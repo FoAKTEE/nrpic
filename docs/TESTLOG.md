@@ -1184,3 +1184,23 @@ the job reached t = 268.6 M of 300 M at the time limit. Figure:
 State of the five-model sequence at 10^4 particles: y_c = 0.900 and 0.819 hold for
 300 M; 0.500 collapses to a black hole (horizon at 104 M, mass equal to the total);
 0.283 disperses; 0.605 has not collapsed by 150 M and is being continued.
+
+## Migration of the unperturbed y_c = 0.5 model, first 913 M (11:39)
+
+`st/migration_yc0500_v4` (10^4 stratified particles, no perturbation, four passes plus
+compensation, static mesh; chain continues to 2500 M). All particles kept. Extrema of
+the central lapse against the values read by eye from the original's figure (2e6
+particles):
+
+| | here | original |
+|---|---|---|
+| start | 0.552 | 0.56 |
+| first maximum | 0.913 at t = 228 M | about 0.91, t = 230 to 350 M |
+| first minimum | 0.578 near t = 450 M | about 0.57 to 0.60, t = 450 to 520 M |
+| second maximum | 0.892 at t = 650 M | about 0.90, t = 680 M |
+| second minimum | 0.763 near t = 800 M | about 0.76, t = 830 M |
+
+The large expansion, the recontraction and the following oscillation of the original
+are reproduced with ten thousand particles, in size and in timing to within what can be
+read from the published figure; the start of the expansion is earlier here (see the
+direction tests). Mean Lorentz factor 1.172 at the start, 1.012 at its lowest.
