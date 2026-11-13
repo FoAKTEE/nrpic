@@ -32,8 +32,10 @@ def unconv(b):
 
 
 def table(rows, head):
-    out = ["| " + " | ".join(head) + " |", "|" + "|".join("---" for _ in head) + "|"]
-    out += ["| " + " | ".join(str(c) for c in r) + " |" for r in rows]
+    def esc(c):
+        return str(c).replace("|", "\\|")
+    out = ["| " + " | ".join(esc(h) for h in head) + " |", "|" + "|".join("---" for _ in head) + "|"]
+    out += ["| " + " | ".join(esc(c) for c in r) + " |" for r in rows]
     return "\n".join(out)
 
 
@@ -207,7 +209,7 @@ def part_e(K):
 
 
 def part_a(S):
-    print("### A. Schwarzschild\n")
+    print("### A0. Orbits and initial states\n")
     orbs = S["orbits"]
     for k, o in orbs.items():
         inv = o["invariants"]
