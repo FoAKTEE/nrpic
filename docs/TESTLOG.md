@@ -446,3 +446,10 @@ Predictions written before any of these runs started:
 5. `st/yc0605_v4`, `yc0500_v4` (one-percent inward kick, compensated): both collapse
    and form a horizon (original: at t = 109 M and 73 M); `yc0283_v4` expands;
    `yc0900_v4` and `yc0819_v4` stay within a few percent of equilibrium.
+
+Addendum (06:27), two passes with compensation: lapse rise within 130 M 0.0061 (plain
+two passes: 0.0176), lowest lapse 0.7967 at t = 279 M, energy integral changed by
+-7.9e-5. The history coincides with the four-pass compensated one to 0.002 throughout
+(0.8125 against 0.8126 at t = 50 M, 0.8035 against 0.8049 at t = 200 M). With
+compensation the result no longer depends on the number of passes; the motion that is
+left is common to both and to the unfiltered run of the same seed.
