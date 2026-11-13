@@ -1145,3 +1145,25 @@ four passes plus compensation, corrected horizon finder, 120 M. Figure:
   determined.
 - After removal starts, the centre of mass and the momentum sums of the diagnostics are
   those of the few particles left and carry no information.
+
+## Prolate collapse, first production attempt: the mesh outgrows the memory (10:49)
+
+`prolate/e09_v5`: 10^4 Monte Carlo particles, cells of M/4 over the spheroid at the
+start (512 MeshBlocks), published deposition rule, two plain filter passes, up to eight
+levels. The run stops at t = 17.1 M (smallest lapse 0.71, long before any black hole):
+the refinement asks for 1912 MeshBlocks, above the limit of 1536; at 1408 blocks the
+run already used 48 GB of the 80 GB of the card. The dust-collapse run with a lattice
+start grew from 288 to 456 blocks over its whole collapse.
+
+Reading, not tested: the Monte Carlo sample is noisy on cells that hold 0.2 particles
+on average, the noise reaches the metric, the refinement indicator responds to it, and
+each new level makes the source more granular. This is the situation the level cap was
+meant for, and the cap cannot be used here later, near the black hole.
+
+Second attempt `prolate/e09_v6` (submitted): cells of M/2 over the spheroid at the
+start (1.6 particles per cell), four filter passes with compensation, block limit
+2200, otherwise the same. Written before the run: if the reading is right, the block
+count stays within a few hundred of its starting value until the lapse has fallen well
+below 0.5; if the count climbs as before, the refinement is driven by the collapsing
+spheroid itself (a spindle 20 M long needs fine cells along its whole length) and the
+number of levels has to be limited instead.
