@@ -1056,3 +1056,38 @@ four passes plus compensation, 150 M. Figure:
 - Difference from the original that is established: there the lapse of this model
   declines smoothly to collapse; here the same kind of core oscillation as in the
   stable model sits on top, growing by a factor of 2.5 to 3 per cycle in its minima.
+
+## Reconfiguration test, first attempt: collapse (10:12); and what the original's figure shows
+
+`st/reconf_yc0756_v4`: y_c = 0.756, 10^4 stratified particles compressed homologously
+by (1.1)^(-1/3) in radius (density up by ten percent, velocities unchanged), static
+mesh with dx = M/4, four passes plus compensation; chain stopped after its first
+segment (t = 817 M).
+- Central lapse 0.7520 at t = 0 (the equilibrium value), then 0.742, 0.749, 0.738,
+  0.712, 0.688, 0.630, 0.585, 0.512, 0.401 at t = 5, 10, 30, 60, 80, 100, 120, 130,
+  140 M: a contraction with small wiggles, ending in collapse. All particles are
+  removed at the lapse threshold between t = 151.5 and 154.2 M; this input has no
+  horizon finder and no mesh refinement, so the end of the collapse is not resolved.
+- The original reports for this test no collapse: a core-halo structure, all particles
+  kept. Its figure of the central lapse (read by eye): start near 0.75, an oscillation
+  with a period of about 50 M whose swing GROWS for the first 250 to 300 M, to between
+  0.695 and 0.775, then decays over the next 400 M, and a slow decline to 0.70 by
+  2000 M.
+- Two things follow.
+  (1) The growing core oscillation that this log has chased on the stable model since
+  06:47 is in the original's own data: growth of a coherent oscillation at the core
+  period, saturation, decay. That it appears there with 10^6 particles, another code and
+  another mesh is the strongest evidence so far that it is the collisionless response
+  of these monoenergetic models to a coherent perturbation and not an artifact of this
+  rebuild. (Still not a controlled test of ours.)
+  (2) Our initial data for this test are inconsistent: the particles are compressed,
+  the metric is the one of the unperturbed equilibrium (the lapse at t = 0 equals the
+  equilibrium value, which gives it away). The original does not say how its
+  perturbation is defined or how the initial metric is obtained. A near-critical model
+  is the place where that matters.
+- Next: initial data in which the conformal factor solves the Hamiltonian constraint
+  for the perturbed particle distribution (radial solve), then the run again on the
+  adaptive mesh with the horizon finder. No prediction is made for the outcome: the
+  model is near critical, and with consistent data either the original's oscillation or
+  a collapse is possible; the comparison quantity is the lapse history of the first
+  300 M (initial value, period, growth of the swing).
