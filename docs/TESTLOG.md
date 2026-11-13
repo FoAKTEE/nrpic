@@ -1091,3 +1091,35 @@ segment (t = 817 M).
   model is near critical, and with consistent data either the original's oscillation or
   a collapse is possible; the comparison quantity is the lapse history of the first
   300 M (initial value, period, growth of the swing).
+
+## Consistent initial data for perturbed clusters (10:35)
+
+`python/nrpic/st_cluster.py` (`PerturbedST`), used by `make_ic.py` by default when a
+density or velocity perturbation is requested (file stem suffix `_hc`;
+`--no-consistent-table` gives the old behaviour). The conformal factor solves the
+Hamiltonian constraint for the perturbed matter, Laplacian psi = -2 pi D / psi with D
+the coordinate energy density of the particles, by a radial fixed-point iteration.
+42 tests pass. Figure: `analysis/diag/figs/ic_dpert_consistency.png`.
+
+For y_c = 0.756 compressed by ten percent in density:
+
+| | psi at the centre | lapse at the centre | total mass |
+|---|---|---|---|
+| unperturbed (and the old table) | 1.13940 | 0.75181 | 1 |
+| consistent | 1.14339 | 0.74863 | 0.99689 |
+
+- The old table violates the constraint by 9 percent of the central source; the new one
+  satisfies it to 1e-9 (the round-off floor of the check).
+- The consistent central lapse, 0.7486, is where the original's lapse curve starts.
+- For the one-percent velocity kick the change of psi is 9e-7 (second order). The kick
+  itself, with K_ij = 0 kept, violates the momentum constraint at first order in the
+  kick; this applies to every kicked run here (and is not addressed).
+- Two slips in the derivation I had handed over were corrected by the agent who
+  implemented it (a factor 2 pi in the monopole; which conformal factor lowers the
+  momenta in the sampler); the tests check the corrected forms.
+
+Reconfiguration rerun submitted: `st/reconf_yc0756_hc`, same particles as the run that
+collapsed, consistent table, adaptive mesh with the horizon finder, cells of M/4 inside
+8 M, to 600 M. No prediction for the outcome (near-critical model). Comparison
+quantities: lapse at t = 0 (0.7486 expected by construction), period and growth of the
+swing over the first 300 M against the original's figure.

@@ -410,6 +410,166 @@ def W_of(q):
     return np.sqrt(1 + np.sum(q * q, axis=1))
 
 
+# ----------------------------------------------------------------------------
+# perturbed clusters: tables that solve the Hamiltonian constraint (PerturbedST)
+# ----------------------------------------------------------------------------
+_PERTURBED = {}
+
+
+def perturbed(yc, dpert=0.0, vpert=0.0, profile="uniform"):
+    key = (yc, dpert, vpert, profile)
+    if key not in _PERTURBED:
+        _PERTURBED[key] = stc.PerturbedST(model(yc), dpert, vpert, profile)
+    return _PERTURBED[key]
+
+
+def _lap6(r, f, stride=4):
+    """Independent flat radial Laplacian f'' + 2 f'/r: sixth-order central differences
+    with step H = stride * dr on the uniform table, even reflection at r = 0."""
+    dr = r[1] - r[0]
+    H = stride * dr
+    k = 3 * stride
+    fe = np.concatenate([f[k:0:-1], f])               # fe[j + k] = f(j dr), j >= -k
+    n = len(f) - k
+    j = np.arange(n) + k
+    f0 = fe[j]
+    fp = [fe[j + m * stride] for m in (1, 2, 3)]
+    fm = [fe[j - m * stride] for m in (1, 2, 3)]
+    d2 = (2 * (fp[2] + fm[2]) - 27 * (fp[1] + fm[1]) + 270 * (fp[0] + fm[0])
+          - 490 * f0) / (180 * H * H)
+    d1 = ((fp[2] - fm[2]) - 9 * (fp[1] - fm[1]) + 45 * (fp[0] - fm[0])) / (60 * H)
+    rr = r[:n]
+    out = np.full(len(f), np.nan)
+    with np.errstate(divide="ignore", invalid="ignore"):
+        out[:n] = np.where(rr > 0, d2 + 2 * d1 / rr, 3 * d2)
+    return out
+
+
+def _perturbed_source(md, s, r, psi, vpert=0.0):
+    """2 pi D/psi of the perturbed matter from the model profiles alone: shells move
+    from r/s to r, n' = s^-3 rho_0 psi_0^6 (r/s), delta^ij u_i u_j = psi_0(r)^4 q_0(r/s)^2
+    (1 - 2 v mu + v^2) (sampler convention), <W> by 32-point Gauss-Legendre in mu."""
+    xo = r / s
+    n = md.rho0(xo) * md.psi(xo) ** 6 / s ** 3
+    U2 = md.psi(r) ** 4 * md.q(xo) ** 2
+    mu, w = np.polynomial.legendre.leggauss(32)
+    W = 0.5 * np.sum(w[None, :] * np.sqrt(
+        1 + U2[:, None] * (1 - 2 * vpert * mu[None, :] + vpert ** 2) / psi[:, None] ** 4), axis=1)
+    return 2 * np.pi * n * W / psi
+
+
+def test_perturbed_table_d0_reproduces_equilibrium():
+    """(a) dpert = vpert = 0: the constraint solve returns the equilibrium table. The
+    remaining difference (< 1e-13) is the ODE tolerance (rtol 1e-13) of the node data
+    against the quintic-spline quadrature of the Green's-function form."""
+    for yc in (0.9, 0.756, 0.5, 0.283):
+        md = model(yc)
+        p = perturbed(yc)
+        assert p.iterations == 1 and p.s == 1.0
+        assert abs(p.M - md.M) < 2e-13, (yc, p.M - md.M)
+        assert np.max(np.abs(p.psi_nodes - md.psi_nodes)) < 2e-13
+        assert abs(p.alpha_factor - 1) < 5e-14
+        r, u, a = p.table_arrays()
+        r0, u0, a0 = stc.table_arrays(md)
+        assert np.array_equal(r, r0)
+        assert np.max(np.abs(u - u0)) < 2e-13, (yc, np.max(np.abs(u - u0)))
+        assert np.max(np.abs(a - a0)) < 5e-14, (yc, np.max(np.abs(a - a0)))
+
+
+def test_perturbed_table_constraint_residual():
+    """(b) dpert = 0.1 (and vpert = 0.01): Lap psi + 2 pi D/psi on the written table, by
+    independent sixth-order differences and a source built from the model profiles,
+    is below 1e-9 away from the surface (|r - r_s'| > 0.05 r_s', where D ~ (r_s - r)^(1/2)
+    is not differentiable); the equilibrium table with the same matter misses by ~10%."""
+    md = model(0.756)
+    for dp, vp in ((0.1, 0.0), (0.0, 0.01), (0.1, 0.01)):
+        p = perturbed(0.756, dp, vp)
+        s = (1 + dp) ** (-1 / 3)
+        rs = s * md.rbar_s
+        assert abs(p.rbar_s - rs) < 1e-14
+        r, u, a = p.table_arrays()
+        assert abs(r[4000] - rs) < 1e-12
+        psi = 1 + u
+        src = _perturbed_source(md, s, r, psi, vp)
+        res = _lap6(r, psi) + src
+        ok = np.isfinite(res) & (np.abs(r - rs) > 0.05 * rs)
+        assert np.max(np.abs(res[ok])) < 1e-9, (dp, vp, np.max(np.abs(res[ok])))
+        assert np.max(np.abs(res[ok])) < 2e-8 * np.max(src)
+        # exterior: psi = 1 + M'/(2r), lapse Schwarzschild with M', both continuous
+        out = r > rs
+        assert np.max(np.abs(u[out] - p.M / (2 * r[out]))) < 1e-15
+        assert abs(2 * r[-1] * u[-1] - p.M) < 1e-13
+        h = p.M / (2 * rs)
+        eps = 1e-9 * rs
+        assert abs(p.alpha(rs * (1 - 1e-15)) - (1 - h) / (1 + h)) < 1e-13
+        assert abs(p.psi(rs - eps) - p.psi(rs + eps)) < 1e-9
+        # the lapse is the equilibrium one compressed with the matter, rescaled
+        rr = np.linspace(0, rs, 51)
+        assert np.allclose(p.alpha(rr), p.alpha_factor * md.alpha(rr / s), rtol=1e-13)
+    # the old (equilibrium) table does not solve the constraint for the compressed matter
+    r, u, a = stc.table_arrays(md)
+    p0 = 1 + u
+    res = _lap6(r, p0) + _perturbed_source(md, 1.1 ** (-1 / 3), r, p0)
+    ok = np.isfinite(res) & (r < 0.9 * md.rbar_s)
+    assert np.max(np.abs(res[ok])) > 0.05 * np.max(np.abs(stc.radial_laplacian(r, p0)[ok]))
+
+
+def test_perturbed_table_particle_identity():
+    """(c) Gauss form at the particle level: sum_p m_p W_p/psi(r_p), with W_p and psi from
+    the new table, equals M' = 2 lim r (psi - 1) = int D/psi d^3x. With stratified
+    sampling every term depends on the radial uniform alone (dpert only), so the sum
+    is a one-dimensional stratified estimate with standard deviation
+    M0 N^(-3/2) (int_0^1 h'(U)^2 dU / 12)^(1/2) = 2.5e-8 for y_c = 0.756, N = 10^4
+    (h = W/psi on the shell of mass fraction U; 40 seeds give 2.7e-8). The tolerance
+    1.5e-7 is 6 sigma. The equilibrium table misses by 1.5e-3, and the momentum
+    lowered with psi_0(r/s) instead of psi_0(r) would shift M' by 2.5e-4."""
+    md = model(0.756)
+    p = perturbed(0.756, 0.1)
+    p0 = perturbed(0.756)
+    for seed in (1, 2, 3):
+        x, u, m, _ = sampling.sample_st(md, 10000, "stratified", seed, dpert=0.1)
+        r = np.linalg.norm(x, axis=1)
+        u2 = np.sum(u * u, axis=1)
+        ps = p.psi(r)
+        S = np.sum(m * np.sqrt(1 + u2 / ps ** 4) / ps)
+        assert abs(S / p.M - 1) < 1.5e-7, (seed, S / p.M - 1)
+        ps0 = md.psi(r)
+        S0 = np.sum(m * np.sqrt(1 + u2 / ps0 ** 4) / ps0)
+        assert abs(S0 - md.M) > 1e-3
+        assert abs(S0 / p.equilibrium_table_mismatch()[0] - 1) < 1.5e-7
+        # the unperturbed sample against the equilibrium (d = 0) table
+        x, u, m, _ = sampling.sample_st(md, 10000, "stratified", seed)
+        r = np.linalg.norm(x, axis=1)
+        ps = p0.psi(r)
+        S = np.sum(m * np.sqrt(1 + np.sum(u * u, axis=1) / ps ** 4) / ps)
+        assert abs(S / p0.M - 1) < 1.5e-7
+    # monopole of the table = M'
+    r, u, a = p.table_arrays()
+    assert abs(2 * r[-1] * u[-1] / p.M - 1) < 1e-13
+
+
+def test_perturbed_table_velocity_kick():
+    """vpert: the direction average of W in closed form, and the change of psi is of
+    second order in vpert (dM'/vpert^2 and dpsi_c/vpert^2 independent of vpert)."""
+    c = np.array([0.0, 0.3, 2.0, 0.5])
+    b = np.array([0.0, -0.1, 0.5, 0.0])
+    psi = np.array([1.0, 1.2, 1.5, 1.1])
+    mu, w = np.polynomial.legendre.leggauss(40)
+    ref = 0.5 * np.sum(w * np.sqrt(1 + (c[:, None] + b[:, None] * mu) / psi[:, None] ** 4), 1)
+    assert np.allclose(stc.direction_averaged_W(c, b, psi), ref, rtol=1e-14, atol=0)
+    md = model(0.756)
+    d = {}
+    for vp in (0.01, 0.02):
+        p = perturbed(0.756, 0.0, vp)
+        d[vp] = (p.M - md.M, p.psi_c - md.psi_c, np.max(np.abs(p.psi_nodes - md.psi_nodes)))
+        assert p.M > md.M and p.psi_c > md.psi_c
+    assert abs(d[0.02][0] / d[0.01][0] - 4) < 1e-3
+    assert abs(d[0.02][1] / d[0.01][1] - 4) < 1e-3
+    assert d[0.01][2] < 1e-6 and abs(d[0.01][0] - 5.0e-6) < 0.1e-6
+    p = perturbed(0.756, 0.0, 0.01, "linear")
+    assert 0 < p.M - md.M < d[0.01][0]
+
+
 def test_sampler_spheroid():
     sph = ProlateSpheroid(0.9, 10.0)
     for N in (100, 10000):
@@ -691,10 +851,60 @@ def test_make_ic_cli():
             assert meta["particles"]["N"] == len(m)
             if args[0] != "prolate":
                 r, uu, al, _ = nio.read_tab(os.path.join(d, "run.tab"))
-                assert abs(2 * r[-1] * uu[-1] - 1) < 1e-12
+                # perturbed st data: the table carries the ADM mass of the perturbed
+                # matter (Hamiltonian constraint solved), not that of the equilibrium
+                M = meta.get("table_constraint", {}).get("M_ADM", 1.0)
+                assert abs(2 * r[-1] * uu[-1] - M) < 1e-12
             for ext in (".nrp", ".tab", ".json"):
                 if os.path.exists(os.path.join(d, "run" + ext)):
                     os.remove(os.path.join(d, "run" + ext))
+
+
+def test_make_ic_st_consistent_table():
+    """--dpert writes the constraint-solving table under the '_hc' stem by default;
+    --no-consistent-table restores the equilibrium table under the old stem; the
+    particle files are identical."""
+    import importlib.util
+    import json
+    spec = importlib.util.spec_from_file_location(
+        "make_ic", os.path.join(_ROOT, "problems", "ic", "make_ic.py"))
+    mk = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(mk)
+    md = model(0.756)
+    p = perturbed(0.756, 0.1)
+    with tempfile.TemporaryDirectory() as d:
+        base = ["st", "--yc", "0.756", "--N", "1000", "--dpert", "0.1", "--out", d]
+        assert mk.main(base) == 0
+        assert mk.main(base + ["--no-consistent-table"]) == 0
+        assert mk.main(["st", "--yc", "0.756", "--N", "1000", "--out", d]) == 0
+        new = os.path.join(d, "st_yc0p756_stratified_N1000_s1_dp0p1_hc")
+        old = os.path.join(d, "st_yc0p756_stratified_N1000_s1_dp0p1")
+        eq = os.path.join(d, "st_yc0p756_stratified_N1000_s1")
+        metas = {}
+        for k, stem in (("new", new), ("old", old), ("eq", eq)):
+            with open(stem + ".json") as f:
+                metas[k] = json.load(f)
+        tc = metas["new"]["table_constraint"]
+        assert tc["option"] == "consistent" and tc["M_ADM"] == p.M
+        assert tc["fd_residual"]["max_abs"] < 1e-9 and tc["fixed_point_residual"] < 1e-12
+        # make_ic removes the sample's net momentum ubar, which lowers sum m W/psi by
+        # ~0.2 |ubar|^2 (|ubar| ~ 1e-2 at N = 1000), a sampling effect the continuum
+        # table does not contain; without the removal the identity holds to ~1e-7
+        assert abs(tc["particle_sum_m_W_over_psi"]["consistent"]["rel_diff"]) < 1e-4
+        assert abs(metas["old"]["table_constraint"]["particle_sum_m_W_over_psi"]
+                   ["equilibrium"]["rel_diff"]) > 1e-3
+        assert metas["old"]["table_constraint"]["option"] == "unperturbed_equilibrium_table"
+        assert metas["eq"]["table_constraint"]["option"] == "equilibrium (exact)"
+        r, u, a, _ = nio.read_tab(new + ".tab")
+        r1, u1, a1 = p.table_arrays()
+        assert np.array_equal(r, r1) and np.array_equal(u, u1) and np.array_equal(a, a1)
+        assert abs(2 * r[-1] * u[-1] - p.M) < 1e-13
+        r, u, a, _ = nio.read_tab(old + ".tab")
+        r0, u0, a0 = stc.table_arrays(md)
+        assert np.array_equal(r, r0) and np.array_equal(u, u0) and np.array_equal(a, a0)
+        xn, un, mn, _ = nio.read_nrp(new + ".nrp")
+        xo, uo, mo, _ = nio.read_nrp(old + ".nrp")
+        assert np.array_equal(xn, xo) and np.array_equal(un, uo) and np.array_equal(mn, mo)
 
 
 def test_make_ic_jeans():

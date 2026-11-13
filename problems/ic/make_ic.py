@@ -10,6 +10,7 @@ Examples
     make_ic.py st      --yc 0.819 --N 10000 --sampler stratified --seed 1 --out /tmp/ic
     make_ic.py st      --yc 0.605 --N 10000 --vpert 0.01 --out /tmp/ic
     make_ic.py st      --yc 0.756 --N 10000 --dpert 0.10 --out /tmp/ic
+    make_ic.py st      --yc 0.756 --N 10000 --dpert 0.10 --no-consistent-table --out /tmp/ic
     make_ic.py prolate --e 0.9 --b 10 --N 10000 --seed 1 --out /tmp/ic
     make_ic.py jeans   --N 10000 --seed 1 --out /tmp/ic
 
@@ -18,7 +19,13 @@ conformal sources), see python/nrpic/clumps.py. The table holds the envelope's
 u = psi_env - 1 only (its lapse column is the isolated envelope's and is not used);
 the JSON lists every component of psi_tot and the <problem> block of nrpic_cf.
 
-File formats: docs/FORMATS.md. Units: G = c = 1, ADM mass M = 1.
+st with --dpert/--vpert: by default the table solves the Hamiltonian constraint
+for the perturbed particles (nrpic.st_cluster.PerturbedST; stem suffix '_hc'),
+its ADM mass M' differs slightly from 1 and is in the JSON (table_constraint);
+--no-consistent-table writes the unperturbed equilibrium table as before.
+
+File formats: docs/FORMATS.md. Units: G = c = 1, ADM mass M = 1 (of the
+unperturbed model for st).
 """
 
 import argparse
@@ -91,6 +98,12 @@ def main(argv=None):
     g.add_argument("--vpert-profile", choices=["uniform", "linear"], default="uniform")
     g.add_argument("--dpert", type=float, default=0.0,
                    help="density perturbation (homologous compression by (1+dpert)^(-1/3))")
+    g.add_argument("--consistent-table", action=argparse.BooleanOptionalAction, default=True,
+                   help="with --dpert/--vpert: write the table (psi and lapse) that solves "
+                        "the Hamiltonian constraint for the perturbed matter "
+                        "(stc.PerturbedST; file stem gets the suffix '_hc'). "
+                        "--no-consistent-table writes the unperturbed equilibrium table "
+                        "(old behaviour, violates the constraint)")
     g = p.add_argument_group("prolate")
     g.add_argument("--e", type=float, default=0.9, help="eccentricity")
     g.add_argument("--b", type=float, default=10.0, help="polar semi-axis / M")
@@ -151,6 +164,8 @@ def main(argv=None):
         meta.update(model.summary())
         meta.update(sampler=sampler, vpert=a.vpert, vpert_profile=a.vpert_profile,
                     dpert=a.dpert)
+        perturbed = bool(a.vpert or a.dpert)
+        consistent = perturbed and a.consistent_table
         stem = a.prefix
         if stem is None:
             stem = f"st_yc{_fmt(a.yc)}_{sampler}_N{a.N}_s{a.seed}"
@@ -158,8 +173,34 @@ def main(argv=None):
                 stem += f"_vp{_fmt(a.vpert)}"
             if a.dpert:
                 stem += f"_dp{_fmt(a.dpert)}"
-        table = lambda path: stc.write_table(model, path, a.table_points, a.table_rmax)
-        meta["table_lapse"] = "static equilibrium lapse; Schwarzschild continuation outside"
+            if consistent:
+                stem += "_hc"
+        if consistent:
+            pst = stc.PerturbedST(model, a.dpert, a.vpert, a.vpert_profile)
+            hc = pst.summary()
+            hc["fd_residual"] = pst.constraint_residual(a.table_points, a.table_rmax)
+            meta["table_constraint"] = hc
+            meta["units"] = ("G=c=1, M_ADM of the unperturbed equilibrium = 1; ADM mass of "
+                             f"these data = table_constraint.M_ADM = {pst.M!r}")
+            table = lambda path: pst.write_table(path, a.table_points, a.table_rmax)
+            meta["table_lapse"] = ("k alpha_0(r/s) inside (alpha_0 the static equilibrium "
+                                   "lapse, k = table_constraint.alpha_factor), "
+                                   "Schwarzschild isotropic with the perturbed M_ADM "
+                                   "outside, continuous at the perturbed surface")
+        else:
+            table = lambda path: stc.write_table(model, path, a.table_points, a.table_rmax)
+            meta["table_lapse"] = "static equilibrium lapse; Schwarzschild continuation outside"
+            if perturbed:
+                pst = stc.PerturbedST(model, a.dpert, a.vpert, a.vpert_profile)
+                I_old, rel = pst.equilibrium_table_mismatch()
+                meta["table_constraint"] = dict(
+                    option="unperturbed_equilibrium_table",
+                    warning="table of the unperturbed equilibrium: the Hamiltonian "
+                            "constraint is NOT solved for the perturbed matter",
+                    int_D_over_psi=I_old, monopole=model.M, mismatch_rel=rel,
+                    M_ADM_consistent=pst.M, psi_c_consistent=pst.psi_c)
+            else:
+                meta["table_constraint"] = dict(option="equilibrium (exact)")
 
     elif a.model == "jeans":
         sampler = a.sampler or "stratified"
@@ -229,6 +270,16 @@ def main(argv=None):
     nio.write_nrp(nrp, x, u, m, sp)
     meta["particle_file"] = os.path.basename(nrp)
     meta["particles"] = _particle_stats(x, u, m)
+    if a.model == "st" and meta["table_constraint"]["option"] != "equilibrium (exact)":
+        # particle-level form of the constraint: sum m W/psi(r_p) = M_ADM of the table
+        rp = np.sqrt(np.sum(x * x, axis=1))
+        u2 = np.sum(u * u, axis=1)
+        for key, f, M in (("consistent", pst.psi, pst.M),
+                          ("equilibrium", model.psi, model.M)):
+            ps = f(rp)
+            S = float(np.sum(m * np.sqrt(1.0 + u2 / ps ** 4) / ps))
+            meta["table_constraint"].setdefault("particle_sum_m_W_over_psi", {})[key] = dict(
+                sum=S, monopole=M, rel_diff=S / M - 1.0)
     if table is not None:
         tab = os.path.join(a.out, stem + ".tab")
         r, uu, al = table(tab)
@@ -264,6 +315,27 @@ def main(argv=None):
         keys = ("M_rest", "rbar0", "R0_areal") if a.model == "os" else \
                ("yc", "M0", "R_areal", "rbar_s", "zc", "alpha_c", "Eb_over_M0")
         print("  " + ", ".join(f"{k} = {meta[k]:.10g}" for k in keys))
+        if a.model == "st" and meta["table_constraint"]["option"] != "equilibrium (exact)":
+            tc = meta["table_constraint"]
+            I_old, rel_old = pst.equilibrium_table_mismatch()
+            print(f"  table: {tc['option']}")
+            print(f"  unperturbed equilibrium: psi_c = {model.psi_c:.12f}, "
+                  f"alpha_c = {model.alpha_c:.12f}, M_ADM = {model.M:.12f}")
+            print(f"  consistent (perturbed):  psi_c = {pst.psi_c:.12f}, "
+                  f"alpha_c = {pst.alpha_c:.12f}, M_ADM' = {pst.M:.12f} "
+                  f"(dM/M = {pst.M / model.M - 1:+.4e}; {pst.iterations} iterations, "
+                  f"fixed-point residual {pst.fixed_point_residual:.1e})")
+            print(f"  old equilibrium table:   psi_c = {float(model.psi(0.0)):.12f} "
+                  f"(consistent - old = {pst.psi_c - float(model.psi(0.0)):+.4e})")
+            print(f"  old table, perturbed matter: int D/psi_0 d^3x = {I_old:.12f} vs "
+                  f"monopole {model.M:.12f}: rel. diff {rel_old:+.4e}")
+            if consistent:
+                fr = tc["fd_residual"]
+                print(f"  FD residual of the written table: max |Lap psi + 2 pi D/psi| = "
+                      f"{fr['max_abs']:.2e} ({fr['max_rel']:.2e} of the largest source)")
+            for key, d in tc["particle_sum_m_W_over_psi"].items():
+                print(f"  particles: sum m W/psi [{key:11s} table] = {d['sum']:.12f}, "
+                      f"monopole {d['monopole']:.12f}, rel. diff {d['rel_diff']:+.3e}")
     print(f"  N = {len(m)}, sum m = {m.sum():.10g}")
     return 0
 

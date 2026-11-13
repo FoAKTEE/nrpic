@@ -193,7 +193,9 @@ def sample_st(model, N, method="stratified", seed=0, vpert=0.0,
                    coordinate number density by the factor (1 + dpert). The
                    velocities keep their equilibrium orthonormal values from the
                    unperturbed radius and are lowered with psi at the new position.
-    Masses are M0/N. The perturbed data are not re-solved for the constraints.
+    Masses are M0/N. The particles are not altered to satisfy the constraints;
+    st_cluster.PerturbedST gives the conformal factor (and lapse) that
+    solves the Hamiltonian constraint for exactly this perturbed matter.
     """
     if not isinstance(model, STModel):
         model = STModel(float(model))
