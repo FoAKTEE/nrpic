@@ -230,3 +230,78 @@ Components of this code (hyperedges, each combining several nodes):
 The whole was built by language-model agents working from the published text:
 a lead model for design, derivations and solver source; worker models for builds, runs,
 reference solutions and analysis; a third model for the manuscript text.
+
+## 10. Changes after the control runs of 2026-11-13 (these override Secs. 5 to 8 where they differ)
+
+Facts for the manuscript; the runs behind each are in `docs/TESTLOG.md`.
+
+### 10.1 Filter (replaces the filter item of Sec. 5)
+- n binomial passes with weights (1/4, 1/2, 1/4) per dimension have the response
+  cos^{2n}(k\Delta x/2) = 1 - n(k\Delta x)^2/4 + ...; they widen every cloud by a second
+  moment n\Delta x^2/2 per dimension. For a self-gravitating system that widening is a
+  gravitational softening: the deposited source is less concentrated than the matter,
+  and it also lowers the proper-volume integral of E slightly because E carries
+  1/\sqrt\gamma.
+- Compensation pass (standard in plasma particle-in-cell codes, Birdsall and Langdon):
+  after the n binomial passes, one pass with weights (-c, 1+2c, -c) per dimension,
+  c = n/4. Combined response (1-s)^n (1+ns) with s = \sin^2(k\Delta x/2): equal to one
+  up to fourth order in k\Delta x, monotonically decreasing, zero at the Nyquist
+  wavenumber. The second moment of the combined kernel is zero. Small negative lobes
+  (a few percent of the peak).
+- Used: four passes plus compensation for the cluster runs; the plain filter of the
+  original (one or two passes) for the dust and prolate collapse tests.
+- Limitation, stated once: the mesh filter is exactly conservative on a single level
+  and not across refinement levels; measured change of the integrals 1e-4 to 1e-3 at
+  ten thousand particles when particles cross level boundaries.
+
+### 10.2 Level cap (replaces the two "new here" items of Sec. 5)
+- The level cap and its density-adaptive form exist as options and conserve exactly.
+  They are NOT the remedy for low particle number that the first story made them.
+  Tested on dust collapse with the same particles and mesh: the cap removes the jump of
+  the constraint violation when the mesh refines under diffuse matter and gives a
+  smooth central density; it leaves the collapse of the centre unchanged; near the
+  forming black hole it increases the constraint violation and makes the horizon mass
+  drift, even when the cloud is at most one level coarser than the cell. All collapse
+  results in the paper use the published rule (cloud at the finest local level).
+- In the method section the cap is therefore one short paragraph: the general
+  conservative mapping (cloud on the lattice of one level; coarser leaves sum, finer
+  leaves share) with the published rule as the case used, and one sentence that coarser
+  clouds were tested and are reported in the results as a negative result.
+
+### 10.3 Initial data (adds to Sec. 8)
+- Dust ball on a lattice: the published rule m_p = \rho_0\psi^6 h^3 on the lattice
+  sites inside the surface. The number of sites inside a sphere differs from its volume
+  in cells by a fraction of order one over the number of cells across; the total mass
+  inherits it. Surface correction used here: the masses of the outermost layer of one
+  lattice spacing are rescaled by a common factor so that the total equals the
+  continuum rest mass; the interior is unchanged. With the correction off the rule is
+  the published one.
+- Sampled clusters: the mass-weighted mean of u_i of the sample is subtracted so that
+  the total momentum of the particles vanishes.
+
+### 10.4 Horizon and mass diagnostics (replaces the horizon item of Sec. 8)
+- Apparent horizons: the flow finder of the host code, with one change. As distributed
+  it evaluates the expansion from finite-difference derivatives of the metric stored on
+  the active cells of each mesh block and interpolates that array to the surface; the
+  ghost cells of the array are not filled, so points of the surface near a block face
+  receive wrong derivatives. Here the derivatives are taken from the interpolant of the
+  metric itself. Effect on a black hole of known mass: see results.
+- Independent check: the Misner-Sharp mass of the slice,
+  m = (R/2)(1 - \gamma^{ij}\partial_i R\,\partial_j R + R^2 K_T^2), R the areal radius
+  of the coordinate sphere and K_T the tangential extrinsic curvature; in spherical
+  symmetry 2m/R = 1 on an apparent horizon and m is the black hole mass in vacuum. It
+  is evaluated on saved slices, independently of the finder.
+- Test particles around evolved black holes are compared with exact geodesics in
+  gauge-independent quantities: areal radius against proper time \tau = \int\alpha/W dt.
+
+### 10.5 How results are reported (for the assembly section)
+- Every explanation offered for an unexpected result was written down with the outcome
+  it predicts for a specific run before that run was made. Five first explanations of
+  the lead agent failed this way and were replaced: (i) the motion of the stable cluster
+  as sampling noise (three seeds gave the same motion); (ii) the low horizon mass as
+  early stopping of the finder (a tighter tolerance changed nothing; the cause was the
+  unfilled ghost cells); (iii) the remaining oscillation as noise passed by the
+  compensated filter (seeds and particle numbers gave the same oscillation); (iv) the
+  drift of the horizon mass as part of the collapse (it belongs to the coarser clouds);
+  (v) one level of cloud coarsening as harmless (the horizon mass drifted the other
+  way). Where no run isolates a cause the text says that the cause is not determined.
