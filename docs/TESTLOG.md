@@ -220,3 +220,12 @@ grows at M/4, and the two finder variants reproduce 0.977. If the finder is the 
 dx8_tight or dx8_ang moves towards 1 and dx16 stays near 0.977. A residual mean
 expansion of 4e-3 corresponds to a radial offset of order 4 M^2 x 4e-3, about one
 percent of the horizon radius, so a finder contribution at the percent level is possible.
+
+## Stable cluster controls: results
+
+- Net momentum (s1_nf4 against the earlier unperturbed run, same sample, 05:16): with
+  the mean momentum removed the centre of mass stays within 0.018 M of the origin for
+  300 M (its offset at t = 0 is 0.018 M; the positions were not recentred), against a
+  drift to 0.22 M before. Lapse, mass-shell radii and constraint norms are unchanged to
+  plotting accuracy. Prediction held: the drift was the net momentum of the sample.
+  Figure: `analysis/diag/figs/cluster_ctl_momentum.png`.
