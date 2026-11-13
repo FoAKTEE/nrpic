@@ -1,6 +1,6 @@
 # Results brief for the section "Self-gravitating matter" (facts for the writer)
 
-Status 2026-11-13 11:15. Source of every number: `docs/TESTLOG.md` (entry titles given
+Status 2026-11-13 12:00. Source of every number: `docs/TESTLOG.md` (entry titles given
 in brackets). Numbers are for the figures and the appendix table; the prose uses only
 the numbers the writing guide allows. Parts marked NOT YET are not to be written.
 
@@ -82,18 +82,27 @@ with adaptive refinement (three compact models).
    200 M and then drifts; with 10^2 it does not hold (central lapse from 0.81 to 0.58
    in 500 M, kinetic energy doubling). [Growing oscillation against particle number;
    addendum N = 10^2; Monte Carlo sampling]
-5. The sequence. y_c = 0.500 with the inward kick collapses: horizon first found at
-   t = 104 M, its mass grows to the total mass (1.0000 at the end) as the cluster falls
-   in, all but three particles removed. The original finds the horizon at 73 M and
-   calls the time dependent on particle number and noise. y_c = 0.283 (negative binding
-   energy) disperses: lapse to 0.98, half-mass radius from 1.7 M to 48 M, as in the
-   original. y_c = 0.605: NOT YET (no collapse within 150 M; growing core oscillation;
-   continuation running). [Compact model y_c = 0.500 ...; Unbound model y_c = 0.283;
-   Compact model y_c = 0.605]
-6. The unperturbed model past the binding-energy maximum (y_c = 0.5 without kick)
-   expands, as in the original's migration test; with plain filter passes it starts
-   20 to 30 M earlier than with compensation; three samples agree. Long run: NOT YET.
-   [Unperturbed y_c = 0.5: plain against compensated filter; addenda]
+5. The sequence (figure fig_clusters, being made: for each of the five models the radii
+   enclosing 10 to 90 percent of the rest mass and the central lapse against time, as
+   in the original). With the original's one-percent inward kick:
+   y_c = 0.900 and 0.819 hold. y_c = 0.605 collapses: horizon first found at t = 191 M;
+   y_c = 0.500 collapses: horizon at t = 104 M. In both the horizon mass grows as the
+   cluster falls in and ends at the total mass (to 0.3 percent and 1e-4), and all but
+   a few particles are removed. The original finds its horizons at 109 M and 73 M and
+   calls these times dependent on particle number and noise; here both are later, and
+   in y_c = 0.605 a core oscillation of growing size precedes the collapse. y_c = 0.283
+   (negative binding energy) disperses: lapse to 0.98, half-mass radius from 1.7 M to
+   48 M, as in the original. [Compact model y_c = 0.500 ...; Compact model y_c = 0.605
+   (two entries); Unbound model y_c = 0.283]
+6. Migration (figure fig_migration, to be made when the run ends). The unperturbed
+   model past the binding-energy maximum (y_c = 0.5 without kick) expands, recontracts
+   and oscillates, as in the original's migration test. First 913 M: lapse 0.552 ->
+   0.913 (t = 228 M) -> 0.578 (450 M) -> 0.892 (650 M) -> 0.763 (800 M); the original's
+   figure shows 0.56 -> 0.91 -> 0.57 to 0.60 -> 0.90 -> 0.76 at 230 to 350, 450 to 520,
+   680, 830 M. All particles kept. With plain filter passes the expansion starts 20 to
+   30 M earlier than with compensation; three samples agree. Rest of the run: NOT YET.
+   [Unperturbed y_c = 0.5: plain against compensated filter; Migration of the
+   unperturbed y_c = 0.5 model]
 7. Reconfiguration of the near-critical model: NOT YET (first attempt had inconsistent
    initial data and collapsed; rerun in progress).
 
