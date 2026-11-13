@@ -514,3 +514,11 @@ noise that the compensated filter lets through at intermediate wavenumbers; a sl
 instability of the scheme would look similar in one run. Discriminating runs already
 queued: seeds 2 and 3 (noise: timing and size differ between seeds; instability: same
 growth), N = 10^3 and 10^2 (noise: amplitude grows as N^(-1/2)).
+
+Addendum to the y_c = 0.5 direction tests (figure
+`analysis/diag/figs/cluster_dir_yc0500.png`): the expansion is large in both runs. The
+half-mass radius goes from 2.29 M to 15.7 M (plain) and 11.8 M (compensated) at
+t = 200 M and is still growing, more slowly; the 90 percent radius reaches 20.9 M and
+17.4 M. The original also reports a first expansion by two orders of magnitude in
+central density before recontraction. The finest level of this mesh covers |x| < 7.9 M,
+so most of the matter is on coarser cells (M/2 to 1 M) from t = 100 M on.
