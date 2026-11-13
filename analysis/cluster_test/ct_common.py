@@ -172,7 +172,7 @@ def invariant_history(name, force=False, every=1):
     """Per-particle exact-metric E, L_z, Q on every snapshot, aligned by tag.
 
     Returns dict(t[nt], tag[N], species[N], E0, L0, Q0 [N], E, L, Q [nt, N] with NaN after
-    removal, r [nt, N] Kerr-Schild radius, x [nt, N, 3] positions (float32), alive [nt, N])."""
+    removal, r [nt, N] Kerr-Schild radius, x [nt, N, 3] positions, alive [nt, N])."""
     os.makedirs(CACHE, exist_ok=True)
     cpath = os.path.join(CACHE, f"{name}_inv.npz")
     files = snapshots(name)[::every]
@@ -189,7 +189,7 @@ def invariant_history(name, force=False, every=1):
     out = dict(t=np.zeros(nt), tag=tag0, species=sp0, m=m0,
                E=np.full((nt, N), np.nan), L=np.full((nt, N), np.nan),
                Q=np.full((nt, N), np.nan), r=np.full((nt, N), np.nan),
-               x=np.full((nt, N, 3), np.nan, dtype=np.float32))
+               x=np.full((nt, N, 3), np.nan))
     for k, f in enumerate(files):
         t, x, u, m, tag, sp = read_snap(f)
         j = idx[tag]

@@ -86,9 +86,10 @@ def main():
     res = {}
 
     # ---- time series -------------------------------------------------------------------
-    fig, axes = plt.subplots(3, 2, figsize=(8.0, 7.2), sharex=True)
-    fig.subplots_adjust(left=0.10, right=0.98, bottom=0.07, top=0.93, hspace=0.06,
+    fig, axes = plt.subplots(3, 2, figsize=(8.0, 7.4), sharex="col")
+    fig.subplots_adjust(left=0.10, right=0.98, bottom=0.07, top=0.885, hspace=0.06,
                         wspace=0.22)
+    lw_t = {"mesh, midpoint": 2.8, "analytic, midpoint": 2.2}
     hists = {}
     for j, a in enumerate(SPINS):
         for pat, sp, lab, col in SERIES:
@@ -106,8 +107,10 @@ def main():
                     med = np.nanmedian(e, axis=1)
                     p99 = np.nanpercentile(e, 99, axis=1)
                 ax = axes[i, j]
-                ax.semilogy(t[1:], med[1:], color=col, ls="-", label=lab if i == 0 else None)
-                ax.semilogy(t[1:], p99[1:], color=col, ls="--")
+                lw = lw_t.get(lab, 1.3)
+                ax.semilogy(t[1:], med[1:], color=col, ls="-", lw=lw,
+                            label=lab if i == 0 else None)
+                ax.semilogy(t[1:], p99[1:], color=col, ls="--", lw=lw)
         for pat, sp in EXTRA:
             name = pat.format(a=a)
             if C.exists(name):
@@ -117,8 +120,9 @@ def main():
         axes[-1, j].set_xlabel("$t / T_\\mathrm{orb}$")
     for i, (k, lab) in enumerate(KEYS):
         axes[i, 0].set_ylabel(lab)
-    for ax in axes.ravel():
-        ax.set_xlim(0, C.TLIM / C.T_ORB[0.9])
+    for j, a in enumerate(SPINS):
+        for ax in axes[:, j]:
+            ax.set_xlim(0, C.TLIM / C.T_ORB[a])
     # line-style key
     axes[0, 0].plot([], [], color="k", ls="-", label="median")
     axes[0, 0].plot([], [], color="k", ls="--", label="99th percentile")
@@ -132,7 +136,9 @@ def main():
     fig, axes = plt.subplots(3, 2, figsize=(8.0, 7.2), sharey="row")
     fig.subplots_adjust(left=0.09, right=0.98, bottom=0.07, top=0.93, hspace=0.32,
                         wspace=0.06)
-    bins = np.linspace(-14, -2, 97)
+    bins = np.linspace(-16.5, -1.5, 121)
+    lws = {"analytic, midpoint": 2.6, "mesh, midpoint": 2.6, "analytic, Boris": 1.5,
+           "mesh, Boris": 1.5, "analytic, Boris Cholesky": 1.0}
     for j, a in enumerate(SPINS):
         for pat, sp, lab, col in SERIES:
             if (a, lab) not in hists:
@@ -143,11 +149,12 @@ def main():
                 e = C.rel_err(h, k)[last]
                 e = e[np.isfinite(e)]
                 v = np.log10(np.maximum(e, 1e-16))
-                axes[i, j].hist(v, bins=bins, histtype="step", color=col, lw=1.5,
+                axes[i, j].hist(v, bins=bins, histtype="step", color=col, lw=lws[lab],
                                 label=lab if (i == 0) else None)
         axes[0, j].set_title(f"$a = {a}\\,M$, $t = {C.TLIM:.0f}\\,M$")
         for i, (k, xl) in enumerate(KEYS):
-            axes[i, j].set_xlabel(r"$\log_{10}$ " + xl, labelpad=-1)
+            axes[i, j].set_xlabel(r"$\log_{10}$ " + xl,
+                                  labelpad=-1)
     for i in range(3):
         axes[i, 0].set_ylabel("particles per bin")
     h0, l0 = axes[0, 0].get_legend_handles_labels()

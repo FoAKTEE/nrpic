@@ -119,15 +119,16 @@ def main():
         plt.close(fig)
         res[name] = info
 
-    # ---- order parameter and vertical spread vs time -----------------------------------
+    # ---- order parameter, vertical spread and per-particle position differences ------
     series = [("ana_a{a}_mid", 2, "analytic, midpoint", fs.PAL["blue"]),
               ("mesh_a{a}_n10000_mid", None, "mesh, midpoint", fs.PAL["red"]),
               ("ana_a{a}_boris", 2, "analytic, Boris", fs.PAL["yellow"]),
               ("mesh_a{a}_n10000_boris", None, "mesh, Boris", fs.PAL["green"])]
-    fig, axes = plt.subplots(2, 2, figsize=(8.0, 4.6), sharex="col")
-    fig.subplots_adjust(left=0.09, right=0.98, bottom=0.10, top=0.90, hspace=0.06,
-                        wspace=0.22)
+    fig, axes = plt.subplots(3, 2, figsize=(8.0, 6.6), sharex="col")
+    fig.subplots_adjust(left=0.10, right=0.98, bottom=0.08, top=0.92, hspace=0.07,
+                        wspace=0.24)
     for j, a in enumerate((0.0, 0.9)):
+        ref = None
         for pat, sp, lab, col in series:
             name = pat.format(a=a)
             if not C.exists(name):
@@ -135,6 +136,7 @@ def main():
             h = C.invariant_history(name)
             sel = slice(None) if sp is None else (h["species"] == sp)
             x = h["x"][:, sel].astype(float)
+            tags = h["tag"][sel] - (1100 if sp == 2 else 0)
             phi = np.arctan2(x[..., 1], x[..., 0])
             ok = np.isfinite(phi)
             order = np.abs(np.nansum(np.where(ok, np.exp(1j * phi), 0), 1) / ok.sum(1))
@@ -142,16 +144,30 @@ def main():
             t = h["t"] / C.T_ORB[a]
             axes[0, j].semilogy(t, order, color=col, label=lab)
             axes[1, j].plot(t, zrms, color=col)
-            res.setdefault("order", {})[name] = dict(t=h["t"].tolist(), order=order.tolist(),
-                                                     z_rms=zrms.tolist())
+            rec = dict(t=h["t"].tolist(), order=order.tolist(), z_rms=zrms.tolist())
+            if ref is None:
+                ref = (tags, x)
+            else:
+                o = np.searchsorted(ref[0], tags)
+                d = np.sqrt(np.sum((x - ref[1][:, o]) ** 2, axis=2))
+                with np.errstate(all="ignore"):
+                    med = np.nanmedian(d, 1)
+                    p99 = np.nanpercentile(d, 99, 1)
+                axes[2, j].semilogy(t[1:], med[1:], color=col, ls="-")
+                axes[2, j].semilogy(t[1:], p99[1:], color=col, ls="--")
+                rec.update(dx_median=med.tolist(), dx_p99=p99.tolist())
+            res.setdefault("order", {})[name] = rec
         axes[0, j].set_title(f"$a = {a}\\,M$")
-        axes[1, j].set_xlabel("$t / T_\\mathrm{orb}$")
+        axes[2, j].set_xlabel("$t / T_\\mathrm{orb}$")
         axes[0, j].set_xlim(0, C.TLIM / C.T_ORB[a])
+        axes[0, j].axhline(np.sqrt(np.pi / 4e4), **fs.GUIDE)
     axes[0, 0].set_ylabel(r"$|\langle e^{i\phi}\rangle|$")
     axes[1, 0].set_ylabel(r"$z_\mathrm{rms}/M$")
-    axes[0, 0].plot([], [], **fs.GUIDE, label=r"$N^{-1/2}$")
-    for j in range(2):
-        axes[0, j].axhline(1e-2, **fs.GUIDE)
+    axes[2, 0].set_ylabel("$|x - x_\\mathrm{analytic,\\,midpoint}|/M$")
+    axes[0, 0].plot([], [], **fs.GUIDE, label=r"uniform phases, $N = 10^4$")
+    axes[2, 1].legend([plt.Line2D([], [], color="k", ls="-"),
+                       plt.Line2D([], [], color="k", ls="--")],
+                      ["median", "99th percentile"], loc="lower right", fontsize=8)
     h0, l0 = axes[0, 0].get_legend_handles_labels()
     fig.legend(h0, l0, loc="upper center", ncol=5, fontsize=8, frameon=False,
                bbox_to_anchor=(0.54, 1.0))

@@ -125,15 +125,23 @@ def main():
                         wspace=0.22)
     for j, a in enumerate((0.0, 0.9)):
         name = f"plunge_a{a}_mid"
-        if not C.exists(name):
+        if not C.exists(name) or not C.log_info(name)["ok"]:
             continue
         rec, d = analyse(name, a)
         res[name] = rec
+        nb = f"plunge_a{a}_boris"
+        if C.exists(nb) and C.log_info(nb)["ok"]:
+            rb, db = analyse(nb, a)
+            res[nb] = rb
+            hb = db["h"]
+            axes[0, j].plot(hb[:, H["time"]], hb[:, H["n_excised"]] / rb["N"],
+                            color=fs.PAL["green"], ls="-", lw=3.5, label="excised, number (Boris)")
         h = d["h"]
         t = h[:, H["time"]]
         N = rec["N"]
         ax = axes[0, j]
-        ax.plot(t, h[:, H["n_excised"]] / N, color=fs.PAL["red"], label="excised, number")
+        ax.plot(t, h[:, H["n_excised"]] / N, color=fs.PAL["red"],
+                label="excised, number (midpoint)")
         ax.plot(t, h[:, H["m_excised"]] / rec["m_tot"], color=fs.PAL["red"], ls="--",
                 label="excised, rest mass")
         ax.plot(t, h[:, H["n_escaped"]] / N, color=fs.PAL["yellow"], label="left the mesh")
@@ -148,33 +156,47 @@ def main():
         ax = axes[1, j]
         rp = 1 + np.sqrt(1 - a * a)
         r_exc = 2.0 / (1 / C.ALPHA_EXC ** 2 - 1)      # equatorial alpha = alpha_exc
-        bins = np.linspace(0.0, 4.0, 81)
+        bins = np.arange(1.10, 2.10001, 0.01)
         ax.hist(d["r_last"], bins=bins, histtype="step", color=fs.PAL["red"], lw=1.5,
                 label="last snapshot")
         ax.hist(d["r_rem"][np.isfinite(d["r_rem"])], bins=bins, histtype="step",
                 color=fs.PAL["blue"], lw=1.5, label="removal (exact continuation)")
         ax.axvline(rp, **fs.MASK_LINE)
         ax.axvline(r_exc, **fs.GUIDE)
-        ax.text(rp, ax.get_ylim()[1] * 0.92, " $r_+$", fontsize=8, va="top")
+        ax.set_yscale("log")
+        ax.set_ylim(0.8, None)
+        ax.text(rp, 0.5, " $r_+$", fontsize=8, va="center", transform=ax.get_xaxis_transform())
+        ax.text(r_exc, 0.5, r"$\alpha = \alpha_\mathrm{exc}$ ", fontsize=8, va="center",
+                ha="right", transform=ax.get_xaxis_transform())
+        ax.set_xlim(1.1, 2.1)
         ax.set_xlabel("Kerr-Schild $r/M$", labelpad=-1)
         if j == 0:
             ax.set_ylabel("particles per bin")
-        # invariant errors of the excised particles at their last snapshot
+        # invariant errors of the excised particles at their last snapshot: cumulative
+        # distributions, colour = pusher, line style = invariant
         ax = axes[2, j]
-        for key, col in (("dE", fs.PAL["red"]), ("dL", fs.PAL["yellow"]),
-                         ("dQ", fs.PAL["green"])):
-            ax.scatter(d["r_last"], np.maximum(d[key], 1e-16), s=1.5, lw=0, color=col,
-                       rasterized=True,
-                       label={"dE": r"$|\Delta E/E|$", "dL": r"$|\Delta L_z/L_z|$",
-                              "dQ": r"$|\Delta Q/Q|$"}[key])
-        ax.set_yscale("log")
-        ax.axvline(rp, **fs.MASK_LINE)
-        ax.set_xlabel("Kerr-Schild $r/M$ at the last snapshot", labelpad=-1)
+        runs = [(d, fs.PAL["red"])]
+        if nb in res:
+            runs.append((db, fs.PAL["green"]))
+        for dd, col in runs:
+            for key, ls in (("dE", "-"), ("dL", "--"), ("dQ", ":")):
+                v = np.sort(np.maximum(dd[key], 1e-16))
+                ax.semilogx(v, np.arange(1, len(v) + 1) / len(v), color=col, ls=ls)
+        ax.set_xlim(1e-8, 1e-1)
+        ax.set_ylim(0, 1)
+        ax.set_xlabel("error at the last snapshot before excision", labelpad=-1)
         if j == 0:
-            ax.set_ylabel("error at the last snapshot")
+            ax.set_ylabel("cumulative fraction")
     axes[0, 0].legend(loc="center right", fontsize=8)
     axes[1, 0].legend(loc="upper right", fontsize=8)
-    axes[2, 0].legend(loc="upper right", fontsize=8, markerscale=4)
+    axes[1, 1].text(0.97, 0.95, r"$\alpha_\mathrm{exc}$ line: equatorial plane", fontsize=8,
+                    ha="right", va="top", transform=axes[1, 1].transAxes)
+    L = plt.Line2D
+    axes[2, 0].legend([L([], [], color=fs.PAL["red"]), L([], [], color=fs.PAL["green"]),
+                       L([], [], color="k", ls="-"), L([], [], color="k", ls="--"),
+                       L([], [], color="k", ls=":")],
+                      ["midpoint", "Boris", r"$|\Delta E/E|$", r"$|\Delta L_z/L_z|$",
+                       r"$|\Delta Q/Q|$"], loc="upper left", fontsize=8)
     fs.save(fig, os.path.join(C.FIGS, "excision"))
     plt.close(fig)
     os.makedirs(os.path.join(C.HERE, "results"), exist_ok=True)

@@ -80,6 +80,29 @@ def binned_max(t, v, width=5.0):
     return 0.5 * (edges[1:] + edges[:-1])[keep], out[keep]
 
 
+def boundary_loss(name, a, hist, half=64.0):
+    """At each snapshot, the fraction of sum m W that the cloud-in-cell weights put outside
+    the domain (particles within half a cell of the outer boundary), and the history
+    residual at that time.  Returns arrays (t, predicted, history)."""
+    t = hist[:, H["time"]]
+    dE = hist[:, H["int_e"]] / hist[:, H["sum_mw"]] - 1
+    out = []
+    for f in C.snapshots(name):
+        ts, x, u, m, tag, sp = C.read_snap(f)
+        dx = C.dx_of_level(C.level_of(x))
+        near = np.max(np.abs(x), 1) > half - dx
+        k = int(np.argmin(np.abs(t - ts)))
+        pred = 0.0
+        if near.any():
+            fin = np.ones(near.sum())
+            for d in range(3):
+                fin *= np.clip((half - (np.abs(x[near, d]) - dx[near] / 2)) / dx[near], 0, 1)
+            W = C.lorentz_W(x[near], u[near], a)
+            pred = -np.sum(m[near] * W * (1 - fin)) / hist[k, H["sum_mw"]]
+        out.append((ts, pred, dE[k]))
+    return np.array(out).reshape(-1, 3)
+
+
 SC = (("sx", "sum_mux"), ("sy", "sum_muy"), ("sz", "sum_muz"))
 MAIN = ("mesh_a{a}_n10000_mid", "plunge_a{a}_mid")
 
@@ -102,7 +125,9 @@ def main():
             dE = h[:, H["int_e"]] / mw - 1
             dS = np.stack([(h[:, H["int_" + c]] - h[:, H[s_]]) / mw for c, s_ in SC], 1)
             tb, vb = binned_max(t, dE)
-            axes[0, j].semilogy(tb, np.maximum(vb, FLOOR), color=col, ls="-", label=lab)
+            axes[0, j].semilogy(tb, np.maximum(vb, FLOOR), color=col, ls="-", label=lab,
+                                lw=2.6 if pat == "mesh_a{a}_n10000_mid" else 1.2,
+                                zorder=1 if pat == "mesh_a{a}_n10000_mid" else 2)
             rec = dict(max_abs_dE=float(np.max(np.abs(dE))),
                        rms_dE=float(np.sqrt(np.mean(dE ** 2))),
                        max_abs_dS_over_mW=np.max(np.abs(dS), 0).tolist(),
@@ -114,6 +139,18 @@ def main():
                        m_excised=float(h[-1, H["m_excised"]]),
                        push_maxit=int(h[:, H["push_maxit"]].max()),
                        push_unconverged_total=int(h[:, H["push_unconverged"]].sum()))
+            bl = boundary_loss(name, a, h)
+            nz = bl[:, 1] != 0
+            rec["boundary_loss_snapshots"] = int(nz.sum())
+            if nz.any():
+                rec["boundary_loss_max"] = float(np.min(bl[:, 1]))
+                rec["boundary_loss_minus_history_max"] = float(np.max(np.abs(bl[:, 1] - bl[:, 2])))
+                axes[0, j].semilogy(bl[nz, 0], np.abs(bl[nz, 1]), "x", ms=4, color="k")
+            # identity at snapshots with no particle near the outer boundary
+            rec["max_abs_dE_snapshots_away_from_boundary"] = (
+                float(np.max(np.abs(bl[~nz, 2]))) if (~nz).any() else None)
+            bad = np.abs(dE) > 1e-12
+            rec["n_cycles_dE_gt_1e-12"] = int(bad.sum())
             m0 = h[0, H["sum_m"]]
             rec["mass_bookkeeping"] = float(np.max(np.abs(
                 (h[:, H["sum_m"]] + h[:, H["m_excised"]] + h[:, H["m_escaped"]]) / m0 - 1)))
@@ -121,8 +158,9 @@ def main():
                 dEf = h[:, H["int_e_filt"]] / mw - 1
                 dSf = np.stack([(h[:, H["int_" + c + "_filt"]] - h[:, H[s_]]) / mw
                                 for c, s_ in SC], 1)
-                tb, vb = binned_max(t, dEf)
-                axes[0, j].semilogy(tb, np.maximum(vb, FLOOR), color=col, ls="--")
+                if pat in MAIN:
+                    tb, vb = binned_max(t, dEf)
+                    axes[0, j].semilogy(tb, np.maximum(vb, FLOOR), color=col, ls="--", lw=1.2)
                 rec.update(max_abs_dE_filt=float(np.max(np.abs(dEf))),
                            dE_filt_first=float(dEf[0]), dE_filt_last=float(dEf[-1]),
                            dE_filt_median=float(np.median(dEf)),
@@ -138,10 +176,11 @@ def main():
             pf = post_filter(name, a, h)
             pE = [p for p in pf if "dE" in p]
             pS = [p for p in pf if "comp" in p]
-            if pE:
+            if pE and pat in MAIN:
                 axes[0, j].semilogy([p["t"] for p in pE],
                                     np.maximum(np.abs([p["dE"] for p in pE]), FLOOR),
                                     "o", ms=3.5, mfc="none", color=col)
+            if pE:
                 rec["dumps_dE_filt"] = [(p["t"], p["dE"]) for p in pE]
                 if has_filt:
                     k = [int(np.argmin(np.abs(t - p["t"]))) for p in pE]
@@ -189,8 +228,10 @@ def main():
                 h0.append(hh); l0.append(ll)
     L = plt.Line2D
     axes[0, 1].legend([L([], [], color="k", ls="-"), L([], [], color="k", ls="--"),
-                       L([], [], color="k", ls="", marker="o", mfc="none")],
-                      ["before filter", "after filter", "after filter, 3D dumps"],
+                       L([], [], color="k", ls="", marker="o", mfc="none"),
+                       L([], [], color="k", ls="", marker="x")],
+                      ["before filter", "after filter", "after filter, 3D dumps",
+                       "cloud weight outside the domain"],
                       loc="center right", fontsize=8)
     axes[1, 1].legend([L([], [], color="k", ls=s_) for s_ in ("-", "--", ":")],
                       ["$x$", "$y$", "$z$"], loc="center right", fontsize=8, ncol=3)

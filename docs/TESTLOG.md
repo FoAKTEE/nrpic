@@ -631,3 +631,28 @@ is removed at t = 19.8 M: 1.0126, 1.0140, 1.0165, 1.0185 at t = 22, 25, 30, 36 M
 slice-mass analysis of the same dumps is running. Both dust runs are resubmitted with
 corrected initial data (`os/adapt_sc`, `os/nocap_sc`); the uncapped control with the
 published rule (`os/nocap_v4`) runs as well.
+
+## Test-particle clusters in Schwarzschild and Kerr (campaign finished 07:10)
+
+Full account in `docs/results_cluster_test.md`, figures in `analysis/cluster_test/figs/`
+(I looked at `invariants_time` and `deposit_conservation`). Gaussian clusters of 10^2
+to 10^4 test particles around a circular orbit at 10 M, a = 0 and 0.9, 1000 M, on the
+analytic metric and on the mesh metric (dx = M/4 where the cluster moves).
+- Invariants per particle after 1000 M: analytic metric, median error of the energy
+  1e-8 with either pusher, L_z at round-off with the midpoint pusher; mesh metric,
+  1.2e-7 in energy and 5e-6 in L_z with either pusher (interpolation of the metric
+  sets it; doubling the cell size gives order 3.0 and 2.5).
+- Phase mixing into a ring; the azimuthal order parameter ends at the value of a
+  random ring.
+- Deposition identity before the filter: 1e-15 through up to 1.2e5 level crossings and
+  through all removals, except while a particle sits within half a cell of the outer
+  boundary (the part of its cloud outside the domain is dropped; up to 7e-5).
+- After the filter the integrals differ from the particle sums by up to 9e-4
+  (N = 10^4), 6.6e-3 (N = 10^2) and 7.3e-3 (plunging family) once particles cross
+  refinement boundaries: the mesh filter is not conservative across levels. Known
+  limitation for now; a filter applied to the cloud of each particle before it is
+  mapped to the leaves would be conservative by construction (not implemented).
+- Removal at the lapse threshold: 3726 and 3345 particles of the plunging families
+  removed against 3727 and 3339 predicted from the exact invariants.
+- Density noise against N: exponent -0.47 to -0.51.
+- The mesh step costs 32 to 35 ms whatever N is, of which the two filter passes take 26.
