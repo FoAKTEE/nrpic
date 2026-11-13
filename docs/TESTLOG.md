@@ -797,3 +797,6 @@ The source package of the original contains its figures. Read off them, by eye:
   passes 0.8 near t = 125 M and 0.9 near 230 M, stays there to 350 M and falls back to
   about 0.57 near t = 450 to 520 M before settling around 0.85. Ours passes 0.8 at
   88 M (compensated) and 59 M (plain filter): the same expansion, starting earlier.
+
+Addendum (07:49): without constraint damping (`st/osc/k1_0`) the lapse history is again
+the same (last minimum -0.0107 at t = 280 M). Three values of the damping, one history.
