@@ -1720,3 +1720,44 @@ is running. `os/mc_adapt2` (unlimited cap, one plain pass) is at t = 33 M: at mo
   guard is what prevents formation on a marginal mesh; if neither finds a horizon,
   this test needs the original's cell size, which costs four times the steps of v7
   (about a day on one card for 100 M).
+
+## Monte Carlo dust ball: published rule against capped clouds at equal settings (15:50)
+
+`os/mc_nocap4` (published rule) and `os/mc_adapt4` (unlimited cap): the randomly
+sampled dust ball (9328 particles), four passes plus compensation, one refinement
+level fewer than the lattice runs (finest cells h/4 = M/13), both to 60 M with 400
+blocks at most.
+- Published rule: first horizon at 16.20 M with mass 1.0019; 0.9983 at 20 M (all
+  particles removed at 20.0 M); 0.9971 at 30 and 40 M; 0.9973 at 60 M.
+- Capped: first horizon at 16.58 M with mass 0.9990; largest 0.9992; 0.9944 at 40 M;
+  0.9946 at 60 M.
+- Norm of the Hamiltonian constraint (largest value in the interval, published /
+  capped): 0 to 5 M 0.80 / 0.57; 5 to 10 M 1.77 / 0.70; 10 to 15 M 1.42 / 2.46; 15 to
+  20 M 2.93 / 3.79; 20 to 30 M 0.92 / 2.27; 30 to 60 M 0.39 / 1.16.
+- Against the prediction of 13:36. The masses at 60 M differ by 0.27 percent of M:
+  more than the 0.2 percent of the first branch, less than the 0.5 percent of the
+  second. The constraint norm of the capped run is lower only before 10 M and is 1.3
+  times higher at formation and three times higher afterwards, which the first branch
+  excluded. So the first branch (the disturbance is the lattice beat alone) is
+  refuted; the second (as large as on the lattice) is not met either.
+- What the three sets of runs show together.
+  Lattice, finest h/8: published rule -0.13 percent at 60 M; capped +0.65 percent
+  (unlimited), -1.1 percent (one level); capped central density 11 to 49 percent high
+  from the lattice beat.
+  Random sample, finest h/8: published rule cannot be run (more than 2000 blocks by
+  10 M with either filter); capped within 0.15 percent of M to 41 to 43 M (two runs).
+  Random sample, finest h/4: published rule -0.27 percent; capped -0.54 percent;
+  capped constraint norm three times higher after formation.
+- Conclusions that these support: (1) coarser clouds raise the constraint violation
+  around a forming black hole and shift its mass also without a lattice, by a few
+  tenths of a percent; (2) on a lattice the shift is larger and comes with the beat;
+  (3) on a random sample the capped clouds are what keeps the refinement bounded at
+  the deepest level, and the black hole they give there is within 0.15 percent of M;
+  (4) with finest cells of M/13 the horizon mass is 0.3 to 0.5 percent low with either
+  rule (six to seven cells per horizon radius).
+- For the prolate question (check (ii) of 14:05): the randomly sampled dust ball with
+  the published rule and the prolate run's filter ends 0.27 percent below M (finest
+  cells M/13, coarser than the prolate run's M/16). A random sample of 10^4 particles
+  does not by itself cost several percent of horizon mass in spherical collapse. The
+  prolate deficit of 3 to 5 percent belongs to that collapse (its caustic stage), not
+  to random sampling as such.

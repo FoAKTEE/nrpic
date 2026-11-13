@@ -35,17 +35,40 @@ Facts, in the order of the argument:
    the change finder and slice agree to 3 parts in 10^4. Figure: fig_horizon_check.
    [Horizon mass calibration: results; Further checks of the corrected finder;
    Corrected finder on GPU]
-5. Coarser clouds (negative result). With the cloud allowed on a coarser level than the
-   cell (level cap following the local particle density): the jump of the constraint
-   violation at the first refinement disappears and the central density reading stays
-   on the cycloid (with the published rule the reading drops to 0.4 of it after the
-   refinement, because most fine cells are empty); the central lapse is the same to a
-   few parts in 10^3; near the forming black hole the constraint violation is 2.5 times
-   larger and the horizon mass drifts by +0.65 percent after the matter is gone; with
-   at most one level of coarsening it drifts by -1.1 percent. The published rule drifts
-   by -0.13 percent. Cause of the sensitivity not determined. All results below use the
-   published rule. [Dust collapse: cloud at the finest level against adaptive cloud
-   level; ... limited to one level; addendum two levels]
+5. Coarser clouds (level cap following the local particle density; Sec. deposition).
+   Corrected and extended since the first draft; this replaces the earlier item.
+   (a) Lattice sample. The cap removes the jump of the constraint violation at the
+   first refinement. The central density reading, which with the published rule drops
+   to a third of the cycloid value while the refined central cells are nearly empty,
+   instead reads up to 14 percent above the cycloid (49 percent with at most one level
+   of coarsening). The particles themselves are the same in all three runs (radii of
+   the innermost particles equal to one part in a thousand): the excess is the regular
+   lattice beating against a cloud lattice of nearly equal spacing at the centre of
+   symmetry. This was confirmed by depositing the stored particles of the uncapped run
+   with clouds on the lattice level, which reproduces the readings. Near the forming
+   black hole the constraint norm is 2.5 times larger and the horizon mass ends 0.65
+   percent above M (unlimited cap) or 1.1 percent below (one level), against 0.13
+   percent below with the published rule.
+   (b) Random sample of the same ball (same particle number). With the published rule
+   and the full refinement depth the curvature-based refinement follows the sampling
+   noise and the block count grows past what one card holds before the horizon forms,
+   with one plain pass and with four passes plus compensation. With capped clouds the
+   same runs complete, and the horizon mass stays within 0.15 percent of M.
+   (c) Random sample, both rules at equal settings (one refinement level fewer, four
+   passes plus compensation): horizon mass at the end 0.27 percent below M (published)
+   and 0.54 percent below (capped); constraint norm after formation three times higher
+   with capped clouds.
+   What to conclude in the text: coarser clouds raise the constraint violation around
+   a forming black hole and shift its mass by a few tenths of a percent also without a
+   lattice; on a lattice the shift is larger and comes with the beat; on a random
+   sample capped clouds are what keeps the refinement bounded at the deepest level.
+   The published rule is the more accurate one where it can be afforded, and is used
+   for every collapse result in the paper. The first prediction (that the disturbance
+   was the lattice beat alone) was refuted by run (c).
+   Table: the outcomes table needs these rows (being added).
+   [Correction: central density with the level cap ...; Is the disturbance ... a
+   lattice effect?; Monte Carlo dust ball: published rule runs away ...; Monte Carlo
+   dust ball: published rule against capped clouds at equal settings]
 
 ## B. Relativistic clusters (subsection "Relativistic clusters") -- final except where marked
 
@@ -191,9 +214,11 @@ Facts, in the order of the argument:
    radiation from constraint violation.
 5. The norm of the Hamiltonian constraint peaks at the time of the largest curvature
    and is about three times larger there than in the dust collapse on a lattice.
-6. How much of the mass deficit comes from the particle number and how much from the
-   cell size (M/16 here) is not determined; a spherical control with randomly sampled
-   dust is NOT YET in. With finest cells of M/32 the mesh outgrew one graphics card
+6. A spherical control (randomly sampled dust ball, same filter, published rule,
+   finest cells M/13) ends 0.27 percent below M: a random sample of 10^4 particles
+   does not by itself cost percent-level horizon mass. The prolate deficit belongs to
+   the prolate collapse and its caustic stage; how it splits between particle number
+   and cell size there is not determined. With finest cells of M/32 the mesh outgrew one graphics card
    (the refinement asks for more blocks than fit) so that run does not exist.
 7. Random sampling and refinement: with a random sample, one plain filter pass and the
    published rule the curvature-based refinement follows the sampling noise and the
@@ -207,6 +232,8 @@ published rule: refinement runs away]
 ## Statements the section must not make
 - No horizon mass from before the finder was corrected.
 - No claim that the level cap helps near black holes.
-- No cause for: the sensitivity of the horizon mass to coarser clouds; the initial
+- No claim that the central density stays on the cycloid with the level cap.
+- No cause for: the remaining sensitivity of the horizon mass to coarser clouds on a
+  random sample; the initial
   offset of the cluster oscillation; the later collapse of the compact models compared
   with the original.
