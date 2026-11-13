@@ -468,3 +468,49 @@ finder at 11.5 M reads 1.000323, a difference of 3e-4, the same as at t = 50 M
 mass was wrong: 1.0015 is its value at t = 50 M. At t = 12 M the excess is 6e-4 at the
 horizon and still zero (4e-6) further out; it is produced near the puncture during the
 gauge transient and spreads outward afterwards.
+
+## Unperturbed y_c = 0.5: plain against compensated filter (06:39, 06:50), prediction 2
+
+Same sample (seed 1), no perturbation, static mesh of the migration test, 200 M.
+
+| central lapse reaches | plain filter, t / M | compensated, t / M |
+|---|---|---|
+| 0.60 | 19.5 | 37.8 |
+| 0.65 | 30.2 | 52.2 |
+| 0.70 | 37.5 | 64.0 |
+| 0.80 | 59.2 | 88.0 |
+| 0.85 | 81.0 | 110.8 |
+
+- Plain filter: expands from the start, lapse 0.552 -> 0.929 at t = 200 M, mean Lorentz
+  factor 1.172 -> 1.008, no particle lost. As predicted, and as the original describes
+  its migration run (lapse from about 0.56 to 0.91 in the first expansion).
+- Compensated: expands too, 18 to 30 M later. Its excursion is 24 and 27 percent of the
+  plain one at t = 20 and 30 M and 42 percent at t = 50 M; the prediction "within a
+  third for the first 50 M" holds to t = 35 M and fails after.
+- The direction was not predicted and is outward for this sample in both runs. Whether
+  the compensated run expands because of what is left of an outward bias (the stable
+  model keeps a rise of 0.006 with compensation), because of this sample, or for
+  another reason is not determined. Seeds 2 and 3 with compensation are queued
+  (`st/dir_yc0500_comp_s2`, `_s3`).
+- The reading that the plain filter alone decides between migration and collapse is
+  therefore not established; what is established is that it advances the expansion.
+- The long migration run is started with compensation (`st/migration_yc0500_v4`).
+
+## Stable model with the one-percent inward kick, compensated (06:47)
+
+`st/yc0819_v4`, seed 1, 300 M. Figure: `analysis/diag/figs/cluster_history_yc0819_v4.png`.
+No particle lost; centre of mass within 0.018 M; mean Lorentz factor constant to 1e-3.
+The central lapse oscillates about the equilibrium value 0.8094 with a period of about
+75 M and the minima deepen: maxima 0.8119, 0.8111, 0.8167, 0.8190, 0.8170 at t = 24,
+54, 105, 181, 255 M; minima 0.8087, 0.8074, 0.8066, 0.7991, 0.7875 at t = 40, 73, 155,
+208, 282 M. The 10 percent mass radius swings between 2.5 and 3.5 M at the end
+(equilibrium 3.13 M). The unperturbed compensated runs of the same seed show the dip
+near t = 280 M with 0.011 to 0.013, the unfiltered one with 0.024; the plain four-pass
+runs show no such growth after their initial excursion (ripple 0.003).
+
+Cause of the growth not determined. It orders with the constraint norm of the runs
+(plain 0.011, compensated 0.031, none 0.14), which would fit excitation by particle
+noise that the compensated filter lets through at intermediate wavenumbers; a slow
+instability of the scheme would look similar in one run. Discriminating runs already
+queued: seeds 2 and 3 (noise: timing and size differ between seeds; instability: same
+growth), N = 10^3 and 10^2 (noise: amplitude grows as N^(-1/2)).
