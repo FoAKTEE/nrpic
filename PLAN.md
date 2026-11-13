@@ -66,63 +66,64 @@ sources for the next step; AMR.
 
 ## 4. Milestones
 
+Status on 2026-11-13 (see `docs/TESTLOG.md` for measured numbers, `notes/` for decisions).
+
 ### M0 Infrastructure
-- [ ] Repo, vendored AthenaK, kokkos submodule, pushed to GitHub
-- [ ] CUDA build on A100 and CPU debug build; Z4c one-puncture smoke test on GPU
-- [ ] Slurm wrapper with automatic restart chaining
-- [ ] Python reference: adaptive Kerr geodesic integrator (Boyer-Lindquist and
-      Kerr-Schild), prototypes of both pushers, invariants E, L_z, Q
+- [x] Repo, vendored AthenaK, kokkos submodule, pushed to GitHub
+- [x] CUDA build on A100 (`scripts/build_gpu.sh`, CUDA 12.6) and CPU build; Slurm helpers
+      `scripts/gpu_run.sh`, `scripts/submit_chain.sh`
+- [x] Python reference: exact Kerr geodesics (Mino-time quadrature), invariants,
+      coordinate conversions (`python/nrpic/kerr.py`, `geodesic.py`)
+- [x] Shared figure style `python/nrpic/figstyle.py`; every test gets an inspected figure
 
-### M1 Single test particle, Schwarzschild
-- [ ] Circular, eccentric, and plunging orbits; analytic metric and mesh metric
-- [ ] Acceptance: second-order convergence in dt for both pushers; E and L drift
-      consistent with the Python prototype; GPU and CPU results agree
-
-### M2 Single test particle, Kerr a = 0.9 (paper Sec. III A)
-- [ ] Boyer-Lindquist equatorial-eccentric and inclined orbits (paper Fig. 2)
-- [ ] Kerr-Schild e = 0.99 passage, dt = 0.01 M to t = 230 M, four combinations of
-      pusher and metric input, dx = 0.025 M Hermite lattice (paper Fig. 3)
-- [ ] Acceptance: invariant errors of the same order as the paper
-      (analytic: E ~ 1e-7, Q ~ 1e-6; lattice: E ~ 2e-6, Q ~ 5e-5, L_z ~ 4e-6);
-      midpoint conserves u_phi to round-off with analytic spherical input;
-      second-order convergence of the final position
+### M1-M2 Single test particle, Schwarzschild and Kerr
+- [x] Pusher kernels reproduce the published invariant errors of the Kerr-Schild passage
+      (midpoint exactly; Boris with the symmetric tetrad gauge for analytic input and
+      the Cholesky gauge for lattice input)
+- [~] GPU campaign through AthenaK: Schwarzschild orbits, Boyer-Lindquist orbits,
+      passage, dt and dx convergence, CPU-GPU agreement (`docs/results_geodesic.md`)
 
 ### M3 Test particles in evolved spacetimes
-- [ ] Single puncture evolved with Z4c: L conserved throughout, E conserved once
-      the trumpet is stationary
-- [ ] Binary: tracers in an evolved two-puncture spacetime (head-on Brill-Lindquist
-      first; quasi-circular if the TwoPunctures build works). "Binary test particle"
-      is read as test particles around a binary; a two-particle run is covered by M4
+- [~] Single puncture with six tracers (`problems/puncture/tracers_single.athinput`)
+- [ ] Head-on binary with tracers (L about the collision axis conserved)
 
-### M4 Test-particle clusters (10^2 to 10^4), Schwarzschild and Kerr
-- [ ] Ensemble invariants; deposition without back-reaction
-- [ ] Acceptance: sum over cells of (E, S_i, S_ij) sqrt(gamma) dV equals the particle
-      sums to round-off on uniform, SMR and AMR meshes, including clouds that cross
-      coarse-fine interfaces; particle count and mass conserved through regrids
+### M4 Test-particle clusters (10^2 to 10^4)
+- [x] Deposition identity to round-off on uniform, SMR and AMR meshes, with and without
+      the level cap (`problems/tests/deposit_smr.athinput`)
+- [~] Sheared clusters around Schwarzschild and Kerr (`docs/results_cluster_test.md`)
 
 ### M5 Self-gravitating matter (at most 10^4 particles)
-- [ ] Coupling unit tests: static source in weak field against the Newtonian
-      potential of the deposited cloud; constraint norms against N
-- [ ] Oppenheimer-Snyder collapse (R_0 = 5 M): central lapse against the Staley
-      bound, density cycloid, lapse profile against the 1+log trumpet, horizon mass
-- [ ] Monoenergetic Shapiro-Teukolsky sequence: binding-energy curve and Table I
-      from the structure equations (particle-number independent); evolutions of
-      y_c = 0.900, 0.819, 0.605, 0.500, 0.283
+- [x] Equilibrium sequence, Table I, migration target, OS slice, prolate spheroid:
+      all published values reproduced by the Python tools (18 tests)
+- [~] Oppenheimer-Snyder collapse: lapse bound and cycloid reproduced; horizon forms at
+      t = 16.3 M; production run with adaptive cloud level and tight horizon tolerance
+      (`problems/os/os_amr.athinput`)
+- [~] Monoenergetic clusters y_c = 0.900, 0.819 (static nest), 0.605, 0.500, 0.283
+      (adaptive mesh) (`problems/st/`)
 - [ ] Migration of y_c = 0.500 and reconfiguration of y_c = 0.756
-- [ ] Prolate collapse, e = 0.9, b = 10 M: caustic, Kretschmann scalar, horizon
-- [ ] Sampling studies for N = 10^2, 10^3, 10^4 (initial density error, constraints)
+- [ ] Prolate collapse, e = 0.9, b = 10 M, with the Kretschmann diagnostic
+- [ ] Sampling studies for N = 10^2, 10^3, 10^4
 
-### M6 Jeans collapse and binary in a cluster
-- [ ] Envelope plus two Gaussian clumps at reduced particle number; horizons,
-      masses and spins, common horizon, Psi4 at R = 40 M. Run as far as the 1 h
-      chained allocation and the particle budget allow; report what is and is not
-      recovered
+### M6 Collapse and merger inside a cluster
+- [ ] Reduced-cost design (the published setup needs dx = M/256 over 100 M)
 
 ### M7 Paper
-- [ ] `paper/` skeleton, WRITING_GUIDE.md, NOTATION.md
-- [ ] Figures from `analysis/` scripts, one script per figure
-- [ ] Sections drafted with agy carbon high, reviewed against the test log
-- [ ] Compiles with REVTeX 4.2; pushed with the repository
+- [x] `WRITING_GUIDE.md`, `NOTATION.md`, `paper/` skeleton
+- [ ] Story, 300- and 1000-word versions, reviewers, main text (agy carbon high)
+- [ ] Figures (one script per figure), Supplemental Material ledger, checker, compile
+
+### Code features against the published method
+| Feature | State |
+|---|---|
+| Implicit midpoint pusher; spacetime Boris pusher | done (two tetrad gauges) |
+| Cubic Hermite metric reconstruction | done |
+| First-order deposition, filter, conservative AMR deposition | done; plus level cap and density-adaptive cloud level for low particle number |
+| Lapse excision | done; apparent-horizon excision not implemented |
+| Loehner refinement indicator | done |
+| Parabolic Hamiltonian relaxation | done (off by default) |
+| Kretschmann scalar | done (verified against 48 M^2/R^6) |
+| B^i Gamma-driver; position-dependent eta and kappa_1 | not implemented |
+| MPI | not supported by the particle module (single rank) |
 
 ## 5. Reference numbers from the paper (targets)
 
