@@ -52,6 +52,7 @@ struct NrpicOptions {
   Real lattice_dx;      // spacing of the virtual lattice (metric = lattice)
   bool deposit;         // deposit particle stress-energy onto the mesh
   int nfilter;          // number of binomial filter passes applied to the sources
+  int deposit_max_level;  // finest refinement level on which a cloud is represented
   Real alpha_exc;       // particles with interpolated lapse below this are removed
   int hist_dcycle;      // cycles between history records (0 = off)
   int traj_dcycle;      // cycles between trajectory records (0 = off)

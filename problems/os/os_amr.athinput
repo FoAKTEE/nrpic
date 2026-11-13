@@ -1,0 +1,128 @@
+# Oppenheimer-Snyder dust collapse, R_0 = 5 M (paper Sec. III B at reduced particle
+# number).  Mass-weighted particle lattice aligned with the level-3 mesh (h = dx).
+# Adaptive refinement with the Loehner indicator down to dx = h/8 = M/26.4, lapse
+# excision at 0.1, apparent-horizon finder centred on the origin.
+#   domain half-width = 512 h, root dx = 8 h, h = 0.30280705177720835
+
+<comment>
+problem   = Oppenheimer-Snyder collapse (adaptive refinement)
+
+<job>
+basename  = os
+
+<mesh>
+nghost    = 4
+nx1       = 128
+x1min     = -155.03721050993067
+x1max     = 155.03721050993067
+ix1_bc    = outflow
+ox1_bc    = outflow
+nx2       = 128
+x2min     = -155.03721050993067
+x2max     = 155.03721050993067
+ix2_bc    = outflow
+ox2_bc    = outflow
+nx3       = 128
+x3min     = -155.03721050993067
+x3max     = 155.03721050993067
+ix3_bc    = outflow
+ox3_bc    = outflow
+
+<meshblock>
+nx1       = 32
+nx2       = 32
+nx3       = 32
+
+<mesh_refinement>
+refinement          = adaptive
+num_levels          = 7
+max_nmb_per_rank    = 640
+ncycle_check        = 4
+refinement_interval = 8
+
+<amr_criterion0>
+method = user
+
+<z4c_amr>
+method          = lohner
+lohner_refine   = 0.2
+lohner_derefine = 0.02
+lohner_eps      = 0.01
+radius_0_rad      = 6.0
+radius_0_reflevel = 3
+
+<refined_region1>
+level = 3
+x1min = -6.0
+x1max = 6.0
+x2min = -6.0
+x2max = 6.0
+x3min = -6.0
+x3max = 6.0
+
+<time>
+evolution  = dynamic
+integrator = rk4
+cfl_number = 0.25
+nlim       = -1
+tlim       = 60.0
+ndiag      = 20
+
+<z4c>
+lapse_oplog     = 2.0
+lapse_harmonicf = 1.0
+lapse_harmonic  = 0.0
+lapse_advect    = 1.0
+shift_Gamma     = 0.75
+shift_eta       = 2.0
+shift_advect    = 1.0
+diss            = 0.5
+chi_div_floor   = 1.0e-5
+damp_kappa1     = 0.02
+damp_kappa2     = 0.0
+
+<fastflow>
+num_horizons      = 1
+npunct            = 0
+ntheta            = 16
+lmax              = 8
+use_puncture_0    = -1
+center_x_0        = 0.0
+center_y_0        = 0.0
+center_z_0        = 0.0
+initial_radius_0  = 1.0
+flow_iterations_0 = 200
+flow_alpha_beta_const_0 = 1.0
+hmean_tol_0       = 100.0
+mass_tol_0        = 1.0e-3
+start_time_0      = 8.0
+stop_time_0       = 1000.0
+verbose           = false
+
+<particles>
+particle_type  = nrpic
+pusher         = midpoint
+metric         = mesh
+tolerance      = 1.0e-7
+max_iterations = 50
+deposit        = true
+nfilter        = 1
+alpha_exc      = 0.1
+hist_dcycle    = 1
+snap_dt        = 1.0
+particle_file  = os_R5_lattice_N9328_s1.nrp
+
+<problem>
+pgen_name  = nrpic_cf
+ncomp      = 1
+comp0_type = table
+comp0_file = os_R5_lattice_N9328_s1.tab
+lapse      = one
+
+<output1>
+file_type = hst
+dt        = 0.1
+
+<output2>
+file_type = rst
+dt        = 5.0

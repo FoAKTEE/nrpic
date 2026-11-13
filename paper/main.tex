@@ -1,0 +1,43 @@
+\documentclass[aps,prd,twocolumn,10pt,superscriptaddress,nofootinbib,longbibliography,floatfix]{revtex4-2}
+
+\usepackage{amsmath,amssymb,amsfonts}
+\usepackage{bm}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{xcolor}
+\usepackage{hyperref}
+\graphicspath{{figures/}}
+\hypersetup{colorlinks=true,linkcolor=blue,citecolor=blue,urlcolor=blue}
+
+\newcommand{\dd}{\mathrm{d}}
+\newcommand{\Nppc}{N_{\rm ppc}}
+\newcommand{\lcap}{\ell_{\rm cap}}
+\newcommand{\aexc}{\alpha_{\rm exc}}
+\newcommand{\Ham}{\mathcal{H}}
+\newcommand{\Mom}{\mathcal{M}}
+\newcommand{\Egeo}{\mathcal{E}}
+\newcommand{\Et}{\tilde{E}}
+\newcommand{\Bt}{\tilde{B}}
+\newcommand{\rbar}{\bar{r}}
+
+\begin{document}
+
+\input{sections/title}
+
+\input{sections/introduction}
+\input{sections/system}
+\input{sections/method}
+\input{sections/test_particles}
+\input{sections/self_gravity}
+\input{sections/assembly}
+\input{sections/conclusions}
+
+\input{sections/acknowledgments}
+
+\appendix
+\input{sections/appendix_parameters}
+\input{sections/appendix_sampling}
+
+\bibliography{references}
+
+\end{document}

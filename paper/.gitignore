@@ -1,0 +1,16 @@
+# whitelist: the manuscript directory holds only the paper's inputs
+*
+!.gitignore
+!main.tex
+!supplement.tex
+!references.bib
+!sections/
+!sections/*.tex
+!figures/
+!figures/*.pdf
+!scripts/
+!scripts/*.py
+!data/
+!data/*.json
+!data/*.npz
+!data/*.txt

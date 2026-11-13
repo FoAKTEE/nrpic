@@ -92,6 +92,11 @@ void Particles::NrpicInit(ParameterInput *pin) {
   nropt.spin       = pin->GetOrAddReal("particles", "bh_spin", 0.0);
   nropt.lattice_dx = pin->GetOrAddReal("particles", "lattice_dx", 0.025);
   nropt.nfilter    = pin->GetOrAddInteger("particles", "nfilter", 1);
+  nropt.deposit_max_level = pin->GetOrAddInteger("particles", "deposit_max_level", 31);
+  if (nropt.deposit_max_level < 0) { nropt.deposit_max_level = 0; }
+  if (nropt.deposit_max_level > 31 - pm->root_level) {
+    nropt.deposit_max_level = 31 - pm->root_level;
+  }
   nropt.alpha_exc  = pin->GetOrAddReal("particles", "alpha_exc", -1.0);
   nropt.hist_dcycle = pin->GetOrAddInteger("particles", "hist_dcycle", 1);
   nropt.traj_dcycle = pin->GetOrAddInteger("particles", "traj_dcycle", 0);
@@ -418,6 +423,11 @@ TaskStatus Particles::NrpicExcise(Driver *pdriver, int stage) {
 //! falls into a coarser MeshBlock is accumulated in the coarse cell that contains the
 //! (virtual) fine cell.  The weights of a particle therefore sum to one over the leaf
 //! cells of the mesh and the volume integrals of the sources equal the particle sums.
+//! With <particles> deposit_max_level the representation level is capped: where the
+//! mesh is finer than the cap, the cloud keeps the cell size of the cap level and its
+//! density is spread uniformly over the leaf cells inside each lattice cell.  The
+//! sums are conserved in the same way, and the particle size no longer shrinks with
+//! the mesh, which matters when there are fewer particles than fine cells.
 
 void Particles::NrpicDepositSources() {
   Mesh *pm = pmy_pack->pmesh;
@@ -438,6 +448,8 @@ void Particles::NrpicDepositSources() {
   const int ie = indcs.ie, je = indcs.je, ke = indcs.ke;
   const Real gmin[3] = {pm->mesh_size.x1min, pm->mesh_size.x2min, pm->mesh_size.x3min};
   auto m1 = met1;
+  // finest (logical) level on which a particle cloud is represented
+  const int lcap = pm->root_level + nropt.deposit_max_level;
 
   nrpic::MeshMetric proto;
   proto.m1 = met1;
@@ -482,30 +494,38 @@ void Particles::NrpicDepositSources() {
       q[Tmunu::I_Tmunu_Sy]  = mp*up[1];
       q[Tmunu::I_Tmunu_Sz]  = mp*up[2];
 
-      // (1) finest level among the owners of the eight nearest cell centres of the
-      //     lattice at the level of the particle's own MeshBlock
+      // (1) deposition level: the finest level among the owners of the eight nearest
+      //     cell centres of the lattice at the level of the particle's own MeshBlock,
+      //     but no finer than the cap lcap
       const int lev0 = lev(mo);
       Real h[3] = {sz(mo).dx1, sz(mo).dx2, sz(mo).dx3};
-      int lmax = lev0;
-      {
-        Real xb[3];
+      int ldep = lev0;
+      if (lev0 > lcap) {
+        const Real fac = static_cast<Real>(1 << (lev0 - lcap));
+        h[0] *= fac; h[1] *= fac; h[2] *= fac;
+        ldep = lcap;
+      } else {
+        int lmax = lev0;
+        Real xb0[3];
         for (int d=0; d<3; ++d) {
           Real xi = (xp[d] - gmin[d])/h[d] - 0.5;
-          xb[d] = gmin[d] + (floor(xi) + 0.5)*h[d];
+          xb0[d] = gmin[d] + (floor(xi) + 0.5)*h[d];
         }
         for (int c=0; c<8; ++c) {
-          Real xf = xb[0] + ((c & 1) ? h[0] : 0.0);
-          Real yf = xb[1] + ((c & 2) ? h[1] : 0.0);
-          Real zf = xb[2] + ((c & 4) ? h[2] : 0.0);
+          Real xf = xb0[0] + ((c & 1) ? h[0] : 0.0);
+          Real yf = xb0[1] + ((c & 2) ? h[1] : 0.0);
+          Real zf = xb0[2] + ((c & 4) ? h[2] : 0.0);
           int mb = nrpic::FindBlock(sz, nmb, mo, xf, yf, zf);
           if (mb >= 0) { lmax = (lev(mb) > lmax) ? lev(mb) : lmax; }
         }
+        lmax = (lmax > lcap) ? lcap : lmax;
+        if (lmax > lev0) {
+          const Real fac = 1.0/static_cast<Real>(1 << (lmax - lev0));
+          h[0] *= fac; h[1] *= fac; h[2] *= fac;
+        }
+        ldep = lmax;
       }
-      // (2) cloud-in-cell weights on the lattice of that level
-      if (lmax > lev0) {
-        const Real fac = 1.0/static_cast<Real>(1 << (lmax - lev0));
-        h[0] *= fac; h[1] *= fac; h[2] *= fac;
-      }
+      // (2) cloud-in-cell weights on the lattice of the deposition level
       Real xb[3], s[3];
       for (int d=0; d<3; ++d) {
         Real xi = (xp[d] - gmin[d])/h[d] - 0.5;
@@ -519,18 +539,48 @@ void Particles::NrpicDepositSources() {
         const Real zf = xb[2] + ((c & 4) ? h[2] : 0.0);
         const Real w = ((c & 1) ? s[0] : 1.0 - s[0])*((c & 2) ? s[1] : 1.0 - s[1])
                       *((c & 4) ? s[2] : 1.0 - s[2]);
-        // (3) leaf cell that contains this (real or virtual) lattice cell
+        // (3) leaf cells covered by this (real or virtual) lattice cell.  A lattice
+        //     cell lies inside a single MeshBlock.
         const int mb = nrpic::FindBlock(sz, nmb, mo, xf, yf, zf);
         if (mb < 0) continue;
-        int i = is + static_cast<int>(floor((xf - sz(mb).x1min)/sz(mb).dx1));
-        int j = js + static_cast<int>(floor((yf - sz(mb).x2min)/sz(mb).dx2));
-        int k = ks + static_cast<int>(floor((zf - sz(mb).x3min)/sz(mb).dx3));
-        i = (i < is) ? is : ((i > ie) ? ie : i);
-        j = (j < js) ? js : ((j > je) ? je : j);
-        k = (k < ks) ? ks : ((k > ke) ? ke : k);
-        const Real wv = w/(sz(mb).dx1*sz(mb).dx2*sz(mb).dx3);
-        for (int n=0; n<Tmunu::N_Tmunu; ++n) {
-          Kokkos::atomic_add(&tm(mb,n,k,j,i), wv*q[n]);
+        const int kd = lev(mb) - ldep;
+        if (kd <= 0) {
+          // leaf at the deposition level or coarser: the leaf cell containing the cell
+          int i = is + static_cast<int>(floor((xf - sz(mb).x1min)/sz(mb).dx1));
+          int j = js + static_cast<int>(floor((yf - sz(mb).x2min)/sz(mb).dx2));
+          int k = ks + static_cast<int>(floor((zf - sz(mb).x3min)/sz(mb).dx3));
+          i = (i < is) ? is : ((i > ie) ? ie : i);
+          j = (j < js) ? js : ((j > je) ? je : j);
+          k = (k < ks) ? ks : ((k > ke) ? ke : k);
+          const Real wv = w/(sz(mb).dx1*sz(mb).dx2*sz(mb).dx3);
+          for (int n=0; n<Tmunu::N_Tmunu; ++n) {
+            Kokkos::atomic_add(&tm(mb,n,k,j,i), wv*q[n]);
+          }
+        } else {
+          // finer leaves: the same density in every leaf cell inside the lattice cell
+          const int nsub = 1 << kd;
+          const Real wv = w/(h[0]*h[1]*h[2]);
+          const int i0 = is + static_cast<int>(
+              floor((xf - 0.5*h[0] - sz(mb).x1min)/sz(mb).dx1 + 0.5));
+          const int j0 = js + static_cast<int>(
+              floor((yf - 0.5*h[1] - sz(mb).x2min)/sz(mb).dx2 + 0.5));
+          const int k0 = ks + static_cast<int>(
+              floor((zf - 0.5*h[2] - sz(mb).x3min)/sz(mb).dx3 + 0.5));
+          for (int kk=0; kk<nsub; ++kk) {
+            const int k = k0 + kk;
+            if (k < ks || k > ke) continue;
+            for (int jj=0; jj<nsub; ++jj) {
+              const int j = j0 + jj;
+              if (j < js || j > je) continue;
+              for (int ii=0; ii<nsub; ++ii) {
+                const int i = i0 + ii;
+                if (i < is || i > ie) continue;
+                for (int n=0; n<Tmunu::N_Tmunu; ++n) {
+                  Kokkos::atomic_add(&tm(mb,n,k,j,i), wv*q[n]);
+                }
+              }
+            }
+          }
         }
       }
     }, Kokkos::Sum<Real>(smw));
