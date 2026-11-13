@@ -946,3 +946,11 @@ values (10 percent radius 5.66 -> 5.42 M, 90 percent radius 13.96 -> 14.20 M). M
 Lorentz factor constant to 2e-4. Centre of mass within 0.03 M. As predicted: the model
 holds. Its lapse oscillation is three to four times smaller than that of y_c = 0.819
 and grows ten times more slowly (amplitude fit 0.0008 + 4e-6 t).
+
+Queued (08:52): `st/osc/dx2`, the base stable-cluster run with half the cell size
+(dx = M/4 over the cluster, same particles, four passes plus compensation). Written
+before the run: if the common initial offset and the growth come from the spatial
+discretization at second order, the first maximum of the lapse (+0.0035 at t = 24 M)
+and the amplitude at t = 280 M (0.011) both drop by about four; if the motion is the
+dynamics of the model as sampled, both stay. The filter length halves with the cell, so
+the source is noisier in this run; a larger irregular part is expected either way.
