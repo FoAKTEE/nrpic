@@ -845,3 +845,14 @@ migration) are released; nothing found so far gives a reason to change their set
 and the oscillation question is followed on the stable model in parallel. The collapse
 runs that use the adaptive cloud level (compact clusters, prolate collapse, cluster
 with clumps) stay held until the dust runs with limited cloud coarsening are in.
+
+## Dust collapse with corrected initial data, adaptive cloud level (08:11)
+
+`os/adapt_sc`: particle masses sum to the continuum rest mass (surface-layer
+correction). First horizon at t = 16.39 M with mass 0.9971; 0.9996, 1.0003, 1.0006 at
+t = 17, 18, 20 M. The run with the published lattice rule read 1.0106 to 1.0119 at the
+same times. With consistent initial data the horizon mass after formation equals the
+total mass to 6e-4.
+Later: 1.0012, 1.0026, 1.0047, 1.0061, 1.0068, 1.0067, 1.0065 at t = 22, 25, 30, 35,
+40, 50, 59 M. The drift of the adaptive cloud level is there again, 0.6 percent, and
+it levels off after t = 40 M.
