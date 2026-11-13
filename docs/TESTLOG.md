@@ -363,3 +363,23 @@ the result, and neither number should be quoted.
 Consequences: every horizon mass recorded before this entry (0.974 after dust collapse,
 0.972 to 0.979 for the puncture) was produced by the defect and is withdrawn. Collapse
 runs are to be made with `metric_drvts = interpolant`.
+
+Further checks of the corrected finder (CPU restarts of t = 50 M dumps, 06:12 to 06:20):
+
+| slice | finder setting | finder mass | slice mass (Misner-Sharp) |
+|---|---|---|---|
+| dx = M/8 | original | 0.977110 | 1.0015 to 1.0017 |
+| dx = M/8 | corrected, tolerance 1e-5, 16 angles | 1.001338 | |
+| dx = M/8 | corrected, tolerance 1e-9, 16 angles | 1.001398 | |
+| dx = M/8 | corrected, tolerance 1e-9, 32 angles, l_max 16 | 1.001582 | |
+| dx = M/16 | original (GPU run) | 0.94055 | 1.000014 |
+| dx = M/16 | corrected, tolerance 1e-5, 16 angles | 0.999738 | |
+
+- The original finder gets worse at M/16 (5.9 percent low, and erratic in time): the
+  blocks are 1 M wide there, so more block faces cut the horizon. A resolution error
+  would shrink; a block-face error does this.
+- With the correction the finder agrees with the slice to 3e-4 at the production
+  settings; of that, 6e-5 is the stopping tolerance and 1.8e-4 the 16-point angular
+  grid. With both tightened the difference is below 1e-4.
+- Evolution error of the puncture itself, |slice mass - 1| at t = 50 M: 3.9e-2, 1.5e-3,
+  1.4e-5 for dx = M/4, M/8, M/16 at the puncture.
