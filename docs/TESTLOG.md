@@ -1391,3 +1391,98 @@ successive extrema; total particle energy).
   resolve poorly; expected within 25 percent of 64 M. A first horizon later than 12 M
   would mean that the overdensities are supported by noise or by the softened field,
   and the mesh and filter then need another look before any comparison.
+
+## Correction: central density with the level cap is above the cycloid, not on it (13:35)
+
+Found by the agent that built the appendix tables from the run directories, checked by
+me. The entries on the dust runs with the adaptive cloud level say that the cap "keeps
+the central density on the cycloid". On the logarithmic axis of the figure a difference
+of ten percent is not visible next to the drop by a factor of three of the uncapped
+run. From the histories (central reading over the cycloid at the same central proper
+time; the reading is the mean of the eight central cells after the filter):
+- published rule (`os/nocap_sc`): 1.000 to t = 4 M, 0.993 to 1.002 to t = 6 M, then
+  0.27 to 0.52 after the centre is refined to h/4 (t = 7.3 M), back to 1 by t = 12 M;
+- unlimited cap (`os/adapt_sc`): 1.017 at t = 4 M, 1.105 at 6 M, 1.12 to 1.135 from
+  6 to 10 M, back to 1 at 11 to 12 M;
+- cap at most one level coarser (`os/adapt_mc1`): as the unlimited cap to t = 7.3 M,
+  then 1.28 to 1.49.
+Is the matter more concentrated with the cap, or only the deposited density? The
+particle snapshots of the three runs agree: mean radius of the innermost 8, 64, 512
+particles equal to 1e-3 at t = 6 and 8 M (0.24329 against 0.24324; 0.22247 against
+0.22220), radii enclosing 2, 10, 50 percent of the mass equal to 1e-3. So the matter
+is the same and the reading differs.
+Explanation, with its test. The particles sit on a regular lattice that contracts
+homologously; a cloud lattice of nearly the same spacing beats against it, and at the
+centre of symmetry the beat has the same sign in all three directions. Written before
+the calculation: if that is the cause, depositing the particle snapshot of the uncapped
+run in Python with clouds on the lattice level (cells of h), spread uniformly on the
+leaves, one binomial pass, mean of the eight central leaves, gives 1.10 times the
+deposit with clouds on the leaf level at t = 6 M, and the ratios between the three
+rules at t = 8 to 9 M (one-level cap over unlimited cap 1.21 to 1.27; published rule
+over unlimited cap 0.28 to 0.33). Result: 1.017 at t = 4 M, 1.105 at t = 6 M; at t = 8
+and 9 M the ratios are 1.20 and 1.25, and 0.28 and 0.33. Confirmed to the digits read.
+The excess is a property of a regular lattice with about one particle per cloud cell;
+it is not a different collapse and not an error of the conservative mapping.
+What this changes: the sentence in the paper, and the table entry, must say that the
+cap replaces the drop of the central reading to one third by an excess of up to 14
+percent (49 percent with the one-level cap).
+
+Other items from the same audit, checked against the run files:
+- Migration: with the full history the first minimum of the central lapse is a double
+  dip, 0.591 at t = 400 M and 0.541 at 437 M (earlier entry: 0.578 near 450 M, from
+  values every 10 M); second maximum 0.894 at 631 M (entry: 0.892 at 650 M); second
+  minimum 0.753 at 783 M (entry: 0.763 near 800 M). Three particles leave the outer
+  boundary (t = 1816, 1999, 2405 M); "all particles kept" holds to 1800 M.
+- Head-on run: common-horizon mass at the end 1.00257 (entry: 1.0021 to 1.0025).
+- Tracers around the single puncture sit in cells of M/4 to M/2, not M/2 to M.
+- In ten runs the input file copied into the run directory differs from what the code
+  read, because the problem input was edited while the job was queued; the parameter
+  dump of the first restart file is the record. The added keys had their defaults.
+
+## Is the disturbance of a forming black hole by coarser clouds a lattice effect? (13:36)
+
+The level cap was judged on the dust ball only, whose particles sit on a regular
+lattice. The beat found above puts coherent errors of 10 to 50 percent into the source
+at the centre; the earlier negative result (horizon mass after the matter is removed
+drifts by -0.13 percent with the published rule and by +0.65 percent with the unlimited
+cap) may therefore belong to the lattice and not to coarser clouds as such.
+Control: the same dust ball sampled at random (Monte Carlo, 9328 equal-mass particles,
+total rest mass equal to the continuum value), once with the published rule
+(`os/mc_nocap`) and once with the unlimited cap (`os/mc_adapt`); everything else as in
+`os/nocap_sc` and `os/adapt_sc`.
+Written before the runs. If the lattice beat causes the disturbance, the two runs agree
+in the horizon mass at t = 60 M to 0.2 percent of M, and the capped run has the lower
+constraint norm throughout. If coarser clouds disturb the black hole by themselves, the
+capped run ends 0.5 percent or more away from the published-rule run, as on the
+lattice. A random sample is noisier than the lattice, so the horizon mass of either run
+may differ from M by more than on the lattice; the test is the difference between the
+two rules on the same particles.
+
+## Migration of the unperturbed y_c = 0.5 model, complete to 2500 M (13:45)
+
+`st/migration_yc0500_v4` (10^4 particles, static cells of M/4, four passes plus
+compensation). Figure: `paper/figures/fig_migration.png` (central lapse with the
+original's extrema, read by me from its rendered figure; radii enclosing 10, 50, 90
+percent of the rest mass).
+- Central lapse: 0.552 at the start (equilibrium 0.550); extrema (value at t/M): 0.913
+  at 228; 0.591 at 400, 0.637 at 417, 0.541 at 437; 0.894 at 631; 0.753 at 783; 0.853
+  at 940; 0.795 at 1072; 0.853 at 1184; 0.792 at 1329; 0.840 at 1472; 0.802 at 1583;
+  0.833 at 1726; 0.804 at 1853; 0.826 at 2001; 0.816 at the end.
+- Original, read from its figure: 0.56; plateau 0.905 from 200 to 320; oscillating
+  between 0.55 and 0.63 from 440 to 520, lowest near 490; 0.90 at 670; 0.765 from 830
+  to 880; 0.865 at 1040; 0.78 at 1160; 0.865 at 1320; 0.80 at 1450; 0.85 at 1600;
+  about 0.83 to 0.84 near 2000. (My earlier reading of its first minimum, 0.57 to
+  0.60, was of the middle of that band; the lowest point is 0.55.)
+- Same sequence of states, same values of the first two maxima and of the first two
+  minima to 0.01 to 0.02. Two differences: every extremum after the first maximum comes
+  earlier here, by 50 M at the first minimum and by 130 M at the fifth maximum (full
+  cycles of 250 to 290 M here against 290 to 310 M there); and the later swings are
+  smaller here (0.795 to 0.853 against 0.78 to 0.865). The lapse about which the
+  cluster settles is 0.82 here and 0.83 to 0.84 there; the model of equal binding
+  energy on the stable branch has 0.859.
+- Radii: half-mass radius 2.29 M at the start, 12.4 M at 230 M, 4.8 to 6.9 M after
+  900 M, 5.5 M at the end; 90 percent radius 3.46 M at the start, 19 to 26 M after
+  900 M. Four of 10^4 particles leave the outer boundary (4e-4 of the rest mass), none
+  is removed.
+- Cause of the shorter cycle: not determined. No run varies anything between the two
+  (particle number 10^4 against 2e6, static against adaptive mesh, filter).

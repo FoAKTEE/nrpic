@@ -522,13 +522,16 @@ def collect(key):
         out["central_lapse"] = {"t0": float(a[0]), "min": float(a.min()), "t_min": float(t[a.argmin()]),
                                 "max": float(a.max()), "t_max": float(t[a.argmax()]), "end": float(a[-1])}
         nex = hst[:, H["n_excised"]]
+        nes = hst[:, H["n_escaped"]]
+        out["n_excised_end"], out["n_escaped_end"] = int(nex[-1]), int(nes[-1])
+        out["escape_times"] = [float(t[j + 1]) for j in np.nonzero(np.diff(nes))[0]]
         out["removal_first_t"] = float(t[np.argmax(nex > 0)]) if (nex > 0).any() else None
         out["all_removed_t"] = float(t[np.argmax(n == 0)]) if (n == 0).any() else None
-        live = (n > 0) & (hst[:, H["sum_m"]] > 0)
+        live = (n > 0) & (hst[:, H["sum_m"]] > 0) & (nex == 0)     # before any removal
         if live.any():
             lw = hst[live, H["sum_mw"]] / hst[live, H["sum_m"]]
             out["mean_lorentz"] = {"start": float(lw[0]), "min": float(lw.min()), "max": float(lw.max()),
-                                   "end_live": float(lw[-1])}
+                                   "end_live": float(lw[-1]), "note": "records before the first removal"}
             pm = np.sqrt(sum(hst[live, H[k]] ** 2 for k in ("sum_mux", "sum_muy", "sum_muz"))) / hst[live, H["sum_m"]]
             out["net_momentum_max"] = float(pm.max())
         out["rest_mass_start"] = float(hst[0, H["sum_m"]])
@@ -564,12 +567,13 @@ class Cell:
 
 
 def detex(s):
-    rep = [(r"\times10^{", "e"), (r"\times 10^{", "e"), ("$", ""), (r"\,", " "), ("--", "-"),
-           (r"\le", "<="), (r"\to", "->"), (r"\infty", "inf"), (r"\pm", "+-"), (r"\simeq", "~"),
+    rep = [(r"Ref.~\cite{Wu:2026nrpic}", "Ref. [Wu and Most]"), ("~", " "), (r"\quad", ""),
+           (r"\times10^{", "e"), (r"\times 10^{", "e"), ("$", ""), (r"\,", " "), ("--", "-"),
+           (r"\lesssim", "<~"), (r"\le", "<="), (r"\Delta\alpha", "Delta alpha"), (r"\to", "->"), (r"\infty", "inf"), (r"\pm", "+-"), (r"\simeq", "~"),
            (r"\approx", "~"), (r"\aexc", "alpha_exc"), (r"\Egeo", "E"), (r"\Ham", "H"),
            (r"\Delta ", "Delta "), (r"\Delta", "Delta"), (r"\kappa", "kappa"), (r"\alpha", "alpha"),
            (r"\tau", "tau"), (r"\ell", "l"), (r"\rm ", ""), (r"\textit", ""), (r"\mathrm", ""),
-           (r"\%", "%"), ("~", " "), ("\\", "")]
+           (r"\%", "%"), ("\\", "")]
     for a, b in rep:
         s = s.replace(a, b)
     return re.sub(r"[{}]", "", s).strip()
@@ -594,10 +598,11 @@ def frac(x, digits=2):
     k = 1.0 / x
     if abs(k - round(k)) < 1e-9 and (int(round(k)) & (int(round(k)) - 1)) == 0:
         return f"1/{int(round(k))}"
-    return f"{x:.{digits}g}"
+    nd = max(0, digits - 1 - int(np.floor(np.log10(abs(x)))))
+    return f"{x:.{nd}f}"
 
 
-def mode_and_others(vals, fmt):
+def mode_and_others(vals, fmt, sep=", "):
     """Most common value, the other values in parentheses."""
     vs = [fmt(v) for v in vals]
     order = []
@@ -606,7 +611,7 @@ def mode_and_others(vals, fmt):
             order.append(v)
     main = max(order, key=lambda v: vs.count(v))
     rest = [v for v in order if v != main]
-    return main + (f" ({', '.join(rest)})" if rest else "")
+    return main + (f" ({sep.join(rest)})" if rest else "")
 
 
 def orig_line(pattern):
@@ -797,9 +802,8 @@ def setups():
         Cell(r"$a=0.9M$, $a\to0$; bound, $e=0.99$, plunging", f"{geo}, Setup and sections A-C, E"),
         Cell("1", f"{geo}: single test particle per run"),
         Cell("10--12", f"{geo}, A3 and E: mesh runs on [-10,10]^2x[-5,5], [-10,10]^2x[-2,2], [-12,12]^2x[-6,6] M"),
-        Cell("--", f"{geo}, A3 and E: uniform meshes of 20^3 to 48^3-cell blocks; analytic-metric runs need no mesh"),
-        Cell("uniform", f"{geo}, A3 and E"),
-        Cell("1/8--1/2; 0.025", f"{geo}, A3 and E (mesh dx = 0.125, 0.25, 0.5 M); C (Hermite lattice dx = 0.025 M)"),
+        Cell("uniform, 1/8--1/2; lattice 0.025", f"{geo}, A3 and E (uniform meshes of 20^3 to 48^3-cell blocks, dx = 0.125, "
+                                                 f"0.25, 0.5 M); C (Hermite lattice dx = 0.025 M); analytic-metric runs need no mesh"),
         Cell("0.00125--0.08", f"{geo}, Summary (convergence orders): dt = 0.08 ... 0.005 M (spherical KS), down to 0.00125 M (Cartesian KS)"),
         Cell("--", "no deposition"), Cell("--", "no deposition"), Cell("--", "no excision in the single-particle runs"),
         Cell("--", "fixed metric"),
@@ -809,9 +813,7 @@ def setups():
         Cell(r"$a=0.9M$, $a\to0$; cloud at $r_0=10M$", f"{tpc}, section 1 (initial data)"),
         Cell(r"$10^2$--$10^4$, Gaussian", f"{tpc}, section 1, families table"),
         Cell("64", f"{tpc}, Mesh: [-64, 64]^3"),
-        Cell(r"$64^3$, $16^3$", f"{tpc}, Mesh: [-64, 64]^3 with level-0 dx = 2 M, 16^3 MeshBlocks"),
-        Cell("static", f"{tpc}, Mesh: six levels"),
-        Cell(r"1/4$\to$1/16", f"{tpc}, Mesh table: dx = 0.25 M over the cluster, 0.0625 M at the black hole"),
+        Cell(r"static, 1/4$\to$1/16", f"{tpc}, Mesh: six static levels; dx = 0.25 M over the cluster, 0.0625 M at the black hole"),
         Cell("0.05", f"{tpc}, Mesh: time step dt = 0.05 M"),
         Cell("2", f"{tpc}, Mesh: nfilter = 2"),
         Cell("finest level", f"{tpc}, Mesh: deposit_max_level default (finest), deposit not fed back"),
@@ -832,13 +834,12 @@ def setups():
         cells.append(Cell(mode_and_others([R[k]["mesh"]["domain_half_width"] for k in keys], frac),
                           runs_src(keys, "parameter dump, mesh/x1max (x1min = -x1max)") + " | " +
                           per_run(keys, lambda k: frac(R[k]["mesh"]["domain_half_width"]))))
-        cells.append(Cell(mode_and_others([(R[k]["mesh"]["root_cells"][0], R[k]["mesh"]["cells_per_meshblock"][0]) for k in keys],
-                                          lambda v: f"${v[0]}^3$, ${v[1]}^3$"),
-                          runs_src(keys, "parameter dump, mesh/nx1..3 and meshblock/nx1..3 (all cubic)")))
-        cells.append(Cell(mode_and_others([R[k]["mesh"]["refinement"] for k in keys], str),
-                          runs_src(keys, "parameter dump, mesh_refinement/refinement")))
-        cells.append(Cell(mode_and_others(dx_cell(keys), str),
-                          runs_src(keys, "root spacing (x1max - x1min)/nx1 halved per level; levels of the MeshBlocks holding "
+        refs = {R[k]["mesh"]["refinement"] for k in keys}
+        mtxt = (f"{refs.pop()}, " + mode_and_others(dx_cell(keys), str)) if len(refs) == 1 else \
+            mode_and_others([f"{R[k]['mesh']['refinement']}, {dx_cell([k])[0]}" for k in keys], str, sep="; ")
+        cells.append(Cell(mtxt,
+                          runs_src(keys, "parameter dump, mesh_refinement/refinement; "
+                                         "root spacing (x1max - x1min)/nx1 halved per level; levels of the MeshBlocks holding "
                                          "particles in the first restart dump and its particle restart file (gid -> block level); "
                                          "finest level of any MeshBlock over all dumps; for vacuum runs the finest level (at the puncture)") +
                           " | " + per_run(keys, lambda k: dx_cell([k])[0])))
@@ -925,8 +926,9 @@ FAMILY_ROW = {"vacuum": "Vacuum black hole", "headon": "Head-on collision", "dus
               "dustcap": "Dust collapse, level cap", "filter": "Stable cluster, filter",
               "osc": "Stable cluster, oscillation", "nnum": "Particle number", "stable": "Sequence, stable",
               "unstable": "Sequence, unstable", "unpert": "Unperturbed unstable", "nearcrit": "Near-critical"}
-SETUP_HEAD = ["Scenario", "Model", r"$N$, sampling", r"$L/M$", "Cells", "Mesh", r"$\Delta x/M$",
-              r"$\Delta t/M$", r"$n_{\rm f}$", "Deposition", r"$\aexc$", r"$\kappa_1$", r"$t_{\rm end}/M$"]
+SETUP_HEAD = ["Scenario and model", r"$N$, sampling", r"$L/M$", r"Mesh, $\Delta x/M$", r"$\Delta t/M$",
+              r"$n_{\rm f}$", "Deposition", r"$\aexc$", r"$\kappa_1$", r"$t_{\rm end}/M$"]
+SETUP_COLS = [0.22, 0.1, 0.05, 0.135, 0.07, 0.06, 0.085, 0.035, 0.065, 0.065]   # fractions of the text width
 
 
 def write_setups(rows):
@@ -934,8 +936,8 @@ def write_setups(rows):
     osc = [r for r in rows if r[0] == "Stable cluster, oscillation"][0][1]
     kch = [k for k in fam("osc") if R[k]["spacetime"]["c_H"]]
     kcc = [k for k in fam("osc") if R[k]["particles"]["compensation_c"] not in (None, R[k]["particles"]["nfilter"] / 4)]
-    osc[SETUP_HEAD.index(r"$\kappa_1$") - 1].tex += r"\footnotemark[1]"
-    osc[SETUP_HEAD.index(r"$n_{\rm f}$") - 1].tex += r"\footnotemark[2]"
+    osc[SETUP_HEAD.index(r"$\kappa_1$")].tex += r"\footnotemark[1]"
+    osc[SETUP_HEAD.index(r"$n_{\rm f}$")].tex += r"\footnotemark[2]"
     ch = R[kch[0]]["spacetime"]["c_H"]
     ccv = R[kcc[0]]["particles"]["compensation_c"]
     nf = R[kcc[0]]["particles"]["nfilter"]
@@ -953,25 +955,39 @@ def write_setups(rows):
         notes.append((r"Run in progress; values up to its last record.",
                       runs_src(running, "chain/STATUS = RUNNING; last record of the particle history at t = " +
                                ", ".join(f"{R[k]['outcomes']['t_final']:.2f}" for k in running))))
+    cells_all = {(tuple(R[k]["mesh"]["root_cells"]), tuple(R[k]["mesh"]["cells_per_meshblock"])) for k in RUNS}
+    assert cells_all == {((64, 64, 64), (16, 16, 16))}, cells_all
+    caption = (r"Setups, one row per family of runs: model, macroparticle number $N$ and sampling, domain half-width $L$, "
+               r"mesh and cell spacing $\Delta x$ in the matter at the start and the finest reached (vacuum runs: at the "
+               r"puncture), first time step $\Delta t$, filter passes $n_{\rm f}$ (+c: compensation pass), deposition, "
+               r"excision threshold $\aexc$, constraint damping $\kappa_1$, final time. Meshes other than uniform have "
+               r"$64^3$ root cells in MeshBlocks of $16^3$ cells. Parentheses: single runs of a family.")
+    notes.append(("caption: 64^3 root cells, 16^3-cell MeshBlocks",
+                  runs_src(list(RUNS), "parameter dump, mesh/nx1..3 = 64 and meshblock/nx1..3 = 16 in every run "
+                                       "(checked); docs/results_cluster_test.md, Mesh, for the test-particle clusters")))
+    spec = "".join(rf"p{{{w}\textwidth}}" for w in SETUP_COLS)
     L = [r"\begin{table*}",
-         r"\caption{Setups of the simulated scenarios, one row per family of runs: macroparticle number $N$ and sampling, domain half-width $L$, root cells and cells per MeshBlock, cell spacing $\Delta x$ in the matter at the start and the finest reached (vacuum runs: at the puncture), first time step $\Delta t$, filter passes $n_{\rm f}$ (+c: compensation pass), deposition rule, lapse threshold of excision $\aexc$, constraint damping $\kappa_1$, and final time. Parentheses: values that apply to single runs of a family; --: not applicable.}",
+         rf"\caption{{{caption}}}",
          r"\label{tab:setups}",
          r"\footnotesize",
+         r"\setlength{\tabcolsep}{2pt}",
          r"\begin{ruledtabular}",
-         r"\begin{tabular}{" + "l" * len(SETUP_HEAD) + "}",
-         " & ".join(SETUP_HEAD) + r" \\", r"\colrule"]
+         r"\begin{tabular}{" + spec + "}",
+         " & ".join(rf"\raggedright {h}" for h in SETUP_HEAD) + r" \tabularnewline", r"\colrule"]
     for name, cells in rows:
-        L.append(" & ".join([name] + [c.tex for c in cells]) + r" \\")
+        first = rf"{name}: {cells[0].tex}"
+        L.append(" & ".join(rf"\raggedright {c}" for c in [first] + [c.tex for c in cells[1:]]) + r" \tabularnewline")
     L += [r"\end{tabular}", r"\end{ruledtabular}",
-          *[rf"\footnotetext[{i}]{{{t}}}" for i, (t, _) in enumerate(notes, 1)], r"\end{table*}", ""]
+          *[rf"\footnotetext[{i}]{{{t}}}" for i, (t, _) in enumerate(notes, 1) if not t.startswith("caption")],
+          r"\end{table*}", ""]
     (OUT_TAB / "tab_setups.tex").write_text("\n".join(L))
     led = []
     for name, cells in rows:
-        for h, c in zip(SETUP_HEAD[1:], cells):
+        for h, c in zip(["Model"] + SETUP_HEAD[1:], cells):
             if re.search(r"\d", detex(c.tex)):
                 led.append(f"tab_setups, {name}, {detex(h)}: {detex(c.tex)} <- {c.src}")
     for i, (t, s) in enumerate(notes, 1):
-        led.append(f"tab_setups, footnote {i}: {detex(t)} <- {s}")
+        led.append(f"tab_setups, {t if t.startswith('caption') else f'footnote {i}: ' + detex(t)} <- {s}")
     return led
 
 
@@ -1366,9 +1382,12 @@ def outcomes(do_slice):
                                                      "230-320 M, minima 0.55-0.56 at 450-490 M, maximum 0.90 near 670 M, minimum 0.76 "
                                                      "near 830 M") + "; " + osrc("lapse rises from approximately 0.56 to 0.91", "text"))))
     o = R[km]["outcomes"]
-    rows.append((r"Migration, macroparticles kept (run in progress: last record $t/M$)",
-                 Cell(f"all {o['np_end']} ({o['t_final']:.0f})", f"{R[km]['dir']}, st.nrpic.hst np of the first and last "
-                                                                f"record ({o['np_start']}, {o['np_end']}; run {R[km]['status']})"),
+    esc = ", ".join(f"{x:.0f}" for x in o["escape_times"])
+    rows.append((r"Migration (run in progress, records to $t/M$ given): macroparticles removed by excision; leaving the domain (at $t/M$)",
+                 Cell(f"{o['n_excised_end']}; {o['n_escaped_end']}" + (f" ({esc})" if esc else "") + f"; to {o['t_final']:.0f}",
+                      f"{R[km]['dir']}, st.nrpic.hst columns n_excised and n_escaped of the last record, times at which "
+                      f"n_escaped steps; np {o['np_start']} -> {o['np_end']}; domain half-width "
+                      f"{R[km]['mesh']['domain_half_width']:g} M; run {R[km]['status']}"),
                  NA))
     G.append((r"Unperturbed $y_c=0.5$", rows))
 
@@ -1397,26 +1416,31 @@ def outcomes(do_slice):
 
 
 def write_outcomes(G):
-    L = [r"\begin{table*}",
-         r"\caption{Measured quantities to which the text refers, by scenario, with the values of " + CITE +
-         r" where it gives them (from its text, or read from its figures). Masses in units of the total mass $M$, times in units of $M$; values separated by commas or semicolons follow the order of the first column.}",
-         r"\label{tab:outcomes}",
-         r"\footnotesize",
-         r"\begin{ruledtabular}",
-         r"\begin{tabular}{p{0.50\textwidth}p{0.25\textwidth}p{0.19\textwidth}}",
-         r"Quantity & This work & " + CITE + r" \\", r"\colrule"]
-    led = []
-    for gi, (title, rows) in enumerate(G):
-        if gi:
-            L.append(r"\colrule")
-        L.append(rf"\multicolumn{{3}}{{l}}{{\textit{{{title}}}}} \\")
-        for q, here, orig in rows:
-            L.append(rf"{q} & \raggedright {here.tex} & \raggedright\arraybackslash {orig.tex} \\")
-            label = detex(q)
-            for col, c in (("This work", here), ("Ref.", orig)):
-                if re.search(r"\d", detex(c.tex)):
-                    led.append(f"tab_outcomes, {detex(title)} / {label}, {col}: {detex(c.tex)} <- {c.src}")
-    L += [r"\end{tabular}", r"\end{ruledtabular}", r"\end{table*}", ""]
+    """Two floats in one file: test particles, horizon check and dust collapse; clusters."""
+    parts = [(G[:4], "tab:outcomes",
+              r"Measured quantities to which the text refers for test particles, the apparent-horizon check and "
+              r"dust collapse, with the values of " + CITE + r" where it gives them (from its text, or read from its "
+              r"figures). Masses in units of the total mass $M$, times in units of $M$; listed values follow the "
+              r"order named in the first column."),
+             (G[4:], "tab:outcomes_clusters",
+              r"As Table~\ref{tab:outcomes}, for the relativistic clusters. Central lapse $\alpha_c$ in the eight "
+              r"central cells; $\alpha_c(0)$ is its value at $t=0$.")]
+    L, led = [], []
+    for groups, label, caption in parts:
+        L += [r"\begin{table*}", rf"\caption{{{caption}}}", rf"\label{{{label}}}", r"\footnotesize",
+              r"\setlength{\tabcolsep}{3pt}", r"\begin{ruledtabular}",
+              r"\begin{tabular}{p{0.49\textwidth}p{0.26\textwidth}p{0.205\textwidth}}",
+              r"Quantity & This work & " + CITE + r" \tabularnewline", r"\colrule"]
+        for gi, (title, rows) in enumerate(groups):
+            if gi:
+                L.append(r"\colrule")
+            L.append(rf"\multicolumn{{3}}{{l}}{{\textit{{{title}}}}} \tabularnewline")
+            for q, here, orig in rows:
+                L.append(rf"\raggedright {q} & \raggedright {here.tex} & \raggedright {orig.tex} \tabularnewline")
+                for col, c in (("This work", here), ("Ref.", orig)):
+                    if re.search(r"\d", detex(c.tex)):
+                        led.append(f"{label}, {detex(title)} / {detex(q)}, {col}: {detex(c.tex)} <- {c.src}")
+        L += [r"\end{tabular}", r"\end{ruledtabular}", r"\end{table*}", ""]
     (OUT_TAB / "tab_outcomes.tex").write_text("\n".join(L))
     return led
 
@@ -1461,7 +1485,16 @@ def main():
     OUT_JSON.write_text(json.dumps(jsonable(doc), indent=1, sort_keys=False))
     hdr = ["# Ledger of the numbers in tab_setups.tex and tab_outcomes.tex",
            "# table, row, column: value <- run directory (or result file), file, how computed",
-           f"# written by {rel(Path(__file__))}; run directories are below the repository root", ""]
+           f"# written by {rel(Path(__file__))}; run directories are below the repository root",
+           "# Terms: 'parameter dump' = the text before <par_end> in the first restart file rst/<basename>.00000.rst",
+           "#   of the run directory (what the code read, overrides and defaults included); the one run without restart",
+           "#   files (runs/puncture/hcal/dx8_tight) uses its copied input file plus the command-line overrides of its log;",
+           "#   'particle history' = <basename>.nrpic.hst; 'constraint history' = <basename>.z4c.user.hst (norms are",
+           "#   sqrt(H-norm2)); 'horizon summary' = <basename>.horizon_summary_0.txt (rows with a finite mass);",
+           "#   'log' = athena.<timestamp>.log in the run directory or chain/seg*.log for chained runs;",
+           "#   'generator metadata' = the .json written by the initial-data generator next to the original particle file,",
+           "#   matched to the run's particle file by identical positions and masses (see runs.json, model.particles).",
+           "# tab:outcomes and tab:outcomes_clusters are the two floats of tab_outcomes.tex.", ""]
     OUT_LEDGER.write_text("\n".join(hdr + led) + "\n")
     print(f"{rel(OUT_JSON)}, {rel(OUT_LEDGER)} ({len(led)} lines), {rel(OUT_TAB)}/tab_setups.tex, tab_outcomes.tex")
     for key in RUNS:

@@ -6,7 +6,36 @@
   "Wall-clock times and zone-cycles per second are of the job segments in this directory (one graphics card); they are not quoted in the paper.",
   "Delta x in the matter: levels of the MeshBlocks holding particles in the restart dumps; finest_dx_reached: finest MeshBlock over all dumps."
  ],
- "slice_masses": {},
+ "slice_masses": {
+  "puncture/hcal/dx4": {
+   "time": 50.0,
+   "mass": 0.9655583824234114,
+   "file": "runs/puncture/hcal/dx4/rst/punc.00001.rst",
+   "unc_shells": 0.00010533875101237378,
+   "unc_spread": 0.0007988817885986522
+  },
+  "puncture/single_v3": {
+   "time": 50.0,
+   "mass": 1.0016092068859164,
+   "file": "runs/puncture/single_v3/rst/punc.00001.rst",
+   "unc_shells": 1.1645071817945052e-07,
+   "unc_spread": 6.960075339230952e-06
+  },
+  "puncture/hcal/dx16": {
+   "time": 50.0,
+   "mass": 1.000011417696059,
+   "file": "runs/puncture/hcal/dx16/rst/punc.00001.rst",
+   "unc_shells": 4.143777321274911e-09,
+   "unc_spread": 2.7248763842858616e-07
+  },
+  "puncture/hcal/dx8_fixed": {
+   "time": 12.0,
+   "mass": 1.0006354105828654,
+   "file": "runs/puncture/hcal/dx8_fixed/rst/punc.00001.rst",
+   "unc_shells": 1.5639470873907158e-06,
+   "unc_spread": 1.2154793675117985e-05
+  }
+ },
  "runs": {
   "puncture/single_v3": {
    "dir": "runs/puncture/single_v3",
@@ -134,6 +163,9 @@
      "t_max": 5.9375,
      "end": 0.02574091327512504
     },
+    "n_excised_end": 2,
+    "n_escaped_end": 0,
+    "escape_times": [],
     "removal_first_t": 54.375,
     "all_removed_t": null,
     "rest_mass_start": 0.0,
@@ -286,6 +318,9 @@
      "t_max": 5.625,
      "end": 0.06987087001309833
     },
+    "n_excised_end": 1,
+    "n_escaped_end": 0,
+    "escape_times": [],
     "removal_first_t": 56.25,
     "all_removed_t": null,
     "rest_mass_start": 0.0,
@@ -423,7 +458,7 @@
    "dt_start_source": "athena.20261113-051024.log, first step line",
    "status": "finished",
    "notes": [
-    "athena.20261113-051024.log: the code read fastflow/metric_drvts, which the copied input file horizon_calib.athinput lacks (input edited after the copy)"
+    "athena.20261113-051024.log: the code read fastflow/metric_drvts = stored, which the copied input file horizon_calib.athinput lacks (input edited after the copy)"
    ],
    "outcomes": {
     "t_final": 60.0,
@@ -439,6 +474,9 @@
      "t_max": 6.25,
      "end": 0.01536728705244422
     },
+    "n_excised_end": 1,
+    "n_escaped_end": 0,
+    "escape_times": [],
     "removal_first_t": 54.21875,
     "all_removed_t": null,
     "rest_mass_start": 0.0,
@@ -590,6 +628,9 @@
      "t_max": 5.9375,
      "end": 0.03025941025094707
     },
+    "n_excised_end": 0,
+    "n_escaped_end": 0,
+    "escape_times": [],
     "removal_first_t": null,
     "all_removed_t": null,
     "rest_mass_start": 0.0,
@@ -743,6 +784,9 @@
      "t_max": 5.9375,
      "end": 0.03134608464755224
     },
+    "n_excised_end": 1,
+    "n_escaped_end": 0,
+    "escape_times": [],
     "removal_first_t": 54.375,
     "all_removed_t": null,
     "rest_mass_start": 0.0,
@@ -907,6 +951,9 @@
      "t_max": 7.34375,
      "end": 0.01339620660795128
     },
+    "n_excised_end": 1,
+    "n_escaped_end": 0,
+    "escape_times": [],
     "removal_first_t": 77.8125,
     "all_removed_t": null,
     "rest_mass_start": 0.0,
@@ -1063,7 +1110,7 @@
    "dt_start_source": "athena.20261113-070659.log, first step line",
    "status": "finished",
    "notes": [
-    "athena.20261113-070659.log: the code read particles/deposit_max_coarsen, which the copied input file os_amr.athinput lacks (input edited after the copy)"
+    "athena.20261113-070659.log: the code read particles/deposit_max_coarsen = 31, which the copied input file os_amr.athinput lacks (input edited after the copy)"
    ],
    "outcomes": {
     "t_final": 60.0,
@@ -1079,20 +1126,24 @@
      "t_max": 0.0,
      "end": 0.008797388625188501
     },
+    "n_excised_end": 9328,
+    "n_escaped_end": 0,
+    "escape_times": [],
     "removal_first_t": 19.08630698233265,
     "all_removed_t": 19.73923468772729,
     "mean_lorentz": {
      "start": 1.0,
      "min": 1.0,
-     "max": 1.4661769096639858,
-     "end_live": 1.4661769096639858
+     "max": 1.2256102662468251,
+     "end_live": 1.2256102662468251,
+     "note": "records before the first removal"
     },
-    "net_momentum_max": 8.337118125993684e-13,
+    "net_momentum_max": 3.4190749422935724e-13,
     "rest_mass_start": 1.155147938736469,
     "filtered_energy_change": {
      "t0": -0.0024939115914442977,
-     "mean": -0.0018422891545298121,
-     "end": 0.012562161571697095
+     "mean": -0.0016983965793329321,
+     "end": -0.012741754569911223
     },
     "H_norm": {
      "start": 0.32166908461958227,
@@ -1264,20 +1315,24 @@
      "t_max": 0.0,
      "end": 0.008631465271861875
     },
+    "n_excised_end": 9328,
+    "n_escaped_end": 0,
+    "escape_times": [],
     "removal_first_t": 19.171471465645,
     "all_removed_t": 19.77708556919944,
     "mean_lorentz": {
      "start": 1.0,
      "min": 1.0,
-     "max": 1.4650628057459618,
-     "end_live": 1.4650628057459618
+     "max": 1.2243737947725621,
+     "end_live": 1.2243737947725621,
+     "note": "records before the first removal"
     },
-    "net_momentum_max": 7.275849689617489e-13,
+    "net_momentum_max": 3.5468354580445844e-13,
     "rest_mass_start": 1.168744943788231,
     "filtered_energy_change": {
      "t0": -0.0024843009176919173,
-     "mean": -0.00202915302822297,
-     "end": 0.010128090076040097
+     "mean": -0.0017753341602651342,
+     "end": -0.013006516266938162
     },
     "H_norm": {
      "start": 0.3114291251633347,
@@ -1435,7 +1490,7 @@
    "dt_start_source": "athena.20261113-070659.log, first step line",
    "status": "finished",
    "notes": [
-    "athena.20261113-070659.log: the code read particles/deposit_max_coarsen, which the copied input file os_amr.athinput lacks (input edited after the copy)"
+    "athena.20261113-070659.log: the code read particles/deposit_max_coarsen = 31, which the copied input file os_amr.athinput lacks (input edited after the copy)"
    ],
    "outcomes": {
     "t_final": 60.0,
@@ -1451,20 +1506,24 @@
      "t_max": 0.0,
      "end": 0.008688209950617162
     },
+    "n_excised_end": 9328,
+    "n_escaped_end": 0,
+    "escape_times": [],
     "removal_first_t": 19.06738154159658,
     "all_removed_t": 19.84332461177571,
     "mean_lorentz": {
      "start": 1.0,
      "min": 1.0,
-     "max": 1.4642380699463151,
-     "end_live": 1.4642380699463151
+     "max": 1.2283953694061798,
+     "end_live": 1.2283953694061798,
+     "note": "records before the first removal"
     },
-    "net_momentum_max": 1.1667988730403423e-12,
+    "net_momentum_max": 3.3103752081332096e-13,
     "rest_mass_start": 1.155147938736469,
     "filtered_energy_change": {
      "t0": -0.0024939115914442977,
-     "mean": -0.0007700828424268882,
-     "end": 0.003988829444021347
+     "mean": -0.0005722696707215043,
+     "end": -0.011335775585562313
     },
     "H_norm": {
      "start": 0.32166908461958227,
@@ -1637,20 +1696,24 @@
      "t_max": 0.0,
      "end": 0.008689087444831158
     },
+    "n_excised_end": 9328,
+    "n_escaped_end": 0,
+    "escape_times": [],
     "removal_first_t": 19.06738154159658,
     "all_removed_t": 19.85278733214375,
     "mean_lorentz": {
      "start": 1.0,
      "min": 1.0,
-     "max": 1.4646829336791687,
-     "end_live": 1.4646829336791687
+     "max": 1.2284062265780211,
+     "end_live": 1.2284062265780211,
+     "note": "records before the first removal"
     },
-    "net_momentum_max": 1.1315920220858427e-12,
+    "net_momentum_max": 3.434301972481085e-13,
     "rest_mass_start": 1.155147938736469,
     "filtered_energy_change": {
      "t0": -0.0024939115914442977,
-     "mean": -0.0007661285881429456,
-     "end": 0.0041183197333261035
+     "mean": -0.0005742778148301475,
+     "end": -0.011361595745028708
     },
     "H_norm": {
      "start": 0.32166908461958227,
@@ -1823,20 +1886,24 @@
      "t_max": 0.0,
      "end": 0.008915290102238169
     },
+    "n_excised_end": 9328,
+    "n_escaped_end": 0,
+    "escape_times": [],
     "removal_first_t": 19.07684426196462,
     "all_removed_t": 19.80547373030356,
     "mean_lorentz": {
      "start": 1.0,
      "min": 1.0,
-     "max": 1.465802180658243,
-     "end_live": 1.465802180658243
+     "max": 1.2274090488934315,
+     "end_live": 1.2274090488934315,
+     "note": "records before the first removal"
     },
-    "net_momentum_max": 1.0947065394748969e-12,
+    "net_momentum_max": 3.267611068694872e-13,
     "rest_mass_start": 1.155147938736469,
     "filtered_energy_change": {
      "t0": -0.0024939115914442977,
-     "mean": -0.001482714846223172,
-     "end": 0.008224493644844344
+     "mean": -0.0013519370438877726,
+     "end": -0.011708942246222986
     },
     "H_norm": {
      "start": 0.32166908461958227,
@@ -2011,13 +2078,17 @@
      "t_max": 116.0,
      "end": 0.80982130583562
     },
+    "n_excised_end": 0,
+    "n_escaped_end": 0,
+    "escape_times": [],
     "removal_first_t": null,
     "all_removed_t": null,
     "mean_lorentz": {
      "start": 1.0468939029400843,
      "min": 1.0369264546742485,
      "max": 1.0470236824917294,
-     "end_live": 1.0459579349102635
+     "end_live": 1.0459579349102635,
+     "note": "records before the first removal"
     },
     "net_momentum_max": 8.300704439141765e-05,
     "rest_mass_start": 1.030106488283254,
@@ -2189,13 +2260,17 @@
      "t_max": 120.75,
      "end": 0.8066797108063829
     },
+    "n_excised_end": 0,
+    "n_escaped_end": 0,
+    "escape_times": [],
     "removal_first_t": null,
     "all_removed_t": null,
     "mean_lorentz": {
      "start": 1.046892444091145,
      "min": 1.036810364120527,
      "max": 1.046910793431443,
-     "end_live": 1.046303053137899
+     "end_live": 1.046303053137899,
+     "note": "records before the first removal"
     },
     "net_momentum_max": 4.377300473303094e-05,
     "rest_mass_start": 1.030106488283254,
@@ -2367,13 +2442,17 @@
      "t_max": 119.625,
      "end": 0.8085892831989879
     },
+    "n_excised_end": 0,
+    "n_escaped_end": 0,
+    "escape_times": [],
     "removal_first_t": null,
     "all_removed_t": null,
     "mean_lorentz": {
      "start": 1.046893770623035,
      "min": 1.0369546425738718,
      "max": 1.0470619169114714,
-     "end_live": 1.0464201331905876
+     "end_live": 1.0464201331905876,
+     "note": "records before the first removal"
     },
     "net_momentum_max": 0.0001106545709991202,
     "rest_mass_start": 1.030106488283254,
@@ -2545,13 +2624,17 @@
      "t_max": 89.0,
      "end": 0.8047287967311896
     },
+    "n_excised_end": 0,
+    "n_escaped_end": 0,
+    "escape_times": [],
     "removal_first_t": null,
     "all_removed_t": null,
     "mean_lorentz": {
      "start": 1.0468939029400843,
      "min": 1.0453591793477461,
      "max": 1.0514143629437152,
-     "end_live": 1.0493953601694892
+     "end_live": 1.0493953601694892,
+     "note": "records before the first removal"
     },
     "net_momentum_max": 0.00016407298341737458,
     "rest_mass_start": 1.030106488283254,
@@ -2723,13 +2806,17 @@
      "t_max": 112.375,
      "end": 0.808682493821395
     },
+    "n_excised_end": 0,
+    "n_escaped_end": 0,
+    "escape_times": [],
     "removal_first_t": null,
     "all_removed_t": null,
     "mean_lorentz": {
      "start": 1.0468939029400843,
      "min": 1.0406908028826094,
      "max": 1.0471943169834261,
-     "end_live": 1.046377440742491
+     "end_live": 1.046377440742491,
+     "note": "records before the first removal"
     },
     "net_momentum_max": 8.16589980790146e-05,
     "rest_mass_start": 1.030106488283254,
@@ -2902,13 +2989,17 @@
      "t_max": 108.375,
      "end": 0.8125514878972544
     },
+    "n_excised_end": 0,
+    "n_escaped_end": 0,
+    "escape_times": [],
     "removal_first_t": null,
     "all_removed_t": null,
     "mean_lorentz": {
      "start": 1.0468939029400843,
      "min": 1.0449407504324868,
      "max": 1.0478121864357755,
-     "end_live": 1.046498601126244
+     "end_live": 1.046498601126244,
+     "note": "records before the first removal"
     },
     "net_momentum_max": 8.12095212358266e-05,
     "rest_mass_start": 1.030106488283254,
@@ -3081,13 +3172,17 @@
      "t_max": 248.0,
      "end": 0.8127645752304701
     },
+    "n_excised_end": 0,
+    "n_escaped_end": 0,
+    "escape_times": [],
     "removal_first_t": null,
     "all_removed_t": null,
     "mean_lorentz": {
      "start": 1.046892444091145,
      "min": 1.044784152695942,
      "max": 1.0483575353407875,
-     "end_live": 1.04633720093931
+     "end_live": 1.04633720093931,
+     "note": "records before the first removal"
     },
     "net_momentum_max": 4.5183824496384175e-05,
     "rest_mass_start": 1.030106488283254,
@@ -3260,13 +3355,17 @@
      "t_max": 245.75,
      "end": 0.8108767511078981
     },
+    "n_excised_end": 0,
+    "n_escaped_end": 0,
+    "escape_times": [],
     "removal_first_t": null,
     "all_removed_t": null,
     "mean_lorentz": {
      "start": 1.046893770623035,
      "min": 1.0452716470760095,
      "max": 1.0479075194962066,
-     "end_live": 1.0466808473975424
+     "end_live": 1.0466808473975424,
+     "note": "records before the first removal"
     },
     "net_momentum_max": 0.00011172890720668378,
     "rest_mass_start": 1.030106488283254,
@@ -3439,13 +3538,17 @@
      "t_max": 109.0,
      "end": 0.8119478333606005
     },
+    "n_excised_end": 0,
+    "n_escaped_end": 0,
+    "escape_times": [],
     "removal_first_t": null,
     "all_removed_t": null,
     "mean_lorentz": {
      "start": 1.0468939029400843,
      "min": 1.0450492599404757,
      "max": 1.048140442907359,
-     "end_live": 1.0467235251911415
+     "end_live": 1.0467235251911415,
+     "note": "records before the first removal"
     },
     "net_momentum_max": 8.00313223432559e-05,
     "rest_mass_start": 1.030106488283254,
@@ -3619,13 +3722,17 @@
      "t_max": 108.375,
      "end": 0.8128907395364275
     },
+    "n_excised_end": 0,
+    "n_escaped_end": 0,
+    "escape_times": [],
     "removal_first_t": null,
     "all_removed_t": null,
     "mean_lorentz": {
      "start": 1.0468939029400843,
      "min": 1.044912139014629,
      "max": 1.0476890490353448,
-     "end_live": 1.046392980260698
+     "end_live": 1.046392980260698,
+     "note": "records before the first removal"
     },
     "net_momentum_max": 8.139478692100927e-05,
     "rest_mass_start": 1.030106488283254,
@@ -3799,13 +3906,17 @@
      "t_max": 108.375,
      "end": 0.812437030904666
     },
+    "n_excised_end": 0,
+    "n_escaped_end": 0,
+    "escape_times": [],
     "removal_first_t": null,
     "all_removed_t": null,
     "mean_lorentz": {
      "start": 1.0468939029400843,
      "min": 1.045009148854654,
      "max": 1.047777242427738,
-     "end_live": 1.0465232515174492
+     "end_live": 1.0465232515174492,
+     "note": "records before the first removal"
     },
     "net_momentum_max": 0.00019284852289932643,
     "rest_mass_start": 1.030106488283254,
@@ -3965,7 +4076,7 @@
    "dt_start_source": "athena.20261113-065724.log, first step line",
    "status": "finished",
    "notes": [
-    "athena.20261113-065724.log: the code read particles/deposit_max_coarsen, which the copied input file st_cluster.athinput lacks (input edited after the copy)"
+    "athena.20261113-065724.log: the code read particles/deposit_max_coarsen = 31, which the copied input file st_cluster.athinput lacks (input edited after the copy)"
    ],
    "outcomes": {
     "t_final": 300.0,
@@ -3981,13 +4092,17 @@
      "t_max": 108.375,
      "end": 0.8125603700660965
     },
+    "n_excised_end": 0,
+    "n_escaped_end": 0,
+    "escape_times": [],
     "removal_first_t": null,
     "all_removed_t": null,
     "mean_lorentz": {
      "start": 1.0468939029400843,
      "min": 1.044935428875822,
      "max": 1.0478183755488795,
-     "end_live": 1.0464927535394444
+     "end_live": 1.0464927535394444,
+     "note": "records before the first removal"
     },
     "net_momentum_max": 7.985571592230591e-05,
     "rest_mass_start": 1.030106488283254,
@@ -4147,7 +4262,7 @@
    "dt_start_source": "athena.20261113-065724.log, first step line",
    "status": "finished",
    "notes": [
-    "athena.20261113-065724.log: the code read particles/deposit_max_coarsen, which the copied input file st_cluster.athinput lacks (input edited after the copy)"
+    "athena.20261113-065724.log: the code read particles/deposit_max_coarsen = 31, which the copied input file st_cluster.athinput lacks (input edited after the copy)"
    ],
    "outcomes": {
     "t_final": 300.0,
@@ -4163,13 +4278,17 @@
      "t_max": 108.375,
      "end": 0.8125531395092368
     },
+    "n_excised_end": 0,
+    "n_escaped_end": 0,
+    "escape_times": [],
     "removal_first_t": null,
     "all_removed_t": null,
     "mean_lorentz": {
      "start": 1.0468939029400843,
      "min": 1.0449371644458143,
      "max": 1.0478160166452712,
-     "end_live": 1.046498565382385
+     "end_live": 1.046498565382385,
+     "note": "records before the first removal"
     },
     "net_momentum_max": 8.1096479366177e-05,
     "rest_mass_start": 1.030106488283254,
@@ -4329,7 +4448,7 @@
    "dt_start_source": "athena.20261113-071725.log, first step line",
    "status": "finished",
    "notes": [
-    "athena.20261113-071725.log: the code read particles/deposit_max_coarsen, which the copied input file st_cluster.athinput lacks (input edited after the copy)"
+    "athena.20261113-071725.log: the code read particles/deposit_max_coarsen = 31, which the copied input file st_cluster.athinput lacks (input edited after the copy)"
    ],
    "outcomes": {
     "t_final": 300.0,
@@ -4345,13 +4464,17 @@
      "t_max": 107.625,
      "end": 0.8129949192846423
     },
+    "n_excised_end": 0,
+    "n_escaped_end": 0,
+    "escape_times": [],
     "removal_first_t": null,
     "all_removed_t": null,
     "mean_lorentz": {
      "start": 1.0468939029400843,
      "min": 1.0456382191152365,
      "max": 1.048275102431506,
-     "end_live": 1.0465199508293197
+     "end_live": 1.0465199508293197,
+     "note": "records before the first removal"
     },
     "net_momentum_max": 8.106776360082369e-05,
     "rest_mass_start": 1.030106488283254,
@@ -4523,13 +4646,17 @@
      "t_max": 600.0,
      "end": 0.8259024638029504
     },
+    "n_excised_end": 0,
+    "n_escaped_end": 0,
+    "escape_times": [],
     "removal_first_t": null,
     "all_removed_t": null,
     "mean_lorentz": {
      "start": 1.0464908836087665,
      "min": 1.044758268098096,
      "max": 1.049452648400452,
-     "end_live": 1.0450577662781337
+     "end_live": 1.0450577662781337,
+     "note": "records before the first removal"
     },
     "net_momentum_max": 7.385794968814266e-05,
     "rest_mass_start": 1.030106488283254,
@@ -4701,13 +4828,17 @@
      "t_max": 606.875,
      "end": 0.7881287899616263
     },
+    "n_excised_end": 0,
+    "n_escaped_end": 0,
+    "escape_times": [],
     "removal_first_t": null,
     "all_removed_t": null,
     "mean_lorentz": {
      "start": 1.0450544919025742,
      "min": 1.0445593084699119,
      "max": 1.0511591969347989,
-     "end_live": 1.0494138979688508
+     "end_live": 1.0494138979688508,
+     "note": "records before the first removal"
     },
     "net_momentum_max": 0.00013324197208736292,
     "rest_mass_start": 1.030106488283254,
@@ -4883,13 +5014,17 @@
      "t_max": 88.875,
      "end": 0.8107146658572608
     },
+    "n_excised_end": 0,
+    "n_escaped_end": 0,
+    "escape_times": [],
     "removal_first_t": null,
     "all_removed_t": null,
     "mean_lorentz": {
      "start": 1.0468938746966643,
      "min": 1.0456868919685574,
      "max": 1.049070029047652,
-     "end_live": 1.047144186425008
+     "end_live": 1.047144186425008,
+     "note": "records before the first removal"
     },
     "net_momentum_max": 0.00019051040975748924,
     "rest_mass_start": 1.030106488283254,
@@ -5062,13 +5197,17 @@
      "t_max": 174.875,
      "end": 0.787212801541273
     },
+    "n_excised_end": 0,
+    "n_escaped_end": 0,
+    "escape_times": [],
     "removal_first_t": null,
     "all_removed_t": null,
     "mean_lorentz": {
      "start": 1.0468958182543109,
      "min": 1.0434377052662114,
      "max": 1.0516132772277786,
-     "end_live": 1.0515415730338595
+     "end_live": 1.0515415730338595,
+     "note": "records before the first removal"
     },
     "net_momentum_max": 0.00034976595296675004,
     "rest_mass_start": 1.030106488283254,
@@ -5241,13 +5380,17 @@
      "t_max": 83.125,
      "end": 0.582990287739647
     },
+    "n_excised_end": 0,
+    "n_escaped_end": 0,
+    "escape_times": [],
     "removal_first_t": null,
     "all_removed_t": null,
     "mean_lorentz": {
      "start": 1.046748352623235,
      "min": 1.035056941913514,
      "max": 1.1241302558052197,
-     "end_live": 1.1241302558052197
+     "end_live": 1.1241302558052197,
+     "note": "records before the first removal"
     },
     "net_momentum_max": 0.004069031027047476,
     "rest_mass_start": 1.030106488283254,
@@ -5407,7 +5550,7 @@
    "dt_start_source": "athena.20261113-062240.log, first step line",
    "status": "finished",
    "notes": [
-    "athena.20261113-062240.log: the code read particles/deposit_max_coarsen, which the copied input file st_cluster.athinput lacks (input edited after the copy)"
+    "athena.20261113-062240.log: the code read particles/deposit_max_coarsen = 31, which the copied input file st_cluster.athinput lacks (input edited after the copy)"
    ],
    "outcomes": {
     "t_final": 500.0,
@@ -5423,13 +5566,17 @@
      "t_max": 34.625,
      "end": 0.5818832041656645
     },
+    "n_excised_end": 0,
+    "n_escaped_end": 0,
+    "escape_times": [],
     "removal_first_t": null,
     "all_removed_t": null,
     "mean_lorentz": {
      "start": 1.0472476785260652,
      "min": 1.036795821030846,
      "max": 1.4178645665122451,
-     "end_live": 1.1380251701785233
+     "end_live": 1.1380251701785233,
+     "note": "records before the first removal"
     },
     "net_momentum_max": 0.03940330125274403,
     "rest_mass_start": 1.030106488283254,
@@ -5589,7 +5736,7 @@
    "dt_start_source": "athena.20261113-062240.log, first step line",
    "status": "finished",
    "notes": [
-    "athena.20261113-062240.log: the code read particles/deposit_max_coarsen, which the copied input file st_cluster.athinput lacks (input edited after the copy)"
+    "athena.20261113-062240.log: the code read particles/deposit_max_coarsen = 31, which the copied input file st_cluster.athinput lacks (input edited after the copy)"
    ],
    "outcomes": {
     "t_final": 500.0,
@@ -5605,13 +5752,17 @@
      "t_max": 33.75,
      "end": 0.7878715415461561
     },
+    "n_excised_end": 0,
+    "n_escaped_end": 0,
+    "escape_times": [],
     "removal_first_t": null,
     "all_removed_t": null,
     "mean_lorentz": {
      "start": 1.0471233302643195,
      "min": 1.043624147817115,
      "max": 1.0525694350404184,
-     "end_live": 1.0523038343197424
+     "end_live": 1.0523038343197424,
+     "note": "records before the first removal"
     },
     "net_momentum_max": 0.00044111689997497185,
     "rest_mass_start": 1.030106488283254,
@@ -5771,7 +5922,7 @@
    "dt_start_source": "athena.20261113-062240.log, first step line",
    "status": "finished",
    "notes": [
-    "athena.20261113-062240.log: the code read particles/deposit_max_coarsen, which the copied input file st_cluster.athinput lacks (input edited after the copy)"
+    "athena.20261113-062240.log: the code read particles/deposit_max_coarsen = 31, which the copied input file st_cluster.athinput lacks (input edited after the copy)"
    ],
    "outcomes": {
     "t_final": 500.0,
@@ -5787,13 +5938,17 @@
      "t_max": 457.5,
      "end": 0.7973213915951596
     },
+    "n_excised_end": 0,
+    "n_escaped_end": 0,
+    "escape_times": [],
     "removal_first_t": null,
     "all_removed_t": null,
     "mean_lorentz": {
      "start": 1.046797320027582,
      "min": 1.0447440588477335,
      "max": 1.0493123548321455,
-     "end_live": 1.0486663853584475
+     "end_live": 1.0486663853584475,
+     "note": "records before the first removal"
     },
     "net_momentum_max": 0.00010824946592151723,
     "rest_mass_start": 1.030106488283254,
@@ -5952,7 +6107,7 @@
    "dt_start_source": "athena.20261113-062221.log, first step line",
    "status": "finished",
    "notes": [
-    "athena.20261113-062221.log: the code read particles/deposit_max_coarsen, which the copied input file st_cluster.athinput lacks (input edited after the copy)"
+    "athena.20261113-062221.log: the code read particles/deposit_max_coarsen = 31, which the copied input file st_cluster.athinput lacks (input edited after the copy)"
    ],
    "outcomes": {
     "t_final": 300.0,
@@ -5968,13 +6123,17 @@
      "t_max": 204.25,
      "end": 0.8861523172279682
     },
+    "n_excised_end": 0,
+    "n_escaped_end": 0,
+    "escape_times": [],
     "removal_first_t": null,
     "all_removed_t": null,
     "mean_lorentz": {
      "start": 1.0244692122181003,
      "min": 1.0242551807416354,
      "max": 1.0246200951581905,
-     "end_live": 1.0245843955203582
+     "end_live": 1.0245843955203582,
+     "note": "records before the first removal"
     },
     "net_momentum_max": 4.534350907603827e-05,
     "rest_mass_start": 1.019453288543533,
@@ -6148,13 +6307,17 @@
      "t_max": 181.0,
      "end": 0.8098398392166183
     },
+    "n_excised_end": 0,
+    "n_escaped_end": 0,
+    "escape_times": [],
     "removal_first_t": null,
     "all_removed_t": null,
     "mean_lorentz": {
      "start": 1.046890722670144,
      "min": 1.045444283100496,
      "max": 1.0483809182176833,
-     "end_live": 1.047019982513848
+     "end_live": 1.047019982513848,
+     "note": "records before the first removal"
     },
     "net_momentum_max": 8.170348731579727e-05,
     "rest_mass_start": 1.030106488283254,
@@ -6335,9 +6498,7 @@
    "dt_start": 0.0625,
    "dt_start_source": "athena.20261113-083550.log, first step line",
    "status": "finished",
-   "notes": [
-    "athena.20261113-100905.log: the code read time/start_time, problem/comp0_x1, problem/comp0_x2, problem/comp0_x3, problem/lapse_comp, which the copied input file st_cluster_amr.athinput lacks (input edited after the copy)"
-   ],
+   "notes": [],
    "outcomes": {
     "t_final": 300.0,
     "np_start": 10000,
@@ -6352,20 +6513,24 @@
      "t_max": 128.6875,
      "end": 0.05072885633352179
     },
+    "n_excised_end": 9994,
+    "n_escaped_end": 0,
+    "escape_times": [],
     "removal_first_t": 191.90625,
     "all_removed_t": null,
     "mean_lorentz": {
      "start": 1.1221296075899552,
-     "min": 1.0376295681833043,
-     "max": 1.654500304739556,
-     "end_live": 1.2396567413255886
+     "min": 1.11922299969382,
+     "max": 1.6507180580066194,
+     "end_live": 1.6507180580066194,
+     "note": "records before the first removal"
     },
-    "net_momentum_max": 0.9701098070895537,
+    "net_momentum_max": 0.005646782634491149,
     "rest_mass_start": 1.035171278981257,
     "filtered_energy_change": {
      "t0": -7.544416098625994e-05,
-     "mean": -0.005050245630102577,
-     "end": -0.013489520203208927
+     "mean": -0.00040447185766033045,
+     "end": -0.009618241118477311
     },
     "H_norm": {
      "start": 0.45308829161654574,
@@ -6545,20 +6710,24 @@
      "t_max": 46.1875,
      "end": 0.01642018425030545
     },
+    "n_excised_end": 9997,
+    "n_escaped_end": 0,
+    "escape_times": [],
     "removal_first_t": 104.40625,
     "all_removed_t": null,
     "mean_lorentz": {
      "start": 1.1717528995625541,
      "min": 1.1711168860360441,
-     "max": 1.683428027658241,
-     "end_live": 1.4812461683588438
+     "max": 1.6781771257454152,
+     "end_live": 1.6781771257454152,
+     "note": "records before the first removal"
     },
-    "net_momentum_max": 3.3655013578062576,
+    "net_momentum_max": 0.0025536197191304787,
     "rest_mass_start": 1.023830456857005,
     "filtered_energy_change": {
      "t0": -0.0002252223487209104,
-     "mean": -0.004556314810455465,
-     "end": -0.11387539482785614
+     "mean": -0.0006140636549371418,
+     "end": -0.003188120961986951
     },
     "H_norm": {
      "start": 0.42561719890060834,
@@ -6738,13 +6907,17 @@
      "t_max": 270.0625,
      "end": 0.9759885136948208
     },
+    "n_excised_end": 0,
+    "n_escaped_end": 0,
+    "escape_times": [],
     "removal_first_t": null,
     "all_removed_t": null,
     "mean_lorentz": {
      "start": 1.3249690272914547,
      "min": 1.0466782228021003,
      "max": 1.324985524838551,
-     "end_live": 1.0466782228021003
+     "end_live": 1.0466782228021003,
+     "note": "records before the first removal"
     },
     "net_momentum_max": 0.0008628853530988291,
     "rest_mass_start": 0.9617318069524872,
@@ -6920,13 +7093,17 @@
      "t_max": 200.0,
      "end": 0.9288851080345262
     },
+    "n_excised_end": 0,
+    "n_escaped_end": 0,
+    "escape_times": [],
     "removal_first_t": null,
     "all_removed_t": null,
     "mean_lorentz": {
      "start": 1.1717646021137782,
      "min": 1.0081925709630757,
      "max": 1.1719372975252702,
-     "end_live": 1.0081925709630757
+     "end_live": 1.0081925709630757,
+     "note": "records before the first removal"
     },
     "net_momentum_max": 0.00028062973380294393,
     "rest_mass_start": 1.023830456857005,
@@ -7100,13 +7277,17 @@
      "t_max": 200.0,
      "end": 0.909011971888465
     },
+    "n_excised_end": 0,
+    "n_escaped_end": 0,
+    "escape_times": [],
     "removal_first_t": null,
     "all_removed_t": null,
     "mean_lorentz": {
      "start": 1.1717646021137782,
      "min": 1.0128205627197895,
      "max": 1.1717646021137782,
-     "end_live": 1.0128205627197895
+     "end_live": 1.0128205627197895,
+     "note": "records before the first removal"
     },
     "net_momentum_max": 0.00030869214282294174,
     "rest_mass_start": 1.023830456857005,
@@ -7280,13 +7461,17 @@
      "t_max": 200.0,
      "end": 0.9038559207209105
     },
+    "n_excised_end": 0,
+    "n_escaped_end": 0,
+    "escape_times": [],
     "removal_first_t": null,
     "all_removed_t": null,
     "mean_lorentz": {
      "start": 1.171761320184297,
      "min": 1.0134311972440517,
      "max": 1.171761320184297,
-     "end_live": 1.0134311972440517
+     "end_live": 1.0134311972440517,
+     "note": "records before the first removal"
     },
     "net_momentum_max": 0.00033994003377474575,
     "rest_mass_start": 1.023830456857005,
@@ -7460,13 +7645,17 @@
      "t_max": 200.0,
      "end": 0.9102095562297617
     },
+    "n_excised_end": 0,
+    "n_escaped_end": 0,
+    "escape_times": [],
     "removal_first_t": null,
     "all_removed_t": null,
     "mean_lorentz": {
      "start": 1.1717650796025123,
      "min": 1.0128552701414482,
      "max": 1.1717650796025123,
-     "end_live": 1.0128552701414482
+     "end_live": 1.0128552701414482,
+     "note": "records before the first removal"
     },
     "net_momentum_max": 0.0004061629959465371,
     "rest_mass_start": 1.023830456857005,
@@ -7647,29 +7836,26 @@
      },
      {
       "log": "runs/st/migration_yc0500_v4/chain/seg003.job4217.a1.log",
-      "wall_s": 1069.894,
+      "wall_s": 1891.471,
       "wall_source": "last elapsed= line (no summary: job killed or running)",
       "zone_cycles_per_s": null,
       "meshblock_cycles": null,
       "termination": null,
       "exit": null,
-      "time_reached": 2156.25
+      "time_reached": 2406.25
      }
     ],
-    "wall_s_total": 7069.285,
+    "wall_s_total": 7890.861999999999,
     "zone_cycles_per_s": 7998660.36684574
    },
    "dt_start": 0.0625,
    "dt_start_source": "seg001.job4189.a1.log, first step line",
    "status": "running",
-   "notes": [
-    "seg002.job4211.a1.log: the code read time/start_time, problem/comp0_x1, problem/comp0_x2, problem/comp0_x3, problem/lapse_comp, which the copied input file input.athinput lacks (input edited after the copy)",
-    "seg003.job4217.a1.log: the code read time/start_time, problem/comp0_x1, problem/comp0_x2, problem/comp0_x3, problem/lapse_comp, which the copied input file input.athinput lacks (input edited after the copy)"
-   ],
+   "notes": [],
    "outcomes": {
-    "t_final": 2180.0,
+    "t_final": 2428.75,
     "np_start": 10000,
-    "np_end": 9998,
+    "np_end": 9997,
     "nmb_start_hist": 400,
     "nmb_max": 400,
     "central_lapse": {
@@ -7678,28 +7864,36 @@
      "t_min": 436.5,
      "max": 0.9129951219229888,
      "t_max": 228.0,
-     "end": 0.8114579830234636
+     "end": 0.8065094832358772
     },
+    "n_excised_end": 0,
+    "n_escaped_end": 3,
+    "escape_times": [
+     1816.5,
+     1999.25,
+     2405.0
+    ],
     "removal_first_t": null,
     "all_removed_t": null,
     "mean_lorentz": {
      "start": 1.1717646021137782,
      "min": 1.0120205573629668,
      "max": 1.1717646021137782,
-     "end_live": 1.0404869043396192
+     "end_live": 1.0415261322014933,
+     "note": "records before the first removal"
     },
     "net_momentum_max": 0.0004670988132660584,
     "rest_mass_start": 1.023830456857005,
     "filtered_energy_change": {
      "t0": -0.0002252119619675641,
-     "mean": -0.00017036730362715436,
-     "end": 0.00048784011675473415
+     "mean": -0.00017381776670108494,
+     "end": -0.0001776547786076499
     },
     "H_norm": {
      "start": 0.42563012111456583,
      "max": 0.42563012111456583,
      "t_max": 0.0,
-     "end": 0.092734837035496
+     "end": 0.0928749697173571
     },
     "dt_halvings": [],
     "horizon": "no finder"
@@ -7870,7 +8064,7 @@
    },
    "dt_start": 0.0625,
    "dt_start_source": "seg001.job4209.a1.log, first step line",
-   "status": "no summary",
+   "status": "stopped by hand",
    "notes": [],
    "outcomes": {
     "t_final": 160.421875,
@@ -7886,20 +8080,24 @@
      "t_max": 15.0,
      "end": 0.01475326064951915
     },
+    "n_excised_end": 10000,
+    "n_escaped_end": 0,
+    "escape_times": [],
     "removal_first_t": 148.828125,
     "all_removed_t": 152.265625,
     "mean_lorentz": {
      "start": 1.0658667129661936,
      "min": 1.0656776147021443,
-     "max": 1.6573950742101808,
-     "end_live": 1.2831425411095816
+     "max": 1.6563067289713458,
+     "end_live": 1.6563067289713458,
+     "note": "records before the first removal"
     },
-    "net_momentum_max": 6.030392480531468,
+    "net_momentum_max": 0.0015044430750451507,
     "rest_mass_start": 1.035178867548587,
     "filtered_energy_change": {
      "t0": -1.3787530272701964e-05,
-     "mean": 0.007529592887911356,
-     "end": 0.6358928417222465
+     "mean": -0.0002905463634241362,
+     "end": -0.0030456024792180347
     },
     "H_norm": {
      "start": 0.5018057393055604,
@@ -8101,13 +8299,17 @@
      "t_max": 400.4375,
      "end": 0.7873992045921511
     },
+    "n_excised_end": 0,
+    "n_escaped_end": 0,
+    "escape_times": [],
     "removal_first_t": null,
     "all_removed_t": null,
     "mean_lorentz": {
      "start": 1.0667682338683377,
      "min": 1.041285689014329,
      "max": 1.0702714206336807,
-     "end_live": 1.0562451941508093
+     "end_live": 1.0562451941508093,
+     "note": "records before the first removal"
     },
     "net_momentum_max": 0.00026698491460442074,
     "rest_mass_start": 1.035178867548587,
@@ -8281,20 +8483,24 @@
      "t_max": 0.0,
      "end": 0.2576443214832385
     },
+    "n_excised_end": 10000,
+    "n_escaped_end": 0,
+    "escape_times": [],
     "removal_first_t": 151.5,
     "all_removed_t": 154.25,
     "mean_lorentz": {
      "start": 1.0663085975836795,
      "min": 1.0652451414979074,
-     "max": 1.7562315537063424,
-     "end_live": 1.372380415996536
+     "max": 1.6956069746293085,
+     "end_live": 1.6956069746293085,
+     "note": "records before the first removal"
     },
-    "net_momentum_max": 6.671203756093703,
+    "net_momentum_max": 0.003059313616451701,
     "rest_mass_start": 1.035178867548587,
     "filtered_energy_change": {
      "t0": -1.2865910654302759e-05,
-     "mean": -0.010748842514273974,
-     "end": -0.4323858171464092
+     "mean": -0.0033919154753464698,
+     "end": -0.28205692574203545
     },
     "H_norm": {
      "start": 0.5148727998253549,

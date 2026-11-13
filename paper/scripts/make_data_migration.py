@@ -41,14 +41,20 @@ RUN = REPO / "runs" / "st" / "migration_yc0500_v4"
 YC = 0.5
 NMAX = 5000
 SNAP_DT = 2.0                         # snapshot interval of the run
-# original's migration figure, read by eye: t, t_lo, t_hi, alpha_c, alpha_lo, alpha_hi
-# (the first maximum is a plateau from 230 to 350 M; the first minimum lies between
-# 0.57 and 0.60 somewhere in 450 to 520 M)
+# original's migration figure, read by eye from the rendered figure: t, t_lo, t_hi,
+# alpha_c, alpha_lo, alpha_hi (the first maximum is a plateau from about 200 to 320 M;
+# around the first minimum the curve oscillates between 0.55 and 0.63 from 440 to 520 M,
+# lowest near 490 M; the second minimum is flat from 830 to 880 M)
 ORIGINAL = np.array([[0.0, 0.0, 0.0, 0.56, 0.56, 0.56],
-                     [290.0, 230.0, 350.0, 0.91, 0.91, 0.91],
-                     [485.0, 450.0, 520.0, 0.585, 0.57, 0.60],
-                     [680.0, 680.0, 680.0, 0.90, 0.90, 0.90],
-                     [830.0, 830.0, 830.0, 0.76, 0.76, 0.76]])
+                     [260.0, 200.0, 320.0, 0.905, 0.905, 0.905],
+                     [490.0, 440.0, 520.0, 0.55, 0.55, 0.63],
+                     [670.0, 670.0, 670.0, 0.90, 0.90, 0.90],
+                     [850.0, 830.0, 880.0, 0.765, 0.765, 0.765],
+                     [1040.0, 1040.0, 1040.0, 0.865, 0.865, 0.865],
+                     [1160.0, 1160.0, 1160.0, 0.78, 0.78, 0.78],
+                     [1320.0, 1320.0, 1320.0, 0.865, 0.865, 0.865],
+                     [1450.0, 1450.0, 1450.0, 0.80, 0.80, 0.80],
+                     [1600.0, 1600.0, 1600.0, 0.85, 0.85, 0.85]])
 OUT = HERE.parent / "data" / "migration.npz"
 
 
@@ -144,10 +150,10 @@ def main():
     print("spot checks (TESTLOG, first 913 M; original read from its figure):")
     print(f"  start: {a[0]:.4f}   log 0.552; original 0.56")
     for kind, lo, hi, log, orig in (
-            ("max", 150, 400, "0.913 at 228 M", "0.91, 230 .. 350 M"),
-            ("min", 380, 600, "0.578 near 450 M", "0.57 .. 0.60, 450 .. 520 M"),
-            ("max", 580, 760, "0.892 at 650 M", "0.90 at 680 M"),
-            ("min", 740, 900, "0.763 near 800 M", "0.76 at 830 M")):
+            ("max", 150, 400, "0.913 at 228 M", "0.905, 200 .. 320 M"),
+            ("min", 380, 600, "0.541 at 437 M (corrected)", "0.55 .. 0.63, 440 .. 520 M"),
+            ("max", 580, 760, "0.894 at 631 M (corrected)", "0.90 at 670 M"),
+            ("min", 740, 900, "0.753 at 783 M (corrected)", "0.765, 830 .. 880 M")):
         w = (t >= lo) & (t <= hi)
         if w.any():
             i = np.argmax(a[w]) if kind == "max" else np.argmin(a[w])

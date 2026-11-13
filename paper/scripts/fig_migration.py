@@ -50,7 +50,7 @@ def lapse(ax, d):
     t_end = float(d["t_end"])
     ax.text(0.98 * t_end, float(d["alpha_eq"]) + 0.008, "equilibrium", ha="right",
             va="bottom", fontsize=LAB_PT)
-    ax.text(870, 0.715, "original\n(read from figure)", color=BLUE, ha="left",
+    ax.text(1000, 0.70, "original\n(read from figure)", color=BLUE, ha="left",
             va="top", fontsize=LAB_PT, linespacing=1.1)
     ax.text(0.98 * t_end, 0.94, r"$N = 10^4$", color=RED, ha="right", va="top",
             fontsize=LAB_PT)
