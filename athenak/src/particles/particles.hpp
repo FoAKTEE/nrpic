@@ -157,6 +157,7 @@ class Particles {
   int  push_maxit = 0, push_unconverged = 0;
   Real sum_m = 0.0, sum_mw = 0.0, sum_mu[3] = {0.0, 0.0, 0.0};
   Real dep_sum[4] = {0.0, 0.0, 0.0, 0.0};   // mesh integrals of E, S_i sqrt(gamma) dV
+  Real dep_sum_filt[4] = {0.0, 0.0, 0.0, 0.0};   // the same after the filter
 
   void NrpicInit(ParameterInput *pin);
   void SetNumberOfParticles(int n);

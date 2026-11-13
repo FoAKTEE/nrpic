@@ -688,7 +688,10 @@ void Particles::NrpicDepositSources() {
 //! MeshBlocks at the same level and by restriction and prolongation across levels.
 
 void Particles::NrpicFilterSources() {
-  if (nropt.nfilter <= 0) return;
+  if (nropt.nfilter <= 0) {
+    for (int n=0; n<4; ++n) { dep_sum_filt[n] = dep_sum[n]; }
+    return;
+  }
   Mesh *pm = pmy_pack->pmesh;
   auto &indcs = pm->mb_indcs;
   const int is = indcs.is, js = indcs.js, ks = indcs.ks;
@@ -731,6 +734,35 @@ void Particles::NrpicFilterSources() {
       tm(m,n,k,j,i) = wk(m,n,k,j,i);
     });
   }
+
+  // proper-volume integrals of the filtered E and S_i.  The filter acts on the sources
+  // themselves (which carry 1/sqrt(gamma)) and across refinement boundaries, so these
+  // integrals differ from the particle sums by a small amount, recorded in the history.
+  auto sz = pmy_pack->pmb->mb_size.d_view;
+  auto m1 = met1;
+  const int n1 = indcs.nx1, n2 = indcs.nx2, n3 = indcs.nx3;
+  const int ncell = (nmb1 + 1)*n3*n2*n1;
+  Real se = 0.0, sx = 0.0, sy = 0.0, szz = 0.0;
+  Kokkos::parallel_reduce("nrpic_filtsum", Kokkos::RangePolicy<DevExeSpace>(0, ncell),
+  KOKKOS_LAMBDA(const int idx, Real &lse, Real &lsx, Real &lsy, Real &lsz) {
+    int m = idx/(n3*n2*n1);
+    int rem = idx - m*(n3*n2*n1);
+    int k = rem/(n2*n1);
+    rem -= k*(n2*n1);
+    int j = rem/n1;
+    int i = rem - j*n1;
+    k += ks; j += js; i += is;
+    const Real det = adm::SpatialDet(m1(m,NRM_GXX,k,j,i), m1(m,NRM_GXY,k,j,i),
+                                     m1(m,NRM_GXZ,k,j,i), m1(m,NRM_GYY,k,j,i),
+                                     m1(m,NRM_GYZ,k,j,i), m1(m,NRM_GZZ,k,j,i));
+    const Real w = sqrt(det)*sz(m).dx1*sz(m).dx2*sz(m).dx3;
+    lse += tm(m,Tmunu::I_Tmunu_E,k,j,i)*w;
+    lsx += tm(m,Tmunu::I_Tmunu_Sx,k,j,i)*w;
+    lsy += tm(m,Tmunu::I_Tmunu_Sy,k,j,i)*w;
+    lsz += tm(m,Tmunu::I_Tmunu_Sz,k,j,i)*w;
+  }, Kokkos::Sum<Real>(se), Kokkos::Sum<Real>(sx), Kokkos::Sum<Real>(sy),
+     Kokkos::Sum<Real>(szz));
+  dep_sum_filt[0] = se; dep_sum_filt[1] = sx; dep_sum_filt[2] = sy; dep_sum_filt[3] = szz;
 }
 
 //----------------------------------------------------------------------------------------

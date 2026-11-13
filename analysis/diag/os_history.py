@@ -21,6 +21,11 @@ if "--out" in sys.argv:
     out = sys.argv[sys.argv.index("--out") + 1]
     args = [a for a in args if a != out]
 runs = [a.split("=", 1) for a in args]
+# runs without output yet (queued, or not started) are reported and skipped
+for label, d in list(runs):
+    if not os.path.exists(os.path.join(d, "os.nrpic.hst")):
+        print(f"{label}: no {os.path.join(d, 'os.nrpic.hst')} yet, skipped")
+        runs.remove([label, d])
 
 fs.use_style()
 fig, axes = plt.subplots(2, 2, figsize=(fs.FULL_WIDTH, 5.4))
@@ -50,7 +55,7 @@ axes[0, 1].plot(tt, np.array([float(osn.cycloid_rho(x)) for x in tt]) / E0, **fs
 axes[0, 0].set_ylim(-0.05, 1.05)
 axes[0, 0].set_xlabel(r"$\tau_c\,[M]$")
 axes[0, 0].set_ylabel(r"$\alpha_c$")
-axes[0, 0].legend(loc="upper right")
+axes[0, 0].legend(loc="lower left")
 axes[0, 1].set_yscale("log")
 axes[0, 1].set_xlabel(r"$\tau_c\,[M]$")
 axes[0, 1].set_ylabel(r"$E_c/E_0$")

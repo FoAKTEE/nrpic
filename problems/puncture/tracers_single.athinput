@@ -1,7 +1,8 @@
 # Test particles around a black hole evolved with Z4c in moving-puncture gauge.
 # Initial data: one Brill-Lindquist puncture (Schwarzschild in isotropic coordinates)
 # with precollapsed lapse.  Six massless tracers: three circular equatorial orbits, an
-# inclined circular orbit, an eccentric orbit, and a radial infall.  Axisymmetry of the
+# inclined circular orbit, a plunging orbit with angular momentum below the last bound
+# value, and a radial infall.  Axisymmetry of the
 # evolved slice keeps L_z exact in the continuum; the areal radius of the circular
 # orbits is gauge invariant.
 
@@ -130,7 +131,7 @@ p3_u1 = 0
 p3_u2 = 0.3521341772643112
 p3_u3 = 0.2954756582673984
 p3_m  = 0.0
-# particle 4: eccentric, apocentre r_iso=12, 0.8 L_circ
+# particle 4: plunging, from r_iso=12 with 0.8 L_circ (below the minimum for a bound orbit)
 p4_x1 = 0
 p4_x2 = 12
 p4_x3 = 0

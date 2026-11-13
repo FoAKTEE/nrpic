@@ -147,14 +147,18 @@ void Particles::NrpicWriteHistory(Real time, int ncycle, bool header) {
                  "[7]=sum_muy [8]=sum_muz [9]=int_E [10]=int_Sx [11]=int_Sy [12]=int_Sz "
                  "[13]=alpha_probe [14]=E_probe [15]=tau_probe [16]=alpha_min "
                  "[17]=n_excised [18]=m_excised [19]=n_escaped [20]=m_escaped "
-                 "[21]=push_maxit [22]=push_unconverged [23]=nmb\n");
+                 "[21]=push_maxit [22]=push_unconverged [23]=nmb "
+                 "[24]=int_E_filtered [25]=int_Sx_filtered [26]=int_Sy_filtered "
+                 "[27]=int_Sz_filtered\n");
   }
   std::fprintf(fp, "%.15e %d %d %.15e %.15e %.15e %.15e %.15e %.15e %.15e %.15e %.15e "
-               "%.15e %.15e %.15e %.15e %d %.15e %d %.15e %d %d %d\n",
+               "%.15e %.15e %.15e %.15e %d %.15e %d %.15e %d %d %d "
+               "%.15e %.15e %.15e %.15e\n",
                time, ncycle, np, sum_m, sum_mw, sum_mu[0], sum_mu[1], sum_mu[2],
                dep_sum[0], dep_sum[1], dep_sum[2], dep_sum[3], alpha_probe, e_probe,
                tau_probe, amin, n_excised, mass_excised, n_escaped, mass_escaped,
-               push_maxit, push_unconverged, pmy_pack->nmb_thispack);
+               push_maxit, push_unconverged, pmy_pack->nmb_thispack,
+               dep_sum_filt[0], dep_sum_filt[1], dep_sum_filt[2], dep_sum_filt[3]);
   std::fclose(fp);
 }
 
