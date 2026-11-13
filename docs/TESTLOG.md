@@ -1167,3 +1167,20 @@ count stays within a few hundred of its starting value until the lapse has falle
 below 0.5; if the count climbs as before, the refinement is driven by the collapsing
 spheroid itself (a spindle 20 M long needs fine cells along its whole length) and the
 number of levels has to be limited instead.
+
+## Unbound model y_c = 0.283 with the one-percent inward kick: dispersal (11:09), prediction 5
+
+`st/yc0283_v5` (negative binding energy), same settings as the other compact models;
+the job reached t = 268.6 M of 300 M at the time limit. Figure:
+`analysis/diag/figs/cluster_history_yc0283_v5.png`.
+- The central lapse (0.405 at t = 0) dips to 0.388 at t = 31 M and then rises: 0.49,
+  0.76, 0.86, 0.94, 0.964, 0.976 at t = 60, 80, 100, 150, 200, 268 M.
+- All particles are kept. The half-mass radius goes from 1.69 M to 47.6 M and the mass
+  shells move apart at constant speed from t = 100 M on; the mean Lorentz factor falls
+  from 1.325 to 1.047.
+- As predicted, and as in the original (which notes that the spherical calculation of
+  the 1980s reported a black hole for this model): the cluster disperses.
+
+State of the five-model sequence at 10^4 particles: y_c = 0.900 and 0.819 hold for
+300 M; 0.500 collapses to a black hole (horizon at 104 M, mass equal to the total);
+0.283 disperses; 0.605 has not collapsed by 150 M and is being continued.
