@@ -1523,3 +1523,44 @@ original's curve, which I read from its rendered figure).
   Not shown: what the original's perturbation was. A perturbation that starts the same
   oscillation at a larger amplitude without changing the mean structure would give its
   curve; no run here tests a particular form.
+
+## Prolate collapse, complete to 45 M (14:05)
+
+`prolate/e09_v8` (10^4 Monte Carlo particles with reflection and half-turn symmetry,
+four passes plus compensation, finest cells M/16, at most 1352 MeshBlocks).
+- Largest Kretschmann scalar on the axis: 63 at t = 20 M at z = -5.0 M, 527 at
+  22.25 M at z = -4.6 M, 761 at 25 M at z = -2.7 M, largest value 1203 at 27.75 M at
+  z = -0.66 M, 464 at 30 M. The maximum starts near the ends of the spindle and moves
+  inward, as the original describes (two maxima near the ends, within the matter).
+- First apparent horizon found at t = 32.0 M (searches every 0.25 M), irreducible mass
+  0.929. The original shows the configuration "after apparent-horizon detection" at
+  32 M and gives focusing at 20.5 M and the narrow spindle at 27.75 M.
+- Particles are removed from t = 33.8 M; all 10^4 are removed by the end (removed rest
+  mass 1.0981, the rest mass of the data). Smallest lapse 0.017 at the end.
+- Horizon mass: rises to 0.9494 at t = 44.25 M and is 0.9489 at 44.75 M. That is five
+  percent below the total mass M. The original states agreement of the horizon mass
+  with the initial mass to 1e-3 for this test.
+- Open at this point: where the five percent are. Two checks, written before their
+  results. (i) Misner-Sharp mass of the last slices (the black hole is nearly
+  spherical by then): if the slice mass outside the horizon is 1.00, the horizon
+  reading is low on this mesh; if it is 0.95, the spacetime has lost the mass. (ii)
+  The Monte Carlo dust ball with the published rule, which is running (`os/mc_nocap2`):
+  if a random sample of 10^4 particles by itself costs several percent of horizon mass
+  through its noise, that run also ends between 0.93 and 0.98 of M; if it ends within
+  0.5 percent of M, the deficit belongs to the prolate collapse (its shape, or its
+  finest cells of M/16 against M/26 in the dust runs).
+
+## Monte Carlo dust ball with the published rule: refinement runs away (14:03)
+
+`os/mc_nocap` (block limit 640) stopped at t = 6.6 M asking for 785 blocks;
+`os/mc_nocap2` (limit 1800) stopped at t = 8.8 M asking for 1884. The lattice run
+needs 456 blocks in all. `os/mc_adapt` (unlimited cap, limit 640) stopped at t = 10 M
+asking for 974; `os/mc_adapt2` (limit 1800) is running.
+- With a random sample of 10^4 particles, one plain filter pass and clouds on the
+  finest level, the curvature-based refinement follows the sampling noise: every
+  refinement makes the source noisier (one eighth of the particles per cell), which
+  asks for more refinement. The lattice has no such noise.
+- The control is therefore repeated with the filter of the prolate run (four passes
+  plus compensation), which kept a random sample within 1352 blocks: `os/mc_nocap3`
+  (published rule) and `os/mc_adapt3` (unlimited cap), block limit 2000. The
+  predictions of 13:36 and 14:05 carry over unchanged to this pair.
