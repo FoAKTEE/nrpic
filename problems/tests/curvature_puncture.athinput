@@ -1,0 +1,53 @@
+# Check of the Kretschmann-scalar diagnostic on a Brill-Lindquist puncture at t = 0,
+# where I = 48 M^2/R^6 with the areal radius R = r (1 + M/2r)^2.
+<job>
+basename  = curv
+<mesh>
+nghost    = 4
+nx1       = 64
+x1min     = -8.0
+x1max     = 8.0
+ix1_bc    = outflow
+ox1_bc    = outflow
+nx2       = 64
+x2min     = -8.0
+x2max     = 8.0
+ix2_bc    = outflow
+ox2_bc    = outflow
+nx3       = 64
+x3min     = -8.0
+x3max     = 8.0
+ix3_bc    = outflow
+ox3_bc    = outflow
+<meshblock>
+nx1       = 32
+nx2       = 32
+nx3       = 32
+<time>
+evolution  = dynamic
+integrator = rk4
+cfl_number = 0.25
+nlim       = 0
+tlim       = 1.0
+<z4c>
+lapse_oplog     = 2.0
+shift_Gamma     = 0.75
+shift_eta       = 2.0
+diss            = 0.5
+chi_div_floor   = 1.0e-5
+damp_kappa1     = 0.02
+<particles>
+particle_type = nrpic
+pusher        = midpoint
+metric        = mesh
+deposit       = false
+hist_dcycle   = 0
+curv_dt       = 1.0
+curv_slice    = true
+curv_plane_y  = 0.01
+<problem>
+pgen_name  = nrpic_cf
+ncomp      = 1
+comp0_type = puncture
+comp0_mass = 1.0
+lapse      = precollapsed

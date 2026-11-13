@@ -1,0 +1,87 @@
+# Conservation test of the deposition on a statically refined mesh in flat spacetime:
+# 10^4 particles with random positions and momenta drift across three refinement
+# levels.  The history file compares the volume integrals of the deposited sources with
+# the particle sums every cycle.  Run with and without particles/deposit_max_level.
+
+<comment>
+problem   = NRPIC deposition conservation on a refined mesh
+
+<job>
+basename  = dep
+
+<mesh>
+nghost    = 2
+nx1       = 64
+x1min     = -16.0
+x1max     = 16.0
+ix1_bc    = outflow
+ox1_bc    = outflow
+nx2       = 64
+x2min     = -16.0
+x2max     = 16.0
+ix2_bc    = outflow
+ox2_bc    = outflow
+nx3       = 64
+x3min     = -16.0
+x3max     = 16.0
+ix3_bc    = outflow
+ox3_bc    = outflow
+
+<meshblock>
+nx1       = 16
+nx2       = 16
+nx3       = 16
+
+<mesh_refinement>
+refinement       = static
+max_nmb_per_rank = 1024
+
+<refined_region1>
+level = 1
+x1min = -5.0
+x1max = 5.0
+x2min = -5.0
+x2max = 5.0
+x3min = -5.0
+x3max = 5.0
+
+<refined_region2>
+level = 2
+x1min = -2.0
+x1max = 2.0
+x2min = -2.0
+x2max = 2.0
+x3min = -2.0
+x3max = 2.0
+
+<time>
+evolution  = dynamic
+integrator = rk2
+cfl_number = 1.0
+nlim       = -1
+tlim       = 8.0
+ndiag      = 50
+
+<adm>
+dynamic = false
+
+<particles>
+particle_type  = nrpic
+pusher         = midpoint
+metric         = mesh
+bh_mass        = 0.0
+bh_spin        = 0.0
+tolerance      = 1.0e-12
+max_iterations = 50
+dt             = 0.1
+deposit        = true
+nfilter        = 0
+deposit_max_level = 31
+deposit_adaptive  = false
+deposit_min_level = 0
+deposit_ppc       = 2.0
+hist_dcycle    = 1
+particle_file  = random.nrp
+
+<problem>
+pgen_name = nrpic_geodesic

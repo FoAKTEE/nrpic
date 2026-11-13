@@ -97,11 +97,21 @@ void Particles::NrpicInit(ParameterInput *pin) {
   if (nropt.deposit_max_level > 31 - pm->root_level) {
     nropt.deposit_max_level = 31 - pm->root_level;
   }
+  nropt.deposit_adaptive  = pin->GetOrAddBoolean("particles", "deposit_adaptive", false);
+  nropt.deposit_min_level = pin->GetOrAddInteger("particles", "deposit_min_level", 0);
+  nropt.deposit_ppc       = pin->GetOrAddReal("particles", "deposit_ppc", 2.0);
+  if (nropt.deposit_min_level < 0) { nropt.deposit_min_level = 0; }
+  if (nropt.deposit_min_level > nropt.deposit_max_level) {
+    nropt.deposit_min_level = nropt.deposit_max_level;
+  }
   nropt.alpha_exc  = pin->GetOrAddReal("particles", "alpha_exc", -1.0);
   nropt.hist_dcycle = pin->GetOrAddInteger("particles", "hist_dcycle", 1);
   nropt.traj_dcycle = pin->GetOrAddInteger("particles", "traj_dcycle", 0);
   nropt.traj_ntrack = pin->GetOrAddInteger("particles", "traj_ntrack", 0);
   nropt.snap_dt    = pin->GetOrAddReal("particles", "snap_dt", -1.0);
+  nropt.curv_dt    = pin->GetOrAddReal("particles", "curv_dt", -1.0);
+  nropt.curv_slice = pin->GetOrAddBoolean("particles", "curv_slice", false);
+  nropt.curv_plane_y = pin->GetOrAddReal("particles", "curv_plane_y", 1.0e-6);
   nropt.probe[0]   = pin->GetOrAddReal("particles", "probe_x1", 0.0);
   nropt.probe[1]   = pin->GetOrAddReal("particles", "probe_x2", 0.0);
   nropt.probe[2]   = pin->GetOrAddReal("particles", "probe_x3", 0.0);
@@ -158,6 +168,9 @@ void Particles::NrpicInit(ParameterInput *pin) {
   }
   if (nropt.deposit) {
     Kokkos::realloc(tm_work, nmb, Tmunu::N_Tmunu, ncells3, ncells2, ncells1);
+    if (nropt.deposit_adaptive) {
+      Kokkos::realloc(e_prev, nmb, ncells3, ncells2, ncells1);
+    }
     if (pm->multilevel) {
       int nccells1 = indcs.cnx1 + 2*(indcs.ng);
       int nccells2 = indcs.cnx2 + 2*(indcs.ng);
@@ -428,11 +441,33 @@ TaskStatus Particles::NrpicExcise(Driver *pdriver, int stage) {
 //! density is spread uniformly over the leaf cells inside each lattice cell.  The
 //! sums are conserved in the same way, and the particle size no longer shrinks with
 //! the mesh, which matters when there are fewer particles than fine cells.
+//! With deposit_adaptive the cap of each particle follows the local particle density:
+//! it is the finest level, between deposit_min_level and deposit_max_level, whose cells
+//! contain at least deposit_ppc particles at the coordinate density of the previous
+//! deposit.
 
 void Particles::NrpicDepositSources() {
   Mesh *pm = pmy_pack->pmesh;
   auto &indcs = pm->mb_indcs;
   auto tm = pmy_pack->ptmunu->u_tmunu;
+  // With the adaptive level cap, the coordinate density sqrt(gamma) E of the previous
+  // deposit selects the representation level of each particle.  It is not available
+  // for the first deposit on a new mesh, which then uses the lowest allowed level.
+  const bool adaptive = nropt.deposit_adaptive;
+  const bool have_prev = adaptive && e_prev_valid;
+  auto ep = e_prev;
+  if (have_prev) {
+    auto mm = met1;
+    const int nb1 = pmy_pack->nmb_thispack - 1;
+    par_for("nrpic_eprev", DevExeSpace(), 0, nb1, indcs.ks, indcs.ke, indcs.js, indcs.je,
+            indcs.is, indcs.ie,
+    KOKKOS_LAMBDA(const int m, const int k, const int j, const int i) {
+      const Real det = adm::SpatialDet(mm(m,NRM_GXX,k,j,i), mm(m,NRM_GXY,k,j,i),
+                                       mm(m,NRM_GXZ,k,j,i), mm(m,NRM_GYY,k,j,i),
+                                       mm(m,NRM_GYZ,k,j,i), mm(m,NRM_GZZ,k,j,i));
+      ep(m,k,j,i) = tm(m,Tmunu::I_Tmunu_E,k,j,i)*sqrt(det);
+    });
+  }
   Kokkos::deep_copy(DevExeSpace(), tm, 0.0);
   sum_mw = 0.0;
   for (int n=0; n<4; ++n) { dep_sum[n] = 0.0; }
@@ -448,8 +483,11 @@ void Particles::NrpicDepositSources() {
   const int ie = indcs.ie, je = indcs.je, ke = indcs.ke;
   const Real gmin[3] = {pm->mesh_size.x1min, pm->mesh_size.x2min, pm->mesh_size.x3min};
   auto m1 = met1;
-  // finest (logical) level on which a particle cloud is represented
-  const int lcap = pm->root_level + nropt.deposit_max_level;
+  // finest and coarsest (logical) levels on which a particle cloud is represented
+  const int lcap_max = pm->root_level + nropt.deposit_max_level;
+  const int lcap_min = pm->root_level + nropt.deposit_min_level;
+  const int root_lev = pm->root_level;
+  const Real ppc_target = nropt.deposit_ppc;
 
   nrpic::MeshMetric proto;
   proto.m1 = met1;
@@ -499,6 +537,30 @@ void Particles::NrpicDepositSources() {
       //     but no finer than the cap lcap
       const int lev0 = lev(mo);
       Real h[3] = {sz(mo).dx1, sz(mo).dx2, sz(mo).dx3};
+      // level cap of this particle: fixed, or the finest level whose cells hold at
+      // least ppc_target particles at the local density of the previous deposit
+      int lcap = lcap_max;
+      if (adaptive) {
+        lcap = lcap_min;
+        if (have_prev) {
+          int i = is + static_cast<int>(floor((xp[0] - sz(mo).x1min)/h[0]));
+          int j = js + static_cast<int>(floor((xp[1] - sz(mo).x2min)/h[1]));
+          int k = ks + static_cast<int>(floor((xp[2] - sz(mo).x3min)/h[2]));
+          i = (i < is) ? is : ((i > ie) ? ie : i);
+          j = (j < js) ? js : ((j > je) ? je : j);
+          k = (k < ks) ? ks : ((k > ke) ? ke : k);
+          const Real nc = ep(mo,k,j,i);
+          if (nc > 0.0) {
+            // smallest admissible cell size, and the finest level that respects it
+            const Real dmin = cbrt(ppc_target*mp*W/nc);
+            const Real droot = h[0]*static_cast<Real>(1 << (lev0 - root_lev));
+            int lv = root_lev + static_cast<int>(floor(log2(droot/dmin)));
+            lv = (lv < lcap_min) ? lcap_min : lv;
+            lv = (lv > lcap_max) ? lcap_max : lv;
+            lcap = lv;
+          }
+        }
+      }
       int ldep = lev0;
       if (lev0 > lcap) {
         const Real fac = static_cast<Real>(1 << (lev0 - lcap));
@@ -616,6 +678,7 @@ void Particles::NrpicDepositSources() {
   }, Kokkos::Sum<Real>(se), Kokkos::Sum<Real>(sx), Kokkos::Sum<Real>(sy),
      Kokkos::Sum<Real>(szz));
   dep_sum[0] = se; dep_sum[1] = sx; dep_sum[2] = sy; dep_sum[3] = szz;
+  e_prev_valid = true;
 }
 
 //----------------------------------------------------------------------------------------
@@ -706,7 +769,13 @@ void Particles::NrpicInitializeSources() {
   NrpicAssignBlocks();
   NrpicRemoveFlagged();
   if (nropt.deposit) {
+    // the mesh may have changed: the sources of the previous deposit are not usable.
+    // Two deposits give the adaptive level cap a density estimate on the new mesh.
+    e_prev_valid = false;
     NrpicDepositSources();
+    if (nropt.deposit_adaptive) {
+      NrpicDepositSources();
+    }
     NrpicFilterSources();
     if (pz4c != nullptr) {
       switch (pmy_pack->pmesh->mb_indcs.ng) {

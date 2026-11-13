@@ -133,6 +133,7 @@ add_executable(
         particles/particles_tasks.cpp
         particles/nrpic.cpp
         particles/nrpic_io.cpp
+        particles/nrpic_curvature.cpp
         outputs/pdf.cpp
 
         pgen/pgen.cpp

@@ -1,0 +1,75 @@
+# Test particle in Kerr (a = 0.9 M) with the Cartesian Kerr-Schild metric stored on the AthenaK
+# mesh (<adm> block, set by the nrpic_geodesic problem generator at the cell centres including
+# ghost cells) and reconstructed at the particle with cubic Hermite interpolation.
+# Massless test particle (deposit = false).  Default orbit: the paper's inclined BL orbit
+# (ref/initial_conditions.json, bl_inclined, 8.00 M <= r <= 8.52 M, |z| <= 3.67 M) in
+# Cartesian KS coordinates, on [-10,10]^2 x [-5,5] with dx = 0.25 M (4 x 4 x 2 MeshBlocks).
+# The run starts at the KS time t0 = 3.601850772058761 of the initial event; compare with the
+# exact solution at t_KS = t0 + t.  analysis/geodesic/run_campaign.py overrides mesh size,
+# pusher, dt and tlim.
+
+<comment>
+problem   = NRPIC geodesic test on the mesh metric, Kerr a = 0.9
+
+<job>
+basename  = geo
+
+<mesh>
+nghost    = 2
+nx1       = 80
+x1min     = -10.0
+x1max     = 10.0
+ix1_bc    = outflow
+ox1_bc    = outflow
+nx2       = 80
+x2min     = -10.0
+x2max     = 10.0
+ix2_bc    = outflow
+ox2_bc    = outflow
+nx3       = 40
+x3min     = -5.0
+x3max     = 5.0
+ix3_bc    = outflow
+ox3_bc    = outflow
+
+<meshblock>
+nx1       = 20
+nx2       = 20
+nx3       = 20
+
+<time>
+evolution  = dynamic
+integrator = rk2
+cfl_number = 1.0
+nlim       = -1
+tlim       = 600.0
+ndiag      = 10000
+
+<adm>
+dynamic = false
+
+<particles>
+particle_type  = nrpic
+pusher         = midpoint
+metric         = mesh
+triad          = symmetric
+bh_mass        = 1.0
+bh_spin        = 0.9
+tolerance      = 2.0e-14
+max_iterations = 200
+dt             = 0.005
+deposit        = false
+hist_dcycle    = 1
+traj_dcycle    = 1
+traj_ntrack    = 1
+nparticles     = 1
+p0_x1          = 7.56133226781686
+p0_x2          = -0.1263543217518889
+p0_x3          = 2.743182459643612
+p0_u1          = 0.32447906719171543
+p0_u2          = 0.37810805904020506
+p0_u3          = -0.0029067554315326
+p0_m           = 0.0
+
+<problem>
+pgen_name = nrpic_geodesic

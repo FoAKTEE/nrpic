@@ -1,0 +1,72 @@
+# Test particle in Schwarzschild (a = 0) with the Cartesian Kerr-Schild metric stored on the
+# AthenaK mesh (<adm> block, set by the nrpic_geodesic problem generator at the cell centres
+# including ghost cells) and reconstructed at the particle with cubic Hermite interpolation.
+# Massless test particle (deposit = false).  Defaults: eccentric inclined orbit (ref/orbits.json,
+# 'ecc') on [-12,12]^2 x [-6,6] with dx = 0.25 M (4 x 4 x 2 MeshBlocks).  The campaign driver
+# analysis/geodesic/run_campaign.py overrides the mesh size, the orbit, the pusher and dt.
+
+<comment>
+problem   = NRPIC geodesic test on the mesh metric, Schwarzschild
+
+<job>
+basename  = geo
+
+<mesh>
+nghost    = 2
+nx1       = 96
+x1min     = -12.0
+x1max     = 12.0
+ix1_bc    = outflow
+ox1_bc    = outflow
+nx2       = 96
+x2min     = -12.0
+x2max     = 12.0
+ix2_bc    = outflow
+ox2_bc    = outflow
+nx3       = 48
+x3min     = -6.0
+x3max     = 6.0
+ix3_bc    = outflow
+ox3_bc    = outflow
+
+<meshblock>
+nx1       = 24
+nx2       = 24
+nx3       = 24
+
+<time>
+evolution  = dynamic
+integrator = rk2
+cfl_number = 1.0
+nlim       = -1
+tlim       = 1000.0
+ndiag      = 10000
+
+<adm>
+dynamic = false
+
+<particles>
+particle_type  = nrpic
+pusher         = midpoint
+metric         = mesh
+triad          = symmetric
+bh_mass        = 1.0
+bh_spin        = 0.0
+tolerance      = 2.0e-14
+max_iterations = 200
+dt             = 0.005
+deposit        = false
+hist_dcycle    = 1
+traj_dcycle    = 1
+traj_ntrack    = 1
+nparticles     = 1
+p0_x1          = 6.153846153846153
+p0_x2          = 0.0
+p0_x3          = 3.768e-16
+p0_u1          = 0.45863025
+p0_u2          = 0.50808133
+p0_u3          = 0.29334089
+p0_m           = 0.0
+
+<problem>
+pgen_name = nrpic_geodesic

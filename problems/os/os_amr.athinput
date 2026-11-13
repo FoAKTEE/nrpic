@@ -91,10 +91,10 @@ center_x_0        = 0.0
 center_y_0        = 0.0
 center_z_0        = 0.0
 initial_radius_0  = 1.0
-flow_iterations_0 = 200
+flow_iterations_0 = 3000
 flow_alpha_beta_const_0 = 1.0
 hmean_tol_0       = 100.0
-mass_tol_0        = 1.0e-3
+mass_tol_0        = 1.0e-7
 start_time_0      = 8.0
 stop_time_0       = 1000.0
 verbose           = false
@@ -107,6 +107,10 @@ tolerance      = 1.0e-7
 max_iterations = 50
 deposit        = true
 nfilter        = 1
+deposit_max_level = 31
+deposit_adaptive  = true   # cloud level follows the local particle density ...
+deposit_min_level = 3      # ... and is never coarser than the level-3 cell (dx = h)
+deposit_ppc       = 1.0
 alpha_exc      = 0.1
 hist_dcycle    = 1
 snap_dt        = 1.0
@@ -126,3 +130,24 @@ dt        = 0.1
 <output2>
 file_type = rst
 dt        = 5.0
+
+<output3>
+file_type = tab
+variable  = adm
+dt        = 2.5
+slice_x2  = 0.01
+slice_x3  = 0.01
+
+<output4>
+file_type = tab
+variable  = tmunu
+dt        = 2.5
+slice_x2  = 0.01
+slice_x3  = 0.01
+
+<output5>
+file_type = tab
+variable  = z4c
+dt        = 2.5
+slice_x2  = 0.01
+slice_x3  = 0.01

@@ -1,0 +1,70 @@
+# Test particle in a fixed Schwarzschild spacetime (a = 0), analytic or lattice metric.
+# Defaults: circular orbit r = 8 M in spherical Kerr-Schild coordinates, implicit midpoint.
+# The orbits (ICs, exact solutions) are in ref/orbits.json; the campaign driver
+# analysis/geodesic/run_campaign.py passes the ICs, metric, pusher, dt and tlim on the
+# command line, e.g.
+#   particles/metric=kerr_schild particles/pusher=boris particles/triad=cholesky
+#   particles/p0_x1=... particles/dt=0.02 time/tlim=1000
+
+<comment>
+problem   = NRPIC geodesic test, Schwarzschild
+
+<job>
+basename  = geo
+
+<mesh>
+nghost    = 2
+nx1       = 8
+x1min     = -1.0
+x1max     = 1.0
+ix1_bc    = periodic
+ox1_bc    = periodic
+nx2       = 8
+x2min     = -1.0
+x2max     = 1.0
+ix2_bc    = periodic
+ox2_bc    = periodic
+nx3       = 8
+x3min     = -1.0
+x3max     = 1.0
+ix3_bc    = periodic
+ox3_bc    = periodic
+
+<meshblock>
+nx1       = 8
+nx2       = 8
+nx3       = 8
+
+<time>
+evolution  = dynamic
+integrator = rk2
+cfl_number = 1.0
+nlim       = -1
+tlim       = 1000.0
+ndiag      = 10000
+
+<particles>
+particle_type  = nrpic
+pusher         = midpoint         # midpoint | boris
+metric         = kerr_schild_sph  # kerr_schild_sph | kerr_schild | lattice
+triad          = symmetric        # symmetric | cholesky (Boris pusher)
+bh_mass        = 1.0
+bh_spin        = 0.0
+lattice_dx     = 0.25
+tolerance      = 2.0e-14
+max_iterations = 200
+dt             = 0.01
+hist_dcycle    = 1
+traj_dcycle    = 1
+traj_ntrack    = 1
+nparticles     = 1
+p0_x1          = 8.0
+p0_x2          = 1.5707963267948966
+p0_x3          = 0.0
+p0_u1          = 0.31622776601683794
+p0_u2          = 0.0
+p0_u3          = 3.5777087639996634
+p0_m           = 0.0
+
+<problem>
+pgen_name = nrpic_geodesic

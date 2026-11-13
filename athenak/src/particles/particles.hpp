@@ -53,12 +53,18 @@ struct NrpicOptions {
   bool deposit;         // deposit particle stress-energy onto the mesh
   int nfilter;          // number of binomial filter passes applied to the sources
   int deposit_max_level;  // finest refinement level on which a cloud is represented
+  bool deposit_adaptive;  // choose the level of each cloud from the local density
+  int deposit_min_level;  // coarsest level of a cloud with the adaptive choice
+  Real deposit_ppc;       // target number of particles per cloud cell
   Real alpha_exc;       // particles with interpolated lapse below this are removed
   int hist_dcycle;      // cycles between history records (0 = off)
   int traj_dcycle;      // cycles between trajectory records (0 = off)
   int traj_ntrack;      // particles with tag < traj_ntrack are recorded
   Real snap_dt;         // time between full particle snapshots (<= 0 = off)
   Real probe[3];        // position of the lapse/energy-density probe
+  Real curv_dt;         // time between curvature diagnostics (<= 0 = off)
+  bool curv_slice;      // also write the cut through the plane y = curv_plane_y
+  Real curv_plane_y;
 };
 
 //----------------------------------------------------------------------------------------
@@ -131,6 +137,8 @@ class Particles {
   DvceArray5D<Real> met0;          // alpha, beta^i, gamma_ij at t^n
   DvceArray5D<Real> met1;          // alpha, beta^i, gamma_ij at t^{n+1}
   DvceArray5D<Real> tm_work;       // work array for the source filter
+  DvceArray4D<Real> e_prev;        // sqrt(gamma) E of the previous deposit
+  bool e_prev_valid = false;       // e_prev belongs to the current mesh
   DvceArray5D<Real> coarse_tm;     // coarse sources (ghost exchange with SMR/AMR)
   MeshBoundaryValuesCC *pbval_tm = nullptr;
   bool metric_is_static = true;    // true unless Z4c evolves the spacetime
@@ -143,6 +151,8 @@ class Particles {
   int  n_excised = 0, n_escaped = 0;
   int  snap_number = 0;
   Real snap_next_time = 0.0;
+  int  curv_number = 0;
+  Real curv_next_time = 0.0;
   // statistics of the last step
   int  push_maxit = 0, push_unconverged = 0;
   Real sum_m = 0.0, sum_mw = 0.0, sum_mu[3] = {0.0, 0.0, 0.0};
@@ -163,6 +173,7 @@ class Particles {
   void NrpicWriteHistory(Real time, int ncycle, bool header);
   void NrpicWriteTrajectories(Real time, bool truncate);
   void NrpicWriteSnapshot(Real time);
+  void NrpicWriteCurvature(Real time);
   void NrpicWriteRestart(const std::string &fname);
   void NrpicReadRestart(const std::string &fname);
   TaskStatus NrpicSaveMetric(Driver *pdriver, int stage);

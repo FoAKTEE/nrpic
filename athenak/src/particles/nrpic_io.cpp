@@ -361,23 +361,24 @@ void Particles::NrpicCreateParticles() {
 //----------------------------------------------------------------------------------------
 //! \fn  void Particles::NrpicWriteRestart
 //! \brief writes the particle restart file that accompanies a mesh restart file:
-//!   8 bytes "NRPRST01", int64 N, 6 doubles (tau_probe, alpha_probe, e_probe,
-//!   mass_excised, mass_escaped, snap_next_time), 3 int64 (n_excised, n_escaped,
-//!   snap_number), N records of 7 doubles, N records of 3 int32 (gid, tag, species)
+//!   8 bytes "NRPRST02", int64 N, 7 doubles (tau_probe, alpha_probe, e_probe,
+//!   mass_excised, mass_escaped, snap_next_time, curv_next_time), 4 int64 (n_excised,
+//!   n_escaped, snap_number, curv_number), N records of 7 doubles, N records of 3 int32
+//!   (gid, tag, species)
 
 void Particles::NrpicWriteRestart(const std::string &fname) {
   std::FILE *fp = std::fopen(fname.c_str(), "wb");
   if (fp == nullptr) NrpicFatal("cannot open " + fname);
   const int np = nprtcl_thispack;
-  const char magic[9] = "NRPRST01";
+  const char magic[9] = "NRPRST02";
   std::int64_t n64 = np;
-  double dstate[6] = {tau_probe, alpha_probe, e_probe, mass_excised, mass_escaped,
-                      snap_next_time};
-  std::int64_t istate[3] = {n_excised, n_escaped, snap_number};
+  double dstate[7] = {tau_probe, alpha_probe, e_probe, mass_excised, mass_escaped,
+                      snap_next_time, curv_next_time};
+  std::int64_t istate[4] = {n_excised, n_escaped, snap_number, curv_number};
   std::fwrite(magic, 1, 8, fp);
   std::fwrite(&n64, sizeof(std::int64_t), 1, fp);
-  std::fwrite(dstate, sizeof(double), 6, fp);
-  std::fwrite(istate, sizeof(std::int64_t), 3, fp);
+  std::fwrite(dstate, sizeof(double), 7, fp);
+  std::fwrite(istate, sizeof(std::int64_t), 4, fp);
   if (np > 0) {
     auto rh = Kokkos::create_mirror_view_and_copy(HostMemSpace(), prtcl_rdata);
     auto ih = Kokkos::create_mirror_view_and_copy(HostMemSpace(), prtcl_idata);
@@ -406,14 +407,14 @@ void Particles::NrpicReadRestart(const std::string &fname) {
   if (fp == nullptr) NrpicFatal("cannot open particle restart file " + fname);
   char magic[9] = {0};
   std::int64_t n64 = 0;
-  double dstate[6];
-  std::int64_t istate[3];
-  if (std::fread(magic, 1, 8, fp) != 8 || std::strncmp(magic, "NRPRST01", 8) != 0) {
+  double dstate[7];
+  std::int64_t istate[4];
+  if (std::fread(magic, 1, 8, fp) != 8 || std::strncmp(magic, "NRPRST02", 8) != 0) {
     NrpicFatal("bad magic in particle restart file " + fname);
   }
   if (std::fread(&n64, sizeof(std::int64_t), 1, fp) != 1 ||
-      std::fread(dstate, sizeof(double), 6, fp) != 6 ||
-      std::fread(istate, sizeof(std::int64_t), 3, fp) != 3) {
+      std::fread(dstate, sizeof(double), 7, fp) != 7 ||
+      std::fread(istate, sizeof(std::int64_t), 4, fp) != 4) {
     NrpicFatal("bad header in particle restart file " + fname);
   }
   const int np = static_cast<int>(n64);
@@ -427,9 +428,11 @@ void Particles::NrpicReadRestart(const std::string &fname) {
 
   tau_probe = dstate[0]; alpha_probe = dstate[1]; e_probe = dstate[2];
   mass_excised = dstate[3]; mass_escaped = dstate[4]; snap_next_time = dstate[5];
+  curv_next_time = dstate[6];
   n_excised = static_cast<int>(istate[0]);
   n_escaped = static_cast<int>(istate[1]);
   snap_number = static_cast<int>(istate[2]);
+  curv_number = static_cast<int>(istate[3]);
 
   SetNumberOfParticles(np);
   HostArray2D<Real> rh("rh", nrdata, np);
@@ -472,6 +475,10 @@ void Particles::NrpicStartup(bool res_flag) {
     NrpicWriteSnapshot(pm->time);
     snap_next_time = pm->time + nropt.snap_dt;
   }
+  if (nropt.curv_dt > 0.0) {
+    NrpicWriteCurvature(pm->time);
+    curv_next_time = pm->time + nropt.curv_dt;
+  }
 }
 
 //----------------------------------------------------------------------------------------
@@ -493,6 +500,10 @@ TaskStatus Particles::NrpicDiagnostics(Driver *pdriver, int stage) {
   if (nropt.snap_dt > 0.0 && tnew >= snap_next_time - 1.0e-10*nropt.snap_dt) {
     NrpicWriteSnapshot(tnew);
     snap_next_time += nropt.snap_dt;
+  }
+  if (nropt.curv_dt > 0.0 && tnew >= curv_next_time - 1.0e-10*nropt.curv_dt) {
+    NrpicWriteCurvature(tnew);
+    curv_next_time += nropt.curv_dt;
   }
   return TaskStatus::complete;
 }
