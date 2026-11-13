@@ -693,3 +693,20 @@ t = 178 M, its mean drifts down by 0.029, and the mean Lorentz factor of the par
 rises by 0.077 (the kinetic energy more than doubles). With a hundred particles the
 sample dominates within one period; with 10^3 and 10^4 the common growing oscillation
 does.
+
+## Unperturbed y_c = 0.5, compensated, second seed (07:17)
+
+Seed 2 expands on the same schedule as seed 1: central lapse 0.60, 0.70, 0.80, 0.85
+at t = 38.2, 67.5, 86.0, 109.8 M (seed 1: 37.8, 64.0, 88.0, 110.8 M). The outward
+start with the compensated filter is therefore not a property of the sample either.
+Something common to all samples still pushes outward, as in the stable model, where a
+lapse rise of 0.006 is left with compensation.
+
+One candidate with a test: the compensation pass cancels the widening by the filter
+passes but not the width of the cloud itself (variance dx^2/6 per dimension, a twelfth
+of what four passes add). Run `st/osc/ccloud` (stable model, seed 1, compensation
+coefficient 4/4 + 1/12, which cancels both) is queued. Written before the run: if the
+cloud width is what is left, the rise within 130 M drops well below 0.006; if it stays,
+the remaining offset comes from elsewhere (for instance from the difference between
+the continuum equilibrium and the equilibrium of the discretized field equations at
+this cell size).
