@@ -1304,3 +1304,24 @@ half-swing grows to between 0.03 and 0.05 somewhere between t = 200 and 500 M an
 stops growing, around a mean lapse within 0.01 of the equilibrium value 0.752, all
 particles kept. If the swing stays below 0.02, or the model collapses or breathes
 slowly instead, the reading is wrong.
+
+## Near-critical model with the density reduced by ten percent, complete to 600 M (12:34)
+
+`st/reconf_yc0756_hc_m`. Figure: `analysis/diag/figs/cluster_history_yc0756_dpert.png`
+(with the compressed run). All 10^4 particles kept; centre of mass within 0.06 M.
+- The entry written at t = 409 M called the motion a slow breathing with a period of
+  250 to 300 M. With the whole run in view that holds only for the first 250 M (rise of
+  the central lapse to 0.82, fall to 0.73). From t = 250 M on the lapse oscillates
+  faster, between about 0.72 and 0.83, with successive extrema 60 to 100 M apart, and
+  the mass shells oscillate together with it; the radius enclosing 90 percent of the
+  rest mass ranges from 6 to 9 M (6.4 M at the start), the 10 percent radius from 1.8
+  to 3.8 M (2.4 M at the start).
+- So this run does show large oscillations with every particle kept and an extended
+  outer part, which is the kind of outcome the original describes. It still differs
+  from the original's curve in what can be compared: there the lapse oscillates about
+  0.74 to 0.75 (at or slightly below the equilibrium value 0.752) from the start and
+  with a period near 50 M; here it first moves up, and oscillates about 0.77.
+- The statement of the previous entry stands in this form: neither sign of a homologous
+  ten-percent perturbation reproduces the original's lapse curve; the reduced-density
+  run shares its qualitative outcome (oscillation, no collapse), the compressed run
+  does not.
