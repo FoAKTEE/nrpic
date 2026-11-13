@@ -561,3 +561,24 @@ compensation:
   reconfiguration, migration, cluster with clumps) are held until this is understood;
   dust collapse, prolate collapse and the head-on tracers do not depend on it and
   proceed after the diagnostics.
+
+Shape of the growing oscillation (script `analysis/diag/cluster_osc.py`, figure
+`analysis/diag/figs/cluster_osc_seeds.png`), observations only:
+- Amplitude (half the difference of successive smoothed extrema) against time, fitted
+  by a straight line: slopes 1.3e-5, 5.0e-5, 3.4e-5 per M for seeds 1, 2, 3 with
+  compensation; it reaches 0.007 to 0.013 at t = 280 M. The growth looks linear in time
+  rather than exponential; 300 M do not decide between the two.
+- The mean of the oscillation drifts down by 0.001 to 0.004 with compensation and by
+  0.016 without filter.
+- The mean Lorentz factor of all particles changes by at most 2e-3 in the compensated
+  runs while the lapse dips by 0.011 to 0.017; in the plain-filter excursion a lapse
+  change of 0.027 came with a change of 0.010. The late dips are therefore concentrated
+  at the centre (the 10 percent mass radius swings, the outer shells hardly move) and
+  are not a breathing of the whole cluster.
+- The compensated runs also show, at a fifth of its size, the slow excursion of the
+  plain filter (mean Lorentz factor lowest near t = 110 M, back at t = 210 M).
+- Newtonian estimate of the radial period of a particle in the core, for the central
+  density 5.5e-4: pi (3/(4 pi rho))^(1/2) = 66 M. The observed period, 72 M, is close
+  to it; in a nearly harmonic core all particles share this period, so a coherent
+  radial motion of the core does not phase-mix away. This says where the period comes
+  from, not why the amplitude grows.

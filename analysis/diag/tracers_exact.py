@@ -22,7 +22,8 @@ dphi/dtau = L/R^2 with R(0) = r0 psi^2 and E, L from the initial data (E = alpha
 alpha_K = (1 - M/2r)/(1 + M/2r)); tags 0-3 R = const, dphi/dt = (M/R^3)^(1/2) in
 Killing time, dphi/dtau = (M/R^3)^(1/2) (1 - 3M/R)^(-1/2).
 
-Restart dumps (skipped with --no-rst or when absent) give metric-only diagnostics:
+Restart dumps (skipped with --no-rst or when absent; reader and Misner-Sharp mass in
+slicemass.py) give metric-only diagnostics:
 the Misner-Sharp mass m = (R/2)(1 - gamma^ij d_i R d_j R + R^2 K_T^2) of the evolved
 slice (K_T = tangential eigenvalue of K^i_j, 4th-order differences inside each
 MeshBlock), the coordinate drift d_t R|_x = -alpha R K_T + beta^i d_i R, the
@@ -46,7 +47,6 @@ shaded: the window of the frequency fits.
 """
 import glob
 import os
-import struct
 import sys
 
 import numpy as np
@@ -59,6 +59,7 @@ from scipy.signal import savgol_filter
 
 from common import FIGS, inv_sym3, parse_cli, read_horizon, read_traj_tagged, run_path
 from nrpic import figstyle as fs
+from slicemass import near, rst_geometry, rst_open, slice_fields, wide
 
 M = 1.0
 RCUT = 2.2            # "outside the horizon" part of the falls: R_exact > RCUT
@@ -214,103 +215,6 @@ def first_cross(tau, y, level):
 # ---------------------------------------------------------------------------------------
 # restart dumps: Misner-Sharp mass, drift, Killing normalisation, R-reading check
 # ---------------------------------------------------------------------------------------
-NZ4C = 22   # chi, gt_ij(6), Khat, At_ij(6), Gam^i(3), Theta, alpha, beta^i(3)
-
-
-def rst_open(path):
-    """Header and memory map of an AthenaK restart file holding only Z4c data."""
-    with open(path, "rb") as f:
-        head = f.read(65536)
-    i = head.find(b"<par_end>")
-    if i < 0:
-        return None
-    off = head.find(b"\n", i) + 1
-    nmb, root = struct.unpack_from("ii", head, off)
-    off += 8 + 72 + 76                          # RegionSize, mesh RegionIndcs
-    bind = struct.unpack_from("19i", head, off)
-    off += 76
-    time, _ = struct.unpack_from("dd", head, off)
-    off += 20                                   # time, dt, ncycle
-    lloc = np.frombuffer(head, dtype=np.int32, count=4 * nmb, offset=off).reshape(nmb, 4)
-    ng, nx = bind[0], bind[1]
-    n = nx + 2 * ng
-    size = NZ4C * n ** 3 * 8
-    start = os.path.getsize(path) - nmb * size
-    with open(path, "rb") as f:
-        f.seek(start - 8)
-        if struct.unpack("Q", f.read(8))[0] != size:
-            return None
-    mm = np.memmap(path, dtype=np.float64, mode="r", offset=start, shape=(nmb, NZ4C, n, n, n))
-    return dict(time=time, nmb=nmb, root=root, ng=ng, nx=nx, n=n, lloc=lloc, mm=mm,
-                path=path)
-
-
-def rst_geometry(h, mesh_min=-128.0, root_width=64.0):
-    out = []
-    for b in range(h["nmb"]):
-        lx1, lx2, lx3, L = h["lloc"][b]
-        w = root_width / 2 ** (L - h["root"])
-        out.append((np.array([mesh_min + lx1 * w, mesh_min + lx2 * w, mesh_min + lx3 * w]),
-                    w, w / h["nx"]))
-    return out
-
-
-def mesh_extent(path):
-    """x1min and root MeshBlock width from the parameter dump of the restart file."""
-    txt = open(path, "rb").read(65536).decode("latin-1")
-    par, blk = {}, None
-    for line in txt.splitlines():
-        line = line.split("#")[0].strip()
-        if line.startswith("<"):
-            blk = line.strip("<>")
-        elif "=" in line and blk in ("mesh", "meshblock"):
-            k, v = [s.strip() for s in line.split("=", 1)]
-            par[(blk, k)] = v
-    x1min = float(par[("mesh", "x1min")])
-    x1max = float(par[("mesh", "x1max")])
-    nroot = int(par[("mesh", "nx1")]) // int(par[("meshblock", "nx1")])
-    return x1min, (x1max - x1min) / nroot
-
-
-def slice_fields(xmin, dx, u, ng):
-    """Misner-Sharp mass etc. on the active cells of one MeshBlock."""
-    n = u.shape[-1]
-    c = (np.arange(n) - ng + 0.5) * dx
-    z, y, x = np.meshgrid(xmin[2] + c, xmin[1] + c, xmin[0] + c, indexing="ij")
-    chi, gt, Kh, At, Th, alp, beta = u[0], u[1:7], u[7], u[8:14], u[17], u[18], u[19:22]
-    g = gt / chi
-    K = At / chi + (Kh + 2 * Th) / 3 * g
-
-    def full(s):
-        xx, xy, xz, yy, yz, zz = s
-        return np.array([[xx, xy, xz], [xy, yy, yz], [xz, yz, zz]])
-    G, KK = full(g), full(K)
-    r = np.sqrt(x * x + y * y + z * z)
-    nn = np.stack([x, y, z]) / r
-    ez = np.abs(nn[2]) < 0.9
-    ref = np.stack([np.where(ez, 0.0, 1.0), 0 * r, np.where(ez, 1.0, 0.0)])
-    t1 = np.cross(ref, nn, axis=0)
-    t1 /= np.sqrt((t1 ** 2).sum(0))
-    t2 = np.cross(nn, t1, axis=0)
-    quad = lambda T, a: np.einsum("i...,ij...,j...->...", a, T, a)
-    g1, g2 = quad(G, t1), quad(G, t2)
-    R = r * 0.5 * (np.sqrt(g1) + np.sqrt(g2))
-    KT = 0.5 * (quad(KK, t1) / g1 + quad(KK, t2) / g2)
-
-    def dd(f, ax):
-        return (-np.roll(f, -2, ax) + 8 * np.roll(f, -1, ax) - 8 * np.roll(f, 1, ax)
-                + np.roll(f, 2, ax)) / (12 * dx)
-    dR = np.stack([dd(R, 2), dd(R, 1), dd(R, 0)])
-    Gi = np.moveaxis(np.linalg.inv(np.moveaxis(G, (0, 1), (-2, -1))), (-2, -1), (0, 1))
-    m = R / 2 * (1 - np.einsum("i...,ij...,j...->...", dR, Gi, dR) + (R * KT) ** 2)
-    dtR = -alp * R * KT + (beta * dR).sum(0)
-    b2 = (beta * np.einsum("ij...,j...->i...", G, beta)).sum(0)
-    cK = np.sqrt(np.abs(alp ** 2 - b2) / np.abs(1 - 2 * M / R))
-    s = (slice(ng, n - ng),) * 3
-    return {k: v[s].ravel() for k, v in dict(R=R, m=m, dtR=dtR, cK=cK, r=r, x=x, y=y,
-                                              z=z).items()}
-
-
 def lagrange_w(s, npt):
     nodes = np.arange(-(npt // 2 - 1), npt // 2 + 1)
     w = np.ones(npt)
@@ -348,10 +252,10 @@ rfiles = [] if "no-rst" in opts else sorted(glob.glob(run_path(d, "rst", f"{base
 for p in rfiles:
     h = rst_open(p)
     if h is None:
-        print(f"{os.path.basename(p)}: not a Z4c-only restart file, skipped")
+        print(f"{os.path.basename(p)}: not a Z4c restart file slicemass.rst_open can read, "
+              "skipped")
         continue
-    x1min, wroot = mesh_extent(p)
-    geo = rst_geometry(h, x1min, wroot)
+    geo = rst_geometry(h)
     acc = {}
     for b, (xmin, w, dx) in enumerate(geo):
         # MeshBlocks whose nearest point lies within r = 17 (covers 2.5 < R < 16)
@@ -364,26 +268,6 @@ for p in rfiles:
     h.update({k: np.concatenate(v) for k, v in acc.items()})
     h["geo"] = geo
     dumps.append(h)
-
-
-def shell(h, key, R, half=0.1):
-    s = (np.abs(h["R"] - R) < half) & (h["r"] > 1.0)
-    v = h[key][s]
-    return np.median(v), v.min(), v.max()
-
-
-def wide(h, key, lo, hi):
-    """Median and range over lo < R < hi; cells with coordinate r < 1 are left out
-    (on the t = 0 slice R grows again towards the puncture, the second sheet)."""
-    s = (h["R"] > lo) & (h["R"] < hi) & (h["r"] > 1.0)
-    v = h[key][s]
-    return np.median(v), v.min(), v.max()
-
-
-def near(h, key, X, rad=0.5):
-    """Median over the cells within rad of the point X."""
-    s = (h["x"] - X[0]) ** 2 + (h["y"] - X[1]) ** 2 + (h["z"] - X[2]) ** 2 < rad ** 2
-    return np.median(h[key][s]) if s.any() else np.nan
 
 
 TD = np.array([h["time"] for h in dumps])
