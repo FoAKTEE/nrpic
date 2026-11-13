@@ -150,7 +150,52 @@ with adaptive refinement (three compact models).
    [Reconfiguration test, first attempt; Consistent initial data for perturbed
    clusters; Reconfiguration rerun ...; addendum 12:05]
 
-## C. Prolate collapse -- NOT YET
+## C. Prolate collapse (subsection "Prolate collapse") -- facts final; the Monte Carlo dust control (item 6) NOT YET
+
+Setup: cold homogeneous prolate spheroid, eccentricity 0.9, polar semi-axis b = 10 M,
+total mass M, particles at rest; 10^4 equal-mass particles drawn at random with
+reflection and half-turn symmetry (Appendix on sampling); adaptive mesh with finest
+cells of M/16; four filter passes with compensation; published deposition rule; lapse
+excision at 0.05. The original: 2e6 particles, finest cells M/64. Figure: fig_prolate
+(being made: particle positions in the x-z plane at four times; largest Kretschmann
+scalar, smallest lapse, horizon mass against time).
+
+Facts, in the order of the argument:
+1. Why the test: no symmetry reduces it; the collapse passes through a caustic (matter
+   focused onto the axis) before any horizon exists; the literature on it
+   (Shapiro:1991zza no horizon found; Yoo:2016kzu; East:2019bwu horizon after the
+   caustic; Wu:2026nrpic horizon after the caustic).
+2. The spheroid contracts to a spindle. The largest Kretschmann scalar lies on the
+   axis near the two ends of the spindle and moves inward: 63 at t = 20 M at
+   |z| = 5.0 M, 527 at 22.25 M at 4.6 M, 761 at 25 M at 2.7 M, largest value 1203 at
+   27.75 M at 0.66 M. The original describes two maxima near the ends, within the
+   matter, and shows them at 22.25 M; its narrow spindle is at 27.75 M.
+3. The curvature stays finite and the run continues through the caustic stage; an
+   apparent horizon is first found at t = 32.0 M (searches every M/4). The original
+   shows the configuration after horizon detection at 32 M. All particles are then
+   removed at the lapse threshold (from 33.8 M; none left at 45 M; removed rest mass
+   equal to the rest mass of the data).
+4. Horizon mass (documented difference). First found 0.929 M; largest 0.967 M at
+   33.75 M; then falling steadily to 0.949 M at 45 M, not levelling off. The original
+   reports agreement with the total mass to 1e-3. The Misner-Sharp mass of the last
+   slice agrees with the finder at the horizon (0.92 with an angular spread of 0.03)
+   and gives the total mass 0.999 M at large radius: five to eight percent of the mass
+   lie outside the black hole, between 5 and 50 M, when every particle has been
+   removed. That is field content; this diagnostic does not separate gravitational
+   radiation from constraint violation.
+5. The constraint norm peaks at the time of the largest curvature and is 25 times
+   larger there than in the dust collapse on a lattice.
+6. How much of the mass deficit comes from the particle number and how much from the
+   cell size (M/16 here) is not determined; a spherical control with randomly sampled
+   dust is NOT YET in. With finest cells of M/32 the mesh outgrew one graphics card
+   (the refinement asks for more blocks than fit) so that run does not exist.
+7. Random sampling and refinement: with a random sample, one plain filter pass and the
+   published rule the curvature-based refinement follows the sampling noise and the
+   block count grows without bound (seen in the dust ball); four passes with
+   compensation keep the prolate run at 1352 blocks at most.
+[Prolate collapse, complete to 45 M; Prolate collapse: where the five percent are;
+Prolate collapse, attempt with compensated filter; Monte Carlo dust ball with the
+published rule: refinement runs away]
 ## D. Collapse and merger inside a cluster -- NOT YET
 
 ## Statements the section must not make
