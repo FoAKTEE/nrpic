@@ -901,3 +901,30 @@ determined: the cause of the common initial offset (0.4 percent in lapse within
 One reading (bunching in radial phase in an isochronous core) fits and is untested.
 Open tests: continuation to 1200 M (queued), halved cell size, a different sampler
 (the Monte Carlo runs now released), an imposed offset of known size.
+
+## Dust collapse: cloud coarsening limited to one level (08:35), against its prediction
+
+`os/adapt_mc1` (adaptive cloud level, at most one level coarser than the particle's
+block; corrected initial data) between the two runs of the previous entry:
+
+| | cloud at the finest level | at most one level coarser | unlimited |
+|---|---|---|---|
+| constraint norm at the first refinement (t = 7.5 M) | 1.25 | 0.89 | 0.37 |
+| largest constraint norm | 1.9 | 2.8 | 4.7 |
+| constraint norm at t = 60 M | 0.031 | 0.10 | 0.14 |
+| horizon mass at formation | 1.0004 | 1.0006 | 0.9971 |
+| horizon mass at t = 20, 25 M | 1.0001, 0.9995 | 1.0011, 1.0011 | 1.0006, 1.0026 |
+| horizon mass at t = 40, 59 M | 0.9988, 0.9987 | 0.9923, 0.9903 | 1.0068, 1.0065 |
+
+The prediction fails. Limiting the coarsening to one level does not bring the late
+behaviour to that of the uncapped run: the constraint norm peaks higher than uncapped,
+and the horizon mass drifts by one percent, downward this time. The picture "a cloud
+wider than the metric scale does the damage, so a little coarsening is harmless" is
+too simple. What the three runs do show: the drift of the horizon mass after the
+matter is removed is 0.13, 1.1 and 0.65 percent, smallest by far with the published
+rule, and its sign is not systematic. Why any coarsening, even by one level, disturbs
+the black hole this much is not determined.
+
+Decision: collapse runs use the published rule (cloud at the finest local level). The
+level cap stays in the code as an option for diffuse matter on a mesh that is refined
+for other reasons; it is not used near black holes.
