@@ -1,6 +1,252 @@
 {
  "C": {
   "runs": {
+   "kerr_passage/bchol_cks_dt0.00125": {
+    "name": "kerr_passage/bchol_cks_dt0.00125",
+    "meta": {
+     "orbit": "ks_passage",
+     "a": 0.9,
+     "pusher": "bchol",
+     "metric": "cks",
+     "system": "cks",
+     "dt": 0.00125,
+     "t_end": 230.0,
+     "lattice_dx": null,
+     "t0_offset": 0.0
+    },
+    "overrides": [
+     "particles/pusher=boris",
+     "particles/triad=cholesky",
+     "particles/metric=kerr_schild",
+     "particles/bh_spin=0.9",
+     "particles/lattice_dx=0.025",
+     "particles/dt=0.00125",
+     "time/tlim=230.0",
+     "particles/tolerance=2.0e-14",
+     "particles/max_iterations=200",
+     "particles/hist_dcycle=1",
+     "particles/traj_dcycle=1",
+     "particles/traj_ntrack=1",
+     "time/ndiag=20000",
+     "particles/p0_x1=20.0",
+     "particles/p0_x2=0.9",
+     "particles/p0_x3=1.2246467991473533e-15",
+     "particles/p0_u1=-0.20131797516752664",
+     "particles/p0_u2=0.11258069111746129",
+     "particles/p0_u3=-0.07024955515873393",
+     "particles/p0_m=0.0"
+    ],
+    "input": "problems/kerr/geodesic.athinput",
+    "log": {
+     "ok": true,
+     "log": "runs/geodesic/kerr_passage/bchol_cks_dt0.00125/athena.20261113-042923.log",
+     "cpu_time_s": 25.75565,
+     "fatal": false,
+     "nan": false
+    },
+    "hist": {
+     "ncycles": 184001,
+     "hist_every_cycle": true,
+     "n_unconverged_steps": 0,
+     "max_iterations": 5,
+     "mean_iterations": 3.612018412943408,
+     "n_particles_end": 1,
+     "n_escaped": 0,
+     "n_excised": 0
+    },
+    "n_records": 184002,
+    "t_last": 230.0,
+    "max_dE": 4.645991826834329e-08,
+    "max_dLz": 7.062325914984326e-08,
+    "max_dQ": 5.481295559283755e-08,
+    "inv0": [
+     0.99738,
+     2.4328,
+     1.974
+    ],
+    "final_pos_err": 0.00032013209230541406,
+    "final_pos_err_components": [
+     -0.0002547900543774517,
+     5.549475777244517e-05,
+     0.00032013209230541406
+    ],
+    "r_peri": 1.89832597470809,
+    "t_peri": 98.94886885164807,
+    "r_min_sample": 1.8983259747099739,
+    "r_final": 23.483437743990255,
+    "final_rthph": [
+     23.483437743990255,
+     1.1623017398538202,
+     2.581185359727046
+    ],
+    "r_peri_err": -1.2989970807897322e-06,
+    "t_peri_err": 0.0005217157533365935,
+    "max_pos_err_samples": 0.0003231822210985058
+   },
+   "kerr_passage/bchol_cks_dt0.0025": {
+    "name": "kerr_passage/bchol_cks_dt0.0025",
+    "meta": {
+     "orbit": "ks_passage",
+     "a": 0.9,
+     "pusher": "bchol",
+     "metric": "cks",
+     "system": "cks",
+     "dt": 0.0025,
+     "t_end": 230.0,
+     "lattice_dx": null,
+     "t0_offset": 0.0
+    },
+    "overrides": [
+     "particles/pusher=boris",
+     "particles/triad=cholesky",
+     "particles/metric=kerr_schild",
+     "particles/bh_spin=0.9",
+     "particles/lattice_dx=0.025",
+     "particles/dt=0.0025",
+     "time/tlim=230.0",
+     "particles/tolerance=2.0e-14",
+     "particles/max_iterations=200",
+     "particles/hist_dcycle=1",
+     "particles/traj_dcycle=1",
+     "particles/traj_ntrack=1",
+     "time/ndiag=20000",
+     "particles/p0_x1=20.0",
+     "particles/p0_x2=0.9",
+     "particles/p0_x3=1.2246467991473533e-15",
+     "particles/p0_u1=-0.20131797516752664",
+     "particles/p0_u2=0.11258069111746129",
+     "particles/p0_u3=-0.07024955515873393",
+     "particles/p0_m=0.0"
+    ],
+    "input": "problems/kerr/geodesic.athinput",
+    "log": {
+     "ok": true,
+     "log": "runs/geodesic/kerr_passage/bchol_cks_dt0.0025/athena.20261113-042908.log",
+     "cpu_time_s": 13.24795,
+     "fatal": false,
+     "nan": false
+    },
+    "hist": {
+     "ncycles": 92001,
+     "hist_every_cycle": true,
+     "n_unconverged_steps": 0,
+     "max_iterations": 5,
+     "mean_iterations": 4.075097009815111,
+     "n_particles_end": 1,
+     "n_escaped": 0,
+     "n_excised": 0
+    },
+    "n_records": 92002,
+    "t_last": 230.0,
+    "max_dE": 1.8585294403320983e-07,
+    "max_dLz": 2.8251229464259484e-07,
+    "max_dQ": 2.1926531444945675e-07,
+    "inv0": [
+     0.99738,
+     2.4328,
+     1.974
+    ],
+    "final_pos_err": 0.0012806925474464492,
+    "final_pos_err_components": [
+     -0.0010193291030269336,
+     0.00022208110987032015,
+     0.0012806925474464492
+    ],
+    "r_peri": 1.8983220772717984,
+    "t_peri": 98.9504343647393,
+    "r_min_sample": 1.8983220772969573,
+    "r_final": 23.482673204941605,
+    "final_rthph": [
+     23.482673204941605,
+     1.1624683262059181,
+     2.582145920182184
+    ],
+    "r_peri_err": -5.1964333724896505e-06,
+    "t_peri_err": 0.0020872288445588083,
+    "max_pos_err_samples": 0.0012929017099807538
+   },
+   "kerr_passage/bchol_cks_dt0.005": {
+    "name": "kerr_passage/bchol_cks_dt0.005",
+    "meta": {
+     "orbit": "ks_passage",
+     "a": 0.9,
+     "pusher": "bchol",
+     "metric": "cks",
+     "system": "cks",
+     "dt": 0.005,
+     "t_end": 230.0,
+     "lattice_dx": null,
+     "t0_offset": 0.0
+    },
+    "overrides": [
+     "particles/pusher=boris",
+     "particles/triad=cholesky",
+     "particles/metric=kerr_schild",
+     "particles/bh_spin=0.9",
+     "particles/lattice_dx=0.025",
+     "particles/dt=0.005",
+     "time/tlim=230.0",
+     "particles/tolerance=2.0e-14",
+     "particles/max_iterations=200",
+     "particles/hist_dcycle=1",
+     "particles/traj_dcycle=1",
+     "particles/traj_ntrack=1",
+     "time/ndiag=20000",
+     "particles/p0_x1=20.0",
+     "particles/p0_x2=0.9",
+     "particles/p0_x3=1.2246467991473533e-15",
+     "particles/p0_u1=-0.20131797516752664",
+     "particles/p0_u2=0.11258069111746129",
+     "particles/p0_u3=-0.07024955515873393",
+     "particles/p0_m=0.0"
+    ],
+    "input": "problems/kerr/geodesic.athinput",
+    "log": {
+     "ok": true,
+     "log": "runs/geodesic/kerr_passage/bchol_cks_dt0.005/athena.20261113-042900.log",
+     "cpu_time_s": 6.742542,
+     "fatal": false,
+     "nan": false
+    },
+    "hist": {
+     "ncycles": 46001,
+     "hist_every_cycle": true,
+     "n_unconverged_steps": 0,
+     "max_iterations": 5,
+     "mean_iterations": 4.401208669376753,
+     "n_particles_end": 1,
+     "n_escaped": 0,
+     "n_excised": 0
+    },
+    "n_records": 46002,
+    "t_last": 230.0,
+    "max_dE": 7.436293259919792e-07,
+    "max_dLz": 1.130362346345551e-06,
+    "max_dQ": 8.772968046044728e-07,
+    "inv0": [
+     0.99738,
+     2.4328,
+     1.974
+    ],
+    "final_pos_err": 0.005125370267979434,
+    "final_pos_err_components": [
+     -0.004079997581296624,
+     0.0008899539798847833,
+     0.005125370267979434
+    ],
+    "r_peri": 1.8983064809707049,
+    "t_peri": 98.95670186036966,
+    "r_min_sample": 1.8983064813566564,
+    "r_final": 23.479612536463335,
+    "final_rthph": [
+     23.479612536463335,
+     1.1631361990759326,
+     2.5859905979027182
+    ],
+    "r_peri_err": -2.0792734465979734e-05,
+    "t_peri_err": 0.008354724474926911,
+    "max_pos_err_samples": 0.005174344477641313
+   },
    "kerr_passage/bchol_cks_dt0.01": {
     "name": "kerr_passage/bchol_cks_dt0.01",
     "meta": {
@@ -74,9 +320,260 @@
     "t_peri": 98.98185940088345,
     "r_min_sample": 1.898243990856893,
     "r_final": 23.46732946380847,
+    "final_rthph": [
+     23.46732946380847,
+     1.165832216973334,
+     2.6014084596696474
+    ],
     "r_peri_err": -8.328330770890346e-05,
     "t_peri_err": 0.0335122649887154,
     "max_pos_err_samples": 0.02074130043390454
+   },
+   "kerr_passage/bchol_cks_dt0.02": {
+    "name": "kerr_passage/bchol_cks_dt0.02",
+    "meta": {
+     "orbit": "ks_passage",
+     "a": 0.9,
+     "pusher": "bchol",
+     "metric": "cks",
+     "system": "cks",
+     "dt": 0.02,
+     "t_end": 230.0,
+     "lattice_dx": null,
+     "t0_offset": 0.0
+    },
+    "overrides": [
+     "particles/pusher=boris",
+     "particles/triad=cholesky",
+     "particles/metric=kerr_schild",
+     "particles/bh_spin=0.9",
+     "particles/lattice_dx=0.025",
+     "particles/dt=0.02",
+     "time/tlim=230.0",
+     "particles/tolerance=2.0e-14",
+     "particles/max_iterations=200",
+     "particles/hist_dcycle=1",
+     "particles/traj_dcycle=1",
+     "particles/traj_ntrack=1",
+     "time/ndiag=20000",
+     "particles/p0_x1=20.0",
+     "particles/p0_x2=0.9",
+     "particles/p0_x3=1.2246467991473533e-15",
+     "particles/p0_u1=-0.20131797516752664",
+     "particles/p0_u2=0.11258069111746129",
+     "particles/p0_u3=-0.07024955515873393",
+     "particles/p0_m=0.0"
+    ],
+    "input": "problems/kerr/geodesic.athinput",
+    "log": {
+     "ok": true,
+     "log": "runs/geodesic/kerr_passage/bchol_cks_dt0.02/athena.20261113-042857.log",
+     "cpu_time_s": 1.734417,
+     "fatal": false,
+     "nan": false
+    },
+    "hist": {
+     "ncycles": 11500,
+     "hist_every_cycle": true,
+     "n_unconverged_steps": 0,
+     "max_iterations": 7,
+     "mean_iterations": 5.222782608695653,
+     "n_particles_end": 1,
+     "n_escaped": 0,
+     "n_excised": 0
+    },
+    "n_records": 11501,
+    "t_last": 230.0,
+    "max_dE": 1.1968454634452202e-05,
+    "max_dLz": 1.818696452581482e-05,
+    "max_dQ": 1.4112878328544973e-05,
+    "inv0": [
+     0.99738,
+     2.4328,
+     1.974
+    ],
+    "final_pos_err": 0.08285141273774244,
+    "final_pos_err_components": [
+     -0.06615397852443294,
+     0.014767858796198574,
+     0.08285141273774244
+    ],
+    "r_peri": 1.897992317025768,
+    "t_peri": 99.08391796023382,
+    "r_min_sample": 1.897992319042672,
+    "r_final": 23.4175385555202,
+    "final_rthph": [
+     23.4175385555202,
+     1.1770141038922464,
+     2.6637166403724817
+    ],
+    "r_peri_err": -0.00033495667940286467,
+    "t_peri_err": 0.13557082433908363,
+    "max_pos_err_samples": 0.08367740671547352
+   },
+   "kerr_passage/bchol_cks_dt0.04": {
+    "name": "kerr_passage/bchol_cks_dt0.04",
+    "meta": {
+     "orbit": "ks_passage",
+     "a": 0.9,
+     "pusher": "bchol",
+     "metric": "cks",
+     "system": "cks",
+     "dt": 0.04,
+     "t_end": 230.0,
+     "lattice_dx": null,
+     "t0_offset": 0.0
+    },
+    "overrides": [
+     "particles/pusher=boris",
+     "particles/triad=cholesky",
+     "particles/metric=kerr_schild",
+     "particles/bh_spin=0.9",
+     "particles/lattice_dx=0.025",
+     "particles/dt=0.04",
+     "time/tlim=230.0",
+     "particles/tolerance=2.0e-14",
+     "particles/max_iterations=200",
+     "particles/hist_dcycle=1",
+     "particles/traj_dcycle=1",
+     "particles/traj_ntrack=1",
+     "time/ndiag=20000",
+     "particles/p0_x1=20.0",
+     "particles/p0_x2=0.9",
+     "particles/p0_x3=1.2246467991473533e-15",
+     "particles/p0_u1=-0.20131797516752664",
+     "particles/p0_u2=0.11258069111746129",
+     "particles/p0_u3=-0.07024955515873393",
+     "particles/p0_m=0.0"
+    ],
+    "input": "problems/kerr/geodesic.athinput",
+    "log": {
+     "ok": true,
+     "log": "runs/geodesic/kerr_passage/bchol_cks_dt0.04/athena.20261113-042855.log",
+     "cpu_time_s": 0.8915941,
+     "fatal": false,
+     "nan": false
+    },
+    "hist": {
+     "ncycles": 5751,
+     "hist_every_cycle": true,
+     "n_unconverged_steps": 0,
+     "max_iterations": 7,
+     "mean_iterations": 5.828899321857068,
+     "n_particles_end": 1,
+     "n_escaped": 0,
+     "n_excised": 0
+    },
+    "n_records": 5752,
+    "t_last": 230.0,
+    "max_dE": 4.881536388491478e-05,
+    "max_dLz": 7.409170116705208e-05,
+    "max_dQ": 5.747505601518603e-05,
+    "inv0": [
+     0.99738,
+     2.4328,
+     1.974
+    ],
+    "final_pos_err": 0.34302458536896907,
+    "final_pos_err_components": [
+     -0.27671193024133345,
+     0.06621799213389767,
+     0.34302458536896907
+    ],
+    "r_peri": 1.8969565145081584,
+    "t_peri": 99.51693708856783,
+    "r_min_sample": 1.8969565156830672,
+    "r_final": 23.2069806038033,
+    "final_rthph": [
+     23.2069806038033,
+     1.2284642372299455,
+     2.9238898130037074
+    ],
+    "r_peri_err": -0.001370759197012461,
+    "t_peri_err": 0.5685899526730935,
+    "max_pos_err_samples": 0.34675249606626934
+   },
+   "kerr_passage/bchol_cks_dt0.08": {
+    "name": "kerr_passage/bchol_cks_dt0.08",
+    "meta": {
+     "orbit": "ks_passage",
+     "a": 0.9,
+     "pusher": "bchol",
+     "metric": "cks",
+     "system": "cks",
+     "dt": 0.08,
+     "t_end": 230.0,
+     "lattice_dx": null,
+     "t0_offset": 0.0
+    },
+    "overrides": [
+     "particles/pusher=boris",
+     "particles/triad=cholesky",
+     "particles/metric=kerr_schild",
+     "particles/bh_spin=0.9",
+     "particles/lattice_dx=0.025",
+     "particles/dt=0.08",
+     "time/tlim=230.0",
+     "particles/tolerance=2.0e-14",
+     "particles/max_iterations=200",
+     "particles/hist_dcycle=1",
+     "particles/traj_dcycle=1",
+     "particles/traj_ntrack=1",
+     "time/ndiag=20000",
+     "particles/p0_x1=20.0",
+     "particles/p0_x2=0.9",
+     "particles/p0_x3=1.2246467991473533e-15",
+     "particles/p0_u1=-0.20131797516752664",
+     "particles/p0_u2=0.11258069111746129",
+     "particles/p0_u3=-0.07024955515873393",
+     "particles/p0_m=0.0"
+    ],
+    "input": "problems/kerr/geodesic.athinput",
+    "log": {
+     "ok": true,
+     "log": "runs/geodesic/kerr_passage/bchol_cks_dt0.08/athena.20261113-042854.log",
+     "cpu_time_s": 0.4688437,
+     "fatal": false,
+     "nan": false
+    },
+    "hist": {
+     "ncycles": 2875,
+     "hist_every_cycle": true,
+     "n_unconverged_steps": 0,
+     "max_iterations": 9,
+     "mean_iterations": 6.491478260869565,
+     "n_particles_end": 1,
+     "n_escaped": 0,
+     "n_excised": 0
+    },
+    "n_records": 2876,
+    "t_last": 230.0,
+    "max_dE": 0.0002142449096770116,
+    "max_dLz": 0.00032176820827688006,
+    "max_dQ": 0.00025004988964455563,
+    "inv0": [
+     0.99738,
+     2.4328,
+     1.974
+    ],
+    "final_pos_err": 1.6490368273719938,
+    "final_pos_err_components": [
+     -1.3871900192786413,
+     0.40607153721155687,
+     1.6490368273719938
+    ],
+    "r_peri": 1.8921874374184906,
+    "t_peri": 101.83614384353793,
+    "r_min_sample": 1.8921874388721347,
+    "r_final": 22.09650251476599,
+    "final_rthph": [
+     22.09650251476599,
+     1.5683177823076047,
+     -2.053283252172855
+    ],
+    "r_peri_err": -0.006139836286680245,
+    "t_peri_err": 2.88779670764319,
+    "max_pos_err_samples": 1.6531090820437342
    },
    "kerr_passage/bchol_ks_dt0.005": {
     "name": "kerr_passage/bchol_ks_dt0.005",
@@ -151,6 +648,11 @@
     "t_peri": 98.94759516307239,
     "r_min_sample": 1.8983292488176997,
     "r_final": 23.48404635196443,
+    "final_rthph": [
+     23.48404635196443,
+     1.1621666102518478,
+     27.71314709068506
+    ],
     "r_peri_err": 1.974341106603106e-06,
     "t_peri_err": -0.0007519728223428501,
     "max_pos_err_samples": 0.0004639588629018476
@@ -228,6 +730,11 @@
     "t_peri": 98.94533996513071,
     "r_min_sample": 1.8983351730440452,
     "r_final": 23.48510746066596,
+    "final_rthph": [
+     23.48510746066596,
+     1.1619279155589977,
+     27.711769329917306
+    ],
     "r_peri_err": 7.89644151621971e-06,
     "t_peri_err": -0.0030071707640217937,
     "max_pos_err_samples": 0.0018554809254638371
@@ -305,6 +812,11 @@
     "t_peri": 98.93632993074864,
     "r_min_sample": 1.8983588466086392,
     "r_final": 23.48934674667664,
+    "final_rthph": [
+     23.48934674667664,
+     1.1609762768336778,
+     27.706263302101885
+    ],
     "r_peri_err": 3.157110466345259e-05,
     "t_peri_err": -0.012017205146094057,
     "max_pos_err_samples": 0.007416278462656578
@@ -382,6 +894,11 @@
     "t_peri": 98.90046073607363,
     "r_min_sample": 1.8984533758259456,
     "r_final": 23.50622203768353,
+    "final_rthph": [
+     23.50622203768353,
+     1.1572197207633352,
+     27.684319005893215
+    ],
     "r_peri_err": 0.0001260509418721245,
     "t_peri_err": -0.04788639982110965,
     "max_pos_err_samples": 0.029575197514859042
@@ -459,9 +976,178 @@
     "t_peri": 98.75964873865523,
     "r_min_sample": 1.8988280248025577,
     "r_final": 23.57244740415707,
+    "final_rthph": [
+     23.57244740415707,
+     1.142977950269284,
+     27.597791294116035
+    ],
     "r_peri_err": 0.0005005372171691391,
     "t_peri_err": -0.18869839723950577,
     "max_pos_err_samples": 0.11688773785750683
+   },
+   "kerr_passage/bchol_lat_dt0.00125": {
+    "name": "kerr_passage/bchol_lat_dt0.00125",
+    "meta": {
+     "orbit": "ks_passage",
+     "a": 0.9,
+     "pusher": "bchol",
+     "metric": "lat",
+     "system": "cks",
+     "dt": 0.00125,
+     "t_end": 230.0,
+     "lattice_dx": 0.025,
+     "t0_offset": 0.0
+    },
+    "overrides": [
+     "particles/pusher=boris",
+     "particles/triad=cholesky",
+     "particles/metric=lattice",
+     "particles/bh_spin=0.9",
+     "particles/lattice_dx=0.025",
+     "particles/dt=0.00125",
+     "time/tlim=230.0",
+     "particles/tolerance=2.0e-14",
+     "particles/max_iterations=200",
+     "particles/hist_dcycle=1",
+     "particles/traj_dcycle=1",
+     "particles/traj_ntrack=1",
+     "time/ndiag=20000",
+     "particles/p0_x1=20.0",
+     "particles/p0_x2=0.9",
+     "particles/p0_x3=1.2246467991473533e-15",
+     "particles/p0_u1=-0.20131797516752664",
+     "particles/p0_u2=0.11258069111746129",
+     "particles/p0_u3=-0.07024955515873393",
+     "particles/p0_m=0.0"
+    ],
+    "input": "problems/kerr/geodesic.athinput",
+    "log": {
+     "ok": true,
+     "log": "runs/geodesic/kerr_passage/bchol_lat_dt0.00125/athena.20261113-043606.log",
+     "cpu_time_s": 102.2406,
+     "fatal": false,
+     "nan": false
+    },
+    "hist": {
+     "ncycles": 184001,
+     "hist_every_cycle": true,
+     "n_unconverged_steps": 0,
+     "max_iterations": 5,
+     "mean_iterations": 3.611964065412688,
+     "n_particles_end": 1,
+     "n_escaped": 0,
+     "n_excised": 0
+    },
+    "n_records": 184002,
+    "t_last": 230.0,
+    "max_dE": 8.674404849238277e-07,
+    "max_dLz": 4.413000897149502e-06,
+    "max_dQ": 5.148083064132816e-05,
+    "inv0": [
+     0.99738,
+     2.4328,
+     1.974
+    ],
+    "final_pos_err": 5.499903900485492e-05,
+    "final_pos_err_components": [
+     5.499903900485492e-05,
+     -3.414745940233388e-06,
+     -2.705891711229924e-05
+    ],
+    "r_peri": 1.8983263336617755,
+    "t_peri": 98.9496547736466,
+    "r_min_sample": 1.8983263336770337,
+    "r_final": 23.483747533083637,
+    "final_rthph": [
+     23.483747533083637,
+     1.1622428303501076,
+     2.580838168717627
+    ],
+    "r_peri_err": -9.400433953477005e-07,
+    "t_peri_err": 0.0013076377518643767,
+    "max_pos_err_samples": 5.625168029510519e-05
+   },
+   "kerr_passage/bchol_lat_dt0.0025": {
+    "name": "kerr_passage/bchol_lat_dt0.0025",
+    "meta": {
+     "orbit": "ks_passage",
+     "a": 0.9,
+     "pusher": "bchol",
+     "metric": "lat",
+     "system": "cks",
+     "dt": 0.0025,
+     "t_end": 230.0,
+     "lattice_dx": 0.025,
+     "t0_offset": 0.0
+    },
+    "overrides": [
+     "particles/pusher=boris",
+     "particles/triad=cholesky",
+     "particles/metric=lattice",
+     "particles/bh_spin=0.9",
+     "particles/lattice_dx=0.025",
+     "particles/dt=0.0025",
+     "time/tlim=230.0",
+     "particles/tolerance=2.0e-14",
+     "particles/max_iterations=200",
+     "particles/hist_dcycle=1",
+     "particles/traj_dcycle=1",
+     "particles/traj_ntrack=1",
+     "time/ndiag=20000",
+     "particles/p0_x1=20.0",
+     "particles/p0_x2=0.9",
+     "particles/p0_x3=1.2246467991473533e-15",
+     "particles/p0_u1=-0.20131797516752664",
+     "particles/p0_u2=0.11258069111746129",
+     "particles/p0_u3=-0.07024955515873393",
+     "particles/p0_m=0.0"
+    ],
+    "input": "problems/kerr/geodesic.athinput",
+    "log": {
+     "ok": true,
+     "log": "runs/geodesic/kerr_passage/bchol_lat_dt0.0025/athena.20261113-043510.log",
+     "cpu_time_s": 54.89826,
+     "fatal": false,
+     "nan": false
+    },
+    "hist": {
+     "ncycles": 92001,
+     "hist_every_cycle": true,
+     "n_unconverged_steps": 0,
+     "max_iterations": 5,
+     "mean_iterations": 4.074955707003185,
+     "n_particles_end": 1,
+     "n_escaped": 0,
+     "n_excised": 0
+    },
+    "n_records": 92002,
+    "t_last": 230.0,
+    "max_dE": 1.0290655911764279e-06,
+    "max_dLz": 4.007045474961256e-06,
+    "max_dQ": 5.1750661694135334e-05,
+    "inv0": [
+     0.99738,
+     2.4328,
+     1.974
+    ],
+    "final_pos_err": 0.00102616746127282,
+    "final_pos_err_components": [
+     -0.0008068291781633263,
+     0.0001799769788750627,
+     0.00102616746127282
+    ],
+    "r_peri": 1.898322267472034,
+    "t_peri": 98.9514163934363,
+    "r_min_sample": 1.898322267620198,
+    "r_final": 23.48288570486647,
+    "final_rthph": [
+     23.48288570486647,
+     1.1624262220749229,
+     2.5818913950960125
+    ],
+    "r_peri_err": -5.006233136928273e-06,
+    "t_peri_err": 0.003069257541568504,
+    "max_pos_err_samples": 0.001036805194807755
    },
    "kerr_passage/bchol_lat_dt0.005": {
     "name": "kerr_passage/bchol_lat_dt0.005",
@@ -536,6 +1222,11 @@
     "t_peri": 98.95838792917147,
     "r_min_sample": 1.8983059321934992,
     "r_final": 23.479535473953213,
+    "final_rthph": [
+     23.479535473953213,
+     1.1631386746166437,
+     2.5859776385545783
+    ],
     "r_peri_err": -2.1341845263034287e-05,
     "t_peri_err": 0.010040793276729687,
     "max_pos_err_samples": 0.0051611168461320744
@@ -613,6 +1304,11 @@
     "t_peri": 98.98131068406097,
     "r_min_sample": 1.898247904472218,
     "r_final": 23.46867611508457,
+    "final_rthph": [
+     23.46867611508457,
+     1.1655737631781122,
+     2.599891718214996
+    ],
     "r_peri_err": -7.936946351749796e-05,
     "t_peri_err": 0.03296354816623648,
     "max_pos_err_samples": 0.019213537751127774,
@@ -692,9 +1388,260 @@
     "t_peri": 99.08206271897704,
     "r_min_sample": 1.897998852426636,
     "r_final": 23.41936213977844,
+    "final_rthph": [
+     23.41936213977844,
+     1.1766162414219723,
+     2.661419542088129
+    ],
     "r_peri_err": -0.00032842185950099356,
     "t_peri_err": 0.13371558308230647,
     "max_pos_err_samples": 0.08136100495751464
+   },
+   "kerr_passage/bsym_cks_dt0.00125": {
+    "name": "kerr_passage/bsym_cks_dt0.00125",
+    "meta": {
+     "orbit": "ks_passage",
+     "a": 0.9,
+     "pusher": "bsym",
+     "metric": "cks",
+     "system": "cks",
+     "dt": 0.00125,
+     "t_end": 230.0,
+     "lattice_dx": null,
+     "t0_offset": 0.0
+    },
+    "overrides": [
+     "particles/pusher=boris",
+     "particles/triad=symmetric",
+     "particles/metric=kerr_schild",
+     "particles/bh_spin=0.9",
+     "particles/lattice_dx=0.025",
+     "particles/dt=0.00125",
+     "time/tlim=230.0",
+     "particles/tolerance=2.0e-14",
+     "particles/max_iterations=200",
+     "particles/hist_dcycle=1",
+     "particles/traj_dcycle=1",
+     "particles/traj_ntrack=1",
+     "time/ndiag=20000",
+     "particles/p0_x1=20.0",
+     "particles/p0_x2=0.9",
+     "particles/p0_x3=1.2246467991473533e-15",
+     "particles/p0_u1=-0.20131797516752664",
+     "particles/p0_u2=0.11258069111746129",
+     "particles/p0_u3=-0.07024955515873393",
+     "particles/p0_m=0.0"
+    ],
+    "input": "problems/kerr/geodesic.athinput",
+    "log": {
+     "ok": true,
+     "log": "runs/geodesic/kerr_passage/bsym_cks_dt0.00125/athena.20261113-042819.log",
+     "cpu_time_s": 33.62228,
+     "fatal": false,
+     "nan": false
+    },
+    "hist": {
+     "ncycles": 184001,
+     "hist_every_cycle": true,
+     "n_unconverged_steps": 0,
+     "max_iterations": 4,
+     "mean_iterations": 3.5967467568111045,
+     "n_particles_end": 1,
+     "n_escaped": 0,
+     "n_excised": 0
+    },
+    "n_records": 184002,
+    "t_last": 230.0,
+    "max_dE": 1.2658937622881316e-08,
+    "max_dLz": 3.27009072748792e-09,
+    "max_dQ": 1.655834436130393e-08,
+    "inv0": [
+     0.99738,
+     2.4328,
+     1.974
+    ],
+    "final_pos_err": 0.00030689197025424164,
+    "final_pos_err_components": [
+     -0.00023738428632569253,
+     5.311345349934271e-05,
+     0.00030689197025424164
+    ],
+    "r_peri": 1.8983260027011655,
+    "t_peri": 98.94885105997481,
+    "r_min_sample": 1.8983260027025275,
+    "r_final": 23.483455149758306,
+    "final_rthph": [
+     23.483455149758306,
+     1.1622993585495471,
+     2.581172119604993
+    ],
+    "r_peri_err": -1.271004005376497e-06,
+    "t_peri_err": 0.0005039240800783773,
+    "max_pos_err_samples": 0.00030991631290433475
+   },
+   "kerr_passage/bsym_cks_dt0.0025": {
+    "name": "kerr_passage/bsym_cks_dt0.0025",
+    "meta": {
+     "orbit": "ks_passage",
+     "a": 0.9,
+     "pusher": "bsym",
+     "metric": "cks",
+     "system": "cks",
+     "dt": 0.0025,
+     "t_end": 230.0,
+     "lattice_dx": null,
+     "t0_offset": 0.0
+    },
+    "overrides": [
+     "particles/pusher=boris",
+     "particles/triad=symmetric",
+     "particles/metric=kerr_schild",
+     "particles/bh_spin=0.9",
+     "particles/lattice_dx=0.025",
+     "particles/dt=0.0025",
+     "time/tlim=230.0",
+     "particles/tolerance=2.0e-14",
+     "particles/max_iterations=200",
+     "particles/hist_dcycle=1",
+     "particles/traj_dcycle=1",
+     "particles/traj_ntrack=1",
+     "time/ndiag=20000",
+     "particles/p0_x1=20.0",
+     "particles/p0_x2=0.9",
+     "particles/p0_x3=1.2246467991473533e-15",
+     "particles/p0_u1=-0.20131797516752664",
+     "particles/p0_u2=0.11258069111746129",
+     "particles/p0_u3=-0.07024955515873393",
+     "particles/p0_m=0.0"
+    ],
+    "input": "problems/kerr/geodesic.athinput",
+    "log": {
+     "ok": true,
+     "log": "runs/geodesic/kerr_passage/bsym_cks_dt0.0025/athena.20261113-042801.log",
+     "cpu_time_s": 17.68779,
+     "fatal": false,
+     "nan": false
+    },
+    "hist": {
+     "ncycles": 92001,
+     "hist_every_cycle": true,
+     "n_unconverged_steps": 0,
+     "max_iterations": 5,
+     "mean_iterations": 4.090064238432191,
+     "n_particles_end": 1,
+     "n_escaped": 0,
+     "n_excised": 0
+    },
+    "n_records": 92002,
+    "t_last": 230.0,
+    "max_dE": 5.066028441894474e-08,
+    "max_dLz": 1.3130451455926522e-08,
+    "max_dQ": 6.632455633898785e-08,
+    "inv0": [
+     0.99738,
+     2.4328,
+     1.974
+    ],
+    "final_pos_err": 0.0012272537112920645,
+    "final_pos_err_components": [
+     -0.0009493251425993776,
+     0.0002124667816627568,
+     0.0012272537112920645
+    ],
+    "r_peri": 1.8983221912645085,
+    "t_peri": 98.95036239926294,
+    "r_min_sample": 1.8983221912820218,
+    "r_final": 23.482743208902033,
+    "final_rthph": [
+     23.482743208902033,
+     1.1624587118777105,
+     2.5820924813460318
+    ],
+    "r_peri_err": -5.082440662329546e-06,
+    "t_peri_err": 0.002015263368207343,
+    "max_pos_err_samples": 0.001239354698181927
+   },
+   "kerr_passage/bsym_cks_dt0.005": {
+    "name": "kerr_passage/bsym_cks_dt0.005",
+    "meta": {
+     "orbit": "ks_passage",
+     "a": 0.9,
+     "pusher": "bsym",
+     "metric": "cks",
+     "system": "cks",
+     "dt": 0.005,
+     "t_end": 230.0,
+     "lattice_dx": null,
+     "t0_offset": 0.0
+    },
+    "overrides": [
+     "particles/pusher=boris",
+     "particles/triad=symmetric",
+     "particles/metric=kerr_schild",
+     "particles/bh_spin=0.9",
+     "particles/lattice_dx=0.025",
+     "particles/dt=0.005",
+     "time/tlim=230.0",
+     "particles/tolerance=2.0e-14",
+     "particles/max_iterations=200",
+     "particles/hist_dcycle=1",
+     "particles/traj_dcycle=1",
+     "particles/traj_ntrack=1",
+     "time/ndiag=20000",
+     "particles/p0_x1=20.0",
+     "particles/p0_x2=0.9",
+     "particles/p0_x3=1.2246467991473533e-15",
+     "particles/p0_u1=-0.20131797516752664",
+     "particles/p0_u2=0.11258069111746129",
+     "particles/p0_u3=-0.07024955515873393",
+     "particles/p0_m=0.0"
+    ],
+    "input": "problems/kerr/geodesic.athinput",
+    "log": {
+     "ok": true,
+     "log": "runs/geodesic/kerr_passage/bsym_cks_dt0.005/athena.20261113-042751.log",
+     "cpu_time_s": 9.155009,
+     "fatal": false,
+     "nan": false
+    },
+    "hist": {
+     "ncycles": 46001,
+     "hist_every_cycle": true,
+     "n_unconverged_steps": 0,
+     "max_iterations": 5,
+     "mean_iterations": 4.411121497358753,
+     "n_particles_end": 1,
+     "n_escaped": 0,
+     "n_excised": 0
+    },
+    "n_records": 46002,
+    "t_last": 230.0,
+    "max_dE": 2.026568286007799e-07,
+    "max_dLz": 5.254592460660228e-08,
+    "max_dQ": 2.6535736368566815e-07,
+    "inv0": [
+     0.99738,
+     2.4328,
+     1.974
+    ],
+    "final_pos_err": 0.004911202035042805,
+    "final_pos_err_components": [
+     -0.0037995947650628636,
+     0.00085132385933262,
+     0.004911202035042805
+    ],
+    "r_peri": 1.8983069383073201,
+    "t_peri": 98.95641302314048,
+    "r_min_sample": 1.8983069385734015,
+    "r_final": 23.47989293927957,
+    "final_rthph": [
+     23.47989293927957,
+     1.1630975689553804,
+     2.585776429669782
+    ],
+    "r_peri_err": -2.0335397850734793e-05,
+    "t_peri_err": 0.008065887245749082,
+    "max_pos_err_samples": 0.00495973293879004
    },
    "kerr_passage/bsym_cks_dt0.01": {
     "name": "kerr_passage/bsym_cks_dt0.01",
@@ -769,9 +1716,260 @@
     "t_peri": 98.98069362056683,
     "r_min_sample": 1.8982458279258112,
     "r_final": 23.46845474070579,
+    "final_rthph": [
+     23.46845474070579,
+     1.1656754805000729,
+     2.6005483903751667
+    ],
     "r_peri_err": -8.144584331004623e-05,
     "t_peri_err": 0.03234648467208956,
     "max_pos_err_samples": 0.019879322687046397
+   },
+   "kerr_passage/bsym_cks_dt0.02": {
+    "name": "kerr_passage/bsym_cks_dt0.02",
+    "meta": {
+     "orbit": "ks_passage",
+     "a": 0.9,
+     "pusher": "bsym",
+     "metric": "cks",
+     "system": "cks",
+     "dt": 0.02,
+     "t_end": 230.0,
+     "lattice_dx": null,
+     "t0_offset": 0.0
+    },
+    "overrides": [
+     "particles/pusher=boris",
+     "particles/triad=symmetric",
+     "particles/metric=kerr_schild",
+     "particles/bh_spin=0.9",
+     "particles/lattice_dx=0.025",
+     "particles/dt=0.02",
+     "time/tlim=230.0",
+     "particles/tolerance=2.0e-14",
+     "particles/max_iterations=200",
+     "particles/hist_dcycle=1",
+     "particles/traj_dcycle=1",
+     "particles/traj_ntrack=1",
+     "time/ndiag=20000",
+     "particles/p0_x1=20.0",
+     "particles/p0_x2=0.9",
+     "particles/p0_x3=1.2246467991473533e-15",
+     "particles/p0_u1=-0.20131797516752664",
+     "particles/p0_u2=0.11258069111746129",
+     "particles/p0_u3=-0.07024955515873393",
+     "particles/p0_m=0.0"
+    ],
+    "input": "problems/kerr/geodesic.athinput",
+    "log": {
+     "ok": true,
+     "log": "runs/geodesic/kerr_passage/bsym_cks_dt0.02/athena.20261113-042747.log",
+     "cpu_time_s": 2.625255,
+     "fatal": false,
+     "nan": false
+    },
+    "hist": {
+     "ncycles": 11500,
+     "hist_every_cycle": true,
+     "n_unconverged_steps": 0,
+     "max_iterations": 6,
+     "mean_iterations": 5.195304347826087,
+     "n_particles_end": 1,
+     "n_escaped": 0,
+     "n_excised": 0
+    },
+    "n_records": 11501,
+    "t_last": 230.0,
+    "max_dE": 3.243948349561683e-06,
+    "max_dLz": 8.411779439172559e-07,
+    "max_dQ": 4.251319855198367e-06,
+    "inv0": [
+     0.99738,
+     2.4328,
+     1.974
+    ],
+    "final_pos_err": 0.07935740345843811,
+    "final_pos_err_components": [
+     -0.06159421899826256,
+     0.014105133599447317,
+     0.07935740345843811
+    ],
+    "r_peri": 1.8979997925579228,
+    "t_peri": 99.07908622431964,
+    "r_min_sample": 1.8979997926677612,
+    "r_final": 23.42209831504637,
+    "final_rthph": [
+     23.42209831504637,
+     1.176351378695495,
+     2.6602226310931787
+    ],
+    "r_peri_err": -0.0003274811472480099,
+    "t_peri_err": 0.13073908842490312,
+    "max_pos_err_samples": 0.08017344389842407
+   },
+   "kerr_passage/bsym_cks_dt0.04": {
+    "name": "kerr_passage/bsym_cks_dt0.04",
+    "meta": {
+     "orbit": "ks_passage",
+     "a": 0.9,
+     "pusher": "bsym",
+     "metric": "cks",
+     "system": "cks",
+     "dt": 0.04,
+     "t_end": 230.0,
+     "lattice_dx": null,
+     "t0_offset": 0.0
+    },
+    "overrides": [
+     "particles/pusher=boris",
+     "particles/triad=symmetric",
+     "particles/metric=kerr_schild",
+     "particles/bh_spin=0.9",
+     "particles/lattice_dx=0.025",
+     "particles/dt=0.04",
+     "time/tlim=230.0",
+     "particles/tolerance=2.0e-14",
+     "particles/max_iterations=200",
+     "particles/hist_dcycle=1",
+     "particles/traj_dcycle=1",
+     "particles/traj_ntrack=1",
+     "time/ndiag=20000",
+     "particles/p0_x1=20.0",
+     "particles/p0_x2=0.9",
+     "particles/p0_x3=1.2246467991473533e-15",
+     "particles/p0_u1=-0.20131797516752664",
+     "particles/p0_u2=0.11258069111746129",
+     "particles/p0_u3=-0.07024955515873393",
+     "particles/p0_m=0.0"
+    ],
+    "input": "problems/kerr/geodesic.athinput",
+    "log": {
+     "ok": true,
+     "log": "runs/geodesic/kerr_passage/bsym_cks_dt0.04/athena.20261113-042745.log",
+     "cpu_time_s": 1.286555,
+     "fatal": false,
+     "nan": false
+    },
+    "hist": {
+     "ncycles": 5751,
+     "hist_every_cycle": true,
+     "n_unconverged_steps": 0,
+     "max_iterations": 7,
+     "mean_iterations": 5.839853938445488,
+     "n_particles_end": 1,
+     "n_escaped": 0,
+     "n_excised": 0
+    },
+    "n_records": 5752,
+    "t_last": 230.0,
+    "max_dE": 1.299387402537838e-05,
+    "max_dLz": 3.3697048847046146e-06,
+    "max_dQ": 1.707582515924395e-05,
+    "inv0": [
+     0.99738,
+     2.4328,
+     1.974
+    ],
+    "final_pos_err": 0.3280967759490352,
+    "final_pos_err_components": [
+     -0.25743166194358835,
+     0.0629520304013389,
+     0.3280967759490352
+    ],
+    "r_peri": 1.896988679869788,
+    "t_peri": 99.4945701639922,
+    "r_min_sample": 1.8969887065930418,
+    "r_final": 23.226260872101044,
+    "final_rthph": [
+     23.226260872101044,
+     1.2251982754973867,
+     2.9089620035837735
+    ],
+    "r_peri_err": -0.0013385938353829285,
+    "t_peri_err": 0.546223028097458,
+    "max_pos_err_samples": 0.3317640413856324
+   },
+   "kerr_passage/bsym_cks_dt0.08": {
+    "name": "kerr_passage/bsym_cks_dt0.08",
+    "meta": {
+     "orbit": "ks_passage",
+     "a": 0.9,
+     "pusher": "bsym",
+     "metric": "cks",
+     "system": "cks",
+     "dt": 0.08,
+     "t_end": 230.0,
+     "lattice_dx": null,
+     "t0_offset": 0.0
+    },
+    "overrides": [
+     "particles/pusher=boris",
+     "particles/triad=symmetric",
+     "particles/metric=kerr_schild",
+     "particles/bh_spin=0.9",
+     "particles/lattice_dx=0.025",
+     "particles/dt=0.08",
+     "time/tlim=230.0",
+     "particles/tolerance=2.0e-14",
+     "particles/max_iterations=200",
+     "particles/hist_dcycle=1",
+     "particles/traj_dcycle=1",
+     "particles/traj_ntrack=1",
+     "time/ndiag=20000",
+     "particles/p0_x1=20.0",
+     "particles/p0_x2=0.9",
+     "particles/p0_x3=1.2246467991473533e-15",
+     "particles/p0_u1=-0.20131797516752664",
+     "particles/p0_u2=0.11258069111746129",
+     "particles/p0_u3=-0.07024955515873393",
+     "particles/p0_m=0.0"
+    ],
+    "input": "problems/kerr/geodesic.athinput",
+    "log": {
+     "ok": true,
+     "log": "runs/geodesic/kerr_passage/bsym_cks_dt0.08/athena.20261113-042743.log",
+     "cpu_time_s": 0.6858922,
+     "fatal": false,
+     "nan": false
+    },
+    "hist": {
+     "ncycles": 2875,
+     "hist_every_cycle": true,
+     "n_unconverged_steps": 0,
+     "max_iterations": 8,
+     "mean_iterations": 6.444521739130435,
+     "n_particles_end": 1,
+     "n_escaped": 0,
+     "n_excised": 0
+    },
+    "n_records": 2876,
+    "t_last": 230.0,
+    "max_dE": 5.22653323686206e-05,
+    "max_dLz": 1.355886332674131e-05,
+    "max_dQ": 6.945096376789033e-05,
+    "inv0": [
+     0.99738,
+     2.4328,
+     1.974
+    ],
+    "final_pos_err": 1.5603563119694996,
+    "final_pos_err_components": [
+     -1.281260349285791,
+     0.3799761615195967,
+     1.5603563119694996
+    ],
+    "r_peri": 1.8923801438066314,
+    "t_peri": 101.66075732968928,
+    "r_min_sample": 1.892380180826257,
+    "r_final": 22.20243218475884,
+    "final_rthph": [
+     22.20243218475884,
+     1.5422224066156445,
+     -2.1419637675753482
+    ],
+    "r_peri_err": -0.005947129898539405,
+    "t_peri_err": 2.7124101937945397,
+    "max_pos_err_samples": 1.5661308315786684
    },
    "kerr_passage/bsym_ks_dt0.005": {
     "name": "kerr_passage/bsym_ks_dt0.005",
@@ -846,6 +2044,11 @@
     "t_peri": 98.9477077249879,
     "r_min_sample": 1.8983289543882245,
     "r_final": 23.48399400277781,
+    "final_rthph": [
+     23.48399400277781,
+     1.1621781338991444,
+     27.71321394254926
+    ],
     "r_peri_err": 1.6799821651591884e-06,
     "t_peri_err": -0.0006394109068423859,
     "max_pos_err_samples": 0.00039646509512536454
@@ -923,6 +2126,11 @@
     "t_peri": 98.94579000622655,
     "r_min_sample": 1.898333995342406,
     "r_final": 23.484898158710564,
+    "final_rthph": [
+     23.484898158710564,
+     1.1619739533114524,
+     27.712036643977275
+    ],
     "r_peri_err": 6.719272592770054e-06,
     "t_peri_err": -0.0025571296681903277,
     "max_pos_err_samples": 0.0015856041901827211,
@@ -1002,6 +2210,11 @@
     "t_peri": 98.93812688429715,
     "r_min_sample": 1.8983541406220805,
     "r_final": 23.48851100837878,
+    "final_rthph": [
+     23.48851100837878,
+     1.1611595297234658,
+     27.707331123463653
+    ],
     "r_peri_err": 2.6866448441742463e-05,
     "t_peri_err": -0.010220251597587549,
     "max_pos_err_samples": 0.006338285373171715
@@ -1079,6 +2292,11 @@
     "t_peri": 98.90759759299499,
     "r_min_sample": 1.898434590543359,
     "r_final": 23.502902395963606,
+    "final_rthph": [
+     23.502902395963606,
+     1.1579384542669433,
+     27.688567496381935
+    ],
     "r_peri_err": 0.00010729623432470525,
     "t_peri_err": -0.040749542899746416,
     "max_pos_err_samples": 0.025287280365557052
@@ -1156,9 +2374,178 @@
     "t_peri": 98.78740746428547,
     "r_min_sample": 1.898753810044037,
     "r_final": 23.559529121177565,
+    "final_rthph": [
+     23.559529121177565,
+     1.1456302993222027,
+     27.61443081303967
+    ],
     "r_peri_err": 0.0004265148301676458,
     "t_peri_err": -0.16093967160927036,
     "max_pos_err_samples": 0.1001117052706526
+   },
+   "kerr_passage/bsym_lat_dt0.00125": {
+    "name": "kerr_passage/bsym_lat_dt0.00125",
+    "meta": {
+     "orbit": "ks_passage",
+     "a": 0.9,
+     "pusher": "bsym",
+     "metric": "lat",
+     "system": "cks",
+     "dt": 0.00125,
+     "t_end": 230.0,
+     "lattice_dx": 0.025,
+     "t0_offset": 0.0
+    },
+    "overrides": [
+     "particles/pusher=boris",
+     "particles/triad=symmetric",
+     "particles/metric=lattice",
+     "particles/bh_spin=0.9",
+     "particles/lattice_dx=0.025",
+     "particles/dt=0.00125",
+     "time/tlim=230.0",
+     "particles/tolerance=2.0e-14",
+     "particles/max_iterations=200",
+     "particles/hist_dcycle=1",
+     "particles/traj_dcycle=1",
+     "particles/traj_ntrack=1",
+     "time/ndiag=20000",
+     "particles/p0_x1=20.0",
+     "particles/p0_x2=0.9",
+     "particles/p0_x3=1.2246467991473533e-15",
+     "particles/p0_u1=-0.20131797516752664",
+     "particles/p0_u2=0.11258069111746129",
+     "particles/p0_u3=-0.07024955515873393",
+     "particles/p0_m=0.0"
+    ],
+    "input": "problems/kerr/geodesic.athinput",
+    "log": {
+     "ok": true,
+     "log": "runs/geodesic/kerr_passage/bsym_lat_dt0.00125/athena.20261113-043318.log",
+     "cpu_time_s": 111.0678,
+     "fatal": false,
+     "nan": false
+    },
+    "hist": {
+     "ncycles": 184001,
+     "hist_every_cycle": true,
+     "n_unconverged_steps": 0,
+     "max_iterations": 4,
+     "mean_iterations": 3.5968282781071843,
+     "n_particles_end": 1,
+     "n_escaped": 0,
+     "n_excised": 0
+    },
+    "n_records": 184002,
+    "t_last": 230.0,
+    "max_dE": 8.769872058654395e-07,
+    "max_dLz": 4.440045989538201e-06,
+    "max_dQ": 5.1451712270999254e-05,
+    "inv0": [
+     0.99738,
+     2.4328,
+     1.974
+    ],
+    "final_pos_err": 6.52788502719659e-05,
+    "final_pos_err_components": [
+     6.52788502719659e-05,
+     -4.89595053676517e-06,
+     -3.527974981309967e-05
+    ],
+    "r_peri": 1.8983263503071006,
+    "t_peri": 98.9496454333242,
+    "r_min_sample": 1.8983263503231957,
+    "r_final": 23.483757812894904,
+    "final_rthph": [
+     23.483757812894904,
+     1.162241349145511,
+     2.5808299478849253
+    ],
+    "r_peri_err": -9.233980702294531e-07,
+    "t_peri_err": 0.0012982974294715177,
+    "max_pos_err_samples": 6.543459729613232e-05
+   },
+   "kerr_passage/bsym_lat_dt0.0025": {
+    "name": "kerr_passage/bsym_lat_dt0.0025",
+    "meta": {
+     "orbit": "ks_passage",
+     "a": 0.9,
+     "pusher": "bsym",
+     "metric": "lat",
+     "system": "cks",
+     "dt": 0.0025,
+     "t_end": 230.0,
+     "lattice_dx": 0.025,
+     "t0_offset": 0.0
+    },
+    "overrides": [
+     "particles/pusher=boris",
+     "particles/triad=symmetric",
+     "particles/metric=lattice",
+     "particles/bh_spin=0.9",
+     "particles/lattice_dx=0.025",
+     "particles/dt=0.0025",
+     "time/tlim=230.0",
+     "particles/tolerance=2.0e-14",
+     "particles/max_iterations=200",
+     "particles/hist_dcycle=1",
+     "particles/traj_dcycle=1",
+     "particles/traj_ntrack=1",
+     "time/ndiag=20000",
+     "particles/p0_x1=20.0",
+     "particles/p0_x2=0.9",
+     "particles/p0_x3=1.2246467991473533e-15",
+     "particles/p0_u1=-0.20131797516752664",
+     "particles/p0_u2=0.11258069111746129",
+     "particles/p0_u3=-0.07024955515873393",
+     "particles/p0_m=0.0"
+    ],
+    "input": "problems/kerr/geodesic.athinput",
+    "log": {
+     "ok": true,
+     "log": "runs/geodesic/kerr_passage/bsym_lat_dt0.0025/athena.20261113-043217.log",
+     "cpu_time_s": 60.15154,
+     "fatal": false,
+     "nan": false
+    },
+    "hist": {
+     "ncycles": 92001,
+     "hist_every_cycle": true,
+     "n_unconverged_steps": 0,
+     "max_iterations": 5,
+     "mean_iterations": 4.090151194008761,
+     "n_particles_end": 1,
+     "n_escaped": 0,
+     "n_excised": 0
+    },
+    "n_records": 92002,
+    "t_last": 230.0,
+    "max_dE": 8.655393705316636e-07,
+    "max_dLz": 4.236900421101452e-06,
+    "max_dQ": 5.1545214149421905e-05,
+    "inv0": [
+     0.99738,
+     2.4328,
+     1.974
+    ],
+    "final_pos_err": 0.0009687488174314751,
+    "final_pos_err_components": [
+     -0.0007332288152674948,
+     0.0001695906220378074,
+     0.0009687488174314751
+    ],
+    "r_peri": 1.8983223469821162,
+    "t_peri": 98.9513428425935,
+    "r_min_sample": 1.8983223471510806,
+    "r_final": 23.482959305229365,
+    "final_rthph": [
+     23.482959305229365,
+     1.1624158357180856,
+     2.58183397645217
+    ],
+    "r_peri_err": -4.926723054632376e-06,
+    "t_peri_err": 0.0029957066987691405,
+    "max_pos_err_samples": 0.0009792573041131902
    },
    "kerr_passage/bsym_lat_dt0.005": {
     "name": "kerr_passage/bsym_lat_dt0.005",
@@ -1233,6 +2620,11 @@
     "t_peri": 98.95811816206744,
     "r_min_sample": 1.8983062766371144,
     "r_final": 23.47984526917084,
+    "final_rthph": [
+     23.47984526917084,
+     1.1631016810352859,
+     2.5857761001865254
+    ],
     "r_peri_err": -2.099752267104016e-05,
     "t_peri_err": 0.009771026172700203,
     "max_pos_err_samples": 0.00495985073851557
@@ -1310,6 +2702,11 @@
     "t_peri": 98.97990229233876,
     "r_min_sample": 1.898250508552639,
     "r_final": 23.470004857991803,
+    "final_rthph": [
+     23.470004857991803,
+     1.1653836107087603,
+     2.5988471743309027
+    ],
     "r_peri_err": -7.676515381360716e-05,
     "t_peri_err": 0.0315551564440284,
     "max_pos_err_samples": 0.018166204628208504
@@ -1387,9 +2784,257 @@
     "t_peri": 99.07819569369613,
     "r_min_sample": 1.8980049047261605,
     "r_final": 23.423740347694622,
+    "final_rthph": [
+     23.423740347694622,
+     1.1760494516126747,
+     2.6584435578602954
+    ],
     "r_peri_err": -0.00032236942390606593,
     "t_peri_err": 0.12984855780139526,
     "max_pos_err_samples": 0.07838398635246335
+   },
+   "kerr_passage/mid_cks_dt0.00125": {
+    "name": "kerr_passage/mid_cks_dt0.00125",
+    "meta": {
+     "orbit": "ks_passage",
+     "a": 0.9,
+     "pusher": "mid",
+     "metric": "cks",
+     "system": "cks",
+     "dt": 0.00125,
+     "t_end": 230.0,
+     "lattice_dx": null,
+     "t0_offset": 0.0
+    },
+    "overrides": [
+     "particles/pusher=midpoint",
+     "particles/metric=kerr_schild",
+     "particles/bh_spin=0.9",
+     "particles/lattice_dx=0.025",
+     "particles/dt=0.00125",
+     "time/tlim=230.0",
+     "particles/tolerance=2.0e-14",
+     "particles/max_iterations=200",
+     "particles/hist_dcycle=1",
+     "particles/traj_dcycle=1",
+     "particles/traj_ntrack=1",
+     "time/ndiag=20000",
+     "particles/p0_x1=20.0",
+     "particles/p0_x2=0.9",
+     "particles/p0_x3=1.2246467991473533e-15",
+     "particles/p0_u1=-0.20131797516752664",
+     "particles/p0_u2=0.11258069111746129",
+     "particles/p0_u3=-0.07024955515873393",
+     "particles/p0_m=0.0"
+    ],
+    "input": "problems/kerr/geodesic.athinput",
+    "log": {
+     "ok": true,
+     "log": "runs/geodesic/kerr_passage/mid_cks_dt0.00125/athena.20261113-042720.log",
+     "cpu_time_s": 21.32798,
+     "fatal": false,
+     "nan": false
+    },
+    "hist": {
+     "ncycles": 184001,
+     "hist_every_cycle": true,
+     "n_unconverged_steps": 0,
+     "max_iterations": 4,
+     "mean_iterations": 3.6275781109885274,
+     "n_particles_end": 1,
+     "n_escaped": 0,
+     "n_excised": 0
+    },
+    "n_records": 184002,
+    "t_last": 230.0,
+    "max_dE": 9.615077388154072e-09,
+    "max_dLz": 1.1262867579640277e-13,
+    "max_dQ": 1.915632135638192e-08,
+    "inv0": [
+     0.99738,
+     2.4328,
+     1.974
+    ],
+    "final_pos_err": 0.00026941692643589477,
+    "final_pos_err_components": [
+     -0.00020858563529913,
+     4.663254973724662e-05,
+     0.00026941692643589477
+    ],
+    "r_peri": 1.8983261631403627,
+    "t_peri": 98.94878941883015,
+    "r_min_sample": 1.8983261631405701,
+    "r_final": 23.483483948409333,
+    "final_rthph": [
+     23.483483948409333,
+     1.162292877645785,
+     2.5811346445611765
+    ],
+    "r_peri_err": -1.110564808115555e-06,
+    "t_peri_err": 0.0004422829354098212,
+    "max_pos_err_samples": 0.00027206898551668246
+   },
+   "kerr_passage/mid_cks_dt0.0025": {
+    "name": "kerr_passage/mid_cks_dt0.0025",
+    "meta": {
+     "orbit": "ks_passage",
+     "a": 0.9,
+     "pusher": "mid",
+     "metric": "cks",
+     "system": "cks",
+     "dt": 0.0025,
+     "t_end": 230.0,
+     "lattice_dx": null,
+     "t0_offset": 0.0
+    },
+    "overrides": [
+     "particles/pusher=midpoint",
+     "particles/metric=kerr_schild",
+     "particles/bh_spin=0.9",
+     "particles/lattice_dx=0.025",
+     "particles/dt=0.0025",
+     "time/tlim=230.0",
+     "particles/tolerance=2.0e-14",
+     "particles/max_iterations=200",
+     "particles/hist_dcycle=1",
+     "particles/traj_dcycle=1",
+     "particles/traj_ntrack=1",
+     "time/ndiag=20000",
+     "particles/p0_x1=20.0",
+     "particles/p0_x2=0.9",
+     "particles/p0_x3=1.2246467991473533e-15",
+     "particles/p0_u1=-0.20131797516752664",
+     "particles/p0_u2=0.11258069111746129",
+     "particles/p0_u3=-0.07024955515873393",
+     "particles/p0_m=0.0"
+    ],
+    "input": "problems/kerr/geodesic.athinput",
+    "log": {
+     "ok": true,
+     "log": "runs/geodesic/kerr_passage/mid_cks_dt0.0025/athena.20261113-042708.log",
+     "cpu_time_s": 11.05757,
+     "fatal": false,
+     "nan": false
+    },
+    "hist": {
+     "ncycles": 92001,
+     "hist_every_cycle": true,
+     "n_unconverged_steps": 0,
+     "max_iterations": 5,
+     "mean_iterations": 4.133063771045967,
+     "n_particles_end": 1,
+     "n_escaped": 0,
+     "n_excised": 0
+    },
+    "n_records": 92002,
+    "t_last": 230.0,
+    "max_dE": 3.846064627729991e-08,
+    "max_dLz": 4.983408183536136e-14,
+    "max_dQ": 7.662570937999371e-08,
+    "inv0": [
+     0.99738,
+     2.4328,
+     1.974
+    ],
+    "final_pos_err": 0.0010777840745923584,
+    "final_pos_err_components": [
+     -0.0008344617732092274,
+     0.00018660228930533762,
+     0.0010777840745923584
+    ],
+    "r_peri": 1.8983228311274765,
+    "t_peri": 98.95011651937993,
+    "r_min_sample": 1.898322831129287,
+    "r_final": 23.482858072271423,
+    "final_rthph": [
+     23.482858072271423,
+     1.1624328473853531,
+     2.5819430117093307
+    ],
+    "r_peri_err": -4.442577694385719e-06,
+    "t_peri_err": 0.0017693834851968404,
+    "max_pos_err_samples": 0.001088398563169335
+   },
+   "kerr_passage/mid_cks_dt0.005": {
+    "name": "kerr_passage/mid_cks_dt0.005",
+    "meta": {
+     "orbit": "ks_passage",
+     "a": 0.9,
+     "pusher": "mid",
+     "metric": "cks",
+     "system": "cks",
+     "dt": 0.005,
+     "t_end": 230.0,
+     "lattice_dx": null,
+     "t0_offset": 0.0
+    },
+    "overrides": [
+     "particles/pusher=midpoint",
+     "particles/metric=kerr_schild",
+     "particles/bh_spin=0.9",
+     "particles/lattice_dx=0.025",
+     "particles/dt=0.005",
+     "time/tlim=230.0",
+     "particles/tolerance=2.0e-14",
+     "particles/max_iterations=200",
+     "particles/hist_dcycle=1",
+     "particles/traj_dcycle=1",
+     "particles/traj_ntrack=1",
+     "time/ndiag=20000",
+     "particles/p0_x1=20.0",
+     "particles/p0_x2=0.9",
+     "particles/p0_x3=1.2246467991473533e-15",
+     "particles/p0_u1=-0.20131797516752664",
+     "particles/p0_u2=0.11258069111746129",
+     "particles/p0_u3=-0.07024955515873393",
+     "particles/p0_m=0.0"
+    ],
+    "input": "problems/kerr/geodesic.athinput",
+    "log": {
+     "ok": true,
+     "log": "runs/geodesic/kerr_passage/mid_cks_dt0.005/athena.20261113-042702.log",
+     "cpu_time_s": 5.57583,
+     "fatal": false,
+     "nan": false
+    },
+    "hist": {
+     "ncycles": 46001,
+     "hist_every_cycle": true,
+     "n_unconverged_steps": 0,
+     "max_iterations": 5,
+     "mean_iterations": 4.432642768635464,
+     "n_particles_end": 1,
+     "n_escaped": 0,
+     "n_excised": 0
+    },
+    "n_records": 46002,
+    "t_last": 230.0,
+    "max_dE": 1.5384503234628043e-07,
+    "max_dLz": 3.231000910204747e-14,
+    "max_dQ": 3.065100676927564e-07,
+    "inv0": [
+     0.99738,
+     2.4328,
+     1.974
+    ],
+    "final_pos_err": 0.004312984554875499,
+    "final_pos_err_components": [
+     -0.0033397434382251845,
+     0.0007475607949267715,
+     0.004312984554875499
+    ],
+    "r_peri": 1.8983094983625477,
+    "t_peri": 98.95542866551966,
+    "r_min_sample": 1.8983094983870383,
+    "r_final": 23.480352790606407,
+    "final_rthph": [
+     23.480352790606407,
+     1.1629938058909746,
+     2.5851782121896147
+    ],
+    "r_peri_err": -1.7775342623149726e-05,
+    "t_peri_err": 0.007081529624926475,
+    "max_pos_err_samples": 0.004355542068289253
    },
    "kerr_passage/mid_cks_dt0.01": {
     "name": "kerr_passage/mid_cks_dt0.01",
@@ -1463,9 +3108,257 @@
     "t_peri": 98.97673740294373,
     "r_min_sample": 1.8982560930471075,
     "r_final": 23.47030311341382,
+    "final_rthph": [
+     23.47030311341382,
+     1.165254963832909,
+     2.5981468248201267
+    ],
     "r_peri_err": -7.118207354994688e-05,
     "t_peri_err": 0.028390267048990836,
     "max_pos_err_samples": 0.017453402509485016
+   },
+   "kerr_passage/mid_cks_dt0.02": {
+    "name": "kerr_passage/mid_cks_dt0.02",
+    "meta": {
+     "orbit": "ks_passage",
+     "a": 0.9,
+     "pusher": "mid",
+     "metric": "cks",
+     "system": "cks",
+     "dt": 0.02,
+     "t_end": 230.0,
+     "lattice_dx": null,
+     "t0_offset": 0.0
+    },
+    "overrides": [
+     "particles/pusher=midpoint",
+     "particles/metric=kerr_schild",
+     "particles/bh_spin=0.9",
+     "particles/lattice_dx=0.025",
+     "particles/dt=0.02",
+     "time/tlim=230.0",
+     "particles/tolerance=2.0e-14",
+     "particles/max_iterations=200",
+     "particles/hist_dcycle=1",
+     "particles/traj_dcycle=1",
+     "particles/traj_ntrack=1",
+     "time/ndiag=20000",
+     "particles/p0_x1=20.0",
+     "particles/p0_x2=0.9",
+     "particles/p0_x3=1.2246467991473533e-15",
+     "particles/p0_u1=-0.20131797516752664",
+     "particles/p0_u2=0.11258069111746129",
+     "particles/p0_u3=-0.07024955515873393",
+     "particles/p0_m=0.0"
+    ],
+    "input": "problems/kerr/geodesic.athinput",
+    "log": {
+     "ok": true,
+     "log": "runs/geodesic/kerr_passage/mid_cks_dt0.02/athena.20261113-042700.log",
+     "cpu_time_s": 1.444871,
+     "fatal": false,
+     "nan": false
+    },
+    "hist": {
+     "ncycles": 11500,
+     "hist_every_cycle": true,
+     "n_unconverged_steps": 0,
+     "max_iterations": 6,
+     "mean_iterations": 5.205652173913044,
+     "n_particles_end": 1,
+     "n_escaped": 0,
+     "n_excised": 0
+    },
+    "n_records": 11501,
+    "t_last": 230.0,
+    "max_dE": 2.4623161576722335e-06,
+    "max_dLz": 5.092933638119347e-14,
+    "max_dQ": 4.9064058793501185e-06,
+    "inv0": [
+     0.99738,
+     2.4328,
+     1.974
+    ],
+    "final_pos_err": 0.0696071523509687,
+    "final_pos_err_components": [
+     -0.054052229421039044,
+     0.012333752400819131,
+     0.0696071523509687
+    ],
+    "r_peri": 1.8980412394106598,
+    "t_peri": 99.06295031266644,
+    "r_min_sample": 1.8980412405576081,
+    "r_final": 23.429640304623593,
+    "final_rthph": [
+     23.429640304623593,
+     1.174579997496867,
+     2.6504723799857057
+    ],
+    "r_peri_err": -0.00028603429451101725,
+    "t_peri_err": 0.11460317677170906,
+    "max_pos_err_samples": 0.07031875892770856
+   },
+   "kerr_passage/mid_cks_dt0.04": {
+    "name": "kerr_passage/mid_cks_dt0.04",
+    "meta": {
+     "orbit": "ks_passage",
+     "a": 0.9,
+     "pusher": "mid",
+     "metric": "cks",
+     "system": "cks",
+     "dt": 0.04,
+     "t_end": 230.0,
+     "lattice_dx": null,
+     "t0_offset": 0.0
+    },
+    "overrides": [
+     "particles/pusher=midpoint",
+     "particles/metric=kerr_schild",
+     "particles/bh_spin=0.9",
+     "particles/lattice_dx=0.025",
+     "particles/dt=0.04",
+     "time/tlim=230.0",
+     "particles/tolerance=2.0e-14",
+     "particles/max_iterations=200",
+     "particles/hist_dcycle=1",
+     "particles/traj_dcycle=1",
+     "particles/traj_ntrack=1",
+     "time/ndiag=20000",
+     "particles/p0_x1=20.0",
+     "particles/p0_x2=0.9",
+     "particles/p0_x3=1.2246467991473533e-15",
+     "particles/p0_u1=-0.20131797516752664",
+     "particles/p0_u2=0.11258069111746129",
+     "particles/p0_u3=-0.07024955515873393",
+     "particles/p0_m=0.0"
+    ],
+    "input": "problems/kerr/geodesic.athinput",
+    "log": {
+     "ok": true,
+     "log": "runs/geodesic/kerr_passage/mid_cks_dt0.04/athena.20261113-042658.log",
+     "cpu_time_s": 0.7582008,
+     "fatal": false,
+     "nan": false
+    },
+    "hist": {
+     "ncycles": 5751,
+     "hist_every_cycle": true,
+     "n_unconverged_steps": 0,
+     "max_iterations": 7,
+     "mean_iterations": 5.8440271257172665,
+     "n_particles_end": 1,
+     "n_escaped": 0,
+     "n_excised": 0
+    },
+    "n_records": 5752,
+    "t_last": 230.0,
+    "max_dE": 9.859463089769383e-06,
+    "max_dLz": 2.5008312129833353e-14,
+    "max_dQ": 1.965465454208589e-05,
+    "inv0": [
+     0.99738,
+     2.4328,
+     1.974
+    ],
+    "final_pos_err": 0.2865654825274859,
+    "final_pos_err_components": [
+     -0.22463260043878464,
+     0.05433275346147348,
+     0.2865654825274859
+    ],
+    "r_peri": 1.8971612347824478,
+    "t_peri": 99.42451615765914,
+    "r_min_sample": 1.8971612651839345,
+    "r_final": 23.259059933605847,
+    "final_rthph": [
+     23.259059933605847,
+     1.2165789985575213,
+     2.8674307101622256
+    ],
+    "r_peri_err": -0.001166038922723045,
+    "t_peri_err": 0.4761690217644059,
+    "max_pos_err_samples": 0.28973779851708414
+   },
+   "kerr_passage/mid_cks_dt0.08": {
+    "name": "kerr_passage/mid_cks_dt0.08",
+    "meta": {
+     "orbit": "ks_passage",
+     "a": 0.9,
+     "pusher": "mid",
+     "metric": "cks",
+     "system": "cks",
+     "dt": 0.08,
+     "t_end": 230.0,
+     "lattice_dx": null,
+     "t0_offset": 0.0
+    },
+    "overrides": [
+     "particles/pusher=midpoint",
+     "particles/metric=kerr_schild",
+     "particles/bh_spin=0.9",
+     "particles/lattice_dx=0.025",
+     "particles/dt=0.08",
+     "time/tlim=230.0",
+     "particles/tolerance=2.0e-14",
+     "particles/max_iterations=200",
+     "particles/hist_dcycle=1",
+     "particles/traj_dcycle=1",
+     "particles/traj_ntrack=1",
+     "time/ndiag=20000",
+     "particles/p0_x1=20.0",
+     "particles/p0_x2=0.9",
+     "particles/p0_x3=1.2246467991473533e-15",
+     "particles/p0_u1=-0.20131797516752664",
+     "particles/p0_u2=0.11258069111746129",
+     "particles/p0_u3=-0.07024955515873393",
+     "particles/p0_m=0.0"
+    ],
+    "input": "problems/kerr/geodesic.athinput",
+    "log": {
+     "ok": true,
+     "log": "runs/geodesic/kerr_passage/mid_cks_dt0.08/athena.20261113-042656.log",
+     "cpu_time_s": 0.3907788,
+     "fatal": false,
+     "nan": false
+    },
+    "hist": {
+     "ncycles": 2875,
+     "hist_every_cycle": true,
+     "n_unconverged_steps": 0,
+     "max_iterations": 9,
+     "mean_iterations": 6.45495652173913,
+     "n_particles_end": 1,
+     "n_escaped": 0,
+     "n_excised": 0
+    },
+    "n_records": 2876,
+    "t_last": 230.0,
+    "max_dE": 3.9600221132535704e-05,
+    "max_dLz": 6.115171214229323e-14,
+    "max_dQ": 7.919422927738525e-05,
+    "inv0": [
+     0.99738,
+     2.4328,
+     1.974
+    ],
+    "final_pos_err": 1.3234798231603868,
+    "final_pos_err_components": [
+     -1.0800312253974198,
+     0.3129990125806359,
+     1.3234798231603868
+    ],
+    "r_peri": 1.8932271562179483,
+    "t_peri": 101.23502743778853,
+    "r_min_sample": 1.8932272845290072,
+    "r_final": 22.403661308647212,
+    "final_rthph": [
+     22.403661308647212,
+     1.4752452576766837,
+     -2.3788402563844615
+    ],
+    "r_peri_err": -0.0051001174872225,
+    "t_peri_err": 2.286680301893796,
+    "max_pos_err_samples": 1.3318509176438056
    },
    "kerr_passage/mid_ks_dt0.005": {
     "name": "kerr_passage/mid_ks_dt0.005",
@@ -1539,6 +3432,11 @@
     "t_peri": 98.94853229029044,
     "r_min_sample": 1.8983267725027464,
     "r_final": 23.48360576471839,
+    "final_rthph": [
+     23.48360576471839,
+     1.162265347599143,
+     27.71371863063493
+    ],
     "r_peri_err": -5.014897392907613e-07,
     "t_peri_err": 0.00018515439570876424,
     "max_pos_err_samples": 0.00011322221820719847
@@ -1615,6 +3513,11 @@
     "t_peri": 98.94908779756238,
     "r_min_sample": 1.8983252678037676,
     "r_final": 23.483345436390692,
+    "final_rthph": [
+     23.483345436390692,
+     1.1623226672387648,
+     27.714055173311436
+    ],
     "r_peri_err": -2.006012380650901e-06,
     "t_peri_err": 0.0007406616676490785,
     "max_pos_err_samples": 0.0004529097287111483,
@@ -1693,6 +3596,11 @@
     "t_peri": 98.95131047350064,
     "r_min_sample": 1.8983192588701598,
     "r_final": 23.482303819783947,
+    "final_rthph": [
+     23.482303819783947,
+     1.1625521277493578,
+     27.71540164122523
+    ],
     "r_peri_err": -8.024902955927615e-06,
     "t_peri_err": 0.0029633376059052807,
     "max_pos_err_samples": 0.0018119722861200671
@@ -1769,6 +3677,11 @@
     "t_peri": 98.96021165574206,
     "r_min_sample": 1.8982951604337053,
     "r_final": 23.47813249282747,
+    "final_rthph": [
+     23.47813249282747,
+     1.1634728843961382,
+     27.72079227390364
+    ],
     "r_peri_err": -3.2113277433243326e-05,
     "t_peri_err": 0.01186451984732173,
     "max_pos_err_samples": 0.007253227312446597
@@ -1845,9 +3758,176 @@
     "t_peri": 98.99598464175133,
     "r_min_sample": 1.8981987727163188,
     "r_final": 23.46136890436517,
+    "final_rthph": [
+     23.46136890436517,
+     1.167202771676605,
+     27.74243141117844
+    ],
     "r_peri_err": -0.00012867282402595492,
     "t_peri_err": 0.047637505856599205,
     "max_pos_err_samples": 0.029098679344247813
+   },
+   "kerr_passage/mid_lat_dt0.00125": {
+    "name": "kerr_passage/mid_lat_dt0.00125",
+    "meta": {
+     "orbit": "ks_passage",
+     "a": 0.9,
+     "pusher": "mid",
+     "metric": "lat",
+     "system": "cks",
+     "dt": 0.00125,
+     "t_end": 230.0,
+     "lattice_dx": 0.025,
+     "t0_offset": 0.0
+    },
+    "overrides": [
+     "particles/pusher=midpoint",
+     "particles/metric=lattice",
+     "particles/bh_spin=0.9",
+     "particles/lattice_dx=0.025",
+     "particles/dt=0.00125",
+     "time/tlim=230.0",
+     "particles/tolerance=2.0e-14",
+     "particles/max_iterations=200",
+     "particles/hist_dcycle=1",
+     "particles/traj_dcycle=1",
+     "particles/traj_ntrack=1",
+     "time/ndiag=20000",
+     "particles/p0_x1=20.0",
+     "particles/p0_x2=0.9",
+     "particles/p0_x3=1.2246467991473533e-15",
+     "particles/p0_u1=-0.20131797516752664",
+     "particles/p0_u2=0.11258069111746129",
+     "particles/p0_u3=-0.07024955515873393",
+     "particles/p0_m=0.0"
+    ],
+    "input": "problems/kerr/geodesic.athinput",
+    "log": {
+     "ok": true,
+     "log": "runs/geodesic/kerr_passage/mid_lat_dt0.00125/athena.20261113-043042.log",
+     "cpu_time_s": 94.02087,
+     "fatal": false,
+     "nan": false
+    },
+    "hist": {
+     "ncycles": 184001,
+     "hist_every_cycle": true,
+     "n_unconverged_steps": 0,
+     "max_iterations": 4,
+     "mean_iterations": 3.627588980494671,
+     "n_particles_end": 1,
+     "n_escaped": 0,
+     "n_excised": 0
+    },
+    "n_records": 184002,
+    "t_last": 230.0,
+    "max_dE": 8.758106795799876e-07,
+    "max_dLz": 4.439294967837309e-06,
+    "max_dQ": 5.146032476300892e-05,
+    "inv0": [
+     0.99738,
+     2.4328,
+     1.974
+    ],
+    "final_pos_err": 8.919178281630025e-05,
+    "final_pos_err_components": [
+     8.919178281630025e-05,
+     -1.0437667680607277e-05,
+     -6.728441625014625e-05
+    ],
+    "r_peri": 1.8983264818338068,
+    "t_peri": 98.94959204976145,
+    "r_min_sample": 1.8983264818551135,
+    "r_final": 23.48378172582745,
+    "final_rthph": [
+     23.48378172582745,
+     1.1622358074283672,
+     2.5807979432184873
+    ],
+    "r_peri_err": -7.918713640364672e-07,
+    "t_peri_err": 0.0012449138667136594,
+    "max_pos_err_samples": 9.248435127773291e-05
+   },
+   "kerr_passage/mid_lat_dt0.0025": {
+    "name": "kerr_passage/mid_lat_dt0.0025",
+    "meta": {
+     "orbit": "ks_passage",
+     "a": 0.9,
+     "pusher": "mid",
+     "metric": "lat",
+     "system": "cks",
+     "dt": 0.0025,
+     "t_end": 230.0,
+     "lattice_dx": 0.025,
+     "t0_offset": 0.0
+    },
+    "overrides": [
+     "particles/pusher=midpoint",
+     "particles/metric=lattice",
+     "particles/bh_spin=0.9",
+     "particles/lattice_dx=0.025",
+     "particles/dt=0.0025",
+     "time/tlim=230.0",
+     "particles/tolerance=2.0e-14",
+     "particles/max_iterations=200",
+     "particles/hist_dcycle=1",
+     "particles/traj_dcycle=1",
+     "particles/traj_ntrack=1",
+     "time/ndiag=20000",
+     "particles/p0_x1=20.0",
+     "particles/p0_x2=0.9",
+     "particles/p0_x3=1.2246467991473533e-15",
+     "particles/p0_u1=-0.20131797516752664",
+     "particles/p0_u2=0.11258069111746129",
+     "particles/p0_u3=-0.07024955515873393",
+     "particles/p0_m=0.0"
+    ],
+    "input": "problems/kerr/geodesic.athinput",
+    "log": {
+     "ok": true,
+     "log": "runs/geodesic/kerr_passage/mid_lat_dt0.0025/athena.20261113-042950.log",
+     "cpu_time_s": 51.50856,
+     "fatal": false,
+     "nan": false
+    },
+    "hist": {
+     "ncycles": 92001,
+     "hist_every_cycle": true,
+     "n_unconverged_steps": 0,
+     "max_iterations": 5,
+     "mean_iterations": 4.133107248834252,
+     "n_particles_end": 1,
+     "n_escaped": 0,
+     "n_excised": 0
+    },
+    "n_records": 92002,
+    "t_last": 230.0,
+    "max_dE": 8.956252679653719e-07,
+    "max_dLz": 4.204959399605047e-06,
+    "max_dQ": 5.1641365435949366e-05,
+    "inv0": [
+     0.99738,
+     2.4328,
+     1.974
+    ],
+    "final_pos_err": 0.0008696094143481048,
+    "final_pos_err_components": [
+     -0.0006547859832259917,
+     0.0001524234209708819,
+     0.0008696094143481048
+    ],
+    "r_peri": 1.8983227848582862,
+    "t_peri": 98.95117445480335,
+    "r_min_sample": 1.8983227850348268,
+    "r_final": 23.483037748061406,
+    "final_rthph": [
+     23.483037748061406,
+     1.1623986685170187,
+     2.5817348370490882
+    ],
+    "r_peri_err": -4.488846884642683e-06,
+    "t_peri_err": 0.002827318908614984,
+    "max_pos_err_samples": 0.0008791658293780813
    },
    "kerr_passage/mid_lat_dt0.005": {
     "name": "kerr_passage/mid_lat_dt0.005",
@@ -1921,6 +4001,11 @@
     "t_peri": 98.95681097221544,
     "r_min_sample": 1.8983093226589,
     "r_final": 23.480461562549284,
+    "final_rthph": [
+     23.480461562549284,
+     1.1629678704425153,
+     2.5850094094760534
+    ],
     "r_peri_err": -1.795145759064809e-05,
     "t_peri_err": 0.00846383632070058,
     "max_pos_err_samples": 0.004185809986417155
@@ -1997,6 +4082,11 @@
     "t_peri": 98.9766214654767,
     "r_min_sample": 1.8982601214131272,
     "r_final": 23.471584082658254,
+    "final_rthph": [
+     23.471584082658254,
+     1.1650263614561,
+     2.596803217005587
+    ],
     "r_peri_err": -6.715382597599628e-05,
     "t_peri_err": 0.02827432958196141,
     "max_pos_err_samples": 0.01610167605262447,
@@ -2075,6 +4165,11 @@
     "t_peri": 99.0659979256391,
     "r_min_sample": 1.8980370392822121,
     "r_final": 23.429577201257885,
+    "final_rthph": [
+     23.429577201257885,
+     1.1747016744066132,
+     2.651020416072397
+    ],
     "r_peri_err": -0.00029023914144632457,
     "t_peri_err": 0.11765078974435994,
     "max_pos_err_samples": 0.07088270127018603
@@ -2222,109 +4317,343 @@
      4.19837197200465e-05
     ]
    },
+   "mid_cks": {
+    "metric": "cks",
+    "pusher": "mid",
+    "dt": [
+     0.00125,
+     0.0025,
+     0.005,
+     0.01,
+     0.02,
+     0.04,
+     0.08
+    ],
+    "err": [
+     0.00026941692643589477,
+     0.0010777840745923584,
+     0.004312984554875499,
+     0.01728159718538791,
+     0.0696071523509687,
+     0.2865654825274859,
+     1.3234798231603868
+    ],
+    "order": 2.0324431100547096,
+    "prefactor": 206.95401745360167,
+    "pairwise": [
+     2.00015577686566,
+     2.0006183750394477,
+     2.0024781044292395,
+     2.0099989958610363,
+     2.0415573839269947,
+     2.2073994514536657
+    ],
+    "dE": [
+     9.615077388154072e-09,
+     3.846064627729991e-08,
+     1.5384503234628043e-07,
+     6.154200117245334e-07,
+     2.4623161576722335e-06,
+     9.859463089769383e-06,
+     3.9600221132535704e-05
+    ],
+    "dLz": [
+     1.1262867579640277e-13,
+     4.983408183536136e-14,
+     3.231000910204747e-14,
+     2.1722548492337002e-14,
+     5.092933638119347e-14,
+     2.5008312129833353e-14,
+     6.115171214229323e-14
+    ],
+    "dQ": [
+     1.915632135638192e-08,
+     7.662570937999371e-08,
+     3.065100676927564e-07,
+     1.2261535392785113e-06,
+     4.9064058793501185e-06,
+     1.965465454208589e-05,
+     7.919422927738525e-05
+    ]
+   },
+   "bsym_cks": {
+    "metric": "cks",
+    "pusher": "bsym",
+    "dt": [
+     0.00125,
+     0.0025,
+     0.005,
+     0.01,
+     0.02,
+     0.04,
+     0.08
+    ],
+    "err": [
+     0.00030689197025424164,
+     0.0012272537112920645,
+     0.004911202035042805,
+     0.019683162740427917,
+     0.07935740345843811,
+     0.3280967759490352,
+     1.5603563119694996
+    ],
+    "order": 2.038388424047642,
+    "prefactor": 243.65711582701366,
+    "pairwise": [
+     1.9996307258270758,
+     2.0006426432483435,
+     2.002813977324005,
+     2.0114027669137085,
+     2.047684690025982,
+     2.2496821880182742
+    ],
+    "dE": [
+     1.2658937622881316e-08,
+     5.066028441894474e-08,
+     2.026568286007799e-07,
+     8.107036838953065e-07,
+     3.243948349561683e-06,
+     1.299387402537838e-05,
+     5.22653323686206e-05
+    ],
+    "dLz": [
+     3.27009072748792e-09,
+     1.3130451455926522e-08,
+     5.254592460660228e-08,
+     2.1021535055261396e-07,
+     8.411779439172559e-07,
+     3.3697048847046146e-06,
+     1.355886332674131e-05
+    ],
+    "dQ": [
+     1.655834436130393e-08,
+     6.632455633898785e-08,
+     2.6535736368566815e-07,
+     1.061725719275336e-06,
+     4.251319855198367e-06,
+     1.707582515924395e-05,
+     6.945096376789033e-05
+    ]
+   },
+   "bchol_cks": {
+    "metric": "cks",
+    "pusher": "bchol",
+    "dt": [
+     0.00125,
+     0.0025,
+     0.005,
+     0.01,
+     0.02,
+     0.04,
+     0.08
+    ],
+    "err": [
+     0.00032013209230541406,
+     0.0012806925474464492,
+     0.005125370267979434,
+     0.020543232034910375,
+     0.08285141273774244,
+     0.34302458536896907,
+     1.6490368273719938
+    ],
+    "order": 2.040617579293426,
+    "prefactor": 257.4347121312485,
+    "pairwise": [
+     2.0001849579702506,
+     2.000732058662121,
+     2.002935039544797,
+     2.01186312122508,
+     2.049713778579879,
+     2.265239731825293
+    ],
+    "dE": [
+     4.645991826834329e-08,
+     1.8585294403320983e-07,
+     7.436293259919792e-07,
+     2.9780073134996743e-06,
+     1.1968454634452202e-05,
+     4.881536388491478e-05,
+     0.0002142449096770116
+    ],
+    "dLz": [
+     7.062325914984326e-08,
+     2.8251229464259484e-07,
+     1.130362346345551e-06,
+     4.526472129085126e-06,
+     1.818696452581482e-05,
+     7.409170116705208e-05,
+     0.00032176820827688006
+    ],
+    "dQ": [
+     5.481295559283755e-08,
+     2.1926531444945675e-07,
+     8.772968046044728e-07,
+     3.5129607316095537e-06,
+     1.4112878328544973e-05,
+     5.747505601518603e-05,
+     0.00025004988964455563
+    ]
+   },
    "mid_lat": {
     "metric": "lat",
     "pusher": "mid",
     "dt": [
+     0.00125,
+     0.0025,
      0.005,
      0.01,
      0.02
     ],
     "err": [
+     8.919178281630025e-05,
+     0.0008696094143481048,
      0.004144181841315486,
      0.01593798937084756,
      0.07015518843765989
     ],
-    "order": 2.0406952957344346,
-    "prefactor": 201.07957967210365,
+    "order": 2.343480484606749,
+    "prefactor": 800.8204063621357,
     "pairwise": [
+     3.28538485221416,
+     2.252647843890645,
      1.943310427029535,
      2.1380801644393266
     ],
     "dE": [
+     8.758106795799876e-07,
+     8.956252679653719e-07,
      9.119713124888384e-07,
      2.1622087530516187e-06,
      4.8109973382332556e-06
     ],
     "dLz": [
+     4.439294967837309e-06,
+     4.204959399605047e-06,
      4.023786761968966e-06,
      5.304298667328887e-06,
      8.418701162223324e-06
     ],
     "dQ": [
+     5.146032476300892e-05,
+     5.1641365435949366e-05,
      5.1959166721405895e-05,
      5.059545043527577e-05,
      5.9272932061356275e-05
+    ],
+    "lat_minus_cks_final": [
+     0.00033670134268914964,
+     0.00020817466024247722,
+     0.00016880271356134458,
+     0.0013436078145399044,
+     0.0005480360866911838
     ]
    },
    "bsym_lat": {
     "metric": "lat",
     "pusher": "bsym",
     "dt": [
+     0.00125,
+     0.0025,
      0.005,
      0.01,
      0.02
     ],
     "err": [
+     6.52788502719659e-05,
+     0.0009687488174314751,
      0.004910872551786127,
      0.01798194669616393,
      0.07757833022555616
     ],
-    "order": 1.9908012185464978,
-    "prefactor": 182.04595609281722,
+    "order": 2.4643927480188785,
+    "prefactor": 1577.5587075314997,
     "pairwise": [
+     3.891435091067664,
+     2.341784832565279,
      1.8724979261716566,
      2.1091045109213304
     ],
     "dE": [
+     8.769872058654395e-07,
+     8.655393705316636e-07,
      1.0805201392188752e-06,
      3.1938168703869994e-06,
      7.326932803081236e-06
     ],
     "dLz": [
+     4.440045989538201e-06,
+     4.236900421101452e-06,
      3.748243492778089e-06,
      6.28465206708951e-06,
      9.440027425764541e-06
     ],
     "dQ": [
+     5.1451712270999254e-05,
+     5.1545214149421905e-05,
      5.207732155787796e-05,
      4.890121664958918e-05,
      5.7265890590028016e-05
+    ],
+    "lat_minus_cks_final": [
+     0.0003421717200677854,
+     0.00025850489386192166,
+     4.767010872797073e-05,
+     0.0017012160442639868,
+     0.0017790732328832881
     ]
    },
    "bchol_lat": {
     "metric": "lat",
     "pusher": "bchol",
     "dt": [
+     0.00125,
+     0.0025,
      0.005,
      0.01,
      0.02
     ],
     "err": [
+     5.499903900485492e-05,
+     0.00102616746127282,
      0.00511241091983905,
      0.01902649058025574,
      0.08055431445339067
     ],
-    "order": 1.9889430778338604,
-    "prefactor": 188.76026240820894,
+    "order": 2.524535086229626,
+    "prefactor": 2178.5136060719547,
     "pairwise": [
+     4.221715964021165,
+     2.316737615354139,
      1.8959337768561084,
      2.081952378811606
     ],
     "dE": [
+     8.674404849238277e-07,
+     1.0290655911764279e-06,
      1.940647205899675e-06,
      2.0456850044161193e-06,
      1.212176641656577e-05
     ],
     "dLz": [
+     4.413000897149502e-06,
+     4.007045474961256e-06,
      2.5852820525599e-06,
      3.7884840799568006e-06,
      1.6521514503777432e-05
     ],
     "dQ": [
+     5.148083064132816e-05,
+     5.1750661694135334e-05,
      5.321818884560676e-05,
      5.2886585579652864e-05,
      7.090976592160269e-05
+    ],
+    "lat_minus_cks_final": [
+     0.00034719100941904557,
+     0.0002545250861714088,
+     7.706251012251641e-05,
+     0.0015167414546515268,
+     0.00229709828435265
     ]
    }
   },

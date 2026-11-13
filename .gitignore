@@ -26,3 +26,5 @@ paper/*.synctex.gz
 
 # large regenerable reference trajectories
 problems/kerr/ref/*.npz
+__pycache__/
+*.pyc
