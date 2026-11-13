@@ -413,3 +413,36 @@ and against no filter. Figure: `analysis/diag/figs/cluster_ctl_compensated.png`.
 
 Decision: cluster runs use four passes with compensation. Dust-collapse tests keep the
 published plain filter until the two are compared on them.
+
+## Production relaunch with the corrected executable (queued 06:22)
+
+All production jobs that were still waiting carried the earlier executable (finder
+defect, no compensation) and were cancelled before they ran. Relaunched with
+`.work/build_gpu_v4` (source at commit 78d1d42 or later), run directories `*_v4`:
+cluster models with four filter passes plus compensation; dust and prolate collapse with
+the published plain filter; `metric_drvts = interpolant` everywhere.
+
+Predictions written before any of these runs started:
+1. `puncture/hcal/dx8_fixed` (GPU check of the corrected finder, 12 M): horizon mass at
+   t = 10 M within 5e-4 of the slice mass (about 1.0015), rms expansion below 1e-6;
+   the original gave 0.9778 and 1.1e-2.
+2. `st/dir_yc0500_plain` and `_comp` (y_c = 0.5, no perturbation, 200 M): with the
+   plain filter the cluster expands from the start (lapse rising from 0.55), as the
+   stable model did; with compensation the first 50 M stay within a third of that
+   excursion, and which way it finally goes is set by the sample and is not predicted.
+   The original reports that its unperturbed y_c = 0.5 run expands and migrates while
+   the same model with a one-percent inward kick collapses; a systematic outward bias
+   of a plain filter would produce exactly that pair. If the plain run does not expand,
+   this reading is wrong.
+3. `st/ctl/s2_nf4c`, `s3_nf4c` (stable model, seeds 2 and 3, compensated): lapse rise
+   within 130 M below 0.01 for both; later excursions of order 0.01 that differ
+   between seeds.
+4. `os/adapt_v4` against `os/nocap_v4` (same particles and mesh, cloud level adaptive
+   against cloud at the finest level): open question, no prediction for the lapse; for
+   the central density reading the uncapped run should repeat the drop to about half
+   of the cycloid after the first refinement and the capped run should not. Horizon
+   mass with the corrected finder: within one percent of the total mass in both; a
+   value below 0.98 would mean mass is really missing and would need explaining.
+5. `st/yc0605_v4`, `yc0500_v4` (one-percent inward kick, compensated): both collapse
+   and form a horizon (original: at t = 109 M and 73 M); `yc0283_v4` expands;
+   `yc0900_v4` and `yc0819_v4` stay within a few percent of equilibrium.
