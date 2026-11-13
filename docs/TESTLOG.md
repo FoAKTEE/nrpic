@@ -453,3 +453,18 @@ two passes: 0.0176), lowest lapse 0.7967 at t = 279 M, energy integral changed b
 (0.8125 against 0.8126 at t = 50 M, 0.8035 against 0.8049 at t = 200 M). With
 compensation the result no longer depends on the number of passes; the motion that is
 left is common to both and to the unfiltered run of the same seed.
+
+## Corrected finder on GPU (06:28), against prediction 1
+
+`puncture/hcal/dx8_fixed`, 12 M. Horizon mass 0.999860, 1.000044, 1.000189, 1.000323 at
+t = 5, 8, 10, 11.5 M with rms expansion 7e-9 (original finder: 0.9812, 0.9776, 0.9778,
+0.9782 with 1.1e-2). At t = 0 the GPU and CPU values agree to the six digits printed
+(0.991521).
+
+The prediction said "within 5e-4 of the slice mass (about 1.0015)". The agreement holds:
+the slice's Misner-Sharp mass at the horizon in the t = 12 M dump is 1.000635, the
+finder at 11.5 M reads 1.000323, a difference of 3e-4, the same as at t = 50 M
+(stopping tolerance plus 16-point angular grid). The number I had put in for the slice
+mass was wrong: 1.0015 is its value at t = 50 M. At t = 12 M the excess is 6e-4 at the
+horizon and still zero (4e-6) further out; it is produced near the puncture during the
+gauge transient and spreads outward afterwards.
