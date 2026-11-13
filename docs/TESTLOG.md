@@ -1591,3 +1591,25 @@ the horizon forms are far from spherical and their profiles mean little).
   particles, cells of M/64). What is not: how much of the deficit comes from the
   particle number and how much from the cell size. Check (ii), the Monte Carlo dust
   ball, tests the particle number alone in spherical collapse.
+
+## Corrections to the two prolate entries (14:25)
+
+Found by the agent that made the figure from the run files, checked by me.
+- Constraint norm. I compared two different measures. On one measure, the square root
+  of the volume-normalized integral of H^2, the prolate run peaks at 6.31 (t = 27.5 M)
+  and the lattice dust run at 1.90: a factor of 3.3, not 25. (The combined norm of the
+  history file peaks at 49.7 against 4.34, a factor of 11.)
+- Motion of the curvature maximum. It does not move inward smoothly. The axis carries
+  several separate condensations of particles, and the maximum jumps between them:
+  |z| = 5.0 M at t = 20 M, 3.9 M at 24.25 M, jump to 2.8 M at 24.5 M, jump to 0.7 M at
+  26.25 to 28 M, back out to 1.8 M at 28.25 M, then 1.3 M at 30 M and 0.7 M at 32 M.
+  Inward overall, in steps. The two maxima are mirror images by construction of the
+  sample. Before t = 18.5 M the maximum is off the axis, and its value jumps by a
+  factor of 280 when the two finest levels appear at 15.75 M (resolution, not
+  dynamics).
+- The spindle at 10^4 particles is a chain of separate condensations along the axis
+  (figure `paper/figures/fig_prolate.png`, third panel), not a smooth line.
+- Particle removal runs from 33.78 M to 38.80 M. Largest energy density 0.82 at
+  t = 23.5 M at |z| = 4.2 M.
+- The method section of the paper says that prolate runs keep one or two plain filter
+  passes; the run used four passes plus compensation. To be corrected in the text.

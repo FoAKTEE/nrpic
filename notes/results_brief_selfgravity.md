@@ -157,19 +157,25 @@ total mass M, particles at rest; 10^4 equal-mass particles drawn at random with
 reflection and half-turn symmetry (Appendix on sampling); adaptive mesh with finest
 cells of M/16; four filter passes with compensation; published deposition rule; lapse
 excision at 0.05. The original: 2e6 particles, finest cells M/64. Figure: fig_prolate
-(being made: particle positions in the x-z plane at four times; largest Kretschmann
-scalar, smallest lapse, horizon mass against time).
+(made; caption draft and numbers in notes/drafts/figure_captions_3.md: particle
+positions in the x-z plane at four times; largest Kretschmann scalar and where it
+lies, smallest lapse and particles remaining, horizon mass against time).
 
 Facts, in the order of the argument:
 1. Why the test: no symmetry reduces it; the collapse passes through a caustic (matter
    focused onto the axis) before any horizon exists; the literature on it
    (Shapiro:1991zza no horizon found; Yoo:2016kzu; East:2019bwu horizon after the
    caustic; Wu:2026nrpic horizon after the caustic).
-2. The spheroid contracts to a spindle. The largest Kretschmann scalar lies on the
-   axis near the two ends of the spindle and moves inward: 63 at t = 20 M at
-   |z| = 5.0 M, 527 at 22.25 M at 4.6 M, 761 at 25 M at 2.7 M, largest value 1203 at
-   27.75 M at 0.66 M. The original describes two maxima near the ends, within the
-   matter, and shows them at 22.25 M; its narrow spindle is at 27.75 M.
+2. The spheroid contracts to a spindle. At 10^4 particles the spindle is a chain of
+   separate condensations along the axis (figure, third panel). The largest
+   Kretschmann scalar lies on the axis, first near the two ends of the spindle, and
+   moves inward in steps as it jumps from one condensation to the next (|z| of 5.0 M
+   at t = 20 M, 3.9 M at 24.25 M, 2.8 M at 24.5 M, 0.7 M at 26.25 to 28 M, then 1.8 M
+   at 28.25 M, 0.7 M at 32 M); largest value at 27.75 M. The two maxima are mirror
+   images by the symmetry of the sample. The original describes two maxima near the
+   ends, within the matter, and shows them at 22.25 M; its narrow spindle is at
+   27.75 M. Do not quote values of the Kretschmann scalar as physical: they depend on
+   the cell size (the original says the same), and jump when finer levels appear.
 3. The curvature stays finite and the run continues through the caustic stage; an
    apparent horizon is first found at t = 32.0 M (searches every M/4). The original
    shows the configuration after horizon detection at 32 M. All particles are then
@@ -183,8 +189,8 @@ Facts, in the order of the argument:
    lie outside the black hole, between 5 and 50 M, when every particle has been
    removed. That is field content; this diagnostic does not separate gravitational
    radiation from constraint violation.
-5. The constraint norm peaks at the time of the largest curvature and is 25 times
-   larger there than in the dust collapse on a lattice.
+5. The norm of the Hamiltonian constraint peaks at the time of the largest curvature
+   and is about three times larger there than in the dust collapse on a lattice.
 6. How much of the mass deficit comes from the particle number and how much from the
    cell size (M/16 here) is not determined; a spherical control with randomly sampled
    dust is NOT YET in. With finest cells of M/32 the mesh outgrew one graphics card
