@@ -1,0 +1,25 @@
+# scratch and upstream clones
+.work/
+# reference paper source (fetch with refs/fetch.sh)
+refs/arxiv_2611.12831/
+# builds
+build*/
+athenak/build*/
+# run outputs
+problems/**/out/
+problems/**/*.rst
+problems/**/slurm-*.out
+runs/
+*.o
+*.pyc
+__pycache__/
+# LaTeX
+paper/*.aux
+paper/*.log
+paper/*.out
+paper/*.bbl
+paper/*.blg
+paper/*.fls
+paper/*.fdb_latexmk
+paper/*Notes.bib
+paper/*.synctex.gz
