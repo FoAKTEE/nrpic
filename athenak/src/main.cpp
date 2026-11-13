@@ -286,6 +286,11 @@ int main(int argc, char *argv[]) {
     pinput->CheckBlockNames();
   }
   pinput->ModifyFromCmdline(argc, argv);
+  // remember the restart file, so that modules that keep their own restart data next
+  // to it (NRPIC particles) can find them
+  if (res_flag) {
+    pinput->SetString("job", "restart_file", restart_file);
+  }
 
   // Dump input parameters and quit if code was run with -n option.
   if (narg_flag) {

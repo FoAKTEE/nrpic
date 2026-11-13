@@ -152,6 +152,11 @@ class Z4c {
     // Constraint damping parameters
     Real damp_kappa1;
     Real damp_kappa2;
+    // Parabolic relaxation of the Hamiltonian constraint through the conformal factor,
+    // d_t chi += (c_H/2) chi^(-1/4) H with c_H = damp_ch + damp_ch_dx*dx (a length).
+    // The form assumes chi = psi^-4.
+    Real damp_ch;
+    Real damp_ch_dx;
     // Gauge conditions for the lapse
     Real lapse_oplog;
     Real lapse_harmonicf;

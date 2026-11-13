@@ -28,6 +28,22 @@ namespace particles {
 void Particles::AssembleTasks(std::map<std::string, std::shared_ptr<TaskList>> tl) {
   TaskID none(0);
 
+  // Particles of type nrpic: the metric at t^n is stored before the spacetime update,
+  // and the particles are advanced, excised, reassigned to MeshBlocks and deposited
+  // once the spacetime has reached t^{n+1}.
+  if (is_nrpic) {
+    id.savemet = tl["before_timeintegrator"]->AddTask(&Particles::NrpicSaveMetric, this,
+                                                      none);
+    id.push    = tl["after_timeintegrator"]->AddTask(&Particles::NrpicPush, this, none);
+    id.excise  = tl["after_timeintegrator"]->AddTask(&Particles::NrpicExcise, this,
+                                                     id.push);
+    id.deposit = tl["after_timeintegrator"]->AddTask(&Particles::NrpicDeposit, this,
+                                                     id.excise);
+    id.diag    = tl["after_timeintegrator"]->AddTask(&Particles::NrpicDiagnostics, this,
+                                                     id.deposit);
+    return;
+  }
+
   // particle integration done in "before_timeintegrator" task list
   id.push   = tl["before_timeintegrator"]->AddTask(&Particles::Push, this, none);
   id.newgid = tl["before_timeintegrator"]->AddTask(&Particles::NewGID, this, id.push);

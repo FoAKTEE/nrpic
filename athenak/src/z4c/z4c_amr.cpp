@@ -36,6 +36,11 @@ Z4c_AMR::Z4c_AMR(ParameterInput *pin) {
   } else if (ref_method == "dchi") {
     method = dChi;
     dchi_thresh = pin->GetOrAddReal("z4c_amr", "dchi_max", 0.01);
+  } else if (ref_method == "lohner") {
+    method = Lohner;
+    lohner_refine   = pin->GetOrAddReal("z4c_amr", "lohner_refine", 0.2);
+    lohner_derefine = pin->GetOrAddReal("z4c_amr", "lohner_derefine", 0.02);
+    lohner_eps      = pin->GetOrAddReal("z4c_amr", "lohner_eps", 0.01);
   } else {
     std::cout << "### FATAL ERROR in " << __FILE__ << " at line "
               << __LINE__ << std::endl;
@@ -63,6 +68,8 @@ void Z4c_AMR::Refine(MeshBlockPack *pmy_pack) {
     RefineChiMin(pmy_pack);
   } else if (method == dChi) {
     RefineDchiMax(pmy_pack);
+  } else if (method == Lohner) {
+    RefineLohner(pmy_pack);
   }
   RefineRadii(pmy_pack);
 }
@@ -215,6 +222,100 @@ void Z4c_AMR::RefineDchiMax(MeshBlockPack *pmbp) {
         refine_flag.d_view(m + mbs) = 1;
       }
       if (team_dmax < 0.5 * dchi_thresh) {
+        refine_flag.d_view(m + mbs) = -1;
+      }
+    });
+
+  // sync host and device
+  refine_flag.template modify<DevExeSpace>();
+  refine_flag.template sync<HostMemSpace>();
+}
+
+// refine based on the Lohner-type indicator of q = alpha psi^7 = alpha chi^(7/N), with
+// chi = psi^N.  With the centred difference D_a q_i = q_{i+e_a} - q_{i-e_a} and the
+// amplitude S_ab,i = sum_{s,t=+-1} |q_{i+s e_a+t e_b}|, the indicator of a cell is
+//   E_i^2 = sum_ab (D_a q_{i+e_b} - D_a q_{i-e_b})^2
+//         / sum_ab (|D_a q_{i+e_b}| + |D_a q_{i-e_b}| + eps S_ab,i + delta)^2 ,
+// and a MeshBlock is flagged with the maximum over its active cells.
+void Z4c_AMR::RefineLohner(MeshBlockPack *pmbp) {
+  Mesh *pmesh       = pmbp->pmesh;
+  int nmb           = pmbp->nmb_thispack;
+  int mbs           = pmesh->gids_eachrank[global_variable::my_rank];
+  auto &refine_flag = pmesh->pmr->refine_flag;
+  auto &indcs       = pmesh->mb_indcs;
+  int &is = indcs.is, nx1 = indcs.nx1;
+  int &js = indcs.js, nx2 = indcs.nx2;
+  int &ks = indcs.ks, nx3 = indcs.nx3;
+  const int nkji = nx3 * nx2 * nx1;
+  const int nji  = nx2 * nx1;
+  const int n1 = nx1 + 2*indcs.ng, n2 = nx2 + 2*indcs.ng, n3 = nx3 + 2*indcs.ng;
+  auto &u0        = pmbp->pz4c->u0;
+  int I_Z4C_CHI   = pmbp->pz4c->I_Z4C_CHI;
+  int I_Z4C_ALPHA = pmbp->pz4c->I_Z4C_ALPHA;
+  const Real expo      = 7.0/pmbp->pz4c->opt.chi_psi_power;
+  const Real chi_floor = pmbp->pz4c->opt.chi_div_floor;
+  auto thr_ref = this->lohner_refine;
+  auto thr_der = this->lohner_derefine;
+  auto eps     = this->lohner_eps;
+  const Real delta = 1.0e-99;
+
+  // monitored field on all cells, including ghost cells
+  DvceArray4D<Real> q("lohner_q", nmb, n3, n2, n1);
+  par_for("Z4c_AMR::LohnerQ", DevExeSpace(), 0, nmb-1, 0, n3-1, 0, n2-1, 0, n1-1,
+  KOKKOS_LAMBDA(const int m, const int k, const int j, const int i) {
+    q(m,k,j,i) = u0(m,I_Z4C_ALPHA,k,j,i)
+                 *pow(fmax(u0(m,I_Z4C_CHI,k,j,i), chi_floor), expo);
+  });
+
+  par_for_outer(
+    "Z4c_AMR::Lohner", DevExeSpace(), 0, 0, 0, (nmb - 1),
+    KOKKOS_LAMBDA(TeamMember_t tmember, const int m) {
+      Real team_emax;
+      Kokkos::parallel_reduce(
+        Kokkos::TeamThreadRange(tmember, nkji),
+        [=](const int idx, Real &emax) {
+          int k = (idx) / nji;
+          int j = (idx - k * nji) / nx1;
+          int i = (idx - k * nji - j * nx1) + is;
+          j += js;
+          k += ks;
+          const int c[3] = {i, j, k};
+          Real num = 0.0, den = 0.0;
+          for (int a = 0; a < 3; ++a) {
+            for (int b = 0; b < 3; ++b) {
+              int p[3], o[3];
+              // D_a q at i + e_b and at i - e_b
+              Real dq[2];
+              for (int sgn = 0; sgn < 2; ++sgn) {
+                p[0] = c[0]; p[1] = c[1]; p[2] = c[2];
+                p[b] += (sgn == 0) ? 1 : -1;
+                o[0] = p[0]; o[1] = p[1]; o[2] = p[2];
+                p[a] += 1;
+                o[a] -= 1;
+                dq[sgn] = q(m,p[2],p[1],p[0]) - q(m,o[2],o[1],o[0]);
+              }
+              // amplitude scale
+              Real sab = 0.0;
+              for (int s1 = -1; s1 <= 1; s1 += 2) {
+                for (int s2 = -1; s2 <= 1; s2 += 2) {
+                  p[0] = c[0]; p[1] = c[1]; p[2] = c[2];
+                  p[a] += s1;
+                  p[b] += s2;
+                  sab += fabs(q(m,p[2],p[1],p[0]));
+                }
+              }
+              num += SQR(dq[0] - dq[1]);
+              den += SQR(fabs(dq[0]) + fabs(dq[1]) + eps*sab + delta);
+            }
+          }
+          emax = fmax(sqrt(num/den), emax);
+        },
+        Kokkos::Max<Real>(team_emax));
+
+      if (team_emax > thr_ref) {
+        refine_flag.d_view(m + mbs) = 1;
+      }
+      if (team_emax < thr_der) {
         refine_flag.d_view(m + mbs) = -1;
       }
     });

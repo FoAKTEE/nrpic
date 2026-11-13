@@ -577,6 +577,15 @@ TaskStatus Z4c::CalcRHS(Driver *pdriver, int stage) {
     }
     rhs.chi(m,k,j,i) = Lchi - (1./6.) * opt.chi_psi_power *
       chi_guarded * z4c.alpha(m,k,j,i) * K;
+    // Parabolic relaxation of the Hamiltonian constraint (off unless damp_ch is set)
+    if (opt.damp_ch != 0.0 || opt.damp_ch_dx != 0.0) {
+      Real Hfull = Ht;
+      if(!is_vacuum) {
+        Hfull -= 16.*M_PI * tmunu.E(m,k,j,i);
+      }
+      Real ch = opt.damp_ch + opt.damp_ch_dx * size.d_view(m).dx1;
+      rhs.chi(m,k,j,i) += 0.5 * ch * pow(chi_guarded, -0.25) * Hfull;
+    }
     rhs.vTheta(m,k,j,i) = LTheta + z4c.alpha(m,k,j,i) * (
         0.5*Ht - (2. + opt.damp_kappa2) * opt.damp_kappa1 * z4c.vTheta(m,k,j,i));
     // Matter term

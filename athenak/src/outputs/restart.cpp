@@ -27,6 +27,7 @@
 #include "coordinates/adm.hpp"
 #include "z4c/compact_object_tracker.hpp"
 #include "z4c/z4c.hpp"
+#include "particles/particles.hpp"
 #include "radiation/radiation.hpp"
 #include "srcterms/turb_driver.hpp"
 //#include "outputs.hpp"
@@ -633,6 +634,11 @@ void RestartOutput::WriteOutputFile(Mesh *pm, ParameterInput *pin) {
 
   // close file, clean up
   resfile.Close(single_file_per_rank);
+
+  // NRPIC particles are stored in a separate file next to the mesh restart file
+  if (pm->pmb_pack->ppart != nullptr && pm->pmb_pack->ppart->is_nrpic) {
+    pm->pmb_pack->ppart->NrpicWriteRestart(fname + ".prt");
+  }
 
   return;
 }

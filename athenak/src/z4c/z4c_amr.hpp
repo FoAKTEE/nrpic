@@ -21,7 +21,7 @@ class Z4c;
 //! \class Z4c_AMR
 //  \brief managing AMR for Z4c simulations
 class Z4c_AMR {
-  enum RefinementMethod { Trivial, Tracker, Chi, dChi };
+  enum RefinementMethod { Trivial, Tracker, Chi, dChi, Lohner };
 
  public:
   explicit Z4c_AMR(ParameterInput *pin);
@@ -31,6 +31,7 @@ class Z4c_AMR {
   void RefineTracker(MeshBlockPack *pmbp);      // Refine based on trackers
   void RefineChiMin(MeshBlockPack *pmbp);       // Refine based on min{chi}
   void RefineDchiMax(MeshBlockPack *pmbp);      // Refine based on max{dchi}
+  void RefineLohner(MeshBlockPack *pmbp);       // Refine based on the Lohner indicator
   void RefineRadii(MeshBlockPack *pmbp);        // Refine based on the radii
 
   RefinementMethod method;
@@ -41,6 +42,9 @@ class Z4c_AMR {
 
   Real chi_thresh;     // chi threshold for chi refinement method
   Real dchi_thresh;    // dchi threshold for dchi refinement method
+  // Lohner indicator of q = alpha psi^7: refine above lohner_refine, derefine below
+  // lohner_derefine; lohner_eps weights the amplitude term of the denominator
+  Real lohner_refine, lohner_derefine, lohner_eps;
 };
 
 } // namespace z4c

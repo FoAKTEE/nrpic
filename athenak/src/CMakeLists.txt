@@ -131,6 +131,8 @@ add_executable(
         particles/particles.cpp
         particles/particles_pushers.cpp
         particles/particles_tasks.cpp
+        particles/nrpic.cpp
+        particles/nrpic_io.cpp
         outputs/pdf.cpp
 
         pgen/pgen.cpp
@@ -154,6 +156,8 @@ add_executable(
         pgen/tests/jeans_wave.cpp
         pgen/tests/binary_gravity.cpp
         pgen/tests/be_collapse.cpp
+        pgen/nrpic/nrpic_geodesic.cpp
+        pgen/nrpic/nrpic_cf.cpp
 
         pgen/unit_tests/eos_compose.cpp
         pgen/unit_tests/gauss_legendre.cpp

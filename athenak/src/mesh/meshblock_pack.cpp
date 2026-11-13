@@ -238,6 +238,10 @@ void MeshBlockPack::AddPhysics(ParameterInput *pin) {
   if (pin->DoesBlockExist("particles")) {
     ppart = new particles::Particles(this, pin);
     ppart->AssembleTasks(tl_map);
+    // particles of type nrpic deposit their stress-energy into the Tmunu sources
+    if (ppart->is_nrpic && ppart->nropt.deposit && ptmunu == nullptr) {
+      ptmunu = new Tmunu(this, pin);
+    }
     nphysics++;
   } else {
     ppart = nullptr;

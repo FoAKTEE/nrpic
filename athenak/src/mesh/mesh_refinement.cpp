@@ -31,6 +31,7 @@
 #include "radiation/radiation.hpp"
 #include "coordinates/adm.hpp"
 #include "z4c/z4c.hpp"
+#include "particles/particles.hpp"
 #include "z4c/z4c_amr.hpp"
 #include "prolongation.hpp"
 #include "restriction.hpp"
@@ -181,6 +182,11 @@ void MeshRefinement::AdaptiveMeshRefinement(Driver *pdriver, ParameterInput *pin
     }
     if (pmbp->pz4c != nullptr) {
       (void) pmbp->pz4c->NewTimeStep(pdriver, pdriver->nexp_stages);
+    }
+    // NRPIC particles keep their records; ownership, metric arrays and deposited
+    // sources are rebuilt on the new hierarchy
+    if (pmbp->ppart != nullptr && pmbp->ppart->is_nrpic) {
+      pmbp->ppart->NrpicInitializeSources();
     }
 
     nmb_created += nnew;

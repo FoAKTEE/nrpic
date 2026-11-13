@@ -27,6 +27,7 @@
 #include "z4c/z4c.hpp"
 #include "radiation/radiation.hpp"
 #include "srcterms/turb_driver.hpp"
+#include "particles/particles.hpp"
 #include "pgen.hpp"
 
 
@@ -631,6 +632,11 @@ ProblemGenerator::ProblemGenerator(ParameterInput *pin, Mesh *pm, IOWrapper resf
   // second argument true since this IS a restart
   CallProblemGenerator(pin, true);
 
+  // NRPIC particles are read from the file that accompanies the mesh restart file
+  if (pm->pmb_pack->ppart != nullptr && pm->pmb_pack->ppart->is_nrpic) {
+    pm->pmb_pack->ppart->NrpicReadRestart(pin->GetString("job","restart_file") + ".prt");
+  }
+
   // Read cyclic zoom restart data if enabled
   if (pm->pzoom != nullptr && pm->pzoom->read_rst) {
     // calculate offset of zoom data, i.e., after all previous data
@@ -964,6 +970,10 @@ void ProblemGenerator::CallProblemGenerator(ParameterInput *pin, bool is_restart
     BinaryGravity(pin, is_restart);
   } else if (pgen_fun_name.compare("be_collapse") == 0) {
     BECollapse(pin, is_restart);
+  } else if (pgen_fun_name.compare("nrpic_geodesic") == 0) {
+    NrpicGeodesic(pin, is_restart);
+  } else if (pgen_fun_name.compare("nrpic_cf") == 0) {
+    NrpicConformallyFlat(pin, is_restart);
 
   // pre-defined unit tests
   } else if (pgen_fun_name.compare("eos_compose") == 0) {

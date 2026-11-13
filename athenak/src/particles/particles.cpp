@@ -45,6 +45,11 @@ Particles::Particles(MeshBlockPack *ppack, ParameterInput *pin) :
     std::string ptype = pin->GetString("particles","particle_type");
     if (ptype.compare("cosmic_ray") == 0) {
       particle_type = ParticleType::cosmic_ray;
+    } else if (ptype.compare("nrpic") == 0) {
+      particle_type = ParticleType::nrpic;
+      is_nrpic = true;
+      // the number of particles is set by the problem generator
+      nprtcl_thispack = 0;
     } else {
       std::cout << "### FATAL ERROR in " << __FILE__ << " at line " << __LINE__
                 << std::endl << "Particle type = '" << ptype << "' not recognized"
@@ -58,6 +63,10 @@ Particles::Particles(MeshBlockPack *ppack, ParameterInput *pin) :
     std::string ppush = pin->GetString("particles","pusher");
     if (ppush.compare("drift") == 0) {
       pusher = ParticlesPusher::drift;
+    } else if (is_nrpic && ppush.compare("midpoint") == 0) {
+      pusher = ParticlesPusher::nrpic_midpoint;
+    } else if (is_nrpic && ppush.compare("boris") == 0) {
+      pusher = ParticlesPusher::nrpic_boris;
     } else {
       std::cout << "### FATAL ERROR in " << __FILE__ << " at line " << __LINE__
                 << std::endl << "Particle pusher must be specified in <particles> block"
@@ -81,6 +90,12 @@ Particles::Particles(MeshBlockPack *ppack, ParameterInput *pin) :
         nidata = 2;
         break;
       }
+    case ParticleType::nrpic:
+      {
+        nrdata = NRPIC_NRDATA;
+        nidata = NRPIC_NIDATA;
+        break;
+      }
     default:
       break;
   }
@@ -89,12 +104,18 @@ Particles::Particles(MeshBlockPack *ppack, ParameterInput *pin) :
 
   // allocate boundary object
   pbval_part = new ParticlesBoundaryValues(this, pin);
+
+  // options and mesh arrays of the numerical-relativity particle-in-cell module
+  if (is_nrpic) {
+    NrpicInit(pin);
+  }
 }
 
 //----------------------------------------------------------------------------------------
 // destructor
 
 Particles::~Particles() {
+  if (pbval_tm != nullptr) {delete pbval_tm;}
 }
 
 //----------------------------------------------------------------------------------------
@@ -103,6 +124,8 @@ Particles::~Particles() {
 // those with tag numbers less than ntrack.
 
 void Particles::CreateParticleTags(ParameterInput *pin) {
+  // nrpic particles are created and tagged by the problem generator
+  if (is_nrpic) return;
   std::string assign = pin->GetOrAddString("particles","assign_tag","index_order");
 
   // tags are assigned sequentially within this rank, starting at 0 with rank=0

@@ -26,6 +26,7 @@
 #include "ion-neutral/ion-neutral.hpp"
 #include "radiation/radiation.hpp"
 #include "driver.hpp"
+#include "particles/particles.hpp"
 #include "gravity/gravity.hpp"
 #include "utils/utils.hpp"
 
@@ -462,6 +463,11 @@ void Driver::ExecuteTaskList(Mesh *pm, std::string tl, int stage) {
 void Driver::Initialize(Mesh *pmesh, ParameterInput *pin, Outputs *pout, bool res_flag) {
   //---- Step 1.  Set conserved variables in ghost zones for all physics
   InitBoundaryValuesAndPrimitives(pmesh);
+
+  // NRPIC particles: metric arrays, MeshBlock ownership, deposited sources
+  if (pmesh->pmb_pack->ppart != nullptr && pmesh->pmb_pack->ppart->is_nrpic) {
+    pmesh->pmb_pack->ppart->NrpicStartup(res_flag);
+  }
 
   //---- Step 2.  Compute time step (if problem involves time evolution)
   hydro::Hydro *phydro = pmesh->pmb_pack->phydro;

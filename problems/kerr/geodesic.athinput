@@ -1,0 +1,67 @@
+# Test particle(s) in a fixed Kerr spacetime (paper Sec. III A).
+# Defaults: the e = 0.99 Kerr-Schild passage with analytic spherical Kerr-Schild input.
+# Override on the command line, e.g.
+#   particles/pusher=boris particles/metric=lattice particles/triad=cholesky
+
+<comment>
+problem   = NRPIC geodesic test
+
+<job>
+basename  = geo
+
+<mesh>
+nghost    = 2
+nx1       = 8
+x1min     = -1.0
+x1max     = 1.0
+ix1_bc    = periodic
+ox1_bc    = periodic
+nx2       = 8
+x2min     = -1.0
+x2max     = 1.0
+ix2_bc    = periodic
+ox2_bc    = periodic
+nx3       = 8
+x3min     = -1.0
+x3max     = 1.0
+ix3_bc    = periodic
+ox3_bc    = periodic
+
+<meshblock>
+nx1       = 8
+nx2       = 8
+nx3       = 8
+
+<time>
+evolution  = dynamic
+integrator = rk2
+cfl_number = 1.0
+nlim       = -1
+tlim       = 230.0
+ndiag      = 2000
+
+<particles>
+particle_type  = nrpic
+pusher         = midpoint         # midpoint | boris
+metric         = kerr_schild_sph  # kerr_schild_sph | boyer_lindquist | kerr_schild | lattice | mesh
+triad          = symmetric        # symmetric | cholesky (Boris pusher)
+bh_mass        = 1.0
+bh_spin        = 0.9
+lattice_dx     = 0.025
+tolerance      = 2.0e-14
+max_iterations = 200
+dt             = 0.01
+hist_dcycle    = 1000
+traj_dcycle    = 1
+traj_ntrack    = 1
+nparticles     = 1
+p0_x1          = 20.0
+p0_x2          = 1.5707963267948966
+p0_x3          = 0.0
+p0_u1          = -0.20131797516752664
+p0_u2          = 1.4049911031746785
+p0_u3          = 2.4328
+p0_m           = 0.0
+
+<problem>
+pgen_name = nrpic_geodesic

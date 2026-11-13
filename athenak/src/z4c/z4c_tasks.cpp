@@ -23,6 +23,7 @@
 #include "z4c/fastflow.hpp"
 #include "z4c/horizon_dump.hpp"
 #include "z4c/z4c.hpp"
+#include "particles/particles.hpp"
 #include "tasklist/numerical_relativity.hpp"
 #include "z4c/cce/cce.hpp"
 
@@ -241,6 +242,12 @@ TaskStatus Z4c::UpdateExcisionMasks(Driver *pdrive, int stage) {
 
 TaskStatus Z4c::ADMConstraints_(Driver *pdrive, int stage) {
   auto &indcs = pmy_pack->pmesh->mb_indcs;
+  // with depositing NRPIC particles the constraints are evaluated after the sources
+  // have been updated to the new time level (Particles::NrpicDeposit)
+  if (pmy_pack->ppart != nullptr && pmy_pack->ppart->is_nrpic &&
+      pmy_pack->ppart->nropt.deposit) {
+    return TaskStatus::complete;
+  }
   if (stage == pdrive->nexp_stages) {
     switch (indcs.ng) {
       case 2: ADMConstraints<2>(pmy_pack);
