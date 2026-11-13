@@ -80,8 +80,10 @@ Figure: `analysis/diag/figs/cluster_history_yc0819_full.png`.
 ## Apparent-horizon finder settings (2026-11-13)
 
 The flow finder stops when the mass changes by less than `mass_tol` between iterations.
-With 1e-3 it stops early (mean expansion -0.03 left on the surface, mass low by about
-3 percent). With 1e-7 it never meets the criterion at these resolutions and uses all its
+With 1e-3 the surface it returns in the dust-collapse run has a mean expansion of -0.03
+and a mass of 0.974. Whether the stopping rule is the reason for the low mass was not
+tested at the time; the vacuum puncture below, run with 1e-5, reads 0.972 to 0.979, so
+the stopping rule is at most part of it (see the calibration entry). With 1e-7 it never meets the criterion at these resolutions and uses all its
 iterations every cycle (about 10 s per cycle). Production runs use 1e-5, at most 400
 iterations, and a search every 16 cycles (`fastflow/find_every`, added here).
 
@@ -159,3 +161,62 @@ exactly at every cycle; the three momentum integrals agree to 5e-15 relative. Th
 runs of the same test sit at 1e-13 to 2e-12, the round-off of a sequential sum over
 10^5 cells against the pairwise sum used on the device.
 Figure: `analysis/diag/figs/dep_smr_adaptive.png`.
+
+## Test particles around an evolved puncture (GPU, 2026-11-13)
+
+Unit-mass puncture, precollapsed lapse, moving-puncture gauge, 250 M; dx = M/8 inside
+|x| < 4 M, dx = M/2 to 1 M where the bound tracers move; six tracers on the mesh metric,
+implicit midpoint pusher. Figure: `analysis/diag/figs/tracers_single_v3.png`.
+
+- Circular orbits at areal radius 7.04, 9.03, 11.03 M and an inclined one at 9.03 M:
+  the areal radius stays within 2.5, 1.1, 0.9 and 1.1 percent of its initial value while
+  the coordinate radius grows by 1.1 M (gauge). L_z, exactly conserved in any gauge that
+  keeps the spherical symmetry, holds to 1.1e-4, 2.4e-4, 3.9e-4, 2.0e-4.
+- The coordinate energy alpha W - beta^i u_i is not conserved while the gauge evolves
+  (swings of 2 to 6 percent in the first 40 M, as expected: the initial time vector is
+  not the Killing vector). Once the coordinates near the orbit are stationary it must
+  equal the Killing energy (1 - 2M/R)/(1 - 3M/R)^(1/2) of the circular orbit. Late-time
+  values: 0.944831, 0.952531, 0.959324, 0.952534 against 0.945053, 0.952697, 0.959479,
+  0.952697: low by 2.4e-4, 1.7e-4, 1.6e-4, 1.7e-4.
+- Plunging orbit (tag 4) and radial infall from rest (tag 5): reach the black hole and
+  are excised at lapse 0.05 at t = 126 M and 54 M. Their coordinate energy after the
+  transient sits 0.3 to 0.8 percent below its initial value; for the radial case the
+  Killing energy is 0.904762 and the recorded plateau is near 0.900. The particle falls
+  through the region where the coordinates still drift (the horizon's coordinate radius
+  grows from 1.12 M at t = 10 M to 1.48 M at t = 250 M), so this number does not
+  separate gauge from error. Gauge-independent check still to do: areal radius against
+  proper time compared with the exact radial geodesic.
+
+## Horizon mass of a vacuum puncture: calibration (2026-11-13)
+
+The same run gives the apparent-horizon mass of an exact unit-mass black hole as the
+finder reports it on this mesh family (dx = M/8 at the puncture, stopping tolerance
+1e-5 on the mass, 16 angular points, l_max = 8):
+
+| t / M | mass | mean expansion | rms expansion | mean coordinate radius |
+|---|---|---|---|---|
+| 0 | 1.00356 | +1.5e-1 | 1.3e-1 | 0.532 |
+| 10 | 0.97779 | -4.1e-3 | 1.1e-2 | 1.120 |
+| 50 | 0.97711 | -2.2e-3 | 1.2e-2 | 1.270 |
+| 100 | 0.97503 | +1.7e-3 | 1.2e-2 | 1.364 |
+| 250 | 0.97171 | +6.1e-3 | 1.3e-2 | 1.479 |
+
+The mass falls by 2.2 percent in the first 10 M and then by 2.2e-5 per M. There is no
+matter and no excision in this run. The value 0.974 found after dust collapse is
+therefore what this setup gives for a black hole of unit mass, and says little about
+the mass that went in. Two candidate causes, with a test for each (queued, 60 M each,
+`runs/puncture/hcal/`, input `problems/puncture/horizon_calib.athinput`):
+
+| run | change | tests |
+|---|---|---|
+| dx4 | dx = M/4 at the puncture | evolution resolution |
+| dx16 | dx = M/16 inside 2 M | evolution resolution |
+| dx8_tight | stopping tolerance 1e-8, up to 4000 flow steps | finder stopping |
+| dx8_ang | 32 angular points, l_max = 16 | finder angular resolution |
+
+Written before the runs: if the evolution near the puncture is under-resolved, the
+deficit at t = 50 M (2.3 percent at M/8) shrinks by a factor of four or more at M/16 and
+grows at M/4, and the two finder variants reproduce 0.977. If the finder is the limit,
+dx8_tight or dx8_ang moves towards 1 and dx16 stays near 0.977. A residual mean
+expansion of 4e-3 corresponds to a radial offset of order 4 M^2 x 4e-3, about one
+percent of the horizon radius, so a finder contribution at the percent level is possible.
