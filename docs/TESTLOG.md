@@ -1693,3 +1693,30 @@ is running. `os/mc_adapt2` (unlimited cap, one plain pass) is at t = 33 M: at mo
   with one refinement level fewer (finest cells h/4 instead of h/8), four passes plus
   compensation: `os/mc_nocap4`, `os/mc_adapt4`, block limit 2100. The prediction of
   13:36 applies to this pair.
+
+## Cluster with two overdensities at M/64 with horizon-based removal: no horizon (15:22)
+
+`jeans/n1e4_v10` (mesh of v7; removal inside 0.8 of a found horizon; lapse guard 0.02).
+- No particle is removed up to t = 9.34 M. The smallest lapse falls through 0.098
+  (8.80 M), 0.049 (9.18 M), 0.026 (9.34 M); the particle energy sum rises from 1.075
+  to 1.55 of M (core particles at Lorentz factors of 3 to 4); the constraint norm
+  (integral of H^2) reaches 572 at 9.5 M.
+- The finder, searching every 0.0625 M around each tracker, reports no horizon.
+- At 9.37 to 9.43 M the lapse passes the guard (0.02) and 1806 particles are removed;
+  the smallest lapse then rises again (0.027 at 9.59 M). Run stopped.
+- Against the prediction of 14:50: the second branch. No horizon is reported while the
+  lapse falls below 0.02: cells of M/64 do not form these black holes, with or without
+  early removal. (The first branch, a horizon between 8.5 and 10 M, did not occur.)
+- Why this is plausible, as an estimate and not a tested statement: a black hole of
+  0.1 M forming from regular data has an isotropic horizon radius near 0.05 M, three
+  cells of M/64, while clouds and filter spread each particle over about two cells.
+  The runs in which horizons formed had 8 cells (prolate, compact clusters) and 13
+  cells (dust) per horizon radius; M/128 gives 6, the original's M/256 gives 13.
+- `jeans/n1e4_v11` (M/128, guard 0.02) is running. Added `jeans/n1e4_v12`: M/128
+  with the lapse guard off, removal only inside a found horizon. Written before the
+  results: if six cells per horizon radius suffice, both report horizons around
+  t = 9 to 10 M and v11 removes no particle before its first horizon; if v11 again
+  removes the cores at the guard without a horizon while v12 finds one later, the
+  guard is what prevents formation on a marginal mesh; if neither finds a horizon,
+  this test needs the original's cell size, which costs four times the steps of v7
+  (about a day on one card for 100 M).
