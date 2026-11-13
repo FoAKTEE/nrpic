@@ -76,7 +76,7 @@ as limits of the adaptive mesh.
 ## Project names (5.8)
 
 The project's intermediate products, which the paper never names. Pass them to the checker
-as `--forbid 'nrpic_cf|nrpic_geodesic|kernel_test|build_gpu|gpu_run|submit_chain|make_ic|athinput|Slurm|A100|anta'`.
+as `--forbid 'nrpic_cf|nrpic_geodesic|kernel_test|build_gpu|gpu_run|submit_chain|make_ic|athinput|Slurm|A100|\banta\b'`.
 
 - problem generator and script names (`nrpic_cf`, `nrpic_geodesic`, `kernel_test`,
   `make_ic.py`, `gpu_run.sh`, `submit_chain.sh`), input-file names, run directories;
