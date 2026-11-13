@@ -1239,3 +1239,17 @@ shows what its figure shows: an oscillation of the central lapse with a period n
 decays, all particles kept. If this run does something else (a quiet oscillation of
 constant size, or a slow expansion), the reading is wrong and the difference from the
 original stays unexplained.
+
+## Two runs out of memory at start; memory rule for adaptive runs (11:53)
+
+- `st/osc/dx2` (half cell size): my override put level 7 over the whole 15.9 M region,
+  which the nesting rule turned into 3200 MeshBlocks. Resubmitted as `st/osc/dx2b` with
+  level 7 inside 7.9 M only (456 blocks): the cells are halved where the oscillation
+  lives (the core and 85 percent of the mass), not over the whole cluster.
+- `jeans/n1e4_v5`: 1128 MeshBlocks, block limit 3072. With adaptive refinement the
+  arrays are sized for the block limit, not for the blocks in use: measured 31 to 32
+  MiB per allowed block (16^3 cells, four ghost cells) in three adaptive runs (32.3 GB
+  at a limit of 1024, 20.4 GB at 640, 48.3 GB at 1536). A limit of 3072 asks for
+  about 97 GB on an 80 GB card. Resubmitted as `jeans/n1e4_v6` with a limit of 1500.
+- The second prolate attempt, not yet started, had a limit of 2200 (70 GB); replaced
+  by `prolate/e09_v7` with 2000.

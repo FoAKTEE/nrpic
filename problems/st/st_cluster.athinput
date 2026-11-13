@@ -44,6 +44,16 @@ x2max = 15.9
 x3min = -15.9
 x3max = 15.9
 
+# second region, same level by default; level = 7 halves the cells inside 7.9 M
+<refined_region2>
+level = 6
+x1min = -7.9
+x1max = 7.9
+x2min = -7.9
+x2max = 7.9
+x3min = -7.9
+x3max = 7.9
+
 <time>
 evolution  = dynamic
 integrator = rk4
