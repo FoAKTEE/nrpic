@@ -770,3 +770,30 @@ instead of 0.031 (momentum 0.009 against 0.016). The lapse history is the same t
 3e-4: every extremum at the same time with the same value (last minimum -0.0111
 against -0.0108 at t = 280 M). The reading "constraint damping feeds back on the mode"
 predicted a strong dependence on the value and is ruled out.
+
+## Growing oscillation: time step (07:44)
+
+`st/osc/dt2` (half the time step) against the base run: the same history to 4e-4
+(last minimum -0.0104 against -0.0108 at t = 281 and 280 M; amplitude fit
+0.0006 + 1.33e-5 t against 0.0006 + 1.34e-5 t). The time lag of the frozen source is
+not the cause, as the estimate written beforehand had it.
+
+Ruled out so far by a run each: the sample (three seeds), the particle number (10^3
+against 10^4), the constraint damping (0.1 against 0.02), the time step. Still to
+come: no constraint damping, parabolic relaxation, cancelling the cloud width,
+continuation to 600 M.
+
+## What the original shows for these two models (its figure files, 07:50)
+
+The source package of the original contains its figures. Read off them, by eye:
+- Stable model y_c = 0.819 (figure of the cluster sequence): the central lapse is drawn
+  on an axis from 0 to 1 and stays near 0.81 for 300 M, with a broad rise of roughly
+  0.01 around t = 150 to 250 M. An oscillation of 0.01 with a period of 70 M, as in our
+  compensated runs, is at the limit of what that figure can show; the broad rise has
+  the shape of the excursion our plain-filter runs make (0.027 with four passes, 0.018
+  with two). Nothing here contradicts the original, and the original cannot confirm or
+  exclude the growth we see.
+- Unperturbed y_c = 0.5 (migration figure): the lapse leaves 0.56 after about 50 M,
+  passes 0.8 near t = 125 M and 0.9 near 230 M, stays there to 350 M and falls back to
+  about 0.57 near t = 450 to 520 M before settling around 0.85. Ours passes 0.8 at
+  88 M (compensated) and 59 M (plain filter): the same expansion, starting earlier.
