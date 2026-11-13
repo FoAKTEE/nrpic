@@ -1123,3 +1123,25 @@ collapsed, consistent table, adaptive mesh with the horizon finder, cells of M/4
 8 M, to 600 M. No prediction for the outcome (near-critical model). Comparison
 quantities: lapse at t = 0 (0.7486 expected by construction), period and growth of the
 swing over the first 300 M against the original's figure.
+
+## Compact model y_c = 0.500 with the one-percent inward kick: collapse (10:43), prediction 5
+
+`st/yc0500_v5`: 10^4 stratified particles, adaptive mesh, published deposition rule,
+four passes plus compensation, corrected horizon finder, 120 M. Figure:
+`analysis/diag/figs/cluster_history_yc0500_v5.png`.
+- The central lapse stays between 0.545 and 0.556 until t = 50 M, dips to 0.514 at
+  70 M, recovers to 0.536 at 80 M and then falls: 0.38, 0.23, 0.045, 0.016 at t = 90,
+  100, 110, 120 M. The mass shells contract together from t = 85 M.
+- Apparent horizon first found at t = 104.3 M. Its mass grows as the rest of the
+  cluster falls in: 0.831 at first detection, 0.949 at 106.3 M, 0.992 at 109.3 M,
+  0.9992 at 114.3 M, 1.0000 at 119 M; the total mass is 1.
+- Removal at the lapse threshold starts at t = 104.6 M; at t = 120 M three of the 10^4
+  particles are left and 1.0235 of 1.0238 in rest mass has been removed.
+- As predicted, the model collapses to a black hole whose horizon mass equals the total
+  mass. The horizon appears at 104 M here against 73 M in the original (2e6 particles),
+  which itself calls its collapse time dependent on the particle number and the initial
+  noise. The other compact model, y_c = 0.605, is also late here (no collapse by 150 M
+  against 109 M). The common direction of the difference is noted; its cause is not
+  determined.
+- After removal starts, the centre of mass and the momentum sums of the diagnostics are
+  those of the few particles left and carry no information.
