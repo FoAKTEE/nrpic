@@ -84,3 +84,38 @@ With 1e-3 it stops early (mean expansion -0.03 left on the surface, mass low by 
 3 percent). With 1e-7 it never meets the criterion at these resolutions and uses all its
 iterations every cycle (about 10 s per cycle). Production runs use 1e-5, at most 400
 iterations, and a search every 16 cycles (`fastflow/find_every`, added here).
+
+## Stable cluster: block size, perturbation, net momentum (GPU, 2026-11-13)
+
+Three runs of y_c = 0.819 with the same 10^4 stratified particles, 300 M each.
+Figure: `analysis/diag/figs/cluster_history_yc0819_compare.png`.
+
+- 32^3 against 16^3 MeshBlocks (same cells, different block decomposition): identical
+  histories to plotting accuracy (lapse, mass-shell radii, centre of mass); constraint
+  norms differ by 5 percent at late times. The 16^3 layout runs 300 M in 8 minutes.
+- With and without the one-percent inward velocity perturbation: the same breathing
+  motion, lapse 0.809 -> 0.837 at t = 115 M -> 0.810 at t = 230 to 300 M. The
+  oscillation is therefore driven by the particle sample itself (sampling noise of the
+  initial data against the smooth equilibrium), not by the applied perturbation; its
+  period, about 230 M, is long because the model sits close to the binding-energy maximum.
+- Centre of mass: moves by (-0.02, 0.09, 0.20) M in 300 M. The sample has a net momentum
+  sum m u_i = (-1.3, 4.0, 9.1) 1e-4, i.e. a mean velocity of the same size as the drift
+  rate (7e-4 in z). The drift is the motion of the sample, not a gauge effect.
+  Consequence: `problems/ic/make_ic.py` now subtracts the mass-weighted mean of u_i for
+  the cluster models by default (`--keep-net-momentum` restores the raw sample), and the
+  particle files of all runs still queued at this time were shifted in place with
+  `problems/ic/zero_momentum.py` (net momentum 1e-17 afterwards). At N = 100 the raw
+  sample has a mean velocity of 0.02 to 0.03, which would have carried the cluster
+  across its own radius in 300 M.
+- Change of the total sum m u_i over 300 M: below 7e-5 of the rest mass in every
+  component (it is conserved only for a stationary, homogeneous metric; the residual
+  measures the noise of the field the particles move in).
+
+## Density-adaptive cloud level on GPU: conservation (2026-11-13)
+
+Same flat-space statically refined test as before (random particles crossing three
+levels), adaptive cloud level, 81 cycles. The energy integral equals the particle sum
+exactly at every cycle; the three momentum integrals agree to 5e-15 relative. The CPU
+runs of the same test sit at 1e-13 to 2e-12, the round-off of a sequential sum over
+10^5 cells against the pairwise sum used on the device.
+Figure: `analysis/diag/figs/dep_smr_adaptive.png`.

@@ -725,7 +725,12 @@ def test_make_ic_jeans():
         assert abs(meta["envelope"]["M_env"] + 2 * 0.12 - meta["M_ADM"]) < 1e-15
         J = jeans()
         x2, u2, m2, sp2 = J.sample(1000, seed=1)
-        assert np.array_equal(x, x2) and np.array_equal(u, u2) and np.array_equal(m, m2)
+        # make_ic removes the net momentum of the sample by default
+        ubar = (m2[:, None] * u2).sum(0) / m2.sum()
+        assert meta["net_momentum_removed"]["mean_u"] == [float(v) for v in ubar]
+        assert np.array_equal(x, x2) and np.array_equal(u, u2 - ubar) \
+            and np.array_equal(m, m2)
+        assert np.max(np.abs((m[:, None] * u).sum(0))) < 1e-15
         p0 = meta["psi_tot"]["origin"]
         assert abs(meta["lapse_isotropic"]["origin"] - (2 - p0) / p0) < 1e-15
         assert meta["particles_by_species"]["total"]["N"] == 1000

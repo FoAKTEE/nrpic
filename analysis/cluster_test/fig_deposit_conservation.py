@@ -182,18 +182,23 @@ def main():
                           "$/ \\sum m W$, before filter")
     axes[2, 0].set_ylabel("same, after filter")
     axes[3, 0].set_ylabel(r"events per $M$")
-    axes[0, 1].plot([], [], color="k", ls="-", label="before filter")
-    axes[0, 1].plot([], [], color="k", ls="--", label="after filter")
-    axes[0, 1].plot([], [], "o", color="k", mfc="none", label="after filter, 3D dumps")
-    axes[0, 1].legend(loc="center right", fontsize=8)
-    axes[1, 1].plot([], [], color="k", ls="-", label="$x$")
-    axes[1, 1].plot([], [], color="k", ls="--", label="$y$")
-    axes[1, 1].plot([], [], color="k", ls=":", label="$z$")
-    axes[1, 1].legend(loc="center right", fontsize=8, ncol=3)
-    axes[3, 1].plot([], [], color="k", ls="-", label="refinement-level changes")
-    axes[3, 1].plot([], [], color="k", ls="--", label="removals (excised, left mesh)")
-    axes[3, 1].legend(loc="upper right", fontsize=8)
-    h0, l0 = axes[0, 0].get_legend_handles_labels()
+    h0, l0 = [], []
+    for ax in axes[0]:
+        for hh, ll in zip(*ax.get_legend_handles_labels()):
+            if ll not in l0:
+                h0.append(hh); l0.append(ll)
+    L = plt.Line2D
+    axes[0, 1].legend([L([], [], color="k", ls="-"), L([], [], color="k", ls="--"),
+                       L([], [], color="k", ls="", marker="o", mfc="none")],
+                      ["before filter", "after filter", "after filter, 3D dumps"],
+                      loc="center right", fontsize=8)
+    axes[1, 1].legend([L([], [], color="k", ls=s_) for s_ in ("-", "--", ":")],
+                      ["$x$", "$y$", "$z$"], loc="center right", fontsize=8, ncol=3)
+    axes[2, 1].legend([L([], [], color="k", ls="", marker=m, mfc="none") for m in "os^"],
+                      ["$x$, 3D dumps", "$y$", "$z$"], loc="lower right", fontsize=8, ncol=3)
+    axes[3, 1].legend([L([], [], color="k", ls="-"), L([], [], color="k", ls="--")],
+                      ["refinement-level changes", "removals (excised, left mesh)"],
+                      loc="upper right", fontsize=8)
     fig.legend(h0, l0, loc="upper center", ncol=5, fontsize=8, frameon=False,
                bbox_to_anchor=(0.54, 1.0))
     fs.save(fig, os.path.join(C.FIGS, "deposit_conservation"))

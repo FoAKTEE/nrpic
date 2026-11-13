@@ -67,6 +67,10 @@ def main(argv=None):
     p.add_argument("--out", default=".", help="output directory")
     p.add_argument("--prefix", default=None, help="output file stem")
     p.add_argument("--species", type=int, default=0)
+    p.add_argument("--keep-net-momentum", action="store_true",
+                   help="st, jeans: keep the net momentum sum m u_i of the sample "
+                        "(default: subtract the mass-weighted mean of u_i, so that "
+                        "the cluster stays centred; the removed value is recorded)")
     p.add_argument("--table-points", type=int, default=4000,
                    help="table rows across the matter (dr = rbar_s/table_points)")
     p.add_argument("--table-rmax", type=float, default=1.5,
@@ -207,6 +211,12 @@ def main(argv=None):
         meta.update(sampler="mc", symmetrize=sym)
         stem = a.prefix or f"prolate_e{_fmt(a.e)}_b{_fmt(a.b)}_N{N}_s{a.seed}"
 
+    if a.model in ("st", "jeans") and not a.keep_net_momentum:
+        ubar = (m[:, None] * u).sum(0) / m.sum()
+        u = u - ubar
+        meta["net_momentum_removed"] = dict(
+            mean_u=[float(v) for v in ubar],
+            note="u_i -> u_i - sum(m u_i)/sum(m); sum m u_i = 0 afterwards")
     nrp = os.path.join(a.out, stem + ".nrp")
     nio.write_nrp(nrp, x, u, m, sp)
     meta["particle_file"] = os.path.basename(nrp)

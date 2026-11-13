@@ -49,6 +49,10 @@ for a in 0.0 0.9; do
   run_def plunge_a${a}_boris      $MESH particles/particle_file=$IC/plunge_a${a}_n10000.nrp particles/bh_spin=$a particles/snap_dt=1.0 time/tlim=500.0 particles/pusher=boris
 done
 
+# mesh-resolution check: every dx doubled (root nx 32 and 8^3 MeshBlocks: the same
+# MeshBlock geometry and refinement layout as the production mesh, half the cells per side)
+run_def mesh_a0.9_n10000_mid_dx2  $MESH particles/particle_file=$IC/bound_a0.9_n10000.nrp particles/bh_spin=0.9 mesh/nx1=32 mesh/nx2=32 mesh/nx3=32 meshblock/nx1=8 meshblock/nx2=8 meshblock/nx3=8
+
 done_ok() {
   local log=runs/cluster_test/$1/athena.log
   [[ -f $log ]] && grep -q "Terminating on time limit" "$log" && grep -q "# exit=0" "$log"

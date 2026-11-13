@@ -31,12 +31,14 @@ KEYS = [("E", r"$|\Delta E/E|$"), ("L", r"$|\Delta L_z/L_z|$"), ("Q", r"$|\Delta
 
 
 def load(name, species):
-    h = C.invariant_history(name)
+    h = dict(C.invariant_history(name))
+    h["a"] = C.spin_of(name)
     if species is not None:
         sel = h["species"] == species
         h = {k: (v[..., sel] if (isinstance(v, np.ndarray) and v.ndim >= 1
                                  and v.shape[-1] == len(sel)) else v)
              for k, v in h.items() if k != "x"}
+        h["a"] = C.spin_of(name)
     return h
 
 
@@ -53,6 +55,21 @@ def stats(h):
                       max_final=float(fin.max()),
                       max_all=float(allv.max()),
                       median_all=float(np.median(allv)))
+    # |dQ| / K with the Carter constant K = Q + (L_z - a E)^2 >= Q (insensitive to the
+    # near-equatorial particles with tiny Q)
+    a = h["a"]
+    K = h["Q0"] + (h["L0"] - a * h["E0"]) ** 2
+    eqk = np.abs(h["Q"] - h["Q0"][None, :]) / K[None, :]
+    fin = eqk[last][np.isfinite(eqk[last])]
+    out["QK"] = dict(median_final=float(np.median(fin)), p99_final=float(np.percentile(fin, 99)),
+                     max_final=float(fin.max()), max_all=float(np.nanmax(eqk)))
+    # dependence on the pericentre: particles with r_min < 6 M versus the rest
+    rmin = np.nanmin(h["r"], 0)
+    eE = C.rel_err(h, "E")[last]
+    for lab, sel in (("rmin_lt6", rmin < 6), ("rmin_ge6", rmin >= 6)):
+        v = eE[sel & np.isfinite(eE)]
+        out["E_" + lab] = dict(n=int(len(v)), median=float(np.median(v)) if len(v) else None,
+                               p99=float(np.percentile(v, 99)) if len(v) else None)
     out["n_start"] = int(h["alive"][0].sum())
     out["n_end"] = int(h["alive"][last].sum())
     out["t_end"] = float(h["t"][last])
