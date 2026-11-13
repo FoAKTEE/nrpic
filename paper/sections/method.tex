@@ -1,0 +1,203 @@
+\section{The particle-mesh method}\label{sec:method}
+
+Evolving collisionless matter in dynamical gravity requires advancing smooth curvature fields on an Eulerian mesh alongside discrete phase-space trajectories over a shared global time step $\Delta t$, set by the Courant limit of the finest cell spacing $\Delta x$, without updating the particle ensemble at every intermediate substep of the field equations. The numerical-relativity particle-in-cell (NRPIC) method \cite{Wu:2026nrpic} couples the two representations through a staggered cycle in which a hyperbolic spacetime solver---the gravitational counterpart of the Maxwell solver in an electromagnetic particle-in-cell code \cite{1988csup.book.....H,1991ppcs.book.....B}---evolves cell-centered metric fields while macroparticles follow geodesics and return smoothed stress-energy moments to the grid. Representing phase space with a mean count $\Nppc$ of macroparticles per cell introduces discrete sampling noise of relative amplitude $\Nppc^{-1/2}$, so each stage is built to preserve time-reversal symmetry on orbits, exact integral weight across mesh interfaces, and smooth sources when $\Nppc$ is modest.
+
+One cycle from $t^n$ to $t^{n+1} = t^n + \Delta t$ executes six stages in sequence (Fig.~\ref{fig:cycle}). First, $\alpha$, $\beta^i$, and $\gamma_{ij}$ at $t^n$ are saved across all active and ghost cells so trajectories can access both endpoints of the step. Second, holding the sources $(E, S_i, S_{ij})$ deposited at $t^n$ fixed across four fourth-order Runge--Kutta stages advances the spacetime variables to $t^{n+1}$, supplying the future metric at the cost of a single particle update per step. Third, a geodesic pusher---an update advancing each macroparticle's position and momentum across $\Delta t$---evolves every particle from $t^n$ to $t^{n+1}$ in the midpoint-averaged metric interpolated between $t^n$ and $t^{n+1}$. Fourth, lapse excision removes particles deep inside black holes where the interpolated initial lapse satisfies $\alpha(t^n, \bm{x}_p^n) < \aexc$ for a threshold $\aexc$, out-of-bounds and nonfinite particles are discarded, and remaining particles are reassigned to their enclosing mesh blocks. Fifth, stress-energy deposition---assigning each macroparticle's mass-energy, momentum, and stress to neighboring cells---builds $(E, S_i, S_{ij})$ at $t^{n+1}$, applies binomial smoothing passes, and evaluates the gravitational constraints with the updated sources. Sixth, diagnostics run and the adaptive mesh refines or coarsens where curvature gradients demand; after any regrid, metric arrays, block ownership, and deposited sources are rebuilt on the new leaf hierarchy while every macroparticle keeps its rest mass $m_p$, position $x_p^i$, and momentum $u_{i,p}$ unchanged.
+
+\subsection{Geodesic pushers}\label{sec:pushers}
+
+Sustaining collisionless equilibria over many crossing times and resolving periapsis passages near spinning black holes require trajectory updates free of secular drift in orbital invariants. Both pushers implemented here---the implicit midpoint pusher and the spacetime Boris pusher \cite{Wu:2026nrpic}---store $x_p^i$ and $u_{i,p}$ at integer time levels, achieve second-order accuracy in $\Delta t$, and maintain time-reversal symmetry through implicit midpoint evaluation. Each queries the geometry solely through a point-evaluation interface returning $\alpha$, $\beta^i$, $\gamma_{ij}$, and their first spatial derivatives, so identical trajectory code runs on analytic metrics in arbitrary coordinates, uniform-lattice samples, and adaptive mesh blocks. Fixed-point iteration updates the six endpoint variables $(x_p^{i,n+1}, u_{i,p}^{n+1})$ until the largest component change falls below a tolerance.
+
+Suppressing the particle index $p$, the implicit midpoint pusher forms the phase-space midpoint
+\begin{equation}\label{eq:midpoint_state}
+\bar{x}^i = \frac{x^{i,n} + x^{i,n+1}}{2}, \qquad
+\bar{u}_i = \frac{u_i^n + u_i^{n+1}}{2},
+\end{equation}
+and averages the $t^n$ and $t^{n+1}$ spatial reconstructions at $\bar{\bm{x}}$ to obtain $\bar{\alpha}$, $\bar{\beta}^i$, $\bar{\gamma}_{ij}$, and their spatial derivatives. Inverting $\bar{\gamma}_{ij}$ gives $\bar{\gamma}^{ij}$, $\bar{u}^i = \bar{\gamma}^{ij}\bar{u}_j$, and $\bar{W} = \sqrt{1 + \bar{\gamma}^{ij}\bar{u}_i\bar{u}_j}$, advancing the trajectory by the midpoint update,
+\begin{align}\label{eq:midpoint_update}
+\frac{x^{i,n+1} - x^{i,n}}{\Delta t} &= \frac{\bar{\alpha}\bar{\gamma}^{ij}\bar{u}_j}{\bar{W}} - \bar{\beta}^i, \nonumber\\
+\frac{u_i^{n+1} - u_i^n}{\Delta t} &= -\bar{W}\partial_i\bar{\alpha} + \bar{u}_j\partial_i\bar{\beta}^j + \frac{\bar{\alpha}}{2\bar{W}}\bar{u}^j\bar{u}^k\partial_i\bar{\gamma}_{jk},
+\end{align}
+where $\bar{u}^j\bar{u}^k\partial_i\bar{\gamma}_{jk} = -\bar{u}_j\bar{u}_k\partial_i\bar{\gamma}^{jk}$. Fixed uniquely by the coordinate metric, the midpoint update conserves any momentum $u_i$ conjugate to a cyclic coordinate ($\partial_i = 0$) to rounding error \cite{Bacchini:2020cze}.
+
+The spacetime Boris pusher projects the momentum onto a tetrad, a local orthonormal frame of four mutually perpendicular unit vectors---here $e_{(0)}^\mu = n^\mu$ along the normal observers together with a spatial triad $e^{(m)}_i$ of three mutually perpendicular unit covectors on the slice---in which the metric is locally Minkowskian \cite{Olivares:2021cfa,Boyeneni:2025tsx,Wu:2026nrpic}. The triad and its inverse $e^i_{(m)}$ satisfy
+\begin{equation}\label{eq:triad_def}
+\gamma_{ij} = \delta_{mn} e^{(m)}_i e^{(n)}_j, \qquad
+e^i_{(m)} e^{(n)}_i = \delta^n_m,
+\end{equation}
+with Kronecker deltas $\delta_{mn}$ and $\delta^n_m$, defining the tetrad momentum $u_{(m)} = e^i_{(m)} u_i$ (so $u_i = e^{(n)}_i u_{(n)}$) and $W = \sqrt{1 + \delta^{mn} u_{(m)} u_{(n)}}$. Along a trajectory with $u^j = \gamma^{jk} u_k$, coordinate velocity $v^j$, and convective derivative
+\begin{equation}\label{eq:coord_vel}
+\frac{\dd}{\dd t} = \partial_t + v^j \partial_j, \qquad
+v^j = \frac{\alpha u^j}{W} - \beta^j,
+\end{equation}
+differentiating $u_i = e^{(n)}_i u_{(n)}$ yields
+\begin{equation}\label{eq:triad_chain}
+e^{(n)}_i \frac{\dd u_{(n)}}{\dd t} = \frac{\dd u_i}{\dd t} - u_{(n)}\bigl(\partial_t e^{(n)}_i + v^j \partial_j e^{(n)}_i\bigr).
+\end{equation}
+Differentiating $\gamma_{jk} = \delta_{mn} e^{(m)}_j e^{(n)}_k$ rewrites the metric-gradient force in the characteristic equations as
+\begin{equation}\label{eq:metric_triad_id}
+\frac{1}{2} u^j u^k \partial_i \gamma_{jk} = u^j u_{(n)} \partial_i e^{(n)}_j.
+\end{equation}
+Defining the momentum-contracted triad gradients
+\begin{equation}\label{eq:triad_gradients}
+c_{jk} = u_{(n)} \partial_j e^{(n)}_k, \qquad
+c^t_k = u_{(n)} \partial_t e^{(n)}_k,
+\end{equation}
+inserting the characteristic equations, contracting with $e^i_{(m)}$, and passing to normal-observer proper time $\dd\hat{t} = \alpha\,\dd t$ gives the tetrad equation of motion,
+\begin{equation}\label{eq:tetrad_eom}
+\frac{\dd u_{(m)}}{\dd\hat{t}} = \Et_{(m)} + \frac{1}{W}\epsilon_{(m)(n)(k)} u_{(n)} \Bt_{(k)},
+\end{equation}
+where $\epsilon_{(m)(n)(k)}$ is the Levi-Civita symbol and the momentum-contracted gravito-electric and gravito-magnetic fields $\Et_{(m)}$ and $\Bt_{(k)}$ are
+\begin{align}\label{eq:gravito_em}
+\alpha \Et_{(m)} &= e^i_{(m)}\bigl(-W\partial_i\alpha + u_j\partial_i\beta^j + \beta^j c_{ji} - c^t_i\bigr), \nonumber\\
+\Bt_{(k)} &= \epsilon_{(k)(m)(n)} e^i_{(m)} e^j_{(n)} c_{ij},
+\end{align}
+representing the tetrad field strengths $\partial_\mu e^{(m)}_\nu - \partial_\nu e^{(m)}_\mu$ contracted with momentum \cite{Olivares:2021cfa,Boyeneni:2025tsx}.
+
+In plasma simulation \cite{boris1970relativistic,1991ppcs.book.....B}, the Boris step splits the Lorentz force into two half-step electric kicks that change particle energy and momentum magnitude, separated by a magnetic rotation at constant Lorentz factor. Here $\Et_{(m)}$---carrying lapse, shift, and temporal triad gradients---drives the energy-changing kicks, while $\Bt_{(k)}$---carrying the spatial curl of the triad---rotates $u_{(m)}$ at fixed $W$. Because both fields depend on momentum, each fixed-point iteration evaluates $\bar{\Et}_{(m)}$, $\bar{\Bt}_{(k)}$, and $\bar{W}$ at $\bar{\bm{x}}$ from the midpoint mean $\bar{u}_{(m)}$ of $u_{(m)}^n = e^i_{(m)}(t^n, \bm{x}^n) u_i^n$ and $u_{(m)}^{n+1} = e^i_{(m)}(t^{n+1}, \bm{x}^{n+1}) u_i^{n+1}$ with $\Delta\hat{t} = \bar{\alpha}\Delta t$, advancing $\bm{u}_{\rm tet} = (u_{(1)}, u_{(2)}, u_{(3)})$ and $x^i$ through the Boris rotation,
+\begin{align}\label{eq:boris_rotation}
+\bm{u}^{-} &= \bm{u}_{\rm tet}^n + \frac{\Delta\hat{t}}{2}\bar{\bm{\Et}}, \nonumber\\
+\bm{\vartheta} &= \frac{\Delta\hat{t}}{2\bar{W}}\bar{\bm{\Bt}}, \nonumber\\
+\bm{u}' &= \bm{u}^{-} + \bm{u}^{-} \times \bm{\vartheta}, \nonumber\\
+\bm{u}^{+} &= \bm{u}^{-} + \frac{2(\bm{u}' \times \bm{\vartheta})}{1 + |\bm{\vartheta}|^2}, \nonumber\\
+\bm{u}_{\rm tet}^{n+1} &= \bm{u}^{+} + \frac{\Delta\hat{t}}{2}\bar{\bm{\Et}}, \nonumber\\
+\frac{x^{i,n+1} - x^{i,n}}{\Delta t} &= \frac{\bar{\alpha}\bar{e}^i_{(m)}\bar{u}_{(m)}}{\bar{W}} - \bar{\beta}^i,
+\end{align}
+before contracting $u_{(m)}^{n+1}$ back to $u_i^{n+1} = e^{(m)}_i(t^{n+1}, \bm{x}^{n+1}) u_{(m)}^{n+1}$.
+
+Just as integrating free motion in polar coordinates tracks rotating unit vectors---where midpoint evaluation of the frame-rotation rate paired with endpoint component projections leaves a finite-step discrepancy relative to fixed Cartesian axes---factoring $\gamma_{ij}$ fixes $e^{(m)}_i$ only up to a local orthogonal rotation. Continuous trajectories are invariant because frame-rotation terms in $c_{jk}$ and $c^t_k$ cancel endpoint projections identically, whereas a finite step $\Delta t$ leaves a second-order truncation error set by this local frame choice, the tetrad gauge. Two gauges are implemented: the symmetric gauge, using the symmetric positive-definite matrix square root of $\gamma_{ij}$,
+\begin{equation}\label{eq:symmetric_gauge}
+e^{(m)}_j = \bigl(\gamma^{1/2}\bigr)_{mj},
+\end{equation}
+from eigendecomposition with derivatives solved from the Sylvester equation for $\partial(\gamma^{1/2})$ in the eigenbasis; and the Cholesky gauge, using the lower-triangular factor $L_{jm}$ with $\gamma_{ij} = \delta^{mn} L_{im} L_{jn}$,
+\begin{equation}\label{eq:cholesky_gauge}
+e^{(m)}_j = L_{jm}, \qquad L_{jm} = 0 \text{ for } j < m,
+\end{equation}
+equivalent to Gram--Schmidt orthonormalization of the coordinate basis in index order in closed form at lower cost. Reference~\cite{Wu:2026nrpic} leaves the tetrad gauge unstated. Testing both realizations against its geodesic benchmarks (Sec.~\ref{sec:testparticles}) identifies each choice: for analytic spherical Kerr--Schild input, the symmetric gauge reproduces the published invariant errors to all reported digits, whereas on a Cartesian mesh---where polynomial interpolation sets the error scale while triad derivatives still separate the two frames---the Cholesky gauge in $(x,y,z)$ order reproduces the published errors. Each gauge matches its corresponding benchmark alone, and permuted coordinate orderings yield distinct error curves.
+
+\subsection{Metric reconstruction}\label{sec:reconstruction}
+
+Fixed-point trajectory iteration requires off-grid values of $\alpha$, $\beta^i$, $\gamma_{ij}$, and their first spatial derivatives that vary continuously across cell faces so derivative jumps never stall convergence or disturb orbital invariants. The mesh stores $\alpha$, $\beta^i$, and the six covariant components $\gamma_{ij}$ at cell centers, inverting the interpolated $3 \times 3$ metric afterward to preserve symmetry.
+
+Along each axis, a four-point cubic Hermite (Catmull--Rom) stencil spans two cell centers on each side of the bracketing interval at fractional offset $s \in [0,1)$ in units of the cell spacing $h$, using the Hermite weights,
+\begin{align}\label{eq:hermite_weights}
+w_{-1}(s) &= \frac{-s + 2s^2 - s^3}{2}, \nonumber\\
+w_{0}(s) &= \frac{2 - 5s^2 + 3s^3}{2}, \nonumber\\
+w_{1}(s) &= \frac{s + 4s^2 - 3s^3}{2}, \nonumber\\
+w_{2}(s) &= \frac{-s^2 + s^3}{2}, \nonumber\\
+w'_a(s) &= \frac{1}{h}\frac{\dd w_a}{\dd s}.
+\end{align}
+Tensor products $w_a(s_1) w_b(s_2) w_c(s_3)$ over the $4^3$ surrounding cells reconstruct each field, while substituting $w'_a(s_i)$ along axis $i$ provides the exact polynomial derivative $\partial_i$. Two ghost cells surround every block. Each macroparticle interpolates within its owning block, shifting the stencil inward by one cell to extrapolate the same cubic where an iterate approaches the outer edge of the allocated cells. For standalone grid tests, the same routine samples an analytic metric on a virtual uniform lattice of cell centers of spacing $h$.
+
+\subsection{Stress-energy deposition}\label{sec:deposition}
+
+Driving Einstein's equations from discrete particles requires spreading each macroparticle's moments smoothly onto nearby cells while preserving exact integral weight across refinement interfaces and keeping clouds wide enough to overlap at low particle number. Each macroparticle carries a shape function, a localized profile of unit integral setting its cloud width on the grid \cite{1988csup.book.....H,1991ppcs.book.....B}. On a uniform lattice of spacing $\Delta x$ and cell centers $\bm{x}_q$, tensor products of the first-order (cloud-in-cell) shape function $B_1$ define the eight nonvanishing lattice weights $\tilde{\omega}_{qp}$,
+\begin{align}\label{eq:cic_shape}
+B_1(\xi) &= \max\bigl(0,\, 1 - |\xi|\bigr), \nonumber\\
+\tilde{\omega}_{qp} &= \prod_{i=1}^{3} B_1\!\left(\frac{x_q^i - x_p^i}{\Delta x}\right),
+\end{align}
+which are nonnegative and sum to unity. Dividing the accumulated moments in leaf cell $C$ by its proper spatial volume $\sqrt{\gamma_C}\,\Delta V_C$, with cell-centered determinant $\gamma_C$ and coordinate volume $\Delta V_C$, yields the ten deposited sources,
+\begin{align}\label{eq:deposited_sources}
+\bigl(E,\, S_i,\, S_{ij}\bigr)_C &= \frac{1}{\sqrt{\gamma_C}\,\Delta V_C} \nonumber\\
+&\quad \times \sum_{p=1}^{N} \omega_{Cp}\, m_p \left(W_p,\, u_{i,p},\, \frac{u_{i,p} u_{j,p}}{W_p}\right),
+\end{align}
+with dimensionless leaf-cell weight $\omega_{Cp}$.
+
+At a coarse-fine mesh interface, evaluating $B_1$ separately on each cell with its own width $\Delta x_C$ pairs a coarse stencil on one side with a half-width stencil on the other; for any particle straddling the boundary, the weights fail to sum to unity, injecting spurious mass-energy and momentum jumps that excite constraint violations as matter crosses interfaces. Giving each macroparticle a single representation level $\ell_p$ restores partition of unity \cite{Myers:2021gfn,Wu:2026nrpic}, while capping how fine $\ell_p$ can become prevents cloud fragmentation. Each octree refinement level halves $\Delta x$ and divides cell volume and $\Nppc$ by eight; once fine cells shrink below the interparticle spacing, an uncapped cloud contracts into an isolated spike among empty cells, breaking smooth matter into discrete blobs.
+
+Level-capped deposition combines both requirements. With $\ell_{\rm loc}(p)$ denoting the finest level among the leaf blocks owning the eight cell centers nearest $\bm{x}_p$, macroparticle $p$ is represented on the level set by the level cap,
+\begin{equation}\label{eq:level_cap}
+\ell_p = \min\bigl(\ell_{\rm loc}(p),\, \lcap\bigr),
+\end{equation}
+where $\lcap$ bounds the cloud level. Laying the cloud on a virtual uniform lattice of spacing $\Delta x(\ell_p)$ produces eight unit-sum weights $\tilde{\omega}_{qp}$ on virtual cells $q$ of volume $\Delta V_q$ (Fig.~\ref{fig:deposition}), which map onto leaf cells $C$ of level $\ell_C$ and volume $\Delta V_C$ via
+\begin{equation}\label{eq:leaf_weights}
+\omega_{Cp} =
+\begin{cases}
+\displaystyle \sum_{q \subset C} \tilde{\omega}_{qp}, & \ell_C \le \ell_p, \\[10pt]
+\displaystyle \tilde{\omega}_{qp}\,\frac{\Delta V_C}{\Delta V_q}, & C \subset q,\ \ell_C > \ell_p,
+\end{cases}
+\end{equation}
+summing enclosed virtual weights into a coarser leaf cell when $\ell_C \le \ell_p$ and dividing coordinate density uniformly across enclosed fine leaf cells when $\ell_C > \ell_p$. Removing the cap ($\lcap \to \infty$) gives $\ell_p = \ell_{\rm loc}(p)$ everywhere, recovering the published scheme \cite{Myers:2021gfn,Wu:2026nrpic} as the uncapped limit in which only the $\ell_C \le \ell_p$ branch occurs. Away from that limit, a density-adaptive cap tracks gravitational compression by setting $\lcap(p)$ between a floor and a ceiling as the finest level whose cell volume holds at least a target count $N_{\rm tar}$ of particles at the previous step's coordinate energy density $\sqrt{\gamma}\,E$,
+\begin{equation}\label{eq:adaptive_cap}
+\Delta x(\lcap)^3 \ge \frac{N_{\rm tar}\, m_p W_p}{\sqrt{\gamma}\,E},
+\end{equation}
+acting as a mesh-aligned adaptive smoothing length.
+
+Because the leaf weights $\omega_{Cp}$ sum to unity for every particle in both branches and in the uncapped limit, summing the proper-volume-weighted moments over all leaf cells yields the conservation identity,
+\begin{align}\label{eq:conservation_identity}
+\sum_{C} \bigl(E,\, S_i,\, S_{ij}\bigr)_C \sqrt{\gamma_C}\,\Delta V_C
+&= \sum_{p=1}^{N} m_p \left(W_p,\, u_{i,p},\, \frac{u_{i,p} u_{j,p}}{W_p}\right),
+\end{align}
+to rounding error across arbitrary refinement boundaries, equating the proper spatial volume integrals of the deposited grid sources to the discrete ensemble sums. Afterward, $n_{\rm f}$ passes of a separable binomial filter with one-dimensional weights one-quarter, one-half, and one-quarter smooth all ten components $(E, S_i, S_{ij})$ \cite{1991ppcs.book.....B,Wu:2026nrpic}, filling ghost zones before each pass by copy at equal level and by restriction and prolongation across levels. Enclosing blocks are found by geometric search, and cell updates accumulate via concurrent atomic additions.
+
+\subsection{Spacetime evolution}\label{sec:spacetime}
+
+Propagating gravitational waves and collapsing geometry stably through black hole formation requires a hyperbolic field solver that damps constraint violations without coordinate singularities. We adopt AthenaK's implementation \cite{2026ApJS..283...27S,Zhu:2024utz} of the Z4c formulation \cite{Bona:2003fj,Gundlach:2005eh,Hilditch:2012fp} in moving-puncture gauge \cite{Campanelli:2005dd,Baker:2005vv,Alcubierre:2002kk,vanMeter:2006vi}. With $K = \gamma^{ij}K_{ij}$, Z4c evolves the conformal variables
+\begin{align}\label{eq:z4c_vars}
+\chi &= \gamma^{-1/3}, &
+\tilde{\gamma}_{ij} &= \chi\gamma_{ij}, \nonumber\\
+\tilde{A}_{ij} &= \chi\!\left(K_{ij} - \frac{1}{3}\gamma_{ij}K\right), &
+\hat{K} &= K - 2\Theta,
+\end{align}
+together with the contracted conformal connection $\tilde{\Gamma}^i$ and constraint-propagation scalar $\Theta$, damping the Hamiltonian and momentum constraint residuals $\Ham$ and $\Mom_i$ through parameters $\kappa_1$ and $\kappa_2$. Moving-puncture gauge---evolving black hole interiors across fixed Cartesian grids without excising cells---combines $1+\log$ lapse slicing \cite{Bona:1994dr,Alcubierre:2002kk} with the integrated Gamma-driver shift condition \cite{Alcubierre:2002kk,Campanelli:2005dd,Baker:2005vv} damped at rate $\eta$ with speed parameter $\mu$,
+\begin{align}\label{eq:puncture_gauge}
+\partial_t \alpha &= \beta^i \partial_i \alpha - 2\alpha \hat{K}, \nonumber\\
+\partial_t \beta^i &= \mu \tilde{\Gamma}^i - \eta \beta^i + \beta^j \partial_j \beta^i.
+\end{align}
+Cell-centered finite differences with Kreiss--Oliger dissipation, fourth-order Runge--Kutta integration, and Sommerfeld outer boundaries advance the state; AthenaK's even ghost-zone requirement under mesh refinement selects sixth-order stencils (four ghost cells) on refined grids, alongside fourth-order stencils on uniform grids \cite{Zhu:2024utz}.
+
+This work extends AthenaK's Z4c module (previously coupled solely to magnetohydrodynamics \cite{Zhu:2024utz}) by supplying the particle-deposited sources $(E, S_i, S_{ij})$ to the Z4c evolution equations and constraint residuals $\Ham$ and $\Mom_i$, and by adding optional parabolic relaxation of the Hamiltonian constraint \cite{Duez:2002bn,Etienne:2024ncu,Wu:2026nrpic} to diffuse short-wavelength sampling noise locally:
+\begin{align}\label{eq:parabolic_relaxation}
+\partial_t \chi &= (\partial_t \chi)_{\rm Z4c} + \frac{c_H}{2}\chi^{-1/4}\Ham, \nonumber\\
+\Ham &= {}^{(3)}R + \frac{2}{3}K^2 - \tilde{A}_{ij}\tilde{A}^{ij} - 16\pi E,
+\end{align}
+where $(\partial_t \chi)_{\rm Z4c}$ is the standard Z4c evolution term, ${}^{(3)}R$ is the Ricci scalar of $\gamma_{ij}$, and the relaxation length $c_H$ sums a constant and a term proportional to $\Delta x$ for stability across refinement levels.
+
+\subsection{Adaptive mesh}\label{sec:amr}
+
+Collapse and black hole mergers concentrate steep metric gradients inside compact volumes far smaller than the ambient cluster or wave zone, requiring fine cells that track strong curvature dynamically. AthenaK uses block-structured octree refinement \cite{2020ApJS..249....4S,2026ApJS..283...27S}, splitting cubic mesh blocks recursively into eight half-sized child blocks where needed, with uniform and statically refined meshes entering as the limits without dynamic splitting.
+
+Refinement follows the scalar monitor
+\begin{equation}\label{eq:refinement_monitor}
+q = \alpha \chi^{-7/4},
+\end{equation}
+whose factor $\chi^{-7/4}$ outweighs the collapsing lapse near black holes so $q$ rises sharply in strong-field regions \cite{Wu:2026nrpic}. With $\bm{\iota}_a$ denoting the unit cell shift along axis $a \in \{1,2,3\}$ and $\Delta_a q_i = q_{i+\bm{\iota}_a} - q_{i-\bm{\iota}_a}$, each cell $i$ evaluates a L\"ohner-type second-difference ratio \cite{1987CMAME..61..323L,Wu:2026nrpic}, the refinement indicator,
+\begin{align}\label{eq:refinement_indicator}
+\varepsilon_i^2 &= \frac{\sum_{a,b=1}^{3} \bigl(\Delta_a q_{i+\bm{\iota}_b} - \Delta_a q_{i-\bm{\iota}_b}\bigr)^2}{\sum_{a,b=1}^{3} \bigl(|\Delta_a q_{i+\bm{\iota}_b}| + |\Delta_a q_{i-\bm{\iota}_b}| + \epsilon_0 q_{ab,i} + \delta_0\bigr)^2}, \nonumber\\
+q_{ab,i} &= \sum_{\sigma,\tau=\pm 1} \bigl|q_{i+\sigma\bm{\iota}_a+\tau\bm{\iota}_b}\bigr|,
+\end{align}
+with dimensionless filter weight $\epsilon_0$ and positive floor $\delta_0$. Blocks refine above an upper threshold on $\max_i \varepsilon_i$ and derefine below a lower threshold, while prescribed inner radii enforce a minimum level resolving diffuse matter at the initial particle-lattice scale. Through every regrid, macroparticles keep $(m_p, x_p^i, u_{i,p})$ unchanged without splitting or merging, and metric arrays, block ownership, and deposited sources are rebuilt on the new leaf cells.
+
+\subsection{Numerical methods}\label{sec:numerical_methods}
+
+Self-contained evolutions from initial equilibria through black hole formation require interior particle excision, apparent-horizon and curvature diagnostics, constraint-satisfying initial data with quiet-start sampling, and portable parallel execution.
+
+Inside a black hole, $1+\log$ slicing drives $\alpha$ toward zero so infalling particles pile up in unresolved gradients even though signals from the black hole interior remain causally trapped. Lapse excision \cite{Rosswog:2023nnl,Wu:2026nrpic} removes particles with $\alpha(t^n, \bm{x}_p^n) < \aexc$, clearing black hole interiors through this lapse criterion alone. Black hole boundaries and irreducible masses are measured on apparent horizons---outermost closed two-surfaces on a slice whose outgoing orthogonal null geodesics have zero expansion---found with AthenaK's pseudospectral flow finder \cite{Gundlach:1997us,Zhu:2024utz} using a tightened expansion-residual tolerance so the flow reaches the zero-expansion surface instead of stopping early at underestimated area.
+
+For origin-centered runs, central lapse $\alpha_c(t)$ and central energy density $E_c(t)$ average the eight central leaf cells, and integrating $\alpha_c$ gives the central normal-observer proper time,
+\begin{equation}\label{eq:central_proper_time}
+\tau_c(t) = \int_0^t \alpha_c(t')\,\dd t'.
+\end{equation}
+Coordinate-independent curvature is tracked through the Kretschmann scalar $I = R_{\mu\nu\rho\sigma} R^{\mu\nu\rho\sigma}$ of the spacetime Riemann tensor $R_{\mu\nu\rho\sigma}$, decomposed via the Gauss, Codazzi, and Ricci equations with Einstein's equations eliminating time derivatives in the two-normal projection \cite{Wu:2026nrpic},
+\begin{align}\label{eq:kretschmann}
+I &= G_{ijkl}G^{ijkl} - 4 C_{ijk}C^{ijk} + 4 Z_{ij}Z^{ij}, \nonumber\\
+G_{ijkl} &= {}^{(3)}R_{ijkl} + K_{ik}K_{jl} - K_{il}K_{jk}, \nonumber\\
+C_{ijk} &= D_i K_{jk} - D_j K_{ik}, \nonumber\\
+Z_{ij} &= {}^{(3)}R_{ij} + K K_{ij} - K_{ik}K^k{}_j \nonumber\\
+       &\quad - 8\pi\left[S_{ij} - \frac{1}{2}\gamma_{ij}(S - E)\right],
+\end{align}
+where ${}^{(3)}R_{ijkl}$ and ${}^{(3)}R_{ij}$ are the Riemann and Ricci tensors of $\gamma_{ij}$, $S = \gamma^{ij} S_{ij}$ is the spatial stress trace, and indices are raised with $\gamma^{ij}$; the implementation is verified on vacuum Schwarzschild slices against the exact analytic radial profile.
+
+Self-gravitating runs start on conformally flat, time-symmetric slices---surfaces of instantaneous rest with $K_{ij} = 0$, $\beta^i = 0$, and $\gamma_{ij} = \psi^4 \delta_{ij}$ for conformal factor $\psi$---where $\Mom_i = 0$ identically and superposing potentials $u_c$ of the flat-space Laplacian $\nabla_{\rm flat}^2$ for conformal density components $\tilde{\rho}_c(\bm{x})$ solves $\Ham = 0$ exactly:
+\begin{align}\label{eq:initial_superposition}
+\psi(\bm{x}) &= 1 + \sum_{c} u_c(\bm{x}), \nonumber\\
+\nabla_{\rm flat}^2 u_c &= -2\pi \tilde{\rho}_c, \nonumber\\
+E(\bm{x}) &= \psi(\bm{x})^{-5} \sum_{c} \tilde{\rho}_c(\bm{x}).
+\end{align}
+Components combine tabulated spherical equilibria, vacuum black hole punctures
+\begin{equation}\label{eq:puncture_potential}
+u_c(\bm{x}) = \frac{m_c}{2\rbar_c}
+\end{equation}
+of bare mass $m_c$ at isotropic distance $\rbar_c$, Gaussians, and closed-form homogeneous prolate spheroids; equal-mass ensembles of rest-mass density $\rho_0$ follow coordinate number density proportional to $\rho_0 \psi^6$ from $\sqrt{\gamma} = \psi^6$. Quiet-start samplers initialize $(m_p, x_p^i, u_{i,p})$ by a mesh-aligned mass-weighted lattice reproducing the exact continuum cloud-in-cell profile for cold spherical collapse, randomized stratified sampling in radius, both position angles, and both velocity angles for spherical clusters, and equal-mass Monte Carlo sampling with reflection and half-turn symmetry for prolate spheroids.
+
+All mesh and particle kernels run through Kokkos \cite{2022ITPDS..33..805T,2026ApJS..283...27S} across multicore processors and graphics accelerators, with particle operations consuming a small fraction of the spacetime update cost across our ensembles. Two optional features of Ref.~\cite{Wu:2026nrpic} are not implemented here: the auxiliary-field shift condition and position-dependent profiles of $\eta$ and $\kappa_1$ tied to tracked black holes.
