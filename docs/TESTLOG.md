@@ -383,3 +383,33 @@ Further checks of the corrected finder (CPU restarts of t = 50 M dumps, 06:12 to
   grid. With both tightened the difference is below 1e-4.
 - Evolution error of the puncture itself, |slice mass - 1| at t = 50 M: 3.9e-2, 1.5e-3,
   1.4e-5 for dx = M/4, M/8, M/16 at the puncture.
+
+## Compensated filter on the stable cluster: result (06:19)
+
+Seed 1, four binomial passes plus the compensation pass, against four passes without it
+and against no filter. Figure: `analysis/diag/figs/cluster_ctl_compensated.png`.
+
+| filter | lapse rise within 130 M | lowest lapse in 300 M | late constraint norm | filtered / deposited energy - 1 |
+|---|---|---|---|---|
+| none | 0.0044 | 0.7849 | 0.14 | 0 |
+| four passes | 0.0273 | 0.8094 | 0.011 | -3.4e-3 |
+| four passes, compensated | 0.0065 | 0.7985 | 0.031 | -9.8e-5 |
+
+- Prediction was a rise of 0.002 to 0.005 and constraint norms near 0.011. Measured:
+  0.0065 and 0.031. The outward excursion is gone (a factor 4.2 down, to the level of
+  the unfiltered run, whose history it follows for the first 110 M); the prediction for
+  the rise was slightly too low and the one for the constraint norm too optimistic by a
+  factor of three, because the compensated response passes more of the middle
+  wavenumbers. The softening hypothesis stands: the excursion came from the second
+  moment of the filter.
+- A second effect of the same origin, not anticipated: the plain filter lowers the
+  proper-volume integral of the energy density by 0.34 percent (it averages E, which
+  carries 1/sqrt(gamma), across a non-uniform sqrt(gamma)); with compensation the
+  change is 1e-4.
+- With compensation the mass-shell radii stay within about 4 percent of equilibrium
+  for 300 M. What remains is a seed-specific motion (a lapse dip of 0.011 near
+  t = 280 M, which the unfiltered run of the same seed shows with 0.024). Other seeds
+  with compensation have not been run yet.
+
+Decision: cluster runs use four passes with compensation. Dust-collapse tests keep the
+published plain filter until the two are compared on them.
