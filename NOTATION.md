@@ -60,6 +60,12 @@ orthonormal-frame (tetrad) indices.
 | alpha_c | | central lapse | tests |
 | y_c, z_c | | cluster sequence label and central redshift | tests |
 | M_0 | | total rest mass | tests |
+| alpha_{c,eq} | | central lapse of the cluster equilibrium (isotropic lapse of the model) | tests |
+| E_0 | | conserved energy per unit rest mass shared by all particles of a monoenergetic cluster | tests, sampling appendix |
+| E_c | | energy density at the centre seen by the normal observer | tests |
+| M_AH | `M_{\rm AH}` | apparent-horizon (irreducible) mass | numerical methods |
+| h | | spacing of the particle lattice of the dust ball | tests, sampling appendix |
+| ell_loc | `\ell_{\rm loc}` | finest mesh level at the position of a particle | deposition |
 | E_b | | binding energy M_0 - M | tests |
 
 ## Named results

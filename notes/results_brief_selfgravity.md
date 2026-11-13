@@ -72,7 +72,10 @@ with adaptive refinement (three compact models).
    the core. Its swing grows until about t = 500 M and then stays at two to three
    percent of the lapse to 1200 M. It is the same for three samples, for a Monte Carlo
    sample, for 10^3 particles, for half the time step, for three values of the
-   constraint damping and with relaxation of the Hamiltonian constraint. The original's
+   constraint damping, with relaxation of the Hamiltonian constraint, and with half the
+   cell size over the cluster (first maximum equal to three percent, growth rate equal
+   or slightly larger; the prediction that a discretization error would shrink both by
+   four was refuted). The original's
    figure for its perturbed near-critical model shows the same growth, saturation and
    decay of an oscillation at the core period. What sets the small offset from which it
    starts is not determined. [Growing oscillation ... (all entries); Stable cluster to
@@ -113,9 +116,15 @@ with adaptive refinement (three compact models).
    equals the mass of the initial data to 1e-4. The same particles on the unperturbed
    metric (inconsistent data) give the same contraction, so the outcome does not hinge
    on the initial metric. The original's run oscillates and keeps all particles. The
-   run with the density reduced by ten percent: NOT YET. Write only the compression
-   result, in three or four sentences, as a documented difference from the original
-   whose cause (the definition of the perturbation is one candidate) is not determined.
+   run with the density reduced by ten percent (homologous expansion, same
+   construction, 600 M): all particles kept; the central lapse first rises to 0.82 and
+   falls to 0.73 over 250 M, then oscillates between about 0.72 and 0.83 with extrema
+   60 to 100 M apart; the 90 percent mass radius ranges from 6 to 9 M. This shares the
+   original's qualitative outcome (large oscillation, no collapse, extended outer part)
+   but not its curve (there: about 0.74 to 0.75 from the start, period near 50 M; here
+   about 0.77). Neither sign reproduces the original's lapse curve; the definition of
+   the perturbation is one candidate cause, not determined. Unperturbed model on the
+   same mesh: NOT YET (running).
    [Reconfiguration test, first attempt; Consistent initial data for perturbed
    clusters; Reconfiguration rerun ...; addendum 12:05]
 
