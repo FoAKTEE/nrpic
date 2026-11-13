@@ -1204,3 +1204,38 @@ The large expansion, the recontraction and the following oscillation of the orig
 are reproduced with ten thousand particles, in size and in timing to within what can be
 read from the published figure; the start of the expansion is earlier here (see the
 direction tests). Mean Lorentz factor 1.172 at the start, 1.012 at its lowest.
+
+## Compact model y_c = 0.605, continued: collapse (11:52), prediction 5
+
+`st/yc0605_v5` continued from 150 M. The central lapse falls from 0.62 at t = 160 M to
+0.53, 0.36, 0.17 at t = 170, 180, 190 M. Apparent horizon first found at t = 191.0 M
+(mass 0.789), removal of particles from t = 191.9 M. Horizon mass 0.908, 0.953, 0.990,
+0.9973, 0.9985, 0.9972, 0.9994 at t = 195, 200, 210, 220, 240, 260, 280 M: it reaches
+the total mass to within 0.3 percent once the cluster has fallen in. Seven of the 10^4
+particles are left at t = 297 M.
+The prediction (collapse and a horizon) holds, 82 M later than the original's 109 M.
+With y_c = 0.500 (104 M against 73 M) both compact models collapse later here than in
+the original.
+
+## Reconfiguration rerun with consistent initial data: it contracts again (11:52)
+
+`st/reconf_yc0756_hc` (ten-percent compression, conformal factor solving the constraint
+for the compressed matter). Central lapse 0.7488 at t = 0 (0.7486 by construction),
+then 0.7448, 0.7480, 0.7466, 0.7376, 0.7351, 0.7213, 0.7124, 0.6857, 0.6295, 0.5761 at
+t = 5, 10, 20, 30, 40, 50, 60, 80, 100, 120 M. The inconsistent run had 0.742, 0.749,
+0.747, 0.738, 0.736, 0.72, 0.712, 0.688, 0.630, 0.585 at the same times. The two
+histories agree to 0.01: the inconsistency of the first attempt was not what made it
+collapse. A ten-percent compression of this near-critical model leads to collapse in
+this code, with either initial metric.
+
+The original's perturbed run oscillates and keeps all its particles. What its "density
+perturbation of ten percent" is (sign, shape, how the metric is obtained) is not
+stated. One reading that can be tested: a reduction instead of an increase. Submitted:
+`st/reconf_yc0756_hc_m`, the same model expanded homologously (density down by ten
+percent), consistent initial data (central lapse 0.7552, total mass 1.0034), adaptive
+mesh, 600 M. Written before the run: if the original perturbed downward, this run
+shows what its figure shows: an oscillation of the central lapse with a period near
+50 M whose swing grows over the first 250 to 300 M to several hundredths and then
+decays, all particles kept. If this run does something else (a quiet oscillation of
+constant size, or a slow expansion), the reading is wrong and the difference from the
+original stays unexplained.
