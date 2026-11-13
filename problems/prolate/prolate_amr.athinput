@@ -115,7 +115,7 @@ nfilter        = 2
 filter_compensate = false  # one extra pass cancelling the widening of the binomial passes
 filter_comp_c  = -1.0          # its coefficient; negative: nfilter/4
 deposit_max_level = 31
-deposit_adaptive  = true   # cloud level follows the local particle density ...
+deposit_adaptive  = false  # published rule: cloud at the finest local level (the adaptive cloud level disturbs forming black holes, docs/TESTLOG.md)
 deposit_min_level = 3      # ... and is never coarser than dx = M/2
 deposit_ppc       = 2.0
 deposit_max_coarsen = 31   # a cloud is at most this many levels coarser than its particle's block
