@@ -838,3 +838,10 @@ between 500 and 565 M. Two extrema are not enough to call that saturation. A fur
 continuation to 1200 M is queued (`st/osc/long2`). What can be said now: over 600 M
 the stable model stays bound and centred, with an oscillation of the central lapse
 that has reached two to three percent.
+
+Decision (08:00): the cluster runs on static meshes without the adaptive cloud level
+(least compact model, Monte Carlo sampling at three particle numbers, reconfiguration,
+migration) are released; nothing found so far gives a reason to change their settings,
+and the oscillation question is followed on the stable model in parallel. The collapse
+runs that use the adaptive cloud level (compact clusters, prolate collapse, cluster
+with clumps) stay held until the dust runs with limited cloud coarsening are in.
