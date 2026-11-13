@@ -184,6 +184,8 @@ tolerance      = 1.0e-7
 max_iterations = 50
 deposit        = true
 nfilter        = 2
+filter_compensate = false  # one extra pass cancelling the widening of the binomial passes
+filter_comp_c  = -1.0          # its coefficient; negative: nfilter/4
 deposit_max_level = 31
 deposit_adaptive  = true   # cloud level follows the local particle density ...
 deposit_min_level = 3      # ... and is never coarser than dx = 1 M

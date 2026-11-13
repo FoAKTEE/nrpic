@@ -53,6 +53,12 @@ done
 # MeshBlock geometry and refinement layout as the production mesh, half the cells per side)
 run_def mesh_a0.9_n10000_mid_dx2  $MESH particles/particle_file=$IC/bound_a0.9_n10000.nrp particles/bh_spin=0.9 mesh/nx1=32 mesh/nx2=32 mesh/nx3=32 meshblock/nx1=8 meshblock/nx2=8 meshblock/nx3=8
 
+# cost breakdown of a mesh-run cycle (a = 0.9, N = 1e4, 1000 cycles, data outputs off)
+QUIET="time/tlim=50.0 output1/dt=1e9 output2/dt=1e9 output3/dt=1e9 output4/dt=1e9 output5/dt=1e9 particles/snap_dt=-1 particles/traj_dcycle=0"
+run_def thr_a0.9_prod   $MESH particles/particle_file=$IC/bound_a0.9_n10000.nrp particles/bh_spin=0.9 $QUIET
+run_def thr_a0.9_nf0    $MESH particles/particle_file=$IC/bound_a0.9_n10000.nrp particles/bh_spin=0.9 $QUIET particles/nfilter=0
+run_def thr_a0.9_nodep  $MESH particles/particle_file=$IC/bound_a0.9_n10000.nrp particles/bh_spin=0.9 $QUIET particles/deposit=false particles/hist_dcycle=1000
+
 done_ok() {
   local log=runs/cluster_test/$1/athena.log
   [[ -f $log ]] && grep -q "Terminating on time limit" "$log" && grep -q "# exit=0" "$log"
