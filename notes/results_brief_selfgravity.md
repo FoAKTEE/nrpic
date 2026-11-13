@@ -103,8 +103,21 @@ with adaptive refinement (three compact models).
    30 M earlier than with compensation; three samples agree. Rest of the run: NOT YET.
    [Unperturbed y_c = 0.5: plain against compensated filter; Migration of the
    unperturbed y_c = 0.5 model]
-7. Reconfiguration of the near-critical model: NOT YET (first attempt had inconsistent
-   initial data and collapsed; rerun in progress).
+7. Near-critical model y_c = 0.756 with a ten-percent density perturbation (the
+   original's "reconfiguration" test). The original states the size of the perturbation
+   and neither its sign nor how the initial metric is obtained. Here: homologous
+   compression (density up by ten percent), with the conformal factor solving the
+   Hamiltonian constraint for the compressed matter (the data set is 0.3 percent
+   lighter than the unperturbed cluster). Result: the cluster contracts and collapses;
+   horizon first found at t = 147 M; all particles removed; the horizon mass at the end
+   equals the mass of the initial data to 1e-4. The same particles on the unperturbed
+   metric (inconsistent data) give the same contraction, so the outcome does not hinge
+   on the initial metric. The original's run oscillates and keeps all particles. The
+   run with the density reduced by ten percent: NOT YET. Write only the compression
+   result, in three or four sentences, as a documented difference from the original
+   whose cause (the definition of the perturbation is one candidate) is not determined.
+   [Reconfiguration test, first attempt; Consistent initial data for perturbed
+   clusters; Reconfiguration rerun ...; addendum 12:05]
 
 ## C. Prolate collapse -- NOT YET
 ## D. Collapse and merger inside a cluster -- NOT YET
