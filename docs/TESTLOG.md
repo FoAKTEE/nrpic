@@ -979,3 +979,26 @@ rest on the symmetry plane). New script `analysis/diag/tracers_headon.py`, figur
   the total mass, so the excess of 0.25 percent is an error of the evolution at this
   resolution; the single puncture at dx = M/8 gained 0.18 percent in the same way.
   The radiated energy of this collision is smaller than that and is not resolved here.
+
+## Stable cluster with Monte Carlo sampling, N = 10^2, 10^3, 10^4 (09:25)
+
+`st/yc0819_mc_n{100,1000,10000}_v4`: independent random draws instead of the stratified
+sampler, no perturbation, four passes plus compensation, 500 M. Figure:
+`analysis/diag/figs/cluster_osc_mc.png` (with the stratified run to 600 M).
+- N = 10^4: the same oscillation as with the stratified sampler, at the same times and
+  sizes. Extrema of the lapse minus equilibrium, Monte Carlo against stratified:
+  +0.0059 at 99 M (+0.0065 at 108), -0.0056 at 209 (-0.0062 at 208), -0.0078 at 278
+  (-0.0108 at 280), +0.0084 at 316 (+0.0061 at 316), -0.0079 at 347 (-0.0065 at 359),
+  +0.0125 at 386 (+0.0126 at 392), -0.0155 at 419 (-0.0103 at 423), +0.0128 at 458
+  (+0.0088 at 464). This was the open test "a different sampler": the oscillation and
+  its phase do not come from the stratification either. They belong to the model on
+  this mesh.
+- N = 10^3: the same up to t = 190 M; afterwards deeper minima (-0.016 to -0.024) and
+  a mean that drifts down by 0.011; mean Lorentz factor up by 0.005.
+- N = 10^2: the cluster does not hold. The central lapse falls from 0.81 to 0.68 at
+  t = 200 M and 0.58 at t = 500 M, the mean Lorentz factor rises from 1.047 to 1.138,
+  and the total momentum wanders to 0.025 of the rest mass. A hundred particles are a
+  collisional system on this time scale.
+- Particle-number statement for the stable model, from the stratified and Monte Carlo
+  runs together: 10^4 and 10^3 particles keep the cluster for 300 M with the common
+  oscillation; 10^2 do not.
