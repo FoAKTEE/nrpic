@@ -1325,3 +1325,20 @@ slowly instead, the reading is wrong.
   ten-percent perturbation reproduces the original's lapse curve; the reduced-density
   run shares its qualitative outcome (oscillation, no collapse), the compressed run
   does not.
+
+## Prolate collapse, attempt with compensated filter: blocks again exceed the limit (12:49)
+
+`prolate/e09_v7` (four passes plus compensation, block limit 2000; the override meant to
+coarsen the starting mesh had no effect, because the input also fixes a static level-4
+region, so the start is again 512 blocks with cells of M/4).
+- Up to t = 15 M the block count stays at 512; the first attempt (two plain passes) had
+  gone to 960 blocks before t = 5 M. The smoother source removed the early refinement.
+- At t = 16 M the count rises to 764 and at t = 16.3 M the refinement asks for 2584
+  blocks. The first attempt failed at the same stage (t = 17.1 M, smallest lapse 0.72
+  in both).
+- Against the prediction: both parts of it occur. The early refinement was driven by
+  the noisy source and is gone; the later one comes back at the same time with the
+  smoother source, so it belongs to the collapse itself (the spheroid is contracting
+  towards a spindle 20 M long), as the alternative in the prediction said.
+- Next attempt `prolate/e09_v8`: one level fewer (finest cells M/16 instead of M/32),
+  otherwise as v7.
