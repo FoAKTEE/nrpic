@@ -229,3 +229,27 @@ percent of the horizon radius, so a finder contribution at the percent level is 
   drift to 0.22 M before. Lapse, mass-shell radii and constraint norms are unchanged to
   plotting accuracy. Prediction held: the drift was the net momentum of the sample.
   Figure: `analysis/diag/figs/cluster_ctl_momentum.png`.
+- Seeds (s1_nf4 against s2_nf4, 05:24): the excursion is common to both. Central lapse
+  0.8094 -> 0.8367 at t = 116 M (seed 1) and 0.8383 at t = 121 M (seed 2), back to
+  0.8133 and 0.8113 at t = 230 M. The seed-dependent part is a ripple of about 0.003
+  on top, a tenth of the excursion. The sampling-noise explanation predicted different
+  sign or timing between seeds and is ruled out as the main cause.
+  Figure: `analysis/diag/figs/cluster_ctl_seeds.png`.
+- The excursion is a physical expansion and recontraction, not a coordinate effect: the
+  central energy density (20 M averages) goes 5.0e-4 -> 3.4e-4 (t = 115 M) -> 5.5e-4
+  (t = 230 M) for seed 1 and 5.1e-4 -> 3.1e-4 -> 5.9e-4 for seed 2 (equilibrium
+  5.47e-4), and the mean Lorentz factor sum m W / sum m goes 1.04689 -> 1.0371 ->
+  1.0452, a fifth of the kinetic energy given up and taken back.
+- The original reports "only small-amplitude oscillations" for this model at the same
+  dx = M/2 with 2e6 particles (no number given). Ours: mass-shell radii out by about 15
+  percent and back.
+- Working hypothesis, written before the filter variants finish: the source is softened
+  by the cloud and the filter (variance per dimension dx^2/6 for the cloud plus dx^2/2
+  per filter pass: 0.54, 0.29, 0.04 M^2 for four, two, zero passes at dx = M/2), the
+  metric it produces is shallower than the equilibrium one the particle velocities were
+  drawn for, and the cluster expands towards the softened equilibrium and overshoots.
+  If so, the lapse excursion (0.028 with four passes) scales with that variance: about
+  0.015 with two passes and about 0.002 with none. If the three variants show the same
+  excursion, the hypothesis is wrong and the next suspects are the time lag of the
+  source (frozen over a step; test: half the time step) and the relaxation of the
+  initial constraint violation.
