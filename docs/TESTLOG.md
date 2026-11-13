@@ -1280,3 +1280,27 @@ sampled every 10 M:
 Figure for the paper: `paper/figures/fig_clusters.png` (radii about the origin, as in
 the original; the diagnostic figures use the centre of mass; the two differ by less
 than 0.6 percent while most particles are present).
+
+## Near-critical model with the density reduced by ten percent: slow breathing (12:22)
+
+`st/reconf_yc0756_hc_m`, first 409 M (chain continues to 600 M). All particles kept.
+Central lapse 0.7554 at t = 0 (0.7552 by construction), rising to 0.811 at t = 100 M
+and 0.819 at t = 160 M, falling to 0.728 at t = 251 M, rising again to 0.827 at
+t = 400 M, with ripples of about 0.01 on top. This is a slow breathing of the whole
+cluster with a period of 250 to 300 M and a swing of 0.05.
+
+Against the prediction: the original's figure shows an oscillation with a period near
+50 M whose swing grows and decays, around a lapse that stays near 0.73 to 0.76. This
+run does something else. The reading "the original reduced the density" is not
+supported. Neither sign of a homologous ten-percent perturbation reproduces the
+original's curve: compression collapses, expansion breathes slowly.
+
+What the original's curve does look like is the core oscillation of our weakly
+perturbed models (growing, at the core period, then levelling off). Test of that
+reading, submitted: `st/yc0756_unpert`, the same model without any imposed
+perturbation, static mesh with cells of M/4, compensated filter, 800 M. Written before
+the run: an oscillation of the central lapse at a period of 50 to 55 M whose
+half-swing grows to between 0.03 and 0.05 somewhere between t = 200 and 500 M and then
+stops growing, around a mean lapse within 0.01 of the equilibrium value 0.752, all
+particles kept. If the swing stays below 0.02, or the model collapses or breathes
+slowly instead, the reading is wrong.
