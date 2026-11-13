@@ -83,6 +83,7 @@ damp_kappa1     = 0.02
 damp_kappa2     = 0.0
 
 <fastflow>
+find_every        = 16
 num_horizons      = 1
 npunct            = 0
 ntheta            = 16
@@ -92,10 +93,10 @@ center_x_0        = 0.0
 center_y_0        = 0.0
 center_z_0        = 0.0
 initial_radius_0  = 1.0
-flow_iterations_0 = 3000
+flow_iterations_0 = 400
 flow_alpha_beta_const_0 = 1.0
 hmean_tol_0       = 100.0
-mass_tol_0        = 1.0e-7
+mass_tol_0        = 1.0e-5
 start_time_0      = 20.0
 stop_time_0       = 1000.0
 verbose           = false

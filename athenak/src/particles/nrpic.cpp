@@ -40,6 +40,8 @@
 #include "particles/nrpic_kernels.hpp"
 #include "particles/nrpic_metrics.hpp"
 #include "particles/nrpic_mesh.hpp"
+// last: this header defines the macro NDIM, which collides with a member of Tmunu
+#include "z4c/fastflow.hpp"
 
 namespace particles {
 
@@ -105,6 +107,7 @@ void Particles::NrpicInit(ParameterInput *pin) {
     nropt.deposit_min_level = nropt.deposit_max_level;
   }
   nropt.alpha_exc  = pin->GetOrAddReal("particles", "alpha_exc", -1.0);
+  nropt.ah_exc_factor = pin->GetOrAddReal("particles", "ah_exc_factor", -1.0);
   nropt.hist_dcycle = pin->GetOrAddInteger("particles", "hist_dcycle", 1);
   nropt.traj_dcycle = pin->GetOrAddInteger("particles", "traj_dcycle", 0);
   nropt.traj_ntrack = pin->GetOrAddInteger("particles", "traj_ntrack", 0);
@@ -265,6 +268,26 @@ TaskStatus Particles::NrpicPush(Driver *pdriver, int stage) {
   const Real bh_mass = nropt.mass, bh_spin = nropt.spin, lat_dx = nropt.lattice_dx;
   const Real alpha_exc = nropt.alpha_exc;
 
+  // apparent-horizon excision: particles inside ah_exc_factor times the minimum
+  // coordinate radius of a found horizon are removed
+  int nah = 0;
+  Real ahc[4][3], ahr2[4];
+  for (int n=0; n<4; ++n) {
+    ahc[n][0] = 0.0; ahc[n][1] = 0.0; ahc[n][2] = 0.0;
+    ahr2[n] = 0.0;
+  }
+  if (mesh_metric && nropt.ah_exc_factor > 0.0 && pmy_pack->pz4c != nullptr) {
+    for (auto &pah : pmy_pack->pz4c->pfastflow) {
+      if (pah->ah_found && nah < 4 && Kokkos::isfinite(pah->rr_min)) {
+        ahc[nah][0] = pah->center[0];
+        ahc[nah][1] = pah->center[1];
+        ahc[nah][2] = pah->center[2];
+        ahr2[nah] = SQR(nropt.ah_exc_factor*pah->rr_min);
+        ++nah;
+      }
+    }
+  }
+
   nrpic::MeshMetric proto;
   if (mesh_metric) {
     proto.m1 = met1;
@@ -293,6 +316,11 @@ TaskStatus Particles::NrpicPush(Driver *pdriver, int stage) {
         nrpic::AdmPoint ap;
         met(0, x, ap);
         excise = (ap.alp < alpha_exc);
+      }
+      for (int n=0; n<nah; ++n) {
+        const Real d2 = SQR(x[0] - ahc[n][0]) + SQR(x[1] - ahc[n][1])
+                        + SQR(x[2] - ahc[n][2]);
+        if (d2 < ahr2[n]) { excise = true; }
       }
       if (!excise) {
         it = boris ? nrpic::PushBoris(met, triad, dt, tol, maxit, x, u)

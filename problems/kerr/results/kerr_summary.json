@@ -3732,5 +3732,1060 @@
     "order_dQ": 2.6631009638265013
    }
   }
+ },
+ "B": {
+  "runs": {
+   "kerr_bl/ecc_bchol_dt0.01": {
+    "name": "kerr_bl/ecc_bchol_dt0.01",
+    "meta": {
+     "orbit": "bl_equatorial_eccentric",
+     "a": 0.9,
+     "pusher": "bchol",
+     "metric": "bl",
+     "system": "bl",
+     "dt": 0.01,
+     "t_end": 4550.0,
+     "t0_offset": 0.0
+    },
+    "overrides": [
+     "particles/pusher=boris",
+     "particles/triad=cholesky",
+     "particles/metric=boyer_lindquist",
+     "particles/bh_spin=0.9",
+     "particles/dt=0.01",
+     "time/tlim=4550.0",
+     "particles/tolerance=2.0e-14",
+     "particles/max_iterations=200",
+     "particles/hist_dcycle=1",
+     "particles/traj_dcycle=1",
+     "particles/traj_ntrack=1",
+     "time/ndiag=20000",
+     "particles/p0_x1=6.0",
+     "particles/p0_x2=1.5707963267948966",
+     "particles/p0_x3=0.0",
+     "particles/p0_u1=0.0",
+     "particles/p0_u2=0.0",
+     "particles/p0_u3=3.144275",
+     "particles/p0_m=0.0"
+    ],
+    "input": "problems/kerr/geodesic.athinput",
+    "log": {
+     "ok": true,
+     "log": "runs/geodesic/kerr_bl/ecc_bchol_dt0.01/athena.20261113-042226.log",
+     "cpu_time_s": 57.91444,
+     "fatal": false,
+     "nan": false
+    },
+    "hist": {
+     "ncycles": 455000,
+     "hist_every_cycle": true,
+     "n_unconverged_steps": 0,
+     "max_iterations": 5,
+     "mean_iterations": 4.003391208791209,
+     "n_particles_end": 1,
+     "n_escaped": 0,
+     "n_excised": 0
+    },
+    "max_pos_err_samples": 4.050962231438859e-06,
+    "n_records": 455001,
+    "t_last": 4550.0,
+    "max_dE": 1.5928650728551142e-10,
+    "max_dLz": 2.542951047700474e-11,
+    "max_dQ": 9.871902780409793e-28,
+    "dQ_relative": false,
+    "inv0": [
+     0.9460319622242687,
+     3.144275,
+     3.7387265406599826e-32
+    ],
+    "final_pos_err": 2.330288793928048e-06,
+    "final_pos_err_components": [
+     -3.3699825774391456e-07,
+     0.0,
+     -2.330288793928048e-06
+    ],
+    "final_u_err": [
+     -3.393737151892451e-07,
+     3.156716697108746e-14,
+     -3.6060043839825084e-13
+    ],
+    "r_min": 6.0,
+    "r_max": 11.605636423588086,
+    "r_peri_refined": [
+     5.999999999998753,
+     6.0
+    ],
+    "r_apo_refined": [
+     11.60563642379803,
+     11.605636423803663
+    ],
+    "n_pericenters": 21,
+    "n_apocenters": 20,
+    "pericenter_time_err_max": 5.2063633120269515e-05,
+    "pericenter_phi_err_max": 1.294172733423693e-06,
+    "periapsis_advance_mean": 2.3965710456616343,
+    "periapsis_advance_mean_exact": 2.3965709809529976,
+    "periapsis_advance_mean_exact_periods": 2.3965709809529976,
+    "n_radial_periods_used": 20
+   },
+   "kerr_bl/ecc_bsym_dt0.01": {
+    "name": "kerr_bl/ecc_bsym_dt0.01",
+    "meta": {
+     "orbit": "bl_equatorial_eccentric",
+     "a": 0.9,
+     "pusher": "bsym",
+     "metric": "bl",
+     "system": "bl",
+     "dt": 0.01,
+     "t_end": 4550.0,
+     "t0_offset": 0.0
+    },
+    "overrides": [
+     "particles/pusher=boris",
+     "particles/triad=symmetric",
+     "particles/metric=boyer_lindquist",
+     "particles/bh_spin=0.9",
+     "particles/dt=0.01",
+     "time/tlim=4550.0",
+     "particles/tolerance=2.0e-14",
+     "particles/max_iterations=200",
+     "particles/hist_dcycle=1",
+     "particles/traj_dcycle=1",
+     "particles/traj_ntrack=1",
+     "time/ndiag=20000",
+     "particles/p0_x1=6.0",
+     "particles/p0_x2=1.5707963267948966",
+     "particles/p0_x3=0.0",
+     "particles/p0_u1=0.0",
+     "particles/p0_u2=0.0",
+     "particles/p0_u3=3.144275",
+     "particles/p0_m=0.0"
+    ],
+    "input": "problems/kerr/geodesic.athinput",
+    "log": {
+     "ok": true,
+     "log": "runs/geodesic/kerr_bl/ecc_bsym_dt0.01/athena.20261113-042110.log",
+     "cpu_time_s": 74.27537,
+     "fatal": false,
+     "nan": false
+    },
+    "hist": {
+     "ncycles": 455000,
+     "hist_every_cycle": true,
+     "n_unconverged_steps": 0,
+     "max_iterations": 5,
+     "mean_iterations": 4.003468131868132,
+     "n_particles_end": 1,
+     "n_escaped": 0,
+     "n_excised": 0
+    },
+    "max_pos_err_samples": 4.051026837537108e-06,
+    "n_records": 455001,
+    "t_last": 4550.0,
+    "max_dE": 1.5928650728551142e-10,
+    "max_dLz": 2.538911658206326e-11,
+    "max_dQ": 9.87190278040513e-28,
+    "dQ_relative": false,
+    "inv0": [
+     0.9460319622242687,
+     3.144275,
+     3.7387265406599826e-32
+    ],
+    "final_pos_err": 2.330354874402474e-06,
+    "final_pos_err_components": [
+     -3.370036054661796e-07,
+     0.0,
+     -2.330354874402474e-06
+    ],
+    "final_u_err": [
+     -3.393789859088697e-07,
+     3.156716697108004e-14,
+     -2.1360690993788012e-13
+    ],
+    "r_min": 6.0,
+    "r_max": 11.60563642359139,
+    "r_peri_refined": [
+     5.999999999999008,
+     6.0
+    ],
+    "r_apo_refined": [
+     11.605636423800625,
+     11.605636423803663
+    ],
+    "n_pericenters": 21,
+    "n_apocenters": 20,
+    "pericenter_time_err_max": 5.2064444389543496e-05,
+    "pericenter_phi_err_max": 1.294163098464196e-06,
+    "periapsis_advance_mean": 2.396571045661153,
+    "periapsis_advance_mean_exact": 2.3965709809529976,
+    "periapsis_advance_mean_exact_periods": 2.3965709809529976,
+    "n_radial_periods_used": 20
+   },
+   "kerr_bl/ecc_bsym_dt0.02": {
+    "name": "kerr_bl/ecc_bsym_dt0.02",
+    "meta": {
+     "orbit": "bl_equatorial_eccentric",
+     "a": 0.9,
+     "pusher": "bsym",
+     "metric": "bl",
+     "system": "bl",
+     "dt": 0.02,
+     "t_end": 4550.0,
+     "t0_offset": 0.0
+    },
+    "overrides": [
+     "particles/pusher=boris",
+     "particles/triad=symmetric",
+     "particles/metric=boyer_lindquist",
+     "particles/bh_spin=0.9",
+     "particles/dt=0.02",
+     "time/tlim=4550.0",
+     "particles/tolerance=2.0e-14",
+     "particles/max_iterations=200",
+     "particles/hist_dcycle=1",
+     "particles/traj_dcycle=1",
+     "particles/traj_ntrack=1",
+     "time/ndiag=20000",
+     "particles/p0_x1=6.0",
+     "particles/p0_x2=1.5707963267948966",
+     "particles/p0_x3=0.0",
+     "particles/p0_u1=0.0",
+     "particles/p0_u2=0.0",
+     "particles/p0_u3=3.144275",
+     "particles/p0_m=0.0"
+    ],
+    "input": "problems/kerr/geodesic.athinput",
+    "log": {
+     "ok": true,
+     "log": "runs/geodesic/kerr_bl/ecc_bsym_dt0.02/athena.20261113-042031.log",
+     "cpu_time_s": 38.16531,
+     "fatal": false,
+     "nan": false
+    },
+    "hist": {
+     "ncycles": 227500,
+     "hist_every_cycle": true,
+     "n_unconverged_steps": 0,
+     "max_iterations": 6,
+     "mean_iterations": 4.338659340659341,
+     "n_particles_end": 1,
+     "n_escaped": 0,
+     "n_excised": 0
+    },
+    "max_pos_err_samples": 1.620435805715914e-05,
+    "n_records": 227501,
+    "t_last": 4550.0,
+    "max_dE": 6.371561217376377e-10,
+    "max_dLz": 1.0121325945864537e-10,
+    "max_dQ": 9.87190210037022e-28,
+    "dQ_relative": false,
+    "inv0": [
+     0.9460319622242687,
+     3.144275,
+     3.7387265406599826e-32
+    ],
+    "final_pos_err": 9.307372664579816e-06,
+    "final_pos_err_components": [
+     -1.3466501167513911e-06,
+     0.0,
+     -9.307372664579816e-06
+    ],
+    "final_u_err": [
+     -1.3562008061920872e-06,
+     3.1567165888896846e-14,
+     8.704148513061227e-14
+    ],
+    "r_min": 6.0,
+    "r_max": 11.605636650120491,
+    "r_peri_refined": [
+     5.999999999999746,
+     6.000000000000649
+    ],
+    "r_apo_refined": [
+     11.605636650428997,
+     11.605636650430286
+    ],
+    "n_pericenters": 21,
+    "n_apocenters": 20,
+    "pericenter_time_err_max": 0.00020805555413971888,
+    "pericenter_phi_err_max": 5.1766106707873405e-06,
+    "periapsis_advance_mean": 2.3965712397835315,
+    "periapsis_advance_mean_exact": 2.3965709809529976,
+    "periapsis_advance_mean_exact_periods": 2.3965709809529976,
+    "n_radial_periods_used": 20
+   },
+   "kerr_bl/ecc_mid_dt0.01": {
+    "name": "kerr_bl/ecc_mid_dt0.01",
+    "meta": {
+     "orbit": "bl_equatorial_eccentric",
+     "a": 0.9,
+     "pusher": "mid",
+     "metric": "bl",
+     "system": "bl",
+     "dt": 0.01,
+     "t_end": 4550.0,
+     "t0_offset": 0.0
+    },
+    "overrides": [
+     "particles/pusher=midpoint",
+     "particles/metric=boyer_lindquist",
+     "particles/bh_spin=0.9",
+     "particles/dt=0.01",
+     "time/tlim=4550.0",
+     "particles/tolerance=2.0e-14",
+     "particles/max_iterations=200",
+     "particles/hist_dcycle=1",
+     "particles/traj_dcycle=1",
+     "particles/traj_ntrack=1",
+     "time/ndiag=20000",
+     "particles/p0_x1=6.0",
+     "particles/p0_x2=1.5707963267948966",
+     "particles/p0_x3=0.0",
+     "particles/p0_u1=0.0",
+     "particles/p0_u2=0.0",
+     "particles/p0_u3=3.144275",
+     "particles/p0_m=0.0"
+    ],
+    "input": "problems/kerr/geodesic.athinput",
+    "log": {
+     "ok": true,
+     "log": "runs/geodesic/kerr_bl/ecc_mid_dt0.01/athena.20261113-041941.log",
+     "cpu_time_s": 49.46407,
+     "fatal": false,
+     "nan": false
+    },
+    "hist": {
+     "ncycles": 455000,
+     "hist_every_cycle": true,
+     "n_unconverged_steps": 0,
+     "max_iterations": 6,
+     "mean_iterations": 3.9984813186813186,
+     "n_particles_end": 1,
+     "n_escaped": 0,
+     "n_excised": 0
+    },
+    "max_pos_err_samples": 1.788208791708712e-06,
+    "n_records": 455001,
+    "t_last": 4550.0,
+    "max_dE": 8.233551219478632e-11,
+    "max_dLz": 0.0,
+    "max_dQ": 9.87190300098266e-28,
+    "dQ_relative": false,
+    "inv0": [
+     0.9460319622242687,
+     3.144275,
+     3.7387265406599826e-32
+    ],
+    "final_pos_err": 1.4951430227228002e-07,
+    "final_pos_err_components": [
+     -1.4951430227228002e-07,
+     0.0,
+     -1.1206446970390971e-07
+    ],
+    "final_u_err": [
+     -1.5053996968439343e-07,
+     3.156716732209921e-14,
+     0.0
+    ],
+    "r_min": 6.0,
+    "r_max": 11.605636309745877,
+    "r_peri_refined": [
+     5.999999999999977,
+     6.000000000000109
+    ],
+    "r_apo_refined": [
+     11.605636309940172,
+     11.60563630994058
+    ],
+    "n_pericenters": 21,
+    "n_apocenters": 20,
+    "pericenter_time_err_max": 2.3069036615197547e-05,
+    "pericenter_phi_err_max": 1.4944803865546419e-06,
+    "periapsis_advance_mean": 2.3965710556770183,
+    "periapsis_advance_mean_exact": 2.3965709809529976,
+    "periapsis_advance_mean_exact_periods": 2.3965709809529976,
+    "n_radial_periods_used": 20
+   },
+   "kerr_bl/ecc_mid_dt0.02": {
+    "name": "kerr_bl/ecc_mid_dt0.02",
+    "meta": {
+     "orbit": "bl_equatorial_eccentric",
+     "a": 0.9,
+     "pusher": "mid",
+     "metric": "bl",
+     "system": "bl",
+     "dt": 0.02,
+     "t_end": 4550.0,
+     "t0_offset": 0.0
+    },
+    "overrides": [
+     "particles/pusher=midpoint",
+     "particles/metric=boyer_lindquist",
+     "particles/bh_spin=0.9",
+     "particles/dt=0.02",
+     "time/tlim=4550.0",
+     "particles/tolerance=2.0e-14",
+     "particles/max_iterations=200",
+     "particles/hist_dcycle=1",
+     "particles/traj_dcycle=1",
+     "particles/traj_ntrack=1",
+     "time/ndiag=20000",
+     "particles/p0_x1=6.0",
+     "particles/p0_x2=1.5707963267948966",
+     "particles/p0_x3=0.0",
+     "particles/p0_u1=0.0",
+     "particles/p0_u2=0.0",
+     "particles/p0_u3=3.144275",
+     "particles/p0_m=0.0"
+    ],
+    "input": "problems/kerr/geodesic.athinput",
+    "log": {
+     "ok": true,
+     "log": "runs/geodesic/kerr_bl/ecc_mid_dt0.02/athena.20261113-041915.log",
+     "cpu_time_s": 25.00671,
+     "fatal": false,
+     "nan": false
+    },
+    "hist": {
+     "ncycles": 227500,
+     "hist_every_cycle": true,
+     "n_unconverged_steps": 0,
+     "max_iterations": 6,
+     "mean_iterations": 4.254131868131868,
+     "n_particles_end": 1,
+     "n_escaped": 0,
+     "n_excised": 0
+    },
+    "max_pos_err_samples": 7.152844300861716e-06,
+    "n_records": 227501,
+    "t_last": 4550.0,
+    "max_dE": 3.2933817603897624e-10,
+    "max_dLz": 0.0,
+    "max_dQ": 9.87190298270192e-28,
+    "dQ_relative": false,
+    "inv0": [
+     0.9460319622242687,
+     3.144275,
+     3.7387265406599826e-32
+    ],
+    "final_pos_err": 5.967217200364416e-07,
+    "final_pos_err_components": [
+     -5.967217200364416e-07,
+     0.0,
+     -4.3398944171713083e-07
+    ],
+    "final_u_err": [
+     -6.008251102907619e-07,
+     3.15671672930079e-14,
+     0.0
+    ],
+    "r_min": 6.0,
+    "r_max": 11.605636194741933,
+    "r_peri_refined": [
+     5.999999999999926,
+     6.0
+    ],
+    "r_apo_refined": [
+     11.605636194976105,
+     11.605636194976304
+    ],
+    "n_pericenters": 21,
+    "n_apocenters": 20,
+    "pericenter_time_err_max": 9.207103175867815e-05,
+    "pericenter_phi_err_max": 5.977899519393759e-06,
+    "periapsis_advance_mean": 2.396571279847974,
+    "periapsis_advance_mean_exact": 2.3965709809529976,
+    "periapsis_advance_mean_exact_periods": 2.3965709809529976,
+    "n_radial_periods_used": 20
+   },
+   "kerr_bl/inc_bchol_dt0.01": {
+    "name": "kerr_bl/inc_bchol_dt0.01",
+    "meta": {
+     "orbit": "bl_inclined",
+     "a": 0.9,
+     "pusher": "bchol",
+     "metric": "bl",
+     "system": "bl",
+     "dt": 0.01,
+     "t_end": 3850.0,
+     "t0_offset": 0.0
+    },
+    "overrides": [
+     "particles/pusher=boris",
+     "particles/triad=cholesky",
+     "particles/metric=boyer_lindquist",
+     "particles/bh_spin=0.9",
+     "particles/dt=0.01",
+     "time/tlim=3850.0",
+     "particles/tolerance=2.0e-14",
+     "particles/max_iterations=200",
+     "particles/hist_dcycle=1",
+     "particles/traj_dcycle=1",
+     "particles/traj_ntrack=1",
+     "time/ndiag=20000",
+     "particles/p0_x1=8.0",
+     "particles/p0_x2=1.2207963267948965",
+     "particles/p0_x3=0.0",
+     "particles/p0_u1=0.0",
+     "particles/p0_u2=0.9",
+     "particles/p0_u3=2.9",
+     "particles/p0_m=0.0"
+    ],
+    "input": "problems/kerr/geodesic.athinput",
+    "log": {
+     "ok": true,
+     "log": "runs/geodesic/kerr_bl/inc_bchol_dt0.01/athena.20261113-042606.log",
+     "cpu_time_s": 48.80945,
+     "fatal": false,
+     "nan": false
+    },
+    "hist": {
+     "ncycles": 385000,
+     "hist_every_cycle": true,
+     "n_unconverged_steps": 0,
+     "max_iterations": 5,
+     "mean_iterations": 4.00148051948052,
+     "n_particles_end": 1,
+     "n_escaped": 0,
+     "n_excised": 0
+    },
+    "max_pos_err_samples": 9.53114408730471e-07,
+    "n_records": 385001,
+    "t_last": 3850.0,
+    "max_dE": 8.813897442456403e-12,
+    "max_dLz": 1.168084785984414e-10,
+    "max_dQ": 2.617161745731399e-09,
+    "dQ_relative": true,
+    "inv0": [
+     0.94313371908962,
+     2.9,
+     1.9411209797169753
+    ],
+    "final_pos_err": 7.426045840475126e-07,
+    "final_pos_err_components": [
+     -6.761583826175865e-08,
+     4.829904454162204e-07,
+     7.426045840475126e-07
+    ],
+    "final_u_err": [
+     -1.94121459488536e-08,
+     1.0491550956892581e-06,
+     1.0728928856451603e-10
+    ],
+    "r_min": 7.999999990832325,
+    "r_max": 8.517103562602768,
+    "r_peri_refined": [
+     7.999999990124811,
+     8.000000006302947
+    ],
+    "r_apo_refined": [
+     8.517103550241558,
+     8.517103562796438
+    ],
+    "n_pericenters": 19,
+    "n_apocenters": 18,
+    "pericenter_time_err_max": 5.1362540034460835e-05,
+    "pericenter_phi_err_max": 2.9304100053195725e-06,
+    "periapsis_advance_mean": 2.4559128547747378,
+    "periapsis_advance_mean_exact": 2.4559126919741825,
+    "periapsis_advance_mean_exact_periods": 2.455875800075651,
+    "n_radial_periods_used": 18,
+    "theta_range": [
+     1.1246093076868253,
+     2.0169833458882285
+    ],
+    "n_ascending_nodes": 23,
+    "nodal_advance_mean": 0.4090450454618191,
+    "nodal_advance_mean_reference": 0.40904495376911587,
+    "node_time_err_max": 3.1193963422992965e-05,
+    "nodal_advance_exact_periods": 0.40893315190245083
+   },
+   "kerr_bl/inc_bsym_dt0.01": {
+    "name": "kerr_bl/inc_bsym_dt0.01",
+    "meta": {
+     "orbit": "bl_inclined",
+     "a": 0.9,
+     "pusher": "bsym",
+     "metric": "bl",
+     "system": "bl",
+     "dt": 0.01,
+     "t_end": 3850.0,
+     "t0_offset": 0.0
+    },
+    "overrides": [
+     "particles/pusher=boris",
+     "particles/triad=symmetric",
+     "particles/metric=boyer_lindquist",
+     "particles/bh_spin=0.9",
+     "particles/dt=0.01",
+     "time/tlim=3850.0",
+     "particles/tolerance=2.0e-14",
+     "particles/max_iterations=200",
+     "particles/hist_dcycle=1",
+     "particles/traj_dcycle=1",
+     "particles/traj_ntrack=1",
+     "time/ndiag=20000",
+     "particles/p0_x1=8.0",
+     "particles/p0_x2=1.2207963267948965",
+     "particles/p0_x3=0.0",
+     "particles/p0_u1=0.0",
+     "particles/p0_u2=0.9",
+     "particles/p0_u3=2.9",
+     "particles/p0_m=0.0"
+    ],
+    "input": "problems/kerr/geodesic.athinput",
+    "log": {
+     "ok": true,
+     "log": "runs/geodesic/kerr_bl/inc_bsym_dt0.01/athena.20261113-042502.log",
+     "cpu_time_s": 62.70748,
+     "fatal": false,
+     "nan": false
+    },
+    "hist": {
+     "ncycles": 385000,
+     "hist_every_cycle": true,
+     "n_unconverged_steps": 0,
+     "max_iterations": 5,
+     "mean_iterations": 4.001581818181818,
+     "n_particles_end": 1,
+     "n_escaped": 0,
+     "n_excised": 0
+    },
+    "max_pos_err_samples": 9.530945703772886e-07,
+    "n_records": 385001,
+    "t_last": 3850.0,
+    "max_dE": 8.820371844242538e-12,
+    "max_dLz": 1.1685120304311316e-10,
+    "max_dQ": 2.6172272911352928e-09,
+    "dQ_relative": true,
+    "inv0": [
+     0.94313371908962,
+     2.9,
+     1.9411209797169753
+    ],
+    "final_pos_err": 7.425795729432139e-07,
+    "final_pos_err_components": [
+     -6.761613846606451e-08,
+     4.829986361976069e-07,
+     7.425795729432139e-07
+    ],
+    "final_u_err": [
+     -1.9412295067851998e-08,
+     1.0491728847927817e-06,
+     1.0762457591795282e-10
+    ],
+    "r_min": 7.99999999083132,
+    "r_max": 8.517103562604884,
+    "r_peri_refined": [
+     7.9999999901246435,
+     8.00000000630223
+    ],
+    "r_apo_refined": [
+     8.517103550241558,
+     8.517103562798553
+    ],
+    "n_pericenters": 19,
+    "n_apocenters": 18,
+    "pericenter_time_err_max": 5.136318395670969e-05,
+    "pericenter_phi_err_max": 2.930412279056327e-06,
+    "periapsis_advance_mean": 2.4559128547748657,
+    "periapsis_advance_mean_exact": 2.4559126919741825,
+    "periapsis_advance_mean_exact_periods": 2.455875800075651,
+    "n_radial_periods_used": 18,
+    "theta_range": [
+     1.1246093076868109,
+     2.0169833458882356
+    ],
+    "n_ascending_nodes": 23,
+    "nodal_advance_mean": 0.40904504546178,
+    "nodal_advance_mean_reference": 0.40904495376911587,
+    "node_time_err_max": 3.119448456345708e-05,
+    "nodal_advance_exact_periods": 0.40893315190245083
+   },
+   "kerr_bl/inc_bsym_dt0.02": {
+    "name": "kerr_bl/inc_bsym_dt0.02",
+    "meta": {
+     "orbit": "bl_inclined",
+     "a": 0.9,
+     "pusher": "bsym",
+     "metric": "bl",
+     "system": "bl",
+     "dt": 0.02,
+     "t_end": 3850.0,
+     "t0_offset": 0.0
+    },
+    "overrides": [
+     "particles/pusher=boris",
+     "particles/triad=symmetric",
+     "particles/metric=boyer_lindquist",
+     "particles/bh_spin=0.9",
+     "particles/dt=0.02",
+     "time/tlim=3850.0",
+     "particles/tolerance=2.0e-14",
+     "particles/max_iterations=200",
+     "particles/hist_dcycle=1",
+     "particles/traj_dcycle=1",
+     "particles/traj_ntrack=1",
+     "time/ndiag=20000",
+     "particles/p0_x1=8.0",
+     "particles/p0_x2=1.2207963267948965",
+     "particles/p0_x3=0.0",
+     "particles/p0_u1=0.0",
+     "particles/p0_u2=0.9",
+     "particles/p0_u3=2.9",
+     "particles/p0_m=0.0"
+    ],
+    "input": "problems/kerr/geodesic.athinput",
+    "log": {
+     "ok": true,
+     "log": "runs/geodesic/kerr_bl/inc_bsym_dt0.02/athena.20261113-042429.log",
+     "cpu_time_s": 32.03115,
+     "fatal": false,
+     "nan": false
+    },
+    "hist": {
+     "ncycles": 192501,
+     "hist_every_cycle": true,
+     "n_unconverged_steps": 0,
+     "max_iterations": 6,
+     "mean_iterations": 4.257562298377671,
+     "n_particles_end": 1,
+     "n_escaped": 0,
+     "n_excised": 0
+    },
+    "max_pos_err_samples": 3.8125656374177197e-06,
+    "n_records": 192502,
+    "t_last": 3850.0,
+    "max_dE": 3.523722601203221e-11,
+    "max_dLz": 4.669356089521145e-10,
+    "max_dQ": 1.0468225227420962e-08,
+    "dQ_relative": true,
+    "inv0": [
+     0.94313371908962,
+     2.9,
+     1.9411209797169753
+    ],
+    "final_pos_err": 2.9769923060030123e-06,
+    "final_pos_err_components": [
+     -2.7026453430778474e-07,
+     1.929704855907488e-06,
+     2.9769923060030123e-06
+    ],
+    "final_u_err": [
+     -7.759000994304877e-08,
+     4.191738911307752e-06,
+     4.288325250456637e-10
+    ],
+    "r_min": 7.999999962153689,
+    "r_max": 8.517103402064938,
+    "r_peri_refined": [
+     7.999999960489018,
+     8.000000025201686
+    ],
+    "r_apo_refined": [
+     8.517103352020865,
+     8.517103402238293
+    ],
+    "n_pericenters": 19,
+    "n_apocenters": 18,
+    "pericenter_time_err_max": 0.000205293552880903,
+    "pericenter_phi_err_max": 1.17261373020483e-05,
+    "periapsis_advance_mean": 2.4559133434262552,
+    "periapsis_advance_mean_exact": 2.4559126919741825,
+    "periapsis_advance_mean_exact_periods": 2.455875800075651,
+    "n_radial_periods_used": 18,
+    "theta_range": [
+     1.124609307287088,
+     2.0169833466689653
+    ],
+    "n_ascending_nodes": 23,
+    "nodal_advance_mean": 0.4090453205353404,
+    "nodal_advance_mean_reference": 0.40904495376911587,
+    "node_time_err_max": 0.00012468474506022176,
+    "nodal_advance_exact_periods": 0.40893315190245083
+   },
+   "kerr_bl/inc_mid_dt0.01": {
+    "name": "kerr_bl/inc_mid_dt0.01",
+    "meta": {
+     "orbit": "bl_inclined",
+     "a": 0.9,
+     "pusher": "mid",
+     "metric": "bl",
+     "system": "bl",
+     "dt": 0.01,
+     "t_end": 3850.0,
+     "t0_offset": 0.0
+    },
+    "overrides": [
+     "particles/pusher=midpoint",
+     "particles/metric=boyer_lindquist",
+     "particles/bh_spin=0.9",
+     "particles/dt=0.01",
+     "time/tlim=3850.0",
+     "particles/tolerance=2.0e-14",
+     "particles/max_iterations=200",
+     "particles/hist_dcycle=1",
+     "particles/traj_dcycle=1",
+     "particles/traj_ntrack=1",
+     "time/ndiag=20000",
+     "particles/p0_x1=8.0",
+     "particles/p0_x2=1.2207963267948965",
+     "particles/p0_x3=0.0",
+     "particles/p0_u1=0.0",
+     "particles/p0_u2=0.9",
+     "particles/p0_u3=2.9",
+     "particles/p0_m=0.0"
+    ],
+    "input": "problems/kerr/geodesic.athinput",
+    "log": {
+     "ok": true,
+     "log": "runs/geodesic/kerr_bl/inc_mid_dt0.01/athena.20261113-042347.log",
+     "cpu_time_s": 41.65106,
+     "fatal": false,
+     "nan": false
+    },
+    "hist": {
+     "ncycles": 385000,
+     "hist_every_cycle": true,
+     "n_unconverged_steps": 0,
+     "max_iterations": 5,
+     "mean_iterations": 4.002384415584416,
+     "n_particles_end": 1,
+     "n_escaped": 0,
+     "n_excised": 0
+    },
+    "max_pos_err_samples": 2.019337841829838e-06,
+    "n_records": 385001,
+    "t_last": 3850.0,
+    "max_dE": 9.775934689678068e-11,
+    "max_dLz": 0.0,
+    "max_dQ": 4.541495074300225e-09,
+    "dQ_relative": true,
+    "inv0": [
+     0.94313371908962,
+     2.9,
+     1.9411209797169753
+    ],
+    "final_pos_err": 1.8871858742386394e-06,
+    "final_pos_err_components": [
+     -5.510415412857128e-08,
+     6.72043320992799e-08,
+     1.8871858742386394e-06
+    ],
+    "final_u_err": [
+     -1.6160870759673873e-08,
+     1.4731236475107323e-07,
+     0.0
+    ],
+    "r_min": 7.99999999794242,
+    "r_max": 8.517103470363512,
+    "r_peri_refined": [
+     7.999999997719617,
+     8.000000001148912
+    ],
+    "r_apo_refined": [
+     8.517103467910411,
+     8.517103470557984
+    ],
+    "n_pericenters": 19,
+    "n_apocenters": 18,
+    "pericenter_time_err_max": 4.1541103200870566e-05,
+    "pericenter_phi_err_max": 3.697904020327769e-06,
+    "periapsis_advance_mean": 2.4559128974132953,
+    "periapsis_advance_mean_exact": 2.4559126919741825,
+    "periapsis_advance_mean_exact_periods": 2.455875800075651,
+    "n_radial_periods_used": 18,
+    "theta_range": [
+     1.1246093078378119,
+     2.016983345698117
+    ],
+    "n_ascending_nodes": 23,
+    "nodal_advance_mean": 0.4090450425571266,
+    "nodal_advance_mean_reference": 0.40904495376911587,
+    "node_time_err_max": 3.862876837956719e-06,
+    "nodal_advance_exact_periods": 0.40893315190245083
+   },
+   "kerr_bl/inc_mid_dt0.02": {
+    "name": "kerr_bl/inc_mid_dt0.02",
+    "meta": {
+     "orbit": "bl_inclined",
+     "a": 0.9,
+     "pusher": "mid",
+     "metric": "bl",
+     "system": "bl",
+     "dt": 0.02,
+     "t_end": 3850.0,
+     "t0_offset": 0.0
+    },
+    "overrides": [
+     "particles/pusher=midpoint",
+     "particles/metric=boyer_lindquist",
+     "particles/bh_spin=0.9",
+     "particles/dt=0.02",
+     "time/tlim=3850.0",
+     "particles/tolerance=2.0e-14",
+     "particles/max_iterations=200",
+     "particles/hist_dcycle=1",
+     "particles/traj_dcycle=1",
+     "particles/traj_ntrack=1",
+     "time/ndiag=20000",
+     "particles/p0_x1=8.0",
+     "particles/p0_x2=1.2207963267948965",
+     "particles/p0_x3=0.0",
+     "particles/p0_u1=0.0",
+     "particles/p0_u2=0.9",
+     "particles/p0_u3=2.9",
+     "particles/p0_m=0.0"
+    ],
+    "input": "problems/kerr/geodesic.athinput",
+    "log": {
+     "ok": true,
+     "log": "runs/geodesic/kerr_bl/inc_mid_dt0.02/athena.20261113-042325.log",
+     "cpu_time_s": 21.54843,
+     "fatal": false,
+     "nan": false
+    },
+    "hist": {
+     "ncycles": 192501,
+     "hist_every_cycle": true,
+     "n_unconverged_steps": 0,
+     "max_iterations": 6,
+     "mean_iterations": 4.646594043667306,
+     "n_particles_end": 1,
+     "n_escaped": 0,
+     "n_excised": 0
+    },
+    "max_pos_err_samples": 8.077343125023617e-06,
+    "n_records": 192502,
+    "t_last": 3850.0,
+    "max_dE": 3.910389179002722e-10,
+    "max_dLz": 0.0,
+    "max_dQ": 1.8165965540905785e-08,
+    "dQ_relative": true,
+    "inv0": [
+     0.94313371908962,
+     2.9,
+     1.9411209797169753
+    ],
+    "final_pos_err": 7.555191842811837e-06,
+    "final_pos_err_components": [
+     -2.2021658985238446e-07,
+     2.6660801233369114e-07,
+     7.555191842811837e-06
+    ],
+    "final_u_err": [
+     -6.458607300797309e-08,
+     5.844525039488957e-07,
+     0.0
+    ],
+    "r_min": 7.999999991564773,
+    "r_max": 8.51710303311119,
+    "r_peri_refined": [
+     7.999999990878849,
+     8.000000004594337
+    ],
+    "r_apo_refined": [
+     8.517103022697915,
+     8.517103033287592
+    ],
+    "n_pericenters": 19,
+    "n_apocenters": 18,
+    "pericenter_time_err_max": 0.00016601031666141353,
+    "pericenter_phi_err_max": 1.479601993992219e-05,
+    "periapsis_advance_mean": 2.4559135139752897,
+    "periapsis_advance_mean_exact": 2.4559126919741825,
+    "periapsis_advance_mean_exact_periods": 2.455875800075651,
+    "n_radial_periods_used": 18,
+    "theta_range": [
+     1.1246093072024619,
+     2.016983346121693
+    ],
+    "n_ascending_nodes": 23,
+    "nodal_advance_mean": 0.40904530891647184,
+    "nodal_advance_mean_reference": 0.40904495376911587,
+    "node_time_err_max": 1.536593663331587e-05,
+    "nodal_advance_exact_periods": 0.40893315190245083
+   }
+  },
+  "exact": {
+   "bl_equatorial_eccentric": {
+    "radial_range": [
+     6.0,
+     11.605636348262067
+    ],
+    "theta_range": [
+     1.5707963267948966,
+     1.5707963267948968
+    ],
+    "invariants": {
+     "E": 0.9460319622242687,
+     "Lz": 3.144275,
+     "Q": 3.7387265406599826e-32
+    },
+    "periods": {
+     "Lambda_r": 2.5709385532103637,
+     "Lambda_th": null,
+     "Gamma": 88.45073844864257,
+     "T_r": 227.40141353754143,
+     "T_th": null,
+     "Omega_r": 0.02763037049522255,
+     "Omega_th": null,
+     "Omega_phi": 0.038169315454583366
+    },
+    "t_end": 4550.0,
+    "final_state": {
+     "t": 4550.0,
+     "x": [
+      6.00637989216042,
+      1.5707963267948966,
+      173.73251567840686
+     ],
+     "u": [
+      0.012899513425108661,
+      -1.475826638280913e-16,
+      3.144275
+     ]
+    }
+   },
+   "bl_inclined": {
+    "radial_range": [
+     8.0,
+     8.517103616314596
+    ],
+    "theta_range": [
+     1.1246093080485955,
+     2.0169833455411976
+    ],
+    "invariants": {
+     "E": 0.94313371908962,
+     "Lz": 2.9,
+     "Q": 1.9411209797169753
+    },
+    "periods": {
+     "Lambda_r": 2.54236807017963,
+     "Lambda_th": 1.946871418269963,
+     "Gamma": 84.00737862792973,
+     "T_r": 213.57767708313918,
+     "T_th": 163.55156437449932,
+     "Omega_r": 0.029418736044843005,
+     "Omega_th": 0.03841715199245902,
+     "Omega_phi": 0.04091748363689428
+    },
+    "t_end": 3850.0,
+    "final_state": {
+     "t": 3850.0,
+     "x": [
+      8.003636430051024,
+      1.8369219769839957,
+      157.54417960023375
+     ],
+     "u": [
+      0.002111720662828585,
+      -1.1445592503453186,
+      2.9
+     ]
+    }
+   }
+  }
  }
 }

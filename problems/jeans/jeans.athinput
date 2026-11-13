@@ -1,0 +1,218 @@
+# Two overdensities in a relativistic collisionless cluster (paper Sec. IV at reduced
+# particle number and resolution).  Envelope: monoenergetic cluster of gravitational
+# mass 0.76 M (y_c = 0.907, the member for which the quoted clump speed is a circular
+# orbit); clumps: Gaussian conformal sources of mass 0.12 M and width 0.70 M at
+# x = -3 M and +3 M with bulk speed 0.133215 in -y and +y.  10^4 particles
+# (6000 envelope, 2000 per clump).  Conformally flat, time-symmetric superposition.
+#
+# Mesh: [-256 M, 256 M]^3, root dx = 8 M in 16^3 MeshBlocks; dx = 1 M within 32 M of
+# the origin (wave zone), 0.5 M within 16 M (envelope), 0.25 M within 8 M (orbit), and
+# nested refinement following each clump (lapse-minimum trackers) down to dx = M/64.
+
+<comment>
+problem   = collapse and merger of two overdensities inside a cluster
+
+<job>
+basename  = jeans
+
+<mesh>
+nghost    = 4
+nx1       = 64
+x1min     = -256.0
+x1max     = 256.0
+ix1_bc    = outflow
+ox1_bc    = outflow
+nx2       = 64
+x2min     = -256.0
+x2max     = 256.0
+ix2_bc    = outflow
+ox2_bc    = outflow
+nx3       = 64
+x3min     = -256.0
+x3max     = 256.0
+ix3_bc    = outflow
+ox3_bc    = outflow
+
+<meshblock>
+nx1       = 16
+nx2       = 16
+nx3       = 16
+
+<mesh_refinement>
+refinement          = adaptive
+num_levels          = 10
+max_nmb_per_rank    = 3072
+ncycle_check        = 4
+refinement_interval = 8
+
+<amr_criterion0>
+method = user
+
+<z4c_amr>
+method            = tracker
+radius_0_rad      = 30.0
+radius_0_reflevel = 3
+radius_1_rad      = 12.0
+radius_1_reflevel = 4
+radius_2_rad      = 6.0
+radius_2_reflevel = 5
+
+<refined_region1>
+level = 9
+x1min = -3.2
+x1max = -2.8
+x2min = -0.2
+x2max = 0.2
+x3min = -0.2
+x3max = 0.2
+
+<refined_region2>
+level = 9
+x1min = 2.8
+x1max = 3.2
+x2min = -0.2
+x2max = 0.2
+x3min = -0.2
+x3max = 0.2
+
+<refined_region3>
+level = 3
+x1min = -30.0
+x1max = 30.0
+x2min = -30.0
+x2max = 30.0
+x3min = -30.0
+x3max = 30.0
+
+<refined_region4>
+level = 4
+x1min = -12.0
+x1max = 12.0
+x2min = -12.0
+x2max = 12.0
+x3min = -12.0
+x3max = 12.0
+
+<refined_region5>
+level = 5
+x1min = -5.0
+x1max = 5.0
+x2min = -5.0
+x2max = 5.0
+x3min = -5.0
+x3max = 5.0
+
+<time>
+evolution  = dynamic
+integrator = rk4
+cfl_number = 0.25
+nlim       = -1
+tlim       = 100.0
+ndiag      = 100
+
+<z4c>
+lapse_oplog     = 2.0
+lapse_harmonicf = 1.0
+lapse_harmonic  = 0.0
+lapse_advect    = 1.0
+shift_Gamma     = 0.75
+shift_eta       = 2.0
+shift_advect    = 1.0
+diss            = 0.5
+chi_div_floor   = 1.0e-5
+damp_kappa1     = 0.02
+damp_kappa2     = 0.0
+nco             = 2
+co_0_type       = BH
+co_0_x          = -3.0
+co_0_mass       = 0.12
+co_0_radius     = 0.4
+co_0_reflevel   = 9
+co_1_type       = BH
+co_1_x          = 3.0
+co_1_mass       = 0.12
+co_1_radius     = 0.4
+co_1_reflevel   = 9
+tracker_mode    = walk
+nrad_wave_extraction = 3
+extraction_radius_0  = 16.0
+extraction_radius_1  = 22.0
+extraction_radius_2  = 28.0
+extraction_nlev      = 10
+waveform_dt          = 0.25
+
+<fastflow>
+find_every        = 16
+num_horizons      = 3
+npunct            = 2
+ntheta            = 16
+lmax              = 8
+use_puncture_0    = 0
+initial_radius_0  = 0.12
+flow_iterations_0 = 400
+flow_alpha_beta_const_0 = 1.0
+hmean_tol_0       = 100.0
+mass_tol_0        = 1.0e-5
+start_time_0      = 5.0
+stop_time_0       = 10000.0
+use_puncture_1    = 1
+initial_radius_1  = 0.12
+flow_iterations_1 = 400
+flow_alpha_beta_const_1 = 1.0
+hmean_tol_1       = 100.0
+mass_tol_1        = 1.0e-5
+start_time_1      = 5.0
+stop_time_1       = 10000.0
+use_puncture_2    = -1
+use_puncture_massweighted_center_2 = true
+wait_until_punc_are_close_2 = true
+merger_distance   = 1.0
+initial_radius_2  = 0.6
+flow_iterations_2 = 400
+flow_alpha_beta_const_2 = 1.0
+hmean_tol_2       = 100.0
+mass_tol_2        = 1.0e-5
+start_time_2      = 20.0
+stop_time_2       = 10000.0
+verbose           = false
+
+<particles>
+particle_type  = nrpic
+pusher         = midpoint
+metric         = mesh
+tolerance      = 1.0e-7
+max_iterations = 50
+deposit        = true
+nfilter        = 2
+deposit_max_level = 31
+deposit_adaptive  = true   # cloud level follows the local particle density ...
+deposit_min_level = 3      # ... and is never coarser than dx = 1 M
+deposit_ppc       = 2.0
+alpha_exc      = 0.05
+ah_exc_factor  = -1.0
+hist_dcycle    = 1
+snap_dt        = 0.5
+particle_file  = particles.nrp
+
+<problem>
+pgen_name  = nrpic_cf
+ncomp      = 3
+comp0_type = table
+comp0_file = envelope.tab
+comp1_type  = gaussian
+comp1_mass  = 0.12
+comp1_sigma = 0.7
+comp1_x1    = -3.0
+comp2_type  = gaussian
+comp2_mass  = 0.12
+comp2_sigma = 0.7
+comp2_x1    = 3.0
+lapse      = isotropic
+
+<output1>
+file_type = hst
+dt        = 0.5
+
+<output2>
+file_type = rst
+dt        = 5.0

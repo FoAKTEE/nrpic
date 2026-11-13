@@ -82,6 +82,8 @@ FastFlow::FastFlow(MeshBlockPack *pmbp, ParameterInput *pin, int n):
   // Convergence parameters
   hmean_tol = pin->GetOrAddReal("fastflow", "hmean_tol_" + n_str, 100.);
   mass_tol = pin->GetOrAddReal("fastflow", "mass_tol_" + n_str, 1e-2);
+  find_every = pin->GetOrAddInteger("fastflow", "find_every", 1);
+  if (find_every < 1) { find_every = 1; }
 
   // Output booleans
   verbose = pin->GetOrAddBoolean("fastflow", "verbose", false);

@@ -336,6 +336,12 @@ TaskStatus Z4c::FindHorizon(Driver *pdrive, int stage) {
   Real time = pmy_pack->pmesh->time;
   auto &indcs = pmy_pack->pmesh->mb_indcs;
   if (stage == pdrive->nexp_stages) {
+    // search only every find_every cycles (each flow iteration interpolates the metric
+    // onto the trial surface, so a search costs as much as many time steps)
+    if (!pfastflow.empty() &&
+        (pmy_pack->pmesh->ncycle % pfastflow[0]->find_every) != 0) {
+      return TaskStatus::complete;
+    }
     for (auto & pahf : pfastflow) {
       switch (indcs.ng) {
         case 2: pahf->MetricDerivatives<2>(time); break;

@@ -57,6 +57,7 @@ struct NrpicOptions {
   int deposit_min_level;  // coarsest level of a cloud with the adaptive choice
   Real deposit_ppc;       // target number of particles per cloud cell
   Real alpha_exc;       // particles with interpolated lapse below this are removed
+  Real ah_exc_factor;   // particles inside this fraction of a horizon radius are removed
   int hist_dcycle;      // cycles between history records (0 = off)
   int traj_dcycle;      // cycles between trajectory records (0 = off)
   int traj_ntrack;      // particles with tag < traj_ntrack are recorded
