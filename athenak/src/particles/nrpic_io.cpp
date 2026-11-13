@@ -168,10 +168,57 @@ void Particles::NrpicWriteTrajectories(Real time, bool truncate) {
   std::FILE *fp = std::fopen(fname.c_str(), truncate ? "wb" : "ab");
   if (fp == nullptr) NrpicFatal("cannot open " + fname);
   const int np = nprtcl_thispack;
+  const bool mesh_metric = (nropt.metric == NrpicMetric::mesh);
+  // With a mesh metric the fields reconstructed at each tracked particle are written to
+  // <basename>.trajmet.bin as records of 12 doubles: time, tag, alpha, beta^i, gamma_ij
+  // (xx, xy, xz, yy, yz, zz), in the same order as the records of the trajectory file.
+  std::FILE *fpm = nullptr;
+  if (mesh_metric) {
+    std::string fmet = nr_basename + ".trajmet.bin";
+    fpm = std::fopen(fmet.c_str(), truncate ? "wb" : "ab");
+    if (fpm == nullptr) NrpicFatal("cannot open " + fmet);
+  }
   if (np > 0) {
     auto rh = Kokkos::create_mirror_view_and_copy(HostMemSpace(), prtcl_rdata);
     auto ih = Kokkos::create_mirror_view_and_copy(HostMemSpace(), prtcl_idata);
-    std::vector<double> buf;
+    HostArray2D<Real> mh;
+    if (mesh_metric) {
+      auto &indcs = pmy_pack->pmesh->mb_indcs;
+      auto pr = prtcl_rdata;
+      auto pi = prtcl_idata;
+      auto sz = pmy_pack->pmb->mb_size.d_view;
+      const int gids = pmy_pack->gids;
+      const int ntrack = nropt.traj_ntrack;
+      nrpic::MeshMetric proto;
+      proto.m1 = met1;
+      proto.m0 = met1;
+      proto.is_static = true;
+      proto.ist[0] = indcs.is; proto.ist[1] = indcs.js; proto.ist[2] = indcs.ks;
+      proto.ncell[0] = indcs.nx1 + 2*indcs.ng;
+      proto.ncell[1] = indcs.nx2 + 2*indcs.ng;
+      proto.ncell[2] = indcs.nx3 + 2*indcs.ng;
+      DvceArray2D<Real> pmet("pmet", NRM_NVAR, np);
+      par_for("nrpic_trajmet", DevExeSpace(), 0, np-1, KOKKOS_LAMBDA(const int p) {
+        if (pi(PTAG,p) >= ntrack) return;
+        const int m = pi(PGID,p) - gids;
+        nrpic::MeshMetric met = proto;
+        met.m = m;
+        met.xmin[0] = sz(m).x1min; met.xmin[1] = sz(m).x2min; met.xmin[2] = sz(m).x3min;
+        met.idx[0] = 1.0/sz(m).dx1; met.idx[1] = 1.0/sz(m).dx2;
+        met.idx[2] = 1.0/sz(m).dx3;
+        const Real x[3] = {pr(IPX,p), pr(IPY,p), pr(IPZ,p)};
+        nrpic::AdmPoint ap;
+        met(1, x, ap);
+        pmet(NRM_ALP,p) = ap.alp;
+        pmet(NRM_BX,p) = ap.beta[0]; pmet(NRM_BY,p) = ap.beta[1];
+        pmet(NRM_BZ,p) = ap.beta[2];
+        pmet(NRM_GXX,p) = ap.g[0][0]; pmet(NRM_GXY,p) = ap.g[0][1];
+        pmet(NRM_GXZ,p) = ap.g[0][2]; pmet(NRM_GYY,p) = ap.g[1][1];
+        pmet(NRM_GYZ,p) = ap.g[1][2]; pmet(NRM_GZZ,p) = ap.g[2][2];
+      });
+      mh = Kokkos::create_mirror_view_and_copy(HostMemSpace(), pmet);
+    }
+    std::vector<double> buf, mbuf;
     buf.reserve(8*static_cast<size_t>(std::min(np, nropt.traj_ntrack)));
     for (int p=0; p<np; ++p) {
       if (ih(PTAG,p) < nropt.traj_ntrack) {
@@ -179,11 +226,20 @@ void Particles::NrpicWriteTrajectories(Real time, bool truncate) {
         buf.push_back(static_cast<double>(ih(PTAG,p)));
         buf.push_back(rh(IPX,p)); buf.push_back(rh(IPY,p)); buf.push_back(rh(IPZ,p));
         buf.push_back(rh(IPVX,p)); buf.push_back(rh(IPVY,p)); buf.push_back(rh(IPVZ,p));
+        if (mesh_metric) {
+          mbuf.push_back(time);
+          mbuf.push_back(static_cast<double>(ih(PTAG,p)));
+          for (int n=0; n<NRM_NVAR; ++n) { mbuf.push_back(mh(n,p)); }
+        }
       }
     }
     if (!buf.empty()) std::fwrite(buf.data(), sizeof(double), buf.size(), fp);
+    if (fpm != nullptr && !mbuf.empty()) {
+      std::fwrite(mbuf.data(), sizeof(double), mbuf.size(), fpm);
+    }
   }
   std::fclose(fp);
+  if (fpm != nullptr) std::fclose(fpm);
 }
 
 //----------------------------------------------------------------------------------------

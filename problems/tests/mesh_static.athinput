@@ -1,0 +1,70 @@
+# Test particle on a circular orbit (r = 8 M) of a Schwarzschild black hole whose
+# Kerr-Schild metric is sampled on the mesh and reconstructed with cubic Hermite
+# interpolation.  The particle carries rest mass and is deposited (no back-reaction),
+# which exercises ownership, deposition and filtering on a multi-block mesh.
+
+<comment>
+problem   = NRPIC mesh-metric test
+
+<job>
+basename  = mesh
+
+<mesh>
+nghost    = 2
+nx1       = 96
+x1min     = -12.0
+x1max     = 12.0
+ix1_bc    = outflow
+ox1_bc    = outflow
+nx2       = 96
+x2min     = -12.0
+x2max     = 12.0
+ix2_bc    = outflow
+ox2_bc    = outflow
+nx3       = 96
+x3min     = -12.0
+x3max     = 12.0
+ix3_bc    = outflow
+ox3_bc    = outflow
+
+<meshblock>
+nx1       = 32
+nx2       = 32
+nx3       = 32
+
+<time>
+evolution  = dynamic
+integrator = rk2
+cfl_number = 1.0
+nlim       = -1
+tlim       = 300.0
+ndiag      = 500
+
+<adm>
+dynamic = false
+
+<particles>
+particle_type  = nrpic
+pusher         = midpoint
+metric         = mesh
+bh_mass        = 1.0
+bh_spin        = 0.0
+tolerance      = 1.0e-12
+max_iterations = 100
+dt             = 0.1
+deposit        = true
+nfilter        = 1
+hist_dcycle    = 10
+traj_dcycle    = 1
+traj_ntrack    = 1
+nparticles     = 1
+p0_x1          = 8.0
+p0_x2          = 0.0
+p0_x3          = 0.0
+p0_u1          = 0.31622776601683794
+p0_u2          = 0.4472135954999579
+p0_u3          = 0.0
+p0_m           = 1.0e-3
+
+<problem>
+pgen_name = nrpic_geodesic

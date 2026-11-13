@@ -1,0 +1,95 @@
+# Oppenheimer-Snyder dust collapse, R_0 = 5 M, mass-weighted particle lattice aligned
+# with the mesh (lattice spacing = finest cell size).  Development configuration with
+# static refinement: checks the coupled evolution before the black hole forms.
+#   domain half-width = 512 h, root dx = 8 h, level 3 dx = h = 0.30280705177720835
+
+<comment>
+problem   = Oppenheimer-Snyder collapse (static refinement)
+
+<job>
+basename  = os
+
+<mesh>
+nghost    = 4
+nx1       = 128
+x1min     = -155.03721050993067
+x1max     = 155.03721050993067
+ix1_bc    = outflow
+ox1_bc    = outflow
+nx2       = 128
+x2min     = -155.03721050993067
+x2max     = 155.03721050993067
+ix2_bc    = outflow
+ox2_bc    = outflow
+nx3       = 128
+x3min     = -155.03721050993067
+x3max     = 155.03721050993067
+ix3_bc    = outflow
+ox3_bc    = outflow
+
+<meshblock>
+nx1       = 32
+nx2       = 32
+nx3       = 32
+
+<mesh_refinement>
+refinement       = static
+max_nmb_per_rank = 512
+
+<refined_region1>
+level = 3
+x1min = -6.0
+x1max = 6.0
+x2min = -6.0
+x2max = 6.0
+x3min = -6.0
+x3max = 6.0
+
+<time>
+evolution  = dynamic
+integrator = rk4
+cfl_number = 0.25
+nlim       = -1
+tlim       = 10.0
+ndiag      = 10
+
+<z4c>
+lapse_oplog     = 2.0
+lapse_harmonicf = 1.0
+lapse_harmonic  = 0.0
+lapse_advect    = 1.0
+shift_Gamma     = 0.75
+shift_eta       = 2.0
+shift_advect    = 1.0
+diss            = 0.5
+chi_div_floor   = 1.0e-5
+damp_kappa1     = 0.02
+damp_kappa2     = 0.0
+
+<particles>
+particle_type  = nrpic
+pusher         = midpoint
+metric         = mesh
+tolerance      = 1.0e-7
+max_iterations = 50
+deposit        = true
+nfilter        = 1
+alpha_exc      = 0.1
+hist_dcycle    = 1
+snap_dt        = 1.0
+particle_file  = os_R5_lattice_N9328_s1.nrp
+
+<problem>
+pgen_name  = nrpic_cf
+ncomp      = 1
+comp0_type = table
+comp0_file = os_R5_lattice_N9328_s1.tab
+lapse      = one
+
+<output1>
+file_type = hst
+dt        = 0.1
+
+<output2>
+file_type = rst
+dt        = 5.0

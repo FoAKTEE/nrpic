@@ -1,0 +1,44 @@
+# Z4c throughput benchmark: single Brill-Lindquist puncture on a uniform mesh.
+<job>
+basename  = bench
+<mesh>
+nghost    = 4
+nx1       = 128
+x1min     = -16.0
+x1max     = 16.0
+ix1_bc    = outflow
+ox1_bc    = outflow
+nx2       = 128
+x2min     = -16.0
+x2max     = 16.0
+ix2_bc    = outflow
+ox2_bc    = outflow
+nx3       = 128
+x3min     = -16.0
+x3max     = 16.0
+ix3_bc    = outflow
+ox3_bc    = outflow
+<meshblock>
+nx1       = 32
+nx2       = 32
+nx3       = 32
+<time>
+evolution  = dynamic
+integrator = rk4
+cfl_number = 0.25
+nlim       = 20
+tlim       = 1000.0
+ndiag      = 5
+<z4c>
+lapse_oplog     = 2.0
+shift_Gamma     = 0.75
+shift_eta       = 2.0
+diss            = 0.5
+chi_div_floor   = 1.0e-5
+damp_kappa1     = 0.02
+<problem>
+pgen_name  = nrpic_cf
+ncomp      = 1
+comp0_type = puncture
+comp0_mass = 1.0
+lapse      = precollapsed
