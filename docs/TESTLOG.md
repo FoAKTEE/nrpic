@@ -800,3 +800,25 @@ The source package of the original contains its figures. Read off them, by eye:
 
 Addendum (07:49): without constraint damping (`st/osc/k1_0`) the lapse history is again
 the same (last minimum -0.0107 at t = 280 M). Three values of the damping, one history.
+
+## Growing oscillation: parabolic relaxation (07:53)
+
+`st/osc/ch0p05` (relaxation length 0.05) against the base run. The relaxation works:
+the Hamiltonian-constraint norm is 0.077 against 0.121 at t = 5 M and ends at 0.0145
+against 0.031 (momentum 0.0085 against 0.016). The lapse history is the same to 1e-4.
+The constraint violation carried along does not drive the oscillation.
+
+State of the question: the history of the central lapse is reproduced to a few 1e-4
+under changes of the constraint damping (three values), the relaxation, and the time
+step, and its timing by other seeds and by a tenth of the particles. It is a
+deterministic consequence of the initial particle distribution on this mesh with this
+filter. That leaves the spatial side (cell size, cloud and filter, mesh layout), the
+way the initial data are built, and the possibility that the motion is simply the
+collisionless evolution of the small common offset the runs start with: in a core
+where all particles share one radial period, a small coherent velocity offset bunches
+the particles in radial phase, and the bunching grows in proportion to time until phase
+mixing stops it. That would be linear growth, independent of N, of the time step and
+of the constraint handling, which is what is seen; it is a reading, not a result. It
+predicts that the amplitude saturates (the 600 M continuation) and that the growth is
+proportional to the size of the initial offset (the run that also cancels the cloud
+width, if that makes the offset smaller).
