@@ -761,3 +761,12 @@ brings the late constraint norm (below about 2.5 at its maximum) and the horizon
 drift after removal (below 0.2 percent) to the values of the uncapped run, with limit 2
 in between. If the late behaviour stays that of the unlimited adaptive run, the cause
 is elsewhere in the adaptive path.
+
+## Growing oscillation: constraint damping (07:41)
+
+`st/osc/k1_0p1` (constraint damping 0.1) against the base run (0.02), same sample.
+The damping acted: the Hamiltonian-constraint norm falls faster and ends at 0.019
+instead of 0.031 (momentum 0.009 against 0.016). The lapse history is the same to
+3e-4: every extremum at the same time with the same value (last minimum -0.0111
+against -0.0108 at t = 280 M). The reading "constraint damping feeds back on the mode"
+predicted a strong dependence on the value and is ruled out.
