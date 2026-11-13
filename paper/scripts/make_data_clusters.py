@@ -50,7 +50,7 @@ OUT = HERE.parent / "data" / "clusters.npz"
 
 def alpha_exc(d):
     """Lapse threshold of particle removal from the run's input file."""
-    for p in sorted(d.glob("*.athinput")):
+    for p in sorted(q for q in d.iterdir() if q.suffix.startswith(".ath")):
         m = re.search(r"^\s*alpha_exc\s*=\s*([0-9.eE+-]+)", p.read_text(), re.M)
         if m:
             return float(m.group(1))
