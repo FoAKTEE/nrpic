@@ -68,3 +68,12 @@ the cloud width as well. Bottom right: difference from the first sample for half
 time step, constraint damping raised and switched off (dashed), and relaxation of the
 Hamiltonian constraint.
 (NOTATION.md needs: alpha_{c,eq}, E_0.)
+
+fig_clusters (full): Five relativistic star clusters of 10^4 particles with a small
+inward velocity kick, from the least compact model (left) to the unbound one (right).
+Top: coordinate radii about the origin enclosing successive tenths of the rest mass
+present (half mass thicker), drawn while at least half of it remains. Middle: central
+lapse; dotted, threshold for particle removal; dashed (top and middle), first apparent
+horizon. Bottom: apparent-horizon mass of the two models that collapse, with the total
+mass (blue). The models y_c = 0.900 and 0.819 hold, y_c = 0.605 and 0.500 collapse to
+black holes, and y_c = 0.283 disperses.

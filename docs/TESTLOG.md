@@ -1261,3 +1261,22 @@ mass 0.9962 to 0.9970 from t = 149 to 160 M. The total mass of this initial data
 0.99689 (it is lighter than the unperturbed cluster because it is more tightly bound);
 the horizon mass at the end, 0.99698, equals it to 1e-4. The collapse is resolved this
 time (adaptive mesh, finder), and it conserves the mass of the consistent initial data.
+
+Corrections to the cluster-sequence entries, found while the sequence figure was
+reduced from the full histories (12:10); the entries had been written from values
+sampled every 10 M:
+- y_c = 0.283: the run ends at t = 270.06 M (not 268.6 M); the half-mass radius of
+  47.6 M is the value at 270 M. Its central lapse starts at 0.4054 where the equilibrium
+  model has 0.3994, 1.5 percent higher (the probe averages the eight central cells of
+  M/4; for the other models the offset is 0.1 to 0.3 percent).
+- y_c = 0.500: the central lapse before the collapse ranges from 0.538 (t = 35.5 M) to
+  0.561 (46.2 M), not 0.545 to 0.556; removal of particles starts at t = 104.41 M.
+- y_c = 0.605: the half-mass radius is not constant at 2.84 M until 120 M; it swings
+  between 2.62 and 2.91 M between t = 100 and 125 M.
+- A difference from the original not noted before: after the horizon forms the central
+  lapse falls to 0.02 to 0.05 here, while the original's curves level off near 0.2.
+  This is a statement about the coordinates at the centre; which gauge setting makes
+  the difference was not looked into.
+Figure for the paper: `paper/figures/fig_clusters.png` (radii about the origin, as in
+the original; the diagnostic figures use the centre of mass; the two differ by less
+than 0.6 percent while most particles are present).
