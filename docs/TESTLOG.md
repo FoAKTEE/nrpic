@@ -59,3 +59,28 @@ constraints) adds about 3 percent at 10^4 particles.
   Horizon mass 0.974 M with the finder's default stopping tolerance (1e-3 per iteration),
   which leaves a residual mean expansion of -0.03; rerun with tolerance 1e-7 pending.
 - Deposition identity 1e-15 throughout, across all regrids; no unconverged pushes.
+
+## Restart (CPU, 2026-11-13)
+
+Dust collapse on a small mesh (8 MeshBlocks, 9328 particles, adaptive cloud level):
+20 cycles uninterrupted against 10 cycles, restart, 10 cycles. Particle positions agree
+to 9e-16, momenta to 3e-16; every column of the particle history (lapse, density,
+proper time, sums) is identical to the printed digits; counters and output schedule are
+restored from the particle restart file.
+
+## Stable cluster y_c = 0.819, 10^4 stratified particles (GPU, 2026-11-13)
+
+dx = M/2 over the cluster, four filter passes, inward velocity perturbation of one
+percent, 300 M: no particle lost; central lapse oscillates between 0.804 and 0.838 about
+the equilibrium value 0.8091; the radii enclosing 10 to 90 percent of the rest mass stay
+within about 10 percent of their equilibrium values; constraint norms decay by a factor
+of ten in the first 100 M and then stay flat; centre of mass moves 0.2 M.
+Figure: `analysis/diag/figs/cluster_history_yc0819_full.png`.
+
+## Apparent-horizon finder settings (2026-11-13)
+
+The flow finder stops when the mass changes by less than `mass_tol` between iterations.
+With 1e-3 it stops early (mean expansion -0.03 left on the surface, mass low by about
+3 percent). With 1e-7 it never meets the criterion at these resolutions and uses all its
+iterations every cycle (about 10 s per cycle). Production runs use 1e-5, at most 400
+iterations, and a search every 16 cycles (`fastflow/find_every`, added here).
