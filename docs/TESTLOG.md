@@ -954,3 +954,28 @@ discretization at second order, the first maximum of the lapse (+0.0035 at t = 2
 and the amplitude at t = 280 M (0.011) both drop by about four; if the motion is the
 dynamics of the model as sampled, both stay. The filter length halves with the cell, so
 the source is noisier in this run; a larger irregular part is expected either way.
+
+## Test particles around a head-on collision of two black holes (09:20)
+
+`puncture/headon_v4`: two punctures of bare mass M/2 at rest at x = -5 M and +5 M,
+moving-puncture gauge, refinement following the punctures, corrected horizon finder,
+160 M; six tracers with angular momentum about the collision axis (one released at
+rest on the symmetry plane). New script `analysis/diag/tracers_headon.py`, figure
+`analysis/diag/figs/tracers_headon_v4.png`.
+- The one exact invariant, L_x = y u_z - z u_y (axisymmetry about the collision axis in
+  any gauge that keeps it): relative change below 1.4e-4 for every tracer up to
+  t = 40 M, below 4.4e-4 up to t = 60 M (the punctures meet near t = 49 M), and below
+  1.0e-3 over the whole run. The largest values come in a burst between t = 90 and
+  115 M that all five orbiting tracers show at the same time, after which the change
+  is back near 1e-4. What passes them at that time (they are 10 to 16 M from the axis)
+  was not determined; the mesh is Cartesian with refinement boxes, so the numerical
+  spacetime is axisymmetric only up to its truncation error.
+- The tracer released at rest falls in and is removed at the lapse threshold at
+  t = 77.6 M; its L_x stays at 4e-14 (round-off).
+- Common apparent horizon first found at t = 49.25 M. Its mass is 1.0020 at t = 55 M
+  and 1.0021 to 1.0025 from t = 60 M to the end (rms expansion on the surface 1e-6 at
+  the end), against a total mass of 1; between t = 60 and 110 M successive searches
+  alternate between two values 5e-4 apart. A merged black hole cannot be heavier than
+  the total mass, so the excess of 0.25 percent is an error of the evolution at this
+  resolution; the single puncture at dx = M/8 gained 0.18 percent in the same way.
+  The radiated energy of this collision is smaller than that and is not resolved here.
