@@ -79,6 +79,11 @@ def main(argv=None):
     g.add_argument("--R0", type=float, default=5.0, help="initial areal radius / M")
     g.add_argument("--nlat", type=int, default=None, help="lattice cells across the diameter")
     g.add_argument("--normalize-lattice-mass", action="store_true")
+    g.add_argument("--lattice-surface-correction", action="store_true",
+                   help="lattice: rescale the masses of the outermost layer (one lattice "
+                        "spacing) so that the total equals the continuum rest mass; the "
+                        "published rule m = rho_0 psi^6 h^3 is off by the lattice-count "
+                        "error of the sphere (+1.2 percent at n_lat = 26)")
     g = p.add_argument_group("st")
     g.add_argument("--yc", type=float, default=None, help="central y_c of the sequence")
     g.add_argument("--vpert", type=float, default=0.0,
@@ -122,14 +127,17 @@ def main(argv=None):
     if a.model == "os":
         sampler = a.sampler or "lattice"
         x, u, m, sp = sampling.sample_os(a.N, sampler, a.seed, a.R0, 1.0, a.nlat,
-                                         a.species, a.normalize_lattice_mass)
+                                         a.species, a.normalize_lattice_mass,
+                                         a.lattice_surface_correction)
+        meta["lattice_surface_correction"] = bool(a.lattice_surface_correction)
         meta.update(osn.summary(a.R0))
         meta["sampler"] = sampler
         if sampler == "lattice":
             nlat = a.nlat or sampling.os_nlat_for(a.N)
             meta.update(n_lat=nlat, lattice_h=2 * osn.isotropic_radius(a.R0) / nlat,
                         lattice_convention="cell centres -rbar0+(i+1/2)h, |x|<=rbar0")
-        stem = a.prefix or f"os_R{_fmt(a.R0)}_{sampler}_N{len(m)}_s{a.seed}"
+        stem = a.prefix or (f"os_R{_fmt(a.R0)}_{sampler}_N{len(m)}_s{a.seed}"
+                            + ("_sc" if a.lattice_surface_correction else ""))
         table = lambda path: osn.write_table(path, a.R0, 1.0, a.table_points, a.table_rmax)
         meta["table_lapse"] = "alpha = 1 (initial lapse); do not use tabulated-lapse continuation"
 

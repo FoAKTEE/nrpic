@@ -115,7 +115,7 @@ def os_lattice(n_lat, R0=5.0, M=1.0):
 
 
 def sample_os(N=None, method="mc", seed=0, R0=5.0, M=1.0, n_lat=None,
-              species=0, normalize_lattice_mass=False):
+              species=0, normalize_lattice_mass=False, surface_correction=False):
     """Oppenheimer-Snyder dust at rest, u_i = 0.
 
     method 'mc' or 'stratified': N equal-mass particles, m_p = M_rest/N.
@@ -132,8 +132,23 @@ def sample_os(N=None, method="mc", seed=0, R0=5.0, M=1.0, n_lat=None,
                 raise ValueError("lattice sampler needs n_lat or N")
             n_lat = os_nlat_for(N)
         x, m = os_lattice(n_lat, R0, M)
+        if normalize_lattice_mass and surface_correction:
+            raise ValueError("choose one of normalize_lattice_mass, surface_correction")
         if normalize_lattice_mass:
             m = m * (Mrest / m.sum())
+        if surface_correction:
+            # The number of lattice sites inside a sphere differs from its volume in
+            # cells by a fraction of order 1/n_lat (+1.2 percent at n_lat = 26), and
+            # the rule m = rho_0 psi^6 h^3 inherits that as an error of the total rest
+            # mass.  Put the whole correction into the outermost layer of one lattice
+            # spacing, where the cells are cut by the surface: the interior keeps the
+            # exact density and the total equals the continuum rest mass.
+            rbar0 = osn.isotropic_radius(R0, M)
+            h = 2.0 * rbar0 / n_lat
+            r = np.sqrt(np.sum(x * x, axis=1))
+            layer = r > rbar0 - h
+            m = m.copy()
+            m[layer] *= (Mrest - m[~layer].sum()) / m[layer].sum()
         n = len(m)
         return x, np.zeros((n, 3)), m, _species(n, species)
     if N is None:

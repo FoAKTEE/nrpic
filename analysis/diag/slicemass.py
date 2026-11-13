@@ -500,7 +500,8 @@ def analyse(h, center=(0.0, 0.0, 0.0), finder=None):
     # asymptotic mass: from the outermost shell inward while each shell median stays
     # within FLAT_TOL of the median of the shells already taken
     P = A["P"][NPER2_PRINT]
-    s = np.nonzero(np.isfinite(P["m"]))[0]
+    s = outer_sheet(P)                        # not into a second sheet
+    s = s[np.isfinite(P["m"][s])]
     inc = [s[-1]]
     for k in s[-2::-1]:
         ref = np.median(P["m"][inc])
@@ -517,8 +518,8 @@ def analyse(h, center=(0.0, 0.0, 0.0), finder=None):
     i0, i1 = np.searchsorted(cs["r"], [r_a, r_out])
     A["m_inf"] = np.median(cs["m"][i0:i1])
     A["flat_r"] = (r_a, r_out)
-    A["flat_R"] = (np.median(cs["R"][i0:min(i0 + 1000, i1)]), np.median(cs["R"][max(i1 - 1000, i0):i1]))
     sel = [k for k in inc if P["lo"][k] >= r_a - 1e-12]
+    A["flat_R"] = (P["R"][min(sel)], P["R"][max(sel)])
     A["flat_dev"] = np.max(np.abs(P["m"][sel] - A["m_inf"]))
     # trapped region and horizon
     PH = A["P"][NPER2_H]
@@ -598,7 +599,8 @@ def report(A, pr=print):
     fr, fR = A["flat_r"], A["flat_R"]
     if A["flat"]:
         pr(f"  asymptotic mass m = {A['m_inf']:.6f} (m - 1 = {A['m_inf'] - 1:+.2e}): median "
-           f"over r = {fr[0]:.4g}..{fr[1]:.4g} (R = {fR[0]:.4g}..{fR[1]:.4g}), where the "
+           f"over r = {fr[0]:.4g}..{fr[1]:.4g} (shell medians R = {fR[0]:.4g}..{fR[1]:.4g}), "
+           "where the "
            f"shell medians agree to {A['flat_dev']:.1e} (tolerance {FLAT_TOL:g} m)"
            + ("" if A["flat_break"] is None else
               f"; the next shell inward (r = {P['lo'][A['flat_break']]:.4g}..) has m = "
@@ -804,6 +806,8 @@ def main(argv):
     label, d = runs[0]
     bases = find_bases(d)
     base = opts.get("base") or (bases[0] if len(bases) == 1 else None)
+    if not bases:
+        sys.exit(f"no restart dumps <base>.NNNNN.rst in {d}/rst")
     if base is None:
         sys.exit(f"{d}/rst holds dumps of the basenames {bases}: give --base")
     out = opts.get("out", f"slicemass_{label}")

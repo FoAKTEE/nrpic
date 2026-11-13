@@ -582,3 +582,52 @@ Shape of the growing oscillation (script `analysis/diag/cluster_osc.py`, figure
   to it; in a nearly harmonic core all particles share this period, so a coherent
   radial motion of the core does not phase-mix away. This says where the period comes
   from, not why the amplitude grows.
+
+## Growing oscillation against particle number (07:06)
+
+`st/yc0819_n1e3_v4` against `st/yc0819_v4` (both with the one-percent inward kick and
+the compensated filter). Figure: `analysis/diag/figs/cluster_osc_N.png`.
+- Amplitude at N = 10^3 and 10^4: 0.008 against 0.005 near t = 120 M, 0.012 against
+  0.010 near t = 215 M, 0.008 against 0.009 near t = 258 M; slopes of the straight-line
+  fit 3.7e-5 and 4.8e-5 per M. A noise-driven motion would be 3.2 times larger with ten
+  times fewer particles. It is not.
+- Same period; the extrema of the smaller sample come up to 20 M later in the first
+  half and at the same times in the second.
+- So the growth does not depend on the sample (three seeds) and not on the number of
+  particles (10^3, 10^4). It belongs to the scheme or to the model. Remaining tests as
+  listed above (time step, constraint damping, relaxation, longer run).
+
+## Dust collapse: the published lattice rule at 10^4 particles carries 1.2 percent too much mass (07:05)
+
+Found through the slice-mass tool (`analysis/diag/slicemass.py`, new; it reads the
+Misner-Sharp mass profile of every restart dump of a spherical run and locates the
+horizon where 2m/R = 1). On the earlier adaptive-mesh dust run the mass profile sits at
+1.010 to 1.015 between the dust and a front that leaves the surface at t = 0 and moves
+out at light speed, and at 1.000000 outside the front; the horizon mass from the slice
+is 1.0077 and 1.0042 at t = 20 and 25 M, above the total mass of the initial metric.
+Figure: `analysis/diag/figs/slicemass_os_amr_n26.png`.
+
+Reason: the particle masses follow the published rule m_p = rho_0 psi^6 h^3 on the
+lattice sites inside the surface. The number of sites inside a sphere differs from its
+volume in cells by a fraction of order 1/n_lat; at n_lat = 26 there are 9328 sites for
+a volume of 9203 cells, and the masses sum to 1.16874 against the continuum rest mass
+1.15515 the initial metric is built for (+1.18 percent; between -0.7 and +2.5 percent
+for n_lat = 14 to 27; the original uses n_lat = 124, where it is negligible). The
+interior density is exact, which is why the central lapse and density had followed the
+exact solution; the excess sits at the surface and shows up as a mass the initial
+metric does not contain.
+
+Change: generator option `--lattice-surface-correction` (the masses of the outermost
+layer of one lattice spacing, 2120 of 9328 particles, are multiplied by 0.9424 so that
+the total equals the continuum rest mass; interior unchanged). Off, the rule is the
+published one.
+
+The first adaptive run with the corrected finder (`os/adapt_v4`, published rule,
+cancelled at t = 36 M when this was found; it had finished the collapse in ten minutes)
+gives a horizon mass of 1.0106 at formation (first found t = 17.1 M) and 1.0119 at
+t = 20 M, as the excess mass predicts, and then keeps rising after the last particle
+is removed at t = 19.8 M: 1.0126, 1.0140, 1.0165, 1.0185 at t = 22, 25, 30, 36 M
+(rms expansion on the surface below 1e-5). Cause of the rise not determined; the
+slice-mass analysis of the same dumps is running. Both dust runs are resubmitted with
+corrected initial data (`os/adapt_sc`, `os/nocap_sc`); the uncapped control with the
+published rule (`os/nocap_v4`) runs as well.
