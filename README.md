@@ -12,3 +12,11 @@ tests run on GPUs and a Physical Review D style write-up.
 - `problems/`, `analysis/`, `paper/`, `docs/`: runs, post-processing, manuscript, notes.
 
 Clone with `git clone --recursive`. Build instructions are in `scripts/`.
+
+## Paper
+
+- Current draft (PDF, rebuilt with the sources): [paper/main.pdf](paper/main.pdf)
+- LaTeX sources: [paper/](paper/) (`main.tex`, `sections/`, figure scripts in `scripts/`,
+  reduced data in `data/`)
+- Record of every test, prediction and outcome: [docs/TESTLOG.md](docs/TESTLOG.md)
+- Build: `cd paper && latexmk -pdf main.tex`

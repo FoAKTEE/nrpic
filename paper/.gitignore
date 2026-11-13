@@ -2,6 +2,7 @@
 *
 !.gitignore
 !main.tex
+!main.pdf
 !supplement.tex
 !references.bib
 !sections/

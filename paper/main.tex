@@ -22,21 +22,21 @@
 
 \begin{document}
 
-\input{sections/title}
+\IfFileExists{sections/title.tex}{\input{sections/title}}{}
 
-\input{sections/introduction}
-\input{sections/system}
-\input{sections/method}
-\input{sections/test_particles}
-\input{sections/self_gravity}
-\input{sections/assembly}
-\input{sections/conclusions}
+\IfFileExists{sections/introduction.tex}{\input{sections/introduction}}{}
+\IfFileExists{sections/system.tex}{\input{sections/system}}{}
+\IfFileExists{sections/method.tex}{\input{sections/method}}{}
+\IfFileExists{sections/test_particles.tex}{\input{sections/test_particles}}{}
+\IfFileExists{sections/self_gravity.tex}{\input{sections/self_gravity}}{}
+\IfFileExists{sections/assembly.tex}{\input{sections/assembly}}{}
+\IfFileExists{sections/conclusions.tex}{\input{sections/conclusions}}{}
 
-\input{sections/acknowledgments}
+\IfFileExists{sections/acknowledgments.tex}{\input{sections/acknowledgments}}{}
 
 \appendix
-\input{sections/appendix_parameters}
-\input{sections/appendix_sampling}
+\IfFileExists{sections/appendix_parameters.tex}{\input{sections/appendix_parameters}}{}
+\IfFileExists{sections/appendix_sampling.tex}{\input{sections/appendix_sampling}}{}
 
 \bibliography{references}
 

@@ -1,0 +1,15 @@
+% Title block. The abstract below is the writer's 300-word version of the paper and is
+% provisional; the final abstract is written last.
+\title{Numerical-relativity particle-in-cell method at low particle number:\\ An independent reconstruction by language-model agents}
+
+\author{Author list to be set}
+\noaffiliation
+
+\date{Draft of 13 November 2026}
+
+\begin{abstract}
+\textit{Provisional abstract of a draft in progress; results marked [pending] were not final when it was written.}
+Collisionless matter near black holes obeys the Einstein-Vlasov system, where particles follow geodesics of their curvature. Wu and Most introduced a numerical-relativity particle-in-cell method with millions of phase-space packets called macroparticles. We ask whether their text enables an independent rebuild and what changes at ten thousand macroparticles. Language-model agents under human direction built the code from text alone in AthenaK, with separate models for code, checks, and writing. Predictions written before each control run tested every diagnosis. Each step evolves spacetime like a field solver, advances macroparticles by a pusher, and spreads sources onto cells by cloud-in-cell deposition. The implicit midpoint pusher matches Kerr orbits, while the spacetime Boris pusher needs an unstated local-frame tetrad gauge: symmetric analytically, Cholesky on meshes. Tracers near fixed and evolving black holes conserve invariants, and deposition conserves sources across refinement. Geometric slice-mass checks of apparent horizons, outermost surfaces of non-expanding light rays, exposed an unfilled ghost-cell defect in AthenaK's apparent-horizon finder. Interpolant derivatives agree within the accuracy of the mass measure. Surface mass rescaling removes dust-collapse lattice excess at ten thousand macroparticles. A filter compensation pass cancels cloud widening that expands stable clusters. Level-capped deposition coarsens clouds yet worsens constraints and apparent-horizon mass drift near black holes, so finest-level deposition stays. Dust collapses to a black hole of matching apparent-horizon mass while lapse excision removes interior particles frozen by time dilation. Monoenergetic clusters, equal-energy stellar spheres, stay bound with a growing core oscillation. The cause of that growth and coarsened-cloud drift is not determined. Past the binding-energy maximum, unperturbed unstable clusters expand toward migration [pending], perturbed ones collapse [pending], and unbound ones disperse [pending]. Prolate clouds collapse [pending], and a relativistic cluster with two collapsing overdensities at speed-consistent radius merges [pending]. These controls establish a reproducible algorithm: ten thousand macroparticles capture black hole formation and cluster stability.
+\end{abstract}
+
+\maketitle
