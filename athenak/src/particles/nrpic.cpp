@@ -94,6 +94,8 @@ void Particles::NrpicInit(ParameterInput *pin) {
   nropt.spin       = pin->GetOrAddReal("particles", "bh_spin", 0.0);
   nropt.lattice_dx = pin->GetOrAddReal("particles", "lattice_dx", 0.025);
   nropt.nfilter    = pin->GetOrAddInteger("particles", "nfilter", 1);
+  nropt.filter_compensate = pin->GetOrAddBoolean("particles", "filter_compensate", false);
+  nropt.filter_comp_c     = pin->GetOrAddReal("particles", "filter_comp_c", -1.0);
   nropt.deposit_max_level = pin->GetOrAddInteger("particles", "deposit_max_level", 31);
   if (nropt.deposit_max_level < 0) { nropt.deposit_max_level = 0; }
   if (nropt.deposit_max_level > 31 - pm->root_level) {
@@ -714,9 +716,18 @@ void Particles::NrpicDepositSources() {
 //! \brief applies nfilter passes of the binomial (1/4, 1/2, 1/4)^3 filter to each of the
 //! ten source components.  Ghost cells are filled before every pass, by copy between
 //! MeshBlocks at the same level and by restriction and prolongation across levels.
+//!
+//! With filter_compensate the binomial passes are followed by one pass with the weights
+//! (-c, 1+2c, -c)^3.  n binomial passes have the response cos^{2n}(k dx/2) =
+//! 1 - n (k dx)^2/4 + ..., i.e. they widen every cloud by a second moment n dx^2/2 per
+//! dimension, which softens the self-gravity of the matter.  The compensation pass has
+//! the response 1 + 4c sin^2(k dx/2); c = n/4 cancels the second moment, the combined
+//! response (1-s)^n (1+ns), s = sin^2(k dx/2), is 1 - n(n+1)s^2/2 + ..., decreases
+//! monotonically and still vanishes at the Nyquist wavenumber.  The weights sum to one,
+//! so the pass conserves what the binomial passes conserve; it has small negative lobes.
 
 void Particles::NrpicFilterSources() {
-  if (nropt.nfilter <= 0) {
+  if (nropt.nfilter <= 0 && !(nropt.filter_compensate && nropt.filter_comp_c > 0.0)) {
     for (int n=0; n<4; ++n) { dep_sum_filt[n] = dep_sum[n]; }
     return;
   }
@@ -730,7 +741,16 @@ void Particles::NrpicFilterSources() {
   auto tm = tmu;
   auto wk = tm_work;
 
-  for (int pass=0; pass<nropt.nfilter; ++pass) {
+  const int npass = nropt.nfilter + (nropt.filter_compensate ? 1 : 0);
+  for (int pass=0; pass<npass; ++pass) {
+    // one-dimensional weights (w1, w0, w1) of this pass
+    Real w0 = 0.5, w1 = 0.25;
+    if (pass >= nropt.nfilter) {
+      const Real c = (nropt.filter_comp_c >= 0.0) ? nropt.filter_comp_c
+                                                  : 0.25*static_cast<Real>(nropt.nfilter);
+      w0 = 1.0 + 2.0*c;
+      w1 = -c;
+    }
     if (pm->multilevel) {
       pm->pmr->RestrictCC(tmu, coarse_tm);
     }
@@ -748,11 +768,11 @@ void Particles::NrpicFilterSources() {
     KOKKOS_LAMBDA(const int m, const int n, const int k, const int j, const int i) {
       Real sum = 0.0;
       for (int c=-1; c<=1; ++c) {
-        const Real wc = (c == 0) ? 0.5 : 0.25;
+        const Real wc = (c == 0) ? w0 : w1;
         for (int b=-1; b<=1; ++b) {
-          const Real wb = (b == 0) ? 0.5 : 0.25;
-          sum += wc*wb*(0.25*tm(m,n,k+c,j+b,i-1) + 0.5*tm(m,n,k+c,j+b,i)
-                        + 0.25*tm(m,n,k+c,j+b,i+1));
+          const Real wb = (b == 0) ? w0 : w1;
+          sum += wc*wb*(w1*tm(m,n,k+c,j+b,i-1) + w0*tm(m,n,k+c,j+b,i)
+                        + w1*tm(m,n,k+c,j+b,i+1));
         }
       }
       wk(m,n,k,j,i) = sum;

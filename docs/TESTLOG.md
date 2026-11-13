@@ -256,3 +256,47 @@ percent of the horizon radius, so a finder contribution at the percent level is 
 - Seed 3 (05:32): peak lapse 0.8369 at t = 120 M, 0.8138 at t = 230 M. Three seeds:
   peaks 0.8367, 0.8383, 0.8369 at t = 116, 121, 120 M. The excursion is the same for
   every sample.
+- Filter passes (seed 1; 05:40 and 05:48). Peak rise of the central lapse above
+  equilibrium within the first 130 M against the smoothing variance per dimension:
+
+  | passes | variance / M^2 | predicted rise | measured rise | at t / M |
+  |---|---|---|---|---|
+  | 0 | 0.042 | about 0.002 | 0.0044 | 89 |
+  | 2 | 0.292 | about 0.015 | 0.0176 | 112 |
+  | 4 | 0.542 | (reference) | 0.0273 | 116 |
+
+  The excursion grows with the smoothing as predicted, close to linearly, with a
+  remainder of 0.002 to 0.004 at zero passes that is of the size of the seed ripple.
+  This supports the softening hypothesis and does not yet prove it: the number of passes
+  also changes the noise level. Decisive test: a filter with the same number of passes
+  whose second moment is cancelled (below).
+- Without filter the run shows no outward excursion, and from t = 115 M on something
+  else: the lapse falls in irregular steps to 0.785 at t = 270 M, the outer mass shells
+  move in (90 percent radius 8.03 -> 7.37 M), the constraint norms are 13 times those of
+  the four-pass run (0.14 against 0.011) and sum m u_i wanders by 1e-4. Cause not
+  determined; a noise-driven origin would show as seed dependence and as a faster drift
+  at smaller N, neither of which has been run.
+  Figure: `analysis/diag/figs/cluster_ctl_filter.png`.
+
+## Compensated filter (source, 2026-11-13)
+
+New option `<particles> filter_compensate = true`: after the `nfilter` binomial passes,
+one pass with weights (-c, 1+2c, -c) per dimension, c = nfilter/4 (`filter_comp_c`
+overrides c). The binomial passes widen every cloud by nfilter dx^2/2 per dimension;
+this pass cancels that second moment. Combined response (1-s)^n (1+ns) with
+s = sin^2(k dx/2): equal to one up to fourth order in k dx, monotonically decreasing,
+zero at the Nyquist wavenumber. Standard in plasma particle-in-cell codes.
+
+Single particle at a cell centre, flat space, uniform level (CPU): the line profile
+through the particle equals the expected one-dimensional kernel to the printed digits
+(1e-7) for 4 passes without and for 4, 2, 1 passes with compensation; second moment
+2.0000 cells^2 without and 0.0000 with; negative lobes 5, 6 and 10 percent of the peak
+for 4, 2, 1 passes; volume integral of E equal to the particle sum to 1e-15, and to
+6e-8 in the one case where the wider kernel reaches a refinement boundary (the filter
+is not exactly conservative across levels; this was already so for the binomial passes
+and is what the post-filter columns of the particle history record).
+
+Prediction for the stable cluster with four passes plus compensation, written before
+the run: the lapse rise within 130 M drops from 0.027 to the zero-pass value (0.002 to
+0.005) while the constraint norms stay near those of four passes (0.011). If the rise
+stays near 0.027 the softening hypothesis is wrong.
