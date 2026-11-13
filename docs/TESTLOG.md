@@ -1648,3 +1648,48 @@ within 0.3 M of each tracker; removal below a lapse of 0.05; at most 1828 blocks
   `jeans/n1e4_v9`: one more level (cells of M/128 within 0.15 M of each tracker), same
   threshold of 0.1; twice the steps. If the cell size is the cause, this run passes
   where v8 fails, and reports horizons within 1 M of the first removal of particles.
+
+## Cluster with two overdensities: no black hole had formed; my reading was wrong (14:50)
+
+Check on `jeans/n1e4_v7` before the reruns started. Misner-Sharp mass about the
+tracker of one overdensity on the restart dump at t = 10 M
+(`analysis/diag/figs/slicemass_jeans_v7_t10.png`): the largest 2m/R is 0.47 (0.50
+without shell widening). There is no trapped surface around the collapsed core at
+t = 10 M, 0.8 M after 838 of its 2000 particles had been removed at a lapse of 0.05.
+- So the finder was right to report nothing, and the reading of the previous entry (a
+  black hole of 6 to 8 cells per mass with matter lingering inside) is not supported:
+  at t = 10 M there was no black hole for matter to linger in.
+- What the data show instead: the lapse in the core fell below the removal threshold
+  before a horizon existed; the removal took 0.05 M of matter out of each core; the
+  lapse then recovered (0.08) and the collapse did not complete. In the dust and
+  prolate runs the horizon came first (dust: horizon at 16.4 M, first removal at
+  18.9 M; prolate: horizon at 32.0 M with a smallest lapse of 0.087, removal from
+  33.8 M). Whether a horizon would have formed here without the removal is not known.
+- The two runs submitted at 14:35 (`v8`, `v9`, removal at a lapse of 0.1) were
+  withdrawn before they started: a higher threshold removes the core earlier still.
+- New runs, written before their results. Removal tied to the horizon: particles are
+  removed inside 0.8 of the smallest coordinate radius of a found horizon; the lapse
+  threshold is lowered to 0.02 and kept only as a guard against failure.
+  `jeans/n1e4_v10`: mesh of v7 (cells of M/64 at the trackers).
+  `jeans/n1e4_v11`: one more level (M/128 within 0.15 M of each tracker).
+  If the early removal aborted the collapse, v10 reports a horizon around each
+  overdensity between 8.5 and 10 M with a mass between 0.05 and 0.12 M, and particles
+  are removed only after that. If no horizon is reported in v10 by t = 11 M while the
+  lapse falls below 0.02, cells of M/64 cannot form these black holes, and v11
+  decides whether M/128 can.
+
+## Monte Carlo dust ball: published rule runs away with either filter (14:50)
+
+`os/mc_nocap3` (published rule, four passes plus compensation, limit 2000) stopped at
+t = 10.2 M asking for 2024 blocks (400 blocks at 6.3 M, 799 at 6.7 M, 1933 at
+10.1 M). `os/mc_adapt3` (unlimited cap, same filter) has 400 blocks at t = 7.5 M and
+is running. `os/mc_adapt2` (unlimited cap, one plain pass) is at t = 33 M: at most
+1779 blocks; first horizon at 16.35 M (lattice 16.39 M) with mass 0.9949; 0.9999 at
+20.1 M when the last particle is removed; 1.0012 at 33 M.
+- On a random sample the published rule cannot be run to horizon formation within
+  2000 blocks; the capped clouds can, and give a horizon mass within 0.1 percent of M
+  when the matter is gone.
+- For the comparison at equal settings asked for at 13:36, both rules are repeated
+  with one refinement level fewer (finest cells h/4 instead of h/8), four passes plus
+  compensation: `os/mc_nocap4`, `os/mc_adapt4`, block limit 2100. The prediction of
+  13:36 applies to this pair.
