@@ -36,3 +36,15 @@ To change in the revision pass:
    published numbers. Do not write that the test "identifies each choice" of the
    original code: agreement of digits shows that these two triads are sufficient, and
    other constructions that coincide with them on these orbits are not excluded.
+9. method, deposition: the sentence on per-cell cloud-in-cell at a coarse-fine interface
+   claims that the weight defect "excites constraint violations as matter crosses
+   interfaces". That scheme was never run here. Keep the arithmetic (the weights of a
+   straddling particle do not sum to one, so the mesh integrals differ from the particle
+   sums) and drop the untested consequence.
+10. method, numerical methods: the horizon-finder sentence states as fact that a tighter
+    tolerance removes an underestimate of the area. A vacuum puncture read with the
+    tighter tolerance still gives a mass 2 to 3 percent low (docs/TESTLOG.md, calibration
+    entry). Rewrite after the calibration runs; until then describe only the settings.
+11. Anything that names a cause ("because", "so", "driven by", "sets the error") needs a
+    run that isolates that cause, or it is rewritten as the observation. Check each one
+    against docs/TESTLOG.md before the next pass.
