@@ -1,0 +1,159 @@
+# Collapse of a cold prolate spheroid of collisionless matter (paper Sec. III C at
+# reduced particle number): eccentricity 0.9, polar semi-axis b = 10 M along z,
+# equatorial semi-axis a = 4.3589 M, particles at rest, conformally flat and
+# time-symmetric initial slice with psi = 1 - Phi_N of the homogeneous spheroid.
+# Adaptive refinement with the Loehner indicator, lapse excision at 0.05, apparent
+# horizon finder at the origin, Kretschmann scalar every 0.25 M.
+
+<comment>
+problem   = prolate collapse
+
+<job>
+basename  = prol
+
+<mesh>
+nghost    = 4
+nx1       = 128
+x1min     = -128.0
+x1max     = 128.0
+ix1_bc    = outflow
+ox1_bc    = outflow
+nx2       = 128
+x2min     = -128.0
+x2max     = 128.0
+ix2_bc    = outflow
+ox2_bc    = outflow
+nx3       = 128
+x3min     = -128.0
+x3max     = 128.0
+ix3_bc    = outflow
+ox3_bc    = outflow
+
+<meshblock>
+nx1       = 32
+nx2       = 32
+nx3       = 32
+
+<mesh_refinement>
+refinement          = adaptive
+num_levels          = 7
+max_nmb_per_rank    = 640
+ncycle_check        = 4
+refinement_interval = 8
+
+<amr_criterion0>
+method = user
+
+<z4c_amr>
+method          = lohner
+lohner_refine   = 0.2
+lohner_derefine = 0.02
+lohner_eps      = 0.01
+radius_0_rad      = 11.0
+radius_0_reflevel = 3
+
+<refined_region1>
+level = 3
+x1min = -5.0
+x1max = 5.0
+x2min = -5.0
+x2max = 5.0
+x3min = -11.0
+x3max = 11.0
+
+<time>
+evolution  = dynamic
+integrator = rk4
+cfl_number = 0.25
+nlim       = -1
+tlim       = 45.0
+ndiag      = 20
+
+<z4c>
+lapse_oplog     = 2.0
+lapse_harmonicf = 1.0
+lapse_harmonic  = 0.0
+lapse_advect    = 1.0
+shift_Gamma     = 0.75
+shift_eta       = 2.0
+shift_advect    = 1.0
+diss            = 0.5
+chi_div_floor   = 1.0e-5
+damp_kappa1     = 0.02
+damp_kappa2     = 0.0
+
+<fastflow>
+num_horizons      = 1
+npunct            = 0
+ntheta            = 16
+lmax              = 8
+use_puncture_0    = -1
+center_x_0        = 0.0
+center_y_0        = 0.0
+center_z_0        = 0.0
+initial_radius_0  = 1.0
+flow_iterations_0 = 3000
+flow_alpha_beta_const_0 = 1.0
+hmean_tol_0       = 100.0
+mass_tol_0        = 1.0e-7
+start_time_0      = 20.0
+stop_time_0       = 1000.0
+verbose           = false
+
+<particles>
+particle_type  = nrpic
+pusher         = midpoint
+metric         = mesh
+tolerance      = 1.0e-7
+max_iterations = 50
+deposit        = true
+nfilter        = 2
+deposit_max_level = 31
+deposit_adaptive  = true   # cloud level follows the local particle density ...
+deposit_min_level = 2      # ... and is never coarser than dx = M/2
+deposit_ppc       = 2.0
+alpha_exc      = 0.05
+hist_dcycle    = 1
+snap_dt        = 0.5
+curv_dt        = 0.25
+curv_slice     = true
+curv_plane_y   = 1.0e-3
+particle_file  = prolate_e0p9_b10_N10000_s1.nrp
+
+<problem>
+pgen_name  = nrpic_cf
+ncomp      = 1
+comp0_type = spheroid
+comp0_mass = 1.0
+comp0_a    = 4.358898943540673
+comp0_b    = 10.0
+lapse      = one
+
+<output1>
+file_type = hst
+dt        = 0.1
+
+<output2>
+file_type = rst
+dt        = 5.0
+
+<output3>
+file_type = tab
+variable  = adm
+dt        = 2.5
+slice_x2  = 0.01
+slice_x3  = 0.01
+
+<output4>
+file_type = tab
+variable  = tmunu
+dt        = 2.5
+slice_x2  = 0.01
+slice_x3  = 0.01
+
+<output5>
+file_type = tab
+variable  = z4c
+dt        = 2.5
+slice_x2  = 0.01
+slice_x3  = 0.01
