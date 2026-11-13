@@ -656,3 +656,33 @@ analytic metric and on the mesh metric (dx = M/4 where the cluster moves).
   removed against 3727 and 3339 predicted from the exact invariants.
 - Density noise against N: exponent -0.47 to -0.51.
 - The mesh step costs 32 to 35 ms whatever N is, of which the two filter passes take 26.
+
+## Dust collapse, adaptive cloud level: horizon mass from the slice against the finder (07:20)
+
+`os/adapt_v4` (published lattice rule, particle mass 1.18 percent above the continuum
+value; all particles removed between t = 19.0 and 19.8 M). Mass far from the hole
+1.000001 in every dump. Figure: `analysis/diag/figs/slicemass_os_adapt_v4.png`.
+
+| t / M | horizon mass from 2m/R = 1 | corrected finder | difference |
+|---|---|---|---|
+| 20.0 | 1.01088 | 1.01193 | +1.1e-3 |
+| 25.0 | 1.01548 | 1.01397 | -1.5e-3 |
+| 30.0 | 1.01666 | 1.01649 | -1.7e-4 |
+| 35.0 | 1.01828 | 1.01830 | +2e-5 |
+
+- The two independent measures agree, to 1e-3 right after the collapse (when the
+  spread of m around the sphere is 4e-3) and to 2e-5 at t = 35 M.
+- At formation (t = 17.1 M) the finder reads 1.0106; the particles carry 1.0118 times
+  the mass of the initial metric. The horizon mass at formation equals the mass that
+  went in to 0.1 percent.
+- Afterwards the horizon mass rises by 0.7 percent in 15 M although no matter is left,
+  at 2e-4 to 9e-4 per M, in both measures. In exact vacuum it cannot change. The older
+  run with the cloud at the finest level went the other way (1.0077 at t = 20 M, 1.0042
+  at t = 25 M). Cause not determined. Things that differ from the vacuum-puncture test,
+  where the drift was 3e-5 per M: the interior is far from stationary when the matter
+  is removed; removing the matter leaves a constraint violation of the size of the
+  removed source inside the horizon; the horizon (coordinate radius 1.2 to 1.35 M) sits
+  on the boundary between the two finest levels (dx = M/26 inside 1.21 M, M/13
+  outside). Not yet tested which of these, if any, matters.
+- Until that is settled the number to quote for the collapse is the horizon mass at
+  formation, with the later drift given as its uncertainty.
