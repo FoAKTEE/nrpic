@@ -66,28 +66,27 @@ def make():
     az = fs.inch_axes(fig, xl, b0, w, hz)
     at = fs.inch_axes(fig, xl, b0 + hz + gap, w, ht)
 
-    leg_kw = dict(fontsize=LEG_PT, handlelength=1.8, borderaxespad=0.3, labelspacing=0.25,
-                  frameon=False)
+    leg_kw = dict(fontsize=LEG_PT, handlelength=1.8, borderaxespad=0.3, labelspacing=0.25)
     draw(at, d, 1.0, 0.0)
     at.set_ylim(0.897, 1.012)
     at.set_ylabel(r"horizon mass$/M$")
     at.xaxis.set_major_formatter(matplotlib.ticker.NullFormatter())
     keys = ("dx4", "dx8", "dx16")
     leg = at.legend([Line2D([], [], color=COL[k]) for k in keys], [LABEL[k] for k in keys],
-                    loc="lower left", **leg_kw)
+                    loc="lower left", frameon=False, **leg_kw)
     at.add_artist(leg)
     at.legend([Line2D([], [], color="k", lw=1.5),
                Line2D([], [], color="k", lw=1.5, ls=(0, (4, 2)))],
-              ["finder of the host code", "corrected finder"], loc="lower right", **leg_kw)
+              ["finder of the host code", "corrected finder"], loc="lower right", frameon=False, **leg_kw)
 
     draw(az, d, ZOOM, 1.0)
-    az.set_ylim(-0.75, 2.45)
+    az.set_ylim(-0.75, 3.0)
     az.set_yticks([0, 1, 2])
     az.set_ylabel(r"mass$/M - 1\ \ [10^{-3}]$")
     az.set_xlabel(r"$t/M$", labelpad=1)
     az.legend([Line2D([], [], mec="k", **SLICE_MK), Line2D([], [], color="k", **CPU_MK)],
               ["Misner-Sharp mass of the slice", "corrected finder on the same slice"],
-              loc="upper left", handletextpad=0.4, **{**leg_kw, "handlelength": 1.0})
+              loc="upper left", handletextpad=0.4, frameon=False, **{**leg_kw, "handlelength": 1.0})
     for ax in (at, az):
         ax.set_xlim(0, 62)
         ax.yaxis.set_label_coords(-0.16, 0.5)

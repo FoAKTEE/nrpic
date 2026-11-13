@@ -37,3 +37,34 @@ exact geodesics (blue dashed). Middle: relative difference for mass M (solid) an
 Misner-Sharp mass of the slice (dotted); grey: R = 2M. Bottom: mass implied by each
 circular orbit (red) and Misner-Sharp mass of the slice (black).
 (NOTATION.md needs entries: particle proper time tau, Misner-Sharp mass.)
+
+fig_horizon_check (column): Apparent-horizon mass of a vacuum black hole of mass M (blue)
+against time. Solid: the finder of the host code at three cell spacings (colour); dashed:
+with derivatives taken from the interpolant of the metric. Circles: Misner-Sharp mass of
+the slice at its outermost trapped sphere; diamonds: the corrected finder on the same
+slices. Bottom: enlarged about M.
+
+fig_filter (full): Smoothing filter and cluster motion with 10^4 particles. Left: central
+lapse of the stable model y_c = 0.819 minus its equilibrium value (black) for three
+samples (colour), with plain binomial filter passes (solid) and with the compensation
+pass added (dashed). Middle: one sample with no filter and with two and four passes
+(colour), plain and compensated. Right: central lapse of the model y_c = 0.5 past the
+binding-energy maximum, encoded as on the left.
+
+fig_dust (full): Collapse of a dust ball of about 10^4 particles to a black hole. Top
+left: central lapse against proper time of the central observer (red) and the analytic
+lapse bound (blue dashed). Top right: central energy density over its initial value and
+the cycloid, for the cloud at the finest level and the level-capped cloud. Bottom:
+apparent-horizon mass with the total mass (blue), and norm of the Hamiltonian
+constraint. Red: cloud at the finest level with lattice masses consistent with the
+initial data; orange: the published lattice masses; yellow, green: level-capped clouds,
+unlimited and at most one level coarser.
+
+fig_oscillation (full): Central lapse of the stable cluster y_c = 0.819 with 10^4
+particles minus its equilibrium value (black). Top: three samples (colour), the first
+continued over the whole run. Bottom left: with a small inward kick, 10^4 and 10^3
+particles. Bottom middle: the first sample with the compensation pass extended to cancel
+the cloud width as well. Bottom right: difference from the first sample for half the
+time step, constraint damping raised and switched off (dashed), and relaxation of the
+Hamiltonian constraint.
+(NOTATION.md needs: alpha_{c,eq}, E_0.)
