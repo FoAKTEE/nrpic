@@ -822,3 +822,19 @@ of the constraint handling, which is what is seen; it is a reading, not a result
 predicts that the amplitude saturates (the 600 M continuation) and that the growth is
 proportional to the size of the initial offset (the run that also cancels the cloud
 width, if that makes the offset smaller).
+
+## Growing oscillation: continuation to 600 M (07:58)
+
+`st/osc/long` continues the base run (seed 1, unperturbed, four passes plus
+compensation). Extrema of the lapse minus equilibrium after t = 300 M: +0.0061 (316),
+-0.0065 (359), +0.0126 (392), -0.0103 (423), +0.0088 (464), -0.0262 (495), +0.0112
+(534), -0.0249 (564). Half the peak-to-peak swing: about 0.008 near t = 300 M, 0.011
+near 400 M, 0.018 near 500 M and 0.018 near 550 M. The mean over each 100 M stays
+within 0.004 of equilibrium, the mean Lorentz factor of the particles within 0.003 of
+its initial value, and no particle is lost.
+
+Against the two readings: the amplitude kept growing to t = 500 M and did not grow
+between 500 and 565 M. Two extrema are not enough to call that saturation. A further
+continuation to 1200 M is queued (`st/osc/long2`). What can be said now: over 600 M
+the stable model stays bound and centred, with an oscillation of the central lapse
+that has reached two to three percent.
