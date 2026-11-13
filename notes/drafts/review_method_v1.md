@@ -32,3 +32,7 @@ To change in the revision pass:
    cycles), without "instead of".
 7. method, spacetime: the order of the finite differences is a property of the runs
    (sixth order on refined meshes); keep one clause, drop the host-code requirement.
+8. method, pushers, last paragraph: say what was observed, which triad reproduces which
+   published numbers. Do not write that the test "identifies each choice" of the
+   original code: agreement of digits shows that these two triads are sufficient, and
+   other constructions that coincide with them on these orbits are not excluded.

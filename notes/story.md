@@ -38,9 +38,11 @@ low-particle-number regime changes one specific thing.
    particles per cell by eight. Following the published rule (cloud size = finest local
    cell), the dust-collapse source breaks into isolated blobs as soon as cells are
    smaller than the particle spacing, and the central density falls to less than half of
-   its true value. Capping the level on which a cloud is represented, with the cap
-   following the local particle density, removes this while keeping exact conservation;
-   with the cap off the rule is the published one.
+   its true value [pending: whether the lapse, i.e. the dynamics, is affected or only
+   the central density reading]. Capping the level on which a cloud is represented,
+   with the cap following the local particle density, removes this [pending: capped
+   against uncapped run on the same mesh] while keeping exact conservation; with the
+   cap off the rule is the published one.
 
 4. **What does not depend on particle number is reproduced at full precision**: the
    equilibrium sequence of relativistic clusters and its binding-energy maximum, the
@@ -50,14 +52,18 @@ low-particle-number regime changes one specific thing.
 5. **What does depend on particle number is reproduced in kind.** Dust collapses to a
    black hole with all matter excised and a horizon mass near the total mass [pending:
    final number with the tight horizon tolerance]. A cluster on the stable branch
-   breathes about its equilibrium; clusters past the binding-energy maximum collapse
+   stays within a few percent of its equilibrium over 300 M [pending: what sets the
+   size of its excursion, sampling or source smoothing]; clusters past the binding-energy maximum collapse
    [pending]; the unbound model disperses [pending]. Prolate collapse passes its caustic
    and forms a horizon [pending]. Two overdensities in a cluster collapse, orbit and merge
    [pending].
 
-6. **A wrong number in the original was found by rebuilding it.** The orbital speed
-   quoted for the two overdensities is a circular orbit only if the host cluster is less
-   than half as large as stated; the published figure agrees with the smaller size.
+6. **Two quoted numbers of the original do not fit together.** The orbital speed quoted
+   for the two overdensities is the circular speed only if the host cluster is less than
+   half as large as the stated radius; the extent of the cluster in the published figure
+   agrees with the smaller size. Which of the two numbers is the misprint, or whether
+   the orbit was meant to be circular, cannot be decided from the text; the rebuild uses
+   the reading that is self-consistent and says so.
 
 7. **Who did the work.** The reconstruction was carried out by language-model agents
    under human direction, from the text of the paper alone: one model for design,

@@ -93,23 +93,63 @@ Figure: `analysis/diag/figs/cluster_history_yc0819_compare.png`.
 - 32^3 against 16^3 MeshBlocks (same cells, different block decomposition): identical
   histories to plotting accuracy (lapse, mass-shell radii, centre of mass); constraint
   norms differ by 5 percent at late times. The 16^3 layout runs 300 M in 8 minutes.
-- With and without the one-percent inward velocity perturbation: the same breathing
-  motion, lapse 0.809 -> 0.837 at t = 115 M -> 0.810 at t = 230 to 300 M. The
-  oscillation is therefore driven by the particle sample itself (sampling noise of the
-  initial data against the smooth equilibrium), not by the applied perturbation; its
-  period, about 230 M, is long because the model sits close to the binding-energy maximum.
+- With and without the one-percent inward velocity perturbation (same sample): the same
+  motion, lapse 0.809 -> 0.837 at t = 115 M -> 0.810 at t = 230 M; afterwards the
+  perturbed run falls to 0.804 and the unperturbed one stays at 0.810 to 0.813. The
+  applied perturbation is therefore not what drives the excursion. What does drive it is
+  not established by these runs. Two candidates, which predict different things:
+  (a) sampling noise of this particular sample: other seeds give excursions of similar
+  size with different sign and timing, and the size grows as N^(-1/2);
+  (b) a systematic offset between the deposited source (cloud plus four filter passes,
+  width about 0.75 M at dx = M/2) and the smooth equilibrium the metric starts from, or
+  the relaxation of the initial constraint violation (norm 0.11 at t = 0): every seed
+  gives the same outward-first excursion, and its size changes with the number of filter
+  passes and with dx, not with N.
+  Controls queued: seeds 2 and 3, and seed 1 with zero and two filter passes (see below).
+  One excursion in 300 M does not define a period; 230 M is of the order of the orbital
+  period at the surface, 2 pi (R^3/M)^(1/2) = 200 M. (An earlier version of this entry
+  attributed the motion to sampling noise and its duration to closeness to the
+  binding-energy maximum. Neither was tested, and the second is wrong: the maximum of
+  the binding energy lies between y_c = 0.756 and 0.605.)
 - Centre of mass: moves by (-0.02, 0.09, 0.20) M in 300 M. The sample has a net momentum
-  sum m u_i = (-1.3, 4.0, 9.1) 1e-4, i.e. a mean velocity of the same size as the drift
-  rate (7e-4 in z). The drift is the motion of the sample, not a gauge effect.
-  Consequence: `problems/ic/make_ic.py` now subtracts the mass-weighted mean of u_i for
-  the cluster models by default (`--keep-net-momentum` restores the raw sample), and the
-  particle files of all runs still queued at this time were shifted in place with
-  `problems/ic/zero_momentum.py` (net momentum 1e-17 afterwards). At N = 100 the raw
-  sample has a mean velocity of 0.02 to 0.03, which would have carried the cluster
-  across its own radius in 300 M.
+  per unit mass of (-1.3, 3.9, 8.8) 1e-4. The drift rates are 0.55, 0.74 and 0.76 of
+  these in x, y, z, the same sign in every component and the size expected from
+  dx/dt = alpha gamma^ij u_j / W. This points to the net momentum of the sample as the
+  cause; the shift at the centre was not looked at. Direct check queued: the same sample
+  with the net momentum removed should stay centred to well below 0.2 M.
+  Consequence already applied: `problems/ic/make_ic.py` subtracts the mass-weighted mean
+  of u_i for the cluster models by default (`--keep-net-momentum` restores the raw
+  sample), and the particle files of all runs still queued at this time were shifted in
+  place with `problems/ic/zero_momentum.py` (net momentum 1e-17 afterwards). At N = 100
+  the raw sample has a mean velocity of 0.02, about half the cluster radius in 300 M.
 - Change of the total sum m u_i over 300 M: below 7e-5 of the rest mass in every
-  component (it is conserved only for a stationary, homogeneous metric; the residual
-  measures the noise of the field the particles move in).
+  component. This is the net self-force of the discretized field on the sample; noise
+  and mesh effects are not separated here.
+
+## Stable cluster controls: what drives the excursion (queued 2026-11-13 05:03)
+
+y_c = 0.819, 10^4 stratified particles, no velocity perturbation, net momentum removed,
+dx = M/2, 300 M, under `runs/st/ctl/`:
+
+| run | seed | filter passes |
+|---|---|---|
+| s1_nf4 | 1 | 4 |
+| s2_nf4 | 2 | 4 |
+| s3_nf4 | 3 | 4 |
+| s1_nf0 | 1 | 0 |
+| s1_nf2 | 1 | 2 |
+
+Written before the runs:
+- Sampling noise predicts: seeds 2 and 3 differ from seed 1 in sign or timing of the
+  lapse excursion while its size stays at a few percent; the filter variants of seed 1
+  keep the timing of seed 1.
+- A systematic source-smoothing or constraint-relaxation offset predicts: all three
+  seeds rise first and peak near t = 115 M; the size is ordered with the number of
+  filter passes.
+- Both can be present; then the seed-to-seed scatter against the common part gives
+  their ratio.
+- Net momentum: s1_nf4 differs from the earlier unperturbed run only by the removed
+  mean momentum; its centre of mass should stay within a few 0.01 M.
 
 ## Density-adaptive cloud level on GPU: conservation (2026-11-13)
 
