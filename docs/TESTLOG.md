@@ -686,3 +686,10 @@ value; all particles removed between t = 19.0 and 19.8 M). Mass far from the hol
   outside). Not yet tested which of these, if any, matters.
 - Until that is settled the number to quote for the collapse is the horizon mass at
   formation, with the later drift given as its uncertainty.
+
+Addendum (07:14), N = 10^2 (`st/yc0819_n1e2_v4`, same figure): a different regime.
+The lapse swings by 0.01 to 0.02 from the first 20 M on, irregularly, dips by 0.037 at
+t = 178 M, its mean drifts down by 0.029, and the mean Lorentz factor of the particles
+rises by 0.077 (the kinetic energy more than doubles). With a hundred particles the
+sample dominates within one period; with 10^3 and 10^4 the common growing oscillation
+does.
