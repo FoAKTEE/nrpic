@@ -1342,3 +1342,52 @@ region, so the start is again 512 blocks with cells of M/4).
   towards a spindle 20 M long), as the alternative in the prediction said.
 - Next attempt `prolate/e09_v8`: one level fewer (finest cells M/16 instead of M/32),
   otherwise as v7.
+
+## Stable cluster at half the cell size: the oscillation does not shrink (12:58)
+
+`st/osc/dx2b` (cells of M/4 inside 7.9 M, M/2 outside; otherwise the base run
+`st/ctl/s1_nf4c`: same particles, four passes plus compensation, 300 M). Figure:
+`analysis/diag/figs/cluster_osc_dx.png` (lapse minus equilibrium; amplitude and mean of
+successive extrema; total particle energy).
+- Central lapse minus its equilibrium value, extrema (time: value). Base: 24: +0.0037,
+  108: +0.0065, 158: -0.0023, 208: -0.0062, 280: -0.0108. Half cell size: 23: +0.0036,
+  107: +0.0035, 156: -0.0070, 204: -0.0110, 276: -0.0158. Fit of the half-swing:
+  0.0006 + 1.34e-5 t (base), 0.0006 + 1.70e-5 t (half cell size).
+- The first maximum is the same to three percent, and the half-swing grows at the same
+  rate or slightly faster. What changes is the mean about which the lapse swings: it
+  ends 0.0039 below equilibrium in the base run and 0.0073 below at half the cell
+  size. The total particle energy moves by -2.0e-3 to +0.9e-3 (base) and -1.2e-3 to
+  +2.2e-3 (half cell size) of its initial value.
+- Against the prediction written at 08:52 (a second-order discretization error would
+  drop both the first maximum and the amplitude at 280 M by about four): refuted. Both
+  stay. The common initial offset and the growth of the oscillation do not come from
+  the cell size of the mesh.
+- Limit of this test: at half the cell size each cell holds one eighth of the
+  particles, so the source is noisier there. The larger drift of the mean may come
+  from that; no run separates the two. The cause of the oscillation stays not
+  determined. Tested and excluded so far: random seed, sampler, particle number (10^3,
+  10^4), time step, constraint damping, constraint relaxation, cloud width, cell size.
+
+## Cluster with two overdensities: the moving fine regions outgrow the block limit (12:58)
+
+`jeans/n1e4_v6` (block limit 1500, 1128 blocks at start, time step 3.9e-3 M, 59 s per
+100 steps) stopped at t = 1.1 M: the refinement asked for 1800 blocks.
+- Cause, read from the tracker files and the block counts in the history: the two
+  overdensities move at their orbital speed (0.10 M in y by t = 1.1 M, the trackers
+  follow), and the finest region around each (radius 0.4 M, blocks 0.25 M wide) then
+  no longer lines up with the block layers. A sphere of 3.2 block widths covers four
+  blocks per direction when aligned and five when not, and every coarser level has to
+  wrap the larger set. The count went 1128, 1464, 1128, 1800 within 0.1 M.
+- Resubmitted as `jeans/n1e4_v7`: finest region of radius 0.3 M around each tracker
+  (2.4 block widths: three or four blocks per direction), block limit 2100 (about 72 GB
+  by the measured 32 to 35 MiB per allowed block). Same particles and envelope.
+- Cost: 100 M at this time step are 25600 steps, five to seven hours on one card.
+- Written before the run. The original reports horizons at t = 8.475 and 8.525 M and a
+  common horizon at 64.16 M. Each overdensity here has about 1200 particles. If their
+  collapse is cold free fall, as in the dust ball, whose timing did not depend on the
+  particle number, both horizons appear between 8 and 9.5 M, each with a mass below
+  0.12 at formation that grows as the envelope falls in. The time to the common
+  horizon depends on the orbit after formation, which the 7600 envelope particles
+  resolve poorly; expected within 25 percent of 64 M. A first horizon later than 12 M
+  would mean that the overdensities are supported by noise or by the softened field,
+  and the mesh and filter then need another look before any comparison.
