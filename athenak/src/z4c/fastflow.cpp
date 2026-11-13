@@ -83,6 +83,10 @@ FastFlow::FastFlow(MeshBlockPack *pmbp, ParameterInput *pin, int n):
   hmean_tol = pin->GetOrAddReal("fastflow", "hmean_tol_" + n_str, 100.);
   mass_tol = pin->GetOrAddReal("fastflow", "mass_tol_" + n_str, 1e-2);
   find_every = pin->GetOrAddInteger("fastflow", "find_every", 1);
+  // "stored": finite differences on the mesh, interpolated to the surface (original);
+  // "interpolant": derivative of the interpolant of the metric at the surface points
+  drvts_from_interp =
+      (pin->GetOrAddString("fastflow", "metric_drvts", "stored") == "interpolant");
   if (find_every < 1) { find_every = 1; }
 
   // Output booleans
@@ -513,6 +517,7 @@ template <int NGHOST>
 void FastFlow::MetricDerivatives(Real time) {
   // Check whether derivatives have to be computed
   // if (use_stored_metric_drvts) return;
+  if (drvts_from_interp) return;  // derivatives are taken from the interpolant instead
   if((time < start_time) || (time > stop_time)) return;
   if (wait_until_punc_are_close && !(PuncAreClose())) return;
 
@@ -617,6 +622,7 @@ void FastFlow::MetricInterp() {
     pmbp->padm->I_ADM_KZZ
   };
 
+  const bool from_interp = drvts_from_interp;
   par_for("FastFlow_interpolate", DevExeSpace(), 0, nangles-1,
   KOKKOS_LAMBDA(int p) {
     Real theta = polar_pos.d_view(p,0);
@@ -647,9 +653,21 @@ void FastFlow::MetricInterp() {
         Ki_(b,p) = InterpolateLagrange<NGHOST>(u_adm, Kind[b], indcs, ind_and_wghts);
       }
 
-      // Metric derivatives
-      for (int c = 0; c < NDRVSSPMETRIC; ++c) {
-        dgi_(c,p) = InterpolateLagrange<NGHOST>(dg_, c, indcs, ind_and_wghts);
+      // Metric derivatives.  The stored array dg holds finite differences on the
+      // active cells only; its ghost cells are never filled, while the interpolation
+      // stencil reaches NGHOST cells beyond a point, so surface points within NGHOST
+      // cells of a MeshBlock face would pick up zeros.  With drvts_from_interp the
+      // derivative of the interpolant of the metric itself is used instead (index
+      // c = 6*direction + component, components ordered as gind).
+      if (from_interp) {
+        for (int c = 0; c < NDRVSSPMETRIC; ++c) {
+          dgi_(c,p) = InterpolateLagrangeDeriv<NGHOST>(u_adm, gind[c%6], indcs, size, pos,
+                                                       ind_and_wghts, c/6);
+        }
+      } else {
+        for (int c = 0; c < NDRVSSPMETRIC; ++c) {
+          dgi_(c,p) = InterpolateLagrange<NGHOST>(dg_, c, indcs, ind_and_wghts);
+        }
       }
     }
   });

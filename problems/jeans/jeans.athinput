@@ -143,6 +143,7 @@ waveform_dt          = 0.25
 
 <fastflow>
 find_every        = 16
+metric_drvts      = interpolant   # derivative of the metric interpolant; 'stored' is the original, wrong near block faces
 num_horizons      = 3
 npunct            = 2
 ntheta            = 16

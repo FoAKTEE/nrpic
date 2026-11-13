@@ -138,4 +138,67 @@ Real InterpolateLagrange(
   return ival;
 }
 
+//----------------------------------------------------------------------------------------
+//! \fn InterpolateLagrangeDeriv
+//! \brief derivative along direction dir (0,1,2) of the Lagrange interpolant of val at the
+//! point rcoords, on the stencil of IndicesAndWeights.  Differentiating the interpolant
+//! of a field whose ghost cells are filled avoids interpolating a separately stored
+//! derivative array, which would need ghost cells of its own.
+
+template <int NGHOST>
+KOKKOS_INLINE_FUNCTION
+Real InterpolateLagrangeDeriv(
+  const DvceArray5D<Real> &val,
+  int var,
+  const RegionIndcs &indcs,
+  const DualArray1D<RegionSize> &size,
+  const Real rcoords[3],
+  const IndAndWghts<NGHOST> &iw,
+  int dir
+) {
+  if (iw.ii0 == -1) { return 0.0; }
+  const int is = indcs.is, js = indcs.js, ks = indcs.ks;
+  auto mb0 = size.d_view(iw.ii0);
+  const int ii = (dir == 0) ? iw.ii1 : ((dir == 1) ? iw.ii2 : iw.ii3);
+  const int nx = (dir == 0) ? indcs.nx1 : ((dir == 1) ? indcs.nx2 : indcs.nx3);
+  const Real xmin = (dir == 0) ? mb0.x1min : ((dir == 1) ? mb0.x2min : mb0.x3min);
+  const Real xmax = (dir == 0) ? mb0.x1max : ((dir == 1) ? mb0.x2max : mb0.x3max);
+  const Real x = rcoords[dir];
+
+  // nodes of the stencil and derivative of each Lagrange basis polynomial at x
+  Real xn[2 * NGHOST], dw[2 * NGHOST];
+  for (int i = 0; i < 2 * NGHOST; ++i) {
+    xn[i] = CellCenterX(ii - NGHOST + i + 1, nx, xmin, xmax);
+  }
+  for (int i = 0; i < 2 * NGHOST; ++i) {
+    Real sum = 0.0;
+    for (int m = 0; m < 2 * NGHOST; ++m) {
+      if (m == i) continue;
+      Real prod = 1.0/(xn[i] - xn[m]);
+      for (int j = 0; j < 2 * NGHOST; ++j) {
+        if (j == i || j == m) continue;
+        prod *= (x - xn[j])/(xn[i] - xn[j]);
+      }
+      sum += prod;
+    }
+    dw[i] = sum;
+  }
+
+  Real ival = 0.0;
+  for (int i = 0; i < 2 * NGHOST; i++) {
+    const Real w1 = (dir == 0) ? dw[i] : iw.wght1[i];
+    for (int j = 0; j < 2 * NGHOST; j++) {
+      const Real w2 = (dir == 1) ? dw[j] : iw.wght2[j];
+      for (int k = 0; k < 2 * NGHOST; k++) {
+        const Real w3 = (dir == 2) ? dw[k] : iw.wght3[k];
+        ival += w1*w2*w3*val(iw.ii0, var,
+                             iw.ii3 - (NGHOST - k - ks) + 1,
+                             iw.ii2 - (NGHOST - j - js) + 1,
+                             iw.ii1 - (NGHOST - i - is) + 1);
+      }
+    }
+  }
+  return ival;
+}
+
 #endif  // UTILS_INLINE_INTERPOLATOR_HPP_

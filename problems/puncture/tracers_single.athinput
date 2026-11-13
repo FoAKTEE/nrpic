@@ -71,6 +71,7 @@ damp_kappa2     = 0.0
 
 <fastflow>
 find_every        = 16
+metric_drvts      = interpolant   # derivative of the metric interpolant; 'stored' is the original, wrong near block faces
 num_horizons      = 1
 npunct            = 0
 ntheta            = 16

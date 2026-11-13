@@ -56,8 +56,9 @@ constraints) adds about 3 percent at 10^4 particles.
   dx = h/4 the central density drops to 0.44 of the cycloid (fewer particles than
   cells) and recovers as the dust contracts; apparent horizon first found at
   t = 16.33 M; all particles excised between t = 19.0 and 19.8 M (lapse threshold 0.1).
-  Horizon mass 0.974 M with the finder's default stopping tolerance (1e-3 per iteration),
-  which leaves a residual mean expansion of -0.03; rerun with tolerance 1e-7 pending.
+  Horizon mass 0.974 M as reported by the finder at the time. WITHDRAWN: the finder had
+  a defect that makes it read low by 2 to 3 percent (see "Horizon mass calibration:
+  results"); to be remeasured.
 - Deposition identity 1e-15 throughout, across all regrids; no unconverged pushes.
 
 ## Restart (CPU, 2026-11-13)
@@ -305,3 +306,60 @@ Addendum to the filter-pass controls (two-pass run complete, 05:47): the two-pas
 history has the shape of the four-pass one at 0.65 of its height; late-time constraint
 norms 0.14, 0.026, 0.011 for zero, two, four passes. Three-way figure:
 `analysis/diag/figs/cluster_ctl_filter.png`.
+
+## Horizon mass calibration: results (2026-11-13, 05:50 to 06:05)
+
+Misner-Sharp mass m of the evolved slice from the restart dumps (script
+`analysis/diag/tracers_exact.py`, written for the tracer check; m is constant in R for
+exact Schwarzschild and equals the horizon mass) against the mass the finder reports,
+all at t = 50 M:
+
+| run | m - 1 (slice) | finder mass - 1 | finder rms expansion |
+|---|---|---|---|
+| dx = M/4 | -3.9e-2 | -6.5e-2 | 1.9e-2 |
+| dx = M/8 (baseline) | +1.5e-3 | -2.29e-2 | 1.2e-2 |
+| dx = M/8, tolerance 1e-8 | (same slice) | -2.29e-2 | 1.2e-2 |
+| dx = M/8, 32 angles, l_max 16 | (same slice) | -1.19e-2 | 8.8e-3 |
+
+Against the predictions written before the runs:
+- Evolution resolution: the slice itself is 3.9 percent light at M/4 and 0.15 percent
+  heavy at M/8. That part converges and is small at M/8.
+- Finder stopping: the tight tolerance takes the mean expansion from -2e-3 to +2e-5 and
+  changes the mass by 3e-5. The stopping rule is not the cause of the offset. My first
+  explanation of the low horizon mass ("the finder stops early") is refuted.
+- The finder reads 2.4 to 3 percent below the slice at both resolutions, its rms
+  expansion does not go down with more iterations, and the result depends on the
+  angular resolution. None of the three should happen for a sphere.
+
+Cause, found by reading the finder and confirmed by an A/B run. The finder
+(`z4c/fastflow.cpp`, vendored AthenaK) stores finite-difference derivatives of the
+metric on the active cells of each MeshBlock and interpolates that array to the surface
+with a stencil of 2 NGHOST points per dimension. The ghost cells of the array are never
+filled (they keep their allocated zeros), so every surface point within NGHOST cells of
+a block face gets a wrong derivative. A horizon centred on the origin, where eight
+blocks meet, is cut by three such faces.
+
+New option `<fastflow> metric_drvts = interpolant`: the derivatives are taken from the
+interpolant of the metric itself, whose ghost cells are filled
+(`InterpolateLagrangeDeriv` in `utils/inline_interpolator.hpp`). A/B on the same data,
+the t = 50 M dump of the baseline run restarted on CPU for one cycle, identical finder
+settings:
+
+| derivatives | finder mass | rms expansion | mean radius |
+|---|---|---|---|
+| stored (original) | 0.977110 | 1.2e-2 | 1.2699 |
+| interpolant | 1.001338 | 6.3e-9 | 1.3455 |
+
+The original setting reproduces the GPU value (0.97711). With the interpolant the
+surface is a sphere to 6e-9 in expansion and its mass agrees with the Misner-Sharp
+mass of the slice (1.0015 to 1.0017) to 2 to 4 parts in 1e4. The remaining mean
+expansion, -4e-3, is the stopping tolerance (worth 3e-5 to 6e-5 in mass).
+
+On the exact initial slice (true mass 1, horizon at r = M/2, four cells from the
+puncture at dx = M/8) the two settings give 1.0036 and 0.9915 with rms expansion 0.13
+and 0.005: there the interpolation of the metric itself next to the puncture limits
+the result, and neither number should be quoted.
+
+Consequences: every horizon mass recorded before this entry (0.974 after dust collapse,
+0.972 to 0.979 for the puncture) was produced by the defect and is withdrawn. Collapse
+runs are to be made with `metric_drvts = interpolant`.
