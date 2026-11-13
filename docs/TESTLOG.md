@@ -300,3 +300,8 @@ Prediction for the stable cluster with four passes plus compensation, written be
 the run: the lapse rise within 130 M drops from 0.027 to the zero-pass value (0.002 to
 0.005) while the constraint norms stay near those of four passes (0.011). If the rise
 stays near 0.027 the softening hypothesis is wrong.
+
+Addendum to the filter-pass controls (two-pass run complete, 05:47): the two-pass
+history has the shape of the four-pass one at 0.65 of its height; late-time constraint
+norms 0.14, 0.026, 0.011 for zero, two, four passes. Three-way figure:
+`analysis/diag/figs/cluster_ctl_filter.png`.
