@@ -935,3 +935,14 @@ unlimited adaptive run to plotting accuracy (horizon mass 1.0065 at t = 59 M aga
 more than two levels in this problem. The scan is complete: horizon-mass drift after
 removal of the matter -0.13, -1.1, +0.65, +0.65 percent for clouds at the finest level,
 at most one, at most two, any number of levels coarser.
+
+## Least compact cluster model, y_c = 0.900 (08:43), prediction 5
+
+`st/yc0900_v4`: 10^4 stratified particles, one-percent inward kick, four passes plus
+compensation, dx = M/2, 300 M. Figure: `analysis/diag/figs/cluster_history_yc0900_v4.png`.
+No particle lost. Central lapse between 0.886 and 0.892 (equilibrium 0.8891). Radii
+enclosing 10 to 90 percent of the rest mass within about 4 percent of their initial
+values (10 percent radius 5.66 -> 5.42 M, 90 percent radius 13.96 -> 14.20 M). Mean
+Lorentz factor constant to 2e-4. Centre of mass within 0.03 M. As predicted: the model
+holds. Its lapse oscillation is three to four times smaller than that of y_c = 0.819
+and grows ten times more slowly (amplitude fit 0.0008 + 4e-6 t).
