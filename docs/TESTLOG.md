@@ -1034,3 +1034,25 @@ reduced, 10:00):
 - "Growing oscillation: cancelling the cloud width": that run differs from the base run
   by up to 3.6e-3 (it lowers the slow excursion); the other four controls stay within
   6.5e-4 of the base run.
+
+## Compact model y_c = 0.605 with the one-percent inward kick (10:08), prediction 5
+
+`st/yc0605_v5`: 10^4 stratified particles, adaptive mesh, published deposition rule,
+four passes plus compensation, 150 M. Figure:
+`analysis/diag/figs/cluster_history_yc0605_v5.png`.
+- No horizon and no particle lost in 150 M. The original reports a horizon at
+  t = 109 M for this model.
+- The central lapse (0.629 at t = 0) oscillates with a period of about 38 M and a
+  growing swing: maxima 0.641, 0.650, 0.655 at t = 52, 90, 128 M; minima 0.616, 0.590,
+  0.534 at t = 77, 104, 142 M. The radius enclosing 10 percent of the rest mass swings
+  between 0.9 and 1.7 M at the end (1.42 M at the start); the half-mass radius is
+  2.84 M until t = 120 M and 2.29 M at t = 150 M. Mean Lorentz factor 1.122 -> 1.136.
+- The mesh refines at the last two minima (MeshBlocks 456 -> 512), and each refinement
+  comes with a jump of the constraint norms (0.27 -> 1.1 at t = 104 M, 0.77 -> 1.2 at
+  t = 140 M).
+- Against the prediction ("collapses and forms a horizon"): not within 150 M. Whether
+  the growing oscillation ends in collapse is not known from this run. Continuation to
+  300 M submitted from the last dump (same directory).
+- Difference from the original that is established: there the lapse of this model
+  declines smoothly to collapse; here the same kind of core oscillation as in the
+  stable model sits on top, growing by a factor of 2.5 to 3 per cycle in its minima.
