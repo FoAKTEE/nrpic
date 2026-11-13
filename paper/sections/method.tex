@@ -7,7 +7,7 @@ One cycle from $t^n$ to $t^{n+1} = t^n + \Delta t$ runs through six stages in se
 \begin{figure}[t]
 \centering
 \includegraphics[width=\columnwidth]{figures/fig_cycle.pdf}
-\caption{One step of the particle-mesh cycle from $t^n$ to $t^{n+1}$. Blue stages act on the mesh and red stages act on the macroparticles; arrows state the quantities passed, and overbars mark metric fields averaged over the step. Along the dashed regrid branch, metric fields, block ownership, and sources are rebuilt on the updated mesh.}
+\caption{One step of the particle-mesh cycle from $t^n$ to $t^{n+1}$. Blue stages act on the mesh, red stages on the macroparticles. Arrows state the quantities passed; overbars mark metric fields averaged over the step. On the dashed regrid branch, metric fields, block ownership, and sources are rebuilt on the new mesh.}
 \label{fig:cycle}
 \end{figure}
 

@@ -32,17 +32,18 @@ W = 3.4                  # one column of the two-column journal page, in inches
 LAB_PT = 9
 RED, BLUE = fs.PAL["red"], fs.PAL["blue"]
 DASH = (0, (4.0, 1.8))
-RADII = ((8, "90%", DASH), (4, "50%", "-"), (0, "10%", ":"))   # column, label, style
+# column of the radii, label, line style, label above (+1) or below (-1) the curve
+RADII = ((8, "90%", DASH, 1), (4, "50%", "-", 1), (0, "10%", ":", -1))
 
 
 def lapse(ax, d):
     ax.axhline(float(d["alpha_eq"]), zorder=1, **fs.THIN)
-    ax.plot(d["t"], d["alpha"], color=RED, lw=1.0, zorder=2)
+    ax.plot(d["t"], d["alpha"], color=RED, lw=1.2, zorder=2)
     o = d["original"]
     ax.errorbar(o[:, 0], o[:, 3], xerr=[o[:, 0] - o[:, 1], o[:, 2] - o[:, 0]],
                 yerr=[o[:, 3] - o[:, 4], o[:, 5] - o[:, 3]], fmt="o", ms=4.5,
                 mfc="white", mec=BLUE, mew=1.2, ecolor=BLUE, elinewidth=1.2, capsize=0,
-                zorder=4)
+                zorder=4, clip_on=False)
     ax.set_ylim(0.5, 0.96)
     ax.set_yticks((0.5, 0.6, 0.7, 0.8, 0.9))
     ax.set_ylabel(r"$\alpha_c$")
@@ -53,17 +54,21 @@ def lapse(ax, d):
             va="top", fontsize=LAB_PT, linespacing=1.1)
     ax.text(0.98 * t_end, 0.94, r"$N = 10^4$", color=RED, ha="right", va="top",
             fontsize=LAB_PT)
-    ax.text(0.03, 0.95, r"$y_c = 0.5$", transform=ax.transAxes, ha="left", va="top")
 
 
 def radii(ax, d):
     T, R = d["snap_t"], d["r"]
     t_lab = 0.93 * float(d["t_end"])
-    for j, lab, ls in RADII:
+    for j, lab, ls, side in RADII:
         ax.plot(T, R[:, j], color=RED, ls=ls, lw=1.2)
         w = np.abs(T - t_lab) <= 60
-        ax.text(t_lab, 1.22 * R[w, j].max(), lab, color=RED, ha="center", va="bottom",
-                fontsize=LAB_PT)
+        if side > 0:
+            ax.text(t_lab, 1.15 * R[w, j].max(), lab, color=RED, ha="center",
+                    va="bottom", fontsize=LAB_PT)
+        else:
+            ax.text(t_lab, R[w, j].min() / 1.15, lab, color=RED, ha="center", va="top",
+                    fontsize=LAB_PT)
+    ax.text(0.03, 0.95, r"$y_c = 0.5$", transform=ax.transAxes, ha="left", va="top")
     ax.set_yscale("log")
     ax.set_ylim(0.8, 60)
     ax.yaxis.set_major_formatter(matplotlib.ticker.FuncFormatter(lambda v, _: f"{v:g}"))
@@ -77,7 +82,7 @@ def make():
     d = np.load(DATA)
     Hfig = 3.9
     fig = plt.figure(figsize=(W, Hfig))
-    left, right, bot, top, gap = 0.56, 0.08, 0.42, 0.06, 0.06
+    left, right, bot, top, gap = 0.56, 0.20, 0.42, 0.08, 0.06
     h = (Hfig - bot - top - gap) / 2
     a_r = fs.inch_axes(fig, left, bot, W - left - right, h)
     a_l = fs.inch_axes(fig, left, bot + h + gap, W - left - right, h)
