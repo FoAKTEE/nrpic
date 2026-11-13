@@ -1,8 +1,9 @@
 # Oppenheimer-Snyder dust collapse, R_0 = 5 M (paper Sec. III B at reduced particle
-# number).  Mass-weighted particle lattice aligned with the level-3 mesh (h = dx).
+# number).  Mass-weighted particle lattice aligned with the level-4 mesh (h = dx).
 # Adaptive refinement with the Loehner indicator down to dx = h/8 = M/26.4, lapse
 # excision at 0.1, apparent-horizon finder centred on the origin.
-#   domain half-width = 512 h, root dx = 8 h, h = 0.30280705177720835
+#   domain half-width = 512 h, root dx = 16 h in 16^3 MeshBlocks, level 4 has dx = h,
+#   h = 0.30280705177720835
 
 <comment>
 problem   = Oppenheimer-Snyder collapse (adaptive refinement)
@@ -12,30 +13,30 @@ basename  = os
 
 <mesh>
 nghost    = 4
-nx1       = 128
+nx1       = 64
 x1min     = -155.03721050993067
 x1max     = 155.03721050993067
 ix1_bc    = outflow
 ox1_bc    = outflow
-nx2       = 128
+nx2       = 64
 x2min     = -155.03721050993067
 x2max     = 155.03721050993067
 ix2_bc    = outflow
 ox2_bc    = outflow
-nx3       = 128
+nx3       = 64
 x3min     = -155.03721050993067
 x3max     = 155.03721050993067
 ix3_bc    = outflow
 ox3_bc    = outflow
 
 <meshblock>
-nx1       = 32
-nx2       = 32
-nx3       = 32
+nx1       = 16
+nx2       = 16
+nx3       = 16
 
 <mesh_refinement>
 refinement          = adaptive
-num_levels          = 7
+num_levels          = 8
 max_nmb_per_rank    = 640
 ncycle_check        = 4
 refinement_interval = 8
@@ -49,10 +50,10 @@ lohner_refine   = 0.2
 lohner_derefine = 0.02
 lohner_eps      = 0.01
 radius_0_rad      = 6.0
-radius_0_reflevel = 3
+radius_0_reflevel = 4
 
 <refined_region1>
-level = 3
+level = 4
 x1min = -6.0
 x1max = 6.0
 x2min = -6.0
@@ -109,7 +110,7 @@ deposit        = true
 nfilter        = 1
 deposit_max_level = 31
 deposit_adaptive  = true   # cloud level follows the local particle density ...
-deposit_min_level = 3      # ... and is never coarser than the level-3 cell (dx = h)
+deposit_min_level = 4      # ... and is never coarser than the level-4 cell (dx = h)
 deposit_ppc       = 1.0
 alpha_exc      = 0.1
 hist_dcycle    = 1

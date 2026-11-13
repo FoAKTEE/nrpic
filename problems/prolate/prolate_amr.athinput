@@ -13,31 +13,31 @@ basename  = prol
 
 <mesh>
 nghost    = 4
-nx1       = 128
+nx1       = 64
 x1min     = -128.0
 x1max     = 128.0
 ix1_bc    = outflow
 ox1_bc    = outflow
-nx2       = 128
+nx2       = 64
 x2min     = -128.0
 x2max     = 128.0
 ix2_bc    = outflow
 ox2_bc    = outflow
-nx3       = 128
+nx3       = 64
 x3min     = -128.0
 x3max     = 128.0
 ix3_bc    = outflow
 ox3_bc    = outflow
 
 <meshblock>
-nx1       = 32
-nx2       = 32
-nx3       = 32
+nx1       = 16
+nx2       = 16
+nx3       = 16
 
 <mesh_refinement>
 refinement          = adaptive
-num_levels          = 7
-max_nmb_per_rank    = 640
+num_levels          = 8
+max_nmb_per_rank    = 1536
 ncycle_check        = 4
 refinement_interval = 8
 
@@ -50,10 +50,10 @@ lohner_refine   = 0.2
 lohner_derefine = 0.02
 lohner_eps      = 0.01
 radius_0_rad      = 11.0
-radius_0_reflevel = 3
+radius_0_reflevel = 4
 
 <refined_region1>
-level = 3
+level = 4
 x1min = -5.0
 x1max = 5.0
 x2min = -5.0
@@ -110,7 +110,7 @@ deposit        = true
 nfilter        = 2
 deposit_max_level = 31
 deposit_adaptive  = true   # cloud level follows the local particle density ...
-deposit_min_level = 2      # ... and is never coarser than dx = M/2
+deposit_min_level = 3      # ... and is never coarser than dx = M/2
 deposit_ppc       = 2.0
 alpha_exc      = 0.05
 hist_dcycle    = 1

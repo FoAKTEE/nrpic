@@ -20,6 +20,7 @@ import numpy as np  # noqa: E402
 from scipy import stats  # noqa: E402
 from scipy.integrate import quad  # noqa: E402
 
+from nrpic import clumps as clm  # noqa: E402
 from nrpic import io as nio  # noqa: E402
 from nrpic import oppenheimer_snyder as osn  # noqa: E402
 from nrpic import sampling  # noqa: E402
@@ -53,6 +54,16 @@ def model(yc):
     return _MODELS[yc]
 
 
+_JEANS = {}
+
+
+def jeans(**kw):
+    key = tuple(sorted(kw.items()))
+    if key not in _JEANS:
+        _JEANS[key] = clm.JeansModel(**kw)
+    return _JEANS[key]
+
+
 # ----------------------------------------------------------------------------
 # paper comparison (also printed in script mode)
 # ----------------------------------------------------------------------------
@@ -81,6 +92,10 @@ def paper_comparison():
     sph = ProlateSpheroid(0.9, 10.0)
     rows += [("prolate a/M (e=0.9, b=10M)", sph.a, "4.3589"),
              ("prolate M_rest/M", sph.rest_mass(), "1.09815")]
+    rows += [("Jeans v_circ (M_env=0.76, R=30M)",
+              jeans().newtonian_circular_speed()["v_circ"], "0.133215"),
+             ("Jeans v_circ (M_env=0.76, y_c=0.907)",
+              jeans(yc=0.907).newtonian_circular_speed()["v_circ"], "0.133215")]
     return rows
 
 
@@ -421,6 +436,213 @@ def test_sampler_spheroid():
 
 
 # ----------------------------------------------------------------------------
+# cluster with two Gaussian clumps (Jeans problem, paper lines 1335-1338)
+# ----------------------------------------------------------------------------
+def _random_dirs(n, seed):
+    v = np.random.default_rng(seed).normal(size=(n, 3))
+    return v / np.linalg.norm(v, axis=1)[:, None]
+
+
+def test_jeans_psi_asymptotics():
+    """(a) psi_tot -> 1 + M/(2r), M = M_env + 2 m_c = 1; outside the matter psi_tot is
+    the exact point-mass superposition, its remainder the clumps' quadrupole."""
+    J = jeans()
+    assert abs(J.M_adm - 1.0) < 1e-15
+    n = _random_dirs(500, 0)
+    Q = J.m_c * J.d ** 2                       # r (psi - 1) - 1/2 -> (Q/2)(3 n_x^2 - 1)/r^2
+    for r in (1e2, 1e3, 1e4):
+        x = r * n
+        psi = J.psi(x)
+        pm = 1 + J.M_env / (2 * r) + sum(0.5 * J.m_c / np.linalg.norm(x - J.centres[k], axis=1)
+                                         for k in (1, 2))
+        assert np.max(np.abs(psi - pm)) < 1e-14
+        dev = r * sum(J.parts(x)) - 0.5           # psi_tot - 1 without its roundoff
+        assert np.max(np.abs(dev)) <= Q / r ** 2 * (1 + 10 * (J.d / r) ** 2)
+        quad_ = 0.5 * Q * (3 * n[:, 0] ** 2 - 1) / r ** 2
+        # O(r^-4) remainder, plus the roundoff r * eps of u_env = psi_env - 1
+        assert np.max(np.abs(dev - quad_)) < 3 * Q * J.d ** 2 / r ** 4 + 1e-15 * r
+    # monopole: the sphere average of psi_tot - 1 is exactly 1/(2r) outside the matter
+    mu, w = np.polynomial.legendre.leggauss(64)
+    for r in (40.0, 100.0, 1e3):
+        pts = r * np.stack([mu, np.sqrt(1 - mu * mu), 0 * mu], axis=1)
+        avg = 0.5 * np.sum(w * (J.psi(pts) - 1))
+        assert abs(avg * 2 * r - 1) < 1e-12, (r, avg * 2 * r - 1)
+
+
+def test_jeans_component_laplacians():
+    """(b) flat Laplacian of each component equals -2 pi rho~_k on a radial grid, the
+    conformal sources integrate to the conformal masses, the superposition
+    satisfies Lap psi_tot = -2 pi rho~_tot in 3D, and the radial table reproduces
+    u_env with the 4-point Lagrange interpolation of nrpic_cf."""
+    J = jeans()
+    md = J.env
+    # envelope on the uniform table grid
+    r, u, a = stc.table_arrays(md, n_matter=4000)
+    src = -2 * np.pi * J.rho_tilde_radial(0, r)
+    assert np.allclose(u, J.u_radial(0, r), rtol=0, atol=1e-15)
+    res = stc.radial_laplacian(r, u) - src
+    scale = np.max(np.abs(src))
+    inner = r < 0.95 * md.rbar_s
+    outer = (r > 1.05 * md.rbar_s) & np.isfinite(res)
+    assert np.max(np.abs(res[inner])) < 1e-6 * scale
+    assert np.max(np.abs(res[outer])) < 1e-6 * scale
+    # Gaussian clump
+    rg = np.linspace(0, 12 * J.sigma, 4801)
+    ug = J.u_radial(1, rg)
+    sg = -2 * np.pi * J.rho_tilde_radial(1, rg)
+    rg_res = stc.radial_laplacian(rg, ug) - sg
+    ok = np.isfinite(rg_res)
+    assert np.max(np.abs(rg_res[ok])) < 1e-8 * np.max(np.abs(sg))
+    assert abs(J.u_radial(1, 1e-9) - J.u_radial(1, 0.0)) < 1e-15
+    assert abs(J.u_radial(1, 30.0) * 60.0 - J.m_c) < 1e-15
+    # conformal masses: int rho~_k = M_env, m_c, m_c (Gauss: Lap u = -2 pi rho~)
+    c = J.continuum()
+    assert abs(c["envelope"]["conformal_mass"] / J.M_env - 1) < 1e-9
+    assert abs(c["clump_A"]["conformal_mass"] / J.m_c - 1) < 1e-13
+    assert abs(c["total"]["conformal_mass"] - J.M_adm) < 1e-9
+    # isolated envelope: int rho0 psi_env^6 = M0 (quadrature check)
+    M0 = J.shell_integral(0, lambda x, s: md.psi(s) / md.W(s))
+    assert abs(M0 / md.M0 - 1) < 1e-9
+    # cross terms: Gaussian overlaps in closed form, Green reciprocity with the envelope
+    from scipy.special import erf
+    D = 2 * J.d
+    uA = lambda x, s: J.u_radial(1, J._dist(x, 1))
+    uB = lambda x, s: J.u_radial(2, J._dist(x, 2))
+    ue = lambda x, s: J.u_radial(0, J._dist(x, 0))
+    assert abs(J.shell_integral(1, uA) / (J.m_c ** 2 / (2 * J.sigma * np.sqrt(np.pi))) - 1) < 1e-12
+    assert abs(J.shell_integral(1, uB) / (J.m_c ** 2 * erf(D / (2 * J.sigma)) / (2 * D)) - 1) < 1e-12
+    assert abs(J.shell_integral(0, uA) / J.shell_integral(1, ue) - 1) < 1e-9
+    # 3D superposition, 4th-order differences
+    rng = np.random.default_rng(1)
+    p = np.concatenate([rng.normal(size=(1500, 3)) * J.sigma * 1.5 + J.centres[1],
+                        rng.normal(size=(1500, 3)) * J.sigma * 1.5 + J.centres[2],
+                        _random_dirs(1000, 2) * rng.uniform(0, 0.9, (1000, 1)) * md.rbar_s])
+    h = 0.01
+    lap = 0
+    for e in np.eye(3):
+        lap = lap + (-J.psi(p + 2 * h * e) + 16 * J.psi(p + h * e) - 30 * J.psi(p)
+                     + 16 * J.psi(p - h * e) - J.psi(p - 2 * h * e)) / (12 * h * h)
+    src3 = -2 * np.pi * J.rho_tilde(p)
+    assert np.max(np.abs(lap - src3)) < 1e-6 * np.max(np.abs(src3))
+    assert np.allclose(J.energy_density(p) * J.psi(p) ** 5, J.rho_tilde(p), rtol=1e-14)
+    # the table with the generator's interpolation (nrpic_cf CFCubic)
+    rr = rng.uniform(0, r[-1] * 0.999, 20000)
+    xi = rr / (r[1] - r[0])
+    i = np.clip(np.floor(xi).astype(int), 1, len(r) - 3)
+    s = xi - i
+    lag = (-s * (s - 1) * (s - 2) / 6 * u[i - 1] + (s + 1) * (s - 1) * (s - 2) / 2 * u[i]
+           - (s + 1) * s * (s - 2) / 2 * u[i + 1] + (s + 1) * s * (s - 1) / 6 * u[i + 2])
+    assert np.max(np.abs(lag - J.u_radial(0, rr))) < 1e-9
+
+
+def _shell_edges(J, k, nb):
+    if k == 0:
+        e = J.env.Finv(np.linspace(0, 1, nb + 1))
+        e[-1] = J.env.rbar_s * (1 + 1e-12)
+    else:
+        e = sampling.gaussian_radius_inv(np.linspace(0, 1, nb + 1), J.sigma)
+        e[-1] = np.inf
+    return e
+
+
+def test_jeans_sampler_density():
+    """(c) binned coordinate density of m W of each species, in shells about the
+    component centre, against the continuum int rho~_k psi_tot; rest masses and
+    velocities of the particles."""
+    J = jeans()
+    for method, N, mirror in (("stratified", 100000, True), ("mc", 20000, False)):
+        x, u, m, sp = J.sample(N, seed=5, method=method, mirror=mirror)
+        n_env, n_a, n_b = clm.split_counts(N)
+        assert (n_env, n_a, n_b) == (3 * N // 5, N // 5, N // 5)
+        assert [int(np.sum(sp == k)) for k in range(3)] == [n_env, n_a, n_b]
+        W = J.lorentz_factor(x, u)
+        psi = J.psi(x)
+        q = u / psi[:, None] ** 2
+        cont = J.continuum()
+        zmax = 0.0
+        for k in range(3):
+            sel = sp == k
+            r = J._dist(x[sel], k)
+            g = (m * W)[sel]
+            edges = _shell_edges(J, k, 8)
+            counts = np.histogram(r, edges)[0]
+            for i in range(8):
+                b = (r >= edges[i]) & (r < edges[i + 1])
+                est = g[b].sum()
+                expect = J.shell_values(k, edges[i], edges[i + 1])[1]
+                if method == "stratified":
+                    # one particle per equal-probability stratum: fixed shell counts,
+                    # the scatter is that of m W within the shell
+                    assert counts[i] == sel.sum() // 8
+                    sig = np.sqrt(b.sum() * g[b].var())
+                    assert abs(est / expect - 1) < 2e-3
+                else:
+                    sig = np.sqrt(np.sum(g[b] ** 2))
+                zmax = max(zmax, abs(est - expect) / sig)
+            name = J.names[k]
+            tol = 2e-4 if method == "stratified" else 3e-2
+            assert abs(m[sel].sum() / cont[name]["rest_mass"] - 1) < tol
+            assert abs(g.sum() / cont[name]["sum_mW"] - 1) < tol
+            # velocities: envelope keeps the isolated |q|(r), clumps are cold at v
+            if k == 0:
+                # (rtol: q ~ (rbar_s - r)^(1/2) at the surface, |x| vs the drawn radius)
+                assert np.allclose(np.linalg.norm(q[sel], axis=1), J.env.q(r), rtol=1e-9,
+                                   atol=1e-15)
+                assert np.allclose(m[sel], J.env.M0 / n_env * psi[sel] / J.env.psi(r),
+                                   rtol=1e-14)
+            else:
+                assert np.allclose(q[sel], J.W * J.velocities[k - 1], rtol=1e-13, atol=0)
+                assert np.allclose(W[sel], J.W, rtol=1e-14)
+                assert np.allclose(m[sel], J.m_c / sel.sum() * psi[sel] / J.W, rtol=1e-14)
+        assert zmax < 5.0, (method, zmax)
+    # positions of a clump: stratified Gaussian in r and cos(theta) about its centre
+    x, u, m, sp = J.sample(10000, seed=2)
+    for k in (1, 2):
+        d = x[sp == k] - J.centres[k]
+        r = np.linalg.norm(d, axis=1)
+        n = len(r)
+        assert _ecdf_dev(r, lambda v: sampling.gaussian_radius_cdf(v, J.sigma)) <= 1 / n + 1e-9
+        assert _ecdf_dev(d[:, 2] / r, lambda c: (c + 1) / 2) <= 1 / n + 1e-9
+
+
+def test_jeans_momentum_and_spin():
+    """(d) the clumps' momenta cancel; J_z = sum m (x u_y - y u_x) > 0 (paper: the
+    clumps 'acquire positive angular momentum' with v_A^y < 0 at x_A = -d)."""
+    J = jeans()
+    assert J.centres[1, 0] < 0 and J.velocities[0, 1] < 0      # A at x < 0 moves to -y
+    x, u, m, sp = J.sample(10000, seed=1)
+    s = J.particle_summary(x, u, m, sp)
+    pA, pB = np.array(s["clump_A"]["sum_m_u"]), np.array(s["clump_B"]["sum_m_u"])
+    assert pA[1] < 0 < pB[1]
+    assert np.max(np.abs(pA + pB)) < 1e-14 * abs(pA[1])          # mirrored clump B
+    assert s["clump_A"]["J_z"] > 0 and s["clump_B"]["J_z"] > 0 and s["total"]["J_z"] > 0
+    assert abs(s["clump_A"]["J_z"] / s["clump_B"]["J_z"] - 1) < 1e-13
+    # continuum J_z of a clump: v int rho~_A psi_tot^3 (-x) d^3x
+    jz = J.v * J.shell_integral(1, lambda p, r: J.psi(p) ** 3 * (-p[..., 0]))
+    assert abs(s["clump_A"]["J_z"] / jz - 1) < 1e-3
+    # envelope: no net angular momentum beyond sampling noise (isotropic q)
+    e = sp == 0
+    lz = m[e] * (x[e, 0] * u[e, 1] - x[e, 1] * u[e, 0])
+    assert abs(s["envelope"]["J_z"]) < 5 * np.sqrt(np.sum(lz ** 2))
+    # independently sampled clumps: momenta cancel to sampling accuracy
+    x, u, m, sp = J.sample(10000, seed=1, mirror=False)
+    s = J.particle_summary(x, u, m, sp)
+    pA, pB = np.array(s["clump_A"]["sum_m_u"]), np.array(s["clump_B"]["sum_m_u"])
+    assert np.max(np.abs(pA + pB)) < 1e-3 * abs(pA[1]) and s["total"]["J_z"] > 0
+
+
+def test_jeans_circular_speed():
+    """Leading-order circular speed v^2 = m_env(<d)/d + m_c/(4d) at d = 3M. The
+    paper's 0.133215 is not reached with the R = 30M envelope, but is reproduced
+    by the y_c = 0.907 envelope of the same mass (R = 13.31M)."""
+    c = jeans().newtonian_circular_speed()
+    assert abs(c["v_circ"] - 0.10272) < 1e-5 and c["v_clump_only"] == 0.1
+    c = jeans(yc=0.907).newtonian_circular_speed()
+    assert abs(c["v_circ"] - 0.133215) < 1e-6
+    assert abs(jeans(yc=0.907).env.R - 13.3143) < 1e-4
+
+
+# ----------------------------------------------------------------------------
 # file formats and the command-line tool
 # ----------------------------------------------------------------------------
 def test_io_roundtrip():
@@ -473,6 +695,46 @@ def test_make_ic_cli():
             for ext in (".nrp", ".tab", ".json"):
                 if os.path.exists(os.path.join(d, "run" + ext)):
                     os.remove(os.path.join(d, "run" + ext))
+
+
+def test_make_ic_jeans():
+    import importlib.util
+    import json
+    spec = importlib.util.spec_from_file_location(
+        "make_ic", os.path.join(_ROOT, "problems", "ic", "make_ic.py"))
+    mk = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(mk)
+    with tempfile.TemporaryDirectory() as d:
+        assert mk.main(["jeans", "--N", "1000", "--seed", "1", "--out", d]) == 0
+        stem = os.path.join(d, "jeans_N1000_s1")
+        with open(stem + ".json") as f:
+            meta = json.load(f)
+        x, u, m, sp = nio.read_nrp(stem + ".nrp")
+        assert len(m) == 1000 and [int(np.sum(sp == k)) for k in range(3)] == [600, 200, 200]
+        r, uu, al, _ = nio.read_tab(stem + ".tab")
+        assert abs(2 * r[-1] * uu[-1] - 0.76) < 1e-12 and r[-1] > meta["envelope"]["rbar_s"]
+        comps = meta["components"]
+        assert [c["type"] for c in comps] == ["table", "gaussian", "gaussian"]
+        assert comps[0]["file"] == "jeans_N1000_s1.tab"
+        assert comps[1]["center"] == [-3.0, 0.0, 0.0] and comps[2]["center"] == [3.0, 0.0, 0.0]
+        assert comps[1]["velocity"][1] == -0.133215 and comps[2]["velocity"][1] == 0.133215
+        prob = meta["athenak"]["problem"]
+        assert prob["ncomp"] == 3 and prob["comp1_mass"] == 0.12 and prob["comp1_sigma"] == 0.7
+        assert prob["lapse"] == "isotropic"
+        assert abs(meta["envelope"]["R_areal"] - 30.0) < 1e-9
+        assert abs(meta["envelope"]["M_env"] + 2 * 0.12 - meta["M_ADM"]) < 1e-15
+        J = jeans()
+        x2, u2, m2, sp2 = J.sample(1000, seed=1)
+        assert np.array_equal(x, x2) and np.array_equal(u, u2) and np.array_equal(m, m2)
+        p0 = meta["psi_tot"]["origin"]
+        assert abs(meta["lapse_isotropic"]["origin"] - (2 - p0) / p0) < 1e-15
+        assert meta["particles_by_species"]["total"]["N"] == 1000
+        assert mk.main(["jeans", "--N", "1000", "--env-yc", "0.907", "--out", d,
+                        "--prefix", "alt", "--independent-clumps", "--sampler", "mc"]) == 0
+        with open(os.path.join(d, "alt.json")) as f:
+            alt = json.load(f)
+        assert abs(alt["clumps"]["circular_speed_check"]["v_circ"] - 0.133215) < 1e-6
+        assert alt["clump_B_mirror_of_A"] is False
 
 
 # ----------------------------------------------------------------------------

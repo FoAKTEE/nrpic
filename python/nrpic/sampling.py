@@ -28,11 +28,16 @@ Monoenergetic cluster (paper lines 1119-1128):
 Prolate spheroid (paper line 967): accept-reject from the uniform spheroid with
 acceptance psibar/psibar(0); N/4 base points are completed by the images under
 z -> -z and the pi rotation about z, (x, y) -> (-x, -y).
+Isotropic Gaussian (clumps of the Jeans problem, see clumps.py): positions only,
+    'stratified'  U_ad as for the cluster, d = r, cos(theta), phi, with
+                  r = sigma chi_3^(-1)(U) the inverse radial CDF of the 3D Gaussian.
+    'mc'          the same maps with independent uniforms.
 """
 
 import math
 
 import numpy as np
+from scipy.stats import chi as _chi
 
 from . import oppenheimer_snyder as osn
 from .spheroid import ProlateSpheroid
@@ -41,6 +46,7 @@ from .st_cluster import STModel
 __all__ = [
     "stratified_uniforms", "unit_vectors", "sample_os", "os_lattice",
     "os_lattice_count", "os_nlat_for", "sample_st", "sample_spheroid",
+    "gaussian_radius_cdf", "gaussian_radius_inv", "sample_gaussian_positions",
 ]
 
 
@@ -200,6 +206,36 @@ def sample_st(model, N, method="stratified", seed=0, vpert=0.0,
     x = rb[:, None] * nhat
     u = model.psi(rb)[:, None] ** 2 * q
     return x, u, np.full(N, model.M0 / N), _species(N, species)
+
+
+# ----------------------------------------------------------------------------
+# isotropic Gaussian (positions only)
+# ----------------------------------------------------------------------------
+def gaussian_radius_cdf(r, sigma):
+    """Fraction of an isotropic 3D Gaussian of width sigma inside radius r:
+    erf(t/sqrt 2) - (2/pi)^(1/2) t exp(-t^2/2), t = r/sigma."""
+    return _chi.cdf(np.asarray(r, dtype=float) / sigma, 3)
+
+
+def gaussian_radius_inv(U, sigma):
+    """Inverse of gaussian_radius_cdf: r = sigma chi_3^(-1)(U)."""
+    return sigma * _chi.ppf(np.asarray(U, dtype=float), 3)
+
+
+def sample_gaussian_positions(N, sigma, centre=(0.0, 0.0, 0.0), method="stratified",
+                              seed=0):
+    """N positions x[N,3] of the isotropic Gaussian exp(-|x - centre|^2/(2 sigma^2)),
+    with randomized stratification in r, cos(theta) and phi ('stratified', the
+    construction of the cluster sampler) or independent uniforms ('mc')."""
+    rng = _rng(seed)
+    if method == "stratified":
+        U = stratified_uniforms(N, 3, rng)
+    elif method == "mc":
+        U = rng.random((N, 3))
+    else:
+        raise ValueError(f"unknown Gaussian sampler {method!r}")
+    r = gaussian_radius_inv(U[:, 0], sigma)
+    return np.asarray(centre, dtype=float) + r[:, None] * unit_vectors(U[:, 1], U[:, 2])
 
 
 # ----------------------------------------------------------------------------

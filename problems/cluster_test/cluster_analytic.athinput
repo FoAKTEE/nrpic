@@ -1,0 +1,65 @@
+# Test-particle cluster in a fixed Kerr black hole spacetime with the analytic Cartesian
+# Kerr-Schild metric (docs/results_cluster_test.md).  Same particles as
+# cluster_mesh.athinput; the mesh is a dummy (the analytic metric does not use it, there
+# is no deposition, no MeshBlock ownership and no excision).  Particles are independent,
+# so several clusters (species 0, 1, 2, ...) can share one run.
+#
+#   scripts/gpu_run.sh runs/cluster_test/<name> problems/cluster_test/cluster_analytic.athinput \
+#       particles/particle_file=<abs path .nrp> particles/bh_spin=0.9 particles/pusher=boris
+
+<comment>
+problem   = NRPIC test-particle cluster, analytic Kerr-Schild metric
+
+<job>
+basename  = tpc
+
+<mesh>
+nghost    = 2
+nx1       = 8
+x1min     = -1.0
+x1max     = 1.0
+ix1_bc    = periodic
+ox1_bc    = periodic
+nx2       = 8
+x2min     = -1.0
+x2max     = 1.0
+ix2_bc    = periodic
+ox2_bc    = periodic
+nx3       = 8
+x3min     = -1.0
+x3max     = 1.0
+ix3_bc    = periodic
+ox3_bc    = periodic
+
+<meshblock>
+nx1       = 8
+nx2       = 8
+nx3       = 8
+
+<time>
+evolution  = dynamic
+integrator = rk2
+cfl_number = 1.0
+nlim       = -1
+tlim       = 1000.0
+ndiag      = 2000
+
+<particles>
+particle_type  = nrpic
+pusher         = midpoint         # midpoint | boris
+triad          = symmetric        # symmetric | cholesky (Boris pusher)
+metric         = kerr_schild
+bh_mass        = 1.0
+bh_spin        = 0.0
+tolerance      = 1.0e-12
+max_iterations = 100
+dt             = 0.05
+deposit        = false
+hist_dcycle    = 10
+traj_dcycle    = 10
+traj_ntrack    = 16
+snap_dt        = 5.0
+particle_file  = cluster.nrp
+
+<problem>
+pgen_name = nrpic_geodesic
