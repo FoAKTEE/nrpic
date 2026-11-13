@@ -1020,3 +1020,17 @@ since the size of the initial offset has not been varied in a controlled way. Wh
 established: the stable model stays bound and centred for 1200 M at ten thousand
 particles, with a core oscillation that is the same for every sample and sampler and
 is bounded at two to three percent in the central lapse.
+
+Corrections and completions to earlier entries (found while the paper figures were
+reduced, 10:00):
+- "Stable model, compensated, three seeds": seed 3 was read while it was still running.
+  Complete to 300 M, its fourth minimum is 0.7990 at t = 277 M (seeds 1 and 2: 0.7985
+  at 281 M and 0.7924 at 277 M).
+- "Horizon mass calibration: results", row dx = M/4: -3.9e-2 is the median of the
+  Misner-Sharp mass over a wide shell; at this resolution the mass is not constant in
+  radius, and at the horizon it is 0.9656 at t = 50 M (-3.4e-2).
+- Extrema quoted for the long stable-cluster run are those of the 4 M smoothed lapse;
+  the raw extrema are up to 4e-4 larger in size.
+- "Growing oscillation: cancelling the cloud width": that run differs from the base run
+  by up to 3.6e-3 (it lowers the slow excursion); the other four controls stay within
+  6.5e-4 of the base run.
