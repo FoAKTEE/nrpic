@@ -49,7 +49,7 @@ def radius(ax, d):
     ax.set_ylabel(r"$R/M$")
     ax.legend([Line2D([], [], color=RED), Line2D([], [], color=BLUE, ls="--")],
               ["numerical", "exact geodesic"], loc="upper right", fontsize=LEG_PT,
-              handlelength=1.8, borderaxespad=0.3, labelspacing=0.25)
+              handlelength=1.8, borderaxespad=0.3, labelspacing=0.25, frameon=False)
     ax.xaxis.set_major_formatter(matplotlib.ticker.NullFormatter())
 
 
@@ -71,7 +71,7 @@ def residual(ax, d):
     ax.set_xlabel(r"$\tau/M$", labelpad=1)
     ax.legend([Line2D([], [], color=RED, lw=1.3), Line2D([], [], color=RED, lw=1.3, ls=":")],
               [r"exact, mass $M$", "exact, mass of the slice"], loc="upper left",
-              fontsize=LEG_PT, handlelength=1.8, borderaxespad=0.3, labelspacing=0.25)
+              fontsize=LEG_PT, handlelength=1.8, borderaxespad=0.3, labelspacing=0.25, frameon=False)
 
 
 def mass(ax, d):
@@ -93,7 +93,7 @@ def mass(ax, d):
                Line2D([], [], color="k", ls="none", marker="s", ms=4.5)],
               ["from circular orbits", "Misner-Sharp, slice"],
               loc="lower right", fontsize=LEG_PT, handlelength=1.8, borderaxespad=0.3,
-              labelspacing=0.25)
+              labelspacing=0.25, frameon=False)
 
 
 def make():

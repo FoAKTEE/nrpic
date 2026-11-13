@@ -109,13 +109,13 @@ def invariants(aE, aL, d):
               ["implicit midpoint", "spacetime Boris, symmetric gauge",
                "spacetime Boris, Cholesky gauge"],
               loc="upper left", fontsize=LEG_PT, handlelength=1.6, borderaxespad=0.3,
-              labelspacing=0.25)
+              labelspacing=0.25, frameon=False)
     aL.legend([Line2D([], [], color="k", lw=LW_MESH), Line2D([], [], color="k", lw=LW_THIN),
                Line2D([], [], color="k", lw=LW_THIN),
                Line2D([], [], color="k", lw=LW_THIN, ls=dashed(LW_THIN))],
               ["mesh metric", "analytic metric", "median", "99th percentile"],
               loc="upper left", ncol=2, fontsize=LEG_PT, handlelength=1.8,
-              borderaxespad=0.3, labelspacing=0.25, columnspacing=1.2)
+              borderaxespad=0.3, labelspacing=0.25, columnspacing=1.2, frameon=False)
 
 
 def deposition(ax, d):
@@ -143,7 +143,7 @@ def deposition(ax, d):
     ax.set_ylabel("relative difference")
     ax.legend([Line2D([], [], color=RED)],
               [r"$|\int E\sqrt{\gamma}\,\mathrm{d}V\,/\sum\, m_p W_p - 1|$"],
-              loc="upper right", fontsize=LEG_PT, handlelength=1.6, borderaxespad=0.3)
+              loc="upper right", fontsize=LEG_PT, handlelength=1.6, borderaxespad=0.3, frameon=False)
     return ar
 
 
@@ -161,7 +161,7 @@ def removal(ax, d):
     ax.set_ylabel("removed particles")
     ax.legend([Line2D([], [], color=RED), Line2D([], [], color=BLUE, ls="--")],
               ["lapse excision", "exact geodesics"], loc="lower right",
-              fontsize=LEG_PT, handlelength=1.8, borderaxespad=0.4)
+              fontsize=LEG_PT, handlelength=1.8, borderaxespad=0.4, frameon=False)
 
 
 def make():
