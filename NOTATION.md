@@ -36,20 +36,27 @@ orthonormal-frame (tetrad) indices.
 | B_1 | | first-order (cloud-in-cell) shape function | deposition |
 | omega_{Cp} | | weight of particle p on leaf cell C | deposition |
 | ell_p, ell_cap | `\ell_p`, `\lcap` | level on which particle p is represented; cap on that level | deposition |
+| n_f, c, s | | binomial filter pass count, compensation weight n_f/4, squared half-wavenumber sine | deposition |
 | chi, tilde gamma_{ij}, hat K, tilde A_{ij}, tilde Gamma^i, Theta | | Z4c variables | spacetime |
 | kappa_1, kappa_2 | | Z4c constraint-damping parameters | spacetime |
 | eta | `\eta` | shift damping parameter | spacetime |
-| c_H | | coefficient of the parabolic Hamiltonian relaxation | spacetime |
+| mu_S | | shift speed parameter in the Gamma-driver condition | spacetime |
+| c_H | | coefficient of the parabolic Hamiltonian-constraint relaxation | spacetime |
 | H, M_i | `\Ham`, `\Mom` | Hamiltonian and momentum constraint residuals | spacetime |
 | q | | refinement monitor alpha chi^{-7/4} | adaptive mesh |
 | alpha_exc | `\aexc` | lapse threshold of particle excision | numerical methods |
+| R | | areal radius | numerical methods |
+| K_T | | tangential extrinsic curvature on a coordinate sphere | numerical methods |
+| M_MS | | Misner-Sharp mass of the spatial slice | numerical methods |
 | M | | ADM mass; sets the unit of length and time | tests |
 | a | | Kerr spin parameter (length) | tests |
 | E, L_z, Q | `\Egeo`, `L_z`, `Q` | geodesic energy, axial angular momentum, Carter constant | tests |
-| R, R_0 | | areal radius; initial areal radius of the dust ball | tests |
+| R_0 | | initial areal radius of the dust ball | tests |
 | \bar r | `\rbar` | isotropic radius | tests |
 | psi | `\psi` | conformal factor of the initial slice | tests |
-| tau_c | `\tau_c` | proper time of the central normal observer | tests |
+| tau | `\tau` | proper time along a particle worldline | tests |
+| M_eff | | enclosed mass implied by a circular tracer orbit | tests |
+| tau_c | `\tau_c` | proper time of the central normal observer | numerical methods |
 | alpha_c | | central lapse | tests |
 | y_c, z_c | | cluster sequence label and central redshift | tests |
 | M_0 | | total rest mass | tests |
@@ -95,6 +102,7 @@ The names that replace equation numbers (3.4). Use each name consistently.
 | S_{ijk} (assignment weight, original paper) | omega_{Cp} only | collision with the stress S_{ij} |
 | E_i (refinement indicator, original paper) | varepsilon_i | collision with the energy density E |
 | hatted tetrad indices | parenthesized indices | hats are used for the Z4c variable \hat K |
+| mu (shift speed parameter) | mu_S | collision with spacetime index mu |
 
 ## Overlaps kept on purpose
 
