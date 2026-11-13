@@ -35,3 +35,23 @@ run oscillates between lapse 0.72 and 0.83 about a mean of 0.78 over the run (0.
 after 250 M), above the original's band; its 90 percent radius spans 5.8 to 9.2 M. The unperturbed run, 315 M so far, is
 the one that oscillates about the original's band: lapse between 0.72 and 0.77, mean
 0.750, extrema 45 to 55 M apart, swing growing.)
+
+
+## Update 13:50 (supersedes the numbers above where they differ)
+
+fig_migration now shows the complete run (2500 M) and ten extrema of the original's
+curve (open circles, bars over the ranges read). fig_nearcritical now shows the
+complete unperturbed run (800 M) and, instead of a band, the extrema of the original's
+perturbed run read from its figure (open circles). Caption drafts:
+
+\caption{Unperturbed, the unstable cluster $y_c = 0.5$ migrates as in
+Ref.~\cite{Wu:2026nrpic}: it expands, recontracts, and oscillates about a more extended
+state. Top: central lapse, equilibrium value (black), and extrema read from the figure
+of Ref.~\cite{Wu:2026nrpic} (circles; bars: ranges read). Bottom: radii enclosing 90,
+50, and 10 percent of the rest mass.}
+
+\caption{Near-critical cluster $y_c = 0.756$. Compressed by ten percent in density it
+collapses (red; dashed line: first apparent horizon); expanded it oscillates (green);
+unperturbed it oscillates at the core period (orange) like the perturbed model of
+Ref.~\cite{Wu:2026nrpic} (circles: extrema read from its figure). Top: central lapse.
+Bottom: radii enclosing 90 and 10 percent of the rest mass.}

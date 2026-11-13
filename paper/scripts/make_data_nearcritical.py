@@ -47,14 +47,23 @@ ST = REPO / "runs" / "st"
 YC = 0.756
 RUNS = {"plus": ST / "reconf_yc0756_hc", "minus": ST / "reconf_yc0756_hc_m",
         "unpert": ST / "yc0756_unpert"}
-ORIGINAL_BAND = (0.74, 0.75)          # original's curve oscillates about this range
+ORIGINAL_BAND = (0.74, 0.75)          # (kept for reference; not drawn)
+# central lapse of the original's perturbed run, extrema read by eye from its rendered
+# figure (t/M, alpha_c); reading accuracy about 10 M and 0.005. After 650 M the curve
+# has no clear extrema; the last rows are values of the slowly falling curve.
+ORIGINAL = np.array([[0, 0.748], [35, 0.755], [60, 0.745], [90, 0.763], [115, 0.738],
+                     [140, 0.772], [165, 0.720], [195, 0.774], [220, 0.705],
+                     [250, 0.777], [275, 0.696], [305, 0.770], [330, 0.710],
+                     [360, 0.757], [395, 0.718], [430, 0.757], [460, 0.720],
+                     [490, 0.754], [520, 0.722], [555, 0.764], [590, 0.737],
+                     [650, 0.720], [800, 0.735]], dtype=float)
 OUT = HERE.parent / "data" / "nearcritical.npz"
 
 
 def main():
     mod = STModel(YC)
     data = {"keys": np.array(list(RUNS)), "yc": YC, "qs": QS, "alpha_eq": mod.alpha_c,
-            "eq_r": np.asarray(mod.Finv(QS)), "original_band": np.array(ORIGINAL_BAND)}
+            "eq_r": np.asarray(mod.Finv(QS)), "original_band": np.array(ORIGINAL_BAND), "original": ORIGINAL}
     full = {}
     for key, d in RUNS.items():
         h, nback = history(d)

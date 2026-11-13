@@ -45,25 +45,27 @@ RUN = {   # key: label, colour, line style, line width
 }
 ORDER = ("unpert", "minus", "plus")      # drawing order, last on top
 MIN_LEFT = 0.5           # radii drawn while this fraction of the rest mass remains
-YLIM_LAPSE = (0.4, 0.9)       # room for the key below the oscillating curves
+YLIM_LAPSE = (0.52, 0.86)      # room for the key below the oscillating curves
 LEG = dict(fontsize=LAB_PT, handlelength=2.2, borderaxespad=0.3, labelspacing=0.25)
 
 
 def lapse(ax, d):
-    lo, hi = d["original_band"]
-    ax.axhspan(lo, hi, color=BLUE, alpha=0.2, lw=0, zorder=1)
+    o = d["original"]
+    ax.plot(o[:, 0], o[:, 1], ls="none", marker="o", ms=3.2, mfc="white", mec=BLUE,
+            mew=0.9, zorder=4)
     ax.axhline(float(d["alpha_eq"]), zorder=2, **fs.THIN)
     for k in ORDER:
         lab, col, ls, lw = RUN[k]
         ax.plot(d[f"{k}_t"], d[f"{k}_alpha"], color=col, ls=ls, lw=lw, zorder=3)
     ax.set_ylim(*YLIM_LAPSE)
-    ax.set_yticks((0.5, 0.6, 0.7, 0.8, 0.9))
+    ax.set_yticks((0.6, 0.7, 0.8))
     ax.set_ylabel(r"$\alpha_c$")
     ax.text(0.97, 0.96, r"$y_c = 0.756$", transform=ax.transAxes, ha="right", va="top")
     keys = ("plus", "minus", "unpert")
     h = [Line2D([], [], color=RUN[k][1], ls=RUN[k][2], lw=RUN[k][3]) for k in keys]
-    h += [Patch(color=BLUE, alpha=0.2, lw=0), Line2D([], [], **fs.THIN)]
-    ax.legend(h, [RUN[k][0] for k in keys] + ["original (read from figure)", "equilibrium"],
+    h += [Line2D([], [], ls="none", marker="o", ms=3.2, mfc="white", mec=BLUE, mew=0.9),
+          Line2D([], [], **fs.THIN)]
+    ax.legend(h, [RUN[k][0] for k in keys] + ["original, perturbed (read)", "equilibrium"],
               loc="lower right", frameon=False, **LEG)
 
 
@@ -85,12 +87,13 @@ def radii(ax, d):
 def make():
     fs.use_style()
     d = np.load(DATA)
-    Hfig = 3.9
+    Hfig = 4.5
     fig = plt.figure(figsize=(W, Hfig))
     left, right, bot, top, gap = 0.56, 0.20, 0.42, 0.08, 0.06
-    h = (Hfig - bot - top - gap) / 2
+    h = (Hfig - bot - top - gap) * 0.42          # radii panel; the lapse panel is taller
+    hl = (Hfig - bot - top - gap) - h
     a_r = fs.inch_axes(fig, left, bot, W - left - right, h)
-    a_l = fs.inch_axes(fig, left, bot + h + gap, W - left - right, h)
+    a_l = fs.inch_axes(fig, left, bot + h + gap, W - left - right, hl)
     lapse(a_l, d)
     radii(a_r, d)
     t_max = max(float(d[f"{k}_t_end"]) for k in RUN)

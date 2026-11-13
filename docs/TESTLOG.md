@@ -1486,3 +1486,40 @@ percent of the rest mass).
   is removed.
 - Cause of the shorter cycle: not determined. No run varies anything between the two
   (particle number 10^4 against 2e6, static against adaptive mesh, filter).
+
+## Unperturbed near-critical model y_c = 0.756 to 800 M (13:50)
+
+`st/yc0756_unpert` (10^4 particles, static cells of M/4, four passes plus compensation,
+no perturbation). Figures: `analysis/diag/figs/cluster_osc_yc0756.png`,
+`paper/figures/fig_nearcritical.png` (with both perturbed runs and the extrema of the
+original's curve, which I read from its rendered figure).
+- Central lapse minus equilibrium (0.7518): within 0.01 to t = 150 M; then an
+  oscillation with minima at 207, 262, 306, 362, 415, 474, 532, 581, 657, 720, 771 M
+  (spacings of 45 to 59 M up to 580 M). Half-swing of successive extrema: 0.015 at 207
+  to 260 M, 0.023 to 0.025 at 284 to 341 M, 0.031 to 0.036 at 362 to 474 M (largest
+  0.036 at 415 M), 0.011 to 0.025 from 560 M on. Range of the lapse 0.696 to 0.772.
+- Mean of successive extrema: 0.013 below equilibrium at 207 to 260 M, 0.012 to 0.020
+  below at 362 to 474 M, 0.032 to 0.037 below at 745 to 771 M. Mean lapse of the whole
+  run 0.739. The mean Lorentz factor of the particles rises by 1.2 to 1.5 percent at
+  the end. All 10^4 particles kept. Radius enclosing 90 percent of the rest mass 5.6 to
+  7.3 M (6.15 M at the start), 10 percent radius 1.6 to 2.8 M (2.32 M).
+- Against the prediction (11:58 entry): period 50 to 55 M: yes (45 to 59 M). Half-swing
+  growing to 0.03 to 0.05 between 200 and 500 M and then no longer growing: yes (0.036
+  at 415 M, smaller afterwards). All particles kept: yes. Mean within 0.01 of
+  equilibrium: no. The mean is 0.01 to 0.02 low from 200 M and 0.03 to 0.04 low at the
+  end, and is still falling when the run stops; the core is slowly becoming more
+  compact. Whether that ends in collapse later was not followed.
+- Comparison with the original's perturbed run (its figure, read by eye, accuracy
+  about 10 M and 0.005): there the oscillation grows from the start, the extrema reach
+  0.696 and 0.777 at 250 to 275 M (half-swing 0.04), the spacing of maxima is 50 to
+  55 M, the swing decays by 600 M, and the lapse then falls slowly, 0.735 at 800 M and
+  0.70 at 2000 M (stated in its text). The unperturbed run here has the same period,
+  the same largest swing (0.036 against 0.04), the same decay and the same slow fall of
+  the lapse (0.72 at 800 M against 0.735); its largest swing comes about 150 M later.
+- What this supports and what it does not. Supported: the behaviour the original shows
+  for its perturbed model is the behaviour of the unperturbed model here, earlier by
+  150 M. A homologous change of the density by ten percent of either sign does
+  something else (+10 percent: collapse at 147 M; -10 percent: oscillation about 0.78).
+  Not shown: what the original's perturbation was. A perturbation that starts the same
+  oscillation at a larger amplitude without changing the mean structure would give its
+  curve; no run here tests a particular form.

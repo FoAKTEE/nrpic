@@ -1,10 +1,10 @@
 # Results brief for the section "Self-gravitating matter" (facts for the writer)
 
-Status 2026-11-13 12:00. Source of every number: `docs/TESTLOG.md` (entry titles given
+Status 2026-11-13 13:50. Source of every number: `docs/TESTLOG.md` (entry titles given
 in brackets). Numbers are for the figures and the appendix table; the prose uses only
 the numbers the writing guide allows. Parts marked NOT YET are not to be written.
 
-All runs: at most 10^4 macroparticles, one graphics card, minutes to an hour each.
+All runs: at most 10^4 macroparticles, one graphics card, minutes to a few hours each.
 
 ## A. Dust collapse (subsection "Dust collapse") -- final
 
@@ -97,15 +97,24 @@ with adaptive refinement (three compact models).
    (negative binding energy) disperses: lapse to 0.98, half-mass radius from 1.7 M to
    48 M, as in the original. [Compact model y_c = 0.500 ...; Compact model y_c = 0.605
    (two entries); Unbound model y_c = 0.283]
-6. Migration (figure fig_migration, to be made when the run ends). The unperturbed
+6. Migration (figure fig_migration; Table tab:outcomes_clusters). The unperturbed
    model past the binding-energy maximum (y_c = 0.5 without kick) expands, recontracts
-   and oscillates, as in the original's migration test. First 913 M: lapse 0.552 ->
-   0.913 (t = 228 M) -> 0.578 (450 M) -> 0.892 (650 M) -> 0.763 (800 M); the original's
-   figure shows 0.56 -> 0.91 -> 0.57 to 0.60 -> 0.90 -> 0.76 at 230 to 350, 450 to 520,
-   680, 830 M. All particles kept. With plain filter passes the expansion starts 20 to
-   30 M earlier than with compensation; three samples agree. Rest of the run: NOT YET.
-   [Unperturbed y_c = 0.5: plain against compensated filter; Migration of the
-   unperturbed y_c = 0.5 model]
+   deeply and then oscillates with decreasing swing about a more extended state, to the
+   end of the run at 2500 M, as in the original's migration test. Lapse extrema here
+   (value at t/M): 0.552 at 0; 0.913 at 228; 0.541 at 437 (after a first dip of 0.591
+   at 400); 0.894 at 631; 0.753 at 783; then between 0.79 and 0.85; 0.816 at the end.
+   Original (read from its figure): 0.56; 0.905 (plateau 200 to 320); 0.55 near 490;
+   0.90 at 670; 0.765 at 830 to 880; then 0.78 to 0.865; about 0.83 to 0.84 near 2000.
+   Agreement: the sequence of states and the values of the first two maxima and minima
+   (to 0.01 to 0.02). Differences: every extremum after the first maximum comes earlier
+   here (by 50 M at the first minimum, by 130 M at the fifth maximum; full cycles of 250
+   to 290 M against 290 to 310 M) and the later swings are smaller; cause not
+   determined. Half-mass radius 2.3 M at the start, 12 M at the first expansion, 5 to
+   7 M after 900 M; the radius enclosing 90 percent grows from 3.5 M to 19 to 26 M.
+   Four of 10^4 particles leave the domain; none is removed by excision. With plain
+   filter passes the expansion starts 20 to 30 M earlier than with compensation; three
+   samples agree. [Migration of the unperturbed y_c = 0.5 model, complete to 2500 M;
+   Unperturbed y_c = 0.5: plain against compensated filter]
 7. Near-critical model y_c = 0.756 with a ten-percent density perturbation (the
    original's "reconfiguration" test). The original states the size of the perturbation
    and neither its sign nor how the initial metric is obtained. Here: homologous
@@ -123,8 +132,21 @@ with adaptive refinement (three compact models).
    original's qualitative outcome (large oscillation, no collapse, extended outer part)
    but not its curve (there: about 0.74 to 0.75 from the start, period near 50 M; here
    about 0.77). Neither sign reproduces the original's lapse curve; the definition of
-   the perturbation is one candidate cause, not determined. Unperturbed model on the
-   same mesh: NOT YET (running).
+   the perturbation is one candidate cause, not determined.
+   Unperturbed model (no kick, no density change, static cells of M/4, 800 M): within
+   0.01 of equilibrium to 150 M; then an oscillation at a period of 45 to 59 M whose
+   half-swing grows to 0.036 at t = 415 M and is smaller afterwards (0.011 to 0.025);
+   lapse between 0.696 and 0.772; the mean falls slowly (0.01 to 0.02 below equilibrium
+   from 200 M, 0.03 to 0.04 below at 800 M, still falling); all particles kept; 90
+   percent radius 5.6 to 7.3 M. The original's perturbed run (read from its figure and
+   text): oscillation growing from the start, extrema 0.696 and 0.777 at 250 to 275 M,
+   spacing 50 to 55 M, decayed by 600 M, lapse then falling slowly to 0.735 at 800 M
+   and 0.70 at 2000 M. So the unperturbed model here shows the period, the largest
+   swing, the decay and the slow fall of the original's perturbed model, about 150 M
+   later. Inference (not a result): the original's perturbation started this
+   oscillation at a larger amplitude without changing the mean structure; a homologous
+   ten-percent change does something else. What the perturbation was cannot be decided
+   from the text. [Unperturbed near-critical model y_c = 0.756 to 800 M]
    [Reconfiguration test, first attempt; Consistent initial data for perturbed
    clusters; Reconfiguration rerun ...; addendum 12:05]
 
