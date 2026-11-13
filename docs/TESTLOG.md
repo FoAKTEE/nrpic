@@ -522,3 +522,42 @@ t = 200 M and is still growing, more slowly; the 90 percent radius reaches 20.9 
 17.4 M. The original also reports a first expansion by two orders of magnitude in
 central density before recontraction. The finest level of this mesh covers |x| < 7.9 M,
 so most of the matter is on coarser cells (M/2 to 1 M) from t = 100 M on.
+
+## Stable model, compensated, three seeds (06:56), prediction 3
+
+Extrema of the central lapse (equilibrium 0.8094), unperturbed, four passes plus
+compensation:
+
+| seed | rise within 130 M | minima (t / M : value) |
+|---|---|---|
+| 1 | 0.0065 | 74 : 0.8114, 158 : 0.8069, 208 : 0.8031, 281 : 0.7985 |
+| 2 | 0.0084 | 67 : 0.8100, 141 : 0.8053, 215 : 0.7990, 277 : 0.7924 |
+| 3 (to t = 247 M) | 0.0061 | 69 : 0.8101, 139 : 0.8075, 217 : 0.8033 |
+
+- First part of the prediction holds (rise below 0.01 for every seed).
+- Second part fails: I predicted later excursions "that differ between seeds". They do
+  not. All three seeds oscillate with the same period (about 72 M), the same phase
+  (minima near 70, 140, 215, 280 M) and minima that deepen at the same rate (by a
+  factor of about 1.6 per period). The reading "excited by particle noise" predicted
+  seed-dependent timing and is ruled out as the main cause. The oscillation is started
+  by something common to all samples and then grows.
+- A stable equilibrium should not have a growing radial oscillation. Candidates, each
+  with a run that can fail it (queued 06:57 under `runs/st/osc/`, all seed 1, four
+  passes plus compensation, unperturbed):
+
+  | run | change | reading it tests | expected if that reading is right |
+  |---|---|---|---|
+  | dt2 | half the time step | the source is frozen over a step, so gravity lags the matter | growth per period roughly halves |
+  | k1_0p1, k1_0 | constraint damping 0.1 and 0 (default 0.02, i.e. a time of 50 M, close to the period) | constraint damping feeds back on the mode | growth changes strongly with the value |
+  | ch0p05 | parabolic relaxation of the Hamiltonian constraint | the constraint violation carried along (norm 0.03) drives it | growth reduced |
+  | long | continue the base run to 600 M | growth against beating of two close modes | keeps growing, or turns over |
+  | N = 10^3, 10^2 (already queued) | fewer particles | deterministic origin | same phase and period |
+
+  My own estimate for the time-lag reading, written before the run: a restoring force
+  delayed by half a step gives a growth rate omega^2 dt/4 = 2e-4 per M for
+  omega = 2 pi/72 M and dt = M/8, forty times less than the 8e-3 per M observed, so I
+  expect dt2 to change little. If it halves the growth, the estimate is wrong.
+- The cluster production runs (sequence, N scaling with Monte Carlo sampling,
+  reconfiguration, migration, cluster with clumps) are held until this is understood;
+  dust collapse, prolate collapse and the head-on tracers do not depend on it and
+  proceed after the diagnostics.

@@ -1,0 +1,139 @@
+# Timing variant of cluster_mesh.athinput (docs/results_cluster_test.md, item f): the same
+# mesh and particle settings without the data outputs, so that a run can also be made
+# with deposit = false (the tmunu outputs need the deposit).  Generated from
+# cluster_mesh.athinput by deleting the <output> blocks; tlim = 50 M (1000 cycles).
+
+# Test-particle cluster in a fixed Kerr black hole spacetime (docs/results_cluster_test.md):
+# N massive test particles (total rest mass 1e-6 M) read from a particle file made by
+# problems/cluster_test/make_cluster.py.  The Cartesian Kerr-Schild metric is stored on a
+# statically refined mesh (<adm> block, set by nrpic_geodesic) and reconstructed at the
+# particles with cubic Hermite interpolation; E, S_i, S_ij are deposited (cloud in cell,
+# nfilter binomial passes) without back-reaction.  Particles are removed when they leave
+# the mesh or when the interpolated lapse drops below alpha_exc (0.62: r = 1.25 M in the
+# equatorial plane, inside the horizon for a = 0 (r = 2 M) and a = 0.9 M (r_+ = 1.436 M)).
+#
+# Mesh: [-64, 64]^3, 16^3 MeshBlocks, six levels, 1128 MeshBlocks, 4.62e6 cells
+#   level 0  dx = 2       everywhere else
+#   level 1  dx = 1       [-64, 64]^2 x [-32, 32]
+#   level 2  dx = 0.5     [-32, 32]^2 x [-16, 16]
+#   level 3  dx = 0.25    [-24, 24]^2 x [-8, 8]    (the cluster: 99 % of the apocentres
+#                                                   are below 36 M, |z| < 4 M)
+#   level 4  dx = 0.125   [-4, 4]^3
+#   level 5  dx = 0.0625  [-2, 2]^3                (black hole; excision at r ~ 1.25 M)
+# (AthenaK expands each refined_region box below to whole parent MeshBlocks)
+#
+# Run (the particle file is read relative to the run directory):
+#   scripts/gpu_run.sh runs/cluster_test/<name> problems/cluster_test/cluster_mesh.athinput \
+#       particles/particle_file=<abs path .nrp> particles/bh_spin=0.9 ...
+
+<comment>
+problem   = NRPIC test-particle cluster, mesh metric with deposition
+
+<job>
+basename  = tpc
+
+<mesh>
+nghost    = 2
+nx1       = 64
+x1min     = -64.0
+x1max     = 64.0
+ix1_bc    = outflow
+ox1_bc    = outflow
+nx2       = 64
+x2min     = -64.0
+x2max     = 64.0
+ix2_bc    = outflow
+ox2_bc    = outflow
+nx3       = 64
+x3min     = -64.0
+x3max     = 64.0
+ix3_bc    = outflow
+ox3_bc    = outflow
+
+<meshblock>
+nx1       = 16
+nx2       = 16
+nx3       = 16
+
+<mesh_refinement>
+refinement = static
+
+<refined_region1>
+level = 1
+x1min = -48.0
+x1max = 48.0
+x2min = -48.0
+x2max = 48.0
+x3min = -16.0
+x3max = 16.0
+
+<refined_region2>
+level = 2
+x1min = -32.0
+x1max = 32.0
+x2min = -32.0
+x2max = 32.0
+x3min = -8.0
+x3max = 8.0
+
+<refined_region3>
+level = 3
+x1min = -24.0
+x1max = 24.0
+x2min = -24.0
+x2max = 24.0
+x3min = -4.0
+x3max = 4.0
+
+<refined_region4>
+level = 4
+x1min = -4.0
+x1max = 4.0
+x2min = -4.0
+x2max = 4.0
+x3min = -4.0
+x3max = 4.0
+
+<refined_region5>
+level = 5
+x1min = -2.0
+x1max = 2.0
+x2min = -2.0
+x2max = 2.0
+x3min = -2.0
+x3max = 2.0
+
+<time>
+evolution  = dynamic
+integrator = rk2
+cfl_number = 1.0
+nlim       = -1
+tlim       = 50.0
+ndiag      = 2000
+
+<adm>
+dynamic = false
+
+<particles>
+particle_type  = nrpic
+pusher         = midpoint         # midpoint | boris
+triad          = symmetric        # symmetric | cholesky (Boris pusher)
+metric         = mesh
+bh_mass        = 1.0
+bh_spin        = 0.0
+tolerance      = 1.0e-12
+max_iterations = 100
+dt             = 0.05
+deposit        = true
+nfilter        = 2
+filter_compensate = false  # one extra pass cancelling the widening of the binomial passes
+filter_comp_c  = -1.0          # its coefficient; negative: nfilter/4
+alpha_exc      = 0.62
+hist_dcycle    = 1
+traj_dcycle    = 10
+traj_ntrack    = 16
+snap_dt        = 5.0
+particle_file  = cluster.nrp
+
+<problem>
+pgen_name = nrpic_geodesic
