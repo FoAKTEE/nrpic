@@ -1,0 +1,28 @@
+\begin{table*}
+\caption{Setups, one row per family of runs: model, macroparticle number $N$ and sampling, domain half-width $L$, mesh and cell spacing $\Delta x$ in the matter at the start and the finest reached (vacuum runs: at the puncture), first time step $\Delta t$, filter passes $n_{\rm f}$ (+c: compensation pass), deposition, excision threshold $\aexc$, constraint damping $\kappa_1$, final time. Meshes other than uniform have $64^3$ root cells in MeshBlocks of $16^3$ cells. Parentheses: single runs of a family.}
+\label{tab:setups}
+\footnotesize
+\setlength{\tabcolsep}{2pt}
+\begin{ruledtabular}
+\begin{tabular}{p{0.22\textwidth}p{0.1\textwidth}p{0.05\textwidth}p{0.135\textwidth}p{0.07\textwidth}p{0.06\textwidth}p{0.085\textwidth}p{0.035\textwidth}p{0.065\textwidth}p{0.065\textwidth}}
+\raggedright Scenario and model & \raggedright $N$, sampling & \raggedright $L/M$ & \raggedright Mesh, $\Delta x/M$ & \raggedright $\Delta t/M$ & \raggedright $n_{\rm f}$ & \raggedright Deposition & \raggedright $\aexc$ & \raggedright $\kappa_1$ & \raggedright $t_{\rm end}/M$ \tabularnewline
+\colrule
+\raggedright Kerr geodesics: $a=0.9M$, $a\to0$; bound, $e=0.99$, plunging & \raggedright 1 & \raggedright 10--12 & \raggedright uniform, 1/8--1/2; lattice 0.025 & \raggedright 0.00125--0.08 & \raggedright -- & \raggedright -- & \raggedright -- & \raggedright -- & \raggedright 77.5--4550 \tabularnewline
+\raggedright Test-particle clusters: $a=0.9M$, $a\to0$; cloud at $r_0=10M$ & \raggedright $10^2$--$10^4$, Gaussian & \raggedright 64 & \raggedright static, 1/4$\to$1/16 & \raggedright 0.05 & \raggedright 2 & \raggedright finest level & \raggedright 0.62 & \raggedright -- & \raggedright 500--1000 \tabularnewline
+\raggedright Vacuum black hole: puncture of mass $M$; 6 tracers & \raggedright 6, tracers & \raggedright 128 & \raggedright static, 1/8 (1/4, 1/16) & \raggedright 1/32 (1/16, 1/64) & \raggedright -- & \raggedright none & \raggedright 0.05 & \raggedright 0.02 & \raggedright 12--250 \tabularnewline
+\raggedright Head-on collision: punctures $M/2$ at $x=\pm5M$; 6 tracers & \raggedright 6, tracers & \raggedright 128 & \raggedright adaptive, 1/16 & \raggedright 1/64 & \raggedright -- & \raggedright none & \raggedright 0.05 & \raggedright 0.02 & \raggedright 160 \tabularnewline
+\raggedright Dust collapse: $R_0=5M$, $h=0.30M$; masses corrected, published & \raggedright 9328, lattice & \raggedright 155 & \raggedright adaptive, 0.30$\to$0.038 & \raggedright 0.076 & \raggedright 1 & \raggedright finest level & \raggedright 0.1 & \raggedright 0.02 & \raggedright 60 \tabularnewline
+\raggedright Dust collapse, level cap: as above, corrected masses & \raggedright 9328, lattice & \raggedright 155 & \raggedright adaptive, 0.30$\to$0.038 & \raggedright 0.076 & \raggedright 1 & \raggedright level-capped ($\le1$, $\le2$, any) & \raggedright 0.1 & \raggedright 0.02 & \raggedright 60 \tabularnewline
+\raggedright Stable cluster, filter: $y_c=0.819$, unperturbed; samples 1--3 & \raggedright $10^4$, stratified & \raggedright 1024 & \raggedright static, 1/2 & \raggedright 1/8 & \raggedright 0, 2, 2+c, 4, 4+c & \raggedright finest level & \raggedright 0.1 & \raggedright 0.02 & \raggedright 300 \tabularnewline
+\raggedright Stable cluster, oscillation: $y_c=0.819$, unperturbed; sample 1 & \raggedright $10^4$, stratified & \raggedright 1024 & \raggedright static, 1/2 (1/4--1/2) & \raggedright 1/8 (1/16) & \raggedright 4+c\footnotemark[2] & \raggedright finest level & \raggedright 0.1 & \raggedright 0.02 (0.1, 0)\footnotemark[1] & \raggedright 300--1200 \tabularnewline
+\raggedright Particle number: $y_c=0.819$; kick 0.01 or none & \raggedright $10^2$--$10^4$, Monte Carlo, stratified & \raggedright 1024 & \raggedright static, 1/2 & \raggedright 1/8 & \raggedright 4+c & \raggedright finest level & \raggedright 0.1 & \raggedright 0.02 & \raggedright 300--500 \tabularnewline
+\raggedright Sequence, stable: $y_c=0.900, 0.819$; kick 0.01 & \raggedright $10^4$, stratified & \raggedright 1024 & \raggedright static, 1/2 & \raggedright 1/8 & \raggedright 4+c & \raggedright finest level & \raggedright 0.1 & \raggedright 0.02 & \raggedright 300 \tabularnewline
+\raggedright Sequence, unstable: $y_c=0.605, 0.500, 0.283$; kick 0.01 & \raggedright $10^4$, stratified & \raggedright 512 & \raggedright adaptive, 1/4$\to$1/16 & \raggedright 1/16 & \raggedright 4+c & \raggedright finest level & \raggedright 0.1 & \raggedright 0.02 & \raggedright 120--300 \tabularnewline
+\raggedright Unperturbed unstable: $y_c=0.500$, unperturbed; samples 1--3 & \raggedright $10^4$, stratified & \raggedright 512 & \raggedright static, 1/4 & \raggedright 1/16 & \raggedright 4, 4+c & \raggedright finest level & \raggedright 0.1 & \raggedright 0.02 & \raggedright 200--2429\footnotemark[3] \tabularnewline
+\raggedright Near-critical: $y_c=0.756$; density $\times(1\pm0.1)$ & \raggedright $10^4$, stratified & \raggedright 512 (1024) & \raggedright adaptive, 1/4$\to$1/16 (adaptive, 1/4; static, 1/4) & \raggedright 1/16 & \raggedright 4+c & \raggedright finest level & \raggedright 0.1 & \raggedright 0.02 & \raggedright 160--818 \tabularnewline
+\end{tabular}
+\end{ruledtabular}
+\footnotetext[1]{One run adds parabolic relaxation of $\Ham$ with $c_H=0.05\,M$.}
+\footnotetext[2]{One run uses $c=n_{\rm f}/4+1/12$, which also cancels the cloud width.}
+\footnotetext[3]{Run in progress; values up to its last record.}
+\end{table*}
