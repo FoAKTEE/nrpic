@@ -878,3 +878,26 @@ it levels off after t = 40 M.
 - The second pair repeats the first: the adaptive cloud level removes the jump at the
   first refinement and makes the late collapse worse (constraint norm 2.5 times larger
   at its peak, horizon mass drifting up by 0.65 percent).
+
+## Growing oscillation: cancelling the cloud width as well (08:20)
+
+`st/osc/ccloud` (compensation coefficient 4/4 + 1/12) against the base run. Figure:
+`analysis/diag/figs/cluster_osc_ccloud.png`.
+- Largest rise of the lapse within 130 M: 0.0045 against 0.0065. The slow excursion
+  shrinks by a third.
+- The first maximum, at t = 24 M, is unchanged (+0.0035 against +0.0037), and so is
+  the oscillation: amplitude fit 0.0005 + 1.5e-5 t against 0.0006 + 1.3e-5 t, last
+  minimum -0.0119 against -0.0108.
+- Against the prediction ("if the cloud width is what is left, the rise drops well
+  below 0.006"): it drops a little. The cloud width is a minor part of what is left;
+  the common initial offset and the growing oscillation come from elsewhere. Since the
+  offset did not change, this run says nothing about whether the growth is
+  proportional to it.
+
+Where the oscillation question stands. Ruled out by a run each: sample, particle
+number, time step, constraint damping, constraint relaxation, cloud width. Not
+determined: the cause of the common initial offset (0.4 percent in lapse within
+25 M, 0.1 to 0.2 percent in the mean Lorentz factor), and why the oscillation grows.
+One reading (bunching in radial phase in an isochronous core) fits and is untested.
+Open tests: continuation to 1200 M (queued), halved cell size, a different sampler
+(the Monte Carlo runs now released), an imposed offset of known size.
