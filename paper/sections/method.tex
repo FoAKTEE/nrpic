@@ -148,7 +148,7 @@ With $s = \sin^2(k\Delta x/2)$, the combined one-dimensional wavenumber response
 \begin{equation}\label{eq:comp_response}
 F(k) = (1 - s)^{n_{\rm f}}(1 + n_{\rm f} s) = 1 - \mathcal{O}\bigl((k\Delta x)^4\bigr).
 \end{equation}
-This response equals unity to fourth order in $k\Delta x$, falls monotonically to zero at the Nyquist wavenumber $k = \pi/\Delta x$, cancels the second moment, and carries small negative sidelobes. Cluster evolutions in Sec.~\ref{sec:selfgravity} apply four binomial passes plus this compensation pass, while spherical dust and prolate collapse runs retain one or two plain binomial passes \cite{Wu:2026nrpic}. With uniform $\sqrt{\gamma}$, both stencils conserve total weight on a single level, whereas mesh-level filtering across coarse-fine ghost zones is nonconservative once particles cross refinement boundaries (Sec.~\ref{sec:testparticles}).
+This response equals unity to fourth order in $k\Delta x$, falls monotonically to zero at the Nyquist wavenumber $k = \pi/\Delta x$, cancels the second moment, and carries small negative sidelobes. Cluster evolutions and the randomly sampled prolate collapse in Sec.~\ref{sec:selfgravity} apply four binomial passes plus this compensation pass. Spherical dust collapse on a lattice retains one plain binomial pass \cite{Wu:2026nrpic}. With uniform $\sqrt{\gamma}$, both stencils conserve total weight on a single level, whereas mesh-level filtering across coarse-fine ghost zones is nonconservative once particles cross refinement boundaries (Sec.~\ref{sec:testparticles}).
 
 \subsection{Spacetime evolution}\label{sec:spacetime}
 
