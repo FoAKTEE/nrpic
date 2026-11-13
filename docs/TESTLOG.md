@@ -1613,3 +1613,38 @@ Found by the agent that made the figure from the run files, checked by me.
   t = 23.5 M at |z| = 4.2 M.
 - The method section of the paper says that prolate runs keep one or two plain filter
   passes; the run used four passes plus compensation. To be corrected in the text.
+
+## Cluster with two overdensities: collapse on time, then failure at t = 11.9 M (14:35)
+
+`jeans/n1e4_v7` (6000 envelope particles, 2000 in each overdensity; finest cells M/64
+within 0.3 M of each tracker; removal below a lapse of 0.05; at most 1828 blocks).
+- The overdensities collapse on time: the radius holding half of one overdensity's
+  particles about its densest point falls from 1.08 M (t = 0) to 0.30 M (8 M) and
+  0.06 M (9 M). The tracker stays within 0.03 M of that point from t = 7 M on.
+  Smallest lapse 0.066 at t = 9.05 M; at 9.18 M the lapse drops below 0.05 and 1676
+  particles are removed in one step (both cores). The original finds its horizons at
+  8.475 and 8.525 M.
+- No apparent horizon is reported by the finder at any time up to the failure.
+- After the first removal the smallest lapse returns to 0.08 and then stays between
+  0.045 and 0.055, with particles removed a few at a time. Between 9.4 and 9.8 M the
+  particle energy sum rises by 12 percent of M at constant particle number: the few
+  hundred particles still falling in reach large Lorentz factors near the centres.
+- Constraint norm (volume-normalized integral of H^2): 6 at t = 5 M, 126 at 8 M, 258
+  at 9.5 M, 16 at 11.5 M. (Square roots: 2.5, 11, 16, 4; prolate peak 6.3, dust 1.9.)
+- At t = 11.94 M 640 particles are removed in one step and the fields are NaN in the
+  next output. Chain stopped.
+- Reading, not yet tested: a black hole of mass 0.09 to 0.12 M is 6 to 8 cells of M/64
+  per mass (the original refines to M/256). On such a mesh the lapse at cell centres
+  bottoms out near the removal threshold, so matter inside the black hole is removed
+  only when it passes within a cell of the centre; until then it moves at large
+  Lorentz factor where the metric is least resolved and feeds large sources back.
+  The finder's stencil (eight points) is wider than a horizon of three cells' radius.
+- Two runs, written before their results.
+  `jeans/n1e4_v8`: as v7 with removal below a lapse of 0.1 (the threshold of the dust
+  and cluster runs). If lingering matter caused the failure, this run passes 12 M, the
+  particle energy sum no longer rises by more than 2 percent of M after the first
+  removal, and the constraint norm after formation stays below the 258 of v7. If it
+  fails near the same time, the cell size at the black holes is the cause.
+  `jeans/n1e4_v9`: one more level (cells of M/128 within 0.15 M of each tracker), same
+  threshold of 0.1; twice the steps. If the cell size is the cause, this run passes
+  where v8 fails, and reports horizons within 1 M of the first removal of particles.
