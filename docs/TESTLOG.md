@@ -710,3 +710,7 @@ cloud width is what is left, the rise within 130 M drops well below 0.006; if it
 the remaining offset comes from elsewhere (for instance from the difference between
 the continuum equilibrium and the equilibrium of the discretized field equations at
 this cell size).
+
+Addendum (07:28), third seed of the unperturbed y_c = 0.5 model with compensation:
+central lapse 0.60, 0.70, 0.80, 0.85 at t = 41.5, 70.0, 91.5, 122.2 M. All three seeds
+expand, on schedules that agree to 4 M at lapse 0.60 and to 12 M at 0.85.
