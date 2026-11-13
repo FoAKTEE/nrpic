@@ -1002,3 +1002,21 @@ sampler, no perturbation, four passes plus compensation, 500 M. Figure:
 - Particle-number statement for the stable model, from the stratified and Monte Carlo
   runs together: 10^4 and 10^3 particles keep the cluster for 300 M with the common
   oscillation; 10^2 do not.
+
+## Stable cluster to 1200 M: the oscillation saturates (09:42)
+
+Base run (seed 1, unperturbed, four passes plus compensation) continued through
+`st/osc/long` and `st/osc/long2`. Half the swing of the (4 M smoothed) central lapse in
+successive windows of 100 M, from t = 100 M: 0.005, 0.007, 0.010, 0.018, 0.021, 0.022,
+0.019, 0.020, 0.019, 0.015 (the last for 1000 to 1100 M). The amplitude grows until
+about t = 500 M and then stays between 0.015 and 0.022, two to three percent of the
+lapse, for the following 600 M. The mean lapse ends 0.006 to 0.008 below equilibrium.
+All 10^4 particles are kept; the mean Lorentz factor stays within 0.004 of its initial
+value.
+
+Against the two readings written before the continuation: "keeps growing" fails,
+"saturates" holds. That is what the bunching reading predicted; it remains a reading,
+since the size of the initial offset has not been varied in a controlled way. What is
+established: the stable model stays bound and centred for 1200 M at ten thousand
+particles, with a core oscillation that is the same for every sample and sampler and
+is bounded at two to three percent in the central lapse.
