@@ -1564,3 +1564,30 @@ asking for 974; `os/mc_adapt2` (limit 1800) is running.
   plus compensation), which kept a random sample within 1352 blocks: `os/mc_nocap3`
   (published rule) and `os/mc_adapt3` (unlimited cap), block limit 2000. The
   predictions of 13:36 and 14:05 carry over unchanged to this pair.
+
+## Prolate collapse: where the five percent are (14:12)
+
+Check (i) of the previous entry. Figure: `analysis/diag/figs/slicemass_prolate_v8.png`
+(Misner-Sharp mass against areal radius for the ten restart dumps; the slices before
+the horizon forms are far from spherical and their profiles mean little).
+- Horizon mass history from the finder: 0.929 at first detection (32.0 M), largest
+  value 0.9666 at 33.75 M, then falling steadily: 0.9635 at 35 M, 0.9567 at 40 M,
+  0.9489 at 44.75 M (0.0016 per M at the end, not levelling off).
+- Slice at t = 45 M: 2m/R = 1 at R = 1.84 M, M_H = 0.92 with a spread of 0.03 over
+  angle (the finder's 0.949 lies within it). The mass function is 0.92 to 0.95 out to
+  R = 5 M, rises through 0.96 to 0.98 between 10 and 20 M, and reaches 0.999 at 50 to
+  100 M (flagged "not flat" by the tool).
+- Reading against the two outcomes I had written: neither as stated. The horizon
+  reading is not low: the slice agrees with it. The spacetime has not lost the mass
+  either: the total at large radius is 0.999. Five to eight percent of the mass lie
+  outside the black hole, between 5 and 50 M, at a time when every particle has been
+  removed, so it is field content: constraint-violating and radiative parts are not
+  separated by this diagnostic.
+- Constraint norm: largest value 49.7 at t = 27.7 M, the time of the largest
+  curvature. The lattice dust run peaks at 1.9.
+- What is established: at 10^4 particles and finest cells of M/16 the horizon forms
+  at the original's time, and its mass is 3 percent low at its largest and still
+  falling at the end of the run, where the original reports agreement to 1e-3 (2e6
+  particles, cells of M/64). What is not: how much of the deficit comes from the
+  particle number and how much from the cell size. Check (ii), the Monte Carlo dust
+  ball, tests the particle number alone in spherical collapse.
