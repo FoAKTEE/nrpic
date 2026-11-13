@@ -1,0 +1,99 @@
+# Migration of an unstable monoenergetic cluster (paper Sec. III D 2, y_c = 0.500, no
+# imposed perturbation) at reduced particle number.  Static nest down to dx = M/4 inside
+# the central (16 M)^3 box, M/2 inside (32 M)^3, domain [-512 M, 512 M]^3, 16^3
+# MeshBlocks.  Long run: use the restart chain.
+
+<comment>
+problem   = monoenergetic relativistic cluster
+
+<job>
+basename  = st
+
+<mesh>
+nghost    = 4
+nx1       = 64
+x1min     = -512.0
+x1max     = 512.0
+ix1_bc    = outflow
+ox1_bc    = outflow
+nx2       = 64
+x2min     = -512.0
+x2max     = 512.0
+ix2_bc    = outflow
+ox2_bc    = outflow
+nx3       = 64
+x3min     = -512.0
+x3max     = 512.0
+ix3_bc    = outflow
+ox3_bc    = outflow
+
+<meshblock>
+nx1       = 16
+nx2       = 16
+nx3       = 16
+
+<mesh_refinement>
+refinement       = static
+max_nmb_per_rank = 1024
+
+<refined_region1>
+level = 6
+x1min = -7.9
+x1max = 7.9
+x2min = -7.9
+x2max = 7.9
+x3min = -7.9
+x3max = 7.9
+
+<time>
+evolution  = dynamic
+integrator = rk4
+cfl_number = 0.25
+nlim       = -1
+tlim       = 2500.0
+ndiag      = 500
+
+<z4c>
+lapse_oplog     = 2.0
+lapse_harmonicf = 1.0
+lapse_harmonic  = 0.0
+lapse_advect    = 1.0
+shift_Gamma     = 0.75
+shift_eta       = 2.0
+shift_advect    = 1.0
+diss            = 0.5
+chi_div_floor   = 1.0e-5
+damp_kappa1     = 0.02
+damp_kappa2     = 0.0
+
+<particles>
+particle_type  = nrpic
+pusher         = midpoint
+metric         = mesh
+tolerance      = 1.0e-7
+max_iterations = 50
+deposit        = true
+nfilter        = 4
+deposit_max_level = 31
+deposit_adaptive  = false
+deposit_min_level = 6
+deposit_ppc       = 2.0
+alpha_exc      = 0.1
+hist_dcycle    = 4
+snap_dt        = 2.0
+particle_file  = particles.nrp
+
+<problem>
+pgen_name  = nrpic_cf
+ncomp      = 1
+comp0_type = table
+comp0_file = cluster.tab
+lapse      = table
+
+<output1>
+file_type = hst
+dt        = 1.0
+
+<output2>
+file_type = rst
+dt        = 100.0
