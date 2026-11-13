@@ -82,6 +82,7 @@ deposit_max_level = 31
 deposit_adaptive  = false
 deposit_min_level = 6
 deposit_ppc       = 2.0
+deposit_max_coarsen = 31   # a cloud is at most this many levels coarser than its particle's block
 alpha_exc      = 0.1
 hist_dcycle    = 4
 snap_dt        = 2.0

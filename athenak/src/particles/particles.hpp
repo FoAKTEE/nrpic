@@ -59,6 +59,8 @@ struct NrpicOptions {
   bool deposit_adaptive;  // choose the level of each cloud from the local density
   int deposit_min_level;  // coarsest level of a cloud with the adaptive choice
   Real deposit_ppc;       // target number of particles per cloud cell
+  int deposit_max_coarsen;  // a cloud is at most this many levels coarser than the
+                            // particle's own MeshBlock (31: no limit)
   Real alpha_exc;       // particles with interpolated lapse below this are removed
   Real ah_exc_factor;   // particles inside this fraction of a horizon radius are removed
   int hist_dcycle;      // cycles between history records (0 = off)

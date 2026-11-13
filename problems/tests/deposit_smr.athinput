@@ -82,6 +82,7 @@ deposit_max_level = 31
 deposit_adaptive  = false
 deposit_min_level = 0
 deposit_ppc       = 2.0
+deposit_max_coarsen = 31   # a cloud is at most this many levels coarser than its particle's block
 hist_dcycle    = 1
 particle_file  = random.nrp
 

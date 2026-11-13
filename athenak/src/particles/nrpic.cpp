@@ -104,6 +104,8 @@ void Particles::NrpicInit(ParameterInput *pin) {
   nropt.deposit_adaptive  = pin->GetOrAddBoolean("particles", "deposit_adaptive", false);
   nropt.deposit_min_level = pin->GetOrAddInteger("particles", "deposit_min_level", 0);
   nropt.deposit_ppc       = pin->GetOrAddReal("particles", "deposit_ppc", 2.0);
+  nropt.deposit_max_coarsen = pin->GetOrAddInteger("particles", "deposit_max_coarsen", 31);
+  if (nropt.deposit_max_coarsen < 0) { nropt.deposit_max_coarsen = 0; }
   if (nropt.deposit_min_level < 0) { nropt.deposit_min_level = 0; }
   if (nropt.deposit_min_level > nropt.deposit_max_level) {
     nropt.deposit_min_level = nropt.deposit_max_level;
@@ -518,6 +520,7 @@ void Particles::NrpicDepositSources() {
   const int lcap_min = pm->root_level + nropt.deposit_min_level;
   const int root_lev = pm->root_level;
   const Real ppc_target = nropt.deposit_ppc;
+  const int max_coarsen = nropt.deposit_max_coarsen;
 
   nrpic::MeshMetric proto;
   proto.m1 = met1;
@@ -591,6 +594,11 @@ void Particles::NrpicDepositSources() {
           }
         }
       }
+      // the cloud is at most max_coarsen levels coarser than the particle's own
+      // MeshBlock: the mesh is refined to resolve the metric, and a cloud many cells
+      // wide would spread a particle's energy and covariant momentum over a region
+      // across which the metric changes
+      if (lcap < lev0 - max_coarsen) { lcap = lev0 - max_coarsen; }
       int ldep = lev0;
       if (lev0 > lcap) {
         const Real fac = static_cast<Real>(1 << (lev0 - lcap));

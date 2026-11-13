@@ -714,3 +714,50 @@ this cell size).
 Addendum (07:28), third seed of the unperturbed y_c = 0.5 model with compensation:
 central lapse 0.60, 0.70, 0.80, 0.85 at t = 41.5, 70.0, 91.5, 122.2 M. All three seeds
 expand, on schedules that agree to 4 M at lapse 0.60 and to 12 M at 0.85.
+
+## Dust collapse: cloud at the finest level against adaptive cloud level (07:32), prediction 4
+
+Same particles (published lattice rule), same mesh rules, corrected finder; only
+`deposit_adaptive` differs. `os/nocap_v4` (60 M) against `os/adapt_v4` (to 36 M).
+Figures: `analysis/diag/figs/os_history_cap_v4.png`, `os_constraints_cap_v4.png`.
+
+| | cloud at the finest level | adaptive cloud level |
+|---|---|---|
+| central lapse, difference between the two runs | below 4e-3 throughout, mostly below 1e-3 | |
+| central density reading after the first refinement (t = 8 to 10 M) | 0.28 to 0.40 of the other run | follows the cycloid |
+| constraint norm at the first refinement (t = 7.3 M) | jumps from 0.3 to 1.6 | no jump |
+| largest constraint norm (t = 17 to 18 M) | 2.0 | 4.5 |
+| constraint norm at t = 36 M | 0.2 | 0.66 |
+| first horizon, t / M and mass | 16.43, 1.0114 | 16.47, 1.0113 |
+| horizon mass at t = 20, 25, 30, 35 M | 1.0115, 1.0106, 1.0098, 1.0095 | 1.0119, 1.0140, 1.0165, 1.0183 |
+| horizon mass at t = 50, 59 M | 1.0100, 1.0100 | (run stopped) |
+
+Against the prediction:
+- Density reading: as predicted (the uncapped run repeats the drop, the capped run does
+  not).
+- Lapse: this was the open question. The answer is that the dynamics at the centre do
+  not notice the granular source: the lapse histories agree to a few 1e-3.
+- Horizon mass "within one percent of the total in both": the mass that went in is
+  1.0118 (see the lattice entry). At formation both read 1.0113 to 1.0114. Afterwards
+  the uncapped run stays within 0.2 percent and settles at 1.0100; the capped run
+  drifts up by 0.7 percent and is still rising when it stops. The upward drift noted
+  earlier belongs to the adaptive cloud level, not to the collapse.
+
+What this says about the level cap, as far as these two runs go: it removes the jump
+of the constraint violation when the mesh refines under diffuse matter and gives a
+usable density, and it does not change the collapse of the centre. Near the forming
+black hole it makes things worse: constraint violations two to three times larger from
+t = 13 M on, and a drifting horizon mass.
+
+Reading to be tested: the mesh is refined to resolve the metric, so a cloud of one leaf
+cell never spans a large change of the metric; a cloud several levels coarser does,
+and spreads a particle's energy and its covariant momentum components over places
+where the same particle would have different values. New option
+`deposit_max_coarsen` (a cloud is at most this many levels coarser than the block its
+particle is in; default 31 = no limit). Runs `os/adapt_mc1` and `os/adapt_mc2`
+(corrected initial data, limit 1 and 2) queued after the build. Written before the
+runs: if the reading is right, limit 1 keeps the first refinement free of the jump and
+brings the late constraint norm (below about 2.5 at its maximum) and the horizon-mass
+drift after removal (below 0.2 percent) to the values of the uncapped run, with limit 2
+in between. If the late behaviour stays that of the unlimited adaptive run, the cause
+is elsewhere in the adaptive path.

@@ -193,6 +193,7 @@ deposit_max_level = 31
 deposit_adaptive  = true   # cloud level follows the local particle density ...
 deposit_min_level = 3      # ... and is never coarser than dx = 1 M
 deposit_ppc       = 2.0
+deposit_max_coarsen = 31   # a cloud is at most this many levels coarser than its particle's block
 alpha_exc      = 0.05
 ah_exc_factor  = -1.0
 hist_dcycle    = 1
