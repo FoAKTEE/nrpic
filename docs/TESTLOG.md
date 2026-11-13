@@ -856,3 +856,25 @@ total mass to 6e-4.
 Later: 1.0012, 1.0026, 1.0047, 1.0061, 1.0068, 1.0067, 1.0065 at t = 22, 25, 30, 35,
 40, 50, 59 M. The drift of the adaptive cloud level is there again, 0.6 percent, and
 it levels off after t = 40 M.
+
+## Dust collapse with corrected initial data, cloud at the finest level (08:16)
+
+`os/nocap_sc` (published deposition rule, corrected lattice masses) against
+`os/adapt_sc`:
+
+| | cloud at the finest level | adaptive cloud level |
+|---|---|---|
+| first horizon, t / M and mass | 16.39, 1.00035 | 16.39, 0.9971 |
+| horizon mass at t = 18, 20, 22 M | 1.0003, 1.0001, 1.0000 | 1.0003, 1.0006, 1.0012 |
+| at t = 25, 30, 40, 59 M | 0.9995, 0.9990, 0.9988, 0.9987 | 1.0026, 1.0047, 1.0068, 1.0065 |
+| largest constraint norm | 1.9 at t = 17.3 M | 4.7 at t = 18.2 M |
+| constraint norm at t = 60 M | 0.031 | 0.142 |
+| constraint norm at the first refinement (t = 7.5 M) | 1.25 | 0.37 |
+
+- With the published deposition rule and consistent initial data the horizon mass equals
+  the total mass to 3e-4 for the first 6 M after formation and settles 0.13 percent
+  below it. This is the reproduction of the original's statement that the horizon mass
+  is consistent with the total mass, at 9328 particles.
+- The second pair repeats the first: the adaptive cloud level removes the jump at the
+  first refinement and makes the late collapse worse (constraint norm 2.5 times larger
+  at its peak, horizon mass drifting up by 0.65 percent).
