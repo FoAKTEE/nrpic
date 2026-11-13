@@ -23,3 +23,6 @@ paper/*.fls
 paper/*.fdb_latexmk
 paper/*Notes.bib
 paper/*.synctex.gz
+
+# large regenerable reference trajectories
+problems/kerr/ref/*.npz
