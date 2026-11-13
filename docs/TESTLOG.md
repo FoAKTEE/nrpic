@@ -1253,3 +1253,11 @@ original stays unexplained.
   about 97 GB on an 80 GB card. Resubmitted as `jeans/n1e4_v6` with a limit of 1500.
 - The second prolate attempt, not yet started, had a limit of 2200 (70 GB); replaced
   by `prolate/e09_v7` with 2000.
+
+Addendum (12:05), end of the reconfiguration rerun with ten-percent compression
+(`st/reconf_yc0756_hc`, stopped after the collapse): apparent horizon first found at
+t = 147.2 M (mass 0.990), all particles removed between t = 148.8 and 160 M, horizon
+mass 0.9962 to 0.9970 from t = 149 to 160 M. The total mass of this initial data set is
+0.99689 (it is lighter than the unperturbed cluster because it is more tightly bound);
+the horizon mass at the end, 0.99698, equals it to 1e-4. The collapse is resolved this
+time (adaptive mesh, finder), and it conserves the mass of the consistent initial data.
