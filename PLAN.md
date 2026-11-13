@@ -66,7 +66,8 @@ sources for the next step; AMR.
 
 ## 4. Milestones
 
-Status on 2026-11-13 (see `docs/TESTLOG.md` for measured numbers, `notes/` for decisions).
+Status on 2026-11-13, 09:00 (measured numbers and the outcome of every prediction in
+`docs/TESTLOG.md`; decisions in `notes/`).
 
 ### M0 Infrastructure
 - [x] Repo, vendored AthenaK, kokkos submodule, pushed to GitHub
@@ -80,45 +81,61 @@ Status on 2026-11-13 (see `docs/TESTLOG.md` for measured numbers, `notes/` for d
 - [x] Pusher kernels reproduce the published invariant errors of the Kerr-Schild passage
       (midpoint exactly; Boris with the symmetric tetrad gauge for analytic input and
       the Cholesky gauge for lattice input)
-- [~] GPU campaign through AthenaK: Schwarzschild orbits, Boyer-Lindquist orbits,
+- [x] GPU campaign through AthenaK: Schwarzschild orbits, Boyer-Lindquist orbits,
       passage, dt and dx convergence, CPU-GPU agreement (`docs/results_geodesic.md`)
 
 ### M3 Test particles in evolved spacetimes
-- [~] Single puncture with six tracers (`problems/puncture/tracers_single.athinput`)
-- [ ] Head-on binary with tracers (L about the collision axis conserved)
+- [x] Single puncture with six tracers, compared with exact geodesics in
+      gauge-independent quantities (`docs/results_tracers.md`)
+- [~] Head-on collision of two black holes with tracers (running)
 
 ### M4 Test-particle clusters (10^2 to 10^4)
-- [x] Deposition identity to round-off on uniform, SMR and AMR meshes, with and without
-      the level cap (`problems/tests/deposit_smr.athinput`)
-- [~] Sheared clusters around Schwarzschild and Kerr (`docs/results_cluster_test.md`)
+- [x] Deposition identity to round-off on uniform, SMR and AMR meshes
+- [x] Sheared clusters around Schwarzschild and Kerr: invariants, phase mixing,
+      removal counts, noise against N (`docs/results_cluster_test.md`)
 
 ### M5 Self-gravitating matter (at most 10^4 particles)
 - [x] Equilibrium sequence, Table I, migration target, OS slice, prolate spheroid:
-      all published values reproduced by the Python tools (18 tests)
-- [~] Oppenheimer-Snyder collapse: lapse bound and cycloid reproduced; horizon forms at
-      t = 16.3 M; production run with adaptive cloud level and tight horizon tolerance
-      (`problems/os/os_amr.athinput`)
-- [~] Monoenergetic clusters y_c = 0.900, 0.819 (static nest), 0.605, 0.500, 0.283
-      (adaptive mesh) (`problems/st/`)
-- [ ] Migration of y_c = 0.500 and reconfiguration of y_c = 0.756
-- [ ] Prolate collapse, e = 0.9, b = 10 M, with the Kretschmann diagnostic
-- [ ] Sampling studies for N = 10^2, 10^3, 10^4
+      all published values reproduced by the Python tools
+- [x] Oppenheimer-Snyder collapse: lapse bound and cycloid; horizon mass equal to the
+      total mass to 0.1 percent with the published deposition rule and corrected
+      lattice masses (`runs/os/nocap_sc`)
+- [~] Monoenergetic clusters: y_c = 0.900 and 0.819 hold for 300 M (0.819 followed to
+      600 M; its core oscillation grows, cause not determined); 0.605, 0.500, 0.283
+      queued (adaptive mesh)
+- [~] Migration of y_c = 0.500 (expands as in the original; long run queued) and
+      reconfiguration of y_c = 0.756 (queued)
+- [~] Prolate collapse, e = 0.9, b = 10 M, with the Kretschmann diagnostic (queued)
+- [~] Sampling studies: N = 10^2, 10^3, 10^4 stratified done; Monte Carlo running
 
 ### M6 Collapse and merger inside a cluster
-- [ ] Reduced-cost design (the published setup needs dx = M/256 over 100 M)
+- [~] Reduced-cost run queued (`runs/jeans/n1e4_v5`)
 
 ### M7 Paper
 - [x] `WRITING_GUIDE.md`, `NOTATION.md`, `paper/` skeleton
-- [ ] Story, 300- and 1000-word versions, reviewers, main text (agy carbon high)
-- [ ] Figures (one script per figure), Supplemental Material ledger, checker, compile
+- [~] Story (second version), 300- and 1000-word versions (second versions being
+      written), reviewers, main text: system, method, test particles drafted
+- [~] Figures: cycle, deposition, assembly, orbits, passage, convergence, test-particle
+      cluster, tracers done; self-gravity figures open. Supplemental ledger, compile open
+
+### Found on the way (all in `docs/TESTLOG.md`)
+| Finding | Consequence |
+|---|---|
+| Horizon finder of the vendored host code interpolates a derivative array with unfilled ghost cells: masses 2 to 6 percent low | `<fastflow> metric_drvts = interpolant`; Misner-Sharp cross-check `analysis/diag/slicemass.py` |
+| Plain binomial filter softens self-gravity (stable cluster expands 15 percent with four passes) | `<particles> filter_compensate = true` for cluster runs |
+| Published lattice mass rule is 1.2 percent heavy at 10^4 particles | `make_ic.py --lattice-surface-correction` |
+| Sampled clusters carry net momentum | removed by default in `make_ic.py` |
+| Level-capped deposition disturbs forming black holes | collapse runs use the published rule; cap kept as an option |
+| Mesh filter not conservative across refinement levels (1e-4 to 1e-3) | known limitation |
+| Core oscillation of the stable cluster grows over 600 M | open |
 
 ### Code features against the published method
 | Feature | State |
 |---|---|
 | Implicit midpoint pusher; spacetime Boris pusher | done (two tetrad gauges) |
 | Cubic Hermite metric reconstruction | done |
-| First-order deposition, filter, conservative AMR deposition | done; plus level cap and density-adaptive cloud level for low particle number |
-| Lapse excision | done; apparent-horizon excision not implemented |
+| First-order deposition, filter, conservative AMR deposition | done; plus compensation pass of the filter; level cap and adaptive cloud level as options (not used near black holes) |
+| Lapse excision | done; apparent-horizon excision implemented, untested |
 | Loehner refinement indicator | done |
 | Parabolic Hamiltonian relaxation | done (off by default) |
 | Kretschmann scalar | done (verified against 48 M^2/R^6) |
