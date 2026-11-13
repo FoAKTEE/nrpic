@@ -253,3 +253,6 @@ percent of the horizon radius, so a finder contribution at the percent level is 
   excursion, the hypothesis is wrong and the next suspects are the time lag of the
   source (frozen over a step; test: half the time step) and the relaxation of the
   initial constraint violation.
+- Seed 3 (05:32): peak lapse 0.8369 at t = 120 M, 0.8138 at t = 230 M. Three seeds:
+  peaks 0.8367, 0.8383, 0.8369 at t = 116, 121, 120 M. The excursion is the same for
+  every sample.
