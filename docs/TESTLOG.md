@@ -928,3 +928,10 @@ the black hole this much is not determined.
 Decision: collapse runs use the published rule (cloud at the finest local level). The
 level cap stays in the code as an option for diffuse matter on a mesh that is refined
 for other reasons; it is not used near black holes.
+
+Addendum (08:38), coarsening limited to two levels (`os/adapt_mc2`): the same as the
+unlimited adaptive run to plotting accuracy (horizon mass 1.0065 at t = 59 M against
+1.0065, largest constraint norm 4.5 against 4.7). The unlimited rule rarely asks for
+more than two levels in this problem. The scan is complete: horizon-mass drift after
+removal of the matter -0.13, -1.1, +0.65, +0.65 percent for clouds at the finest level,
+at most one, at most two, any number of levels coarser.
