@@ -14,6 +14,13 @@ changed settings):
 - finest cells M/64: runs/jeans/n1e4_v19 (one run from t = 0 on a domain of +-80 M, a
   restart chain);
 - finest cells M/128: runs/jeans/n1e4_v11 (0 to 6.31 M), n1e4_v18 (6.31 M onward);
+- envelope radius (key "64R30", fig_overdensities_radius.py): runs/jeans/n1e4_v20, the
+  configuration of n1e4_v19 (finest cells M/64, +-80 M, the same clumps and speed) with
+  the envelope at the areal radius the original states in its text, 30 M, instead of
+  13.3 M (the radius at which the stated orbital speed is the circular speed). The two
+  M/64 and M/128 evolutions above use 13.3 M. The envelope's areal radius of each
+  evolution is kept as R_env_<key>, from the initial-data generator's metadata
+  (<run>/jeans_N*_s*.json, envelope.R_areal);
 - comparison only (not drawn): the earlier M/64 run on +-256 M, n1e4_v7 (to 10.0 M),
   diag_v14b (to 13.0 M), n1e4_v17 (from 13.0 M).
 Each directory is cut where the next one starts (first record of the next directory in
@@ -44,9 +51,10 @@ not the tracker itself. The positions are therefore taken from
   particles nearest to it, iterated); its error against the anchors and the jump where
   the two sources meet are printed.
 
-Kept, for each mesh:
-- particle history (every step): particle number, removed particles, rest mass,
-  smallest lapse, MeshBlock count;
+Kept, for each evolution (the two meshes and the envelope radius; prefix m<key>_):
+- particle history (every step): particle number, removed particles and their rest mass,
+  particles that left the domain and their rest mass, rest mass, smallest lapse,
+  MeshBlock count;
 - the position record of A and B: time, x, y, z, source (0 macroparticles, 1 anchor,
   2 interpolated), separation and unwrapped orbital phase; the anchors (time, positions, kind:
   0 restart dump, 1 tracker file);
@@ -61,7 +69,8 @@ Kept, for each mesh:
   trackers are closer than fastflow/merger_distance times the sum of the tracker masses
   z4c/co_<n>_mass (athenak/src/z4c/fastflow.cpp, PuncAreClose): its first row is the
   first search, and the time of the first found common horizon is an upper bound on its
-  formation when that first search already finds it;
+  formation when that first search already finds it. Nothing in the reduction needs a
+  common horizon: n1e4_v20 has none so far (no search of it, an empty file);
 - from every complete snapshot (every 0.5 M): number and rest mass of the macroparticles
   of each species, and the densest point of each overdensity;
 - from the horizon shape files: the offset of the centre of each found horizon from its
@@ -72,9 +81,14 @@ third panel takes the snapshot half-way between 12 M and the last one. With each
 snapshot: the black-hole positions from the record and the mean coordinate radius of the
 horizons found within 0.25 M of it.
 
+The printed checks also compare the two envelope radii at M/64 (separation, orbital
+phase in turns and z of the midpoint of A and B every 10 M, extreme separations after
+10 M, growth rate of the individual horizon masses from 20 M on).
+
     python3 paper/scripts/make_data_overdensities.py
 """
 import glob
+import json
 import os
 import re
 import struct
@@ -98,9 +112,14 @@ MESHES = {
     "64": [("n1e4_v19", 0.0)],
     "128": [("n1e4_v11", 0.0), ("n1e4_v18", 6.31)],
 }
+# the M/64 evolution with the envelope at the areal radius stated in the original's text
+RADII = {"64R30": [("n1e4_v20", 0.0)]}
+EVOLUTIONS = {**MESHES, **RADII}
 COMPARE = {"64old": [("n1e4_v7", 0.0), ("diag_v14b", 10.0), ("n1e4_v17", 13.0)]}
 T_COMPARE = (10.5, 15.0, 20.0, 25.0, 27.0, 28.0)
-DX = {"64": 1.0 / 64.0, "128": 1.0 / 128.0, "64old": 1.0 / 64.0}
+DX = {"64": 1.0 / 64.0, "128": 1.0 / 128.0, "64R30": 1.0 / 64.0, "64old": 1.0 / 64.0}
+T_RADIUS = (10.0, 20.0, 30.0, 40.0, 50.0, 60.0, 70.0)   # times of the radius comparison
+T_GROW = 20.0       # start of the interval of the horizon-mass growth rates, in M
 TOL = 0.01                            # slack on the restart times, in M
 T_END = 100.0                         # end time of the runs
 LMAX = 8                              # degree of the horizon shape expansion
@@ -188,6 +207,16 @@ def read_ah(d, i):
     """Horizon searches: iter, time, mass, Sx, Sy, Sz, S, area, hrms, hmean, mean radius,
     smallest radius (nan where no horizon was found)."""
     return read_table(d / f"{BASE}.horizon_summary_{i}.txt", (12,), 1)
+
+
+def envelope_radius(spec):
+    """Areal radius of the envelope (isolated-envelope model) from the initial-data
+    generator's metadata in the first directory of an evolution; nan if absent."""
+    p = sorted(glob.glob(str(RUNS / spec[0][0] / f"{BASE}_N*_s*.json")))
+    if not p:
+        return np.nan
+    with open(p[0]) as f:
+        return float(json.load(f)["envelope"]["R_areal"])
 
 
 def complete_snapshots(d):
@@ -553,7 +582,8 @@ def reduce_run(spec, with_snapshots=True):
                     est[k, s - 1] = densest_point(q[sel, :3])
     d = {"h_t": h[:, H["time"]], "h_np": h[:, H["np"]], "h_nexc": h[:, H["n_excised"]],
          "h_alpha_min": h[:, H["alpha_min"]], "h_nmb": h[:, H["nmb"]],
-         "h_sum_m": h[:, H["sum_m"]], "h_seg": h_seg,
+         "h_sum_m": h[:, H["sum_m"]], "h_seg": h_seg, "h_mexc": h[:, H["m_excised"]],
+         "h_nesc": h[:, H["n_escaped"]], "h_mesc": h[:, H["m_escaped"]],
          "snap_t": st, "snap_n": sn, "snap_m": sm, "snap_dens": est,
          "restart_t": np.array(starts[1:]),
          "dirs": np.array([p.name for p in dirs])}
@@ -642,12 +672,13 @@ def main():
     data = {f"orig_{k}": v for k, v in ORIG.items()}
     data.update(t_end=T_END, t_list=T_LIST)
     checks, runs = {}, {}
-    for key, spec in list(MESHES.items()) + list(COMPARE.items()):
+    for key, spec in list(EVOLUTIONS.items()) + list(COMPARE.items()):
         d, files = reduce_run(spec, with_snapshots=True)
         checks[key] = d.pop("_checks")
         runs[key] = (d, files)
-        if key in MESHES:
+        if key in EVOLUTIONS:
             data.update({f"m{key}_{k}": v for k, v in d.items()})
+            data[f"R_env_{key}"] = envelope_radius(spec)
         else:                          # comparison: horizons and positions only
             data.update({f"m{key}_{k}": d[k] for k in d if k.startswith(("ah", "pos_"))})
         print(f"M/{DX[key] ** -1:.0f} ({key}): " + ", ".join(n for n, _ in spec)
@@ -689,7 +720,11 @@ def at_time(t, y, t0, win):
 
 def rec_at(D, m, key, t0):
     """Record quantity at t0 (linear between finite record points, nan in gaps)."""
-    t, y = D[f"m{m}_pos_t"], D[f"m{m}_{key}"]
+    return rec_interp(D[f"m{m}_pos_t"], D[f"m{m}_{key}"], t0)
+
+
+def rec_interp(t, y, t0):
+    """y of the position record at t0 (linear between finite record points, nan in gaps)."""
     ok = np.isfinite(y)
     if ok.sum() < 2 or not (t[ok][0] - 1e-9 <= t0 <= t[ok][-1] + 1e-9):
         return np.nan
@@ -718,9 +753,10 @@ def gaps(t_search, M, longer=0.5):
 def summary(D, checks):
     print("summary:")
     print("  particle panels at " + ", ".join(f"{D[f'p{j}_t']:g} M" for j in range(4)))
-    for m in ("64", "128"):
+    for m in EVOLUTIONS:
         ht = D[f"m{m}_h_t"]
-        print(f"  --- M/{m} ({', '.join(D[f'm{m}_dirs'])}); history to {ht[-1]:.4f} M, "
+        print(f"  --- M/{DX[m] ** -1:.0f}, envelope areal radius {D[f'R_env_{m}']:.2f} M "
+              f"({m}: {', '.join(D[f'm{m}_dirs'])}); history to {ht[-1]:.4f} M, "
               f"snapshots to {D[f'm{m}_snap_t'][-1]:g} M")
         # positions
         ta, ka = D[f"m{m}_anc_t"], D[f"m{m}_anc_kind"]
@@ -875,6 +911,109 @@ def summary(D, checks):
         s = [rec_at(D, m, "pos_sep", t0) for m in ("64", "64old")]
         row += f"  {s[0]:.4f}/{s[1]:.4f} ({s[0] - s[1]:+.4f})"
         print(row)
+    radius_summary(D)
+
+
+def apart(D, m):
+    """Mask of the record points with distinct trackers: finite, nonzero separation and
+    before the first record with coincident trackers (after the merger the code joins
+    them into one point)."""
+    t, sep = D[f"m{m}_pos_t"], D[f"m{m}_pos_sep"]
+    z0 = np.where(np.isfinite(sep) & (sep < 1e-9) & (t > D[f"m{m}_t_switch"]))[0]
+    ok = np.isfinite(sep) & (sep >= 1e-9)
+    if len(z0):
+        ok &= t < t[z0[0]]
+    return ok
+
+
+def last_found(D, m, lab, t_max=np.inf):
+    """(time, mass) of the last found horizon at or before t_max (nan if none)."""
+    tf, M, _ = found(D, m, lab)
+    k = np.where(tf <= t_max + 1e-9)[0]
+    return (float(tf[k[-1]]), float(M[k[-1]])) if len(k) else (np.nan, np.nan)
+
+
+def nearest_mass(D, m, lab, t0):
+    """(time, mass) of the found horizon nearest to t0 (nan if none)."""
+    tf, M, _ = found(D, m, lab)
+    if not len(tf):
+        return np.nan, np.nan
+    k = int(np.argmin(np.abs(tf - t0)))
+    return float(tf[k]), float(M[k])
+
+
+def cell(v, spec):
+    """v formatted with spec, or '--' of the same width where v is nan."""
+    s = format(v, spec)
+    return s if np.isfinite(v) else "--".rjust(len(s))
+
+
+def radius_summary(D, runs=("64", "64R30")):
+    """The two envelope radii at M/64: separation, orbital phase (turns of the line from A
+    to B since t = 0) and z of the midpoint every 10 M and at the latest record with
+    distinct trackers; extreme separations after 10 M; horizon masses and rest mass of
+    the macroparticles at the same times; growth rate of the individual horizon masses."""
+    runs = [m for m in runs if f"m{m}_pos_t" in D]
+    if len(runs) < 2:
+        return
+    print("  --- envelope radius at M/64: " + "; ".join(
+        f"{m} ({', '.join(D[f'm{m}_dirs'])}) areal radius {D[f'R_env_{m}']:.2f} M" for m in runs))
+    latest = {}
+    for m in runs:
+        ok = apart(D, m)
+        latest[m] = float(D[f"m{m}_pos_t"][ok][-1]) if ok.any() else np.nan
+        print(f"      {m}: last record with distinct trackers at {latest[m]:.4f} M; history to "
+              f"{D[f'm{m}_h_t'][-1]:.4f} M")
+    times = sorted(set(T_RADIUS) | {latest[m] for m in runs if np.isfinite(latest[m])})
+    cols = ((6, "d/M"), (6, "turns"), (7, "z_mid/M"), (7, "M_A/M"), (7, "M_B/M"), (6, "M_rest"),
+            (5, "env"))
+    print("          t/M " + "".join(f"| {m:<{sum(w for w, _ in cols) + len(cols) + 7}s}" for m in runs))
+    print("              " + "".join("|         " + " ".join(h.rjust(w) for w, h in cols) + " "
+                                     for _ in runs))
+    print("              (turns: of the line from A to B since t = 0; z_mid: of the midpoint of A and "
+          "B; M_rest: rest mass of all macroparticles left; env: rest mass of the envelope's "
+          "macroparticles left, fraction of the first snapshot's)")
+    for t0 in times:
+        row = f"      {t0:7.3f} "
+        for m in runs:
+            ok = apart(D, m)
+            t = D[f"m{m}_pos_t"]
+            sep = np.where(ok, D[f"m{m}_pos_sep"], np.nan)
+            phi = np.where(ok, D[f"m{m}_pos_phi"], np.nan)
+            phi = phi - phi[np.isfinite(phi)][0]          # turns since the first record
+            zm =np.where(ok, 0.5 * (D[f"m{m}_pos_A"][:, 2] + D[f"m{m}_pos_B"][:, 2]), np.nan)
+            s, p, z = (rec_interp(t, y, t0) for y in (sep, phi, zm))
+            ma = at_time(*found(D, m, "A")[:2], t0, T_WIN)
+            mb = at_time(*found(D, m, "B")[:2], t0, T_WIN)
+            ht, hm = D[f"m{m}_h_t"], D[f"m{m}_h_sum_m"]
+            mr = float(np.interp(t0, ht, hm)) if ht[0] <= t0 <= ht[-1] else np.nan
+            st, sm_ = D[f"m{m}_snap_t"], D[f"m{m}_snap_m"]
+            k = np.where(np.abs(st - t0) <= T_WIN)[0]
+            fe = sm_[k[np.argmin(np.abs(st[k] - t0))], 0] / sm_[0, 0] if len(k) else np.nan
+            row += ("|         " + " ".join(cell(v, f) for v, f in (
+                (s, "6.3f"), (p / (2 * np.pi), "6.3f"), (z, "+7.3f"), (ma, "7.5f"), (mb, "7.5f"),
+                (mr, "6.4f"), (fe, "5.3f"))) + " ")
+        print(row)
+    for m in runs:
+        ok = apart(D, m) & (D[f"m{m}_pos_t"] >= 10.0)
+        t, sep = D[f"m{m}_pos_t"][ok], D[f"m{m}_pos_sep"][ok]
+        if len(t):
+            i, j = int(np.argmax(sep)), int(np.argmin(sep))
+            print(f"      {m}: after 10 M (distinct trackers, to {t[-1]:.3f} M) largest separation "
+                  f"{sep[i]:.4f} M at {t[i]:.3f} M, smallest {sep[j]:.4f} M at {t[j]:.3f} M")
+    # growth of the individual horizon masses from T_GROW on: to each run's last
+    # individual horizon, and over the interval common to the runs
+    t_common = min(min(last_found(D, m, lab)[0] for lab in "AB") for m in runs)
+    for m in runs:
+        parts = []
+        for lab in "AB":
+            t0, m0 = nearest_mass(D, m, lab, T_GROW)
+            t1, m1 = last_found(D, m, lab)
+            t2, m2 = last_found(D, m, lab, t_common)
+            parts.append(f"{lab} {m0:.5f} ({t0:.3f} M) -> {m1:.5f} ({t1:.3f} M): "
+                         f"{(m1 - m0) / (t1 - t0):.3e}; to {t2:.3f} M: {(m2 - m0) / (t2 - t0):.3e}")
+        print(f"      {m}: dM_AH/dt from {T_GROW:g} M to the last individual horizon, and to the "
+              f"last found by {t_common:.3f} M (common to the runs): " + "; ".join(parts))
 
 
 if __name__ == "__main__":

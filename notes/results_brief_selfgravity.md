@@ -276,8 +276,11 @@ Facts so far (formation stage), in the order of the argument:
    lingering matter turns non-finite was not isolated. Whether the published rule
    alone suffices at the original's cell size cannot be tested on one card.
 3c. Individual spins. The finder gives dimensionless spins of 0.007 to 0.03 for the two
-   black holes; the original quotes spins of order 1e-5. With 2000 particles per
-   overdensity the accreted angular momentum does not average out.
+   black holes; the original quotes spins of order 1e-5. Observation only: a cold clump
+   with one bulk velocity has no spin about its own centre whatever the sample, so the
+   spin comes from what is accreted afterwards or from the measurement; which, was not
+   tested (candidate: few envelope particles per black hole, so their angular momentum
+   does not average out). The text states the spins and gives no cause.
 [Cluster with two overdensities: collapse on time ...; Correction: the black holes of
 the two overdensities do form ...; Finder test ...; Second finder test ...; Where the
 failure starts: at a puncture; Intervention: removing matter inside the horizon cures
@@ -437,7 +440,9 @@ Not established (each with its candidate causes; none tested):
   slice-mass profile against the removal history on more dumps); the measures (finder
   and Misner-Sharp agree at the horizon, but the slice measure outside is not flat to
   +-3 percent).
-- How the envelope acquires L_z = +0.03 during the inspiral (item 10); test: the
+- How the envelope acquires L_z = +0.03 during the inspiral (item 10): the text may
+  say that the envelope gains angular momentum about the orbital axis, not that the
+  pair transfers it; test: the
   envelope's L_z against the orbital angular momentum of the black holes over time.
 - The drift out of the plane on the M/64 mesh (item 11; open since the 23:10 entry).
 What the text may say: the black holes merge inside the cluster before completing an
