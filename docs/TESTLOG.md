@@ -1855,3 +1855,27 @@ What this overturns and what it restores.
   the second horizon is found with a mass within 0.01 of 0.113 M.
 - Lesson recorded for the tool: an option it does not recognise must be an error, not
   a silent default. To be fixed in `analysis/diag/common.py`.
+
+## Finder test: the flow overshoots on its first step; first trapped surface at 8.6 M (17:25)
+
+`jeans/finder_test` (restart of v11 at 12.30 M with the finder's log on).
+- Both individual searches start from a sphere of radius 0.12 M (area 0.905, mean
+  expansion 1.27) and after one flow step have a mean radius of -0.20 M; the search
+  ends with "meanradius < 0". This happens identically with the expansion tolerance at
+  100 and at 10^4.
+- Against the prediction of 17:10: refuted. The tolerance on the mean expansion is not
+  what ends the search. The flow step is: each spectral coefficient is lowered by a
+  constant times the spectral component of the weighted expansion, and the constant
+  (1 in these inputs, as in every earlier run) is sized for a black hole of unit mass.
+  For a black hole ten times smaller the first step is larger than the radius.
+- `jeans/n1e4_v12d` (v12 repeated from 6.28 M to 8.66 M; the dump interval override
+  did not take effect on restart, so only the final dump exists). Misner-Sharp profile
+  about the tracker at t = 8.66 M: trapped region, outermost 2m/R = 1 at areal radius
+  0.098 M (coordinate radius 0.02 M), M_H = 0.049 with a spread of 0.004; the largest
+  2m/R is 1.007. So the first trapped surface has just formed at 8.66 M with no
+  particle removed; the original's first horizons are at 8.475 and 8.525 M. The black
+  hole then grows (0.085 M at 10 M in v7).
+- Next test, written before its result: `jeans/finder_test2`, same restart, flow
+  constant 0.05 for the first horizon and 0.1 for the second, 2000 iterations, mass
+  tolerance 1e-7. If the step size is the cause, both horizons are found with masses
+  within 0.01 of the Misner-Sharp value (0.113 M for the first).
