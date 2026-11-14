@@ -1916,3 +1916,32 @@ the fields are NaN afterwards.
   constants; new executable): `jeans/n1e4_v13` continues v11's mesh (M/128) from its
   dump at 6.31 M; `jeans/n1e4_v14` continues the M/64 mesh from the dump of v10 at
   5.0 M.
+
+## Reruns with working finder: horizons found; the failure is not a single bad cell (18:05)
+
+`jeans/n1e4_v14` (M/64 from 5.0 M, published removal at a lapse of 0.05, finder flow
+constant 0.05, guarded source normalization).
+- First horizons from the finder: B at t = 10.125 M with mass 0.0885 M, A at 10.25 M
+  with 0.0929 M (coordinate radius 0.053 M, 3.4 cells). The original gives 0.0880 and
+  0.0877 M at t = 10 M. Before 10.1 M the finder does not converge on this mesh; the
+  Misner-Sharp profile showed the trapped region at 10.0 M (0.085 M) in v7. Found in
+  28 and 30 searches up to 11.94 M, where the masses are 0.1198 and 0.1185 M.
+- The run fails at t = 11.926 M, the same step as v7.
+- Against the prediction of 17:40: refuted as stated. The run did not pass the time at
+  which v7 failed. The guard did report cells with a bad determinant, but not one cell
+  beside a puncture before the failure: the first report, in the failing step itself,
+  counts 10944 cells, then 92319, 329942, ... in the following steps. A region of that
+  size after one step is what one spacetime update (four substeps, stencils of four
+  cells) makes of a single bad value. So the bad value is born inside the spacetime
+  update, with finite sources (the particle energy sum is normal in the step before),
+  and not in the source normalization.
+- Known so far about the failure: same step on the same mesh with two different
+  executables and removal diagnostics; at M/128 (v11) it comes later, at 13.26 M; in
+  both cases the black holes have reached about 0.12 M and a coordinate radius of
+  about 0.08 M; no regridding in the steps before; trackers at rest on the mesh for the
+  last 0.05 M; smallest lapse on the mesh unremarkable (0.046).
+- Next: a build that reports where the bad cells are (centroid, extent, cell sizes) and
+  a restart of the M/64 run from its dump at 10.0 M. No prediction is attached: this
+  is a measurement of where the failure starts.
+`jeans/n1e4_v13` (M/128 from 6.31 M, same settings) is running: horizons first found
+at 9.52 M (0.0782 M) and 9.61 M (0.0801 M); 0.0827 and 0.0830 M at 9.83 M.

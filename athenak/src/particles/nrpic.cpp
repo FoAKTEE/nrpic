@@ -729,9 +729,43 @@ void Particles::NrpicDepositSources() {
     n_bad_det_total += nbad;
     if (n_bad_det_reports < 50) {
       ++n_bad_det_reports;
+      // where they are: centroid, extent and cell sizes of the affected cells, and how
+      // many of them have a non-finite determinant (as opposed to a non-positive one)
+      Real cx = 0.0, cy = 0.0, cz = 0.0, xlo = 0.0, xhi = 0.0, dlo = 0.0, dhi = 0.0;
+      int nnf = 0;
+      Kokkos::parallel_reduce("nrpic_baddet", Kokkos::RangePolicy<DevExeSpace>(0, ncell),
+      KOKKOS_LAMBDA(const int idx, Real &lx, Real &ly, Real &lz, Real &lxlo, Real &lxhi,
+                    Real &ldlo, Real &ldhi, int &lnnf) {
+        int m = idx/(n3*n2*n1);
+        int rem = idx - m*(n3*n2*n1);
+        int k = rem/(n2*n1);
+        rem -= k*(n2*n1);
+        int j = rem/n1;
+        int i = rem - j*n1;
+        const Real det = adm::SpatialDet(m1(m,NRM_GXX,k+ks,j+js,i+is),
+            m1(m,NRM_GXY,k+ks,j+js,i+is), m1(m,NRM_GXZ,k+ks,j+js,i+is),
+            m1(m,NRM_GYY,k+ks,j+js,i+is), m1(m,NRM_GYZ,k+ks,j+js,i+is),
+            m1(m,NRM_GZZ,k+ks,j+js,i+is));
+        if (!((det > 0.0) && (det < 1.0e300))) {
+          const Real x = sz(m).x1min + (i + 0.5)*sz(m).dx1;
+          const Real y = sz(m).x2min + (j + 0.5)*sz(m).dx2;
+          const Real z = sz(m).x3min + (k + 0.5)*sz(m).dx3;
+          lx += x; ly += y; lz += z;
+          lxlo = (x < lxlo) ? x : lxlo;
+          lxhi = (x > lxhi) ? x : lxhi;
+          ldlo = (sz(m).dx1 < ldlo) ? sz(m).dx1 : ldlo;
+          ldhi = (sz(m).dx1 > ldhi) ? sz(m).dx1 : ldhi;
+          if (!(det == det) || !(det < 1.0e300) || !(det > -1.0e300)) { lnnf += 1; }
+        }
+      }, Kokkos::Sum<Real>(cx), Kokkos::Sum<Real>(cy), Kokkos::Sum<Real>(cz),
+         Kokkos::Min<Real>(xlo), Kokkos::Max<Real>(xhi), Kokkos::Min<Real>(dlo),
+         Kokkos::Max<Real>(dhi), Kokkos::Sum<int>(nnf));
       std::cout << "NRPIC: " << nbad << " cell(s) with a non-positive or non-finite "
                 << "metric determinant at time " << pm->time
-                << " (sources set to zero there)" << std::endl;
+                << " (sources set to zero there); non-finite: " << nnf
+                << "; centroid (" << cx/nbad << ", " << cy/nbad << ", " << cz/nbad
+                << "), x from " << xlo << " to " << xhi << ", cell sizes " << dlo
+                << " to " << dhi << std::endl;
     }
   }
   e_prev_valid = true;
