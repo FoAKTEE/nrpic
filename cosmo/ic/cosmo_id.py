@@ -31,6 +31,7 @@ DEP_COMP_C = 0.0  # compensation of the cloud on the deposited density, before t
                   # division by sqrt(gamma), as <particles> deposit_comp_c
 DEP_COMP_LIMIT = 0.0  # > 0: that pass in flux form with the limiter of the code
                       # (<particles> deposit_comp_limit)
+DEP_COMP_C2 = 0.0     # fourth-order term of that pass (<particles> deposit_comp_c2)
 
 
 def cic_deposit(x, w, n, L, shape=None):
@@ -75,24 +76,32 @@ def interp(f, x, L, order=3):
     return ndimage.map_coordinates(f, c, order=order, mode="grid-wrap")
 
 
-def compensate_density(fields, c, lim=0.0):
+def compensate_density(fields, c, lim=0.0, c2=0.0):
     """The compensation pass of the deposit as in the code (NrpicCompensateLimited):
-    fields[0] is the energy density, the others follow it. Without a limit this is the
-    pass (-c, 1 + 2c, -c) per direction; with lim > 0 each face flux c (u_{i+1} - u_i) is
-    scaled by min(1, lim min(E_i, E_{i+1}) / |flux of E|), the directions in turn."""
-    if lim <= 0.0:
+    fields[0] is the energy density, the others follow it. Per direction
+    u - (F_{i+1/2} - F_{i-1/2}), F_{i+1/2} = c (u_{i+1} - u_i)
+    - (c2/16) (u_{i+2} - 3 u_{i+1} + 3 u_i - u_{i-1}); with lim > 0 each face flux is
+    scaled by min(1, lim min(E_i, E_{i+1}) / |flux of E|); the directions in turn."""
+    if lim <= 0.0 and c2 == 0.0:
         return [binomial(f, 0, True, c) for f in fields]
+    q = c2/16.0
+
+    def flux(u, ax):
+        up, um, upp = np.roll(u, -1, ax), np.roll(u, 1, ax), np.roll(u, -2, ax)
+        return c*(up - u) - q*(upp - 3.0*up + 3.0*u - um)
+
     out = [np.array(f, dtype=float) for f in fields]
     for ax in range(3):
-        e = out[0]
-        ep = np.roll(e, -1, ax)
-        fe = c*(ep - e)
-        cap = lim*np.maximum(np.minimum(e, ep), 0.0)
-        with np.errstate(divide="ignore", invalid="ignore"):
-            th = np.where(np.abs(fe) > cap, cap/np.abs(fe), 1.0)
+        th = 1.0
+        if lim > 0.0:
+            e = out[0]
+            fe = flux(e, ax)
+            cap = lim*np.maximum(np.minimum(e, np.roll(e, -1, ax)), 0.0)
+            with np.errstate(divide="ignore", invalid="ignore"):
+                th = np.where(np.abs(fe) > cap, cap/np.abs(fe), 1.0)
         new = []
         for u in out:
-            f = th*c*(np.roll(u, -1, ax) - u)          # flux through the upper face
+            f = th*flux(u, ax)                         # flux through the upper face
             new.append(u - f + np.roll(f, 1, ax))
         out = new
     return out
@@ -185,7 +194,7 @@ def sources(tor, x, u, m, psi, nfilter=0, compensate=False):
     dens = [cic_deposit(x, m*W, tor.n, tor.L)] + [cic_deposit(x, m*u[:, i], tor.n, tor.L)
                                                    for i in range(3)]
     if DEP_COMP_C > 0.0:
-        dens = compensate_density(dens, DEP_COMP_C, DEP_COMP_LIMIT)
+        dens = compensate_density(dens, DEP_COMP_C, DEP_COMP_LIMIT, DEP_COMP_C2)
     E = binomial(dens[0]*isg, nfilter, compensate, COMP_C)
     S = [binomial(dens[1 + i]*isg, nfilter, compensate, COMP_C) for i in range(3)]
     return E, S, W

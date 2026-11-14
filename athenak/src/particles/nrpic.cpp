@@ -99,6 +99,7 @@ void Particles::NrpicInit(ParameterInput *pin) {
   nropt.filter_comp_c     = pin->GetOrAddReal("particles", "filter_comp_c", -1.0);
   nropt.deposit_comp_c    = pin->GetOrAddReal("particles", "deposit_comp_c", 0.0);
   nropt.deposit_comp_limit = pin->GetOrAddReal("particles", "deposit_comp_limit", 0.0);
+  nropt.deposit_comp_c2    = pin->GetOrAddReal("particles", "deposit_comp_c2", 0.0);
   nropt.deposit_max_level = pin->GetOrAddInteger("particles", "deposit_max_level", 31);
   if (nropt.deposit_max_level < 0) { nropt.deposit_max_level = 0; }
   if (nropt.deposit_max_level > 31 - pm->root_level) {
@@ -831,8 +832,10 @@ void Particles::NrpicDepositSources() {
   // a pass after it would leave the part of the density that follows sqrt(gamma)
   // smoothed.
   if (nropt.deposit_comp_c > 0.0) {
-    if (nropt.deposit_comp_limit > 0.0 && pmy_pack->pmesh->three_d) {
-      NrpicCompensateLimited(nropt.deposit_comp_c, nropt.deposit_comp_limit);
+    if ((nropt.deposit_comp_limit > 0.0 || nropt.deposit_comp_c2 != 0.0) &&
+        pmy_pack->pmesh->three_d) {
+      NrpicCompensateLimited(nropt.deposit_comp_c, nropt.deposit_comp_c2,
+                             nropt.deposit_comp_limit);
     } else {
       NrpicFilterPass(1.0 + 2.0*nropt.deposit_comp_c, -nropt.deposit_comp_c);
     }
@@ -982,19 +985,24 @@ void Particles::NrpicFilterPass(const Real w0, const Real w1) {
 
 //----------------------------------------------------------------------------------------
 //! \fn  void Particles::NrpicCompensateLimited
-//! \brief the compensation pass of the deposit in flux form with a limiter.  The pass
-//! (-c, 1+2c, -c) in one direction is u_i - (F_{i+1/2} - F_{i-1/2}) with the flux
-//! F_{i+1/2} = c (u_{i+1} - u_i) taken out of the lower and put into the higher cell.
-//! Where neighbouring cells differ strongly (collapsed regions, single clouds in
-//! voids) that sharpens noise and can turn the energy density negative.  Each face
-//! flux is therefore scaled by theta = min(1, lim min(E_i, E_{i+1}) / |F^E|), with the
-//! flux of the energy density F^E; the same theta multiplies the flux of every source
-//! component at that face.  In smooth flow theta = 1 and the result is the plain pass
-//! (the three directions applied in turn equal the product stencil); with lim <= 1/6
-//! the energy density stays positive.  The sums over the mesh are conserved.
+//! \brief the compensation pass of the deposit in flux form, to fourth order and with
+//! an optional limiter.  In one direction the pass is u_i - (F_{i+1/2} - F_{i-1/2}) with
+//!   F_{i+1/2} = c (u_{i+1} - u_i) - (c2/16) (u_{i+2} - 3 u_{i+1} + 3 u_i - u_{i-1}),
+//! i.e. u - c d2 u + (c2/16) d4 u with the second and fourth differences d2, d4; its
+//! response is 1 + 4c s + c2 s^2, s = sin^2(k dx/2).  The inverse of the window of a
+//! cloud of order p (sinc^p) is 1 + (p/3) s + c2 s^2 + ..., c2 = 8/45, 37/120, 7/15 for
+//! p = 2, 3, 4 (linear, quadratic, cubic cloud): with c = p/12 and that c2 the density
+//! of a long wave is correct to sixth order in dx.
+//! Limiter (lim > 0): where neighbouring cells differ strongly (collapsed regions,
+//! single clouds in voids) the pass sharpens noise and can turn the energy density
+//! negative.  Each face flux is scaled by theta = min(1, lim min(E_i, E_{i+1})/|F^E|),
+//! with the flux of the energy density F^E; the same theta multiplies the flux of every
+//! source component at that face.  In smooth flow theta = 1 and the result is the plain
+//! pass (the three directions applied in turn equal the product stencil); with
+//! lim <= 1/6 the energy density stays positive.  The sums over the mesh are conserved.
 //! One ghost exchange serves the three directions (two ghost layers are used).
 
-void Particles::NrpicCompensateLimited(const Real c, const Real lim) {
+void Particles::NrpicCompensateLimited(const Real c, const Real c2, const Real lim) {
   Mesh *pm = pmy_pack->pmesh;
   auto &indcs = pm->mb_indcs;
   const int is = indcs.is, js = indcs.js, ks = indcs.ks;
@@ -1005,6 +1013,8 @@ void Particles::NrpicCompensateLimited(const Real c, const Real lim) {
   auto tm = tmu;
   auto wk = tm_work;
   const int ie_ = Tmunu::I_Tmunu_E;
+  const Real q = c2/16.0;
+  const bool limit = (lim > 0.0);
 
   if (pm->multilevel) {
     pm->pmr->RestrictCC(tmu, coarse_tm);
@@ -1021,22 +1031,30 @@ void Particles::NrpicCompensateLimited(const Real c, const Real lim) {
 
   // directions in turn; the ranges shrink so that every pass finds its neighbours
   for (int dir=0; dir<3; ++dir) {
-    const int kl = (dir < 2) ? ks - 1 : ks, ku = (dir < 2) ? ke + 1 : ke;
-    const int jl = (dir < 1) ? js - 1 : js, ju = (dir < 1) ? je + 1 : je;
+    const int kl = (dir < 2) ? ks - 2 : ks, ku = (dir < 2) ? ke + 2 : ke;
+    const int jl = (dir < 1) ? js - 2 : js, ju = (dir < 1) ? je + 2 : je;
     const int di = (dir == 0) ? 1 : 0, dj = (dir == 1) ? 1 : 0, dk = (dir == 2) ? 1 : 0;
     par_for("nrpic_complim", DevExeSpace(), 0, nmb1, 0, nv1, kl, ku, jl, ju, is, ie,
     KOKKOS_LAMBDA(const int m, const int n, const int k, const int j, const int i) {
-      const Real e0 = tm(m,ie_,k,j,i);
-      const Real ep = tm(m,ie_,k+dk,j+dj,i+di);
-      const Real em = tm(m,ie_,k-dk,j-dj,i-di);
-      // upper and lower face: limiter from the energy density
-      const Real fep = c*(ep - e0), fem = c*(e0 - em);
-      const Real capp = lim*fmax(fmin(e0, ep), 0.0), capm = lim*fmax(fmin(e0, em), 0.0);
-      const Real thp = (fabs(fep) > capp) ? capp/fabs(fep) : 1.0;
-      const Real thm = (fabs(fem) > capm) ? capm/fabs(fem) : 1.0;
+      // values at i-2 ... i+2 along the direction of the pass
       const Real u0 = tm(m,n,k,j,i);
-      const Real fp = c*(tm(m,n,k+dk,j+dj,i+di) - u0);
-      const Real fm = c*(u0 - tm(m,n,k-dk,j-dj,i-di));
+      const Real up = tm(m,n,k+dk,j+dj,i+di), um = tm(m,n,k-dk,j-dj,i-di);
+      const Real upp = tm(m,n,k+2*dk,j+2*dj,i+2*di), umm = tm(m,n,k-2*dk,j-2*dj,i-2*di);
+      const Real fp = c*(up - u0) - q*(upp - 3.0*up + 3.0*u0 - um);
+      const Real fm = c*(u0 - um) - q*(up - 3.0*u0 + 3.0*um - umm);
+      Real thp = 1.0, thm = 1.0;
+      if (limit) {
+        const Real e0 = tm(m,ie_,k,j,i);
+        const Real ep = tm(m,ie_,k+dk,j+dj,i+di), em = tm(m,ie_,k-dk,j-dj,i-di);
+        const Real epp = tm(m,ie_,k+2*dk,j+2*dj,i+2*di);
+        const Real emm = tm(m,ie_,k-2*dk,j-2*dj,i-2*di);
+        const Real fep = c*(ep - e0) - q*(epp - 3.0*ep + 3.0*e0 - em);
+        const Real fem = c*(e0 - em) - q*(ep - 3.0*e0 + 3.0*em - emm);
+        const Real capp = lim*fmax(fmin(e0, ep), 0.0);
+        const Real capm = lim*fmax(fmin(e0, em), 0.0);
+        thp = (fabs(fep) > capp) ? capp/fabs(fep) : 1.0;
+        thm = (fabs(fem) > capm) ? capm/fabs(fem) : 1.0;
+      }
       wk(m,n,k,j,i) = u0 - thp*fp + thm*fm;
     });
     par_for("nrpic_complim_copy", DevExeSpace(), 0, nmb1, 0, nv1, kl, ku, jl, ju, is, ie,

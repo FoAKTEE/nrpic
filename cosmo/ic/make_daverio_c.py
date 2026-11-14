@@ -48,6 +48,9 @@ if __name__ == "__main__":
                          "direction on the deposited density (deposit_comp_c = c in the "
                          "code); 1/12, 1/8, 1/6 cancel the second moment of the linear, "
                          "quadratic and cubic cloud")
+    ap.add_argument("--dep-comp-c2", type=float, default=0.0,
+                    help="fourth-order term of that pass (deposit_comp_c2 in the code): "
+                         "8/45, 37/120, 7/15 for the linear, quadratic, cubic cloud")
     ap.add_argument("--dep-comp-limit", type=float, default=0.0,
                     help="limiter of that pass (deposit_comp_limit in the code)")
     ap.add_argument("--comp-c", type=float, default=-1.0,
@@ -59,6 +62,7 @@ if __name__ == "__main__":
     cid.COMP_C = a.comp_c
     cid.DEP_COMP_C = a.dep_comp_c
     cid.DEP_COMP_LIMIT = a.dep_comp_limit
+    cid.DEP_COMP_C2 = a.dep_comp_c2
 
     def pk(k):
         return sp.linear_power(k, 0.0, sp.PLANCK18)/(1.0 + Z_INIT)**2

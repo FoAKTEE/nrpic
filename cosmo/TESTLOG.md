@@ -1234,3 +1234,101 @@ Runs (64 cells, smaller box; 32 cells, larger box; step limit on; L = 0.1):
     pass, the amplified noise is of moderate contrast, spread over the multi-stream
     regions, and a limiter on the cell-to-cell contrast is the wrong tool.
 (3) Larger box from z = 3 on: no change (the lattice there is distorted but smooth).
+
+## T1: what the rise of the constraints before collapse is (Python experiment, 04:39)
+
+Question: in the smaller box the constraints rise from z of about 30 on, long before
+anything collapses (largest linear contrast 0.06 at z = 30, 0.2 at z = 10). Is this the
+sampling error of the displaced lattice, and which remedy removes it?
+Experiment (`cosmo/analysis/lattice_error.py`, no evolution): the same kind of field
+(shortest wave ten cells, 32 cells), Zel'dovich displacements scaled by the growth
+factor, deposited from lattices of 1, 2, 3 particles per cell and direction with the
+three clouds, and from lattices refined by sub-particles at trilinearly interpolated
+displacements (the Lagrangian sheet, 2 to 4 per direction). Reference: 8 per cell and
+direction with exact displacements. Error of the density over the mean, rms:
+
+    z     cloud      1/cell    2/cell    3/cell    2/cell + sheet 2
+    32    linear     1.0e-4    7.9e-5    7.8e-5    1.1e-4
+          quadratic  1.8e-4    2.2e-5    2.6e-5    8.5e-5
+          cubic      4.6e-6    9.6e-7    3.9e-7    8.0e-5
+    10    linear     1.9e-3    1.9e-3    2.0e-3    2.3e-3
+          quadratic  6.6e-4    1.0e-4    1.5e-4    2.6e-4
+          cubic      3.8e-5    8.7e-6    5.0e-6    2.4e-4
+    4     linear     7.6e-3    8.8e-3    7.0e-3    5.9e-3
+          quadratic  2.2e-3    7.1e-4    4.9e-4    6.4e-4
+          cubic      1.8e-4    7.3e-5    3.8e-5    5.4e-4
+    1     linear     4.9e-2    2.4e-2    1.3e-2    7.7e-3
+          quadratic  9.3e-3    3.1e-3    1.2e-3    1.6e-3
+          cubic      2.1e-3    4.8e-4    1.3e-4    1.5e-3
+
+(largest errors are 5 to 10 times the rms.) Reading:
+- Yes: with the quadratic cloud at 2 per cell the error grows from 2e-5 at z = 32 to
+  1e-4 at z = 10 and 3e-3 at z = 1, the range and the timing of the rise in the run.
+- More particles per cell do nothing for the linear cloud until z = 2 and little for
+  the quadratic one (3 against 2 per cell: none at z = 10, 1.5 at z = 4, 2.6 at z = 1).
+- The cubic cloud is 7 to 12 times better than the quadratic at equal particle number
+  at every epoch, and gains from particles as well. This is the third-order law of T1a
+  acting on a real field.
+- The sheet refinement is worse than no refinement for the quadratic and cubic clouds
+  until the contrast is of order one: the trilinear interpolation of the displacement
+  is itself a second-order error in the particle spacing, larger than what the cloud
+  leaves. It helps only the linear cloud late. Not worth building for this regime.
+Consequence, sharpening the prediction for `dav_c256_n64_pcsct` (queued): between
+z = 30 and z = 2 its Hamiltonian and momentum constraints are lower than those of the
+compensated quadratic run by a factor of three or more (the compensation amplifies
+short waves by up to (1 + 4c)^3 = 4.6 at the corner of the band for c = 1/6, typically
+two, which eats part of the factor of ten). And for `dav_c256_n64_p3t` (27 per cell,
+quadratic, no compensation): no gain at z = 10, a factor of 1.5 to 2.6 from z = 4 to 1.
+
+## C5/T1: cubic cloud with compensation, larger box at 32 cells; the late rise (04:43)
+
+`dav_c704_n32_pcsct` against `dav_c704_n32_dcompt` (quadratic, compensated), z = 100,
+10, 1, 0.02. Momentum constraint 2.1e-4, 7.8e-4, 1.5e-3, 4.3e-3 against 1.7e-3, 2.0e-3,
+2.3e-3, 7.1e-3: lower by 7.8, 2.5, 1.6, 1.7. Hamiltonian constraint 6.4e-8, 1.5e-7,
+1.9e-6, 7.6e-6 against 5.0e-8, 1.3e-7, 2.0e-6, 9.5e-6: the same. Power up to the cut-off
+0.23, 0.76, 1.7, 2.6 percent against 0.26, 0.37, 0.98, 1.8.
+Against my predictions: power within 0.5 percent at z = 10: fails (0.76); constraints
+from z = 3 on lower by more than two: fails (1.0 for the Hamiltonian, 1.6 for the
+momentum constraint).
+What the numbers say instead:
+- The early Hamiltonian constraint follows the remainder of the compensation. The pass
+  cancels the second moment; the fourth-order remainder of cloud times pass at the
+  cut-off wave is 0.30 percent (quadratic) and 0.43 percent (cubic), ratio 1.4; the
+  constraints at z = 100 are in the ratio 1.26, and both are 14 times below the
+  uncompensated run, whose mismatch there is 4.8 percent (ratio 16). So the smoothing
+  mismatch (cause (a) of the earlier entry) does set the Hamiltonian constraint of
+  smooth flow, now that the offsets no longer hide it. The same remainder explains the
+  slightly larger loss of power with the cubic cloud. A pass that also cancels the
+  fourth-order term needs a five-point stencil: 1 - c d2 + (c2/16) d4 with d2, d4 the
+  second and fourth differences and c2 = 8/45, 37/120, 7/15 for the three clouds.
+- The late rise (from z of about 3, to the same level at 32 and 64 cells, local) is
+  the same for both clouds, so it is NOT the lattice sampling error of the density,
+  which is ten times smaller for the cubic cloud. Cause not determined.
+Runs to find what the late rise depends on (32 cells, cubic cloud, compensated, step
+limit; one change each): `_d01` Kreiss-Oliger dissipation 0.1 instead of 0.5; `_k2`
+damping rate 2 instead of 0.5; `_p3` 27 particles per cell; `_tol` pusher tolerance
+1e-14; `_cfl` step 0.125 of the cell. No prediction: I have no model that survives
+the comparison above. Whichever run changes the level at z = 1 and 0 by more than a
+factor of two names the direction to look in.
+
+## T1: fourth-order compensation, written before the runs (04:47)
+
+New option `deposit_comp_c2`: the pass per direction becomes u - c d2 u + (c2/16) d4 u
+(five points), response 1 + 4c s + c2 s^2 with s = sin^2(k dx/2); c2 = 8/45, 37/120,
+7/15 cancels the fourth-order term of the linear, quadratic, cubic cloud. Implemented
+in the flux form of the limited pass (the limiter stays optional). Checks: response
+equal to the formula to 1e-8 for waves of 16, 11, 6 cells; remainder of cloud times
+pass at 10 cells per wave 0.02 percent (quadratic) and 0.03 percent (cubic) against
+0.30 and 0.43 with the three-point pass; code and solver agree on the noisy lattice to
+the precision of the dump with the fourth-order term and the limiter on.
+Runs: `dav_c704_n32_tsc4t`, `dav_c704_n32_pcs4t` (32 cells, larger box, step limit
+0.005 so that the background offset, 7e-8 late with 0.01, is 16 times lower).
+Predictions:
+(1) Mean relative Hamiltonian constraint at z = 100 below 1.5e-8 and at z = 10 below
+    5e-8 for both clouds (5.0e-8 and 1.3e-7, 6.4e-8 and 1.5e-7 with the three-point
+    pass): the early level follows the remainder.
+(2) Power up to the cut-off within 0.15 percent of linear theory at z = 100 and within
+    0.3 percent at z = 10.
+(3) The late rise is unchanged.
+If (1) fails the early level is not the remainder of the pass, and the agreement of
+the ratios 1.26 and 14 above was a coincidence.
