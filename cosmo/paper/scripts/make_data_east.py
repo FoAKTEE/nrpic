@@ -10,7 +10,7 @@ import east_c2 as ec
 import shape_study as ss
 
 DELTAS = (0.0025, 0.005, 0.01, 0.05)
-SHAPES = (("v2", ""), ("tsc", "_tsc"), ("pcs", "_pcs"))
+SHAPES = (("v2", ""), ("tsc", "_tsc"), ("pcs", "_pcs"), ("pcs4b", "_pcs4"))
 
 
 def thin(n, m=700):
@@ -70,6 +70,33 @@ for d in DELTAS:
             out[f"cs_a_{tag}_{key}"] = c["a"][i]
             out[f"cs_Hr_{tag}_{key}"] = c["Hr_mean"][i]
             out[f"cs_Mr_{tag}_{key}"] = c["Mr_mean"][i]
+# wavelength test: the same delay for boxes of 2 and 8 initial Hubble radii at the
+# amplitude 0.01 (quadratic cloud)
+L0, X0 = ec.L, ec.XPK
+for Lb in (2.0, 8.0):
+    ec.L, ec.XPK = Lb, X0*Lb/L0
+    try:
+        v = ec.load(RUNS, 0.01, 64, f"_tsc_L{Lb:g}", f"_tsc_L{Lb:g}")
+    except (FileNotFoundError, OSError):
+        v = None
+    if v is not None:
+        nw, f = v["nw"], v["f"]
+        dg = ec.distances(f["x"], f["q"], f["axis"])
+        apg = ec.a_of_tau(f["tau"])
+        dn = ec.distances(np.mod(nw["x"], ec.L), nw["q_fid"], nw["axis_fid"])
+        apn = ec.a_of_tau(nw["t_p"])
+        dly = []
+        for fr in ec.SHOWN:
+            gg, nn = [], []
+            for j in range(len(f["axis"])):
+                s0 = f["q"][j, f["axis"][j]] - ec.XPK
+                if abs(s0 - fr*ec.L) < 1e-9:
+                    gg.append(ec.below(apg[:, j], dg[:, j], 0.1*dg[0, j]))
+                    nn.append(ec.below(apn[:, j], dn[:, j], 0.1*dn[0, j]))
+            dly.append((np.mean(gg), np.mean(nn)) if gg and np.isfinite(gg).all()
+                       and np.isfinite(nn).all() else (np.nan, np.nan))
+        out[f"a10_tsc_L{Lb:g}"] = np.array(dly)
+ec.L, ec.XPK = L0, X0
 np.savez_compressed(os.path.join(DATA, "east.npz"), **out)
 print("wrote", os.path.join(DATA, "east.npz"), os.path.getsize(os.path.join(DATA, "east.npz"))//1024, "kB")
 for d in DELTAS:

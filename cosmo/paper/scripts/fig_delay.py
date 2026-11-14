@@ -16,8 +16,10 @@ fs.use_style()
 fig, (ax, ax2) = plt.subplots(1, 2, figsize=(fs.FULL_WIDTH, 3.1))
 fig.subplots_adjust(left=0.085, right=0.985, bottom=0.15, top=0.96, wspace=0.24)
 shapes = (("v2", "linear cloud", fs.PAL["red"], "o"), ("tsc", "quadratic", fs.PAL["green"], "s"),
-          ("pcs", "cubic", fs.PAL["blue"], "^"))
+          ("pcs", "cubic", fs.PAL["blue"], "^"), ("pcs4b", "production", "k", "*"))
 for tag, name, col, mk in shapes:
+    if f"a10_{tag}_{deltas[0]:g}" not in d.files:
+        continue
     y = []
     for dl in deltas:
         a = d[f"a10_{tag}_{dl:g}"]
@@ -44,6 +46,8 @@ def depth(delta, Lbox):
 
 
 for tag, name, col, mk in shapes:
+    if f"a10_{tag}_{deltas[0]:g}" not in d.files:
+        continue
     x = [depth(dl, 4.0) for dl in deltas]
     y = [np.nanmean(d[f"a10_{tag}_{dl:g}"][:, 0]/d[f"a10_{tag}_{dl:g}"][:, 1]) - 1.0
          for dl in deltas]
