@@ -1817,3 +1817,41 @@ first restart; removal inside a found horizon; lapse guard 0.02) and `jeans/n1e4
   8.6 M, a trapped surface exists on the mesh and the finder misses it: the test can
   then go on at M/128 once the finder is made to find it. If 2m/R stays below one up
   to the time the lapse turns negative, no horizon forms on this mesh.
+
+## Correction: the black holes of the two overdensities do form; my check of 14:50 was wrong (17:10)
+
+The Misner-Sharp check of 14:50 passed the centre to the tool in a form the tool does
+not parse (`--center=x,y,z`); it silently used the origin. The profile I read (largest
+2m/R of 0.47) was about the centre of the cluster, not about the collapsed core. I
+noticed when two runs with different centres returned identical numbers. Repeated with
+the centre at the tracker (header of the output checked):
+- `jeans/n1e4_v7` (M/64, removal at a lapse of 0.05), dump at t = 10 M: a trapped
+  region exists. Outermost 2m/R = 1 at areal radius 0.170 M, coordinate radius 0.050 M
+  (three cells): M_H = 0.0849 with a spread of 0.007 over angle. The original gives
+  0.0880 and 0.0877 M for its two black holes at t = 10 M. The mass function is flat
+  (0.085 to 0.092 M) from 0.03 to 0.15 M around the core.
+- `jeans/n1e4_v11` (M/128, guard 0.02), dump at t = 12.30 M: trapped region, outermost
+  2m/R = 1 at areal radius 0.226 M, coordinate radius 0.078 M (ten cells): M_H = 0.1128
+  with a spread of 0.005.
+- The horizon finder reports nothing in either run at any time.
+What this overturns and what it restores.
+- Wrong: "no black hole had formed; the removal aborted the collapse" (14:50), and
+  "cells of M/64 do not form these black holes" (15:22, 17:00). Black holes of the
+  right mass form at M/64 and at M/128 with lapse-based removal.
+- Restored in part: the reading of 14:35 that black holes form and the finder cannot
+  see them. Its other half (matter lingering inside as the cause of the failure at
+  11.9 M) remains untested.
+- The rise of the smallest lapse after each burst of removal is not evidence against a
+  black hole: on these meshes the lapse at cell centres near the puncture is a few
+  hundredths.
+- Open now: why the finder fails on a horizon of ten cells' radius. Candidate read
+  from its source: the flow is abandoned when the mean expansion on the trial surface
+  exceeds a fixed tolerance (100 in these inputs), and the expansion scales inversely
+  with the black-hole mass, ten times larger here than in the dust and cluster runs.
+  Test submitted (`jeans/finder_test`): restart from the v11 dump at 12.30 M, where a
+  black hole of 0.113 M is known to exist, with the finder's log on, the tolerance
+  unchanged for the first horizon and 10^4 for the second. Written before the result:
+  if the tolerance is the cause, the log of the first horizon ends with "hmean >" and
+  the second horizon is found with a mass within 0.01 of 0.113 M.
+- Lesson recorded for the tool: an option it does not recognise must be an error, not
+  a silent default. To be fixed in `analysis/diag/common.py`.
