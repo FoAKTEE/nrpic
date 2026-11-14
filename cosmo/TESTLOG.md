@@ -1719,3 +1719,32 @@ So the relativistic delay at this amplitude, 4.4 to 4.7 percent near the overden
 and 5.3 percent a quarter of the box away, holds in three numerical configurations
 (linear cloud with filter; quadratic cloud with filter at three resolutions; cubic
 cloud with compensation and spline) to 0.15 points.
+
+## C5: smaller box at 128 cells in the production configuration, outcome (08:00)
+
+`dav_c256_n128_pcs4bt` (one particle per cell; chain of two segments). Reaches z = 0.
+Mean relative Hamiltonian constraint at z = 100, 30, 10, 5, 2, 1, 0.3, 0: 5.2e-9, 4.8e-9,
+3.9e-8, 1.0e-6, 1.7e-5, 7.8e-5, 2.8e-4, 9.6e-4. Predicted below 3e-7 at z = 10: holds
+(3.9e-8); below 1e-6 at z = 5: at the edge (1.0e-6); rise after the first collapse as
+before: holds. Against 64 cells in the same configuration (2.8e-8, 1.9e-7, 1.5e-6,
+5.6e-6, 3.3e-5, 1.2e-4, 5.9e-4, 1.9e-3): 38 times lower at z = 10, where the 64-cell
+run was limited by the under-resolved second-order terms, 6 times at z = 5, 2 times
+from z = 2 on. Against the 128-cell run without the new elements (6.0e-8, 5.5e-7,
+4.4e-6, 1.5e-5, ...): 110 times lower at z = 30 and 10. Paper 2 at 128 cells: 4.5e-8,
+3.4e-8 (z = 20), 4.3e-8, 1.2e-7, 3.9e-7 (z = 1), 4.8e-6: equal to ours at z = 10, below
+ours from z = 5 on (8 times at z = 5, 200 times at z = 1 and 0).
+Momentum constraint: 1.5e-4, 1.6e-4, 2.2e-4, 1.4e-3, 1.9e-2, 6.3e-2, 0.16, 0.30 (paper 2:
+2.0e-3, 2.8e-3 at z = 10, 7.1e-3 at z = 1, 4.2e-2 at z = 0): 13 times below paper 2 to
+z = 10, 9 times above at z = 1.
+Power against linear theory, six shells up to the cut-off, percent:
+   z = 100  +0.02 +0.04 -0.03 -0.04 -0.03 -0.01    (64 cells: +0.01 +0.04 -0.04 -0.05 -0.05 -0.06)
+   z = 10   +0.25 +0.43 -0.31 -0.37 -0.30 +0.08    (+0.24 +0.43 -0.32 -0.40 -0.35 -0.04)
+   z = 1    +1.31 +2.08 -1.81 -1.21 -1.69 +5.62    (+1.31 +2.07 -1.82 -1.24 -1.76 +5.46)
+   z = 0    +2.35 +3.16 -4.04 -0.68 -3.19 +20.15   (+2.34 +3.15 -4.05 -0.72 -3.27 +19.95)
+The two resolutions agree to 0.2 percent of the power in every shell at every epoch,
+including z = 0 where the rms contrast is of order one: the departures from linear
+theory are converged nonlinear evolution. (Paper 2 compares with linear theory only
+and quotes a percent at its best resolution.)
+What is not good: after the first collapse both constraints are far above paper 2's.
+The bound regions are sampled by a few particles per cell and the compensation
+amplifies their noise; this is the open item of T1.
