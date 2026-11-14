@@ -64,6 +64,10 @@ orthonormal-frame (tetrad) indices.
 | E_0 | | conserved energy per unit rest mass shared by all particles of a monoenergetic cluster | tests, sampling appendix |
 | E_c | | energy density at the centre seen by the normal observer | tests |
 | M_AH | `M_{\rm AH}` | apparent-horizon (irreducible) mass | numerical methods |
+| J | | angular momentum (spin) of an apparent horizon as the finder returns it; J_z its component along the orbital axis (never S, which is the momentum density) | collapse and merger inside a cluster |
+| chi_AH | `\chi_{\rm AH}` | dimensionless spin J / M_AH^2 of an apparent horizon (never bare chi, which is the Z4c conformal factor) | collapse and merger inside a cluster |
+| d_AB | `d_{AB}` | coordinate separation of black holes A and B (twice the orbital radius d_orb of the appendix at t = 0) | collapse and merger inside a cluster |
+| L_z | | angular momentum of the macroparticles about the orbital axis | collapse and merger inside a cluster |
 | h | | spacing of the particle lattice of the dust ball | tests, sampling appendix |
 | ell_loc | `\ell_{\rm loc}` | finest mesh level at the position of a particle | deposition |
 | E_b | | binding energy M_0 - M | tests |

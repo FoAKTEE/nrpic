@@ -44,6 +44,7 @@ as limits of the adaptive mesh.
 - Parameter values that define the figures: black hole spin a = 0.9 M, eccentricity
   e = 0.99, initial areal radius R_0 = 5 M, the particle numbers 10^2, 10^3, 10^4, the
   spheroid eccentricity 0.9.
+- The finest cell spacings that label curves of a figure (M/16, M/32, M/64, M/128).
 - Everything else (errors, tolerances, step sizes, mesh spacings, times of horizon
   formation, masses, fit parameters) lives in figures, the appendix table, or the
   Supplemental Material.
@@ -58,6 +59,9 @@ as limits of the adaptive mesh.
 | macroparticle | superparticle, marker | particle-in-cell |
 | shape function; cloud-in-cell | kernel (for first order), CIC without definition | particle-in-cell |
 | deposition | scatter, projection | particle-in-cell |
+| speed-matched radius (the envelope radius at which the stated orbital speed is circular); stated radius | self-consistent radius, host radius | this paper |
+| envelope | host, host cluster ("host" is kept for the host code) | this paper |
+| common apparent horizon | common horizon | numerical relativity |
 | pusher | integrator (for the particle update) | particle-in-cell |
 | implicit midpoint pusher | midpoint scheme, IM | particle-in-cell |
 | spacetime Boris pusher | DGREM-Boris, GR-Boris (which is a different scheme) | this paper |
@@ -95,6 +99,15 @@ of Wu and Most, WarpX, Entity, TRISTAN-MP) and its own code in its current versi
   and the acknowledgments.
 - All runs use at most 10^4 particles; the original uses 10^6 and above. Statements about
   noise-limited quantities are scoped to that.
+- Cost. The second question of the paper is what the method needs at a size that one
+  graphics card can run, so "one graphics card" and "minutes to several hours" appear in
+  the abstract, the Introduction and the Conclusions as the statement of that size. This
+  is the one exception to 5.5; no processor or card model, no thread count and no wall
+  time of an individual run appears anywhere.
+- The two-overdensity cluster has two envelopes: the speed-matched radius (main runs, two
+  cell sizes) and the stated radius (one run). Its initial slice has K_ij = 0 with
+  orbiting overdensities, so the momentum constraint is violated at first order in the
+  orbital speed and is not corrected; say so where the data are described.
 - Quantities that do not depend on particle number are compared at the precision of the
   original (geodesic invariants, equilibrium sequences, conservation identities).
 
