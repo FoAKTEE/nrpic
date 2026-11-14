@@ -631,7 +631,7 @@ TaskStatus Z4c::CalcRHS(Driver *pdriver, int stage) {
         Hfull -= 16.*M_PI * (mE + lam8);
       }
       Real ch = opt.damp_ch + opt.damp_ch_dx * size.d_view(m).dx1;
-      rhs.chi(m,k,j,i) += 0.5 * ch * pow(chi_guarded, -0.25) * Hfull;
+      rhs.chi(m,k,j,i) += 0.5 * ch * pow(chi_guarded, opt.damp_ch_chipow) * Hfull;
     }
     rhs.vTheta(m,k,j,i) = LTheta + z4c.alpha(m,k,j,i) * (
         0.5*Ht - (2. + opt.damp_kappa2) * kappa1 * z4c.vTheta(m,k,j,i));

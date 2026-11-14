@@ -59,6 +59,7 @@ damp_kappa1_over_alpha = false         # true: damping rate kappa1 per unit of c
 damp_kappa2     = 0.0
 damp_ch         = 0.0
 damp_ch_dx      = 0.0
+damp_ch_chipow  = 0.0                  # exponent of chi in the relaxation of the Hamiltonian constraint (0: fixed diffusion coefficient in conformal time)
 excise_chi      = 0.0                  # constraint norms over the whole box (chi = 1/a^2 falls)
 
 <particles>

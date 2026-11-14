@@ -158,6 +158,13 @@ class Z4c {
     // The form assumes chi = psi^-4.
     Real damp_ch;
     Real damp_ch_dx;
+    // exponent of chi in that term (default -1/4).  To first order in a perturbation
+    // of chi the Ricci scalar is 2 lap(chi) for a conformally flat metric, so the term
+    // diffuses chi with the coefficient c_H chi^p.  In a cosmological run in conformal
+    // time chi falls as 1/a^2: p = 0 keeps the coefficient, and with it the stability
+    // limit of the explicit step, fixed (c_H = damp_ch_dx*dx with damp_ch_dx below 0.5
+    // for a step of a quarter cell).
+    Real damp_ch_chipow;
     // Gauge conditions for the lapse
     Real lapse_oplog;
     Real lapse_harmonicf;

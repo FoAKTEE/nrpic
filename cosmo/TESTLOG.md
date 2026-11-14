@@ -1748,3 +1748,26 @@ and quotes a percent at its best resolution.)
 What is not good: after the first collapse both constraints are far above paper 2's.
 The bound regions are sampled by a few particles per cell and the compensation
 amplifies their noise; this is the open item of T1.
+
+## Open item of T1: relaxing the Hamiltonian constraint after collapse, written before the run (08:04)
+
+After the first collapse the Hamiltonian constraint of every configuration is 1e-4 to
+1e-3 (paper 2: 4e-7 to 5e-6); the momentum constraint is comparable to paper 2's at
+equal particle number. A code that solves the constraints at every step (the
+particle-mesh reference, the code of paper 3) has no Hamiltonian-constraint violation
+by construction: its potential follows the noisy density. The spacetime solver here
+has a term of that kind, d_t chi += (c_H/2) chi^p H, a parabolic relaxation of the
+conformal factor towards the constraint (added for the first project, exponent
+p = -1/4). To first order the Ricci scalar of a conformally flat metric is 2 lap(chi),
+so the term diffuses chi with the coefficient c_H chi^p; in conformal time chi falls a
+millionfold, so the exponent is now an option (`damp_ch_chipow`) and p = 0 keeps the
+diffusion coefficient and the stability limit fixed (c_H = 0.3 cells).
+Run `dav_c256_n64_pcs4bt_ch`: the 64-cell production run of the smaller box with
+`damp_ch_dx = 0.3`, `damp_ch_chipow = 0`. Predictions:
+(1) Mean relative Hamiltonian constraint at z = 1 and 0 lower by more than ten
+    (1.2e-4, 1.9e-3 without).
+(2) Momentum constraint within a factor of 1.5 of the run without (9e-2, 0.38).
+(3) Power within 0.1 percent of the run without at z = 10 and 1 in every shell, and
+    within 1 percent at z = 0: the term must not change the dynamics.
+(4) Stable to z = 0.
+If (3) fails the relaxation changes the physics and is not usable as it stands.
