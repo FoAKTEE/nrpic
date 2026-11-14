@@ -6,6 +6,8 @@ on initial conditions made by cosmo/ic/gramses_ic.py at reduced size.
     python3 gramses_tests.py estimator [--n 128]       mesh estimator on lattice ICs
     python3 gramses_tests.py ics --L 4000 --z 49 [--n 256]   one box and redshift
     python3 gramses_tests.py fig4 [--n 256]            sigma8 variants (4 Gpc/h, z = 49)
+    python3 gramses_tests.py t0prec [--n 256]          single-precision and table-rounding
+                                                       emulations of the FD velocity
     python3 gramses_tests.py report [--n 256]          figures and gramses_tests.json
 
 Specification: cosmo/notes/spec_2001.07968.md ("notes:L" = its line L). Every test is on

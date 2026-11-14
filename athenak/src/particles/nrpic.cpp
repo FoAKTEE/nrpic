@@ -178,6 +178,8 @@ void Particles::NrpicInit(ParameterInput *pin) {
   nropt.dom_len[2] = pm->mesh_size.x3max - pm->mesh_size.x3min;
   dtnew = pin->GetOrAddReal("particles", "dt",
                             static_cast<Real>(std::numeric_limits<float>::max()));
+  dt_user = dtnew;
+  nropt.dt_expansion = pin->GetOrAddReal("particles", "dt_expansion", 0.0);
   nr_basename = pin->GetString("job", "basename");
   nr_particle_file = pin->GetOrAddString("particles", "particle_file", "");
   {
@@ -1064,13 +1066,24 @@ void Particles::NrpicStepSources() {
   auto tp = tm_prev;
   auto m1 = met1;
   const bool extrap = nropt.source_extrap && tm_prev_valid;
+  // half the ratio of the coming step to the last one: the densities are extrapolated
+  // to the middle of the coming step from the deposits at the two ends of the last one
+  Real half = 0.5;
+  {
+    Mesh *pm = pmy_pack->pmesh;
+    Real dt_next = std::min(2.0*pm->dt, dtnew);
+    if (pmy_pack->pz4c != nullptr) {
+      dt_next = std::min(dt_next, pm->cfl_no*pmy_pack->pz4c->dtnew);
+    }
+    if (pm->dt > 0.0 && dt_next > 0.0) { half = 0.5*dt_next/pm->dt; }
+  }
   par_for("nrpic_stepsrc", DevExeSpace(), 0, nmb1, 0, nv1, ks, ke, js, je, is, ie,
   KOKKOS_LAMBDA(const int m, const int n, const int k, const int j, const int i) {
     const Real det = adm::SpatialDet(m1(m,NRM_GXX,k,j,i), m1(m,NRM_GXY,k,j,i),
                                      m1(m,NRM_GXZ,k,j,i), m1(m,NRM_GYY,k,j,i),
                                      m1(m,NRM_GYZ,k,j,i), m1(m,NRM_GZZ,k,j,i));
     const Real d = (det > 0.0) ? tm(m,n,k,j,i)*sqrt(det) : 0.0;
-    ts(m,n,k,j,i) = extrap ? (1.5*d - 0.5*tp(m,n,k,j,i)) : d;
+    ts(m,n,k,j,i) = extrap ? (d + half*(d - tp(m,n,k,j,i))) : d;
     tp(m,n,k,j,i) = d;
   });
   tm_prev_valid = true;
@@ -1119,6 +1132,49 @@ void Particles::NrpicAddLambda() {
 }
 
 //----------------------------------------------------------------------------------------
+//! \fn  void Particles::NrpicUpdateTimeStep
+//! \brief with <particles> dt_expansion = f > 0, limits the coming step to the fraction
+//! f of the expansion time 3/|<alpha Khat>| (cell mean).  In a cosmological run that
+//! starts with the Hubble radius inside the box, the Courant step of the mesh is a
+//! sizeable fraction of the expansion time at first, and the error of the time
+//! integrator on the homogeneous background, committed in the first steps, stays in the
+//! solution as a uniform violation of the Hamiltonian constraint.  The limit acts only
+//! while the expansion is fast; later the step is the Courant step.
+
+void Particles::NrpicUpdateTimeStep() {
+  dtnew = dt_user;
+  if (nropt.dt_expansion <= 0.0 || pmy_pack->pz4c == nullptr) return;
+  auto &indcs = pmy_pack->pmesh->mb_indcs;
+  const int is = indcs.is, js = indcs.js, ks = indcs.ks;
+  const int n1 = indcs.nx1, n2 = indcs.nx2, n3 = indcs.nx3;
+  const int nmb = pmy_pack->nmb_thispack;
+  const int ncell = nmb*n3*n2*n1;
+  auto u0 = pmy_pack->pz4c->u0;
+  const int ikh = pmy_pack->pz4c->I_Z4C_KHAT, ial = pmy_pack->pz4c->I_Z4C_ALPHA;
+  Real sum = 0.0;
+  Kokkos::parallel_reduce("nrpic_exprate", Kokkos::RangePolicy<DevExeSpace>(0, ncell),
+  KOKKOS_LAMBDA(const int idx, Real &ls) {
+    int m = idx/(n3*n2*n1);
+    int rem = idx - m*(n3*n2*n1);
+    int k = rem/(n2*n1);
+    rem -= k*(n2*n1);
+    int j = rem/n1;
+    int i = rem - j*n1;
+    ls += u0(m,ial,k+ks,j+js,i+is)*u0(m,ikh,k+ks,j+js,i+is);
+  }, Kokkos::Sum<Real>(sum));
+  Real cnt = static_cast<Real>(ncell);
+#if MPI_PARALLEL_ENABLED
+  Real buf[2] = {sum, cnt};
+  MPI_Allreduce(MPI_IN_PLACE, buf, 2, MPI_ATHENA_REAL, MPI_SUM, MPI_COMM_WORLD);
+  sum = buf[0]; cnt = buf[1];
+#endif
+  const Real rate = fabs(sum)/(3.0*cnt);
+  if (rate > 0.0 && rate < 1.0e300) {
+    dtnew = std::min(dtnew, nropt.dt_expansion/rate);
+  }
+}
+
+//----------------------------------------------------------------------------------------
 //! \fn  TaskStatus Particles::NrpicDeposit
 //! \brief deposits and filters the matter sources at t^{n+1} and re-evaluates the
 //! constraints with them
@@ -1127,6 +1183,7 @@ TaskStatus Particles::NrpicDeposit(Driver *pdriver, int stage) {
   if (!nropt.deposit) return TaskStatus::complete;
   NrpicDepositSources();
   NrpicFilterSources();
+  NrpicUpdateTimeStep();
   NrpicStepSources();
   NrpicAddLambda();
   z4c::Z4c *pz4c = pmy_pack->pz4c;
@@ -1165,6 +1222,7 @@ void Particles::NrpicInitializeSources() {
       NrpicDepositSources();
     }
     NrpicFilterSources();
+    NrpicUpdateTimeStep();
     NrpicStepSources();
     NrpicAddLambda();
     if (pz4c != nullptr) {

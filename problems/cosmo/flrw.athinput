@@ -61,6 +61,7 @@ excise_chi      = 0.0                  # constraint norms over the whole box (ch
 <particles>
 particle_type  = nrpic
 pusher         = midpoint
+dt_expansion   = 0.0     # > 0: step limited to this fraction of the expansion time
 metric         = mesh
 tolerance      = 1.0e-12
 max_iterations = 50

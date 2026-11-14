@@ -57,6 +57,8 @@ struct NrpicOptions {
   bool filter_compensate;  // follow them by one pass (-c, 1+2c, -c)^3 that cancels
                            // the second moment of the binomial passes (c = nfilter/4)
   Real filter_comp_c;      // c of that pass if >= 0 (default -1: nfilter/4)
+  Real dt_expansion;       // > 0: step limited to this fraction of the expansion time
+                           // 3/|mean(alpha Khat)| (cosmological runs)
   Real deposit_comp_c;     // > 0: pass (-c, 1+2c, -c)^3 on the deposited densities, before
                            // the division by sqrt(gamma), compensating the cloud
   int deposit_max_level;  // finest refinement level on which a cloud is represented
@@ -131,6 +133,8 @@ class Particles {
   DvceArray2D<Real> prtcl_rdata;   // real number properties each particle (x,v,etc.)
   DvceArray2D<int>  prtcl_idata;   // integer properties each particle (gid, tag, etc.)
   Real dtnew;
+  Real dt_user = 0.0;          // <particles> dt (upper limit of the step)
+  Real dt_probe_old = -1.0;    // previous step (third-order proper time of the probes)
 
   ParticlesPusher pusher;
 
@@ -207,6 +211,7 @@ class Particles {
   void NrpicRemoveFlagged();
   void NrpicDepositSources();
   void NrpicFilterPass(const Real w0, const Real w1);
+  void NrpicUpdateTimeStep();
   void NrpicFilterSources();
   void NrpicAddLambda();
   void NrpicStepSources();

@@ -81,8 +81,9 @@ def linear_field(delta0, box, a):
     return np.fft.irfftn(np.fft.rfftn(delta0)*(3.0 + x*a)/(3.0 + x), s=(n,)*3, axes=(0, 1, 2))
 
 
-VARIANT = {"": "constant coefficient", "k": "", "cic": "linear cloud", "pcs": "cubic cloud",
-           "k2": "damping rate 2", "cfl": "step 0.05 of the cell"}
+VARIANT = {"": "", "k": "", "cic": "linear cloud", "pcs": "cubic cloud",
+           "k2": "damping rate 2", "cfl": "step 0.05 of the cell",
+           "comp": "compensated after the division", "dcomp": "compensated"}
 
 
 def label(case):

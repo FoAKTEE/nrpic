@@ -109,10 +109,16 @@ void Particles::NrpicProbe(Real dt) {
       Real &eng = (ip == 0) ? e_probe : e_probes[ip-1];
       if (dt > 0.0) {
         // proper time of the normal observer over the step: third-order formula with
-        // the lapse of the two previous times (trapezoidal rule on the first step)
+        // the lapse of the two previous times (trapezoidal rule on the first step).
+        // The parabola through the lapse at -h0, 0 and dt is integrated over the step;
+        // for equal steps this is dt (5 anew + 8 alp - aold)/12.
         const Real aold = alpha_probe_old[ip];
         if (aold > 0.0) {
-          tau += dt*(5.0*anew + 8.0*alp - aold)/12.0;
+          const Real h0 = (dt_probe_old > 0.0) ? dt_probe_old : dt;
+          const Real s1 = (anew - alp)/dt, s0 = (alp - aold)/h0;
+          const Real d1 = (s1*h0 + s0*dt)/(h0 + dt);
+          const Real d2 = 2.0*(s1 - s0)/(h0 + dt);
+          tau += dt*(alp + 0.5*dt*d1 + dt*dt*d2/6.0);
         } else {
           tau += 0.5*(alp + anew)*dt;
         }
@@ -122,6 +128,7 @@ void Particles::NrpicProbe(Real dt) {
       eng = se/sw;
     }
   }
+  if (dt > 0.0) { dt_probe_old = dt; }
 }
 
 //----------------------------------------------------------------------------------------
@@ -765,7 +772,7 @@ void Particles::NrpicCreateParticles() {
 //----------------------------------------------------------------------------------------
 //! \fn  void Particles::NrpicWriteRestart
 //! \brief writes the particle restart file that accompanies a mesh restart file:
-//!   8 bytes "NRPRST04" (02 and 03 are still read), int64 N, 7 doubles (tau_probe, alpha_probe, e_probe,
+//!   8 bytes "NRPRST05" (02 to 04 are still read), int64 N, 7 doubles (tau_probe, alpha_probe, e_probe,
 //!   mass_excised, mass_escaped, snap_next_time, curv_next_time), 4 int64 (n_excised,
 //!   n_escaped, snap_number, curv_number), N records of 7 doubles, N records of 3 int32
 //!   (gid, tag, species)
@@ -774,7 +781,7 @@ void Particles::NrpicWriteRestart(const std::string &fname) {
   std::FILE *fp = std::fopen(fname.c_str(), "wb");
   if (fp == nullptr) NrpicFatal("cannot open " + fname);
   const int np = nprtcl_thispack;
-  const char magic[9] = "NRPRST04";
+  const char magic[9] = "NRPRST05";
   std::int64_t n64 = np;
   double dstate[7] = {tau_probe, alpha_probe, e_probe, mass_excised, mass_escaped,
                       snap_next_time, curv_next_time};
@@ -814,6 +821,9 @@ void Particles::NrpicWriteRestart(const std::string &fname) {
   // densities handed to the spacetime solver for the coming step (extrapolated from the
   // last two deposits; they cannot be rebuilt from the particles at one time)
   std::fwrite(alpha_probe_old, sizeof(double), 9, fp);
+  // version 05: the previous step (the step may vary, see dt_expansion)
+  const double dtold = dt_probe_old;
+  std::fwrite(&dtold, sizeof(double), 1, fp);
   std::int64_t has_ts = 0;
   if (nropt.deposit && nropt.source_density && nropt.source_extrap &&
       pmy_pack->ptmunu != nullptr && pmy_pack->ptmunu->step_density && tm_prev_valid) {
@@ -844,10 +854,12 @@ void Particles::NrpicReadRestart(const std::string &fname) {
   std::int64_t istate[4];
   if (std::fread(magic, 1, 8, fp) != 8 || (std::strncmp(magic, "NRPRST02", 8) != 0 &&
                                            std::strncmp(magic, "NRPRST03", 8) != 0 &&
-                                           std::strncmp(magic, "NRPRST04", 8) != 0)) {
+                                           std::strncmp(magic, "NRPRST04", 8) != 0 &&
+                                           std::strncmp(magic, "NRPRST05", 8) != 0)) {
     NrpicFatal("bad magic in particle restart file " + fname);
   }
-  const bool v4 = (std::strncmp(magic, "NRPRST04", 8) == 0);
+  const bool v5 = (std::strncmp(magic, "NRPRST05", 8) == 0);
+  const bool v4 = v5 || (std::strncmp(magic, "NRPRST04", 8) == 0);
   const bool v3 = v4 || (std::strncmp(magic, "NRPRST03", 8) == 0);
   if (std::fread(&n64, sizeof(std::int64_t), 1, fp) != 1 ||
       std::fread(dstate, sizeof(double), 7, fp) != 7 ||
@@ -876,10 +888,13 @@ void Particles::NrpicReadRestart(const std::string &fname) {
   ts_restart.clear();
   if (v4) {
     std::int64_t has_ts = 0;
+    double dtold = -1.0;
     if (std::fread(alpha_probe_old, sizeof(double), 9, fp) != 9 ||
+        (v5 && std::fread(&dtold, sizeof(double), 1, fp) != 1) ||
         std::fread(&has_ts, sizeof(std::int64_t), 1, fp) != 1) {
       NrpicFatal("particle restart file " + fname + " is truncated");
     }
+    dt_probe_old = dtold;
     if (has_ts == 1) {
       if (std::fread(ts_restart_dims, sizeof(std::int64_t), 5, fp) != 5) {
         NrpicFatal("particle restart file " + fname + " is truncated");

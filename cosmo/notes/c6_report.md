@@ -41,7 +41,8 @@ Every test is on initial-condition data at z_ini; nothing is evolved (notes:43-4
     and the metadata (σ8 targets, renormalisation factors). Command line writes an `.npz`.
 
 `gramses_tests.py`: stages `expect`, `closed` (Fig. 1 analogue), `estimator`, `ics` (per box
-and z_ini: T0, Figs. 2 and 3), `fig4`, `report`.
+and z_ini: T0, Figs. 2 and 3), `fig4`, `t0prec` (added after the run, to find the cause of
+failed expectation 2), `report`.
 
 ## 2. Formulas used, with sources
 
@@ -199,7 +200,10 @@ sample variance of each bin (reduced χ² ~ 1).
 | FD (CMC), same model with II:384 | −7.05%, −3.66%, −2.77%; −1.91% | −8.0%, −4.3%, −3.1%; −1.9% (red) |
 
 The last two rows are a model, not a reproduction: in the paper the σ8 values that CAMB reports at
-z± carry the radiation-era growth; here a Mészáros growth factor plays that role. The CMC curve
+z± carry the radiation-era growth; here a Mészáros growth factor plays that role. (A first version
+of the CMC model scaled σ^p_8 itself with the Mészáros growth, which also skips II:384, and gave
+−5.6%, −2.9%, −2.2%; −1.5%. It was replaced before the run, because CAMB's σ^p_8(z±) is the σ8 of
+its own δ^p = δ^S − 3η with η nearly constant, i.e. II:384 with the radiation growth ratio.) The CMC curve
 grows at large scales as (1+G(k)), G = −3η/δ^S, because the misnormalised part of χ_p(z±)
 includes the η term, which does not cancel in the difference. The "σ^p_8 ∝ D_1" row is the only
 σ8 effect that exists without radiation; it depends on the lower limit of the σ8 integral

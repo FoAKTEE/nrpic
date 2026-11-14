@@ -1058,3 +1058,28 @@ Predictions:
     lobes; if the density turns negative in the voids after collapse the run may fail);
     power below half the cut-off within 1 percent at z = 100 and 10 (2.6 and 5.7
     percent without).
+
+## Step limited by the expansion rate (03:43)
+
+First repeated runs with the exact box (`dav_c704_n32_{k,dcomp,cic,pcs}`): the mean
+relative Hamiltonian constraint at t = 0 is 1.2e-9 (prediction (1) holds), but through
+the run it is nearly what it was (5.2e-6, 3.6e-5, 6.9e-5, 8.1e-5 at z = 100, 10, 1, 0),
+uniform and identical for all clouds: prediction (2), about 2e-6, fails by forty. My
+estimate used the wrong step for test A0 (its input has a step of 0.1 of the cell, so
+0.0084, not 0.021). Scaled correctly, (0.058/0.0084)^4 times 3e-8 is 7e-5: the offset
+IS the fourth-order error of the integrator on the background, committed in the first
+steps, where the Courant step of this mesh is 6 percent of the expansion time (the box
+is 7.4 Hubble radii wide), and carried from then on like spatial curvature.
+New option `dt_expansion = f`: the step is at most f times the expansion time
+3/|mean(alpha Khat)|. With it the step varies, so the extrapolation of the source
+densities and the third-order proper time of the probes now use the ratio of
+successive steps, and the restart file (format 05) carries the previous step.
+Checks on CPU. Homogeneous universe, 16 cells, box 4, to a = 36: without the limit
+(step 0.0625, 160 steps) the relative Hamiltonian constraint is 2.5e-5 and the error
+of chi a^2 is 5e-5 at the end; with f = 0.01 (360 steps) 6.0e-8 and 1.0e-7.
+Restart with the limit active and the compensation on (`cosmo/restart_test/a2, b2`):
+all compared quantities identical to the last digit.
+Predictions for the larger box at 32 cells with f = 0.01 (`dav_c704_n32_{t,dcompt}`):
+mean relative Hamiltonian constraint below 3e-7 at z = 100 and below 3e-6 to z = 0
+(the smaller box at 64 cells, whose step is 1 percent of the expansion time from the
+start, has 9.5e-8 at z = 100); momentum constraint and power unchanged.
