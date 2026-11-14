@@ -1993,3 +1993,31 @@ particle inside 0.8 of the smallest radius of a found horizon).
   at 12.246 M, four steps before v13 failed. Written before: v16 passes 12.26 M if the
   same cause was at work there; if it fails within a few steps of its start, the
   restart itself is involved and has to be looked at.
+
+## M/128 chain failed at the same step; a defect of the horizon-based removal after restarts (18:40)
+
+`jeans/n1e4_v16` (M/128 from the dump of v13 at 12.246 M, horizon-based removal on).
+- Fails at t = 12.2559 M, the step at which v13 failed: 11072 cells with non-finite
+  determinant, centred two cells from the puncture of black hole B. The finder's first
+  success after the restart came at 12.2656 M (first horizon only), so the removal
+  inside the horizon had not acted before the failure.
+- Against the prediction of 18:30: it failed within a few steps of its start, which I
+  had taken to implicate the restart. The comparison with v13 shows instead that the
+  state in that dump fails five steps later with or without the new rule, because the
+  rule had no horizon to work with yet. The test did not separate the two; it shows
+  only that the removal must be active before the matter accumulates.
+- Found while reading the first steps: v16 had nine particles fewer than v13 from its
+  first step. After a restart the finder's flag "found" is restored from the dump
+  while its radius is the initial placeholder (-1) and its centre the stored default,
+  and my rule used them: 0.8 times the placeholder is a radius of 0.8 M about the
+  default centre. Corrected: the rule waits for a successful search of the current
+  run (radius positive), and ignores a surface more than four times its starting
+  radius. The earlier intervention run (`diag_v14b`) was not affected: it restarted
+  from a dump written before any horizon had been found. `v15`, started from a dump
+  with horizons, was stopped after its first steps and is discarded.
+- New production chains with the corrected build: `jeans/n1e4_v17` (M/64, from the
+  dump of the intervention run at 13.0 M) and `jeans/n1e4_v18` (M/128, from the dump
+  of v13 at 6.31 M, before the collapse, so that the removal acts from the first
+  successful search on). Written before: v18 passes 12.26 M and 13.26 M with no bad
+  cells; if it fails there again, removal inside 0.8 of the horizon is not enough at
+  M/128 and the comparison with M/64 has to explain why.

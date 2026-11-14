@@ -282,7 +282,14 @@ TaskStatus Particles::NrpicPush(Driver *pdriver, int stage) {
   }
   if (mesh_metric && nropt.ah_exc_factor > 0.0 && pmy_pack->pz4c != nullptr) {
     for (auto &pah : pmy_pack->pz4c->pfastflow) {
-      if (pah->ah_found && nah < 4 && Kokkos::isfinite(pah->rr_min)) {
+      // rr_min is -1 until a search of this run has succeeded: after a restart the
+      // flag ah_found is restored from the dump but the radius and centre are not, so
+      // the rule waits for the first successful search
+      // A surface more than four times its starting radius is not accepted as a
+      // region to empty (a search that ends on a spurious surface must not remove
+      // the matter of the cluster).
+      if (pah->ah_found && nah < 4 && Kokkos::isfinite(pah->rr_min)
+          && pah->rr_min > 0.0 && pah->rr_min < 4.0*pah->initial_radius) {
         ahc[nah][0] = pah->center[0];
         ahc[nah][1] = pah->center[1];
         ahc[nah][2] = pah->center[2];
