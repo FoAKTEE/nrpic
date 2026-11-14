@@ -1400,3 +1400,18 @@ box away, resolved to 0.1 points.
 The mean relative Hamiltonian constraint at a = 20 and 40 is the same at the three
 resolutions (1.0e-4 to 1.1e-4, 2.1e-4 to 2.3e-4): the resolution-independent level seen
 in the random-field runs, where it follows the damping coefficient (entry above).
+
+## C5: 27 particles per cell in the smaller box, outcome (05:11)
+
+`dav_c256_n64_p3t` against `dav_c256_n64_t` (8 per cell), quadratic cloud, no
+compensation. Mean relative Hamiltonian constraint at z = 30, 10, 5, 2, 1, 0.3, 0:
+3.6e-7, 2.7e-6, 9.3e-6, 4.5e-5, 9.6e-5, 2.2e-4, 5.1e-4 against 1.8e-7, 1.2e-6, 7.3e-6,
+5.0e-5, 1.3e-4, 3.5e-4, 6.9e-4. Momentum constraint 1.4e-3, 4.2e-3, 9.9e-3, 2.3e-2,
+3.4e-2, 6.4e-2, 0.11 against 9.2e-4, 1.3e-3, 6.3e-3, 2.8e-2, 4.9e-2, 8.7e-2, 0.13.
+Predictions: no gain at z = 10: holds (it is worse, as three per cell and direction
+were slightly worse than two in the Python table); a factor of 1.5 to 2.6 from z = 4
+to 1: fails (1.1 to 1.4); a factor of 1.8 after collapse: fails (1.35 to 1.6).
+So 3.4 times the particles change the constraints after collapse by a third. The
+level there is not shot noise. With the damping style, the cloud order, the
+compensation and the limiter all tried, the remaining lead is the dependence on the
+damping coefficient found in the larger box.
