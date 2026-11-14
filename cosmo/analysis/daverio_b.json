@@ -1,0 +1,18 @@
+{
+ "dav_b_test": {
+  "n": 16,
+  "t_end": 16.00002368882361,
+  "phi_amp_start_e-9": -6.74556567562424,
+  "phi_amp_end_e-9": -6.76191131502278,
+  "phi_amp_change": 0.002423168075822879,
+  "phi_mean_end_e-9": 27.653256906567947,
+  "delta_delta": {},
+  "delta_delta_mean_removed": {},
+  "background_density_error_end": 8.295977287769984e-08,
+  "background_density_error_max": 8.295977287769984e-08,
+  "delta_amp_over_linear_end": 0.976177587987714,
+  "Hr_max_end": 6.756937481267187e-08,
+  "Hr_max_max": 6.756937481267187e-08,
+  "Mr_max_end": 7.637010007166263e-05
+ }
+}

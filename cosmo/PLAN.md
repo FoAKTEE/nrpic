@@ -89,6 +89,40 @@ Method tracks that run beside the milestones (from the assessment of the first p
   cluster of the first project, where it tests what seeds the core oscillation; in the
   cosmological runs the homogeneous lattice plays the role of the known solution.
 
+## State and revisions (2026-11-14 01:08)
+
+Done: C0, C1; C3 machinery (rays in the code, both analyses, homogeneous test).
+Running: C2 rerun with identical positions in the two calculations, with the cloud-shape
+study (linear, quadratic, cubic); C5 tests A0, A (homogeneous universe, a = 1 to 1001,
+with and without noise) and B (plane-wave linear mode).
+What the first runs changed in the plan:
+- Sources go to the spacetime solver as densities, converted at every stage (C0).
+- The lattice sits on the cell corners; the relativistic data use the Newtonian
+  positions and carry the rest of the density in the masses (C1, C2).
+- T1 is staged. T1a: smoother clouds (B-splines of degree two and three, done in the
+  code): the sampling error of a compressed lattice is c/2, 0.4 c^2, 0.4 c^3 for the
+  three shapes, and the mismatch between the deposited fields and the finite
+  differences of the solver, which drives the constraint violation, is the unresolved
+  part of the cloud shape. T1b, only if T1a leaves a floor: a momentum density built
+  from fluxes so that the discrete continuity equation holds; centred differences do
+  not see the Nyquist mode, so this needs the filter and a non-local map.
+- C4 gains the resolution study that the first runs call for: 64, 96, 128 cells, one
+  and two particles per cell and direction, the three shapes; the filter without the
+  compensation pass as a variant (the compensated filter leaves cells of negative
+  energy density next to the collapsed region).
+- New item E1 (beyond paper 1, which left it to future work): the extreme case through
+  the formation of the black hole. Needs a lapse condition that keeps conformal time
+  where the universe expands and avoids the singularity where it collapses, mesh
+  refinement around the overdensity, and the horizon finder of the first project in a
+  periodic box. To be designed after C2 to C4.
+- C5: tests A0, A, B at the resolutions of paper 2 where affordable (8 particles per
+  cell instead of 27; the 128-cell case of test B later); test C (random field from a
+  power spectrum, 704 and 256 Mpc/h) needs a spectrum generator and long runs with
+  restarts, after B.
+- The Slurm limit is one hour per job and the two GPUs are shared with the last runs of
+  the first project: short runs go through `scripts/gpu_batch.sh`; long cosmological
+  runs need the restart path, which is untested for periodic particle runs.
+
 ## Decisions
 
 - Particle numbers: the limit of 10^4 belonged to the first project. Here the mesh has
