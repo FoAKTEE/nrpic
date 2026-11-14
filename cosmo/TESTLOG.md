@@ -75,3 +75,42 @@ works; the lapse condition gives conformal time; with density-form sources the c
 reproduces the matter-dominated universe to 1e-6 at 32 cells and a quarter-cell step.
 The first-order error of the published coupling in an expanding background is the
 first finding of this extension.
+
+## C1: constraint-solved initial data; a deposit artifact of lattices at cell centres (00:10)
+
+`cosmo/ic/cosmo_id.py` solves the Hamiltonian and momentum constraints on the torus for
+given particles and K with Fourier transforms, forming the sources as the code does.
+Checks: homogeneous lattice gives psi = 1 exactly; a manufactured conformal factor is
+recovered to 1e-15; a transverse momentum density gives the analytic traceless
+curvature. `cosmo/ic/make_east.py` builds the data of paper 1 (lattice, relativistic
+Zel'dovich displacement, masses, dictionary K and lapse).
+- First attempt, particles at cell centres: the solved conformal factor differed from
+  the dictionary by 23 percent of its perturbation at an amplitude of 1e-4, where the
+  two must agree. Cause: a particle at a cell centre sits on the cusp of the
+  cloud-in-cell weight; where the displacement changes sign (density peak and trough)
+  both neighbours leak into each other's cells, and the two cells next to the peak
+  receive a contrast of 1.5 times the true one (seen directly in the deposit: 5.97e-4
+  against 3.7e-4 in the neighbours). This is the same mechanism as the lattice beat of
+  the dust ball in the first project.
+- Lattice shifted by half a spacing (particles at cell corners, each shared by eight
+  cells; the undisplaced lattice still deposits an exactly uniform density): the
+  difference falls to 0.7 percent of the perturbation at 1e-4 and is 4 percent at 1e-2
+  and 15 percent at 5e-2, i.e. second order in the amplitude, as paper 1 states for its
+  own nonlinear correction. Two particles per cell and direction behave the same.
+- The momentum constraint leaves a residual at the Nyquist wave number of the mesh
+  when the sources are not filtered (1.5e-3 at 5e-2 amplitude; centred differences
+  cannot balance it); one binomial pass removes it (1.6e-6). The cosmological runs use
+  two passes with compensation.
+
+First run with these data: `cosmo/east_d1e-4_n32_cpu`, amplitude 1e-4, 32^3 cells,
+shifted lattice of 32^3 particles, to t = 18 (a = 100). Written before the run:
+(1) the code's own Hamiltonian-constraint norm at t = 0 is below 1e-6 (the terms are of
+order 6); (2) the observer density contrast at the two probes follows linear theory,
+delta_obs = +-3 delta [a_p + 3 (H/k)^2 a_p^(-3/2)] with 3 (H/k)^2 = 1.216, where the
+second term comes from the offset between the initial slice and a slice of constant
+proper time; at 32 cells the probe value is reduced by cos(k h/2) and the deposit
+window to 0.994 of this; agreement within 2 percent up to a_p = 30, and departures of
+the order of the contrast itself beyond (the peak contrast reaches 0.03 at a_p = 100).
+A failure of (1) means the solver and the code disagree on the constraints; a failure
+of (2) by a constant factor means the dictionary or the displacement is wrong; a wrong
+growth law means the evolution is wrong.

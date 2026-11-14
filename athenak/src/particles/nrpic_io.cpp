@@ -42,7 +42,7 @@ void NrpicFatal(const std::string &msg) {
 //! \fn  void Particles::NrpicProbe
 //! \brief trilinear (cloud-in-cell) interpolation of the lapse and of the deposited
 //! energy density to the probe position, and proper time of the normal observer there,
-//! tau = int alpha dt (trapezoidal rule).  At a MeshBlock corner the interpolation is
+//! tau = int alpha dt (third order in the step).  At a MeshBlock corner the interpolation is
 //! the average of the eight surrounding cells.
 
 void Particles::NrpicProbe(Real dt) {
@@ -104,15 +104,22 @@ void Particles::NrpicProbe(Real dt) {
 
     if (sw > 0.0) {
       const Real anew = sa/sw;
-      if (ip == 0) {
-        if (dt > 0.0) { tau_probe += 0.5*(alpha_probe + anew)*dt; }
-        alpha_probe = anew;
-        e_probe = se/sw;
-      } else {
-        if (dt > 0.0) { tau_probes[ip-1] += 0.5*(alpha_probes[ip-1] + anew)*dt; }
-        alpha_probes[ip-1] = anew;
-        e_probes[ip-1] = se/sw;
+      Real &tau = (ip == 0) ? tau_probe : tau_probes[ip-1];
+      Real &alp = (ip == 0) ? alpha_probe : alpha_probes[ip-1];
+      Real &eng = (ip == 0) ? e_probe : e_probes[ip-1];
+      if (dt > 0.0) {
+        // proper time of the normal observer over the step: third-order formula with
+        // the lapse of the two previous times (trapezoidal rule on the first step)
+        const Real aold = alpha_probe_old[ip];
+        if (aold > 0.0) {
+          tau += dt*(5.0*anew + 8.0*alp - aold)/12.0;
+        } else {
+          tau += 0.5*(alp + anew)*dt;
+        }
+        alpha_probe_old[ip] = alp;
       }
+      alp = anew;
+      eng = se/sw;
     }
   }
 }
@@ -132,10 +139,11 @@ void Particles::NrpicWriteHistory(Real time, int ncycle, bool header) {
     auto pr = prtcl_rdata;
     Kokkos::parallel_reduce("nrpic_sums", Kokkos::RangePolicy<DevExeSpace>(0, np),
     KOKKOS_LAMBDA(const int p, Real &lm, Real &lx, Real &ly, Real &lz) {
-      lm += pr(IPM,p);
-      lx += pr(IPM,p)*pr(IPVX,p);
-      ly += pr(IPM,p)*pr(IPVY,p);
-      lz += pr(IPM,p)*pr(IPVZ,p);
+      const Real mm = (pr(IPM,p) > 0.0) ? pr(IPM,p) : 0.0;   // null particles: none
+      lm += mm;
+      lx += mm*pr(IPVX,p);
+      ly += mm*pr(IPVY,p);
+      lz += mm*pr(IPVZ,p);
     }, Kokkos::Sum<Real>(sm), Kokkos::Sum<Real>(sux), Kokkos::Sum<Real>(suy),
        Kokkos::Sum<Real>(suz));
   }
@@ -240,8 +248,10 @@ void Particles::NrpicWriteTrajectories(Real time, bool truncate) {
   const int np = nprtcl_thispack;
   const bool mesh_metric = (nropt.metric == NrpicMetric::mesh);
   // With a mesh metric the fields reconstructed at each tracked particle are written to
-  // <basename>.trajmet.bin as records of 12 doubles: time, tag, alpha, beta^i, gamma_ij
-  // (xx, xy, xz, yy, yz, zz), in the same order as the records of the trajectory file.
+  // <basename>.trajmet.bin as records of 17 doubles: time, tag, alpha, beta^i, gamma_ij
+  // (xx, xy, xz, yy, yz, zz), the proper time of the particle (affine parameter of a
+  // null particle), and the deposited E and S_i interpolated to it with the
+  // cloud-in-cell weights, in the same order as the records of the trajectory file.
   std::FILE *fpm = nullptr;
   if (mesh_metric) {
     std::string fmet = nr_basename + ".trajmet.bin";
@@ -267,7 +277,19 @@ void Particles::NrpicWriteTrajectories(Real time, bool truncate) {
       proto.ncell[0] = indcs.nx1 + 2*indcs.ng;
       proto.ncell[1] = indcs.nx2 + 2*indcs.ng;
       proto.ncell[2] = indcs.nx3 + 2*indcs.ng;
-      DvceArray2D<Real> pmet("pmet", NRM_NVAR, np);
+      DvceArray2D<Real> pmet("pmet", NRM_NVAR + 5, np);
+      const int nmb = pmy_pack->nmb_thispack;
+      const int is = indcs.is, js = indcs.js, ks = indcs.ks;
+      const int ie = indcs.ie, je = indcs.je, ke = indcs.ke;
+      Mesh *pm = pmy_pack->pmesh;
+      const Real gmin[3] = {pm->mesh_size.x1min, pm->mesh_size.x2min,
+                            pm->mesh_size.x3min};
+      const Real dmin[3] = {nropt.dom_min[0], nropt.dom_min[1], nropt.dom_min[2]};
+      const Real dlen[3] = {nropt.dom_len[0], nropt.dom_len[1], nropt.dom_len[2]};
+      const bool per[3] = {nropt.periodic[0], nropt.periodic[1], nropt.periodic[2]};
+      const bool has_tm = nropt.deposit;
+      DvceArray5D<Real> tm;
+      if (has_tm) { tm = pmy_pack->ptmunu->u_tmunu; }
       par_for("nrpic_trajmet", DevExeSpace(), 0, np-1, KOKKOS_LAMBDA(const int p) {
         if (pi(PTAG,p) >= ntrack) return;
         const int m = pi(PGID,p) - gids;
@@ -285,6 +307,47 @@ void Particles::NrpicWriteTrajectories(Real time, bool truncate) {
         pmet(NRM_GXX,p) = ap.g[0][0]; pmet(NRM_GXY,p) = ap.g[0][1];
         pmet(NRM_GXZ,p) = ap.g[0][2]; pmet(NRM_GYY,p) = ap.g[1][1];
         pmet(NRM_GYZ,p) = ap.g[1][2]; pmet(NRM_GZZ,p) = ap.g[2][2];
+        pmet(NRM_NVAR,p) = pr(IPTAU,p);
+        // deposited E and S_i at the particle (cloud-in-cell gather on its level)
+        Real se = 0.0, sx = 0.0, sy = 0.0, sz3 = 0.0, sw = 0.0;
+        if (has_tm) {
+          const Real h[3] = {sz(m).dx1, sz(m).dx2, sz(m).dx3};
+          Real xb[3], s[3];
+          for (int d=0; d<3; ++d) {
+            Real xi = (x[d] - gmin[d])/h[d] - 0.5;
+            Real fl = floor(xi);
+            s[d] = xi - fl;
+            xb[d] = gmin[d] + (fl + 0.5)*h[d];
+          }
+          for (int c=0; c<8; ++c) {
+            const Real xf = nrpic::WrapCoord(xb[0] + ((c & 1) ? h[0] : 0.0),
+                                             dmin[0], dlen[0], per[0]);
+            const Real yf = nrpic::WrapCoord(xb[1] + ((c & 2) ? h[1] : 0.0),
+                                             dmin[1], dlen[1], per[1]);
+            const Real zf = nrpic::WrapCoord(xb[2] + ((c & 4) ? h[2] : 0.0),
+                                             dmin[2], dlen[2], per[2]);
+            const Real w = ((c & 1) ? s[0] : 1.0 - s[0])*((c & 2) ? s[1] : 1.0 - s[1])
+                          *((c & 4) ? s[2] : 1.0 - s[2]);
+            const int mb = nrpic::FindBlock(sz, nmb, m, xf, yf, zf);
+            if (mb < 0) continue;
+            int i = is + static_cast<int>(floor((xf - sz(mb).x1min)/sz(mb).dx1));
+            int j = js + static_cast<int>(floor((yf - sz(mb).x2min)/sz(mb).dx2));
+            int k = ks + static_cast<int>(floor((zf - sz(mb).x3min)/sz(mb).dx3));
+            i = (i < is) ? is : ((i > ie) ? ie : i);
+            j = (j < js) ? js : ((j > je) ? je : j);
+            k = (k < ks) ? ks : ((k > ke) ? ke : k);
+            se += w*tm(mb,Tmunu::I_Tmunu_E,k,j,i);
+            sx += w*tm(mb,Tmunu::I_Tmunu_Sx,k,j,i);
+            sy += w*tm(mb,Tmunu::I_Tmunu_Sy,k,j,i);
+            sz3 += w*tm(mb,Tmunu::I_Tmunu_Sz,k,j,i);
+            sw += w;
+          }
+        }
+        const Real isw = (sw > 0.0) ? 1.0/sw : 0.0;
+        pmet(NRM_NVAR+1,p) = se*isw;
+        pmet(NRM_NVAR+2,p) = sx*isw;
+        pmet(NRM_NVAR+3,p) = sy*isw;
+        pmet(NRM_NVAR+4,p) = sz3*isw;
       });
       mh = Kokkos::create_mirror_view_and_copy(HostMemSpace(), pmet);
     }
@@ -299,7 +362,7 @@ void Particles::NrpicWriteTrajectories(Real time, bool truncate) {
         if (mesh_metric) {
           mbuf.push_back(time);
           mbuf.push_back(static_cast<double>(ih(PTAG,p)));
-          for (int n=0; n<NRM_NVAR; ++n) { mbuf.push_back(mh(n,p)); }
+          for (int n=0; n<NRM_NVAR+5; ++n) { mbuf.push_back(mh(n,p)); }
         }
       }
     }

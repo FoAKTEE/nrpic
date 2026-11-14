@@ -289,6 +289,7 @@ TaskStatus Particles::NrpicPush(Driver *pdriver, int stage) {
   auto sz = pmy_pack->pmb->mb_size.d_view;
   const int gids = pmy_pack->gids;
   const Real dt = pm->dt;
+  const Real tnow = pm->time;
   const Real tol = nropt.tol;
   const int maxit = nropt.maxit;
   const int triad = nropt.triad;
@@ -340,8 +341,11 @@ TaskStatus Particles::NrpicPush(Driver *pdriver, int stage) {
   KOKKOS_LAMBDA(const int p, int &lnun, int &lmxit) {
     Real x[3] = {pr(IPX,p), pr(IPY,p), pr(IPZ,p)};
     Real u[3] = {pr(IPVX,p), pr(IPVY,p), pr(IPVZ,p)};
-    // a particle without rest mass follows a null geodesic (midpoint pusher only)
+    // a particle without rest mass follows a null geodesic (midpoint pusher only);
+    // a negative mass -t_e marks a null particle that waits at its position until the
+    // time t_e (a light ray emitted during the run)
     const Real eps = (pr(IPM,p) > 0.0) ? 1.0 : 0.0;
+    if (pr(IPM,p) < 0.0 && tnow < -pr(IPM,p)) return;
     Real dtau = 0.0;
     int it = 0;
     bool excise = false;

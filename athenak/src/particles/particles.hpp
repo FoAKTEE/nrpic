@@ -169,6 +169,9 @@ class Particles {
   Real tau_probes[8] = {0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0};   // additional probes
   Real alpha_probes[8] = {1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0};
   Real e_probes[8] = {0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
+  // lapse at the probes one step earlier (index 0: the main probe) for the third-order
+  // integration of their proper time; negative: not available
+  Real alpha_probe_old[9] = {-1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0};
   long n_bad_det_total = 0;        // cells whose sources were zeroed (det <= 0), summed
   int n_bad_det_reports = 0;       // number of such events reported so far
   Real mass_excised = 0.0;         // rest mass removed by excision

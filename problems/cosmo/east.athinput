@@ -1,0 +1,99 @@
+# Inhomogeneities at one wavelength in a matter-dominated universe: the initial data of
+# East, Wojtak & Pretorius (arXiv:1908.05683), built by cosmo/ic/make_east.py, which
+# writes particles.nrp and fields.bin for the mesh and the filter set here (cosmo/PLAN.md).
+# Units G = c = 1 and initial Hubble rate H_0 = 1 at a = 1; periodic box of side 4, four
+# initial Hubble radii. Lapse condition d_t alpha = -(1/3) alpha^2 K (conformal time on
+# the homogeneous solution, a = (1 + t/2)^2), zero shift. Probe 0 sits at the overdensity
+# peak (x_i = 1), probe 1 at the underdensity (x_i = 3).
+
+<comment>
+problem   = single-wavelength inhomogeneities in an expanding universe
+
+<job>
+basename  = east
+
+<mesh>
+nghost    = 4
+nx1       = 32
+x1min     = 0.0
+x1max     = 4.0
+ix1_bc    = periodic
+ox1_bc    = periodic
+nx2       = 32
+x2min     = 0.0
+x2max     = 4.0
+ix2_bc    = periodic
+ox2_bc    = periodic
+nx3       = 32
+x3min     = 0.0
+x3max     = 4.0
+ix3_bc    = periodic
+ox3_bc    = periodic
+
+<meshblock>
+nx1       = 16
+nx2       = 16
+nx3       = 16
+
+<time>
+evolution  = dynamic
+integrator = rk4
+cfl_number = 0.25
+nlim       = -1
+tlim       = 18.0
+ndiag      = 20
+
+<z4c>
+lapse_oplog     = 0.0
+lapse_harmonicf = 1.0
+lapse_harmonic  = 0.3333333333333333   # d_t alpha = -(1/3) alpha^2 K
+lapse_advect    = 0.0
+shift_Gamma     = 0.0                  # zero shift
+shift_eta       = 0.0
+shift_advect    = 0.0
+diss            = 0.5
+damp_kappa1     = 0.02
+damp_kappa2     = 0.0
+damp_ch         = 0.0
+damp_ch_dx      = 0.0
+
+<particles>
+particle_type  = nrpic
+pusher         = midpoint
+metric         = mesh
+tolerance      = 1.0e-12
+max_iterations = 50
+deposit        = true
+nfilter        = 2
+filter_compensate = true
+filter_comp_c  = -1.0
+deposit_max_level = 31
+deposit_adaptive  = false
+deposit_min_level = 0
+deposit_ppc       = 2.0
+deposit_max_coarsen = 31
+alpha_exc      = -1.0
+ah_exc_factor  = -1.0
+hist_dcycle    = 1
+snap_dt        = 0.5
+probe_x1       = 1.0
+probe_x2       = 1.0
+probe_x3       = 1.0
+nprobe         = 1
+probe1_x1      = 3.0
+probe1_x2      = 3.0
+probe1_x3      = 3.0
+lambda         = 0.0
+source_density = true    # densities converted with the volume element of each stage
+source_extrap  = true    # ... extrapolated to the middle of the step
+particle_file  = particles.nrp
+
+<problem>
+pgen_name  = nrpic_cosmo
+id         = file
+id_file    = fields.bin
+hubble     = 1.0
+
+<output1>
+file_type = hst
+dt        = 0.1
