@@ -824,3 +824,22 @@ Open, in order: a shift condition that is stable on refined blocks (smaller coef
 damping, or the shift of the first project switched on only near the collapse);
 initial data that satisfy the constraints on the refined blocks; more particles in the
 collapsing region. Paused here in favour of the remaining reproduction items.
+
+## C5, test C: the late growth is the stiff damping (02:45)
+
+`cosmo/dav_c704_n32_k` (damping at a fixed rate per unit of conformal time, kappa1 =
+0.5): confirmed. No late growth: the mean relative Hamiltonian constraint is 6e-6 at
+z = 100, 4e-5 at z = 10, 8e-5 at z = 1 and 9.6e-5 at z = 0.02 (predicted below 2e-4); the
+mean relative momentum constraint stays between 1.4e-3 and 5.7e-3 (0.3 at the end
+before). The power spectrum is unchanged (departures 5.7 to 9.4 percent below half the
+cut-off at 32 cells, as before). The 64-cell run with the constant coefficient shows
+the same growth more weakly (4e-4 and 0.13 at z = 0.02, where the product of rate and
+step is 1.2), so the growth sets in well below the stability limit of a pure decay
+term; I have not worked out the mode. From here on the runs over a thousandfold
+expansion use the fixed-rate damping (input `problems/cosmo/daverio_field.athinput`).
+The earlier runs are not affected: their product of rate and step stayed below 0.5
+(tests A0, A, B: at most 0.42; the collapse runs: 0.35), and their constraints fall or
+stay level to the end.
+Against paper 2 at 32 cells: mean relative momentum constraint 5.7e-3, 1.8e-3, 1.5e-3
+at z = 100, 10, 1 (paper 2: 1.8e-2, 1.3e-2, 9.1e-3); mean relative Hamiltonian
+constraint 6e-6 to 1e-4 (paper 2: 3e-7 to 3.5e-6, with a five times smaller step).

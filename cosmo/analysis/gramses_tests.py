@@ -373,14 +373,13 @@ def stage_expect(args):
                            L, z, lambda k: gi.power_ratio_pS(k, a, P)),
                        "ratio_last_bin": pp[-1]/ps[-1], "k_last": kk[-1]}
             low = (kk > 0.01)
-            # the paper's bins run to k = 0.804 (4 Gpc) / 12.57 (256 Mpc), 1024^3
+            # the paper's bins run to k = 0.804 (4 Gpc) / 12.57 (256 Mpc), 1024^3;
+            # thin shells at k > 0.01: the bin centre stands for the mode average
             ep = edges(1024, L)
-            _, tnp, _, _ = rf.expected_power(min(1024, 4*n), L,
-                                             lambda k: gi.theta_power_N(k, z, P), ep)
-            _, tlp, _, _ = rf.expected_power(min(1024, 4*n), L,
-                                             lambda k: gi.theta_power_lower(k, z, P), ep)
             kp = 0.5*(ep[1:] + ep[:-1])
-            okp = np.isfinite(tnp) & (kp > 0.01)
+            tnp = gi.theta_power_N(kp, z, P)
+            tlp = gi.theta_power_lower(kp, z, P)
+            okp = kp > 0.01
             f3[key] = {"first_bin_lower_ratio_ensemble": tl[0]/tn[0],
                        "first_bin_lower_ratio_centre": float(
                            gi.theta_lower_T(kk[0], a, P)**2),
