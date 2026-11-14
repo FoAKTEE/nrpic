@@ -57,6 +57,7 @@ struct NrpicOptions {
   bool filter_compensate;  // follow them by one pass (-c, 1+2c, -c)^3 that cancels
                            // the second moment of the binomial passes (c = nfilter/4)
   Real filter_comp_c;      // c of that pass if >= 0 (default -1: nfilter/4)
+  bool field_constraints;  // field dumps also hold the constraints, Khat, Theta, lapse
   Real dt_expansion;       // > 0: step limited to this fraction of the expansion time
                            // 3/|mean(alpha Khat)| (cosmological runs)
   Real deposit_comp_c;     // > 0: pass (-c, 1+2c, -c)^3 on the deposited densities, before

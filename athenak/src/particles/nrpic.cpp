@@ -182,6 +182,7 @@ void Particles::NrpicInit(ParameterInput *pin) {
                             static_cast<Real>(std::numeric_limits<float>::max()));
   dt_user = dtnew;
   nropt.dt_expansion = pin->GetOrAddReal("particles", "dt_expansion", 0.0);
+  nropt.field_constraints = pin->GetOrAddBoolean("particles", "field_constraints", false);
   nr_basename = pin->GetString("job", "basename");
   nr_particle_file = pin->GetOrAddString("particles", "particle_file", "");
   {

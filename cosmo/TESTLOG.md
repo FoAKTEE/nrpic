@@ -1415,3 +1415,26 @@ So 3.4 times the particles change the constraints after collapse by a third. The
 level there is not shot noise. With the damping style, the cloud order, the
 compensation and the limiter all tried, the remaining lead is the dependence on the
 damping coefficient found in the larger box.
+
+## C5/T1: damping rate, outcome; the constraint field goes into the dumps (05:35)
+
+`dav_c704_n32_pcsct_{k01,k002,k0}` with the reference (0.5) and rate 2. Mean relative
+Hamiltonian constraint at z = 100, 10, 1, 0.02:
+   rate 2     2.0e-7, 4.9e-7, 6.3e-6, 2.2e-5
+   rate 0.5   6.4e-8, 1.5e-7, 1.9e-6, 7.6e-6
+   rate 0.1   4.7e-8, 1.7e-7, 1.9e-6, 6.8e-6
+   rate 0.02  4.9e-8, 1.1e-7, 2.0e-6, 7.6e-6
+   none       4.9e-8, 1.0e-7, 1.5e-6, 6.3e-6
+Momentum constraint the same in all (7.8e-4 at z = 10, 4.0e-3 to 4.8e-3 at the end).
+Prediction (falls in proportion down to rate 0.1): FAILS. The constraint rises with
+the rate above 0.5 and is flat below it: stronger damping feeds the Hamiltonian
+constraint, weaker damping does not lower it. The run is stable to z = 0 without any
+damping. So the level of 1e-7, 1.5e-6, 6e-6 is intrinsic to the coupled scheme at this
+amplitude: it does not depend on the damping (at or below 0.5), the cell size (from
+z = 0.3 on), the step, the cloud order, the particle number, the pusher tolerance or
+the dissipation; the compensation doubles it; it grows as the square of the contrast
+(about 1e-3 times the squared rms contrast in both boxes). Rate 0.5 stays the default.
+I stop guessing here. New output: with `field_constraints = true` the field dumps
+also hold the Hamiltonian constraint, the momentum constraint, Khat, Theta and the
+lapse (format NRFIELD2). Next: look at the constraint field itself (where it sits,
+its spectrum, what it correlates with) in `dav_c704_n32_pcsct_f`.

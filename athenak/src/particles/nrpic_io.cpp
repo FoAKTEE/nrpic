@@ -457,6 +457,9 @@ void Particles::NrpicWriteLine(Real time, bool header) {
 //! \brief writes the energy density E and the conformal factor chi of the whole uniform
 //! mesh to <basename>.field.NNNNN.bin: 8 bytes "NRFIELD1", the time (double), 3 int64
 //! (n1, n2, n3), then two arrays of n3*n2*n1 floats (E, chi), first index fastest.
+//! With <particles> field_constraints = true the magic is "NRFIELD2" and seven more
+//! arrays follow: the Hamiltonian constraint, the three components of the momentum
+//! constraint, Khat, Theta and the lapse, all as doubles.
 
 void Particles::NrpicWriteEnergyField(Real time, int index) {
   if (pmy_pack->pz4c == nullptr || !nropt.deposit) return;
@@ -502,11 +505,39 @@ void Particles::NrpicWriteEnergyField(Real time, int index) {
   if (fp == nullptr) NrpicFatal("cannot open " + fname);
   const std::int64_t dims[3] = {g1, g2, g3};
   const double tt = time;
-  std::fwrite("NRFIELD1", 1, 8, fp);
+  std::fwrite(nropt.field_constraints ? "NRFIELD2" : "NRFIELD1", 1, 8, fp);
   std::fwrite(&tt, sizeof(double), 1, fp);
   std::fwrite(dims, sizeof(std::int64_t), 3, fp);
   std::fwrite(e.data(), sizeof(float), ncell, fp);
   std::fwrite(c.data(), sizeof(float), ncell, fp);
+  if (nropt.field_constraints) {
+    auto conh = Kokkos::create_mirror_view_and_copy(Kokkos::HostSpace(),
+                                                    pmy_pack->pz4c->u_con);
+    const int src[7] = {z4c::Z4c::I_CON_H, z4c::Z4c::I_CON_MX, z4c::Z4c::I_CON_MY,
+                        z4c::Z4c::I_CON_MZ, z4c::Z4c::I_Z4C_KHAT, z4c::Z4c::I_Z4C_THETA,
+                        z4c::Z4c::I_Z4C_ALPHA};
+    std::vector<double> buf(ncell);
+    for (int n=0; n<7; ++n) {
+      for (int m=0; m<nmb; ++m) {
+        const std::int64_t i0 = static_cast<std::int64_t>(
+            std::floor((sz(m).x1min - pm->mesh_size.x1min)/d1 + 0.5));
+        const std::int64_t j0 = static_cast<std::int64_t>(
+            std::floor((sz(m).x2min - pm->mesh_size.x2min)/d2 + 0.5));
+        const std::int64_t k0 = static_cast<std::int64_t>(
+            std::floor((sz(m).x3min - pm->mesh_size.x3min)/d3 + 0.5));
+        for (int k=0; k<nx3; ++k) {
+          for (int j=0; j<nx2; ++j) {
+            for (int i=0; i<nx1; ++i) {
+              const size_t idx = (static_cast<size_t>(k0 + k)*g2 + (j0 + j))*g1 + (i0 + i);
+              buf[idx] = (n < 4) ? conh(m,src[n],ks+k,js+j,is+i)
+                                 : u0h(m,src[n],ks+k,js+j,is+i);
+            }
+          }
+        }
+      }
+      std::fwrite(buf.data(), sizeof(double), ncell, fp);
+    }
+  }
   std::fclose(fp);
 }
 

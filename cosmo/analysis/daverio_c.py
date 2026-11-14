@@ -33,7 +33,8 @@ LUNIT = (1.0/1001.0)/0.0105535
 
 def read_field(path):
     with open(path, "rb") as f:
-        assert f.read(8) == b"NRFIELD1"
+        magic = f.read(8)
+        assert magic in (b"NRFIELD1", b"NRFIELD2")
         t = np.fromfile(f, dtype=np.float64, count=1)[0]
         n = np.fromfile(f, dtype=np.int64, count=3)
         nc = int(n[0]*n[1]*n[2])
