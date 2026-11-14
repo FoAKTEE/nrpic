@@ -382,6 +382,70 @@ void Particles::NrpicWriteConstraintStats(Real time, bool header) {
 }
 
 //----------------------------------------------------------------------------------------
+//! \fn  void Particles::NrpicWriteLine
+//! \brief appends the fields along the mesh line through the first cells in x2 and x3
+//! to <basename>.line.bin, as records of 1 + 5 n doubles: time, then chi, alpha, K, E and
+//! S_x at the n cells of the line in order of increasing x1.  The header call writes
+//! <basename>.line.txt with n and the cell centres.  Uniform mesh, one rank.
+
+void Particles::NrpicWriteLine(Real time, bool header) {
+  if (pmy_pack->pz4c == nullptr || !nropt.deposit) return;
+  Mesh *pm = pmy_pack->pmesh;
+  auto &indcs = pm->mb_indcs;
+  const int nx1 = indcs.nx1, is = indcs.is, js = indcs.js, ks = indcs.ks;
+  const int nmb = pmy_pack->nmb_thispack;
+  const int ng1 = pm->mesh_indcs.nx1;
+  const Real x1min = pm->mesh_size.x1min;
+  const Real dx1 = (pm->mesh_size.x1max - x1min)/static_cast<Real>(ng1);
+  const Real tol = 1.0e-10*(pm->mesh_size.x2max - pm->mesh_size.x2min);
+
+  // the MeshBlocks on the line, and the five fields along it
+  auto sz = pmy_pack->pmb->mb_size.h_view;
+  DvceArray3D<Real> line("nrpic_line", nmb, 5, nx1);
+  auto u0 = pmy_pack->pz4c->u0;
+  auto tm = pmy_pack->ptmunu->u_tmunu;
+  const int ikhat = z4c::Z4c::I_Z4C_KHAT, itheta = z4c::Z4c::I_Z4C_THETA;
+  const int ichi = z4c::Z4c::I_Z4C_CHI, ialp = z4c::Z4c::I_Z4C_ALPHA;
+  par_for("nrpic_line", DevExeSpace(), 0, nmb-1, 0, nx1-1,
+  KOKKOS_LAMBDA(const int m, const int i) {
+    line(m,0,i) = u0(m,ichi,ks,js,is+i);
+    line(m,1,i) = u0(m,ialp,ks,js,is+i);
+    line(m,2,i) = u0(m,ikhat,ks,js,is+i) + 2.0*u0(m,itheta,ks,js,is+i);
+    line(m,3,i) = tm(m,Tmunu::I_Tmunu_E,ks,js,is+i);
+    line(m,4,i) = tm(m,Tmunu::I_Tmunu_Sx,ks,js,is+i);
+  });
+  auto lh = Kokkos::create_mirror_view_and_copy(Kokkos::HostSpace(), line);
+  std::vector<double> buf(1 + 5*static_cast<size_t>(ng1), 0.0);
+  buf[0] = time;
+  for (int m=0; m<nmb; ++m) {
+    if (std::abs(sz(m).x2min - pm->mesh_size.x2min) > tol ||
+        std::abs(sz(m).x3min - pm->mesh_size.x3min) > tol) continue;
+    const int i0 = static_cast<int>(std::floor((sz(m).x1min - x1min)/dx1 + 0.5));
+    for (int v=0; v<5; ++v) {
+      for (int i=0; i<nx1; ++i) {
+        if (i0 + i >= 0 && i0 + i < ng1) {
+          buf[1 + static_cast<size_t>(v)*ng1 + i0 + i] = lh(m,v,i);
+        }
+      }
+    }
+  }
+  if (header) {
+    std::string ftxt = nr_basename + ".line.txt";
+    std::FILE *ft = std::fopen(ftxt.c_str(), "w");
+    if (ft == nullptr) NrpicFatal("cannot open " + ftxt);
+    std::fprintf(ft, "# records of 1 + 5 n doubles in the .line.bin file: time, chi, alpha, "
+                 "K, E, S_x at the n cell centres below\n%d\n", ng1);
+    for (int i=0; i<ng1; ++i) { std::fprintf(ft, "%.15e\n", x1min + (i + 0.5)*dx1); }
+    std::fclose(ft);
+  }
+  std::string fname = nr_basename + ".line.bin";
+  std::FILE *fp = std::fopen(fname.c_str(), header ? "wb" : "ab");
+  if (fp == nullptr) NrpicFatal("cannot open " + fname);
+  std::fwrite(buf.data(), sizeof(double), buf.size(), fp);
+  std::fclose(fp);
+}
+
+//----------------------------------------------------------------------------------------
 //! \fn  void Particles::NrpicWriteTrajectories
 //! \brief appends the state of the tracked particles (tag < traj_ntrack) to
 //! <basename>.traj.bin as records of 8 doubles: time, tag, x^i, u_i
@@ -782,6 +846,9 @@ void Particles::NrpicStartup(bool res_flag) {
   if (nropt.cstat_dcycle > 0) {
     NrpicWriteConstraintStats(pm->time, true);
   }
+  if (nropt.line_dcycle > 0) {
+    NrpicWriteLine(pm->time, true);
+  }
   if (nropt.snap_dt > 0.0) {
     NrpicWriteSnapshot(pm->time);
     snap_next_time = pm->time + nropt.snap_dt;
@@ -810,6 +877,9 @@ TaskStatus Particles::NrpicDiagnostics(Driver *pdriver, int stage) {
   }
   if (nropt.cstat_dcycle > 0 && (ncyc % nropt.cstat_dcycle == 0)) {
     NrpicWriteConstraintStats(tnew, false);
+  }
+  if (nropt.line_dcycle > 0 && (ncyc % nropt.line_dcycle == 0)) {
+    NrpicWriteLine(tnew, false);
   }
   if (nropt.snap_dt > 0.0 && tnew >= snap_next_time - 1.0e-10*nropt.snap_dt) {
     NrpicWriteSnapshot(tnew);

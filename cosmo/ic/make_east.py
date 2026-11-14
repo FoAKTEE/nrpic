@@ -190,6 +190,8 @@ if __name__ == "__main__":
     ap.add_argument("--zero-velocity", action="store_true")
     ap.add_argument("--no-stagger", action="store_true",
                     help="keep particles at cell centres for odd ppc (shows the cusp)")
+    ap.add_argument("--ratios", default="1,0.9,1.1",
+                    help="amplitudes of the three directions over delta (1,0,0: plane wave)")
     ap.add_argument("--displacement", default="newtonian", choices=("newtonian", "number"))
     ap.add_argument("--shape", default="cic", choices=("cic", "tsc", "pcs"),
                     help="cloud shape of the deposit of the run (<particles> deposit_shape)")
@@ -204,6 +206,8 @@ if __name__ == "__main__":
     a = ap.parse_args()
     cid.SHAPE = a.shape
     x, u, m, r, K, alpha, info, fid = build(a.delta, a.n, a.ppc, a.L, a.H0,
+                                            ratios=tuple(float(v) for v in
+                                                         a.ratios.split(",")),
                                             nfilter=a.nfilter,
                                             compensate=a.compensate,
                                             zero_velocity=a.zero_velocity,

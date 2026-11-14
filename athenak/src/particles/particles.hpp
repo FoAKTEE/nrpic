@@ -68,6 +68,7 @@ struct NrpicOptions {
   int hist_dcycle;      // cycles between history records (0 = off)
   int traj_dcycle;      // cycles between trajectory records (0 = off)
   int cstat_dcycle;     // cycles between constraint-statistics records (0 = off)
+  int line_dcycle;      // cycles between records of the fields along an x1 line (0 = off)
   int traj_ntrack;      // particles with tag < traj_ntrack are recorded
   Real snap_dt;         // time between full particle snapshots (<= 0 = off)
   Real probe[3];        // position of the lapse/energy-density probe
@@ -206,6 +207,7 @@ class Particles {
   void NrpicStartup(bool res_flag);
   void NrpicWriteHistory(Real time, int ncycle, bool header);
   void NrpicWriteConstraintStats(Real time, bool header);
+  void NrpicWriteLine(Real time, bool header);
   void NrpicWriteTrajectories(Real time, bool truncate);
   void NrpicWriteSnapshot(Real time);
   void NrpicWriteCurvature(Real time);

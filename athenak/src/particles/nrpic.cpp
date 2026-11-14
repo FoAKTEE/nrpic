@@ -115,6 +115,7 @@ void Particles::NrpicInit(ParameterInput *pin) {
   nropt.hist_dcycle = pin->GetOrAddInteger("particles", "hist_dcycle", 1);
   nropt.traj_dcycle = pin->GetOrAddInteger("particles", "traj_dcycle", 0);
   nropt.cstat_dcycle = pin->GetOrAddInteger("particles", "cstat_dcycle", 0);
+  nropt.line_dcycle = pin->GetOrAddInteger("particles", "line_dcycle", 0);
   nropt.traj_ntrack = pin->GetOrAddInteger("particles", "traj_ntrack", 0);
   nropt.snap_dt    = pin->GetOrAddReal("particles", "snap_dt", -1.0);
   nropt.curv_dt    = pin->GetOrAddReal("particles", "curv_dt", -1.0);

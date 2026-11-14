@@ -312,3 +312,26 @@ A.  The evolution is stable to a = 1001: the error of chi does not grow after an
     damps at a rate proportional to the expansion rate. A blow-up, or a constraint
     violation that grows relative to its terms, would mean that the method does not
     tolerate grid-scale noise in an expanding background.
+
+## C5, test B of paper 2: plane-wave linear mode over a thousandfold expansion (01:05)
+
+Paper 2: delta = 1e-7 sin(2 pi x / L), L = 128 Mpc/h (1.35 initial Hubble radii, so the
+mode starts outside the horizon and ends well inside), 32, 64, 128 cells, 27 particles
+per cell, step 0.1 of the cell. Here: box 1.35085, amplitude 1e-7, quadratic cloud as in
+paper 2 and no filter, 8 particles per cell, 32 and 64 cells, step 0.25 of the cell and
+once 0.1 at 32 cells; constraint-solved data from `make_east.py --ratios 1,0,0`; fields
+along the x line recorded (`<particles> line_dcycle`).
+Check of the data at 16 cells: phi = (chi - 1)/2 has the amplitude 6.75e-9 against the
+analytic 6.93e-9 (cloud window), density contrast 1.11e-7 against 1.139e-7.
+Written before the runs `cosmo/dav_b_n{32,64}`, `cosmo/dav_b_n32_c01`:
+(1) phi stays constant in time: the change of its amplitude over the run is below 5
+    percent at 32 cells and falls by about four per doubling (paper 2: +4.9, +1.0,
+    +0.25 percent at 32, 64, 128 cells).
+(2) The density contrast follows delta(t) = -2 [1 + k^2/(3 H_c^2)] phi_0, H_c the
+    conformal Hubble rate: largest departure over the mesh, relative to the largest
+    contrast, below 5e-2 at 32 cells at the end, second order in the cell size (paper 2:
+    3.6e-2, 9.1e-3, 2.4e-3).
+(3) The largest relative Hamiltonian constraint stays below 1e-6 (paper 2: 5e-9 to 1e-7
+    at the end, growing with resolution, which its authors do not understand).
+(4) The step ratio 0.1 instead of 0.25 changes (1) and (2) by less than a tenth of
+    their values (the error is spatial).
