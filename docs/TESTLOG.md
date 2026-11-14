@@ -2251,3 +2251,27 @@ common horizon between 60 and 70 M) is failing, and the alternative named there 
 what happens: with the stated radius and the stated speed the pair moves to a wide
 orbit and does not merge, so that pair of values is not what the original evolved
 either. Its outcome lies between our two runs. Final numbers when the run reaches 100 M.
+
+## Stated envelope radius: does the stated speed explain the wide orbit? (09:33, 2026-11-14)
+
+Check of the statement in brief item 14 that the pair moves outward because the stated
+speed is above the circular speed in the stated envelope. It could fail: a Newtonian
+orbit with the stated speed could turn around well inside or far outside the measured
+separation. Estimate: two equal masses on a planar orbit about their midpoint, each
+attracted by the other and by the envelope mass inside its radius (envelope table of the
+run: only 0.0016 M inside 3 M, so the envelope hardly matters and the circular speed is
+set by the companion: 0.103 for 0.12 M against the stated 0.1332), started at 3 M.
+Result: with the stated speed taken as the coordinate speed, the separation is 10.1 to
+9.6 M at 64 M and 11.0 to 10.4 M at 78 M for masses 0.137 to 0.145 M, and still
+growing (apocentre 11.4 to 12.5 M after 100 M). With the speed converted to a
+coordinate speed by the lapse and conformal factor of the other bodies at the clump
+(0.117), the apocentre is 7.0 to 7.7 M at 87 to 95 M. Measured: 9.2 M at 64 M, 9.3 M
+at 78 M. The measurement lies between the two estimates, so the direction and the size
+of the outward motion are what the stated speed gives; the statement stands as a
+two-body estimate, no more. Not explained by it: the line between the black holes turns
+more slowly than in either estimate (0.23 and 0.26 of a turn at 64 and 78 M against
+0.30 to 0.42), which means less angular momentum per unit mass than the initial orbit
+had. Candidates, none tested: the black holes take up envelope matter without angular
+momentum (0.12 M of clump becomes 0.145 M of black hole); drag by the envelope; the
+gauge of the tracker coordinates. The paper states the outward motion and the excess of
+the stated speed over the circular speed, and gives no orbit model.
