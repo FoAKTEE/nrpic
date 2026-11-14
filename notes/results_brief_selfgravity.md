@@ -229,7 +229,7 @@ Facts, in the order of the argument:
 [Prolate collapse, complete to 45 M; Prolate collapse: where the five percent are;
 Prolate collapse, attempt with compensated filter; Monte Carlo dust ball with the
 published rule: refinement runs away]
-## D. Collapse and merger inside a cluster (subsection "Two overdensities in a cluster") -- final for the M/64 run (complete to 100 M); the M/128 comparison stopped at 61.57 M
+## D. Collapse and merger inside a cluster (subsection "Two overdensities in a cluster") -- final: M/64 runs with both envelope radii complete to 100 M; the M/128 comparison stopped at 61.57 M
 
 Setup: a monoenergetic envelope (0.76 of the total mass) with two Gaussian
 overdensities (0.12 each, width 0.7 M) at +-3 M on a circular orbit; 6000 envelope
@@ -373,25 +373,34 @@ Established:
 
 14. The stated envelope radius (`jeans/n1e4_v20`: areal radius 30 M as stated in the
    original, same clumps and speeds, 10^4 particles, otherwise the configuration of
-   `n1e4_v19`; test of candidate (b) of the envelope's contraction below). STATE AT 78 M,
-   run still in progress to 100 M; numbers marked (78) will be replaced by the 100 M
-   values. First apparent horizons at 9.19 M (A, 0.0907 M) and 9.06 M (B, 0.0877 M);
-   0.1366 and 0.1367 M at 20 M; 0.1406 and 0.1411 M at 40 M; 0.1440 and 0.1443 M at 60 M;
-   0.145 M each at 78 M (78). The black holes hardly grow after 20 M (0.0002 M per M
-   against 0.001 M per M in the self-consistent envelope): the envelope is twelve times
-   less dense. Rest mass of the particles: 1.029 at t = 0, 0.770 at 20 M (the two
-   overdensities are gone), 0.762 at 60 M, 0.758 at 78 M (78): the envelope stays
-   outside, 97 percent of it at 78 M (78). No common horizon is found: the trackers never
-   come within the 0.24 M at which the finder starts to look. Separation of the black
-   holes: 9.2 M at 64 M, 9.3 M at 76 to 78 M, hardly changing; the line between them has
-   turned by a quarter of a turn by 78 M (78); the stated speed is above the circular
-   speed in this envelope, so the pair moves out from 6 M to a wide orbit. The midpoint
-   of the trackers is 1.0 to 1.2 M out of the orbital plane at 64 to 78 M.
-   Reading: with the self-consistent radius the whole envelope falls in and the remnant
-   is 1.03 M; with the stated radius nothing merges by 78 M (78) and the black holes stay
-   at 0.145 M; the original (merger at 64 M, remnant 0.65 M at 100 M, individual masses
+   `n1e4_v19`; complete to 100 M; test of candidate (b) of the envelope's contraction
+   below). First apparent horizons at 9.19 M (A, 0.0907 M) and 9.06 M (B, 0.0877 M),
+   about 1.4 M earlier and a tenth lighter than with the speed-matched radius; 0.1366
+   and 0.1367 M at 20 M; 0.1406 and 0.1411 M at 40 M; 0.1440 and 0.1443 M at 60 M;
+   0.1468 and 0.1478 M at 80 M; 0.1493 and 0.1501 M at 99.94 M. The black holes hardly
+   grow after 20 M (0.00017 M per M against 0.0012 M per M in the speed-matched
+   envelope): the envelope is twelve times less dense. Rest mass of the particles:
+   1.0288 at t = 0, 0.7698 at 20 M (the two overdensities are gone), 0.7619 at 60 M,
+   0.7534 at 100 M: the envelope stays outside, 98 percent of it at 100 M; 4141
+   particles removed in all (0.2754), none left the domain. No common horizon: the
+   trackers never come within the 0.24 M at which the finder starts to look, so no
+   search for one ran. Separation of the black holes: 6.3 M at 10 M, 6.9 M at 20 M,
+   8.2 M at 40 M, 9.05 M at 60 M, largest 9.32 M at 78.25 M, 8.71 M at 100 M; the line
+   between them has turned by under a third of a turn at 100 M. The stated speed is
+   above the circular speed of the pair (0.133 against 0.103; in this sparse envelope
+   the companion sets the circular speed: only 0.0016 M of envelope lies inside 3 M),
+   so the pair moves out to a wide orbit; a two-body estimate brackets the measured
+   separation and no more (TESTLOG 09:33; the line turns more slowly than the estimate,
+   not explained). The midpoint of the trackers leaves the orbital plane at a nearly
+   constant rate: 0.19 M at 20 M, 0.55 M at 40 M, 0.94 M at 60 M, 1.49 M at 100 M
+   (speed-matched radius on the same mesh: 0.59 M, levelling off after 45 M; M/128:
+   within 0.06 M). Cause not determined.
+   Reading: with the speed-matched radius the whole envelope falls in and the remnant
+   is 1.03 M; with the stated radius nothing merges by 100 M and the black holes stay
+   at 0.15 M; the original (merger at 64 M, remnant 0.65 M at 100 M, individual masses
    0.174 and 0.176 M at 60 M) lies between the two. Which initial data the original
-   evolved cannot be decided from its text.
+   evolved cannot be decided from its text; its figure shows a cluster of the smaller
+   size.
 
 Comparison of the merger with the original (common horizon first found; both of ours at
 the first search, see 6; the M/128 chain stopped at 61.57 M when it reached its limit of
@@ -429,9 +438,10 @@ Not established (each with its candidate causes; none tested):
   mass and spin at 100 M. (a) The envelope is an equilibrium of its own; the clumps add
   mass inside it (Newtonian estimate from the initial macroparticles: the clumps add
   78 percent to the envelope's virial term); test: the envelope alone on the same mesh to
-  60 M. (b) Our envelope's areal radius (13.3 M) against the stated 30 M; a larger
-  envelope contracts and is accreted more slowly; test: the stated radius (clumps then
-  off their circular orbit). (c) Particle number; test: a second sample.
+  60 M. (b) Our envelope's areal radius (13.3 M) against the stated 30 M: TESTED (item 14):
+  with the stated radius the envelope is not accreted and the pair does not merge, so
+  the radius decides how much the remnant swallows; whether the speed-matched envelope
+  contracts because of the clumps (a) or the sample (c) remains untested. (c) Particle number; test: a second sample.
 - Whether the 2.5 percent of remnant mass above M is mass of the spacetime or an error
   (item 13), and what the outgoing step of the slice mass is. Candidates: the
   constraint violation of the superposed initial data (||H|| = 5.8 at t = 0; test:

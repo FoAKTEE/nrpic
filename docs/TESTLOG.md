@@ -2275,3 +2275,30 @@ had. Candidates, none tested: the black holes take up envelope matter without an
 momentum (0.12 M of clump becomes 0.145 M of black hole); drag by the envelope; the
 gauge of the tracker coordinates. The paper states the outward motion and the excess of
 the stated speed over the circular speed, and gives no orbit model.
+
+## Two overdensities with the stated envelope radius: outcome at 100 M (10:53, 2026-11-14)
+
+`jeans/n1e4_v20` is complete (25600 cycles, fifteen job segments). Against the
+prediction of 02:44:
+- remnant mass 0.60 to 0.75 M: fails; there is no remnant. Black holes A and B are
+  0.1493 and 0.1501 M at 99.94 M (0.1366, 0.1367 at 20 M; 0.1440, 0.1443 at 60 M;
+  0.1468, 0.1478 at 80 M);
+- common horizon between 60 and 70 M: fails; none, and the search for one never
+  started (the trackers never came within 0.24 M);
+- envelope fraction remaining above one half: holds; rest mass of the particles
+  0.7534 at 100 M of 1.0288 at the start (0.7698 at 20 M, when the overdensities are
+  gone), so 98 percent of the envelope is outside; 4141 particles removed (0.2754),
+  none left the domain.
+The alternative named in the prediction is what happened: the black holes do not merge
+by 100 M. Separation of the trackers: 6.3 M at 10 M, 9.05 M at 60 M, largest 9.32 M at
+78.25 M, 8.71 M at 100 M; the line between them has turned by under a third of a turn;
+the midpoint is 1.49 M above the orbital plane at 100 M and has moved there at a nearly
+constant rate (0.19 M at 20 M, 0.94 M at 60 M).
+What this decides: the envelope radius decides the outcome (candidate (b) of the
+envelope's contraction and of the remnant mass in brief part D is confirmed as a cause
+of the difference between our two runs: with the stated radius the envelope is not
+accreted). What it does not decide: which data the original evolved. Neither pair of
+values gives its result (merger at 64.2 M, remnant 0.647 M at 100 M, individual masses
+0.174 and 0.176 M at 60 M, between our 0.189/0.186 and 0.144/0.144). The original's
+figure shows a cluster of the smaller size. Not tested: a radius between the two; a
+speed below the stated one in the stated envelope.
