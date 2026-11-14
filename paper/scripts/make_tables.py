@@ -51,9 +51,16 @@ sys.dont_write_bytecode = True        # leave the analysis folders untouched
 sys.path.insert(0, str(REPO / "analysis" / "diag"))
 sys.path.insert(0, str(REPO / "python"))
 import slicemass as sm  # noqa: E402
-from common import (H, keep_last, read_athena_hst, read_horizon,  # noqa: E402
-                    read_nrpic_hst, read_traj_tagged)
+from common import H, read_traj_tagged  # noqa: E402
 from nrpic import oppenheimer_snyder as osn  # noqa: E402
+sys.path.insert(0, str(HERE))
+# the definitions of the figure scripts, so that table and figures use the same extrema,
+# snapshot selection and read-off values of the original
+from make_data_clusters import shells as cl_shells  # noqa: E402
+from make_data_migration import ORIGINAL as MIG_ORIGINAL  # noqa: E402
+from make_data_migration import complete_snapshots as mig_complete_snapshots  # noqa: E402
+from make_data_migration import extrema as mig_extrema  # noqa: E402
+from make_data_nearcritical import ORIGINAL as NC_ORIGINAL  # noqa: E402
 
 RUNS_DIR = REPO / "runs"
 ORIG = REPO / "refs" / "arxiv_2611.12831" / "src" / "main.tex"
@@ -89,7 +96,14 @@ RUNS = {
     "st/dir_yc0500_comp_s2": ["unpert"], "st/dir_yc0500_comp_s3": ["unpert"],
     "st/migration_yc0500_v4": ["unpert"],
     "st/reconf_yc0756_hc": ["nearcrit"], "st/reconf_yc0756_hc_m": ["nearcrit"],
-    "st/reconf_yc0756_v4": ["nearcrit"],
+    "st/reconf_yc0756_v4": ["nearcrit"], "st/yc0756_unpert": ["nearcrit"],
+    "os/mc_adapt2": ["dustmc"], "os/mc_adapt3": ["dustmc"], "os/mc_nocap4": ["dustmc"],
+    "os/mc_adapt4": ["dustmc"],
+    "os/mc_nocap2": ["dustmc_runaway"], "os/mc_nocap3": ["dustmc_runaway"],
+    "prolate/e09_v8": ["prolate"],
+    # Collapse and merger of two overdensities inside a cluster (runs/jeans/n1e4_v11, v12):
+    # still running; add their directories here with the family "jeans" and fill
+    # jeans_setup_row() and jeans_rows() below when they have ended.
 }
 # What the paper uses each run for (statement or figure).
 ROLE = {
@@ -107,10 +121,18 @@ ROLE = {
     "st/osc/long": "continuation of sample 1 (compensated) to 600 M (fig_oscillation)",
     "st/osc/long2": "continuation of sample 1 (compensated) to 1200 M (fig_oscillation)",
     "st/osc/dx2b": "half the cell spacing (no figure; listed for completeness of the oscillation controls)",
-    "st/migration_yc0500_v4": "migration of the unperturbed y_c = 0.5 model (statements; figure to come)",
     "st/reconf_yc0756_hc": "near-critical model compressed by ten percent, consistent initial data (statement)",
-    "st/reconf_yc0756_hc_m": "near-critical model expanded by ten percent (not yet in the text)",
     "st/reconf_yc0756_v4": "statement: the compressed particles on the unperturbed metric contract alike",
+    "st/reconf_yc0756_hc_m": "near-critical model expanded by ten percent (fig_nearcritical)",
+    "st/yc0756_unpert": "unperturbed near-critical model to 800 M (fig_nearcritical)",
+    "st/migration_yc0500_v4": "migration of the unperturbed y_c = 0.5 model to 2500 M (fig_migration)",
+    "os/mc_adapt2": "random-sample dust ball, level cap, full depth, one plain pass (statement)",
+    "os/mc_adapt3": "random-sample dust ball, level cap, full depth, four passes + c (statement)",
+    "os/mc_nocap4": "random-sample dust ball, published rule, one level fewer (statement)",
+    "os/mc_adapt4": "random-sample dust ball, level cap, one level fewer (statement)",
+    "os/mc_nocap2": "random-sample dust ball, published rule, full depth, one plain pass: block limit exceeded (statement)",
+    "os/mc_nocap3": "random-sample dust ball, published rule, full depth, four passes + c: block limit exceeded (statement)",
+    "prolate/e09_v8": "prolate collapse, e = 0.9, b = 10 M (fig_prolate)",
 }
 for _k in RUNS:
     if _k.startswith("st/ctl/"):
@@ -200,9 +222,60 @@ def parse_log(path):
         m = re.search(pat, txt)
         out[key] = f(m.group(1)) if m else None
     out["unused_params"] = re.findall(r"input parameter <(\w+)>/(\w+) = .*? was not used", txt)
+    m = re.search(r"MeshBlocks in this rank on new tree = (\d+) .*? exceeds \S+ = (\d+)", txt)
+    out["block_limit_exceeded"] = (int(m.group(1)), int(m.group(2))) if m else None
     m = re.search(r"NRPIC: read (\d+) particles", txt)
     out["particles_read"] = int(m.group(1)) if m else None
     return out
+
+
+def current(t_raw):
+    """Mask of the records of an appended time series that no later record supersedes:
+    a job segment restarted from an earlier dump rewrites every time from its start on,
+    so a record is kept only if all later records have larger times (as in
+    paper/scripts/make_data_migration.history)."""
+    t_raw = np.asarray(t_raw, dtype=float)
+    later = np.r_[np.minimum.accumulate(t_raw[::-1])[::-1][1:], np.inf]
+    return t_raw < later
+
+
+def read_hst(path):
+    """Particle history (columns H of analysis/diag/common.py) without superseded records."""
+    rows = [l.split() for l in open(path) if l.strip() and not l.startswith("#")]
+    ncol = max((len(r) for r in rows if len(r) in (23, 27)), default=23)
+    a = np.array([r + ["nan"] * (ncol - len(r)) for r in rows if len(r) in (23, 27)], dtype=float)
+    return a[current(a[:, 0])]
+
+
+def read_zhst(path):
+    """Constraint history as a dict of columns, without superseded records."""
+    names, rows = None, []
+    for line in open(path):
+        if line.startswith("#"):
+            if "[1]=" in line:
+                names = [w.split("=", 1)[1] for w in line[1:].split() if "]=" in w]
+            continue
+        x = line.split()
+        if names and len(x) == len(names):
+            rows.append(x)
+    if not rows:
+        return {}
+    a = np.array(rows, dtype=float)
+    a = a[current(a[:, 0])]
+    return {n: a[:, i] for i, n in enumerate(names)}
+
+
+def read_ah(path):
+    """Horizon summary rows with a finite mass: time, mass, area, rms and mean expansion,
+    mean radius (as analysis/diag/common.read_horizon), without superseded searches."""
+    rows = [l.split() for l in open(path) if l.strip() and not l.startswith("#")]
+    rows = [r for r in rows if len(r) >= 12]
+    if not rows:
+        return np.zeros((0, 6))
+    t = np.array([float(r[1]) for r in rows])
+    out = [[float(r[1]), float(r[2]), float(r[7]), float(r[8]), float(r[9]), float(r[10])]
+           for r, k in zip(rows, current(t)) if k and r[2] != "nan"]
+    return np.array(out) if out else np.zeros((0, 6))
 
 
 def read_prt(path):
@@ -281,7 +354,7 @@ def match_ic(nrp):
     du, p, meta = best
     keep = ("model", "sampler", "seed", "vpert", "vpert_profile", "dpert", "yc", "n_lat",
             "lattice_h", "R0_areal", "rbar0", "lattice_surface_correction", "M_rest", "M0",
-            "alpha_c", "rho_c", "zc", "R_areal")
+            "alpha_c", "rho_c", "zc", "R_areal", "e", "a", "b", "symmetrize")
     out = {k: meta[k] for k in keep if k in meta}
     if "table_constraint" in meta:
         out["M_ADM_of_data"] = meta["table_constraint"].get("M_ADM")
@@ -503,15 +576,18 @@ def collect(key):
         status = ("killed at the job time limit (exit %s)" % logs[-1]["exit"]) if logs[-1]["exit"] else "no summary"
     elif logs and logs[-1]["termination"] and "wall" in logs[-1]["termination"] and status == "finished":
         status = "wall-clock stop"
+    if logs and logs[-1].get("block_limit_exceeded"):
+        status = "stopped: MeshBlock limit exceeded"
     rec["status"] = status
+    rec["block_limit_exceeded"] = logs[-1].get("block_limit_exceeded") if logs else None
     rec["notes"] = notes
     # ---- histories
     hp = d / f"{base}.nrpic.hst"
-    hst = read_nrpic_hst(str(hp)) if hp.exists() else None
+    hst = read_hst(hp) if hp.exists() else None
     zp = d / f"{base}.z4c.user.hst"
-    z = read_athena_hst(str(zp)) if zp.exists() else {}
+    z = read_zhst(zp) if zp.exists() else {}
     ap = d / f"{base}.horizon_summary_0.txt"
-    ah = keep_last(read_horizon(str(ap))) if ap.exists() else np.zeros((0, 6))
+    ah = read_ah(ap) if ap.exists() else np.zeros((0, 6))
     CACHE[key].update(hst=hst, z=z, ah=ah, base=base, d=d)
     out = {}
     if hst is not None:
@@ -697,6 +773,15 @@ def concat(keys):
     return np.concatenate(t), np.concatenate(a)
 
 
+def radii(key):
+    """Snapshot times and radii about the origin enclosing 10, ..., 90 percent of the rest
+    mass present, from the completely written snapshots (as the figure scripts)."""
+    d = RUNS_DIR / key
+    files = mig_complete_snapshots(d, R[key]["outcomes"]["t_final"])
+    T, Rq, Nq, Mq, _ = cl_shells(files)
+    return T, Rq, Nq, Mq
+
+
 def slice_mass(key, t_target):
     """Misner-Sharp mass at the outermost 2m/R = 1 of the dump nearest to t_target."""
     d = RUNS_DIR / key
@@ -746,22 +831,23 @@ def nf_text(k):
     return f"{p['nfilter']}" + ("+c" if p["compensation"] else "")
 
 
+def dep_label(k):
+    p = R[k]["particles"]
+    if not p["deposit"]:
+        return "none"
+    c = p["deposit_max_coarsen"]
+    if c is None:
+        return "finest level"
+    return "level-capped" + (r" ($\le" + f"{c}$)" if c < 31 else "")
+
+
 def dep_text(keys):
-    vals = []
-    for k in keys:
-        p = R[k]["particles"]
-        if not p["deposit"]:
-            v = "none"
-        elif p["deposit_max_coarsen"] is not None:
-            v = "cap"
-        else:
-            v = "finest"
-        vals.append(v)
+    labs = [dep_label(k) for k in keys]
     caps = sorted({R[k]["particles"]["deposit_max_coarsen"] for k in keys
                    if R[k]["particles"]["deposit_max_coarsen"] is not None})
-    if set(vals) == {"cap"}:
+    if all(x.startswith("level-capped") for x in labs) and len(caps) > 1:
         return "level-capped (" + ", ".join(r"$\le" + f"{c}$" if c < 31 else "any" for c in caps) + ")"
-    return mode_and_others(vals, lambda v: {"finest": "finest level", "none": "none"}[v])
+    return mode_and_others(labs, str)
 
 
 def sampler_text(k):
@@ -884,6 +970,19 @@ def setups():
         r"as above, corrected masses",
         runs_src(fam("dustcap"), "generator metadata: " + per_run(
             fam("dustcap"), lambda q: f"lattice_surface_correction={R[q]['model']['particles'].get('lattice_surface_correction')}"))))
+    keys = fam("dustmc")
+    row("Dust collapse, random sample", keys, Cell(
+        rf"$R_0={ic['R0_areal']:g}M$; equal masses",
+        runs_src(keys, "generator metadata matched to the particle file (runs/os/ic_mc): sampler mc, R0_areal, "
+                       "equal masses summing to the continuum rest mass: " +
+                 per_run(keys, lambda q: f"sampler {R[q]['model']['particles']['sampler']}"))))
+    k = "prolate/e09_v8"
+    pic = R[k]["model"]["particles"]
+    row("Prolate collapse", [k], Cell(
+        rf"spheroid $e={pic['e']:g}$, $b={pic['b']:g}M$, at rest",
+        runs_src([k], f"generator metadata (runs/prolate/e09_n1e4, same particles): e = {pic['e']}, a = {pic['a']:.4f}, "
+                      f"b = {pic['b']}, symmetrize = {pic.get('symmetrize')}; parameter dump problem/comp0_type = spheroid")))
+    jr = jeans_setup_row()
     keys = fam("filter")
     row("Stable cluster, filter", keys, Cell(
         rf"$y_c={hdr(keys[0])['yc']:g}$, unperturbed; samples 1--3",
@@ -916,16 +1015,19 @@ def setups():
                  per_run(keys, lambda q: f"seed {R[q]['model']['particles']['seed']} vpert {R[q]['model']['particles']['vpert']}"))))
     keys = fam("nearcrit")
     row("Near-critical", keys, Cell(
-        rf"$y_c={hdr(keys[0])['unperturbed.yc']:.3f}$; density $\times(1\pm0.1)$",
+        rf"$y_c={hdr(keys[0])['unperturbed.yc']:.3f}$; density $\times(1\pm0.1)$ or unperturbed",
         runs_src(keys, "initial-data table header unperturbed.yc (or yc); generator metadata dpert: " +
                  per_run(keys, lambda q: f"dpert {R[q]['model']['particles']['dpert']}"))))
+    if jr:
+        row(*jr)
     return rows
 
 
 FAMILY_ROW = {"vacuum": "Vacuum black hole", "headon": "Head-on collision", "dust": "Dust collapse",
               "dustcap": "Dust collapse, level cap", "filter": "Stable cluster, filter",
               "osc": "Stable cluster, oscillation", "nnum": "Particle number", "stable": "Sequence, stable",
-              "unstable": "Sequence, unstable", "unpert": "Unperturbed unstable", "nearcrit": "Near-critical"}
+              "unstable": "Sequence, unstable", "unpert": "Unperturbed unstable", "nearcrit": "Near-critical",
+              "dustmc": "Dust collapse, random sample", "prolate": "Prolate collapse"}
 SETUP_HEAD = ["Scenario and model", r"$N$, sampling", r"$L/M$", r"Mesh, $\Delta x/M$", r"$\Delta t/M$",
               r"$n_{\rm f}$", "Deposition", r"$\aexc$", r"$\kappa_1$", r"$t_{\rm end}/M$"]
 SETUP_COLS = [0.22, 0.1, 0.05, 0.135, 0.07, 0.06, 0.085, 0.035, 0.065, 0.065]   # fractions of the text width
@@ -936,25 +1038,49 @@ def write_setups(rows):
     osc = [r for r in rows if r[0] == "Stable cluster, oscillation"][0][1]
     kch = [k for k in fam("osc") if R[k]["spacetime"]["c_H"]]
     kcc = [k for k in fam("osc") if R[k]["particles"]["compensation_c"] not in (None, R[k]["particles"]["nfilter"] / 4)]
-    osc[SETUP_HEAD.index(r"$\kappa_1$")].tex += r"\footnotemark[1]"
-    osc[SETUP_HEAD.index(r"$n_{\rm f}$")].tex += r"\footnotemark[2]"
     ch = R[kch[0]]["spacetime"]["c_H"]
     ccv = R[kcc[0]]["particles"]["compensation_c"]
     nf = R[kcc[0]]["particles"]["nfilter"]
     extra = 12 * (ccv - nf / 4)
-    notes = [(rf"One run adds parabolic relaxation of $\Ham$ with $c_H={ch:g}\,M$.",
-              runs_src(kch, "parameter dump, z4c/damp_ch")),
-             (rf"One run uses $c=n_{{\rm f}}/4+{extra:.0f}/12$, which also cancels the cloud width.",
-              runs_src(kcc, f"parameter dump, particles/filter_comp_c = {ccv!r}"))]
+    rowd = dict(rows)
+    col = SETUP_HEAD.index
+    marks = []                         # (row, column index into the cells, text, source)
+    marks.append(("Stable cluster, oscillation", col(r"$\kappa_1$"),
+                  rf"One run adds parabolic relaxation of $\Ham$ with $c_H={ch:g}\,M$.",
+                  runs_src(kch, "parameter dump, z4c/damp_ch")))
+    marks.append(("Stable cluster, oscillation", col(r"$n_{\rm f}$"),
+                  rf"One run uses $c=n_{{\rm f}}/4+{extra:.0f}/12$, which also cancels the cloud width.",
+                  runs_src(kcc, f"parameter dump, particles/filter_comp_c = {ccv!r}")))
+    kt = [k for k in fam("dustmc") if R[k]["status"].startswith("killed")]
+    if kt:
+        marks.append(("Dust collapse, random sample", col(r"$t_{\rm end}/M$"),
+                      f"{['No', 'One', 'Two', 'Three'][len(kt)]} capped run{'s' if len(kt) > 1 else ''} with the full refinement depth stopped at the time limit of their jobs, at "
+                      + " and ".join(f"$t={R[k]['outcomes']['t_final']:.0f}M$" for k in kt) + ".",
+                      runs_src(kt, "log ends without a summary, exit 143; particle history, time of the last record: " +
+                               per_run(kt, lambda q: f"{R[q]['outcomes']['t_final']:.3f}"))))
+    kr = fam("dustmc_runaway")
+    if kr:
+        ex = [R[k]["block_limit_exceeded"] for k in kr]
+        marks.append(("Dust collapse, random sample", 0,
+                      r"With the published rule at the full refinement depth the MeshBlock count passed the limit before a "
+                      r"horizon formed: " + "; ".join(
+                          f"$t={R[k]['outcomes']['t_final']:.1f}M$, {e[0]} asked for, limit {e[1]} "
+                          rf"($n_{{\rm f}}={nf_text(k)}$)" for k, e in zip(kr, ex)) + ".",
+                      runs_src(kr, "log, fatal error 'Number of MeshBlocks ... on new tree = N ... exceeds "
+                                   "max_nmb_per_rank = L'; particle history, time of the last record; parameter dump, "
+                                   "nfilter and filter_compensate: " +
+                               per_run(kr, lambda q: f"t {R[q]['outcomes']['t_final']:.3f}, N {R[q]['block_limit_exceeded'][0]}, "
+                                                     f"L {R[q]['block_limit_exceeded'][1]}"))))
     running = [k for k in RUNS if R[k]["status"] == "running"]
-    if running:
-        for name, cells in rows:
-            keys = [k for k in running if any(name == FAMILY_ROW[f] for f in RUNS[k])]
-            if keys:
-                cells[-1].tex += r"\footnotemark[3]"
-        notes.append((r"Run in progress; values up to its last record.",
-                      runs_src(running, "chain/STATUS = RUNNING; last record of the particle history at t = " +
-                               ", ".join(f"{R[k]['outcomes']['t_final']:.2f}" for k in running))))
+    for name in [FAMILY_ROW[f] for f in sorted({f for k in running for f in RUNS[k]}) if f in FAMILY_ROW]:
+        keys = [k for k in running if any(name == FAMILY_ROW[f] for f in RUNS[k])]
+        marks.append((name, col(r"$t_{\rm end}/M$"), r"Run in progress; values up to its last record.",
+                      runs_src(keys, "chain/STATUS = RUNNING; last record of the particle history at t = " +
+                               ", ".join(f"{R[k]['outcomes']['t_final']:.2f}" for k in keys))))
+    notes = []
+    for i, (name, ci, text, src) in enumerate(marks, 1):
+        rowd[name][ci].tex += rf"\footnotemark[{i}]"
+        notes.append((text, src))
     cells_all = {(tuple(R[k]["mesh"]["root_cells"]), tuple(R[k]["mesh"]["cells_per_meshblock"])) for k in RUNS}
     assert cells_all == {((64, 64, 64), (16, 16, 16))}, cells_all
     caption = (r"Setups, one row per family of runs: model, macroparticle number $N$ and sampling, domain half-width $L$, "
@@ -1198,10 +1324,70 @@ def outcomes(do_slice):
         txt.append(f"{np.nanmin(r[s]):.2f}--{np.nanmax(r[s]):.2f}")
         src.append(f"{R[key]['dir']} t = {t1_:.2f}-{t1_ + 3:.2f}: {np.nanmin(r[s]):.4f}-{np.nanmax(r[s]):.4f} "
                    f"(before the refinement: {np.nanmin(r[s0]):.4f}-{np.nanmax(r[s0]):.4f})")
-    rows.append((r"$E_c$ over the cycloid in the $3M$ after the refinement to $h/4$: finest level; level cap with any, $\le1$ levels",
+    rows.append((r"Central reading of $E$ (eight central cells, after the filter) over the cycloid at the same $\tau_c$, in the "
+                 r"$3M$ after the refinement to $h/4$: finest level; level cap with any, $\le1$ levels of coarsening",
                  Cell("; ".join(txt), "os.nrpic.hst e_probe divided by the cycloid density at tau_probe "
                                       "(python/nrpic/oppenheimer_snyder.cycloid_rho), records before the first removal: " + "; ".join(src)), NA))
-    G.append(("Dust collapse", rows))
+    G.append(("Dust collapse on a lattice", rows))
+
+    # ---- dust collapse from a random sample
+    rows = []
+    mc = [("os/mc_adapt2", "capped, full depth, $n_{\\rm f}=1$"), ("os/mc_adapt3", "capped, full depth, 4+c"),
+          ("os/mc_nocap4", "finest level, one level fewer"), ("os/mc_adapt4", "capped, one level fewer")]
+    order = (r"capped clouds at the full depth with $n_{\rm f}=1$ and 4+c; one level fewer, finest-level and capped "
+             r"clouds (4+c)")
+    rows.append((r"Random sample, order of the runs below: " + order, Cell(""), Cell("")))
+    hz = [R[k]["outcomes"]["horizon"] for k, _ in mc]
+    rows.append((r"\quad first apparent horizon $t/M$, $M_{\rm AH}/M$",
+                 Cell("; ".join(f"{x['first_t']:.2f}, {x['first_mass']:.4f}" for x in hz),
+                      "os.horizon_summary_0.txt, first row with a finite mass: " +
+                      "; ".join(f"{R[k]['dir']} t = {x['first_t']}, {x['first_mass']:.6f}" for (k, _), x in zip(mc, hz))),
+                 NA))
+    txt, src = [], []
+    for k, _ in mc:
+        ah = CACHE[k]["ah"]
+        w = [(lo, hi) for lo, hi in ((19.0, 21.0), (39.0, 41.0), (ah[-1, 0] - 2.0, ah[-1, 0] + 0.01))]
+        med = []
+        for lo, hi in w:
+            v = ah[(ah[:, 0] >= lo) & (ah[:, 0] <= hi), 1]
+            med.append((float(np.median(v)), float(v.min()), float(v.max()), len(v)))
+        txt.append(f"{med[0][0]:.4f}, {med[1][0]:.4f}, {med[2][0]:.4f} ({ah[-1, 0]:.0f})")
+        src.append(f"{R[k]['dir']}: " + "; ".join(f"t = {lo:.2f}-{hi:.2f}: median {m_[0]:.5f} of {m_[3]} searches "
+                                                  f"(range {m_[1]:.5f}-{m_[2]:.5f})" for (lo, hi), m_ in zip(w, med)) +
+                   f" (run {R[k]['status']})")
+    rows.append((r"\quad $M_{\rm AH}/M$ at $t=20M$, $40M$, and over the last $2M$ (last search $t/M$); medians over "
+                 r"$\pm1M$, as successive searches scatter by up to $10^{-3}$",
+                 Cell("; ".join(txt), "os.horizon_summary_0.txt, median of the rows with a finite mass in each window: " +
+                      "; ".join(src)), NA))
+    kr = fam("dustmc_runaway")
+    rows.append((r"Largest MeshBlock count: the four runs above; finest-level clouds at the full depth with "
+                 r"$n_{\rm f}=1$ and 4+c, count asked for when the run stopped ($t/M$)",
+                 Cell(", ".join(f"{R[k]['outcomes']['nmb_max']}" for k, _ in mc) + "; " +
+                      ", ".join(f"{R[k]['block_limit_exceeded'][0]} ({R[k]['outcomes']['t_final']:.1f})" for k in kr),
+                      "particle history, max of the nmb column: " +
+                      "; ".join(f"{R[k]['dir']} {R[k]['outcomes']['nmb_max']}" for k, _ in mc) +
+                      "; log fatal error 'MeshBlocks ... on new tree = N exceeds max_nmb_per_rank': " +
+                      "; ".join(f"{R[k]['dir']} N = {R[k]['block_limit_exceeded'][0]}, limit {R[k]['block_limit_exceeded'][1]}, "
+                                f"largest count held {R[k]['outcomes']['nmb_max']}, last record t = {R[k]['outcomes']['t_final']:.3f}"
+                                for k in kr)),
+                 NA))
+    pair = ["os/mc_nocap4", "os/mc_adapt4"]
+    txt, src = [], []
+    for k in pair:
+        z = CACHE[k]["z"]
+        Hn, tz = np.sqrt(z["H-norm2"]), z["time"]
+        tf = R[k]["outcomes"]["horizon"]["first_t"]
+        tr_ = R[k]["outcomes"]["all_removed_t"]
+        parts = [(tz < tf), (tz >= tf) & (tz < tr_), (tz >= tr_)]
+        mx = [(float(Hn[q].max()), float(tz[q][Hn[q].argmax()])) for q in parts]
+        txt.append(", ".join(f"{v:.2f}" for v, _ in mx))
+        src.append(f"{R[k]['dir']} first horizon t = {tf}, last macroparticle removed t = {tr_:.2f}: " +
+                   ", ".join(f"{v:.3f} at {tt_:.2f}" for v, tt_ in mx))
+    rows.append((r"One level fewer, largest $\|\Ham\|$ before the first horizon, from it until the last macroparticle "
+                 r"is removed, and afterwards: finest-level; capped clouds",
+                 Cell("; ".join(txt), "os.z4c.user.hst, sqrt(H-norm2): " + "; ".join(src)), NA))
+    G.append(("Dust collapse from a random sample", rows))
+    G.extend(prolate_rows(do_slice))
 
     # ---- stable cluster: filter
     rows = []
@@ -1368,26 +1554,46 @@ def outcomes(do_slice):
                       f"; {R[km]['dir']} (same sample 1, compensated) {tm:.2f}"),
                  Cell(r"$\approx120$ (" + FIG + ")", figsrc("migration_central_evolution.pdf", "panel (a), first upward crossing of 0.8"))))
     t, a = lapse(km)
-    ts, as_ = smooth(t, a, 4.0)
-    ext = zigzag(ts, as_, 0.08)
-    names = ["start", "first maximum", "first minimum", "second maximum", "second minimum"]
-    ex = [(float(t[0]), float(a[0]), "start")] + ext[1:5]
-    here = "; ".join(f"{v:.2f}" + ("" if i == 0 else f" ({tt_:.0f})") for i, (tt_, v, _) in enumerate(ex))
-    orig = r"0.56; 0.91 (230--320); 0.55--0.56 (450--490); 0.90 (670); 0.76 (830)"
-    rows.append((r"Migration, $\alpha_c$ at the start and at its first extrema ($t/M$)",
-                 Cell(here, f"{R[km]['dir']}, st.nrpic.hst alpha_probe ({R[km]['status']}, records to t = {t[-1]:.0f} M); "
-                            f"start = first record; extrema of the 4 M boxcar, alternating with successive differences above 0.08: " +
-                            ", ".join(f"{n} {v:.4f} at {tt_:.1f}" for n, (tt_, v, _) in zip(names, ex))),
-                 Cell(orig + " (" + FIG + ")", figsrc("migration_central_evolution.pdf", "panel (a): start 0.56, plateau 0.91 at "
-                                                     "230-320 M, minima 0.55-0.56 at 450-490 M, maximum 0.90 near 670 M, minimum 0.76 "
-                                                     "near 830 M") + "; " + osrc("lapse rises from approximately 0.56 to 0.91", "text"))))
+    ex = mig_extrema(t, a, smooth=10.0, swing=0.02)
+    early = [e for e in ex if e[1] < 1000.0]
+    late = [e for e in ex if e[1] >= 1000.0]
+    fmt = lambda e: f"{e[2]:.3f} ({e[1]:.0f})"  # noqa: E731
+    here1 = f"{a[0]:.3f} (0); " + "; ".join(fmt(e) for e in early)
+    exsrc = (f"{R[km]['dir']}, st.nrpic.hst alpha_probe ({R[km]['status']}, records to t = {t[-1]:.0f} M); start = first "
+             f"record; extrema as in paper/scripts/make_data_migration.extrema (10 M running mean, prominence 0.02, "
+             f"moved to the extreme record within 10 M): ")
+    O = MIG_ORIGINAL
+    def two(x):                      # 0.9 -> 0.90, 0.905 -> 0.905 (as read off the figure)
+        v = f"{x:.3f}"
+        return v[:-1] if v.endswith("0") else v
+
+    def ofmt(r):
+        tt_ = f"{r[0]:.0f}" if r[1] == r[2] else f"{r[1]:.0f}--{r[2]:.0f}"
+        aa = two(r[3]) if r[4] == r[5] else f"{two(r[4])}--{two(r[5])}"
+        return f"{aa} ({tt_})"
+    osrc_mig = (f"{rel(HERE / 'make_data_migration.py')}, array ORIGINAL (t, t_lo, t_hi, alpha, alpha_lo, alpha_hi), read by "
+                f"eye from the rendered figure refs/arxiv_2611.12831/src/Figures/migration_central_evolution.pdf: ")
+    oe = [r for r in O if r[0] < 1000.0]
+    ol = [r for r in O if r[0] >= 1000.0]
+    rows.append((r"Migration: $\alpha_c$ at the start and at its extrema to $1000M$ ($t/M$)",
+                 Cell(here1, exsrc + "; ".join(f"{k_} {x:.4f} at {y:.2f}" for k_, y, x in early)),
+                 Cell("; ".join(ofmt(r) for r in oe) + " (" + FIG + ")",
+                      osrc_mig + "; ".join(ofmt(r) for r in oe))))
+    m_late = float(a[t >= 1500.0].mean())
+    rows.append((r"Migration: extrema after $1000M$ ($t/M$); $\alpha_c$ at the end; mean over $1500$--$2500M$",
+                 Cell("; ".join(fmt(e) for e in late) + f"; {a[-1]:.3f} ({t[-1]:.0f}); {m_late:.3f}",
+                      exsrc + "; ".join(f"{k_} {x:.4f} at {y:.2f}" for k_, y, x in late) +
+                      f"; last record {a[-1]:.4f} at {t[-1]:.2f}; mean of alpha_probe over the records with t >= 1500 M"),
+                 Cell("; ".join(ofmt(r) for r in ol) + " (" + FIG + r"); late mean 0.834 (from its text)",
+                      osrc_mig + "; ".join(ofmt(r) for r in ol) + "; " +
+                      osrc(r"\langle\alpha_c\rangle&=0.833530", "text: time-averaged late core lapse 0.833530"))))
     o = R[km]["outcomes"]
     esc = ", ".join(f"{x:.0f}" for x in o["escape_times"])
-    rows.append((r"Migration (run in progress, records to $t/M$ given): macroparticles removed by excision; leaving the domain (at $t/M$)",
-                 Cell(f"{o['n_excised_end']}; {o['n_escaped_end']}" + (f" ({esc})" if esc else "") + f"; to {o['t_final']:.0f}",
-                      f"{R[km]['dir']}, st.nrpic.hst columns n_excised and n_escaped of the last record, times at which "
-                      f"n_escaped steps; np {o['np_start']} -> {o['np_end']}; domain half-width "
-                      f"{R[km]['mesh']['domain_half_width']:g} M; run {R[km]['status']}"),
+    rows.append((r"Migration: macroparticles removed by excision; leaving the domain (at $t/M$)",
+                 Cell(f"{o['n_excised_end']}; {o['n_escaped_end']}" + (f" ({esc})" if esc else ""),
+                      f"{R[km]['dir']}, st.nrpic.hst columns n_excised and n_escaped of the last record (t = "
+                      f"{o['t_final']:.0f}), times at which n_escaped steps; np {o['np_start']} -> {o['np_end']}; "
+                      f"domain half-width {R[km]['mesh']['domain_half_width']:g} M; run {R[km]['status']}"),
                  NA))
     G.append((r"Unperturbed $y_c=0.5$", rows))
 
@@ -1411,22 +1617,188 @@ def outcomes(do_slice):
     rows.append((r"Compressed: largest $|\Delta\alpha_c|$ to $120M$ between the consistent and the unperturbed initial metric",
                  Cell(f"{v:.3f}", f"runs/st/reconf_yc0756_v4 against {R[k]['dir']}, st.nrpic.hst alpha_probe interpolated, t <= 120 M: {v:.4f}"),
                  NA))
+    # density lowered by ten percent
+    k = "st/reconf_yc0756_hc_m"
+    t, a = lapse(k)
+    o = R[k]["outcomes"]
+    T, Rq, Nq, Mq = radii(k)
+    rows.append((r"Density lowered by ten percent: $\alpha_c$ range; mean over $600M$; radii enclosing 90 and 10 percent of "
+                 r"the rest mass, range ($t=0$); macroparticles kept",
+                 Cell(f"{a.min():.3f}--{a.max():.3f}; {a.mean():.3f}; {Rq[:, 8].min():.1f}--{Rq[:, 8].max():.1f} ({Rq[0, 8]:.1f}), "
+                      f"{Rq[:, 0].min():.1f}--{Rq[:, 0].max():.1f} ({Rq[0, 0]:.1f}); "
+                      + ("all" if o["np_end"] == o["np_start"] else f"{o['np_end']} of {o['np_start']}"),
+                      f"{R[k]['dir']}, st.nrpic.hst alpha_probe min, max, mean over all records (to {t[-1]:.0f} M); "
+                      f"particle snapshots st.part.*.bin ({len(T)} times, {T[0]:g}-{T[-1]:g} M): radii about the origin "
+                      f"enclosing 90 and 10 percent of the rest mass present (paper/scripts/make_data_clusters.shells); "
+                      f"np {o['np_start']} -> {o['np_end']}"),
+                 NA))
+    # unperturbed model
+    k = "st/yc0756_unpert"
+    t, a = lapse(k)
+    o = R[k]["outcomes"]
+    eq = R[k]["model"]["components"][0]["header"]["alpha_c"]
+    ex = mig_extrema(t, a, smooth=5.0, swing=0.01)
+    mins = [y for kind, y, x in ex if kind == "min" and y >= 200.0]
+    sp = np.diff(mins)
+    tm = [0.5 * (y0 + y1) for y0, y1 in zip(mins[:-1], mins[1:])]
+    sp_a = [d_ for d_, c_ in zip(sp, tm) if c_ < 600.0]
+    sp_b = [d_ for d_, c_ in zip(sp, tm) if c_ >= 600.0]
+    hs = [(ex[i][1], abs(ex[i][2] - ex[i - 1][2]) / 2, (ex[i][2] + ex[i - 1][2]) / 2) for i in range(1, len(ex))]
+    j = int(np.argmax([x[1] for x in hs]))
+    Oc = NC_ORIGINAL
+    Oe = Oc[Oc[:, 0] <= 600.0]
+    imax = [i for i in range(1, len(Oe) - 1) if Oe[i, 1] > Oe[i - 1, 1] and Oe[i, 1] > Oe[i + 1, 1]]
+    ohs = [(0.5 * (Oe[i - 1, 0] + Oe[i, 0]), abs(Oe[i, 1] - Oe[i - 1, 1]) / 2, Oe[i - 1, 0], Oe[i, 0]) for i in range(2, len(Oe))]
+    oj = int(np.argmax([x[1] for x in ohs]))
+    osp = np.diff(Oe[imax, 0])
+    omid = 0.5 * (Oe[imax, 0][:-1] + Oe[imax, 0][1:])
+    t_split = Oe[imax, 0][int(np.argmax(osp > 55.0))] if (osp > 55.0).any() else 600.0
+    osp_a, osp_b = osp[omid < t_split], osp[omid >= t_split]
+    ncsrc = (f"{rel(HERE / 'make_data_nearcritical.py')}, array ORIGINAL (t, alpha_c), read by eye from the rendered figure "
+             f"refs/arxiv_2611.12831/src/Figures/migration_lapse_redshift_shells.pdf (accuracy about 10 M and 0.005); ")
+    rows.append((r"Unperturbed: spacing of successive minima of $\alpha_c$ from $200M$, before and after $600M$",
+                 Cell(f"{min(sp_a):.0f}--{max(sp_a):.0f}; {min(sp_b):.0f}--{max(sp_b):.0f}",
+                      f"{R[k]['dir']}, st.nrpic.hst alpha_probe; extrema as in paper/scripts/make_data_migration.extrema with "
+                      f"5 M running mean and prominence 0.01 (as make_data_nearcritical.py); minima from 200 M at " +
+                      ", ".join(f"{y:.1f}" for y in mins) + "; spacings " + ", ".join(f"{d_:.2f}" for d_ in sp)),
+                 Cell(f"maxima {min(osp_a):.0f}--{max(osp_a):.0f} to {t_split:.0f}, {min(osp_b):.0f}--{max(osp_b):.0f} after "
+                      f"(perturbed run; {FIG})",
+                      ncsrc + "maxima at " + ", ".join(f"{x:.0f}" for x in Oe[imax, 0]) + "; spacings " +
+                      ", ".join(f"{x:.0f}" for x in osp))))
+    rows.append((r"Unperturbed: largest half-swing of $\alpha_c$ between successive extrema ($t/M$)",
+                 Cell(f"{hs[j][1]:.3f} ({hs[j][0]:.0f})",
+                      f"{R[k]['dir']}, same extrema: half of |difference| of successive extrema, largest {hs[j][1]:.4f} "
+                      f"ending at {hs[j][0]:.1f} M"),
+                 Cell(f"{ohs[oj][1]:.3f} ({ohs[oj][2]:.0f}--{ohs[oj][3]:.0f}; perturbed run; {FIG})",
+                      ncsrc + f"half of |difference| of successive rows to 600 M, largest between {ohs[oj][2]:.0f} and "
+                              f"{ohs[oj][3]:.0f} M")))
+    last = hs[-2:]
+    rows.append((r"Unperturbed: $\alpha_c$ range; mean of the last two pairs of successive extrema ($t/M$); "
+                 r"macroparticles kept",
+                 Cell(f"{a.min():.3f}--{a.max():.3f}; " + ", ".join(f"{x[2]:.3f} ({x[0]:.0f})" for x in last) + "; "
+                      + ("all" if o["np_end"] == o["np_start"] else f"{o['np_end']} of {o['np_start']}"),
+                      f"{R[k]['dir']}, st.nrpic.hst alpha_probe min and max over the run (to {t[-1]:.0f} M), mean of successive "
+                      f"extrema (equilibrium {eq:.4f}): " + ", ".join(f"{x[2]:.4f} ending at {x[0]:.1f}" for x in last) +
+                      f"; np {o['np_start']} -> {o['np_end']}"),
+                 Cell(f"{Oe[:, 1].min():.3f}--{Oe[:, 1].max():.3f}; {Oc[-1, 1]:.3f} ({Oc[-1, 0]:.0f}; perturbed run; {FIG}); "
+                      r"all kept",
+                      ncsrc + f"min and max of the rows to 600 M; last row; " +
+                      osrc("All particles remain present throughout the displayed interval", "text"))))
     G.append((r"Near-critical $y_c=0.756$", rows))
+    G.extend(jeans_rows())
     return G
 
 
+def prolate_rows(do_slice):
+    """Outcome rows of the prolate collapse."""
+    k = "prolate/e09_v8"
+    d = RUNS_DIR / k
+    rows, NA = [], Cell("--", "not given in the original")
+    c = np.loadtxt(d / "prol.curv.hst", comments="#", ndmin=2)
+    c = c[current(c[:, 0])]
+    i = int(np.argmax(c[:, 1]))
+    R[k]["outcomes"]["kretschmann_max"] = {"value": float(c[i, 1]), "t": float(c[i, 0]),
+                                          "x": float(c[i, 2]), "y": float(c[i, 3]), "z": float(c[i, 4]),
+                                          "note": "largest |I| on the mesh, prol.curv.hst; depends on the cell size"}
+    rows.append((r"Largest Kretschmann scalar: time $t/M$ and $|z|/M$ (on the axis)",
+                 Cell(f"{c[i, 0]:.2f}; {abs(c[i, 4]):.2f}",
+                      f"{R[k]['dir']}, prol.curv.hst (columns time, max|I|, x, y, z), record with the largest max|I|: "
+                      f"t = {c[i, 0]:.4f}, |I| = {c[i, 1]:.1f} M^-4 (value kept out of the table: it depends on the cell size), "
+                      f"(x, y, z) = ({c[i, 2]:.3f}, {c[i, 3]:.3f}, {c[i, 4]:.3f})"), NA))
+    o = R[k]["outcomes"]
+    hz = o["horizon"]
+    rows.append((r"First apparent horizon $t/M$; $M_{\rm AH}/M$",
+                 Cell(f"{hz['first_t']:.2f}; {hz['first_mass']:.3f}",
+                      f"{R[k]['dir']}, prol.horizon_summary_0.txt, first row with a finite mass: t = {hz['first_t']}, "
+                      f"{hz['first_mass']:.6f} (searches every {R[k]['horizon_finder']['search_every_cycles']:g} cycles)"),
+                 Cell("32 (from its text)", osrc("the configuration after apparent-horizon detection at $t=32M$", "text"))))
+    ah = CACHE[k]["ah"]
+    j = int(np.argmax(ah[:, 1]))
+    rows.append((r"Largest $M_{\rm AH}/M$ ($t/M$); $M_{\rm AH}/M$ at the last search ($t/M$)",
+                 Cell(f"{ah[j, 1]:.4f} ({ah[j, 0]:.2f}); {ah[-1, 1]:.4f} ({ah[-1, 0]:.2f})",
+                      f"{R[k]['dir']}, prol.horizon_summary_0.txt: largest mass {ah[j, 1]:.6f} at t = {ah[j, 0]}; last row "
+                      f"{ah[-1, 1]:.6f} at t = {ah[-1, 0]}"), NA))
+    rows.append((r"First and last removal of macroparticles $t/M$ (macroparticles left)",
+                 Cell(f"{o['removal_first_t']:.2f}; {o['all_removed_t']:.2f} ({o['np_end']})",
+                      f"{R[k]['dir']}, prol.nrpic.hst: first record with n_excised > 0; first record with np = 0; np of the "
+                      f"last record; removed rest mass {CACHE[k]['hst'][-1, H['m_excised']]:.4f} of "
+                      f"{CACHE[k]['hst'][0, H['sum_m']]:.4f}"), NA))
+    S = CACHE.get("slice", {})
+    if do_slice:
+        last = sorted(d.glob("rst/prol.[0-9][0-9][0-9][0-9][0-9].rst"))[-1]
+        A = sm.analyse(sm.rst_open(str(last), strict=True))
+        X = A["X"][sm.NPER2_H]
+        S[k] = {"time": float(A["time"]), "file": rel(last), "mass": float(X["RH"] / 2),
+                "unc_shells": float(A["dMH_shell"]), "unc_spread": float(A["dMH_spread"]),
+                "m_inf": float(A["m_inf"]), "flat": bool(A["flat"])}
+        CACHE["slice"] = S
+        s_ = S[k]
+        rows.append((r"Misner--Sharp mass on the last slice, at the horizon ($\pm$ its spread over angle) and at large "
+                     r"radius ($t/M$ of the slice)",
+                     Cell(f"{s_['mass']:.3f} $\\pm$ {s_['unc_spread']:.3f}; {s_['m_inf']:.3f} ({s_['time']:.0f})",
+                          f"{R[k]['dir']}, {Path(s_['file']).name} (t = {s_['time']:.2f} M), recomputed here with "
+                          f"analysis/diag/slicemass.analyse: outermost 2m/R = 1, M_H = {s_['mass']:.5f} +- {s_['unc_shells']:.1e} "
+                          f"(shells) +- {s_['unc_spread']:.1e} (spread of m); asymptotic m = {s_['m_inf']:.6f} "
+                          f"({'flat' if s_['flat'] else 'NOT FLAT: median over the outermost factor 2 in r'}); agrees with "
+                          f".work/slicemass_prolate_last.out (t = 45: M_H = 0.91950 +- 6e-04 +- 3e-02, m_inf = 0.998989 NOT FLAT)"),
+                     NA))
+    else:
+        rows.append((r"Misner--Sharp mass on the last slice: at the horizon; at large radius",
+                     Cell("not computed", "run without --no-slice"), NA))
+    z = CACHE[k]["z"]
+    Hn = np.sqrt(z["H-norm2"])
+    zl = CACHE["os/nocap_sc"]["z"]
+    Hl = np.sqrt(zl["H-norm2"])
+    rows.append((r"Largest $\|\Ham\|$ ($t/M$); lattice dust collapse (finest level, corrected masses) on the same measure",
+                 Cell(f"{Hn.max():.2f} ({z['time'][Hn.argmax()]:.1f}); {Hl.max():.2f}",
+                      f"{R[k]['dir']}, prol.z4c.user.hst sqrt(H-norm2), max {Hn.max():.4f} at t = {z['time'][Hn.argmax()]:.2f}; "
+                      f"runs/os/nocap_sc, os.z4c.user.hst, max {Hl.max():.4f} at t = {zl['time'][Hl.argmax()]:.2f}"), NA))
+    return [("Prolate collapse", rows)]
+
+
+def jeans_setup_row():
+    """Setups-table row of the cluster with two collapsing overdensities (runs/jeans/...).
+    Placeholder: those runs are still in progress. To fill: add the run directories to
+    RUNS with the family "jeans", return ("Two overdensities", keys, model Cell) for the
+    row() helper of setups(), and add "jeans" to FAMILY_ROW."""
+    return None
+
+
+def jeans_rows():
+    """Outcome rows of the cluster with two collapsing overdensities. Placeholder: the
+    runs are still in progress; return [(group title, [(quantity, Cell, Cell)])] when
+    they have ended (it is appended to the cluster float)."""
+    return []
+
+
+OUT_FLOATS = [  # label, first and last group title (inclusive), caption
+    ("tab:outcomes", "Fixed black hole", "Apparent-horizon check",
+     r"Measured quantities to which the text refers for test particles and the apparent-horizon check, with the "
+     r"values of " + CITE + r" where it gives them (from its text, or read from its figures). Masses in units of the "
+     r"total mass $M$, times in units of $M$; listed values follow the order named in the first column."),
+    ("tab:outcomes_dust", "Dust collapse on a lattice", "Dust collapse from a random sample",
+     r"As Table~\ref{tab:outcomes}, for dust collapse. $\|\Ham\|$ is the square root of the integral of $\Ham^2$ over "
+     r"the proper volume of the grid, cells with $\chi<1/16$ excluded; the same measure is used in every table."),
+    ("tab:outcomes_prolate", "Prolate collapse", "Prolate collapse",
+     r"As Table~\ref{tab:outcomes}, for the collapse of a prolate spheroid; $\|\Ham\|$ as in "
+     r"Table~\ref{tab:outcomes_dust}."),
+    ("tab:outcomes_clusters", r"Stable cluster $y_c=0.819$: filter", "Cluster sequence with inward kick",
+     r"As Table~\ref{tab:outcomes}, for the relativistic clusters; $\|\Ham\|$ as in Table~\ref{tab:outcomes_dust}. "
+     r"Central lapse $\alpha_c$ in the eight central cells; $\alpha_c(0)$ is its value at $t=0$."),
+    ("tab:outcomes_migration", r"Unperturbed $y_c=0.5$", None,
+     r"As Table~\ref{tab:outcomes_clusters}, for the unperturbed model past the binding-energy maximum and the "
+     r"near-critical model."),
+]
+
+
 def write_outcomes(G):
-    """Two floats in one file: test particles, horizon check and dust collapse; clusters."""
-    parts = [(G[:4], "tab:outcomes",
-              r"Measured quantities to which the text refers for test particles, the apparent-horizon check and "
-              r"dust collapse, with the values of " + CITE + r" where it gives them (from its text, or read from its "
-              r"figures). Masses in units of the total mass $M$, times in units of $M$; listed values follow the "
-              r"order named in the first column."),
-             (G[4:], "tab:outcomes_clusters",
-              r"As Table~\ref{tab:outcomes}, for the relativistic clusters. Central lapse $\alpha_c$ in the eight "
-              r"central cells; $\alpha_c(0)$ is its value at $t=0$.")]
+    """One float per scenario block (labels in OUT_FLOATS), all in tab_outcomes.tex."""
+    titles = [g[0] for g in G]
     L, led = [], []
-    for groups, label, caption in parts:
+    for label, first, lastt, caption in OUT_FLOATS:
+        i0 = titles.index(first)
+        i1 = titles.index(lastt) if lastt else len(G) - 1
+        groups = G[i0:i1 + 1]
         L += [r"\begin{table*}", rf"\caption{{{caption}}}", rf"\label{{{label}}}", r"\footnotesize",
               r"\setlength{\tabcolsep}{3pt}", r"\begin{ruledtabular}",
               r"\begin{tabular}{p{0.49\textwidth}p{0.26\textwidth}p{0.205\textwidth}}",
@@ -1441,6 +1813,7 @@ def write_outcomes(G):
                     if re.search(r"\d", detex(c.tex)):
                         led.append(f"{label}, {detex(title)} / {detex(q)}, {col}: {detex(c.tex)} <- {c.src}")
         L += [r"\end{tabular}", r"\end{ruledtabular}", r"\end{table*}", ""]
+        led.append(f"{label}, caption: {detex(caption)}")
     (OUT_TAB / "tab_outcomes.tex").write_text("\n".join(L))
     return led
 
@@ -1494,7 +1867,8 @@ def main():
            "#   'log' = athena.<timestamp>.log in the run directory or chain/seg*.log for chained runs;",
            "#   'generator metadata' = the .json written by the initial-data generator next to the original particle file,",
            "#   matched to the run's particle file by identical positions and masses (see runs.json, model.particles).",
-           "# tab:outcomes and tab:outcomes_clusters are the two floats of tab_outcomes.tex.", ""]
+           "# tab:outcomes, tab:outcomes_dust, tab:outcomes_prolate, tab:outcomes_clusters and tab:outcomes_migration are the floats of",
+           "#   tab_outcomes.tex.", ""]
     OUT_LEDGER.write_text("\n".join(hdr + led) + "\n")
     print(f"{rel(OUT_JSON)}, {rel(OUT_LEDGER)} ({len(led)} lines), {rel(OUT_TAB)}/tab_setups.tex, tab_outcomes.tex")
     for key in RUNS:

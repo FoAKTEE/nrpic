@@ -1,5 +1,5 @@
 \begin{table*}
-\caption{Measured quantities to which the text refers for test particles, the apparent-horizon check and dust collapse, with the values of Ref.~\cite{Wu:2026nrpic} where it gives them (from its text, or read from its figures). Masses in units of the total mass $M$, times in units of $M$; listed values follow the order named in the first column.}
+\caption{Measured quantities to which the text refers for test particles and the apparent-horizon check, with the values of Ref.~\cite{Wu:2026nrpic} where it gives them (from its text, or read from its figures). Masses in units of the total mass $M$, times in units of $M$; listed values follow the order named in the first column.}
 \label{tab:outcomes}
 \footnotesize
 \setlength{\tabcolsep}{3pt}
@@ -30,8 +30,20 @@ Quantity & This work & Ref.~\cite{Wu:2026nrpic} \tabularnewline
 \raggedright Slice Misner--Sharp horizon mass, same slices & \raggedright 0.9656, 1.0016, 1.0000 & \raggedright -- \tabularnewline
 \raggedright Finder as distributed ($M/8$), stopping tolerance $10^{-5}$ and $10^{-8}$, $t\simeq50M$ & \raggedright 0.9771, 0.9771 & \raggedright -- \tabularnewline
 \raggedright Corrected finder in a live run ($M/8$), last search; slice mass at $t=12M$ & \raggedright 1.0003; 1.0006 & \raggedright -- \tabularnewline
+\end{tabular}
+\end{ruledtabular}
+\end{table*}
+
+\begin{table*}
+\caption{As Table~\ref{tab:outcomes}, for dust collapse. $\|\Ham\|$ is the square root of the integral of $\Ham^2$ over the proper volume of the grid, cells with $\chi<1/16$ excluded; the same measure is used in every table.}
+\label{tab:outcomes_dust}
+\footnotesize
+\setlength{\tabcolsep}{3pt}
+\begin{ruledtabular}
+\begin{tabular}{p{0.49\textwidth}p{0.26\textwidth}p{0.205\textwidth}}
+Quantity & This work & Ref.~\cite{Wu:2026nrpic} \tabularnewline
 \colrule
-\multicolumn{3}{l}{\textit{Dust collapse}} \tabularnewline
+\multicolumn{3}{l}{\textit{Dust collapse on a lattice}} \tabularnewline
 \raggedright Central proper time $\tau_c/M$ at which $\alpha_c$ exceeds the lapse bound by $10^{-2}$ & \raggedright 3.53 & \raggedright $\simeq3.5$ \tabularnewline
 \raggedright Rest mass $\sum_p m_p/M$: published lattice rule; surface-corrected (continuum $M_0$) & \raggedright 1.1687; 1.1551 & \raggedright $\simeq1.155$ ($N\simeq10^6$) \tabularnewline
 \raggedright First apparent horizon $t/M$ (finest-level clouds, corrected masses) & \raggedright 16.39 & \raggedright -- \tabularnewline
@@ -40,13 +52,40 @@ Quantity & This work & Ref.~\cite{Wu:2026nrpic} \tabularnewline
 \raggedright $M_{\rm AH}/M$ when the last macroparticle is removed $\to$ at $t=60M$: finest level; level cap with any, $\le2$, $\le1$ levels of coarsening & \raggedright 1.0004$\to$0.9987; 1.0006$\to$1.0065; 1.0006$\to$1.0064; 1.0012$\to$0.9904 & \raggedright -- \tabularnewline
 \raggedright Largest $\|\Ham\|$, same four runs & \raggedright 1.9, 4.7, 4.5, 2.8 & \raggedright -- \tabularnewline
 \raggedright Largest $\|\Ham\|$ within $1M$ after the refinement to $\Delta x=h/4$, same four runs & \raggedright 1.59, 0.48, 0.48, 1.14 & \raggedright -- \tabularnewline
-\raggedright $E_c$ over the cycloid in the $3M$ after the refinement to $h/4$: finest level; level cap with any, $\le1$ levels & \raggedright 0.27--0.52; 1.11--1.14; 1.28--1.49 & \raggedright -- \tabularnewline
+\raggedright Central reading of $E$ (eight central cells, after the filter) over the cycloid at the same $\tau_c$, in the $3M$ after the refinement to $h/4$: finest level; level cap with any, $\le1$ levels of coarsening & \raggedright 0.27--0.52; 1.11--1.14; 1.28--1.49 & \raggedright -- \tabularnewline
+\colrule
+\multicolumn{3}{l}{\textit{Dust collapse from a random sample}} \tabularnewline
+\raggedright Random sample, order of the runs below: capped clouds at the full depth with $n_{\rm f}=1$ and 4+c; one level fewer, finest-level and capped clouds (4+c) & \raggedright  & \raggedright  \tabularnewline
+\raggedright \quad first apparent horizon $t/M$, $M_{\rm AH}/M$ & \raggedright 16.35, 0.9949; 16.31, 0.9939; 16.20, 1.0019; 16.58, 0.9990 & \raggedright -- \tabularnewline
+\raggedright \quad $M_{\rm AH}/M$ at $t=20M$, $40M$, and over the last $2M$ (last search $t/M$); medians over $\pm1M$, as successive searches scatter by up to $10^{-3}$ & \raggedright 1.0000, 1.0004, 1.0000 (43); 1.0004, 1.0013, 1.0013 (41); 0.9983, 0.9971, 0.9973 (60); 0.9984, 0.9946, 0.9946 (60) & \raggedright -- \tabularnewline
+\raggedright Largest MeshBlock count: the four runs above; finest-level clouds at the full depth with $n_{\rm f}=1$ and 4+c, count asked for when the run stopped ($t/M$) & \raggedright 1779, 1681, 400, 400; 1884 (8.8), 2024 (10.2) & \raggedright -- \tabularnewline
+\raggedright One level fewer, largest $\|\Ham\|$ before the first horizon, from it until the last macroparticle is removed, and afterwards: finest-level; capped clouds & \raggedright 1.77, 2.93, 0.91; 2.95, 3.79, 2.23 & \raggedright -- \tabularnewline
 \end{tabular}
 \end{ruledtabular}
 \end{table*}
 
 \begin{table*}
-\caption{As Table~\ref{tab:outcomes}, for the relativistic clusters. Central lapse $\alpha_c$ in the eight central cells; $\alpha_c(0)$ is its value at $t=0$.}
+\caption{As Table~\ref{tab:outcomes}, for the collapse of a prolate spheroid; $\|\Ham\|$ as in Table~\ref{tab:outcomes_dust}.}
+\label{tab:outcomes_prolate}
+\footnotesize
+\setlength{\tabcolsep}{3pt}
+\begin{ruledtabular}
+\begin{tabular}{p{0.49\textwidth}p{0.26\textwidth}p{0.205\textwidth}}
+Quantity & This work & Ref.~\cite{Wu:2026nrpic} \tabularnewline
+\colrule
+\multicolumn{3}{l}{\textit{Prolate collapse}} \tabularnewline
+\raggedright Largest Kretschmann scalar: time $t/M$ and $|z|/M$ (on the axis) & \raggedright 27.75; 0.66 & \raggedright -- \tabularnewline
+\raggedright First apparent horizon $t/M$; $M_{\rm AH}/M$ & \raggedright 32.00; 0.929 & \raggedright 32 (from its text) \tabularnewline
+\raggedright Largest $M_{\rm AH}/M$ ($t/M$); $M_{\rm AH}/M$ at the last search ($t/M$) & \raggedright 0.9666 (33.75); 0.9489 (44.75) & \raggedright -- \tabularnewline
+\raggedright First and last removal of macroparticles $t/M$ (macroparticles left) & \raggedright 33.78; 38.80 (0) & \raggedright -- \tabularnewline
+\raggedright Misner--Sharp mass on the last slice, at the horizon ($\pm$ its spread over angle) and at large radius ($t/M$ of the slice) & \raggedright 0.920 $\pm$ 0.027; 0.999 (45) & \raggedright -- \tabularnewline
+\raggedright Largest $\|\Ham\|$ ($t/M$); lattice dust collapse (finest level, corrected masses) on the same measure & \raggedright 6.31 (27.5); 1.90 & \raggedright -- \tabularnewline
+\end{tabular}
+\end{ruledtabular}
+\end{table*}
+
+\begin{table*}
+\caption{As Table~\ref{tab:outcomes}, for the relativistic clusters; $\|\Ham\|$ as in Table~\ref{tab:outcomes_dust}. Central lapse $\alpha_c$ in the eight central cells; $\alpha_c(0)$ is its value at $t=0$.}
 \label{tab:outcomes_clusters}
 \footnotesize
 \setlength{\tabcolsep}{3pt}
@@ -77,16 +116,33 @@ Quantity & This work & Ref.~\cite{Wu:2026nrpic} \tabularnewline
 \raggedright $M_{\rm AH}/M$ at the end; macroparticles left of $10^4$ & \raggedright 1.0000; 1.0001; 6, 3 & \raggedright $\simeq1$ (stated) \tabularnewline
 \raggedright $\alpha_c$ at the end, after the horizon forms: $y_c=0.605$; $0.500$ & \raggedright 0.051; 0.016 & \raggedright $\approx0.20$ (read from figure) \tabularnewline
 \raggedright $y_c=0.283$: $\alpha_c$ at the end ($t/M$); particles kept & \raggedright 0.976 (270); all & \raggedright $\approx0.98$ (300; read from figure) \tabularnewline
+\end{tabular}
+\end{ruledtabular}
+\end{table*}
+
+\begin{table*}
+\caption{As Table~\ref{tab:outcomes_clusters}, for the unperturbed model past the binding-energy maximum and the near-critical model.}
+\label{tab:outcomes_migration}
+\footnotesize
+\setlength{\tabcolsep}{3pt}
+\begin{ruledtabular}
+\begin{tabular}{p{0.49\textwidth}p{0.26\textwidth}p{0.205\textwidth}}
+Quantity & This work & Ref.~\cite{Wu:2026nrpic} \tabularnewline
 \colrule
 \multicolumn{3}{l}{\textit{Unperturbed $y_c=0.5$}} \tabularnewline
 \raggedright Time $t/M$ at which $\alpha_c$ first reaches 0.8: plain filter; compensated, samples 1--3 & \raggedright 59; 88, 86, 91 & \raggedright $\approx120$ (read from figure) \tabularnewline
-\raggedright Migration, $\alpha_c$ at the start and at its first extrema ($t/M$) & \raggedright 0.55; 0.91 (228); 0.54 (437); 0.89 (632); 0.75 (783) & \raggedright 0.56; 0.91 (230--320); 0.55--0.56 (450--490); 0.90 (670); 0.76 (830) (read from figure) \tabularnewline
-\raggedright Migration (run in progress, records to $t/M$ given): macroparticles removed by excision; leaving the domain (at $t/M$) & \raggedright 0; 3 (1816, 1999, 2405); to 2429 & \raggedright -- \tabularnewline
+\raggedright Migration: $\alpha_c$ at the start and at its extrema to $1000M$ ($t/M$) & \raggedright 0.552 (0); 0.913 (228); 0.591 (400); 0.637 (417); 0.541 (436); 0.894 (631); 0.753 (783); 0.853 (940) & \raggedright 0.56 (0); 0.905 (200--320); 0.55--0.63 (440--520); 0.90 (670); 0.765 (830--880) (read from figure) \tabularnewline
+\raggedright Migration: extrema after $1000M$ ($t/M$); $\alpha_c$ at the end; mean over $1500$--$2500M$ & \raggedright 0.795 (1072); 0.853 (1184); 0.792 (1329); 0.840 (1472); 0.802 (1582); 0.833 (1726); 0.804 (1852); 0.826 (2001); 0.816 (2500); 0.814 & \raggedright 0.865 (1040); 0.78 (1160); 0.865 (1320); 0.80 (1450); 0.85 (1600) (read from figure); late mean 0.834 (from its text) \tabularnewline
+\raggedright Migration: macroparticles removed by excision; leaving the domain (at $t/M$) & \raggedright 0; 4 (1816, 1999, 2405, 2440) & \raggedright -- \tabularnewline
 \colrule
 \multicolumn{3}{l}{\textit{Near-critical $y_c=0.756$}} \tabularnewline
 \raggedright Compressed by ten percent: $\alpha_c(0)$; first apparent horizon $t/M$ & \raggedright 0.749; 147.2 & \raggedright $\simeq0.75$; none \tabularnewline
 \raggedright Compressed: $M_{\rm AH}/M$ at the end; $M$ of the initial data; macroparticles left & \raggedright 0.9970; 0.9969; 0 & \raggedright all kept \tabularnewline
 \raggedright Compressed: largest $|\Delta\alpha_c|$ to $120M$ between the consistent and the unperturbed initial metric & \raggedright 0.009 & \raggedright -- \tabularnewline
+\raggedright Density lowered by ten percent: $\alpha_c$ range; mean over $600M$; radii enclosing 90 and 10 percent of the rest mass, range ($t=0$); macroparticles kept & \raggedright 0.721--0.827; 0.783; 5.8--9.2 (6.4), 1.8--3.8 (2.4); all & \raggedright -- \tabularnewline
+\raggedright Unperturbed: spacing of successive minima of $\alpha_c$ from $200M$, before and after $600M$ & \raggedright 44--58; 50--76 & \raggedright maxima 50--55 to 360, 60--70 after (perturbed run; read from figure) \tabularnewline
+\raggedright Unperturbed: largest half-swing of $\alpha_c$ between successive extrema ($t/M$) & \raggedright 0.036 (415) & \raggedright 0.041 (250--275; perturbed run; read from figure) \tabularnewline
+\raggedright Unperturbed: $\alpha_c$ range; mean of the last two pairs of successive extrema ($t/M$); macroparticles kept & \raggedright 0.696--0.772; 0.720 (745), 0.714 (770); all & \raggedright 0.696--0.777; 0.735 (800; perturbed run; read from figure); all kept \tabularnewline
 \end{tabular}
 \end{ruledtabular}
 \end{table*}
