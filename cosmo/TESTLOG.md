@@ -1593,3 +1593,21 @@ Prediction: relativistic infall of the four groups of observers later by 0.1 to 
 percent in a_p than with Catmull-Rom (58.88, 59.68, 62.62, 79.36), so the delay rises
 from 4.61, 4.55, 4.79, 5.25 percent by that much. If the shift is below 0.05 percent
 the interpolation does not matter for this result.
+
+## C5: production configuration at 64 cells, both boxes, outcome (06:46)
+
+`dav_c704_n64_pcs4bt`. Power against linear theory, signed, three shells up to the
+cut-off: z = 100: -0.006, +0.005, -0.012 percent; z = 10: +0.07, +0.14, -0.015; z = 1:
++0.47, +0.84, +0.004; z = 0: +0.96, +1.65, +0.06. Predicted within 0.2 percent at z = 100
+and 10: holds. The two long shells show the same excess as every other compensated run
+at 32 and 64 cells, so it is growth of second order; the shortest shell stays within
+0.06 percent to z = 0. Constraints at z = 100, 10, 1, 0: Hamiltonian 2.3e-8, 8.5e-8,
+1.7e-7, 8.5e-7; momentum 2.6e-4, 2.3e-4, 2.4e-4, 8.7e-4. Predicted at or below the
+three-point runs (6.8e-7, 7.3e-4 at the end): fails by a quarter at the end, holds
+before. Conservation on the mesh: momentum 7e-5 (to z = 3), 1.7e-4 at the end; energy
+4e-4, 4.2e-3 at the end.
+`dav_c256_n64_pcs4bt`. Power: within 0.06 percent at z = 100; +0.24, +0.43, -0.32,
+-0.40, -0.35, -0.04 percent at z = 10 (rms contrast 0.05). Predicted within 0.4: at the
+edge (0.43). Constraints as with the three-point pass and Catmull-Rom (Hamiltonian
+1.5e-6 at z = 10, 1.2e-4 at z = 1): as predicted, the second-order terms are
+under-resolved at ten cells per cut-off wave and nothing else matters there.
