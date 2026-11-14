@@ -974,6 +974,8 @@ void ProblemGenerator::CallProblemGenerator(ParameterInput *pin, bool is_restart
     NrpicGeodesic(pin, is_restart);
   } else if (pgen_fun_name.compare("nrpic_cf") == 0) {
     NrpicConformallyFlat(pin, is_restart);
+  } else if (pgen_fun_name.compare("nrpic_cosmo") == 0) {
+    NrpicCosmology(pin, is_restart);
 
   // pre-defined unit tests
   } else if (pgen_fun_name.compare("eos_compose") == 0) {

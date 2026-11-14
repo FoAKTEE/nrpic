@@ -46,6 +46,18 @@ class Tmunu {
 
   DvceArray5D<Real> u_tmunu;                          // Tmunu
 
+  // Sources of the next spacetime step as densities (the sources times sqrt(gamma)),
+  // provided by a matter module whose sources depend on the metric mainly through the
+  // volume element (particles).  With step_density set, the spacetime solver reads
+  // them and multiplies by 1/sqrt(gamma) of the current stage, and adds the vacuum
+  // energy lambda8pi = Lambda/(8 pi) itself.  u_tmunu keeps the sources at the time
+  // of the deposit for the constraints and the diagnostics.
+  Tmunu_vars tmunu_step;
+  DvceArray5D<Real> u_tmunu_step;
+  bool step_density = false;
+  Real lambda8pi = 0.0;
+  void AllocateStepSources();
+
  private:
   MeshBlockPack* pmy_pack;
 };

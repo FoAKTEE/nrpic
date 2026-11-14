@@ -78,6 +78,7 @@ class ProblemGenerator {
   void BECollapse(ParameterInput *pin, const bool restart);
   void NrpicGeodesic(ParameterInput *pin, const bool restart);
   void NrpicConformallyFlat(ParameterInput *pin, const bool restart);
+  void NrpicCosmology(ParameterInput *pin, const bool restart);
 
   // predefined problem generator functions for unit tests
   void EOSCompose(ParameterInput *pin, const bool restart);

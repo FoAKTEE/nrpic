@@ -128,7 +128,15 @@ TaskStatus Z4c::CalcRHS(Driver *pdriver, int stage) {
 
   bool is_vacuum = (pmy_pack->ptmunu == nullptr) ? true : false;
   Tmunu::Tmunu_vars tmunu;
-  if (!is_vacuum) tmunu = pmy_pack->ptmunu->tmunu;
+  // Matter sources: either the sources themselves, or (step_density) densities that
+  // are converted with the volume element of the current stage, plus a vacuum energy
+  bool mdens = false;
+  Real lam8 = 0.0;
+  if (!is_vacuum) {
+    mdens = pmy_pack->ptmunu->step_density;
+    tmunu = mdens ? pmy_pack->ptmunu->tmunu_step : pmy_pack->ptmunu->tmunu;
+    lam8 = mdens ? pmy_pack->ptmunu->lambda8pi : 0.0;
+  }
 
   // ===================================================================================
   // Main RHS calculation
@@ -444,10 +452,17 @@ TaskStatus Z4c::CalcRHS(Driver *pdriver, int stage) {
     // -----------------------------------------------------------------------------------
     // Trace of the matter stress tensor
     //
+    // mfac = 1/sqrt(gamma) of this stage if the sources are given as densities;
+    // mE and S are the energy density and the trace of the stress of the particles,
+    // the vacuum energy lam8 enters the equations below as E += lam8, S -= 3 lam8
+    // (its trace-free stress vanishes)
+    Real mfac = 1.0, mE = 0.0;
     if(!is_vacuum) {
+      if (mdens) { mfac = pow(chi_guarded, -6./opt.chi_psi_power); }
+      mE = mfac * tmunu.E(m,k,j,i);
       for (int a = 0; a < 3; ++a)
       for (int b = 0; b < 3; ++b) {
-        S += oopsi4 * g_uu(a,b) * tmunu.S_dd(m,a,b,k,j,i);
+        S += oopsi4 * g_uu(a,b) * mfac * tmunu.S_dd(m,a,b,k,j,i);
       }
     }
 
@@ -573,7 +588,7 @@ TaskStatus Z4c::CalcRHS(Driver *pdriver, int stage) {
       * z4c.alpha(m,k,j,i) * z4c.vTheta(m,k,j,i);
     // Matter term
     if(!is_vacuum) {
-      rhs.vKhat(m,k,j,i) += 4.*M_PI * z4c.alpha(m,k,j,i) * (S + tmunu.E(m,k,j,i));
+      rhs.vKhat(m,k,j,i) += 4.*M_PI * z4c.alpha(m,k,j,i) * (S + mE - 2.*lam8);
     }
     rhs.chi(m,k,j,i) = Lchi - (1./6.) * opt.chi_psi_power *
       chi_guarded * z4c.alpha(m,k,j,i) * K;
@@ -581,7 +596,7 @@ TaskStatus Z4c::CalcRHS(Driver *pdriver, int stage) {
     if (opt.damp_ch != 0.0 || opt.damp_ch_dx != 0.0) {
       Real Hfull = Ht;
       if(!is_vacuum) {
-        Hfull -= 16.*M_PI * tmunu.E(m,k,j,i);
+        Hfull -= 16.*M_PI * (mE + lam8);
       }
       Real ch = opt.damp_ch + opt.damp_ch_dx * size.d_view(m).dx1;
       rhs.chi(m,k,j,i) += 0.5 * ch * pow(chi_guarded, -0.25) * Hfull;
@@ -590,7 +605,7 @@ TaskStatus Z4c::CalcRHS(Driver *pdriver, int stage) {
         0.5*Ht - (2. + opt.damp_kappa2) * opt.damp_kappa1 * z4c.vTheta(m,k,j,i));
     // Matter term
     if(!is_vacuum) {
-      rhs.vTheta(m,k,j,i) -= 8.*M_PI * z4c.alpha(m,k,j,i) * tmunu.E(m,k,j,i);
+      rhs.vTheta(m,k,j,i) -= 8.*M_PI * z4c.alpha(m,k,j,i) * (mE + lam8);
     }
     // If BSSN is enabled, theta is disabled.
     rhs.vTheta(m,k,j,i) *= opt.use_z4c;
@@ -604,7 +619,7 @@ TaskStatus Z4c::CalcRHS(Driver *pdriver, int stage) {
         // Matter term
         if(!is_vacuum) {
           rhs.vGam_u(m,a,k,j,i) -= 16.*M_PI * z4c.alpha(m,k,j,i)
-                              * g_uu(a,b) * tmunu.S_d(m,b,k,j,i);
+                              * g_uu(a,b) * mfac * tmunu.S_d(m,b,k,j,i);
         }
       }
     }
@@ -624,7 +639,8 @@ TaskStatus Z4c::CalcRHS(Driver *pdriver, int stage) {
       // Matter term
       if(!is_vacuum) {
         rhs.vA_dd(m,a,b,k,j,i) -= 8.*M_PI * z4c.alpha(m,k,j,i) *
-                (oopsi4*tmunu.S_dd(m,a,b,k,j,i) - (1./3.)*S*z4c.g_dd(m,a,b,k,j,i));
+                (oopsi4*mfac*tmunu.S_dd(m,a,b,k,j,i)
+                 - (1./3.)*S*z4c.g_dd(m,a,b,k,j,i));
       }
     }
     // lapse function

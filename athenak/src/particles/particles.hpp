@@ -30,7 +30,9 @@ enum class ParticleType {cosmic_ray, nrpic};
 // Additional array indices used by particles of type "nrpic".  Positions are stored in
 // IPX,IPY,IPZ and the covariant spatial four-velocity components u_i (momentum per unit
 // rest mass) in IPVX,IPVY,IPVZ.
-enum NrpicRealIndex {IPM=6, NRPIC_NRDATA=7};       // rest mass
+// rest mass (zero: null particle, no sources) and proper time (affine parameter of a
+// null particle)
+enum NrpicRealIndex {IPM=6, IPTAU=7, NRPIC_NRDATA=8};
 enum NrpicIntIndex  {PSP=2, NRPIC_NIDATA=3};       // species
 // Layout of the metric arrays seen by the pushers
 enum NrpicMetricIndex {NRM_ALP=0, NRM_BX=1, NRM_BY=2, NRM_BZ=3, NRM_GXX=4, NRM_GXY=5,
@@ -68,6 +70,16 @@ struct NrpicOptions {
   int traj_ntrack;      // particles with tag < traj_ntrack are recorded
   Real snap_dt;         // time between full particle snapshots (<= 0 = off)
   Real probe[3];        // position of the lapse/energy-density probe
+  int nprobe;           // number of additional probes (at most 8)
+  Real probes[8][3];    // their positions
+  bool periodic[3];     // periodic mesh direction: particles and their clouds wrap
+  Real dom_min[3];      // lower edge and length of the mesh in each direction
+  Real dom_len[3];
+  Real lambda;          // cosmological constant, added to the sources as vacuum energy
+  bool source_density;  // hand the spacetime solver densities (sources x sqrt(gamma)),
+                        // converted with the volume element of each of its stages
+  bool source_extrap;   // ... extrapolated to the middle of the step from the last two
+                        // deposits, D = 3/2 D^n - 1/2 D^(n-1)
   Real curv_dt;         // time between curvature diagnostics (<= 0 = off)
   bool curv_slice;      // also write the cut through the plane y = curv_plane_y
   Real curv_plane_y;
@@ -143,6 +155,8 @@ class Particles {
   DvceArray5D<Real> met0;          // alpha, beta^i, gamma_ij at t^n
   DvceArray5D<Real> met1;          // alpha, beta^i, gamma_ij at t^{n+1}
   DvceArray5D<Real> tm_work;       // work array for the source filter
+  DvceArray5D<Real> tm_prev;       // source densities of the previous deposit
+  bool tm_prev_valid = false;      // tm_prev belongs to the current mesh
   DvceArray4D<Real> e_prev;        // sqrt(gamma) E of the previous deposit
   bool e_prev_valid = false;       // e_prev belongs to the current mesh
   DvceArray5D<Real> coarse_tm;     // coarse sources (ghost exchange with SMR/AMR)
@@ -152,6 +166,9 @@ class Particles {
   Real tau_probe = 0.0;            // proper time of the normal observer at the probe
   Real alpha_probe = 1.0;          // lapse at the probe
   Real e_probe = 0.0;              // deposited energy density at the probe
+  Real tau_probes[8] = {0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0};   // additional probes
+  Real alpha_probes[8] = {1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0};
+  Real e_probes[8] = {0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
   long n_bad_det_total = 0;        // cells whose sources were zeroed (det <= 0), summed
   int n_bad_det_reports = 0;       // number of such events reported so far
   Real mass_excised = 0.0;         // rest mass removed by excision
@@ -176,6 +193,8 @@ class Particles {
   void NrpicRemoveFlagged();
   void NrpicDepositSources();
   void NrpicFilterSources();
+  void NrpicAddLambda();
+  void NrpicStepSources();
   void NrpicProbe(Real dt);
   void NrpicInitializeSources();
   void NrpicStartup(bool res_flag);

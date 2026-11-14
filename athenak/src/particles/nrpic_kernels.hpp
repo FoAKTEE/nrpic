@@ -306,6 +306,23 @@ Real LorentzFactor(const Real gi[3][3], const Real u[3], Real uup[3]) {
 }
 
 //----------------------------------------------------------------------------------------
+//! \fn LorentzFactorEps
+//! \brief W = sqrt(eps + gamma^ij u_i u_j): eps = 1 for a particle with rest mass,
+//! eps = 0 for a null particle, for which W is the energy seen by the normal observer in
+//! the units of u_i; also returns the raised components u^i
+
+KOKKOS_INLINE_FUNCTION
+Real LorentzFactorEps(const Real gi[3][3], const Real u[3], const Real eps,
+                      Real uup[3]) {
+  Real usq = 0.0;
+  for (int i=0; i<3; ++i) {
+    uup[i] = gi[i][0]*u[0] + gi[i][1]*u[1] + gi[i][2]*u[2];
+    usq += uup[i]*u[i];
+  }
+  return sqrt(eps + usq);
+}
+
+//----------------------------------------------------------------------------------------
 //! \fn PushMidpoint
 //! \brief implicit midpoint update of (x^i, u_i) over one step dt,
 //!   dx^i/dt = alpha gamma^ij u_j / W - beta^i,
@@ -321,7 +338,7 @@ Real LorentzFactor(const Real gi[3][3], const Real u[3], Real uup[3]) {
 template <class MetricT>
 KOKKOS_INLINE_FUNCTION
 int PushMidpoint(const MetricT &met, const Real dt, const Real tol, const int maxit,
-                 Real x[3], Real u[3]) {
+                 Real x[3], Real u[3], const Real eps, Real &dtau) {
   const Real x0[3] = {x[0], x[1], x[2]};
   const Real u0[3] = {u[0], u[1], u[2]};
   AdmPoint p, q;
@@ -330,7 +347,7 @@ int PushMidpoint(const MetricT &met, const Real dt, const Real tol, const int ma
   // initial guess: explicit Euler in position with the old-level fields, momentum held
   met(0, x0, p);
   Inv3Sym(p.g, gi);
-  Real W = LorentzFactor(gi, u0, uup);
+  Real W = LorentzFactorEps(gi, u0, eps, uup);
   Real x1[3], u1[3];
   for (int i=0; i<3; ++i) {
     x1[i] = x0[i] + dt*(p.alp*uup[i]/W - p.beta[i]);
@@ -353,7 +370,7 @@ int PushMidpoint(const MetricT &met, const Real dt, const Real tol, const int ma
       AverageAdm(p, q);
     }
     Inv3Sym(p.g, gi);
-    W = LorentzFactor(gi, ub, uup);
+    W = LorentzFactorEps(gi, ub, eps, uup);
 
     Real err = 0.0;
     for (int i=0; i<3; ++i) {
@@ -380,7 +397,22 @@ int PushMidpoint(const MetricT &met, const Real dt, const Real tol, const int ma
     x[i] = x1[i];
     u[i] = u1[i];
   }
+  // proper time (affine parameter for eps = 0) elapsed over the step, with the lapse
+  // and the Lorentz factor of the last midpoint evaluation: d tau = alpha dt / W
+  dtau = dt*p.alp/W;
   return converged ? it : -it;
+}
+
+//----------------------------------------------------------------------------------------
+//! \fn PushMidpoint
+//! \brief the same for a particle with rest mass, without the proper time
+
+template <class MetricT>
+KOKKOS_INLINE_FUNCTION
+int PushMidpoint(const MetricT &met, const Real dt, const Real tol, const int maxit,
+                 Real x[3], Real u[3]) {
+  Real dtau = 0.0;
+  return PushMidpoint(met, dt, tol, maxit, x, u, 1.0, dtau);
 }
 
 //----------------------------------------------------------------------------------------

@@ -122,6 +122,31 @@ void Particles::NrpicInit(ParameterInput *pin) {
   nropt.probe[0]   = pin->GetOrAddReal("particles", "probe_x1", 0.0);
   nropt.probe[1]   = pin->GetOrAddReal("particles", "probe_x2", 0.0);
   nropt.probe[2]   = pin->GetOrAddReal("particles", "probe_x3", 0.0);
+  nropt.nprobe     = pin->GetOrAddInteger("particles", "nprobe", 0);
+  if (nropt.nprobe < 0) { nropt.nprobe = 0; }
+  if (nropt.nprobe > 8) { nropt.nprobe = 8; }
+  for (int n=0; n<8; ++n) {
+    nropt.probes[n][0] = 0.0; nropt.probes[n][1] = 0.0; nropt.probes[n][2] = 0.0;
+  }
+  for (int n=0; n<nropt.nprobe; ++n) {
+    const std::string pre = "probe" + std::to_string(n+1) + "_";
+    nropt.probes[n][0] = pin->GetReal("particles", pre + "x1");
+    nropt.probes[n][1] = pin->GetReal("particles", pre + "x2");
+    nropt.probes[n][2] = pin->GetReal("particles", pre + "x3");
+  }
+  nropt.lambda     = pin->GetOrAddReal("particles", "lambda", 0.0);
+  nropt.source_density = pin->GetOrAddBoolean("particles", "source_density", false);
+  nropt.source_extrap  = pin->GetOrAddBoolean("particles", "source_extrap", false);
+  // periodic directions of the mesh: particles and their clouds wrap around
+  nropt.periodic[0] = (pm->mesh_bcs[BoundaryFace::inner_x1] == BoundaryFlag::periodic);
+  nropt.periodic[1] = (pm->mesh_bcs[BoundaryFace::inner_x2] == BoundaryFlag::periodic);
+  nropt.periodic[2] = (pm->mesh_bcs[BoundaryFace::inner_x3] == BoundaryFlag::periodic);
+  nropt.dom_min[0] = pm->mesh_size.x1min;
+  nropt.dom_min[1] = pm->mesh_size.x2min;
+  nropt.dom_min[2] = pm->mesh_size.x3min;
+  nropt.dom_len[0] = pm->mesh_size.x1max - pm->mesh_size.x1min;
+  nropt.dom_len[1] = pm->mesh_size.x2max - pm->mesh_size.x2min;
+  nropt.dom_len[2] = pm->mesh_size.x3max - pm->mesh_size.x3min;
   dtnew = pin->GetOrAddReal("particles", "dt",
                             static_cast<Real>(std::numeric_limits<float>::max()));
   nr_basename = pin->GetString("job", "basename");
@@ -315,6 +340,9 @@ TaskStatus Particles::NrpicPush(Driver *pdriver, int stage) {
   KOKKOS_LAMBDA(const int p, int &lnun, int &lmxit) {
     Real x[3] = {pr(IPX,p), pr(IPY,p), pr(IPZ,p)};
     Real u[3] = {pr(IPVX,p), pr(IPVY,p), pr(IPVZ,p)};
+    // a particle without rest mass follows a null geodesic (midpoint pusher only)
+    const Real eps = (pr(IPM,p) > 0.0) ? 1.0 : 0.0;
+    Real dtau = 0.0;
     int it = 0;
     bool excise = false;
     if (msrc == NrpicMetric::mesh) {
@@ -334,8 +362,11 @@ TaskStatus Particles::NrpicPush(Driver *pdriver, int stage) {
         if (d2 < ahr2[n]) { excise = true; }
       }
       if (!excise) {
-        it = boris ? nrpic::PushBoris(met, triad, dt, tol, maxit, x, u)
-                   : nrpic::PushMidpoint(met, dt, tol, maxit, x, u);
+        if (boris) {
+          it = nrpic::PushBoris(met, triad, dt, tol, maxit, x, u);
+        } else {
+          it = nrpic::PushMidpoint(met, dt, tol, maxit, x, u, eps, dtau);
+        }
       }
     } else if (msrc == NrpicMetric::kerr_schild) {
       nrpic::KerrSchildCart met{bh_mass, bh_spin};
@@ -369,6 +400,7 @@ TaskStatus Particles::NrpicPush(Driver *pdriver, int stage) {
     } else {
       pr(IPX,p) = x[0]; pr(IPY,p) = x[1]; pr(IPZ,p) = x[2];
       pr(IPVX,p) = u[0]; pr(IPVY,p) = u[1]; pr(IPVZ,p) = u[2];
+      pr(IPTAU,p) += dtau;
     }
   }, Kokkos::Sum<int>(nun), Kokkos::Max<int>(mxit));
   push_unconverged = nun;
@@ -390,8 +422,14 @@ void Particles::NrpicAssignBlocks() {
   auto sz = pmy_pack->pmb->mb_size.d_view;
   const int gids = pmy_pack->gids;
   const int nmb = pmy_pack->nmb_thispack;
+  const Real dmin[3] = {nropt.dom_min[0], nropt.dom_min[1], nropt.dom_min[2]};
+  const Real dlen[3] = {nropt.dom_len[0], nropt.dom_len[1], nropt.dom_len[2]};
+  const bool per[3] = {nropt.periodic[0], nropt.periodic[1], nropt.periodic[2]};
   par_for("nrpic_assign", DevExeSpace(), 0, np-1, KOKKOS_LAMBDA(const int p) {
     if (pi(PGID,p) >= 0) {
+      pr(IPX,p) = nrpic::WrapCoord(pr(IPX,p), dmin[0], dlen[0], per[0]);
+      pr(IPY,p) = nrpic::WrapCoord(pr(IPY,p), dmin[1], dlen[1], per[1]);
+      pr(IPZ,p) = nrpic::WrapCoord(pr(IPZ,p), dmin[2], dlen[2], per[2]);
       int m = nrpic::FindBlock(sz, nmb, pi(PGID,p) - gids, pr(IPX,p), pr(IPY,p),
                                pr(IPZ,p));
       pi(PGID,p) = (m < 0) ? -1 : (m + gids);
@@ -528,6 +566,9 @@ void Particles::NrpicDepositSources() {
   const int root_lev = pm->root_level;
   const Real ppc_target = nropt.deposit_ppc;
   const int max_coarsen = nropt.deposit_max_coarsen;
+  const Real dmin[3] = {nropt.dom_min[0], nropt.dom_min[1], nropt.dom_min[2]};
+  const Real dlen[3] = {nropt.dom_len[0], nropt.dom_len[1], nropt.dom_len[2]};
+  const bool per[3] = {nropt.periodic[0], nropt.periodic[1], nropt.periodic[2]};
 
   nrpic::MeshMetric proto;
   proto.m1 = met1;
@@ -546,6 +587,7 @@ void Particles::NrpicDepositSources() {
       const Real xp[3] = {pr(IPX,p), pr(IPY,p), pr(IPZ,p)};
       const Real up[3] = {pr(IPVX,p), pr(IPVY,p), pr(IPVZ,p)};
       const Real mp = pr(IPM,p);
+      if (mp <= 0.0) return;        // null particles and tracers carry no sources
 
       // Lorentz factor from the metric reconstructed at the particle
       nrpic::MeshMetric met = proto;
@@ -619,9 +661,12 @@ void Particles::NrpicDepositSources() {
           xb0[d] = gmin[d] + (floor(xi) + 0.5)*h[d];
         }
         for (int c=0; c<8; ++c) {
-          Real xf = xb0[0] + ((c & 1) ? h[0] : 0.0);
-          Real yf = xb0[1] + ((c & 2) ? h[1] : 0.0);
-          Real zf = xb0[2] + ((c & 4) ? h[2] : 0.0);
+          Real xf = nrpic::WrapCoord(xb0[0] + ((c & 1) ? h[0] : 0.0),
+                                     dmin[0], dlen[0], per[0]);
+          Real yf = nrpic::WrapCoord(xb0[1] + ((c & 2) ? h[1] : 0.0),
+                                     dmin[1], dlen[1], per[1]);
+          Real zf = nrpic::WrapCoord(xb0[2] + ((c & 4) ? h[2] : 0.0),
+                                     dmin[2], dlen[2], per[2]);
           int mb = nrpic::FindBlock(sz, nmb, mo, xf, yf, zf);
           if (mb >= 0) { lmax = (lev(mb) > lmax) ? lev(mb) : lmax; }
         }
@@ -641,9 +686,13 @@ void Particles::NrpicDepositSources() {
         xb[d] = gmin[d] + (fl + 0.5)*h[d];
       }
       for (int c=0; c<8; ++c) {
-        const Real xf = xb[0] + ((c & 1) ? h[0] : 0.0);
-        const Real yf = xb[1] + ((c & 2) ? h[1] : 0.0);
-        const Real zf = xb[2] + ((c & 4) ? h[2] : 0.0);
+        // centre of the lattice cell, wrapped into the mesh in periodic directions
+        const Real xf = nrpic::WrapCoord(xb[0] + ((c & 1) ? h[0] : 0.0),
+                                         dmin[0], dlen[0], per[0]);
+        const Real yf = nrpic::WrapCoord(xb[1] + ((c & 2) ? h[1] : 0.0),
+                                         dmin[1], dlen[1], per[1]);
+        const Real zf = nrpic::WrapCoord(xb[2] + ((c & 4) ? h[2] : 0.0),
+                                         dmin[2], dlen[2], per[2]);
         const Real w = ((c & 1) ? s[0] : 1.0 - s[0])*((c & 2) ? s[1] : 1.0 - s[1])
                       *((c & 4) ? s[2] : 1.0 - s[2]);
         // (3) leaf cells covered by this (real or virtual) lattice cell.  A lattice
@@ -881,6 +930,76 @@ void Particles::NrpicFilterSources() {
 }
 
 //----------------------------------------------------------------------------------------
+//! \fn  void Particles::NrpicStepSources
+//! \brief with <particles> source_density, writes the sources of the next spacetime
+//! step in density form, D = sqrt(gamma) x (deposited and filtered sources).  The
+//! particle sums change slowly, the volume element changes at the expansion rate: the
+//! spacetime solver multiplies D by 1/sqrt(gamma) of each of its stages, which removes
+//! the first-order error of sources held fixed over the step.  With source_extrap the
+//! densities are extrapolated to the middle of the step from the last two deposits.
+
+void Particles::NrpicStepSources() {
+  if (!nropt.source_density) return;
+  auto &indcs = pmy_pack->pmesh->mb_indcs;
+  const int is = indcs.is, js = indcs.js, ks = indcs.ks;
+  const int ie = indcs.ie, je = indcs.je, ke = indcs.ke;
+  const int nmb1 = pmy_pack->nmb_thispack - 1;
+  const int nv1 = Tmunu::N_Tmunu - 1;
+  if (!pmy_pack->ptmunu->step_density) {
+    // first call: the source container exists only after the particle module has
+    // been constructed, so the step arrays are allocated here
+    pmy_pack->ptmunu->AllocateStepSources();
+    pmy_pack->ptmunu->lambda8pi = nropt.lambda/(8.0*M_PI);
+    int nmb = std::max((pmy_pack->nmb_thispack), (pmy_pack->pmesh->nmb_maxperrank));
+    Kokkos::realloc(tm_prev, nmb, Tmunu::N_Tmunu, indcs.nx3 + 2*indcs.ng,
+                    indcs.nx2 + 2*indcs.ng, indcs.nx1 + 2*indcs.ng);
+    tm_prev_valid = false;
+  }
+  auto tm = pmy_pack->ptmunu->u_tmunu;
+  auto ts = pmy_pack->ptmunu->u_tmunu_step;
+  auto tp = tm_prev;
+  auto m1 = met1;
+  const bool extrap = nropt.source_extrap && tm_prev_valid;
+  par_for("nrpic_stepsrc", DevExeSpace(), 0, nmb1, 0, nv1, ks, ke, js, je, is, ie,
+  KOKKOS_LAMBDA(const int m, const int n, const int k, const int j, const int i) {
+    const Real det = adm::SpatialDet(m1(m,NRM_GXX,k,j,i), m1(m,NRM_GXY,k,j,i),
+                                     m1(m,NRM_GXZ,k,j,i), m1(m,NRM_GYY,k,j,i),
+                                     m1(m,NRM_GYZ,k,j,i), m1(m,NRM_GZZ,k,j,i));
+    const Real d = (det > 0.0) ? tm(m,n,k,j,i)*sqrt(det) : 0.0;
+    ts(m,n,k,j,i) = extrap ? (1.5*d - 0.5*tp(m,n,k,j,i)) : d;
+    tp(m,n,k,j,i) = d;
+  });
+  tm_prev_valid = true;
+}
+
+//----------------------------------------------------------------------------------------
+//! \fn  void Particles::NrpicAddLambda
+//! \brief adds a cosmological constant Lambda to the sources as vacuum energy,
+//!   E += Lambda/(8 pi),  S_ij -= Lambda/(8 pi) gamma_ij,
+//! after the particle sources have been deposited and filtered
+
+void Particles::NrpicAddLambda() {
+  if (nropt.lambda == 0.0) return;
+  auto &indcs = pmy_pack->pmesh->mb_indcs;
+  const int is = indcs.is, js = indcs.js, ks = indcs.ks;
+  const int ie = indcs.ie, je = indcs.je, ke = indcs.ke;
+  const int nmb1 = pmy_pack->nmb_thispack - 1;
+  auto tm = pmy_pack->ptmunu->u_tmunu;
+  auto m1 = met1;
+  const Real rl = nropt.lambda/(8.0*M_PI);
+  par_for("nrpic_lambda", DevExeSpace(), 0, nmb1, ks, ke, js, je, is, ie,
+  KOKKOS_LAMBDA(const int m, const int k, const int j, const int i) {
+    tm(m,Tmunu::I_Tmunu_E,k,j,i)   += rl;
+    tm(m,Tmunu::I_Tmunu_Sxx,k,j,i) -= rl*m1(m,NRM_GXX,k,j,i);
+    tm(m,Tmunu::I_Tmunu_Sxy,k,j,i) -= rl*m1(m,NRM_GXY,k,j,i);
+    tm(m,Tmunu::I_Tmunu_Sxz,k,j,i) -= rl*m1(m,NRM_GXZ,k,j,i);
+    tm(m,Tmunu::I_Tmunu_Syy,k,j,i) -= rl*m1(m,NRM_GYY,k,j,i);
+    tm(m,Tmunu::I_Tmunu_Syz,k,j,i) -= rl*m1(m,NRM_GYZ,k,j,i);
+    tm(m,Tmunu::I_Tmunu_Szz,k,j,i) -= rl*m1(m,NRM_GZZ,k,j,i);
+  });
+}
+
+//----------------------------------------------------------------------------------------
 //! \fn  TaskStatus Particles::NrpicDeposit
 //! \brief deposits and filters the matter sources at t^{n+1} and re-evaluates the
 //! constraints with them
@@ -889,6 +1008,8 @@ TaskStatus Particles::NrpicDeposit(Driver *pdriver, int stage) {
   if (!nropt.deposit) return TaskStatus::complete;
   NrpicDepositSources();
   NrpicFilterSources();
+  NrpicStepSources();
+  NrpicAddLambda();
   z4c::Z4c *pz4c = pmy_pack->pz4c;
   if (pz4c != nullptr) {
     switch (pmy_pack->pmesh->mb_indcs.ng) {
@@ -919,11 +1040,14 @@ void Particles::NrpicInitializeSources() {
     // the mesh may have changed: the sources of the previous deposit are not usable.
     // Two deposits give the adaptive level cap a density estimate on the new mesh.
     e_prev_valid = false;
+    tm_prev_valid = false;
     NrpicDepositSources();
     if (nropt.deposit_adaptive) {
       NrpicDepositSources();
     }
     NrpicFilterSources();
+    NrpicStepSources();
+    NrpicAddLambda();
     if (pz4c != nullptr) {
       switch (pmy_pack->pmesh->mb_indcs.ng) {
         case 2: pz4c->ADMConstraints<2>(pmy_pack); break;

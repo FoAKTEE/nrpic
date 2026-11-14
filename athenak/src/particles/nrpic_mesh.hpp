@@ -45,6 +45,24 @@ int FindBlock(const SizeViewT &sz, const int nmb, const int hint,
 }
 
 //----------------------------------------------------------------------------------------
+//! \fn WrapCoord
+//! \brief maps a coordinate into [xmin, xmin + len) of a periodic direction; returns it
+//! unchanged in a direction that is not periodic
+
+KOKKOS_INLINE_FUNCTION
+Real WrapCoord(const Real x, const Real xmin, const Real len, const bool periodic) {
+  if (!periodic) return x;
+  Real y = x;
+  if (y < xmin) {
+    y += len*ceil((xmin - y)/len);
+  } else if (y >= xmin + len) {
+    y -= len*floor((y - xmin)/len);
+  }
+  if (y >= xmin + len) { y = xmin; }      // rounding at the upper edge
+  return y;
+}
+
+//----------------------------------------------------------------------------------------
 //! \struct MeshMetric
 //! \brief metric functor for the pusher kernels that reads the fields of one MeshBlock.
 //! m0 and m1 hold alpha, beta^i and gamma_ij (layout NrpicMetricIndex) at the old and

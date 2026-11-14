@@ -54,49 +54,66 @@ void Particles::NrpicProbe(Real dt) {
   const int is = indcs.is, js = indcs.js, ks = indcs.ks;
   const int ie = indcs.ie, je = indcs.je, ke = indcs.ke;
   const Real gmin[3] = {pm->mesh_size.x1min, pm->mesh_size.x2min, pm->mesh_size.x3min};
-  const Real px = nropt.probe[0], py = nropt.probe[1], pz = nropt.probe[2];
+  const Real dmin[3] = {nropt.dom_min[0], nropt.dom_min[1], nropt.dom_min[2]};
+  const Real dlen[3] = {nropt.dom_len[0], nropt.dom_len[1], nropt.dom_len[2]};
+  const bool per[3] = {nropt.periodic[0], nropt.periodic[1], nropt.periodic[2]};
   auto m1 = met1;
   const bool has_tm = nropt.deposit;
   DvceArray5D<Real> tm;
   if (has_tm) { tm = pmy_pack->ptmunu->u_tmunu; }
 
-  Real sa = 0.0, se = 0.0, sw = 0.0;
-  Kokkos::parallel_reduce("nrpic_probe", Kokkos::RangePolicy<DevExeSpace>(0, 8),
-  KOKKOS_LAMBDA(const int c, Real &la, Real &le, Real &lw) {
-    const int mp = nrpic::FindBlock(sz, nmb, 0, px, py, pz);
-    if (mp < 0) return;
-    const Real h[3] = {sz(mp).dx1, sz(mp).dx2, sz(mp).dx3};
-    const Real xp[3] = {px, py, pz};
-    Real xb[3], s[3];
-    for (int d=0; d<3; ++d) {
-      Real xi = (xp[d] - gmin[d])/h[d] - 0.5;
-      Real fl = floor(xi);
-      s[d] = xi - fl;
-      xb[d] = gmin[d] + (fl + 0.5)*h[d];
-    }
-    const Real xf = xb[0] + ((c & 1) ? h[0] : 0.0);
-    const Real yf = xb[1] + ((c & 2) ? h[1] : 0.0);
-    const Real zf = xb[2] + ((c & 4) ? h[2] : 0.0);
-    const Real w = ((c & 1) ? s[0] : 1.0 - s[0])*((c & 2) ? s[1] : 1.0 - s[1])
-                  *((c & 4) ? s[2] : 1.0 - s[2]);
-    const int mb = nrpic::FindBlock(sz, nmb, mp, xf, yf, zf);
-    if (mb < 0) return;
-    int i = is + static_cast<int>(floor((xf - sz(mb).x1min)/sz(mb).dx1));
-    int j = js + static_cast<int>(floor((yf - sz(mb).x2min)/sz(mb).dx2));
-    int k = ks + static_cast<int>(floor((zf - sz(mb).x3min)/sz(mb).dx3));
-    i = (i < is) ? is : ((i > ie) ? ie : i);
-    j = (j < js) ? js : ((j > je) ? je : j);
-    k = (k < ks) ? ks : ((k > ke) ? ke : k);
-    la += w*m1(mb,NRM_ALP,k,j,i);
-    if (has_tm) { le += w*tm(mb,Tmunu::I_Tmunu_E,k,j,i); }
-    lw += w;
-  }, Kokkos::Sum<Real>(sa), Kokkos::Sum<Real>(se), Kokkos::Sum<Real>(sw));
+  // probe 0 is <particles> probe_x1..3; probes 1..nprobe are probeN_x1..3
+  for (int ip=0; ip<=nropt.nprobe; ++ip) {
+    const Real px = (ip == 0) ? nropt.probe[0] : nropt.probes[ip-1][0];
+    const Real py = (ip == 0) ? nropt.probe[1] : nropt.probes[ip-1][1];
+    const Real pz = (ip == 0) ? nropt.probe[2] : nropt.probes[ip-1][2];
+    Real sa = 0.0, se = 0.0, sw = 0.0;
+    Kokkos::parallel_reduce("nrpic_probe", Kokkos::RangePolicy<DevExeSpace>(0, 8),
+    KOKKOS_LAMBDA(const int c, Real &la, Real &le, Real &lw) {
+      const int mp = nrpic::FindBlock(sz, nmb, 0, px, py, pz);
+      if (mp < 0) return;
+      const Real h[3] = {sz(mp).dx1, sz(mp).dx2, sz(mp).dx3};
+      const Real xp[3] = {px, py, pz};
+      Real xb[3], s[3];
+      for (int d=0; d<3; ++d) {
+        Real xi = (xp[d] - gmin[d])/h[d] - 0.5;
+        Real fl = floor(xi);
+        s[d] = xi - fl;
+        xb[d] = gmin[d] + (fl + 0.5)*h[d];
+      }
+      const Real xf = nrpic::WrapCoord(xb[0] + ((c & 1) ? h[0] : 0.0),
+                                       dmin[0], dlen[0], per[0]);
+      const Real yf = nrpic::WrapCoord(xb[1] + ((c & 2) ? h[1] : 0.0),
+                                       dmin[1], dlen[1], per[1]);
+      const Real zf = nrpic::WrapCoord(xb[2] + ((c & 4) ? h[2] : 0.0),
+                                       dmin[2], dlen[2], per[2]);
+      const Real w = ((c & 1) ? s[0] : 1.0 - s[0])*((c & 2) ? s[1] : 1.0 - s[1])
+                    *((c & 4) ? s[2] : 1.0 - s[2]);
+      const int mb = nrpic::FindBlock(sz, nmb, mp, xf, yf, zf);
+      if (mb < 0) return;
+      int i = is + static_cast<int>(floor((xf - sz(mb).x1min)/sz(mb).dx1));
+      int j = js + static_cast<int>(floor((yf - sz(mb).x2min)/sz(mb).dx2));
+      int k = ks + static_cast<int>(floor((zf - sz(mb).x3min)/sz(mb).dx3));
+      i = (i < is) ? is : ((i > ie) ? ie : i);
+      j = (j < js) ? js : ((j > je) ? je : j);
+      k = (k < ks) ? ks : ((k > ke) ? ke : k);
+      la += w*m1(mb,NRM_ALP,k,j,i);
+      if (has_tm) { le += w*tm(mb,Tmunu::I_Tmunu_E,k,j,i); }
+      lw += w;
+    }, Kokkos::Sum<Real>(sa), Kokkos::Sum<Real>(se), Kokkos::Sum<Real>(sw));
 
-  if (sw > 0.0) {
-    const Real anew = sa/sw;
-    if (dt > 0.0) { tau_probe += 0.5*(alpha_probe + anew)*dt; }
-    alpha_probe = anew;
-    e_probe = se/sw;
+    if (sw > 0.0) {
+      const Real anew = sa/sw;
+      if (ip == 0) {
+        if (dt > 0.0) { tau_probe += 0.5*(alpha_probe + anew)*dt; }
+        alpha_probe = anew;
+        e_probe = se/sw;
+      } else {
+        if (dt > 0.0) { tau_probes[ip-1] += 0.5*(alpha_probes[ip-1] + anew)*dt; }
+        alpha_probes[ip-1] = anew;
+        e_probes[ip-1] = se/sw;
+      }
+    }
   }
 }
 
@@ -138,6 +155,43 @@ void Particles::NrpicWriteHistory(Real time, int ncycle, bool header) {
     }, Kokkos::Min<Real>(amin));
   }
 
+  // mesh statistics: proper volume, volume-weighted mean of K, extrema of the lapse
+  // and of the energy density
+  Real vol = 0.0, kvol = 0.0, amax = 0.0, emax = 0.0, emin = 0.0;
+  if (nropt.metric == NrpicMetric::mesh) {
+    auto m1 = met1;
+    auto sz = pmy_pack->pmb->mb_size.d_view;
+    const int nmb = pmy_pack->nmb_thispack;
+    const bool has_tm = nropt.deposit;
+    const bool has_z4c = (pmy_pack->pz4c != nullptr);
+    DvceArray5D<Real> tm;
+    if (has_tm) { tm = pmy_pack->ptmunu->u_tmunu; }
+    DvceArray5D<Real> u0;
+    if (has_z4c) { u0 = pmy_pack->pz4c->u0; }
+    const int ikhat = z4c::Z4c::I_Z4C_KHAT, itheta = z4c::Z4c::I_Z4C_THETA;
+    Real lemin = 1.0e300;
+    Kokkos::parallel_reduce("nrpic_meshstat",
+      Kokkos::MDRangePolicy<DevExeSpace, Kokkos::Rank<4>>(
+        {0, indcs.ks, indcs.js, indcs.is},
+        {nmb, indcs.ke+1, indcs.je+1, indcs.ie+1}),
+    KOKKOS_LAMBDA(const int m, const int k, const int j, const int i, Real &lv,
+                  Real &lk, Real &lamax, Real &lemax, Real &llemin) {
+      const Real det = adm::SpatialDet(m1(m,NRM_GXX,k,j,i), m1(m,NRM_GXY,k,j,i),
+                                       m1(m,NRM_GXZ,k,j,i), m1(m,NRM_GYY,k,j,i),
+                                       m1(m,NRM_GYZ,k,j,i), m1(m,NRM_GZZ,k,j,i));
+      const Real w = sqrt(fabs(det))*sz(m).dx1*sz(m).dx2*sz(m).dx3;
+      lv += w;
+      if (has_z4c) { lk += w*(u0(m,ikhat,k,j,i) + 2.0*u0(m,itheta,k,j,i)); }
+      lamax = fmax(lamax, m1(m,NRM_ALP,k,j,i));
+      if (has_tm) {
+        lemax = fmax(lemax, tm(m,Tmunu::I_Tmunu_E,k,j,i));
+        llemin = fmin(llemin, tm(m,Tmunu::I_Tmunu_E,k,j,i));
+      }
+    }, Kokkos::Sum<Real>(vol), Kokkos::Sum<Real>(kvol), Kokkos::Max<Real>(amax),
+       Kokkos::Max<Real>(emax), Kokkos::Min<Real>(lemin));
+    emin = (lemin < 1.0e299) ? lemin : 0.0;
+  }
+
   std::string fname = nr_basename + ".nrpic.hst";
   std::FILE *fp = std::fopen(fname.c_str(), header ? "w" : "a");
   if (fp == nullptr) NrpicFatal("cannot open " + fname);
@@ -149,16 +203,28 @@ void Particles::NrpicWriteHistory(Real time, int ncycle, bool header) {
                  "[17]=n_excised [18]=m_excised [19]=n_escaped [20]=m_escaped "
                  "[21]=push_maxit [22]=push_unconverged [23]=nmb "
                  "[24]=int_E_filtered [25]=int_Sx_filtered [26]=int_Sy_filtered "
-                 "[27]=int_Sz_filtered\n");
+                 "[27]=int_Sz_filtered [28]=proper_volume [29]=mean_K [30]=alpha_max "
+                 "[31]=E_max [32]=E_min");
+    for (int n=0; n<nropt.nprobe; ++n) {
+      std::fprintf(fp, " [%d]=alpha_probe%d [%d]=E_probe%d [%d]=tau_probe%d",
+                   33+3*n, n+1, 34+3*n, n+1, 35+3*n, n+1);
+    }
+    std::fprintf(fp, "\n");
   }
   std::fprintf(fp, "%.15e %d %d %.15e %.15e %.15e %.15e %.15e %.15e %.15e %.15e %.15e "
                "%.15e %.15e %.15e %.15e %d %.15e %d %.15e %d %d %d "
-               "%.15e %.15e %.15e %.15e\n",
+               "%.15e %.15e %.15e %.15e",
                time, ncycle, np, sum_m, sum_mw, sum_mu[0], sum_mu[1], sum_mu[2],
                dep_sum[0], dep_sum[1], dep_sum[2], dep_sum[3], alpha_probe, e_probe,
                tau_probe, amin, n_excised, mass_excised, n_escaped, mass_escaped,
                push_maxit, push_unconverged, pmy_pack->nmb_thispack,
                dep_sum_filt[0], dep_sum_filt[1], dep_sum_filt[2], dep_sum_filt[3]);
+  std::fprintf(fp, " %.15e %.15e %.15e %.15e %.15e", vol, (vol > 0.0) ? kvol/vol : 0.0,
+               amax, emax, emin);
+  for (int n=0; n<nropt.nprobe; ++n) {
+    std::fprintf(fp, " %.15e %.15e %.15e", alpha_probes[n], e_probes[n], tau_probes[n]);
+  }
+  std::fprintf(fp, "\n");
   std::fclose(fp);
 }
 
@@ -250,7 +316,8 @@ void Particles::NrpicWriteTrajectories(Real time, bool truncate) {
 //! \fn  void Particles::NrpicWriteSnapshot
 //! \brief writes all particles to <basename>.part.NNNNN.bin:
 //!   8 bytes "NRPSNAP1", double time, int64 N, int64 ncycle,
-//!   N records of 7 doubles (x^i, u_i, m), N int32 tags, N int32 species
+//!   N records of 7 doubles (x^i, u_i, m), N int32 tags, N int32 species, N doubles
+//!   (proper time of each particle; affine parameter of a null particle)
 
 void Particles::NrpicWriteSnapshot(Real time) {
   char number[16];
@@ -281,6 +348,9 @@ void Particles::NrpicWriteSnapshot(Real time) {
     std::fwrite(buf.data(), sizeof(double), buf.size(), fp);
     std::fwrite(tag.data(), sizeof(std::int32_t), tag.size(), fp);
     std::fwrite(sp.data(), sizeof(std::int32_t), sp.size(), fp);
+    std::vector<double> tau(np);
+    for (int p=0; p<np; ++p) { tau[p] = rh(IPTAU,p); }
+    std::fwrite(tau.data(), sizeof(double), tau.size(), fp);
   }
   std::fclose(fp);
   snap_number++;
@@ -374,7 +444,7 @@ void Particles::NrpicWriteRestart(const std::string &fname) {
   std::FILE *fp = std::fopen(fname.c_str(), "wb");
   if (fp == nullptr) NrpicFatal("cannot open " + fname);
   const int np = nprtcl_thispack;
-  const char magic[9] = "NRPRST02";
+  const char magic[9] = "NRPRST03";
   std::int64_t n64 = np;
   double dstate[7] = {tau_probe, alpha_probe, e_probe, mass_excised, mass_escaped,
                       snap_next_time, curv_next_time};
@@ -398,7 +468,18 @@ void Particles::NrpicWriteRestart(const std::string &fname) {
     }
     std::fwrite(buf.data(), sizeof(double), buf.size(), fp);
     std::fwrite(ibuf.data(), sizeof(std::int32_t), ibuf.size(), fp);
+    // version 03: proper time of each particle
+    std::vector<double> tau(np);
+    for (int p=0; p<np; ++p) { tau[p] = rh(IPTAU,p); }
+    std::fwrite(tau.data(), sizeof(double), tau.size(), fp);
   }
+  // version 03: state of the additional probes
+  double pstate[24];
+  for (int n=0; n<8; ++n) {
+    pstate[3*n] = tau_probes[n]; pstate[3*n+1] = alpha_probes[n];
+    pstate[3*n+2] = e_probes[n];
+  }
+  std::fwrite(pstate, sizeof(double), 24, fp);
   std::fclose(fp);
 }
 
@@ -413,9 +494,11 @@ void Particles::NrpicReadRestart(const std::string &fname) {
   std::int64_t n64 = 0;
   double dstate[7];
   std::int64_t istate[4];
-  if (std::fread(magic, 1, 8, fp) != 8 || std::strncmp(magic, "NRPRST02", 8) != 0) {
+  if (std::fread(magic, 1, 8, fp) != 8 || (std::strncmp(magic, "NRPRST02", 8) != 0 &&
+                                           std::strncmp(magic, "NRPRST03", 8) != 0)) {
     NrpicFatal("bad magic in particle restart file " + fname);
   }
+  const bool v3 = (std::strncmp(magic, "NRPRST03", 8) == 0);
   if (std::fread(&n64, sizeof(std::int64_t), 1, fp) != 1 ||
       std::fread(dstate, sizeof(double), 7, fp) != 7 ||
       std::fread(istate, sizeof(std::int64_t), 4, fp) != 4) {
@@ -427,6 +510,18 @@ void Particles::NrpicReadRestart(const std::string &fname) {
   if (std::fread(buf.data(), sizeof(double), buf.size(), fp) != buf.size() ||
       std::fread(ibuf.data(), sizeof(std::int32_t), ibuf.size(), fp) != ibuf.size()) {
     NrpicFatal("particle restart file " + fname + " is truncated");
+  }
+  std::vector<double> tau(np, 0.0);
+  if (v3) {
+    double pstate[24];
+    if (std::fread(tau.data(), sizeof(double), tau.size(), fp) != tau.size() ||
+        std::fread(pstate, sizeof(double), 24, fp) != 24) {
+      NrpicFatal("particle restart file " + fname + " is truncated");
+    }
+    for (int n=0; n<8; ++n) {
+      tau_probes[n] = pstate[3*n]; alpha_probes[n] = pstate[3*n+1];
+      e_probes[n] = pstate[3*n+2];
+    }
   }
   std::fclose(fp);
 
@@ -445,6 +540,7 @@ void Particles::NrpicReadRestart(const std::string &fname) {
     rh(IPX,p) = buf[7*p+0];  rh(IPY,p) = buf[7*p+1];  rh(IPZ,p) = buf[7*p+2];
     rh(IPVX,p) = buf[7*p+3]; rh(IPVY,p) = buf[7*p+4]; rh(IPVZ,p) = buf[7*p+5];
     rh(IPM,p) = buf[7*p+6];
+    rh(IPTAU,p) = tau[p];
     ih(PGID,p) = ibuf[3*p+0];
     ih(PTAG,p) = ibuf[3*p+1];
     ih(PSP,p) = ibuf[3*p+2];

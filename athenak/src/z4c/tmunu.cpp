@@ -35,4 +35,22 @@ Tmunu::Tmunu(MeshBlockPack *ppack, ParameterInput *pin):
   tmunu.S_d.InitWithShallowSlice(u_tmunu, I_Tmunu_Sx, I_Tmunu_Sz);
 }
 
+//----------------------------------------------------------------------------------------
+//! \fn void Tmunu::AllocateStepSources
+//! \brief allocates the density-form sources of the step (see tmunu.hpp) and switches
+//! the spacetime solver to them
+
+void Tmunu::AllocateStepSources() {
+  int nmb = std::max((pmy_pack->nmb_thispack), (pmy_pack->pmesh->nmb_maxperrank));
+  auto &indcs = pmy_pack->pmesh->mb_indcs;
+  int ncells1 = indcs.nx1 + 2*(indcs.ng);
+  int ncells2 = (indcs.nx2 > 1) ? (indcs.nx2 + 2*(indcs.ng)) : 1;
+  int ncells3 = (indcs.nx3 > 1) ? (indcs.nx3 + 2*(indcs.ng)) : 1;
+  Kokkos::realloc(u_tmunu_step, nmb, N_Tmunu, ncells3, ncells2, ncells1);
+  tmunu_step.S_dd.InitWithShallowSlice(u_tmunu_step, I_Tmunu_Sxx, I_Tmunu_Szz);
+  tmunu_step.E.InitWithShallowSlice(u_tmunu_step, I_Tmunu_E);
+  tmunu_step.S_d.InitWithShallowSlice(u_tmunu_step, I_Tmunu_Sx, I_Tmunu_Sz);
+  step_density = true;
+}
+
 Tmunu::~Tmunu() {}

@@ -159,6 +159,7 @@ add_executable(
         pgen/tests/be_collapse.cpp
         pgen/nrpic/nrpic_geodesic.cpp
         pgen/nrpic/nrpic_cf.cpp
+        pgen/nrpic/nrpic_cosmo.cpp
 
         pgen/unit_tests/eos_compose.cpp
         pgen/unit_tests/gauss_legendre.cpp
