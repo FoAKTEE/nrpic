@@ -692,8 +692,9 @@ void Particles::NrpicDepositSources() {
   const int n1 = indcs.nx1, n2 = indcs.nx2, n3 = indcs.nx3;
   const int ncell = nmb*n3*n2*n1;
   Real se = 0.0, sx = 0.0, sy = 0.0, szz = 0.0;
+  int nbad = 0;
   Kokkos::parallel_reduce("nrpic_normalize", Kokkos::RangePolicy<DevExeSpace>(0, ncell),
-  KOKKOS_LAMBDA(const int idx, Real &lse, Real &lsx, Real &lsy, Real &lsz) {
+  KOKKOS_LAMBDA(const int idx, Real &lse, Real &lsx, Real &lsy, Real &lsz, int &lnbad) {
     int m = idx/(n3*n2*n1);
     int rem = idx - m*(n3*n2*n1);
     int k = rem/(n2*n1);
@@ -709,13 +710,30 @@ void Particles::NrpicDepositSources() {
     const Real det = adm::SpatialDet(m1(m,NRM_GXX,k,j,i), m1(m,NRM_GXY,k,j,i),
                                      m1(m,NRM_GXZ,k,j,i), m1(m,NRM_GYY,k,j,i),
                                      m1(m,NRM_GYZ,k,j,i), m1(m,NRM_GZZ,k,j,i));
-    const Real isg = 1.0/sqrt(det);
+    // The ADM metric is the conformal metric divided by the evolved conformal factor
+    // chi without a floor.  At a cell centre next to a moving puncture chi can
+    // undershoot to zero or below; the determinant is then not positive (or not
+    // finite) and 1/sqrt(det) would put a NaN into the sources of that cell, which the
+    // filter passes spread over the mesh.  Such a cell lies inside the black hole:
+    // its sources are set to zero and the cell is counted.
+    const bool ok = (det > 0.0) && (det < 1.0e300);
+    const Real isg = ok ? 1.0/sqrt(det) : 0.0;
+    if (!ok) { lnbad += 1; }
     for (int n=0; n<Tmunu::N_Tmunu; ++n) {
       tm(m,n,k,j,i) *= isg;
     }
   }, Kokkos::Sum<Real>(se), Kokkos::Sum<Real>(sx), Kokkos::Sum<Real>(sy),
-     Kokkos::Sum<Real>(szz));
+     Kokkos::Sum<Real>(szz), Kokkos::Sum<int>(nbad));
   dep_sum[0] = se; dep_sum[1] = sx; dep_sum[2] = sy; dep_sum[3] = szz;
+  if (nbad > 0) {
+    n_bad_det_total += nbad;
+    if (n_bad_det_reports < 50) {
+      ++n_bad_det_reports;
+      std::cout << "NRPIC: " << nbad << " cell(s) with a non-positive or non-finite "
+                << "metric determinant at time " << pm->time
+                << " (sources set to zero there)" << std::endl;
+    }
+  }
   e_prev_valid = true;
 }
 

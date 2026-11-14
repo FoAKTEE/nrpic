@@ -152,6 +152,8 @@ class Particles {
   Real tau_probe = 0.0;            // proper time of the normal observer at the probe
   Real alpha_probe = 1.0;          // lapse at the probe
   Real e_probe = 0.0;              // deposited energy density at the probe
+  long n_bad_det_total = 0;        // cells whose sources were zeroed (det <= 0), summed
+  int n_bad_det_reports = 0;       // number of such events reported so far
   Real mass_excised = 0.0;         // rest mass removed by excision
   Real mass_escaped = 0.0;         // rest mass removed at the domain boundary
   int  n_excised = 0, n_escaped = 0;

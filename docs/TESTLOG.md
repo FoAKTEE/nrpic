@@ -1879,3 +1879,40 @@ What this overturns and what it restores.
   constant 0.05 for the first horizon and 0.1 for the second, 2000 iterations, mass
   tolerance 1e-7. If the step size is the cause, both horizons are found with masses
   within 0.01 of the Misner-Sharp value (0.113 M for the first).
+
+## Second finder test: found; and why the runs fail after the black holes form (17:40)
+
+`jeans/finder_test2` (same restart, flow constant 0.05 for the first horizon and 0.1
+for the second, 2000 iterations, mass tolerance 1e-7).
+- First horizon: found at every search, mass 0.11407, 0.11430, 0.11452 at t = 12.33,
+  12.36, 12.39 M (Misner-Sharp at 12.30 M: 0.1128 with a spread of 0.005). The flow
+  converges in about thirty iterations.
+- Second horizon: found at two of three searches with 0.11418 and 0.11451; in the
+  first search the flow reaches 0.1139 after three iterations and then, driven on by
+  the tight mass tolerance, becomes unstable near iteration 90. The constant 0.05 is
+  the safer one.
+- Against the prediction: confirmed. The flow constant, sized for unit mass, was the
+  reason the finder never reported these black holes.
+Both lapse-removal runs fail a few M after formation: v7 (M/64) at 11.94 M, v11
+(M/128) at 13.26 M. In both the particle number goes to zero within about six steps
+over the whole cluster while the smallest lapse on the mesh stays where it was, and
+the fields are NaN afterwards.
+- Reading, with its test. Six steps for the whole cluster is the speed at which the
+  five filter passes carry a NaN in the sources across the mesh, not the speed of any
+  signal. A NaN can be born in the sources at a single cell without any particle
+  there: the normalization divides every cell's sources by the square root of the
+  metric determinant, and the host code forms the metric as the conformal metric
+  divided by the evolved conformal factor chi without a floor. Next to a moving
+  puncture chi at a cell centre can undershoot to zero or below (the guard-free run
+  showed the lapse doing exactly that). In all earlier collapse runs the black hole
+  sat at the origin, a cell corner; here the black holes move across cell centres.
+- Change to the source normalization (my code): where the determinant is not positive
+  and finite the sources are set to zero, and such cells are counted and reported.
+- Written before the runs: if this is the cause, the runs pass the times at which v7
+  and v11 failed, and the log reports cells with non-positive determinant at or before
+  those times. If a run fails at the same time without such a report, the cause is
+  elsewhere.
+- Runs (published removal rule, lapse 0.05, no horizon-based removal; new finder
+  constants; new executable): `jeans/n1e4_v13` continues v11's mesh (M/128) from its
+  dump at 6.31 M; `jeans/n1e4_v14` continues the M/64 mesh from the dump of v10 at
+  5.0 M.
