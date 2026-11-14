@@ -1967,3 +1967,29 @@ cells with a bad determinant are).
   close to the puncture produces the bad value, this run passes 11.93 M. If it fails
   at the same step, matter inside the horizon is not the cause and the spacetime
   evolution of the puncture is.
+
+## Intervention: removing matter inside the horizon cures the failure (18:30)
+
+`jeans/diag_v14b` (M/64, restart at 10.0 M; published lapse rule plus removal of every
+particle inside 0.8 of the smallest radius of a found horizon).
+- The run passes 11.926 M, where v7 and v14 failed, and reaches its end at 13.0 M with
+  no cell of bad determinant reported. Horizons found in 42 and 43 searches; masses
+  0.1222 and 0.1216 M at 12.1 M, 0.1281 and 0.1281 M at 12.9 M (coordinate radius
+  0.092 M, six cells). 6407 particles left.
+- Against the prediction of 18:15: the first branch. Matter close to the puncture
+  produces the bad value; with it removed the spacetime evolution of the small moving
+  puncture is stable on this mesh for at least the tested stretch.
+- `jeans/n1e4_v13` (M/128, lapse rule only) failed at 12.256 M, five steps after a
+  restart at 12.246 M (v11, with the lower lapse threshold, had failed at 13.26 M).
+- Why the lapse rule alone is not enough here, as far as the data go: on these meshes
+  the lapse at cell centres next to the puncture stays at 0.02 to 0.05, at or above
+  the removal thresholds, so particles inside the horizon are removed only in the few
+  cells nearest the puncture and the rest stay. Which quantity of theirs turns bad
+  (the reconstructed metric at a particle next to the puncture is one candidate) was
+  not isolated.
+- Production runs with both removal rules, finder constants as tested, the build that
+  reports bad cells: `jeans/n1e4_v15` (M/64) continues from the dump of the
+  intervention run at 13.0 M; `jeans/n1e4_v16` (M/128) continues from the dump of v13
+  at 12.246 M, four steps before v13 failed. Written before: v16 passes 12.26 M if the
+  same cause was at work there; if it fails within a few steps of its start, the
+  restart itself is involved and has to be looked at.
