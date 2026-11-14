@@ -22,10 +22,10 @@
 
 \author{Author list to be set}
 
-\date{Working paper, state of 13 November 2026}
+\date{Working paper, state of 14 November 2026}
 
 \begin{abstract}
-This working paper records the extension of a numerical-relativity particle-in-cell code to cosmological structure formation. The aim is to redo, with that code, the comparison of general-relativistic and Newtonian collapse of East, Wojtak, and Pretorius, the integration tests of Daverio, Dirian, and Mitsou, and the initial-condition tests of Barrera-Hinojosa and Li. The plan, the formulation, and the method are written; the code changes are in progress and no result exists yet. The progress ledger in the appendix states what is done.
+This working paper records the extension of a numerical-relativity particle-in-cell code to cosmological structure formation. The aim is to redo, with that code, the comparison of general-relativistic and Newtonian collapse of East, Wojtak, and Pretorius, the integration tests of Daverio, Dirian, and Mitsou, and the initial-condition tests of Barrera-Hinojosa and Li. So far the code reproduces the homogeneous matter-dominated universe, the linear growth of a horizon-scale perturbation over two decades of expansion, and the luminosity distance along light rays in the homogeneous universe. Two findings concern the method. Matter sources held fixed during a spacetime step are a first-order error in an expanding universe. The cloud-in-cell deposit of a compressed particle lattice carries an error that grows with the square of the compression. The comparison of collapse in the two theories of gravity is running. The progress ledger in the appendix states what is done.
 \end{abstract}
 
 \maketitle
@@ -54,7 +54,19 @@ a member of the Bona--Mass\'o family, the homogeneous solution has $\alpha = a$.
 
 \subsection{Periodic domain and particles as observers}
 
-Particles that leave the box re-enter on the opposite side, and the clouds that deposit their energy, momentum, and stress on the mesh wrap around in the same way. Every particle carries its proper time $\tau$, advanced with the lapse and Lorentz factor at the midpoint of each step, so that any particle serves as a fiducial observer. Particles of zero rest mass follow null geodesics with the same pushers and carry no sources; they serve as light rays.
+Particles that leave the box re-enter on the opposite side, and the clouds that deposit their energy, momentum, and stress on the mesh wrap around in the same way. Every particle carries its proper time $\tau$, advanced with the lapse and Lorentz factor at the midpoint of each step, so that any particle serves as a fiducial observer. Particles of zero rest mass follow null geodesics with the same pusher and carry no sources; they serve as light rays. A ray that is emitted during the run waits at its point of emission, and at the emission time its direction becomes the null momentum of unit frequency for the normal observer there.
+
+\subsection{Matter sources in an expanding universe}\label{sec:sources}
+
+The coupling of Ref.~\cite{Wu:2026nrpic} deposits the energy density $E$, the momentum density $S_i$, and the stress $S_{ij}$ seen by normal observers once per time step and holds them fixed during the stages of the spacetime integrator. Each is a sum over particles divided by the volume element $\sqrt{\gamma}$ of the cell. Around an isolated object the volume element changes little during a step. In an expanding universe it grows at three times the Hubble rate, and sources held fixed are a first-order error in time with that coefficient. The particle sums change only through the motion and the Lorentz factors of the particles, which is slow. The code therefore hands the spacetime solver the densities
+\begin{equation}\label{eq:densities}
+\hat E = \sqrt{\gamma}\,E, \quad \hat S_i = \sqrt{\gamma}\,S_i, \quad \hat S_{ij} = \sqrt{\gamma}\,S_{ij},
+\end{equation}
+and the solver divides them by the volume element of each stage, $1/\sqrt{\gamma} = \chi^{3/2}$ with the conformal factor $\chi$ of the Z4c variables. The densities are extrapolated to the middle of the step from the last two deposits,
+\begin{equation}
+\hat E^{\,n+1/2} = \tfrac{3}{2}\hat E^{\,n} - \tfrac{1}{2}\hat E^{\,n-1},
+\end{equation}
+and likewise for the other two, which makes the coupling second order for the slow part as well. Daverio, Dirian, and Mitsou refresh the same factor between particle updates \cite{Daverio:2019gql}.
 
 \subsection{Initial data on the three-torus}\label{sec:id}
 
@@ -65,9 +77,10 @@ The initial slice must satisfy the Hamiltonian and momentum constraints. Followi
 K &= -3H\left(1 - \psiN - \frac{1}{H}\frac{\dd\psiN}{\dd t}\right).
 \end{align}
 The source papers solve the conformal thin-sandwich equations for the corrections beyond linear order with the density held fixed. Here the particles are held fixed instead. The spatial metric is conformally flat, $\gamma_{ij} = \psi^4\delta_{ij}$, and the extrinsic curvature is
-\begin{equation}
-K_{ij} = \psi^{-2}\Ahat_{ij} + \tfrac{1}{3}\psi^4\delta_{ij}K, \qquad \Ahat_{ij} = \partial_i W_j + \partial_j W_i - \tfrac{2}{3}\delta_{ij}\partial_k W^k ,
-\end{equation}
+\begin{align}
+K_{ij} &= \psi^{-2}\Ahat_{ij} + \tfrac{1}{3}\psi^4\delta_{ij}K, \nonumber\\
+\Ahat_{ij} &= \partial_i W_j + \partial_j W_i - \tfrac{2}{3}\delta_{ij}\partial_k W^k ,
+\end{align}
 with $K$ from the dictionary and a vector potential $W^i$. The particle sums that the code deposits, $\hat E = \psi^6 E$ and $\hat S_i = \psi^6 S_i$ for the energy density $E$ and momentum density $S_i$ seen by normal observers, are fixed by the particle positions, masses, and momenta, up to the dependence of the Lorentz factor on $\psi$. The constraints become
 \begin{align}\label{eq:constraints}
 \partial^j\partial_j\psi &= \tfrac{1}{12}K^2\psi^5 - \tfrac{1}{8}\psi^{-7}\Ahat_{ij}\Ahat^{ij} - 2\pi\psi^{-1}\hat E,\nonumber\\
@@ -75,11 +88,11 @@ with $K$ from the dictionary and a vector potential $W^i$. The particle sums tha
 \end{align}
 With the density scaling as the particles require, the linearized first equation has the operator $\partial^j\partial_j - \tfrac{9}{2}H^2$ on the homogeneous background, which is invertible on the torus; with the density held fixed the constant mode is marginal. The equations are solved on the mesh of the run with Fourier transforms, with the deposit of the code reproduced, so that the data satisfy the constraints for the sources the code will see.
 
-The particles start on a lattice aligned with the mesh and are displaced by the Zel'dovich approximation. Their coordinate number density must equal $\rho W\psi^6$ with Lorentz factor $W$, whose contrast is $\dN - 5\psiN$ to linear order for growing-mode velocities; the displacement is chosen accordingly, and the particle masses carry the remaining nonlinear part.
+The particles start on a lattice aligned with the mesh, with the lattice points at the cell corners, and are displaced by the Zel'dovich approximation exactly as in the Newtonian reference. The mass per coordinate volume must equal $\rho W\psi^6$ with Lorentz factor $W$, whose contrast is $\dN - 5\psiN$ to linear order for growing-mode velocities; the particle masses carry the part of it that the displacement leaves out. For cold matter only the density and velocity fields enter the evolution, so the division of the mass among the particles is free. Identical positions give the two calculations the same sampling error of the deposit, which Sec.~\ref{sec:res_id} shows to matter.
 
 \subsection{Newtonian reference}
 
-The Newtonian reference is a particle-mesh code on the mesh of the relativistic run with the same cloud shape, so that the two calculations differ in the gravity. Its output is turned into observer quantities with the dictionary above, as in Ref.~\cite{East:2017qmk}.
+The Newtonian reference is a particle-mesh code on the mesh of the relativistic run with the same cloud shape, so that the two calculations differ in the gravity. Its output is turned into observer quantities with the dictionary above, as in Ref.~\cite{East:2017qmk}, and light rays are integrated in the metric of the dictionary alongside the particles.
 
 \subsection{Observables}
 
@@ -87,15 +100,77 @@ The comparisons use quantities defined by observers \cite{East:2017qmk,East:2019
 \begin{equation}
 a_p = \left(1 + \tfrac{3}{2}H_0\tau\right)^{2/3}, \qquad \delta_{\rm obs} = \frac{\rho}{\rho_0}\,a_p^{3} - 1 ,
 \end{equation}
-the proper time at which fiducial observers cross the overdensity, and the redshift and luminosity distance along light rays between the overdensity and the underdensity.
+the proper time at which fiducial observers cross the overdensity, and the redshift and luminosity distance along light rays between the overdensity and the underdensity. For a ray with wave vector $k^a$, emitted and received by observers with four-velocity $u^a$ that move with the matter,
+\begin{equation}
+1 + z = \frac{(u_a k^a)_{\rm emitted}}{(u_a k^a)_{\rm received}} .
+\end{equation}
+A bundle of rays that leaves the emitter within the solid angle $\dd\Omega$ has the cross section $\dd A$ where it is received, and the luminosity distance is
+\begin{equation}
+D_L = (1+z)\sqrt{\frac{\dd A}{\dd\Omega}} .
+\end{equation}
+Each bundle here is a central ray and four neighbors at a small opening angle; the cross section follows from the separations of the neighbors orthogonal to the central ray, and the solid angle from their directions in the frame of the emitter.
 
 \section{Results}\label{sec:results}
 
-\subsection{Homogeneous expansion}
-To be written with the first test.
+\subsection{Homogeneous expansion}\label{sec:res_flrw}
 
-\subsection{Collapse at one wavelength: general relativity against Newtonian gravity}
-To be written (Ref.~\cite{East:2019chx}).
+A lattice of particles at rest in a periodic box of four Hubble radii must reproduce the homogeneous solution of Sec.~\ref{sec:system}. The fields have no spatial dependence, so the test isolates the time integration of the coupled system. Figure~\ref{fig:flrw} compares the two couplings of Sec.~\ref{sec:sources} over a fourfold expansion. With the sources held fixed during a step, the lapse, the density, and the proper time of an observer drift from the exact solution at the percent level and the Hamiltonian constraint is violated at a tenth of its largest term. With the densities converted at each stage the errors fall by four to five orders of magnitude, to the level of the fourth-order time integrator, and the constraint stays satisfied.
+
+\begin{figure*}[t]
+\includegraphics[width=\textwidth]{fig_flrw}
+\caption{Homogeneous universe. With the matter sources held fixed during a spacetime step (dashed), the lapse, the density, and the proper time of an observer drift from the exact solution; with the densities converted at each stage (solid) the errors are those of the time integrator. Left: relative errors against the exact matter-dominated solution; the proper volume of the box has the error of the density. Right: root mean square of the Hamiltonian constraint over the box in units of its largest term, $16\pi\rho$.}
+\label{fig:flrw}
+\end{figure*}
+
+\subsection{Initial data and the sampling error of a lattice}\label{sec:res_id}
+
+The constraint solve of Sec.~\ref{sec:id} must return the dictionary to linear order. Figure~\ref{fig:id} shows that it does so only for a suitable lattice. A particle at a cell center sits at the cusp of the cloud-in-cell weight. Where the displacement changes sign, at the density peak and at the trough, the two neighboring particles leak into each other's cells, the deposited contrast is half again too large there, and the conformal factor inherits the excess. With the lattice points at the cell corners, each particle is shared equally by eight cells, the deposit responds linearly to a small displacement, and the solved conformal factor agrees with the dictionary, with a remainder that is second order in the amplitude.
+
+\begin{figure*}[t]
+\includegraphics[width=\textwidth]{fig_id}
+\caption{Initial data at small amplitude along the mesh line next to the density peak. Particles at the cell centers (red) deposit a density contrast far above the dictionary value (dashed), with spikes where the displacement changes sign, and the solved conformal factor inherits the excess. Particles at the cell corners (blue) reproduce the dictionary. Left: deposited density contrast. Right: conformal factor.}
+\label{fig:id}
+\end{figure*}
+
+The same mechanism acts at any amplitude. A lattice of spacing $s$ deposited with the cloud-in-cell shape on a mesh of spacing $h$ is modulated at the lattice wave number with the relative amplitude
+\begin{equation}\label{eq:beat}
+\left[\frac{\sin(\pi h/s)}{\pi h/s}\right]^2 ,
+\end{equation}
+per direction, which vanishes for an undisplaced lattice of $h/s$ particles per cell and equals $c^2$ to leading order for a lattice compressed by the fraction $c$. On the mesh the modulation appears at the long wavelength $h/c$, which a filter of a few cells leaves in place, and a lattice point on a cell corner sits at its minimum. A relativistic lattice displaced so that equal masses give the coordinate density is compressed four times more than the Newtonian one for the wavelength used here, and its deposit error is sixteen times larger. This is the reason for the identical positions of Sec.~\ref{sec:id}.
+
+\subsection{Linear growth}\label{sec:res_linear}
+
+For a small amplitude both calculations must follow linear theory. With the single-wavelength data of Ref.~\cite{East:2019chx}, $\dN = \sum_i \bar\delta_i \sin(k x^i)$ with $\sum_i\bar\delta_i = 3\bar\delta$, the growing mode has a constant potential, and the observer density contrast at the two extrema is
+\begin{equation}\label{eq:linear}
+\delta_{\rm obs} = \pm 3\bar\delta\left[a_p + 3\left(\frac{H_0}{k}\right)^2 a_p^{-3/2}\right] .
+\end{equation}
+The first term is the growing mode. The second is what remains of the density offset $-2\psiN$ of the dictionary once the slower clock of an observer inside the potential is taken into account; it decays. Figure~\ref{fig:linear} shows that the relativistic run, which starts from constraint-solved data and evolves in the slicing of Sec.~\ref{sec:system}, and the Newtonian reference both follow this law over two decades of expansion, at both extrema, to within the size of the second-order terms. The lapse condition keeps the slices close to those of the Newtonian gauge in this regime: with zero shift it holds $\alpha\,\gamma^{-1/6}$ fixed in time, as the dictionary metric does for a constant potential.
+
+\begin{figure*}[t]
+\includegraphics[width=\textwidth]{fig_linear}
+\caption{Linear regime. The observer density contrast of the relativistic run (red) and of the Newtonian reference (blue, dashed) follows linear theory (black, dashed) over two decades of expansion at the overdensity (left) and the underdensity (right). Lower panels: departure from linear theory, which includes the smoothing of the density probe.}
+\label{fig:linear}
+\end{figure*}
+
+\subsection{Light rays in the homogeneous universe}\label{sec:res_rays}
+
+In the homogeneous universe a ray emitted at the Hubble rate $H_e$ has
+\begin{equation}
+D_L = \frac{2}{H_e}\,(1+z)^2\left(\sqrt{1+z}-1\right) .
+\end{equation}
+Figure~\ref{fig:rays} compares bundles emitted at two times with this relation. The redshift agrees to the accuracy of the background. The luminosity distance is low by a small amount that falls along the ray, and that amount is the second-order time error of the pusher: the metric at the middle of a step is the mean of the two time levels, which lowers the coordinate speed of light by $(\mathcal{H}\Delta t)^2/8$ for the conformal Hubble rate $\mathcal{H}$ and time step $\Delta t$. The measured error coincides with this expression along every ray, so the launch, the cross section, and the solid angle of the bundles are right.
+
+\begin{figure*}[t]
+\includegraphics[width=\textwidth]{fig_rays_flrw}
+\caption{Light rays in the homogeneous universe. The redshift along bundles emitted at two times agrees with the exact relation (left), and the error of the luminosity distance (right) coincides with the one expected of a pusher that centers the metric in time (dashed).}
+\label{fig:rays}
+\end{figure*}
+
+\subsection{Collapse at one wavelength: general relativity against Newtonian gravity}\label{sec:res_east}
+
+The four amplitudes of Ref.~\cite{East:2019chx} have been run with both theories of gravity on a mesh of sixty-four cells per wavelength with one particle per cell. With zero shift and the lapse condition of Sec.~\ref{sec:system}, the three lower amplitudes run through the first crossing of matter streams and the formation of the bound region to the end, with every particle kept. At the largest amplitude the lapse at the overdensity turns around and collapses while the density there rises without bound, and the run ends; the Newtonian dictionary fails slightly earlier, where its potential reaches one half. Reference~\cite{East:2019chx} reports the same end for both calculations and a black hole forming. The slicing used here does not avoid the singularity, and following the black hole needs a different lapse condition near it and mesh refinement.
+
+The comparison of the observer density contrasts and of the crossing times with identical particle positions in the two calculations is running; the first runs, with the relativistic lattice compressed more than the Newtonian one, are recorded in the ledger.
 
 \subsection{Time-integration tests}
 To be written (Ref.~\cite{Daverio:2019gql}).
@@ -105,7 +180,7 @@ To be written (Ref.~\cite{Barrera-Hinojosa:2020arz}).
 
 \section{Method developments}\label{sec:tracks}
 
-The first project traced most of its difficulties to one coupling: the source on the mesh is only as smooth as the local cell size and particle number allow. Two developments address it. The first is a deposit whose momentum density satisfies, with the difference operators of the spacetime solver, the continuity equation of the deposited density, the gravitational counterpart of charge-conserving current deposition in plasma simulation. The second is to evolve with particles only the departure of the distribution from a known solution. In a cosmological run that starts from a lattice, the lattice already plays this role at early times. Both will be tested here once the baseline results exist.
+The first project traced most of its difficulties to one coupling: the source on the mesh is only as smooth as the local cell size and particle number allow. Two developments address it. The first is a deposit whose momentum density satisfies, with the difference operators of the spacetime solver, the continuity equation of the deposited density, the gravitational counterpart of charge-conserving current deposition in plasma simulation. The second is to evolve with particles only the departure of the distribution from a known solution. In a cosmological run that starts from a lattice, the lattice already plays this role at early times. Both will be tested here once the baseline results exist. The cosmological runs already quantify the first: the sampling error of the deposit follows the compression law of Sec.~\ref{sec:res_id}, and the constraint violation of a run with smooth flow grows with it, since the deposited momentum density and the change of the deposited energy density do not satisfy the continuity equation of the mesh.
 
 \appendix
 
@@ -117,26 +192,35 @@ This appendix belongs to the working paper only. Table~\ref{tab:ledger} lists th
 \caption{Targets and state. C0 to C6 are the milestones of the plan; T1 and T2 are the method developments of Sec.~\ref{sec:tracks}.}
 \label{tab:ledger}
 \begin{ruledtabular}
-\begin{tabular}{lll}
+\begin{tabular}{l p{0.47\textwidth} p{0.40\textwidth}}
 Target & Content & State \\
 \hline
 Plan & Sources read; design of slicing, initial data, reference code, observables & done \\
-C0 & Periodic particles, cosmology setup, proper time per particle, homogeneous-universe test & in progress \\
-C1 & Constraint-solved initial data on the torus; linear growth & not started \\
-C2 & Ref.~\cite{East:2019chx}: observer density contrasts and crossing times, four amplitudes, both gravities & not started \\
-C3 & Ref.~\cite{East:2019chx}: luminosity distance against redshift & not started \\
+C0 & Periodic particles, cosmology setup, proper time per particle, homogeneous-universe test & done \\
+C1 & Constraint-solved initial data on the torus; linear growth & done \\
+C2 & Ref.~\cite{East:2019chx}: observer density contrasts and crossing times, four amplitudes, both gravities & first runs done; rerun with identical positions running \\
+C3 & Ref.~\cite{East:2019chx}: luminosity distance against redshift & machinery and homogeneous test done; production with C2 rerun \\
 C4 & Ref.~\cite{East:2019chx}: constraint convergence, resolution and particle number, extreme case & not started \\
-C5 & Ref.~\cite{Daverio:2019gql}: all tests & specification being written \\
-C6 & Ref.~\cite{Barrera-Hinojosa:2020arz}: all tests & specification being written \\
-T1 & Constraint-compatible deposit & not started \\
+C5 & Ref.~\cite{Daverio:2019gql}: all tests & specification written \\
+C6 & Ref.~\cite{Barrera-Hinojosa:2020arz}: all tests & specification written \\
+T1 & Constraint-compatible deposit & not started; test case identified (C2 runs) \\
 T2 & Evolving the departure from a known solution & not started \\
 \end{tabular}
 \end{ruledtabular}
 \end{table*}
 
+\paragraph*{Numbers behind the statements of the main text.}
+C0, thirty-two cells, a quarter-cell step, fourfold expansion. Densities converted per stage: lapse within $2\times10^{-7}$, density and proper volume within $1\times10^{-6}$ of the exact solution; root-mean-square Hamiltonian constraint $2\times10^{-6}$ of its largest term. Sources held fixed: lapse 8\,\% low, density 4\,\% high, constraint 0.15 of its largest term.
+
+C1, amplitude $10^{-4}$, thirty-two cells, to $a = 100$. The Hamiltonian-constraint norm of the code at the start is $6\times10^{-10}$. Conformal factor against the dictionary: 23\,\% of the perturbation off with particles at cell centers, 0.7\,\% with particles at cell corners. Observer density contrast: within 0.5\,\% of linear theory up to $a_p = 30$, $+0.75\,\%$ and $-0.70\,\%$ at $a_p = 100$ (contrast 0.03); the two theories differ by 0.3\,\% and 0.8\,\% of the contrast there.
+
+C3 test, thirty-two cells. Redshift within $9\times10^{-7}$; luminosity distance low by $1.2\times10^{-4}$ at emission at $a = 1$; measured and expected error agree to $6\times10^{-7}$.
+
+C2, first runs (relativistic lattice displaced $4.04$ times the Newtonian one). Deposited density at the probes 0.5\,\% below target at amplitude 0.01 and 7 to 14\,\% below at 0.05. First crossing of the fiducial observers later in the relativistic run by 5, 9, 14, and 23 to 28\,\% in $a_p$ for amplitudes 0.0025, 0.005, 0.01, 0.05 (Ref.~\cite{East:2019chx}, read from its figures: 7, 9, 12\,\% for the three lower amplitudes). Largest amplitude: relativistic run ends at $a = 18.6$, Newtonian dictionary at $a = 14.4$. Constraint violation relative to its largest term up to $a = 4$: $3\times10^{-4}$, $1\times10^{-2}$, $1\times10^{-1}$ for amplitudes 0.0025, 0.01, 0.05.
+
 \section{Stated differences from the source papers}\label{app:differences}
 
-The formulation is Z4c with the lapse condition above and zero shift; Ref.~\cite{East:2019chx} uses the generalized harmonic formulation in a damped harmonic gauge. Comparisons therefore use observer quantities only. The initial data hold the particles fixed in the constraint solve, where Ref.~\cite{East:2017qmk} holds the density fixed. The Newtonian reference is a particle-mesh code at the resolution of the relativistic run, where Ref.~\cite{East:2019chx} uses a tree code at higher force resolution. Particle numbers are lower than in the source papers, and the dependence on particle number is part of the tests.
+The formulation is Z4c with the lapse condition above and zero shift; Ref.~\cite{East:2019chx} uses the generalized harmonic formulation in a damped harmonic gauge. Comparisons therefore use observer quantities only. The initial data hold the particles fixed in the constraint solve, where Ref.~\cite{East:2017qmk} holds the density fixed; the total rest mass is that of the dictionary, and the density has the dictionary shape up to a constant factor that differs from one at second order in the amplitude. The Newtonian reference is a particle-mesh code at the resolution of the relativistic run, where Ref.~\cite{East:2019chx} uses a tree code at higher force resolution. Particle numbers are lower than in the source papers, and the dependence on particle number is part of the tests.
 
 \bibliography{references}
 
