@@ -153,6 +153,10 @@ class Z4c {
     Real damp_kappa1;
     Real damp_kappa2;
     bool damp_kappa1_over_alpha;
+    // additional damping of the connection constraint alone: the term
+    // -2 alpha kappa (Gamma - Gamma(metric)) of the Gamma equation with kappa1 +
+    // damp_kappa_gam (divided by the lapse like kappa1 if damp_kappa1_over_alpha)
+    Real damp_kappa_gam;
     // Parabolic relaxation of the Hamiltonian constraint through the conformal factor,
     // d_t chi += (c_H/2) chi^(-1/4) H with c_H = damp_ch + damp_ch_dx*dx (a length).
     // The form assumes chi = psi^-4.

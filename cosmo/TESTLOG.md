@@ -1802,3 +1802,51 @@ constraint rises threefold, so the damping term is not the cure.
 Not pursued further here. Next steps if it is: put the connection constraint into the
 field dumps; test the substitution of the metric connection for the evolved one where
 it appears undifferentiated; test a damping of Z alone.
+
+## C2: the other three amplitudes in the production configuration, written before the runs (08:24)
+
+`cosmo/east_d{0.0025,0.005,0.05}_n64_pcs4b` with `newton_d..._n64_pcs4`, as the pair at
+0.01. Earlier delays of the infall (linear cloud with the filter, 64 cells): 1.37,
+2.60, 5.15, 26 percent for 0.0025, 0.005, 0.01, 0.05. Prediction: within 0.2 points of
+1.37 and 2.60 for the two lower amplitudes, and within 3 points of 26 for the largest
+(its infall is close to the end of the run, where the bound region is noisier without
+the filter); the largest-amplitude run reaches at least a = 17.
+
+## Open item: damping of the connection constraint alone, written before the runs (08:31)
+
+The damping coefficient kappa1 enters three terms (Theta, the trace of the extrinsic
+curvature, the conformal connection). Raising it lowered |Z| by a third and raised the
+Hamiltonian constraint threefold. New option `damp_kappa_gam`: an additional rate on
+the connection term only. Runs `dav_c704_n32_pcs4bt_g5` and `_g20` (additional rate 5
+and 20 per unit of conformal time, larger box, 32 cells, production configuration).
+Predictions: mean |Z| at z = 1 and 0 lower by more than 3 and 10; the relative
+Hamiltonian constraint lower by more than 2 and 5 (1.9e-6, 7.8e-6 without); power
+unchanged to 0.02 percent; stable (rate times step 0.3 and 1.2: the second is close
+to where the stiff damping failed before, so it may not be).
+
+## Open item: damping of the connection constraint alone, outcome (08:35)
+
+`dav_c704_n32_pcs4bt_g5`, `_g20`: both stable to z = 0. Mean |Z| at z = 1 and 0: 7.8e-9,
+1.3e-8 (rate 5) and 3.6e-9, 5.2e-9 (rate 20) against 1.8e-8, 3.4e-8: lower by 2.3 and 2.6,
+and by 5 and 6.5. Predicted more than 3 and 10: fails. Relative Hamiltonian constraint
+at z = 10, 1, 0: 1.9e-7, 3.1e-6, 1.0e-5 and 5.1e-7, 4.7e-6, 1.3e-5 against 1.2e-7,
+1.9e-6, 7.8e-6: HIGHER, where I predicted lower by more than 2 and 5. The momentum
+constraint and Theta rise as well; the power changes by 0.02 and 0.07 percent.
+So damping one constraint moves the violation into the others. With the result of the
+relaxation test and of the damping rates, three attempts to lower the constraints by
+acting on the constraint subsystem have failed in the same way; what lowers them is
+what lowers the error that feeds them (resolution of the second-order terms, the
+cubic cloud, the compensation, the spline). `damp_kappa_gam` stays in the code,
+default off. Thread closed.
+
+## C2: largest amplitude in the production configuration, outcome (08:35)
+
+`cosmo/east_d0.05_n64_pcs4b` with `newton_d0.05_n64_pcs4`. Infall of the observers that
+start at L/32, L/16, L/8: relativistic a_p = 13.44, 13.57, 14.27; Newtonian 10.86,
+10.93, 11.22; delay 23.8, 24.2, 27.3 percent (26 with the linear cloud and the filter).
+Predicted within 3 points of 26: holds. Predicted to reach a = 17: it reaches a = 17.2
+and then fails: the metric determinant becomes non-finite in 5,120 cells at t = 6.28
+and in most of the mesh two steps later. The filtered runs failed at a = 18.6 in 48
+cells around the overdensity; without the filter the failure comes 8 percent earlier
+and spreads at once. (The source paper's relativistic run of this amplitude ends at
+a_p of 16.8 to 18.)

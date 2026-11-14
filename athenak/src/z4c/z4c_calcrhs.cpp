@@ -614,6 +614,9 @@ TaskStatus Z4c::CalcRHS(Driver *pdriver, int stage) {
     const Real kappa1 = opt.damp_kappa1_over_alpha
                         ? opt.damp_kappa1/fmax(z4c.alpha(m,k,j,i), 1.0e-30)
                         : opt.damp_kappa1;
+    const Real kappag = opt.damp_kappa1_over_alpha
+                        ? opt.damp_kappa_gam/fmax(z4c.alpha(m,k,j,i), 1.0e-30)
+                        : opt.damp_kappa_gam;
     rhs.vKhat(m,k,j,i) = - Ddalpha + z4c.alpha(m,k,j,i)
       * (AA + (1./3.)*SQR(K)) +
       LKhat + kappa1*(1 - opt.damp_kappa2)
@@ -644,7 +647,7 @@ TaskStatus Z4c::CalcRHS(Driver *pdriver, int stage) {
     // Gamma's
     for(int a = 0; a < 3; ++a) {
       rhs.vGam_u(m,a,k,j,i) = 2.*z4c.alpha(m,k,j,i)*DA_u(a) + LGam_u(a);
-      rhs.vGam_u(m,a,k,j,i) -= 2.*z4c.alpha(m,k,j,i) * kappa1 *
+      rhs.vGam_u(m,a,k,j,i) -= 2.*z4c.alpha(m,k,j,i) * (kappa1 + kappag) *
           (z4c.vGam_u(m,a,k,j,i) - Gamma_u(a));
       for(int b = 0; b < 3; ++b) {
         rhs.vGam_u(m,a,k,j,i) -= 2. * A_uu(a,b) * dalpha_d(b);
