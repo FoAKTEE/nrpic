@@ -628,3 +628,43 @@ project, interpolated initial data, and the horizon finder. A mass estimate: the
 that starts within a quarter wavelength of the overdensity has M = 0.5 in these units,
 a horizon of proper radius 1, i.e. 0.05 in comoving coordinates at a = 20, less than
 one cell of the 64-cell mesh; three levels of refinement give it six to twelve cells.
+
+## C3: luminosity distance along light rays, outcome (02:00)
+
+Relativistic bundles from the v2 runs (emission at scale factors 1, 10, 28, ... as in
+paper 1 plus a few more); Newtonian bundles emitted at the same proper times of the
+emitters and integrated in the dictionary metric (`cosmo/newton_d*_n64_v2`). Analysis
+`cosmo/analysis/east_rays.py`, figures `cosmo/analysis/figs/east_rays.png` and
+`cosmo/paper/figures/fig_rays.png` (inspected). No prediction was written for these
+runs beyond the homogeneous test; the comparison is with the values read from the
+figures of paper 1 (`cosmo/notes/east_figures/SUMMARY.md`).
+Deviation from the homogeneous relation, D_L/D_FRW - 1, at z = 0.1, 0.5, 1, 2
+(relativistic; paper 1 in brackets):
+- 0.01, overdensity, a_e = 1: -0.0069, -0.0043, -0.0042, -0.0108 (-0.0077, -0.0051,
+  -0.0048, -0.0111); underdensity: +0.0073, +0.0045, +0.0041, +0.0099 (+0.0066,
+  +0.0038, +0.0034, +0.0094). Newtonian: -0.0075, -0.0045, -0.0040, -0.0102 (-0.0076,
+  -0.0046, -0.0041, -0.0104).
+- 0.01, a_e = 28: overdensity +0.654, +0.025 (+0.605, +0.006); underdensity -0.176,
+  -0.189 (-0.161, -0.173). a_e = 43: +0.805, -0.053 (+0.754, -0.073) and -0.215, -0.261
+  (-0.205, -0.252). a_e = 52: +0.731, -0.102 (+0.676, -0.124) and -0.229, -0.303
+  (-0.222, -0.288).
+- 0.005, a_e = 1: -0.0035, -0.0022, -0.0021, -0.0053 (-0.0039, -0.0025, -0.0024,
+  -0.0055); a_e = 28: +0.220, +0.034 (+0.211, +0.023) and -0.115, -0.089 (-0.103,
+  -0.081); a_e = 58: +0.496, -0.040 (+0.478, -0.052) and -0.174 (-0.167).
+- 0.0025, a_e = 1: -0.0018, -0.0011, -0.0011, -0.0026 (-0.0020, -0.0014, -0.0013,
+  -0.0029); a_e = 28: +0.085, +0.023 (+0.086, +0.018); a_e = 59: +0.208, -0.021
+  (+0.204, -0.025); a_e = 163: +0.320 (+0.309) and -0.205 (-0.200).
+The redshift of rays from the underdensity turns back near the overdensity for the
+amplitude 0.01 (largest redshift 0.73 to 0.77; paper 1: 0.735 to 0.796) and not for the
+lower amplitudes at the emission times of paper 1, as there.
+Relativistic against Newtonian at equal redshift: rays emitted at a = 1: at most 6e-4,
+1.8e-4, 7e-5 for 0.01, 0.005, 0.0025 (paper 1: below 2e-3); later rays: percent level
+where the ray starts or ends in the bound region (0.01: 5 percent at z = 0.03 for the
+overdensity ray of a_e = 28, 8 percent at z = 0.73 for the underdensity ray; paper 1:
+10 and 7 percent), below 1e-2 elsewhere. At 0.05 the Newtonian rays that reach the
+overdensity after a = 12 enter the region where 1 + 2 psi_N is negative and their
+redshift is meaningless.
+What this establishes: the ray machinery of both calculations reproduces Fig. 4 of
+paper 1 to about a tenth of the plotted deviations at lower particle number, and its
+conclusion: large deviations from the homogeneous relation, small differences between
+the two gravities except in the bound region.
