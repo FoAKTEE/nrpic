@@ -2051,3 +2051,22 @@ horizon from the first successful search at 9.5 M on).
   significant difference between the two in its benchmarks. The rule used here is
   therefore not new; what is new is that on meshes with 3 to 12 cells per horizon
   radius the two differ, and the horizon-based one is needed.
+
+## M/64 production chain: second stop on the block limit at 29.1 M (20:10)
+
+`jeans/n1e4_v17` ran from 13.0 to 29.14 M (finest region of radius 0.2 M, limit 2280):
+horizons found in 357 of 357 searches, masses 0.1522 and 0.1523 M at 29.1 M, no bad
+cells; separation of the trackers 6.1 M at 10 M and 5.3 M at 28 M.
+- Block count: 1842 at 18 M, falling to 1485 at 24 M, then 1940 at 24.9 M, 2234 at
+  26 M, and a request for 2311 at 29.14 M (limit 2280). At the restart at 26.15 M the
+  levels with cells of 4 M to M/4 hold 294 blocks each (112 at the start of the run).
+- Cause, read from the level counts and the tracker positions: the refinement keeps
+  nested spheres of fixed radius around each tracker (30, 12 and 6 M for the levels
+  with cells of M, M/2 and M/4). The black holes have left the planes of symmetry of
+  the mesh (z = 0.35 M, and they are no longer at x = +-3 M on the x axis), the
+  spheres no longer line up with the block layers in any direction, and every coarser
+  level has to wrap the larger set.
+- Resumed from the dump at 26.15 M with the spheres reduced to 24, 10 and 4 M. This
+  coarsens the envelope beyond 4 M from each black hole from cells of M/4 to M/2 (the
+  cell size of the stable-cluster runs). The same change is set for the M/128 chain
+  from its next restart segment on, before it reaches this stage.
