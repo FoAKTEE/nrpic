@@ -859,3 +859,202 @@ With both written (particle restart format 04; 02 and 03 are still read): every
 compared quantity (probe lapse, density and proper time at both probes, particle and
 mesh sums, proper volume, mean K, constraint statistics) is identical to the last
 digit. Field dumps written before a restart are not repeated after it.
+
+## C5, test C: what sets the constraint level, written before the runs (02:57)
+
+`cosmo/dav_c704_n64_k` (64 cells, fixed-rate damping) ran cleanly to z = 0: mean
+relative Hamiltonian constraint 1.4e-6, 9.0e-6, 1.8e-5, 2.1e-5 at z = 100, 10, 1, 0.02
+(32 cells: 6.2e-6, 4.2e-5, 8.3e-5, 9.6e-5: ratio 4.6, second order), mean relative
+momentum constraint 3.0e-3, 1.1e-3, 1.4e-3, 5.6e-3. Prediction (2) of the entry before
+the runs (below 1e-5 throughout at 64 cells) fails by a factor of two; paper 2 reports
+1e-7 at this resolution. The momentum constraint is at or below paper 2's.
+Two candidate causes, with different signatures:
+(a) Smoothing mismatch. The deposited momentum density changes by the force
+    interpolated to the particles and then smoothed by the cloud, while the field
+    equations expect the unsmoothed force times the deposited density. To first order
+    in the perturbation the momentum balance on the mesh is then violated by the
+    fraction 1 - W(k) of the force: (k h)^2/12, /8, /6 for the linear, quadratic and
+    cubic cloud.
+    This drives the momentum constraint at relative size (k h)^2/8 (1e-3 to 1e-2 here,
+    as measured) and through it the Hamiltonian constraint at about M_r times the
+    density contrast (2.6e-6, 8e-6 at z = 100, 10; measured 1.4e-6, 9e-6).
+    Signature: second order in the cell size, independent of the step, mildly LARGER
+    for the smoother cloud (ratios 2 : 3 : 4).
+(b) Sampling error of the lattice (T1a): c/2, 0.4 c^2, 0.4 c^3 for compression c.
+    Signature: independent of the cell size at fixed particles per cell, strongly
+    SMALLER for the smoother cloud.
+(c) The step: second order in the step, so a five times smaller step would lower the
+    constraints 25 times.
+Runs at 32 cells (45 s to 4 min each), all with the fixed-rate damping:
+`dav_c704_n32_cfl` (step 0.05 of the cell), `dav_c704_n32_cic`, `dav_c704_n32_pcs`
+(linear and cubic cloud, initial data rebuilt with the same cloud),
+`dav_c704_n32_k2` (damping rate 2 instead of 0.5).
+Predictions, from (a):
+(1) Step: both mean relative constraints at z = 100, 10, 1 change by less than 30
+    percent.
+(2) Cloud: the momentum constraint at z = 100 in the ratios 0.67 : 1 : 1.33 (linear :
+    quadratic : cubic) within 25 percent. For the linear cloud the lattice error
+    (first order in c) may add to the Hamiltonian constraint; for the quadratic and
+    cubic clouds the Hamiltonian constraint follows the momentum constraint.
+(3) Damping: four times the rate lowers the Hamiltonian constraint at z = 1 by a factor
+    between 1.5 and 4 and leaves the power spectrum unchanged within 1 percentage
+    point. (Paper 2 damps at a constant coefficient times the lapse, which grows a
+    thousandfold, with a five times smaller step; this may be how it reaches 1e-7.)
+If (1) fails by a large factor the cause is the step and (a) is wrong.
+
+## C5, test C, smaller box: written before the runs (03:03)
+
+Paper 2, run C256: box 256 Mpc/h, power only above 40 Mpc/h, 64, 128, 256 cells. This
+is the box of its power-spectrum figure (departure from linear theory about 1e-2 at
+worst at the best resolution, z = 100, 10, 1) and the one that becomes nonlinear: it
+reports jumps of the constraints at z of about 10 and 1 after which they no longer
+converge, with the means of the relative constraints staying below about 1e-6 and 1e-2.
+Here: same spectrum, seed and cut as before; 64 cells with 8 particles per cell and 128
+cells with 1 per cell (the same 2,097,152 particles on both meshes, so the pair tests
+the mesh alone); quadratic cloud, fixed-rate damping 0.5, step 0.25 of the cell. The
+128-cell run takes 11,600 steps (about an hour) and runs as a chain with restarts.
+256 cells would take most of a day and is left out.
+Data at 64 cells: rms of the contrast 5.5e-4, maximum 2.1e-3, so linear theory gives
+rms 0.55 and maximum 2.1 at z = 0: the highest peaks collapse between z = 1 and 0.
+Largest displacement 0.004 cells, potential at most 7e-5.
+Predictions for `cosmo/dav_c256_n{64,128}`:
+(1) Both reach z = 0 with finite fields.
+(2) At z = 100 and 10 the power below half the cut-off is within 10 percent of linear
+    theory at 64 cells and within 2.5 percent at 128 cells (the same cells per cut-off
+    wave as the larger box at 32 and 64 cells). At z = 1 (linear rms 0.28) the
+    departure in the upper half of the band is more than twice that at z = 10 at 128
+    cells: nonlinear growth, not error.
+(3) While linear, the mean relative Hamiltonian constraint is the larger-box value at
+    the same cells per wave times the ratio of the amplitudes (6.7), if the smoothing
+    mismatch of the previous entry is its cause: 4e-5 and 3e-4 at z = 100 and 10 at 64
+    cells, 9e-6 and 6e-5 at 128 cells. The mean relative momentum constraint is as in
+    the larger box (2e-3 to 6e-3 and 1e-3 to 3e-3).
+(4) After the first collapse (z below 1) the constraint means rise by more than ten
+    and the ratio between the resolutions falls below two, as in paper 2.
+
+## T1: compensating the cloud in the deposit, written before the run (03:04)
+
+If the smoothing mismatch (a) of the entry above sets the constraint level, it can be
+removed at its leading order: one pass with the weights (-c, 1 + 2c, -c) per direction
+on the deposited sources, with c chosen to cancel the second moment of the cloud
+(c = 1/12, 1/8, 1/6 for the linear, quadratic and cubic cloud; the pass exists in the
+code as the compensation of the binomial filter and can run alone). The deposited
+density of a long wave is then the density of the particles to fourth order in the
+cell size, and the force on a particle times the deposited density is the force
+density the field equations expect. For a wave of 10 cells and the quadratic cloud the
+mismatch falls from 4.8 percent to 0.3 percent, for 20 cells from 1.2 percent to 0.02
+percent.
+The same smoothing weakens the self-gravity of a wave: with the source of the growth
+equation reduced by the fraction e, the growth exponent is 1 - 0.6 e, and over a
+thousandfold expansion the power falls short by 8.3 e: 10 percent for a wave of 20
+cells. That is the size of the departure measured at 32 cells below half the cut-off
+(9.4 percent at z = 0), so the two findings may have one cause.
+Run `cosmo/dav_c704_n32_comp`: quadratic cloud, c = 1/8 in the initial data and in the
+evolution, otherwise as `dav_c704_n32_k`.
+Predictions, from (a):
+(1) Mean relative momentum constraint at z = 100 below 1.2e-3 (5.7e-3 without).
+(2) Mean relative Hamiltonian constraint at z = 10 and 1 below 1e-5 and 2e-5 (4.2e-5,
+    8.3e-5 without).
+(3) Power below half the cut-off within 2 percent of linear theory at z = 100, 10, 1
+    (5.7 to 9.1 percent without).
+If the sampling error of the lattice (b) is the cause, the pass amplifies it (by up to
+1.5 at the shortest wave) and the constraints rise.
+
+## T1: the compensation must act on the density, not on the source (03:23)
+
+Found in the initial data while the run above was queued. With the pass after the
+division by sqrt(gamma) (the existing filter compensation) the solved conformal factor
+still differs from the linear dictionary by 3.0 percent in every mode (5.4 percent
+without the pass at the longest wave), although the deposited density of the particles
+matches its target to 5e-5. Cause: the particles carry the density per coordinate
+volume, rho sqrt(gamma), whose contrast at long waves is mostly the contrast of
+sqrt(gamma) itself (delta_N - 2 psi_N - 3 psi_N; for the longest wave of this box the
+last term is six times the first). The cloud smooths that product; the division by the
+local sqrt(gamma) then leaves the smoothed-minus-unsmoothed part of sqrt(gamma) in the
+source, and a pass applied after the division cannot remove it. Measured: contrast of E
+against the dictionary -0.58, -0.97, -1.26 percent for the three longest waves, equal
+to -(k h)^2/8 times 3 psi_N / (delta_N - 2 psi_N) as this predicts (-0.584 percent for
+the first).
+Fix: new option `deposit_comp_c` (code) and `DEP_COMP_C` (initial data): the pass
+acts on the deposited densities before the division. Initial data at 32 cells with it:
+conformal factor against the dictionary -0.05 percent (quadratic cloud), -0.03 percent
+(cubic), -0.4 percent (linear; its lattice error is of first order); largest
+difference 1.7e-7 against 5.1e-6 without (29 times smaller); Ahat 9e-8 against 2.9e-6.
+The sensitivity is a relativistic one: it scales with (H/k)^2 and is largest for waves
+longer than the Hubble radius.
+Run `cosmo/dav_c704_n32_dcomp` (quadratic cloud, deposit_comp_c = 1/8 in data and
+evolution). Predictions: as (1) to (3) of the entry above (momentum constraint at z =
+100 below 1.2e-3, Hamiltonian constraint at z = 10 and 1 below 1e-5 and 2e-5, power
+below half the cut-off within 2 percent), and better than `dav_c704_n32_comp` in the
+Hamiltonian constraint at z = 100, where (H/k)^2 is still 0.14 for the longest wave.
+
+## C5, test C: the Hamiltonian-constraint level was a rounded box size (03:28)
+
+Outcome of the four runs at 32 cells (`dav_c704_n32_{cfl,cic,pcs,k2}`) and of the
+128-cell run, and what they uncovered.
+Mean relative Hamiltonian constraint at z = 100, 10, 1: identical to three digits for
+the three clouds (6.18e-6, 4.24e-5, 8.25e-5); 4.8 to 6.2 times lower with the five times
+smaller step (1.28e-6, 6.9e-6, 1.34e-5); and nearly the same at 64 and 128 cells
+(1.35e-6, 9.0e-6, 1.75e-5 and 1.13e-6, 7.0e-6, 1.42e-5). Its maximum is close to its
+mean. So prediction (1) fails for the Hamiltonian constraint and cause (a) is not what
+sets it: it is a uniform offset, the sum of a term of fourth order in the step (the
+background error of the integrator, 3.6e-5 at z = 10 for the largest step) and a floor
+that depends on nothing I varied (1.2e-6, 6.9e-6, 1.4e-5, 2.0e-5 at z = 100, 10, 1, 0).
+The floor is there at t = 0: mean |H| = 2.29e-6 at all three resolutions, although the
+residual of the initial-data solver is 1e-12. Comparing the first field dump with the
+solver's fields: the code's energy density is higher by a uniform 3.8e-7. Cause: the
+input file had the box size rounded to six digits (7.42966) and the initial data use
+7.429660943..., so the mesh volume was 3.8e-7 too small. A uniform excess of density
+acts like spatial curvature: its share of the Hamiltonian constraint grows with the
+expansion. This is an error of the set-up of test C in the larger box only (tests A
+and B used the same rounded number on both sides; the smaller box was passed in full).
+The momentum constraint is not affected by it: step 5.7e-3 to 5.1e-3 at z = 100
+(prediction (1) holds for it); cloud 3.1e-3, 5.7e-3, 5.2e-3 for linear, quadratic,
+cubic at z = 100 (prediction (2), ratios 0.67 : 1 : 1.33, fails for the cubic cloud),
+and at z = 10 and 1 the cubic cloud is the lowest (1.0e-3, 7.8e-4) and the linear the
+highest (4.1e-3, 1.7e-2). So (a) does not describe the momentum constraint either
+beyond its order of magnitude; the linear cloud's growth points to the lattice error.
+Power below half the cut-off at z = 10: 5.3, 7.9, 10.2 percent short for linear,
+quadratic, cubic (ratios 0.67 : 1 : 1.29: this part of (a) holds, the smoothing of
+self-gravity), unchanged by the step (7.6 percent) and 1.1 points lower with four
+times the damping (6.8 percent; prediction (3) allowed 1 point).
+Compensation (`dav_c704_n32_comp` after the division, `dav_c704_n32_dcomp` on the
+density), against the predictions of the two T1 entries:
+(1) Momentum constraint at z = 100: 3.6e-3 and 3.7e-3 (5.7e-3 without; predicted below
+    1.2e-3: fails), and at z = 10, 1, 0 it is HIGHER than without (2.6e-3, 3.4e-3,
+    8.1e-3 against 1.8e-3, 1.5e-3, 2.5e-3). With the ordering of the clouds above this
+    says the momentum constraint is set by the sampling error of the lattice, which
+    the pass amplifies, and not by the smoothing mismatch.
+(2) Hamiltonian constraint: cannot be judged, it is the offset of the box size.
+(3) Power below half the cut-off against linear theory at z = 100, 10, 1, 0:
+    5.7, 7.9, 9.1, 9.4 percent without; 2.0, 1.8, 1.3, 0.9 percent with the pass after
+    the division; 0.05, 0.05, 0.5, 1.0 percent with the pass on the density. Up to the
+    cut-off (waves of 10 cells): 11 to 30 percent without, 0.5 to 1.6 percent with the
+    pass on the density. Predicted within 2 percent: holds, by a factor of forty at
+    z = 100 and 10. The growth of a wave ten cells long is now right to half a percent
+    over a thousandfold expansion, at 32 cells.
+All runs of the larger box are repeated with the exact box size before any of this
+goes into the working paper. Old runs kept in `runs/cosmo/_rounded_box`.
+
+## C5, test C: repeat with the exact box size, written before the runs (03:31)
+
+The smaller box at 64 cells (`dav_c256_n64`, box passed in full) already shows the
+level without the offset: mean relative Hamiltonian constraint 9.5e-8 at z = 100 and
+1.2e-6 at z = 10 (my prediction (3) for it, 4e-5 and 3e-4, came from the wrong model
+and is off by a factor of several hundred, in the good direction); these are the
+values paper 2 reports (about 1e-7 to 1e-6). Its other numbers are in the outcome
+entry below, once the 128-cell run exists.
+Repeated runs, larger box: `dav_c704_n32_{k,cfl,cic,pcs,k2,dcomp}`,
+`dav_c704_n64_{k,dcomp}`, `dav_c704_n128_k`; new: `dav_c256_n64_dcomp`.
+Predictions:
+(1) Mean relative Hamiltonian constraint at t = 0 below 1e-8 at every resolution.
+(2) At 32 cells with the large step (0.058) it is set by the fourth-order error of the
+    integrator on the background, about 2e-6 late (test A0: 3e-8 at a step of 0.021);
+    with the small step and at 64 and 128 cells it stays below 5e-7 to z = 10.
+(3) Momentum constraint and power as in the rounded-box runs, within a tenth.
+(4) With the compensation on the density at 64 cells: power within 0.5 percent of
+    linear theory up to the cut-off at z = 100 and 10.
+(5) Smaller box at 64 cells with the compensation: reaches z = 0 (the pass has negative
+    lobes; if the density turns negative in the voids after collapse the run may fail);
+    power below half the cut-off within 1 percent at z = 100 and 10 (2.6 and 5.7
+    percent without).

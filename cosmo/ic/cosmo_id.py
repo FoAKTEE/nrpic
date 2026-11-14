@@ -26,6 +26,9 @@ from scipy import ndimage
 # particle-mesh operations of the code
 # ---------------------------------------------------------------------------------------
 SHAPE = "cic"    # cloud shape of the deposit, as <particles> deposit_shape of the code
+COMP_C = -1.0    # coefficient of the compensation pass, as <particles> filter_comp_c
+DEP_COMP_C = 0.0  # compensation of the cloud on the deposited density, before the
+                  # division by sqrt(gamma), as <particles> deposit_comp_c
 
 
 def cic_deposit(x, w, n, L, shape=None):
@@ -154,9 +157,12 @@ def sources(tor, x, u, m, psi, nfilter=0, compensate=False):
     psip = interp(psi, x, tor.L)
     W = np.sqrt(1.0 + (u*u).sum(axis=1)/psip**4)
     isg = 1.0/psi**6
-    E = binomial(cic_deposit(x, m*W, tor.n, tor.L)*isg, nfilter, compensate)
-    S = [binomial(cic_deposit(x, m*u[:, i], tor.n, tor.L)*isg, nfilter, compensate)
-         for i in range(3)]
+    def density(w):
+        d = cic_deposit(x, w, tor.n, tor.L)
+        return binomial(d, 0, True, DEP_COMP_C) if DEP_COMP_C > 0.0 else d
+
+    E = binomial(density(m*W)*isg, nfilter, compensate, COMP_C)
+    S = [binomial(density(m*u[:, i])*isg, nfilter, compensate, COMP_C) for i in range(3)]
     return E, S, W
 
 

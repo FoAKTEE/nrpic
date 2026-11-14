@@ -78,7 +78,20 @@ def linear_field(delta0, box, a):
     kr = 2.0*np.pi*np.fft.rfftfreq(n, d=box/n)
     KX, KY, KZ = np.meshgrid(k1, k1, kr, indexing="ij")
     x = (KX**2 + KY**2 + KZ**2)/HC0**2
-    return np.fft.irfftn(np.fft.rfftn(delta0)*(3.0 + x*a)/(3.0 + x), s=(n,)*3)
+    return np.fft.irfftn(np.fft.rfftn(delta0)*(3.0 + x*a)/(3.0 + x), s=(n,)*3, axes=(0, 1, 2))
+
+
+VARIANT = {"": "constant coefficient", "k": "", "cic": "linear cloud", "pcs": "cubic cloud",
+           "k2": "damping rate 2", "cfl": "step 0.05 of the cell"}
+
+
+def label(case):
+    """Legend entry from the name of a run, dav_<box>_n<cells>[_<variant>]."""
+    parts = case.split("_")
+    n = next(p for p in parts if p.startswith("n") and p[1:].isdigit())
+    var = "_".join(parts[parts.index(n) + 1:])
+    text = VARIANT.get(var, var)
+    return rf"$N_g = {n[1:]}$" + (f", {text}" if text else "")
 
 
 def main():
@@ -94,13 +107,13 @@ def main():
     if not data:
         sys.exit("no run found")
     fs.use_style()
-    cols = [fs.PAL["blue"], fs.PAL["green"], fs.PAL["red"], fs.PAL["orange"]]
+    cols = [fs.PAL[c] for c in ("blue", "green", "red", "orange", "yellow")] + ["0.4", "k"]
     fig, axs = plt.subplots(1, 3, figsize=(fs.FULL_WIDTH, 2.9))
     fig.subplots_adjust(left=0.085, right=0.985, bottom=0.17, top=0.95, wspace=0.36)
     summ = {}
     kcut = 2.0*np.pi/cut
     for col, (c, d) in zip(cols, data.items()):
-        lab = c.split("_")[-1].replace("n", r"$N_g = $")
+        lab = label(c)
         zz = np.maximum(d["z"], 1e-3)
         axs[0].loglog(zz[1:], d["Hr"][1:], color=col, label=lab)
         axs[1].loglog(zz[1:], d["Mr"][1:], color=col)

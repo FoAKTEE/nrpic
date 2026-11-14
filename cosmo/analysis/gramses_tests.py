@@ -751,6 +751,95 @@ def stage_fig4(args):
 
 
 # ---------------------------------------------------------------------------------------
+# stage: t0prec (single-precision emulations of the FD velocity, 4 Gpc/h)
+# ---------------------------------------------------------------------------------------
+def zeldovich32(delta, L):
+    """Zel'dovich displacement with every step in single precision (scipy.fft on float32
+    and complex64), as in a single-precision IC code; same operator as
+    random_field.zeldovich."""
+    import scipy.fft as sfft
+    n = delta.shape[0]
+    tor = cid.Torus(n, L)
+    F = sfft.rfftn(delta.astype(np.float32))
+    k2 = tor.k2.astype(np.float32)
+    k2[0, 0, 0] = 1.0
+    G = F/k2
+    G[0, 0, 0] = 0.0
+    return [sfft.irfftn((1j*kd.astype(np.float32))*G, s=(n,)*3) for kd in tor.kd]
+
+
+def table_pk(pk, digits=7, kmin=1e-5, kmax=1e2, npts=1000):
+    """P(k) through a table: npts log-spaced k, values rounded to `digits` significant
+    digits, linear interpolation in (log k, log P)."""
+    kt = np.logspace(np.log10(kmin), np.log10(kmax), npts)
+    pt = np.array([float(f"{v:.{digits - 1}e}") for v in pk(kt)])
+    lk, lp = np.log(kt), np.log(pt)
+    return lambda k: np.exp(np.interp(np.log(k), lk, lp))
+
+
+def stage_t0prec(args):
+    """Delta P/P of FD against two-step with chi(z+-) (a) stored in float32 after a
+    double-precision computation (as make_ic(fd_dtype=float32)) and (b) computed entirely
+    in float32 (field, FFTs, difference), for the notes' inference that the paper's
+    Delta z = 0.05 scatter is single-precision round-off (notes:468-469)."""
+    n, L = args.n, 4000.0
+    arr, st = {}, {}
+    for z in ZINI:
+        a = a_of(z)
+        H = float(gi.hubble_kms(a, P))
+        ref = gi.make_ic(n, L, z, "newtonian", "two-step", seed=SEED)
+        k, p2, _ = lagrangian_power(divergence(ref["mesh"]["u"], L), L, n)
+        arr["k"] = k
+        # reference for (c): the two-step velocity from the tabulated z_ini spectrum (the
+        # default 2LPTic reads the same kind of table, so the interpolation error cancels)
+        _, x0 = gi.realise(n, L, table_pk(lambda kk: gi.power_S(kk, z, P)), SEED)
+        f0 = float(gi.growth_rate(a, P))
+        p2t = lagrangian_power(divergence([np.sqrt(a)*H*f0*c for c in x0], L), L, n)[1]
+        del x0
+        for dz in (0.25, 0.05):
+            c2 = fd_factor(z, dz)**2 - 1
+            dm = rf.gaussian_field(n, L, lambda kk: gi.power_S_scaled(kk, z - dz, z, P),
+                                   SEED, zero_nyquist=True)
+            dp = rf.gaussian_field(n, L, lambda kk: gi.power_S_scaled(kk, z + dz, z, P),
+                                   SEED, zero_nyquist=True)
+            cm, cp = zeldovich32(dm, L), zeldovich32(dp, L)
+            fac = np.float32(np.sqrt(a)*H/a/(2.0*dz))
+            u32 = [(fac*(cm[i] - cp[i])).astype(np.float64) for i in range(3)]
+            r = lagrangian_power(divergence(u32, L), L, n)[1]/p2 - 1 - c2
+            arr[f"full32_z{z:g}_dz{dz:g}"] = r
+            ic = gi.make_ic(n, L, z, "newtonian", "fd", dz=dz, seed=SEED, fd_dtype=np.float32)
+            rs = lagrangian_power(divergence(ic["mesh"]["u"], L), L, n)[1]/p2 - 1 - c2
+            arr[f"store32_z{z:g}_dz{dz:g}"] = rs
+            # (c) double precision, but P(k; z+-) read from tables printed with 7
+            # significant digits ("%.6e", as CAMB's E15.6 output) and interpolated linearly
+            # in (log k, log P) like 2LPTic's tabulated spectrum
+            tm = table_pk(lambda kk: gi.power_S_scaled(kk, z - dz, z, P))
+            tp = table_pk(lambda kk: gi.power_S_scaled(kk, z + dz, z, P))
+            _, xm = gi.realise(n, L, tm, SEED)
+            _, xp = gi.realise(n, L, tp, SEED)
+            fac64 = np.sqrt(a)*H/a/(2.0*dz)
+            ut = [fac64*(xm[i] - xp[i]) for i in range(3)]
+            rt = lagrangian_power(divergence(ut, L), L, n)[1]/p2t - 1 - c2
+            arr[f"table7_z{z:g}_dz{dz:g}"] = rt
+            del xm, xp, ut
+            e = np.stack([c.ravel() for c in u32], 1) - fd_factor(z, dz)*ref["u"]
+            st[f"z{z:g}_dz{dz:g}"] = {
+                "full32_rms": float(np.sqrt(np.mean(r**2))),
+                "full32_mean": float(r.mean()), "full32_max": float(np.abs(r).max()),
+                "full32_rms_first10": float(np.sqrt(np.mean(r[:10]**2))),
+                "table7_rms": float(np.sqrt(np.mean(rt**2))),
+                "table7_mean": float(rt.mean()), "table7_max": float(np.abs(rt).max()),
+                "store32_rms": float(np.sqrt(np.mean(rs**2))),
+                "store32_max": float(np.abs(rs).max()),
+                "full32_particle_rel_err_rms": float(np.sqrt((e**2).sum(1).mean()
+                                                             / (ref["u"]**2).sum(1).mean()))}
+            log("t0prec", z, dz, st[f"z{z:g}_dz{dz:g}"])
+            del ic, cm, cp, u32
+    np.savez(os.path.join(WORK, f"t0prec_n{n}.npz"), **arr)
+    jdump(st, os.path.join(WORK, f"t0prec_n{n}.json"))
+
+
+# ---------------------------------------------------------------------------------------
 # stage: estimator (Eulerian deposit of lattice ICs against the mesh field)
 # ---------------------------------------------------------------------------------------
 def stage_estimator(args):
@@ -812,10 +901,546 @@ def stage_estimator(args):
 
 
 # ---------------------------------------------------------------------------------------
+# stage: report (summaries, figures, gramses_tests.json)
+# ---------------------------------------------------------------------------------------
+def _load(path):
+    return json.load(open(path)) if os.path.exists(path) else None
+
+
+def _first_bad(k, v, kny, tol=0.01):
+    bad = np.abs(np.asarray(v) - 1.0) > tol
+    return float(k[np.argmax(bad)]/kny) if bad.any() else 1.0
+
+
+def summarise_ics(n):
+    out = {}
+    for L in BOXES:
+        for z in ZINI:
+            tag = f"L{L:g}_z{z:g}_n{n}"
+            pz = os.path.join(WORK, f"ics_{tag}.npz")
+            if not os.path.exists(pz):
+                continue
+            d = dict(np.load(pz))
+            st = _load(os.path.join(WORK, f"ics_{tag}.json"))
+            k, kny = d["k"], np.pi*n/L
+            s = {"stats": st}
+            # T0: FD against two-step
+            t0 = {}
+            for dz in DZS:
+                c2 = fd_factor(z, dz)**2 - 1
+                r64 = d[f"Pth_fdN64_dz{dz:g}_L"]/d["Pth_2s_L"] - 1
+                r32 = d[f"Pth_fdN32_dz{dz:g}_L"]/d["Pth_2s_L"] - 1
+                rC = d[f"Pth_fdC_dz{dz:g}_L"]/d["Pth_2s_L"] - 1
+                t0[f"{dz:g}"] = {
+                    "expected": c2, "approx": 2*dz*dz/(1 + z)**2,
+                    "mean_double": float(r64.mean()),
+                    "max|double - expected|": float(np.abs(r64 - c2).max()),
+                    "mean_single": float(r32.mean()),
+                    "rms_single_minus_expected": float(np.sqrt(np.mean((r32 - c2)**2))),
+                    "max|single - expected|": float(np.abs(r32 - c2).max()),
+                    "rms_single_minus_expected_k<kNy/2": float(np.sqrt(np.mean(
+                        (r32 - c2)[k < kny/2]**2))),
+                    "mean_CMC_upper_vs_two_step": float(rC.mean()),
+                    "max|CMC - expected|": float(np.abs(rC - c2).max())}
+            dzm = main_dz(z)
+            rE = d["Pth_fdN_E"]/d["Pth_2s_E"] - 1
+            t0["eulerian_main_dz"] = {"dz": dzm, "mean": float(rE.mean()),
+                                      "max|E - expected|": float(np.abs(
+                                          rE - (fd_factor(z, dzm)**2 - 1)).max())}
+            s["t0"] = t0
+            # Fig. 2
+            rm = d["P_dp_E"]/d["P_dS_E"]
+            rr = d["ratio_pS_realised"]
+            ens = d["lin_p"]/d["lin_S"]
+            bins = [r[0] for r in PAPER["fig2"][(L, int(z))]]
+            s["fig2"] = {
+                "bins": bins, "k": [float(k[j - 1]) for j in bins],
+                "measured": [float(rm[j - 1]) for j in bins],
+                "realised_linear": [float(rr[j - 1]) for j in bins],
+                "ensemble_linear": [float(ens[j - 1]) for j in bins],
+                "paper_measured": [r[1] for r in PAPER["fig2"][(L, int(z))]],
+                "paper_linear_centre": [r[2] for r in PAPER["fig2"][(L, int(z))]],
+                "max|meas/realised - 1|_k<kNy/2": float(np.abs(rm/rr - 1)[k < kny/2].max()),
+                "max|meas/realised - 1|_all": float(np.abs(rm/rr - 1).max()),
+                "mean_ratio_last_quarter": float(rm[k > 0.75*kny].mean()),
+                "S_dep/mesh_1pct_at_k/kNy": _first_bad(k, d["P_dS_E"]/d["P_dS_mesh"], kny),
+                "p_dep/mesh_1pct_at_k/kNy": _first_bad(k, d["P_dp_E"]/d["P_dp_mesh"], kny),
+                "S_dep/mesh_at_kNy/2": float((d["P_dS_E"]/d["P_dS_mesh"])[
+                    np.argmin(np.abs(k - kny/2))]),
+                "S_dep/mesh_last": float(d["P_dS_E"][-1]/d["P_dS_mesh"][-1]),
+                "p_dep/mesh_last": float(d["P_dp_E"][-1]/d["P_dp_mesh"][-1]),
+                "pred_response_at_kNy/2": float(d["resp_dens"][np.argmin(np.abs(k - kny/2))]),
+                "pred_response_last": float(d["resp_dens"][-1]),
+                "chi2_mesh_S_vs_linear": float(np.mean(((d["P_dS_mesh"] - d["lin_S"])
+                                                        / d["sig_S"])**2)),
+                "chi2_mesh_S_vs_linear_k<0.1": float(np.mean(((d["P_dS_mesh"] - d["lin_S"])
+                                                              / d["sig_S"])[k < 0.1]**2)),
+                "nbins": int(len(k))}
+            # Fig. 3
+            c2m = fd_factor(z, dzm)**2
+            lowE = d["Pth_lowC_E"]/d["Pth_2s_E"]
+            lowL = d[f"Pth_lowC_dz{dzm:g}_L"]/d["Pth_2s_L"]
+            real = d["lowerN_realised"]*c2m
+            ensl = d["lin_thL"]/d["lin_thN"]*c2m
+            sel = k > 0.01
+            s["fig3"] = {
+                "first_bin_lower/2s_eulerian": float(lowE[0]),
+                "first_bin_lower/2s_lagrangian": float(lowL[0]),
+                "first_bin_realised_expectation": float(real[0]),
+                "first_bin_ensemble": float(ensl[0]),
+                "max|lagr/realised - 1|": float(np.abs(lowL/real - 1).max()),
+                "max|euler/realised - 1|_k<kNy/2": float(np.abs(lowE/real - 1)[k < kny/2].max()),
+                "mean(lower/N - 1)_k>0.01_eulerian": float(np.mean(lowE[sel] - 1)),
+                "mean(lower/N - 1)_k>0.01_expected": float(np.mean(real[sel] - 1)),
+                "theta_E/L_1pct_at_k/kNy": _first_bad(k, d["Pth_2s_E"]/d["Pth_2s_L"], kny),
+                "theta_E/L_at_kNy/2": float((d["Pth_2s_E"]/d["Pth_2s_L"])[
+                    np.argmin(np.abs(k - kny/2))]),
+                "theta_E/L_last": float(d["Pth_2s_E"][-1]/d["Pth_2s_L"][-1]),
+                "pred_vel_response_last": float(d["resp_vel"][-1]),
+                "naive_CMC_first_bin_over_2s": float(d["Pth_naiveC_L"][0]/d["Pth_2s_L"][0]),
+                "theta_mesh_vs_linear_chi2": float(np.mean(((d["Pth_2s_L"] - d["lin_thN"])
+                                                            / d["sig_thN"])**2))}
+            out[f"L{L:g}_z{z:g}"] = s
+    return out
+
+
+def summarise_fig4(n):
+    pz = os.path.join(WORK, f"fig4_n{n}.npz")
+    if not os.path.exists(pz):
+        return None
+    d = dict(np.load(pz))
+    st = _load(os.path.join(WORK, f"fig4_n{n}.json"))
+    k = d["k"]
+    out = {"stats": st, "k_first3": k[:3].tolist()}
+    for name, *_ in fig4_variants():
+        r = d[f"Pth_{name}"]/d["Pth_ref"] - 1
+        pr = d[f"pred_{name}"]
+        out[name] = {"measured_first3": r[:3].tolist(),
+                     "measured_plateau_k>0.05": float(r[k > 0.05].mean()),
+                     "predicted_first3": pr[:3].tolist(),
+                     "predicted_plateau_k>0.05": float(pr[k > 0.05].mean()),
+                     "max|meas - pred|": float(np.abs(r - pr).max()),
+                     "dPdd_max_vs_same_setting": float(np.abs(
+                         d[f"Pdd_{name}"]/(d["Pdd_ref"] if name.endswith("_N")
+                                           else d["Pdd_fd_lin_s8_C"]) - 1).max())}
+    out["backscaled_dPdd_max"] = float(np.abs(d["Pdd_backscaled"]/d["Pdd_ref"] - 1).max())
+    return out
+
+
+def stage_report(args):
+    n = args.n
+    rep = {"settings": {"params": P, "seed": SEED, "n": n, "boxes": BOXES, "z_ini": ZINI,
+                        "dz": DZS, "shape": SHAPE, "mesh_factor": MESH_FACTOR,
+                        "vel_weighted": VEL_WEIGHTED,
+                        "bins": "width k_f, edges at integer multiples of k_f, to k_Ny"}}
+    rep["expected"] = _load(os.path.join(WORK, "expect.json"))
+    cl = _load(os.path.join(WORK, "closed.json"))
+    if cl:
+        rep["closed_form_checks"] = cl["checks"]
+        rep["fig1"] = cl["fig1"]
+    est = _load(os.path.join(WORK, "estimator_n128.json"))
+    rep["estimator_n128"] = est
+    rep["ics"] = summarise_ics(n)
+    rep["fig4"] = summarise_fig4(n)
+    rep["t0_precision"] = _load(os.path.join(WORK, f"t0prec_n{n}.json"))
+    jdump(rep, JSON_OUT)
+    log("wrote", JSON_OUT)
+    fig_t0(n)
+    fig_pdd(n)
+    fig_ptt(n)
+    fig_fig4(n)
+    if os.path.exists(os.path.join(WORK, "estimator_n128.npz")):
+        fig_estimator(128)
+
+
+# ---- figures --------------------------------------------------------------------------
+def _style():
+    import matplotlib
+    matplotlib.use("Agg")
+    import matplotlib.pyplot as plt
+    from nrpic import figstyle as fs
+    fs.use_style()
+    return plt, fs
+
+
+DZ_COL = {1.0: "#FF7F0E", 0.5: "#C2185B", 0.25: "#009925", 0.05: "#00ACC1"}
+
+
+def fig_t0(n):
+    plt, fs = _style()
+    fig = plt.figure(figsize=(fs.FULL_WIDTH, 5.6))
+    ax1 = fs.inch_axes(fig, 0.8, 2.45, 3.4, 3.0)
+    ax3 = fs.inch_axes(fig, 0.8, 0.45, 3.4, 1.75)
+    ax2 = fs.inch_axes(fig, 5.05, 0.45, 2.8, 5.0)
+    L = 4000.0
+    for z, mk in ((99.0, "o"), (49.0, "s")):
+        pz = os.path.join(WORK, f"ics_L{L:g}_z{z:g}_n{n}.npz")
+        if not os.path.exists(pz):
+            continue
+        d = dict(np.load(pz))
+        k = d["k"]
+        for dz in DZS:
+            c2 = fd_factor(z, dz)**2 - 1
+            r = d[f"Pth_fdN64_dz{dz:g}_L"]/d["Pth_2s_L"] - 1
+            ax1.loglog(k, r, mk, ms=2.5, color=DZ_COL[dz], mfc=DZ_COL[dz] if z == 99 else
+                       "none", mew=0.7)
+            ax1.axhline(c2, color=DZ_COL[dz], lw=1.0, ls="--")
+    for dz in DZS:
+        ax1.plot([], [], "s", color=DZ_COL[dz], ms=4, label=fr"$\Delta z={dz:g}$")
+    ax1.plot([], [], "o", color="grey", ms=4, label=r"$z_{\rm ini}=99$")
+    ax1.plot([], [], "s", color="grey", mfc="none", ms=4, label=r"$z_{\rm ini}=49$")
+    ax1.plot([], [], ls="--", color="grey", lw=1.0, label=r"$c^2-1$")
+    ax1.legend(loc="upper center", ncol=3, fontsize=7.5)
+    ax1.set_ylim(1e-7, 1e-1)
+    ax1.set_ylabel(r"$\Delta P_\theta/P_\theta$ (FD $-$ two-step)")
+    ax1.set_xticklabels([])
+    ax1.text(0.03, 0.03, r"4 $h^{-1}$Gpc, $256^3$, double precision", transform=ax1.transAxes,
+             fontsize=8)
+    # precision emulations at dz = 0.05 (stage t0prec)
+    pp = os.path.join(WORK, f"t0prec_n{n}.npz")
+    if os.path.exists(pp):
+        e = dict(np.load(pp))
+        k = e["k"]
+        for z, mfc in ((99.0, None), (49.0, "none")):
+            for key, col, lab in (("table7", fs.PAL["red"], "P(k) tables, 7 digits"),
+                                  ("full32", fs.PAL["green"], "float32 FFTs"),
+                                  ("store32", "grey", "float32 storage of $\\chi$")):
+                ax3.semilogx(k, 1e4*e[f"{key}_z{z:g}_dz0.05"], "o", ms=2.3, color=col,
+                             mfc=col if mfc is None else "none", mew=0.6,
+                             label=lab if z == 99.0 else None)
+    for p_ in (3.5, -3.5):
+        ax3.axhline(p_, **fs.MASK_LINE)
+    ax3.axhline(0.0, **fs.THIN)
+    ax3.set_ylim(-8.5, 8.5)
+    ax3.set_ylabel(r"$[\Delta P/P-(c^2-1)]/10^{-4}$", fontsize=9)
+    ax3.set_xlabel(r"$k$ [$h$ Mpc$^{-1}$]", labelpad=-2)
+    ax3.legend(loc="lower left", fontsize=7, ncol=3)
+    ax3.text(0.98, 0.95, r"$\Delta z=0.05$; filled $z_{\rm ini}=99$, open 49; "
+             "grey lines: paper's scatter", transform=ax3.transAxes, ha="right", va="top",
+             fontsize=7)
+    for ax in (ax1, ax3):
+        ax.set_xlim(1.5e-3, 0.21)
+    # quadratic law
+    xx = np.logspace(-4, -1.5, 50)
+    ax2.loglog(xx, 2*xx*xx, **fs.GUIDE, label=r"$2(\Delta z)^2/(1+z)^2$")
+    for (L, z), mk in (((4000.0, 99.0), "o"), ((4000.0, 49.0), "s"),
+                       ((256.0, 99.0), "^"), ((256.0, 49.0), "v")):
+        pz = os.path.join(WORK, f"ics_L{L:g}_z{z:g}_n{n}.npz")
+        if not os.path.exists(pz):
+            continue
+        d = dict(np.load(pz))
+        xs = [dz/(1 + z) for dz in DZS]
+        ys = [float(np.mean(d[f"Pth_fdN64_dz{dz:g}_L"]/d["Pth_2s_L"] - 1)) for dz in DZS]
+        ax2.loglog(xs, ys, mk, color=fs.PAL["red"], mfc="none" if L == 256.0 else
+                   fs.PAL["red"], ms=6, label=f"ours, {L/1000 if L > 1000 else L:g} "
+                   f"{'Gpc' if L > 1000 else 'Mpc'}/$h$, $z={z:g}$")
+    for z, mk in ((99, "D"), (49, "p")):
+        xs = [dz/(1 + z) for dz in DZS if PAPER["fig3_dP"][z][dz] > 0]
+        ys = [PAPER["fig3_dP"][z][dz] for dz in DZS if PAPER["fig3_dP"][z][dz] > 0]
+        ax2.loglog(xs, ys, mk, color=fs.PAL["blue"], mfc="none", ms=8, mew=1.2,
+                   label=f"paper, $z={z}$")
+    ax2.set_xlabel(r"$\Delta z/(1+z_{\rm ini})$", labelpad=-2)
+    ax2.set_ylabel(r"mean $\Delta P_\theta/P_\theta$ over $k$")
+    ax2.legend(loc="upper left", fontsize=8)
+    ax2.set_xlim(3e-4, 3e-2)
+    ax2.set_ylim(1.5e-7, 3e-3)
+    fs.save(fig, os.path.join(FIGDIR, "gramses_t0_fd"))
+    plt.close(fig)
+    log("wrote gramses_t0_fd")
+
+
+def _panel_grid(fs, plt, heights, height_total):
+    """2 x 2 panels (columns: boxes, rows: z), each a stack of strips of the given
+    heights (inches). Returns fig, axes[row][col] = list of strip axes (top first)."""
+    fig = plt.figure(figsize=(fs.FULL_WIDTH, height_total))
+    W, x0s = 3.15, (0.78, 4.75)
+    block = sum(heights)
+    gap = 0.55
+    y_top = height_total - 0.12
+    axes = [[None, None], [None, None]]
+    for r in range(2):
+        ytop = y_top - r*(block + gap)
+        for c in range(2):
+            strips, y = [], ytop
+            for h in heights:
+                y -= h
+                strips.append(fs.inch_axes(fig, x0s[c], y, W, h))
+            axes[r][c] = strips
+    return fig, axes
+
+
+def _minor_labels(ax):
+    """Label minor ticks of a log axis spanning less than about two decades."""
+    from matplotlib.ticker import LogFormatterSciNotation
+    ax.yaxis.set_minor_formatter(LogFormatterSciNotation(labelOnlyBase=False,
+                                                         minor_thresholds=(2, 0.5)))
+    ax.tick_params(axis="y", which="minor", labelsize=8)
+
+
+def _box_label(L):
+    return "4 $h^{-1}$Gpc" if L > 1000 else "256 $h^{-1}$Mpc"
+
+
+def fig_pdd(n):
+    plt, fs = _style()
+    fig, axes = _panel_grid(fs, plt, (1.75, 0.95, 0.8), 8.4)
+    for c, L in enumerate(BOXES):
+        for r, z in enumerate(ZINI):
+            pz = os.path.join(WORK, f"ics_L{L:g}_z{z:g}_n{n}.npz")
+            if not os.path.exists(pz):
+                continue
+            d = dict(np.load(pz))
+            k, kny = d["k"], np.pi*n/L
+            kl = np.logspace(np.log10(k[0]*0.9), np.log10(kny*1.05), 300)
+            a1, a2, a3 = axes[r][c]
+            w = k**1.5
+            a1.loglog(kl, kl**1.5*gi.power_S(kl, z, P), **fs.GUIDE, label="linear S")
+            a1.loglog(kl, kl**1.5*gi.power_gauge(kl, z, P, "p"), color="k",
+                      label="linear CMC")
+            a1.loglog(k, w*d["P_dS_E"], "^", ms=3, color=fs.PAL["orange"], label="ICs, S")
+            a1.loglog(k, w*d["P_dp_E"], "o", ms=3, mfc="none", color=fs.PAL["red"], mew=0.8,
+                      label="ICs, CMC")
+            a1.text(0.03, 0.94 if L > 1000 else 0.06,
+                    f"{_box_label(L)}, $z_{{\\rm ini}}={z:g}$", transform=a1.transAxes,
+                    fontsize=9, va="top" if L > 1000 else "bottom")
+            if r == 0:
+                a1.legend(loc="lower right" if L > 1000 else "lower left", fontsize=8,
+                          ncol=2, bbox_to_anchor=None if L > 1000 else (0.0, 0.1))
+            a1.set_ylabel(r"$k^{1.5}P_{\delta\delta}$")
+            _minor_labels(a1)
+            # ratio
+            ens = d["lin_p"]/d["lin_S"]
+            a2.plot(k, d["P_dp_E"]/d["P_dS_E"], "o", ms=3, mfc="none", color=fs.PAL["red"],
+                    mew=0.8, label="ICs, CMC/S")
+            a2.plot(k, d["ratio_pS_realised"], "-", color="grey", lw=1.0,
+                    label="linear, realised modes")
+            a2.plot(kl, gi.power_ratio_pS(kl, a_of(z), P), color="k", lw=1.0, ls="--",
+                    label="linear, closed form")
+            pp = PAPER["fig2"][(L, int(z))]
+            a2.plot([k[j - 1] for j, _, _ in pp], [m for _, m, _ in pp], "s", mfc="none",
+                    color=fs.PAL["blue"], ms=6, mew=1.0, label="paper")
+            a2.axhline(1.0, color="grey", ls=":", lw=1.0)
+            a2.set_ylabel(r"$P^{\rm CMC}/P^{\rm S}$")
+            if L > 1000:
+                a2.set_yscale("log")
+                a2.set_ylim(0.8, 80)
+            else:
+                a2.set_ylim(0.995, 1.09 if z == 99 else 1.045)
+            if r == 0:
+                a2.legend(loc="upper right", fontsize=7, ncol=2)
+            # estimator: deposit / mesh field
+            a3.plot(k, d["P_dS_E"]/d["P_dS_mesh"], "^", ms=2.5, color=fs.PAL["orange"])
+            a3.plot(k, d["P_dp_E"]/d["P_dp_mesh"], "o", ms=2.5, mfc="none",
+                    color=fs.PAL["red"], mew=0.7)
+            a3.plot(k, d["resp_dens"], color="k", lw=1.0, ls="--")
+            fs.band(a3, [k[0]*0.5, kny*2], [0.99, 0.99], [1.01, 1.01], "grey", alpha=0.15)
+            a3.axhline(1.0, **fs.THIN)
+            a3.set_ylim(0.96, 1.08)
+            a3.set_ylabel("deposit/mesh", fontsize=9)
+            a3.set_xlabel(r"$k$ [$h$ Mpc$^{-1}$]", labelpad=-2)
+            for ax in (a1, a2, a3):
+                ax.set_xscale("log")
+                ax.set_xlim(k[0]*0.85, kny*1.05)
+            for ax in (a1, a2):
+                ax.set_xticklabels([])
+    fs.save(fig, os.path.join(FIGDIR, "gramses_fig2_pdd"))
+    plt.close(fig)
+    log("wrote gramses_fig2_pdd")
+
+
+def fig_ptt(n):
+    plt, fs = _style()
+    fig, axes = _panel_grid(fs, plt, (1.75, 0.95, 0.8), 8.4)
+    for c, L in enumerate(BOXES):
+        for r, z in enumerate(ZINI):
+            pz = os.path.join(WORK, f"ics_L{L:g}_z{z:g}_n{n}.npz")
+            if not os.path.exists(pz):
+                continue
+            d = dict(np.load(pz))
+            k, kny = d["k"], np.pi*n/L
+            dzm = main_dz(z)
+            kl = np.logspace(np.log10(k[0]*0.9), np.log10(kny*1.05), 300)
+            a1, a2, a3 = axes[r][c]
+            w = k**1.5
+            a1.loglog(kl, kl**1.5*gi.theta_power_N(kl, z, P), **fs.GUIDE, label="linear N")
+            a1.loglog(kl, kl**1.5*gi.theta_power_lower(kl, z, P), color="k",
+                      label="linear CMC, lower")
+            a1.loglog(k, w*d["Pth_2s_E"], "*", ms=6, mfc="none", mew=0.8,
+                      color=fs.PAL["orange"], label="two-step (N)")
+            a1.loglog(k, w*d["Pth_fdN_E"], "o", ms=1.8, color=DZ_COL[dzm],
+                      label=fr"FD (N), $\Delta z={dzm:g}$")
+            a1.loglog(k, w*d["Pth_lowC_E"], "^", ms=3, mfc="none", color=fs.PAL["red"],
+                      mew=0.8, label=r"CMC, $a^{-2}\partial_iu_i$")
+            a1.text(0.03, 0.94 if L > 1000 else 0.06,
+                    f"{_box_label(L)}, $z_{{\\rm ini}}={z:g}$", transform=a1.transAxes,
+                    fontsize=9, va="top" if L > 1000 else "bottom")
+            if r == 0 and c == 0:
+                a1.legend(loc="lower right", fontsize=7, ncol=2)
+            a1.set_ylabel(r"$k^{1.5}P_{\theta\theta}$")
+            _minor_labels(a1)
+            # Delta P_N / P_N for each dz (Lagrangian) and the Eulerian one for dzm
+            for dz in DZS:
+                rr = d[f"Pth_fdN64_dz{dz:g}_L"]/d["Pth_2s_L"] - 1
+                a2.plot(k, rr, "o", ms=2.2, color=DZ_COL[dz], label=fr"$\Delta z={dz:g}$")
+                a2.axhline(fd_factor(z, dz)**2 - 1, color=DZ_COL[dz], lw=0.8, ls="--")
+            rE = d["Pth_fdN_E"]/d["Pth_2s_E"] - 1
+            a2.plot(k, rE, "x", ms=3.5, color="k", mew=0.7, label="Eulerian")
+            a2.set_yscale("log")
+            a2.set_ylim(2e-7, 0.08)
+            a2.set_ylabel(r"$\Delta P_{\rm N}/P_{\rm N}$")
+            if r == 0:
+                a2.legend(loc="upper center", fontsize=7, ncol=5, handletextpad=0.1,
+                          columnspacing=0.6)
+            # lower-index CMC over N
+            c2m = fd_factor(z, dzm)**2
+            a3.plot(k, d["Pth_lowC_E"]/d["Pth_2s_E"], "^", ms=3, mfc="none",
+                    color=fs.PAL["red"], mew=0.8)
+            a3.plot(k, d["lowerN_realised"]*c2m, "-", color="grey", lw=1.0)
+            a3.plot(kl, gi.theta_lower_T(kl, a_of(z), P)**2, color="k", lw=1.0, ls="--")
+            if L > 1000:
+                a3.plot([k[0]], [PAPER["fig3_lower_first"][int(z)]], "s", mfc="none",
+                        color=fs.PAL["blue"], ms=6, mew=1.0)
+                a3.set_yscale("log")
+                a3.set_ylim(0.03, 1.5)
+            else:
+                a3.set_ylim(0.95, 1.008)
+            a3.axhline(1.0, color="grey", ls=":", lw=1.0)
+            a3.set_ylabel(r"CMC/N", fontsize=9)
+            a3.set_xlabel(r"$k$ [$h$ Mpc$^{-1}$]", labelpad=-2)
+            for ax in (a1, a2, a3):
+                ax.set_xscale("log")
+                ax.set_xlim(k[0]*0.85, kny*1.05)
+            for ax in (a1, a2):
+                ax.set_xticklabels([])
+    fs.save(fig, os.path.join(FIGDIR, "gramses_fig3_ptt"))
+    plt.close(fig)
+    log("wrote gramses_fig3_ptt")
+
+
+FIG4_STYLE = {"fd_lin_s8_N": ("o", "#00ACC1", "FD (N), $\\sigma_8$ corrected"),
+              "fd_lin_s8_C": ("s", "#009925", "FD (CMC), $\\sigma_8$ corrected"),
+              "fd_none_s8_C": ("+", "k", "FD (CMC), no renormalisation"),
+              "fd_D1scaled_s8_C": ("D", "#C2185B", "FD (CMC), $\\sigma_8^p\\propto D_1$"),
+              "fd_def_s8_N": ("o", "#FF7F0E", "FD (N), def. $\\sigma_8$ model"),
+              "fd_def_s8_C": ("*", "#EA4335", "FD (CMC), def. $\\sigma_8$ model")}
+
+
+def fig_fig4(n):
+    pz = os.path.join(WORK, f"fig4_n{n}.npz")
+    if not os.path.exists(pz):
+        return
+    plt, fs = _style()
+    d = dict(np.load(pz))
+    k = d["k"]
+    fig = plt.figure(figsize=(fs.FULL_WIDTH, 4.9))
+    ax1 = fs.inch_axes(fig, 0.85, 3.05, 6.95, 1.75)
+    ax2 = fs.inch_axes(fig, 0.85, 0.45, 6.95, 2.55)
+    w = k**1.5
+    ax1.loglog(k, w*d["Pth_ref"], "v", ms=3, color="#8D6E63", label="two-step (N), reference")
+    for name, (mk, col, lab) in FIG4_STYLE.items():
+        ax1.loglog(k, w*d[f"Pth_{name}"], mk, ms=2.5, color=col, mfc="none", mew=0.7)
+        ax2.semilogx(k, d[f"Pth_{name}"]/d["Pth_ref"] - 1, mk, ms=3.2, color=col,
+                     mfc="none", mew=0.8, label=lab)
+        ax2.semilogx(k, d[f"pred_{name}"], "-", color=col, lw=0.9)
+    kl = np.logspace(-3, np.log10(0.21), 200)
+    ax1.loglog(kl, kl**1.5*gi.theta_power_N(kl, 49.0, P), **fs.GUIDE, label="linear N")
+    ax1.legend(loc="lower right", fontsize=8)
+    ax1.set_ylabel(r"$k^{1.5}P_{\theta\theta}$")
+    ax1.set_xticklabels([])
+    kp = list(k[:3]) + [0.1]
+    pmap = {"fd_def_s8_N": ("o", "paper: def $\\sigma_8$ (N)"),
+            "fd_def_s8_C": ("*", "paper: def $\\sigma_8$ (CMC)")}
+    for key, (mk, lab) in pmap.items():
+        ax2.semilogx(kp, PAPER["fig4"][key], mk, ms=8, mfc="none", color=fs.PAL["blue"],
+                     mew=1.1, label=lab)
+    for key, mk, lab in (("fd_inc_etadot_N", "d", "paper: inc $\\dot\\eta$ (N)"),
+                         ("fd_inc_etadot_C", "s", "paper: inc $\\dot\\eta$ (CMC)"),
+                         ("backscaled_N", "v", "paper: back-scaled")):
+        ax2.semilogx(kp, PAPER["fig4"][key], mk, ms=6, mfc="none", color="grey", mew=1.0,
+                     label=lab + " (not made)")
+    ax2.axhline(0.0, **fs.THIN)
+    ax2.set_ylim(-0.095, 0.065)
+    ax2.set_ylabel(r"$\Delta P_{\theta\theta}/P^{\rm N}_{\theta\theta}$")
+    ax2.set_xlabel(r"$k$ [$h$ Mpc$^{-1}$]", labelpad=-2)
+    ax2.legend(loc="lower right", fontsize=7, ncol=3)
+    ax2.text(0.98, 0.95, r"4 $h^{-1}$Gpc, $256^3$, $z_{\rm ini}=49$, $\Delta z=0.5$; "
+             "lines: predictions", transform=ax2.transAxes, va="top", ha="right", fontsize=8)
+    for ax in (ax1, ax2):
+        ax.set_xlim(1.4e-3, 0.21)
+    fs.save(fig, os.path.join(FIGDIR, "gramses_fig4_sigma8"))
+    plt.close(fig)
+    log("wrote gramses_fig4_sigma8")
+
+
+def fig_estimator(n):
+    plt, fs = _style()
+    from matplotlib.lines import Line2D
+    raw = dict(np.load(os.path.join(WORK, f"estimator_n{n}.npz")))
+    get = lambda key, name: raw[f"{key}|{name}"]                     # noqa: E731
+    fig = plt.figure(figsize=(fs.FULL_WIDTH, 5.7))
+    cols = {("tsc", 1): fs.PAL["yellow"], ("tsc", 2): fs.PAL["green"],
+            ("pcs", 1): fs.PAL["blue"], ("pcs", 2): fs.PAL["red"], ("cic", 2): "grey",
+            ("cic", 1): "#8D6E63"}
+    for c, L in enumerate(BOXES):
+        key = f"L{L:g}_z49"
+        k, kny = get(key, "k"), float(get(key, "k_Ny"))
+        x = k/kny
+        a1 = fs.inch_axes(fig, 0.8 + c*3.55, 2.95, 3.4, 2.4)
+        a2 = fs.inch_axes(fig, 0.8 + c*3.55, 0.45, 3.4, 2.4)
+        for shape in ("cic", "tsc", "pcs"):
+            for s in (1, 2):
+                col = cols[(shape, s)]
+                nm = f"dens_{shape}_s{s}_amp0.0001"
+                a1.plot(x, get(key, nm), "o", ms=2.3, color=col, mfc="none", mew=0.7)
+                a1.plot(x, get(key, f"dens_{shape}_s{s}_amp1"), "-", color=col, lw=1.0,
+                        label=f"{shape.upper()}, {'$n^3$' if s == 1 else '$(2n)^3$'}")
+                if shape != "cic":
+                    a1.plot(x, get(key, f"pred_dens_{shape}_s{s}"), ls="--", color=col,
+                            lw=0.8)
+                    a2.plot(x, get(key, f"vel_{shape}_s{s}_amp1_m"), "-", color=col, lw=1.0)
+                    a2.plot(x, get(key, f"vel_{shape}_s{s}_amp1_w"), ":", color=col, lw=1.2)
+                    a2.plot(x, get(key, f"pred_vel_{shape}_s{s}"), ls="--", color=col,
+                            lw=0.8)
+        for ax in (a1, a2):
+            fs.band(ax, [0, 1], [0.99, 0.99], [1.01, 1.01], "grey", alpha=0.15)
+            ax.axhline(1.0, **fs.THIN)
+            ax.set_xlim(0, 1.0)
+            ax.set_ylim(0.85, 1.15)
+            ax.set_yticks([0.9, 0.95, 1.0, 1.05, 1.1])
+            ax.set_xticks([0, 0.2, 0.4, 0.6, 0.8] if c == 0 else [0.2, 0.4, 0.6, 0.8, 1.0])
+        a1.set_xticklabels([])
+        a1.text(0.5, 0.97, f"{_box_label(L)}, $z_{{\\rm ini}}=49$, ${n}^3$",
+                transform=a1.transAxes, ha="center", va="top", fontsize=9,
+                bbox=dict(fc="white", ec="none", alpha=0.8, pad=1.0))
+        a2.set_xlabel(r"$k/k_{\rm Ny}$", labelpad=-2)
+        if c == 0:
+            a1.set_ylabel(r"$P_{\delta\delta}$: deposit / mesh field")
+            a2.set_ylabel(r"$P_{\theta\theta}$: deposit / mesh field")
+            a1.legend(loc="lower left", fontsize=7, ncol=3)
+            h = [Line2D([], [], color="k", lw=1.0), Line2D([], [], color="k", ls="",
+                                                           marker="o", mfc="none", ms=3),
+                 Line2D([], [], color="k", ls="--", lw=0.8)]
+            l2 = a2.legend(h[:1] + [Line2D([], [], color="k", ls=":", lw=1.2), h[2]],
+                           ["momentum deposit", "momentum / mass", "lattice response"],
+                           loc="lower left", fontsize=7)
+        else:
+            a1.legend([Line2D([], [], color="k", lw=1.0),
+                       Line2D([], [], color="k", ls="", marker="o", mfc="none", ms=3),
+                       Line2D([], [], color="k", ls="--", lw=0.8)],
+                      ["actual amplitude", "amplitude $10^{-4}$", "lattice response"],
+                      loc="lower left", fontsize=7)
+            for ax in (a1, a2):
+                ax.set_yticklabels([])
+    fs.save(fig, os.path.join(FIGDIR, "gramses_estimator"))
+    plt.close(fig)
+    log("wrote gramses_estimator")
+
+
+# ---------------------------------------------------------------------------------------
 def main():
     ap = argparse.ArgumentParser(description=__doc__.split("\n")[0])
     ap.add_argument("stage", choices=("expect", "closed", "estimator", "ics", "fig4",
-                                      "report"))
+                                      "t0prec", "report"))
     ap.add_argument("--n", type=int, default=256)
     ap.add_argument("--L", type=float, default=4000.0)
     ap.add_argument("--z", type=float, default=49.0)

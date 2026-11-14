@@ -102,6 +102,7 @@ deposit        = true
 nfilter        = 2
 filter_compensate = true
 filter_comp_c  = -1.0
+deposit_comp_c = 0.0    # > 0: compensation of the cloud on the deposited density (1/12, 1/8, 1/6)
 deposit_shape  = cic     # cloud shape: cic, tsc or pcs (B-spline of degree 1, 2, 3)
 deposit_max_level = 31
 deposit_adaptive  = true 

@@ -43,9 +43,19 @@ if __name__ == "__main__":
     ap.add_argument("--seed", type=int, default=1)
     ap.add_argument("--shape", default="tsc", choices=("cic", "tsc", "pcs"))
     ap.add_argument("--nfilter", type=int, default=0)
+    ap.add_argument("--dep-comp-c", type=float, default=0.0,
+                    help="coefficient c of a compensation pass (-c, 1 + 2c, -c) per "
+                         "direction on the deposited density (deposit_comp_c = c in the "
+                         "code); 1/12, 1/8, 1/6 cancel the second moment of the linear, "
+                         "quadratic and cubic cloud")
+    ap.add_argument("--comp-c", type=float, default=-1.0,
+                    help="the same pass after the division by sqrt(gamma) "
+                         "(filter_compensate = true, filter_comp_c = c in the code)")
     ap.add_argument("--out", required=True)
     a = ap.parse_args()
     cid.SHAPE = a.shape
+    cid.COMP_C = a.comp_c
+    cid.DEP_COMP_C = a.dep_comp_c
 
     def pk(k):
         return sp.linear_power(k, 0.0, sp.PLANCK18)/(1.0 + Z_INIT)**2
@@ -54,7 +64,8 @@ if __name__ == "__main__":
     delta = rf.gaussian_field(a.n, a.box, pk, a.seed, kcut=kcut, cut="sharp",
                               zero_nyquist=True)
     L = a.box*HC0
-    x, u, m, r, K, alpha, info, fid = mf.build(delta, L, 1.0, a.ppc, nfilter=a.nfilter)
+    x, u, m, r, K, alpha, info, fid = mf.build(delta, L, 1.0, a.ppc, nfilter=a.nfilter,
+                                               compensate=a.comp_c > 0.0)
     os.makedirs(a.out, exist_ok=True)
     write_particles(os.path.join(a.out, "particles.nrp"), x, u, m)
     write_fields(os.path.join(a.out, "fields.bin"), r["psi"], K, alpha, r["A"])

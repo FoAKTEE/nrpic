@@ -97,6 +97,7 @@ void Particles::NrpicInit(ParameterInput *pin) {
   nropt.nfilter    = pin->GetOrAddInteger("particles", "nfilter", 1);
   nropt.filter_compensate = pin->GetOrAddBoolean("particles", "filter_compensate", false);
   nropt.filter_comp_c     = pin->GetOrAddReal("particles", "filter_comp_c", -1.0);
+  nropt.deposit_comp_c    = pin->GetOrAddReal("particles", "deposit_comp_c", 0.0);
   nropt.deposit_max_level = pin->GetOrAddInteger("particles", "deposit_max_level", 31);
   if (nropt.deposit_max_level < 0) { nropt.deposit_max_level = 0; }
   if (nropt.deposit_max_level > 31 - pm->root_level) {
@@ -817,6 +818,19 @@ void Particles::NrpicDepositSources() {
     sum_mw = smw;
   }
 
+  // Compensation of the cloud (deposit_comp_c = c > 0): one pass (-c, 1+2c, -c)^3 over
+  // the deposited densities.  A cloud of second moment s^2 dx^2 per direction lowers a
+  // wave of wavenumber k by the factor 1 - s^2 (k dx)^2/2; the pass has the response
+  // 1 + 4c sin^2(k dx/2), so c = s^2/2 (1/12, 1/8, 1/6 for the linear, quadratic and
+  // cubic cloud) leaves the density of a long wave correct to fourth order in dx.  The
+  // pass acts here, on the densities per coordinate volume that the clouds were summed
+  // into, and not on the sources: the division by sqrt(gamma) that follows is local, so
+  // a pass after it would leave the part of the density that follows sqrt(gamma)
+  // smoothed.
+  if (nropt.deposit_comp_c > 0.0) {
+    NrpicFilterPass(1.0 + 2.0*nropt.deposit_comp_c, -nropt.deposit_comp_c);
+  }
+
   // divide by sqrt(gamma) at the receiving cell; accumulate the proper-volume integrals
   // of E and S_i, which equal the particle sums of m W and m u_i
   const int n1 = indcs.nx1, n2 = indcs.nx2, n3 = indcs.nx3;
@@ -902,9 +916,9 @@ void Particles::NrpicDepositSources() {
 }
 
 //----------------------------------------------------------------------------------------
-//! \fn  void Particles::NrpicFilterSources
-//! \brief applies nfilter passes of the binomial (1/4, 1/2, 1/4)^3 filter to each of the
-//! ten source components.  Ghost cells are filled before every pass, by copy between
+//! \fn  void Particles::NrpicFilterPass
+//! \brief one pass with the weights (w1, w0, w1)^3 over each of the ten source
+//! components.  The source filter applies nfilter passes of the binomial (1/4, 1/2, 1/4)^3.  Ghost cells are filled before every pass, by copy between
 //! MeshBlocks at the same level and by restriction and prolongation across levels.
 //!
 //! With filter_compensate the binomial passes are followed by one pass with the weights
@@ -916,11 +930,7 @@ void Particles::NrpicDepositSources() {
 //! monotonically and still vanishes at the Nyquist wavenumber.  The weights sum to one,
 //! so the pass conserves what the binomial passes conserve; it has small negative lobes.
 
-void Particles::NrpicFilterSources() {
-  if (nropt.nfilter <= 0 && !(nropt.filter_compensate && nropt.filter_comp_c > 0.0)) {
-    for (int n=0; n<4; ++n) { dep_sum_filt[n] = dep_sum[n]; }
-    return;
-  }
+void Particles::NrpicFilterPass(const Real w0, const Real w1) {
   Mesh *pm = pmy_pack->pmesh;
   auto &indcs = pm->mb_indcs;
   const int is = indcs.is, js = indcs.js, ks = indcs.ks;
@@ -930,6 +940,55 @@ void Particles::NrpicFilterSources() {
   auto &tmu = pmy_pack->ptmunu->u_tmunu;
   auto tm = tmu;
   auto wk = tm_work;
+
+  if (pm->multilevel) {
+    pm->pmr->RestrictCC(tmu, coarse_tm);
+  }
+  (void) pbval_tm->InitRecv(Tmunu::N_Tmunu);
+  (void) pbval_tm->PackAndSendCC(tmu, coarse_tm);
+  (void) pbval_tm->ClearSend();
+  (void) pbval_tm->ClearRecv();
+  (void) pbval_tm->RecvAndUnpackCC(tmu, coarse_tm);
+  if (pm->multilevel) {
+    pbval_tm->FillCoarseInBndryCC(tmu, coarse_tm);
+    pbval_tm->ProlongateCC(tmu, coarse_tm);
+  }
+
+  par_for("nrpic_filter", DevExeSpace(), 0, nmb1, 0, nv1, ks, ke, js, je, is, ie,
+  KOKKOS_LAMBDA(const int m, const int n, const int k, const int j, const int i) {
+    Real sum = 0.0;
+    for (int c=-1; c<=1; ++c) {
+      const Real wc = (c == 0) ? w0 : w1;
+      for (int b=-1; b<=1; ++b) {
+        const Real wb = (b == 0) ? w0 : w1;
+        sum += wc*wb*(w1*tm(m,n,k+c,j+b,i-1) + w0*tm(m,n,k+c,j+b,i)
+                      + w1*tm(m,n,k+c,j+b,i+1));
+      }
+    }
+    wk(m,n,k,j,i) = sum;
+  });
+  par_for("nrpic_filter_copy", DevExeSpace(), 0, nmb1, 0, nv1, ks, ke, js, je, is, ie,
+  KOKKOS_LAMBDA(const int m, const int n, const int k, const int j, const int i) {
+    tm(m,n,k,j,i) = wk(m,n,k,j,i);
+  });
+}
+
+//----------------------------------------------------------------------------------------
+//! \fn  void Particles::NrpicFilterSources
+//! \brief the source filter: nfilter binomial passes and the optional compensation pass
+//! (see NrpicFilterPass), then the proper-volume integrals of the filtered sources
+
+void Particles::NrpicFilterSources() {
+  if (nropt.nfilter <= 0 && !(nropt.filter_compensate && nropt.filter_comp_c > 0.0)) {
+    for (int n=0; n<4; ++n) { dep_sum_filt[n] = dep_sum[n]; }
+    return;
+  }
+  Mesh *pm = pmy_pack->pmesh;
+  auto &indcs = pm->mb_indcs;
+  const int is = indcs.is, js = indcs.js, ks = indcs.ks;
+  const int nmb1 = pmy_pack->nmb_thispack - 1;
+  auto &tmu = pmy_pack->ptmunu->u_tmunu;
+  auto tm = tmu;
 
   const int npass = nropt.nfilter + (nropt.filter_compensate ? 1 : 0);
   for (int pass=0; pass<npass; ++pass) {
@@ -941,36 +1000,7 @@ void Particles::NrpicFilterSources() {
       w0 = 1.0 + 2.0*c;
       w1 = -c;
     }
-    if (pm->multilevel) {
-      pm->pmr->RestrictCC(tmu, coarse_tm);
-    }
-    (void) pbval_tm->InitRecv(Tmunu::N_Tmunu);
-    (void) pbval_tm->PackAndSendCC(tmu, coarse_tm);
-    (void) pbval_tm->ClearSend();
-    (void) pbval_tm->ClearRecv();
-    (void) pbval_tm->RecvAndUnpackCC(tmu, coarse_tm);
-    if (pm->multilevel) {
-      pbval_tm->FillCoarseInBndryCC(tmu, coarse_tm);
-      pbval_tm->ProlongateCC(tmu, coarse_tm);
-    }
-
-    par_for("nrpic_filter", DevExeSpace(), 0, nmb1, 0, nv1, ks, ke, js, je, is, ie,
-    KOKKOS_LAMBDA(const int m, const int n, const int k, const int j, const int i) {
-      Real sum = 0.0;
-      for (int c=-1; c<=1; ++c) {
-        const Real wc = (c == 0) ? w0 : w1;
-        for (int b=-1; b<=1; ++b) {
-          const Real wb = (b == 0) ? w0 : w1;
-          sum += wc*wb*(w1*tm(m,n,k+c,j+b,i-1) + w0*tm(m,n,k+c,j+b,i)
-                        + w1*tm(m,n,k+c,j+b,i+1));
-        }
-      }
-      wk(m,n,k,j,i) = sum;
-    });
-    par_for("nrpic_filter_copy", DevExeSpace(), 0, nmb1, 0, nv1, ks, ke, js, je, is, ie,
-    KOKKOS_LAMBDA(const int m, const int n, const int k, const int j, const int i) {
-      tm(m,n,k,j,i) = wk(m,n,k,j,i);
-    });
+    NrpicFilterPass(w0, w1);
   }
 
   // proper-volume integrals of the filtered E and S_i.  The filter acts on the sources

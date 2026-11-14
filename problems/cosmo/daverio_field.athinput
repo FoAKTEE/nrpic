@@ -14,17 +14,17 @@ basename  = east
 nghost    = 4
 nx1       = 32
 x1min     = 0.0
-x1max     = 7.42966
+x1max     = 7.429660943483566   # exactly the L_code of the initial data (meta.json)
 ix1_bc    = periodic
 ox1_bc    = periodic
 nx2       = 32
 x2min     = 0.0
-x2max     = 7.42966
+x2max     = 7.429660943483566   # exactly the L_code of the initial data (meta.json)
 ix2_bc    = periodic
 ox2_bc    = periodic
 nx3       = 32
 x3min     = 0.0
-x3max     = 7.42966
+x3max     = 7.429660943483566   # exactly the L_code of the initial data (meta.json)
 ix3_bc    = periodic
 ox3_bc    = periodic
 
@@ -69,6 +69,7 @@ deposit        = true
 nfilter        = 0
 filter_compensate = false
 filter_comp_c  = -1.0
+deposit_comp_c = 0.0    # > 0: compensation of the cloud on the deposited density (1/12, 1/8, 1/6)
 deposit_shape  = tsc     # cloud shape: cic, tsc or pcs (B-spline of degree 1, 2, 3)
 deposit_max_level = 31
 deposit_adaptive  = false
@@ -83,7 +84,7 @@ line_dcycle    = 0
 field_time1    = 4.2962     # z = 100
 field_time2    = 17.0788    # z = 10
 field_time3    = 42.7439    # z = 1
-field_time4    = 61.277     # z = 0       # records of chi, alpha, K, E, S_x along the first x1 line
+field_time4    = 61.277     # z = 0
 traj_dcycle    = 0        # trajectories of the fiducial observers (lowest tags)
 traj_ntrack    = 94       # 3 n - 2 for one particle per cell and direction
 snap_dt        = 100.0

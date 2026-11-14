@@ -57,6 +57,8 @@ struct NrpicOptions {
   bool filter_compensate;  // follow them by one pass (-c, 1+2c, -c)^3 that cancels
                            // the second moment of the binomial passes (c = nfilter/4)
   Real filter_comp_c;      // c of that pass if >= 0 (default -1: nfilter/4)
+  Real deposit_comp_c;     // > 0: pass (-c, 1+2c, -c)^3 on the deposited densities, before
+                           // the division by sqrt(gamma), compensating the cloud
   int deposit_max_level;  // finest refinement level on which a cloud is represented
   bool deposit_adaptive;  // choose the level of each cloud from the local density
   int deposit_min_level;  // coarsest level of a cloud with the adaptive choice
@@ -204,6 +206,7 @@ class Particles {
   void NrpicAssignBlocks();
   void NrpicRemoveFlagged();
   void NrpicDepositSources();
+  void NrpicFilterPass(const Real w0, const Real w1);
   void NrpicFilterSources();
   void NrpicAddLambda();
   void NrpicStepSources();
