@@ -28,3 +28,4 @@ paper/*.synctex.gz
 problems/kerr/ref/*.npz
 __pycache__/
 *.pyc
+refs/arxiv_*/

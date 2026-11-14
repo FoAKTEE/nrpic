@@ -1,0 +1,143 @@
+\documentclass[aps,prd,twocolumn,10pt,superscriptaddress,nofootinbib,longbibliography,floatfix]{revtex4-2}
+
+\usepackage{amsmath,amssymb,amsfonts}
+\usepackage{bm}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{xcolor}
+\usepackage{hyperref}
+\graphicspath{{figures/}}
+\hypersetup{colorlinks=true,linkcolor=blue,citecolor=blue,urlcolor=blue}
+
+\newcommand{\dd}{\mathrm{d}}
+\newcommand{\Ham}{\mathcal{H}}
+\newcommand{\Mom}{\mathcal{M}}
+\newcommand{\psiN}{\psi_N}
+\newcommand{\dN}{\delta_N}
+\newcommand{\Ahat}{\hat{A}}
+
+\begin{document}
+
+\title{Structure formation in an expanding universe with a numerical-relativity particle-in-cell code: Working paper}
+
+\author{Author list to be set}
+
+\date{Working paper, state of 13 November 2026}
+
+\begin{abstract}
+This working paper records the extension of a numerical-relativity particle-in-cell code to cosmological structure formation. The aim is to redo, with that code, the comparison of general-relativistic and Newtonian collapse of East, Wojtak, and Pretorius, the integration tests of Daverio, Dirian, and Mitsou, and the initial-condition tests of Barrera-Hinojosa and Li. The plan, the formulation, and the method are written; the code changes are in progress and no result exists yet. The progress ledger in the appendix states what is done.
+\end{abstract}
+
+\maketitle
+
+\section{Aim}\label{sec:aim}
+
+Cold dark matter is collisionless: after the first crossing of matter streams it has many velocities at one place, which a fluid cannot represent. A particle description coupled to the full Einstein equations follows it through the formation of bound structures, and answers how much a Newtonian $N$-body calculation on a prescribed expanding background misses. East, Wojtak, and Pretorius \cite{East:2019chx}, building on Ref.~\cite{East:2017qmk}, made that comparison for inhomogeneities at one wavelength with amplitudes from the cosmological to the extreme. Daverio, Dirian, and Mitsou \cite{Daverio:2019gql} tested the time integration of a relativistic $N$-body code, and Barrera-Hinojosa and Li \cite{Barrera-Hinojosa:2019mzo,Barrera-Hinojosa:2020arz} built and tested initial conditions for one.
+
+The question of this work is whether the numerical-relativity particle-in-cell method of Ref.~\cite{Wu:2026nrpic}, as rebuilt in our earlier work for isolated systems, reproduces these results when it is turned to an expanding, periodic universe, and what the method needs for that. Section~\ref{sec:system} writes the expanding universe in the variables of the code and shows why the calculation is inexpensive in conformal time. Section~\ref{sec:method} gives the additions to the method. Section~\ref{sec:results} will hold the results, one subsection per source paper. Section~\ref{sec:tracks} states two method developments that the first project called for.
+
+\section{An expanding universe in the variables of the code}\label{sec:system}
+
+The code evolves the spatial metric $\gamma_{ij}$ and the extrinsic curvature $K_{ij}$ of the slices of constant time $t$, with lapse $\alpha$ and shift $\beta^i$, in the Z4c formulation, and moves macroparticles of rest mass $m_p$ along geodesics \cite{Wu:2026nrpic}. A flat, matter-dominated homogeneous universe with scale factor $a$ has
+\begin{equation}\label{eq:flrw}
+\gamma_{ij} = a^2 \delta_{ij}, \qquad K = -\frac{3}{\alpha}\frac{\dot a}{a} = -3H, \qquad H^2 = \frac{8\pi}{3}\rho ,
+\end{equation}
+where $K$ is the trace of $K_{ij}$, a dot is a derivative with respect to $t$, $H$ is the Hubble rate, and $\rho$ is the density. Matter at rest in these comoving coordinates stays at rest, and its density falls as $a^{-3}$.
+
+The slicing decides the cost. Gravitational fields travel at the speed of light, so a time step may cover at most a fraction of a cell. With the lapse condition
+\begin{equation}\label{eq:lapse}
+\partial_t \alpha = -\tfrac{1}{3}\,\alpha^2 K ,
+\end{equation}
+a member of the Bona--Mass\'o family, the homogeneous solution has $\alpha = a$. The time coordinate is then conformal time, light covers one comoving cell per unit of $t/\Delta x$ at all epochs, and a fixed time step remains stable while the universe expands. In a matter-dominated universe $a \propto t^2$, so an expansion by a factor $a$ takes $2(\sqrt{a}-1)/H_0$ of conformal time, where $H_0$ is the initial Hubble rate. For a periodic box of four initial Hubble radii, the choice of Ref.~\cite{East:2019chx}, the expansion to the collapse of a one-percent perturbation is a few box-crossing times, hence about a thousand time steps on a mesh of a hundred cells per side. The shift is zero. The mesh is uniform and periodic, and the spatial coordinates are comoving.
+
+\section{Method}\label{sec:method}
+
+\subsection{Periodic domain and particles as observers}
+
+Particles that leave the box re-enter on the opposite side, and the clouds that deposit their energy, momentum, and stress on the mesh wrap around in the same way. Every particle carries its proper time $\tau$, advanced with the lapse and Lorentz factor at the midpoint of each step, so that any particle serves as a fiducial observer. Particles of zero rest mass follow null geodesics with the same pushers and carry no sources; they serve as light rays.
+
+\subsection{Initial data on the three-torus}\label{sec:id}
+
+The initial slice must satisfy the Hamiltonian and momentum constraints. Following Refs.~\cite{East:2017qmk,East:2019chx}, the data start from a Newtonian density contrast $\dN$ and velocity $v^i$ on a background with $a = 1$, with the potential $\psiN$ from $\partial^i\partial_i \psiN = 4\pi\rho_0\dN$, and from the dictionary of Refs.~\cite{Chisari:2011iq,Green:2011wc}, which reads them as a metric and a matter distribution,
+\begin{align}\label{eq:dict}
+\dd s^2 &= a^2\left[-(1+2\psiN)\,\dd t^2 + (1-2\psiN)\,\delta_{ij}\,\dd x^i \dd x^j\right],\nonumber\\
+\frac{\rho}{\rho_0} &= 1 + \dN - 2\psiN - 2\,\frac{\dd\psiN}{\dd\ln a},\nonumber\\
+K &= -3H\left(1 - \psiN - \frac{1}{H}\frac{\dd\psiN}{\dd t}\right).
+\end{align}
+The source papers solve the conformal thin-sandwich equations for the corrections beyond linear order with the density held fixed. Here the particles are held fixed instead. The spatial metric is conformally flat, $\gamma_{ij} = \psi^4\delta_{ij}$, and the extrinsic curvature is
+\begin{equation}
+K_{ij} = \psi^{-2}\Ahat_{ij} + \tfrac{1}{3}\psi^4\delta_{ij}K, \qquad \Ahat_{ij} = \partial_i W_j + \partial_j W_i - \tfrac{2}{3}\delta_{ij}\partial_k W^k ,
+\end{equation}
+with $K$ from the dictionary and a vector potential $W^i$. The particle sums that the code deposits, $\hat E = \psi^6 E$ and $\hat S_i = \psi^6 S_i$ for the energy density $E$ and momentum density $S_i$ seen by normal observers, are fixed by the particle positions, masses, and momenta, up to the dependence of the Lorentz factor on $\psi$. The constraints become
+\begin{align}\label{eq:constraints}
+\partial^j\partial_j\psi &= \tfrac{1}{12}K^2\psi^5 - \tfrac{1}{8}\psi^{-7}\Ahat_{ij}\Ahat^{ij} - 2\pi\psi^{-1}\hat E,\nonumber\\
+\partial^j\Ahat_{ij} &= \tfrac{2}{3}\psi^6\partial_i K + 8\pi\hat S_i .
+\end{align}
+With the density scaling as the particles require, the linearized first equation has the operator $\partial^j\partial_j - \tfrac{9}{2}H^2$ on the homogeneous background, which is invertible on the torus; with the density held fixed the constant mode is marginal. The equations are solved on the mesh of the run with Fourier transforms, with the deposit of the code reproduced, so that the data satisfy the constraints for the sources the code will see.
+
+The particles start on a lattice aligned with the mesh and are displaced by the Zel'dovich approximation. Their coordinate number density must equal $\rho W\psi^6$ with Lorentz factor $W$, whose contrast is $\dN - 5\psiN$ to linear order for growing-mode velocities; the displacement is chosen accordingly, and the particle masses carry the remaining nonlinear part.
+
+\subsection{Newtonian reference}
+
+The Newtonian reference is a particle-mesh code on the mesh of the relativistic run with the same cloud shape, so that the two calculations differ in the gravity. Its output is turned into observer quantities with the dictionary above, as in Ref.~\cite{East:2017qmk}.
+
+\subsection{Observables}
+
+The comparisons use quantities defined by observers \cite{East:2017qmk,East:2019chx}: the density $\rho(\tau)$ along the worldline of an observer comoving with the matter, expressed through
+\begin{equation}
+a_p = \left(1 + \tfrac{3}{2}H_0\tau\right)^{2/3}, \qquad \delta_{\rm obs} = \frac{\rho}{\rho_0}\,a_p^{3} - 1 ,
+\end{equation}
+the proper time at which fiducial observers cross the overdensity, and the redshift and luminosity distance along light rays between the overdensity and the underdensity.
+
+\section{Results}\label{sec:results}
+
+\subsection{Homogeneous expansion}
+To be written with the first test.
+
+\subsection{Collapse at one wavelength: general relativity against Newtonian gravity}
+To be written (Ref.~\cite{East:2019chx}).
+
+\subsection{Time-integration tests}
+To be written (Ref.~\cite{Daverio:2019gql}).
+
+\subsection{Initial conditions with a spectrum of scales}
+To be written (Ref.~\cite{Barrera-Hinojosa:2020arz}).
+
+\section{Method developments}\label{sec:tracks}
+
+The first project traced most of its difficulties to one coupling: the source on the mesh is only as smooth as the local cell size and particle number allow. Two developments address it. The first is a deposit whose momentum density satisfies, with the difference operators of the spacetime solver, the continuity equation of the deposited density, the gravitational counterpart of charge-conserving current deposition in plasma simulation. The second is to evolve with particles only the departure of the distribution from a known solution. In a cosmological run that starts from a lattice, the lattice already plays this role at early times. Both will be tested here once the baseline results exist.
+
+\appendix
+
+\section{Progress ledger}\label{app:ledger}
+
+This appendix belongs to the working paper only. Table~\ref{tab:ledger} lists the targets and their state.
+
+\begin{table*}[t]
+\caption{Targets and state. C0 to C6 are the milestones of the plan; T1 and T2 are the method developments of Sec.~\ref{sec:tracks}.}
+\label{tab:ledger}
+\begin{ruledtabular}
+\begin{tabular}{lll}
+Target & Content & State \\
+\hline
+Plan & Sources read; design of slicing, initial data, reference code, observables & done \\
+C0 & Periodic particles, cosmology setup, proper time per particle, homogeneous-universe test & in progress \\
+C1 & Constraint-solved initial data on the torus; linear growth & not started \\
+C2 & Ref.~\cite{East:2019chx}: observer density contrasts and crossing times, four amplitudes, both gravities & not started \\
+C3 & Ref.~\cite{East:2019chx}: luminosity distance against redshift & not started \\
+C4 & Ref.~\cite{East:2019chx}: constraint convergence, resolution and particle number, extreme case & not started \\
+C5 & Ref.~\cite{Daverio:2019gql}: all tests & specification being written \\
+C6 & Ref.~\cite{Barrera-Hinojosa:2020arz}: all tests & specification being written \\
+T1 & Constraint-compatible deposit & not started \\
+T2 & Evolving the departure from a known solution & not started \\
+\end{tabular}
+\end{ruledtabular}
+\end{table*}
+
+\section{Stated differences from the source papers}\label{app:differences}
+
+The formulation is Z4c with the lapse condition above and zero shift; Ref.~\cite{East:2019chx} uses the generalized harmonic formulation in a damped harmonic gauge. Comparisons therefore use observer quantities only. The initial data hold the particles fixed in the constraint solve, where Ref.~\cite{East:2017qmk} holds the density fixed. The Newtonian reference is a particle-mesh code at the resolution of the relativistic run, where Ref.~\cite{East:2019chx} uses a tree code at higher force resolution. Particle numbers are lower than in the source papers, and the dependence on particle number is part of the tests.
+
+\bibliography{references}
+
+\end{document}
