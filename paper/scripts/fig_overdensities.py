@@ -5,10 +5,14 @@ Top: macroparticles projected on the orbital (x-y) plane at t = 0, 12 M, 50 M (w
 the run has not passed 60 M: half-way between 12 M and the last snapshot) and the last
 snapshot, coloured by species (envelope grey, the overdensities of A and B red and
 blue), the same window in every panel; black circles: apparent horizons at true size
-(mean coordinate radius) at the tracker positions, with an open marker where they are
-too small to see; the bar gives the scale. Bottom left: coordinate separation of the
-two trackers (top strip) and orbital phase, the angle of the line from A to B in turns
-(bottom strip). Bottom middle: apparent-horizon masses of A, B and of the common
+(mean coordinate radius) at the black-hole positions, with an open marker where they
+are too small to see; the bar gives the scale. Bottom left: coordinate separation of
+the black holes (top strip) and orbital phase, the angle of the line from A to B in
+turns (bottom strip). The positions are those of the data script: before the first
+horizon the densest point of each overdensity, after it the trackers stored with the
+restart dumps (dots: filled M/64, open M/128) and in the tracker files, interpolated
+between them; the line breaks where they are too far apart to interpolate. Bottom
+middle: apparent-horizon masses of A, B and of the common
 horizon (found searches only). Bottom right: fraction of the macroparticles of each
 species remaining (and the dimensionless spin of the common horizon on a right axis
 once one is found). Thick solid: finest cells M/64; thin dashed: M/128. Black open
@@ -45,6 +49,8 @@ SP_COL = (COL["env"], COL["A"], COL["B"])         # species 0, 1, 2
 ORIG_KW = dict(ls="none", marker="o", ms=4.5, mfc="none", mec=ORIG, mew=1.0, zorder=7)
 DASH = (0, (3.5, 1.6))
 MESH = {"64": dict(lw=1.5, ls="-"), "128": dict(lw=0.9, ls=DASH)}
+DOT = {"64": dict(ls="none", marker="o", ms=3.0, mfc="k", mec="k", mew=0.0, zorder=5),
+       "128": dict(ls="none", marker="o", ms=3.0, mfc="white", mec="k", mew=0.7, zorder=5)}
 HALF = 8.0               # half-width of the particle windows, in M
 BAR = 4.0                # scale bar, in M
 GAP_BREAK = 1.0          # break a horizon curve where no horizon was found for longer
@@ -154,24 +160,28 @@ def orbit(a_d, a_p, d, xmax):
     (angle of the line from A to B about the z axis, in turns)."""
     pmax = 0.05
     for m in ("64", "128"):
-        t = d[f"m{m}_co_t"]
+        t = d[f"m{m}_pos_t"]
         if len(t) == 0:
             continue
-        dx = d[f"m{m}_co_B"] - d[f"m{m}_co_A"]
-        sep = np.sqrt((dx ** 2).sum(1))
+        sep = d[f"m{m}_pos_sep"]
+        # the phase is defined while the black holes are apart (nan: gap in the record)
+        phi = np.where(sep > SEP_MIN, d[f"m{m}_pos_phi"], np.nan) / (2 * np.pi)
         a_d.plot(t, sep, color="k", **MESH[m])
-        # the phase is defined while the trackers are apart
-        apart = sep > SEP_MIN
-        t, dx = t[apart], dx[apart]
-        if len(t) == 0:
-            continue
-        phi = np.unwrap(np.arctan2(dx[:, 1], dx[:, 0])) / (2 * np.pi)
         a_p.plot(t, phi, color="k", **MESH[m])
-        pmax = max(pmax, float(np.nanmax(phi)))
+        if np.isfinite(phi).any():
+            pmax = max(pmax, float(np.nanmax(phi)))
+        # dots: positions stored with the restart dumps, where the record is built on them
+        ta, ka = d[f"m{m}_anc_t"], d[f"m{m}_anc_kind"]
+        sel = (ka == 0) & (ta >= float(d[f"m{m}_t_switch"]) - 1e-9)
+        dx = d[f"m{m}_anc_B"][sel] - d[f"m{m}_anc_A"][sel]
+        mk = DOT[m]
+        a_d.plot(ta[sel], np.sqrt((dx ** 2).sum(1)), **mk)
+        a_p.plot(ta[sel], np.interp(ta[sel], t[np.isfinite(phi)], phi[np.isfinite(phi)]),
+                 **mk)
     a_d.set_ylim(0, 7.5)
     a_d.set_yticks((3, 6))
     a_d.set_ylabel(r"$d/M$")
-    a_d.text(0.04 * xmax, 5.0, "separation", fontsize=LAB_PT, ha="left", va="top")
+    a_d.text(0.04 * xmax, 3.9, "separation", fontsize=LAB_PT, ha="left", va="top")
     step = 0.05 if pmax < 0.5 else (0.5 if pmax < 5 else 5.0)
     top = step * np.ceil(pmax / 0.8 / step)
     a_p.set_ylim(0, top)
@@ -241,16 +251,21 @@ def fractions(ax, d, xmax):
     ax.set_ylabel("fraction remaining")
     ax.text(0.04 * xmax, 1.03, "envelope", color="0.4", fontsize=LAB_PT, ha="left",
             va="bottom")
+    # 'A, B' to the right of the drop of the M/64 curves, at half height
     t, n = d["m64_snap_t"], d["m64_snap_n"]
     f = n[:, 1] / n[0, 1]
-    k = min(len(t) - 1, int(np.searchsorted(t, t[-1] - 0.25 * (t[-1] - t[0]))))
-    ab_label(ax, t[k] + 0.03 * xmax, f[k] + 0.12)
-    ax.legend([Line2D([], [], color="k", **MESH["64"]), Line2D([], [], color="k", **MESH["128"])],
-              [r"$\Delta x=M/64$", r"$\Delta x=M/128$"], loc="lower left", frameon=False,
-              fontsize=LAB_PT, handlelength=2.2, borderaxespad=0.3)
+    k = int(np.argmax(f < 0.5)) if (f < 0.5).any() else len(t) - 1
+    ab_label(ax, t[k] + 0.04 * xmax, 0.5)
     # spin of the common horizon, once found
     tc, Mc, Sc = found(d, "64", "C")
     t2, M2, S2 = found(d, "128", "C")
+    # legend in the empty area: right middle, or low centre once the spin is drawn
+    spin = bool(len(tc) or len(t2))
+    ax.legend([Line2D([], [], color="k", **MESH["64"]), Line2D([], [], color="k", **MESH["128"])],
+              [r"$\Delta x=M/64$", r"$\Delta x=M/128$"], frameon=False, fontsize=LAB_PT,
+              handlelength=2.2, borderaxespad=0.3,
+              **(dict(loc="lower center", bbox_to_anchor=(0.56, 0.05)) if spin else
+                 dict(loc="center right", bbox_to_anchor=(1.0, 0.36))))
     if len(tc) or len(t2):
         axr = ax.twinx()
         for m, (t, M, S) in (("64", (tc, Mc, Sc)), ("128", (t2, M2, S2))):

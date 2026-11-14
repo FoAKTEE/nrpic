@@ -2102,3 +2102,38 @@ count did not fall (2241 at 27.1 M).
   (first found horizons near 10.3 M at 0.093 M; 0.150 M at 27 M; separation 5.3 M at
   28 M) to within the differences already seen between restarts (masses to 0.002 M).
   A larger difference would mean that the domain or the coarse-level layout matters.
+
+## Fresh M/64 run on the smaller domain: state at 48 M and comparison with the old domain (23:10)
+
+`jeans/n1e4_v19` (domain +-80 M, eight levels, all settings from the start; at 48 M,
+1945 blocks at most, no bad cells, horizons found in 542 of about 560 searches from
+10.5 M on). Figure: `paper/figures/fig_overdensities.png`. Black-hole positions for
+the figure: the tracker files keep only the latest restart segment, so the exact
+positions come from the headers of the restart dumps and from the current tracker
+file, with a monotone cubic between them (error at most 0.014 M in the separation by
+leave-one-out); before the first horizon, the densest point of each overdensity's
+particles. Tracker files are now archived per segment for both runs.
+- Horizon masses (A, B): first found at 10.50 and 10.56 M with 0.0976 and 0.0992 M;
+  0.1448, 0.1442 at 20 M; 0.1538, 0.1527 at 30 M; 0.1626, 0.1622 at 40 M; 0.168 at
+  44 M. The original: 0.0880, 0.0877 at 10 M and 0.1742, 0.1761 at 60 M.
+- Separation of the black holes: 6.05 M at 10 M, 5.96 M at 20 M, 5.36 M at 30 M,
+  4.11 M at 40 M, 2.54 M at 47.75 M. Orbital phase 0.22 of a turn by 47.75 M. No
+  common horizon yet. The original merges at 64.16 M.
+- Against the prediction of 20:35 (old domain against new, to 27 M): the masses agree
+  to 0.0006 M, within the predicted 0.002 M. The separation does not: 5.52 M at 28 M
+  on the new domain against 5.39 M at 27.5 M on the old one (predicted equal, 5.3 M).
+  On the smaller domain the black holes approach more slowly; by the stated test the
+  domain or the coarse-level layout matters for the orbit at the level of 0.15 M in
+  the separation by 28 M. Which of the two, or whether it is the different history of
+  restarts and settings of the old run, is not determined.
+- M/128 against M/64 (`v18`, at 38 M): its black holes are about 0.01 M lighter from
+  15 M on (0.1439, 0.1448 against 0.1538, 0.1527 at 30 M) and closer (5.15 against
+  5.36 M at 30 M).
+- Drift out of the orbital plane on the M/64 mesh: both black holes are at z = +0.6 M
+  by 48 M (the old-domain run: +0.33 M by 27.5 M); the mean u_z of the particles
+  grows from 0 to +0.015 and the envelope's centroid moves from z = +0.009 to
+  +0.097 M. The M/128 run with the same particles stays within 0.06 M of the plane.
+  The system as a whole gains momentum along z on the M/64 mesh. Cause not
+  determined (it comes with the mesh, not with the domain).
+- The finder first reports the horizons at 10.5 M (M/64) and 9.5 M (M/128); the
+  trapped surface itself forms near 8.7 M (Misner-Sharp, 17:25 entry).
