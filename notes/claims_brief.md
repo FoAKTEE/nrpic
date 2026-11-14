@@ -1,6 +1,6 @@
 # Claims brief for the title, abstract, introduction and conclusions
 
-Status 2026-11-13 16:15. This is the list of what the paper claims, in the order of
+Status 2026-11-13 17:10. This is the list of what the paper claims, in the order of
 importance, each with the place where the paper shows it. The abstract, the last
 paragraphs of the introduction and the conclusions state these and nothing beyond them.
 Source of every statement: `docs/TESTLOG.md` (later entries and "Correction" entries
@@ -59,12 +59,10 @@ A2. What has to change at this particle number (each found by a control run).
    horizon mass near a forming black hole (more on a lattice, where the regular
    particle lattice beats against the cloud lattice), so collapse results use the
    published rule.
-4. Removal of particles: a black hole forms only where the mesh has about six or more
-   cells per horizon radius; on a coarser mesh the lapse falls below the removal
-   threshold before a horizon exists, the removal takes the collapsing core away and
-   no black hole forms. Where horizons formed in this work they preceded the first
-   removal. [Established at M/64 for the cluster with two overdensities; whether M/128
-   suffices is PENDING.]
+4. (Withdrawn 17:10: an earlier item here, that black holes form only on meshes with
+   six or more cells per horizon radius and that lapse-based removal aborts the
+   collapse on coarser meshes, rested on a mass profile taken about the wrong centre.
+   Do not write it.)
 
 A third result that concerns the host code.
 - The apparent-horizon finder of the host code, as distributed, interpolated a
@@ -98,14 +96,19 @@ A third result that concerns the host code.
   from which it starts is not determined.
 - Cluster with two overdensities: PENDING (see below).
 
-## Cluster with two overdensities: state
+## Cluster with two overdensities: state (17:10)
 
-- The overdensities collapse on time (cores collapsed at 9.2 to 9.4 M; the original's
-  horizons are at 8.5 M).
-- With cells of M/64 at the overdensities (the original: M/256) no apparent horizon
-  forms: three cells per horizon radius. Lapse-based removal then takes the cores away
-  and the collapse is aborted (shown with the Misner-Sharp mass: no trapped surface).
-- Runs with cells of M/128 are in progress: PENDING. Do not state an outcome.
+- The overdensities collapse on time (smallest lapse 0.07 at 8.0 M with cells of
+  M/128; the original's horizons are at 8.5 M).
+- Black holes form with lapse-based removal, on both meshes tried. Measured with the
+  Misner-Sharp mass about each tracker: 0.085 M at t = 10 M with cells of M/64 (the
+  original: 0.088 M); 0.113 M at t = 12.3 M with cells of M/128.
+- The apparent-horizon finder of the host code reports none of them (horizon radius
+  three cells at M/64, ten cells at M/128). Why, and whether a setting cures it:
+  PENDING.
+- The M/64 run with the original's removal threshold failed at 11.9 M (cause not
+  determined). The M/128 run with a lower threshold is running. Inspiral, merger and
+  the common horizon: PENDING. Do not state an outcome.
 
 ## How the work was done (one paragraph in the introduction, one section)
 
@@ -117,6 +120,8 @@ A third result that concerns the host code.
   an independent audit of the run files (cluster motion as sampling noise, twice; low
   horizon mass as early stopping of the finder; horizon-mass drift as part of the
   collapse; one level of cloud coarsening harmless; oscillation as a discretization
-  error of the cell size; coarser-cloud disturbance as the lattice beat alone; black
-  holes of the overdensities formed but under-resolved).
+  error of the cell size; coarser-cloud disturbance as the lattice beat alone). One
+  check of mine was itself wrong (a mass profile about the wrong centre) and was
+  caught when two runs returned identical numbers; the statements built on it were
+  withdrawn.
 - Where no run isolates a cause the paper says "not determined".
