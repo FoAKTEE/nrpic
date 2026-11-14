@@ -15,7 +15,8 @@
 //!            8 bytes "NRCOSMO1", 3 int64 (n1, n2, n3),
 //!            9 arrays of n3*n2*n1 doubles, first index fastest:
 //!            psi, K, alpha, Ahat_xx, Ahat_xy, Ahat_xz, Ahat_yy, Ahat_yz, Ahat_zz,
-//!          given at the cell centres of the mesh, which must have n1 x n2 x n3 cells
+//!          given at the cell centres of the root mesh, which must have n1 x n2 x n3
+//!          cells; on refined MeshBlocks the fields are interpolated (cubic)
 //! The matter is carried by the particles of the nrpic module (<particles>
 //! particle_file); its sources are deposited after this function returns.
 //!
@@ -104,9 +105,6 @@ void ProblemGenerator::NrpicCosmology(ParameterInput *pin, const bool restart) {
   const size_t ncell = static_cast<size_t>(g1)*g2*g3;
   DvceArray2D<Real> fld("cosmo_fld", 9, from_file ? ncell : 1);
   if (from_file) {
-    if (pmy_mesh_->multilevel) {
-      CosmoFatal("id = file requires a uniform mesh");
-    }
     const std::string fname = pin->GetString("problem", "id_file");
     std::FILE *fp = std::fopen(fname.c_str(), "rb");
     if (fp == nullptr) CosmoFatal("cannot open " + fname);
@@ -147,17 +145,52 @@ void ProblemGenerator::NrpicCosmology(ParameterInput *pin, const bool restart) {
       const Real x = CellCenterX(i-is, nx1, size.d_view(m).x1min, size.d_view(m).x1max);
       const Real y = CellCenterX(j-js, nx2, size.d_view(m).x2min, size.d_view(m).x2max);
       const Real z = CellCenterX(k-ks, nx3, size.d_view(m).x3min, size.d_view(m).x3max);
-      int ig = static_cast<int>(floor((x - gx1)/gd1));
-      int jg = static_cast<int>(floor((y - gx2)/gd2));
-      int kg = static_cast<int>(floor((z - gx3)/gd3));
-      ig = ((ig % g1) + g1) % g1;
-      jg = ((jg % g2) + g2) % g2;
-      kg = ((kg % g3) + g3) % g3;
-      const size_t c = (static_cast<size_t>(kg)*g2 + jg)*g1 + ig;
-      psi = fld(0,c);
-      trk = fld(1,c);
-      alp = fld(2,c);
-      for (int v=0; v<6; ++v) { ah[v] = fld(3+v,c); }
+      // Position in units of the cells of the file, measured from the first cell
+      // centre.  At a cell centre of the root mesh the value of the file is taken; on
+      // refined MeshBlocks the fields are interpolated with cubic Lagrange polynomials
+      // through the four nearest cell centres per direction (periodic).
+      const Real xi = (x - gx1)/gd1 - 0.5;
+      const Real yi = (y - gx2)/gd2 - 0.5;
+      const Real zi = (z - gx3)/gd3 - 0.5;
+      Real fx = floor(xi + 1.0e-9), fy = floor(yi + 1.0e-9), fz = floor(zi + 1.0e-9);
+      const Real s[3] = {xi - fx, yi - fy, zi - fz};
+      const int i0[3] = {static_cast<int>(fx), static_cast<int>(fy), static_cast<int>(fz)};
+      const int gn[3] = {g1, g2, g3};
+      Real val[9] = {0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
+      if (fabs(s[0]) < 1.0e-8 && fabs(s[1]) < 1.0e-8 && fabs(s[2]) < 1.0e-8) {
+        const int ig = ((i0[0] % g1) + g1) % g1;
+        const int jg = ((i0[1] % g2) + g2) % g2;
+        const int kg = ((i0[2] % g3) + g3) % g3;
+        const size_t c = (static_cast<size_t>(kg)*g2 + jg)*g1 + ig;
+        for (int v=0; v<9; ++v) { val[v] = fld(v,c); }
+      } else {
+        Real w[3][4];
+        int idx[3][4];
+        for (int d=0; d<3; ++d) {
+          const Real t = s[d];
+          w[d][0] = -t*(t - 1.0)*(t - 2.0)/6.0;
+          w[d][1] = (t + 1.0)*(t - 1.0)*(t - 2.0)/2.0;
+          w[d][2] = -(t + 1.0)*t*(t - 2.0)/2.0;
+          w[d][3] = (t + 1.0)*t*(t - 1.0)/6.0;
+          for (int q=0; q<4; ++q) {
+            idx[d][q] = (((i0[d] - 1 + q) % gn[d]) + gn[d]) % gn[d];
+          }
+        }
+        for (int c3=0; c3<4; ++c3) {
+          for (int c2=0; c2<4; ++c2) {
+            for (int c1=0; c1<4; ++c1) {
+              const size_t c = (static_cast<size_t>(idx[2][c3])*g2 + idx[1][c2])*g1
+                               + idx[0][c1];
+              const Real ww = w[0][c1]*w[1][c2]*w[2][c3];
+              for (int v=0; v<9; ++v) { val[v] += ww*fld(v,c); }
+            }
+          }
+        }
+      }
+      psi = val[0];
+      trk = val[1];
+      alp = val[2];
+      for (int v=0; v<6; ++v) { ah[v] = val[3+v]; }
     }
     const Real psi2 = psi*psi;
     const Real psi4 = psi2*psi2;

@@ -142,11 +142,12 @@ def gaussian_field(n, L, pk, seed, kcut=None, cut="sharp", zero_nyquist=False):
     multiplies delta_k by exp(-k^2/(2 kcut^2)) (the power by exp(-k^2/kcut^2)). The modes
     that survive a cut are those of the uncut field with the same seed.
     zero_nyquist: set the modes on the Nyquist planes (any |n_i| = n/2, even n) to zero.
-    The derivatives of cosmo_id.Torus do not act on these modes, so a Zel'dovich
-    displacement (zeldovich) cannot carry them.
+    The first derivative of cosmo_id.Torus drops the Nyquist component of k, so the
+    Zel'dovich displacement (zeldovich) reproduces these modes only in part; without
+    them -div psi = delta exactly.
     """
     F = _mesh_coefficients(n, L, pk, seed, kcut, cut, zero_nyquist, half=True)
-    return np.fft.irfftn(F, s=(n, n, n))
+    return np.fft.irfftn(F, s=(n, n, n), axes=(0, 1, 2))
 
 
 def gaussian_modes(n, L, pk, seed, kcut=None, cut="sharp", zero_nyquist=False):
@@ -277,9 +278,12 @@ def _inverse_laplacian_modes(delta, L):
 def zeldovich(delta, L):
     """Zel'dovich displacement psi_i = -d_i lap^-1 delta (Mpc/h for L in Mpc/h), three
     mesh arrays, spectral with the derivatives of cosmo_id.Torus (|k|^2 in lap^-1, and
-    the first derivative of a Nyquist component is zero). Particles at q + psi(q) then
-    have the linear density contrast -div psi = delta, except for the modes of delta on
-    the Nyquist planes, which no displacement carries. Fourier: psi_k = i k_i delta_k/k^2.
+    the first derivative of a Nyquist component is zero): psi_k = i kd_i delta_k / k^2,
+    with kd_i = k_i except kd_i = 0 for n_i = n/2. Particles at q + psi(q) then have the
+    linear density contrast -div psi = delta for every mode off the Nyquist planes; a
+    mode on them is reproduced only by the fraction (kd^2/k^2) of its non-Nyquist
+    components (none for the axis, edge and corner Nyquist modes). Generate the field
+    with gaussian_field(..., zero_nyquist=True) to have -div psi = delta exactly.
     """
     tor, G = _inverse_laplacian_modes(delta, L)
     return [tor.ifft(1j*kd*G) for kd in tor.kd]
@@ -289,7 +293,8 @@ def displacement_jacobian(delta, L):
     """det(delta_ij + d_j psi_i) on the mesh for the Zel'dovich displacement of delta
     (zeldovich), with d_j psi_i = -d_i d_j lap^-1 delta spectral (Torus derivatives).
     The density of the displaced particles is (1 + delta_ZA) = 1/J at x = q + psi(q);
-    for a single plane wave below the Nyquist frequency J = 1 - delta exactly."""
+    for a single plane wave below the Nyquist frequency J = 1 - delta exactly (the
+    displacement gradient has rank one)."""
     tor, G = _inverse_laplacian_modes(delta, L)
     kd = tor.kd
     d = {}
