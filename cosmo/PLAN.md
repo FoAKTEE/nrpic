@@ -123,6 +123,33 @@ What the first runs changed in the plan:
   the first project: short runs go through `scripts/gpu_batch.sh`; long cosmological
   runs need the restart path, which is untested for periodic particle runs.
 
+## State and revisions (2026-11-14 04:26)
+
+- C5 test C (random field): larger box done at 32, 64, 128 cells; smaller box done at
+  64 cells, 128 cells running as restartable chains. C6 done (initial-condition tests
+  of paper 3 without radiation; helper agent, reviewed).
+- Three method elements came out of test C and are now options of the code:
+  `deposit_comp_c` (compensation of the cloud on the deposited density, before the
+  division by the volume element: the growth of waves ten cells long is right to
+  half a percent over a thousandfold expansion), `dt_expansion` (step limited to a
+  fraction of the expansion time: removes the uniform Hamiltonian-constraint offset
+  that the integrator leaves in the first steps), and `damp_kappa1_over_alpha`
+  (damping at a fixed rate per unit of conformal time). Restarts are exact with all
+  three (format 05).
+- T1 revised. The compensation is the constraint-compatible deposit for smooth flow:
+  it removes the smoothing mismatch at its leading order. What limits the constraints
+  afterwards is the sampling of a distorted lattice (rise from z of about 3 in the
+  linear box, to the same level at 32 and 64 cells) and, after collapse, the noise of
+  the collapsed regions, which the pass amplifies. Open: particles per cell against
+  cloud order after collapse (runs queued: 27 per cell, cubic cloud with its
+  compensation), and whether to switch the pass off where the flow has crossed.
+- Lesson logged: box sizes go into the input in full precision, from the meta file of
+  the initial data; six digits left a density offset of 4e-7 that looked like a
+  property of the scheme for an hour.
+- Still open from before: E1 (shift condition on refined blocks), the split of the
+  relativistic delay between initial offset and evolution, C4 leftovers (two
+  particles per cell and direction, filter without compensation).
+
 ## T2, design notes (not started)
 
 Where it applies. A cold lattice has no smooth distribution function to subtract: its

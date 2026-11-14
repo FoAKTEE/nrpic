@@ -98,6 +98,7 @@ void Particles::NrpicInit(ParameterInput *pin) {
   nropt.filter_compensate = pin->GetOrAddBoolean("particles", "filter_compensate", false);
   nropt.filter_comp_c     = pin->GetOrAddReal("particles", "filter_comp_c", -1.0);
   nropt.deposit_comp_c    = pin->GetOrAddReal("particles", "deposit_comp_c", 0.0);
+  nropt.deposit_comp_limit = pin->GetOrAddReal("particles", "deposit_comp_limit", 0.0);
   nropt.deposit_max_level = pin->GetOrAddInteger("particles", "deposit_max_level", 31);
   if (nropt.deposit_max_level < 0) { nropt.deposit_max_level = 0; }
   if (nropt.deposit_max_level > 31 - pm->root_level) {
@@ -830,7 +831,11 @@ void Particles::NrpicDepositSources() {
   // a pass after it would leave the part of the density that follows sqrt(gamma)
   // smoothed.
   if (nropt.deposit_comp_c > 0.0) {
-    NrpicFilterPass(1.0 + 2.0*nropt.deposit_comp_c, -nropt.deposit_comp_c);
+    if (nropt.deposit_comp_limit > 0.0 && pmy_pack->pmesh->three_d) {
+      NrpicCompensateLimited(nropt.deposit_comp_c, nropt.deposit_comp_limit);
+    } else {
+      NrpicFilterPass(1.0 + 2.0*nropt.deposit_comp_c, -nropt.deposit_comp_c);
+    }
   }
 
   // divide by sqrt(gamma) at the receiving cell; accumulate the proper-volume integrals
@@ -973,6 +978,72 @@ void Particles::NrpicFilterPass(const Real w0, const Real w1) {
   KOKKOS_LAMBDA(const int m, const int n, const int k, const int j, const int i) {
     tm(m,n,k,j,i) = wk(m,n,k,j,i);
   });
+}
+
+//----------------------------------------------------------------------------------------
+//! \fn  void Particles::NrpicCompensateLimited
+//! \brief the compensation pass of the deposit in flux form with a limiter.  The pass
+//! (-c, 1+2c, -c) in one direction is u_i - (F_{i+1/2} - F_{i-1/2}) with the flux
+//! F_{i+1/2} = c (u_{i+1} - u_i) taken out of the lower and put into the higher cell.
+//! Where neighbouring cells differ strongly (collapsed regions, single clouds in
+//! voids) that sharpens noise and can turn the energy density negative.  Each face
+//! flux is therefore scaled by theta = min(1, lim min(E_i, E_{i+1}) / |F^E|), with the
+//! flux of the energy density F^E; the same theta multiplies the flux of every source
+//! component at that face.  In smooth flow theta = 1 and the result is the plain pass
+//! (the three directions applied in turn equal the product stencil); with lim <= 1/6
+//! the energy density stays positive.  The sums over the mesh are conserved.
+//! One ghost exchange serves the three directions (two ghost layers are used).
+
+void Particles::NrpicCompensateLimited(const Real c, const Real lim) {
+  Mesh *pm = pmy_pack->pmesh;
+  auto &indcs = pm->mb_indcs;
+  const int is = indcs.is, js = indcs.js, ks = indcs.ks;
+  const int ie = indcs.ie, je = indcs.je, ke = indcs.ke;
+  const int nmb1 = pmy_pack->nmb_thispack - 1;
+  const int nv1 = Tmunu::N_Tmunu - 1;
+  auto &tmu = pmy_pack->ptmunu->u_tmunu;
+  auto tm = tmu;
+  auto wk = tm_work;
+  const int ie_ = Tmunu::I_Tmunu_E;
+
+  if (pm->multilevel) {
+    pm->pmr->RestrictCC(tmu, coarse_tm);
+  }
+  (void) pbval_tm->InitRecv(Tmunu::N_Tmunu);
+  (void) pbval_tm->PackAndSendCC(tmu, coarse_tm);
+  (void) pbval_tm->ClearSend();
+  (void) pbval_tm->ClearRecv();
+  (void) pbval_tm->RecvAndUnpackCC(tmu, coarse_tm);
+  if (pm->multilevel) {
+    pbval_tm->FillCoarseInBndryCC(tmu, coarse_tm);
+    pbval_tm->ProlongateCC(tmu, coarse_tm);
+  }
+
+  // directions in turn; the ranges shrink so that every pass finds its neighbours
+  for (int dir=0; dir<3; ++dir) {
+    const int kl = (dir < 2) ? ks - 1 : ks, ku = (dir < 2) ? ke + 1 : ke;
+    const int jl = (dir < 1) ? js - 1 : js, ju = (dir < 1) ? je + 1 : je;
+    const int di = (dir == 0) ? 1 : 0, dj = (dir == 1) ? 1 : 0, dk = (dir == 2) ? 1 : 0;
+    par_for("nrpic_complim", DevExeSpace(), 0, nmb1, 0, nv1, kl, ku, jl, ju, is, ie,
+    KOKKOS_LAMBDA(const int m, const int n, const int k, const int j, const int i) {
+      const Real e0 = tm(m,ie_,k,j,i);
+      const Real ep = tm(m,ie_,k+dk,j+dj,i+di);
+      const Real em = tm(m,ie_,k-dk,j-dj,i-di);
+      // upper and lower face: limiter from the energy density
+      const Real fep = c*(ep - e0), fem = c*(e0 - em);
+      const Real capp = lim*fmax(fmin(e0, ep), 0.0), capm = lim*fmax(fmin(e0, em), 0.0);
+      const Real thp = (fabs(fep) > capp) ? capp/fabs(fep) : 1.0;
+      const Real thm = (fabs(fem) > capm) ? capm/fabs(fem) : 1.0;
+      const Real u0 = tm(m,n,k,j,i);
+      const Real fp = c*(tm(m,n,k+dk,j+dj,i+di) - u0);
+      const Real fm = c*(u0 - tm(m,n,k-dk,j-dj,i-di));
+      wk(m,n,k,j,i) = u0 - thp*fp + thm*fm;
+    });
+    par_for("nrpic_complim_copy", DevExeSpace(), 0, nmb1, 0, nv1, kl, ku, jl, ju, is, ie,
+    KOKKOS_LAMBDA(const int m, const int n, const int k, const int j, const int i) {
+      tm(m,n,k,j,i) = wk(m,n,k,j,i);
+    });
+  }
 }
 
 //----------------------------------------------------------------------------------------

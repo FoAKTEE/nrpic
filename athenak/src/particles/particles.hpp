@@ -61,6 +61,8 @@ struct NrpicOptions {
                            // 3/|mean(alpha Khat)| (cosmological runs)
   Real deposit_comp_c;     // > 0: pass (-c, 1+2c, -c)^3 on the deposited densities, before
                            // the division by sqrt(gamma), compensating the cloud
+  Real deposit_comp_limit; // > 0: that pass in flux form, each face flux at most this
+                           // fraction of the smaller neighbouring energy density
   int deposit_max_level;  // finest refinement level on which a cloud is represented
   bool deposit_adaptive;  // choose the level of each cloud from the local density
   int deposit_min_level;  // coarsest level of a cloud with the adaptive choice
@@ -211,6 +213,7 @@ class Particles {
   void NrpicRemoveFlagged();
   void NrpicDepositSources();
   void NrpicFilterPass(const Real w0, const Real w1);
+  void NrpicCompensateLimited(const Real c, const Real lim);
   void NrpicUpdateTimeStep();
   void NrpicFilterSources();
   void NrpicAddLambda();

@@ -264,7 +264,17 @@ In the third test a plane wave of small amplitude starts outside the horizon and
 \label{fig:davb}
 \end{figure*}
 
-The fourth test, a random field drawn from a power spectrum, is being prepared.
+\subsection{A random field from a power spectrum}\label{sec:res_field}
+
+The fourth test of Ref.~\cite{Daverio:2019gql} starts at redshift one thousand from a Gaussian random field with a cosmological power spectrum, with all power below a cut-off wavelength removed, in two boxes. In the larger box the field stays linear to the end. In the smaller box the highest peaks collapse before the end. The initial data are built from the field as in Sec.~\ref{sec:id}. Ref.~\cite{Daverio:2019gql} does not specify its spectrum; a fitting formula with current parameters is used here, and one realization serves all resolutions.
+
+Figure~\ref{fig:davc} shows the larger box. Three properties of the method set the errors, and the test separates them. The first is the step. With the Courant step alone the Hamiltonian constraint is a uniform offset that falls by sixteen per halving of the step: the error of the integrator on the background (Sec.~\ref{sec:step}). With the step limit the offset is absent and the constraint is set by the perturbations. The second is the cloud. Without the compensation of Sec.~\ref{sec:sources}, the power of the shortest initial waves, ten cells long at the coarsest resolution, falls short of linear theory by an amount that grows through the run and scales with the second moment of the cloud. With the compensation the power follows linear theory at every resolution over the thousandfold expansion, up to the growth of second order in the contrast near the end, and the Hamiltonian constraint of the early evolution falls by an order of magnitude. The third is the sampling of the matter by particles. The momentum constraint converges at second order while the lattice is nearly undistorted. Once the displacements reach a fraction of the particle spacing, both constraints rise in a few cells to a level that depends on the number of particles per cell and hardly on the cell size, and the compensation, which amplifies the shortest waves, raises that level.
+
+\begin{figure*}[t]
+\includegraphics[width=\textwidth]{fig_daverio_c}
+\caption{Random field in the larger box of Ref.~\cite{Daverio:2019gql}, linear to the end, at 32, 64, and 128 cells. Left and center: means over the mesh of the relative Hamiltonian and momentum constraints against redshift. Solid: with the compensation of the cloud and the step limit; dashed: without the compensation; dotted: 32 cells with the Courant step alone. Right: departure of the power spectrum from linear theory at redshift ten up to the cut-off of the initial spectrum. Crosses: values read from the figures of Ref.~\cite{Daverio:2019gql}.}
+\label{fig:davc}
+\end{figure*}
 
 \subsection{Initial conditions with a spectrum of scales}\label{sec:res_gramses}
 

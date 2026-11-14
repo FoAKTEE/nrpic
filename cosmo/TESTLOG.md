@@ -1207,3 +1207,30 @@ the largest and is what the pass removes. Predictions: power as with the compens
 quadratic cloud (within 0.5 percent up to the cut-off at z = 100 and 10); constraints
 from z = 3 on lower than with the compensated quadratic cloud by more than two in the
 larger box; in the smaller box lower after the first collapse, by less.
+
+## T1: limited compensation, written before the runs (04:29)
+
+The compensation raises the constraints once matter has collapsed (three times in the
+smaller box). Candidate cause: at a density spike one cell wide the pass moves
+density from the lower to the higher cell (it is anti-diffusion), sharpens the spike by
+up to (1 + 2c)^3 and leaves negative values beside it. New option
+`deposit_comp_limit = L`: the pass in flux form, direction by direction, each face
+flux c (u_{i+1} - u_i) scaled so that the flux of the energy density is at most L times
+the smaller of the two neighbouring energy densities; the same factor for all source
+components at the face. In smooth flow the limiter is inactive (with c = 1/8 and
+L = 0.1 it acts only where neighbouring cells differ by more than 80 percent) and the
+result is the plain pass; the energy density stays positive for L <= 1/6; sums are
+conserved.
+Checks: the flux form equals the product stencil to 1e-15; on a lattice with position
+noise of 0.3 cells (energy density between 0.1 and 2.7 times the mean) the code and the
+initial-data solver agree to the precision of the dump (6e-8), across block boundaries;
+unlimited, the same data give negative energy density.
+Runs (64 cells, smaller box; 32 cells, larger box; step limit on; L = 0.1):
+`dav_c256_n64_dclt`, `dav_c704_n32_dclt`. Predictions:
+(1) Before collapse (z = 100, 10) power and constraints as with the plain pass, to a
+    tenth.
+(2) After collapse (z = 1, 0) the constraints of the smaller box lie between those of
+    the runs without and with the plain pass. If they stay at the level of the plain
+    pass, the amplified noise is of moderate contrast, spread over the multi-stream
+    regions, and a limiter on the cell-to-cell contrast is the wrong tool.
+(3) Larger box from z = 3 on: no change (the lattice there is distorted but smooth).

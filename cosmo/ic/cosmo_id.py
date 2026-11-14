@@ -29,6 +29,8 @@ SHAPE = "cic"    # cloud shape of the deposit, as <particles> deposit_shape of t
 COMP_C = -1.0    # coefficient of the compensation pass, as <particles> filter_comp_c
 DEP_COMP_C = 0.0  # compensation of the cloud on the deposited density, before the
                   # division by sqrt(gamma), as <particles> deposit_comp_c
+DEP_COMP_LIMIT = 0.0  # > 0: that pass in flux form with the limiter of the code
+                      # (<particles> deposit_comp_limit)
 
 
 def cic_deposit(x, w, n, L, shape=None):
@@ -71,6 +73,29 @@ def interp(f, x, L, order=3):
     n = f.shape[0]
     c = (x/(L/n) - 0.5).T
     return ndimage.map_coordinates(f, c, order=order, mode="grid-wrap")
+
+
+def compensate_density(fields, c, lim=0.0):
+    """The compensation pass of the deposit as in the code (NrpicCompensateLimited):
+    fields[0] is the energy density, the others follow it. Without a limit this is the
+    pass (-c, 1 + 2c, -c) per direction; with lim > 0 each face flux c (u_{i+1} - u_i) is
+    scaled by min(1, lim min(E_i, E_{i+1}) / |flux of E|), the directions in turn."""
+    if lim <= 0.0:
+        return [binomial(f, 0, True, c) for f in fields]
+    out = [np.array(f, dtype=float) for f in fields]
+    for ax in range(3):
+        e = out[0]
+        ep = np.roll(e, -1, ax)
+        fe = c*(ep - e)
+        cap = lim*np.maximum(np.minimum(e, ep), 0.0)
+        with np.errstate(divide="ignore", invalid="ignore"):
+            th = np.where(np.abs(fe) > cap, cap/np.abs(fe), 1.0)
+        new = []
+        for u in out:
+            f = th*c*(np.roll(u, -1, ax) - u)          # flux through the upper face
+            new.append(u - f + np.roll(f, 1, ax))
+        out = new
+    return out
 
 
 def binomial(f, npass, compensate=False, comp_c=-1.0):
@@ -157,12 +182,12 @@ def sources(tor, x, u, m, psi, nfilter=0, compensate=False):
     psip = interp(psi, x, tor.L)
     W = np.sqrt(1.0 + (u*u).sum(axis=1)/psip**4)
     isg = 1.0/psi**6
-    def density(w):
-        d = cic_deposit(x, w, tor.n, tor.L)
-        return binomial(d, 0, True, DEP_COMP_C) if DEP_COMP_C > 0.0 else d
-
-    E = binomial(density(m*W)*isg, nfilter, compensate, COMP_C)
-    S = [binomial(density(m*u[:, i])*isg, nfilter, compensate, COMP_C) for i in range(3)]
+    dens = [cic_deposit(x, m*W, tor.n, tor.L)] + [cic_deposit(x, m*u[:, i], tor.n, tor.L)
+                                                   for i in range(3)]
+    if DEP_COMP_C > 0.0:
+        dens = compensate_density(dens, DEP_COMP_C, DEP_COMP_LIMIT)
+    E = binomial(dens[0]*isg, nfilter, compensate, COMP_C)
+    S = [binomial(dens[1 + i]*isg, nfilter, compensate, COMP_C) for i in range(3)]
     return E, S, W
 
 
