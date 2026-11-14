@@ -2070,3 +2070,35 @@ cells; separation of the trackers 6.1 M at 10 M and 5.3 M at 28 M.
   coarsens the envelope beyond 4 M from each black hole from cells of M/4 to M/2 (the
   cell size of the stable-cluster runs). The same change is set for the M/128 chain
   from its next restart segment on, before it reaches this stage.
+
+## Block growth during the inspiral: my reading of 20:10 was wrong; smaller domain (20:35)
+
+After the restart at 26.15 M with the spheres reduced to 24, 10 and 4 M the block
+count did not fall (2241 at 27.1 M).
+- Reading the refinement code: the nested spheres of fixed radius are centred on the
+  origin, not on the trackers; only the finest region (radius 0.2 M) follows each
+  tracker. Reducing the spheres could not help, and the "cause" of the previous entry
+  is withdrawn.
+- What the level counts show: 294 blocks on each of the five coarsest refined levels
+  is one box seven blocks wide per level, where two separate nests four blocks wide
+  give 112. The two fine nests have come within a few block widths of each other on
+  the levels with blocks of 1 to 2 M; from that level outward every coarser level has
+  to wrap their union. The count rose in steps as the separation fell from 6.1 to
+  5.3 M, and each further halving of the separation moves the merging one level
+  finer and adds a wider box on one more level.
+- Consequence: on the domain of +-256 M (ten levels) the run needs more blocks than
+  one card holds well before the merger; on the M/128 mesh (eleven levels) earlier
+  still. `jeans/n1e4_v17` stopped at 27 M. The M/128 chain (`v18`) is left to run
+  until it meets its limit; it serves as the comparison of the two meshes through
+  formation and the first part of the orbit.
+- New M/64 run from t = 0, `jeans/n1e4_v19`: domain +-80 M with root cells of 2 M
+  (eight levels instead of ten, finest cells M/64 as before), every setting found
+  necessary today in place from the start (finder flow constants, removal inside 0.8
+  of a found horizon besides the lapse rule, tracked finest region of radius 0.2 M,
+  block limit 2280). The outer boundary at 80 M is out of causal contact with the
+  centre for the 100 M of the run also for gauge modes at sqrt(2) c. One run, no
+  stitching.
+- Written before the run: the evolution to 27 M repeats what the stitched runs gave
+  (first found horizons near 10.3 M at 0.093 M; 0.150 M at 27 M; separation 5.3 M at
+  28 M) to within the differences already seen between restarts (masses to 0.002 M).
+  A larger difference would mean that the domain or the coarse-level layout matters.
