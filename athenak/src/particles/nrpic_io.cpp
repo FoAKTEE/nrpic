@@ -404,6 +404,29 @@ void Particles::NrpicWriteConstraintStats(Real time, bool header) {
      Kokkos::Sum<Real>(hrsum), Kokkos::Max<Real>(mmax), Kokkos::Sum<Real>(msum),
      Kokkos::Max<Real>(mrmax), Kokkos::Sum<Real>(mrsum));
 
+  // the constraint on the conformal connection, |Gamma - Gamma(metric)|/2 in the
+  // conformal metric, and the mean of |Theta|
+  Real zmax = 0.0, zsum = 0.0, thsum = 0.0;
+  {
+    auto &ix = pm->mb_indcs;
+    const int is_ = ix.is, js_ = ix.js, ks_ = ix.ks;
+    const int m1_ = ix.nx1, m2_ = ix.nx2, m3_ = ix.nx3;
+    Kokkos::parallel_reduce("nrpic_zstat",
+                            Kokkos::RangePolicy<DevExeSpace>(0, nmb*m3_*m2_*m1_),
+    KOKKOS_LAMBDA(const int idx, Real &lzmax, Real &lzsum, Real &lthsum) {
+      int m = idx/(m3_*m2_*m1_);
+      int rem = idx - m*(m3_*m2_*m1_);
+      int k = rem/(m2_*m1_);
+      rem -= k*(m2_*m1_);
+      int j = rem/m1_;
+      int i = rem - j*m1_;
+      const Real zz = sqrt(fmax(con.Z(m,k+ks_,j+js_,i+is_), 0.0));
+      lzmax = fmax(lzmax, zz);
+      lzsum += zz;
+      lthsum += fabs(u0(m,itheta,k+ks_,j+js_,i+is_));
+    }, Kokkos::Max<Real>(zmax), Kokkos::Sum<Real>(zsum), Kokkos::Sum<Real>(thsum));
+  }
+
   std::string fname = nr_basename + ".cstat.hst";
   std::FILE *fp = std::fopen(fname.c_str(), header ? "w" : "a");
   if (fp == nullptr) NrpicFatal("cannot open " + fname);
@@ -411,12 +434,13 @@ void Particles::NrpicWriteConstraintStats(Real time, bool header) {
     std::fprintf(fp, "# NRPIC constraint statistics\n");
     std::fprintf(fp, "# [1]=time [2]=chi_min [3]=chi_max [4]=K_min [5]=K_max [6]=E_min "
                  "[7]=E_max [8]=Theta_max [9]=H_max [10]=H_mean [11]=Hr_max [12]=Hr_mean "
-                 "[13]=M_max [14]=M_mean [15]=Mr_max [16]=Mr_mean\n");
+                 "[13]=M_max [14]=M_mean [15]=Mr_max [16]=Mr_mean [17]=Z_max [18]=Z_mean "
+                 "[19]=Theta_mean\n");
   }
   std::fprintf(fp, "%.15e %.15e %.15e %.15e %.15e %.15e %.15e %.15e %.15e %.15e %.15e "
-               "%.15e %.15e %.15e %.15e %.15e\n", time, chimin, chimax, kmin, kmax, emin,
-               emax, thmax, hmax, hsum/ncell, hrmax, hrsum/ncell, mmax, msum/ncell,
-               mrmax, mrsum/ncell);
+               "%.15e %.15e %.15e %.15e %.15e %.15e %.15e %.15e\n", time, chimin, chimax,
+               kmin, kmax, emin, emax, thmax, hmax, hsum/ncell, hrmax, hrsum/ncell, mmax,
+               msum/ncell, mrmax, mrsum/ncell, zmax, zsum/ncell, thsum/ncell);
   std::fclose(fp);
 }
 

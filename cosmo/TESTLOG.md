@@ -1771,3 +1771,34 @@ Run `dav_c256_n64_pcs4bt_ch`: the 64-cell production run of the smaller box with
     within 1 percent at z = 0: the term must not change the dynamics.
 (4) Stable to z = 0.
 If (3) fails the relaxation changes the physics and is not usable as it stands.
+
+## Open item of T1: relaxation of the Hamiltonian constraint, outcome; where the violation sits (08:23)
+
+`dav_c256_n64_pcs4bt_ch` (relaxation of the conformal factor, coefficient 0.3 cells,
+exponent 0). (4) stable to z = 0: holds. (3) power: identical to the run without, to
+1e-5 of the power in every shell at every epoch: holds. (2) momentum constraint: the
+same (8.4e-2 against 9.0e-2 at z = 1): holds. (1) Hamiltonian constraint lower by more
+than ten after collapse: FAILS; it is unchanged at every epoch (1.2e-4 at z = 1, both),
+and so is Theta. The term is active (the first records differ by a quarter) and does
+nothing to the constraint that is measured.
+Why: the spacetime solver drives its own form of the Hamiltonian constraint, built
+with the evolved conformal connection, and Theta records it: Theta is tiny and decays.
+The constraint in the statistics is the one of the metric alone. The two differ by the
+divergence of the connection constraint Z^i = (evolved connection - connection of the
+metric)/2. New columns in the statistics (mean and largest |Z|, mean |Theta|), larger
+box, production configuration:
+   32 cells: |Z| mean 1.8e-9, 3.7e-9, 1.8e-8, 3.4e-8 at z = 100, 10, 1, 0;
+             Hamiltonian (relative) 2.5e-8, 1.2e-7, 1.9e-6, 7.8e-6
+   64 cells: |Z| mean 1.6e-9, 1.5e-10, 4.5e-10, 1.1e-9; Hamiltonian 2.3e-8, 8.5e-8,
+             1.7e-7, 8.5e-7
+The estimate 2 chi k |Z| over the size of the terms reproduces the Hamiltonian
+constraint within a factor of three at z = 10, 1, 0 at 32 cells. So what the
+statistics call the Hamiltonian-constraint violation is, from the time the contrast
+has grown, the violation of the connection constraint: the truncation error of the
+second-order terms (and, after collapse, the particle noise) enters through the
+evolution of the conformal connection, whose source is the momentum density of the
+particles. With four times the damping rate |Z| falls by a third and the Hamiltonian
+constraint rises threefold, so the damping term is not the cure.
+Not pursued further here. Next steps if it is: put the connection constraint into the
+field dumps; test the substitution of the metric connection for the evolved one where
+it appears undifferentiated; test a damping of Z alone.
