@@ -2035,3 +2035,19 @@ particle inside 0.8 of the smallest radius of a found horizon).
   from 13.0 M.
 - Resumed with a tracked finest region of radius 0.2 M instead of 0.3 M (the horizon
   radius is 0.11 M), a block limit of 2280, and wall-clock segments of 25 minutes.
+
+## M/128 production chain passes both earlier failure points (19:40)
+
+`jeans/n1e4_v18` (M/128 from 6.31 M; lapse rule plus removal inside 0.8 of a found
+horizon from the first successful search at 9.5 M on).
+- At t = 14.18 M: no cell with a bad determinant; horizons found in 147 and 150
+  searches; masses 0.1258 and 0.1260 M (coordinate radius 0.092 M, twelve cells). The
+  run passed 12.256 M (where v13 and v16 failed) and 13.26 M (where v11 failed), and
+  went through a restart at 12.2 M without incident.
+- Against the prediction of 18:40: confirmed. With the removal inside the horizon
+  active from the first found horizon, the M/128 mesh behaves like the M/64 mesh.
+- Also learned from the referee read of the draft: the original states that its code
+  supports apparent-horizon-based excision besides lapse excision and found no
+  significant difference between the two in its benchmarks. The rule used here is
+  therefore not new; what is new is that on meshes with 3 to 12 cells per horizon
+  radius the two differ, and the horizon-based one is needed.
