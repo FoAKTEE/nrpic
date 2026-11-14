@@ -24,12 +24,15 @@
 \raggedright Unperturbed unstable: $y_c=0.500$, unperturbed; seeds 1--3 & \raggedright $10^4$, stratified & \raggedright 512 & \raggedright static, 1/4 & \raggedright 1/16 & \raggedright 4, 4+c & \raggedright finest level & \raggedright 0.1 & \raggedright 0.02 & \raggedright 200--2500 \tabularnewline
 \raggedright Near-critical, consistent data: $y_c=0.756$; density $\times1.1$, $\times0.9$ & \raggedright $10^4$, stratified & \raggedright 512 & \raggedright adaptive, 1/4$\to$1/16, 1/4 & \raggedright 1/16 & \raggedright 4+c & \raggedright finest level & \raggedright 0.1 & \raggedright 0.02 & \raggedright 160--600 \tabularnewline
 \raggedright Near-critical, static mesh: $y_c=0.756$; unperturbed, or $\times1.1$ on its metric & \raggedright $10^4$, stratified & \raggedright 1024 & \raggedright static, 1/4 & \raggedright 1/16 & \raggedright 4+c & \raggedright finest level & \raggedright 0.1 & \raggedright 0.02 & \raggedright 800--818 \tabularnewline
+\raggedright Two overdensities: envelope $y_c=0.907$ of $0.76M$, areal radius $13.3M$; Gaussian clumps of $0.12M$, width $0.7M$, at $x=\pm3M$, speed $0.133$; $6000+2\times2000$ macroparticles & \raggedright $10^4$, stratified & \raggedright 80 & \raggedright adaptive, 1/64--1/2\footnotemark[5] & \raggedright 1/256 & \raggedright 4+c & \raggedright finest level & \raggedright 0.05\footnotemark[6] & \raggedright 0.02 & \raggedright 100 \tabularnewline
 \end{tabular}
 \end{ruledtabular}
 \footnotetext[1]{Finest-level clouds at the full refinement depth passed the MeshBlock limit before a horizon formed: $t=8.8M$, 1884 asked for, limit 1800 ($n_{\rm f}=1$); $t=10.2M$, 2024 asked for, limit 2000 ($n_{\rm f}=4+c$).}
 \footnotetext[2]{Both runs stopped at the time limit of their job, at $t=43M$ and $t=41M$.}
 \footnotetext[3]{One control uses $c=n_{\rm f}/4+1/12$, which also cancels the cloud width.}
 \footnotetext[4]{One control adds parabolic relaxation of $\Ham$ with constant $c_H=0.05\,M$ and no $\Delta x$-proportional term.}
+\footnotetext[5]{Root grid of $80^3$ cells ($\Delta x=2M$) in $16^3$-cell MeshBlocks; cells of $M/64$ within $0.2M$ of each puncture tracker.}
+\footnotetext[6]{Also removed: macroparticles inside $0.8$ of the smallest coordinate radius of a found apparent horizon.}
 \end{table*}
 
 \begin{table*}
@@ -58,9 +61,11 @@
 \raggedright Unperturbed unstable & \raggedright static & \raggedright 7 & \raggedright 1/4: 7.9 & \raggedright 1024 & \raggedright -- & \raggedright $10^{-7}$, 50 & \raggedright -- \tabularnewline
 \raggedright Near-critical, consistent data & \raggedright L\"ohner & \raggedright 9 & \raggedright 1/4: 6 and $r<8$ & \raggedright 1024 & \raggedright 10 (1) & \raggedright $10^{-7}$, 50 & \raggedright -- \tabularnewline
 \raggedright Near-critical, static mesh & \raggedright static & \raggedright 8 & \raggedright 1/4: 7.9 & \raggedright 1024 & \raggedright -- & \raggedright $10^{-7}$, 50 & \raggedright -- \tabularnewline
+\raggedright Two overdensities & \raggedright puncture tracking & \raggedright 8 & \raggedright 1/64: 0.2 about each puncture; 1/4: 5; 1/2: 12; 1: 30 & \raggedright 2280 & \raggedright 5 (0.12)\footnotemark[4] & \raggedright $10^{-7}$, 50 & \raggedright -- \tabularnewline
 \end{tabular}
 \end{ruledtabular}
 \footnotetext[1]{Every Z4c run: fourth-order Runge--Kutta steps $\Delta t=0.25\,\Delta x_{\min}$ (one control 0.125), halving whenever a finer level appears; $\kappa_2=0$; $1+\log$ slicing and Gamma-driver shift with advection terms, $\mu_S=3/4$, $\eta=2$; Kreiss--Oliger dissipation $0.5$; floor $10^{-5}$ on $\chi$; four ghost cells (two in the test-particle meshes).}
 \footnotetext[2]{L\"ohner indicator on $q=\alpha\chi^{-7/4}$: refine above $0.2$, derefine below $0.02$, $\epsilon_0=0.01$, $\delta_0=10^{-99}$; checked every 4 cycles, regrids at least 8 cycles apart.}
 \footnotetext[3]{Searches every 16 cycles on 16 polar points up to degree 8, stopping tolerance $10^{-5}$ on the mass, at most 400 flow iterations, flow constant 1; the stopping-rule control: every 160 cycles, $10^{-8}$, 4000 iterations.}
+\footnotetext[4]{Three horizons: A and B about their trackers, flow constant 0.05; the common horizon (first radius $0.6M$), flow constant 0.2, searched only while the trackers are closer than $0.24M$; every 16 cycles, at most 2000 flow iterations, stopping tolerance $10^{-7}$ on the mass.}
 \end{table*}

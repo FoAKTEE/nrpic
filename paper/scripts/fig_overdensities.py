@@ -11,14 +11,17 @@ the black holes (top strip) and orbital phase, the angle of the line from A to B
 turns (bottom strip). The positions are those of the data script: before the first
 horizon the densest point of each overdensity, after it the trackers stored with the
 restart dumps (dots: filled M/64, open M/128) and in the tracker files, interpolated
-between them; the line breaks where they are too far apart to interpolate. Bottom
-middle: apparent-horizon masses of A, B and of the common
-horizon (found searches only). Bottom right: fraction of the macroparticles of each
-species remaining (and the dimensionless spin of the common horizon on a right axis
-once one is found). Thick solid: finest cells M/64; thin dashed: M/128. Black open
-circles and ticks at the top: values and times of the original paper (black, because
-blue marks B). Time axes end where the M/64 run has got to (rounded up to 5 M), so
-values of the original beyond that time are not drawn.
+between them; the line breaks where they are too far apart to interpolate. After the
+merger the code joins the two trackers into one point: the separation is drawn up to
+the first record with coincident trackers, the phase while the separation exceeds
+0.1 M. Bottom middle: apparent-horizon masses of A, B and of the common horizon (found
+searches only; searches of A or B that converged on the common horizon are left out),
+dotted line at the total mass M of the initial data. Bottom right: fraction of the
+macroparticles of each species remaining (and the dimensionless spin of the common
+horizon on a right axis once one is found). Thick solid: finest cells M/64; thin
+dashed: M/128. Black open circles and ticks at the top: values and times of the
+original paper (black, because blue marks B). Time axes end where the M/64 run has got
+to (rounded up to 5 M), so values of the original beyond that time are not drawn.
 
 Reads paper/data/overdensities.npz, written by make_data_overdensities.py.
 
@@ -163,19 +166,26 @@ def orbit(a_d, a_p, d, xmax):
         t = d[f"m{m}_pos_t"]
         if len(t) == 0:
             continue
-        sep = d[f"m{m}_pos_sep"]
+        sep = d[f"m{m}_pos_sep"].copy()
+        # the code joins the two trackers into one point after the merger: the separation
+        # is drawn up to the first record with coincident trackers, not along the axis
+        z0 = np.where(np.isfinite(sep) & (sep < 1e-9) & (t > float(d[f"m{m}_t_switch"])))[0]
+        if len(z0):
+            sep[z0[0] + 1:] = np.nan
         # the phase is defined while the black holes are apart (nan: gap in the record)
         phi = np.where(sep > SEP_MIN, d[f"m{m}_pos_phi"], np.nan) / (2 * np.pi)
         a_d.plot(t, sep, color="k", **MESH[m])
         a_p.plot(t, phi, color="k", **MESH[m])
         if np.isfinite(phi).any():
             pmax = max(pmax, float(np.nanmax(phi)))
-        # dots: positions stored with the restart dumps, where the record is built on them
+        # dots: positions stored with the restart dumps, where the record is built on them,
+        # while the trackers are apart
         ta, ka = d[f"m{m}_anc_t"], d[f"m{m}_anc_kind"]
-        sel = (ka == 0) & (ta >= float(d[f"m{m}_t_switch"]) - 1e-9)
-        dx = d[f"m{m}_anc_B"][sel] - d[f"m{m}_anc_A"][sel]
+        dx = d[f"m{m}_anc_B"] - d[f"m{m}_anc_A"]
+        sa = np.sqrt((dx ** 2).sum(1))
+        sel = (ka == 0) & (ta >= float(d[f"m{m}_t_switch"]) - 1e-9) & (sa > SEP_MIN)
         mk = DOT[m]
-        a_d.plot(ta[sel], np.sqrt((dx ** 2).sum(1)), **mk)
+        a_d.plot(ta[sel], sa[sel], **mk)
         a_p.plot(ta[sel], np.interp(ta[sel], t[np.isfinite(phi)], phi[np.isfinite(phi)]),
                  **mk)
     a_d.set_ylim(0, 7.5)
@@ -225,6 +235,10 @@ def masses(ax, d, xmax):
     for k, t in enumerate(d["orig_t_first"]):
         tick(ax, float(t), "original" if k == 1 else None, side="right")
     ax.set_ylim(0, 1.15 * ymax if ymax > 0 else 0.2)
+    if ymax > 0.8:                      # reference: the total (ADM) mass of the data
+        ax.axhline(1.0, color="0.55", lw=0.7, ls=(0, (1, 1.5)), zorder=1)
+        ax.text(x0 + 0.22 * (xmax - x0), 0.985, "total mass", color="0.4", fontsize=LAB_PT,
+                ha="left", va="top")
     ax.yaxis.set_major_locator(matplotlib.ticker.MaxNLocator(4))
     ax.set_ylabel(r"$M_{\rm AH}/M$")
     # label A, B at the end of the M/64 curves
@@ -281,8 +295,10 @@ def fractions(ax, d, xmax):
         ax.tick_params(axis="y", which="both", right=False)
         t = tc if len(tc) else t2
         chi = (Sc / Mc ** 2) if len(tc) else (S2 / M2 ** 2)
-        axr.text(t[0], chi[0] + 0.08, "spin of\ncommon\nhorizon", fontsize=LAB_PT,
-                 ha="center", va="bottom", linespacing=1.0)
+        # above and to the left of the start of the curve, clear of the original's marker,
+        # the 'A, B' label and the legend
+        axr.text(t[0] - 0.01 * xmax, chi[0] + 0.06, "spin of\ncommon\nhorizon", fontsize=LAB_PT,
+                 ha="right", va="bottom", linespacing=1.0)
         return axr
     return None
 

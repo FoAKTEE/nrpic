@@ -35,7 +35,9 @@ not the tracker itself. The positions are therefore taken from
   phase and z difference of A and B through the anchors (thinned to at least 1 M apart),
   drawn only across gaps of at most 10 M in which the line from A to B turns by at most
   40 degrees and the separation stays above 1 M (otherwise the record has a gap); its
-  error, from leaving out one restart dump at a time, is printed;
+  error, from leaving out one restart dump at a time, is printed. Where the tracker files
+  give a position every 0.25 M, those positions are the record and nothing is
+  interpolated between them (only gaps longer than that get interpolated points);
 - before the first apparent horizon (or before the first anchor after 7 M, when that is
   later), when the trackers lag the uncollapsed overdensities, the densest point of each
   overdensity's macroparticles in every snapshot (mean of the half of the species'
@@ -51,7 +53,15 @@ Kept, for each mesh:
 - apparent-horizon searches of A, B and the common horizon: time, mass, spin vector and
   magnitude, area, mean and smallest coordinate radius (nan: no horizon found; a row
   identical in every column to the previous found row is the finder re-writing its last
-  result after a failed search, flagged as stale and set to nan);
+  result after a failed search, flagged as stale and set to nan). Once the trackers are
+  close, the searches of A and B can converge on the common horizon (warm start from the
+  last surface): a row of A or B whose mass is within 1 percent of the common horizon
+  found at the same search time is flagged as such and set to nan, so the curves of A and
+  B hold the individual horizons only. The common-horizon search runs only while the
+  trackers are closer than fastflow/merger_distance times the sum of the tracker masses
+  z4c/co_<n>_mass (athenak/src/z4c/fastflow.cpp, PuncAreClose): its first row is the
+  first search, and the time of the first found common horizon is an upper bound on its
+  formation when that first search already finds it;
 - from every complete snapshot (every 0.5 M): number and rest mass of the macroparticles
   of each species, and the densest point of each overdensity;
 - from the horizon shape files: the offset of the centre of each found horizon from its
@@ -105,6 +115,8 @@ GAP_MAX = 10.0      # longest gap between anchors that is interpolated, in M
 TURN_MAX = 40.0     # largest turn of the line A-B across an interpolated gap, degrees
 SEP_MIN = 1.0       # no interpolation once the anchors are closer than this, in M
 N_MIN = 20          # fewest macroparticles of an overdensity for its densest point
+ON_COMMON = 0.01    # an A or B row within this fraction of the common-horizon mass found
+                    # at the same search time is the common horizon (dropped from A, B)
 # values of the original paper (from its text)
 ORIG = dict(
     t_first=np.array([8.475, 8.525]),               # first apparent horizons
@@ -329,10 +341,11 @@ def densest_point(x, it=10):
 
 
 def phase_of(A, B):
-    """Unwrapped angle of the line from A to B about the z axis (nan where undefined)."""
+    """Unwrapped angle of the line from A to B about the z axis (nan where undefined,
+    including where the two trackers coincide)."""
     dx = B - A
     phi = np.full(len(dx), np.nan)
-    ok = np.isfinite(dx).all(1)
+    ok = np.isfinite(dx).all(1) & (np.abs(dx[:, :2]).sum(1) > 1e-9)
     if ok.any():
         phi[ok] = np.unwrap(np.arctan2(dx[ok, 1], dx[ok, 0]))
     return phi
@@ -450,7 +463,16 @@ def position_record(ta, PA, ka, st, est, t_first):
     if np.isfinite(t_sw):
         ta_on, PA_on, ka_on = ta[on], PA[on], ka[on]
         t_last = ta_on[-1]
-        tg = np.unique(np.r_[np.arange(t_sw, t_last, DT_GRID), t_sw, ta_on[ta_on >= t_sw]])
+        # interpolated points only inside gaps between anchors that are wider than the
+        # sampling of the tracker files; where those give a position every CO_EVERY, the
+        # record is those positions (an interpolated point there would be nan wherever
+        # the rules of interp_ok refuse the thinned anchors, and break the record)
+        grid = np.arange(t_sw, t_last, DT_GRID)
+        j = np.searchsorted(ta_on, grid, side="right")
+        lo = ta_on[np.clip(j - 1, 0, len(ta_on) - 1)]
+        hi = ta_on[np.clip(j, 0, len(ta_on) - 1)]
+        grid = grid[(hi - lo > CO_EVERY + 1e-6) | (j == 0)]
+        tg = np.unique(np.r_[grid, t_sw, ta_on[ta_on >= t_sw]])
         Pg = interpolate(*thin(ta_on, PA_on, ka_on), tg)
         exact = np.isin(np.round(tg, 6), np.round(ta_on, 6))
         for i in np.where(exact)[0]:
@@ -535,6 +557,8 @@ def reduce_run(spec, with_snapshots=True):
          "snap_t": st, "snap_n": sn, "snap_m": sm, "snap_dens": est,
          "restart_t": np.array(starts[1:]),
          "dirs": np.array([p.name for p in dirs])}
+    cm = ah[2][np.isfinite(ah[2][:, 2])]
+    c_mass = dict(zip(np.round(cm[:, 1], 6), cm[:, 2]))       # common horizon by search time
     for i, lab in enumerate("ABC"):
         a = ah[i].copy()
         # a search that fails after a success can re-write the previous result: every
@@ -543,6 +567,12 @@ def reduce_run(spec, with_snapshots=True):
         rep = fi[1:][np.all(a[fi[1:], 2:12] == a[fi[:-1], 2:12], axis=1)]
         a[rep, 2:12] = np.nan
         d[f"ah{lab}_stale"] = np.isin(np.arange(len(a)), rep)
+        if lab in "AB":
+            # the search of A or B converged on the common horizon: not an individual one
+            mc = np.array([c_mass.get(t, np.nan) for t in np.round(a[:, 1], 6)])
+            onc = np.isfinite(a[:, 2]) & (np.abs(a[:, 2] - mc) <= ON_COMMON * mc)
+            a[onc, 2:12] = np.nan
+            d[f"ah{lab}_oncommon"] = onc
         d.update({f"ah{lab}_t": a[:, 1], f"ah{lab}_M": a[:, 2], f"ah{lab}_S": a[:, 6],
                   f"ah{lab}_Svec": a[:, 3:6], f"ah{lab}_area": a[:, 7],
                   f"ah{lab}_rmean": a[:, 10], f"ah{lab}_rmin": a[:, 11],
@@ -563,7 +593,9 @@ def reduce_run(spec, with_snapshots=True):
         shp = {}
         for p in dirs:
             shp.update(read_shapes(p / f"{BASE}.horizon_shape_{i}.txt"))
-        ts = np.array(sorted(shp))
+        # shapes of individual horizons only (not stale rows, not the common horizon)
+        ind = set(np.round(d[f"ah{lab}_t"][np.isfinite(d[f"ah{lab}_M"])], 6).tolist())
+        ts = np.array([t for t in sorted(shp) if round(t, 6) in ind])
         off = np.array([centre_offset(shp[t]) for t in ts]) if len(ts) else np.zeros((0, 3))
         d[f"off{lab}_t"], d[f"off{lab}"] = ts, off
     return d, sf
@@ -717,10 +749,11 @@ def summary(D, checks):
                 print(f"      record has gaps (no interpolation) at {len(gap)} points between "
                       f"{tr[gap[0]]:.3f} and {tr[gap[-1]]:.3f} M")
             below = np.where(ok & (sep < 1.0))[0]
-            orbits = (phi[ok][-1] - phi[ok][0]) / (2 * np.pi)
-            print(f"      orbital phase {np.degrees(phi[ok][-1] - phi[ok][0]):.1f} deg "
+            okp = np.isfinite(phi)
+            orbits = (phi[okp][-1] - phi[okp][0]) / (2 * np.pi)
+            print(f"      orbital phase {np.degrees(phi[okp][-1] - phi[okp][0]):.1f} deg "
                   f"({orbits:.3f} orbits, {int(np.floor(abs(orbits)))} completed) by "
-                  f"{tr[ok][-1]:.3f} M; separation below 1 M: "
+                  f"{tr[okp][-1]:.3f} M (last record with distinct trackers); separation below 1 M: "
                   + (f"from t = {tr[below[0]]:.4f} M" if len(below) else "not yet")
                   + f"; smallest {sep[ok].min():.4f} M at {tr[ok][np.argmin(sep[ok])]:.4f} M")
             zA, zB = D[f"m{m}_pos_A"][ok][-1, 2], D[f"m{m}_pos_B"][ok][-1, 2]
@@ -736,15 +769,47 @@ def summary(D, checks):
                 if g:
                     print(f"         stretches > 0.5 M without a found {lab}: "
                           + ", ".join(f"{a:.3f}-{b:.3f}" for a, b in g))
+                onc = D[f"m{m}_ah{lab}_oncommon"]
+                if onc.any():
+                    print(f"         {onc.sum()} searches of {lab} found the common horizon (dropped), "
+                          f"the first at t = {D[f'm{m}_ah{lab}_t'][onc][0]:.4f} M; last individual "
+                          f"{lab} before the first common horizon: see below")
             else:
                 print(f"      {lab}: no horizon found in {len(D[f'm{m}_ah{lab}_t'])} searches")
         tf, M, S = found(D, m, "C")
         if len(tf):
-            print(f"      common horizon first found t = {tf[0]:.4f} M, mass {M[0]:.5f}, "
+            tc0 = tf[0]
+            print(f"      common horizon first found t = {tc0:.4f} M (first search of it at "
+                  f"{D[f'm{m}_ahC_t'][0]:.4f} M), mass {M[0]:.5f}, S {S[0]:.5f}, "
                   f"S/M^2 {S[0] / M[0] ** 2:.4f}; last {M[-1]:.5f}, S/M^2 "
-                  f"{S[-1] / M[-1] ** 2:.4f} at {tf[-1]:.4f} M")
+                  f"{S[-1] / M[-1] ** 2:.4f} at {tf[-1]:.4f} M; found in {len(tf)} of "
+                  f"{len(D[f'm{m}_ahC_t'])} searches")
+            for lab in "AB":
+                ta_, Ma, Sa = found(D, m, lab)
+                b = ta_ < tc0 - 1e-9
+                e = np.abs(ta_ - tc0) < 1e-6
+                print(f"      {lab} just before: t = {ta_[b][-1]:.4f} M, mass {Ma[b][-1]:.5f}, "
+                      f"S/M^2 {Sa[b][-1] / Ma[b][-1] ** 2:.4f}"
+                      + (f"; at {tc0:.4f} M: {Ma[e][0]:.5f}" if e.any() else "")
+                      + f"; last individual {lab} found at {ta_[-1]:.4f} M ({Ma[-1]:.5f})")
+            s0, s1 = rec_at(D, m, "pos_sep", D[f"m{m}_t_first"]), rec_at(D, m, "pos_sep", tc0)
+            p0, p1 = rec_at(D, m, "pos_phi", D[f"m{m}_t_first"]), rec_at(D, m, "pos_phi", tc0)
+            print(f"      separation at the first individual horizon ({D[f'm{m}_t_first']:.4f} M) "
+                  f"{s0:.4f} M, at the first common horizon {s1:.4f} M; the line from A to B "
+                  f"turned by {np.degrees(p1 - p0):.1f} deg ({(p1 - p0) / (2 * np.pi):.3f} turns) "
+                  f"between them ({np.degrees(p1 - rec_at(D, m, 'pos_phi', 0.0)):.1f} deg from t = 0)")
+            for t0 in (tc0, 60.0, 70.0, 80.0, 90.0, 100.0):
+                k = np.where(np.abs(tf - t0) <= T_WIN)[0]
+                if len(k):
+                    k = k[np.argmin(np.abs(tf[k] - t0))]
+                    print(f"         common at {tf[k]:8.4f} M: mass {M[k]:.5f}, S {S[k]:.5f}, "
+                          f"S/M^2 {S[k] / M[k] ** 2:.4f}")
         else:
             print(f"      common horizon: none found ({len(D[f'm{m}_ahC_t'])} searches)")
+        sep_ = D[f"m{m}_pos_sep"]
+        z0 = np.where(np.isfinite(sep_) & (sep_ < 1e-9) & (D[f"m{m}_pos_t"] > D[f"m{m}_t_switch"]))[0]
+        if len(z0):
+            print(f"      trackers coincide from t = {D[f'm{m}_pos_t'][z0[0]]:.4f} M")
         n0 = D[f"m{m}_snap_n"][0]
         print("        t     sep   phase/deg  M_A      M_B      M_C     N_env N_A  N_B "
               "  (fractions)")

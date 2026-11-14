@@ -63,15 +63,22 @@ def load(rundir, box):
         delta = e/e.mean() - 1.0
         k, pk, nm = rf.measure_power(delta, box, nbins=None)
         spec.append({"t": float(t), "a": float((1.0 + 0.5*t)**2), "k": k, "P": pk, "nm": nm,
-                     "rms": float(delta.std())})
+                     "rms": float(delta.std()), "delta": delta})
     out["spec"] = spec
     return out
 
 
-def linear_ratio(k_mpch, a):
-    """[(3 + k^2/H_c^2(t)) / (3 + k^2/H_c^2(0))]^2 with H_c(t) = H_c(0)/sqrt(a)."""
-    x = (k_mpch/0.0105535)**2
-    return ((3.0 + x*a)/(3.0 + x))**2
+def linear_field(delta0, box, a):
+    """The initial contrast evolved by linear theory to the scale factor a (1 at the
+    start): every Fourier mode multiplied by (3 + k^2/H_c^2(t)) / (3 + k^2/H_c^2(0)),
+    H_c(t) = H_c(0)/sqrt(a). Mode by mode, because the factor varies strongly across a
+    shell of wave numbers."""
+    n = delta0.shape[0]
+    k1 = 2.0*np.pi*np.fft.fftfreq(n, d=box/n)
+    kr = 2.0*np.pi*np.fft.rfftfreq(n, d=box/n)
+    KX, KY, KZ = np.meshgrid(k1, k1, kr, indexing="ij")
+    x = (KX**2 + KY**2 + KZ**2)/HC0**2
+    return np.fft.irfftn(np.fft.rfftn(delta0)*(3.0 + x*a)/(3.0 + x), s=(n,)*3)
 
 
 def main():
@@ -104,14 +111,19 @@ def main():
                                "H": float(d["H"][i]), "M": float(d["M"][i])}
         sp = d["spec"]
         if len(sp) > 1:
-            k0, p0 = sp[0]["k"], sp[0]["P"]
+            k0 = sp[0]["k"]
             for q in sp[1:]:
                 zq = 1001.0/q["a"] - 1.0
-                pan = linear_ratio(k0, q["a"])*p0
+                _, pan, _ = rf.measure_power(linear_field(sp[0]["delta"], box, q["a"]), box,
+                                             nbins=None)
                 dev = np.abs(q["P"] - pan)/pan
+                # amplitude and phase: the field against its linear prediction
+                lin = linear_field(sp[0]["delta"], box, q["a"])
+                q["corr"] = float((q["delta"]*lin).sum()/np.sqrt((q["delta"]**2).sum()
+                                                               * (lin**2).sum()))
                 keep = k0 <= kcut*1.0001
                 half = k0 <= 0.5*kcut
-                s[f"spec_z{zq:.3g}"] = {"rms": q["rms"],
+                s[f"spec_z{zq:.3g}"] = {"rms": q["rms"], "corr": q["corr"],
                                         "max_dev_below_half_cut": float(dev[half].max()),
                                         "max_dev_below_cut": float(dev[keep].max()),
                                         "dev": [float(v) for v in dev[keep]],
@@ -141,7 +153,8 @@ def main():
                   f"|M| {v['M']:.2e}")
         for key, v in s.items():
             if key.startswith("spec_"):
-                print(f"   {key}: rms of the contrast {v['rms']:.3e}; largest |P/P_lin - 1| below "
+                print(f"   {key}: rms of the contrast {v['rms']:.3e}; correlation with the "
+                      f"linear field {v['corr']:.5f}; largest |P/P_lin - 1| below "
                       f"half the cut {v['max_dev_below_half_cut']:.2e}, below the cut "
                       f"{v['max_dev_below_cut']:.2e}")
     for a, b in zip(names[:-1], names[1:]):

@@ -36,12 +36,13 @@ Writes
 
     python3 paper/scripts/make_tables.py [--no-slice]
 
---no-slice skips the Misner-Sharp masses of five restart dumps (about a minute) and
+--no-slice skips the Misner-Sharp masses of seven restart dumps (a few minutes) and
 writes "not computed" in their place. Extrema of long cluster runs, snapshot selection and
 the values read off the original's figures are imported from the figure scripts
 make_data_migration.py, make_data_nearcritical.py and make_data_clusters.py, so table and
-figures agree. jeans_setup_row() and jeans_rows() are placeholders for the cluster with two
-collapsing overdensities, whose runs are still in progress.
+figures agree; the horizon records and black-hole positions of the cluster with two
+collapsing overdensities come from make_data_overdensities.reduce_run (the same filtering
+of stale and common-horizon rows as the figure).
 """
 import glob
 import json
@@ -58,7 +59,7 @@ sys.dont_write_bytecode = True        # leave the analysis folders untouched
 sys.path.insert(0, str(REPO / "analysis" / "diag"))
 sys.path.insert(0, str(REPO / "python"))
 import slicemass as sm  # noqa: E402
-from common import H, read_traj_tagged  # noqa: E402
+from common import H, read_snapshot, read_traj_tagged  # noqa: E402
 from nrpic import oppenheimer_snyder as osn  # noqa: E402
 sys.path.insert(0, str(HERE))
 # the definitions of the figure scripts, so that table and figures use the same extrema,
@@ -68,6 +69,9 @@ from make_data_migration import ORIGINAL as MIG_ORIGINAL  # noqa: E402
 from make_data_migration import complete_snapshots as mig_complete_snapshots  # noqa: E402
 from make_data_migration import extrema as mig_extrema  # noqa: E402
 from make_data_nearcritical import ORIGINAL as NC_ORIGINAL  # noqa: E402
+from make_data_overdensities import MESHES as OD_MESHES  # noqa: E402
+from make_data_overdensities import reduce_run as od_reduce_run  # noqa: E402
+from make_data_overdensities import rst_trackers as od_rst_trackers  # noqa: E402
 
 RUNS_DIR = REPO / "runs"
 ORIG = REPO / "refs" / "arxiv_2611.12831" / "src" / "main.tex"
@@ -109,9 +113,10 @@ RUNS = {
     "os/mc_adapt4": ["dustmc_lf"],
     "os/mc_nocap2": ["dustmc_runaway"], "os/mc_nocap3": ["dustmc_runaway"],
     "prolate/e09_v8": ["prolate"],
-    # Collapse and merger of two overdensities inside a cluster (runs/jeans/n1e4_v11, v12):
-    # still running; add their directories here with the family "jeans" and fill
-    # jeans_setup_row() and jeans_rows() below when they have ended.
+    # Collapse and merger of two overdensities inside a cluster: the run with finest cells
+    # M/64 from t = 0 to 100 M on a domain of +-80 M (the figure's M/64 curves; the M/128
+    # comparison n1e4_v11 + n1e4_v18 is not tabulated).
+    "jeans/n1e4_v19": ["jeans"],
 }
 # What the paper uses each run for (statement or figure).
 ROLE = {
@@ -141,6 +146,7 @@ ROLE = {
     "os/mc_nocap2": "random-sample dust ball, published rule, full depth, one plain pass: block limit exceeded (statement)",
     "os/mc_nocap3": "random-sample dust ball, published rule, full depth, four passes + c: block limit exceeded (statement)",
     "prolate/e09_v8": "prolate collapse, e = 0.9, b = 10 M (fig_prolate)",
+    "jeans/n1e4_v19": "two collapsing overdensities in a cluster, finest cells M/64, to 100 M (fig_overdensities, solid)",
 }
 for _k in RUNS:
     if _k.startswith("st/ctl/"):
@@ -1227,6 +1233,26 @@ def write_setups(rows):
                                    "nfilter and filter_compensate: " +
                                per_run(kr, lambda q: f"t {R[q]['outcomes']['t_final']:.3f}, N {R[q]['block_limit_exceeded'][0]}, "
                                                      f"L {R[q]['block_limit_exceeded'][1]}"))))
+    kj = fam("jeans")
+    if kj:
+        k = kj[0]
+        m, p_ = R[k]["mesh"], PARAMS[k]
+        lev = int(num(p_[("z4c", "co_0_reflevel")]))
+        marks.append(("Two overdensities", col(r"Mesh, $\Delta x/M$"),
+                      rf"Root grid of ${m['root_cells'][0]}^3$ cells ($\Delta x={frac(m['root_dx'])}M$) in "
+                      rf"${m['cells_per_meshblock'][0]}^3$-cell MeshBlocks; cells of $M/{1 / dx_of(k, lev):.0f}$ within "
+                      rf"${num(p_[('z4c', 'co_0_radius')]):g}M$ of each puncture tracker.",
+                      runs_src(kj, f"parameter dump, mesh/nx1 = {m['root_cells'][0]}, x1max = {m['domain_half_width']:g}, "
+                                   f"meshblock/nx1 = {m['cells_per_meshblock'][0]}, z4c/co_0_radius = "
+                                   f"{p_[('z4c', 'co_0_radius')]}, co_1_radius = {p_[('z4c', 'co_1_radius')]}, "
+                                   f"co_0_reflevel = {lev}")))
+        marks.append(("Two overdensities", col(r"$\aexc$"),
+                      rf"Also removed: macroparticles inside ${num(p_[('particles', 'ah_exc_factor')]):g}$ of the smallest "
+                      r"coordinate radius of a found apparent horizon.",
+                      runs_src(kj, f"parameter dump, particles/ah_exc_factor = {p_[('particles', 'ah_exc_factor')]}; "
+                                   f"athenak/src/particles/nrpic.cpp line "
+                                   f"{src_line(REPO / 'athenak/src/particles/nrpic.cpp', 'ahr2[nah] = SQR(nropt.ah_exc_factor')} "
+                                   f"(radius ah_exc_factor times rr_min of each found horizon, individual and common)")))
     running = [k for k in RUNS if R[k]["status"] == "running"]
     for name, keys, base, _v in SETUP_ROWS:
         kk = [k for k in keys if k in running]
@@ -1236,8 +1262,12 @@ def write_setups(rows):
                                    ", ".join(f"{R[k]['outcomes']['t_final']:.2f}" for k in kk))))
     head = list(SETUP_HEAD)
     notes = footnoted(rows, head, marks)
-    cells_all = {(tuple(R[k]["mesh"]["root_cells"]), tuple(R[k]["mesh"]["cells_per_meshblock"])) for k in RUNS}
+    # the caption states the root grid of every run except the two-overdensity run, which
+    # has a footnote of its own
+    cells_all = {(tuple(R[k]["mesh"]["root_cells"]), tuple(R[k]["mesh"]["cells_per_meshblock"]))
+                 for k in RUNS if k not in kj}
     assert cells_all == {((64, 64, 64), (16, 16, 16))}, cells_all
+    assert all(tuple(R[k]["mesh"]["cells_per_meshblock"]) == (16, 16, 16) for k in kj)
     caption = (r"Setups, one row per family of runs (numerical settings in Table~\ref{tab:setups_numerics}): macroparticle "
                r"number $N$ and sampling, domain half-width $L$, mesh and cell spacing $\Delta x$ in the matter at the start and "
                r"finest reached (vacuum: at the puncture), first step $\Delta t$, filter passes $n_{\rm f}$ (+c: compensation), "
@@ -1252,8 +1282,10 @@ def write_setups(rows):
     for i, (t, s_) in enumerate(notes, 1):
         led.append(f"tab:setups, footnote {i}: {detex(t)} <- {s_}")
     led.append("tab:setups, caption: 64^3 root cells, 16^3-cell MeshBlocks <- " +
-               runs_src(list(RUNS), "parameter dump, mesh/nx1..3 = 64 and meshblock/nx1..3 = 16 in every run "
-                                    "(checked); docs/results_cluster_test.md, Mesh, for the test-particle clusters"))
+               runs_src([k for k in RUNS if k not in kj],
+                        "parameter dump, mesh/nx1..3 = 64 and meshblock/nx1..3 = 16 in every run except the "
+                        "two-overdensity run, which has its own footnote (checked); docs/results_cluster_test.md, Mesh, "
+                        "for the test-particle clusters"))
     L2, led2 = write_numerics(rows)
     (OUT_TAB / "tab_setups.tex").write_text("\n".join(L + L2))
     return led + led2
@@ -1383,7 +1415,8 @@ def write_numerics(rows):
     for key in ("find_every", "ntheta", "lmax", "mass_tol_0", "flow_iterations_0", "flow_alpha_beta_const_0", "hmean_tol_0"):
         fvals[key] = {k: PARAMS[k].get(("fastflow", key)) for k in fk}
     fmain = {key: max(set(v.values()), key=list(v.values()).count) for key, v in fvals.items()}
-    fctl = sorted({k for key, v in fvals.items() for k, x in v.items() if x != fmain[key]})
+    kj = fam("jeans")                  # finder settings of their own, in a footnote of their row
+    fctl = sorted({k for key, v in fvals.items() for k, x in v.items() if x != fmain[key]} - set(kj))
     assert fctl == ["puncture/hcal/dx8_tight"], fctl
     kt = fctl[0]
     marks = [(None, 0, r"Every Z4c run: fourth-order Runge--Kutta steps $\Delta t=" + f"{cfl[-1]:g}" + r"\,\Delta x_{\min}$ "
@@ -1406,7 +1439,25 @@ def write_numerics(rows):
                        rf"the stopping-rule control: every {fvals['find_every'][kt]} cycles, "
                        rf"${sci_plain(fvals['mass_tol_0'][kt])}$, {fvals['flow_iterations_0'][kt]} iterations.",
               runs_src(fk, "parameter dump, fastflow/find_every, ntheta, lmax, mass_tol_0, flow_iterations_0, "
-                           "flow_alpha_beta_const_0 (same in every run with a finder except " + R[kt]["dir"] + ")"))]
+                           "flow_alpha_beta_const_0 (same in every run with a finder except " + R[kt]["dir"] +
+                           "".join(f" and {R[q]['dir']} (footnote of its own row)" for q in kj) + ")"))]
+    for k in kj:
+        p_ = PARAMS[k]
+        g_ = lambda key: p_.get(("fastflow", key))  # noqa: E731
+        md = num(g_("merger_distance")) * (num(p_[("z4c", "co_0_mass")]) + num(p_[("z4c", "co_1_mass")]))
+        assert g_("flow_alpha_beta_const_0") == g_("flow_alpha_beta_const_1"), k
+        assert len({g_(f"flow_iterations_{i}") for i in range(3)}) == 1 and len({g_(f"mass_tol_{i}") for i in range(3)}) == 1, k
+        marks.append(([n_ for n_, ks, _, _ in SETUP_ROWS if k in ks][0], 5,
+                      rf"Three horizons: A and B about their trackers, flow constant {num(g_('flow_alpha_beta_const_0')):g}; "
+                      rf"the common horizon (first radius ${num(g_('initial_radius_2')):g}M$), flow constant "
+                      rf"{num(g_('flow_alpha_beta_const_2')):g}, searched only while the trackers are closer than "
+                      rf"${md:.2f}M$; every {g_('find_every')} cycles, at most {g_('flow_iterations_0')} flow iterations, "
+                      rf"stopping tolerance ${sci_plain(g_('mass_tol_0'))}$ on the mass.",
+                      runs_src([k], "parameter dump, fastflow/num_horizons, flow_alpha_beta_const_0..2, initial_radius_2, "
+                                    "flow_iterations_0..2, mass_tol_0..2, find_every, merger_distance, "
+                                    "wait_until_punc_are_close_2 = " + str(g_("wait_until_punc_are_close_2")) +
+                                    "; z4c/co_0_mass + co_1_mass; athenak/src/z4c/fastflow.cpp PuncAreClose (maximal "
+                                    "tracker distance < merger_distance times the sum of the tracker masses)")))
     head = list(NUM_HEAD)
     notes = footnoted(nrows, head, marks)
     caption = (r"Numerical settings of the families of Table~\ref{tab:setups}: refinement and number of levels, regions "
@@ -2088,7 +2139,7 @@ def outcomes(do_slice):
                       ncsrc + f"min and max of the rows to 600 M; last row; " +
                       osrc("All particles remain present throughout the displayed interval", "text"))))
     G.append((r"Near-critical $y_c=0.756$", rows))
-    G.extend(jeans_rows())
+    G.extend(jeans_rows(do_slice))
     return G
 
 
@@ -2160,18 +2211,199 @@ def prolate_rows(do_slice):
 
 
 def jeans_setup_row():
-    """Setups-table row of the cluster with two collapsing overdensities (runs/jeans/...).
-    Placeholder: those runs are still in progress. To fill: add the run directories to
-    RUNS with the family "jeans", return ("Two overdensities", keys, model Cell) for the
-    row() helper of setups(), and add "jeans" to FAMILY_ROW."""
-    return None
+    """Setups-table row of the cluster with two collapsing overdensities: the run with
+    finest cells M/64 (family "jeans"; the M/128 comparison is not tabulated). Returns
+    (name, run keys, base run, varied columns, model Cell) as the rows of setup_rows()."""
+    keys = fam("jeans")
+    k = keys[0]
+    ic = R[k]["model"]["particles"]
+    gen = REPO / (ic["generator_file"][:-4] + ".json")
+    meta = json.load(open(gen))
+    env, cl = meta["envelope"], meta["clumps"]
+    n = [c["N"] for c in meta["components"]]
+    assert n[1] == n[2], n
+    return ("Two overdensities", keys, k, set(), Cell(
+        rf"envelope $y_c={env['yc']:g}$ of ${env['M_env']:g}M$, areal radius ${env['R_areal']:.1f}M$; Gaussian clumps of "
+        rf"${cl['m_c']:g}M$, width ${cl['sigma']:g}M$, at $x=\pm{abs(cl['x_A'][0]):g}M$, speed ${abs(cl['v_B'][1]):.3f}$; "
+        rf"${n[0]}+2\times{n[1]}$ macroparticles",
+        runs_src(keys, f"generator metadata {rel(gen)} (its .nrp matched to the run's particle file): envelope.yc = "
+                       f"{env['yc']}, envelope.M_env = {env['M_env']}, envelope.R_areal = {env['R_areal']:.4f} (isolated "
+                       f"envelope; with the clumps R_areal_composite = {env['R_areal_composite']:.4f}), clumps.m_c = "
+                       f"{cl['m_c']}, clumps.sigma = {cl['sigma']}, clumps.x_A = {cl['x_A']}, clumps.x_B = {cl['x_B']}, "
+                       f"clumps.v_A = {cl['v_A']}, clumps.v_B = {cl['v_B']}, components N = {n}")))
 
 
-def jeans_rows():
-    """Outcome rows of the cluster with two collapsing overdensities. Placeholder: the
-    runs are still in progress; return [(group title, [(quantity, Cell, Cell)])] when
-    they have ended (it is appended to the cluster float)."""
-    return []
+def jeans_rows(do_slice=True):
+    """Outcome rows of the cluster with two collapsing overdensities (finest cells M/64),
+    appended to the last cluster float. The horizon records (stale rows and searches of A
+    or B that converged on the common horizon left out) and the tracker positions come
+    from make_data_overdensities.reduce_run, so table and figure agree."""
+    keys = fam("jeans")
+    k = keys[0]
+    assert OD_MESHES["64"] == [(Path(k).name, 0.0)], OD_MESHES["64"]
+    d = RUNS_DIR / k
+    D, files = od_reduce_run(OD_MESHES["64"], with_snapshots=False)
+    NA = Cell("--", "not given in the original")
+    src0 = R[k]["dir"]
+    flt = ("rows with a finite mass, without stale rows (equal in every column to the previous found row) and without "
+           "rows of A or B within 1 percent of the common-horizon mass of the same search time "
+           "(paper/scripts/make_data_overdensities.reduce_run)")
+    rows = []
+
+    def found(lab):
+        M = D[f"ah{lab}_M"]
+        ok = np.isfinite(M)
+        return D[f"ah{lab}_t"][ok], M[ok], D[f"ah{lab}_S"][ok], D[f"ah{lab}_Svec"][ok]
+
+    def near(lab, t0):
+        t, M, S, Sv = found(lab)
+        j = int(np.argmin(np.abs(t - t0)))
+        return float(t[j]), float(M[j]), float(S[j]), Sv[j]
+
+    def rec(key, t0):
+        t, y = D["pos_t"], D[key]
+        ok = np.isfinite(y) if y.ndim == 1 else np.isfinite(y).all(1)
+        return np.interp(t0, t[ok], y[ok]) if y.ndim == 1 else \
+            np.array([np.interp(t0, t[ok], y[ok, c]) for c in range(y.shape[1])])
+
+    par = PARAMS[k]
+    every, t_start = int(num(par[("fastflow", "find_every")])), num(par[("fastflow", "start_time_0")])
+    tA, MA, _, _ = found("A")
+    tB, MB, _, _ = found("B")
+    tC, MC, SC, SvC = found("C")
+    tc0, tf = float(tC[0]), float(D["t_first"])
+    rows.append((r"First apparent horizons of A, B: $t/M$; $M_{\rm AH}/M$",
+                 Cell(f"{tA[0]:.2f}, {tB[0]:.2f}; {MA[0]:.4f}, {MB[0]:.4f}",
+                      f"{src0}, jeans.horizon_summary_0.txt and _1.txt (columns time, mass), first row with a finite mass: "
+                      f"A t = {tA[0]:g}, {MA[0]:.6f}; B t = {tB[0]:g}, {MB[0]:.6f} (searches every {every} cycles from "
+                      f"t = {t_start:g} M)"),
+                 Cell("8.475, 8.525; --", osrc("at $t=8.475M$ and $8.525M$", "text"))))
+    a20, b20 = near("A", 20.0), near("B", 20.0)
+    a40, b40 = near("A", 40.0), near("B", 40.0)
+    la, lb = (tA[tA < tc0][-1], MA[tA < tc0][-1]), (tB[tB < tc0][-1], MB[tB < tc0][-1])
+    rows.append((r"$M_{\rm AH}/M$ of A, B at $t=20M$; $40M$; at the last search before the first common horizon ($t/M$)",
+                 Cell(f"{a20[1]:.4f}, {b20[1]:.4f}; {a40[1]:.4f}, {b40[1]:.4f}; {la[1]:.4f}, {lb[1]:.4f} "
+                      f"({la[0]:.2f}, {lb[0]:.2f})",
+                      f"{src0}, jeans.horizon_summary_0.txt and _1.txt, {flt}: A at t = {a20[0]:g}, {a40[0]:g}, {la[0]:g}: "
+                      f"{a20[1]:.6f}, {a40[1]:.6f}, {la[1]:.6f}; B at t = {b20[0]:g}, {b40[0]:g}, {lb[0]:g}: {b20[1]:.6f}, "
+                      f"{b40[1]:.6f}, {lb[1]:.6f}"),
+                 Cell(r"0.0880, 0.0877 at $10M$; 0.1742, 0.1761 at $60M$",
+                      osrc("the individual masses are $0.08802M$ and $0.08772M$", "text") + "; " +
+                      osrc("they have increased to $0.17421M$ and $0.17605M$", "text"))))
+    s0, s1 = rec("pos_sep", tf), rec("pos_sep", tc0)
+    turn = (rec("pos_phi", tc0) - rec("pos_phi", tf)) / (2 * np.pi)
+    rows.append((r"Coordinate separation of the trackers $d/M$ at the first apparent horizon; at the first common "
+                 r"horizon; turns of the line from A to B between the two",
+                 Cell(f"{s0:.2f}; {s1:.2f}; {turn:.2f}",
+                      f"{src0}: tracker positions from the restart-dump headers and the tracker files jeans.co_0.txt, "
+                      f"jeans.co_1.txt with their copies in co_archive/, monotone cubic between restart dumps before the "
+                      f"tracker files begin (paper/scripts/make_data_overdensities.reduce_run): d = {s0:.4f} at t = {tf:g}, "
+                      f"{s1:.4f} at t = {tc0:g}; unwrapped angle of B - A about the z axis changes by "
+                      f"{np.degrees(2 * np.pi * turn):.1f} deg"), NA))
+    md = num(par[("fastflow", "merger_distance")])
+    mco = num(par[("z4c", "co_0_mass")]) + num(par[("z4c", "co_1_mass")])
+    t_search = float(D["ahC_t"][0])
+    at_first = abs(t_search - tc0) < 1e-9
+    rows.append((r"First common apparent horizon" + (", found at the first search of it" if at_first else "") +
+                 r" (searched only while the trackers are closer than $" + f"{md * mco:.2f}" + r"M$): $t/M$; "
+                 r"$M_{\rm AH}/M$; $\chi=S/M_{\rm AH}^2$",
+                 Cell(f"{tc0:.2f}; {MC[0]:.4f}; {SC[0] / MC[0] ** 2:.3f}",
+                      f"{src0}, jeans.horizon_summary_2.txt (columns time, mass, S): first row with a finite mass t = {tc0:g}, "
+                      f"M = {MC[0]:.6f}, S = {SC[0]:.6f}; first row of the file (first search) t = {t_search:g}; search "
+                      f"condition: maximal tracker distance < fastflow/merger_distance ({md:g}) times z4c/co_0_mass + "
+                      f"co_1_mass ({mco:g}) (athenak/src/z4c/fastflow.cpp, PuncAreClose)"),
+                 Cell("64.16; 0.3833; 0.504", osrc("is found at $t_{\\rm m}=64.15625M$", "text") + "; " +
+                      osrc("Initially, it has $M_{\\rm AH}=0.38326M$ and $\\chi=0.50355$", "text"))))
+    tl = (70.0, 80.0, 90.0, 100.0)
+    vals = [near("C", x) for x in tl]
+    rows.append((r"Common horizon $M_{\rm AH}/M$, $\chi$ at $t=70$, $80$, $90$, $100M$",
+                 Cell("; ".join(f"{v[1]:.4f}, {v[2] / v[1] ** 2:.3f}" for v in vals),
+                      f"{src0}, jeans.horizon_summary_2.txt, row nearest to each time: " +
+                      "; ".join(f"t = {v[0]:g}: M = {v[1]:.6f}, S = {v[2]:.6f}" for v in vals) +
+                      f" (found in {len(tC)} of {len(D['ahC_t'])} searches)"),
+                 Cell(r"0.6474, 0.171 at $100M$", osrc("By $t=100M$, the mass has grown to $0.64740M$", "text") + "; " +
+                      osrc("decreases to $\\chi=0.17132$", "text"))))
+    v90, v100 = vals[2], vals[3]
+    dM, dchi = v100[1] - v90[1], v100[2] / v100[1] ** 2 - v90[2] / v90[1] ** 2
+    rows.append((r"Change of the common-horizon $M_{\rm AH}/M$; of $\chi$, from $t=90M$ to the last search",
+                 Cell(f"${dM:+.4f}$; ${dchi:+.4f}$",
+                      f"{src0}, jeans.horizon_summary_2.txt rows at t = {v90[0]:g} and {v100[0]:g}: M {v90[1]:.6f} -> "
+                      f"{v100[1]:.6f}, chi {v90[2] / v90[1] ** 2:.5f} -> {v100[2] / v100[1] ** 2:.5f}"), NA))
+    tpos, okp = D["pos_t"], np.isfinite(D["pos_A"]).all(1) & np.isfinite(D["pos_B"]).all(1)
+    mid = 0.5 * (D["pos_A"] + D["pos_B"])
+    J = []
+    for p in files:
+        ts, q, _, _ = read_snapshot(p)
+        if ts < tc0 - 1e-9:
+            continue
+        c = np.array([np.interp(ts, tpos[okp], mid[okp, i]) for i in range(3)])
+        x = q[:, :3] - c
+        Lz = float((q[:, 6] * (x[:, 0] * q[:, 4] - x[:, 1] * q[:, 3])).sum())
+        j = int(np.argmin(np.abs(tC - ts)))
+        J.append((ts, float(SvC[j][2]), Lz, float(SvC[j][2]) + Lz))
+    J = np.array(J)
+    rows.append((r"$S$ of the common horizon at the first and at the last search; $S_z$ plus $L_z$ of the macroparticles "
+                 r"left (about the merged black hole), first common horizon to $100M$: first, last, range",
+                 Cell(f"{SC[0]:.4f}, {SC[-1]:.4f}; {J[0, 3]:.4f}, {J[-1, 3]:.4f}, {J[:, 3].min():.3f}--{J[:, 3].max():.3f}",
+                      f"{src0}, jeans.horizon_summary_2.txt column S (t = {tC[0]:g}, {tC[-1]:g}) and columns Sx, Sy, Sz; particle "
+                      f"snapshots jeans.part.*.bin from t = {J[0, 0]:g} to {J[-1, 0]:g} M ({len(J)} times): L_z = sum m "
+                      f"[(x - c) u_y - (y - c_y) u_x] with the stored spatial momenta u_i, c = midpoint of the trackers; "
+                      f"S_z of the search at the snapshot time; at the first and last snapshot S_z = {J[0, 1]:.4f}, "
+                      f"{J[-1, 1]:.4f}, L_z = {J[0, 2]:.4f}, {J[-1, 2]:.4f}"),
+                 Cell(r"$J=\chi M_{\rm AH}^2$ conserved to 2\%", osrc("is conserved to within 2\\%", "text"))))
+    h = CACHE[k]["hst"]
+    th = h[:, 0]
+    i1, i2, i3 = int(np.argmin(np.abs(th - tf))), int(np.argmin(np.abs(th - tc0))), len(h) - 1
+    nx_, mx_ = h[:, H["n_excised"]], h[:, H["m_excised"]]
+    st = [(0, i1), (i1, i2), (i2, i3)]
+    rows.append((r"Macroparticles removed (rest mass$/M$): before the first apparent horizon; from it to the first common "
+                 r"horizon; after it. Left at $100M$ (rest mass$/M$); left the domain",
+                 Cell("; ".join(f"{nx_[b] - nx_[a]:.0f} ({mx_[b] - mx_[a]:.3f})" for a, b in st) +
+                      f". {h[i3, H['np']]:.0f} ({h[i3, H['sum_m']]:.4f}); {h[i3, H['n_escaped']]:.0f}",
+                      f"{src0}, jeans.nrpic.hst columns n_excised, m_excised at the records t = {th[i1]:g}, {th[i2]:g}, "
+                      f"{th[i3]:g}; np, sum_m, n_escaped ({h[i3, H['m_escaped']]:g} rest mass) of the last record; rest mass "
+                      f"at the start {h[0, H['sum_m']]:.6f}; first removal at t = {th[np.argmax(nx_ > 0)]:g}"), NA))
+    if do_slice:
+        rst = sorted(d.glob("rst/jeans.[0-9][0-9][0-9][0-9][0-9].rst"))
+        tr = od_rst_trackers(str(rst[-1]))
+        c = tuple(float(v) for v in tr[1].mean(0))
+        A0 = sm.analyse(sm.rst_open(str(rst[0]), strict=True))
+        A1 = sm.analyse(sm.rst_open(str(rst[-1]), strict=True), center=c)
+        X = A1["X"][sm.NPER2_H]
+        S = CACHE.setdefault("slice", {})
+        S[k + " first dump"] = {"time": float(A0["time"]), "file": rel(rst[0]), "m_inf": float(A0["m_inf"]),
+                                "flat": bool(A0["flat"])}
+        S[k + " last dump"] = {"time": float(A1["time"]), "file": rel(rst[-1]), "mass": float(X["RH"] / 2),
+                               "unc_shells": float(A1["dMH_shell"]), "unc_spread": float(A1["dMH_spread"]),
+                               "m_inf": float(A1["m_inf"]), "flat": bool(A1["flat"]), "centre": c}
+        rows.append((r"Slice Misner--Sharp mass at large radius at $t=0$ and $100M$; at the outermost $2m/R=1$ at "
+                     r"$100M$ ($\pm$ its spread over angle)",
+                     Cell(f"{A0['m_inf']:.4f}, {A1['m_inf']:.4f}; {X['RH'] / 2:.3f} $\\pm$ {A1['dMH_spread']:.3f}",
+                          f"{src0}, {rst[0].name} (t = {A0['time']:g}) and {rst[-1].name} (t = {A1['time']:g}, centre at the "
+                          f"trackers of its header {c}), recomputed here with analysis/diag/slicemass.analyse: m at large "
+                          f"radius {A0['m_inf']:.5f} over r = {A0['flat_r'][0]:.1f}-{A0['flat_r'][1]:.1f} M and "
+                          f"{A1['m_inf']:.5f} over r = {A1['flat_r'][0]:.1f}-{A1['flat_r'][1]:.1f} M "
+                          f"({'flat' if A1['flat'] else 'NOT FLAT: median over the outermost factor 2 in r'}); "
+                          f"M_H = {X['RH'] / 2:.5f} +- {A1['dMH_shell']:.1e} (shells) +- {A1['dMH_spread']:.1e} (spread)"),
+                     NA))
+    else:
+        rows.append((r"Slice Misner--Sharp mass at large radius at $t=0$ and $100M$; at the horizon at $100M$",
+                     Cell("not computed", "run without --no-slice"), NA))
+    z = CACHE[k]["z"]
+    Hn, tz = np.sqrt(z["H-norm2"]), z["time"]
+    jm, jc = int(np.argmax(Hn)), int(np.argmin(np.abs(tz - tc0)))
+    rows.append((r"$\|\Ham\|$ at $t=0$; largest ($t/M$); at the first common horizon; at $100M$",
+                 Cell(f"{Hn[0]:.2f}; {Hn[jm]:.2f} ({tz[jm]:.1f}); {Hn[jc]:.2f}; {Hn[-1]:.2f}",
+                      f"{src0}, jeans.z4c.user.hst sqrt(H-norm2): t = 0 {Hn[0]:.4f}; max {Hn[jm]:.4f} at t = {tz[jm]:g}; "
+                      f"t = {tz[jc]:g} {Hn[jc]:.4f}; last record t = {tz[-1]:g} {Hn[-1]:.4f}"), NA))
+    tlast = float(tpos[okp][-1])
+    z30, zc, zend = (0.5 * (rec("pos_A", x) + rec("pos_B", x)) for x in (30.0, tc0, tlast))
+    rows.append((r"Out of the orbital plane: $z/M$ of the midpoint of the trackers at $t=30M$; at the first common "
+                 r"horizon; of the merged tracker at $100M$",
+                 Cell(f"{z30[2]:.2f}; {zc[2]:.2f}; {zend[2]:.2f}",
+                      f"{src0}: tracker positions as above (z resolved to 1/128 M in the tracker files): midpoint z at "
+                      f"t = 30: {z30[2]:.4f}, t = {tc0:g}: {zc[2]:.4f}, t = {tlast:g}: {zend[2]:.4f}"), NA))
+    return [("Two overdensities in a cluster", rows)]
 
 
 OUT_FLOATS = [  # label, first and last group title (inclusive), caption
@@ -2190,8 +2422,9 @@ OUT_FLOATS = [  # label, first and last group title (inclusive), caption
      r"As Table~\ref{tab:outcomes}, for the relativistic clusters; $\|\Ham\|$ as in Table~\ref{tab:outcomes_dust}. "
      r"Central lapse $\alpha_c$ in the eight central cells; $\alpha_c(0)$ is its value at $t=0$."),
     ("tab:outcomes_migration", r"Unperturbed $y_c=0.5$", None,
-     r"As Table~\ref{tab:outcomes_clusters}, for the unperturbed model past the binding-energy maximum and the "
-     r"near-critical model."),
+     r"As Table~\ref{tab:outcomes_clusters}, for the unperturbed model past the binding-energy maximum, the "
+     r"near-critical model, and the cluster with two collapsing overdensities (finest cells $M/64$; "
+     r"$\chi=S/M_{\rm AH}^2$; $L_z$ from the stored spatial momenta $u_i$ of the macroparticles)."),
 ]
 
 

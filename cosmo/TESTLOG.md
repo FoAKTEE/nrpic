@@ -782,3 +782,45 @@ symptom, the cause is elsewhere (the under-resolved caustic or the deposit).
   percent for the outer ones: confirmed (earlier, by up to a few percent).
 - Density contrast of 10 at the overdensity: delay 3.04 and 3.01 percent.
 The 128-cell pair is running (the Newtonian run takes about three hours on one core).
+
+## C5, test C, larger box, 32 cells: outcome and a stiffness problem (02:28)
+
+`cosmo/dav_c704_n32` (1,056 steps, 45 s). (1) It reaches z = 0 with finite fields, but
+not cleanly: the mean relative Hamiltonian constraint is 5e-6 at z = 90, 4e-5 to 9e-5
+from z = 30 to 1.6, and then grows by a factor of seven per 4.6 time units: 2e-4 at
+z = 0.7, 1.8e-3 at 0.42, 1.2e-2 at 0.2, 0.39 at 0.03. Theta grows with it and the
+relative momentum constraint jumps to 0.3. Prediction (2) fails at this resolution and
+the late growth is an instability, not a truncation error.
+Hypothesis: the constraint damping. Its rate per unit of coordinate time is 2 kappa1
+alpha, and the lapse reaches 1000; with kappa1 = 0.02 and the step of this run (0.058,
+larger than in any earlier run because the box is 7.4 Hubble radii) the product of rate
+and step is 1.4 where the growth starts and 2.3 at the end, near the stability limit
+of the integrator for a decaying mode (2.8). In the earlier runs it stayed below 0.5.
+Written before `cosmo/dav_c704_n32_k` (same data; damping at a fixed rate per unit of
+conformal time, `damp_kappa1_over_alpha = true`, kappa1 = 0.5): no late growth; the mean
+relative Hamiltonian constraint stays below 2e-4 to z = 0. If the growth is still there
+the damping is not the cause.
+(4) Power spectrum against linear theory: departures of 11 to 14 percent below half the
+cut-off at z = 100 to 0 and 16 to 33 percent up to the cut-off. Refuted as written for
+64 cells only if it persists there; at 32 cells the shortest waves are 10 cells long and
+test B showed a departure of 2 percent in amplitude at 32 cells per wave, which scales
+to 20 percent here. Wait for 64 and 128 cells.
+
+## E1, third step: outcome of the shift-driver run (02:42)
+
+`cosmo/east_d0.05_n64_bh2`: refuted, and worse than without the shift. The run ends at
+t = 1.97 (a = 3.9), long before the collapse: the largest relative Hamiltonian constraint
+at the refined overdensity grows from 4e-2 at t = 1.25 to 0.86 at t = 1.94, then the
+metric determinant turns non-positive in 2,908 cells centred on the overdensity and the
+particles are lost. Without the shift (bh1) the same mesh ran to t = 6.4. So the shift
+driver as set (0.75 alpha^2 Gamma^i - 2 beta^i with advection) is itself unstable on the
+refined blocks, where the conformal connection carries the error of the interpolated
+initial data and of the clouds spread over fine cells. The stretching hypothesis for
+bh1 is neither confirmed nor refuted by this run.
+State of E1: (i) a lapse driver towards constant mean curvature that passes the
+homogeneous and linear checks and collapses the lapse at the overdensity; (ii) initial
+data on refined meshes by interpolation; (iii) no stable run through the collapse yet.
+Open, in order: a shift condition that is stable on refined blocks (smaller coefficient,
+damping, or the shift of the first project switched on only near the collapse);
+initial data that satisfy the constraints on the refined blocks; more particles in the
+collapsing region. Paused here in favour of the remaining reproduction items.

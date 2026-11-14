@@ -2150,3 +2150,93 @@ original's remnant: 0.647 M and spin 0.171 at 100 M). Figure and numbers when co
 Not determined: why earlier (candidates seen in this log: the orbit depends on the
 domain at the level of 0.15 M in separation by 28 M; the M/128 run approaches faster
 still; the binary drifts out of the plane on this mesh).
+
+## Two overdensities: run complete at 100 M (2026-11-14, 02:35)
+
+`jeans/n1e4_v19` (M/64, domain +-80 M) reached t = 100 M (chain DONE, no bad cells).
+Numbers from the run files (horizon summaries 0, 1, 2: time, mass, S; `jeans.nrpic.hst`;
+`jeans.z4c.user.hst`; tracker files with `co_archive/` and restart-dump headers), as
+printed by `paper/scripts/make_data_overdensities.py` and tabulated by
+`paper/scripts/make_tables.py`; the full list is in `notes/results_brief_selfgravity.md`,
+part D, items 4 to 13.
+- Correction to 23:30. The finder searches for the common horizon only while the
+  trackers are closer than fastflow/merger_distance (1.0) times the sum of the tracker
+  masses (2 x 0.12) = 0.24 M (athenak/src/z4c/fastflow.cpp, PuncAreClose). The first
+  row of horizon_summary_2.txt (57.0 M, tracker separation 0.237 M) already has a
+  horizon. So 57.0 M is the first search, an upper bound on when the common horizon
+  exists, not its formation time; "the merger comes 7 M earlier" overstated what was
+  measured. Spin settled: chi = 0.427 at 57.0 M (0.3746 M, S = 0.0600); the 0.41 of
+  23:30 and of the commit message is chi at 57.9 M. Individual horizons just before:
+  0.1890 M (A, 56.88 M) and 0.1862 M (B, 56.94 M), not "about 0.18".
+- Inspiral: separation 6.05 M at the first horizon (10.5 M), 1.99 M at 50 M, 0.24 M at
+  57.0 M; the line from A to B turns by 0.42 of a turn in between. No full orbit. The
+  trackers coincide from 59.69 M.
+- Remnant: M_AH, chi = 0.5194, 0.178 (70 M); 0.8257, 0.043 (80 M); 1.0183, 0.079
+  (90 M); 1.0255, 0.085 (99.94 M); change over the last 10 M +0.0072 and +0.0053. The
+  original: 0.6474 and 0.1713 at 100 M.
+- Matter: all but 15 of 10^4 macroparticles removed by 100 M (rest mass 0.0020 of 1.0502
+  left), none through the outer boundary; rest mass removed 0.163 M before the first
+  found horizon, 0.184 M from it to 57.0 M, 0.701 M after 57.0 M (0.546 M between 70
+  and 90 M). The envelope contracts as a whole from t = 0 on both meshes (half-mass radius
+  8.48 M at 0, 6.56 M at 40 M, 4.12 M at 60 M; M/128 4.22 M) and falls into the remnant
+  by 90 M. That is why the remnant is 1.03 M here against 0.65 M; why the envelope
+  contracts is not determined (Newtonian estimate from the initial particles: the clumps
+  add 78 percent to the envelope's virial term; our envelope is 13.3 M in areal radius
+  against the stated 30 M).
+- Angular momentum: S of the common horizon falls from 0.0600 to 0.0296 at 80 M and
+  rises to 0.0890 at 100 M; S_z plus L_z of the particles left stays between 0.087 and
+  0.099 (0.0907 at 57 M and at 100 M). The envelope's L_z rises from -0.003 to +0.032
+  during the inspiral.
+- Remnant above the total mass: 1.0255 M against M = 1 (sum m W / psi of the initial
+  particles is 1.00000). Slice Misner-Sharp mass at r = 36 to 72 M: 0.9999 at t = 0,
+  1.0002 at 50 M, 1.0043 at 59.7 M, 1.0202 at 70 M, 1.0283 at 100 M; at the horizon
+  at 100 M 1.024 +- 0.006. At 100 M m(r) outside the hole is 0.97 to 1.03 (not flat); a
+  step of +0.03 moves outward through r = 39 to 66 M between 55 and 85 M. The deposited
+  energy equals the particles' energy at every step. Cause not determined.
+- ||H||: 5.82 at t = 0, 12.6 at 8.0 M, 2.88 at 57.0 M, 5.36 at 77 M, 0.54 at 100 M.
+- Drift out of the plane (open since 23:10): the midpoint of the trackers reaches
+  z = +0.59 M by 50 M and stays there; the remnant is at z = +0.59 M at 100 M. M/128
+  stays within 0.06 M of the plane.
+- M/128 (`n1e4_v18`): common horizon first found at 59.70 M (also its first search),
+  0.3523 M, chi = 0.565, with A and B at 0.1779 and 0.1753 M, still found to 61.5 M.
+  Against the candidate of 23:30 that "the M/128 run approaches faster still": true to
+  40 M (4.03 against 4.11 M), false afterwards (2.24 against 1.99 M at 50 M; 0.72
+  against 0.24 M at 57 M). Side by side (t, M_AH, chi of the first common horizon):
+  M/64 57.00, 0.3746, 0.427; M/128 59.70, 0.3523, 0.565; original 64.16, 0.3833,
+  0.504. With finer cells the time moves towards the original's; mass and chi do not.
+  Two resolutions, no order. The M/128 chain stopped at 61.57 M with STATUS FAILED
+  because its MAX_SEGMENTS = 10 was reached (the last segment ended on its wall-clock
+  limit with exit 0 and a restart dump); it is not running now.
+- Figure scripts fixed (not the picture): the position record broke into isolated
+  points wherever the tracker files are dense and the separation is below 1 M (an
+  interpolation grid between anchors 0.25 M apart); the phase was 0 instead of undefined
+  once the trackers coincide; the searches of A and B that converge on the common
+  horizon (from 58.63 M) were drawn as individual horizons. Appendix tables filled
+  (setup row and eleven outcome rows; Tables tab:setups, tab:setups_numerics,
+  tab:outcomes_migration).
+- Tests that would decide the open points (none run): the stretch from the dump at
+  50.89 M with a larger merger_distance (formation time of the common horizon); the
+  envelope alone on the same mesh to 60 M (does it contract without the clumps); the
+  envelope with the stated 30 M radius; initial data solving the Hamiltonian constraint
+  (mass excess); a third resolution or a second particle sample (merger time).
+
+## Two overdensities: the stated envelope radius, written before the run (2026-11-14 02:44)
+
+The completed run (`jeans/n1e4_v19`) differs from the original in two ways that the
+analysis of the previous entry could not explain: the whole envelope falls into the
+remnant by 90 M (remnant 1.03 M at 100 M against 0.65 M), and the common horizon appears
+by 57.0 M (59.7 M at M/128) against 64.2 M. Our envelope is the monoenergetic model with
+areal radius 13.3 M, chosen because the stated clump speed (0.133215) is the circular
+speed in that envelope and not in one of the stated radius (30 M). The original states
+both the radius and the speed. If its run used the radius of 30 M with the stated speed,
+the envelope is twelve times less dense, so it is accreted far more slowly, and the
+clumps move faster than the circular speed of their orbit, so they start on a wider,
+eccentric orbit and merge later. Both differences would follow.
+Run `jeans/n1e4_v20`: initial data `jeans/ic_n1e4` (areal radius 30 M, same clumps and
+speeds, 10^4 particles, seed 1), otherwise exactly the configuration and executable of
+`n1e4_v19` (domain +-80 M, M/64, removal rules, finder constants).
+Prediction: the remnant mass at 100 M is between 0.60 and 0.75 M (original 0.647), the
+envelope fraction remaining at 100 M is above one half, and the common horizon appears
+between 60 and 70 M (original 64.2). If the remnant again reaches 1 M by 90 M, the radius
+is not the cause; if the black holes do not merge by 100 M, the orbit is wider than the
+original's and the stated pair of radius and speed is not what it ran either.
