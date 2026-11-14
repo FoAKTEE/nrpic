@@ -1,0 +1,10 @@
+# a_p where |delta_obs| first reaches 1, 10, 100, 1000 (interpolated along the drawn line); first maximum = first
+# local maximum followed by a drop > 0.05 dex; plateau = median/min/max of |delta_obs| from the first maximum to the end
+curve,a_p_at_1,a_p_at_10,a_p_at_100,a_p_at_1000,first_max_a_p,first_max_value,plateau_median,plateau_min,plateau_max,end_a_p,end_value,global_max_a_p,global_max_value
+GR,20.582,45.923,58.942,69.572,75.36,1128,1121,515.7,1670,131.59,1265,116.25,1670
+GR_highres,20.191,45.614,57.206,63.750,69.51,1550,1265,1061,1724,78.73,1724,78.73,1724
+GR_fluid,19.943,44.551,55.851,62.077,72.12,1.22e+04,1.118e+04,8544,1.22e+04,73.16,8544,72.12,1.22e+04
+GR_fluid_highres,19.942,44.588,55.165,58.842,,,,,,62.58,2.349e+04,62.58,2.349e+04
+Newt,19.528,43.111,52.708,55.150,56.15,1.164e+04,2.349e+04,5592,2.349e+04,60.87,2.349e+04,58.21,2.349e+04
+Newt_highres,19.380,42.821,52.427,54.986,,,,,,56.00,2.349e+04,56.00,2.349e+04
+NewtCIC,19.697,43.165,53.890,59.604,,,,,,90.42,2440,90.42,2440

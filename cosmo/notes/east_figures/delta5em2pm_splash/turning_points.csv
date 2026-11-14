@@ -1,0 +1,29 @@
+# d = |plotted y| = distance/L from the point of maximum density. first_cross = first local minimum of d after
+# d < 0.15 d0 (bracket = a_p interval around it where the drawn d stays within max(5e-4, 0.02 d0) of its minimum);
+# a_p_d_lt_0.1d0 / a_p_d_lt_0.05d0 = first a_p with d < 0.1 d0 / 0.05 d0 (robust infall markers, linear interpolation);
+# tp* = following turning points (hysteresis max(5e-4, 0.04 d0)); crossed=0: no minimum before the curve ends
+curve,model,resolution,direction,d0_nominal,d0_plotted,a_p_d_lt_0.1d0,a_p_d_lt_0.05d0,crossed,first_cross_a_p,first_cross_d,bracket_lo,bracket_hi,tp1_kind,tp1_a_p,tp1_d,tp2_kind,tp2_a_p,tp2_d,tp3_kind,tp3_a_p,tp3_d,tp4_kind,tp4_a_p,tp4_d,end_a_p,end_d
+GR_x_d0_0.03125,GR,default (96 points per wavelength; caption of Fig. 7 implies N=384^3 particles),x,0.03125,0.03125,16.17,16.58,1,16.75,0.00133,16.48,17.07,,,,,,,,,,,,,17.90,0.00106
+GR_x_d0_0.0625,GR,default (96 points per wavelength; caption of Fig. 7 implies N=384^3 particles),x,0.0625,0.06250,16.34,16.78,1,16.90,0.00295,16.60,17.21,,,,,,,,,,,,,17.89,0.00258
+GR_x_d0_0.125,GR,default (96 points per wavelength; caption of Fig. 7 implies N=384^3 particles),x,0.125,0.12500,17.15,17.51,1,17.74,0.00432,17.48,17.89,,,,,,,,,,,,,17.89,0.00482
+GR_x_d0_0.25,GR,default (96 points per wavelength; caption of Fig. 7 implies N=384^3 particles),x,0.25,0.25000,,,0,,,,,,,,,,,,,,,,,18.00,0.08441
+GR_y_d0_0.03125,GR,default (96 points per wavelength; caption of Fig. 7 implies N=384^3 particles),y,0.03125,0.03125,15.98,17.77,1,16.44,0.00169,16.19,16.84,max,17.32,0.00298,,,,,,,,,,17.90,0.00140
+GR_y_d0_0.0625,GR,default (96 points per wavelength; caption of Fig. 7 implies N=384^3 particles),y,0.0625,0.06250,16.13,17.87,1,16.61,0.00349,16.32,16.91,max,17.27,0.00616,,,,,,,,,,17.88,0.00310
+GR_y_d0_0.125,GR,default (96 points per wavelength; caption of Fig. 7 implies N=384^3 particles),y,0.125,0.12500,16.92,17.90,1,17.38,0.00687,17.10,17.91,,,,,,,,,,,,,17.91,0.00612
+GR_y_d0_0.25,GR,default (96 points per wavelength; caption of Fig. 7 implies N=384^3 particles),y,0.25,0.25000,,,0,,,,,,,,,,,,,,,,,18.01,0.08303
+GR_z_d0_0.03125,GR,default (96 points per wavelength; caption of Fig. 7 implies N=384^3 particles),z,0.03125,0.03125,15.48,15.87,1,16.20,0.00036,16.01,16.42,max,17.22,0.00280,,,,,,,,,,17.89,0.00085
+GR_z_d0_0.0625,GR,default (96 points per wavelength; caption of Fig. 7 implies N=384^3 particles),z,0.0625,0.06250,15.65,16.02,1,16.34,0.00035,16.19,16.52,max,17.22,0.00570,,,,,,,,,,17.86,0.00100
+GR_z_d0_0.125,GR,default (96 points per wavelength; caption of Fig. 7 implies N=384^3 particles),z,0.125,0.12500,16.48,16.80,1,17.08,0.00018,16.96,17.22,,,,,,,,,,,,,17.97,0.00321
+GR_z_d0_0.25,GR,default (96 points per wavelength; caption of Fig. 7 implies N=384^3 particles),z,0.25,0.25000,,,0,,,,,,,,,,,,,,,,,18.00,0.07269
+Newt_x_d0_0.03125,Newtonian,default (N=196^3),x,0.03125,0.03120,10.78,,0,,,,,,,,,,,,,,,,,10.86,0.00209
+Newt_x_d0_0.0625,Newtonian,default (N=196^3),x,0.0625,0.06248,10.72,10.81,0,,,,,,,,,,,,,,,,,10.82,0.00264
+Newt_x_d0_0.125,Newtonian,default (N=196^3),x,0.125,0.12491,,,0,,,,,,,,,,,,,,,,,11.10,0.01681
+Newt_x_d0_0.25,Newtonian,default (N=196^3),x,0.25,0.24996,,,0,,,,,,,,,,,,,,,,,13.56,0.05990
+Newt_y_d0_0.03125,Newtonian,default (N=196^3),y,0.03125,0.03125,,,0,,,,,,,,,,,,,,,,,10.85,0.00526
+Newt_y_d0_0.0625,Newtonian,default (N=196^3),y,0.0625,0.06256,,,0,,,,,,,,,,,,,,,,,10.84,0.00854
+Newt_y_d0_0.125,Newtonian,default (N=196^3),y,0.125,0.12492,,,0,,,,,,,,,,,,,,,,,11.15,0.02601
+Newt_y_d0_0.25,Newtonian,default (N=196^3),y,0.25,0.24998,,,0,,,,,,,,,,,,,,,,,13.87,0.06918
+Newt_z_d0_0.03125,Newtonian,default (N=196^3),z,0.03125,0.03125,10.54,10.71,0,,,,,,,,,,,,,,,,,10.85,0.00098
+Newt_z_d0_0.0625,Newtonian,default (N=196^3),z,0.0625,0.06240,10.49,10.65,0,,,,,,,,,,,,,,,,,10.83,0.00193
+Newt_z_d0_0.125,Newtonian,default (N=196^3),z,0.125,0.12506,,,0,,,,,,,,,,,,,,,,,10.92,0.01519
+Newt_z_d0_0.25,Newtonian,default (N=196^3),z,0.25,0.24993,,,0,,,,,,,,,,,,,,,,,13.27,0.05468

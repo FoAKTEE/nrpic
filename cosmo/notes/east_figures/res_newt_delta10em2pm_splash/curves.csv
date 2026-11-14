@@ -1,0 +1,25 @@
+curve,color,linestyle,n_points,n_segments,a_p_min,a_p_max,half,model,resolution,dbar,direction,d0_nominal,d0_plotted
+Newtlow_x_d0_0.03125,red,solid,37,1,1.00006,90.7103,top (plotted +d/L),Newtonian,low (caption: N=128^3),0.01,x,0.03125,0.03124
+Newtlow_x_d0_0.0625,red,dotted [1 3],41,1,1.00006,90.8879,top (plotted +d/L),Newtonian,low (caption: N=128^3),0.01,x,0.0625,0.06245
+Newtlow_x_d0_0.125,red,dashed [6 6],44,1,1.00006,92.2478,top (plotted +d/L),Newtonian,low (caption: N=128^3),0.01,x,0.125,0.12491
+Newtlow_x_d0_0.25,red,dash-dot [3 5 1 5],43,1,1.00006,94.725,top (plotted +d/L),Newtonian,low (caption: N=128^3),0.01,x,0.25,0.25
+Newtlow_y_d0_0.03125,green (mpl "g"),solid,34,1,1.00006,90.7144,top (plotted +d/L),Newtonian,low (caption: N=128^3),0.01,y,0.03125,0.03116
+Newtlow_y_d0_0.0625,green (mpl "g"),dotted [1 3],41,1,1.00006,90.6482,top (plotted +d/L),Newtonian,low (caption: N=128^3),0.01,y,0.0625,0.06253
+Newtlow_y_d0_0.125,green (mpl "g"),dashed [6 6],45,1,1.00006,91.8657,top (plotted +d/L),Newtonian,low (caption: N=128^3),0.01,y,0.125,0.12504
+Newtlow_y_d0_0.25,green (mpl "g"),dash-dot [3 5 1 5],41,1,1.00006,94.725,top (plotted +d/L),Newtonian,low (caption: N=128^3),0.01,y,0.25,0.24992
+Newtlow_z_d0_0.03125,blue,solid,37,1,1.00006,91.0751,top (plotted +d/L),Newtonian,low (caption: N=128^3),0.01,z,0.03125,0.03126
+Newtlow_z_d0_0.0625,blue,dotted [1 3],39,1,1.00006,90.9484,top (plotted +d/L),Newtonian,low (caption: N=128^3),0.01,z,0.0625,0.06259
+Newtlow_z_d0_0.125,blue,dashed [6 6],46,1,1.00006,90.9038,top (plotted +d/L),Newtonian,low (caption: N=128^3),0.01,z,0.125,0.12496
+Newtlow_z_d0_0.25,blue,dash-dot [3 5 1 5],43,1,1.00006,94.725,top (plotted +d/L),Newtonian,low (caption: N=128^3),0.01,z,0.25,0.24992
+Newthigh_x_d0_0.03125,red,solid,35,1,1.00006,90.2153,bottom (plotted -d/L),Newtonian,high (caption: N=196^3),0.01,x,0.03125,0.03132
+Newthigh_x_d0_0.0625,red,dotted [1 3],38,1,1.00006,90.3501,bottom (plotted -d/L),Newtonian,high (caption: N=196^3),0.01,x,0.0625,0.06257
+Newthigh_x_d0_0.125,red,dashed [6 6],45,1,1.00006,91.6231,bottom (plotted -d/L),Newtonian,high (caption: N=196^3),0.01,x,0.125,0.12501
+Newthigh_x_d0_0.25,red,dash-dot [3 5 1 5],43,1,1.00006,94.725,bottom (plotted -d/L),Newtonian,high (caption: N=196^3),0.01,x,0.25,0.25008
+Newthigh_y_d0_0.03125,green (mpl "g"),solid,37,1,1.00006,90.0351,bottom (plotted -d/L),Newtonian,high (caption: N=196^3),0.01,y,0.03125,0.0313
+Newthigh_y_d0_0.0625,green (mpl "g"),dotted [1 3],42,1,1.00006,90.2155,bottom (plotted -d/L),Newtonian,high (caption: N=196^3),0.01,y,0.0625,0.06255
+Newthigh_y_d0_0.125,green (mpl "g"),dashed [6 6],45,1,1.00006,91.5392,bottom (plotted -d/L),Newtonian,high (caption: N=196^3),0.01,y,0.125,0.12508
+Newthigh_y_d0_0.25,green (mpl "g"),dash-dot [3 5 1 5],41,1,1.00006,94.725,bottom (plotted -d/L),Newtonian,high (caption: N=196^3),0.01,y,0.25,0.25005
+Newthigh_z_d0_0.03125,blue,solid,35,1,1.00006,90.3022,bottom (plotted -d/L),Newtonian,high (caption: N=196^3),0.01,z,0.03125,0.03126
+Newthigh_z_d0_0.0625,blue,dotted [1 3],39,1,1.00006,90.4302,bottom (plotted -d/L),Newtonian,high (caption: N=196^3),0.01,z,0.0625,0.0625
+Newthigh_z_d0_0.125,blue,dashed [6 6],46,1,1.00006,91.53,bottom (plotted -d/L),Newtonian,high (caption: N=196^3),0.01,z,0.125,0.12501
+Newthigh_z_d0_0.25,blue,dash-dot [3 5 1 5],43,1,1.00006,94.2307,bottom (plotted -d/L),Newtonian,high (caption: N=196^3),0.01,z,0.25,0.25002

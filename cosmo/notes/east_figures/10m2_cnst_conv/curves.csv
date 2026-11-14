@@ -1,0 +1,4 @@
+curve,color,linestyle,n_points,n_segments,a_avg_min,a_avg_max,L_over_dx,Ncell_cuberoot,N_particles,plotted_scale_factor,dbar,note
+Ldx64,black,solid,206,1,1.03491,140,64,1,64^3,1.0,0.01,plotted value = (L2 norm of C_a)/L^2 x factor
+Ldx96,blue,dashed [6 6],195,1,1.0223,140.001,96,2,192^3,2.25,0.01,plotted value = (L2 norm of C_a)/L^2 x factor
+Ldx128,green (mpl "g"),dash-dot [3 5 1 5],166,1,1.01638,81.7653,128,4,512^3,4.0,0.01,plotted value = (L2 norm of C_a)/L^2 x factor

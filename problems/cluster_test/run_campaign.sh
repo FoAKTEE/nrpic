@@ -18,7 +18,7 @@ cd "$REPO"
 IC=$REPO/runs/cluster_test/ic
 MESH=problems/cluster_test/cluster_mesh.athinput
 ANA=problems/cluster_test/cluster_analytic.athinput
-export ATHENA_EXE=/data/haiyangw/nrpic/.work/build_gpu_v2/src/athena
+export ATHENA_EXE=${ATHENA_EXE:-$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)/.work/build_gpu_v2/src/athena}
 export TIME=00:20:00
 export JOB_NAME=tpc
 WALL=00:18:00            # athena's own wall-clock stop, before the Slurm limit

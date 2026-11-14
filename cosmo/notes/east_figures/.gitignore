@@ -1,0 +1,23 @@
+# renders of the original figures and the full digitized curves are not redistributed;
+# regenerate them with tools/ from the sources fetched by refs/fetch_cosmo.sh
+check_*.png
+10m2_cnst_conv/10m2_cnst_conv.csv
+delta10em2pm_splash/delta10em2pm_splash.csv
+delta10m2_comp_all/delta10m2_comp_all.csv
+delta1em2_dl_comp_frw/delta1em2_dl_comp_frw.csv
+delta1em2_dl_newt_gr/delta1em2_dl_newt_gr.csv
+delta1em2_dl_newt_gr_res_ou/delta1em2_dl_newt_gr_res_ou.csv
+delta1em2_dl_newt_gr_res_uo/delta1em2_dl_newt_gr_res_uo.csv
+delta2p5em3_dl_comp_frw/delta2p5em3_dl_comp_frw.csv
+delta2p5em3_dl_newt_gr/delta2p5em3_dl_newt_gr.csv
+delta2p5em3pm_splash/delta2p5em3pm_splash.csv
+delta5em2_dl_comp_frw/delta5em2_dl_comp_frw.csv
+delta5em2pm_splash/delta5em2pm_splash.csv
+delta5em3_dl_comp_frw/delta5em3_dl_comp_frw.csv
+delta5em3_dl_newt_gr/delta5em3_dl_newt_gr.csv
+delta5em3pm_splash/delta5em3pm_splash.csv
+od_comp/od_comp.csv
+rel_eff/rel_eff.csv
+res_delta10em2pm_splash/res_delta10em2pm_splash.csv
+res_newt_delta10em2pm_splash/res_newt_delta10em2pm_splash.csv
+ud_comp/ud_comp.csv

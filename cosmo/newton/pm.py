@@ -97,12 +97,15 @@ def cosmic_time(tau, H0=1.0):
     return (2.0/(3.0*H0))*((1.0 + 0.5*H0*tau)**3 - 1.0)
 
 
-def run(pm, dtau, tau_end, probes=(), track=None, every=1, verbose=False):
+def run(pm, dtau, tau_end, probes=(), track=None, every=1, verbose=False, hook=None):
     """Advance to tau_end. Returns a dict of histories: tau, a, and for each probe point
     delta_N, psi_N, d psi_N / d ln a, the proper time t_p of the comoving observer there
     and the observer density contrast; for the tracked particle indices their positions,
     velocities, potential and proper time. Proper times are the exact cosmic time of the
-    background plus the integral of the perturbation of the rate, advanced every step."""
+    background plus the integral of the perturbation of the rate, advanced every step.
+    hook, if given, is called after every step as hook(pm, tau0, psi0, tp0, r0, psi1,
+    tp1, r1) with the potential on the mesh, the proper times of the probe observers and
+    their rates d t_p / d tau at the two ends of the step (light rays, ray_newton.py)."""
     H0 = pm.H0
     out = {"tau": [], "a": []}
     for i in range(len(probes)):
@@ -127,9 +130,9 @@ def run(pm, dtau, tau_end, probes=(), track=None, every=1, verbose=False):
             pt_ = cid.interp(psi, pm.x[track], pm.L)
             rt = a*(np.sqrt(np.maximum(1.0 + 2.0*pt_ - (1.0 - 2.0*pt_)*(vt*vt).sum(axis=1),
                                        0.0)) - 1.0)
-        return a, pp, rp, pt_, vt, rt
+        return a, pp, rp, pt_, vt, rt, psi
 
-    a, pp, rp, ptk, vt, rt = rates()
+    a, pp, rp, ptk, vt, rt, psi_mesh = rates()
     dtp = np.zeros(len(probes))
     dtt = np.zeros(len(track)) if track is not None else None
     a_rec, pp_rec = a, pp.copy()
@@ -156,9 +159,14 @@ def run(pm, dtau, tau_end, probes=(), track=None, every=1, verbose=False):
         if track is not None:
             x_before = pm.x[track].copy()
         rp0, rt0 = rp, rt
+        tau0, a0, psi0 = pm.tau, a, psi_mesh
+        tp0 = cosmic_time(tau0, H0) + dtp
         pm.step(dtau)
-        a, pp, rp, ptk, vt, rt = rates()
+        a, pp, rp, ptk, vt, rt, psi_mesh = rates()
         dtp = dtp + 0.5*dtau*(rp + rp0)
+        if hook is not None:
+            hook(pm, tau0, psi0, tp0, a0 + rp0, psi_mesh,
+                 cosmic_time(pm.tau, H0) + dtp, a + rp)
         if track is not None:
             dtt = dtt + 0.5*dtau*(rt + rt0)
             dx = pm.x[track] - x_before

@@ -1,0 +1,9 @@
+curve,color,linestyle,n_points,n_segments,a_p_min,a_p_max,model,dbar,point,resolution,density_estimator
+GR_dbar0.0025,black,solid,45,1,1,256.289,GR,0.0025,underdensity (minimum density),default (GR: 96 points per wavelength; Newtonian: N=196^3),GR particle deposit on grid
+Newt_dbar0.0025,red,dashed [6 6],48,1,1.0001,265.812,Newtonian,0.0025,underdensity (minimum density),default (GR: 96 points per wavelength; Newtonian: N=196^3),tetrahedral (phase-space) cells
+GR_dbar0.005,black,solid,49,1,1,172.124,GR,0.005,underdensity (minimum density),default (GR: 96 points per wavelength; Newtonian: N=196^3),GR particle deposit on grid
+Newt_dbar0.005,red,dashed [6 6],47,1,1.0001,147.275,Newtonian,0.005,underdensity (minimum density),default (GR: 96 points per wavelength; Newtonian: N=196^3),tetrahedral (phase-space) cells
+GR_dbar0.01,black,solid,46,1,1,96.3139,GR,0.01,underdensity (minimum density),default (GR: 96 points per wavelength; Newtonian: N=196^3),GR particle deposit on grid
+Newt_dbar0.01,red,dashed [6 6],43,1,1.0001,102.053,Newtonian,0.01,underdensity (minimum density),default (GR: 96 points per wavelength; Newtonian: N=196^3),tetrahedral (phase-space) cells
+GR_dbar0.05,black,solid,35,1,1,19.2843,GR,0.05,underdensity (minimum density),default (GR: 96 points per wavelength; Newtonian: N=196^3),GR particle deposit on grid
+Newt_dbar0.05,red,dashed [6 6],126,1,1.00011,22.7331,Newtonian,0.05,underdensity (minimum density),default (GR: 96 points per wavelength; Newtonian: N=196^3),tetrahedral (phase-space) cells

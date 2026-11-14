@@ -1,0 +1,9 @@
+curve,color,linestyle,n_points,n_segments,z_min,z_max,ray,a_em_label,legend,dbar,quantity
+OD_aem1,maroon,solid,345,1,0.0898148,6.51386,emitted at OD towards UD,1,a^{ODem}~1,0.0025,|D_L^Newt/D_L^GR - 1|
+UD_aem1,chartreuse,dashed [6 6],324,1,0.0898081,6.39436,emitted at UD towards OD,1,a^{UDem}~1,0.0025,|D_L^Newt/D_L^GR - 1|
+OD_aem28,red,solid,304,12,0.00245572,0.774389,emitted at OD towards UD,28,a^{ODem}~28,0.0025,|D_L^Newt/D_L^GR - 1|
+UD_aem28,forestgreen,dashed [6 6],323,5,0.00245572,0.741996,emitted at UD towards OD,28,a^{UDem}~28,0.0025,|D_L^Newt/D_L^GR - 1|
+OD_aem59,chocolate,solid,212,1,0.00245572,0.518013,emitted at OD towards UD,59,a^{ODem}~59,0.0025,|D_L^Newt/D_L^GR - 1|
+UD_aem58,lightseagreen,dashed [6 6],238,1,0.00245572,0.49141,emitted at UD towards OD,58,a^{UDem}~58,0.0025,|D_L^Newt/D_L^GR - 1|
+OD_aem163,darkorange,solid,114,1,0.00245572,0.304583,emitted at OD towards UD,163,a^{ODem}~163,0.0025,|D_L^Newt/D_L^GR - 1|
+UD_aem162,aqua/cyan,dashed [6 6],119,1,0.00253232,0.311155,emitted at UD towards OD,162,a^{UDem}~162,0.0025,|D_L^Newt/D_L^GR - 1|

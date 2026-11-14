@@ -142,3 +142,103 @@ Predictions:
 (c) Not known in advance: whether zero shift with this lapse condition carries the run
     through shell crossing and the formation of the bound region. Paper 1 used a damped
     harmonic gauge. If a run stops at the collapse, the gauge is the first suspect.
+
+## C3, first test: light rays in the homogeneous universe (00:45)
+
+Code: a ray waits at its point until its emission time; at the launch its coordinate
+direction is turned into the null momentum of unit frequency for the normal observer
+(`nrpic.cpp`). Initial data: bundles of five rays (centre and four neighbours at an
+opening of 1e-4) from two points towards each other (`cosmo/ic/ray_ic.py`). Analysis:
+redshift from the deposited matter velocity, area distance from the cross section of the
+bundle over its solid angle at the emitter (`cosmo/analysis/ray_obs.py`).
+Run `cosmo/flrw_rays_n32_cpu`: the homogeneous universe of C0 with bundles emitted at
+t = 0 (a = 1) and t = 0.84375 (a = 2.022), to t = 2 (a = 4).
+Written before the run: in conformal time the rays are straight lines at unit coordinate
+speed, so the test checks the launch and the bookkeeping of the analysis, not the
+integrator. (1) 1 + z = a(t)/a_e to 1e-5 along every central ray (largest z: 3 and
+0.98). (2) D_L equals (2/H_e)(1+z)^2 (sqrt(1+z) - 1) to 1e-5 at all records. (3) The
+solid angle per unit opening squared is 1 to 1e-7. A constant factor in (2) means a
+wrong solid angle or projection; a drift with z means a wrong redshift or emission time.
+
+## C1 result: linear regime to a = 100 (00:50)
+
+`cosmo/east_d1e-4_n32_cpu` complete (576 steps, a = 100). Against the prediction of
+00:10: (1) confirmed earlier. (2) The observer density contrast stays within 0.5
+percent of linear theory at both probes up to a_p = 30 (predicted: within 2 percent)
+and departs by +0.75 percent (overdensity) and -0.70 percent (underdensity) at
+a_p = 100, where the contrast is 0.03; the Newtonian reference departs by +0.5 and -1.5
+percent there. The two gravities differ by 0.30 percent (overdensity) and 0.77 percent
+(underdensity) of the contrast at the end, i.e. by 1e-4 and 2.4e-4 of the density.
+Confirmed. Figure `cosmo/analysis/figs/delta_obs_d1e-4_n32.png` (inspected: the three
+curves coincide in the upper panels; the residuals are smooth, without oscillation).
+Correction to the C0 entry: the constraint numbers quoted there (3.7e-10, 0.66) are the
+history column, which is the square of the norm. The root mean square of the Hamiltonian
+constraint over the box relative to its largest term 16 pi rho is 2e-6 with densities
+converted per stage and 0.15 with sources held fixed (figure `cosmo/paper/figures/
+fig_flrw.png`).
+What C1 establishes: the initial data, the evolution in the conformal-time slicing and
+the Newtonian reference with its dictionary agree with each other and with linear
+theory over two decades of expansion at 32 cells per wavelength.
+
+Result (`cosmo/flrw_rays_n32_cpu`; figure `cosmo/analysis/figs/ray_test_flrw.png`,
+inspected): (1) redshift within 8.9e-7 of a/a_e - 1 on all bundles: confirmed. (3) solid
+angle per unit opening squared 1 - 1.0e-8: confirmed. (2) D_L is low by 1.2e-4 at the
+start of the rays emitted at a = 1 and by 6e-5 for those emitted at a = 2, falling
+slowly along the ray: refuted at the 1e-5 I wrote. Cause, with its test: the pusher
+takes the metric at the middle of the step as the mean of the two time levels, and the
+mean of the lapse over the root of the mean of gamma_xx is 1 - (H_c dt)^2 / 8 for a
+power-law expansion, H_c the conformal Hubble rate; the coordinate speed of light is low
+by that. The distance error computed from this formula agrees with the measured one to
+6e-7 on every record of every bundle. It is the second-order time error of the pusher,
+not a defect of the ray bookkeeping; at 64 cells (step 1/64) it is 3e-5 at a = 1 and
+falls as 1/a. The same factor multiplies the velocity terms of the matter particles.
+What the test establishes: launch, solid angle, cross section and redshift are right.
+
+## C2, first runs: outcome against the predictions of 00:20 (01:15)
+
+Runs `cosmo/east_d{0.0025,0.005,0.01,0.05}_n64` (25 steps per second on one GPU; 21 to
+120 s each) and `cosmo/newton_d*_n64`; analysis `cosmo/analysis/east_c2.py`, figures
+`cosmo/analysis/figs/east_{delta_obs,splash,rel_eff}.png` (first one inspected).
+(c) Answered: with zero shift and the conformal-time lapse condition the three lower
+    amplitudes run through shell crossing to the end (a = 140, 281, 561) with every
+    particle kept. The extreme case stops at a = 18.6 of the background: from a = 14.6
+    the lapse at the overdensity falls (10.8 to 4.1) while the density there rises
+    without bound, then a negative lapse appears. The Newtonian dictionary fails
+    earlier, at a = 14.4, where 1 + 2 psi_N turns negative (paper 1: |psi| ~ 1/2 after
+    a 15-fold expansion; relativistic run not continued indefinitely, black hole
+    forming). This slicing does not avoid the singularity; following the black hole
+    needs another lapse condition near it and mesh refinement.
+(b) Direction confirmed, size not credible: the relativistic collapse is later by 5,
+    9, 14 and 23 to 28 percent in a_p of the first crossing of the fiducial observers.
+(a) Refuted: the densities at the underdensity differ by up to 8, 15 and 24 percent
+    for the three lower amplitudes, and the two curves differ already at a_p = 1 (at
+    amplitude 0.05: delta_obs -0.43 against -0.33 at the underdensity, +0.24 against
+    +0.33 at the overdensity).
+Cause, with its test. The deposited density of the relativistic data is 0.5 percent
+below its target at both probes at amplitude 0.01 and 7 and 14 percent below at 0.05,
+i.e. quadratic in the amplitude, while its mean over the box is right. The
+cloud-in-cell deposit of a lattice compressed by a fraction c is modulated by c^2 per
+direction (the lattice harmonic no longer falls on a zero of the cloud shape), with a
+long wavelength h/c that the filter does not remove, and a lattice point that sits on a
+cell corner, as at both probes, is at the minimum of the modulation. The relativistic
+data displaced the lattice by 1 + 7.5 (H/k)^2 = 4.04 times the Newtonian displacement
+(so that equal masses give the coordinate density), hence 16 times the modulation of
+the Newtonian run. For cold matter only the density and velocity fields matter, not how
+the mass is divided among the particles, so the relativistic data can use the Newtonian
+positions and carry the rest of the density in the masses; the two calculations then
+start from identical positions and share the modulation.
+Also found: (i) the constraint norms of the history are blank after a = 4 (the
+diagnostic leaves out cells with chi < 1/16, meant for punctures; switched off with
+`<z4c> excise_chi = 0` for cosmology). (ii) Up to a = 4 the constraint violation relative
+to its largest term grows to 3e-4, 1e-2 and 1e-1 for amplitudes 0.0025, 0.01, 0.05
+from 1e-11 to 4e-4 at t = 0: the deposit does not satisfy the continuity equation of the
+mesh, and the violation follows the lattice modulation. This is the case for the
+constraint-compatible deposit (T1). (iii) The filter with compensation leaves cells of
+negative energy density next to the collapsed region (-1e-3 of the peak).
+Written before the rerun (`cosmo/east_d*_n64_v2`: Newtonian positions, masses carry the
+relativistic density; otherwise unchanged): the observer density contrasts of the two
+calculations agree at a_p = 1 within 1 percent of the contrast at both probes for
+amplitudes up to 0.01; the underdensity densities agree within 2 percent for the three
+lower amplitudes at all times; the delay of the relativistic first crossings falls below
+1, 2 and 4 percent for 0.0025, 0.005 and 0.01. If the delays stay at 5, 9 and 14 percent
+the explanation is wrong.

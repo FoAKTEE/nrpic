@@ -1,0 +1,17 @@
+curve,color,linestyle,n_points,n_segments,z_min,z_max,model,ray,a_em_label,legend,dbar
+GR_OD_aem1,maroon,solid,36,1,0.0887247,6.73483,GR,emitted at OD towards UD,1,a^{ODem}~1,0.01
+Newt_OD_aem1,black,dashed [6 6],36,1,0.0887247,6.73483,Newtonian,emitted at OD towards UD,1,(black; paired with a^{ODem}~1),0.01
+GR_UD_aem1,chartreuse,solid,36,1,0.0887231,6.19742,GR,emitted at UD towards OD,1,a^{UDem}~1,0.01
+Newt_UD_aem1,black,dash-dot [3 5 1 5],40,1,0.0887231,6.19742,Newtonian,emitted at UD towards OD,1,(black; paired with a^{UDem}~1),0.01
+GR_OD_aem28,red,solid,53,1,0.00221566,0.839304,GR,emitted at OD towards UD,28,a^{ODem}~28,0.01
+Newt_OD_aem28,black,dashed [6 6],57,1,0.00221566,0.839304,Newtonian,emitted at OD towards UD,28,(black; paired with a^{ODem}~28),0.01
+GR_UD_aem27,forestgreen,solid,31,1,0.00221566,0.734833,GR,emitted at UD towards OD,27,a^{UDem}~27,0.01
+Newt_UD_aem27,black,dash-dot [3 5 1 5],27,1,0.00221566,0.734833,Newtonian,emitted at UD towards OD,27,(black; paired with a^{UDem}~27),0.01
+GR_OD_aem43,chocolate,solid,52,1,0.00221566,0.678303,GR,emitted at OD towards UD,43,a^{ODem}~43,0.01
+Newt_OD_aem43,black,dashed [6 6],47,1,0.00221566,0.678303,Newtonian,emitted at OD towards UD,43,(black; paired with a^{ODem}~43),0.01
+GR_UD_aem44,lightseagreen,solid,37,1,0.00221566,0.795522,GR,emitted at UD towards OD,44,a^{UDem}~44,0.01
+Newt_UD_aem44,black,dash-dot [3 5 1 5],39,1,0.00221566,0.795522,Newtonian,emitted at UD towards OD,44,(black; paired with a^{UDem}~44),0.01
+GR_OD_aem52,darkorange,solid,54,1,0.00221566,0.631542,GR,emitted at OD towards UD,52,a^{ODem}~52,0.01
+Newt_OD_aem52,black,dashed [6 6],53,1,0.00221566,0.631542,Newtonian,emitted at OD towards UD,52,(black; paired with a^{ODem}~52),0.01
+GR_UD_aem52,aqua/cyan,solid,35,1,0.00221566,0.77055,GR,emitted at UD towards OD,52,a^{UDem}~52,0.01
+Newt_UD_aem52,black,dash-dot [3 5 1 5],40,1,0.00221566,0.77055,Newtonian,emitted at UD towards OD,52,(black; paired with a^{UDem}~52),0.01

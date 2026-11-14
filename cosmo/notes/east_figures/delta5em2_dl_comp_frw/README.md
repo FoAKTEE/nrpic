@@ -1,0 +1,43 @@
+# delta5em2_dl_comp_frw: Fig. 5 (dbar=0.05)
+
+Source: `refs/arxiv_1908.05683/src/delta5em2_dl_comp_frw.eps` (matplotlib 1.5.1, vector). Paper: East, Wojtak & Pretorius, arXiv:1908.05683.
+
+## What is plotted
+D_L(z)/D_L^LFRW(z) - 1 along fiducial null rays emitted at the overdensity (OD) towards the underdensity (UD), or vice versa, at several emission times a_em (legend). Coloured solid = GR; black dashed = Newtonian OD->UD; black dash-dot = Newtonian UD->OD (each black curve is drawn right after the GR curve of the same ray and shares its z end points). Vertical axis: symlog, linear within +-1e-2, log outside.
+
+## Files
+* `delta5em2_dl_comp_frw.csv`: long format, columns `curve, segment, z, DL_over_DL_LFRW_minus_1, visible, canvas_edge` (see the header comments).
+* `curves.csv`: one row per curve with colour, line style and metadata.
+* `check_delta5em2_dl_comp_frw.png`: the original EPS rendered with ghostscript (left) next to a replot of the CSV in data coordinates with the same axis limits and scales (right).
+
+## Calibration
+Curves are the stroked PostScript polylines; colour and dash pattern come from the setrgbcolor/setdash state; axes from the clip box; data coordinates from a least-squares fit of the major tick positions (tick marks paired with their labels in drawing order).
+* x: log axis: pos = 392.166700 + 148.113400 * f(v); ticks used: 0.01@95.940, 0.1@244.053, 1@392.167, 10@540.280; max |residual| = 0.0003 pt
+* y: symlog axis: pos = 239.692467 + 37.676049 * f(v) (linthresh=0.01, linscale_adj=1.11113); ticks used: -10@84.801, -1@122.477, -0.1@160.154, -0.01@197.830, 0@239.692, 0.01@281.555, 0.1@319.231, 1@356.908, 10@394.584; max |residual| = 0.0006 pt
+* Axes box in data units: x in [0.01, 9.9938], y in [-30.01, 29.927].
+
+## Accuracy
+matplotlib simplified the paths with a tolerance of 1/9 pt (vertices within 0.11 pt of a straight run were dropped); coordinates are written to 1e-6 pt and the tick fit residual is < 1e-3 pt. Reading error: x +-0.17% (0.0008 dex), y +-2.7e-05 absolute inside |y|<1e-2, +-0.68% of |y| outside. Between vertices the curve is the straight line that was drawn (in display coordinates).
+
+## Curves
+
+| curve | colour | line | meaning | z range | points |
+|---|---|---|---|---|---|
+| `GR_OD_aem1` | maroon | solid | model=GR; ray=emitted at OD towards UD; a_em_label=1; dbar=0.05 | 0.0284-8.168 | 29 |
+| `Newt_OD_aem1` | black | dashed [6 6] | model=Newtonian; ray=emitted at OD towards UD; a_em_label=1; dbar=0.05 | 0.0284-8.168 | 53 |
+| `GR_UD_aem1` | chartreuse | solid | model=GR; ray=emitted at UD towards OD; a_em_label=1; dbar=0.05 | 0.03045-5.251 | 27 |
+| `Newt_UD_aem1` | black | dash-dot [3 5 1 5] | model=Newtonian; ray=emitted at UD towards OD; a_em_label=1; dbar=0.05 | 0.03045-5.251 | 72 |
+| `GR_OD_aem8` | red | solid | model=GR; ray=emitted at OD towards UD; a_em_label=8; dbar=0.05 | 0.002216-1.964 | 70 |
+| `Newt_OD_aem8` | black | dashed [6 6] | model=Newtonian; ray=emitted at OD towards UD; a_em_label=8; dbar=0.05 | 0.002216-1.964 | 60 |
+| `GR_UD_aem9` | forestgreen | solid | model=GR; ray=emitted at UD towards OD; a_em_label=9; dbar=0.05 | 0.002216-1.852 | 38 |
+| `Newt_UD_aem9` | black | dash-dot [3 5 1 5] | model=Newtonian; ray=emitted at UD towards OD; a_em_label=9; dbar=0.05 | 0.002216-1.852 | 24 |
+| `GR_UD_aem14` | lightseagreen | solid | model=GR; ray=emitted at UD towards OD; a_em_label=14; dbar=0.05 | 0.002216-0.5353 | 9 |
+| `Newt_UD_aem14` | black | dash-dot [3 5 1 5] | model=Newtonian; ray=emitted at UD towards OD; a_em_label=14; dbar=0.05 | 0.002216-0.5353 | 10 |
+
+## Notes
+* The y axis is matplotlib symlog with linthresh = 1e-2 and linscale = 1 (fitted from the ticks: the 0 to 1e-2 stretch
+  is 1/(1-1/10) = 1.111 decades long). Values inside +-1e-2 are linear.
+* Curves run in ray order (from the emitter); z is not monotonic along some UD->OD rays (blueshift near the halo), so
+  do not sort by z. Points at z < 0.01 (down to 0.0022) are drawn outside the axes and hidden in the paper (visible = 0).
+* `values_at_z.csv`: values at z = 0.1, 0.5, 1, 2 (every pass of the ray through that z).
+

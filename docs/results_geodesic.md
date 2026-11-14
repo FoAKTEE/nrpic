@@ -19,7 +19,7 @@ login node. Both executables were built from the same `nrpic_kernels.hpp`, `nrpi
 (name, input file, overrides). The command of each run is the project helper,
 
 ```
-ATHENA_EXE=/data/haiyangw/nrpic/.work/build_gpu_dev/src/athena TIME=00:20:00 JOB_NAME=geo \
+ATHENA_EXE=$PWD/.work/build_gpu_dev/src/athena TIME=00:20:00 JOB_NAME=geo \
   scripts/gpu_run.sh runs/geodesic/<name> <athinput> <overrides...>
 ```
 
@@ -128,7 +128,7 @@ The exact solutions agree with a free-running DOP853 integration (rtol = atol = 
 `schw_mesh/<orbit>_<pusher>_<mesh|lat>_dx<dx>`. Example:
 
 ```
-ATHENA_EXE=/data/haiyangw/nrpic/.work/build_gpu_dev/src/athena TIME=00:20:00 JOB_NAME=geo \
+ATHENA_EXE=$PWD/.work/build_gpu_dev/src/athena TIME=00:20:00 JOB_NAME=geo \
   scripts/gpu_run.sh runs/geodesic/schw/ecc_mid_cks_dt0.01 problems/schwarzschild/geodesic.athinput \
   particles/pusher=midpoint particles/metric=kerr_schild particles/bh_spin=0.0 particles/dt=0.01 \
   time/tlim=1000.0 particles/tolerance=2.0e-14 particles/max_iterations=200 \
@@ -331,7 +331,7 @@ runs) `p0_x = (20.0, 0.9, 1.2246467991473533e-15)`,
 Example (midpoint, analytic spherical KS, dt = 0.01):
 
 ```
-ATHENA_EXE=/data/haiyangw/nrpic/.work/build_gpu_dev/src/athena TIME=00:20:00 JOB_NAME=geo \
+ATHENA_EXE=$PWD/.work/build_gpu_dev/src/athena TIME=00:20:00 JOB_NAME=geo \
   scripts/gpu_run.sh runs/geodesic/kerr_passage/mid_ks_dt0.01 problems/kerr/geodesic.athinput \
   particles/pusher=midpoint particles/metric=kerr_schild_sph particles/bh_spin=0.9 \
   particles/lattice_dx=0.025 particles/dt=0.01 time/tlim=230.0 particles/tolerance=2.0e-14 \

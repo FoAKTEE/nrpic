@@ -1,0 +1,25 @@
+curve,color,linestyle,n_points,n_segments,a_p_min,a_p_max,half,model,resolution,dbar,direction,d0_nominal,d0_plotted
+GR_x_d0_0.03125,red,solid,44,1,1.00003,92.7999,top (plotted +d/L),GR,default (96 points per wavelength; caption of Fig. 7 implies N=384^3 particles),0.01,x,0.03125,0.03125
+GR_x_d0_0.0625,red,dotted [1 3],61,1,1.00003,92.6214,top (plotted +d/L),GR,default (96 points per wavelength; caption of Fig. 7 implies N=384^3 particles),0.01,x,0.0625,0.0625
+GR_x_d0_0.125,red,dashed [6 6],83,1,1.00003,92.2394,top (plotted +d/L),GR,default (96 points per wavelength; caption of Fig. 7 implies N=384^3 particles),0.01,x,0.125,0.125
+GR_x_d0_0.25,red,dash-dot [3 5 1 5],84,1,1.00003,92.5122,top (plotted +d/L),GR,default (96 points per wavelength; caption of Fig. 7 implies N=384^3 particles),0.01,x,0.25,0.25
+GR_y_d0_0.03125,green (mpl "g"),solid,42,1,1.00003,92.7938,top (plotted +d/L),GR,default (96 points per wavelength; caption of Fig. 7 implies N=384^3 particles),0.01,y,0.03125,0.03125
+GR_y_d0_0.0625,green (mpl "g"),dotted [1 3],58,1,1.00003,92.6081,top (plotted +d/L),GR,default (96 points per wavelength; caption of Fig. 7 implies N=384^3 particles),0.01,y,0.0625,0.0625
+GR_y_d0_0.125,green (mpl "g"),dashed [6 6],81,1,1.00003,92.3035,top (plotted +d/L),GR,default (96 points per wavelength; caption of Fig. 7 implies N=384^3 particles),0.01,y,0.125,0.125
+GR_y_d0_0.25,green (mpl "g"),dash-dot [3 5 1 5],78,1,1.00003,92.6238,top (plotted +d/L),GR,default (96 points per wavelength; caption of Fig. 7 implies N=384^3 particles),0.01,y,0.25,0.25
+GR_z_d0_0.03125,blue,solid,42,1,1.00003,92.7864,top (plotted +d/L),GR,default (96 points per wavelength; caption of Fig. 7 implies N=384^3 particles),0.01,z,0.03125,0.03125
+GR_z_d0_0.0625,blue,dotted [1 3],57,1,1.00003,92.5224,top (plotted +d/L),GR,default (96 points per wavelength; caption of Fig. 7 implies N=384^3 particles),0.01,z,0.0625,0.0625
+GR_z_d0_0.125,blue,dashed [6 6],78,1,1.00003,91.9563,top (plotted +d/L),GR,default (96 points per wavelength; caption of Fig. 7 implies N=384^3 particles),0.01,z,0.125,0.125
+GR_z_d0_0.25,blue,dash-dot [3 5 1 5],87,1,1.00003,92.3408,top (plotted +d/L),GR,default (96 points per wavelength; caption of Fig. 7 implies N=384^3 particles),0.01,z,0.25,0.25
+Newt_x_d0_0.03125,red,solid,35,1,1.00013,90.2153,bottom (plotted -d/L),Newtonian,default (N=196^3),0.01,x,0.03125,0.03132
+Newt_x_d0_0.0625,red,dotted [1 3],38,1,1.00013,90.3501,bottom (plotted -d/L),Newtonian,default (N=196^3),0.01,x,0.0625,0.06257
+Newt_x_d0_0.125,red,dashed [6 6],45,1,1.00013,91.6231,bottom (plotted -d/L),Newtonian,default (N=196^3),0.01,x,0.125,0.12501
+Newt_x_d0_0.25,red,dash-dot [3 5 1 5],43,1,1.00013,95.5068,bottom (plotted -d/L),Newtonian,default (N=196^3),0.01,x,0.25,0.25008
+Newt_y_d0_0.03125,green (mpl "g"),solid,37,1,1.00013,90.0351,bottom (plotted -d/L),Newtonian,default (N=196^3),0.01,y,0.03125,0.0313
+Newt_y_d0_0.0625,green (mpl "g"),dotted [1 3],42,1,1.00013,90.2155,bottom (plotted -d/L),Newtonian,default (N=196^3),0.01,y,0.0625,0.06255
+Newt_y_d0_0.125,green (mpl "g"),dashed [6 6],45,1,1.00013,91.5392,bottom (plotted -d/L),Newtonian,default (N=196^3),0.01,y,0.125,0.12508
+Newt_y_d0_0.25,green (mpl "g"),dash-dot [3 5 1 5],41,1,1.00013,95.5068,bottom (plotted -d/L),Newtonian,default (N=196^3),0.01,y,0.25,0.25005
+Newt_z_d0_0.03125,blue,solid,35,1,1.00013,90.3022,bottom (plotted -d/L),Newtonian,default (N=196^3),0.01,z,0.03125,0.03126
+Newt_z_d0_0.0625,blue,dotted [1 3],39,1,1.00013,90.4302,bottom (plotted -d/L),Newtonian,default (N=196^3),0.01,z,0.0625,0.0625
+Newt_z_d0_0.125,blue,dashed [6 6],46,1,1.00013,91.53,bottom (plotted -d/L),Newtonian,default (N=196^3),0.01,z,0.125,0.12501
+Newt_z_d0_0.25,blue,dash-dot [3 5 1 5],43,1,1.00013,94.2307,bottom (plotted -d/L),Newtonian,default (N=196^3),0.01,z,0.25,0.25002

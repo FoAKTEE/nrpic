@@ -1,0 +1,11 @@
+curve,color,linestyle,n_points,n_segments,a_p_min,a_p_max,model,dbar,point,resolution,density_estimator
+GR_dbar0.0025,black,solid,55,1,1,255.172,GR,0.0025,overdensity (maximum density),default (GR: 96 points per wavelength; Newtonian: N=196^3),GR particle deposit on grid
+Newt_dbar0.0025,red,dashed [6 6],56,1,1.0001,262.818,Newtonian,0.0025,overdensity (maximum density),default (GR: 96 points per wavelength; Newtonian: N=196^3),tetrahedral (phase-space) cells
+GR_dbar0.005,black,solid,82,1,1,171.082,GR,0.005,overdensity (maximum density),default (GR: 96 points per wavelength; Newtonian: N=196^3),GR particle deposit on grid
+Newt_dbar0.005,red,dashed [6 6],58,1,1.0001,142.768,Newtonian,0.005,overdensity (maximum density),default (GR: 96 points per wavelength; Newtonian: N=196^3),tetrahedral (phase-space) cells
+GR_dbar0.01,black,solid,84,1,1,92.9026,GR,0.01,overdensity (maximum density),default (GR: 96 points per wavelength; Newtonian: N=196^3),GR particle deposit on grid
+Newt_dbar0.01,red,dashed [6 6],70,1,1.0001,90.4243,Newtonian,0.01,overdensity (maximum density),default (GR: 96 points per wavelength; Newtonian: N=196^3),tetrahedral (phase-space) cells
+NewtCIC_dbar0.01,magenta (mpl "m"),dotted [1 3],65,1,1.0001,90.4243,Newtonian CIC,0.01,overdensity (maximum density),default (GR: 96 points per wavelength; Newtonian: N=196^3),CIC
+GR_dbar0.05,black,solid,47,1,1,16.7976,GR,0.05,overdensity (maximum density),default (GR: 96 points per wavelength; Newtonian: N=196^3),GR particle deposit on grid
+Newt_dbar0.05,red,dashed [6 6],103,1,1.00009,10.8636,Newtonian,0.05,overdensity (maximum density),default (GR: 96 points per wavelength; Newtonian: N=196^3),tetrahedral (phase-space) cells
+NewtCIC_dbar0.05,magenta (mpl "m"),dotted [1 3],103,1,1.00009,10.8636,Newtonian CIC,0.05,overdensity (maximum density),default (GR: 96 points per wavelength; Newtonian: N=196^3),CIC

@@ -1,0 +1,4 @@
+curve,color,linestyle,n_points,n_segments,abs_v_infall_min,abs_v_infall_max,dbar,d0_label,legend,plot_block,quantity
+dbar0.0025_d0_0.031,purple (gnuplot 0.58;0;0.83),solid,220,2,0.000314629,0.00572563,0.0025,0.031,dbar=0.0025; d_OD(a_p=1)/L=0.031,1,|d_OD^Newt - d_OD^GR|/L vs |v_infall| (Newtonian); up to first Newtonian halo crossing
+dbar0.01_d0_0.063,teal green (gnuplot 0;0.62;0.45),solid,165,2,0.00246557,0.143266,0.01,0.063,dbar=0.01; d_OD(a_p=1)/L=0.063,2,|d_OD^Newt - d_OD^GR|/L vs |v_infall| (Newtonian); up to first Newtonian halo crossing
+dbar0.01_d0_0.25,orange (gnuplot 0.9;0.62;0),solid,178,2,0.00644471,0.510932,0.01,0.25,dbar=0.01; d_OD(a_p=1)/L=0.25 (as labelled),3,|d_OD^Newt - d_OD^GR|/L vs |v_infall| (Newtonian); up to first Newtonian halo crossing

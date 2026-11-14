@@ -1,0 +1,11 @@
+# values of the plotted quantity where each ray passes z (several values = several passes, in ray order);
+# z_min/z_max over drawn points (incl. hidden z<0.01); max_visible = largest value inside the axes and its z
+curve,z_min,z_max,z_first_point,z_last_point,z_nonmonotonic,at_z0.1,at_z0.5,at_z1,at_z2,max_visible,z_at_max_visible
+OD_aem1_highres,0.065031,6.7426,0.065031,6.7426,0,9.8043e-05,0.00029824,0.00063212,0.00062619,0.0015447,5.1031
+OD_aem1_lowres,0.088724,6.7349,0.088724,6.7349,0,9.7619e-05,0.00042756,0.00082381,0.00095864,0.0023177,6.02
+OD_aem28_highres,0.0024557,0.84037,0.0024557,0.84037,0,0.028057,0.0056525,,,0.095475,0.027267
+OD_aem28_lowres,0.0024557,0.84092,0.0024557,0.84092,0,0.026849,0.0050783,,,0.070381,0.038337
+OD_aem43_highres,0.0024557,0.678,0.0024557,0.678,0,0.0032462,0.010896,,,0.1029,0.011247
+OD_aem43_lowres,0.0024557,0.67746,0.0024557,0.67746,0,0.001963,0.0082353,,,0.096683,0.012161
+OD_aem52_highres,0.0024557,0.63322,0.0024557,0.63322,0,0.02726,0.024789,,,0.030168,0.17531
+OD_aem52_lowres,0.0024557,0.63219,0.0024557,0.63219,0,0.020689,0.025784,,,0.029402,0.26457

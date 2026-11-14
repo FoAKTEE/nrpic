@@ -14,10 +14,11 @@ Dictionary (Chisari & Zaldarriaga; Green & Wald):
     rho  = rho_0 [1 + (1 + 3 (H/k)^2) delta_N],     K = -3 H (1 - psi_N),
     alpha = sqrt(1 + 2 psi_N),    u^a = u^t (1, v^i).
 
-Particles: a lattice aligned with the mesh, displaced by xi_i = c d_i cos(k q_i)/k with
-c = 1 + (15/2) (H/k)^2, so that the coordinate number density has the contrast
-delta_N - 5 psi_N of rho W psi^6 to linear order; the masses carry the rest, with the
-exact Jacobian of the displacement. The conformal factor and the traceless extrinsic
+Particles: a lattice aligned with the mesh, displaced by xi_i = c d_i cos(k q_i)/k. With
+c = 1 (default) the positions are those of the Newtonian reference; with
+c = 1 + (15/2) (H/k)^2 (--displacement number) the coordinate number density has the
+contrast delta_N - 5 psi_N of rho W psi^6 to linear order. The masses carry the rest of
+the density in either case, with the exact Jacobian of the displacement. The conformal factor and the traceless extrinsic
 curvature then follow from the constraints for these particles (cosmo_id.solve). The
 momenta u_i = psi^4 W v^i / alpha use the solved psi; the masses are set from the target
 density with the solved psi, at fixed total rest mass (the density then has the target
@@ -33,6 +34,7 @@ import os
 import numpy as np
 
 import cosmo_id as cid
+import ray_ic as ry
 from nrp_io import write_fields, write_particles
 
 
@@ -47,7 +49,8 @@ def newtonian_fields(x, y, z, k, H, d):
 
 
 def build(delta, n, ppc=1, L=4.0, H=1.0, ratios=(1.0, 0.9, 1.1), nfilter=0,
-          compensate=False, zero_velocity=False, outer=6, verbose=True, stagger=None):
+          compensate=False, zero_velocity=False, outer=6, verbose=True, stagger=None,
+          displacement="newtonian"):
     k = 2.0*np.pi/L
     rho0 = 3.0*H*H/(8.0*np.pi)
     d = [delta*r for r in ratios]
@@ -78,11 +81,18 @@ def build(delta, n, ppc=1, L=4.0, H=1.0, ratios=(1.0, 0.9, 1.1), nfilter=0,
     q1 = (np.arange(npd) + (1.0 if stagger else 0.5))*hq
     Q = np.meshgrid(q1, q1, q1, indexing="ij")
     q = np.stack([a.ravel() for a in Q], axis=1)
-    cz = 1.0 if zero_velocity else 1.0 + 7.5*hk2
-    # zero velocity: delta = delta_N and no growing-mode velocity; the coordinate
-    # density contrast is delta_N - 3 psi_N = (1 + 4.5 (H/k)^2) delta_N
-    if zero_velocity:
-        cz = 1.0 + 4.5*hk2
+    # displacement = "number": the lattice carries the whole coordinate density
+    # contrast (delta_N - 5 psi_N with growing-mode velocities, delta_N - 3 psi_N with
+    # zero velocity) and the masses are nearly equal. displacement = "newtonian": the
+    # positions of the Newtonian reference, and the masses carry the rest. The second
+    # is the default: for cold matter only the density and velocity fields matter, and
+    # the deposit error of a compressed lattice grows with the square of the
+    # compression (cosmo/TESTLOG.md, C2 first runs), so the two calculations should
+    # start from the same positions.
+    if displacement == "newtonian":
+        cz = 1.0
+    else:
+        cz = 1.0 + (4.5 if zero_velocity else 7.5)*hk2
     xi = np.stack([cz*d[i]*np.cos(k*q[:, i])/k for i in range(3)], axis=1)
     jac = np.prod(1.0 - cz*np.stack([d[i]*np.sin(k*q[:, i]) for i in range(3)], axis=1),
                   axis=1)
@@ -148,6 +158,7 @@ def build(delta, n, ppc=1, L=4.0, H=1.0, ratios=(1.0, 0.9, 1.1), nfilter=0,
         "delta": delta, "ratios": list(ratios), "n": n, "ppc": ppc, "L": L, "H0": H,
         "k": k, "rho0": rho0, "nfilter": nfilter, "compensate": compensate,
         "zero_velocity": zero_velocity, "N": int(len(m)), "stagger": bool(stagger),
+        "displacement": displacement,
         "displacement_factor": cz, "max_displacement_over_h": float(np.abs(xi).max()/h),
         "total_rest_mass": float(m.sum()), "rho0_L3": rho0*L**3,
         "mass_min_over_mean": float(m.min()/m.mean()),
@@ -179,19 +190,47 @@ if __name__ == "__main__":
     ap.add_argument("--zero-velocity", action="store_true")
     ap.add_argument("--no-stagger", action="store_true",
                     help="keep particles at cell centres for odd ppc (shows the cusp)")
+    ap.add_argument("--displacement", default="newtonian", choices=("newtonian", "number"))
+    ap.add_argument("--rays", default="",
+                    help="comma-separated scale factors of the homogeneous solution at "
+                         "which light rays leave the two extrema")
+    ap.add_argument("--cfl", type=float, default=0.25,
+                    help="time step over cell size of the run (emission times are "
+                         "rounded to steps)")
+    ap.add_argument("--ray-eps", type=float, default=1e-4)
     ap.add_argument("--out", required=True)
     a = ap.parse_args()
     x, u, m, r, K, alpha, info, fid = build(a.delta, a.n, a.ppc, a.L, a.H0,
                                             nfilter=a.nfilter,
                                             compensate=a.compensate,
                                             zero_velocity=a.zero_velocity,
-                                            stagger=(False if a.no_stagger else None))
+                                            stagger=(False if a.no_stagger else None),
+                                            displacement=a.displacement)
     os.makedirs(a.out, exist_ok=True)
+    if a.rays:
+        # the rays follow the fiducial observers in the file, so that the code records
+        # both (tags below traj_ntrack = n_fiducial + n_rays)
+        dt = a.cfl*a.L/a.n
+        a_emit = [float(v) for v in a.rays.split(",")]
+        t_emit = [dt*round(2.0*(np.sqrt(v) - 1.0)/a.H0/dt) for v in a_emit]
+        xr, cr, mr, meta = ry.bundles(t_emit, a.L, a.ray_eps)
+        nf = info["n_fiducial"]
+        x = np.concatenate([x[:nf], xr, x[nf:]])
+        u = np.concatenate([u[:nf], cr, u[nf:]])
+        m = np.concatenate([m[:nf], mr, m[nf:]])
+        meta["tag"] = nf + np.arange(len(mr))
+        np.savez(os.path.join(a.out, "rays.npz"), **meta)
+        info["n_rays"] = int(len(mr))
+        info["ray_t_emit"] = t_emit
+        info["traj_ntrack"] = int(nf + len(mr))
     write_particles(os.path.join(a.out, "particles.nrp"), x, u, m)
     write_fields(os.path.join(a.out, "fields.bin"), r["psi"], K, alpha, r["A"])
     np.savez(os.path.join(a.out, "fiducial.npz"), **fid)
     with open(os.path.join(a.out, "id.json"), "w") as f:
         json.dump(info, f, indent=1)
+    for key in ("traj_ntrack", "ray_t_emit"):
+        if key in info:
+            print(f"{key}: {info[key]}")
     for key in ("N", "n_fiducial", "max_displacement_over_h", "mass_min_over_mean", "mass_max_over_mean",
                 "max_velocity", "max_abs_psiN", "max_psi_minus_dictionary", "mean_psi6",
                 "max_abs_Ahat", "max_hamiltonian_residual", "max_momentum_residual"):

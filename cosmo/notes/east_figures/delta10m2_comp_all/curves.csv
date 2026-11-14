@@ -1,0 +1,8 @@
+curve,color,linestyle,n_points,n_segments,a_p_min,a_p_max,legend,model,matter,dbar,point,resolution
+GR,blue,solid,115,1,1.00001,131.586,GR OD,GR,particles,0.01,overdensity,default (96 points per wavelength)
+GR_highres,green (mpl "g"),solid,97,1,1.00001,78.735,GR OD High Res.,GR,particles,0.01,overdensity,high (presumably 128 points per wavelength; 4/3 x default)
+GR_fluid,red,solid,71,1,1.00001,73.1612,GR OD Fluid,GR,pressureless fluid,0.01,overdensity,default (96 points per wavelength)
+GR_fluid_highres,cyan (mpl "c"),solid,57,1,1.00001,62.5783,GR OD Fluid High Res.,GR,pressureless fluid,0.01,overdensity,high (presumably 128 points per wavelength)
+Newt,red,dashed [6 6],50,2,1.00011,60.8721,Newt. OD,Newtonian,particles (tetrahedral density),0.01,overdensity,see README: identical to Fig.1 middle Newtonian dbar=0.01 (N=196^3 default)
+Newt_highres,black,dashed [6 6],45,1,1.00011,56.0012,Newt. OD High Res.,Newtonian,particles (tetrahedral density),0.01,overdensity,labelled High Res.; N not stated
+NewtCIC,blue,dashed [6 6],63,1,1.00011,90.4245,Newt. OD CIC,Newtonian,particles (CIC density),0.01,overdensity,default N=196^3

@@ -344,8 +344,14 @@ TaskStatus Particles::NrpicPush(Driver *pdriver, int stage) {
     // a particle without rest mass follows a null geodesic (midpoint pusher only);
     // a negative mass -t_e marks a null particle that waits at its position until the
     // time t_e (a light ray emitted during the run)
+    // The ray leaves at the step time nearest to t_e. Until then its momentum slots
+    // hold the coordinate direction c^i of emission; at the launch they are replaced
+    // by k_i = gamma_ij c^j / sqrt(gamma_kl c^k c^l), the null momentum of unit
+    // frequency for the normal observer at the point of emission. The proper-time slot
+    // of a null particle accumulates its affine parameter and is zero until the launch.
     const Real eps = (pr(IPM,p) > 0.0) ? 1.0 : 0.0;
-    if (pr(IPM,p) < 0.0 && tnow < -pr(IPM,p)) return;
+    if (pr(IPM,p) < 0.0 && tnow + 0.5*dt < -pr(IPM,p)) return;
+    const bool launch = (pr(IPM,p) < 0.0 && pr(IPTAU,p) == 0.0);
     Real dtau = 0.0;
     int it = 0;
     bool excise = false;
@@ -355,6 +361,20 @@ TaskStatus Particles::NrpicPush(Driver *pdriver, int stage) {
       met.m = m;
       met.xmin[0] = sz(m).x1min; met.xmin[1] = sz(m).x2min; met.xmin[2] = sz(m).x3min;
       met.idx[0] = 1.0/sz(m).dx1; met.idx[1] = 1.0/sz(m).dx2; met.idx[2] = 1.0/sz(m).dx3;
+      if (launch) {
+        nrpic::AdmPoint ap;
+        met(0, x, ap);
+        Real k[3] = {0.0, 0.0, 0.0};
+        Real c2 = 0.0;
+        for (int a=0; a<3; ++a) {
+          for (int b=0; b<3; ++b) {
+            k[a] += ap.g[a][b]*u[b];
+            c2 += ap.g[a][b]*u[a]*u[b];
+          }
+        }
+        const Real ic = 1.0/sqrt(c2);
+        u[0] = k[0]*ic; u[1] = k[1]*ic; u[2] = k[2]*ic;
+      }
       if (alpha_exc > 0.0) {
         nrpic::AdmPoint ap;
         met(0, x, ap);
