@@ -237,16 +237,21 @@ particles and 2000 in each overdensity (the original: 3e6 and 1e6 each). Envelop
 radius: the self-consistent value (Appendix on sampling; the stated radius does not fit
 the stated speed). Meshes: finest cells M/64 or M/128 in a region that follows each
 overdensity (the original: M/64 at the start, refinement down to M/256). Four filter
-passes with compensation.
+passes with compensation. The region of finest cells around each tracker has a radius
+of 0.3 M up to t = 13 M and 0.2 M afterwards on the M/64 mesh (0.15 M, then 0.125 M on
+the M/128 mesh); the figure caption notes need not mention this, the setups table does.
 
 Facts so far (formation stage), in the order of the argument:
-1. Collapse time. The overdensities collapse from the inside out. With cells of M/128
-   the first trapped surface (Misner-Sharp mass about the tracker, nothing removed
-   yet) exists at t = 8.66 M with a mass of 0.05 M. The original's first apparent
-   horizons are at 8.475 and 8.525 M.
-2. Black-hole masses after formation. Apparent horizons (finder): 0.0885 and 0.0929 M
-   at t = 10.1 and 10.25 M with cells of M/64; 0.078 and 0.080 M at 9.5 and 9.6 M and
-   0.083 M at 9.8 M with cells of M/128. Misner-Sharp at t = 10.0 M (M/64): 0.085 M.
+1. Collapse time. The overdensities collapse from the inside out. With cells of M/128,
+   in a run in which no particle is removed, the first trapped surface (Misner-Sharp
+   mass about the tracker) exists at t = 8.66 M with a mass of 0.05 M. The original's
+   first apparent horizons are at 8.475 and 8.525 M. (In the production runs the
+   lapse rule starts to remove particles at 8.1 to 9.2 M, before the finder can see
+   the horizons.)
+2. Black-hole masses after formation. Apparent horizons (finder; production runs as
+   stitched for the figure): first found at t = 10.31 and 10.38 M with 0.0932 and
+   0.0946 M with cells of M/64; at 9.52 and 9.61 M with 0.0782 and 0.0801 M with cells
+   of M/128, where they are 0.0855 and 0.0856 M at t = 10 M. Misner-Sharp at t = 10.0 M (M/64): 0.085 M.
    The original gives 0.0880 and 0.0877 M at t = 10 M. Later: 0.128 M each at
    t = 12.9 M (M/64).
 3. What had to change for black holes this small (a tenth of the total mass):
@@ -264,6 +269,9 @@ Facts so far (formation stage), in the order of the argument:
    passes the step at which two runs without the rule failed). Which quantity of the
    lingering matter turns non-finite was not isolated. Whether the published rule
    alone suffices at the original's cell size cannot be tested on one card.
+3c. Individual spins. The finder gives dimensionless spins of 0.007 to 0.03 for the two
+   black holes; the original quotes spins of order 1e-5. With 2000 particles per
+   overdensity the accreted angular momentum does not average out.
 4. Inspiral, merger, common horizon, remnant growth: NOT YET (runs in progress). Do
    not state an outcome.
 [Cluster with two overdensities: collapse on time ...; Correction: the black holes of
