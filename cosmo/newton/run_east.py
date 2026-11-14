@@ -32,6 +32,8 @@ ap.add_argument("--rays-from", default="",
                      "at the proper times of its emitters (writes DIR/newton_rays.npz)")
 ap.add_argument("--out", required=True)
 a = ap.parse_args()
+P.cid.DEP_COMP_C = a.dep_comp_c
+P.cid.DEP_COMP_C2 = a.dep_comp_c2
 
 x, v, m, q = P.east_particles(a.delta, a.n, a.ppc, a.L)
 npd = a.n*a.ppc

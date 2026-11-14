@@ -1659,3 +1659,22 @@ initial data. Relativistic infall of the four groups of observers at a_p = 58.86
 alternative I named holds: the shift is at or below 0.05 percent and the interpolation
 does not matter for this result. The wave is 64 cells long there, sixteen times better
 resolved than the waves on which the gradient error was found.
+
+## C2: production-configuration collapse run, first comparison VOID (07:37)
+
+`cosmo/east_d0.01_n64_pcs4b` ran. Against the Newtonian run I had started for it the
+delay came out as 2.8, 2.8, 3.2, 4.5 percent, far from the predicted 4.4 to 4.9 and 5.2
+to 5.6. Before reading anything into that I checked the pair: `run_east.py` accepted
+the two compensation options and never passed them to the deposit, so the Newtonian
+run used the cubic cloud WITHOUT the compensation and was not the counterpart of the
+relativistic run. (The random-field script `run_field.py` sets them, so the
+random-field comparison is not affected.) Fixed; the Newtonian run is repeated
+(`newton_d0.01_n64_pcs4`; the uncompensated one is kept as `..._pcs_nocomp`). The
+prediction above stands for the repeated pair.
+Relativistic run alone, constraints (mean, relative) at a = 2, 5, 10, 20, 40, 100:
+Hamiltonian 3.0e-7, 2.1e-6, 3.7e-6, 3.2e-5, 2.4e-4, 1.6e-2; momentum 8.6e-5, 1.6e-4,
+8.9e-4, 4.7e-3, 2.9e-2, 0.17. Quadratic cloud with the filter: 4.9e-6, 8.1e-6, 6.9e-5,
+1.1e-4, 2.3e-4, 4.0e-3 and 1.2e-3, 1.9e-3, 6.1e-3, 1.3e-2, 2.1e-2, 2.1e-2. So 16, 4, 19,
+3 times lower in the Hamiltonian constraint up to a = 20 (predicted at least three:
+holds), equal at 40, and four to eight times HIGHER after the collapse, where the
+filter of the old runs smoothed the noise of the bound region.
