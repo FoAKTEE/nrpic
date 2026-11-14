@@ -1701,3 +1701,21 @@ So the excess is nonlinear Newtonian growth, reproduced by the relativistic run 
 at every epoch and in every shell: the size expected of a relativistic correction for
 a potential of 1.4e-4, but at 32 cells I cannot separate it from the differences
 between the two discretisations. The 64-cell Newtonian run is under way for that.
+
+## C2: the collapse run in the production configuration, outcome (07:51)
+
+`cosmo/east_d0.01_n64_pcs4b` against the repeated `newton_d0.01_n64_pcs4` (both with
+the cubic cloud and the compensation to fourth order). Infall of the four groups of
+observers: relativistic a_p = 58.07, 58.66, 61.66, 78.77; Newtonian 55.53, 56.13, 58.92,
+74.83; delay 4.58, 4.51, 4.65, 5.27 percent. Predicted 4.4 to 4.9 (inner) and 5.2 to
+5.6 (outer): holds. The quadratic cloud with the filter gave 4.61, 4.55, 4.79, 5.25 at
+64 cells and 4.39, 4.48, 4.72, 5.31 at 128 cells.
+The infall times themselves, 58.07 and 55.53 for the innermost group, are close to the
+128-cell values of the old configuration (57.92, 55.48) and to its extrapolation to
+infinite resolution at second order (57.6, 55.2): at 64 cells the production
+configuration is as accurate as the old one at 128. Density contrast of ten at the
+overdensity: delay 3.0 percent (3.0 before); contrast of a hundred: 3.6 (3.5).
+So the relativistic delay at this amplitude, 4.4 to 4.7 percent near the overdensity
+and 5.3 percent a quarter of the box away, holds in three numerical configurations
+(linear cloud with filter; quadratic cloud with filter at three resolutions; cubic
+cloud with compensation and spline) to 0.15 points.
