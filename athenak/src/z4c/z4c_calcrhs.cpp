@@ -43,6 +43,32 @@ TaskStatus Z4c::CalcRHS(Driver *pdriver, int stage) {
 
   Real time = pmy_pack->pmesh->time;
 
+  // Reference values of the driver towards constant mean curvature (lapse_kdriver):
+  // the largest lapse and the proper-volume mean of Khat, taken from the state of this
+  // stage, so that the driver vanishes identically in a homogeneous universe.
+  if (opt.lapse_kdriver != 0.0) {
+    auto &u0_ = pmy_pack->pz4c->u0;
+    const int ichi = I_Z4C_CHI, ikh = I_Z4C_KHAT, ial = I_Z4C_ALPHA;
+    Real vol = 0.0, kvol = 0.0, amax = 0.0;
+    Kokkos::parallel_reduce("z4c_lapseref",
+      Kokkos::MDRangePolicy<DevExeSpace, Kokkos::Rank<4>>(
+        {0, ks, js, is}, {nmb, ke+1, je+1, ie+1}),
+    KOKKOS_LAMBDA(const int m, const int k, const int j, const int i, Real &lv,
+                  Real &lk, Real &lamax) {
+      // sqrt(gamma) = chi^(-3/2)
+      const Real chi = fmax(u0_(m,ichi,k,j,i), 1.0e-30);
+      const Real w = size.d_view(m).dx1*size.d_view(m).dx2*size.d_view(m).dx3
+                     / (chi*sqrt(chi));
+      lv += w;
+      lk += w*u0_(m,ikh,k,j,i);
+      lamax = fmax(lamax, u0_(m,ial,k,j,i));
+    }, Kokkos::Sum<Real>(vol), Kokkos::Sum<Real>(kvol), Kokkos::Max<Real>(amax));
+    if (vol > 0.0 && Kokkos::isfinite(kvol) && Kokkos::isfinite(amax) && amax > 0.0) {
+      opt.lapse_ref_alpha = amax;
+      opt.lapse_ref_khat = kvol/vol;
+    }
+  }
+
   // Drift control (optional)
   int nx1 = indcs.nx1, nx2 = indcs.nx2, nx3 = indcs.nx3;
   bool dc_on        = opt.enable_driftcontrol;
@@ -661,6 +687,15 @@ TaskStatus Z4c::CalcRHS(Driver *pdriver, int stage) {
                     ? opt.lapse_volume/sqrt(fmax(chi_guarded, 1.0e-30)) : 0.0);
     rhs.alpha(m,k,j,i) = opt.lapse_advect * Lalpha
                        - f * z4c.alpha(m,k,j,i) * z4c.vKhat(m,k,j,i);
+    // lapse_kdriver adds a driver towards constant mean curvature,
+    //   -mu alpha_ref alpha (Khat - Khat_ref),
+    // with Khat_ref the volume mean of Khat and alpha_ref the largest lapse of this
+    // stage.  It vanishes in a homogeneous universe; where the matter contracts
+    // relative to the mean the lapse falls exponentially.
+    if (opt.lapse_kdriver != 0.0) {
+      rhs.alpha(m,k,j,i) -= opt.lapse_kdriver * opt.lapse_ref_alpha * z4c.alpha(m,k,j,i)
+                            * (z4c.vKhat(m,k,j,i) - opt.lapse_ref_khat);
+    }
 
     if (opt.slow_start_lapse) {
       Real W2 = (z4c.chi(m,k,j,i) > opt.chi_min_floor)

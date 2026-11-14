@@ -163,6 +163,9 @@ class Z4c {
     Real lapse_harmonicf;
     Real lapse_harmonic;
     Real lapse_volume;
+    Real lapse_kdriver;     // strength of the driver towards constant mean curvature
+    Real lapse_ref_alpha;   // ... its reference lapse (largest lapse on the mesh)
+    Real lapse_ref_khat;    // ... and reference Khat (volume mean)
     Real lapse_advect;
     // slow start lapse condition
     bool slow_start_lapse;

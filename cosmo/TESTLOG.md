@@ -559,3 +559,72 @@ What test B establishes: in the linear regime the potential stays constant and t
 density follows linear theory with second-order convergence in the cell size, with
 errors a factor of 1.5 to 3 below those of paper 2 at equal cell number (8 particles per
 cell here against 27 there).
+
+## E1, second step: driver towards constant mean curvature (01:48)
+
+Code: `<z4c> lapse_kdriver = mu` adds -mu alpha_ref alpha (Khat - Khat_ref) to the lapse
+equation, with alpha_ref the largest lapse and Khat_ref the proper-volume mean of Khat.
+First version: references refreshed once per step. Check on the homogeneous universe:
+alpha / a - 1 = -2.5e-2 after 12 steps. Cause: K changes by 4.5 percent per step, so a
+reference from the start of the step leaves a driver term of first order in the step.
+Second version: references taken from the state of each stage (one reduction per
+stage): alpha / a - 1 = -1.6e-7 after 12 steps, as without the driver.
+Written before the linear-regime check `cosmo/east_d1e-4_n32_kd` (amplitude 1e-4,
+32 cells, mu = 1, to a = 10): the observer density contrast at both probes stays within
+1 percent of linear theory, as without the driver, because it does not depend on the
+slicing; the lapse perturbation at the probes changes from the Newtonian-gauge value.
+A departure of the contrast from linear theory would mean that the proper time of the
+probe or the density is no longer that of the comoving observer (for example if the
+driver made the lapse oscillate).
+Written before the extreme case `cosmo/east_d0.05_n64_kd` (mu = 1, no particle
+removal): the lapse at the overdensity falls below a tenth of the largest lapse while
+the density there is still finite, and the run passes a = 18.6; whether 64 cells hold
+the gradients is again open.
+
+## C5, follow-up runs of tests A0 and A: outcome (01:58)
+
+(i) `cosmo/dav_a0k_n{8,16,32}` (damping rate fixed per unit of conformal time, kappa1 =
+    1). Error of chi at the end: 3.9e-8, 2.6e-9, 6.2e-10 against 1.3e-7, 8.2e-9, 1.1e-9
+    with the constant coefficient: lower by 3.3, 3.2, 1.8, not by more than ten.
+    Refuted. Fourth-order convergence holds (15.2 between 8 and 16 cells). Paper 2 is
+    still 15 times lower at 8 cells.
+    Correction of the previous entry: I wrote that the integral of (2/3) alpha Theta
+    "is a few 1e-8, as measured". Redone with the recorded values: the lapse over the
+    code's own scale factor, alpha chi^(1/2), is off by -1.7e-8 at the end, which is
+    what that integral gives; the larger part of the error of chi (1.3e-7) is the
+    difference between the code's homogeneous solution and the exact one in the
+    normalization of conformal time, set by the truncation error of the early steps
+    and not by Theta. The integrator of this code is a low-storage fourth-order
+    Runge-Kutta scheme with about twice the principal error of the classical one
+    (stated in its source); that explains a factor of two of the fifteen. The rest is
+    not explained.
+(ii) `cosmo/dav_anp_n{8,16,32}` (noise of test A without the momentum noise of the
+    particles). Error of E at t = 10 Mpc/h: 9.0e-9, 2.3e-9, 5.5e-10 (paper 2: 7.7e-9,
+    2.2e-9, 4.4e-10): the early level is the noise of chi in both. At the end: 2.4e-6,
+    1.2e-6, 6.4e-7 against 8.9e-7, 1.9e-7, 6.7e-8: within a factor of five at 8 cells
+    (2.6), not at 16 and 32 cells (6.3 and 9.5). Partly confirmed. With the momentum
+    noise the error was 700 times that of paper 2, without it 3 to 10 times: the runs
+    of paper 2 cannot have had momentum noise of the size its text states. The
+    remaining factor grows with resolution; the deposit here is the linear cloud
+    (paper 2: quadratic), which passes more of the grid-scale noise to the density.
+
+## E1, second step: outcome (01:59)
+
+Linear-regime check `cosmo/east_d1e-4_n32_kd` (mu = 1, to a = 10): the observer density
+contrast over linear theory is 0.996 to 0.998 at both probes, equal to the run without
+the driver to three digits; the lapse perturbation at the probes is 14 percent smaller
+(-1.57e-4 against -1.83e-4 at the overdensity at t = 4.4). Confirmed.
+Extreme case `cosmo/east_d0.05_n64_kd` (mu = 1): confirmed as far as predicted. The
+lapse at the overdensity turns around at a = 15.6 (10.5), falls smoothly to 1.56 at
+t = 7.03 (a = 20.5), 7.5 percent of the largest lapse, and the density there now rises
+by half in a quarter time unit where it doubled every 0.06 before. The run passes a =
+18.6. It ends at t = 7.05 (a = 20.6): the metric determinant turns non-positive in 48
+cells around the overdensity (three cells across), the relative Hamiltonian constraint
+there is of order one and Theta is 0.12. The driver does what it should; 64 cells do
+not resolve the collapsing region, as feared.
+Next: the same on a finer uniform mesh (128 cells) to see whether the end moves, then
+static refinement around the overdensity with the adaptive cloud level of the first
+project, interpolated initial data, and the horizon finder. A mass estimate: the matter
+that starts within a quarter wavelength of the overdensity has M = 0.5 in these units,
+a horizon of proper radius 1, i.e. 0.05 in comoving coordinates at a = 20, less than
+one cell of the 64-cell mesh; three levels of refinement give it six to twelve cells.

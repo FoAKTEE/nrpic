@@ -137,6 +137,9 @@ Z4c::Z4c(MeshBlockPack *ppack, ParameterInput *pin) :
   opt.lapse_harmonicf = pin->GetOrAddReal("z4c", "lapse_harmonicf", 1.0);
   opt.lapse_harmonic = pin->GetOrAddReal("z4c", "lapse_harmonic", 0.0);
   opt.lapse_volume = pin->GetOrAddReal("z4c", "lapse_volume", 0.0);
+  opt.lapse_kdriver = pin->GetOrAddReal("z4c", "lapse_kdriver", 0.0);
+  opt.lapse_ref_alpha = 1.0;
+  opt.lapse_ref_khat = 0.0;
   opt.lapse_oplog = pin->GetOrAddReal("z4c", "lapse_oplog", 2.0);
   opt.lapse_advect = pin->GetOrAddReal("z4c", "lapse_advect", 1.0);
   opt.slow_start_lapse = pin->GetOrAddBoolean("z4c", "slow_start_lapse", false);
