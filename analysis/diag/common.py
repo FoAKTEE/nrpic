@@ -96,6 +96,13 @@ def parse_cli(argv, defaults=(), options=()):
         a = argv[i]
         if a.startswith("--"):
             key = a[2:]
+            if "=" in key and key.split("=", 1)[0] in options:
+                # --key=value: accepted (it used to be stored as a flag named
+                # "key=value" and the option silently kept its default)
+                key, val = key.split("=", 1)
+                opts[key] = val
+                i += 1
+                continue
             if key in options:
                 opts[key] = argv[i + 1]
                 i += 2
