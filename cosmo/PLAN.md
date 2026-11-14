@@ -123,6 +123,31 @@ What the first runs changed in the plan:
   the first project: short runs go through `scripts/gpu_batch.sh`; long cosmological
   runs need the restart path, which is untested for periodic particle runs.
 
+## T2, design notes (not started)
+
+Where it applies. A cold lattice has no smooth distribution function to subtract: its
+error is the lattice sampling error of T1a, and the undisplaced lattice already deposits
+exactly. T2 is for warm systems with a known stationary solution, i.e. the equilibrium
+clusters of the first project, whose noise (the growing oscillation of the stable
+cluster, the scatter of the collapse times) is sampling noise of the whole distribution.
+Form. The distribution function is constant along particle paths, so a particle that
+starts with the value f_p carries the weight w_p(t) = 1 - f0(z_p(t)) / f_p, where f0 is
+the reference evaluated at the particle's current phase-space point. No weight equation
+has to be integrated. The source is the stress-energy of f0 plus the weighted particle
+sums; its noise scales with the size of the departure.
+The difficulty in general relativity. f0 must be a function on the phase space of the
+evolved coordinates, and its stress-energy must be taken in the evolved metric. For a
+static cluster f0 = F(E) with E the conserved energy of the static metric; once the
+gauge moves, E is no longer a known function of the evolved variables. Options, in
+order of cost: (a) keep the reference in a gauge that the evolution can hold (static
+slicing of the cluster with frozen lapse and zero shift while the departure is small);
+(b) define f0 through the evolved metric itself, f0 = F(-p_t / alpha-like invariant),
+which is not a solution and then needs the weight equation with a source term; (c)
+tabulate the moments of f0 as functions of the local metric components.
+First test, when started: the stable cluster of the first project at 1e4 particles in
+the static gauge, option (a): the oscillation amplitude and its growth against the
+full-distribution run.
+
 ## Decisions
 
 - Particle numbers: the limit of 10^4 belonged to the first project. Here the mesh has
