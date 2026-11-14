@@ -1917,3 +1917,32 @@ Delay over amplitude, innermost group: 5.2, 4.7, 4.6, 4.8; outermost: 5.0, 5.1, 
 The law of the earlier runs (about five times the amplitude, or 2.6 to 2.9 times the
 depth of the initial potential) holds in the production configuration; the linear
 cloud had overstated the inner delays by a few tenths of a point.
+
+## C5 extension: the random field in the Newtonian reference at 64 cells, outcome (10:30)
+
+`newton_c704_n64_pcs4` (2196 steps, same particles and numerical configuration as
+`dav_c704_n64_pcs4bt`). No size was predicted for this run; the question written at
+07:38 was whether the 0.014 to 0.046 percent by which the relativistic power lies
+below the Newtonian one at 32 cells is a property of the solutions or of the two
+discretisations. Power against the linear theory of each code, three shells, percent:
+   z = 100  Newtonian +0.006 +0.012 -0.004   relativistic -0.006 +0.005 -0.012
+   z = 10             +0.087 +0.153 -0.005                +0.067 +0.142 -0.015
+   z = 1              +0.495 +0.849 +0.015                +0.474 +0.837 +0.004
+   z = 0              +0.985 +1.661 +0.067                +0.963 +1.648 +0.055
+Relativistic minus Newtonian, 64 cells (32 cells):
+   z = 100  -0.012 -0.008 -0.008   (-0.014 -0.013 -0.017)
+   z = 10   -0.020 -0.011 -0.010   (-0.023 -0.017 -0.029)
+   z = 1    -0.022 -0.012 -0.011   (-0.026 -0.022 -0.041)
+   z = 0    -0.022 -0.013 -0.012   (-0.027 -0.023 -0.046)
+Reading. (1) The nonlinear excess over linear theory is the same in both codes at both
+resolutions (to 0.02 percent of the power). (2) The difference between the codes
+depends on resolution, most in the shortest shell (a factor 3.8 at z = 0, about the
+factor four of a second-order error), least in the longest (a factor 1.2). So most of
+the 32-cell difference in the shortest shell was numerical. (3) What is left at 64
+cells is 0.01 to 0.02 percent, largest in the longest shell and constant after z = 10.
+An extrapolation at second order from the two resolutions gives -0.020, -0.010,
+-0.001 percent at z = 0: suggestive of a difference that falls with wave number, as a
+relativistic correction would, but two resolutions with an assumed order decide
+nothing. Not determined: whether the remainder is relativistic or numerical. A 128-cell
+Newtonian run would decide (the relativistic 128-cell run exists with one particle per
+cell, so it needs the Newtonian run with the same particles).
