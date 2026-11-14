@@ -2863,7 +2863,8 @@
   "st/ctl/s1_nf4c": {
    "dir": "runs/st/ctl/s1_nf4c",
    "families": [
-    "filter"
+    "filter",
+    "osc"
    ],
    "role": "filter controls of the stable model (fig_filter)",
    "param_source": "runs/st/ctl/s1_nf4c/rst/st.00000.rst (parameter dump)",
@@ -7955,7 +7956,7 @@
   "st/reconf_yc0756_hc": {
    "dir": "runs/st/reconf_yc0756_hc",
    "families": [
-    "nearcrit"
+    "nearcrit_ad"
    ],
    "role": "near-critical model compressed by ten percent, consistent initial data (statement)",
    "param_source": "runs/st/reconf_yc0756_hc/rst/st.00000.rst (parameter dump)",
@@ -8175,7 +8176,7 @@
   "st/reconf_yc0756_hc_m": {
    "dir": "runs/st/reconf_yc0756_hc_m",
    "families": [
-    "nearcrit"
+    "nearcrit_ad"
    ],
    "role": "near-critical model expanded by ten percent (fig_nearcritical)",
    "param_source": "runs/st/reconf_yc0756_hc_m/rst/st.00000.rst (parameter dump)",
@@ -8383,10 +8384,194 @@
     "horizon": "none found"
    }
   },
+  "st/yc0756_unpert": {
+   "dir": "runs/st/yc0756_unpert",
+   "families": [
+    "nearcrit_st"
+   ],
+   "role": "unperturbed near-critical model to 800 M (fig_nearcritical)",
+   "param_source": "runs/st/yc0756_unpert/rst/st.00000.rst (parameter dump)",
+   "copied_input": "runs/st/yc0756_unpert/chain/input.athinput",
+   "command": [
+    {
+     "log": "runs/st/yc0756_unpert/chain/seg001.job4216.a1.log",
+     "mode": "new",
+     "input": "runs/st/yc0756_unpert/chain/input.athinput",
+     "overrides": {
+      "time/tlim": "800"
+     }
+    }
+   ],
+   "mesh": {
+    "domain_half_width": 1024.0,
+    "symmetric": true,
+    "root_cells": [
+     64,
+     64,
+     64
+    ],
+    "cells_per_meshblock": [
+     16,
+     16,
+     16
+    ],
+    "root_dx": 32.0,
+    "refinement": "static",
+    "num_levels": null,
+    "refined_regions": [
+     {
+      "level": 7,
+      "half_width": 7.9
+     }
+    ],
+    "matter_dx_start": [
+     0.25,
+     0.25
+    ],
+    "matter_dx_start_time": 0.0,
+    "matter_dx_finest_in_dumps": 0.25,
+    "finest_dx_start": 0.25,
+    "finest_dx_reached": 0.25
+   },
+   "particles": {
+    "pusher": "midpoint",
+    "metric": "mesh",
+    "tetrad_gauge": "symmetric",
+    "deposit": true,
+    "nfilter": 4,
+    "compensation": true,
+    "compensation_c": 1.0,
+    "deposition_rule": "cloud at the finest local level",
+    "deposit_max_coarsen": null,
+    "alpha_exc": 0.1,
+    "particle_file": "particles.nrp",
+    "tracers": 0
+   },
+   "spacetime": {
+    "kappa1": 0.02,
+    "kappa2": 0.0,
+    "c_H": 0.0,
+    "c_H_dx": 0.0,
+    "shift_eta": 2.0,
+    "dissipation": 0.5,
+    "cfl": 0.25,
+    "tlim": 800.0
+   },
+   "horizon_finder": null,
+   "model": {
+    "components": [
+     {
+      "type": "table",
+      "table": "runs/st/yc0756_unpert/st_yc0p756_stratified_N10000_s1.tab",
+      "header": {
+       "model": "st_monoenergetic",
+       "yc": 0.756,
+       "M_ADM": 1.0,
+       "M0": 1.0351788675485867,
+       "Eb_over_M0": 0.033983371039918775,
+       "R_areal": 7.9252994782530966,
+       "rbar_s": 6.889009792575857,
+       "zc": 0.3301229614185821,
+       "alpha_c": 0.7518101927460117,
+       "alpha_s": 0.8646638686275995,
+       "E0": 0.8646638686275995,
+       "psi_c": 1.1393975129787663,
+       "psi_s": 1.0725793713544782,
+       "rho_c": 0.00118741701459541,
+       "P_c": 9.657658385376001e-05,
+       "rho0_c": 0.0010324384388002567,
+       "zeta": 0.08133333333333333,
+       "L": 2.3346819192175756
+      }
+     }
+    ],
+    "initial_lapse": "table",
+    "particles": {
+     "model": "st_monoenergetic",
+     "sampler": "stratified",
+     "seed": 1,
+     "vpert": 0.0,
+     "vpert_profile": "uniform",
+     "dpert": 0.0,
+     "yc": 0.756,
+     "M0": 1.0351788675485867,
+     "alpha_c": 0.7518101927460117,
+     "rho_c": 0.00118741701459541,
+     "zc": 0.3301229614185821,
+     "R_areal": 7.9252994782530966,
+     "M_ADM_of_data": null,
+     "generator_file": "runs/st/yc0756_unpert/st_yc0p756_stratified_N10000_s1.nrp",
+     "max_momentum_difference": 0.0
+    }
+   },
+   "performance": {
+    "segments": [
+     {
+      "log": "runs/st/yc0756_unpert/chain/seg001.job4216.a1.log",
+      "wall_s": 2967.767,
+      "wall_source": "log summary (cpu time used)",
+      "zone_cycles_per_s": 8055732.0,
+      "meshblock_cycles": 5836800,
+      "termination": "time limit",
+      "exit": 0,
+      "time_reached": 781.25
+     }
+    ],
+    "wall_s_total": 2967.767,
+    "zone_cycles_per_s": 8055732.000000001
+   },
+   "dt_start": 0.0625,
+   "dt_start_source": "seg001.job4216.a1.log, first step line",
+   "status": "finished",
+   "block_limit_exceeded": null,
+   "notes": [],
+   "outcomes": {
+    "t_final": 800.0,
+    "np_start": 10000,
+    "np_end": 10000,
+    "nmb_start_hist": 456,
+    "nmb_max": 456,
+    "central_lapse": {
+     "t0": 0.7519938321503861,
+     "min": 0.6962646663968615,
+     "t_min": 770.5,
+     "max": 0.7721599324662412,
+     "t_max": 389.5,
+     "end": 0.7203700455593536
+    },
+    "n_excised_end": 0,
+    "n_escaped_end": 0,
+    "escape_times": [],
+    "removal_first_t": null,
+    "all_removed_t": null,
+    "mean_lorentz": {
+     "start": 1.066308600779068,
+     "min": 1.0633923621953034,
+     "max": 1.0818441084762827,
+     "end_live": 1.0780761137446246,
+     "note": "records before the first removal"
+    },
+    "net_momentum_max": 0.00033670730530014373,
+    "rest_mass_start": 1.035178867548587,
+    "filtered_energy_change": {
+     "t0": -3.0512441165364557e-05,
+     "mean": -0.00016187985996377345,
+     "end": -0.00021673236704944365
+    },
+    "H_norm": {
+     "start": 0.5055106329247685,
+     "max": 0.5055106329247685,
+     "t_max": 0.0,
+     "end": 0.09263741144915481
+    },
+    "dt_halvings": [],
+    "horizon": "no finder"
+   }
+  },
   "st/reconf_yc0756_v4": {
    "dir": "runs/st/reconf_yc0756_v4",
    "families": [
-    "nearcrit"
+    "nearcrit_st"
    ],
    "role": "statement: the compressed particles on the unperturbed metric contract alike",
    "param_source": "runs/st/reconf_yc0756_v4/rst/st.00000.rst (parameter dump)",
@@ -8568,194 +8753,10 @@
     "horizon": "no finder"
    }
   },
-  "st/yc0756_unpert": {
-   "dir": "runs/st/yc0756_unpert",
-   "families": [
-    "nearcrit"
-   ],
-   "role": "unperturbed near-critical model to 800 M (fig_nearcritical)",
-   "param_source": "runs/st/yc0756_unpert/rst/st.00000.rst (parameter dump)",
-   "copied_input": "runs/st/yc0756_unpert/chain/input.athinput",
-   "command": [
-    {
-     "log": "runs/st/yc0756_unpert/chain/seg001.job4216.a1.log",
-     "mode": "new",
-     "input": "runs/st/yc0756_unpert/chain/input.athinput",
-     "overrides": {
-      "time/tlim": "800"
-     }
-    }
-   ],
-   "mesh": {
-    "domain_half_width": 1024.0,
-    "symmetric": true,
-    "root_cells": [
-     64,
-     64,
-     64
-    ],
-    "cells_per_meshblock": [
-     16,
-     16,
-     16
-    ],
-    "root_dx": 32.0,
-    "refinement": "static",
-    "num_levels": null,
-    "refined_regions": [
-     {
-      "level": 7,
-      "half_width": 7.9
-     }
-    ],
-    "matter_dx_start": [
-     0.25,
-     0.25
-    ],
-    "matter_dx_start_time": 0.0,
-    "matter_dx_finest_in_dumps": 0.25,
-    "finest_dx_start": 0.25,
-    "finest_dx_reached": 0.25
-   },
-   "particles": {
-    "pusher": "midpoint",
-    "metric": "mesh",
-    "tetrad_gauge": "symmetric",
-    "deposit": true,
-    "nfilter": 4,
-    "compensation": true,
-    "compensation_c": 1.0,
-    "deposition_rule": "cloud at the finest local level",
-    "deposit_max_coarsen": null,
-    "alpha_exc": 0.1,
-    "particle_file": "particles.nrp",
-    "tracers": 0
-   },
-   "spacetime": {
-    "kappa1": 0.02,
-    "kappa2": 0.0,
-    "c_H": 0.0,
-    "c_H_dx": 0.0,
-    "shift_eta": 2.0,
-    "dissipation": 0.5,
-    "cfl": 0.25,
-    "tlim": 800.0
-   },
-   "horizon_finder": null,
-   "model": {
-    "components": [
-     {
-      "type": "table",
-      "table": "runs/st/yc0756_unpert/st_yc0p756_stratified_N10000_s1.tab",
-      "header": {
-       "model": "st_monoenergetic",
-       "yc": 0.756,
-       "M_ADM": 1.0,
-       "M0": 1.0351788675485867,
-       "Eb_over_M0": 0.033983371039918775,
-       "R_areal": 7.9252994782530966,
-       "rbar_s": 6.889009792575857,
-       "zc": 0.3301229614185821,
-       "alpha_c": 0.7518101927460117,
-       "alpha_s": 0.8646638686275995,
-       "E0": 0.8646638686275995,
-       "psi_c": 1.1393975129787663,
-       "psi_s": 1.0725793713544782,
-       "rho_c": 0.00118741701459541,
-       "P_c": 9.657658385376001e-05,
-       "rho0_c": 0.0010324384388002567,
-       "zeta": 0.08133333333333333,
-       "L": 2.3346819192175756
-      }
-     }
-    ],
-    "initial_lapse": "table",
-    "particles": {
-     "model": "st_monoenergetic",
-     "sampler": "stratified",
-     "seed": 1,
-     "vpert": 0.0,
-     "vpert_profile": "uniform",
-     "dpert": 0.0,
-     "yc": 0.756,
-     "M0": 1.0351788675485867,
-     "alpha_c": 0.7518101927460117,
-     "rho_c": 0.00118741701459541,
-     "zc": 0.3301229614185821,
-     "R_areal": 7.9252994782530966,
-     "M_ADM_of_data": null,
-     "generator_file": "runs/st/yc0756_unpert/st_yc0p756_stratified_N10000_s1.nrp",
-     "max_momentum_difference": 0.0
-    }
-   },
-   "performance": {
-    "segments": [
-     {
-      "log": "runs/st/yc0756_unpert/chain/seg001.job4216.a1.log",
-      "wall_s": 2967.767,
-      "wall_source": "log summary (cpu time used)",
-      "zone_cycles_per_s": 8055732.0,
-      "meshblock_cycles": 5836800,
-      "termination": "time limit",
-      "exit": 0,
-      "time_reached": 781.25
-     }
-    ],
-    "wall_s_total": 2967.767,
-    "zone_cycles_per_s": 8055732.000000001
-   },
-   "dt_start": 0.0625,
-   "dt_start_source": "seg001.job4216.a1.log, first step line",
-   "status": "finished",
-   "block_limit_exceeded": null,
-   "notes": [],
-   "outcomes": {
-    "t_final": 800.0,
-    "np_start": 10000,
-    "np_end": 10000,
-    "nmb_start_hist": 456,
-    "nmb_max": 456,
-    "central_lapse": {
-     "t0": 0.7519938321503861,
-     "min": 0.6962646663968615,
-     "t_min": 770.5,
-     "max": 0.7721599324662412,
-     "t_max": 389.5,
-     "end": 0.7203700455593536
-    },
-    "n_excised_end": 0,
-    "n_escaped_end": 0,
-    "escape_times": [],
-    "removal_first_t": null,
-    "all_removed_t": null,
-    "mean_lorentz": {
-     "start": 1.066308600779068,
-     "min": 1.0633923621953034,
-     "max": 1.0818441084762827,
-     "end_live": 1.0780761137446246,
-     "note": "records before the first removal"
-    },
-    "net_momentum_max": 0.00033670730530014373,
-    "rest_mass_start": 1.035178867548587,
-    "filtered_energy_change": {
-     "t0": -3.0512441165364557e-05,
-     "mean": -0.00016187985996377345,
-     "end": -0.00021673236704944365
-    },
-    "H_norm": {
-     "start": 0.5055106329247685,
-     "max": 0.5055106329247685,
-     "t_max": 0.0,
-     "end": 0.09263741144915481
-    },
-    "dt_halvings": [],
-    "horizon": "no finder"
-   }
-  },
   "os/mc_adapt2": {
    "dir": "runs/os/mc_adapt2",
    "families": [
-    "dustmc"
+    "dustmc_full"
    ],
    "role": "random-sample dust ball, level cap, full depth, one plain pass (statement)",
    "param_source": "runs/os/mc_adapt2/rst/os.00000.rst (parameter dump)",
@@ -8945,7 +8946,7 @@
   "os/mc_adapt3": {
    "dir": "runs/os/mc_adapt3",
    "families": [
-    "dustmc"
+    "dustmc_full"
    ],
    "role": "random-sample dust ball, level cap, full depth, four passes + c (statement)",
    "param_source": "runs/os/mc_adapt3/rst/os.00000.rst (parameter dump)",
@@ -9137,7 +9138,7 @@
   "os/mc_nocap4": {
    "dir": "runs/os/mc_nocap4",
    "families": [
-    "dustmc"
+    "dustmc_lf"
    ],
    "role": "random-sample dust ball, published rule, one level fewer (statement)",
    "param_source": "runs/os/mc_nocap4/rst/os.00000.rst (parameter dump)",
@@ -9330,7 +9331,7 @@
   "os/mc_adapt4": {
    "dir": "runs/os/mc_adapt4",
    "families": [
-    "dustmc"
+    "dustmc_lf"
    ],
    "role": "random-sample dust ball, level cap, one level fewer (statement)",
    "param_source": "runs/os/mc_adapt4/rst/os.00000.rst (parameter dump)",

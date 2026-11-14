@@ -91,6 +91,7 @@ RUNS = {
     **{f"st/ctl/{k}": ["filter"] for k in ("s1_nf4", "s2_nf4", "s3_nf4", "s1_nf0",
                                            "s1_nf2", "s1_nf4c", "s2_nf4c", "s3_nf4c",
                                            "s1_nf2c")},
+    "st/ctl/s1_nf4c": ["filter", "osc"],      # base run of the oscillation controls
     **{f"st/osc/{k}": ["osc"] for k in ("dt2", "k1_0p1", "k1_0", "ch0p05", "ccloud",
                                         "long", "long2", "dx2b")},
     "st/yc0819_n1e3_v4": ["nnum"], "st/yc0819_n1e2_v4": ["nnum"],
@@ -102,10 +103,10 @@ RUNS = {
     "st/dir_yc0500_plain": ["unpert"], "st/dir_yc0500_comp": ["unpert"],
     "st/dir_yc0500_comp_s2": ["unpert"], "st/dir_yc0500_comp_s3": ["unpert"],
     "st/migration_yc0500_v4": ["unpert"],
-    "st/reconf_yc0756_hc": ["nearcrit"], "st/reconf_yc0756_hc_m": ["nearcrit"],
-    "st/reconf_yc0756_v4": ["nearcrit"], "st/yc0756_unpert": ["nearcrit"],
-    "os/mc_adapt2": ["dustmc"], "os/mc_adapt3": ["dustmc"], "os/mc_nocap4": ["dustmc"],
-    "os/mc_adapt4": ["dustmc"],
+    "st/reconf_yc0756_hc": ["nearcrit_ad"], "st/reconf_yc0756_hc_m": ["nearcrit_ad"],
+    "st/yc0756_unpert": ["nearcrit_st"], "st/reconf_yc0756_v4": ["nearcrit_st"],
+    "os/mc_adapt2": ["dustmc_full"], "os/mc_adapt3": ["dustmc_full"], "os/mc_nocap4": ["dustmc_lf"],
+    "os/mc_adapt4": ["dustmc_lf"],
     "os/mc_nocap2": ["dustmc_runaway"], "os/mc_nocap3": ["dustmc_runaway"],
     "prolate/e09_v8": ["prolate"],
     # Collapse and merger of two overdensities inside a cluster (runs/jeans/n1e4_v11, v12):
@@ -374,6 +375,7 @@ def match_ic(nrp):
 # one run
 # ---------------------------------------------------------------------------------------
 CACHE = {}          # run -> arrays not written to the json
+PARAMS = {}         # run -> {(block, key): value} that the code read
 
 
 def find_logs(d):
@@ -463,6 +465,7 @@ def collect(key):
                        "overrides": {f"{b}/{k}": v for (b, k), v in lg["overrides"].items()}}
                       for lg in logs]
 
+    PARAMS[key] = par
     g = lambda b, k, default=None: par.get((b, k), default)  # noqa: E731
     base = g("job", "basename")
     # ---- mesh
@@ -780,6 +783,38 @@ def concat(keys):
     return np.concatenate(t), np.concatenate(a)
 
 
+def refine_steps(key):
+    """Times at which the MeshBlock count of the particle history changes."""
+    h = CACHE[key]["hst"]
+    n = h[:, H["nmb"]]
+    return [float(h[i + 1, 0]) for i in np.nonzero(np.diff(n))[0]]
+
+
+def osc_fit(key):
+    """Extrema and growth of the central-lapse oscillation as analysis/diag/cluster_osc.py:
+    4 M boxcar, extrema at least 15 M apart between 8 M and t_end - 4 M, half the difference
+    of successive alternating extrema fitted by a straight line in time."""
+    from scipy.signal import argrelextrema
+    t, a = lapse(key)
+    a0 = float(a[0])
+    dt = float(np.median(np.diff(t)))
+    n = max(3, int(round(4.0 / dt)) | 1)
+    sm_ = np.convolve(a, np.ones(n) / n, mode="same")
+    order = max(2, int(round(15.0 / dt)))
+    ext = sorted([(i, +1) for i in argrelextrema(sm_, np.greater, order=order)[0]] +
+                 [(i, -1) for i in argrelextrema(sm_, np.less, order=order)[0]])
+    ext = [(i, k) for i, k in ext if 8.0 < t[i] < t[-1] - 4.0]
+    te, amp, mid = [], [], []
+    for (i0, k0), (i1, k1) in zip(ext[:-1], ext[1:]):
+        if k0 != k1:
+            te.append(t[i1])
+            amp.append(0.5 * abs(sm_[i1] - sm_[i0]))
+            mid.append(0.5 * (sm_[i1] + sm_[i0]) - a0)
+    p = np.polyfit(te, amp, 1)
+    return {"a0": a0, "ext": [(float(t[i]), float(sm_[i] - a0)) for i, _ in ext], "slope": float(p[0]),
+            "icpt": float(p[1]), "mid": float(mid[-1])}
+
+
 def radii(key):
     """Snapshot times and radii about the origin enclosing 10, ..., 90 percent of the rest
     mass present, from the completely written snapshots (as the figure scripts)."""
@@ -887,6 +922,150 @@ def dx_cell(keys):
     return vals
 
 
+def dx_of(k, level):
+    """Cell spacing of a physical refinement level of run k."""
+    return R[k]["mesh"]["root_dx"] / 2 ** level
+
+
+def fval(x):
+    """Sort key of a table text such as 1/8, 0.30->0.038, 4+c (filter passes: plain
+    before compensated, then by number)."""
+    m = re.match(r"^(\d+)(\+c)?$", x.strip())
+    if m:
+        return (1 if m.group(2) else 0) * 100 + int(m.group(1))
+    m = re.match(r"\s*(\d+)/(\d+)", x)
+    if m:
+        return -int(m.group(1)) / int(m.group(2))
+    m = re.match(r"\s*([0-9.]+)", x)
+    return -float(m.group(1)) if m else 0.0
+
+
+def aggregate(keys, base, varied, vals, numeric=False):
+    """Text of one column of a row. All equal: the value. A column the row varies: the
+    values of its runs in the order of the model column (or coarse to fine for spacings).
+    Otherwise the base run's value with the values of control runs in parentheses."""
+    order = []
+    for k in keys:
+        v = vals[k]
+        if v is not None and v not in order:
+            order.append(v)
+    if not order:
+        return "--"
+    if len(order) == 1:
+        return order[0]
+    sep = "; " if any("," in v for v in order) else ", "
+    if varied:
+        order = sorted(order, key=fval) if numeric else order
+        tails = {v.split(": ", 1)[1] for v in order if ": " in v}
+        if len(tails) == 1 and all(": " in v and ";" not in v for v in order):
+            return ", ".join(v.split(": ", 1)[0] for v in order) + ": " + tails.pop()
+        return sep.join(order)
+    b = vals[base]
+    return b + " (" + sep.join(v for v in order if v != b) + ")"
+
+
+def mesh_text(k):
+    return f"{R[k]['mesh']['refinement']}, {dx_cell([k])[0]}"
+
+
+def setup_rows():
+    """Rows of the setups table: (name, run keys, base run, set of varied columns, model Cell)."""
+    def hdr(k):
+        return R[k]["model"]["components"][0].get("header", {})
+
+    def seeds(keys):
+        return sorted({R[q]["model"]["particles"]["seed"] for q in keys})
+    out = []
+    k = "puncture/single_v3"
+    out.append(("Vacuum black hole", fam("vacuum"), k, {"mesh", "dt"}, Cell(
+        f"puncture of mass $M$; {R[k]['particles']['tracers']} tracers",
+        runs_src(fam("vacuum"), "parameter dump, problem/comp0_type = puncture, comp0_mass; particles/nparticles "
+                                "(all five runs carry the six tracers)"))))
+    k = "puncture/headon_v4"
+    c = R[k]["model"]["components"]
+    out.append(("Head-on collision", [k], k, set(), Cell(
+        rf"punctures $M/2$ at $x=\pm{abs(c[0]['position'][0]):g}M$; {R[k]['particles']['tracers']} tracers",
+        runs_src([k], f"parameter dump, problem/comp0,1: masses {c[0]['mass']}, {c[1]['mass']}, "
+                      f"x = {c[0]['position'][0]}, {c[1]['position'][0]}; particles/nparticles"))))
+    k = "os/nocap_sc"
+    ic = R[k]["model"]["particles"]
+    out.append(("Dust collapse, lattice", fam("dust"), k, set(), Cell(
+        rf"$R_0={ic['R0_areal']:g}M$; $n_{{\rm lat}}={ic['n_lat']}$ ($h={ic['lattice_h']:.2f}M$); masses corrected, "
+        r"published",
+        runs_src(fam("dust"), f"generator metadata matched to the particle file: R0_areal = {ic['R0_areal']}, "
+                              f"n_lat = {ic['n_lat']}, lattice_h = {ic['lattice_h']:.6f}, lattice_surface_correction = "
+                              + per_run(fam('dust'), lambda q: str(R[q]['model']['particles'].get('lattice_surface_correction', False)))))))
+    out.append(("Dust collapse, lattice, level cap", fam("dustcap"), "os/adapt_sc", {"dep"}, Cell(
+        r"as above, corrected masses",
+        runs_src(fam("dustcap"), "generator metadata: " + per_run(
+            fam("dustcap"), lambda q: f"n_lat={R[q]['model']['particles'].get('n_lat')}, "
+                                      f"lattice_surface_correction={R[q]['model']['particles'].get('lattice_surface_correction')}")))))
+    keys = fam("dustmc_full")
+    out.append(("Dust collapse, random sample, full depth", keys, "os/mc_adapt2", {"nf"}, Cell(
+        rf"$R_0={ic['R0_areal']:g}M$; positions drawn with density $\propto\psi^6$, equal masses",
+        runs_src(keys, "generator metadata matched to the particle file (runs/os/ic_mc): sampler mc, equal masses "
+                       "summing to the continuum rest mass; python/nrpic/sampling.sample_os: acceptance psi^6/psi(0)^6: " +
+                 per_run(keys, lambda q: f"sampler {R[q]['model']['particles']['sampler']}")))))
+    keys = fam("dustmc_lf")
+    out.append(("Dust collapse, random sample, one level fewer", keys, "os/mc_nocap4", {"dep"}, Cell(
+        "as above",
+        runs_src(keys, "same particle file as the full-depth runs: " +
+                 per_run(keys, lambda q: R[q]['model']['particles']['generator_file'])))))
+    k = "prolate/e09_v8"
+    pic = R[k]["model"]["particles"]
+    out.append(("Prolate collapse", [k], k, set(), Cell(
+        rf"spheroid $e={pic['e']:g}$, $b={pic['b']:g}M$, at rest",
+        runs_src([k], f"generator metadata (runs/prolate/e09_n1e4, same particles): e = {pic['e']}, a = {pic['a']:.4f}, "
+                      f"b = {pic['b']}, symmetrize = {pic.get('symmetrize')}; parameter dump problem/comp0_type = spheroid"))))
+    keys = fam("filter")
+    sd = seeds(keys)
+    out.append(("Stable cluster, filter", keys, "st/ctl/s1_nf4", {"nf"}, Cell(
+        rf"$y_c={hdr(keys[0])['yc']:g}$, unperturbed; seeds {sd[0]}--{sd[-1]}",
+        runs_src(keys, "initial-data table header yc; generator metadata seed and vpert: " +
+                 per_run(keys, lambda q: f"seed {R[q]['model']['particles']['seed']} vpert {R[q]['model']['particles']['vpert']}")))))
+    keys = fam("osc")
+    out.append(("Stable cluster, oscillation", keys, "st/ctl/s1_nf4c", set(), Cell(
+        rf"$y_c={hdr(keys[0])['yc']:g}$, unperturbed; seed {seeds(keys)[0]}",
+        runs_src(keys, "base run runs/st/ctl/s1_nf4c and its controls; initial-data table header yc; generator metadata "
+                       "seed and vpert: " +
+                 per_run(keys, lambda q: f"seed {R[q]['model']['particles']['seed']} vpert {R[q]['model']['particles']['vpert']}")))))
+    keys = fam("nnum")
+    out.append(("Particle number", keys, "st/yc0819_v4", set(), Cell(
+        rf"$y_c={hdr(keys[0])['yc']:g}$; kick 0.01 (stratified) or none (Monte Carlo)",
+        runs_src(keys, "initial-data table header yc; generator metadata sampler and vpert: " +
+                 per_run(keys, lambda q: f"{R[q]['model']['particles']['sampler']} vpert {R[q]['model']['particles']['vpert']}")))))
+    keys = fam("stable")
+    out.append(("Sequence, stable", keys, keys[0], set(), Cell(
+        r"$y_c=" + ", ".join(f"{hdr(q)['yc']:.3f}" for q in keys) + r"$; kick 0.01",
+        runs_src(keys, "initial-data table header yc; generator metadata vpert: " +
+                 per_run(keys, lambda q: f"yc {hdr(q)['yc']} vpert {R[q]['model']['particles']['vpert']}")))))
+    keys = fam("unstable")
+    out.append(("Sequence, unstable", keys, keys[0], set(), Cell(
+        r"$y_c=" + ", ".join(f"{hdr(q)['yc']:.3f}" for q in keys) + r"$; kick 0.01",
+        runs_src(keys, "initial-data table header yc; generator metadata vpert: " +
+                 per_run(keys, lambda q: f"yc {hdr(q)['yc']} vpert {R[q]['model']['particles']['vpert']}")))))
+    keys = fam("unpert")
+    sd = seeds(keys)
+    out.append(("Unperturbed unstable", keys, "st/migration_yc0500_v4", {"nf"}, Cell(
+        rf"$y_c={hdr(keys[0])['yc']:.3f}$, unperturbed; seeds {sd[0]}--{sd[-1]}",
+        runs_src(keys, "initial-data table header yc; generator metadata seed, vpert: " +
+                 per_run(keys, lambda q: f"seed {R[q]['model']['particles']['seed']} vpert {R[q]['model']['particles']['vpert']}")))))
+    keys = fam("nearcrit_ad")
+    out.append(("Near-critical, consistent data", keys, keys[0], {"mesh"}, Cell(
+        rf"$y_c={hdr(keys[0])['unperturbed.yc']:.3f}$; density $\times1.1$, $\times0.9$",
+        runs_src(keys, "initial-data table header unperturbed.yc; generator metadata dpert: " +
+                 per_run(keys, lambda q: f"dpert {R[q]['model']['particles']['dpert']}")))))
+    keys = fam("nearcrit_st")
+    out.append(("Near-critical, static mesh", keys, "st/yc0756_unpert", set(), Cell(
+        rf"$y_c={hdr(keys[0])['yc']:.3f}$; unperturbed, or $\times1.1$ on its metric",
+        runs_src(keys, "initial-data table header yc (unperturbed table in both runs); generator metadata dpert: " +
+                 per_run(keys, lambda q: f"dpert {R[q]['model']['particles']['dpert']}")))))
+    jr = jeans_setup_row()
+    if jr:
+        out.append(jr)
+    return out
+
+
 def setups():
     rows = []
     geo = "docs/results_geodesic.md"
@@ -903,7 +1082,8 @@ def setups():
         Cell("77.5--4550", f"{geo}, A (plunge stopped at t = 77.52 M) and B (equatorial BL orbit to 4550 M)"),
     ]))
     rows.append(("Test-particle clusters", [
-        Cell(r"$a=0.9M$, $a\to0$; cloud at $r_0=10M$", f"{tpc}, section 1 (initial data)"),
+        Cell(r"$a=0.9M$, $a\to0$; Gaussian cloud about $r_0=10M$, widths $0.5M$, $0.02$ in velocity",
+             f"{tpc}, section 1 (initial data: sigma_x = 0.5 M, sigma_v = 0.02, centre on the orbit with turning point at r_0 = 10 M)"),
         Cell(r"$10^2$--$10^4$, Gaussian", f"{tpc}, section 1, families table"),
         Cell("64", f"{tpc}, Mesh: [-64, 64]^3"),
         Cell(r"static, 1/4$\to$1/16", f"{tpc}, Mesh: six static levels; dx = 0.25 M over the cluster, 0.0625 M at the black hole"),
@@ -914,163 +1094,132 @@ def setups():
         Cell("--", "fixed metric"),
         Cell("500--1000", f"{tpc}, Mesh: 1000 M, plunging runs 500 M"),
     ]))
-
-    def row(name, keys, model_cell):
-        cells = [model_cell]
+    SETUP_ROWS.clear()
+    for name, keys, base, varied, model in setup_rows():
+        SETUP_ROWS.append((name, keys, base, varied))
+        cells = [model]
         ns = sorted({R[k]["outcomes"]["np_start"] for k in keys})
-        smp = sorted({sampler_text(k) for k in keys})
+        smp = []
+        for k in keys:
+            if sampler_text(k) not in smp:
+                smp.append(sampler_text(k))
         ntx = n_text(ns[0]) if len(ns) == 1 else f"{n_text(ns[0])}--{n_text(ns[-1])}"
         cells.append(Cell(f"{ntx}, {', '.join(smp)}",
                           runs_src(keys, "particle history, np of the first record; sampler from the generator metadata "
                                          "matched to the run's particle file") + " | " +
                           per_run(keys, lambda k: f"N={R[k]['outcomes']['np_start']} {sampler_text(k)}")))
-        cells.append(Cell(mode_and_others([R[k]["mesh"]["domain_half_width"] for k in keys], frac),
-                          runs_src(keys, "parameter dump, mesh/x1max (x1min = -x1max)") + " | " +
-                          per_run(keys, lambda k: frac(R[k]["mesh"]["domain_half_width"]))))
+        how = f" (base run {R[base]['dir']}; parentheses: control runs; lists: the runs of the row)"
+        vals = {k: frac(R[k]["mesh"]["domain_half_width"]) for k in keys}
+        cells.append(Cell(aggregate(keys, base, "L" in varied, vals, True),
+                          runs_src(keys, "parameter dump, mesh/x1max (x1min = -x1max)" + how) + " | " +
+                          per_run(keys, lambda k: vals[k])))
         refs = {R[k]["mesh"]["refinement"] for k in keys}
-        mtxt = (f"{refs.pop()}, " + mode_and_others(dx_cell(keys), str)) if len(refs) == 1 else \
-            mode_and_others([f"{R[k]['mesh']['refinement']}, {dx_cell([k])[0]}" for k in keys], str, sep="; ")
+        if len(refs) == 1:
+            dv = {k: dx_cell([k])[0] for k in keys}
+            mtxt = f"{next(iter(refs))}, " + aggregate(keys, base, "mesh" in varied, dv, "mesh" in varied and len(keys) > 2)
+        else:
+            dv = {k: mesh_text(k) for k in keys}
+            mtxt = aggregate(keys, base, "mesh" in varied, dv)
         cells.append(Cell(mtxt,
                           runs_src(keys, "parameter dump, mesh_refinement/refinement; "
                                          "root spacing (x1max - x1min)/nx1 halved per level; levels of the MeshBlocks holding "
                                          "particles in the first restart dump and its particle restart file (gid -> block level); "
-                                         "finest level of any MeshBlock over all dumps; for vacuum runs the finest level (at the puncture)") +
-                          " | " + per_run(keys, lambda k: dx_cell([k])[0])))
-        cells.append(Cell(mode_and_others([R[k]["dt_start"] or float("nan") for k in keys if R[k]["dt_start"]], frac),
-                          runs_src([k for k in keys if R[k]["dt_start"]], "log, dt of the first step line (cycle 0)") + " | " +
-                          per_run([k for k in keys if R[k]["dt_start"]], lambda k: f"{R[k]['dt_start']:.6g}")))
-        cells.append(Cell(", ".join(sorted({nf_text(k) for k in keys})),
-                          runs_src(keys, "parameter dump, particles/nfilter and particles/filter_compensate")))
-        cells.append(Cell(dep_text(keys), runs_src(keys, "parameter dump, particles/deposit, deposit_adaptive, deposit_max_coarsen")))
-        cells.append(Cell(mode_and_others([R[k]["particles"]["alpha_exc"] for k in keys], lambda v: f"{v:g}"),
-                          runs_src(keys, "parameter dump, particles/alpha_exc")))
-        cells.append(Cell(mode_and_others([R[k]["spacetime"]["kappa1"] for k in keys], lambda v: f"{v:g}"),
-                          runs_src(keys, "parameter dump, z4c/damp_kappa1")))
+                                         "finest level of any MeshBlock over all dumps; for vacuum runs the finest level (at the puncture)"
+                                   + how) + " | " + per_run(keys, lambda k: mesh_text(k))))
+        vals = {k: (frac(R[k]["dt_start"]) if R[k]["dt_start"] else None) for k in keys}
+        cells.append(Cell(aggregate(keys, base, "dt" in varied, vals, True),
+                          runs_src(keys, "log, dt of the first step line (cycle 0); runs restarted from another run's "
+                                         "dump have none" + how) + " | " +
+                          per_run(keys, lambda k: f"{R[k]['dt_start']:.6g}" if R[k]['dt_start'] else "restart")))
+        vals = {k: nf_text(k) for k in keys}
+        cells.append(Cell(aggregate(keys, base, "nf" in varied, vals, True),
+                          runs_src(keys, "parameter dump, particles/nfilter and particles/filter_compensate" + how) + " | " +
+                          per_run(keys, lambda k: vals[k])))
+        vals = {k: dep_label(k) for k in keys}
+        caps = sorted({R[k]["particles"]["deposit_max_coarsen"] for k in keys
+                       if R[k]["particles"]["deposit_max_coarsen"] is not None})
+        dtx = ("level-capped (" + ", ".join(r"$\le" + f"{c}$" if c < 31 else "any" for c in caps) + ")"
+               if all(v.startswith("level-capped") for v in vals.values()) and len(caps) > 1
+               else aggregate(keys, base, "dep" in varied, vals))
+        cells.append(Cell(dtx, runs_src(keys, "parameter dump, particles/deposit, deposit_adaptive, deposit_max_coarsen" + how)
+                          + " | " + per_run(keys, lambda k: vals[k])))
+        vals = {k: f"{R[k]['particles']['alpha_exc']:g}" for k in keys}
+        cells.append(Cell(aggregate(keys, base, False, vals), runs_src(keys, "parameter dump, particles/alpha_exc" + how)))
+        vals = {k: f"{R[k]['spacetime']['kappa1']:g}" for k in keys}
+        cells.append(Cell(aggregate(keys, base, False, vals), runs_src(keys, "parameter dump, z4c/damp_kappa1" + how)
+                          + " | " + per_run(keys, lambda k: vals[k])))
         tf = [R[k]["outcomes"]["t_final"] for k in keys]
         tt = f"{tf[0]:.0f}" if max(tf) - min(tf) < 0.5 else f"{min(tf):.0f}--{max(tf):.0f}"
         cells.append(Cell(tt, runs_src(keys, "particle history, time of the last record") + " | " +
                           per_run(keys, lambda k: f"{R[k]['outcomes']['t_final']:.2f} ({R[k]['status']})")))
         rows.append((name, cells))
-
-    def hdr(k):
-        return R[k]["model"]["components"][0].get("header", {})
-
-    k = "puncture/single_v3"
-    row("Vacuum black hole", fam("vacuum"), Cell(
-        f"puncture of mass $M$; {R[k]['particles']['tracers']} tracers",
-        runs_src(fam("vacuum"), "parameter dump, problem/comp0_type = puncture, comp0_mass; particles/nparticles"
-                                " (all five runs carry the six tracers)")))
-    k = "puncture/headon_v4"
-    c = R[k]["model"]["components"]
-    row("Head-on collision", [k], Cell(
-        rf"punctures $M/2$ at $x=\pm{abs(c[0]['position'][0]):g}M$; {R[k]['particles']['tracers']} tracers",
-        runs_src([k], f"parameter dump, problem/comp0,1: masses {c[0]['mass']}, {c[1]['mass']}, "
-                      f"x = {c[0]['position'][0]}, {c[1]['position'][0]}; particles/nparticles")))
-    k = "os/nocap_sc"
-    ic = R[k]["model"]["particles"]
-    row("Dust collapse", fam("dust"), Cell(
-        rf"$R_0={ic['R0_areal']:g}M$, $h={ic['lattice_h']:.2f}M$; masses corrected, published",
-        runs_src(fam("dust"), f"generator metadata matched to the particle file: R0_areal = {ic['R0_areal']}, "
-                              f"lattice_h = {ic['lattice_h']:.6f}, lattice_surface_correction = "
-                              + per_run(fam('dust'), lambda q: str(R[q]['model']['particles'].get('lattice_surface_correction', False))))))
-    row("Dust collapse, level cap", fam("dustcap"), Cell(
-        r"as above, corrected masses",
-        runs_src(fam("dustcap"), "generator metadata: " + per_run(
-            fam("dustcap"), lambda q: f"lattice_surface_correction={R[q]['model']['particles'].get('lattice_surface_correction')}"))))
-    keys = fam("dustmc")
-    row("Dust collapse, random sample", keys, Cell(
-        rf"$R_0={ic['R0_areal']:g}M$; equal masses",
-        runs_src(keys, "generator metadata matched to the particle file (runs/os/ic_mc): sampler mc, R0_areal, "
-                       "equal masses summing to the continuum rest mass: " +
-                 per_run(keys, lambda q: f"sampler {R[q]['model']['particles']['sampler']}"))))
-    k = "prolate/e09_v8"
-    pic = R[k]["model"]["particles"]
-    row("Prolate collapse", [k], Cell(
-        rf"spheroid $e={pic['e']:g}$, $b={pic['b']:g}M$, at rest",
-        runs_src([k], f"generator metadata (runs/prolate/e09_n1e4, same particles): e = {pic['e']}, a = {pic['a']:.4f}, "
-                      f"b = {pic['b']}, symmetrize = {pic.get('symmetrize')}; parameter dump problem/comp0_type = spheroid")))
-    jr = jeans_setup_row()
-    keys = fam("filter")
-    row("Stable cluster, filter", keys, Cell(
-        rf"$y_c={hdr(keys[0])['yc']:g}$, unperturbed; samples 1--3",
-        runs_src(keys, "initial-data table header yc; generator metadata seed and vpert: " +
-                 per_run(keys, lambda q: f"seed {R[q]['model']['particles']['seed']} vpert {R[q]['model']['particles']['vpert']}"))))
-    keys = fam("osc")
-    row("Stable cluster, oscillation", keys, Cell(
-        rf"$y_c={hdr(keys[0])['yc']:g}$, unperturbed; sample 1",
-        runs_src(keys, "initial-data table header yc; generator metadata seed and vpert: " +
-                 per_run(keys, lambda q: f"seed {R[q]['model']['particles']['seed']} vpert {R[q]['model']['particles']['vpert']}"))))
-    keys = fam("nnum")
-    row("Particle number", keys, Cell(
-        rf"$y_c={hdr(keys[0])['yc']:g}$; kick 0.01 or none",
-        runs_src(keys, "initial-data table header yc; generator metadata vpert: " +
-                 per_run(keys, lambda q: f"vpert {R[q]['model']['particles']['vpert']}"))))
-    keys = fam("stable")
-    row("Sequence, stable", keys, Cell(
-        r"$y_c=" + ", ".join(f"{hdr(q)['yc']:.3f}" for q in keys) + r"$; kick 0.01",
-        runs_src(keys, "initial-data table header yc; generator metadata vpert: " +
-                 per_run(keys, lambda q: f"yc {hdr(q)['yc']} vpert {R[q]['model']['particles']['vpert']}"))))
-    keys = fam("unstable")
-    row("Sequence, unstable", keys, Cell(
-        r"$y_c=" + ", ".join(f"{hdr(q)['yc']:.3f}" for q in keys) + r"$; kick 0.01",
-        runs_src(keys, "initial-data table header yc; generator metadata vpert: " +
-                 per_run(keys, lambda q: f"yc {hdr(q)['yc']} vpert {R[q]['model']['particles']['vpert']}"))))
-    keys = fam("unpert")
-    row("Unperturbed unstable", keys, Cell(
-        rf"$y_c={hdr(keys[0])['yc']:.3f}$, unperturbed; samples 1--3",
-        runs_src(keys, "initial-data table header yc; generator metadata seed, vpert: " +
-                 per_run(keys, lambda q: f"seed {R[q]['model']['particles']['seed']} vpert {R[q]['model']['particles']['vpert']}"))))
-    keys = fam("nearcrit")
-    row("Near-critical", keys, Cell(
-        rf"$y_c={hdr(keys[0])['unperturbed.yc']:.3f}$; density $\times(1\pm0.1)$ or unperturbed",
-        runs_src(keys, "initial-data table header unperturbed.yc (or yc); generator metadata dpert: " +
-                 per_run(keys, lambda q: f"dpert {R[q]['model']['particles']['dpert']}"))))
-    if jr:
-        row(*jr)
     return rows
 
 
-FAMILY_ROW = {"vacuum": "Vacuum black hole", "headon": "Head-on collision", "dust": "Dust collapse",
-              "dustcap": "Dust collapse, level cap", "filter": "Stable cluster, filter",
-              "osc": "Stable cluster, oscillation", "nnum": "Particle number", "stable": "Sequence, stable",
-              "unstable": "Sequence, unstable", "unpert": "Unperturbed unstable", "nearcrit": "Near-critical",
-              "dustmc": "Dust collapse, random sample", "prolate": "Prolate collapse"}
+SETUP_ROWS = []          # (name, keys, base) of the rows built from run directories
 SETUP_HEAD = ["Scenario and model", r"$N$, sampling", r"$L/M$", r"Mesh, $\Delta x/M$", r"$\Delta t/M$",
               r"$n_{\rm f}$", "Deposition", r"$\aexc$", r"$\kappa_1$", r"$t_{\rm end}/M$"]
-SETUP_COLS = [0.22, 0.1, 0.05, 0.135, 0.07, 0.06, 0.085, 0.035, 0.065, 0.065]   # fractions of the text width
+SETUP_COLS = [0.245, 0.09, 0.05, 0.135, 0.065, 0.055, 0.085, 0.035, 0.065, 0.06]   # fractions of the text width
+
+
+def footnoted(rows, head, marks):
+    """Attach footnote marks in reading order (row by row, left to right; marks on the
+    header first) and return the footnote texts with their sources in that order."""
+    names = [r[0] for r in rows]
+    order = sorted(marks, key=lambda m: (-1 if m[0] is None else names.index(m[0]), m[1]))
+    notes = []
+    for i, (name, ci, text, src) in enumerate(order, 1):
+        if name is None:
+            head[ci] += rf"\footnotemark[{i}]"
+        else:
+            dict(rows)[name][ci].tex += rf"\footnotemark[{i}]"
+        notes.append((text, src))
+    return notes
+
+
+def table_lines(label, caption, head, cols, rows, notes, sep="2pt"):
+    spec = "".join(rf"p{{{w}\textwidth}}" for w in cols)
+    L = [r"\begin{table*}", rf"\caption{{{caption}}}", rf"\label{{{label}}}", r"\footnotesize",
+         rf"\setlength{{\tabcolsep}}{{{sep}}}", r"\begin{ruledtabular}", r"\begin{tabular}{" + spec + "}",
+         " & ".join(rf"\raggedright {h}" for h in head) + r" \tabularnewline", r"\colrule"]
+    for name, cells in rows:
+        first = rf"{name}: {cells[0].tex}" if cells[0].tex else name
+        L.append(" & ".join(rf"\raggedright {c}" for c in [first] + [c.tex for c in cells[1:]]) + r" \tabularnewline")
+    L += [r"\end{tabular}", r"\end{ruledtabular}",
+          *[rf"\footnotetext[{i}]{{{t}}}" for i, (t, _) in enumerate(notes, 1)], r"\end{table*}", ""]
+    return L
 
 
 def write_setups(rows):
-    # control runs marked by footnotes (single runs of the oscillation family)
-    osc = [r for r in rows if r[0] == "Stable cluster, oscillation"][0][1]
     kch = [k for k in fam("osc") if R[k]["spacetime"]["c_H"]]
     kcc = [k for k in fam("osc") if R[k]["particles"]["compensation_c"] not in (None, R[k]["particles"]["nfilter"] / 4)]
-    ch = R[kch[0]]["spacetime"]["c_H"]
+    ch, chdx = R[kch[0]]["spacetime"]["c_H"], R[kch[0]]["spacetime"]["c_H_dx"]
     ccv = R[kcc[0]]["particles"]["compensation_c"]
     nf = R[kcc[0]]["particles"]["nfilter"]
     extra = 12 * (ccv - nf / 4)
-    rowd = dict(rows)
     col = SETUP_HEAD.index
-    marks = []                         # (row, column index into the cells, text, source)
+    marks = []                         # (row or None for the header, column index, text, source)
     marks.append(("Stable cluster, oscillation", col(r"$\kappa_1$"),
-                  rf"One run adds parabolic relaxation of $\Ham$ with $c_H={ch:g}\,M$.",
-                  runs_src(kch, "parameter dump, z4c/damp_ch")))
+                  rf"One control adds parabolic relaxation of $\Ham$ with constant $c_H={ch:g}\,M$"
+                  + (r" and no $\Delta x$-proportional term." if not chdx else "."),
+                  runs_src(kch, f"parameter dump, z4c/damp_ch = {ch}, z4c/damp_ch_dx = {chdx}")))
     marks.append(("Stable cluster, oscillation", col(r"$n_{\rm f}$"),
-                  rf"One run uses $c=n_{{\rm f}}/4+{extra:.0f}/12$, which also cancels the cloud width.",
+                  rf"One control uses $c=n_{{\rm f}}/4+{extra:.0f}/12$, which also cancels the cloud width.",
                   runs_src(kcc, f"parameter dump, particles/filter_comp_c = {ccv!r}")))
-    kt = [k for k in fam("dustmc") if R[k]["status"].startswith("killed")]
+    kt = [k for k in fam("dustmc_full") if R[k]["status"].startswith("killed")]
     if kt:
-        marks.append(("Dust collapse, random sample", col(r"$t_{\rm end}/M$"),
-                      f"{['No', 'One', 'Two', 'Three'][len(kt)]} capped run{'s' if len(kt) > 1 else ''} with the full refinement depth stopped at the time limit of their jobs, at "
+        marks.append(("Dust collapse, random sample, full depth", col(r"$t_{\rm end}/M$"),
+                      f"{['No', 'One', 'Both', 'Three'][len(kt)]} run{'s' if len(kt) > 1 else ''} stopped at the time limit of "
+                      f"{'their' if len(kt) > 1 else 'its'} job, at "
                       + " and ".join(f"$t={R[k]['outcomes']['t_final']:.0f}M$" for k in kt) + ".",
                       runs_src(kt, "log ends without a summary, exit 143; particle history, time of the last record: " +
                                per_run(kt, lambda q: f"{R[q]['outcomes']['t_final']:.3f}"))))
     kr = fam("dustmc_runaway")
     if kr:
         ex = [R[k]["block_limit_exceeded"] for k in kr]
-        marks.append(("Dust collapse, random sample", 0,
-                      r"With the published rule at the full refinement depth the MeshBlock count passed the limit before a "
-                      r"horizon formed: " + "; ".join(
+        marks.append(("Dust collapse, random sample, full depth", 0,
+                      r"Finest-level clouds at the full refinement depth passed the MeshBlock limit before a horizon "
+                      r"formed: " + "; ".join(
                           f"$t={R[k]['outcomes']['t_final']:.1f}M$, {e[0]} asked for, limit {e[1]} "
                           rf"($n_{{\rm f}}={nf_text(k)}$)" for k, e in zip(kr, ex)) + ".",
                       runs_src(kr, "log, fatal error 'Number of MeshBlocks ... on new tree = N ... exceeds "
@@ -1079,49 +1228,213 @@ def write_setups(rows):
                                per_run(kr, lambda q: f"t {R[q]['outcomes']['t_final']:.3f}, N {R[q]['block_limit_exceeded'][0]}, "
                                                      f"L {R[q]['block_limit_exceeded'][1]}"))))
     running = [k for k in RUNS if R[k]["status"] == "running"]
-    for name in [FAMILY_ROW[f] for f in sorted({f for k in running for f in RUNS[k]}) if f in FAMILY_ROW]:
-        keys = [k for k in running if any(name == FAMILY_ROW[f] for f in RUNS[k])]
-        marks.append((name, col(r"$t_{\rm end}/M$"), r"Run in progress; values up to its last record.",
-                      runs_src(keys, "chain/STATUS = RUNNING; last record of the particle history at t = " +
-                               ", ".join(f"{R[k]['outcomes']['t_final']:.2f}" for k in keys))))
-    notes = []
-    for i, (name, ci, text, src) in enumerate(marks, 1):
-        rowd[name][ci].tex += rf"\footnotemark[{i}]"
-        notes.append((text, src))
+    for name, keys, base, _v in SETUP_ROWS:
+        kk = [k for k in keys if k in running]
+        if kk:
+            marks.append((name, col(r"$t_{\rm end}/M$"), r"Run in progress; values up to its last record.",
+                          runs_src(kk, "chain/STATUS = RUNNING; last record of the particle history at t = " +
+                                   ", ".join(f"{R[k]['outcomes']['t_final']:.2f}" for k in kk))))
+    head = list(SETUP_HEAD)
+    notes = footnoted(rows, head, marks)
     cells_all = {(tuple(R[k]["mesh"]["root_cells"]), tuple(R[k]["mesh"]["cells_per_meshblock"])) for k in RUNS}
     assert cells_all == {((64, 64, 64), (16, 16, 16))}, cells_all
-    caption = (r"Setups, one row per family of runs: model, macroparticle number $N$ and sampling, domain half-width $L$, "
-               r"mesh and cell spacing $\Delta x$ in the matter at the start and the finest reached (vacuum runs: at the "
-               r"puncture), first time step $\Delta t$, filter passes $n_{\rm f}$ (+c: compensation pass), deposition, "
-               r"excision threshold $\aexc$, constraint damping $\kappa_1$, final time. Meshes other than uniform have "
-               r"$64^3$ root cells in MeshBlocks of $16^3$ cells. Parentheses: single runs of a family.")
-    notes.append(("caption: 64^3 root cells, 16^3-cell MeshBlocks",
-                  runs_src(list(RUNS), "parameter dump, mesh/nx1..3 = 64 and meshblock/nx1..3 = 16 in every run "
-                                       "(checked); docs/results_cluster_test.md, Mesh, for the test-particle clusters")))
-    spec = "".join(rf"p{{{w}\textwidth}}" for w in SETUP_COLS)
-    L = [r"\begin{table*}",
-         rf"\caption{{{caption}}}",
-         r"\label{tab:setups}",
-         r"\footnotesize",
-         r"\setlength{\tabcolsep}{2pt}",
-         r"\begin{ruledtabular}",
-         r"\begin{tabular}{" + spec + "}",
-         " & ".join(rf"\raggedright {h}" for h in SETUP_HEAD) + r" \tabularnewline", r"\colrule"]
-    for name, cells in rows:
-        first = rf"{name}: {cells[0].tex}"
-        L.append(" & ".join(rf"\raggedright {c}" for c in [first] + [c.tex for c in cells[1:]]) + r" \tabularnewline")
-    L += [r"\end{tabular}", r"\end{ruledtabular}",
-          *[rf"\footnotetext[{i}]{{{t}}}" for i, (t, _) in enumerate(notes, 1) if not t.startswith("caption")],
-          r"\end{table*}", ""]
-    (OUT_TAB / "tab_setups.tex").write_text("\n".join(L))
+    caption = (r"Setups, one row per family of runs (numerical settings in Table~\ref{tab:setups_numerics}): macroparticle "
+               r"number $N$ and sampling, domain half-width $L$, mesh and cell spacing $\Delta x$ in the matter at the start and "
+               r"finest reached (vacuum: at the puncture), first step $\Delta t$, filter passes $n_{\rm f}$ (+c: compensation), "
+               r"deposition, excision threshold $\aexc$, constraint damping $\kappa_1$, final time. Non-uniform meshes: $64^3$ "
+               r"root cells, $16^3$-cell MeshBlocks. Lists follow the model column; parentheses: control runs.")
+    L = table_lines("tab:setups", caption, head, SETUP_COLS, rows, notes)
     led = []
     for name, cells in rows:
         for h, c in zip(["Model"] + SETUP_HEAD[1:], cells):
             if re.search(r"\d", detex(c.tex)):
-                led.append(f"tab_setups, {name}, {detex(h)}: {detex(c.tex)} <- {c.src}")
-    for i, (t, s) in enumerate(notes, 1):
-        led.append(f"tab_setups, {t if t.startswith('caption') else f'footnote {i}: ' + detex(t)} <- {s}")
-    return led
+                led.append(f"tab:setups, {name}, {detex(h)}: {detex(c.tex)} <- {c.src}")
+    for i, (t, s_) in enumerate(notes, 1):
+        led.append(f"tab:setups, footnote {i}: {detex(t)} <- {s_}")
+    led.append("tab:setups, caption: 64^3 root cells, 16^3-cell MeshBlocks <- " +
+               runs_src(list(RUNS), "parameter dump, mesh/nx1..3 = 64 and meshblock/nx1..3 = 16 in every run "
+                                    "(checked); docs/results_cluster_test.md, Mesh, for the test-particle clusters"))
+    L2, led2 = write_numerics(rows)
+    (OUT_TAB / "tab_setups.tex").write_text("\n".join(L + L2))
+    return led + led2
+
+
+NUM_HEAD = ["Scenario", "Refinement", "Levels", r"Minimum resolution: $\Delta x/M$ for $|x|/M$ below",
+            "MeshBlock limit", r"Finder: start $t/M$ (first radius$/M$)", "Pusher tolerance, iterations",
+            r"Level cap: particles per cloud cell, coarsest cloud $\Delta x/M$"]
+NUM_COLS = [0.16, 0.095, 0.045, 0.155, 0.08, 0.105, 0.09, 0.13]
+
+
+def numerics_values(k):
+    """Numerical settings of one run, from its parameters (dict of column -> text) and the
+    source description."""
+    par = PARAMS[k]
+    g = lambda b, key, d=None: par.get((b, key), d)  # noqa: E731
+    m = R[k]["mesh"]
+    out = {}
+    meth = g("z4c_amr", "method", "trivial")
+    out["ref"] = {"lohner": r"L\"ohner", "tracker": "puncture tracking", "trivial": "static"}.get(meth, meth) \
+        if m["refinement"] == "adaptive" else "static"
+    lv = CACHE[k]["levels"]
+    if m["refinement"] == "adaptive":
+        out["levels"] = f"{int(num(g('mesh_refinement', 'num_levels')))}"
+    elif lv:
+        out["levels"] = f"{max(x['mesh_level_max'] for x in lv) + 1}"
+    else:
+        out["levels"] = f"{max(r['level'] for r in m['refined_regions']) + 1}"
+    boxes = {}                                   # extent text -> (finest level, half-widths)
+    for b in sorted({b for b, _ in par if b.startswith("refined_region")}):
+        lev = int(g(b, "level"))
+        x1 = [num(g(b, "x1min")), num(g(b, "x1max"))]
+        x2 = [num(g(b, "x2min")), num(g(b, "x2max"))]
+        x3 = [num(g(b, "x3min")), num(g(b, "x3max"))]
+        if abs(x1[0] + x1[1]) > 1e-9:            # box about a puncture off the origin
+            ext, hw = f"{(x1[1] - x1[0]) / 2:g} about each puncture", 0.0
+        else:
+            hx, hy, hz = max(map(abs, x1)), max(map(abs, x2)), max(map(abs, x3))
+            ext = f"{hx:g}" if abs(hx - hz) < 1e-9 and abs(hx - hy) < 1e-9 else f"{hx:g}, {hy:g}, {hz:g}"
+            hw = min(hx, hy, hz)
+        if ext not in boxes or lev > boxes[ext][0]:
+            boxes[ext] = (lev, hw)
+    parts = {}                                   # dx text -> [extents], finest first
+    for ext, (lev, hw) in sorted(boxes.items(), key=lambda e: -e[1][0]):
+        parts.setdefault(lev, []).append(ext)
+    if g("z4c_amr", "radius_0_rad") is not None and m["refinement"] == "adaptive":
+        rr, rl = num(g("z4c_amr", "radius_0_rad")), int(num(g("z4c_amr", "radius_0_reflevel")))
+        inside = any(lev == rl and hw >= rr - 1e-9 for lev, hw in boxes.values())
+        if not inside:
+            parts.setdefault(rl, []).append(f"$r<{rr:g}$")
+    out["region"] = "; ".join(f"{frac(dx_of(k, lev))}: " + " and ".join(exts)
+                              for lev, exts in sorted(parts.items(), key=lambda e: -e[0]))
+    out["limit"] = f"{int(num(g('mesh_refinement', 'max_nmb_per_rank')))}"
+    if R[k]["horizon_finder"]:
+        out["finder"] = f"{num(g('fastflow', 'start_time_0')):g} ({num(g('fastflow', 'initial_radius_0')):g})"
+    else:
+        out["finder"] = "--"
+    tol = num(g("particles", "tolerance"))
+    e = int(np.floor(np.log10(tol) + 1e-9))
+    mant = tol / 10 ** e
+    out["pusher"] = (rf"$10^{{{e}}}$" if abs(mant - 1) < 1e-9 else rf"${mant:g}\times10^{{{e}}}$") + \
+        f", {int(num(g('particles', 'max_iterations')))}"
+    if R[k]["particles"]["deposit_max_coarsen"] is not None:
+        out["cap"] = f"{num(g('particles', 'deposit_ppc')):g}, {frac(dx_of(k, int(num(g('particles', 'deposit_min_level')))))}"
+    else:
+        out["cap"] = "--"
+    return out
+
+
+def write_numerics(rows):
+    """Second setups float: refinement, finder, pusher and level-cap settings per row."""
+    geo = "docs/results_geodesic.md"
+    tpc = "docs/results_cluster_test.md"
+    nrows = [("Kerr geodesics", [Cell(""), Cell("uniform", f"{geo}, A3 and E"), Cell("1", f"{geo}, A3 and E"),
+                                 Cell("--", "uniform mesh"), Cell("--", "uniform mesh"), Cell("--", "no finder"),
+                                 Cell(r"$2\times10^{-14}$, 200", f"{geo}, Setup: particles/tolerance=2.0e-14 "
+                                                                  "particles/max_iterations=200"),
+                                 Cell("--", "no deposition")]),
+             ("Test-particle clusters", [Cell(""), Cell("static", f"{tpc}, Mesh"), Cell("6", f"{tpc}, Mesh: 6 levels"),
+                                         Cell("1/4: 24, 24, 8; 1/16: 2", f"{tpc}, Mesh table: level 3 dx = 0.25 M on "
+                                                                         "[-24,24]^2 x [-8,8] (cluster), level 5 dx = 0.0625 M "
+                                                                         "on [-2,2]^3 (black hole)"),
+                                         Cell("--", f"{tpc}, Mesh: static, 1128 MeshBlocks"), Cell("--", "no finder"),
+                                         Cell(r"$10^{-12}$, 100", f"{tpc}, Mesh: fixed-point tolerance 1e-12, max_iterations = 100"),
+                                         Cell("--", "finest-level clouds")])]
+    cols = ["ref", "levels", "region", "limit", "finder", "pusher", "cap"]
+    srcs = {"ref": "parameter dump, mesh_refinement/refinement and z4c_amr/method",
+            "levels": "parameter dump, mesh_refinement/num_levels (adaptive); levels present in the restart dumps (static)",
+            "region": "parameter dump, refined_region<n>/level and extents (box half-widths; requested values, expanded to "
+                      "whole MeshBlocks by the code) and z4c_amr/radius_0_rad with radius_0_reflevel (sphere kept at least "
+                      "at that level); dx of a level = root spacing / 2^level",
+            "limit": "parameter dump, mesh_refinement/max_nmb_per_rank (one rank)",
+            "finder": "parameter dump, fastflow/start_time_0 and initial_radius_0",
+            "pusher": "parameter dump, particles/tolerance and max_iterations",
+            "cap": "parameter dump, particles/deposit_ppc and deposit_min_level (as a cell spacing)"}
+    rows_varied = [(n_, v_) for n_, _, _, v_ in SETUP_ROWS]
+    for name, keys, base, _v in SETUP_ROWS:
+        vals = {k: numerics_values(k) for k in keys}
+        cells = [Cell("")]
+        rv = [r for r in rows_varied if r[0] == name][0][1]
+        for c in cols:
+            v = {k: vals[k][c] for k in keys}
+            vary = (c in ("levels", "region") and "mesh" in rv) or (c == "cap" and "dep" in rv) or \
+                   (c == "limit" and bool(rv))
+            txt = aggregate(keys, base, vary, v, c in ("levels", "region"))
+            cells.append(Cell(txt, runs_src(keys, srcs[c]) + " | " + per_run(keys, lambda k: v[k])))
+        nrows.append((name, cells))
+    # common settings as footnotes on the header
+    common_keys = [k for k in RUNS if PARAMS[k].get(("z4c", "damp_kappa1")) is not None]
+    def common(b, key):
+        vs = sorted({PARAMS[k].get((b, key)) for k in common_keys}, key=str)
+        return vs
+    for b, key, want in (("z4c", "damp_kappa2", ["0.0"]), ("z4c", "shift_eta", ["2.0"]), ("z4c", "shift_Gamma", ["0.75"]),
+                         ("z4c", "diss", ["0.5"]), ("z4c", "lapse_oplog", ["2.0"]), ("z4c", "lapse_advect", ["1.0"]),
+                         ("z4c", "shift_advect", ["1.0"]), ("z4c", "chi_div_floor", ["1.0e-5"]), ("time", "integrator", ["rk4"]),
+                         ("mesh", "nghost", ["4"])):
+        assert [str(x) for x in common(b, key)] == want, (b, key, common(b, key))
+    cfl = sorted({num(PARAMS[k].get(("time", "cfl_number"))) for k in common_keys})
+    lk = [k for k in RUNS if PARAMS[k].get(("z4c_amr", "method")) == "lohner"]
+    for b, key, want in (("z4c_amr", "lohner_refine", ["0.2"]), ("z4c_amr", "lohner_derefine", ["0.02"]),
+                         ("z4c_amr", "lohner_eps", ["0.01"]), ("mesh_refinement", "ncycle_check", ["4"]),
+                         ("mesh_refinement", "refinement_interval", ["8"])):
+        vs = sorted({str(PARAMS[k].get((b, key))) for k in lk})
+        assert vs == want, (b, key, vs)
+    fk = [k for k in RUNS if R[k]["horizon_finder"]]
+    fvals = {}
+    for key in ("find_every", "ntheta", "lmax", "mass_tol_0", "flow_iterations_0", "flow_alpha_beta_const_0", "hmean_tol_0"):
+        fvals[key] = {k: PARAMS[k].get(("fastflow", key)) for k in fk}
+    fmain = {key: max(set(v.values()), key=list(v.values()).count) for key, v in fvals.items()}
+    fctl = sorted({k for key, v in fvals.items() for k, x in v.items() if x != fmain[key]})
+    assert fctl == ["puncture/hcal/dx8_tight"], fctl
+    kt = fctl[0]
+    marks = [(None, 0, r"Every Z4c run: fourth-order Runge--Kutta steps $\Delta t=" + f"{cfl[-1]:g}" + r"\,\Delta x_{\min}$ "
+                       r"(one control " + f"{cfl[0]:g}" + r"), halving whenever a finer level appears; $\kappa_2=0$; "
+                       r"$1+\log$ slicing and Gamma-driver shift with advection terms, $\mu_S=3/4$, $\eta=2$; Kreiss--Oliger "
+                       r"dissipation $0.5$; floor $10^{-5}$ on $\chi$; four ghost cells (two in the test-particle meshes).",
+              runs_src(common_keys, "parameter dump: time/integrator rk4, time/cfl_number, z4c/damp_kappa2, lapse_oplog 2 "
+                                    "(1+log), lapse_advect, shift_advect, shift_Gamma, shift_eta, diss, chi_div_floor, "
+                                    "mesh/nghost, identical in every run (checked; cfl " + ", ".join(f"{c:g}" for c in cfl) +
+                                    "); problems/kerr/geodesic_mesh and problems/cluster_test/cluster_mesh inputs: nghost = 2")),
+             (None, 1, r"L\"ohner indicator on $q=\alpha\chi^{-7/4}$: refine above $0.2$, derefine below $0.02$, "
+                       r"$\epsilon_0=0.01$, $\delta_0=10^{-99}$; checked every 4 cycles, regrids at least 8 cycles apart.",
+              runs_src(lk, "parameter dump z4c_amr/lohner_refine, lohner_derefine, lohner_eps, mesh_refinement/ncycle_check, "
+                           "refinement_interval (identical in every run, checked); athenak/src/z4c/z4c_amr.cpp line "
+                           + str(src_line(REPO / "athenak/src/z4c/z4c_amr.cpp", "const Real delta = 1.0e-99")) +
+                           " (delta) and the definition of q in the same file (alpha chi^(7/chi_psi_power), chi_psi_power = -4)")),
+             (None, 5, rf"Searches every {fmain['find_every']} cycles on {fmain['ntheta']} polar points up to degree "
+                       rf"{fmain['lmax']}, stopping tolerance ${sci_plain(fmain['mass_tol_0'])}$ on the mass, at most "
+                       rf"{fmain['flow_iterations_0']} flow iterations, flow constant {num(fmain['flow_alpha_beta_const_0']):g}; "
+                       rf"the stopping-rule control: every {fvals['find_every'][kt]} cycles, "
+                       rf"${sci_plain(fvals['mass_tol_0'][kt])}$, {fvals['flow_iterations_0'][kt]} iterations.",
+              runs_src(fk, "parameter dump, fastflow/find_every, ntheta, lmax, mass_tol_0, flow_iterations_0, "
+                           "flow_alpha_beta_const_0 (same in every run with a finder except " + R[kt]["dir"] + ")"))]
+    head = list(NUM_HEAD)
+    notes = footnoted(nrows, head, marks)
+    caption = (r"Numerical settings of the families of Table~\ref{tab:setups}: refinement and number of levels, regions "
+               r"held at least at the given cell spacing (half-widths; three numbers: $x$, $y$, $z$), MeshBlock limit, "
+               r"apparent-horizon finder, pusher iteration, and the level cap of the capped runs.")
+    L = table_lines("tab:setups_numerics", caption, head, NUM_COLS, nrows, notes, sep="3pt")
+    led = []
+    for name, cells in nrows:
+        for h, c in zip(NUM_HEAD[1:], cells[1:]):
+            if re.search(r"\d", detex(c.tex)):
+                led.append(f"tab:setups_numerics, {name}, {detex(h)}: {detex(c.tex)} <- {c.src}")
+    for i, (t, s_) in enumerate(notes, 1):
+        led.append(f"tab:setups_numerics, footnote {i}: {detex(t)} <- {s_}")
+    return L, led
+
+
+def src_line(path, pattern):
+    for i, line in enumerate(Path(path).read_text().splitlines(), 1):
+        if pattern in line:
+            return i
+    raise RuntimeError(f"{pattern!r} not in {path}")
+
+
+def sci_plain(v):
+    x = num(v)
+    e = int(np.floor(np.log10(x) + 1e-9))
+    mant = x / 10 ** e
+    return f"10^{{{e}}}" if abs(mant - 1) < 1e-9 else rf"{mant:g}\times10^{{{e}}}"
 
 
 # ---------------------------------------------------------------------------------------
@@ -1307,7 +1620,7 @@ def outcomes(do_slice):
                  Cell(", ".join(txt), "os.z4c.user.hst: max of sqrt(H-norm2) over the run: " +
                       "; ".join(f"{R[key]['dir']} {R[key]['outcomes']['H_norm']['max']:.3f} at t = {R[key]['outcomes']['H_norm']['t_max']:.1f}"
                                 for _, key in cap)), NA))
-    tref = [R[key]["outcomes"]["dt_halvings"][1] for _, key in cap]
+    tref = [refine_steps(key)[1] for _, key in cap]
     txt, src = [], []
     for (_, key), t1_ in zip(cap, tref):
         z = CACHE[key]["z"]
@@ -1317,8 +1630,8 @@ def outcomes(do_slice):
         txt.append(f"{hm:.2f}")
         src.append(f"{R[key]['dir']} refinement at t = {t1_:.2f}: {hb:.3f} before, {hm:.3f} max")
     rows.append((r"Largest $\|\Ham\|$ within $1M$ after the refinement to $\Delta x=h/4$, same four runs",
-                 Cell(", ".join(txt), "os.z4c.user.hst; refinement time = second halving of dt in the dt column (the first, "
-                                      "near t = 0.7 M, refines to h/2 and keeps the central reading exact): " + "; ".join(src)), NA))
+                 Cell(", ".join(txt), "os.z4c.user.hst; refinement time = second step of the MeshBlock count in os.nrpic.hst (the first, "
+                                      "at t = 0.64 M, refines to h/2 and keeps the central reading exact): " + "; ".join(src)), NA))
     txt, src = [], []
     for (_, key), t1_ in zip(cap, tref):
         if key == "os/adapt_mc2":
@@ -1335,6 +1648,24 @@ def outcomes(do_slice):
                  r"$3M$ after the refinement to $h/4$: finest level; level cap with any, $\le1$ levels of coarsening",
                  Cell("; ".join(txt), "os.nrpic.hst e_probe divided by the cycloid density at tau_probe "
                                       "(python/nrpic/oppenheimer_snyder.cycloid_rho), records before the first removal: " + "; ".join(src)), NA))
+    kp, kc_ = "os/nocap_v4", "os/nocap_sc"
+    h = CACHE[kp]["hst"]
+    tau, a = h[:, H["tau_probe"]], h[:, H["alpha_probe"]]
+    alp = np.array([float(osn.staley_lower_bound(x)) if x < tc else np.nan for x in tau])
+    dpub = float(tau[np.argmax(a - alp > 1e-2)])
+    rho = np.array([float(osn.cycloid_rho(x)) if x < 0.99 * tc else np.nan for x in tau])
+    r = h[:, H["e_probe"]] / rho
+    t_h4 = refine_steps(kp)[1]
+    s0 = h[:, 0] < t_h4
+    tl = min(R[kp]["outcomes"]["all_removed_t"], R[kc_]["outcomes"]["all_removed_t"])
+    da = max_diff(kp, kc_, tl)
+    rows.append((r"Published lattice masses: $\tau_c/M$ at which $\alpha_c$ exceeds the lapse bound by $10^{-2}$; central "
+                 r"reading of $E$ over the cycloid before the refinement to $h/4$; largest $|\Delta\alpha_c|$ from the "
+                 r"corrected-mass run while macroparticles remain",
+                 Cell(f"{dpub:.2f}; {np.nanmin(r[s0]):.3f}--{np.nanmax(r[s0]):.3f}; {sci(da)}",
+                      f"{R[kp]['dir']}, os.nrpic.hst: first record with alpha_probe - (1 + 6 ln(R(tau)/R_0)) > 1e-2; e_probe "
+                      f"over the cycloid density at tau_probe for t < {t_h4:.3f} M (second step of the MeshBlock count); alpha_probe "
+                      f"against {R[kc_]['dir']} interpolated, t <= {tl:.2f} M (all particles removed): {da:.3e}"), NA))
     G.append(("Dust collapse on a lattice", rows))
 
     # ---- dust collapse from a random sample
@@ -1413,7 +1744,7 @@ def outcomes(do_slice):
                  Cell(", ".join(f"{x[0]:.4f}" for x in rr), "st.nrpic.hst: max of alpha_probe over t <= 130 M minus its value at t = 0 "
                       f"({a0:.5f}; the tabulated equilibrium has {eq:.5f}): " +
                       "; ".join(f"{R[key]['dir']} {x[0]:.4f} at t = {x[1]:.0f}" for (key, _), x in zip(order, rr))),
-                 Cell(r"$\approx0.01$ (" + FIG + ")", figsrc("st_dynamics.pdf", "y_c = 0.819 lapse panel, broad rise of about 0.01 "
+                 Cell(r"$\approx0.01$ (kicked model; " + FIG + ")", figsrc("st_dynamics.pdf", "y_c = 0.819 lapse panel, broad rise of about 0.01 "
                                                                                 "near t = 150-250 M on an axis 0-1 (this run has the inward kick)"))))
     rs = [rise(f"st/ctl/s{i}_nf4") for i in (1, 2, 3)]
     rc = [rise(f"st/ctl/s{i}_nf4c") for i in (1, 2, 3)]
@@ -1430,6 +1761,23 @@ def outcomes(do_slice):
     rows.append((r"$\|\Ham\|$ at $t=300M$: no filter; four plain passes; with compensation",
                  Cell("; ".join(f"{v:.3f}" for _, v in hn), "st.z4c.user.hst sqrt(H-norm2) of the last record: " +
                       "; ".join(f"{R[key]['dir']} {v:.4f}" for key, v in hn)), NA))
+    txt, src = [], []
+    for key in ("st/ctl/s1_nf4", "st/ctl/s1_nf4c"):
+        T, Rq, _, _ = radii(key)
+        s5 = T <= 300.0
+        g50, g90 = float(Rq[s5, 4].max() / Rq[0, 4]), float(Rq[s5, 8].max() / Rq[0, 8])
+        h = CACHE[key]["hst"]
+        tt, ee = smooth(h[:, 0], h[:, H["e_probe"]], 20.0)
+        e0 = float(ee[0])
+        emin = float(ee.min())
+        txt.append(f"{g50:.2f}, {g90:.2f}, {emin / e0:.2f}")
+        src.append(f"{R[key]['dir']}: radii about the origin enclosing 50 and 90 percent of the rest mass from the particle "
+                   f"snapshots ({len(T)} times, paper/scripts/make_data_clusters.shells), largest over the initial value "
+                   f"{g50:.4f}, {g90:.4f} (initial {Rq[0, 4]:.3f}, {Rq[0, 8]:.3f} M); e_probe (central E) in 20 M boxcar "
+                   f"means, lowest {emin:.4e} at {tt[ee.argmin()]:.0f} M over the first mean {e0:.4e}")
+    rows.append((r"Sample 1, four plain passes; with compensation: largest radius enclosing 50 and 90 percent of the rest mass "
+                 r"over its initial value; lowest central $E$ ($20M$ means) over its first value",
+                 Cell("; ".join(txt), "; ".join(src)), NA))
     G.append((r"Stable cluster $y_c=0.819$: filter", rows))
 
     # ---- core oscillation
@@ -1471,6 +1819,45 @@ def outcomes(do_slice):
     v = max_diff("st/osc/ccloud", "st/ctl/s1_nf4c", 300.0)
     rows.append((r"Same, compensation that also cancels the cloud width",
                  Cell(sci(v), f"{R['st/osc/ccloud']['dir']}, st.nrpic.hst against runs/st/ctl/s1_nf4c as above: {v:.3e}"), NA))
+    T, Rq = [], []
+    for key in base:
+        T_, R_, _, _ = radii(key)
+        keep = T_ > (T[-1][-1] if T else -1.0)
+        T.append(T_[keep])
+        Rq.append(R_[keep])
+    T, Rq = np.concatenate(T), np.concatenate(Rq)
+    win = [(0.0, 300.0), (300.0, T[-1])]
+    sw = []
+    for lo, hi in win:
+        q_ = (T >= lo) & (T <= hi)
+        sw.append(((Rq[q_, 0].max() - Rq[q_, 0].min()) / Rq[0, 0], (Rq[q_, 8].max() - Rq[q_, 8].min()) / Rq[0, 8],
+                   Rq[q_, 0].min(), Rq[q_, 0].max(), Rq[q_, 8].min(), Rq[q_, 8].max()))
+    rows.append((r"Sample 1: range of the radius enclosing 10 and of that enclosing 90 percent of the rest mass over its "
+                 r"initial value, $0$--$300M$; $300$--$1200M$",
+                 Cell("; ".join(f"{x[0]:.2f}, {x[1]:.2f}" for x in sw),
+                      f"{', '.join(R[q]['dir'] for q in base)}, particle snapshots joined in time ({len(T)} times, "
+                      f"{T[0]:g}-{T[-1]:g} M), radii about the origin (paper/scripts/make_data_clusters.shells), initial r10 "
+                      f"{Rq[0, 0]:.3f}, r90 {Rq[0, 8]:.3f} M: " +
+                      "; ".join(f"t = {lo:g}-{hi:g} M: r10 {x[2]:.3f}-{x[3]:.3f}, r90 {x[4]:.3f}-{x[5]:.3f}"
+                                for (lo, hi), x in zip(win, sw))), NA))
+    oa = {key: osc_fit(key) for key in ("st/ctl/s1_nf4c", "st/osc/dx2b")}
+    def ofx(x):
+        first = x["ext"][0]
+        last = x["ext"][-1]
+        return first, last
+    txt, src = [], []
+    for key in ("st/ctl/s1_nf4c", "st/osc/dx2b"):
+        x = oa[key]
+        (t1, v1), (t2, v2) = x["ext"][0], x["ext"][-1]
+        txt.append(f"${v1:+.4f}$ ({t1:.0f}), {sci(x['slope'])}, ${v2:+.4f}$ ({t2:.0f}), ${x['mid']:+.4f}$")
+        src.append(f"{R[key]['dir']}: extrema of the 4 M boxcar (at least 15 M apart, 8 M < t < t_end - 4 M) minus "
+                   f"alpha_c(0) = {x['a0']:.5f}: " + ", ".join(f"{tt_:.0f}: {vv:+.4f}" for tt_, vv in x["ext"]) +
+                   f"; straight-line fit of half the difference of successive extrema against time: {x['icpt']:.4f} + "
+                   f"{x['slope']:.3e} t; mean of the last two extrema {x['mid']:+.4f} (as analysis/diag/cluster_osc.py)")
+    rows.append((r"Half the cell spacing over the cluster against sample 1 (to $300M$): first maximum of "
+                 r"$\alpha_c-\alpha_c(0)$ ($t/M$), growth rate of the half-swing per $M$, last minimum ($t/M$), mean of the last "
+                 r"two extrema; sample 1 first",
+                 Cell("; ".join(txt), "; ".join(src)), NA))
     rho_n = R["st/reconf_yc0756_hc"]["model"]["components"][0]["header"]["unperturbed.rho_c"]
     tn = float(np.pi * np.sqrt(3 / (4 * np.pi * rho_n)))
     rows.append((r"Near-critical $y_c=0.756$ in " + CITE + r": period of $\alpha_c$; here the core radial period of that model",
@@ -1518,6 +1905,15 @@ def outcomes(do_slice):
                                 f"np {R[q]['outcomes']['np_start']}->{R[q]['outcomes']['np_end']}" for q in st)),
                  Cell(r"$\approx0.89$; $0.81$--$0.82$ (" + FIG + ")",
                       figsrc("st_dynamics.pdf", "lapse panels of y_c = 0.900 (flat near 0.89) and 0.819 (0.81 with a rise to about 0.82)"))))
+    lw = {}
+    for q in st:
+        h = CACHE[q]["hst"]
+        w = h[:, H["sum_mw"]] / h[:, H["sum_m"]]
+        lw[q] = (float(np.abs(w - w[0]).max()), float(w[0]))
+    rows.append((r"Largest change of the mean Lorentz factor $\sum_p m_pW_p/\sum_p m_p$ over $300M$, $y_c=0.900$; $0.819$",
+                 Cell("; ".join(sci(lw[q][0]) for q in st),
+                      "st.nrpic.hst sum_mW/sum_m, largest |value - first value|: " +
+                      "; ".join(f"{R[q]['dir']} {lw[q][0]:.3e} (first value {lw[q][1]:.5f})" for q in st)), NA))
     un = ["st/yc0605_v5", "st/yc0500_v5"]
     rows.append((r"First apparent horizon $t/M$: $y_c=0.605$; $0.500$",
                  Cell("; ".join(f"{R[q]['outcomes']['horizon']['first_t']:.1f}" for q in un),
@@ -1784,8 +2180,9 @@ OUT_FLOATS = [  # label, first and last group title (inclusive), caption
      r"values of " + CITE + r" where it gives them (from its text, or read from its figures). Masses in units of the "
      r"total mass $M$, times in units of $M$; listed values follow the order named in the first column."),
     ("tab:outcomes_dust", "Dust collapse on a lattice", "Dust collapse from a random sample",
-     r"As Table~\ref{tab:outcomes}, for dust collapse. $\|\Ham\|$ is the square root of the integral of $\Ham^2$ over "
-     r"the proper volume of the grid, cells with $\chi<1/16$ excluded; the same measure is used in every table."),
+     r"As Table~\ref{tab:outcomes}, for dust collapse. Hamiltonian constraint norm $\|\Ham\|=(\int\Ham^2\sqrt{\gamma}\,"
+     r"\dd^3x)^{1/2}$, integrated over the grid cells with $\chi\ge1/16$ (a total, without division by a volume); the "
+     r"same measure in every table."),
     ("tab:outcomes_prolate", "Prolate collapse", "Prolate collapse",
      r"As Table~\ref{tab:outcomes}, for the collapse of a prolate spheroid; $\|\Ham\|$ as in "
      r"Table~\ref{tab:outcomes_dust}."),
