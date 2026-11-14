@@ -1901,3 +1901,19 @@ the mean density, 2.7e-8.
 So the second-order errors of this test were the cloud and the metric
 reconstruction, and its remaining error is the step on the background, which the
 step limit controls.
+
+## C2: the other amplitudes in the production configuration, outcome (09:21)
+
+Delay of the relativistic infall for the observers that start at L/32, L/16, L/8, L/4,
+both calculations in the production configuration, 64 cells:
+   0.0025: 1.29, 1.19, 1.15, 1.25 percent   (linear cloud with filter, earlier: 1.37)
+   0.005:  2.37, 2.28, 2.30, 2.53           (2.60)
+   0.01:   4.58, 4.51, 4.65, 5.27           (5.15; quadratic cloud 4.61 ... 5.25)
+   0.05:   23.8, 24.2, 27.3, -              (26)
+Predictions: within 0.2 points for the two lower amplitudes: holds for 0.0025 (0.08 to
+0.22) and for the outer group at 0.005 (0.07), fails by a tenth of a point for its
+inner groups (0.23 to 0.32); within 3 points at 0.05: holds.
+Delay over amplitude, innermost group: 5.2, 4.7, 4.6, 4.8; outermost: 5.0, 5.1, 5.3.
+The law of the earlier runs (about five times the amplitude, or 2.6 to 2.9 times the
+depth of the initial potential) holds in the production configuration; the linear
+cloud had overstated the inner delays by a few tenths of a point.
