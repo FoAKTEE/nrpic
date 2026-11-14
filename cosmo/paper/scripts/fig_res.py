@@ -7,6 +7,7 @@ import numpy as np
 import matplotlib
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
+import matplotlib.ticker
 
 from common import DATA, fs, savefig
 
@@ -14,7 +15,7 @@ d = np.load(os.path.join(DATA, "resolution.npz"))
 ns = [int(n) for n in d["ns"]]
 fs.use_style()
 fig, axs = plt.subplots(1, 3, figsize=(fs.FULL_WIDTH, 2.9))
-fig.subplots_adjust(left=0.085, right=0.985, bottom=0.17, top=0.95, wspace=0.34)
+fig.subplots_adjust(left=0.085, right=0.985, bottom=0.17, top=0.95, wspace=0.42)
 cols = {64: fs.PAL["blue"], 96: fs.PAL["green"], 128: fs.PAL["red"]}
 for n in ns:
     c = cols[n]
@@ -41,8 +42,9 @@ for k in range(4):
                 lw=0.8, ls="--", mfc="none")
 axs[1].set_xlabel(r"cells per wavelength $N_g$")
 axs[1].set_ylabel("infall, relative to 64 cells")
+axs[1].yaxis.set_major_formatter(matplotlib.ticker.FormatStrFormatter("%.3f"))
 axs[1].set_xticks(ns)
-axs[1].legend(frameon=False, fontsize=7, loc="center right", title="start", title_fontsize=7)
+axs[1].legend(frameon=False, fontsize=7, loc="upper right", title="start", title_fontsize=7)
 axs[2].set_xlabel(r"scale factor $a$")
 axs[2].set_ylabel(r"mean of $H_r$")
 savefig(fig, "fig_res")

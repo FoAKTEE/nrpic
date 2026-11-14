@@ -1332,3 +1332,71 @@ Predictions:
 (3) The late rise is unchanged.
 If (1) fails the early level is not the remainder of the pass, and the agreement of
 the ratios 1.26 and 14 above was a coincidence.
+
+## T1/C5: outcomes of the limiter, the fourth-order pass, the damping style and the five variants (05:06)
+
+Limiter (`dav_c704_n32_dclt`, `dav_c256_n64_dclt`, L = 0.1): identical to the plain
+pass in the larger box (prediction (3) holds) and in the smaller box until z = 0.3;
+at the end the Hamiltonian constraint is 1.7e-3 against 2.0e-3 and the momentum
+constraint unchanged (0.47). Predictions (1) holds; (2) took its second branch: the
+amplified noise is not at sharp spikes. The limiter stays as a safeguard for
+positivity, it does not cure the noise.
+Fourth-order pass (`dav_c704_n32_{tsc4t,pcs4t}`): Hamiltonian constraint at z = 100
+4.3e-8 and 7.2e-8 (three-point pass: 5.0e-8, 6.4e-8). Prediction (1), below 1.5e-8:
+FAILS. So the early level is not the remainder of the pass; the matching ratios were
+a coincidence, as I said they would be in this case. Power, signed, shortest wave (10
+cells), z = 100 and 10: quadratic three-point -0.26, -0.37 percent; quadratic
+fourth-order +0.13, +0.40; cubic three-point +0.19, +0.53; cubic fourth-order +0.76,
++1.7. Prediction (2) fails for the cubic cloud: the sharper the pass, the more the
+shortest wave OVERSHOOTS. At the two longer waves all compensated runs agree with each
+other and with 64 cells (+0.1 to +0.2 percent at z = 10, +0.5 to +1 at z = 1, +1 to +2
+at z = 0): that part is the growth of second order. The overshoot of the shortest wave
+is not explained (candidate: the response of a deposited lattice differs from the
+window of the cloud by aliased terms, as the C6 agent found for estimators).
+Decision: the three-point pass is the default; the fourth-order term gains nothing.
+Damping with a constant coefficient in the smaller box (`dav_c256_n64_kct`):
+Hamiltonian constraint 1.8e-4 at z = 1 and 1.1e-3 at z = 0 against 1.3e-4 and 6.9e-4.
+Prediction (lower by more than ten): FAILS; it is slightly higher.
+Cubic cloud with compensation in the smaller box (`dav_c256_n64_pcsct`): Hamiltonian
+constraint equal to the other two configurations from z = 30 to 10 (1.9e-7, 1.5e-6),
+then 1.4 to 3.4 times below the compensated quadratic run; momentum constraint 2.4
+times lower at z = 100, 1.5 at z = 10, 2.5 at z = 1. My sharpened prediction (three or
+more between z = 30 and 2) fails for the Hamiltonian constraint. The density error of
+the Python experiment is therefore not what sets it.
+Five variants at 32 cells, larger box, cubic cloud, compensated (z = 100, 10, 1, 0):
+  reference        H 6.4e-8, 1.5e-7, 1.9e-6, 7.6e-6   M 2.1e-4, 7.8e-4, 1.4e-3, 4.3e-3
+  dissipation 0.1  H 6.1e-8, 1.3e-7, 1.8e-6, 7.4e-6   M 2.6e-4, 9.0e-4, 9.5e-4, 1.6e-3
+  damping rate 2   H 2.0e-7, 4.9e-7, 6.3e-6, 2.2e-5   M 4.0e-4, 8.0e-4, 1.7e-3, 4.8e-3
+  27 per cell      H 2.7e-8, 1.2e-7, 1.9e-6, 7.4e-6   M 2.6e-4, 7.9e-4, 1.5e-3, 4.2e-3
+  tolerance 1e-14  identical to the reference
+  step 0.125 cell  H 6.3e-8, 1.2e-7, 1.9e-6, 7.6e-6   M 1.9e-4, 2.3e-4, 1.4e-3, 4.3e-3
+Reading: the Hamiltonian constraint is three times higher at every epoch with four
+times the damping rate, and indifferent to everything else. The momentum constraint
+in the middle of the run follows the square of the step (3.4 for a factor of two) and
+late it falls with the dissipation (2.7 at z = 0).
+Hypothesis: the particles keep a momentum-constraint error of 1e-3 alive (sampling,
+step), and the damping terms of the formulation, which couple the constraint variable
+Theta and the conformal connection into the evolution of K and of the connection,
+turn part of it into a Hamiltonian-constraint error at a rate proportional to the
+damping coefficient. Runs `dav_c704_n32_pcsct_{k01,k002,k0}` (damping rate 0.1, 0.02
+and none). Predictions: Hamiltonian constraint at z = 10 and 1 falls roughly in
+proportion down to rate 0.1 (to about 3e-8 and 4e-7) and then levels off at whatever
+the sources themselves leave; without any damping the run stays stable to z = 0 in
+this linear box (if it does not, the damping is needed and its rate is a trade).
+
+## C4, resolution test: complete with the Newtonian run at 128 cells (05:08)
+
+Amplitude 0.01, quadratic cloud, 64, 96, 128 cells (one particle per cell). Infall of
+the observers that start at L/32, L/16, L/8, L/4 from the overdensity, delay of the
+relativistic run against the Newtonian one in a_p:
+   64 cells: 4.61, 4.55, 4.79, 5.25 percent
+   96 cells: 4.44, 4.51, 4.74, 5.27 percent
+  128 cells: 4.39, 4.48, 4.72, 5.31 percent
+The changes from 96 to 128 cells are at most 0.05 points. Relativistic infall of the
+innermost observers at a_p = 58.88, 58.18, 57.92 and Newtonian at 56.29, 55.70, 55.48:
+each converges, and so does their ratio. The delay at this amplitude is 4.4 percent for
+observers near the overdensity and 5.3 percent for those that start a quarter of the
+box away, resolved to 0.1 points.
+The mean relative Hamiltonian constraint at a = 20 and 40 is the same at the three
+resolutions (1.0e-4 to 1.1e-4, 2.1e-4 to 2.3e-4): the resolution-independent level seen
+in the random-field runs, where it follows the damping coefficient (entry above).
