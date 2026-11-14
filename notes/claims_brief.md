@@ -116,7 +116,7 @@ A third result that concerns the host code.
   one ran and analysed, one wrote the text; exact reference solutions were written
   without access to the solver.
 - Every explanation of an unexpected result was written down with a prediction before
-  the run that could refute it. Eight first explanations were refuted this way or by
+  the run that could refute it. Seven first explanations were refuted this way or by
   an independent audit of the run files (cluster motion as sampling noise, twice; low
   horizon mass as early stopping of the finder; horizon-mass drift as part of the
   collapse; one level of cloud coarsening harmless; oscillation as a discretization
