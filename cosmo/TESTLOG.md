@@ -1850,3 +1850,17 @@ and in most of the mesh two steps later. The filtered runs failed at a = 18.6 in
 cells around the overdensity; without the filter the failure comes 8 percent earlier
 and spreads at once. (The source paper's relativistic run of this amplitude ends at
 a_p of 16.8 to 18.)
+
+## C5, test B in the production configuration, written before the runs (08:47)
+
+The plane-wave linear mode of paper 2 (box 128 Mpc/h, amplitude 1e-7, 32 and 64 cells,
+8 particles per cell) had errors of second order in the cell size: potential constant
+to 1.7 and 0.44 percent, density within 2.3e-2 and 6.0e-3 of linear theory at the end
+(paper 2: 4.9 and 1.0 percent; 3.6e-2 and 9.1e-3). The wave is 32 and 64 cells long,
+so the cloud's smoothing ((k h)^2/8: 0.5 and 0.12 percent of the self-gravity for the
+quadratic cloud) and the gradient error of the Catmull-Rom reconstruction at the
+quarter points are of that order. Runs `cosmo/dav_b_n{32,64}_pcs4b`: cubic cloud,
+compensation to fourth order, spline, step limit, damping rate 0.5.
+Predictions: potential constant to better than 0.1 percent at both resolutions;
+density within 1e-3 (32 cells) and 3e-4 (64 cells) of linear theory at the end;
+largest relative Hamiltonian constraint at or below the earlier values (8e-8, 1.4e-8).
