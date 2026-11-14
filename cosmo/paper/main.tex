@@ -25,7 +25,7 @@
 \date{Working paper, state of 14 November 2026}
 
 \begin{abstract}
-This working paper records the extension of a numerical-relativity particle-in-cell code to cosmological structure formation. The aim is to redo, with that code, the comparison of general-relativistic and Newtonian collapse of East, Wojtak, and Pretorius, the integration tests of Daverio, Dirian, and Mitsou, and the initial-condition tests of Barrera-Hinojosa and Li. So far the code reproduces the homogeneous matter-dominated universe, the linear growth of a horizon-scale perturbation over two decades of expansion, and the luminosity distance along light rays in the homogeneous universe. Two findings concern the method. Matter sources held fixed during a spacetime step are a first-order error in an expanding universe. The deposit of a cold particle lattice carries an error set by its compression and by the smoothness of the particle cloud: proportional to the compression for the linear cloud of the method, to its square and cube for the quadratic and cubic clouds added here. The comparison of collapse in the two theories of gravity is running. The progress ledger in the appendix states what is done.
+This working paper records the extension of a numerical-relativity particle-in-cell code to cosmological structure formation. The aim is to redo, with that code, the comparison of general-relativistic and Newtonian collapse of East, Wojtak, and Pretorius, the integration tests of Daverio, Dirian, and Mitsou, and the initial-condition tests of Barrera-Hinojosa and Li. So far the code reproduces the homogeneous matter-dominated universe, the linear growth of a horizon-scale perturbation over two decades of expansion, and the luminosity distance along light rays in the homogeneous universe. Two findings concern the method. Matter sources held fixed during a spacetime step are a first-order error in an expanding universe. The deposit of a cold particle lattice carries an error set by its compression and by the smoothness of the particle cloud: proportional to the compression for the linear cloud of the method, to its square and cube for the quadratic and cubic clouds added here. In the collapse of a perturbation at one wavelength, run with identical particles and resolution in the two theories of gravity, the relativistic infall is later by a fraction proportional to the amplitude, smaller than the delay reported by East, Wojtak, and Pretorius for the lower amplitudes, whose two codes differed in resolution. The tests of Daverio, Dirian, and Mitsou and the light-ray comparison are in progress. The progress ledger in the appendix states what is done.
 \end{abstract}
 
 \maketitle
@@ -174,9 +174,41 @@ Figure~\ref{fig:rays} compares bundles emitted at two times with this relation. 
 
 \subsection{Collapse at one wavelength: general relativity against Newtonian gravity}\label{sec:res_east}
 
-The four amplitudes of Ref.~\cite{East:2019chx} have been run with both theories of gravity on a mesh of sixty-four cells per wavelength with one particle per cell. With zero shift and the lapse condition of Sec.~\ref{sec:system}, the three lower amplitudes run through the first crossing of matter streams and the formation of the bound region to the end, with every particle kept. At the largest amplitude the lapse at the overdensity turns around and collapses while the density there rises without bound, and the run ends; the Newtonian dictionary fails slightly earlier, where its potential reaches one half. Reference~\cite{East:2019chx} reports the same end for both calculations and a black hole forming. The slicing used here does not avoid the singularity, and following the black hole needs a different lapse condition near it and mesh refinement.
+With the two calculations started from identical particle positions on the same mesh, with the same cloud shape and time step, the comparison isolates gravity. Figure~\ref{fig:east} shows the observer density contrast at the two extrema for the four amplitudes of Ref.~\cite{East:2019chx}, on a mesh of sixty-four cells per wavelength with one particle per cell. At the underdensity the two calculations coincide for the three lower amplitudes, as in Ref.~\cite{East:2019chx}, and separate only for the largest. At the overdensity the contrast rises steeply when the matter streams cross, and the rise comes later in the relativistic calculation, by an amount that grows with the amplitude.
 
-The comparison of the observer density contrasts and of the crossing times with identical particle positions in the two calculations is running; the first runs, with the relativistic lattice compressed more than the Newtonian one, are recorded in the ledger.
+\begin{figure*}[t]
+\includegraphics[width=\textwidth]{fig_east}
+\caption{Collapse at one wavelength. The observer density contrast of the relativistic run (colors) and of the Newtonian reference (black, dashed) coincides at the underdensity (left) for the three lower amplitudes; at the overdensity (right) the relativistic rise comes later, increasingly so for larger amplitude. The relativistic run at the largest amplitude ends when the lapse collapses at the overdensity, the Newtonian one where its potential reaches one half.}
+\label{fig:east}
+\end{figure*}
+
+The proper time at which a fiducial observer reaches the overdensity measures the delay without reference to coordinates \cite{East:2019chx}. Figure~\ref{fig:fid} follows observers that start at four distances from the overdensity. In both calculations they fall in, cross, and oscillate about the bound region, and the relativistic infall is later. Figure~\ref{fig:delay} shows the delay, the ratio of the proper-time scale factors at which the distance has fallen to a tenth of its initial value in the two calculations, against the amplitude. The delay is proportional to the amplitude over the whole range, the extreme case included. It is the same for the four starting distances and for the three cloud shapes of Sec.~\ref{sec:res_id}. It is also the same when measured in coordinate time, and the clocks of the observers agree between the two calculations, so the infall itself is later. The dictionary that turns the Newtonian calculation into a spacetime is exact to first order in the perturbation, and the wavelength is several Hubble radii at the start; a difference of second order, proportional to the amplitude in relative terms, is what the comparison can show, and it shows one.
+
+\begin{figure*}[t]
+\includegraphics[width=\textwidth]{fig_east_fid}
+\caption{Fiducial observers fall into the overdensity later in the relativistic run (upper half of each panel) than in the Newtonian reference (lower half, mirrored). Coordinate distance from the overdensity, in units of the wavelength $L$, of observers that start at $L/32$, $L/16$, $L/8$, and $L/4$ along one axis, against their own proper-time scale factor. At the largest amplitude both calculations end during the first infall.}
+\label{fig:fid}
+\end{figure*}
+
+\begin{figure}[t]
+\includegraphics[width=\columnwidth]{fig_delay}
+\caption{The relativistic delay of the infall is proportional to the amplitude and independent of the cloud shape. Ratio, minus one, of the proper-time scale factors at which the distance of a fiducial observer has fallen to a tenth of its start in the relativistic and in the Newtonian calculation, averaged over the starting distances; dashed: $5.2\,\bar\delta$. Crosses: the same ratio and the ratio at a density contrast of ten, read from the figures of Ref.~\cite{East:2019chx}.}
+\label{fig:delay}
+\end{figure}
+
+The delays read from the figures of Ref.~\cite{East:2019chx} are larger for the three lower amplitudes and depend weakly on the amplitude. Its Newtonian reference had a finer force resolution than its relativistic code, and its text notes that finite resolution delays the collapse. With the same resolution in both calculations the delay is that of gravity alone for the given initial data. Which second-order term carries it is open. The nonlinear part of the constraint solve lowers the initial contrast at the overdensity by a fraction proportional to the amplitude, in the direction of a later collapse, and the evolution has second-order terms of its own at the horizon scale. A shorter wavelength will separate the two.
+
+At the largest amplitude the lapse at the overdensity turns around and collapses while the density there rises without bound, and the run ends; the Newtonian dictionary fails slightly earlier, where its potential reaches one half. Reference~\cite{East:2019chx} reports the same end for both calculations and a black hole forming. The lapse condition of Sec.~\ref{sec:system} holds $\alpha\,\gamma^{-1/6}$ fixed, so the lapse vanishes only with the volume element. A first alternative that holds $\alpha - \gamma^{1/6}$ fixed, and so stops the slices at a finite volume element, ends at the same place: the lapse then falls only as fast as the local scale factor. Following the black hole needs a lapse that falls by its own size when the local scale factor falls by a factor of order one, and mesh refinement around the overdensity.
+
+\subsection{Constraint violation and the cloud shape}\label{sec:res_shape}
+
+The collapse runs measure how the cloud shape acts on the constraints. Following Ref.~\cite{Daverio:2019gql}, a constraint is reported relative to the root of the sum of the squares of its terms, $H_r$ for the Hamiltonian and $M_r$ for the momentum constraint. Figure~\ref{fig:shaperuns} shows their means over the mesh. While the flow is single-valued the violation is set by the deposit. The deposited fields satisfy the continuity equations exactly as functions of position, and the finite differences of the spacetime solver see them through the mesh, so the mismatch is the part of the cloud that the mesh does not resolve. The quadratic cloud lowers the violation by one to two orders of magnitude and the cubic cloud by more, down to the level of the time integration at early times. Once the bound region has formed, the three shapes agree: the matter there has many velocities within a cell. The smoother clouds also remove a bias of the collapse itself. The linear cloud holds the central density down, and the inner observers fall in several percent later than with the smoother clouds, in both calculations alike; the relativistic delay of Fig.~\ref{fig:delay} is unaffected.
+
+\begin{figure*}[t]
+\includegraphics[width=\textwidth]{fig_shape_runs}
+\caption{A smoother particle cloud lowers the constraint violation of the collapse runs until the matter streams cross. Mean over the mesh of the relative Hamiltonian constraint (top) and momentum constraint (bottom) against the scale factor of the background, for the four amplitudes and the linear, quadratic, and cubic cloud.}
+\label{fig:shaperuns}
+\end{figure*}
 
 \subsection{Time-integration tests}
 To be written (Ref.~\cite{Daverio:2019gql}).
@@ -204,12 +236,12 @@ Target & Content & State \\
 Plan & Sources read; design of slicing, initial data, reference code, observables & done \\
 C0 & Periodic particles, cosmology setup, proper time per particle, homogeneous-universe test & done \\
 C1 & Constraint-solved initial data on the torus; linear growth & done \\
-C2 & Ref.~\cite{East:2019chx}: observer density contrasts and crossing times, four amplitudes, both gravities & first runs done; rerun with identical positions running \\
-C3 & Ref.~\cite{East:2019chx}: luminosity distance against redshift & machinery and homogeneous test done; production with C2 rerun \\
-C4 & Ref.~\cite{East:2019chx}: constraint convergence, resolution and particle number, extreme case & not started \\
-C5 & Ref.~\cite{Daverio:2019gql}: all tests & specification written \\
+C2 & Ref.~\cite{East:2019chx}: observer density contrasts and crossing times, four amplitudes, both gravities & done at 64 cells, three cloud shapes \\
+C3 & Ref.~\cite{East:2019chx}: luminosity distance against redshift & machinery and homogeneous test done; relativistic rays run, Newtonian rays running \\
+C4 & Ref.~\cite{East:2019chx}: constraint convergence, resolution and particle number, extreme case & cloud shapes done; resolution not started; extreme case: first lapse alternative fails \\
+C5 & Ref.~\cite{Daverio:2019gql}: all tests & homogeneous tests with and without noise done; linear mode at 32 cells done, 64 running; random-field test not started \\
 C6 & Ref.~\cite{Barrera-Hinojosa:2020arz}: all tests & specification written \\
-T1 & Constraint-compatible deposit & not started; test case identified (C2 runs) \\
+T1 & Constraint-compatible deposit & first stage done: quadratic and cubic clouds, measured in the C2 runs \\
 T2 & Evolving the departure from a known solution & not started \\
 \end{tabular}
 \end{ruledtabular}
@@ -223,6 +255,12 @@ C1, amplitude $10^{-4}$, thirty-two cells, to $a = 100$. The Hamiltonian-constra
 C3 test, thirty-two cells. Redshift within $9\times10^{-7}$; luminosity distance low by $1.2\times10^{-4}$ at emission at $a = 1$; measured and expected error agree to $6\times10^{-7}$.
 
 C2, first runs (relativistic lattice displaced $4.04$ times the Newtonian one). Deposited density at the probes 0.5\,\% below target at amplitude 0.01 and 7 to 14\,\% below at 0.05. First crossing of the fiducial observers later in the relativistic run by 5, 9, 14, and 23 to 28\,\% in $a_p$ for amplitudes 0.0025, 0.005, 0.01, 0.05 (Ref.~\cite{East:2019chx}, read from its figures: 7, 9, 12\,\% for the three lower amplitudes). Largest amplitude: relativistic run ends at $a = 18.6$, Newtonian dictionary at $a = 14.4$. Constraint violation relative to its largest term up to $a = 4$: $3\times10^{-4}$, $1\times10^{-2}$, $1\times10^{-1}$ for amplitudes 0.0025, 0.01, 0.05.
+
+C2, identical positions, sixty-four cells, linear cloud. Contrast at $a_p = 1$, relativistic against Newtonian: $-0.33$, $-0.53$, $-0.94$, $-5.8\,\%$ at the overdensity and $+0.06$, $+0.24$, $+0.60$, $+3.7\,\%$ at the underdensity for amplitudes 0.0025, 0.005, 0.01, 0.05. Densities at the underdensity agree within 0.5, 1.0, 2.2\,\% for the three lower amplitudes. Delay of the infall: 1.37, 2.60, 5.15, 26\,\% ($5.2\,\bar\delta$); in coordinate time the same to 0.1\,\% of the scale factor. By cloud shape at amplitude 0.01, inner and outer observers: 5.2 and 5.3 (linear), 4.6 and 5.3 (quadratic), 4.7 and 5.3\,\% (cubic). Infall of the inner observers, relativistic run, amplitude 0.01: $a_p = 63.1$, 58.9, 59.6 for the three shapes. Read from the figures of Ref.~\cite{East:2019chx}: 6 to 7, 6, 10 to 11\,\% for the observers and 1.9, 5.8, 6.9, 31\,\% at a density contrast of ten.
+
+Constraint violation, amplitude 0.01, mean over the mesh up to $a = 4$: $H_r = 2.0\times10^{-4}$, $6.0\times10^{-6}$, $9.9\times10^{-6}$ and $M_r = 3.8\times10^{-2}$, $1.6\times10^{-3}$, $1.9\times10^{-4}$ for the linear, quadratic, cubic cloud; after the collapse $H_r \approx 10^{-2}$ for all.
+
+C5. Homogeneous universe to $a = 1001$ at 8, 16, 32 cells, exact data: error of $\chi$ at $t = 100$ Mpc/$h$: $3.9\times10^{-9}$, $2.4\times10^{-10}$, $1.6\times10^{-11}$ (fourth order); at the end $1.3\times10^{-7}$, $8.2\times10^{-9}$, $1.1\times10^{-9}$, fifty times Ref.~\cite{Daverio:2019gql}, from a drift of the lapse of $8\times10^{-8}$ driven by the constraint variable $\Theta$. With noise: stable; largest constraints fall by seven orders of magnitude. Linear mode at 32 cells: potential constant to 1.7\,\% (Ref.~\cite{Daverio:2019gql}: 4.9\,\%); density within $2\times10^{-2}$ of linear theory.
 
 \section{Stated differences from the source papers}\label{app:differences}
 
