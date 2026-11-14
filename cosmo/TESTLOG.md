@@ -1518,3 +1518,64 @@ and `dav_c704_n32_pcs4bt` (with the fourth-order term). Predictions:
     gone; the remainder of the pass is -0.43 percent in the source, about -1 percent in
     the power at z = 100); with the fourth-order term within 0.2 percent at z = 100
     and 10.
+
+## T1: spline interpolation, outcome at 32 cells; the fourth-order pass reinstated (06:19)
+
+`dav_c704_n32_{pcsct_c,pcsbt,pcs4bt}` (cubic cloud, step limit; Catmull-Rom with the
+three-point pass; spline with the three-point pass; spline with the fourth-order pass).
+(1) Momentum residual on the mesh (mean, relative), constant through the run: 2.2e-3,
+    4.3e-4, 9.8e-4. Five times lower with the spline; predicted below 3e-4: fails by a
+    factor 1.4. The energy residual is 4.6e-3 in all three, the size of the fourth-order
+    truncation of the diagnostic's own differences for waves of ten cells ((k h)^4/30 =
+    5e-3), which also limits the momentum residual here; 64 cells will be cleaner.
+(2) Momentum constraint: unchanged (3.1e-4 against 2.1e-4 at z = 100, equal later).
+    Predicted two times lower: FAILS. Hamiltonian constraint at z = 100, 30, 10: 2.3e-8,
+    6.0e-8, 1.1e-7 against 6.4e-8, 1.1e-7, 1.5e-7; equal later (second-order terms).
+(3) Power, signed, three shells up to the cut-off (the last is the wave of ten cells):
+      Catmull-Rom, three-point:  z = 100  +0.08 +0.23 +0.19   z = 10  +0.35 +0.76 +0.53
+      spline, three-point:                -0.06 -0.23 -0.62           -0.01 -0.29 -1.26
+      spline, fourth-order:               -0.01 -0.01 -0.06           +0.06 +0.11 -0.13
+    (percent). Both predictions hold: a deficit with the three-point pass, and within
+    0.2 percent with the fourth-order term. With deposit and force both right to
+    fourth order, every wave of the initial data, down to ten cells, follows linear
+    theory to about a thousandth over a hundredfold expansion at 32 cells.
+Correction of the earlier decision ("the fourth-order term gains nothing"): its
+overshoot with the Catmull-Rom interpolation was the gradient error of that
+interpolation, which the more exact deposit no longer hid. With the spline the
+fourth-order term is what is needed.
+Production configuration from here on: cubic cloud, pass with c = 1/6 and c2 = 7/15,
+spline interpolation, step limit, damping rate 0.5. The 128-cell chain of the smaller
+box with the three-point pass and Catmull-Rom was stopped before it started.
+
+Production runs with the consistent configuration, written before them:
+`dav_c704_n{64,128}_pcs4bt`, `dav_c256_n64_pcs4bt` (batches) and `dav_c256_n128_pcs4bt`
+(chain). Predictions: larger box, power within 0.2 percent of linear theory up to the
+cut-off at z = 100 and 10 at both resolutions, constraints at or below those of the
+three-point runs (Hamiltonian below 7e-7 to z = 0 at 64 and 128 cells). Smaller box at
+64 cells: power within 0.4 percent at z = 100 and 10 (the contrast is 0.05 at z = 10, so
+a few thousandths of second-order growth are expected); constraints as before (the
+second-order terms are under-resolved at 64 cells). Smaller box at 128 cells: the
+prediction written for the stopped chain stands (Hamiltonian constraint below 3e-7 at
+z = 10 and below 1e-6 at z = 5; rise after the first collapse as before).
+
+## C5/T1: spline interpolation at 64 cells; smaller box at 128 cells without the new elements (06:28)
+
+`dav_c704_n64_pcsbt` (cubic cloud, three-point pass, spline). Conservation on the mesh
+(mean, relative): momentum residual 2.6e-5 to 3.0e-5 from z = 100 to 2, 1.2e-4 at the end
+(32 cells: 4.3e-4; ratio 16, fourth order); energy residual 4e-4 to z = 5, 3.9e-3 at the
+end (32 cells: 4.6e-3). Paper 2 reports 1e-2 for both at every resolution and redshift,
+without convergence (its measure divides by larger terms than this one, which uses the
+density form in which the background terms cancel). Constraints: as with Catmull-Rom
+from z = 10 on (Hamiltonian 8.5e-8, 1.7e-7, 6.8e-7 at z = 10, 1, 0; momentum 2.3e-4 to
+7.4e-4); the Hamiltonian constraint at z = 100 is 2.2e-8 against 3.5e-8.
+`dav_c256_n128_t` (quadratic cloud, no compensation, Catmull-Rom, one particle per
+cell; chain of two segments, restart at t = 38.8): reaches z = 0. Mean relative
+Hamiltonian constraint at z = 100, 30, 10, 1, 0: 6.0e-8, 5.5e-7, 4.4e-6, 2.1e-4, 8.6e-4;
+momentum constraint 1.5e-3, 3.2e-3, 1.2e-2, 0.16, 0.37. From z = 30 on this is WORSE
+than 64 cells with 8 particles per cell (1.8e-7, 1.2e-6, 1.3e-4, 6.9e-4 and 9.2e-4,
+1.3e-3, 4.9e-2, 0.13): one quadratic cloud per cell samples the displaced lattice
+poorly (the Python table: six times the error of two per direction). Power up to the
+cut-off: 0.55 percent at z = 100 and 1.8 percent at z = 10 (64 cells: 9 and 18);
+below half the cut-off 0.16 and 0.82 percent (predicted within 2.5: holds). Paper 2 at
+128 cells: 0.3 to 3.5 percent at z = 100 and 0.3 to 10 percent at z = 10 across the
+band; constraints 4.5e-8, 4.3e-8, 3.9e-7, 4.8e-6 and 2.0e-3, 2.8e-3, 7.1e-3, 4.2e-2.

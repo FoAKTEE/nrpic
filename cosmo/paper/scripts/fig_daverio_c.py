@@ -59,7 +59,7 @@ def constraints(axs, box, cells, comp, plain):
 # larger box
 fig, axs = plt.subplots(1, 3, figsize=(fs.FULL_WIDTH, 2.9))
 fig.subplots_adjust(left=0.08, right=0.985, bottom=0.17, top=0.95, wspace=0.36)
-constraints(axs, "c704", (32, 64, 128), "pcsct", {32: "t", 64: "t", 128: "k"})
+constraints(axs, "c704", (32, 64, 128), "pcs4bt", {32: "t", 64: "t", 128: "k"})
 if have("c704_n32_k"):
     axs[0].loglog(zz("c704_n32_k"), d["c704_n32_k_Hr"][1:], color=COL[32], ls=":", lw=0.9)
 if have("c704_n64_dcompt"):
@@ -67,7 +67,7 @@ if have("c704_n64_dcompt"):
         ax.loglog(zz("c704_n64_dcompt"), d[f"c704_n64_dcompt_{key}"][1:], color=COL[64],
                   ls="-.", lw=0.9)
 for n in (32, 64, 128):
-    for name, ls, lw in (("pcsct", "-", 1.2), ("t" if n < 128 else "k", "--", 0.9)):
+    for name, ls, lw in (("pcs4bt", "-", 1.2), ("t" if n < 128 else "k", "--", 0.9)):
         tag = f"c704_n{n}_{name}"
         if f"{tag}_dev_z10" in d.files:
             axs[2].semilogy(d[f"{tag}_k"], d[f"{tag}_dev_z10"], color=COL[n], ls=ls, lw=lw,
@@ -79,10 +79,10 @@ savefig(fig, "fig_daverio_c")
 # smaller box
 fig, axs = plt.subplots(1, 3, figsize=(fs.FULL_WIDTH, 2.9))
 fig.subplots_adjust(left=0.08, right=0.985, bottom=0.17, top=0.95, wspace=0.36)
-constraints(axs, "c256", (64, 128), "pcsct", "t")
+constraints(axs, "c256", (64, 128), "pcs4bt", "t")
 for n in (64, 128):
     for z, mk in ((100, "o"), (10, "s")):
-        for name, ls, lw in (("pcsct", "-", 1.2), ("t", "--", 0.9)):
+        for name, ls, lw in (("pcs4bt", "-", 1.2), ("t", "--", 0.9)):
             tag = f"c256_n{n}_{name}"
             if f"{tag}_dev_z{z}" in d.files:
                 axs[2].semilogy(d[f"{tag}_k"], d[f"{tag}_dev_z{z}"], color=COL[n], ls=ls, lw=lw,

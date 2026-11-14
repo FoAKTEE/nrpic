@@ -14,9 +14,11 @@ CASES = {
     704.0: (220.0, ("dav_c704_n32_t", "dav_c704_n64_t", "dav_c704_n128_k",
                     "dav_c704_n32_dcompt", "dav_c704_n64_dcompt", "dav_c704_n128_dcompt",
                     "dav_c704_n32_pcsct", "dav_c704_n64_pcsct", "dav_c704_n128_pcsct",
+                    "dav_c704_n32_pcs4bt", "dav_c704_n64_pcs4bt", "dav_c704_n128_pcs4bt",
                     "dav_c704_n32_k", "dav_c704_n32_cic", "dav_c704_n32_pcs")),
     256.0: (40.0, ("dav_c256_n64_t", "dav_c256_n128_t", "dav_c256_n64_dcompt",
-                   "dav_c256_n64_pcsct", "dav_c256_n128_pcsct", "dav_c256_n64")),
+                   "dav_c256_n64_pcsct", "dav_c256_n64_pcs4bt", "dav_c256_n128_pcs4bt",
+                   "dav_c256_n64")),
 }
 
 
