@@ -2137,3 +2137,16 @@ particles. Tracker files are now archived per segment for both runs.
   determined (it comes with the mesh, not with the domain).
 - The finder first reports the horizons at 10.5 M (M/64) and 9.5 M (M/128); the
   trapped surface itself forms near 8.7 M (Misner-Sharp, 17:25 entry).
+
+## Two overdensities: common horizon at 57.0 M (23:30)
+
+`jeans/n1e4_v19` (M/64, domain +-80 M). The common apparent horizon is first found at
+t = 57.0 M with mass 0.3746 M; at 57.9 M it has 0.3837 M and angular momentum 0.060,
+dimensionless spin 0.41. The original: first common horizon at 64.16 M with 0.3833 M
+and spin 0.504. The individual horizons at the merger: about 0.18 M each (the original:
+0.174 and 0.176 M at 60 M). The merger comes 7 M earlier here and the remnant spin at
+formation is lower; the masses agree to a few percent. The run continues to 100 M (the
+original's remnant: 0.647 M and spin 0.171 at 100 M). Figure and numbers when complete.
+Not determined: why earlier (candidates seen in this log: the orbit depends on the
+domain at the level of 0.15 M in separation by 28 M; the M/128 run approaches faster
+still; the binary drifts out of the plane on this mesh).
