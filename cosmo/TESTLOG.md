@@ -1624,3 +1624,38 @@ neither the step limit nor the form of the damping matters here). `cosmo/east_d0
 (4.61 and 5.25 with the quadratic cloud, the filter and Catmull-Rom); mean relative
 constraints before the collapse (a = 2 to 10) at least three times below the quadratic
 filtered run (4.7e-6 to 6.4e-5).
+
+## C5: production configuration at 128 cells, larger box, outcome (07:12)
+
+`dav_c704_n128_pcs4bt` (one particle per cell). Power against linear theory, signed,
+three shells, z = 100, 10, 1, 0: -0.006, +0.006, -0.009; +0.070, +0.146, -0.007;
++0.477, +0.842, +0.013; +0.966, +1.653, +0.065 percent. At 64 cells: -0.006, +0.005,
+-0.012; +0.067, +0.142, -0.015; +0.474, +0.837, +0.004; +0.963, +1.648, +0.055. The two
+resolutions agree to 0.005 percent of the power in the two long shells at every epoch,
+so the excess over linear theory there (0.1 percent at z = 10, 1 to 1.7 percent at
+z = 0, rms contrast 0.008 and 0.084) is resolved growth of second order, not error.
+Prediction (within 0.2 percent at z = 100 and 10): holds.
+With Catmull-Rom and the three-point pass at 128 cells (`dav_c704_n128_pcsct`) the
+same shells read +0.03, +0.14, +0.25 at z = 100 and +0.16, +0.44, +0.56 at z = 10: the
+lattice of one particle per cell sits at the cell corners, where that reconstruction
+overestimates the gradient.
+Constraints (mean, relative) at z = 100, 10, 1, 0: Hamiltonian 1.0e-8, 6.1e-8, 1.3e-7,
+8.3e-7; momentum 5.5e-5, 5.7e-5, 9.2e-5, 7.9e-4 (paper 2 at 128 cells: 2.4e-8, 2.4e-8,
+2.8e-8, 5.1e-8 and 1.2e-3, 1.1e-3, 1.4e-3, 2.2e-3). Prediction (Hamiltonian below 7e-7
+to the end): fails by a fifth at the end. Conservation on the mesh: momentum 5e-6 to
+z = 3 and 1.8e-4 at the end, energy 3e-5 to 2e-4 and 6e-3 at the end: twelve to
+fourteen times below 64 cells while the flow is smooth, fourth order.
+Series 32, 64, 128 cells in the production configuration, Hamiltonian constraint at
+z = 100: 2.5e-8, 2.3e-8, 1.0e-8; at z = 1: 1.9e-6, 1.7e-7, 1.3e-7; momentum constraint
+at z = 100: 2.6e-4, 2.6e-4, 5.5e-5.
+
+## C2/C4: the metric interpolation does not bias the relativistic delay, outcome (07:13)
+
+`cosmo/east_d0.01_n64_tsc_b` (spline) against `east_d0.01_n64_tsc` (Catmull-Rom), same
+initial data. Relativistic infall of the four groups of observers at a_p = 58.86,
+59.71, 62.62, 79.36 against 58.88, 59.68, 62.62, 79.36: shifts of -0.03, +0.05, 0.00,
+0.00 percent. Delay against the Newtonian run 4.57, 4.60, 4.79, 5.25 percent against
+4.61, 4.55, 4.79, 5.25. Prediction (later by 0.1 to 0.5 percent): FAILS; the
+alternative I named holds: the shift is at or below 0.05 percent and the interpolation
+does not matter for this result. The wave is 64 cells long there, sixteen times better
+resolved than the waves on which the gradient error was found.
