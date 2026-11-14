@@ -1678,3 +1678,26 @@ Hamiltonian 3.0e-7, 2.1e-6, 3.7e-6, 3.2e-5, 2.4e-4, 1.6e-2; momentum 8.6e-5, 1.6
 3 times lower in the Hamiltonian constraint up to a = 20 (predicted at least three:
 holds), equal at 40, and four to eight times HIGHER after the collapse, where the
 filter of the old runs smoothed the noise of the bound region.
+
+## C5 extension: the random field in the Newtonian reference (07:38)
+
+Question: is the excess of the power over linear theory in the two long shells of the
+larger box (0.1 percent at z = 10, 1 to 1.7 percent at z = 0, the same at 32, 64 and
+128 cells) ordinary nonlinear growth? Test: the same field in the Newtonian
+particle-mesh code with the same particles, cubic cloud, compensation to fourth order
+and spline force (`cosmo/newton/run_field.py`, `cosmo/analysis/newton_field.py`),
+32 cells, against `dav_c704_n32_pcs4bt`; each against its own linear theory (growth in
+proportion to a for the Newtonian contrast; the relativistic formula for the energy
+density contrast). Expectation written here before the comparison was run: the same
+excess within a tenth of itself; a difference of the order of the potential (1e-4,
+so a few 1e-4 in the power) would be the relativistic correction.
+Outcome, three shells, percent:
+   z = 100  Newtonian +0.005 +0.004 -0.044   relativistic -0.009 -0.009 -0.060
+   z = 10             +0.084 +0.130 -0.103                +0.062 +0.113 -0.133
+   z = 1              +0.492 +0.816 -0.129                +0.466 +0.794 -0.169
+   z = 0              +0.981 +1.622 -0.095                +0.954 +1.599 -0.142
+So the excess is nonlinear Newtonian growth, reproduced by the relativistic run to
+0.03 percent of the power. The relativistic power is lower by 0.014 to 0.046 percent
+at every epoch and in every shell: the size expected of a relativistic correction for
+a potential of 1.4e-4, but at 32 cells I cannot separate it from the differences
+between the two discretisations. The 64-cell Newtonian run is under way for that.
