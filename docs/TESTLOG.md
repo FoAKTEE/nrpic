@@ -1761,3 +1761,25 @@ blocks at most.
   does not by itself cost several percent of horizon mass in spherical collapse. The
   prolate deficit of 3 to 5 percent belongs to that collapse (its caustic stage), not
   to random sampling as such.
+
+## Corrections from the second audit of the tables (16:10)
+
+Found by the agent that extended the appendix tables from the run files and the
+original's text; checked by me.
+- Prolate collapse, what the original reports. I wrote (14:05, and in the brief) that
+  the original states agreement of the horizon mass with the total mass to 1e-3 for
+  the prolate test. It does not: that statement (its conclusions, and its dust
+  section) is about the Oppenheimer-Snyder collapse. For the prolate test the original
+  gives no horizon mass. The deficit found here (3 percent at the largest value, 5
+  percent at 45 M and falling) is therefore a limitation of this run, measured against
+  the total mass, and not a difference from a published number.
+- Constraint norm, wording. The history column is the sum of H^2 sqrt(gamma) dx^3 over
+  the cells with chi >= 1/16; it is not divided by a volume. The numbers quoted
+  (square roots 1.90, 6.31, and those of the dust controls) are right; "volume-
+  normalized" in the entries of 14:25 and 14:35 is wrong.
+- Capped Monte Carlo dust runs at full depth (`mc_adapt2`, `mc_adapt3`): they did not
+  run to 60 M; the jobs reached their time limit at 43 and 41 M. Horizon masses quoted
+  from single searches scatter by about 5e-4; the tables use medians over 2 M
+  (1.0000 at 20 M for `mc_adapt2`, 0.9946 at 40 M for `mc_adapt4`).
+- Density-lowered near-critical run: the mean lapse is 0.783 over the whole run and
+  0.776 after 250 M.

@@ -53,7 +53,8 @@ Facts, in the order of the argument:
    and the full refinement depth the curvature-based refinement follows the sampling
    noise and the block count grows past what one card holds before the horizon forms,
    with one plain pass and with four passes plus compensation. With capped clouds the
-   same runs complete, and the horizon mass stays within 0.15 percent of M.
+   same runs pass through horizon formation and on to 41 and 43 M (where the jobs
+   reached their time limit), and the horizon mass stays within 0.15 percent of M.
    (c) Random sample, both rules at equal settings (one refinement level fewer, four
    passes plus compensation): horizon mass at the end 0.27 percent below M (published)
    and 0.54 percent below (capped); constraint norm after formation three times higher
@@ -206,7 +207,8 @@ Facts, in the order of the argument:
    equal to the rest mass of the data).
 4. Horizon mass (documented difference). First found 0.929 M; largest 0.967 M at
    33.75 M; then falling steadily to 0.949 M at 45 M, not levelling off. The original
-   reports agreement with the total mass to 1e-3. The Misner-Sharp mass of the last
+   states no horizon mass for this test (its 1e-3 agreement is for the dust collapse);
+   this is a limitation found here, not a difference from a published number. The Misner-Sharp mass of the last
    slice agrees with the finder at the horizon (0.92 with an angular spread of 0.03)
    and gives the total mass 0.999 M at large radius: five to eight percent of the mass
    lie outside the black hole, between 5 and 50 M, when every particle has been

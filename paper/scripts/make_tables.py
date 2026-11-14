@@ -28,13 +28,20 @@ the ledger) or are read by eye from its figures (marked "read from figure").
 Writes
     paper/data/runs.json                    one record per run (machine readable)
     paper/sections/tables/tab_setups.tex    setups, one row per scenario family
-    paper/sections/tables/tab_outcomes.tex  measured numbers the text points to
+    paper/sections/tables/tab_outcomes.tex  measured numbers the text points to, one float per
+                                            block: tab:outcomes (test particles, horizon check),
+                                            tab:outcomes_dust, tab:outcomes_prolate,
+                                            tab:outcomes_clusters, tab:outcomes_migration
     paper/data/ledger.txt                   one line per number of the two tables
 
     python3 paper/scripts/make_tables.py [--no-slice]
 
---no-slice skips the Misner-Sharp masses of four restart dumps (about a minute) and
-writes "not computed" in their place.
+--no-slice skips the Misner-Sharp masses of five restart dumps (about a minute) and
+writes "not computed" in their place. Extrema of long cluster runs, snapshot selection and
+the values read off the original's figures are imported from the figure scripts
+make_data_migration.py, make_data_nearcritical.py and make_data_clusters.py, so table and
+figures agree. jeans_setup_row() and jeans_rows() are placeholders for the cluster with two
+collapsing overdensities, whose runs are still in progress.
 """
 import glob
 import json
