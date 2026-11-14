@@ -19,6 +19,9 @@ ap.add_argument("--ppc", type=int, default=1, help="particles per cell per direc
 ap.add_argument("--L", type=float, default=4.0)
 ap.add_argument("--H0", type=float, default=1.0)
 ap.add_argument("--xmin", type=float, default=0.0)
+ap.add_argument("--omega-m", type=float, default=1.0,
+                help="matter density parameter at the start (the rest is a cosmological "
+                     "constant, <particles> lambda = 3 (1 - omega_m) H0^2)")
 ap.add_argument("--centred", action="store_true",
                 help="particles at cell centres for odd ppc (default: shifted by half a "
                      "particle spacing, see make_east.py)")
@@ -41,7 +44,7 @@ off = 0.5 if (a.centred or a.ppc % 2 == 0) else 1.0
 q = a.xmin + np.mod((np.arange(npd) + off)*h, a.L)
 X, Y, Z = np.meshgrid(q, q, q, indexing="ij")
 x = np.stack([X.ravel(), Y.ravel(), Z.ravel()], axis=1)
-rho0 = 3.0*a.H0**2/(8.0*np.pi)
+rho0 = a.omega_m*3.0*a.H0**2/(8.0*np.pi)
 m = np.full(len(x), rho0*h**3)
 os.makedirs(a.out, exist_ok=True)
 u = np.zeros_like(x)

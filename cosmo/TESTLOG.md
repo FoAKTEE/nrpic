@@ -720,3 +720,23 @@ Predictions for `cosmo/dav_c704_n{32,64,128}`:
     [(3 + k^2/H_c^2(t)) / (3 + k^2/H_c^2(0))]^2 P(0, k) with the measured initial
     spectrum: within 3 percent in every shell below half the cut-off at 64 cells, and
     the departure falling with resolution.
+
+## C6 preparation: homogeneous universe with a cosmological constant (02:16)
+
+The third paper works in a universe with dark energy. The code carries the constant as
+a source (`<particles> lambda`: E gains Lambda / 8 pi, S_ij loses Lambda gamma_ij / 8 pi),
+untested so far. Run `cosmo/flrw_lambda_n32_cpu`: matter fraction 0.3 and Lambda = 2.1 (in
+units of the initial Hubble rate squared) at the start, lattice at rest, 32 cells, to
+t = 0.75 (a = 5.5, deep in the accelerating phase).
+Written before the run: the lapse condition gives conformal time for any homogeneous
+universe, so alpha = a(t) with da/dt = a^2 sqrt(0.3 a^-3 + 0.7); lapse, matter density
+(0.3 rho_c a^-3 at the probe) and mean K = -3 H(a) agree with the numerically integrated
+solution to 1e-5, and the Hamiltonian constraint stays at the level of the matter-only
+run (relative 1e-6). An error of order one in K or in the lapse would mean a wrong sign
+or factor in the Lambda source.
+
+Result (`cosmo/flrw_lambda_n32_cpu`, 02:17): confirmed. Lapse within 1.8e-6 of a(t), mean K
+within 1.4e-6 of -3 H(a), energy density at the probe within 4e-7 of matter plus
+Lambda / 8 pi, largest relative Hamiltonian constraint 1.7e-6, up to the end of the run.
+(The end is at a = 3.05; the "a = 5.5" I wrote was a wrong estimate of the conformal
+time, which does not affect the test.) The Lambda source is right.
