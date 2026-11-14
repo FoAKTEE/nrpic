@@ -29,6 +29,11 @@ for tag, lab in (("n32", r"$N_g = 32$"), ("n64", r"$N_g = 64$")):
     axs[1].plot(tp, p_dd[tag], "x", color=c, ms=5)
     axs[2].semilogy(d[f"b_{tag}_ct"][1:], d[f"b_{tag}_Hr"][1:], color=c)
     axs[2].plot([5806.0], [p_hr[tag]], "x", color=c, ms=5)
+# production configuration (cubic cloud, compensation, spline interpolation, step limit)
+for tag, base in (("n32_pcs4b_f2", "n32"), ("n64_pcs4b", "n64")):
+    if f"b_{tag}_t" in d.files:
+        axs[1].semilogy(d[f"b_{tag}_t"][1:], d[f"b_{tag}_dd0"][1:], color=cols[base], lw=2.0)
+        axs[2].semilogy(d[f"b_{tag}_ct"][1:], d[f"b_{tag}_Hr"][1:], color=cols[base], lw=2.0)
 if "b_n32_c01_ct" in d.files:
     axs[2].semilogy(d["b_n32_c01_ct"][1:], d["b_n32_c01_Hr"][1:], color=cols["n32"], ls="--",
                     lw=0.9)

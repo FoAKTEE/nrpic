@@ -1864,3 +1864,40 @@ compensation to fourth order, spline, step limit, damping rate 0.5.
 Predictions: potential constant to better than 0.1 percent at both resolutions;
 density within 1e-3 (32 cells) and 3e-4 (64 cells) of linear theory at the end;
 largest relative Hamiltonian constraint at or below the earlier values (8e-8, 1.4e-8).
+
+## C5, test B in the production configuration, 32 cells: outcome (08:55)
+
+`cosmo/dav_b_n32_pcs4b` against `dav_b_n32`. Potential: amplitude at the start equal to
+the analytic one to five digits (0.7 percent low before), change to the end +0.03
+percent (1.72 before; paper 2: 4.9 at 32 cells, 0.25 at 128): predicted below 0.1:
+holds. Density of the wave (mean removed) against linear theory at t = 100, 1000, 3000
+Mpc/h: 3.8e-5, 4.9e-5, 7.6e-5 (7.5e-3, 1.5e-2, 2.0e-2 before); amplitude over linear
+theory at the end 0.99995 (0.977). Largest relative Hamiltonian constraint 8.4e-8
+(8.3e-8): unchanged, it is the uniform offset.
+The error measure of paper 2 includes the mean: 5.6e-2, 1.6e-2, 8.8e-3 here against
+6.4e-2, 4.3e-2, 3.3e-2 before. Predicted within 1e-3 at the end: FAILS in that measure.
+What is left is the error of the mean density, 4.0e-7 (4.7e-7 before), four times the
+amplitude of the wave at the start: the fourth-order error of the integrator on the
+background at a step of one percent of the expansion time (paper 2 uses a step five
+times smaller throughout).
+Run `cosmo/dav_b_n32_pcs4b_f2`: step limit 0.002 instead of 0.01. Prediction: error
+of the mean density below 2e-9 (625 times smaller); paper 2's measure below 2e-3 at
+t = 100 and below 2e-4 from t = 1000 on.
+
+## C5, test B in the production configuration: outcome (09:12)
+
+`cosmo/dav_b_n32_pcs4b_f2` (32 cells, step limit 0.002; 5,758... same end time, more
+early steps): potential amplitude -6.9334e-9 at the start and -6.9335e-9 at the end
+(analytic -6.9334e-9); error of the mean density 1.8e-9 (predicted below 2e-9: holds;
+4.0e-7 with the limit 0.01); paper 2's measure of the density error at t = 100, 1000,
+3000 Mpc/h: 1.7e-4, 8.4e-5, 7.4e-5 (predicted below 2e-3 and 2e-4: holds); largest
+relative Hamiltonian constraint 3.1e-9 (8.5e-8). Paper 2: 2.5e-3, 1.8e-2, 2.9e-2 at 32
+cells and 1.6e-4, 1.1e-3, 1.9e-3 at 128 cells; potential constant to 4.9 percent at 32
+and 0.25 percent at 128 cells.
+`cosmo/dav_b_n64_pcs4b` (64 cells, step limit 0.01): potential change +0.01 percent
+(0.44 before); density of the wave with the mean removed 1.1e-5, 1.6e-5, 4.0e-5 (1.9e-3,
+3.7e-3, 5.1e-3 before); paper 2's measure 3.6e-3, 1.0e-3, 6.1e-4, set by the error of
+the mean density, 2.7e-8.
+So the second-order errors of this test were the cloud and the metric
+reconstruction, and its remaining error is the step on the background, which the
+step limit controls.

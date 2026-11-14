@@ -22,7 +22,7 @@ for k in ("a0", "a", "a0k", "anp"):
         i = thin(len(d["t"]))
         for key in ("t", "a", "dchi", "dE", "H", "M"):
             out[f"{k}_{n}_{key}"] = d[key][i]
-for c in ("dav_b_n32", "dav_b_n32_c01", "dav_b_n64"):
+for c in ("dav_b_n32", "dav_b_n32_c01", "dav_b_n64", "dav_b_n32_pcs4b_f2", "dav_b_n64_pcs4b"):
     d = db.load(os.path.join(RUNS, c))
     if d is None:
         continue
