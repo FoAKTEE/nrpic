@@ -185,6 +185,9 @@ class Particles {
   Real snap_next_time = 0.0;
   int  curv_number = 0;
   Real curv_next_time = 0.0;
+  int nfield_times = 0;          // times at which the energy density is dumped
+  Real field_times[16];
+  int field_next = 0;
   // statistics of the last step
   int  push_maxit = 0, push_unconverged = 0;
   Real sum_m = 0.0, sum_mw = 0.0, sum_mu[3] = {0.0, 0.0, 0.0};
@@ -208,6 +211,7 @@ class Particles {
   void NrpicWriteHistory(Real time, int ncycle, bool header);
   void NrpicWriteConstraintStats(Real time, bool header);
   void NrpicWriteLine(Real time, bool header);
+  void NrpicWriteEnergyField(Real time, int index);
   void NrpicWriteTrajectories(Real time, bool truncate);
   void NrpicWriteSnapshot(Real time);
   void NrpicWriteCurvature(Real time);

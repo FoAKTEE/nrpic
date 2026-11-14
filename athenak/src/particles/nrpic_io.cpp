@@ -446,6 +446,64 @@ void Particles::NrpicWriteLine(Real time, bool header) {
 }
 
 //----------------------------------------------------------------------------------------
+//! \fn  void Particles::NrpicWriteEnergyField
+//! \brief writes the energy density E and the conformal factor chi of the whole uniform
+//! mesh to <basename>.field.NNNNN.bin: 8 bytes "NRFIELD1", the time (double), 3 int64
+//! (n1, n2, n3), then two arrays of n3*n2*n1 floats (E, chi), first index fastest.
+
+void Particles::NrpicWriteEnergyField(Real time, int index) {
+  if (pmy_pack->pz4c == nullptr || !nropt.deposit) return;
+  Mesh *pm = pmy_pack->pmesh;
+  if (pm->multilevel) return;
+  auto &indcs = pm->mb_indcs;
+  const int nx1 = indcs.nx1, nx2 = indcs.nx2, nx3 = indcs.nx3;
+  const int is = indcs.is, js = indcs.js, ks = indcs.ks;
+  const int nmb = pmy_pack->nmb_thispack;
+  const std::int64_t g1 = pm->mesh_indcs.nx1, g2 = pm->mesh_indcs.nx2;
+  const std::int64_t g3 = pm->mesh_indcs.nx3;
+  const Real d1 = (pm->mesh_size.x1max - pm->mesh_size.x1min)/static_cast<Real>(g1);
+  const Real d2 = (pm->mesh_size.x2max - pm->mesh_size.x2min)/static_cast<Real>(g2);
+  const Real d3 = (pm->mesh_size.x3max - pm->mesh_size.x3min)/static_cast<Real>(g3);
+  auto tmh = Kokkos::create_mirror_view_and_copy(Kokkos::HostSpace(),
+                                                 pmy_pack->ptmunu->u_tmunu);
+  auto u0h = Kokkos::create_mirror_view_and_copy(Kokkos::HostSpace(), pmy_pack->pz4c->u0);
+  auto sz = pmy_pack->pmb->mb_size.h_view;
+  const size_t ncell = static_cast<size_t>(g1)*g2*g3;
+  std::vector<float> e(ncell), c(ncell);
+  const int ichi = z4c::Z4c::I_Z4C_CHI;
+  for (int m=0; m<nmb; ++m) {
+    const std::int64_t i0 = static_cast<std::int64_t>(
+        std::floor((sz(m).x1min - pm->mesh_size.x1min)/d1 + 0.5));
+    const std::int64_t j0 = static_cast<std::int64_t>(
+        std::floor((sz(m).x2min - pm->mesh_size.x2min)/d2 + 0.5));
+    const std::int64_t k0 = static_cast<std::int64_t>(
+        std::floor((sz(m).x3min - pm->mesh_size.x3min)/d3 + 0.5));
+    for (int k=0; k<nx3; ++k) {
+      for (int j=0; j<nx2; ++j) {
+        for (int i=0; i<nx1; ++i) {
+          const size_t idx = (static_cast<size_t>(k0 + k)*g2 + (j0 + j))*g1 + (i0 + i);
+          e[idx] = static_cast<float>(tmh(m,Tmunu::I_Tmunu_E,ks+k,js+j,is+i));
+          c[idx] = static_cast<float>(u0h(m,ichi,ks+k,js+j,is+i));
+        }
+      }
+    }
+  }
+  char num[16];
+  std::snprintf(num, sizeof(num), "%05d", index);
+  std::string fname = nr_basename + ".field." + num + ".bin";
+  std::FILE *fp = std::fopen(fname.c_str(), "wb");
+  if (fp == nullptr) NrpicFatal("cannot open " + fname);
+  const std::int64_t dims[3] = {g1, g2, g3};
+  const double tt = time;
+  std::fwrite("NRFIELD1", 1, 8, fp);
+  std::fwrite(&tt, sizeof(double), 1, fp);
+  std::fwrite(dims, sizeof(std::int64_t), 3, fp);
+  std::fwrite(e.data(), sizeof(float), ncell, fp);
+  std::fwrite(c.data(), sizeof(float), ncell, fp);
+  std::fclose(fp);
+}
+
+//----------------------------------------------------------------------------------------
 //! \fn  void Particles::NrpicWriteTrajectories
 //! \brief appends the state of the tracked particles (tag < traj_ntrack) to
 //! <basename>.traj.bin as records of 8 doubles: time, tag, x^i, u_i
@@ -849,6 +907,9 @@ void Particles::NrpicStartup(bool res_flag) {
   if (nropt.line_dcycle > 0) {
     NrpicWriteLine(pm->time, true);
   }
+  if (nfield_times > 0) {
+    NrpicWriteEnergyField(pm->time, 0);
+  }
   if (nropt.snap_dt > 0.0) {
     NrpicWriteSnapshot(pm->time);
     snap_next_time = pm->time + nropt.snap_dt;
@@ -880,6 +941,10 @@ TaskStatus Particles::NrpicDiagnostics(Driver *pdriver, int stage) {
   }
   if (nropt.line_dcycle > 0 && (ncyc % nropt.line_dcycle == 0)) {
     NrpicWriteLine(tnew, false);
+  }
+  while (field_next < nfield_times && tnew >= field_times[field_next] - 0.5*pm->dt) {
+    NrpicWriteEnergyField(tnew, field_next + 1);
+    ++field_next;
   }
   if (nropt.snap_dt > 0.0 && tnew >= snap_next_time - 1.0e-10*nropt.snap_dt) {
     NrpicWriteSnapshot(tnew);

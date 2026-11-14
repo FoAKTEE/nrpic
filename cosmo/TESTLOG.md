@@ -692,3 +692,31 @@ initial potential, about three times its depth, and vanishes for perturbations w
 inside the horizon, where the Newtonian calculation with the dictionary is accurate.
 Not established: its split between the second-order part of the initial data and of
 the evolution.
+
+## C5, test C of paper 2 (random field), larger box: written before the runs (02:14)
+
+Paper 2, run C704: box 704 Mpc/h, power only above 220 Mpc/h, 32, 64, 128 cells, 27
+particles per cell, step 0.05 of the cell, z = 1000 to 0, a spectrum from CLASS that it
+does not specify. Here: Eisenstein-Hu spectrum with Planck 2018 parameters at z = 0
+scaled to z = 1000 with D = a, sharp spherical cut at 2 pi / 220 h/Mpc, one seed with
+the same large-scale modes at all resolutions (`cosmo/ic/spectrum.py`,
+`random_field.py`, written by a helper agent, 22 checks passing; relativistic data from
+the field with `cosmo/ic/make_field.py`, which reproduces `make_east.py` on the sine
+waves: identical positions, masses to 9e-7). Quadratic cloud, no filter, 8 particles per
+cell at 32 and 64 cells, 1 at 128; step 0.25 of the cell. The field has rms 8.3e-5 and
+maximum 3.3e-4 at the start, so it stays linear to z = 0 (rms 0.08).
+Data at 32 cells: the solved conformal factor differs from the dictionary by 7 percent
+of its perturbation: the shortest waves are 10 cells long and the cloud window lowers
+their deposited density by that much.
+Predictions for `cosmo/dav_c704_n{32,64,128}`:
+(1) Stable to z = 0 at all three resolutions.
+(2) Mean relative Hamiltonian constraint below 1e-5 throughout at 64 cells, falling
+    with resolution (paper 2: 3e-7 to 3.5e-6, 1e-7, 2.4e-8 to 5e-8 at 32, 64, 128 cells
+    with a five times smaller step).
+(3) Mean relative momentum constraint at z = 100 within a factor of three of paper 2
+    (1.8e-2, 4.9e-3, 1.2e-3) and falling by about four per doubling between 32 and 64
+    cells; the 128-cell run has fewer particles per cell and may not continue the trend.
+(4) Power spectrum of E / mean - 1 at z = 100, 10, 1 against linear theory, P(t, k) =
+    [(3 + k^2/H_c^2(t)) / (3 + k^2/H_c^2(0))]^2 P(0, k) with the measured initial
+    spectrum: within 3 percent in every shell below half the cut-off at 64 cells, and
+    the departure falling with resolution.

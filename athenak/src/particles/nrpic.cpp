@@ -116,6 +116,14 @@ void Particles::NrpicInit(ParameterInput *pin) {
   nropt.traj_dcycle = pin->GetOrAddInteger("particles", "traj_dcycle", 0);
   nropt.cstat_dcycle = pin->GetOrAddInteger("particles", "cstat_dcycle", 0);
   nropt.line_dcycle = pin->GetOrAddInteger("particles", "line_dcycle", 0);
+  // times at which the energy density on the (uniform) mesh is written: field_time1, ...
+  nfield_times = 0;
+  for (int n=1; n<=16; ++n) {
+    const std::string key = "field_time" + std::to_string(n);
+    if (!pin->DoesParameterExist("particles", key)) break;
+    field_times[nfield_times++] = pin->GetReal("particles", key);
+  }
+  field_next = 0;
   nropt.traj_ntrack = pin->GetOrAddInteger("particles", "traj_ntrack", 0);
   nropt.snap_dt    = pin->GetOrAddReal("particles", "snap_dt", -1.0);
   nropt.curv_dt    = pin->GetOrAddReal("particles", "curv_dt", -1.0);
