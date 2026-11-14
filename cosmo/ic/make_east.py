@@ -88,6 +88,25 @@ def build(delta, n, ppc=1, L=4.0, H=1.0, ratios=(1.0, 0.9, 1.1), nfilter=0,
                   axis=1)
     x = np.mod(q + xi, L)
 
+    # Fiducial observers come first in the file (the code records the trajectories of
+    # the particles with the lowest tags): the lattice particles on the three lines
+    # through the lattice point nearest to the overdensity peak, x line first.
+    ic = int(np.argmin(np.abs(q1 - 0.25*L)))
+    I = [a.ravel() for a in np.meshgrid(np.arange(npd), np.arange(npd), np.arange(npd),
+                                        indexing="ij")]
+    on = [(I[1] == ic) & (I[2] == ic), (I[0] == ic) & (I[2] == ic),
+          (I[0] == ic) & (I[1] == ic)]
+    centre = on[0] & on[1]
+    first = np.concatenate([np.flatnonzero(on[0]), np.flatnonzero(on[1] & ~centre),
+                            np.flatnonzero(on[2] & ~centre)])
+    rest = np.ones(len(q), dtype=bool)
+    rest[first] = False
+    order = np.concatenate([first, np.flatnonzero(rest)])
+    q, xi, jac, x = q[order], xi[order], jac[order], x[order]
+    nfid = len(first)
+    fid_axis = np.concatenate([np.zeros(npd, int), np.ones(npd - 1, int),
+                               np.full(npd - 1, 2)])
+
     # target density and velocity at the particles
     dN_p, psiN_p, v_p = newtonian_fields(x[:, 0], x[:, 1], x[:, 2], k, H, d)
     if zero_velocity:
@@ -142,8 +161,10 @@ def build(delta, n, ppc=1, L=4.0, H=1.0, ratios=(1.0, 0.9, 1.1), nfilter=0,
         "max_momentum_residual": float(max(np.abs(v_).max() for v_ in mom)),
         "removed_momentum_source_mean": r["rmean"],
         "overdensity_point": [L/4]*3, "underdensity_point": [3*L/4]*3,
+        "n_fiducial": int(nfid),
     }
-    return x, u, m, r, K, alpha, info
+    fid = {"q": q[:nfid], "axis": fid_axis, "q_centre": q1[ic]}
+    return x, u, m, r, K, alpha, info, fid
 
 
 if __name__ == "__main__":
@@ -160,16 +181,18 @@ if __name__ == "__main__":
                     help="keep particles at cell centres for odd ppc (shows the cusp)")
     ap.add_argument("--out", required=True)
     a = ap.parse_args()
-    x, u, m, r, K, alpha, info = build(a.delta, a.n, a.ppc, a.L, a.H0, nfilter=a.nfilter,
-                                       compensate=a.compensate,
-                                       zero_velocity=a.zero_velocity,
-                                       stagger=(False if a.no_stagger else None))
+    x, u, m, r, K, alpha, info, fid = build(a.delta, a.n, a.ppc, a.L, a.H0,
+                                            nfilter=a.nfilter,
+                                            compensate=a.compensate,
+                                            zero_velocity=a.zero_velocity,
+                                            stagger=(False if a.no_stagger else None))
     os.makedirs(a.out, exist_ok=True)
     write_particles(os.path.join(a.out, "particles.nrp"), x, u, m)
     write_fields(os.path.join(a.out, "fields.bin"), r["psi"], K, alpha, r["A"])
+    np.savez(os.path.join(a.out, "fiducial.npz"), **fid)
     with open(os.path.join(a.out, "id.json"), "w") as f:
         json.dump(info, f, indent=1)
-    for key in ("N", "max_displacement_over_h", "mass_min_over_mean", "mass_max_over_mean",
+    for key in ("N", "n_fiducial", "max_displacement_over_h", "mass_min_over_mean", "mass_max_over_mean",
                 "max_velocity", "max_abs_psiN", "max_psi_minus_dictionary", "mean_psi6",
                 "max_abs_Ahat", "max_hamiltonian_residual", "max_momentum_residual"):
         print(f"{key}: {info[key]}")

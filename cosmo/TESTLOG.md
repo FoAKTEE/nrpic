@@ -114,3 +114,31 @@ the order of the contrast itself beyond (the peak contrast reaches 0.03 at a_p =
 A failure of (1) means the solver and the code disagree on the constraints; a failure
 of (2) by a constant factor means the dictionary or the displacement is wrong; a wrong
 growth law means the evolution is wrong.
+
+Result so far (`cosmo/east_d1e-4_n32_cpu`, at a = 17 of 100): (1) the code's own
+constraint norms at t = 0 are 6e-10 (Hamiltonian) and 8e-10 (momentum): confirmed, the
+solver and the code agree on the constraints. (2) The observer density contrast is
+0.9955 to 0.9993 of linear theory at both probes up to a_p = 10 and agrees with the
+Newtonian reference to 0.44 percent: confirmed so far. The Newtonian reference itself
+(`cosmo/newton/pm.py`) is 0.992 to 0.993 of linear theory up to a_p = 30, the window
+factor of the probe. (My first comparison of the Newtonian run with linear theory was
+off by up to 77 percent at a = 2: the proper time of the observers was integrated with
+the trapezoidal rule over four steps, whose error equals the signal at this amplitude;
+the background part is now exact. The code's probe proper time is third order now.)
+
+## C2: production runs of paper 1, written before the runs (00:20)
+
+Runs `cosmo/east_d{0.0025,0.005,0.01,0.05}_n64`: 64^3 cells, 64^3 particles on the
+shifted lattice, two filter passes with compensation, zero shift, conformal-time lapse
+condition, to a = 1.4/delta (2.5 times the scale factor at which the linear contrast
+of the peak reaches 1.686). Newtonian reference at the same mesh, filter and step.
+Predictions:
+(a) Underdensity: the two calculations agree in delta_obs(a_p) to better than 2
+    percent of 1 + delta_obs for the three lower amplitudes (paper 1: indistinguishable).
+(b) Overdensity: the peak density rises steeply at a_p near 0.56/delta in both; the
+    relativistic rise comes later than the Newtonian one by an amount that grows with
+    the amplitude: not resolvable at 0.0025, clear at 0.05 (paper 1: Newtonian collapse
+    earlier, most pronounced at 0.05).
+(c) Not known in advance: whether zero shift with this lapse condition carries the run
+    through shell crossing and the formation of the bound region. Paper 1 used a damped
+    harmonic gauge. If a run stops at the collapse, the gauge is the first suspect.
