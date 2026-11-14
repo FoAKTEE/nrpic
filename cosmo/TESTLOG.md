@@ -1083,3 +1083,127 @@ Predictions for the larger box at 32 cells with f = 0.01 (`dav_c704_n32_{t,dcomp
 mean relative Hamiltonian constraint below 3e-7 at z = 100 and below 3e-6 to z = 0
 (the smaller box at 64 cells, whose step is 1 percent of the expansion time from the
 start, has 9.5e-8 at z = 100); momentum constraint and power unchanged.
+
+## C6: initial conditions of paper 3 (GRAMSES), outcome (03:45)
+
+Done by a helper agent from the specification `cosmo/notes/spec_2001.07968.md`; its
+expectations were written before its runs and are in `cosmo/notes/c6_report.md` with
+the full tables. I reran the closed-form checks (20 of 20 pass) and looked at the six
+figures (`cosmo/analysis/figs/gramses_*`). All tests of paper 3 are on initial data,
+nothing is evolved. No radiation here (Eisenstein-Hu spectrum, growth of matter plus a
+cosmological constant), 256^3 particles instead of 1024^3, boxes 4 Gpc/h and 256 Mpc/h,
+z = 99 and 49.
+Reproduced:
+- finite-difference against two-step velocity: excess power 2.0003e-4, 5.0002e-5,
+  1.2500e-5 at z = 99 and 8.0044e-4, 2.0002e-4, 4.9999e-5 at z = 49 for offsets 1, 0.5,
+  0.25 (paper 3: 2.0e-4, 5.0e-5, 1.1e-5 and 8.0e-4, 2.0e-4, 5.1e-5), equal to
+  2 dz^2/(1+z)^2 in every bin to 4e-13, same in both gauges;
+- growth rate of the particle-number contrast reaches one half at k = 3.58e-3 and
+  5.06e-3 h/Mpc (paper 3: 3.6e-3, 5.1e-3); its power at k = 1e-4 within 0.8 percent;
+- power of the particle-number contrast over the synchronous one: equal to the linear
+  ratio on the realized modes to 1.2e-4 in every bin; first bin of the large box 52.9
+  and 16.9 against paper 3's 46.7 and 13.7, both inside the spread over realizations
+  (38 to 57, 13 to 18); small box 1.0553, 1.0275 against 1.049, 1.024;
+- lower-index velocity divergence over the Newtonian one follows k^2/(k^2 + m^2) mode
+  by mode.
+Different, with cause: paper 3's growth rates carry radiation (its synchronous rate is
+0.9805 and 0.9903 on small scales; a Meszaros estimate gives 0.9807 and 0.9903); its
+horizon-scale curves are 3 to 8 percent off the radiation-free closed forms. Not
+reproducible without a Boltzmann code: the curves of its last figure that depend on the
+radiation-era growth (modelled only).
+Three of the agent's expectations failed, each with a cause found: two numbers in the
+specification were figure readings that include radiation; the scatter at the smallest
+offset is rounding of tabulated spectra to seven digits (1.3e-4, paper 3: 2 to 5e-4),
+not single precision of the displacements (1.6e-7); the deposited velocity spectrum in
+the small box at z = 49 exceeds linear theory above 0.5 h/Mpc at second order in the
+amplitude.
+For this code: the lapse condition keeps the Newtonian slicing while the potential is
+constant (growing mode, matter domination); with zero shift the threading is the one
+in which paper 3 defines the particle-number contrast, delta_S - 5 phi in matter
+domination, which is the coordinate density of our initial data (displacement of
+delta_S, the rest in the masses). With a cosmological constant the slicing drifts by
+(1 - f) phi, of order phi by z = 0. So our data are the hyperbolic counterpart of
+paper 3's without change; an evolved comparison would need its code.
+
+## C5, test C: exact box and compensation, first outcomes (03:53)
+
+Larger box, exact box size, Courant step (`dav_c704_n{32,64}_{k,dcomp}`, `n32_cfl`).
+Hamiltonian constraint (mean, relative) at z = 100, 10, 1: 5.2e-6, 3.6e-5, 6.9e-5 at 32
+cells and 3.4e-7, 2.2e-6, 4.3e-6 at 64 cells: ratio 15 to 16, the fourth order of the
+integrator in the step; with the step of 0.05 of a cell at 32 cells 7.2e-7, 7.1e-7,
+1.5e-6. Momentum constraint at z = 100 and 10: 4.6e-3, 1.6e-3 at 32 cells and 1.1e-3,
+5.2e-4 at 64 (ratio 4.0, 3.0); with the compensation 2.3e-3, 1.9e-3 and 5.7e-4, 5.3e-4:
+half at z = 100, equal or higher later. Paper 2: 1.8e-2, 1.3e-2 and 4.9e-3, 4.1e-3.
+Power with the compensation at 64 cells: checked with the step-limited runs below.
+Smaller box at 64 cells (`dav_c256_n64`, `dav_c256_n64_dcomp`), against the
+predictions of the two entries:
+(1) both reach z = 0 with finite fields; the compensated one too (prediction (5)).
+(2) power below half the cut-off at z = 100, 10: 2.6, 5.7 percent without (predicted
+    within 10); up to the cut-off 9 and 18 percent. With the compensation 0.09 and 0.5
+    percent up to the cut-off (predicted within 1 below half the cut-off: holds).
+    Paper 2 at 64 cells: 0.9 to 13 percent at z = 100, 1.5 to 31 percent at z = 10.
+    At z = 1 (rms contrast 0.26 and 0.30): 9 and 2 percent below half the cut-off.
+(3) Hamiltonian constraint while linear: 9.5e-8 at z = 100 and 1.2e-6 at z = 10
+    (2.3e-8 and 1.7e-6 with the compensation); paper 2: 2.5e-7, 2.0e-7. It rises from
+    z of about 30 on, before any collapse. Momentum constraint 1.1e-3, 1.3e-3 (paper 2:
+    7.6e-3, 7.2e-3).
+(4) After the first collapse: Hamiltonian constraint 1.3e-4 at z = 1 and 6.9e-4 at
+    z = 0, momentum constraint 5e-2 and 0.13 (paper 2: 9.6e-7, 5.3e-6 and 1.6e-2,
+    6.7e-2). With the compensation they are three times higher still (2.7e-4, 2.0e-3
+    and 0.20, 0.47): the pass amplifies the noise of the collapsed regions. The rms
+    contrast at z = 0 is 0.86 with it against 0.63 without.
+So before collapse this code is at or below paper 2's constraint levels and far closer
+to linear theory with the compensation; after collapse its Hamiltonian constraint is a
+hundred times higher. Two candidate causes, one run each (64 cells, no compensation,
+step limit on):
+`dav_c256_n64_p3t`: 27 particles per cell as in paper 2 instead of 8. Prediction:
+    constraints after collapse lower by about sqrt(27/8) = 1.8 (noise), the rise from
+    z = 30 to 10 lower by more than 2 (lattice error); not the factor of a hundred.
+`dav_c256_n64_kct`: damping with a constant coefficient 0.02 as paper 2 uses (rate
+    grows with the lapse to 40 per unit of conformal time at the end; rate times step
+    0.42, below the stiffness found before). Prediction: Hamiltonian constraint at
+    z = 1 and 0 lower by more than ten, momentum constraint and power unchanged
+    within a tenth. If so, the late level is a matter of how hard the constraint is
+    damped, not of how well the dynamics is solved, as paper 2 itself cautions.
+
+Added before the 128-cell chains of the smaller box (`dav_c256_n128_{t,dcompt}`, step
+limit on): with the compensation the power up to the cut-off is within 0.5 percent of
+linear theory at z = 100 and 10; the prediction for the run without it stands (2.5
+percent below half the cut-off).
+
+## C5, test C: step-limited runs of the larger box, and the cubic cloud with compensation (04:13)
+
+`dav_c704_n{32,64}_{t,dcompt}` (step limit 0.01; 1,243 steps instead of 1,056 at 32
+cells). Mean relative Hamiltonian constraint at z = 100, 10, 1, 0.02:
+  32 cells: 7.1e-7, 6.6e-7, 1.5e-6, 4.9e-6; with compensation 5.0e-8, 1.3e-7, 2.0e-6, 9.5e-6
+  64 cells: 1.8e-7, 1.9e-7, 4.2e-7, 5.3e-6; with compensation 2.1e-8, 8.5e-8, 6.4e-7, 1.0e-5
+  paper 2:  3.1e-7, 5.1e-7, 2.6e-6, 3.5e-6 (32); 9.1e-8, 8.9e-8, 9.8e-8, 1.2e-7 (64).
+My prediction (below 3e-7 at z = 100, below 3e-6 to z = 0, at 32 cells) fails without
+the compensation (7.1e-7; 4.9e-6 at the end) and holds with it up to z = 1. The offset
+of the background is gone (55 times lower at z = 10); what remains depends on the cloud
+after all: the compensation lowers it 14 and 9 times at z = 100, so cause (a) does act
+on the Hamiltonian constraint once the offset no longer hides it.
+From z of about 3 on the constraints rise at both resolutions to the same level
+(5e-6 to 1e-5), local (largest value 30 times the mean), higher with the compensation:
+the sampling of the distorted lattice (rms displacement a quarter to a half of the
+particle spacing at the end). Momentum constraint: 3.8e-3, 1.6e-3, 1.4e-3, 2.4e-3 and
+1.2e-3, 5.2e-4, 1.0e-3, 5.4e-3 without; 1.7e-3, 2.0e-3, 2.3e-3, 7.1e-3 and 6.0e-4,
+5.3e-4, 1.3e-3, 9.6e-3 with (paper 2: 1.8e-2 to 7.8e-3 at 32, 4.9e-3 to 4.3e-3 at 64).
+Power against linear theory, up to the cut-off, z = 100, 10, 1, 0: without 11, 21, 27,
+29 percent (32 cells) and 2.8, 5.5, 7.4, 8.2 percent (64); with 0.26, 0.37, 0.98, 1.8
+percent (32) and 0.05, 0.24, 0.99, 1.8 percent (64). Prediction (4), within 0.5
+percent at z = 100 and 10 at 64 cells: holds. The departure of 1 to 2 percent at z = 1
+and 0 is the same at both resolutions: growth of second order in the contrast (rms
+0.04 and 0.08), not error.
+128 cells, exact box, Courant step, one particle per cell, no compensation
+(`dav_c704_n128_k`): Hamiltonian constraint 3.9e-8, 1.7e-7, 2.1e-6, 8.8e-6 (paper 2:
+2.4e-8, 2.4e-8, 2.8e-8, 5.1e-8), momentum constraint 6.7e-4, 7.3e-4, 4.8e-3, 1.3e-2
+(1.2e-3, 1.1e-3, 1.4e-3, 2.2e-3), power within 0.3 percent to z = 10.
+Next, written before the runs `dav_c704_n32_pcsct` and `dav_c256_n64_pcsct`: cubic
+cloud with its compensation (c = 1/6) and the step limit. The lattice error of the
+cubic cloud is of third order in the compression (T1a) and its momentum constraint
+was the lowest late in the uncompensated comparison; its smoothing of the growth was
+the largest and is what the pass removes. Predictions: power as with the compensated
+quadratic cloud (within 0.5 percent up to the cut-off at z = 100 and 10); constraints
+from z = 3 on lower than with the compensated quadratic cloud by more than two in the
+larger box; in the smaller box lower after the first collapse, by less.

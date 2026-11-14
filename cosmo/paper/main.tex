@@ -64,9 +64,21 @@ The coupling of Ref.~\cite{Wu:2026nrpic} deposits the energy density $E$, the mo
 \end{equation}
 and the solver divides them by the volume element of each stage, $1/\sqrt{\gamma} = \chi^{3/2}$ with the conformal factor $\chi$ of the Z4c variables. The densities are extrapolated to the middle of the step from the last two deposits,
 \begin{equation}
-\hat E^{\,n+1/2} = \tfrac{3}{2}\hat E^{\,n} - \tfrac{1}{2}\hat E^{\,n-1},
+\hat E^{\,n+1/2} = \hat E^{\,n} + \frac{\Delta t_{n+1}}{2\,\Delta t_{n}}\left(\hat E^{\,n} - \hat E^{\,n-1}\right),
 \end{equation}
-and likewise for the other two, which makes the coupling second order for the slow part as well. Daverio, Dirian, and Mitsou refresh the same factor between particle updates \cite{Daverio:2019gql}.
+where $\Delta t_n$ is the step that ends at the deposit $n$, and likewise for the other two, which makes the coupling second order for the slow part as well. Daverio, Dirian, and Mitsou refresh the same factor between particle updates \cite{Daverio:2019gql}.
+
+The cloud that spreads a particle over the mesh smooths the deposited densities. A wave of wave number $k$ on a mesh of spacing $\Delta x$ is lowered by the factor $1 - \tfrac{1}{2}s^2(k\Delta x)^2$, where $s^2\Delta x^2$ is the second moment of the cloud in each direction: $s^2 = 1/6$, $1/4$, and $1/3$ for the linear, quadratic, and cubic cloud. The smoothing weakens the self-gravity of the wave and slows its growth. One pass over the deposited densities with the weights $(-c,\,1+2c,\,-c)$ in each direction has the response $1 + 4c\sin^2(k\Delta x/2)$, and $c = s^2/2$ cancels the second moment, so that the density of a long wave is correct to fourth order in the cell size. The pass acts on the densities of Eq.~(\ref{eq:densities}), before the division by the volume element. The particles carry the density per coordinate volume, and on scales near the Hubble radius most of its contrast is the contrast of the volume element itself. The division is local, so a pass after it leaves that part of the smoothing in the sources. The pass also amplifies the sampling error of the deposit at the shortest waves, which limits its use once the flow is no longer smooth (Sec.~\ref{sec:res_field}).
+
+\subsection{Time step and constraint damping}\label{sec:step}
+
+A fixed fraction of a cell is a stable step at all epochs, but its accuracy is set at the start of a run. The homogeneous solution changes on the expansion time $1/\mathcal{H}$, with $\mathcal{H} = \dot a/a$, and the integrator of the spacetime solver is of fourth order. Its error on the homogeneous background is committed in the first steps and stays in the solution as a uniform violation of the Hamiltonian constraint, which the expansion does not dilute. In a box several Hubble radii wide the Courant step is a sizeable fraction of the initial expansion time. The step is therefore limited to a fraction $f$ of the expansion time,
+\begin{equation}
+\Delta t \le \frac{3f}{|\langle \alpha K\rangle|},
+\end{equation}
+with the mean over the mesh. The limit acts only while the expansion is fast, and the extra steps grow with the logarithm of the expansion over which it acts.
+
+The constraint damping of the Z4c formulation acts at the rate $\kappa_1\alpha$ per unit of coordinate time. With $\alpha = a$ a constant coefficient $\kappa_1$ becomes stiff as the universe expands. The coefficient is divided by the lapse here, which damps the constraints at a fixed rate per unit of conformal time.
 
 \subsection{Initial data on the three-torus}\label{sec:id}
 
@@ -254,8 +266,21 @@ In the third test a plane wave of small amplitude starts outside the horizon and
 
 The fourth test, a random field drawn from a power spectrum, is being prepared.
 
-\subsection{Initial conditions with a spectrum of scales}
-To be written (Ref.~\cite{Barrera-Hinojosa:2020arz}).
+\subsection{Initial conditions with a spectrum of scales}\label{sec:res_gramses}
+
+Barrera-Hinojosa and Li derive the initial conditions of a relativistic particle code in a constant-mean-curvature slicing and test them at the initial time \cite{Barrera-Hinojosa:2020arz}. The particle positions must carry the particle-number contrast of the threading. On scales of the Hubble radius it exceeds the synchronous density contrast of a Newtonian simulation by a multiple of the curvature perturbation, which is constant in time. The velocities follow either from the growth rate or from the difference of two displacement fields at neighboring redshifts. All tests of Ref.~\cite{Barrera-Hinojosa:2020arz} concern linear theory and the generator, so they are repeated here without evolution, for matter and a cosmological constant, with the same parameters, the same two boxes, and both starting redshifts. Every transfer function has a closed form in this case, and the generator is checked against the closed forms through the gauge transformations and the constraints.
+
+Figure~\ref{fig:gramses} shows three results. The growth rate $f_p$ of the particle-number contrast falls from the matter value on small scales to zero beyond the Hubble radius. The closed form passes through the values of Ref.~\cite{Barrera-Hinojosa:2020arz} up to the effect of radiation, which is absent here and lowers the growth rate of Ref.~\cite{Barrera-Hinojosa:2020arz} on small scales by the factor of M\'esz\'aros. The power $P_p$ of the particle-number contrast of the realized initial conditions, relative to the synchronous power $P_S$, equals the linear ratio on the realized modes in every bin, and agrees with Ref.~\cite{Barrera-Hinojosa:2020arz} within the spread between realizations of the few largest modes. The finite-difference velocity carries more power $P_{\theta\theta}$ of the velocity divergence than the growth-rate velocity by the truncation error of the central difference, $2\,\Delta z^2/(1+z)^2$ for a redshift offset $\Delta z$, in every bin and in both gauges, as in Ref.~\cite{Barrera-Hinojosa:2020arz}.
+
+\begin{figure*}[t]
+\includegraphics[width=\textwidth]{fig_gramses}
+\caption{Initial conditions with a spectrum of scales, at redshifts 99 and 49. Left: the growth rate $f_p$ of the particle-number contrast vanishes beyond the Hubble radius. Center: the power of the particle-number contrast exceeds the synchronous power on the largest scales of a box of $4\,h^{-1}$Gpc; lines: linear theory at the bin center. Right: excess velocity power of the finite-difference velocity over the growth-rate velocity; lines: $2\,\Delta z^2/(1+z)^2$. Dots: this work. Crosses: values read from the figures of Ref.~\cite{Barrera-Hinojosa:2020arz}, which include radiation.}
+\label{fig:gramses}
+\end{figure*}
+
+Two statements of Ref.~\cite{Barrera-Hinojosa:2020arz} are refined. The scatter it reports at the smallest redshift offset is reproduced by the rounding of tabulated input spectra and is far larger than single-precision arithmetic of the displacement field would give. For particles on a lattice the window correction of a mesh estimator is replaced by the linear response of a displaced lattice, which is derived and verified here.
+
+The lapse condition of Sec.~\ref{sec:system} keeps the Newtonian slicing while the potential is constant, which holds for the growing mode in matter domination, and zero shift keeps the threading in which the particle-number contrast is defined. The initial data of Sec.~\ref{sec:id} carry that contrast: the displacement supplies the synchronous part and the particle masses the remainder, and the constraint solve supplies the metric. They are therefore the counterpart of the initial conditions of Ref.~\cite{Barrera-Hinojosa:2020arz} for a hyperbolic code. With a cosmological constant the slicing drifts from the Newtonian one late in the evolution, by the fraction of the potential by which the growth rate falls below one.
 
 \section{Method developments}\label{sec:tracks}
 
