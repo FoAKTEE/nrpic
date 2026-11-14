@@ -61,6 +61,7 @@ excise_chi      = 0.0                  # constraint norms over the whole box (ch
 <particles>
 particle_type  = nrpic
 pusher         = midpoint
+interp         = hermite  # metric at the particles: hermite (Catmull-Rom) or bspline (cubic spline through the nodes)
 dt_expansion   = 0.0     # > 0: step limited to this fraction of the expansion time
 metric         = mesh
 tolerance      = 1.0e-12
@@ -87,6 +88,7 @@ probe_x2       = 2.0
 probe_x3       = 2.0
 nprobe         = 0
 cstat_dcycle   = 8        # constraint statistics (maximum and mean, absolute and relative)
+cons_dcycle    = 0        # conservation of the deposited matter on the mesh (cycles between records)
 traj_dcycle    = 0       # records of the tracked particles every this many steps
 traj_ntrack    = 0       # particles with tags below this are tracked
 lambda         = 0.0

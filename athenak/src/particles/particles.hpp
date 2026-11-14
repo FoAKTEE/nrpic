@@ -58,6 +58,8 @@ struct NrpicOptions {
                            // the second moment of the binomial passes (c = nfilter/4)
   Real filter_comp_c;      // c of that pass if >= 0 (default -1: nfilter/4)
   bool field_constraints;  // field dumps also hold the constraints, Khat, Theta, lapse
+  bool interp_bspline;     // metric at the particles by the cubic spline through the
+                           // nodes instead of the Catmull-Rom reconstruction
   Real dt_expansion;       // > 0: step limited to this fraction of the expansion time
                            // 3/|mean(alpha Khat)| (cosmological runs)
   Real deposit_comp_c;     // > 0: pass (-c, 1+2c, -c)^3 on the deposited densities, before
@@ -77,6 +79,8 @@ struct NrpicOptions {
   int hist_dcycle;      // cycles between history records (0 = off)
   int traj_dcycle;      // cycles between trajectory records (0 = off)
   int cstat_dcycle;     // cycles between constraint-statistics records (0 = off)
+  int cons_dcycle;      // cycles between records of the conservation of the deposited
+                        // matter on the mesh (0 = off)
   int line_dcycle;      // cycles between records of the fields along an x1 line (0 = off)
   int traj_ntrack;      // particles with tag < traj_ntrack are recorded
   Real snap_dt;         // time between full particle snapshots (<= 0 = off)
@@ -139,6 +143,10 @@ class Particles {
   DvceArray2D<int>  prtcl_idata;   // integer properties each particle (gid, tag, etc.)
   Real dtnew;
   Real dt_user = 0.0;          // <particles> dt (upper limit of the step)
+  DvceArray5D<Real> cons_new, cons_old, cons_d2;   // conservation diagnostic
+  DvceArray5D<Real> met0s, met1s, met_work;        // sharpened metric (interp = bspline)
+  int cons_valid = 0;
+  Real cons_dt_prev = 0.0;
   Real dt_probe_old = -1.0;    // previous step (third-order proper time of the probes)
 
   ParticlesPusher pusher;
@@ -212,10 +220,12 @@ class Particles {
   void NrpicCreateParticles();
   void NrpicLoadParticleFile(const std::string &fname);
   void NrpicFillMetric(DvceArray5D<Real> &met);
+  void NrpicSharpenMetric(DvceArray5D<Real> &met, DvceArray5D<Real> &mets);
   void NrpicAssignBlocks();
   void NrpicRemoveFlagged();
   void NrpicDepositSources();
   void NrpicFilterPass(const Real w0, const Real w1);
+  void NrpicWriteConservation(Real time, Real dt, bool header, bool write);
   void NrpicCompensateLimited(const Real c, const Real c2, const Real lim);
   void NrpicUpdateTimeStep();
   void NrpicFilterSources();

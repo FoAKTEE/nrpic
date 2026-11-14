@@ -78,6 +78,7 @@ struct MeshMetric {
   int ist[3];         // index of the first active cell in each direction
   int ncell[3];       // number of cells including ghost cells in each direction
   bool is_static;
+  bool bspline = false;   // m0, m1 hold sharpened values: cubic B-spline weights
 
   KOKKOS_INLINE_FUNCTION
   bool IsStatic() const { return is_static; }
@@ -92,7 +93,11 @@ struct MeshMetric {
       i0 = (i0 < 1) ? 1 : i0;
       i0 = (i0 > ncell[d]-3) ? ncell[d]-3 : i0;
       ib[d] = i0;
-      HermiteWeights(xi - static_cast<Real>(i0 - ist[d]), w[d], dw[d]);
+      if (bspline) {
+        BSplineWeights(xi - static_cast<Real>(i0 - ist[d]), w[d], dw[d]);
+      } else {
+        HermiteWeights(xi - static_cast<Real>(i0 - ist[d]), w[d], dw[d]);
+      }
       for (int n=0; n<4; ++n) { dw[d][n] *= idx[d]; }
     }
     Real v[NRM_NVAR], dv[3][NRM_NVAR];

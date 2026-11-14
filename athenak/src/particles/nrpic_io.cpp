@@ -36,6 +36,38 @@ void NrpicFatal(const std::string &msg) {
   std::cout << "### FATAL ERROR in nrpic_io.cpp" << std::endl << msg << std::endl;
   std::exit(EXIT_FAILURE);
 }
+
+// index of the stress component S_ab in the source container (Sxx Sxy Sxz Syy Syz Szz)
+KOKKOS_INLINE_FUNCTION
+int NrpicSymIdx(const int a, const int b) {
+  const int lo = (a < b) ? a : b, hi = (a < b) ? b : a;
+  return (lo == 0) ? hi : ((lo == 1) ? 2 + hi : 5);
+}
+
+// fluxes of the densitized energy and momentum equations through the direction c at one
+// cell: f[0] = alpha sqrt(gamma) gamma^{cb} S_b, f[1+a] = alpha sqrt(gamma) gamma^{cb} S_ba
+KOKKOS_INLINE_FUNCTION
+void NrpicConsFlux(const DvceArray5D<Real> &m1, const DvceArray5D<Real> &tm, const int m,
+                   const int k, const int j, const int i, const int c, Real f[4]) {
+  Real g[3][3], gi[3][3];
+  g[0][0] = m1(m,NRM_GXX,k,j,i); g[0][1] = m1(m,NRM_GXY,k,j,i);
+  g[0][2] = m1(m,NRM_GXZ,k,j,i); g[1][1] = m1(m,NRM_GYY,k,j,i);
+  g[1][2] = m1(m,NRM_GYZ,k,j,i); g[2][2] = m1(m,NRM_GZZ,k,j,i);
+  g[1][0] = g[0][1]; g[2][0] = g[0][2]; g[2][1] = g[1][2];
+  const Real det = nrpic::Inv3Sym(g, gi);
+  const Real w = m1(m,NRM_ALP,k,j,i)*sqrt(fmax(det, 0.0));
+  f[0] = 0.0;
+  for (int b=0; b<3; ++b) {
+    f[0] += w*gi[c][b]*tm(m,Tmunu::I_Tmunu_Sx+b,k,j,i);
+  }
+  for (int a=0; a<3; ++a) {
+    f[1+a] = 0.0;
+    for (int b=0; b<3; ++b) {
+      f[1+a] += w*gi[c][b]*tm(m,Tmunu::I_Tmunu_Sxx+NrpicSymIdx(b,a),k,j,i);
+    }
+  }
+}
+
 } // namespace
 
 //----------------------------------------------------------------------------------------
@@ -542,6 +574,205 @@ void Particles::NrpicWriteEnergyField(Real time, int index) {
 }
 
 //----------------------------------------------------------------------------------------
+//! \fn  void Particles::NrpicWriteConservation
+//! \brief conservation of energy and momentum of the deposited matter on the mesh
+//! (the test of Daverio, Dirian & Mitsou 2019, Sec. 4.4, in the variables of this code).
+//! With zero shift and the densities D = sqrt(gamma) E, D_i = sqrt(gamma) S_i, the
+//! equations nabla_b T^{ab} = 0 read
+//!   d_t D   + d_c (alpha sqrt(gamma) S^c)   = alpha K_ab sqrt(gamma) S^ab
+//!                                             - sqrt(gamma) S^c d_c alpha,
+//!   d_t D_a + d_c (alpha sqrt(gamma) S^c_a) = - D d_a alpha
+//!                                             + (alpha/2) sqrt(gamma) S^bc d_a gamma_bc.
+//! The right-hand sides and the divergences are evaluated at every step with
+//! fourth-order differences, the time derivative from three successive steps, and the
+//! residuals C^E, C^P_a are those of the middle step.  Each is divided by the root of
+//! the sum of squares of the terms of its equation (C_r), as for the constraints.
+//! Record of <basename>.cons.hst: time of the middle step; mean and maximum of C^E_r;
+//! mean and maximum of C^P_r; mean of |C^E|/D and of |C^P|/D.
+//! The fields of the two previous steps are kept in memory; they are not in the restart
+//! file, so the record resumes two steps after a restart.  Uniform meshes only.
+
+void Particles::NrpicWriteConservation(Real time, Real dt, bool header, bool write) {
+  if (pmy_pack->pz4c == nullptr || !nropt.deposit) return;
+  Mesh *pm = pmy_pack->pmesh;
+  if (pm->multilevel) return;
+  auto &indcs = pm->mb_indcs;
+  const int is = indcs.is, js = indcs.js, ks = indcs.ks;
+  const int ie = indcs.ie, je = indcs.je, ke = indcs.ke;
+  const int nmb = pmy_pack->nmb_thispack;
+  const int nmb1 = nmb - 1;
+  if (cons_new.extent(0) == 0 || header) {
+    const int n1 = indcs.nx1 + 2*indcs.ng, n2 = indcs.nx2 + 2*indcs.ng;
+    const int n3 = indcs.nx3 + 2*indcs.ng;
+    int nmbm = std::max((pmy_pack->nmb_thispack), (pm->nmb_maxperrank));
+    Kokkos::realloc(cons_new, nmbm, 10, n3, n2, n1);
+    Kokkos::realloc(cons_old, nmbm, 10, n3, n2, n1);
+    Kokkos::realloc(cons_d2, nmbm, 4, n3, n2, n1);
+    cons_valid = 0;
+  }
+
+  // ghost cells of the sources (the divergences need two layers)
+  auto &tmu = pmy_pack->ptmunu->u_tmunu;
+  (void) pbval_tm->InitRecv(Tmunu::N_Tmunu);
+  (void) pbval_tm->PackAndSendCC(tmu, coarse_tm);
+  (void) pbval_tm->ClearSend();
+  (void) pbval_tm->ClearRecv();
+  (void) pbval_tm->RecvAndUnpackCC(tmu, coarse_tm);
+
+  auto tm = tmu;
+  auto m1 = met1;
+  auto adm = pmy_pack->padm->adm;
+  auto sz = pmy_pack->pmb->mb_size.d_view;
+  auto cn = cons_new;
+  par_for("nrpic_cons", DevExeSpace(), 0, nmb1, ks, ke, js, je, is, ie,
+  KOKKOS_LAMBDA(const int m, const int k, const int j, const int i) {
+    Real g[3][3], gi[3][3];
+    g[0][0] = m1(m,NRM_GXX,k,j,i); g[0][1] = m1(m,NRM_GXY,k,j,i);
+    g[0][2] = m1(m,NRM_GXZ,k,j,i); g[1][1] = m1(m,NRM_GYY,k,j,i);
+    g[1][2] = m1(m,NRM_GYZ,k,j,i); g[2][2] = m1(m,NRM_GZZ,k,j,i);
+    g[1][0] = g[0][1]; g[2][0] = g[0][2]; g[2][1] = g[1][2];
+    const Real det = nrpic::Inv3Sym(g, gi);
+    const Real sg = sqrt(fmax(det, 0.0));
+    const Real alp = m1(m,NRM_ALP,k,j,i);
+    const Real idx[3] = {1.0/sz(m).dx1, 1.0/sz(m).dx2, 1.0/sz(m).dx3};
+    const int gidx[3][3] = {{NRM_GXX, NRM_GXY, NRM_GXZ}, {NRM_GXY, NRM_GYY, NRM_GYZ},
+                            {NRM_GXZ, NRM_GYZ, NRM_GZZ}};
+    // derivatives of the lapse and of the metric, divergences of the fluxes
+    Real dalp[3], dg[3][3][3], div[4] = {0.0, 0.0, 0.0, 0.0};
+    for (int c=0; c<3; ++c) {
+      const int di = (c == 0) ? 1 : 0, dj = (c == 1) ? 1 : 0, dk = (c == 2) ? 1 : 0;
+      dalp[c] = idx[c]*(8.0*(m1(m,NRM_ALP,k+dk,j+dj,i+di) - m1(m,NRM_ALP,k-dk,j-dj,i-di))
+                        - (m1(m,NRM_ALP,k+2*dk,j+2*dj,i+2*di)
+                           - m1(m,NRM_ALP,k-2*dk,j-2*dj,i-2*di)))/12.0;
+      for (int a=0; a<3; ++a) {
+        for (int b=a; b<3; ++b) {
+          const int n = gidx[a][b];
+          dg[c][a][b] = idx[c]*(8.0*(m1(m,n,k+dk,j+dj,i+di) - m1(m,n,k-dk,j-dj,i-di))
+                                - (m1(m,n,k+2*dk,j+2*dj,i+2*di)
+                                   - m1(m,n,k-2*dk,j-2*dj,i-2*di)))/12.0;
+          dg[c][b][a] = dg[c][a][b];
+        }
+      }
+      Real fp1[4], fm1[4], fp2[4], fm2[4];
+      NrpicConsFlux(m1, tm, m, k+dk, j+dj, i+di, c, fp1);
+      NrpicConsFlux(m1, tm, m, k-dk, j-dj, i-di, c, fm1);
+      NrpicConsFlux(m1, tm, m, k+2*dk, j+2*dj, i+2*di, c, fp2);
+      NrpicConsFlux(m1, tm, m, k-2*dk, j-2*dj, i-2*di, c, fm2);
+      for (int n=0; n<4; ++n) {
+        div[n] += idx[c]*(8.0*(fp1[n] - fm1[n]) - (fp2[n] - fm2[n]))/12.0;
+      }
+    }
+    // densities and raised components at this cell
+    const Real dE = sg*tm(m,Tmunu::I_Tmunu_E,k,j,i);
+    Real su[3], suu[3][3];
+    for (int a=0; a<3; ++a) {
+      su[a] = 0.0;
+      for (int b=0; b<3; ++b) {
+        su[a] += sg*gi[a][b]*tm(m,Tmunu::I_Tmunu_Sx+b,k,j,i);
+        suu[a][b] = 0.0;
+        for (int c=0; c<3; ++c) {
+          for (int d=0; d<3; ++d) {
+            suu[a][b] += sg*gi[a][c]*gi[b][d]
+                         *tm(m,Tmunu::I_Tmunu_Sxx+NrpicSymIdx(c,d),k,j,i);
+          }
+        }
+      }
+    }
+    Real ks_ = 0.0, sda = 0.0;
+    for (int a=0; a<3; ++a) {
+      sda += su[a]*dalp[a];
+      for (int b=0; b<3; ++b) {
+        ks_ += adm.vK_dd(m,a,b,k,j,i)*suu[a][b];
+      }
+    }
+    cn(m,0,k,j,i) = dE;
+    cn(m,4,k,j,i) = -div[0] + alp*ks_ - sda;
+    cn(m,8,k,j,i) = SQR(div[0]) + SQR(alp*ks_) + SQR(sda);
+    Real den = 0.0;
+    for (int a=0; a<3; ++a) {
+      Real t3 = 0.0;
+      for (int b=0; b<3; ++b) {
+        for (int c=0; c<3; ++c) {
+          t3 += 0.5*alp*suu[b][c]*dg[a][b][c];
+        }
+      }
+      const Real t2 = dE*dalp[a];
+      cn(m,1+a,k,j,i) = sg*tm(m,Tmunu::I_Tmunu_Sx+a,k,j,i);
+      cn(m,5+a,k,j,i) = -div[1+a] - t2 + t3;
+      den += SQR(div[1+a]) + SQR(t2) + SQR(t3);
+    }
+    cn(m,9,k,j,i) = den;
+  });
+
+  if (cons_valid >= 2 && write && dt > 0.0 && cons_dt_prev > 0.0) {
+    auto co = cons_old;
+    auto c2 = cons_d2;
+    const Real h0 = cons_dt_prev, h1 = dt;
+    const Real w1 = h0/(h1*(h0 + h1)), w0 = h1/(h0*(h0 + h1));
+    const int n1 = indcs.nx1, n2 = indcs.nx2, n3 = indcs.nx3;
+    const int ncell = nmb*n3*n2*n1;
+    Real ser = 0.0, mer = 0.0, spr = 0.0, mpr = 0.0, sea = 0.0, spa = 0.0;
+    Kokkos::parallel_reduce("nrpic_consred", Kokkos::RangePolicy<DevExeSpace>(0, ncell),
+    KOKKOS_LAMBDA(const int idx, Real &lser, Real &lmer, Real &lspr, Real &lmpr,
+                  Real &lsea, Real &lspa) {
+      int m = idx/(n3*n2*n1);
+      int rem = idx - m*(n3*n2*n1);
+      int k = rem/(n2*n1);
+      rem -= k*(n2*n1);
+      int j = rem/n1;
+      int i = rem - j*n1;
+      k += ks; j += js; i += is;
+      // time derivative at the middle step from three steps of unequal length
+      const Real de = w1*(cn(m,0,k,j,i) - co(m,0,k,j,i)) + w0*(co(m,0,k,j,i) - c2(m,0,k,j,i));
+      const Real ce = de - co(m,4,k,j,i);
+      const Real er = fabs(ce)/sqrt(fmax(SQR(de) + co(m,8,k,j,i), 1.0e-300));
+      Real cp2 = 0.0, dp2 = 0.0;
+      for (int a=0; a<3; ++a) {
+        const Real dp = w1*(cn(m,1+a,k,j,i) - co(m,1+a,k,j,i))
+                        + w0*(co(m,1+a,k,j,i) - c2(m,1+a,k,j,i));
+        cp2 += SQR(dp - co(m,5+a,k,j,i));
+        dp2 += SQR(dp);
+      }
+      const Real pr = sqrt(cp2)/sqrt(fmax(dp2 + co(m,9,k,j,i), 1.0e-300));
+      const Real dd = fmax(fabs(co(m,0,k,j,i)), 1.0e-300);
+      lser += er; lmer = fmax(lmer, er);
+      lspr += pr; lmpr = fmax(lmpr, pr);
+      lsea += fabs(ce)/dd; lspa += sqrt(cp2)/dd;
+    }, Kokkos::Sum<Real>(ser), Kokkos::Max<Real>(mer), Kokkos::Sum<Real>(spr),
+       Kokkos::Max<Real>(mpr), Kokkos::Sum<Real>(sea), Kokkos::Sum<Real>(spa));
+    const Real nc = static_cast<Real>(ncell);
+    std::string fname = nr_basename + ".cons.hst";
+    std::FILE *fp = std::fopen(fname.c_str(), "a");
+    if (fp == nullptr) NrpicFatal("cannot open " + fname);
+    std::fprintf(fp, "%.15e %.6e %.6e %.6e %.6e %.6e %.6e\n", time - dt, ser/nc, mer,
+                 spr/nc, mpr, sea/nc, spa/nc);
+    std::fclose(fp);
+  }
+  if (header) {
+    std::string fname = nr_basename + ".cons.hst";
+    std::FILE *fp = std::fopen(fname.c_str(), "w");
+    if (fp == nullptr) NrpicFatal("cannot open " + fname);
+    std::fprintf(fp, "# NRPIC conservation of the deposited matter\n");
+    std::fprintf(fp, "# [1]=time [2]=CEr_mean [3]=CEr_max [4]=CPr_mean [5]=CPr_max "
+                 "[6]=|CE|/D_mean [7]=|CP|/D_mean\n");
+    std::fclose(fp);
+  }
+
+  // keep this step and the one before it
+  {
+    auto co = cons_old;
+    auto c2 = cons_d2;
+    par_for("nrpic_cons_shift", DevExeSpace(), 0, nmb1, 0, 3, ks, ke, js, je, is, ie,
+    KOKKOS_LAMBDA(const int m, const int n, const int k, const int j, const int i) {
+      c2(m,n,k,j,i) = co(m,n,k,j,i);
+    });
+  }
+  std::swap(cons_old, cons_new);
+  cons_dt_prev = dt;
+  if (cons_valid < 2) { ++cons_valid; }
+}
+
+//----------------------------------------------------------------------------------------
 //! \fn  void Particles::NrpicWriteTrajectories
 //! \brief appends the state of the tracked particles (tag < traj_ntrack) to
 //! <basename>.traj.bin as records of 8 doubles: time, tag, x^i, u_i
@@ -575,8 +806,9 @@ void Particles::NrpicWriteTrajectories(Real time, bool truncate) {
       const int gids = pmy_pack->gids;
       const int ntrack = nropt.traj_ntrack;
       nrpic::MeshMetric proto;
-      proto.m1 = met1;
-      proto.m0 = met1;
+      proto.bspline = nropt.interp_bspline;
+      proto.m1 = nropt.interp_bspline ? met1s : met1;
+      proto.m0 = proto.m1;
       proto.is_static = true;
       proto.ist[0] = indcs.is; proto.ist[1] = indcs.js; proto.ist[2] = indcs.ks;
       proto.ncell[0] = indcs.nx1 + 2*indcs.ng;
@@ -998,6 +1230,9 @@ void Particles::NrpicStartup(bool res_flag) {
   if (nropt.line_dcycle > 0) {
     NrpicWriteLine(pm->time, true);
   }
+  if (nropt.cons_dcycle > 0) {
+    NrpicWriteConservation(pm->time, 0.0, true, false);
+  }
   if (nfield_times > 0) {
     NrpicWriteEnergyField(pm->time, 0);
   }
@@ -1032,6 +1267,9 @@ TaskStatus Particles::NrpicDiagnostics(Driver *pdriver, int stage) {
   }
   if (nropt.line_dcycle > 0 && (ncyc % nropt.line_dcycle == 0)) {
     NrpicWriteLine(tnew, false);
+  }
+  if (nropt.cons_dcycle > 0) {
+    NrpicWriteConservation(tnew, pm->dt, false, (ncyc % nropt.cons_dcycle == 0));
   }
   while (field_next < nfield_times && tnew >= field_times[field_next] - 0.5*pm->dt) {
     NrpicWriteEnergyField(tnew, field_next + 1);

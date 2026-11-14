@@ -95,6 +95,7 @@ excise_chi      = 0.0                  # constraint norms over the whole box (ch
 <particles>
 particle_type  = nrpic
 pusher         = midpoint
+interp         = hermite  # metric at the particles: hermite (Catmull-Rom) or bspline (cubic spline through the nodes)
 dt_expansion   = 0.0     # > 0: step limited to this fraction of the expansion time
 metric         = mesh
 tolerance      = 1.0e-12
@@ -116,6 +117,7 @@ alpha_exc      = -1.0
 ah_exc_factor  = -1.0
 hist_dcycle    = 1
 cstat_dcycle   = 8        # constraint statistics (maximum and mean, absolute and relative)
+cons_dcycle    = 0        # conservation of the deposited matter on the mesh (cycles between records)
 line_dcycle    = 0        # records of chi, alpha, K, E, S_x along the first x1 line
 traj_dcycle    = 2        # trajectories of the fiducial observers (lowest tags)
 traj_ntrack    = 94       # 3 n - 2 for one particle per cell and direction

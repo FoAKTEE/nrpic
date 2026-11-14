@@ -1476,3 +1476,45 @@ could not help there. The 128-cell run with the cubic compensated cloud is the t
 Prediction for `dav_c256_n128_pcsct` (one particle per cell): mean relative
 Hamiltonian constraint at z = 10 below 3e-7 (1.5e-6 at 64 cells) and at z = 5 below
 1e-6 (5.4e-6); after the first collapse it rises as before.
+
+## T1: conservation on the mesh, and the interpolation of the metric (06:09)
+
+New diagnostic (`cons_dcycle`, file `.cons.hst`): the residuals of the energy and
+momentum equations of the deposited matter on the mesh, in density form, relative to
+the root of the sum of squares of their terms; the test of paper 2's last figure
+(which reports 1e-2 for both at all resolutions and redshifts) in this code's variables.
+First use, the small linear run of the restart test (one wavelength of 32 cells, linear
+cloud, one particle per cell at the cell corners): momentum residual 1.27e-3, the same
+in every cell; energy residual 4.2e-3 in the mean. With the compensation (c = 1/12):
+1.0e-3. So it is not the cloud. It is the metric interpolation at the particles. The
+Catmull-Rom reconstruction of the method has a gradient whose error depends on the
+position in the cell at second order: for a wave of wavenumber k it is low by
+(k h)^2/6 at the cell centres, high by (k h)^2/12 midway between them and high by
+(k h)^2/48 at the quarter points (computed: -6.4, +3.1, +0.6 percent for a wave of ten
+cells, the last with a part of 1.3 percent out of phase). The residual equals deposit
+response times gradient response minus one: for this lattice (1 - (k h)^2/8)(1 +
+(k h)^2/12) - 1 = -1.6e-3, over root two 1.15e-3: as measured.
+Consequences: the force on a lattice particle is wrong by a fixed fraction that
+depends on where the lattice sits in the cells (a growth error), and it changes as
+the particles cross cells (a force with the period of the mesh).
+New option `interp = bspline`: the cubic spline through the nodal values (B-spline
+weights on values sharpened with the inverse of the sampled spline to second order;
+same 64-point stencil, twice continuously differentiable); its gradient error is of
+fourth order and independent of the position in the cell.
+Same small run with it: momentum residual 3.5e-3 without compensation (now the
+deposit response alone, -4.8e-3 over root two: as predicted), 1.26e-3 with c = 1/12,
+1.3e-4 with c = 1/8 (the response of a linear cloud deposited from the cell corners is
+1 - (k h)^2/8, not the window's 1/12), and with the cubic cloud and c = 1/6: momentum
+residual 1.4e-4, energy residual 1.4e-5 (4.2e-3 with the linear cloud).
+Runs (larger box, step limit, cubic cloud, spline interpolation, constraint fields and
+conservation records): `dav_c704_n32_pcsbt`, `dav_c704_n64_pcsbt` (three-point pass)
+and `dav_c704_n32_pcs4bt` (with the fourth-order term). Predictions:
+(1) Momentum residual at z = 100 and 10 below 3e-4 at 32 cells (to be compared with the
+    Catmull-Rom run `dav_c704_n32_pcsct_c`, same settings, started with them).
+(2) Mean relative momentum constraint at z = 100 to 10 at least two times below the
+    Catmull-Rom run (2.1e-4 to 7.8e-4 at 32 cells).
+(3) Power of the shortest wave (ten cells): with the three-point pass now a DEFICIT
+    (the overshoot of +0.2 to +0.5 percent came from the gradient error, which is
+    gone; the remainder of the pass is -0.43 percent in the source, about -1 percent in
+    the power at z = 100); with the fourth-order term within 0.2 percent at z = 100
+    and 10.

@@ -292,6 +292,31 @@ void HermiteWeights(const Real s, Real w[4], Real dw[4]) {
 }
 
 //----------------------------------------------------------------------------------------
+//! \fn BSplineWeights
+//! \brief weights of the cubic B-spline and their derivatives for the four nodes at
+//! offsets -1,0,1,2 from the base node, s = (x - x_base)/h in [0,1).  The derivative
+//! weights must be divided by h.  Applied to nodal values that were sharpened with the
+//! inverse of the sampled spline (Particles::NrpicSharpenMetric), this is the cubic
+//! spline through the nodes: twice continuously differentiable, with a gradient whose
+//! error does not depend on the position within the cell at second order, unlike the
+//! Catmull-Rom weights (gradient low by (k h)^2/6 at the nodes and high by (k h)^2/12
+//! midway between them for a wave of wavenumber k).
+
+KOKKOS_INLINE_FUNCTION
+void BSplineWeights(const Real s, Real w[4], Real dw[4]) {
+  const Real t = 1.0 - s;
+  const Real s2 = s*s;
+  w[0] = t*t*t/6.0;
+  w[1] = (3.0*s2*s - 6.0*s2 + 4.0)/6.0;
+  w[2] = (-3.0*s2*s + 3.0*s2 + 3.0*s + 1.0)/6.0;
+  w[3] = s2*s/6.0;
+  dw[0] = -0.5*t*t;
+  dw[1] = 0.5*(3.0*s2 - 4.0*s);
+  dw[2] = 0.5*(-3.0*s2 + 2.0*s + 1.0);
+  dw[3] = 0.5*s2;
+}
+
+//----------------------------------------------------------------------------------------
 //! \fn LorentzFactor
 //! \brief W = sqrt(1 + gamma^ij u_i u_j); also returns the raised components u^i
 

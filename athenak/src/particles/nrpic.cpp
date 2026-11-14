@@ -119,6 +119,7 @@ void Particles::NrpicInit(ParameterInput *pin) {
   nropt.hist_dcycle = pin->GetOrAddInteger("particles", "hist_dcycle", 1);
   nropt.traj_dcycle = pin->GetOrAddInteger("particles", "traj_dcycle", 0);
   nropt.cstat_dcycle = pin->GetOrAddInteger("particles", "cstat_dcycle", 0);
+  nropt.cons_dcycle = pin->GetOrAddInteger("particles", "cons_dcycle", 0);
   nropt.line_dcycle = pin->GetOrAddInteger("particles", "line_dcycle", 0);
   // times at which the energy density on the (uniform) mesh is written: field_time1, ...
   nfield_times = 0;
@@ -183,6 +184,20 @@ void Particles::NrpicInit(ParameterInput *pin) {
   dt_user = dtnew;
   nropt.dt_expansion = pin->GetOrAddReal("particles", "dt_expansion", 0.0);
   nropt.field_constraints = pin->GetOrAddBoolean("particles", "field_constraints", false);
+  {
+    std::string itp = pin->GetOrAddString("particles", "interp", "hermite");
+    if (itp != "hermite" && itp != "bspline") {
+      std::cout << "### FATAL ERROR in " << __FILE__ << " at line " << __LINE__ << std::endl
+                << "<particles> interp must be hermite or bspline" << std::endl;
+      std::exit(EXIT_FAILURE);
+    }
+    nropt.interp_bspline = (itp == "bspline");
+    if (nropt.interp_bspline && pm->mb_indcs.ng < 4) {
+      std::cout << "### FATAL ERROR in " << __FILE__ << " at line " << __LINE__ << std::endl
+                << "<particles> interp = bspline needs four ghost cells" << std::endl;
+      std::exit(EXIT_FAILURE);
+    }
+  }
   nr_basename = pin->GetString("job", "basename");
   nr_particle_file = pin->GetOrAddString("particles", "particle_file", "");
   {
@@ -230,6 +245,13 @@ void Particles::NrpicInit(ParameterInput *pin) {
     Kokkos::realloc(met1, nmb, NRM_NVAR, ncells3, ncells2, ncells1);
     if (!metric_is_static) {
       Kokkos::realloc(met0, nmb, NRM_NVAR, ncells3, ncells2, ncells1);
+    }
+    if (nropt.interp_bspline) {
+      Kokkos::realloc(met1s, nmb, NRM_NVAR, ncells3, ncells2, ncells1);
+      Kokkos::realloc(met_work, nmb, NRM_NVAR, ncells3, ncells2, ncells1);
+      if (!metric_is_static) {
+        Kokkos::realloc(met0s, nmb, NRM_NVAR, ncells3, ncells2, ncells1);
+      }
     }
   }
   if (nropt.deposit) {
@@ -291,6 +313,46 @@ void Particles::NrpicFillMetric(DvceArray5D<Real> &met) {
 }
 
 //----------------------------------------------------------------------------------------
+//! \fn  void Particles::NrpicSharpenMetric
+//! \brief nodal coefficients of the cubic spline through the metric at the cell centres
+//! (<particles> interp = bspline).  The cubic B-spline sampled at the nodes has the
+//! weights (1/6, 2/3, 1/6), response 1 - (2/3) s with s = sin^2(k dx/2); its inverse
+//! 1 + (2/3) s + (4/9) s^2 + ... is applied to second order in s, one direction after
+//! the other: 1 - d2/6 + d4/36 with the second and fourth differences, i.e. the weights
+//! (1/36, -5/18, 3/2, -5/18, 1/36).  The spline then passes through the nodal values up
+//! to (8/27) s^3 (3e-4 of a wave ten cells long).  Cells within two of the edge of the
+//! allocated array keep their value in that direction; the pusher does not read them
+//! for particles inside the active region (four ghost cells).
+
+void Particles::NrpicSharpenMetric(DvceArray5D<Real> &met, DvceArray5D<Real> &mets) {
+  auto &indcs = pmy_pack->pmesh->mb_indcs;
+  const int n1 = indcs.nx1 + 2*(indcs.ng);
+  const int n2 = indcs.nx2 + 2*(indcs.ng);
+  const int n3 = indcs.nx3 + 2*(indcs.ng);
+  const int nmb1 = pmy_pack->nmb_thispack - 1;
+  const Real w0 = 1.5, w1 = -5.0/18.0, w2 = 1.0/36.0;
+  for (int dir=0; dir<3; ++dir) {
+    // x: met -> mets, y: mets -> work, z: work -> mets
+    auto in = (dir == 0) ? met : ((dir == 1) ? mets : met_work);
+    auto out = (dir == 1) ? met_work : mets;
+    const int di = (dir == 0) ? 1 : 0, dj = (dir == 1) ? 1 : 0, dk = (dir == 2) ? 1 : 0;
+    const int nd = (dir == 0) ? n1 : ((dir == 1) ? n2 : n3);
+    par_for("nrpic_sharpen", DevExeSpace(), 0, nmb1, 0, NRM_NVAR-1, 0, n3-1, 0, n2-1,
+            0, n1-1,
+    KOKKOS_LAMBDA(const int m, const int n, const int k, const int j, const int i) {
+      const int id = (dir == 0) ? i : ((dir == 1) ? j : k);
+      if (id < 2 || id > nd-3) {
+        out(m,n,k,j,i) = in(m,n,k,j,i);
+      } else {
+        out(m,n,k,j,i) = w0*in(m,n,k,j,i)
+                       + w1*(in(m,n,k+dk,j+dj,i+di) + in(m,n,k-dk,j-dj,i-di))
+                       + w2*(in(m,n,k+2*dk,j+2*dj,i+2*di) + in(m,n,k-2*dk,j-2*dj,i-2*di));
+      }
+    });
+  }
+}
+
+//----------------------------------------------------------------------------------------
 //! \fn  TaskStatus Particles::NrpicSaveMetric
 //! \brief before the spacetime update, the metric of the previous cycle becomes the
 //! old time level
@@ -298,6 +360,7 @@ void Particles::NrpicFillMetric(DvceArray5D<Real> &met) {
 TaskStatus Particles::NrpicSaveMetric(Driver *pdriver, int stage) {
   if (nropt.metric == NrpicMetric::mesh && !metric_is_static) {
     std::swap(met0, met1);
+    if (nropt.interp_bspline) { std::swap(met0s, met1s); }
   }
   return TaskStatus::complete;
 }
@@ -311,6 +374,7 @@ TaskStatus Particles::NrpicPush(Driver *pdriver, int stage) {
   const bool mesh_metric = (nropt.metric == NrpicMetric::mesh);
   if (mesh_metric && !metric_is_static) {
     NrpicFillMetric(met1);
+    if (nropt.interp_bspline) { NrpicSharpenMetric(met1, met1s); }
   }
   push_maxit = 0;
   push_unconverged = 0;
@@ -361,8 +425,14 @@ TaskStatus Particles::NrpicPush(Driver *pdriver, int stage) {
 
   nrpic::MeshMetric proto;
   if (mesh_metric) {
-    proto.m1 = met1;
-    proto.m0 = metric_is_static ? met1 : met0;
+    proto.bspline = nropt.interp_bspline;
+    if (nropt.interp_bspline) {
+      proto.m1 = met1s;
+      proto.m0 = metric_is_static ? met1s : met0s;
+    } else {
+      proto.m1 = met1;
+      proto.m0 = metric_is_static ? met1 : met0;
+    }
     proto.is_static = metric_is_static;
     proto.ist[0] = indcs.is; proto.ist[1] = indcs.js; proto.ist[2] = indcs.ks;
     proto.ncell[0] = indcs.nx1 + 2*indcs.ng;
@@ -630,8 +700,9 @@ void Particles::NrpicDepositSources() {
   const int nb = nropt.deposit_shape + 1;              // cells per direction of a cloud
 
   nrpic::MeshMetric proto;
-  proto.m1 = met1;
-  proto.m0 = met1;
+  proto.bspline = nropt.interp_bspline;
+  proto.m1 = nropt.interp_bspline ? met1s : met1;
+  proto.m0 = proto.m1;
   proto.is_static = true;
   proto.ist[0] = is; proto.ist[1] = js; proto.ist[2] = ks;
   proto.ncell[0] = indcs.nx1 + 2*indcs.ng;
@@ -1300,6 +1371,7 @@ void Particles::NrpicInitializeSources() {
     pz4c->Z4cToADM(pmy_pack);
   }
   NrpicFillMetric(met1);
+  if (nropt.interp_bspline) { NrpicSharpenMetric(met1, met1s); }
   NrpicAssignBlocks();
   NrpicRemoveFlagged();
   if (nropt.deposit) {

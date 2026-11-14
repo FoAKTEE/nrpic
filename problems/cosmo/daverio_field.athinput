@@ -62,6 +62,7 @@ excise_chi      = 0.0                  # constraint norms over the whole box (ch
 <particles>
 particle_type  = nrpic
 pusher         = midpoint
+interp         = hermite  # metric at the particles: hermite (Catmull-Rom) or bspline (cubic spline through the nodes)
 dt_expansion   = 0.0     # > 0: step limited to this fraction of the expansion time
 metric         = mesh
 tolerance      = 1.0e-12
@@ -83,6 +84,7 @@ alpha_exc      = -1.0
 ah_exc_factor  = -1.0
 hist_dcycle    = 16
 cstat_dcycle   = 16       # constraint statistics (maximum and mean, absolute and relative)
+cons_dcycle    = 0        # conservation of the deposited matter on the mesh (cycles between records)
 line_dcycle    = 0 
 field_time1    = 4.2962     # z = 100
 field_time2    = 17.0788    # z = 10
