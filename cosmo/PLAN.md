@@ -150,6 +150,30 @@ What the first runs changed in the plan:
   relativistic delay between initial offset and evolution, C4 leftovers (two
   particles per cell and direction, filter without compensation).
 
+## State and revisions (2026-11-14 06:30)
+
+- T1 has grown into a consistent set, all options of the code, each with a measured
+  effect: cubic cloud (`deposit_shape = pcs`), compensation of the cloud on the
+  deposited density to fourth order (`deposit_comp_c = 1/6`, `deposit_comp_c2 = 7/15`),
+  spline interpolation of the metric at the particles (`interp = bspline`), step limit
+  (`dt_expansion = 0.01`), damping at a fixed rate (0.5). With them: waves of ten
+  cells grow correctly to a thousandth over a hundredfold expansion; energy and
+  momentum of the deposited matter are conserved on the mesh at fourth order
+  (`cons_dcycle`); the constraints of a linear random field stay below 7e-7 and 7e-4
+  to z = 0 at twenty cells per shortest wave.
+- Rules learned: resolve the shortest wave of the initial data with twenty cells (the
+  terms of second order sit at twice its wave number); the Catmull-Rom gradient error
+  depends on where the lattice sits in the cells; one particle per cell is enough with
+  the cubic cloud before collapse and not with the quadratic one.
+- Diagnostics added: constraint fields in the dumps (`field_constraints`), conservation
+  on the mesh, `cosmo/analysis/constraint_field.py`, `cosmo/analysis/lattice_error.py`.
+- Running: production runs of test C in this configuration (larger box 64 and 128
+  cells, smaller box 64 and 128 cells), and the 64-cell collapse run with the spline
+  to see whether the interpolation biases the relativistic delay.
+- Not solved: the noise after the matter streams cross (constraints rise, the
+  compensation amplifies it). Candidates: T2, or withholding the pass by a criterion on
+  stream crossing rather than on contrast.
+
 ## T2, design notes (not started)
 
 Where it applies. A cold lattice has no smooth distribution function to subtract: its

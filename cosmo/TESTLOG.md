@@ -1579,3 +1579,17 @@ cut-off: 0.55 percent at z = 100 and 1.8 percent at z = 10 (64 cells: 9 and 18);
 below half the cut-off 0.16 and 0.82 percent (predicted within 2.5: holds). Paper 2 at
 128 cells: 0.3 to 3.5 percent at z = 100 and 0.3 to 10 percent at z = 10 across the
 band; constraints 4.5e-8, 4.3e-8, 3.9e-7, 4.8e-6 and 2.0e-3, 2.8e-3, 7.1e-3, 4.2e-2.
+
+## C2/C4: does the metric interpolation bias the relativistic delay? Written before the run (06:29)
+
+The Newtonian reference interpolates its force with the exact cubic spline; the
+relativistic runs used the Catmull-Rom reconstruction, whose gradient at the lattice
+positions of those runs (cell corners) is high by (k h)^2/12: 0.08 percent for the
+fundamental wave at 64 cells, more for the shorter scales that form during the
+collapse. A force that is too strong makes the relativistic infall early and the
+measured delay small. Run `cosmo/east_d0.01_n64_tsc_b`: the 64-cell run of the
+resolution study (amplitude 0.01, quadratic cloud, same initial data) with the spline.
+Prediction: relativistic infall of the four groups of observers later by 0.1 to 0.5
+percent in a_p than with Catmull-Rom (58.88, 59.68, 62.62, 79.36), so the delay rises
+from 4.61, 4.55, 4.79, 5.25 percent by that much. If the shift is below 0.05 percent
+the interpolation does not matter for this result.
