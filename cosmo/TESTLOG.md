@@ -668,3 +668,27 @@ What this establishes: the ray machinery of both calculations reproduces Fig. 4 
 paper 1 to about a tenth of the plotted deviations at lower particle number, and its
 conclusion: large deviations from the homogeneous relation, small differences between
 the two gravities except in the bound region.
+
+## C4, wavelength test: outcome (02:09)
+
+Runs `cosmo/east_d0.01_n64_tsc_L{2,8}` against their Newtonian runs and the 4-radii pair
+of the same cloud. Delay of the relativistic infall (distance of the fiducial observers
+below a tenth; four starting distances):
+- 2 Hubble radii, (H/k)^2 = 0.101: 1.09, 0.98, 1.08, 1.17 percent;
+- 4 Hubble radii, (H/k)^2 = 0.405: 4.6, 4.6, 4.8, 5.3 percent;
+- 8 Hubble radii, (H/k)^2 = 1.62: 27.9, 28.2, 29.5 percent (three inner distances).
+Predicted for a horizon-scale origin: 1.2 to 1.3 percent at 2 radii (found 1.0 to 1.2)
+and about 20 at 8 (found 28 to 30); predicted for a dependence on the amplitude alone:
+5 percent at all three. The first is confirmed; the delay rises somewhat faster than
+(H/k)^2 at the long end (power 1.17 between 2 and 8 radii). At 8 radii both
+calculations end near the collapse, as predicted: the relativistic run at a = 96 with
+the lapse collapsing at the overdensity, the Newtonian dictionary at a = 91.
+In terms of the depth of the initial potential at the overdensity, |psi_N| =
+(9/2) (H/k)^2 times the amplitude: delay / |psi_N| = 2.4 (2 radii), 2.75 (4 radii,
+amplitude 0.01), 2.85 (4 radii, 0.05), 3.9 (8 radii). The density probe agrees (contrast
+of 10 reached later by 0.6, 3.0, 20 percent).
+What this establishes: the delay of C2 belongs to the horizon scale. It is set by the
+initial potential, about three times its depth, and vanishes for perturbations well
+inside the horizon, where the Newtonian calculation with the dictionary is accurate.
+Not established: its split between the second-order part of the initial data and of
+the evolution.
