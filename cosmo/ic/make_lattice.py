@@ -22,6 +22,11 @@ ap.add_argument("--xmin", type=float, default=0.0)
 ap.add_argument("--centred", action="store_true",
                 help="particles at cell centres for odd ppc (default: shifted by half a "
                      "particle spacing, see make_east.py)")
+ap.add_argument("--noise-x", type=float, default=0.0,
+                help="white noise on the positions: uniform in (-A, A) per component")
+ap.add_argument("--noise-u", type=float, default=0.0,
+                help="white noise on the covariant momenta per unit mass")
+ap.add_argument("--seed", type=int, default=1)
 ap.add_argument("--rays", default="",
                 help="comma-separated scale factors at which light rays leave the points "
                      "(L/4, L/4, L/4) and (3L/4, 3L/4, 3L/4) towards each other")
@@ -40,6 +45,10 @@ rho0 = 3.0*a.H0**2/(8.0*np.pi)
 m = np.full(len(x), rho0*h**3)
 os.makedirs(a.out, exist_ok=True)
 u = np.zeros_like(x)
+if a.noise_x > 0.0 or a.noise_u > 0.0:
+    rng = np.random.default_rng(a.seed)
+    x = np.mod(x + a.noise_x*rng.uniform(-1.0, 1.0, x.shape) - a.xmin, a.L) + a.xmin
+    u = a.noise_u*rng.uniform(-1.0, 1.0, x.shape)
 if a.rays:
     # rays first in the file: the code records the particles with the lowest tags
     dt = a.cfl*a.L/a.n

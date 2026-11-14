@@ -79,6 +79,7 @@ probe_x1       = 2.0
 probe_x2       = 2.0
 probe_x3       = 2.0
 nprobe         = 0
+cstat_dcycle   = 8        # constraint statistics (maximum and mean, absolute and relative)
 traj_dcycle    = 0       # records of the tracked particles every this many steps
 traj_ntrack    = 0       # particles with tags below this are tracked
 lambda         = 0.0

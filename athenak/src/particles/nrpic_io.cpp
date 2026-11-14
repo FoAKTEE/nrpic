@@ -237,6 +237,151 @@ void Particles::NrpicWriteHistory(Real time, int ncycle, bool header) {
 }
 
 //----------------------------------------------------------------------------------------
+//! \fn  void Particles::NrpicWriteConstraintStats
+//! \brief appends one record to <basename>.cstat.hst: extrema over the mesh of the
+//! conformal factor chi, of the trace K and of the energy density, and the largest value
+//! and the cell average of the constraints, absolute and relative,
+//!   H   = R + (2/3) K^2 - A_ij A^ij - 16 pi E,
+//!   M_i = D_j A^j_i - (2/3) d_i K - 8 pi S_i,      |M| = sqrt(gamma^ij M_i M_j),
+//!   H_r = |H| / sqrt(sum of the squares of the four terms of H),
+//!   M_r = |M| / sqrt(sum over the three terms T of gamma^ij T_i T_j)
+//! (Mertens, Giblin & Starkman 2016; Daverio, Dirian & Mitsou 2019).  The averages give
+//! every cell the same weight (uniform mesh).
+
+void Particles::NrpicWriteConstraintStats(Real time, bool header) {
+  if (pmy_pack->pz4c == nullptr || !nropt.deposit) return;
+  Mesh *pm = pmy_pack->pmesh;
+  auto &indcs = pm->mb_indcs;
+  auto con = pmy_pack->pz4c->con;
+  auto adm = pmy_pack->padm->adm;
+  auto u0 = pmy_pack->pz4c->u0;
+  auto tm = pmy_pack->ptmunu->u_tmunu;
+  auto sz = pmy_pack->pmb->mb_size.d_view;
+  const int nmb = pmy_pack->nmb_thispack;
+  const int ikhat = z4c::Z4c::I_Z4C_KHAT, itheta = z4c::Z4c::I_Z4C_THETA;
+  const int ichi = z4c::Z4c::I_Z4C_CHI;
+  const Real ncell = static_cast<Real>(nmb)*indcs.nx1*indcs.nx2*indcs.nx3;
+
+  Real chimin = 1.0e300, chimax = -1.0e300, kmin = 1.0e300, kmax = -1.0e300;
+  Real emin = 1.0e300, emax = -1.0e300, thmax = 0.0;
+  Kokkos::parallel_reduce("nrpic_cstat1",
+    Kokkos::MDRangePolicy<DevExeSpace, Kokkos::Rank<4>>(
+      {0, indcs.ks, indcs.js, indcs.is},
+      {nmb, indcs.ke+1, indcs.je+1, indcs.ie+1}),
+  KOKKOS_LAMBDA(const int m, const int k, const int j, const int i, Real &lcmin,
+                Real &lcmax, Real &lkmin, Real &lkmax, Real &lemin, Real &lemax,
+                Real &lth) {
+    const Real chi = u0(m,ichi,k,j,i);
+    const Real trk = u0(m,ikhat,k,j,i) + 2.0*u0(m,itheta,k,j,i);
+    const Real e = tm(m,Tmunu::I_Tmunu_E,k,j,i);
+    lcmin = fmin(lcmin, chi);
+    lcmax = fmax(lcmax, chi);
+    lkmin = fmin(lkmin, trk);
+    lkmax = fmax(lkmax, trk);
+    lemin = fmin(lemin, e);
+    lemax = fmax(lemax, e);
+    lth = fmax(lth, fabs(u0(m,itheta,k,j,i)));
+  }, Kokkos::Min<Real>(chimin), Kokkos::Max<Real>(chimax), Kokkos::Min<Real>(kmin),
+     Kokkos::Max<Real>(kmax), Kokkos::Min<Real>(emin), Kokkos::Max<Real>(emax),
+     Kokkos::Max<Real>(thmax));
+
+  Real hmax = 0.0, hsum = 0.0, hrmax = 0.0, hrsum = 0.0;
+  Real mmax = 0.0, msum = 0.0, mrmax = 0.0, mrsum = 0.0;
+  Kokkos::parallel_reduce("nrpic_cstat2",
+    Kokkos::MDRangePolicy<DevExeSpace, Kokkos::Rank<4>>(
+      {0, indcs.ks, indcs.js, indcs.is},
+      {nmb, indcs.ke+1, indcs.je+1, indcs.ie+1}),
+  KOKKOS_LAMBDA(const int m, const int k, const int j, const int i, Real &lhmax,
+                Real &lhsum, Real &lhrmax, Real &lhrsum, Real &lmmax, Real &lmsum,
+                Real &lmrmax, Real &lmrsum) {
+    Real g[3][3], kd[3][3], gi[3][3];
+    for (int a=0; a<3; ++a) {
+      for (int b=0; b<3; ++b) {
+        g[a][b] = adm.g_dd(m,a,b,k,j,i);
+        kd[a][b] = adm.vK_dd(m,a,b,k,j,i);
+      }
+    }
+    nrpic::Inv3Sym(g, gi);
+    Real trk = 0.0, kk = 0.0;
+    for (int a=0; a<3; ++a) {
+      for (int b=0; b<3; ++b) {
+        trk += gi[a][b]*kd[a][b];
+        for (int c=0; c<3; ++c) {
+          for (int d=0; d<3; ++d) {
+            kk += gi[a][c]*gi[b][d]*kd[a][b]*kd[c][d];
+          }
+        }
+      }
+    }
+    const Real a2 = kk - trk*trk/3.0;
+    const Real e16 = 16.0*M_PI*tm(m,Tmunu::I_Tmunu_E,k,j,i);
+    const Real h = con.H(m,k,j,i);
+    const Real k23 = 2.0*trk*trk/3.0;
+    const Real ricci = h - k23 + a2 + e16;
+    const Real hden = sqrt(ricci*ricci + k23*k23 + a2*a2 + e16*e16);
+    const Real habs = fabs(h);
+    const Real hr = (hden > 0.0) ? habs/hden : 0.0;
+    lhmax = fmax(lhmax, habs);
+    lhsum += habs;
+    lhrmax = fmax(lhrmax, hr);
+    lhrsum += hr;
+
+    // gradient of K with fourth-order centred differences
+    const Real idx[3] = {1.0/sz(m).dx1, 1.0/sz(m).dx2, 1.0/sz(m).dx3};
+    Real dk[3];
+    dk[0] = idx[0]*(8.0*((u0(m,ikhat,k,j,i+1) + 2.0*u0(m,itheta,k,j,i+1))
+                         - (u0(m,ikhat,k,j,i-1) + 2.0*u0(m,itheta,k,j,i-1)))
+                    - ((u0(m,ikhat,k,j,i+2) + 2.0*u0(m,itheta,k,j,i+2))
+                       - (u0(m,ikhat,k,j,i-2) + 2.0*u0(m,itheta,k,j,i-2))))/12.0;
+    dk[1] = idx[1]*(8.0*((u0(m,ikhat,k,j+1,i) + 2.0*u0(m,itheta,k,j+1,i))
+                         - (u0(m,ikhat,k,j-1,i) + 2.0*u0(m,itheta,k,j-1,i)))
+                    - ((u0(m,ikhat,k,j+2,i) + 2.0*u0(m,itheta,k,j+2,i))
+                       - (u0(m,ikhat,k,j-2,i) + 2.0*u0(m,itheta,k,j-2,i))))/12.0;
+    dk[2] = idx[2]*(8.0*((u0(m,ikhat,k+1,j,i) + 2.0*u0(m,itheta,k+1,j,i))
+                         - (u0(m,ikhat,k-1,j,i) + 2.0*u0(m,itheta,k-1,j,i)))
+                    - ((u0(m,ikhat,k+2,j,i) + 2.0*u0(m,itheta,k+2,j,i))
+                       - (u0(m,ikhat,k-2,j,i) + 2.0*u0(m,itheta,k-2,j,i))))/12.0;
+    Real md[3], t1[3], t2[3], t3[3];
+    for (int a=0; a<3; ++a) {
+      md[a] = con.M_d(m,a,k,j,i);
+      t2[a] = -2.0*dk[a]/3.0;
+      t3[a] = -8.0*M_PI*tm(m,Tmunu::I_Tmunu_Sx+a,k,j,i);
+      t1[a] = md[a] - t2[a] - t3[a];
+    }
+    Real m2 = 0.0, d2 = 0.0;
+    for (int a=0; a<3; ++a) {
+      for (int b=0; b<3; ++b) {
+        m2 += gi[a][b]*md[a]*md[b];
+        d2 += gi[a][b]*(t1[a]*t1[b] + t2[a]*t2[b] + t3[a]*t3[b]);
+      }
+    }
+    const Real mabs = sqrt(fmax(m2, 0.0));
+    const Real mr = (d2 > 0.0) ? mabs/sqrt(d2) : 0.0;
+    lmmax = fmax(lmmax, mabs);
+    lmsum += mabs;
+    lmrmax = fmax(lmrmax, mr);
+    lmrsum += mr;
+  }, Kokkos::Max<Real>(hmax), Kokkos::Sum<Real>(hsum), Kokkos::Max<Real>(hrmax),
+     Kokkos::Sum<Real>(hrsum), Kokkos::Max<Real>(mmax), Kokkos::Sum<Real>(msum),
+     Kokkos::Max<Real>(mrmax), Kokkos::Sum<Real>(mrsum));
+
+  std::string fname = nr_basename + ".cstat.hst";
+  std::FILE *fp = std::fopen(fname.c_str(), header ? "w" : "a");
+  if (fp == nullptr) NrpicFatal("cannot open " + fname);
+  if (header) {
+    std::fprintf(fp, "# NRPIC constraint statistics\n");
+    std::fprintf(fp, "# [1]=time [2]=chi_min [3]=chi_max [4]=K_min [5]=K_max [6]=E_min "
+                 "[7]=E_max [8]=Theta_max [9]=H_max [10]=H_mean [11]=Hr_max [12]=Hr_mean "
+                 "[13]=M_max [14]=M_mean [15]=Mr_max [16]=Mr_mean\n");
+  }
+  std::fprintf(fp, "%.15e %.15e %.15e %.15e %.15e %.15e %.15e %.15e %.15e %.15e %.15e "
+               "%.15e %.15e %.15e %.15e %.15e\n", time, chimin, chimax, kmin, kmax, emin,
+               emax, thmax, hmax, hsum/ncell, hrmax, hrsum/ncell, mmax, msum/ncell,
+               mrmax, mrsum/ncell);
+  std::fclose(fp);
+}
+
+//----------------------------------------------------------------------------------------
 //! \fn  void Particles::NrpicWriteTrajectories
 //! \brief appends the state of the tracked particles (tag < traj_ntrack) to
 //! <basename>.traj.bin as records of 8 doubles: time, tag, x^i, u_i
@@ -634,6 +779,9 @@ void Particles::NrpicStartup(bool res_flag) {
   if (nropt.traj_dcycle > 0 && nropt.traj_ntrack > 0) {
     NrpicWriteTrajectories(pm->time, true);
   }
+  if (nropt.cstat_dcycle > 0) {
+    NrpicWriteConstraintStats(pm->time, true);
+  }
   if (nropt.snap_dt > 0.0) {
     NrpicWriteSnapshot(pm->time);
     snap_next_time = pm->time + nropt.snap_dt;
@@ -659,6 +807,9 @@ TaskStatus Particles::NrpicDiagnostics(Driver *pdriver, int stage) {
   if (nropt.traj_dcycle > 0 && nropt.traj_ntrack > 0 &&
       (ncyc % nropt.traj_dcycle == 0)) {
     NrpicWriteTrajectories(tnew, false);
+  }
+  if (nropt.cstat_dcycle > 0 && (ncyc % nropt.cstat_dcycle == 0)) {
+    NrpicWriteConstraintStats(tnew, false);
   }
   if (nropt.snap_dt > 0.0 && tnew >= snap_next_time - 1.0e-10*nropt.snap_dt) {
     NrpicWriteSnapshot(tnew);

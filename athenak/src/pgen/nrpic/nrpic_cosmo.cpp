@@ -18,6 +18,16 @@
 //!          given at the cell centres of the mesh, which must have n1 x n2 x n3 cells
 //! The matter is carried by the particles of the nrpic module (<particles>
 //! particle_file); its sources are deposited after this function returns.
+//!
+//! Robustness test of Daverio, Dirian & Mitsou (arXiv:1904.07841, Sec. IV A): with
+//! <problem> noise_amp > 0 every evolved field receives white noise, drawn uniformly and
+//! independently per cell and component from (-A, A):
+//!   alpha, chi and K are multiplied by 1 + eps        (A = noise_amp),
+//!   the conformal metric receives  + eps_ij           (A = noise_amp),
+//!   Atilde_ij receives  + eps_ij                      (A = noise_atilde),
+//!   Theta receives  + eps                             (A = noise_theta),
+//!   Gamma^i receives  + eps^i                         (A = noise_gamma).
+//! The last three default to noise_amp; they carry units and are set by the caller.
 
 #include <cmath>
 #include <cstdint>
@@ -41,6 +51,21 @@ namespace {
 void CosmoFatal(const std::string &msg) {
   std::cout << "### FATAL ERROR in nrpic_cosmo.cpp" << std::endl << msg << std::endl;
   std::exit(EXIT_FAILURE);
+}
+
+//! uniform deviate in (-1, 1) from the global index of a cell, the index of a field
+//! component and a seed (splitmix64); the same in a ghost cell and in its periodic image
+KOKKOS_INLINE_FUNCTION
+Real CosmoNoise(const std::uint64_t cell, const std::uint64_t comp,
+                const std::uint64_t seed) {
+  std::uint64_t z = cell*0x9E3779B97F4A7C15ULL + comp*0xBF58476D1CE4E5B9ULL
+                    + seed*0x94D049BB133111EBULL + 0x2545F4914F6CDD1DULL;
+  z = (z ^ (z >> 30))*0xBF58476D1CE4E5B9ULL;
+  z = (z ^ (z >> 27))*0x94D049BB133111EBULL;
+  z = z ^ (z >> 31);
+  // 53 random bits to [0, 1), then to (-1, 1)
+  const Real u = static_cast<Real>(z >> 11)*(1.0/9007199254740992.0);
+  return 2.0*u - 1.0;
 }
 
 } // namespace
@@ -155,6 +180,44 @@ void ProblemGenerator::NrpicCosmology(ParameterInput *pin, const bool restart) {
     case 2: pmbp->pz4c->ADMToZ4c<2>(pmbp, pin); break;
     case 3: pmbp->pz4c->ADMToZ4c<3>(pmbp, pin); break;
     case 4: pmbp->pz4c->ADMToZ4c<4>(pmbp, pin); break;
+  }
+  // ---- white noise on the evolved fields
+  const Real namp = pin->GetOrAddReal("problem", "noise_amp", 0.0);
+  if (namp > 0.0) {
+    const Real nat = pin->GetOrAddReal("problem", "noise_atilde", namp);
+    const Real nth = pin->GetOrAddReal("problem", "noise_theta", namp);
+    const Real ngm = pin->GetOrAddReal("problem", "noise_gamma", namp);
+    const std::uint64_t seed = static_cast<std::uint64_t>(
+        pin->GetOrAddInteger("problem", "noise_seed", 1));
+    auto u0 = pmbp->pz4c->u0;
+    const int ichi = z4c::Z4c::I_Z4C_CHI, igxx = z4c::Z4c::I_Z4C_GXX;
+    const int ikh = z4c::Z4c::I_Z4C_KHAT, iaxx = z4c::Z4c::I_Z4C_AXX;
+    const int igam = z4c::Z4c::I_Z4C_GAMX, ith = z4c::Z4c::I_Z4C_THETA;
+    const int ial = z4c::Z4c::I_Z4C_ALPHA;
+    par_for("nrpic_cosmo_noise", DevExeSpace(), 0, nmb-1, 0, n3-1, 0, n2-1, 0, n1-1,
+    KOKKOS_LAMBDA(const int m, const int k, const int j, const int i) {
+      const Real x = CellCenterX(i-is, nx1, size.d_view(m).x1min, size.d_view(m).x1max);
+      const Real y = CellCenterX(j-js, nx2, size.d_view(m).x2min, size.d_view(m).x2max);
+      const Real z = CellCenterX(k-ks, nx3, size.d_view(m).x3min, size.d_view(m).x3max);
+      int ig = static_cast<int>(floor((x - gx1)/gd1));
+      int jg = static_cast<int>(floor((y - gx2)/gd2));
+      int kg = static_cast<int>(floor((z - gx3)/gd3));
+      ig = ((ig % g1) + g1) % g1;
+      jg = ((jg % g2) + g2) % g2;
+      kg = ((kg % g3) + g3) % g3;
+      const std::uint64_t c = (static_cast<std::uint64_t>(kg)*g2 + jg)*g1 + ig;
+      u0(m,ial,k,j,i) *= 1.0 + namp*CosmoNoise(c, 0, seed);
+      u0(m,ichi,k,j,i) *= 1.0 + namp*CosmoNoise(c, 1, seed);
+      u0(m,ikh,k,j,i) *= 1.0 + namp*CosmoNoise(c, 2, seed);
+      u0(m,ith,k,j,i) += nth*CosmoNoise(c, 3, seed);
+      for (int a=0; a<3; ++a) {
+        u0(m,igam+a,k,j,i) += ngm*CosmoNoise(c, 4+a, seed);
+      }
+      for (int a=0; a<6; ++a) {
+        u0(m,igxx+a,k,j,i) += namp*CosmoNoise(c, 7+a, seed);
+        u0(m,iaxx+a,k,j,i) += nat*CosmoNoise(c, 13+a, seed);
+      }
+    });
   }
   pmbp->pz4c->Z4cToADM(pmbp);
   switch (indcs.ng) {

@@ -283,3 +283,32 @@ with the quadratic cloud and a further factor of five with the cubic one; the ob
 density contrast at both probes at a_p = 1 is within 0.1 percent of 6.648 times the
 amplitude for the cubic cloud; the first-crossing times of the two calculations change
 by less than 2 percent between the shapes (the collapse is set by the large scales).
+
+## C5, tests A0 and A of paper 2: homogeneous universe over a thousandfold expansion (01:00)
+
+Paper 2 (Daverio, Dirian & Mitsou): box of 64 Mpc/h, 8, 16, 32 cells, one particle per
+cell, step 0.1 of the cell, from z = 1000 to 0; test A0 exact data, test A white noise of
+amplitude 1e-7/N_g^2 on every field and 1e-7/N_g^3 on the particles. In the units of this
+code (initial Hubble rate 1, a = 1 at the start): box 0.67542 (its size in initial
+Hubble radii), end at a = 1001, t = 61.277. Noise amplitudes carried over with their
+units: Atilde and Theta times 0.09466, Gamma times 94.76, particle positions
+1.055e-9/N_g^3, momenta 1.001e-4/N_g^3. Code: `<problem> noise_amp` etc. in the
+cosmology problem generator, `make_lattice.py --noise-x --noise-u`, constraint
+statistics (`<particles> cstat_dcycle`: maxima and cell means of the constraints,
+absolute and relative to their terms; extrema of chi, K, E).
+Runs `cosmo/dav_a0_n{8,16,32}` and `cosmo/dav_a_n{8,16,32}`.
+Written before the runs:
+A0. The fields stay homogeneous and the test is the time integration of ordinary
+    differential equations. The relative errors of chi and of E against the exact
+    solution converge at fourth order with the cell number at fixed step ratio (factor 16
+    per halving), with levels of 1e-9 to 1e-8 at 8 cells at the end (paper 2: 2.6e-9 and
+    3.8e-9), since the lapse condition is the same and both codes use fourth-order
+    Runge-Kutta.
+A.  The evolution is stable to a = 1001: the error of chi does not grow after an initial
+    transient, the error of E grows more slowly than a, and the largest constraint
+    violations fall by orders of magnitude (paper 2: H from 5e-4 to 4e-12, M from 1.5e-4
+    to 2e-12 in its units), with finer meshes lower. Not known in advance: how fast the
+    constraints fall in Z4c with a constant damping coefficient of 0.02, where paper 2
+    damps at a rate proportional to the expansion rate. A blow-up, or a constraint
+    violation that grows relative to its terms, would mean that the method does not
+    tolerate grid-scale noise in an expanding background.

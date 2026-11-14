@@ -1,0 +1,103 @@
+# Homogeneous universe over a thousandfold expansion, with or without white noise on
+# every field (cosmo/PLAN.md, C5; tests A0 and A of Daverio, Dirian & Mitsou,
+# arXiv:1904.07841). Units G = c = 1, initial Hubble rate 1 at a = 1; the box of
+# 64 Mpc/h at z = 1000 is 0.67542 initial Hubble radii; a = 1001 at t = 61.277.
+# Overrides per run: mesh/nx*, meshblock/nx*, problem/noise_* (see cosmo/TESTLOG.md).
+
+<comment>
+problem   = homogeneous dust universe, long expansion, optional noise
+
+<job>
+basename  = flrw
+
+<mesh>
+nghost    = 4
+nx1       = 32
+x1min     = 0.0
+x1max     = 0.67542
+ix1_bc    = periodic
+ox1_bc    = periodic
+nx2       = 32
+x2min     = 0.0
+x2max     = 0.67542
+ix2_bc    = periodic
+ox2_bc    = periodic
+nx3       = 32
+x3min     = 0.0
+x3max     = 0.67542
+ix3_bc    = periodic
+ox3_bc    = periodic
+
+<meshblock>
+nx1       = 16
+nx2       = 16
+nx3       = 16
+
+<time>
+evolution  = dynamic
+integrator = rk4
+cfl_number = 0.1
+nlim       = -1
+tlim       = 61.277
+ndiag      = 1000
+
+<z4c>
+lapse_oplog     = 0.0
+lapse_harmonicf = 1.0
+lapse_harmonic  = 0.3333333333333333   # d_t alpha = -(1/3) alpha^2 K
+lapse_advect    = 0.0
+shift_Gamma     = 0.0                  # zero shift
+shift_eta       = 0.0
+shift_advect    = 0.0
+diss            = 0.5
+damp_kappa1     = 0.02
+damp_kappa2     = 0.0
+damp_ch         = 0.0
+damp_ch_dx      = 0.0
+excise_chi      = 0.0                  # constraint norms over the whole box (chi = 1/a^2 falls)
+
+<particles>
+particle_type  = nrpic
+pusher         = midpoint
+metric         = mesh
+tolerance      = 1.0e-12
+max_iterations = 50
+deposit        = true
+nfilter        = 0
+filter_compensate = false
+filter_comp_c  = -1.0
+deposit_shape  = cic     # cloud shape: cic, tsc or pcs (B-spline of degree 1, 2, 3)
+deposit_max_level = 31
+deposit_adaptive  = false
+deposit_min_level = 0
+deposit_ppc       = 2.0
+deposit_max_coarsen = 31
+alpha_exc      = -1.0
+ah_exc_factor  = -1.0
+hist_dcycle    = 1
+snap_dt        = 100.0
+probe_x1       = 0.33771
+probe_x2       = 0.33771
+probe_x3       = 0.33771
+nprobe         = 0
+cstat_dcycle   = 8        # constraint statistics (maximum and mean, absolute and relative)
+traj_dcycle    = 0       # records of the tracked particles every this many steps
+traj_ntrack    = 0       # particles with tags below this are tracked
+lambda         = 0.0
+source_density = true    # densities converted with the volume element of each stage
+source_extrap  = true    # ... extrapolated to the middle of the step
+particle_file  = particles.nrp
+
+<problem>
+pgen_name  = nrpic_cosmo
+id         = flrw
+hubble     = 1.0
+noise_amp    = 0.0      # white noise on alpha, chi, K (relative) and the conformal metric
+noise_atilde = 0.0      # ... on Atilde_ij
+noise_theta  = 0.0      # ... on Theta
+noise_gamma  = 0.0      # ... on Gamma^i
+noise_seed   = 1
+
+<output1>
+file_type = hst
+dt        = 0.5

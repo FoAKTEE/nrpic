@@ -77,6 +77,7 @@ deposit_max_coarsen = 31
 alpha_exc      = -1.0
 ah_exc_factor  = -1.0
 hist_dcycle    = 1
+cstat_dcycle   = 8        # constraint statistics (maximum and mean, absolute and relative)
 traj_dcycle    = 2        # trajectories of the fiducial observers (lowest tags)
 traj_ntrack    = 94       # 3 n - 2 for one particle per cell and direction
 snap_dt        = 0.5
