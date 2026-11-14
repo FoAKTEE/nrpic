@@ -1945,3 +1945,25 @@ constant 0.05, guarded source normalization).
   is a measurement of where the failure starts.
 `jeans/n1e4_v13` (M/128 from 6.31 M, same settings) is running: horizons first found
 at 9.52 M (0.0782 M) and 9.61 M (0.0801 M); 0.0827 and 0.0830 M at 9.83 M.
+
+## Where the failure starts: at a puncture (18:15)
+
+`jeans/diag_v14` (v14 repeated from its dump at 10.0 M with a build that reports where
+cells with a bad determinant are).
+- First report, t = 11.92578 M: 10944 cells, all with a non-finite determinant, all on
+  the finest level (cells of M/64), centroid (2.828, 1.141, 0.047), x from 2.617 to
+  3.039. The tracker of black hole B is at (2.805, 1.133, 0.055): the bad region is
+  centred 1.5 cells from that puncture and spans 13.5 cells either way, which is what
+  one spacetime step makes of one bad cell. The following steps spread it over the
+  coarser levels.
+- So the bad value is born within about two cells of the puncture of one black hole,
+  inside the spacetime update, in a step whose sources have a normal energy sum.
+- Not yet known: which term. Candidates are the matter still inside the horizon (its
+  sources are finite in sum but could be large or badly behaved in single cells next
+  to the puncture) and the spacetime evolution of a small moving puncture by itself.
+- Intervention, written before its result. `jeans/diag_v14b`: the same restart with
+  every particle inside 0.8 of the smallest horizon radius removed as soon as the
+  finder reports a horizon (from 10.1 M on), in addition to the lapse rule. If matter
+  close to the puncture produces the bad value, this run passes 11.93 M. If it fails
+  at the same step, matter inside the horizon is not the cause and the spacetime
+  evolution of the puncture is.
