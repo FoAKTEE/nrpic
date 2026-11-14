@@ -1783,3 +1783,11 @@ original's text; checked by me.
   (1.0000 at 20 M for `mc_adapt2`, 0.9946 at 40 M for `mc_adapt4`).
 - Density-lowered near-critical run: the mean lapse is 0.783 over the whole run and
   0.776 after 250 M.
+
+## M/128 runs of the cluster with two overdensities: block count near the limit (16:05)
+
+`jeans/n1e4_v11` reaches 2164 blocks at t = 5.9 M against a limit of 2200 (76.3 GB on
+the card at that limit); `v12` has the same mesh. From the next restart segment on,
+both use a limit of 2280 (about 79 GB) and a finest region of radius 0.125 M instead
+of 0.15 M around each tracker. The horizon radius expected at formation is 0.05 to
+0.1 M. This is a change of the mesh during the run and is recorded in the chain logs.
