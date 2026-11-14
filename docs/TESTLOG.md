@@ -2302,3 +2302,23 @@ values gives its result (merger at 64.2 M, remnant 0.647 M at 100 M, individual 
 0.174 and 0.176 M at 60 M, between our 0.189/0.186 and 0.144/0.144). The original's
 figure shows a cluster of the smaller size. Not tested: a radius between the two; a
 speed below the stated one in the stated envelope.
+
+## Corrections from the final reduction of the two-overdensity runs (11:06, 2026-11-14)
+
+The table script now reduces every tabulated number itself; where it differs from what
+I wrote earlier, the reduction is right:
+- stated radius, envelope outside the black holes at 100 M: 0.976 of the envelope's
+  rest mass at the start (0.982 at 78 M). My "98 percent" and "97 percent" used the
+  continuum rest mass of the envelope model in the denominator, not the sampled one;
+- individual spins before the merger (speed-matched radius): 0.022 and 0.023 at the
+  first horizons, 0.057 and 0.047 at the last search before the common horizon; over the
+  inspiral they range between 0.004 and 0.10. The "0.007 to 0.03" of the brief was the
+  range over the first searches only;
+- M/128, first common horizon: dimensionless spin 0.564 (0.56445; the brief had 0.565);
+  angular momentum of the envelope +0.039 at that time (+0.038 at 57 M);
+- M/128, midpoint of the trackers: within 0.03 M of the plane (the brief's 0.06 M was a
+  bound);
+- stated radius: the line from A to B turns by 0.30 of a turn from the start to 100 M
+  (0.25 from the first horizon); midpoint height 0.37, 0.94, 1.27, 1.49 M at 30, 60,
+  80, 100 M: steady, slowing in the last fifth, so "nearly constant rate" was too
+  strong.

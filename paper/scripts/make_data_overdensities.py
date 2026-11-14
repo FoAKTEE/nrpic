@@ -16,8 +16,9 @@ changed settings):
 - finest cells M/128: runs/jeans/n1e4_v11 (0 to 6.31 M), n1e4_v18 (6.31 M onward);
 - envelope radius (key "64R30", fig_overdensities_radius.py): runs/jeans/n1e4_v20, the
   configuration of n1e4_v19 (finest cells M/64, +-80 M, the same clumps and speed) with
-  the envelope at the areal radius the original states in its text, 30 M, instead of
-  13.3 M (the radius at which the stated orbital speed is the circular speed). The two
+  the envelope at the areal radius the original states in its text, 30 M (the stated
+  radius), instead of 13.3 M (the speed-matched radius, at which the stated orbital speed
+  is the circular speed). The two
   M/64 and M/128 evolutions above use 13.3 M. The envelope's areal radius of each
   evolution is kept as R_env_<key>, from the initial-data generator's metadata
   (<run>/jeans_N*_s*.json, envelope.R_areal);
@@ -72,7 +73,10 @@ Kept, for each evolution (the two meshes and the envelope radius; prefix m<key>_
   formation when that first search already finds it. Nothing in the reduction needs a
   common horizon: n1e4_v20 has none so far (no search of it, an empty file);
 - from every complete snapshot (every 0.5 M): number and rest mass of the macroparticles
-  of each species, and the densest point of each overdensity;
+  of each species, the densest point of each overdensity, and of the envelope's
+  macroparticles L_z about the origin and the radius about the origin enclosing half their
+  rest mass (envelope_moments; the helpers below it give the numbers of the outcome table
+  of make_tables.py, so table and figures agree);
 - from the horizon shape files: the offset of the centre of each found horizon from its
   expansion centre (the tracker), as a check that the tracker stays inside its black hole.
 For the M/64 mesh also four particle snapshots (x, y and species of every particle) at
@@ -118,7 +122,8 @@ EVOLUTIONS = {**MESHES, **RADII}
 COMPARE = {"64old": [("n1e4_v7", 0.0), ("diag_v14b", 10.0), ("n1e4_v17", 13.0)]}
 T_COMPARE = (10.5, 15.0, 20.0, 25.0, 27.0, 28.0)
 DX = {"64": 1.0 / 64.0, "128": 1.0 / 128.0, "64R30": 1.0 / 64.0, "64old": 1.0 / 64.0}
-T_RADIUS = (10.0, 20.0, 30.0, 40.0, 50.0, 60.0, 70.0)   # times of the radius comparison
+T_RADIUS = tuple(np.arange(10.0, 100.1, 10.0))     # times of the radius comparison
+T_HALF = (0.0, 20.0, 40.0, 60.0)       # times of the envelope's half-mass radius
 T_GROW = 20.0       # start of the interval of the horizon-mass growth rates, in M
 TOL = 0.01                            # slack on the restart times, in M
 T_END = 100.0                         # end time of the runs
@@ -553,6 +558,70 @@ def position_checks(ta, PA, ka, st, est, t_rec, P_rec, t_sw):
     return loo, dens, jump
 
 
+# ---- envelope and black-hole numbers shared with make_tables.py ------------------------
+def envelope_moments(q, sp):
+    """Of the envelope's macroparticles (species 0) of one snapshot: L_z about the z axis
+    through the origin, sum m (x u_y - y u_x) with the stored spatial momenta u_i per unit
+    rest mass (as .work/jeans_final/angmom0.py, brief item D10), and the radius about the
+    origin that encloses half the rest mass of the envelope's macroparticles present (the
+    first macroparticle, ordered by radius, at which the enclosed fraction reaches one
+    half; as .work/jeans_final/envelope.py, brief item D9). nan if none is left."""
+    e = sp == 0
+    if not e.any():
+        return np.nan, np.nan
+    x, u, m = q[e, :3], q[e, 3:6], q[e, 6]
+    lz = float((m * (x[:, 0] * u[:, 1] - x[:, 1] * u[:, 0])).sum())
+    r = np.sqrt((x ** 2).sum(1))
+    o = np.argsort(r)
+    cm = np.cumsum(m[o]) / m.sum()
+    return lz, float(r[o][min(int(np.searchsorted(cm, 0.5)), len(r) - 1)])
+
+
+def snap_value(st, y, t0):
+    """Snapshot quantity y at t0: the snapshot value at a snapshot time, linear between
+    the two snapshots around t0 otherwise (snapshots every 0.5 M); nan outside."""
+    ok = np.isfinite(y)
+    if ok.sum() < 1 or not (st[ok][0] - 1e-9 <= t0 <= st[ok][-1] + 1e-9):
+        return np.nan
+    return float(np.interp(t0, st[ok], y[ok]))
+
+
+def emptied(st, sn, s):
+    """Time of the first snapshot without macroparticles of species s (nan if none)."""
+    k = np.where(sn[:, s] == 0)[0]
+    return float(st[k[0]]) if len(k) else np.nan
+
+
+def spin(M, S):
+    """Dimensionless spin chi_AH = J / M_AH^2 of the finder's mass and spin magnitude."""
+    return np.asarray(S) / np.asarray(M) ** 2
+
+
+def individual_before(t, M, S, t_c):
+    """(time, mass, chi_AH) of the last found individual horizon before t_c."""
+    k = np.where(t < t_c - 1e-9)[0]
+    return (float(t[k[-1]]), float(M[k[-1]]), float(spin(M[k[-1]], S[k[-1]]))) if len(k) else \
+        (np.nan, np.nan, np.nan)
+
+
+def growth_rate(t, M, t0=None, t1=None):
+    """(t_a, M_a, t_b, M_b, rate) of an individual horizon from the found search nearest to
+    t0 (default T_GROW) to the last found search at or before t1 (default: the last)."""
+    t0 = T_GROW if t0 is None else t0
+    if not len(t):
+        return (np.nan,) * 5
+    a = int(np.argmin(np.abs(t - t0)))
+    k = np.where(t <= (np.inf if t1 is None else t1) + 1e-9)[0]
+    b = int(k[-1])
+    return float(t[a]), float(M[a]), float(t[b]), float(M[b]), \
+        float((M[b] - M[a]) / (t[b] - t[a]))
+
+
+def midpoint_height(pos_t, A, B, ok):
+    """z of the midpoint of A and B along the position record (nan where not ok)."""
+    return np.where(ok, 0.5 * (A[:, 2] + B[:, 2]), np.nan)
+
+
 # ---- one run ---------------------------------------------------------------------------
 def reduce_run(spec, with_snapshots=True):
     dirs = [RUNS / name for name, _ in spec]
@@ -571,6 +640,7 @@ def reduce_run(spec, with_snapshots=True):
     st = np.array(st)
     sn, sm = np.zeros((len(sf), 3)), np.zeros((len(sf), 3))
     est = np.full((len(sf), 2, 3), np.nan)
+    env = np.full((len(sf), 2), np.nan)          # envelope: L_z about the origin, r_50
     if with_snapshots:
         for k, p in enumerate(sf):
             _, q, _, sp = read_snapshot(p)
@@ -580,11 +650,13 @@ def reduce_run(spec, with_snapshots=True):
                 sm[k, s] = q[sel, 6].sum()
                 if s > 0 and sel.sum() >= N_MIN:
                     est[k, s - 1] = densest_point(q[sel, :3])
+            env[k] = envelope_moments(q, sp)
     d = {"h_t": h[:, H["time"]], "h_np": h[:, H["np"]], "h_nexc": h[:, H["n_excised"]],
          "h_alpha_min": h[:, H["alpha_min"]], "h_nmb": h[:, H["nmb"]],
          "h_sum_m": h[:, H["sum_m"]], "h_seg": h_seg, "h_mexc": h[:, H["m_excised"]],
          "h_nesc": h[:, H["n_escaped"]], "h_mesc": h[:, H["m_escaped"]],
          "snap_t": st, "snap_n": sn, "snap_m": sm, "snap_dens": est,
+         "snap_envLz": env[:, 0], "snap_envr50": env[:, 1],
          "restart_t": np.array(starts[1:]),
          "dirs": np.array([p.name for p in dirs])}
     cm = ah[2][np.isfinite(ah[2][:, 2])]
@@ -875,6 +947,31 @@ def summary(D, checks):
         ne = D[f"m{m}_h_nexc"]
         k0 = int(np.argmax(ne > 0))
         print(f"      first removal at t = {ht[k0]:.4f} M ({ne[k0]:.0f} particles)")
+        # numbers of the outcome table (make_tables.py, tab:outcomes_overdensities)
+        st_, sn_ = D[f"m{m}_snap_t"], D[f"m{m}_snap_n"]
+        print(f"      last macroparticle of overdensity A, B gone by the snapshot at "
+              f"{emptied(st_, sn_, 1):g}, {emptied(st_, sn_, 2):g} M")
+        lz, r50 = D[f"m{m}_snap_envLz"], D[f"m{m}_snap_envr50"]
+        tc_ = found(D, m, "C")[0]
+        tl_ = [0.0] + ([float(tc_[0])] if len(tc_) else []) + [57.0]
+        print("      envelope L_z about the origin: " + ", ".join(
+            f"{snap_value(st_, lz, x):+.4f} at {x:g} M" for x in tl_))
+        print("      envelope half-mass radius about the origin: " + ", ".join(
+            f"{snap_value(st_, r50, x):.2f} at {x:g} M" for x in T_HALF))
+        for lab in "AB":
+            tf, M, S = found(D, m, lab)
+            if len(tf):
+                b = individual_before(tf, M, S, float(tc_[0]) if len(tc_) else np.inf)
+                print(f"      chi_AH of {lab}: {spin(M[0], S[0]):.4f} at the first detection "
+                      f"({tf[0]:.3f} M); {b[2]:.4f} at the last search before the first common "
+                      f"horizon or the last found ({b[0]:.3f} M); range {spin(M, S).min():.4f}-"
+                      f"{spin(M, S).max():.4f}")
+        zm = midpoint_height(D[f"m{m}_pos_t"], D[f"m{m}_pos_A"], D[f"m{m}_pos_B"],
+                             np.isfinite(D[f"m{m}_pos_sep"]))
+        if np.isfinite(zm).any():
+            k = int(np.nanargmax(np.abs(zm)))
+            print(f"      largest |z| of the midpoint of A and B {abs(zm[k]):.4f} M at "
+                  f"{D[f'm{m}_pos_t'][k]:.3f} M")
         # history across the restarts (dumps) inside the run and between directories
         hs = D[f"m{m}_h_seg"]
         for tr_ in np.r_[dumps, D[f"m{m}_restart_t"]]:
@@ -1014,6 +1111,11 @@ def radius_summary(D, runs=("64", "64R30")):
                          f"{(m1 - m0) / (t1 - t0):.3e}; to {t2:.3f} M: {(m2 - m0) / (t2 - t0):.3e}")
         print(f"      {m}: dM_AH/dt from {T_GROW:g} M to the last individual horizon, and to the "
               f"last found by {t_common:.3f} M (common to the runs): " + "; ".join(parts))
+        ch = []
+        for lab in "AB":
+            tf, M, S = found(D, m, lab)
+            ch.append(f"{lab} {spin(M[-1], S[-1]):.4f} ({tf[-1]:.3f} M)")
+        print(f"      {m}: chi_AH at the last individual horizon: " + ", ".join(ch))
 
 
 if __name__ == "__main__":

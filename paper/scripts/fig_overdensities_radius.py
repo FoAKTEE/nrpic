@@ -1,5 +1,5 @@
 """Cluster with two collapsing overdensities: the envelope at the radius at which the
-stated orbital speed is the circular speed (self-consistent radius, areal radius 13.3 M)
+stated orbital speed is the circular speed (speed-matched radius, areal radius 13.3 M)
 against the envelope at the areal radius the original paper states in its text (stated
 radius, 30 M), both with finest cells M/64 and otherwise the same configuration.
 
@@ -11,19 +11,20 @@ apparent-horizon masses (found searches only, as in fig_overdensities.py) of the
 individual black holes and of the common horizon, logarithmic axis; dotted line: the
 total mass M of the initial data. A and B coincide at the line width in both runs, so
 one line, A, stands for both (for the caption: "A and B coincide"). The script prints
-the largest difference and where it exceeds half the line width (self-consistent radius:
+the largest difference and where it exceeds half the line width (speed-matched radius:
 three searches in the last M before the individual horizons end, |M_A - M_B| up to
-0.011; stated radius: nowhere so far), and draws B dotted in the run's colour should that
+0.011; stated radius: nowhere), and draws B dotted in the run's colour should that
 last longer than B_VISIBLE. Bottom:
 rest mass of the envelope's macroparticles still present (neither removed inside the
 black holes nor left the domain), as a fraction of its value at t = 0, from the particle
 snapshots (fig_overdensities.py plots the number fraction of the same macroparticles;
 the two differ by less than 10^-3 because the macroparticle masses are nearly equal).
-Dark blue dashed: self-consistent radius; orange solid: stated radius (labelled in the
+Dark blue dashed: speed-matched radius; orange solid: stated radius (labelled in the
 top panel). Black open circles: masses of the original paper (individual black holes at
-10 M and 60 M, the common horizon when it is first found and at 100 M); black ticks at
-the top: the original's merger time (first common horizon). Lines end where the runs
-have got to.
+10 M and 60 M, the common apparent horizon when it is first found and at 100 M), not
+clipped at the frame; black ticks at the top: the original's merger time (first common
+apparent horizon). Lines end where the runs have got to; the time axis runs a little
+past 100 M (PAD) so that nothing ends on the frame.
 
 Reads paper/data/overdensities.npz, written by make_data_overdensities.py.
 
@@ -47,11 +48,12 @@ OUT = HERE.parent / "figures" / "fig_overdensities_radius"
 W = 3.4                  # one column of the two-column journal page, in inches
 LAB_PT = 9
 T_MAX = 100.0            # common time axis, in M
+PAD = 2.0                # the axis runs this far past T_MAX, in M
 DASH = (0, (3.5, 1.6))
 LW = 1.5
 # key of the evolution in the data file: label, colour, line style, areal radius of the
 # envelope it must have (checked against R_env_<key>, in M)
-RUN = {"64": ("self-consistent radius", fs.PAL2["blue"], DASH, 13.3),
+RUN = {"64": ("speed-matched radius", fs.PAL2["blue"], DASH, 13.3),
        "64R30": ("stated radius", fs.PAL["orange"], "-", 30.0)}
 ORDER = ("64", "64R30")                     # drawing order, last on top
 ORIG = "k"               # values of the original paper
@@ -97,9 +99,9 @@ def separation(ax, d):
         ax.plot(t, sep, color=col, ls=ls, lw=LW, zorder=3)
     ax.set_ylim(0, 12.5)
     ax.set_yticks((0, 4, 8, 12))
-    ax.set_ylabel(r"$d/M$")
+    ax.set_ylabel(r"$d_{AB}/M$")
     # direct labels where the curves are apart: the stated radius below its curve, the
-    # self-consistent one right of the end of its curve
+    # speed-matched one right of the end of its curve
     ax.text(63.0, 8.0, RUN["64R30"][0], color=RUN["64R30"][1], ha="left", va="top",
             fontsize=LAB_PT)
     ax.text(63.0, 0.5, "\n".join(RUN["64"][0].rsplit(" ", 1)), color=RUN["64"][1],
@@ -150,7 +152,8 @@ def masses(ax, d):
     ax.text(30.0, 0.115, "A, B", ha="center", va="top", fontsize=LAB_PT)
     tC, MC = found(d, "64", "C")
     if len(tC):
-        ax.text(tC[0] - 2.0, MC[0], "common", ha="right", va="center", fontsize=LAB_PT)
+        ax.text(tC[0] - 2.0, MC[0], "common apparent\nhorizon", ha="right", va="center",
+                fontsize=LAB_PT, linespacing=1.0)
     ax.text(float(d["orig_t_final"]) - 3.0, float(d["orig_M_final"]) / 1.25, "original",
             ha="right", va="top", fontsize=LAB_PT)
     tick(ax, float(d["orig_t_common"]))
@@ -193,7 +196,7 @@ def make():
     masses(a_m, d)
     envelope(a_c, d)
     for ax in (a_d, a_m, a_c):
-        ax.set_xlim(0, T_MAX)
+        ax.set_xlim(0, T_MAX + PAD)
         ax.xaxis.set_major_locator(matplotlib.ticker.MultipleLocator(20))
         ax.yaxis.set_label_coords(-0.42 / w, 0.5)
     for ax in (a_d, a_m):

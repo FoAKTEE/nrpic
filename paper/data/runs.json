@@ -10106,7 +10106,7 @@
    "families": [
     "jeans"
    ],
-   "role": "two collapsing overdensities in a cluster, finest cells M/64, to 100 M (fig_overdensities, solid; fig_overdensities_radius, self-consistent radius)",
+   "role": "two collapsing overdensities in a cluster, envelope at the speed-matched radius, finest cells M/64, to 100 M (fig_overdensities, solid; fig_overdensities_radius, speed-matched radius)",
    "param_source": "runs/jeans/n1e4_v19/rst/jeans.00000.rst (parameter dump)",
    "copied_input": "runs/jeans/n1e4_v19/chain/input.athinput",
    "command": [
@@ -10967,6 +10967,800 @@
     }
    }
   },
+  "jeans/n1e4_v11": {
+   "dir": "runs/jeans/n1e4_v11",
+   "families": [
+    "jeans128"
+   ],
+   "role": "two collapsing overdensities, speed-matched radius, finest cells M/128, t = 0 to 6.31 M (continued in n1e4_v18; fig_overdensities, dashed; control of n1e4_v19 in the setups tables)",
+   "param_source": "runs/jeans/n1e4_v11/rst/jeans.00000.rst (parameter dump)",
+   "copied_input": "runs/jeans/n1e4_v11/chain/input.athinput",
+   "command": [
+    {
+     "log": "runs/jeans/n1e4_v11/chain/seg001.job4229.a1.log",
+     "mode": "new",
+     "input": "runs/jeans/n1e4_v11/chain/input.athinput",
+     "overrides": {
+      "mesh_refinement/max_nmb_per_rank": "2200",
+      "mesh_refinement/num_levels": "11",
+      "z4c/co_0_radius": "0.15",
+      "z4c/co_1_radius": "0.15",
+      "z4c/co_0_reflevel": "10",
+      "z4c/co_1_reflevel": "10",
+      "particles/alpha_exc": "0.02",
+      "particles/ah_exc_factor": "0.8"
+     }
+    },
+    {
+     "log": "runs/jeans/n1e4_v11/chain/seg002.job4233.a1.log",
+     "mode": "restart",
+     "input": "runs/jeans/n1e4_v11/rst/jeans.00002.rst",
+     "overrides": {
+      "mesh_refinement/max_nmb_per_rank": "2280",
+      "mesh_refinement/num_levels": "11",
+      "z4c/co_0_radius": "0.125",
+      "z4c/co_1_radius": "0.125",
+      "z4c/co_0_reflevel": "10",
+      "z4c/co_1_reflevel": "10",
+      "particles/alpha_exc": "0.02",
+      "particles/ah_exc_factor": "0.8"
+     }
+    },
+    {
+     "log": "runs/jeans/n1e4_v11/chain/seg003.job4235.a1.log",
+     "mode": "restart",
+     "input": "runs/jeans/n1e4_v11/rst/jeans.00003.rst",
+     "overrides": {
+      "mesh_refinement/max_nmb_per_rank": "2280",
+      "mesh_refinement/num_levels": "11",
+      "z4c/co_0_radius": "0.125",
+      "z4c/co_1_radius": "0.125",
+      "z4c/co_0_reflevel": "10",
+      "z4c/co_1_reflevel": "10",
+      "particles/alpha_exc": "0.02",
+      "particles/ah_exc_factor": "0.8"
+     }
+    }
+   ],
+   "mesh": {
+    "domain_half_width": 256.0,
+    "symmetric": true,
+    "root_cells": [
+     64,
+     64,
+     64
+    ],
+    "cells_per_meshblock": [
+     16,
+     16,
+     16
+    ],
+    "root_dx": 8.0,
+    "refinement": "adaptive",
+    "num_levels": 11.0,
+    "refined_regions": [
+     {
+      "level": 9,
+      "half_width": 3.2
+     },
+     {
+      "level": 9,
+      "half_width": 3.2
+     },
+     {
+      "level": 3,
+      "half_width": 30.0
+     },
+     {
+      "level": 4,
+      "half_width": 12.0
+     },
+     {
+      "level": 5,
+      "half_width": 5.0
+     }
+    ],
+    "matter_dx_start": [
+     0.015625,
+     0.5
+    ],
+    "matter_dx_start_time": 0.0,
+    "matter_dx_finest_in_dumps": 0.0078125,
+    "finest_dx_start": 0.015625,
+    "finest_dx_reached": 0.0078125
+   },
+   "particles": {
+    "pusher": "midpoint",
+    "metric": "mesh",
+    "tetrad_gauge": "symmetric",
+    "deposit": true,
+    "nfilter": 4,
+    "compensation": true,
+    "compensation_c": 1.0,
+    "deposition_rule": "cloud at the finest local level",
+    "deposit_max_coarsen": null,
+    "alpha_exc": 0.02,
+    "particle_file": "particles.nrp",
+    "tracers": 0
+   },
+   "spacetime": {
+    "kappa1": 0.02,
+    "kappa2": 0.0,
+    "c_H": 0.0,
+    "c_H_dx": 0.0,
+    "shift_eta": 2.0,
+    "dissipation": 0.5,
+    "cfl": 0.25,
+    "tlim": 100.0
+   },
+   "horizon_finder": {
+    "derivatives": "interpolant",
+    "mass_tolerance": 1e-05,
+    "angular_points": 16.0,
+    "lmax": 8.0,
+    "search_every_cycles": 16.0
+   },
+   "model": {
+    "components": [
+     {
+      "type": "table",
+      "table": "runs/jeans/n1e4_v11/envelope.tab",
+      "header": {
+       "model": "st_monoenergetic",
+       "yc": 0.907,
+       "M_ADM": 0.76,
+       "M0": 0.7739214913482914,
+       "Eb_over_M0": 0.017988247521125156,
+       "R_areal": 13.314294396331563,
+       "rbar_s": 12.54278179870231,
+       "zc": 0.11562811974677678,
+       "alpha_c": 0.8963560368368791,
+       "alpha_s": 0.9411891331264048,
+       "E0": 0.9411891331264048,
+       "psi_c": 1.0542752796064443,
+       "psi_s": 1.0302963095506705,
+       "rho_c": 0.00015630616368232116,
+       "P_c": 4.845491074151954e-06,
+       "rho0_c": 0.00014886059398716542,
+       "zeta": 0.03099999999999999,
+       "L": 3.972719141147014
+      }
+     },
+     {
+      "type": "gaussian"
+     },
+     {
+      "type": "gaussian"
+     }
+    ],
+    "initial_lapse": "isotropic",
+    "particles": {
+     "model": "st_envelope_two_gaussian_clumps",
+     "sampler": "stratified",
+     "seed": 1,
+     "generator_file": "runs/jeans/ic_yc0907_n1e4/jeans_N10000_s1.nrp",
+     "max_momentum_difference": 0.0003064130636712681
+    }
+   },
+   "performance": {
+    "segments": [
+     {
+      "log": "runs/jeans/n1e4_v11/chain/seg001.job4229.a1.log",
+      "wall_s": 3000.694,
+      "wall_source": "log summary (cpu time used)",
+      "zone_cycles_per_s": 8054369.0,
+      "meshblock_cycles": 5900560,
+      "termination": "wall clock limit",
+      "exit": 0,
+      "time_reached": 6.265625
+     },
+     {
+      "log": "runs/jeans/n1e4_v11/chain/seg002.job4233.a1.log",
+      "wall_s": 3000.828,
+      "wall_source": "log summary (cpu time used)",
+      "zone_cycles_per_s": 8125026.0,
+      "meshblock_cycles": 5952588,
+      "termination": "wall clock limit",
+      "exit": 0,
+      "time_reached": 12.125
+     },
+     {
+      "log": "runs/jeans/n1e4_v11/chain/seg003.job4235.a1.log",
+      "wall_s": 1478.693,
+      "wall_source": "last elapsed= line (no summary: job killed or running)",
+      "zone_cycles_per_s": null,
+      "meshblock_cycles": null,
+      "termination": null,
+      "exit": null,
+      "time_reached": 15.05469
+     }
+    ],
+    "wall_s_total": 7480.215,
+    "zone_cycles_per_s": 8089698.287299598
+   },
+   "dt_start": 0.00390625,
+   "dt_start_source": "seg001.job4229.a1.log, first step line",
+   "status": "stopped by hand",
+   "block_limit_exceeded": null,
+   "notes": [],
+   "outcomes": {
+    "t_final": 15.212890625,
+    "np_start": 10000,
+    "np_end": 0,
+    "nmb_start_hist": 1128,
+    "nmb_max": 2164,
+    "central_lapse": {
+     "t0": 0.8276959546936766,
+     "min": NaN,
+     "t_min": 13.25390625,
+     "max": NaN,
+     "t_max": 13.25390625,
+     "end": NaN
+    },
+    "n_excised_end": 10000,
+    "n_escaped_end": 0,
+    "escape_times": [],
+    "removal_first_t": 8.294921875,
+    "all_removed_t": 13.263671875,
+    "mean_lorentz": {
+     "start": 1.0192688143508133,
+     "min": 1.0192521346415044,
+     "max": 1.2741245245753796,
+     "end_live": 1.2741245245753796,
+     "note": "records before the first removal"
+    },
+    "net_momentum_max": 0.019444361533520572,
+    "rest_mass_start": 1.050217972602385,
+    "filtered_energy_change": {
+     "t0": 0.0009207014166130456,
+     "mean": -0.005440415296735897,
+     "end": -0.14553385959855902
+    },
+    "H_norm": {
+     "start": 5.822714143764917,
+     "max": 11.464074319368311,
+     "t_max": 8.0,
+     "end": 0.0
+    },
+    "dt_halvings": [
+     0.5
+    ],
+    "horizon": "none found"
+   }
+  },
+  "jeans/n1e4_v18": {
+   "dir": "runs/jeans/n1e4_v18",
+   "families": [
+    "jeans128"
+   ],
+   "role": "two collapsing overdensities, speed-matched radius, finest cells M/128, from the dump of n1e4_v11 at 6.31 M to 61.57 M (fig_overdensities, dashed; control of n1e4_v19 in the setups tables)",
+   "param_source": "runs/jeans/n1e4_v18/rst/jeans.00003.rst (parameter dump; first dump written by this run, jeans.00002.rst is the copied dump it restarted from)",
+   "copied_input": "runs/jeans/n1e4_v18/chain/input.athinput",
+   "command": [
+    {
+     "log": "runs/jeans/n1e4_v18/chain/seg001.job4247.a1.log",
+     "mode": "restart",
+     "input": "runs/jeans/n1e4_v18/rst/jeans.00002.rst",
+     "overrides": {
+      "mesh_refinement/max_nmb_per_rank": "2280",
+      "mesh_refinement/num_levels": "11",
+      "z4c/co_0_radius": "0.125",
+      "z4c/co_1_radius": "0.125",
+      "z4c/co_0_reflevel": "10",
+      "z4c/co_1_reflevel": "10",
+      "particles/alpha_exc": "0.05",
+      "particles/ah_exc_factor": "0.8",
+      "fastflow/flow_alpha_beta_const_0": "0.05",
+      "fastflow/flow_alpha_beta_const_1": "0.05",
+      "fastflow/flow_alpha_beta_const_2": "0.2",
+      "fastflow/flow_iterations_0": "2000",
+      "fastflow/flow_iterations_1": "2000",
+      "fastflow/flow_iterations_2": "2000",
+      "fastflow/mass_tol_0": "1.0e-7",
+      "fastflow/mass_tol_1": "1.0e-7",
+      "fastflow/mass_tol_2": "1.0e-7"
+     }
+    },
+    {
+     "log": "runs/jeans/n1e4_v18/chain/seg002.job4250.a1.log",
+     "mode": "restart",
+     "input": "runs/jeans/n1e4_v18/rst/jeans.00003.rst",
+     "overrides": {
+      "mesh_refinement/max_nmb_per_rank": "2280",
+      "mesh_refinement/num_levels": "11",
+      "z4c/co_0_radius": "0.125",
+      "z4c/co_1_radius": "0.125",
+      "z4c/co_0_reflevel": "10",
+      "z4c/co_1_reflevel": "10",
+      "particles/alpha_exc": "0.05",
+      "particles/ah_exc_factor": "0.8",
+      "fastflow/flow_alpha_beta_const_0": "0.05",
+      "fastflow/flow_alpha_beta_const_1": "0.05",
+      "fastflow/flow_alpha_beta_const_2": "0.2",
+      "fastflow/flow_iterations_0": "2000",
+      "fastflow/flow_iterations_1": "2000",
+      "fastflow/flow_iterations_2": "2000",
+      "fastflow/mass_tol_0": "1.0e-7",
+      "fastflow/mass_tol_1": "1.0e-7",
+      "fastflow/mass_tol_2": "1.0e-7"
+     }
+    },
+    {
+     "log": "runs/jeans/n1e4_v18/chain/seg003.job4254.a1.log",
+     "mode": "restart",
+     "input": "runs/jeans/n1e4_v18/rst/jeans.00004.rst",
+     "overrides": {
+      "mesh_refinement/max_nmb_per_rank": "2280",
+      "mesh_refinement/num_levels": "11",
+      "z4c/co_0_radius": "0.125",
+      "z4c/co_1_radius": "0.125",
+      "z4c/co_0_reflevel": "10",
+      "z4c/co_1_reflevel": "10",
+      "particles/alpha_exc": "0.05",
+      "particles/ah_exc_factor": "0.8",
+      "z4c_amr/radius_0_rad": "24.0",
+      "z4c_amr/radius_1_rad": "10.0",
+      "z4c_amr/radius_2_rad": "4.0",
+      "fastflow/flow_alpha_beta_const_0": "0.05",
+      "fastflow/flow_alpha_beta_const_1": "0.05",
+      "fastflow/flow_alpha_beta_const_2": "0.2",
+      "fastflow/flow_iterations_0": "2000",
+      "fastflow/flow_iterations_1": "2000",
+      "fastflow/flow_iterations_2": "2000",
+      "fastflow/mass_tol_0": "1.0e-7",
+      "fastflow/mass_tol_1": "1.0e-7",
+      "fastflow/mass_tol_2": "1.0e-7"
+     }
+    },
+    {
+     "log": "runs/jeans/n1e4_v18/chain/seg004.job4257.a1.log",
+     "mode": "restart",
+     "input": "runs/jeans/n1e4_v18/rst/jeans.00005.rst",
+     "overrides": {
+      "mesh_refinement/max_nmb_per_rank": "2280",
+      "mesh_refinement/num_levels": "11",
+      "z4c/co_0_radius": "0.125",
+      "z4c/co_1_radius": "0.125",
+      "z4c/co_0_reflevel": "10",
+      "z4c/co_1_reflevel": "10",
+      "particles/alpha_exc": "0.05",
+      "particles/ah_exc_factor": "0.8",
+      "fastflow/flow_alpha_beta_const_0": "0.05",
+      "fastflow/flow_alpha_beta_const_1": "0.05",
+      "fastflow/flow_alpha_beta_const_2": "0.2",
+      "fastflow/flow_iterations_0": "2000",
+      "fastflow/flow_iterations_1": "2000",
+      "fastflow/flow_iterations_2": "2000",
+      "fastflow/mass_tol_0": "1.0e-7",
+      "fastflow/mass_tol_1": "1.0e-7",
+      "fastflow/mass_tol_2": "1.0e-7"
+     }
+    },
+    {
+     "log": "runs/jeans/n1e4_v18/chain/seg005.job4260.a1.log",
+     "mode": "restart",
+     "input": "runs/jeans/n1e4_v18/rst/jeans.00006.rst",
+     "overrides": {
+      "mesh_refinement/max_nmb_per_rank": "2280",
+      "mesh_refinement/num_levels": "11",
+      "z4c/co_0_radius": "0.125",
+      "z4c/co_1_radius": "0.125",
+      "z4c/co_0_reflevel": "10",
+      "z4c/co_1_reflevel": "10",
+      "particles/alpha_exc": "0.05",
+      "particles/ah_exc_factor": "0.8",
+      "fastflow/flow_alpha_beta_const_0": "0.05",
+      "fastflow/flow_alpha_beta_const_1": "0.05",
+      "fastflow/flow_alpha_beta_const_2": "0.2",
+      "fastflow/flow_iterations_0": "2000",
+      "fastflow/flow_iterations_1": "2000",
+      "fastflow/flow_iterations_2": "2000",
+      "fastflow/mass_tol_0": "1.0e-7",
+      "fastflow/mass_tol_1": "1.0e-7",
+      "fastflow/mass_tol_2": "1.0e-7"
+     }
+    },
+    {
+     "log": "runs/jeans/n1e4_v18/chain/seg006.job4263.a1.log",
+     "mode": "restart",
+     "input": "runs/jeans/n1e4_v18/rst/jeans.00008.rst",
+     "overrides": {
+      "mesh_refinement/max_nmb_per_rank": "2280",
+      "mesh_refinement/num_levels": "11",
+      "z4c/co_0_radius": "0.125",
+      "z4c/co_1_radius": "0.125",
+      "z4c/co_0_reflevel": "10",
+      "z4c/co_1_reflevel": "10",
+      "particles/alpha_exc": "0.05",
+      "particles/ah_exc_factor": "0.8",
+      "fastflow/flow_alpha_beta_const_0": "0.05",
+      "fastflow/flow_alpha_beta_const_1": "0.05",
+      "fastflow/flow_alpha_beta_const_2": "0.2",
+      "fastflow/flow_iterations_0": "2000",
+      "fastflow/flow_iterations_1": "2000",
+      "fastflow/flow_iterations_2": "2000",
+      "fastflow/mass_tol_0": "1.0e-7",
+      "fastflow/mass_tol_1": "1.0e-7",
+      "fastflow/mass_tol_2": "1.0e-7"
+     }
+    },
+    {
+     "log": "runs/jeans/n1e4_v18/chain/seg007.job4266.a1.log",
+     "mode": "restart",
+     "input": "runs/jeans/n1e4_v18/rst/jeans.00009.rst",
+     "overrides": {
+      "mesh_refinement/max_nmb_per_rank": "2280",
+      "mesh_refinement/num_levels": "11",
+      "z4c/co_0_radius": "0.125",
+      "z4c/co_1_radius": "0.125",
+      "z4c/co_0_reflevel": "10",
+      "z4c/co_1_reflevel": "10",
+      "particles/alpha_exc": "0.05",
+      "particles/ah_exc_factor": "0.8",
+      "fastflow/flow_alpha_beta_const_0": "0.05",
+      "fastflow/flow_alpha_beta_const_1": "0.05",
+      "fastflow/flow_alpha_beta_const_2": "0.2",
+      "fastflow/flow_iterations_0": "2000",
+      "fastflow/flow_iterations_1": "2000",
+      "fastflow/flow_iterations_2": "2000",
+      "fastflow/mass_tol_0": "1.0e-7",
+      "fastflow/mass_tol_1": "1.0e-7",
+      "fastflow/mass_tol_2": "1.0e-7"
+     }
+    },
+    {
+     "log": "runs/jeans/n1e4_v18/chain/seg008.job4273.a1.log",
+     "mode": "restart",
+     "input": "runs/jeans/n1e4_v18/rst/jeans.00010.rst",
+     "overrides": {
+      "mesh_refinement/max_nmb_per_rank": "2280",
+      "mesh_refinement/num_levels": "11",
+      "z4c/co_0_radius": "0.125",
+      "z4c/co_1_radius": "0.125",
+      "z4c/co_0_reflevel": "10",
+      "z4c/co_1_reflevel": "10",
+      "particles/alpha_exc": "0.05",
+      "particles/ah_exc_factor": "0.8",
+      "fastflow/flow_alpha_beta_const_0": "0.05",
+      "fastflow/flow_alpha_beta_const_1": "0.05",
+      "fastflow/flow_alpha_beta_const_2": "0.2",
+      "fastflow/flow_iterations_0": "2000",
+      "fastflow/flow_iterations_1": "2000",
+      "fastflow/flow_iterations_2": "2000",
+      "fastflow/mass_tol_0": "1.0e-7",
+      "fastflow/mass_tol_1": "1.0e-7",
+      "fastflow/mass_tol_2": "1.0e-7"
+     }
+    },
+    {
+     "log": "runs/jeans/n1e4_v18/chain/seg009.job4282.a1.log",
+     "mode": "restart",
+     "input": "runs/jeans/n1e4_v18/rst/jeans.00011.rst",
+     "overrides": {
+      "mesh_refinement/max_nmb_per_rank": "2280",
+      "mesh_refinement/num_levels": "11",
+      "z4c/co_0_radius": "0.125",
+      "z4c/co_1_radius": "0.125",
+      "z4c/co_0_reflevel": "10",
+      "z4c/co_1_reflevel": "10",
+      "particles/alpha_exc": "0.05",
+      "particles/ah_exc_factor": "0.8",
+      "fastflow/flow_alpha_beta_const_0": "0.05",
+      "fastflow/flow_alpha_beta_const_1": "0.05",
+      "fastflow/flow_alpha_beta_const_2": "0.2",
+      "fastflow/flow_iterations_0": "2000",
+      "fastflow/flow_iterations_1": "2000",
+      "fastflow/flow_iterations_2": "2000",
+      "fastflow/mass_tol_0": "1.0e-7",
+      "fastflow/mass_tol_1": "1.0e-7",
+      "fastflow/mass_tol_2": "1.0e-7"
+     }
+    },
+    {
+     "log": "runs/jeans/n1e4_v18/chain/seg010.job4286.a1.log",
+     "mode": "restart",
+     "input": "runs/jeans/n1e4_v18/rst/jeans.00012.rst",
+     "overrides": {
+      "mesh_refinement/max_nmb_per_rank": "2280",
+      "mesh_refinement/num_levels": "11",
+      "z4c/co_0_radius": "0.125",
+      "z4c/co_1_radius": "0.125",
+      "z4c/co_0_reflevel": "10",
+      "z4c/co_1_reflevel": "10",
+      "particles/alpha_exc": "0.05",
+      "particles/ah_exc_factor": "0.8",
+      "fastflow/flow_alpha_beta_const_0": "0.05",
+      "fastflow/flow_alpha_beta_const_1": "0.05",
+      "fastflow/flow_alpha_beta_const_2": "0.2",
+      "fastflow/flow_iterations_0": "2000",
+      "fastflow/flow_iterations_1": "2000",
+      "fastflow/flow_iterations_2": "2000",
+      "fastflow/mass_tol_0": "1.0e-7",
+      "fastflow/mass_tol_1": "1.0e-7",
+      "fastflow/mass_tol_2": "1.0e-7"
+     }
+    }
+   ],
+   "mesh": {
+    "domain_half_width": 256.0,
+    "symmetric": true,
+    "root_cells": [
+     64,
+     64,
+     64
+    ],
+    "cells_per_meshblock": [
+     16,
+     16,
+     16
+    ],
+    "root_dx": 8.0,
+    "refinement": "adaptive",
+    "num_levels": 11.0,
+    "refined_regions": [
+     {
+      "level": 9,
+      "half_width": 3.2
+     },
+     {
+      "level": 9,
+      "half_width": 3.2
+     },
+     {
+      "level": 3,
+      "half_width": 30.0
+     },
+     {
+      "level": 4,
+      "half_width": 12.0
+     },
+     {
+      "level": 5,
+      "half_width": 5.0
+     }
+    ],
+    "matter_dx_start": [
+     0.0078125,
+     0.5
+    ],
+    "matter_dx_start_time": 6.306640625,
+    "matter_dx_finest_in_dumps": 0.0078125,
+    "finest_dx_start": 0.0078125,
+    "finest_dx_reached": 0.0078125
+   },
+   "particles": {
+    "pusher": "midpoint",
+    "metric": "mesh",
+    "tetrad_gauge": "symmetric",
+    "deposit": true,
+    "nfilter": 4,
+    "compensation": true,
+    "compensation_c": 1.0,
+    "deposition_rule": "cloud at the finest local level",
+    "deposit_max_coarsen": null,
+    "alpha_exc": 0.05,
+    "particle_file": "particles.nrp",
+    "tracers": 0
+   },
+   "spacetime": {
+    "kappa1": 0.02,
+    "kappa2": 0.0,
+    "c_H": 0.0,
+    "c_H_dx": 0.0,
+    "shift_eta": 2.0,
+    "dissipation": 0.5,
+    "cfl": 0.25,
+    "tlim": 100.0
+   },
+   "horizon_finder": {
+    "derivatives": "interpolant",
+    "mass_tolerance": 1e-07,
+    "angular_points": 16.0,
+    "lmax": 8.0,
+    "search_every_cycles": 16.0
+   },
+   "model": {
+    "components": [
+     {
+      "type": "table",
+      "table": "runs/jeans/n1e4_v18/envelope.tab",
+      "header": {
+       "model": "st_monoenergetic",
+       "yc": 0.907,
+       "M_ADM": 0.76,
+       "M0": 0.7739214913482914,
+       "Eb_over_M0": 0.017988247521125156,
+       "R_areal": 13.314294396331563,
+       "rbar_s": 12.54278179870231,
+       "zc": 0.11562811974677678,
+       "alpha_c": 0.8963560368368791,
+       "alpha_s": 0.9411891331264048,
+       "E0": 0.9411891331264048,
+       "psi_c": 1.0542752796064443,
+       "psi_s": 1.0302963095506705,
+       "rho_c": 0.00015630616368232116,
+       "P_c": 4.845491074151954e-06,
+       "rho0_c": 0.00014886059398716542,
+       "zeta": 0.03099999999999999,
+       "L": 3.972719141147014
+      }
+     },
+     {
+      "type": "gaussian"
+     },
+     {
+      "type": "gaussian"
+     }
+    ],
+    "initial_lapse": "isotropic",
+    "particles": {
+     "model": "st_envelope_two_gaussian_clumps",
+     "sampler": "stratified",
+     "seed": 1,
+     "generator_file": "runs/jeans/ic_yc0907_n1e4/jeans_N10000_s1.nrp",
+     "max_momentum_difference": 0.0003064130636712681
+    }
+   },
+   "performance": {
+    "segments": [
+     {
+      "log": "runs/jeans/n1e4_v18/chain/seg001.job4247.a1.log",
+      "wall_s": 3000.546,
+      "wall_source": "log summary (cpu time used)",
+      "zone_cycles_per_s": 7989694.0,
+      "meshblock_cycles": 5852892,
+      "termination": "wall clock limit",
+      "exit": 0,
+      "time_reached": 12.125
+     },
+     {
+      "log": "runs/jeans/n1e4_v18/chain/seg002.job4250.a1.log",
+      "wall_s": 2998.396,
+      "wall_source": "log summary (cpu time used)",
+      "zone_cycles_per_s": 8089984.0,
+      "meshblock_cycles": 5922112,
+      "termination": "wall clock limit",
+      "exit": 0,
+      "time_reached": 17.78906
+     },
+     {
+      "log": "runs/jeans/n1e4_v18/chain/seg003.job4254.a1.log",
+      "wall_s": 2999.627,
+      "wall_source": "log summary (cpu time used)",
+      "zone_cycles_per_s": 8079640.0,
+      "meshblock_cycles": 5916970,
+      "termination": "wall clock limit",
+      "exit": 0,
+      "time_reached": 23.45312
+     },
+     {
+      "log": "runs/jeans/n1e4_v18/chain/seg004.job4257.a1.log",
+      "wall_s": 2999.117,
+      "wall_source": "log summary (cpu time used)",
+      "zone_cycles_per_s": 7933661.0,
+      "meshblock_cycles": 5809076,
+      "termination": "wall clock limit",
+      "exit": 0,
+      "time_reached": 29.70312
+     },
+     {
+      "log": "runs/jeans/n1e4_v18/chain/seg005.job4260.a1.log",
+      "wall_s": 2999.781,
+      "wall_source": "log summary (cpu time used)",
+      "zone_cycles_per_s": 7934426.0,
+      "meshblock_cycles": 5810922,
+      "termination": "wall clock limit",
+      "exit": 0,
+      "time_reached": 36.14844
+     },
+     {
+      "log": "runs/jeans/n1e4_v18/chain/seg006.job4263.a1.log",
+      "wall_s": 3000.411,
+      "wall_source": "log summary (cpu time used)",
+      "zone_cycles_per_s": 7971172.0,
+      "meshblock_cycles": 5839061,
+      "termination": "wall clock limit",
+      "exit": 0,
+      "time_reached": 42.20312
+     },
+     {
+      "log": "runs/jeans/n1e4_v18/chain/seg007.job4266.a1.log",
+      "wall_s": 2999.657,
+      "wall_source": "log summary (cpu time used)",
+      "zone_cycles_per_s": 7786684.0,
+      "meshblock_cycles": 5702487,
+      "termination": "wall clock limit",
+      "exit": 0,
+      "time_reached": 48.84375
+     },
+     {
+      "log": "runs/jeans/n1e4_v18/chain/seg008.job4273.a1.log",
+      "wall_s": 2999.221,
+      "wall_source": "log summary (cpu time used)",
+      "zone_cycles_per_s": 8033986.0,
+      "meshblock_cycles": 5882740,
+      "termination": "wall clock limit",
+      "exit": 0,
+      "time_reached": 54.89844
+     },
+     {
+      "log": "runs/jeans/n1e4_v18/chain/seg009.job4282.a1.log",
+      "wall_s": 1198.025,
+      "wall_source": "log summary (cpu time used)",
+      "zone_cycles_per_s": 7820390.0,
+      "meshblock_cycles": 2287360,
+      "termination": "wall clock limit",
+      "exit": 0,
+      "time_reached": 57.82812
+     },
+     {
+      "log": "runs/jeans/n1e4_v18/chain/seg010.job4286.a1.log",
+      "wall_s": 1198.634,
+      "wall_source": "log summary (cpu time used)",
+      "zone_cycles_per_s": 6593410.0,
+      "meshblock_cycles": 1929464,
+      "termination": "wall clock limit",
+      "exit": 0,
+      "time_reached": 61.53906
+     }
+    ],
+    "wall_s_total": 26393.415,
+    "zone_cycles_per_s": 7907420.290213399
+   },
+   "dt_start": null,
+   "dt_start_source": "run restarted from another run's dump (see that run)",
+   "status": "wall-clock stop",
+   "block_limit_exceeded": null,
+   "notes": [],
+   "outcomes": {
+    "t_final": 61.568359375,
+    "np_start": 10000,
+    "np_end": 5222,
+    "nmb_start_hist": 2108,
+    "nmb_max": 2108,
+    "central_lapse": {
+     "t0": 0.8323919699903867,
+     "min": 0.03816669047632386,
+     "t_min": 60.890625,
+     "max": 0.8323919699903867,
+     "t_max": 6.30859375,
+     "end": 0.05362897060415875
+    },
+    "n_excised_end": 4778,
+    "n_escaped_end": 0,
+    "escape_times": [],
+    "removal_first_t": 8.134765625,
+    "all_removed_t": null,
+    "mean_lorentz": {
+     "start": 1.0270035476997392,
+     "min": 1.0270035476997392,
+     "max": 1.1727864070875669,
+     "end_live": 1.1727864070875669,
+     "note": "records before the first removal"
+    },
+    "net_momentum_max": 0.011093812537307362,
+    "rest_mass_start": 1.050217972602385,
+    "filtered_energy_change": {
+     "t0": -0.00043547269774024677,
+     "mean": -0.013946082128468689,
+     "end": -0.09523747689244022
+    },
+    "H_norm": {
+     "start": 6.396960215602408,
+     "max": 11.464074319368311,
+     "t_max": 8.0,
+     "end": 4.722245228702127
+    },
+    "dt_halvings": [],
+    "horizon": {
+     "first_t": 9.60938,
+     "first_mass": 0.08011886601753045,
+     "last_t": 61.5469,
+     "last_mass": 0.1827505026204233,
+     "rows": 1663
+    }
+   }
+  },
   "jeans/n1e4_v20": {
    "dir": "runs/jeans/n1e4_v20",
    "families": [
@@ -11521,6 +12315,90 @@
       "fastflow/mass_tol_1": "1.0e-7",
       "fastflow/mass_tol_2": "1.0e-7"
      }
+    },
+    {
+     "log": "runs/jeans/n1e4_v20/chain/seg014.job4340.a1.log",
+     "mode": "restart",
+     "input": "runs/jeans/n1e4_v20/rst/jeans.00018.rst",
+     "overrides": {
+      "mesh_refinement/max_nmb_per_rank": "2280",
+      "z4c/co_0_radius": "0.2",
+      "z4c/co_1_radius": "0.2",
+      "particles/alpha_exc": "0.05",
+      "particles/ah_exc_factor": "0.8",
+      "mesh/nx1": "80",
+      "mesh/nx2": "80",
+      "mesh/nx3": "80",
+      "mesh/x1min": "-80.0",
+      "mesh/x1max": "80.0",
+      "mesh/x2min": "-80.0",
+      "mesh/x2max": "80.0",
+      "mesh/x3min": "-80.0",
+      "mesh/x3max": "80.0",
+      "mesh_refinement/num_levels": "8",
+      "z4c/co_0_reflevel": "7",
+      "z4c/co_1_reflevel": "7",
+      "refined_region1/level": "7",
+      "refined_region2/level": "7",
+      "refined_region3/level": "1",
+      "refined_region4/level": "2",
+      "refined_region5/level": "3",
+      "z4c_amr/radius_0_reflevel": "1",
+      "z4c_amr/radius_1_reflevel": "2",
+      "z4c_amr/radius_2_reflevel": "3",
+      "particles/deposit_min_level": "1",
+      "fastflow/flow_alpha_beta_const_0": "0.05",
+      "fastflow/flow_alpha_beta_const_1": "0.05",
+      "fastflow/flow_alpha_beta_const_2": "0.2",
+      "fastflow/flow_iterations_0": "2000",
+      "fastflow/flow_iterations_1": "2000",
+      "fastflow/flow_iterations_2": "2000",
+      "fastflow/mass_tol_0": "1.0e-7",
+      "fastflow/mass_tol_1": "1.0e-7",
+      "fastflow/mass_tol_2": "1.0e-7"
+     }
+    },
+    {
+     "log": "runs/jeans/n1e4_v20/chain/seg015.job4341.a1.log",
+     "mode": "restart",
+     "input": "runs/jeans/n1e4_v20/rst/jeans.00020.rst",
+     "overrides": {
+      "mesh_refinement/max_nmb_per_rank": "2280",
+      "z4c/co_0_radius": "0.2",
+      "z4c/co_1_radius": "0.2",
+      "particles/alpha_exc": "0.05",
+      "particles/ah_exc_factor": "0.8",
+      "mesh/nx1": "80",
+      "mesh/nx2": "80",
+      "mesh/nx3": "80",
+      "mesh/x1min": "-80.0",
+      "mesh/x1max": "80.0",
+      "mesh/x2min": "-80.0",
+      "mesh/x2max": "80.0",
+      "mesh/x3min": "-80.0",
+      "mesh/x3max": "80.0",
+      "mesh_refinement/num_levels": "8",
+      "z4c/co_0_reflevel": "7",
+      "z4c/co_1_reflevel": "7",
+      "refined_region1/level": "7",
+      "refined_region2/level": "7",
+      "refined_region3/level": "1",
+      "refined_region4/level": "2",
+      "refined_region5/level": "3",
+      "z4c_amr/radius_0_reflevel": "1",
+      "z4c_amr/radius_1_reflevel": "2",
+      "z4c_amr/radius_2_reflevel": "3",
+      "particles/deposit_min_level": "1",
+      "fastflow/flow_alpha_beta_const_0": "0.05",
+      "fastflow/flow_alpha_beta_const_1": "0.05",
+      "fastflow/flow_alpha_beta_const_2": "0.2",
+      "fastflow/flow_iterations_0": "2000",
+      "fastflow/flow_iterations_1": "2000",
+      "fastflow/flow_iterations_2": "2000",
+      "fastflow/mass_tol_0": "1.0e-7",
+      "fastflow/mass_tol_1": "1.0e-7",
+      "fastflow/mass_tol_2": "1.0e-7"
+     }
     }
    ],
    "mesh": {
@@ -11767,27 +12645,47 @@
      },
      {
       "log": "runs/jeans/n1e4_v20/chain/seg013.job4339.a1.log",
-      "wall_s": 506.0248,
-      "wall_source": "last elapsed= line (no summary: job killed or running)",
-      "zone_cycles_per_s": null,
-      "meshblock_cycles": null,
-      "termination": null,
-      "exit": null,
-      "time_reached": 85.15625
+      "wall_s": 1499.069,
+      "wall_source": "log summary (cpu time used)",
+      "zone_cycles_per_s": 8093626.0,
+      "meshblock_cycles": 2962134,
+      "termination": "wall clock limit",
+      "exit": 0,
+      "time_reached": 88.67188
+     },
+     {
+      "log": "runs/jeans/n1e4_v20/chain/seg014.job4340.a1.log",
+      "wall_s": 1498.068,
+      "wall_source": "log summary (cpu time used)",
+      "zone_cycles_per_s": 8029967.0,
+      "meshblock_cycles": 2936874,
+      "termination": "wall clock limit",
+      "exit": 0,
+      "time_reached": 94.92188
+     },
+     {
+      "log": "runs/jeans/n1e4_v20/chain/seg015.job4341.a1.log",
+      "wall_s": 1151.583,
+      "wall_source": "log summary (cpu time used)",
+      "zone_cycles_per_s": 7953724.0,
+      "meshblock_cycles": 2236176,
+      "termination": "time limit",
+      "exit": 0,
+      "time_reached": 100.0
      }
     ],
-    "wall_s_total": 18506.948800000002,
-    "zone_cycles_per_s": 7837620.361072604
+    "wall_s_total": 22149.644,
+    "zone_cycles_per_s": 7873992.113755385
    },
    "dt_start": 0.00390625,
    "dt_start_source": "seg001.job4293.a1.log, first step line",
-   "status": "running",
+   "status": "finished",
    "block_limit_exceeded": null,
    "notes": [],
    "outcomes": {
-    "t_final": 85.40625,
+    "t_final": 100.0,
     "np_start": 10000,
-    "np_end": 5880,
+    "np_end": 5859,
     "nmb_start_hist": 1042,
     "nmb_max": 2071,
     "central_lapse": {
@@ -11796,9 +12694,9 @@
      "t_min": 12.58203125,
      "max": 0.8955131656634621,
      "t_max": 52.5390625,
-     "end": 0.8906309998664048
+     "end": 0.8849261937268262
     },
-    "n_excised_end": 4120,
+    "n_excised_end": 4141,
     "n_escaped_end": 0,
     "escape_times": [],
     "removal_first_t": 8.046875,
@@ -11821,15 +12719,15 @@
      "start": 6.001324853730217,
      "max": 26.76606059919913,
      "t_max": 8.5,
-     "end": 1.7305634920452933
+     "end": 1.7056083958517558
     },
     "dt_halvings": [],
     "horizon": {
      "first_t": 9.1875,
      "first_mass": 0.09073447251382184,
-     "last_t": 85.375,
-     "last_mass": 0.1474541572634815,
-     "rows": 1220
+     "last_t": 99.9375,
+     "last_mass": 0.1493413676799526,
+     "rows": 1453
     }
    }
   }

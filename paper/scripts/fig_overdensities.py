@@ -10,18 +10,21 @@ are too small to see; the bar gives the scale. Bottom left: coordinate separatio
 the black holes (top strip) and orbital phase, the angle of the line from A to B in
 turns (bottom strip). The positions are those of the data script: before the first
 horizon the densest point of each overdensity, after it the trackers stored with the
-restart dumps (dots: filled M/64, open M/128) and in the tracker files, interpolated
+restart dumps (small filled dots, larger for M/64) and in the tracker files, interpolated
 between them; the line breaks where they are too far apart to interpolate. After the
 merger the code joins the two trackers into one point: the separation is drawn up to
 the first record with coincident trackers, the phase while the separation exceeds
 0.1 M. Bottom middle: apparent-horizon masses of A, B and of the common horizon (found
 searches only; searches of A or B that converged on the common horizon are left out),
-dotted line at the total mass M of the initial data. Bottom right: fraction of the
-macroparticles of each species remaining (and the dimensionless spin of the common
-horizon on a right axis once one is found). Thick solid: finest cells M/64; thin
-dashed: M/128. Black open circles and ticks at the top: values and times of the
-original paper (black, because blue marks B). Time axes end where the M/64 run has got
-to (rounded up to 5 M), so values of the original beyond that time are not drawn.
+dotted line at the total mass M of the initial data, legend of the two meshes for all
+lower panels. Bottom right: fraction of the
+macroparticles of each species remaining (and the dimensionless spin chi_AH = J/M_AH^2 of
+the common apparent horizon on a right axis once one is found). Thick solid: finest cells
+M/64; thin dashed: M/128. Black open circles and ticks at the top: values and times of
+the original paper (black, because blue marks B). Time axes end where the M/64 run has got
+to (rounded up to 5 M), with a margin of PAD of the range so that the original's open
+circles at the end are not cut by the frame; values of the original beyond that time are
+not drawn.
 
 Reads paper/data/overdensities.npz, written by make_data_overdensities.py.
 
@@ -49,15 +52,18 @@ LAB_PT = 8
 COL = {"env": "0.62", "A": fs.PAL["red"], "B": fs.PAL["blue"], "C": "k"}
 ORIG = "k"               # values of the original paper (blue is taken by B)
 SP_COL = (COL["env"], COL["A"], COL["B"])         # species 0, 1, 2
-ORIG_KW = dict(ls="none", marker="o", ms=4.5, mfc="none", mec=ORIG, mew=1.0, zorder=7)
+ORIG_KW = dict(ls="none", marker="o", ms=4.5, mfc="none", mec=ORIG, mew=1.0, zorder=7, clip_on=False)
 DASH = (0, (3.5, 1.6))
 MESH = {"64": dict(lw=1.5, ls="-"), "128": dict(lw=0.9, ls=DASH)}
-DOT = {"64": dict(ls="none", marker="o", ms=3.0, mfc="k", mec="k", mew=0.0, zorder=5),
-       "128": dict(ls="none", marker="o", ms=3.0, mfc="white", mec="k", mew=0.7, zorder=5)}
+# recorded positions: small filled dots (open circles are the original's values)
+DOT = {"64": dict(ls="none", marker="o", ms=2.6, mfc="k", mec="none", zorder=5),
+       "128": dict(ls="none", marker="o", ms=1.8, mfc="k", mec="none", zorder=5)}
+PAD = 0.035              # margin right of the last time, fraction of the time range
 HALF = 8.0               # half-width of the particle windows, in M
 BAR = 4.0                # scale bar, in M
 GAP_BREAK = 1.0          # break a horizon curve where no horizon was found for longer
 SEP_MIN = 0.1            # smallest tracker separation at which the phase is drawn, in M
+TICK_GAP = 3.5           # gap between a tick of the original and its label, in points
 
 
 def scale_bar(ax, half, length):
@@ -127,10 +133,11 @@ def tick(ax, t, label=None, side="left"):
     ax.plot([t, t], [1.0, 0.90], transform=ax.get_xaxis_transform(), color=ORIG,
             lw=1.2, clip_on=False, zorder=6)
     if label:
-        off = (-1 if side == "left" else 1) * 0.015 * np.diff(ax.get_xlim())[0]
-        ax.text(t + off, 0.985, label, color=ORIG, transform=ax.get_xaxis_transform(),
-                ha="right" if side == "left" else "left", va="top", fontsize=LAB_PT,
-                linespacing=1.0)
+        off = (-1 if side == "left" else 1) * TICK_GAP
+        ax.text(t, 0.985, label, color=ORIG, ha="right" if side == "left" else "left",
+                transform=offset_copy(ax.get_xaxis_transform(), fig=ax.figure, x=off,
+                                      units="points"),
+                va="top", fontsize=LAB_PT, linespacing=1.0)
 
 
 def ab_label(ax, x, y, coords="data", size=LAB_PT):
@@ -190,8 +197,8 @@ def orbit(a_d, a_p, d, xmax):
                  **mk)
     a_d.set_ylim(0, 7.5)
     a_d.set_yticks((3, 6))
-    a_d.set_ylabel(r"$d/M$")
-    a_d.text(0.04 * xmax, 3.9, "separation", fontsize=LAB_PT, ha="left", va="top")
+    a_d.set_ylabel(r"$d_{AB}/M$")
+    a_d.text(0.04 * xmax, 2.7, "separation", fontsize=LAB_PT, ha="left", va="top")
     step = 0.05 if pmax < 0.5 else (0.5 if pmax < 5 else 5.0)
     top = step * np.ceil(pmax / 0.8 / step)
     a_p.set_ylim(0, top)
@@ -203,7 +210,7 @@ def orbit(a_d, a_p, d, xmax):
              fontsize=LAB_PT, ha="left", va="top")
     tm = float(d["orig_t_common"])
     for ax in (a_d, a_p):
-        ax.set_xlim(0, xmax)
+        ax.set_xlim(0, xmax * (1 + PAD))
         if tm <= xmax:
             tick(ax, tm, "original\nmerger" if ax is a_d else None,
                  side="right" if xmax - tm > 0.3 * xmax else "left")
@@ -231,7 +238,7 @@ def masses(ax, d, xmax):
             ax.plot(float(t), float(M), **ORIG_KW)
             ymax = max(ymax, float(M))
     x0 = 8.0
-    ax.set_xlim(x0, xmax)
+    ax.set_xlim(x0, xmax + PAD * xmax)
     for k, t in enumerate(d["orig_t_first"]):
         tick(ax, float(t), "original" if k == 1 else None, side="right")
     ax.set_ylim(0, 1.15 * ymax if ymax > 0 else 0.2)
@@ -249,6 +256,11 @@ def masses(ax, d, xmax):
     if len(t):
         ax.text(t[0] - 0.03 * (xmax - x0), M[0], "common", fontsize=LAB_PT,
                 ha="right", va="center")
+    # line styles of the two meshes (for every lower panel): in the empty upper left, below
+    # the label of the total mass and clear of the curves
+    ax.legend([Line2D([], [], color="k", **MESH["64"]), Line2D([], [], color="k", **MESH["128"])],
+              [r"$\Delta x=M/64$", r"$\Delta x=M/128$"], frameon=False, fontsize=LAB_PT,
+              handlelength=2.2, borderaxespad=0.3, loc="upper left", bbox_to_anchor=(0.0, 0.76))
 
 
 def fractions(ax, d, xmax):
@@ -259,7 +271,7 @@ def fractions(ax, d, xmax):
         f = n / n[0]
         for s, lab in enumerate(("env", "A", "B")):
             ax.plot(t, f[:, s], color=COL[lab], **MESH[m])
-    ax.set_xlim(0, xmax)
+    ax.set_xlim(0, xmax * (1 + PAD))
     ax.set_ylim(0, 1.12)
     ax.set_yticks((0, 0.5, 1))
     ax.set_ylabel("fraction remaining")
@@ -273,13 +285,6 @@ def fractions(ax, d, xmax):
     # spin of the common horizon, once found
     tc, Mc, Sc = found(d, "64", "C")
     t2, M2, S2 = found(d, "128", "C")
-    # legend in the empty area: right middle, or low centre once the spin is drawn
-    spin = bool(len(tc) or len(t2))
-    ax.legend([Line2D([], [], color="k", **MESH["64"]), Line2D([], [], color="k", **MESH["128"])],
-              [r"$\Delta x=M/64$", r"$\Delta x=M/128$"], frameon=False, fontsize=LAB_PT,
-              handlelength=2.2, borderaxespad=0.3,
-              **(dict(loc="lower center", bbox_to_anchor=(0.56, 0.05)) if spin else
-                 dict(loc="center right", bbox_to_anchor=(1.0, 0.36))))
     if len(tc) or len(t2):
         axr = ax.twinx()
         for m, (t, M, S) in (("64", (tc, Mc, Sc)), ("128", (t2, M2, S2))):
@@ -291,13 +296,13 @@ def fractions(ax, d, xmax):
                 axr.plot(float(t), float(c), **ORIG_KW)
         axr.set_ylim(0, 1.12)
         axr.set_yticks((0, 0.5, 1))
-        axr.set_ylabel(r"$S/M_{\rm AH}^2$", labelpad=2)
+        axr.set_ylabel(r"$\chi_{\rm AH}$", labelpad=2)
         ax.tick_params(axis="y", which="both", right=False)
         t = tc if len(tc) else t2
         chi = (Sc / Mc ** 2) if len(tc) else (S2 / M2 ** 2)
-        # above and to the left of the start of the curve, clear of the original's marker,
-        # the 'A, B' label and the legend
-        axr.text(t[0] - 0.01 * xmax, chi[0] + 0.06, "spin of\ncommon\nhorizon", fontsize=LAB_PT,
+        # above and to the left of the start of the curve, clear of the original's marker
+        # and the 'A, B' label
+        axr.text(t[0] - 0.01 * xmax, chi[0] + 0.14, "common\napparent\nhorizon", fontsize=LAB_PT,
                  ha="right", va="bottom", linespacing=1.0)
         return axr
     return None

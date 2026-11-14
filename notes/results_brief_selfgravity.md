@@ -234,7 +234,7 @@ published rule: refinement runs away]
 Setup: a monoenergetic envelope (0.76 of the total mass) with two Gaussian
 overdensities (0.12 each, width 0.7 M) at +-3 M on a circular orbit; 6000 envelope
 particles and 2000 in each overdensity (the original: 3e6 and 1e6 each). Envelope
-radius: the self-consistent value, areal radius 13.3 M (Appendix on sampling; the
+radius: the speed-matched value (the stated speed is circular there), areal radius 13.3 M (Appendix on sampling; the
 stated radius of 30 M does not fit the stated speed). Meshes: finest cells M/64 or M/128
 in a region that follows each overdensity (the original: M/64 at the start, refinement
 down to M/256). Four filter passes with compensation. Figure and tables use the M/64 run
@@ -275,8 +275,9 @@ Facts so far (formation stage), in the order of the argument:
    passes the step at which two runs without the rule failed). Which quantity of the
    lingering matter turns non-finite was not isolated. Whether the published rule
    alone suffices at the original's cell size cannot be tested on one card.
-3c. Individual spins. The finder gives dimensionless spins of 0.007 to 0.03 for the two
-   black holes; the original quotes spins of order 1e-5. Observation only: a cold clump
+3c. Individual spins. The finder gives dimensionless spins of 0.022 and 0.023 at the
+   first horizons and 0.057 and 0.047 at the last search before the common horizon
+   (0.004 to 0.10 in between) for the two black holes; the original quotes spins of order 1e-5. Observation only: a cold clump
    with one bulk velocity has no spin about its own centre whatever the sample, so the
    spin comes from what is accreted afterwards or from the measurement; which, was not
    tested (candidate: few envelope particles per black hole, so their angular momentum
@@ -349,11 +350,11 @@ Established:
    between 0.087 and 0.099 from 57 to 100 M and is 0.0907 at both ends (S_z 0.0600 +
    L_z 0.0307 at 57 M, 0.0872 + 0.0035 at 100 M): the changes of S are matched by the
    matter around the hole. The envelope's L_z about the origin rises from -0.003 at t = 0
-   to +0.032 at 57 M during the inspiral (M/128: +0.038 at 57 M). The lower final chi is
+   to +0.032 at 57 M during the inspiral (M/128: +0.038 at 57 M, +0.039 at its first common horizon). The lower final chi is
    arithmetic: chi_here/chi_orig = 0.49 = (0.6474/1.0255)^2 x (0.0890/0.0718).
 11. Out of the orbital plane (M/64 only): midpoint of the trackers at z = +0.24 M at
    20 M, +0.43 M at 30 M, +0.55 M at 40 M, +0.59 M at 50 M and at 57 M; merged tracker
-   at +0.59 M at 100 M (the drift stops after about 45 M). M/128: within 0.06 M of the
+   at +0.59 M at 100 M (the drift stops after about 45 M). M/128: within 0.03 M of the
    plane throughout.
 12. Constraint norm ||H||: 5.82 at t = 0 (superposed initial data), largest 12.6 at 8.0 M
    (collapse), 2.88 at 57.0 M, a second maximum of 5.36 at 77 M (envelope falling in),
@@ -381,18 +382,19 @@ Established:
    grow after 20 M (0.00017 M per M against 0.0012 M per M in the speed-matched
    envelope): the envelope is twelve times less dense. Rest mass of the particles:
    1.0288 at t = 0, 0.7698 at 20 M (the two overdensities are gone), 0.7619 at 60 M,
-   0.7534 at 100 M: the envelope stays outside, 98 percent of it at 100 M; 4141
+   0.7534 at 100 M: the envelope stays outside, 0.976 of its sampled rest mass at 100 M; 4141
    particles removed in all (0.2754), none left the domain. No common horizon: the
    trackers never come within the 0.24 M at which the finder starts to look, so no
    search for one ran. Separation of the black holes: 6.3 M at 10 M, 6.9 M at 20 M,
    8.2 M at 40 M, 9.05 M at 60 M, largest 9.32 M at 78.25 M, 8.71 M at 100 M; the line
-   between them has turned by under a third of a turn at 100 M. The stated speed is
+   between them has turned by 0.30 of a turn at 100 M (0.25 from the first horizon). The stated speed is
    above the circular speed of the pair (0.133 against 0.103; in this sparse envelope
    the companion sets the circular speed: only 0.0016 M of envelope lies inside 3 M),
    so the pair moves out to a wide orbit; a two-body estimate brackets the measured
    separation and no more (TESTLOG 09:33; the line turns more slowly than the estimate,
-   not explained). The midpoint of the trackers leaves the orbital plane at a nearly
-   constant rate: 0.19 M at 20 M, 0.55 M at 40 M, 0.94 M at 60 M, 1.49 M at 100 M
+   not explained). The midpoint of the trackers leaves the orbital plane steadily,
+   slowing in the last fifth: 0.19 M at 20 M, 0.55 M at 40 M, 0.94 M at 60 M, 1.27 M at
+   80 M, 1.49 M at 100 M
    (speed-matched radius on the same mesh: 0.59 M, levelling off after 45 M; M/128:
    within 0.06 M). Cause not determined.
    Reading: with the speed-matched radius the whole envelope falls in and the remnant
@@ -409,7 +411,7 @@ ten job segments, not on an error):
 | | t/M | M_AH/M | chi |
 |---|---|---|---|
 | M/64 (`n1e4_v19`) | 57.00 | 0.3746 | 0.427 |
-| M/128 (`n1e4_v18`) | 59.70 | 0.3523 | 0.565 |
+| M/128 (`n1e4_v18`) | 59.70 | 0.3523 | 0.564 |
 | original (M/64 refined to M/256) | 64.16 | 0.3833 | 0.504 |
 
 Observation from two resolutions (no order of convergence): with finer cells the time

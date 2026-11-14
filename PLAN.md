@@ -100,23 +100,34 @@ Status on 2026-11-13, 09:00 (measured numbers and the outcome of every predictio
 - [x] Oppenheimer-Snyder collapse: lapse bound and cycloid; horizon mass equal to the
       total mass to 0.1 percent with the published deposition rule and corrected
       lattice masses (`runs/os/nocap_sc`)
-- [~] Monoenergetic clusters: y_c = 0.900 and 0.819 hold for 300 M (0.819 followed to
-      600 M; its core oscillation grows, cause not determined); 0.605, 0.500, 0.283
-      queued (adaptive mesh)
-- [~] Migration of y_c = 0.500 (expands as in the original; long run queued) and
-      reconfiguration of y_c = 0.756 (queued)
-- [~] Prolate collapse, e = 0.9, b = 10 M, with the Kretschmann diagnostic (queued)
-- [~] Sampling studies: N = 10^2, 10^3, 10^4 stratified done; Monte Carlo running
+- [x] Monoenergetic clusters: y_c = 0.900 and 0.819 hold (0.819 followed to 1200 M; its
+      core oscillation grows and stops growing, cause not determined); 0.605 and 0.500
+      collapse when kicked, later than in the original; 0.283 disperses
+- [x] Migration of y_c = 0.500 to 2500 M (first two maxima and minima as in the
+      original; later extrema earlier and smaller) and the near-critical model
+      y_c = 0.756 (compressed, expanded, unperturbed; which perturbation the original
+      used cannot be decided from its text)
+- [x] Prolate collapse, e = 0.9, b = 10 M, with the Kretschmann diagnostic (horizon mass
+      a few percent below the total mass; spherical control)
+- [x] Sampling studies: N = 10^2, 10^3, 10^4, stratified and Monte Carlo
 
 ### M6 Collapse and merger inside a cluster
-- [~] Reduced-cost run queued (`runs/jeans/n1e4_v5`)
+- [x] Speed-matched envelope (areal radius 13.3 M, at which the stated speed is
+      circular): `runs/jeans/n1e4_v19` (M/64, to 100 M; common horizon first found at
+      57.0 M, remnant 1.03 M) and `n1e4_v11` + `n1e4_v18` (M/128, to 61.6 M)
+- [x] Stated envelope radius (30 M) with the stated speed: `runs/jeans/n1e4_v20` (M/64,
+      to 100 M): no merger, black holes 0.15 M, envelope stays outside. The original's
+      outcome lies between the two; prediction and outcome in `docs/TESTLOG.md`
 
 ### M7 Paper
 - [x] `WRITING_GUIDE.md`, `NOTATION.md`, `paper/` skeleton
-- [~] Story (second version), 300- and 1000-word versions (second versions being
-      written), reviewers, main text: system, method, test particles drafted
-- [~] Figures: cycle, deposition, assembly, orbits, passage, convergence, test-particle
-      cluster, tracers done; self-gravity figures open. Supplemental ledger, compile open
+- [x] Story, 300- and 1000-word versions, reviewers, every section of the main text,
+      conclusions, abstract; two referee reads (`notes/drafts/review_full_v1.md`,
+      `review_final_v1.md`) and their correction passes
+- [x] Figures and generated tables (`paper/scripts/`), ledger (`paper/data/ledger.txt`),
+      manuscript checker, compile (36 pages)
+- [ ] For the authors: author list, affiliations, funding line; whether to report the
+      horizon-finder defect to the host code's developers
 
 ### Found on the way (all in `docs/TESTLOG.md`)
 | Finding | Consequence |

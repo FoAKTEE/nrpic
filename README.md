@@ -15,8 +15,20 @@ Clone with `git clone --recursive`. Build instructions are in `scripts/`.
 
 ## Paper
 
-- Current draft (PDF, rebuilt with the sources): [paper/main.pdf](paper/main.pdf)
+- Manuscript, complete (PDF, rebuilt with the sources; author list and funding line
+  left for the authors): [paper/main.pdf](paper/main.pdf)
 - LaTeX sources: [paper/](paper/) (`main.tex`, `sections/`, figure scripts in `scripts/`,
   reduced data in `data/`)
 - Record of every test, prediction and outcome: [docs/TESTLOG.md](docs/TESTLOG.md)
 - Build: `cd paper && latexmk -pdf main.tex`
+
+## Cosmology extension
+
+The code extended to an expanding, periodic universe, with three source papers redone
+(East, Wojtak & Pretorius, arXiv:1908.05683; Daverio, Dirian & Mitsou, arXiv:1904.07841;
+Barrera-Hinojosa & Li, arXiv:2001.07968).
+
+- Overview, options, a run from start to finish: [cosmo/README.md](cosmo/README.md)
+- Working paper (text, figures, ledger of numbers): [cosmo/paper/main.pdf](cosmo/paper/main.pdf)
+- Plan and state: [cosmo/PLAN.md](cosmo/PLAN.md); every test with its prediction and
+  outcome: [cosmo/TESTLOG.md](cosmo/TESTLOG.md)
