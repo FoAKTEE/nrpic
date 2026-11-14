@@ -1791,3 +1791,29 @@ the card at that limit); `v12` has the same mesh. From the next restart segment 
 both use a limit of 2280 (about 79 GB) and a finest region of radius 0.125 M instead
 of 0.15 M around each tracker. The horizon radius expected at formation is 0.05 to
 0.1 M. This is a change of the mesh during the run and is recorded in the chain logs.
+
+## Cluster with two overdensities at M/128: no horizon with either removal rule (17:00)
+
+`jeans/n1e4_v11` (cells of M/128 within 0.15 M of each tracker, 0.125 M after the
+first restart; removal inside a found horizon; lapse guard 0.02) and `jeans/n1e4_v12`
+(same, guard off).
+- The collapse is earlier than at M/64: the smallest lapse is 0.068 at t = 8.02 M
+  (M/64: 9.05 M) and 0.047 at 8.19 M. The original's horizons are at 8.475 and 8.525 M.
+- v11: no horizon reported. The lapse passes the guard at 8.30 M and 966 particles are
+  removed; it returns to 0.04; further bursts follow (1594 removed by 9.3 M, 2187 by
+  10.1 M, 3132 by 12.4 M). Still running.
+- v12: no horizon reported and nothing removed. The particle energy sum rises from
+  1.07 to 2.1 of M at 8.63 M and 3.4 at 8.91 M; the smallest lapse on the mesh is
+  negative from 8.63 M (-0.003, then -0.016); the fields are NaN at 8.95 M. Stopped.
+- Against the prediction of 15:22: the third branch (neither run finds a horizon).
+- Particle snapshots (crude estimate, not a measurement): at t = 8.0 M a tenth of one
+  overdensity's particles lie within 0.003 M of its densest point, a third of a cell;
+  the collapse is from the inside out, so the first trapped region is far smaller than
+  the black hole of 0.09 M that the original reports at t = 10 M.
+- One more check before accepting that branch, written before its result. The finder
+  has only ever been seen to work on horizons of eight or more cells in radius. Run
+  `jeans/n1e4_v12d` repeats v12 from its dump at 6.28 M to 8.66 M with a restart dump
+  every 0.25 M. If the Misner-Sharp profile about a tracker shows 2m/R >= 1 at 8.3 to
+  8.6 M, a trapped surface exists on the mesh and the finder misses it: the test can
+  then go on at M/128 once the finder is made to find it. If 2m/R stays below one up
+  to the time the lapse turns negative, no horizon forms on this mesh.
