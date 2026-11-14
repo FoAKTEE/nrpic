@@ -740,3 +740,32 @@ within 1.4e-6 of -3 H(a), energy density at the probe within 4e-7 of matter plus
 Lambda / 8 pi, largest relative Hamiltonian constraint 1.7e-6, up to the end of the run.
 (The end is at a = 3.05; the "a = 5.5" I wrote was a wrong estimate of the conformal
 time, which does not affect the test.) The Lambda source is right.
+
+## E1, third step: static refinement around the overdensity (02:26)
+
+Code: the cosmology problem generator interpolates the initial data of the root mesh
+onto refined blocks (cubic); input `problems/cosmo/east_bh.athinput` (three levels
+around the overdensity, finest cell 0.0078, 1/512 of the wavelength,
+lapse driver, cloud level chosen by the local particle density). Two-step check on CPU
+at amplitude 1e-4: 176 blocks, particle sums conserved across levels, initial relative
+Hamiltonian constraint 4e-5 at most on the refined blocks (2e-11 on the uniform mesh):
+the root-level clouds are spread as constants over the fine cells while the metric is
+interpolated smoothly.
+Run `cosmo/east_d0.05_n64_bh1` (amplitude 0.05, data of the v2 run, 232 blocks, 4,393
+steps planned; no prediction was written beyond "see whether the end moves"). Outcome:
+it ends earlier, at t = 6.38 (a = 17.6; uniform mesh with the driver: 7.05). From t =
+6.06 the smallest lapse falls from 9.7 to 1.9 (a tenth of the largest) in 0.3 time
+units while the largest density rises twenty-fold; then the metric determinant turns
+non-positive in 32 cells of the finest level at the overdensity.
+Reading: on the fine mesh the collapse is followed to smaller scales and is faster; the
+lapse driver acts in time; what fails is the spatial metric itself. With zero shift the
+coordinate lines are dragged into the collapsing region and the conformal metric
+stretches without bound, the known reason for a shift driver around black holes. This
+is a hypothesis; its test is the next run.
+Written before `cosmo/east_d0.05_n64_bh2` (as bh1, plus a shift driver d_t beta^i = 0.75
+alpha^2 Gamma^i - 2 beta^i with advection, which leaves the homogeneous universe at zero
+shift; lapse advected with the shift; clouds no finer than the second level; particles
+removed where the lapse is below 0.3): if the stretching is the cause, the run passes
+t = 6.4 and the smallest lapse falls below 1; a shift of order 0.1 to 1 develops only
+within a few cells of the overdensity. If it ends at the same time with the same
+symptom, the cause is elsewhere (the under-resolved caustic or the deposit).
