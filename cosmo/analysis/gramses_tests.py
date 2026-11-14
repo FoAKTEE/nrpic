@@ -414,13 +414,13 @@ def stage_expect(args):
 
 
 def fig4_variants():
-    """(name, setting, sigma8 mode, growth function for "scaled")."""
-    return [("fd_lin_s8_N", "newtonian", "linear", None),
-            ("fd_lin_s8_C", "gramses", "linear", None),
-            ("fd_D1scaled_s8_C", "gramses", "scaled", None),
-            ("fd_mesz_s8_N", "newtonian", "scaled", meszaros_growth),
-            ("fd_mesz_s8_C", "gramses", "scaled", meszaros_growth),
-            ("fd_none_s8_C", "gramses", "none", None)]
+    """(name, setting, sigma8 mode, growth function of the sigma8 targets)."""
+    return [("fd_lin_s8_N", "newtonian", "linear", None),       # II:378 (corrected)
+            ("fd_lin_s8_C", "gramses", "linear", None),         # II:384, 388 (corrected)
+            ("fd_D1scaled_s8_C", "gramses", "scaled", None),    # II:384 skipped
+            ("fd_def_s8_N", "newtonian", "linear", meszaros_growth),   # model of "def"
+            ("fd_def_s8_C", "gramses", "linear", meszaros_growth),     # model of "def"
+            ("fd_none_s8_C", "gramses", "none", None)]          # no renormalisation
 
 
 def fig4_factor(k, setting, mode, gfn, z=49.0, dz=0.5):
@@ -430,7 +430,7 @@ def fig4_factor(k, setting, mode, gfn, z=49.0, dz=0.5):
     / (r_- - r_+), with c_FD = fd_factor(z, dz)."""
     a0 = a_of(z)
     t = gi.sigma8_targets(z, dz, P, setting, mode if mode != "none" else "linear", gfn)
-    r = t["r"]
+    r = gi.sigma8_targets(z, dz, P, setting, "linear")["r"]        # D_1 of the tables
     G = 0.0 if setting == "newtonian" else -3.0*gi.eta_T(k, a0, P)
     if mode == "none":
         cm = cp = 1.0
@@ -529,23 +529,27 @@ def fig_closed(k):
         if ("p", int(z)) in PAPER["fig1_f"]:
             ax3.semilogx(kF, PAPER["fig1_f"][("p", int(z))], "o", mfc="none", color=c, ms=5)
             ax3.semilogx(kF, PAPER["fig1_f"][("S", int(z))], "s", mfc="none", color=c, ms=4)
-            ax4.semilogx(kF, np.array(PAPER["fig1_f"][("p", int(z))])
-                         / gi.growth_rate_p(kF, a, P), "o-", mfc="none", color=c, ms=4,
-                         lw=1.0)
+            fpp = np.array(PAPER["fig1_f"][("p", int(z))])
+            use = fpp >= 0.03                    # read to +-0.0005: skip the k = 1e-4 point
+            ax4.semilogx(kF[use], fpp[use]/gi.growth_rate_p(kF[use], a, P), "o-",
+                         mfc="none", color=c, ms=4, lw=1.0)
             ax4.semilogx(kF, np.array(PAPER["fig1_f"][("S", int(z))])
                          / float(gi.growth_rate(a, P)), "s--", mfc="none", color=c, ms=3.5,
                          lw=1.0)
             ax4.axhline(float(meszaros_rate(a)), color=c, lw=1.0, ls=":")
     ax1.set_ylabel(r"$P_{\delta\delta}(k)$ [$(h^{-1}$Mpc$)^3$]")
     ax1.set_ylim(2e-3, 3e6)
-    ax1.plot([], [], color="grey", label=r"$\delta^p$ (CMC-MD), closed form")
-    ax1.plot([], [], color="grey", ls="--", label=r"$\delta^{\rm S}$ (synchronous)")
-    ax1.plot([], [], "o", mfc="none", color="grey", label="paper, CMC")
-    ax1.plot([], [], "s", mfc="none", color="grey", label="paper, S")
-    ax1.legend(loc="upper right", fontsize=8, ncol=2)
+    hz = ax1.get_legend_handles_labels()
+    leg = ax1.legend(hz[0], hz[1], loc="lower left", fontsize=8)
+    ax1.add_artist(leg)
+    st = [ax1.plot([], [], color="grey")[0], ax1.plot([], [], color="grey", ls="--")[0],
+          ax1.plot([], [], "o", mfc="none", color="grey")[0],
+          ax1.plot([], [], "s", mfc="none", color="grey")[0]]
+    ax1.legend(st, [r"$\delta^p$ (CMC-MD), closed form", r"$\delta^{\rm S}$ (synchronous)",
+                    "paper, CMC", "paper, S"], loc="upper right", fontsize=8)
     ax2.axhline(1.0, **fs.THIN)
     ax2.set_ylabel("paper / ours")
-    ax2.set_ylim(0.7, 1.45)
+    ax2.set_ylim(0.84, 1.12)
     ax2.set_xlabel(r"$k$ [$h$ Mpc$^{-1}$]", labelpad=-2)
     ax3.axhline(1.0, color="grey", ls=":", lw=1.0)
     ax3.set_ylim(-0.03, 1.12)
@@ -556,7 +560,7 @@ def fig_closed(k):
     ax3.legend(loc="center right", fontsize=8)
     ax4.axhline(1.0, **fs.THIN)
     ax4.set_ylabel("paper / ours")
-    ax4.set_ylim(0.94, 1.065)
+    ax4.set_ylim(0.935, 1.065)
     ax4.plot([], [], color="grey", ls=":", lw=1.0, label=r"M$\acute{\rm e}$sz$\acute{\rm a}$ros $f$")
     ax4.legend(loc="upper right", fontsize=8)
     ax4.set_xlabel(r"$k$ [$h$ Mpc$^{-1}$]", labelpad=-2)
@@ -568,6 +572,182 @@ def fig_closed(k):
     fs.save(fig, os.path.join(FIGDIR, "gramses_fig1_growth"))
     plt.close(fig)
     log("wrote", os.path.join(FIGDIR, "gramses_fig1_growth.png"))
+
+
+# ---------------------------------------------------------------------------------------
+# stage: ics (one box and redshift: Figs. 2, 3 and T0)
+# ---------------------------------------------------------------------------------------
+VEL_WEIGHTED = False     # Eulerian velocity: momentum deposit per mean density
+
+
+def main_dz(z):
+    """The Delta z of DZS closest to 1 % of z_ini (II:410)."""
+    return min(DZS, key=lambda d: abs(d/z - 0.01))
+
+
+def stage_ics(args):
+    n, L, z = args.n, args.L, args.z
+    a = a_of(z)
+    tag = f"L{L:g}_z{z:g}_n{n}"
+    arr, st = {}, {"n": n, "L": L, "z": z, "seed": SEED, "k_Ny": np.pi*n/L,
+                   "shape": SHAPE, "mesh": MESH_FACTOR*n, "vel_weighted": VEL_WEIGHTED}
+    dzm = main_dz(z)
+    st["dz_main"] = dzm
+
+    # Newtonian setting, two-step velocities (the "default 2LPTic" reference)
+    icN = gi.make_ic(n, L, z, "newtonian", "two-step", seed=SEED)
+    dS = icN["mesh"]["delta"]
+    k, p, nm = lagrangian_power(dS, L, n)
+    arr.update(k=k, nmodes=nm, P_dS_mesh=p)
+    thN = divergence(icN["mesh"]["u"], L)
+    arr["Pth_2s_L"] = lagrangian_power(thN, L, n)[1]
+    xS, u2s = icN["x"], icN["u"]
+    chi = np.stack([c.ravel() for c in icN["mesh"]["chi"]], 1)
+    st["rms_chi_over_spacing"] = float(np.sqrt((chi**2).sum(1).mean())/(L/n))
+    st["rms_delta_S_mesh"] = float(dS.std())
+    st["u2s_rms_kms"] = float(np.sqrt((u2s**2).sum(1).mean()))
+    del icN, chi
+    log(tag, "newtonian two-step done")
+
+    # Newtonian setting, finite-difference velocities, double and single precision
+    keepFD = None
+    for dz in DZS:
+        c = fd_factor(z, dz)
+        for prec, dt in (("64", np.float64), ("32", np.float32)):
+            ic = gi.make_ic(n, L, z, "newtonian", "fd", dz=dz, seed=SEED, fd_dtype=dt)
+            th = divergence(ic["mesh"]["u"], L)
+            arr[f"Pth_fdN{prec}_dz{dz:g}_L"] = lagrangian_power(th, L, n)[1]
+            st[f"fdN{prec}_dz{dz:g}"] = {
+                "max|u_FD - c u_2s|/max|u_2s|": float(np.abs(ic["u"] - c*u2s).max()
+                                                       / np.abs(u2s).max()),
+                "rms|u_FD/(c u_2s) - 1|": float(np.sqrt(np.mean(
+                    ((ic["u"] - c*u2s)**2).sum(1))/np.mean((c*u2s)**2*3))),
+                "c": c, "c_minus": ic["meta"]["c_minus"], "c_plus": ic["meta"]["c_plus"],
+                "sigma8": ic["meta"]["sigma8_targets"]["sigma8"]}
+            if dz == dzm and prec == "64":
+                keepFD = ic["u"]
+                st["positions_FD_equal_two_step"] = bool(np.array_equal(ic["x"], xS))
+            del ic
+        log(tag, f"newtonian fd dz={dz:g} done")
+
+    # GRAMSES setting: finite difference (u^i_C) and the lower-index velocity
+    keepC = None
+    for dz in DZS:
+        ic = gi.make_ic(n, L, z, "gramses", "fd", dz=dz, seed=SEED, lower=True)
+        th = divergence(ic["mesh"]["u"], L)
+        arr[f"Pth_fdC_dz{dz:g}_L"] = lagrangian_power(th, L, n)[1]
+        thl = divergence(ic["mesh"]["u_lower"], L)
+        arr[f"Pth_lowC_dz{dz:g}_L"] = lagrangian_power(thl, L, n)[1]
+        c = fd_factor(z, dz)
+        st[f"fdC_dz{dz:g}"] = {
+            "max|u_C - c u_2s|/max|u_2s|": float(np.abs(ic["u"] - c*u2s).max()
+                                                  / np.abs(u2s).max()),
+            "c_minus": ic["meta"]["c_minus"], "c_ini": ic["meta"]["c_ini"],
+            "c_plus": ic["meta"]["c_plus"], "sigma8": ic["meta"]["sigma8_targets"]}
+        if dz == dzm:
+            keepC = (ic["x"], ic["u"], ic["u_lower"])
+            dp = ic["mesh"]["delta"]
+            arr["P_dp_mesh"] = lagrangian_power(dp, L, n)[1]
+            arr["ratio_pS_realised"] = arr["P_dp_mesh"]/arr["P_dS_mesh"]
+            # realised expectation of the lower/N ratio and of the FD lower spectrum
+            arr["lowerN_realised"] = realised_average(
+                thN, L, lambda kk: gi.theta_lower_T(kk, a, P)**2)
+            tor = cid.Torus(n, L)
+            Fd, FS = tor.fft(dp), tor.fft(dS)
+            good = np.abs(FS) > 1e-10*np.abs(FS).max()
+            kk = np.sqrt(tor.k2)[good]
+            st["max|dp_k/dS_k - closed form|"] = float(np.abs(
+                (Fd[good]/FS[good]).real/gi.deltap_T(kk, a, P) - 1).max())
+            Ul = sum(1j*tor.kd[i]*tor.fft(ic["mesh"]["u_lower"][i]) for i in range(3))
+            Uu = sum(1j*tor.kd[i]*tor.fft(ic["mesh"]["u"][i]) for i in range(3))
+            g2 = np.abs(Uu) > 1e-10*np.abs(Uu).max()
+            st["max|theta_lower/theta - k^2/(k^2+m^2)|"] = float(np.abs(
+                (Ul[g2]/Uu[g2]).real - gi.theta_lower_T(np.sqrt(tor.k2)[g2], a, P)).max())
+            del Fd, FS, Ul, Uu
+        del ic
+        log(tag, f"gramses fd dz={dz:g} done")
+
+    # GRAMSES setting: two-step (paper II:333) and naive H f chi_p, Lagrangian only
+    ic = gi.make_ic(n, L, z, "gramses", "two-step", seed=SEED)
+    st["two_step_C_equals_N"] = float(np.abs(ic["u"] - u2s).max()/np.abs(u2s).max())
+    arr["Pth_2sC_L"] = lagrangian_power(divergence(ic["mesh"]["u"], L), L, n)[1]
+    del ic
+    ic = gi.make_ic(n, L, z, "gramses", "naive", seed=SEED)
+    arr["Pth_naiveC_L"] = lagrangian_power(divergence(ic["mesh"]["u"], L), L, n)[1]
+    del ic
+
+    # linear theory, ensemble mode averages and sample variance
+    for name, fn in (("S", lambda kk: gi.power_S(kk, z, P)),
+                     ("p", lambda kk: gi.power_gauge(kk, z, P, "p")),
+                     ("thN", lambda kk: gi.theta_power_N(kk, z, P)),
+                     ("thL", lambda kk: gi.theta_power_lower(kk, z, P))):
+        _, pb, sb, _ = rf.expected_power(n, L, fn, edges(n, L))
+        arr[f"lin_{name}"], arr[f"sig_{name}"] = pb, sb
+    # predicted linear response of the Eulerian estimator (realised weights)
+    arr["resp_dens"], _ = deposit_response(n, L, DEGREE, MESH_FACTOR, field=dS)
+    arr["resp_vel"] = deposit_response(n, L, DEGREE, MESH_FACTOR, field=thN)[1]
+    del thN
+    log(tag, "lagrangian part done")
+
+    # Eulerian deposits (PCS on a mesh of 2n)
+    xp, uC, ulow = keepC
+    dE, rhoS = eulerian_density(xS, n, L)
+    arr["P_dS_E"] = measure_eulerian(dE, L, n)[1]
+    del dE
+    log(tag, "deposit S")
+    for name, uu in (("2s", u2s), ("fdN", keepFD)):
+        v = eulerian_velocity(xS, uu, n, L, rhoS, weighted=VEL_WEIGHTED)
+        arr[f"Pth_{name}_E"] = measure_eulerian(divergence(v, L), L, n)[1]
+        del v
+        log(tag, f"deposit velocity {name}")
+    del rhoS
+    dE, rhoC = eulerian_density(xp, n, L)
+    arr["P_dp_E"] = measure_eulerian(dE, L, n)[1]
+    del dE
+    v = eulerian_velocity(xp, ulow, n, L, rhoC, weighted=VEL_WEIGHTED)
+    arr["Pth_lowC_E"] = measure_eulerian(divergence(v, L), L, n)[1]
+    del v, rhoC
+    log(tag, "deposits done")
+    np.savez(os.path.join(WORK, f"ics_{tag}.npz"), **arr)
+    jdump(st, os.path.join(WORK, f"ics_{tag}.json"))
+    log(tag, "saved")
+
+
+# ---------------------------------------------------------------------------------------
+# stage: fig4 (sigma8 variants, 4 Gpc/h, z = 49, dz = 0.5)
+# ---------------------------------------------------------------------------------------
+def stage_fig4(args):
+    n, L, z, dz = args.n, 4000.0, 49.0, 0.5
+    a = a_of(z)
+    ref = gi.make_ic(n, L, z, "newtonian", "two-step", seed=SEED)
+    th0 = divergence(ref["mesh"]["u"], L)
+    k, p0, nm = lagrangian_power(th0, L, n)
+    _, pd0, _ = lagrangian_power(ref["mesh"]["delta"], L, n)
+    arr = {"k": k, "Pth_ref": p0, "Pdd_ref": pd0}
+    st = {}
+    for name, setting, mode, gfn in fig4_variants():
+        ic = gi.make_ic(n, L, z, setting, "fd", dz=dz, sigma8=mode, growth_fn=gfn, seed=SEED)
+        th = divergence(ic["mesh"]["u"], L)
+        arr[f"Pth_{name}"] = lagrangian_power(th, L, n)[1]
+        arr[f"Pdd_{name}"] = lagrangian_power(ic["mesh"]["delta"], L, n)[1]
+        arr[f"pred_{name}"] = realised_average(
+            th0, L, lambda kk, s=setting, m=mode, g=gfn: fig4_factor(kk, s, m, g, z, dz)**2) - 1
+        st[name] = {"c_minus": ic["meta"]["c_minus"], "c_ini": ic["meta"]["c_ini"],
+                    "c_plus": ic["meta"]["c_plus"],
+                    "sigma8": ic["meta"].get("sigma8_targets", {}).get("sigma8"),
+                    "positions_equal_ref": bool(np.array_equal(ic["x"], ref["x"]))}
+        del ic, th
+        log("fig4", name)
+    # back-scaling (2LPTic "inc D_1"): the z = 0 spectrum scaled back with D_1
+    D = lambda zz: float(gi.growth(a_of(zz), P))                     # noqa: E731
+    pk_b = lambda kk: sp.linear_power(kk, 0.0, P)*(D(z)/D(0.0))**2   # noqa: E731
+    db = rf.gaussian_field(n, L, pk_b, SEED, zero_nyquist=True)
+    st["backscaled_max|delta_b - delta|/max|delta|"] = float(
+        np.abs(db - ref["mesh"]["delta"]).max()/np.abs(ref["mesh"]["delta"]).max())
+    arr["Pdd_backscaled"] = lagrangian_power(db, L, n)[1]
+    np.savez(os.path.join(WORK, f"fig4_n{n}.npz"), **arr)
+    jdump(st, os.path.join(WORK, f"fig4_n{n}.json"))
+    log("fig4 saved")
 
 
 # ---------------------------------------------------------------------------------------

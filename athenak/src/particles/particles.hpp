@@ -188,6 +188,8 @@ class Particles {
   int nfield_times = 0;          // times at which the energy density is dumped
   Real field_times[16];
   int field_next = 0;
+  std::vector<double> ts_restart;      // source densities read from a restart file
+  std::int64_t ts_restart_dims[5] = {0, 0, 0, 0, 0};
   // statistics of the last step
   int  push_maxit = 0, push_unconverged = 0;
   Real sum_m = 0.0, sum_mw = 0.0, sum_mu[3] = {0.0, 0.0, 0.0};

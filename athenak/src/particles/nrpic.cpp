@@ -22,6 +22,7 @@
 
 #include <algorithm>
 #include <cmath>
+#include <cstring>
 #include <iostream>
 #include <limits>
 #include <string>
@@ -1043,6 +1044,21 @@ void Particles::NrpicStepSources() {
     tp(m,n,k,j,i) = d;
   });
   tm_prev_valid = true;
+  // After a restart the densities for the coming step are those of the dump (they were
+  // extrapolated from two deposits; one deposit cannot rebuild them).
+  if (!ts_restart.empty()) {
+    bool same = true;
+    for (int d=0; d<5; ++d) {
+      same = same && (ts_restart_dims[d] == static_cast<std::int64_t>(ts.extent(d)));
+    }
+    if (same) {
+      auto tsh = Kokkos::create_mirror_view(Kokkos::HostSpace(), ts);
+      std::memcpy(tsh.data(), ts_restart.data(), ts_restart.size()*sizeof(double));
+      Kokkos::deep_copy(ts, tsh);
+    }
+    ts_restart.clear();
+    ts_restart.shrink_to_fit();
+  }
 }
 
 //----------------------------------------------------------------------------------------

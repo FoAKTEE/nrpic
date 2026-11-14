@@ -280,22 +280,25 @@ def sigma8_targets(z_ini, dz, params, setting, mode="linear", growth_fn=None):
     """sigma8 values to which the spectra at (z_ini - dz, z_ini, z_ini + dz) are
     renormalised, as 2LPTic needs them (notes:267-275).
 
-    mode "linear": the corrections of the paper, with r = D_1(z)/D_1(z_ini):
+    mode "linear": the corrections of the paper, with r = g(z)/g(z_ini) and g = D_1
+    (growth_fn None):
         newtonian  sigma8^S(z) = r sigma8^S(z_ini)                         (II:378)
         gramses    sigma8^p(z) = sqrt(r^2 [sigma8^S]^2 + 9 [sigma8^eta]^2
                                       - 6 r [sigma8^{S eta}]^2)            (II:384)
                    [sigma8^{S eta}]^2 = ([sigma8^S]^2 - [sigma8^p]^2
                                           + 9 [sigma8^eta]^2) / 6          (II:388)
-        all at z_ini; sigma8 of P_SS, P_pp and P_etaeta from sigma8_of.
+        all at z_ini; sigma8 of P_SS, P_pp and P_etaeta from sigma8_of. With a growth_fn g
+        that is not D_1 the same formulas give the sigma8 a Boltzmann code with that growth
+        of delta^S (and eta constant) would report at z_+- (a model of the paper's "def
+        sigma8" curves of Fig. 4, notes:275, 496-497).
     mode "scaled": sigma8(z) = sigma8(z_ini) g(z)/g(z_ini) for the setting's own spectrum,
-        with g = growth_fn(a) (default D_1). For "newtonian" and g = D_1 this equals
-        "linear"; for "gramses" it skips II:384 (delta^p does not grow like D_1); with a
-        g that is not D_1 it models sigma8 values from a code whose growth differs (the
-        "def sigma8" curves of the paper's Fig. 4, notes:275, 496-497).
+        g = growth_fn or D_1. For "newtonian" this equals "linear"; for "gramses" it skips
+        II:384 (delta^p does not grow like delta^S).
     Returns {"z": [z-, z_ini, z+], "sigma8": [...], plus the ingredients}."""
     zs = [z_ini - dz, z_ini, z_ini + dz]
     a0 = float(a_of_z(z_ini))
-    r = [float(growth(a_of_z(z), params)/growth(a0, params)) for z in zs]
+    g = growth_fn if growth_fn is not None else (lambda aa: growth(aa, params))
+    r = [float(g(a_of_z(z))/g(a0)) for z in zs]
     sS = sigma8_of(lambda k: power_S(k, z_ini, params))
     out = {"z": zs, "r": r, "sigma8_S_ini": sS}
     if setting == "newtonian":
@@ -304,19 +307,16 @@ def sigma8_targets(z_ini, dz, params, setting, mode="linear", growth_fn=None):
         s0 = sigma8_of(lambda k: power_gauge(k, z_ini, params, "p"))
         se = sigma8_of(lambda k: power_gauge(k, z_ini, params, "eta"))
         cross2 = (sS**2 - s0**2 + 9.0*se**2)/6.0                       # II:388
+        sx = sigma8_of(lambda k: power_gauge(k, z_ini, params, "S-eta"))
         out.update(sigma8_p_ini=s0, sigma8_eta_ini=se, sigma8_Seta2_ini=cross2,
-                   sigma8_Seta2_direct=sigma8_of(
-                       lambda k: power_gauge(k, z_ini, params, "S-eta"))**2
-                   * np.sign(sigma8_of(lambda k: power_gauge(k, z_ini, params, "S-eta"))))
+                   sigma8_Seta2_direct=float(np.sign(sx)*sx*sx))
     if mode == "linear":
         if setting == "newtonian":
             vals = [ri*sS for ri in r]                                  # II:378
         else:
             vals = [float(np.sqrt(ri*ri*sS**2 + 9.0*se**2 - 6.0*ri*cross2)) for ri in r]
     elif mode == "scaled":
-        g = growth_fn if growth_fn is not None else (lambda a: growth(a, params))
-        g0 = float(g(a0))
-        vals = [s0*float(g(a_of_z(z)))/g0 for z in zs]
+        vals = [s0*ri for ri in r]
     else:
         raise ValueError(f"unknown sigma8 mode {mode!r}")
     out["sigma8"] = vals

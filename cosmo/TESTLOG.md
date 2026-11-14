@@ -843,3 +843,19 @@ stay level to the end.
 Against paper 2 at 32 cells: mean relative momentum constraint 5.7e-3, 1.8e-3, 1.5e-3
 at z = 100, 10, 1 (paper 2: 1.8e-2, 1.3e-2, 9.1e-3); mean relative Hamiltonian
 constraint 6e-6 to 1e-4 (paper 2: 3e-7 to 3.5e-6, with a five times smaller step).
+
+## Restart of periodic runs (02:51)
+
+Needed for runs longer than the one-hour job limit. Test on CPU (`cosmo/restart_test`,
+amplitude 1e-4, 32 cells): one run of 16 steps with restart dumps, one run restarted from
+the dump at step 8, compared at step 16.
+First result: the sums over particles and over the mesh agreed to 1e-12, but the lapse
+and the density at the probes differed by 2e-8 and 5e-8 and the proper time of the
+probes by 2e-6. Two pieces of state were not in the dump: the lapse of the previous step
+at each probe (the proper time is integrated at third order with it) and the source
+densities handed to the spacetime solver for the coming step, which are extrapolated
+from the last two deposits and cannot be rebuilt from the particles at one time.
+With both written (particle restart format 04; 02 and 03 are still read): every
+compared quantity (probe lapse, density and proper time at both probes, particle and
+mesh sums, proper volume, mean K, constraint statistics) is identical to the last
+digit. Field dumps written before a restart are not repeated after it.
