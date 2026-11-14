@@ -211,6 +211,11 @@ if __name__ == "__main__":
     ap.add_argument("--ratios", default="1,0.9,1.1",
                     help="amplitudes of the three directions over delta (1,0,0: plane wave)")
     ap.add_argument("--displacement", default="newtonian", choices=("newtonian", "number"))
+    ap.add_argument("--dep-comp-c", type=float, default=0.0,
+                    help="compensation of the cloud on the deposited density "
+                         "(deposit_comp_c of the code)")
+    ap.add_argument("--dep-comp-c2", type=float, default=0.0,
+                    help="fourth-order term of that pass (deposit_comp_c2)")
     ap.add_argument("--shape", default="cic", choices=("cic", "tsc", "pcs"),
                     help="cloud shape of the deposit of the run (<particles> deposit_shape)")
     ap.add_argument("--rays", default="",
@@ -223,6 +228,8 @@ if __name__ == "__main__":
     ap.add_argument("--out", required=True)
     a = ap.parse_args()
     cid.SHAPE = a.shape
+    cid.DEP_COMP_C = a.dep_comp_c
+    cid.DEP_COMP_C2 = a.dep_comp_c2
     x, u, m, r, K, alpha, info, fid = build(a.delta, a.n, a.ppc, a.L, a.H0,
                                             ratios=tuple(float(v) for v in
                                                          a.ratios.split(",")),

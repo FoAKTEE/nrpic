@@ -1611,3 +1611,16 @@ before. Conservation on the mesh: momentum 7e-5 (to z = 3), 1.7e-4 at the end; e
 edge (0.43). Constraints as with the three-point pass and Catmull-Rom (Hamiltonian
 1.5e-6 at z = 10, 1.2e-4 at z = 1): as predicted, the second-order terms are
 under-resolved at ten cells per cut-off wave and nothing else matters there.
+
+## C2: the collapse run in the production configuration, written before the runs (06:49)
+
+Amplitude 0.01, 64 cells, one particle per cell, both codes with the cubic cloud and
+the compensation to fourth order, no filter; relativistic run with the spline and the
+step limit, damping as in the earlier collapse runs (constant coefficient 0.02; the
+box is four Hubble radii and the Courant step 1.6 percent of the expansion time, so
+neither the step limit nor the form of the damping matters here). `cosmo/east_d0.01_n64_pcs4b` and
+`cosmo/newton_d0.01_n64_pcs4`. Prediction: delay of the relativistic infall 4.4 to
+4.9 percent for the innermost and 5.2 to 5.6 percent for the outermost observers
+(4.61 and 5.25 with the quadratic cloud, the filter and Catmull-Rom); mean relative
+constraints before the collapse (a = 2 to 10) at least three times below the quadratic
+filtered run (4.7e-6 to 6.4e-5).

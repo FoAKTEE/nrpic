@@ -55,8 +55,11 @@ class PM:
     def fields(self):
         """Density contrast, potential and force at the particles for the current x."""
         tor = self.tor
-        rho = cid.binomial(cid.cic_deposit(self.x, self.m, self.n, self.L, self.shape),
-                           self.nfilter, self.compensate)
+        rho = cid.cic_deposit(self.x, self.m, self.n, self.L, self.shape)
+        if cid.DEP_COMP_C > 0.0:
+            # compensation of the cloud as in the relativistic code (deposit_comp_c, _c2)
+            rho = cid.compensate_density([rho], cid.DEP_COMP_C, 0.0, cid.DEP_COMP_C2)[0]
+        rho = cid.binomial(rho, self.nfilter, self.compensate)
         self.delta = rho/self.mean - 1.0
         k2 = tor.k2.copy()
         k2[0, 0, 0] = 1.0

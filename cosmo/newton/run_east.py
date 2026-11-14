@@ -24,6 +24,9 @@ ap.add_argument("--no-compensate", action="store_true")
 ap.add_argument("--cfl", type=float, default=0.25)
 ap.add_argument("--every", type=int, default=2)
 ap.add_argument("--shape", default="cic", choices=("cic", "tsc", "pcs"))
+ap.add_argument("--dep-comp-c", type=float, default=0.0,
+                help="compensation of the cloud on the deposited density (as the code)")
+ap.add_argument("--dep-comp-c2", type=float, default=0.0)
 ap.add_argument("--rays-from", default="",
                 help="directory of the relativistic run: light-ray bundles are emitted "
                      "at the proper times of its emitters (writes DIR/newton_rays.npz)")
