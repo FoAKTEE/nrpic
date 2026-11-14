@@ -80,6 +80,8 @@ struct NrpicOptions {
                         // converted with the volume element of each of its stages
   bool source_extrap;   // ... extrapolated to the middle of the step from the last two
                         // deposits, D = 3/2 D^n - 1/2 D^(n-1)
+  int deposit_shape;    // degree of the B-spline cloud of the deposit: 1 (cloud in
+                        // cell), 2 (triangular shaped cloud), 3 (piecewise cubic)
   Real curv_dt;         // time between curvature diagnostics (<= 0 = off)
   bool curv_slice;      // also write the cut through the plane y = curv_plane_y
   Real curv_plane_y;

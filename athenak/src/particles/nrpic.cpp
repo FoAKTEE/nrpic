@@ -137,6 +137,23 @@ void Particles::NrpicInit(ParameterInput *pin) {
   nropt.lambda     = pin->GetOrAddReal("particles", "lambda", 0.0);
   nropt.source_density = pin->GetOrAddBoolean("particles", "source_density", false);
   nropt.source_extrap  = pin->GetOrAddBoolean("particles", "source_extrap", false);
+  {
+    // shape of the particle cloud in the deposit, a B-spline of degree one, two or
+    // three: cic (two cells per direction), tsc (three), pcs (four)
+    const std::string shp = pin->GetOrAddString("particles", "deposit_shape", "cic");
+    if (shp.compare("cic") == 0) {
+      nropt.deposit_shape = 1;
+    } else if (shp.compare("tsc") == 0) {
+      nropt.deposit_shape = 2;
+    } else if (shp.compare("pcs") == 0) {
+      nropt.deposit_shape = 3;
+    } else {
+      std::cout << "### FATAL ERROR in " << __FILE__ << " at line " << __LINE__
+                << std::endl << "<particles> deposit_shape = '" << shp
+                << "' not recognized (cic, tsc or pcs)" << std::endl;
+      std::exit(EXIT_FAILURE);
+    }
+  }
   // periodic directions of the mesh: particles and their clouds wrap around
   nropt.periodic[0] = (pm->mesh_bcs[BoundaryFace::inner_x1] == BoundaryFlag::periodic);
   nropt.periodic[1] = (pm->mesh_bcs[BoundaryFace::inner_x2] == BoundaryFlag::periodic);
@@ -593,6 +610,7 @@ void Particles::NrpicDepositSources() {
   const Real dmin[3] = {nropt.dom_min[0], nropt.dom_min[1], nropt.dom_min[2]};
   const Real dlen[3] = {nropt.dom_len[0], nropt.dom_len[1], nropt.dom_len[2]};
   const bool per[3] = {nropt.periodic[0], nropt.periodic[1], nropt.periodic[2]};
+  const int nb = nropt.deposit_shape + 1;              // cells per direction of a cloud
 
   nrpic::MeshMetric proto;
   proto.m1 = met1;
@@ -682,15 +700,15 @@ void Particles::NrpicDepositSources() {
         Real xb0[3];
         for (int d=0; d<3; ++d) {
           Real xi = (xp[d] - gmin[d])/h[d] - 0.5;
-          xb0[d] = gmin[d] + (floor(xi) + 0.5)*h[d];
+          Real fl = (nb == 3) ? floor(xi + 0.5) - 1.0
+                              : ((nb == 4) ? floor(xi) - 1.0 : floor(xi));
+          xb0[d] = gmin[d] + (fl + 0.5)*h[d];
         }
-        for (int c=0; c<8; ++c) {
-          Real xf = nrpic::WrapCoord(xb0[0] + ((c & 1) ? h[0] : 0.0),
-                                     dmin[0], dlen[0], per[0]);
-          Real yf = nrpic::WrapCoord(xb0[1] + ((c & 2) ? h[1] : 0.0),
-                                     dmin[1], dlen[1], per[1]);
-          Real zf = nrpic::WrapCoord(xb0[2] + ((c & 4) ? h[2] : 0.0),
-                                     dmin[2], dlen[2], per[2]);
+        for (int c=0; c<nb*nb*nb; ++c) {
+          const int c1 = c % nb, c2 = (c/nb) % nb, c3 = c/(nb*nb);
+          Real xf = nrpic::WrapCoord(xb0[0] + c1*h[0], dmin[0], dlen[0], per[0]);
+          Real yf = nrpic::WrapCoord(xb0[1] + c2*h[1], dmin[1], dlen[1], per[1]);
+          Real zf = nrpic::WrapCoord(xb0[2] + c3*h[2], dmin[2], dlen[2], per[2]);
           int mb = nrpic::FindBlock(sz, nmb, mo, xf, yf, zf);
           if (mb >= 0) { lmax = (lev(mb) > lmax) ? lev(mb) : lmax; }
         }
@@ -701,24 +719,45 @@ void Particles::NrpicDepositSources() {
         }
         ldep = lmax;
       }
-      // (2) cloud-in-cell weights on the lattice of the deposition level
-      Real xb[3], s[3];
+      // (2) weights of the cloud on the lattice of the deposition level: B-splines of
+      //     degree one (cloud in cell, two cells per direction), two (triangular shaped
+      //     cloud, three cells) or three (piecewise cubic, four cells)
+      Real xb[3], wt[3][4];
       for (int d=0; d<3; ++d) {
         Real xi = (xp[d] - gmin[d])/h[d] - 0.5;
-        Real fl = floor(xi);
-        s[d] = xi - fl;
-        xb[d] = gmin[d] + (fl + 0.5)*h[d];
+        if (nb == 3) {
+          Real fl = floor(xi + 0.5);
+          Real dd = xi - fl;
+          wt[d][0] = 0.5*SQR(0.5 - dd);
+          wt[d][1] = 0.75 - dd*dd;
+          wt[d][2] = 0.5*SQR(0.5 + dd);
+          wt[d][3] = 0.0;
+          xb[d] = gmin[d] + (fl - 0.5)*h[d];
+        } else if (nb == 4) {
+          Real fl = floor(xi);
+          Real sd = xi - fl;
+          wt[d][0] = (1.0 - sd)*(1.0 - sd)*(1.0 - sd)/6.0;
+          wt[d][1] = (3.0*sd*sd*sd - 6.0*sd*sd + 4.0)/6.0;
+          wt[d][2] = (-3.0*sd*sd*sd + 3.0*sd*sd + 3.0*sd + 1.0)/6.0;
+          wt[d][3] = sd*sd*sd/6.0;
+          xb[d] = gmin[d] + (fl - 0.5)*h[d];
+        } else {
+          Real fl = floor(xi);
+          Real sd = xi - fl;
+          wt[d][0] = 1.0 - sd;
+          wt[d][1] = sd;
+          wt[d][2] = 0.0;
+          wt[d][3] = 0.0;
+          xb[d] = gmin[d] + (fl + 0.5)*h[d];
+        }
       }
-      for (int c=0; c<8; ++c) {
+      for (int c=0; c<nb*nb*nb; ++c) {
+        const int c1 = c % nb, c2 = (c/nb) % nb, c3 = c/(nb*nb);
         // centre of the lattice cell, wrapped into the mesh in periodic directions
-        const Real xf = nrpic::WrapCoord(xb[0] + ((c & 1) ? h[0] : 0.0),
-                                         dmin[0], dlen[0], per[0]);
-        const Real yf = nrpic::WrapCoord(xb[1] + ((c & 2) ? h[1] : 0.0),
-                                         dmin[1], dlen[1], per[1]);
-        const Real zf = nrpic::WrapCoord(xb[2] + ((c & 4) ? h[2] : 0.0),
-                                         dmin[2], dlen[2], per[2]);
-        const Real w = ((c & 1) ? s[0] : 1.0 - s[0])*((c & 2) ? s[1] : 1.0 - s[1])
-                      *((c & 4) ? s[2] : 1.0 - s[2]);
+        const Real xf = nrpic::WrapCoord(xb[0] + c1*h[0], dmin[0], dlen[0], per[0]);
+        const Real yf = nrpic::WrapCoord(xb[1] + c2*h[1], dmin[1], dlen[1], per[1]);
+        const Real zf = nrpic::WrapCoord(xb[2] + c3*h[2], dmin[2], dlen[2], per[2]);
+        const Real w = wt[0][c1]*wt[1][c2]*wt[2][c3];
         // (3) leaf cells covered by this (real or virtual) lattice cell.  A lattice
         //     cell lies inside a single MeshBlock.
         const int mb = nrpic::FindBlock(sz, nmb, mo, xf, yf, zf);

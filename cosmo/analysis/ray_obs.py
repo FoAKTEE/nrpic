@@ -116,6 +116,31 @@ def bundle_observables(t, x, kcov, g, E, S, c_emit, g_emit, E_emit, S_emit, eps,
             "solid_angle": omega_solid, "x": x[sl, 0]}
 
 
+def emission_proper_times(rundir, base="east"):
+    """(bundle, kind, t_emit, tau_emit) of every bundle of a relativistic run: the proper
+    time of the emitter (probe 0 at the overdensity for kind 0, probe 1 for kind 1) at
+    the emission, from the lapse history of the probe."""
+    import sys
+    here = os.path.dirname(os.path.abspath(__file__))
+    sys.path.insert(0, os.path.join(os.path.dirname(here), "ic"))
+    from nrp_io import read_history
+    from scipy.integrate import cumulative_simpson
+    meta = np.load(os.path.join(rundir, "rays.npz"))
+    h = read_history(os.path.join(rundir, base + ".nrpic.hst"))
+    ok = np.isfinite(h["alpha_probe"]) & np.isfinite(h["alpha_probe1"])
+    n = len(ok) if ok.all() else int(np.argmin(ok))
+    t = h["time"][:n]
+    tau = [cumulative_simpson(h[k][:n], x=t, initial=0.0)
+           for k in ("alpha_probe", "alpha_probe1")]
+    out = []
+    for b in np.unique(meta["bundle"]):
+        i = np.flatnonzero(meta["bundle"] == b)[0]
+        te, kind = float(meta["t_emit"][i]), int(meta["kind"][i])
+        if te <= t[-1]:
+            out.append((int(b), kind, te, float(np.interp(te, t, tau[kind]))))
+    return out
+
+
 def gr_bundles(rundir, base="east", L=4.0, H0=1.0):
     """All bundles of a relativistic run. The proper time of each emitter is taken from
     the probe histories (probe 0 at the overdensity for kind 0, probe 1 for kind 1)."""

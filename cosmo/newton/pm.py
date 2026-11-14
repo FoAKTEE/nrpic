@@ -9,7 +9,7 @@ momenta p = a dx/dtau:
 
 so dp/dtau = -(3/2) H0^2 grad lap^-1 delta_N has no explicit time dependence. Kick-drift-
 kick leapfrog with the drift integral of 1/a taken exactly. The mass is deposited with
-the cloud-in-cell shape on the mesh of the relativistic run and passed through the same
+the cloud shape of the relativistic run on its mesh and passed through the same
 binomial filter, the Poisson equation is solved with Fourier transforms, and the force
 is interpolated to the particles with cubic splines.
 
@@ -38,12 +38,12 @@ def drift_integral(tau1, tau2, H0=1.0):
 
 
 class PM:
-    def __init__(self, x, p, m, n, L, H0=1.0, nfilter=0, compensate=False):
+    def __init__(self, x, p, m, n, L, H0=1.0, nfilter=0, compensate=False, shape="cic"):
         self.x = np.array(x, dtype=float)
         self.p = np.array(p, dtype=float)
         self.m = np.array(m, dtype=float)
         self.n, self.L, self.H0 = n, L, H0
-        self.nfilter, self.compensate = nfilter, compensate
+        self.nfilter, self.compensate, self.shape = nfilter, compensate, shape
         self.tor = cid.Torus(n, L)
         self.mean = self.m.sum()/L**3
         self.tau = 0.0
@@ -55,8 +55,8 @@ class PM:
     def fields(self):
         """Density contrast, potential and force at the particles for the current x."""
         tor = self.tor
-        rho = cid.binomial(cid.cic_deposit(self.x, self.m, self.n, self.L), self.nfilter,
-                           self.compensate)
+        rho = cid.binomial(cid.cic_deposit(self.x, self.m, self.n, self.L, self.shape),
+                           self.nfilter, self.compensate)
         self.delta = rho/self.mean - 1.0
         k2 = tor.k2.copy()
         k2[0, 0, 0] = 1.0

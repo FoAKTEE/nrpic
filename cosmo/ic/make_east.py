@@ -191,6 +191,8 @@ if __name__ == "__main__":
     ap.add_argument("--no-stagger", action="store_true",
                     help="keep particles at cell centres for odd ppc (shows the cusp)")
     ap.add_argument("--displacement", default="newtonian", choices=("newtonian", "number"))
+    ap.add_argument("--shape", default="cic", choices=("cic", "tsc", "pcs"),
+                    help="cloud shape of the deposit of the run (<particles> deposit_shape)")
     ap.add_argument("--rays", default="",
                     help="comma-separated scale factors of the homogeneous solution at "
                          "which light rays leave the two extrema")
@@ -200,6 +202,7 @@ if __name__ == "__main__":
     ap.add_argument("--ray-eps", type=float, default=1e-4)
     ap.add_argument("--out", required=True)
     a = ap.parse_args()
+    cid.SHAPE = a.shape
     x, u, m, r, K, alpha, info, fid = build(a.delta, a.n, a.ppc, a.L, a.H0,
                                             nfilter=a.nfilter,
                                             compensate=a.compensate,
@@ -207,6 +210,7 @@ if __name__ == "__main__":
                                             stagger=(False if a.no_stagger else None),
                                             displacement=a.displacement)
     os.makedirs(a.out, exist_ok=True)
+    info["shape"] = a.shape
     if a.rays:
         # the rays follow the fiducial observers in the file, so that the code records
         # both (tags below traj_ntrack = n_fiducial + n_rays)

@@ -25,23 +25,40 @@ from scipy import ndimage
 # ---------------------------------------------------------------------------------------
 # particle-mesh operations of the code
 # ---------------------------------------------------------------------------------------
-def cic_deposit(x, w, n, L):
-    """Sum of weights w spread with the cloud-in-cell shape, per coordinate volume."""
+SHAPE = "cic"    # cloud shape of the deposit, as <particles> deposit_shape of the code
+
+
+def cic_deposit(x, w, n, L, shape=None):
+    """Sum of weights w spread with the cloud shape of the code, per coordinate volume:
+    a B-spline of degree one ("cic", two cells per direction), two ("tsc", three cells)
+    or three ("pcs", four cells). The default is the module variable SHAPE."""
+    shape = SHAPE if shape is None else shape
     h = L/n
     xi = x/h - 0.5
-    i0 = np.floor(xi).astype(np.int64)
-    s = xi - i0
+    if shape == "tsc":
+        i0 = np.floor(xi + 0.5).astype(np.int64)
+        d = xi - i0
+        wts = [0.5*(0.5 - d)**2, 0.75 - d*d, 0.5*(0.5 + d)**2]
+        i0 = i0 - 1
+    elif shape == "pcs":
+        i0 = np.floor(xi).astype(np.int64)
+        s = xi - i0
+        wts = [(1.0 - s)**3/6.0, (3.0*s**3 - 6.0*s**2 + 4.0)/6.0,
+               (-3.0*s**3 + 3.0*s**2 + 3.0*s + 1.0)/6.0, s**3/6.0]
+        i0 = i0 - 1
+    else:
+        i0 = np.floor(xi).astype(np.int64)
+        s = xi - i0
+        wts = [1.0 - s, s]
     out = np.zeros(n*n*n)
-    for cx in (0, 1):
-        wx = s[:, 0] if cx else 1.0 - s[:, 0]
+    for cx, wx in enumerate(wts):
         ix = (i0[:, 0] + cx) % n
-        for cy in (0, 1):
-            wy = s[:, 1] if cy else 1.0 - s[:, 1]
+        for cy, wy in enumerate(wts):
             iy = (i0[:, 1] + cy) % n
-            for cz in (0, 1):
-                wz = s[:, 2] if cz else 1.0 - s[:, 2]
+            for cz, wz in enumerate(wts):
                 iz = (i0[:, 2] + cz) % n
-                out += np.bincount((ix*n + iy)*n + iz, weights=w*wx*wy*wz,
+                out += np.bincount((ix*n + iy)*n + iz,
+                                   weights=w*wx[:, 0]*wy[:, 1]*wz[:, 2],
                                    minlength=n*n*n)
     return out.reshape(n, n, n)/h**3
 

@@ -143,7 +143,7 @@ Predictions:
     through shell crossing and the formation of the bound region. Paper 1 used a damped
     harmonic gauge. If a run stops at the collapse, the gauge is the first suspect.
 
-## C3, first test: light rays in the homogeneous universe (00:45)
+## C3, first test: light rays in the homogeneous universe (00:27)
 
 Code: a ray waits at its point until its emission time; at the launch its coordinate
 direction is turned into the null momentum of unit frequency for the normal observer
@@ -160,7 +160,7 @@ integrator. (1) 1 + z = a(t)/a_e to 1e-5 along every central ray (largest z: 3 a
 solid angle per unit opening squared is 1 to 1e-7. A constant factor in (2) means a
 wrong solid angle or projection; a drift with z means a wrong redshift or emission time.
 
-## C1 result: linear regime to a = 100 (00:50)
+## C1 result: linear regime to a = 100 (00:30)
 
 `cosmo/east_d1e-4_n32_cpu` complete (576 steps, a = 100). Against the prediction of
 00:10: (1) confirmed earlier. (2) The observer density contrast stays within 0.5
@@ -180,6 +180,8 @@ What C1 establishes: the initial data, the evolution in the conformal-time slici
 the Newtonian reference with its dictionary agree with each other and with linear
 theory over two decades of expansion at 32 cells per wavelength.
 
+## C3, first test: result (00:35)
+
 Result (`cosmo/flrw_rays_n32_cpu`; figure `cosmo/analysis/figs/ray_test_flrw.png`,
 inspected): (1) redshift within 8.9e-7 of a/a_e - 1 on all bundles: confirmed. (3) solid
 angle per unit opening squared 1 - 1.0e-8: confirmed. (2) D_L is low by 1.2e-4 at the
@@ -194,7 +196,7 @@ not a defect of the ray bookkeeping; at 64 cells (step 1/64) it is 3e-5 at a = 1
 falls as 1/a. The same factor multiplies the velocity terms of the matter particles.
 What the test establishes: launch, solid angle, cross section and redshift are right.
 
-## C2, first runs: outcome against the predictions of 00:20 (01:15)
+## C2, first runs: outcome against the predictions written before them (00:38)
 
 Runs `cosmo/east_d{0.0025,0.005,0.01,0.05}_n64` (25 steps per second on one GPU; 21 to
 120 s each) and `cosmo/newton_d*_n64`; analysis `cosmo/analysis/east_c2.py`, figures
@@ -242,3 +244,42 @@ amplitudes up to 0.01; the underdensity densities agree within 2 percent for the
 lower amplitudes at all times; the delay of the relativistic first crossings falls below
 1, 2 and 4 percent for 0.0025, 0.005 and 0.01. If the delays stay at 5, 9 and 14 percent
 the explanation is wrong.
+
+Note on the times in the headings: from here on they are read from the clock when the
+entry is written; the earlier ones were estimates and can be off by several minutes
+(the order of the entries is the order of the work).
+
+## T1a: sampling error of a compressed lattice against the cloud shape (00:49)
+
+Question raised by the first C2 runs: does a smoother cloud remove the deposit error?
+Expectation written in the previous entry's terms: the first lattice harmonic leaks
+through the cloud shape as [sin(pi h/s)/(pi h/s)]^p, i.e. c^2 for the linear cloud
+(p = 2) and c^3 for the quadratic one (p = 3).
+Measured (`cosmo/paper/scripts/make_data_shape.py`, one dimension, uniform target
+density, exact Jacobian in the masses, worst case over forty lattice offsets and over
+the mesh; figure `cosmo/paper/figures/fig_shape.png`, inspected):
+- linear cloud: 0.5 c (0.0092 at c = 0.02, 0.044 at 0.1, 0.079 at 0.2);
+- quadratic: 0.4 c^2 (1.8e-4, 3.9e-3, 1.3e-2);
+- cubic: 0.4 c^3 (4.2e-6, 3.9e-4, 2.5e-3);
+after two filter passes with compensation; without the filter the errors are twice
+these. Two particles per cell and direction halve them and cap them (0.02, 2e-3, 3e-4
+for the three shapes); four per cell cap the linear cloud at 0.005.
+So the expectation was wrong by one power of c: all harmonics of the lattice leak with
+the same power, and where a particle meets a kink of the cloud shape they add up. The
+c^2 that I measured at the probes of the first C2 runs is the special case of a lattice
+point on a cell corner (exactly -c^2 per direction for c < 1/4), not the general size
+of the error. The filter does not help because the pattern has the long wavelength
+h/c. Consequences: (i) with the linear cloud and one particle per cell the deposited
+density of a cold lattice is wrong by 5 to 10 percent in places once the compression
+reaches 0.1 to 0.2, in both the relativistic and the Newtonian calculation; (ii) the
+setup of paper 1 (linear cloud, four particles per cell and direction) is at 0.5
+percent; (iii) a cubic cloud with two particles per cell is at 3e-4.
+Code: `<particles> deposit_shape = cic | tsc | pcs` (B-splines of degree one to three;
+the constraint solver and the Newtonian reference use the same shape).
+Written before the runs `cosmo/east_d*_n64_{tsc,pcs}` (identical to the v2 runs except
+for the shape): at amplitude 0.01 the constraint violation up to a = 4, relative to its
+largest term, falls from 1e-2 (linear cloud, first runs) by at least a factor of ten
+with the quadratic cloud and a further factor of five with the cubic one; the observer
+density contrast at both probes at a_p = 1 is within 0.1 percent of 6.648 times the
+amplitude for the cubic cloud; the first-crossing times of the two calculations change
+by less than 2 percent between the shapes (the collapse is set by the large scales).

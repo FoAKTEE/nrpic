@@ -96,9 +96,9 @@ class NewtonRays:
         pm = self.pm
         if self._vel is None:
             v = pm.velocity()
-            rho = cid.binomial(cid.cic_deposit(pm.x, pm.m, pm.n, pm.L), pm.nfilter,
-                               pm.compensate)
-            mom = [cid.binomial(cid.cic_deposit(pm.x, pm.m*v[:, i], pm.n, pm.L),
+            rho = cid.binomial(cid.cic_deposit(pm.x, pm.m, pm.n, pm.L, pm.shape),
+                               pm.nfilter, pm.compensate)
+            mom = [cid.binomial(cid.cic_deposit(pm.x, pm.m*v[:, i], pm.n, pm.L, pm.shape),
                                 pm.nfilter, pm.compensate) for i in range(3)]
             self._vel = (rho, mom)
         rho, mom = self._vel

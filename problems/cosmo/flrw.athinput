@@ -65,6 +65,7 @@ deposit        = true
 nfilter        = 0
 filter_compensate = false
 filter_comp_c  = -1.0
+deposit_shape  = cic     # cloud shape: cic, tsc or pcs (B-spline of degree 1, 2, 3)
 deposit_max_level = 31
 deposit_adaptive  = false
 deposit_min_level = 0

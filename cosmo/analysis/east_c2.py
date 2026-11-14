@@ -32,6 +32,7 @@ from delta_obs import gr_probes  # noqa: E402
 
 L, H0 = 4.0, 1.0
 XPK = 0.25*L
+SHOWN = (1.0/32.0, 1.0/16.0, 1.0/8.0, 1.0/4.0)   # initial distances over L, as the source
 
 
 def a_of_tau(tau):
@@ -102,10 +103,21 @@ def rise(a_p, dobs, level):
     return float(a_p[i]*(a_p[i+1]/a_p[i])**f)
 
 
-def load(runs, delta, n):
+def below(a_p, d, level):
+    """Scale factor at which the distance first falls below the level."""
+    ok = np.isfinite(d) & np.isfinite(a_p)
+    a_p, d = a_p[ok], d[ok]
+    i = np.flatnonzero((d[:-1] > level) & (d[1:] <= level))
+    if len(i) == 0:
+        return np.nan
+    i = i[0]
+    return float(a_p[i] + (a_p[i+1] - a_p[i])*(d[i] - level)/(d[i] - d[i+1]))
+
+
+def load(runs, delta, n, gsuf="", nsuf=""):
     tagd = f"{delta:g}"
-    gdir = os.path.join(runs, f"east_d{tagd}_n{n}")
-    nfile = os.path.join(runs, f"newton_d{tagd}_n{n}", "newton.npz")
+    gdir = os.path.join(runs, f"east_d{tagd}_n{n}{gsuf}")
+    nfile = os.path.join(runs, f"newton_d{tagd}_n{n}{nsuf}", "newton.npz")
     if not (os.path.exists(os.path.join(gdir, "east.nrpic.hst")) and os.path.exists(nfile)):
         return None
     g, h = gr_probes(gdir)
@@ -123,7 +135,15 @@ def load(runs, delta, n):
             f[k] = f[k][kf]
         g["t_stop"] = t_end
     nw = dict(np.load(nfile))
-    # the Newtonian dictionary ends where 1 + 2 psi_N turns negative
+    # the Newtonian dictionary ends where 1 + 2 psi_N turns negative: cut all Newtonian
+    # histories at the last time with a finite observer density at the overdensity
+    okn = np.isfinite(nw["delta_obs_0"]) & np.isfinite(nw["t_p_0"])
+    if not okn.all():
+        m = int(np.argmin(okn))
+        nt = len(nw["tau"])
+        nw = {k: (v[:m] if isinstance(v, np.ndarray) and v.ndim >= 1 and len(v) == nt
+                  else v) for k, v in nw.items()}
+        nw["stopped"] = True
     return {"g": g, "f": f, "nw": nw, "gdir": gdir}
 
 
@@ -134,7 +154,8 @@ def main():
     n = int(opt.get("n", "64"))
     deltas = [float(s) for s in opt.get("deltas", "0.0025,0.005,0.01,0.05").split(",")]
     suffix = opt.get("suffix", "")
-    data = {d: load(runs, d, n) for d in deltas}
+    gsuf, nsuf = opt.get("gr-suffix", ""), opt.get("newton-suffix", "")
+    data = {d: load(runs, d, n, gsuf, nsuf) for d in deltas}
     data = {d: v for d, v in data.items() if v is not None}
     if not data:
         sys.exit("no pair of runs found")
@@ -217,8 +238,10 @@ def main():
                 continue
             ag, an = first_crossing(apg[:, j], dg[:, j]), first_crossing(apn[:, j], dn[:, j])
             cross.append({"axis": int(f["axis"][j]), "q0": float(s0), "gr": ag,
-                          "newton": an})
-            if abs(round(s0/h) % 4) == 0:
+                          "newton": an,
+                          "gr_10": below(apg[:, j], dg[:, j], 0.1*dg[0, j]),
+                          "newton_10": below(apn[:, j], dn[:, j], 0.1*dn[0, j])})
+            if any(abs(s0 - fr*L) < 1e-9 for fr in SHOWN):
                 show.append(j)
         s["crossings"] = cross
         for j in show:
@@ -226,10 +249,12 @@ def main():
             axs[0, k].plot(apg[:, j], dg[:, j], color=cc, lw=0.8)
             ok = np.isfinite(apn[:, j])
             axs[1, k].plot(apn[ok, j], dn[ok, j], color=cc, lw=0.8)
+        a_first = np.nanmin([c_["newton"] for c_ in cross] + [c_["gr"] for c_ in cross])
+        a_last = min(np.nanmax(apg), 2.2*a_first) if np.isfinite(a_first) else np.nanmax(apg)
         for ax in axs[:, k]:
             ax.axhline(0.0, **fs.THIN)
-            ax.set_xscale("log")
-            ax.set_ylim(-0.45, 1.15)
+            ax.set_xlim(1.0, a_last)
+            ax.set_ylim(-0.3, 1.1)
         axs[0, k].set_title(rf"$\bar\delta = {d:g}$", fontsize=8)
         axs[1, k].set_xlabel(r"$a_p$")
         # difference of distance against Newtonian infall speed, up to the first
@@ -243,15 +268,17 @@ def main():
                 ok &= apn[:, j] <= an_c
             vinf = np.abs(nw["v"][:, j, 0])
             dgi = np.interp(apn[ok, j], apg[:, j], dg[:, j], right=np.nan)
-            ax3.plot(vinf[ok], (dgi - dn[ok, j])/q0[j], color=c, lw=0.8)
+            ax3.plot(vinf[ok], np.abs(dgi - dn[ok, j])/L, color=c, lw=0.8,
+                     ls=("-", ":", "--", "-.")[show.index(j) % 4])
     axs[0, 0].set_ylabel("distance, general relativity")
     axs[1, 0].set_ylabel("distance, Newtonian")
     fs.save(fig, os.path.join(figdir, "east_splash" + suffix))
     plt.close(fig)
     ax3.set_xscale("log")
-    ax3.axhline(0.0, **fs.THIN)
+    ax3.set_yscale("log")
+    ax3.set_ylim(1e-6, 0.3)
     ax3.set_xlabel("Newtonian infall speed")
-    ax3.set_ylabel("distance difference / initial distance")
+    ax3.set_ylabel(r"$|d_{\rm GR} - d_{\rm N}|/L$")
     for c, d in zip(cols, data):
         ax3.plot([], [], color=c, label=rf"$\bar\delta = {d:g}$")
     ax3.legend(frameon=False, loc="upper left")
@@ -280,8 +307,16 @@ def main():
             line = "  ".join(f"{c['q0']:.3f}:{c['gr']:.2f}/{c['newton']:.2f}"
                              f"({c['gr']/c['newton'] - 1.0:+.3f})"
                              for c in cr if c["axis"] == ax
-                             and abs(round(c["q0"]/(L/n)) % 4) == 0)
+                             and any(abs(c["q0"] - fr*L) < 1e-9 for fr in SHOWN))
             print(f"   first crossing, axis {ax} (q0: GR/N (rel. diff.)): {line}")
+        for fr in SHOWN:
+            sel = [c for c in s["crossings"] if abs(c["q0"] - fr*L) < 1e-9
+                   and np.isfinite(c["gr_10"]) and np.isfinite(c["newton_10"])]
+            if sel:
+                g10 = np.mean([c["gr_10"] for c in sel])
+                n10 = np.mean([c["newton_10"] for c in sel])
+                print(f"   distance below a tenth, d0 = L/{1.0/fr:.0f} (mean of {len(sel)} "
+                      f"directions): a_p = {g10:.2f} (GR) {n10:.2f} (N), ratio {g10/n10:.4f}")
     print(os.path.join(figdir, "east_delta_obs" + suffix + ".png"))
     print(os.path.join(figdir, "east_splash" + suffix + ".png"))
     print(os.path.join(figdir, "east_rel_eff" + suffix + ".png"))

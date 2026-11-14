@@ -23,6 +23,10 @@ ap.add_argument("--nfilter", type=int, default=2)
 ap.add_argument("--no-compensate", action="store_true")
 ap.add_argument("--cfl", type=float, default=0.25)
 ap.add_argument("--every", type=int, default=2)
+ap.add_argument("--shape", default="cic", choices=("cic", "tsc", "pcs"))
+ap.add_argument("--rays-from", default="",
+                help="directory of the relativistic run: light-ray bundles are emitted "
+                     "at the proper times of its emitters (writes DIR/newton_rays.npz)")
 ap.add_argument("--out", required=True)
 a = ap.parse_args()
 
@@ -36,11 +40,34 @@ on = [(I[1] == ic) & (I[2] == ic), (I[0] == ic) & (I[2] == ic), (I[0] == ic) & (
 centre = on[0] & on[1]
 track = np.concatenate([np.flatnonzero(on[0]), np.flatnonzero(on[1] & ~centre),
                         np.flatnonzero(on[2] & ~centre)])
-sim = P.PM(x, v, m, a.n, a.L, nfilter=a.nfilter, compensate=not a.no_compensate)
+sim = P.PM(x, v, m, a.n, a.L, nfilter=a.nfilter, compensate=not a.no_compensate,
+           shape=a.shape)
 t0 = time.time()
+rays = None
+if a.rays_from:
+    import importlib.util
+    import ray_newton as RN
+    spec = importlib.util.spec_from_file_location(
+        "ray_obs", os.path.join(os.path.dirname(os.path.abspath(__file__)), "..",
+                                "analysis", "ray_obs.py"))
+    ray_obs = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(ray_obs)
+    emit = ray_obs.emission_proper_times(a.rays_from)
+    meta = np.load(os.path.join(a.rays_from, "rays.npz"))
+    rays = RN.NewtonRays(sim, [(k, tau) for (_, k, _, tau) in emit], eps=float(meta["eps"]))
+    for i, b in enumerate(rays.pending):
+        b["bundle"] = emit[i][0]
 res = P.run(sim, dtau=a.cfl*a.L/a.n, tau_end=a.tend,
             probes=[(0.25*a.L,)*3, (0.75*a.L,)*3], track=track, every=a.every,
-            verbose=True)
+            verbose=True, hook=rays)
+os.makedirs(a.out, exist_ok=True)
+if rays is not None:
+    obs = RN.observables(rays.results(), a.L)
+    flat = {"nbundle": len(obs)}
+    for i, o in enumerate(obs):
+        for k, val in o.items():
+            flat[f"{k}_{i}"] = val
+    np.savez(os.path.join(a.out, "newton_rays.npz"), **flat)
 res["q_fid"] = q[track]
 res["axis_fid"] = np.concatenate([np.zeros(npd, int), np.ones(npd - 1, int),
                                   np.full(npd - 1, 2)])

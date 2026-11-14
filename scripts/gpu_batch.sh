@@ -11,7 +11,9 @@
 #
 # Environment: ATHENA_EXE, TIME (default 00:45:00), JOB_NAME (default batch), PARTITION.
 set -euo pipefail
-SCRIPTS=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
+# inside the job this file runs from the Slurm spool directory: the submission passes
+# the location of the scripts along
+SCRIPTS=${NRPIC_SCRIPTS:-$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)}
 list=$(cd "$(dirname "$1")" && pwd)/$(basename "$1")
 [[ -f $list ]] || { echo "ERROR: no such file: $list" >&2; exit 1; }
 if [[ -z ${SLURM_JOB_ID:-} ]]; then
@@ -20,7 +22,7 @@ if [[ -z ${SLURM_JOB_ID:-} ]]; then
   cp "$EXE" "$snap"
   jid=$(sbatch --parsable -p "${PARTITION:-preempt}" --gres=gpu:1 -c 1 -t "${TIME:-00:45:00}" \
           -J "${JOB_NAME:-batch}" -o "$list.slurm-%j.out" \
-          --export=ALL,ATHENA_EXE="$snap" "$0" "$list")
+          --export=ALL,ATHENA_EXE="$snap",NRPIC_SCRIPTS="$SCRIPTS" "$0" "$list")
   echo "submitted job $jid for $(grep -cv '^\s*\(#\|$\)' "$list") runs"
   exit 0
 fi
@@ -29,6 +31,6 @@ while read -r line; do
   [[ -z $line || $line == \#* ]] && continue
   # shellcheck disable=SC2086
   set -- $line
-  if "$SCRIPTS/gpu_run.sh" "$@" > /dev/null 2>&1; then rc=0; else rc=$?; fi
+  if "$SCRIPTS/gpu_run.sh" "$@" > "$list.last.log" 2>&1; then rc=0; else rc=$?; fi
   echo "$(date +%H:%M:%S) rc=$rc $1" >> "$list.status"
 done < "$list"
