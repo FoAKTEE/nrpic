@@ -769,3 +769,16 @@ removed where the lapse is below 0.3): if the stretching is the cause, the run p
 t = 6.4 and the smallest lapse falls below 1; a shift of order 0.1 to 1 develops only
 within a few cells of the overdensity. If it ends at the same time with the same
 symptom, the cause is elsewhere (the under-resolved caustic or the deposit).
+
+## C4, resolution test: 64 against 96 cells (02:27)
+
+`cosmo/east_d0.01_n96_tsc` and `cosmo/newton_d0.01_n96_tsc` against the 64-cell pair
+(amplitude 0.01, quadratic cloud, one particle per cell).
+- Delay of the relativistic infall at the four starting distances: 4.61, 4.55, 4.79,
+  5.25 percent at 64 cells; 4.44, 4.51, 4.74, 5.27 percent at 96 cells. Largest change
+  0.17 percentage points (predicted below 0.3): confirmed.
+- The infall itself is earlier at 96 cells by 1.2 percent (relativistic, inner
+  observers: a_p = 58.88 to 58.18) and 1.0 percent (Newtonian: 56.29 to 55.70), 0.5
+  percent for the outer ones: confirmed (earlier, by up to a few percent).
+- Density contrast of 10 at the overdensity: delay 3.04 and 3.01 percent.
+The 128-cell pair is running (the Newtonian run takes about three hours on one core).
