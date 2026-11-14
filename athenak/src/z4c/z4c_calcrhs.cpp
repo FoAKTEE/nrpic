@@ -582,9 +582,15 @@ TaskStatus Z4c::CalcRHS(Driver *pdriver, int stage) {
     // Assemble RHS
     //
     // Khat, chi, and Theta
+    // damp_kappa1_over_alpha divides the damping coefficient by the lapse, so that the
+    // constraints are damped at a fixed rate per unit of coordinate time (in conformal
+    // time the lapse grows with the scale factor)
+    const Real kappa1 = opt.damp_kappa1_over_alpha
+                        ? opt.damp_kappa1/fmax(z4c.alpha(m,k,j,i), 1.0e-30)
+                        : opt.damp_kappa1;
     rhs.vKhat(m,k,j,i) = - Ddalpha + z4c.alpha(m,k,j,i)
       * (AA + (1./3.)*SQR(K)) +
-      LKhat + opt.damp_kappa1*(1 - opt.damp_kappa2)
+      LKhat + kappa1*(1 - opt.damp_kappa2)
       * z4c.alpha(m,k,j,i) * z4c.vTheta(m,k,j,i);
     // Matter term
     if(!is_vacuum) {
@@ -602,7 +608,7 @@ TaskStatus Z4c::CalcRHS(Driver *pdriver, int stage) {
       rhs.chi(m,k,j,i) += 0.5 * ch * pow(chi_guarded, -0.25) * Hfull;
     }
     rhs.vTheta(m,k,j,i) = LTheta + z4c.alpha(m,k,j,i) * (
-        0.5*Ht - (2. + opt.damp_kappa2) * opt.damp_kappa1 * z4c.vTheta(m,k,j,i));
+        0.5*Ht - (2. + opt.damp_kappa2) * kappa1 * z4c.vTheta(m,k,j,i));
     // Matter term
     if(!is_vacuum) {
       rhs.vTheta(m,k,j,i) -= 8.*M_PI * z4c.alpha(m,k,j,i) * (mE + lam8);
@@ -612,7 +618,7 @@ TaskStatus Z4c::CalcRHS(Driver *pdriver, int stage) {
     // Gamma's
     for(int a = 0; a < 3; ++a) {
       rhs.vGam_u(m,a,k,j,i) = 2.*z4c.alpha(m,k,j,i)*DA_u(a) + LGam_u(a);
-      rhs.vGam_u(m,a,k,j,i) -= 2.*z4c.alpha(m,k,j,i) * opt.damp_kappa1 *
+      rhs.vGam_u(m,a,k,j,i) -= 2.*z4c.alpha(m,k,j,i) * kappa1 *
           (z4c.vGam_u(m,a,k,j,i) - Gamma_u(a));
       for(int b = 0; b < 3; ++b) {
         rhs.vGam_u(m,a,k,j,i) -= 2. * A_uu(a,b) * dalpha_d(b);

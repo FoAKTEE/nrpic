@@ -358,3 +358,159 @@ failure by non-finite fields close to the overdensity after a = 19 would point t
 resolution, a failure before a = 15 to the condition itself. The slices differ from
 those of the other runs at first order in the potential, so only observer quantities
 compare.
+
+## C2, rerun with identical positions: outcome (01:22)
+
+Runs `cosmo/east_d*_n64_v2` against `cosmo/newton_d*_n64`; figures
+`cosmo/analysis/figs/east_{delta_obs,splash,rel_eff}_v2.png` (first inspected: the
+underdensity curves of the two calculations now coincide for the three lower
+amplitudes; the overdensity curves separate towards the collapse, more for larger
+amplitude). Against the predictions written after the first runs:
+- Contrast at a_p = 1: the two calculations differ by -0.33, -0.53, -0.94 percent at the
+  overdensity and +0.06, +0.24, +0.60 percent at the underdensity for amplitudes
+  0.0025, 0.005, 0.01 (-5.8 and +3.7 percent at 0.05): within 1 percent, confirmed.
+  The difference is linear in the amplitude, i.e. second order: it is the nonlinear
+  part of the constraint solve (paper 1 reads 4 percent at 0.05 and below 1 at 0.01 in
+  its own data).
+- Underdensity: densities agree within 0.5, 1.0 and 2.2 percent (predicted 2): confirmed
+  for the two lower amplitudes, marginally exceeded at 0.01.
+- Delay of the relativistic infall (scale factor at which the distance of a fiducial
+  observer first falls below a tenth of its start): 1.4, 2.6, 5.2 percent for 0.0025,
+  0.005, 0.01, the same for the four starting distances; predicted below 1, 2, 4:
+  exceeded by a third. The first runs had 5, 9, 14: the deposit error accounted for
+  most of those, as claimed, but a delay remains.
+What remains is linear in the amplitude over a factor of twenty: 1.37, 2.60, 5.15 and
+26 percent for 0.0025, 0.005, 0.01, 0.05, i.e. 5.2 times the amplitude, or 2.9 times the
+depth of the initial potential at the overdensity. The density probe gives the same
+(contrast of 10 reached later by 0.95, 1.9, 3.7, 16 percent). It is not a clock effect:
+measured with the coordinate time the delays are the same to 0.1 percent of the scale
+factor, and the ratio of proper-time to coordinate scale factor at the infall is the
+same in the two calculations (0.9944, 0.9888, 0.9774). So the infall itself is later in
+the relativistic calculation, by an amount of second order in the perturbation.
+Comparison with paper 1 (read from its figures): 6 to 7, 6, 10 to 11 percent for the
+fiducial observers and 1.9, 5.8, 6.9, 31 percent for the density contrast of 10. Its
+Newtonian reference had a finer force resolution than its relativistic code, and its
+text says that finite resolution delays the collapse; with the same mesh, deposit and
+step in both calculations the delay is two to five times smaller for the three lower
+amplitudes and proportional to the amplitude.
+Not established: what the delay consists of. Candidates: the second-order offset of
+the initial data (about 1 percent of the contrast at 0.01, which alone would give a
+delay of that size), and second-order terms of horizon-scale origin in the evolution
+(the wavelength is four Hubble radii at the start). A test: the same comparison with a
+shorter wavelength, where the horizon-scale terms are smaller.
+
+## C5, tests A0 and A: outcome (01:29)
+
+Six runs `cosmo/dav_a0_n{8,16,32}`, `cosmo/dav_a_n{8,16,32}`, all to a = 1001 without
+failure (7,258 to 29,031 steps; 20 s to 3 min each on one GPU). Analysis
+`cosmo/analysis/daverio_a.py`, figure `cosmo/analysis/figs/daverio_a.png`.
+A0 (exact data). Fourth-order convergence: confirmed (errors of chi at t = 100 Mpc/h:
+3.9e-9, 2.4e-10, 1.55e-11, ratios 16.0 and 15.7; later 15.8 and 9 to 10 as the finest run
+meets rounding). Levels: refuted. The error of chi grows through the run to 1.3e-7,
+8.2e-9, 1.1e-9 at the end, where paper 2 has a plateau at 2.6e-9, 1.6e-10, 9.8e-12; the
+error of E reaches 1.9e-7 at 8 cells (paper 2: 3.8e-9).
+Cause, with numbers. At the end the lapse is alpha / a = 1 - 8.2e-8 and all other errors
+are those of a homogeneous solution whose conformal time runs at that rate (chi a^2 - 1
+= 1.3e-7 = 2 x 8.2e-8 x t/(2+t), etc.). The lapse condition of Z4c uses Khat = K - 2
+Theta, so a nonzero Theta drives the lapse away from conformal time at the rate (2/3)
+alpha Theta; Theta, produced by the truncation error of the first steps, is 1.1e-10 at
+a = 23, and the integral of (2/3) alpha Theta over the run is a few 1e-8, as measured.
+Theta decays slowly because the damping coefficient is constant (0.02) while paper 2
+damps in proportion to the expansion rate.
+A (noise). Stable: confirmed, at all three resolutions. Constraints: the largest H falls
+from 1.2e-5 (t = 100) to 2.5e-10 (t = 3000) at 8 cells, |M| from 9.0e-6 to 1.1e-10, finer
+meshes lower by 2 to 4 per halving; paper 2 has 7.4e-7 (t = 500) to 1.8e-10 (t = 3000)
+for H: the same decay. Error of chi: follows the A0 error (1.3e-7 at 8 cells), i.e. the
+noise does not add to it; refuted only in the sense of A0. Error of E: grows more slowly
+than a (dE/a falls from 1.6e-6 to 6.9e-7 after t = 200 at 8 cells): confirmed. Its level
+is 700 times that of paper 2 (6.9e-4 at the end against 8.9e-7).
+On that factor: with the stated momentum noise (p_i / m uniform in +-1e-7/N_g^3) the
+particles drift freely by 4.5e-6 cells over the run at 8 cells, which gives a density
+noise of 1e-5 before any gravitational growth, ten times the final value of paper 2 at
+every resolution, and its curve grows as the growing mode from the level set by the
+noise of chi at the start. So the momentum noise in the runs of paper 2 was much smaller
+than my reading of its text; my runs carry the stated amplitude and show its free
+streaming followed by growth.
+Written before the follow-up runs:
+(i) `cosmo/dav_a0k_n{8,16,32}`: exact data with the damping rate fixed per unit of
+    conformal time (`<z4c> damp_kappa1_over_alpha = true`, kappa1 = 1): the lapse offset
+    and the error of chi at the end fall by more than ten at each resolution, and the
+    convergence stays fourth order.
+(ii) `cosmo/dav_anp_n{8,16,32}`: the noise of test A without the momentum noise of the
+    particles: the error of E at the end comes within a factor of five of paper 2 (8.9e-7,
+    1.9e-7, 6.7e-8).
+
+## T1a: cloud-shape study, outcome (01:29)
+
+Runs `cosmo/east_d*_n64_{v2,tsc,pcs}` with the Newtonian runs of the same shape;
+analysis `cosmo/analysis/shape_study.py`. At amplitude 0.01 (all three shapes complete):
+- Constraint violation up to a = 4, cell mean of the relative Hamiltonian constraint:
+  2.0e-4 (linear), 6.0e-6 (quadratic), 9.9e-6 (cubic); relative momentum constraint
+  3.8e-2, 1.6e-3, 1.9e-4. Predicted: a factor of at least ten from linear to quadratic
+  (found 33 and 24: confirmed) and a further five to cubic (found none for H, 8 for M:
+  refuted for H). The Hamiltonian constraint has reached a floor of 1e-5 that the cloud
+  shape does not set.
+- After the collapse the mean relative Hamiltonian constraint is 1e-2 for all shapes.
+- Cells of negative energy density (compensated filter): the most negative value over
+  the largest falls from -9e-3 to -7e-4 to -1.5e-4.
+- Observer density contrast at a_p = 1 against linear theory 0.066476: relativistic
+  +0.065701/-0.066781, +0.066135/-0.066608, +0.065945/-0.066438; Newtonian
+  +0.066324/-0.066382, +0.066931/-0.066019, +0.066739/-0.065833 for the three shapes.
+  Predicted within 0.1 percent for the cubic cloud: refuted; the values stay within 1
+  percent, and the Newtonian ones move by 1 percent with the shape. The probe value
+  carries a shape-dependent offset of the order of the compression squared in both
+  calculations.
+- Infall of the fiducial observers (distance below a tenth), relativistic / Newtonian:
+  start L/32: 63.08/59.98, 58.88/56.29, 59.61/56.92; start L/4: 79.74/75.73,
+  79.36/75.40, 79.55/75.55. Predicted: changes below 2 percent between shapes:
+  refuted for the inner observers, which fall in 6 to 7 percent earlier with the smoother
+  clouds in both calculations (the linear cloud holds the central density down); holds
+  for the outer ones (0.5 percent).
+- The relativistic delay does not depend on the shape: 5.2, 4.6, 4.7 percent (inner),
+  5.3, 5.3, 5.3 percent (outer).
+What this establishes: the deposit error of the linear cloud is what set the constraint
+violation of the smooth phase and delayed the centre of the collapse by several
+percent; the quadratic cloud removes most of both; the relativistic delay of C2 is not
+an artifact of the deposit.
+
+## C5, test B: first results (01:29)
+
+`cosmo/dav_b_n32` (step 0.25 of the cell) and `cosmo/dav_b_n32_c01` (step 0.1; partial
+at the time of writing); analysis `cosmo/analysis/daverio_b.py`.
+(1) Amplitude of phi: -6.886e-9 at the start (analytic -6.933e-9), -7.005e-9 at the end:
+    +1.7 percent (paper 2 at 32 cells: +4.9 percent). Confirmed.
+(2) Largest departure of the density contrast from linear theory, mean over the line
+    removed: 7.5e-3, 1.5e-2, 2.0e-2 at t = 100, 1000, 3000 Mpc/h (paper 2: 2.5e-3, 1.8e-2,
+    2.9e-2). As paper 2 defines it (exact background) it is 6.4e-2 at t = 100 with the step
+    0.25, because the error of the mean density (4.7e-7) exceeds the contrast (1e-7)
+    early on; with the step 0.1 it is 8.9e-3. Confirmed.
+(3) Largest relative Hamiltonian constraint at the end: 8.3e-8 (step 0.25), 4.4e-9
+    (step 0.1; paper 2: 4.6e-9). Confirmed.
+(4) Step 0.1 against 0.25: the departure of the density is unchanged (7.43e-3 against
+    7.47e-3); the drift of phi is 1.4 against 1.7 percent, a change of a fifth, more
+    than the tenth I wrote.
+The 64-cell run is in progress.
+
+## E1, first step: outcome (01:32)
+
+`cosmo/east_d0.05_n64_lv`: refuted. The run ends at the same place as with the old
+condition (a = 18.6): the lapse at the overdensity turns around at a = 15.8 (10.3) and
+falls to 4.5 by t = 6.578 while the density there doubles every four steps; in the next
+step 60,000 particles reach a non-finite state and are removed, then all of them. The
+fields stay finite. No negative lapse this time.
+Why the condition does not help: alpha - gamma^(1/6) is constant, and that constant is
+-0.18 at the overdensity, so the lapse vanishes only when the local gamma^(1/6) has
+fallen to 0.18. At the failure it is still 4.6: the volume element would have to shrink
+by another factor of 17,000. The condition collapses the lapse only as fast as the
+local scale factor itself. My estimate in the previous entry had the right formula and
+drew the wrong conclusion from it.
+What is needed is a lapse that falls by its own size when the local scale factor falls
+by a factor of order one, as the 1+log condition does around an isolated object. That
+requires a reference for "its own size", i.e. one global quantity. Candidate for the
+second step: a driver towards constant mean curvature,
+    d_t alpha = -(1/3) alpha^2 K - mu alpha_ref alpha (K - Kbar),
+with Kbar the volume mean of K and alpha_ref the largest lapse, both taken once per
+step. In a homogeneous universe the second term vanishes; where the matter contracts
+relative to the mean the lapse falls exponentially; slices of constant mean curvature
+are known to avoid the singularity of a black hole. It changes the slicing of every
+region at first order, so it is for this extension only. Not started.
