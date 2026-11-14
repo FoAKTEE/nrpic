@@ -174,6 +174,24 @@ What the first runs changed in the plan:
   compensation amplifies it). Candidates: T2, or withholding the pass by a criterion on
   stream crossing rather than on contrast.
 
+## State and revisions (2026-11-14 10:31)
+
+- The redo of the three papers is complete (C0 to C6); every run of the working paper
+  is in the production configuration, and the working paper's ledger holds all numbers.
+- Finished since 06:30: production runs of test C in both boxes at 64 and 128 cells
+  (chains), test B and the four collapse amplitudes in the production configuration,
+  the conservation test, the Newtonian random field at 32 and 64 cells.
+- Newtonian against relativistic power of the random field: the nonlinear excess over
+  linear theory is the same in both; the relativistic power is lower by 0.01 to 0.02
+  percent at 64 cells (0.014 to 0.046 at 32); the part in the shortest shell was
+  numerical; whether the remainder is relativistic is not determined (needs the
+  Newtonian run at 128 cells with the particles of the relativistic one; days on one
+  processor with the present reference code, not run).
+- Open, none needed for the redo: noise after the matter streams cross (three remedies
+  on the constraint subsystem failed; the clue is the connection constraint); E1
+  (black-hole formation in an expanding box); T2 (not started); the split of the
+  relativistic delay between initial data and evolution.
+
 ## T2, design notes (not started)
 
 Where it applies. A cold lattice has no smooth distribution function to subtract: its
