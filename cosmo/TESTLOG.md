@@ -1438,3 +1438,41 @@ I stop guessing here. New output: with `field_constraints = true` the field dump
 also hold the Hamiltonian constraint, the momentum constraint, Khat, Theta and the
 lapse (format NRFIELD2). Next: look at the constraint field itself (where it sits,
 its spectrum, what it correlates with) in `dav_c704_n32_pcsct_f`.
+
+## C5/T1: the constraint field, and a wrong inference of mine corrected (05:51)
+
+`dav_c704_n32_pcsct_f` and `dav_c704_n64_pcsct` with the constraint fields in the
+dumps (`cosmo/analysis/constraint_field.py`).
+32 cells, z = 1 to 0: 90 percent of the power of the Hamiltonian-constraint field lies
+between 4 and 6 times the fundamental wave number, above the cut-off of the initial
+spectrum (3.2) and below twice it: the sum wave numbers of pairs of initial waves. The
+field follows the Laplacian of the squared contrast (correlation 0.79; rms 1.8e-5 of
+16 pi <E> at z = 0). These waves are 5 to 8 cells long at 32 cells.
+64 cells, z = 0: that part is 37 times smaller (rms 4.8e-7); 94 percent of what is left
+(rms 2.2e-6) lies above 13 times the fundamental, at the scale of the mesh.
+Mean relative constraints of the cubic compensated run at 64 cells, z = 100, 10, 1,
+0.3, 0.02: Hamiltonian 3.5e-8, 8.5e-8, 1.7e-7, 3.2e-7, 6.8e-7; momentum 2.2e-4, 2.3e-4,
+2.4e-4, 3.8e-4, 7.3e-4. Quadratic compensated at 64 cells: 2.1e-8, 8.5e-8, 6.4e-7,
+4.4e-6, 1.0e-5 and 6.0e-4, 5.3e-4, 1.3e-3, 4.6e-3, 9.6e-3. So at 64 cells the cubic
+cloud is 15 times lower in the Hamiltonian and 13 times lower in the momentum
+constraint at the end. Power up to the cut-off: 0.20, 0.45, 1.2, 2.0 percent at z =
+100, 10, 1, 0 (the last two are growth of second order).
+Correction. I wrote above that the late level "does not depend on the cell size, the
+cloud order, ...", and called it intrinsic. That came from comparing the quadratic
+cloud at 64 cells with both clouds at 32 cells, two changes at once. There are two
+different errors of similar size:
+- at 32 cells, the truncation error of the terms of second order in the contrast,
+  which live at up to twice the cut-off wave number, here 5 cells per wave; it is
+  the same for both clouds and falls fast with the cell size;
+- at 64 cells with the quadratic cloud, the sampling error of the displaced lattice,
+  which the cubic cloud lowers tenfold, as the Python experiment said it would.
+The damping dependence (higher above rate 0.5) and the absence of a dependence on the
+particle number at 32 cells stand as measured. The rule that follows: the cut-off of
+the initial spectrum must be resolved with twenty cells, not ten, if the terms of
+second order are to be resolved, and the cloud must be cubic.
+Consequence for the smaller box: its 64-cell runs have 10 cells per cut-off wave, so
+their rise from z = 30 on is the same truncation of second-order terms, and the cloud
+could not help there. The 128-cell run with the cubic compensated cloud is the test.
+Prediction for `dav_c256_n128_pcsct` (one particle per cell): mean relative
+Hamiltonian constraint at z = 10 below 3e-7 (1.5e-6 at 64 cells) and at z = 5 below
+1e-6 (5.4e-6); after the first collapse it rises as before.
