@@ -2240,3 +2240,14 @@ envelope fraction remaining at 100 M is above one half, and the common horizon a
 between 60 and 70 M (original 64.2). If the remnant again reaches 1 M by 90 M, the radius
 is not the cause; if the black holes do not merge by 100 M, the orbit is wider than the
 original's and the stated pair of radius and speed is not what it ran either.
+
+## Two overdensities with the stated envelope radius: state at 78 M (09:24, 2026-11-14)
+
+`jeans/n1e4_v20` is at 78 M and runs on to 100 M. Against the prediction written
+before the run: the black holes form at 9.1 to 9.2 M and stay near 0.145 M; no common
+horizon; the trackers are 9.3 M apart at 78 M and the separation hardly changes; 97
+percent of the envelope is still outside. So the prediction (remnant 0.60 to 0.75 M,
+common horizon between 60 and 70 M) is failing, and the alternative named there is
+what happens: with the stated radius and the stated speed the pair moves to a wide
+orbit and does not merge, so that pair of values is not what the original evolved
+either. Its outcome lies between our two runs. Final numbers when the run reaches 100 M.

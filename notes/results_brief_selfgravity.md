@@ -368,6 +368,28 @@ Established:
    from the outer boundary. The deposited energy equals the particles' energy at every
    step (int_E = sum_mW to round-off).
 
+14. The stated envelope radius (`jeans/n1e4_v20`: areal radius 30 M as stated in the
+   original, same clumps and speeds, 10^4 particles, otherwise the configuration of
+   `n1e4_v19`; test of candidate (b) of the envelope's contraction below). STATE AT 78 M,
+   run still in progress to 100 M; numbers marked (78) will be replaced by the 100 M
+   values. First apparent horizons at 9.19 M (A, 0.0907 M) and 9.06 M (B, 0.0877 M);
+   0.1366 and 0.1367 M at 20 M; 0.1406 and 0.1411 M at 40 M; 0.1440 and 0.1443 M at 60 M;
+   0.145 M each at 78 M (78). The black holes hardly grow after 20 M (0.0002 M per M
+   against 0.001 M per M in the self-consistent envelope): the envelope is twelve times
+   less dense. Rest mass of the particles: 1.029 at t = 0, 0.770 at 20 M (the two
+   overdensities are gone), 0.762 at 60 M, 0.758 at 78 M (78): the envelope stays
+   outside, 97 percent of it at 78 M (78). No common horizon is found: the trackers never
+   come within the 0.24 M at which the finder starts to look. Separation of the black
+   holes: 9.2 M at 64 M, 9.3 M at 76 to 78 M, hardly changing; the line between them has
+   turned by a quarter of a turn by 78 M (78); the stated speed is above the circular
+   speed in this envelope, so the pair moves out from 6 M to a wide orbit. The midpoint
+   of the trackers is 1.0 to 1.2 M out of the orbital plane at 64 to 78 M.
+   Reading: with the self-consistent radius the whole envelope falls in and the remnant
+   is 1.03 M; with the stated radius nothing merges by 78 M (78) and the black holes stay
+   at 0.145 M; the original (merger at 64 M, remnant 0.65 M at 100 M, individual masses
+   0.174 and 0.176 M at 60 M) lies between the two. Which initial data the original
+   evolved cannot be decided from its text.
+
 Comparison of the merger with the original (common horizon first found; both of ours at
 the first search, see 6; the M/128 chain stopped at 61.57 M when it reached its limit of
 ten job segments, not on an error):
