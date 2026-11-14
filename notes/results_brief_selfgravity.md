@@ -229,7 +229,47 @@ Facts, in the order of the argument:
 [Prolate collapse, complete to 45 M; Prolate collapse: where the five percent are;
 Prolate collapse, attempt with compensated filter; Monte Carlo dust ball with the
 published rule: refinement runs away]
-## D. Collapse and merger inside a cluster -- NOT YET
+## D. Collapse and merger inside a cluster (subsection "Two overdensities in a cluster") -- formation stage final; inspiral and merger NOT YET
+
+Setup: a monoenergetic envelope (0.76 of the total mass) with two Gaussian
+overdensities (0.12 each, width 0.7 M) at +-3 M on a circular orbit; 6000 envelope
+particles and 2000 in each overdensity (the original: 3e6 and 1e6 each). Envelope
+radius: the self-consistent value (Appendix on sampling; the stated radius does not fit
+the stated speed). Meshes: finest cells M/64 or M/128 in a region that follows each
+overdensity (the original: M/64 at the start, refinement down to M/256). Four filter
+passes with compensation.
+
+Facts so far (formation stage), in the order of the argument:
+1. Collapse time. The overdensities collapse from the inside out. With cells of M/128
+   the first trapped surface (Misner-Sharp mass about the tracker, nothing removed
+   yet) exists at t = 8.66 M with a mass of 0.05 M. The original's first apparent
+   horizons are at 8.475 and 8.525 M.
+2. Black-hole masses after formation. Apparent horizons (finder): 0.0885 and 0.0929 M
+   at t = 10.1 and 10.25 M with cells of M/64; 0.078 and 0.080 M at 9.5 and 9.6 M and
+   0.083 M at 9.8 M with cells of M/128. Misner-Sharp at t = 10.0 M (M/64): 0.085 M.
+   The original gives 0.0880 and 0.0877 M at t = 10 M. Later: 0.128 M each at
+   t = 12.9 M (M/64).
+3. What had to change for black holes this small (a tenth of the total mass):
+   (a) Horizon finder. Its flow step is a fixed constant sized for a black hole of
+   unit mass; for these the first step overshoots to a negative radius and no horizon
+   is reported although one exists (shown by the Misner-Sharp mass). A constant twenty
+   times smaller finds them; finder and Misner-Sharp masses then agree to one percent.
+   (b) Removal of particles. With the published rule alone (lapse below 0.05) the
+   runs fail three to five M after the black holes form, on both meshes: on these
+   meshes the lapse at cell centres next to the puncture stays at or above the
+   threshold, matter inside the horizon is removed only in the few cells nearest the
+   puncture, and a non-finite value appears within two cells of one puncture in the
+   spacetime update. Removing in addition every particle inside 0.8 of the smallest
+   coordinate radius of a found horizon cures this (tested on the M/64 mesh: the run
+   passes the step at which two runs without the rule failed). Which quantity of the
+   lingering matter turns non-finite was not isolated. Whether the published rule
+   alone suffices at the original's cell size cannot be tested on one card.
+4. Inspiral, merger, common horizon, remnant growth: NOT YET (runs in progress). Do
+   not state an outcome.
+[Cluster with two overdensities: collapse on time ...; Correction: the black holes of
+the two overdensities do form ...; Finder test ...; Second finder test ...; Where the
+failure starts: at a puncture; Intervention: removing matter inside the horizon cures
+the failure; M/128 chain failed at the same step ...]
 
 ## Statements the section must not make
 - No horizon mass from before the finder was corrected.
