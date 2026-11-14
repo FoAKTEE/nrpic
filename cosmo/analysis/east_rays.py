@@ -30,6 +30,7 @@ import ray_obs as ar  # noqa: E402
 
 L = 4.0
 PATH = 2.0*np.sqrt(3.0)*L/4.0
+ZMIN = 0.01     # smallest redshift shown (as in the source paper)
 
 
 def travelled(x):
@@ -53,6 +54,51 @@ def monotonic(z):
     """Length of the leading part of z that increases."""
     d = np.diff(z) <= 0.0
     return len(z) if not d.any() else int(np.argmax(d)) + 1
+
+
+def segments(z, nmin=4):
+    """Index ranges (i0, i1, direction) of the parts of the ray on which z is monotonic
+    (the redshift turns back where the ray enters a deep potential)."""
+    dz = np.sign(np.diff(z))
+    out, i0 = [], 0
+    for i in range(1, len(dz) + 1):
+        if i == len(dz) or (dz[i] != dz[i0] and dz[i] != 0.0):
+            if i - i0 + 1 >= nmin:
+                out.append((i0, i + 1, float(dz[i0])))
+            i0 = i
+    return out
+
+
+def first_passage(z, y, zz):
+    """y where z first passes the value zz along the ray; nan if it never does."""
+    c = (z[:-1] - zz)*(z[1:] - zz) <= 0.0
+    if not c.any():
+        return np.nan
+    i = int(np.argmax(c))
+    if z[i+1] == z[i]:
+        return float(y[i])
+    return float(y[i] + (y[i+1] - y[i])*(zz - z[i])/(z[i+1] - z[i]))
+
+
+def compare(g, w):
+    """D_L(GR) / D_L(N) - 1 at equal redshift, branch by branch. Returns z and the
+    ratio minus one, concatenated over the branches (nan between them)."""
+    zs, ds = [], []
+    for (a0, a1, da), (b0, b1, db) in zip(segments(g["z"]), segments(w["z"])):
+        if da != db:
+            break
+        zg, dg = g["z"][a0:a1], g["D_L"][a0:a1]
+        zw, dw = w["z"][b0:b1], w["D_L"][b0:b1]
+        if da < 0.0:
+            zg, dg, zw, dw = zg[::-1], dg[::-1], zw[::-1], dw[::-1]
+        sel = (zg >= zw[0]) & (zg <= zw[-1])
+        if sel.sum() < 3:
+            continue
+        zs += [zg[sel], [np.nan]]
+        ds += [dg[sel]/np.interp(zg[sel], zw, dw) - 1.0, [np.nan]]
+    if not zs:
+        return np.array([]), np.array([])
+    return np.concatenate(zs), np.concatenate(ds)
 
 
 def load_newton(path):
@@ -106,28 +152,28 @@ def main():
             c = cmap[(b//2) % len(cmap)]
             ls = "-" if kind == 0 else "--"
             ax = axs[r, 0]
-            ax.plot(g["z"], g["D_L"]/g["D_FRW"] - 1.0, color=c, ls=ls, lw=1.2)
-            ax.plot(w["z"], w["D_L"]/w["D_FRW"] - 1.0, color=c, ls=ls, lw=0.5)
-            mg, mw = monotonic(g["z"]), monotonic(w["z"])
-            zc = g["z"][:mg]
-            sel = (zc >= w["z"][0]) & (zc <= w["z"][:mw][-1])
-            if sel.sum() < 3:
+            yg, yw = g["D_L"]/g["D_FRW"] - 1.0, w["D_L"]/w["D_FRW"] - 1.0
+            vg, vw = g["z"] >= ZMIN, w["z"] >= ZMIN
+            ax.plot(np.where(vg, g["z"], np.nan), yg, color=c, ls=ls, lw=1.2,
+                    label=rf"$a_e = {g['a_emit']:.0f}$" if kind == 0 else None)
+            ax.plot(np.where(vw, w["z"], np.nan), yw, color="k", ls=ls, lw=0.5)
+            zc, diff = compare(g, w)
+            vis = np.isfinite(zc) & (zc >= ZMIN)
+            if vis.sum() < 3:
                 continue
-            dn = np.interp(zc[sel], w["z"][:mw], w["D_L"][:mw])
-            diff = g["D_L"][:mg][sel]/dn - 1.0
-            axs[r, 1].plot(zc[sel], np.abs(diff), color=c, ls=ls, lw=1.0,
-                           label=rf"$a_e = {g['a_emit']:.0f}$" if kind == 0 else None)
-            big = int(np.argmax(np.abs(diff)))
-            at = {zz: float(np.interp(zz, zc[sel], diff)) for zz in (0.1, 0.5, 1.0, 2.0)
-                  if zc[sel][0] <= zz <= zc[sel][-1]}
+            axs[r, 1].plot(np.where(zc >= ZMIN, zc, np.nan), np.abs(diff), color=c, ls=ls,
+                           lw=1.0)
+            big = int(np.nanargmax(np.where(vis, np.abs(diff), np.nan)))
+            zl = (0.1, 0.5, 1.0, 2.0)
             summ.append({"bundle": int(b), "kind": int(kind), "a_emit_gr": float(g["a_emit"]),
                          "a_emit_newton": float(w["a_emit"]), "z_end_gr": float(g["z"][-1]),
                          "z_end_newton": float(w["z"][-1]),
-                         "frw_dev_gr_end": float(g["D_L"][-1]/g["D_FRW"][-1] - 1.0),
-                         "max_abs_gr_minus_newton": float(np.abs(diff).max()),
-                         "z_of_max": float(zc[sel][big]), "diff_at_z": at,
-                         "blueshift_gr": bool(mg < len(g["z"])),
-                         "blueshift_newton": bool(mw < len(w["z"]))})
+                         "frw_dev_gr": [first_passage(g["z"], yg, zz) for zz in zl],
+                         "frw_dev_newton": [first_passage(w["z"], yw, zz) for zz in zl],
+                         "max_abs_gr_minus_newton": float(np.abs(diff[big])),
+                         "z_of_max": float(zc[big]),
+                         "blueshift_gr": bool(len(segments(g["z"])) > 1),
+                         "blueshift_newton": bool(len(segments(w["z"])) > 1)})
         axs[r, 0].set_xscale("log")
         axs[r, 0].set_yscale("symlog", linthresh=1e-2)
         axs[r, 0].axhline(0.0, **fs.THIN)
@@ -136,7 +182,9 @@ def main():
         axs[r, 1].set_yscale("log")
         axs[r, 1].set_ylim(1e-6, 1.0)
         axs[r, 1].set_ylabel(r"$|D_L^{\rm GR}/D_L^{\rm N} - 1|$")
-        axs[r, 1].legend(frameon=False, fontsize=6, ncol=2, loc="upper left")
+        axs[r, 0].set_xlim(ZMIN, 10.0)
+        axs[r, 1].set_xlim(ZMIN, 10.0)
+        axs[r, 0].legend(frameon=False, fontsize=6, ncol=2, loc="upper right")
     for ax in axs[-1]:
         ax.set_xlabel(r"redshift $z$")
     figdir = os.path.join(HERE, "figs")
@@ -147,11 +195,11 @@ def main():
         print(f"== delta = {d}")
         for s in summ:
             src = "OD" if s["kind"] == 0 else "UD"
-            at = " ".join(f"z={k:g}:{v:+.2e}" for k, v in s["diff_at_z"].items())
-            print(f"   {src} a_e {s['a_emit_gr']:6.1f} (N {s['a_emit_newton']:6.1f}) z_end "
-                  f"{s['z_end_gr']:.3f}/{s['z_end_newton']:.3f}  D/FRW-1 at end "
-                  f"{s['frw_dev_gr_end']:+.3f}  max|GR/N-1| {s['max_abs_gr_minus_newton']:.2e} "
-                  f"at z={s['z_of_max']:.3f}  {at}  blueshift GR/N "
+            fg = " ".join(f"{v:+.4f}" for v in s["frw_dev_gr"])
+            fn = " ".join(f"{v:+.4f}" for v in s["frw_dev_newton"])
+            print(f"   {src} a_e {s['a_emit_gr']:6.1f}: D/FRW-1 at z = 0.1, 0.5, 1, 2: GR {fg} | "
+                  f"N {fn} | max|GR/N-1| {s['max_abs_gr_minus_newton']:.2e} at "
+                  f"z={s['z_of_max']:.3f}; z turns back GR/N "
                   f"{int(s['blueshift_gr'])}/{int(s['blueshift_newton'])}")
     print(os.path.join(figdir, "east_rays" + suffix + ".png"))
 

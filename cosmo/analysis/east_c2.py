@@ -155,6 +155,10 @@ def main():
     deltas = [float(s) for s in opt.get("deltas", "0.0025,0.005,0.01,0.05").split(",")]
     suffix = opt.get("suffix", "")
     gsuf, nsuf = opt.get("gr-suffix", ""), opt.get("newton-suffix", "")
+    # wavelength of the perturbation (box size), default four initial Hubble radii
+    global L, XPK
+    L = float(opt.get("L", L))
+    XPK = 0.25*L
     data = {d: load(runs, d, n, gsuf, nsuf) for d in deltas}
     data = {d: v for d, v in data.items() if v is not None}
     if not data:

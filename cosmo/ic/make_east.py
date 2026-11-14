@@ -49,7 +49,7 @@ def newtonian_fields(x, y, z, k, H, d):
 
 
 def build(delta, n, ppc=1, L=4.0, H=1.0, ratios=(1.0, 0.9, 1.1), nfilter=0,
-          compensate=False, zero_velocity=False, outer=6, verbose=True, stagger=None,
+          compensate=False, zero_velocity=False, outer=18, verbose=True, stagger=None,
           displacement="newtonian"):
     k = 2.0*np.pi/L
     rho0 = 3.0*H*H/(8.0*np.pi)
@@ -137,22 +137,39 @@ def build(delta, n, ppc=1, L=4.0, H=1.0, ratios=(1.0, 0.9, 1.1), nfilter=0,
     psi_p = (1.0 - 2.0*psiN_p)**0.25
     u, m, W = particle_state(psi_p)
     mtot = m.sum()
+    # tolerance of the constraint solve: not below the rounding error of the Laplacian
+    # at the mesh spacing
+    tol = max(1e-11, 100.0*np.finfo(float).eps*(np.pi*n/L)**2)
     psi = psi_dict.copy()
+    # The outer iteration (masses from the solved psi, psi from the masses) converges
+    # geometrically, slowly for long wavelengths: the problem with the density held
+    # fixed is marginal. Its error is dominated by one mode, so every third iteration
+    # the limit is extrapolated from the last two changes (Aitken).
+    d_prev = None
     for it in range(outer):
         r = cid.solve(tor, x, u, m, K, psi0=psi, nfilter=nfilter, compensate=compensate,
-                      tol=1e-11, maxit=60)
-        dpsi = float(np.abs(r["psi"] - psi).max())
+                      tol=tol, maxit=60)
+        d_now = r["psi"] - psi
+        dpsi = float(np.abs(d_now).max())
         psi = r["psi"]
+        note = ""
+        if d_prev is not None and it % 3 == 2:
+            ratio = float((d_now*d_prev).sum()/(d_prev*d_prev).sum())
+            if 0.0 < ratio < 0.95:
+                psi = psi + d_now*ratio/(1.0 - ratio)
+                note = f", extrapolated with ratio {ratio:.3f}"
+                d_now = None
+        d_prev = d_now
         psi_p = cid.interp(psi, x, L)
         u, m, W = particle_state(psi_p)
         m *= mtot/m.sum()
         if verbose:
             print(f"outer {it}: inner iterations {len(r['hist'])}, residual "
-                  f"{r['hist'][-1]:.2e}, change of psi {dpsi:.2e}")
-        if dpsi < 1e-12:
+                  f"{r['hist'][-1]:.2e}, change of psi {dpsi:.2e}{note}", flush=True)
+        if dpsi < 1e-9:
             break
     r = cid.solve(tor, x, u, m, K, psi0=psi, nfilter=nfilter, compensate=compensate,
-                  tol=1e-11, maxit=60)
+                  tol=tol, maxit=60)
     ham, mom = cid.residuals(tor, r["psi"], K, r["A"], r["E"], r["S"])
     info = {
         "delta": delta, "ratios": list(ratios), "n": n, "ppc": ppc, "L": L, "H0": H,
@@ -171,6 +188,7 @@ def build(delta, n, ppc=1, L=4.0, H=1.0, ratios=(1.0, 0.9, 1.1), nfilter=0,
         "max_hamiltonian_residual": float(np.abs(ham).max()),
         "max_momentum_residual": float(max(np.abs(v_).max() for v_ in mom)),
         "removed_momentum_source_mean": r["rmean"],
+        "outer_last_change_of_psi": dpsi,
         "overdensity_point": [L/4]*3, "underdensity_point": [3*L/4]*3,
         "n_fiducial": int(nfid),
     }

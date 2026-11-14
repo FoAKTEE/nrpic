@@ -514,3 +514,48 @@ step. In a homogeneous universe the second term vanishes; where the matter contr
 relative to the mean the lapse falls exponentially; slices of constant mean curvature
 are known to avoid the singularity of a black hole. It changes the slicing of every
 region at first order, so it is for this extension only. Not started.
+
+## C4: wavelength test and resolution test, written before the runs (01:35)
+
+Wavelength test. Runs `cosmo/east_d0.01_n64_tsc_L{2,8}` with their Newtonian runs:
+amplitude 0.01, quadratic cloud, 64 cells, wavelength 2 and 8 initial Hubble radii
+instead of 4, so (H/k)^2 = 0.101 and 1.62 instead of 0.405. The Newtonian calculation
+does not depend on the wavelength (its equations have no scale), so its infall times
+are those of the 4-radii run; the relativistic one does.
+If the relativistic delay is of horizon-scale origin it is proportional to the initial
+potential, i.e. to (H/k)^2 at fixed amplitude: 4.6 to 5.3 percent at 4 radii becomes 1.2
+to 1.3 percent at 2 radii and about 20 percent at 8. If it depends on the amplitude
+alone it stays near 5 percent. I expect the first, possibly with a part that does not
+scale. At 8 radii the potential is as deep as for the amplitude 0.04 at 4 radii, so I
+expect both calculations to end near the collapse, as for the amplitude 0.05, with the
+delay measurable only for the inner observers.
+Resolution test. Runs `cosmo/east_d0.01_n{96,128}_tsc` with their Newtonian runs, one
+particle per cell. Prediction: the delay changes by less than 0.3 percentage points
+between 64, 96 and 128 cells; the infall itself comes earlier with resolution in both
+calculations (less smoothing of the centre), by up to a few percent; the constraint
+violation of the smooth phase falls with resolution.
+
+## C5, test B: outcome (01:42)
+
+All three runs complete (`cosmo/dav_b_n32`, `cosmo/dav_b_n32_c01`, `cosmo/dav_b_n64`;
+figure `cosmo/analysis/figs/daverio_b.png`).
+(1) Amplitude of phi, start to end: -6.886e-9 to -7.005e-9 (+1.72 percent) at 32 cells,
+    -6.9215e-9 to -6.9518e-9 (+0.44 percent) at 64 cells; ratio 3.9, second order. Paper
+    2: +4.9 and +1.0 percent from nearly the same starting values (6.868, 6.918).
+    Confirmed.
+(2) Largest departure of the density contrast from linear theory, mean removed, at
+    t = 100, 1000, 3000 Mpc/h and at the end: 7.47e-03, 1.49e-02, 2.01e-02, 2.34e-02 (32 cells); 1.86e-03, 3.73e-03, 5.06e-03, 5.96e-03 (64 cells)
+    (paper 2: 2.5e-3, 1.8e-2, 2.9e-2, 3.6e-2 and 6.2e-4, 4.6e-3, 7.3e-3, 9.1e-3). The
+    ratio between the resolutions is 4.0 at all times: second order. Confirmed.
+(3) Largest relative Hamiltonian constraint at the end: 8.3e-8 (32 cells), 1.4e-8 (64
+    cells) with the step 0.25; 7.6e-9 at 32 cells with the step 0.1. It falls with
+    resolution here, where paper 2 finds it growing (4.6e-9, 2.3e-8, 1.1e-7) and says so.
+    Confirmed (below 1e-6). The largest relative momentum constraint is not a useful
+    number in this test: it is taken at the nodes of the wave, where its terms vanish.
+(4) Step 0.1 against 0.25 at 32 cells, both complete: drift of phi +1.70 against +1.72
+    percent, density departure equal to three digits. Confirmed. (The "1.4 against 1.7"
+    of the previous entry compared a run that had not finished with one that had.)
+What test B establishes: in the linear regime the potential stays constant and the
+density follows linear theory with second-order convergence in the cell size, with
+errors a factor of 1.5 to 3 below those of paper 2 at equal cell number (8 particles per
+cell here against 27 there).

@@ -160,13 +160,23 @@ def gr_bundles(rundir, base="east", L=4.0, H0=1.0):
         idx = idx[np.argsort(meta["role"][idx])]
         te = float(meta["t_emit"][idx[0]])
         kind = int(meta["kind"][idx[0]])
-        ie = int(np.argmin(np.abs(tk["t"] - te)))
-        if abs(tk["t"][ie] - te) > 1e-9 or ie >= len(tk["t"]) - 2:
+        # last record at or before the emission (the ray still waits at its point);
+        # if the records do not include the emission time itself, the metric and the
+        # matter at the emission are extrapolated linearly from the last two
+        ie = int(np.searchsorted(tk["t"], te + 1e-9)) - 1
+        if ie < 0 or ie >= len(tk["t"]) - 2:
             continue
+        c0 = idx[0]
+        if abs(tk["t"][ie] - te) <= 1e-9 or ie == 0:
+            g_e, E_e, S_e = tk["g"][ie, c0], tk["E"][ie, c0], tk["S"][ie, c0]
+        else:
+            w = (te - tk["t"][ie])/(tk["t"][ie] - tk["t"][ie-1])
+            g_e = tk["g"][ie, c0] + w*(tk["g"][ie, c0] - tk["g"][ie-1, c0])
+            E_e = tk["E"][ie, c0] + w*(tk["E"][ie, c0] - tk["E"][ie-1, c0])
+            S_e = tk["S"][ie, c0] + w*(tk["S"][ie, c0] - tk["S"][ie-1, c0])
         res = bundle_observables(tk["t"], tk["x"][:, idx], tk["u"][:, idx],
                                  tk["g"][:, idx], tk["E"][:, idx], tk["S"][:, idx],
-                                 tk["u"][ie, idx], tk["g"][ie, idx[0]],
-                                 tk["E"][ie, idx[0]], tk["S"][ie, idx[0]],
+                                 tk["u"][ie, idx], g_e, E_e, S_e,
                                  float(meta["eps"]), L, ie)
         tp = tau_probe[min(kind, len(tau_probe) - 1)]
         tau_e = float(np.interp(te, h["time"], tp))
