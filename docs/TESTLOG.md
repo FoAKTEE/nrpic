@@ -2021,3 +2021,17 @@ particle inside 0.8 of the smallest radius of a found horizon).
   successful search on). Written before: v18 passes 12.26 M and 13.26 M with no bad
   cells; if it fails there again, removal inside 0.8 of the horizon is not enough at
   M/128 and the comparison with M/64 has to explain why.
+
+## M/64 production chain: stable to 19.1 M, then over the block limit (19:00)
+
+`jeans/n1e4_v17` (M/64, both removal rules, from 13.0 M).
+- Runs from 13.0 to 19.125 M with both horizons found at every search (98 of 98);
+  masses 0.1285 and 0.1287 M at 13.0 M, 0.1437 and 0.1433 M at 19.06 M; coordinate
+  radius 0.108 M; no cell with a bad determinant reported. That is 7 M past the step
+  at which the runs without the horizon rule failed.
+- At 19.13 M one regridding asks for 2388 blocks (1856 before; limit 2100) and the
+  run stops. Not a numerical failure. Periodic restart dumps were not written after
+  the restart (only the dump at each wall-clock stop exists), so the chain resumes
+  from 13.0 M.
+- Resumed with a tracked finest region of radius 0.2 M instead of 0.3 M (the horizon
+  radius is 0.11 M), a block limit of 2280, and wall-clock segments of 25 minutes.
