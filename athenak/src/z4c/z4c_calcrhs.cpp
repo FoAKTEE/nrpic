@@ -644,8 +644,15 @@ TaskStatus Z4c::CalcRHS(Driver *pdriver, int stage) {
       }
     }
     // lapse function
+    // lapse_volume adds the term -c gamma^(1/6) alpha Khat (gamma^(1/6) = chi^(-1/2)
+    // for chi_psi_power = -4).  With c = 1/3 and zero shift a homogeneous universe
+    // has alpha = a as with lapse_harmonic = 1/3 (conformal time), and
+    // alpha - gamma^(1/6) is constant in time at every point, so that the lapse falls
+    // to zero where the volume element collapses, as with the 1+log condition.
     Real const f = opt.lapse_oplog * opt.lapse_harmonicf
-                 + opt.lapse_harmonic * z4c.alpha(m,k,j,i);
+                 + opt.lapse_harmonic * z4c.alpha(m,k,j,i)
+                 + ((opt.lapse_volume != 0.0)
+                    ? opt.lapse_volume/sqrt(fmax(chi_guarded, 1.0e-30)) : 0.0);
     rhs.alpha(m,k,j,i) = opt.lapse_advect * Lalpha
                        - f * z4c.alpha(m,k,j,i) * z4c.vKhat(m,k,j,i);
 

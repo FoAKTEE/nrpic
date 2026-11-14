@@ -44,6 +44,7 @@ ndiag      = 20
 lapse_oplog     = 0.0
 lapse_harmonicf = 1.0
 lapse_harmonic  = 0.3333333333333333   # d_t alpha = -(1/3) alpha^2 K
+lapse_volume    = 0.0                  # 1/3 (with lapse_harmonic = 0): alpha - gamma^(1/6) constant
 lapse_advect    = 0.0
 shift_Gamma     = 0.0                  # zero shift
 shift_eta       = 0.0

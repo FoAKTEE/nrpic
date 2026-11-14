@@ -161,6 +161,7 @@ class Z4c {
     Real lapse_oplog;
     Real lapse_harmonicf;
     Real lapse_harmonic;
+    Real lapse_volume;
     Real lapse_advect;
     // slow start lapse condition
     bool slow_start_lapse;

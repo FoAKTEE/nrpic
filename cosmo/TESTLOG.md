@@ -335,3 +335,26 @@ Written before the runs `cosmo/dav_b_n{32,64}`, `cosmo/dav_b_n32_c01`:
     at the end, growing with resolution, which its authors do not understand).
 (4) The step ratio 0.1 instead of 0.25 changes (1) and (2) by less than a tenth of
     their values (the error is spatial).
+
+## E1, first step: a lapse condition for the collapsing overdensity (01:11)
+
+The conformal-time condition d_t alpha = -(1/3) alpha^2 K keeps alpha / gamma^(1/6)
+fixed at every point (zero shift), so the lapse reaches zero only with the volume
+element: the extreme case ran into the singularity (C2 first runs). Alternative in the
+same family, d_t alpha = -(1/3) gamma^(1/6) alpha K (`<z4c> lapse_volume = 1/3`,
+`lapse_harmonic = 0`): the homogeneous universe again has alpha = a, and now
+alpha - gamma^(1/6) is fixed at every point. At the overdensity that constant is
+negative (about 2 psi_N = -0.18 for the amplitude 0.05), so the lapse goes to zero when
+the local gamma^(1/6) has fallen to 0.18, before the volume element vanishes, and the
+approach is exponential as with the 1+log condition (the right-hand side is linear in
+alpha). No explicit time dependence and no global quantity is needed.
+Check: homogeneous universe, 16 steps, alpha / a - 1 = -2e-8 (as with the old condition).
+Written before the run `cosmo/east_d0.05_n64_lv` (data of the v2 run, new condition, no
+particle removal): the lapse at the overdensity turns around near a = 15 as before,
+then falls towards zero and stays positive; the run passes a = 18.6, where the old
+condition failed, and reaches the end at a = 28 with every particle kept. Not known:
+whether 64 cells without refinement can hold the gradients around the frozen region; a
+failure by non-finite fields close to the overdensity after a = 19 would point to
+resolution, a failure before a = 15 to the condition itself. The slices differ from
+those of the other runs at first order in the potential, so only observer quantities
+compare.
