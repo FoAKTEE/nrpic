@@ -227,6 +227,7 @@ def coplanar(run_id, supplement_run=None):
         ax.set_yscale("log")
         ax.set_title(title)
         ax.set_xlabel(r"$\phi/\pi$ (SKR convention)")
+        ax.set_xticks([-1, -0.5, 0, 0.5] if tag == "pro" else [-0.5, 0, 0.5, 1])
     axs[0].set_ylabel(r"$D$")
     cax = fs.inch_axes(fig, 7.3, 0.48, 0.1, 2.65)
     fig.colorbar(pc, cax=cax, label=r"$E_2$ (grey: survives)", extend="both")
