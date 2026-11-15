@@ -663,3 +663,24 @@ Figure looked at: `figs/t7_constraint_drift.png` (the two steps lie on top of ea
 for the jittered lattice; for the plain one they join at t = 0.05).
 Consequence for the answer to Track B (REQUESTS_B.md, section 5): unchanged; a smaller
 step does not lower the constraint level of a noisy lattice.
+
+Note after T7 on the two candidates [JUDGEMENT, by hand, no run]:
+- Against the first candidate (two Ricci scalars): for gamma_ij = delta_ij / chi the
+  scalar of `ADMConstraints` is -2 D2(f)/f^2 + (3/2)(D1 f)^2/f^3 with f = 1/chi, that of
+  the conformal variables 2 D2(chi) - (5/2)(D1 chi)^2/chi. For chi = chi_0 (1 + eps n)
+  with a small noise n both are 2 chi_0 eps D2(n) to first order in eps, with the same
+  second-difference operator. They differ at order eps^2 and eps times the gradient of
+  the background, far below the residual seen. So P8's hypothesis as I worded it is
+  unlikely, although its prediction (no dependence on the step) held.
+- For the second candidate (continuity): the Hamiltonian residual changes at the rate
+  16 pi times the amount by which d_t E + d_i S^i fails to vanish in the code's
+  differences. For sources at the mesh frequency the sixth-order first difference is far
+  from the true derivative, so the failure is of the order of the noise part of
+  k rho v: 16 pi x 0.12 (density) x 0.2 (noise fraction, guessed) x 0.07 (velocity) x
+  12.6 (pi/h) = 1.1 per unit time, against 0.87 measured for the jittered lattice. The
+  same estimate with the truncation error of the 16-cell wave gives 2e-6 per unit time
+  for the plain lattice, a thousand times less than its measured rise (1.6e-3 per unit
+  time at first): the plain lattice needs another explanation (the lattice harmonics of
+  the deposit were not looked at).
+This is the constraint-compatible deposition of the brief's direction M3; it is outside
+this package.
