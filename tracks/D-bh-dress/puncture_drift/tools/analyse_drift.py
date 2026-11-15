@@ -109,6 +109,12 @@ def analyse_run(name, d, inv_dx, t0s, W):
         if t[-1] >= 250 + W:
             s2 = t >= 250
             P["slope_late"] = float(np.polyfit(t[s2], M[s2], 1)[0])
+        P["slopes"] = []
+        for lo in (t0, 100.0, 200.0, 300.0, 400.0):
+            hi = {t0: 100.0}.get(lo, lo + 100.0)
+            w = (t >= lo) & (t <= hi)
+            if lo >= t0 and hi > lo and w.sum() > 4 and t[-1] >= hi - 1:
+                P["slopes"].append((lo, hi, float(np.polyfit(t[w], M[w], 1)[0])))
         P["T"] = (t[ok] - t0).tolist()
         P["D"] = Dt[ok].tolist()
         P["envD"] = np.maximum.accumulate(np.abs(Dt[ok])).tolist()
@@ -230,6 +236,9 @@ def main():
                f"{P['slope_late']:+.2e} per M" if "slope_late" in P else "")
                + (f"; finder-setting spread of the drift D_fs = {wfs:.1e}" if wfs is not None
                   else "; no finder-setting spread (fewer than two probed dumps)"))
+            if P["slopes"]:
+                pr("    slopes per 100 M window: " + ", ".join(
+                    f"{lo:g}-{hi:g}: {sl:+.2e}" for lo, hi, sl in P["slopes"]))
             o["per_t0"][t0] = {k: v for k, v in P.items() if k not in ("T", "D", "envD")}
         out["runs"][R["name"]] = o
     pr()
