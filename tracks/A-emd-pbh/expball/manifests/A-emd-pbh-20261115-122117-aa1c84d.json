@@ -1,0 +1,72 @@
+{
+  "run_id": "A-emd-pbh-20261115-122117-aa1c84d",
+  "owner": "A-emd-pbh",
+  "purpose": "G1 of A-pre-1: FD constraint residuals vs resolution (orders (2, 4), N = [128, 256, 512]) and table interpolation error vs spacing",
+  "kind": "production",
+  "command": "python3 scripts/run_convergence.py --models smooth_tophat --Ns 128,256,512 --no-table --slab 4 --tag _smooth_tophat_N512",
+  "cwd": "/data/haiyangw/nrpic/wt/A-emd-pbh/tracks/A-emd-pbh/expball",
+  "commit": "aa1c84d67bd1502c2bd80874527c4b3bada08e3c",
+  "worktree_dirty_in_package": false,
+  "host": "anta",
+  "inputs": [],
+  "output_dir": "/data/haiyangw/nrpic/scratch/A-emd-pbh/A-emd-pbh-20261115-122117-aa1c84d",
+  "wall_time_s": 252.75,
+  "cores": 4,
+  "card_hours": 0.0,
+  "status": "ok",
+  "outputs": [
+    {
+      "path": "/data/haiyangw/nrpic/scratch/A-emd-pbh/A-emd-pbh-20261115-122117-aa1c84d/convergence.json",
+      "sha256": "823f10b58d05ab4a7cc81591f233218d71a0d3914943b5a664f33de320f99179"
+    },
+    {
+      "path": "/data/haiyangw/nrpic/scratch/A-emd-pbh/A-emd-pbh-20261115-122117-aa1c84d/fig_constraint_convergence_smooth_tophat_N512.pdf",
+      "sha256": "20384d054746f2eee478c775e0f04b798fed652f794b7a9299a918991b38ade7"
+    },
+    {
+      "path": "/data/haiyangw/nrpic/scratch/A-emd-pbh/A-emd-pbh-20261115-122117-aa1c84d/fig_constraint_convergence_smooth_tophat_N512.png",
+      "sha256": "dd7dab93c58a339f35a24300dc7d82de53900873cf350543b5348f0e0a921618"
+    },
+    {
+      "path": "/data/haiyangw/nrpic/scratch/A-emd-pbh/A-emd-pbh-20261115-122117-aa1c84d/fig_residual_maps_N128_smooth_tophat_N512.pdf",
+      "sha256": "e2fd8c0f887189bdd1aad58a7f7bed15ccf712541fee4946cd90aa170cffdec9"
+    },
+    {
+      "path": "/data/haiyangw/nrpic/scratch/A-emd-pbh/A-emd-pbh-20261115-122117-aa1c84d/fig_residual_maps_N128_smooth_tophat_N512.png",
+      "sha256": "de95c227f936b9e93dafbc905a1729b29efed18fb1d47cb4dfd32fdedaf68cfd"
+    },
+    {
+      "path": "/data/haiyangw/nrpic/scratch/A-emd-pbh/A-emd-pbh-20261115-122117-aa1c84d/planes_N128.npz",
+      "sha256": "06e49e470ec6c6af5dc9c5613f18b16e3666fc9c56739f85cea692f4dd99c260"
+    }
+  ],
+  "results": {
+    "orders": {
+      "smooth_tophat": {
+        "p2/smooth/H_L2": [
+          1.9951667119341205,
+          1.9988057386422415
+        ],
+        "p2/smooth/M_L2": [
+          1.9779023356895722,
+          1.9943713035624824
+        ],
+        "p4/smooth/H_L2": [
+          3.918750737924144,
+          3.977835958338342
+        ],
+        "p4/smooth/M_L2": [
+          3.7910855067932325,
+          3.939143033506903
+        ]
+      }
+    },
+    "table_orders": {},
+    "figures": [
+      "fig_constraint_convergence_smooth_tophat_N512.pdf",
+      "fig_constraint_convergence_smooth_tophat_N512.png",
+      "fig_residual_maps_N128_smooth_tophat_N512.pdf",
+      "fig_residual_maps_N128_smooth_tophat_N512.png"
+    ]
+  }
+}

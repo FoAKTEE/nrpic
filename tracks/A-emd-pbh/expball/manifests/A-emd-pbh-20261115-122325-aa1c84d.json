@@ -1,0 +1,55 @@
+{
+  "run_id": "A-emd-pbh-20261115-122325-aa1c84d",
+  "owner": "A-emd-pbh",
+  "purpose": "A-pre-1: Hamiltonian-constraint noise of CIC-deposited particles vs N (N = [10000, 30000, 100000, 300000, 1000000], mesh 64^3)",
+  "kind": "production",
+  "command": "python3 scripts/run_noise.py",
+  "cwd": "/data/haiyangw/nrpic/wt/A-emd-pbh/tracks/A-emd-pbh/expball",
+  "commit": "aa1c84d67bd1502c2bd80874527c4b3bada08e3c",
+  "worktree_dirty_in_package": true,
+  "host": "anta",
+  "inputs": [],
+  "output_dir": "/data/haiyangw/nrpic/scratch/A-emd-pbh/A-emd-pbh-20261115-122325-aa1c84d",
+  "wall_time_s": 154.44,
+  "cores": 4,
+  "card_hours": 0.0,
+  "status": "ok",
+  "outputs": [
+    {
+      "path": "/data/haiyangw/nrpic/scratch/A-emd-pbh/A-emd-pbh-20261115-122325-aa1c84d/fig_particle_noise.pdf",
+      "sha256": "d30bb61cc9974fe1ecf2831426849488978a2f99a120cc01984f9205bb3128da"
+    },
+    {
+      "path": "/data/haiyangw/nrpic/scratch/A-emd-pbh/A-emd-pbh-20261115-122325-aa1c84d/fig_particle_noise.png",
+      "sha256": "56386cc851facb23180c3dc208da6fd025042bcc40b85a69692377c1fa1e8783"
+    },
+    {
+      "path": "/data/haiyangw/nrpic/scratch/A-emd-pbh/A-emd-pbh-20261115-122325-aa1c84d/fig_particle_noise_maps_N1e5.pdf",
+      "sha256": "07802a36223d5966dfe5902c41f8d798a27aeb4df96d732f03134b50b7173c44"
+    },
+    {
+      "path": "/data/haiyangw/nrpic/scratch/A-emd-pbh/A-emd-pbh-20261115-122325-aa1c84d/fig_particle_noise_maps_N1e5.png",
+      "sha256": "d21f3877adcae65fd508c0f7b03cd6844e8661716e9e67a6d3c7f01bef403fd1"
+    },
+    {
+      "path": "/data/haiyangw/nrpic/scratch/A-emd-pbh/A-emd-pbh-20261115-122325-aa1c84d/noise.json",
+      "sha256": "d53a5d11046bff5979261ed7bb5e77d1a51d420a8d6c8ae699887a963c85feb1"
+    }
+  ],
+  "results": {
+    "slopes": {
+      "flat/mc": -0.5000661305169438,
+      "flat/stratified": -0.49953218711406233,
+      "flat/lattice": -0.667200488747945,
+      "smooth_tophat/mc": -0.49923896842440585,
+      "smooth_tophat/stratified": -0.49878840006043484,
+      "smooth_tophat/lattice": -0.6396919365356627
+    },
+    "figures": [
+      "fig_particle_noise.pdf",
+      "fig_particle_noise.png",
+      "fig_particle_noise_maps_N1e5.pdf",
+      "fig_particle_noise_maps_N1e5.png"
+    ]
+  }
+}

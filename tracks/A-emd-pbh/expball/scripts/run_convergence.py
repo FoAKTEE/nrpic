@@ -204,8 +204,9 @@ def make_figures(out, planes, d, L, tag=""):
                 ax.set_ylabel(("Hamiltonian" if key == "H" else "momentum") + r" $L_2/6H^2$")
             if i == 1:
                 ax.set_xlabel(r"$h/R_b$", labelpad=-2)
-            ax.set_xticks([0.005, 0.01, 0.02, 0.04])
-            ax.set_xticklabels(["0.005", "0.01", "0.02", "0.04"])
+            tk = [t for t in (0.0025, 0.005, 0.01, 0.02, 0.04) if h.min() / 1.01 <= t <= h.max() * 1.01]
+            ax.set_xticks(tk)
+            ax.set_xticklabels([f"{t:g}" for t in tk])
             ax.xaxis.set_minor_formatter(matplotlib.ticker.NullFormatter())
     fig.legend(loc="upper center", ncol=5, fontsize=8, bbox_to_anchor=(0.54, 0.995))
     files += fs.save(fig, os.path.join(d, "fig_constraint_convergence" + tag))

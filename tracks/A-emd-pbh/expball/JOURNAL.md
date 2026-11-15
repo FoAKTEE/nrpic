@@ -235,3 +235,15 @@ top-hat: H 1.44e-3, M 1.61e-2 against the octant N = 32 values 1.28e-3, 1.43e-2 
 Prediction. With N = 128, 256, 512 (same set-up as P4, order 2 and 4), the 256 -> 512
 order in the smooth region is >= 1.98 (p = 2) and >= 3.9 for both H and M (p = 4).
 Refuted if the p = 4 momentum order of the finest pair stays below 3.85.
+
+Outcome P9 (12:26 UTC), run A-emd-pbh-20261115-122117-aa1c84d: orders 128 -> 256 -> 512
+in the smooth region: p = 2: H 1.995, 1.999; M 1.978, 1.994; p = 4: H 3.919, 3.978;
+M 3.791, 3.939. As predicted (>= 1.98 and >= 3.9 for the finest pair): the smoothed top-hat
+converges at order 4, approached from below. Together with P4 this is the G1 result.
+
+Reruns with corrected figure layouts only (same code paths, same numbers):
+convergence A-emd-pbh-20261115-122121-aa1c84d (identical norms to -121654-6bfb707), noise
+A-emd-pbh-20261115-122325-aa1c84d (identical to -121659-6bfb707; slopes -0.5001 mc,
+-0.4995 stratified, -0.667 lattice for the flat ball). All figures in figures/ were looked
+at; the N = 512 figure has an x axis extending beyond the data (tick list), fixed in the
+script for later runs.
