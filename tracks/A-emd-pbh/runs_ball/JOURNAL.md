@@ -240,3 +240,25 @@ Card time so far 0.28 of the 1 card-hour of the package.
 - Horizon-formation time and horizon-mass error against the source paper's 1e-3
   (main.tex:945, 1484): NOT MEASURED in any of the four runs (SR-1 unstable before the
   collapse, SR-2 cannot resolve a 0.16 M horizon at dx = M/2 in its coordinates).
+
+## 2026-11-15, entry 4: a third resolution to t = 20 (prediction R, written before the runs)
+
+Purpose: an order of convergence for the turnaround (G2 criterion "errors of the
+turnaround time converge in mesh spacing") and the resolution dependence of the SR-1
+instability and of the SR-2 lapse pulse. dx = M/4 on 256^3 over [-32, 32]^3 (512^3 over
+the old domain does not fit on one card); the boundary at 32 M does not reach the core
+(r <= 6 M) before t ~ 26 [JUDGEMENT: light speed ~1 from 32 to 6]; t = 0 -> 20 covers the
+core turnaround (tau = 16.9; SR-2 reaches it near t = 11). New lattice of 2t with
+h = M/4 (expball `particles.lattice`, n_lat = 76, one site per cell), tracked particles
+chosen as before. Cost about 0.12 card-hours per gauge.
+
+- R1 both runs reach t = 20 with finite fields.
+- R2 core turnaround, mean proper-time error |Delta tau_ta| <= 0.02 M in both gauges;
+  largest core |eps| at tau = 16.9 below 2.5e-3 (SR-1, 6.2e-3 at dx = M/2) and below 3e-3
+  (SR-2, 7.5e-3 at dx = M/2): order >= 1.3 between M/2 and M/4.
+- R3 SR-1 largest |H| at t = 20 below 0.051 (its dx = M/2 value; 0.24 at dx = M):
+  the instability is driven by truncation error. Refuted by a larger value (the
+  signature of an ill-posed system).
+- R4 SR-2: |alpha_c/a - 1| exceeds 0.1 first between t = 6.0 and 7.0 (6.5 and 6.6 at
+  dx = M and M/2) and the central lapse peaks at 1.8-1.9 near t = 12: the pulse is a
+  property of the gauge.
