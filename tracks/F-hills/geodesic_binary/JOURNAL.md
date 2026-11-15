@@ -79,3 +79,11 @@ the deviation exceeds 1e-2, or if it follows (1 - 2M/r)^(1/2) or no dilation ins
 - Invariant drifts: E 1.7e-13 to 1.4e-12, L_z 1.6e-12 to 1.02e-11. The bound Kerr orbit's L_z
   drift (1.02e-11) is marginally above the predicted 1e-11 and below the refutation level 1e-10.
 - Figure t2_geodesic_limit.png inspected: the differences grow smoothly (no jumps at pericentre).
+
+### T1b outcome (run F-hills-20261115-130007-80eb1b9)
+
+- Newton, same data: 1.16e-10 after 100 periods, a slow secular integration drift (figure);
+  marginally above the predicted 1e-10, far below 5e-7. HRNA with mb = 1e-8: 5.03e-9, i.e. the
+  amplitude scales with v^2 = mb/(4 a0). The cause named above is confirmed: the 1/Gamma^2 of
+  each member makes a Newtonian-circular binary eccentric at order v^2 in HRNA (a property of
+  the model with the paper's initial data, not an integration error).
