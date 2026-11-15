@@ -344,3 +344,27 @@ Figure `figs/oblate_reference.png` (looked at: equatorial and polar profiles joi
 version cut the colorbar label, fixed in the third run). This is the reference the
 lead needs for an oblate component of `nrpic_cf` and an oblate sampler; it is not an
 oblate collapse.
+
+## 15:48Z First round-1 outcomes (y_c = 0.72, 0.70) and the round-2 prediction
+
+`st_yc0p720` (run core-20261115-152843-5728b1d, 1065 s of card time) and `st_yc0p700`
+(core-20261115-152842-5728b1d, 1056 s): both reach 300 M without a horizon and without
+the central lapse falling below 0.3; mean central lapse over 200-300 M 0.7079 and 0.6920
+against the equilibrium 0.7207 and 0.7039 (offsets -0.013, -0.012: inside the 0.03 of
+the rule): STABLE by the rule fixed before the runs, as predicted. Not hidden by the
+verdict: in both runs the mean central lapse drifts down in the last 100 M (50 M windows,
+y_c = 0.70: 0.7124, 0.7023, 0.6817; y_c = 0.72: 0.7201, 0.7127, 0.7031) and the swing
+grows (0.70: 0.701-0.708 in the first 50 M, 0.638-0.727 in the last 50 M), like the
+noise-driven growing oscillation of the earlier y_c = 0.819 and 0.756 runs. Whether this
+drift would end in collapse after 300 M is not tested (UNDECIDED in a longer run is
+possible). Numbers from a quick, unregistered pass of `cluster_fate.py`; the registered
+analysis follows when all runs are in.
+
+Round 2, submitted now, before the 0.66 and 0.64 outcomes (to keep the cards busy; risk
+written down: if 0.66 does not collapse, the round-2 points lie on the stable side and a
+third point below 0.66 is needed): y_c = 0.69 and 0.67, the members 0.01 above and below
+y_c* = 0.6796, same protocol, to 300 M.
+Prediction: 0.69 STABLE (with the same late drift), 0.67 COLLAPSE or UNDECIDED (its
+growth time near the threshold may exceed 300 M); if 0.67 is STABLE by the rule, the
+threshold at this resolution and noise lies below y_c* - 0.01, i.e. the cluster is more
+stable than the turning point says (which the collapse of 0.605 bounds from below).
