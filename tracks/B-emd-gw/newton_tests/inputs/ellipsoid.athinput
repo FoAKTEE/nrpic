@@ -1,0 +1,95 @@
+# Homogeneous Zel'dovich ellipsoid without background (model C of
+# tracks/B-emd-gw/baseline/BASELINE.md, test N1 of its section 4.2) in the Newtonian mode
+# of the particle module (Track B, newton_tests): isolated domain [-half, half]^3,
+# potential on the faces from the multipole expansion (order 4) about the centre of mass,
+# no expansion, G = 1. Time 0 of the run is the turnaround t_turn of the first axis.
+# Numerics of problems/newton/isolated.athinput (cloud-in-cell, no filter, Catmull-Rom).
+# The box, the mesh, the step and the end time are set on the command line by
+# scripts/run_case.sh. Options: coord/INTERFACES/newtonian_mode.md.
+
+<comment>
+problem   = Track B newton_tests: static isolated ellipsoid, Newtonian mode
+
+<job>
+basename  = newton
+
+<mesh>
+nghost    = 2
+nx1       = 64
+x1min     = -12.0
+x1max     = 12.0
+ix1_bc    = outflow
+ox1_bc    = outflow
+nx2       = 64
+x2min     = -12.0
+x2max     = 12.0
+ix2_bc    = outflow
+ox2_bc    = outflow
+nx3       = 64
+x3min     = -12.0
+x3max     = 12.0
+ix3_bc    = outflow
+ox3_bc    = outflow
+
+<meshblock>
+nx1       = 32
+nx2       = 32
+nx3       = 32
+
+<time>
+evolution  = dynamic
+integrator = rk2          # not used by the particles; the driver needs one
+cfl_number = 1.0
+nlim       = -1
+tlim       = 15.5         # t_turn + 15.5 = 25.03 t_k, past the first crossing (23.85)
+ndiag      = 100
+
+<gravity>
+four_pi_G      = 12.566370614359172   # G = 1
+threshold      = 0.0      # V cycles until the defect stops falling
+niteration     = -1
+npresmooth     = 1
+npostsmooth    = 1
+full_multigrid = false
+fmg_ncycle     = 1
+show_defect    = 0
+mg_nghost      = 1
+mg_bc          = multipole
+mporder        = 4
+auto_mporigin  = true
+root_on_host   = false
+
+<particles>
+particle_type  = nrpic
+pusher         = newton
+interp         = hermite
+dt             = 0.02
+newton_cfl     = 0.0
+newton_mg_tol  = 0.0
+newton_expansion = none
+newton_hubble  = 0.0
+newton_exponent = 2.0
+deposit        = true
+deposit_shape  = cic
+nfilter        = 0
+filter_compensate = false
+filter_comp_c  = -1.0
+deposit_comp_c = 0.0
+deposit_comp_limit = 0.0
+deposit_comp_c2 = 0.0
+hist_dcycle    = 1
+traj_dcycle    = 0
+traj_ntrack    = 0
+snap_dt        = 3.875    # four snapshots and the end
+probe_x1       = 0.0
+probe_x2       = 0.0
+probe_x3       = 0.0
+nprobe         = 0
+particle_file  = particles.nrp
+
+<problem>
+pgen_name = nrpic_newton
+
+<output1>
+file_type = rst
+dt        = 1.0e30
