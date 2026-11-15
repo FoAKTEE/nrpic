@@ -1,6 +1,6 @@
 # Stage report: E-stoch-inf G0
 
-Date: 2026-11-15 · branch `track/E-stoch-inf` at `4b4a9bcf823b` · checklist
+Date: 2026-11-15 · branch `track/E-stoch-inf` at `c04f424c3b4e` · checklist
 `tracks/E-stoch-inf/stage/G0/CHECKLIST.md` (from `nrpic-stage collect`)
 
 ## Verdict
@@ -8,8 +8,8 @@ Date: 2026-11-15 · branch `track/E-stoch-inf` at `4b4a9bcf823b` · checklist
 **FAIL**. Tag: `stage/E-stoch-inf/G0-fail-20261115` (created and pushed by the orchestrator after review, decision 0003).
 
 - 4 checklist items not PASS or NA: C2 FAIL, C8 OPEN, C18 OPEN, C20 OPEN
-- verify ran on fad8f4b; files changed since: tracks/E-stoch-inf/ladder/JOURNAL.md, tracks/E-stoch-inf/ladder/fig/proc32/fig_a2_modes.png, tracks/E-stoch-inf/ladder/fig/proc32/fig_a4_paper.png, tracks/E-stoch-inf/ladder/fig/proc32/fig_a5_parts.png, tracks/E-stoch-inf/ladder/fig/proc32/fig_constraints.png, tracks/E-stoch-inf/ladder/inputs/proc64.list (run verify again)
-- verify reported FAIL: clean, runs
+- verify ran on 5c1933b; files changed since: tracks/E-stoch-inf/ladder/JOURNAL.md, tracks/E-stoch-inf/runs/E-20261115-174008-7aee5ff/manifest.json (run verify again)
+- verify reported FAIL: runs
 - no VERIFIER_REPORT.md (step 7: verifier subagent)
 
 ## Package documents (decision 0012)
@@ -50,13 +50,13 @@ Date: 2026-11-15 · branch `track/E-stoch-inf` at `4b4a9bcf823b` · checklist
 
 ## Re-verification on a clean checkout (`nrpic-stage verify`)
 
-`nrpic-stage verify` on 2026-11-15T17:37:31Z, clean export of `fad8f4b4b80f`: **FAIL**. Details: `VERIFY_RESULTS.md`.
+`nrpic-stage verify` on 2026-11-15T17:40:45Z, clean export of `5c1933bc0f7d`: **FAIL**. Details: `VERIFY_RESULTS.md`.
 
 | Check | Result | Message |
 |---|---|---|
-| clean | FAIL | 4 uncommitted paths: commit them first (tracks/E-stoch-inf/ladder/scripts/make_figures.py, tracks/E-stoch-inf/ladder/fig/, tracks/E-stoch-inf/ladder/inputs/proc64.list, tracks/E-stoch-inf/ladder/results/) |
+| clean | PASS | worktree clean (outside the stage directory being assembled) |
 | sync | PASS | main is merged into the branch |
-| export | PASS | clean export of fad8f4b4b80f (HEAD) in /data/haiyangw/nrpic/scratch/E-stoch-inf/tmp/stage-verify/E-stoch-inf-G0-fad8f4b-20261115T173712Z/tree |
+| export | PASS | clean export of 5c1933bc0f7d (HEAD) in /data/haiyangw/nrpic/scratch/E-stoch-inf/tmp/stage-verify/E-stoch-inf-G0-5c1933b-20261115T174010Z/tree |
 | size | PASS | no committed file of the track above 5 MB |
 | note | PASS | tracks/<ID>/note/main.tex present |
 | package | PASS | EVIDENCE.md, OPEN.md, CHECKLIST.md present (decision 0012); scoping text: spec/scope/SCOPE.md |
@@ -64,7 +64,7 @@ Date: 2026-11-15 · branch `track/E-stoch-inf` at `4b4a9bcf823b` · checklist
 | style | PASS | 2 style copies equal harness/style/SHA256SUMS (czstyle.py, paperfig.py) |
 | fig-script | PASS | 7 figures, each with its script |
 | min-figs | PASS | 2 schematics and 5 data figures (brief 13.4 asks at least 2 and 0 at G0) |
-| runs | FAIL | 6 of 60 runs have problems |
+| runs | FAIL | 8 of 63 runs have problems |
 | run-notes | WARN | 30 runs read with defaults or not fully re-verifiable (nrpic-run lint) |
 | status | PASS | STATUS.md has 35 lines |
 | rerun | PASS | 7 of 7 scripts and commands ran cleanly in the export |
@@ -145,9 +145,8 @@ E-20261115-173135-858482f, E-20261115-173402-641b6e2 are on record there).
 
 ## Notes on the verification
 
-- `clean` FAIL (second verify, on fad8f4b): uncommitted files of the ladder helper of this
-  track (`ladder/`), written while it works; none belongs to this package. The first verify
-  (55ab078) found the tree clean.
+- `clean`: PASS in the verify above (5c1933b) and the first one (55ab078); a verify in
+  between (fad8f4b) failed it on uncommitted files of the ladder helper of this track.
 - `runs` FAIL: the runs named in `VERIFY_RESULTS.md` belong to other wave-2 helpers of
   this track (noise unit test at 64^3, analysis, ladder) and were still running or submitted
   when verify ran; none is a run of this package. Verify again once they are finished.
