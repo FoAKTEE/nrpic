@@ -504,3 +504,31 @@ which equals the source at HEAD.
   any coordinate differs by more than 1e-15 (the centre would then be taken at another
   time level than its record, which the identity of the counts cannot see when the
   centre moves 1e-4 M per step against particles 5.7e-6 M from the sphere).
+
+### Card checks: what ran, and the predictions for judging it (written before the
+judgement)
+
+Run core-20261115-161528-ff00411 (Slurm job 4456) started at 17:12 UTC and was stopped by
+its 50-minute limit [VERIFIED, `sacct`]: t1_circ and t3_acc completed in 1.2 s and 8.5 s
+of card time; t4_kepler took about 0.33 s per step (one multigrid solve per step on a
+32^3 mesh of 4^3 MeshBlocks: launch-bound on a card) and reached t = 18.02 of 20; the
+remaining cases (t5_pair, mem2700, bench16, bench32, t1_accept) never started. My
+mistake of planning: the Kepler case was put on the card without timing its step there.
+Card time of this package: 0.0681 (T1 reproduction) + 0.8383 = 0.906 card-hours of the
+one allowed; no further card job in this package.
+
+Predictions for the judgement (those of "Card runs" above, adapted to what ran, plus a
+comparison with the processor runs that I did not write down before):
+- t1_circ: r in [8.0000, 8.0012] M for 300 M, relative errors of E and L_z below 1e-6 and
+  6e-6; the trajectory differs from the processor trajectory (run
+  core-20261115-163155-0f014b4, case b_new) by less than 1e-8 M in position at every
+  record (rounding of a different instruction order, grown over 3000 steps);
+- t3_acc: 192 / 84 / 16 crossings, identity to 1e-15, 192 removal records, counters
+  (2, 2, 2, 2) and (3, 3, 3, 3); sums of m E equal to the processor run (case mesh of
+  core-20261115-163327-0f014b4) within 1e-12 relative; removal times equal;
+- t4_kepler, window t <= 18.02: pericentre passages and crossings of r = 1 in the
+  history equal to the exact events before the last record; distance to the exact
+  orbit below 1e-4 (processor: 6.8e-5 over 20); trajectory equal to the processor run
+  (case kepler of core-20261115-160805-5d1663f) within 1e-9 at every common record.
+Refuted by any count that differs, by an identity off by more than rounding, or by a
+card-processor difference beyond the bound (a defect of the card build in the new code).

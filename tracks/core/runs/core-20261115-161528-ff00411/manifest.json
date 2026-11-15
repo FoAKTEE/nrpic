@@ -61,5 +61,22 @@
  "host": "anta",
  "start_utc": "2026-11-15T16:15:29Z",
  "cores": 1,
- "status": "running"
+ "status": "stopped",
+ "slurm_job": 4456,
+ "slurm_state": "TIMEOUT (limit 00:50:00; elapsed 00:50:18)",
+ "card_start_utc": "2026-11-15T17:12:10Z",
+ "end_utc": "2026-11-15T18:02:28Z",
+ "wall_time_s": 3018.0,
+ "card_hours": 0.8383,
+ "completed_by": "hand, session dfix-2 (runreg.py had ended with session dfix-1)",
+ "cases_state": {
+  "t1_circ": "completed (exit 0, 1.2 s)",
+  "t3_acc": "completed (exit 0, 8.5 s)",
+  "t4_kepler": "stopped by the Slurm limit at t = 18.02 of 20 (cycle 9010; about 0.33 s per step on the card)",
+  "t5_pair": "not started",
+  "mem2700": "not started",
+  "bench16": "not started",
+  "bench32": "not started",
+  "t1_accept": "not started"
+ }
 }
