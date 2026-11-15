@@ -222,3 +222,14 @@ Kerr-Schild metric is singular). Fixed: these energies are NaN when not computab
 capture the stop test follows the surviving member (r > 150 r_t outwards, or turning around
 beyond 10 r_t). Runs without captures are unaffected (checked: beta = 5, phi = 1.41 gives the
 same r_cm(t_s) = 31.11 r_g and eps1 to all digits).
+
+## T4 HRNA force in the 3+1 (x, u_i) form of the NRPIC pushers (before running)
+
+Derivation (tests/t4_force_31.py docstring): du_i/dt = geodesic part + (alpha/W)(A_i +
+u_i U^j A_j), U^j = gamma^jk u_k - W beta^j/alpha, A_i the Newtonian pair acceleration. This is
+the form an AthenaK implementation would use. Test: the beta = 5, phi = 1.41 prograde
+encounter released at 5 r_t, Cartesian Kerr-Schild with a = 0 and 0.9, integrated with scipy
+DOP853 on python/nrpic/kerr.py, compared with hrna.py at the same coordinate times.
+Prediction: the relative orbit x1 - x2 agrees to < 1e-7 a0 and member positions to < 1e-6 r_g.
+Refuted if the relative-orbit difference exceeds 1e-5 a0 (a wrong 1/Gamma^2, projection or
+index placement changes the internal orbit at order v^2 ~ 1e-2 of the separation or more).
