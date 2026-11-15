@@ -31,6 +31,53 @@ tabulated lapse is used, `alpha = (1 - M/2r)/(1 + M/2r)`.
 Interpolation inside the table is cubic, so `dr` should resolve the profile
 (at least a few thousand points across the matter).
 
+## Radial table with extrinsic curvature (`*.tab`, format 2)
+
+Spherical initial data that are not time-symmetric (an expanding or contracting ball,
+a black hole in a vacuum bubble). The interface text with the reasons is
+`tracks/core/interfaces/spherical_id_format2.md` (proposal for
+`coord/INTERFACES/spherical_id_format2.md`). Plain text; header lines begin with `#`
+and must include
+
+    # format = 2
+    # columns = rbar u KL KT alpha betar
+    # exterior = pg | zero
+
+and may include `# breaks = r_1 r_2 ...` (at most four). Each data row is
+
+    rbar   u   KL   KT   alpha   betar
+
+on the uniform grid `rbar_k = k drbar`, `k = 0 .. N-1` (at least eight rows), with
+
+- `u = psi - 1` as in format 1 (`gamma_ij = psi^4 delta_ij`, `psi = 1 +` the sum of
+  the `u` of all components of the run);
+- `KL`, `KT` the radial and the tangential eigenvalue of `K^i_j`, so that
+  `K_ij = psi^4 [KT delta_ij + (KL - KT) n_i n_j]` with `n^i = (x - x_c)^i / rbar` and the
+  full `psi`; trace `K = KL + 2 KT`, negative for expansion;
+- `alpha` the lapse and `betar` the radial shift, `beta^i = betar n^i`.
+
+A break is a radius, strictly between two rows, at which the columns may be
+discontinuous (a sharp dust surface: `KL` jumps); the cubic interpolation takes its four
+rows from one side of every break. Beyond the last row `u` continues as in format 1;
+`exterior = pg` continues `KL`, `KT` as `rbar^(-3/2)` and `betar` as `rbar^(-1/2)`
+through the last row and keeps the last `alpha` (exact for a Painleve-Gullstrand
+exterior with `psi = 1`), `exterior = zero` sets `KL = KT = betar = 0`. Other header
+lines `# key = value` are copied to the log of the run.
+
+The problem generator `nrpic_cf` recognises the format by the header line; one
+component of a run may be such a table. Start options: `<problem> lapse = table` takes
+the `alpha` column of component `lapse_comp` (the other lapse choices are unchanged);
+`<problem> shift = zero | table` (default `zero`) takes `betar` of component
+`shift_comp`. The generator of a table answers for the constraints of the table with
+its matter; dust at rest in the slice has `u_i = 0` in the particle file.
+
+Python: `nrpic.io.write_tab2`, `read_tab2` and the class `Table2`, which evaluates a
+table by the rule of the problem generator; `nrpic.expanding_ball` (class `Ball`: the
+marginally bound expanding dust ball, sharp or with a smooth edge, and a bound ball that
+turns around; exact radii against proper time; `residuals_1d`, the offline check of the
+constraints of any table); command line `problems/ic/make_ball.py`, input
+`problems/ball/ball.athinput`.
+
 ## Run outputs of the particle module
 
 All binary files are written by one rank in native byte order. `<base>` is
