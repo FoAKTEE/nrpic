@@ -295,7 +295,8 @@ in this estimate.
    momenta at d = 10 M) is not established. [TO VERIFY: longer run, PN momenta]
 5. Shift damping and unequal masses (section 4): with one `shift_eta` the tracker of
    the heavy hole stays behind (measured), and on the coarse mesh of the scouting run
-   it even drifts against the momentum. What a tracker that lags by a sizeable fraction of the
+   it even drifts against the momentum. What a tracker that lags by a sizeable
+   fraction of the
    horizon radius does to the refinement, the finder (centred on the tracker) and the
    evolution over a Hills passage is not tested. A damping that scales with the local
    mass is source work in the gauge of Z4c, outside this package. [TO VERIFY]
