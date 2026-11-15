@@ -1,26 +1,61 @@
 {
-  "run_id": "A-emd-pbh-20261115-113446-024989f",
-  "command": "python3 check_criteria.py",
-  "cwd": "/data/haiyangw/nrpic/wt/A-emd-pbh/tracks/A-emd-pbh/criteria",
-  "commit": "024989fb13b1127a096d6897aea81a683f044030",
-  "worktree_dirty_in_package": false,
-  "inputs": [
-    {
-      "path": "tracks/A-emd-pbh/criteria/emd_criteria.py",
-      "sha256": "9bab0d6dcdc162b4a22ac814072970c951e19151c30afb125770e1da53c1f0a6"
-    },
-    {
-      "path": "tracks/A-emd-pbh/criteria/check_criteria.py",
-      "sha256": "8387a851765ef1412acaf3014d3902daddd3d30a447607bbdd4cc7e75d358510"
-    }
-  ],
-  "output_dir": "/data/haiyangw/nrpic/scratch/A-emd-pbh/A-emd-pbh-20261115-113446-024989f",
-  "purpose": "A-pre-2: check the analytic criteria against numbers printed in 1609.01588, 1707.03595, 2211.13950, 2507.18312, 2508.10070",
-  "kind": "scouting",
-  "started_utc": "2026-11-15T11:34:46+00:00",
-  "wall_time_s": 842.5,
-  "cores": 1,
-  "card_hours": 0.0,
-  "host": "anta",
-  "exit": "ok"
+ "run_id": "A-emd-pbh-20261115-113446-024989f",
+ "command": "python3 check_criteria.py",
+ "cwd": "/data/haiyangw/nrpic/wt/A-emd-pbh/tracks/A-emd-pbh/criteria",
+ "commit": "024989fb13b1127a096d6897aea81a683f044030",
+ "worktree_dirty_in_package": false,
+ "inputs": [
+  {
+   "path": "tracks/A-emd-pbh/criteria/emd_criteria.py",
+   "sha256": "9bab0d6dcdc162b4a22ac814072970c951e19151c30afb125770e1da53c1f0a6"
+  },
+  {
+   "path": "tracks/A-emd-pbh/criteria/check_criteria.py",
+   "sha256": "8387a851765ef1412acaf3014d3902daddd3d30a447607bbdd4cc7e75d358510"
+  }
+ ],
+ "output_dir": "/data/haiyangw/nrpic/scratch/A-emd-pbh/A-emd-pbh-20261115-113446-024989f",
+ "purpose": "A-pre-2: check the analytic criteria against numbers printed in 1609.01588, 1707.03595, 2211.13950, 2507.18312, 2508.10070",
+ "kind": "scouting",
+ "started_utc": "2026-11-15T11:34:46+00:00",
+ "wall_time_s": 842.5,
+ "cores": 1,
+ "card_hours": 0.0,
+ "host": "anta",
+ "exit": "ok",
+ "status": "completed",
+ "gate": "G1",
+ "outputs": {
+  "dir": "scratch/A-emd-pbh/A-emd-pbh-20261115-113446-024989f"
+ },
+ "launcher": "local",
+ "track": "A-emd-pbh",
+ "lead_corrections": [
+  {
+   "field": "status",
+   "was": null,
+   "now": "completed",
+   "why": "harness state names",
+   "by": "A-emd-pbh lead",
+   "at": "2026-11-15T12:58Z"
+  },
+  {
+   "field": "gate",
+   "was": null,
+   "now": "G1",
+   "why": "field of the template",
+   "by": "A-emd-pbh lead",
+   "at": "2026-11-15T12:58Z"
+  },
+  {
+   "field": "outputs",
+   "was": "missing or not a mapping",
+   "now": {
+    "dir": "scratch/A-emd-pbh/A-emd-pbh-20261115-113446-024989f"
+   },
+   "why": "nrpic-run reads outputs.dir",
+   "by": "A-emd-pbh lead",
+   "at": "2026-11-15T12:58Z"
+  }
+ ]
 }

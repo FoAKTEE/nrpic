@@ -1,0 +1,72 @@
+{
+ "run_id": "A-emd-pbh-20261115-113810-e02c969",
+ "owner": "A-emd-pbh",
+ "helper": "gauge",
+ "command": "python3 tracks/A-emd-pbh/gauge/scripts/kd_compare.py --out /data/haiyangw/nrpic/scratch/A-emd-pbh/A-emd-pbh-20261115-113810-e02c969",
+ "cwd": "/data/haiyangw/nrpic/wt/A-emd-pbh",
+ "commit": "e02c9694ce903617671dc3685c20231ed92e14ac",
+ "inputs": [
+  {
+   "path": "tracks/A-emd-pbh/gauge/scripts/kd_compare.py",
+   "sha256": "098c581d550718c5132cda1f8aef23ddfdcc30ce140194de79275b3206ccc95a",
+   "at_commit": "e02c969"
+  },
+  {
+   "path": "tracks/A-emd-pbh/gauge/scripts/lapse_toy.py",
+   "sha256": "5516f0ee6f72c579612588d83afeb939ab7c462b094aebab08a78f691a23fca5",
+   "at_commit": "e02c969"
+  },
+  {
+   "path": "python/nrpic/figstyle.py",
+   "sha256": "5d3b78ad8c2c02e428b675e3d7e35a32cbc8f053d1aeedd4fde66f27da55676e",
+   "at_commit": "e02c969"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/runs/cosmo/east_d0.05_n64_kd/east.nrpic.hst",
+   "sha256": "10fa6adc9b078a8f5ad78513048b0812e575599d813c9d1e8ce14ee8f2ede1fb",
+   "note": "read only"
+  }
+ ],
+ "output_dir": "/data/haiyangw/nrpic/scratch/A-emd-pbh/A-emd-pbh-20261115-113810-e02c969/",
+ "purpose": "Gauge T4: uniform-lapse toy (conformal_kd) against the lapse at the overdensity of the 3D lapse-driver run east_d0.05_n64_kd",
+ "kind": "scouting",
+ "machine": "anta, login node, one processor core (OMP_NUM_THREADS=1)",
+ "wall_time_s": 25.71,
+ "cores": 1,
+ "card_hours": 0.0,
+ "status": "completed",
+ "gate": "G1",
+ "outputs": {
+  "dir": "scratch/A-emd-pbh/A-emd-pbh-20261115-113810-e02c969"
+ },
+ "launcher": "local",
+ "track": "A-emd-pbh",
+ "lead_corrections": [
+  {
+   "field": "status",
+   "was": "done",
+   "now": "completed",
+   "why": "harness state names",
+   "by": "A-emd-pbh lead",
+   "at": "2026-11-15T12:58Z"
+  },
+  {
+   "field": "gate",
+   "was": null,
+   "now": "G1",
+   "why": "field of the template",
+   "by": "A-emd-pbh lead",
+   "at": "2026-11-15T12:58Z"
+  },
+  {
+   "field": "outputs",
+   "was": "missing or not a mapping",
+   "now": {
+    "dir": "scratch/A-emd-pbh/A-emd-pbh-20261115-113810-e02c969"
+   },
+   "why": "nrpic-run reads outputs.dir",
+   "by": "A-emd-pbh lead",
+   "at": "2026-11-15T12:58Z"
+  }
+ ]
+}

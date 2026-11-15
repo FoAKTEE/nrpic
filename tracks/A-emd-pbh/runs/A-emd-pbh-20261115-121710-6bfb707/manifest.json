@@ -1,0 +1,141 @@
+{
+ "run_id": "A-emd-pbh-20261115-121710-6bfb707",
+ "owner": "A-emd-pbh",
+ "purpose": "A-pre-1 data set: expanding dust ball, model smooth_tophat, H R_b = 0.5, bound core delta_c = 1.0, R1 = 0.3 R_b, R2 = 0.75 R_b",
+ "kind": "scouting",
+ "command": "python3 scripts/make_dataset.py --model smooth_tophat --HRb 0.5 --delta-c 1.0 --R1 0.3 --R2 0.75",
+ "cwd": "/data/haiyangw/nrpic/wt/A-emd-pbh/tracks/A-emd-pbh/expball",
+ "commit": "6bfb707e3c042d015832ad2ef92bd1ec54007a38",
+ "worktree_dirty_in_package": true,
+ "host": "anta",
+ "inputs": [],
+ "output_dir": "/data/haiyangw/nrpic/scratch/A-emd-pbh/A-emd-pbh-20261115-121710-6bfb707",
+ "wall_time_s": 11.92,
+ "cores": 4,
+ "card_hours": 0.0,
+ "status": "completed",
+ "outputs": {
+  "dir": "scratch/A-emd-pbh/A-emd-pbh-20261115-121710-6bfb707"
+ },
+ "results": {
+  "summary": {
+   "H": 0.0625,
+   "Rb": 8.0,
+   "HRb": 0.5,
+   "edge_width": 0.0,
+   "M_misner_sharp": 1.0,
+   "rho_b": 0.0004662742473395371,
+   "t_i": 10.666666666666666,
+   "hubble_radius": 16.0,
+   "rbar_matter": 8.0,
+   "rest_mass": 1.0063074443244628,
+   "psi_centre": 1.0138359086868192,
+   "max_2m_over_R": 0.24998766682711096,
+   "R_at_max_2m_over_R": 7.999802666800001,
+   "anti_trapped_surface_on_slice": false,
+   "interp_rbar_max": 12.8,
+   "profile": "smooth_tophat",
+   "delta_c": 1.0,
+   "R1": 2.4,
+   "R2": 6.0,
+   "local_delta_min": -0.5633331788300492
+  },
+  "predictions": {
+   "n_shells": 400,
+   "t_i": 10.666666666666666,
+   "first_horizon": {
+    "tau_ah": 44.34927021035343,
+    "R_i": 2.74,
+    "m": 0.08035172544574115,
+    "index": 136
+   },
+   "tau_ta_innermost": 16.893768950040425,
+   "tau_c_innermost": 44.454204566747514,
+   "R_i_innermost": 0.02,
+   "tau_ta_min": 16.893768950040418,
+   "tau_c_min": 44.45420456674751,
+   "core_tau_ta": 16.893768950040425,
+   "core_tau_c": 44.454204566747514,
+   "core_tau_ta_spread": 2.1316282072803006e-14,
+   "core_edge_shell": {
+    "R_i": 2.4,
+    "m": 0.05399999999999999,
+    "tau_ah": 44.381465741946926
+   },
+   "shell_crossing_before_core_crunch": Infinity
+  },
+  "files": {
+   "table": "expball_smooth_tophat_HRb0p5_dc1_R10p3_R20p75.tab",
+   "particles_stratified": "expball_smooth_tophat_HRb0p5_dc1_R10p3_R20p75_strat_N100000_s1.nrp",
+   "particles_lattice": "expball_smooth_tophat_HRb0p5_dc1_R10p3_R20p75_lat58.nrp",
+   "mesh": "expball_smooth_tophat_HRb0p5_dc1_R10p3_R20p75_mesh64.npz",
+   "shells": "expball_smooth_tophat_HRb0p5_dc1_R10p3_R20p75_shells.txt"
+  }
+ },
+ "dataset": true,
+ "gate": "G1",
+ "outputs_as_written": [
+  {
+   "path": "/data/haiyangw/nrpic/scratch/A-emd-pbh/A-emd-pbh-20261115-121710-6bfb707/expball_smooth_tophat_HRb0p5_dc1_R10p3_R20p75.json",
+   "sha256": "9caa0a7f3597fdc958820c23540695a8871fa7a787fff15c591c8faac56776f5"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/scratch/A-emd-pbh/A-emd-pbh-20261115-121710-6bfb707/expball_smooth_tophat_HRb0p5_dc1_R10p3_R20p75.tab",
+   "sha256": "45303e3fe4bc016b0f3e2550c57eef6285344f4c32b0889c2e08d3b346aa2e07"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/scratch/A-emd-pbh/A-emd-pbh-20261115-121710-6bfb707/expball_smooth_tophat_HRb0p5_dc1_R10p3_R20p75_lat58.nrp",
+   "sha256": "ab92ac1f5a9ee5c508998b3c2243102d293fdd0a443a84585e2e1668219fa32f"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/scratch/A-emd-pbh/A-emd-pbh-20261115-121710-6bfb707/expball_smooth_tophat_HRb0p5_dc1_R10p3_R20p75_mesh64.npz",
+   "sha256": "4d494f82d65b84c45ee4430e8c7c598fc1052518e87a130a6f5ca3fbc6fe9587"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/scratch/A-emd-pbh/A-emd-pbh-20261115-121710-6bfb707/expball_smooth_tophat_HRb0p5_dc1_R10p3_R20p75_shells.txt",
+   "sha256": "5a8f14d33e88b7f0a3872dd7a6f4207f291cc3c69fe8b42c9ae6c55e0bc18323"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/scratch/A-emd-pbh/A-emd-pbh-20261115-121710-6bfb707/expball_smooth_tophat_HRb0p5_dc1_R10p3_R20p75_strat_N100000_s1.nrp",
+   "sha256": "b00e38d8a71a45905725fcd66b2a8e4c721baff883186828381f54854228d600"
+  }
+ ],
+ "launcher": "local",
+ "track": "A-emd-pbh",
+ "lead_corrections": [
+  {
+   "field": "status",
+   "was": "ok",
+   "now": "completed",
+   "why": "harness state names",
+   "by": "A-emd-pbh lead",
+   "at": "2026-11-15T12:58Z"
+  },
+  {
+   "field": "kind",
+   "was": "production",
+   "now": "scouting",
+   "why": "offline analysis before G0 passed; production needs a preregistered plan and the G0 tag",
+   "by": "A-emd-pbh lead",
+   "at": "2026-11-15T12:58Z"
+  },
+  {
+   "field": "gate",
+   "was": null,
+   "now": "G1",
+   "why": "field of the template",
+   "by": "A-emd-pbh lead",
+   "at": "2026-11-15T12:58Z"
+  },
+  {
+   "field": "outputs",
+   "was": "missing or not a mapping",
+   "now": {
+    "dir": "scratch/A-emd-pbh/A-emd-pbh-20261115-121710-6bfb707"
+   },
+   "why": "nrpic-run reads outputs.dir",
+   "by": "A-emd-pbh lead",
+   "at": "2026-11-15T12:58Z"
+  }
+ ]
+}

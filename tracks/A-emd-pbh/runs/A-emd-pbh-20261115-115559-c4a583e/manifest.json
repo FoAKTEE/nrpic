@@ -1,0 +1,64 @@
+{
+ "run_id": "A-emd-pbh-20261115-115559-c4a583e",
+ "owner": "A-emd-pbh",
+ "purpose": "A-pre-1: Hamiltonian-constraint noise of CIC-deposited particles vs N (N = [10000, 30000, 100000, 300000, 1000000], mesh 64^3)",
+ "kind": "scouting",
+ "command": "python3 scripts/run_noise.py",
+ "cwd": "/data/haiyangw/nrpic/wt/A-emd-pbh/tracks/A-emd-pbh/expball",
+ "commit": "c4a583e",
+ "inputs": [],
+ "output_dir": "/data/haiyangw/nrpic/scratch/A-emd-pbh/A-emd-pbh-20261115-115559-c4a583e",
+ "cores": 4,
+ "card_hours": 0.0,
+ "status": "stopped",
+ "error": "killed by the helper (kill <pid>) at about 12:02 UTC: the smoothed top-hat interpolant build was too slow because y_of_Delta and R_of_rbar ran to their iteration caps (convergence tolerance at the last bit oscillated); partial.log holds the lines printed before the kill (flat, flat_taper, tophat for the convergence run; flat for the noise run)",
+ "outputs": {
+  "dir": "scratch/A-emd-pbh/A-emd-pbh-20261115-115559-c4a583e"
+ },
+ "manifest_written_by_hand": true,
+ "gate": "G1",
+ "outputs_as_written": [
+  {
+   "path": "/data/haiyangw/nrpic/scratch/A-emd-pbh/A-emd-pbh-20261115-115559-c4a583e/partial.log",
+   "sha256": "d938157c6eca6b76720a6a38066e4d4d9c3bf6b664d18456d8208e9593c193a0"
+  }
+ ],
+ "launcher": "local",
+ "track": "A-emd-pbh",
+ "lead_corrections": [
+  {
+   "field": "status",
+   "was": "aborted",
+   "now": "stopped",
+   "why": "harness state names",
+   "by": "A-emd-pbh lead",
+   "at": "2026-11-15T12:58Z"
+  },
+  {
+   "field": "kind",
+   "was": "production",
+   "now": "scouting",
+   "why": "offline analysis before G0 passed; production needs a preregistered plan and the G0 tag",
+   "by": "A-emd-pbh lead",
+   "at": "2026-11-15T12:58Z"
+  },
+  {
+   "field": "gate",
+   "was": null,
+   "now": "G1",
+   "why": "field of the template",
+   "by": "A-emd-pbh lead",
+   "at": "2026-11-15T12:58Z"
+  },
+  {
+   "field": "outputs",
+   "was": "missing or not a mapping",
+   "now": {
+    "dir": "scratch/A-emd-pbh/A-emd-pbh-20261115-115559-c4a583e"
+   },
+   "why": "nrpic-run reads outputs.dir",
+   "by": "A-emd-pbh lead",
+   "at": "2026-11-15T12:58Z"
+  }
+ ]
+}

@@ -1,30 +1,65 @@
 {
-  "run_id": "A-emd-pbh-20261115-115122-2eb3117",
-  "command": "python3 scan_disagreement.py",
-  "cwd": "/data/haiyangw/nrpic/wt/A-emd-pbh/tracks/A-emd-pbh/criteria",
-  "commit": "2eb3117332f93669f86acef26d961a55e39ba0d7",
-  "worktree_dirty_in_package": false,
-  "inputs": [
-    {
-      "path": "tracks/A-emd-pbh/criteria/emd_criteria.py",
-      "sha256": "61ee84c3c5e8159ca6e2743a303111629e3c6f3f7ee10e51323bcd869e8e2e16"
-    },
-    {
-      "path": "tracks/A-emd-pbh/criteria/predict.py",
-      "sha256": "86523274fe6132cd57f4f76cf65fd331aad14f5d4df0b1c7871ddd690edf8857"
-    },
-    {
-      "path": "tracks/A-emd-pbh/criteria/scan_disagreement.py",
-      "sha256": "0e24e76cb83b6e10bab04bed66a2879c113c3320bd1a1f021740fb4aa97dd642"
-    }
-  ],
-  "output_dir": "/data/haiyangw/nrpic/scratch/A-emd-pbh/A-emd-pbh-20261115-115122-2eb3117",
-  "purpose": "A-pre-2: scan the analytic criteria over the brief's range (e, p, delta, sigma_v, a_end) and record where they disagree",
-  "kind": "scouting",
-  "started_utc": "2026-11-15T11:51:22+00:00",
-  "wall_time_s": 4.6,
-  "cores": 1,
-  "card_hours": 0.0,
-  "host": "anta",
-  "exit": "ok"
+ "run_id": "A-emd-pbh-20261115-115122-2eb3117",
+ "command": "python3 scan_disagreement.py",
+ "cwd": "/data/haiyangw/nrpic/wt/A-emd-pbh/tracks/A-emd-pbh/criteria",
+ "commit": "2eb3117332f93669f86acef26d961a55e39ba0d7",
+ "worktree_dirty_in_package": false,
+ "inputs": [
+  {
+   "path": "tracks/A-emd-pbh/criteria/emd_criteria.py",
+   "sha256": "61ee84c3c5e8159ca6e2743a303111629e3c6f3f7ee10e51323bcd869e8e2e16"
+  },
+  {
+   "path": "tracks/A-emd-pbh/criteria/predict.py",
+   "sha256": "86523274fe6132cd57f4f76cf65fd331aad14f5d4df0b1c7871ddd690edf8857"
+  },
+  {
+   "path": "tracks/A-emd-pbh/criteria/scan_disagreement.py",
+   "sha256": "0e24e76cb83b6e10bab04bed66a2879c113c3320bd1a1f021740fb4aa97dd642"
+  }
+ ],
+ "output_dir": "/data/haiyangw/nrpic/scratch/A-emd-pbh/A-emd-pbh-20261115-115122-2eb3117",
+ "purpose": "A-pre-2: scan the analytic criteria over the brief's range (e, p, delta, sigma_v, a_end) and record where they disagree",
+ "kind": "scouting",
+ "started_utc": "2026-11-15T11:51:22+00:00",
+ "wall_time_s": 4.6,
+ "cores": 1,
+ "card_hours": 0.0,
+ "host": "anta",
+ "exit": "ok",
+ "status": "completed",
+ "gate": "G1",
+ "outputs": {
+  "dir": "scratch/A-emd-pbh/A-emd-pbh-20261115-115122-2eb3117"
+ },
+ "launcher": "local",
+ "track": "A-emd-pbh",
+ "lead_corrections": [
+  {
+   "field": "status",
+   "was": null,
+   "now": "completed",
+   "why": "harness state names",
+   "by": "A-emd-pbh lead",
+   "at": "2026-11-15T12:58Z"
+  },
+  {
+   "field": "gate",
+   "was": null,
+   "now": "G1",
+   "why": "field of the template",
+   "by": "A-emd-pbh lead",
+   "at": "2026-11-15T12:58Z"
+  },
+  {
+   "field": "outputs",
+   "was": "missing or not a mapping",
+   "now": {
+    "dir": "scratch/A-emd-pbh/A-emd-pbh-20261115-115122-2eb3117"
+   },
+   "why": "nrpic-run reads outputs.dir",
+   "by": "A-emd-pbh lead",
+   "at": "2026-11-15T12:58Z"
+  }
+ ]
 }

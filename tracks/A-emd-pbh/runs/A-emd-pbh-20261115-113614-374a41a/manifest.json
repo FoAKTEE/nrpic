@@ -1,0 +1,62 @@
+{
+ "run_id": "A-emd-pbh-20261115-113614-374a41a",
+ "owner": "A-emd-pbh",
+ "helper": "gauge",
+ "command": "python3 tracks/A-emd-pbh/gauge/scripts/lapse_toy.py --out /data/haiyangw/nrpic/scratch/A-emd-pbh/A-emd-pbh-20261115-113614-374a41a --X 56",
+ "cwd": "/data/haiyangw/nrpic/wt/A-emd-pbh",
+ "commit": "374a41a2514531c4d26cfedc2431ab1dd089a6d1",
+ "inputs": [
+  {
+   "path": "tracks/A-emd-pbh/gauge/scripts/lapse_toy.py",
+   "sha256": "5516f0ee6f72c579612588d83afeb939ab7c462b094aebab08a78f691a23fca5",
+   "at_commit": "374a41a"
+  },
+  {
+   "path": "python/nrpic/figstyle.py",
+   "sha256": "5d3b78ad8c2c02e428b675e3d7e35a32cbc8f053d1aeedd4fde66f27da55676e",
+   "at_commit": "374a41a"
+  }
+ ],
+ "output_dir": "/data/haiyangw/nrpic/scratch/A-emd-pbh/A-emd-pbh-20261115-113614-374a41a/",
+ "purpose": "Gauge T1: lapse of candidate slicing conditions in homogeneous EdS and top-hat regions (zero shift), X = 56",
+ "kind": "scouting",
+ "machine": "anta, login node, one processor core (OMP_NUM_THREADS=1)",
+ "wall_time_s": 50.93,
+ "cores": 1,
+ "card_hours": 0.0,
+ "status": "completed",
+ "gate": "G1",
+ "outputs": {
+  "dir": "scratch/A-emd-pbh/A-emd-pbh-20261115-113614-374a41a"
+ },
+ "launcher": "local",
+ "track": "A-emd-pbh",
+ "lead_corrections": [
+  {
+   "field": "status",
+   "was": "done",
+   "now": "completed",
+   "why": "harness state names",
+   "by": "A-emd-pbh lead",
+   "at": "2026-11-15T12:58Z"
+  },
+  {
+   "field": "gate",
+   "was": null,
+   "now": "G1",
+   "why": "field of the template",
+   "by": "A-emd-pbh lead",
+   "at": "2026-11-15T12:58Z"
+  },
+  {
+   "field": "outputs",
+   "was": "missing or not a mapping",
+   "now": {
+    "dir": "scratch/A-emd-pbh/A-emd-pbh-20261115-113614-374a41a"
+   },
+   "why": "nrpic-run reads outputs.dir",
+   "by": "A-emd-pbh lead",
+   "at": "2026-11-15T12:58Z"
+  }
+ ]
+}

@@ -1,0 +1,68 @@
+{
+ "run_id": "A-emd-pbh-20261115-113822-87cba08",
+ "owner": "A-emd-pbh",
+ "helper": "newton",
+ "command": "python3 tracks/A-emd-pbh/newton/compare_snapshots.py --out /data/haiyangw/nrpic/scratch/A-emd-pbh/A-emd-pbh-20261115-113822-87cba08 --selftest",
+ "cwd": "/data/haiyangw/nrpic/wt/A-emd-pbh",
+ "commit": "87cba0849331c1d11f032b82016e93a478b561b9",
+ "inputs": [
+  {
+   "path": "tracks/A-emd-pbh/newton/compare_snapshots.py",
+   "sha256": "6760106b323aeb2c6124f927830dd22a4709cc9b0d651a20f0eb9122b90d22e9"
+  },
+  {
+   "path": "tracks/A-emd-pbh/newton/tophat.py",
+   "sha256": "18782ebc87ce74a5b3830e7916c844a89ca5ab6b5a43c8cc0ba91d095e8c211b"
+  },
+  {
+   "path": "tracks/A-emd-pbh/newton/ellipsoid.py",
+   "sha256": "01389674e104789dcd6d324c618ac154075fd566d8960b63d9f50b4d9144151d"
+  },
+  {
+   "path": "python/nrpic/figstyle.py",
+   "sha256": "5d3b78ad8c2c02e428b675e3d7e35a32cbc8f053d1aeedd4fde66f27da55676e"
+  }
+ ],
+ "output_dir": "/data/haiyangw/nrpic/scratch/A-emd-pbh/A-emd-pbh-20261115-113822-87cba08/",
+ "purpose": "Self-test of the snapshot analysis (rerun of A-emd-pbh-20261115-113807-e02c969 with the spacing report fixed): synthetic NRPSNAP1 snapshots of the exact added ellipsoid of the main case of 2605.04487, N = 20000, NRPIC001 units",
+ "kind": "scouting",
+ "machine": "anta, login node, one processor core (OMP_NUM_THREADS=1)",
+ "wall_time_s": 1.47,
+ "cores": 1,
+ "card_hours": 0.0,
+ "status": "completed",
+ "gate": "G1",
+ "outputs": {
+  "dir": "scratch/A-emd-pbh/A-emd-pbh-20261115-113822-87cba08"
+ },
+ "launcher": "local",
+ "track": "A-emd-pbh",
+ "lead_corrections": [
+  {
+   "field": "status",
+   "was": "done",
+   "now": "completed",
+   "why": "harness state names",
+   "by": "A-emd-pbh lead",
+   "at": "2026-11-15T12:58Z"
+  },
+  {
+   "field": "gate",
+   "was": null,
+   "now": "G1",
+   "why": "field of the template",
+   "by": "A-emd-pbh lead",
+   "at": "2026-11-15T12:58Z"
+  },
+  {
+   "field": "outputs",
+   "was": "missing or not a mapping",
+   "now": {
+    "dir": "scratch/A-emd-pbh/A-emd-pbh-20261115-113822-87cba08"
+   },
+   "why": "nrpic-run reads outputs.dir",
+   "by": "A-emd-pbh lead",
+   "at": "2026-11-15T12:58Z"
+  }
+ ]
+}
