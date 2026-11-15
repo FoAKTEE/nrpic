@@ -438,3 +438,25 @@ and the window and the number of good phases are identical to those of the wave-
 classification (the two phases that change class at q = 10 sit near 105 and 285 deg,
 where a member comes close to M anyway). Refuted if the chosen phase leaves its window or
 the windows differ.
+
+## 2026-11-15 outcomes of Q4 (finite q) and Q5b (phase window)
+
+- Q4 (rerun F-20261115-175232-d399e83, analysis F-20261115-180351-440afa2): P_dis
+  unchanged at every D, q and orientation (holds, exactly 0: class changes are between
+  disrupted classes only). Outcome classes change for 0.20 / 0.05 / 0.23 percent of all
+  samples at M/m = 10 (iso / pro / ret; prediction "< 1 percent": holds overall), but for
+  1.76 percent of the isotropic samples at D = 0.1 (refuted per D); every change is a
+  single ejection becoming "both bound" (outer member bound to M + partner with a
+  positive energy against M alone at the end time). Phase-averaged |dE| corrected/before
+  0.982-1.009 (bound 5 percent: holds); the "0.49-0.79 of restricted for 0.1 <= D <= 1"
+  statement is 0.491-0.791 (holds). Changed statement: both captured at D = 0.1,
+  M/m = 10, isotropic: 10.4 percent (was 8.6). Figures `fig_finite_q.png`,
+  `fig_finite_q_definition.png` looked at.
+- Q5b (F-20261115-180351-b8eb386): holds. Chosen phases inside clean windows with the
+  corrected classification, windows and counts identical to wave 1: q = 10 window
+  115-159 deg (130 chosen), 128 good phases; q = 4 window 109-144 deg (127 chosen), 100
+  good phases. The phase choices of the input files stand.
+- status of the package newton3_fix: corrected definition with derivation (README),
+  discriminating test, reruns of finite q, P3 and the passage phase scans, updated
+  passage predictions, multi-puncture output of the driver: done and tested. Open: no
+  second agent; masses and momenta of the puncture block are Newtonian (README).

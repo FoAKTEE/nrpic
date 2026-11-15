@@ -380,5 +380,43 @@
       "max_energy_error": 2.834610478763202e-05,
       "max_abs_W_end_single": 8.095103891532194e-06
     }
+  },
+  "window": {
+    "q10_corrected": {
+      "chosen_phase_deg": 130.0,
+      "chosen_is_good": true,
+      "window_deg": [
+        115,
+        159
+      ],
+      "n_good": 128
+    },
+    "q10_before": {
+      "chosen_phase_deg": 130.0,
+      "chosen_is_good": true,
+      "window_deg": [
+        115,
+        159
+      ],
+      "n_good": 128
+    },
+    "q4_corrected": {
+      "chosen_phase_deg": 127.0,
+      "chosen_is_good": true,
+      "window_deg": [
+        109,
+        144
+      ],
+      "n_good": 100
+    },
+    "q4_before": {
+      "chosen_phase_deg": 127.0,
+      "chosen_is_good": true,
+      "window_deg": [
+        109,
+        144
+      ],
+      "n_good": 100
+    }
   }
 }

@@ -284,6 +284,21 @@ restricted value for 0.1 <= D <= 1 at M/m = 10 (0.85 at D = 1.2). Coplanar retro
 binaries are always disrupted for D <= 0.3 at M/m = 10 and still at 37 % for D = 0.5, where
 the restricted limit has none (its edge is 0.41). Exchange outcomes m1/m2 ejected are equal to all
 digits for m1 = m2, as the symmetry requires.
+Wave 2, corrected energies (rerun F-20261115-175232-d399e83, analysis
+F-20261115-180351-440afa2, `results/finiteq.json`, `figures/fig_finite_q.png`, comparison
+with the wave-1 definition from the same trajectories `figures/fig_finite_q_definition.png`):
+P_dis is unchanged at every D, q and orientation (a change of definition moves samples
+only between disrupted classes); outcome classes change for 0.20, 0.05, 0.23 percent of
+the samples at M/m = 10 (isotropic, prograde, retrograde; at most 1.8 percent at one D)
+and 0.05, 0.03, 0.03 percent at M/m = 30, none at 100 and 1000, always a single ejection
+becoming "both bound" (the departing member is bound to M and its former partner
+although its energy against M alone was positive); the phase-averaged |dE| is 0-2
+percent lower than before (ratio 0.982-1.009). The statements above stand with these
+numbers: isotropic P_dis at M/m = 10 0.747 vs 0.754 (D = 0.4), 0.601 vs 0.641 (D = 0.7),
+0.929 vs 0.860 (D = 0.1); <|dE|> 0.491-0.791 of the restricted value for 0.1 <= D <= 1
+(0.844 at D = 1.2); retrograde disrupted 0.370 at D = 0.5. One number changes: at D = 0.1,
+M/m = 10, isotropic, both members are captured in 10.4 percent of the encounters (was
+8.6).
 
 **P4, start distance of the driver** (run F-hills-20261115-131801-907e5fe, analysis
 F-hills-20261115-133205-05ee76a, `results/p4.json`, `figures/fig_start_distance.png`;
