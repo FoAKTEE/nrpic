@@ -286,3 +286,36 @@ wrong softening rule, wrong time level of the background term) or if a count dif
 
 Run core-20261115-160746-19e3afe stopped at once: the two new inputs had no `<problem>`
 block (`pgen_name = nrpic_newton`); nothing was computed. Added, rerun.
+
+### T5 Common horizon of a pair among several punctures (request F
+`pairwise-common-horizon`)
+
+Read [VERIFIED, `athenak/src/z4c/fastflow.cpp` at 3da9086]: `PuncAreClose()` (lines
+1606-1612) compares `PuncMaxDistance()`, the largest distance between all `npunct`
+punctures, with `merger_distance` times `PuncSumMasses()`, the sum of all masses; a
+surface with `wait_until_punc_are_close_<n>` is therefore not searched while any puncture
+is far away, as Track F wrote.
+
+Implemented (hooks in `z4c/fastflow.{hpp,cpp}`): `<fastflow> punc_pair_a_<n>`,
+`punc_pair_b_<n>` make surface n the common horizon of these two punctures: the trigger
+compares their distance with `merger_distance` times the sum of their two masses, and
+`use_puncture_massweighted_center_<n>` centres the surface on their centre of mass;
+`merger_distance_<n>` replaces the common threshold for one surface. Without the new
+parameters nothing changes (they are read only if present).
+
+Set-up: `problems/tests/pair_horizon.athinput`, Brill-Lindquist data of three punctures
+of bare mass 0.5 at x = -0.2, +0.2 and 12 (finest cell 1/16 around the pair), two cycles,
+three waiting surfaces: 0 the pair (0, 1), 1 all punctures, 2 the pair (0, 2);
+`merger_distance = 1`.
+
+Predictions (written before the run):
+- corrected executable: surface 0 is searched from the first call and found; its mass is
+  between 1.005 and 1.030 (bare masses 1.0 raised by the third hole to 1.0208, minus
+  less than one per cent outside the common horizon, plus the finder's error at this
+  resolution, +0.36 per cent for a single hole at dx = M/8 in `docs/TESTLOG.md` line
+  ~200); its centre is the origin; its mean coordinate radius is near 0.5 (isotropic
+  radius M/2). Surfaces 1 and 2 write no record (their punctures are 12.2 apart).
+- release core-v0.3 with the same input (it ignores `punc_pair_*`): surface 0 follows
+  the rule "all punctures" and writes no record either.
+Refuted if surface 0 is not found or its mass is outside the band, or if surface 1 or 2
+is searched.
