@@ -143,7 +143,7 @@ Without it only the particle snapshots are available (positions and momenta, no
 acceleration), which give Q and Q' of the patch but Q'' and Q''' only by differencing
 snapshots. Not attempted in this package.
 
-## 2026-11-15 17:05 UTC: first outcomes at n = 32 (debug pass of the analysis scripts)
+## 2026-11-15 16:48 UTC: first outcomes at n = 32 (debug pass of the analysis scripts)
 
 Runs: B-20261115-163556-ad5637f (P1, east32), B-20261115-163558-20244f2 (P2, sin32),
 B-20261115-163613-790095f (N1, N = 32), B-20261115-163620-5b286c1 (N3, N = 32). The
@@ -203,7 +203,7 @@ Q''' turns over at t ~ 22.3, where R_x ~ 1 cell; figure in the debug directory).
 N3 at N = 32: E/(M c^2 (2 alpha)^3.5) = 0.061787 for alpha = 0.05, 0.1, 0.11122237, 0.2
 with a spread of 5.8e-15, t_x/t_turn 2.524849 with a spread of 2.6e-15: N3a passed.
 
-## 2026-11-15 17:20 UTC: H1a checked (failed as stated); new test H1d at n = 16 before its run
+## 2026-11-15 16:53 UTC: H1a checked (failed as stated); new test H1d at n = 16 before its run
 
 H1a outcome (n = 32 data, computed after the entry above): **failed as stated.** The
 per-sheet ratio of the measured error to the H1 error, over the sheets with
@@ -233,3 +233,27 @@ step L/(4n), one core each, a few minutes). Predictions from the formula of H1:
   percentage points not explained by H1; at n = 16 it should be at most twice that).
 Refuted if the ratio of H1d-2 is below 3 (then the error is not second order in kh,
 and the seven-point Laplacian is not its main source).
+
+## 2026-11-15 17:00 UTC: H1d outcome (runs B-20261115-165349-81a17bc, -165351-b38db6f)
+
+- H1d-1 **passed**: n = 16 largest sheet error against the continuum 5.64e-3, 1.163e-2,
+  1.84e-2 at a = 2, 5, 10 against the H1 values at the same records 5.74e-3, 1.184e-2,
+  1.65e-2 (-1.6 %, -1.8 %, +12 %).
+- H1d-2 **passed**: ex(16)/ex(32) at a = 2 is 5.643e-3/1.390e-3 = 4.06.
+- H1d-3 **partly failed**: d3I_xx mean signed relative error 5.24 % against 2.75 % from
+  H1 at 2 <= a <= 5 (factor 1.9, bound 1.5), 6.14 % against 4.51 % at 5-10 (passes).
+  The measured jerk error itself scales by 4.2, 3.9, 4.1 from n = 16 to 32 in the three
+  bands (5.24/1.25, 6.14/1.57, 12.3/3.03 %): second order in the cell size; H1 carries
+  half to three quarters of it; the remainder is also of second order and not explained
+  here.
+
+Conclusion on H1 (a cause named after runs that could have refuted it): the position
+error of the Newtonian mode in the pancake before shell crossing is set by the
+seven-point Laplacian of the multigrid solve, (kh)^2/12 in the force of the
+fundamental mode, which pm.py's spectral solve does not have; it is of second order in
+the cell size and at n = 32 it exceeds the lattice-sampling error that dominates pm.py
+[VERIFIED: runs above and B-20261115-163556-ad5637f]. The failed predictions P1a and P1b
+were therefore wrong because they assumed the lattice error dominates both codes;
+core's interface note 5.6 found the two codes comparable with the cloud-in-cell options,
+where the cloud error is larger. The n = 64 card run (H1b) remains the test of the
+second-order fall at the resolution of the verify_cosmo comparison.
