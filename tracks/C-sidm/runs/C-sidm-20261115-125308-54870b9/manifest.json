@@ -1,0 +1,104 @@
+{
+ "run_id": "C-sidm-20261115-125308-54870b9",
+ "track": "C-sidm",
+ "package": "equilibria",
+ "command": "python3 smoke_athenak.py --ic /data/haiyangw/nrpic/scratch/C-sidm/C-sidm-20261115-120610-b4592be --stem king_y0p33403_stratified_N10000_s1 --out /data/haiyangw/nrpic/scratch/C-sidm/C-sidm-20261115-125308-54870b9 --nlim 2 --threads 4",
+ "cwd": "/data/haiyangw/nrpic/wt/C-sidm/tracks/C-sidm/equilibria",
+ "commit": "54870b999b4e9bd265aae8edfc5b3389e5473358",
+ "branch": "track/C-sidm",
+ "package_dirty": false,
+ "package_status": [],
+ "inputs": [
+  {
+   "path": "tracks/C-sidm/equilibria/check_equilibria.py",
+   "sha256": "a894d3311cd29cc77ba753a7e073d6f6494101c2117ec77d516fb54c8e4b5375"
+  },
+  {
+   "path": "tracks/C-sidm/equilibria/evstatic.py",
+   "sha256": "d6e37be890d11602d68ebf7cb336447bcea813c019f8592d4f8e5f766e7ca2fa"
+  },
+  {
+   "path": "tracks/C-sidm/equilibria/fig_knudsen.py",
+   "sha256": "9d3720ebc5c0dc97f05238090f4786476582c71c83a0119948b769f413dcd6be"
+  },
+  {
+   "path": "tracks/C-sidm/equilibria/figures.py",
+   "sha256": "592c35423bbb1ff10baefe67ad7dec9953cac41a07cec339b7702dfd05833898"
+  },
+  {
+   "path": "tracks/C-sidm/equilibria/knudsen.py",
+   "sha256": "cab38f6ea80495d382aa5cc33c6990f3d9d3c5df16cf7c0a234180c377516362"
+  },
+  {
+   "path": "tracks/C-sidm/equilibria/make_equilibria.py",
+   "sha256": "aedd928378ffef30b9d20ba90ca982f896bf00062be3b2206ac9d22ee01602d7"
+  },
+  {
+   "path": "tracks/C-sidm/equilibria/models.py",
+   "sha256": "32f30505b65c17a2d3ae069d6090912ff0ae2ee673194515d55e93b82b4389ca"
+  },
+  {
+   "path": "tracks/C-sidm/equilibria/paper_values.py",
+   "sha256": "fa43075b9ab038d288eaaf372e2b6506dc563ce489d89b758267135d881ce60e"
+  },
+  {
+   "path": "tracks/C-sidm/equilibria/runreg.py",
+   "sha256": "87c53d3ad7c05250d3cd421bda4d97703113d24f0a89999305248090265767d3"
+  },
+  {
+   "path": "tracks/C-sidm/equilibria/smoke_athenak.py",
+   "sha256": "7ed731a5c272a59354c13180e4c05d79008078a86d68fb6acd3eb160116c6ecd"
+  },
+  {
+   "path": "python/nrpic/io.py",
+   "sha256": "0dc0084ecc8591361616debb8883a20b9f3dee77167b71cb165932c73a5ab322"
+  },
+  {
+   "path": "python/nrpic/sampling.py",
+   "sha256": "3bd91ff2c0b3be46bdef8047ebe75f345655c831c8a8d5f51c1b7b0af979d610"
+  },
+  {
+   "path": "python/nrpic/st_cluster.py",
+   "sha256": "81dc4c66731cef81c76473e532d6a443ef1a42b9b3a91e90fb68620412db1bd1"
+  },
+  {
+   "path": "python/nrpic/figstyle.py",
+   "sha256": "5d3b78ad8c2c02e428b675e3d7e35a32cbc8f053d1aeedd4fde66f27da55676e"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/.work/build_cpu_c1/src/athena",
+   "sha256": "91f2e2c23a6301047ed4fe06ffe153d100fe6c121d0b6632087637b525547403"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/scratch/C-sidm/C-sidm-20261115-120610-b4592be/king_y0p33403_stratified_N10000_s1.nrp",
+   "sha256": "6647d8bd24310419d658e768f443446f7eb314ed23d768763f0c8b4885b14451"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/scratch/C-sidm/C-sidm-20261115-120610-b4592be/king_y0p33403_stratified_N10000_s1.tab",
+   "sha256": "333aa7ab28151b1b52ebed38f446ec7e71bc7c9929b505d876e168a767314cf4"
+  }
+ ],
+ "output_dir": "scratch/C-sidm/C-sidm-20261115-125308-54870b9",
+ "purpose": "C-pre-4 Test 4: AthenaK nrpic_cf (processor build of main) reads the King threshold table and 10^4-particle file; two cycles against the paper's y_c=0.819 model on the same small mesh",
+ "kind": "scouting",
+ "cores": 4,
+ "card_hours": 0.0,
+ "parents": [
+  "C-sidm-20261115-120610-b4592be"
+ ],
+ "env": {
+  "OMP_NUM_THREADS": "4",
+  "OPENBLAS_NUM_THREADS": "4"
+ },
+ "started_utc": "2026-11-15T12:53:08+00:00",
+ "status": "done",
+ "exit_code": 0,
+ "finished_utc": "2026-11-15T12:59:11+00:00",
+ "wall_time_s": 363.1,
+ "core_hours": 0.4035,
+ "outputs": {
+  "files": 19,
+  "sha256sums": "sha256sums.txt",
+  "sha256sums_sha256": "61c927b9d4eafbb90865467063f99e12f68d5a882d7133775b0692d20dbbca85"
+ }
+}

@@ -220,3 +220,17 @@ H-norm2 of the King run is within a factor 3 of the reference run, and probably 
 because the King density vanishes smoothly (rho ~ y^{5/2}) while the monoenergetic density
 has a kink at the surface. Refuted if `nrpic_cf` rejects or misreads the files (np or sum m
 wrong), or if the King H-norm2 exceeds the reference by more than a factor 3.
+
+### Test 4, outcome: run C-sidm-20261115-125308-54870b9 (results/athenak_smoke.json, figs/athenak_smoke.png)
+
+Holds. `nrpic_cf` read the King threshold files ("NRPIC: read 10000 particles"); both runs
+finished two cycles (232 MeshBlocks, about 3 minutes each on 4 threads). First NRPIC record of
+the King run: np = 10000, sum m = 1.036901881345 (file sum, relative difference -3e-14),
+deposited int E sqrt(gamma) dV = sum m W to 9e-16 (reference: 5e-15). Initial H-norm2 of
+the King run is 0.93 times the reference's (0.0329 against 0.0353): within the factor 3,
+and lower as predicted, but only slightly. Not predicted: the momentum-constraint integral
+M-norm2 is 1.42 times the reference's (1.11e-3 against 7.8e-4). Both data sets have
+K_ij = 0 with random particle momenta, so M is the deposition noise of S_i. A larger central
+speed (<v>_c = 0.50 against the monoenergetic model's lower speeds) gives a larger noise,
+which fits the sign [JUDGEMENT, not tested]. sum m W changes by -9e-7 over two cycles
+(King) against -7e-6 (reference).

@@ -17,9 +17,10 @@ directory also holds the conversion between Knudsen number and cross-section per
 | `check_equilibria.py` | Offline checks (Tests 1-2 of `JOURNAL.md`): paper values, Newtonian limit, mass-radius turning point, matching, TOV, Hamiltonian constraint, sampler, moments, invariants, file round trip |
 | `knudsen.py` | Knudsen number against `sigma/m` with the relativistic (Moller) rate; collisions per particle per dynamical time; resolution at N = 10^4 |
 | `figures.py`, `fig_knudsen.py` | Figures (style `python/nrpic/figstyle.py`) |
+| `smoke_athenak.py`, `fig_smoke.py` | Test 4: AthenaK's processor build reads a new table and particle file (two cycles against the paper's y_c = 0.819 model) |
 | `runreg.py` | Registers a processor run: `tracks/C-sidm/runs/<run_id>/manifest.json`, output in `scratch/C-sidm/<run_id>/` |
-| `results/` | `checks.json` (run C-sidm-20261115-121626-e99907d), `models_index.json` (run C-sidm-20261115-120610-b4592be), `knudsen.json` (run C-sidm-20261115-122915-cdc395c) |
-| `figs/` | `binding_energy`, `king_mass_radius`, `profiles_threshold`, `constraint_residual`, `sampling_threshold`, `shell_angular_momentum`, `knudsen_conversion`, `knudsen_profiles` (PDF and PNG) |
+| `results/` | `checks.json` (run C-sidm-20261115-121626-e99907d), `models_index.json` (run C-sidm-20261115-120610-b4592be), `knudsen.json` (run C-sidm-20261115-122915-cdc395c), `athenak_smoke.json` (run C-sidm-20261115-125308-54870b9) |
+| `figs/` | `binding_energy`, `king_mass_radius`, `profiles_threshold`, `constraint_residual`, `sampling_threshold`, `shell_angular_momentum`, `knudsen_conversion`, `knudsen_profiles`, `athenak_smoke` (PDF and PNG) |
 
 ## The models (ADM mass M = 1; 10^4 particles each, stratified, seed 1)
 
@@ -70,6 +71,10 @@ AthenaK (`pgen_name = nrpic_cf`, `comp0_type = table`, `lapse = table`, as
   stratified radial and polar ECDF within 1/N, equal-mass shell counts exact; shell moments
   (n, rho, p_r, p_t) within 4.5 standard errors for both samplers; KS tests of radii and
   Killing energies for plain Monte Carlo; every particle E <= E0 and L >= L0; file round trip.
+- AthenaK (run C-sidm-20261115-125308-54870b9, processor build of main): `nrpic_cf` reads
+  the King threshold files; np, sum m and the deposited energy agree with the file to
+  round-off; the initial Hamiltonian-constraint norm equals that of the paper's
+  y_c = 0.819 model on the same mesh (ratio 0.93 of the squared integrals).
 
 ## How to rerun
 
@@ -80,14 +85,16 @@ From this directory (processors, 4 threads, a few minutes each):
     python3 runreg.py --purpose "..." -- python3 knudsen.py --out {out} --N 10000
     python3 figures.py --checks <check run dir> --out figs
     python3 fig_knudsen.py --run <knudsen run dir> --out figs
+    python3 runreg.py --purpose "..." -- python3 smoke_athenak.py --ic <build run dir> --stem <stem> --out {out}
+    python3 fig_smoke.py --run <smoke run dir> --out figs
 
 Another particle number or seed: `make_equilibria.py --N ... --seed ... [--sampler mc]`;
 a single family: `--only king` (or a tag).
 
 ## Not done here
 
-- No AthenaK evolution of these models (the collisionless threshold with three-way
-  convergence is Track C's work that depends on core, G2).
+- No AthenaK evolution of these models beyond the two-cycle read test (the collisionless
+  threshold with three-way convergence is Track C's work that depends on core, G2).
 - gr-qc/0601112 Case 3 (k = 1): its ansatz (E0 - E)^1 depends on the normalisation of E0
   (lines 670-674) and is not reproduced.
 - Perturbed models (the papers perturb by A f_s, gr-qc/0601112 line 677, or by a
