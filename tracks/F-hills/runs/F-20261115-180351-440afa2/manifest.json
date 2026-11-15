@@ -1,0 +1,121 @@
+{
+  "schema": "nrpic-run-manifest/1",
+  "run_id": "F-20261115-180351-440afa2",
+  "track": "F-hills",
+  "gate": "G1",
+  "kind": "scouting",
+  "purpose": "newton3 analysis of the finite-q rerun F-20261115-175232-d399e83 (corrected vs wave-1 energies)",
+  "preregistered_in": "tracks/F-hills/newton3/JOURNAL.md",
+  "launcher": "local",
+  "command": [
+    "python3",
+    "tracks/F-hills/newton3/scripts/analyze.py",
+    "finiteq",
+    "F-20261115-175232-d399e83"
+  ],
+  "cwd": ".",
+  "git": {
+    "sha": "440afa2ea18a100fec9ab3ccdc13d00a91b45031",
+    "branch": "track/F-hills",
+    "dirty": false,
+    "package": [
+      "tracks/F-hills/newton3"
+    ],
+    "outside_package": {
+      "count": 14,
+      "first": [
+        " M tracks/F-hills/note/scripts/common.py",
+        " M tracks/F-hills/note/scripts/fig_cost.py",
+        " M tracks/F-hills/note/scripts/fig_geodesic.py",
+        " M tracks/F-hills/note/scripts/fig_newton.py",
+        " M tracks/F-hills/note/scripts/fig_passage.py",
+        " M tracks/F-hills/note/scripts/fig_rp_scan.py",
+        " M tracks/F-hills/note/scripts/ledger.py",
+        "?? tracks/F-hills/NOTATION.md",
+        "?? tracks/F-hills/WRITING_GUIDE.md",
+        "?? tracks/F-hills/note/figures/",
+        "?? tracks/F-hills/note/main.pdf",
+        "?? tracks/F-hills/note/main.tex",
+        "?? tracks/F-hills/note/references.bib",
+        "?? tracks/F-hills/note/tables/"
+      ]
+    },
+    "merge_base_main": "b9fbf3e6534517c3393000da91c79ce552b254b9",
+    "worktree": "wt/F-hills"
+  },
+  "code": {
+    "core_tag": "core-v0.3",
+    "athenak_upstream_sha": "c5a0d7f",
+    "kokkos_sha": "6739bc623081648af9e752b616d9671527922cbf",
+    "problem": null
+  },
+  "env": {
+    "host": "anta",
+    "env_hash": "33c1dbb6673b68919eaa332b0add0b58aeac8be843f2071b9d06e2e0e397a96d",
+    "machine_file_sha256": "0321f40f4caeeb2a36624a9fa9809e60bad31071f366b3517ba23ad45698d2d7",
+    "uv_lock_sha256": "5417f6ba318b914aa3800e5d55f7b11fdd8df13c2688bdda7d419240aa1d5863",
+    "track_requirements_sha256": null,
+    "container_digest": null,
+    "compiler": "g++ 11.4.0",
+    "mpi": "none (Athena_ENABLE_MPI=OFF)",
+    "gpu": null,
+    "python": "3.10.12 /data/haiyangw/nrpic/wt/F-hills/.venv"
+  },
+  "input": null,
+  "inputs": [
+    {
+      "path": "/data/haiyangw/nrpic/scratch/F-hills/F-20261115-175232-d399e83/finiteq.npz",
+      "role": "input",
+      "sha256": "3cf46a06651c84bc105381d30c90e5051b164e3bf7b7b629bf92eb7d8c0aacb4",
+      "bytes": 25244103,
+      "tracked": false,
+      "location": "main checkout data root"
+    },
+    {
+      "path": "tracks/F-hills/newton3/scripts/analyze.py",
+      "role": "argv",
+      "sha256": "207e3ba345ca97dd5891c805a6cf499a13aef30ac645ef5d7419f498cc1f260d",
+      "bytes": 33219,
+      "tracked": true
+    }
+  ],
+  "batch_entries": null,
+  "resources": {
+    "nodes": 1,
+    "gpus": 0,
+    "cores": 1,
+    "walltime_s": null,
+    "wall_limit": null,
+    "segments_max": null,
+    "gpu_hours_requested": 0.0,
+    "gpu_hours": null,
+    "particles": null
+  },
+  "slurm": null,
+  "outputs": {
+    "dir": "scratch/F-hills/F-20261115-180351-440afa2",
+    "sha256sums": "sha256sums.txt",
+    "sha256sums_sha256": null,
+    "bytes": null,
+    "files": null
+  },
+  "status": "running",
+  "exit_code": null,
+  "registered": "2026-11-15T18:03:51Z",
+  "started": null,
+  "ended": null,
+  "parents": [
+    "F-20261115-175232-d399e83"
+  ],
+  "notes": "",
+  "budget_at_submit": {
+    "gpu_hours_allotted": 50.0,
+    "cores_allotted": 16,
+    "gpu_hours_used": 0.0,
+    "gpu_hours_reserved": 2.35,
+    "gpu_hours_without_gate": 0.0,
+    "cores_busy": 7,
+    "runs": 107,
+    "allotment_from": "coord/DECISIONS/0006-compute-budget.md + 0014-budgets-after-wave-1.md"
+  }
+}
