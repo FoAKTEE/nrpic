@@ -152,3 +152,10 @@ for its plunges (members with L < 4 M; stronger relativistic tides) are physical
 NR passage will tell. Decision for the G1 run: keep the helper's configuration r_p = 8 M,
 where both baselines are robust over phase and disagree in kind (Newton: no member inside
 4 M in 94 percent of phases; HRNA: a member below 2.5 M in 94 percent).
+
+Correction to the V7 entry above (checked at the source): 2404.16270 defines its consistency
+parameter as alpha = a / R_curv with R_curv = (r/r_g)^(3/2) r_g (article.tex:272-274), and
+reports alpha up to about 0.1 at pericentre in its own examples (appendix.tex:8). For
+a_b = 3 M this is 0.13 at r = 8 M and 0.064 at 13 M, i.e. the same as the paper's own peak
+values, not "0.23-0.43" (that was a_b / r_p). HRNA's main limitation for our runs is the
+fixed hole at q = 10 (and 4), not alpha.
