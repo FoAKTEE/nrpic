@@ -215,7 +215,17 @@ def resolution(a):
     without and with the solve, to t = 2, with field dumps at t = 0, 1, 2: where the
     violation made by the evolution sits, and how it scales with the cell size."""
     path = os.path.join(idlib.HERE, "evolution_numbers.json")
-    binp = os.path.join(idlib.WT, "problems/idsolve/ball.athinput")
+    # the input of the ball with two more field-dump times (a parameter given on the
+    # command line must exist in the input file)
+    with open(os.path.join(idlib.WT, "problems/idsolve/ball.athinput")) as f:
+        txt = f.read()
+    key = "field_time1    = 1.0e30"
+    if key not in txt:
+        raise RuntimeError("ball.athinput: line '%s' not found" % key)
+    txt = txt.replace(key, "field_time1    = 1.0\nfield_time2    = 2.0\n# was: " + key)
+    binp = os.path.join(TMP, "ball_fields.athinput")
+    with open(binp, "w") as f:
+        f.write(txt)
     res = {}
     jobs = []
     for n in (64, 128):
@@ -225,7 +235,6 @@ def resolution(a):
             "time/nlim=1000", "time/tlim=2.0", "particles/nfilter=0",
             "particles/source_density=true", "particles/source_extrap=true",
             "z4c/lapse_oplog=0.0", "z4c/lapse_harmonic=0.3333333333333333",
-            "particles/field_time1=1.0", "particles/field_time2=2.0",
             "particles/particle_file=" + os.path.basename(nrp),
             "problem/comp0_file=" + os.path.basename(tab)]
         for label, extra in (("off", ["particles/id_solve=false"]),
@@ -239,12 +248,16 @@ def resolution(a):
                            "initial-data solver, test F: smooth triaxial ball with the "
                            "settings of test E at %d cells to t = 2 with field dumps, "
                            "solve %s" % (n, label), "idsolve-evo-res-%s-n%d" % (label, n),
-                           [binp, nrp, tab], [a.exe, "-i", "ball.athinput"] + args)] = (
+                           [binp, nrp, tab], [a.exe, "-i", "ball_fields.athinput"] + args)] = (
                 n, label)
             time.sleep(1.5)
         for f in concurrent.futures.as_completed(futs):
             n, label = futs[f]
             rr, s = f.result()
+            print("F %s n%d %s %s" % (label, n, rr, s), flush=True)
+            if not os.path.exists(os.path.join(idlib.run_dir(rr), "ball.cstat.hst")):
+                res["%s_n%d" % (label, n)] = dict(run=rr, status=s, n=n, failed=True)
+                continue
             c = cstat(rr, "ball")
             v = dict(run=rr, status=s, n=n, time=[float(x) for x in c[:, 0]],
                      H_max=[float(x) for x in c[:, 8]], H_mean=[float(x) for x in c[:, 9]],
@@ -256,7 +269,6 @@ def resolution(a):
                     st, _ = region_stats(fp, 4 if n == 64 else 8)
                     v["regions"].append(st)
             res["%s_n%d" % (label, n)] = v
-            print("F %s n%d %s %s" % (label, n, rr, s), flush=True)
     out = idlib.load_json(path)
     out["triaxial_smooth_resolution"] = res
     idlib.save_json(path, out)
@@ -265,7 +277,8 @@ def resolution(a):
 
 
 def plot_resolution(out):
-    res = out["triaxial_smooth_resolution"]
+    res = {k: v for k, v in out["triaxial_smooth_resolution"].items()
+           if not v.get("failed")}
     fs.use_style()
     fig, axs = plt.subplots(1, 3, figsize=(fs.FULL_WIDTH, 3.2))
     fig.subplots_adjust(left=0.08, right=0.99, bottom=0.15, top=0.9, wspace=0.32)
