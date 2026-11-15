@@ -1,0 +1,2 @@
+# the note ledger and claims check (reads registered run outputs, writes note/tables)
+cd tracks/D-bh-dress/note/scripts && python ledger.py
