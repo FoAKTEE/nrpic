@@ -15,13 +15,17 @@ Writes (claims) happen inside the writer lock `locks/kb-writer.lock`.
 
     python3 -I kb/serve_locate.py resolve <id> <file> <lines> [--expect TOKEN ...]
     python3 -I kb/serve_locate.py check <statements.jsonl> <out.jsonl> [--db PATH]
-    python3 -I kb/serve_locate.py load <checked.jsonl> <out_ids.tsv> [--dry-run]
+    python3 -I kb/serve_locate.py sync-k8 <checked.jsonl> <k8map.tsv> <out.tsv> [--dry-run]
+    python3 -I kb/serve_locate.py load <checked.jsonl> <out_ids.tsv> [--dry-run]   (superseded)
 
 <lines> is "491", "491-493" or "491,493,667-673". The `check` input has one JSON object per
 line with at least key, paper_id, file, ranges ([[lo, hi], ...]) and text; `check` adds the
 fields `kb` (one resolution per range) and `numbers` (number check) and writes them out.
-`load` writes the claims of a checked file (origin `served:<key>`, idempotent: an existing
-claim with that origin is updated in place and keeps its id).
+`sync-k8` is the load in use: a statement that a claim of the K8 seed (`kb claim seed`)
+already covers gets no claim of its own; an uncovered one is added with the K8 side tables
+(seed_key `served:<key>`); rows of the superseded `load` (claims table only) are removed.
+`load` wrote the claims table alone (origin `served:<key>`); it duplicated the K8 seed and
+is kept only to document run kb-20261115-153751-e164901.
 """
 import argparse
 import bisect
@@ -465,6 +469,134 @@ def cmd_load(a):
     return 0
 
 
+def k8_label_status(st):
+    """Label and status in the conventions of the K8 layer (kbtool/claims_db.py): status
+    located / partial / unresolved / unlocated from the locator and number check; label
+    fulltext only for a statement the track read at the source (VERIFIED) that is located;
+    errata of the tracks are judgements carrying the evidence run (as the K8 seed stores
+    them); TO VERIFY stays to_verify."""
+    res = st.get("kb") or []
+    if not res:
+        status = "unlocated"
+    elif not all(r.get("status") == "resolved" and r.get("lines_in_file", False) for r in res):
+        status = "unresolved"
+    else:
+        nums = st.get("numbers") or {"n": 0}
+        exp = st.get("expect_found") or {}
+        ok_n = not nums.get("n") or nums.get("near", 0) == nums["n"]
+        status = "located" if ok_n and all(exp.values()) else "partial"
+    want = st.get("label") or LABELS.get(st.get("track_label", ""), "to_verify")
+    if want == "refuted":
+        want = "judgement"
+    if want == "fulltext" and status != "located":
+        want = "to_verify"
+    return want, status
+
+
+def k8_locator(r):
+    return f"{r['paper_id']}{r.get('version') or ''}:{r['file']}:L{r['lo']}" + (f"-{r['hi']}" if r["hi"] != r["lo"] else "")
+
+
+def cmd_sync_k8(a):
+    """Replace the served rows by K8-layer claims: a served statement that a K8 claim
+    already covers (k8map) gets no claim of its own; an uncovered one is added with the
+    K8 side tables (claim_meta, claim_locators, claim_events); served rows of an earlier
+    load that lack claim_meta are removed. Idempotent on seed_key 'served:<key>'."""
+    from kbtool import claims_db as _cdb
+    lay = _paths.layout()
+    rows = [json.loads(l) for l in open(a.inp) if l.strip()]
+    k8 = {}
+    with open(a.k8map) as f:
+        next(f)
+        for line in f:
+            p = line.rstrip("\n").split("\t")
+            k8[p[0]] = [int(x) for x in p[4].split(",") if x]
+    out, n_del = [], 0
+    with _lock.writer_lock(lay, what="serve sync-k8"):
+        con = _db.connect_rw(lay.db_work)
+        try:
+            _cdb.ensure(con)
+            con.execute("BEGIN")
+            meta = {r[0]: r[1] for r in con.execute(
+                "SELECT seed_key, claim_id FROM claim_meta WHERE seed_key LIKE 'served:%'")}
+            raw = {r[0]: r[1] for r in con.execute("SELECT origin, claim_id FROM claims WHERE origin LIKE 'served:%'")}
+            keep = set()
+            for st in rows:
+                key = "served:" + st["key"]
+                if k8.get(st["key"]):
+                    out.append((st["key"], "k8", ",".join(map(str, k8[st["key"]])), "", ""))
+                    continue
+                if not st.get("kb"):
+                    out.append((st["key"], "no-locator", "", "", ""))
+                    continue
+                label, status = k8_label_status(st)
+                if key in meta:
+                    cid = meta[key]
+                    keep.add(cid)
+                    out.append((st["key"], "kept", str(cid), label, status))
+                    continue
+                doc = st.get("doc", "")
+                path, _, commit = doc.partition("@")
+                ev = "; ".join(x for x in (st.get("evidence"), f"kb serve check run {a.run_id}") if x)
+                loc = "; ".join(k8_locator(r) for r in st["kb"])
+                cid = _cdb.add_claim(con, st["text"], st.get("kind", "result"), st["paper_id"], loc,
+                                     "to_verify", "kb-serve", key, st["owner"], ev)
+                r0 = st["kb"][0]
+                chunk = next((c["chunk_id"] for c in r0.get("chunks", [])), None)
+                flat = r0.get("flat") or [None, None]
+                con.execute("UPDATE claims SET label=?, chunk_id=?, quote_start=?, quote_end=?, verified_by=?, "
+                            "verified_at=? WHERE claim_id=?",
+                            (label, chunk, flat[0], flat[1],
+                             f"{st['owner']} (read at the source); kb serve check run {a.run_id}"
+                             if label == "fulltext" else None, _db.utcnow() if label == "fulltext" else None, cid))
+                detail = {"numbers": st.get("numbers"), "expect": st.get("expect_found")}
+                con.execute("UPDATE claim_meta SET seed_key=?, source_label=?, origin_ref=?, origin_commit=?, "
+                            "origin_path=?, origin_line=?, status=?, status_detail=?, label_set_by='auto', "
+                            "checked_by=?, checked_at=? WHERE claim_id=?",
+                            (key, st.get("track_label"), path.split(":")[0] if ":" in path else None, commit or None,
+                             path.split(":", 1)[-1], st.get("doc_line"), status, json.dumps(detail),
+                             f"kb-serve {a.run_id}", _db.utcnow(), cid))
+                for i, r in enumerate(st["kb"]):
+                    ok = r.get("status") == "resolved" and r.get("lines_in_file", False)
+                    con.execute("INSERT INTO claim_locators(claim_id, ord, paper_id, version, file, line_start, "
+                                "line_end, written, resolved, problem, flat_start, flat_end, chunk_ids_json) "
+                                "VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)",
+                                (cid, i, r["paper_id"], r.get("version"), r["file"], r["lo"], r["hi"], k8_locator(r),
+                                 int(ok), None if ok else str(r.get("status")), (r.get("flat") or [None])[0],
+                                 (r.get("flat") or [None, None])[1],
+                                 json.dumps([c["chunk_id"] for c in r.get("chunks", [])])))
+                keep.add(cid)
+                out.append((st["key"], "added", str(cid), label, status))
+            for origin, cid in raw.items():                 # earlier served rows not kept
+                if cid in keep:
+                    continue
+                for t in ("claim_events", "claim_locators", "claim_meta"):
+                    con.execute(f"DELETE FROM {t} WHERE claim_id=?", (cid,))
+                con.execute("DELETE FROM claims WHERE claim_id=?", (cid,))
+                n_del += 1
+            _db.log(con, "serve-sync-k8", os.path.basename(a.inp), "ok",
+                    json.dumps({"added": sum(o[1] == "added" for o in out), "kept": sum(o[1] == "kept" for o in out),
+                                "covered_by_k8": sum(o[1] == "k8" for o in out), "removed": n_del,
+                                "run": a.run_id, "tool": TOOL}))
+            if a.dry_run:
+                con.rollback()
+            else:
+                con.commit()
+        except Exception:
+            con.rollback()
+            raise
+        finally:
+            con.close()
+    with open(a.out, "w") as g:
+        g.write("key\taction\tclaim_ids\tlabel\tstatus\n")
+        for o in out:
+            g.write("\t".join(o) + "\n")
+    print(f"{'dry run: ' if a.dry_run else ''}added {sum(o[1] == 'added' for o in out)}, kept "
+          f"{sum(o[1] == 'kept' for o in out)}, covered by K8 {sum(o[1] == 'k8' for o in out)}, "
+          f"no locator {sum(o[1] == 'no-locator' for o in out)}, removed {n_del} earlier served rows")
+    return 0
+
+
 def main(argv=None):
     ap = argparse.ArgumentParser(prog="kb/serve_locate.py")
     sub = ap.add_subparsers(dest="cmd", required=True)
@@ -485,8 +617,14 @@ def main(argv=None):
     p.add_argument("out")
     p.add_argument("--run-id", default="unregistered")
     p.add_argument("--dry-run", action="store_true")
+    p = sub.add_parser("sync-k8")
+    p.add_argument("inp")
+    p.add_argument("k8map")
+    p.add_argument("out")
+    p.add_argument("--run-id", default="unregistered")
+    p.add_argument("--dry-run", action="store_true")
     a = ap.parse_args(argv)
-    return {"resolve": cmd_resolve, "check": cmd_check, "load": cmd_load}[a.cmd](a)
+    return {"resolve": cmd_resolve, "check": cmd_check, "load": cmd_load, "sync-k8": cmd_sync_k8}[a.cmd](a)
 
 
 if __name__ == "__main__":

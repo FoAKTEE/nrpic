@@ -67,3 +67,34 @@ Prediction for the registered run (same inputs, deterministic code): the same co
 claims loaded with consecutive new ids, because the claims table was empty at 15:23
 (`kb status`). Refuted if any count differs, or the ids are not consecutive (another writer
 of claims at the same time).
+
+Outcome S3 (run kb-20261115-153751-e164901; the `--run-id` argument was passed as the
+literal RUNID_PLACEHOLDER by my mistake, so the loaded rows named that instead of the run
+id). Counts held exactly (330 statements, 372 locators all resolved, numbers 117/2/13);
+330 claims loaded with consecutive ids, but 623-952, not from 1: the premise of the
+prediction was false. A second helper of kb (K8 claims layer, commit 595d313,
+`tracks/kb/claims/`) had seeded 622 claims from the same track notes at 15:37:15Z, 36 s
+before my load. At 15:39:43Z its `kb claim seed --rebuild` emptied all claim tables
+(ingest_log) and re-seeded 618 claims with ids 1-618; my 330 rows are gone (checked:
+0 rows with origin `served:%`).
+
+Decision [JUDGEMENT]: the K8 layer (`kbtool/claims_*.py`, `kb claim`) owns the claims; my
+rows duplicated 265 of its claims and bypassed its side tables (claim_meta,
+claim_locators, claim_events). This package therefore writes no claims. It maps each
+served statement to the K8 claims that cover it (`scripts/map_to_k8.py`: same track, paper
+and file, overlapping lines) and hands the statements the K8 seed does not cover to the
+K8 owner (`claims/uncovered_seed.jsonl`). `kb/serve_locate.py sync-k8` (adds uncovered
+statements with the K8 side tables, idempotent on seed_key `served:<key>`) is tested only
+as a dry run (rolled back); it is for the lead once K8 claim ids are frozen by a snapshot
+(K8 refuses `--rebuild` once `db/current` holds claims, so a snapshot by this package
+would block the K8 helper; none taken).
+
+## S4 16:25 Registered locator check and mapping to the K8 claims (prediction)
+
+Inputs: track notes at their branch tips, `claims/manual.jsonl`, kb.sqlite read-only.
+Prediction: identical check counts to S3 (330 statements, 372 locators resolved, numbers
+117 exact / 2 near / 13 missing); 266 statements covered by K8 claims as in the last dry
+run (fewer or more only if the K8 helper re-seeds in between); 62 uncovered with a
+locator (F 53, B 7, D 2-3, E 1), 2 without a paper locator; nothing written to the
+database (the sync step rolls back). Refuted if a check count differs or any claims row
+changes because of this run.
