@@ -22,5 +22,11 @@
  "output_directory": "/data/haiyangw/nrpic/scratch/core/core-20261115-123325-6855046",
  "resources": "1 card (A100), 1 core",
  "started_utc": "2026-11-15T12:33:25Z",
- "status": "running"
+ "status": "done",
+ "card_memory_peak_mib": 46559.0,
+ "exit_code": 0,
+ "wall_time_s": 74.3,
+ "queue_wait_s": 4650.9,
+ "card_hours": 0.0206,
+ "core_hours": 0.0206
 }

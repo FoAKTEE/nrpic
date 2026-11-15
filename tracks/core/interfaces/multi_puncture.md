@@ -202,9 +202,10 @@ table is used as it is.
   the surface (diagnostics of section 8); do not lower the constant below `m^2`
   without tightening `mass_tol`.
 - Shift damping. `<z4c> shift_eta` is one number in code units. With holes of
-  masses 0.5 and 10 and `shift_eta = 2`, `eta m` is 1 and 20; the heavy hole's tracker
-  then barely moves (section 8, tests 3 and E20). [VERIFIED for the tracker; what it
-  does to a long run is open, section 9]
+  masses 0.5 and 10 and `shift_eta = 2`, `eta m` is 1 and 20, and the heavy hole's
+  tracker barely moves: at early times the tracker speed falls nearly in proportion
+  to `1/shift_eta` (9 times smaller for 20 than for 2 on a hole of unit mass, section
+  8). [VERIFIED for the tracker; what it does to a long run is open, section 9]
 
 ## 5. Cost
 
@@ -227,7 +228,7 @@ All measured on one A100, RK4, `nghost = 4`, 16^3 MeshBlocks, finder every 16 cy
   limit of 2048 with one finder, 58.5 GB for 2400 with two, 63.1 GB for 2400 with
   three (about 22 MB per block slot plus 2 MB per finder). A card holds a limit of
   about 3000.
-- This package used 1.3 of its 3 card-hours.
+- This package used 1.28 of its 3 card-hours (sum over the manifests).
 
 ## 6. With particles
 
@@ -261,7 +262,9 @@ Predictions and outcomes in full: `tracks/core/JOURNAL-mp.md`. Scripts and figur
 | 3, binary and a hole ten times heavier (mass 10 against 1), t = 0 | `H` norm of the code 2.25e-5 none, 8.5e-6 background factor, 1.50e-5 plain sum; closed form on the same cells 2.15e-5, 2.2e-6, 1.23e-5 (the rest is truncation at the light holes on cells of m/8) | processors `core-20261115-120210-212dce7`, `-120209-`, `-120211-` |
 | 3, the same evolved 16 M | runs; three trackers; light horizons in all 64 searches (0.541 and 0.550 at t = 0, +1.3 and +1.5 percent at the end); heavy horizon not found (finder tolerance, fixed since); heavy tracker moves 4e-4 in 16 M; `H` norm 8.5e-6, peak 5.2e-3 at t = 2, 7.8e-5 at the end; momentum norm peak 5.6e-5 | `core-20261115-120834-d08c476` |
 | Finder on the heavy spinning hole (m = 10, S = 30, cells m/10) | found from a first guess of radius m/2 for flow constants 1 to 100 (mass 10.348, `S_z` = 29.98); from the first guess of radius m used when other holes are far: rejected at step 0 with `hmean_tol = 100`, found in 31 steps with 1000 and flow constant 100 (mass 10.3483, `S_z` = 29.981) | processors `core-20261115-122312-8e699b1` to `-122316-`, `-122626-` to `-122630-`, `-122832-1cf6d89` |
-| 3 with the final source, one cycle | three horizons at the first search: light holes 0.54097 and 0.54974 (the digits of the 16 M run), heavy hole 10.3996 with `S_z` = 29.98 | processors `core-20261115-131206-372e977` |
+| 3 with the final source | three horizons from the first search on: light holes 0.54097 and 0.54974 (the digits of the 16 M run), heavy hole 10.3996 (10.3990 at t = 0.75) with `S_z` = 29.98 | card, to t = 1: `core-20261115-123046-fbf578f`; processors, one cycle: `core-20261115-131206-372e977` |
+| R with the final source on a card | data files identical byte for byte to the executable of `main` | `core-20261115-123044-fbf578f` against `-113546-a5197ba` |
+| Shift damping and the tracker | hole of unit mass, `P` = 0.043, `S` = 0.3, cells 1/16: tracker speed 0.00080 with `shift_eta = 20` against 0.00725 with 2 at t = 1.6, 0.0024 against 0.0221 at t = 4.9; horizon unchanged. On cells of 1/8 the mean speed is 5.5 times smaller and the drift is against the momentum | card `core-20261115-123325-6855046` against (E); processors `core-20261115-131207-372e977`, `-131208-` |
 | Restart and particles with `puncture_setup` | tracker and horizon output identical in all printed digits after a restart; two tracers carried along | processors `core-20261115-120935-9211dcd`, `-121543-2e16f45` |
 | Burst of radiation ("junk") | energy through a sphere at 14 m over 40 m, drift of the news removed: 1.4e-4 m (`P` = 0.3 corrected), 1.6e-4 m (uncorrected), 1.9e-3 m (`P` = 0.6), 7e-6 m (`S` = 0.3, `P` = 0.043); the stock boosted slice, which has no burst, gives 6e-5 m: the floor of this estimate. Above the floor: about 1.3e-2 (P/m)^4 m | runs A to E above |
 
@@ -291,7 +294,8 @@ in this estimate.
    binary's coordinate separation in 30 M is that lag or the orbit (Newtonian
    momenta at d = 10 M) is not established. [TO VERIFY: longer run, PN momenta]
 5. Shift damping and unequal masses (section 4): with one `shift_eta` the tracker of
-   the heavy hole stays behind. What a tracker that lags by a sizeable fraction of the
+   the heavy hole stays behind (measured), and on the coarse mesh of the scouting run
+   it even drifts against the momentum. What a tracker that lags by a sizeable fraction of the
    horizon radius does to the refinement, the finder (centred on the tracker) and the
    evolution over a Hills passage is not tested. A damping that scales with the local
    mass is source work in the gauge of Z4c, outside this package. [TO VERIFY]
@@ -319,8 +323,8 @@ in this estimate.
     7a60df2; the source changed afterwards only in the place of the reader call and a
     log line in `nrpic_cf.cpp` and in two defaults of `puncture_setup` (tracker radius
     0.999 of the stated one, `hmean_tol`). The final source is verified by the
-    regression pair and static cases on processors (journal) and by the two short card
-    runs at the end of section 8.
+    regression pair and static cases on processors (journal) and by two short card
+    runs (regression, three black holes to t = 1; section 8).
 
 ## 10. Lines touched in shared files
 

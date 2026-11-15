@@ -681,3 +681,34 @@ after the main loop (line 369 of its `nrpic_cf.cpp`).
  momentum toward -x, -y). The explanation of the slow heavy tracker is supported, not
  settled: the card run at cells of 1/16 (`b16_spin0.3_eta20`, queued) is the clean
  test. [VERIFIED as stated; TO VERIFY at 1/16]
+
+### Outcome of the last three card runs (they started sooner than the scheduler had estimated)
+
+ - Regression with the final executable (`core-20261115-123044-fbf578f`,
+   `problems/puncture/tracers_headon.athinput`, 24 cycles) against the executable of
+   `main` (`core-20261115-113546-a5197ba`): trackers, horizon summary, particle
+   history, trajectories, metric at the particles, Z4c history and particle restart
+   files identical byte for byte (11 files); the three mesh restart files differ in the
+   7 uninitialised header bytes. Prediction held. [VERIFIED]
+ - Three black holes to t = 1 with the final executable
+   (`core-20261115-123046-fbf578f`, 36 s): three horizons from the first search on;
+   light holes 0.5409674769678748 and 0.5497393844448359 (the digits of the earlier
+   card run and of the processor run), heavy hole 10.3996 at t = 0 and 10.3990 at
+   t = 0.75, S_z = 29.98. Prediction held. [VERIFIED]
+ - Shift damping at cells of 1/16 (`core-20261115-123325-6855046`, shift_eta = 20,
+   against run (E) `core-20261115-121050-0c197fb`, shift_eta = 2; m = 1, P = 0.043,
+   S = 0.3): tracker speed 0.00080 against 0.00725 at t = 1.6 (9.1 times smaller),
+   0.00239 against 0.0221 at t = 4.9 (9.2 times); displacement 0.00049 against
+   0.00468 at t = 1.6; both along +P; horizon mass 1.03543 and S_z = 0.2999 in both.
+   Prediction held: the early tracker speed falls nearly in proportion to 1/shift_eta.
+   The slow tracker of the heavy hole in test 3 (eta m = 20) is explained by the
+   damping; its direction against the momentum there, and in the processor run on
+   cells of 1/8, is a feature of the coarse meshes (at 1/16 the drift is along +P for
+   both dampings). [VERIFIED]
+
+### Card time of the package
+
+Sum of the card-hours in the manifests: 1.28 of the 3 allowed. 147 registered runs:
+72 done, 43 superseded (relaunched under the same label), 25 failed (launch errors of
+the static series, the block limit, a missing command-line parameter), 6 cancelled,
+1 stopped. No job of this package is left in the queue.
