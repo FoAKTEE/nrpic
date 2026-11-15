@@ -121,7 +121,8 @@ def main():
     ax.loglog(eps, hp, "o", color=fs.PAL["red"], ms=4, label="Fourier projection")
     p0 = res["cases"]["plane (1,0,0)"]["max_TT_strain"]
     ax.axhline(max(p0, 1e-22), **fs.MASK_LINE)
-    ax.text(1.2e-3, max(p0, 1e-22)*3, r"plane wave, $\epsilon=0$: largest $|h^{TT}|$",
+    ax.text(1.2e-3, max(p0, 1e-22)*3,
+            r"plane wave, $\epsilon=0$: $h^{TT}=0$ exactly (drawn at the floor)",
             fontsize=8, color="grey")
     ax.set_xlabel(r"amplitude ratio $\epsilon$ of the second wave")
     ax.set_ylabel(r"$|h_+|$ at $\mathbf{k}=(k,k,0)$, $\delta=0.01$")
@@ -135,11 +136,12 @@ def main():
     ax2.bar(xs - 0.18, full, 0.36, color=fs.PAL["blue"], label="traceless source")
     ax2.bar(xs + 0.18, vals, 0.36, color=fs.PAL["red"], label="TT part")
     ax2.set_yscale("log")
-    ax2.set_ylim(1e-23, 1e-3)
+    ax2.set_ylim(1e-23, 1e1)
+    ax2.text(0.18, 1e-21, "= 0", ha="center", fontsize=8, color="grey")
     ax2.set_xticks(xs)
     ax2.set_xticklabels(["(1,0,0)", "(1,1,0)", "(1,1,1)", "(1,0.9,1.1)"])
     ax2.set_xlabel("amplitude ratios of the three waves")
-    ax2.set_ylabel(r"largest $(20/3)|S|/k^2$ over the box modes")
+    ax2.set_ylabel(r"largest $(20/3)\,|S_{ij}|/k^2$")
     ax2.legend(loc="upper left", ncol=2)
     fs.save(fig, os.path.join(a.out, "crossed_waves_tt"))
     print(json.dumps({k: v for k, v in res.items() if k != "eps_scan"}, indent=1))
