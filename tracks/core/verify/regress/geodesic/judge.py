@@ -58,7 +58,7 @@ def main():
     old = json.loads(SUMMARY.read_text())
     oldruns = old["C"]["runs"]
     kr = gc.kerr_ref()
-    fin = np.array(kr["ks_passage"]["final_state"]["ks"]["x"])
+    fin = np.array(kr["orbits"]["ks_passage"]["final_state"]["ks"]["x"])
     out = lib.SCRATCH / a.run_id
     res, checks, hist = {}, [], {}
     for d in sorted(p for p in out.iterdir() if (p / "run.json").exists()):

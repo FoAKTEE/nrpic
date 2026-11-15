@@ -9,7 +9,16 @@ t = 9 (a = 30.25) instead of t = 18 (a = 100). Input problems/cosmo/east.athinpu
 
     python3 run.py --prepare      # new run id: constraint-solved data, manifest; batch line
     python3 judge.py <run_id>
+
+The earlier run was made with the relativistic ("number") displacement of the lattice,
+the default of make_east.py at the time (its id.json records displacement_factor
+4.0396 = 1 + 7.5 (H/k)^2); the default became "newtonian" in commit 2a19963. The
+regression therefore passes --displacement number (variant "number", the default here).
+Variant "newtonian" uses the current default of the generator; variant "copy" runs the
+earlier initial data files themselves (a control that separates the code from the
+generator).
 """
+import shutil
 import subprocess
 import sys
 from pathlib import Path
@@ -40,18 +49,32 @@ def read_doubles(path):
 
 
 def max_abs_diff(a, b):
+    """Largest difference of the payloads; particle records are compared after sorting by
+    position (the generator now writes the fiducial observers first, commit 7f9ef83)."""
     x, y = read_doubles(a), read_doubles(b)
     if x.size != y.size:
         return None
+    if Path(a).suffix == ".nrp":
+        x, y = x.reshape(-1, 7), y.reshape(-1, 7)
+        kx = np.lexsort(np.round(x[:, 2::-1], 9).T)
+        ky = np.lexsort(np.round(y[:, 2::-1], 9).T)
+        x, y = x[kx], y[ky]
     return float(np.max(np.abs(x - y)))
 
 
-def prepare():
+def prepare(variant="number"):
     run_id = lib.new_run_id()
     out = lib.run_dir(run_id)
-    gen = ["python3", str(lib.WT / "cosmo" / "ic" / "make_east.py"), "--delta", "1e-4",
-           "--n", "32", "--ppc", "1", "--nfilter", "2", "--compensate", "--out", str(out)]
-    subprocess.run(gen, cwd=str(lib.WT), check=True, stdout=subprocess.DEVNULL)
+    if variant == "copy":
+        gen = ["cp", str(OLD / "particles.nrp"), str(OLD / "fields.bin"), str(OLD / "id.json"),
+               str(out)]
+        for f in ("particles.nrp", "fields.bin", "id.json"):
+            shutil.copy2(OLD / f, out / f)
+    else:
+        gen = ["python3", str(lib.WT / "cosmo" / "ic" / "make_east.py"), "--delta", "1e-4",
+               "--n", "32", "--ppc", "1", "--nfilter", "2", "--compensate",
+               "--displacement", variant, "--out", str(out)]
+        subprocess.run(gen, cwd=str(lib.WT), check=True, stdout=subprocess.DEVNULL)
     ic = {}
     for f in ("particles.nrp", "fields.bin"):
         new, old = out / f, OLD / f
@@ -60,7 +83,7 @@ def prepare():
                      max_abs_diff_as_doubles=max_abs_diff(new, old))
     line = " ".join([str(out), str(INPUT)] + ARGS)
     lib.write_manifest(
-        run_id, kind="scouting", test="L linear growth",
+        run_id, kind="scouting", test="L linear growth", variant=variant,
         purpose="C3 regression of the cosmology extension: observer density contrast at "
                 "amplitude 1e-4 to a = 30 against linear theory and runs/cosmo/east_d1e-4_n32_cpu",
         command=[" ".join(gen), f"scripts/gpu_batch.sh line: {line}",
@@ -76,4 +99,9 @@ def prepare():
 
 
 if __name__ == "__main__":
-    prepare()
+    import argparse
+    ap = argparse.ArgumentParser()
+    ap.add_argument("--prepare", action="store_true")
+    ap.add_argument("--variant", default="number", choices=("number", "newtonian", "copy"))
+    a = ap.parse_args()
+    prepare(a.variant)

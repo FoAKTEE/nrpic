@@ -75,3 +75,71 @@ more than 0.5 percent or from the earlier run by more than 1e-3 of the contrast.
 Card time: the earlier collapse reached t = 22 M in 251 s of a 1100 s run to 60 M
 (`runs/os/nocap_sc/athena.20261113-070659.log`); the two cosmology runs are 32^3. Expected
 total under 0.25 card-hours, against the 2 card-hours of the package.
+
+Correction (03:55): the clock times of the two entries above are wrong; both were
+written before any run and committed in 45e1779 at 03:26, before job 4342 was
+submitted (03:26) and before the geodesic runs (03:26).
+
+## 03:55 Outcomes of the first regression pass
+
+**G** (`core-20261115-032625-45e1779`, processors, 11 runs, 13 s): 104 of 104 checks pass.
+Invariant errors equal the earlier card values to 2e-5 relative or better (round-off of
+processor against card), the published values to the paper's two digits; pairwise
+orders 1.9989 to 2.0003, equal to the earlier ones to 6e-7; the two passage runs of the
+earlier processor build are reproduced bitwise (largest difference 0). Prediction
+confirmed. Figure `figs/regress_geodesic_core-20261115-032625-45e1779.png` (inspected:
+the maxima of the four error histories sit on the dashed earlier maxima; the order panel
+puts today's points on the earlier circles).
+
+**O** (`core-20261115-032614-45e1779`, card, 317 s = 0.088 card-hours): 13 of 13 checks
+pass. Initial data regenerated bitwise identical (sha256 of .nrp and .tab equal). First
+horizon at 16.3894 M as before, mass 1.000352575670864 against 1.000352575670862
+(2e-15); central lapse equal to the earlier run to 2.4e-15 before the horizon; largest
+Hamiltonian-constraint norm equal to the printed digits; all particles removed at
+19.739 M as before; deposition identity 1.0e-15. Prediction confirmed, closer than I
+wrote (agreement to round-off, not bitwise). The asymptotically flat path of the current
+source is the path of the earlier run. Figure `figs/regress_os_core-20261115-032614-45e1779.png`
+(inspected; the spike of the lapse difference at t = 25 M is the last, shortened step
+compared with an interpolated earlier record, not a difference of the runs).
+
+**F** (`core-20261115-032615-45e1779`, card, 1 s): 12 of 12 checks of the criteria as
+written pass; errors of lapse, density, mean K, volume, H-norm2 and Theta equal the
+earlier ones to four digits (1.914e-7, 1.119e-6, 3.793e-7, 1.119e-6, 3.696e-10,
+1.106e-11), the particle file differs from the earlier one (sha256) but deposits the same
+uniform density. One prediction refuted: I wrote that the largest proper-time error
+drops from 4.0e-5 to below 1e-6; it is 4.005e-5 in both runs. Reading, with a check that
+could have failed: the largest error sits at the first record, where the code uses the
+trapezoidal rule (no earlier lapse yet, `athenak/src/particles/nrpic_io.cpp` lines
+142-156), whose relative error is dt^2 a''/(12 a) = 4.07e-5 at dt = 1/32; the first
+record of both runs is 4.005e-5. At t = 2 the earlier (second-order) run is off by
+1.73e-5, this run by 1.0e-7: the third-order integration is in effect. Change made after
+seeing the run: the judge now also checks the error at t = 2 against 1e-6 (criteria.json
+F.tau_probe_end_max, with its reason); with it 13 of 13 pass. Figure
+`figs/regress_flrw_core-20261115-032615-45e1779.png` (inspected).
+
+**L** (`core-20261115-032617-45e1779`, card, 4 s): FAILED, 4 of 10 checks. The observer
+contrast is 0.6 to 1.0 percent below linear theory at both probes (criterion 0.5) and
+0.46 and 0.82 percent of the contrast below the earlier run (criterion 0.1). The offset
+is there at a_p = 1 and stays (figure `figs/regress_growth_core-20261115-032617-45e1779.png`,
+inspected), so it comes from the initial data, not from the evolution. The regenerated
+data are not those of the earlier run: `id.json` shows displacement_factor 1.0 and
+particle masses varying by 9e-4, against 4.0396 and 3e-6 in the earlier run. The
+generator's default changed from the relativistic ("number") displacement to the
+Newtonian one in commit 2a19963 (`cosmo/ic/make_east.py` lines 84-95); my run script
+used the default. This is a defect of my regression set-up, and the second variant of
+the data is not the one the earlier result was obtained with. Constraint norms at t = 0
+(6.0e-10, 7.6e-10) equal the earlier ones.
+
+## 03:58 Predictions for the second linear-growth pass (written before the runs)
+
+Two runs on one card job: (a) `growth/run.py --variant number`, the data regenerated
+with `--displacement number`; (b) `--variant copy`, the earlier files themselves.
+(a) The regenerated fields agree with the earlier `fields.bin` to below 1e-12 and the
+particle records, sorted by position, to below 1e-12 (the generator's solver changed
+only its iteration and stopping rule since, commit 56ac61d); the run then reproduces
+the earlier contrast to below 1e-4 of the contrast and stays within 0.5 percent of
+linear theory (earlier 0.45 and 0.31 percent). (b) The same to below 1e-5 of the
+contrast (round-off of card against processor only). If (b) passes and (a) fails, the
+generator has changed beyond the displacement; if both fail, the evolution has changed.
+The first pass (Newtonian displacement) stays on record as variant "newtonian"; its
+0.6 to 1.0 percent offset from linear theory at 32 cells is not explained here.

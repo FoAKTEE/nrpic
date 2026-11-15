@@ -3,23 +3,42 @@
  "G": {
   "earlier": "problems/kerr/results/kerr_summary.json (from runs/geodesic/kerr_passage*/, analysis/geodesic/analyze_kerr.py); docs/TESTLOG.md lines 6-21",
   "published_source": "refs/arxiv_2611.12831/src/main.tex lines 824-833 (dt = 0.01 M to t = 230 M)",
-  "rel_tol_vs_earlier": 1e-3,
+  "rel_tol_vs_earlier": 0.001,
   "rel_tol_vs_earlier_why": "earlier errors are quoted to four digits in docs/TESTLOG.md; a change of the pusher, the metric or the Hermite lattice changes them by far more",
   "abs_tol_when_zero": 1e-15,
-  "r_peri_abs_tol": 1e-6,
+  "r_peri_abs_tol": 1e-06,
   "r_peri_abs_tol_why": "docs/TESTLOG.md line 20 quotes r_p to six decimals",
   "published": {
-   "mid_ks_dt0.01": [2.8e-8, null, 1.3e-7],
-   "bsym_ks_dt0.01": [9.0e-8, 1.1e-8, 7.8e-7],
-   "mid_lat_dt0.01": [2.2e-6, 5.3e-6, 5.1e-5],
-   "bchol_lat_dt0.01": [2.0e-6, 3.8e-6, 5.3e-5]
+   "mid_ks_dt0.01": [
+    2.8e-08,
+    null,
+    1.3e-07
+   ],
+   "bsym_ks_dt0.01": [
+    9e-08,
+    1.1e-08,
+    7.8e-07
+   ],
+   "mid_lat_dt0.01": [
+    2.2e-06,
+    5.3e-06,
+    5.1e-05
+   ],
+   "bchol_lat_dt0.01": [
+    2e-06,
+    3.8e-06,
+    5.3e-05
+   ]
   },
   "rel_tol_vs_published": 0.05,
   "rel_tol_vs_published_why": "two significant digits in the paper (rounding allows up to 4 percent: 1.254e-7 against 1.3e-7)",
   "order_abs_tol": 0.005,
-  "order_range": [1.99, 2.01],
+  "order_range": [
+   1.99,
+   2.01
+  ],
   "order_why": "pairwise orders of the final position error between dt = 0.005, 0.01, 0.02 M were 1.9989 to 2.0003 (kerr_summary.json C.dt_convergence_ks); the table entry tab:outcomes says 1.995-2.001 (fit over five steps)",
-  "traj_abs_tol": 2e-8,
+  "traj_abs_tol": 2e-08,
   "traj_abs_tol_why": "largest earlier processor-against-card difference of the same run, 1.8e-8 in position (kerr_summary.json D, bchol_lat_dt0.01): anything below is round-off ordering, not a change of the method"
  },
  "O": {
@@ -28,10 +47,10 @@
   "t_end": 25.0,
   "t_first_ah_abs_tol": 0.16,
   "t_first_ah_abs_tol_why": "one search interval of the finder (16 cycles of dt = 9.46e-3 M = 0.151 M)",
-  "published_mass_error": 1e-3,
-  "m_abs_tol_vs_earlier": 3e-4,
+  "published_mass_error": 0.001,
+  "m_abs_tol_vs_earlier": 0.0003,
   "m_abs_tol_vs_earlier_why": "successive searches of the earlier run scatter between 0.9997 and 1.0005 from formation to 22 M",
-  "alpha_abs_tol_before_ah": 1e-3,
+  "alpha_abs_tol_before_ah": 0.001,
   "alpha_abs_tol_before_ah_why": "the two deposition rules (finest level, adaptive level) differ by up to 4e-3 in the central lapse (docs/TESTLOG.md line 726); a change of that kind must show",
   "deposit_identity_tol": 1e-12,
   "deposit_identity_tol_why": "earlier 1.1e-15 (docs/TESTLOG.md line 62)",
@@ -44,10 +63,12 @@
   "factor_vs_earlier": 2.0,
   "floor": 1e-12,
   "factor_why": "the errors are those of fourth-order Runge-Kutta at a quarter-cell step on ordinary differential equations; a change of the step or of the source conversion changes them by orders of magnitude, round-off by far less than a factor two",
-  "tau_probe_max": 8.0e-5,
+  "tau_probe_max": 8e-05,
   "tau_probe_max_why": "twice the largest earlier relative error of the probe proper time (4.0e-5 over the run; 1.7e-5 at t = 2, cosmo/TESTLOG.md line 69); the code has since made it third order (cosmo/TESTLOG.md line 127)",
   "density_spread_max": 1e-12,
-  "deposit_identity_tol": 1e-12
+  "deposit_identity_tol": 1e-12,
+  "tau_probe_end_max": 1e-06,
+  "tau_probe_end_max_why": "set on 2026-11-15 03:50 after the first regression run (JOURNAL.md): the probe proper time is third order since 95b5c47 (cosmo/TESTLOG.md line 127); the earlier second-order run ends at 1.7e-5, the regression run core-20261115-032615-45e1779 at 1.0e-7; a return to second order fails this check"
  },
  "L": {
   "earlier": "runs/cosmo/east_d1e-4_n32_cpu (cosmo/TESTLOG.md lines 118-127 and 163-172)",
@@ -55,8 +76,9 @@
   "ap_max": 30.0,
   "linear_rel_tol": 0.005,
   "linear_rel_tol_why": "earlier: within 0.5 percent of linear theory at both probes up to a_p = 30 (cosmo/TESTLOG.md line 166); measured again from the earlier run: 0.45 and 0.31 percent",
-  "earlier_rel_tol": 1e-3,
+  "earlier_rel_tol": 0.001,
   "earlier_rel_tol_why": "the earlier run differs from this one only by processor against card and by later code changes on paths these options do not use; 1e-3 of the contrast is ten times below the agreement with linear theory",
-  "factor_vs_earlier": 2.0
+  "factor_vs_earlier": 2.0,
+  "variant_why": "the earlier run used the relativistic ('number') displacement, then the default of cosmo/ic/make_east.py (its id.json: displacement_factor 4.0396); growth/run.py passes --displacement number"
  }
 }

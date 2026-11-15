@@ -18,7 +18,9 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import lib  # noqa: E402
 
-MODS = {"O": "os/run.py", "F": "flrw/run.py", "L": "growth/run.py"}
+MODS = {"O": "os/run.py", "F": "flrw/run.py", "L": "growth/run.py",
+        "Lnewtonian": "growth/run.py", "Lcopy": "growth/run.py"}
+VARIANT = {"L": "number", "Lnewtonian": "newtonian", "Lcopy": "copy"}
 
 
 def load(rel):
@@ -36,7 +38,8 @@ def main():
     a = ap.parse_args()
     ids, lines = [], []
     for t in a.tests:
-        run_id, line = load(MODS[t]).prepare()
+        mod = load(MODS[t])
+        run_id, line = mod.prepare(VARIANT[t]) if t in VARIANT else mod.prepare()
         ids.append(run_id)
         lines.append(line)
         time.sleep(1.1)          # distinct run ids (one-second resolution)

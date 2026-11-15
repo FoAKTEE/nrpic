@@ -54,6 +54,9 @@ def measure(d):
         else:
             err[q] = np.abs(got[q] / ex[q] - 1.0)
     m = {f"max_rel_err_{q}": float(err[q].max()) for q in QUANTS}
+    # the largest proper-time error sits at the first record (trapezoidal first step,
+    # relative error dt^2 a''/(12 a) = 4.07e-5 at dt = 1/32); the end value shows the order
+    m["rel_err_tau_probe_end"] = float(err["tau_probe"][-1])
     m.update(t_last=float(t[-1]), a_last=float(ex["a"][-1]),
              np_min=int(h["np"].min()), np_max=int(h["np"].max()),
              max_density_spread=float(np.max(h["E_max"] / h["E_min"] - 1.0)),
@@ -78,6 +81,8 @@ def judge(run_id):
         if q == "tau_probe":
             hi = crit["tau_probe_max"]
         checks.append(lib.verdict_line(f"{k}", new[k], hi=hi))
+    checks.append(lib.verdict_line("rel_err_tau_probe_end (t = 2)", new["rel_err_tau_probe_end"],
+                                   hi=crit["tau_probe_end_max"]))
     checks += [
         lib.verdict_line("max H-norm2 (history column)", new["max_H_norm2"],
                          hi=max(fac * old["max_H_norm2"], floor)),
