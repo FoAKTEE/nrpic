@@ -419,10 +419,10 @@ the first dumps (h 2.2e-12 single, 3.5e-13 double).
 P8: CONFIRMED, and more. c_+(K1) at 32^3 and 64^3 agree to <= 0.06 percent at a = 5-40 in
 all four cases (largest |difference| for a <= 20: 0.09 percent for eps = 1 and the Gamma
 driver; 0.45 and 0.62 percent for eps = 0.1 and 0.3, at the first dumps where c_+ is
-small), 0.07-0.2 percent at a = 60, 0.4-0.5 percent at a = 80 (zero shift; -1.9 percent
+small), 0.05-0.2 percent at a = 60, 0.4-0.5 percent at a = 80 (zero shift; -1.9 percent
 Gamma driver) and within 3.2 percent at a = 100; the largest excursions, 5-7 percent, are
 at a = 90-130 for eps = 1 where c_+ oscillates fast. The rms non-TT part agrees to 3e-4
-(a <= 40) and 0.3 percent (a = 100). So the growth of the box-mode strain to 2-2.5 s
+(a <= 40) and 0.3 percent at a = 100 (2 percent in the Gamma-driver run). So the growth of the box-mode strain to 2-2.5 s
 after shell crossing is independent of the mesh at these two resolutions (same particle
 loading, two per cell and direction) [JUDGEMENT: two meshes and one loading are not a
 convergence study; particle number and the 128^3 mesh are the missing legs].
