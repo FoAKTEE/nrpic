@@ -123,3 +123,48 @@ or a few more if the served ingest added extras; bibliography with an arXiv id 6
 and in-corpus edges 15 +- 1 % (the K3 numbers of kb/README.md); every reference of CHARTER
 section 10 ingested. Refuted by any other id in the not-ingested list or a rate outside
 those bands.
+
+## P3-P5 outcomes (first QA run kb-20261115-155007-11f0fde; the run before it,
+## kb-20261115-154858-b0d8c8f, failed in the retrieval step: IndexError in
+## embed_search.Locator.lines on the empty source map of 2201.03458; guarded in qa_report)
+
+P3 held as worded: 39 of 41 papers agree exactly, 40 within 2 % or 2 lines (totals 2283
+independent, 2295 database). Both mismatches were read at the source and both are defects
+of MY counter, not of the extractor [VERIFIED]:
+- 1706.09896 (0 against 10): "$\sim 1 - 3$$\Gpc^{-3}...$" is two inline maths side by
+  side; the counter took the `$$` for a display and swallowed the paper. Fixed (the first
+  `$` decides; escaped `\$` skipped), test `test_adjacent_inline_maths_are_not_a_display`.
+- 2408.09964 (61 against 63): two align blocks end in `\nonumber \\` before `\end{align}`.
+  pdflatex on a synthetic file (run kb-20261115-155344-596b4ce, labels in its stdout.log)
+  numbers the empty last row after a trailing `\\` in align, gather and eqnarray alike, so
+  the database's 63 (contiguous 1-15, A1-A21, B1-B27) is right and the counter's rule "drop
+  an empty last row" was wrong. Fixed and tested. The same rule is written in the lead's
+  checker `tracks/kb/analysis/lead_checks/eqcount.py` ("a trailing \\ before \end is
+  dropped for ams environments"): refuted by this run for align and gather (Request).
+So on this sample the extractor's numbered-line counts have no error found; the
+independent counter had two.
+
+P4 held for BM25: expected paper in the top 10 for 27 of 32 (84 %), expected lines (+-5)
+for 21 of 32 (66 %), mean reciprocal rank 0.71. Missed papers: q07 (machines of
+2611.12831), q11 and q12 (2609.14218, slicing and eigenvalues: mathematics-heavy), q17
+(2507.18312), q24 (astro-ph/0110561). The hybrid sub-prediction is refuted: hybrid found
+22 of 32 papers (69 %) and 15 locators, five fewer than BM25, with vectors for 21760 of
+43398 chunks at run time [JUDGEMENT: fusing a vector ranking that covers half the chunks
+pushes BM25's correct hits down; to re-test when all chunks are embedded].
+
+P5: held for C1 (not ingested: gr-qc/9412071 only), C3 (25 not ok: 23 review, 1 pdf,
+1 failed), C10 (27 of 27 suite references ingested), bibliography with an arXiv id 59.9 %.
+Refuted as worded for the in-corpus fraction: 11.9 %, outside 15 +- 1 %. Cause, checked
+with a query in which it could have failed: I counted citation rows (one per `\cite`
+occurrence, 104726), K3 counted distinct (citing, cited arXiv id) edges; with K3's
+definition the base gives 5700 of 38406 = 14.8 %, inside the band. The report now gives both.
+New finding of C2: 37 papers with status ok have no section row; read for 7 of them
+(1505.04756, 2504.15978, 0710.5073, 1207.1286, 2311.17644, 2312.03860, gr-qc/0511048):
+none has a `\section` command (letters). The rerun separates "no sectioning command"
+from "command present, nothing extracted".
+
+## P6 (prediction, before the QA rerun with the corrected counter)
+
+All 41 sampled papers agree exactly (the two fixes touch only the cases found); C2 finds
+no paper whose flat.tex has a sectioning command but no extracted section. Refuted by any
+mismatch or any such paper.

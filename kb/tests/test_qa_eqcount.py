@@ -10,7 +10,7 @@ DOC = r"""\documentclass{article}
 \begin{document}
 \begin{equation} a=b \end{equation}            % 1
 \begin{equation*} c \end{equation*}            % 0
-\begin{align} x&=1 \\ y&=2 \nonumber \\ z&=3 \\ \end{align}   % 2 (trailing \\ dropped)
+\begin{align} x&=1 \\ y&=2 \nonumber \\ z&=3 \\ \end{align}   % 3 (the empty last line is numbered)
 \begin{align} M=\begin{pmatrix} 1 & 2 \\ 3 & 4 \end{pmatrix} \\ {a \\ b} \end{align}   % 2: inner rows not split
 \be f \ee                                      % 1 through the shorthand
 \bea p &=& q \\ r &=& s \notag \eea            % 1
@@ -29,7 +29,7 @@ $$ v $$                                        % display, 0
 
 def test_counts():
     r = q.count_document(DOC)
-    assert r["numbered"] == 1 + 0 + 2 + 2 + 1 + 1 + 1 + 1 + 2
+    assert r["numbered"] == 1 + 0 + 3 + 2 + 1 + 1 + 1 + 1 + 2
     assert r["tagged"] == 1
     assert r["displays"] == 11
     assert set(r["shorthands"]) == {"be", "ee", "bea", "eea"}
@@ -37,6 +37,7 @@ def test_counts():
 
 def test_split_rows_and_alignat():
     assert len(q._split_rows(r" a \\ b \\[2pt] c \\* d ")) == 4
+    assert len(q._split_rows(r" a \\ b \\ ")) == 3          # empty last row kept (numbered by amsmath)
     r = q.count_document(r"\begin{document}\begin{alignat}{2} a&=b & c&=d \\ e&=f \end{alignat}\end{document}")
     assert r["numbered"] == 2
 
@@ -57,3 +58,12 @@ def test_source_choice(tmp_path):
     (src / "main.tex").write_text("\\documentclass{x}\\begin{document}% \\input{sec}\n\\end{document}")
     t, which = q.source_for(str(src), "main.tex", str(flat))
     assert which == "raw main file"
+
+
+def test_adjacent_inline_maths_are_not_a_display():
+    """Found on 1706.09896 (audit P3): "$\\sim 1-3$$\\Gpc^{-3}$" is two inline maths; reading
+    it as $$ swallowed every equation up to the next $$."""
+    doc = (r"\begin{document} rate $\sim 1 - 3$$\Gpc^{-3}$ and 5\$ \begin{equation} a \end{equation}"
+           r" again $x$$y$ \begin{equation} b \end{equation} $$ c $$ \end{document}")
+    r = q.count_document(doc)
+    assert r["numbered"] == 2 and r["displays"] == 3

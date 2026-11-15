@@ -14,8 +14,9 @@ Rules (amsmath and LaTeX defaults):
   forms unnumbered), displaymath, \\[ \\], $$ $$; only outermost blocks count;
 - numbered lines: equation and multline give one unless the block holds \\nonumber,
   \\notag or (starred) no \\tag; align-like environments split at \\\\ outside braces and
-  inner environments (aligned, split, cases, array, matrix, ...), a last empty row is
-  dropped, a row with \\nonumber or \\notag has no number unless it has \\tag;
+  inner environments (aligned, split, cases, array, matrix, ...); the empty last row
+  after a trailing \\\\ is numbered (pdflatex does so for align, gather and eqnarray); a
+  row with \\nonumber or \\notag has no number unless it has \\tag;
   \\tag gives a number in a starred environment too.
 
 Input: the raw main file when it includes no other .tex file (independent of flattening
@@ -139,8 +140,8 @@ def _split_rows(inner):
         cur.append(c)
         i += 1
     rows.append("".join(cur))
-    if rows and not rows[-1].strip():
-        rows.pop()
+    # a trailing \\ leaves an empty last row, and amsmath numbers it (align, gather and
+    # eqnarray alike; checked with pdflatex on a synthetic file, run in tracks/kb/claims/JOURNAL.md P3)
     return rows
 
 
@@ -173,16 +174,22 @@ def scan(body):
     i, n = 0, len(body)
     while i < n:
         j = body.find("\\", i)
-        k = body.find("$$", i)
+        k = body.find("$", i)
         if j < 0 and k < 0:
             break
         if k >= 0 and (j < 0 or k < j):
-            e = body.find("$$", k + 2)
-            if e < 0:
-                break
-            res["displays"] += 1
-            res["by_env"]["$$"] = res["by_env"].get("$$", 0) + 1
-            i = e + 2
+            if body.startswith("$$", k):                # display math
+                e = body.find("$$", k + 2)
+                if e < 0:
+                    break
+                res["displays"] += 1
+                res["by_env"]["$$"] = res["by_env"].get("$$", 0) + 1
+                i = e + 2
+            else:                                       # inline math: skip to its closing $
+                p = k + 1
+                while p < n and body[p] != "$":
+                    p += 2 if body[p] == "\\" else 1
+                i = p + 1                               # "$a$$b$" is two inline maths, not a display
             continue
         if body.startswith("\\[", j):
             e = body.find("\\]", j + 2)
@@ -220,10 +227,7 @@ def scan(body):
                 continue
             i = m.end()
             continue
-        if body.startswith("\\\\", j):
-            i = j + 2
-        else:
-            i = j + 1 if j >= 0 else n
+        i = j + 2 if j >= 0 else n                      # a control symbol or the first letter of a word
     return res
 
 

@@ -62,7 +62,10 @@ def c1_counts(con):
             "agree": len(not_ingested) == 0 and not missing_dl}
 
 
-def c2_abstract_sections(con):
+RE_SECTIONING = re.compile(r"\\(?:sub)*section\*?\s*[\[{]|\\chapter\*?\s*[\[{]|\\part\*?\s*[\[{]")
+
+
+def c2_abstract_sections(con, build_tex=None):
     no_abs, no_sec = [], []
     for pid, abstract, kind in con.execute("SELECT paper_id, abstract, source_kind FROM papers ORDER BY paper_id"):
         has_abs = bool(abstract and abstract.strip()) or bool(con.execute(
@@ -73,8 +76,20 @@ def c2_abstract_sections(con):
         if n_sec == 0:
             no_sec.append(pid)
     n = con.execute("SELECT count(*) FROM papers").fetchone()[0]
+    # a paper without sections: does its flattened text hold any sectioning command at all?
+    no_cmd, missed, no_flat = [], [], []
+    for pid in no_sec:
+        p = os.path.join(build_tex, _key(pid), "flat.tex") if build_tex else None
+        if not p or not os.path.isfile(p):
+            no_flat.append(pid)
+            continue
+        with open(p, "rb") as f:
+            t = f.read(64 << 20).decode("utf-8", errors="replace")
+        (missed if RE_SECTIONING.search(t) else no_cmd).append(pid)
     return {"papers": n, "without_abstract": no_abs, "without_sections": no_sec,
-            "with_both": n - len(set(no_abs) | set(no_sec))}
+            "with_both": n - len(set(no_abs) | set(no_sec)),
+            "sectionless_no_command": no_cmd, "sectionless_extraction_missed": missed,
+            "sectionless_no_flat": no_flat}
 
 
 # ---------------------------------------------------------------- C3
@@ -192,6 +207,8 @@ def c5_bibliography(con):
     by_src = {s: {"entries": n, "with_id": k} for s, n, k in con.execute(
         "SELECT coalesce(source,'?'), count(*), sum(target_arxiv IS NOT NULL OR target_doi IS NOT NULL) "
         "FROM bib_entries GROUP BY 1")}
+    dist = con.execute("SELECT count(*), sum(ic) FROM (SELECT citing, cited_arxiv, max(in_corpus) ic FROM citations "
+                       "WHERE cited_arxiv IS NOT NULL GROUP BY 1, 2)").fetchone()
     cit = con.execute("SELECT count(*), sum(in_corpus) FROM citations").fetchone()
     cit_id = con.execute("SELECT count(*), sum(in_corpus) FROM citations WHERE cited_arxiv IS NOT NULL OR "
                          "cited_doi IS NOT NULL").fetchone()
@@ -200,7 +217,9 @@ def c5_bibliography(con):
             "by_resolved_by": by_res, "by_source": by_src, "citations": cit[0], "in_corpus": cit[1] or 0,
             "in_corpus_fraction": (cit[1] or 0) / cit[0] if cit[0] else None,
             "citations_with_id": cit_id[0], "in_corpus_fraction_of_identified": (cit_id[1] or 0) / cit_id[0]
-            if cit_id[0] else None}
+            if cit_id[0] else None,
+            "distinct_edges_arxiv": dist[0], "distinct_in_corpus": dist[1] or 0,
+            "distinct_in_corpus_fraction": (dist[1] or 0) / dist[0] if dist[0] else None}
 
 
 # ---------------------------------------------------------------- C6
@@ -356,7 +375,7 @@ def run(lay, db_path=None, hybrid=False, eq_n=40):
                "snapshot_current": os.path.basename(os.path.realpath(lay.db_current))
                if os.path.exists(lay.db_current) else None}
         rep["C1"] = c1_counts(con)
-        rep["C2"] = c2_abstract_sections(con)
+        rep["C2"] = c2_abstract_sections(con, os.path.join(lay.build, "tex"))
         rep["C3"] = c3_failures(con)
         rep["C4"] = c4_inspire_sample(con, lay.meta_arxiv)
         rep["C5"] = c5_bibliography(con)
@@ -401,6 +420,11 @@ def markdown(rep):
     a(f"- {c['with_both']} of {c['papers']} papers have both. Without an abstract ({len(c['without_abstract'])}): "
       f"{', '.join(c['without_abstract']) or 'none'}.")
     a(f"- Without any section ({len(c['without_sections'])}): {', '.join(c['without_sections']) or 'none'}.")
+    if "sectionless_no_command" in c:
+        a(f"  - of these, no sectioning command at all in flat.tex (letters, plain TeX): "
+          f"{len(c['sectionless_no_command'])}; a sectioning command present but no section extracted: "
+          f"{len(c['sectionless_extraction_missed'])} ({', '.join(c['sectionless_extraction_missed']) or 'none'}); "
+          f"no flat.tex: {', '.join(c['sectionless_no_flat']) or 'none'}.")
     a("")
     c = rep["C3"]
     a("## C3. Parse failures and the review list, by cause")
@@ -441,8 +465,11 @@ def markdown(rep):
     a("- By source: " + "; ".join(f"{s} {d['entries']} entries, {d['with_id']} with an id"
                                    for s, d in sorted(c["by_source"].items())) + ".")
     a("- By resolution step: " + ", ".join(f"{k} {v}" for k, v in sorted(c["by_resolved_by"].items())) + ".")
-    a(f"- Citation edges: {c['citations']}; in the corpus {c['in_corpus']} ({_pc(c['in_corpus_fraction'])}); of the "
-      f"{c['citations_with_id']} edges with an identifier, {_pc(c['in_corpus_fraction_of_identified'])} in the corpus.")
+    a(f"- Distinct citation edges (citing paper, cited arXiv id): {c['distinct_edges_arxiv']}, inside the corpus "
+      f"{c['distinct_in_corpus']} ({_pc(c['distinct_in_corpus_fraction'])}); the definition of the K3 report.")
+    a(f"- Citation rows (one per `\\cite` occurrence): {c['citations']}; in the corpus {c['in_corpus']} "
+      f"({_pc(c['in_corpus_fraction'])}); of the {c['citations_with_id']} rows with an identifier, "
+      f"{_pc(c['in_corpus_fraction_of_identified'])} in the corpus.")
     a("")
     c = rep["C6"]
     a("## C6. Duplicates")
