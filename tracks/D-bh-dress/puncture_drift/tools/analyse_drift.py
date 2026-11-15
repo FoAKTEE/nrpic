@@ -401,27 +401,36 @@ def fig_history(runs, ptab, slices, res, labels, a, path):
 
 
 def fig_floor(runs, a, path):
-    fig, ax = plt.subplots(1, 1, figsize=(fs.COLUMN_WIDTH * 1.4, 3.6))
-    fig.subplots_adjust(left=0.16, right=0.97, top=0.96, bottom=0.14)
-    t0 = a.t0[0]
-    for R in runs:
-        if t0 not in R["per_t0"]:
-            continue
-        P = R["per_t0"][t0]
-        c = RES_COL.get(R["inv_dx"], "k")
-        T = np.array(P["T"])
-        env = np.array(P["envD"])
-        add = (P["D_fs"] or 0.0) + 2 * math.sqrt(2) * P["sigma"]
-        ok = T > 0
-        ax.loglog(T[ok], env[ok] + add, color=c, label=fr"$M/{R['inv_dx']}$: $\Delta M_{{\min}}(T)$")
-        ax.loglog(T[ok], env[ok], color=c, ls=":", label=fr"$M/{R['inv_dx']}$: $\max|D|$")
-    for eps, af in SCEN:
-        ax.axvline(scen_T(eps, af), **fs.MASK_LINE)
-        ax.text(scen_T(eps, af) * 1.03, 0.98, fr"$\epsilon={eps:g}$, $a\times{af:g}$",
-                rotation=90, va="top", ha="left", fontsize=7, transform=ax.get_xaxis_transform())
-    ax.set_xlabel(r"run length $T/M$ (from $t_0=%g\,M$)" % parse_spec(t0)[0])
-    ax.set_ylabel(r"$\Delta M/M$")
-    ax.legend(fontsize=7, loc="lower right")
+    specs = [sp for sp in ("50", "20") if sp in a.t0] or [a.t0[0]]
+    fig, axs = plt.subplots(1, len(specs), figsize=(fs.FULL_WIDTH, 3.6), sharey=True,
+                            squeeze=False)
+    fig.subplots_adjust(left=0.09, right=0.98, top=0.95, bottom=0.14, wspace=0.0)
+    for ax, sp in zip(axs[0], specs):
+        t0 = parse_spec(sp)[0]
+        for R in runs:
+            if sp not in R["per_t0"]:
+                continue
+            P = R["per_t0"][sp]
+            c = RES_COL.get(R["inv_dx"], "k")
+            T = np.array(P["T"])
+            env = np.array(P["envD"])
+            add = (P["D_fs"] or 0.0) + 2 * math.sqrt(2) * P["sigma"]
+            ok = T > 0
+            ax.loglog(T[ok], env[ok] + add, color=c,
+                      label=fr"$M/{R['inv_dx']}$: $\Delta M_{{\min}}(T)$")
+            ax.loglog(T[ok], env[ok], color=c, ls=":", label=fr"$M/{R['inv_dx']}$: $\max|D|$")
+        for eps, af in SCEN:
+            ax.axvline(scen_T(eps, af), **fs.MASK_LINE)
+            ax.text(scen_T(eps, af) * 1.03, 0.98, fr"$\epsilon={eps:g}$, $a\times{af:g}$",
+                    rotation=90, va="top", ha="left", fontsize=7,
+                    transform=ax.get_xaxis_transform())
+        ax.axvline(215.0 - t0, **fs.GUIDE)
+        ax.text((215.0 - t0) * 0.97, 0.02, "boundary signal\nat the hole", ha="right",
+                va="bottom", fontsize=7, transform=ax.get_xaxis_transform())
+        ax.set_xlabel(r"run length $T/M$ from $t_0=%g\,M$" % t0)
+        ax.set_xlim(1.0, 600.0)
+    axs[0][0].set_ylabel(r"$\Delta M/M$")
+    axs[0][0].legend(fontsize=7, loc="upper left", ncol=2)
     return fs.save(fig, path) if hasattr(fs, "save") else _save(fig, path)
 
 

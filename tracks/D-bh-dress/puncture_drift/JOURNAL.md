@@ -145,3 +145,64 @@ P6 on these two times (the full test needs the long runs):
 Card runs: chains D-bh-dress-20261115-121313-284ec4f (M/8, job 4406) and
 D-bh-dress-20261115-121314-284ec4f (M/16, job 4407) queued at 12:13Z, still pending at
 12:44Z behind 7 jobs.
+
+## 2026-11-15T14:17Z  M/8 card run complete; M/16 in its second segment
+
+Run D-bh-dress-20261115-121313-284ec4f (M/8): Slurm job 4406, 12:53:07Z-13:32:22Z, one
+segment, 16000 cycles to t = 500 M, 2355 s on one A100 = 0.654 card-hours (4.71 s per M,
+as in the calibration runs). Run D-bh-dress-20261115-121314-284ec4f (M/16): segment 1
+(job 4407) 12:57:24Z-13:47:26Z to t = 272.92 M (0.834 card-hours, 11.0 s per M); segment 2
+(job 4420) started 13:56:14Z from that dump.
+
+Found while waiting (not a test of mine; recorded because it changes what exists on
+disk): the chain's wall-clock stop writes a restart through the ordinary restart writer,
+which advances `last_time` by dt at every write (athenak/src/outputs/restart.cpp:193-201),
+so after the restart the next periodic dump is one interval late. Here the dump at
+t = 300 M of the M/16 run was never written (dump 00006 at 272.92 M stores last_time =
+300, file_number = 7; segment 2 writes 350, 400, 450, 500). The probes of the M/16 run
+therefore have no t = 300 M point.
+
+Analysis run D-bh-dress-20261115-130954-49ed46f (`tools/finish.sh`, continued with
+FINISH_RUN_ID; passes at 13:10Z, 13:35Z, 13:50Z, 14:07Z). At registration the package
+directory held uncommitted tool changes; they are the ones committed in d07b8e8, f1d90b2.
+Figures looked at: history (M/8 to 500 M, M/16 to 311 M), floor, finder.
+
+M/8 outcome (complete):
+- P1 holds. Finder mass minus one: 1.3348e-3 (50 M), 1.5032e-3 (100), 1.5087e-3 (150),
+  1.4890e-3 (200), 1.4722e-3 (250), 1.5147e-3 (300), 1.5911e-3 (400), 1.6124e-3 (450)
+  (punc.horizon_summary_0.txt of the run). Total change of the 20 M mean from 50 M:
+  +2.95e-4 (limit 3e-3). Late rate: linear slope over 250-500 M +6.8e-7 per M (limit
+  2e-6). The history has three parts: the end of the gauge transient, +1.6e-4 between 50
+  and 100 M (3.4e-6 per M); a plateau 100-210 M (-2.6e-7 per M); after the window below,
+  a steady rise, +6.2e-7 and +7.5e-7 per M over 300-400 and 400-500 M.
+- The Misner-Sharp mass of the slice at the horizon moves the same way: M_H - 1 =
+  1.609e-3, 1.782e-3, 1.765e-3 (200), 1.745e-3 (250), 1.789e-3 (300), 1.927e-3 (500)
+  (slices.json of the analysis run). The finder follows the slice; the drift is the
+  slice's, not the finder's.
+
+Common to both resolutions (P4, the outer boundary): between 220 and 255 M the finder
+mass makes the same excursion at M/8 and M/16, at the same times: relative to the
+level before, -4.9e-5 and -4.1e-5 at 230 M, +5.2e-5 and +5.8e-5 at 240 M, back by 255 M
+(5 M running mean about a line over 150-300 M: peak-to-peak 9.3e-5 at M/8 and 9.2e-5 at
+M/16, minimum at 229 M and maximum at 239-239.5 M in both; outside 170-270 M the same
+measure is 1.4e-5 and 6.6e-6). A feature of equal size and timing at two resolutions of
+the hole is not made at the hole; the outer region is the same mesh in both runs. The
+timing fits a pulse that leaves at the 1+log gauge speed sqrt(2), reaches the faces at
+128 M near 89 M, and returns at light speed (126 M), arriving near 215 M [JUDGEMENT; a
+run with the boundary at 256 M would move it to about 430 M; not run]. P4 said "below
+1e-4 at M/16": 9.2e-5 peak-to-peak on the 5 M mean and 1.0e-4 on the raw finder values:
+at the bound, not clearly below it. The asymptotic Misner-Sharp mass of the outer shells
+also grows with time at both resolutions (m_inf - 1 = 1.3e-5 at 50 M, then 1.9e-3,
+4.5e-3, 8.5e-3, 1.6e-2 at 100, 150, 250, 500 M at M/8; 6.9e-3 at 250 M at M/16): the
+outer region is not clean after the first boundary crossing. In AthenaK's Z4c an
+`outflow` mesh boundary applies the Sommerfeld condition to the right-hand side
+(athenak/src/z4c/z4c_Sbc.cpp:145-185) [VERIFIED by reading the source]; that condition is
+not constraint preserving, so a partial reflection is expected [BACKGROUND].
+
+P5 holds: |S|/M^2 after 5 M at most 3.3e-7 at M/8 (falling to 5e-9 after 250 M) and
+5.7e-9 at M/16; the 32-point grid lowers S by 10 to 100 on the same slice (probes).
+
+P6 holds over the full span: the offsets of the five other settings from production are
+flat from 50 to 500 M at M/8 and from 50 to 273 M at M/16 (figure drift_finder); the
+largest change of a drift between settings, D_fs, is 7.8e-6 (M/8) and 8.0e-6 (M/16)
+from t0 = 50 M, 1.0e-5 and 9.5e-6 from t0 = 100 M (limit 5e-5).

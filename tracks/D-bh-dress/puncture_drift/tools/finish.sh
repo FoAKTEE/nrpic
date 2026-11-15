@@ -51,7 +51,7 @@ python3 "$P/tools/analyse_drift.py" --out "$OUT" --tag drift \
   --run "$R8=$S/$R8:8" "$R16=$S/$R16:16" \
   --probes "$OUT/chain/probes.json" "$HC/hcal/probes.json" \
   --slices "$OUT/slices.json" "$HC/slices.json" \
-  --res dx4=4 dx8_tight=8 dx16=16 --label "$R8=M/8" "$R16=M/16" --t0 50 100 20 50:210 100:210 \
+  --res dx4=4 dx8_tight=8 dx16=16 --label "$R8=M/8" "$R16=M/16" --t0 50 100 20 50:210 100:210 20:210 \
   > "$OUT/analyse_stdout.txt" 2>&1
 end=$(date +%s)
 cp "$OUT"/drift_drift.txt "$OUT"/drift_drift.json "$P/results/"
