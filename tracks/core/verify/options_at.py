@@ -22,7 +22,8 @@ CALL = re.compile(r'(?:pin|pinput|pin_)\s*->\s*(Get(?:OrAdd)?(?:Real|Integer|Boo
 
 
 def files_at(commit):
-    out = subprocess.run(["git", "ls-tree", "-r", "--name-only", commit, "--", "athenak/src"],
+    out = subprocess.run(["git", "ls-tree", "-r", "--full-tree", "--name-only", commit, "--",
+                          "athenak/src"],
                          check=True, capture_output=True, text=True).stdout.split()
     return [f for f in out if f.endswith((".cpp", ".hpp"))]
 

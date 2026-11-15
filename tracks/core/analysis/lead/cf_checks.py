@@ -47,9 +47,10 @@ def run(exe, rundir, inp, args):
         raise RuntimeError(f"{rundir}: exit status {p.returncode}")
 
 
-def compare(a, b):
+def compare(a, b, start_only=False):
     p = subprocess.run([sys.executable, os.path.join(WT, "tracks", "core", "analysis", "id",
-                                                     "regress_format1.py"), a, b],
+                                                     "regress_format1.py"), a, b]
+                       + (["--start-only"] if start_only else []),
                        capture_output=True, text=True)
     return p.returncode, p.stdout
 
@@ -71,6 +72,9 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--base", required=True)
     ap.add_argument("--new", required=True)
+    ap.add_argument("--parts", default="P2,P5")
+    ap.add_argument("--card", action="store_true",
+                    help="card executables: runs with deposit are compared at the start only")
     a = ap.parse_args()
     top = os.getcwd()
     summary = {"base": a.base, "new": a.new}
@@ -78,29 +82,31 @@ def main():
     os.makedirs(ic, exist_ok=True)
 
     # ---- P2: byte regression of existing set-ups
-    subprocess.run([sys.executable, os.path.join(WT, "tracks", "core", "analysis", "mp",
-                                                 "make_regress_table.py"),
-                    os.path.join(ic, "regress.tab")], check=True)
-    subprocess.run([sys.executable, os.path.join(WT, "problems", "ic", "make_ic.py"), "os",
-                    "--N", "10000", "--sampler", "lattice", "--out", ic],
-                   check=True, stdout=subprocess.DEVNULL)
-    osnrp = sorted(x for x in os.listdir(ic) if x.endswith(".nrp"))[0]
-    ostab = osnrp[:-4] + ".tab"
-    cases = {
-        "regress_cf": (os.path.join(WT, "problems", "tests", "regress_cf.athinput"),
-                       [f"problem/comp0_file={ic}/regress.tab"]),
-        "cf_table_regress": (os.path.join(WT, "problems", "tests",
-                                          "cf_table_regress.athinput"),
-                             [f"particles/particle_file={ic}/{osnrp}",
-                              f"problem/comp0_file={ic}/{ostab}"]),
-    }
     summary["P2"] = {}
-    for name, (inp, args) in cases.items():
-        for lab, exe in (("base", a.base), ("new", a.new)):
-            run(exe, os.path.join(top, name, lab), inp, args)
-        rc, txt = compare(os.path.join(top, name, "base"), os.path.join(top, name, "new"))
-        summary["P2"][name] = {"identical": rc == 0, "report": txt.splitlines()[-1]}
-        print(f"P2 {name}: {txt.splitlines()[-1]}", flush=True)
+    if "P2" in a.parts:
+        subprocess.run([sys.executable, os.path.join(WT, "tracks", "core", "analysis", "mp",
+                                                     "make_regress_table.py"),
+                        os.path.join(ic, "regress.tab")], check=True)
+        subprocess.run([sys.executable, os.path.join(WT, "problems", "ic", "make_ic.py"), "os",
+                        "--N", "10000", "--sampler", "lattice", "--out", ic],
+                       check=True, stdout=subprocess.DEVNULL)
+        osnrp = sorted(x for x in os.listdir(ic) if x.endswith(".nrp"))[0]
+        ostab = osnrp[:-4] + ".tab"
+        cases = {
+            "regress_cf": (os.path.join(WT, "problems", "tests", "regress_cf.athinput"),
+                           [f"problem/comp0_file={ic}/regress.tab"]),
+            "cf_table_regress": (os.path.join(WT, "problems", "tests",
+                                              "cf_table_regress.athinput"),
+                                 [f"particles/particle_file={ic}/{osnrp}",
+                                  f"problem/comp0_file={ic}/{ostab}"]),
+        }
+        for name, (inp, args) in cases.items():
+            for lab, exe in (("base", a.base), ("new", a.new)):
+                run(exe, os.path.join(top, name, lab), inp, args)
+            rc, txt = compare(os.path.join(top, name, "base"), os.path.join(top, name, "new"),
+                                start_only=(a.card and name == "cf_table_regress"))
+            summary["P2"][name] = {"identical": rc == 0, "report": txt.splitlines()[-1]}
+            print(f"P2 {name}: {txt.splitlines()[-1]}", flush=True)
 
     # ---- P5: combined curvature
     ball = os.path.join(ic, "ball")
@@ -117,19 +123,28 @@ def main():
                 continue
             v = line.split()
             fo.write(" ".join([v[0], v[1], "0.0", "0.0", v[4], "0.0"]) + "\n")
-    inp = os.path.join(WT, "problems", "tests", "regress_cf.athinput")
-    common = ["problem/ncomp=2", "problem/comp0_type=table", "problem/comp0_x1=0.0",
-              "problem/comp1_type=gaussian",   # placeholder, replaced below
-              "problem/lapse=one", "time/nlim=0", "output5/dcycle=-1",
+    # input of P5: regress_cf.athinput with its <problem> block replaced (AthenaK accepts
+    # on the command line only parameters that the input file has)
+    with open(os.path.join(WT, "problems", "tests", "regress_cf.athinput")) as f:
+        txt = f.read()
+    i0 = txt.index("<problem>")
+    i1 = txt.index("<output1>")
+    prob = ("<problem>\npgen_name   = nrpic_cf\nncomp       = 2\n"
+            f"comp0_type  = table\ncomp0_file  = {tab}\n"
+            "comp1_type  = puncture\ncomp1_mass  = 0.5\ncomp1_x1    = 2.6\n"
+            "comp1_x2    = -1.1\ncomp1_x3    = 0.7\ncomp1_p1    = 0.05\n"
+            "comp1_p2    = 0.3\ncomp1_p3    = 0.0\ncomp1_s1    = 0.0\n"
+            "comp1_s2    = 0.0\ncomp1_s3    = 0.2\nlapse       = one\n")
+    inp = os.path.join(top, "p5.athinput")
+    with open(inp, "w") as f:
+        f.write(txt[:i0] + prob + txt[i1:])
+    common = ["time/nlim=0", "output5/dcycle=-1",
               "mesh/x1min=-12", "mesh/x1max=12", "mesh/x2min=-12", "mesh/x2max=12",
               "mesh/x3min=-12", "mesh/x3max=12"]
-    common = [c for c in common if not c.startswith("problem/comp1_type")]
-    punc = ["problem/comp1_type=puncture", "problem/comp1_mass=0.5",
-            "problem/comp1_x1=2.6", "problem/comp1_x2=-1.1", "problem/comp1_x3=0.7"]
-    mom = ["problem/comp1_p1=0.05", "problem/comp1_p2=0.3", "problem/comp1_s3=0.2"]
-    runs = {"comb": [f"problem/comp0_file={tab}"] + punc + mom,
-            "A": [f"problem/comp0_file={tab}"] + punc,
-            "B": [f"problem/comp0_file={tab0}"] + punc + mom}
+    rest = ["problem/comp1_p1=0.0", "problem/comp1_p2=0.0", "problem/comp1_s3=0.0"]
+    runs = {"comb": [],
+            "A": rest,
+            "B": [f"problem/comp0_file={tab0}"]}
     for lab, extra in runs.items():
         run(a.new, os.path.join(top, "P5", lab), inp, common + extra)
     comps = ["Kxx", "Kxy", "Kxz", "Kyy", "Kyz", "Kzz"]
