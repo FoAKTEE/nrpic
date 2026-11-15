@@ -985,3 +985,33 @@ rises to 1e-14 and stays flat).
 For Track B: at 16 cells per wavelength and delta = 0.1 the noise does not grow through
 the first shell crossing to a = 13.9. In the 256 x 256 x 16 box (h = 1/64) it is about
 twenty times larger at t = 1 (At 1.8e-13); its course to a = 9 is P10c of T8, pending.
+
+### State at 18:50Z (session bfix-2): T8 queued
+
+Card jobs 4480 (run core-20261115-181436-bd93f3e, release executable, Z4c benchmark) and
+4481 (run core-20261115-181437-8d252cb, published card executable: benchmark, amplitude
+scan N = 64 and 128, the 256 x 256 x 16 box to t = 4, circular wave N = 16) are pending
+behind ten jobs of other sessions (about 6.5 card-hours of limits on two cards).
+Predictions P10a to P10d above. Messages: `tracks/core/outbox/20261115T1850Z__to-B-emd-gw
+__card-test-and-floors.md`, `...__to-orch__requests-b-card-state.md`.
+
+To finish T8 (from the worktree; outputs land in `scratch/core/<run id>/<name>/`):
+```
+harness/bin/nrpic-run status core-20261115-181436-bd93f3e     # and ...-181437-8d252cb
+harness/bin/nrpic-run finish core-20261115-181436-bd93f3e
+harness/bin/nrpic-run finish core-20261115-181437-8d252cb
+harness/bin/nrpic-run submit --kind scouting --gate G2 --cores 2 \
+  --parent core-20261115-181436-bd93f3e --parent core-20261115-181437-8d252cb \
+  --purpose "T8 analysis (P10)" -- python3 tracks/core/analysis/bfix/t8_analysis.py \
+  --base /data/haiyangw/nrpic/scratch/core/core-20261115-181436-bd93f3e \
+  --new /data/haiyangw/nrpic/scratch/core/core-20261115-181437-8d252cb \
+  --t4 /data/haiyangw/nrpic/scratch/core/core-20261115-170758-f5f58f4 \
+  --t1 /data/haiyangw/nrpic/scratch/core/core-20261115-154120-9c92f68
+```
+then look at `t8_amplitude.png` and `t8_zgrow.png`, enter the outcome against P10a to
+P10d here, and update the CARD TEST section of READY (both copies).
+
+Not done in this package (unchanged from bfix-1 unless said): T8 (above); no second agent
+has checked these results; the cause of the constraint level that the evolution restores
+with a noisy lattice is not identified (T7 rules out the time step); requests deferred or
+declined: REQUESTS_B.md sections 2 (in-situ Fourier modes), 6, 7 (items 2, 3), 8.
