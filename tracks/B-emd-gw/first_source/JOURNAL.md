@@ -191,3 +191,15 @@ signal. It is an upper bound on the TT content at those scales, rho_GW/rho_bar <
 (quadratic) and < 1.3e-11 (cubic) at a = 1001, and the low-k part (|k|L/2pi < 10), the only
 part that is resolved, does not rise. Settling between "resolved small-scale physics" and
 "noise" needs the same run at 256^3 or with more particles per cell (not run).
+
+Correction to the last sentence above (checked after the commit, same run, band sums of the
+shell spectra of `late_rise.json`): the low-k part does rise, mildly. rms of Lambda h in
+|k|L/2pi < 10 goes from 1.197e-9 (a = 342) to 1.290e-9 (a = 1001) with the quadratic cloud
+and from 1.211e-9 (a = 335) to 1.328e-9 with the cubic cloud (+8 and +10 percent; Lambda h - G:
+1.309e-9 and 1.348e-9, so G does not remove it either); the band 10 <= |k|L/2pi < 20 rises
+twentyfold, from 1.6e-11 to 3.3e-10 and 3.9e-10; the band >= 20 from 7.7e-11 and 2.1e-11 to
+2.1e-9 and 4.1e-9. The deposit dependence is 3 percent below 10, 19 percent in 10-20 and a
+factor 1.9 above 20. So the resolved part (below |k|L/2pi ~ 20, where the two deposits agree)
+does grow in the nonlinear stage, by an amount the deposit does not change; that part is a
+candidate for a physical TT signal of nonlinear structure (quasi-static: rho_kin/rho_grad
+~ 0.02), the grid-scale part is not resolved.
