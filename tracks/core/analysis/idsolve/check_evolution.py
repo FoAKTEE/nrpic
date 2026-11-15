@@ -280,29 +280,30 @@ def plot_resolution(out):
     res = {k: v for k, v in out["triaxial_smooth_resolution"].items()
            if not v.get("failed")}
     fs.use_style()
-    fig, axs = plt.subplots(1, 3, figsize=(fs.FULL_WIDTH, 3.2))
-    fig.subplots_adjust(left=0.08, right=0.99, bottom=0.15, top=0.9, wspace=0.32)
+    fig, axs = plt.subplots(1, 4, figsize=(fs.FULL_WIDTH, 2.9), sharey=True)
+    fig.subplots_adjust(left=0.08, right=0.99, bottom=0.16, top=0.88, wspace=0.08)
     cols = {64: fs.PAL["blue"], 128: fs.PAL["red"]}
     ax = axs[0]
     for key, v in sorted(res.items()):
         ls = "-" if key.startswith("code") else "--"
         ax.semilogy(v["time"], np.array(v["H_mean"]) + 1e-30, color=cols[v["n"]], ls=ls,
-                    marker=".", label="%d cells, solve %s" % (v["n"], key.split("_")[0]))
-    ax.set_xlabel(r"$t$")
-    ax.set_ylabel(r"mean $|H|$ over the mesh")
-    ax.legend(fontsize=6.5)
-    for ax, reg in ((axs[1], "shell"), (axs[2], "faces")):
+                    marker=".", ms=3)
+    ax.set_title("whole mesh", fontsize=9)
+    ax.set_ylabel(r"mean $|H|$")
+    for ax, reg, title in ((axs[1], "interior", r"interior $r < 7$"),
+                           (axs[2], "shell", r"edge shell $7 \leq r < 13.5$"),
+                           (axs[3], "faces", "face layer (4 units)")):
         for key, v in sorted(res.items()):
             ls = "-" if key.startswith("code") else "--"
-            t = [s["time"] for s in v["regions"]]
-            ax.semilogy(t, [s[reg]["H_mean"] + 1e-30 for s in v["regions"]], color=cols[v["n"]],
-                        ls=ls, marker="o", ms=3)
-            ax.semilogy(t, [s[reg]["M_mean"] + 1e-30 for s in v["regions"]], color=cols[v["n"]],
-                        ls=":", lw=1.0)
+            t = [st["time"] for st in v["regions"]]
+            ax.semilogy(t, [max(st[reg]["H_mean"], 1e-9) for st in v["regions"]],
+                        color=cols[v["n"]], ls=ls, marker="o", ms=3,
+                        label="%d cells, solve %s" % (v["n"], key.split("_")[0]))
+        ax.set_title(title, fontsize=9)
+    for ax in axs:
         ax.set_xlabel(r"$t$")
-        ax.set_title({"shell": r"surface shell $7 \leq r < 13.5$",
-                      "faces": "face layer (4 units)"}[reg], fontsize=9)
-    axs[1].set_ylabel(r"mean $|H|$ (markers), mean $|M|$ (dotted)")
+        ax.set_ylim(1e-9, 1e-3)
+    axs[3].legend(fontsize=6, loc="lower right")
     fs.save(fig, os.path.join(idlib.FIGS, "evolution_res"))
     plt.close(fig)
 
@@ -356,7 +357,10 @@ def main():
     if a.resolution:
         return resolution(a)
     if a.plot:
-        plot_tri(idlib.load_json(os.path.join(idlib.HERE, "evolution_numbers.json")))
+        o = idlib.load_json(os.path.join(idlib.HERE, "evolution_numbers.json"))
+        plot_tri(o)
+        if "triaxial_smooth_resolution" in o:
+            plot_resolution(o)
         return 0
     if a.followup:
         return followup(a)

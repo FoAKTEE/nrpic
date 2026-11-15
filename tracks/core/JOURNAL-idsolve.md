@@ -722,3 +722,54 @@ within 60 outer iterations (from the record above: near iteration 32, vector res
 about 6e-5) with max|H| at the tolerance and the monitor's mean |M| at least 3 times
 below the value before (7.08e-6); (b) the moving Gaussian ends at id_vector_tol as before;
 V6 as predicted above.
+
+## 2026-11-15, entry 12: outcome of F (where the violation of the evolution sits), V5, V6
+
+**F** (runs core-20261115-181317 off 64, -181318 code 64, -181320 off 128, -181321 code
+128-2aa3f30; source 87e189e; numbers `evolution_numbers.json` key
+`triaxial_smooth_resolution`; figure `evolution_res`, redrawn with four region panels,
+looked at). Means of |H| over the regions from the field dumps at t = 0, 1, 2:
+
+| run | interior t=0 / 2 | shell t=0 / 2 | faces t=2 | share of faces in the integral of \|H\| at t=2 |
+|---|---|---|---|---|
+| off, 64 | 6.7e-5 / 9.9e-5 | 4.08e-4 / 3.42e-4 | 1.32e-4 | 0.75 |
+| code, 64 | 9e-13 / 9.3e-5 | 5e-13 / 1.81e-4 | 1.32e-4 | 0.82 |
+| off, 128 | 6.6e-5 / 6.4e-5 | 3.76e-4 / 2.38e-4 | 1.30e-4 | 0.83 |
+| code, 128 | 7e-13 / 1.1e-5 | 3e-13 / 4.35e-5 | 1.30e-4 | 0.96 |
+
+- (a) held: the 64-cell runs repeat the constraint records of E byte for byte
+  (`ball.cstat.hst` and `ball.idsolve.bin` identical to -164339 and -164627-1013682).
+- (b) held: at t = 2 the face layer (33 per cent of the volume) holds 0.75 and 0.82 of
+  the integral of |H| at 64 cells (0.83, 0.96 at 128). Its mean, 1.3e-4, is the same in
+  all four runs: it does not depend on the data or on the resolution (outflow faces).
+- (c) as written it does not apply: in the unsolved runs the shell's mean |H| does not
+  grow, it falls (4.1e-4 -> 3.4e-4 and 3.8e-4 -> 2.4e-4). What it was meant to test
+  held: the violation the evolution makes in the shell, seen in the solved runs, falls
+  from 1.81e-4 to 4.35e-5 (factor 4.2) from dx = 1 to 0.5, and at dx = 0.5 the solved run
+  stays 5.5 times below the unsolved one in the shell (6 times in the interior) at t = 2.
+- (d) failed, (d') of the amendment held: the shell's mean |M| at t = 0 falls from
+  1.88e-4 to 2.43e-5 (factor 7.7) from dx = 1 to 0.5: discretisation of the table, not a
+  property of the strained data.
+- Revision of the reading of B, D, E: "the gain of the solve does not last" was the
+  mean over the whole mesh, which at 64 cells is dominated by the outflow faces and by
+  the evolution's truncation error at an edge of four cells. In the matter region and at
+  dx = 0.5 the solved data keep a violation 5 to 6 times below the trial's through t = 2;
+  the face layer needs its own treatment (a boundary condition of Z4c, not of the data).
+
+**V5 rerun** (runs core-20261115-185501 sphere, -185657 strained, -185858 moving
+Gaussian, a7a32cd; numbers `vector_numbers.json` key V5):
+- (a) held: both balls end by the stall rule after 44 outer iterations (vector residual
+  5.7e-5 of its scale), max|H| 1.7e-12; the monitor's mean |M| falls from 7.08e-6 to
+  1.88e-7 (factor 38; stencil form: rises to 1.47e-5) and its maximum from 7.8e-4 to
+  2.5e-6.
+- (b) held: the moving Gaussian ends at id_vector_tol (9.6e-7) after 17 outer
+  iterations; the monitor's max|M| falls from 2.29e-2 to 3.98e-8 (stencil form 5.3e-5),
+  mean from 8.8e-5 to 2.6e-9.
+- (c) held: nothing diverged.
+
+**V6 held** (run core-20261115-190018-a7a32cd): the evolution of the strained ball with
+both solves in mode code (data with mean |H| 1.2e-7 and mean |M| 6.8e-7 at t = 0) has at
+t = 2 a mean |H| over the mesh of 5.33e-5 (scalar solve only, E: 5.31e-5) and a mean |M|
+of 4.07e-5 (E: 4.26e-5). After one step the mean |M| is 1.0e-5 (E: 1.34e-5). The
+momentum residual of the data does not feed the growth seen over the whole mesh, which
+F places at the faces and, at 64 cells, at the edge.

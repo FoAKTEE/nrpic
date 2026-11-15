@@ -408,8 +408,10 @@ F_i = psi^6 M_i of the monitor and the step is the same P^-1. The symbol of the
 monitor's operator per direction over that of the seven-point Laplacian,
 g6(k) g2(k) / lambda(k), lies in [0, 1] [derived], 0 at the Nyquist wavenumber, so every
 mode but those decays with the relaxation 6/7 and the modes near the Nyquist wavenumber
-decay slowly (a smoke run: 3 per cent per outer iteration below 1e-6). Hence its own
-tolerance `id_vector_tol` (default 1e-6) and a stall rule (less than 5 per cent over five
-outer iterations once the scalar part has converged: the vector part ends and the record
-says "stalled"). The argument at the top of this section still holds: the Nyquist
-content of a deposited source cannot be removed; mode code takes everything else.
+decay slowly (a smoke run: 3 per cent per outer iteration below 1e-6; the balls of V5:
+0.92 to 0.97 per iteration after the first ten). Hence its own tolerance
+`id_vector_tol` (default 1e-6) and a stall rule: W is frozen once the vector residual is
+at `id_vector_tol` or has fallen by less than a factor 2 over the last ten outer
+iterations (the record says "stalled"), and the scalar part then converges with the
+frozen W. The argument at the top of this section still holds: the Nyquist content of a
+deposited source cannot be removed; mode code takes everything else.
