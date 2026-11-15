@@ -26,8 +26,9 @@ def at(d, meta, law, sense, beta):
     if abs(d["betas"][b] - beta) > 1e-6:
         return None
     sep = d["separated"][i, j, b] > 0
-    cap = d["plunged"][i, j, b] > 0
-    clean = sep & ~cap
+    coll = d["a_min"][i, j, b] < 1e-4                 # point-mass near-collisions: excluded from speeds
+    cap = (d["plunged"][i, j, b] > 0) & ~coll
+    clean = sep & ~cap & ~coll
     v = d["vinf"][i, j, b] * C_KMS
     return dict(sf=float(sep.mean()), v_mean=float(v[clean].mean()) if clean.any() else None,
                 cap=float(cap.mean()), sep=sep)
@@ -58,8 +59,9 @@ def main(s1, s3, s4, outdir):
                     i, j = 0, m4["senses"].index(sense)
                     b = int(np.argmin(np.abs(d4["betas"] - beta)))
                     sep = d4["separated"][k, j, b] > 0
-                    cap = d4["plunged"][k, j, b] > 0
-                    clean = sep & ~cap
+                    coll = d4["a_min"][k, j, b] < 1e-4
+                    cap = (d4["plunged"][k, j, b] > 0) & ~coll
+                    clean = sep & ~cap & ~coll
                     v = d4["vinf"][k, j, b] * C_KMS
                     row[f"sf_a{sp:+g}"] = float(sep.mean())
                     row[f"cap_a{sp:+g}"] = float(cap.mean())

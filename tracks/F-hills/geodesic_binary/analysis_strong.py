@@ -43,6 +43,8 @@ def stats(d, meta, law, sense):
     return dict(sf=sep.mean(-1), cap=cap.mean(-1), coll=coll.mean(-1), tmax=tmax.mean(-1),
                 v_mean=vm, v_max=vx, v_med=vmed,
                 alpha_med=np.median(d["alpha_max"][i, j], -1), alpha_max=d["alpha_max"][i, j].max(-1),
+                alpha_all_med=np.median(np.where(coll, np.nan, d["alpha_all"][i, j]), -1),
+                alpha_all_max=np.nanmax(np.where(coll, np.nan, d["alpha_all"][i, j]), -1),
                 bad=((d["status"][i, j] >= 2) & (d["status"][i, j] != 5)).sum(-1))
 
 
@@ -79,6 +81,10 @@ def main(s1, s2, outdir):
     for sn in ("pro", "retro"):
         chk[f"Q4_{sn}_alpha_bound_max_beta15"] = float(S[f"{sn}_hrna"]["alpha_max"][np.argmin(np.abs(betas - 15))])
         chk[f"Q4_{sn}_alpha_bound_median_beta15"] = float(S[f"{sn}_hrna"]["alpha_med"][np.argmin(np.abs(betas - 15))])
+        for bb in (8.5, 10, 15, 20):
+            kb = int(np.argmin(np.abs(betas - bb)))
+            chk[f"Q4_{sn}_alpha_all_max_beta{bb}"] = float(S[f"{sn}_hrna"]["alpha_all_max"][kb])
+            chk[f"Q4_{sn}_alpha_all_median_beta{bb}"] = float(S[f"{sn}_hrna"]["alpha_all_med"][kb])
     chk["runs_status_tmax_or_maxsteps"] = int(sum(S[k]["bad"].sum() for k in S))
     for nm, dd in (("S1", d1), ("S2", d2)):
         chk[f"{nm}_runs_step_underflow"] = int((dd["status"] == 4).sum())
@@ -119,7 +125,7 @@ def main(s1, s2, outdir):
             axs[1].plot(rp, s["v_mean"] / 1e3, color=col[law], ls=ls[sn])
             if law == "hrna":
                 axs[2].plot(rp, s["cap"], color=col[law], ls=ls[sn], label=f"captured member, {sn}")
-                axs[2].plot(rp, s["alpha_max"], color=fs.PAL["yellow"], ls=ls[sn], label=f"max $a/\\mathcal{{R}}$, {sn}")
+                axs[2].plot(rp, s["alpha_all_max"], color=fs.PAL["yellow"], ls=ls[sn], label=f"max $a/\\mathcal{{R}}$, {sn}")
     for ax in axs:
         ax.set_xscale("log")
         ax.set_xlim(rp.max() * 1.05, 3.8)
