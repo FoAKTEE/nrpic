@@ -670,3 +670,12 @@ Not done: heat conduction and any transport coefficient (track's T6 to T8); a ra
 check of the `cutoff` cross-section; adaptive refinement, excision with collisions,
 several ranks; a second, independent check of the results (decision 0009), which is
 track C's part.
+
+Correction (16:45 UTC): two entries above name `fig_rate_conservation.png` (runs
+core-20261115-132842-b33b7f3 and core-20261115-133533-0ca5e3b) and `fig_replay.png` (run
+core-20261115-134644-466dcfd) among the figures. I opened these two only now. They agree
+with the numbers given: mean pair energy defect 0.30 to 0.46 eps of the pair energy at
+every step, the plain history sum of M W wandering within 500 eps; all replay errors
+below 1e-14, the curved symmetric-triad case the largest. The left panels of
+`fig_rate_conservation.png`, `fig_rate_summary.png` (first card and processor versions)
+and `fig_unequal.png` cut their y-label at the edge of the figure (layout only).
