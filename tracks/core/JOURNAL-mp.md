@@ -484,3 +484,14 @@ mass 10.3483 (irreducible 10.2443) and S_z = 29.981. The flow constant m^2 is st
 for a first guess twice too large. [VERIFIED] The three-black-hole card run in
 progress was started before the fix and will have no heavy horizon; a short card run
 with the final executable is to show the three horizons together.
+
+### Predictions for the card checks of the final executable (before they run)
+
+ - `problems/puncture/tracers_headon.athinput`, 24 cycles, executable of the final
+   source (`.work/build_gpu_final`): data files identical byte for byte to those of the
+   executable of `main` (run `core-20261115-113546-a5197ba`); restart files identical
+   except the uninitialised header bytes.
+ - Three black holes to t = 1 with the final executable (`hmean_tol_2 = 1000` from the
+   fixed set-up): three horizons from the first search; heavy hole: Christodoulou mass
+   10.40 +- 0.05 (10.348 alone, times the background factor 1.005), S_z = 30 +- 0.1;
+   light holes 0.5358 and 0.5448 as in the first card run.

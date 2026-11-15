@@ -26,7 +26,8 @@ SCRATCH = "/data/haiyangw/nrpic/scratch/core"
 EXES = {"cpu": WT + "/.work/build_cpu/src/athena",
         "gpu": WT + "/.work/build_gpu/src/athena",
         "cpu_base": WT + "/.work/athena_cpu_base",
-        "gpu_base": WT + "/.work/athena_gpu_base"}
+        "gpu_base": WT + "/.work/athena_gpu_base",
+        "gpu_final": WT + "/.work/build_gpu_final/src/athena"}
 
 
 def sha256(path):
