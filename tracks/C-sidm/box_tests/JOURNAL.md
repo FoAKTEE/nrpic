@@ -193,3 +193,30 @@ so T10b (statistics within 4 sigma) passes trivially; if the counts differ, T2(a
 still pass on the card. Cost: below 1e-8 s per tested pair (core: 1e6 particles x 200
 steps in 2-4 s including start-up), i.e. at least 50 times the processor. Card time below
 0.1 card-hour.
+Submitted as run C-20261115-170447-cb3b230 (Slurm job 4464); the queue held nine jobs of
+other owners at submission.
+
+## 2026-11-15 T3, T4, T5: predictions (before the runs)
+
+`scripts/t345.py`: twotemp (theta_1 = 3 theta_2, n1 = n2 = 5e5), theta_2 in {1e-3, 1},
+seeds 1 and 2, sigma = 1, rho_0 = 1, 16^3 cells (244 per cell, so that the occupation
+effect core reports at 12-98 per cell stays out of the way), dt = 0.005 tau_rel. Run A to
+0.25 tau_rel with snapshots every 0.01 tau_rel, run B (same file, seed, dt) to 15 tau_rel
+with snapshots every 0.25 tau_rel; the analysis is `collide/analysis/an_box.py relax` of
+wave 1, unchanged, on A's snapshots followed by B's later ones (B at 0.25 tau_rel must
+equal A's last snapshot bit for bit).
+Predictions:
+- T4: slope/exact = 1 + dt/(2 tau_rel) = 1.0025 (first-order splitting, the
+  forward-Euler excess nu^2 dt/2 that core measured, collisions.md section 8) within the
+  noise; |ratio - 1| < 0.01 in all four runs, so the criterion (4 se + 1 percent and at
+  most 5 percent) passes. The non-relativistic form would give 1/0.2382 = 4.2 times the
+  rate at theta_2 = 1; a code with |v_a - v_b| would give 1.27 (TESTS.md): both refuted
+  by the criterion.
+- T3: at 15 tau_rel KS p > 1e-3 against MJ(theta_eq) in all four runs; <u^2/W>/3 and
+  both population temperatures at theta_eq within 4 sigma.
+- T5: s(0) = s_mixture within 4 se; no decrease beyond 4 sqrt 2 se between snapshots
+  0.25 tau_rel apart; s(15 tau_rel) = s_MJ(theta_eq) within 4 se (gaps 0.0448 and 0.1220,
+  se ~1.5e-3).
+- T1 over the 3000-step runs: per-step criterion holds; exactly rounded sum M W unchanged
+  to < 1e-15 relative.
+Refuted by any of the four runs failing a criterion.
