@@ -17,15 +17,13 @@ def run(argv):
     return cli.main(argv)
 
 
-@pytest.mark.parametrize("cmd", ["search", "code", "frontier", "ingest", "resolve-bib", "embed", "eq",
-                                 "cites", "link", "claim", "export", "qa"])
+@pytest.mark.parametrize("cmd", ["search", "frontier", "ingest", "resolve-bib", "embed", "eq",
+                                 "cites", "claim", "export", "qa"])
 def test_stubs_exit_3(cmd, capsys):
     assert run([cmd, "x"]) == 3
     assert "not built yet" in capsys.readouterr().err
-
-
-def test_watch_upstream_stub(capsys):
-    assert run(["watch", "upstream"]) == 3
+# `code`, `link`, `watch upstream`, `fetch-repos` and `ingest repo` are built (K6-K7):
+# tests in test_code_*.py
 
 
 def test_init_verify_status_snapshot(store, capsys):

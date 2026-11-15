@@ -17,6 +17,7 @@ from . import db as _db
 from . import inventory as _inv
 from .lock import writer_lock
 from .paths import KB_DIR, default_brief, fetch_command, kb_manifest_dir, layout
+from . import code_cli as _code_cli          # K6-K7: fetch-repos, ingest repo, code, link, watch
 
 NOT_YET = 3
 
@@ -234,17 +235,10 @@ def cmd_show(a):
 
 
 def cmd_stub(a):
+    if a.cmd == "ingest" and a.args[:1] == ["repo"]:            # K6 (kbtool.code_cli)
+        return _code_cli.cmd_ingest_repo(a.args[1:], data_root=a.data_root)
     stage, what = STUBS[a.cmd]
     print(f"kb {a.cmd}: {what}; filled by stage {stage} of brief section 12, not built yet", file=sys.stderr)
-    return NOT_YET
-
-
-def cmd_watch(a):
-    if a.what != "upstream":
-        print("usage: kb watch upstream", file=sys.stderr)
-        return 2
-    print("kb watch upstream: diff of `git ls-remote` for the watched repositories; filled by stage K6-K7 "
-          "(needs the AthenaK record with branch tips), not built yet", file=sys.stderr)
     return NOT_YET
 
 
@@ -303,11 +297,11 @@ def parser():
     s.add_argument("--max-chars", type=int)
     s.set_defaults(fn=cmd_show)
 
-    s = sub.add_parser("watch", help="watch upstream repositories")
-    s.add_argument("what", nargs="?", default="upstream")
-    s.set_defaults(fn=cmd_watch)
+    _code_cli.register(sub)                    # fetch-repos, code, link, watch (kbtool/code_cli.py)
 
     for name, (stage, what) in STUBS.items():
+        if name in _code_cli.CLAIMS:
+            continue
         s = sub.add_parser(name, help=f"[{stage}, not built] {what}")
         s.add_argument("args", nargs=argparse.REMAINDER)
         s.set_defaults(fn=cmd_stub)

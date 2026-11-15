@@ -155,3 +155,33 @@ D2 One detached process (`kb fetch-missing --priority 3 2 1`, exec into
    source (HTTP 403/404) or PDF-only. Refuted if more than 3 % fail, if two download
    processes of mine run at once, or if any stored record has a kind other than tar,
    single-file or pdf.
+
+## 2026-11-15 13:10 UTC  K6-K7 helper (code: clones, code index, parameter index, paper-code links, upstream watch)
+
+Scope: brief 12.7 under decision 0010 (repositories are cloned for reading and indexing
+only; nothing in a clone is built, run or imported). Modules `kbtool/code_*.py`,
+`kbtool/links_*.py`; subcommands `fetch-repos`, `ingest repo`, `code`, `link`, `watch upstream`.
+
+### Starting state (13:05 UTC)
+
+- `kb-data/raw/github/` and `kb-data/meta/github/` empty. No universal-ctags, tree-sitter
+  or ripgrep on the machine; git 2.34.1 (Ubuntu package 1:2.34.1-1ubuntu1.17, with the
+  distribution's security backports) [VERIFIED: `dpkg -l git`].
+- The user's global git configuration has credential helpers for github.com. A clone that
+  used it could send the user's token when a name does not resolve (GitHub answers 401 and
+  git asks the helper). So every git call on downloads runs with GIT_CONFIG_GLOBAL=/dev/null,
+  GIT_CONFIG_NOSYSTEM=1, no prompt, no askpass [JUDGEMENT; `kbtool/code_fetch.py`].
+- `git ls-remote https://github.com/IAS-Astrophysics/athenak HEAD` at 13:02 UTC:
+  c5a0d7f9155a70149931bf0be5a4ffb673f2532a, the commit the brief inspected (brief line 122).
+
+### Prediction R1 (before the clone run)
+
+R1 `kb fetch-repos` clones the 63 manifest rows sequentially (AthenaK first, with its
+   remote branch list). Expected: at least 58 of 63 names resolve and clone; the ones that
+   may not resolve are small personal or renamed repositories (for example
+   gevolution-code/gevolution-2.0, caravangelo/inflation-easy, hayleyjm/mescaline-1.0);
+   total checkout size 1-5 GB, wall time under 60 min; every clone's HEAD (read as a file)
+   equals the sha of `git ls-remote` taken just before; AthenaK main is still c5a0d7f and the
+   branch list has about 124 heads (brief line 130). Refuted if fewer than 58 clone, if any
+   clone fails for a reason other than a name that does not resolve or a timeout, or if a
+   HEAD differs from its ls-remote sha without a push in between.
