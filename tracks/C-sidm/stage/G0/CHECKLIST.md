@@ -1,6 +1,6 @@
 # Checklist: C-sidm G0
 
-Collected by `harness/bin/nrpic-stage collect C-sidm G0` on 2026-11-15T17:13:07Z from `coord/CHARTER.md` (last changed in b7b431d) and the brief (sections 13.3 and 13.4).
+Collected by `harness/bin/nrpic-stage collect C-sidm G0` on 2026-11-15T19:39:52Z from `coord/CHARTER.md` (last changed in b7b431dd) and the brief (sections 13.3 and 13.4).
 For each item set `status:` to PASS, FAIL or NA (OPEN until judged) and give the evidence: run ids,
 figure files, KB locators, commits. `nrpic-stage report` reads this file; the automated checks are
 in VERIFY_RESULTS.md (`nrpic-stage verify`), not here.
