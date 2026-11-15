@@ -48,5 +48,10 @@
  "start_utc": "2026-11-15T15:54:05Z",
  "cores": 1,
  "registered_by": "tracks/core/analysis/scalar2/runreg.py (by hand: nrpic-run submit fails with KeyError 'outputs')",
- "status": "running"
+ "status": "completed",
+ "wall_time_s": 2506.84,
+ "exit_status": 0,
+ "end_utc": "2026-11-15T16:35:52Z",
+ "card_seconds": 210.0,
+ "card_hours": 0.05833
 }

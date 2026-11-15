@@ -450,3 +450,85 @@ shells a factor 3 higher).
   is 150 times below Track E's bound.
 The repeat of T8 at 32^3 for the figure (run core-20261115-161803-38adbb8) and of T3b
 (run core-20261115-162128-9c13f9f) give the numbers of the first runs.
+
+## 2026-11-15, entry 11: card runs (Slurm job 4444, one A100, 210 s of card time)
+
+**Run core-20261115-155404-24c88e3** (queued 15:54Z, ran 16:32Z to 16:35Z; executable
+`.work/exe/athena_gpu_a58e95b`, sha256 dd716bc9...26b1; 24 AthenaK runs, all with exit
+status 0; card time 210 s = 0.058 card-hours of the one allowed).
+
+**T4 card against processors, analysis run core-20261115-163549-7be94e4** (the 32^3
+case, 20 steps; processor part repeated: layouts and restart bit-identical again;
+figure `fig_card.png`, looked at: differences of the state fields between 1e-16 and
+1e-13, the bars of the largest values many orders above).
+- At t = 0 (the slice) HOLDS, and better than predicted: phi, Pi, chi, K, alpha, gt_ij,
+  At_ij are bit-identical between the card and the processor; E differs by 1.4e-17;
+  the constraint fields by 1.2e-13 (H, values up to 1.8e-10) and 4e-15 (M_i).
+- After 10 and 20 steps the largest absolute differences are phi 4.9e-15, Pi 2.5e-14,
+  chi 8.9e-16, K 3.3e-14, gt_ij 3.1e-15, At_ij 8.7e-15, E 9.7e-16, H 3.4e-13, M_i 1.1e-13:
+  rounding of quantities of order one. The prediction "within 1e-11 of its largest
+  value" FAILED as I wrote it for the fields that are pure perturbations: At_ij differs
+  by 4.4e-8 of its largest value (2e-7) and the off-diagonal gt_ij by 7e-9; the
+  criterion should have been absolute. alpha is identical.
+- Records: box means of phi, Pi, K within 6.4e-13 (the running sum of the serial
+  build against the reduction on the card), alpha 2.7e-14; <|H|/[H]> and <|M|/[M]>
+  within 1.4e-5 and 1.0e-5, their maxima within 4.5e-3 and 3.4e-3 (bound 1e-2 HOLDS);
+  rms |M_bssn - M_adm|, itself rounding (1.8e-15), differs by 10 percent, and the
+  e-fold entry at t = 0 is rounding: these two columns FAIL the bound and mean nothing.
+
+**T3d ladder N = 32, 64, 128 (nmax2 = 64, s = +-1), analysis run
+core-20261115-163726-7be94e4** (figure `fig_ladder.png`, looked at: the ratios of N = 32
+rise when the upper shells enter, those of N = 64 show a small bump, those of N = 128
+none; the even parts of N = 64 and 128 coincide).
+- P3d HOLDS. Odd part (first order) of H, rms at N = 32, 64, 128: t = 2.0: 3.87e-10,
+  8.00e-12, 1.99e-13 (orders 5.60, 5.33); t = 2.4: 6.57e-10, 1.42e-11, 2.53e-13 (5.54,
+  5.81); t = 2.8: 3.44e-10, 7.77e-12, 1.41e-13 (5.47, 5.78); t = 3.2: 1.63e-10, 3.51e-12,
+  6.39e-14 (5.54, 5.78). Of |M|: t = 2.4: 7.52e-10, 1.61e-11, 2.96e-13 (5.55, 5.76); t =
+  2.8 and 3.2: (5.52, 5.83), (5.55, 5.83). Before t = 1.6 the odd parts of N = 64 and 128
+  sit on the rounding floor, which grows with N (2.7e-14, 1.1e-13, 4.3e-13 at t = 0).
+  The dumps of the three resolutions are 0.44, 0.42, 0.40 after each multiple of 0.4
+  (first step at or after it), so the orders carry an error of a few tenths.
+- The even part of |M| is the same at the three resolutions within 1 percent (7.15e-12,
+  7.13e-12, 7.18e-12 at t = 0.4; 1.85e-11, 1.86e-11, 1.87e-11 at t = 2.0): the
+  second-order part does not depend on N. The even part of H at N = 64 and 128 (1.6e-11
+  falling to 2e-12 and 5e-13) is the second-order part found at 32^3 in T3b (1.7e-11
+  falling to 6e-13) plus the residual of the time integration (3.2e-11 at N = 32, one
+  sixteenth of it at N = 64).
+- Box-mean ratios: the largest value over the run is 4.7e-11 (H) and 3.7e-4 (M) at
+  N = 32; at N = 64 and 128 the ratios never exceed their values at t = 0, 2.6e-12 and
+  1.46e-5. At t = 2.4: <|H|/[H]> = 4.65e-11, 1.01e-12, 6.6e-14 (orders 5.5, 3.9), <|M|/[M]>
+  = 3.0e-4, 6.5e-6, 9.0e-7 (5.5, 2.9): between 4 and 6 from 32 to 64 (Track E's A5),
+  lower from 64 to 128, where the second-order part is reached.
+- P3e HOLDS in part: rms |M_bssn - M_adm| is at most 8.5e-14 at N = 32 (3.2e-4 of rms
+  |M|) and 4.4e-15 at N = 64 (order 4.3), but 7.3e-15 at N = 128: it has reached
+  rounding and does not fall further, and relative to |M|, which falls faster, it
+  rises to 6.9e-3. A wrong sign of the Christoffel terms would show at 5 to 20 percent
+  of |M| ([JUDGEMENT] from Gt x At of order k (2e-7)^2 against |M| of 3e-12 to 1e-11).
+
+**T5 on the card.** U9 (U2 of the scaled base case on the card) against the processor
+runs, validation run core-20261115-163855-7be94e4 (reference as committed, hence exit
+status 1 from the known A1 of Markov tanh): A14 PASSES, largest relative difference
+1.3e-15 (bound 1e-12), not bit-identical. Prediction HOLDS.
+Full base case of NOISE_SPEC 9 (64^3, nmax2 = 256, 300 steps, U1 to U8, 1.7 to 9.5 s
+each on the card), validation run core-20261115-163910-7be94e4: with the reference as
+committed frozen tanh passes every test (A1 9.8e-14; 1, 8, 64 MeshBlocks bit-identical
+on the card; restart at cycle 150 bit-identical; N = 32 against 64 3.5e-15; seeds
+independent), Markov Heaviside passes (A1 2.6e-15), Markov tanh fails A1 at 8.5e-10;
+with the cancellation-free reference all three pass, A1 = 4.9e-15, 4.0e-15, 2.6e-15.
+
+**Cost on one A100** (runs cost* of the card job; zone-cycles per second of the main
+loop; slow-roll case with the slice, nmax2 = (N/4)^2, one MeshBlock unless said):
+
+| Configuration | 128^3, 20 steps | 256^3, 10 steps |
+|---|---|---|
+| field and spacetime, kicks off (no synthesis), no constraint record | 1.634e7 | 1.654e7 (1.01 s per step) |
+| with the sources (six fields synthesized at each stage; 68532 and 548958 modes) | 1.484e7 | 1.393e7 (1.20 s) |
+| and the constraint record every step | 1.459e7 | 1.364e7 (1.23 s) |
+| sources, eight MeshBlocks of 128^3 | | 1.290e7 (1.30 s) |
+
+So the sources cost 10 percent at 128^3 and 19 percent at 256^3, the constraint record
+2 percent; a 256^3 run of 1304 steps (Track E's slow-roll case at Courant 0.25) is
+0.45 card-hours with the record every step, the 1630 steps of the other case 0.56.
+The start (slice, tables) takes about 1 s at 256^3. On one processor core the 32^3
+case with sources and record runs at 1.06e4 zone-cycles per second (run
+core-20261115-155040-eb68eaa: 172 steps in 534 s).
