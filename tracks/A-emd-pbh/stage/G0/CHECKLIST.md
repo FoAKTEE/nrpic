@@ -15,7 +15,7 @@ in VERIFY_RESULTS.md (`nrpic-stage verify`), not here.
   - evidence: verified at the raw store with file:line locators (scope/REFERENCES.md; seven locators re-read by the lead, SCOPE.md 10.5), not yet knowledge-base entries: outbox 20261115T1320Z__to-kb__ingest-s1-references.md
 - [x] **C3** Risk list
   - status: PASS
-  - evidence: RISKS.md (15 rows); SCOPE.md section 8
+  - evidence: RISKS.md (16 rows); SCOPE.md section 8
 - [x] **C4** Compute estimate
   - status: PASS
   - evidence: SCOPE.md section 9 (T5, run A-emd-pbh-20261115-112625-e854f12, rerun A-20261115-130252-7877b7a identical) and 10.7 (unit cost from core run core-20261115-040406-1311b8e; scouting runs A-20261115-130948-5a2b58a)

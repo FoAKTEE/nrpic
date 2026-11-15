@@ -1,0 +1,97 @@
+{
+ "run_id": "A-emd-pbh-20261115-130639-947c898",
+ "owner": "A-emd-pbh",
+ "purpose": "A-pre-1: Hamiltonian-constraint noise of CIC-deposited particles vs N (N = [10000, 30000, 100000, 300000, 1000000], mesh 64^3)",
+ "kind": "scouting",
+ "command": "python3 scripts/run_noise.py",
+ "cwd": "/data/haiyangw/nrpic/wt/A-emd-pbh/tracks/A-emd-pbh/expball",
+ "commit": "947c89882dc067b98d30172fef7452fec21ab2cd",
+ "worktree_dirty_in_package": true,
+ "host": "anta",
+ "inputs": [],
+ "output_dir": "/data/haiyangw/nrpic/scratch/A-emd-pbh/A-emd-pbh-20261115-130639-947c898",
+ "wall_time_s": 170.32,
+ "cores": 4,
+ "card_hours": 0.0,
+ "status": "completed",
+ "outputs": {
+  "dir": "scratch/A-emd-pbh/A-emd-pbh-20261115-130639-947c898"
+ },
+ "results": {
+  "slopes": {
+   "flat/mc": -0.5000661305169438,
+   "flat/stratified": -0.49953218711406233,
+   "flat/lattice": -0.667200488747945,
+   "smooth_tophat/mc": -0.49923896842440585,
+   "smooth_tophat/stratified": -0.49878840006043484,
+   "smooth_tophat/lattice": -0.6396919365356627
+  },
+  "figures": [
+   "fig_particle_noise.pdf",
+   "fig_particle_noise.png",
+   "fig_particle_noise_maps_N1e5.pdf",
+   "fig_particle_noise_maps_N1e5.png"
+  ]
+ },
+ "gate": "G1",
+ "outputs_as_written": [
+  {
+   "path": "/data/haiyangw/nrpic/scratch/A-emd-pbh/A-emd-pbh-20261115-130639-947c898/fig_particle_noise.pdf",
+   "sha256": "6c1c69b73229e54db90feeaa27dbefdb64f8695d8eef800234811fa3aabd30d6"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/scratch/A-emd-pbh/A-emd-pbh-20261115-130639-947c898/fig_particle_noise.png",
+   "sha256": "56386cc851facb23180c3dc208da6fd025042bcc40b85a69692377c1fa1e8783"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/scratch/A-emd-pbh/A-emd-pbh-20261115-130639-947c898/fig_particle_noise_maps_N1e5.pdf",
+   "sha256": "8d865c3ab1cf54d2078b3edf2baa8e8f756c50ddc180a0453b89880f39cf5c51"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/scratch/A-emd-pbh/A-emd-pbh-20261115-130639-947c898/fig_particle_noise_maps_N1e5.png",
+   "sha256": "d21f3877adcae65fd508c0f7b03cd6844e8661716e9e67a6d3c7f01bef403fd1"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/scratch/A-emd-pbh/A-emd-pbh-20261115-130639-947c898/noise.json",
+   "sha256": "cf977045618f0fbb0246b2e82d5438d3e66a10f3992719648a77ffc089498c5c"
+  }
+ ],
+ "launcher": "local",
+ "track": "A-emd-pbh",
+ "lead_corrections": [
+  {
+   "field": "status",
+   "was": "ok",
+   "now": "completed",
+   "why": "harness state names",
+   "by": "A-emd-pbh lead",
+   "at": "2026-11-15T13:09Z"
+  },
+  {
+   "field": "kind",
+   "was": "production",
+   "now": "scouting",
+   "why": "offline analysis before G0 passed; production needs a preregistered plan and the G0 tag",
+   "by": "A-emd-pbh lead",
+   "at": "2026-11-15T13:09Z"
+  },
+  {
+   "field": "gate",
+   "was": null,
+   "now": "G1",
+   "why": "field of the template",
+   "by": "A-emd-pbh lead",
+   "at": "2026-11-15T13:09Z"
+  },
+  {
+   "field": "outputs",
+   "was": "missing or not a mapping",
+   "now": {
+    "dir": "scratch/A-emd-pbh/A-emd-pbh-20261115-130639-947c898"
+   },
+   "why": "nrpic-run reads outputs.dir",
+   "by": "A-emd-pbh lead",
+   "at": "2026-11-15T13:09Z"
+  }
+ ]
+}

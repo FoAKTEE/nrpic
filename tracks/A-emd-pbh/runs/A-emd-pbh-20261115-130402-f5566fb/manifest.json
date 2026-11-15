@@ -1,0 +1,273 @@
+{
+ "run_id": "A-emd-pbh-20261115-130402-f5566fb",
+ "owner": "A-emd-pbh",
+ "purpose": "G1 of A-pre-1: FD constraint residuals vs resolution (orders (2, 4), N = [32, 64, 128, 256]) and table interpolation error vs spacing",
+ "kind": "scouting",
+ "command": "python3 scripts/run_convergence.py --tag _leadrerun",
+ "cwd": "/data/haiyangw/nrpic/wt/A-emd-pbh/tracks/A-emd-pbh/expball",
+ "commit": "f5566fb6332f0090badacc12148e783c0f53ff11",
+ "worktree_dirty_in_package": true,
+ "host": "anta",
+ "inputs": [],
+ "output_dir": "/data/haiyangw/nrpic/scratch/A-emd-pbh/A-emd-pbh-20261115-130402-f5566fb",
+ "wall_time_s": 155.42,
+ "cores": 4,
+ "card_hours": 0.0,
+ "status": "completed",
+ "outputs": {
+  "dir": "scratch/A-emd-pbh/A-emd-pbh-20261115-130402-f5566fb"
+ },
+ "results": {
+  "orders": {
+   "flat": {
+    "p2/smooth/H_L2": [
+     0.025037442135165337,
+     -0.046800250216436697,
+     0.005000693098734774
+    ],
+    "p2/smooth/M_L2": [
+     1.994021687005264,
+     2.000416596733652,
+     2.000074253779426
+    ],
+    "p4/smooth/H_L2": [
+     -1.9994106811900587,
+     -1.9999019340332098,
+     -1.9999648921986597
+    ],
+    "p4/smooth/M_L2": [
+     3.9951085461895604,
+     4.00010506619682,
+     3.999871788881023
+    ]
+   },
+   "flat_taper": {
+    "p2/smooth/H_L2": [
+     0.05891961290518582,
+     0.04712270010163568,
+     -0.0011779540274684623
+    ],
+    "p2/smooth/M_L2": [
+     1.849892532280203,
+     1.9604368312052574,
+     1.9899296275021463
+    ],
+    "p4/smooth/H_L2": [
+     -1.999478776286563,
+     -1.9999118698905505,
+     -1.999969822572306
+    ],
+    "p4/smooth/M_L2": [
+     3.4316574528710606,
+     3.7661148342692945,
+     3.8958449524721166
+    ]
+   },
+   "tophat": {
+    "p2/smooth/H_L2": [
+     1.9886265173948316,
+     2.0028645539539607,
+     1.999436966189078
+    ],
+    "p2/smooth/M_L2": [
+     1.985040727764775,
+     2.003584391269321,
+     1.9993381602858828
+    ],
+    "p4/smooth/H_L2": [
+     3.964065369423226,
+     4.007278320229161,
+     4.001327399102431
+    ],
+    "p4/smooth/M_L2": [
+     4.006431321666671,
+     4.0058376336480315,
+     3.9989381966276007
+    ]
+   },
+   "smooth_tophat": {
+    "p2/smooth/H_L2": [
+     1.9370390994402074,
+     1.9813742532207685,
+     1.9951667119341205
+    ],
+    "p2/smooth/M_L2": [
+     1.7395019818323412,
+     1.9183876217494535,
+     1.977902335689572
+    ],
+    "p4/smooth/H_L2": [
+     3.387352356960344,
+     3.748789186285772,
+     3.918750737924145
+    ],
+    "p4/smooth/M_L2": [
+     2.8123652775574763,
+     3.4273369876809836,
+     3.7910855067932325
+    ]
+   }
+  },
+  "table_orders": {
+   "smooth_tophat": {
+    "u": [
+     4.006147757090444,
+     3.994269287816477,
+     4.014122527104327,
+     3.990099234660792
+    ],
+    "KL": [
+     4.024091652903475,
+     3.9772542703804743,
+     4.049655058393144,
+     3.947096268563336
+    ],
+    "KT": [
+     3.9032510374263043,
+     4.003368933790586,
+     4.016950133909982,
+     3.9954748758708942
+    ],
+    "betar": [
+     3.9064356932134796,
+     4.0037205426225935,
+     4.015003796622108,
+     4.0003989202405865
+    ]
+   },
+   "flat": {
+    "u": [
+     NaN,
+     NaN,
+     NaN,
+     NaN
+    ],
+    "KL": [
+     3.9898377869385713,
+     3.8550586875616095,
+     2.090922543246206,
+     0.683972506552322
+    ],
+    "KT": [
+     3.9898377869385713,
+     3.8498846412236722,
+     2.6233435924490123,
+     0.7124234099034146
+    ],
+    "betar": [
+     3.988886325996453,
+     2.666169816056346,
+     0.9533499067011787,
+     0.3890422907458993
+    ]
+   },
+   "tophat": {
+    "u": [
+     4.03992319356573,
+     3.8971508684875897,
+     3.971077044537595,
+     4.042091333489033
+    ],
+    "KL": [
+     4.046902534058687,
+     3.8746890884614293,
+     3.9614022644806965,
+     4.044394119358453
+    ],
+    "KT": [
+     4.052330563017301,
+     3.857237556876637,
+     3.9619663004986254,
+     4.063648140520486
+    ],
+    "betar": [
+     4.037734898249416,
+     3.9030478005900715,
+     3.98140717079712,
+     1.6090907716140481
+    ]
+   }
+  },
+  "figures": [
+   "fig_constraint_convergence_leadrerun.pdf",
+   "fig_constraint_convergence_leadrerun.png",
+   "fig_residual_maps_N128_leadrerun.pdf",
+   "fig_residual_maps_N128_leadrerun.png",
+   "fig_table_interpolation_leadrerun.pdf",
+   "fig_table_interpolation_leadrerun.png"
+  ]
+ },
+ "gate": "G1",
+ "outputs_as_written": [
+  {
+   "path": "/data/haiyangw/nrpic/scratch/A-emd-pbh/A-emd-pbh-20261115-130402-f5566fb/convergence.json",
+   "sha256": "4431fe69fb63156c3233364f00046d4c227837cc5641031bb33d4925dc2f327a"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/scratch/A-emd-pbh/A-emd-pbh-20261115-130402-f5566fb/fig_constraint_convergence_leadrerun.pdf",
+   "sha256": "24f4c3f1594066a53f0ee8902b185a471e6561fc4a763e50e480b2dfbaf61b41"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/scratch/A-emd-pbh/A-emd-pbh-20261115-130402-f5566fb/fig_constraint_convergence_leadrerun.png",
+   "sha256": "049b59fe8bdfad4e4e01095ae551b316fb19beb64ef37571919b16013862d1d3"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/scratch/A-emd-pbh/A-emd-pbh-20261115-130402-f5566fb/fig_residual_maps_N128_leadrerun.pdf",
+   "sha256": "bf9c0ea1e860c170470c8c63e6bcf391bf066cf4816da1571e057fcc8cfce335"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/scratch/A-emd-pbh/A-emd-pbh-20261115-130402-f5566fb/fig_residual_maps_N128_leadrerun.png",
+   "sha256": "145859a61fed2238992200ee63076e553e28fed7e8e3e384306257fbb77a2836"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/scratch/A-emd-pbh/A-emd-pbh-20261115-130402-f5566fb/fig_table_interpolation_leadrerun.pdf",
+   "sha256": "88609b07962cf0353894d3943de6358bb421b71eda2c9ae499b55f8d6b60c41b"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/scratch/A-emd-pbh/A-emd-pbh-20261115-130402-f5566fb/fig_table_interpolation_leadrerun.png",
+   "sha256": "ae6cf3f04a68e9ec3c8bb826d297a581599669c84281919d878e96fb6bcf0201"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/scratch/A-emd-pbh/A-emd-pbh-20261115-130402-f5566fb/planes_N128.npz",
+   "sha256": "95f113342376bf6f7cd7d765f67ea5a6cefe6d9e870ec1fd21c57d2bf7b66a05"
+  }
+ ],
+ "launcher": "local",
+ "track": "A-emd-pbh",
+ "lead_corrections": [
+  {
+   "field": "status",
+   "was": "ok",
+   "now": "completed",
+   "why": "harness state names",
+   "by": "A-emd-pbh lead",
+   "at": "2026-11-15T13:09Z"
+  },
+  {
+   "field": "kind",
+   "was": "production",
+   "now": "scouting",
+   "why": "offline analysis before G0 passed; production needs a preregistered plan and the G0 tag",
+   "by": "A-emd-pbh lead",
+   "at": "2026-11-15T13:09Z"
+  },
+  {
+   "field": "gate",
+   "was": null,
+   "now": "G1",
+   "why": "field of the template",
+   "by": "A-emd-pbh lead",
+   "at": "2026-11-15T13:09Z"
+  },
+  {
+   "field": "outputs",
+   "was": "missing or not a mapping",
+   "now": {
+    "dir": "scratch/A-emd-pbh/A-emd-pbh-20261115-130402-f5566fb"
+   },
+   "why": "nrpic-run reads outputs.dir",
+   "by": "A-emd-pbh lead",
+   "at": "2026-11-15T13:09Z"
+  }
+ ]
+}
