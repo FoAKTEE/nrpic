@@ -123,7 +123,7 @@ def figures(rows, out):
     ax1.legend(loc="upper left")
     ax2.set_xlabel(r"ellipticity $e$")
     ax2.set_ylabel(r"$t_1/t_0$ (first collapse / start)")
-    ax2.text(0.03, 0.05, r"solid $p=0$, dashed $p=e$, dotted $p=-e$", transform=ax2.transAxes)
+    ax2.text(0.03, 0.92, r"solid $p=0$, dashed $p=e$, dotted $p=-e$", transform=ax2.transAxes)
     fs.save(fig, os.path.join(out, "fig_scan_hoop_time"))
     plt.close(fig)
 
