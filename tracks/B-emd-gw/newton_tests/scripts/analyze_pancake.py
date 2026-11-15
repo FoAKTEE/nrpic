@@ -38,6 +38,34 @@ import zeldovich as Z  # noqa: E402
 A_CHECK = (2.0, 5.0, 10.0, 15.0, 18.0, 20.0)
 
 
+def h1_growth(n, L=1.0):
+    """Hypothesis H1 (JOURNAL.md): the seven-point Laplacian makes the force on the
+    fundamental mode too strong by F = [(kh/2)/sin(kh/2)]^2. Linear theory with that
+    force, started in the growing mode of F = 1 (s = s0, ds/da = s0 at a = 1):
+    s/s0 = A a^n1 + B a^n2. Returns F and the list [(A, n1), (B, n2)]."""
+    kh = 2.0*np.pi/n
+    F = ((0.5*kh)/np.sin(0.5*kh))**2
+    r = np.sqrt(0.25 + 6.0*F)
+    n1, n2 = 0.5*(-0.5 + r), 0.5*(-0.5 - r)
+    A = (1.0 - n2)/(n1 - n2)
+    return F, [(A, n1), (1.0 - A, n2)]
+
+
+def h1_D(n, t, k=0):
+    """k-th conformal-time derivative of D = s/s0 of h1_growth at the times t
+    (a = (1 + t/2)^2, so a^m = u^(2m) with u = 1 + t/2, du/dt = 1/2)."""
+    _, terms = h1_growth(n)
+    u = 1.0 + 0.5*np.asarray(t, float)
+    out = np.zeros_like(u)
+    for c, m in terms:
+        e = 2.0*m
+        f = 1.0
+        for j in range(k):
+            f *= (e - j)
+        out += c*f*u**(e - k)/2.0**k
+    return out
+
+
 def pairs(items):
     out = []
     for s in items or []:
@@ -94,10 +122,17 @@ def east_case(n, case):
         ex_sheet = np.abs(xu - xs).max(axis=1)/disp
         ev_cont = np.abs(v - np.sqrt(a)[:, None]*(d/k)*np.cos(k*x0)[None, :]).max(axis=1) \
             / (np.sqrt(a)*d/k)
+    D = h1_D(n, tau)
+    with np.errstate(invalid="ignore", divide="ignore"):
+        ex_h1 = np.abs(D - a)/(a - 1.0)
+        x0u = unwrap(x0, q, L)
+        ratio = (xu - xc)/(xc - x0u[None, :])/((D - a)/(a - 1.0))[:, None]
+    big = np.abs(np.cos(2.0*np.pi*x0/L)) > 0.3
     a_cross = Z.first_crossing_a(xu, a)
     a_cross_sheets = Z.first_crossing_a(xs, a)
     return dict(n=n, L=L, d=d, tau=tau, a=a, x=xu, v=v, x0=x0, xs=xs, xc=xc, disp=disp,
                 ex_cont=ex_cont, ex_sheet=ex_sheet, ev_cont=ev_cont, a_cross=a_cross,
+                ex_h1=ex_h1, ratio_h1=ratio, big=big,
                 a_cross_sheets=a_cross_sheets, case=case)
 
 
@@ -139,6 +174,10 @@ def east_analysis(east, pm, res):
             e["ex_cont_a%g" % ac], e["a_rec_%g" % ac] = at(r["ex_cont"], r["a"], ac)
             e["ex_sheet_a%g" % ac], _ = at(r["ex_sheet"], r["a"], ac)
             e["ev_cont_a%g" % ac], _ = at(r["ev_cont"], r["a"], ac)
+            e["ex_h1_pred_a%g" % ac], _ = at(r["ex_h1"], r["a"], ac)
+            i = int(np.argmin(np.abs(r["a"] - ac)))
+            rr = r["ratio_h1"][i][r["big"]]
+            e["h1a_ratio_min_max_a%g" % ac] = [float(rr.min()), float(rr.max())]
         e["plane_symmetry"] = plane_symmetry(case, 21.0)
         res["P1_athenak_n%d" % n] = e
     pms = {}
@@ -158,7 +197,22 @@ def east_analysis(east, pm, res):
             r["pm_ex"] = pm_ex
             r["pm_a"] = r["a"][:m]
             e = {"max_tau_mismatch": float(dtau),
+                 "max_tau_mismatch_but_last": float(np.abs(r["tau"][:m-1]
+                                                           - p["tau"][:m-1]).max()),
                  "a_cross_pm": Z.first_crossing_a(p["x"], p["a"])}
+            # H1a' (post hoc, JOURNAL.md): AthenaK - pm.py sheet by sheet against the
+            # H1 error of each sheet (the lattice error, shared by both, cancels)
+            L = r["L"]
+            x0u = unwrap(r["x0"], p["q"], L)
+            D = h1_D(n, r["tau"][:m])
+            pred = ((D - r["a"][:m])/(r["a"][:m] - 1.0))[:, None] \
+                * (r["xc"][:m] - x0u[None, :])
+            with np.errstate(invalid="ignore", divide="ignore"):
+                rat = (r["x"][:m] - p["x"][:m])/pred
+            for ac in (2.0, 5.0, 10.0):
+                i = int(np.argmin(np.abs(r["a"][:m] - ac)))
+                rr = rat[i][r["big"]]
+                e["h1a_prime_ratio_min_max_a%g" % ac] = [float(rr.min()), float(rr.max())]
             for ac in A_CHECK + (25.0, 30.0, 42.0):
                 e["diff_a%g" % ac], _ = at(diff, r["a"][:m], ac)
                 e["pm_ex_cont_a%g" % ac], _ = at(pm_ex, r["a"][:m], ac)
@@ -175,6 +229,8 @@ def east_figure(rows, out):
         c = cols.get(n, "k")
         ax = axs[0]
         ax.semilogy(r["a"], r["ex_cont"], color=c, label="AthenaK Newton, n = %d" % n)
+        ax.semilogy(r["a"], r["ex_h1"], color="k", ls="--", lw=1.0,
+                    label=("H1: seven-point Laplacian, linear" if n == min(rows) else None))
         if "pm_ex" in r:
             ax.semilogy(r["pm_a"], r["pm_ex"], color=c, ls="--", lw=1.0,
                         label="pm.py, n = %d" % n)
@@ -187,9 +243,9 @@ def east_figure(rows, out):
     axs[1].set_xlabel(r"scale factor $a$")
     axs[0].set_ylim(1e-6, 1)
     axs[1].set_ylim(1e-7, 1)
-    axs[0].legend(ncol=1, loc="lower right", fontsize=8)
+    axs[0].legend(ncol=1, loc="upper left", fontsize=8)
     axs[1].legend(loc="lower right")
-    axs[0].text(21.3, 3e-6, "continuum\ncrossing", fontsize=8)
+    axs[0].text(20.6, 2e-6, "continuum crossing", fontsize=8, ha="right")
     return fs.save(fig, os.path.join(out, "pancake_east"))
 
 
@@ -208,6 +264,10 @@ def sin_case(n, case):
     w15 = a <= 15.0
     rel = {k: np.abs(got[k] - ex[k])/np.abs(ex[k][w15]).max() for k in ("I", "dI", "d2I")}
     rel["d3I"] = np.abs(got["d3I"] - ex["d3I"])/np.abs(ex["d3I"])
+    D0, D1, D2, D3 = (h1_D(n, t3, k) for k in range(4))
+    d3_h1 = c1*D3 + 2.0*c2*(3.0*D1*D2 + D0*D3)
+    sgn_meas = (got["d3I"] - ex["d3I"])/ex["d3I"]
+    sgn_h1 = (d3_h1 - ex["d3I"])/ex["d3I"]
     # the first record has no difference quotient yet
     rel["d3I"][0] = np.nan
     got["d3I"] = got["d3I"].copy()
@@ -222,7 +282,9 @@ def sin_case(n, case):
         others["I_%s_rel" % c] = float(np.abs(h["I_%s" % c] - c0c).max()/c0c)
     W = h["W"]
     C = h["C"]
+    sgn_meas[0] = np.nan
     return dict(n=n, a=a, a3=a3, rel=rel, ex=ex, got=got, others=others, h=h,
+                d3_rel_meas=sgn_meas, d3_rel_h1=sgn_h1,
                 C=C, W=W, a_cross=meta["a_cross"])
 
 
@@ -241,6 +303,10 @@ def sin_analysis(sins, res):
         for lo, hi in ((1.2, 5.0), (5.0, 10.0), (10.0, 15.0), (15.0, 19.0)):
             w = (r["a3"] >= lo) & (r["a3"] <= hi)
             e["d3I_rms_rel_%g_%g" % (lo, hi)] = float(np.sqrt(np.mean(r["rel"]["d3I"][w]**2)))
+        for lo, hi in ((2.0, 5.0), (5.0, 10.0), (10.0, 15.0)):
+            w = (r["a3"] >= lo) & (r["a3"] <= hi)
+            e["h1c_d3I_relerr_mean_meas_%g_%g" % (lo, hi)] = float(np.mean(r["d3_rel_meas"][w]))
+            e["h1c_d3I_relerr_mean_pred_%g_%g" % (lo, hi)] = float(np.mean(r["d3_rel_h1"][w]))
         pre = r["a"] < 20.0
         aW = np.abs(r["a"]*r["W"])[pre].max()
         e["layzer_irvine_dC_over_max_aW"] = float(np.abs(r["C"][pre] - r["C"][0]).max()/aW)
@@ -261,6 +327,8 @@ def sin_figure(rows, out):
                             label=({"I": r"$I_{xx} - c_0$", "dI": r"$\dot I_{xx}$",
                                     "d2I": r"$\ddot I_{xx}$"}[k] + ", n = %d" % n))
         axs[2].semilogy(r["a3"], r["rel"]["d3I"], color=c, lw=0.6, label="n = %d" % n)
+        axs[2].semilogy(r["a3"], np.abs(r["d3_rel_h1"]), color=c, ls="--", lw=1.0,
+                        label="H1 prediction, n = %d" % n)
     r = rows[min(rows)]
     axs[0].plot(r["a3"], r["ex"]["d3I"], **fs.GUIDE, label=r"exact $3 c_2 a^{1/2}$")
     for ax in axs:

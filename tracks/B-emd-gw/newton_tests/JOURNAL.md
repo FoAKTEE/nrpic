@@ -202,3 +202,34 @@ Q''' turns over at t ~ 22.3, where R_x ~ 1 cell; figure in the debug directory).
 
 N3 at N = 32: E/(M c^2 (2 alpha)^3.5) = 0.061787 for alpha = 0.05, 0.1, 0.11122237, 0.2
 with a spread of 5.8e-15, t_x/t_turn 2.524849 with a spread of 2.6e-15: N3a passed.
+
+## 2026-11-15 17:20 UTC: H1a checked (failed as stated); new test H1d at n = 16 before its run
+
+H1a outcome (n = 32 data, computed after the entry above): **failed as stated.** The
+per-sheet ratio of the measured error to the H1 error, over the sheets with
+|cos k x0| > 0.3, spans 0.91-1.13 at a = 2 and 0.76-1.38 at a = 5 (bound: within 10 %).
+The sheet with the largest displacement agrees to 1 %; the spread comes from sheets
+with smaller displacement, where the lattice error that pm.py also has (1.1e-4 of the
+largest displacement at a = 2, `verify_cosmo/results/pancake.json` N_n32) is not small
+against the H1 error of that sheet [JUDGEMENT: an explanation, not tested]. A post-hoc
+version that removes the shared lattice error, (x_AthenaK - x_pm)/(H1 error) sheet by
+sheet, spans 0.94-1.07 at a = 2 and 0.86-1.20 at a = 5; it was formulated after seeing
+the data and is not counted as a test.
+
+H1c outcome (n = 32): **partly failed.** Mean signed relative error of d3I_xx, measured
+against H1: 1.25 % against 0.69 % (2 <= a <= 5), 1.57 % against 1.11 % (5-10), 3.03 %
+against 1.45 % (10-15). H1 accounts for a half to two thirds of the jerk error, not for
+all of it within a third at a <= 10 (fails at 2-5, passes at 5-10).
+
+H1d (new; written before the runs): at n = 16 the H1 force error is four times that of
+n = 32 (F - 1 = 1.295e-2), so the error grows by four while the lattice error (first
+order, verify_cosmo P8) only doubles. Runs east16 and sin16 (same data, same numerics,
+step L/(4n), one core each, a few minutes). Predictions from the formula of H1:
+- H1d-1. East data: largest sheet error against the continuum 5.66e-3, 1.19e-2,
+  1.65e-2 at a = 2, 5, 10, within 10 % at a = 2 and 5 and within 25 % at a = 10.
+- H1d-2. ex(n = 16)/ex(n = 32) at a = 2 is 4.0 within 10 % (n = 32: 1.39e-3).
+- H1d-3. Sin data: mean signed relative error of d3I_xx 2.8 % (2-5) and 4.6 % (5-10)
+  from H1, measured within a factor 1.5 (the n = 32 run had a remainder of about 0.5
+  percentage points not explained by H1; at n = 16 it should be at most twice that).
+Refuted if the ratio of H1d-2 is below 3 (then the error is not second order in kh,
+and the seven-point Laplacian is not its main source).

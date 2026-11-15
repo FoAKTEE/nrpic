@@ -172,6 +172,10 @@ def case_analysis(n, case):
     E_mech = h["K"] + h["W"]
     out["energy_KW_maxrel_before_tx"] = float(np.abs(E_mech[pre] - E_mech[0]).max()
                                               / np.abs(h["W"][0]))
+    tx_o = out["ode"]["equivalent"]["t_x"]
+    pre1 = t <= tx_o - 1.0
+    out["energy_KW_maxrel_before_tx_minus_1"] = float(
+        np.abs(E_mech[pre1] - E_mech[0]).max()/np.abs(h["W"][0]))
     P = np.stack([h["P_x"], h["P_y"], h["P_z"]], axis=1)
     out["momentum_max_over_M_vscale"] = float(np.abs(P[pre]).max()
                                               / (M*np.sqrt(M/np.max(R0))))
