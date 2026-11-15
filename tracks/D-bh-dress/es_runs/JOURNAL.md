@@ -144,3 +144,17 @@ of run D-20261115-170213-d2c2131 unless stated):
   0.88 card-hours per run plus the particles (0.15 card-hours for 7e5 particles, scoping
   model): ES-1 1.0, V-1 0.9 card-hours, 1.9 together, inside the 2.5 card-hours of the
   package [JUDGEMENT].
+
+## Entry 3 (2026-11-15): does p<n>_m = 0 make a null particle in the release executables?
+
+Question (from entry 2): the wave-1 finding "massless tracers are mis-pushed by the release
+card executable" (outbox tracer-push-release-build) may be the light-ray convention of the
+current source (`nrpic.cpp:454-460`: m = 0 pushes a null geodesic), not a push defect.
+Test (`tools/tracer_mass_check.py`, processor executable of release core-v0.3, cheap):
+`problems/kerr/geodesic_mesh.athinput` (the verified Kerr geodesic of the paper, static
+mesh metric, midpoint pusher; its p0_m = 0.0) for 30 M, as it is and with
+particles/p0_m = 1e-30.
+Prediction: with m = 1e-30 the particle stays on its bound orbit (Boyer-Lindquist r
+between about 5 and 10 M over 30 M); with m = 0 it moves off at a coordinate radial speed
+near 1 and is beyond r = 25 M by t = 30 M. Refuted if the two trajectories agree (then
+m = 0 is not the cause, and the card-executable defect stays open as reported).
