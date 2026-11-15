@@ -41,13 +41,14 @@ def snaps_of(rundir):
     return sorted(glob.glob(os.path.join(rundir, "infall.part.*.bin")))
 
 
-def analyse_run(rundir):
+def analyse_run(rundir, stride=1):
     with open(os.path.join(rundir, "setup.json")) as f:
         p = json.load(f)
     with open(os.path.join(rundir, "nm_run.json")) as f:
         meta = json.load(f)
     n_tot, (c0, c1), (d0, d1) = p["n_total"], p["tag_clump"], p["tag_dust"]
     files = snaps_of(rundir)
+    files = files[::stride] if (len(files) - 1) % stride == 0 else files[::stride] + files[-1:]
     shift = np.asarray(p.get("shift", [0.0, 0.0, 0.0]))
     t0, _, x, u, m, tag = nw.read_snapshot(files[0])
     x = x - shift
@@ -133,6 +134,9 @@ def main():
     ap.add_argument("--run", action="append", required=True)
     ap.add_argument("--ref", action="append", default=[])
     ap.add_argument("--selfsim", required=True)
+    ap.add_argument("--stride", type=int, default=1,
+                    help="use every stride-th snapshot (test of the sampling of the turnaround and "
+                         "pericentre detection)")
     a = ap.parse_args()
     os.makedirs(a.out, exist_ok=True)
     fs = load_figstyle()
@@ -141,7 +145,7 @@ def main():
     runs, order = {}, []
     for spec in a.run:
         lab, d = spec.split(":", 1)
-        runs[lab] = analyse_run(d)
+        runs[lab] = analyse_run(d, a.stride)
         runs[lab]["dir"] = d
         runs[lab]["refs"] = {}
         order.append(lab)
