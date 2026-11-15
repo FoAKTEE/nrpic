@@ -64,17 +64,17 @@
     "cores": 1,
     "gpus": 0,
     "card_hours": 0.0,
-    "walltime_s": null
+    "walltime_s": 4.591
   },
   "outputs": {
     "dir": "scratch/D-bh-dress/D-20261115-170837-af64029",
     "sha256sums": "sha256sums.txt",
-    "bytes": null
+    "bytes": 3206241
   },
-  "status": "running",
-  "exit_code": null,
+  "status": "completed",
+  "exit_code": 0,
   "started": "2026-11-15T17:08:37Z",
-  "ended": null,
+  "ended": "2026-11-15T17:08:41Z",
   "parents": [
     "D-20261115-170803-d988f59"
   ],
