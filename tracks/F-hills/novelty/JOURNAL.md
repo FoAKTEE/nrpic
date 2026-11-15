@@ -144,3 +144,10 @@ puncture is not measured). Model inputs that are JUDGEMENT: 1000 MeshBlocks, the
 radius, and that no horizon forms in the clumps during the passage (if one forms, the
 cost becomes that of object (a)). Figure: none new (numbers only, in SCOPE.md table 5).
 Other numbers identical to run B.
+
+## 2026-11-15 package state
+
+Written: `NOVELTY.md` (F-pre-5 verdict and limits), `scope/SCOPE.md` (G0 scope),
+`search/SEARCH_LOG.md`, `README.md` (contents, rerun, requests). Not done: no NR run; no
+second-agent check of the verdict or of the scope (CLAUDE.md, models and roles: a result
+that matters is checked by an agent that did not produce it; for the lead to arrange).
