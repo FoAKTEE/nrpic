@@ -187,3 +187,25 @@ particles kept, M_AH(t = 0) = 0.99239, minimum lapse 0.0307; the 1+log lapse at 
 rises at 0.0334/M over the first two steps, -2K = 0.0335/M as in A2). ES-1 and V-1 were
 submitted as chains D-20261115-172726-60ba4c2 (Slurm 4472) and D-20261115-172730-c6d151b
 (Slurm 4473), two segments of at most 59 min each.
+
+## State at the end of the helper session (2026-11-15, 17:55 UTC)
+
+- ES-1 (D-20261115-172726-60ba4c2, Slurm 4472) and V-1 (D-20261115-172730-c6d151b, Slurm
+  4473) are QUEUED behind about nine jobs (FIFO, all priority 1); not started, no card time
+  used yet. Each chain may run two segments of at most 59 min (nrpic-run reserves 1.97
+  card-hours each, 3.93 together; the expected use is 1.0 + 0.9 = 1.9 card-hours, A6; the
+  package cap is 2.5). The second segment of each chain is submitted by the chain itself
+  when the first stops at the 50 min wall clock.
+- The outcome of entry 2 is therefore NOT written: no horizon-mass drift, no wall
+  comparison, no crossing times yet. To finish: `tracks/D-bh-dress/es_runs/tools/finish.sh`
+  from the worktree root once both chains say DONE (`--partial` analyses a running or
+  stopped pair without closing the runs); then look at every figure it copies into
+  `figs/` and append the outcome below entry 2, against predictions 1-4 and A1-A6 as
+  written (not edited).
+- What to watch first in the output: column 3 of `es.nrpic.hst` (a run that goes non-finite
+  ends "successfully" with zero particles), the plateau lapse (probe 0) against the model
+  of A2, and whether a lapse front from the dust edges reaches the hole (probes 1-3,
+  `figs/axis_profiles.png`).
+- ES-1G (`inputs/es1g_dx8.athinput`, core's `lapse_leak = 0.5`) is prepared and not run:
+  `scratch/core/exe/core_gauge/READY` did not exist; it needs about 1 card-hour, which
+  together with ES-1 and V-1 exceeds the 2.5 card-hours of this package: the lead decides.

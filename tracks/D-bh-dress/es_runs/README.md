@@ -20,8 +20,8 @@ outputs in `/data/haiyangw/nrpic/scratch/D-bh-dress/<id>/`):
 | D-20261115-170326-dfb2a02 | processor smoke run, 16^3 blocks (1280 blocks) | superseded |
 | D-20261115-172413-6412daf | processor smoke run of the ES-1 input as submitted (344 blocks) | done |
 | D-20261115-172821-f800e34 | m = 0 against m = 1e-30 on a Kerr geodesic (entry 3) | done: m = 0 is a null particle |
-| D-20261115-172726-60ba4c2 | ES-1 on the card (chain, Slurm 4472) | see JOURNAL / `harness/bin/nrpic-run status` |
-| D-20261115-172730-c6d151b | V-1 on the card (chain, Slurm 4473) | see JOURNAL |
+| D-20261115-172726-60ba4c2 | ES-1 on the card (chain, Slurm 4472) | queued at the end of the helper session; close and analyse with `tools/finish.sh` |
+| D-20261115-172730-c6d151b | V-1 on the card (chain, Slurm 4473) | queued, as ES-1 |
 
 ## Contents
 
@@ -31,6 +31,8 @@ outputs in `/data/haiyangw/nrpic/scratch/D-bh-dress/<id>/`):
 | `tools/offline_check_es.py` | offline constraint check of both tables (`einstein_straus/offline_check.py`, figures redirected) |
 | `tools/tracer_mass_check.py` | entry 3: the Kerr geodesic of `problems/kerr/geodesic_mesh.athinput` with p0_m = 0 and 1e-30 |
 | `inputs/es1_dx8.athinput`, `inputs/v1_dx8.athinput` | the two runs (identical apart from basename, table and particle file; 24^3 MeshBlocks, 344 blocks; 1+log + Gamma-driver; D-pre-4 finder; massive tracers m = 1e-30; probes at x = 46, 1, 4, 20, 36, 56, 80, 152 M; z = 0 slices of z4c every 10 M, of con and tmunu_E every 25 M) |
+| `tools/finish.sh` | closes both card runs (`nrpic-run finish`), registers `analyse.py` on them and copies its JSON and figures here (`--partial`: analyse what exists) |
+| `inputs/es1g_dx8.athinput` | ES-1 with core's `lapse_leak = 0.5` (branch core/gauge); NOT RUN, needs `scratch/core/exe/core_gauge/athena_gpu` |
 | `analyse.py` | the analysis of both runs: horizon mass and its drift against the control, every tracer's areal radius (metric at the particle) against its proper time and the exact curve, crossing times of R = 2M, lapse at the probes and along the x axis; `es_analysis.json` and figures |
 | `figs/` | figures copied from the registered runs (each looked at before use) |
 | `results/` | JSON results copied from the registered runs |
