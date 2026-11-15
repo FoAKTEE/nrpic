@@ -171,3 +171,71 @@ is not tested here.
 
 Card time used by the package: jobs 4342 (5 min 23 s) and 4346 (7 s), 0.092
 card-hours in all, of the 2 allowed.
+
+# Wave 2 (2026-11-15, UTC from here on)
+
+Package: ladder rows 3 and 4 on release core-v0.3 with the release executables
+(`/data/haiyangw/nrpic/.work/build_gpu_v03/src/athena`, sha256 f9f2dc12...;
+`.work/build_cpu_v03/src/athena`), the open analysis of the initial data with extrinsic
+curvature (T2d, T3), the figures of the stage check. Card time allowed: 2.5 card-hours.
+
+## 15:26Z Setting, before any run
+
+- Initial data regenerate bitwise: `make_ic.py prolate --e 0.9 --b 10 --N 10000 --seed 1`
+  gives the particle file of `runs/prolate/e09_v8` (sha256 dcc80b8d...), and
+  `make_ic.py st --yc 0.605 --N 10000 --sampler stratified --seed 1 --vpert 0.01
+  --no-consistent-table` gives the table and particles of `runs/st/yc0605_v5` (b76213c9...,
+  81fa1c2d...) [VERIFIED, trial in scratch/core/tmp/verify2/, not a registered run]. The
+  earlier sequence runs therefore used the equilibrium table with kicked particles; the
+  bisection keeps that protocol (`--no-consistent-table`; the consistent table differs in
+  psi_c by 1.1e-6, generator output).
+- Inputs `problems/st/st_cluster_amr.athinput` and `problems/prolate/prolate_amr.athinput`
+  equal the copies in the earlier run directories (diff).
+- Oblate collapse: the `spheroid` component of `nrpic_cf` refuses a > b
+  (`athenak/src/pgen/nrpic/nrpic_cf.cpp` line 485, "needs 0 < a < b (prolate ...)"), and
+  the sampler has `ProlateSpheroid` only (`python/nrpic/spheroid.py`). An oblate run needs
+  source work in `athenak/src` (core lead), which this package may not write: BLOCKED,
+  request in README.md.
+- First maximum of E_b/M_0 along the monoenergetic sequence (turning-point criterion,
+  `python/nrpic/st_cluster.binding_energy_maximum`): y_c* = 0.6796, z_c = 0.4553,
+  E_b/M_0 = 0.036058, R/M = 6.552 (recomputed in the registered IC run below).
+
+## 15:30Z Predictions, prolate collapse at a second resolution (written before the run)
+
+Run: the input of `runs/prolate/e09_v8` with one level fewer, finest cells M/8 instead of
+M/16 (`mesh_refinement/num_levels=6`; everything else as e09_v8: 10^4 particles of the
+same file, four binomial passes with compensation, block limit 2000), to t = 45 M, card
+release executable. The horizon finder searches every 16 cycles, every 0.5 M at
+dt = M/32.
+Predictions: (i) first apparent horizon at 31.5 to 33.0 M (e09_v8: 32.00 M; the paper's
+detection times vary by less than 0.1 M between M/32 and M/128, main.tex line 975);
+(ii) the largest Kretschmann scalar is below the 1203 of e09_v8 (the peak grows with
+resolution, main.tex line 975) and lies on the axis within |z| < 3 M between 25 and 30 M;
+(iii) if the mass deficit of e09_v8 is a mesh effect, the largest horizon mass at M/8 is
+below e09_v8's 0.9666 (I expect 0.92 to 0.96); if it is equal within 0.005 or larger,
+the deficit is not set by the finest cell size between M/8 and M/16; (iv) all 10^4
+particles are removed by 45 M; (v) under 0.25 card-hours.
+Refuted: (i) by a first horizon outside 31.5-33.0 M or none by 45 M.
+
+## 15:30Z Predictions, bisection of the stability threshold, round 1 (written before the runs)
+
+Protocol of the earlier sequence (`runs/st/yc0605_v5`): 10^4 stratified particles, seed 1,
+one-percent uniform inward kick, equilibrium table, input `st_cluster_amr.athinput`; one
+change to make four runs fit the card time: `mesh_refinement/num_levels=7`, so the mesh
+never refines beyond the initial nest of M/4 (the earlier compact runs refined to M/8
+early and to M/16 at collapse; 7.9 s of card time per M before collapse, too dear for a
+bisection). To t = 300 M. Models y_c = 0.72, 0.70 (stable side of y_c*) and 0.66, 0.64
+(unstable side).
+Fate rule, fixed now: COLLAPSE if an apparent horizon is found or the central lapse
+(probe at the origin) falls below 0.3; STABLE if neither happens by 300 M and the mean
+central lapse over 200-300 M is within 0.03 of the equilibrium alpha_c; otherwise
+UNDECIDED (drift without collapse).
+Predictions: 0.72 STABLE; 0.70 STABLE (less sure: 0.02 from y_c*); 0.66 COLLAPSE or
+UNDECIDED (growth time near the threshold may exceed 300 M); 0.64 COLLAPSE with a first
+horizon between 150 and 300 M (0.605 collapsed at 191 M on the finer AMR mesh).
+Refuted (turning point is not the threshold at this resolution and noise): 0.72 or 0.70
+collapsing, or 0.64 and 0.66 both STABLE. If 0.64 does not collapse, the coarse mesh
+is suspect and the control 0.605 on the same mesh runs next.
+Card time: about 0.25 card-hours per run (0.2 s per cycle at about 450 blocks, 4800
+cycles); four runs and the prolate run about 1.3 card-hours; round 2 (two models inside
+the bracket) about 0.5.
