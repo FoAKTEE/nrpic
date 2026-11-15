@@ -105,6 +105,14 @@ def diag(Q):
 def case_analysis(n, case):
     meta = json.load(open(os.path.join(case, "particles.json")))
     h = nw.read_newton_hst(os.path.join(case, "newton.newton.hst"))
+    # drop records after a step far below the nominal one (the driver ends on tlim with
+    # a remainder step of order 1e-13; the difference quotient d3I of that record is
+    # rounding divided by the step)
+    dtn = np.median(h["dt"][1:])
+    keep = np.ones(len(h["dt"]), bool)
+    keep[1:] = h["dt"][1:] > 0.5*dtn
+    ndrop = int((~keep).sum())
+    h = {k: v[keep] for k, v in h.items()}
     lam = np.array(meta["lam"])
     t0 = meta["t_turn"]
     M = meta["mass"]
@@ -113,8 +121,8 @@ def case_analysis(n, case):
     dt = float(np.median(np.diff(h["time"])))
     nhalf = int(round(0.5*WIN_FRAC*t0/dt))
     Q = [diag(nw.quadrupole(h, k)) for k in range(4)]
-    off = max(float(np.abs(nw.quadrupole(h, k)[:, i, j]).max()/np.abs(Q[k]).max())
-              for k in range(4) for i, j in ((0, 1), (0, 2), (1, 2)))
+    off = [max(float(np.abs(nw.quadrupole(h, k)[:, i, j]).max()/np.abs(Q[k]).max())
+               for i, j in ((0, 1), (0, 2), (1, 2))) for k in range(4)]
     R0, V0 = np.array(meta["R0"]), np.array(meta["V0"])
     I0 = np.array(meta["I0"])
     Reff = np.sqrt(5.0*np.diag(I0)/M)
@@ -123,7 +131,8 @@ def case_analysis(n, case):
     runs = {"nominal": ode(lam, t_end=t_end), "equivalent": ode(lam, Reff, Veff, t_end)}
     out = {"case": case, "n": n, "alpha": float(lam[0]), "t_turn": t0, "mass": M,
            "nparticle": meta["nparticle"], "dt": dt, "window": 2*nhalf*dt,
-           "R_equivalent_over_nominal": (Reff/R0).tolist(), "offdiag_max_rel": off}
+           "R_equivalent_over_nominal": (Reff/R0).tolist(), "offdiag_max_rel": off,
+           "records_dropped_short_step": ndrop}
     tx = t0 + zero_up(h["time"], h["dI_xx"])
     out["t_x"] = tx
     out["tau_x"] = tx/t0
@@ -206,7 +215,9 @@ def fig_quadrupole(S, out):
             axs[3].semilogy(s["t3"], s["Praw"], color=c, lw=0.4, alpha=0.5,
                             label="N = %d, raw" % n)
         m = s["t3"] <= s["tx"]
-        Ec = np.concatenate([[0.0], np.cumsum(0.5*(s["Ps"][m][1:] + s["Ps"][m][:-1])
+        # cumulative energy from the raw difference quotient (the fair comparison with
+        # the exact ODE; the averaging window biases the ODE itself, ellipsoid.json)
+        Ec = np.concatenate([[0.0], np.cumsum(0.5*(s["Praw"][m][1:] + s["Praw"][m][:-1])
                                               * np.diff(s["t3"][m]))])
         axs[4].plot(s["t3"][m], Ec/s["M"], color=c, lw=1.0)
         axs[4].plot([s["tx"]], [Ec[-1]/s["M"]], "o", color=c, ms=3)
@@ -236,8 +247,10 @@ def fig_quadrupole(S, out):
     axs[3].set_ylabel(r"$P = \dddot Q_{ij}\dddot Q_{ij}/5$")
     axs[4].set_ylabel(r"$E(t_{\rm turn}\to t)\,/\,M c^2$")
     axs[4].set_xlabel(r"$t / t_k$")
-    axs[0].legend(loc="lower left", ncol=2, fontsize=8)
+    axs[0].legend(loc="center left", ncol=2, fontsize=8)
     axs[3].legend(loc="upper left", ncol=2, fontsize=7)
+    axs[4].text(0.03, 0.85, "particles: raw difference quotient; ODE: exact",
+                transform=axs[4].transAxes, fontsize=8)
     axs[3].set_ylim(1e-6, 2e-3)
     axs[0].text(0.45, 0.55, "x solid, y dashed, z dotted", transform=axs[0].transAxes,
                 ha="left", fontsize=8)
@@ -253,21 +266,23 @@ def fig_convergence(rows, dtrow, out):
     for key, mk, lab in (("nominal", "s", "nominal ZA state"),
                          ("equivalent", "o", "equivalent ellipsoid of the lattice")):
         dtx = np.array([abs(rows[n]["ode"][key]["dt_x_rel"]) for n in ns])
-        dea = np.array([abs(rows[n]["ode"][key]["dE_avg_rel"]) for n in ns])
-        der = np.array([abs(rows[n]["ode"][key]["dE_raw_rel"]) for n in ns])
         axs[0].loglog(ns, dtx, mk + "-", color=fs.PAL["red"], label=lab, ms=4)
-        axs[1].loglog(ns, dea, mk + "-", color=fs.PAL["red"], ms=4,
-                      label="averaged, " + lab)
-        axs[1].loglog(ns, der, mk + ":", color=fs.PAL["orange"], ms=4,
-                      label="raw, " + lab)
+    o = "nominal"
+    series = (("dE_raw_rel", "o-", fs.PAL["red"], "raw $\\dddot Q$ vs ODE"),
+              ("dE_avg_vs_avg_ode_rel", "s-", fs.PAL["orange"],
+               "averaged vs averaged ODE"),
+              ("dE_avg_rel", "^:", fs.PAL["yellow"], "averaged vs ODE (as predicted)"))
+    for k, mk, c, lab in series:
+        y = np.array([abs(rows[n]["ode"][o][k]) for n in ns])
+        axs[1].loglog(ns, y, mk, color=c, ms=4, label=lab)
     if dtrow is not None:
         n, r = dtrow
         axs[0].loglog([n], [abs(r["ode"]["equivalent"]["dt_x_rel"])], "x", color="k",
                       label="step 0.01")
-        axs[1].loglog([n], [abs(r["ode"]["equivalent"]["dE_avg_rel"])], "x", color="k",
-                      label="step 0.01")
-    for ax, y0 in ((axs[0], abs(rows[ns[0]]["ode"]["equivalent"]["dt_x_rel"])),
-                   (axs[1], abs(rows[ns[0]]["ode"]["equivalent"]["dE_avg_rel"]))):
+        axs[1].loglog([n], [abs(r["ode"][o]["dE_raw_rel"])], "x", color="k",
+                      label="step 0.01 (raw)")
+    for ax, y0 in ((axs[0], abs(rows[ns[0]]["ode"]["nominal"]["dt_x_rel"])),
+                   (axs[1], abs(rows[ns[0]]["ode"][o]["dE_raw_rel"]))):
         nn = np.array([ns[0], ns[-1]], float)
         ax.loglog(nn, y0*(nn/nn[0])**-1, color="k", ls="--", lw=1.0)
         ax.loglog(nn, y0*(nn/nn[0])**-2, color="k", ls=":", lw=1.0)
@@ -398,6 +413,7 @@ def main():
             p = np.log2(abs((f1 - f2)/(f2 - f3)))
             conv[key] = {"values": [f1, f2, f3], "order": float(p),
                          "richardson": float(f3 + (f3 - f2)/(2.0**p - 1.0))}
+        conv["E_ode_avg_same_window_nominal"] = rows[n3]["ode"]["nominal"]["E_avg_same_window"]
         conv["E_ode_equivalent_finest"] = rows[n3]["ode"]["equivalent"]["E"]
         conv["E_ode_nominal"] = rows[n3]["ode"]["nominal"]["E"]
         conv["t_x_ode_nominal"] = rows[n3]["ode"]["nominal"]["t_x"]
