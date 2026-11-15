@@ -39,7 +39,7 @@ def check(tid, what, value, ref, locator, ok, note="", info=False):
 
 def _round_half_up(x, places):
     from decimal import Decimal, ROUND_HALF_UP
-    return Decimal(repr(x)).quantize(Decimal(1).scaleb(-places), rounding=ROUND_HALF_UP)
+    return Decimal(repr(float(x))).quantize(Decimal(1).scaleb(-places), rounding=ROUND_HALF_UP)
 
 
 # ------------------------------------------------------------------- T1 1609.01588
