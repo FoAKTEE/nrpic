@@ -158,3 +158,22 @@ Prediction: with m = 1e-30 the particle stays on its bound orbit (Boyer-Lindquis
 between about 5 and 10 M over 30 M); with m = 0 it moves off at a coordinate radial speed
 near 1 and is beyond r = 25 M by t = 30 M. Refuted if the two trajectories agree (then
 m = 0 is not the cause, and the card-executable defect stays open as reported).
+
+Outcome of entry 3 (run D-20261115-172821-f800e34, `results/tracer_mass_check.json`,
+`figs/tracer_mass_check.png`, looked at): the dichotomy is confirmed, the details of my
+prediction are not all testable. With p0_m = 1e-30 the particle stays on its orbit
+(Boyer-Lindquist r = 8.000 -> 8.097 M over 30 M, coordinate radial speed below 0.006, 6002
+records). With p0_m = 0, as the verified input has it, it leaves the orbit at once and
+accelerates outward (radial coordinate speed 0.26 -> 0.58) and leaves the mesh (|z| = 5 M)
+at t = 9.8 M at r = 12.3 M, so "beyond 25 M by 30 M" could not be observed and "speed near
+1" is not what the radial component shows (the null ray keeps a large tangential
+component). [VERIFIED on the processor executable of release core-v0.3] In this source a
+zero rest mass makes a null particle; the six tracers of
+`problems/puncture/horizon_calib.athinput` and the geodesic of
+`problems/kerr/geodesic_mesh.athinput` carry p<n>_m = 0.0 and are therefore light rays now,
+which matches the wave-1 observation on the card (five tracers moving out together near
+light speed). [JUDGEMENT] The card executable runs the same source, so the wave-1 blocker
+is an input convention that changed when light rays were added, not a mis-push; the
+card's push of massive tracers is checked by ES-1 itself. Request to core: positive
+p<n>_m in those two inputs (or an explicit option for null particles), and an answer to
+the outbox blocker on this basis.

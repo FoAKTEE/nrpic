@@ -1,0 +1,29 @@
+{
+ "exe": "/data/haiyangw/nrpic/.work/build_cpu_v03/src/athena",
+ "input": "/data/haiyangw/nrpic/wt/D-bh-dress/problems/kerr/geodesic_mesh.athinput",
+ "tlim": 30.0,
+ "cases": {
+  "m0": {
+   "exit": 0,
+   "n": 1958,
+   "r_BL_start": 7.999999999999999,
+   "r_BL_end": 12.280493356288318,
+   "r_BL_min": 7.999999999999999,
+   "r_BL_max": 12.280493356288318,
+   "gamma_uu_start": 0.2352010781234871,
+   "gamma_uu_end": 0.22463708663473533,
+   "max_abs_coord_radial_speed": 0.5785067343551537
+  },
+  "m1e-30": {
+   "exit": 0,
+   "n": 6002,
+   "r_BL_start": 7.999999999999999,
+   "r_BL_end": 8.09708865846765,
+   "r_BL_min": 7.999999999999999,
+   "r_BL_max": 8.09708865846765,
+   "gamma_uu_start": 0.2352010781234871,
+   "gamma_uu_end": 0.2346209031427148,
+   "max_abs_coord_radial_speed": 0.005859375
+  }
+ }
+}
