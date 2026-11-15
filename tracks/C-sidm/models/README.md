@@ -14,7 +14,7 @@ Helper package of owner C-sidm (wave 2, work package "models"). It delivers
 
 Everything here is a reference solution or analysis of AthenaK output (decision 0010); no
 simulation was run and no card time was used. Predictions and outcomes of every test:
-`JOURNAL.md` (entries 1-6). Labels: [VERIFIED] computed in a registered run named here;
+`JOURNAL.md` (entries 1-8). Labels: [VERIFIED] computed in a registered run named here;
 [JUDGEMENT]; [TO VERIFY].
 
 ## Files
@@ -66,7 +66,7 @@ The b = 0.1 models are core-halo: R/M = 20-22 against a core radius (n = n_c/2) 
 
 ## Results
 
-**Models (entries 5 and 6).** [VERIFIED] M1: the King files at N = 10^4 are byte-identical
+**Models (entries 5-7).** [VERIFIED] M1: the King files at N = 10^4 are byte-identical
 to those of run C-sidm-20261115-120610-b4592be (10/10). M2: evstatic_b and `tmb.solve`
 (independent variables and quadratures) agree on Z(0), eps, R/M, M0/M to 5e-11; the E_b
 maximum lies at Z(0) = 0.54041288 (criteria.json: 0.54041286). M3: every check of
@@ -137,12 +137,13 @@ validation 1 min, diagnosis 1 min (processors, 0 card-hours).
 | C-20261115-170126-b4f74af | models N = 10^4 | built |
 | C-20261115-170221-b1a491c | checks N = 10^4 (exit 1: three TOV-residual checks) | M1, M2 pass; M3 250/253 |
 | C-20261115-170742-84990ed | models N = 10^5 | built |
-| C-20261115-171137-9e3c807 | checks N = 10^5 | entry 6 |
+| C-20261115-171137-9e3c807 | checks N = 10^5 (exit 1: the same three TOV-residual checks) | M3 240/243 |
 | C-20261115-170231-4e68455 | growth validation, first attempt (KeyError in the verdicts, no JSON) | failed run, numbers in run.log |
 | C-20261115-170346-298a1ba | growth validation | G1 pass, G2 fail, G3 seeds pass, G4 fail, G5 partly, G6 pass |
 | C-20261115-170713-cefe1c2 | G2 diagnosis | D1: cause found |
 | C-20261115-171723-17d46f0 | TOV step test | T1 pass |
-| figures run | entry 6 | |
+| C-20261115-173404-378c69e | figures (fig_fluid_onset, fig_models, fig_growth) | looked at, entry 7 |
+| C-20261115-174557-8978b36 | AthenaK read test of tmb01_Z0p5404 at N = 1e5 (processor build core-v0.3) | entry 8 |
 
 ## Not done
 

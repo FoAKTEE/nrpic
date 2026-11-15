@@ -293,3 +293,29 @@ model's alpha_c = 0.64918 (the King run read 0.6647 against 0.66141, 0.5 percent
 initial Hamiltonian-constraint norm within a factor 3 of the reference's [JUDGEMENT; the
 model is wider than the refined region of the deck, |x| < 15.9 M against rbar_s = 19.4 M].
 Refuted by a failed run or any number outside these bounds.
+
+## 2026-11-15, entry 7: outcomes M3 at N = 10^5; figures
+
+Build run C-20261115-170742-84990ed (N = 10^5, 13 models, 16-17 s each, 80 MB); check run
+C-20261115-171137-9e3c807 (exit 1 for the same three TOV checks as at 10^4).
+- M3 at 10^5: 240 checks pass, the same 3 fail (TOV residual 1.1e-6, 1.2e-6, 1.4e-6 at
+  Z(0) = 0.58, 0.60, 0.6348; explained by T1 as the check's own truncation error). Equal-mass
+  shell counts 12500 x 8 exact, stratified ECDFs within 1/N, max E/E0 = 0.99992 (b = 0.1
+  E_b maximum), KS statistic of E/E0 of the file 0.0020 (0.0014 King threshold), shell
+  moments within 2.15 standard errors. sum m W/psi - M = -2.2e-5 to -4.0e-5 (10^4:
+  +2.2e-4 to +3.0e-4); the prediction "smaller at 10^5" holds for every model. [VERIFIED]
+- Centre resolution at 10^5 (index_N100000.json): 30 macroparticles per M/4 cell at the
+  centre of the b = 0.1 E_b-maximum model (19 for the King threshold model, as
+  stage/G1/STATUS.md section 4 estimated), proper spacing 0.118 M.
+
+Figures (run C-20261115-173404-378c69e, copies in figs/; each looked at):
+- `fig_fluid_onset`: Juttner Gamma_1 and 1 + p/u against theta; omega_0^2 R^3/M along the
+  b = 0.1 sequence for the five indices with the roots; gamma(r) at the E_b maximum; onset
+  Z(0) against b. The J_E curve lies below the E_b maximum at every b, the F21 curve above.
+- `fig_models`: E_b(Z(0)) with the eight b = 0.1 models; n/n_c of the b = 0.1 and King
+  threshold models with the density of the 10^5 files (counts over the continuum
+  expectation), on the curve over five decades; E/E0 of the 10^5 file against the
+  continuum; |sum m W/psi - M| of every file at both N.
+- `fig_growth`: synthetic example and the 150 synthetic fits; departures and fits of the
+  unperturbed y_c = 0.5 runs (alpha_c and r10); alpha_c of the three collapsing runs with
+  the first apparent horizons and t(alpha_c = 0.2); the fitted plunge segments.
