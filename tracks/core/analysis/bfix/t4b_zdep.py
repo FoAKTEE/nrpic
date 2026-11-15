@@ -64,7 +64,7 @@ def figure(res, rundir, out, label):
             relx.append(max(s["rel_xyvar"], 1e-20) if np.isfinite(s["rel_xyvar"]) else 1e2)
             relm.append(max(s["rel_max"], 1e-20))
     order = np.argsort(relx)
-    fig, (ax, ax2) = plt.subplots(1, 2, figsize=(fs.PAGE_WIDTH, 5.6),
+    fig, (ax, ax2) = plt.subplots(1, 2, figsize=(fs.FULL_WIDTH, 5.6),
                                   gridspec_kw={"width_ratios": [1.25, 1]})
     fig.subplots_adjust(left=0.13, right=0.95, bottom=0.09, top=0.95, wspace=0.35)
     y = np.arange(len(names))
