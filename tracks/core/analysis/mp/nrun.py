@@ -80,7 +80,11 @@ def main():
     cmd = [exe, "-i", os.path.basename(inp), "-d", out] + a.args
     if on_card:
         # time stamps inside the allocation: the card time excludes the wait in the queue
-        wrap = 'date +%s.%N > .t_start; "$@"; rc=$?; date +%s.%N > .t_end; exit $rc'
+        # and the memory of the card is sampled every 5 s into .gpumem (MiB)
+        wrap = ('date +%s.%N > .t_start; '
+                '(while true; do nvidia-smi --query-gpu=memory.used '
+                '--format=csv,noheader,nounits >> .gpumem 2>/dev/null; sleep 5; done) & '
+                'smp=$!; "$@"; rc=$?; kill $smp; date +%s.%N > .t_end; exit $rc')
         cmd = ["srun", "-p", "preempt", "--gres=gpu:1", "-c", "1", "-t", a.time,
                "-J", a.label[:12], "/bin/bash", "-c", wrap, "athena"] + cmd
     env = dict(os.environ, OMP_NUM_THREADS="1")
@@ -107,6 +111,11 @@ def main():
             wall = te - ts
         except (OSError, ValueError):
             pass
+    try:
+        mem = [float(v) for v in open(os.path.join(out, ".gpumem")).read().split()]
+        man["card_memory_peak_mib"] = max(mem)
+    except (OSError, ValueError):
+        pass
     man.update({"status": "done" if rc == 0 else "failed", "exit_code": rc,
                 "wall_time_s": round(wall, 1), "queue_wait_s": round(queued, 1),
                 "card_hours": round(wall / 3600.0, 4) if on_card else 0.0,

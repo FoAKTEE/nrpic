@@ -304,3 +304,32 @@ units).
  - Junk radiation: the energy through the sphere at 16 integrated over the run is below
    1e-3 of the mass for (A) and (E) and larger for (B) than for (A). [JUDGEMENT]
  - Block count stays below 2048; refuted if the block limit is hit again.
+
+### Outcome of test 3 at t = 0 (processors; runs `core-20261115-120209-212dce7` approx, `-120210-` none, `-120211-` plain sum)
+
+Mesh of `problems/puncture/by_triple.athinput`: 1100 MeshBlocks at the start, cells of
+1/16 (m/8) at the light holes, 1 (m/10) at the heavy one. Norm as the Z4c history forms
+it (sum of H^2 sqrt(gamma) dV over the cells with psi^4 <= 16 over the sum of
+sqrt(gamma) dV; `triple_static.py` reproduces the history value from the dumped field
+to four digits, 2.253e-5, which checks reader and mask):
+
+| data | code (history) | closed form on the same cells | code minus closed form |
+|---|---|---|---|
+| no correction | 2.253e-5 | 2.148e-5 | 8.8e-6 |
+| closed form, background factor (Lambda = 1.077, 1.077, 1.005) | 8.50e-6 | 2.19e-6 | 8.1e-6 |
+| closed form, plain sum | 1.496e-5 | 1.233e-5 | 7.8e-6 |
+
+ - The closed form says: the background-rescaled corrections lower the residual 9.8
+   times, the plain sum 1.7 times. The binary region carries it (2.12e-5 of 2.15e-5
+   without correction); the heavy hole's region goes from 3.5e-6 to 2.7e-7.
+ - Prediction "at least a factor 3 with the background factor" FAILED for the norm the
+   code reports: 2.65 (2.253e-5 to 8.50e-6), because on this mesh the truncation error
+   of the light punctures themselves is 8e-6, four times the residual left by the
+   correction. It holds for the closed form (9.8). Prediction "not with the plain sum"
+   held (1.5 in the code, 1.7 closed form).
+ - Momentum-constraint norm (history): 5.2e-7, 4.7e-7, 4.5e-7: truncation only.
+ - Memory: the three processes with `max_nmb_per_rank = 4096` and three finders used
+   108 GB each (26 MB per MeshBlock slot), more than a card has; the block limit of the
+   card runs must stay near 2500. [VERIFIED: resident size seen with ps while they ran]
+ Figure looked at: `figs/triple_static.png` (code on the closed form outside the
+ punctures; the plain sum barely below the uncorrected curve at the light holes).
