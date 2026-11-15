@@ -361,3 +361,30 @@ of the counts inside 10 Gm (excess first, then oscillation damped by phase mixin
 Refuted (in the sense that the slice matters below the noise of these tests, so wave 1's
 Schwarzschild test is not affected at its precision) if the BL run shows no excursion
 above 2 sigma in the running mean over 100 M.
+
+## K2 runs so far
+
+- IC D-bh-dress-20261115-172335-9e5ccf9 (145 s, 4 cores): 48000 particles, acceptance
+  6.25 %, 1 envelope violation in 8e5 proposals (largest ratio 1.03), 13 of 209 cells
+  without a pilot hit (weight 0: their content is checked by the t = 0 chi^2 below);
+  invariants of the CKS states equal the drawn ones to 1.1e-15 (E), 4e-15 (Lz), 6e-14 (Q);
+  pericentres >= 2.283 Gm, apocentres <= 95.2 Gm, 17.7 % inside 16 Gm, mean Lz +0.436.
+- Reference grid D-bh-dress-20261115-172646-ed6a510 (207 s, 4 cores): n(r, theta) on
+  73 x 10 nodes, 2.05-100 Gm; no density at 100 Gm.
+- Main run D-bh-dress-20261115-172611-1e40191 started (12 processes). A development pass
+  of analyze_kerr.py over its first 39 snapshots (to test the script, scratch tmp) showed
+  chi^2 = 51.4 / 47 at t = 0, the equator/pole contrast 1.209 +- 0.033 at t = 0 against
+  the reference 1.127 (a 2.5 sigma draw; later snapshots 1.08-1.20), and 5 particles below
+  their predicted pericentre by up to 3e-3 Gm (energy error 1e-5 near r_p = 2.3 Gm).
+
+## K3 prediction (before the registered run of kerr_budget.py)
+
+Criteria in kerr_budget.py's docstring (8 log bins in 4-16 Gm x 3 bands of |cos theta|;
+deposit noise 0.26 at 1.1 particles per occupied cell, N^-1/2, docs/results_cluster_test.md
+(d)). Prediction [JUDGEMENT, scaled from wave 1's 3.0e4 for 8 bins in 5-20 Gm without
+angular bins]: for E_cut = 0.99 the counting criterion needs N_total = 1e5-3e5 (10 %) and
+x4 for 5 %, set by the polar band in the innermost bin; it grows by 4-6x per decade of the
+largest apocentre beyond the first decade. The deposit criterion at dx = 0.25 Gm needs
+3e7-3e8 particles inside 16 Gm, i.e. 1e8-2e9 in total for E_cut = 0.99, and 8x that at
+dx = 0.125 Gm. Refuted if the numbers fall outside these ranges (then the scaling from
+wave 1 does not carry over).
