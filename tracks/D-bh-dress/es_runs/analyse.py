@@ -93,7 +93,9 @@ def tracer_tracks(run, base):
     """{tag: dict(t, x[3], u[3], alpha, beta[3], g[6])}, records joined on (time, tag),
     duplicates from restarts removed (last kept)."""
     tr = read_records(os.path.join(run, f"{base}.traj.bin"), 8)
-    tm = read_records(os.path.join(run, f"{base}.trajmet.bin"), 12)
+    # 17 doubles per record (nrpic_io.cpp:811-814; docs/FORMATS.md still says 12): time, tag,
+    # alpha, beta^i, gamma_ij (xx xy xz yy yz zz), proper time of the particle, E, S_i
+    tm = read_records(os.path.join(run, f"{base}.trajmet.bin"), 17)
     if tr is None or tm is None:
         return {}
     out = {}
@@ -108,7 +110,8 @@ def tracer_tracks(run, base):
         b = b[::-1][ib]
         common, ja, jb = np.intersect1d(a[:, 0], b[:, 0], return_indices=True)
         a, b = a[ja], b[jb]
-        out[tag] = dict(t=a[:, 0], x=a[:, 2:5], u=a[:, 5:8], alpha=b[:, 2], beta=b[:, 3:6], g=b[:, 6:12])
+        out[tag] = dict(t=a[:, 0], x=a[:, 2:5], u=a[:, 5:8], alpha=b[:, 2], beta=b[:, 3:6], g=b[:, 6:12],
+                        tau_code=b[:, 12], E=b[:, 13])
     return out
 
 
@@ -129,10 +132,12 @@ def areal_and_tau(d):
     uu = np.einsum("ni,nij,nj->n", d["u"], Ginv, d["u"])
     W = np.sqrt(1.0 + uu)
     rate = d["alpha"] / W
-    tau = np.concatenate([[0.0], np.cumsum(0.5 * (rate[1:] + rate[:-1]) * np.diff(d["t"]))])
+    tau_int = np.concatenate([[0.0], np.cumsum(0.5 * (rate[1:] + rate[:-1]) * np.diff(d["t"]))])
     if d["t"][0] > 0:
-        tau += rate[0] * d["t"][0]
-    return R, tau, gnn, gT
+        tau_int += rate[0] * d["t"][0]
+    # the particle's own proper time (accumulated by the pusher) is used; the trapezoid
+    # integral of alpha/W over the records is the cross-check
+    return R, d["tau_code"], gnn, gT, tau_int
 
 
 def axis_profiles(run, base, var_list=("z4c_alpha", "z4c_chi", "z4c_Khat", "z4c_betax")):
@@ -214,10 +219,11 @@ def analyse_tracers(run, base, model, groups):
             if tag not in tracks:
                 continue
             d = tracks[tag]
-            R, tau, gnn, gT = areal_and_tau(d)
+            R, tau, gnn, gT, tau_int = areal_and_tau(d)
             Rex = em.ltb_radius(np.full_like(tau, g["R0"]), tau, g["m"], g["E"])
             rel = R / Rex - 1.0
-            per[tag] = dict(t=d["t"], tau=tau, R=R, Rex=Rex, rel=rel, alpha=d["alpha"], x=d["x"])
+            per[tag] = dict(t=d["t"], tau=tau, R=R, Rex=Rex, rel=rel, alpha=d["alpha"], x=d["x"],
+                            tau_int_diff=float(np.max(np.abs(tau_int - tau))) if len(tau) else 0.0)
             rec["n_tracks"] += 1
             ok = np.isfinite(rel) & (R > 2.2)
             rel_all.append(rel[ok])
@@ -243,6 +249,7 @@ def analyse_tracers(run, base, model, groups):
             rec["tau_cross_2M_mean"] = float(np.mean(cr)) if cr else None
             rec["tau_cross_2M_spread"] = float(np.ptp(cr)) if cr else None
             rec["tau_end_range"] = [min(tau_end), max(tau_end)]
+            rec["tau_code_minus_integral_max"] = float(max(per[t]["tau_int_diff"] for t in g["tags"] if t in per))
             tex = np.linspace(0, 400, 40001)
             rec["tau_cross_2M_exact"] = crossing(tex, em.ltb_radius(np.full_like(tex, g["R0"]), tex, g["m"], g["E"]))
         res["groups"].append(rec)
