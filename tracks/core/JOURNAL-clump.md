@@ -280,3 +280,28 @@ of this worktree, 64 cells, a lattice of spacing 0.25, `comp0_p1 = 0.06`, in
 curvature on 1 Gaussian component(s)", 5.8 s. The executables `.work/build_cpu` and
 `.work/build_gpu` were built from the working tree whose source files are those of the
 first commit of this package (no source edit between the build and the commit).
+
+### Correction of two clock times above, and a failure of the harness (2026-11-15T15:50Z)
+
+- The times I wrote for the predictions ("15:45Z") and the smoke run ("15:50Z") were
+  guesses. From the files: `predict.json` was written at 15:40:27Z, the predictions went
+  into this journal right after it, the smoke run's log is from 15:43:05Z, the first
+  commit (e1a4d0c, with the predictions) from 15:45:48Z, the first registered run from
+  15:46:22Z. Order: predictions, smoke run, commit, tests.
+- `harness/bin/nrpic-run submit --kind scouting --gate G2 --cores 1 ... -- python3
+  tracks/core/analysis/clump/regress.py ...` stops with `KeyError: 'outputs'`
+  (`nrpic-run` line 163, `is_live`, called from `budget_state` line 197): it reads the
+  hand-written manifests of wave 1 under `tracks/core/runs/`, which have no `outputs`
+  entry. Runs of this package are therefore registered by hand with wave 1's helper
+  `tracks/core/analysis/rng/runreg.py` (run id, manifest with command, cwd, commit,
+  inputs with sha256, output directory, purpose, kind, wall time, cores or card-hours).
+
+### Prediction for the card check G (written before the job is submitted)
+
+`tracks/core/analysis/clump/card_check_job.sh`: (1) the card executable of this branch
+and the release card executable `.work/build_gpu_v03` give byte-identical data files
+for `regress_cf.athinput` and `by_static.athinput` (no deposit); (2) the history
+records at t = 0 of `clump_static.athinput` on the card (64 cells without and with the
+curvature, 128 cells with it, spin at 64 cells) equal the processor records in the six
+printed digits (the deposit adds in another order on a card, 1e-16). Refuted by a
+differing data byte or a relative difference above 1e-6.
