@@ -190,30 +190,32 @@
     "nodes": 1,
     "gpus": 1,
     "cores": 1,
-    "walltime_s": null,
+    "walltime_s": 906.0,
     "wall_limit": "00:40:00",
     "segments_max": null,
     "gpu_hours_requested": 0.6667,
-    "gpu_hours": null,
+    "gpu_hours": 0.2517,
     "particles": 2097152.0
   },
   "slurm": {
     "partition": "preempt",
     "job_name": "B-20261115-164059-d802e82",
-    "job_ids": []
+    "job_ids": [
+      "4460"
+    ]
   },
   "outputs": {
     "dir": "scratch/B-emd-gw/B-20261115-164059-d802e82",
     "sha256sums": "sha256sums.txt",
-    "sha256sums_sha256": null,
-    "bytes": null,
-    "files": null
+    "sha256sums_sha256": "f514b2110ddc19984218f31f02b924e31e3094b1e5389c2bb23a27c99900b83c",
+    "bytes": 37793637730,
+    "files": 881
   },
-  "status": "submitted",
-  "exit_code": null,
+  "status": "completed",
+  "exit_code": 0,
   "registered": "2026-11-15T16:41:00Z",
-  "started": null,
-  "ended": null,
+  "started": "2026-11-15T09:28:07-08:00",
+  "ended": "2026-11-15T09:43:12-08:00",
   "parents": [
     "B-20261115-161656-03d75e1"
   ],
@@ -227,5 +229,6 @@
     "cores_busy": 6,
     "runs": 89,
     "allotment_from": "coord/DECISIONS/0006-compute-budget.md + 0014-budgets-after-wave-1.md"
-  }
+  },
+  "finished": "2026-11-15T17:47:17Z"
 }
