@@ -99,3 +99,17 @@ comoving wavelength 2 pi c a(t_e) / omega_peak at the energy-weighted emission t
 exceeds the side of the periodic box that holds one patch per smoothing volume,
 V_k^(1/3) = (4 pi/3)^(1/3) R_L = 1.612 R_L (2605.04487 lines 2032-2036), and scales as
 alpha^(-1/2). Refuted if it is shorter than that side.
+
+## 2026-11-15T11:48Z  one more prediction (before any script ran)
+
+T7b (the numbers of 2403.15126 through the conversion of 2605.04487). 2403.15126 states
+for sigma = 0.1 a first peak of the averaged N-body spectrum at omega_e ~ H_k/10 with
+<dE/dln omega> ~ 2e-5 in units G = c = H_k = 1 (lines 1487-1491; there M = 1/2 from
+t_k = 4GM/3, line 450), emission completed by 3 <t_col> (line 1486), and today
+f_peak ~ 4e-9 Hz (M/M_sun)^(-1/3) (T_rh/GeV)^(1/3), Omega_peak ~ 1e-6 sigma^(7/2)
+(M/M_sun)^(2/3) (T_rh/GeV)^(4/3) (lines 1500-1509). Its <t_col> ~ 28 is ambiguous
+(0.9 sigma^(-3/2) t_k = 28.5 t_k but written "28 H_k^-1", line 1481), so I take the
+emission time t_e between 28 t_k and 3 x 42 t_k = 126 t_k. Prediction: the conversion
+of T7 gives f_0 within a factor 3 of 4e-9 Hz and Omega_peak within a factor 10 of
+1e-6 (0.1)^(7/2) = 3.2e-10 (at M = M_sun, T_rh = 1 GeV) for some t_e in that range.
+Refuted if no t_e in the range comes within these factors.
