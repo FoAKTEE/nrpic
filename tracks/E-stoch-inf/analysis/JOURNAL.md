@@ -139,3 +139,34 @@ reconstruction and `read_bin_metric` agree with the code on real output, and a p
 The ratio [M] used for |M|/[M] is the flat norm of covariant components, as P1's [M]; it
 does not depend on gt. Figure `fig/fig_plane_constraint_ratios.png` (looked at: the
 dump-based ratios lie on the history's crosses).
+
+## 17:36 Predictions: slow-roll scouting runs with the release executable, homogeneous start
+
+What the release cannot do: the perturbed initial slice at N* (request R8). What it can:
+start from the homogeneous slice (`id = flrw`) dn_pre = 1.5 e-folds before the lowest
+mode reaches the window, where W(k_min) = 3.6e-7 (scripts/make_sr_case.py, case.json), and
+let the Mukhanov-Sasaki sources bring every mode in. By linearity the NR perturbation then
+differs from the papers' (initial slice W(t*) R plus sources) by the free evolution of
+the slice W(t0) R, a constraint-satisfying linear solution of relative size W(t0)
+[JUDGEMENT: argument, tested by the runs below only through PS2]. Case: quadratic
+potential, eps1 = 0.0105 at the start, H ~ 1, geodesic slicing, level 0, stencil
+projector, k_max = N k_sigma*/4, amplitude scaled to Delta_R ~ 1e-6, end at ln a = 8;
+reference = the code's own lockstep R_q (any mode-equation data are valid).
+Disclosure: before writing this, a development run to t = 0.6 (ln a = 0.5, no mode
+crossed yet; scratch/E-stoch-inf/tmp/sr16dev) was used to debug analyse_sr.py; it showed
+<|H|>/<[H]> = 6.6e-14 and per-mode deviations up to 1.8 percent at that early time, while
+W was still about 1e-4.
+- PS1 constraints: with the correct sign the largest <|H|>/<[H]> lies between 1e-8 and
+  1e-5 (second order, R_rms^2 ~ 1e-6 times a factor 0.01-10); the control with the sign
+  of the Pi kick flipped (N = 16) is at least 30 times larger during entry (first order).
+- PS2 per mode at the end, modes with k <= k_max/2: |R^NR_n/(L^-3/2 W R alpha) - 1| <= 2
+  percent at N = 32 and <= 5 percent at N = 16, with the gt term. Refuted otherwise; a
+  common offset of all modes would point to a factor in the kicks or the extraction, a
+  k-dependent one to dispersion or the homogeneous start.
+- PS3 gt term: rms(gt term)/rms(R^NR) at the end between 1e-4 and 5e-2; the per-mode
+  ratios with and without it differ by less than 2 percent.
+- PS4 freezing (SPEC 7.3): modes with N_f - N_k >= 5 drift by |d ln|c|^2/dN| <= 2.5e-3
+  per e-fold from N_k + 4 on, not by -4 eps1 = -0.042 (the FLRW-lattice behaviour).
+- PS5 the code's lockstep R_q agree with SciPy's integration of the same data to <= 1e-3
+  at every dump.
+- PS6 cost: N = 16 below 5 min per run; N = 32 between 30 and 60 min (one core).
