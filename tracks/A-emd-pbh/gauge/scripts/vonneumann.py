@@ -127,23 +127,24 @@ def main():
     import matplotlib.pyplot as plt
     use_style()
     fig, axs = plt.subplots(1, 2, figsize=(FULL_WIDTH, 3.2))
-    fig.subplots_adjust(left=0.08, right=0.985, bottom=0.15, top=0.95, wspace=0.28)
+    fig.subplots_adjust(left=0.10, right=0.985, bottom=0.15, top=0.95, wspace=0.30)
     ax = axs[0]
     Cs = np.linspace(0.05, 1.2, 231)
     for (name, om), col in zip(cases.items(), (SERIES[0], SERIES[1])):
         for diss, lst in ((0.0, "--"), (0.5, "-")):
             g = [max_amp(c, om, ko, diss) for c in Cs]
-            ax.plot(Cs, np.array(g) - 1.0, color=col, ls=lst,
+            ax.plot(Cs, np.maximum(np.array(g) - 1.0, 1e-14), color=col, ls=lst,
                     label=f"{name}, diss {diss}")
-    ax.axhline(0.0, **MASK_LINE)
-    ax.set_yscale("symlog", linthresh=1e-6)
+    ax.set_yscale("log")
+    ax.set_ylim(1e-14, 1e2)
     ax.set_xlabel(r"Courant number times speed, $C\,v$")
-    ax.set_ylabel(r"$\max|G| - 1$ per RK4 step")
+    ax.set_ylabel(r"$\max|G| - 1$ per RK4 step (floor $10^{-14}$)")
     ax.legend(fontsize=8, loc="upper left")
     ax = axs[1]
-    ax.plot(a_s, gmax - 1.0, color=SERIES[1])
+    ax.plot(a_s, np.maximum(gmax - 1.0, 1e-14), color=SERIES[1])
     ax.axvline(a_crit, **GUIDE)
-    ax.set_yscale("symlog", linthresh=1e-6)
+    ax.set_yscale("log")
+    ax.set_ylim(1e-14, 1e2)
     ax.set_xlabel(r"background scale factor $a$ (lapse $\alpha = a$)")
     ax.set_ylabel(r"$\max|G| - 1$, shift mode, $C=0.25$")
     for ext in ("png", "pdf"):
