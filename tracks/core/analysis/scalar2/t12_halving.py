@@ -3,7 +3,7 @@
 (the constraint ratios of the record when the amplitude is halved) at N = 32 and 64, and
 test T8 at N = 64.
 
-    python3 t12_halving.py --exe EXE --out DIR [--n 64] [--tlim 3.2] [--workers 5]
+    python3 t12_halving.py --exe EXE [--out DIR] [--n 64] [--tlim 3.2] [--workers 5]
                            [--analyse-only] [--ref32 DIR32 --ref32-s0 DIR32S0]
                            [--t8-ref32 DIRT8]
 
@@ -120,7 +120,9 @@ def window_stats(fac, lo, hi):
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--exe", required=True)
-    ap.add_argument("--out", required=True)
+    ap.add_argument("--out", default=os.environ.get("NRPIC_RUN_DIR"),
+                    help="default: $NRPIC_RUN_DIR of nrpic-run (which runs the command "
+                         "without a shell, so a literal $NRPIC_RUN_DIR is not expanded)")
     ap.add_argument("--n", type=int, default=64)
     ap.add_argument("--tlim", type=float, default=3.2)
     ap.add_argument("--workers", type=int, default=5)
@@ -129,6 +131,8 @@ def main():
     ap.add_argument("--ref32-s0", help="output of t3b_parts.py at N = 32 (run p0)")
     ap.add_argument("--t8-ref32", help="output of t8_rnr.py at N = 32")
     a = ap.parse_args()
+    if not a.out or "$" in a.out:
+        ap.error(f"--out missing or unexpanded: {a.out!r}")
     out = os.path.abspath(a.out)
     os.makedirs(out, exist_ok=True)
     args = [f"scalar_field/noise_mode_file={MODES}", f"time/tlim={a.tlim}",

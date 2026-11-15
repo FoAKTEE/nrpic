@@ -599,3 +599,10 @@ computed before):
   2.5e-12, or if C2 depends on N by more than 10 percent.
 - P8 at N = 64 as written in entry 8: largest deviation over all modes at the last dump
   between 4.4e-5 and 1.8e-4 (2.8e-3 at N = 32 divided by 16 to 64); |n| <= 2 below 5e-7.
+
+Run core-20261115-175447-764390e STOPPED after 3 minutes (no result): `nrpic-run` starts
+the command without a shell, so the argument `--out $NRPIC_RUN_DIR` reached the driver
+literally and the five runs wrote into a directory named `$NRPIC_RUN_DIR` in the
+worktree. Stopped with `nrpic-run stop`, the partial output moved to
+`scratch/core/core-20261115-175447-764390e/out_unexpanded/`, closed as stopped. The
+driver now takes the run directory from the environment and refuses an unexpanded one.
