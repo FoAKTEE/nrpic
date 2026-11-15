@@ -430,3 +430,94 @@ reruns (with the option the grey points "dump at t_n" lie on the diagonal, the r
 Figure looked at: `t2_output.png` (left: the float32 output of the diagonal component
 scatters by a few per cent of A around the double-precision curve, the off-diagonal one
 does not; right: the two waveform series against their labels, shifted by one step).
+
+### Outcome of T3 (run core-20261115-160633-7d80187, 474 s on 8 cores; analysis runs T3b core-20261115-161610-7d39f51 and T3c core-20261115-161720-07ab27e)
+
+Executable `.work/exe/athena_cpu_w1`; eight runs to conformal time 5.5 (a = 13.9, 265
+cycles; 9.6 per cent of the lattice neighbours along x have crossed), every particle kept
+in every run. Results `tracks/core/analysis/bfix/results/results_t3.json`, figure
+`figs/t3_thin_jitter.png` (looked at: the two energy-density panels are alike, with two
+dark cells beside the densest one, see P2e; the differences against the cube stay
+between 1e-14 and 3e-10 below the 1e-8 line; flat jitter histograms; constraint
+histories of the four plane-wave runs).
+
+Registration slip, on record: T3b and T3c received `results_t3.json` of T3 as a linked
+input and wrote their result file under the same name, i.e. through the link into the
+output directory of T3. That file now carries the added keys `from_dir`, `jcheck` and a
+`note`; its `ic`, `run`, `ana` parts are as T3 wrote them (a JSON round trip), and
+`meta.commit` was set back by hand to T3's commit. The driver now writes
+`results_t3_post.json` when it reads an earlier result.
+
+- P3a PASSED: for the cube the new tool and `cosmo/ic/make_east.py` give the same
+  particles (positions identical, momenta to 3.3e-16, masses to 9.1e-15 relative) and
+  fields (largest difference 8.9e-16, in psi).
+- P3b PASSED: the thin-box fields equal every layer of the cube's to 1.1e-15; the
+  thin-box particles are the cube's of the same lattice sites (positions identical,
+  momenta to 3.3e-16, masses to 7.8e-15).
+- P3c PASSED on the bound 1e-8, FAILED as written on the bound 1e-10 for the dependence
+  on z. Thin 16 x 16 x 8 and 16 x 16 x 4 against the cube, largest relative difference
+  over 12 dumps and the fields chi, alpha, Khat, Theta, At_xx, At_xy, gt_xx, gt_xy:
+  3.0e-10 and 2.7e-10, both in Theta in the first dumps (relative to its own maximum);
+  2.3e-12 for At, below 6e-13 for the others; at the end 1.3e-12. Dependence on z inside
+  a run: 2.4e-10 (thin8), 2.0e-10 (thin4) and 3.0e-10 in the cube itself, again Theta
+  early; at the end 1e-12. The cube shows the same level, so this is the rounding of
+  the scheme, not the thickness. Particles at the end against the cube's of the same
+  sites: 7.4e-14 cells in x and y, 6.6e-15 in z, momenta 3.4e-14 of the largest. Box
+  thin in x with the waves (0, 1, 0.5) against thin4 with the axes exchanged: 9.9e-13
+  (Theta), 6e-14 for chi, alpha, Khat.
+  Answer to Track B: yes; `nrpic_cosmo`, the cubic cloud with compensation, the cubic
+  spline gather and the Z4c exchange work with four cells and one MeshBlock in a
+  periodic direction (the minimum that `mesh.cpp` accepts), in z and in x.
+- P3d PASSED: 3034, 3233 and 3145 zone-cycles per processor second for 4, 8 and 16
+  layers (eight particles per cell); processor time 89 s, 168 s, 345 s: the thin4 run
+  costs 0.26 of the cube.
+- P2e PASSED except for the sign of E at the end. The `tmunu` dump in double precision
+  is finite; the single-precision dump equals it rounded (0 differing values); the
+  Hamiltonian constraint recomputed in python (gw_diag's sixth-order Ricci scalar) from
+  the double `z4c` and `tmunu` dumps of one output time equals the code's `con_H` to
+  6.5e-12, 6.8e-11 and 6.1e-10 of the largest source term 16 pi E at t = 0.51, 3.02, 5.5
+  (cube and thin4 alike), where the constraint itself is 2e-4, 2.4e-3, 3.1e-2 of that
+  term. With E replaced by E sqrt(gamma) the mismatch is 0.8 to 1.0: the dump holds E
+  itself although the run uses `source_density = true`. So the `z4c`, `tmunu` and `con`
+  dumps of one output time belong to one time level. E is positive at the first two
+  times (minimum 1.9e-2, 1.6e-4) and has a minimum of -5.2e-6 at the end (maximum
+  6.9e-4), in the two cells beside the densest one: the compensation of the cubic cloud
+  without its limiter undershoots next to the caustic (`deposit_comp_limit` exists for
+  this, cosmo/README.md). My prediction "positive where particles are" did not allow for
+  that.
+- P4a PASSED: `jitter = 0` gives files identical to a call without the option.
+- P4b PASSED: 8192 particles; x unchanged in every particle; y displacement in
+  (-0.29976, 0.29978) h, mean 0.0029 h (1.5 standard errors), rms 0.17321 h; z in
+  (-0.29995, 0.29997) h, mean 0.0020 h (1.0 standard error), rms 0.17372 h (expected
+  0.17321); correlation of the two 0.001; same seed: identical files; seed 8: different;
+  `id.json` holds jitter 0.3, axes y z, seed 7, sub-stream 16. Hamiltonian residual of
+  the tool 6.8e-12 of the largest term (plain lattice 2.4e-12).
+- P4c PASSED (T3b, T3c): the particles of the jittered thin box and of the jittered cube
+  at the same sites differ by 0 modulo the thin box, and jittered minus plain positions
+  equal the deviates of `nrpic.rng` to 4.4e-16. (Stage ic of T3 compared without the
+  periodic wrap and reported 3.0, the difference of the box lengths: an error of the
+  driver, corrected.)
+- P4d FAILED: the jittered plane wave runs to the end with every particle, but its
+  Hamiltonian residual at t = 0 is 8.73e-2 rms against 2.91e-5 for the plain lattice
+  (largest source term 16 pi E = 7.2): a factor 3000, not three. At the end 2.08e-4
+  against 5.43e-5; chi then depends on y and z by 7.3e-3 relative (plain: 7.8e-15).
+- P4e PASSED for H, FAILED narrowly for M. With the constraints solved with the code's
+  differences (`--fd-order 6`) the residual of the code at t = 0 is 1.89e-6 for the
+  jittered lattice (factor 4.6e4 down) and 3.08e-8 for the plain one (factor 944 down):
+  the reading "spectral derivatives against the code's differences" is confirmed by a
+  run in which it could have failed. The rms of M falls from 5.48e-3 to 7.27e-4, a
+  factor 7.5 (predicted: at least ten); the tool's own momentum residual there is 1.0e-3
+  from the eight modes without solution (5.2e-4 in amplitude) [that these dominate what
+  is left is JUDGEMENT: the product-rule error was not separated].
+- Not predicted, and the main thing Track B should know: the gain does not survive ten
+  steps. At t = 0.10 the jittered run that started at 1.89e-6 has H rms 6.92e-2 (the
+  spectral start: 7.38e-2), from t = 0.5 the two agree to two digits (2.03e-2, 2.06e-2),
+  at the end to three (2.075e-4, 2.077e-4). The same for the plain lattice: 3.1e-8 at
+  t = 0, 1.65e-4 at t = 0.10 (spectral start 1.73e-4). So the constraint level of these
+  runs is set by the evolution within ten steps, not by the initial data; for a noisy
+  lattice it is about one per cent of the source term at the start and falls with the
+  expansion. Cause not identified [TO VERIFY]; candidates [JUDGEMENT]: the first step has
+  no earlier deposit to extrapolate the sources from; the deposit does not obey a
+  discrete continuity equation with the code's differences, so the part of the sources
+  near the mesh frequency drives Khat and with it the term K^2 of the constraint before
+  the metric follows. `--fd-order` therefore cleans the initial slice only.

@@ -584,6 +584,9 @@ def main():
         with open(os.path.join(a.from_dir, "results_t3.json")) as f:
             res = json.load(f)
         res["from_dir"] = a.from_dir
+        # never the name of the file read: a registered run links its inputs into its
+        # directory, and writing that name would write through the link
+        resfile = os.path.join(out, "results_t3_post.json")
     elif os.path.exists(resfile):
         with open(resfile) as f:
             res = json.load(f)
