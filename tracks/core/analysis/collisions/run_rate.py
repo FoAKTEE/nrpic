@@ -193,7 +193,7 @@ def main():
 
     # figure 2: summary against temperature
     fig, axs = plt.subplots(1, 3, figsize=(8.0, 2.8))
-    fig.subplots_adjust(left=0.1, right=0.985, bottom=0.17, top=0.93, wspace=0.6)
+    fig.subplots_adjust(left=0.115, right=0.985, bottom=0.17, top=0.9, wspace=0.62)
     for mode, col, mk in (("plain", fs.PAL["blue"], "o"), ("subcycled", fs.PAL["red"], "s")):
         cs = [c for c in summary["cases"] if c["mode"] == mode]
         tt = np.array([c["theta"] for c in cs])
