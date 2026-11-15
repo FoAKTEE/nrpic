@@ -41,7 +41,9 @@ CLAUDE.md are:
 the source. Request (README.md): rebuild the processor executable from core-v0.2 before
 it is called the release executable for processors, and let the build script record the
 source commit. Until then, a processor run that sets `<z4c> damp_ch_chipow` or
-`damp_kappa_gam` gets the parameter-unused warning and the defaults.
+`damp_kappa_gam` gets the parameter-unused warning and the behaviour from before the
+option existed (the help of the interfaces package also found the constraint-statistics
+columns 17-19 missing from that executable, commit 5eda23b).
 
 Regression with these executables (`regress/`, JOURNAL.md): the card executable
 reproduces the core-v0.1 evidence of the dust collapse to round-off (horizon mass
