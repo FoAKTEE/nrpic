@@ -372,8 +372,8 @@ def p3(run_id):
                         "rel_diff": float(abs(Z["example_full_dE"][0] / Z["example_restricted_E2"][0] - 1)),
                         "full_outcome": OUT[int(Z["example_full_outcome"][0])]}
     _summary(run, "p3", S)
-    fig, axs = plt.subplots(1, 3, figsize=(fs.FULL_WIDTH, 2.9))
-    fig.subplots_adjust(left=0.07, right=0.98, bottom=0.17, top=0.96, wspace=0.32)
+    fig, axs = plt.subplots(1, 3, figsize=(fs.FULL_WIDTH, 3.1))
+    fig.subplots_adjust(left=0.07, right=0.98, bottom=0.16, top=0.91, wspace=0.32)
     cols = fs.series_colors(len(qs), cmap="viridis")
     for ax, D in ((axs[0], 1.0), (axs[1], 0.1)):
         Er = Z[f"E2_q0_D{D:g}"]
@@ -440,6 +440,7 @@ def p4(run_id):
         ax.set_title(f"M/m = {q:g}, D = 0.5, prograde, m1 = m2", fontsize=10)
         ax.set_xlabel(r"effective phase $\phi/\pi$")
         ax.set_xlim(0, 2)
+        ax.set_xticks([0, 0.5, 1, 1.5])
     axs[0].set_ylabel(r"$\Delta E$")
     axs[0].legend(fontsize=8, ncol=2)
     _save(fig, run, "fig_start_distance")
