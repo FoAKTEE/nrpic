@@ -26,8 +26,9 @@ MAX_JOBS = 16                                             # CLAUDE.md: at most 1
 
 def _ensure_converter():
     from . import tex_text as T
+    # the venv's python is a symbolic link to the system interpreter, so compare prefixes, not paths
     if T.LatexNodes2Text is None and os.path.exists(VENV_PY) and os.environ.get("KB_NO_REEXEC") != "1" \
-            and os.path.realpath(sys.executable) != os.path.realpath(VENV_PY):
+            and os.path.realpath(sys.prefix) != os.path.realpath(os.path.join(KB_DIR, ".venv")):
         kb_bin = os.path.join(KB_DIR, "bin", "kb")
         sys.stdout.flush()
         os.execv(VENV_PY, [VENV_PY, "-I", kb_bin] + sys.argv[1:])

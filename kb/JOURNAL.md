@@ -301,3 +301,23 @@ K2-P4 test_papers_ingest (synthetic store): two papers ingested; sections 1, 2, 
   kb/manifests/arxiv.tsv).
 - Existing tests of K0-K1 that hard-coded schema version 2 now use db.latest_version() and
   db.migrations(). Whole suite: 85 passed.
+
+### Prediction K2-P5: ingestion of the 47 priority-3 papers (before the run)
+
+`kb ingest arxiv --priority 3 --jobs 8` on the real store (all 47 verified ok by K1). Expected:
+0 failed; at least 40 of 47 with parse_score >= 0.75 (status ok), the rest 'review' (short
+letters, papers with few equations or unusual classes); a title from \title for at least 45
+and an abstract for at least 44; more than 2000 equation rows in total; at least 60 % of the
+bibliography entries carry an arXiv id; the fraction of distinct citation edges that stay
+inside a 47-paper corpus is small, 2 to 15 %; wall time under 10 min. Refuted by any failed
+paper whose cause is the code, or by counts outside these ranges.
+
+### Outcome of the first priority-3 run (kb-20261115-131730-b603113): wrong converter
+
+- 47 of 47 parsed, 0 failed, 41 ok, 6 review, 7.6 s. But the header says "converter stdlib":
+  the re-execution under kb/.venv never happened, because kb/.venv/bin/python is a symbolic
+  link to /usr/bin/python3.10, and the check compared real paths of the interpreters. The
+  plain text of that run is the crude standard-library conversion, and the fuzzy matcher was
+  difflib. Fixed (compare sys.prefix with kb/.venv); one unregistered check run on 2611.12831
+  confirmed "converter pylatexenc 2.11". The priority-3 ingestion is redone below; this run's
+  rows are overwritten.
