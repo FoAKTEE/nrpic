@@ -28,8 +28,8 @@ Labels: [VERIFIED] read or measured in this package (locator given), [JUDGEMENT]
 | A3 | item 3: halting tests | Track A runs them | They are acceptance tests of the mode by the track (decision 0010); the mode needs nothing more for them than isolated boundaries, which exist |
 | F1 | `pairwise-common-horizon` | ACCEPTED, done | Section 2.5 |
 | F2 | `hrna-pair-force-optional` | ACCEPTED FOR A LATER WAVE | Optional by the request; an O(N^2) pair force inside the pusher kernels is a new operator (interface rule 2 of `pusher.md`: between push and deposit) and needs F's four acceptance tests. Nothing in this package blocks it |
-| F3 | `two-card-or-larger-blocks` | ASSESSED, not started | Section 3: estimate for more than one rank; the benchmark of 32^3 MeshBlocks is prepared and waits for the card queue |
-| F4 | `release-multi-puncture` | ANSWERED | Release `core-v0.3`, tag at 609a875, is merged into main (decision 0011, rulings of 2026-11-15T15:16Z): run that tag or the executables of the main checkout. Interface corrections taken (section 2.6). Memory at `max_nmb_per_rank = 2700` with three finders: 71 GB by the measured 26.3 MB per slot (63.1 GB at 2400, `multi_puncture.md` section 5) [JUDGEMENT, linear in the slots]; a card run that measures it is prepared and waits for the queue |
+| F3 | `two-card-or-larger-blocks` | ASSESSED, not started | Section 3: estimate for more than one rank. Larger MeshBlocks need no source change; the benchmark of 32^3 MeshBlocks was prepared (`cases/card_checks.list`, cases bench16, bench32) but did not run within this package's card hour: Track F can run it with the release |
+| F4 | `release-multi-puncture` | ANSWERED | Release `core-v0.3`, tag at 609a875, is merged into main (decision 0011, rulings of 2026-11-15T15:16Z): run that tag or the executables of the main checkout. Interface corrections taken (section 2.6). Memory at `max_nmb_per_rank = 2700` with three finders: 71 GB by the measured 26.3 MB per slot (63.1 GB at 2400, `multi_puncture.md` section 5) [JUDGEMENT, linear in the slots]; the card case that measures it (mem2700) did not run within this package's card hour |
 
 ## 2. What was implemented
 
@@ -69,10 +69,12 @@ zero_mass_null`; `NrpicReportMassless`), `particles/nrpic.cpp` (`NrpicInit`: opt
 `NrpicPush`: the line that sets `eps`), `particles/nrpic_io.cpp` (`NrpicReportMassless`
 and its call in `NrpicStartup`).
 
-Open: the 250 M card run of `horizon_calib.athinput` with the corrected card
-executable (Track D's acceptance: circular orbits within 1 per cent of their areal
-radius, as in `runs/puncture/single_v3`) and the card reproduction R3, R4 are
-submitted and were still queued when this file was written; section 4.
+Card: the reproduction R3, R4 (run core-20261115-154030-5ba192a) gives the processor
+speeds to five digits; the corrected card executable keeps the circular orbit of the
+static-mesh test within the same band, 1.2e-12 M from the processor trajectory (section
+4). Open: the 250 M run of `horizon_calib.athinput` with the corrected executable is
+Track D's acceptance test (circular orbits within 1 per cent of their areal radius, as
+in `runs/puncture/single_v3`); it did not run within this package's card hour.
 
 ### 2.2 Output schedule across a restart (D2)
 
@@ -137,6 +139,14 @@ evolving spacetime E is the instantaneous value: use a sphere where the gauge ha
 settled [JUDGEMENT].
 Limit of the counter: an orbit whose radial excursion per step is below rounding (a
 circular orbit) is counted by noise; it is meant for radial and eccentric motion.
+Test T7 (`problems/tests/accretion_tracker.athinput`, `t7_tracker.py`, run
+core-20261115-163129-a200caf, re-judged in core-20261115-180101-6d165b4): sphere of
+radius 2 on the tracker of a Bowen-York puncture with momentum 0.3, 4000 particles
+crossing it both ways (1021 in, 963 out in 0.75 M): content = in - out - removed exactly
+at every record, the content counted from the snapshots equals the history, the centre
+equals the tracker position of the same time to 5.6e-17. The tracker file
+`<basename>.co_<n>.txt` labels the position of t^(n+1) with cycle n and t^n (upstream,
+`docs/FORMATS.md`).
 
 ### 2.4 External gravity in the Newtonian mode (D5 item 1, A1)
 
@@ -165,8 +175,9 @@ radius to 3e-6 and their phase to 5e-5; the background term reproduces r = r0
 orbits around the seed with comoving softening follow an independent ODE solution to
 2e-4 and the Layzer-Irvine combination C of the history is constant to 4e-5 of a|W|
 while a (K + W) changes by 0.30 of it. With the softening fixed in physical units the
-distance to the ODE solution reached 6e-3 at this step; the follow-up at half the step
-is reported in section 4.
+distance to the ODE solution reached 6e-3 at this step; at half the step every
+distance and the drift of C fall by 4.00 (second order; run core-20261115-180144-83abe17).
+C is a conservation check only for comoving softening (`newtonian_mode.md`).
 
 ### 2.5 Common horizon of a pair (F1)
 
@@ -256,8 +267,9 @@ Not started (task). Facts [VERIFIED by reading this branch]:
 - Larger MeshBlocks (Track F's option 2) need no source: `<meshblock> nx = 32` on the
   three-puncture mesh. The uniform-mesh rate is 2.0e7 zone-cycles/s against 7.7e6 to
   8.8e6 for refined 16^3 meshes (`multi_puncture.md` section 5). The benchmark on the
-  three-puncture mesh (MeshBlock-cycles per second, memory) is prepared as a card
-  case list (`tracks/core/analysis/dfix/cases/card_checks.list`) and is pending.
+  three-puncture mesh (MeshBlock-cycles per second, memory) is prepared as cases
+  bench16, bench32 of `tracks/core/analysis/dfix/cases/card_checks.list`; it did not run
+  (section 4) and needs no source: any owner can run it with the release.
   Recommendation [JUDGEMENT]: option 2 first; it costs minutes and no source, and
   halving the block count at q = 10 brings the m/16 mesh (2654 to 4544 blocks of 16^3,
   i.e. 332 to 568 of 32^3 for the same cells, more with the coarser rounding of the
@@ -265,5 +277,56 @@ Not started (task). Facts [VERIFIED by reading this branch]:
 
 ## 4. Tests of this package and their state
 
-Filled in at the end of the session: see the last entry of
-`tracks/core/JOURNAL-dfix.md` and `scratch/core/exe/core_requests-adf/READY`.
+Predictions and outcomes: `tracks/core/JOURNAL-dfix.md`. Scripts and case lists:
+`tracks/core/analysis/dfix/`; figures `tracks/core/analysis/dfix/figs/` (each looked at).
+
+| Test | What | Runs | State |
+|---|---|---|---|
+| T1 | tracer rule: reproduction (release, processors and card), regression on a static mesh | core-20261115-152835-920d573, -154030-5ba192a (card), -154303-da69f6a | passes; one timing guess failed (photon left at 15.6 M, not before 15 M) |
+| T2 | output schedule across a stop and continuation | core-20261115-154739-a7a0010 (first hook FAILED in the wall-clock case), -154901-d8ad7ec | passes with the second hook |
+| T3 | removal record, spheres, counter, lapse threshold on analytic metrics, restart | core-20261115-160245-727e96a | passes |
+| T4 | point mass, softening, background term, expanding box | core-20261115-160805-5d1663f, -162608-113493f, judged -180144-83abe17 | passes; two error bounds at dt = 0.002 failed, second-order convergence shown at half the step |
+| T5 | common horizon of a pair among three punctures | core-20261115-161025-3f75eb8 | passes on processors |
+| T6 | existing set-ups byte for byte against release core-v0.3 | core-20261115-161129-f905e98 (and its sub-runs) | passes except the stored last_time of final off-schedule outputs (correction 2, by design); prediction "no exception" failed |
+| T7 | spheres on a moving puncture tracker | core-20261115-163129-a200caf, re-judged -180101-6d165b4 | passes; the first centre check compared rows one step apart (tracker-file labelling) |
+| card | T1, T3, T4 (to t = 18) with the card executable | core-20261115-161528-ff00411 (stopped at its 50-minute limit), judged -180353-7d7116d | passes: counts equal, positions within 1.2e-12 of processors |
+| repeat | T1, T2, T3 with the published executables against their first runs | core-20261115-163155/163203/163327-0f014b4, compared -180556-eb25f13, -180814-4652cf3 | identical byte for byte once the run directory in the parameter dump is masked |
+
+Executables published for scouting runs (decision 0013):
+`scratch/core/exe/core_requests-adf/{athena_cpu,athena_gpu,COMMIT,READY}`, source
+3f75eb8 (athenak/ unchanged to the tip of the branch). Card time of the package: 0.906
+card-hours (0.068 reproduction, 0.838 card checks).
+
+Not done in this package (and why):
+- card runs of T5, T7, the memory measurement at 2700 slots, the 16^3 against 32^3
+  MeshBlock benchmark and the 250 M acceptance run of `horizon_calib.athinput`: the card
+  job holding them stopped at its limit inside the Kepler case (0.33 s per step on a
+  card, which I had not timed); the card hour of the package was used. The benchmark and
+  the acceptance run need no source change: Tracks F and D can run them with the
+  published or released executables;
+- a merger during an evolution for the pair horizon (T5 tests the trigger at t = 0);
+- the deferred items of section 1.
+
+## 5. For the integrator: lines of shared files touched (against main at b7034c9)
+
+New files: `particles/nrpic_accretion.cpp`, `particles/nrpic_external.hpp`, seven inputs
+under `problems/tests/`. Hunks in shared files (new-file line numbers of
+`git diff -U0 main...core/requests-adf`):
+- `CMakeLists.txt` (athenak/src) +140 (the new source file);
+- `driver/driver.cpp` +660-673, +676 (`Driver::Finalize`: final off-schedule output);
+- `particles/particles.hpp` +12, +22, +36-39, +41-43, +119-123, +163-193, +327,
+  +356-379, +381, +404-405 (slot `PPERI`, `NRPIC_NIDATA`, options, members, methods);
+- `particles/nrpic.cpp` +152-168 (`NrpicInit`), +292, +384, +397-402, +428, +480-482,
+  +488 (`eps`: tracer rule), +494-496, +525-528, +539-547, +550-558, +561-569,
+  +574-582 (lapse test on the analytic branches), +591-596, +606, +641-643, +665,
+  +700-709 (removal and excision);
+- `particles/nrpic_io.cpp` +979-980, +1022, +1057, +1132-1133, +1224-1228,
+  +1237-1265, +1275, +1278, +1291, +1329-1332 (snapshot block, restart block,
+  start-up report, counter slot set to zero);
+- `particles/nrpic_newton.cpp` +172-194, +205-209, +226-259 (options, `NrpicNewtonScale`,
+  `NrpicNewtonExternal`), +523-526, +546-550, +561, +617-618, +640-651, +656 (kicks,
+  potential-energy sum);
+- `z4c/fastflow.hpp` +98-100; `z4c/fastflow.cpp` +136-159 (constructor),
+  +1556-1564, +1607-1610, +1627, +1645-1647 (pair distance, masses, centre);
+- `docs/FORMATS.md` (rows of `removed.bin`, `acc.hst`, `co_<n>.txt`, the paragraph on
+  the optional blocks and the rest-mass rule); `scripts/README.md` (restart caveat).

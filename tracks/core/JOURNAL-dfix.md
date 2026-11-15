@@ -603,3 +603,9 @@ parameter dump, and the path contains the run directory; everything after `<par_
 identical. I had not thought of the path in the dump. Prediction for the second pass
 (script masks the two run-directory names): every differing file of T1, T3 and the T2
 cases u, c is equal after masking; the w cases still differ.
+
+Outcome, second pass (run core-20261115-180814-4652cf3) [VERIFIED]: T1 12 of 12 files
+identical; T3 59 of 59 identical once the run directory is masked; T2: all 13 files that
+differ outside the wall-clock cases are equal once masked, and the 13 that still differ
+all belong to the wall-clock cases (their stop times differ). As predicted: the
+published executables reproduce the first runs of T1 to T3 byte for byte.
