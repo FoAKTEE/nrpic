@@ -249,3 +249,58 @@ before the change). Single-puncture cases unchanged to all printed digits (P = 0
 and looked at: `figs/static_profile.png`, right panel: the background-rescaled
 correction lies 5 to 10 times below the uncorrected residual along the axis, the plain
 sum above it outside the punctures. [VERIFIED]
+
+### Test 1b, first attempt: failed on the block limit; what it showed
+
+- Run `core-20261115-115339-7a60df2` (P = 0.3, `approx`, finest cells 1/32, tracker radius
+  1.0 = two finest MeshBlocks, puncture on a block corner): 400 MeshBlocks at the start;
+  stopped at cycle 144 (t = 1.125) with "Number of MeshBlocks ... on new tree = 1184
+  exceeds max_nmb_per_rank = 1024". Until then: horizon found from the first search,
+  mass 1.01098 at t = 0.25 (predicted 1.011 +- 0.005: held), tracker moving along +x
+  (sign prediction held), v_x = 0.033 at t = 1.1. [VERIFIED]
+- Why the block count jumped [JUDGEMENT, not isolated by a run]: the 400-block mesh
+  exists only while the tracker sits exactly on a block corner of every level (2x2x2
+  refined parents per level). The tracker criterion refines every block whose nearest
+  point is closer than the radius; with the radius equal to a block edge the test is
+  `1 - y_t < 1`, true as soon as the round-off drift of the tracker in y and z (8e-17
+  at t = 0.5 in the tracker file) exceeds half a unit of round-off. A tracker off the
+  corner in all three directions needs 3x3x3 refined parents per level, about 190
+  leaves per level: 1184 blocks is that state, not a runaway. The diagnostic run
+  `core-20261115-115551-7a60df2` was cancelled in the queue.
+- Cost measured on the reference run `core-20261115-115342-7a60df2` (stock generator,
+  400 to 600 blocks): 4.0 cycles per second at the start, 3.4 after 800 cycles, that
+  is about 6.5e6 zone-cycles per second with 16^3 MeshBlocks (2.0e7 on a uniform mesh,
+  docs/TESTLOG.md line 46). A moving black hole with seven levels then costs about an
+  hour of card time for 40 M; my estimate before the test was five minutes.
+- Consequences [JUDGEMENT]: finest cells 1/16 instead of 1/32 for all evolved tests
+  (six levels), tracker radius 0.9 (not a multiple of the block size), block limit
+  2048, and shorter runs for tests 2 and 3 than predicted above. The 1/32 reference
+  run is stopped once it has passed t = 12 and serves as the resolution check of the
+  reference only.
+- Early observation on the reference (same run): the tracker of the stock generator
+  starts at v_x = 0.280, falls to 0.040 at t = 1.5 and rises again (0.108 at t = 7.5).
+  The prediction "moves at its velocity from t = 0" is refuted for the first M: the
+  Gamma-driver relaxes the analytic shift within 1/eta. Whether the speeds agree later
+  is still open.
+
+### Revised set-up and predictions for 1b (written before these runs)
+
+Mesh: domain +-64, root cells 2, six levels (finest 1/16 within 0.9 of the tracker),
+cells of 1/2 within 18 of the origin, extraction spheres at 12 and 16, puncture
+starting at x = -4, to t = 40. Runs: (A) P = 0.3 `approx`, (B) P = 0.3 `none`, (C)
+stock generator with v = 0.2844 and rest mass 1.0112, (D) P = 0.6 `approx` to t = 30,
+(E) P = 0.043, S = 0.3 along z, `approx` (the heavy black hole of test 3 in its own
+units).
+ - Unchanged: tracker along +x; horizon mass 1.011 +- 0.005 for (A) and constant to one
+   percent; lower by up to one percent for (B).
+ - Speed, revised after the early reference data: the tracker speed of all cases is
+   still rising at t = 20; averaged over 30 < t < 40 it lies between 0.6 and 1.05 of
+   P/M_ADM (0.284 for A, 0.498 for D with M_ADM = 1.204), and (A), (B), (C) agree
+   with each other within 15 percent over that window. Refuted by a mean outside
+   [0.17, 0.30] for (A).
+ - (E): horizon spin S = 0.30 +- 0.01 (the finder's S column) and horizon mass
+   between 1.00 and 1.05 (m + (2/5) S^2/m^3 = 1.036 is the ADM mass to second order);
+   the puncture drifts along +x at less than 0.05.
+ - Junk radiation: the energy through the sphere at 16 integrated over the run is below
+   1e-3 of the mass for (A) and (E) and larger for (B) than for (A). [JUDGEMENT]
+ - Block count stays below 2048; refuted if the block limit is hit again.
