@@ -7,9 +7,14 @@
 # z4c/lapse_leak=0.0 on the command line gives the old condition with this file.
 # Everything else as problems/ball/ball.athinput (initial data: problems/ic/make_ball.py;
 # give particles/particle_file, problem/comp0_file and particles/traj_ntrack on the
-# command line).  Choose T of several cells and at least a few tens of time steps, and
-# 6 T H below about 0.5.  Tests and numbers: tracks/core/interfaces/cosmo_gauge.md,
-# tracks/core/JOURNAL-gauge.md.
+# command line).  Choose T short against the time a gauge wave needs to cross the
+# expanding region, T <= 0.1 R/sqrt(2 alpha) (R its radius): then the central lapse
+# stays within 2 per cent of the homogeneous value; T = 0.15 R/sqrt(2 alpha) gave 3 to
+# 4 per cent, 0.3 R/sqrt(2 alpha) a dip of 13 to 20 per cent from the surface.  T down
+# to dx/8 (rate x step = 2) ran without loss; the explicit step needs
+# lapse_leak x dt below about 2.7.  Default here T = 0.5 M for this ball of 10 M (runs
+# with T = 1 M also passed).  Tests and numbers: tracks/core/interfaces/cosmo_gauge.md
+# section 7, tracks/core/JOURNAL-gauge.md entries 3 and 4.
 
 <comment>
 problem   = expanding dust ball, 1+log lapse with relaxation of its excess
@@ -54,7 +59,7 @@ lapse_harmonicf = 1.0
 lapse_harmonic  = 0.0
 lapse_volume    = 0.0
 lapse_advect    = 1.0
-lapse_leak      = 1.0      # 1/T of the relaxation of the excess lapse (0: plain 1+log)
+lapse_leak      = 2.0      # 1/T of the relaxation of the excess lapse (0: plain 1+log); T = 0.5 M
 lapse_leak_alpha = 1.0     # reference lapse
 shift_Gamma     = 0.75
 shift_eta       = 2.0

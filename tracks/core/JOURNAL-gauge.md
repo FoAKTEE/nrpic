@@ -593,3 +593,29 @@ does not depend on the resolution, as in L1); core |eps| above that of T = 0.25 
 core |eps| within 20 per cent of T = 0.25 M. Refuted if the core error of T = 0.5 M is
 below that of T = 0.25 M (then the core error at cells M/2 is set by the resolution,
 not by the start-up pulse).
+
+### Outcome of R, last part: vacuum binary with trackers (prediction of entry 1)
+
+`problems/puncture/by_binary.athinput` (two Bowen-York punctures, trackers and horizon
+finder from `puncture_setup`; small mesh: half-width 32, 32 root cells, MeshBlocks 8^3,
+five levels, 12 cycles, every output written every cycle): release processor executable
+(run core-20261115-180234-3f710a3) against this branch's `athena_cpu_b4430da`
+(core-20261115-180234-b4430da). All 19 output files identical byte for byte (14 lapse
+dumps, both tracker files, both horizon summaries, the constraint history). Confirmed:
+with the new parameters absent, the tracker path of `MakeGaugeExt` and the extra loop
+change nothing.
+
+### Outcome of P on processors (half-width 32, cells m/8, t = 10 M)
+
+Runs core-20261115-160341-b4430da (`g-p-leak1`, T = 1 M) and -160344- (`g-p-plain`).
+The tracker file, the horizon summary (19 searches, mass 1.0000 to 1.000174 in both),
+the horizon shape and the constraint history are identical byte for byte; the four lapse
+and constraint dumps differ in one byte each, the value of `lapse_leak` in the parameter
+dump of the header (offsets 1593-1599; the data parts are identical). So the lapse never
+exceeded 1 anywhere in 10 M and the term never acted. Prediction P: confirmed.
+For Track D's 500 M history (run D-bh-dress-20261115-121313-284ec4f): its `punc.nrpic.hst`
+column 30 is the largest lapse over all active cells of the mesh
+(`athenak/src/particles/nrpic_io.cpp` lines 205-238) [VERIFIED]; over 1601 records from
+t = 0 to 500 M it lies between 0.99530 and 0.99722. Since the term is exactly zero for
+alpha <= 1, that run is what `lapse_leak` would give [JUDGEMENT: the records are 0.3125
+M apart; between them the lapse would have to rise by 2.8e-3 above every recorded value].

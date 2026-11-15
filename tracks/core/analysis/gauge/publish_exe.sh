@@ -1,31 +1,39 @@
 #!/bin/bash
 # Publish the executables of branch core/gauge for the tracks' scouting runs (decision
-# 0013): builds the processor and the card executable from the committed source of this
-# worktree and copies them, with COMMIT and READY, to
+# 0013):
 #   /data/haiyangw/nrpic/scratch/core/exe/core_gauge/{athena_cpu,athena_gpu,COMMIT,READY}
-# Refuses a worktree whose athenak/ differs from HEAD.  READY is copied from
-# tracks/core/analysis/gauge/READY.md last, so that a track that waits for it finds the
-# executables complete.
+# What is published is what the tests of tracks/core/JOURNAL-gauge.md ran: the pinned
+# copies scratch/core/gauge/exe/athena_{cpu,gpu}_<SRC>, built from the source of commit
+# SRC.  The script refuses to publish if athenak/src of HEAD (or of the working tree)
+# differs from SRC.  READY is copied from tracks/core/analysis/gauge/READY.md last, so
+# that a track that waits for it finds the executables and COMMIT complete.
+#   tracks/core/analysis/gauge/publish_exe.sh [SRC]        (default b4430da)
 set -euo pipefail
 WT=/data/haiyangw/nrpic/wt/core-gauge
 DST=/data/haiyangw/nrpic/scratch/core/exe/core_gauge
+PIN=/data/haiyangw/nrpic/scratch/core/gauge/exe
+SRC=${1:-b4430da}
 cd "$WT"
-if [[ -n $(git status --porcelain -- athenak scripts) ]]; then
-  echo "ERROR: athenak/ or scripts/ differ from HEAD; commit first" >&2; exit 1
+if [[ -n $(git status --porcelain -- athenak/src) ]]; then
+  echo "ERROR: athenak/src of the working tree differs from HEAD" >&2; exit 1
 fi
-src=$(git log -1 --format=%H -- athenak/src)       # last commit that changed the source
+if [[ -n $(git diff "$SRC" HEAD -- athenak/src) ]]; then
+  echo "ERROR: athenak/src of HEAD differs from $SRC; rebuild and test first" >&2; exit 1
+fi
+src=$(git rev-parse "$SRC")
 head=$(git rev-parse HEAD)
-scripts/build_cpu.sh .work/build_cpu | tail -1
-scripts/build_gpu.sh .work/build_gpu | tail -1
 mkdir -p "$DST"
 rm -f "$DST/READY"
-cp .work/build_cpu/src/athena "$DST/athena_cpu"
-cp .work/build_gpu/src/athena "$DST/athena_gpu"
+cp "$PIN/athena_cpu_$SRC" "$DST/athena_cpu"
+cp "$PIN/athena_gpu_$SRC" "$DST/athena_gpu"
+chmod 755 "$DST/athena_cpu" "$DST/athena_gpu"
 {
   echo "branch core/gauge"
-  echo "source commit (last change of athenak/src): $src"
-  echo "HEAD at build: $head"
-  echo "built: $(date -u +%Y-%m-%dT%H:%M:%SZ) by scripts/build_cpu.sh, scripts/build_gpu.sh"
+  echo "source commit (athenak/src of the executables): $src"
+  echo "HEAD at publication (same athenak/src): $head"
+  echo "built 2026-11-15 by scripts/build_cpu.sh and scripts/build_gpu.sh (CUDA 12.6) from"
+  echo "the source of $SRC; copies of $PIN/athena_{cpu,gpu}_$SRC"
+  echo "published: $(date -u +%Y-%m-%dT%H:%M:%SZ)"
   echo "sha256 athena_cpu: $(sha256sum "$DST/athena_cpu" | cut -d' ' -f1)"
   echo "sha256 athena_gpu: $(sha256sum "$DST/athena_gpu" | cut -d' ' -f1)"
 } > "$DST/COMMIT"
