@@ -673,3 +673,7 @@ its deviation falls below 3e-7 after N = 1.2 (at least four times below 1.2e-6);
 s = 1/2 alone gives 6e-7 +- 20 percent (half of the s = 1 value). Refuted if the odd part
 keeps 1.2e-6: the floor would then be first order (an error of the evolution or of the
 linear reference of the record).
+
+Run core-20261115-184925-71663b2 FAILED at once (exit 2, no output): the analysis-only
+repeat was started without a way to point at the files of -175842-7d54ff5 (an argument
+the driver does not have). The driver now takes `--data`.

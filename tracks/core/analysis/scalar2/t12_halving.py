@@ -4,7 +4,7 @@
 test T8 at N = 64.
 
     python3 t12_halving.py --exe EXE [--out DIR] [--n 64] [--tlim 3.2] [--workers 5]
-                           [--analyse-only] [--ref32 DIR32 --ref32-s0 DIR32S0]
+                           [--analyse-only [--data DIR0]] [--ref32 DIR32 --ref32-s0 DIR32S0]
                            [--t8-ref32 DIRT8]
 
 Runs problems/scalar/sr_stochastic.athinput at N^3 (nmax2 = 64, dumps every 0.4 with the
@@ -162,6 +162,8 @@ def main():
     ap.add_argument("--tlim", type=float, default=3.2)
     ap.add_argument("--workers", type=int, default=5)
     ap.add_argument("--analyse-only", action="store_true")
+    ap.add_argument("--data", help="with --analyse-only: directory of an earlier "
+                    "execution at N (summary and figure go to --out)")
     ap.add_argument("--ref32", help="output of t23_evolve.py at N = 32")
     ap.add_argument("--ref32-s0", help="output of t3b_parts.py at N = 32 (run p0)")
     ap.add_argument("--t8-ref32", help="output of t8_rnr.py at N = 32")
@@ -180,7 +182,9 @@ def main():
         summ["wall_s"] = dict(zip([k for k, _ in SCALES],
                                   common.run_many(os.path.abspath(a.exe), cases,
                                                   a.workers)))
-    sets = {a.n: {k: os.path.join(out, k) for k, _ in SCALES}}
+    data = os.path.abspath(a.data) if (a.analyse_only and a.data) else out
+    summ["data"] = data
+    sets = {a.n: {k: os.path.join(data, k) for k, _ in SCALES}}
     if a.ref32 and a.ref32_s0:
         d32 = {k: os.path.join(os.path.abspath(a.ref32), v) for k, v in NAMES32.items()}
         d32["s0"] = os.path.join(os.path.abspath(a.ref32_s0), "p0")
