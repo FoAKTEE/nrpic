@@ -353,3 +353,16 @@ P/M_ADM over t = 10-20, 20-30, 30-40 (to +-0.02; core's M_ADM may be the full so
 1.0547 or the second order 1.0563, a 0.15 percent difference); H norm 2.3e-6 at t = 0.
 Refuted if any differs beyond these tolerances (then my readers or my reading of core's
 definitions are wrong).
+
+## 2026-11-15 E3a, outcome (run F-20261115-182100-613c9c6; output in `out/` of the run)
+
+Met [VERIFIED, `out/single_analysis.json`, figure `out/fig_single_gauge.png` read]: with
+P/M_ADM = 0.3/1.05625 (second-order ADM mass, the data on the mesh) the tracker speed ratio is
+0.480, 0.557, 0.616 over t = 10-20, 20-30, 30-40 (core: 0.48, 0.55, 0.61); horizon mass at the
+first search 1.010719 (core: 1.0107), at the end 1.010807 (first to end +8.9e-5, inside core's
+"constant to 2e-4"); <H^2>^(1/2) = 2.35e-6 at t = 0 (core: 2.3e-6). The readers and my reading
+of core's definitions agree with core's published numbers.
+Seen in the figure: the horizon mass has single-search dips of up to 1.8e-3 between t = 20 and
+36 (finder noise, not a trend); drifts are therefore read from medians over windows, not
+from single rows. The junk estimate is meaningless for this run (spheres at 10 and 14 m, run
+ends at 40 m before the window closes; flagged `complete: false`).
