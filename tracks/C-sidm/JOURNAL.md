@@ -102,3 +102,45 @@ Helper packages under review (their own journals hold their predictions and outc
   F21 b = 0.1 particle files, growth-rate pipeline, literature); G1 waits for core's tested
   executable (T0b-T12); helper journals: `scope/JOURNAL.md`, `collide/JOURNAL.md`,
   `gravothermal/JOURNAL.md`, `equilibria/JOURNAL.md`.
+
+## 2026-11-15T19:40Z  session C-sidm lead (wave 2 review)  commits 5f5767da..(this session)  runs (below)
+
+Predictions of the lead's independent rechecks, written before any of them ran. Code:
+`stage/review_wave2/` (own readers of the AthenaK files, own Maxwell-Juttner functions;
+the track's references `collide/REFERENCES/` only where TESTS.md names them).
+
+- L8 box tests (`rv_box.py`, registered outputs of runs -165500, -170155, -165902,
+  -170539, -170741, -170814, -174651): (a) T2: for all 16 runs, accepted collisions vs
+  summed sum_P |z| < 4; mean sum_P per step over (1/2) N rho0 sigma <v_Mol>(theta from
+  <W - 1> of the first snapshot) dt within 2e-4 of 1 and |z| < 4 (helper: 0.99991-1.00010);
+  (c) theta of the last snapshot equal to the first to < 1e-10. (b) T1: max |dE|/sum_MW per
+  step <= 1e-18, exactly rounded sum M W of first and last snapshot equal to the bit in all
+  T2, T1-long and T3-T5 runs. (c) T10: final snapshots of mb1, mb8, mb64, rst0-rst2 byte-
+  identical in the particle records; seed 8 differs in > 99 percent of particles. (d) T4:
+  my own quadratic fit over [0, 0.15 tau_rel] with relax.dtheta_dt of the sample's initial
+  temperatures gives slope/exact within 1 se of the helper's 0.9924, 0.9792, 0.9959,
+  1.0088. (e) T9: final class temperatures equal within 4 se in all 8 seeds; mean energy
+  drift z between 1.5 and 3.5 (helper +2.42). (f) T0b: the helper's replay on the six
+  registered dumps passes again (same numbers). (g) T11: accepted vs sum_P |z| < 2.
+  Refuted by any T2/T1/T10 criterion failing or any recomputed number differing from the
+  helper's beyond its stated precision.
+- L9 models (`rv_models.py`): (a) my reader of the 13 particle files at N = 1e5 (own cubic
+  table interpolation) gives sum m W/psi - 1 within 1e-6 of the JSON value (-2.2e-5 to
+  -4.0e-5), E/E0 <= 1 for every particle, equal masses, |sum m u_i| < 1e-15. (b) The fluid
+  onset with the Juttner Gamma_1 = 1 + 1/c_v at the energy-matched temperature, computed
+  with the verifier's Rayleigh-Ritz operator (not the models helper's FEM) and my own
+  Juttner functions, lies at Z(0) = 0.5331 +- 0.0005 for b = 0.1, and with theta = p/n at
+  0.5317 +- 0.0005; with F21's gamma = 1 + p/u at 0.6348 +- 0.0002 (V4: 0.63482). Refuted
+  if the Juttner onset differs by more than 0.002 (that would change the anchor decision).
+  (c) The rerun of validate_growth.py reproduces growth_validation.json (G1 18/18).
+- L10 threshold scan (`rv_scan.py`, histories of runs -171058, -171059-4b70228,
+  -171059-35441e3): alpha_min < 0.3 first at 72.5, 77.8, 184.3, 206.8 M (+-0.5 M, the
+  record spacing); controls keep N = 1e5 and never fall below 0.3; sum_m + m_excised +
+  m_escaped equal to the initial rest mass to < 1e-13; excised fraction 20 M after the first
+  excision 0.82-0.91; alpha_probe of the controls rises by 0.033 and 0.018 (+-0.002);
+  collisions per particle before alpha_min < 0.3 (2 n_coll/N summed) 13.4, 15.3, 2.5, 2.9
+  (+-0.2). Refuted by any number outside these bands.
+- L11 note claims (`rv_note.py`): the three differences of note/tables/claims.md are
+  confirmed from the run outputs (Table 1 B at w0 = 4.5 above 1.1e-4; fastest phase bound
+  8.5e4 < 1e5; R/M and r_core/M ranges wider than 20-26 and 1.5-2.1 for Z(0) = 0.40-0.80).
+  Refuted if the files support the lead's original wording.
