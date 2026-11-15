@@ -1,11 +1,13 @@
 #!/usr/bin/env bash
 # Card runs of the collision work package in one allocation (short jobs), by part:
 #   (from the root of the worktree)
-#   sbatch -p preempt --gres=gpu:1 -c 4 -t 00:30:00 -J core-coll -o <log> \
+#   sbatch -p preempt --gres=gpu:1 -c 2 -t 00:30:00 -J core-coll -o <log> \
 #          tracks/core/analysis/collisions/gpu_job.sh <part> <card exe> <baseline card exe>
 #   part A  regression (option absent), rate, relaxation
 #   part B  reproducibility (layouts, restart), convergence in the time step
 #   part C  homogeneous curved metric, relativistic cluster with and without collisions
+# The node has four cores in all: a job that asks for all four keeps the second card
+# idle, so ask for two.
 # Each test is a registered run (runreg.py --card); its card time is its wall time
 # inside the allocation.
 set -uo pipefail
@@ -18,7 +20,7 @@ R=tracks/core/analysis/rng
 C=tracks/core/analysis/collisions
 cd "$REPO"
 nvidia-smi -L
-export OMP_NUM_THREADS=4 OPENBLAS_NUM_THREADS=4
+export OMP_NUM_THREADS=2 OPENBLAS_NUM_THREADS=2
 
 if [[ $PART == A ]]; then
   python3 $R/runreg.py --card --kind production \
