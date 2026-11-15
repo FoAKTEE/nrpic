@@ -35,3 +35,20 @@ def test_two_temperature_rate_vs_mc():
     rng = np.random.default_rng(5)
     m, se = rate.vmol_mean_mc(0.01, 2_000_000, rng, theta_b=0.5)
     assert abs(m - rate.vmol_mean_two_temperatures(0.01, 0.5)) < 4 * se
+
+
+def test_noninvariant_relative_speed_is_refuted():
+    """T4 and T11 discriminate v_Mol from |v_a - v_b| (numbers quoted in TESTS.md)."""
+    import mj
+    import kinematics as kin
+    rng = np.random.default_rng(31)
+    N = 2_000_000
+    ua = mj.sample_u(N, 3.0, rng); ub = mj.sample_u(N, 1.0, rng)
+    dE = 0.5 * (np.sum(ub * ub, 1) - np.sum(ua * ua, 1)) / (kin.W_of(ua) + kin.W_of(ub))
+    r = (rate.vrel_noninvariant_mc(ua, ub) * dE).mean() / (kin.vmol(ua, ub) * dE).mean()
+    assert 1.22 < r < 1.31                       # 1.266 at seed 31
+    b = np.array([0.6, 0, 0]); g2 = 1 / (1 - 0.36)
+    ua = mj.sample_u_boosted(N, 1.0, b, rng); ub = mj.sample_u_boosted(N, 1.0, b, rng)
+    vm = kin.vmol(ua, ub)
+    assert abs(vm.mean() - rate.vmol_mean(1.0) / g2) < 4 * vm.std() / np.sqrt(N)
+    assert rate.vrel_noninvariant_mc(ua, ub).mean() / vm.mean() > 1.4   # 1.48

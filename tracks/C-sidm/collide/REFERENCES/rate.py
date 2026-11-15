@@ -122,3 +122,11 @@ def _speed_rule(theta, n=400):
     dens = s * u * W * np.exp(-y)
     norm = np.sum(ws * dens)
     return u, ws * dens / norm
+
+
+def vrel_noninvariant_mc(ua, ub):
+    """|v_a - v_b| (three-velocities): the non-invariant relative speed a wrong
+    implementation might use; for the tests that must refute it (TESTS.md T4, T11)."""
+    va = ua / kin.W_of(ua)[:, None]
+    vb = ub / kin.W_of(ub)[:, None]
+    return np.linalg.norm(va - vb, axis=1)

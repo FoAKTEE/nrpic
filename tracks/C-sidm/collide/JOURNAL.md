@@ -180,3 +180,14 @@ the hot slab first drops (fast particles leave first) and then overshoots, in th
 curve as well as in the run. So the Minkowski box (analytic kerr_schild with bh_mass = 0,
 periodic mesh, box away from r = 0) works with the existing code, and the T6 pipeline is
 ready for the collisional runs.
+
+## 2026-11-15 Discriminating power of T4 and T11 against a non-invariant relative speed
+
+Before writing the criteria, computed (now a reference test,
+`REFERENCES/tests/test_rate.py::test_noninvariant_relative_speed_is_refuted`, 2e6
+Monte Carlo pairs, seed 31): a collision code that used |v_a - v_b| instead of v_Mol would
+give an initial two-temperature rate 1.266 times the correct one at (theta_1, theta_2) =
+(3, 1) and 1.0008 times at (3e-3, 1e-3); in a gas at theta = 1 drifting with beta = 0.6 its
+lab-frame pair average is 0.931 against <v_Mol> = 0.628, which equals
+<v_Mol>_rest/gamma_b^2 = 0.6277 as SPEC.md section 2 requires. So T4 at theta_2 = 1 and
+T11(a) refute the wrong speed by 27 and 48 percent; T4 at theta_2 = 1e-3 cannot.
