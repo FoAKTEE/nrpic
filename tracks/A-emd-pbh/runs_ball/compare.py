@@ -475,6 +475,12 @@ def figures(a, res, ball, ex, t, tau, R, eps, Ri, grp, groups, sh, tta_num, Rmax
     import matplotlib.pyplot as plt
     from matplotlib.colors import LogNorm
     outs = []
+    # plots only: drop history records that are not finite or absurdly large (after an
+    # instability) so that log axes stay drawable
+    okc = np.all(np.isfinite(cst), axis=1) & np.all(np.abs(cst) < 1e30, axis=1)
+    cst = cst[okc]
+    okh = np.all(np.isfinite(hst[:, :16]), axis=1)
+    hst, lapse_dev, rho_dev, tau_c = hst[okh], lapse_dev[okh], rho_dev[okh], tau_c[okh]
     lab = a.label
     gcol = {}
     names = [g for g in groups if g != "sample"]
