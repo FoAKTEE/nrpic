@@ -1,0 +1,2 @@
+# nr_first E3: single puncture P/m = 0.25 at cells m/16 (eta m = 2), junk at the higher resolution
+S1 tracks/F-hills/nr_first/inputs/single_P025.athinput mesh_refinement/num_levels=8 -t 00:55:00

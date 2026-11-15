@@ -1,0 +1,3 @@
+# nr_first E3: single puncture P/m = 0.25 at cells m/8; S3 eta m = 2, S2 eta m = 0.25
+S3 tracks/F-hills/nr_first/inputs/single_P025.athinput -t 00:28:00
+S2 tracks/F-hills/nr_first/inputs/single_P025.athinput z4c/shift_eta=0.25 -t 00:28:00
