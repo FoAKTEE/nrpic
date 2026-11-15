@@ -1,0 +1,69 @@
+{
+  "schema": "nrpic-run-manifest/1",
+  "run_id": "D-20261115-171414-93fdf13",
+  "track": "D-bh-dress",
+  "gate": "G1",
+  "kind": "scouting",
+  "purpose": "nm_clumpstab: S1 clump stability at a vertex and a cell centre",
+  "preregistered_in": null,
+  "launcher": "local (hand registration)",
+  "registered_by": "hand: tracks/D-bh-dress/secondary_infall/nm_register.py, because harness/bin/nrpic-run submit refused (an untracked file of another helper in the worktree root); see the package README, Requests",
+  "command": [
+    ".venv/bin/python",
+    "tracks/D-bh-dress/secondary_infall/nm_clumpstab.py",
+    "--run",
+    "vertex + 0.05 dx:/data/haiyangw/nrpic/scratch/D-bh-dress/D-20261115-171245-a89f225",
+    "--run",
+    "cell centre + 0.05 dx:/data/haiyangw/nrpic/scratch/D-bh-dress/D-20261115-171247-cde0674"
+  ],
+  "cwd": ".",
+  "git": {
+    "sha": "93fdf13efe30a52c26b3394b719334b48f458c30",
+    "branch": "track/D-bh-dress",
+    "dirty": false,
+    "package": [
+      "tracks/D-bh-dress/secondary_infall"
+    ]
+  },
+  "code": {
+    "core_tag": "core-v0.3",
+    "problem": "nrpic_newton"
+  },
+  "env": {
+    "host": "anta",
+    "python": "3.10.12",
+    "OMP_NUM_THREADS": "1"
+  },
+  "inputs": [
+    {
+      "path": ".venv/bin/python",
+      "sha256": "d6bca2b84e73c7775a0dd5e6a76899cfe4ee62863d7c8f88513811d1fda23f49",
+      "bytes": 5937704
+    },
+    {
+      "path": "tracks/D-bh-dress/secondary_infall/nm_clumpstab.py",
+      "sha256": "c47e8c1a2c290bc0f51e5c7eec721d942ecc1aeb772be27ca228f674d281fc77",
+      "bytes": 4009
+    }
+  ],
+  "resources": {
+    "cores": 1,
+    "gpus": 0,
+    "card_hours": 0.0,
+    "walltime_s": null
+  },
+  "outputs": {
+    "dir": "scratch/D-bh-dress/D-20261115-171414-93fdf13",
+    "sha256sums": "sha256sums.txt",
+    "bytes": null
+  },
+  "status": "running",
+  "exit_code": null,
+  "started": "2026-11-15T17:14:14Z",
+  "ended": null,
+  "parents": [
+    "D-20261115-171245-a89f225",
+    "D-20261115-171247-cde0674"
+  ],
+  "notes": ""
+}
