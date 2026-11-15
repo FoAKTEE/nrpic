@@ -153,7 +153,7 @@ with open(os.path.join(OUT, "results.json"), "w") as f:
 # ------------------------------------------------------------ figure
 fs.use_style()
 fig = plt.figure(figsize=(fs.FULL_WIDTH, 3.2))
-ax = fig.add_axes([0.08, 0.15, 0.38, 0.80])
+ax = fig.add_axes([0.08, 0.15, 0.34, 0.80])
 mid = [0.5 * (s["t_first"] + s["t_last"]) for s in segs]
 ax.plot(mid, RES["v19"]["R_per_segment"], "o-", color=fs.PAL["red"], ms=4,
         label="n1e4_v19 segments (BHs + particles)")
@@ -171,7 +171,7 @@ ax.set_ylabel("MeshBlock-cycles per second")
 ax.set_ylim(0, 2600)
 ax.legend(loc="lower left", fontsize=7)
 
-ax = fig.add_axes([0.60, 0.15, 0.38, 0.80])
+ax = fig.add_axes([0.63, 0.15, 0.35, 0.80])
 cols = {(10., 6.0): fs.PAL["red"], (10., 10.0): fs.PAL["orange"], (4., 6.0): fs.PAL["blue"]}
 for key, c in cols.items():
     sel = [x for x in cases if (x["q"], x["rp"]) == key]
