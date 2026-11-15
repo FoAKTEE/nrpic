@@ -287,3 +287,27 @@ a horizon near 0.8-1.0 of the top-hat time, 13-16 t_H (tau = 9.4-10.4); if the h
 holds, no horizon and a halted pancake; (d) more likely than either, the run ends before
 tau ~ 10 with a non-positive metric determinant in the finest cells (the E1 failure).
 Outcome (d) or a crash before tau = 5 = UNDECIDED in the sense of SCOPE.md section 3.
+
+Note on T2b: the mu = 0.5 data at 32^3 (run A-emd-pbh-20261115-154740-69e8f8b, `ic_peak0.5`)
+were nearly solved (residual 4e-10 at the 60-iteration limit), unlike 64^3 (0.06): the
+stagnation of the solve worsens with resolution. T1 sweep: mu = 0.5 at eps_i = sqrt 6
+diverges (NaN) like eps_i = 0.2.
+
+## 2026-11-15, T4: feasibility of the constant-mean-curvature route with the existing
+solver (written before the run)
+
+Purpose: evidence for request 1 (DESIGN.md 2.2), not production data. Script
+`scripts/t4_cmc_route.py`: the gradient-expansion fields of MDPBH.tex:515-543 at
+eps_i = 0.2 (the paper's start), e = 0.2, 64^3, box 20/k: psi_GE = Psi (1 - q/(6 (aH)^2)),
+Ahat = psi^6 (2/5) p_ij H/(aH)^2, E from the conformally flat Hamiltonian constraint of
+psi_GE with K = -3H, momenta u_i = Shat_i/Ehat from the momentum constraint; one
+particle per cell at the cell centre (the paper's lattice, one cloud per cell), masses
+Ehat h^3/W; then `cosmo_id.solve` (unchanged) with K = -3H, started from psi = 1.
+Measure: c_CMC = max|psi - psi_GE| / max|psi_GE - 1|, the residual, the iterations.
+Predictions [JUDGEMENT]: the solve converges for mu = 0.03 and 0.5 (the linearized
+operator has sigma = (5/12) K^2 + 2 pi E > 0 and nothing large cancels on this slice);
+without the filter c_CMC is at the level of the spectral-versus-deposit difference,
+below 1e-6, since the cell-centred cloud deposits exactly; with two binomial passes and
+compensation c_CMC is of the order (kh)^4 smoothing of delta, 1e-3 to 1e-2. Refuted if
+the solve stagnates or diverges at mu = 0.5 (then the tool's iteration, not the slice,
+limits the amplitude) or if c_CMC exceeds 0.05 with the filter.
