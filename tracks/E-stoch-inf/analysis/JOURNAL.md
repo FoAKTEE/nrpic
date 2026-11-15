@@ -249,3 +249,16 @@ If RK4 truncation sets the lockstep-SciPy difference, it falls by about 16 (orde
 7.3e-4, i.e. below 1e-4 (refuted if it falls by less than 8). Decision rule for the
 per-mode residual (8.3e-5 at k <= k_max/2, no prediction of its cause): if it falls by 8
 or more it is temporal; if it changes by less than a factor 2 it is not.
+
+## 18:05 Outcome P8 (run E-20261115-175951-2e2387d): lockstep difference is the time step
+
+With half the step the lockstep-SciPy difference falls from 7.3e-4 to 4.5e-5, a factor
+16.1 (RK4, order 4): PS5's failure at N = 32 is the truncation of the lockstep integration
+at the mesh's step, not a defect, and the bound 1e-3 I set was simply too tight for the
+sub-horizon start. The per-mode residual with the gt term stays at 8.31e-5 (8.31e-5
+before), so it is not temporal. Candidate [JUDGEMENT, untested]: the float32 resolution of
+gt in the bin output. The gt term is 4.9e-3 of R; one unit in the last place of float32
+near 1 (1.2e-7) against gt - delta of about 7.5e-6 is 1.6e-2 of that term, i.e. 8e-5 of R,
+the size of the residual. Without the gt term the modes scatter by only 4e-5 about their
+common -0.48 percent offset. A double-precision gt in the dump would decide it (request
+(a) to core). <|H|>/<[H]> peak 2.138e-8 (2.066e-8 at the full step).

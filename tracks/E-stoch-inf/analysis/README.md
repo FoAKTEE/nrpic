@@ -59,21 +59,27 @@ processor run exist (CARD, PROC = their run directories):
   A1 3.3e-15 and all tests pass with a cancellation-free reference; 9.8e-11 (fails 1e-11)
   with the reference as it is. The defect is in `noise/ref/noise_ref.py`, not in the
   code. [VERIFIED by run]
-- Slow-roll scouting case, N = 16 (E-20261115-172349-0bdb97d): see below.
+- Slow-roll scouting case, N = 16 and 32 (E-20261115-172349-0bdb97d,
+  E-20261115-172347-a297a96): see below.
 
 ## What the release executable can and cannot do for the slow-roll case
 
-Can [VERIFIED by run E-20261115-172349-0bdb97d, N = 16, one realisation]: start from the
-homogeneous slice (`id = flrw`) 1.5 e-folds before the lowest mode reaches the window
-(W(k_min) = 3.6e-7 there) and let the Mukhanov-Sasaki sources (level 0, stencil projector,
-geodesic slicing) bring every mode in. At ln a = 7.8 the extracted R^NR equals the code's
-linear prediction L^-3/2 W_q R_q alpha_n mode by mode to 8.3e-5 for k <= k_max/2 (3.9e-3
-for all modes); super-horizon modes freeze (largest drift 3.3e-4 per e-fold from N_k + 4,
-against 2.5e-3 of SPEC 7.3 and -4 eps1 = -0.042 of an FLRW lattice); <|H|>/<[H]> peaks at
-2.1e-8 (second order, R_rms ~ 1.5e-3) and the negative control is 610 times larger; the
-lockstep mode functions agree with SciPy to 7.3e-4. The cost of the workaround is the
-extra 1.5 e-folds of steps (about 20 percent of an 8-e-fold run). N = 32 (run
-E-20261115-172347-a297a96) is listed under pending until it finishes.
+Can [VERIFIED by runs E-20261115-172349-0bdb97d (N = 16, with control) and
+E-20261115-172347-a297a96 (N = 32); one realisation each]: start from the homogeneous
+slice (`id = flrw`) 1.5 e-folds before the lowest mode reaches the window (W(k_min) =
+3.6e-7 there) and let the Mukhanov-Sasaki sources (level 0, stencil projector, geodesic
+slicing) bring every mode in. At ln a = 7.8 the extracted R^NR equals the code's linear
+prediction L^-3/2 W_q R_q alpha_n mode by mode to 8.3e-5 (N = 16) and 1.0e-4 (N = 32) for
+k <= k_max/2 (3.9e-3 and 3.8e-3 for all modes); super-horizon modes freeze (largest drift
+3.3e-4 and 3.4e-4 per e-fold from N_k + 4, against 2.5e-3 of SPEC 7.3 and -4 eps1 = -0.042
+of an FLRW lattice); <|H|>/<[H]> peaks at 2.1e-8 (second order, R_rms ~ 1.5e-3) and the
+negative control is 610 times larger (N = 16); rms M/rms [M] peaks at 2.2e-3 (first order
+in R, as PRD_v2.tex:746 expects) and 0.3 in the control. The lockstep mode functions
+differ from SciPy's integration of the same data by 7.3e-4 (N = 16) and 1.4e-3 (N = 32),
+made while the modes are deep inside the horizon (half-step test: journal P8). The cost
+of the workaround is the extra 1.5 e-folds of steps (about 20 percent of an 8-e-fold
+run); N = 32 took 35 min on one core. This is a scouting statement at reduced N with a
+quadratic potential in code units, not the 256^3 reproduction of 2512.14649.
 
 Cannot (or not without help):
 1. The perturbed initial slice at N* of SPEC 5.3 (request R8): the exact set-up of
@@ -103,7 +109,6 @@ Cannot (or not without help):
   P1-P4, P6 of the journal. Close with `harness/bin/nrpic-run finish <run_id>`.
 - Processor run E-20261115-170727-d15df12 (U2 at the base size, about 98 min, then U4
   about 50 min): A12 on processors and the reference of A14.
-- N = 32 slow-roll run E-20261115-172347-a297a96, unless finished below.
 
 ## Requests
 
