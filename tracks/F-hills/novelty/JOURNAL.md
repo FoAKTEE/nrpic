@@ -108,3 +108,15 @@ Run B, final `F-hills-20261115-045438-f62d553` (results `results/cost_...json`, 
   of about 2400). q = 4, a_b = 20 r_gb, r_p = 6 r_g: 11.9, 30.6, 74.9. The block model
   (+380 MeshBlocks per level, +150 for the larger domain) is a JUDGEMENT taken from core's
   interface note (190 leaves per level and hole), not measured for these configurations.
+
+## 2026-11-15 outcome of P1 (novelty search)
+
+P1 held in its stated form: no full-NR Hills encounter (binary separated by a heavier hole
+on a near-parabolic orbit) and no full-GR matter binary passing a black hole were found
+(`NOVELTY.md`, `search/SEARCH_LOG.md`, 25 INSPIRE queries 04:33 to 04:56 UTC-8, 7 web
+queries). Near misses as foreseen: equal-mass three-body NR with binary disruption
+(0710.0879, 0711.1165) and exchange (2505.03934); one not foreseen: 2406.11985 evolves a
+binary on a bound orbit about a heavier hole (8:1:1, 18:1:1), outside its tidal radius
+(D/r_t = 4.1, 5.8 by run A). Its authors state the intention to continue to 128:1:1, so
+the novelty window may be short. Web-engine summaries were used only to find candidates;
+each statement in NOVELTY.md was checked in the source or the INSPIRE abstract.
