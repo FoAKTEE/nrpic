@@ -86,7 +86,8 @@ python3 -I kb/bin/kb eq --list-tags ; python3 -I kb/bin/kb eq --apply-tags [--pa
 ```
 
 - `kb search` fuses the BM25 ranking of `chunks_fts` and the cosine ranking of the chunk
-  vectors by reciprocal rank (k = 60, 100 candidates from each); every hit carries paper,
+  vectors by reciprocal rank (k = 10, 100 candidates from each; k = 10 rather than the usual 60
+  after test E7 of `tracks/kb/embed/JOURNAL.md`); every hit carries paper,
   version, kind, section, the character range in `build/tex/<id>/flat.tex` and the source file
   and lines (through `sourcemap.json`). `--text-only` needs the standard library only; vector and
   hybrid search re-execute under `kb/.venv` and load the model (about 5 s).
@@ -104,7 +105,21 @@ python3 -I kb/bin/kb eq --list-tags ; python3 -I kb/bin/kb eq --apply-tags [--pa
 it: `kb eq --apply-tags` (seconds), `kb embed` (only the new or changed rows; orphaned vectors
 are deleted), `kb embed --check`, `kb snapshot`.
 
-## Measured
+## Measured (snapshot kb-20261115-621430e; runs and predictions in `tracks/kb/embed/JOURNAL.md`)
 
-Runs and outcomes in `tracks/kb/embed/JOURNAL.md` (tests E1-E5); the retrieval test of the ten
-questions is `tracks/kb/embed/questions10.yaml` with `tracks/kb/embed/scripts/eval_questions.py`.
+| What | Result | Run |
+|---|---|---|
+| Vectors | 43398 chunks, 54259 equations; 0 missing, stale or orphaned | kb-20261115-153805-e164901, kb-20261115-163855-5aca10c |
+| Throughput (12 threads, loaded machine) | 28.8 chunks/s, 25.9 equations/s; 60 min for the whole corpus | kb-20261115-153805-e164901 |
+| Truncated at 512 word pieces | 23.2 % of chunks, 14.3 % of equation strings | same |
+| Ten questions, locator in the top 10, whole corpus | hybrid 5, text 4, vector 4 (MRR 0.21, 0.35, 0.24) | kb-20261115-164540-5aca10c |
+| K9 golden set (32, slack 5 lines) | hybrid 23, text 21, vector 17 (MRR 0.49, 0.50, 0.30) | kb-20261115-164558-5aca10c |
+| Equation lookups by label with `--paper` | 6 of 6 in every mode; hybrid ranks 1, 1, 1, 2, 4, 2 | kb-20261115-164540-5aca10c |
+| Fusion constant | k = 10 chosen on the K9 set (23 against 21 for k = 60), 5 against 4 on the held-out ten | kb-20261115-164430-5aca10c |
+| Latency of one `kb search` | hybrid 9.5 s and 0.73 GB (model load), `--text-only` 0.1 s | JOURNAL, E4b |
+
+Reading [JUDGEMENT]: vectors find answers that BM25 misses (and the reverse), so hybrid answers
+one or two more questions per set, but its first places are less often right than BM25's; use
+`--text-only` when the words of the answer are known, hybrid when they are not. Four of the ten
+questions are missed by every mode although their chunks exist; finer chunks or a second
+vector per long chunk are the next things to try (not done).

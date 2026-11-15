@@ -166,9 +166,10 @@ def test_eq_tags_and_search(store, monkeypatch, capsys):
 
 
 def test_rrf_and_fts_query():
-    f = S.rrf({"a": [1, 2, 3], "b": [3, 1]})
+    f = S.rrf({"a": [1, 2, 3], "b": [3, 1]}, k0=60)
     assert f[1][0] == pytest.approx(1 / 61 + 1 / 62) and f[3][0] == pytest.approx(1 / 63 + 1 / 61)
     assert f[2][0] == pytest.approx(1 / 62) and f[1][1] == {"a": 1, "b": 2}
+    assert S.K_RRF == 10 and S.rrf({"a": [7]})[7][0] == pytest.approx(1 / 11)     # default of kb search
     assert S.fts_query("What is the order of the shape functions?") == '"order" OR "shape" OR "functions"'
     assert S.fts_query("the of a") is None
     # normalized like the stored tex_norm (spaces removed), then cut into FTS5 unicode61 runs
@@ -245,6 +246,20 @@ def test_real_model_offline():
     v = emb.encode(["first-order cloud-in-cell deposition"], query=True)
     assert v.shape == (1, 384) and abs(float((v[0] ** 2).sum()) - 1) < 1e-5
     assert emb.n_tokens(["a b c"]) == [5]
+
+
+def test_locator_without_source_map(tmp_path):
+    """A paper whose sourcemap.json is empty (PDF only) or missing gets no line locator."""
+    from kbtool.paths import Layout
+    lay = Layout(home=str(tmp_path), data=str(tmp_path), lock=str(tmp_path / "l"))
+    d = tmp_path / "build" / "tex" / "2201.03458"
+    d.mkdir(parents=True)
+    (d / "sourcemap.json").write_text("[]")
+    loc = S.Locator(lay)
+    assert loc.lines("2201.03458", 10, 20) is None and loc.lines("gr-qc/0000000", 0, 5) is None
+    (d / "sourcemap.json").write_text('[[0, "a.tex", 1, 0], [10, "a.tex", 2, 0], [30, "b.tex", 1, 0]]')
+    loc = S.Locator(lay)
+    assert loc.lines("2201.03458", 12, 25) == "a.tex:L2" and loc.lines("2201.03458", 5, 35) == "a.tex:L1-b.tex:L1"
 
 
 def test_recipes_are_stable():

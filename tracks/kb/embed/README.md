@@ -13,10 +13,23 @@ processors only, at most 16 cores. Predictions and outcomes: `JOURNAL.md` (tests
 | `questions10.yaml` | the retrieval test: ten questions with the answer locations of `stage/KB-G1/FIRST_QUESTIONS.md`, six equation lookups by label |
 | `scripts/bench_model.py` | E1 (offline load, unit vectors, ordering) and E2 (word pieces per chunk kind, throughput) |
 | `scripts/sample_tags.py` | E5: tag counts, the 2611.12831 checks, a random sample per tag for reading (sample text to scratch only) |
-| `scripts/eval_questions.py` | E4: text, vector and hybrid retrieval of `questions10.yaml` over the whole corpus |
-| `scripts/fig_bench.py`, `scripts/fig_eval.py`, `scripts/figstyle.py` | figures (project style, copied from `harness/style/figstyle.py`) |
+| `scripts/eval_questions.py` | E4/E6: text, vector and hybrid retrieval of `questions10.yaml` (or, `--set k9`, the K9 helper's 32 golden questions) over the whole corpus |
+| `scripts/fusion_study.py` | E7: weighted reciprocal-rank variants chosen on the K9 set, scored on the ten |
+| `scripts/fig_bench.py`, `scripts/fig_eval.py`, `scripts/fig_fusion.py`, `scripts/figstyle.py` | figures (project style, copied from `harness/style/figstyle.py`) |
 | `fig_e1e2_bench.{png,pdf}` | word pieces per chunk kind against the 512 limit; E1 scores |
-| `fig_e4_retrieval.{png,pdf}` | rank of the first correct chunk per question and mode; hits within the top k |
+| `fig_e4_retrieval.{png,pdf}` | ten questions: rank of the first correct chunk per question and mode; hits within the top k |
+| `fig_e6_retrieval_k9.{png,pdf}` | the same for the K9 helper's 32 golden questions |
+| `fig_e7_fusion.{png,pdf}` | hits in the top 10 over the fusion grid, both sets; the chosen variant outlined |
+
+## Results (details and run ids: `JOURNAL.md`, `kb/EMBEDDING.md` "Measured")
+
+- Model BAAI/bge-small-en-v1.5@5c38ec7 (MIT), fetched once, every file hash-checked, loaded
+  offline. Snapshot `kb-data/db/kb-20261115-621430e.sqlite` (`db/current`): 43398 chunk and
+  54259 equation vectors, 0 missing, stale or orphaned; 1140 equations tagged (rules v3).
+- Ten questions over the whole corpus, locator in the top 10: hybrid 5, text 4, vector 4; the
+  K9 helper's 32: hybrid 23, text 21, vector 17. Hybrid adds hits but has a lower MRR than text.
+  Prediction E4 (hybrid >= 8 of 10) and E6 were refuted; E7 set the fusion constant k = 10.
+- Tag precision on a fresh sample: 7/10 or better for all nine tags (rules v2; v1 failed for five).
 
 Code (outside this directory, in `kb/`): `kbtool/embed_model.py`, `embed_index.py`,
 `embed_search.py`, `embed_cli.py` (registered in `kbtool/cli.py`), `eq_tags.py`, `eq_search.py`,
@@ -45,10 +58,13 @@ python3 -I kb/scripts/registered_run.py --purpose "..." -- \
 python3 -I kb/scripts/registered_run.py --detach --cores 12 --purpose "..." -- \
     kb/.venv/bin/python -I kb/bin/kb embed --threads 12
 python3 -I kb/bin/kb embed --check --work ; python3 -I kb/bin/kb snapshot
-# E4
+# E4, E6, E7
 python3 -I kb/scripts/registered_run.py --cores 8 --purpose "..." -- \
-    kb/.venv/bin/python -I tracks/kb/embed/scripts/eval_questions.py '{run_dir}' --threads 8
+    kb/.venv/bin/python -I tracks/kb/embed/scripts/eval_questions.py '{run_dir}' --threads 8 [--set k9]
 kb/.venv/bin/python -I tracks/kb/embed/scripts/fig_eval.py <run_dir>/results.json tracks/kb/embed/fig_e4_retrieval
+python3 -I kb/scripts/registered_run.py --cores 8 --purpose "..." -- \
+    kb/.venv/bin/python -I tracks/kb/embed/scripts/fusion_study.py '{run_dir}' --threads 8
+kb/.venv/bin/python -I tracks/kb/embed/scripts/fig_fusion.py <run_dir>/fusion.json tracks/kb/embed/fig_e7_fusion
 ```
 
 ## Requests
@@ -73,9 +89,17 @@ kb/.venv/bin/python -I tracks/kb/embed/scripts/fig_eval.py <run_dir>/results.jso
    this package covers what existed at its start only.
 4. **kb lead: migration numbers.** `0006_embeddings_k4.sql` is applied to `kb.sqlite`; the next
    free number is 0007.
-5. **kb lead / QA helper: golden questions.** `questions10.yaml` and the hit rule of
-   `scripts/eval_questions.py` (chunk of the right paper whose source lines overlap the locator)
-   can seed `kb/golden/questions.yaml` of K9.
+5. **kb lead / QA helper: golden questions.** `questions10.yaml` (no slack) can join the K9
+   set (`kbtool/qa_golden.py`); `scripts/eval_questions.py --set k9` scores that set in all
+   three modes. The `IndexError` of `embed_search.Locator.lines` on an empty `sourcemap.json`
+   (PDF-only papers), which `qa_report.c7_retrieval` guards against, is fixed in
+   `embed_search.py` (test `test_locator_without_source_map`); the guard can go.
 6. **kb lead: code chunks.** The 157184 code chunks have no vectors (brief 12.6 names code
-   chunks too); `kb search --kind code` is BM25 only through `kb code`. Embedding them would
-   take about 1.5 hours on 12 threads; worth it only if code questions miss by text.
+   chunks too); `kb search --kind code` is BM25 only through `kb code`. At the measured 26-29
+   rows per second on 12 threads that would take about 1.5 hours [JUDGEMENT: extrapolated from
+   run kb-20261115-153805-e164901]; worth it only if code questions miss by text.
+7. **kb lead: retrieval quality.** Four of the ten questions (conclusions of 2611.12831, two
+   about 2609.14218, one about 2512.14649) are missed by every mode although their chunks
+   exist. Candidates, not tried: shorter chunks or one vector per 512-piece window (23 % of
+   chunks are truncated), the paper title in the chunk recipe, a reranker. Each needs the
+   retrieval sets as the test, chosen on one and checked on the other.

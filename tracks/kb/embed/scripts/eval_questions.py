@@ -37,7 +37,7 @@ def span(loc, pid, start, end):
     return a[1], a[2], b[1], b[2]
 
 
-def is_hit(sp, q):
+def is_hit(sp, q, slack=0):
     if sp is None:
         return False
     fa, la, fb, lb = sp
@@ -45,7 +45,7 @@ def is_hit(sp, q):
         return False
     lo = la if fa == q["file"] else 1
     hi = lb if fb == q["file"] else 10 ** 9
-    return any(lo <= b and a <= hi for a, b in q["lines"])
+    return any(lo <= b + slack and a - slack <= hi for a, b in q["lines"])
 
 
 def main():
@@ -54,18 +54,26 @@ def main():
     ap.add_argument("--db")
     ap.add_argument("--threads", type=int, default=8)
     ap.add_argument("--questions", default=os.path.join(os.path.dirname(HERE), "questions10.yaml"))
+    ap.add_argument("--set", default="ten", choices=("ten", "k9"),
+                    help="ten: questions10.yaml (no slack); k9: the 32 golden questions of kbtool/qa_golden.py "
+                         "(written by the K9 helper; its slack of 5 lines), questions only")
     a = ap.parse_args()
     os.makedirs(a.out, exist_ok=True)
     lay = layout()
     path = os.path.realpath(_db.open_for_read(lay, a.db))
     qs = yaml.safe_load(open(a.questions))
+    slack = 0
+    if a.set == "k9":
+        from kbtool import qa_golden
+        qs = {"questions": qa_golden.questions(), "equations": []}
+        slack = qa_golden.SLACK
     emb = E.STEmbedder(threads=a.threads)
     con = _db.connect_ro(path)
     cstore = S.VectorStore(con, emb.key, "chunk")
     estore = S.VectorStore(con, emb.key, "equation")
     loc = S.Locator(lay)
     res = {"database": path, "model": emb.key, "chunk_vectors": len(cstore), "equation_vectors": len(estore),
-           "depth": DEPTH, "questions": [], "equations": []}
+           "depth": DEPTH, "set": a.set, "slack_lines": slack, "questions": [], "equations": []}
     for q in qs["questions"]:
         row = {"id": q["id"], "paper": q["paper"], "file": q["file"], "lines": q["lines"], "modes": {}}
         for mode in MODES:
@@ -74,7 +82,7 @@ def main():
             first, paper_first, top = None, None, []
             for h in hits:
                 sp = span(loc, h["paper_id"], h["char_start"], h["char_end"])
-                hit = h["paper_id"] == q["paper"] and is_hit(sp, q)
+                hit = h["paper_id"] == q["paper"] and is_hit(sp, q, slack)
                 if hit and first is None:
                     first = h["rank"]
                 if h["paper_id"] == q["paper"] and paper_first is None:
@@ -107,7 +115,8 @@ def main():
                       "ranks": ranks}
     for key in [f"{m}/{s}" for m in MODES for s in ("corpus", "paper")]:
         ranks = [r["modes"][key]["first_hit"] for r in res["equations"]]
-        summ["eq " + key] = {"hit@10": sum(1 for x in ranks if x and x <= 10), "ranks": ranks}
+        if ranks:
+            summ["eq " + key] = {"hit@10": sum(1 for x in ranks if x and x <= 10), "ranks": ranks}
     res["summary"] = summ
     with open(os.path.join(a.out, "results.json"), "w") as f:
         json.dump(res, f, indent=1)

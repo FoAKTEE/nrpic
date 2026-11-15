@@ -9,7 +9,7 @@ context vectors together.
   content words.
 - vector: cosine between the query vector and the stored equation vectors (recipe eq-v1:
   section heading, context, tex_norm).
-- fused by reciprocal rank (k = 60); filters --tag (equations.tags_json), --paper, --group.
+- fused by reciprocal rank (embed_search.K_RRF); filters --tag (equations.tags_json), --paper, --group.
 """
 import json
 import os

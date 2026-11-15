@@ -7,7 +7,9 @@ filters --kind, --group, --paper):
 - vector: cosine between the query vector (with the model's query instruction) and the stored
   chunk vectors of one model (exhaustive, numpy).
 They are fused by reciprocal rank, score(d) = sum over rankings of 1 / (K_RRF + rank), ranks
-from 1, K_RRF = 60. A vector candidate whose stored text hash no longer matches its chunk
+from 1, K_RRF = 10 (chosen over the usual 60 on the K9 golden questions, 23 against 21 hits in
+the top 10, and confirmed on the ten held-out questions, 5 against 4; run
+kb-20261115-164430-5aca10c, tracks/kb/embed/JOURNAL.md, test E7). A vector candidate whose stored text hash no longer matches its chunk
 (re-ingested since embedding) is dropped and counted as stale.
 
 Every hit carries its locator: paper id and version, chunk kind, section number and title,
@@ -25,7 +27,7 @@ import re
 from . import db as _db
 from . import embed_index as X
 
-K_RRF = 60
+K_RRF = 10
 KINDS = {"text": ("abstract", "body", "appendix", "footnote"), "caption": ("caption",),
          "all": X.EMBED_CHUNK_KINDS}
 STOP = set("""a an the of in on at to for from by with and or is are was were be been being it its this that these
@@ -140,7 +142,7 @@ class Locator:
             p = os.path.join(self.lay.build, "tex", pid.replace("/", "_"), "sourcemap.json")
             try:
                 m = json.load(open(p))
-                self._maps[pid] = ([e[0] for e in m], m)
+                self._maps[pid] = ([e[0] for e in m], m) if m else None    # empty for PDF-only papers
             except (OSError, ValueError):
                 self._maps[pid] = None
         return self._maps[pid]

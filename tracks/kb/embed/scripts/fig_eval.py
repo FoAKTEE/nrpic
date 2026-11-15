@@ -23,8 +23,8 @@ MISS = 160
 def main(path, stem):
     r = json.load(open(path))
     fs.use_style()
-    fig = plt.figure(figsize=(fs.FULL_WIDTH, 3.4))
-    ax = fig.add_axes([0.08, 0.14, 0.52, 0.80])
+    fig = plt.figure(figsize=(fs.FULL_WIDTH, 3.6))
+    ax = fig.add_axes([0.08, 0.14, 0.52, 0.74])
     qs = r["questions"]
     x = np.arange(len(qs))
     for k, (mode, (c, m, lab)) in enumerate(STYLE.items()):
@@ -32,18 +32,17 @@ def main(path, stem):
         ax.scatter(x + (k - 1) * 0.22, y, color=c, marker=m, s=28, label=lab, zorder=3)
     ax.axhline(10.5, **fs.GUIDE)
     ax.axhspan(110, 250, color="grey", alpha=0.15, lw=0)
-    ax.text(len(qs) - 0.6, MISS, "not in top 100", ha="right", va="center", fontsize=8)
     ax.set_yscale("log")
     ax.set_ylim(0.7, 250)
     ax.set_xlim(-0.6, len(qs) - 0.4)
     ax.set_xticks(x)
-    ax.set_xticklabels([q["id"] for q in qs], rotation=0, fontsize=8)
+    ax.set_xticklabels([q["id"] for q in qs], rotation=0 if len(qs) <= 12 else 90, fontsize=8 if len(qs) <= 12 else 6)
     ax.minorticks_off()
-    ax.set_yticks([1, 2, 5, 10, 20, 50, 100])
-    ax.set_yticklabels(["1", "2", "5", "10", "20", "50", "100"])
+    ax.set_yticks([1, 2, 5, 10, 20, 50, 100, MISS])
+    ax.set_yticklabels(["1", "2", "5", "10", "20", "50", "100", "none"])
     ax.set_ylabel("rank of the first correct chunk")
-    ax.legend(loc="upper left", ncol=3, fontsize=8)
-    ax2 = fig.add_axes([0.70, 0.14, 0.28, 0.80])
+    ax.legend(loc="lower left", bbox_to_anchor=(0.0, 1.0), ncol=3, fontsize=8)
+    ax2 = fig.add_axes([0.70, 0.14, 0.28, 0.74])
     ks = np.arange(1, 21)
     for mode, (c, m, lab) in STYLE.items():
         ranks = [q["modes"][mode]["first_hit"] for q in qs]
@@ -54,7 +53,8 @@ def main(path, stem):
     ax2.set_ylabel("questions answered in the top k")
     ax2.set_ylim(0, 1.05)
     ax2.set_xlim(1, 20)
-    ax2.set_title(f"{r['chunk_vectors']} chunk vectors, whole corpus", fontsize=9)
+    ax2.set_title(f"{len(qs)} questions" + (f", slack {r['slack_lines']} lines" if r.get("slack_lines") else "")
+                  + f"\n{r['chunk_vectors']} chunk vectors", fontsize=8)
     fs.save(fig, stem)
 
 

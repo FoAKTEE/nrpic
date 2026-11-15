@@ -173,3 +173,132 @@ Every tag at 7/10 or better on a new random sample; counts of the five revised t
   z4c, `eq:transportid4` for tidal_radius). Version 3 anchors those two label patterns (four
   more regression cases; 35 tests in the file pass). Version 3 was not re-sampled: it can only
   remove tags of labels that contain the two strings inside another word.
+
+### Prediction E6 (before the run): the K9 helper's 32 golden questions under hybrid search
+
+The K9 helper wrote 32 golden questions (`kb/kbtool/qa_golden.py`, commit 2e00432; their BM25
+run reports 27/32 hits in the top 10 with a slack of 5 lines). They were written by another
+helper, so they test my search on wording I did not choose. Expected with the same hit rule:
+text-only 25-29 of 32 (my BM25 query is built differently from theirs), vector-only 20 or more,
+hybrid at least 27 and at least as many as text-only. Refuted by hybrid below 27 or below
+text-only.
+
+### Outcome E3 (run kb-20261115-153805-e164901, 12 threads, wall 3603 s)
+
+- Chunks: 43197 embedded in 1500 s (28.8/s), 0 skipped as changed, 10015 truncated (23.2 %,
+  inside the predicted 20-30 %). Equations: 54259 embedded in 2096 s (25.9/s), 0 skipped,
+  7771 truncated (14.3 %). [VERIFIED, final stats in `stdout.log` of the run]
+- The equation truncation prediction (below 5 %) is REFUTED: contexts with inline mathematics
+  and the TeX string cut into many more word pieces than the 575 characters suggested. The
+  truncated part is the end of the after-context and the TeX, which carry less of the meaning
+  than the sentence introducing the equation [JUDGEMENT]; the recipe was not changed.
+- Wall time 60 minutes, at the upper end of the predicted 25-60 (load average of the machine
+  60 during the run). The run planned at its start: papers the serving helper ingested during
+  the chunk phase have no chunk vectors yet (201 chunks missing at 16:05 UTC by
+  `kb embed --check --only chunks`, 0 stale, 0 orphaned); the incremental run below covers them.
+
+### Prediction E3b (closing incremental run, before it starts)
+
+`kb eq --apply-tags` changes only the equations of the newly ingested papers; `kb embed`
+embeds only rows that are missing (a few hundred chunks and equations), deletes no vector
+unless a paper was re-ingested meanwhile, and afterwards `kb embed --check --work` exits 0
+(0 missing, 0 stale, 0 orphaned, for chunks and equations). Refuted by any remaining missing,
+stale or orphaned row, or by re-embedding rows that did not change.
+
+### Outcome E3b (runs kb-20261115-163830-5aca10c tags, kb-20261115-163855-5aca10c embed)
+
+Holds. Tags: 212 equations changed (the new papers'), 1140 of 54259 tagged. Embed: 201 chunks
+embedded, 43197 chunks and 54259 equations unchanged, 0 orphaned. `kb embed --check --work`
+exit 0: chunks 43398 owners = 43398 vectors, equations 54259 = 54259, 0 missing, 0 stale,
+0 orphaned (`scratch/kb/embed/check_after_e3b.json`). [VERIFIED]
+
+### E4, first attempt failed (run kb-20261115-164121-5aca10c, exit 1)
+
+`IndexError` in `embed_search.Locator.lines`: the PDF-only paper 2201.03458 has an empty
+`sourcemap.json`, and a vector hit of it reached the locator. Fixed (an empty map gives no line
+locator, as a missing one does) with `test_locator_without_source_map`; 36 tests in the file pass.
+The text-only path had not met it because no BM25 hit of the earlier checks was that paper.
+
+### Outcome E4 (run kb-20261115-164204-5aca10c, snapshot kb-20261115-621430e: 43398 chunk and 54259 equation vectors)
+
+REFUTED. Locator hits in the top 10 over the whole corpus, ten questions:
+
+| mode | hit@10 | hit@1 | MRR@10 | right paper in top 10 | ranks of the first correct chunk (q01..q10; - = not in 100) |
+|---|---|---|---|---|---|
+| text (BM25) | 4 | 3 | 0.350 | 9 | 1, 2, -, 1, 1, -, -, -, -, 58 |
+| vector | 4 | 2 | 0.239 | 5 | 29, 1, 4, 47, 7, -, -, -, -, 1 |
+| hybrid (RRF k=60) | 4 | 1 | 0.179 | 7 | 7, 1, 20, 7, 2, -, -, -, -, 13 |
+
+- Predicted hybrid >= 8, each single ranking >= 6, hybrid MRR above text: all three fail. Text
+  and vector find different questions (union of their top 10s: 6 of 10); reciprocal-rank fusion
+  with k = 60 rewards chunks that both rank moderately over a chunk one ranking puts first, so
+  a first place of one ranking that the other misses (q01, q04 by text; q10 by vector) lands at
+  rank 7-13. Four questions (q06 conclusions, q07 and q08 of 2609.14218, q09 of 2512.14649) are
+  missed by every mode, although the right chunks exist with the right line ranges (checked:
+  2609.14218 has chunks at MDPBH.tex L420-461 and L1076-1124, 2512.14649 at PRD_v2.tex
+  L476-487); for q07/q08 the right paper is in the top 10 of some mode, with other chunks.
+  [VERIFIED for the numbers; the reading of the causes is JUDGEMENT]
+- Equation lookups by label: with `--paper`, 6 of 6 in the top 10 in every mode; hybrid ranks
+  1, 1, 1, 2, 4, 2 (text 2, 2, 2, 2, 8, 2; vector 2, 1, 7, 2, 1, 8). Over the whole corpus 2, 1
+  and 1 of 6 (text, vector, hybrid), as predicted fewer. Prediction for `--paper` (5 or more of
+  6) holds. [VERIFIED]
+
+### Outcome E6 (run kb-20261115-164254-5aca10c, the K9 helper's 32 questions, slack 5 lines)
+
+REFUTED as worded. Locator hits@10: text 21, vector 17, hybrid 21 (MRR 0.497, 0.304, 0.457);
+the right paper in the top 10: 27, 23, 27. Union of the text and vector top 10s: 23. The "27/32"
+of the K9 helper that my prediction took as a locator figure is the paper-level rate (their
+`qa_report.c7_retrieval` calls this `embed_search.search` in text mode; paper hits 27 here too),
+so my prediction misread their number. Hybrid equals text in hits and is below it in MRR, as
+on the ten.
+
+### Prediction E7 (fusion variants, before the run)
+
+Weighted reciprocal rank, score = 1/(k + r_text) + w/(k + r_vec), k in {5, 10, 20, 60, 100},
+w in {0, 0.25, 0.5, 0.75, 1, 1.5}, 200 candidates per ranking. Chosen on the K9 set (most hits,
+then MRR), scored on the ten (held out). Expected: the chosen variant has a small k (5-20) and
+w below 1; on K9 it reaches 22-24 hits; on the ten 5 or more (above text's 4). Refuted if the
+chosen variant gives 4 or fewer on the ten, i.e. no held-out gain over text alone.
+
+### Outcome E7 (run kb-20261115-164430-5aca10c)
+
+Mostly holds. Chosen on K9: k = 10, w = 1 (plain reciprocal rank with k = 10): K9 23 of 32
+(MRR 0.49) against 21 for k = 60 and 21 for text alone; held-out ten: 5 of 10 (MRR 0.21) against
+4 for k = 60 and 4 for text alone. The expected small k holds, the expected w below 1 does not
+(w = 0.75-1 is best for k = 5-10 on both sets); K9 23 and ten 5 are inside the predicted ranges.
+Over the grid, small k (5-10) with w 0.75-1 gives one or two more hits than k = 60 on both
+sets; every fusion with vectors has a lower MRR on the ten than text alone (0.35): vectors add
+hits at ranks 5-10 and push some first places down. The gains are one or two questions on sets
+of 32 and 10 [JUDGEMENT: a direction, not a measured size]. `kb search` and `kb eq` now fuse
+with k = 10 (`embed_search.K_RRF`); `--text-only` stays available and has the best MRR.
+
+### Prediction E4b / E6b (reruns of E4 and E6 with k = 10 and 100 candidates, for the figures)
+
+Hybrid 5 of 10 and 23 of 32 (E7 used 200 candidates, so a difference of one is possible);
+text and vector unchanged (4 and 4; 21 and 17); equations with `--paper` 6 of 6.
+
+### Outcome E4b / E6b (runs kb-20261115-164540-5aca10c, kb-20261115-164558-5aca10c)
+
+Hold. Ten questions: hybrid 5 of 10 (ranks 4, 1, 13, 4, 2, -, -, -, -, 7; MRR 0.214), text 4,
+vector 4 as before; equations with `--paper` 6 of 6 (hybrid ranks 1, 1, 1, 2, 4, 2). K9 set:
+hybrid 23 of 32 (MRR 0.491), text 21 (0.497), vector 17 (0.304); right paper in the top 10:
+hybrid 28, text 27, vector 23. Figures `fig_e4_retrieval.png`, `fig_e6_retrieval_k9.png`,
+`fig_e7_fusion.png` (looked at). Latency on the loaded machine (load average 42): hybrid
+`kb search` 9.5 s wall and 0.73 GB (torch import, model load and hash check, 43398 vectors read
+from SQLite), `--text-only` 0.1 s. [VERIFIED]
+
+## Summary of the package (16:50 UTC)
+
+- K4 built: model fetched once and hash-checked; 43398 chunk and 54259 equation vectors in
+  snapshot `kb-20261115-621430e.sqlite` (= `db/current`); `kb embed` incremental with check;
+  `kb search` hybrid, text or vector with filters and line locators.
+- K5 built: tag rules version 3 (nine tags, 1140 equations tagged, precision 7/10 or better
+  on a fresh sample for every tag under version 2), `kb eq` with TeX normalization, tags and
+  context vectors.
+- Retrieval quality is the open point: on ten questions over 701 papers hybrid finds 5 (text 4,
+  vector 4); four questions are missed by every mode. Hybrid adds one or two hits over text on
+  both sets but lowers MRR; `--text-only` remains the better first look when the words of the
+  answer are known. [JUDGEMENT]
+- Whole kb test suite: 174 passed with `NRPIC_HOME=/data/haiyangw/nrpic/wt/kb`; without it 17
+  fail (every synthetic-store test of every package: the fixture loads `unpack` from the main
+  checkout's `harness/bin/nrpic-fetch-arxiv`, which main's f9ab6c7 replaced). README Request 2.
