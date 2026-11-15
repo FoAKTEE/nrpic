@@ -3,7 +3,7 @@
 Every draw is a pure function of its key (seed, stream, entity, step, draw); for
 identical keys the functions below return the same bits as the C++ header does inside
 the code, on processors and on a card. All arguments broadcast against each other, so a
-whole array of tags or cells is drawn in one call::
+whole array of tags or cells is drawn in one call (scalars give arrays of shape (1,))::
 
     from nrpic import rng
     key = dict(seed=1, stream=rng.stream(rng.STREAM_TESTS), entity=tags, step=ncycle)
@@ -48,15 +48,24 @@ _MAX_BLOCK = 16
 
 
 def _u64(x):
-    """Unsigned 64-bit array (at least one dimension) of non-negative integers."""
-    a = np.asarray(x)
-    if a.dtype == np.uint64:
-        return np.atleast_1d(a)
-    if a.dtype == object or a.dtype.kind not in "iub":
-        return np.atleast_1d(np.array(x, dtype=np.uint64))
-    if a.dtype.kind == "i" and a.size and a.min() < 0:
-        raise ValueError("a field of a random-number key is negative")
-    return np.atleast_1d(a.astype(np.uint64))
+    """Unsigned 64-bit array (at least one dimension) of non-negative integers. A field
+    of a key is an integer by definition: floating-point values are refused."""
+    if isinstance(x, (np.ndarray, np.generic)):
+        a = np.asarray(x)
+        if a.dtype == np.uint64:
+            return np.atleast_1d(a)
+        if a.dtype.kind not in "iub":
+            raise TypeError("a field of a random-number key must be an integer")
+        if a.dtype.kind == "i" and a.size and a.min() < 0:
+            raise ValueError("a field of a random-number key is negative")
+        return np.atleast_1d(a.astype(np.uint64))
+    # Python integers and (nested) lists of them, also beyond the range of int64
+    for v in np.asarray(x, dtype=object).ravel():
+        if not isinstance(v, (int, np.integer)):
+            raise TypeError("a field of a random-number key must be an integer")
+        if v < 0:
+            raise ValueError("a field of a random-number key is negative")
+    return np.atleast_1d(np.array(x, dtype=np.uint64))
 
 
 def stream(ident, sub=0):
