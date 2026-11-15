@@ -381,3 +381,25 @@ Prediction [JUDGEMENT]: m1 and the heavy hole converge as in C0 (0.12778, 0.9960
 by reaching 400 iterations (its larger momentum distorts the horizon, and the flow constant
 m^2 = 0.0156 moves the surface slowly on 4 cells per radius), not by a non-finite value.
 Refuted if the verbose file shows another reason; then the request to core names that one.
+
+## 2026-11-15 E8, outcome (run F-20261115-182223-17ca48a; `hills.horizon_verbose_<n>.txt` of the run)
+
+[VERIFIED, read in the verbose files] All three searches start from a sphere of radius 0.125
+(members) and 1.0 (heavy hole) at cycle 4's search time t = 0.
+- m1 (horizon 0): the flow shrinks the surface for 25 iterations and settles; found at
+  iteration 30, mass 0.127780, mean radius 0.0588 (3.8 cells of 0.015625).
+- m2 (horizon 1): the same approach for 25 iterations (mass 0.1283 at iteration 23), then the
+  surface does not settle: over the last 100 of 400 iterations the mass jumps between 0.1264
+  and 0.1367 (mean 0.1285) and hmean changes sign with |hmean| up to 4.6; "Failed, reached max
+  iterations 400". No non-finite value.
+- heavy hole (horizon 2): found (as in C0).
+Prediction: met in the outcome (400 iterations, no non-finite value), FAILED in the mechanism I
+wrote: the flow is not slow; it reaches the horizon's neighbourhood as fast as for m1 and then
+oscillates by about 8 percent in mass, far above mass_tol = 1.25e-6. I name no cause; what
+differs from m1 is the momentum (P/m 0.268 against 0.234) and the position of the puncture
+relative to the cells. For P1 [JUDGEMENT]: the mean over the oscillation (0.1285) is close to
+the found value of m1 scaled by the background factors (0.12778 x 1.0273/1.0296 = 0.1275), but
+it is not a horizon; member horizon masses at m/8 may be intermittent. Request to core
+(README): a convergence test that does not require |dmass| < 1e-5 m when the surface
+oscillates on about 4 cells per radius, or advice on the flow constant; E7 shows whether the
+search succeeds later in the evolution.
