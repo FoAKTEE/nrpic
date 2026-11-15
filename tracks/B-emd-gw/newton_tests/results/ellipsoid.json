@@ -392,14 +392,14 @@
   "spread_tau_x": 2.6571268884289528e-15
  },
  "figures": [
-  "/data/haiyangw/nrpic/scratch/B-emd-gw/B-20261115-174251-3698196/ell_quadrupole.pdf",
-  "/data/haiyangw/nrpic/scratch/B-emd-gw/B-20261115-174251-3698196/ell_quadrupole.png",
-  "/data/haiyangw/nrpic/scratch/B-emd-gw/B-20261115-174251-3698196/ell_convergence.pdf",
-  "/data/haiyangw/nrpic/scratch/B-emd-gw/B-20261115-174251-3698196/ell_convergence.png",
-  "/data/haiyangw/nrpic/scratch/B-emd-gw/B-20261115-174251-3698196/ell_snapshots.pdf",
-  "/data/haiyangw/nrpic/scratch/B-emd-gw/B-20261115-174251-3698196/ell_snapshots.png",
-  "/data/haiyangw/nrpic/scratch/B-emd-gw/B-20261115-174251-3698196/ell_selfsim.pdf",
-  "/data/haiyangw/nrpic/scratch/B-emd-gw/B-20261115-174251-3698196/ell_selfsim.png"
+  "/data/haiyangw/nrpic/scratch/B-emd-gw/B-20261115-174405-af11300/ell_quadrupole.pdf",
+  "/data/haiyangw/nrpic/scratch/B-emd-gw/B-20261115-174405-af11300/ell_quadrupole.png",
+  "/data/haiyangw/nrpic/scratch/B-emd-gw/B-20261115-174405-af11300/ell_convergence.pdf",
+  "/data/haiyangw/nrpic/scratch/B-emd-gw/B-20261115-174405-af11300/ell_convergence.png",
+  "/data/haiyangw/nrpic/scratch/B-emd-gw/B-20261115-174405-af11300/ell_snapshots.pdf",
+  "/data/haiyangw/nrpic/scratch/B-emd-gw/B-20261115-174405-af11300/ell_snapshots.png",
+  "/data/haiyangw/nrpic/scratch/B-emd-gw/B-20261115-174405-af11300/ell_selfsim.pdf",
+  "/data/haiyangw/nrpic/scratch/B-emd-gw/B-20261115-174405-af11300/ell_selfsim.png"
  ],
  "F_C_baseline": 0.09464885704755792
 }
