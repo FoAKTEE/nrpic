@@ -179,7 +179,7 @@ def main():
     p.plot(en[::st], h["Pi"][::st]/pi0, "o", ms=3, mfc="none", color=fs.PAL["red"])
     p.plot(en[::st], h["K"][::st]/h["K"][0], "o", ms=3, mfc="none", color=fs.PAL["red"])
     p.set_xlabel("e-folds after $N_*$", labelpad=0)
-    p.set_ylabel("background (lines: Friedmann reference)")
+    p.set_ylabel("background (lines: reference)")
     p.legend(loc="lower left", fontsize=8)
     p = ax[0, 1]
     for k, ls in (("bg025", "-"), ("bg0125", "--")):
@@ -210,7 +210,8 @@ def main():
     p.set_yscale("log")
     p.set_xlabel("e-folds after $N_*$", labelpad=0)
     p.set_ylabel("constraint ratio")
-    p.legend(loc="lower right", bbox_to_anchor=(0.995, 0.13), fontsize=6.5, ncol=2)
+    p.set_ylim(bottom=3e-15)
+    p.legend(loc="lower right", fontsize=6.5, ncol=2)
     p = ax[1, 1]
     en = np.array([r["efolds"] for r in parts])
     for lab, cl, lbl in (("s1", fs.PAL["blue"], "$s=1$"), ("s05", fs.PAL["green"],
