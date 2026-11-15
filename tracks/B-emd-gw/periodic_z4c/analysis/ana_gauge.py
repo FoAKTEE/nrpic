@@ -137,7 +137,7 @@ def nonlinear(fig_prof, fig_grad):
     fig.subplots_adjust(left=0.08, right=0.99, bottom=0.09, top=0.94, hspace=0.25,
                         wspace=0.08)
     fig2, ax2 = plt.subplots(1, 3, figsize=(fs.FULL_WIDTH, 3.0))
-    fig2.subplots_adjust(left=0.08, right=0.99, bottom=0.16, top=0.91, wspace=0.33)
+    fig2.subplots_adjust(left=0.08, right=0.99, bottom=0.16, top=0.86, wspace=0.33)
     out = {}
     colg = {"harmonic": fs.PAL["blue"], "onelog": fs.PAL["red"],
             "conformal": fs.PAL["yellow"], "volume": fs.PAL["green"],
@@ -191,7 +191,8 @@ def nonlinear(fig_prof, fig_grad):
     ax2[0].set_xlabel("t")
     ax2[0].set_ylabel(r"max $|\partial_x\alpha|$ (N = 128)")
     ax2[0].set_ylim(0.05, 40)
-    ax2[0].legend(fontsize=5.5, loc="lower right", ncol=2)
+    h, l = ax2[0].get_legend_handles_labels()
+    fig2.legend(h, l, loc="upper center", ncol=6, fontsize=6.5, bbox_to_anchor=(0.5, 1.0))
     ax2[1].set_xlabel("t")
     ax2[1].set_ylabel("slicing identity residual")
     ax2[2].set_xlabel("t")
