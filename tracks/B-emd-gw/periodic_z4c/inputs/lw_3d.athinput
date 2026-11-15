@@ -1,0 +1,100 @@
+# Linear gravitational wave in a cubic periodic box (B-pre-1, periodic_z4c).
+# Problem generator z4c_linear_wave; see lw_x.athinput for the solution.
+# Box [-1/2, 1/2]^3 so that the origin, about which the Weyl-scalar tetrad of
+# athenak/src/z4c/z4c_calculate_weyl_scalars.cpp is built, lies at the centre.
+# Uses:
+#   (a) the metric dumps for the gw_diag package: k = (1, 0, 0) (the only directions
+#       for which the polarization tensor of the pgen is transverse, see JOURNAL.md),
+#       restart files (the only double-precision full-mesh output) every 1/16 period,
+#       binary z4c, adm, con, weyl outputs (float32) at the same times;
+#   (b) the check of the constraints of the oblique data k = (1, 1, 1).
+# Production numerics of the cosmology runs (see lw_x.athinput).
+
+<comment>
+problem   = z4c linear wave, 3D box
+
+<job>
+basename  = lw3
+
+<mesh>
+nghost    = 4
+nx1       = 32
+x1min     = -0.5
+x1max     = 0.5
+ix1_bc    = periodic
+ox1_bc    = periodic
+nx2       = 32
+x2min     = -0.5
+x2max     = 0.5
+ix2_bc    = periodic
+ox2_bc    = periodic
+nx3       = 32
+x3min     = -0.5
+x3max     = 0.5
+ix3_bc    = periodic
+ox3_bc    = periodic
+
+<meshblock>
+nx1       = 32
+nx2       = 32
+nx3       = 32
+
+<time>
+evolution  = dynamic
+integrator = rk4
+cfl_number = 0.25
+nlim       = -1
+tlim       = 2.0       # periods
+ndiag      = 100
+
+<z4c>
+lapse_oplog     = 0.0
+lapse_harmonicf = 1.0
+lapse_harmonic  = 0.3333333333333333
+lapse_advect    = 0.0
+shift_Gamma     = 0.0
+shift_eta       = 0.0
+shift_advect    = 0.0
+diss            = 0.5
+damp_kappa1     = 0.02
+damp_kappa2     = 0.0
+nrad_wave_extraction = 1      # needed for the Weyl scalar on the mesh (computed at waveform_dt)
+extraction_radius_0  = 0.3
+extraction_nlev      = 10
+waveform_dt          = 0.0625
+
+<problem>
+pgen_name = z4c_linear_wave
+amp       = 1.0e-6
+kx1       = 1.0
+kx2       = 0.0
+kx3       = 0.0
+
+<output1>
+file_type   = rst
+dt          = 0.0625
+
+<output2>
+file_type   = bin
+variable    = z4c
+dt          = 0.0625
+
+<output3>
+file_type   = bin
+variable    = adm
+dt          = 0.0625
+
+<output4>
+file_type   = bin
+variable    = con
+dt          = 0.0625
+
+<output5>
+file_type   = bin
+variable    = weyl
+dt          = 0.0625
+
+<output6>
+file_type   = hst
+data_format = %.16e
+dt          = 0.0625

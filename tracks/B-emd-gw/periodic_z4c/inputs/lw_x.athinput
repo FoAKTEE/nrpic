@@ -1,0 +1,84 @@
+# Linear gravitational wave along x1 in a periodic box (B-pre-1, periodic_z4c).
+# Problem generator z4c_linear_wave (athenak/src/pgen/tests/z4c_linear_wave.cpp):
+#   gamma_ij = delta_ij + A e_ij sin(2 pi k.x),  Atilde_ij = pi |k| A e_ij cos(2 pi k.x),
+#   alpha = chi = 1, Khat = Theta = Gamma^i = 0, beta^i = 0,
+# with k = (kx1, kx2, kx3) in cycles per unit length and e_ij the plus polarization in the
+# frame of k; for k = (1, 0, 0): e = diag(0, -1, 1). Exact solution of the linearized
+# equations: the argument becomes 2 pi (k.x - |k| t). <time> tlim is read as a number of
+# periods (the pgen multiplies it by 1/|k|).
+#
+# Production configuration of the cosmology runs (problems/cosmo/flrw.athinput):
+# nghost = 4 (sixth-order differences), RK4, Courant 0.25, Kreiss-Oliger 0.5,
+# damp_kappa1 = 0.02, conformal-time lapse, zero shift.
+# The thin directions x2, x3 have 4 cells of the same size as in x1 (set x2max = x3max
+# = 4/nx1 on the command line together with nx1, and the table slices at the cell centre 1.5/nx1).
+
+<comment>
+problem   = z4c linear wave along x1
+
+<job>
+basename  = lw
+
+<mesh>
+nghost    = 4
+nx1       = 32
+x1min     = 0.0
+x1max     = 1.0
+ix1_bc    = periodic
+ox1_bc    = periodic
+nx2       = 4
+x2min     = 0.0
+x2max     = 0.125
+ix2_bc    = periodic
+ox2_bc    = periodic
+nx3       = 4
+x3min     = 0.0
+x3max     = 0.125
+ix3_bc    = periodic
+ox3_bc    = periodic
+
+<meshblock>
+nx1       = 32
+nx2       = 4
+nx3       = 4
+
+<time>
+evolution  = dynamic
+integrator = rk4
+cfl_number = 0.25
+nlim       = -1
+tlim       = 10.0      # periods (= box crossings for k = (1,0,0))
+ndiag      = 1000
+
+<z4c>
+lapse_oplog     = 0.0
+lapse_harmonicf = 1.0
+lapse_harmonic  = 0.3333333333333333
+lapse_advect    = 0.0
+shift_Gamma     = 0.0
+shift_eta       = 0.0
+shift_advect    = 0.0
+diss            = 0.5
+damp_kappa1     = 0.02
+damp_kappa2     = 0.0
+
+<problem>
+pgen_name = z4c_linear_wave
+amp       = 1.0e-6    # 1e-8 of the upstream input puts roundoff (1e-16/dx^2) within 1e-4 of the signal
+kx1       = 1.0
+kx2       = 0.0
+kx3       = 0.0
+
+<output1>
+file_type   = tab
+variable    = z4c
+data_format = %.16e
+dt          = 0.0625
+slice_x2    = 0.046875
+slice_x3    = 0.046875
+ghost_zones = false
+
+<output2>
+file_type   = hst
+data_format = %.16e
+dt          = 0.0625

@@ -1,0 +1,194 @@
+[
+ {
+  "name": "gauge_nl_harmonic_N128",
+  "set": "gauge_nl",
+  "input": "inputs/gauge.athinput",
+  "overrides": [
+   "mesh/nx1=128",
+   "meshblock/nx1=128",
+   "mesh/x1max=1.0",
+   "mesh/x2max=0.03125",
+   "mesh/x3max=0.03125",
+   "z4c/lapse_oplog=0.0",
+   "z4c/lapse_harmonic=1.0",
+   "z4c/lapse_volume=0.0",
+   "z4c/lapse_kdriver=0.0",
+   "z4c/lapse_advect=0.0",
+   "z4c/shift_Gamma=0.0",
+   "z4c/shift_alpha2Gamma=0.0",
+   "z4c/shift_H=0.0",
+   "z4c/shift_eta=0.0",
+   "z4c/shift_advect=0.0",
+   "problem/id_file=/data/haiyangw/nrpic/scratch/B-emd-gw/ids/puregauge_N128_k1.5.bin",
+   "output1/slice_x2=0.01171875",
+   "output1/slice_x3=0.01171875",
+   "output2/slice_x2=0.01171875",
+   "output2/slice_x3=0.01171875"
+  ],
+  "extra_inputs": [
+   "/data/haiyangw/nrpic/scratch/B-emd-gw/ids/puregauge_N128_k1.5.bin"
+  ],
+  "purpose": "pure-gauge data K_xx = 1.5 sin(2 pi x), gauge harmonic: nonlinear behaviour (steepening, gauge shocks, failure time)",
+  "kind": "scouting"
+ },
+ {
+  "name": "gauge_nl_onelog_N128",
+  "set": "gauge_nl",
+  "input": "inputs/gauge.athinput",
+  "overrides": [
+   "mesh/nx1=128",
+   "meshblock/nx1=128",
+   "mesh/x1max=1.0",
+   "mesh/x2max=0.03125",
+   "mesh/x3max=0.03125",
+   "z4c/lapse_oplog=2.0",
+   "z4c/lapse_harmonic=0.0",
+   "z4c/lapse_volume=0.0",
+   "z4c/lapse_kdriver=0.0",
+   "z4c/lapse_advect=0.0",
+   "z4c/shift_Gamma=0.0",
+   "z4c/shift_alpha2Gamma=0.0",
+   "z4c/shift_H=0.0",
+   "z4c/shift_eta=0.0",
+   "z4c/shift_advect=0.0",
+   "problem/id_file=/data/haiyangw/nrpic/scratch/B-emd-gw/ids/puregauge_N128_k1.5.bin",
+   "output1/slice_x2=0.01171875",
+   "output1/slice_x3=0.01171875",
+   "output2/slice_x2=0.01171875",
+   "output2/slice_x3=0.01171875"
+  ],
+  "extra_inputs": [
+   "/data/haiyangw/nrpic/scratch/B-emd-gw/ids/puregauge_N128_k1.5.bin"
+  ],
+  "purpose": "pure-gauge data K_xx = 1.5 sin(2 pi x), gauge onelog: nonlinear behaviour (steepening, gauge shocks, failure time)",
+  "kind": "scouting"
+ },
+ {
+  "name": "gauge_nl_conformal_N128",
+  "set": "gauge_nl",
+  "input": "inputs/gauge.athinput",
+  "overrides": [
+   "mesh/nx1=128",
+   "meshblock/nx1=128",
+   "mesh/x1max=1.0",
+   "mesh/x2max=0.03125",
+   "mesh/x3max=0.03125",
+   "z4c/lapse_oplog=0.0",
+   "z4c/lapse_harmonic=0.3333333333333333",
+   "z4c/lapse_volume=0.0",
+   "z4c/lapse_kdriver=0.0",
+   "z4c/lapse_advect=0.0",
+   "z4c/shift_Gamma=0.0",
+   "z4c/shift_alpha2Gamma=0.0",
+   "z4c/shift_H=0.0",
+   "z4c/shift_eta=0.0",
+   "z4c/shift_advect=0.0",
+   "problem/id_file=/data/haiyangw/nrpic/scratch/B-emd-gw/ids/puregauge_N128_k1.5.bin",
+   "output1/slice_x2=0.01171875",
+   "output1/slice_x3=0.01171875",
+   "output2/slice_x2=0.01171875",
+   "output2/slice_x3=0.01171875"
+  ],
+  "extra_inputs": [
+   "/data/haiyangw/nrpic/scratch/B-emd-gw/ids/puregauge_N128_k1.5.bin"
+  ],
+  "purpose": "pure-gauge data K_xx = 1.5 sin(2 pi x), gauge conformal: nonlinear behaviour (steepening, gauge shocks, failure time)",
+  "kind": "scouting"
+ },
+ {
+  "name": "gauge_nl_volume_N128",
+  "set": "gauge_nl",
+  "input": "inputs/gauge.athinput",
+  "overrides": [
+   "mesh/nx1=128",
+   "meshblock/nx1=128",
+   "mesh/x1max=1.0",
+   "mesh/x2max=0.03125",
+   "mesh/x3max=0.03125",
+   "z4c/lapse_oplog=0.0",
+   "z4c/lapse_harmonic=0.0",
+   "z4c/lapse_volume=0.3333333333333333",
+   "z4c/lapse_kdriver=0.0",
+   "z4c/lapse_advect=0.0",
+   "z4c/shift_Gamma=0.0",
+   "z4c/shift_alpha2Gamma=0.0",
+   "z4c/shift_H=0.0",
+   "z4c/shift_eta=0.0",
+   "z4c/shift_advect=0.0",
+   "problem/id_file=/data/haiyangw/nrpic/scratch/B-emd-gw/ids/puregauge_N128_k1.5.bin",
+   "output1/slice_x2=0.01171875",
+   "output1/slice_x3=0.01171875",
+   "output2/slice_x2=0.01171875",
+   "output2/slice_x3=0.01171875"
+  ],
+  "extra_inputs": [
+   "/data/haiyangw/nrpic/scratch/B-emd-gw/ids/puregauge_N128_k1.5.bin"
+  ],
+  "purpose": "pure-gauge data K_xx = 1.5 sin(2 pi x), gauge volume: nonlinear behaviour (steepening, gauge shocks, failure time)",
+  "kind": "scouting"
+ },
+ {
+  "name": "gauge_nl_kdriver_N128",
+  "set": "gauge_nl",
+  "input": "inputs/gauge.athinput",
+  "overrides": [
+   "mesh/nx1=128",
+   "meshblock/nx1=128",
+   "mesh/x1max=1.0",
+   "mesh/x2max=0.03125",
+   "mesh/x3max=0.03125",
+   "z4c/lapse_oplog=0.0",
+   "z4c/lapse_harmonic=0.3333333333333333",
+   "z4c/lapse_volume=0.0",
+   "z4c/lapse_kdriver=1.0",
+   "z4c/lapse_advect=0.0",
+   "z4c/shift_Gamma=0.0",
+   "z4c/shift_alpha2Gamma=0.0",
+   "z4c/shift_H=0.0",
+   "z4c/shift_eta=0.0",
+   "z4c/shift_advect=0.0",
+   "problem/id_file=/data/haiyangw/nrpic/scratch/B-emd-gw/ids/puregauge_N128_k1.5.bin",
+   "output1/slice_x2=0.01171875",
+   "output1/slice_x3=0.01171875",
+   "output2/slice_x2=0.01171875",
+   "output2/slice_x3=0.01171875"
+  ],
+  "extra_inputs": [
+   "/data/haiyangw/nrpic/scratch/B-emd-gw/ids/puregauge_N128_k1.5.bin"
+  ],
+  "purpose": "pure-gauge data K_xx = 1.5 sin(2 pi x), gauge kdriver: nonlinear behaviour (steepening, gauge shocks, failure time)",
+  "kind": "scouting"
+ },
+ {
+  "name": "gauge_nl_onelog_gd_N128",
+  "set": "gauge_nl",
+  "input": "inputs/gauge.athinput",
+  "overrides": [
+   "mesh/nx1=128",
+   "meshblock/nx1=128",
+   "mesh/x1max=1.0",
+   "mesh/x2max=0.03125",
+   "mesh/x3max=0.03125",
+   "z4c/lapse_oplog=2.0",
+   "z4c/lapse_harmonic=0.0",
+   "z4c/lapse_volume=0.0",
+   "z4c/lapse_kdriver=0.0",
+   "z4c/lapse_advect=1.0",
+   "z4c/shift_Gamma=1.0",
+   "z4c/shift_alpha2Gamma=0.0",
+   "z4c/shift_H=0.0",
+   "z4c/shift_eta=2.0",
+   "z4c/shift_advect=1.0",
+   "problem/id_file=/data/haiyangw/nrpic/scratch/B-emd-gw/ids/puregauge_N128_k1.5.bin",
+   "output1/slice_x2=0.01171875",
+   "output1/slice_x3=0.01171875",
+   "output2/slice_x2=0.01171875",
+   "output2/slice_x3=0.01171875"
+  ],
+  "extra_inputs": [
+   "/data/haiyangw/nrpic/scratch/B-emd-gw/ids/puregauge_N128_k1.5.bin"
+  ],
+  "purpose": "pure-gauge data K_xx = 1.5 sin(2 pi x), gauge onelog_gd: nonlinear behaviour (steepening, gauge shocks, failure time)",
+  "kind": "scouting"
+ }
+]

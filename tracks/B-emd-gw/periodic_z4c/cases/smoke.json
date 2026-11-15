@@ -1,0 +1,81 @@
+[
+ {
+  "name": "smoke_gauge_onelog_gd",
+  "set": "smoke",
+  "input": "inputs/gauge.athinput",
+  "overrides": [
+   "mesh/nx1=32",
+   "meshblock/nx1=32",
+   "mesh/x1max=1.0",
+   "mesh/x2max=0.125",
+   "mesh/x3max=0.125",
+   "z4c/lapse_oplog=2.0",
+   "z4c/lapse_harmonic=0.0",
+   "z4c/lapse_volume=0.0",
+   "z4c/lapse_kdriver=0.0",
+   "z4c/lapse_advect=1.0",
+   "z4c/shift_Gamma=1.0",
+   "z4c/shift_alpha2Gamma=0.0",
+   "z4c/shift_H=0.0",
+   "z4c/shift_eta=2.0",
+   "z4c/shift_advect=1.0",
+   "problem/id_file=/data/haiyangw/nrpic/scratch/B-emd-gw/ids/puregauge_N32_k1e-06.bin",
+   "output1/slice_x2=0.046875",
+   "output1/slice_x3=0.046875",
+   "output2/slice_x2=0.046875",
+   "output2/slice_x3=0.046875",
+   "time/tlim=0.25"
+  ],
+  "extra_inputs": [
+   "/data/haiyangw/nrpic/scratch/B-emd-gw/ids/puregauge_N32_k1e-06.bin"
+  ],
+  "purpose": "smoke test: nrpic_cosmo id=file in vacuum (no particles), Gamma-driver shift",
+  "kind": "scouting"
+ },
+ {
+  "name": "smoke_lw3d",
+  "set": "smoke",
+  "input": "inputs/lw_3d.athinput",
+  "overrides": [
+   "time/tlim=0.125"
+  ],
+  "purpose": "smoke test: 3D linear wave with restart, bin and Weyl outputs",
+  "kind": "scouting"
+ },
+ {
+  "name": "smoke_awa",
+  "set": "smoke",
+  "input": "inputs/gauge.athinput",
+  "overrides": [
+   "mesh/nx1=50",
+   "meshblock/nx1=50",
+   "mesh/x1max=0.9999937498535093",
+   "mesh/x2max=0.07999949998828075",
+   "mesh/x3max=0.07999949998828075",
+   "z4c/lapse_oplog=0.0",
+   "z4c/lapse_harmonic=1.0",
+   "z4c/lapse_volume=0.0",
+   "z4c/lapse_kdriver=0.0",
+   "z4c/lapse_advect=0.0",
+   "z4c/shift_Gamma=0.0",
+   "z4c/shift_alpha2Gamma=0.0",
+   "z4c/shift_H=0.0",
+   "z4c/shift_eta=0.0",
+   "z4c/shift_advect=0.0",
+   "problem/id_file=/data/haiyangw/nrpic/scratch/B-emd-gw/ids/gaugewave_N50_A0.01.bin",
+   "time/tlim=20.0",
+   "output1/slice_x2=0.02999981249560528",
+   "output1/slice_x3=0.02999981249560528",
+   "output2/slice_x2=0.02999981249560528",
+   "output2/slice_x3=0.02999981249560528",
+   "output1/dt=0.0625",
+   "output2/dt=0.0625",
+   "time/tlim=0.25"
+  ],
+  "extra_inputs": [
+   "/data/haiyangw/nrpic/scratch/B-emd-gw/ids/gaugewave_N50_A0.01.bin"
+  ],
+  "purpose": "smoke test: gauge wave initial data in proper-length coordinates",
+  "kind": "scouting"
+ }
+]

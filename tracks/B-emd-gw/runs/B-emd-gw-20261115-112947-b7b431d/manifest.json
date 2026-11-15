@@ -1,0 +1,32 @@
+{
+ "run_id": "B-emd-gw-20261115-112947-b7b431d",
+ "name": "smoke_lw3d",
+ "set": "smoke",
+ "command": "/data/haiyangw/nrpic/.work/build_cpu_c1/src/athena -i /data/haiyangw/nrpic/wt/B-emd-gw/tracks/B-emd-gw/periodic_z4c/inputs/lw_3d.athinput -d /data/haiyangw/nrpic/scratch/B-emd-gw/B-emd-gw-20261115-112947-b7b431d time/tlim=0.125",
+ "cwd": "/data/haiyangw/nrpic/scratch/B-emd-gw/B-emd-gw-20261115-112947-b7b431d",
+ "commit": "b7b431ddf4bb8550ac3e4a855d05c5a1a847f50c",
+ "worktree_dirty": true,
+ "inputs": [
+  {
+   "path": "tracks/B-emd-gw/periodic_z4c/inputs/lw_3d.athinput",
+   "sha256": "d1221b0ee732d18869c6ba9275fe03eed894d77e9d26a0eb903309722947ec84"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/.work/build_cpu_c1/src/athena",
+   "sha256": "91f2e2c23a6301047ed4fe06ffe153d100fe6c121d0b6632087637b525547403"
+  }
+ ],
+ "output_dir": "/data/haiyangw/nrpic/scratch/B-emd-gw/B-emd-gw-20261115-112947-b7b431d",
+ "purpose": "smoke test: 3D linear wave with restart, bin and Weyl outputs",
+ "kind": "scouting",
+ "cores": 1,
+ "card_hours": 0.0,
+ "env": {
+  "OMP_NUM_THREADS": "1"
+ },
+ "started_utc": "2026-11-15T11:29:47+00:00",
+ "status": "done",
+ "wall_time_s": 36.4,
+ "finished_utc": "2026-11-15T11:30:23+00:00",
+ "core_hours": 0.0101
+}

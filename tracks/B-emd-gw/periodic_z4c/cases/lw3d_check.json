@@ -1,0 +1,52 @@
+[
+ {
+  "name": "lw3d_check_diag",
+  "set": "lw3d_check",
+  "input": "inputs/lw_3d.athinput",
+  "overrides": [
+   "mesh/nx1=16",
+   "mesh/nx2=16",
+   "mesh/nx3=16",
+   "meshblock/nx1=16",
+   "meshblock/nx2=16",
+   "meshblock/nx3=16",
+   "problem/kx1=1.0",
+   "problem/kx2=1.0",
+   "problem/kx3=1.0",
+   "time/tlim=1.0",
+   "output1/dt=1000.0",
+   "output2/dt=0.0625",
+   "output3/dt=1000.0",
+   "output4/dt=0.0625",
+   "output5/dt=1000.0",
+   "output6/dt=0.0625"
+  ],
+  "purpose": "constraints of the initial data of z4c_linear_wave for an oblique and an axis-aligned wave vector (polarization tensor)",
+  "kind": "scouting"
+ },
+ {
+  "name": "lw3d_check_axis",
+  "set": "lw3d_check",
+  "input": "inputs/lw_3d.athinput",
+  "overrides": [
+   "mesh/nx1=16",
+   "mesh/nx2=16",
+   "mesh/nx3=16",
+   "meshblock/nx1=16",
+   "meshblock/nx2=16",
+   "meshblock/nx3=16",
+   "problem/kx1=1.0",
+   "problem/kx2=0.0",
+   "problem/kx3=0.0",
+   "time/tlim=1.0",
+   "output1/dt=1000.0",
+   "output2/dt=0.0625",
+   "output3/dt=1000.0",
+   "output4/dt=0.0625",
+   "output5/dt=1000.0",
+   "output6/dt=0.0625"
+  ],
+  "purpose": "constraints of the initial data of z4c_linear_wave for an oblique and an axis-aligned wave vector (polarization tensor)",
+  "kind": "scouting"
+ }
+]

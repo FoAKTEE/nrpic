@@ -1,0 +1,66 @@
+[
+ {
+  "name": "lw_x_prod_N16",
+  "set": "lw_x_prod",
+  "input": "inputs/lw_x.athinput",
+  "overrides": [
+   "mesh/nx1=16",
+   "meshblock/nx1=16",
+   "mesh/x1max=1.0",
+   "mesh/x2max=0.25",
+   "mesh/x3max=0.25",
+   "output1/slice_x2=0.09375",
+   "output1/slice_x3=0.09375"
+  ],
+  "purpose": "TT wave along x for 10 crossings, production numerics: amplitude and phase error, convergence order",
+  "kind": "production"
+ },
+ {
+  "name": "lw_x_prod_N32",
+  "set": "lw_x_prod",
+  "input": "inputs/lw_x.athinput",
+  "overrides": [
+   "mesh/nx1=32",
+   "meshblock/nx1=32",
+   "mesh/x1max=1.0",
+   "mesh/x2max=0.125",
+   "mesh/x3max=0.125",
+   "output1/slice_x2=0.046875",
+   "output1/slice_x3=0.046875"
+  ],
+  "purpose": "TT wave along x for 10 crossings, production numerics: amplitude and phase error, convergence order",
+  "kind": "production"
+ },
+ {
+  "name": "lw_x_prod_N64",
+  "set": "lw_x_prod",
+  "input": "inputs/lw_x.athinput",
+  "overrides": [
+   "mesh/nx1=64",
+   "meshblock/nx1=64",
+   "mesh/x1max=1.0",
+   "mesh/x2max=0.0625",
+   "mesh/x3max=0.0625",
+   "output1/slice_x2=0.0234375",
+   "output1/slice_x3=0.0234375"
+  ],
+  "purpose": "TT wave along x for 10 crossings, production numerics: amplitude and phase error, convergence order",
+  "kind": "production"
+ },
+ {
+  "name": "lw_x_prod_N128",
+  "set": "lw_x_prod",
+  "input": "inputs/lw_x.athinput",
+  "overrides": [
+   "mesh/nx1=128",
+   "meshblock/nx1=128",
+   "mesh/x1max=1.0",
+   "mesh/x2max=0.03125",
+   "mesh/x3max=0.03125",
+   "output1/slice_x2=0.01171875",
+   "output1/slice_x3=0.01171875"
+  ],
+  "purpose": "TT wave along x for 10 crossings, production numerics: amplitude and phase error, convergence order",
+  "kind": "production"
+ }
+]

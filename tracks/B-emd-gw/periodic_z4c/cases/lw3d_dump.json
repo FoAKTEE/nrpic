@@ -1,0 +1,10 @@
+[
+ {
+  "name": "lw3d_dump_N32",
+  "set": "lw3d_dump",
+  "input": "inputs/lw_3d.athinput",
+  "overrides": [],
+  "purpose": "metric dumps of an analytic linear TT wave (k along x, A = 1e-6, 32^3, two periods, every 1/16 period) for the gw_diag package",
+  "kind": "production"
+ }
+]
