@@ -118,7 +118,7 @@ def main():
     axs[1].set_ylabel(r"pair energy defect / $\epsilon E$")
     axs[2].set_ylabel(r"relative error of $v_{\rm Mol}$")
     for ax in axs:
-        ax.set_xlabel("Lorentz factor of the pair's mean momentum")
+        ax.set_xlabel("bulk Lorentz factor of the pair")
     axs[0].legend(fontsize=7, loc="lower right")
     fig.savefig(os.path.join(out, "fig_kernel_test.png"), dpi=200)
     sys.exit(0 if summary["ok"] else 1)
