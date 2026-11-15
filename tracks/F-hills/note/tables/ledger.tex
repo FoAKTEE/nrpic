@@ -1,0 +1,85 @@
+% written by scripts/ledger.py from registered runs; do not edit
+\begin{table*}
+\caption{Ledger of the reference solutions. Energies in units of $(Gm_1m_2/a_b)(M/m_b)^{1/3}$; sources are registered runs or the file and line of a paper's text.}
+\label{tab:ledger1}
+\footnotesize
+\begin{ruledtabular}
+\begin{tabular}{p{0.44\textwidth}p{0.19\textwidth}p{0.29\textwidth}}
+Quantity & Value & Source \\ \hline
+\multicolumn{3}{l}{\emph{Scales}} \\
+plunge bound $4q^{2/3}$ on $a_b/r_{gb}$, $q=10,100,1000$ & 18.57, 86.18, 400 & \texttt{\detokenize{F-hills-20261115-045435-f62d553}} \\
+marginally bound radius and angular momentum (parabolic) & 4 $M$, 4 $M$ & \texttt{\detokenize{F-hills-20261115-045435-f62d553}} \\
+Peters time at $a_b=30\,r_{gb}$, $q=10$ & 6328 $M$ & \texttt{\detokenize{F-hills-20261115-045435-f62d553}} \\
+\multicolumn{3}{l}{\emph{Restricted Newton}} \\
+last disrupting $D$, prograde & 2.085 & \texttt{\detokenize{F-hills-20261115-133222-9cb10db}} \\
+deep-limit disruption probability, prograde & 0.807 & \texttt{\detokenize{F-hills-20261115-133222-9cb10db}} \\
+largest ejection energy, prograde & 27.15 at $D=0.1$ & \texttt{\detokenize{F-hills-20261115-133222-9cb10db}} \\
+failed integrations, prograde & 127 of 477000 & \texttt{\detokenize{F-hills-20261115-133222-9cb10db}} \\
+last disrupting $D$, retrograde & 0.405 & \texttt{\detokenize{F-hills-20261115-133222-9cb10db}} \\
+deep-limit disruption probability, retrograde & 0.801 & \texttt{\detokenize{F-hills-20261115-133222-9cb10db}} \\
+largest ejection energy, retrograde & 1.838 at $D=1e-05$ & \texttt{\detokenize{F-hills-20261115-133222-9cb10db}} \\
+failed integrations, retrograde & 92 of 477000 & \texttt{\detokenize{F-hills-20261115-133222-9cb10db}} \\
+largest disruption probability (prograde) & 0.988 at $D=0.16$ & \texttt{\detokenize{F-hills-20261115-133222-9cb10db}} \\
+printed: last disrupting $D$; largest energy; deep limit; best $D$ & 2.1/0.44; 27.3/1.8; about 0.8; 0.15 & arXiv:0911.1136 prp.tex:735-738, 846-849, 854 \\
+against the digitised curve: median, largest $|\Delta P|$, prograde & 0.0014, 0.037 at $D=2.07$ & \texttt{\detokenize{F-hills-20261115-132703-0bfc352}} \\
+retrograde, bound binaries wider than $3.5\,a_b$ counted as disrupted: largest $|\Delta P|$ against the digitised curve, last disrupting $D$ & 0.0088, 0.445 & \texttt{\detokenize{F-hills-20261115-132942-2f7ad7f}} \\
+against the digitised curve: largest $|\Delta P|$, retrograde & 0.21 at $D=0.418$ & \texttt{\detokenize{F-hills-20261115-132703-0bfc352}} \\
+isotropic orientations, $D\le1$: largest fractional deviation from the published fit, probability and mean energy & 0.015, 0.017 (512 orientations $\times$ 64 phases) & \texttt{\detokenize{F-hills-20261115-133200-05ee76a}} \\
+printed: plateau of the isotropic probability; accuracy of the fits for $D\lesssim1$ & about 0.88; 1\% & arXiv:1804.02911 mnras.tex:368, 377, 440 \\
+independent code, nine points: largest $|\Delta P|$, $|\Delta E|/E$ & 0.021, 0.079 (retrograde $D=0.38$) & \texttt{\detokenize{F-hills-20261115-145246-090f5dc}} \\
+the same at retrograde $D=0.3, 0.38$, wide binaries followed on & 0.0013, 0.0035 & \texttt{\detokenize{F-hills-20261115-145544-a314517}} \\
+\multicolumn{3}{l}{\emph{Geodesic baseline}} \\
+encounters of the scan & 160000 & \texttt{\detokenize{F-hills-20261115-142554-c10b371}} \\
+retrograde onset of separation in $\beta$ (geodesic, Newton) & 1.9, 2.5 & \texttt{\detokenize{F-hills-20261115-142554-c10b371}} \\
+separated fraction at $\beta=3$ (N pro, N retro, G pro, G retro) & 0.98, 0.295, 0.985, 0.51 & \texttt{\detokenize{F-hills-20261115-142554-c10b371}} \\
+separated fraction at $\beta=10$ (N pro, N retro, G pro, G retro) & 0.985, 0.58, 0.993, 0.91 & \texttt{\detokenize{F-hills-20261115-142554-c10b371}} \\
+against the figure of arXiv:2404.16270: largest $|\Delta|$ of the fraction & 0.0225 & \texttt{\detokenize{F-hills-20261115-142554-c10b371}} \\
+the same, mean $v_\infty$ (relative) & 0.0073 & \texttt{\detokenize{F-hills-20261115-142554-c10b371}} \\
+largest $a_b/R_{\rm curv}$ of a bound binary at $\beta=10$ & 0.0056 & \texttt{\detokenize{F-hills-20261115-142554-c10b371}} \\
+\end{tabular}
+\end{ruledtabular}
+\end{table*}
+
+\begin{table*}
+\caption{Ledger of the pericentre scan, the first passages and the cost. Fractions are over the sampled binary phases; card-hours are the median rate with the fast and slow rates in parentheses.}
+\label{tab:ledger2}
+\footnotesize
+\begin{ruledtabular}
+\begin{tabular}{p{0.44\textwidth}p{0.19\textwidth}p{0.29\textwidth}}
+Quantity & Value & Source \\ \hline
+\multicolumn{3}{l}{\emph{Pericentre scan}} \\
+$q=10$, $r_p=7$: Newton sep., inside $4M$; geodesic sep., plunge & 0.9, 0.62; 0.99, 0.96 & \texttt{\detokenize{F-hills-20261115-145915-71abf93}} \\
+$q=10$, $r_p=8$: the same & 0.88, 0.056; 1, 0.94 & \texttt{\detokenize{F-hills-20261115-145915-71abf93}} \\
+$q=10$, $r_p=13$: the same & 0.22, 0; 0.98, 0.3 & \texttt{\detokenize{F-hills-20261115-145915-71abf93}} \\
+$q=4$, $r_p=9.82$: Newton sep., inside $4M$; geodesic sep., plunge & 0.84, 0.3; 0.99, 0.94 & \texttt{\detokenize{F-hills-20261115-145915-71abf93}} \\
+$q=4$, $r_p=16$: the same & 0.54, 0.011; 0.94, 0.67 & \texttt{\detokenize{F-hills-20261115-145915-71abf93}} \\
+\multicolumn{3}{l}{\emph{First passages}} \\
+$q=4$: energy unit $(m_1m_2/a_b)q^{1/3}$ & 0.004961 $M$ & \texttt{\detokenize{F-20261115-174648-25514db}} \\
+$q=4$, Newton: ejected member, energy (barycentric), its spread after $t=300M$ & $m_1$, 1.3119, 0.00015 & \texttt{\detokenize{F-20261115-174648-25514db}} \\
+$q=4$, Newton: two-body energy of the same member with $M$, range & 0.9887 to 1.723 & \texttt{\detokenize{F-20261115-174648-25514db}} \\
+$q=4$, Newton: captured member, energy, closest approach & $m_2$, -1.627, 5.777 $M$ & \texttt{\detokenize{F-20261115-174648-25514db}} \\
+$q=4$, geodesic: ejected member and energy; other member & $m_2$, 0.9703; bound, -0.5, first pericentre 7.262 $M$ & \texttt{\detokenize{F-20261115-174648-25514db}} \\
+$q=4$, Newton with $M$ fixed: ejected energy, closest approach of the other & 1.835, 6.107 $M$ & \texttt{\detokenize{F-20261115-174648-25514db}} \\
+$q=10$: energy unit $(m_1m_2/a_b)q^{1/3}$ & 0.001795 $M$ & \texttt{\detokenize{F-20261115-174648-25514db}} \\
+$q=10$, Newton: ejected member, energy (barycentric), its spread after $t=300M$ & $m_1$, 1.6127, 3.2e-05 & \texttt{\detokenize{F-20261115-174648-25514db}} \\
+$q=10$, Newton: two-body energy of the same member with $M$, range & 1.474 to 1.845 & \texttt{\detokenize{F-20261115-174648-25514db}} \\
+$q=10$, Newton: captured member, energy, closest approach & $m_2$, -1.845, 5.641 $M$ & \texttt{\detokenize{F-20261115-174648-25514db}} \\
+$q=10$, geodesic: ejected member and energy; other member & $m_2$, 1.159; plunges at $t=97.1M$ & \texttt{\detokenize{F-20261115-174648-25514db}} \\
+$q=10$, Newton with $M$ fixed: ejected energy, closest approach of the other & 1.887, 5.862 $M$ & \texttt{\detokenize{F-20261115-174648-25514db}} \\
+$q=4$: reproduces the earlier run in every printed digit (ejected energy) & 1.31187 & \texttt{\detokenize{F-20261115-174102-ffa764f}} \\
+$q=4$, Newton: displacement of the heavy black hole by the end of the run & 13.3 $M$ at $t=280M$ & \texttt{\detokenize{F-20261115-174102-ffa764f}} \\
+readers on a synthetic three-body run: checks passed & 10 of 10 & \texttt{\detokenize{F-20261115-173821-b2c969a}} \\
+$q=10$: captured orbit of Newton ($a$, $e$, pericentre) & 7.55, 0.247, 5.68 $M$ & \texttt{\detokenize{F-hills-20261115-145251-090f5dc}} \\
+\multicolumn{3}{l}{\emph{Mesh and cost}} \\
+$q=10$, $m/8$: MeshBlocks start, largest, mean; card-hours (240 $M$) & 1800, 2332, 2006; 38.9 (37-42.3) & \texttt{\detokenize{F-hills-20261115-131348-634fb86}} \\
+$q=10$, $m/16$: MeshBlocks start, largest, mean; card-hours (240 $M$) & 3690, 4544, 4019; 156 (149-170) & \texttt{\detokenize{F-hills-20261115-131348-634fb86}} \\
+$q=10$, $m/16$, small radius: MeshBlocks start, largest, mean; card-hours (240 $M$) & 2654, 2934, 2574; 99.4 (94.7-108) & \texttt{\detokenize{F-hills-20261115-131348-634fb86}} \\
+$q=4$, $m/8$: MeshBlocks start, largest, mean; card-hours (270 $M$) & 1716, 2080, 1744; 15.2 (14.5-16.5) & \texttt{\detokenize{F-hills-20261115-131933-907e5fe}} \\
+$q=4$, $m/16$: MeshBlocks start, largest, mean; card-hours (270 $M$) & 2514, 2864, 2568; 44.8 (42.7-48.7) & \texttt{\detokenize{F-hills-20261115-131933-907e5fe}} \\
+$q=4$, $m/16$, small radius: MeshBlocks start, largest, mean; card-hours (270 $M$) & 2416, 2654, 2348; 40.9 (39-44.6) & \texttt{\detokenize{F-hills-20261115-131933-907e5fe}} \\
+rate, MeshBlock-cycles per second (median, slow, fast) & 2201, 2022, 2310 & \texttt{\detokenize{F-hills-20261115-131348-634fb86}} \\
+$q=4$ input at the start, release executable: $m/4$, $m/8$, $m/16$ & 1128, 1716, 2514 & \texttt{\detokenize{F-20261115-173543-29e87e8}} \\
+card memory, MeshBlock slots & about 3000 & coord/INTERFACES/multi\_puncture.md:229-230 \\
+\end{tabular}
+\end{ruledtabular}
+\end{table*}

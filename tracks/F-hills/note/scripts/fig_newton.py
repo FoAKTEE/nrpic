@@ -79,7 +79,7 @@ def main():
     a.plot([SKR["D_best"]], [1.0], "v", color="k", ms=4)
     a.set_ylabel(r"disruption probability")
     a.set_ylim(0, 1.05)
-    a.legend(loc="center left", fontsize=8)
+    a.legend(frameon=False, loc="center left", fontsize=8)
     b = axs[1]
     b.set_ylabel(r"mean $|E|$ [unit]")
     b.set_xscale("log")

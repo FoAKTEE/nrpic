@@ -27,6 +27,7 @@ RUNS = {
     "coplanar_an": "F-hills-20261115-133222-9cb10db",  # newton3 P1: analysis of the two above
     "skr": "F-hills-20261115-132703-0bfc352",         # newton3: comparison with SKR's figures
     "general_an": "F-hills-20261115-133200-05ee76a",  # newton3 P2: isotropic scan analysis
+    "h1": "F-hills-20261115-132942-2f7ad7f",          # newton3 P7/P8: BKRS curves, survival criterion H1
     "s1_an": "F-hills-20261115-142554-c10b371",       # geodesic_binary: analysis of S1, S2, S4
     "v4": "F-hills-20261115-145246-090f5dc",          # lead V4: independent restricted problem
     "v4b": "F-hills-20261115-145544-a314517",         # lead V4b: wide binaries followed on

@@ -64,7 +64,7 @@ def main():
     a.set_xlabel(r"time from the pericentre $[M]$")
     a.set_ylabel("MeshBlocks")
     a.set_ylim(800, 5000)
-    a.legend(loc="upper left", fontsize=6.8, ncol=2, columnspacing=0.8)
+    a.legend(frameon=False, loc="upper left", fontsize=6.8, ncol=2, columnspacing=0.8)
     b = axs[1]
     for q, src, cases, col, mk in (("q10", m10, ("D205_m8_r1.8", "D205_m16_r1.8"), RED, "s"),
                                    ("q4", m4, ("D256q4_m8_r1.8", "D256q4_m16_r1.8"), BLUE, "o")):
@@ -85,7 +85,7 @@ def main():
     b.set_ylim(8, 300)
     b.set_xlabel("finest cell")
     b.set_ylabel("card-hours per passage")
-    b.legend(loc="upper left", fontsize=7)
+    b.legend(frameon=False, loc="upper left", fontsize=7)
     cz.save(fig, os.path.join(out, STEM))
     C.write_numbers(out, STEM, nums)
     C.report_checks(STEM)

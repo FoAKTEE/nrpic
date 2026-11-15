@@ -81,9 +81,9 @@ def main():
                      "cm_rp": S[key]["cm_rp"], "a_b": S[key]["a_b"], "r0": S[key]["r0"]}
     axs[1, 0].set_xlabel(r"$t\,[M]$")
     axs[1, 1].set_xlabel(r"$t\,[M]$")
-    axs[0, 0].legend(loc="upper left", fontsize=6.3, ncol=2, handlelength=2.0,
+    axs[0, 0].legend(frameon=False, loc="upper left", fontsize=6.3, ncol=2, handlelength=2.0,
                      columnspacing=0.8)
-    axs[0, 1].legend(loc="upper right", fontsize=7)
+    axs[0, 1].legend(frameon=False, loc="upper right", fontsize=7)
     cz.save(fig, os.path.join(out, STEM))
     C.write_numbers(out, STEM, nums)
     C.report_checks(STEM)

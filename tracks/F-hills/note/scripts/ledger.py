@@ -98,9 +98,23 @@ def main():
     add("Restricted Newton", "against the digitised curve: median, largest $|\\Delta P|$, prograde",
         f"{g(skrc['P_pro']['median_abs_diff'], 2)}, {g(skrc['P_pro']['max_abs_diff'], 2)} at "
         f"$D={g(skrc['P_pro']['D_of_max'], 3)}$", R["skr"])
+    h1 = C.load_json("h1", "summary_bkrs_h1.json")["H1"]["X=3.5"]["ret"]
+    add("Restricted Newton", "retrograde, bound binaries wider than $3.5\\,a_b$ counted as disrupted: "
+        "largest $|\\Delta P|$ against the digitised curve, last disrupting $D$",
+        f"{g(h1['max_abs_diff'], 2)}, {g(h1['last_D_disrupting'], 3)}", R["h1"])
     add("Restricted Newton", "against the digitised curve: largest $|\\Delta P|$, retrograde",
         f"{g(skrc['P_ret']['max_abs_diff'], 2)} at $D={g(skrc['P_ret']['D_of_max'], 3)}$",
         R["skr"])
+    gen = C.load_json("general_an", "summary_general.json")
+    Dg = np.array(gen["D"])
+    sel = Dg <= 1.0 + 1e-12
+    frac = np.abs(np.array(gen["P_minus_fit"]) / np.array(gen["P_fit_BKRS"]))[sel]
+    add("Restricted Newton", "isotropic orientations, $D\\le1$: largest fractional deviation from the "
+        "published fit, probability and mean energy",
+        f"{g(frac.max(), 2)}, {g(gen['max_abs_Emean_rel_dev_D<=1'], 2)} "
+        f"({gen['N_ori']} orientations $\\times$ {gen['N_pha']} phases)", R["general_an"])
+    add("Restricted Newton", "printed: plateau of the isotropic probability; accuracy of the fits for $D\\lesssim1$",
+        "about 0.88; one percent", "arXiv:1804.02911 mnras.tex:368, 377, 440")
     dP = [abs(r["P_dis"] - r["P_dis_ref"]) for r in v4["rows"]]
     dE = [abs(r["Emean_dis"] / r["Emean_dis_ref"] - 1) for r in v4["rows"]]
     add("Restricted Newton", "independent code, nine points: largest $|\\Delta P|$, $|\\Delta E|/E$",
@@ -164,6 +178,8 @@ def main():
             f"{g(max(nf['E1_u'], nf['E2_u']), 4)}, {g(min(nf['rmin_1'], nf['rmin_2']), 4)} $M$", R["n1"])
     add("First passages", "$q=4$: reproduces the earlier run in every printed digit (ejected energy)",
         f"{g(e6['newton']['E_ejected_bc_u'], 6)}", R["e6"])
+    add("First passages", "$q=4$, Newton: displacement of the heavy black hole by the end of the run",
+        f"{g(e6['newton']['at_t_run']['hole_displacement'], 3)} $M$ at $t={g(e6['t_run'])}M$", R["e6"])
     add("First passages", "readers on a synthetic three-body run: checks passed",
         f"{sum(r['ok'] for r in e4['results'])} of {len(e4['results'])}", R["e4"])
     add("First passages", "$q=10$: captured orbit of Newton ($a$, $e$, pericentre)",
@@ -187,13 +203,13 @@ def main():
     add("Mesh and cost", "$q=4$ input at the start, release executable: $m/4$, $m/8$, $m/16$",
         f"{e1[9]}, {e1[10]}, {e1[11]}", R["e1"])
     add("Mesh and cost", "card memory, MeshBlock slots", "about 3000",
-        "coord/INTERFACES/multi\\_puncture.md:229-230")
+        "multi\\_puncture.md lines 229--230 of coord/INTERFACES")
 
     # ---- write ledger.tex: two tables
     def table(groups, label, caption):
         lines = [r"\begin{table*}", r"\caption{" + caption + "}", r"\label{" + label + "}",
                  r"\footnotesize", r"\begin{ruledtabular}",
-                 r"\begin{tabular}{p{0.50\textwidth}p{0.22\textwidth}p{0.22\textwidth}}",
+                 r"\begin{tabular}{p{0.44\textwidth}p{0.19\textwidth}p{0.29\textwidth}}",
                  r"Quantity & Value & Source \\ \hline"]
         cur = None
         for grp, q, v, src in rows:
@@ -208,7 +224,7 @@ def main():
         return "\n".join(lines)
 
     with open(os.path.join(out, "ledger.tex"), "w") as f:
-        f.write("% written by scripts/ledger.py from registered runs; do not edit\n")
+        f.write("% generated from registered run outputs; do not edit\n")
         f.write(table({"Scales", "Restricted Newton", "Geodesic baseline"}, "tab:ledger1",
                       "Ledger of the reference solutions. Energies in units of "
                       r"$(Gm_1m_2/a_b)(M/m_b)^{1/3}$; sources are registered runs or the "
@@ -244,13 +260,13 @@ def main():
     lines = [r"\begin{table}", r"\caption{Parameters of the two first passages (units $G=c=M=1$). "
              r"Both are coplanar and prograde with nonspinning black holes and start from the "
              r"Newtonian state integrated in from ten tidal radii.}", r"\label{tab:parameters}",
-             r"\footnotesize", r"\begin{ruledtabular}", r"\begin{tabular}{p{0.56\columnwidth}ll}",
+             r"\footnotesize", r"\begin{ruledtabular}", r"\begin{tabular}{p{0.46\columnwidth}ll}",
              r"Parameter & " + par[0][0] + " & " + par[1][0] + r" \\ \hline"]
     for name, fn in prow:
         lines.append(f"{name} & {fn(par[0][1], par[0][2])} & {fn(par[1][1], par[1][2])} \\\\")
     lines += [r"\end{tabular}", r"\end{ruledtabular}", r"\end{table}"]
     with open(os.path.join(out, "parameters.tex"), "w") as f:
-        f.write("% written by scripts/ledger.py from the inputs run N1 recorded; do not edit\n")
+        f.write("% generated from the passage inputs; do not edit\n")
         f.write("\n".join(lines) + "\n")
 
     # ---- claims of the lead's documents against the files

@@ -1,0 +1,221 @@
+\documentclass[aps,prd,twocolumn,10pt,superscriptaddress,nofootinbib,longbibliography,floatfix]{revtex4-2}
+
+\usepackage{amsmath,amssymb,amsfonts}
+\usepackage{bm}
+\usepackage{graphicx}
+\usepackage{xcolor}
+\usepackage{hyperref}
+\graphicspath{{figures/}}
+\hypersetup{colorlinks=true,linkcolor=blue,citecolor=blue,urlcolor=blue}
+
+\newcommand{\dd}{\mathrm{d}}
+\newcommand{\rt}{r_t}
+\newcommand{\rp}{r_p}
+\newcommand{\mb}{m_b}
+\newcommand{\Eu}{E_u}
+
+\begin{document}
+
+\title{The Hills mechanism near a black hole in full numerical relativity:\\ Scope, reference solutions, and first passages (working note v0)}
+
+\author{Track F of the numerical-relativity particle-in-cell cosmology program}
+
+\date{Working note v0, state of 15 November 2026}
+
+\begin{abstract}
+A bound binary that passes close to a heavier black hole can be torn apart: one member is flung away and the other is captured. Near the black hole every pair of the three bodies interacts relativistically, yet the existing models of this encounter treat either all of gravity or the binary's own gravity in Newton's theory. This working note scopes a calculation of the encounter in full numerical relativity, with three moving black holes and later with binaries of collisionless clumps, and records the tests done so far. Two reference solutions frame every run: the Newtonian three-body problem, which reproduces the published disruption probabilities and ejection energies, and a geodesic model in which each member follows the exact black-hole spacetime while the members attract each other in Newton's theory, which reproduces its published separation fractions and ejection speeds. At the mass ratios a full simulation can afford, between four and ten, the binary must be wide compared with its own gravitational radius to reach the tidal radius before the centre of mass is swallowed, and there the two references disagree in kind: the geodesic model swallows one member in most binary phases, while Newton's theory keeps both members outside the black hole and binds one of them on a tight orbit. The first passages in full relativity are specified to decide between the two pictures, their initial data and meshes are built with the released code, and a passage at mass ratio four fits the computing allotment on one card.
+\end{abstract}
+
+\maketitle
+
+\section{Introduction}\label{sec:intro}
+
+A binary star that wanders close to a massive black hole is separated when the tidal field of the black hole exceeds the binding of the pair; one member leaves with a large velocity and the other stays on a bound, eccentric orbit about the black hole. This Hills mechanism explains the hypervelocity stars of the Galaxy, and its Newtonian theory is mature: in the limit of a very heavy black hole the problem reduces to the restricted parabolic three-body problem, whose disruption probability and ejection energy depend on one number, the ratio of pericentre to tidal radius \cite{Sari:2010hills,Kobayashi:2012hills,Brown:2018hills}. When the pericentre comes within a few tens of gravitational radii, relativity changes the outcome. A model that moves each member on the exact Schwarzschild spacetime and adds the Newtonian attraction between the members finds that more binaries are separated and that the ejected members move faster \cite{Manzaneda:2024geodesic}, and a study of the same encounter in Kerr spacetime calls the full problem intractable in numerical relativity \cite{Zhang:2024kerr}.
+
+Full numerical relativity has followed three black holes of equal mass through close encounters \cite{Campanelli:2008three,Lousto:2008multiple,Heinze:2025encounters} and binaries on bound orbits about black holes four and nine times heavier, outside their tidal radius \cite{Ficarra:2024three}. A search of the literature found no calculation in which a heavier black hole separates a binary on a near-parabolic orbit with pericentre at or inside the tidal radius, and none in which a binary of matter clumps passes a black hole with all three bodies in general relativity. This track computes both with the numerical-relativity particle-in-cell method of Wu and Most \cite{Wu:2026nrpic}, rebuilt in the code AthenaK \cite{Stone:2024athenak,Zhu:2024utz}, which evolves the spacetime with moving punctures and collisionless matter with macroparticles. The work is carried out by large-language-model agents under human direction.
+
+This note records the scoping stage and the tests done so far:
+\begin{itemize}
+\item a full simulation reaches mass ratios between four and ten, where the binary must be wider than a plunge bound to be separated before its centre of mass is swallowed; the binary then meets the black hole at one to two tidal radii (Sec.~\ref{sec:problem});
+\item the Newtonian reference reproduces the published disruption probabilities and energies, and the geodesic reference reproduces its published separation fractions and ejection speeds (Secs.~\ref{sec:t-newton} and \ref{sec:t-geodesic});
+\item at mass ratios four and ten the two references disagree in kind: the geodesic one sends a member into the black hole, or swaps which member escapes, in most binary phases (Secs.~\ref{sec:t-scan} and \ref{sec:t-passage});
+\item the first passages are specified and their meshes measured; a passage at mass ratio four fits one card within the allotment, and the finest resolution at mass ratio ten exceeds the memory of one card (Sec.~\ref{sec:t-cost}).
+\end{itemize}
+Section~\ref{sec:setup} describes the set-up and the numerical methods, and Sec.~\ref{sec:plan} the plan to the next gates and what is open. Table~\ref{tab:parameters} holds the parameters of the first passages, and Tables~\ref{tab:ledger1} and \ref{tab:ledger2} every number of the note with the registered run that produced it.
+
+\section{The Hills problem near a black hole}\label{sec:problem}
+
+\subsection{Scales of the encounter}\label{sec:scales}
+
+A binary of members $m_1$ and $m_2$, total mass $\mb=m_1+m_2$ and semimajor axis $a_b$ approaches a black hole of mass $M$ on a nearly parabolic orbit of its centre of mass with pericentre $\rp$. The mass ratio is $q=M/\mb$, and we use units $G=c=1$ with $M$ as the unit of length and time. The binary is separated when the tidal acceleration of the black hole across the binary rivals the members' mutual attraction, which happens inside the tidal radius
+\begin{equation}\label{eq:rt}
+\rt=a_b\,q^{1/3}.
+\end{equation}
+The penetration factor $D=\rp/\rt$ measures how deep the binary goes. After a separation the members share the energy of the encounter: one leaves with positive energy and the other is bound to the black hole with a nearly opposite one. Their natural unit is the energy unit
+\begin{equation}\label{eq:Eu}
+\Eu=\frac{m_1m_2}{a_b}\,q^{1/3},
+\end{equation}
+the binding energy of the binary enlarged by the ratio of the tidal radius to the binary's size \cite{Sari:2010hills}. In the restricted problem, $q\to\infty$, the outcome depends only on $D$, on the orientation of the binary orbit and on its phase at pericentre.
+
+\subsection{The plunge bound}\label{sec:plunge}
+
+In gravitational radii, $r_g=M$ for the black hole and $r_{gb}=\mb$ for the binary, the tidal radius reads
+\begin{equation}\label{eq:rtrg}
+\frac{\rt}{r_g}=\frac{a_b}{r_{gb}}\,q^{-2/3}.
+\end{equation}
+A parabolic orbit about a Schwarzschild black hole turns around outside the black hole only if its angular momentum per unit mass exceeds $4M$; the marginally bound orbit has its pericentre at $4M$. A binary separated before its centre of mass is swallowed therefore needs $\rt>4M$, the plunge bound
+\begin{equation}\label{eq:plunge}
+\frac{a_b}{r_{gb}}>4\,q^{2/3}.
+\end{equation}
+The binary must be wide in units of its own gravitational radius, and the bound grows as the two-thirds power of the mass ratio. The members are smaller than the heavy black hole by the mass ratio and set the global time step, while the passage lasts a few hundred units of $M$, so the number of steps grows with $q$, and the reach of the method is a mass ratio of a few to ten. At $q=10$ we take $a_b=3M$, thirty gravitational radii of the binary, and at $q=4$, $a_b=5M$. The binary then shrinks by gravitational radiation on a time far longer than the passage (Table~\ref{tab:ledger1}), so it enters the encounter as a Newtonian binary.
+
+The plunge bound concerns the centre of mass. Each member moves with the binary's internal speed in addition, which changes its angular momentum by about the pericentre times that speed, a sizeable fraction of $4M$ at the separations above. Near the separation, one member can fall below the angular momentum of the marginally bound orbit while the centre of mass stays above it. This is the origin of the plunges of Sec.~\ref{sec:t-scan}.
+
+\subsection{Objects and observables}\label{sec:objects}
+
+Three objects are planned: (a) a binary of two black holes passing a heavier black hole, pure vacuum, the baseline; (b) a binary of two self-gravitating collisionless clumps passing a black hole, the regime only a particle-in-cell method reaches; (c) two black holes dressed with collisionless matter. Object (a) comes first, and the first clump binary passes right after the first black-hole passage. Each passage gives whether the binary is separated, the energy given to the ejected and to the captured member, the fate of the captured member (bound, or swallowed by the black hole), the burst of gravitational waves, and for matter members their stripping and heating. One line of passages in pericentre at fixed mass ratio, for each of (a) and (b), compared with both references, is the first publishable result.
+
+\section{Set-up and numerical methods}\label{sec:setup}
+
+\subsection{The calculation}\label{sec:architecture}
+
+Figure~\ref{fig:architecture} shows the parts of the calculation and their state. The initial data place the binary's centre of mass at four tidal radii from the heavy black hole, in the state that the Newtonian problem reaches when started at ten tidal radii. The evolution in AthenaK moves the punctures, refines the mesh around three length scales (the heavy black hole, the members, the binary orbit) and extracts the waves on spheres. The analysis compares the trajectories, energies and waves with the two reference solutions, which live outside the code.
+
+\begin{figure*}
+\centering
+\includegraphics[width=0.92\textwidth]{schem_architecture.png}
+\caption{Architecture of the calculation. Columns: initial data, evolution in the code, and analysis with the reference solutions outside the code; the pills below are the deliverables. Green blocks exist and are tested, slate blocks exist in another setting and are being carried over, red blocks are still to be written.}
+\label{fig:architecture}
+\end{figure*}
+
+\subsection{Reference solutions}\label{sec:references}
+
+The Newtonian reference integrates the three-body problem with the masses of the passage, so that the heavy black hole recoils; its limit $q\to\infty$ at fixed $D$ is the restricted parabolic problem \cite{Sari:2010hills}, which we integrate separately for the comparison with the literature. At finite $q$ the two-body energy of the escaping member with $M$ alone oscillates while the other member orbits $M$, because $M$ itself moves about their common barycentre. We therefore measure the energy of the escaping member against the barycentre of $M$ and the captured member, which is conserved once the escaper is far away, and the energy of the captured member against $M$ alone (Sec.~\ref{sec:t-passage}).
+
+The geodesic reference is the model of Ref.~\cite{Manzaneda:2024geodesic}. Each member follows the exact Schwarzschild (or Kerr) spacetime of a black hole fixed at the origin, and the members attract each other through the Newtonian potential $\Phi$ of their Euclidean coordinate distance. In coordinate time $t$ the position $x^i$ of a member of mass $m$ obeys
+\begin{equation}\label{eq:geodesic}
+\begin{split}
+\ddot{x}^i=&-\left(g^{i\lambda}-g^{0\lambda}\dot{x}^i\right)\\
+&\times\left[\frac{1}{m\Gamma^2}\frac{\partial\Phi}{\partial x^\lambda}
++\left(\frac{\partial g_{\mu\lambda}}{\partial x^\nu}-\frac{1}{2}\frac{\partial g_{\mu\nu}}{\partial x^\lambda}\right)\dot{x}^\mu\dot{x}^\nu\right],
+\end{split}
+\end{equation}
+where $g_{\mu\nu}$ is the metric of the black hole, an overdot is a derivative with respect to $t$, and $\Gamma=(-g_{\mu\nu}\dot{x}^\mu\dot{x}^\nu)^{-1/2}$ is the member's Lorentz factor. Without the pair force each member moves on a geodesic; far from the black hole the model becomes the Newtonian three-body problem with the black hole held fixed. A member that crosses $r=2.5M$ inward is counted as swallowed. The model neglects the recoil of the black hole and the relativistic interaction of the members, so at $q$ of a few it is a frame of reference with known gaps, and the comparison with full relativity measures them.
+
+\subsection{The passages in full relativity}\label{sec:nr}
+
+The three black holes are moving punctures in conformally flat initial data: each carries the Bowen--York extrinsic curvature of its momentum, and the conformal factor of each puncture receives a closed-form correction of second order in its momentum, rescaled by the conformal factor of the others. The data satisfy the constraints approximately; their residual and the junk radiation they emit are measured at the start of gate G1, and data that solve the constraints follow later in the code itself. Positions and momenta come from the Newtonian three-body state at four tidal radii, integrated in from ten tidal radii, so that the binary carries the tidal distortion of its approach. The lapse starts precollapsed, and the shift is driven with one damping parameter for all three black holes. Each black hole gets a tracker, a refined region and an apparent-horizon finder; the finest cells resolve each member by eight cells per member mass ($m/8$), and waves are extracted on four spheres in the wave zone. Table~\ref{tab:parameters} gives the parameters of the two first passages, at $q=4$ and $q=10$, both coplanar and prograde with nonspinning black holes.
+
+\subsection{Numerical methods}\label{sec:methods}
+
+The Newtonian problems are integrated with an eighth-order Runge--Kutta method with adaptive steps at tolerances far below the differences studied; the restricted scans start at ten tidal radii and sample thousands of binary phases per penetration factor. The geodesic reference is integrated with the same kind of method; its scans start where the published scan starts, or at four tidal radii for the binaries of the passages, and sample the binary phase uniformly. A scan counts a binary as separated when both members are unbound from each other at the end, and the Newtonian scans follow wide but still bound binaries further out before they decide. The code's output is read by readers of the trackers, the horizon summaries and the waves, which join the segments of a restarted run. The card time of a passage is the number of mesh blocks times the number of cycles at the global time step of the finest cell, divided by the measured rate of the code on one card; the mesh blocks along the passage come from trees that the code builds at the Newtonian positions of the three bodies every ten units of time.
+
+\section{Tests so far}\label{sec:tests}
+
+\subsection{Newtonian limit: the restricted problem}\label{sec:t-newton}
+
+Figure~\ref{fig:newton} shows the restricted parabolic problem for coplanar binaries. Prograde binaries are disrupted out to a penetration factor of about two and retrograde ones out to a few tenths, the disruption probability saturates for deep encounters at the same value for both orientations, and prograde binaries reach their largest disruption probability and ejection energy near a tenth. The edges, the saturation level and the best penetration factor agree with the values printed in Ref.~\cite{Sari:2010hills}, and the curves agree with its figures to the digitising accuracy away from the edges. The retrograde edge lies slightly inside the published one; the published curve is recovered when bound binaries that end wider than a few initial separations count as disrupted, which suggests a different survival criterion in the published scan. For isotropic orientations the disruption probability and the mean energy follow the published polynomial fits \cite{Brown:2018hills} to about their stated accuracy. An independent integration of the restricted problem reproduces the prograde scan and, after wide bound binaries are followed further, the two outer retrograde points; at the two inner retrograde points a small difference remains, and the wide bound binaries there are still to be followed (Table~\ref{tab:ledger1}).
+
+\begin{figure}
+\centering
+\includegraphics[width=\columnwidth]{fig_newton.pdf}
+\caption{Restricted parabolic three-body problem for coplanar binaries. Top: probability that the binary is disrupted against the penetration factor; bottom: mean energy of the ejected member in the energy unit. Dashed ticks: the edges and the deep-limit saturation printed in Ref.~\cite{Sari:2010hills}; triangle: its most disruptive penetration factor.}
+\label{fig:newton}
+\end{figure}
+
+\subsection{Geodesic reference in its own regime}\label{sec:t-geodesic}
+
+Figure~\ref{fig:geodesic} repeats the scan of Ref.~\cite{Manzaneda:2024geodesic}: a binary of total mass $10^{-6}M$ sent to the black hole at penetration factors $\beta=\rt/\rp$ up to ten, every binary phase sampled, with the Newtonian and the geodesic law. For prograde binaries the two laws separate the same fraction and give nearly the same ejection speed. For retrograde binaries relativity separates binaries at smaller $\beta$, separates more of them at every $\beta$, and ejects them faster. The separation fractions agree with the published figure to its digitising accuracy, and the mean ejection speeds within a percent of the published curves. The binary stays small against the curvature radius of the black hole throughout, as the model requires.
+
+\begin{figure}
+\centering
+\includegraphics[width=\columnwidth]{fig_geodesic.pdf}
+\caption{Geodesic reference in the set-up of Ref.~\cite{Manzaneda:2024geodesic}, binary mass $10^{-6}M$. Top: fraction of binary phases in which the binary is separated, against the penetration factor; bottom: mean ejection speed of the separated binaries. Blue: Newtonian law; red: geodesic law; solid: prograde; dashed: retrograde.}
+\label{fig:geodesic}
+\end{figure}
+
+\subsection{The two references at mass ratios four and ten}\label{sec:t-scan}
+
+Figure~\ref{fig:rpscan} applies both references to the binaries of the planned passages, at mass ratio ten with $a_b=3M$ and at four with $a_b=5M$, for pericentres from the plunge region out to about two tidal radii. The Newtonian three-body problem separates most binaries at small pericentre and fewer as the penetration factor approaches two; with the black hole held fixed it separates fewer still at the largest pericentres, so the recoil of the black hole matters at these mass ratios. In Newton's theory a member comes within $4M$ of the black hole in a sizeable fraction of the phases only at the smallest pericentre. The geodesic reference separates nearly every binary over the whole range, and in most binary phases one member crosses $2.5M$ and is swallowed; this fraction falls with the pericentre and drops below one half only at the largest pericentre at mass ratio ten.
+
+The two references therefore disagree in kind. In Newton's theory the encounter ejects one member and binds the other on a tight orbit about the black hole. In the geodesic reference, at both first passages, the member that Newton's theory binds escapes, and the one it ejects is swallowed at mass ratio ten and stays on a wide bound orbit at mass ratio four (Sec.~\ref{sec:t-passage}). The reason is the angular momentum of Sec.~\ref{sec:plunge}: after the separation one member carries less angular momentum than the marginally bound orbit, and a tight Newtonian orbit with pericentre near $6M$ has less angular momentum than the innermost stable circular orbit of the Schwarzschild spacetime, so in relativity it plunges. Each reference captures part of these encounters: Newton's theory misses the plunge, and the geodesic model misses the recoil and holds the black hole fixed at a mass ratio of a few. The full simulation decides.
+
+\begin{figure*}
+\centering
+\includegraphics[width=\textwidth]{fig_rp_scan.pdf}
+\caption{Fractions of binary phases against the pericentre of the centre-of-mass orbit, for the binaries of the first passages at mass ratio ten (left) and four (right), coplanar and prograde, started at four tidal radii. Blue: Newtonian three-body problem (solid: separated; dotted: separated with the black hole held fixed; dashed: a member comes inside $4M$). Red: geodesic reference (solid: separated; dashed: a member is swallowed). Grey line: pericentre of the first passage.}
+\label{fig:rpscan}
+\end{figure*}
+
+\subsection{The first passages}\label{sec:t-passage}
+
+Figure~\ref{fig:passage} follows the members of the two first passages from their initial data in both references. At mass ratio four the Newtonian problem ejects the first member and binds the second on an orbit between about six and ten units of $M$, with its second pericentre inside the planned run; the geodesic reference ejects the second member and keeps the first on a wide bound orbit. The two pictures part at the pericentre passage, about a hundred units of time after the start, well inside the run. At mass ratio ten the geodesic reference swallows the first member at its first pericentre, where the Newtonian problem ejects it. The heavy black hole of the Newtonian problem moves by more than ten of its gravitational radii during the run, so the code's trajectories are read relative to its tracker.
+
+The right panels show why the energies are measured against the barycentre. The two-body energy of the escaping member with $M$ alone oscillates with the period of the captured member by a sizeable fraction of its value, while its energy against the barycentre of $M$ and the captured member settles after the encounter and stays constant. The readers of the code's output use this definition; on a Newtonian three-body run written in the code's output formats, with a restart in the middle, they recover the positions to the printed digits and the conserved energy to its value in the reference.
+
+\begin{figure*}
+\centering
+\includegraphics[width=\textwidth]{fig_passage.pdf}
+\caption{The first passages in the two references, from the initial data of the full simulations at mass ratio four (top) and ten (bottom). Left: distance of each member from the heavy black hole (blue: first member; red: second) in the Newtonian problem (solid), with the black hole fixed (dotted) and in the geodesic reference (dashed; a swallowed member stops at $2.5M$); grey: $4M$; dash-dotted: end of the planned run. Right: energy of the member that Newton ejects, two-body with $M$ (blue) and against the barycentre (black).}
+\label{fig:passage}
+\end{figure*}
+
+\subsection{Mesh and cost of a passage}\label{sec:t-cost}
+
+Figure~\ref{fig:cost} shows the number of mesh blocks along the passage and the card time of one passage. At the resolution $m/8$ the mesh stays well below the memory of one card at both mass ratios, a passage at $q=4$ costs a fraction of the allotment to the next gate, and one at $q=10$ most of it. Doubling the resolution multiplies the cost by roughly a factor of three to four; at $q=10$ the mesh then exceeds the memory of one card, and at $q=4$ it comes close to it and above the block limit of the present input. The released code builds the same tree at the start of the $q=4$ passage as the trees used for the estimate, at both resolutions of the estimate. These numbers set the plan: the resolution study and the first scan line run at mass ratio four, and the mass ratio ten follows when two cards or larger mesh blocks are available.
+
+\begin{figure*}
+\centering
+\includegraphics[width=\textwidth]{fig_cost.pdf}
+\caption{Left: number of mesh blocks against time from the pericentre of the centre-of-mass orbit, at mass ratio ten (red) and four (blue) with finest cells $m/8$ (solid) and $m/16$ (dashed); open symbols: trees of the released code at the start of the $q=4$ passage with cells $m/4$, $m/8$, $m/16$ (triangle, circle, square); grey: memory of one card. Right: card-hours of one passage, median rate with the fast and slow rates as bars; dashed: allotment to the next gate.}
+\label{fig:cost}
+\end{figure*}
+
+\section{Plan and open questions}\label{sec:plan}
+
+Figure~\ref{fig:timeline} shows the gates of the track. Gate G0 asks for the scope, the parameters, the tests and the compute estimate; this note completes its written products, and the review of the gate is pending. Gate G1 asks that both references reproduce the literature, which they do in the Schwarzschild case; that the constraint residual and the junk radiation of the three-black-hole data be quantified; and that one vacuum passage be completed. The constraint residual of the $q=4$ data at the start, at three resolutions and with three versions of the conformal-factor correction, is running; single-puncture runs on a card measure the junk radiation and the settling of the gauge of a member-like black hole; the passage at $q=4$ follows them.
+
+Gate G2 asks that the vacuum passage converge with resolution at $q=4$, that passages at large pericentre return to both references, that a published three-black-hole encounter \cite{Campanelli:2008three} be reproduced, and that a collisionless clump at rest keep its structure much longer than a passage. Gate G3 asks for the two scan lines with three-way convergence.
+
+Open questions, in the order they affect the next runs:
+\begin{itemize}
+\item Does the full simulation swallow a member where the geodesic reference does, and which member escapes? The first passage answers this for one binary phase; a phase scan in full relativity multiplies the cost of a passage by the number of phases.
+\item How large are the junk radiation and the constraint violation of the approximate data compared with the burst of the passage? Approximate data can change the evolution of several black holes \cite{Galaviz:2010multiple}; the existing estimates of the junk of a member disagree with each other.
+\item Is one damping parameter of the shift adequate for black holes of different masses, or does the light member's tracker lag?
+\item The Kerr results of Ref.~\cite{Zhang:2024kerr} for inclined binaries and the first post-Newtonian version of the geodesic reference are still to be reproduced.
+\item Objects (b) and (c) need moving equilibrium clumps and dressed black holes as initial data, from the code and from the neighbouring tracks.
+\item A second agent is checking the literature search and the disagreement of the two references from the artefacts alone.
+\end{itemize}
+
+\begin{figure*}
+\centering
+\includegraphics[width=0.92\textwidth]{schem_timeline.png}
+\caption{Gates of the track. Each callout states what the gate asks; the braces below the axis name what the step to the next gate needs. The marker shows the present state.}
+\label{fig:timeline}
+\end{figure*}
+
+\section{Summary}\label{sec:summary}
+
+A binary must be wide in units of its own gravitational radius to be separated by a black hole before its centre of mass is swallowed, so at the mass ratios a full simulation reaches the encounters happen at one to two tidal radii, about ten gravitational radii from the black hole. There the binary's internal motion pushes one member below the angular momentum of the marginally bound orbit, and the two standard references part ways: Newton's theory binds that member on a tight orbit, while the geodesic model swallows it or lets the partner escape instead. Both references reproduce their published results in their own regimes, so the disagreement is physics at the edge of each model. The first passage in full relativity, at mass ratio four, is built and fits one card; it will tell which picture holds and how the energy is shared when every pair of the three bodies is relativistic.
+
+\begin{acknowledgments}
+This note, its figures and the calculations behind it were produced by large-language-model agents (Claude, Anthropic) working in the program's repository under human direction; the agents' records of predictions and outcomes are kept with the runs.
+\end{acknowledgments}
+
+\appendix
+
+\section{Parameters of the first passages}\label{app:parameters}
+
+Table~\ref{tab:parameters} lists the physical and simulation parameters of the two first passages. The positions and momenta of the three black holes are those of the Newtonian state at four tidal radii.
+
+\input{tables/parameters}
+
+\section{Numerical ledger}\label{app:ledger}
+
+Tables~\ref{tab:ledger1} and \ref{tab:ledger2} give every number behind this note with the registered run that produced it; the inputs of each figure and table were checked against the checksums their runs recorded (one run of the scoping stage recorded no checksums and is read as it is). The figures and tables were made in run RUNID-N3 from the outputs listed; the time series of the first passages come from run F-20261115-174648-25514db, which reproduces the earlier runs F-20261115-174102-ffa764f, F-hills-20261115-145251-090f5dc and F-hills-20261115-145559-a314517 in every printed digit. Numbers quoted from the literature carry the file and line of the arXiv source. The energy unit of a member follows Ref.~\cite{Sari:2010hills} (\texttt{prp.tex} lines 345--357); the consistency parameter of the geodesic reference, the binary separation over the curvature radius $(r/r_g)^{3/2}r_g$, follows Ref.~\cite{Manzaneda:2024geodesic} (\texttt{article.tex} lines 272--274).
+
+\input{tables/ledger}
+
+\bibliography{references}
+
+\end{document}

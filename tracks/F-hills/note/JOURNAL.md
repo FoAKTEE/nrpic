@@ -76,3 +76,39 @@ Figure `fig_passage` (draft, read): in the planned run windows (280 M at q = 4, 
 q = 10) the two baselines differ in kind from t of about 100 M on: at q = 4 Newton sends m1
 out and keeps m2 between 5.8 and 9.7 M, the geodesic baseline sends m2 out and keeps m1 on a
 wide orbit; at q = 10 the geodesic m1 plunges at t = 97 M while Newton's m1 leaves.
+
+## 2026-11-15 N2, outcome (run F-20261115-175639-ce844e5)
+
+1. Inputs: 26 files checked; all match the sha256 their runs recorded except the scale run
+   F-hills-20261115-045435-f62d553 (wave 1, novelty helper), whose manifest lists its outputs
+   without checksums; read as it is and said so in the ledger appendix. Prediction met.
+2. The recomputed numbers equal those of the source analyses to the precision checked in the
+   scripts (`common.close`, relative 1e-12): last disrupting D 2.085 / 0.405, deep-limit
+   P_dis 0.8075 / 0.8014, max |E| 27.146 at D = 0.1 (prograde); geodesic fractions at
+   beta = 3, 5, 8, 10 and mean speeds equal the run's printed values. Prediction met.
+3. Claims check (`tables/claims.md`): 13 of 17 agree, 2 superseded (allotment 40 -> 50 by
+   decision 0014; multi-puncture released in core-v0.3), 2 differ. The four changes I
+   predicted were found (two as "superseded", the q = 4 m/16 tree as "differs
+   (definition)", the "captures" wording as "agrees, wording differs"). Prediction REFUTED
+   in one point I did not foresee: the lead's "independent code agrees at nine (sense, D)
+   points within 0.002 in P_dis and 0.4 percent in energy (V4b)" (G1/STATUS.md T1,
+   EVIDENCE.md "all nine agree") is not what the files show: V4b reran only retrograde
+   D = 0.3 and 0.38 (|dP| <= 0.0013, |dE|/E <= 0.0035); retrograde D = 0.1 and 0.2 come from
+   V4 with |dP| = 0.0023 and 0.0063 and |dE|/E = 0.0038 and 0.0116, and they have 8 and 14
+   wide bound samples that were not followed on. Plausibly the same classification effect;
+   not shown.
+4. Figures: all seven PNGs byte-identical to the drafts I opened and read
+   (`scratch/F-hills/tmp/note/figures/`).
+New finding while checking claim 14: the q = 4 input has puncture_radius = 1.8 and
+max_nmb_per_rank = 2700; its m/16 tree reaches 2864 MeshBlocks along the passage (run
+F-hills-20261115-131933-907e5fe), above that limit and close to the card's ~3000 slots.
+
+## 2026-11-15 N3. Rerun of the figures and tables after the text pass (prediction)
+
+Changes since N2: two ledger rows added (survival criterion H1 of run
+F-hills-20261115-132942-2f7ad7f; recoil of the heavy black hole in E6), the isotropic fit
+row, narrower table columns, explicit frameon=False in the legends (the style already set
+it), comments of the generated tables.
+Prediction: every PNG byte-identical to N2 (the legend change is a no-op under czstyle);
+ledger.tex differs from N2 only in the added rows and the column widths; claims.md
+identical. Refuted if a PNG changes.

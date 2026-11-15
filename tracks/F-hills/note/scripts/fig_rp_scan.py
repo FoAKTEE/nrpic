@@ -61,7 +61,7 @@ def main():
                      "rp_first_passage": rp1, **{k: list(map(float, v)) for k, v in f.items()}}
     axs[0].set_ylabel("fraction of phases")
     h, l = axs[0].get_legend_handles_labels()
-    axs[1].legend(h, l, loc="lower left", fontsize=6.6, handlelength=2.2,
+    axs[1].legend(h, l, frameon=False, loc="lower left", fontsize=6.6, handlelength=2.2,
                   bbox_to_anchor=(0.17, 0.07))
     cz.save(fig, os.path.join(out, STEM))
     C.write_numbers(out, STEM, nums)

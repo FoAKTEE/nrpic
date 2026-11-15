@@ -42,7 +42,7 @@ def main():
         axs[1].plot(beta, v / 1e3, color=col, ls=ls, lw=1.3)
     axs[0].set_ylabel("separated fraction")
     axs[0].set_ylim(-0.02, 1.05)
-    axs[0].legend(loc="lower right", fontsize=7)
+    axs[0].legend(frameon=False, loc="lower right", fontsize=7)
     axs[1].set_ylabel(r"mean $v_\infty$ $[10^3\,{\rm km\,s^{-1}}]$")
     axs[1].set_xlabel(r"penetration factor $\beta=r_t/r_p$")
     axs[1].set_xlim(0, 10)

@@ -1,0 +1,55 @@
+{
+ "beta_range": [
+  0.1,
+  10.0
+ ],
+ "checks": {
+  "P1_retro_onset_hrna": 1.9000000000000001,
+  "P1_retro_onset_newton": 2.5000000000000004,
+  "alpha_bound_max_beta10": {
+   "pro_hrna": 0.00563580432949585,
+   "retro_hrna": 0.003830328541688792
+  },
+  "digitized_sf_max_abs_dev_pro_hrna": 0.022226554232804285,
+  "digitized_sf_max_abs_dev_pro_newton": 0.016132804232804165,
+  "digitized_sf_max_abs_dev_retro_hrna": 0.0225,
+  "digitized_sf_max_abs_dev_retro_newton": 0.005,
+  "digitized_vmean_max_rel_dev_pro_hrna": 0.007255141893971917,
+  "digitized_vmean_max_rel_dev_pro_newton": 0.0051022914137086595,
+  "digitized_vmean_max_rel_dev_retro_hrna": 0.0040784310372598,
+  "digitized_vmean_max_rel_dev_retro_newton": 0.0045383751845557985,
+  "runs_total": 160000,
+  "sf_beta10": {
+   "pro_hrna": 0.9925,
+   "pro_newton": 0.985,
+   "retro_hrna": 0.91,
+   "retro_newton": 0.58
+  },
+  "sf_beta3": {
+   "pro_hrna": 0.985,
+   "pro_newton": 0.98,
+   "retro_hrna": 0.51,
+   "retro_newton": 0.295
+  },
+  "sf_beta5": {
+   "pro_hrna": 0.9925,
+   "pro_newton": 0.99,
+   "retro_hrna": 0.7125,
+   "retro_newton": 0.4725
+  },
+  "sf_beta8": {
+   "pro_hrna": 0.9925,
+   "pro_newton": 0.985,
+   "retro_hrna": 0.855,
+   "retro_newton": 0.555
+  },
+  "vmean_kms_beta5": {
+   "pro_hrna": 3780.223171285237,
+   "pro_newton": 3721.066698481824,
+   "retro_hrna": 2400.587475728909,
+   "retro_newton": 1963.4997297452167
+  }
+ },
+ "n_phases": 400,
+ "run": "F-hills-20261115-142554-c10b371"
+}
