@@ -4,14 +4,20 @@
 # each in OUT/<name>/ (athena's working directory, so relative paths of the input resolve
 # there).  OUT/status.txt gets one line per entry: name, exit status, seconds.
 #
-#   scripts/run_list_cpu.sh <exe> <list> <out>
+#   scripts/run_list_cpu.sh <exe> <list> [<out>]
 #
-# Used inside a registered run (harness/bin/nrpic-run submit --launcher local ... -- bash
-# tracks/E-stoch-inf/ladder/scripts/run_list_cpu.sh EXE LIST "$NRPIC_RUN_DIR").
+# <out> defaults to $NRPIC_RUN_DIR (set by harness/bin/nrpic-run for a registered run);
+# it must be an existing absolute directory.  nrpic-run passes its command without a
+# shell, so a literal '$NRPIC_RUN_DIR' on its command line is not expanded: leave <out>
+# out (run E-20261115-172521-e098160 wrote into a directory named '$NRPIC_RUN_DIR').
 set -uo pipefail
 EXE=$1
 LIST=$2
-OUT=$3
+OUT=${3:-${NRPIC_RUN_DIR:-}}
+if [[ $OUT != /* || ! -d $OUT ]]; then
+  echo "run_list_cpu.sh: output directory '$OUT' is not an existing absolute path" >&2
+  exit 2
+fi
 ROOT=$(pwd)
 export OMP_NUM_THREADS=1
 : > "$OUT/status.txt"
