@@ -165,9 +165,11 @@ is at the level of second-order terms and of the window at W = 1/2, far below ev
 Outcomes at N = 32 (k_max/dk = 8, which at N = 32 is also the paper's four cells per shortest
 wavelength), analysis run E-20261115-173540-b69c63f, figures `fig/proc32/`, numbers
 `results/proc32/`:
-- A1: box means of phi, Pi, K within 6.3e-13, 7.7e-12, 3.5e-12 of this package's Friedmann
-  reference (threshold 1e-4; P7 predicted below 1e-10: confirmed). The e-fold count
-  -ln<chi>/2 differs from ln a by 3.3e-6 (time integration at Courant 0.25; core: 5.5e-6).
+- A1 (L32p, 8.1 e-folds): box means of phi, Pi, K within 6.4e-13, 4.5e-12, 3.6e-12 of this
+  package's Friedmann reference (threshold 1e-4; P7 predicted below 1e-10: confirmed). The
+  e-fold count -ln<chi>/2 differs from ln a by 5.5e-6 (time integration at Courant 0.25;
+  core: 5.5e-6). [Corrected at 17:52Z: the first version of this line quoted the numbers of
+  the 4.4-e-fold run NC32p (6.3e-13, 7.7e-12, 3.5e-12, 3.3e-6) instead of L32p.]
 - A2 at N_f = 8.10: max D_n = 8.8e-5 over the 128 modes with |n| <= 4 (threshold 0.02;
   pass), 4.1e-3 over all 1054 modes (the top shell |n|^2 = 64). The deviation is set during
   the entry (N = 1.5 to 3.5) and constant afterwards (`fig_a2_modes.png`, right). At N = 3.0
@@ -181,7 +183,8 @@ wavelength), analysis run E-20261115-173540-b69c63f, figures `fig/proc32/`, numb
   formula 1.0104-1.0109 for |n| <= 7 (SPEC 7.3: 1.010-1.012). P3 confirmed.
 - Constraints (pair L32p/L32m, halving pair L32ph/L32mh, `fig_a4_paper.png`,
   `fig_a5_parts.png`): the odd part of H (first order in the amplitude) rises from 5e-13 of
-  <[H]> at N = 0.5 to 5.4e-11 at N = 2.5 and dominates the even part from N = 1.2 on; the
+  <[H]> at N = 0.5 to 5.4e-11 at N = 2.5 and dominates the even part from the dump at N = 1.5
+  on (the dumps at N = 1.0 and 1.5 bracket the crossing; largest ratio odd/even 745); the
   even part (box mean removed) is 2.8e-12 at t = 0 (second-order violation of the slice),
   7e-13 at N = 0.5-2, then falls. The halving test separates them exactly: even part factor
   4.00 (second order), odd part factor 2.00 (first order) at every dump. M behaves the same
@@ -191,7 +194,7 @@ wavelength), analysis run E-20261115-173540-b69c63f, figures `fig/proc32/`, numb
   identified, and it makes the record ratio <|H|/[H]> between s = 1 and s = 1/2 close to 1
   before the entry (thick line in `fig_a4_paper.png`). So at N = 32 with four cells per
   shortest wavelength, A4 in its strict form ("second order during the entry") FAILS for
-  both constraints from N = 1.2-1.5 on, as P4 predicted, while the magnitude <|H|/[H]>
+  both constraints from N = 1.5 on, as P4 predicted, while the magnitude <|H|/[H]>
   stays below 4.7e-11 (within a factor 10 of P1's 1e-10). Whether the odd part is the
   truncation error that converges away is A5, which needs N = 64 and up.
 - Negative control (NC32p/m): odd part of H 7e-8 to 1e-7 of <[H]> during the first two
