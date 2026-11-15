@@ -429,3 +429,21 @@ and below 1e-5 at N = 16; the amplitude decays slightly through the upwinding, b
 than 1e-2 at N = 8 over t = 1, falling with at least fifth order. With the opposite sign
 of the shift the frequency is omega + k.beta = 13.338. Refuted by a frequency near omega
 (advective terms missing) or by a frequency shift of the wrong sign.
+
+### Test 6, outcome (run core-20261115-140852-3f7ca07) [VERIFIED]
+
+| Shift | N | measured frequency | omega -+ k.beta | relative error | amplitude loss at t = 1 |
+|---|---|---|---|---|---|
+| +(0.3, 0.2, 0) | 8 | 7.048048 | 7.054330 | 6.2e-4 | 3.8e-3 |
+| | 16 | 7.054205 | | 1.23e-5 | 3.5e-5 |
+| | 32 | 7.054328 | | 2.0e-7 | 2.7e-7 |
+| -(0.3, 0.2, 0) | 8 | 13.340843 | 13.337515 | 3.3e-4 | 3.8e-3 |
+| | 16 | 13.337590 | | 7.4e-6 | 3.5e-5 |
+| | 32 | 13.337516 | | 1.2e-7 | 2.7e-7 |
+
+The advective terms carry the wave with the right sign and size: orders of the frequency
+error 5.65 and 5.91 (+), 5.47 and 5.94 (-); amplitude loss falls at orders 6.80 and 6.99.
+One number of the prediction FAILED narrowly: 1.23e-5 at N = 16 for the positive shift,
+not below 1e-5 (the bound was a guess of the error constant; the order is as predicted
+or better). Figure `fig_wave_shift.png` (looked at). The shift here is uniform and
+frozen; an evolved shift (Gamma driver) with a field has not been run.

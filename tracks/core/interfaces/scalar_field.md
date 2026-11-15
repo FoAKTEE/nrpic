@@ -81,7 +81,8 @@ The seed of the stochastic sources is `<job> rng_seed` (`rng.md`). A parameter t
 command line overrides must be present in the input file (AthenaK rule).
 
 `<problem> pgen_name = scalar_field`, `id =` `wave` (flat spacetime, phi = phi0 + amp
-cos(k.(x - x0)), Pi = pi0 + amp omega sin(k.(x - x0)), integers `n1 n2 n3`), `flrw`
+cos(k.(x - x0)), Pi = pi0 + amp omega sin(k.(x - x0)), integers `n1 n2 n3`, optional
+uniform shift `beta1 beta2 beta3`), `flrw`
 (homogeneous: `phi0`, `pi0`, K from the Hamiltonian constraint, alpha = 1), `plane`
 (section 8, test 3). Other problem generators may set `pscalar->u0` themselves (all
 cells including ghost cells, or the active cells: the driver exchanges ghost cells before
@@ -190,7 +191,10 @@ Synthesis: MeshBlock by MeshBlock, three one-dimensional sums (n_z, then n_y, th
 with tables of cos and sin of 2 pi n (g + 1/2)/N_level from the global cell index g with
 the phase reduced in integers. Every cell sums the same terms in the same order for any
 division of the mesh; a refined MeshBlock evaluates the same function at its own cell
-centres. No Fourier library. Cost: section 9.
+centres. No Fourier library. Cost: section 9. The phase convention is that of
+`tracks/E-stoch-inf/noise/ref/noise_ref.py` (positions relative to the lower corner x0);
+`codebase/ref/synth.py` of the same track uses absolute positions, which differs by the
+phase k.x0 per mode when x0 is not zero: for Track E to reconcile.
 
 ### 7.2 Model `noise = power` (generic hook, unit test of the generator)
 
@@ -295,6 +299,7 @@ the journal. Figures: `tracks/core/notes/scalar_figs/`.
 | Test 4, generic sources (32^3, 2084 modes): coefficients of the synthesized fields equal (shell factor) x (twin alpha) to 2.2e-16 of the rms for frozen, white-in-time and step-window cases, nothing outside the ball (9e-17); shell means of the power within 2.9 sigma (85 shells), mean 1.031 +- 0.022; all dumped fields bit-identical for 1, 8 and 64 MeshBlocks; a restart at cycle 32 gives byte-identical dumps at cycle 64; increments of two steps have phase correlation 1.0 (frozen) and -5e-5 +- 0.06 (white in time); phi and Pi after one step equal the Runge-Kutta response to the sources to 6.6e-16 and 2.6e-15 | run core-20261115-135414-5a6953e (first version core-20261115-134715-1b6bc30, journal entry 4); `fig_noise_power.png` |
 | Test 4, Mukhanov-Sasaki sources (16^3, box 10, 435 modes, 31 shells, slow-roll background, geodesic slicing): lockstep mode functions against SciPy 6.4e-3, 3.7e-4, 2.2e-5 for Courant 0.25, 0.125, 0.0625 (orders 4.12, 4.07); the six fields equal (shell factor) x (twin alpha) x (stencil projector) to 7.1e-17 of the rms; 1 and 8 MeshBlocks bit-identical, restart byte-identical; discrete momentum constraint of the kick fields 4.9e-16 of its terms with the stencil projector, 1.4e-2 with the continuum projector; flipped sign of the Pi kick gives rms H = 1.9e-7 after one step against 2.7e-11, doubling with the amplitude | the same run; `fig_noise_ms.png` |
 | Test 5, particles and field together (dust universe of `problems/cosmo/flrw.athinput`, 32^3 particles, density-form sources, 16 steps): a vacuum energy Lambda = 0.6 from the particle module against the same from a field at rest with the constant potential Lambda/(8 pi) through `tmunu_tot`: lapse at the probe, proper volume and deposited energy agree to 7.6e-16; a field with V = 0 against no field: 7.1e-16. The vacuum energy changes the final volume by 19 percent | run core-20261115-140626-6699860; `fig_particles_field.png` |
+| Test 6, advective terms: the wave of test 1 with a uniform shift +-(0.3, 0.2, 0) has the coordinate frequency omega -+ k.beta to 6.2e-4, 1.2e-5, 2.0e-7 (N = 8, 16, 32; orders 5.65, 5.91) and 3.3e-4, 7.4e-6, 1.2e-7 for the other sign; amplitude loss of the upwinded stencils 3.8e-3, 3.5e-5, 2.7e-7 | run core-20261115-140852-3f7ca07; `fig_wave_shift.png` |
 | Statically refined mesh (smoke run): plane wave of test 1 across one refinement level (32^3 root mesh, 120 MeshBlocks, 64 steps) stays stable; rms difference to the exact wave 2.5e-6 (coarse), 6.4e-6 (fine), maximum 1.8e-5, about 100 times the error of a uniform 32^3 mesh | run core-20261115-135434-5a6953e (scouting) |
 | Standard outputs `sf` (bin) and `sf_phi` (vtk) are written and read by `athenak/vis/python/bin_convert.py` | unregistered smoke run, `scratch/core/tmp/sf/out_smoke` |
 | The module compiles in the card build (CUDA 12.6) | `.work/build_gpu_sf`; card runs pending: Slurm job 4427 (`tracks/core/analysis/scalar/gpu_job.sh`: cost at 128^3, tests 2, 4, 3, 1), queued when this was written; each part registers itself under `tracks/core/runs/` with a `summary.json` |
@@ -315,6 +320,8 @@ the journal. Figures: `tracks/core/notes/scalar_figs/`.
 - Particles and field in one run: verified for a field at rest (test 5); not run with a
   dynamical field. The constraint statistics of the particle module do not include the
   field.
+- Shift: tested with a uniform, frozen shift only (test 6); a field with an evolved shift
+  (Gamma driver, punctures) has not been run.
 - Refined meshes: one smoke run; the order of the error across a refinement boundary and
   the constraint behaviour with a coupled field there are not measured. The stencil
   projector uses the cell size of the root mesh.
