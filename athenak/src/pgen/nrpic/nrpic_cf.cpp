@@ -24,6 +24,10 @@
 //!   precollapsed  alpha = psi^-2
 //! The matter is carried by the particles of the nrpic module, which reads them from
 //! <particles> particle_file.
+//! Punctures may carry linear momentum and spin (Bowen-York curvature, K_ij = psi^-2
+//! Abar_ij) and a regular correction of their conformal factor: nrpic_bowen_york.hpp.
+//! <problem> puncture_setup = true adds a tracker, an initial refined region and a
+//! horizon finder for every puncture: nrpic_puncture_setup.hpp.
 
 #include <cmath>
 #include <cstdio>
@@ -43,6 +47,7 @@
 #include "z4c/z4c_amr.hpp"
 #include "particles/particles.hpp"
 #include "pgen/pgen.hpp"
+#include "pgen/nrpic/nrpic_bowen_york.hpp"
 
 namespace {
 
@@ -220,6 +225,11 @@ void ProblemGenerator::NrpicConformallyFlat(ParameterInput *pin, const bool rest
     CFFatal("<problem> lapse = '" + lapse + "' not recognized");
   }
 
+  // Bowen-York momentum and spin of the punctures, corrections of their psi
+  std::vector<Real> bytab_h;
+  const nrpic_by::BYSet by = nrpic_by::BYRead(pin, ncomp, bytab_h);
+  const DvceArray1D<Real> bytab = nrpic_by::BYDeviceTable(bytab_h);
+
   // tables on the device
   const int ntot = static_cast<int>(utab_h.size());
   DvceArray1D<Real> utab("cf_utab", (ntot > 0) ? ntot : 1);
@@ -253,6 +263,9 @@ void ProblemGenerator::NrpicConformallyFlat(ParameterInput *pin, const bool rest
     for (int c=0; c<ncomp; ++c) {
       psi += CFExcess(comp[c], utab, x, y, z);
     }
+    for (int c=0; c<by.n; ++c) {
+      psi += nrpic_by::BYCorrection(by.punc[c], bytab, x, y, z);
+    }
     const Real psi4 = psi*psi*psi*psi;
     adm.psi4(m,k,j,i) = psi4;
     for (int a=0; a<3; ++a) {
@@ -260,6 +273,19 @@ void ProblemGenerator::NrpicConformallyFlat(ParameterInput *pin, const bool rest
       for (int b=a; b<3; ++b) {
         adm.g_dd(m,a,b,k,j,i) = (a == b) ? psi4 : 0.0;
         adm.vK_dd(m,a,b,k,j,i) = 0.0;
+      }
+    }
+    if (by.curv) {
+      Real ab[6] = {0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
+      for (int c=0; c<by.n; ++c) {
+        nrpic_by::BYAddCurvature(by.punc[c], x, y, z, ab);
+      }
+      const Real ipsi2 = 1.0/(psi*psi);
+      int q = 0;
+      for (int a=0; a<3; ++a) {
+        for (int b=a; b<3; ++b) {
+          adm.vK_dd(m,a,b,k,j,i) += ipsi2*ab[q++];
+        }
       }
     }
     Real alp = 1.0;
@@ -295,6 +321,10 @@ void ProblemGenerator::NrpicConformallyFlat(ParameterInput *pin, const bool rest
   if (global_variable::my_rank == 0) {
     std::cout << "NRPIC: conformally flat initial data with " << ncomp
               << " component(s), lapse = " << lapse << std::endl;
+    if (by.n > 0) {
+      std::cout << "NRPIC: Bowen-York curvature or correction on " << by.n
+                << " puncture(s)" << std::endl;
+    }
   }
   return;
 }
