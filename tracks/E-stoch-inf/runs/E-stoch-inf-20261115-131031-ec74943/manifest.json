@@ -1,0 +1,39 @@
+{
+ "run_id": "E-stoch-inf-20261115-131031-ec74943",
+ "owner": "E-stoch-inf",
+ "package": "noise (E-pre-4)",
+ "kind": "scouting",
+ "purpose": "T-N2, T-N3, T-N4 of noise/JOURNAL.md: calibration of the statistics over 200 seeds (N=32), positive controls (20 seeds frozen/tanh, 5 each Markov/tanh, Markov/Heaviside, pair, 3 single precision, comparisons A11-A15) and 15 mutants through validate/validate_noise.py",
+ "cwd": "/data/haiyangw/nrpic/scratch/E-stoch-inf/E-stoch-inf-20261115-131031-ec74943",
+ "command": "python3 /data/haiyangw/nrpic/wt/E-stoch-inf/tracks/E-stoch-inf/noise/validate/selftest.py --out /data/haiyangw/nrpic/scratch/E-stoch-inf/E-stoch-inf-20261115-131031-ec74943",
+ "commit": "ec74943",
+ "worktree_dirty_paths": [],
+ "inputs": [
+  {
+   "path": "/data/haiyangw/nrpic/wt/E-stoch-inf/tracks/E-stoch-inf/noise/validate/selftest.py",
+   "sha256": "e079acb42ffbff3093b6a39cad47a83dd94f46f86b76b94d4f3c27e7fb91598c"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/wt/E-stoch-inf/tracks/E-stoch-inf/noise/validate/validate_noise.py",
+   "sha256": "a572cd3bf6904e7f14aca1e64f6ba0e49faeb216bc59a19adc551dd168e735b3"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/wt/E-stoch-inf/tracks/E-stoch-inf/noise/validate/athenak_io.py",
+   "sha256": "8452f13210eb656dd9897fa30f72df39ee600f65fb8625c090968229dfb93e6d"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/wt/E-stoch-inf/tracks/E-stoch-inf/noise/ref/noise_ref.py",
+   "sha256": "be4a7abf86ec91727c0ce8c1fefdc59e9603869a85f98c925f6a8ba11b907793"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/wt/E-stoch-inf/tracks/E-stoch-inf/noise/ref/philox_ref.py",
+   "sha256": "911a77cc4eafb1baaa3865cf02f1b1ea809892e86399b75d2b701694573e3df8"
+  }
+ ],
+ "output_dir": "/data/haiyangw/nrpic/scratch/E-stoch-inf/E-stoch-inf-20261115-131031-ec74943/",
+ "wall_time": "147.6 s",
+ "cores": 4,
+ "card_hours": 0.0,
+ "status": "completed",
+ "results": "T-N2 calibration (200 seeds): holds True; A2 zpool c0@200: mean -0.118 sd 1.064; A3 z4 c0@200: mean -0.101 sd 1.030; A7 z_re@200: mean 0.036 sd 1.006; A7 z_im@200: mean -0.011 sd 1.046; A15 z_re@200: mean -0.019 sd 0.987; A4 lag (0, 0, 0): mean -0.131 sd 1.068; A4 lag (1, 0, 0): mean -0.130 sd 1.046; A4 lag (1, 1, 1): mean 0.007 sd 1.024; A4 lag (2, 2, 2): mean 0.087 sd 0.937; A4 lag (4, 4, 4): mean -0.049 sd 1.043\nT-N3 positive controls: 2 failures\nT-N4 mutants: norm_2pi: failed ['A1', 'A2', 'A3', 'A4', 'A7', 'A9'] (expected ['A2']); white: failed ['A1', 'A2', 'A3', 'A4', 'A7', 'A9'] (expected ['A2']); corner: failed ['A1', 'A9'] (expected ['A1']); fresh_in_frozen: failed ['A1', 'A4', 'A8', 'A9'] (expected ['A8', 'A9']); separate_keys: failed ['A1', 'A6'] (expected ['A6']); axis_swap: failed ['A1', 'A10', 'A2', 'A3', 'A4', 'A6', 'A9'] (expected ['A1', 'A2']); fixed_modulus: failed ['A1', 'A3', 'A9'] (expected ['A3']); beyond_cut: failed ['A1', 'A10', 'A4', 'A9'] (expected ['A10']); pair_declared_hemisphere: failed ['A1', 'A6', 'A9'] (expected ['A6']); stage_time_error: failed ['A9'] (expected ['A9']); frozen_in_markov: failed ['A1', 'A2', 'A4', 'A8'] (expected ['A8']); block_keys: failed ['A1', 'A10', 'A11', 'A2', 'A3', 'A4', 'A6', 'A8', 'A9'] (expected ['A11']); restart_counter: failed ['A12'] (expected ['A12']); seed_ignored: failed ['A15'] (expected ['A15']); corner_resolution: failed ['A13'] (expected ['A13'])\n"
+}

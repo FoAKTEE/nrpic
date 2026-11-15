@@ -166,3 +166,45 @@ same run showed all 15 mutants caught; some fail more tests than predicted (for 
 the normalisation mutant also fails A3, A4, A7 and A9, whose statistics are normalised by
 the reference G). A1 divided by zero for an all-zero reference field (Heaviside step
 without crossing); fixed.
+
+## 2026-11-15 13:12 UTC: outcome T-N5 (run E-stoch-inf-20261115-131126-8eb199a)
+
+Processor release build of main (`.work/build_cpu_c1/src/athena`, sha256 in the manifest),
+z4c_linear_wave at cycle 0 with 1, 8 and 64 MeshBlocks. The assembled z4c_gzz and z4c_gxy
+are bit-identical for the three divisions; max |gzz - formula| = 5.4e-8 and
+|gxy - formula| = 1.8e-9 (float rounding; predicted below 4e-7); with x and z exchanged
+the error is 7.0e-2. The file header says "size of variable=4": AthenaK `bin` output is
+single precision [VERIFIED], so request C1 (double precision) stands. Prediction holds.
+Figure fig_reader_test.png of the run: the difference is the float quantisation pattern.
+
+## 2026-11-15 13:35 UTC: outcomes T-N2, T-N3, T-N4 (run E-stoch-inf-20261115-131031-ec74943)
+
+- T-N2 holds. 200 seeds, N = 32, nmax2 = 64: the ten statistics (A2 pooled z, A3 z4, A7
+  Re and Im, A15 Re, A4 at five lags) have means between -0.131 and 0.087 (all within
+  1.9 standard errors) and standard deviations between 0.937 and 1.068 (within 7 percent
+  of 1). The 1600 exact Gamma p-values of the shells are uniform (KS p = 0.88; 0.69
+  percent below 0.01). The analytic variances of the reference are right.
+- T-N3 refuted. 38 validations of correct output (20 frozen/tanh, 5 Markov/tanh, 5
+  Markov/Heaviside, 5 pair, 3 single precision) and the five comparisons: two failures,
+  both A3 (Kolmogorov-Smirnov of |w|^2 against Exp(1)) in the frozen/tanh series: seed
+  20379900 with p = 7.4e-6 (c0, c1, c3 at cycles 100 and 101, which share the same
+  257 amplitudes) and seed 20387819 with p = 6.9e-5 (c3 at cycle 300). Predicted: at most
+  one failing validation. Every other test passed in all 38.
+- T-N4 holds. All 15 mutants fail the tests written for them; most fail more (the
+  normalisation and white mutants also A3, A4, A7, A9; the axis exchange also A10 and A6,
+  because G of c3 vanishes exactly at n_z^2 = n^2/3 and the exchanged field does not; the
+  MeshBlock-keyed mutant fails nine tests). The statistical-only mutants are caught by
+  their statistical tests: fixed modulus by A3, ignored seed by A15.
+- A diagnostic (unregistered, 2000 seeds) showed the single KS p-values calibrated
+  (fractions below 1e-2 and 1e-3: 0.007-0.013 and 0-0.0015 for six selections; 1.7e6
+  pooled |alpha|^2: KS p = 0.88, tail beyond 10 at 4.51e-5 against e^-10 = 4.54e-5). No
+  cause is named yet; T-N6 measures the family-wise rate of A3.
+
+Prediction T-N6 (validate/calib_a3.py, 2000 seeds, the A3 decisions of the base case):
+single decisions calibrated (fraction below 1e-3 within three binomial standard
+deviations of 1e-3); the family-wise rate of A3 per validation at the per-decision level
+1e-4 between 1e-3 and 1e-2 (40 correlated decisions). If so, two failures in 20 base
+validations had a probability of the order of 1e-3 to 1e-2, i.e. bad luck but not
+impossible; the remedy is to control the family-wise rate per validation (Bonferroni
+over the counted decisions). Refuted if single decisions are miscalibrated (then the
+draws or the selection are at fault) or the family rate exceeds 2e-2.
