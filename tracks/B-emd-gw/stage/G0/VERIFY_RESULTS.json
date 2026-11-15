@@ -1,9 +1,9 @@
 {
   "track": "B-emd-gw",
   "gate": "G0",
-  "commit": "0fee5b605028251b82e7f305e08eb806afa32b6e",
-  "verified_utc": "2026-11-15T16:57:42Z",
-  "export": "/data/haiyangw/nrpic/scratch/B-emd-gw/tmp/stage-verify/B-emd-gw-G0-0fee5b6-20261115T165645Z",
+  "commit": "20350efd1394a1884621cb08580b6bf3c9b939c3",
+  "verified_utc": "2026-11-15T19:24:43Z",
+  "export": "/data/haiyangw/nrpic/scratch/B-emd-gw/tmp/stage-verify/B-emd-gw-G0-20350ef-20261115T191231Z",
   "result": "FAIL",
   "checks": [
     {
@@ -21,7 +21,7 @@
     {
       "check": "export",
       "status": "PASS",
-      "message": "clean export of 0fee5b605028 (HEAD) in /data/haiyangw/nrpic/scratch/B-emd-gw/tmp/stage-verify/B-emd-gw-G0-0fee5b6-20261115T165645Z/tree",
+      "message": "clean export of 20350efd1394 (HEAD) in /data/haiyangw/nrpic/scratch/B-emd-gw/tmp/stage-verify/B-emd-gw-G0-20350ef-20261115T191231Z/tree",
       "detail": null
     },
     {
@@ -69,46 +69,14 @@
     {
       "check": "runs",
       "status": "FAIL",
-      "message": "17 of 108 runs have problems",
+      "message": "9 of 132 runs have problems",
       "detail": {
-        "B-20261115-163617-085c093": [
-          "status is running: not finished (nrpic-run finish)",
-          "missing /data/haiyangw/nrpic/scratch/B-emd-gw/B-20261115-163617-085c093/sha256sums.txt"
-        ],
-        "B-20261115-163621-0ae44f1": [
-          "status is running: not finished (nrpic-run finish)",
-          "missing /data/haiyangw/nrpic/scratch/B-emd-gw/B-20261115-163621-0ae44f1/sha256sums.txt"
-        ],
-        "B-20261115-163653-f6324ea": [
-          "status is submitted: not finished (nrpic-run finish)",
-          "missing /data/haiyangw/nrpic/scratch/B-emd-gw/B-20261115-163653-f6324ea/sha256sums.txt"
-        ],
-        "B-20261115-164059-d802e82": [
-          "status is submitted: not finished (nrpic-run finish)",
-          "missing /data/haiyangw/nrpic/scratch/B-emd-gw/B-20261115-164059-d802e82/sha256sums.txt"
-        ],
         "B-20261115-164157-40b9f6d": [
           "output not in sha256sums.txt: reference.png",
           "output not in sha256sums.txt: reference.pdf",
           "output not in sha256sums.txt: reference_g.npz",
           "output not in sha256sums.txt: sha256sums.moved.txt",
           "output not in sha256sums.txt: reference.json"
-        ],
-        "B-20261115-165056-835fddf": [
-          "status is running: not finished (nrpic-run finish)",
-          "missing /data/haiyangw/nrpic/scratch/B-emd-gw/B-20261115-165056-835fddf/sha256sums.txt"
-        ],
-        "B-20261115-165353-b592d43": [
-          "status is submitted: not finished (nrpic-run finish)",
-          "missing /data/haiyangw/nrpic/scratch/B-emd-gw/B-20261115-165353-b592d43/sha256sums.txt"
-        ],
-        "B-20261115-165525-f7c2004": [
-          "status is running: not finished (nrpic-run finish)",
-          "missing /data/haiyangw/nrpic/scratch/B-emd-gw/B-20261115-165525-f7c2004/sha256sums.txt"
-        ],
-        "B-20261115-165608-171ff45": [
-          "status is running: not finished (nrpic-run finish)",
-          "missing /data/haiyangw/nrpic/scratch/B-emd-gw/B-20261115-165608-171ff45/sha256sums.txt"
         ],
         "B-emd-gw-20261115-113102-bc5e082": [
           "fields missing: code, env, input"
@@ -424,7 +392,7 @@
     {
       "check": "status",
       "status": "PASS",
-      "message": "STATUS.md has 35 lines",
+      "message": "STATUS.md has 34 lines",
       "detail": null
     },
     {
