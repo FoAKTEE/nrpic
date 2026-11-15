@@ -256,3 +256,29 @@ Figures looked at: `fig_rate_history.png`, `fig_rate_summary.png`,
   momentum components change by at most 4.6e-19 of sum M |u|; largest mean pair defect
   per step 0.46 eps of the pair energy and 0.28 eps of the pair momentum scale. The
   history column sum_MW (a plain floating sum) scatters by 1.7e-13 relative.
+
+## 2026-11-15 13:50 UTC  outcome of P7 (first run), prediction for a second box
+
+Run core-20261115-133737-82e2040 (1e5 particles, 100 cycles, 4.97e5 collisions,
+sub-cycling active). Figure `fig_repro.png` looked at.
+- Analytic path: all five snapshots byte-identical for 1, 8 and 64 MeshBlocks; integer
+  history columns identical; restart from the dump of cycle 37 gives the identical last
+  snapshot and identical history records (1 and 64 MeshBlocks); seed 8 instead of 7
+  changes all 1e5 particles from the first cycle on. Passed.
+- Mesh path: restart identical (passed). The two layouts are ALSO byte-identical,
+  against my prediction. Reason, by inspection of the numbers: the box [100, 101]^3 with
+  32^3 cells has block edges and a cell size that are exact binary fractions, so
+  (x - xmin)/dx of two MeshBlock divisions differ by an exact integer and the metric
+  reconstruction rounds identically. The momenta of the mesh path differ from the
+  analytic path by at most 3.6e-15 (99930 particles), with the same collisions.
+  So this box cannot show the limitation of `rng.md` section 9, nor does it exercise the
+  face table of the collision cells.
+- Prediction for a second box, [100.3, 101.2]^3 with 30^3 cells in 1 or 27 MeshBlocks
+  (faces are not binary fractions), written before the run: analytic path byte-identical
+  (this is what the tabulated faces are for; with the block-relative cell index a
+  particle within rounding of a face could change cell). Mesh path: NOT byte-identical;
+  my first prediction ("amplified by the first acceptance that flips") was also wrong in
+  its mechanism: a flip needs a uniform deviate within 1e-16 of a probability, which
+  does not happen in 5e6 tests, so the difference stays at rounding level: most
+  particles differ, by less than 1e-13 in u, and the integer history columns are
+  identical.

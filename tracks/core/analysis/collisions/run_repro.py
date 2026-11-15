@@ -95,6 +95,22 @@ def main():
     runs = {"a1": (deck_a, ov(1)), "a8": (deck_a, ov(2)), "a64": (deck_a, ov(4)),
             "a1_seed8": (deck_a, ov(1, seed=8)), "m1": (deck_m, ov(1)),
             "m64": (deck_m, ov(4))}
+    # The box above has cell faces that are exact binary fractions. A second box,
+    # [100.3, 101.2]^3 with 30^3 cells in 1 or 27 MeshBlocks, has not: there the cell
+    # index needs the tabulated faces, and the metric reconstruction of the mesh path
+    # rounds differently for different MeshBlock edges.
+    ic2 = os.path.join(out, "twotemp_nd.nrp")
+    common.make_box(ic2, "twotemp", n, seed=31, theta=0.3, theta2=0.1, xmin=100.3,
+                    length=0.9)
+    nd = [f"particles/particle_file={ic2}", f"particles/dt={dt}",
+          f"particles/coll_sigma={sigma*0.9**3!r}", f"particles/snap_dt={25*dt!r}",
+          f"time/nlim={steps}", "time/tlim=1.0e9", "job/rng_seed=7"] \
+        + [f"mesh/nx{d}=30" for d in (1, 2, 3)] \
+        + [f"mesh/x{d}min=100.3" for d in (1, 2, 3)] \
+        + [f"mesh/x{d}max=101.2" for d in (1, 2, 3)]
+    for key, deck in (("a", deck_a), ("m", deck_m)):
+        runs[key + "1_nd"] = (deck, nd + [f"meshblock/nx{d}=30" for d in (1, 2, 3)])
+        runs[key + "27_nd"] = (deck, nd + [f"meshblock/nx{d}=10" for d in (1, 2, 3)])
     res = common.run_many([(args.exe, d, os.path.join(out, k), o) for k, (d, o) in
                            runs.items()], args.nproc)
     ok = all(r[0] == 0 for r in res)
@@ -134,7 +150,9 @@ def main():
                "analytic_other_seed": compare(d("a1"), d("a1_seed8")),
                "mesh_1_vs_64": compare(d("m1"), d("m64")),
                "mesh_restart_1": restart_compare(d("m1"), d("m1_restart")),
-               "analytic_vs_mesh_1": compare(d("a1"), d("m1"))}
+               "analytic_vs_mesh_1": compare(d("a1"), d("m1")),
+               "analytic_nondyadic_1_vs_27": compare(d("a1_nd"), d("a27_nd")),
+               "mesh_nondyadic_1_vs_27": compare(d("m1_nd"), d("m27_nd"))}
     s = summary
     expect = {
         "analytic path: snapshots byte-identical for 1, 8, 64 MeshBlocks":
@@ -151,11 +169,15 @@ def main():
             and s["analytic_other_seed"]["particles_differing"] > n//2,
         "mesh path: restart byte-identical":
             s["mesh_restart_1"]["last_snapshot_identical"],
+        "analytic path, faces not binary fractions: byte-identical for 1 and 27 blocks":
+            s["analytic_nondyadic_1_vs_27"]["identical_files"],
     }
     summary["expectations"] = {k: bool(v) for k, v in expect.items()}
     # the mesh path is predicted NOT to be identical between layouts (metric gather)
     summary["mesh_layouts_identical"] = s["mesh_1_vs_64"]["identical_files"]
-    ca, cb = s["mesh_1_vs_64"]["collisions"]
+    summary["mesh_nondyadic_layouts_identical"] = \
+        s["mesh_nondyadic_1_vs_27"]["identical_files"]
+    ca, cb = s["mesh_nondyadic_1_vs_27"]["collisions"]
     summary["mesh_layouts_collision_count_z"] = float((ca - cb)/np.sqrt(ca + cb))
     summary["ok"] = bool(ok and all(expect.values()))
     with open(os.path.join(out, "summary.json"), "w") as fp:
@@ -170,7 +192,9 @@ def main():
     pairs = [("a1", "a8", "analytic, 1 vs 8 blocks", fs.PAL["blue"]),
              ("a1", "a64", "analytic, 1 vs 64 blocks", fs.PAL["red"]),
              ("a1", "a1_seed8", "analytic, other seed", fs.PAL["yellow"]),
-             ("m1", "m64", "mesh metric, 1 vs 64 blocks", fs.PAL["green"])]
+             ("m1", "m64", "mesh metric, 1 vs 64 blocks", fs.PAL["green"]),
+             ("a1_nd", "a27_nd", "analytic, second box, 1 vs 27", fs.PAL["orange"]),
+             ("m1_nd", "m27_nd", "mesh metric, second box, 1 vs 27", "k")]
     for a, b, lab, col in pairs:
         frac, mx = [], []
         sa, sb = common.snapshots(d(a)), common.snapshots(d(b))
