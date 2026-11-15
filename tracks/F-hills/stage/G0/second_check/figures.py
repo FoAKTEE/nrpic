@@ -39,6 +39,24 @@ def main(a):
     S = summ["summary"]
     lead = json.load(open(LEAD_V7))["q10"]
     comp = {}
+    # fractions over all 180 phases: a run stopped as "superluminal" (point-mass near-collision
+    # of the members) counts by its binary energy at the stop (all such runs were bound)
+    A = {}
+    for lab in S:
+        A[lab] = []
+        for rp in rps:
+            rr = [r for r in rows if r["label"] == lab and r["rp"] == rp and "error" not in r]
+            sl = [r for r in rr if r["status"] == "superluminal"]
+            A[lab].append(dict(
+                rp=rp, n=len(rr), n_superluminal=len(sl),
+                n_superluminal_bound=sum((r["Eb"] is not None and r["Eb"] < 0) for r in sl),
+                separated=frac(rr, lambda r: any(r["plunged"]) or (r["Eb"] is not None and r["Eb"] > 0)),
+                captured=frac(rr, lambda r: any(r["plunged"])),
+                gr_criterion_any=frac([r for r in rr if r["status"] != "superluminal"],
+                                      lambda r: any(r["gr_capture_criterion"])),
+                dL_cm_to_2rt_median=S[lab][rps.index(rp)]["dL_cm_to_2rt_median"],
+                member_below_4M=S[lab][rps.index(rp)]["member_below_4M"]))
+    S = A
 
     # ---------------- SC1: my fractions against the lead's V7 ----------------
     fig, axs = plt.subplots(1, 2, figsize=(fs.FULL_WIDTH, 3.0))
@@ -147,7 +165,7 @@ def main(a):
     fig.tight_layout()
     fs.save(fig, os.path.join(out, "fig_sc3_sc6_models"))
     plt.close(fig)
-    comp["models"] = {lab: S[lab] for lab in S}
+    comp["models_all_phases"] = {lab: S[lab] for lab in S}
 
     # ---------------- SC4: capture criterion in the (L, E) plane ----------------
     Ls = np.linspace(3.0, 8.0, 400)
