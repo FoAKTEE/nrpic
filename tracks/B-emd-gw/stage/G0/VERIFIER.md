@@ -144,7 +144,8 @@ restart or NRFIELD file given); `test_zeldovich.py` all pass (my first rerun,
 part; on record). Break tests with my own fields (`v5_gwdiag.py`, run
 `B-20261115-170546-4507b05`, figure read): plane waves along (1,0,0), (1,2,0), (1,1,1),
 (0,1,2), plus, cross and mixed polarization, a = 1 and a = 3 (rescaled metric, proper
-frequency |k|/a): TT read-back error 1e-10 of A; Psi_4 = d_t^2 h_+ - i d_t^2 h_x (the
+frequency |k|/a; a static rescaling, not an expanding background): TT read-back error
+1e-10 of A; Psi_4 = d_t^2 h_+ - i d_t^2 h_x (the
 documented convention) to 8.7e-7 relative with spectral derivatives (the O(A) nonlinearity)
 and 9e-5 with sixth-order differences at 24 cells; backward partner 2e-9. Exactly flat
 metrics in perturbed coordinates (eps = 1e-4, 1e-3): TT part scales as eps^2 (ratio 100.1),
@@ -211,4 +212,57 @@ unit test, the compute table beyond the two throughput logs (1404 cycles, 63.78 
 
 ## 4. Comparison with the track's own review (written after sections 1 to 3)
 
-See the section appended below after reading `stage/G0/REVIEW.md`.
+Read after commit ad7f707: `stage/G0/REVIEW.md` (lead's review, runs
+B-emd-gw-20261115-131016-03b1119 and -131027-03b1119), then `stage/G0/OPEN.md` and
+`stage/G1/STATUS.md`.
+
+Agreement (same conclusion reached independently):
+- Item 3, its amendments and check 1E (REVIEW, scope, L2 b, c); the global mode
+  C Y^-3 diag(1, -1/2, -1/2).
+- The crossed-wave coefficient -(5/6) phi_x phi_y cos(K.x) (REVIEW L2 d). The lead's
+  1.3858e-5 is the same formula at eps = 0.9 (the cosmo/ ratio); mine 1.5399e-5 at eps = 1.
+- The junk decays as 1/a (the lead by a hand argument; here the exact solution, the
+  numbers 0.66 percent and 1.81 percent, and the check that K^TT of the data vanishes).
+- The sign error of the oblique-wave generator (REVIEW periodic_z4c, OPEN item 13): found
+  here from the source and measured in the evolution (TT half A/2 travels at c, the rest
+  violates the momentum constraint at first order).
+- The second-order closed-box backreaction (REVIEW L2 f: alpha - 1 = -1.64e-10 at t = 10):
+  my x_N32 run has alpha - 1 of 1.61e-10 in magnitude at t = 10.
+- Throughput numbers, the locators 1604.06065:142, 294-298, 2403.15126:1074,
+  2605.04487:2395-2405; the track's tests pass and the scope and baseline scripts reproduce
+  the committed numbers.
+
+Found here, not in the review:
+1. The TT-fraction crossover of risk 1 is eps = 1/(2 sqrt3) = 0.289, not 0.18, and the
+   fraction measure depends on which non-TT terms are counted (C2). The review calls the
+   noise criterion a JUDGEMENT bound without examining the number.
+2. The overlap of K with the global TT mode is a total time derivative only for an
+   x-independent lapse (C1).
+3. The code's slicing is Newtonian at first order and, with zero shift, the second-order
+   TT strain of the code's conformal metric equals the Poisson-gauge strain (C5,
+   derivation, not tested numerically). This answers OPEN item 7 at second order: the
+   reference needs no carrying to the code's gauge before shell crossing; K^TT is not
+   needed for gauge safety at that order.
+4. The homogeneous anisotropic drift of the conformal metric in the wave runs and its A^2
+   scaling (run B-20261115-170431-c49964c): the anisotropic companion of the lead's
+   alpha backreaction.
+5. Omega_GW today: with eq. (result_OmZ) of 2403.15126 and z_e taken at t_col, the peak
+   scales as sigma^(5/2), not sigma^(7/2) (C8). The review confirms line 1074 as a reading,
+   which it is. Pointer for OPEN item 12 [JUDGEMENT]: the factor 144-392 by which the
+   track misses the Omega prefactor of 2403.15126 line 1501 varies with the emission time
+   theta = 28 to 126 exactly as theta^(2/3) (143.7 to 391.6 in
+   `baseline/results/baseline_results.json` T7b; 2.7257 = (126/28)^(2/3)): the track's
+   conversion `today()` divides by 1 + z_e taken at the emission time, while the paper's
+   1e-6 sigma^(7/2) has no such dependence. So part of that factor is where the emission
+   redshift is taken; the constant part (144 at theta = 28) remains open.
+6. Weakest point 1 (the pre-shell-crossing comparison window, closed by junk early and
+   third order late unless the reference is the full second-order solution from the
+   code's own initial data) is not in the review or in OPEN.md.
+
+In the review, not checked here: the five packages' bit-for-bit reproduction of every
+number (I reran scope, baseline T1-T2 and the tests only), periodic_z4c's gauge-wave and
+AwA tables, the Fourier-symbol prediction, the weyl-output lag, the late rise of h^TT in
+the cosmology dumps (OPEN item 9), the manifest relabelling, verify_cosmo, the
+self-similarity of the homogeneous ellipsoid, and the "(5/12)" normalization note (fixed
+in SCOPE.md before I read it; my numbers use the real-space amplitude 5/6 and the Fourier
+magnitude 5/12 as defined there).
