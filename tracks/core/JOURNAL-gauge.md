@@ -727,3 +727,19 @@ logarithmic distance between the constant-eta value and the value of the hole's 
 units (here ln(1.20)/ln(1.46) = 0.48 left), and leaves the heavy hole exactly as with
 eta = 2. Both horizon masses do not depend on the damping (the early plateaus of the
 horizon masses are the same in all three runs: a property of the small mesh).
+
+## 2026-11-15, entry 6: test H, the relaxation in a homogeneous universe (prediction written before the run)
+
+The ball tests compare the lapse with the homogeneous reference only at the centre and
+mix the term with the dynamics of the surface. An exact check of the term itself: the
+homogeneous dust universe of `problems/cosmo/flrw.athinput` (periodic box of side 4,
+H_0 = 1, 32 cells, zero shift) with the 1+log lapse and `lapse_leak` = 0, 20, 5
+(`problems/cosmo/flrw_leak.athinput`, driver and comparison
+`analysis/gauge/flrw_leak.py`, t = 2/H_0). There the condition is the ordinary
+differential equation d ln(alpha)/dt = 6 H(tau) - lapse_leak max(ln alpha, 0),
+d tau/dt = alpha, H = H_0/(1 + 3 H_0 tau/2), a = (1 + 3 H_0 tau/2)^(2/3); lapse_leak = 0
+gives alpha = 1 + 6 ln a. Prediction [JUDGEMENT]: the lapse (alpha_max of the history)
+and a from the proper volume agree with that solution to 1e-5 relative over the run for
+all three rates (wave 1 matched alpha = a to 1.9e-7 with the conformal-time lapse, CT
+"C0"); alpha_max - alpha_min below 1e-10 (homogeneity is kept). Refuted by a relative
+error above 1e-4 (a wrong factor or sign in the term would show at order 1e-1).
