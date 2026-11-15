@@ -375,3 +375,8 @@ B. Triaxial ball at 64 cells, 8 cycles, without the solve and with it. Predictio
    (t = 2) the run with the solve still has the smaller mean |H| (by at least a factor
    3: the momentum constraint is violated equally in both and feeds H during the
    evolution). Refuted if the run with the solve has the larger H at the end, or fails.
+
+First launch of the check (runs core-20261115-162329-5e52ac1 and -162413-5e52ac1): void,
+a fault of my set-up. The inputs end at `tlim = 1`, which the step of 0.25 reaches after
+4 cycles; the run from the dump started at the end time and stopped at once without a
+record. Relaunched with `time/tlim=100` on the command lines; the predictions stand.

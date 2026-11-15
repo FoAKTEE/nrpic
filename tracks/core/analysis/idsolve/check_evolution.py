@@ -68,7 +68,7 @@ def main():
     with open(inp, "w") as f:
         f.write(txt + RST % (a.steps//2))
     nrp = run_tests.ic_gauss(0.5)
-    args = run_tests.mesh_args(32, 16) + ["time/nlim=%d" % a.steps,
+    args = run_tests.mesh_args(32, 16) + ["time/nlim=%d" % a.steps, "time/tlim=100.0",
                                            "particles/particle_file=" + os.path.basename(nrp)]
     ra, sa = registered("initial-data solver: evolution of the solved Gaussian data with a "
                         "restart dump", "idsolve-evo-gauss", [inp, nrp],
@@ -77,7 +77,7 @@ def main():
     rst = os.path.join(da, "rst", "gauss.00001.rst")
     rb, sb = registered("initial-data solver: continuation of %s from its restart dump" % ra,
                         "idsolve-evo-gauss-restart", [rst, rst + ".prt", nrp],
-                        [a.exe, "-r", "gauss.00001.rst"])
+                        [a.exe, "-r", "gauss.00001.rst", "time/tlim=100.0"])
     ca, cb = cstat(ra, "gauss"), cstat(rb, "gauss")
     # the continued run writes the records after the dump
     tb = cb[:, 0]
@@ -100,7 +100,7 @@ def main():
     # ---- B: triaxial ball without and with the solve
     nrp, tab = run_tests.ic_tri(0.5, 0.05)
     base = run_tests.mesh_args(64, 32) + [
-        "time/nlim=%d" % a.steps, "particles/nfilter=0",
+        "time/nlim=%d" % a.steps, "time/tlim=100.0", "particles/nfilter=0",
         "particles/particle_file=" + os.path.basename(nrp),
         "problem/comp0_file=" + os.path.basename(tab)]
     binp = os.path.join(idlib.WT, "problems/idsolve/ball.athinput")
