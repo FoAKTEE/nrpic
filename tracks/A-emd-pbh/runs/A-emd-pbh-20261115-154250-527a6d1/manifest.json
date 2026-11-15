@@ -1,0 +1,59 @@
+{
+ "run_id": "A-emd-pbh-20261115-154250-527a6d1",
+ "owner": "A-emd-pbh",
+ "track": "A-emd-pbh",
+ "gate": "G2",
+ "package": "periodic_threshold",
+ "purpose": "T2/T3: static and adaptive mesh in the periodic cosmological box; horizon finder in a periodic mesh (processor)",
+ "kind": "scouting",
+ "command": [
+  "/data/haiyangw/nrpic/wt/A-emd-pbh/.venv/bin/python",
+  "-I",
+  "tracks/A-emd-pbh/periodic_threshold/scripts/t2t3_cpu.py",
+  "--out",
+  "/data/haiyangw/nrpic/scratch/A-emd-pbh/A-emd-pbh-20261115-154250-527a6d1",
+  "--jobs",
+  "3"
+ ],
+ "cwd": "/data/haiyangw/nrpic/wt/A-emd-pbh",
+ "commit": "527a6d1641897441faaf5e280b05d5b05e12eb81",
+ "git": {
+  "sha": "527a6d1641897441faaf5e280b05d5b05e12eb81",
+  "branch": "track/A-emd-pbh",
+  "package_dirty": false
+ },
+ "host": "anta",
+ "inputs": [
+  {
+   "path": "/data/haiyangw/nrpic/.work/build_cpu_v03/src/athena",
+   "sha256": "d983155bb21befedbd123d54d84fcfc12a875ee0aaa0baa36f5a51261041c25c"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/wt/A-emd-pbh/tracks/A-emd-pbh/periodic_threshold/inputs/peak_smr.athinput",
+   "sha256": "6b139c20c67d08f10cbcd273f6e4ed86c2600c49258ecd9392772c5ed6bb2d8e"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/wt/A-emd-pbh/tracks/A-emd-pbh/periodic_threshold/inputs/peak_amr.athinput",
+   "sha256": "f35b4073cac7c7aa6e4d1dfc1b5a2d2d43cf3eabfe867a33aed42e0649107c44"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/wt/A-emd-pbh/tracks/A-emd-pbh/periodic_threshold/inputs/punc_box16.athinput",
+   "sha256": "c495e57074a9e8f2b5972f91a39dffce082536b1518c358fd98c22ca8930eaae"
+  }
+ ],
+ "output_dir": "/data/haiyangw/nrpic/scratch/A-emd-pbh/A-emd-pbh-20261115-154250-527a6d1",
+ "outputs": {
+  "dir": "scratch/A-emd-pbh/A-emd-pbh-20261115-154250-527a6d1",
+  "sha256sums": "sha256sums.txt"
+ },
+ "cores": 3,
+ "card_hours": 0.0,
+ "parents": [],
+ "registered_by": "hand (scripts/register_run.py): nrpic-run refuses the worktree while other helpers' untracked files are present",
+ "status": "completed",
+ "started": "2026-11-15T15:42:50.201212+00:00",
+ "notes": "",
+ "wall_time_s": 203.04,
+ "exit_code": 0,
+ "ended": "2026-11-15T15:46:13.505051+00:00"
+}

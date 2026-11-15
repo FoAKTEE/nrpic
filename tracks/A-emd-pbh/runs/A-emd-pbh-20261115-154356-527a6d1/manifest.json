@@ -1,0 +1,47 @@
+{
+ "run_id": "A-emd-pbh-20261115-154356-527a6d1",
+ "owner": "A-emd-pbh",
+ "track": "A-emd-pbh",
+ "gate": "G2",
+ "package": "periodic_threshold",
+ "purpose": "S1 initial data: peak mu = 0.5, e = 0.2, eps_i = 1, 64^3, one particle per cell (make_peak_ic.py)",
+ "kind": "scouting",
+ "command": [
+  "/data/haiyangw/nrpic/wt/A-emd-pbh/.venv/bin/python",
+  "-I",
+  "tracks/A-emd-pbh/periodic_threshold/scripts/make_peak_ic.py",
+  "--mu",
+  "0.5",
+  "--e",
+  "0.2",
+  "--eps-i",
+  "1",
+  "--n",
+  "64",
+  "--nfilter",
+  "2",
+  "--compensate",
+  "--out",
+  "/data/haiyangw/nrpic/scratch/A-emd-pbh/A-emd-pbh-20261115-154356-527a6d1"
+ ],
+ "cwd": "/data/haiyangw/nrpic/wt/A-emd-pbh",
+ "commit": "527a6d1641897441faaf5e280b05d5b05e12eb81",
+ "git": {
+  "sha": "527a6d1641897441faaf5e280b05d5b05e12eb81",
+  "branch": "track/A-emd-pbh",
+  "package_dirty": true
+ },
+ "host": "anta",
+ "inputs": [],
+ "output_dir": "/data/haiyangw/nrpic/scratch/A-emd-pbh/A-emd-pbh-20261115-154356-527a6d1",
+ "outputs": {
+  "dir": "scratch/A-emd-pbh/A-emd-pbh-20261115-154356-527a6d1"
+ },
+ "cores": 2,
+ "card_hours": 0.0,
+ "parents": [],
+ "registered_by": "hand (scripts/register_run.py): nrpic-run refuses the worktree while other helpers' untracked files are present",
+ "status": "stopped",
+ "started": "2026-11-15T15:43:56.095488+00:00",
+ "notes": "Stopped by hand before completion: make_peak_ic.py of commit 527a6d1 wrapped the particle positions into [-L/2, L/2) without shifting them by -L/2, so the particle peak sat at the box corner and the metric peak at the origin (found by T2b, run A-emd-pbh-20261115-154250-527a6d1). Superseded."
+}

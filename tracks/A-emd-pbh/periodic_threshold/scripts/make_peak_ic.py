@@ -125,7 +125,10 @@ def main():
     # the tool's own psi_N (spectral) against -(3/5) zeta: a check of the normalisation
     psiN_tool, _ = mf.spectral_fields(tor, delta, 1.0, 1.0)
     psi_dict = (1.0 - 2.0*psiN_tool)**0.25
-    xs = np.mod(x + 0.5*L, L) - 0.5*L
+    # make_field works on [0, L); its cell i is the mesh cell i of [-L/2, L/2): shift by
+    # -L/2 (a first version wrapped x into [-L/2, L/2) without shifting it, which put the
+    # particle peak at the box corner and the metric peak at the origin; found by T2b)
+    xs = x - 0.5*L
     info.update({
         "mu": a.mu, "e": a.e, "p": a.p, "eps_i": a.eps_i, "k": k, "boxk": a.boxk,
         "box_side": L, "r_m": float(np.sqrt(6.0)/k), "peak_at": [0.0, 0.0, 0.0],

@@ -1,0 +1,40 @@
+{
+ "run_id": "A-emd-pbh-20261115-153520-0576e01",
+ "owner": "A-emd-pbh",
+ "track": "A-emd-pbh",
+ "gate": "G2",
+ "package": "periodic_threshold",
+ "purpose": "P0: design numbers of the single-peak periodic set-up (arithmetic)",
+ "kind": "scouting",
+ "command": [
+  "/data/haiyangw/nrpic/wt/A-emd-pbh/.venv/bin/python",
+  "-I",
+  "tracks/A-emd-pbh/periodic_threshold/scripts/design_numbers.py",
+  "--out",
+  "/data/haiyangw/nrpic/scratch/A-emd-pbh/A-emd-pbh-20261115-153520-0576e01"
+ ],
+ "cwd": "/data/haiyangw/nrpic/wt/A-emd-pbh",
+ "commit": "0576e011479916bc0fa4c38d86a7b9284914155d",
+ "git": {
+  "sha": "0576e011479916bc0fa4c38d86a7b9284914155d",
+  "branch": "track/A-emd-pbh",
+  "package_dirty": false
+ },
+ "host": "anta",
+ "inputs": [],
+ "output_dir": "/data/haiyangw/nrpic/scratch/A-emd-pbh/A-emd-pbh-20261115-153520-0576e01",
+ "outputs": {
+  "dir": "scratch/A-emd-pbh/A-emd-pbh-20261115-153520-0576e01",
+  "sha256sums": "sha256sums.txt"
+ },
+ "cores": 1,
+ "card_hours": 0.0,
+ "parents": [],
+ "registered_by": "hand (scripts/register_run.py): nrpic-run refuses the worktree while other helpers' untracked files are present",
+ "status": "completed",
+ "started": "2026-11-15T15:35:20.392659+00:00",
+ "notes": "",
+ "wall_time_s": 1.42,
+ "exit_code": 0,
+ "ended": "2026-11-15T15:35:21.812061+00:00"
+}

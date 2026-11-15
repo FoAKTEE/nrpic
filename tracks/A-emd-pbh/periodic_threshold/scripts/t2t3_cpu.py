@@ -51,6 +51,11 @@ CASES = {
     "T2b_smr_mu0.03": dict(inp=SMR, ic="peak0.03", args=["time/nlim=1",
                                                          "fastflow/find_every=1000"]),
     # T2c: adaptive refinement at the start
+    "T2c_amr_flrw": dict(inp=AMR, ic="flrw", args=["problem/id=flrw", "time/nlim=8",
+                                                   "mesh/nx1=32", "mesh/nx2=32",
+                                                   "mesh/nx3=32", "meshblock/nx1=8",
+                                                   "meshblock/nx2=8", "meshblock/nx3=8",
+                                                   "fastflow/find_every=1000"]),
     "T2c_amr_mu0.5": dict(inp=AMR, ic="peak0.5", args=["time/nlim=8", "mesh/nx1=32",
                                                        "mesh/nx2=32", "mesh/nx3=32",
                                                        "meshblock/nx1=8", "meshblock/nx2=8",
@@ -129,6 +134,8 @@ def analyse(out):
     res = {}
     for name in CASES:
         d = os.path.join(out, name)
+        if not os.path.isdir(d):
+            continue
         r = {"log_tail": open(os.path.join(d, "athena.log")).read().splitlines()[-4:]}
         cst = glob.glob(os.path.join(d, "*.cstat.hst"))
         if cst:
@@ -196,7 +203,7 @@ def figures(out, res):
     ax = fig.add_subplot(2, 2, 1)
     for name, col in (("T2a_uniform", fs.PAL["blue"]), ("T2a_smr_adaptive", fs.PAL["red"]),
                       ("T2a_smr_finest", fs.PAL["yellow"])):
-        c = res[name].get("cstat")
+        c = res.get(name, {}).get("cstat")
         if c:
             ax.semilogy(c["time"], np.maximum(c["Hr_max"], 1e-17), "o-", color=col,
                         label=name[4:])
@@ -208,7 +215,7 @@ def figures(out, res):
     ax = fig.add_subplot(2, 2, 2)
     for name, col in (("T2a_uniform", fs.PAL["blue"]), ("T2a_smr_adaptive", fs.PAL["red"]),
                       ("T2a_smr_finest", fs.PAL["yellow"])):
-        c = res[name].get("cstat")
+        c = res.get(name, {}).get("cstat")
         if c:
             sp = np.array(c["chi_max"])/np.array(c["chi_min"]) - 1.0
             ax.semilogy(c["time"], np.maximum(sp, 1e-17), "o-", color=col, label=name[4:])
@@ -219,7 +226,7 @@ def figures(out, res):
         ax = fig.add_subplot(2, 2, 3 + j)
         for name, col in ((f"T2b_uniform_mu{mu}", fs.PAL["blue"]),
                           (f"T2b_smr_mu{mu}", fs.PAL["red"])):
-            ln = res[name].get("line_t0")
+            ln = res.get(name, {}).get("line_t0")
             if ln:
                 E = np.array(ln["E"])
                 dE = 16*np.pi*np.abs(E - 3/(8*np.pi)).max()
@@ -239,10 +246,13 @@ def main():
     ap.add_argument("--out", required=True)
     ap.add_argument("--jobs", type=int, default=3)
     ap.add_argument("--only-analysis", action="store_true")
+    ap.add_argument("--cases", default="", help="comma-separated prefixes of case names")
     a = ap.parse_args()
     if not a.only_analysis:
         make_ic(a.out)
-        queue = list(CASES.items())
+        pre = [c for c in a.cases.split(",") if c]
+        queue = [(n, c) for n, c in CASES.items()
+                 if not pre or any(n.startswith(p_) for p_ in pre)]
         running = []
         t0 = time.time()
         while queue or running:

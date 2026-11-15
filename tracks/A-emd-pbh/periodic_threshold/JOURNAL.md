@@ -138,3 +138,77 @@ as in the calibration mesh; (b) identical to (a) to all printed digits (the boun
 does not enter at t = 0); (c) unknown: if the finder maps surface points into the box
 it equals (b); if it does not, every surface point lies outside the mesh and it reports
 no horizon or fails. Outcome (c) decides whether a peak may sit near a box face.
+
+## 2026-11-15, P0 outcome (run A-emd-pbh-20261115-153520-0576e01)
+
+All three checks hold: a_H/a_i = 150.000, t_H/t_i = 1837.117 (750 sqrt 6 = 1837.117);
+top-hat amplitude for 250 t_H: mu = 0.0481 (1000 t_H: 0.0191); box 100, 8.165 and 1.296
+Hubble radii at the start, at entry and at 250 t_H. Figure `fig_design_numbers.png`
+looked at: box and r_m against t/t_H, collapse epochs against mu.
+
+## 2026-11-15, S1 and S2 (first scouting runs on cards): written before submission
+
+Common set-up: `inputs/peak_amr.athinput`; e = 0.2, p = 0, eps_i = k/(a_i H_i) = 1, box
+[-10, 10]^3 (20/k, 20 initial Hubble radii), root 64^3 (k dx = 0.3125, r_m = 7.8 cells),
+adaptive refinement by the Lohner indicator, up to four levels (k dx = 0.0195); data of
+the T1 sweep at n = 64 (make_field.py, one particle per root cell, 262,144 particles,
+solve change c = 0.078 at mu = 0.03); conformal-time lapse plus the driver towards
+constant mean curvature, zero shift (cosmo E1 gauge); particles removed where alpha <
+0.3; finder at the origin, initial radius 2.0, every 32 cycles. Release card executable
+`.work/build_gpu_v03/src/athena`. Slurm limit 40 min each (at most 1.33 card-hours).
+Epochs (P0 formulas, eps_i = 1: tau = 2 (sqrt(a) - 1), a = 6 (t/t_H)^(2/3)).
+
+**S1, mu = 0.5 ("clearly above")**: above the particle threshold of arXiv:2609.14218 at
+e = 0.2 (horizons for mu >= 0.05, MDPBH.tex:1101-1103) by ten and above the
+Zel'dovich-hoop line mu > 0.452 (SCOPE.md T1) by a tenth. Zel'dovich axes collapse at
+t/t_H = 1.95, 3.95, 15.6 (tau = 4.1, 5.8, 10.3); top-hat collapse of the compaction shell
+7.5 t_H (tau = 7.6). tlim = 14 (30 t_H).
+Predictions [JUDGEMENT]: (a) the run reaches the first pancake (tau ~ 4) with the
+relative Hamiltonian constraint below 1e-2; (b) the Lohner indicator refines the centre
+before tau ~ 4; (c) the central lapse falls relative to the largest lapse from tau ~ 5;
+(d) either the finder reports a horizon between tau ~ 6 and 10, or the run ends before
+it with a non-positive metric determinant at the centre, the failure of cosmo E1
+(`cosmo/TESTLOG.md` 744-763). I rate (d, failure first) as the more likely outcome.
+Refuted as a usable configuration for the line by a crash before tau = 4, or by a
+horizon whose area mass exceeds the mass inside r_m at the start (0.5 r_m^3 = 7.35 in
+these units, P0).
+
+**S2, mu = 0.03 ("clearly below")**: below the particle threshold of arXiv:2609.14218
+(none for mu <= 0.045) and below the finite-duration cutoff for 250 t_H (0.048, P0);
+every criterion predicts no horizon by 250 t_H. First Zel'dovich axis collapses at
+133 t_H (tau = 23); top-hat 508 t_H. tlim = 28.9 (250 t_H).
+Predictions: no horizon to tau = 28.9; the relative Hamiltonian constraint stays below
+1e-2 until the pancake forms (tau ~ 23), then grows in the sheet; the lapse at the
+centre stays within ten per cent of the largest lapse until tau ~ 20. Refuted by a
+horizon (it would be an artefact) or by a failure before tau = 20 (then the cause is
+the gauge, the mesh or the noise, not shell crossing).
+Cost prediction: each below 0.3 card-hours (8.1e-8 card-seconds per cell and step,
+`tracks/core` run core-20261115-040406-1311b8e, as quoted in SCOPE.md 10.7).
+
+## 2026-11-15, T2/T3 outcome (run A-emd-pbh-20261115-154250-527a6d1) and a driver bug
+
+- **Bug in my driver, found by T2b.** On the uniform mesh at t = 0 the code's Hamiltonian
+  constraint was 2.3 to 2.6 times 16 pi max|E - Ebar| (relative H_r max 0.64 at mu = 0.5,
+  0.05 at mu = 0.03), where a solved data set should give a small fraction. Cause, read
+  in the code: `make_peak_ic.py` wrapped the particle positions into [-L/2, L/2) instead
+  of shifting them by -L/2, so the particles' peak sat at the box corner and the metric's
+  at the origin. Fixed (x - L/2). The T2b and T2c numbers of this run are therefore void
+  and are repeated; the run that was building the S1 data with the bug
+  (A-emd-pbh-20261115-154356-527a6d1) was stopped and marked superseded. T1 is not
+  affected (its diagnostic is computed before the positions are written).
+- T2a confirmed: uniform mesh and static mesh with the adaptive cloud level stay
+  homogeneous (chi_max/chi_min - 1 = 2e-15 at t = 0.3; H_max = H_mean, a uniform 4e-6 from
+  the time integration, no structure at level boundaries); with clouds on the finest
+  level the relative Hamiltonian constraint is 1.02 at t = 0 and the conformal factor
+  spreads by 12 per cent by t = 0.3. As predicted.
+- T3d confirmed: no horizon reported in the homogeneous universe (three runs), no crash.
+- T3a/b confirmed: the finder gives 0.9915211031 on the puncture slice with outflow and with
+  periodic boundaries, the calibration value 0.991521 of docs/TESTLOG.md to all its digits.
+- T3c: with the finder centred one period away, (32, 0, 0), it reports no horizon: **the
+  finder does not map surface points into the periodic box**. A horizon that crosses a
+  box face is not found; the peak must sit at the box centre and the finder centre
+  inside the box.
+- T2c (adaptive mesh): the run died with a segmentation fault (exit -11) after cycle 4,
+  the first refinement check, with 64 blocks and no refinement before it. To be repeated
+  with the corrected data to see whether the crash belongs to the data or to adaptive
+  refinement with periodic particles and the cosmological generator.
