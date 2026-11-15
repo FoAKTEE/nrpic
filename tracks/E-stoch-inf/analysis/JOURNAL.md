@@ -140,7 +140,7 @@ The ratio [M] used for |M|/[M] is the flat norm of covariant components, as P1's
 does not depend on gt. Figure `fig/fig_plane_constraint_ratios.png` (looked at: the
 dump-based ratios lie on the history's crosses).
 
-## 17:36 Predictions: slow-roll scouting runs with the release executable, homogeneous start
+## 17:23 Predictions: slow-roll scouting runs with the release executable, homogeneous start
 
 What the release cannot do: the perturbed initial slice at N* (request R8). What it can:
 start from the homogeneous slice (`id = flrw`) dn_pre = 1.5 e-folds before the lowest
