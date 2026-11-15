@@ -126,6 +126,10 @@ def main():
     axs[1].set_xlabel(r"collision cell side $h/M$")
     axs[1].set_ylabel("particles per collision cell")
     axs[1].legend(fontsize=8, loc="upper left")
+    for ax in axs:
+        ax.set_xticks(list(SIZES))
+        ax.set_xticklabels(["1/8", "1/4", "1/2", "1"])
+        ax.xaxis.set_minor_formatter(plt.NullFormatter())
     fig.savefig(os.path.join(a.out, "fig_pred_cellsize.png"), dpi=200)
     return 0
 

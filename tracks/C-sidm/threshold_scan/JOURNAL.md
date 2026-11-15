@@ -222,3 +222,15 @@ h^2 (each ratio between successive sizes within 30 percent of 4), as the reading
 (partners at potential depths that differ by order h) and core's measured ratios 0.22 and
 0.10 for 2 to 1 M and 2 to 0.5 M in the y_c = 0.819 cluster suggest; the value at M/4 equals
 that of predict.py (1.74e-10) within its noise. Refuted if a ratio lies outside [2.8, 5.2].
+
+Outcome of Test 5 (run C-20261115-175636-b7b5252, `fig_pred_cellsize.png` looked at):
+PASS. Defect per collision over sum M W: 4.8e-11 (M/8, standard error 1.3e-11), 1.74e-10
+(M/4, as predict.py), 6.5e-10 (M/2), 2.5e-9 (M); successive ratios 3.6, 3.7, 3.9, so second
+order in the cell side. Killing-energy change per collision 6.6e-11, 2.4e-10, 8.9e-10,
+3.4e-9 M. Occupation: mean of occupied cells 1.2, 2.3, 6.7, 27; cells within r < M hold
+2.3, 16, 129, 922. So the choice between relaxation fidelity (core: about 100 per cell)
+and the energy defect is sharp in this model at N = 10^5: about 100 per cell in the core
+needs M/2 cells (coll_cell_factor = 2 on the M/4 mesh), where the defect is 6.5e-10 per
+collision, 7.6e-4 of sum M W over 300 M at Kn = 1 and about 8e-3 at Kn = 0.1 (at the
+initial rate). The x-axis labels of the first version of the figure overlapped; the script
+now labels the four sizes (cosmetic; numbers unchanged).
