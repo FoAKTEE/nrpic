@@ -189,8 +189,8 @@ def main():
         p.plot(q, dd, "x", ms=2.5, color=col[key], alpha=0.5)
     p.set_yscale("log")
     p.set_xlabel(r"$|n|$", labelpad=-2)
-    p.set_ylabel("coefficient of the slice (dots), code minus twin (crosses)")
-    p.legend(ncol=2, loc="lower left")
+    p.set_ylabel("coefficient (dots), code $-$ twin (crosses)")
+    p.legend(ncol=2, loc="upper right")
     p = ax[0, 1]
     ss = np.array([1.0, 0.5, 0.25])
     p.plot(ss, order["cor"]["H_ratio"], "o-", color=fs.PAL["blue"],
@@ -204,9 +204,12 @@ def main():
     p.plot(ss, order["cor"]["M_ratio"][0]*ss, **fs.GUIDE)
     p.set_xscale("log")
     p.set_yscale("log")
-    p.set_xlabel("factor $s$ on the mode functions", labelpad=-2)
+    p.set_xticks([0.25, 0.5, 1.0])
+    p.set_xticklabels(["1/4", "1/2", "1"])
+    p.tick_params(axis="x", which="minor", labelbottom=False)
+    p.set_xlabel("factor $s$ on the mode functions")
     p.set_ylabel("constraint ratio at $t=0$")
-    p.legend(loc="center left", fontsize=8)
+    p.legend(loc="center", bbox_to_anchor=(0.5, 0.62), fontsize=8)
     p = ax[1, 0]
     q, cc, rr, dd = prt
     p.plot(q, rr, "o", ms=4, mfc="none", color=fs.PAL["blue"],

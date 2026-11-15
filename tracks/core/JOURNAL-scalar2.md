@@ -174,3 +174,35 @@ give byte-identical files on the scalar-field inputs of wave 1 (`flrw_slowroll`,
 `kg_wave`, `noise_power`, `noise_ms`: histories, dumps, records, restart files up to the
 36 unset header bytes) and on the cases geo, boris, dep, east, os, jeans, binary of
 `tracks/core/tools/regress_relativistic.py`.
+
+## 2026-11-15, entry 3: registration by hand; one more test, predicted before it ran
+
+- `harness/bin/nrpic-run submit` fails in this worktree: `KeyError: 'outputs'` in
+  `budget_state` -> `is_live` (`harness/bin/nrpic-run:163`) while it reads the manifests
+  of core's wave 1, which have no `outputs` key. Runs of this package are therefore
+  registered by hand with `tracks/core/analysis/scalar2/runreg.py` (same fields; the keys
+  `track`, `gate`, `outputs`, `status` are added in the layout of the harness template).
+  `tracks/core/tools/regress_relativistic.py` registers through `run_registered.py` of
+  wave 1. Request to orch: let `nrpic-run` read manifests without `outputs`.
+- Run core-20261115-154749-1b20b0f FAILED before any AthenaK run (relative path of the
+  executable in the driver); fixed, no result lost.
+- `scratch/core/` is shared by all core sessions; this package keeps temporary files in
+  `scratch/core/tmp/scalar2/`.
+
+T8 (added; no run of it has been looked at). End-to-end check that the slice and the
+sources carry one linear solution: from dumps with the metric (32^3, nmax2 = 64, to t =
+3.2), the curvature perturbation of the slice psi_n = (a^2 chi_n - 1)/2 + (1/4) n_i n_j
+(gt_ij - delta_ij)_n/n^2 (own derivation from gamma_ij = a^2 [(1 - 2 psi) delta_ij + 2 d_i
+d_j E]: a^2 chi - 1 = 2 psi + (2/3) k^2 E, gt_ij - delta_ij = 2 (d_i d_j - delta_ij
+lap/3) E; it equals E6 of SPEC 9) and R^NR_n = psi_n + (H/Pi_b) delta phi_n with box means
+for H = -<K>/3 and Pi_b = <Pi> (SPEC 7.1, P-c), against L^(-3/2) W(t) R(t) alpha_n with
+R(t) of the lockstep record of the same dump.
+- P8a At t = 0 the ratio R^NR_n/(W R alpha_n) is 1 within 1e-6 for the modes with W >
+  1e-3 (the slice is built that way; rounding of chi and phi limits it).
+- P8b At every later dump, for the modes with |n| <= 4 (k <= k_max/2) and W > 0.5, the
+  ratio is 1 within 2e-2 (Track E's A2 threshold), and within 2e-3 for |n| <= 2. The
+  deviation grows with |n| like the truncation error of the stencils. Refuted by a
+  deviation of order one during the entry (wrong sign or factor between slice and
+  kicks), or by a drift of the lowest modes after their entry (no freezing).
+- P8c With the negative control `noise_pi_sign = -1` the ratio departs from 1 by more
+  than 10 percent for the modes that have entered.
