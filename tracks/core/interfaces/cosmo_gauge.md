@@ -1,6 +1,9 @@
 # Interface: gauge, step limit and constraint damping (proposal for `coord/INTERFACES/cosmo_gauge.md`)
 
-Status: PROPOSAL (core, 2026-11-15), written from the code at commit b7b431d:
+Status: sections 1 to 6 ACCEPTED as the state of release `core-v0.3` (decision 0011);
+the entries marked "wave 2" (lapse relaxation, tracker-dependent shift damping, section
+7) are a PROPOSAL of branch `core/gauge` (source commit b4430da), evidence in
+`tracks/core/JOURNAL-gauge.md`. Sections 1 to 6 were written from the code at commit b7b431d:
 `athenak/src/z4c/z4c.cpp` lines 125-166 (options), `z4c.hpp` lines 142-199,
 `z4c_calcrhs.cpp` lines 40-69 and 607-729 (right-hand sides),
 `particles/nrpic.cpp` lines 1295-1336 (step limit). Options are in `<z4c>` unless
@@ -21,6 +24,7 @@ As implemented (`z4c_calcrhs.cpp` lines 681-710), with `chi = gamma^(-1/3)`:
                 - [lapse_oplog lapse_harmonicf + lapse_harmonic alpha
                    + lapse_volume chi^(-1/2)] alpha Khat
                 - lapse_kdriver alpha_ref alpha (Khat - Khat_ref)
+                - lapse_leak alpha max(ln(alpha/lapse_leak_alpha), 0)       (wave 2)
                 + (slow-start term if slow_start_lapse)
 
 | Option | Default | Meaning | Tests |
@@ -31,25 +35,32 @@ As implemented (`z4c_calcrhs.cpp` lines 681-710), with `chi = gamma^(-1/3)`:
 | `lapse_volume` | 0.0 | `-c gamma^(1/6) alpha Khat`; c = 1/3 (with `lapse_harmonic = 0`) also gives alpha = a, and keeps `alpha - gamma^(1/6)` constant, so the lapse reaches zero before the volume element where matter collapses | CT "E1, first step: a lapse condition for the collapsing overdensity" and its outcome |
 | `lapse_kdriver` | 0.0 | driver towards constant mean curvature, strength mu; `alpha_ref` = largest lapse, `Khat_ref` = proper-volume mean of Khat, both from the state of each Runge-Kutta stage; vanishes on a homogeneous universe | CT "E1, second step: driver towards constant mean curvature" and "E1, second step: outcome" |
 | `lapse_advect` | 1.0 | advection of the lapse (0 in the cosmological inputs) | |
+| `lapse_leak` (wave 2) | absent = 0 | rate 1/T at which the excess of the lapse over `lapse_leak_alpha` relaxes; with 1+log the lapse of an expanding region tends to exp(-2 T Khat) = exp(6 T H) instead of 1 + 6 ln a; no effect where the lapse is at or below the reference (contraction, black holes). Read only if present in the input | section 7 |
+| `lapse_leak_alpha` (wave 2) | absent = 1.0 | reference lapse | section 7 (only 1 is tested) |
 | `slow_start_lapse`, `ssl_damping_amp`, `ssl_damping_time`, `ssl_damping_index` | false, 0.6, 20, 1 | AthenaK's slow-start term, not used here | none |
 
 ## 2. Shift
 
 As implemented (lines 712-729):
 
-    d_t beta^i = shift_Gamma Gamma^i + shift_advect beta^j d_j beta^i - shift_eta beta^i
+    d_t beta^i = shift_Gamma Gamma^i + shift_advect beta^j d_j beta^i - eta(x) beta^i
                  + shift_alpha2Gamma alpha^2 Gamma^i
                  + shift_H alpha chi (alpha/2 d_j chi - d_j alpha) gamma~^ij
 
 | Option | Default | Meaning | Production |
 |---|---|---|---|
 | `shift_Gamma` | 1.0 | Gamma-driver coefficient | 0.75 isolated systems; 0 cosmology |
-| `shift_eta` | 2.0 | damping eta (constant; the paper's tracker-dependent eta(x,t), L388-397, is not implemented) | 2.0; 0 cosmology |
+| `shift_eta` | 2.0 | damping eta_0: constant, or the far value of the profile below | 2.0; 0 cosmology |
+| `shift_eta_profile` (wave 2) | absent = false | eta(x) = eta_0 [1 + sum_A (M_ref/m_A - 1)/(1 + abs(x - x_A)^2/w_A^2)] over the compact-object trackers A with `co_<A>_mass` > 0 (at most 8): the paper's profile (main.tex L388-397). eta tends to eta_0 M_ref/m_A at black hole A and to eta_0 far away | section 7 |
+| `shift_eta_mref` (wave 2) | absent = 1.0 | M_ref | section 7 |
+| `shift_eta_width` (wave 2) | absent = 2.0 | w_A in units of the smallest tracker mass (the paper's 4 m_min^2 is width 2) | section 7 (only 2 is tested) |
+| `shift_eta_width_local` (wave 2) | absent = false | true: w_A = `shift_eta_width` m_A | not tested |
 | `shift_advect` | 1.0 | advection | 1; 0 cosmology |
 | `shift_alpha2Gamma` | 0.0 | the paper's form `alpha^2 mu_S Gamma^i` (L376) | 0 |
 | `shift_H` | 0.0 | harmonic-gauge term | 0 |
 
-The `B^i` form of the Gamma-driver (paper L381-386) is not implemented. A shift driver
+The `B^i` form of the Gamma-driver (paper L381-386) is not implemented; nor is the
+paper's factor eta(x)/eta_0 on kappa_1 (L394-397). A shift driver
 `0.75 alpha^2 Gamma^i - 2 beta^i` with advection in a refined cosmological box was
 unstable within a few time units (CT "E1, third step: outcome of the shift-driver run").
 Cosmological runs so far use zero shift. Moving black holes in an expanding background
