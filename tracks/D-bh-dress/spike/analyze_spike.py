@@ -187,14 +187,15 @@ def main():
         t_, r_, e_, l_ = last_out[g]
         tmeas[g] = t_ + remaining(e_, l_, r_)
     off = tmeas - tpred
-    res["losscone"]["crossing_time_offset_meas_minus_pred"] = {
+    res["losscone"]["crossing_time_offset_meas_minus_pred"] = None if not sel.any() else {
         "median": float(np.nanmedian(off[sel])), "min": float(np.nanmin(off[sel])),
         "max": float(np.nanmax(off[sel])),
         "p01_p99": [float(np.nanquantile(off[sel], 0.01)), float(np.nanquantile(off[sel], 0.99))],
         "abs_max_for_|q|>1e-2": float(np.nanmax(np.abs(off[sel & (np.abs(q) > 1e-2)])))
         if np.any(sel & (np.abs(q) > 1e-2)) else None}
-    np.savez(out / "crossing.npz", gid=np.where(sel)[0], q=q[sel], tpred=tpred[sel],
-             tmeas=tmeas[sel], first_in=first_in[sel])
+    if sel.any():
+        np.savez(out / "crossing.npz", gid=np.where(sel)[0], q=q[sel], tpred=tpred[sel],
+                 tmeas=tmeas[sel], first_in=first_in[sel])
     snap_dt = float(np.median(np.diff(times)))
     res["losscone"]["first_snapshot_inside_minus_predicted"] = {
         "min": float(dts.min()) if dts.size else None,

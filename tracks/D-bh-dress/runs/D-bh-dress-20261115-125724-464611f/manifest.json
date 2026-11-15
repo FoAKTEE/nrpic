@@ -1,0 +1,75 @@
+{
+ "run_id": "D-bh-dress-20261115-125724-464611f",
+ "track": "D-bh-dress",
+ "package": "D-pre-2 spike",
+ "purpose": "P2a-d analysis of run A: stationarity, invariants, empty loss cone",
+ "kind": "scouting",
+ "command": [
+  "python3",
+  "analyze_spike.py",
+  "--ic",
+  "/data/haiyangw/nrpic/scratch/D-bh-dress/D-bh-dress-20261115-123734-25227d4",
+  "--runs",
+  "/data/haiyangw/nrpic/scratch/D-bh-dress/D-bh-dress-20261115-123755-25227d4/spike_0",
+  "/data/haiyangw/nrpic/scratch/D-bh-dress/D-bh-dress-20261115-123755-25227d4/spike_1",
+  "/data/haiyangw/nrpic/scratch/D-bh-dress/D-bh-dress-20261115-123755-25227d4/spike_2",
+  "/data/haiyangw/nrpic/scratch/D-bh-dress/D-bh-dress-20261115-123755-25227d4/spike_3",
+  "/data/haiyangw/nrpic/scratch/D-bh-dress/D-bh-dress-20261115-123755-25227d4/spike_4",
+  "/data/haiyangw/nrpic/scratch/D-bh-dress/D-bh-dress-20261115-123755-25227d4/spike_5",
+  "/data/haiyangw/nrpic/scratch/D-bh-dress/D-bh-dress-20261115-123755-25227d4/spike_6",
+  "/data/haiyangw/nrpic/scratch/D-bh-dress/D-bh-dress-20261115-123755-25227d4/spike_7",
+  "/data/haiyangw/nrpic/scratch/D-bh-dress/D-bh-dress-20261115-123755-25227d4/spike_8",
+  "/data/haiyangw/nrpic/scratch/D-bh-dress/D-bh-dress-20261115-123755-25227d4/spike_9",
+  "/data/haiyangw/nrpic/scratch/D-bh-dress/D-bh-dress-20261115-123755-25227d4/spike_10",
+  "/data/haiyangw/nrpic/scratch/D-bh-dress/D-bh-dress-20261115-123755-25227d4/spike_11",
+  "--out",
+  "/data/haiyangw/nrpic/scratch/D-bh-dress/D-bh-dress-20261115-125724-464611f"
+ ],
+ "cwd": "/data/haiyangw/nrpic/wt/D-bh-dress/tracks/D-bh-dress/spike",
+ "env_overrides": {
+  "OMP_NUM_THREADS": "4",
+  "OPENBLAS_NUM_THREADS": "4"
+ },
+ "git": {
+  "sha": "464611f3f4c67c0c46b5f5d670fad630839c5488",
+  "branch": "track/D-bh-dress",
+  "dirty_spike_dir": false
+ },
+ "inputs": [
+  {
+   "path": "/data/haiyangw/nrpic/wt/D-bh-dress/tracks/D-bh-dress/spike/analyze_spike.py",
+   "sha256": "8966fb029d48d3643798895350ffe33748866052dc3f0c737ec3872e9437d67f"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/scratch/D-bh-dress/D-bh-dress-20261115-123734-25227d4/ic_meta.npz",
+   "sha256": "58de4c5b8046681806abb46fe476be49074bd0f95cfebeb73ade9fcea5928fc4"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/scratch/D-bh-dress/D-bh-dress-20261115-123734-25227d4/ic_summary.json",
+   "sha256": "e4fc2e13ba3d4b6815c83b015b9db920ee8b7f1ad35bb8f26edf0978bb2902f5"
+  }
+ ],
+ "resources": {
+  "nodes": 1,
+  "cores": 4,
+  "gpus": 0,
+  "card_hours": 0.0,
+  "walltime_s": 2.48
+ },
+ "outputs": {
+  "dir": "/data/haiyangw/nrpic/scratch/D-bh-dress/D-bh-dress-20261115-125724-464611f",
+  "sha256sums": "sha256sums.txt",
+  "files": [
+   "stdout.txt"
+  ]
+ },
+ "status": "failed",
+ "exit_code": 1,
+ "started": "2026-11-15T12:57:24+00:00",
+ "ended": "2026-11-15T12:57:26+00:00",
+ "parents": [
+  "D-bh-dress-20261115-123755-25227d4",
+  "D-bh-dress-20261115-123734-25227d4"
+ ],
+ "notes": "Registered by hand with spike/register_run.py."
+}
