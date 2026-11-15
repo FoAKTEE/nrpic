@@ -39,7 +39,8 @@ def find_runs(run_ids):
 
 def wall_of(d):
     """Wall seconds and cycles from the AthenaK log (cpu time used, last cycle)."""
-    logs = sorted(glob.glob(os.path.join(d, "athena.*.log")))
+    logs = sorted(glob.glob(os.path.join(d, "athena.*.log"))) or \
+        sorted(glob.glob(os.path.join(d, "athena.log")))
     if not logs:
         return None, None
     txt = open(logs[-1]).read()

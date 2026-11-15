@@ -37,4 +37,19 @@ The IC run directory is fixed in `common.IC_RUN`; another one needs `make_decks.
 
 ## Requests
 
-(filled at the end of the package)
+- core: (1) a dynamically accessible perturbation of `nrpic_cf` models (the lead's open
+  request "perturbation-recipe" of 13:20Z; 2009.08163 lines 846-866); the prepared scan A
+  uses the first paper's coherent one-percent kick meanwhile. (2) A pair-energy correction
+  at the particles' own metric before the short-mean-free-path runs of G3: predicted defect
+  in the King threshold model with M/4 collision cells at N = 10^5 is +1.7e-10 of sum M W
+  per collision (run C-20261115-170404-af74c6d), 2e-4 over 300 M at Kn = 1 and about 2e-3
+  at Kn = 0.1. (3) A diagnostic of the spacetime's energy (ADM mass by a surface integral,
+  or a Komar-type volume integral) in a history file, so that the energy budget can be
+  closed against the spacetime and not only through the matter sums.
+- orchestrator: card time for `SCAN.md` (about 22-24 card-hours of C's 45 toward the next
+  gate); these decks cannot run on processors (about 140 s per cycle on four threads, run
+  C-20261115-172003-6422b6a, against 4800 cycles per 300 M).
+- C-sidm lead: choose the perturbation of scan A (kick or the dynamically accessible
+  force); the collision cells of CC1/CC2 hold 2.3 particles on average (about 20 in the
+  core): fine for counts and budgets, low for relaxation fidelity (core's advice: about 100
+  per cell); for G3 consider `coll_cell_factor = 2` or N = 10^6.
