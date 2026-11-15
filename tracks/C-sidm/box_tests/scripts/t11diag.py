@@ -26,6 +26,8 @@ import t11
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("rundir")
+    ap.add_argument("--npairs", type=int, default=4_000_000)
+    ap.add_argument("--chunk", type=int, default=4_000_000)
     a = ap.parse_args()
     out = bl.outdir()
     res = {}
@@ -43,21 +45,34 @@ def main():
         w0 = 0.5 * N * 1.0 * t11.SIG * dt
         sw = h["sum_W"] / w0
         vt = h["sum_P"] / h["sum_W"] / vref
-        i = rs.integers(0, N, 4_000_000)
-        j = rs.integers(0, N, 4_000_000)
-        ok = i != j
-        vm = kin.vmol(s0["u"][i[ok]], s0["u"][j[ok]])
+        s1 = bl.snap.read_snapshot(bl.snapshots(rd)[-1])
+
+        def mc(u):
+            tot, tot2, n = 0.0, 0.0, 0
+            for _ in range(max(1, a.npairs // a.chunk)):
+                i = rs.integers(0, N, a.chunk)
+                j = rs.integers(0, N, a.chunk)
+                ok = i != j
+                v = kin.vmol(u[i[ok]], u[j[ok]])
+                tot += float(v.sum()); tot2 += float((v * v).sum()); n += v.size
+            m = tot / n
+            return m, np.sqrt((tot2 / n - m * m) / n)
+        mc0, se0 = mc(s0["u"])
+        mc1, se1 = mc(s1["u"])
         res[f"s{seed}"] = dict(
             theta_s=th, beta_s=b, vref=vref,
             sumW_ratio=float(sw.mean()), sumW_se=float(sw.std(ddof=1) / np.sqrt(sw.size)),
             vtested_ratio=float(vt.mean()), vtested_se=float(vt.std(ddof=1) / np.sqrt(vt.size)),
             sumP_ratio=float((h["sum_P"] / (w0 * vref)).mean()),
-            mc_pairs_ratio=float(vm.mean() / vref),
-            mc_pairs_se=float(vm.std() / np.sqrt(vm.size) / vref))
+            mc_pairs_ratio=mc0 / vref, mc_pairs_se=se0 / vref,
+            mc_pairs_end_ratio=mc1 / vref, mc_pairs_end_se=se1 / vref, npairs=a.npairs)
         r = res[f"s{seed}"]
         r["z_sumW"] = (r["sumW_ratio"] - 1) / r["sumW_se"]
         r["z_vtested"] = (r["vtested_ratio"] - 1) / r["vtested_se"]
         r["z_mc"] = (r["mc_pairs_ratio"] - 1) / r["mc_pairs_se"]
+        r["z_mc_end"] = (r["mc_pairs_end_ratio"] - 1) / r["mc_pairs_end_se"]
+        r["z_tested_vs_mc0"] = (r["vtested_ratio"] - r["mc_pairs_ratio"]) / np.hypot(
+            r["vtested_se"], r["mc_pairs_se"])
     bl.save_json(os.path.join(out, "t11diag.json"), res)
     print(json.dumps(res, indent=1))
 

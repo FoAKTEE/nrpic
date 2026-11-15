@@ -384,3 +384,21 @@ snapshot then tells whether the sample itself carries it (the generator's booste
 sampler) or the tested pairs differ from random pairs (the operator). If the Monte Carlo
 also shows +2e-4 the operator is cleared and the generator or the analytic reference is
 in question; if not, the operator's pair selection or v_Mol in a drifting gas is.
+
+D1 outcome (run C-20261115-180041-f00f777): the occupation part is clean (sum_W per step
+/ (1/2) N rho sigma dt = 1.000039(18), 0.999983(19)); the excess sits in the mean Moller
+speed of the tested pairs, 1.000240(44) and 1.000196(40) of <v_Mol>(theta_s)/gamma_s^2
+(z = 5.5, 4.9). The Monte Carlo over 4e6 random pairs of the initial snapshot gives
+1.00024(35) and 1.00033(35): too coarse to say whether the sample itself carries the
+offset. Prediction half confirmed (occupation clean), half undecided.
+
+## 2026-11-15 Diagnostic D2: random pairs of the snapshots at 2e8 pairs (prediction first)
+
+Same script with 2e8 random pairs per snapshot (se ~2.5e-5), initial and final snapshot
+of both T11ab seeds. Prediction [JUDGEMENT, because in the gas at rest (T2) the tested
+pairs matched <v_Mol> to 1.6e-4 with no sign of a bias]: the sample's random-pair mean is
+itself ~2e-4 above <v_Mol>(theta_s)/gamma_s^2 and equals the tested-pair mean within 3 se,
+which clears the operator and puts the offset in the boosted generator or in my analytic
+reference for the drifting gas. Refuted if the random-pair mean equals the reference
+within 3 se while the tested pairs stay 2e-4 above it: that would point at the operator's
+pair statistics in a drifting gas (to be reported to core with this reproduction).
