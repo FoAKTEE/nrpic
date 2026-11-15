@@ -1,0 +1,136 @@
+{
+  "schema": "nrpic-run-manifest/1",
+  "run_id": "D-20261115-170002-8cefc3e",
+  "track": "D-bh-dress",
+  "gate": "G1",
+  "kind": "scouting",
+  "purpose": "G0/G1 verifier C1: D-pre-1 vacuum-bubble slice rechecked from the format-2 table alone (own formulas): Misner-Sharp mass, Hamiltonian density, momentum residual at four spacings, expansions, puncture relation, negative control, exact references, particle file",
+  "preregistered_in": null,
+  "launcher": "local",
+  "command": [
+    "python3",
+    "tracks/D-bh-dress/stage/G0/verify/v1_es_slice.py",
+    "--data",
+    "/data/haiyangw/nrpic/scratch/D-bh-dress/D-bh-dress-20261115-043445-b782009",
+    "--out",
+    "$NRPIC_RUN_DIR"
+  ],
+  "cwd": ".",
+  "git": {
+    "sha": "8cefc3e4e52e57b4eb3094b2219d2ca1159041bb",
+    "branch": "track/D-bh-dress",
+    "dirty": false,
+    "package": [
+      "tracks/D-bh-dress/stage/G0"
+    ],
+    "outside_package": {
+      "count": 3,
+      "first": [
+        "?? tracks/D-bh-dress/es_runs/",
+        "?? tracks/D-bh-dress/note/",
+        "?? tracks/D-bh-dress/secondary_infall/nm_ic.py"
+      ]
+    },
+    "merge_base_main": "b9fbf3e6534517c3393000da91c79ce552b254b9",
+    "worktree": "wt/D-bh-dress"
+  },
+  "code": {
+    "core_tag": "core-v0.3",
+    "athenak_upstream_sha": "c5a0d7f",
+    "kokkos_sha": "6739bc623081648af9e752b616d9671527922cbf",
+    "problem": null
+  },
+  "env": {
+    "host": "anta",
+    "env_hash": "33c1dbb6673b68919eaa332b0add0b58aeac8be843f2071b9d06e2e0e397a96d",
+    "machine_file_sha256": "0321f40f4caeeb2a36624a9fa9809e60bad31071f366b3517ba23ad45698d2d7",
+    "uv_lock_sha256": "5417f6ba318b914aa3800e5d55f7b11fdd8df13c2688bdda7d419240aa1d5863",
+    "track_requirements_sha256": null,
+    "container_digest": null,
+    "compiler": "g++ 11.4.0",
+    "mpi": "none (Athena_ENABLE_MPI=OFF)",
+    "gpu": null,
+    "python": "3.10.12 /data/haiyangw/nrpic/wt/D-bh-dress/.venv"
+  },
+  "input": null,
+  "inputs": [
+    {
+      "path": "/data/haiyangw/nrpic/scratch/D-bh-dress/D-bh-dress-20261115-043445-b782009/es.tab",
+      "role": "input",
+      "sha256": "ec5a277b88b3cd8bb2b9c2c4eba0fe887ccb92dfe8759af283d9b3ffc1ac6c29",
+      "bytes": 901240,
+      "tracked": false,
+      "location": "main checkout data root"
+    },
+    {
+      "path": "/data/haiyangw/nrpic/scratch/D-bh-dress/D-bh-dress-20261115-043445-b782009/es.json",
+      "role": "input",
+      "sha256": "efc9c995d737e31d2b7d4a5284fe08d683d395f610647a60368bf51aed7f072e",
+      "bytes": 3592,
+      "tracked": false,
+      "location": "main checkout data root"
+    },
+    {
+      "path": "/data/haiyangw/nrpic/scratch/D-bh-dress/D-bh-dress-20261115-043445-b782009/es_reference.csv",
+      "role": "input",
+      "sha256": "b7b204b3661b8b4a7028726555ee39e08d889098d7f2d932eec9e39a9c1ee8de",
+      "bytes": 623330,
+      "tracked": false,
+      "location": "main checkout data root"
+    },
+    {
+      "path": "/data/haiyangw/nrpic/scratch/D-bh-dress/D-bh-dress-20261115-043445-b782009/es.nrp",
+      "role": "input",
+      "sha256": "58b0463f67c3da327757fd5e4da67eeb033d8169c1f0aab867d8ef40fcafaf80",
+      "bytes": 284781856,
+      "tracked": false,
+      "location": "main checkout data root"
+    },
+    {
+      "path": "tracks/D-bh-dress/stage/G0/verify/v1_es_slice.py",
+      "role": "argv",
+      "sha256": "19c58745ad9915417ca50fa27b48ba87505dee6c8b93b7302784cc766de78812",
+      "bytes": 15056,
+      "tracked": true
+    }
+  ],
+  "batch_entries": null,
+  "resources": {
+    "nodes": 1,
+    "gpus": 0,
+    "cores": 1,
+    "walltime_s": null,
+    "wall_limit": null,
+    "segments_max": null,
+    "gpu_hours_requested": 0.0,
+    "gpu_hours": null,
+    "particles": null
+  },
+  "slurm": null,
+  "outputs": {
+    "dir": "scratch/D-bh-dress/D-20261115-170002-8cefc3e",
+    "sha256sums": "sha256sums.txt",
+    "sha256sums_sha256": null,
+    "bytes": null,
+    "files": null
+  },
+  "status": "running",
+  "exit_code": null,
+  "registered": "2026-11-15T17:00:03Z",
+  "started": null,
+  "ended": null,
+  "parents": [
+    "D-bh-dress-20261115-043445-b782009"
+  ],
+  "notes": "",
+  "budget_at_submit": {
+    "gpu_hours_allotted": 30.0,
+    "cores_allotted": 16,
+    "gpu_hours_used": 2.177,
+    "gpu_hours_reserved": 0.0,
+    "gpu_hours_without_gate": 0.0,
+    "cores_busy": 0,
+    "runs": 56,
+    "allotment_from": "coord/DECISIONS/0006-compute-budget.md + 0014-budgets-after-wave-1.md"
+  }
+}
