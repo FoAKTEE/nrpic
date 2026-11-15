@@ -5,14 +5,12 @@ tracks/core/interfaces/REQUESTS_B.md (git show core/requests-b:<path>).
 STATUS
   athena_cpu  processor executable: TESTED (tests T1, T1s, T2, T3 below; byte regression
               of seven existing set-ups against the source of release core-v0.3).
-  athena_gpu  card executable: built from the same source, NOT YET RUN ON A CARD when
-              this file was written. Its card test T4 (oblique wave N = 16..128, byte
-              regression of three set-ups without deposit against the release card
-              executable, thin boxes, a 256 x 256 x 16 box) is Slurm job 4452, queued.
-              Until a section "CARD TEST" at the end of this file says it passed, use
-              athena_gpu for scouting only and check your first run against a processor
-              run. The only device code that changed is the kernel of the linear-wave
-              generator.
+  athena_gpu  card executable, built from the same source: TESTED ON A CARD (test T4,
+              run core-20261115-170758-f5f58f4; section CARD TEST at the end). Two
+              checks are still running (test T8: the Z4c benchmark byte comparison with
+              the release card executable, and the growth of the mesh-scale noise in a
+              thin box to t = 4); the section CARD TEST says when they are in. The only
+              device code that changed is the kernel of the linear-wave generator.
 Everything not named below behaves as release core-v0.3 (byte-identical outputs in the
 regression; restart files differ in 36 padding bytes, see 5).
 
@@ -76,3 +74,25 @@ command line only if the input file has it)
 
 NOT IN THIS BUILD: in-situ Fourier modes; initial data with a TT part; species selection
 in the Newtonian history; z4c_gauge_wave as a built-in generator (REQUESTS_B.md).
+
+CARD TEST (added 2026-11-15T18:30Z, session bfix-2; numbers from results_t4.json of run
+core-20261115-170758-f5f58f4, Slurm job 4452, one A100, 0.051 card-hours)
+  Oblique wave k = (1,1,1), one period: N = 16 and 32 give the processor's amplitude and
+    phase errors to three digits; N = 64: -7.76e-9 and -1.758e-7 rad (Fourier symbol of
+    the scheme: -7.88e-9, -1.750e-7); N = 128: phase -1.36e-8 (symbol -1.07e-8), the
+    amplitude error at the rounding floor (+2.7e-10). gw_diag's Psi_4 against the
+    analytic value: 9.2e-5, 3.2e-6, 3.3e-7, 8.1e-7 for N = 16..128 (a floor from 64 on).
+    A non-TT part of 3.4e-6 A appears after one period at every N (16 to 128): it sets
+    the floor of the pointwise metric error; its scaling with A is checked in T8.
+  Byte regression against the release card executable: geodesic with the midpoint and
+    with the Boris pusher identical. The Z4c benchmark had no output block (nothing was
+    compared): repeated in T8.
+  Thin boxes on the card: 16 x 16 x 8 and 16 x 16 x 4 equal the 16^3 cube to 3.3e-10
+    (1.3e-12 at the end); the x-thin box equals the z-thin one to 9e-13.
+  Track B's box 256 x 256 x 16 (1 048 576 particles, waves (1, 0.3, 0), delta = 0.01):
+    ran to t = 1 with every particle, 59 s, 4.7e6 zone-cycles per second. The layers
+    differ by mesh-scale noise: 1.2e-13 to 1.8e-13 absolute in At, 1.5e-14 in gt, 2.5e-12
+    in Gamma^i, also in the components that vanish exactly (Axz, gxz, Gamma^z); Theta,
+    whose maximum is 3.2e-8, differs by 2.7e-13 (analysis T4b, run
+    core-20261115-180817-4a0566d). Measure the TT content of a thin-box run against this
+    floor. Whether the noise grows past t = 1 is test T8 (pending).

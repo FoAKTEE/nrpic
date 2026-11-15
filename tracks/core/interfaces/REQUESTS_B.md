@@ -55,8 +55,16 @@ review `tracks/B-emd-gw/stage/G0/REVIEW.md`. Order of work: what closes Track B'
   t1_linear_wave.py`.
 - For Track B: `periodic_z4c/analysis/refsol.tt_polarization` copies the upstream signs
   on purpose; flip `xy` and `yz` there to obtain the reference of the corrected generator
-  (python twin: `tracks/core/analysis/bfix/bfix_common.pol_tensors`). The 64^3 oblique
-  run on a card is in core's card test T4 (journal, P5a), queued at the time of writing.
+  (python twin: `tracks/core/analysis/bfix/bfix_common.pol_tensors`).
+- On a card (T4, run core-20261115-170758-f5f58f4): N = 16 and 32 give the processor's
+  errors to three digits; N = 64 amplitude -7.76e-9 and phase -1.758e-7 rad against the
+  symbol's -7.88e-9 and -1.750e-7; at N = 128 the phase is -1.36e-8 (symbol -1.07e-8)
+  and the amplitude error sits at the rounding floor. gw_diag's Psi_4 against the
+  analytic value: 9.2e-5, 3.2e-6, 3.3e-7, 8.1e-7 at N = 16 to 128. After one period the
+  metric has a non-TT part of 3.4e-6 A at every N, which sets the floor of the pointwise
+  error from 64 cells on (the Fourier coefficient keeps converging); the amplitude scan
+  of card test T8 tests whether it is of second order in A and whether the Psi_4 floor
+  is rounding (journal, P10b).
 - Kept as upstream has it: the generator fills the Z4c variables only, so `adm` and `con`
   outputs and the history row at t = 0 hold zeros; use `variable = z4c` at t = 0.
 
@@ -119,7 +127,18 @@ MeshBlock in z give the fields of the 16^3 cube to 3e-10 of their maxima at ever
 (1e-12 at the end; the cube's own dependence on z is of the same size) and the particles
 to 7e-14 cells; a box thin in x agrees with the thin-z one after exchanging the axes to
 1e-12. Four cells is the minimum that `mesh.cpp` accepts. Cost is proportional to the
-number of layers. Not yet run on a card (card test T4 queued).
+number of layers. The same on a card (T4): 3.3e-10 at most, 1.3e-12 at the end.
+
+Track B's box on a card (T4): 256 x 256 x 16 cells, one particle per cell and direction
+(1 048 576), waves (1, 0.3, 0), delta = 0.01, four MeshBlocks of 128 x 128 x 16, to t = 1
+(a = 2.25, 256 cycles): every particle kept, 59 s, 4.7e6 zone-cycles per second, a
+double-precision `z4c` dump of 185 MB. The layers are not identical: they differ by noise
+at the mesh scale, 1.2e-13 to 1.8e-13 absolute in the components of At, 1.5e-14 in gt,
+2.5e-12 in Gamma^i, of the same size in the components that vanish in the exact problem
+(Axz, Ayz, gxz, Gamma^z) (T4b, run core-20261115-180817-4a0566d). The size matches the
+rounding of order-one fields through the code's second differences [JUDGEMENT]. Use it
+as the floor of the TT content of a thin-box run. Whether it grows beyond t = 1 is the
+card test T8 (journal, P10c).
 
 Initial data: the generator reads an n1 x n2 x n3 field file; `cosmo/ic/` writes cubic
 ones only and is outside core's ownership, so `problems/cosmo/make_waves.py` (solver
