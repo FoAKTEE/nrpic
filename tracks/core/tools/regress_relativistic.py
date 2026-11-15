@@ -100,6 +100,9 @@ def main():
     ap.add_argument("--cores", type=int, default=1)
     ap.add_argument("--card", action="store_true")
     ap.add_argument("--out", default="")
+    ap.add_argument("--repeat-a", action="store_true",
+                    help="run the baseline twice and compare it with itself as well "
+                         "(is the executable reproducible from run to run?)")
     a = ap.parse_args()
     report, bad = {}, 0
     for case in a.cases.split(","):
@@ -108,6 +111,13 @@ def main():
         same, differ = compare(ra, rb)
         report[case] = dict(baseline=ra, new=rb, identical=same, differ=differ,
                             status_baseline=sa, status_new=sb)
+        if a.repeat_a:
+            ra2, _ = run(a.exe_a, case, "baseline-repeat", a.cores, a.card)
+            same2, differ2 = compare(ra, ra2)
+            report[case].update(baseline_repeat=ra2, repeat_identical=same2,
+                                repeat_differ=differ2)
+            print("%-6s baseline against itself (%s): identical files: %d  differing: %s"
+                  % (case, ra2, len(same2), differ2 if differ2 else "none"))
         bad += len(differ) + (0 if same else 1)
         print("%-6s %s  %s  identical files: %d  differing: %s"
               % (case, ra, rb, len(same), differ if differ else "none"))

@@ -404,3 +404,97 @@ sqrt(2 * 0.2 * 0.125/1) = 0.22, capped at 0.05) and the step shrinks as the spee
 fixed-step run to 1e-3 of the radius (second-order time error with larger early steps).
 Refuted by a run that needs more cycles, by differences at the 1e-3 level from the
 tolerance alone, or by a step that does not adapt.
+
+Outcome of T3b (run core-20261115-120504-6bef558, 1000 steps) [VERIFIED]: difference of
+I against dI 1.02e-5 (was 4.03e-5: factor 3.94, held); difference of dI against d2I
+2.69e-4 (was 7.61e-4: factor 2.83, below the predicted 3 to 5: FAILED as predicted).
+The mismatch falls with the step, which an acceleration in the sums different from the
+applied one would not do; but the order is 1.5, not 2. Deviation from the cycloid and
+energy unchanged (mean -9.75e-5 and +1.02e-4; energy 8.9e-4 and 8.2e-4), as predicted.
+Hypothesis for the order 1.5 [not yet tested]: the gradient of the Catmull-Rom
+interpolant is continuous but has kinks at the cell faces, so the force along a
+trajectory has kinks in time, and the lattice aligned with the mesh crosses faces in
+step; a centred difference across a kink is of first order.
+
+### T3c The same pair of runs with the cubic spline (prediction)
+
+`interp = bspline` (twice continuously differentiable interpolant, four ghost cells),
+collapse at N = 64 with steps 0.002 and 0.001. Prediction if the hypothesis is right:
+the mismatch between the difference of dI and d2I falls by a factor 3.5 to 4.5 between
+the two steps (no kinks), and is smaller than with Catmull-Rom at the same step. If it
+falls again by about 2.8 the hypothesis is wrong. The run also tests the mode with the
+second interpolation of the module: the deviation from the cycloid should be of the same
+size as with Catmull-Rom (within a factor two).
+
+### R2 Regression of the relativistic mode on a card (prediction)
+
+The five cases of R1 with two card executables: built from `main` (b7b431d, a `git
+archive` of `athenak/` built with `scripts/build_gpu.sh`, `.work/baseline/athena_gpu`)
+and from this branch (c061b12). The baseline is run twice, to know whether a card run
+reproduces itself (the deposit adds into cells with atomic operations, whose order is
+not fixed in principle).
+Prediction: where the baseline reproduces itself byte for byte, the new executable
+gives the same bytes. Refuted by a file that differs between baseline and new although
+the two baseline runs agree on it.
+
+### T4b The filter and the compensation of the deposit in the loop (prediction)
+
+The plane wave of T4 at N = 32 with the options of the relativistic production runs
+switched on: triangular cloud (`deposit_shape = tsc`), compensation of the cloud
+(`deposit_comp_c = 0.125`), two binomial passes with the compensating pass
+(`nfilter = 2`, `filter_compensate = true`). References as in T4, with the same options
+in `pm.py` and in the numpy scheme (`cosmo/ic/cosmo_id.py`: `cic_deposit`,
+`compensate_density`, `binomial`).
+Prediction: agreement with the numpy scheme to 1e-10 or better at every snapshot (it
+was 1e-15 without filter). This can fail: it tests that the density the solver receives
+is the deposited density after the existing compensation and filter passes, in that
+order. A difference at the 1e-3 level would mean one of the passes is not applied (or
+applied to a different array) in the Newtonian mode.
+
+Outcome of T6 (run core-20261115-120641-6bef558, 400 steps, 209 s on one core;
+`tracks/core/analysis/newton/spin_N64.json`, figure `spin_N64.png` inspected) [VERIFIED]:
+all four predictions held, with margin: centre of mass off uniform motion by 1.8e-5 R at
+t = 0.8 (the estimate from the self-forces was 2e-5); momentum changes by 2.5e-5 of
+M sqrt(GM/R), most of it in the first tenth of the run; angular momentum about the
+centre of mass by 4.3e-5 of its size; energy by 1.4e-4. Columns, six components:
+difference of I against dI at most 4.9e-6, of dI against d2I at most 2.1e-5 (the aligned
+lattice of T3 gave 7.6e-4 at the same step). The solver takes 19 V cycles per step.
+
+Outcome of T8 (commit c061b12: runs core-20261115-121044-c061b12 tolerance 0,
+core-20261115-121101-c061b12 tolerance 1e-6, core-20261115-121108-c061b12 tolerance 1e-6
+with `newton_cfl = 0.2`) [VERIFIED]: V cycles per step 16.6 -> 5.6 (a third; predicted
+half), wall time 17.6 s -> 8.5 s; largest position difference at t = 0.8 3.4e-9 (bound
+1e-5), energy error unchanged to four digits (3.670e-3). With the step limit: 19 steps
+instead of 200, step from 0.05 falling to 0.0109, largest position difference 1.5e-4
+(bound 1e-3), energy error 4.7e-3. Held. (The first runs of this test,
+core-20261115-120949/-121007/-121016-6bef558, used the executable before its source was
+committed; the same numbers.)
+
+Outcome of T3 at N = 128 (card run core-20261115-120028-fee90ca, 1000 steps;
+`tracks/core/analysis/newton/collapse.json`, figure `collapse.png` inspected: both
+resolutions on the cycloid; inner particles ahead and outer shell behind, four times
+less at N = 128; energy flat after an early rise; second moment and its derivatives on
+the exact curves) [VERIFIED]:
+| quantity | N = 64 | N = 128 | ratio |
+|---|---|---|---|
+| mean r/r_0 against cycloid, half free-fall time | -9.7e-5 | -2.4e-5 | 4.0 |
+| mean, t = 1.0 | +1.08e-4 | +9.0e-5 | (cancellation) |
+| particles r_0 < 0.8, t = 1.0 | -4.54e-3 | -1.05e-3 | 4.3 |
+| particles r_0 > 0.9, t = 1.0 | +1.07e-2 | +2.48e-3 | 4.3 |
+| rms spread, r_0 < 0.8, t = 1.0 | 9.0e-3 | 3.5e-3 | 2.6 |
+| energy K + W, largest relative change | 1.45e-3 | 3.9e-4 | 3.7 |
+| I_xx, t = 1.0 | 7.0e-3 | 1.86e-3 | 3.8 |
+| d2I_xx, half free-fall time | -1.9e-3 | -5.2e-4 | 3.6 |
+| d3I_xx, rms over the run (difference quotient) | 8.6e-2 | 4.0e-2 | 2.2 |
+| d3I_xx averaged over a tenth of the free-fall time, half free-fall time | +7.8e-3 | +3.8e-4 | |
+Predictions 1 to 3 held (the deviation falls by four, not only by the predicted two);
+the oscillating error of d3I falls at first order, as the reading of the N = 64 run said
+it would if the oscillation of d2I is of second order: that reading could have failed
+here and did not.
+
+T7 so far (card run core-20261115-120028-fee90ca against the processor run
+core-20261115-115450-fee90ca, which is at cycle 418 of 1000): the card run completed,
+650 s for 1000 steps (0.65 s per step; the processor run takes about 5 s per step on one
+core of the loaded machine); K, W, C, I_xx, d2I_xx agree to 1.2e-13 relative over the
+common 418 cycles, the number of V cycles is the same at every step, particle positions
+agree to 8.9e-16 and momenta to 1.8e-15 at t = 0.4. Card time 0.18 card-hours.

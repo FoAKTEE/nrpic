@@ -45,13 +45,16 @@ class PMScheme(pm.PM):
 
     def fields(self):
         rho = cid.cic_deposit(self.x, self.m, self.n, self.L, self.shape)
+        if cid.DEP_COMP_C > 0.0:
+            rho = cid.compensate_density([rho], cid.DEP_COMP_C, 0.0, cid.DEP_COMP_C2)[0]
         rho = cid.binomial(rho, self.nfilter, self.compensate)
         self.delta = rho/self.mean - 1.0
         self.phi = nw.scheme_fields(self.delta, self.L, four_pi_g=1.0)
         self.g = nw.gather_gradient(self.phi, self.x, self.L)[1]
 
 
-def python_runs(stem, meta, nmesh, dt, steps, cache):
+def python_runs(stem, meta, nmesh, dt, steps, cache, nfilter=0, compensate=False,
+                shape="cic"):
     """Positions and momenta of pm.PM and of PMScheme after the given numbers of steps."""
     if os.path.exists(cache):
         z = np.load(cache)
@@ -60,8 +63,8 @@ def python_runs(stem, meta, nmesh, dt, steps, cache):
     x0, p0, m, _ = nio.read_nrp(stem + ".nrp")
     out = []
     for cls in (pm.PM, PMScheme):
-        sim = cls(x0, p0, m, nmesh, meta["L"], H0=meta["hubble"], nfilter=0,
-                  compensate=False, shape="cic")
+        sim = cls(x0, p0, m, nmesh, meta["L"], H0=meta["hubble"], nfilter=nfilter,
+                  compensate=compensate, shape=shape)
         xs, ps, done = [], [], 0
         for s in steps:
             for _ in range(s - done):
@@ -82,7 +85,15 @@ def main():
     ap.add_argument("--dt", type=float, default=0.005)
     ap.add_argument("--name", default="wave")
     ap.add_argument("--no-python", action="store_true")
+    ap.add_argument("--shape", default="cic", choices=("cic", "tsc", "pcs"),
+                    help="cloud of the run (<particles> deposit_shape)")
+    ap.add_argument("--nfilter", type=int, default=0, help="<particles> nfilter")
+    ap.add_argument("--compensate", action="store_true",
+                    help="<particles> filter_compensate = true")
+    ap.add_argument("--dep-comp-c", type=float, default=0.0,
+                    help="<particles> deposit_comp_c")
     a = ap.parse_args()
+    cid.DEP_COMP_C = a.dep_comp_c
     os.makedirs(a.out, exist_ok=True)
     fs.use_style()
     cols = [fs.PAL["red"], fs.PAL["yellow"], fs.PAL["green"]]
@@ -135,7 +146,8 @@ def main():
                                             for i in range(len(times)))))
         if not a.no_python:
             cache = os.path.join(a.out, "%s_%s_pm.npz" % (a.name, label.replace(" ", "")))
-            x_pm, p_pm, x_sc, p_sc = python_runs(stem, meta, nmesh, a.dt, steps, cache)
+            x_pm, p_pm, x_sc, p_sc = python_runs(stem, meta, nmesh, a.dt, steps, cache,
+                                                 a.nfilter, a.compensate, a.shape)
             epm = np.array([rel(xs[i][:, 0], x_pm[i][:, 0], i) for i in range(len(times))])
             esc = np.array([rel(xs[i][:, 0], x_sc[i][:, 0], i) for i in range(len(times))])
             esc3 = np.array([float(np.max(np.abs((xs[i] - x_sc[i])

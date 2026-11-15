@@ -48,3 +48,14 @@ All binary files are written by one rank in native byte order. `<base>` is
 
 The Z4c history `<base>.z4c.user.hst` holds volume integrals of the squared constraint
 residuals (divide by its Volume column and take the square root for a norm).
+
+## Newtonian mode of the particle module (`<particles> pusher = newton`)
+
+Interface and column table: `tracks/core/interfaces/newtonian_mode.md`; reader:
+`python/nrpic/newton.py` (`read_newton_hst`, `NEWTON_COLUMNS`).
+
+| File | Content |
+|---|---|
+| `<base>.newton.hst` | text, one record every `hist_dcycle` cycles, 50 columns: time, cycle, scale factor, rest mass, kinetic energy, potential energy (particle sum and mesh sum), the Layzer-Irvine constant and its integral, momentum, angular momentum, centre of mass, the second moment `sum m x_i x_j` and its first three time derivatives (6 components each; the third is a difference quotient over the last step and has its own time column), extrema of the potential, largest momentum and acceleration, defect norm and number of V cycles of the Poisson solve, the step |
+| `<base>.nrpic.hst`, snapshots, trajectories | as in the relativistic mode, with these readings: the momentum slots hold `a dx/dt`; `sum_mW` and `int_E` are rest mass; the lapse columns (`alpha_probe`, `alpha_min`, `alpha_max`, probes) hold the potential `Phi` of `lap Phi = four_pi_G (rho - <rho>)`; the proper-time columns have no meaning |
+| `rst/<base>.NNNNN.rst.prt.nwt` | state of the mode next to the particle restart file: 8 bytes `NRPNWT01`, 50 float64 (30 particle sums of the last synchronised state, time, scale factor, Layzer-Irvine integral, 6 third derivatives and their time, largest momentum, defect norm, 6 mesh sums, largest acceleration, number of V cycles), 5 int64 (extents of the potential array), the potential including ghost cells as float64 |

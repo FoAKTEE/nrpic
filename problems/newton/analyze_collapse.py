@@ -195,19 +195,22 @@ def main():
         ax.set_ylabel(r"$I_{xx}$ and derivatives / $I_{xx}(0)$")
         ax.legend(loc="lower left", fontsize=7, ncol=2)
         ax = axs[1, 1]
-        ax.plot(t/tff, np.abs(rI), "-", color=col, label=label + r", $I$")
-        ax.plot(t[1:]/tff, np.abs(rdI[1:]), "--", color=col, label=r"$dI/dt$")
-        ax.plot(t/tff, np.abs(rd2I), "-.", color=col, label=r"$d^2I/dt^2$")
-        ax.plot(h["time_d3I"][1:]/tff, np.abs(rd3I[1:]), ":", color=col, lw=0.8,
-                label=r"$d^3I/dt^3$")
-        ax.plot(tsm/tff, np.abs(rd3s), "-", color=col, lw=0.8,
-                label=r"$d^3I/dt^3$, averaged")
+        ax.plot(t/tff, np.abs(rI), "-", color=col)
+        ax.plot(t/tff, np.abs(rd2I), "--", color=col, lw=1.0)
+        ax.plot(tsm/tff, np.abs(rd3s), ":", color=col, lw=1.0)
+        if irun == 0:
+            from matplotlib.lines import Line2D
+            ax.legend(handles=[Line2D([], [], color="k", ls="-", label=r"$I$"),
+                               Line2D([], [], color="k", ls="--", lw=1.0,
+                                      label=r"$d^2I/dt^2$"),
+                               Line2D([], [], color="k", ls=":", lw=1.0,
+                                      label=r"$d^3I/dt^3$, averaged")],
+                      loc="upper left", fontsize=7, ncol=2, columnspacing=0.8)
         ax.set_yscale("log")
-        ax.set_ylim(1e-6, 1)
+        ax.set_ylim(1e-6, 10)
         ax.set_xlim(0, 1)
         ax.set_xlabel(r"$t/t_{\rm ff}$", labelpad=-1)
         ax.set_ylabel("relative deviation from exact")
-        ax.legend(loc="lower right", fontsize=7, ncol=2)
         ax = axs[1, 2]
         ax.plot(t[1:]/tff, h["mg_cycles"][1:], "-", color=col, label=label)
         ax.set_xlim(0, 1)
