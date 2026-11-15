@@ -582,3 +582,17 @@ without; noise reaching the lattice value at 10^6 particles; the two lobes of M_
 gone with the curvature; H-norm flat with the curvature and rising six-fold without;
 second-order H on the P^2 line; the clumps' lobes gone beside the puncture, the
 puncture's own truncation error left at its position).
+
+### Outcome of test R (runs `core-20261115-174445-36616db`, `core-20261115-174439-7359389`)
+
+HELD. Release processor executable `.work/build_cpu_v03` against this branch's
+(sha256 53c0d32b...), every data file compared byte by byte (restart headers without
+their 36 never-set bytes): `regress_cf` IDENTICAL (16 files), `cf_table_regress` (9),
+`by_static` (5), `jeans` (20; the first paper's configuration of `n1e4_v19`, two cycles,
+10^4 particles, 1042 MeshBlocks, about 20 min per executable on one core). First
+history record of the jeans case against run `n1e4_v19`: equal in every printed column
+but Z-norm2, 2.29825e-26 against 1.22401e-26 (Z vanishes analytically; the run was made
+on a card with `.work/build_gpu_v7`); I had predicted equality without excepting that
+column, so as worded the prediction fails in a round-off digit of a zero, and holds for
+every quantity that is not zero. No figure: byte comparisons have nothing to plot
+[JUDGEMENT].
