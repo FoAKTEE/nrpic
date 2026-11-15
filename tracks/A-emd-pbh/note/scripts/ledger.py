@@ -155,6 +155,35 @@ def main():
           (g, "predicted card-hours of the two scouting runs",
            f"{P['SR1_geodesic']['card_hours']:.2f}; {P['SR2_conformal_time']['card_hours']:.2f}", "scouting")]
 
+    # ------------------------------------------------------------------ parameter table
+    D = common.load_json("dataset2t", "expball_smooth_tophat_HRb0p5_dc1_R10p3_R20p75_w0p1875.json")
+    dm, da = D["model"], D["args"]
+    # the outcome rule of scope/SCOPE.md section 3 (lines 94-116): design constants, no run
+    par = [("Scouting data: expanding ball with a bound core", None),
+           (r"total (Misner--Sharp) mass $M$; rest mass", f"{dm['M_misner_sharp']:.4f}; {dm['rest_mass']:.4f}"),
+           (r"envelope: $HR_b$; ball radius $R_b/M$; Hubble rate $HM$; start $t_i/M$",
+            f"{dm['HRb']:g}; {dm['Rb']:g}; {dm['H']:g}; {dm['t_i']:.3f}"),
+           (r"core: mean contrast $\Delta$ inside $R/M$; compensated at $R/M$",
+            f"{dm['delta_c']:g}; {dm['R1']:g}; {dm['R2']:g}"),
+           (r"edge taper: half width$/M$; matter edge$/M$", f"{dm['edge_width']:g}; {dm['rbar_matter']:g}"),
+           (r"conformal factor at the centre; largest $2m/R$ on the slice",
+            f"{dm['psi_centre']:.4f}; {dm['max_2m_over_R']:.3f}"),
+           (r"particle lattice spacing$/M$", f"{2 * dm['rbar_matter'] / da['nlat']:g}"),
+           ("Outcome rule and threshold bracket (design)", None),
+           ("consecutive horizon searches; their span in units of the horizon mass", "3; 5"),
+           (r"constraint bound: $\|\Ham\|_2$ over $\|16\pi E\|_2$ outside the horizon", "0.1"),
+           (r"bracket ratio $A_{\rm hi}/A_{\rm lo}$ at the end of the bisection", "1.1"),
+           (r"primary end time; continuation of the run below threshold ($t_H$)", "250; 1000")]
+    ptex = [r"\begin{table}", r"\caption{Parameters of the scouting data and of the outcome rule.}",
+            r"\label{tab:parameters}", r"\begin{ruledtabular}", r"\begin{tabular}{p{0.62\columnwidth}l}"]
+    for q, v in par:
+        ptex.append(rf"\multicolumn{{2}}{{l}}{{\emph{{{q}}}}} \\" if v is None else rf"{q} & {v} \\")
+    ptex += [r"\end{tabular}", r"\end{ruledtabular}", r"\end{table}"]
+    with open(os.path.join(out, "parameters.tex"), "w") as f:
+        f.write("% written by scripts/ledger.py from the data-set run and scope/SCOPE.md section 3; do not edit\n")
+        f.write("\n".join(ptex) + "\n")
+    L += [("Parameters", r"scouting data of Table~\ref{tab:parameters}", "see table", "dataset2t")]
+
     tex = [r"\begin{table*}",
            r"\caption{Numerical ledger. Every number of this note with the registered run that produced it.}",
            r"\label{tab:ledger}",
@@ -270,6 +299,11 @@ def main():
         f.write("\n".join(md) + "\n")
     with open(os.path.join(out, "claims.json"), "w") as f:
         json.dump(dict(n=len(C), disagree=n_bad, claims=C, inputs=common.CHECKED), f, indent=1)
+    with open(os.path.join(out, "claims_summary.tex"), "w") as f:
+        f.write("% written by scripts/ledger.py; do not edit\n")
+        f.write(f"A check of {len(C)} numbers stated in the track's status documents and journals against "
+                f"the run outputs found {len(C) - n_bad} in agreement and {n_bad} "
+                f"difference{'s' if n_bad != 1 else ''}")
     common.report_checks("ledger")
     print(f"ledger: {len(L)} ledger rows; {len(C)} claims, {n_bad} disagree")
     for c in C:
