@@ -296,3 +296,18 @@ at the next output time t_n = t + waveform_dt stores this array: lag waveform_dt
 as measured (a pure "previous waveform time" lag would have been 8 steps; the run distinguishes
 the two). Whether the extracted waveforms (CalcWaveForm, same Task_End) carry the one-step offset
 was not tested [TO VERIFY by core].
+
+## Scouting prediction: diagnostics on two full-GR cosmology runs (written before cosmo_demo.py ran)
+
+Input: `runs/cosmo/dav_c256_n128_t` (quadratic cloud) and `runs/cosmo/dav_c256_n128_pcs4bt`
+(cubic cloud, fourth-order compensation), 128^3, one particle per cell, 14 restart dumps each
+from a = 1 to ~1000 (cosmo/TESTLOG.md, C5). All [JUDGEMENT]:
+(1) the reader assembles the dumps; a from <chi>^(-1/2) runs from 1 to about 1000;
+(2) the TT part of the metric is far below the non-TT part: rms h^TT / rms(non-TT) <= 1e-2 at
+    all times (induced tensor modes are second order in the potential, ~7e-5 at the start);
+(3) rho_GW / rho_bar is tiny (< 1e-6) and grows as structure forms;
+(4) if the TT power at the highest k is particle noise, the two deposit schemes differ there by
+    more than a factor 2, while at low k they agree within 20 percent; if they agree at all k,
+    the TT content is not deposit noise;
+(5) at the last dump B and Lambda E are small against E (rms ratio < 0.1): the Weyl field of a
+    matter-dominated box is mostly the Coulomb-type tidal part.
