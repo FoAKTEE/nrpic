@@ -1,0 +1,58 @@
+{
+ "run_id": "B-emd-gw-20261115-115217-69ab1db",
+ "command": "ATHENA_EXE=/data/haiyangw/nrpic/.work/build_gpu_c3/src/athena TIME=00:50:00 JOB_NAME=B-pancake scripts/gpu_batch.sh /data/haiyangw/nrpic/scratch/B-emd-gw/<run_id>/pancake.list",
+ "cwd": "/data/haiyangw/nrpic/wt/B-emd-gw",
+ "commit": "69ab1db8c2f01fcfc59ef0df436c2fa7dd89cfbb",
+ "worktree_dirty": true,
+ "inputs": [
+  {
+   "path": "/data/haiyangw/nrpic/.work/build_gpu_c3/src/athena",
+   "sha256": "bd4fc2723403a8ebbc9fa9e2c684c677510b92b670b129064270266a06632fb4"
+  },
+  {
+   "path": "tracks/B-emd-gw/verify_cosmo/inputs/pancake.athinput",
+   "sha256": "c95840b5f8b8585603a12dc58e67f5b669b0b374cad25a5978831917ee30214f"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/scratch/B-emd-gw/B-emd-gw-20261115-114807-dbd105a/L1_n32/particles.nrp",
+   "sha256": "e8e4bc770501c5fd699d8238cbe5623def1aff794196f6b50239e3a46bcc44b8"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/scratch/B-emd-gw/B-emd-gw-20261115-114807-dbd105a/L1_n32/fields.bin",
+   "sha256": "b81823dd4fc1e5d6e909f59987c596cd56cf8c69d4c8aa068e286e36b8fe1dd5"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/scratch/B-emd-gw/B-emd-gw-20261115-114807-dbd105a/L1_n64/particles.nrp",
+   "sha256": "973d96da4eb91a2b71c28998d6aeb2f29823abbdfc0a157648545bfec09eeb8e"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/scratch/B-emd-gw/B-emd-gw-20261115-114807-dbd105a/L1_n64/fields.bin",
+   "sha256": "93eeb023bab1a13474cd09855275fac76243a526609969ee19d93620dfffb67b"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/scratch/B-emd-gw/B-emd-gw-20261115-114807-dbd105a/L1_n96/particles.nrp",
+   "sha256": "fb06e43f885c40edd9cd48360c856fd72348d1680c57c5fceee8fd8e482a0af5"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/scratch/B-emd-gw/B-emd-gw-20261115-114807-dbd105a/L1_n96/fields.bin",
+   "sha256": "898b88548b3ab6f358a58368878a13ff275a0adb5ce217369a01fb6081aee169"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/scratch/B-emd-gw/B-emd-gw-20261115-114807-dbd105a/L4_n64/particles.nrp",
+   "sha256": "e0dd5d4f86daa1a7c004d1642d8553c7ff3a22b744916968d4330ceabb5fc569"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/scratch/B-emd-gw/B-emd-gw-20261115-114807-dbd105a/L4_n64/fields.bin",
+   "sha256": "8961026119d4c6071cb78f4d21ea43ff79b7233962763866eab735f94a9398a7"
+  }
+ ],
+ "output_dir": "/data/haiyangw/nrpic/scratch/B-emd-gw/B-emd-gw-20261115-115217-69ab1db",
+ "purpose": "plane-wave pancake d = 0.05 through shell crossing to a = 42, production configuration, release executable on one card: L = 1 at 32, 64, 96 cells and L = 4 at 64 cells (one Slurm job, scripts/gpu_batch.sh)",
+ "kind": "scouting",
+ "cores": 1,
+ "card_hours": 0.0,
+ "started_utc": "2026-11-15T11:52:17+00:00",
+ "status": "running",
+ "package": "tracks/B-emd-gw/verify_cosmo",
+ "notes": "parent: B-emd-gw-20261115-114807-dbd105a (initial data). Release executable built 2026-11-14 08:31 from main before 0c06525 (adds damp_kappa_gam, default off, not used here)."
+}

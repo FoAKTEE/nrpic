@@ -1,0 +1,30 @@
+{
+ "run_id": "B-emd-gw-20261115-115239-69ab1db",
+ "command": "for n in 32 64: OMP_NUM_THREADS=1 python3 tracks/B-emd-gw/verify_cosmo/scripts/newton_pancake.py --delta 0.05 --n $n --L 1 --tend 10.9615 --out /data/haiyangw/nrpic/scratch/B-emd-gw/<run_id>/n$n (two processes in parallel)",
+ "cwd": "/data/haiyangw/nrpic/wt/B-emd-gw",
+ "commit": "69ab1db8c2f01fcfc59ef0df436c2fa7dd89cfbb",
+ "worktree_dirty": true,
+ "inputs": [
+  {
+   "path": "tracks/B-emd-gw/verify_cosmo/scripts/newton_pancake.py",
+   "sha256": "cb2b18a2aaeddbd26d0c90098d7631749f0c76f993c10a89414355cf12843ca4"
+  },
+  {
+   "path": "cosmo/newton/pm.py",
+   "sha256": "7e95f83c70c70d6fd43cf0c2c15604b24cd29acb382a38feb7a324620e6a1136"
+  },
+  {
+   "path": "cosmo/ic/cosmo_id.py",
+   "sha256": "3e1ec590a123453a0d788946912abb4e66a35d71af50c787d7c6f518c6e77a52"
+  }
+ ],
+ "output_dir": "/data/haiyangw/nrpic/scratch/B-emd-gw/B-emd-gw-20261115-115239-69ab1db",
+ "purpose": "Newtonian particle-mesh reference (cosmo/newton/pm.py as a library) of the plane-wave pancake d = 0.05, L = 1, 32 and 64 cells, same positions as the relativistic data, production cloud and compensation, to tau = 10.9615 (a = 42)",
+ "kind": "scouting",
+ "cores": 2,
+ "card_hours": 0.0,
+ "started_utc": "2026-11-15T11:52:39+00:00",
+ "status": "running",
+ "package": "tracks/B-emd-gw/verify_cosmo",
+ "notes": ""
+}
