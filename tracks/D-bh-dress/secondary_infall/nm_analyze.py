@@ -89,7 +89,15 @@ def analyse_run(rundir, stride=1):
         a_ai = ((p["t_i"] + t) / p["t_i"]) ** (2.0 / 3.0)
         rho_b = p["rho_i"] * (p["t_i"] / (p["t_i"] + t)) ** 2
         mta = float(mc.sum() + md[turned].sum())
-        rows.append(dict(t=t, cycle=int(cyc), a=a_ai, mta=mta, dress=float(md[passed].sum()),
+        rp_ = r[ad & passed]
+        wq = md[ad & passed]
+        if rp_.size:
+            o = np.argsort(rp_)
+            cw = np.cumsum(wq[o]) / wq.sum()
+            rsp = {f"r_sp{int(q * 100)}": float(np.interp(q, cw, rp_[o])) for q in (0.5, 0.9, 0.99)}
+        else:
+            rsp = {}
+        rows.append(dict(t=t, cycle=int(cyc), a=a_ai, mta=mta, dress=float(md[passed].sum()), **rsp,
                          n_alive=int(alive.sum()), com=com.tolist(),
                          clump_rms=float(np.sqrt(np.mean(rcl ** 2))),
                          clump_r90=float(np.percentile(rcl, 90)),
@@ -218,9 +226,19 @@ def main():
                 continue
             rho_b = p["rho_i"] * (p["t_i"] / (p["t_i"] + pr["t"])) ** 2
             ent = dict(a=pr["a"], t=pr["t"], rho=pr["rho"])
+            row = R["rows"][kk]
+            ent.update({k_: row[k_] for k_ in ("r_sp50", "r_sp90", "r_sp99") if k_ in row})
             for law, ref in R["refs"].items():
                 j = int(np.argmin(np.abs(ref["snap_t"] - pr["t"])))
                 rp = ref_profile(ref, j, rho_b)
+                pm = ref["snap_ncross"][j] > 0
+                if pm.any():
+                    rr_ = np.abs(ref["snap_r"][j][pm])
+                    ww_ = ref["m0"][pm]
+                    o = np.argsort(rr_)
+                    cw = np.cumsum(ww_[o]) / ww_.sum()
+                    for q in (0.5, 0.9, 0.99):
+                        ent[f"ref_{law}_r_sp{int(q * 100)}"] = float(np.interp(q, cw, rr_[o]))
                 ent[f"ref_{law}"] = rp.tolist()
                 ent[f"ref_{law}_dt"] = float(ref["snap_t"][j] - pr["t"])
                 mtak = np.interp(pr["t"], t, mta)

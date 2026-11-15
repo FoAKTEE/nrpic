@@ -447,3 +447,13 @@ D-20261115-180251-ffafe32): N64c analysed with every other snapshot (6.2 M apart
 3.1 M) gives M_ta and dress at a/a_i = 4 identical to all printed digits (2.59656, 0.79662 M)
 and the dress at a/a_i = 2 within 0.15 % of the full sampling (+1.26 % against +1.40 % from the
 kernel shells). The snapshot spacing does not limit the mass measurements.
+
+## 2026-11-15T19:12Z  prediction: is the excess density beyond the outermost caustic a shift or a smearing?
+
+Analysis D-20261115-190403-0bdb9b7 (cell-centred runs) shows at a/a_i = 4 the bin 16-20 M at
+1.89 (N128c), 1.31 (N64c), 1.75 (N128Lc) times the kernel shells and the bin inside it low
+(0.72, 0.97, 0.90). Test: the radius holding 99 % of the dust that has passed its pericentre
+(r_sp99) in the run against the same in the kernel shells. If the excess is the smearing of a
+sharp caustic by the cloud (one cell), |r_sp99(run) - r_sp99(shells)| < 0.5 dx; if the run's
+streams turn around farther out, the difference exceeds 1 dx. Expectation [JUDGEMENT]:
+smearing, i.e. below 0.5 dx in all three; for the vertex runs (heated dress) above 1 dx.
