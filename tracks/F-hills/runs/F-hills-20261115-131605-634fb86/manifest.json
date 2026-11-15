@@ -1,0 +1,129 @@
+{
+ "run_id": "F-hills-20261115-131605-634fb86",
+ "track": "F-hills",
+ "package": "three_punctures (F-pre-3, F-pre-4 plan)",
+ "purpose": "T4: junk radiation (energy through r = 10, 14) and constraint norms of Bowen-York punctures from core's card runs of test 1b (A approx, B none, C stock boosted slice, E spin), analysis of AthenaK output, read only",
+ "kind": "scouting",
+ "command": [
+  "python3",
+  "tracks/F-hills/three_punctures/scripts/junk_energy.py",
+  "/data/haiyangw/nrpic/scratch/F-hills/F-hills-20261115-131605-634fb86"
+ ],
+ "cwd": "/data/haiyangw/nrpic/wt/F-hills",
+ "git": {
+  "sha": "634fb86b5cc62950a82ee6b55db024d7ab978a2e",
+  "branch": "track/F-hills",
+  "dirty_package": true
+ },
+ "inputs": [
+  {
+   "path": "tracks/F-hills/three_punctures/scripts/junk_energy.py",
+   "sha256": "c56a725f1440d49b5ac3bab595a1894f982f40c82cc2ff601243b82b561e7695"
+  },
+  {
+   "path": "python/nrpic/figstyle.py",
+   "sha256": "5d3b78ad8c2c02e428b675e3d7e35a32cbc8f053d1aeedd4fde66f27da55676e"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/scratch/core/core-20261115-121046-0c197fb/waveforms/rpsi4_real_0010.txt",
+   "sha256": "adde91698f31feb512aa06cc813876905ed083585515191085fec5eaec1ddf7e"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/scratch/core/core-20261115-121046-0c197fb/waveforms/rpsi4_imag_0010.txt",
+   "sha256": "0482d07ef777b4c0d0a099336ed3ab55ef54cb0690c68f79976461035fb1607b"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/scratch/core/core-20261115-121046-0c197fb/waveforms/rpsi4_real_0014.txt",
+   "sha256": "7d8f333fc473d3da7a9a762ffb4f2c3c801dd1c8e49457ec997aad63138d74bc"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/scratch/core/core-20261115-121046-0c197fb/waveforms/rpsi4_imag_0014.txt",
+   "sha256": "09f9db680cac29f21814c38757f9ddc57f10a0c13f3ada00111a6c781e932854"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/scratch/core/core-20261115-121046-0c197fb/byb.z4c.user.hst",
+   "sha256": "4a4185e835b9e54112dae9938094af3408e5627a9878c67c5a3b054bedf9620d"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/scratch/core/core-20261115-121049-0c197fb/waveforms/rpsi4_real_0010.txt",
+   "sha256": "0712044c0b08b7a3708f93d8af2614c612a9696454d451ce7ff1f9e0c30d5d7d"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/scratch/core/core-20261115-121049-0c197fb/waveforms/rpsi4_imag_0010.txt",
+   "sha256": "eeacc7d79ca2f129f75298cb94169ac8ea3fb4574085a761fc02bccc820a7d55"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/scratch/core/core-20261115-121049-0c197fb/waveforms/rpsi4_real_0014.txt",
+   "sha256": "8738b0f4ffdc4362b74b4e95bcf531446922d041624cdf31358418634fe76530"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/scratch/core/core-20261115-121049-0c197fb/waveforms/rpsi4_imag_0014.txt",
+   "sha256": "eee8b0daa6e59114f3b30ed4ccd2a256ccb7526c7a4eb31b3d5228099e46d28a"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/scratch/core/core-20261115-121049-0c197fb/byb.z4c.user.hst",
+   "sha256": "6acbed153eec1efc9a85197178a8a0912da8b0fd869f7c86947f7708ea10354c"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/scratch/core/core-20261115-121047-0c197fb/waveforms/rpsi4_real_0010.txt",
+   "sha256": "298f85529b735e632b6d0a26a015638b092825de2572090957ece4f609a4eaa0"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/scratch/core/core-20261115-121047-0c197fb/waveforms/rpsi4_imag_0010.txt",
+   "sha256": "74f376ff3844ebf24b491c32e51ca14504cef8eec8cd6f1383a980636e7bb7e4"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/scratch/core/core-20261115-121047-0c197fb/waveforms/rpsi4_real_0014.txt",
+   "sha256": "3b09f5f6eb5d4bd3f1189235ebeb822fa190abfbbcbda21bc64d250211ff7e8b"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/scratch/core/core-20261115-121047-0c197fb/waveforms/rpsi4_imag_0014.txt",
+   "sha256": "20cd2171fbf647b8d931718c439b47244af02b55b37b1f057c8bc7db2f95b33f"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/scratch/core/core-20261115-121047-0c197fb/bref.z4c.user.hst",
+   "sha256": "12719767e56d94dcf66de85a121e9edfa084b421eaf0cc6d17f7530236639a22"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/scratch/core/core-20261115-121050-0c197fb/waveforms/rpsi4_real_0010.txt",
+   "sha256": "3386af47bf35d0865c4c8e4040bb9bd8761b8a2efb5c757a8840dcd24c06a79b"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/scratch/core/core-20261115-121050-0c197fb/waveforms/rpsi4_imag_0010.txt",
+   "sha256": "4de3ab25ad0f8c3ddf4b3290bd22e5e270c18a4258a2227719a123ce51540582"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/scratch/core/core-20261115-121050-0c197fb/waveforms/rpsi4_real_0014.txt",
+   "sha256": "0fb19f7d59f19a6033f2b44d4a6a6f4a73e9e26c078f7545ccebd7787e462a5d"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/scratch/core/core-20261115-121050-0c197fb/waveforms/rpsi4_imag_0014.txt",
+   "sha256": "67608b4ae8509d99da59ef3f392900116eca85f836e44a3f3b32f7020053b90f"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/scratch/core/core-20261115-121050-0c197fb/byb.z4c.user.hst",
+   "sha256": "dff1f79b4a936a9731c55a8d44630a289d6782f86e5eea0fadd05d627f83a199"
+  }
+ ],
+ "parents": [],
+ "resources": {
+  "cores": 1,
+  "gpus": 0,
+  "card_hours": 0.0,
+  "core_hours": 0.00049
+ },
+ "outputs": {
+  "dir": "scratch/F-hills/F-hills-20261115-131605-634fb86",
+  "sha256": {
+   "fig_junk.pdf": "bc6862d050548a681e4d73f9514f0c99b3d5faec31002c5be65b63d294247fc4",
+   "fig_junk.png": "7e2621f2e0c3534a7e788cb3ca1ccf26a856e1485af284ea00e3f7ef637ed6be",
+   "junk_energy.json": "fb72e41acba8479161af65756784c820802cd55fec7261b1d82a0f5ad7e41a57",
+   "stdout.txt": "4c72a9a2fcf64f4df86c31ff5a6674ed38b493575c3f9933b96e6358a526c140"
+  }
+ },
+ "status": "completed",
+ "exit_code": 0,
+ "started": "2026-11-15T13:16:05+00:00",
+ "ended": "2026-11-15T13:16:07+00:00",
+ "wall_time_s": 1.8
+}

@@ -1,0 +1,66 @@
+{
+ "run_id": "F-hills-20261115-130755-982aba0",
+ "track": "F-hills",
+ "package": "three_punctures (F-pre-3, F-pre-4 plan)",
+ "purpose": "T2 rerun: Newtonian outcome scan, start state at 4 r_t and Newtonian track for the chosen first configuration a_b = 3, r_p = 8, phase 130 deg (newton3 driver)",
+ "kind": "scouting",
+ "command": [
+  "python3",
+  "tracks/F-hills/three_punctures/scripts/newton_start.py",
+  "--choose",
+  "far",
+  "130",
+  "/data/haiyangw/nrpic/scratch/F-hills/F-hills-20261115-130755-982aba0"
+ ],
+ "cwd": "/data/haiyangw/nrpic/wt/F-hills",
+ "git": {
+  "sha": "982aba07a2ed22b8a9615e8b389b4c12532faeb6",
+  "branch": "track/F-hills",
+  "dirty_package": true
+ },
+ "inputs": [
+  {
+   "path": "tracks/F-hills/three_punctures/scripts/newton_start.py",
+   "sha256": "8096ce0a89b485b0ee41bfab7491c632e2d5752ed99b2565bfb65a16bb699f97"
+  },
+  {
+   "path": "tracks/F-hills/newton3/hills3/threebody.py",
+   "sha256": "a7b2297ace17bebb37875ffd98daa46f1968a1d712000f428c877b389cfba626"
+  },
+  {
+   "path": "tracks/F-hills/newton3/hills3/integrate.py",
+   "sha256": "9163e563f7a90fec5d705fbe6b50365946158c65ffaedd8c80730ac3ecae7af9"
+  },
+  {
+   "path": "tracks/F-hills/newton3/hills3/orbits.py",
+   "sha256": "208fd9a68210007dfbc850f8c892e901abfe08b359708673a45d75517ac95b11"
+  },
+  {
+   "path": "python/nrpic/figstyle.py",
+   "sha256": "5d3b78ad8c2c02e428b675e3d7e35a32cbc8f053d1aeedd4fde66f27da55676e"
+  }
+ ],
+ "parents": [],
+ "resources": {
+  "cores": 1,
+  "gpus": 0,
+  "card_hours": 0.0,
+  "core_hours": 0.03542
+ },
+ "outputs": {
+  "dir": "scratch/F-hills/F-hills-20261115-130755-982aba0",
+  "sha256": {
+   "fig_newton_choice.pdf": "e21de310cccc4fceebe7740f35e1b29d8bf567044cb3c1e001191eb4af48ab29",
+   "fig_newton_choice.png": "313ed95427cfd42031288e1e62990a044284b851fcfe768183ebc9130b0c06bb",
+   "fig_newton_phase.pdf": "b9b59821df4362bd9ee92cfb0517e495b9b8036ec72b73ae2821daeef937d597",
+   "fig_newton_phase.png": "87390147cdd3936aaf6de16f946d915e97c75dd5ea459de56ed29a8ebe0f2536",
+   "newton_start.json": "b786160b9e3c6e38956abd065848385f23b84875b65f93eeacac869755be61d7",
+   "stdout.txt": "c633bcf1d1eccc70b94e79b8af85ec88f8fa5ab89e1d9f6f9eda69f57ee4e0a3"
+  }
+ },
+ "status": "completed",
+ "exit_code": 0,
+ "started": "2026-11-15T13:07:55+00:00",
+ "ended": "2026-11-15T13:10:03+00:00",
+ "wall_time_s": 127.5
+}

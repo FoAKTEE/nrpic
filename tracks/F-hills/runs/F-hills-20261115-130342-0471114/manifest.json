@@ -1,0 +1,63 @@
+{
+ "run_id": "F-hills-20261115-130342-0471114",
+ "track": "F-hills",
+ "package": "three_punctures (F-pre-3, F-pre-4 plan)",
+ "purpose": "T2: Newtonian outcome over the binary phase and start state at 4 r_t for the first three-black-hole configuration (newton3 driver), three candidate configurations",
+ "kind": "scouting",
+ "command": [
+  "python3",
+  "tracks/F-hills/three_punctures/scripts/newton_start.py",
+  "/data/haiyangw/nrpic/scratch/F-hills/F-hills-20261115-130342-0471114"
+ ],
+ "cwd": "/data/haiyangw/nrpic/wt/F-hills",
+ "git": {
+  "sha": "0471114e0a9b31580b434943f81162e5ed353471",
+  "branch": "track/F-hills",
+  "dirty_package": true
+ },
+ "inputs": [
+  {
+   "path": "tracks/F-hills/three_punctures/scripts/newton_start.py",
+   "sha256": "5e0f7c9e6e556aa59fc42265bbaef91bceb469de12e6ce4550c1b2f87c54ae0c"
+  },
+  {
+   "path": "tracks/F-hills/newton3/hills3/threebody.py",
+   "sha256": "a7b2297ace17bebb37875ffd98daa46f1968a1d712000f428c877b389cfba626"
+  },
+  {
+   "path": "tracks/F-hills/newton3/hills3/integrate.py",
+   "sha256": "9163e563f7a90fec5d705fbe6b50365946158c65ffaedd8c80730ac3ecae7af9"
+  },
+  {
+   "path": "tracks/F-hills/newton3/hills3/orbits.py",
+   "sha256": "208fd9a68210007dfbc850f8c892e901abfe08b359708673a45d75517ac95b11"
+  },
+  {
+   "path": "python/nrpic/figstyle.py",
+   "sha256": "5d3b78ad8c2c02e428b675e3d7e35a32cbc8f053d1aeedd4fde66f27da55676e"
+  }
+ ],
+ "parents": [],
+ "resources": {
+  "cores": 1,
+  "gpus": 0,
+  "card_hours": 0.0,
+  "core_hours": 0.04022
+ },
+ "outputs": {
+  "dir": "scratch/F-hills/F-hills-20261115-130342-0471114",
+  "sha256": {
+   "fig_newton_choice.pdf": "2decb452a821c09aa6d431f4beb2ca7f81ce215d87113a74d187f4c8b8defa97",
+   "fig_newton_choice.png": "16d4ad36b9e1cdeec5ffa9ce238440b65017ae98411bc77b2943ce76c1a759f1",
+   "fig_newton_phase.pdf": "103400d44f4db1662bc3f51c9ccc874b61d23b3820ee874098500acd8dc62676",
+   "fig_newton_phase.png": "d4f58a3511362cae7fc1659904b9e92e49b8b4358ee4071d586ad890bcbd5189",
+   "newton_start.json": "11fc114eeeadc6c7e684ad3530b71b2a1144288cbc9de7d735f300ad26128162",
+   "stdout.txt": "6259de8586e6f98ec9005fa12eeaff7f051aba60fc1f78753321d2adcdcd2f96"
+  }
+ },
+ "status": "completed",
+ "exit_code": 0,
+ "started": "2026-11-15T13:03:42+00:00",
+ "ended": "2026-11-15T13:06:07+00:00",
+ "wall_time_s": 144.8
+}
