@@ -191,3 +191,21 @@ Added prediction before the registered run: N(kick) at N*+4.2 stays within 6 per
 linear term for kicks up to 6 H/2pi (N'' delta phi/(2 N') = 0.045 at 6 H/2pi from the trial's
 N', N''), and within 2 percent at N*+3. Refuted by a larger departure (that would mean the
 kicks of the USR box are non-perturbative in delta N although f_NL is small).
+
+O-V2b (run E-20261115-180056-d62ee5a). f_NL (delta N, surface N*+12.5) = 0.0089, 0.0110,
+0.0111, 0.0112 for kicks at N*+2, 3, 3.5, 4.2. N(kick) for kicks of -6..+6 H/2pi: at N*+3 the
+response is 4.48 .. -4.23 e-folds against the linear 4.35 .. -4.35 (departure 3 percent at
+the ends: my 2 percent refined prediction FAILED narrowly); at N*+4.2 6.66 .. -5.87 against
+6.38 .. -6.38 (4.5 and 8 percent at the ends: the 6 percent prediction FAILED at +6 H/2pi,
+held up to 5 H/2pi). Drift/diffusion per e-fold: 1.5e5 at N*+1.6, falls through 1e3 near
+N*+4.2 (entry of the last mode), minimum 0.983 at N*+8.33, 1.00 at N_f.
+Reading [JUDGEMENT]: a kick of one H/2pi moves the end of USR by about one e-fold, so
+Delta_R of order 1 at the UV end is a large R from a tiny delta phi over a tiny dphi/dN, but
+the response stays linear to a few percent; with f_NL = 0.011 the local-quadratic
+contamination of the A3 modes is r of about 8e-5 (per-mode deviation about 1 percent). My
+suspicion that A3-USR is spoiled by mode coupling is NOT supported by this proxy. What
+remains: the background reaches the diffusion-dominated border (ratio 0.98) at the end of the
+run; in the N = 256 box no noise enters then (last mode at N*+4.2), but any larger box or later
+cut would feed noise computed from a classical level-0 background into a diffusion-dominated
+phase. The proxy is separate-universe delta N, not NR; gradients and the NR extraction are not
+in it.
