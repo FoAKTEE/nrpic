@@ -85,8 +85,10 @@ def fig_eqcount(rep, out):
     ax2 = fig.add_axes([0.57, 0.15, 0.41, 0.78])
     d = db - ind
     order = np.argsort(d)
-    ax2.bar(np.arange(len(d)), d[order], color=[fs.PAL["red"] if v else "0.7" for v in d[order]], width=0.8)
-    ax2.axhline(0, color="k", lw=1.0)
+    ax2.axhline(0, color="k", ls="--", lw=1.0)
+    ax2.scatter(np.arange(len(d)), d[order], s=18, color=fs.PAL["red"], zorder=3)
+    span = max(2.0, float(np.abs(d).max()) * 1.2)
+    ax2.set_ylim(-span, span)
     ax2.set_xlabel("sampled papers (sorted)")
     ax2.set_ylabel("database - independent")
     ax2.set_title(f"{int((d == 0).sum())} of {len(d)} agree exactly", fontsize=10)
@@ -99,8 +101,8 @@ def fig_retrieval(rep, out):
     modes = list(c["modes"])
     q = [r["id"] for r in c["modes"][modes[0]]["rows"]]
     fs.use_style()
-    fig = plt.figure(figsize=(fs.FULL_WIDTH, 3.4))
-    ax = fig.add_axes([0.08, 0.17, 0.9, 0.73])
+    fig = plt.figure(figsize=(fs.FULL_WIDTH, 3.6))
+    ax = fig.add_axes([0.08, 0.16, 0.9, 0.7])
     x = np.arange(len(q))
     miss = c["k"] + 1.5
     colors = {"text": fs.PAL["blue"], "hybrid": fs.PAL["red"]}
@@ -114,13 +116,14 @@ def fig_retrieval(rep, out):
         ax.scatter(x + off[m], lr, marker="x", s=22, color=colors.get(m, "k"),
                    label=f"{m}: locator ({c['modes'][m]['locator_hits']}/{len(q)})")
     ax.axhline(c["k"] + 0.5, color="k", ls="--", lw=1.0)
-    ax.text(len(q) - 0.5, c["k"] + 0.9, "not in the top 10", ha="right", va="bottom", fontsize=8)
+    ax.text(-0.6, c["k"] + 1.0, "not in the top 10", ha="left", va="center", fontsize=8)
     ax.set_xticks(x)
     ax.set_xticklabels(q, rotation=90, fontsize=7)
+    ax.set_xlim(-1, len(q))
     ax.set_ylabel("rank of first hit")
     ax.set_ylim(miss + 1, 0)
     ax.minorticks_off()
-    ax.legend(ncol=2, loc="lower left", fontsize=8)
+    ax.legend(ncol=4, loc="lower center", bbox_to_anchor=(0.5, 1.0), fontsize=8)
     fs.save(fig, out)
     plt.close(fig)
 

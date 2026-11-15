@@ -1,0 +1,195 @@
+# Golden questions of the retrieval regression (brief 12.9); written by kbtool/qa_golden.py
+version: 1
+questions:
+  - id: q01
+    from: "brief 12.9 example"
+    question: "Which paper writes the Einstein equations as a first-order system in a form analogous to electrodynamics?"
+    paper: "2111.05282"
+    file: paper.tex
+    lines: [[87, 88], [130, 140]]
+  - id: q02
+    from: "FQ1 L637-663"
+    question: "What order of shape function is used when particles are deposited onto the grid?"
+    paper: "2611.12831"
+    file: main.tex
+    lines: [[625, 670]]
+  - id: q03
+    from: "FQ1 L680-686"
+    question: "Is the deposited source smoothed by a binomial filter after deposition?"
+    paper: "2611.12831"
+    file: main.tex
+    lines: [[680, 686]]
+  - id: q04
+    from: "FQ2 L888-917"
+    question: "How is the dust ball of the Oppenheimer-Snyder test sampled with particles?"
+    paper: "2611.12831"
+    file: main.tex
+    lines: [[888, 917]]
+  - id: q05
+    from: "FQ3 L371-397"
+    question: "Which lapse and shift gauge conditions are used, and how does the shift damping follow the tracked black holes?"
+    paper: "2611.12831"
+    file: main.tex
+    lines: [[371, 397]]
+  - id: q06
+    from: "FQ4 L1393"
+    question: "Which future directions are listed in the conclusions of the particle-in-cell numerical relativity paper?"
+    paper: "2611.12831"
+    file: main.tex
+    lines: [[1390, 1399]]
+  - id: q07
+    from: "FQ5 L1398"
+    question: "On which supercomputers were the Einstein-Vlasov particle-in-cell simulations run?"
+    paper: "2611.12831"
+    file: main.tex
+    lines: [[1395, 1399]]
+  - id: q08
+    from: "claim 508"
+    question: "At what times do the two clumps inside the common envelope form apparent horizons?"
+    paper: "2611.12831"
+    file: main.tex
+    lines: [[1340, 1340]]
+  - id: q09
+    from: "claim 577"
+    question: "How does the implicit midpoint pusher average positions and momenta between time levels?"
+    paper: "2611.12831"
+    file: main.tex
+    lines: [[445, 456]]
+  - id: q10
+    from: "claim 560"
+    question: "Do the constraint violations seeded by particle noise scale as the inverse square root of the particle number?"
+    paper: "2611.12831"
+    file: main.tex
+    lines: [[1129, 1129], [1509, 1511]]
+  - id: q11
+    from: "FQ6 L398-469"
+    question: "Which modified slicing condition is used for primordial black hole formation in a matter-dominated universe with a background scale factor?"
+    paper: "2609.14218"
+    file: MDPBH.tex
+    lines: [[398, 469]]
+  - id: q12
+    from: "claim 31"
+    question: "What are the eigenvalues of the deformation tensor for the ellipsoidal peak with ellipticity e and prolateness p?"
+    paper: "2609.14218"
+    file: MDPBH.tex
+    lines: [[907, 908]]
+  - id: q13
+    from: "FQ7 L503-506"
+    question: "Which window function in wavenumber is used to coarse-grain the stochastic inflation noise in the numerical relativity simulation?"
+    paper: "2512.14649"
+    file: PRD_v2.tex
+    lines: [[503, 506]]
+  - id: q14
+    from: "FQ8 L194"
+    question: "Below which pericentre distance do general-relativistic effects become significant for tidal separation of binaries by a massive black hole?"
+    paper: "2404.16270"
+    file: article.tex
+    lines: [[194, 194]]
+  - id: q15
+    from: "claim 51"
+    question: "Is the hoop conjecture ratio 2M over the circumferential radius used to diagnose black hole formation in dust collapse with different gauges?"
+    paper: "2610.23218"
+    file: main.tex
+    lines: [[352, 360]]
+  - id: q16
+    from: "claim 55"
+    question: "Which paper uses the Zel'dovich approximation to estimate primordial black hole formation in the matter-dominated era?"
+    paper: "1609.01588"
+    file: apj_nonsphericalpbh.tex
+    lines: [[381, 383]]
+  - id: q17
+    from: "claim 91"
+    question: "Does a trapped surface form near the centre at the time of collapse for a generic quadratic density profile?"
+    paper: "2507.18312"
+    file: Main.tex
+    lines: [[234, 238]]
+  - id: q18
+    from: "claim 164"
+    question: "How large is the gravitational-wave power emitted around the time of black hole formation in the collapse simulations?"
+    paper: "1901.04498"
+    file: main.tex
+    lines: [[284, 284]]
+  - id: q19
+    from: "claim 178"
+    question: "What is the gravitational-wave energy spectrum per logarithmic frequency in terms of the Fourier transform of the quadrupole moment?"
+    paper: "2403.15126"
+    file: pII_GW_Vir_C2_Arx.tex
+    lines: [[903, 903]]
+  - id: q20
+    from: "claim 196"
+    question: "How many particles and which softening are chosen for the N-body runs of nonspherical collapse, and how converged are they?"
+    paper: "2605.04487"
+    file: main_v3.tex
+    lines: [[2365, 2365]]
+  - id: q21
+    from: "claim 198"
+    question: "How do the fully numerical gravitational-wave spectra compare with the Zel'dovich-based estimate near the peak?"
+    paper: "2605.04487"
+    file: main_v3.tex
+    lines: [[2512, 2512]]
+  - id: q22
+    from: "claim 212"
+    question: "What is the traceless part of the space-space Einstein equation in the weak-field expansion of the relativistic N-body code?"
+    paper: "1604.06065"
+    file: compendium_arxiv.tex
+    lines: [[294, 298]]
+  - id: q23
+    from: "claim 223"
+    question: "Which open-source multigrid code solves the constraint equations for initial data with fundamental fields and inhomogeneous cosmologies?"
+    paper: "2501.13046"
+    file: main.tex
+    lines: [[62, 103]]
+  - id: q24
+    from: "claim 279"
+    question: "What is the relaxation time of self-interacting dark matter in terms of density, velocity dispersion and cross section?"
+    paper: "astro-ph/0110561"
+    file: SIDMGT_Xiv2.tex
+    lines: [[310, 321]]
+  - id: q25
+    from: "claim 342"
+    question: "For which black hole can the capture condition of dark matter orbits be derived analytically?"
+    paper: "1305.2619"
+    file: SFWpaper.tex
+    lines: [[377, 377]]
+  - id: q26
+    from: "claim 345"
+    question: "Does black hole spin increase the dark matter density spike close to the hole?"
+    paper: "1707.06302"
+    file: kerrdm.tex
+    lines: [[83, 95]]
+  - id: q27
+    from: "claim 371"
+    question: "Which simulations model a matter-dominated background with an oscillating massive scalar field and the perturbation with a massless field?"
+    paper: "2109.04896"
+    file: PBH_formation.tex
+    lines: [[89, 89]]
+  - id: q28
+    from: "claim 386"
+    question: "What coupling strength k do traditional black holes like Kerr have in the cosmological coupling hypothesis?"
+    paper: "2302.07878"
+    file: paper_couple_rev.tex
+    lines: [[132, 132]]
+  - id: q29
+    from: "claim 405"
+    question: "What do the Gaia black hole binaries imply for cosmologically coupled black hole mass growth with k equal to three?"
+    paper: "2305.01307"
+    file: andrae-elbadry-2023.tex
+    lines: [[48, 50], [184, 184]]
+  - id: q30
+    from: "claim 429"
+    question: "Which simulation shows an exchange followed by a merger after a strong binary-single black hole scattering?"
+    paper: "2505.03934"
+    file: apssamp.tex
+    lines: [[464, 480]]
+  - id: q31
+    from: "claim 436"
+    question: "Which three black hole simulations start from the Pythagorean Burrau configuration of the three-body problem?"
+    paper: "2108.01392"
+    file: main.tex
+    lines: [[185, 185], [269, 277], [400, 400]]
+  - id: q32
+    from: "claim 438"
+    question: "Which study simulates head-on collisions of several black holes initially at rest with the BSSN formulation?"
+    paper: "2610.09336"
+    file: Liu_article_V2.tex
+    lines: [[129, 129]]

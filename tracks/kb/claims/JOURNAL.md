@@ -168,3 +168,18 @@ from "command present, nothing extracted".
 All 41 sampled papers agree exactly (the two fixes touch only the cases found); C2 finds
 no paper whose flat.tex has a sectioning command but no extracted section. Refuted by any
 mismatch or any such paper.
+
+## P6 outcome (QA rerun kb-20261115-155508-2e00432; figures kb-20261115-155649-2e00432)
+
+Counts held: 41 of 41 papers agree exactly (2295 numbered lines on both sides). The C2
+part is refuted: one paper has sectioning commands but no extracted section,
+astro-ph/0003278 (`separate.tex`, `\documentstyle[prl,aps,floats]{revtex}`, an unbraced
+`\input epsf` at line 16; `\section` at lines 80, 145, 278, 484, 659 [VERIFIED, read in
+the store]); kbtool stores 0 sections for it. The other 36 sectionless papers have no
+sectioning command at all. Cause of the miss not established (no run of the extractor on
+it here); handed to the lead. Retrieval unchanged (BM25 27/32 papers, 21/32 locators;
+hybrid 22/32 and 15/32 with 29184 of 43398 chunks embedded at run time).
+Figures read: fig_qa_claims (claims per track by status; labels), fig_qa_eqcount (41
+points on the line of equality; differences all zero), fig_qa_retrieval (ranks per
+question; the BM25 misses are q07, q11, q12, q17, q24). The first drawing of the last two
+had an empty difference panel and a legend over the miss markers; redrawn.
