@@ -4,7 +4,7 @@ Work package of a helper of F-hills (wave 2): the t = 0 constraints of the three
 data at mass ratio four against resolution, two single-puncture runs (junk energy; gauge
 settling of the light member), readers of trackers, horizons and member energies, and the
 passage P1 at q = 4 prepared but not submitted. Predictions and outcomes, including the
-failed ones: `JOURNAL.md` (entries E1-E7). Labels [VERIFIED], [JUDGEMENT] as in the journal.
+failed ones: `JOURNAL.md` (entries E1-E9). Labels [VERIFIED], [JUDGEMENT] as in the journal.
 
 ## State (2026-11-15)
 
@@ -12,11 +12,14 @@ failed ones: `JOURNAL.md` (entries E1-E7). Labels [VERIFIED], [JUDGEMENT] as in 
 |---|---|---|
 | E1 trees of the q = 4 data | 1128 / 1716 / 2514 MeshBlocks at m/4, m/8, m/16 (t = 0) | run F-20261115-173543-29e87e8 |
 | E2 t = 0 residual against resolution (C0) | done; at m/8 truncation dominates (4.7e-5), the corrected data's own residual is 4.9e-7 (1/33 of uncorrected), visible from m/16 on; order 7.6-8 | runs F-20261115-173547-a02af7d, F-20261115-181434-b9c8916; `figures/fig_c0_constraints.png`, `results/c0_constraints.json` |
-| E3 single-puncture runs S3, S2 (and S1) | submitted, queued on the cards (see "Pending") | F-20261115-173601-2fae2dc (S3, S2), F-20261115-173606-efcbf69 (S1) |
-| E4 readers | `scripts/nrread.py`; synthetic test 10/10 | F-20261115-173821-b2c969a; `figures/fig_test_nrread_synthetic.png` |
+| E3 single-puncture runs S3, S2 | submitted, queued on the cards (see "Pending"); the optional S1 (m/16) was withdrawn before it started (card-hour cap) | F-20261115-173601-2fae2dc (S3, S2); F-20261115-173606-efcbf69 (S1, stopped) |
+| E3a single-puncture analysis checked on core's run A | reproduces core's tracker ratios 0.480/0.557/0.616, horizon 1.010719, H 2.35e-6 | F-20261115-182100-613c9c6 |
+| E4 readers | `scripts/nrread.py`; synthetic test 10/10; on the three-hole data at t = 0: trackers at the input positions (4e-9), m2's horizon not found, m1 and M 0.7-0.8 percent below m Lambda | F-20261115-173821-b2c969a, F-20261115-181805-f9c3473; `figures/fig_test_nrread_synthetic.png` |
 | E5 trackers across restarts | AthenaK truncates the tracker files on every restart; `scripts/athena_keep_trackers.sh` keeps them; checks 7/7 | F-20261115-173930-deef41a, F-20261115-181049-ab04d03 |
 | E6 baselines of P1 | Newton ejects m1 (+1.312 units), HRNA ejects m2 (+0.970) | F-20261115-174102-ffa764f; `figures/fig_baselines_p1.png`, `results/baselines_p1.json` |
 | E7 P1 smoke test on a card (400 cycles) | submitted, queued | F-20261115-174602-c6879fe |
+| E8 why m2's horizon is missed at m/8 | the flow reaches the horizon and then oscillates (mass 0.126-0.137) until 400 iterations | F-20261115-182223-17ca48a |
+| E9 passage analysis `scripts/p1_analysis.py` | on synthetic tracker files: +1.31187 / -1.62654 units, separation at t = 115.2 | F-20261115-183737-49f0a7f |
 | P1 | prepared, NOT submitted (the lead decides) | section "P1" below |
 
 ## Contents
@@ -33,6 +36,9 @@ failed ones: `JOURNAL.md` (entries E1-E7). Labels [VERIFIED], [JUDGEMENT] as in 
 | `scripts/probe_mesh.sh`, `c0_t0.sh`, `c0_constraints.py` | E1, E2 |
 | `scripts/single_analysis.py` | E3: junk energy, tracker speed ratio, horizon drift, constraint norms |
 | `scripts/baselines_p1.py` | E6: Newton and HRNA from the P1 state (python of `scratch/F-hills/venv-gb`, numba) |
+| `scripts/p1_analysis.py` | E9: the readers applied to a passage run (distances, member energies, horizons, history, radiated energy; baselines overlaid) |
+| `inputs/p1_q4_finderdiag.athinput`, `scripts/finderdiag.sh` | E8 |
+| `inputs/single_P025_profile.athinput`, `inputs/batch_S2g.list` | S2 repeated with core's mass-scaled shift damping (needs `scratch/core/exe/core_gauge/`; not run) |
 | `figures/`, `results/` | copies of the figures and JSON of the runs named above |
 
 ## How to rerun
@@ -57,6 +63,8 @@ Analysis of the card runs when they have finished (not yet run):
             scratch/F-hills/<S3S2 run>/S3 scratch/F-hills/<S3S2 run>/S2 scratch/F-hills/<S1 run>/S1
     ... --cores 1 -- python tracks/F-hills/nr_first/scripts/test_nrread.py single <the same run dirs>
     ... --cores 1 -- python tracks/F-hills/nr_first/scripts/test_nrread.py three scratch/F-hills/<smoke run>/P1smoke
+    ... --cores 1 -- python tracks/F-hills/nr_first/scripts/p1_analysis.py scratch/F-hills/<P1 run> \
+            --baselines=tracks/F-hills/nr_first/results/baselines_p1.json
 
 Processor runs use one core: the release's processor build is serial (2.6 MeshBlock-cycles
 per second measured, E5), so anything beyond t = 0 belongs on a card.
@@ -120,8 +128,8 @@ be missing in early searches; no non-finite values; history Volume constant.
 
 ## Pending (not done by this package)
 
-- Card runs queued at 18:17 UTC behind six jobs: S3 + S2 (job 4474), S1 (4475), P1 smoke
-  (4476). Their analysis commands are above; the outcomes of E3 and E7 are not in the journal.
+- Card runs queued since 17:36 UTC behind six jobs of other owners: S3 + S2 (job 4474), P1
+  smoke (4476); S1 (4475) withdrawn. Their analysis commands are above.
 - The repeat of the light single-puncture run with core's mass-scaled shift damping: core
   has not published `scratch/core/exe/core_gauge/READY` (branch `core/gauge` has
   `shift_eta_profile` in progress).
