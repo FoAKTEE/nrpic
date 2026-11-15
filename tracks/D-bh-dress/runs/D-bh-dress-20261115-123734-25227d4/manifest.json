@@ -1,0 +1,80 @@
+{
+ "run_id": "D-bh-dress-20261115-123734-25227d4",
+ "track": "D-bh-dress",
+ "package": "D-pre-2 spike",
+ "purpose": "P2 initial data: 48000 test particles from the final spike DF (canonical action, m=4e6, Hernquist M=1e12 a=20 kpc, E<=0.99) in 12 files, and 2400 loss-cone boundary probes",
+ "kind": "scouting",
+ "command": [
+  "python3",
+  "sample_spike.py",
+  "--out",
+  "/data/haiyangw/nrpic/scratch/D-bh-dress/D-bh-dress-20261115-123734-25227d4",
+  "--n0",
+  "48000",
+  "--n1",
+  "2400",
+  "--nfiles",
+  "12",
+  "--ecut",
+  "0.99",
+  "--seed",
+  "20261115"
+ ],
+ "cwd": "/data/haiyangw/nrpic/wt/D-bh-dress/tracks/D-bh-dress/spike",
+ "env_overrides": {
+  "OMP_NUM_THREADS": "4",
+  "OPENBLAS_NUM_THREADS": "4"
+ },
+ "git": {
+  "sha": "25227d4787538fe8ebb92b754bd581038aac34b7",
+  "branch": "track/D-bh-dress",
+  "dirty_spike_dir": false
+ },
+ "inputs": [
+  {
+   "path": "/data/haiyangw/nrpic/wt/D-bh-dress/tracks/D-bh-dress/spike/spike_lib.py",
+   "sha256": "c6ddd1260ac7cf587775d1c115e2e301e49f5e1f3d7eec85b7546aaa773d96ff"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/wt/D-bh-dress/tracks/D-bh-dress/spike/sample_spike.py",
+   "sha256": "82c60556639468fc9492c214b22e9474fc2a109075ea8a41ad2ab14a04b9a047"
+  }
+ ],
+ "resources": {
+  "nodes": 1,
+  "cores": 4,
+  "gpus": 0,
+  "card_hours": 0.0,
+  "walltime_s": 10.66
+ },
+ "outputs": {
+  "dir": "/data/haiyangw/nrpic/scratch/D-bh-dress/D-bh-dress-20261115-123734-25227d4",
+  "sha256sums": "sha256sums.txt",
+  "files": [
+   "ic_meta.npz",
+   "ic_summary.json",
+   "spike_0.nrp",
+   "spike_1.nrp",
+   "spike_10.nrp",
+   "spike_11.nrp",
+   "spike_2.nrp",
+   "spike_3.nrp",
+   "spike_4.nrp",
+   "spike_5.nrp",
+   "spike_6.nrp",
+   "spike_7.nrp",
+   "spike_8.nrp",
+   "spike_9.nrp",
+   "spike_lc.nrp",
+   "stdout.txt"
+  ]
+ },
+ "status": "completed",
+ "exit_code": 0,
+ "started": "2026-11-15T12:37:34+00:00",
+ "ended": "2026-11-15T12:37:45+00:00",
+ "parents": [
+  "D-bh-dress-20261115-123029-4df1e76"
+ ],
+ "notes": "Registered by hand with spike/register_run.py."
+}

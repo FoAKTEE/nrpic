@@ -133,3 +133,12 @@ P2e (loss-cone boundary) every species-1 particle inside the loss cone (q < 0) c
     [t_pred - 1 M, t_pred + 2 M); with dt halved (B2) the early crossings shrink by about
     4x (second order). Refuted by any misclassified particle, or by offsets that do not
     shrink with dt.
+
+## P3 particle budget (prediction, before the run of particle_budget.py)
+
+Equal-mass particles drawn from the truncated DF: from the P2 initial data (r quantiles: 10 %
+inside 13.2 Gm, 50 % inside 32.6 Gm, E_cut = 0.99) about 30 % lie inside 20 Gm; the
+innermost of 8 log bins in 5-20 Gm holds the fewest. Prediction: for E_cut = 0.99 about
+3e4 particles in total give 100 per bin (10 %); the requirement grows like
+N(<r_apo)/N(<20) ~ (r_apo/20)^(2/3) (number profile of a rho ~ r^-7/3 spike), i.e. about
+4.6x per decade of the largest apocentre. Refuted if the growth per decade is outside 3-7x.
