@@ -120,14 +120,15 @@ def main():
     for col, L in zip((fs.PAL["blue"], fs.PAL["red"], fs.PAL["yellow"]), (2.0, 4.0, 8.0)):
         ax2.loglog(deltas, res["3B"][f"L{L:g}"]["omega_over_ck1"], color=col,
                    label=f"box {L:g} initial Hubble radii")
-    for d, v in res["3B"]["measured_infall_L4"].items():
-        ax2.loglog(float(d), v["omega_over_ck1"], "s", color=fs.PAL["red"], ms=4)
+    for i, (d, v) in enumerate(res["3B"]["measured_infall_L4"].items()):
+        ax2.loglog(float(d), v["omega_over_ck1"], "s", color=fs.PAL["red"], ms=4,
+                   label=("measured infall, box 4" if i == 0 else None))
     for s in (1.0, np.sqrt(2), np.sqrt(3)):
         ax2.axhline(s, **fs.MASK_LINE)
     ax2.text(1.1e-3, 1.9, r"$|\mathbf{n}|=1,\sqrt{2},\sqrt{3}$", color="grey", fontsize=8)
-    ax2.set_xlabel(r"wave amplitude $\delta$ (cosmo/ single-wavelength data)")
+    ax2.set_xlabel(r"wave amplitude $\delta$")
     ax2.set_ylabel(r"$\omega_{\rm vir}/(c\,k_1)$ at collapse")
-    ax2.legend(loc="upper right")
+    ax2.legend(loc="lower right")
     fs.save(fig, os.path.join(out, "regime_estimates"))
     print(json.dumps({k: v for k, v in res.items() if k != "3B"}, indent=1))
     print("3B L4 ratio range for delta 0.0025-0.05:", res["3B"]["L4_ratio_range_0.0025_0.05"])
