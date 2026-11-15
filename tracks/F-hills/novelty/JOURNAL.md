@@ -131,3 +131,16 @@ at least five times less than object (a) at m/8 (23.6), because the time step is
 cells ten times larger; particles add less than 20 percent at 2e5 and become comparable
 to the mesh near 2e6. Refuted if (b) at R_c/16 with 2e5 particles costs more than 10
 card-hours.
+
+## 2026-11-15 outcome of run C (`F-hills-20261115-045918-e7d0a66`)
+
+Object (b), q = 10, a_b = 30 r_gb, r_p = 6 r_g, r0 = 4 r_t (T = 223 GM/c^3): 1.80 card-hours
+of mesh at R_c/16 (cells M/16), 3.60 at R_c/32; particles add 0.04 (2e5) or 0.40 (2e6)
+card-hours at R_c/16. Prediction held for the total (1.84 card-hours, 13 times below
+object (a) at m/8). The clause "particles comparable to the mesh near 2e6" FAILED: 18
+percent at 2e6 (push rate 1.99e7 per second from the cosmology run
+`runs/cosmo/dav_c704_n64_k`, a uniform periodic mesh; the rate on a refined mesh near a
+puncture is not measured). Model inputs that are JUDGEMENT: 1000 MeshBlocks, the clump
+radius, and that no horizon forms in the clumps during the passage (if one forms, the
+cost becomes that of object (a)). Figure: none new (numbers only, in SCOPE.md table 5).
+Other numbers identical to run B.

@@ -1,0 +1,50 @@
+{
+ "run_id": "F-hills-20261115-125915-9518508",
+ "track": "F-hills",
+ "package": "geodesic_binary (F-pre-2)",
+ "purpose": "T1 metric identities, derivatives, CKS metric vs python/nrpic, flat-space binary",
+ "kind": "scouting",
+ "command": [
+  "/data/haiyangw/nrpic/scratch/F-hills/venv-gb/bin/python",
+  "-I",
+  "tracks/F-hills/geodesic_binary/tests/t1_metric_checks.py",
+  "/data/haiyangw/nrpic/scratch/F-hills/F-hills-20261115-125915-9518508"
+ ],
+ "cwd": "/data/haiyangw/nrpic/wt/F-hills",
+ "git": {
+  "sha": "95185089c5ac8d0812860ca7da298ceb3d3f0358",
+  "branch": "track/F-hills",
+  "dirty_package": false
+ },
+ "inputs": [
+  {
+   "path": "tracks/F-hills/geodesic_binary/hrna.py",
+   "sha256": "a9d98682bde83f1f412681f07ec30f760f2f1f14a49fe25e4ec7a39643ff3b91"
+  },
+  {
+   "path": "tracks/F-hills/geodesic_binary/tests/t1_metric_checks.py",
+   "sha256": "518b42f998b34ee8558602981a15fe4825f7973665e2271cd93f33398b7b20d7"
+  }
+ ],
+ "parents": [],
+ "resources": {
+  "cores": 1,
+  "gpus": 0,
+  "card_hours": 0.0,
+  "core_hours": 0.0008
+ },
+ "outputs": {
+  "dir": "scratch/F-hills/F-hills-20261115-125915-9518508",
+  "sha256": {
+   "stdout.txt": "b6d185d92a3d822da16c42cd5974662ec5d4cfa0062891f60f5525caaffa2180",
+   "t1_flat_binary.pdf": "71edba39c7ca12ddcdfa24beeda9dfd2c1212bf0eb3e2b74bc6206ab207a5fff",
+   "t1_flat_binary.png": "e21c06eb36d185ca16afdc14b1b6a8329a4a10fd41dbc0f5c201f9530bddbba8",
+   "t1_metric_checks.json": "bb676863b2c30e05328893ebecbc97522a05b554d5648b3727f1c4411a329159"
+  }
+ },
+ "status": "completed",
+ "started": "2026-11-15T12:59:15+00:00",
+ "exit_code": 0,
+ "ended": "2026-11-15T12:59:17+00:00",
+ "wall_time_s": 2.8
+}
