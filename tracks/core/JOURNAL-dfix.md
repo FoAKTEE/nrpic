@@ -335,3 +335,43 @@ m = 0 on the mesh metric would differ by design (T1); none of these cases has on
 [TO VERIFY by the run: `mesh_static` has a particle of mass 1e-3, `newton_point` has
 tracers with m = 0 in the Newtonian mode, which never used the null rule].
 Refuted by any differing file.
+
+Outcome of T5 (run core-20261115-161025-3f75eb8, processors, 212 s; figure
+`tracks/core/analysis/dfix/figs/t5_pair.png`, looked at) [VERIFIED]:
+- corrected: surface 0 (pair 0, 1) has a record at each of the two calls: mass 1.019897
+  at t = 0 and 1.019870 at t = 0.0156 M, rms expansion 3.3e-5 and 7.4e-5, mean
+  coordinate radius 0.490 and 0.482; inside the band [1.005, 1.030] and 0.09 per cent
+  below (0.5 + 0.5)(1 + 0.5/24) = 1.02083. Surfaces 1 (all punctures) and 2 (pair 0, 2)
+  have no record;
+- release core-v0.3, same input: no record on any surface.
+Not refuted. The pair rule finds the common horizon that the released rule does not
+search for while a third hole is far away. Not tested here: a merger during an
+evolution (the surface appearing when two moving holes approach); the trigger is the
+same function, the first guess is `initial_radius_<n>`, which the user must set near
+the expected radius [JUDGEMENT].
+
+### Card runs (written before they ran; the queue held the first card job of this
+package, the reproduction R3/R4, from 15:40 UTC on)
+
+Case list `tracks/core/analysis/dfix/cases/card_checks.list`, card executable of this
+branch. Predictions:
+- t1_circ: r in [8.0000, 8.0012] M, as on processors;
+- t3_acc: 192 / 84 / 16 crossings, 192 removal records, counters (2,2,2,2), (3,3,3,3);
+  sums of m E equal to the processor run within 1e-12 relative;
+- t4_kepler: counters (3, 4), 8 crossings inwards and 7 outwards;
+- t5_pair: surface 0 found with mass 1.0199 within 1e-4, surfaces 1 and 2 without
+  record;
+- mem2700 (`by_triple.athinput`, `max_nmb_per_rank = 2700`, three finders): peak card
+  memory 71 GB within 2 GB (26.3 MB per slot, `multi_puncture.md` section 5);
+- bench16, bench32 (the same problem, 96 cycles, MeshBlocks of 16^3 and of 32^3 with
+  560 slots): the 32^3 run needs fewer than 560 MeshBlocks, its zone-cycles per second
+  are 1.5 to 2.5 times those of the 16^3 run and its memory per cell is lower; if it
+  needs more slots the run stops with the mesh error and the benchmark must be repeated
+  with a smaller wave zone;
+- t1_accept (`horizon_calib.athinput`, 250 M, corrected executable): the four circular
+  tracers stay on their orbits: areal radius within 3 per cent of its start for 250 M
+  (the earlier run `single_v3` on a similar mesh: 2.5, 1.1, 0.9, 1.1 per cent,
+  `docs/TESTLOG.md` "Test particles around an evolved puncture"), L_z to 1e-3; the
+  plunging tracer and the one released at rest are removed at the lapse threshold
+  (in `single_v3` at 126 M and 54 M). Track D's bound of 1 per cent may fail for the
+  innermost orbit, as it did in `single_v3`.
