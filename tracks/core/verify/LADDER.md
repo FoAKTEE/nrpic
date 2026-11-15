@@ -176,6 +176,36 @@ growing central-lapse oscillation (half swing 0.005 to 0.018 between 100 and 500
 saturating at 0.015-0.022; table tab:outcomes_clusters) whose cause is not determined
 (`docs/TESTLOG.md` lines 897-904).
 
+### Row 4, wave 2: bisection on release core-v0.3 (`verify/JOURNAL.md`, 15:30Z onwards)
+
+Protocol of the earlier sequence (`runs/st/yc0605_v5`: 10^4 stratified particles, seed
+1, one-percent inward kick, equilibrium table, `st_cluster_amr.athinput`) with the mesh
+capped at the initial nest (finest cells M/4, `mesh_refinement/num_levels=7`), to 300 M,
+card release executable `.work/build_gpu_v03`. Turning point of the sequence (first
+maximum of E_b/M_0, `python/nrpic/st_cluster.binding_energy_maximum`, recomputed in run
+core-20261115-152805-47d8f25): y_c* = 0.6796, z_c = 0.4553, E_b/M_0 = 0.036058.
+Analysis run core-20261115-160501-ee15e0f, figure `figs/cluster_threshold.png`.
+
+| y_c | run | horizon | mean central lapse 200-300 M (alpha_c) | rule of 15:30Z | equal-binding target |
+|---|---|---|---|---|---|
+| 0.72 | core-20261115-152843-5728b1d | none | 0.7079 (0.7207) | STABLE | -- |
+| 0.70 | core-20261115-152842-5728b1d | none | 0.6920 (0.7039) | STABLE | -- |
+| 0.66 | core-20261115-152842-5728b1d | none | 0.7005 (0.6713) | STABLE (offset 0.029 of 0.03) | 0.7034 |
+| 0.64 | core-20261115-152843-5728b1d | none | 0.7221 (0.6554) | UNDECIDED | 0.7205 |
+| 0.69, 0.67 | job 4439, run core-20261115-154726-37450f2 | PENDING (queued) | | | |
+| 0.605 control | job 4447, run core-20261115-155617-06f844b | PENDING (queued) | | | |
+
+Verdict of the bisection: by the rule fixed before the runs it does NOT locate the
+threshold (no model collapses at M/4; the prediction that 0.64 collapses is refuted).
+Read after the runs [JUDGEMENT]: the members below y_c* migrate outward to the member of
+equal binding fraction (within 0.003 and 0.002 in central lapse), those above stay, so
+the stability threshold at this mesh and particle number lies between 0.66 and 0.70 and
+brackets the turning point; the direction of departure (migration, not collapse, for a
+one-percent inward kick) differs from the earlier finer-mesh run of 0.605, which the
+pending control at M/4 tests. Unexplained: the central-lapse oscillation (period about
+50 M) grows to +-0.05 to +-0.08 after 200 M in every run, stable ones included.
+Row 4 stays PARTIAL.
+
 ## Supporting checks of the C2 steps (earlier, not re-run today)
 
 | Step | Number | Source |
