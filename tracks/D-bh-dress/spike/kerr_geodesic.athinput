@@ -1,0 +1,62 @@
+# D-pre-2 Kerr (D-bh-dress, wave 2): test particles drawn from the adiabatically grown Kerr
+# spike distribution function (sample_kerr.py), evolved in the fixed Kerr metric (analytic
+# Cartesian Kerr-Schild, spin a = 0.8 along +z) with the midpoint pusher.  Based on
+# problems/cluster_test/cluster_analytic.athinput: the mesh is a dummy, the analytic
+# metric does not use it; there is no deposition and (in this metric mode) no excision.
+#
+#   athena -i kerr_geodesic.athinput -d <rundir> particles/particle_file=<abs .nrp>
+
+<comment>
+problem   = D-pre-2 Kerr spike stationarity, analytic Kerr (Kerr-Schild) metric, a = 0.8
+
+<job>
+basename  = kerr
+
+<mesh>
+nghost    = 2
+nx1       = 8
+x1min     = -1.0
+x1max     = 1.0
+ix1_bc    = periodic
+ox1_bc    = periodic
+nx2       = 8
+x2min     = -1.0
+x2max     = 1.0
+ix2_bc    = periodic
+ox2_bc    = periodic
+nx3       = 8
+x3min     = -1.0
+x3max     = 1.0
+ix3_bc    = periodic
+ox3_bc    = periodic
+
+<meshblock>
+nx1       = 8
+nx2       = 8
+nx3       = 8
+
+<time>
+evolution  = dynamic
+integrator = rk2
+cfl_number = 1.0
+nlim       = -1
+tlim       = 20000.0
+ndiag      = 20000
+
+<particles>
+particle_type  = nrpic
+pusher         = midpoint
+metric         = kerr_schild
+bh_mass        = 1.0
+bh_spin        = 0.8
+tolerance      = 1.0e-12
+max_iterations = 100
+dt             = 0.05
+deposit        = false
+hist_dcycle    = 200
+traj_dcycle    = 0
+snap_dt        = 100.0
+particle_file  = kerr.nrp
+
+<problem>
+pgen_name = nrpic_geodesic

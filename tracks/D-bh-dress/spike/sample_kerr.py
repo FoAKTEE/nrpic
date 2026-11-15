@@ -62,7 +62,18 @@ class Target:
         ok = (E < self.ecut) & (cv > cu) & (D > a * a * s * s)
         st = {}
         if ok.any():
-            i = np.nonzero(ok)[0]
+            ii = np.nonzero(ok)[0]
+            parts = [self._one(i, r, D, A, E, Lz, cu, cv, phic, sr, w)
+                     for i in np.array_split(ii, max(1, ii.size // 40000))]
+            parts = [q for q in parts if q]
+            if parts:
+                st = {k: np.concatenate([q[k] for q in parts]) for k in parts[0]}
+        return w, st
+
+    def _one(self, i, r, D, A, E, Lz, cu, cv, phic, sr, w):
+        K, a = self.K, self.K.a
+        st = {}
+        if True:
             Cc, ru, end = K.ccrit(E[i], Lz[i], r[i])
             C = cu[i] + (cv[i] - cu[i]) * 0.5 * (1 - np.cos(phic[i]))
             good = (~end) & (C > Cc)
@@ -75,7 +86,7 @@ class Target:
                 jac = base + (2 * r[j] * D[j] * urbl if self.slice == "ks" else 0.0)
                 w[j] = r[j] * 2.0 / D[j] ** 1.5 * f * jac
                 st = {"idx": j, "C": C[good], "urbl": urbl, "uth_abs": np.sqrt(C[good] - cu[j])}
-        return w, st
+        return st
 
 
 def main():

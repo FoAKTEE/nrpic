@@ -311,3 +311,53 @@ printed (a^2 - x(x-2) under the root) has no real value at x = 10 for any a < 1;
 a^2 + x(x-2) = Delta(x) it gives 4.8753, 4.8328, 4.8287, 4.8226, 4.8125 for a = 0.5, 0.7,
 0.72, 0.75, 0.8, i.e. the caption fits a ~ 0.72 (the spin is not stated). [VERIFIED: a sign
 typo in eq. (lmax); eq. (lmaxe1) has the + sign.]
+Probe after item 7 (development, scratch): with r inside the bound region (8, 12, 15, 20 Gm)
+C_crit(a = 0.75, E = 0.97, Lz = 2) = 10.3209 at r_unst = 2.834 Gm, FdRW's 10.3 confirmed.
+
+## K2 setup (development, not registered, scratch/D-bh-dress/tmp/kerr_dev/)
+
+- Slice subtlety found while writing the sampler: f is the density per d^3x d^3p_i on a
+  slice of the time coordinate whose Hamiltonian is used, so a sample drawn on t_BL = const
+  and placed at t_KS = 0 (what sample_spike.py of wave 1 did, uniform in Schwarzschild time
+  along each orbit, then u_r shifted to KS) carries the weight 1/(1 + delta_t' v^r_BL) with
+  respect to the stationary state on the KS slice (delta_t' = 2r/Delta): ingoing particles
+  are over-weighted by a few per cent inside ~10 Gm. The r histogram at t = 0 is not
+  affected (the factor is odd in u_r at first order), the evolution is. sample_kerr.py
+  includes the Jacobian (option --slice bl leaves it out, for a control).
+- Sampler dry run (3000 particles): acceptance 6.3 %, no envelope violation (largest
+  weight/envelope 0.56), conversion BL -> CKS reproduces E, Lz, Q to 4e-16, 3e-15, 4e-14;
+  pericentres >= 2.37 Gm, apocentres <= 92 Gm, 17.8 % inside 16 Gm, mean Lz = +0.37.
+- Smoke test of the release processor executable (build_cpu_v03, kerr_geodesic.athinput,
+  a = 0.8) on 1500 particles for 200 M: 1.31e6 particle updates per second per core;
+  max |dE/E| 4.8e-6, |dLz| 8.7e-12, |dQ|/max(Q, 1) 5.4e-6 at t = 200 M.
+
+## K2 prediction (before the registered runs)
+
+Main run: 48000 particles from the Hernquist-grown Kerr DF (a = 0.8, E <= E_cut = 0.99,
+KS-slice sampling, seed 20261116), 12 processes of the release processor executable,
+midpoint pusher, dt = 0.05 M, t = 0 ... 20000 M, snapshots every 100 M. Reference: the
+coordinate density n(r, theta) of kerr_lib with E <= 0.99, integrated over bins of
+ln r (2.2-100 Gm) x |cos theta| ([0, 1/3), [1/3, 2/3), [2/3, 1]).
+K2a (sampler) at t = 0 the binned counts follow the reference: chi^2/dof within
+    1 +- 3 sqrt(2/dof) (bins with > 20 expected); the mean Lz in the r ranges below equals
+    the reference number-weighted <Lz> within 3 sigma.
+K2b (stationarity) chi^2/dof stays in that band at every snapshot without trend; counts in
+    r ranges [r_min, 4), [4, 6), [6, 10), [10, 16), [16, 40) Gm within 3.5 sigma (Poisson)
+    at every snapshot (201 snapshots x 5 ranges) and their late-half means within
+    3 sigma; the equator/pole contrast (|cos| < 1/3 over |cos| > 2/3, r < 16 Gm) constant
+    within 3 sigma. Refuted by a drift or trend in any of these.
+K2c (invariants) max over snapshots |dE/E|: median < 1e-7, max < 1e-4; |dLz| < 1e-8
+    (quadratic invariant of the implicit midpoint rule, up to the 1e-12 iteration
+    tolerance); |dQ| / max(Q, 1): max < 1e-4. Refuted above.
+K2d no particle comes within r_+ = 1.6 Gm, and no particle goes below its predicted
+    pericentre by more than 1e-3 Gm (orbits within the capture boundary were not drawn).
+K2e the mean Lz (net prograde rotation from frame dragging and capture of retrograde
+    orbits) stays at its t = 0 value in each r range within 3 sigma.
+Control (after the main run): 48000 particles each, same seed, KS-slice and BL-slice
+(uncorrected) samples, 3000 M, snapshots every 10 M. Prediction [JUDGEMENT]: the KS sample
+stays within Poisson noise of its t = 0 counts; the BL sample shows a coherent transient
+of the counts inside 10 Gm (excess first, then oscillation damped by phase mixing) of
+1-3 %, i.e. 1-2 sigma per snapshot, visible as a correlated excursion over ~100-300 M.
+Refuted (in the sense that the slice matters below the noise of these tests, so wave 1's
+Schwarzschild test is not affected at its precision) if the BL run shows no excursion
+above 2 sigma in the running mean over 100 M.

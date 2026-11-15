@@ -24,6 +24,7 @@ def main():
     ap.add_argument("--out", required=True)
     ap.add_argument("--files", nargs="+", required=True)
     ap.add_argument("--exe", default="/data/haiyangw/nrpic/.work/build_cpu_c1/src/athena")
+    ap.add_argument("--athinput", default="spike_geodesic.athinput")
     args = ap.parse_args(argv)
     env = dict(os.environ, OMP_NUM_THREADS="1")
     procs = []
@@ -32,7 +33,7 @@ def main():
         d = Path(args.out) / Path(f).stem
         d.mkdir(parents=True, exist_ok=True)
         (d / "run_file.txt").write_text(f + "\n")
-        cmd = [args.exe, "-i", str(HERE / "spike_geodesic.athinput"), "-d", str(d),
+        cmd = [args.exe, "-i", str(HERE / args.athinput), "-d", str(d),
                f"particles/particle_file={Path(args.ic).resolve() / f}", *extra]
         (d / "command.txt").write_text(" ".join(cmd) + "\n")
         log = open(d / "athena.log", "w")
