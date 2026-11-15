@@ -83,3 +83,20 @@ costs 1 to 3 card-hours; the first scan (about 65 runs) 100 to 200 card-hours, a
 60 card-hours that decision 0006 gives Track A to the next gate. Refuted (estimate
 wrong by more than a factor 3) only by the first production runs; recorded here so that
 they can refute it.
+
+## 2026-11-15, first run of `scope_calc.py` and what changed before the second
+
+- `A-emd-pbh-20261115-112500-61acbec`: failed at start (`python3 -I` hides the user
+  site-packages, numpy not found). No output. The script reads only this repository's
+  files and run logs, not downloads, so it is run without `-I`.
+- `A-emd-pbh-20261115-112505-61acbec` (commit 61acbec, 2.6 s on one core): all pass flags
+  true. Looking at the figures showed three things to fix before relying on them:
+  (i) the T2 interval check had left out the mu = 0.3, e = 0.2 read-off (24 t_H) that the
+  prediction names; with it, that point lies OUTSIDE the interval (t_c(r_m) = 16.1 t_H,
+  read-off 24 +- 3): one point outside, so by the stated criterion (two or more) the
+  prediction still holds, but the large-amplitude anisotropic case collapses later than
+  the top-hat shell; the check now includes it and the slope is fitted to mu <= 0.15 as
+  predicted; (ii) the cost model let halo runs with t_c > 250 t_H run to the halt while
+  the label said "to 250 t_H": now every halo run is followed to the halt plus 0.3 t_c,
+  stated in the label; (iii) layout (legends over data, clipped label, log tick labels).
+  The second run supersedes this one for figures and numbers; it stays on record.

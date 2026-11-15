@@ -22,6 +22,7 @@ import os
 import re
 import sys
 
+import matplotlib as mpl
 import numpy as np
 from scipy.special import ellipe
 
@@ -114,13 +115,13 @@ def fig_T1(path, t1):
     ax1.set_ylabel(r"prolateness $p$")
     ax1.set_xlim(0, 0.3); ax1.set_ylim(-0.3, 0.3)
     ax1.text(0.02, 0.25, r"$\hat h(e,p)$; grey: excluded", fontsize=9)
-    ax2.plot(e, h_hat(e, 0.0), color=fs.PAL["blue"], label=r"$\hat h(e,0)$ (this script)")
+    ax2.plot(e, h_hat(e, 0.0), color=fs.PAL["blue"], label=r"$\hat h(e,0)$, this script")
     ax2.plot(t1["readoff_e"], t1["readoff_mu"], "o", color=fs.PAL["red"], ms=5,
-             label="blue line of 2609.14218, read by eye")
+             label="2609.14218 line, by eye")
     ax2.set_xlabel(r"ellipticity $e$")
     ax2.set_ylabel(r"hoop threshold $\mu$ at $aH=k/\sqrt{6}$")
     ax2.set_xlim(0, 0.3); ax2.set_ylim(0, 0.55)
-    ax2.legend(loc="lower right")
+    ax2.legend(loc="lower right", fontsize=8)
     return fs.save(fig, path)
 
 
@@ -145,15 +146,15 @@ def t_collapse(dbar):
 
 
 def test_T2():
-    mus = np.array([0.15, 0.10, 0.075, 0.06, 0.05])
-    t_read = np.array([46.0, 74.0, 106.0, 144.0, 199.0])     # alpha.pdf of 2609.14218, by eye
-    t_err = np.array([3.0, 3.0, 3.0, 3.0, 10.0])
-    extra = {"mu0.3_e0.2": 24.0, "mu0.3_e0.0": 11.5}
+    mus = np.array([0.3, 0.15, 0.10, 0.075, 0.06, 0.05])
+    t_read = np.array([24.0, 46.0, 74.0, 106.0, 144.0, 199.0])     # alpha.pdf of 2609.14218, by eye
+    t_err = np.array([3.0, 3.0, 3.0, 3.0, 3.0, 10.0])
+    extra = {"mu0.3_e0.0": 11.5}
     d0 = 12.0 / 5.0 * mus
     t_lo = t_collapse(d0)                       # centre
     t_hi = t_collapse(d0 / np.e)                # compaction radius r_m: deltabar = d0/e
     inside = (t_read >= t_lo - t_err) & (t_read <= t_hi + t_err)
-    slope = np.polyfit(np.log(mus), np.log(t_read), 1)[0]
+    slope = np.polyfit(np.log(mus[1:]), np.log(t_read[1:]), 1)[0]      # mu <= 0.15 as predicted
     mu_fd = lambda tend: DELTA_C * np.e / (12.0 / 5.0) / tend ** (2.0 / 3.0)
     ratio = t_read / t_hi
     out = {
@@ -179,8 +180,8 @@ def test_T2():
 
 def fig_T2(path, t2):
     fs.use_style()
-    fig = fs.plt.figure(figsize=(fs.COLUMN_WIDTH + 0.6, 3.4))
-    ax = fig.add_axes([0.16, 0.14, 0.80, 0.82])
+    fig = fs.plt.figure(figsize=(fs.FULL_WIDTH * 0.85, 3.4))
+    ax = fig.add_axes([0.10, 0.14, 0.52, 0.82])
     mu = np.logspace(np.log10(0.03), np.log10(0.4), 200)
     d0 = 2.4 * mu
     fs.band(ax, mu, t_collapse(d0), t_collapse(d0 / np.e), fs.PAL["blue"])
@@ -188,9 +189,8 @@ def fig_T2(path, t2):
     ax.plot(mu, t_collapse(d0 / np.e), color=fs.PAL["blue"], label=r"top hat, shell $r_m$")
     ax.plot(mu, (1.0 / (0.8 * mu * 1.6)) ** 1.5, color=fs.PAL["green"], lw=1.0, ls="--",
             label=r"first pancake, $e=0.2$")
-    ax.errorbar(t2["mu"], t2["t_read"], yerr=[3, 3, 3, 3, 10], fmt="o", color=fs.PAL["red"], ms=4,
+    ax.errorbar(t2["mu"], t2["t_read"], yerr=[3, 3, 3, 3, 3, 10], fmt="o", color=fs.PAL["red"], ms=4,
                 label="2609.14218 particles, $e=0.2$")
-    ax.plot([0.3], [t2["extra_readoffs"]["mu0.3_e0.2"]], "o", color=fs.PAL["red"], ms=4)
     ax.plot([0.3], [t2["extra_readoffs"]["mu0.3_e0.0"]], "s", mfc="none", color=fs.PAL["red"], ms=5,
             label=r"same, $e=0$")
     ax.axhline(250.0, **fs.MASK_LINE)
@@ -200,9 +200,12 @@ def fig_T2(path, t2):
     ax.text(0.17, 270, "end of plotted runs", fontsize=8, color="grey")
     ax.set_xscale("log"); ax.set_yscale("log")
     ax.set_xlim(0.03, 0.4); ax.set_ylim(2, 600)
+    ax.set_xticks([0.03, 0.05, 0.1, 0.2, 0.4])
+    ax.xaxis.set_major_formatter(mpl.ticker.FormatStrFormatter("%g"))
+    ax.xaxis.set_minor_formatter(mpl.ticker.NullFormatter())
     ax.set_xlabel(r"amplitude $\mu$")
     ax.set_ylabel(r"collapse time $t/t_H$")
-    ax.legend(loc="lower left", fontsize=8)
+    ax.legend(loc="upper left", bbox_to_anchor=(1.02, 1.0), fontsize=8)
     return fs.save(fig, path)
 
 
@@ -259,7 +262,7 @@ def v19_cost(v19dir):
             "zone_cycles_per_s": zc, "cycles": 25600, "s_per_cycle": float(np.sum(cpu) / 25600.0)}
 
 
-def ball_run_steps(dbar, bh=True, f_bh=0.3, n_R=32, cfl=0.25, t_end_tH=250.0, post_M=30.0, b_min=0.1):
+def ball_run_steps(dbar, bh=True, f_bh=0.3, n_R=32, cfl=0.25, post_frac=0.3, post_M=30.0, b_min=0.1):
     """Steps of one expanding-ball run in units M_p (mass inside r_m). Top-hat cycloid of
     the r_m shell; finest cell max(R/n_R, dx_AH); dx_AH = 0.06 M_BH (twelve cells over a
     coordinate horizon radius of 0.73 M_BH, docs/TESTLOG.md 'M/128 production chain')."""
@@ -284,9 +287,8 @@ def ball_run_steps(dbar, bh=True, f_bh=0.3, n_R=32, cfl=0.25, t_end_tH=250.0, po
         tt, RR = t[sel], R[sel]
         dx = np.maximum(RR / n_R, dx_ah)
         steps = np.trapezoid(1.0 / (cfl * dx), tt)
-        t_end = t_end_tH * tH
-        steps += max(t_end - tt.max(), 0.0) / (cfl * Rmin / n_R)
-        t_run = max(t_end, tt.max())
+        steps += post_frac * tc / (cfl * Rmin / n_R)       # halo followed for 0.3 t_c after the halt
+        t_run = tt.max() + post_frac * tc
     return float(steps), float(t_run / tH)
 
 
@@ -317,9 +319,9 @@ def test_T5(v19dir):
 def fig_T345(path, t3, t4, t5):
     fs.use_style()
     fig = fs.plt.figure(figsize=(fs.FULL_WIDTH, 3.2))
-    ax1 = fig.add_axes([0.07, 0.15, 0.25, 0.80])
-    ax2 = fig.add_axes([0.40, 0.15, 0.25, 0.80])
-    ax3 = fig.add_axes([0.73, 0.15, 0.25, 0.80])
+    ax1 = fig.add_axes([0.09, 0.15, 0.24, 0.80])
+    ax2 = fig.add_axes([0.41, 0.15, 0.24, 0.80])
+    ax3 = fig.add_axes([0.74, 0.15, 0.24, 0.80])
     # left: ball window
     RbH = np.linspace(0.3, 0.99, 100)
     for q, c in ((2.0, fs.PAL["blue"]), (3.0, fs.PAL["red"]), (4.0, fs.PAL["green"])):
@@ -333,6 +335,7 @@ def fig_T345(path, t3, t4, t5):
     ax1.set_ylim(1e-3, 0.3)
     ax1.legend(loc="upper left", fontsize=8)
     ax1.text(0.32, 0.055, "2609.14218 particle threshold", fontsize=7)
+    ax1.text(0.55, 1.4e-3, "solid: mean in $r_m$ <= 0.3\ndotted: centre <= 0.3", fontsize=7)
     # middle: velocity dispersion
     s = np.linspace(0, 2.2, 200)
     ax2.plot(s, (10.0 / 3.0) * s ** 2, color=fs.PAL["blue"], label=r"virial, $5/3$ (2507.18312)")
@@ -367,14 +370,18 @@ def fig_cost(path, t5):
             r = [x for x in t5["rows"] if x["bh"] == bh and x["N_p"] == Np]
             ax.plot([x["dbar_ent"] for x in r], [x["card_hours"] for x in r], mk + "-", color=c, ms=4, lw=1.0,
                     mfc=c if bh else "none",
-                    label=f"N={Np:.0e}, " + ("black hole" if bh else "no black hole, to 250 $t_H$"))
+                    label=f"N={Np:.0e}, " + ("black hole" if bh else "halo, to halt + 0.3 $t_c$"))
     if t5["v19"]:
         ax.axhline(t5["v19"]["card_hours"], **fs.MASK_LINE)
-        ax.text(0.011, t5["v19"]["card_hours"] * 1.08, "measured: n1e4_v19 (100 M)", fontsize=7, color="grey")
+        ax.text(0.011, t5["v19"]["card_hours"] * 0.86, "measured: n1e4_v19 (100 M)", fontsize=7, color="grey")
     ax.set_xscale("log"); ax.set_yscale("log")
+    ax.set_ylim(0.3, 10)
+    ax.set_xticks([0.01, 0.02, 0.04, 0.08])
+    ax.xaxis.set_major_formatter(mpl.ticker.FormatStrFormatter("%g"))
+    ax.xaxis.set_minor_formatter(mpl.ticker.NullFormatter())
     ax.set_xlabel(r"$\bar\delta_{\rm ent}$")
     ax.set_ylabel("card-hours per run (estimate)")
-    ax.legend(loc="upper right", fontsize=7)
+    ax.legend(loc="lower left", fontsize=7)
     return fs.save(fig, path)
 
 
