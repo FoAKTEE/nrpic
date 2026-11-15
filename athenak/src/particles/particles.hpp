@@ -147,6 +147,22 @@ struct NrpicCollideOptions {
   std::uint64_t seed = 0;    // seed of the run (<job> rng_seed)
   int face_maxlev = -1;      // finest level of the tabulated face positions
   bool face_warned = false;  // the warning about MeshBlock edges has been printed
+  int energy = 0;            // <particles> coll_energy: 0 the pair conserves its energy
+                             // with the metric of the cell centre, 1 with the metric at
+                             // each particle (canonical energy alpha W - beta^i u_i)
+  bool ext = false;          // coll_energy is present: history columns 32 to 35
+};
+
+//----------------------------------------------------------------------------------------
+//! \struct NrpicPerturbOptions
+//  \brief radial force on all particles during an interval (nrpic_perturb.cpp)
+
+struct NrpicPerturbOptions {
+  bool on = false;           // <particles> perturb_gamma is present and not zero
+  Real gamma = 0.0;          // du_i/dt += gamma (x^i - c^i)/|x - c|
+  Real tstart = 0.0;         // the force acts for tstart <= t < tstart + duration
+  Real duration = 0.0;
+  Real centre[3] = {0.0, 0.0, 0.0};
 };
 
 //----------------------------------------------------------------------------------------
@@ -307,8 +323,15 @@ class Particles {
   DvceArray1D<int> coll_cell, coll_list, coll_count, coll_begin;   // cell lists
   DvceArray1D<std::uint64_t> coll_key;                             // pairing words
   DvceArray1D<Real> coll_face;                                     // face positions
+  DvceArray2D<Real> coll_pmet;     // metric at the particles (coll_energy = particle)
   void NrpicCollideInit(ParameterInput *pin);
   TaskStatus NrpicCollide(Driver *pdriver, int stage);
+
+  // radial force during an interval: dynamically accessible perturbation of an
+  // equilibrium (nrpic_perturb.cpp)
+  NrpicPerturbOptions pert;
+  void NrpicPerturbInit(ParameterInput *pin);
+  void NrpicPerturbKick(const Real t0, const Real t1);
 
   // ---- Newtonian mode of the nrpic module (particles/nrpic_newton.cpp) ----
   // The potential of the Poisson equation is held in the lapse slot of met1 (the

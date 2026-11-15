@@ -272,6 +272,7 @@ void Particles::NrpicInit(ParameterInput *pin) {
   }
   NrpicKickInit(pin);       // test kick with reproducible random numbers
   NrpicCollideInit(pin);    // Monte Carlo collisions
+  NrpicPerturbInit(pin);    // radial force during an interval (nrpic_perturb.cpp)
   if (nropt.newton) { NrpicNewtonInit(pin); }
 }
 
@@ -386,6 +387,8 @@ TaskStatus Particles::NrpicPush(Driver *pdriver, int stage) {
   push_unconverged = 0;
   const int np = nprtcl_thispack;
   if (np == 0) return TaskStatus::complete;
+  // perturbing force (nrpic_perturb.cpp): impulse of the first half of the step
+  if (pert.on) { NrpicPerturbKick(pm->time, pm->time + 0.5*pm->dt); }
 
   auto &indcs = pm->mb_indcs;
   auto &pr = prtcl_rdata;
@@ -539,6 +542,8 @@ TaskStatus Particles::NrpicPush(Driver *pdriver, int stage) {
   }, Kokkos::Sum<int>(nun), Kokkos::Max<int>(mxit));
   push_unconverged = nun;
   push_maxit = mxit;
+  // perturbing force: impulse of the second half of the step, at the new positions
+  if (pert.on) { NrpicPerturbKick(pm->time + 0.5*pm->dt, pm->time + pm->dt); }
   if (kick.on) { NrpicTestKick(); }
 
   return TaskStatus::complete;

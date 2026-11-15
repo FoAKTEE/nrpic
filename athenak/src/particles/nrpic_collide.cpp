@@ -39,6 +39,14 @@
 //!   coll_budget      = false      also record the sum of M W with the metric at each
 //!                                 particle before and after the collision step
 //!   coll_dump_cycle  = -1         cycle whose collision step is dumped (replay test)
+//!   coll_energy      = cell       the pair conserves its four-momentum with the metric
+//!                                 of the cell centre (exact only where the metric does
+//!                                 not vary across a cell)
+//!                                 | particle: it conserves the sum of the covariant
+//!                                 momenta u_i and the sum of the canonical energies
+//!                                 alpha W - beta^i u_i, each with the metric at the
+//!                                 particle (nrpic_collide.hpp).  Read only if present;
+//!                                 its presence adds history columns 32 to 35.
 //! The seed is <job> rng_seed.
 
 #include <cinttypes>
@@ -107,6 +115,10 @@ struct CollStats {
   Real abs_dp = 0.0;           // sum of the largest |change of a pair momentum component|
   Real e_part = 0.0;           // sum of M W with the metric at each particle, after
   Real de_part = 0.0;          // its change over the collision step (coll_budget)
+  Real h_part = 0.0;           // sum of M (alpha W - beta^i u_i), metric at each particle
+  Real dh_part = 0.0;          // its change over the collision step
+  std::int64_t n_noroot = 0;   // accepted pairs left unscattered (coll_energy = particle)
+  Real max_dlam = 0.0;         // largest |lam - 1| of the energy correction
 
   KOKKOS_INLINE_FUNCTION
   void operator+=(const CollStats &o) {
@@ -129,6 +141,12 @@ struct CollStats {
       sum_mu[i] += o.sum_mu[i];
       dp[i] += o.dp[i];
     }
+    e_part += o.e_part;
+    de_part += o.de_part;
+    h_part += o.h_part;
+    dh_part += o.dh_part;
+    n_noroot += o.n_noroot;
+    max_dlam = (o.max_dlam > max_dlam) ? o.max_dlam : max_dlam;
   }
 };
 
@@ -192,6 +210,43 @@ Real CollEnergyAtParticles(const int np, const DvceArray2D<Real> &pr,
   return sum;
 }
 
+//----------------------------------------------------------------------------------------
+//! \fn CollMetricAtParticles
+//! \brief lapse, shift and inverse spatial metric at the position of every colliding
+//! particle (pcell >= 0), from the same source as in CollEnergyAtParticles:
+//! pmet(0..9,p) = alpha, beta^x, beta^y, beta^z, gamma^xx, ^xy, ^xz, ^yy, ^yz, ^zz
+
+void CollMetricAtParticles(const int np, const DvceArray2D<Real> &pr,
+                           const DvceArray2D<int> &pi, const DvceArray1D<int> &pcell,
+                           const DvceArray2D<Real> &pmet, const nrpic::MeshMetric &proto,
+                           const bool mesh_metric,
+                           const DualArray1D<RegionSize> &mbsize, const int gids,
+                           const NrpicMetric msrc, const Real mass, const Real spin,
+                           const Real lat_dx) {
+  auto sz = mbsize.d_view;
+  par_for("nrpic_coll_pmet", DevExeSpace(), 0, np-1, KOKKOS_LAMBDA(const int p) {
+    if (pcell(p) < 0) return;
+    const Real xp[3] = {pr(IPX,p), pr(IPY,p), pr(IPZ,p)};
+    nrpic::AdmPoint ap;
+    if (mesh_metric) {
+      const int m = pi(PGID,p) - gids;
+      nrpic::MeshMetric met = proto;
+      met.m = m;
+      met.xmin[0] = sz(m).x1min; met.xmin[1] = sz(m).x2min; met.xmin[2] = sz(m).x3min;
+      met.idx[0] = 1.0/sz(m).dx1; met.idx[1] = 1.0/sz(m).dx2; met.idx[2] = 1.0/sz(m).dx3;
+      met(1, xp, ap);
+    } else {
+      CollAnalyticMetric(msrc, mass, spin, lat_dx, xp, ap);
+    }
+    Real gi[3][3];
+    nrpic::Inv3Sym(ap.g, gi);
+    pmet(0,p) = ap.alp;
+    pmet(1,p) = ap.beta[0]; pmet(2,p) = ap.beta[1]; pmet(3,p) = ap.beta[2];
+    pmet(4,p) = gi[0][0]; pmet(5,p) = gi[0][1]; pmet(6,p) = gi[0][2];
+    pmet(7,p) = gi[1][1]; pmet(8,p) = gi[1][2]; pmet(9,p) = gi[2][2];
+  });
+}
+
 void CollFatal(const std::string &msg) {
   std::cout << "### FATAL ERROR in nrpic collisions" << std::endl << msg << std::endl;
   std::exit(EXIT_FAILURE);
@@ -203,7 +258,8 @@ void CollFatal(const std::string &msg) {
 //! collision step to it
 
 void CollWriteHistory(const std::string &fname, const bool header, const bool record,
-                      const Real time, const int ncycle, const CollStats &st) {
+                      const Real time, const int ncycle, const CollStats &st,
+                      const bool ext) {
   std::FILE *fp = std::fopen(fname.c_str(), header ? "w" : "a");
   if (fp == nullptr) CollFatal("cannot open " + fname);
   if (header) {
@@ -215,7 +271,9 @@ void CollWriteHistory(const std::string &fname, const bool header, const bool re
                  "[16]=sum_MW [17]=sum_Mu1 [18]=sum_Mu2 [19]=sum_Mu3 [20]=dE [21]=dP1 "
                  "[22]=dP2 [23]=dP3 [24]=abs_dE [25]=abs_dP [26]=n_bad_cells "
                  "[27]=sum_W [28]=sum_MW_species0 [29]=sum_M_species0 "
-                 "[30]=sum_MW_particles [31]=dE_particles\n");
+                 "[30]=sum_MW_particles [31]=dE_particles%s\n",
+                 ext ? " [32]=sum_MH_particles [33]=dH_particles [34]=n_noroot "
+                       "[35]=max_dlam" : "");
   }
   if (record) {
     const double mean_nsub = (st.n_cells > 0) ?
@@ -226,12 +284,17 @@ void CollWriteHistory(const std::string &fname, const bool header, const bool re
     std::fprintf(fp, "%.15e %d %" PRId64 " %" PRId64 " %" PRId64 " %.15e %" PRId64
                  " %" PRId64 " %" PRId64 " %.15e %d %.15e %d %.15e %.15e %.17e %.17e"
                  " %.17e %.17e %.15e %.15e %.15e %.15e %.15e %.15e %" PRId64 " %.15e"
-                 " %.17e %.17e %.17e %.15e\n",
+                 " %.17e %.17e %.17e %.15e",
                  time, ncycle, st.n_part, st.n_cells, st.n_tested, st.sum_p, st.n_coll,
                  st.n_upd, st.n_trunc, st.max_p, st.max_nsub, mean_nsub, min_n, mean_n,
                  st.max_dxmfp, st.sum_mw, st.sum_mu[0], st.sum_mu[1], st.sum_mu[2],
                  st.de, st.dp[0], st.dp[1], st.dp[2], st.abs_de, st.abs_dp, st.n_bad,
                  st.sum_w, st.sum_mw0, st.sum_m0, st.e_part, st.de_part);
+    if (ext) {
+      std::fprintf(fp, " %.17e %.15e %" PRId64 " %.15e", st.h_part, st.dh_part,
+                   st.n_noroot, st.max_dlam);
+    }
+    std::fprintf(fp, "\n");
   }
   std::fclose(fp);
 }
@@ -305,6 +368,22 @@ void Particles::NrpicCollideInit(ParameterInput *pin) {
               "every direction");
   }
   coll.seed = rng::RunSeed(pin);
+  // metric with which a pair conserves its energy (read only if present, so that
+  // existing inputs and their restart files are unchanged)
+  coll.energy = 0;
+  coll.ext = false;
+  if (pin->DoesParameterExist("particles", "coll_energy")) {
+    const std::string en = pin->GetString("particles", "coll_energy");
+    if (en.compare("cell") == 0) {
+      coll.energy = 0;
+    } else if (en.compare("particle") == 0) {
+      coll.energy = 1;
+    } else {
+      CollFatal("<particles> coll_energy = '" + en + "' not recognized "
+                "(cell or particle)");
+    }
+    coll.ext = true;
+  }
 }
 
 //----------------------------------------------------------------------------------------
@@ -474,9 +553,15 @@ TaskStatus Particles::NrpicCollide(Driver *pdriver, int stage) {
 
     // energy budget with the metric at the particles (coll_budget): before the step
     const bool budget = coll.budget;
+    // coll_energy present: the metric at every colliding particle, for the pair
+    // kinematics (coll_energy = particle) and for the budget, which is then taken
+    // particle by particle inside the cells
+    const bool pmode = (coll.energy == 1);
+    const bool own = (pmode || (coll.ext && budget));
+    const bool budget_cells = (coll.ext && budget);
     nrpic::MeshMetric eproto;
     Real e_before = 0.0;
-    if (budget) {
+    if (budget || own) {
       if (nropt.metric == NrpicMetric::mesh) {
         eproto.bspline = nropt.interp_bspline;
         eproto.m1 = nropt.interp_bspline ? met1s : met1;
@@ -487,21 +572,39 @@ TaskStatus Particles::NrpicCollide(Driver *pdriver, int stage) {
         eproto.ncell[1] = indcs.nx2 + 2*indcs.ng;
         eproto.ncell[2] = indcs.nx3 + 2*indcs.ng;
       }
+    }
+    if (budget && !budget_cells) {
       e_before = CollEnergyAtParticles(np, prtcl_rdata, prtcl_idata, coll_cell, eproto,
                                        (nropt.metric == NrpicMetric::mesh),
                                        pmy_pack->pmb->mb_size, gids, nropt.metric,
                                        nropt.mass, nropt.spin, nropt.lattice_dx);
     }
+    // rows 0-9: metric at the particle (the cell kernel replaces rows 1-9 by the
+    // components in the triad of the cell); rows 10, 11: energies before the step
+    if (own) {
+      if (static_cast<int>(coll_pmet.extent(1)) != np) {
+        Kokkos::realloc(coll_pmet, 12, np);
+      }
+      CollMetricAtParticles(np, prtcl_rdata, prtcl_idata, coll_cell, coll_pmet, eproto,
+                            (nropt.metric == NrpicMetric::mesh), pmy_pack->pmb->mb_size,
+                            gids, nropt.metric, nropt.mass, nropt.spin, nropt.lattice_dx);
+    }
+    auto pmt = coll_pmet;
 
     // state before the collisions and per-particle records of the replay dump
     HostArray2D<Real> rbefore;
     DvceArray2D<Real> dmet;
     DvceArray2D<int> dint;
+    HostArray2D<Real> pmet_raw;
     if (dump) {
       rbefore = HostArray2D<Real>("coll_rbefore", nrdata, np);
       Kokkos::deep_copy(rbefore, prtcl_rdata);
       Kokkos::realloc(dmet, 8, np);
       Kokkos::realloc(dint, 2, np);
+      if (own) {
+        pmet_raw = HostArray2D<Real>("coll_pmet_raw", 12, np);
+        Kokkos::deep_copy(pmet_raw, coll_pmet);
+      }
     }
 
     // ---- (3) the cells
@@ -623,6 +726,51 @@ TaskStatus Particles::NrpicCollide(Driver *pdriver, int stage) {
           uh[a] = tr.Si[a][0]*u0 + tr.Si[a][1]*u1 + tr.Si[a][2]*u2;
         }
       };
+      // metric at a particle in the triad of the cell (nrpic::CollOwnMetric)
+      auto own_metric = [&](const int p, nrpic::CollOwnMetric &om) {
+        om.alp = pmt(0,p);
+        om.b[0] = pmt(1,p); om.b[1] = pmt(2,p); om.b[2] = pmt(3,p);
+        om.g[0][0] = pmt(4,p); om.g[0][1] = pmt(5,p); om.g[0][2] = pmt(6,p);
+        om.g[1][1] = pmt(7,p); om.g[1][2] = pmt(8,p); om.g[2][2] = pmt(9,p);
+        om.g[1][0] = om.g[0][1]; om.g[2][0] = om.g[0][2]; om.g[2][1] = om.g[1][2];
+      };
+      if (own) {
+        for (int q=0; q<n; ++q) {
+          const int p = lst(b+q);
+          // b_(m) = e^(m)_i beta^i,  g_(mn) = e^(m)_i e^(n)_j gamma^ij,  e^(m)_i = S[i][m]
+          const Real bt[3] = {pmt(1,p), pmt(2,p), pmt(3,p)};
+          const Real gi[3][3] = {{pmt(4,p), pmt(5,p), pmt(6,p)},
+                                 {pmt(5,p), pmt(7,p), pmt(8,p)},
+                                 {pmt(6,p), pmt(8,p), pmt(9,p)}};
+          Real t[3][3];
+          for (int i=0; i<3; ++i) {
+            for (int a=0; a<3; ++a) {
+              t[i][a] = gi[i][0]*tr.S[0][a] + gi[i][1]*tr.S[1][a] + gi[i][2]*tr.S[2][a];
+            }
+          }
+          for (int a=0; a<3; ++a) {
+            pmt(1+a,p) = tr.S[0][a]*bt[0] + tr.S[1][a]*bt[1] + tr.S[2][a]*bt[2];
+          }
+          int row = 4;
+          for (int a=0; a<3; ++a) {
+            for (int bb=a; bb<3; ++bb) {
+              pmt(row,p) = tr.S[0][a]*t[0][bb] + tr.S[1][a]*t[1][bb] + tr.S[2][a]*t[2][bb];
+              ++row;
+            }
+          }
+          if (budget_cells) {
+            nrpic::CollOwnMetric om;
+            own_metric(p, om);
+            Real uh[3], vv[3];
+            to_triad(p, uh);
+            const Real hk = nrpic::CollEnergy(om, uh, vv);
+            Real bu = 0.0;
+            for (int a=0; a<3; ++a) { bu += om.b[a]*uh[a]; }
+            pmt(10,p) = (hk + bu)/om.alp;      // W - 1
+            pmt(11,p) = hk;                    // alpha (W - 1) - beta^i u_i
+          }
+        }
+      }
       // order of the cell: by (pairing word, tag)
       auto less = [&](const int i, const int j) {
         const std::uint64_t ki = skey(b+i), kj = skey(b+j);
@@ -698,7 +846,25 @@ TaskStatus Particles::NrpicCollide(Driver *pdriver, int stage) {
             Real ua[3], ub[3], wa, wb;
             to_triad(pa, ua);
             to_triad(pb, ub);
-            const Real g1 = nrpic::CollGammaRelM1(ua, ub, wa, wb);
+            // coll_energy = particle: the pair is taken to the cell frame by the
+            // transfer dl of momentum that makes equal coordinate velocities equal
+            // momenta (nrpic::CollCentre); uat, ubt are its momenta there
+            nrpic::CollOwnMetric oma, omb;
+            Real dl[3] = {0.0, 0.0, 0.0};
+            Real uat[3], ubt[3];
+            Real g1;
+            if (pmode) {
+              own_metric(pa, oma);
+              own_metric(pb, omb);
+              nrpic::CollCentre(alp, oma, omb, ua, ub, dl);
+              for (int a=0; a<3; ++a) {
+                uat[a] = ua[a] - dl[a];
+                ubt[a] = ub[a] + dl[a];
+              }
+              g1 = nrpic::CollGammaRelM1(uat, ubt, wa, wb);
+            } else {
+              g1 = nrpic::CollGammaRelM1(ua, ub, wa, wb);
+            }
             const Real ma = pr(IPM,pa), mb = pr(IPM,pb);
             const Real mmx = fmax(ma, mb);
             const Real prob = wgt*fac*nrpic::CollSigma(model, sigma0, sigw, g1)*mmx
@@ -714,7 +880,27 @@ TaskStatus Particles::NrpicCollide(Driver *pdriver, int stage) {
             double nh[3];
             rng::Direction(rng::Key{seed, st_dir, ta, step, tb}, draw, nh);
             Real uan[3], ubn[3];
-            nrpic::CollScatter(ua, ub, wa, wb, g1, nh, uan, ubn);
+            Real ha0 = 0.0, hb0 = 0.0;      // canonical energies before (per unit mass)
+            if (pmode) {
+              // relative momentum of the collision in the cell frame, then the new
+              // momenta on the surface of constant canonical energy of the pair
+              Real wv[3], ca[3], pt[3], vv[3], lam, res;
+              nrpic::CollScatterRel(uat, ubt, wa, wb, g1, nh, wv);
+              for (int a=0; a<3; ++a) {
+                pt[a] = ua[a] + ub[a];
+                ca[a] = 0.5*pt[a] + dl[a];
+              }
+              ha0 = nrpic::CollEnergy(oma, ua, vv);
+              hb0 = nrpic::CollEnergy(omb, ub, vv);
+              if (!nrpic::CollEnergyRoot(oma, omb, pt, ca, wv, ha0 + hb0, uan, ubn, lam,
+                                         res)) {
+                ls.n_noroot += 1;
+                return;
+              }
+              ls.max_dlam = fmax(ls.max_dlam, fabs(lam - 1.0));
+            } else {
+              nrpic::CollScatter(ua, ub, wa, wb, g1, nh, uan, ubn);
+            }
             // unequal rest masses of the macroparticles: the lighter one always takes
             // its new momentum, the heavier one with probability M_min/M_max
             bool upa = true, upb = true;
@@ -723,10 +909,20 @@ TaskStatus Particles::NrpicCollide(Driver *pdriver, int stage) {
               if (ma > mb) { upa = heavy_updates; } else { upb = heavy_updates; }
             }
             // change of the energy and momentum of the pair (rounding for equal masses)
-            const Real wan = sqrt(1.0 + uan[0]*uan[0] + uan[1]*uan[1] + uan[2]*uan[2]);
-            const Real wbn = sqrt(1.0 + ubn[0]*ubn[0] + ubn[1]*ubn[1] + ubn[2]*ubn[2]);
-            const Real e0 = ma*wa + mb*wb;
-            const Real e1 = ma*(upa ? wan : wa) + mb*(upb ? wbn : wb);
+            Real e0, e1;
+            if (pmode) {
+              // canonical energies with the metric at each particle (kinetic part)
+              Real vv[3];
+              const Real ha1 = nrpic::CollEnergy(oma, uan, vv);
+              const Real hb1 = nrpic::CollEnergy(omb, ubn, vv);
+              e0 = ma*ha0 + mb*hb0;
+              e1 = ma*(upa ? ha1 : ha0) + mb*(upb ? hb1 : hb0);
+            } else {
+              const Real wan = sqrt(1.0 + uan[0]*uan[0] + uan[1]*uan[1] + uan[2]*uan[2]);
+              const Real wbn = sqrt(1.0 + ubn[0]*ubn[0] + ubn[1]*ubn[1] + ubn[2]*ubn[2]);
+              e0 = ma*wa + mb*wb;
+              e1 = ma*(upa ? wan : wa) + mb*(upb ? wbn : wb);
+            }
             ls.de += (e1 - e0);
             ls.abs_de += fabs(e1 - e0);
             Real dpm = 0.0;
@@ -784,10 +980,24 @@ TaskStatus Particles::NrpicCollide(Driver *pdriver, int stage) {
         ls.sum_mu[0] += mp*pr(IPVX,p);
         ls.sum_mu[1] += mp*pr(IPVY,p);
         ls.sum_mu[2] += mp*pr(IPVZ,p);
+        if (budget_cells) {
+          // energies with the metric at the particle and their change over the step
+          nrpic::CollOwnMetric om;
+          own_metric(p, om);
+          Real vv[3];
+          const Real hk = nrpic::CollEnergy(om, uh, vv);
+          Real bu = 0.0;
+          for (int a=0; a<3; ++a) { bu += om.b[a]*uh[a]; }
+          const Real wm1 = (hk + bu)/om.alp;
+          ls.e_part += mp*(1.0 + wm1);
+          ls.de_part += mp*(wm1 - pmt(10,p));
+          ls.h_part += mp*(om.alp + hk);
+          ls.dh_part += mp*(hk - pmt(11,p));
+        }
       }
     }, stats);
 
-    if (budget) {
+    if (budget && !budget_cells) {
       stats.e_part = CollEnergyAtParticles(np, prtcl_rdata, prtcl_idata, coll_cell,
                                            eproto, (nropt.metric == NrpicMetric::mesh),
                                            pmy_pack->pmb->mb_size, gids, nropt.metric,
@@ -808,7 +1018,10 @@ TaskStatus Particles::NrpicCollide(Driver *pdriver, int stage) {
       auto mh = Kokkos::create_mirror_view_and_copy(HostMemSpace(), dmet);
       auto dh = Kokkos::create_mirror_view_and_copy(HostMemSpace(), dint);
       auto oh = Kokkos::create_mirror_view_and_copy(HostMemSpace(), off);
-      const char magic[9] = "NRPCOLD1";
+      // version 2 (coll_energy present) adds the mode to the header and the metric at
+      // every particle to its record
+      const char *magic = coll.ext ? "NRPCOLD2" : "NRPCOLD1";
+      const int nrec = coll.ext ? 28 : 18;
       const std::int64_t head_i[3] = {np, pm->ncycle, f};
       const double head_d[4] = {pm->dt, coll.sigma, coll.sigma_w, coll.pmax};
       const std::int64_t head_j[4] = {coll.model, coll.weights, coll.subcycle,
@@ -821,10 +1034,19 @@ TaskStatus Particles::NrpicCollide(Driver *pdriver, int stage) {
       std::fwrite(head_j, sizeof(std::int64_t), 4, fp);
       std::fwrite(&seed64, sizeof(std::uint64_t), 1, fp);
       std::fwrite(&triad64, sizeof(std::int64_t), 1, fp);
-      std::vector<double> buf(18*static_cast<size_t>(np));
+      if (coll.ext) {
+        const std::int64_t head_e[2] = {coll.energy, own ? 1 : 0};
+        std::fwrite(head_e, sizeof(std::int64_t), 2, fp);
+      }
+      std::vector<double> buf(static_cast<size_t>(nrec)*static_cast<size_t>(np));
       std::vector<std::int32_t> ibuf(7*static_cast<size_t>(np));
       for (int p=0; p<np; ++p) {
-        double *r = &buf[18*static_cast<size_t>(p)];
+        double *r = &buf[static_cast<size_t>(nrec)*static_cast<size_t>(p)];
+        if (coll.ext) {
+          for (int v=0; v<10; ++v) {
+            r[18+v] = (own && ch(p) >= 0) ? pmet_raw(v,p) : 0.0;
+          }
+        }
         std::int32_t *q = &ibuf[7*static_cast<size_t>(p)];
         r[0] = rbefore(IPX,p);  r[1] = rbefore(IPY,p);  r[2] = rbefore(IPZ,p);
         r[3] = rbefore(IPVX,p); r[4] = rbefore(IPVY,p); r[5] = rbefore(IPVZ,p);
@@ -863,7 +1085,7 @@ TaskStatus Particles::NrpicCollide(Driver *pdriver, int stage) {
     const bool record = (ncyc % coll.hist_dcycle == 0);
     if (fresh || record) {
       CollWriteHistory(nr_basename + ".coll.hst", fresh, record, pm->time + pm->dt, ncyc,
-                       stats);
+                       stats, coll.ext);
     }
   }
   return TaskStatus::complete;
