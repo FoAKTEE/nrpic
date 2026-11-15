@@ -1,0 +1,53 @@
+{
+  "schema": "nrpic-run-manifest/1",
+  "run_id": "C-sidm-20261115-120715-38ab057",
+  "track": "C-sidm",
+  "gate": "G1",
+  "kind": "scouting",
+  "purpose": "C-pre-3 unit tests of the truncated-MB TOV solver and the radial-pulsation FEM",
+  "launcher": "local (tracks/C-sidm/gravothermal/register.py)",
+  "command": [
+    "python3",
+    "-E",
+    "test_tmb.py"
+  ],
+  "cwd": "wt/C-sidm/tracks/C-sidm/gravothermal",
+  "git": {
+    "sha": "38ab05751c0fa0dda12abe5d65ffb742c91cc906",
+    "branch": "track/C-sidm",
+    "dirty": false,
+    "merge_base_main": "02348f3de3f6f72eb2da83078637dab586678b13",
+    "worktree": "wt/C-sidm"
+  },
+  "inputs": [
+    {
+      "path": "wt/C-sidm/tracks/C-sidm/gravothermal/test_tmb.py",
+      "sha256": "f61d324e8d80353fe66a2fed540ad8e80084b37baf2e6c4d56afb0195a73b18e"
+    }
+  ],
+  "env": {
+    "python": "3.10.12",
+    "threads": 1
+  },
+  "resources": {
+    "nodes": 1,
+    "gpus": 0,
+    "cores": 1,
+    "walltime_s": 2.5,
+    "gpu_hours": 0.0,
+    "core_hours": 0.0007
+  },
+  "outputs": {
+    "dir": "scratch/C-sidm/C-sidm-20261115-120715-38ab057",
+    "sha256sums": "sha256sums.txt",
+    "sha256sums_sha256": "fe3012bc6d0ae6df6663c7730cae9376fc32984001a5ff90cc31175e59105add",
+    "files": 1
+  },
+  "status": "completed",
+  "exit_code": 0,
+  "registered": "2026-11-15T12:07:15+00:00",
+  "started": "2026-11-15T12:07:15+00:00",
+  "ended": "2026-11-15T12:07:17+00:00",
+  "parents": [],
+  "notes": ""
+}

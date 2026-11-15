@@ -1,0 +1,67 @@
+{
+ "run_id": "C-sidm-20261115-120801-38ab057",
+ "track": "C-sidm",
+ "package": "equilibria",
+ "command": "python3 check_equilibria.py --ic /data/haiyangw/nrpic/scratch/C-sidm/C-sidm-20261115-120610-b4592be --out /data/haiyangw/nrpic/scratch/C-sidm/C-sidm-20261115-120801-38ab057",
+ "cwd": "/data/haiyangw/nrpic/wt/C-sidm/tracks/C-sidm/equilibria",
+ "commit": "38ab05751c0fa0dda12abe5d65ffb742c91cc906",
+ "branch": "track/C-sidm",
+ "package_dirty": false,
+ "package_status": [],
+ "inputs": [
+  {
+   "path": "tracks/C-sidm/equilibria/check_equilibria.py",
+   "sha256": "3edf3b36990287627396f2a5c6d66f02ce7af7d5d06ec9faf89509f831cdb11c"
+  },
+  {
+   "path": "tracks/C-sidm/equilibria/evstatic.py",
+   "sha256": "d6e37be890d11602d68ebf7cb336447bcea813c019f8592d4f8e5f766e7ca2fa"
+  },
+  {
+   "path": "tracks/C-sidm/equilibria/make_equilibria.py",
+   "sha256": "aedd928378ffef30b9d20ba90ca982f896bf00062be3b2206ac9d22ee01602d7"
+  },
+  {
+   "path": "tracks/C-sidm/equilibria/models.py",
+   "sha256": "32f30505b65c17a2d3ae069d6090912ff0ae2ee673194515d55e93b82b4389ca"
+  },
+  {
+   "path": "tracks/C-sidm/equilibria/paper_values.py",
+   "sha256": "fa43075b9ab038d288eaaf372e2b6506dc563ce489d89b758267135d881ce60e"
+  },
+  {
+   "path": "tracks/C-sidm/equilibria/runreg.py",
+   "sha256": "87c53d3ad7c05250d3cd421bda4d97703113d24f0a89999305248090265767d3"
+  },
+  {
+   "path": "python/nrpic/io.py",
+   "sha256": "0dc0084ecc8591361616debb8883a20b9f3dee77167b71cb165932c73a5ab322"
+  },
+  {
+   "path": "python/nrpic/sampling.py",
+   "sha256": "3bd91ff2c0b3be46bdef8047ebe75f345655c831c8a8d5f51c1b7b0af979d610"
+  },
+  {
+   "path": "python/nrpic/st_cluster.py",
+   "sha256": "81dc4c66731cef81c76473e532d6a443ef1a42b9b3a91e90fb68620412db1bd1"
+  },
+  {
+   "path": "python/nrpic/figstyle.py",
+   "sha256": "5d3b78ad8c2c02e428b675e3d7e35a32cbc8f053d1aeedd4fde66f27da55676e"
+  }
+ ],
+ "output_dir": "scratch/C-sidm/C-sidm-20261115-120801-38ab057",
+ "purpose": "C-pre-4 Tests 1-2: paper values (2009.08163 table, gr-qc/0601112 Tables 1,2,4), Newtonian limit, King turning point, and the offline checks of the 13 equilibria and their 10^4-particle files",
+ "kind": "scouting",
+ "cores": 4,
+ "card_hours": 0.0,
+ "parents": [
+  "C-sidm-20261115-120610-b4592be"
+ ],
+ "env": {
+  "OMP_NUM_THREADS": "4",
+  "OPENBLAS_NUM_THREADS": "4"
+ },
+ "started_utc": "2026-11-15T12:08:01+00:00",
+ "status": "running"
+}

@@ -106,3 +106,42 @@ nearly resting partner of an ultra-relativistic particle gives D_par/A -> 1, and
 1 - D_par/A cancels). The branch is selected by r = D_par/A <= 1/2 instead of the sign of
 u_a . u_b; for r > 1/2 the norm form has no cancellation (docstring of gamma_rel_m1).
 Prediction R2b unchanged.
+
+## 2026-11-15 Outcomes R1-R7 (commit 9747576 tests; run C-sidm-20261115-120703-9b3e868)
+
+Test suite `REFERENCES/tests` (pytest): 61 passed after two corrections of my scripts
+that were not physics: scipy's `quad` refuses epsrel = 1e-14 with epsabs = 0 and
+`brentq` refuses rtol = 4e-16 (raised errors, no wrong numbers); and the entropy
+estimator (below).
+
+- R1 confirmed. Closed form vs Monte Carlo (1e6 pairs each, run above,
+  `figs/ref_numbers.json`): deviations -1.3 to +1.0 standard errors at 11 temperatures
+  from 1e-3 to 100; vs the one-dimensional integral 1e-10; non-relativistic and
+  ultra-relativistic limits as predicted. Figure `figs/ref_rate.png` (looked at).
+- R2 failed at first (above), R2b confirmed: after the change of gamma_rel - 1 the worst
+  error over 2e4 pairs is 1.1e-15 (pytest bound 1e-14), 9.7e-16 over the 6000 pairs of
+  the run; relative error of gamma_rel - 1 at most 4.3e-15 against up to 1.0e-8 for the
+  rejected norm form; four-momentum residual at most 0.72 eps (momentum) and 2.6 eps
+  (energy) relative to the pair energy. Figure `figs/ref_kinematics.png` (looked at).
+- R3 confirmed: direction average of E_a' equals (E_a + E_b)/2 within 4 standard
+  errors (4e5 directions); the CM energy of a equals sqrt(s)/2 to 1e-12 E.
+- R4 confirmed: at theta ~ 1e-4 the exact quadrature is within 2e-3 of the
+  non-relativistic closed form, the Monte Carlo collision integral within 4 standard
+  errors of the quadrature at theta 1e-4, (1, 0.5), (3, 0.1); run above: MC/quadrature
+  = 1.0048 +- 0.0029, 0.9990 +- 0.0025, 1.0014 +- 0.0022, 1.0029 +- 0.0022 at
+  theta_2 = 1e-3, 0.1, 1, 10. New number: the exact initial rate of (theta_1 - theta_2)
+  for theta_1 = 2 theta_2 is 0.995, 0.813, 0.162, 0.027 of the non-relativistic form at
+  theta_2 = 1e-3, 0.053, 2.8, 100. Figure `figs/ref_relax.png` (looked at).
+- R5 confirmed: one-sided fluxes vs quadrature 1e-9, limits, initial slope of the
+  collisionless step 1e-4, late-time mixing 1e-3. Figure `figs/ref_conduction.png`
+  (looked at): at theta_2 = 1 the slab energy oscillates with period ~ L/c, recurrences
+  of nearly luminal particles in the periodic box, as free streaming requires.
+- R6: closed form vs quadrature and Sackur-Tetrode confirmed. Estimator FAILED as first
+  written: equal-probability bins put the tail into one bin and biased s by +0.0195
+  (11 standard errors) at theta = 1. Bins uniform in s = sqrt(zeta (W - 1)) (400 bins):
+  deviations -0.5 to +1.7 standard errors at theta = 1e-3 to 10 (run above, figure
+  `figs/ref_entropy.png`, looked at). Entropy gap of the two-temperature start
+  (theta_1 = 3 theta_2): 0.045 per particle at theta_2 = 1e-3, 0.123 at theta_2 = 1:
+  the H-test needs a resolution well below that, i.e. N >~ 1e5 per snapshot.
+- R7 confirmed (normalization, identities, Bessel forms vs quadrature, inversion,
+  sampler KS, drifting-gas moments).

@@ -1,0 +1,41 @@
+{
+ "schema": "nrpic-run-manifest/1 (by hand)",
+ "run_id": "C-sidm-20261115-120703-9b3e868",
+ "owner": "C-sidm",
+ "package": "collide",
+ "kind": "scouting",
+ "purpose": "Reference figures and key numbers of the collide references (rate, kinematics, relaxation, conduction, entropy)",
+ "command": [
+  "python3",
+  "tracks/C-sidm/collide/REFERENCES/make_figures.py",
+  "/data/haiyangw/nrpic/scratch/C-sidm/C-sidm-20261115-120703-9b3e868"
+ ],
+ "cwd": "/data/haiyangw/nrpic/wt/C-sidm",
+ "commit": "9b3e86860c19d9970b687c6f55186e5e4df1d104",
+ "package_dirty_at_start": [],
+ "inputs": {
+  "tracks/C-sidm/collide/REFERENCES/make_figures.py": "c4a4b59b6e9fba1b98c2b2ff8a77dd34df9a96fd6cd7cf4c8a318e8cb117a4d4"
+ },
+ "output_dir": "/data/haiyangw/nrpic/scratch/C-sidm/C-sidm-20261115-120703-9b3e868",
+ "cores": 4,
+ "card_hours": 0.0,
+ "notes": "",
+ "started_utc": "2026-11-15T12:07:03.468506+00:00",
+ "status": "completed",
+ "wall_time_s": 104.8,
+ "exit_status": 0,
+ "outputs_sha256": {
+  "ref_conduction.pdf": "e70719c39f1f27e5e338fd64b5e766f8183527b931f184ddf65489d51b7505e9",
+  "ref_conduction.png": "831ae340bb26543b54acfa1f24316700c5bf69f581845dd503f5749a20e0998e",
+  "ref_entropy.pdf": "fecc099fce64bf664b70cf5c5fee8412a10651a8e1fa689f9f222e2358f5138b",
+  "ref_entropy.png": "b6204fa6e76e2c74d37782fda191f870b5930e89f39080be120d5475abd35512",
+  "ref_kinematics.pdf": "fc68f271bd0750eee5e4c0d0a749481bec48a668fb88b630c97488846f027f08",
+  "ref_kinematics.png": "4e71c40d1bd30d8e8b4d5cf95ed17306ee675b4e22b5fd04320c36a0535416e9",
+  "ref_numbers.json": "ae7f34cf0a4a30e330feacba5c8e0d901c37f87830e0f6c2c7a3e0bc48609ecd",
+  "ref_rate.pdf": "42a41e15765a9f9437dd6306db1458b7db02bb082db5faf24ed8ba41003ad8e9",
+  "ref_rate.png": "b9b1abefc54eaaf07767b45548cfb2fac68e963f43c110e89ef27bb931b849d4",
+  "ref_relax.pdf": "bfa54ed0627a4a82f04a5aff003a2f701fbd76ee7c3f7e32c9f63421f9638def",
+  "ref_relax.png": "44bc9af24a61bf60f49943cb2806ef9795ca990c81f1045574d48b904ab225a7",
+  "stdout.log": "b8f934e2b220a02a565ec95829f11c5e37b769e9094c443933ebc309f0fb7af5"
+ }
+}
