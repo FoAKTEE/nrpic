@@ -1,9 +1,9 @@
 {
   "track": "kb",
   "gate": "KB-G1",
-  "commit": "be22f7f7f263ab486e217f18a4aa9a1841aff6c1",
-  "verified_utc": "2026-11-15T18:33:30Z",
-  "export": "/data/haiyangw/nrpic/scratch/kb/tmp/stage-verify/kb-KB-G1-be22f7f-20261115T183258Z",
+  "commit": "c65ab4d48ec75fbd9fa9529063ec6e6911f58186",
+  "verified_utc": "2026-11-15T18:35:17Z",
+  "export": "/data/haiyangw/nrpic/scratch/kb/tmp/stage-verify/kb-KB-G1-c65ab4d-20261115T183440Z",
   "result": "PASS",
   "checks": [
     {
@@ -21,7 +21,7 @@
     {
       "check": "export",
       "status": "PASS",
-      "message": "clean export of be22f7f7f263 (HEAD) in /data/haiyangw/nrpic/scratch/kb/tmp/stage-verify/kb-KB-G1-be22f7f-20261115T183258Z/tree",
+      "message": "clean export of c65ab4d48ec7 (HEAD) in /data/haiyangw/nrpic/scratch/kb/tmp/stage-verify/kb-KB-G1-c65ab4d-20261115T183440Z/tree",
       "detail": null
     },
     {

@@ -1,12 +1,12 @@
 # Re-verification: kb KB-G1
 
-`harness/bin/nrpic-stage verify kb KB-G1` on 2026-11-15T18:33:30Z, clean export of commit `be22f7f7f263` in `scratch/kb/tmp/stage-verify/kb-KB-G1-be22f7f-20261115T183258Z`. Result: **PASS**.
+`harness/bin/nrpic-stage verify kb KB-G1` on 2026-11-15T18:35:17Z, clean export of commit `c65ab4d48ec7` in `scratch/kb/tmp/stage-verify/kb-KB-G1-c65ab4d-20261115T183440Z`. Result: **PASS**.
 
 | Check | Result | Message |
 |---|---|---|
 | clean | PASS | worktree clean (outside the stage directory being assembled) |
 | sync | PASS | main is merged into the branch |
-| export | PASS | clean export of be22f7f7f263 (HEAD) in /data/haiyangw/nrpic/scratch/kb/tmp/stage-verify/kb-KB-G1-be22f7f-20261115T183258Z/tree |
+| export | PASS | clean export of c65ab4d48ec7 (HEAD) in /data/haiyangw/nrpic/scratch/kb/tmp/stage-verify/kb-KB-G1-c65ab4d-20261115T183440Z/tree |
 | size | PASS | no committed file of the track above 5 MB |
 | note | WARN | no tracks/<ID>/note/main.tex (working note) |
 | package | PASS | EVIDENCE.md, OPEN.md, CHECKLIST.md present (decision 0012); REVIEW.md present |
