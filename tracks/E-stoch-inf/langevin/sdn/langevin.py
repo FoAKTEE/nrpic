@@ -106,22 +106,30 @@ class Background:
 
 
 def fpt_phase_space(model, phi0, w0, N0, phi_end, dN, n, rng, noise=None, window=(0.0, 0.0),
-                    dN_det=None, N_max=200.0, bias=None, noise_scale=1.0):
+                    dN_det=None, N_max=200.0, bias=None, noise_scale=1.0, var_factor=None):
     """First passage of phi through phi_end for the phase-space Langevin system.
 
     noise(N) -> 2x2 matrix L with covariance per unit N equal to L L^T (rows: phi, varpi).
     The noise acts for N in [window[0], window[1]); outside, the step is deterministic
     with step dN_det (default dN). bias(N) -> c: importance-sampling shift of the first
-    standard-normal draw per step, z1 -> z1 + c sqrt(dN); log weight -c sqrt(dN) z1 -
-    c^2 dN / 2 (shift of a standard normal, exact).
-    Returns dict(N=first-passage e-folds since N0 (nan if N_max), logw, phi_w=state at the
-    end of the noise window).
+    standard-normal pair per step along the dominant noise direction (against the roll),
+    z -> z + c sqrt(dN) e; log weight -c sqrt(dN) e.z - c^2 dN / 2 (exact for a shifted
+    standard normal). noise_scale multiplies the noise amplitude; var_factor(N) multiplies
+    the covariance (used for the lattice density of states). Crossings inside deterministic
+    steps are located by cubic Hermite interpolation, inside noisy steps linearly.
+    phi_end may be an array of surfaces (reached in order; one crossing per step at most).
+    Returns dict(N=first-passage e-folds since N0, shape (n,) or (n, n_surfaces), nan if
+    N_max is reached; logw; state_after_window; ends).
     """
     bg = Background(model)
-    s = 1.0 if phi0 < phi_end else -1.0      # +1: phi increases towards phi_end
+    ends = np.atleast_1d(np.asarray(phi_end, dtype=float))
+    s = 1.0 if phi0 < ends[0] else -1.0      # +1: phi increases towards phi_end
+    ends = ends[np.argsort(s * ends)]          # in the order they are reached
+    nsurf = len(ends)
     phi = np.full(n, float(phi0))
     w = np.full(n, float(w0))
-    fpt = np.full(n, np.nan)
+    fpt = np.full((n, nsurf), np.nan)
+    target = np.zeros(n, dtype=int)            # index of the next surface per realisation
     logw = np.zeros(n)
     alive = np.arange(n)
     N = float(N0)
@@ -137,24 +145,54 @@ def fpt_phase_space(model, phi0, w0, N0, phi_end, dN, n, rng, noise=None, window
                 h = dN
         pa, wa = phi[alive], w[alive]
         pn, wn = bg.rk4(pa, wa, h)
-        if in_win and noise is not None:
+        noisy = in_win and noise is not None
+        if noisy:
             L = noise(N) * noise_scale
+            if var_factor is not None:
+                L = L * np.sqrt(var_factor(N))
             z1 = rng.standard_normal(alive.size)
             z2 = rng.standard_normal(alive.size)
             if bias is not None:
-                c = bias(N)
-                logw[alive] += -c * sq * z1 - 0.5 * c * c * dN
-                z1 = z1 + c * sq
+                # shift of the standard-normal pair along the dominant noise direction,
+                # oriented against the roll (towards longer first-passage times)
+                lam, U = np.linalg.eigh(L @ L.T)
+                u = U[:, -1] * (-np.sign(U[0, -1]) * s if U[0, -1] != 0 else 1.0)
+                # the pair z maps to noise L z; choose z-direction e with L e parallel to u
+                e = np.linalg.lstsq(L, u, rcond=None)[0]
+                e = e / np.linalg.norm(e)
+                c = bias(N) * sq
+                logw[alive] += -c * (e[0] * z1 + e[1] * z2) - 0.5 * c * c
+                z1 = z1 + c * e[0]
+                z2 = z2 + c * e[1]
             pn = pn + sq * (L[0, 0] * z1 + L[0, 1] * z2)
             wn = wn + sq * (L[1, 0] * z1 + L[1, 1] * z2)
-        d0 = s * (phi_end - pa)
-        d1 = s * (phi_end - pn)
+        pe = ends[target[alive]]
+        d0 = s * (pe - pa)
+        d1 = s * (pe - pn)
         hit = d1 <= 0
-        tc = N + h * d0 / np.where(hit, d0 - d1, 1.0)
-        fpt[alive[hit]] = tc[hit] - N0
+        th = d0 / np.where(hit, d0 - d1, 1.0)
+        if not noisy and np.any(hit):
+            # cubic Hermite crossing inside a deterministic step (Newton from the linear guess)
+            i = np.where(hit)[0]
+            f0 = wa[i] / bg.H(pa[i], wa[i]) * h
+            f1 = wn[i] / bg.H(pn[i], wn[i]) * h
+            p0, p1, t = pa[i], pn[i], th[i]
+            for _ in range(6):
+                t2, t3 = t * t, t * t * t
+                val = ((2 * t3 - 3 * t2 + 1) * p0 + (t3 - 2 * t2 + t) * f0
+                       + (-2 * t3 + 3 * t2) * p1 + (t3 - t2) * f1 - pe[i])
+                der = ((6 * t2 - 6 * t) * p0 + (3 * t2 - 4 * t + 1) * f0
+                       + (-6 * t2 + 6 * t) * p1 + (3 * t2 - 2 * t) * f1)
+                t = np.clip(t - val / der, 0.0, 1.0)
+            th[i] = t
+        tc = N + h * th
+        ah = alive[hit]
+        fpt[ah, target[ah]] = tc[hit] - N0
+        target[ah] += 1
         phi[alive], w[alive] = pn, wn
-        alive = alive[~hit]
+        alive = alive[target[alive] < nsurf]
         N += h
         if state_after is None and N >= window[1]:
             state_after = (phi.copy(), w.copy())
-    return dict(N=fpt, logw=logw, state_after_window=state_after)
+    return dict(N=fpt[:, 0] if nsurf == 1 else fpt, logw=logw, state_after_window=state_after,
+                ends=ends)

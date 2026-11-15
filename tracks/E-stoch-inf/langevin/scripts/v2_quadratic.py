@@ -106,6 +106,8 @@ def main():
         J=[-0.999 * V0 / 4, -1.001 * V0 / 4],
         chi=exact.quadratic_laplace_closed_form([-0.999 * V0 / 4, -1.001 * V0 / 4], PHI_IN, M_INF, PHI_END, PHI_UV))
     print("eigenvalues", spec, "closed-form poles", poles, flush=True)
+    print("recursion", rec, "pde mean/var", out["pde_M8000_mean_var"], flush=True)
+    print("laplace closed", out["laplace_closed_form"]["chi"], "pde", out["laplace_pde_M8000"], flush=True)
 
     # ---- Monte Carlo
     mc = {}
@@ -161,7 +163,8 @@ def main():
     fig = plt.figure(figsize=(figstyle.FULL_WIDTH, 3.3))
     ax1 = figstyle.inch_axes(fig, 0.75, 0.55, 3.2, 2.55)
     ax2 = figstyle.inch_axes(fig, 4.75, 0.55, 3.0, 2.55)
-    ax1.semilogy(pde.N, pde.pdf_v, **figstyle.GUIDE, label="survival solver (BDF2)")
+    sel = pde.N >= 2.5      # below, the start-up error (~1e-12) exceeds the true density
+    ax1.semilogy(pde.N[sel], pde.pdf_v[sel], **figstyle.GUIDE, label="survival solver (BDF2)")
     styles = [("direct_dN0.002", figstyle.PAL["red"], "o", "direct, $10^6$"),
               ("IS_A0.4", figstyle.PAL["yellow"], "s", "IS, $A=0.4$"),
               ("IS_A0.8", figstyle.PAL["green"], "^", "IS, $A=0.8$")]

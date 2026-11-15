@@ -115,9 +115,9 @@ def main():
 
         # ---- figure: PDF (direct and IS) against the inverse Gaussian; convergence
         fig = plt.figure(figsize=(figstyle.FULL_WIDTH, 3.0))
-        ax1 = figstyle.inch_axes(fig, 0.65, 0.5, 2.05, 2.3)
-        ax3 = figstyle.inch_axes(fig, 3.35, 0.5, 2.05, 2.3)
-        ax2 = figstyle.inch_axes(fig, 5.85, 0.5, 2.0, 2.3)
+        ax1 = figstyle.inch_axes(fig, 0.62, 0.5, 1.95, 2.3)
+        ax3 = figstyle.inch_axes(fig, 3.15, 0.5, 1.85, 2.3)
+        ax2 = figstyle.inch_axes(fig, 5.85, 0.5, 1.95, 2.3)
         x = np.linspace(1e-3, Nmax_plot, 800)
         ax1.semilogy(x, exact.ig_pdf(x, m, mu), **figstyle.GUIDE, label="inverse Gaussian")
         edges = np.linspace(0.0, Nmax_plot, 121)
@@ -142,7 +142,7 @@ def main():
         ax3.axhline(0, **figstyle.THIN)
         ax3.set_ylim(-0.25, 0.25)
         ax3.set_xlabel("$\\mathcal{N}$")
-        ax3.set_ylabel("Monte Carlo / exact $-1$ (bins $\\geq 100$)")
+        ax3.set_ylabel("Monte Carlo / exact $-1$")
         ax1.set_xlabel("first-passage time $\\mathcal{N}$")
         ax1.set_ylabel("$P(\\mathcal{N})$")
         ax1.set_ylim(1e-16, 2)

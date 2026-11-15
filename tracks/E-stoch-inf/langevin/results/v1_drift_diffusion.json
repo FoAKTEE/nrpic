@@ -1,5 +1,5 @@
 {
- "run_id": "E-stoch-inf-20261115-125014-097160b",
+ "run_id": "E-stoch-inf-20261115-125312-dafadc4",
  "cases": [
   {
    "mu": 1.0,
@@ -146,7 +146,15 @@
      "laplace_J": 0.5,
      "laplace_IS": 0.12684038075662848,
      "laplace_exact": 0.12605111094439408,
-     "mean_N_reweighted": 4.99299061101065
+     "mean_N_reweighted": 4.99299061101065,
+     "bins": {
+      "n_bins": 67,
+      "mean_z2": 0.9855816031502923,
+      "max_abs_z": 2.6624659935389268,
+      "max_abs_rel": 0.15847864047286375,
+      "deepest_P": 2.8507013986436537e-08,
+      "deepest_N": 34.76472009556991
+     }
     },
     {
      "A": -0.8,
@@ -154,11 +162,27 @@
      "se_w": 0.005615611984393465,
      "mean_w_printed_sign": 1.572351690971219e+80,
      "laplace_J": 0.5,
-     "laplace_IS": NaN,
+     "laplace_IS": 0.12433519608334793,
      "laplace_exact": 0.12605111094439408,
-     "mean_N_reweighted": NaN
+     "mean_N_reweighted": NaN,
+     "bins": {
+      "n_bins": 117,
+      "mean_z2": 1.1825849414444454,
+      "max_abs_z": 3.2460865193097366,
+      "max_abs_rel": 0.09954685283651887,
+      "deepest_P": 3.4151201973909015e-14,
+      "deepest_N": 60.647942356505176
+     }
     }
-   ]
+   ],
+   "direct_bins": {
+    "n_bins": 28,
+    "mean_z2": 0.8298898310019901,
+    "max_abs_z": 1.8371312369874444,
+    "max_abs_rel": 0.054190649206174335,
+    "deepest_P": 0.0012117888446732637,
+    "deepest_N": 14.971667778384123
+   }
   },
   {
    "mu": 0.5,
@@ -305,7 +329,15 @@
      "laplace_J": 0.5,
      "laplace_IS": 0.2891612701819109,
      "laplace_exact": 0.2905243231860233,
-     "mean_N_reweighted": 4.007815031038142
+     "mean_N_reweighted": 4.007815031038142,
+     "bins": {
+      "n_bins": 64,
+      "mean_z2": 1.2730885753183,
+      "max_abs_z": 2.8611412527718953,
+      "max_abs_rel": 0.1672880666624712,
+      "deepest_P": 5.918170878697474e-06,
+      "deepest_N": 55.03333333333333
+     }
     },
     {
      "A": -0.4,
@@ -313,11 +345,27 @@
      "se_w": 0.0015686787179974495,
      "mean_w_printed_sign": 2.3181616291868907e+24,
      "laplace_J": 0.5,
-     "laplace_IS": NaN,
+     "laplace_IS": 0.29011686123482955,
      "laplace_exact": 0.2905243231860233,
-     "mean_N_reweighted": NaN
+     "mean_N_reweighted": NaN,
+     "bins": {
+      "n_bins": 115,
+      "mean_z2": 1.042172815010463,
+      "max_abs_z": 2.7513986183301333,
+      "max_abs_rel": 0.1681241362525101,
+      "deepest_P": 7.034126533630951e-09,
+      "deepest_N": 101.83333333333334
+     }
     }
-   ]
+   ],
+   "direct_bins": {
+    "n_bins": 31,
+    "mean_z2": 1.242784533083891,
+    "max_abs_z": 2.2622250970798587,
+    "max_abs_rel": 0.2498081938800749,
+    "deepest_P": 0.0005826923076923074,
+    "deepest_N": 27.3
+   }
   }
  ]
 }

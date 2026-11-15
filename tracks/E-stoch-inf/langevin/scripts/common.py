@@ -20,13 +20,23 @@ RES = os.path.join(PKG, "results")
 os.makedirs(RUN_DIR, exist_ok=True)
 
 
+def _jsonable(o):
+    if isinstance(o, np.ndarray):
+        return o.tolist()
+    if isinstance(o, np.generic):
+        return o.item()
+    if isinstance(o, complex):
+        return [o.real, o.imag]
+    raise TypeError(type(o))
+
+
 def save_results(name, obj):
     obj = dict(run_id=RUN_ID, **obj)
     path = os.path.join(RES, f"{name}.json")
     with open(path, "w") as f:
-        json.dump(obj, f, indent=1, default=float)
+        json.dump(obj, f, indent=1, default=_jsonable)
     with open(os.path.join(RUN_DIR, f"{name}.json"), "w") as f:
-        json.dump(obj, f, indent=1, default=float)
+        json.dump(obj, f, indent=1, default=_jsonable)
     return path
 
 

@@ -1,0 +1,71 @@
+{
+  "run_id": "E-stoch-inf-20261115-125014-097160b",
+  "owner": "E-stoch-inf",
+  "command": "python3 tracks/E-stoch-inf/langevin/scripts/v1_drift_diffusion.py",
+  "cwd": "/data/haiyangw/nrpic/wt/E-stoch-inf",
+  "commit": "097160b7598040ccf00163a18cc673bcf6fe509f",
+  "inputs": [
+    {
+      "path": "tracks/E-stoch-inf/langevin/scripts/v1_drift_diffusion.py",
+      "sha256": "ed87d0896d634144162cd1a2edac974283046cf2c7c45a4bf9231d579c024cd1"
+    },
+    {
+      "path": "tracks/E-stoch-inf/langevin/sdn/__init__.py",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "tracks/E-stoch-inf/langevin/sdn/exact.py",
+      "sha256": "ec3c762f061c02b6e84a5ae50bc1b0a6fb67c02a3764c4f493b52537e0d2e474"
+    },
+    {
+      "path": "tracks/E-stoch-inf/langevin/sdn/langevin.py",
+      "sha256": "6087e3b1da2aa4895d104dd212a6e774bf9c2679893477ae2900192ddf6cab31"
+    },
+    {
+      "path": "tracks/E-stoch-inf/langevin/sdn/linear.py",
+      "sha256": "1e19d0c8a5b5292ad0b2ef6416ab8216b3e8748583cd4a828bde105f7afe5c8b"
+    },
+    {
+      "path": "tracks/E-stoch-inf/langevin/sdn/models.py",
+      "sha256": "8d06d58cfe370f3d7b3df494dc72634b44ec814030a874152105cd6d51e38763"
+    }
+  ],
+  "output_dir": "/data/haiyangw/nrpic/scratch/E-stoch-inf/E-stoch-inf-20261115-125014-097160b",
+  "purpose": "V1: Langevin first passage vs exact drift-diffusion (1308.4754), step convergence, bridge test, importance-sampling weights",
+  "kind": "scouting",
+  "launcher": "local",
+  "cores": 8,
+  "card_hours": 0.0,
+  "started_utc": "2026-11-15T12:50:14+00:00",
+  "status": "completed",
+  "exit_code": 0,
+  "wall_time_s": 85.2,
+  "core_hours": 0.189,
+  "finished_utc": "2026-11-15T12:51:39+00:00",
+  "outputs": [
+    {
+      "path": "stdout.txt",
+      "sha256": "dc5c4ce9fad210a6e7abb397f8b201a27e944db0da0507f33377c2bd1da8c74c"
+    },
+    {
+      "path": "v1_case0.npz",
+      "sha256": "f87dca1c123ce8e7498037c003a8ec1e0c42d580a40a01a6af525eb1b49ad1fc"
+    },
+    {
+      "path": "v1_case1.npz",
+      "sha256": "a2133cc11974bbe2be2b555901dae59abcffbc54ee3698034ff6bdb19aa42411"
+    },
+    {
+      "path": "v1_drift_diffusion.json",
+      "sha256": "8ca202fbb7e12a415383566377cfb84dc6b89b3c66c68d134cb27f0734a9670a"
+    },
+    {
+      "path": "v1_drift_mu0.5_m2.png",
+      "sha256": "7a309abbfe11223f6db6178a60513f504ac54e23fc9a177b6e2af6efffe385f3"
+    },
+    {
+      "path": "v1_drift_mu1_m5.png",
+      "sha256": "0280e0d36b113aa4ff2c600b4d80747bec1a52752808b968f447f7eb4407c7fc"
+    }
+  ]
+}
