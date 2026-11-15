@@ -241,9 +241,10 @@ def main():
         r_, y_ = arr(ours_name, scale)
         d = dig[fig]["curves"][ck]
         pk_o, pk_d = peak(r_, y_), peak(np.array(d["x"]), np.array(d["y"]))
-        dense = np.linspace(r_[0], r_[-1], 2000)
-        yo = np.interp(dense, r_, y_)
-        pk_o = peak(dense, yo)
+        # at our nodes; the digitized curve is FdRW's drawn polyline, so linear
+        # interpolation in it is what they plotted
+        dense = r_
+        yo = y_
         yd = interp_curve(dense, d["x"], d["y"])
         # compare where the digitized curve is above 10 % of its peak and inside its range
         m = np.isfinite(yd) & (yd > 0.1 * pk_d[1]) & (dense < 39.0)
@@ -311,11 +312,11 @@ def main():
             col = cols[ck]
             axt.plot(d["x"], d["y"], color=col, lw=3.0, alpha=0.35)
             axt.plot(r_, y_, color=col, label=lab)
-            dense = np.linspace(r_[0], 39.0, 600)
+            dense = r_[r_ <= 39.0]
             yd = interp_curve(dense, d["x"], d["y"])
-            yo = np.interp(dense, r_, y_)
+            yo = y_[r_ <= 39.0]
             mm = np.isfinite(yd) & (yd > 0.1 * np.nanmax(yd))
-            axb.plot(dense[mm], (yo[mm] / yd[mm] - 1) * 100, color=col)
+            axb.plot(dense[mm], (yo[mm] / yd[mm] - 1) * 100, ".-", ms=3, color=col)
         axt.set_xlim(0, 40); axt.set_ylim(*ylim); axt.tick_params(labelbottom=False)
         axt.set_ylabel(ylab)
         axt.legend(loc="upper right", fontsize=8, title="thin: ours, thick: FdRW",

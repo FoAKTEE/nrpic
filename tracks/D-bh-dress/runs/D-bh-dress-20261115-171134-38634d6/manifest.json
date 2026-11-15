@@ -1,0 +1,106 @@
+{
+ "run_id": "D-bh-dress-20261115-171134-38634d6",
+ "track": "D-bh-dress",
+ "package": "D-pre-2 spike",
+ "purpose": "K1: Kerr spike reference (FdRW 1707.06302 method) against the printed numbers and curves",
+ "kind": "scouting",
+ "command": [
+  "/data/haiyangw/nrpic/wt/D-bh-dress/.venv/bin/python",
+  "kerr_reference.py",
+  "--out",
+  "/data/haiyangw/nrpic/scratch/D-bh-dress/D-bh-dress-20261115-171134-38634d6",
+  "--np",
+  "8",
+  "--nr",
+  "44"
+ ],
+ "cwd": "/data/haiyangw/nrpic/wt/D-bh-dress/tracks/D-bh-dress/spike",
+ "env_overrides": {
+  "OMP_NUM_THREADS": "8",
+  "OPENBLAS_NUM_THREADS": "8"
+ },
+ "git": {
+  "sha": "38634d6e80b4e00f42292676ef428345597a1607",
+  "branch": "track/D-bh-dress",
+  "dirty_spike_dir": false
+ },
+ "inputs": [
+  {
+   "path": "/data/haiyangw/nrpic/wt/D-bh-dress/tracks/D-bh-dress/spike/kerr_lib.py",
+   "sha256": "dfea5727333f60d5528e1581e8677286acd5d9a2eed28a046503250812ca848f"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/wt/D-bh-dress/tracks/D-bh-dress/spike/kerr_reference.py",
+   "sha256": "610b0612778cc498cea5d68d519e18b4d309b9bc6045460c874cf13cfbe6a434"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/wt/D-bh-dress/tracks/D-bh-dress/spike/kerr_curves.py",
+   "sha256": "1cd7c43a717e9c972c96bd3af0660b83fede88e624cf9398ebe41033af12df9c"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/wt/D-bh-dress/tracks/D-bh-dress/spike/spike_lib.py",
+   "sha256": "c6ddd1260ac7cf587775d1c115e2e301e49f5e1f3d7eec85b7546aaa773d96ff"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/wt/D-bh-dress/tracks/D-bh-dress/spike/paper_curves.py",
+   "sha256": "96f780d925511fae09e42f64f4554fe46aacac06bcda5c353233e443c60a8d16"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/kb-data/raw/arxiv/1707.06302/v2/src/kerrdm.tex",
+   "sha256": "ccbaecf63d610aea6bac07fc44a43fe13cecf2a2eb414d9d431ae33f598eed1b"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/kb-data/raw/arxiv/1707.06302/v2/src/fig_rho_a.pgf",
+   "sha256": "564db2628a1c0cd25d4eeccc7cbe16400a4f523112113f231df082fb0be41519"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/kb-data/raw/arxiv/1707.06302/v2/src/fig_rho_theta.pgf",
+   "sha256": "5173489b05e3469c8feb2e358baf0bf2542004d490256a045f0d968edd4eeae7"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/kb-data/raw/arxiv/1707.06302/v2/src/fig_rho_hern.pgf",
+   "sha256": "e3804c8e87735b64aa07b4f2f5bd85a0179f1853c4025970b7130856f92195c0"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/kb-data/raw/arxiv/1707.06302/v2/src/fig_angle_hern.pgf",
+   "sha256": "045db460887977303d049ff94031343f7cda455967d9c7613c01bd4156bd084d"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/kb-data/raw/arxiv/1707.06302/v2/src/figequator1.pgf",
+   "sha256": "d05dd5e08963f5f5c84a6dde7adf73a47ef8c93ee9b2bba5a1349bedb69b9802"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/kb-data/raw/arxiv/1707.06302/v2/src/figemin.pgf",
+   "sha256": "57f042f8ece0f69ff3264e4eb4514f64cff11bc428358fc6f46ab41e66bc038b"
+  }
+ ],
+ "resources": {
+  "nodes": 1,
+  "cores": 8,
+  "gpus": 0,
+  "card_hours": 0.0,
+  "walltime_s": 103.28
+ },
+ "outputs": {
+  "dir": "/data/haiyangw/nrpic/scratch/D-bh-dress/D-bh-dress-20261115-171134-38634d6",
+  "sha256sums": "sha256sums.txt",
+  "files": [
+   "kerr_curves.json",
+   "kerr_curves_ours.npz",
+   "kerr_ref_checks.pdf",
+   "kerr_ref_checks.png",
+   "kerr_ref_constf.pdf",
+   "kerr_ref_constf.png",
+   "kerr_ref_hernquist.pdf",
+   "kerr_ref_hernquist.png",
+   "kerr_reference.json",
+   "stdout.txt"
+  ]
+ },
+ "status": "completed",
+ "exit_code": 0,
+ "started": "2026-11-15T17:11:34+00:00",
+ "ended": "2026-11-15T17:13:17+00:00",
+ "parents": [],
+ "notes": "Registered by hand with spike/register_run.py: harness/bin/nrpic-run submit --package refused because of an untracked file of another helper at the worktree root (es.horizon_summary_0.txt)."
+}
