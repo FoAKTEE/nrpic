@@ -21,15 +21,15 @@
    "status_b": "BLOCKED",
    "title": "oblate and prolate collapse",
    "verdict": "PARTIAL",
-   "evidence": "prolate e = 0.9, 10^4 particles: horizon at 32.00 M (M/16), mass 3-5 % low; second\nresolution M/8: pending. Oblate: blocked, nrpic_cf accepts a < b only (source work)."
+   "evidence": "prolate $e=0.9$, $10^4$ particles: horizon at 32.00 M (cells $M/16$) and 32.25 M ($M/8$);\n$M_{AH}$ largest 0.967 and 0.957, deficit falls with resolution. Oblate: blocked (needs source work)."
   },
   "4": {
    "label": "4  Cluster sequence, stability threshold",
    "status": "PARTIAL",
    "title": "relativistic cluster sequence and threshold",
    "verdict": "PARTIAL",
-   "evidence": "fates of y_c = 0.900 ... 0.283 as in the paper; turning point y_c* = 0.6796 (E_b/M_0 max);\nbisection at M/4: pending."
+   "evidence": "fates of $y_c$ = 0.900 ... 0.283 as in the paper; turning point $y_c^*=0.6796$. Bisection at $M/4$: no collapse;\n0.66, 0.64 migrate to their equal-binding members, 0.70, 0.72 stay. Round 2 (0.69, 0.67) pending."
   }
  },
- "footer": "draft: rows 3-4 pending the wave-2 card runs"
+ "footer": "state 2026-11-15 16:30Z; numbers: tracks/core/verify/LADDER.md and JOURNAL.md (run ids there)"
 }
