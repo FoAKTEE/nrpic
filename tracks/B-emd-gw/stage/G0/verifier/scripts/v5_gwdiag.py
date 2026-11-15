@@ -2,7 +2,7 @@
 agree on linear waves. Uses the package's functions as the object under test; the fields
 and the expected values are built here.
 
-    python3 v5_gwdiag.py [OUTDIR] [V4_RUNDIR]
+    python3 v5_gwdiag.py [OUTDIR or - for $NRPIC_RUN_DIR] [V4_RUNDIR]
 
 (a) plane waves h = A_+ e_+ sin(phi) + A_x e_x sin(phi + d), phi = k.x - w t, on a flat
     background, for lattice directions (1,0,0), (1,2,0), (1,1,1), (0,1,2) and three
@@ -171,7 +171,7 @@ def athenak_test(rundir):
 
 
 def main():
-    out = sys.argv[1] if len(sys.argv) > 1 else os.environ["NRPIC_RUN_DIR"]
+    out = sys.argv[1] if len(sys.argv) > 1 and sys.argv[1] != "-" else os.environ["NRPIC_RUN_DIR"]
     v4 = sys.argv[2] if len(sys.argv) > 2 else None
     os.makedirs(out, exist_ok=True)
     res = {"plane": plane_tests(), "gauge": gauge_tests()}

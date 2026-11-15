@@ -154,3 +154,16 @@ in scratch/B-emd-gw/tmp/ to debug them; the registered runs follow.
   wave's anisotropic stress on the mean metric of the box (a Bianchi-I-like shear, the
   k = 0 mode of item 3's amendment 2), it scales as A^2: 4 times larger at A = 2e-6 and
   16 times at A = 4e-6 (N = 32, 10 crossings). Refuted by: a linear or no scaling in A.
+
+## 2026-11-15, entry 5: drift outcome; a misdirected run
+
+- Drift, run `B-20261115-170431-c49964c`: mean gxx - 1 after 10 crossings at N = 32 is
+  6.58e-10, 2.633e-9, 1.053e-8 for A = 1e-6, 2e-6, 4e-6: ratios 4.00 and 16.0. The
+  prediction (A^2) holds: a second-order homogeneous anisotropic mode of the box, not a
+  truncation error. It is the k = 0 traceless mode that the TT diagnostic removes by
+  default (`tt_project_fourier(k0="zero")`); worth knowing for the GW energy budget of a
+  box with strong waves (it grows as t^2 here).
+- Run `B-20261115-170526-a53d364` (C7) was started with a wrong argument: its output went
+  to scratch/B-emd-gw/v5_placeholder/ instead of its run directory, and without the
+  AthenaK part. It stays on record; not used. The script now takes "-" for the run
+  directory, and C7 is rerun.
