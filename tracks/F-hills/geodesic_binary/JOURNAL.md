@@ -233,3 +233,9 @@ DOP853 on python/nrpic/kerr.py, compared with hrna.py at the same coordinate tim
 Prediction: the relative orbit x1 - x2 agrees to < 1e-7 a0 and member positions to < 1e-6 r_g.
 Refuted if the relative-orbit difference exceeds 1e-5 a0 (a wrong 1/Gamma^2, projection or
 index placement changes the internal orbit at order v^2 ~ 1e-2 of the separation or more).
+
+### T4 outcome (run F-hills-20261115-133219-90eeecd, figure t4_force_31.png inspected)
+
+Relative orbit: max difference 4.2e-8 a0 (a = 0) and 4.3e-8 a0 (a = 0.9); member 1 position
+1.8e-8 and 1.9e-8 r_g, over the whole passage (the binary separates in both). Prediction holds:
+the 3+1 form with the projected force is the same model as Eq. CoordtEqs, to integration error.
