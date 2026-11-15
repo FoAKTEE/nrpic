@@ -48,6 +48,14 @@ TESTS = {
     "cluster": ("run_cluster.py", ["--tlim", "0.25", "--kn", "30", "--snap-dt", "0.125"], 1,
                 "core-20261115-135728-18d4555", "P11 null on the processor (two steps)"),
 }
+# card runs of wave 1 (gpu_job.sh): two processes, conv_dt with 4e6 particles
+CARD = {
+    "rate": (["--nproc", "2"], "core-20261115-135816-18d4555"),
+    "relax": (["--nproc", "2"], "core-20261115-135932-18d4555"),
+    "repro": (["--nproc", "2"], "core-20261115-140011-18d4555"),
+    "conv_dt": (["--nproc", "2", "--n", "4000000"], "core-20261115-140021-18d4555"),
+    "curved": (["--nproc", "2"], "core-20261115-140259-8742cdf"),
+}
 SKIP = re.compile(r"(\.log$|\.png$|\.pdf$|summary.*\.json$|\.rst$|\.json$|\.out$|\.o$|kernel_test_|run\.log$)")
 
 
@@ -75,6 +83,8 @@ def main():
     ap.add_argument("--exe", required=True)
     ap.add_argument("--tests", default=",".join(TESTS))
     ap.add_argument("--python", default=sys.executable)
+    ap.add_argument("--card", action="store_true",
+                    help="card executable: arguments and reference runs of the card runs")
     args = ap.parse_args()
     res = {}
     if os.path.exists(args.summary):
@@ -83,11 +93,16 @@ def main():
     ok = True
     for name in args.tests.split(","):
         drv, extra, cores, old_id, what = TESTS[name]
+        if args.card:
+            extra, old_id = CARD[name]
+            cores = 2
         drv_path = os.path.join(HERE, drv)
         exe_arg = [] if name == "kernel" else ["--exe", args.exe]
-        cmd = [args.python, RUNREG, "--kind", "production", "--cores", str(cores),
+        cmd = [args.python, RUNREG, "--kind", "production", "--cores", str(cores)] \
+            + (["--card"] if args.card else []) + [
                "--purpose", f"Rerun of wave 1 with the executable of core/collisions-2 "
-               f"(options absent): {what}; outputs compared with {old_id}",
+               f"(options absent){' on one A100' if args.card else ''}: {what}; "
+               f"outputs compared with {old_id}",
                "--input", drv_path] + ([] if name == "kernel" else ["--input", args.exe]) \
             + ["--", args.python, drv_path, "{out}"] + exe_arg + extra
         proc = subprocess.run(cmd, cwd=REPO, capture_output=True, text=True)

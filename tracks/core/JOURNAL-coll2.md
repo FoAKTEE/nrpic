@@ -298,3 +298,53 @@ is compared at t = 1 with an independent integration of dx/dt = u/W, du/dt = gam
   are step boundaries, the order is between 1.8 and 2.2; if it is not, the reason
   above is wrong. Recommendation for users: choose perturb_tstart and perturb_time as
   multiples of the step.
+
+### Outcome S, rerun: core-20261115-160559-819d588 (16:16 UTC)
+
+Passed. Orders 2.000004 and 2.0000000 from the steps 0.01, 0.005, 0.0025 (errors of u
+1.36e-7, 3.39e-8, 8.48e-9); the steps 0.05, 0.037, 0.02, of which 0.47 is not a
+boundary, give 1.7e-5, 8.4e-7, 4.4e-6 (irregular, up to ten times above the line);
+particle at rest 3e-16 to 4.7e-15; null byte-identical. Figure `fig_perturb.png` looked
+at (the aligned steps lie on the dashed line of slope 2).
+
+### Registered references with the acceptance step (16:20 UTC)
+
+Runs core-20261115-160136-819d588 (psi_iso, _f2, _f4, _half, psi_null),
+core-20261115-160137-819d588 (psi_inverted, lapse_tolman, lapse_iso, well_tolman, _f2),
+core-20261115-160139-819d588 (well_shift, psi_iso_hot, well_tolman_hot, _hot_f2), control
+without the step core-20261115-160140-819d588; 4e6 pairs per case. Slope in the
+equilibrium states with the step, in units of 1e-3 (standard error): psi_iso -0.49
+(0.37), _f2 +0.07 (0.19), _f4 -0.12 (0.10), _half +0.29 (0.37), lapse_tolman +0.02
+(0.37), well_tolman +0.28 (0.37), well_tolman_f2 -0.05 (0.19); at theta0 = 0.3:
+psi_iso_hot +0.4 (2.2), well_tolman_hot -1.1 (2.2), well_tolman_hot_f2 +1.0 (1.1). All
+within 1.3 standard errors of zero: the restated G2(d) holds in the reference. Control
+without the step at theta0 = 0.3: psi_iso_hot +66.1 (2.3), well_tolman_hot +112.6 (2.3)
+against -95.9 and -169.4 of core-v0.3: without the step the transfer in equilibrium is
+two thirds of the old one, of the opposite sign; at theta0 = 0.05 it was 6 percent. So
+the term grows with the temperature as stated, and the acceptance step removes it (a
+test in which the derivation of R could have failed at 29 standard errors).
+Rejected share of the proposals: 0.6e-3 to 6.4e-3 at theta0 = 0.05 (largest for cells
+of four mesh cells), 0.8 to 2.6 percent at theta0 = 0.3; pairs without a root at most
+3e-5 (hot, cells of two mesh cells).
+
+### Predictions for the card runs (16:22 UTC, before submission)
+
+Rc Card regression. The five existing set-ups: verdicts as in wave 1 (the two set-ups
+   whose baseline is reproducible identical; in the others only the files that differ
+   between two runs of the baseline differ). Collisional boxes of wave 1 (rate, relax,
+   repro, conv_dt, curved) against the card outputs of wave 1: particle snapshots
+   byte-identical; `coll.hst` identical unless the larger reduction record changes the
+   order of the card's sums, in which case only floating-point sum columns differ, by
+   less than 1e-12 relative, and all integer columns agree.
+Nc New tests on the card: as G1, G2, G4 on the processor (statistics; card and
+   processor states need not be identical).
+C  Cluster (P11 set-up, Kn = 3, collision cells of 2 M, 150 M, 1e4 particles), runs
+   kn3_cell and kn3_particle. `cell`: the collision steps raise sum M W_p by 5.2e-5 of
+   its value as in wave 1 (within 30 percent: 3.6e-5 to 6.8e-5) and sum M H_p by more,
+   between 5e-5 and 1.5e-4. `particle`: the collision steps change sum M H_p by less
+   than 1e-12 of its value (about 5000 collisions); no more than five pairs without a
+   root; rejected collisions below 2 percent; the same number of collisions as `cell`
+   within 4 sigma; central lapse at 150 M within 0.01 of the `cell` run (wave 1 saw
+   0.7914, 0.7885, 0.7891 for three cell sizes), mass radii within 5 percent. Refuted by
+   a change of sum M H_p in `particle` above 1e-12, or by a structural difference
+   beyond these bounds.

@@ -3,6 +3,7 @@
 problems/st/st_cluster.athinput, Z4c with particle sources) with and without collisions.
 
   run_cluster.py OUTDIR [--exe ATHENA] [--tlim 150] [--kn 30,3] [--n 10000]
+                 [--energy cell,particle]
 
 Runs: "off" (no collision option), "sigma0" (operator on, cross-section zero),
 "knXX" (cross-section per unit mass sigma = 1/(rho0_c R Kn) with the central rest-mass
@@ -10,6 +11,9 @@ density and the areal radius of the model). Collision cells are blocks of 4^3 me
 (2 M wide where the mesh has dx = M/2). Compared: central lapse, radii enclosing 10, 50
 and 90 percent of the rest mass, rest mass, the deposit identity, the pair defects and
 the change of the particle energy caused by the collision steps.
+With --energy the collisional runs are made once per value of <particles> coll_energy
+(names knXX_cell, knXX_particle; history columns 32 to 36): the change of the sum of
+M H, H = alpha W - beta^i u_i with the metric at each particle, in the collision steps.
 """
 import argparse
 import filecmp
@@ -77,11 +81,15 @@ def make_figure(out, runs, hst, snaps, model):
             axs[1, 0].plot(c["time"], np.cumsum(c["n_coll"]), color=cols[name], ls=ls, lw=1.2)
             axs[1, 1].plot(c["time"], np.cumsum(c["dE_particles"])/c["sum_MW_particles"][0],
                            color=cols[name], ls=ls, lw=1.2)
+            if "dH_particles" in c:
+                axs[1, 1].plot(c["time"],
+                               np.cumsum(c["dH_particles"])/c["sum_MH_particles"][0],
+                               color=cols[name], ls="--", lw=1.2)
     axs[0, 0].axhline(model["alpha_c"], **fs.GUIDE)
     axs[0, 0].set_ylabel("central lapse")
     axs[0, 1].set_ylabel("radii of 10, 50, 90 percent of the rest mass")
     axs[1, 0].set_ylabel("collisions (cumulative)")
-    axs[1, 1].set_ylabel(r"cumulative $\Delta(\Sigma MW)$ of the collision steps / $\Sigma MW$")
+    axs[1, 1].set_ylabel(r"cumulative $\Delta(\Sigma MW)$ (solid), $\Delta(\Sigma MH)$ (dashed)")
     for ax in axs.ravel():
         ax.set_xlabel(r"$t/M$")
     axs[0, 0].legend(fontsize=8, ncol=2)
@@ -100,6 +108,9 @@ def main():
                     help="coll_cell_factor of the collisional runs, comma separated")
     ap.add_argument("--skip-null", action="store_true",
                     help="do not run the repeated baseline and the run with sigma = 0")
+    ap.add_argument("--energy", default="",
+                    help="values of coll_energy for the collisional runs, comma separated "
+                         "(empty: the option is absent, as in wave 1)")
     args = ap.parse_args()
     out = os.path.abspath(args.out)
     os.makedirs(out, exist_ok=True)
@@ -122,6 +133,12 @@ def main():
         fp.write(text.replace(anchor, anchor + coll_block)
                  .replace(job, job + "rng_seed  = 4242\n"))
     factors = [int(f) for f in args.factors.split(",") if f]
+    energies = [e for e in args.energy.split(",") if e]
+    deck_coll_e = os.path.join(out, "st_cluster_coll_energy.athinput")
+    if energies:
+        with open(deck_coll_e, "w") as fp:
+            fp.write(text.replace(anchor, anchor + coll_block + "coll_energy      = cell\n")
+                     .replace(job, job + "rng_seed  = 4242\n"))
     base = [f"particles/particle_file={os.path.join(ic, 'st.nrp')}",
             f"problem/comp0_file={os.path.join(ic, 'st.tab')}", f"time/tlim={args.tlim}",
             f"particles/snap_dt={args.snap_dt}"]
@@ -136,8 +153,13 @@ def main():
         sig[kn] = 1.0/(rho0_c*radius*kn)
         for f in factors:
             name = f"kn{kn:g}" if f == 4 else f"kn{kn:g}_f{f}"
-            runs[name] = (deck_coll, base + [f"particles/coll_sigma={sig[kn]!r}",
-                                             f"particles/coll_cell_factor={f}"])
+            if not energies:
+                runs[name] = (deck_coll, base + [f"particles/coll_sigma={sig[kn]!r}",
+                                                 f"particles/coll_cell_factor={f}"])
+            for en in energies:
+                runs[f"{name}_{en}"] = (deck_coll_e, base + [
+                    f"particles/coll_sigma={sig[kn]!r}", f"particles/coll_cell_factor={f}",
+                    f"particles/coll_energy={en}"])
     summary = {"model": {k: model[k] for k in ("yc", "M0", "R_areal", "rho0_c", "alpha_c")},
                "tlim": args.tlim, "n": args.n, "sigma": {f"kn{k:g}": v for k, v in sig.items()},
                "exe": args.exe, "exe_sha256": common.sha256(args.exe), "runs": {}}
@@ -210,6 +232,17 @@ def main():
                      count_z=float((c["n_coll"].sum() - c["sum_P"].sum())
                                    / np.sqrt(max(c["sum_P"].sum(), 1e-300)))
                      if c["sum_P"].sum() > 0 else 0.0)
+            if "dH_particles" in c:
+                r.update(dH_particles_sum_rel=float(c["dH_particles"].sum()
+                                                    / c["sum_MH_particles"][0]),
+                         dH_particles_abs_sum_rel=float(np.abs(c["dH_particles"]).sum()
+                                                        / c["sum_MH_particles"][0]),
+                         n_noroot=int(c["n_noroot"].sum()),
+                         n_balance=int(c["n_balance"].sum()),
+                         max_dlam=float(c["max_dlam"].max()),
+                         count_z=float((c["n_coll"].sum() + c["n_balance"].sum()
+                                        + c["n_noroot"].sum() - c["sum_P"].sum())
+                                       / np.sqrt(max(c["sum_P"].sum(), 1e-300))))
     if args.skip_null:
         good = True
         for name, r in summary["runs"].items():
