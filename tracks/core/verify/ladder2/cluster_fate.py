@@ -192,11 +192,11 @@ def figure(res):
     fs.use_style()
     os.makedirs(FIGS, exist_ok=True)
     fig, ax = plt.subplots(1, 3, figsize=(fs.FULL_WIDTH, 3.0))
-    fig.subplots_adjust(left=0.07, right=0.985, bottom=0.16, top=0.90, wspace=0.36)
+    fig.subplots_adjust(left=0.07, right=0.985, bottom=0.16, top=0.90, wspace=0.42)
     runs = sorted(res["runs"], key=lambda r: -r["yc"])
     cols = fs.series_colors(len(runs), cmap="coolwarm")
     for r, c in zip(runs, cols):
-        lab = r"$y_c=%.2f$" % r["yc"]
+        lab = r"$y_c=%.3g$" % r["yc"]
         ax[0].plot(r["t"], np.array(r["alpha_c"]) / r["alpha_c_eq"], color=c, lw=1.2, label=lab)
         if r["t_first_AH"] is not None:
             ax[0].axvline(r["t_first_AH"], color=c, ls=":", lw=1.0)
@@ -216,28 +216,30 @@ def figure(res):
     ax[1].set_xlabel(r"$t/M$", labelpad=-2)
     ax[1].set_ylabel(r"$r_{50}$ (solid), $r_{90}$ (dashed) [$M$]")
     ax[1].set_ylim(0.0, None)
-    # binding-energy curve with fates
-    ys = np.linspace(0.97, 0.30, 140)
-    eb = np.array([stc.eb_over_m0(v) for v in ys])
-    ax[2].plot(ys, eb, color="k", lw=1.2)
+    # late mean central lapse against y_c, with the equilibrium alpha_c of the model and of
+    # its equal-binding partner (the member a migrating model would settle at)
+    ys = np.linspace(0.585, 0.765, 37)
+    own = np.array([float(stc.st_global(v)["alpha_c"]) for v in ys])
+    par = []
+    for v in ys:
+        try:
+            par.append(float(stc.migration_target(v)["alpha_c"]))
+        except Exception:
+            par.append(np.nan)
+    ax[2].plot(ys, own, color="k", lw=1.2, label=r"own equilibrium $\alpha_c$")
+    ax[2].plot(ys, par, color="k", lw=1.0, ls=":", label=r"equal-binding partner")
     ax[2].axvline(res["turning_point"]["yc"], **fs.GUIDE)
     mk = dict(STABLE="o", COLLAPSE="s", UNDECIDED="^")
     for r in res["runs"]:
-        ax[2].plot(r["yc"], r["Eb_over_M0"], mk[r["fate"]], color=fs.PAL["blue"], ms=7,
-                   mfc="none" if r["fate"] != "COLLAPSE" else fs.PAL["blue"])
-    for r in res["earlier"]:
-        ax[2].plot(r["yc"], r["Eb_over_M0"], mk[r["fate"]], color="grey", ms=5,
-                   mfc="none" if r["fate"] != "COLLAPSE" else "grey")
-    ax[2].plot([], [], "o", color=fs.PAL["blue"], mfc="none", label="stable, this work (M/4)")
-    ax[2].plot([], [], "s", color=fs.PAL["blue"], label="collapse, this work")
-    ax[2].plot([], [], "^", color=fs.PAL["blue"], mfc="none", label="undecided")
-    ax[2].plot([], [], "o", color="grey", mfc="none", ms=5, label="earlier runs")
-    ax[2].invert_xaxis()
-    ax[2].set_xlim(0.95, 0.45)
-    ax[2].set_ylim(-0.006, 0.042)
+        if r["mean_alpha_200_300"] is not None:
+            ax[2].plot(r["yc"], r["mean_alpha_200_300"], mk[r["fate"]], color=fs.PAL["blue"], ms=6,
+                       mfc="none")
+    ax[2].plot([], [], "o", color=fs.PAL["blue"], mfc="none", label="this work, rule: stable")
+    ax[2].plot([], [], "^", color=fs.PAL["blue"], mfc="none", label="this work, rule: undecided")
+    ax[2].set_xlim(0.765, 0.585)
     ax[2].set_xlabel(r"central $y_c$", labelpad=-2)
-    ax[2].set_ylabel(r"$E_b/M_0$")
-    ax[2].legend(fontsize=6.5, loc="lower center", ncol=2, handletextpad=0.3, columnspacing=0.6)
+    ax[2].set_ylabel(r"mean central lapse, 200-300 $M$")
+    ax[2].legend(fontsize=6.3, loc="upper left")
     fs.save(fig, os.path.join(FIGS, "cluster_threshold"))
     plt.close(fig)
 
