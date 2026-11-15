@@ -145,3 +145,22 @@ estimator (below).
   the H-test needs a resolution well below that, i.e. N >~ 1e5 per snapshot.
 - R7 confirmed (normalization, identities, Bessel forms vs quadrature, inversion,
   sampler KS, drifting-gas moments).
+
+## 2026-11-15 Prediction T6-0: collisionless step with the existing executable
+
+Run (to be registered): `analysis/run_step_collisionless.sh 100000` through
+`register_run.py`, processor executable of main (`.work/build_cpu_c1/src/athena`, no
+collision module), deck `inputs/box_step_collisionless.athinput`: flat metric
+(kerr_schild, bh_mass = 0), periodic box 1 x 0.125 x 0.125 at x0 = 10, 32 x 4 x 4 cells,
+1e5 equal-mass particles, left slab theta = 0.02, right slab theta = 0.01, equal pressure,
+dt = 0.02, t = 0..30 (about 2.4 crossing times L/<|v|> of the cold slab), snapshots every
+1.0. Purpose: check the box set-up, the periodic wrapping of particles in an analytic
+metric, and the analysis pipeline of T6 before any collision code exists.
+
+Prediction: every particle moves on x0 + (u/W) t (mod L) with a position error below
+1e-9 L at all snapshots, u unchanged to rounding (Christoffel symbols vanish), so the
+slab sums of the code equal the free-streaming sums of the sample to 1e-12 relative; the
+slab sums lie within about 3 sampling-noise units of the exact ensemble curve
+(`conduction.step_collisionless`) at all times. Refuted by a position error above 1e-9 L
+(a wrapping or pusher defect), a change of u above 1e-12, or ensemble deviations
+systematically above 4 noise units (an error in the reference or in the sampler).

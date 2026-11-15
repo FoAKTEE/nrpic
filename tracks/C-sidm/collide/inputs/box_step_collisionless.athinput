@@ -1,0 +1,60 @@
+# Minkowski periodic box, two slabs at equal pressure and different temperature
+# (test T6 of TESTS.md at sigma/m = 0: the collisionless limit, which the existing code
+# can run). Flat metric: analytic Kerr-Schild with bh_mass = 0, box away from r = 0.
+# Particles: tracks/C-sidm/collide/analysis/make_box.py step (path set on the command
+# line: particles/particle_file=...). With the collision module of core/collisions the
+# same deck takes the collision options listed in TESTS.md section 2.
+
+<comment>
+problem   = collide T6: step in a periodic Minkowski box, collisionless
+
+<job>
+basename  = step
+
+<mesh>
+nghost    = 2
+nx1       = 32
+x1min     = 10.0
+x1max     = 11.0
+ix1_bc    = periodic
+ox1_bc    = periodic
+nx2       = 4
+x2min     = 10.0
+x2max     = 10.125
+ix2_bc    = periodic
+ox2_bc    = periodic
+nx3       = 4
+x3min     = 10.0
+x3max     = 10.125
+ix3_bc    = periodic
+ox3_bc    = periodic
+
+<meshblock>
+nx1       = 8
+nx2       = 4
+nx3       = 4
+
+<time>
+evolution  = dynamic
+integrator = rk2
+cfl_number = 1.0
+nlim       = -1
+tlim       = 30.0
+ndiag      = 500
+
+<problem>
+pgen_name = nrpic_geodesic
+
+<particles>
+particle_type  = nrpic
+pusher         = midpoint
+metric         = kerr_schild
+bh_mass        = 0.0
+bh_spin        = 0.0
+tolerance      = 1.0e-13
+max_iterations = 50
+dt             = 0.02
+deposit        = false
+hist_dcycle    = 50
+snap_dt        = 1.0
+particle_file  = step.nrp
