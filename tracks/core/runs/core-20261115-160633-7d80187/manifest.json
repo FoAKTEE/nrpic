@@ -41,7 +41,9 @@
  "purpose": "T3: thin periodic boxes, lattice jitter, sources in double precision, constraint solve with the differences of the code (P3a-P3d, P4a-P4e, P2e): initial data by problems/cosmo/make_waves.py against cosmo/ic/make_east.py; eight processor runs to conformal time 5.5",
  "kind": "scouting",
  "tag": "T3",
- "state": "running",
+ "state": "finished",
+ "wall_time_s": 473.59,
+ "exit_status": 0,
  "cores": 8,
  "card_hours": 0.0,
  "started_utc": "2026-11-15T16:06:33Z"

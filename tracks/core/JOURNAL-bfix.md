@@ -304,3 +304,129 @@ card-hours; the allotment of this package is one card-hour), test T4
   relative; throughput above 3e6 zone-cycles per second (the cosmology logs give 4.5e6 to
   5.8e6 at 128^3 and 64^3 with particles, Track B's review). Refuted by a failure of the
   run or a z dependence above 1e-6.
+
+### Outcome of T1 (run core-20261115-154120-9c92f68, 1027 s on 8 cores; supplement T1s core-20261115-160040-26eb826, 58 s)
+
+Executables: new `.work/exe/athena_cpu_w1` (source 9c92f68), baseline
+`.work/athena_cpu_base` (source 4ebb05f); sha256 in the manifests. Results
+`results_t1.json`, figures `t1_constraints.png`, `t1_evolution.png`,
+`t1_polarization.png` in the output directories (looked at; copies in
+`tracks/core/analysis/bfix/figs/`). All statements below [VERIFIED] by these runs unless
+marked.
+
+- P1a PASSED for the corrected tensors: over 400 random directions trace 2.2e-16,
+  |e.khat| 1.9e-16, |e:e - 2| 8.9e-16, departure from theta theta - phi phi 3.3e-16;
+  cross tensor: 0, 1.1e-16, 8.9e-16, e+:ex 2.8e-16, departure from
+  theta phi + phi theta 2.2e-16. FAILED as written for the upstream value: I wrote
+  "|e.k|/|k| = 0.77 (Track B's number)"; the Euclidean norm of e.khat at k = (1,1,1) is
+  0.9428 and its largest component is 0.7698, so Track B's 0.77 is the largest
+  component. The upstream tensor is exactly transverse for (1,0,1) (k2 = 0) and along
+  the three axes, and has |e.khat| = 1.000 for (1,1,0) and (0,1,1), 0.800 for (1,2,0),
+  0.515 for (2,-1,3); over the 400 directions between 0.014 and 1.000.
+- P1b PASSED: the tensor fitted to the restart dump at t = 0 equals the corrected
+  tensor to 3.5e-11 (k = (1,1,1)), 2.9e-11 ((1,2,0)), 2.6e-11 ((2,-1,3)) for the new
+  executable, and the upstream tensor to the same accuracy for the baseline (distance
+  from the corrected one 1.33, 0.80, 1.31). For k = (1,0,0) both executables give the
+  same tensor (2.9e-11 from either).
+- P1c PASSED on the track's criterion: Track B's case lw3d_check_diag (16^3, A = 1e-6),
+  first history row with data (t = 0.0625): baseline 1.3852e-9 and 1.5576e-9 (Track B:
+  1.385e-9, 1.558e-9; first-order prediction from the upstream tensor 1.3854e-9,
+  1.5585e-9); new executable 4.587e-21 and 1.070e-21, both below 1e-20, within my
+  estimate (3.6e-21 and 2.7e-21 within a factor three: ratios 1.27 and 0.40). For
+  k = (1,0,0) the two executables give 3.9357e-22 and 1.1942e-22 (H^2 equal to all 17
+  printed digits, M^2 to 14). FAILED as written for the amplitude scaling to A = 1e-7:
+  the norms fell by 3177 and 5449, neither 1e2 nor 1e4. Supplement T1s (prediction
+  written before it): from 1e-6 to 1e-5 and from 1e-5 to 1e-4 the norms rise by 1.0022e4
+  and 1.0000e4 (H^2), 1.0008e4 and 1.0000e4 (M^2): reading (i) holds, what remains is of
+  second order in A; reading (ii) (a first-order remnant, which would give 9.80e3 and
+  9.92e3) is refuted. At A = 1e-7 a floor that does not scale with A adds to the norms
+  (1.4e-24 and 2.0e-25 measured against 4.6e-25 and 1.1e-25 expected) [the floor being
+  rounding of 1 + A e sin P is JUDGEMENT: it was not varied].
+- P1d PASSED: k = (1,2,0), new executable, after the first step: H^2 3.468e-15,
+  1.027e-18, 1.020e-20 and M^2 1.664e-15, 4.907e-19, 2.813e-21 at N = 16, 32, 64: factors
+  3377 and 3391 from 16 to 32 (h^12 is 4096), then 101 and 174 from 32 to 64, where the
+  second-order floor is reached (for |k|^2 = 5 the floor estimated from the axis value is
+  25 x 3.9e-22 = 1.0e-20). Baseline at N = 16: 7.965e-9 and 3.112e-9. k = (2,-1,3): new
+  5.54e-12 and 1.57e-12 at N = 16, 2.05e-15 and 5.87e-16 at N = 32 (factors 2706, 2672;
+  k3 h = 1.18 at N = 16 is not yet asymptotic); baseline 5.38e-9 and 1.00e-8.
+- P1e PASSED: oblique wave k = (1,1,1), one period (t = 0.57735), new executable.
+  Amplitude error -3.522e-5 (N = 16) and -4.291e-7 (N = 32) against -3.521e-5 and
+  -4.285e-7 predicted from the Fourier symbol of the scheme; phase error (numerical
+  minus exact advance) -6.321e-5 and -3.037e-6 rad against -6.318e-5 and -3.034e-6:
+  agreement 0.02 to 0.14 per cent. (The json of T1 stores the phase with the opposite
+  sign, exact minus numerical; the driver was corrected afterwards.) The six components
+  keep the ratios of the tensor to 6e-10 A. gw_diag on the final dump: max |h_x| / A
+  6.0e-16 and 5.3e-10; h_+ against exact 7.2e-5 A and 3.1e-6 A; energy density over
+  the analytic value 0.99993 and 0.9999991; Psi_4 along k against the analytic second
+  time derivative 9.17e-5 and 3.21e-6 relative (order 4.8), Psi_4 along -k 5.3e-6 and
+  1.1e-7 of the maximum. Constraints at the end 3.9e-21, 1.2e-21 (N = 16) and 3.8e-21,
+  1.0e-21 (N = 32). `lwo-errs.dat` (exact solution at the final time): RMS-L1 5.33e-11
+  and 5.93e-12.
+- P1f PASSED for the polarization content; FAILED as written for the constraints of
+  the circular wave. Pure cross wave (amp = 0, amp_cross = 1e-6): gw_diag gives
+  max |h_+| = 2.8e-11 A at t = 0 and h_x equal to the exact wave to 2.5e-11 A; helicity
+  split 0.5/0.5 (linear polarization). amp = amp_cross, phase_cross = +pi/2: all energy
+  in gw_diag's helicity +2 (other 7.7e-21); -pi/2: all in helicity -2. After one period
+  the gain and phase equal those of the plus wave (-3.522e-5, -6.321e-5 rad), Psi_4
+  against d_t^2 h_+ - i d_t^2 h_x: 9.2e-5. Constraints after the first step: cross wave
+  3.92e-21 and 1.25e-21; circular wave 1.399e-20 and 3.51e-21. The circular wave carries
+  twice the energy, and its H^2 is 3.57 times that of one linear wave (not exactly four:
+  the part of the energy density that oscillates in space cancels for a circular wave):
+  second order in A as before, but above the 1e-20 I had predicted for it.
+- P1g PASSED: Track B's own tests with the new executable. lw_x_prod (its analysis
+  function `ana_lw.analyse_run`): N = 16 amplitude -1.7183e-4, phase -2.4935e-4; N = 32
+  -1.4855e-6, -6.2476e-6 (the track's table: -1.72e-4, -2.49e-4; -1.49e-6, -6.25e-6).
+  gw_diag's `validate_athenak.py`, unchanged, on a rerun of lw3d_dump_N32: amplitude
+  within 3.0e-7, phase within 1.25e-6 rad, energy within 5.9e-7, h_x 7.8e-25 A, non-TT
+  part 2.67e-5 A, Psi_4 along x against analytic 2.6e-7 to 1.4e-6; the weyl output lags
+  by exactly 7 steps (fit residual 3.0e-7 to 1.8e-6): every number of the track's README
+  (3e-7, 1.2e-6, 6e-7, 1e-24, 2.7e-5, 7 steps, 3e-7 to 1.8e-6).
+- P1h PASSED with one exception: after a whole period the error files of the two
+  executables agree in every printed digit except the column gyz_L1 (4.242392e-31
+  against 4.241837e-31: rounding noise of a component that is zero). After half a period
+  the baseline reports RMS-L1 1.812e-6 (it compares with the initial data), the new
+  executable 1.368e-11.
+
+Figures looked at: `t1_constraints.png` (left: the upstream data sit at 1.4e-9 where
+Track B's two points are, the corrected data below the 1e-20 line with the axis-aligned
+case a decade lower; right: (1,2,0) follows N^-12 from 16 to 32 and bends to the floor at
+64; the legend covered two points at N = 16 in this first version, moved for T1s),
+`t1_evolution.png` (code on top of the exact h_xx, h_xy and of Psi_4; errors on the
+dashed predictions), `t1_polarization.png` (h_+ = 0 and h_x on the exact curve for the
+cross wave; both for the circular wave), and the track's `athenak_psi4.png` for the two
+reruns (with the option the grey points "dump at t_n" lie on the diagonal, the red ones
+"t_n - 7 dt" do not; without it the reverse).
+
+### Outcome of T2 (run core-20261115-160138-26eb826, 40 s) and of the regression (runs core-20261115-154710-9c92f68 to core-20261115-155839-9c92f68)
+
+- P2a PASSED: five dumps (t = 0 to 0.346) of the oblique wave at 16^3: all 22 fields of
+  the double-precision `bin` equal the active cells of the restart file of the same time
+  bit for bit (0 differing values of 90112 per dump); the single-precision output equals
+  the rounded double one (0 differing); file sizes 729 847 and 369 399 bytes = header
+  8863 + 88 + 22 x 4096 x (8 or 4). The `adm` group in double precision equals the
+  conversion of the Z4c dump (gamma_xx identical, K_xy to 4e-22) except at t = 0, where
+  the ADM arrays of this generator are not yet filled (docs/UPSTREAM_DEFECTS.md, item 4).
+- P2b PASSED: geo (2 files), boris (2), dep (1), east (12), jeans (5 and the result
+  lines of the log), binary (1) identical byte for byte; os: 11 files identical, the five
+  restart files differ in 36 bytes each, all inside the padding window, zero in the new
+  files (`results_t2.json`, stage regress; report
+  `tracks/core/analysis/bfix/results/regress_cpu_w1.json`).
+- P2c PASSED (as amended): Track B's fit of the time of the `weyl` mesh output gives
+  -7.0 steps at all six files with the default (residual 3.0e-7 to 1.8e-6) and 0.0 steps
+  with `waveform_at_new_time = true` (residual 2.7e-7 to 2.1e-6); gw_diag's radial-triad
+  Psi_4 of the dump of the same time agrees with the code's output to 4e-8 to 6e-8 with
+  the option, and differs by 0.2 to 0.6 of the maximum without. Waveform files: both
+  carry the labels n/16; the default series leads the series of the option by
+  0.04908739 rad against omega dt = 0.04908739 (ratio 1.00000003); with the option the
+  first row is at 0.0625, not 0.
+- P2d PASSED (cosmology regression case with a restart output every 5 cycles, 16^3 in
+  eight MeshBlocks, particles with deposit): six restart files of two runs of the new
+  executable identical; against the baseline 36 differing bytes per file, all in the
+  window, all zero in the new files, all 36 non-zero in the baseline's; the other 24
+  output files identical between the three runs. A baseline restart file continued by
+  both executables: 14 output files, differences only in the 36 bytes of the three
+  restart files.
+
+Figure looked at: `t2_output.png` (left: the float32 output of the diagonal component
+scatters by a few per cent of A around the double-precision curve, the off-diagonal one
+does not; right: the two waveform series against their labels, shifted by one step).

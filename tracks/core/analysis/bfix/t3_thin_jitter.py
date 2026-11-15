@@ -231,6 +231,36 @@ def stage_ic(res, out):
     print("ic jitter:", {k: v for k, v in r["jitter"].items() if not k.startswith("hist")})
 
 
+def stage_jcheck(res):
+    """P4c: the jitter of a lattice site in the thin box and in the cube. Positions are
+    compared modulo the lengths of the thin box (the first version of stage ic compared
+    them without the wrap and so reported the box length of the cube)."""
+    dirs = res["ic_dirs"]
+    box = np.array(json.load(open(os.path.join(dirs["jit4"], "id.json")))["box"])
+    out = {}
+    for a, b in (("jit4", "jitcube"), ("plane4", "cube")):
+        pa = read_nrp(os.path.join(dirs[a], "particles.nrp"))
+        pb = read_nrp(os.path.join(dirs[b], "particles.nrp"))
+        sa = np.load(os.path.join(dirs[a], "fiducial.npz"))["site"]
+        sb = np.load(os.path.join(dirs[b], "fiducial.npz"))["site"]
+        key = {tuple(v): i for i, v in enumerate(sb)}
+        idx = np.array([key[tuple(v)] for v in sa])
+        d = pa[:, :3] - pb[idx, :3]
+        d = (d + 0.5*box) % box - 0.5*box
+        out[f"{a}_vs_{b}"] = {"n": int(len(pa)),
+                              "max_abs_dx_periodic": [float(v) for v in np.abs(d).max(axis=0)]}
+    # the deviates themselves, from the generator, for the sites of the thin box
+    sj = np.load(os.path.join(dirs["jit4"], "fiducial.npz"))["site"]
+    off = mw.jitter_offsets(sj, 0.3, (1, 2), 7, H)
+    p0 = read_nrp(os.path.join(dirs["plane4"], "particles.nrp"))
+    pj = read_nrp(os.path.join(dirs["jit4"], "particles.nrp"))
+    d = pj[:, :3] - p0[:, :3] - off
+    d = (d + 0.5*box) % box - 0.5*box
+    out["jit4_minus_plane4_minus_generator"] = float(np.abs(d).max())
+    res["jcheck"] = out
+    print("jcheck:", out)
+
+
 # ---------------------------------------------------------------- stage run
 
 def stage_run(res, exe, out, nproc):
@@ -464,58 +494,61 @@ def figures(res, out):
     fs.use_style()
     C = fs.PAL
     run, an = res["run"], res["ana"]
-    fig = plt.figure(figsize=(fs.FULL_WIDTH, 5.9))
-    # top: energy density of the cube (one layer) and of the thin box at the end
+    fig = plt.figure(figsize=(fs.FULL_WIDTH, 5.7))
+    # top left: energy density of the cube (one layer) and of the thin box at the end
     tc = athena_bin.read_bin(dumps(run["cube"]["rundir"], "tmunu")[-1])
     t4 = athena_bin.read_bin(dumps(run["thin4"]["rundir"], "tmunu")[-1])
     vmax = max(tc["tmunu_E"].max(), t4["tmunu_E"].max())
-    vmin = max(min(tc["tmunu_E"][tc["tmunu_E"] > 0].min(), t4["tmunu_E"][t4["tmunu_E"] > 0].min()),
-               vmax*1e-3)
+    vmin = vmax*1e-2
     norm = matplotlib.colors.LogNorm(vmin=vmin, vmax=vmax)
-    ax = [fs.inch_axes(fig, 0.75 + 1.93*i, 3.35, 1.85, 1.85) for i in range(2)]
+    ax = [fs.inch_axes(fig, 0.6 + 1.76*i, 3.35, 1.7, 1.7) for i in range(2)]
     for a, d, lab in ((ax[0], tc, "cube 16 x 16 x 16"), (ax[1], t4, "thin 16 x 16 x 4")):
-        im = a.imshow(d["tmunu_E"][0], origin="lower", extent=[0, 4, 0, 4], cmap=fs.CMAP["dens"],
-                      norm=norm, interpolation="nearest", rasterized=True, aspect="equal")
+        # cells with E below the lower limit (a few are negative, see the journal) are
+        # drawn at the limit
+        im = a.imshow(np.maximum(d["tmunu_E"][0], vmin), origin="lower", extent=[0, 4, 0, 4],
+                      cmap=fs.CMAP["dens"], norm=norm, interpolation="nearest",
+                      rasterized=True, aspect="equal")
         a.set_title(lab, fontsize=9)
         a.set_xticks([1, 2, 3])
         a.set_yticks([1, 2, 3])
-        a.set_xlabel("x", labelpad=-2)
-    ax[0].set_ylabel("y")
+        a.set_xlabel("x", labelpad=1)
+    ax[0].set_ylabel("y", labelpad=1)
     ax[1].set_yticklabels([])
-    cax = fs.inch_axes(fig, 0.75 + 2*1.93 - 0.02, 3.35, 0.08, 1.85)
+    cax = fs.inch_axes(fig, 0.6 + 2*1.76 + 0.02, 3.35, 0.08, 1.7)
     cb = fig.colorbar(im, cax=cax)
-    cb.set_label(r"$E$ (tmunu dump), t = %.2f" % tc["time"], fontsize=8)
+    cb.set_label(r"$E$ (tmunu dump, layer k = 0), t = %.2f" % tc["time"], fontsize=7)
+    cb.ax.tick_params(labelsize=7)
     # top right: differences against the cube over time
-    a3 = fs.inch_axes(fig, 5.45, 3.35, 2.3, 2.3)
+    a3 = fs.inch_axes(fig, 5.55, 3.35, 2.3, 2.1)
     t = np.array(an["times"])
     for name, col in (("thin8", C["blue"]), ("thin4", C["red"])):
         rows = an[f"{name}_vs_cube"]
         a3.semilogy(t, [max(q[v] for v in SCAL) + 1e-18 for q in rows], "o-", ms=3, color=col,
                     label=f"{name} against cube")
         a3.semilogy(t, [q["zdep_thin"] + 1e-18 for q in rows], "s--", ms=3, mfc="none",
-                    color=col, label=f"{name}: z dependence")
+                    color=col, label=f"{name}: dependence on z")
     a3.semilogy(t, [max(q["z4c_chi"], q["z4c_alpha"], q["z4c_Khat"]) + 1e-18
                     for q in an["thinx_vs_thin4_exchanged"]], "^:", ms=3, color=C["green"],
-                label="thin in x against thin4, axes exchanged")
+                label="thin in x against thin4")
     a3.axhline(1e-8, **fs.THIN)
-    a3.set_ylim(1e-17, 1e-5)
+    a3.set_ylim(1e-16, 1e-3)
     a3.set_xlabel("conformal time")
-    a3.set_ylabel("largest relative difference of the fields")
-    a3.legend(loc="upper left", fontsize=6)
+    a3.set_ylabel("largest relative difference", fontsize=9)
+    a3.legend(loc="upper right", fontsize=6)
     # bottom left: jitter histogram
-    b1 = fs.inch_axes(fig, 0.75, 0.55, 2.9, 2.2)
+    b1 = fs.inch_axes(fig, 0.75, 0.55, 2.9, 2.1)
     jit = res["ic"]["jitter"]
     edges = np.linspace(-0.3, 0.3, 31)
     cen = 0.5*(edges[1:] + edges[:-1])
-    b1.step(cen, jit["hist_y"], where="mid", color=C["red"], label="y displacement / h")
-    b1.step(cen, jit["hist_z"], where="mid", color=C["yellow"], label="z displacement / h")
+    b1.step(cen, jit["hist_y"], where="mid", color=C["red"], label="y")
+    b1.step(cen, jit["hist_z"], where="mid", color=C["yellow"], label="z")
     b1.axhline(jit["n"]/30.0, **dict(fs.GUIDE, lw=1.0), label="uniform")
     b1.set_ylim(0, 1.6*jit["n"]/30.0)
     b1.set_xlabel("displacement of the lattice (cells), jitter 0.3, seed 7")
     b1.set_ylabel("particles per bin")
-    b1.legend(loc="upper center", ncol=3, fontsize=6.5)
-    # bottom right: constraint history, jittered against plain
-    b2 = fs.inch_axes(fig, 4.75, 0.55, 3.0, 2.2)
+    b1.legend(loc="lower center", ncol=3, fontsize=7)
+    # bottom right: constraint history, jittered against plain, two solves
+    b2 = fs.inch_axes(fig, 4.75, 0.55, 3.1, 2.1)
     con = an["constraints_history"]
     for name, col, lab in (("plane4", C["blue"], "plane wave, spectral solve"),
                            ("jit4", C["red"], "jittered lattice, spectral solve"),
@@ -525,8 +558,8 @@ def figures(res, out):
         b2.loglog(tt, con[name]["H_rms"], color=col, label=lab)
         b2.loglog(tt, con[name]["M_rms"], color=col, ls="--")
     b2.set_xlabel("conformal time + 0.02")
-    b2.set_ylabel("rms of H (solid) and of M (dashed)")
-    b2.set_ylim(1e-10, 30)
+    b2.set_ylabel("rms of H (solid) and of M (dashed)", fontsize=9)
+    b2.set_ylim(1e-11, 1e3)
     b2.legend(loc="upper right", fontsize=6, ncol=2)
     made = fs.save(fig, os.path.join(out, "t3_thin_jitter"))
     plt.close(fig)
@@ -540,12 +573,18 @@ def main():
     ap.add_argument("--out", default=None)
     ap.add_argument("--stages", default="ic,run,ana")
     ap.add_argument("--nproc", type=int, default=6)
+    ap.add_argument("--from-dir", default="",
+                    help="read results_t3.json of an earlier run (stages jcheck, fig)")
     a = ap.parse_args()
     out = bc.out_dir(a.out)
     B = bc.track_b(a.bdir)
     resfile = os.path.join(out, "results_t3.json")
     res = {}
-    if os.path.exists(resfile):
+    if a.from_dir:
+        with open(os.path.join(a.from_dir, "results_t3.json")) as f:
+            res = json.load(f)
+        res["from_dir"] = a.from_dir
+    elif os.path.exists(resfile):
         with open(resfile) as f:
             res = json.load(f)
     res["meta"] = {"exe": os.path.abspath(a.exe), "commit": bc.git_rev()}
@@ -559,6 +598,11 @@ def main():
     if "ana" in st:
         stage_ana(res, B, out)
         bc.save_json(res, resfile)
+        print("figures:", figures(res, out))
+    if "jcheck" in st:
+        stage_jcheck(res)
+        bc.save_json(res, resfile)
+    if "fig" in st:                      # figures again from the stored results
         print("figures:", figures(res, out))
 
 
