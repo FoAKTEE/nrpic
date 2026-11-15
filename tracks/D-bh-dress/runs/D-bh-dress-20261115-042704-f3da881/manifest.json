@@ -1,0 +1,43 @@
+{
+ "run_id": "D-bh-dress-20261115-042704-f3da881",
+ "owner": "D-bh-dress",
+ "package": "einstein_straus",
+ "tag": "check",
+ "purpose": "D-pre-1 offline constraint check of data set D-bh-dress-20261115-042653-f3da881: 1D radial residuals of the exact fields (4 spacings per region), 3D generic 3+1 residuals in 7 sub-boxes with exact and table-evaluated fields (3 spacings), table interpolation error (predictions N1-N4 of JOURNAL entry 2)",
+ "kind": "scouting",
+ "command": [
+  "python3",
+  "/data/haiyangw/nrpic/wt/D-bh-dress/tracks/D-bh-dress/einstein_straus/offline_check.py",
+  "--out",
+  "/data/haiyangw/nrpic/scratch/D-bh-dress/D-bh-dress-20261115-042704-f3da881",
+  "--tab",
+  "/data/haiyangw/nrpic/scratch/D-bh-dress/D-bh-dress-20261115-042653-f3da881/es.tab"
+ ],
+ "cwd": "/data/haiyangw/nrpic/scratch/D-bh-dress/D-bh-dress-20261115-042704-f3da881",
+ "commit": "f3da881ab4edaebda3f45ed682cbf7ac555eca53",
+ "worktree_dirty": false,
+ "inputs": [
+  {
+   "path": "/data/haiyangw/nrpic/wt/D-bh-dress/tracks/D-bh-dress/einstein_straus/es_model.py",
+   "sha256": "8e87b226e756f00aa6d08cd769f478ba203770d10651b8de7d312e6fffbbf0fa"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/wt/D-bh-dress/tracks/D-bh-dress/einstein_straus/offline_check.py",
+   "sha256": "2fb29982e01dbe813cb26fa37b5f6f5a3c059e09b23d969d147d49d7758cf34b"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/scratch/D-bh-dress/D-bh-dress-20261115-042653-f3da881/es.tab",
+   "sha256": "b97e18d94566b0e859440591b1890226b4944bc669cffbee1687ead2c02208c1"
+  }
+ ],
+ "output_directory": "/data/haiyangw/nrpic/scratch/D-bh-dress/D-bh-dress-20261115-042704-f3da881",
+ "outputs": [
+  "log.txt",
+  "offline_check.json"
+ ],
+ "wall_time_s": 29.5,
+ "cores": 8,
+ "card_hours": 0.0,
+ "exit_status": 0,
+ "started": "20261115-042704"
+}

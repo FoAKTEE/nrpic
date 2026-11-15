@@ -1,0 +1,45 @@
+{
+ "run_id": "D-bh-dress-20261115-042653-f3da881",
+ "owner": "D-bh-dress",
+ "package": "einstein_straus",
+ "tag": "dataset",
+ "purpose": "D-pre-1 data set for a first run: black hole M = 1 in a vacuum bubble (wall = innermost dust at 36 M = 18 r_s, Schuecking radius 40 M) inside an expanding marginally bound dust ball (surface 100 M, smooth edges w_in = 4, w_out = 6, H R_b = 0.56); format-2 table (drbar 0.02) + puncture m_p, lattice dust hp = 1 M plus 140 massless tracers, exact reference curves, input template",
+ "kind": "scouting",
+ "command": [
+  "python3",
+  "/data/haiyangw/nrpic/wt/D-bh-dress/tracks/D-bh-dress/einstein_straus/make_es.py",
+  "--out",
+  "/data/haiyangw/nrpic/scratch/D-bh-dress/D-bh-dress-20261115-042653-f3da881",
+  "--hp",
+  "1.0",
+  "--tau_max",
+  "400"
+ ],
+ "cwd": "/data/haiyangw/nrpic/scratch/D-bh-dress/D-bh-dress-20261115-042653-f3da881",
+ "commit": "f3da881ab4edaebda3f45ed682cbf7ac555eca53",
+ "worktree_dirty": false,
+ "inputs": [
+  {
+   "path": "/data/haiyangw/nrpic/wt/D-bh-dress/tracks/D-bh-dress/einstein_straus/es_model.py",
+   "sha256": "8e87b226e756f00aa6d08cd769f478ba203770d10651b8de7d312e6fffbbf0fa"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/wt/D-bh-dress/tracks/D-bh-dress/einstein_straus/make_es.py",
+   "sha256": "161df90da208aba9f5bc7478b7032224e53943b520b0b651c9e06ba32522524c"
+  }
+ ],
+ "output_directory": "/data/haiyangw/nrpic/scratch/D-bh-dress/D-bh-dress-20261115-042653-f3da881",
+ "outputs": [
+  "es.athinput",
+  "es.json",
+  "es.nrp",
+  "es.tab",
+  "es_reference.csv",
+  "log.txt"
+ ],
+ "wall_time_s": 5.4,
+ "cores": 8,
+ "card_hours": 0.0,
+ "exit_status": 0,
+ "started": "20261115-042653"
+}

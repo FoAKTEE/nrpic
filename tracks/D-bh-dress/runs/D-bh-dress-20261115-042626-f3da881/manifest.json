@@ -1,0 +1,43 @@
+{
+ "run_id": "D-bh-dress-20261115-042626-f3da881",
+ "owner": "D-bh-dress",
+ "package": "einstein_straus",
+ "tag": "sym",
+ "purpose": "D-pre-1 symbolic derivation: spherical vacuum constraints in KT, KL, Misner-Sharp mass, Schwarzschild slices t = T(R) and the f family, null expansions, LTB mass conservation and wall trajectory (predictions S1-S5 of JOURNAL entry 1)",
+ "kind": "scouting",
+ "command": [
+  "bash",
+  "-c",
+  "python3 /data/haiyangw/nrpic/wt/D-bh-dress/tracks/D-bh-dress/einstein_straus/sym/s1_constraints.py && python3 /data/haiyangw/nrpic/wt/D-bh-dress/tracks/D-bh-dress/einstein_straus/sym/s2_schwarzschild_slices.py && python3 /data/haiyangw/nrpic/wt/D-bh-dress/tracks/D-bh-dress/einstein_straus/sym/s3_ltb_wall.py"
+ ],
+ "cwd": "/data/haiyangw/nrpic/scratch/D-bh-dress/D-bh-dress-20261115-042626-f3da881",
+ "commit": "f3da881ab4edaebda3f45ed682cbf7ac555eca53",
+ "worktree_dirty": false,
+ "inputs": [
+  {
+   "path": "/data/haiyangw/nrpic/wt/D-bh-dress/tracks/D-bh-dress/einstein_straus/sym/tensors.py",
+   "sha256": "9f9e121f5e697b48e4bdc38dc54d9fa76e9d2b740b6c3bbfc2497b789ee82a70"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/wt/D-bh-dress/tracks/D-bh-dress/einstein_straus/sym/s1_constraints.py",
+   "sha256": "cb0ad2d0fdab9c4b94ee29245b42d77749a35f3d37a342f0cc3f256171de4ecc"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/wt/D-bh-dress/tracks/D-bh-dress/einstein_straus/sym/s2_schwarzschild_slices.py",
+   "sha256": "30c046013cea19ef8ac82591fadba9ee0c91d8a1cdb57a437c8d750a1fa4064d"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/wt/D-bh-dress/tracks/D-bh-dress/einstein_straus/sym/s3_ltb_wall.py",
+   "sha256": "5902bd51101c71bc160b4db710416a92a4f82f4ae8a18dfe30d988ee4d8634d3"
+  }
+ ],
+ "output_directory": "/data/haiyangw/nrpic/scratch/D-bh-dress/D-bh-dress-20261115-042626-f3da881",
+ "outputs": [
+  "log.txt"
+ ],
+ "wall_time_s": 10.0,
+ "cores": 1,
+ "card_hours": 0.0,
+ "exit_status": 0,
+ "started": "20261115-042626"
+}

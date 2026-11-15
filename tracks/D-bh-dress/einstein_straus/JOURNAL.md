@@ -56,3 +56,24 @@ N3. Table interpolation (piecewise cubic of `nrpic_cf.cpp`, branch core/id-extri
     with exact fields by more than 10 per cent at h = 1/4 M.
 N4. Throat at rbar = M/(2 a^2), apparent horizon area 16 pi M^2 on the slice; no
     anti-trapped sphere (theta_- < 0 everywhere on the outer sheet).
+
+## 2026-11-15, entry 3: prediction for the start-time check inside AthenaK, written before the runs
+
+Test (`code_t0_check.py`): the registered table of run D-bh-dress-20261115-042653-f3da881
+plus the puncture of bare mass m_p, read by `nrpic_cf` of branch core/id-extrinsic (the
+processor executable of `wt/core-id`, sha256 7d1292d0..., the build core registered at
+commit 408df57), uniform mesh of half-width 48 M, dx = 1 and 1/2 M, nlim = 0; lattice
+dust at the cell centres with hp = dx (CIC then deposits the exact density at the cell
+centres); the code's own field dump of H, M_i, E at t = 0.
+
+C1. Transition region (4 < r < 30): the code's max |H| and max |M| fall with resolution
+    at order >= 3.5 between dx = 1 and 1/2 M, and at dx = 1 M they are within a factor
+    of 10 of my offline 3D values at h = 1 M (box "mid transition": max |H| 1.5e-6,
+    max |M| 5.9e-7); the code may be smaller if its stencils are of higher order.
+C2. Inner dust edge (34 < r < 46): E equals rho at the cell centres to the float32
+    precision of the dump (relative 1e-6); H and M fall at order >= 3.
+C3. Puncture region (r < 3): no convergence claimed (the throat at rbar = 0.52 M is not
+    resolved by dx = 1/2 M); recorded only.
+Refuted by: a transition residual that does not fall, or exceeds 10 times the offline
+value at the same spacing (that would point to a mismatch in how the code assembles
+K_ij = psi^4 [...] with the puncture, a sign, or the mixed-component convention).
