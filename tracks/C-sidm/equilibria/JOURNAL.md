@@ -26,8 +26,8 @@ Sources read (fetched with `harness/bin/nrpic-fetch-arxiv`, untrusted data, not 
   (lines 1160-1167). [VERIFIED]
 - astro-ph/0110561 (Balberg, Shapiro, Inagaki), `.../astro-ph_0110561/v2/src/SIDMGT_Xiv2.tex`:
   lambda = 1/(rho sigma) with sigma the cross-section per unit mass (lines 307-308,
-  387-389), H = [v^2/(4 pi G rho)]^{1/2} with v the one-dimensional dispersion
-  (lines 351, 402-404), t_d = H/v (line 408), t_r = 1/(a rho v sigma) (lines 309-310).
+  388-390), H = [v^2/(4 pi G rho)]^{1/2} with v the one-dimensional dispersion
+  (lines 351, 403-405), t_d = H/v (lines 408-409), t_r = 1/(a rho v sigma) (lines 309-317).
   [VERIFIED]
 
 Observation: the task names "isotropic polytropic or truncated-Maxwellian" families. Only
@@ -147,3 +147,59 @@ figs/binding_energy, figs/king_mass_radius, figs/profiles_threshold, figs/constr
 up to 7e-6 at the inner edge of the shells lie inside the excluded 5-percent bands),
 figs/sampling_threshold (energy and radius histograms of the 10^4 files on the continuum;
 moment z-scores below 2.2), figs/shell_angular_momentum (min L/L0 = 1.000028).
+
+## Test 3: Knudsen number against cross-section per unit mass (prediction, before the run)
+
+Definitions (CONVERSION.md gives them in full). sigma~ = (sigma/m)/M, the cross-section
+per unit mass in units of the ADM mass (G = c = 1, sigma/m has the dimension of a length).
+Rest-mass density rho0 = m n of the static observers. Rate per particle
+Gamma = rho0 (sigma/m) <v_Mol> with v_Mol = [(eps1 eps2 - q1.q2)^2 - 1]^{1/2}/(eps1 eps2)
+averaged over pairs of the local distribution [BACKGROUND: relativistic kinetic theory,
+the Moller relative velocity]; mean free path l = <|q|/eps>/Gamma (relativistic rate);
+scale height H = [v1^2/(4 pi rho0)]^{1/2} with v1^2 = (p + 2 p_T)/(3 rho0), and
+t_d = H/v1 (astro-ph/0110561 eqs. scaleheight and line 408 with rho -> rho0, v^2 -> v1^2:
+[JUDGEMENT] on the relativistic transcription). Kn = l_c/H_c at the centre (shells: at the
+peak of rho0). Collisions per particle per t_d: nu_c = Gamma_c t_d.
+
+Prediction.
+1. The angular average of v_Mol in closed form agrees with a direct Monte Carlo over
+   directions; for two speeds q -> 0 it tends to the Newtonian (4/3) q for equal speeds.
+2. For the isotropic models the Monte Carlo <v_Mol> agrees with the deterministic
+   quadrature within 3 standard errors.
+3. The central 1D dispersion of the King and k = 0.5 threshold models is about 0.3
+   (from the profile figure: p_c/rho_c ~ 0.1, rho0_c/rho_c ~ 0.85), i.e. close to the
+   ~0.3c that 2506.17641 quotes for the onset of the relativistic instability [the brief's
+   statement; not checked against that paper here].
+4. l/lambda_BSI = <v>/<v_Mol> between 0.6 and 0.8 (Newtonian Maxwellian: 1/sqrt 2 = 0.707);
+   nu_c Kn = <v>_c/v1_c between 1.3 and 1.8 (Newtonian Maxwellian sqrt(8/pi) = 1.596).
+5. sigma~ at Kn = 1 between 30 and 300 for the King and polytrope threshold models
+   (rho0_c ~ 6e-3 M^-2, H_c ~ 1.2 M by the estimate rho0_c ~ M0/(4 pi/3 (3M)^3)), smaller
+   (3 to 100) for the more compact shell.
+Refuted if 1 or 2 fail (then the rate is wrong), or if 3-5 are off by more than the stated
+ranges (then my picture of these models is wrong; the conversion itself would still stand).
+
+### Test 3, outcome: run C-sidm-20261115-122915-cdc395c (results/knudsen.json)
+
+1. Holds. The closed-form direction average agrees with direct sampling (largest |z| = 0.77)
+   and tends to 4q/3 (1.333327 at q = 1e-3).
+2. Holds. MC against quadrature for the ten isotropic models: |z| <= 1.36.
+3. Holds. v1_c = 0.316-0.338 (King), 0.319-0.344 (polytrope) near threshold; 0.268-0.283 for
+   the shells. (The 0.3c of 2506.17641 is the brief's quote, not checked here.)
+4. Holds. l/lambda = 0.766-0.777 (isotropic), 0.795-0.798 (shells); nu_c Kn = 1.51-1.54
+   (isotropic), 1.63-1.64 (shells). Relativistic suppression of <v_Mol>/<v> below sqrt 2:
+   1.30 at the centre of the threshold King model, rising towards sqrt 2 in the outskirts
+   (figs/knudsen_profiles.png).
+5. Partly refuted. sigma~(Kn = 1) = Kn sigma~ = 119-157 for King and polytrope (inside
+   30-300), but 143-165 for the shells, outside my predicted 3-100. The shells are
+   more compact (R = 4.8-5.1 M), but their peak rho0 (0.0041-0.0049) is no higher than the
+   King centre and H_c is similar (1.14-1.18 M). My estimate assumed that compactness
+   raises the density, which it does not here.
+
+Finding [JUDGEMENT, details in CONVERSION.md section 5]: at N = 10^4 the central mean free
+path is shorter than the mean macroparticle distance for Kn below 0.19-0.25, and DSMC-like
+resolution of Kn = 0.01 would need ~2e9 particles. A constant sigma/m = 1 cm^2/g gives
+Kn ~ 1e-21 at M = 1 M_sun, so astrophysical relativistic SIDM cores are deep in the fluid
+regime. The Kn = 10 to 0.01 scan probes the transition between the two limits.
+
+After run D only the docstring of knudsen.py was edited (a locator); the code that ran is
+commit cdc395c.

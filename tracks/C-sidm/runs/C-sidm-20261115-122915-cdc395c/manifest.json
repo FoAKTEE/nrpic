@@ -1,0 +1,85 @@
+{
+ "run_id": "C-sidm-20261115-122915-cdc395c",
+ "track": "C-sidm",
+ "package": "equilibria",
+ "command": "python3 knudsen.py --out /data/haiyangw/nrpic/scratch/C-sidm/C-sidm-20261115-122915-cdc395c --N 10000 --seed 7",
+ "cwd": "/data/haiyangw/nrpic/wt/C-sidm/tracks/C-sidm/equilibria",
+ "commit": "cdc395cd3dcf5b6b9e5b1dcbb895a029ed0b04df",
+ "branch": "track/C-sidm",
+ "package_dirty": true,
+ "package_status": [
+  "M tracks/C-sidm/equilibria/JOURNAL.md",
+  "?? tracks/C-sidm/equilibria/knudsen.py"
+ ],
+ "inputs": [
+  {
+   "path": "tracks/C-sidm/equilibria/check_equilibria.py",
+   "sha256": "a894d3311cd29cc77ba753a7e073d6f6494101c2117ec77d516fb54c8e4b5375"
+  },
+  {
+   "path": "tracks/C-sidm/equilibria/evstatic.py",
+   "sha256": "d6e37be890d11602d68ebf7cb336447bcea813c019f8592d4f8e5f766e7ca2fa"
+  },
+  {
+   "path": "tracks/C-sidm/equilibria/figures.py",
+   "sha256": "592c35423bbb1ff10baefe67ad7dec9953cac41a07cec339b7702dfd05833898"
+  },
+  {
+   "path": "tracks/C-sidm/equilibria/knudsen.py",
+   "sha256": "5b9f6dcbfad30f31af84c8ec6494060e75ae6a225b5761e82999bc5f4d359372"
+  },
+  {
+   "path": "tracks/C-sidm/equilibria/make_equilibria.py",
+   "sha256": "aedd928378ffef30b9d20ba90ca982f896bf00062be3b2206ac9d22ee01602d7"
+  },
+  {
+   "path": "tracks/C-sidm/equilibria/models.py",
+   "sha256": "32f30505b65c17a2d3ae069d6090912ff0ae2ee673194515d55e93b82b4389ca"
+  },
+  {
+   "path": "tracks/C-sidm/equilibria/paper_values.py",
+   "sha256": "fa43075b9ab038d288eaaf372e2b6506dc563ce489d89b758267135d881ce60e"
+  },
+  {
+   "path": "tracks/C-sidm/equilibria/runreg.py",
+   "sha256": "87c53d3ad7c05250d3cd421bda4d97703113d24f0a89999305248090265767d3"
+  },
+  {
+   "path": "python/nrpic/io.py",
+   "sha256": "0dc0084ecc8591361616debb8883a20b9f3dee77167b71cb165932c73a5ab322"
+  },
+  {
+   "path": "python/nrpic/sampling.py",
+   "sha256": "3bd91ff2c0b3be46bdef8047ebe75f345655c831c8a8d5f51c1b7b0af979d610"
+  },
+  {
+   "path": "python/nrpic/st_cluster.py",
+   "sha256": "81dc4c66731cef81c76473e532d6a443ef1a42b9b3a91e90fb68620412db1bd1"
+  },
+  {
+   "path": "python/nrpic/figstyle.py",
+   "sha256": "5d3b78ad8c2c02e428b675e3d7e35a32cbc8f053d1aeedd4fde66f27da55676e"
+  }
+ ],
+ "output_dir": "scratch/C-sidm/C-sidm-20261115-122915-cdc395c",
+ "purpose": "C-pre-4 Test 3: Knudsen number vs cross-section per unit mass (relativistic Moller rate) for the 13 near-threshold models; collisions per particle per dynamical time at N=10^4",
+ "kind": "scouting",
+ "cores": 4,
+ "card_hours": 0.0,
+ "parents": [],
+ "env": {
+  "OMP_NUM_THREADS": "4",
+  "OPENBLAS_NUM_THREADS": "4"
+ },
+ "started_utc": "2026-11-15T12:29:15+00:00",
+ "status": "done",
+ "exit_code": 0,
+ "finished_utc": "2026-11-15T12:49:52+00:00",
+ "wall_time_s": 1236.9,
+ "core_hours": 1.3743,
+ "outputs": {
+  "files": 2,
+  "sha256sums": "sha256sums.txt",
+  "sha256sums_sha256": "5e5e766ac3975b46c361427aeec98acbcddc69d58dcc71853bcfdd845b2bc3b7"
+ }
+}
