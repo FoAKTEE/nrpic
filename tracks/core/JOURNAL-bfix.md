@@ -859,3 +859,38 @@ both start and write their first dumps.
   7.5617e-11 within 1e-4 relative (processor, T5: 7.561707e-11), and its final dump
   differs from the processor's (T1, stage pol, case circular) by less than 1e-9 A in every
   component of gt and At (card and processor differ by rounding, 4e-10 A in T4).
+
+### Track B's verifier on the same effects (read 18:35Z, after P10 was written)
+
+`tracks/B-emd-gw/stage/G0/VERIFIER.md` at 0cb312a, section C6 [BACKGROUND for core: the
+verifier's runs, not re-run here]: for the axis-aligned wave (thin box, A = 1e-6, ten
+crossings) a floor near 1e-7 A at N = 128, read by the verifier as rounding in second
+differences, 1e-16 N^2, "not tested further"; and a homogeneous anisotropic drift
+gxx - 1 = -(gyy + gzz - 2), independent of N, growing as t^2, scaling as A^2 (run
+B-20261115-170431-c49964c), 6.6e-10 after ten crossings, removed by gw_diag's TT
+projection with k0 = "zero". Scaled by (k t)^2 to one period of the oblique wave
+(k t = 2 pi instead of 20 pi) that is 6.6e-12, against T4's non-TT part of 3.4e-12
+(3.4e-6 A): the same order. So R2 of P10b is the oblique counterpart of the verifier's
+drift, and R1 its floor. The verifier also found the generator's sign error from the
+source (k = (1,1,0): a = -khat khat + zz), as Track B had.
+
+### P11 Amplitude scan on processors at N = 32: prediction (before T9)
+
+The queue holds the two T8 jobs behind about eight hours of reserved card time. Both
+readings of P10b can be tested on processors at N = 32 (about three minutes a run):
+R2 because the non-TT part does not depend on N; R1 because rounding grows as N^2/A, so
+small amplitudes lift it above the truncation error at 32 cells. Test T9
+(`t9_amp_cpu.py`): oblique wave k = (1,1,1), one period, N = 32, A = 1e-9, 1e-8, 1e-7,
+1e-5 with the published processor executable; A = 1e-6 from T1 (evol N = 32: non-TT
+3.3817e-6 A, Psi_4 along -k 1.076e-7 of the maximum, Psi_4 error 3.212e-6).
+- P11a (R2): the non-TT part over A is 3.38e-7 at A = 1e-7 and 3.38e-5 at A = 1e-5,
+  each within 10 per cent; max |alpha - 1| / A^2 is the same at A = 1e-7, 1e-6, 1e-5
+  within 10 per cent. (At 1e-8 and 1e-9 the rounding of gt, 1e-16/A relative, covers the
+  non-TT part: no statement.) Refuted if the non-TT part over A does not change with A.
+- P11b (R1): the rounding part of Psi_4 along -k, taken from N = 128 (7.8e-7 at A = 1e-6)
+  as proportional to N^2/A, is 4.9e-8 x (1e-6/A) at N = 32: Psi_4 along -k over the
+  maximum is 4.9e-6 at A = 1e-8 and 4.9e-5 at A = 1e-9, each within a factor three, and
+  the Psi_4 error rises above T1's 3.2e-6 at A = 1e-9. Refuted if Psi_4 along -k at
+  A = 1e-9 stays below 1e-6 (then the N = 128 floor is not rounding of the fields).
+- P11c: amplitude and phase errors at A = 1e-5 equal those of A = 1e-6 (-4.2907e-7,
+  3.0374e-6 rad in T1's sign convention) within 1 per cent.
