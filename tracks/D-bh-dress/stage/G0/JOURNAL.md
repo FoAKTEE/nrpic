@@ -201,3 +201,20 @@ runs, against -2.37 of the self-similar solution there.
 Prediction for the registered run v4_driver2.sh (same code, five variants in parallel):
 the debug numbers are reproduced exactly (deterministic), and N = 16000 has a median
 deviation below 10 percent in magnitude; refuted if N = 16000 is not closer than N = 8000.
+
+## Entry 10: C4 outcome (run D-20261115-173149-7c6dd72)
+
+Debug numbers reproduced exactly. Median deviation of my m(lambda) from the track's
+self-similar m(lambda) over 0.02 < lambda < 0.5: -31.6, -23.1, -13.6, -7.4 percent for
+N = 2000, 4000, 8000, 16000 (eta = 0.05), -18.7 percent for N = 4000 at eta = 0.0125;
+largest deviation 12.7 percent at N = 16000. Prediction of entry 9 holds (N = 16000 below
+10 percent in median and closer than N = 8000). A 1/N extrapolation from the two largest N
+gives about -1 percent (from N = 4000, 8000: -4 percent) [JUDGEMENT on the form of the
+extrapolation]. Enclosed-mass slopes over 0.03-0.4 r_ta: -2.32 ... -2.44 (self-similar:
+-2.37 over 0.03-0.3). So my shell code converges towards the track's self-similar solution;
+the -9/4 slope is the asymptote at lambda << 1e-2, not the slope of 0.03-0.3 r_ta.
+Defect found in my own figure: the time-averaged density histogram of v4_shells.py uses
+bins up to 3 times the initial outermost radius, i.e. only r < 0.06 r_ta at a_f = 100; the
+"density_slope_fits" in v4_shells.json are therefore fits to partial ranges and are not
+used anywhere; the enclosed-mass numbers use the final snapshot of all shells and are not
+affected.
