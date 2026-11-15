@@ -102,7 +102,7 @@ captured member's against M, the ejected member's against the barycentre of M an
 captured member. With x_e' - x_M' = R' + beta r' the old definition differs from E_out by
 
     E_e^M - E_out = (mu_eM - mu_out)|R'|^2/2 + mu_eM beta R'.r' + mu_eM beta^2 |r'|^2/2
-                    - G m_c m_e/R + O(r/R^2),
+                    + G m_c m_e/R + O(r/R^2),
 
 whose second term oscillates with the inner orbit at the fixed amplitude
 mu_eM beta v_inf v_in. In energy units it is of relative order m/M (it vanishes in the
@@ -310,7 +310,7 @@ start the Newtonian reference from the same initial data (same r0), not from the
 effective phase.
 
 **Newtonian predictions for the two passages of stage/G1/STATUS.md (wave 2, corrected
-energies)** (run F-20261115-174959-3188846, `scripts/passages.py`, `results/passages.json`,
+energies)** (runs F-20261115-174959-3188846 and, with the phase-window check, F-20261115-180351-b8eb386; `scripts/passages.py`, `results/passages.json`,
 `figures/fig_passages.png`; definition check F-20261115-174139-3340bf3). Start states of
 `three_punctures/inputs/hills_q10_m8.athinput` and `hills_q4_m8.athinput` (rebuilt by
 `puncture_state(k0=4, k_from=10)`, equal to the files to 3e-6 and 5e-6), full Newton,
@@ -339,6 +339,10 @@ of 360 phases stalled (near head-on approach of the members, counted apart); a m
 inside 4 M in 0.05 / 0.05 of the phases; mean ejection energy 1.114 / 1.044 units (median
 1.059 / 0.976, range 0.15-1.72). q = 4: single ejection 0.794 / 0.844, survived 0.206 /
 0.150; inside 4 M 0.19 / 0.30; mean ejection energy 0.874 / 0.805 (median 0.766 / 0.697).
+The clean phase window of `three_punctures/scripts/newton_start.py` (single ejection from
+both starts, same outcome, no member closer than 4.5 M) is the same under both
+definitions: 115-159 deg at q = 10 and 109-144 deg at q = 4; the chosen 130 and 127 deg
+lie inside, so the phases of the input files stand.
 Against the wave-1 definition the classes change for 2 of 360 phases (q = 10 from 4 r_t:
 two single ejections become both bound) and none otherwise; the ejection energy of a
 single phase changes by up to 0.21 (q = 10) and 0.41 units (q = 4), the phase means by
