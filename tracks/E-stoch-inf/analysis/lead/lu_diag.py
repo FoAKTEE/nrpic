@@ -46,9 +46,9 @@ def diag(path, inp):
         small = (dW > 0) & (dW < 1e-10)
         out["outputs"][f"{v}@{cyc}"] = dict(
             max_rel_rms=float(np.abs(a.coef[key] - a.ref[key]).max() / rms),
-            max_diff_dW_gt_1e-6=float(d[big].max()) if big.any() else None,
-            max_diff_dW_lt_1e-10=float(d[small].max()) if small.any() else None,
-            n_modes_dW_lt_1e-10=int(small.sum()),
+            max_diff_dW_gt_1em6=float(d[big].max()) if big.any() else None,
+            max_diff_dW_lt_1em10=float(d[small].max()) if small.any() else None,
+            n_modes_dW_lt_1em10=int(small.sum()),
             max_diff_over_bound=float(np.max(d[dW > 0] * 2 * np.sqrt(dW[dW > 0]) / (6 * 1.1e-16)))
             if (dW > 0).any() else None)
         rows.append((dW, d, f"{v}@{cyc}"))
