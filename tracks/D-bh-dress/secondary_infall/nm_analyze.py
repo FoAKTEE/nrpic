@@ -310,7 +310,7 @@ def main():
     n = len(order)
     fig, axs = plt.subplots(2, n, figsize=(fs.FULL_WIDTH, 5.2), sharex="col",
                             gridspec_kw=dict(height_ratios=[2, 1]))
-    fig.subplots_adjust(left=0.08, right=0.98, bottom=0.09, top=0.97, hspace=0.04, wspace=0.28)
+    fig.subplots_adjust(left=0.08, right=0.98, bottom=0.09, top=0.94, hspace=0.04, wspace=0.28)
     axs = np.atleast_2d(axs).reshape(2, n)
     pcols = [fs.PAL["red"], fs.PAL["yellow"], fs.PAL["green"], fs.PAL["orange"]]
     for i, lab in enumerate(order):
