@@ -1,0 +1,40 @@
+{
+ "run_id": "B-emd-gw-20261115-115001-e9262bd",
+ "owner": "B-emd-gw",
+ "package": "gw_diag",
+ "command": "python3 scripts/validate_tt.py",
+ "cwd": "/data/haiyangw/nrpic/wt/B-emd-gw/tracks/B-emd-gw/gw_diag",
+ "commit": "e9262bddb87fc7d660ac11c482f8bea0f9aaada7",
+ "worktree_dirty_gw_diag": false,
+ "inputs": [
+  {
+   "path": "/data/haiyangw/nrpic/wt/B-emd-gw/tracks/B-emd-gw/gw_diag/scripts/validate_tt.py",
+   "sha256": "68d16e9172b53bad773169cd49f91f422cc4d824d293f73348c7cdb71533fe19"
+  }
+ ],
+ "output_dir": "/data/haiyangw/nrpic/scratch/B-emd-gw/B-emd-gw-20261115-115001-e9262bd",
+ "purpose": "TT projection and GW energy spectrum on analytic fields: amplitude scaling, 48-mode spectrum and helicity, time series incl. standing wave, time differences, pure-gauge and scalar modes (P1, P3-P5)",
+ "kind": "production",
+ "cores": 4,
+ "card_hours": 0.0,
+ "env": {
+  "OMP_NUM_THREADS": "4",
+  "OPENBLAS_NUM_THREADS": "4",
+  "MKL_NUM_THREADS": "4"
+ },
+ "started_utc": "2026-11-15T11:50:01+00:00",
+ "status": "completed",
+ "exit_code": 0,
+ "wall_time_s": 26.35,
+ "ended_utc": "2026-11-15T11:50:28+00:00",
+ "outputs_sha256": {
+  "results_tt.json": "f9e9ff7ab9fa4a88711877d1a1900ef6fe9954f88f76a7bb2f718837c3d48ff4",
+  "stdout.txt": "5ccff1124d066212962ca8ff717420df13bf7dc9a38d4db98aae7db69d16d2f2",
+  "tt_amplitude_spectrum.pdf": "5660e1a0fbd5fa77ad779a673dca13486d55fec4b6bba507f93d2ca859f86e68",
+  "tt_amplitude_spectrum.png": "f5afb19332e85162c9a861d192e553a8b93c980b8e17424da3b889f5a36f73f2",
+  "tt_gauge_scalar.pdf": "84d13857c099390e2385ff3543d20a17e34e7ab9e85fe6ba4bd50a9c473b4fda",
+  "tt_gauge_scalar.png": "929a9533b51de88c9fbb04aab78666dba55d78395f96df0bae8395c90de9e0b4",
+  "tt_time.pdf": "7dfcde2ba498af1a026110a9d9a6d0e1f89300bc7a160633228fc619fdbff151",
+  "tt_time.png": "78d715605ce7f7d6f962a887af9a4a4b10779a9e1fcd3ee6030e9be982d2b304"
+ }
+}
