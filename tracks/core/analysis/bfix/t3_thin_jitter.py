@@ -238,7 +238,7 @@ def stage_jcheck(res):
     dirs = res["ic_dirs"]
     box = np.array(json.load(open(os.path.join(dirs["jit4"], "id.json")))["box"])
     out = {}
-    for a, b in (("jit4", "jitcube"), ("plane4", "cube")):
+    for a, b in (("jit4", "jitcube"),):
         pa = read_nrp(os.path.join(dirs[a], "particles.nrp"))
         pb = read_nrp(os.path.join(dirs[b], "particles.nrp"))
         sa = np.load(os.path.join(dirs[a], "fiducial.npz"))["site"]
@@ -559,8 +559,8 @@ def figures(res, out):
         b2.loglog(tt, con[name]["M_rms"], color=col, ls="--")
     b2.set_xlabel("conformal time + 0.02")
     b2.set_ylabel("rms of H (solid) and of M (dashed)", fontsize=9)
-    b2.set_ylim(1e-11, 1e3)
-    b2.legend(loc="upper right", fontsize=6, ncol=2)
+    b2.set_ylim(1e-9, 1e6)
+    b2.legend(loc="upper right", fontsize=6.5)
     made = fs.save(fig, os.path.join(out, "t3_thin_jitter"))
     plt.close(fig)
     return made
