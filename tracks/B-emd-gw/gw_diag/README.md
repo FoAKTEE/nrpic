@@ -142,10 +142,16 @@ Each validation takes 7-40 s on 4-8 cores. Outputs land in
 
 ## Requests
 
-* **core**: (1) AthenaK's `weyl` mesh output at an output time holds the Weyl scalar of one step
-  after the previous waveform time (lag `waveform_dt - dt`, measured as exactly 7 steps of 1/128
-  with `waveform_dt = 1/16`, run B-emd-gw-20261115-120128-7dfaa38); please confirm in
-  `z4c_tasks.cpp` (InitRecvWeyl / CalcWeylScalar) and fix or document it. (2) For periodic runs,
+* **core**: (1) AthenaK's `weyl` mesh output at an output time t_n holds the Weyl scalar of the
+  state at t_(n-1) + dt (measured: exactly 7 steps of 1/128 before t_n with
+  `waveform_dt = 1/16`, run B-emd-gw-20261115-120128-7dfaa38). Source reading (not run-tested
+  beyond this): `InitRecvWeyl` (Task_Start, last stage) sets `last_output_time = t` at the step
+  that starts at a waveform time; `CalcWeylScalar` (Task_End of the same step) computes from the
+  updated state while `pmesh->time` is still t (`driver.cpp` line 600 adds dt only after the task
+  lists); the mesh output at the next output time writes that stored array. So the scalar labelled
+  t is the one of t + dt, and the mesh output additionally lags by one waveform interval. The
+  same `CalcWaveForm` task list suggests the extracted waveforms carry the one-step offset too
+  [TO VERIFY]. Please confirm in `z4c_tasks.cpp` and fix or document it. (2) For periodic runs,
   an optional double-precision binary output of the Z4c variables (the restart file is the only
   double full-mesh output and carries ghost zones and the whole state), or confirmation that
   restart files at the wave-output cadence are the intended route. (3) Optional: `S_ij` (and

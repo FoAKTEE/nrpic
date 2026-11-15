@@ -284,3 +284,15 @@ no trailing bytes. (An inline read of the restart already gave t = 0.5, 32^3, L 
 `tests/test_readers.py` with the two real files: 4 passed. The restart (nrpic_cosmo, 8 MeshBlocks
 of 16^3, t = 0.5) passes the size check; the NRFIELD dump is NRFIELD1, t = 4.29, 32^3, no
 trailing bytes. PASSED.
+
+## Mechanism of the 7-step lag (source reading after the run)
+
+`athenak/src/z4c/z4c_tasks.cpp`: `InitRecvWeyl` is queued at Task_Start and, at the last RK
+stage, sets `last_output_time = time` when `time >= last_output_time + waveform_dt`;
+`CalcWeylScalar` runs at Task_End of the same step when `time == last_output_time`.
+`athenak/src/driver/driver.cpp` line 600 increments `pmesh->time` only after all stage task lists,
+so the Weyl scalar is computed from the state at t + dt while labelled t. The mesh output written
+at the next output time t_n = t + waveform_dt stores this array: lag waveform_dt - dt = 7 steps,
+as measured (a pure "previous waveform time" lag would have been 8 steps; the run distinguishes
+the two). Whether the extracted waveforms (CalcWaveForm, same Task_End) carry the one-step offset
+was not tested [TO VERIFY by core].
