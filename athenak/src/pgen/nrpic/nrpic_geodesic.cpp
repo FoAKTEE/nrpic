@@ -59,6 +59,41 @@ void NrpicSetKerrSchild(MeshBlockPack *pmbp) {
     adm.psi4(m,k,j,i) = pow(det, 1.0/3.0);
   });
 }
+
+// Static homogeneous metric on the mesh: constant lapse and constant spatial metric,
+// zero shift (flat spacetime in oblique, rescaled coordinates).  Selected with
+// <problem> metric_kind = homogeneous and set by alpha0, gxx, gxy, gxz, gyy, gyz, gzz.
+// It exists to test operators that work in the orthonormal frame of the normal
+// observers (the collision operator) where the lapse, the volume element and the triad
+// are not trivial but the exact solution is known.
+Real homog_alpha0 = 1.0;
+Real homog_g[6] = {1.0, 0.0, 0.0, 1.0, 0.0, 1.0};   // xx, xy, xz, yy, yz, zz
+
+void NrpicSetHomogeneous(MeshBlockPack *pmbp) {
+  auto &indcs = pmbp->pmesh->mb_indcs;
+  const int ng = indcs.ng;
+  const int n1 = indcs.nx1 + 2*ng, n2 = indcs.nx2 + 2*ng, n3 = indcs.nx3 + 2*ng;
+  const int nmb = pmbp->nmb_thispack;
+  const Real alp = homog_alpha0;
+  const Real gxx = homog_g[0], gxy = homog_g[1], gxz = homog_g[2];
+  const Real gyy = homog_g[3], gyz = homog_g[4], gzz = homog_g[5];
+  const Real det = adm::SpatialDet(gxx, gxy, gxz, gyy, gyz, gzz);
+  auto &adm = pmbp->padm->adm;
+  par_for("nrpic_homogeneous", DevExeSpace(), 0, nmb-1, 0, n3-1, 0, n2-1, 0, n1-1,
+  KOKKOS_LAMBDA(const int m, const int k, const int j, const int i) {
+    adm.alpha(m,k,j,i) = alp;
+    adm.beta_u(m,0,k,j,i) = 0.0;
+    adm.beta_u(m,1,k,j,i) = 0.0;
+    adm.beta_u(m,2,k,j,i) = 0.0;
+    adm.g_dd(m,0,0,k,j,i) = gxx;
+    adm.g_dd(m,0,1,k,j,i) = gxy;
+    adm.g_dd(m,0,2,k,j,i) = gxz;
+    adm.g_dd(m,1,1,k,j,i) = gyy;
+    adm.g_dd(m,1,2,k,j,i) = gyz;
+    adm.g_dd(m,2,2,k,j,i) = gzz;
+    adm.psi4(m,k,j,i) = pow(det, 1.0/3.0);
+  });
+}
 } // namespace
 
 //----------------------------------------------------------------------------------------
@@ -81,6 +116,29 @@ void ProblemGenerator::NrpicGeodesic(ParameterInput *pin, const bool restart) {
   // The mesh metric is static and is not stored in restart files in a form that the
   // particle module could reuse, so it is set on restarts as well.
   if (pmbp->padm != nullptr) {
+    // (the option is read only if present, so that existing inputs are unchanged)
+    if (pin->DoesParameterExist("problem", "metric_kind") &&
+        pin->GetString("problem", "metric_kind").compare("homogeneous") == 0) {
+      homog_alpha0 = pin->GetOrAddReal("problem", "alpha0", 1.0);
+      homog_g[0] = pin->GetOrAddReal("problem", "gxx", 1.0);
+      homog_g[1] = pin->GetOrAddReal("problem", "gxy", 0.0);
+      homog_g[2] = pin->GetOrAddReal("problem", "gxz", 0.0);
+      homog_g[3] = pin->GetOrAddReal("problem", "gyy", 1.0);
+      homog_g[4] = pin->GetOrAddReal("problem", "gyz", 0.0);
+      homog_g[5] = pin->GetOrAddReal("problem", "gzz", 1.0);
+      const Real det = adm::SpatialDet(homog_g[0], homog_g[1], homog_g[2], homog_g[3],
+                                       homog_g[4], homog_g[5]);
+      if (!(homog_alpha0 > 0.0) || !(det > 0.0) || !(homog_g[0] > 0.0) ||
+          !(homog_g[0]*homog_g[3] - homog_g[1]*homog_g[1] > 0.0)) {
+        std::cout << "### FATAL ERROR in " << __FILE__ << " at line " << __LINE__
+                  << std::endl << "<problem> metric_kind = homogeneous needs a positive "
+                  << "lapse and a positive-definite spatial metric" << std::endl;
+        exit(EXIT_FAILURE);
+      }
+      pmbp->padm->SetADMVariables = &NrpicSetHomogeneous;
+      NrpicSetHomogeneous(pmbp);
+      return;
+    }
     pmbp->padm->SetADMVariables = &NrpicSetKerrSchild;
     NrpicSetKerrSchild(pmbp);
   }

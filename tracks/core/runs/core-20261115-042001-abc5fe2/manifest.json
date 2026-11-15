@@ -1,0 +1,64 @@
+{
+ "run_id": "core-20261115-042001-abc5fe2",
+ "owner": "core",
+ "package": "id",
+ "tag": "t3-bound-ct-n320",
+ "purpose": "evolution of the expanding ball against the exact solution: bound-ct-n320 (cells 320, half-width 20, gauge ct, start shift zero, q = 1, ball --Rb 5 --e0 0.16 --RE 10, extra none)",
+ "kind": "scouting",
+ "command": [
+  "/data/haiyangw/nrpic/wt/core-id/scripts/gpu_run.sh",
+  "/data/haiyangw/nrpic/scratch/core/core-20261115-042001-abc5fe2",
+  "/data/haiyangw/nrpic/wt/core-id/problems/ball/ball.athinput",
+  "mesh/nx1=320",
+  "mesh/nx2=320",
+  "mesh/nx3=320",
+  "mesh/x1min=-20.0",
+  "mesh/x1max=20.0",
+  "mesh/x2min=-20.0",
+  "mesh/x2max=20.0",
+  "mesh/x3min=-20.0",
+  "mesh/x3max=20.0",
+  "meshblock/nx1=64",
+  "meshblock/nx2=64",
+  "meshblock/nx3=64",
+  "time/tlim=12.0",
+  "particles/traj_dcycle=8",
+  "particles/traj_ntrack=2078",
+  "particles/particle_file=/data/haiyangw/nrpic/scratch/core/id/ic_ball/t2_bound_h0p125.nrp",
+  "problem/comp0_file=/data/haiyangw/nrpic/scratch/core/id/ic_ball/t2_bound_h0p125.tab",
+  "problem/shift=zero",
+  "z4c/lapse_oplog=0.0",
+  "z4c/lapse_harmonic=0.3333333333333333"
+ ],
+ "cwd": "/data/haiyangw/nrpic/scratch/core/core-20261115-042001-abc5fe2",
+ "commit": "abc5fe27b8d4e50d98da5018469389024ca997ce",
+ "worktree_dirty": true,
+ "inputs": [
+  {
+   "path": "/data/haiyangw/nrpic/wt/core-id/problems/ball/ball.athinput",
+   "sha256": "70a2cfe3b2f3e7de633ff750d0f312a99b0276c1d143f2f9ee3130fcf26630bf"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/wt/core-id/.work/build_gpu/src/athena",
+   "sha256": "b59ee3a36f4ac80b87a368a5506dd8c4857dbd856879c82e2f8f5ab49ecaf8bc"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/scratch/core/id/ic_ball/t2_bound_h0p125.nrp",
+   "sha256": "a5b6d14c663fd946ed5fe7e19b330a533a0bd1cb9eb2a25b20b426e64e881d53"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/scratch/core/id/ic_ball/t2_bound_h0p125.tab",
+   "sha256": "31a0f780183d816338982c2a39457e1075f08f65f71e863ec43fa427590c0bbf"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/scratch/core/id/ic_ball/t2_bound_h0p125.json",
+   "sha256": "f2c238063f0af19141461af7183279bff51e8dca7b098b2a80991ac27d198054"
+  }
+ ],
+ "output_directory": "/data/haiyangw/nrpic/scratch/core/core-20261115-042001-abc5fe2",
+ "wall_time_s": 5106.7,
+ "cores": 1,
+ "card_hours": 0.2125,
+ "exit_status": 0,
+ "started": "20261115-042001"
+}

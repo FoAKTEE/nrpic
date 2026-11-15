@@ -1,0 +1,44 @@
+{
+ "run_id": "core-20261115-140021-18d4555",
+ "owner": "core",
+ "purpose": "P9 (P8a on one A100): convergence of the two-temperature relaxation in the time step, 4e6 particles",
+ "kind": "production",
+ "command": [
+  "python3",
+  "/data/haiyangw/nrpic/wt/core-coll/tracks/core/analysis/collisions/run_conv_dt.py",
+  "/data/haiyangw/nrpic/scratch/core/core-20261115-140021-18d4555",
+  "--exe",
+  "/data/haiyangw/nrpic/scratch/core/coll-tmp/exe/athena_gpu_B",
+  "--nproc",
+  "2",
+  "--n",
+  "4000000"
+ ],
+ "cwd": "/data/haiyangw/nrpic/scratch/core/core-20261115-140021-18d4555",
+ "commit": "18d455574a2dea9e49c8badbcd93105c9404ef72",
+ "branch": "core/collisions",
+ "uncommitted_changes": [
+  "?? tracks/core/analysis/collisions/run_unequal.py"
+ ],
+ "inputs": [
+  {
+   "path": "/data/haiyangw/nrpic/scratch/core/coll-tmp/exe/athena_gpu_B",
+   "sha256": "1722943234f542bfaecca6b52f17c75d223164b98a189116ab1fd9819b9b9d42"
+  },
+  {
+   "path": "problems/tests/coll_box.athinput",
+   "sha256": "a06c76bba0baa646a929f0eb020d342bd2ce5210031b51dc44f48d320080cc4a"
+  },
+  {
+   "path": "tracks/core/analysis/collisions/run_conv_dt.py",
+   "sha256": "6da626a27e5cde818afee48aedbb9e55d3a50a1497cadbebaa3a8895f5765487"
+  }
+ ],
+ "output_directory": "/data/haiyangw/nrpic/scratch/core/core-20261115-140021-18d4555",
+ "host": "anta",
+ "start_utc": "2026-11-15T14:00:21Z",
+ "cores": 1,
+ "wall_time_s": 36.56,
+ "exit_status": 0,
+ "card_hours": 0.0102
+}

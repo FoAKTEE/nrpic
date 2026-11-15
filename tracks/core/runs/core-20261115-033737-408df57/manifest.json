@@ -1,0 +1,58 @@
+{
+ "run_id": "core-20261115-033737-408df57",
+ "owner": "core",
+ "package": "id",
+ "tag": "t1-edge2-n128-q1",
+ "purpose": "test 1, constraints at the start: edge2-n128-q1 (cells 128, q = 1, edge 2, lattice shift 0)",
+ "kind": "scouting",
+ "command": [
+  "/data/haiyangw/nrpic/wt/core-id/.work/build_cpu/src/athena",
+  "-i",
+  "/data/haiyangw/nrpic/wt/core-id/problems/ball/ball.athinput",
+  "-d",
+  "/data/haiyangw/nrpic/scratch/core/core-20261115-033737-408df57",
+  "mesh/nx1=128",
+  "mesh/nx2=128",
+  "mesh/nx3=128",
+  "meshblock/nx1=32",
+  "meshblock/nx2=32",
+  "meshblock/nx3=32",
+  "time/nlim=0",
+  "particles/field_time1=1.0e9",
+  "particles/traj_dcycle=0",
+  "particles/snap_dt=-1.0",
+  "particles/particle_file=/data/haiyangw/nrpic/scratch/core/id/ic_ball/t1_edge2_n128_q1.nrp",
+  "problem/comp0_file=/data/haiyangw/nrpic/scratch/core/id/ic_ball/t1_edge2_n128_q1.tab"
+ ],
+ "cwd": "/data/haiyangw/nrpic/scratch/core/core-20261115-033737-408df57",
+ "commit": "408df57705451430aecfc01e119ddb644f6734b4",
+ "worktree_dirty": false,
+ "inputs": [
+  {
+   "path": "/data/haiyangw/nrpic/wt/core-id/problems/ball/ball.athinput",
+   "sha256": "68014de8ceeaf8c3d85991bd44397ab55cfd836626cb8f46a9b859e4d94e580a"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/wt/core-id/.work/build_cpu/src/athena",
+   "sha256": "7d1292d0e73ac41a53dbd9225dbaeaa6c8861220d83762de8d37dea618f01515"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/scratch/core/id/ic_ball/t1_edge2_n128_q1.nrp",
+   "sha256": "7c23cfa9d31f9d5c71b2a008d26dd48fa7e23759728ebb710caa66f15bed8ef7"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/scratch/core/id/ic_ball/t1_edge2_n128_q1.tab",
+   "sha256": "898611ca4e2ec699e964d561b2a73473b451fdee640bc97e1a31fdd3590fb1f0"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/scratch/core/id/ic_ball/t1_edge2_n128_q1.json",
+   "sha256": "a02e6f63f92698c453f54864cacd38bcf3235453635b603fcc0fa328dd08dd34"
+  }
+ ],
+ "output_directory": "/data/haiyangw/nrpic/scratch/core/core-20261115-033737-408df57",
+ "wall_time_s": 40.1,
+ "cores": 1,
+ "card_hours": 0.0,
+ "exit_status": 0,
+ "started": "20261115-033737"
+}

@@ -1,0 +1,119 @@
+{
+ "run_id": "core-20261115-065452-3629622",
+ "owner": "core",
+ "package": "verify",
+ "commit": "362962282e9c012f5bbf8b7a795a6d2e92204746",
+ "worktree_dirty": false,
+ "created": "2026-11-15T06:54:52",
+ "output_dir": "/data/haiyangw/nrpic/scratch/core/core-20261115-065452-3629622",
+ "kind": "scouting",
+ "test": "G geodesic passage",
+ "purpose": "C3 regression: Kerr e=0.99 passage invariants and dt order with the processor release executable against the earlier campaign",
+ "command": [
+  "/data/haiyangw/nrpic/wt/core/.work/build_cpu_609a875/src/athena -i /data/haiyangw/nrpic/wt/core/problems/kerr/geodesic.athinput -d /data/haiyangw/nrpic/scratch/core/core-20261115-065452-3629622/mid_ks_dt0.02 particles/pusher=midpoint particles/metric=kerr_schild_sph particles/bh_spin=0.9 particles/lattice_dx=0.025 particles/dt=0.02 time/tlim=230.0 particles/tolerance=2.0e-14 particles/max_iterations=200 particles/hist_dcycle=1 particles/traj_dcycle=1 particles/traj_ntrack=1 time/ndiag=20000 particles/p0_x1=20.0 particles/p0_x2=1.5707963267948966 particles/p0_x3=0.0 particles/p0_u1=-0.20131797516752664 particles/p0_u2=1.4049911031746785 particles/p0_u3=2.4328 particles/p0_m=0.0",
+  "/data/haiyangw/nrpic/wt/core/.work/build_cpu_609a875/src/athena -i /data/haiyangw/nrpic/wt/core/problems/kerr/geodesic.athinput -d /data/haiyangw/nrpic/scratch/core/core-20261115-065452-3629622/mid_ks_dt0.01 particles/pusher=midpoint particles/metric=kerr_schild_sph particles/bh_spin=0.9 particles/lattice_dx=0.025 particles/dt=0.01 time/tlim=230.0 particles/tolerance=2.0e-14 particles/max_iterations=200 particles/hist_dcycle=1 particles/traj_dcycle=1 particles/traj_ntrack=1 time/ndiag=20000 particles/p0_x1=20.0 particles/p0_x2=1.5707963267948966 particles/p0_x3=0.0 particles/p0_u1=-0.20131797516752664 particles/p0_u2=1.4049911031746785 particles/p0_u3=2.4328 particles/p0_m=0.0",
+  "/data/haiyangw/nrpic/wt/core/.work/build_cpu_609a875/src/athena -i /data/haiyangw/nrpic/wt/core/problems/kerr/geodesic.athinput -d /data/haiyangw/nrpic/scratch/core/core-20261115-065452-3629622/mid_ks_dt0.005 particles/pusher=midpoint particles/metric=kerr_schild_sph particles/bh_spin=0.9 particles/lattice_dx=0.025 particles/dt=0.005 time/tlim=230.0 particles/tolerance=2.0e-14 particles/max_iterations=200 particles/hist_dcycle=1 particles/traj_dcycle=1 particles/traj_ntrack=1 time/ndiag=20000 particles/p0_x1=20.0 particles/p0_x2=1.5707963267948966 particles/p0_x3=0.0 particles/p0_u1=-0.20131797516752664 particles/p0_u2=1.4049911031746785 particles/p0_u3=2.4328 particles/p0_m=0.0",
+  "/data/haiyangw/nrpic/wt/core/.work/build_cpu_609a875/src/athena -i /data/haiyangw/nrpic/wt/core/problems/kerr/geodesic.athinput -d /data/haiyangw/nrpic/scratch/core/core-20261115-065452-3629622/bsym_ks_dt0.02 particles/pusher=boris particles/triad=symmetric particles/metric=kerr_schild_sph particles/bh_spin=0.9 particles/lattice_dx=0.025 particles/dt=0.02 time/tlim=230.0 particles/tolerance=2.0e-14 particles/max_iterations=200 particles/hist_dcycle=1 particles/traj_dcycle=1 particles/traj_ntrack=1 time/ndiag=20000 particles/p0_x1=20.0 particles/p0_x2=1.5707963267948966 particles/p0_x3=0.0 particles/p0_u1=-0.20131797516752664 particles/p0_u2=1.4049911031746785 particles/p0_u3=2.4328 particles/p0_m=0.0",
+  "/data/haiyangw/nrpic/wt/core/.work/build_cpu_609a875/src/athena -i /data/haiyangw/nrpic/wt/core/problems/kerr/geodesic.athinput -d /data/haiyangw/nrpic/scratch/core/core-20261115-065452-3629622/bsym_ks_dt0.01 particles/pusher=boris particles/triad=symmetric particles/metric=kerr_schild_sph particles/bh_spin=0.9 particles/lattice_dx=0.025 particles/dt=0.01 time/tlim=230.0 particles/tolerance=2.0e-14 particles/max_iterations=200 particles/hist_dcycle=1 particles/traj_dcycle=1 particles/traj_ntrack=1 time/ndiag=20000 particles/p0_x1=20.0 particles/p0_x2=1.5707963267948966 particles/p0_x3=0.0 particles/p0_u1=-0.20131797516752664 particles/p0_u2=1.4049911031746785 particles/p0_u3=2.4328 particles/p0_m=0.0",
+  "/data/haiyangw/nrpic/wt/core/.work/build_cpu_609a875/src/athena -i /data/haiyangw/nrpic/wt/core/problems/kerr/geodesic.athinput -d /data/haiyangw/nrpic/scratch/core/core-20261115-065452-3629622/bsym_ks_dt0.005 particles/pusher=boris particles/triad=symmetric particles/metric=kerr_schild_sph particles/bh_spin=0.9 particles/lattice_dx=0.025 particles/dt=0.005 time/tlim=230.0 particles/tolerance=2.0e-14 particles/max_iterations=200 particles/hist_dcycle=1 particles/traj_dcycle=1 particles/traj_ntrack=1 time/ndiag=20000 particles/p0_x1=20.0 particles/p0_x2=1.5707963267948966 particles/p0_x3=0.0 particles/p0_u1=-0.20131797516752664 particles/p0_u2=1.4049911031746785 particles/p0_u3=2.4328 particles/p0_m=0.0",
+  "/data/haiyangw/nrpic/wt/core/.work/build_cpu_609a875/src/athena -i /data/haiyangw/nrpic/wt/core/problems/kerr/geodesic.athinput -d /data/haiyangw/nrpic/scratch/core/core-20261115-065452-3629622/bchol_ks_dt0.02 particles/pusher=boris particles/triad=cholesky particles/metric=kerr_schild_sph particles/bh_spin=0.9 particles/lattice_dx=0.025 particles/dt=0.02 time/tlim=230.0 particles/tolerance=2.0e-14 particles/max_iterations=200 particles/hist_dcycle=1 particles/traj_dcycle=1 particles/traj_ntrack=1 time/ndiag=20000 particles/p0_x1=20.0 particles/p0_x2=1.5707963267948966 particles/p0_x3=0.0 particles/p0_u1=-0.20131797516752664 particles/p0_u2=1.4049911031746785 particles/p0_u3=2.4328 particles/p0_m=0.0",
+  "/data/haiyangw/nrpic/wt/core/.work/build_cpu_609a875/src/athena -i /data/haiyangw/nrpic/wt/core/problems/kerr/geodesic.athinput -d /data/haiyangw/nrpic/scratch/core/core-20261115-065452-3629622/bchol_ks_dt0.01 particles/pusher=boris particles/triad=cholesky particles/metric=kerr_schild_sph particles/bh_spin=0.9 particles/lattice_dx=0.025 particles/dt=0.01 time/tlim=230.0 particles/tolerance=2.0e-14 particles/max_iterations=200 particles/hist_dcycle=1 particles/traj_dcycle=1 particles/traj_ntrack=1 time/ndiag=20000 particles/p0_x1=20.0 particles/p0_x2=1.5707963267948966 particles/p0_x3=0.0 particles/p0_u1=-0.20131797516752664 particles/p0_u2=1.4049911031746785 particles/p0_u3=2.4328 particles/p0_m=0.0",
+  "/data/haiyangw/nrpic/wt/core/.work/build_cpu_609a875/src/athena -i /data/haiyangw/nrpic/wt/core/problems/kerr/geodesic.athinput -d /data/haiyangw/nrpic/scratch/core/core-20261115-065452-3629622/bchol_ks_dt0.005 particles/pusher=boris particles/triad=cholesky particles/metric=kerr_schild_sph particles/bh_spin=0.9 particles/lattice_dx=0.025 particles/dt=0.005 time/tlim=230.0 particles/tolerance=2.0e-14 particles/max_iterations=200 particles/hist_dcycle=1 particles/traj_dcycle=1 particles/traj_ntrack=1 time/ndiag=20000 particles/p0_x1=20.0 particles/p0_x2=1.5707963267948966 particles/p0_x3=0.0 particles/p0_u1=-0.20131797516752664 particles/p0_u2=1.4049911031746785 particles/p0_u3=2.4328 particles/p0_m=0.0",
+  "/data/haiyangw/nrpic/wt/core/.work/build_cpu_609a875/src/athena -i /data/haiyangw/nrpic/wt/core/problems/kerr/geodesic.athinput -d /data/haiyangw/nrpic/scratch/core/core-20261115-065452-3629622/mid_lat_dt0.01 particles/pusher=midpoint particles/metric=lattice particles/bh_spin=0.9 particles/lattice_dx=0.025 particles/dt=0.01 time/tlim=230.0 particles/tolerance=2.0e-14 particles/max_iterations=200 particles/hist_dcycle=1 particles/traj_dcycle=1 particles/traj_ntrack=1 time/ndiag=20000 particles/p0_x1=20.0 particles/p0_x2=0.9 particles/p0_x3=1.2246467991473533e-15 particles/p0_u1=-0.20131797516752664 particles/p0_u2=0.11258069111746129 particles/p0_u3=-0.07024955515873393 particles/p0_m=0.0",
+  "/data/haiyangw/nrpic/wt/core/.work/build_cpu_609a875/src/athena -i /data/haiyangw/nrpic/wt/core/problems/kerr/geodesic.athinput -d /data/haiyangw/nrpic/scratch/core/core-20261115-065452-3629622/bchol_lat_dt0.01 particles/pusher=boris particles/triad=cholesky particles/metric=lattice particles/bh_spin=0.9 particles/lattice_dx=0.025 particles/dt=0.01 time/tlim=230.0 particles/tolerance=2.0e-14 particles/max_iterations=200 particles/hist_dcycle=1 particles/traj_dcycle=1 particles/traj_ntrack=1 time/ndiag=20000 particles/p0_x1=20.0 particles/p0_x2=0.9 particles/p0_x3=1.2246467991473533e-15 particles/p0_u1=-0.20131797516752664 particles/p0_u2=0.11258069111746129 particles/p0_u3=-0.07024955515873393 particles/p0_m=0.0"
+ ],
+ "cwd": "/data/haiyangw/nrpic/scratch/core/core-20261115-065452-3629622",
+ "executable": {
+  "path": "/data/haiyangw/nrpic/wt/core/.work/build_cpu_609a875/src/athena",
+  "sha256": "a325f29a9361481b3f43b2c9cfeda53a78f98c0735998136fd8efc7d9d68f8b9",
+  "mtime": "2026-11-15T06:52:20"
+ },
+ "inputs": [
+  {
+   "path": "/data/haiyangw/nrpic/wt/core/problems/kerr/geodesic.athinput",
+   "sha256": "31c6c43cb59447ec212b35fe1c019012d20d8483cda718e33e03cbd2b039ddc0",
+   "bytes": 1503
+  },
+  {
+   "path": "/data/haiyangw/nrpic/runs/geodesic/kerr_passage/mid_ks_dt0.02/run.json",
+   "sha256": "e0d19b8fd24dc80c68f05d77f2d166521520664a4d4faee22eea93ca46b02c8e",
+   "bytes": 914
+  },
+  {
+   "path": "/data/haiyangw/nrpic/runs/geodesic/kerr_passage/mid_ks_dt0.01/run.json",
+   "sha256": "c6e55157135ea1a82a18df350fc27b9be97ec5216eec207164d293821cf23c1d",
+   "bytes": 914
+  },
+  {
+   "path": "/data/haiyangw/nrpic/runs/geodesic/kerr_passage/mid_ks_dt0.005/run.json",
+   "sha256": "480435269cba22e777a3bb06293858f045cf846afc52926d65ffd5788af91238",
+   "bytes": 917
+  },
+  {
+   "path": "/data/haiyangw/nrpic/runs/geodesic/kerr_passage/bsym_ks_dt0.02/run.json",
+   "sha256": "6a698fccf43302f9a1288b178d2a782c0f8edabee6a570bb229800e3a36b29b5",
+   "bytes": 944
+  },
+  {
+   "path": "/data/haiyangw/nrpic/runs/geodesic/kerr_passage/bsym_ks_dt0.01/run.json",
+   "sha256": "74b672c3e4ecad971e61132d8a635ab5f2ba976010df5c2cf679fc747cea7977",
+   "bytes": 944
+  },
+  {
+   "path": "/data/haiyangw/nrpic/runs/geodesic/kerr_passage/bsym_ks_dt0.005/run.json",
+   "sha256": "d57385201c0835e32fdfb8874e5713446db48fe0d698e433eb324284c2642ac3",
+   "bytes": 947
+  },
+  {
+   "path": "/data/haiyangw/nrpic/runs/geodesic/kerr_passage/bchol_ks_dt0.02/run.json",
+   "sha256": "6f2b8b46a99993b32f00c0d4ed38bb177afdc475ada1d72acbe850dd0504f9d7",
+   "bytes": 945
+  },
+  {
+   "path": "/data/haiyangw/nrpic/runs/geodesic/kerr_passage/bchol_ks_dt0.01/run.json",
+   "sha256": "c0c5951c02250fcf2d49cadc3e96f2218b1b7259d2e31b554bf6dcd9b3b4d6fc",
+   "bytes": 945
+  },
+  {
+   "path": "/data/haiyangw/nrpic/runs/geodesic/kerr_passage/bchol_ks_dt0.005/run.json",
+   "sha256": "18bbd2546c3c4ff00bda83e3ff98f5cb7c9871941aedf27b2f6ac035494342c2",
+   "bytes": 948
+  },
+  {
+   "path": "/data/haiyangw/nrpic/runs/geodesic/kerr_passage/mid_lat_dt0.01/run.json",
+   "sha256": "8181e476eca829c2d90d014d93faff260640eb3d65601e83a7ec56804a0dca78",
+   "bytes": 929
+  },
+  {
+   "path": "/data/haiyangw/nrpic/runs/geodesic/kerr_passage/bchol_lat_dt0.01/run.json",
+   "sha256": "19051b95c67a2562c5197b5ffc3921153304c0a406d6a3f88e790c05f0fe562b",
+   "bytes": 960
+  }
+ ],
+ "resources": {
+  "device": "processor",
+  "cores": 1,
+  "card_hours": 0.0
+ },
+ "status": "finished",
+ "wall_time_s": 8.2,
+ "exit_codes": {
+  "mid_ks_dt0.02": 0,
+  "mid_ks_dt0.01": 0,
+  "mid_ks_dt0.005": 0,
+  "bsym_ks_dt0.02": 0,
+  "bsym_ks_dt0.01": 0,
+  "bsym_ks_dt0.005": 0,
+  "bchol_ks_dt0.02": 0,
+  "bchol_ks_dt0.01": 0,
+  "bchol_ks_dt0.005": 0,
+  "mid_lat_dt0.01": 0,
+  "bchol_lat_dt0.01": 0
+ },
+ "verdict": {
+  "passed": true,
+  "n_checks": 104,
+  "n_failed": 0,
+  "judge": "/data/haiyangw/nrpic/scratch/core/core-20261115-065452-3629622/judge.json"
+ }
+}

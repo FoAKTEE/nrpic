@@ -1,0 +1,48 @@
+{
+ "run_id": "core-20261115-123107-38067a2",
+ "owner": "core",
+ "command": [
+  "/data/haiyangw/nrpic/wt/core-newton/.work/athena_cpu_38067a2",
+  "-i",
+  "isolated.athinput",
+  "mesh/nx1=32",
+  "mesh/nx2=32",
+  "mesh/nx3=32",
+  "meshblock/nx1=16",
+  "meshblock/nx2=16",
+  "meshblock/nx3=16",
+  "time/tlim=0.8",
+  "particles/snap_dt=0.1",
+  "particles/particle_file=ball32.nrp",
+  "particles/dt=0.004",
+  "particles/newton_mg_tol=0.0"
+ ],
+ "cwd": "/data/haiyangw/nrpic/scratch/core/core-20261115-123107-38067a2",
+ "commit": "38067a2",
+ "source_modified_since_commit": false,
+ "inputs": [
+  {
+   "path": "problems/newton/isolated.athinput",
+   "sha256": "e668150c18e0424b03d52e82ea3ab4c916bb29f50165be23dad58374bbadbc7d"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/scratch/core/ic/newton/ball32.nrp",
+   "sha256": "cede74ef470a7cffb304bb43d3e2e6dad2d2536fb40d74f2688c9b0fdb2e2416"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/wt/core-newton/.work/athena_cpu_38067a2",
+   "sha256": "0923644a21a72f31316fe735e3315d05684ff730f1af4e0c6d34660ce2d98db3",
+   "role": "executable"
+  }
+ ],
+ "output_directory": "/data/haiyangw/nrpic/scratch/core/core-20261115-123107-38067a2",
+ "purpose": "final source: collapse N=32 as core-20261115-121044-c061b12, to confirm that the reformatted source gives the same bytes",
+ "kind": "scouting",
+ "tag": "final-check",
+ "state": "finished",
+ "wall_time_s": 17.13,
+ "exit_status": 0,
+ "cores": 1,
+ "card_hours": 0.0,
+ "started_utc": "2026-11-15T12:31:07Z"
+}

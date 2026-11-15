@@ -37,8 +37,15 @@ void Particles::AssembleTasks(std::map<std::string, std::shared_ptr<TaskList>> t
     id.push    = tl["after_timeintegrator"]->AddTask(&Particles::NrpicPush, this, none);
     id.excise  = tl["after_timeintegrator"]->AddTask(&Particles::NrpicExcise, this,
                                                      id.push);
+    // Monte Carlo collisions (nrpic_collide.cpp), only with <particles> collisions
+    TaskID before_deposit = id.excise;
+    if (coll.on) {
+      id.collide = tl["after_timeintegrator"]->AddTask(&Particles::NrpicCollide, this,
+                                                       id.excise);
+      before_deposit = id.collide;
+    }
     id.deposit = tl["after_timeintegrator"]->AddTask(&Particles::NrpicDeposit, this,
-                                                     id.excise);
+                                                     before_deposit);
     id.diag    = tl["after_timeintegrator"]->AddTask(&Particles::NrpicDiagnostics, this,
                                                      id.deposit);
     return;

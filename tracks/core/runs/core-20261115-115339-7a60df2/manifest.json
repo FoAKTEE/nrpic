@@ -1,0 +1,31 @@
+{
+ "run_id": "core-20261115-115339-7a60df2",
+ "label": "b_p0.3_approx",
+ "owner": "core",
+ "purpose": "Test 1b: Bowen-York puncture m = 1, P = 0.3 along x, closed-form correction, finest cells 1/32, to t = 40",
+ "kind": "scouting",
+ "command": "srun -p preempt --gres=gpu:1 -c 1 -t 00:40:00 -J b_p0.3_appro /bin/bash -c date +%s.%N > .t_start; \"$@\"; rc=$?; date +%s.%N > .t_end; exit $rc athena /data/haiyangw/nrpic/wt/core-mp/.work/build_gpu/src/athena -i by_boost.athinput -d /data/haiyangw/nrpic/scratch/core/core-20261115-115339-7a60df2",
+ "cwd": "/data/haiyangw/nrpic/scratch/core/core-20261115-115339-7a60df2",
+ "commit": "7a60df2",
+ "source_dirty": false,
+ "inputs": [
+  {
+   "path": "problems/puncture/by_boost.athinput",
+   "sha256": "aa5b01c7e7440cd6e271ac831e7fc7c641a110a89b1d6e0f1fd944a7335b92a1"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/wt/core-mp/.work/build_gpu/src/athena",
+   "sha256": "ba08b4da17b627a4bf1103c6014fb10203a821c130dcd195017cecf7559f0040",
+   "role": "executable"
+  }
+ ],
+ "output_directory": "/data/haiyangw/nrpic/scratch/core/core-20261115-115339-7a60df2",
+ "resources": "1 card (A100), 1 core",
+ "started_utc": "2026-11-15T11:53:40Z",
+ "status": "failed",
+ "exit_code": 1,
+ "wall_time_s": 46.6,
+ "queue_wait_s": 0.1,
+ "card_hours": 0.0129,
+ "core_hours": 0.0129
+}

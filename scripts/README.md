@@ -118,8 +118,13 @@ Requirements and behaviour:
 - The history file of a Z4c run is called `<basename>.z4c.user.hst` (a missing `break`
   in `outputs/history.cpp`).
 - A Z4c restart is not bitwise reproducible. It agrees with an uninterrupted run to
-  about 1e-12 relative after one cycle; uninterrupted GPU runs are bitwise
-  reproducible.
+  about 1e-12 relative after one cycle. Uninterrupted GPU runs without particle
+  deposit are bitwise reproducible; with deposit they are not: the order of the
+  atomic additions changes from run to run, and two runs of one executable differ from
+  the first step on (1e-16 growing to 1e-13; runs core-20261115-033115-b7b431d and
+  core-20261115-033228-b7b431d, and cases c3-c5 of core-20261115-135312-a6e5c46). A
+  byte regression on a card therefore compares only runs without deposit, or compares
+  the difference between two executables with the scatter between two runs of one.
 - Default parameters are stored in the restart file as text with 6 significant digits
   (`ParameterInput::GetOrAddReal`), so a default real with more digits comes back
   rounded after a restart. Put such values in the input file explicitly.

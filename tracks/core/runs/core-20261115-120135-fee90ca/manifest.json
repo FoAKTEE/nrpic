@@ -1,0 +1,39 @@
+{
+ "run_id": "core-20261115-120135-fee90ca",
+ "owner": "core",
+ "command": [
+  "/data/haiyangw/nrpic/wt/core-newton/.work/athena_cpu_9d84282",
+  "-i",
+  "periodic.athinput",
+  "time/tlim=1.0",
+  "particles/particle_file=wave32.nrp",
+  "output1/dt=0.5"
+ ],
+ "cwd": "/data/haiyangw/nrpic/scratch/core/core-20261115-120135-fee90ca",
+ "commit": "fee90ca",
+ "source_modified_since_commit": true,
+ "inputs": [
+  {
+   "path": "problems/newton/periodic.athinput",
+   "sha256": "8e72bbbe6390798fad7d1396c6c68e35a8dcbe8a9f24f25d3d54eee07d841a93"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/scratch/core/ic/newton/wave32.nrp",
+   "sha256": "bee6f474cd6a57d8be1d01888d3a6d5dd26ef99669ed91af4e0886cdeb57b6fc"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/wt/core-newton/.work/athena_cpu_9d84282",
+   "sha256": "71ff0dac2f3166871a92a20363fac51510191d912647c72a1f6e3df9c47f12f7",
+   "role": "executable"
+  }
+ ],
+ "output_directory": "/data/haiyangw/nrpic/scratch/core/core-20261115-120135-fee90ca",
+ "purpose": "T5 restart, plane wave N=32, uninterrupted",
+ "kind": "scouting",
+ "tag": "restart-wave-full",
+ "wall_time_s": 35.43,
+ "exit_status": 0,
+ "cores": 1,
+ "card_hours": 0.0,
+ "started_utc": "2026-11-15T12:01:35Z"
+}

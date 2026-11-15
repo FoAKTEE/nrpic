@@ -1,0 +1,309 @@
+{
+ "nrp": {
+  "ok": true,
+  "info": {
+   "magic": "NRPIC001",
+   "n": 4096,
+   "trailing": 0
+  }
+ },
+ "hst_columns": {
+  "ok": true,
+  "info": {
+   "ncol_header": 38,
+   "shape": [
+    9,
+    38
+   ],
+   "last": "tau_probe2"
+  }
+ },
+ "hst_sum_m": {
+  "ok": false,
+  "info": {
+   "max_rel": 6.727951529228449e-14
+  }
+ },
+ "hst_int_E": {
+  "ok": true,
+  "info": {
+   "max_rel": 3.552713678800501e-15
+  }
+ },
+ "hst_filtered_equal": {
+  "ok": true,
+  "info": {
+   "equal": true
+  }
+ },
+ "cstat": {
+  "ok": true,
+  "info": {
+   "ncol_header": 16,
+   "shape": [
+    9,
+    16
+   ],
+   "names": [
+    "time",
+    "chi_min",
+    "chi_max",
+    "K_min",
+    "K_max",
+    "E_min",
+    "E_max",
+    "Theta_max",
+    "H_max",
+    "H_mean",
+    "Hr_max",
+    "Hr_mean",
+    "M_max",
+    "M_mean",
+    "Mr_max",
+    "Mr_mean"
+   ]
+  }
+ },
+ "cons": {
+  "ok": true,
+  "info": {
+   "shape": [
+    7,
+    7
+   ],
+   "t": [
+    0.0625,
+    0.125,
+    0.1875,
+    0.25,
+    0.3125,
+    0.375,
+    0.4375
+   ]
+  }
+ },
+ "line": {
+  "ok": true,
+  "info": {
+   "n": 16,
+   "x0": 0.125,
+   "x1": 3.875,
+   "shape": [
+    9,
+    81
+   ]
+  }
+ },
+ "field_0": {
+  "ok": true,
+  "info": {
+   "magic": "NRFIELD2",
+   "t": 0.0,
+   "dims": [
+    16,
+    16,
+    16
+   ]
+  }
+ },
+ "field_1": {
+  "ok": true,
+  "info": {
+   "magic": "NRFIELD2",
+   "t": 0.25,
+   "dims": [
+    16,
+    16,
+    16
+   ]
+  }
+ },
+ "traj": {
+  "ok": true,
+  "info": {
+   "traj": [
+    90,
+    8
+   ],
+   "trajmet": [
+    90,
+    17
+   ],
+   "same_time_tag": true,
+   "tags": [
+    "0",
+    "1",
+    "2",
+    "3",
+    "4",
+    "5",
+    "6",
+    "7",
+    "8",
+    "9"
+   ]
+  }
+ },
+ "snap_0": {
+  "ok": true,
+  "info": {
+   "t": 0.0,
+   "cycle": 0,
+   "masses_equal": true,
+   "tau_range": [
+    0.0,
+    0.0
+   ]
+  }
+ },
+ "snap_1": {
+  "ok": true,
+  "info": {
+   "t": 0.25,
+   "cycle": 3,
+   "masses_equal": true,
+   "tau_range": [
+    0.28249346554497023,
+    0.2826817032894932
+   ]
+  }
+ },
+ "snap_2": {
+  "ok": true,
+  "info": {
+   "t": 0.5,
+   "cycle": 7,
+   "masses_equal": true,
+   "tau_range": [
+    0.6347139414302946,
+    0.6361858114174361
+   ]
+  }
+ },
+ "curv_hst": {
+  "ok": true,
+  "info": {
+   "shape": [
+    3,
+    10
+   ],
+   "names": [
+    "time",
+    "max|I|",
+    "x",
+    "y",
+    "z",
+    "max",
+    "x",
+    "y",
+    "z",
+    "file"
+   ]
+  }
+ },
+ "curv_slice_0": {
+  "ok": true,
+  "info": {
+   "t": 0.0,
+   "n": 256
+  }
+ },
+ "curv_slice_1": {
+  "ok": true,
+  "info": {
+   "t": 0.25,
+   "n": 256
+  }
+ },
+ "curv_slice_2": {
+  "ok": true,
+  "info": {
+   "t": 0.5,
+   "n": 256
+  }
+ },
+ "prt_0": {
+  "ok": true,
+  "info": {
+   "n": 4096,
+   "has_ts": 1,
+   "dims": [
+    8,
+    10,
+    16,
+    16,
+    16
+   ],
+   "dtold": -1.0,
+   "tau_probe": 0.0
+  }
+ },
+ "prt_1": {
+  "ok": true,
+  "info": {
+   "n": 4096,
+   "has_ts": 1,
+   "dims": [
+    8,
+    10,
+    16,
+    16,
+    16
+   ],
+   "dtold": 0.0625,
+   "tau_probe": 0.28253211872996525
+  }
+ },
+ "prt_2": {
+  "ok": true,
+  "info": {
+   "n": 4096,
+   "has_ts": 1,
+   "dims": [
+    8,
+    10,
+    16,
+    16,
+    16
+   ],
+   "dtold": 0.0625,
+   "tau_probe": 0.6351934251176417
+  }
+ },
+ "restart_hst": {
+  "ok": true,
+  "info": {
+   "records": 4,
+   "identical": [
+    true,
+    true,
+    true,
+    true
+   ]
+  }
+ },
+ "restart_cstat": {
+  "ok": true,
+  "info": {
+   "identical": [
+    true,
+    true,
+    true,
+    true
+   ]
+  }
+ },
+ "restart_snapshot": {
+  "ok": true,
+  "info": {
+   "identical": true
+  }
+ },
+ "lapse_vs_a": {
+  "ok": true,
+  "info": {
+   "rel_at_end": 0.0007978111999435988
+  }
+ },
+ "all_ok": false
+}

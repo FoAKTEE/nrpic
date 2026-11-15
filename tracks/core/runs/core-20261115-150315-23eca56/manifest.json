@@ -1,0 +1,62 @@
+{
+ "run_id": "core-20261115-150315-23eca56",
+ "owner": "core",
+ "purpose": "lead integration P5: combined format-2 + Bowen-York curvature on the merged processor executable 609a875 (the first attempt inside core-20261115-145448-3629622 failed: command-line parameters missing from the input)",
+ "kind": "production",
+ "command": [
+  "python3",
+  "/data/haiyangw/nrpic/wt/core/tracks/core/analysis/lead/cf_checks.py",
+  "--base",
+  "/data/haiyangw/nrpic/wt/core/.work/build_cpu_base/src/athena",
+  "--new",
+  "/data/haiyangw/nrpic/wt/core/.work/build_cpu_609a875/src/athena",
+  "--parts",
+  "P5"
+ ],
+ "cwd": "/data/haiyangw/nrpic/scratch/core/core-20261115-150315-23eca56",
+ "commit": "23eca56c25cfcbf19c18556d7a9e27a40eb1ad78",
+ "branch": "core/nrpic",
+ "uncommitted_changes": [
+  "M tracks/core/analysis/id/figs/t2_Hprofile.pdf",
+  " M tracks/core/analysis/id/figs/t2_Hprofile.png",
+  " M tracks/core/analysis/id/figs/t2_constraints.pdf",
+  " M tracks/core/analysis/id/figs/t2_constraints.png",
+  " M tracks/core/analysis/id/figs/t2_constraints_regions.pdf",
+  " M tracks/core/analysis/id/figs/t2_gauge.pdf",
+  " M tracks/core/analysis/id/figs/t2_profiles.pdf",
+  " M tracks/core/analysis/id/figs/t2_radius_ct.pdf",
+  " M tracks/core/analysis/id/figs/t2_radius_ct_edge2.pdf",
+  " M tracks/core/analysis/id/figs/t2_radius_ct_edge2_ext.pdf",
+  " M tracks/core/analysis/id/figs/t2_radius_ct_edge2_ext.png",
+  " M tracks/core/analysis/id/figs/t2_radius_mp.pdf",
+  " M tracks/core/analysis/id/figs/t2_radius_mp_edge2.pdf",
+  " M tracks/core/analysis/id/figs/t2_variants.pdf",
+  " M tracks/core/analysis/id/figs/t2_variants.png",
+  "?? tracks/core/CHANGELOG.md",
+  "?? tracks/core/analysis/id/figs/t2_radius_ct_edge2_prod.pdf",
+  "?? tracks/core/analysis/id/figs/t2_radius_ct_edge2_prod.png",
+  "?? tracks/core/analysis/id/figs/t2_radius_gs0_edge2_ext.pdf",
+  "?? tracks/core/analysis/id/figs/t2_radius_gs0_edge2_ext.png",
+  "?? tracks/core/analysis/id/test2_numbers.json",
+  "?? tracks/core/stage/G2/",
+  "?? tracks/core/verify/figs/regress_geodesic_core-20261115-065452-3629622.pdf",
+  "?? tracks/core/verify/figs/regress_geodesic_core-20261115-065452-3629622.png",
+  "?? tracks/core/verify/manifests/core-20261115-065452-3629622.json",
+  "?? tracks/core/verify/manifests/core-20261115-065901-3629622.json",
+  "?? tracks/core/verify/manifests/core-20261115-065903-3629622.json",
+  "?? tracks/core/verify/manifests/core-20261115-065904-3629622.json"
+ ],
+ "inputs": [
+  {
+   "path": ".work/build_cpu_609a875/src/athena",
+   "sha256": "a325f29a9361481b3f43b2c9cfeda53a78f98c0735998136fd8efc7d9d68f8b9"
+  }
+ ],
+ "output_directory": "/data/haiyangw/nrpic/scratch/core/core-20261115-150315-23eca56",
+ "host": "anta",
+ "start_utc": "2026-11-15T15:03:16Z",
+ "cores": 1,
+ "wall_time_s": 11.94,
+ "exit_status": 1,
+ "core_hours": 0.0033
+}

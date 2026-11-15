@@ -32,6 +32,7 @@
 #include "units/units.hpp"
 #include "meshblock_pack.hpp"
 #include "gravity/gravity.hpp"
+#include "scalar_field/scalar_field.hpp"
 
 //----------------------------------------------------------------------------------------
 // MeshBlockPack constructor:
@@ -57,6 +58,7 @@ MeshBlockPack::MeshBlockPack(Mesh *pm, int igids, int igide) :
 
 MeshBlockPack::~MeshBlockPack() {
   if (ppart  != nullptr) {delete ppart;}
+  if (pscalar != nullptr) {delete pscalar;}
   if (pnr    != nullptr) {delete pnr;}
   if (pdyngr != nullptr) {delete pdyngr;}
   if (ptmunu != nullptr) {delete ptmunu;}
@@ -228,6 +230,17 @@ void MeshBlockPack::AddPhysics(ParameterInput *pin) {
     ptmunu = new Tmunu(this, pin);
   }
 
+  // (8b) Scalar field evolved with the Z4c spacetime.  Its tasks join those of Z4c in
+  // the numerical-relativity task list, so it is constructed before that list.
+  if (pin->DoesBlockExist("scalar_field")) {
+    pscalar = new scalarfield::ScalarField(this, pin);
+    if (pscalar->opt.couple) {
+      if (ptmunu == nullptr) { ptmunu = new Tmunu(this, pin); }
+      ptmunu->AllocateTotalSources();
+    }
+    nphysics++;
+  }
+
   if (pz4c != nullptr || padm != nullptr) {
     pnr = new numrel::NumericalRelativity(this, pin);
     pnr->AssembleNumericalRelativityTasks(tl_map);
@@ -245,6 +258,13 @@ void MeshBlockPack::AddPhysics(ParameterInput *pin) {
     nphysics++;
   } else {
     ppart = nullptr;
+  }
+
+  // diagnostics of the scalar field after the step, behind those of the particles
+  if (pscalar != nullptr) {
+    TaskID dep = (ppart != nullptr && ppart->is_nrpic) ? ppart->id.diag : none;
+    tl_map["after_timeintegrator"]->AddTask(&scalarfield::ScalarField::Diagnostics,
+                                            pscalar, dep);
   }
 
   // (9) GRAVITY

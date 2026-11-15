@@ -1,0 +1,35 @@
+{
+ "run_id": "core-20261115-145323-5407341",
+ "owner": "core",
+ "purpose": "lead integration: byte regression c1-c5 (rng package driver), baseline main source 74ed745 vs merged 609a875, processor",
+ "kind": "production",
+ "command": [
+  "python3",
+  "/data/haiyangw/nrpic/wt/core/tracks/core/analysis/rng/run_regression.py",
+  "--base",
+  "/data/haiyangw/nrpic/wt/core/.work/build_cpu_base/src/athena",
+  "--new",
+  "/data/haiyangw/nrpic/wt/core/.work/build_cpu_609a875/src/athena"
+ ],
+ "cwd": "/data/haiyangw/nrpic/scratch/core/core-20261115-145323-5407341",
+ "commit": "540734107369f3046aef698a859b891d1e1c2610",
+ "branch": "core/nrpic",
+ "uncommitted_changes": [],
+ "inputs": [
+  {
+   "path": ".work/build_cpu_base/src/athena",
+   "sha256": "b4529af75ffca0f411ea112e4b58f52fb0f4a84f24989fa02bc9bf282f0fc63f"
+  },
+  {
+   "path": ".work/build_cpu_609a875/src/athena",
+   "sha256": "a325f29a9361481b3f43b2c9cfeda53a78f98c0735998136fd8efc7d9d68f8b9"
+  }
+ ],
+ "output_directory": "/data/haiyangw/nrpic/scratch/core/core-20261115-145323-5407341",
+ "host": "anta",
+ "start_utc": "2026-11-15T14:53:24Z",
+ "cores": 1,
+ "wall_time_s": 433.69,
+ "exit_status": 1,
+ "core_hours": 0.1205
+}

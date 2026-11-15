@@ -1,0 +1,80 @@
+# Apparent-horizon finder on a heavy spinning Bowen-York puncture at the resolution of
+# the three-black-hole scouting run: bare mass 10, spin 30 along z, momentum
+# (-0.3608, -0.2433, 0), cells of 1 = m/10 within 18 of the puncture.  One cycle, a
+# search after it, verbose output of the flow.  The flow constant of puncture_setup is
+# m^2 = 100; others from the command line: fastflow/flow_alpha_beta_const_0=25.
+# With use_puncture_0 = 0 the first guess is a sphere of radius m/2 (one puncture) or m
+# (several punctures far apart); fastflow/use_puncture_0=-1 fastflow/initial_radius_0=10
+# starts from a sphere of radius 10 about center_x_0, as in the three-black-hole run;
+# there the integrated expansion is 187, above the stock tolerance hmean_tol = 100
+# (fastflow/hmean_tol_0=100.0 reproduces the failure).
+<job>
+basename  = hc
+<mesh>
+nghost    = 4
+nx1       = 32
+x1min     = -128.0
+x1max     = 128.0
+ix1_bc    = outflow
+ox1_bc    = outflow
+nx2       = 32
+x2min     = -128.0
+x2max     = 128.0
+ix2_bc    = outflow
+ox2_bc    = outflow
+nx3       = 32
+x3min     = -128.0
+x3max     = 128.0
+ix3_bc    = outflow
+ox3_bc    = outflow
+<meshblock>
+nx1       = 16
+nx2       = 16
+nx3       = 16
+<mesh_refinement>
+refinement          = adaptive
+num_levels          = 4
+max_nmb_per_rank    = 512
+ncycle_check        = 4
+refinement_interval = 8
+<time>
+evolution  = dynamic
+integrator = rk4
+cfl_number = 0.25
+nlim       = 1
+tlim       = 100.0
+ndiag      = 1
+<z4c>
+lapse_oplog     = 2.0
+shift_Gamma     = 0.75
+shift_eta       = 2.0
+diss            = 0.5
+chi_div_floor   = 1.0e-5
+damp_kappa1     = 0.02
+tracker_mode    = ode
+<fastflow>
+find_every              = 1
+verbose                 = true
+flow_alpha_beta_const_0 = 100.0
+flow_iterations_0       = 400
+mass_tol_0              = 1.0e-4
+hmean_tol_0             = 1000.0
+use_puncture_0          = 0
+center_x_0              = 8.0
+initial_radius_0        = 5.0
+<problem>
+pgen_name       = nrpic_cf
+ncomp           = 1
+comp0_type      = puncture
+comp0_mass      = 10.0
+comp0_x1        = 8.0
+comp0_p1        = -0.3608
+comp0_p2        = -0.2433
+comp0_s3        = 30.0
+comp0_corr      = approx
+lapse           = precollapsed
+puncture_setup  = true
+puncture_radius = 1.8
+<output1>
+file_type = hst
+dcycle    = 1
