@@ -20,7 +20,7 @@ at x0 = L/4 at a = 1 + 1/d (21 for d = 0.05). This is the Zel'dovich solution of
 brief's row "plane-symmetric pancake" [derivation here; the statement "exact up to shell
 crossing" is the brief's [BACKGROUND] and follows from the derivation for Newtonian
 gravity].
-Code: `scripts/zeldovich.py`; checks `scripts/test_zeldovich.py` (all pass, 11:52):
+Code: `scripts/zeldovich.py`; checks `scripts/test_zeldovich.py` (all pass, 11:45):
 closed form against a fourth-order integration of the sheet equations (positions
 6e-15, velocities 2e-15), continuum density equal to dQ/dx (1e-8 at a = 20), discrete
 sheets against the continuum 1.8e-4 (32 cells) and 4.5e-5 (64 cells) of the
@@ -29,7 +29,7 @@ displacement, second order; decaying-mode content of the lattice data 3.3e-4 and
 Discrete crossing of the lattice sheets (exact sheet solution, 32, 64, 96 sheets per
 wavelength): a = 21.109, 21.027, 21.012.
 
-## Plan and predictions for the pancake scouting runs (12:00)
+## Plan and predictions for the pancake scouting runs (11:47)
 
 Data: d = 0.05 plane wave, one particle per cell (lattice at the cell corners), box of
 one initial Hubble radius (L = 1, (H0/k)^2 = 0.0253, depth of the potential
@@ -76,7 +76,7 @@ P6 All four relativistic runs reach a = 42 with every particle kept (no horizon 
    plane symmetry at these amplitudes [JUDGEMENT]); refuted for L = 4 if the run stops at
    the crossing. Total card time below 20 minutes.
 
-## First look at the constraints, and a prediction for two particles per cell (12:12)
+## First look at the constraints, and a prediction for two particles per cell (11:58)
 
 Runs done so far in B-emd-gw-20261115-115217-69ab1db: L1_n32, L4_n64, L1_n64 (all to
 a = 42, exit 0). Prediction P4 (mean H_r below 1e-4 and mean M_r below 1e-2 before the
