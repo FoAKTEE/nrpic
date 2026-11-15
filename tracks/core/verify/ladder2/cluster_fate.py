@@ -134,6 +134,16 @@ def analyse(d, yc, label):
     if yc < tp:
         mt = stc.migration_target(yc)
         res["migration_target"] = dict(yc=float(mt["yc"]), alpha_c=float(mt["alpha_c"]))
+    # migration criterion of JOURNAL.md 16:07Z (fixed before round 2 was read): the
+    # 200-300 M mean of the central lapse lies nearer the equal-binding partner's alpha_c
+    # than the model's own
+    try:
+        pt = stc.migration_target(yc)
+        res["partner"] = dict(yc=float(pt["yc"]), alpha_c=float(pt["alpha_c"]))
+        if mean_late is not None:
+            res["migrated"] = bool(abs(mean_late - pt["alpha_c"]) < abs(mean_late - a0))
+    except Exception as err:          # no partner found in the scan range
+        res["partner"] = dict(error=str(err))
     res["radii"] = mass_radii(d)
     return res
 
@@ -158,7 +168,8 @@ def main():
               f"{r['alpha_max_before_collapse']:.3f}]; last 50 M mean {r['mean_alpha_last50']:.4f}"
               f" (departure {r['departure_last50']:+.4f})"
               + (f"; migration target alpha_c {r['migration_target']['alpha_c']:.4f}"
-                 if 'migration_target' in r else ""))
+                 if 'migration_target' in r else "")
+              + f"; partner {r['partner']}; migrated (16:07Z criterion): {r.get('migrated')}")
     if a.earlier:
         for name, yc, lab in EARLIER:
             d = os.path.join("/data/haiyangw/nrpic/runs/st", name)
