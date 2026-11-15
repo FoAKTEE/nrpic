@@ -429,3 +429,12 @@ origin to 1e-12; the binary centre of mass at r0 to 1e-9. Refuted by any miss.
   and the six workers used about 20 cores (ps: 300-350 percent each), above the 16 of the
   session. compare_full.py and passages.py now pin one thread per worker before numpy is
   imported; resubmitted with the same 6 workers. No result of the stopped run is used.
+
+Prediction Q5b (before the run; passages.py now also recomputes the phase window of
+three_punctures/scripts/newton_start.py:117-125 from its scans): the chosen phases
+130 deg (q = 10) and 127 deg (q = 4) lie inside a clean window (single ejection from 4
+and 10 r_t, same outcome, no member closer than 4.5 M) with the corrected classification,
+and the window and the number of good phases are identical to those of the wave-1
+classification (the two phases that change class at q = 10 sit near 105 and 285 deg,
+where a member comes close to M anyway). Refuted if the chosen phase leaves its window or
+the windows differ.

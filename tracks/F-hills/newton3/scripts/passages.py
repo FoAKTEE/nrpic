@@ -184,6 +184,27 @@ def main():
     for (name, k0), o in scans.items():
         S["scan"][f"{name}_k{k0:g}"] = scan_summary(o)
         print(name, k0, json.dumps(S["scan"][f"{name}_k{k0:g}"]), flush=True)
+    # the phase window of three_punctures/scripts/newton_start.py (lines 117-125): single
+    # ejection from 4 and from 10 r_t, the same outcome, no member closer than 4.5 to M
+    S["window"] = {}
+    for name in CONFIGS:
+        a, b = scans[(name, 4.0)], scans[(name, 10.0)]
+        rmin4, rmin10 = a["rMmin"].min(axis=1), b["rMmin"].min(axis=1)
+        idx = int(round(CONFIGS[name][1]))
+        for tag, oa, ob in (("corrected", a["outcome"], b["outcome"]),
+                            ("before", a["outcome_M"], b["outcome_M"])):
+            good = (np.isin(oa, [1, 2]) & np.isin(ob, [1, 2]) & (oa == ob) & (rmin4 > 4.5)
+                    & (rmin10 > 4.5) & a["ok"] & b["ok"])
+            lo = idx
+            while good[(lo - 1) % NPH] and idx - lo < NPH:
+                lo -= 1
+            hi = idx
+            while good[(hi + 1) % NPH] and hi - idx < NPH:
+                hi += 1
+            S["window"][f"{name}_{tag}"] = dict(chosen_phase_deg=CONFIGS[name][1], chosen_is_good=bool(good[idx]),
+                                                window_deg=[lo, hi] if good[idx] else None,
+                                                n_good=int(good.sum()))
+        print(name, "window", S["window"][f"{name}_corrected"], S["window"][f"{name}_before"], flush=True)
     with open(os.path.join(run["dir"], "passages.json"), "w") as fh:
         json.dump(S, fh, indent=2)
     with open(os.path.join(PKG, "results", "passages.json"), "w") as fh:
