@@ -260,15 +260,15 @@ def figure(res, cases, out):
     fs.use_style()
     ref = res["reference"]
     fig, ax = plt.subplots(1, 3, figsize=(fs.FULL_WIDTH, 2.9))
-    fig.subplots_adjust(left=0.07, right=0.99, bottom=0.17, top=0.95, wspace=0.34)
+    fig.subplots_adjust(left=0.065, right=0.99, bottom=0.17, top=0.95, wspace=0.36)
     for name, col, ls in (("mesh", fs.PAL["red"], "-"), ("analytic", fs.PAL["yellow"], "--")):
         if name not in cases:
             continue
         hst = cases[name]["hst"]
-        ax[0].plot(hst[:, 0], hst[:, 14 + 3], color=col, ls=ls, label=f"{name}: in, r = 4")
+        ax[0].plot(hst[:, 0], hst[:, 14 + 3], color=col, ls=ls, label=name)
         ax[0].plot(hst[:, 0], hst[:, 14 + 9 + 3], color=col, ls=ls, lw=0.9)
         ax[0].plot(hst[:, 0], hst[:, 14 + 9 + 6], color=col, ls=ls, lw=0.9)
-        ax[2].plot(hst[:, 0], hst[:, 10], color=col, ls=ls, label=f"{name}: one or more")
+        ax[2].plot(hst[:, 0], hst[:, 10], color=col, ls=ls, label=name)
         ax[2].plot(hst[:, 0], hst[:, 12], color=col, ls=ls, lw=0.9)
     # reference staircases
     t = np.linspace(0.0, TEND, 4001)
@@ -282,9 +282,12 @@ def figure(res, cases, out):
             for tc in ob["cross"][str(R)][kind]:
                 n += 4*(t >= tc)
         ax[0].plot(t, n, **fs.GUIDE, zorder=0)
-    ax[0].text(600, 198, "in, r = 4", fontsize=8)
+    ax[0].text(430, 180, "in, r = 4 M", fontsize=8)
+    ax[0].text(430, 92, "in, r = 10 M", fontsize=8)
+    ax[0].text(430, 24, "out, r = 10 M", fontsize=8)
     ax[0].set_xlabel(r"$t/M$")
-    ax[0].set_ylabel("particles through a sphere (cumulative)")
+    ax[0].set_ylabel("crossings (cumulative)")
+    ax[0].set_ylim(-8, 215)
     ax[0].set_xlim(0, TEND)
     n1, n2 = np.zeros_like(t), np.zeros_like(t)
     for ob in ref["orbits"]:
@@ -295,7 +298,7 @@ def figure(res, cases, out):
     ax[2].plot(t, n1, **fs.GUIDE, zorder=0, label="exact orbits")
     ax[2].plot(t, n2, **fs.GUIDE, zorder=0)
     ax[2].set_xlabel(r"$t/M$")
-    ax[2].set_ylabel("particles with 1+ and 2+ pericentre passages")
+    ax[2].set_ylabel(r"particles with $\geq 1$, $\geq 2$ passages")
     ax[2].set_xlim(0, TEND)
     ax[2].set_ylim(-0.5, 11.5)
     ax[2].legend(loc="upper left", fontsize=7)
@@ -311,8 +314,9 @@ def figure(res, cases, out):
     ax[1].axvline(0.0, **fs.MASK_LINE)
     ax[1].axvline(DT, **fs.MASK_LINE)
     ax[1].axhline(0.0, **fs.MASK_LINE)
-    ax[1].set_xlabel(r"removal time $-$ exact time at the threshold, $M$")
+    ax[1].set_xlabel(r"$t_{\rm removal} - t_{\rm exact}$ $[M]$")
     ax[1].set_ylabel(r"$10^3\,(E/E_{\rm exact} - 1)$ at removal")
+    ax[1].set_xlim(-0.005, 0.055)
     ax[1].legend(loc="best", fontsize=7)
     fs.save(fig, out + "_accretion")
     plt.close(fig)

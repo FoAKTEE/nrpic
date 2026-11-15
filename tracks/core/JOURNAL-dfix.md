@@ -226,3 +226,27 @@ Predictions (written before the run):
   `acc.nrpic.hst` and the last snapshot identical to the uninterrupted run, byte for
   byte.
 Refuted if a count differs, if the identity fails, or if the continued run differs.
+
+Outcome of T3 (run core-20261115-160245-727e96a, 82 s on three cores; numbers in
+`t3_accretion.json` of the run directory; figure
+`tracks/core/analysis/dfix/figs/t3_accretion.png`, looked at) [VERIFIED]:
+- sphere 4 M: 192 in, 0 out; sum of m E 0.1655715755 (mesh) and 0.1655715753
+  (analytic) against 0.1655715852: -5.8e-8 and -5.9e-8 relative;
+- sphere 10 M: 84 in, 16 out; m E in 0.0770181179 (mesh), +3.3e-9; m E out
+  0.0153111051, +6.7e-8; analytic +1.9e-9 and +2.2e-8;
+- identity content = in - out - removed: largest deviation 8.3e-17 in rest mass, 0 in
+  number, at every one of the 801 records, both spheres, all cases;
+- removal record: 192 records, all reason 2, none of the bound orbits; times 19.30,
+  28.95, 45.50 M, inside [t_exc, t_exc + dt] = [19.287, 19.337], [28.926, 28.976],
+  [45.460, 45.510]; radii 1.219 to 1.241 M, lapse 0.6155 to 0.6188; E at removal within
+  1.2e-5 (mesh) and 3.5e-6 (analytic) of the exact value; counters 0;
+- counters of the bound orbits at 800 M: (2, 2, 2, 2) and (3, 3, 3, 3); the history
+  counts step at the exact pericentre times (figure, right panel);
+- the continued run equals the uninterrupted one byte for byte in `acc.acc.hst`,
+  `acc.removed.bin`, `acc.nrpic.hst` and the last snapshot.
+Not refuted. One prediction was too pessimistic: I allowed 5 per cent for E at removal
+on the mesh and measured 1.2e-5 (the particle is removed at r = 1.22 to 1.24 M, where
+the cubic reconstruction of the Kerr-Schild fields at dx = 0.25 M is still good).
+The statement "E is exact at the sphere" holds here because the metric is stationary;
+in an evolved spacetime E is the instantaneous alpha W - beta^i u_i and Track D's
+definition (a) needs the sphere in the region where the gauge has settled [JUDGEMENT].
