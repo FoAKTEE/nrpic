@@ -1,0 +1,39 @@
+{
+ "run_id": "core-20261115-170028-cdd7c88",
+ "owner": "core",
+ "purpose": "R: nrpic_cf byte regression and combined curvature, release executable core-v0.3 against the executable built from 819d588, processor",
+ "kind": "production",
+ "command": [
+  "/data/haiyangw/nrpic/wt/core-coll2/.venv/bin/python",
+  "/data/haiyangw/nrpic/wt/core-coll2/tracks/core/analysis/lead/cf_checks.py",
+  "--base",
+  "/data/haiyangw/nrpic/.work/build_cpu_v03/src/athena",
+  "--new",
+  "/data/haiyangw/nrpic/scratch/core/tmp/coll2/exe/819d588/athena_cpu"
+ ],
+ "cwd": "/data/haiyangw/nrpic/scratch/core/core-20261115-170028-cdd7c88",
+ "commit": "cdd7c88303fc2f3651ea524757cc3ddc8ed938c0",
+ "branch": "core/collisions-2",
+ "uncommitted_changes": [],
+ "inputs": [
+  {
+   "path": "/data/haiyangw/nrpic/.work/build_cpu_v03/src/athena",
+   "sha256": "d983155bb21befedbd123d54d84fcfc12a875ee0aaa0baa36f5a51261041c25c"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/scratch/core/tmp/coll2/exe/819d588/athena_cpu",
+   "sha256": "c5d0a9879775ae019845922113eab06f5c6662cd0087b7ebd24a81c452a84192"
+  },
+  {
+   "path": "tracks/core/analysis/lead/cf_checks.py",
+   "sha256": "a370c04b86e387706182117aa4007a1961aa8c93202edf2c58179f90c808929f"
+  }
+ ],
+ "output_directory": "/data/haiyangw/nrpic/scratch/core/core-20261115-170028-cdd7c88",
+ "host": "anta",
+ "start_utc": "2026-11-15T17:00:28Z",
+ "cores": 1,
+ "wall_time_s": 1044.93,
+ "exit_status": 0,
+ "core_hours": 0.2903
+}

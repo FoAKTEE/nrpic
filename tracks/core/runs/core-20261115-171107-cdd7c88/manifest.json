@@ -1,0 +1,46 @@
+{
+ "run_id": "core-20261115-171107-cdd7c88",
+ "owner": "core",
+ "purpose": "G1 G2 on one A100: one collision step in the static conformal metric, cases psi_iso, well_tolman, well_shift, psi_iso_hot, both modes",
+ "kind": "production",
+ "command": [
+  "/data/haiyangw/nrpic/wt/core-coll2/.venv/bin/python",
+  "/data/haiyangw/nrpic/wt/core-coll2/tracks/core/analysis/collisions/run_gradient.py",
+  "/data/haiyangw/nrpic/scratch/core/core-20261115-171107-cdd7c88",
+  "--exe",
+  "/data/haiyangw/nrpic/scratch/core/tmp/coll2/exe/819d588/athena_gpu",
+  "--nproc",
+  "2",
+  "--n",
+  "2000000",
+  "--ref",
+  "/data/haiyangw/nrpic/scratch/core/core-20261115-160136-819d588/ref.json",
+  "--ref",
+  "/data/haiyangw/nrpic/scratch/core/core-20261115-160137-819d588/ref.json",
+  "--ref",
+  "/data/haiyangw/nrpic/scratch/core/core-20261115-160139-819d588/ref.json",
+  "--cases",
+  "psi_iso,well_tolman,well_shift,psi_iso_hot"
+ ],
+ "cwd": "/data/haiyangw/nrpic/scratch/core/core-20261115-171107-cdd7c88",
+ "commit": "cdd7c88303fc2f3651ea524757cc3ddc8ed938c0",
+ "branch": "core/collisions-2",
+ "uncommitted_changes": [],
+ "inputs": [
+  {
+   "path": "/data/haiyangw/nrpic/scratch/core/tmp/coll2/exe/819d588/athena_gpu",
+   "sha256": "87f19ec5e364481b4d6453e3efaa7dd090c03a1f66c6ca3fb3ead3267ff7c09d"
+  },
+  {
+   "path": "tracks/core/analysis/collisions/run_gradient.py",
+   "sha256": "f4d661a38ea5e5a8e6c4882557085f20d5c0023d953cc5a515346b02c3260380"
+  }
+ ],
+ "output_directory": "/data/haiyangw/nrpic/scratch/core/core-20261115-171107-cdd7c88",
+ "host": "anta",
+ "start_utc": "2026-11-15T17:11:07Z",
+ "cores": 1,
+ "wall_time_s": 38.81,
+ "exit_status": 1,
+ "card_hours": 0.0108
+}
