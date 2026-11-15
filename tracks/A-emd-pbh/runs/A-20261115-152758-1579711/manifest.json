@@ -92,7 +92,7 @@
     "nodes": 1,
     "gpus": 0,
     "cores": 5,
-    "walltime_s": null,
+    "walltime_s": 430.034,
     "wall_limit": null,
     "segments_max": null,
     "gpu_hours_requested": 0.0,
@@ -103,15 +103,15 @@
   "outputs": {
     "dir": "scratch/A-emd-pbh/A-20261115-152758-1579711",
     "sha256sums": "sha256sums.txt",
-    "sha256sums_sha256": null,
-    "bytes": null,
-    "files": null
+    "sha256sums_sha256": "8cb52b39f49b758e27b30e22664bf1582bc140a198dfd63f4811287d5549aa60",
+    "bytes": 1318766983,
+    "files": 67
   },
-  "status": "running",
-  "exit_code": null,
+  "status": "completed",
+  "exit_code": 0,
   "registered": "2026-11-15T15:27:58Z",
-  "started": null,
-  "ended": null,
+  "started": "2026-11-15T15:27:58Z",
+  "ended": "2026-11-15T15:35:08Z",
   "parents": [],
   "notes": "",
   "budget_at_submit": {
@@ -121,5 +121,6 @@
     "gpu_hours_reserved": 0.0,
     "cores_busy": 0,
     "runs": 61
-  }
+  },
+  "finished": "2026-11-15T15:35:31Z"
 }
