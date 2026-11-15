@@ -1,0 +1,34 @@
+{
+ "run_id": "core-20261115-140539-54f8bee",
+ "owner": "core",
+ "purpose": "Collision cells on a statically refined mesh: periodic box with one octant refined, 2e5 particles; cell assignment, pair counting on both levels, two MeshBlock divisions, cell factor 2; processor",
+ "kind": "production",
+ "command": [
+  "python3",
+  "/data/haiyangw/nrpic/wt/core-coll/tracks/core/analysis/collisions/run_smr.py",
+  "/data/haiyangw/nrpic/scratch/core/core-20261115-140539-54f8bee",
+  "--nproc",
+  "3"
+ ],
+ "cwd": "/data/haiyangw/nrpic/scratch/core/core-20261115-140539-54f8bee",
+ "commit": "54f8beecf0c14207bd9255fd92a753bde428178d",
+ "branch": "core/collisions",
+ "uncommitted_changes": [],
+ "inputs": [
+  {
+   "path": ".work/build_cpu/src/athena",
+   "sha256": "5c78d0a795d66086b030c3dbbbc5408982a238870b1a1d402afe04ea1e153ae2"
+  },
+  {
+   "path": "problems/tests/coll_box.athinput",
+   "sha256": "ff6ac17800558efb5845dd7cfca49377a2e9fb8767728e0c5bac31c464f0c165"
+  }
+ ],
+ "output_directory": "/data/haiyangw/nrpic/scratch/core/core-20261115-140539-54f8bee",
+ "host": "anta",
+ "start_utc": "2026-11-15T14:05:39Z",
+ "cores": 3,
+ "wall_time_s": 7.59,
+ "exit_status": 0,
+ "core_hours": 0.0063
+}

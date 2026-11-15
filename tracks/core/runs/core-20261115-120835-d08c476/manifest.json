@@ -1,0 +1,32 @@
+{
+ "run_id": "core-20261115-120835-d08c476",
+ "label": "t2_binary_approx",
+ "owner": "core",
+ "purpose": "Test 2: two punctures m = 0.5 at x = +-5 with Newtonian circular momenta, closed-form corrections with the background factor, finest cells 1/16, to t = 30",
+ "kind": "scouting",
+ "command": "srun -p preempt --gres=gpu:1 -c 1 -t 00:45:00 -J t2_binary_ap /bin/bash -c date +%s.%N > .t_start; (while true; do nvidia-smi --query-gpu=memory.used --format=csv,noheader,nounits >> .gpumem 2>/dev/null; sleep 5; done) & smp=$!; \"$@\"; rc=$?; kill $smp; date +%s.%N > .t_end; exit $rc athena /data/haiyangw/nrpic/wt/core-mp/.work/build_gpu/src/athena -i by_binary.athinput -d /data/haiyangw/nrpic/scratch/core/core-20261115-120835-d08c476",
+ "cwd": "/data/haiyangw/nrpic/scratch/core/core-20261115-120835-d08c476",
+ "commit": "d08c476",
+ "source_dirty": false,
+ "inputs": [
+  {
+   "path": "problems/puncture/by_binary.athinput",
+   "sha256": "cab30f98891024a33002be3b32aa22503e7d2c6f2182dd026711eb0afd12a2f8"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/wt/core-mp/.work/build_gpu/src/athena",
+   "sha256": "ba08b4da17b627a4bf1103c6014fb10203a821c130dcd195017cecf7559f0040",
+   "role": "executable"
+  }
+ ],
+ "output_directory": "/data/haiyangw/nrpic/scratch/core/core-20261115-120835-d08c476",
+ "resources": "1 card (A100), 1 core",
+ "started_utc": "2026-11-15T12:08:35Z",
+ "status": "done",
+ "card_memory_peak_mib": 58495.0,
+ "exit_code": 0,
+ "wall_time_s": 699.9,
+ "queue_wait_s": 816.2,
+ "card_hours": 0.1944,
+ "core_hours": 0.1944
+}

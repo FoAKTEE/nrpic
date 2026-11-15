@@ -1,0 +1,29 @@
+{
+ "run_id": "core-20261115-145804-3629622",
+ "owner": "core",
+ "purpose": "lead: analysis of the nine id card runs that finished after the id helper's session (T2c, T2d, T2e, T3): test2_evolution.py for prefixes t2 and t3",
+ "kind": "production",
+ "command": [
+  "bash",
+  "-c",
+  "cd /data/haiyangw/nrpic/wt/core/tracks/core/analysis/id && python3 test2_evolution.py --prefix t2 && python3 test2_evolution.py --prefix t3"
+ ],
+ "cwd": "/data/haiyangw/nrpic/scratch/core/core-20261115-145804-3629622",
+ "commit": "362962282e9c012f5bbf8b7a795a6d2e92204746",
+ "branch": "core/nrpic",
+ "uncommitted_changes": [
+  "M tracks/core/verify/options_at.py",
+  "?? tracks/core/stage/G2/",
+  "?? tracks/core/verify/figs/regress_geodesic_core-20261115-065452-3629622.pdf",
+  "?? tracks/core/verify/figs/regress_geodesic_core-20261115-065452-3629622.png",
+  "?? tracks/core/verify/manifests/core-20261115-065452-3629622.json"
+ ],
+ "inputs": [],
+ "output_directory": "/data/haiyangw/nrpic/scratch/core/core-20261115-145804-3629622",
+ "host": "anta",
+ "start_utc": "2026-11-15T14:58:04Z",
+ "cores": 2,
+ "wall_time_s": 260.87,
+ "exit_status": 1,
+ "core_hours": 0.1449
+}

@@ -1,0 +1,34 @@
+{
+ "run_id": "core-20261115-113536-728637a",
+ "owner": "core",
+ "command": [
+  "/data/haiyangw/nrpic/wt/core-newton/.work/athena_cpu_728637a",
+  "-i",
+  "geodesic.athinput",
+  "time/tlim=20.0",
+  "particles/hist_dcycle=100"
+ ],
+ "cwd": "/data/haiyangw/nrpic/scratch/core/core-20261115-113536-728637a",
+ "commit": "728637a",
+ "source_modified_since_commit": false,
+ "inputs": [
+  {
+   "path": "problems/kerr/geodesic.athinput",
+   "sha256": "31c6c43cb59447ec212b35fe1c019012d20d8483cda718e33e03cbd2b039ddc0"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/wt/core-newton/.work/athena_cpu_728637a",
+   "sha256": "8d868cb0a62732a14c2b0e968155541b913fd6e36956ee88c4896e032d320678",
+   "role": "executable"
+  }
+ ],
+ "output_directory": "/data/haiyangw/nrpic/scratch/core/core-20261115-113536-728637a",
+ "purpose": "regression of the relativistic mode, case geo, executable new",
+ "kind": "scouting",
+ "tag": "regress-geo-new",
+ "wall_time_s": 0.02,
+ "exit_status": 0,
+ "cores": 1,
+ "card_hours": 0.0,
+ "started_utc": "2026-11-15T11:35:36Z"
+}

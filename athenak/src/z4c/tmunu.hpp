@@ -58,6 +58,17 @@ class Tmunu {
   Real lambda8pi = 0.0;
   void AllocateStepSources();
 
+  // Sources of all matter modules together.  A module whose sources change with every
+  // stage of the time integrator (the scalar field) assembles them here before each
+  // right-hand side of the spacetime and before each evaluation of the constraints:
+  // its own sources plus those of the other modules (u_tmunu, or the densities of the
+  // step converted with the volume element of the stage, plus the vacuum energy).  With
+  // use_total set the spacetime solver and the constraints read tmunu_tot only.
+  Tmunu_vars tmunu_tot;
+  DvceArray5D<Real> u_tmunu_tot;
+  bool use_total = false;
+  void AllocateTotalSources();
+
  private:
   MeshBlockPack* pmy_pack;
 };

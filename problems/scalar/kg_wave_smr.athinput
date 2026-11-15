@@ -1,0 +1,95 @@
+# Klein-Gordon plane wave of a test field on flat spacetime in a periodic box with a
+# statically refined region (one level) in the middle: the wave crosses the refinement
+# boundaries.  Otherwise as kg_wave.athinput
+# (tracks/core/JOURNAL-scalar.md, test 1).  The spacetime is evolved by Z4c and stays
+# flat because the field does not source it (couple = false).
+#   phi = amp cos(k.x - omega t),  k = 2 pi (n1, n2, n3)/L,  omega^2 = k^2 + mass^2
+
+<comment>
+problem   = Klein-Gordon plane wave, test field
+
+<job>
+basename  = kgsmr
+
+<mesh>
+nghost    = 4
+nx1       = 32
+x1min     = 0.0
+x1max     = 1.0
+ix1_bc    = periodic
+ox1_bc    = periodic
+nx2       = 32
+x2min     = 0.0
+x2max     = 1.0
+ix2_bc    = periodic
+ox2_bc    = periodic
+nx3       = 32
+x3min     = 0.0
+x3max     = 1.0
+ix3_bc    = periodic
+ox3_bc    = periodic
+
+<meshblock>
+nx1       = 8
+nx2       = 8
+nx3       = 8
+
+<mesh_refinement>
+refinement       = static
+max_nmb_per_rank = 1024
+
+<refined_region1>
+level = 1
+x1min = 0.3
+x1max = 0.7
+x2min = 0.3
+x2max = 0.7
+x3min = 0.3
+x3max = 0.7
+
+<time>
+evolution  = dynamic
+integrator = rk4
+cfl_number = 0.25
+nlim       = -1
+tlim       = 0.25
+ndiag      = 100
+
+<z4c>
+lapse_oplog     = 0.0     # geodesic slicing: alpha = 1
+lapse_harmonic  = 0.0
+lapse_advect    = 0.0
+shift_Gamma     = 0.0     # zero shift
+shift_eta       = 0.0
+shift_advect    = 0.0
+diss            = 0.0
+damp_kappa1     = 0.0
+damp_kappa2     = 0.0
+
+<scalar_field>
+couple      = false       # test field
+potential   = quadratic   # quadratic, quartic, plateau, inflection, table
+mass        = 5.0         # quadratic, quartic: V = mass^2 phi^2/2 + lambda phi^4/4
+lambda      = 0.0         # inflection: V = lambda vev^4 phi^2 P/(3 Q^2)
+v0          = 0.0         # plateau: V = v0 (1 - exp(-phi/mu))^2
+mu          = 1.0
+vev         = 1.0
+v_offset    = 0.0         # constant added to V
+table_file  = none        # table: rows "phi V dV/dphi", equally spaced
+diss        = 0.0
+hist_dcycle = 1
+dump_dcycle = 0
+dump_dt     = -1.0
+
+<problem>
+pgen_name  = scalar_field
+id         = wave
+phi0       = 0.0
+pi0        = 0.0
+amp        = 1.0
+n1         = 1
+n2         = 1
+n3         = 0
+beta1      = 0.0         # uniform shift (flat spacetime in moving coordinates)
+beta2      = 0.0
+beta3      = 0.0

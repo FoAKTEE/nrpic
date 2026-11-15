@@ -15,6 +15,38 @@ All binary data are little-endian. Units are geometrized, G = c = 1.
 `u_x u_y u_z` are the covariant spatial components `u_i` of the four-velocity
 (momentum per unit rest mass) in the same coordinates. `m` is the rest mass.
 
+## Puncture correction table (`*.tab`, format `mp1`)
+
+Regular correction `u_c` of the conformal factor of one Bowen-York puncture
+(`<problem> comp<c>_corr = table`, `comp<c>_corr_file`), as multipoles about one axis
+through the puncture:
+
+    u_c(x) = sum_q u_{l_q}(r) P_{l_q}(mu),   r = |x - x_c|,   mu = (x - x_c).axis / r,
+
+with `P_l` the Legendre polynomials. Plain text. Header lines begin with `#`; those of
+the form `# key = value` are read:
+
+| key | value | required |
+|---|---|---|
+| `l` | the multipole orders of the data columns, in order, each between 0 and 12, at most six | yes |
+| `tail` | one exponent per column: beyond the last row the column continues as `u_l(r_N) (r_N/r)^tail` | no (default `l + 1`, the exterior harmonic) |
+| `axis` | three numbers, the symmetry axis (normalised by the reader) | no |
+| `format`, `mass`, `momentum`, `spin`, `nonlinear`, `m_adm`, `u_centre`, `columns` | written by the table writer for the reader of the file; ignored by the code (`nonlinear = 1`: full solution of the puncture equation, `0`: second order in momentum and spin) | no |
+
+Each data row is `r  u_{l_1}  u_{l_2} ...` on a uniform grid `r_k = k dr`, `k = 0 .. N-1`,
+starting at `r = 0`, with at least eight rows. Interpolation is four-point Lagrange
+(cubic), as for the radial table. The axis is, in this order: `comp<c>_corr_axis1..3` of
+the input, the `axis` of the header, the direction of the momentum, the direction of
+the spin. The table is added to `psi` as it is (no rescaling); `psi` enters the lapse
+options `isotropic` and `precollapsed`.
+
+Writer: `python3 -m nrpic.bowen_york --mass m --momentum P --spin S [--lmax 8]
+[--linear] [--background d] [--dr ..] [--rlast ..] --out file.tab` (momentum and spin
+along the axis; even orders `l = 0, 2, .., lmax`; `dr = m/100` and `rlast = 200 m` by
+default; `--background d` writes `Lambda u(m/Lambda, P/Lambda^4, S/Lambda^4)` with
+`Lambda = 1 + d` for a puncture in the conformal factor of others,
+`d = sum_j m_j/(2 d_j)`).
+
 ## Radial table (`*.tab`)
 
 Plain text. Lines starting with `#` are comments. Each data row is
@@ -30,6 +62,53 @@ the matter. Outside the table the generators continue with the vacuum form
 tabulated lapse is used, `alpha = (1 - M/2r)/(1 + M/2r)`.
 Interpolation inside the table is cubic, so `dr` should resolve the profile
 (at least a few thousand points across the matter).
+
+## Radial table with extrinsic curvature (`*.tab`, format 2)
+
+Spherical initial data that are not time-symmetric (an expanding or contracting ball,
+a black hole in a vacuum bubble). The interface text with the reasons is
+`tracks/core/interfaces/spherical_id_format2.md` (proposal for
+`coord/INTERFACES/spherical_id_format2.md`). Plain text; header lines begin with `#`
+and must include
+
+    # format = 2
+    # columns = rbar u KL KT alpha betar
+    # exterior = pg | zero
+
+and may include `# breaks = r_1 r_2 ...` (at most four). Each data row is
+
+    rbar   u   KL   KT   alpha   betar
+
+on the uniform grid `rbar_k = k drbar`, `k = 0 .. N-1` (at least eight rows), with
+
+- `u = psi - 1` as in format 1 (`gamma_ij = psi^4 delta_ij`, `psi = 1 +` the sum of
+  the `u` of all components of the run);
+- `KL`, `KT` the radial and the tangential eigenvalue of `K^i_j`, so that
+  `K_ij = psi^4 [KT delta_ij + (KL - KT) n_i n_j]` with `n^i = (x - x_c)^i / rbar` and the
+  full `psi`; trace `K = KL + 2 KT`, negative for expansion;
+- `alpha` the lapse and `betar` the radial shift, `beta^i = betar n^i`.
+
+A break is a radius, strictly between two rows, at which the columns may be
+discontinuous (a sharp dust surface: `KL` jumps); the cubic interpolation takes its four
+rows from one side of every break. Beyond the last row `u` continues as in format 1;
+`exterior = pg` continues `KL`, `KT` as `rbar^(-3/2)` and `betar` as `rbar^(-1/2)`
+through the last row and keeps the last `alpha` (exact for a Painleve-Gullstrand
+exterior with `psi = 1`), `exterior = zero` sets `KL = KT = betar = 0`. Other header
+lines `# key = value` are copied to the log of the run.
+
+The problem generator `nrpic_cf` recognises the format by the header line; one
+component of a run may be such a table. Start options: `<problem> lapse = table` takes
+the `alpha` column of component `lapse_comp` (the other lapse choices are unchanged);
+`<problem> shift = zero | table` (default `zero`) takes `betar` of component
+`shift_comp`. The generator of a table answers for the constraints of the table with
+its matter; dust at rest in the slice has `u_i = 0` in the particle file.
+
+Python: `nrpic.io.write_tab2`, `read_tab2` and the class `Table2`, which evaluates a
+table by the rule of the problem generator; `nrpic.expanding_ball` (class `Ball`: the
+marginally bound expanding dust ball, sharp or with a smooth edge, and a bound ball that
+turns around; exact radii against proper time; `residuals_1d`, the offline check of the
+constraints of any table); command line `problems/ic/make_ball.py`, input
+`problems/ball/ball.athinput`.
 
 ## Run outputs of the particle module
 
@@ -48,3 +127,14 @@ All binary files are written by one rank in native byte order. `<base>` is
 
 The Z4c history `<base>.z4c.user.hst` holds volume integrals of the squared constraint
 residuals (divide by its Volume column and take the square root for a norm).
+
+## Newtonian mode of the particle module (`<particles> pusher = newton`)
+
+Interface and column table: `tracks/core/interfaces/newtonian_mode.md`; reader:
+`python/nrpic/newton.py` (`read_newton_hst`, `NEWTON_COLUMNS`).
+
+| File | Content |
+|---|---|
+| `<base>.newton.hst` | text, one record every `hist_dcycle` cycles, 50 columns: time, cycle, scale factor, rest mass, kinetic energy, potential energy (particle sum and mesh sum), the Layzer-Irvine constant and its integral, momentum, angular momentum, centre of mass, the second moment `sum m x_i x_j` and its first three time derivatives (6 components each; the third is a difference quotient over the last step and has its own time column), extrema of the potential, largest momentum and acceleration, defect norm and number of V cycles of the Poisson solve, the step |
+| `<base>.nrpic.hst`, snapshots, trajectories | as in the relativistic mode, with these readings: the momentum slots hold `a dx/dt`; `sum_mW` and `int_E` are rest mass; the lapse columns (`alpha_probe`, `alpha_min`, `alpha_max`, probes) hold the potential `Phi` of `lap Phi = four_pi_G (rho - <rho>)`; the proper-time columns have no meaning |
+| `rst/<base>.NNNNN.rst.prt.nwt` | state of the mode next to the particle restart file: 8 bytes `NRPNWT01`, 50 float64 (30 particle sums of the last synchronised state, time, scale factor, Layzer-Irvine integral, 6 third derivatives and their time, largest momentum, defect norm, 6 mesh sums, largest acceleration, number of V cycles), 5 int64 (extents of the potential array), the potential including ghost cells as float64 |

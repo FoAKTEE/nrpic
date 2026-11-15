@@ -1,0 +1,40 @@
+{
+ "run_id": "core-20261115-135932-18d4555",
+ "owner": "core",
+ "purpose": "P9 (P5 P6 on one A100): relaxation of shells and two-temperature starts to Maxwell-Juttner, entropy estimate, 4e5 particles",
+ "kind": "production",
+ "command": [
+  "python3",
+  "/data/haiyangw/nrpic/wt/core-coll/tracks/core/analysis/collisions/run_relax.py",
+  "/data/haiyangw/nrpic/scratch/core/core-20261115-135932-18d4555",
+  "--exe",
+  "/data/haiyangw/nrpic/scratch/core/coll-tmp/exe/athena_gpu_v1",
+  "--nproc",
+  "2"
+ ],
+ "cwd": "/data/haiyangw/nrpic/scratch/core/core-20261115-135932-18d4555",
+ "commit": "18d455574a2dea9e49c8badbcd93105c9404ef72",
+ "branch": "core/collisions",
+ "uncommitted_changes": [],
+ "inputs": [
+  {
+   "path": "/data/haiyangw/nrpic/scratch/core/coll-tmp/exe/athena_gpu_v1",
+   "sha256": "1722943234f542bfaecca6b52f17c75d223164b98a189116ab1fd9819b9b9d42"
+  },
+  {
+   "path": "problems/tests/coll_box.athinput",
+   "sha256": "a06c76bba0baa646a929f0eb020d342bd2ce5210031b51dc44f48d320080cc4a"
+  },
+  {
+   "path": "tracks/core/analysis/collisions/run_relax.py",
+   "sha256": "bd0337c98b1d956a25ec97a6b943583c732de37e811545d59a7aae6a782997ea"
+  }
+ ],
+ "output_directory": "/data/haiyangw/nrpic/scratch/core/core-20261115-135932-18d4555",
+ "host": "anta",
+ "start_utc": "2026-11-15T13:59:32Z",
+ "cores": 1,
+ "wall_time_s": 38.04,
+ "exit_status": 0,
+ "card_hours": 0.0106
+}

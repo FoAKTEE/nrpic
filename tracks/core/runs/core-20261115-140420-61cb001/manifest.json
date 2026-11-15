@@ -1,0 +1,35 @@
+{
+ "run_id": "core-20261115-140420-61cb001",
+ "owner": "core",
+ "purpose": "Scalar field test 1, figures with corrected margins from the data of run core-20261115-133809-836ac86 (analysis only, same numbers as core-20261115-134423-836ac86)",
+ "kind": "production",
+ "command": [
+  "python3",
+  "/data/haiyangw/nrpic/wt/core-scalar/tracks/core/analysis/scalar/test1_wave.py",
+  "--exe",
+  "none",
+  "--reuse",
+  "/data/haiyangw/nrpic/scratch/core/core-20261115-133809-836ac86"
+ ],
+ "cwd": "/data/haiyangw/nrpic/scratch/core/core-20261115-140420-61cb001",
+ "commit": "61cb0019f2b829f380e6f94b9fb6d193446f3b2d",
+ "branch": "core/scalar-field",
+ "uncommitted_changes": [],
+ "inputs": [
+  {
+   "path": "tracks/core/analysis/scalar/test1_wave.py",
+   "sha256": "35ffca644c15bd9b24b3dab54f88bdeb7d37419315ee48aad3093406d2822855"
+  },
+  {
+   "path": "python/nrpic/scalar_field.py",
+   "sha256": "ca852887001ab9f0353f8c54c7c8b4418df6b076cd00b418b978f2c27dbd1ec9"
+  }
+ ],
+ "output_directory": "/data/haiyangw/nrpic/scratch/core/core-20261115-140420-61cb001",
+ "host": "anta",
+ "start_utc": "2026-11-15T14:04:20Z",
+ "cores": 1,
+ "wall_time_s": 2.2,
+ "exit_status": 0,
+ "core_hours": 0.0006
+}
