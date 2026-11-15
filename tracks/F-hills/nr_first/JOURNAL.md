@@ -195,3 +195,20 @@ both segments has identical positions (processor runs are byte reproducible); th
 summary has no duplicate times after the reader. Refuted if the live file still holds
 cycles 0-7 (then the truncation reading of the source is wrong and the wrapper is not
 needed).
+
+## 2026-11-15 E6. Baseline predictions for P1 at q = 4, time-resolved over the run (prediction)
+
+What: `scripts/baselines_p1.py inputs/p1_q4.athinput` (the lead's functions of
+`stage/G0/checks/lead_checks.py`, read only; HRNA of `geodesic_binary/hrna.py`): full Newton,
+HRNA with the hole fixed and Newton with the hole fixed, from the P1 start state, with the
+events inside the 280 M of the run (who leaves, when the binary is wider than 2 a_b, the
+captured member's turning points, distances at t = 280).
+Prediction: it reproduces the lead's V5/V5b/V6a numbers for q = 4 exactly (same functions,
+same state; runs F-hills-20261115-145251-090f5dc, -145559-a314517): Newton full ejects m1
+(comp0) with +1.3119 units against the barycentre (unit 4.96e-3 M), m2 bound with
+a = 7.75, e = 0.25, pericentre 5.81 M, closest approach 5.78 M; HRNA ejects m2 with +0.970
+units and binds m1 (E1 = -0.500) with a first pericentre of 7.26 M at t = 121; Newton with
+the hole fixed ejects m1 (+1.83) and binds m2 (pericentre 6.11 M at t = 142). New numbers
+(no prediction beyond [JUDGEMENT]): the binary is wider than 2 a_b between t = 100 and 140 in
+all three; at t = 280 the ejected member is beyond 60 M in all three. Refuted if any of the
+reproduced numbers differs in the third digit.
