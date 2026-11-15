@@ -16,6 +16,12 @@ Run: cd tracks/F-hills/newton3 && OMP_NUM_THREADS=1 python3 scripts/compare_full
 import argparse
 import os
 import sys
+
+# one thread per worker process: the parallelism is the process pool (--workers = the
+# cores of the run); nrpic-run sets the thread count to --cores, which every worker would
+# inherit (finite-q run F-20261115-174959-9e8a361 used about 20 cores for 6 workers, stopped)
+for _v in ("OMP_NUM_THREADS", "OPENBLAS_NUM_THREADS", "MKL_NUM_THREADS"):
+    os.environ[_v] = "1"
 import numpy as np
 from multiprocessing import Pool
 

@@ -409,3 +409,23 @@ origin to 1e-12; the binary centre of mass at r0 to 1e-9. Refuted by any miss.
   1e-4, 1e-6: hold); integrated from the file state the outcome and energies agree
   (E_ej 1.61267 vs 1.61272). puncture_input.py --predict on the q = 10 start returns the
   lead's V5 captured orbit (a 7.547, e 0.2474, r_p 5.68).
+
+## 2026-11-15 P3 rerun outcome (Q3, Q4 in part); finite-q run stopped and resubmitted
+
+- P3 (rerun F-20261115-174142-0d549b5, analysis F-20261115-175000-d2dc283): medians
+  relative to the restricted mean |E|: 6.05e-4, 7.29e-4 at M/m = 1e6 (wave 1 6.0e-4,
+  7.3e-4; Q3's "< 10 percent change": holds), 0.265, 0.591 at M/m = 10 (wave 1 0.26, 0.59;
+  the old definition from the same trajectories 0.256, 0.590; Q4's "< 5 points": holds);
+  fate mismatch identical; outcome changed for 2 of 200 phases at D = 0.1, M/m = 10.
+  Figure `fig_full_vs_restricted.png` looked at: corrected and old medians lie on each
+  other; the corrected dE curves of the left panels are the wave-1 curves without the
+  survivors (NaN now).
+- Q5 rerun (F-20261115-174959-3188846): numbers as the first pass, stalled phases counted
+  apart (2 of 360 at q = 10, none at q = 4); energies at t = 100..270 added: at t = 200 the
+  corrected E_ej is 1.6128 (q = 10) and 1.3120 (q = 4), the wave-1 definition 1.827 and
+  1.494. Figure looked at after the layout fix: legends and titles clear.
+- finite q (F-20261115-174959-9e8a361): stopped by me after 2 min (exit -15, closed as
+  failed): nrpic-run sets the thread count to --cores = 6, every pool worker inherited it
+  and the six workers used about 20 cores (ps: 300-350 percent each), above the 16 of the
+  session. compare_full.py and passages.py now pin one thread per worker before numpy is
+  imported; resubmitted with the same 6 workers. No result of the stopped run is used.
