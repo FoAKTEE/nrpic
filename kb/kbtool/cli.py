@@ -297,6 +297,8 @@ def parser():
     s.add_argument("--eq")
     s.add_argument("--fig")
     s.add_argument("--max-chars", type=int)
+    s.add_argument("--db", help="text views: database file (default db/current, else kb.sqlite)")
+    s.add_argument("--work", action="store_true", help="text views: read the working database kb.sqlite")
     s.set_defaults(fn=cmd_show)
 
     _code_cli.register(sub)                    # fetch-repos, code, link, watch (kbtool/code_cli.py)

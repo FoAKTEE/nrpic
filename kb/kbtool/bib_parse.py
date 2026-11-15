@@ -165,7 +165,12 @@ def parse_bib(text):
         while j < len(body):
             fm = re.compile(r"\s*([A-Za-z][\w\-:.]*)\s*=\s*").match(body, j)
             if not fm:
-                break
+                # junk such as `//eprint = "..."` (not BibTeX): skip to the next comma at depth 0
+                nxt = _next_comma(body, j)
+                if nxt is None:
+                    break
+                j = nxt + 1
+                continue
             name = fm.group(1).lower()
             j = fm.end()
             val, j = _bib_value(body, j)
@@ -187,6 +192,20 @@ def parse_bib(text):
                 break
         out.append({"cite_key": key, "type": typ, "fields": fields, "raw": text[m.start():i]})
     return out
+
+
+def _next_comma(body, j):
+    depth = 0
+    while j < len(body):
+        c = body[j]
+        if c == "{":
+            depth += 1
+        elif c == "}":
+            depth -= 1
+        elif c == "," and depth == 0:
+            return j
+        j += 1
+    return None
 
 
 def _bib_value(body, j):

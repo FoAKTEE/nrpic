@@ -28,6 +28,8 @@ CITE_TEXT_RE = re.compile(r"\\(?:cite|citep|citet|citealt|citealp|onlinecite|Cit
 DISPLAY_TEXT_RE = re.compile(r"\\begin\s*\{(equation|align|gather|multline|eqnarray|flalign|alignat|displaymath|"
                              r"dmath)(\*?)\}(.*?)\\end\s*\{\1\2\}", re.S)
 LABEL_RE = re.compile(r"\\label\s*\{[^{}]*\}")
+KEEP_ARG_RE = re.compile(r"\\(?:texttt|textsf|textup|textmd|textsl|textnormal|mbox|hbox|fbox|textsuperscript)\s*\{")
+HREF_RE = re.compile(r"\\href\s*\{([^{}]*)\}\s*\{((?:[^{}]|\{[^{}]*\})*)\}")
 
 _KNOWN = None
 
@@ -108,6 +110,10 @@ def to_text(tex, labels=None, macros=None):
         return f"({num})" if m.group(1).lower() == "eqref" else str(num)
 
     t = REF_RE.sub(ref, tex)
+    # pylatexenc 2.11 drops the argument of \texttt, \textsf, \textup, \textmd, \mbox (checked
+    # on 2026-11-15) and raises on some \href forms: keep their text
+    t = KEEP_ARG_RE.sub(r"\\textrm{", t)
+    t = HREF_RE.sub(lambda m: m.group(2), t)
     t = CITE_TEXT_RE.sub("[cit.]", t)
     t = LABEL_RE.sub("", t)
     t = DISPLAY_TEXT_RE.sub(lambda m: " $" + re.sub(r"\\\\(\[[^\]]*\])?|&|\\nonumber|\\notag", " ", m.group(3))

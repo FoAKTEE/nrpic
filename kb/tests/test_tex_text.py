@@ -92,3 +92,9 @@ def test_title_and_author_definitions_are_skipped():
                    r"\begin{document}\title{Real title}\author{A. One \and B. Two}\end{document}")
     assert st["title"]["tex"] == "Real title"
     assert [a["tex"] for a in st["authors"]] == ["A. One", "B. Two"]
+
+
+def test_code_names_survive_conversion():
+    # pylatexenc 2.11 alone drops the argument of \texttt and \textsf and raises on \href
+    t = T.to_text(r"on top of the \texttt{AthenaK} code and \textsf{GRChombo}; see \href{https://x.org}{the site}.")
+    assert t == "on top of the AthenaK code and GRChombo; see the site."

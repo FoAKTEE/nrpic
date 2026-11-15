@@ -113,6 +113,11 @@ def check_labels(lay, con):
         flat = open(os.path.join(lay.build, "tex", pid.replace("/", "_"), "flat.tex"), encoding="utf-8").read()
         stored = {r[0] for r in con.execute("SELECT label FROM equations WHERE paper_id=? AND label IS NOT NULL",
                                             (pid,))}
+        # body only, with the paper's environment shorthands (\\be -> \\begin{equation}) written out
+        from kbtool import tex_macros as M
+        aliases = M.env_aliases(M.collect(flat))
+        mb = re.search(r"\\begin\s*\{document\}", flat)
+        flat = M.substitute_aliases(flat[mb.end():] if mb else flat, aliases)
         in_flat = set()
         for m in DISPLAY.finditer(flat):
             in_flat |= {x.strip() for x in re.findall(r"\\label\s*\{([^{}]*)\}", m.group(3))}
@@ -214,8 +219,7 @@ def figures(con, out_dir, summary):
     ax.set_yticks(y)
     ax.set_yticklabels([r["arxiv"] for r in fr], fontsize=7)
     ax.set_xlabel("corpus papers citing it")
-    ax.text(0.98, 0.02, "blue: in manifest (not yet ingested)\nred: not in manifest", transform=ax.transAxes,
-            ha="right", va="bottom", fontsize=8)
+    ax.set_title("blue: in the manifest, not ingested yet; red: not in the manifest", fontsize=8)
     fig.savefig(os.path.join(out_dir, "fig_citations_k3.png"))
     plt.close(fig)
 

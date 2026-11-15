@@ -89,6 +89,9 @@ BIB = r"""
 }
 @ARTICLE(Old97,
   title = {Old style}, eprint = "gr-qc/9703066", year = 1997)
+@article{junk, title = {Junk field},
+    //eprint = "1602.03837",
+    doi = "10.1103/PhysRevLett.116.061102"}
 @misc{web, howpublished = {\url{https://arxiv.org/abs/2111.05282v3}}, title={Web}}
 @book{nobook, title = {A Book}, publisher = {P}}
 """
@@ -96,7 +99,8 @@ BIB = r"""
 
 def test_parse_bib():
     es = {e["cite_key"]: e for e in B.parse_bib(BIB)}
-    assert set(es) == {"East:2019", "Old97", "web", "nobook"}
+    assert set(es) == {"East:2019", "Old97", "web", "nobook", "junk"}
+    assert es["junk"]["fields"]["doi"] == "10.1103/PhysRevLett.116.061102"     # after a `//eprint` line
     assert es["East:2019"]["fields"]["title"] == "{Relativistic simulations of {Large} scale structure}"
     assert B.bib_entry_ids(es["East:2019"])[:2] == ("1908.05683", "10.1103/PhysRevD.100.064029")
     assert B.bib_entry_ids(es["Old97"])[0] == "gr-qc/9703066"
