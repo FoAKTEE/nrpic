@@ -86,7 +86,7 @@
     "nodes": 1,
     "gpus": 0,
     "cores": 1,
-    "walltime_s": null,
+    "walltime_s": 394.819,
     "wall_limit": null,
     "segments_max": null,
     "gpu_hours_requested": 0.0,
@@ -97,15 +97,15 @@
   "outputs": {
     "dir": "scratch/F-hills/F-20261115-173543-29e87e8",
     "sha256sums": "sha256sums.txt",
-    "sha256sums_sha256": null,
-    "bytes": null,
-    "files": null
+    "sha256sums_sha256": "f0bf74ddc73d1d229913a34132bbb9fb4ea7f169bf22a9bfeef60cc0076a5dc4",
+    "bytes": 974987406,
+    "files": 24
   },
-  "status": "running",
-  "exit_code": null,
+  "status": "stopped",
+  "exit_code": -15,
   "registered": "2026-11-15T17:35:44Z",
-  "started": null,
-  "ended": null,
+  "started": "2026-11-15T17:35:44Z",
+  "ended": "2026-11-15T17:42:19Z",
   "parents": [],
   "notes": "rerun of F-20261115-173106-57c4b4c (stopped: tracker files went to the worktree root); the processor build is serial, one core",
   "budget_at_submit": {
@@ -117,5 +117,6 @@
     "cores_busy": 0,
     "runs": 80,
     "allotment_from": "coord/DECISIONS/0006-compute-budget.md + 0014-budgets-after-wave-1.md"
-  }
+  },
+  "finished": "2026-11-15T17:42:23Z"
 }
