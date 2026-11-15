@@ -265,3 +265,56 @@ shells about 8 M, before the turnaround at 9.54 M). (d) `bound-mp-n160` (1+log):
 lapse front reaches the centre near t = 3 M (central lapse 0.72 at 4 M after 1.71 at
 2 M): T3 (iv) confirmed in timing; its core errors at least twice those of
 `bound-ct-n160` (prediction (iv)).
+
+Correction: the heading time of the previous entry ("15:40Z") is wrong; it was written at
+15:30Z, before the analysis run below.
+
+## 15:37Z Outcomes of the T2d/T3 re-analysis
+
+Runs: `core-20261115-153052-b17f40d` (first pass), `core-20261115-153429-cdc0f54`
+(figure layout), `core-20261115-153539-9702c09` (final figures; numbers identical in all
+three), script `idcheck/t2d_t3.py`, numbers `scratch/core/<run>/t2d_t3_numbers.json`.
+Figures `figs/id_t2d_interior.png`, `figs/id_t3_bound.png` (both looked at; the first
+version of each had legends over the data and an unframed |H| panel, corrected in the
+later runs).
+
+(a) T2d CONFIRMED. Interior rms of H (cells further than four cells plus two edge widths
+inside the outermost ball particle), dx = 1, 1/2, 1/4 M:
+- ct-edge2 (CIC, Hermite): t = 8 M 3.94e-4, 7.53e-5, 2.14e-4; t = 10 M 3.61e-4,
+  1.77e-4, 3.20e-4 (not converging, larger at 1/4 than at 1/2 M);
+- ct-edge2-ext (CIC, sources extrapolated): 4.00e-4, 5.30e-5, 2.20e-4; 3.62e-4, 1.86e-4,
+  3.27e-4 (the extrapolation does not change the late residual);
+- ct-edge2-prod (cubic cloud, compensation, spline metric, sources extrapolated):
+  dx = 1/2, 1/4 M: 2.54e-5, 5.51e-6 at 8 M; 2.62e-5, 1.24e-5 at 10 M.
+At dx = 1/4 M the production deposit is 39 and 26 times below ct-edge2 at 8 and 10 M,
+below the 5e-5 bound, and below its own dx = 1/2 M value (ratio 4.6 at 8 M, 2.1 at
+10 M). The late interior residual of ct-edge2 is therefore the deposit (cloud-in-cell
+of a lattice that has drifted against the mesh), as hypothesized. Equal to the lead's
+numbers to the printed digits (same code).
+(b) CONFIRMED: the boundary layer (r > 0.7 of the half-width) carries rms H 3.71e-4 to
+3.74e-4 at 10 M in every smooth-edge run, whatever the deposit; it, not the ball,
+dominates the mesh mean of |H| quoted in the lead entry (2.3e-4). Item 4 of
+JOURNAL-id.md entry 8 (outer boundary condition for K_ij ~ r^(-3/2)) stays open.
+(c) T3 at dx = 1/8 M (`t3-bound-ct-n320`, core-20261115-042001-abc5fe2): the run BREAKS
+DOWN when the lapse front reaches the centre. Central lapse a(tau_c) to 1.25 until
+t = 8 M, 1.462 at 8.78 M, 0.551 at 8.875 M, non-finite from 8.906 M; all 211062
+particles removed as non-finite by 9.4 M; the code goes on to t = 12 M and exits with
+status 0 (OPEN.md item 11). The largest |H| on the mesh at the front grows with
+resolution: 0.135 (dx = 1/2 M), 6.44 (1/4 M), 184 at 8.75 M and infinite at 9 M (1/8 M)
+(cstat history). A front that steepens without bound as the mesh is refined is the
+signature of a gauge shock [JUDGEMENT; no run here separates it from an instability of
+the formulation]. Before the breakdown the finest run is the most accurate: shells turn
+around at a_max 1.2472 (core), 1.2485, 1.2509, 1.2505 (exact 1.2500) at tau 9.40, 9.50,
+9.56, 9.59 M (exact 9.542 M); largest |eps| at tau = 2 M 4.4e-4 against 3.5e-3 at
+dx = 1/4 M. T3 as predicted (run reaching t = 12 M with |eps| < 1e-2) is REFUTED at
+dx = 1/8 M; at dx = 1/2 and 1/4 M the earlier outcome stands (turnaround within 0.5
+per cent at 1/4 M, errors 0.11 (core) over the whole run, no convergence after the front).
+(d) T3 (iv) CONFIRMED: with 1+log (`t3-bound-mp-n160`) the central lapse peaks at 2.08
+near t = 3 M and falls to 0.44 at 3.6 M; core |eps| at tau = 8 M 6.5e-2 against 4.85e-3
+with the conformal-time lapse (13 times), 0.58 against 0.11 over the run.
+(e) `t3-bound-gs0-n160` (lapse 1, shift 0, card, dx = 1/4 M): unstable as on processors,
+first particle loss at 4.56 M (processor run at 1/2 M: not-a-number at 4.9 M); the
+analysis now records it (3 dumps skipped: no ball particle left) instead of crashing.
+The crash of `test2_evolution.py --prefix t3` is thus worked around in
+`idcheck/t2d_t3.py`; `analysis/id/test2_evolution.py` itself is unchanged (not this
+package's file): request to the lead in README.md.
