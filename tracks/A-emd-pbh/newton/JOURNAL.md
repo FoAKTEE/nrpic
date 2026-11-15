@@ -247,7 +247,9 @@ a step effect above 1e-3.
 Paper start a0 = 1/(2 alpha) (axis 1 at rest), delta_L = 0.2 unless named, 128^3 over
 [-1.5 A_max, 1.5 A_max]^3 (A_max the largest semi-axis of the reference up to 1.35 t_1),
 lattice hxi = 0.025 (2.7e5 particles), run to 1.35 t_1. Reference first collapses (sampled
-ball, R_vol = 1.000107 for hxi = 0.025 is applied by the script): e = 0.05, 0.1, 0.2, 0.3
+ball: R_vol = 1.002794, 1.000414, 1.000017, 0.999964 for hxi = 0.1, 0.05, 0.025, 0.0125,
+N = 4224, 33552, 268096, 2144432, computed with `make_deformed_ball.lattice_ball` before the
+runs and applied by the script; a first draft of this line carried an uncomputed value): e = 0.05, 0.1, 0.2, 0.3
 (p = 0): t_1 = 22.78, 20.47, 16.63, 13.76 (nominal radius); hoop line h_1 delta_L = 0.359,
 0.592, 0.855, 0.968 (`tables/ellipsoid_first_collapse.csv`).
 (a) the first-collapse axis is axis 1 in every case; for p = -e (alpha = beta, a spindle)
