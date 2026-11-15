@@ -242,8 +242,11 @@ def main():
         res = three(out)
     else:
         raise SystemExit(__doc__)
-    path = os.path.join(out if mode != "single" else os.path.dirname(os.path.normpath(out)),
-                        f"test_nrread_{mode}.json")
+    # results go to the run directory of nrpic-run when there is one, never into the run
+    # directory that is being read
+    dest = os.environ.get("NRPIC_RUN_DIR") or (
+        out if mode == "synthetic" else os.path.dirname(os.path.normpath(out)))
+    path = os.path.join(dest, f"test_nrread_{mode}.json")
     json.dump(res, open(path, "w"), indent=1, default=str)
     n_fail = sum(not r["ok"] for r in RESULTS)
     print(f"{len(RESULTS) - n_fail}/{len(RESULTS)} passed; {path}")

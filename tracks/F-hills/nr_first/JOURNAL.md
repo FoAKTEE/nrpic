@@ -324,3 +324,20 @@ Reading for P1 [JUDGEMENT]: at the passage's resolution m/8 the t = 0 constraint
 is set by the mesh, not by the data; the data's own violation (4.9e-7 with the correction,
 1.6e-5 without) is visible only from m/16 on. The correction is still needed for the
 members' masses (three_punctures PLAN section 5: 2.5e-3 M per member without it at q = 10).
+
+## 2026-11-15 E4 test 3, outcome (run F-20261115-181805-f9c3473 on C0's case approx at m/8)
+
+2 of 4 checks passed [VERIFIED, `test_nrread_three.json` of the run; rows of
+`hills.horizon_summary_<n>.txt` and `hills.co_<n>.txt` of C0's `approx_L10`]:
+- three trackers, at the input positions within 4.1e-9;
+- FAILED: the finder of m2 (comp1, P/m = 0.268) returned no horizon at t = 0 (NaN row); m1 and
+  the heavy hole were found;
+- FAILED narrowly: m1 0.12778 M (predicted 0.128-0.132) and the heavy hole 0.99607 M
+  (predicted 1.00-1.01). Both lie 0.7-0.8 percent below bare mass times the background factor
+  (factors 1.0296 and 1.0040: `results/c0_constraints.json`, `lam`). [JUDGEMENT] At m/8 and
+  M/8 the horizon radius is about 4 cells; the single-puncture runs at m/8 and m/16 (E3) will
+  show how the finder's mass depends on resolution. No cause is named for the missing m2
+  horizon until a run has tested one (E7 has 25 searches).
+Note: the first version of the test wrote its JSON into the directory it read (C0's
+`approx_L10`); moved to the run directory of F-20261115-181805-f9c3473, and the script now
+writes to `$NRPIC_RUN_DIR`.
