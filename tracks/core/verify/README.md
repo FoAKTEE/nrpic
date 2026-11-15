@@ -20,7 +20,30 @@ extrinsic curvature (T2d, T3), the figures of the G2 stage check.
 | `figscripts/schem_architecture.py` | architecture (exists / wave 1 / to be built) and gate timeline (check C13); `figs/schem_architecture` |
 | `figscripts/paperfig.py` | copy of `harness/style/paperfig.py` (schematic style) |
 
-WAVE2_RESULTS_PLACEHOLDER
+### Results (wave 2; details and predictions in JOURNAL.md from "Wave 2" on)
+
+| Item | Run ids | Outcome |
+|---|---|---|
+| Row 3, prolate at a second resolution (finest cells M/8) | card core-20261115-152845-5728b1d (0.344 card-hours); analysis -162509-c691fb8 | horizon 32.25 M (M/16: 32.00 M); largest M_AH 0.957 (M/16: 0.967), deficit falls with resolution, 3 per cent left at M/16; peak curvature 101 vs 1203 (unresolved caustic). PARTIAL |
+| Row 3, oblate collapse | -- | NOT RUN: `nrpic_cf` refuses a > b; reference potential ready (core-20261115-154359-d74357f, all checks pass). BLOCKED on source work |
+| Row 4, bisection round 1 (y_c 0.72, 0.70, 0.66, 0.64; M/4; 300 M) | card -152842-5728b1d (0.593), -152843-5728b1d (0.596); analysis -160501-ee15e0f | no collapse; fixed rule: STABLE, STABLE, STABLE (edge), UNDECIDED, no bracket. Reading after the runs: 0.66 and 0.64 migrate to their equal-binding members, 0.70 and 0.72 stay: threshold between 0.66 and 0.70, turning point 0.6796 inside. PARTIAL; prediction "0.64 collapses" refuted |
+| Row 4, round 2 (y_c 0.69, 0.67) | card job 4439, run core-20261115-154726-37450f2 | PENDING in the queue at the end of this session |
+| Row 4, control (y_c 0.605 at M/4, 250 M) | card job 4447, run core-20261115-155617-06f844b | PENDING in the queue |
+| T2d (interior H of the smooth-edge expanding ball) | analysis core-20261115-153052-b17f40d, -153429-cdc0f54, -153539-9702c09 | CONFIRMED: production deposit 5.5e-6 / 1.2e-5 at t = 8 / 10 M (dx = M/4), 26-39 times below cloud-in-cell; the mesh mean of H is the boundary layer |
+| T3 (bound ball) | same | dx = M/8 run blows up when the lapse front reaches the centre (|H| at the front 0.14, 6.4, 184 -> inf for dx = 1/2, 1/4, 1/8 M; exit status 0 regardless); 1+log front at 3 M with 13x larger core errors; fixed gauge unstable; the t3 crash is avoided in `idcheck/t2d_t3.py` |
+| C9 three-way convergence figure | core-20261115-154736-f9f5edb | `figs/convergence_three_way` from existing runs: ||H|| ~ N^-1/2 (cluster), second order in dx (expanding ball, smooth edge), every gauge converging, boundary effect at 24 M removed by moving the boundary to 48 M |
+| C8, C11, C13 figures | -162615-ca0fd2b, -162509-c691fb8, -154738-f9f5edb | `figs/schem_ladder`, `figs/prolate_mosaic`, `figs/schem_architecture` |
+
+Card time of this package in wave 2: 1.53 card-hours used (jobs 4432, 4433, 4434), 0.84
+more requested by the two queued jobs (4439: wall limit 50 min; 4447: 30 min), 2.37 at
+most of the 2.5 allowed. When they end: `ladder2/cards.py finish <run_id>`, then
+`ladder2/cluster_fate.py` on all six bisection directories plus the control, by the
+rule of 15:30Z and the migration criterion of 16:07Z (JOURNAL.md).
+
+Not done in this package: the oblate collapse (blocked), a third prolate resolution,
+the verifier report (C15), the working note (C14), and the STAGE package files
+(CHECKLIST, EVIDENCE, OPEN: the lead's).
+
 
 ### How to rerun (wave 2)
 
