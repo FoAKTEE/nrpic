@@ -1,0 +1,158 @@
+# SR-1 of Track A (tracks/A-emd-pbh/stage/G1/STATUS.md section 3): data set 2t (expball
+# smoothed top-hat core inside an Einstein-de Sitter ball, H R_b = 0.5, C^4 taper), lapse 1
+# and shift 0 held fixed (geodesic slicing, comoving coordinates: t = proper time of every
+# particle). Release core-v0.3. The step must shrink as the core collapses: segment 1 runs
+# to t = 42.0 at cfl 0.25; later segments restart with a smaller time/cfl_number
+# (runs_ball/README.md). Give on the command line:
+#   particles/particle_file=<prep dir>/..._lat38_track.nrp   particles/traj_ntrack=<n_track>
+# dx = M/2 here (256^3 over [-64, 64]^3); dx = M: mesh/nx1..3=128 meshblock/nx1..3=32.
+# Production deposit of cosmo/README.md (cubic cloud, compensation, spline metric) and
+# sources extrapolated to mid-step (core's recommendation, JOURNAL-id.md lead entry).
+
+<comment>
+problem   = expanding dust ball with a bound core, data set 2t, geodesic slicing
+
+<job>
+basename  = ball
+
+<mesh>
+nghost    = 4
+nx1       = 256
+x1min     = -64.0
+x1max     = 64.0
+ix1_bc    = outflow
+ox1_bc    = outflow
+nx2       = 256
+x2min     = -64.0
+x2max     = 64.0
+ix2_bc    = outflow
+ox2_bc    = outflow
+nx3       = 256
+x3min     = -64.0
+x3max     = 64.0
+ix3_bc    = outflow
+ox3_bc    = outflow
+
+<meshblock>
+nx1       = 64
+nx2       = 64
+nx3       = 64
+
+<time>
+evolution  = dynamic
+integrator = rk4
+cfl_number = 0.25
+nlim       = -1
+tlim       = 42.0
+ndiag      = 10
+
+<z4c>
+lapse_oplog     = 0.0
+lapse_harmonicf = 1.0
+lapse_harmonic  = 0.0
+lapse_volume    = 0.0
+lapse_advect    = 0.0
+shift_Gamma     = 0.0
+shift_eta       = 0.0
+shift_advect    = 0.0
+diss            = 0.5
+chi_div_floor   = 1.0e-5
+damp_kappa1     = 0.02
+damp_kappa2     = 0.0
+excise_chi      = 0.0
+
+<fastflow>
+find_every        = 2
+metric_drvts      = interpolant
+num_horizons      = 1
+npunct            = 0
+ntheta            = 16
+lmax              = 8
+use_puncture_0    = -1
+center_x_0        = 0.0
+center_y_0        = 0.0
+center_z_0        = 0.0
+initial_radius_0  = 3.6
+flow_iterations_0 = 1000
+flow_alpha_beta_const_0 = 1.0
+hmean_tol_0       = 100.0
+mass_tol_0        = 1.0e-6
+start_time_0      = 44.2
+stop_time_0       = 1000.0
+verbose           = false
+
+<particles>
+particle_type  = nrpic
+pusher         = midpoint
+metric         = mesh
+interp         = bspline
+tolerance      = 1.0e-10
+max_iterations = 50
+deposit        = true
+deposit_shape  = pcs
+deposit_comp_c = 0.1666666666666667
+deposit_comp_c2 = 0.4666666666666667
+nfilter        = 0
+filter_compensate = false
+source_density = true
+source_extrap  = true
+alpha_exc      = -1.0
+hist_dcycle    = 1
+cstat_dcycle   = 1
+traj_dcycle    = 2
+traj_ntrack    = 0
+snap_dt        = 2.0
+field_constraints = true
+field_time1    = 16.9
+field_time2    = 30.0
+field_time3    = 41.9
+particle_file  = ball.nrp
+
+<problem>
+pgen_name  = nrpic_cf
+ncomp      = 1
+comp0_type = table
+comp0_file = /data/haiyangw/nrpic/scratch/A-emd-pbh/A-emd-pbh-20261115-130609-947c898/expball_smooth_tophat_HRb0p5_dc1_R10p3_R20p75_w0p1875.tab
+lapse      = table
+lapse_comp = 0
+shift      = zero
+
+<output1>
+file_type = hst
+dt        = 0.25
+
+<output2>
+file_type = rst
+dt        = 1000.0
+
+<output3>
+file_type = tab
+variable  = adm
+dt        = 0.25
+slice_x2  = 0.01
+slice_x3  = 0.01
+data_format = %.12e
+
+<output4>
+file_type = tab
+variable  = z4c
+dt        = 0.25
+slice_x2  = 0.01
+slice_x3  = 0.01
+data_format = %.12e
+
+<output5>
+file_type = tab
+variable  = con
+dt        = 0.25
+slice_x2  = 0.01
+slice_x3  = 0.01
+data_format = %.12e
+
+<output6>
+file_type = tab
+variable  = tmunu
+dt        = 0.25
+slice_x2  = 0.01
+slice_x3  = 0.01
+data_format = %.12e
