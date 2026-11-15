@@ -1,0 +1,78 @@
+{
+  "schema": "nrpic-run-manifest/1",
+  "run_id": "E-20261115-140116-87c1cc5",
+  "track": "E-stoch-inf",
+  "gate": "G0",
+  "kind": "scouting",
+  "purpose": "L-R codebase: rerun of the E-pre-2 checks D1-D4 and the cost model, comparison with run E-stoch-inf-20261115-123936-b2ec5c7",
+  "preregistered_in": null,
+  "launcher": "local",
+  "command": [
+    "bash",
+    "-c",
+    "OMP_NUM_THREADS=4 OPENBLAS_NUM_THREADS=4 bash tracks/E-stoch-inf/analysis/lead/rerun_helper.sh codebase \"$NRPIC_RUN_DIR\""
+  ],
+  "cwd": ".",
+  "git": {
+    "sha": "87c1cc5192cc349a9a657c28966ac1f6103e57f9",
+    "branch": "track/E-stoch-inf",
+    "dirty": false,
+    "merge_base_main": "a1c223753952674ee38819dc45043591dddc3022",
+    "worktree": "wt/E-stoch-inf"
+  },
+  "code": {
+    "core_tag": null,
+    "athenak_upstream_sha": "c5a0d7f",
+    "kokkos_sha": "6739bc623081648af9e752b616d9671527922cbf",
+    "problem": null
+  },
+  "env": {
+    "host": "anta",
+    "env_hash": "0279f117f9b5066d0d8f22b387f643d57a7ce55d3c210ad3e0a880c49ae63266",
+    "machine_file_sha256": "fb54b7387bc058c778fdd2fec12e58d67459a657278df6a87d04f63daccb1968",
+    "uv_lock_sha256": "5417f6ba318b914aa3800e5d55f7b11fdd8df13c2688bdda7d419240aa1d5863",
+    "track_requirements_sha256": null,
+    "container_digest": null,
+    "compiler": "g++ 11.4.0",
+    "mpi": "none (Athena_ENABLE_MPI=OFF)",
+    "gpu": null,
+    "python": "3.10.12 /data/haiyangw/nrpic/wt/E-stoch-inf/.venv"
+  },
+  "input": null,
+  "inputs": [],
+  "batch_entries": null,
+  "resources": {
+    "nodes": 1,
+    "gpus": 0,
+    "cores": 4,
+    "walltime_s": null,
+    "wall_limit": null,
+    "segments_max": null,
+    "gpu_hours_requested": 0.0,
+    "gpu_hours": null,
+    "particles": null
+  },
+  "slurm": null,
+  "outputs": {
+    "dir": "scratch/E-stoch-inf/E-20261115-140116-87c1cc5",
+    "sha256sums": "sha256sums.txt",
+    "sha256sums_sha256": null,
+    "bytes": null,
+    "files": null
+  },
+  "status": "running",
+  "exit_code": null,
+  "registered": "2026-11-15T14:01:16Z",
+  "started": null,
+  "ended": null,
+  "parents": [],
+  "notes": "",
+  "budget_at_submit": {
+    "gpu_hours_allotted": 10.0,
+    "cores_allotted": 16,
+    "gpu_hours_used": 0.0,
+    "gpu_hours_reserved": 0.0,
+    "cores_busy": 8,
+    "runs": 35
+  }
+}
