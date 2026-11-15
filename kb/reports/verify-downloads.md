@@ -1,6 +1,6 @@
 # kb verify-downloads report
 
-Checked 2026-11-15T13:27:48Z by kbtool 0.1.0 against `manifests/` (data root `/data/haiyangw/nrpic/kb-data`).
+Checked 2026-11-15T14:03:53Z by kbtool 0.1.0 against `manifests/` (data root `/data/haiyangw/nrpic/kb-data`).
 
 ## arXiv
 

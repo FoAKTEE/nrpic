@@ -98,3 +98,17 @@ def test_code_names_survive_conversion():
     # pylatexenc 2.11 alone drops the argument of \texttt and \textsf and raises on \href
     t = T.to_text(r"on top of the \texttt{AthenaK} code and \textsf{GRChombo}; see \href{https://x.org}{the site}.")
     assert t == "on top of the AthenaK code and GRChombo; see the site."
+
+
+def test_definitions_through_an_alias_of_newcommand():
+    # found by the kb lead on 1908.05683 and 1711.06681: \nc is \newcommand, \beq is defined with \nc
+    pre = (r"\newcommand{\nc}{\newcommand}\let\newc=\newcommand\def\mydef{\def}"
+           r"\nc{\beq}{\begin{equation}}\nc{\eeq}{\end{equation}}\newc\half{\frac12}"
+           r"\newcommand{\wrapper}{\newcommand{\inner}{x}}")
+    mac = M.collect(pre)
+    assert M.env_aliases(mac) == {"beq": r"\begin{equation}", "eeq": r"\end{equation}"}
+    assert mac["half"]["body"] == r"\frac12"
+    assert "wrapper" in mac and "inner" not in M.definition_aliases(pre)   # a body that defines is no alias
+    doc = pre + r"\begin{document}\section{A}\beq a=b \label{e1}\eeq\begin{equation} c \end{equation}\end{document}"
+    st = S.extract(doc)
+    assert [(e["env"], e["number"]) for e in st["equations"]] == [("equation", "1"), ("equation", "2")]

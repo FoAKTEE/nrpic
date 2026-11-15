@@ -70,16 +70,45 @@ def read_csname(s, i):
     return None, i
 
 
-DEF_START = re.compile(r"\\(newcommand|renewcommand|providecommand|DeclareRobustCommand|DeclareMathOperator"
-                       r"|def|gdef|edef|xdef|newcommandx)(\*?)(?![A-Za-z@])")
+DEF_KINDS = ("newcommand", "renewcommand", "providecommand", "DeclareRobustCommand", "DeclareMathOperator",
+             "def", "gdef", "edef", "xdef", "newcommandx")
+DEF_START = re.compile(r"\\(" + "|".join(DEF_KINDS) + r")(\*?)(?![A-Za-z@])")
+_KIND = "(" + "|".join(DEF_KINDS) + ")"
+# an alias of a definition command: \newcommand{\nc}{\newcommand}, \def\nc{\newcommand},
+# \let\nc\newcommand (the body must be the bare command, so a macro that defines another is no alias)
+ALIAS_DEF_RE = re.compile(
+    r"\\(?:newcommand|renewcommand|providecommand)\*?\s*\{\s*\\([A-Za-z@]+)\s*\}\s*\{\s*\\" + _KIND + r"\s*\}"
+    r"|\\(?:newcommand|renewcommand|providecommand)\*?\s*\\([A-Za-z@]+)\s*\{\s*\\" + _KIND + r"\s*\}"
+    r"|\\(?:def|gdef)\s*\\([A-Za-z@]+)\s*\{\s*\\" + _KIND + r"\s*\}"
+    r"|\\let\s*\\([A-Za-z@]+)\s*=?\s*\\" + _KIND + r"(?![A-Za-z@])")
+
+
+def definition_aliases(text):
+    """{alias: definition command} for aliases such as \\nc -> newcommand."""
+    out = {}
+    for m in ALIAS_DEF_RE.finditer(text):
+        g = m.groups()
+        for k in range(0, len(g), 2):
+            if g[k]:
+                if g[k] not in DEF_KINDS:
+                    out[g[k]] = g[k + 1]
+                break
+    return out
 
 
 def collect(text):
     """Macro definitions in text (preamble and body). Returns {name: spec}; the first
-    \\newcommand wins over a later \\providecommand, a \\renewcommand or \\def overrides."""
+    \\newcommand wins over a later \\providecommand, a \\renewcommand or \\def overrides.
+    Definitions written through an alias of a definition command (\\nc for \\newcommand)
+    count as definitions of that command."""
     macros = {}
-    for m in DEF_START.finditer(text):
-        kind, star = m.group(1), m.group(2)
+    aliases = definition_aliases(text)
+    start = DEF_START
+    if aliases:
+        start = re.compile(r"\\(" + "|".join(list(DEF_KINDS) + sorted(aliases, key=len, reverse=True))
+                           + r")(\*?)(?![A-Za-z@])")
+    for m in start.finditer(text):
+        kind, star = aliases.get(m.group(1), m.group(1)), m.group(2)
         i = m.end()
         name, i = read_csname(text, i)
         if not name:

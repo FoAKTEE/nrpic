@@ -184,15 +184,24 @@ def cmd_export(a):
         if not p:
             print(f"{pid}: not ingested", file=sys.stderr)
             return 1
-        secs = {r[0]: r[1:] for r in con.execute("SELECT section_id, number, title, level FROM sections "
+        secs = {r[0]: r[1:] for r in con.execute("SELECT section_id, number, title, level, parent_id FROM sections "
                                                  "WHERE paper_id = ?", (pid,))}
         out = [f"# {p[0]} (arXiv:{pid}{p[2] or ''})", "", "## Abstract", "", p[1] or "", ""]
         last = None
+        printed = set()
         for sid, kind, text in con.execute("SELECT section_id, kind, text FROM chunks WHERE paper_id = ? AND kind IN "
                                            "('body', 'appendix') ORDER BY char_start", (pid,)):
             if sid != last and sid in secs:
-                num, title, level = secs[sid]
-                out += ["", "#" * (1 + min(level or 1, 4)) + f" {num + ' ' if num else ''}{title}", ""]
+                # a section whose text starts with a subsection owns no chunk: print the headings of
+                # ancestors not yet printed, outermost first
+                chain, s = [], sid
+                while s in secs and s not in printed:
+                    chain.append(s)
+                    s = secs[s][3]
+                for s in reversed(chain):
+                    num, title, level, _ = secs[s]
+                    out += ["", "#" * (1 + min(level or 1, 4)) + f" {num + ' ' if num else ''}{title}", ""]
+                    printed.add(s)
                 last = sid
             out.append(text)
             out.append("")
