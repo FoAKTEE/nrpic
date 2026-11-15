@@ -1,0 +1,55 @@
+{
+ "run_id": "core-20261115-181321-2aa3f30",
+ "owner": "core",
+ "command": [
+  "/data/haiyangw/nrpic/wt/core-idsolve/.work/build_cpu/src/athena",
+  "-i",
+  "ball_fields.athinput",
+  "mesh/nx1=128",
+  "mesh/nx2=128",
+  "mesh/nx3=128",
+  "meshblock/nx1=32",
+  "meshblock/nx2=32",
+  "meshblock/nx3=32",
+  "time/nlim=1000",
+  "time/tlim=2.0",
+  "particles/nfilter=0",
+  "particles/source_density=true",
+  "particles/source_extrap=true",
+  "z4c/lapse_oplog=0.0",
+  "z4c/lapse_harmonic=0.3333333333333333",
+  "particles/particle_file=tri_h0p25_w2_e0p05.nrp",
+  "problem/comp0_file=ball_h0p25_w2.tab",
+  "particles/id_residual=code"
+ ],
+ "cwd": "/data/haiyangw/nrpic/scratch/core/core-20261115-181321-2aa3f30",
+ "commit": "2aa3f30",
+ "source_modified_since_commit": false,
+ "inputs": [
+  {
+   "path": "/data/haiyangw/nrpic/scratch/core/tmp/idsolve/evolve/ball_fields.athinput",
+   "sha256": "3ac88617a1e333ea85d448987ffee200ed5bd3f2bc7c8690739c9a266063be2b"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/scratch/core/idsolve_ic/tri_h0p25_w2_e0p05.nrp",
+   "sha256": "a4a911f366eeea3580c5e55d50cf53bb17e7d08fbf54f2a67581b67e4d98c63b"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/scratch/core/idsolve_ic/ball_h0p25_w2.tab",
+   "sha256": "898611ca4e2ec699e964d561b2a73473b451fdee640bc97e1a31fdd3590fb1f0"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/wt/core-idsolve/.work/build_cpu/src/athena",
+   "sha256": "65e3a59ffc0eeb22cee5ae4f81bd8560dc6518fb32562f63abd6771f6e6a814a",
+   "role": "executable"
+  }
+ ],
+ "output_directory": "/data/haiyangw/nrpic/scratch/core/core-20261115-181321-2aa3f30",
+ "purpose": "initial-data solver, test F: smooth triaxial ball with the settings of test E at 128 cells to t = 2 with field dumps, solve code",
+ "kind": "scouting",
+ "tag": "idsolve-evo-res-code-n128",
+ "state": "running",
+ "cores": 1,
+ "card_hours": 0.0,
+ "started_utc": "2026-11-15T18:13:21Z"
+}

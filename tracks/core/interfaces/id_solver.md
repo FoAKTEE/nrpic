@@ -160,7 +160,71 @@ approximation scheme, on every level (MeshBlock levels and root grid; not on oct
 
 ## 6. Interface
 
-(Filled after the implementation: options, files, lines of shared files touched.)
+Source: `athenak/src/particles/nrpic_idsolve.cpp` (the solver, 682 lines) and
+`athenak/src/multigrid/multigrid_robin.cpp` (Robin faces, 100 lines), commit 87e189e;
+unchanged since [VERIFIED: `git diff 87e189e HEAD -- athenak/src` is empty at the
+commit of this section].
+
+**Options, `<particles>` block.** Nothing is read and nothing enters the parameter dump
+of a restart file unless `id_solve` is present (`NrpicIdSolveInit`, the pattern of
+`NrpicKickInit`).
+
+| Option | Default | Meaning |
+|---|---|---|
+| `id_solve` | absent (off) | `true`: solve the Hamiltonian constraint for psi at the start of a new run (never after a restart) |
+| `id_residual` | `code` | `code`: the residual is the constraint monitor of the code, F = -(psi^5/8) H (`Z4c::ADMConstraints`); `stencil`: the seven-point Laplacian |
+| `id_psi_init` | `trial` | start value: `trial` (psi of the problem generator) or `one` |
+| `id_tol` | 1e-10 | stop when max\|F\| <= id_tol times the largest sum of the absolute terms of the right side of (1) |
+| `id_maxit` | 60 | outer (Newton) iterations; not converged is a fatal error |
+| `id_lin_tol` | 1e-3 | conjugate gradients: residual over right side |
+| `id_lin_maxit` | 50 | conjugate-gradient steps per linear solve |
+| `id_mg_tol` | 1e-3 | defect over source at which a preconditioner (multigrid) solve ends |
+| `id_dump` | `false` | write `<basename>.idsolve.bin` (fields, `docs/FORMATS.md`) |
+
+**Options, `<gravity>` block** (required: it creates the multigrid Poisson solver).
+
+| Option | Required value | Meaning |
+|---|---|---|
+| `four_pi_G` | any (1.0) | read by the module; the solver passes its own factor |
+| `threshold` | `0.0` | the solver sets the defect at which V cycles end (fatal otherwise) |
+| `mg_bc` | `robin` unless the mesh is periodic in all directions | new kind: psi - 1 and every correction fall off as 1/r about (`robin_x1`, `robin_x2`, `robin_x3`), default the origin; fatal on a refined mesh |
+
+Without a gas the `<gravity>` block costs memory only: the per-stage solve of the
+driver returns at once (`mg_gravity.cpp` 191-199 [VERIFIED by reading]). With a gas it
+would add Newtonian self-gravity of the gas: do not combine `id_solve` with hydro or MHD.
+
+**Requirements** (each a fatal error with a message): `metric = mesh`, a `<z4c>` block,
+not `pusher = newton`, `deposit = true`, a uniform mesh, cubic cells, a single rank, a
+conformally flat trial metric (relative deviation below 1e-10), no `<scalar_field>`
+block, `threshold = 0`, Robin faces on a mesh that is not periodic, and on the torus K
+or matter (otherwise the linearised operator has a zero mode).
+
+**What the problem generator must provide**: a conformally flat trial state in the ADM
+variables (any psi_t > 0; K_ij from which K and Abar_ij are taken and held fixed), the
+particles (as now), lapse and shift. Tested generators: `nrpic_cf` (format-1 Gaussian,
+format-2 table of the expanding ball), `nrpic_cosmo` (`id = flrw` with a particle file).
+Not tested: `nrpic_cosmo id = file`, Bowen-York curvature of `nrpic_cf`.
+
+**Outputs**: `<basename>.idsolve.txt` (one record per outer iteration, a summary line)
+and with `id_dump = true` `<basename>.idsolve.bin`; formats in `docs/FORMATS.md`, readers
+`tracks/core/analysis/idsolve/idlib.py`. One line on standard output.
+
+**Lines of shared files touched** (all additions; line numbers of this branch):
+
+| File | Lines | What |
+|---|---|---|
+| `athenak/src/CMakeLists.txt` | 103, 141 | the two new source files |
+| `athenak/src/bvals/bvals.hpp` | 21 | `BoundaryFlag::mg_robin` appended at the end of the enum |
+| `athenak/src/gravity/mg_gravity.cpp` | 77-89, 98, 226-241 | `mg_bc = robin` and its centre; `SolvePoisson` (SolveSource with another factor) |
+| `athenak/src/gravity/mg_gravity.hpp` | 68-71 | declarations of `SolvePoisson`, `Threshold` |
+| `athenak/src/multigrid/multigrid.hpp` | 397-401, 505-507, 689-779 | Robin methods and members; `MGRobinFill` (inline kernel) |
+| `athenak/src/multigrid/multigrid_driver.cpp` | 2193-2194 | `if (robin_) RobinBoundaryRoot();` at the end of `MGRootBoundary` |
+| `athenak/src/multigrid/multigrid_tasks.cpp` | 360-361 | `if (robin_) RobinBoundaryBlocks();` at the end of `PhysicalBoundary` |
+| `athenak/src/particles/nrpic.cpp` | 276 | `NrpicIdSolveInit(pin);` at the end of `NrpicInit` |
+| `athenak/src/particles/nrpic_io.cpp` | 1237 | `NrpicSolveInitialData();` after `NrpicCreateParticles()` in `NrpicStartup` |
+| `athenak/src/particles/particles.cpp` | 122 | delete `pbval_ids` in the destructor |
+| `athenak/src/particles/particles.hpp` | 152-166, 362-369 | `NrpicIdSolveOptions`; members and methods of the solver |
+| `docs/FORMATS.md` | 142-150 | the two output files |
 
 ## 7. What refined meshes and punctures will need later
 
@@ -201,8 +265,58 @@ MPI: the particle module is single-rank (`nrpic.cpp` 60-64 [VERIFIED]); so is th
 
 ## 8. Tests
 
-(Filled after the runs: predictions and outcomes are in `tracks/core/JOURNAL-idsolve.md`.)
+Predictions and outcomes, failed predictions included: `tracks/core/JOURNAL-idsolve.md`
+entries 2 to 8. Run ids per case: `tracks/core/analysis/idsolve/runs.json`; numbers:
+`*_numbers.json` there; figures: `figs/`. Processor build of 87e189e unless stated.
+All numbers below are [VERIFIED] in the runs named.
+
+| Test | What it shows | Outcome |
+|---|---|---|
+| T0 regression | without `id_solve` existing results are unchanged | every output file byte-identical to the build of the unchanged source: seven relativistic cases (geodesics, Boris, deposit, East, Oppenheimer-Snyder on a refined mesh, Jeans, binary on four multigrid levels) and the Newtonian mode (isolated with multipole faces, periodic) (runs core-20261115-154817 to -155952, -160219 to -160227-87e189e; `regress_*_87e189e.json`) |
+| T1 Gaussian, K = 0, against the format-1 psi of `nrpic_cf` | the solver solves what the design says, at the expected order | the same discrete system solved by a sparse direct Newton iteration in scipy agrees to 1.1e-13; error of psi - 1 at the centre -9.10e-3, -2.43e-3, -6.17e-4 (stencil) and -1.92e-2, -5.22e-3, -1.33e-3 (code, ng = 4) at dx = 1, 0.5, 0.25: second order, 0.82 to 0.91 of the prediction from the cloud and stencil moments; monitor after the solve 1.5e-11 to 2.6e-11 (code); Robin faces: error at the face centres 8.3e-5, 2.1e-5, 5.2e-6 (`figs/gauss_*`) |
+| T2 expanding ball with its table curvature (exact psi = 1) | the solve accepts data that already solve the equation, up to discretisation | max\|psi - 1\| 2.33e-3, 5.19e-4, 1.20e-4 at dx = 2, 1, 0.5 (sharp surface), 4.2e-4, 1.10e-4, 2.8e-5 (smooth edge); max\|H\| 6e-3 before, 1.3e-12 to 2.1e-12 after (code); the sharp ball loses 3.1e-2, 4.6e-3, 6.3e-4 of its mass in the monopole at the faces (a failed prediction: the jump of the table curvature sampled at cell centres) (`figs/ball_*`) |
+| T3 the same ball strained by (1.05, 1, 0.95) | Hamiltonian residual before and after the solve against resolution | before: max\|H\| 8.2e-3 to 1.2e-2, rms 4.2e-4, 3.3e-4, 3.2e-4 (a property of the data); after (code): max\|H\| 1.3e-12 to 2.2e-12 at dx = 2, 1, 0.5; quadrupole of the solved psi 4.15e-4, 4.21e-4, 4.20e-4 (resolved); the momentum constraint is not touched (rms 2.7e-3) (`figs/tri_slice`) |
+| T4 plane wave on the torus against `cosmo/ic` | the same discrete system as the spectral reference with the seven-point symbol; the mean fixed by integrability | stencil mode against the seven-point reference: 7.8e-14, 5.7e-14 (one particle per cell), 2.3e-12, 4.6e-14 (eight); against the spectral symbol the fundamental of the difference is the predicted (k dx)^2/12 term to one per cent; code mode max\|H\| 7e-10 to 1.2e-9 (`figs/torus_psi`) |
+| T5 card | the card build gives the solution of the processor build | Gaussian at 64 cells, one A100: same iteration counts (17 outer, 22 conjugate-gradient, 78 V cycles), psi equal to 1.1e-15; 5.7 s against 87 s on one core (run core-20261115-162952-46dcb31, `figs/card_vs_cpu`) |
+| A, C restart | a restart never solves again and continues the solved state | held; the continuation differs from the uninterrupted run by the same 2e-10 in K_min with and without the solve (a property of the Z4c restart) |
+| B, D, E evolution of the strained ball at 64 cells | does the evolution keep the advantage of the solved data? | not for the expanding ball at this resolution: after one step the mean \|H\| of the solved run is 2 times below the unsolved one, after eight steps within 10 per cent (sharp and smooth surface, with and without density-form sources) (`figs/evolution_tri`); test F (resolution, where the violation sits) in the journal, entry 9 |
+
+Cost: one processor core, build with assertions: 10, 87, 655 s for the Gaussian in mode
+code at 32, 64, 128 cells (9.2e4 to 5.9e6 particles); 17 to 29 outer iterations in mode
+code, 3 to 4 in mode stencil; at most 3 conjugate-gradient steps per linear solve in all
+tests.
 
 ## 9. Not done, limits
 
-(Filled at the end.)
+1. **Hamiltonian constraint only.** K and Abar_ij are held fixed; the momentum
+   constraint is not solved. Data whose trial momentum constraint is violated (the
+   strained ball, T3: rms 2.7e-3) keep that violation; the vector equation of section 7
+   is the next step [JUDGEMENT]. The evolution checks B, D, E show that for the
+   expanding ball at 64 cells the evolution makes a violation of the size of the trial's
+   within a few steps, with and without the solve.
+2. **Uniform meshes, one rank, cubic cells.** Refined meshes and MPI: section 7.
+3. **Robin faces** are exact for a monopole about the chosen centre; a dipole or
+   quadrupole of the data falls off faster and is continued as 1/r, an error of order
+   (dipole / r^2) at the faces (not measured separately). Off-centre matter: set
+   `robin_x1..3` to the centre of mass.
+4. **Mode stencil** leaves the monitor of the code at the difference of the two discrete
+   operators; at a density jump that is resolved by one cell this does not fall with
+   resolution (T2, T3: max\|H\| 2e-3), and for a deposit with structure at the cell scale
+   it stays at 0.7 per cent of 16 pi rho on the torus (T4). Default and recommendation:
+   mode `code`.
+5. **Mode code** is a defect correction with the seven-point Jacobian: linear
+   convergence with factor 0.5 (ng = 4), 0.32 (ng = 3), Newton-like for ng = 2. It is 2 to
+   3 times slower than mode stencil.
+6. **Matter Jacobian**: the term 2 pi psi^4 E of sigma treats Etilde as independent of
+   psi; with a filter or moving particles (Lorentz factor through the interpolated
+   metric) it is an approximation of the Jacobian, which changes the convergence rate,
+   not the solution. Moving particles and filters were run (T2 with one filter pass);
+   moving particles with large Lorentz factors were not tested.
+7. **Lapse and shift** are those of the problem generator: a lapse option that depends
+   on psi (`isotropic`, `precollapsed`) refers to the trial psi, not the solved one.
+8. **Not tested**: `nrpic_cosmo id = file`, the Bowen-York curvature of `nrpic_cf`, a
+   cosmological constant (`lambda` enters sigma), the adaptive deposit.
+9. **Mass of a sharp-surfaced ball** at coarse resolution changes by the solve (3 per
+   cent at five cells per radius, T2 (d)); a smooth edge of two cells removes most of it.
+10. A `<gravity>` block in a run with a gas adds Newtonian self-gravity of the gas; the
+    solver is meant for particle runs without gas.

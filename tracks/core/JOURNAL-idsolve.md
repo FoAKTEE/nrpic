@@ -517,3 +517,20 @@ Refuted: (b) if the face layer holds less than a quarter; (c) if the shell growt
 by less than a factor 2: then candidate (ii) or another unresolved effect dominates, and
 the vector equation (a trial whose momentum constraint holds) comes before any gain from
 the Hamiltonian solve for such data.
+
+**Amendment to F, written after its launch (core-20261115-181317 to -181321-2aa3f30)
+and before any of its output was read.** Candidate (ii) of entry 8 is misstated. The
+particles of `make_ball.py` are at rest in the slice (u_i = 0, its docstring, line 11
+[VERIFIED]), so S_i = 0, and the strain moves particles, not curvature: in the continuum
+the strained trial satisfies the momentum constraint exactly as the sphere does. For
+gamma_ij = psi^4 delta_ij, K_ij = psi^-2 Abar_ij + (1/3) psi^4 delta_ij K the momentum
+constraint reads psi^-10 d_j Abar_ij - (2/3) psi^-4 d_i K = 8 pi S^i [BACKGROUND], so
+with the trial satisfying it at psi_t = 1 the solved data violate it by
+M_i = (2/3)(psi^-6 - 1) d_i K [derived here]: of order 7e-3 times d_i K at the edge
+(|psi - 1| up to 1.2e-3 in E), a mean over the mesh of order 1e-6. What the code shows
+as M at t = 0 (mean 7e-6) is then the discretisation of the table curvature, which for
+the smooth edge should fall with resolution. I keep (d) as written, to be judged as
+written, and add my present expectation: (d') the shell mean |M| at t = 0 in the
+unsolved run falls by at least a factor 2 from dx = 1 to dx = 0.5. Consequence for the
+design whatever F shows: for these data the vector equation corrects only the
+(2/3)(psi^-6 - 1) d_i K that the scalar solve itself introduces.
