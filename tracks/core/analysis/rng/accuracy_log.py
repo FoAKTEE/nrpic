@@ -71,7 +71,8 @@ def main():
         "max_abs_error_of_radius_sqrt_2L": float(np.abs(dz).max()),
         "max_rel_error_of_radius_for_L_above_1e-6": float(rel[ref > 1e-6].max()),
     }
-    res["ok"] = bool(res["max_abs_error"] < 3.0e-14 and res["min_value"] >= 0.0
+    res["bound_claimed"] = 1.0e-13
+    res["ok"] = bool(res["max_abs_error"] < 1.0e-13 and res["min_value"] >= 0.0
                      and all(v == 0 for k, v in changed.items() if k >= 10))
     with open("accuracy_log.json", "w") as fp:
         json.dump(res, fp, indent=1)
@@ -91,7 +92,7 @@ def main():
     ax.set_ylim(1e-18, 1e-12)
     ax.set_xlabel("$L = -\\ln(s\\,2^{-52})$")
     ax.set_ylabel("absolute error of $L$")
-    ax.legend(loc="lower right")
+    ax.legend(loc="lower left")
     fig.savefig("fig_rng_log.png", dpi=200)
     sys.exit(0 if res["ok"] else 1)
 

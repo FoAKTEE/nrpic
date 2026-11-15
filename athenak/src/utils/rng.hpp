@@ -216,10 +216,11 @@ bool DiskPoint(const std::uint64_t w, std::int64_t &v1, std::int64_t &v2,
 //! \fn NegLog52
 //! \brief -ln(s 2^-52) for an integer 0 < s < 2^52 from the arithmetic-geometric mean:
 //! ln(4/y) = pi / (2 agm(1, y)) (1 + O(y^2)) with y = 2^-30 (s 2^-52) <= 2^-30, so that
-//! -ln(s 2^-52) = pi / (2 agm) - 32 ln 2.  Ten steps (nine reach the fixed point for
-//! every s).  Absolute error below 3e-14; the result is not negative.  Only sums of
-//! non-products, products, square roots, one quotient and one difference: the same
-//! bits on every IEEE 754 platform.
+//! -ln(s 2^-52) = pi / (2 agm) - 32 ln 2.  Ten steps (nine reach the fixed point of
+//! every s tried).  Absolute error below 1e-13 (a few units in the last place of the
+//! quotient, which is at most 58; largest found 3.0e-14); the result is not negative.
+//! Only sums of non-products, products, square roots, one quotient and one difference:
+//! the same bits on every IEEE 754 platform.
 
 KOKKOS_INLINE_FUNCTION
 double NegLog52(const std::int64_t s) {

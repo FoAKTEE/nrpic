@@ -244,3 +244,17 @@ and on the finest level of the two-level mesh.
 Prediction for the registered cell check (processor and card): per level, the same
 number of cells and the same checksum as the Python twin computes from the geometry, in
 all seven runs. Refuted by one differing checksum.
+
+## 2026-11-15 12:20 UTC  session core-rng  a bound of mine exceeded
+
+Run core-20261115-120534-5bdb22c (logarithm against mpmath, 202050 values): largest
+absolute error 3.004e-14 (at s = 57447), above the "below 3e-14" that I had written into
+the header after the scouting sample of 20000 values (2.8e-14). The registered test
+therefore failed. The number is a property of ten rounded steps and one quotient of
+size up to 58, a few units in the last place, and a sample cannot bound it; the claim in
+the header and in the test is restated as "below 1e-13 (largest found 3.0e-14)". Nothing
+else changes: 11 of the values next to 2^52 come out negative before the clamp, the
+result does not change from ten steps on (0 of 202050 values between 10 and 14 steps),
+and the error of the radius sqrt(2 L) is at most 8.4e-8 (for L below 1e-12, probability
+1e-12 per draw) and 4.7e-10 relative for L above 1e-6. The test is rerun with the
+restated bound; the failed run stays on record.
