@@ -484,3 +484,47 @@ in these runs; the departure itself does not. So the M/4 bisection says where th
 equilibria stop being stable, not whether an unstable member collapses; the latter
 needs the finer mesh (and, in the paper, 2e6 particles).
 Card time so far: 1.19 + 0.34 + 0.25 = 1.78; job 4439 (round 2) adds about 0.6.
+
+## 17:07Z Outcome: bisection round 2 (y_c = 0.69, 0.67) and the full bisection
+
+Card job 4439, run `core-20261115-154726-37450f2` (both exit 0, 0.594 card-hours);
+analysis of all seven M/4 runs `core-20261115-170606-1c69507` (the identical pass
+`-170454-5333b49` drew the earlier figure layout); figure `figs/cluster_threshold.png`
+(looked at; third panel: late mean central lapse against y_c with the model's own
+alpha_c and its equal-binding partner's).
+
+| y_c | alpha_c own / partner | mean 200-300 M | offset from own | rule 15:30Z | migration criterion 16:07Z |
+|---|---|---|---|---|---|
+| 0.72 | 0.7207 / 0.6552 | 0.7079 | -0.0128 | STABLE | no |
+| 0.70 | 0.7039 / 0.6708 | 0.6920 | -0.0119 | STABLE | no |
+| 0.69 | 0.6957 / 0.6787 | 0.6864 | -0.0093 | STABLE | yes (towards the compact partner) |
+| 0.67 | 0.6793 / 0.6951 | 0.6911 | +0.0118 | STABLE | yes (towards the expanded partner) |
+| 0.66 | 0.6713 / 0.7034 | 0.7005 | +0.0292 | STABLE | yes |
+| 0.64 | 0.6554 / 0.7205 | 0.7221 | +0.0667 | UNDECIDED | yes |
+| 0.605 (to 250 M) | 0.6281 / 0.7519 | 0.7667 (200-250 M) | +0.139 | UNDECIDED | yes |
+
+Prediction of 15:48Z: 0.69 STABLE (confirmed by the rule; with the same late drift,
+confirmed: -0.009); 0.67 COLLAPSE or UNDECIDED: REFUTED, it is STABLE by the rule (offset
++0.012). By the migration criterion both "migrate", 0.69 inward: the criterion cannot
+separate a member 0.01 from y_c* from the common downward drift of about 0.01 that
+every model above y_c* shows, because the partners of 0.69 and 0.67 lie only 0.017 away
+in alpha_c. Neither criterion fixed in advance resolves round 2.
+What the seven runs establish, stated with its label:
+- [VERIFIED, runs above] No member between 0.605 and 0.72 collapses within 250-300 M on
+  the M/4 mesh with 10^4 particles; the members 0.605, 0.64, 0.66 leave their equilibrium
+  outward and settle, in the 100 M mean, within 0.015, 0.002, 0.003 of their
+  equal-binding partner's central lapse; 0.70 and 0.72 stay within 0.013 of their own.
+- [JUDGEMENT, read after the runs] The sign of the late offset changes between 0.69
+  (-0.009) and 0.67 (+0.012); with the drift of the stable members subtracted the
+  threshold of departure lies between 0.67 and 0.69, around y_c* = 0.6796, the
+  turning-point value. This is a post-hoc criterion and is not claimed as a measurement
+  of the threshold.
+- [VERIFIED] The direction of departure depends on the mesh: 0.605 migrates at M/4 and
+  collapsed on the finer AMR mesh. So the bisection at M/4 does not test the collapse
+  branch of the paper's sequence.
+Row 4 verdict: PARTIAL. Threshold bracketed between 0.66 and 0.70 by the migration
+criterion (fixed before round 2) applied to round 1, consistent with the turning point;
+not located more finely by any criterion fixed in advance; collapse branch untested at
+M/4; the growing central-lapse oscillation (OPEN.md item 3) is present in every run.
+Card time of the package in wave 2: 0.593 + 0.596 + 0.344 + 0.248 + 0.594 = 2.375
+card-hours of the 2.5 allowed (sacct elapsed of jobs 4432, 4433, 4434, 4447, 4439).
