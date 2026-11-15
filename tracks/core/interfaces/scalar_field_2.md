@@ -172,14 +172,24 @@ slicing, `noise_level = 0`.
 | Division of the mesh and restart: 1, 8 and 64 MeshBlocks give bit-identical fields in the dumps at cycles 0, 10, 20 (22 fields each); a restart at cycle 10 gives a byte-identical dump at cycle 20. The box statistics of the records differ by at most 2.7e-14 between divisions | run core-20261115-155719-383321a |
 | Track E's noise validation (NOISE_SPEC 9, 10; scaled base case N = 32, nmax2 = 100, 120 cycles) on the processor executable: frozen tanh and Markov Heaviside pass every test (A1 5.3e-14 and 2.4e-15; 1, 8, 64 MeshBlocks and the restart bit-identical; N = 16 against 32 3.0e-15). Markov tanh fails A1 at 9.77e-11 against Track E's reference as written and passes at 3.3e-15 when the reference forms the increment as the code does (dW = sinh(s hubble dt)/(2 cosh x1 cosh x0)); frozen then 3.7e-15. The code has formed it so since 5a6953e (release core-v0.3) | runs core-20261115-155122-eb68eaa, core-20261115-160103-3fde433 |
 | Existing behaviour: 120 output files of ten scalar-field cases of wave 1 (two gauges, plane, wave, refined mesh, power sources frozen and Markov, Mukhanov-Sasaki sources with and without kicks, restart) are unchanged against the executable of release core-v0.3: 110 byte-identical, 8 mesh restart files differ inside the 36 unset header bytes, 2 in the recorded path of the restart file only. Seven relativistic and gravity set-ups (geo, boris, dep, east, os, jeans, binary) byte-identical | runs core-20261115-161240-61bb520 (files of -160549-a36abe3); core-20261115-155731-383321a to -160856-a36abe3 |
-CARD_ROWS
+| Card against processors (one A100, executable of the same source): the slice is bit-identical (phi, Pi, chi, K, alpha, gt_ij, At_ij); after 10 and 20 steps the fields differ by at most 3.3e-14 (K), 2.5e-14 (Pi), 8.7e-15 (At_ij), 4.9e-15 (phi), the constraint fields by 3.4e-13 (H) and 1.1e-13 (M_i); box means within 6.4e-13, <\|H\|/[H]> and <\|M\|/[M]> within 1.4e-5 | card run core-20261115-155404-24c88e3 (job 4444), analysis core-20261115-163549-7be94e4, `fig_card.png` |
+| Ladder N = 32, 64, 128 at nmax2 = 64 on the card: the first-order part of the constraints is a truncation error, rms of the odd part of H 6.57e-10, 1.42e-11, 2.53e-13 at t = 2.4 (orders 5.5, 5.8; of \|M\| 5.6, 5.8); the second-order part does not depend on N (even part of \|M\| equal within 1 percent). <\|H\|/[H]> and <\|M\|/[M]> at t = 2.4: 4.65e-11, 1.01e-12, 6.6e-14 and 3.0e-4, 6.5e-6, 9.0e-7 (Track E's A5: order between 4 and 6 from 32 to 64); at N = 64 and 128 they never exceed their values at t = 0 (2.6e-12, 1.46e-5) | the same card run, analysis core-20261115-163726-7be94e4, `fig_ladder.png` |
+| M_bssn against M_adm on the ladder: rms difference at most 8.5e-14 (N = 32), 4.4e-15 (64), 7.3e-15 (128, rounding), at most 6.9e-3 of rms \|M\| | the same runs |
+| Track E's U9 (U2 of the scaled base case on the card against the processor runs): A14 passes, 1.3e-15 (bound 1e-12). The full base case of NOISE_SPEC 9 (64^3, nmax2 = 256, 300 steps, U1 to U8) on the card: frozen tanh and Markov Heaviside pass every test (A1 9.8e-14 and 2.6e-15; 1, 8, 64 MeshBlocks and the restart at cycle 150 bit-identical on the card; N = 32 against 64 3.5e-15); Markov tanh A1 8.5e-10 against the reference as committed, 4.0e-15 against the cancellation-free one | card run core-20261115-155404-24c88e3; validations core-20261115-163855-7be94e4, core-20261115-163910-7be94e4 |
+| Other paths: without window and kicks (`slice_window = false`, nmax2 = 16, 32^3) the 128 modes cross and freeze on R alpha of the lockstep record within 8.3e-4 (5.9e-6 for \|n\| <= 2); with `noise_level = 1` R^NR equals W R alpha within 2.8e-3 for all modes, 5.6e-5 for \|n\| <= 2 (two to four times the level-0 value for these) | runs core-20261115-161659-38adbb8, core-20261115-162142-3407748, `fig_rnr_nowindow.png`, `fig_rnr_level1.png` |
+| Cost on one A100, zone-cycles per second (one MeshBlock, nmax2 = (N/4)^2): 128^3: 1.634e7 with the kicks off, 1.484e7 with the sources, 1.459e7 with the constraint record every step; 256^3 (548958 modes): 1.654e7, 1.393e7, 1.364e7, i.e. 1.01, 1.20, 1.23 s per step; eight MeshBlocks of 128^3: 1.30 s. Sources 10 and 19 percent, record 2 percent. One processor core, 32^3 with sources and record: 1.06e4 | card run core-20261115-155404-24c88e3; run core-20261115-155040-eb68eaa |
 
-Failed predictions and failed runs (journal entries 4 to 7): the even part of H does
+Failed predictions and failed runs (journal entries 4 to 11): the even part of H does
 not scale as s^2 (the uniform time-integration residual dominates it; found by the
 test, then predicted and confirmed with the s = 0 run and the Courant factor); the
 second-order part of M changes by 1.1 percent with the printed delta Pi ("unchanged"
-was too strong); three runs failed on defects of the test scripts (a relative path;
-twice the comparison of restart files, which record the path they were started from).
+was too strong); the card comparison "within 1e-11 of the largest value" does not hold
+for the fields that are pure perturbations (At_ij 4.4e-8 of 2e-7; the differences are
+rounding of order-one quantities and the criterion should have been absolute); with
+`noise_level = 1` the lowest shells deviate two to four times more than with level 0,
+not "within 20 percent"; the difference M_bssn - M_adm stops falling at N = 128
+(rounding). Three runs failed on defects of the test scripts (a relative path; twice
+the comparison of restart files, which record the path they were started from).
 
 ## 7. Limits and open points
 
@@ -189,12 +199,23 @@ twice the comparison of restart files, which record the path they were started f
 - At 32^3 with nmax2 = 64 (four cells per shortest wavelength) the constraint violation
   during the entry of the upper shells is first order in the amplitude: a truncation
   error of the stencils (the symbols of the first difference squared and of the second
-  difference differ by 11 percent at k dx = pi/2). CARD_LIMIT
+  difference differ by 11 percent at k dx = pi/2). It converges at order 5.5 to 5.8;
+  at N >= 64 with the same modes (k_max dx <= pi/4) the ratios stay at or below their
+  initial values. The production set-up of P1 (N = 256, nmax2 = 4096) has k_max dx =
+  pi/2 again, so its last shells will show the same first-order part (P1:541 reports it
+  for the momentum constraint and suggests a smaller k_max).
 - The uniform Hamiltonian residual of the background scales with the fourth power of
   the step; at H dt = 0.049 it is 3e-12 of [H].
 - a* = 1 only; the stencil k2 and the stencil projector use the cell size of the root
   mesh; refined meshes are not tested with the slice.
-- `noise_level = 1` and the inflection (USR) case have not been run with the slice.
+- The inflection (USR) case has not been run with the slice; `noise_level = 1` has one
+  run (32^3, 3 e-folds). No run beyond 128^3 with dumps; 256^3 only as a cost run of
+  ten steps. No refined mesh, no second seed.
+- Mode files: `make_case.py --kstart` changes the phase of each mode function (moduli
+  agree to 1.6e-6), i.e. the realisation; runs compared mode by mode must share one
+  mode file.
+- The box means of the records are running sums: 6e-13 relative at 32^3 on the serial
+  build, 2.7e-14 between divisions of the mesh.
 - [M] of P1: sign of the Christoffel term as in section 3.
 - Not done from Track E's requests: `rng::ModeEntity` and the wording of stream 3 and of
   rule 2 in `rng.md` (request (c) of `noise-unit-test-results`); the keys are those of
@@ -203,3 +224,10 @@ twice the comparison of restart files, which record the path they were started f
   journal, entry 4) to hold A1 at 1e-11 for the Markov scheme.
 - `harness/bin/nrpic-run submit` fails in this worktree (journal entry 3); runs are
   registered by hand.
+
+## 8. Published executables (decision 0013)
+
+`/data/haiyangw/nrpic/scratch/core/exe/core_scalar-2/athena_gpu` and `athena_cpu`, built
+from the source of commit a58e95b (the later commits of the branch change no file
+under `athenak/`); files `COMMIT` (commit and checksums) and `READY` (options, example
+input, what is tested). These are the executables all runs of section 6 used.
