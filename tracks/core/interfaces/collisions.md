@@ -1,6 +1,9 @@
 # Monte Carlo collisions in the particle module: design, options, outputs
 
-Status: PROPOSAL of core (branch `core/collisions`, 2026-11-15) for
+Status: accepted as the state of release core-v0.3 (decision 0011); sections 2, 4, 5, 7
+and 9 amended and section 11 added on branch `core/collisions-2` (wave 2, 2026-11-15) as
+a PROPOSAL for the next release: `<particles> coll_energy` (collisions with the metric at
+each particle). First written on branch `core/collisions` for
 `coord/INTERFACES/collisions.md`. Client: Track C (S3, brief lines 518-521 and 747-764).
 Built on the random numbers of `tracks/core/interfaces/rng.md`. The specification of the
 track (`track/C-sidm:tracks/C-sidm/collide/SPEC.md`, read at commit 4c76ca8) is followed
@@ -48,6 +51,7 @@ M/m particles of cross-section sigma_m m.
 | `coll_hist_dcycle` | 1 | cycles between records of `<basename>.coll.hst` (0: none) |
 | `coll_dump_cycle` | -1 | cycle whose collision step is dumped (before and after) for the replay test |
 | `coll_budget` | false | also evaluate the sum of M W with the metric at each particle before and after the collision step (history columns 30, 31; one metric reconstruction per particle and evaluation) |
+| `coll_energy` | absent (= `cell`) | metric with which a pair conserves its energy (section 11). `cell`: the metric of the cell centre, as in core-v0.3 (exact only where the metric does not vary across a collision cell). `particle`: the pair conserves the sum of the covariant momenta u_i and the sum of the canonical energies alpha W - beta^i u_i, each with the metric at the particle; required for runs in a gravitational field that last many collision times. The option is read only if present; its presence (either value) adds history columns 32 to 36, takes the budget of `coll_budget` particle by particle, and writes dumps of version 2 |
 | `<job> rng_seed` | 0 | seed of the run (`rng.md`) |
 
 ## 3. Algorithm
@@ -226,7 +230,7 @@ order in the step [JUDGEMENT]. The key uses the number of the step being taken
 | Use | Stream | entity, entity_hi | step | draw | Call |
 |---|---|---|---|---|---|
 | pairing word of a particle | Stream(2, 0) | tag, 0 | cycle | sub-step | `Bits` |
-| acceptance of a pair | Stream(2, 1) | smaller tag, larger tag | cycle | sub-step | `Uniform4`: u[0] acceptance, u[1] update of the heavier member (`nanbu`) |
+| acceptance of a pair | Stream(2, 1) | smaller tag, larger tag | cycle | sub-step | `Uniform4`: u[0] acceptance, u[1] update of the heavier member (`nanbu`), u[2] detailed-balance acceptance (`coll_energy = particle`, section 11.3) |
 | direction | Stream(2, 2) | smaller tag, larger tag | cycle | sub-step | `Direction` |
 
 ## 5. Outputs
@@ -258,7 +262,15 @@ same records). A new run starts the file, a restart appends. Columns:
 | 26 | n_bad_cells | occupied cells skipped because of an unusable metric |
 | 27 | sum_W | sum_P without the Moller speed and with the sigma_m of the input: sum over the tested pairs of (N - 1) sigma_m M_max alpha dt/(n_sub V) (half in a triple). sum_P/sum_W is the mean of (sigma/sigma_m) v_Mol over the tested pairs; sum_W = sum over the cells of N (N - 1) sigma_m M alpha dt/(2 V) for equal masses |
 | 28, 29 | sum_MW_species0, sum_M_species0 | sum of M W after the step and rest mass of the colliding particles of species 0 (energy exchange between two species) |
-| 30, 31 | sum_MW_particles, dE_particles | with `coll_budget = true`: sum of M W over the colliding particles with the metric reconstructed at each particle (the energy of the history column `sum_mW` and of the deposit) after the collision step, and its change over the collision step; zero otherwise |
+| 30, 31 | sum_MW_particles, dE_particles | with `coll_budget = true`: sum of M W over the colliding particles with the metric reconstructed at each particle (the energy of the history column `sum_mW` and of the deposit) after the collision step, and its change over the collision step; zero otherwise. With `coll_energy` present the change is summed particle by particle inside the cells (rounding of the changes, not of the sums) and both cover the particles of usable cells |
+| 32, 33 | sum_MH_particles, dH_particles | only with `coll_energy` present, filled with `coll_budget = true`: sum of M (alpha W - beta^i u_i) with the metric at each particle after the collision step, and its change over the collision step (summed particle by particle) |
+| 34 | n_noroot | only with `coll_energy` present: accepted pairs that were left unscattered because the energy equation of the pair had no admissible root (section 11.3) |
+| 35 | max_dlam | largest \|lam - 1\| of the collisions of the step (lam = 1: the collision of the cell frame) |
+| 36 | n_balance | collisions rejected by the detailed-balance acceptance (section 11.3) |
+
+With `coll_energy = particle`, columns 20 and 24 (dE, abs_dE) refer to the canonical
+energies: the change of M_a h_a + M_b h_b of the collided pairs, h = alpha (W - 1) -
+beta^i u_i with the metric at each particle.
 
 `<basename>.coll_dump.<cycle>.bin` (`coll_dump_cycle`): 8 bytes "NRPCOLD1", int64 N,
 int64 cycle, int64 f, doubles dt, sigma_m, w, pmax, int64 model, weights, subcycle,
@@ -266,7 +278,12 @@ nsub_max, uint64 seed, int64 triad gauge; then N records of doubles x^i (3), u_i
 (3), u_i after (3), M, alpha and gamma_xx, xy, xz, yy, yz, zz of the collision cell (7),
 proper volume of the cell (1); then N records of int32 tag, level, cell index I/f, J/f,
 K/f, n_sub of the cell, number of momentum updates of the particle. Particles without a
-collision cell have level -1.
+collision cell have level -1. Version 2 (`coll_energy` present): magic "NRPCOLD2"; after
+the triad gauge the header holds int64 energy mode (0 cell, 1 particle) and int64 flag
+(1: the records hold the metric at the particles); each particle record has ten more
+doubles: lapse, beta^x, beta^y, beta^z and the inverse spatial metric gamma^xx, ^xy,
+^xz, ^yy, ^yz, ^zz at the particle (zero if the flag is 0). Reader of both versions:
+`nrpic.collide.read_dump`.
 
 ## 6. Where it is
 
@@ -294,6 +311,9 @@ section 9.
 | pair energy M (W_a + W_b) in the cell frame | rounding (a few units in the last place of the pair energy) | in expectation |
 | momentum and energy of particles that do not collide | unchanged (bit): only accepted pairs are written | the same |
 | sum of M W with the metric interpolated to each particle (history `sum_mW`, deposited E) | not conserved: the two particles of a pair sit at different depths of the potential inside one cell, and a collision raises this sum on average (measured in the cluster: 1e-8 of the sum per collision for cells of 2 M; sections 8, 9). The design text said "random sign"; the runs showed a steady gain | the same |
+
+This table is the operator of core-v0.3 (`coll_energy` absent or `cell`). What
+`coll_energy = particle` conserves: section 11.4.
 
 ## 8. What is verified
 

@@ -4,7 +4,8 @@
 #   sbatch -p preempt --gres=gpu:1 -c 2 -t 00:30:00 -J core-coll2 -o <log> \
 #          tracks/core/analysis/collisions/gpu_job2.sh <part> <card exe> <release card exe> <python>
 #   part R  regression: five existing set-ups against the release executable; the
-#           collisional box tests of wave 1 (options absent) against their card outputs
+#           collisional box tests of wave 1 (options absent) with both executables,
+#           outputs compared byte by byte
 #   part N  the new tests: gradient (three cases), replay of the coll_energy cases,
 #           equilibrium in the potential well
 #   part C  the relativistic cluster at Knudsen number 3 with coll_energy = cell and
@@ -28,7 +29,7 @@ if [[ $PART == R ]]; then
     --input "$BASE" --input "$EXE" --input $R/run_regression.py -- \
     $PY "{repo}/$R/run_regression.py" --base "$BASE" --new "$EXE"
   $PY $C/rerun_wave1.py "$S/tmp/coll2/rerun_wave1_card.json" --exe "$EXE" --python $PY --card \
-    --tests rate,relax,repro,conv_dt,curved
+    --base "$BASE" --tests rate,relax,repro,conv_dt,curved
 fi
 if [[ $PART == N ]]; then
   $PY $R/runreg.py --card --kind production \

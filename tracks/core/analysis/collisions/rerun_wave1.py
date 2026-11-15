@@ -9,6 +9,10 @@ Compared: all files of the wave-1 directory except logs, summaries, figures and 
 files (the mesh restart header holds 36 bytes that are never set, tracks/core/HANDOFF.md).
 A test passes if its driver exits with status 0 (its own criteria) and no compared file
 differs or is missing.
+With --base ATHENA the comparison is made against a fresh run of the same driver with
+that executable (the release one) instead of the wave-1 directory: needed where the
+wave-1 run was made with an earlier build whose history file had fewer columns (the
+rate test, run core-20261115-133533-0ca5e3b).
 """
 import argparse
 import filecmp
@@ -85,6 +89,8 @@ def main():
     ap.add_argument("--python", default=sys.executable)
     ap.add_argument("--card", action="store_true",
                     help="card executable: arguments and reference runs of the card runs")
+    ap.add_argument("--base", default="",
+                    help="compare with a fresh run of this executable, not with wave 1")
     args = ap.parse_args()
     res = {}
     if os.path.exists(args.summary):
@@ -109,6 +115,15 @@ def main():
         line = (proc.stdout.strip().splitlines() or [""])[-1]
         run_id = line.split()[0] if line else ""
         new = os.path.join(SCRATCH, run_id)
+        if args.base:
+            cmd_b = [c.replace(args.exe, args.base) if c == args.exe else c for c in cmd]
+            k = cmd_b.index("--purpose") + 1
+            cmd_b[k] = (f"Baseline for the byte comparison{' on one A100' if args.card else ''}"
+                        f": {what}, release executable core-v0.3")
+            pb = subprocess.run(cmd_b, cwd=REPO, capture_output=True, text=True)
+            lb = (pb.stdout.strip().splitlines() or [""])[-1]
+            old_id = lb.split()[0] if lb else ""
+            name = name + "_vs_release"
         ncmp, diff, missing, skipped = compare(new, os.path.join(SCRATCH, old_id))
         passed = (proc.returncode == 0 and not diff and not missing)
         res[name] = dict(run_id=run_id, wave1_run=old_id, driver_exit=proc.returncode,
