@@ -64,10 +64,10 @@ Processor runs are bit-reproducible (T10); the design JSON is an input of the la
 | T0b replay (triad = cholesky) | PASS 6/6 dumps | C-20261115-170155-13ff01f | cells, n_sub, updates of all 1e4 particles identical; n_tested, n_coll identical; sum_P to 2.2e-15; momenta to 4.4e-16 of max(1,\|u\|); untouched bit-identical | `figs/t0b_replay_cpu.png` |
 | T1 per step | PASS 16/16 + 4 + 2 | C-20261115-165500-c67e036 (and the T3-T5, T1-long runs) | \|dE\|, \|dP_i\| per step <= 2.8e-19 of sum M W (1e-7 of the bound); exactly rounded sum M W bit-identical start to end; n_trunc 0 | `figs/t1_step_cpu.png`, `figs/t1t2_summary_cpu.png` |
 | T1 over 1e4 steps | PASS 2/2 | C-20261115-170741-248af65 | 1.56e7 collisions per run; sum M W bit-identical at all 11 snapshots | `figs/t1_long_cpu.png` |
-| T2 rate | PASS 16/16 | C-20261115-165500-c67e036 | theta 1e-3 to 10, plain and sub-cycled: (a) z in [-2.1, 1.6]; (b) ratio 0.99987-1.00008, z in [-2.2, 2.9]; (c) exact | `figs/t2_rate_cpu.png`, `figs/t1t2_summary_cpu.png` |
-| T3 relaxation | PASS 4/4 | C-20261115-170539-28432c3 | KS p 0.084-0.99 at 15 tau_rel; populations within 1 se of theta_eq | `figs/relax_T345_*.png` |
+| T2 rate | PASS 16/16 | C-20261115-165500-c67e036 | theta 1e-3 to 10, plain and sub-cycled: (a) z in [-2.1, 1.6]; (b) ratio 0.99991-1.00010, z in [-2.2, 2.9]; (c) exact | `figs/t2_rate_cpu.png`, `figs/t1t2_summary_cpu.png` |
+| T3 relaxation | PASS 4/4 | C-20261115-170539-28432c3 | KS p 0.084-0.99 at 15 tau_rel; <u^2/W>/3 = theta_eq within 0.01 se; populations at theta_eq within the 4 se criterion (about 1 se or less by an estimate of the se) | `figs/relax_T345_*.png` |
 | T4 initial rate | PASS 4/4 | C-20261115-170539-28432c3 | slope/exact 0.9924, 0.9792 (theta_2 = 1e-3), 0.9959, 1.0088 (theta_2 = 1); se 0.3-0.6 percent | `figs/t4_zoom_cpu.png` |
-| T5 entropy | PASS 4/4 | C-20261115-170539-28432c3 | s(0) = s_mix and s(end) = s_MJ within 0.2 se; monotone | `figs/relax_T345_*.png` |
+| T5 entropy | PASS 4/4 | C-20261115-170539-28432c3 | s(0) = s_mix within 0.25 se, s(end) = s_MJ within 0.03 se; monotone | `figs/relax_T345_*.png` |
 | T9 unequal (nanbu) | PASS (8 seeds) | C-20261115-170814-8a54b43 | same theta z in [-1.2, 0.6]; KS p >= 0.089; mean energy drift +2.4 se (O4); `equal` refused with a message naming the masses | `figs/t9_unequal_cpu.png` |
 | T10 reproducibility | PASS | C-20261115-165902-f9b1c8f | 1, 8, 64 MeshBlocks and restarts from cycles 0, 37, 74 bit-identical; seed 8 changes every particle; MPI not run (no MPI build) | `figs/t10_repro_cpu.png` |
 | T10b processor/card | PASS 4/4 | C-20261115-170447-cb3b230, C-20261115-180525-94ddd22 | same tested pairs and collisions per step on card and processor; momenta 8.9e-15 apart | - |

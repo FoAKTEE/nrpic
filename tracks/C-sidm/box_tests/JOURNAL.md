@@ -156,8 +156,9 @@ build). Prediction confirmed. Figure `figs/t10_repro_cpu.png` (looked at).
 
 All 16 collisional runs pass T2(a), (b), (c) and T1 per step; no truncation.
 - T2(a): z from -2.10 to +1.58.
-- T2(b): mean sum_P per step / expectation (sample theta) from 0.99987 to 1.00008, z from
-  -2.20 to +2.92. With the nominal theta of the generator the ratio stays within 1e-3 but
+- T2(b): mean sum_P per step / expectation (sample theta) from 0.99991 to 1.00010, z from
+  -2.20 to +2.92 (range corrected at the end of the session from the run's JSON; the
+  first entry said 0.99987 to 1.00008). With the nominal theta of the generator the ratio stays within 1e-3 but
   z reaches 35.6 (theta = 1e-3, sub, s1) and 26.5: the 4 se clause would have failed
   there, as the prediction feared; the sample temperature, declared before the run, is the
   one T2(c) defines. Diagnostic: the mean Moller speed of the tested pairs (sum_P/sum_W)
