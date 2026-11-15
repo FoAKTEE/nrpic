@@ -167,3 +167,16 @@ equilibria/CONVERSION.md]:
   collision times].
 - P3.12 Constraint norm: H-norm2 of the collisional runs at 300 M within a factor 1.5 of
   the control's (the energy defect of P3.4 is below the constraint noise).
+
+## 2026-11-15 Entry 4: inputs of the longer threshold scan (prepared, not run)
+
+`make_scan.py ic` regenerates the five King b = 1 models at N = 10^5 and writes, per model,
+a coherent radial kick of one percent of each particle's speed, inward and outward (the
+first paper's `--vpert`, here with the particle's own speed); `make_scan.py decks` writes
+`inputs/scan/`. Test 4 prediction: king_y0p33403 and king_y0p31400 are byte-identical to
+the files of run C-20261115-165832-fccee3a (same code, seed and thread count); for every
+kicked file the mean radial three-velocity is about -+0.01 times the mean speed (0.0045 in
+magnitude to within 30 percent, mean speed about 0.45 from CONVERSION.md), sum W changes by
+less than 1e-4 relative (second order in the kick), and the fraction of particles pushed
+above E0 lies in [0.002, 0.012] (about half of the 1.7 percent within 1e-2 of E0 move up
+by a first-order change of E of up to 1e-2 E0). Refuted if any of these fails.
