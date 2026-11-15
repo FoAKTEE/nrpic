@@ -372,3 +372,19 @@ mode of one snapshot is then about 0.4 percent, of the late-time mean about 0.2
 percent, enough for the predicted -2 to -10 percent against zero. The growth of
 sum M H in `cell` over 31 collision times is predicted between 1.5e-3 and 5e-3
 (restated for the shorter run: 15.5 collisions per particle times 2e-4).
+
+### Predictions T12 and G3 restated as one run (16:55 UTC, before the run)
+
+`run_static_homog.py` (5e4 particles, 200 steps, alpha0 = 0.8, psi0 = 1.1, two-temperature
+start, 16 x 4 x 4 cells):
+(a) `static_conformal` without amplitudes and `coll_energy = cell` gives snapshots
+    byte-identical to the wave-1 generator `homogeneous` with gxx = gyy = gzz = psi0^4
+    and no `coll_energy` (same metric arrays, same operator). Refuted by one byte.
+(b) G3: `coll_energy = particle` has the same n_tested and n_coll in every step as
+    `cell`, no rejected collision, no pair without a root, and momenta within 1e-9 at
+    the end.
+(c) T12: the number of collisions equals that of the flat box with the cross-section
+    scaled by alpha0 within 4 sigma; the summed weight equals
+    sigma M alpha0 dt/(2 psi0^6 V_cell) x sum N (N - 1) of the cell populations to 1e-10.
+(d) sum M u_i conserved to 1e-12 of sum M |u| in all four runs; (e) the collision
+    steps change sum M W and sum M H at the particles by less than 1e-12 relative.
