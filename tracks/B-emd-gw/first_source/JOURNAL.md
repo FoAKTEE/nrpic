@@ -388,3 +388,10 @@ confirms that piece quantitatively, and the gauge-invariant (at this order) magn
 part agrees between the gauges where the metric does not. The growth of c_+ after a ~ 20
 (to 2.5 s) is present in both gauges and in B: it is not a gauge effect; whether it is
 converged is P8 (32^3 against 64^3).
+
+Not predicted, recorded (same analysis runs, double-precision dumps): the TT part of the
+scan is quasi-static throughout: rho_kin/rho_grad = 0.04 at a = 4 and <= 0.01 from a = 12 to
+140 (eps = 1 and 0.1), while rho_GW/rho_bar (kinetic plus gradient, G = 1) grows from
+2.3e-9 (a = 4) to 3.5e-6 (a = 90-121) for eps = 1 and from 2.3e-11 to 8.8e-9 for eps = 0.1.
+So what grows after shell crossing is the near-field strain of the box modes, not radiation;
+a radiated signal would show rho_kin ~ rho_grad. The null has rho_GW/rho_bar <= 7e-27.
