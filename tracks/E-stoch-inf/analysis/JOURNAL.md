@@ -263,7 +263,7 @@ the size of the residual. Without the gt term the modes scatter by only 4e-5 abo
 common -0.48 percent offset. A double-precision gt in the dump would decide it (request
 (a) to core). <|H|>/<[H]> peak 2.138e-8 (2.066e-8 at the full step).
 
-## 18:08 Card job done (run E-20261115-170645-3b21217); predictions P5' and the validations
+## 18:05 Card job done (run E-20261115-170645-3b21217); predictions P5' and the validations
 
 Slurm 4465 ran at 18:03 by backfill: eight runs, each 1-8 s of card time (U1 5.4 s,
 1.46e7 zone-cycles/s; U3 with 64 MeshBlocks 8.0 s), 55 s in all, 0.0153 card-hours. P6
