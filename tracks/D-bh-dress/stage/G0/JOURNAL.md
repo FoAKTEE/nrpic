@@ -117,3 +117,29 @@ C6 development note (before the registered run): my first quadrature returned a 
 r = 3 M because the plunge condition was applied only for 3 < r < 6; inside the photon
 sphere every orbit plunges. Fixed (n = 0 for r <= 3); r = 3 was the only grid point
 affected.
+
+## Entry 4: development runs of C2, C3/C5, C6, C7, C8 (unregistered, scratch/tmp), then registration
+
+The scripts were debugged on scratch/D-bh-dress/tmp before the registered runs; the
+registered runs below repeat them unchanged. What the debug runs showed beyond the
+predictions of entry 1 (written down here before the registered runs):
+- C2: besides the secular drift, the M/8 and M/16 finder masses show excursions at
+  t = 200-260 and 300-340 M of nearly the same size at both resolutions (7e-5 and 1e-4 vs
+  5e-5 and 7e-5 from a linear fit): not a resolution effect. The D-pre-4 runs kept the
+  domain of +-128 M of the calibration input; the scoping cost model itself asks for
+  L >= 0.71 T (= 355 M for 500 M) to keep the boundary out of causal contact. A boundary
+  signal is a candidate cause, [TO VERIFY] (test: the same run with L = 384 M; refuted if
+  the excursions stay at the same times and size).
+- C8: with the domain actually used (+-128 M) the model predicts the D-pre-4 cost to 3 per
+  cent (measured/model 0.97 at both resolutions); the scoping table's 0.90 and 2.01 h
+  include the domain growth that the runs did not apply. Finest level against horizon: the
+  horizon's coordinate radius grows from 1.34 M (t = 50) to 1.67 M (t = 500); with the
+  calibration input's requested region |x| < 1.5 M the finest level ends at 2 M for M/16
+  (blocks of 1 M) but at 1.5 M for M/32 and M/64, which the horizon reaches at t = 144 M.
+  Prediction for the registered run: same numbers (deterministic).
+- C6: peak ratio relativistic/GS = 2.59 and 4Gm-variant/relativistic = 1.092, not the 3
+  and 1.15 of SFW's prose (SFWpaper.tex:443) that SCOPE.md section 5 proposes as G1
+  numbers; the track's rho_constf_rel agrees with my quadrature to 1.4e-5.
+- C7: sympy gives M_MS = m + H^2 R^3/2 exactly for McVittie, R_h/(2m) = 1 + 4 h^2 + 48 h^4,
+  d ln M_AH/d ln a = -12 h^2 - 240 h^4 (h = m H); exact roots: -1.20e-3, -1.10e-2,
+  -0.151 at h = 0.01, 0.03, 0.1.
