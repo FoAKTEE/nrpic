@@ -1,0 +1,1346 @@
+#!/usr/bin/python3 -I
+"""nrpic-ctx: context sharing between the owners of the NRPIC-cosmology program (brief 11.3, 11.6).
+
+    nrpic-ctx [-C DIR] <command> [options]          works from any worktree of the repository
+
+Read commands (never write anything, never merge; other owners are read through git only):
+  show <ID> [FILE] [--branch B] [--log N]   FILE of tracks/<ID>/ at the tip of ID's branch
+                                            (default STATUS.md; a leading / means the repository root)
+  board [--write]                           board of every owner from the branch tips; --write puts it
+                                            into coord/BOARD.md (orchestrator, main checkout only)
+  inbox [--all] [--show] [--count]          messages addressed to me or to all, not yet acknowledged
+  brief [--hook]                            start-up summary (at most 40 lines); --hook reads the cwd
+                                            from the JSON of a Claude Code SessionStart hook on stdin
+  digest [--week YYYY-Www] [--write]        weekly digest; --write puts it into coord/digests/ (orch)
+  audit [--since REV] [--branch B]          commits touching foreign paths, files above 1 MB, tracked
+                                            files under ignored roots (+ notes); exit 1 on findings
+  owners                                    owner ids, branches and worktrees
+  template NAME [--id ID] [--gate G]        print a harness template with the placeholders filled in
+
+Write commands (only on the own branch, only in the worktree you are in; -C is refused):
+  sync                                      git merge --no-edit main; on a conflict: abort and report
+  post --to ID|all --type T --slug S [--reply-by YYYY-MM-DD] [--refs a,b]
+       (--body TEXT | --body-file FILE | --body-file -) [--no-commit] [--trailer LINE]...
+                                            tracks/<me>/outbox/<UTC>__to-<ID>__<slug>.md, committed
+  ack MESSAGE... | --all [--note TEXT] [--no-commit] [--trailer LINE]...
+                                            record in tracks/<me>/inbox_acks.txt, committed
+                                            (MESSAGE: number of the inbox listing, file name or path)
+
+Owners and branches (CLAUDE.md): orch=main, core=core/nrpic (temporary core/<x>), kb=kb/main,
+<track>=track/<track> (temporary track/<track>--<x>); proposal branches proposal/<ID>/<slug>.
+The owner table is read from `main:CLAUDE.md`; owners found only as branches are added.
+"""
+import argparse
+import datetime as dt
+import json
+import os
+import pwd
+import re
+import subprocess
+import sys
+import time
+
+MAIN = "main"
+TYPES = ("info", "request", "proposal", "interface-change", "blocker", "kb-request")
+NAME_RE = re.compile(r"^(\d{8}T\d{4}(?:\d{2})?Z)__to-([A-Za-z0-9-]+)__([A-Za-z0-9][A-Za-z0-9._-]*)\.md$")
+SLUG_RE = re.compile(r"^[a-z0-9][a-z0-9.-]{0,59}$")
+ROW_RE = re.compile(r"^\|\s*([A-Za-z][A-Za-z0-9-]*)\s*\|\s*`(\.|wt/[A-Za-z0-9._-]+)`[^|]*\|\s*`([A-Za-z0-9._/-]+)`\s*\|")
+TYPE_ORDER = {"blocker": 0, "interface-change": 1, "proposal": 2, "request": 3, "kb-request": 4, "info": 5}
+MB = 1024 * 1024
+STATUS_KEYS = ("gate", "headline", "last-result", "next", "blockers", "needs", "offers", "budget")
+DATA_ROOTS = ("scratch", "kb-data", "cache", "locks", "wt", "runs", ".work")   # inside the main checkout, never a worktree
+
+
+class Fail(Exception):
+    pass
+
+
+# ----------------------------------------------------------------------------------------- git
+def git_env():
+    """Environment of every git call, built from fixed values and the passwd entry, never from the
+    caller's environment (no GIT_DIR, GIT_INDEX_FILE, PATH or locale of the session leaks in)."""
+    pw = pwd.getpwuid(os.getuid())
+    return {"PATH": "/usr/local/bin:/usr/bin:/bin", "HOME": pw.pw_dir, "USER": pw.pw_name, "LOGNAME": pw.pw_name,
+            "LANG": "C.UTF-8", "LC_ALL": "C.UTF-8", "GIT_OPTIONAL_LOCKS": "0", "GIT_TERMINAL_PROMPT": "0"}
+
+
+ENV = git_env()
+
+
+def run(args, cwd, check=True, inp=None):
+    p = subprocess.run(["git", "-c", "core.quotePath=false", *args], cwd=cwd, env=ENV, input=inp,
+                       capture_output=True, text=True)
+    if check and p.returncode != 0:
+        raise Fail(f"git {' '.join(args)} failed in {cwd}:\n{p.stderr.strip()}")
+    return p
+
+
+def git(args, cwd, check=True, inp=None):
+    return run(args, cwd, check, inp).stdout
+
+
+def now_utc():
+    return dt.datetime.now(dt.timezone.utc)
+
+
+def owner_of(branch):
+    """branch name -> owner id (None if the branch belongs to no owner)."""
+    if not branch:
+        return None
+    if branch == MAIN:
+        return "orch"
+    if branch.startswith("core/"):
+        return "core"
+    if branch.startswith("kb/"):
+        return "kb"
+    m = re.match(r"^track/([A-Za-z0-9-]+?)(?:--[A-Za-z0-9._-]+)?$", branch)
+    if m:
+        return m.group(1)
+    m = re.match(r"^proposal/([A-Za-z0-9-]+)/[A-Za-z0-9._/-]+$", branch)
+    if m:
+        return m.group(1)
+    return None
+
+
+def is_proposal(branch):
+    return bool(branch) and branch.startswith("proposal/")
+
+
+def default_branch(oid):
+    return {"orch": MAIN, "core": "core/nrpic", "kb": "kb/main"}.get(oid, f"track/{oid}")
+
+
+def glob_regex(pattern):
+    """gitignore-like glob: ** crosses directories, * and ? do not; a trailing / means a prefix."""
+    p = pattern.strip()
+    if p.endswith("/"):
+        p += "**"
+    out, i = "", 0
+    while i < len(p):
+        c = p[i]
+        if p.startswith("**/", i):
+            out += "(?:.*/)?"
+            i += 3
+        elif p.startswith("**", i):
+            out += ".*"
+            i += 2
+        elif c == "*":
+            out += "[^/]*"
+            i += 1
+        elif c == "?":
+            out += "[^/]"
+            i += 1
+        else:
+            out += re.escape(c)
+            i += 1
+    return re.compile("^" + out + "$")
+
+
+def parse_globs(text):
+    return [ln.strip() for ln in (text or "").splitlines() if ln.strip() and not ln.strip().startswith("#")]
+
+
+def unquote(path):
+    """Undo git's C-style quoting of a path (only used for unusual characters)."""
+    if not (len(path) >= 2 and path[0] == '"' and path[-1] == '"'):
+        return path
+    s, out, i = path[1:-1], bytearray(), 0
+    esc = {"n": b"\n", "t": b"\t", '"': b'"', "\\": b"\\", "a": b"\a", "b": b"\b", "f": b"\f", "r": b"\r", "v": b"\v"}
+    while i < len(s):
+        if s[i] == "\\" and i + 1 < len(s):
+            oct3 = s[i + 1:i + 4]
+            if len(oct3) == 3 and all(c in "01234567" for c in oct3):
+                out.append(int(oct3, 8))
+                i += 4
+                continue
+            out += esc.get(s[i + 1], s[i + 1].encode())
+            i += 2
+            continue
+        out += s[i].encode("utf-8")
+        i += 1
+    return out.decode("utf-8", "replace")
+
+
+# ------------------------------------------------------------------------------------ the repository
+class Repo:
+    def __init__(self, start):
+        start = os.path.abspath(start)
+        if not os.path.isdir(start):
+            raise Fail(f"not a directory: {start}")
+        p = run(["rev-parse", "--show-toplevel"], start, check=False)
+        if p.returncode != 0:
+            raise Fail(f"{start} is not inside a worktree of a git repository")
+        self.wt = os.path.realpath(p.stdout.strip())
+        common = git(["rev-parse", "--path-format=absolute", "--git-common-dir"], start).strip()
+        self.common = os.path.realpath(common)
+        if os.path.basename(self.common) != ".git":
+            raise Fail(f"unexpected repository layout (common dir {self.common})")
+        self.main = os.path.dirname(self.common)
+        if self.wt == self.main:
+            rel = os.path.relpath(os.path.realpath(start), self.main)
+            if rel.split(os.sep)[0] in DATA_ROOTS:
+                raise Fail(f"{start} lies in the data root {rel.split(os.sep)[0]}/ of the main checkout, not in a "
+                           "worktree; run the command from your worktree (or pass -C <worktree>)")
+        self.branch = git(["symbolic-ref", "-q", "--short", "HEAD"], self.wt, check=False).strip() or None
+        self.me = owner_of(self.branch)
+        self.in_main_checkout = self.wt == self.main
+        self._branches = None
+        self._registry = None
+        self._blob_cache = {}
+
+    # -- refs
+    def branches(self):
+        if self._branches is None:
+            out = git(["for-each-ref", "--format=%(refname:short)%09%(objectname)%09%(committerdate:unix)%09%(subject)",
+                       "refs/heads"], self.wt)
+            self._branches = {}
+            for ln in out.splitlines():
+                name, sha, ts, subj = (ln.split("\t", 3) + ["", "", ""])[:4]
+                self._branches[name] = {"sha": sha, "ts": int(ts or 0), "subject": subj}
+        return self._branches
+
+    def registry(self):
+        """[(id, worktree, branch)] from the owner table of main:CLAUDE.md."""
+        if self._registry is None:
+            text = self.show_text(MAIN, "CLAUDE.md") or ""
+            rows, seen = [], set()
+            for ln in text.splitlines():
+                m = ROW_RE.match(ln)
+                if m and m.group(1) not in seen and owner_of(m.group(3)) == m.group(1):
+                    rows.append((m.group(1), m.group(2), m.group(3)))
+                    seen.add(m.group(1))
+            self._registry = rows
+        return self._registry
+
+    def canonical(self, oid):
+        for rid, _, br in self.registry():
+            if rid == oid:
+                return br
+        return default_branch(oid)
+
+    def owners(self):
+        ids = [r[0] for r in self.registry()]
+        extra = sorted({owner_of(b) for b in self.branches() if owner_of(b) and not is_proposal(b)} - set(ids))
+        if "orch" not in ids and MAIN in self.branches():
+            ids.insert(0, "orch")
+        return ids + [x for x in extra if x not in ids]
+
+    def owner_branches(self, oid):
+        """Branches of one owner (no proposal branches), canonical first."""
+        canon = self.canonical(oid)
+        brs = [b for b in self.branches() if owner_of(b) == oid and not is_proposal(b)]
+        brs.sort(key=lambda b: (b != canon, b))
+        return brs
+
+    def resolve_owner(self, name):
+        owners = self.owners()
+        if name in owners:
+            return name
+        hits = [o for o in owners if o.lower().startswith(name.lower())]
+        if len(hits) == 1:
+            return hits[0]
+        raise Fail(f"unknown owner '{name}'" + (f" (ambiguous: {', '.join(hits)})" if hits else
+                                                 f"; owners: {', '.join(owners)}"))
+
+    # -- objects
+    def show_text(self, ref, path):
+        p = run(["show", f"{ref}:{path}"], self.wt, check=False)
+        return p.stdout if p.returncode == 0 else None
+
+    def ls_tree(self, ref, path, long=False):
+        args = ["ls-tree", "-r", "-z"] + (["-l"] if long else []) + [ref, "--"] + ([path] if path else [])
+        out = run(args, self.wt, check=False).stdout
+        rows = []
+        for ent in out.split("\0"):
+            if not ent:
+                continue
+            meta, p = ent.split("\t", 1)
+            f = meta.split()
+            rows.append({"mode": f[0], "type": f[1], "sha": f[2], "path": p,
+                         "size": int(f[3]) if long and f[3] != "-" else None})
+        return rows
+
+    def blobs(self, shas):
+        need = [s for s in dict.fromkeys(shas) if s not in self._blob_cache]
+        if need:
+            p = subprocess.run(["git", "cat-file", "--batch"], cwd=self.wt, env=ENV, capture_output=True,
+                               input=("\n".join(need) + "\n").encode())
+            data, i = p.stdout, 0
+            for s in need:
+                j = data.index(b"\n", i)
+                head = data[i:j].decode().split()
+                if len(head) < 3 or head[1] == "missing":
+                    self._blob_cache[s] = None
+                    i = j + 1
+                    continue
+                n = int(head[2])
+                self._blob_cache[s] = data[j + 1:j + 1 + n].decode("utf-8", "replace")
+                i = j + 1 + n + 1
+        return {s: self._blob_cache.get(s) for s in shas}
+
+    def sizes(self, shas):
+        shas = list(dict.fromkeys(s for s in shas if s and set(s) != {"0"}))
+        if not shas:
+            return {}
+        out = git(["cat-file", "--batch-check=%(objectname) %(objecttype) %(objectsize)"], self.wt,
+                  inp="\n".join(shas) + "\n")
+        res = {}
+        for ln in out.splitlines():
+            f = ln.split()
+            if len(f) == 3 and f[1] == "blob":
+                res[f[0]] = int(f[2])
+        return res
+
+    def ahead_behind(self, br, base=MAIN):
+        out = git(["rev-list", "--left-right", "--count", f"{base}...{br}"], self.wt, check=False).split()
+        return (int(out[0]), int(out[1])) if len(out) == 2 else (0, 0)
+
+    def is_ancestor(self, a, b):
+        return run(["merge-base", "--is-ancestor", a, b], self.wt, check=False).returncode == 0
+
+    def worktrees(self):
+        out = git(["worktree", "list", "--porcelain"], self.wt)
+        res, cur = [], {}
+        for ln in out.splitlines() + [""]:
+            if not ln:
+                if cur:
+                    res.append(cur)
+                cur = {}
+                continue
+            k, _, v = ln.partition(" ")
+            cur[k] = v if v else True
+        for w in res:
+            w["path"] = os.path.realpath(w["worktree"])
+            b = w.get("branch")
+            w["branch"] = b[len("refs/heads/"):] if isinstance(b, str) and b.startswith("refs/heads/") else None
+        return res
+
+    def dirty(self, path=None):
+        out = git(["status", "--porcelain=v1", "--untracked-files=normal"], path or self.wt, check=False)
+        return [ln for ln in out.splitlines() if ln]
+
+
+# ------------------------------------------------------------------------------------- messages
+def parse_front(text):
+    """Front matter between the first two '---' lines: dict, body."""
+    if text is None:
+        return {}, ""
+    lines = text.splitlines()
+    if not lines or lines[0].strip() != "---":
+        return {}, text
+    head, end = {}, None
+    for i, ln in enumerate(lines[1:], 1):
+        if ln.strip() == "---":
+            end = i
+            break
+        k, sep, v = ln.partition(":")
+        if sep:
+            v = re.sub(r"\s+#.*$", "", v).strip()
+            head[k.strip()] = v
+    if end is None:
+        return {}, text
+    return head, "\n".join(lines[end + 1:]).strip("\n")
+
+
+def stamp_text(stamp):
+    try:
+        t = dt.datetime.strptime(stamp, "%Y%m%dT%H%M%SZ" if len(stamp) == 16 else "%Y%m%dT%H%MZ")
+        return t.strftime("%Y-%m-%d %H:%MZ")
+    except ValueError:
+        return stamp
+
+
+def collect_messages(repo):
+    """Every message of every owner, exactly once per path.
+
+    Only an owner's OWN directory tracks/<ID>/outbox/ on that owner's own branches is read
+    (canonical branch first, temporary branches after it, first copy wins); copies that reached
+    other branches through main are never read. An owner without any branch is read from main."""
+    msgs, problems = {}, []
+    for oid in repo.owners():
+        sources = repo.owner_branches(oid) or [MAIN]
+        for br in sources:
+            for ent in repo.ls_tree(br, f"tracks/{oid}/outbox"):
+                path = ent["path"]
+                if path in msgs or ent["type"] != "blob":
+                    continue
+                name = os.path.basename(path)
+                if name == ".gitkeep" or name.startswith("."):
+                    continue
+                if os.path.dirname(path) != f"tracks/{oid}/outbox":
+                    continue                         # attachments in sub-directories are not messages
+                m = NAME_RE.match(name)
+                if not m:
+                    problems.append(f"{br}:{path}: file name does not follow <UTC>__to-<ID>__<slug>.md")
+                    continue
+                msgs[path] = {"path": path, "name": name, "from": oid, "branch": br, "sha": ent["sha"],
+                              "stamp": m.group(1), "to": m.group(2), "slug": m.group(3)}
+    texts = repo.blobs([m["sha"] for m in msgs.values()])
+    owners = set(repo.owners())
+    for m in msgs.values():
+        head, body = parse_front(texts.get(m["sha"]))
+        m["head"], m["body"] = head, body
+        m["type"] = head.get("type", "?")
+        m["reply_by"] = head.get("needs_reply_by", "") or ""
+        if m["reply_by"].lower() in ("none", "null", "-", "~"):
+            m["reply_by"] = ""
+        if head.get("to") and head.get("to") != m["to"]:
+            problems.append(f"{m['path']}: front matter says to: {head.get('to')}, the file name says {m['to']} (the name routes)")
+        if head.get("from") and head.get("from") != m["from"]:
+            problems.append(f"{m['path']}: front matter says from: {head.get('from')}, but it lies in the outbox of {m['from']}")
+        if m["to"] != "all" and m["to"] not in owners:
+            problems.append(f"{m['path']}: addressed to unknown owner '{m['to']}'")
+        if m["type"] not in TYPES:
+            problems.append(f"{m['path']}: type '{m['type']}' is not one of {', '.join(TYPES)}")
+    return sorted(msgs.values(), key=lambda m: (m["stamp"], m["path"])), problems
+
+
+def parse_acks(text, into, where):
+    for ln in (text or "").splitlines():
+        s = ln.strip()
+        if not s or s.startswith("#"):
+            continue
+        f = s.split("\t") if "\t" in s else s.split(None, 2)
+        path = f[0].strip()
+        when = f[1].strip() if len(f) > 1 else ""
+        if path not in into:
+            into[path] = {"when": when, "where": where}
+
+
+def acks_of(repo, oid, include_worktree=False):
+    """path -> {when, where}: acknowledgements of one owner, from all its branches (and its worktree file)."""
+    acks = {}
+    rel = f"tracks/{oid}/inbox_acks.txt"
+    if include_worktree:
+        fp = os.path.join(repo.wt, rel)
+        if os.path.isfile(fp):
+            parse_acks(open(fp, encoding="utf-8", errors="replace").read(), acks, "worktree")
+    for br in repo.owner_branches(oid) or [MAIN]:
+        parse_acks(repo.show_text(br, rel), acks, br)
+    return acks
+
+
+def recipients(repo, m):
+    if m["to"] == "all":
+        return [o for o in repo.owners() if o != m["from"]]
+    return [m["to"]]
+
+
+def inbox_for(repo, oid, msgs, include_acked=False, mine_from_worktree=False):
+    acks = acks_of(repo, oid, include_worktree=mine_from_worktree)
+    out = []
+    for m in msgs:
+        if m["from"] == oid or m["to"] not in (oid, "all"):
+            continue
+        if m["path"] in acks and not include_acked:
+            continue
+        out.append(dict(m, acked=acks.get(m["path"])))
+    return out
+
+
+# --------------------------------------------------------------------------------------- STATUS
+def parse_status(text):
+    fields, key = {}, None
+    for ln in (text or "").splitlines():
+        if ln.startswith("<!--"):
+            break
+        m = re.match(r"^([a-z][a-z-]*):\s*(.*)$", ln)
+        if m and m.group(1) in STATUS_KEYS:
+            key = m.group(1)
+            fields[key] = m.group(2).strip()
+        elif key and ln.startswith((" ", "\t")) and ln.strip():
+            fields[key] += " " + ln.strip() if fields[key] else ln.strip()
+        elif not ln.strip():
+            key = None
+    return fields
+
+
+def first_item(text):
+    """'1. a  2. b' -> 'a'."""
+    if not text:
+        return ""
+    parts = re.split(r"\s*(?:^|\s)\d+\.\s+", " " + text)
+    parts = [p.strip() for p in parts if p.strip()]
+    return parts[0] if parts else text
+
+
+def items(text, n=3):
+    parts = re.split(r"\s*(?:^|\s)\d+\.\s+", " " + (text or ""))
+    parts = [p.strip() for p in parts if p.strip()]
+    return parts[:n] if parts else ([text] if text else [])
+
+
+def cell(s, n=110):
+    s = re.sub(r"\s+", " ", str(s or "")).strip().replace("|", "\\|")
+    return s if len(s) <= n else s[:n - 1] + "…"
+
+
+def clip(s, n):
+    s = re.sub(r"\s+", " ", str(s or "")).strip()
+    return s if len(s) <= n else s[:n - 1] + "…"
+
+
+def handoff_next(text):
+    for ln in (text or "").splitlines():
+        m = re.match(r"^\s*(?:[-*]\s*)?(?:\*\*)?(Run next|Next command|Exact command to run next|Next)(?:\*\*)?\s*:\s*(.+)$", ln, re.I)
+        if m:
+            return m.group(2).strip()
+    return ""
+
+
+# ------------------------------------------------------------------------------------- the board
+def owner_rows(repo, msgs):
+    rows = []
+    for oid in repo.owners():
+        brs = repo.owner_branches(oid)
+        canon = repo.canonical(oid)
+        br = canon if canon in repo.branches() else (brs[0] if brs else None)
+        st = parse_status(repo.show_text(br, f"tracks/{oid}/STATUS.md")) if br else {}
+        info = repo.branches().get(br, {}) if br else {}
+        behind, ahead = repo.ahead_behind(br) if br and br != MAIN else (0, 0)
+        pending = inbox_for(repo, oid, msgs)
+        rows.append({"id": oid, "branch": br, "canonical": canon, "exists": br is not None, "sha": info.get("sha", ""),
+                     "ts": info.get("ts", 0), "subject": info.get("subject", ""), "behind": behind, "ahead": ahead,
+                     "status": st, "inbox": len(pending), "others": [b for b in brs if b != br]})
+    return rows
+
+
+def utc_of(ts):
+    return dt.datetime.fromtimestamp(ts, dt.timezone.utc).strftime("%Y-%m-%d %H:%MZ") if ts else ""
+
+
+def board_text(repo):
+    msgs, problems = collect_messages(repo)
+    rows = owner_rows(repo, msgs)
+    acks = {o: acks_of(repo, o) for o in repo.owners()}
+    t = now_utc()
+    L = ["# Board of the NRPIC-cosmology program", "",
+         f"Generated by `harness/bin/nrpic-ctx board` at {t.strftime('%Y-%m-%dT%H:%MZ')} from the tips of the "
+         "owners' branches (read through git only). Do not edit by hand: regenerate.", "",
+         "## Owners", "",
+         "| Owner | Branch @ tip | Behind / ahead of main | Gate | Headline | Next | Blockers | Inbox | Budget |",
+         "|---|---|---|---|---|---|---|---|---|"]
+    for r in rows:
+        st = r["status"]
+        if not r["exists"]:
+            L.append(f"| {r['id']} | `{r['canonical']}` missing | | | | | | | |")
+            continue
+        tip = f"`{r['branch']}` @ `{r['sha'][:7]}` {utc_of(r['ts'])}"
+        vs = "(main)" if r["branch"] == MAIN else f"{r['behind']} / {r['ahead']}"
+        L.append(f"| {r['id']} | {tip} | {vs} | {cell(st.get('gate', '—'), 40)} | {cell(st.get('headline', '—'))} | "
+                 f"{cell(first_item(st.get('next', '—')), 90)} | {cell(st.get('blockers', '—'), 60)} | {r['inbox']} | "
+                 f"{cell(st.get('budget', '—'), 50)} |")
+    L += ["", "Behind / ahead: commits of main not yet merged into the branch, commits of the branch not yet on main. "
+          "Inbox: messages addressed to the owner or to all and not yet acknowledged.", ""]
+    na = [(r["id"], k, r["status"].get(k)) for r in rows for k in ("needs", "offers", "last-result")
+          if r["status"].get(k) and r["status"].get(k).strip().lower() not in ("none", "none.", "—", "-")]
+    if na:
+        L += ["## Last results, needs and offers", ""]
+        for oid, k, v in na:
+            L.append(f"- **{oid}** {k}: {clip(v, 300)}")
+        L.append("")
+    others = [(r["id"], b) for r in rows for b in r["others"]]
+    props = [b for b in repo.branches() if is_proposal(b)]
+    orphans = [b for b in repo.branches() if owner_of(b) is None]
+    if others or props or orphans:
+        L += ["## Other branches", "", "| Branch | Owner | Kind | Tip | Behind / ahead of main | Last commit |", "|---|---|---|---|---|---|"]
+        for oid, b in others:
+            i = repo.branches()[b]
+            be, ah = repo.ahead_behind(b)
+            L.append(f"| `{b}` | {oid} | temporary | `{i['sha'][:7]}` {utc_of(i['ts'])} | {be} / {ah} | {cell(i['subject'], 80)} |")
+        for b in props:
+            i = repo.branches()[b]
+            be, ah = repo.ahead_behind(b)
+            L.append(f"| `{b}` | {owner_of(b)} | proposal | `{i['sha'][:7]}` {utc_of(i['ts'])} | {be} / {ah} | {cell(i['subject'], 80)} |")
+        for b in orphans:
+            i = repo.branches()[b]
+            L.append(f"| `{b}` | — | no owner | `{i['sha'][:7]}` {utc_of(i['ts'])} | | {cell(i['subject'], 80)} |")
+        L.append("")
+    L += ["## Messages", ""]
+    if not msgs:
+        L += ["No messages yet.", ""]
+    else:
+        today = t.date().isoformat()
+        shown = sorted(msgs, key=lambda m: m["stamp"], reverse=True)[:80]
+        L += ["| Sent | From | To | Type | Subject | Reply by | Acknowledged by | Waiting for |", "|---|---|---|---|---|---|---|---|"]
+        for m in shown:
+            rec = recipients(repo, m)
+            done = [o for o in rec if m["path"] in acks.get(o, {})]
+            wait = [o for o in rec if o not in done]
+            rb = m["reply_by"]
+            if rb and wait and rb < today and m["type"] != "info":
+                rb += " **overdue**"
+            L.append(f"| {stamp_text(m['stamp'])} | {m['from']} | {m['to']} | {m['type']} | "
+                     f"[{cell(m['slug'], 50)}]({m['path']}) | {rb} | {', '.join(done) or '—'} | {', '.join(wait) or '—'} |")
+        if len(msgs) > len(shown):
+            L.append(f"\n{len(msgs) - len(shown)} older messages not shown.")
+        L += ["", "A message is read with `nrpic-ctx show <from> outbox/<file>`; links point to the copy on the "
+              "sender's branch (`git show <branch>:<path>`).", ""]
+    if problems:
+        L += ["## Problems found in outboxes", ""] + [f"- {p}" for p in problems] + [""]
+    return "\n".join(L).rstrip() + "\n"
+
+
+# ----------------------------------------------------------------------------------------- audit
+def changed_files(repo, rev_range, merges):
+    """[(commit, ts, subject, [(status, path, newsha)])] of a revision range."""
+    if merges:
+        shas = git(["rev-list", "--merges", *rev_range], repo.wt, check=False).split()
+        res = []
+        for s in shas:
+            out = git(["diff-tree", "-r", "--cc", "--raw", "--no-abbrev", "--no-commit-id", s], repo.wt, check=False)
+            files = []
+            for ln in out.splitlines():
+                if not ln.startswith("::"):
+                    continue
+                meta, _, path = ln.partition("\t")
+                f = meta.split()
+                files.append((f[-1], unquote(path), f[-2]))
+            info = git(["log", "-1", "--format=%ct%x09%s", s], repo.wt).strip().split("\t", 1)
+            res.append((s, int(info[0]), info[1] if len(info) > 1 else "", files))
+        return res
+    out = git(["log", "--no-merges", "--no-renames", "--raw", "--no-abbrev", "--format=%x01%H%x09%ct%x09%s", *rev_range],
+              repo.wt, check=False)
+    res, cur = [], None
+    for ln in out.splitlines():
+        if ln.startswith("\x01"):
+            h, ts, subj = (ln[1:].split("\t", 2) + ["", ""])[:3]
+            cur = (h, int(ts or 0), subj, [])
+            res.append(cur)
+        elif ln.startswith(":") and cur is not None:
+            meta, _, path = ln.partition("\t")
+            f = meta.split()
+            cur[3].append((f[4], unquote(path), f[3]))
+    return res
+
+
+def audit_text(repo, since=None, only=None):
+    """(markdown, number of findings). Read-only: git reads, directory listings, status without locks."""
+    findings = 0
+    L = [f"# Audit ({now_utc().strftime('%Y-%m-%dT%H:%MZ')}, `nrpic-ctx audit`, read-only)", ""]
+    brs = repo.branches()
+    owners = repo.owners()
+    targets = [b for b in brs if b != MAIN and owner_of(b) and (only is None or b == only)]
+    base = since or MAIN
+    main_globs = {}
+    for o in owners:
+        t = repo.show_text(MAIN, f"tracks/{o}/OWNERSHIP")
+        main_globs[o] = parse_globs(t) if t is not None else None
+
+    # 1. commits touching paths outside the owner's directory and OWNERSHIP
+    L += ["## 1. Commits touching paths outside the owner's directory and OWNERSHIP", "",
+          f"Range per branch: `{base}..<branch>`. OWNERSHIP is taken from main (the accepted version). "
+          "Merge commits count only for what they change against every parent (conflict resolutions), "
+          "and a merge of a branch that is neither on main nor the owner's own is reported.", ""]
+    big_new = []
+    n1 = 0
+    for b in sorted(targets, key=lambda x: (is_proposal(x), x)):
+        oid = owner_of(b)
+        globs = main_globs.get(oid)
+        if globs is None:
+            globs = parse_globs(repo.show_text(b, f"tracks/{oid}/OWNERSHIP"))
+        rx = [glob_regex(g) for g in globs]
+
+        def ok(p):
+            return p.startswith(f"tracks/{oid}/") or any(r.match(p) for r in rx)
+        lines = []
+        for merges in (False, True):
+            for h, ts, subj, files in changed_files(repo, [f"{base}..{b}"], merges):
+                bad = sorted({p for _, p, _ in files if not ok(p)})
+                for st, p, new in files:
+                    if st[0] in "AMC" and new and set(new) != {"0"}:
+                        big_new.append((b, h, p, new))
+                if bad:
+                    shown = ", ".join(f"`{p}`" for p in bad[:8]) + (f" and {len(bad) - 8} more" if len(bad) > 8 else "")
+                    lines.append(f"- `{h[:9]}` {utc_of(ts)} {'(merge) ' if merges else ''}{clip(subj, 70)}: {shown}")
+        for h in git(["rev-list", "--merges", f"{base}..{b}"], repo.wt, check=False).split():
+            parents = git(["rev-list", "--parents", "-n1", h], repo.wt).split()[2:]
+            for par in parents:
+                if repo.is_ancestor(par, MAIN):
+                    continue
+                if any(repo.is_ancestor(par, ob) for ob in repo.owner_branches(oid) if ob != b):
+                    continue
+                lines.append(f"- `{h[:9]}` merges `{par[:9]}`, which is neither on main nor on another branch of {oid}")
+        own_text = repo.show_text(b, f"tracks/{oid}/OWNERSHIP")
+        if main_globs.get(oid) is not None and own_text is not None and parse_globs(own_text) != main_globs.get(oid):
+            L.append(f"- note: `{b}`: tracks/{oid}/OWNERSHIP differs from main's; main's version was applied")
+        if lines:
+            kind = " (proposal branch: foreign paths are its purpose; reviewed at acceptance)" if is_proposal(b) else ""
+            L.append(f"**`{b}`** (owner {oid}){kind}:")
+            L += lines
+            L.append("")
+            if not is_proposal(b):
+                n1 += len(lines)
+    if n1 == 0:
+        L += ["None.", ""]
+    findings += n1
+
+    # 2. files above 1 MB
+    L += ["## 2. Files above 1 MB", ""]
+    sizes = repo.sizes([x[3] for x in big_new])
+    n2 = 0
+    rows = []
+    for b, h, p, new in big_new:
+        sz = sizes.get(new, 0)
+        if sz > MB:
+            tip = [e for e in repo.ls_tree(b, p) if e["path"] == p]
+            at_tip = "still at the tip" if tip and tip[0]["sha"] == new else "no longer at the tip (still in history)"
+            lim = " **above the 5 MB limit**" if sz > 5 * MB else ""
+            rows.append(f"- `{b}` `{h[:9]}` `{p}` {sz / MB:.2f} MB, {at_tip}{lim}")
+    rows = list(dict.fromkeys(rows))
+    n2 = len(rows)
+    L += (["Added or changed on a branch (not on main):", ""] + rows + [""]) if rows else ["Added or changed on a branch (not on main): none.", ""]
+    base_rows = [f"- `{e['path']}` {e['size'] / MB:.2f} MB" for e in repo.ls_tree(MAIN, None, long=True)
+                 if e["type"] == "blob" and (e["size"] or 0) > MB]
+    if base_rows:
+        L += ["Tracked on main (known; listed, not counted):", ""] + base_rows + [""]
+    findings += n2
+
+    # 3. tracked files under ignored roots
+    L += ["## 3. Tracked files under ignored roots", "",
+          "Every tracked path at the tip of every branch, tested against the ignore rules of the main checkout "
+          "(`git check-ignore --no-index`). A root is a directory of the first or second level (`scratch/`, `wt/`, "
+          "`refs/arxiv_<id>/`, ...).", ""]
+    where = {}
+    for b in (brs if only is None else [only]):
+        for e in repo.ls_tree(b, None):
+            where.setdefault(e["path"], []).append(b)
+
+    def ignored(paths):
+        """path -> (source, line, pattern) for the paths the ignore rules exclude (negations '!' honoured)."""
+        if not paths:
+            return {}
+        p = subprocess.run(["git", "check-ignore", "--no-index", "--stdin", "-z", "-v"], cwd=repo.main, env=ENV,
+                           capture_output=True, input=("\0".join(paths) + "\0").encode())
+        f = p.stdout.decode("utf-8", "replace").split("\0")
+        return {f[i + 3]: (f[i], f[i + 1], f[i + 2]) for i in range(0, len(f) - 3, 4)
+                if f[i + 2] and not f[i + 2].startswith("!")}
+
+    def excluded_dir(path, rule):
+        """The directory a directory rule ('x/') excludes for this path, or None for a file rule."""
+        source, _, pattern = rule
+        if not pattern.endswith("/"):
+            return None
+        base = os.path.dirname(source)
+        rel = path[len(base) + 1:] if base else path
+        pat = pattern.rstrip("/")
+        anchored = "/" in pat
+        rx = glob_regex(pat.lstrip("/"))
+        parts = rel.split("/")
+        for d in range(1, len(parts)):
+            if rx.match("/".join(parts[:d]) if anchored else parts[d - 1]):
+                return "/".join(([base] if base else []) + parts[:d]) + "/"
+        return None
+    under, deep = [], {}
+    full = ignored(sorted(where))
+    for path in sorted(full):
+        rule = full[path]
+        d = excluded_dir(path, rule)
+        if d and d.count("/") <= 2:
+            under.append((path, d, rule))
+        else:
+            deep.setdefault(rule, []).append(path)
+    for path, root, rule in under:
+        bl = where.get(path, [])
+        L.append(f"- `{path}` (root `{root}`, rule `{rule[0]}:{rule[1]}: {rule[2]}`) on {', '.join(f'`{x}`' for x in bl[:6])}"
+                 f"{' and more' if len(bl) > 6 else ''}")
+    if not under:
+        L.append("None.")
+    L.append("")
+    if deep:
+        L += ["Tracked files below the roots that an ignore pattern also matches (listed, not counted: usually a "
+              "pattern that is not anchored, which then also hides new files of the same kind):", ""]
+        for rule, ps in sorted(deep.items()):
+            bl = sorted({b for p in ps for b in where.get(p, [])})
+            L.append(f"- rule `{rule[0]}:{rule[1]}: {rule[2]}` matches {len(ps)} tracked file(s), e.g. `{ps[0]}` "
+                     f"(on {', '.join(f'`{x}`' for x in bl[:4])}{' and more' if len(bl) > 4 else ''})")
+        L.append("")
+    hits = under
+    findings += len(hits)
+    must = {}
+    for o in owners:
+        for rel in ("STATUS.md", "inbox_acks.txt", "outbox/20260101T0000Z__to-all__x.md", "runs/X-20260101-000000-abcdef0/manifest.json",
+                    "note/figures/fig_x.pdf", "note/scripts/fig_x.py", "stage/G0/STAGE_REPORT.md"):
+            must[f"tracks/{o}/{rel}"] = rel
+    hidden = ignored(sorted(must))
+    hidden_rules = {}
+    for path, rule in hidden.items():
+        hidden_rules.setdefault((rule, must[path]), []).append(path.split("/")[1])
+
+    # notes (brief 13.1): not counted as findings
+    notes = []
+    for (rule, rel), os_ in sorted(hidden_rules.items()):
+        notes.append(f"the ignore rule `{rule[0]}:{rule[1]}: {rule[2]}` hides `tracks/<ID>/{rel}`, which owners must commit "
+                     f"({len(os_)} owner(s)); it is tracked only when added with -f. Anchor the pattern on main.")
+    msgs, problems = collect_messages(repo)
+    notes += [f"message: {p}" for p in problems]
+    scratch = os.path.join(repo.main, "scratch")
+    for oid in owners:
+        obrs = repo.owner_branches(oid)
+        if not obrs:
+            continue
+        figs, scripts, manifests = set(), set(), set()
+        for b in obrs:
+            for e in repo.ls_tree(b, f"tracks/{oid}"):
+                rel = e["path"][len(f"tracks/{oid}/"):]
+                m = re.match(r"^note/figures/([^/]+)\.(pdf|png|svg)$", rel)
+                if m:
+                    figs.add(m.group(1))
+                m = re.match(r"^note/scripts/([^/]+)\.(py|ipynb)$", rel)
+                if m:
+                    scripts.add(m.group(1))
+                m = re.match(r"^runs/([^/]+)/manifest\.json$", rel)
+                if m:
+                    manifests.add(m.group(1))
+        for f in sorted(figs - scripts):
+            notes.append(f"figure without a script: tracks/{oid}/note/figures/{f}.* (no note/scripts/{f}.py)")
+        sd = os.path.join(scratch, oid)
+        if os.path.isdir(sd):
+            for d in sorted(os.listdir(sd)):
+                if d in ("tmp",) or d.startswith(".") or not os.path.isdir(os.path.join(sd, d)):
+                    continue
+                if d not in manifests:
+                    notes.append(f"run directory without a committed manifest: scratch/{oid}/{d}")
+    for w in repo.worktrees():
+        if w.get("bare") or not os.path.isdir(w["path"]):
+            continue
+        d = repo.dirty(w["path"])
+        if d:
+            rel = os.path.relpath(w["path"], repo.main)
+            notes.append(f"worktree `{rel}` (`{w.get('branch')}`) has {len(d)} uncommitted change(s) now")
+    for b in brs:
+        if owner_of(b) is None:
+            notes.append(f"branch `{b}` belongs to no owner")
+    L += ["## Notes (not counted)", ""] + ([f"- {n}" for n in notes] if notes else ["None."]) + [""]
+    L += ["Not checked by this command: numbers in notes without a run id (read at the stage check).", "",
+          f"Findings: {findings} (section 1: {n1}, section 2: {n2}, section 3: {len(hits)}); notes: {len(notes)}.", ""]
+    return "\n".join(L), findings
+
+
+# ---------------------------------------------------------------------------------------- digest
+def digest_text(repo, week=None):
+    t = now_utc()
+    if week:
+        m = re.match(r"^(\d{4})-W(\d{2})$", week)
+        if not m:
+            raise Fail("--week must look like 2026-W46")
+        y, w = int(m.group(1)), int(m.group(2))
+    else:
+        y, w, _ = t.isocalendar()
+    start = dt.datetime.fromisocalendar(y, w, 1).replace(tzinfo=dt.timezone.utc)
+    end = start + dt.timedelta(days=7)
+    msgs, _ = collect_messages(repo)
+    rows = owner_rows(repo, msgs)
+    acks = {o: acks_of(repo, o) for o in repo.owners()}
+    L = [f"# Digest {y}-W{w:02d}", "",
+         f"Week {start.date()} to {(end - dt.timedelta(days=1)).date()} (UTC). Generated by `harness/bin/nrpic-ctx digest` "
+         f"at {t.strftime('%Y-%m-%dT%H:%MZ')} from the branch tips; the board is `coord/BOARD.md`.", "",
+         "## Owners", ""]
+    for r in rows:
+        st = r["status"]
+        L.append(f"### {r['id']}" + ("" if r["exists"] else " (no branch)"))
+        if not r["exists"]:
+            L.append("")
+            continue
+        L.append(f"- gate: {clip(st.get('gate', '—'), 200)}")
+        L.append(f"- last result: {clip(st.get('last-result', '—'), 400)}")
+        L.append(f"- blockers: {clip(st.get('blockers', '—'), 300)}")
+        rng = [r["branch"]] + r["others"]
+        excl = [] if r["id"] == "orch" else ["--not", MAIN]
+        out = git(["log", "--no-merges", f"--since={start.isoformat()}", f"--until={end.isoformat()}",
+                   "--format=%h %s", *rng, *excl], repo.wt, check=False).splitlines()
+        L.append(f"- commits this week{'' if r['id'] == 'orch' else ' not yet on main'}: {len(out)}")
+        L += [f"  - `{c.split(' ', 1)[0]}` {clip(c.split(' ', 1)[1] if ' ' in c else '', 100)}" for c in out[:6]]
+        if len(out) > 6:
+            L.append(f"  - and {len(out) - 6} more")
+        L.append("")
+    L += ["## Cross-owner requests", "",
+          "Messages of type request, proposal, interface-change, blocker or kb-request; picked up = acknowledged by "
+          "the recipient (for `all`: by every other owner).", "",
+          "| Sent | From | To | Type | Subject | Reply by | Picked up by | Not yet |", "|---|---|---|---|---|---|---|---|"]
+    today = t.date().isoformat()
+    n = 0
+    for m in msgs:
+        if m["type"] == "info":
+            continue
+        rec = recipients(repo, m)
+        done = [o for o in rec if m["path"] in acks.get(o, {})]
+        wait = [o for o in rec if o not in done]
+        rb = m["reply_by"] + (" **overdue**" if m["reply_by"] and wait and m["reply_by"] < today else "")
+        L.append(f"| {stamp_text(m['stamp'])} | {m['from']} | {m['to']} | {m['type']} | {cell(m['slug'], 50)} | {rb} | "
+                 f"{', '.join(done) or '—'} | {', '.join(wait) or '—'} |")
+        n += 1
+    if n == 0:
+        L.append("| — | | | | none | | | |")
+    a, _ = audit_text(repo)
+    L += ["", "## Audit", ""] + ["#" + ln if ln.startswith("#") else ln for ln in a.splitlines()[2:]]
+    return "\n".join(L).rstrip() + "\n", f"{y}-W{w:02d}"
+
+
+# --------------------------------------------------------------------------------------- writing
+def require_write(repo, args):
+    here = Repo(os.getcwd()) if args.C else repo
+    if args.C and here.wt != repo.wt:
+        raise Fail("write commands act only on the worktree you are in; run them there without -C")
+    if not repo.me or is_proposal(repo.branch):
+        raise Fail(f"this worktree is on '{repo.branch}', which is not an owner's branch; write commands refused")
+    if repo.me == "orch" and not repo.in_main_checkout:
+        raise Fail("branch main is written only in the main checkout")
+    if repo.me != "orch" and repo.in_main_checkout:
+        raise Fail(f"the main checkout is on {repo.branch}; owners write in their own worktree under wt/")
+    if repo.me not in repo.owners():
+        raise Fail(f"owner '{repo.me}' is not in the owner table")
+
+
+def commit_paths(repo, rels, message):
+    for attempt in range(13):
+        p = run(["add", "--", *rels], repo.wt, check=False)
+        if p.returncode == 0:
+            changed = run(["diff", "--cached", "--quiet", "--", *rels], repo.wt, check=False).returncode != 0
+            if not changed:
+                return None
+            p = run(["commit", "-q", "-m", message, "--", *rels], repo.wt, check=False)
+            if p.returncode == 0:
+                return git(["rev-parse", "--short", "HEAD"], repo.wt).strip()
+        if "index.lock" in p.stderr and attempt < 12:
+            time.sleep(5)
+            continue
+        raise Fail(f"commit failed:\n{p.stderr.strip()}")
+    return None
+
+
+def commit_message(subject, body, trailers):
+    msg = subject
+    if body:
+        msg += "\n\n" + body
+    if trailers:
+        msg += "\n\n" + "\n".join(trailers)
+    return msg
+
+
+def template_path(repo, name):
+    for root in (repo.wt, repo.main):
+        p = os.path.join(root, "harness", "templates", name)
+        if os.path.isfile(p):
+            return p
+    return None
+
+
+def fill(text, values):
+    for k, v in values.items():
+        text = text.replace("{{" + k + "}}", v)
+    return text
+
+
+DEFAULT_MESSAGE = "---\nfrom: {{FROM}}\nto: {{TO}}\ntype: {{TYPE}}\nneeds_reply_by: {{REPLY_BY}}\nrefs: [{{REFS}}]\n---\n{{BODY}}\n"
+
+
+# -------------------------------------------------------------------------------------- commands
+def cmd_owners(repo, args):
+    wts = {w.get("branch"): w["path"] for w in repo.worktrees()}
+    print(f"{'owner':<12} {'branch':<20} {'worktree':<22} state")
+    reg = {r[0]: r[1] for r in repo.registry()}
+    for oid in repo.owners():
+        br = repo.canonical(oid)
+        path = wts.get(br)
+        rel = os.path.relpath(path, repo.main) if path else reg.get(oid, "—")
+        state = "branch missing" if br not in repo.branches() else ("no worktree" if not path else "ok")
+        extra = [b for b in repo.owner_branches(oid) if b != br]
+        print(f"{oid:<12} {br:<20} {rel:<22} {state}" + (f"  (+ {', '.join(extra)})" if extra else ""))
+    return 0
+
+
+def cmd_show(repo, args):
+    oid = repo.resolve_owner(args.owner)
+    br = args.branch or repo.canonical(oid)
+    if br not in repo.branches():
+        if args.branch:
+            raise Fail(f"no branch {br}")
+        print(f"(branch {br} does not exist; reading the copy on main)", file=sys.stderr)
+        br = MAIN
+    if args.log:
+        sys.stdout.write(git(["log", f"-{args.log}", "--format=%h %ad %s", "--date=format:%Y-%m-%d %H:%M", br], repo.wt))
+        return 0
+    f = args.file or "STATUS.md"
+    path = f.lstrip("/") if f.startswith("/") else f"tracks/{oid}/{f}"
+    p = run(["show", f"{br}:{path}"], repo.wt, check=False)
+    if p.returncode != 0:
+        raise Fail(f"{br}:{path} does not exist")
+    sys.stdout.write(p.stdout)
+    return 0
+
+
+def cmd_board(repo, args):
+    text = board_text(repo)
+    if args.write:
+        if not (repo.me == "orch" and repo.in_main_checkout):
+            raise Fail("board --write is for the orchestrator in the main checkout (coord/ changes only on main)")
+        if args.C and Repo(os.getcwd()).wt != repo.wt:
+            raise Fail("board --write acts only on the worktree you are in")
+        with open(os.path.join(repo.wt, "coord", "BOARD.md"), "w") as fh:
+            fh.write(text)
+        print("wrote coord/BOARD.md (not committed)")
+        return 0
+    sys.stdout.write(text)
+    return 0
+
+
+def cmd_inbox(repo, args):
+    if not repo.me:
+        raise Fail(f"branch '{repo.branch}' belongs to no owner")
+    msgs, _ = collect_messages(repo)
+    items_ = inbox_for(repo, repo.me, msgs, include_acked=args.all, mine_from_worktree=True)
+    items_.sort(key=lambda m: (m["stamp"], m["path"]))
+    if args.count:
+        print(len([m for m in items_ if not m["acked"]]))
+        return 0
+    pend = [m for m in items_ if not m["acked"]]
+    print(f"inbox of {repo.me} ({repo.branch}): {len(pend)} unacknowledged" + (f", {len(items_) - len(pend)} acknowledged" if args.all else ""))
+    for i, m in enumerate(items_, 1):
+        tag = f"acked {m['acked']['when']}" if m["acked"] else f"[{i}]"
+        rb = f"  reply by {m['reply_by']}" if m["reply_by"] else ""
+        print(f" {tag:>5} {stamp_text(m['stamp'])}  from {m['from']:<11} to {m['to']:<11} {m['type']:<16} {m['slug']}{rb}")
+        print(f"       {m['branch']}:{m['path']}")
+        if args.show:
+            print("       " + "\n       ".join((m["body"] or "(empty)").splitlines()))
+            print()
+    if pend and not args.show:
+        print("read one: nrpic-ctx show <from> outbox/<file>   all bodies: nrpic-ctx inbox --show   "
+              "acknowledge: nrpic-ctx ack <n|file> ...")
+    return 0
+
+
+def cmd_ack(repo, args):
+    require_write(repo, args)
+    msgs, _ = collect_messages(repo)
+    mine = inbox_for(repo, repo.me, msgs, include_acked=True, mine_from_worktree=True)
+    pend = [m for m in mine if not m["acked"]]
+    if args.all:
+        chosen = pend
+    else:
+        if not args.messages:
+            raise Fail("name the messages to acknowledge (number, file name or path), or --all")
+        chosen = []
+        for key in args.messages:
+            if key.isdigit():
+                i = int(key)
+                if not 1 <= i <= len(pend):
+                    raise Fail(f"no message number {i} in the inbox ({len(pend)} unacknowledged)")
+                cand = [pend[i - 1]]
+            else:
+                k = key.rstrip("/")
+                cand = [m for m in mine if k in (m["path"], m["name"], f"{m['branch']}:{m['path']}")]
+                if not cand:
+                    cand = [m for m in mine if m["slug"] == k]
+            if len(cand) != 1:
+                raise Fail(f"'{key}' matches {len(cand)} messages addressed to {repo.me}")
+            if cand[0]["acked"]:
+                print(f"already acknowledged: {cand[0]['path']}")
+                continue
+            if cand[0] not in chosen:
+                chosen.append(cand[0])
+    if not chosen:
+        print("nothing to acknowledge")
+        return 0
+    rel = f"tracks/{repo.me}/inbox_acks.txt"
+    fp = os.path.join(repo.wt, rel)
+    new = not os.path.exists(fp)
+    os.makedirs(os.path.dirname(fp), exist_ok=True)
+    when = now_utc().strftime("%Y-%m-%dT%H:%M:%SZ")
+    note = re.sub(r"\s+", " ", args.note or "").strip()
+    with open(fp, "a") as fh:
+        if new:
+            fh.write(f"# acknowledgements of {repo.me}: <message path> TAB <UTC> TAB <note>; append-only (nrpic-ctx ack)\n")
+        for m in chosen:
+            fh.write(f"{m['path']}\t{when}\t{note}\n")
+    for m in chosen:
+        print(f"acknowledged {m['path']} (from {m['from']}, {m['type']})")
+    if not args.no_commit:
+        subj = f"{repo.me}(ctx): acknowledge {len(chosen)} message(s)"
+        body = "\n".join(f"- {m['path']}" for m in chosen)
+        c = commit_paths(repo, [rel], commit_message(subj, body, args.trailer))
+        print(f"committed {c} on {repo.branch}" if c else "nothing new to commit")
+    return 0
+
+
+def cmd_post(repo, args):
+    require_write(repo, args)
+    to = "all" if args.to == "all" else repo.resolve_owner(args.to)
+    if to == repo.me:
+        raise Fail("a message to yourself is a note, not a message")
+    if args.type not in TYPES:
+        raise Fail(f"--type must be one of {', '.join(TYPES)}")
+    if not SLUG_RE.match(args.slug or ""):
+        raise Fail("--slug: lower-case letters, digits, '-' and '.', at most 60 characters, e.g. deposit-order")
+    rb = args.reply_by or "none"
+    if rb != "none":
+        try:
+            dt.date.fromisoformat(rb)
+        except ValueError:
+            raise Fail("--reply-by must be YYYY-MM-DD") from None
+    if args.body is not None and args.body_file is not None:
+        raise Fail("give --body or --body-file, not both")
+    if args.body_file == "-":
+        body = sys.stdin.read()
+    elif args.body_file:
+        body = open(args.body_file, encoding="utf-8").read()
+    else:
+        body = args.body or ""
+    if not body.strip():
+        raise Fail("empty body: say what is asked or announced, why, the evidence, the smallest acceptable answer")
+    refs = ", ".join(r.strip() for r in (args.refs or "").split(",") if r.strip())
+    stamp = now_utc().strftime("%Y%m%dT%H%M%SZ")
+    name = f"{stamp}__to-{to}__{args.slug}.md"
+    rel = f"tracks/{repo.me}/outbox/{name}"
+    fp = os.path.join(repo.wt, rel)
+    if os.path.exists(fp):
+        raise Fail(f"{rel} exists already")
+    tp = template_path(repo, "outbox_message.md")
+    tmpl = open(tp).read() if tp else DEFAULT_MESSAGE
+    text = fill(tmpl, {"FROM": repo.me, "TO": to, "TYPE": args.type, "REPLY_BY": rb, "REFS": refs,
+                       "BODY": body.strip("\n")})
+    if not text.endswith("\n"):
+        text += "\n"
+    os.makedirs(os.path.dirname(fp), exist_ok=True)
+    with open(fp, "x") as fh:
+        fh.write(text)
+    print(f"wrote {rel}")
+    if not args.no_commit:
+        subj = f"{repo.me}(ctx): {args.type} to {to}: {args.slug}"
+        c = commit_paths(repo, [rel], commit_message(subj, "", args.trailer))
+        print(f"committed {c} on {repo.branch}; the recipients see it now (push at the end of the session)")
+    return 0
+
+
+def cmd_sync(repo, args):
+    require_write(repo, args)
+    if repo.me == "orch":
+        print("main is the source of shared content; nothing to merge here")
+        return 0
+    tracked = [ln for ln in git(["status", "--porcelain=v1", "--untracked-files=no"], repo.wt).splitlines() if ln]
+    if tracked:
+        raise Fail("tracked files have uncommitted changes; commit them first (nrpic-ctx sync merges into a clean tree):\n  "
+                   + "\n  ".join(tracked[:10]))
+    before = git(["rev-parse", "HEAD"], repo.wt).strip()
+    behind = int(git(["rev-list", "--count", f"HEAD..{MAIN}"], repo.wt).strip() or 0)
+    if behind == 0:
+        print(f"{repo.branch} already contains main ({git(['rev-parse', '--short', MAIN], repo.wt).strip()})")
+        return 0
+    p = run(["merge", "--no-edit", MAIN], repo.wt, check=False)
+    if p.returncode != 0:
+        conflicts = git(["diff", "--name-only", "--diff-filter=U"], repo.wt, check=False).split()
+        merging = run(["rev-parse", "-q", "--verify", "MERGE_HEAD"], repo.wt, check=False).returncode == 0
+        if merging:
+            run(["merge", "--abort"], repo.wt, check=False)
+        print(f"sync FAILED: merging main into {repo.branch} conflicts in:", file=sys.stderr)
+        for c in conflicts or ["(no file listed)"]:
+            print(f"  {c}", file=sys.stderr)
+        print((p.stdout + p.stderr).strip()[-800:], file=sys.stderr)
+        print("The merge was aborted; the branch is as before. A conflict means a shared path was edited on this "
+              "branch (or main wrote into this owner's directory). Tell the orchestrator: "
+              "nrpic-ctx post --to orch --type blocker --slug sync-conflict --body '...'", file=sys.stderr)
+        return 1
+    after = git(["rev-parse", "HEAD"], repo.wt).strip()
+    changed = git(["diff", "--name-only", before, after], repo.wt).split()
+    own = [c for c in changed if c.startswith(f"tracks/{repo.me}/")]
+    dec = [c for c in changed if c.startswith("coord/DECISIONS/")]
+    print(f"merged {behind} commit(s) of main into {repo.branch} ({after[:7]}); {len(changed)} file(s) changed")
+    for d in dec:
+        print(f"  decision: {d}")
+    shared = set()
+    for c in changed:
+        if c in dec:
+            continue
+        parts = c.split("/")
+        deep = parts[0] in ("coord", "harness", "tracks") and len(parts) > 2
+        shared.add("/".join(parts[:2]) if deep else parts[0])
+    shared = sorted(shared)
+    if shared:
+        print("  areas: " + ", ".join(shared[:20]))
+    if own:
+        print(f"  note: main changed this owner's own directory: {', '.join(own[:10])}")
+    return 0
+
+
+def cmd_brief(repo, args):
+    L = []
+    t = now_utc().strftime("%Y-%m-%dT%H:%MZ")
+    me = repo.me
+    rel = os.path.relpath(repo.wt, repo.main) if not repo.in_main_checkout else "main checkout"
+    if not me:
+        print(f"nrpic brief {t}: this worktree ({rel}) is on '{repo.branch}', which belongs to no owner. "
+              "Owners and branches: CLAUDE.md; nrpic-ctx owners.")
+        return 0
+    kind = " (proposal branch)" if is_proposal(repo.branch) else ("" if repo.branch == repo.canonical(me) else " (temporary branch)")
+    L.append(f"nrpic brief {t}: you are {me}, branch {repo.branch}{kind}, worktree {rel}")
+    msgs, problems = collect_messages(repo)
+    if me == "orch":
+        rows = owner_rows(repo, msgs)
+        L.append("role: orchestrator (harness, coord/, integration, review); board: nrpic-ctx board")
+        for r in rows:
+            if r["id"] == "orch":
+                continue
+            if not r["exists"]:
+                L.append(f"  {r['id']:<12} branch {r['canonical']} missing")
+                continue
+            L.append(f"  {r['id']:<12} {clip(r['status'].get('gate', '—'), 26):<26} inbox {r['inbox']:<2} "
+                     f"ahead {r['ahead']:<3} {clip(r['status'].get('headline', ''), 60)}")
+    else:
+        st_path = os.path.join(repo.wt, "tracks", me, "STATUS.md")
+        st_text = open(st_path, encoding="utf-8", errors="replace").read() if os.path.isfile(st_path) else repo.show_text("HEAD", f"tracks/{me}/STATUS.md")
+        st = parse_status(st_text)
+        L.append(f"gate:        {clip(st.get('gate', '(no STATUS.md)'), 140)}")
+        L.append(f"headline:    {clip(st.get('headline', '—'), 140)}")
+        L.append(f"last-result: {clip(st.get('last-result', '—'), 140)}")
+        nx = items(st.get("next", ""))
+        L.append(f"next:        1. {clip(nx[0], 130)}" if nx else "next:        —")
+        for i, x in enumerate(nx[1:3], 2):
+            L.append(f"             {i}. {clip(x, 130)}")
+        L.append(f"blockers:    {clip(st.get('blockers', '—'), 140)}")
+        L.append(f"needs:       {clip(st.get('needs', '—'), 140)}")
+        L.append(f"budget:      {clip(st.get('budget', '—'), 140)}")
+    pend = inbox_for(repo, me, msgs, mine_from_worktree=True)
+    pend.sort(key=lambda m: (TYPE_ORDER.get(m["type"], 9), m["stamp"]))
+    L.append(f"inbox:       {len(pend)} unacknowledged" + (" -> nrpic-ctx inbox --show, then nrpic-ctx ack" if pend else ""))
+    for m in pend[:5]:
+        rb = f", reply by {m['reply_by']}" if m["reply_by"] else ""
+        L.append(f"  - {m['type']} from {m['from']}: {m['slug']} ({stamp_text(m['stamp'])}{rb})")
+    if len(pend) > 5:
+        L.append(f"  - and {len(pend) - 5} more")
+    if me != "orch":
+        behind = int(git(["rev-list", "--count", f"HEAD..{MAIN}"], repo.wt, check=False).strip() or 0)
+        ahead = int(git(["rev-list", "--count", f"{MAIN}..HEAD"], repo.wt, check=False).strip() or 0)
+        L.append(f"main:        {behind} commit(s) ahead of this branch" + (" -> nrpic-ctx sync" if behind else " (up to date)")
+                 + f"; this branch has {ahead} commit(s) not on main")
+    up = run(["rev-parse", "--abbrev-ref", "--symbolic-full-name", "@{u}"], repo.wt, check=False)
+    if up.returncode == 0:
+        a, b = (git(["rev-list", "--left-right", "--count", f"@{{u}}...HEAD"], repo.wt, check=False).split() + ["0", "0"])[:2]
+        L.append(f"remote:      {up.stdout.strip()}: {b} to push, {a} to pull")
+    else:
+        L.append(f"remote:      no upstream; push with git push -u origin {repo.branch}")
+    d = repo.dirty()
+    L.append("tree:        clean" if not d else f"tree:        {len(d)} uncommitted change(s): " + ", ".join(x[3:] for x in d[:4]))
+    if me != "orch":
+        hp = os.path.join(repo.wt, "tracks", me, "HANDOFF.md")
+        ht = open(hp, encoding="utf-8", errors="replace").read() if os.path.isfile(hp) else repo.show_text("HEAD", f"tracks/{me}/HANDOFF.md")
+        nxt = handoff_next(ht)
+        L.append(f"handoff:     Run next: {clip(nxt, 125)}" if nxt else "handoff:     (no 'Run next:' line in HANDOFF.md)")
+        L.append(f"read first:  tracks/{me}/HANDOFF.md, tracks/{me}/STATUS.md, CLAUDE.md, harness/RULES.md")
+    else:
+        L.append("read first:  coord/BOARD.md (nrpic-ctx board --write), coord/CHARTER.md, harness/RULES.md")
+    if problems:
+        L.append(f"outbox problems: {len(problems)} (nrpic-ctx audit)")
+    L.append("end of session: rewrite STATUS.md and HANDOFF.md, append JOURNAL.md, commit, push your branch")
+    print("\n".join(L[:40]))
+    return 0
+
+
+def cmd_digest(repo, args):
+    text, week = digest_text(repo, args.week)
+    if args.write:
+        if not (repo.me == "orch" and repo.in_main_checkout):
+            raise Fail("digest --write is for the orchestrator in the main checkout")
+        if args.C and Repo(os.getcwd()).wt != repo.wt:
+            raise Fail("digest --write acts only on the worktree you are in")
+        p = os.path.join(repo.wt, "coord", "digests", f"{week}.md")
+        os.makedirs(os.path.dirname(p), exist_ok=True)
+        with open(p, "w") as fh:
+            fh.write(text)
+        print(f"wrote coord/digests/{week}.md (not committed)")
+        return 0
+    sys.stdout.write(text)
+    return 0
+
+
+def cmd_audit(repo, args):
+    if args.branch and args.branch not in repo.branches():
+        raise Fail(f"no branch {args.branch}")
+    text, n = audit_text(repo, args.since, args.branch)
+    sys.stdout.write(text)
+    return 1 if n else 0
+
+
+def cmd_template(repo, args):
+    name = args.name if "." in args.name else args.name + (".json" if args.name == "run_manifest" else ".md")
+    tp = template_path(repo, name)
+    if not tp:
+        raise Fail(f"no template {name} in harness/templates/")
+    oid = repo.resolve_owner(args.id) if args.id else (repo.me or "<ID>")
+    head = git(["rev-parse", "--short", "HEAD"], repo.wt, check=False).strip()
+    wts = {w.get("branch"): os.path.relpath(w["path"], repo.main) for w in repo.worktrees()}
+    br = repo.canonical(oid) if args.id else (repo.branch or "<branch>")
+    vals = {"ID": oid, "BRANCH": br, "WT": wts.get(br, f"wt/{oid}"), "DATE": now_utc().date().isoformat(),
+            "UTC": now_utc().strftime("%Y-%m-%dT%H:%MZ"), "GATE": args.gate or "G<k>", "SESSION": f"<name>",
+            "FROM": "<first commit>", "TO": head or "<last commit>", "RUNS": "none"}
+    sys.stdout.write(fill(open(tp).read(), vals))
+    return 0
+
+
+def main(argv=None):
+    ap = argparse.ArgumentParser(prog="nrpic-ctx", description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
+    ap.add_argument("-C", metavar="DIR", help="act as from this worktree (read commands only)")
+    sp = ap.add_subparsers(dest="cmd", required=True)
+    sp.add_parser("owners")
+    s = sp.add_parser("show")
+    s.add_argument("owner")
+    s.add_argument("file", nargs="?")
+    s.add_argument("--branch")
+    s.add_argument("--log", type=int)
+    s = sp.add_parser("board")
+    s.add_argument("--write", action="store_true")
+    s = sp.add_parser("inbox")
+    s.add_argument("--all", action="store_true")
+    s.add_argument("--show", action="store_true")
+    s.add_argument("--count", action="store_true")
+    s = sp.add_parser("ack")
+    s.add_argument("messages", nargs="*")
+    s.add_argument("--all", action="store_true")
+    s.add_argument("--note")
+    s.add_argument("--no-commit", action="store_true")
+    s.add_argument("--trailer", action="append", default=[])
+    s = sp.add_parser("post")
+    s.add_argument("--to", required=True)
+    s.add_argument("--type", required=True)
+    s.add_argument("--slug", required=True)
+    s.add_argument("--reply-by")
+    s.add_argument("--refs")
+    s.add_argument("--body")
+    s.add_argument("--body-file")
+    s.add_argument("--no-commit", action="store_true")
+    s.add_argument("--trailer", action="append", default=[])
+    sp.add_parser("sync")
+    s = sp.add_parser("brief")
+    s.add_argument("--hook", action="store_true")
+    s = sp.add_parser("digest")
+    s.add_argument("--week")
+    s.add_argument("--write", action="store_true")
+    s = sp.add_parser("audit")
+    s.add_argument("--since")
+    s.add_argument("--branch")
+    s = sp.add_parser("template")
+    s.add_argument("name")
+    s.add_argument("--id")
+    s.add_argument("--gate")
+    args = ap.parse_args(argv)
+    start = args.C or os.getcwd()
+    if args.cmd == "brief" and args.hook:
+        try:
+            data = json.loads(sys.stdin.read() or "{}")
+            start = args.C or data.get("cwd") or start
+        except (ValueError, OSError):
+            pass
+    try:
+        repo = Repo(start)
+        return {"owners": cmd_owners, "show": cmd_show, "board": cmd_board, "inbox": cmd_inbox, "ack": cmd_ack,
+                "post": cmd_post, "sync": cmd_sync, "brief": cmd_brief, "digest": cmd_digest, "audit": cmd_audit,
+                "template": cmd_template}[args.cmd](repo, args)
+    except Fail as e:
+        if args.cmd == "brief" and args.hook:
+            print(f"nrpic brief unavailable: {e}")
+            return 0
+        print(f"nrpic-ctx {args.cmd}: {e}", file=sys.stderr)
+        return 2
+
+
+if __name__ == "__main__":
+    sys.exit(main())
