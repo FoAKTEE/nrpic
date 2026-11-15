@@ -276,7 +276,8 @@ def main():
         s = np.nonzero(np.abs(lapse_dev) > lev)[0]
         res["history"][f"t_lapse_dev_gt_{lev:g}"] = float(th[s[0]]) if len(s) else None
     res["cstat"] = dict()
-    for k, nm in ((9, "H_max"), (10, "H_mean"), (12, "Hr_mean"), (14, "M_mean"), (7, "Theta_max")):
+    # cstat columns (0-based): 7 Theta_max, 8 H_max, 9 H_mean, 11 Hr_mean, 12 M_max, 13 M_mean
+    for k, nm in ((8, "H_max"), (9, "H_mean"), (11, "Hr_mean"), (13, "M_mean"), (7, "Theta_max")):
         if cst.shape[1] > k:
             for tl in (2.0, 10.0, 20.0, 30.0, 40.0, 42.0, 44.0, 50.0):
                 j = np.searchsorted(cst[:, 0], tl)
@@ -341,6 +342,16 @@ def main():
                                     m_exact_shell=float(m_ex[j] + w * (m_ex[j + 1] - m_ex[j])))
         lines.append(L)
     # Misner-Sharp error summary
+    # lines after the instability (largest |H| on the line above 1, or not finite) are
+    # left out of the summaries and figures
+    t_bad = None
+    for L in lines:
+        if "H" in L and not (np.nanmax(np.abs(L["H"])) < 1.0):
+            t_bad = L["t"]
+            break
+    res["line_first_t_maxH_gt_1"] = t_bad
+    if t_bad is not None:
+        lines = [L for L in lines if L["t"] < t_bad]
     # points with r >= 2 M (the Misner-Sharp mass is a small difference of O(1) terms,
     # 2m/R ~ 0.1 inside the ball, so the finite-difference error of dR/dr is amplified
     # by R/m: unreliable near the centre); drift: m(t)/m(0) - 1 on the same shell
@@ -672,8 +683,8 @@ def figures(a, res, ball, ex, t, tau, R, eps, Ri, grp, groups, sh, tta_num, Rmax
     ax.legend(fontsize=7)
     ax.set_title("centre vs homogeneous core", fontsize=10)
     ax = fig.add_subplot(2, 3, 3)
-    for k, nm, c_ in ((10, r"mean $|H|$", fs.PAL["red"]), (9, r"max $|H|$", fs.PAL["orange"]),
-                      (14, r"mean $|M|$", fs.PAL["blue"]), (7, r"max $|\Theta|$", fs.PAL["green"])):
+    for k, nm, c_ in ((9, r"mean $|H|$", fs.PAL["red"]), (8, r"max $|H|$", fs.PAL["orange"]),
+                      (13, r"mean $|M|$", fs.PAL["blue"]), (7, r"max $|\Theta|$", fs.PAL["green"])):
         if cst.shape[1] > k:
             ax.semilogy(cst[:, 0], np.abs(cst[:, k]), color=c_, lw=1.0, label=nm)
     ax.set_xlabel(r"$t\,/M$")

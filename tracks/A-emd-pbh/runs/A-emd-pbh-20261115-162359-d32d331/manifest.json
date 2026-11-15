@@ -47,17 +47,18 @@
     "cores": 4,
     "gpus": 0,
     "wall_limit": null,
-    "walltime_s": null,
+    "walltime_s": 206.7,
     "gpu_hours": null
   },
   "outputs": {
     "dir": "scratch/A-emd-pbh/A-emd-pbh-20261115-162359-d32d331",
-    "sha256sums": "sha256sums.txt"
+    "sha256sums": "sha256sums.txt",
+    "files": 16
   },
-  "status": "running",
-  "exit_code": null,
+  "status": "completed",
+  "exit_code": 0,
   "registered": "2026-11-15T16:23:59Z",
   "started": "2026-11-15T16:23:59Z",
-  "ended": null,
+  "ended": "2026-11-15T16:27:26Z",
   "notes": ""
 }
