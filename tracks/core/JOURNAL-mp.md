@@ -591,8 +591,9 @@ prediction held).
    P/M_ADM between t = 20 and 40) FAILED. (A), (B), (C) agree within 2 percent in every
    window (predicted 15): the Bowen-York puncture and the stock boosted slice move
    alike from t = 5 on, and the 1/32 reference lies on the 1/16 one where it exists
-   (0.1279 at t = 10.47 against 0.1284). So the slow rise is the gauge (the shift
-   builds up slowly), not the data and not the resolution.
+   (speed 0.1279 against 0.1278 at t = 10.47, displacement 1.0263 against 1.0261;
+   at t = 5: 0.1054 against 0.1070). So the slow rise is the gauge (the shift builds
+   up slowly), not the data and not the resolution.
  - Speed against momentum: the ratio of the tracker speed to P/M_ADM is the same for
    the three momenta at equal times: over 20 < t < 30 it is 0.556 (P = 0.3), 0.547
    (P = 0.6, M_ADM = 1.204), 0.545 (P = 0.043 with spin, M_ADM = 1.036 to second
@@ -623,3 +624,8 @@ prediction held).
    A); the estimate is good to a factor two at best.
  - Early reference observation stands: the stock generator's tracker starts at 0.280,
    falls to 0.040 by t = 1.5 and then follows the same curve as the Bowen-York data.
+
+(Correction to the entry above, made in place: the comparison of the two resolutions of
+the reference first carried a number for the 1/16 run, 0.1284, that I had not computed;
+the values now given, 0.1278 at t = 10.47 and the displacements, are read from the
+tracker files of `core-20261115-115342-7a60df2` and `core-20261115-121047-0c197fb`.)
