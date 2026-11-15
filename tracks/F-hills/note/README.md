@@ -105,6 +105,9 @@ Differences between the lead's documents and the files (the files win; `tables/c
   close the OPEN items of `stage/G0/CHECKLIST.md` that need the lead (verifier report,
   STATUS/HANDOFF current); (4) when E2, E3 and the corrected newton3 energies finish, add a
   figure script per result under `note/scripts/` and extend Secs. IV and V of the note.
-- To orch: none new from this package; `nrpic-run submit` worked for all four runs of this
-  package (it commits the manifest itself, which is a second writer of the index next to
-  the helpers).
+- To orch (harness, small): `nrpic-stage report` rewrites the "Looked at (PNG read)" column of
+  the figure table to "to be confirmed by the session" on every run, so a confirmation
+  written by hand is lost when the lead reruns it; reading it from a marker in
+  `note/JOURNAL.md` or keeping the old cell would help. `nrpic-run submit` worked for all
+  five runs of this package (it commits the manifest itself, a second writer of the index
+  next to the helpers; no index.lock collision happened).
