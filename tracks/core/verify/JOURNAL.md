@@ -143,3 +143,31 @@ contrast (round-off of card against processor only). If (b) passes and (a) fails
 generator has changed beyond the displacement; if both fail, the evolution has changed.
 The first pass (Newtonian displacement) stays on record as variant "newtonian"; its
 0.6 to 1.0 percent offset from linear theory at 32 cells is not explained here.
+
+## 04:02 Outcomes of the second linear-growth pass (job 4346, 7 s of card time)
+
+(b) `core-20261115-033410-bac7416`, earlier files copied: 10 of 10 checks pass; the
+contrast equals the earlier processor run to 2.5e-12 and 4.8e-12 of the contrast at the
+two probes; constraint norms at t = 0 equal. Prediction confirmed. The evolution of the
+card release executable is the earlier one to round-off.
+(a) `core-20261115-033408-bac7416`, data regenerated with `--displacement number`: 10 of
+10 checks pass; 0.47 and 0.33 percent from linear theory (earlier 0.45 and 0.31); the
+contrast differs from the earlier run by 1.9e-4 of the contrast at both probes.
+Prediction partly refuted: I wrote that the regenerated files agree with the earlier
+ones to 1e-12 and the contrast to 1e-4. The particle records agree to 6.3e-11 and the
+traceless curvature to 1.3e-11, but the conformal factor differs by 2.9e-8, 3.2e-4 of
+its perturbation (9.0e-5), which matches the 1.9e-4 difference of the contrast. Cause
+not determined; the solver of `cosmo/ic/cosmo_id.py` changed its outer iteration and
+stopping rule after the earlier run (commit 56ac61d; the new `id.json` records
+outer_last_change_of_psi = 5.4e-10), which is a candidate that no run here isolates.
+Figures `figs/regress_growth_core-20261115-033408-bac7416.png` and
+`..._033410-bac7416.png` (inspected: the regenerated run lies on the earlier curve within
+the line width; the copy is indistinguishable).
+Variant "newtonian" (pass 1, `core-20261115-032617-45e1779`) stays on record: with the
+generator's current default the 32^3 run is 0.6 to 1.0 percent below linear theory,
+outside the 0.5 percent the C1 entry reports for the relativistic displacement. Whether
+that default is the better one at 64 cells (where the cosmology production runs use it)
+is not tested here.
+
+Card time used by the package: jobs 4342 (5 min 23 s) and 4346 (7 s), 0.092
+card-hours in all, of the 2 allowed.
