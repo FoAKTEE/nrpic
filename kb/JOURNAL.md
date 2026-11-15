@@ -321,3 +321,34 @@ paper whose cause is the code, or by counts outside these ranges.
   difflib. Fixed (compare sys.prefix with kb/.venv); one unregistered check run on 2611.12831
   confirmed "converter pylatexenc 2.11". The priority-3 ingestion is redone below; this run's
   rows are overwritten.
+
+### Outcome K2-P5 (run kb-20261115-131809-f7f36ac, pylatexenc converter)
+
+- 47 of 47 ingested in 30.8 s, 0 failed, 45 ok, 2 review (gr-qc/9906015: plain TeX with
+  \centerline titles, no \section, score 0.40; 2009.08715: a habilitation thesis without
+  \title, score 0.70). Abstracts 45 (>= 44, held). Equation rows 4099 (2097 labelled; > 2000,
+  held). Bibliography entries 5192, 65.1 % with an arXiv id (>= 60 %, held), 83.9 % with an
+  arXiv id or a DOI; distinct citation edges 3340, of which 111 = 3.3 % inside the corpus
+  (2-15 %, held). Wall time held.
+- FAILED as worded: titles for 43 of 47, not >= 45. Causes, one per paper: 2607.17929 had
+  \renewcommand{\title}[2][]{...} in its preamble, and the first \title found was that
+  definition (code fault; fixed: definitions of \title and \author are skipped, unit test
+  added); gr-qc/9906015 (plain TeX), 2211.13950 (titlepage without \title), 2009.08715 (no
+  \title) have no \title at all; their titles must come from the metadata (Request 2).
+- Also added to the known-command list (quality score only): plain-TeX words such as \cal,
+  \eqno, \cr, \kern, \vskip, which pylatexenc's database lacks and which are not macros of the
+  paper.
+
+### Prediction K2-P6: priority-3 re-ingestion with the title fix, and the independent checks
+
+Re-ingestion: titles 44 of 47 (the three papers without \title stay empty), all other counts
+as in K2-P5 within 2 %. Checks of kb/scripts/papers_checks.py:
+C1 the main-file heuristics without the 00README hints pick the file 00README.json names for
+   every paper that ships one (expect all agree).
+C2 parse_bib equals bibtexparser 2.1 on every .bib file used: same key sets, same eprint and
+   doi values (expect all equal; a difference in brace or quote stripping would refute).
+C3 stored bibliography entries equal the count of \bibitem in the .bbl or flat text for every
+   paper (expect all equal, perhaps one off where an item lacks a key).
+C4 every \label inside a display environment of flat.tex is in some stored equation row
+   (expect 100 %); no stored label absent from flat.tex.
+C5 at most 1 % of the citation keys lack a bibliography entry.

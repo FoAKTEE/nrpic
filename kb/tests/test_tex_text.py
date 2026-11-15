@@ -85,3 +85,10 @@ def test_split_lines_nested():
     inner = r"a &= \begin{cases} 1 \\ 2 \end{cases} \\[3pt] b &= {x \\ y} \\* c"
     parts = [inner[a:b].strip() for a, b in S.split_lines(inner)]
     assert parts == [r"a &= \begin{cases} 1 \\ 2 \end{cases}", r"b &= {x \\ y}", "c"]
+
+
+def test_title_and_author_definitions_are_skipped():
+    st = S.extract(r"\renewcommand{\title}[2][]{\def\@title{#2}}\newcommand\author[1]{#1}"
+                   r"\begin{document}\title{Real title}\author{A. One \and B. Two}\end{document}")
+    assert st["title"]["tex"] == "Real title"
+    assert [a["tex"] for a in st["authors"]] == ["A. One", "B. Two"]

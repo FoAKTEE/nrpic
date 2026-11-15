@@ -274,15 +274,19 @@ def extract(flat, macros=None):
 
     # --- title, authors, abstract (searched in the whole flat text: some classes put them in the preamble)
     title = None
-    mt = re.search(r"\\title(?![A-Za-z@])", flat)
-    if mt:
+    for mt in re.finditer(r"\\title(?![A-Za-z@])", flat):
+        if _is_definition(flat, mt.start()):
+            continue                      # \renewcommand{\title}[2][]{...} in a class or preamble
         a = command_args(flat, mt.end(), 1, 1)
-        if a:
+        if a and "#" not in a[1][0]:
             title = {"tex": a[1][0], "start": mt.start(), "end": a[2]}
+            break
     authors = []
     for ma in re.finditer(r"\\author(?![A-Za-z@])", flat):
+        if _is_definition(flat, ma.start()):
+            continue
         a = command_args(flat, ma.end(), 1, 1)
-        if a:
+        if a and "#" not in a[1][0]:
             for part in re.split(r"\\and(?![A-Za-z@])", a[1][0]):
                 if part.strip():
                     authors.append({"tex": part.strip(), "start": ma.start(), "end": a[2]})
@@ -569,6 +573,13 @@ def extract(flat, macros=None):
                            for s in spans if s["kind"] != "inline"],
             "figure_spans": [{"start": x["start"] + off, "end": x["end"] + off} for x in fig_spans],
             "aliases": aliases}
+
+
+def _is_definition(text, pos):
+    """True if the control word at pos is the name being defined (\\newcommand{\\title}, \\def\\title)."""
+    before = text[max(0, pos - 30):pos]
+    return bool(re.search(r"\\(?:re)?newcommand\*?\s*\{?\s*$|\\providecommand\*?\s*\{?\s*$|\\(?:g|e|x)?def\s*$|"
+                          r"\\let\s*$|\\DeclareRobustCommand\*?\s*\{?\s*$", before))
 
 
 def _prefix(numberwithin, revtex, in_app, top_secnum):

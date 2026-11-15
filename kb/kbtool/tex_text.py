@@ -68,6 +68,9 @@ pdfoutput resizebox scalebox rotatebox textsc textsf texttt sl it bf rm em tt sm
 large Large LARGE huge Huge normalsize mathop limits nolimits stackrel overset underset substack binom choose
 over atop sqrt bibitem bibinfo bibfield eprint doi Eprint BibitemOpen BibitemShut natexlab newblock
 textsuperscript textsubscript ce SI si unit num degree odot hbar ell Re Im wp aleph emptyset
+cal rm bf it sl sf tt eqno leqno cr kern vskip hskip baselineskip lineskip font eject centerline leftline
+rightline line noalign halign valign settabs obeylines addcontentsline tableofcontents listoffigures
+Biggl Biggr biggl biggr bigm Bigm relax ignorespaces protect expandafter hfil hss vss null strut mathstrut
 """.strip()
 
 
