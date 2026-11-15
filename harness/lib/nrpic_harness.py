@@ -80,7 +80,7 @@ def owner_of(branch):
     if branch == "main":
         return "orch"
     if branch.startswith("track/"):
-        return branch[len("track/"):]
+        return branch[len("track/"):].split("--", 1)[0]     # temporary branches track/<ID>--<x>
     if branch.startswith("core/"):
         return "core"
     if branch.startswith("kb/"):
@@ -403,3 +403,68 @@ def strip_options_prefix(argv):
 
 def fnmatch_any(name, patterns):
     return any(fnmatch.fnmatch(name, p) for p in patterns)
+
+
+# ------------------------------------------------------------------ run verification (nrpic-run, nrpic-stage)
+
+FINAL_STATUSES = ("completed", "failed", "stopped")
+
+
+def git_blob_sha256(root, rev, path):
+    r = subprocess.run(["git", "-C", root, "show", f"{rev}:{path}"], capture_output=True, env=boot_env())
+    return hashlib.sha256(r.stdout).hexdigest() if r.returncode == 0 else None
+
+
+def verify_run(home, root, m, outputs=True):
+    """Problems found when re-checking one run manifest: output checksums against sha256sums.txt
+    (and that file against the manifest), tracked inputs against their blobs at the run's commit,
+    untracked inputs against the files still on disk. Returns (problems, notes, n_outputs)."""
+    problems, notes, n = [], [], 0
+    if m.get("status") not in FINAL_STATUSES:
+        problems.append(f"status is {m.get('status')}: not finished (nrpic-run finish)")
+    outdir = os.path.join(home, m.get("outputs", {}).get("dir", ""))
+    sums = os.path.join(outdir, "sha256sums.txt")
+    if outputs:
+        if not os.path.isfile(sums):
+            problems.append(f"missing {sums}")
+        else:
+            rec = m["outputs"].get("sha256sums_sha256")
+            if rec and sha256_file(sums) != rec:
+                problems.append("sha256sums.txt differs from the one recorded in the manifest")
+            listed = set()
+            for line in open(sums):
+                if not line.strip():
+                    continue
+                digest, rel = line.rstrip("\n").split("  ", 1)
+                listed.add(rel)
+                n += 1
+                p = os.path.join(outdir, rel)
+                if not os.path.isfile(p):
+                    problems.append(f"missing output {rel}")
+                elif sha256_file(p) != digest:
+                    problems.append(f"changed output {rel}")
+            for dirpath, dirnames, filenames in os.walk(outdir):
+                rel = os.path.relpath(dirpath, outdir)
+                if rel == ".":
+                    dirnames[:] = [d for d in dirnames if d != ".nrpic"]
+                for fn in filenames:
+                    relf = os.path.normpath(os.path.join(rel, fn))
+                    if (relf != "sha256sums.txt" and relf not in listed
+                            and not os.path.islink(os.path.join(dirpath, fn))):
+                        problems.append(f"output not in sha256sums.txt: {relf}")
+    sha = m.get("git", {}).get("sha")
+    for rec in m.get("inputs", []):
+        if rec.get("tracked"):
+            got = git_blob_sha256(root, sha, rec["path"])
+            if got is None:
+                problems.append(f"input {rec['path']} not in commit {str(sha)[:7]}")
+            elif got != rec["sha256"]:
+                problems.append(f"input {rec['path']}: blob at {sha[:7]} differs from the recorded sha256")
+            continue
+        p = rec["path"] if os.path.isabs(rec["path"]) else os.path.join(root, rec["path"])
+        if os.path.isfile(p):
+            if sha256_file(p) != rec["sha256"]:
+                problems.append(f"input {rec['path']} changed since the run (sha256 differs)")
+        else:
+            notes.append(f"input {rec['path']} no longer present (not re-verifiable)")
+    return problems, notes, n

@@ -341,6 +341,19 @@ pf.text(ax, 15.0, 7.3, "Architecture of the dummy track", size=12, bold=True)
 pf.save(fig, "../figures/schem_architecture")
 '''
 
+SCHEM_TIMELINE = r'''"""Style self-test, schematic: gate timeline with the current position."""
+import paperfig as pf
+
+fig, ax = pf.canvas(30, 7)
+pf.timeline(ax, 1.0, 29.0, 3.5)
+xs = [3.0, 8.5, 14.0, 19.5, 25.0]
+for k, x in enumerate(xs):
+    pf.block(ax, x - 1.6, 4.3, 3.2, 1.1, f"G{k}", fill=pf.GREEN_DARK if k < 2 else pf.GREEN_LIGHT, size=11, bold=True)
+pf.brace(ax, 1.5, 11.0, 2.9, "this stage check", below=True)
+pf.callout(ax, 17.0, 0.4, 11.5, 1.9, "Now", "G1 package assembled, review pending", size=9.5)
+pf.save(fig, "../figures/schem_timeline")
+'''
+
 MAIN_TEX = r'''\documentclass[aps,prd,reprint]{revtex4-2}
 \begin{document}
 \title{Dummy working note}
@@ -361,7 +374,7 @@ def seed_note(wt, owner, commit=True):
     for fn in ("czstyle.py", "cyclic_zoom.mplstyle", "paperfig.py"):
         shutil.copyfile(os.path.join(wt, "harness", "style", fn), os.path.join(scripts, fn))
     for fn, text in (("fig_style_lines.py", FIG_LINES), ("fig_style_mosaic.py", FIG_MOSAIC),
-                     ("schem_architecture.py", SCHEM)):
+                     ("schem_architecture.py", SCHEM), ("schem_timeline.py", SCHEM_TIMELINE)):
         open(os.path.join(scripts, fn), "w").write(text)
     open(os.path.join(note, "main.tex"), "w").write(MAIN_TEX)
     return note
