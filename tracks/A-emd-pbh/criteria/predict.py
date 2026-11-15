@@ -161,11 +161,20 @@ def predict(delta, e=0.0, p=0.0, sigv=0.0, aend=math.inf, sigmaH=None, zeta_rms=
 
     # R5 exact spherical top hat (LTB), no perturbation: always forms, at a_BH
     aBH = C.tophat_aBH(delta) if delta < 0.6 else math.nan
-    rows.append(dict(id="R5", criterion="exact spherical top hat (LTB), unperturbed",
-                     source="2507.18312:211-214, 310, 316",
-                     collapse=bool(np.isfinite(aBH) and aBH <= aend), delta_th=0.0, a_form=aBH,
-                     spin=0.0, note=f"R = 2M at a/a_H = {aBH:.4g}; a_max/a_H = "
-                                    f"{C.tophat_amax(delta):.4g}"))
+    if delta >= 0.6:
+        # b_BH = 5 delta/3 >= 1: R_max <= 2M, outside the formula's range (wave 1 printed
+        # "no" here; corrected in wave 2, criteria/JOURNAL.md)
+        rows.append(dict(id="R5", criterion="exact spherical top hat (LTB), unperturbed",
+                         source="2507.18312:211-214, 310, 316", collapse=None, delta_th=0.0,
+                         a_form=None, spin=0.0,
+                         note="delta >= 0.6: b_BH = 5 delta/3 >= 1, R_max <= 2M; outside the "
+                              "top-hat formula"))
+    else:
+        rows.append(dict(id="R5", criterion="exact spherical top hat (LTB), unperturbed",
+                         source="2507.18312:211-214, 310, 316",
+                         collapse=bool(np.isfinite(aBH) and aBH <= aend), delta_th=0.0,
+                         a_form=aBH, spin=0.0, note=f"R = 2M at a/a_H = {aBH:.4g}; a_max/a_H = "
+                                                    f"{C.tophat_amax(delta):.4g}"))
 
     # R6, R7 a velocity dispersion present from the start, adiabatic sigma_v R = const
     sR_over_M = 2.0 * sigv                       # R_H = 2M

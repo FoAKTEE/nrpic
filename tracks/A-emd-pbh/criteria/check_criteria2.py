@@ -243,11 +243,11 @@ def figures(out):
     ax.axhline(12 / 5, **fs.MASK_LINE)
     ax.axhline(12 / (5 * EUL), **fs.MASK_LINE)
     ax.axvline(1.0, **fs.THIN, ls=":")
-    ax.text(2.0, 12 / 5 + 0.06, r"$\delta_c = 12\mu/5$", fontsize=8)
-    ax.text(2.0, 12 / (5 * EUL) + 0.06, r"$\bar\delta = 12\mu/(5e)$", fontsize=8)
+    ax.text(1.9, 12 / 5 - 0.17, r"$\delta_c = 12\mu/5$", fontsize=8)
+    ax.text(1.9, 12 / (5 * EUL) + 0.06, r"$\bar\delta = 12\mu/(5e)$", fontsize=8)
     ax.set_xlabel(r"$r/r_m$", labelpad=-2)
     ax.set_ylabel(r"linear contrast at $aHr_m=1$, $/\mu$")
-    ax.legend(loc="center right", fontsize=7)
+    ax.legend(loc="upper right", fontsize=7, bbox_to_anchor=(1.0, 0.86))
     ax.set_xlim(0, 3.2)
     # right: thresholds of the literature in the three measures
     rows = [("hoop line, e = 0.2 (1609.01588 via 2609:913)", hhat_918(0.2, 0.0), None),
@@ -274,7 +274,7 @@ def figures(out):
                         fontsize=7)
     ax2.set_ylim(-0.6, len(rows) - 0.4)
     ax2.set_xlabel("threshold amplitude", labelpad=-2)
-    ax2.legend(loc="lower right", fontsize=7)
+    ax2.legend(loc="upper right", fontsize=7)
     fs.save(fig, os.path.join(out, "fig_amplitude"))
     plt.close(fig)
 
@@ -311,7 +311,7 @@ def figures(out):
     a2.plot([], [], color="k", ls=":", lw=1, label=r"$R$ vs $S(x)$ (593), $0.5\,t_s(0)$")
     a2.plot([], [], color="k", ls="-.", lw=1, label=r"same, $0.9\,t_s(0)$")
     a2.legend(loc="upper left", fontsize=7)
-    a2.text(0.3, 2e-11, "expball shells vs 2609.14218 closed forms", fontsize=7)
+    a2.set_title("expball shells vs 2609.14218 closed forms", fontsize=8)
     for mu, col in zip((0.32, 0.33, 0.5), fs.SERIES):
         pr = L.Profile2609(mu, 1.0, 1.0)
         r = np.linspace(1e-3, 3.0, 600) * pr.r_m
