@@ -1,0 +1,76 @@
+{
+ "schema": "nrpic-run-manifest/1 (written by hand by the E-pre-1 helper)",
+ "run_id": "E-stoch-inf-20261115-123236-2e87364",
+ "owner": "E-stoch-inf",
+ "kind": "scouting",
+ "gate": "G0",
+ "launcher": "local",
+ "command": " python3 tracks/E-stoch-inf/spec/ref/make_figures.py --ms /data/haiyangw/nrpic/scratch/E-stoch-inf/E-stoch-inf-20261115-122806-ef0d039 --norm /data/haiyangw/nrpic/scratch/E-stoch-inf/E-stoch-inf-20261115-122934-9ac98d8 --out /data/haiyangw/nrpic/scratch/E-stoch-inf/E-stoch-inf-20261115-123236-2e87364",
+ "cwd": "/data/haiyangw/nrpic/wt/E-stoch-inf",
+ "commit": "2e87364ea8564ce7868f389e2f8c9cee0d2a2139",
+ "inputs": [
+  {
+   "path": "tracks/E-stoch-inf/spec/ref/make_figures.py",
+   "sha256": "3d52e98296991d608f9ef796641f175344675fc2556748e611d37306a7e6afa1",
+   "at_commit": "2e87364ea8564ce7868f389e2f8c9cee0d2a2139"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/scratch/E-stoch-inf/E-stoch-inf-20261115-122806-ef0d039/inflection.json",
+   "sha256": "db1fa56f4159dfc76a15b6f151ce91cd90b6925d9ae44ff0e6aa531d1ad795d3",
+   "from_run": "E-stoch-inf-20261115-122806-ef0d039"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/scratch/E-stoch-inf/E-stoch-inf-20261115-122806-ef0d039/inflection.npz",
+   "sha256": "a376e88d7b3da78784fac747371dc6629a9a803858a6f3bdf9fc2afa40e53f3c",
+   "from_run": "E-stoch-inf-20261115-122806-ef0d039"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/scratch/E-stoch-inf/E-stoch-inf-20261115-122806-ef0d039/quadratic.json",
+   "sha256": "0b05d80830bcacd17594a058fbf41f421fcc8b02f3bdd54bb1d9db0e26a7887d",
+   "from_run": "E-stoch-inf-20261115-122806-ef0d039"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/scratch/E-stoch-inf/E-stoch-inf-20261115-122806-ef0d039/quadratic.npz",
+   "sha256": "6fb64b63ff9455c38d1757347c08918b9bd084a687f1ab756a0b9a8b1496b040",
+   "from_run": "E-stoch-inf-20261115-122806-ef0d039"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/scratch/E-stoch-inf/E-stoch-inf-20261115-122806-ef0d039/summary.json",
+   "sha256": "2f9f21ae2235b928d7bd86f20330fe332d9c25fbb02a0746cc1e69a6235343b7",
+   "from_run": "E-stoch-inf-20261115-122806-ef0d039"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/scratch/E-stoch-inf/E-stoch-inf-20261115-122934-9ac98d8/norm_test.json",
+   "sha256": "ca80ea3445e6bb6625a689f35f8adbea22de5346512720dba0ffb9357c8fb1f9",
+   "from_run": "E-stoch-inf-20261115-122934-9ac98d8"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/scratch/E-stoch-inf/E-stoch-inf-20261115-122934-9ac98d8/norm_test.npz",
+   "sha256": "dd40b41cb900ce5a483a76a1ba998a0b11f681f579c7c3ff448c10c730de816c",
+   "from_run": "E-stoch-inf-20261115-122934-9ac98d8"
+  }
+ ],
+ "output_dir": "scratch/E-stoch-inf/E-stoch-inf-20261115-123236-2e87364/",
+ "purpose": "E-pre-1 figures of T1-T3 and test T2d (same as the previous figure run, wider margin of fig_spectra); the PNGs in tracks/E-stoch-inf/spec/fig/ come from this run",
+ "wall_seconds": 4,
+ "exit_status": 0,
+ "cores": 1,
+ "card_hours": 0.0,
+ "outputs_sha256": {
+  "checks.json": "c7eac0fb3fd6cd6f555e19bb7da39b39c71a9ad9d368bbcb5e09d9c49b1541d9",
+  "exit_status": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+  "fig_background.pdf": "bad81b30571076adaf0a7d5d6dc3083ba81c19fd4804ed6d19e0c41c2d6a16be",
+  "fig_background.png": "be88502bcfa5faefa931580d141ade5c17222a25fea83bd30a166fe72144c15c",
+  "fig_drift.pdf": "09b8539dc7710090e53b96fc0e3c9e364cc5740dd10c8253685008743b188f91",
+  "fig_drift.png": "4de196800354f7598bf9fd2668609db1612494228a9c5bebfccf2804e8c50bbf",
+  "fig_freezing.pdf": "693adbb09b4f23564c6438a42b7f2399289a4ef84efd3c966ed476d62d169f8e",
+  "fig_freezing.png": "448a987f8366282ee88142035b905a2f0ad5cce7192d0054d40ef0e13f15fd82",
+  "fig_norm.pdf": "d18d4fa41a51785cf1bb1bee43af8ed50aaa403a2b50878845525daed50650eb",
+  "fig_norm.png": "dba94c63e7b1a279576a20d5b93f678f71c3c38990ccf9533c3577d5c79fa3ab",
+  "fig_spectra.pdf": "a613b487aa7488d10840e3bdf411b5c197c2a281aa900b8b8e8f320ec15a09a5",
+  "fig_spectra.png": "5873c74caf532cab20b07fa4a452f5694ce3aa0aeb3f99015e4cf32da6e7bd59",
+  "stdout.txt": "f4ce508586604fa3947e98ca77d7b1ffb3c2893eed729ceecded1ef6b2203219",
+  "wall_seconds": "7de1555df0c2700329e815b93b32c571c3ea54dc967b89e81ab73b9972b72d1d"
+ },
+ "status": "completed"
+}

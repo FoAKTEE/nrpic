@@ -84,3 +84,54 @@ the printed one it leaves a first-order residual; the momentum constraint vanish
 and delta-K = 3 (dot Phi_B + H Psi_B) equals 3 eps1 H (R - Phi_B). Refuted if the printed
 form is the one that satisfies the Hamiltonian constraint (then my derivation is wrong), or
 if neither does (then a convention is misread, e.g. the Laplacian or delta-rho).
+
+## 2026-11-15 13:35 UTC: outcomes (runs registered under tracks/E-stoch-inf/runs/)
+
+Runs: E-stoch-inf-20261115-122806-ef0d039 (T1, T2, T2c; identical to the development
+run), -122934-9ac98d8 (T3), -123146-82d2fd4 (T4), -123236-2e87364 (figures and T2d; the
+earlier figure run -123201-82d2fd4 differs only in a margin). Figures in `fig/`, looked at.
+
+- T1a quadratic: PASSED. eps2(N0) = -0.0200000 (1e-11), eps1(N_f) = 0.01350, H(N_f)/H0 =
+  0.860, inflation does not end; phi0 = -14.0950 Mpl, lambda = 1.50502e-12 (m = 1.73494e-6
+  Mpl), H* = 9.48692e-6 Mpl. Against Fig. 1 of 2512.14649 (values read off the axes, about
+  2 percent): eps1(N*) 1.111e-2 (read 1.11e-2), eps2(N*) -2.213e-2 (read -2.23e-2),
+  V(N*) = 2.690e-2 in Mpl = 100 units (read 2.68e-2). fig/fig_background.png.
+- T1b inflection: PASSED against the figure, the text's phase boundaries are loose.
+  H0 = 9.5902e-6 Mpl (hand estimate 9.6e-6), H* = 9.3623e-6. USR (eps2 > 3) from
+  cN = 2.53 to 6.55, eps2 max 6.000, eps1 min 9.72e-13 at cN = 8.33, late eps2 = -2.762e-2
+  (text: -2.8e-2), the field ends at phi = -0.2798 Mpl where |V'| is smallest (text:
+  inflection at |phi| ~ 0.28). The text's "USR from cN ~ 3.5 to ~ 8" is off by about one
+  e-fold, but Fig. 1 of the paper shows eps2 crossing 3.2 at cN ~ 2.5 and ~ 6.45, eps1 peak
+  2.4e-2 at ~ 1.6 (ours 2.408e-2 at 1.62), eps1 min ~ 0.98e-12 at ~ 8.4: the reconstruction
+  matches the figure. V' does not change sign between phi0 and 0 (the "very shallow
+  maximum" of the text, line 534, is not a maximum of V for these parameters; [TO VERIFY]
+  what the authors meant).
+- T2a quadratic: PARTLY FAILED as predicted. Final full spectrum / (H^2/(8 pi^2 eps1) at
+  crossing) = 1.010 to 1.012 for all 25 sampled modes (passes). Deformed drift
+  d ln Delta/dN = -0.0509 to -0.0552 per e-fold, -4 eps1 = -0.046 to -0.054 (passes).
+  Full-MS drift over [N_k + 3, N_f]: -2.5e-4 to -1.9e-3 per e-fold; the prediction (below
+  1e-3) FAILED for the 6 highest of the 23 fitted modes (19 dk <= k <= 45 dk), whose fit
+  windows are short and start only three e-folds after crossing.
+- T2d (cause of the T2a failure): PASSED. Ratio of the drift over [N_k+5, N_k+6] to the one
+  over [N_k+3, N_k+4] = 0.0192 for all eight tested modes (exp(-4) = 0.0183): the residual
+  drift is the (k/aH)^2 gradient correction, not a numerical error. fig/fig_drift.png.
+  Consequence for the criterion: freezing is to be tested from N_k + 4 or later, or against
+  the full MS solution instead of a constant.
+- T2b inflection: MARGINAL FAIL / PARTLY FAILED. Full spectrum at N_f rises monotonically
+  over the lattice range, reaching 1.017 at k = 64 dk (prediction: peak within [1e-2, 1];
+  exceeded by 1.7 percent, and the maximum sits at the UV cutoff, not inside the range).
+  Deformed/full at N_f: 8.40 at k = dk, 1.18 at 4 dk, 1.07 at 5.7 dk, 1.003 at 11.3 dk,
+  1.0000 at 64 dk. Modes leaving the horizon less than about one e-fold before the USR
+  onset differ by less than 10 percent, so the prediction "more than 10 percent for all
+  modes that left before the onset" FAILED for 5.7 dk <= k <= 11.3 dk.
+- T2c: PASSED. Deformed equation in R form vs delta-phi form: max relative difference
+  1.5e-11 (quadratic), 5.2e-9 (inflection).
+- T3: PASSED. L^(-3/2) IRFFTN{f_k s_k}: shell ratios 0.83 to 1.014 (lowest shell, 13
+  modes, 8 draws: 0.83 +- 0.07; all shells within 3/sqrt(8 M)); overall 0.975. The two
+  printed prefactors give 241.8 (expected (2 pi)^3 = 248.1) and 15.35 (expected
+  (2 pi)^(3/2) = 15.75). fig/fig_norm.png.
+- T4: PASSED. Hamiltonian residual with the printed delta-Pi of 2502.06783 eq. (17):
+  4 eps1^2 H^3 a^2 k^-2 Rdot (first order in the perturbation); with the re-derived
+  delta-Pi: 0. Momentum residual 0; 3 (dot Phi_B + H Psi_B) = 3 eps1 H (R - Phi_B)
+  identically. The printed eq. (17) is therefore incomplete; their code must use the
+  complete form since they report second-order Hamiltonian violations [JUDGEMENT].

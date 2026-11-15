@@ -1,0 +1,32 @@
+{
+ "schema": "nrpic-run-manifest/1 (written by hand by the E-pre-1 helper)",
+ "run_id": "E-stoch-inf-20261115-122934-9ac98d8",
+ "owner": "E-stoch-inf",
+ "kind": "scouting",
+ "gate": "G0",
+ "launcher": "local",
+ "command": "OMP_NUM_THREADS=4 python3 tracks/E-stoch-inf/spec/ref/norm_test.py --out /data/haiyangw/nrpic/scratch/E-stoch-inf/E-stoch-inf-20261115-122934-9ac98d8 --n 64 --seeds 8",
+ "cwd": "/data/haiyangw/nrpic/wt/E-stoch-inf",
+ "commit": "9ac98d8cc45f817868a35a00175685ac9cfda736",
+ "inputs": [
+  {
+   "path": "tracks/E-stoch-inf/spec/ref/norm_test.py",
+   "sha256": "84930e619a2ea58bc04222d00f7785bddb1eb78c9087082a80704594ce0889f2",
+   "at_commit": "9ac98d8cc45f817868a35a00175685ac9cfda736"
+  }
+ ],
+ "output_dir": "scratch/E-stoch-inf/E-stoch-inf-20261115-122934-9ac98d8/",
+ "purpose": "E-pre-1 test T3: normalisation of the Gaussian random draw with a spectrum (three prefactors)",
+ "wall_seconds": 1,
+ "exit_status": 0,
+ "cores": 4,
+ "card_hours": 0.0,
+ "outputs_sha256": {
+  "exit_status": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+  "norm_test.json": "ca80ea3445e6bb6625a689f35f8adbea22de5346512720dba0ffb9357c8fb1f9",
+  "norm_test.npz": "dd40b41cb900ce5a483a76a1ba998a0b11f681f579c7c3ff448c10c730de816c",
+  "stdout.txt": "7a2157b80f308f8f588d1db770f7ec1b451585da11b6ea82e3a61441d18b8507",
+  "wall_seconds": "4355a46b19d348dc2f57c046f8ef63d4538ebb936000f3c9ee954a27460dd865"
+ },
+ "status": "completed"
+}
