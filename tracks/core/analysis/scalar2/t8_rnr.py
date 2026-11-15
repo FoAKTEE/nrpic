@@ -82,6 +82,7 @@ def main():
     ap.add_argument("--n", type=int, default=32)
     ap.add_argument("--tlim", type=float, default=3.2)
     ap.add_argument("--analyse-only", action="store_true")
+    ap.add_argument("--no-control", action="store_true")
     a = ap.parse_args()
     out = os.path.abspath(a.out)
     os.makedirs(out, exist_ok=True)
@@ -90,14 +91,16 @@ def main():
             "scalar_field/dump_constraints=false"] + common.mesh_args(a.n)
     summ = dict(exe=os.path.abspath(a.exe), n=a.n)
     if not a.analyse_only:
-        cases = [(os.path.join(out, "run"), INP, args),
-                 (os.path.join(out, "ctl"), INP, args + ["scalar_field/noise_pi_sign=-1.0"])]
+        cases = [(os.path.join(out, "run"), INP, args)]
+        if not a.no_control:
+            cases.append((os.path.join(out, "ctl"), INP,
+                          args + ["scalar_field/noise_pi_sign=-1.0"]))
         summ["wall_s"] = common.run_many(os.path.abspath(a.exe), cases, 2)
     n, n2 = sf.mode_set(NMAX2)
     al = sf.mode_alpha(SEED, 0, 0, n)
     length = 2.0*np.pi
     rows = analyse(os.path.join(out, "run"), n, n2, al, length)
-    ctl = analyse(os.path.join(out, "ctl"), n, n2, al, length)
+    ctl = [] if a.no_control else analyse(os.path.join(out, "ctl"), n, n2, al, length)
     summ["run"] = stats(rows)
     summ["control"] = stats(ctl)
     common.dump_json(summ, os.path.join(out, "summary.json"))

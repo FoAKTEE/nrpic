@@ -102,7 +102,8 @@ def main():
     p.set_yscale("log")
     p.set_xlabel("e-folds after $N_*$")
     p.set_ylabel("rms of the parts of $H$")
-    p.legend(loc="center left", fontsize=7, bbox_to_anchor=(0.0, 0.62))
+    p.set_ylim(1e-17, 3e-6)
+    p.legend(loc="lower right", fontsize=7)
     p = ax[1]
     for lab, cl, lbl in (("s1", fs.PAL["blue"], "$s=1$"), ("s05", fs.PAL["green"],
                                                            "$s=1/2$")):
@@ -116,7 +117,8 @@ def main():
     p.set_yscale("log")
     p.set_xlabel("e-folds after $N_*$")
     p.set_ylabel("rms of the parts of $|M|$")
-    p.legend(loc="center left", fontsize=7, bbox_to_anchor=(0.0, 0.62))
+    p.set_ylim(1e-18, 3e-6)
+    p.legend(loc="lower right", fontsize=7)
     fig.savefig(os.path.join(out, "fig_parts.png"), dpi=200)
     print("T3b done:", os.path.join(out, "summary.json"))
 

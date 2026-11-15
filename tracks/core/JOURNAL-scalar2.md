@@ -379,3 +379,13 @@ differ only inside the 36 unset header bytes; 2 (the restarted case) only in the
 recorded path of the restart file, their data identical. HOLDS. In particular the
 histories, dumps, mode records and `.rst.sf` files of the stochastic sources are
 byte-identical, also with the kicks off (the skipped synthesis changes no output).
+
+## 2026-11-15, entry 8: one more run while the card job waits (job 4444, queued 15:54Z)
+
+T8 at N = 64 (same case, nmax2 = 64, Courant 0.25, to t = 3.2, no control; 57 min on one
+core). Predicted before it runs: the largest deviation |R^NR_n/(W R alpha_n) - 1| over all
+modes at the last dump falls from 2.8e-3 (N = 32) by a factor between 16 and 64, i.e. to
+between 4.4e-5 and 1.8e-4 (the stencils are sixth order, the integrator fourth, and
+both the cell and the step halve); for |n| <= 2 it falls from 3.7e-6 by about 16 (time
+integration), to below 5e-7. Refuted if the deviation of the high shells does not fall
+by at least 16: it would then not be a truncation error.
