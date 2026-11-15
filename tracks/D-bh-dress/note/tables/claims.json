@@ -1,0 +1,405 @@
+[
+ {
+  "doc": "stage/G1/STATUS.md",
+  "line": 11,
+  "stated": "a = 0.9765922286441, m_p = 1.023968828206 M",
+  "file_value": "0.9765922286441, 1.023968828206",
+  "verdict": "agrees",
+  "runs": [
+   "D-bh-dress-20261115-043445-b782009"
+  ],
+  "note": ""
+ },
+ {
+  "doc": "stage/G1/STATUS.md",
+  "line": 11,
+  "stated": "48 symbolic identities, lead rerun 48/48",
+  "file_value": "48, 48 lines [OK]",
+  "verdict": "agrees",
+  "runs": [
+   "D-bh-dress-20261115-042626-f3da881",
+   "D-bh-dress-20261115-065141-5fdc744"
+  ],
+  "note": ""
+ },
+ {
+  "doc": "stage/G1/STATUS.md",
+  "line": 11,
+  "stated": "offline 3D orders 3.85-4.07 in seven sub-boxes",
+  "file_value": "finest-pair orders of the largest residuals above round-off, seven boxes: 3.85-4.07",
+  "verdict": "agrees",
+  "runs": [
+   "D-bh-dress-20261115-042704-f3da881"
+  ],
+  "note": ""
+ },
+ {
+  "doc": "stage/G1/STATUS.md",
+  "line": 11,
+  "stated": "order 5.8-5.9 in the curvature transition",
+  "file_value": "box 'mid transition': H 5.88, M 5.76; whole region 4 < r < 30 M: H 5.29, M 4.69",
+  "verdict": "agrees for one box only",
+  "runs": [
+   "D-bh-dress-20261115-043406-4df1e76"
+  ],
+  "note": "the region-wide orders are 5.3 and 4.7; say 'in the middle of the transition'"
+ },
+ {
+  "doc": "stage/G1/STATUS.md",
+  "line": 11,
+  "stated": "3.2 at the inner dust edge",
+  "file_value": "M 3.20, H 4.94",
+  "verdict": "agrees",
+  "runs": [
+   "D-bh-dress-20261115-043406-4df1e76"
+  ],
+  "note": "3.2 is the momentum residual"
+ },
+ {
+  "doc": "stage/G1/STATUS.md",
+  "line": 11,
+  "stated": "deposited density equals rho to 1.1e-13",
+  "file_value": "1.14e-13",
+  "verdict": "agrees",
+  "runs": [
+   "D-bh-dress-20261115-043406-4df1e76"
+  ],
+  "note": ""
+ },
+ {
+  "doc": "stage/G1/STATUS.md",
+  "line": 12,
+  "stated": "peak 0.8699e8 GeV/cm^3 at 7.58 Gm",
+  "file_value": "0.86990e8 at 7.579",
+  "verdict": "agrees",
+  "runs": [
+   "D-bh-dress-20261115-145636-5259f48"
+  ],
+  "note": ""
+ },
+ {
+  "doc": "stage/G1/STATUS.md",
+  "line": 12,
+  "stated": "against digitized SFW Fig. 1 to 0.02 per cent",
+  "file_value": "peak height 1.5e-05, position 1.5e-04; whole curve 8.5-95 Gm 2.6e-03",
+  "verdict": "agrees for the peak",
+  "runs": [
+   "D-bh-dress-20261115-145636-5259f48"
+  ],
+  "note": "the whole curve deviates by up to 0.26 per cent"
+ },
+ {
+  "doc": "stage/G1/STATUS.md",
+  "line": 12,
+  "stated": "FdRW Schwarzschild curve to 1.0 per cent",
+  "file_value": "0.0101",
+  "verdict": "agrees",
+  "runs": [
+   "D-bh-dress-20261115-145636-5259f48"
+  ],
+  "note": ""
+ },
+ {
+  "doc": "stage/G1/STATUS.md",
+  "line": 12,
+  "stated": "48000 particles for 20000 M, chi^2/dof median 0.98",
+  "file_value": "48000, 20000 M, 0.979",
+  "verdict": "agrees",
+  "runs": [
+   "D-bh-dress-20261115-125739-a18d74d"
+  ],
+  "note": ""
+ },
+ {
+  "doc": "stage/G1/STATUS.md",
+  "line": 12,
+  "stated": "loss-cone probes 1200/1200 inside cross, 0/1200 outside",
+  "file_value": "1200/1200, 0",
+  "verdict": "agrees",
+  "runs": [
+   "D-bh-dress-20261115-124246-aa9dee7",
+   "D-bh-dress-20261115-124249-aa9dee7"
+  ],
+  "note": ""
+ },
+ {
+  "doc": "stage/G0/REPORT.md",
+  "line": 101,
+  "stated": "|dE/E| at most 1.3e-6, |dL/L| at most 1.9e-10 over 20000 M (run -123755)",
+  "file_value": "1.33e-6, 1.93e-10",
+  "verdict": "agrees",
+  "runs": [
+   "D-bh-dress-20261115-125739-a18d74d"
+  ],
+  "note": "the numbers are in the analysis run D-bh-dress-20261115-125739-a18d74d, the report cites the simulation run"
+ },
+ {
+  "doc": "stage/G1/STATUS.md",
+  "line": 13,
+  "stated": "slope of m 0.741 on [1e-4, 1e-3] r_ta, outermost caustic 0.355 r_ta",
+  "file_value": "0.741, 0.3553",
+  "verdict": "agrees",
+  "runs": [
+   "D-bh-dress-20261115-123813-97afeea"
+  ],
+  "note": ""
+ },
+ {
+  "doc": "stage/G1/STATUS.md",
+  "line": 13,
+  "stated": "dress 0.625 M_ta (run -123813-97afeea)",
+  "file_value": "run -123813-97afeea prints m(lambda_1) = 0.654; 0.625 is f_passed = 0.6247 of run -125613-248fdaf",
+  "verdict": "disagrees (locator)",
+  "runs": [
+   "D-bh-dress-20261115-123813-97afeea",
+   "D-bh-dress-20261115-125613-248fdaf"
+  ],
+  "note": "cite run D-bh-dress-20261115-125613-248fdaf for 0.625, or quote 0.654 as the mass inside the outermost caustic"
+ },
+ {
+  "doc": "stage/G1/STATUS.md",
+  "line": 13,
+  "stated": "eta_ta of 2106.07480 to 1.3e-5; the 0.964 of 1901.08528 reproduced",
+  "file_value": "max |d_eta| 1.31e-05; y_eq/y_ta 0.9644-0.9645",
+  "verdict": "agrees",
+  "runs": [
+   "D-bh-dress-20261115-122051-bf0d6b1"
+  ],
+  "note": ""
+ },
+ {
+  "doc": "stage/G1/STATUS.md",
+  "line": 13,
+  "stated": "M_ta 1.52542, 2.62815 at a/a_i = 2, 4",
+  "file_value": "1.52542, 2.62815",
+  "verdict": "agrees",
+  "runs": [
+   "D-bh-dress-20261115-145610-5259f48"
+  ],
+  "note": ""
+ },
+ {
+  "doc": "stage/G1/STATUS.md",
+  "line": 14,
+  "stated": "drift 50 -> 490 M +2.95e-4 (M/8), +3.67e-5 (M/16)",
+  "file_value": "2.95e-4, 3.67e-5",
+  "verdict": "agrees",
+  "runs": [
+   "D-bh-dress-20261115-121313-284ec4f",
+   "D-bh-dress-20261115-121314-284ec4f"
+  ],
+  "note": "the 20 M mean ends at 489.5 and 489.75 M"
+ },
+ {
+  "doc": "stage/G1/STATUS.md",
+  "line": 14,
+  "stated": "smallest detectable change at M/16 2.0-2.5e-5 (windows from 50 M ending before 210 M)",
+  "file_value": "1.96e-5-2.51e-5",
+  "verdict": "agrees",
+  "runs": [
+   "D-bh-dress-20261115-130954-49ed46f"
+  ],
+  "note": ""
+ },
+ {
+  "doc": "stage/G1/STATUS.md",
+  "line": 14,
+  "stated": "5-9e-5 across the outer-boundary excursions",
+  "file_value": "5.43e-5-8.28e-5",
+  "verdict": "agrees",
+  "runs": [
+   "D-bh-dress-20261115-130954-49ed46f"
+  ],
+  "note": ""
+ },
+ {
+  "doc": "stage/G1/STATUS.md",
+  "line": 14,
+  "stated": "9.3e-5 peak to peak in 220-255 M at both resolutions",
+  "file_value": "9.33e-5, 9.28e-5",
+  "verdict": "agrees",
+  "runs": [
+   "D-bh-dress-20261115-121313-284ec4f",
+   "D-bh-dress-20261115-121314-284ec4f"
+  ],
+  "note": ""
+ },
+ {
+  "doc": "stage/G1/STATUS.md",
+  "line": 14,
+  "stated": "spin below 5.7e-9 at M/16",
+  "file_value": "5.65e-9",
+  "verdict": "agrees",
+  "runs": [
+   "D-bh-dress-20261115-121314-284ec4f"
+  ],
+  "note": ""
+ },
+ {
+  "doc": "stage/G1/STATUS.md",
+  "line": 14,
+  "stated": "2.18 card-hours",
+  "file_value": "0.654 + 1.523 = 2.177",
+  "verdict": "agrees",
+  "runs": [
+   "D-bh-dress-20261115-121313-284ec4f",
+   "D-bh-dress-20261115-121314-284ec4f"
+  ],
+  "note": ""
+ },
+ {
+  "doc": "stage/G1/STATUS.md",
+  "line": 43,
+  "stated": "D-pre-4 gives 2.8e-5 from t0 = 100 M before 210 M",
+  "file_value": "M/8, T = 40.6 M: 2.75e-5; M/16: 2.17e-5",
+  "verdict": "agrees",
+  "runs": [
+   "D-bh-dress-20261115-130954-49ed46f"
+  ],
+  "note": "valid for a window of 40.6 M; the run gives no window from 100 M longer than 110 M"
+ },
+ {
+  "doc": "stage/G1/STATUS.md",
+  "line": 45,
+  "stated": "M_AH(100 M) - M = +1.50e-3 at M/8 (D-pre-4)",
+  "file_value": "0.001503",
+  "verdict": "agrees",
+  "runs": [
+   "D-bh-dress-20261115-121313-284ec4f"
+  ],
+  "note": ""
+ },
+ {
+  "doc": "stage/G1/STATUS.md",
+  "line": 49,
+  "stated": "R_w = 46.99, 56.80, 65.84, 74.29 M at tau = 50, 100, 150, 200 M",
+  "file_value": "46.99, 56.80, 65.84, 74.29",
+  "verdict": "agrees",
+  "runs": [
+   "D-bh-dress-20261115-145950-23fa1c7"
+  ],
+  "note": ""
+ },
+ {
+  "doc": "stage/G1/STATUS.md",
+  "line": 52,
+  "stated": "groups at 6 M and 10 M reach R = 2M at tau = 15.0 M and 34.6 M; 20 M group at 245 M",
+  "file_value": "closed form 14.83, 34.44, 244.74 M; 15.0, 34.6, 244.8 are the first samples (spacing 0.2 M) after the crossing",
+  "verdict": "agrees to the sampling",
+  "runs": [
+   "D-bh-dress-20261115-043445-b782009",
+   "D-bh-dress-20261115-145950-23fa1c7"
+  ],
+  "note": "use 14.83 and 34.44 M as the exact arrival times in the G2 criterion"
+ },
+ {
+  "doc": "stage/G1/STATUS.md",
+  "line": 55,
+  "stated": "alpha = 1 + 6 ln a, about 4.9 by tau = 200 M (a = 1.93)",
+  "file_value": "4.935, a = 1.927",
+  "verdict": "agrees",
+  "runs": [
+   "D-bh-dress-20261115-145950-23fa1c7"
+  ],
+  "note": ""
+ },
+ {
+  "doc": "stage/G1/STATUS.md",
+  "line": 34,
+  "stated": "ES-1 cost 1.4 card-hours (M/8); 2.9 at M/16",
+  "file_value": "1.371, 2.870",
+  "verdict": "agrees",
+  "runs": [
+   "D-bh-dress-20261115-145950-23fa1c7"
+  ],
+  "note": ""
+ },
+ {
+  "doc": "stage/G1/STATUS.md",
+  "line": 37,
+  "stated": "V-1 about 1.2 card-hours [JUDGEMENT]",
+  "file_value": "no vacuum-control row in the cost table; the 1.24 row is the dust run with particle spacing 2 M",
+  "verdict": "not computed",
+  "runs": [
+   "D-bh-dress-20261115-145950-23fa1c7"
+  ],
+  "note": "compute V-1 with the cost model before submission (OPEN item 6)"
+ },
+ {
+  "doc": "stage/G0/REPORT.md",
+  "line": 158,
+  "stated": "data set as generated: 11.3 card-hours at M/16 for 200 M",
+  "file_value": "11.34",
+  "verdict": "agrees",
+  "runs": [
+   "D-bh-dress-20261115-145950-23fa1c7"
+  ],
+  "note": ""
+ },
+ {
+  "doc": "stage/G0/REPORT.md",
+  "line": 40,
+  "stated": "turnaround radius after one doubling 16-33 M at eps 0.01-0.03",
+  "file_value": "16.1-33.4",
+  "verdict": "agrees",
+  "runs": [
+   "D-bh-dress-20261115-120304-795eee9"
+  ],
+  "note": ""
+ },
+ {
+  "doc": "stage/G0/REPORT.md",
+  "line": 44,
+  "stated": "74 per cent still captured at sigma_i = 0.2",
+  "file_value": "0.740",
+  "verdict": "agrees",
+  "runs": [
+   "D-bh-dress-20261115-125613-248fdaf"
+  ],
+  "note": ""
+ },
+ {
+  "doc": "stage/G0/REPORT.md",
+  "line": 64,
+  "stated": "M_ta/M = 1.525, 2.628, 4.871; centre 1.190, 1.828, 3.215",
+  "file_value": "1.525, 2.628, 4.871; 1.190, 1.828, 3.215",
+  "verdict": "agrees",
+  "runs": [
+   "D-bh-dress-20261115-145610-5259f48"
+  ],
+  "note": ""
+ },
+ {
+  "doc": "stage/G0/REPORT.md",
+  "line": 66,
+  "stated": "coefficient 0.263 at a/a_i = 2, 0.558 at 100, limit 0.5648",
+  "file_value": "0.263, 0.558, 0.5648",
+  "verdict": "agrees",
+  "runs": [
+   "D-bh-dress-20261115-145610-5259f48"
+  ],
+  "note": ""
+ },
+ {
+  "doc": "stage/G0/REPORT.md",
+  "line": 67,
+  "stated": "r_ta(a/a_i = 2) = 33.4 M (eps 0.01), 16.1 M (eps 0.03)",
+  "file_value": "33.4, 16.1",
+  "verdict": "agrees",
+  "runs": [
+   "D-bh-dress-20261115-120304-795eee9"
+  ],
+  "note": ""
+ },
+ {
+  "doc": "STATUS.md",
+  "line": 6,
+  "stated": "floor 2.0-2.5e-5 at M/16 before 210 M",
+  "file_value": "1.96e-5-2.51e-5",
+  "verdict": "agrees",
+  "runs": [
+   "D-bh-dress-20261115-130954-49ed46f"
+  ],
+  "note": ""
+ }
+]

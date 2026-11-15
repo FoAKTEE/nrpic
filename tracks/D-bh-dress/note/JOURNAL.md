@@ -79,3 +79,24 @@ fig_floor, fig_spike, fig_infall, schem_architecture, schem_timeline.
   of my own differencing of u, not a property of the data (the offline check of the run
   -042704-f3da881 uses fourth-order differences). Plateau: rho/rho_0 - 1 at most 1.7e-7;
   exterior 3.3e-9 rho_0; -K/H = 1 on the plateau.
+
+## 2026-11-15T17:25Z  final run, P6, note compiled, stage report
+
+- Final registered run D-bh-dress-20261115-171627-18706fb (by hand, same refusal):
+  8 of 8 scripts clean; the seven PNGs are byte-identical to those of -171128-38634d6 (the
+  changes between the two runs touch only the ledger layout, the explicit frameon=False, and
+  the deck values, now read from the M/16 input the run's manifest records). Outputs copied
+  to `figures/` and `tables/`.
+- P6 holds for the figures (no label cut at the edge, czstyle check, all eight scripts). The
+  manuscript checker (`--compile`, forbid list of `../WRITING_GUIDE.md`) is clean on 14 of 16
+  checks; the hits of 5.5 (run ids) are in the ledger appendix and of 5.8 in `ledger.py`,
+  `run_all.py`, `handreg.py` (exception 1 of the guide) and one data key `pass_e0.1_s0.5_a100`
+  of a registered output that matches the hardware pattern `A100`. So P6 as written (no hit
+  outside the exception) is refuted only by that data key.
+- `main.pdf`: 10 pages, latexmk without undefined references or overfull boxes; every page
+  read. Figures are numbered in the order of first citation.
+- `stage/G0/STAGE_REPORT.md` written by `harness/bin/nrpic-stage report D-bh-dress G0`
+  (verdict FAIL: CHECKLIST items OPEN, no verify, no verifier report), then sections of my own
+  appended: proposed statuses for C5-C7, C9, C10, C13-C15 with evidence, the five remarks of
+  the claims check, a draft for the decision paragraph. `nrpic-stage verify` not run (it
+  writes into the stage directory, outside this package's paths).

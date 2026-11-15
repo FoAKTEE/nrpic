@@ -96,3 +96,62 @@ MISSING: the verifier subagent has not reported.
 One paragraph: accept G0 of D-bh-dress, or what is missing.
 
 TO WRITE by the track before the package is submitted (`nrpic-stage report ... --decision "..."`).
+
+## Products of the note package (helper of wave 2; for the lead to carry into CHECKLIST.md)
+
+Written by the note helper after `nrpic-stage report` ran on 18706fb; the criteria table above
+is generated from the lead's `CHECKLIST.md` of wave 1, which this helper may not edit. Paths
+relative to `tracks/D-bh-dress/`. Proposed status of the items that the table shows OPEN:
+
+| # | Item | Evidence | Proposed |
+|---|---|---|---|
+| C5, C15 | Working note v0, written with /paper-writing, checker with --compile | `note/main.tex`, `note/main.pdf` (10 pages, compiled with latexmk, no undefined reference or overfull box, pages read); guide and notation `WRITING_GUIDE.md`, `NOTATION.md`; checker clean on 14 of 16 checks, the two remaining (5.5 run ids, 5.8 project names) only in the ledger appendix and in the registration scripts, the exception of `WRITING_GUIDE.md` (plus one data key `..._a100` that matches the hardware pattern) | PASS |
+| C6, C9, C14 | Architecture schematic (exists / to be ported / new), paperfig.py | `note/figures/schem_architecture.png` (`note/scripts/schem_architecture.py`), run D-bh-dress-20261115-171627-18706fb; looked at | PASS |
+| C7, C10, C14 | Stage timeline schematic | `note/figures/schem_timeline.png` (`note/scripts/schem_timeline.py`), same run; looked at | PASS |
+| C13 | Data figures from registered outputs, czstyle, one script each, PNG looked at | five data figures `note/figures/fig_{es,constraints,floor,spike,infall}.png`, each from its script in `note/scripts/` (vendored `czstyle.py`, unchanged), reading only outputs of registered wave-1 runs (`note/scripts/common.py`); every PNG read by the helper; registered run D-bh-dress-20261115-171627-18706fb (by hand: `nrpic-run` refused, see below) | PASS (adds to the lead's evidence) |
+| C16 | Verifier subagent, VERIFIER_REPORT.md | not part of this package; a verifier helper works under `stage/G0/verify/` in the same wave | OPEN |
+| C18 | STATUS, JOURNAL, HANDOFF current | they describe the end of wave 1 (note and schematics "missing"); to be rewritten by the lead | lead |
+
+Figures of the table "Figures" above: all seven PNGs were looked at by the note helper
+(`note/JOURNAL.md`, entry 17:15Z).
+
+## Re-verification by the note helper (not `nrpic-stage verify`)
+
+`nrpic-stage verify` was not run: it writes VERIFY_RESULTS into this directory, which the
+note helper may not write. What was re-run instead: `note/scripts/run_all.py` twice as
+registered runs D-bh-dress-20261115-171128-38634d6 and -171627-18706fb (the second after
+script changes that touch only the ledger layout); all seven PNGs of the two runs are
+byte-identical. The claims check (`note/tables/claims.md`) recomputes 36 numbers of
+`stage/G0/REPORT.md`, `stage/G1/STATUS.md` and `STATUS.md` from the run outputs: 31 agree to
+the printed digits, five need a remark (the files win):
+
+1. `stage/G1/STATUS.md:13` "dress 0.625 M_ta (-123813-97afeea)": that run prints the mass
+   inside the outermost caustic, m(lambda_1) = 0.654 M_ta; 0.625 is `f_passed` = 0.6247 of the
+   analysis run D-bh-dress-20261115-125613-248fdaf. Locator to be corrected.
+2. `stage/G1/STATUS.md:11` "order 5.8-5.9 in the curvature transition": 5.88 (H) and 5.76 (M)
+   hold in the box "mid transition"; over the whole region 4 < r < 30 M the same run
+   (-043406-4df1e76) gives 5.29 and 4.69.
+3. `stage/G1/STATUS.md:12` "against digitized SFW Fig. 1 to 0.02 per cent": true for the peak
+   (1.5e-5 in height, 1.5e-4 in position); the whole curve on 8.5-95 Gm deviates by up to
+   2.6e-3 (run -145636-5259f48).
+4. `stage/G1/STATUS.md:52` (and `REPORT.md` section 3, G2 (a)) "reach R = 2M at tau = 15.0 M
+   and 34.6 M": these are the first samples of the 0.2 M grid of `es_reference.csv` after the
+   crossing; the exact infall times from each group's energy are 14.83 M and 34.44 M (and
+   244.74 M for the 20 M group). The G2 criterion should quote the exact values.
+5. `stage/G1/STATUS.md:37` (and `REPORT.md` section 7) "V-1 about 1.2 card-hours": a
+   judgement; the cost table of run -145950-23fa1c7 has no vacuum-control row (its 1.24 row is
+   the dust run with particle spacing 2 M). To be computed with the model before submission.
+
+Also: `REPORT.md:101` cites the simulation run -123755-25227d4 for |dE/E| <= 1.3e-6 and
+|dL/L| <= 1.9e-10; the values are in the analysis run -125739-a18d74d.
+
+## Draft for "Decision requested" (for the lead; not passed with --decision)
+
+G0 of D-bh-dress is complete in content: the scoping text (`scope/SCOPE.md`, `REPORT.md`
+sections 1-8), the risk list, the compute estimate, the working note v0 with five data
+figures and the two schematics, and a check of the package's numbers against the run
+outputs (five remarks above, none changing a conclusion). Missing before acceptance: the
+fresh verifier's VERIFIER_REPORT.md, `nrpic-stage verify` on the committed tip, the transfer
+of the proposed statuses into CHECKLIST.md, and the corrections 1-5 above. The group is asked
+to accept G0 once these are in, and to note that G1 is met for the benchmark and the floor
+and partly met for the spike (Kerr open) and the infall (AthenaK Newtonian mode open).
