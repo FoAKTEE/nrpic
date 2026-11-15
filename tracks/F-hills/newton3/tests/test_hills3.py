@@ -180,6 +180,15 @@ def test_driver_against_scipy():
     assert np.allclose(X[-1], out["x_end"][0], rtol=0, atol=1e-6 * np.abs(X[-1]).max())
 
 
+def test_initial_state_json_roundtrip():
+    import json
+    s = T.HillsSetup(M=10.0, m1=0.5, m2=0.5, a=30.0, D=0.7, phase=1.0)
+    d = json.loads(json.dumps(T.initial_state_json(s, k0=10.0)))
+    ic = T.initial_state(s, k0=10.0)
+    assert np.allclose(np.array(d["momenta"]), ic["momenta"], rtol=0, atol=0)
+    assert d["names"] == ["M", "m1", "m2"]
+
+
 if __name__ == "__main__":
     for name, fn in list(globals().items()):
         if name.startswith("test_"):

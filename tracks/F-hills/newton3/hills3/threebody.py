@@ -134,6 +134,15 @@ def initial_state(setup, r0=None, k0=10.0):
                 r_t=float(P["r_t"][0]), r_p=float(P["rp"][0]), params=asdict(setup))
 
 
+def initial_state_json(setup, r0=None, k0=10.0):
+    """initial_state as plain JSON-serialisable lists (for a problem-generator input file)."""
+    ic = initial_state(setup, r0=r0, k0=k0)
+    out = {k: (v.tolist() if isinstance(v, np.ndarray) else v) for k, v in ic.items()}
+    out["frame"] = ("barycentric; orbit of the binary centre of mass in the x-y plane, "
+                    "pericentre along +x, orbital angular momentum along +z; G = 1")
+    return out
+
+
 def _rhs_factory(masses, G):
     """Newtonian accelerations; y = (x_M, x_1, x_2, v_M, v_1, v_2), 18 components."""
     def rhs(t, y, idx):
