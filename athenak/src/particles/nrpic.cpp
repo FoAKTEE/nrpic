@@ -269,6 +269,7 @@ void Particles::NrpicInit(ParameterInput *pin) {
     pbval_tm->InitializeBuffers(Tmunu::N_Tmunu);
   }
   NrpicKickInit(pin);       // test kick with reproducible random numbers
+  NrpicCollideInit(pin);    // Monte Carlo collisions
 }
 
 //----------------------------------------------------------------------------------------

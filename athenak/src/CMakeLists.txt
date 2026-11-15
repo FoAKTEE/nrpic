@@ -135,6 +135,7 @@ add_executable(
         particles/nrpic_io.cpp
         particles/nrpic_curvature.cpp
         particles/nrpic_kick.cpp
+        particles/nrpic_collide.cpp
         outputs/pdf.cpp
 
         pgen/pgen.cpp
