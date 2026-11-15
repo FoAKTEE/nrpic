@@ -1,0 +1,55 @@
+{
+ "run_id": "core-20261115-152842-5728b1d",
+ "owner": "core",
+ "package": "verify",
+ "kind": "scouting",
+ "gate": "G2",
+ "purpose": "verify wave 2, ladder row 4: cluster-threshold bisection round 1, y_c 0.70 and 0.66 (one-percent inward kick, 10^4 stratified particles, finest cells M/4), to 300 M",
+ "command": [
+  "/data/haiyangw/nrpic/wt/core/scripts/gpu_batch.sh",
+  "/data/haiyangw/nrpic/scratch/core/core-20261115-152842-5728b1d/batch.list"
+ ],
+ "batch_lines": [
+  "/data/haiyangw/nrpic/scratch/core/core-20261115-152842-5728b1d/st_yc0p700 /data/haiyangw/nrpic/wt/core/problems/st/st_cluster_amr.athinput mesh_refinement/num_levels=7 time/tlim=300 particles/particle_file=/data/haiyangw/nrpic/scratch/core/core-20261115-152805-47d8f25/st_yc0p700/st_yc0p7_stratified_N10000_s1_vp0p01.nrp problem/comp0_file=/data/haiyangw/nrpic/scratch/core/core-20261115-152805-47d8f25/st_yc0p700/st_yc0p7_stratified_N10000_s1_vp0p01.tab",
+  "/data/haiyangw/nrpic/scratch/core/core-20261115-152842-5728b1d/st_yc0p660 /data/haiyangw/nrpic/wt/core/problems/st/st_cluster_amr.athinput mesh_refinement/num_levels=7 time/tlim=300 particles/particle_file=/data/haiyangw/nrpic/scratch/core/core-20261115-152805-47d8f25/st_yc0p660/st_yc0p66_stratified_N10000_s1_vp0p01.nrp problem/comp0_file=/data/haiyangw/nrpic/scratch/core/core-20261115-152805-47d8f25/st_yc0p660/st_yc0p66_stratified_N10000_s1_vp0p01.tab"
+ ],
+ "cwd": "/data/haiyangw/nrpic/wt/core",
+ "commit": "5728b1d",
+ "inputs": [
+  {
+   "path": "/data/haiyangw/nrpic/wt/core/problems/st/st_cluster_amr.athinput",
+   "sha256": "761f5d6f442573162a5370710705ff0e5b61c8ffa823d1525f17849ab575e354"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/scratch/core/core-20261115-152805-47d8f25/st_yc0p700/st_yc0p7_stratified_N10000_s1_vp0p01.nrp",
+   "sha256": "6d8315145d55250f4403ebba67d2f4a1d69e1939c1ec068764c5d7885d243c80"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/scratch/core/core-20261115-152805-47d8f25/st_yc0p700/st_yc0p7_stratified_N10000_s1_vp0p01.tab",
+   "sha256": "b369726de85f3082bb55837b67ff606e99f6eeea5ddb1cc5319179a2406bd1cb"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/scratch/core/core-20261115-152805-47d8f25/st_yc0p660/st_yc0p66_stratified_N10000_s1_vp0p01.nrp",
+   "sha256": "7ba0cf441abc93a960129ab6c5fe034952f6e6df4a27492a66f1023cd7a415c2"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/scratch/core/core-20261115-152805-47d8f25/st_yc0p660/st_yc0p66_stratified_N10000_s1_vp0p01.tab",
+   "sha256": "ad865de93219e7cb6472d91f8f2850a3bf873b23685cf55b27e863c7194b8c2f"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/.work/build_gpu_v03/src/athena",
+   "sha256": "f9f2dc1273a19e7f78f89bebfd88d9eef6487de5c94aebba77b6fd35dc1be3a1",
+   "role": "executable"
+  }
+ ],
+ "output_directory": "/data/haiyangw/nrpic/scratch/core/core-20261115-152842-5728b1d",
+ "parents": [
+  "core-20261115-152805-47d8f25"
+ ],
+ "slurm_job": "4432",
+ "slurm_wall_limit": "00:50:00",
+ "state": "submitted",
+ "submitted_utc": "2026-11-15T15:28:42Z",
+ "card_hours": null,
+ "registration": "by hand (tracks/core/verify/ladder2/cards.py)"
+}

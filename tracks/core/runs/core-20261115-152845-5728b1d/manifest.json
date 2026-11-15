@@ -1,0 +1,42 @@
+{
+ "run_id": "core-20261115-152845-5728b1d",
+ "owner": "core",
+ "package": "verify",
+ "kind": "scouting",
+ "gate": "G2",
+ "purpose": "verify wave 2, ladder row 3: prolate collapse e = 0.9, b = 10 M, 10^4 particles, second resolution (finest cells M/8; e09_v8 had M/16), to 45 M",
+ "command": [
+  "/data/haiyangw/nrpic/wt/core/scripts/gpu_batch.sh",
+  "/data/haiyangw/nrpic/scratch/core/core-20261115-152845-5728b1d/batch.list"
+ ],
+ "batch_lines": [
+  "/data/haiyangw/nrpic/scratch/core/core-20261115-152845-5728b1d/prolate_m8 /data/haiyangw/nrpic/wt/core/problems/prolate/prolate_amr.athinput mesh_refinement/num_levels=6 mesh_refinement/max_nmb_per_rank=2000 particles/nfilter=4 particles/filter_compensate=true time/tlim=45 particles/particle_file=/data/haiyangw/nrpic/scratch/core/core-20261115-152805-47d8f25/prolate/prolate_e0p9_b10_N10000_s1.nrp"
+ ],
+ "cwd": "/data/haiyangw/nrpic/wt/core",
+ "commit": "5728b1d",
+ "inputs": [
+  {
+   "path": "/data/haiyangw/nrpic/wt/core/problems/prolate/prolate_amr.athinput",
+   "sha256": "e53bacce5805eec600f602a6bbd9b89766ddaa9f46071d2e289ca25feafe1a53"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/scratch/core/core-20261115-152805-47d8f25/prolate/prolate_e0p9_b10_N10000_s1.nrp",
+   "sha256": "dcc80b8d9a0750c443a1fdad0b1336232bd0c9e7284bac3dc44d8c0b1dc8b857"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/.work/build_gpu_v03/src/athena",
+   "sha256": "f9f2dc1273a19e7f78f89bebfd88d9eef6487de5c94aebba77b6fd35dc1be3a1",
+   "role": "executable"
+  }
+ ],
+ "output_directory": "/data/haiyangw/nrpic/scratch/core/core-20261115-152845-5728b1d",
+ "parents": [
+  "core-20261115-152805-47d8f25"
+ ],
+ "slurm_job": "4434",
+ "slurm_wall_limit": "00:50:00",
+ "state": "submitted",
+ "submitted_utc": "2026-11-15T15:28:45Z",
+ "card_hours": null,
+ "registration": "by hand (tracks/core/verify/ladder2/cards.py)"
+}
