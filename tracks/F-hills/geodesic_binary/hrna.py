@@ -431,6 +431,20 @@ def integrate(law, coords, pair, M, a, m1, m2, kpair, l0, y0, h0, rtol, atol,
             if (not alive[0]) and (not alive[1]):
                 status = 5
                 break
+            if alive[0] != alive[1]:
+                # one member captured: follow the other one alone (same stopping radii)
+                ka = 0 if alive[0] else 1
+                x0_, x1_, x2_ = ynew[6 * ka], ynew[6 * ka + 1], ynew[6 * ka + 2]
+                ra = math.sqrt(x0_ * x0_ + x1_ * x1_ + x2_ * x2_)
+                rda = (x0_ * ynew[6 * ka + 3] + x1_ * ynew[6 * ka + 4] + x2_ * ynew[6 * ka + 5]) / ra
+                if ra > r_stop and rda > 0.0:
+                    status = 0
+                    rc_old, rd_old, s_old = rc_new, rd_new, s_new
+                    break
+                if rda <= 0.0 and ra > r_apo_min and passed_peri:
+                    status = 1
+                    rc_old, rd_old, s_old = rc_new, rd_new, s_new
+                    break
             rc_old, rd_old, s_old = rc_new, rd_new, s_new
             h = h * fac
         else:
@@ -594,11 +608,20 @@ def summarize(lawc, cc, M, a, m1, m2, a0, y, diag, T0):
     g, gi, dg = np.zeros((4, 4)), np.zeros((4, 4)), np.zeros((3, 4, 4))
     mb = m1 + m2
     x1, v1, x2, v2 = y[0:3], y[3:6], y[6:9], y[9:12]
-    E1, L1, _ = energy_lz(lawc, cc, M, a, x1, v1, g, gi, dg)
-    E2, L2, _ = energy_lz(lawc, cc, M, a, x2, v2, g, gi, dg)
+    def safe_el(x, v):
+        # the flat-space CM of a pair with a captured member can sit where the metric is
+        # singular or the averaged velocity is not timelike: no test-particle energy there
+        try:
+            E, L, _ = energy_lz(lawc, cc, M, a, x, v, g, gi, dg)
+            return E, L
+        except (ZeroDivisionError, ValueError):
+            return math.nan, math.nan
+
+    E1, L1 = safe_el(x1, v1)
+    E2, L2 = safe_el(x2, v2)
     xc = (m1 * x1 + m2 * x2) / mb
     vc = (m1 * v1 + m2 * v2) / mb
-    Ec, Lc, _ = energy_lz(lawc, cc, M, a, xc, vc, g, gi, dg)
+    Ec, Lc = safe_el(xc, vc)
     d = x1 - x2
     w = v1 - v2
     r12 = float(np.linalg.norm(d))

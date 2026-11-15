@@ -200,3 +200,25 @@ K2 Prograde binaries: |s.f.(a = +-0.9) - s.f.(a = 0)| < 0.03 for beta <= 10.
 K3 2402.02178 is not reproduced here: its claim (2402/main.tex:592-597) concerns the survival
    boundary of inclined binaries at beta > 0.9, which needs inclined initial data, and its model
    (Fermi frame, tidal plus PN forces) differs from HRNA. Open item.
+
+## C1 tolerance and C2 release-radius convergence (before running)
+
+C1: beta = 3, 5, 8, both laws and senses, 400 phases, rtol = 1e-10 and 1e-13 against S1
+(rtol = 1e-12). Prediction: s.f. differences <= 0.005 (2 phases of 400); mean v_inf differs by
+< 0.5 percent. Refuted if any s.f. difference exceeds 0.01.
+C2: beta = 4.7 (the case of 2404 appendix C, appendix.tex:212), r0 = 20, 50, 70 r_t.
+2404 reports a relative s.f. variation of ~1e-3 (Newton, 1PN) and a stall at ~1e-2 (HRNA) for
+r0 >~ 20 r_t (appendix.tex:216-217), without an explanation (:222). Prediction: Newton varies
+by <= 0.005 (our phase resolution), HRNA by ~1e-2 relative. Candidate cause [JUDGEMENT, to be
+tested only if C2 shows the HRNA variation]: the Newtonian-circular initial binary is not
+circular under HRNA at r0 (T1b: the pair force is divided by Gamma^2, Gamma^2 - 1 ~ 4M/r0 + v^2
+at release), giving an r0-dependent initial eccentricity of order 1e-3.
+
+### S4 first attempt failed (run F-hills-20261115-131944-360a12e)
+
+ZeroDivisionError in the end-of-run energy of the "virtual particle at the CM" after member
+captures (the flat-space midpoint of a captured and an escaping member can sit where the
+Kerr-Schild metric is singular). Fixed: these energies are NaN when not computable; after a
+capture the stop test follows the surviving member (r > 150 r_t outwards, or turning around
+beyond 10 r_t). Runs without captures are unaffected (checked: beta = 5, phi = 1.41 gives the
+same r_cm(t_s) = 31.11 r_g and eps1 to all digits).
