@@ -267,7 +267,8 @@ def integrate(law, coords, pair, M, a, m1, m2, kpair, l0, y0, h0, rtol, atol,
     t > t_max or max_steps.  Members crossing r < r_plunge inwards are marked dead (captured).
 
     Returns (status, t_end, y_end, diag, rec_t, rec_y, nrec, nsteps, nrej) with
-    diag = [t_peri, r_peri, a_min, alpha_max, t_s, rcm_ts, plunged1, plunged2, Eb_min_bound]
+    diag = [t_peri, r_peri, a_min, alpha_max, t_s, rcm_ts, plunged1, plunged2, alpha_all]
+    (alpha_max: a/R while the instantaneous Newtonian E_b < 0; alpha_all: at any time)
     status 0 r_stop, 1 bound-CM apocentre, 2 t_max, 3 max_steps, 4 step underflow.
     """
     n = 12
@@ -391,9 +392,11 @@ def integrate(law, coords, pair, M, a, m1, m2, kpair, l0, y0, h0, rtol, atol,
                 r_peri = rc_old + w * (rc_new - rc_old)
                 passed_peri = True
             eb = ebin(ynew)
-            if alive[0] and alive[1] and eb < 0.0:
+            if alive[0] and alive[1]:
                 al = s_new / rc_new ** 1.5 * math.sqrt(M)
-                if al > alpha_max:
+                if al > eb_min:
+                    eb_min = al                       # alpha without the bound condition
+                if eb < 0.0 and al > alpha_max:
                     alpha_max = al
             if s_old < 2.0 * a0 and s_new >= 2.0 * a0:
                 w = (2.0 * a0 - s_old) / (s_new - s_old)
@@ -634,4 +637,5 @@ def summarize(lawc, cc, M, a, m1, m2, a0, y, diag, T0):
         t_peri=t_peri, r_peri=float(diag[1]),
         t_s=(float(diag[4]) - t_peri) / T0 if not math.isnan(diag[4]) else math.nan,
         rcm_ts=float(diag[5]), a_min=float(diag[2]) / a0, alpha_max=float(diag[3]),
+        alpha_all=float(diag[8]),
         plunged=plunged, r12_end=r12)

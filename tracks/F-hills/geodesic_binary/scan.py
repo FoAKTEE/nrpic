@@ -21,7 +21,7 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
 
 KEYS = ["outcome", "separated", "Eb_end", "eb_end", "eps1", "eps2", "L1", "L2", "eps_cm", "L_cm",
-        "vinf", "vinf_exact", "t_peri", "r_peri", "t_s", "rcm_ts", "a_min", "alpha_max",
+        "vinf", "vinf_exact", "t_peri", "r_peri", "t_s", "rcm_ts", "a_min", "alpha_max", "alpha_all",
         "plunged", "status", "nsteps", "t_end"]
 
 
