@@ -1,0 +1,174 @@
+# JOURNAL of core, work package rng (reproducible random numbers)
+
+Append-only, newest at the bottom. Predictions are written before a test runs, outcomes
+after. Labels: [VERIFIED], [BACKGROUND], [JUDGEMENT], [TO VERIFY]. Run outputs live under
+`scratch/core/<run_id>/`, manifests under `tracks/core/runs/<run_id>/`.
+
+## 2026-11-15 11:30 UTC  session core-rng  design
+
+Task: brief lines 544-547 (M11), verification row "Reproducible random numbers" (line
+853), work packages C-pre-2 and E-pre-4; decision 0010 (everything in this AthenaK).
+
+### What exists and is left alone
+
+- `athenak/src/utils/random.hpp`: `Ran2`, `RanSt`, `RanGaussian` (sequential generators
+  with static or caller-held state). Not usable for reproducible parallel draws; not
+  touched.
+- `athenak/src/pgen/nrpic/nrpic_cosmo.cpp:59-70`: `CosmoNoise`, a splitmix64 hash of
+  (cell, component, seed) for the noise test of the cosmology problem generator. Not
+  touched (the task forbids changing existing uses).
+
+### Design decisions [JUDGEMENT]
+
+1. Generator: Philox-4x64 with ten rounds (the counter-based family of Salmon et al.,
+   "Random123"). Reasons: (a) a 256-bit counter and a 128-bit key give every field of
+   (seed, stream, entity, step, draw) its own 64-bit word, with two words for the entity
+   (a pair of particle tags, or a cell index plus its level), so nothing has to be packed
+   by the user; (b) `numpy.random.Philox` on this machine (numpy 2.2.6; its docstring
+   names the 4x64 generator and its 256-bit counter and 128-bit key) is an independent
+   implementation of the same function, which gives a known-answer test without
+   downloading anything; (c) only integer operations (64-bit multiply high and low, xor,
+   add), exact on every platform.
+   Layout: key = (seed, stream); counter = (entity, entity_hi, step,
+   draw*256 + kind*16 + block). `kind` separates raw words (0), normal pairs (1) and
+   directions (2); `block` counts the retries of the rejection step.
+2. Derived draws must be bit-identical on processors, on the card and in Python. The
+   library logarithm, sine and cosine are not correctly rounded and differ between glibc,
+   the CUDA library and NumPy, and a product followed by a sum may or may not be fused
+   by the compiler. So the derived draws use only operations that IEEE 754 defines
+   uniquely, arranged so that no product feeds a sum unless the product is exact:
+   - uniform in (0,1): (floor(w / 2^12) + 1/2) 2^-52, exact, never 0 or 1, mean 1/2;
+   - point in the unit disk by rejection on a lattice of odd integers of 26 bits and
+     sign (v1, v2 from one word; s = v1^2 + v2^2 < 2^52 is computed in integers);
+   - direction (Marsaglia 1972 construction): n = (2 v1 h, 2 v2 h, 1 - 2 s) with
+     h = sqrt(1 - s), s in units of 2^52: one exact difference, one square root, one
+     product per component. Uniformity on the sphere: for a uniform point in the disk
+     s is uniform in (0,1), so n_z = 1 - 2 s is uniform in (-1,1), and the azimuth is
+     that of (v1, v2), independent of s;
+   - normal pair (polar form of Box-Muller): z_i = v_i sqrt(2 L / s), L = -ln(s 2^-52).
+     L comes from the arithmetic-geometric mean, ln(4/y) = pi / (2 agm(1, y)) (1 + O(y^2)),
+     with y = 2^-30 (s 2^-52) <= 2^-30: ten steps a <- (a+b)/2, b <- sqrt(a b), then one
+     division and one subtraction of the constant 32 ln 2. Every operation is a single
+     correctly rounded one whose operands are not products feeding a sum.
+3. The Python twin (`python/nrpic/rng.py`) repeats the same operations with NumPy arrays.
+4. Demonstration in the code: a test kick of the particle momenta at the end of the push
+   (`athenak/src/particles/nrpic_kick.cpp`, off by default), keyed by (run seed, stream
+   "tests", particle tag, cycle number), with two control keys that are expected to fail:
+   `block` (the key also contains the MeshBlock that owns the particle, as with one
+   generator per MeshBlock) and `sequence` (the step is the number of kicks since the
+   executable started, as with a generator whose state is not in the restart file).
+
+### Scouting done before this entry (not a registered test)
+
+- `scratch/core/tmp/rng/proto1.py`: a pure-Python Philox-4x64-10 written from memory of
+  the algorithm equals `numpy.random.Philox(counter=c, key=k).random_raw(4)` for 200 of
+  200 random (c, k) when evaluated at counter c + 1 (NumPy increments before it
+  generates), and for 0 of 200 at counter c. So the multipliers 0xD2E7470EE14C6C93,
+  0xCA5A826395121157, the key increments 0x9E3779B97F4A7C15, 0xBB67AE8584CAA73B and the
+  round structure are those of NumPy's generator. [VERIFIED by this comparison; the
+  registered test repeats it with the shipped twin.]
+- `scratch/core/tmp/rng/proto2.py`: the arithmetic-geometric-mean logarithm against mpmath
+  (200 bits) on 20000 values of s between 2 and 2^52: maximum absolute error 2.8e-14
+  from nine steps on; the result does not change between 9 and 14 steps on 200007 values.
+  For s within about 1e-14 of 2^52 the difference comes out negative (-3.6e-15), so the
+  result is clamped at zero. Ten steps are used.
+
+### Predictions (written before the tests are run)
+
+P1 Known answer. The shipped Python twin and the C++ header give the words of
+   `numpy.random.Philox` for 10^4 random counters and keys. Refuted by one differing word.
+
+P2 Agreement of implementations. For a table of at least 2 x 10^5 keys (edge cases and
+   random keys) the raw words, uniforms, integer indices, normal pairs and directions
+   are bit-identical between (a) the processor build, (b) the card build, (c) the Python
+   twin, and (d) a standalone compilation of the header with g++ at -O0, at -O3 with
+   fused multiply-add allowed (-march=native -ffp-contract=fast) and with it forbidden
+   (-ffp-contract=off). Refuted by one differing bit in any column. Most likely place of
+   a failure: the square roots and the division of the normal pair on the card, or a
+   fused product that I have overlooked.
+
+P3 Statistics (Python twin, 10^7 or more draws per test; large samples in the code on
+   the card).
+   - Uniform: mean, variance, third and fourth central moments within four standard
+     errors of 1/2, 1/12, 0, 1/80; chi-square of 1024 equal bins and of pairs in 64 x 64
+     bins with p-values not below 10^-4; frequency of each of the upper 52 bits within
+     four standard errors of 1/2.
+   - Normal: moments up to the eighth within four standard errors of 0, 1, 0, 3, 0, 15,
+     0, 105; counts beyond 3, 4, 5 and 6 standard deviations compatible with Poisson
+     expectations; Kolmogorov-Smirnov p-value not below 10^-4; the two members of a pair
+     uncorrelated.
+   - Direction: mean of each component within four standard errors of 0, second moments
+     of delta_ij / 3; chi-square of n_z and of the azimuth flat; |n|^2 - 1 below 4e-16.
+   - Correlations: lag-one correlation along each field of the key (seed, stream, entity,
+     entity_hi, step, draw), between streams, and between the four words of one call,
+     within four standard errors (1/sqrt(N)) of zero.
+   - The set of all p-values is compatible with a uniform distribution (Kolmogorov-Smirnov
+     p not below 10^-3).
+   Refuted by a moment or correlation beyond five standard errors, or a p-value below
+   10^-6 (with about 60 tests, one p-value below 10^-4 has probability 0.6 percent).
+
+P4 Cost per draw (order of magnitude; refuted if off by more than a factor three).
+   One core of the Xeon 8360Y, serial build at -O2: one generator call (four words)
+   10 to 20 ns; a normal pair about 100 ns (ten dependent square roots); a direction
+   25 to 30 ns. One A100: 1 to 2 x 10^9 generator calls per second, a normal pair 2 to
+   4 ns, a direction 1 to 1.5 ns.
+
+P5 Demonstration in the code.
+   D1 (analytic Kerr-Schild metric, `metric = kerr_schild`; the particles do not read the
+   mesh): with the kick keyed by tag the final particle states are bit-identical for two
+   MeshBlock layouts and for a run restarted halfway, and the per-step checksum of the
+   kicks is identical for the layouts, the restart, and between the processor and the card
+   builds. Controls: key `block` gives different states for the two layouts; key
+   `sequence` gives different states after the restart; another seed gives different
+   states. Refuted by any differing bit in the first group or by identical states in a
+   control.
+   D2 (static Kerr-Schild metric on a uniform mesh, `metric = mesh`): the checksums of
+   the kicks are identical for two layouts; the particle states are NOT bit-identical
+   between layouts, with or without the kick, because the interpolation forms
+   (x - xmin) / dx with the lower edge of the particle's own MeshBlock
+   (`nrpic_mesh.hpp:91`), which rounds differently for different edges; I expect relative
+   differences between 1e-15 and 1e-9 after a few hundred steps. The restart of one
+   layout is bit-identical to the uninterrupted run, also with particles removed at the
+   excision threshold. Refuted by bit-identical states across layouts (then the remark
+   about the interpolation is wrong) or by a restart that differs.
+   Regression: with the kick switched off the modified executable gives byte-identical
+   history files and snapshots to the executable built from the unmodified source, on
+   processors and on the card.
+
+## 2026-11-15 12:25 UTC  session core-rng  implementation, scouting
+
+Written (uncommitted until the commit that follows this entry): `athenak/src/utils/rng.hpp`,
+`python/nrpic/rng.py`, the unit-test problem generator
+`athenak/src/pgen/unit_tests/rng_test.cpp` (`pgen_name = rng_test`), the test kick
+`athenak/src/particles/nrpic_kick.cpp`, inputs `problems/tests/rng_*.athinput`, and the
+drivers under `tracks/core/analysis/rng/`.
+
+Choices made while writing:
+- The seed of a run is `<job> rng_seed`, not a block of its own: AthenaK rejects unknown
+  block names (`parameter_input.cpp`, `CheckBlockNames`), and a new name would be one
+  more line that every branch of this wave edits.
+- The options of the kick are read only when `<particles> test_kick` is present, so a run
+  without it adds nothing to the parameters stored in restart files.
+- On the card the upper half of a 64-bit product is `__umul64hi`; on processors the
+  128-bit integer of the compiler; a portable form from 32-bit halves is kept and the
+  unit test compares it with the one in use for every key of the table.
+
+Scouting (small, unregistered, in `scratch/core/tmp/rng/`; the registered runs follow):
+- Table of 202070 keys, processor build against the Python twin: no differing bit in any
+  of the 15 columns; 11682 keys against `numpy.random.Philox`: none differing. The same
+  table from a standalone compilation at -O0, -O2, -O3 with and without fused
+  multiply-add: identical checksum. One correction to prediction P3: the largest
+  deviation of |n|^2 from 1 is 4.44e-16 (two units in the last place), not "below 4e-16";
+  the bound I should have written is 1e-15.
+- Kick, analytic metric, 2000 particles to t = 20: outcome as predicted (identical bits
+  for layouts and restart; the three controls differ). First version of the driver
+  compared the number of records of the checksum files, which a restarted run cannot
+  match (it records only the cycles after the restart); corrected in the driver.
+- Kick, mesh metric, 2000 particles to t = 20: checksums identical for the two layouts;
+  states differ by at most 3.6e-14 (positions) and 5.4e-15 (momenta) with the kick, and
+  4.0e-14, 5.2e-15 without it; restart identical. The plunging set with L = 0.9 L_circ
+  loses no particle before t = 20, so the registered run uses L = 0.3 L_circ, t = 50,
+  restart at t = 40 (particle number 2000 -> 1440 at t = 40 -> 176 at t = 50 in a
+  scouting run).
+- Cost on one core (serial build, 10^6 keys): generator call 28 ns, single uniform
+  22 ns, normal pair 93 ns, direction 40 ns.

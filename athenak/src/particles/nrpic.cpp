@@ -268,6 +268,7 @@ void Particles::NrpicInit(ParameterInput *pin) {
     pbval_tm = new MeshBoundaryValuesCC(pmy_pack, pin, false);
     pbval_tm->InitializeBuffers(Tmunu::N_Tmunu);
   }
+  NrpicKickInit(pin);       // test kick with reproducible random numbers
 }
 
 //----------------------------------------------------------------------------------------
@@ -533,6 +534,7 @@ TaskStatus Particles::NrpicPush(Driver *pdriver, int stage) {
   }, Kokkos::Sum<int>(nun), Kokkos::Max<int>(mxit));
   push_unconverged = nun;
   push_maxit = mxit;
+  if (kick.on) { NrpicTestKick(); }
 
   return TaskStatus::complete;
 }

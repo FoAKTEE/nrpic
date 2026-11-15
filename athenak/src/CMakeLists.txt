@@ -134,6 +134,7 @@ add_executable(
         particles/nrpic.cpp
         particles/nrpic_io.cpp
         particles/nrpic_curvature.cpp
+        particles/nrpic_kick.cpp
         outputs/pdf.cpp
 
         pgen/pgen.cpp
@@ -163,6 +164,7 @@ add_executable(
 
         pgen/unit_tests/eos_compose.cpp
         pgen/unit_tests/gauss_legendre.cpp
+        pgen/unit_tests/rng_test.cpp
 
         radiation/radiation.cpp
         radiation/radiation_fluxes.cpp
