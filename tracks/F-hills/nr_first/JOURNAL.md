@@ -403,3 +403,12 @@ it is not a horizon; member horizon masses at m/8 may be intermittent. Request t
 (README): a convergence test that does not require |dmass| < 1e-5 m when the surface
 oscillates on about 4 cells per radius, or advice on the flow constant; E7 shows whether the
 search succeeds later in the evolution.
+
+## 2026-11-15 S1 withdrawn before it started (run F-20261115-173606-efcbf69, Slurm job 4475)
+
+The card queue had six jobs ahead of this package's at 18:37 UTC. With S1's wall limit the
+three card jobs could have used up to 2.25 card-hours, above the two the task allows; S1 was
+the optional resolution partner of the junk measurement. Cancelled (scancel through
+`nrpic-run stop`) before it started; no card time used. It can be resubmitted with
+`inputs/batch_S1.list` when S3 and S2 have given the rate. E3's prediction 3 (S1 against
+S3 within a factor two) stays untested.
