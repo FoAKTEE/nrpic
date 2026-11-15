@@ -1,0 +1,32 @@
+{
+ "run_id": "B-emd-gw-20261115-114807-dbd105a",
+ "command": "tracks/B-emd-gw/verify_cosmo/scripts/build_ic.sh /data/haiyangw/nrpic/scratch/B-emd-gw/<run_id>",
+ "cwd": "/data/haiyangw/nrpic/wt/B-emd-gw",
+ "commit": "dbd105a92ea8cfa4802dc2b42575361172361eae",
+ "worktree_dirty": true,
+ "inputs": [
+  {
+   "path": "cosmo/ic/make_east.py",
+   "sha256": "a95a9d979eddff0cbf9a490389825ed3c4473f5967632473b326e1a43cb4eb60"
+  },
+  {
+   "path": "cosmo/ic/cosmo_id.py",
+   "sha256": "3e1ec590a123453a0d788946912abb4e66a35d71af50c787d7c6f518c6e77a52"
+  },
+  {
+   "path": "tracks/B-emd-gw/verify_cosmo/scripts/build_ic.sh",
+   "sha256": "7f1f3302deef0c4a9c29f17279a22c9f60653bf2a39cd26edc2c8e25ec150096"
+  }
+ ],
+ "output_dir": "/data/haiyangw/nrpic/scratch/B-emd-gw/B-emd-gw-20261115-114807-dbd105a",
+ "purpose": "initial data of the plane-wave pancake (d = 0.05, L = 1 at 32, 64, 96 cells; L = 4 at 64 cells) with cosmo/ic/make_east.py --ratios 1,0,0, production cloud and compensation",
+ "kind": "scouting",
+ "cores": 4,
+ "card_hours": 0.0,
+ "started_utc": "2026-11-15T11:48:07+00:00",
+ "status": "completed",
+ "package": "tracks/B-emd-gw/verify_cosmo",
+ "notes": "four data sets written; constraint residuals of the solve below 3e-10 (Hamiltonian) and 2.4e-8 (momentum) at all four",
+ "finished_utc": "2026-11-15T11:51:10+00:00",
+ "wall_time_s": 171.0
+}

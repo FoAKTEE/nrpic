@@ -1,0 +1,129 @@
+# Plane-wave pancake through shell crossing (tracks/B-emd-gw/verify_cosmo): the input of
+# problems/cosmo/east.athinput in the production configuration of cosmo/README.md (cubic
+# cloud, compensation 1/6 and 7/15 on the deposited density, no filter, spline
+# interpolation, step limit 0.01, damping rate 0.5 per unit of conformal time), with
+# field dumps carrying the constraint fields and line records. Initial data from
+# cosmo/ic/make_east.py --ratios 1,0,0 (scripts/build_ic.sh). Box side, mesh, probes and
+# traj_ntrack are set on the command line (scripts/pancake.list). End at a = 42.
+
+<comment>
+problem   = plane-wave pancake through shell crossing in an expanding universe
+
+<job>
+basename  = east
+
+<mesh>
+nghost    = 4
+nx1       = 32
+x1min     = 0.0
+x1max     = 4.0
+ix1_bc    = periodic
+ox1_bc    = periodic
+nx2       = 32
+x2min     = 0.0
+x2max     = 4.0
+ix2_bc    = periodic
+ox2_bc    = periodic
+nx3       = 32
+x3min     = 0.0
+x3max     = 4.0
+ix3_bc    = periodic
+ox3_bc    = periodic
+
+<meshblock>
+nx1       = 16
+nx2       = 16
+nx3       = 16
+
+<time>
+evolution  = dynamic
+integrator = rk4
+cfl_number = 0.25
+nlim       = -1
+tlim       = 10.9615
+ndiag      = 20
+
+<z4c>
+lapse_oplog     = 0.0
+lapse_harmonicf = 1.0
+lapse_harmonic  = 0.3333333333333333   # d_t alpha = -(1/3) alpha^2 K
+lapse_volume    = 0.0                  # 1/3 (with lapse_harmonic = 0): alpha - gamma^(1/6) constant
+lapse_kdriver   = 0.0                  # driver towards constant mean curvature (strength mu)
+lapse_advect    = 0.0
+shift_Gamma     = 0.0                  # zero shift
+shift_eta       = 0.0
+shift_advect    = 0.0
+diss            = 0.5
+damp_kappa1     = 0.5
+damp_kappa1_over_alpha = true          # true: damping rate kappa1 per unit of coordinate time
+damp_kappa2     = 0.0
+damp_kappa_gam  = 0.0                  # additional damping of the connection constraint alone
+damp_ch         = 0.0
+damp_ch_dx      = 0.0
+damp_ch_chipow  = 0.0                  # exponent of chi in the relaxation of the Hamiltonian constraint (0: fixed diffusion coefficient in conformal time)
+excise_chi      = 0.0                  # constraint norms over the whole box (chi = 1/a^2 falls)
+
+<particles>
+particle_type  = nrpic
+pusher         = midpoint
+interp         = bspline  # metric at the particles: hermite (Catmull-Rom) or bspline (cubic spline through the nodes)
+dt_expansion   = 0.01    # > 0: step limited to this fraction of the expansion time
+metric         = mesh
+tolerance      = 1.0e-12
+max_iterations = 50
+deposit        = true
+nfilter        = 0
+filter_compensate = false
+filter_comp_c  = -1.0
+deposit_comp_c = 0.16666666666666666    # > 0: compensation of the cloud on the deposited density (1/12, 1/8, 1/6)
+deposit_comp_limit = 0.0  # > 0: that pass limited where neighbouring cells differ strongly
+deposit_comp_c2 = 0.4666666666666667     # fourth-order term of that pass (8/45, 37/120, 7/15)
+deposit_shape  = pcs     # cloud shape: cic, tsc or pcs (B-spline of degree 1, 2, 3)
+deposit_max_level = 31
+deposit_adaptive  = false
+deposit_min_level = 0
+deposit_ppc       = 2.0
+deposit_max_coarsen = 31
+alpha_exc      = -1.0
+ah_exc_factor  = -1.0
+hist_dcycle    = 1
+cstat_dcycle   = 8        # constraint statistics (maximum and mean, absolute and relative)
+cons_dcycle    = 8        # conservation of the deposited matter on the mesh (cycles between records)
+line_dcycle    = 8        # records of chi, alpha, K, E, S_x along the first x1 line
+traj_dcycle    = 2        # trajectories of the fiducial observers (lowest tags)
+traj_ntrack    = 94       # 3 n - 2 for one particle per cell and direction
+snap_dt        = 2.75
+probe_x1       = 1.0
+probe_x2       = 1.0
+probe_x3       = 1.0
+nprobe         = 1
+probe1_x1      = 3.0
+probe1_x2      = 3.0
+probe1_x3      = 3.0
+lambda         = 0.0
+source_density = true    # densities converted with the volume element of each stage
+source_extrap  = true    # ... extrapolated to the middle of the step
+particle_file  = particles.nrp
+field_constraints = true
+field_time1   = 0.828427124746
+field_time2   = 2.472135955000
+field_time3   = 4.324555320337
+field_time4   = 5.745966692415
+field_time5   = 6.485281374239
+field_time6   = 6.944271909999
+field_time7   = 7.165151389912
+field_time8   = 7.380831519647
+field_time9   = 8.000000000000
+field_time10   = 8.954451150103
+field_time11   = 9.832159566199
+field_time12   = 10.961500000000
+
+<problem>
+pgen_name  = nrpic_cosmo
+id         = file
+id_file    = fields.bin
+hubble     = 1.0
+
+<output1>
+file_type = hst
+dt        = 0.1
