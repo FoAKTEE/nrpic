@@ -172,6 +172,12 @@ background (no expansion of the coordinates). The potential energy W of the hist
 counts the external potential in full. Details: `REQUESTS_ADF.md` section 2.4,
 `athenak/src/particles/nrpic_external.hpp`. The accretion diagnostics (`diagnostics.md`
 section 10a) work in this mode with E = 1 + p^2/(2 a^2) + Phi/a.
+The Layzer-Irvine combination C of `<basename>.newton.hst` is conserved with
+`newton_pm_soft_frame = comoving` (T4: drift 4.1e-5 and 1.0e-5 of a|W| at the steps 0.002
+and 0.001, second order); with `physical` the potential depends on time explicitly
+(s/a) and C is not a conservation check (5.6e-2 at both steps, runs
+core-20261115-160805-5d1663f, core-20261115-162608-113493f, judged in
+core-20261115-180144-83abe17); the orbits converge at second order in both frames.
 
 ### Output
 
