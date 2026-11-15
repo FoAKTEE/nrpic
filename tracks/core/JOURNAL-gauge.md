@@ -472,3 +472,17 @@ unchanged. Card job 4449 keeps the script text of its submission, which names T 
 for ES and T = 1 M for L3; those two steps are disabled through
 `analysis/gauge/skip_tags.txt` (read by `grun.py`), and ES and L3 run in a third job
 (`gpu_job3.sh`) with the relaxation time on the command line.
+
+### Two more runs at cells of 1 M, with their prediction (written before they started)
+
+`leak025-n064` and `leak0125-n064`: the marginally bound ball with T = 0.25 M and
+0.125 M (rate times step 1 and 2; the explicit fourth-order Runge-Kutta step is stable
+for a pure decay up to 2.78). They probe how short the relaxation time may be relative
+to the cell (T = dx/4, dx/8): for T -> 0 the lapse is pinned to 1 where the matter
+expands, which is the fixed-lapse gauge that failed in wave 1 (T2e: surface-shell
+errors 1.9e-2 at cells of M/2, instability for the bound ball). Prediction [JUDGEMENT]:
+T = 0.25 M runs to t = 10 M with the central lapse within 1 per cent of its reference
+and shell errors not above those of T = 0.5 M; T = 0.125 M runs to the end but its
+surface and outer shells are worse than with T = 0.5 M (above 1e-2), the signature of
+the fixed-lapse gauge. Refuted for T = 0.125 M if its errors equal those of T = 0.5 M
+(then there is no lower limit of T at this resolution other than the step).
