@@ -380,3 +380,22 @@ Figures `fig_noise_power.png`, `fig_noise_ms.png` (looked at; legends moved afte
   products and sums differently, so not necessarily 1e-16); lockstep data identical to
   the processor run to rounding (they are integrated on the host); cost of the field
   below 25 percent and of the sources below 25 percent of a Z4c step at 128^3.
+
+## 2026-11-15, entry 6: test 5 (particles and field together), prediction before the run
+
+The additive sources (interface section 5) had not run with particles. Test: the dust
+universe of `problems/cosmo/flrw.athinput` (32^3 particles, density-form sources with
+extrapolation, conformal-time lapse) with a vacuum energy Lambda = 0.6, once from the
+particle module (`particles/lambda`), once from a scalar field at rest with the constant
+potential `v_offset = Lambda/(8 pi)` (phi = Pi = 0, so E = V and S_ij = -V gamma_ij: the
+same sources through `tmunu_tot`). The initial data do not satisfy the Hamiltonian
+constraint with Lambda (H0 = 1 is set for dust alone); both runs start from the same
+data, which is all the comparison needs. Also the pair without vacuum energy (field
+present with V = 0 against no field).
+Prediction: lapse at the probe, proper time of the probe, proper volume and the deposited
+energy agree between the members of each pair to better than 1e-10 relative over the run
+to t = 0.5 (64 steps; the arithmetic differs: the field path multiplies the step
+densities by 1/sqrt(gamma) and adds the vacuum energy before the solver, the particle
+path inside it); the vacuum energy changes the final proper volume by more than 1 percent
+(so the test is not vacuous). Refuted by a difference above 1e-8, which would mean a
+source is counted twice, dropped, or taken at the wrong time level.
