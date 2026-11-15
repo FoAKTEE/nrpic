@@ -319,3 +319,19 @@ Predictions (written before the run):
   the rule "all punctures" and writes no record either.
 Refuted if surface 0 is not found or its mass is outside the band, or if surface 1 or 2
 is searched.
+
+### T6 Existing set-ups, byte for byte (written before the run)
+
+Script `tracks/core/analysis/dfix/t6_regress.py`: release executable core-v0.3 against
+the changed source on processors: the seven cases of
+`tracks/core/tools/regress_relativistic.py` (geo, boris, dep, east, os, jeans, binary),
+three cases of the Newtonian mode (cold ball, point mass with tracers, plane wave in the
+expanding box) and `problems/tests/mesh_static.athinput`.
+Prediction: every output file of every case is identical, restart files included (new
+options are read only if present, so the parameter dump does not change; the
+pericentre slot is not written unless a diagnostic is on). Two exceptions I expect and
+would accept only after reading the difference: none. A set-up whose tracers have
+m = 0 on the mesh metric would differ by design (T1); none of these cases has one
+[TO VERIFY by the run: `mesh_static` has a particle of mass 1e-3, `newton_point` has
+tracers with m = 0 in the Newtonian mode, which never used the null rule].
+Refuted by any differing file.
