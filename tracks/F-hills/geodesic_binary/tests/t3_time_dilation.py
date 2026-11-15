@@ -23,7 +23,7 @@ import hrna  # noqa: E402
 from nrpic import figstyle as fs  # noqa: E402
 
 KM, L0 = 0.2, 3.0 / 40.0          # k/m and l0, appendix.tex:44
-R_START, R_END = 220.0, 8.0
+R_START, R_END = 220.0, 4.0
 
 
 def main(outdir):
@@ -64,7 +64,8 @@ def main(outdir):
         max_rel_dev_proper_period_vs_f0=float(np.max(np.abs(Ptau[sel] / P_notide - 1))),
         max_rel_dev_coord_freq_vs_paper_formula=float(np.max(np.abs(fmeas[sel] / f_paper[sel] - 1))),
         rel_dev_coord_freq_vs_paper_at_r200=float(np.interp(200, rmid[::-1], (fmeas / f_paper - 1)[::-1])),
-        rel_dev_coord_freq_vs_paper_at_r10=float(np.interp(10, rmid[::-1], (fmeas / f_paper - 1)[::-1])),
+        rel_dev_coord_freq_vs_paper_r_ge_10_last=float((fmeas / f_paper - 1)[sel][-1]),
+        r_mid_last_ge_10=float(rmid[sel][-1]),
     )
     with open(os.path.join(outdir, "t3_time_dilation.json"), "w") as fh:
         json.dump(res, fh, indent=1)
