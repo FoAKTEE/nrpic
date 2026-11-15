@@ -340,3 +340,111 @@ Signed relative errors against the cycloid of each sample (`tables/newton_tophat
 The job waited in the queue behind core's verification runs (about 35 minutes) and ran
 the two top-hat cases in 4.5 and 4.6 minutes (0.37 s per cycle at 128^3 with 2.1e6
 particles, inside 0.2-0.6). Final card-hours in entry 8.
+
+## 2026-11-15 (wave 2), entry 8: outcomes of P9d, P10, P11; the range of the full-relativity scan
+
+Runs: scan campaign A-emd-pbh-20261115-153415-dc27b98 (13 cases, 4023 s on 5 cores);
+card job A-emd-pbh-20261115-153437-dc27b98 (Slurm 4435: submitted 07:34:37, started
+08:04:32, ended 08:14:39 local time, 607 s = 0.169 card-hours; particle files from
+A-emd-pbh-20261115-153424-dc27b98); final analysis A-emd-pbh-20261115-164420-4528861
+(supersedes the interim analyses A-emd-pbh-20261115-161537-aa788d9,
+-162554-d32d331 and -164220-dd9fec7: same data, earlier estimator or figures); range
+A-emd-pbh-20261115-164450-4528861. Tables `tables/newton_scan.csv`,
+`tables/newton_tophat.csv`, `tables/gr_scan_range.csv`; figures `figs/fig_newton_*`.
+
+Correction found in the interim analysis (A-emd-pbh-20261115-162554-d32d331): the
+first-collapse vertex fitted over the whole basin A_1 < 0.2 A_1(0) gave +4.3 per cent for
+e = 0.05, because after the pancake forms A_1 stays below that bound and crosses zero a
+second time inside the basin (record at t = 24.85, A_1 = 0.094). The estimator now fits
+only the records around the first minimum with A_1 < 0.1 A_1(0) (`first_vertex`); e = 0.05
+then gives +2.9e-4, in line with the extrapolation estimator (+1.0e-4). The interim value
+is superseded, not a result.
+
+### P9d outcome (card): holds
+
+128^3: lattice 0.0125 (2144432 particles, card) against 0.025 (268096, processors): t_ta
++7.22e-4 against +7.16e-4, t_0.25 +8.28e-4 against +8.39e-4, t_minR +2.50e-4 against
++2.59e-4; 64^3: t_ta +3.13e-3 against +3.15e-3. Differences 1e-5 to 2e-5 (< 1e-3): at
+hxi <= 0.025 the top-hat error is the mesh error alone.
+
+### P10 outcome (128^3, lattice 0.025, delta_L = 0.2 unless named; signed relative errors against the isolated ellipsoid of the sampled ball)
+
+| case | t_1 (vertex) | t_1 (extrap.) | A_2(t_1) | A_3(t_1) | h_1 | h_1 delta_L run / ref | t_2 | energy to 0.9 t_1 / to t_1 |
+|---|---|---|---|---|---|---|---|---|
+| e 0.05 | +2.9e-4 | +1.0e-4 | +1.2e-3 | +4.1e-4 | +6.1e-4 | 0.3597 / 0.3594 | +3.1e-4 | 4.7e-5 / 9.3e-3 |
+| e 0.1 | +2.2e-4 | +1.3e-4 | +6.1e-4 | +1.5e-4 | +2.7e-4 | 0.5925 / 0.5924 | +4.0e-4 | 5.3e-5 / 3.8e-3 |
+| e 0.2 | +3.7e-4 | +2.2e-4 | +4.5e-4 | +1.3e-4 | +2.1e-4 | 0.8547 / 0.8545 | +5.6e-4 | 4.9e-5 / 2.1e-3 |
+| e 0.3 | +6.3e-4 | +3.9e-4 | +5.1e-4 | +1.6e-4 | +2.5e-4 | 0.9685 / 0.9682 | after run end | 5.1e-5 / 1.7e-3 |
+| e 0.2, p +0.2 | +2.9e-4 | +1.7e-4 | +1.1e-4 | +1.1e-4 | +1.1e-4 | 0.9194 / 0.9193 | after run end | 9.3e-5 / 1.1e-3 |
+| e 0.2, p -0.2 (spindle) | +1.5e-3 | +4.3e-4 | 0.031 r_g (ref 0) | +2.5e-4 | +3.2e-4 | 0.8636 / 0.8633 | (= t_1) | 9.3e-5 / 3.0e-2 |
+| e 0.1, delta_L 0.05 | +2.2e-4 | +1.3e-4 | +6.1e-4 | +1.5e-4 | +2.7e-4 | 0.5925 / 0.5924 | +4.0e-4 | 5.4e-5 / 3.8e-3 |
+| e 0.1, delta_L 0.6 | +2.2e-4 | +1.3e-4 | +6.1e-4 | +1.5e-4 | +2.7e-4 | 0.5925 / 0.5924 | +4.0e-4 | 5.4e-5 / 3.8e-3 |
+| e 0.2, rotated lattice | +3.7e-4 | +2.2e-4 | +4.7e-4 | +1.4e-4 | +2.3e-4 | 0.8547 / 0.8545 | +6.4e-4 | 1.6e-5 / 2.1e-3 |
+| e 0.1, 64^3 | +8.8e-4 | +5.8e-4 | +2.7e-3 | +9.8e-4 | +1.4e-3 | 0.5932 / 0.5924 | +1.4e-3 | 5.4e-5 / 7.0e-3 |
+| e 0.2, 64^3 | +1.5e-3 | +1.0e-3 | +1.8e-3 | +6.6e-4 | +9.6e-4 | 0.8553 / 0.8545 | +2.3e-3 | 4.4e-5 / 3.8e-3 |
+| e 0.1, hxi 0.05 | -2.4e-4 | -2.7e-4 | +3.7e-3 | +3.0e-3 | +3.2e-3 | 0.5948 / 0.5928 | +1.6e-3 | 1.9e-4 / 4.3e-3 |
+| e 0.2, hxi 0.05 | -4.6e-4 | -4.3e-4 | +3.6e-4 | +8.3e-4 | +7.1e-4 | 0.8558 / 0.8552 | +1.8e-3 | 7.1e-5 / 1.9e-3 |
+| e 0.2, hxi 0.0125 (card) | +3.7e-4 | +2.2e-4 | +4.7e-4 | +1.5e-4 | +2.3e-4 | 0.8546 / 0.8544 | +5.9e-4 | 1.4e-5 / 2.1e-3 |
+
+- (a) holds: the first collapse is along axis 1 in every case; in the spindle the minima of
+  axes 1 and 2 coincide (both +1.505e-3 against the common reference time).
+- (b) holds: |t_1 error| <= 6.3e-4 for e = 0.05-0.3 at 128^3 (tolerance 1e-2), 1.5e-3 for
+  the spindle; late at hxi <= 0.025, slightly early at hxi = 0.05; the two estimators
+  agree to 2.4e-4 or better at 128^3 except the spindle (1.1e-3), and to 3.0e-4 and
+  4.9e-4 at 64^3 (< 5e-3).
+- (c) holds: at 128^3 with hxi 0.025 the other axes at t_1 lie within 1.2e-3 and h_1
+  within 6.1e-4 of the reference (tolerances 1e-2, 2e-2; 64^3 and hxi 0.05: within 3.7e-3);
+  the Newtonian hoop amplitude h_1 delta_L from the code equals the reference of the
+  nominal radius to 1.4e-4 to 6.4e-4 (`tables/gr_scan_range.csv`).
+- (d) holds: the three amplitudes agree to 5.3e-7 in t_1 delta_L^(3/2) (relative errors
+  2.22280e-4, 2.22756e-4, 2.22814e-4 for delta_L = 0.2, 0.05, 0.6) and to 4.6e-7 in
+  h_1 delta_L; delta_L = 0.05 and 0.6 agree with each other to 6e-8. (The interim
+  estimator corrected above gave 1.6e-6; superseded.)
+- (e) holds: rotated against aligned lattice, t_1 differs by 4e-6 (< 3e-3).
+- (f) holds: 64^3 -> 128^3 lowers the t_1 error by 3.9 and 4.2 (vertex), 4.6 and 4.9
+  (extrapolation) and h_1 by 5.4 and 4.5 (e = 0.1, 0.2): second order; hxi 0.05 against
+  0.025 differs by 4.6e-4 and 8.3e-4 in t_1 (< 5e-3); hxi 0.0125 against 0.025 by 9e-6
+  (< 2e-3).
+- (g) refuted as stated: up to 0.9 t_1 the energy holds to 1.4e-5 to 1.9e-4, but the
+  largest error up to t_1 is 1.1e-3 to 9.3e-3 (3.0e-2 for the spindle), above the 1e-3 of
+  SCAN.md acceptance (iv). The excursion sits at the crossing itself
+  (`figs/fig_newton_scan_dev.png`, right panel), where the pancake is thinner than a cell
+  (equivalent semi-axis A_1 0.10-0.40 dx at its minimum), and the energy does not return
+  to E_0 afterwards: the largest error over the whole run is 1.2e-3 to 4.7e-3 for the
+  runs that end before the third collapse (e >= 0.2, p >= 0), 3.5e-2 for the spindle and
+  4.7e-2 to 4.8e-2 for e = 0.05 and 0.1, which pass the third collapse (9.8e-2 at 64^3,
+  e = 0.1). Cause not
+  established (candidate, untested: W is the particle sum of the mesh potential, which
+  cannot follow a sheet thinner than a cell). For the times and axes it is harmless (they
+  are fixed before the crossing); for any use of the energy after t_1 it is not.
+- (h) holds and better than expected: the second collapse within 3.1e-4 to 6.4e-4 at
+  128^3 (tolerance 1e-1). For a cold homogeneous ellipsoid every particle crosses the
+  plane at once, so the pass-through continuation of `ellipsoid.py` is the collisionless
+  solution as long as the softened sheet passes through itself; the wave-1 caveat that
+  events after t_1 are "idealized" applies only once the third axis collapses (below).
+- Seen in the figures, not predicted: (i) at the third collapse (all three axes near zero:
+  e = 0.05 at about 1.08 t_1, e = 0.1 at about 1.22 t_1) the runs leave the reference
+  (`figs/fig_newton_scan_axes.png`) and relax violently; for e = 0.05 particles reach the
+  box faces and 0.64 per cent of the mass is removed by the end (mass column of
+  `e0p05/newton.newton.hst` of the scan run: 0.5 -> 0.496822); (ii) after that collapse the
+  aligned lattice leaves a pattern of cubic symmetry (streams along the diagonals,
+  `figs/fig_newton_snap_e0p05.png` at 1.35 t_1). Neither affects t_1, t_2 or h_1. A run
+  meant for the virialised state needs a larger box and the rotated lattice.
+
+### P11 outcome: holds
+
+0.37 s per cycle at 128^3 with 2.1e6 particles on one A100 (th_n128_h0125: 700 cycles in
+259 s); the job used 0.169 card-hours of the 0.42 reserved; queue wait 30 minutes.
+
+### The proposed range of the full-relativity scan (run A-emd-pbh-20261115-164450-4528861)
+
+At the Newtonian hoop amplitude delta_L,th (e = 0.05, 0.1, 0.2, 0.3 at p = 0: 0.359,
+0.592, 0.854, 0.968; p = +0.2, -0.2 at e = 0.2: 0.919, 0.863), the infall speed of the short
+axis at the first collapse in the Newtonian solution is 1.24, 1.17, 1.09, 1.05 c (1.01 c
+for p = +0.2; 2.3 c for the spindle, where it grows without bound as the line forms) and
+the end-point SR estimate delays t_1 by 6.0, 8.7, 11.5, 12.6 per cent. So the Newtonian
+hoop line lies where the Newtonian solution itself fails: it locates the region to scan,
+not the threshold [JUDGEMENT]. Ball radius: at the paper's start the expanding ball holds
+the hoop amplitude only for R_ball/R_L < 1.90, 1.40, 1.05, 0.90 (e = 0.05-0.3); a later
+start a0' >= (R_ball/R_L)^2 from the exact ellipsoid state lifts that. Details and the
+proposal: SCAN.md section 8.

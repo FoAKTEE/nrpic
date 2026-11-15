@@ -1,0 +1,48 @@
+{
+ "run_id": "A-emd-pbh-20261115-164420-4528861",
+ "owner": "A-emd-pbh",
+ "helper": "newton",
+ "launcher": "local",
+ "kind": "scouting",
+ "purpose": "Final analysis of the Newtonian-mode runs (supersedes A-emd-pbh-20261115-164220-dd9fec7: figures only): top-hat (A-emd-pbh-20261115-153409-dc27b98 and card A-emd-pbh-20261115-153437-dc27b98) against the cycloid, scan (A-emd-pbh-20261115-153415-dc27b98 and card) against the isolated ellipsoid (P9, P10)",
+ "commit": "4528861ce8b2dcdef921a1fc885b3d8aae94034c",
+ "branch": "track/A-emd-pbh",
+ "cwd": "/data/haiyangw/nrpic/wt/A-emd-pbh",
+ "inputs": [
+  {
+   "path": "tracks/A-emd-pbh/newton/analyze_newton.py",
+   "sha256": "049c36554330686a6aeaae1676f9ca9bd362c3400bc2575324a08cb1f0fd8ead"
+  }
+ ],
+ "outputs": {
+  "dir": "scratch/A-emd-pbh/A-emd-pbh-20261115-164420-4528861"
+ },
+ "output_dir": "/data/haiyangw/nrpic/scratch/A-emd-pbh/A-emd-pbh-20261115-164420-4528861/",
+ "registered": "2026-11-15T16:44:20+00:00",
+ "machine": "anta",
+ "notes": "registered by hand: harness/bin/nrpic-run submit refused (worktree not clean: untracked files of other helpers of A-emd-pbh in the same worktree)",
+ "command": [
+  ".venv/bin/python",
+  "tracks/A-emd-pbh/newton/analyze_newton.py",
+  "--tophat",
+  "/data/haiyangw/nrpic/scratch/A-emd-pbh/A-emd-pbh-20261115-153409-dc27b98",
+  "/data/haiyangw/nrpic/scratch/A-emd-pbh/A-emd-pbh-20261115-153437-dc27b98",
+  "--scan",
+  "/data/haiyangw/nrpic/scratch/A-emd-pbh/A-emd-pbh-20261115-153415-dc27b98",
+  "/data/haiyangw/nrpic/scratch/A-emd-pbh/A-emd-pbh-20261115-153437-dc27b98",
+  "--prep",
+  "/data/haiyangw/nrpic/scratch/A-emd-pbh/A-emd-pbh-20261115-153424-dc27b98",
+  "--snap-cases",
+  "e0p05,e0p2,e0p2_pm"
+ ],
+ "cores": 1,
+ "card_hours": 0.0,
+ "status": "completed",
+ "exit_code": 0,
+ "wall_time_s": 24.2,
+ "core_hours": 0.0067,
+ "ended": "2026-11-15T16:44:44+00:00",
+ "sha256sums": "sha256sums.txt",
+ "sha256sums_sha256": "b261c278d36ff6c8d2be5c0e6f02ae86f75f4cf1a38c779cc310c12ca211f579",
+ "n_output_files": 20
+}

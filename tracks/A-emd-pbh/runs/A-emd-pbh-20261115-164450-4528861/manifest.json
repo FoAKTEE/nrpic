@@ -1,0 +1,44 @@
+{
+ "run_id": "A-emd-pbh-20261115-164450-4528861",
+ "owner": "A-emd-pbh",
+ "helper": "newton",
+ "launcher": "local",
+ "kind": "scouting",
+ "purpose": "Proposed range of the full-relativity scan from the Newtonian hoop line and the AthenaK scan (analysis A-emd-pbh-20261115-164420-4528861)",
+ "commit": "4528861ce8b2dcdef921a1fc885b3d8aae94034c",
+ "branch": "track/A-emd-pbh",
+ "cwd": "/data/haiyangw/nrpic/wt/A-emd-pbh",
+ "inputs": [
+  {
+   "path": "tracks/A-emd-pbh/newton/gr_range.py",
+   "sha256": "be6df2809d85918a02b75adab76de5dcae71cf5aacfa8d8ef8a7b632ac8a4f3d"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/scratch/A-emd-pbh/A-emd-pbh-20261115-164420-4528861/newton_results.json",
+   "sha256": "926f64becc9a0abf91f150a70d8006639ef7489e36c9a7cd7bed17fd1a4a9b6b"
+  }
+ ],
+ "outputs": {
+  "dir": "scratch/A-emd-pbh/A-emd-pbh-20261115-164450-4528861"
+ },
+ "output_dir": "/data/haiyangw/nrpic/scratch/A-emd-pbh/A-emd-pbh-20261115-164450-4528861/",
+ "registered": "2026-11-15T16:44:50+00:00",
+ "machine": "anta",
+ "notes": "registered by hand: harness/bin/nrpic-run submit refused (worktree not clean: untracked files of other helpers of A-emd-pbh in the same worktree)",
+ "command": [
+  ".venv/bin/python",
+  "tracks/A-emd-pbh/newton/gr_range.py",
+  "--results",
+  "/data/haiyangw/nrpic/scratch/A-emd-pbh/A-emd-pbh-20261115-164420-4528861/newton_results.json"
+ ],
+ "cores": 1,
+ "card_hours": 0.0,
+ "status": "completed",
+ "exit_code": 0,
+ "wall_time_s": 2.8,
+ "core_hours": 0.0008,
+ "ended": "2026-11-15T16:44:53+00:00",
+ "sha256sums": "sha256sums.txt",
+ "sha256sums_sha256": "a7d18d8dbca99ba3d65d8ee934a4ba5ebc9b6a3751410d6174641fdfee7b28a1",
+ "n_output_files": 4
+}
