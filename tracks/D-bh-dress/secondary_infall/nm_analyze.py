@@ -423,11 +423,13 @@ def main():
         R = runs[lab]
         key = sorted(R["phase"].keys(), key=float)[-1]
         ph = R["phase"][key]
-        axs[i].plot(ph["r"], ph["vr"], ",", color=fs.PAL["red"], alpha=0.5)
         if "kernel" in R["refs"]:
             ref = R["refs"]["kernel"]
-            axs[i].plot(np.abs(ref["snap_r"][-1]), np.sign(ref["snap_r"][-1]) * ref["snap_v"][-1], ".",
-                        ms=1, color=fs.PAL["blue"])
+            axs[i].plot(np.abs(ref["snap_r"][-1]), np.sign(ref["snap_r"][-1]) * ref["snap_v"][-1], "-",
+                        lw=2.0, color=fs.PAL["blue"], alpha=0.35, label="shells, mesh kernel")
+        axs[i].plot(ph["r"], ph["vr"], ".", ms=0.6, color=fs.PAL["red"], alpha=0.6, label="run (1/25 of the dust)")
+        if i == 0:
+            axs[i].legend(loc="lower right", fontsize=7, markerscale=8)
         axs[i].set_xscale("log")
         axs[i].set_xlim(0.3, 300)
         axs[i].set_ylim(-1.6, 1.6)

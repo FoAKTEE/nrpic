@@ -389,3 +389,45 @@ whole run, its speed below 0.05 c, total momentum below 1e-2 M c (the box faces 
 symmetric about the cell centre, so the boundary seeds a small offset; the dust lattice is
 symmetric about the clump); K + W within 1 % of |W(0)|. In the vertex runs, by contrast,
 the clump displacement exceeds 0.3 dx before the end (N128 and N128L at least).
+
+## 2026-11-15T17:55Z  outcome for N64c (cell centre, D-20261115-171505-62940f4) and N64 (vertex,
+## D-20261115-170703-46ddffa); analysis D-20261115-174734-a688058 (nm_analysis.json, figures)
+
+Matched references: shells with the nx 64 kernel (D-20261115-170829-0d86d49), Plummer
+s = 1.293 M (-170831-b379b65), point s = 0.05 M (-170827-ba851f0). The three references differ
+by less than 2.1 % in M_ta and the dress after a/a_i = 1.5 (softening hardly matters for the
+masses; it matters for the inner profile).
+N64c against the kernel shells:
+1. M_ta holds: largest deviation after a/a_i = 1.5 is 0.12 %; M_ta = 1.506, 2.048, 2.597 M at
+   a/a_i = 2, 3, 4 (wave-1 shells with s = 0.5 M: 1.505, 2.045, 2.593).
+2. Dress holds: +1.4 % at a/a_i = 2, +0.15 % at 4; 0.174, 0.472, 0.797 M at 2, 3, 4.
+3. Profile, 4 dx <= r <= r_ta: largest deviation 14 % (a/a_i = 2), 15 % (3), 31 % (4): the
+   prediction (30 %) fails by one bin at a/a_i = 4, the bin of the outermost caustic (16-20 M,
+   ratio 1.31: the shell caustic is sharp, the run's is smeared over a cell); outside the
+   two bins around the caustic the largest deviation is 6.3 %, rms 3.7 %. Refuted: "flatter
+   than the reference inside 2 dx"; inside 2 dx the ratio scatters between 0.4 and 1.3 with
+   no systematic flattening at this resolution.
+4. Self-similar comparison at a/a_i = 4 (r_ta = 40.5 M from M_ta, measured from the mean
+   radial velocity 40.3 M): refuted for the profile: rho_run/rho_ss = 0.46, 0.59, 0.57, 0.72,
+   1.02 at lambda = 0.11-0.35; the run lies below the self-similar profile by up to a factor
+   2 down to lambda = 0.1 (its outermost caustic is at 16-20 M, lambda = 0.4-0.5, against
+   lambda_1 = 0.355). Holds for the masses: dress/M_ta = 0.307 (predicted 0.3; self-similar
+   0.625); M_ta/(M a/a_i) = 0.649 (predicted 0.65; asymptote 0.565 + 1/(a/a_i)); local growth
+   exponent of the dress 1.67 at a/a_i = 4 (wave 1: > 3/2 below 4.5).
+5. Clump holds: centre of mass within 2.0e-5 dx of the cell centre, 90 % radius at most
+   0.18 dx, total momentum at most 9.6e-5 M c. Energy refuted: K + W oscillates by up to
+   4.7 % of |W(0)| = 1.13 in the first a/a_i ~ 2 and ends 1.3 % low. The clump alone at the cell
+   centre (S1-C, D-20261115-171247-cde0674, no dust) loses 5.4 % of its |W(0)| = 0.654 and
+   oscillates the same way, so the error is the clump's sub-cell self-interaction (deposit
+   and gather kernels differ), not the dust's motion [VERIFIED by S1-C]; energy is therefore
+   no check of the dust in this set-up.
+6. Holds: all 519984 particles stay in the box.
+7. Refuted: 1781 s (N64c) and 1580 s (N64) instead of 10-20 min; 2.2 s per step at 64^3,
+   the particles (520k, one core) dominate, not the mesh.
+N64 (vertex) against the same reference: M_ta within 0.12 %, dress -0.4 % at a/a_i = 4: the
+global masses do not notice the hole's wandering. The inner profile does: the clump leaves
+the vertex at a/a_i ~ 2.8 (|P| from 1e-15 at a/a_i = 1.1 to 0.5 M c), its centre moves 0.9 dx,
+its 90 % radius grows to 1.1 dx and one clump particle reaches 15.9 M; at a/a_i = 4 the dust
+density inside 2 M is 2-7 times below the reference, the outermost caustic is smeared
+(deviation 104 % at the caustic, 35 % outside it), dust is flung out to 60 M at up to 0.8 c
+(`nm_phase.png`), and K + W ends 7.4 % low.
