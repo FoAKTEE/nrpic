@@ -97,11 +97,12 @@ def analyse_run(name, d, pred, model):
         ts.append(s["time"])
         rr.append(mass_radii(s))
         far.append(float(np.sum(s["m"][np.linalg.norm(s["x"], axis=1) > 2.0 * rs]) / np.sum(s["m"])))
-    ts, rr, far = np.array(ts), np.array(rr), np.array(far)
+    ts, rr, far = np.array(ts), np.array(rr).reshape(-1, 3), np.array(far)
     out["radii_t"] = ts.tolist()
     out["radii"] = rr.tolist()
-    out["radii_range_rel"] = [float((rr[:, j].max() - rr[:, j].min()) / rr[0, j]) for j in range(3)]
-    out["radii_end_rel"] = [float(rr[-1, j] / rr[0, j] - 1.0) for j in range(3)]
+    if len(rr):
+        out["radii_range_rel"] = [float((rr[:, j].max() - rr[:, j].min()) / rr[0, j]) for j in range(3)]
+        out["radii_end_rel"] = [float(rr[-1, j] / rr[0, j] - 1.0) for j in range(3)]
     out["mass_frac_beyond_2rs"] = far.tolist()
     # trajectories with the metric: Killing energies
     tj, tm = os.path.join(d, "cc.traj.bin"), os.path.join(d, "cc.trajmet.bin")
@@ -204,7 +205,7 @@ def figures(outdir, res, ser, pred):
             k = kn_of(name)
             axs[row, 0].plot(s["t"], s["ap"] - res[name]["alpha_c_eq"], color=col[k], lw=1.0,
                              label=lab[k])
-            for j, ls in zip(range(3), (":", "-", "--")):
+            for j, ls in zip(range(3 if len(s["rr"]) else 0), (":", "-", "--")):
                 axs[row, 1].plot(s["ts"], s["rr"][:, j] / s["rr"][0, j], color=col[k], ls=ls, lw=1.2,
                                  label=lab[k] if j == 1 else None)
         axs[row, 0].axhline(0.0, **fs.MASK_LINE)
