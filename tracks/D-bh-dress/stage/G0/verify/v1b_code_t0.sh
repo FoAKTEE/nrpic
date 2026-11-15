@@ -8,7 +8,7 @@ WT=/data/haiyangw/nrpic/wt/D-bh-dress
 TAB=/data/haiyangw/nrpic/scratch/D-bh-dress/D-bh-dress-20261115-042653-f3da881/es.tab
 EXE=/data/haiyangw/nrpic/.work/build_cpu_v03/src/athena
 OUT="${NRPIC_RUN_DIR:?run through nrpic-run}"
-export OMP_NUM_THREADS="${OMP_NUM_THREADS:-8}"
+export OMP_NUM_THREADS="${OMP_NUM_THREADS:-4}"
 for spec in "dx1 1.0" "dx05 0.5"; do
   set -- $spec
   mkdir -p "$OUT/$1"
