@@ -262,3 +262,13 @@ near 1 (1.2e-7) against gt - delta of about 7.5e-6 is 1.6e-2 of that term, i.e. 
 the size of the residual. Without the gt term the modes scatter by only 4e-5 about their
 common -0.48 percent offset. A double-precision gt in the dump would decide it (request
 (a) to core). <|H|>/<[H]> peak 2.138e-8 (2.066e-8 at the full step).
+
+## 18:08 Card job done (run E-20261115-170645-3b21217); predictions P5' and the validations
+
+Slurm 4465 ran at 18:03 by backfill: eight runs, each 1-8 s of card time (U1 5.4 s,
+1.46e7 zone-cycles/s; U3 with 64 MeshBlocks 8.0 s), 55 s in all, 0.0153 card-hours. P6
+(card part) holds. The validations (`scripts/val_base.sh CARD - OUT`) follow in a
+registered run; their predictions are P1, P2, P3 (17:05). The card U2 wrote its restart
+files, so U4 can now run on a card too:
+- P5' (A12 on the card): U4 = card U2 restarted at cycle 150 on a card
+  (`inputs/u64/card_u4.list`) gives dumps at cycles 200 and 300 bit-identical to card U2.
