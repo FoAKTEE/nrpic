@@ -149,13 +149,16 @@ def main(a):
             axs[1].plot(rps, [s["captured"] for s in S[lab]], ls=ls, color=col, marker="o", ms=2.5)
         else:
             axs[1].plot(rps, [s["gr_criterion_any"] for s in S[lab]], ls=ls, color=col, marker="x", ms=3)
-        axs[2].plot(rps, [s["dL_cm_to_2rt_median"] for s in S[lab]], ls=ls, color=col, marker="o", ms=2.5)
+        keep = [i for i, rp in enumerate(rps) if rp <= 12.0]
+        axs[2].plot([rps[i] for i in keep], [S[lab][i]["dL_cm_to_2rt_median"] for i in keep], ls=ls,
+                    color=col, marker="o", ms=2.5)
     axs[0].set_ylabel("separated fraction")
     axs[1].set_ylabel("member captured (HRNA, sym.: crossed 2.5 M;\nNewton x: GR criterion on final $E, L$)",
                       fontsize=7)
     axs[2].set_ylabel(r"median $\Delta L_{\rm cm}$, release $\to 2 r_t$ $[M]$")
     axs[2].axhline(0.127, **fs.GUIDE)
-    axs[2].set_yscale("symlog", linthresh=0.01)
+    axs[2].text(7.0, 0.07, "HRNA from 20 $r_t$: CM never\nreaches 2 $r_t$ (pericentre 30-44 M)",
+                fontsize=6.5)
     for ax in axs:
         ax.set_xlabel(r"$r_p\,[M]$")
     axs[0].legend(frameon=False, fontsize=5.5, loc="lower left")
@@ -241,9 +244,9 @@ def main(a):
     axs[0].set_xlim(0, 400)
     axs[0].set_ylim(1.5, 200)
     axs[0].set_xlabel(r"$t\,[M]$")
-    axs[0].set_ylabel(r"distance from the heavy hole $[M]$ (solid $m_1$, dashed $m_2$)")
+    axs[0].set_ylabel(r"distance from $M$ $[M]$")
     axs[0].legend(frameon=False, fontsize=6, loc="upper left")
-    axs[0].set_title("SC5: start state of hills_q10_m8", fontsize=9)
+    axs[0].set_title("SC5: start state of hills_q10_m8 (solid $m_1$, dashed $m_2$)", fontsize=8)
     axs[1].set_xlim(0, 120)
     axs[1].set_ylim(0, 3)
     axs[1].set_xlabel(r"$t\,[M]$")
