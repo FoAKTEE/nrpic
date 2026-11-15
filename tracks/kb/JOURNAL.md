@@ -327,3 +327,23 @@ no locator 2, removed 0, nothing written. Real run: the same counts, new claim i
 consecutive, 688 claims after, labels of the added rows as in the helper's summary (fulltext 24,
 to_verify 44, judgement 2). Refuted by other counts, gaps in the ids, or any change to claims
 1-618.
+
+### W6 outcome (dry run kb-20261115-182414-e13b30c; load kb-20261115-182425-edbae8b)
+
+Held. Dry run: added 70, covered by K8 258, no locator 2, removed 0, claims unchanged. Load:
+the same counts; 688 claims, ids 619-688 (B 619-625, F 626-678 and 686-688 by key order, D
+679-685; exact ids per statement in the run's sync.tsv); digest of claims 1-618 and their
+claim_meta unchanged (40d6c2cfa7e33b84 before and after); added labels fulltext 24, to_verify
+44, judgement 2. `nrpic-run` refused the kind "production" for gate G2 before a G1 tag; the
+load is registered as scouting under G1.
+
+### W7 prediction: arXiv-API and INSPIRE metadata of the 708 ids (decision 0015)
+
+Ids: the 684 manifest ids and the 24 extras (`tracks/kb/analysis/lead_checks/meta_ids_w7.txt`).
+One call at a time through the main checkout's `nrpic-fetch-arxiv --meta` (arXiv batches of 50,
+INSPIRE batches of 25), then two INSPIRE DOI queries (Ambrus et al. 2022 for C,
+Croker-Weiner 2019 for D). Expected: an arXiv-API record with status ok for at least 700 of
+708; an INSPIRE record for at least 95 % (papers of the last weeks may not be in INSPIRE yet);
+2611.12831's record gives categories and a first-submission date in November 2026; each DOI
+query returns exactly one record carrying an arXiv eprint. Refuted by fewer records, a failed
+batch that is not retried, or a DOI query with zero or several hits.
