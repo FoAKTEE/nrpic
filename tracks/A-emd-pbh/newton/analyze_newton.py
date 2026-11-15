@@ -511,8 +511,11 @@ def main():
     ap.add_argument("--snap-cases", default="e0p2,e0p1,e0p2_pm")
     ap.add_argument("--prep", nargs="*", default=[],
                     help="directories of --prepare-only runs (ball.json of card runs)")
-    ap.add_argument("--out", required=True)
+    ap.add_argument("--out", default=os.environ.get("NRPIC_RUN_DIR"),
+                    help="output directory (default: $NRPIC_RUN_DIR of a registered run)")
     a = ap.parse_args()
+    if not a.out:
+        sys.exit("no output directory: --out or NRPIC_RUN_DIR")
     PREP_DIRS.extend(a.prep)
     os.makedirs(a.out, exist_ok=True)
     res = {}

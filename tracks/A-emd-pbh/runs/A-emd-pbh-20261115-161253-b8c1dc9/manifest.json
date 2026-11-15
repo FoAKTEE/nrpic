@@ -1,0 +1,41 @@
+{
+ "run_id": "A-emd-pbh-20261115-161253-b8c1dc9",
+ "owner": "A-emd-pbh",
+ "helper": "newton",
+ "launcher": "local",
+ "kind": "scouting",
+ "purpose": "Analysis of the top-hat campaign A-emd-pbh-20261115-153409-dc27b98 against the cycloid (P9)",
+ "commit": "b8c1dc9e55c193bdac37c4e7d4dabb411d86beb3",
+ "branch": "track/A-emd-pbh",
+ "cwd": "/data/haiyangw/nrpic/wt/A-emd-pbh",
+ "inputs": [
+  {
+   "path": "tracks/A-emd-pbh/newton/analyze_newton.py",
+   "sha256": "e0fc166c23f5ca7804cef732975d745635d41c903b3b22fd13bbd4a0c9818845"
+  }
+ ],
+ "outputs": {
+  "dir": "scratch/A-emd-pbh/A-emd-pbh-20261115-161253-b8c1dc9"
+ },
+ "output_dir": "/data/haiyangw/nrpic/scratch/A-emd-pbh/A-emd-pbh-20261115-161253-b8c1dc9/",
+ "registered": "2026-11-15T16:12:53+00:00",
+ "machine": "anta",
+ "notes": "registered by hand: harness/bin/nrpic-run submit refused (worktree not clean: untracked files of other helpers of A-emd-pbh in the same worktree)",
+ "command": [
+  ".venv/bin/python",
+  "tracks/A-emd-pbh/newton/analyze_newton.py",
+  "--tophat",
+  "/data/haiyangw/nrpic/scratch/A-emd-pbh/A-emd-pbh-20261115-153409-dc27b98",
+  "--out-env"
+ ],
+ "cores": 1,
+ "card_hours": 0.0,
+ "status": "failed",
+ "exit_code": 2,
+ "wall_time_s": 5.3,
+ "core_hours": 0.0015,
+ "ended": "2026-11-15T16:12:59+00:00",
+ "sha256sums": "sha256sums.txt",
+ "sha256sums_sha256": "4e081126b35ac374776fcfd439db191bf5328e4c66612db30764aee7575b6d16",
+ "n_output_files": 1
+}

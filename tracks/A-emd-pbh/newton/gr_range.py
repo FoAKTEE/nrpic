@@ -61,8 +61,11 @@ def infall_speed(dL, e, p):
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--results", required=True)
-    ap.add_argument("--out", required=True)
+    ap.add_argument("--out", default=os.environ.get("NRPIC_RUN_DIR"),
+                    help="output directory (default: $NRPIC_RUN_DIR of a registered run)")
     a = ap.parse_args()
+    if not a.out:
+        sys.exit("no output directory: --out or NRPIC_RUN_DIR")
     with open(a.results) as f:
         res = json.load(f)
     runs = [r for r in res.get("scan", []) if r.get("complete") and r["nx"] == 128
