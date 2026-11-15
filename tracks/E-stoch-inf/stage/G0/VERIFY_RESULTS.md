@@ -1,12 +1,12 @@
 # Re-verification: E-stoch-inf G0
 
-`harness/bin/nrpic-stage verify E-stoch-inf G0` on 2026-11-15T17:36:21Z, clean export of commit `55ab0781f8c0` in `scratch/E-stoch-inf/tmp/stage-verify/E-stoch-inf-G0-55ab078-20261115T173542Z`. Result: **FAIL**.
+`harness/bin/nrpic-stage verify E-stoch-inf G0` on 2026-11-15T17:37:31Z, clean export of commit `fad8f4b4b80f` in `scratch/E-stoch-inf/tmp/stage-verify/E-stoch-inf-G0-fad8f4b-20261115T173712Z`. Result: **FAIL**.
 
 | Check | Result | Message |
 |---|---|---|
-| clean | PASS | worktree clean (outside the stage directory being assembled) |
+| clean | FAIL | 4 uncommitted paths: commit them first (tracks/E-stoch-inf/ladder/scripts/make_figures.py, tracks/E-stoch-inf/ladder/fig/, tracks/E-stoch-inf/ladder/inputs/proc64.list, tracks/E-stoch-inf/ladder/results/) |
 | sync | PASS | main is merged into the branch |
-| export | PASS | clean export of 55ab0781f8c0 (HEAD) in /data/haiyangw/nrpic/scratch/E-stoch-inf/tmp/stage-verify/E-stoch-inf-G0-55ab078-20261115T173542Z/tree |
+| export | PASS | clean export of fad8f4b4b80f (HEAD) in /data/haiyangw/nrpic/scratch/E-stoch-inf/tmp/stage-verify/E-stoch-inf-G0-fad8f4b-20261115T173712Z/tree |
 | size | PASS | no committed file of the track above 5 MB |
 | note | PASS | tracks/<ID>/note/main.tex present |
 | package | PASS | EVIDENCE.md, OPEN.md, CHECKLIST.md present (decision 0012); scoping text: spec/scope/SCOPE.md |
@@ -14,7 +14,7 @@
 | style | PASS | 2 style copies equal harness/style/SHA256SUMS (czstyle.py, paperfig.py) |
 | fig-script | PASS | 7 figures, each with its script |
 | min-figs | PASS | 2 schematics and 5 data figures (brief 13.4 asks at least 2 and 0 at G0) |
-| runs | FAIL | 7 of 60 runs have problems |
+| runs | FAIL | 6 of 60 runs have problems |
 | run-notes | WARN | 30 runs read with defaults or not fully re-verifiable (nrpic-run lint) |
 | status | PASS | STATUS.md has 35 lines |
 | rerun | PASS | 7 of 7 scripts and commands ran cleanly in the export |
@@ -48,9 +48,6 @@
  "E-20261115-172629-312a82c": [
   "status is submitted: not finished (nrpic-run finish)",
   "missing /data/haiyangw/nrpic/scratch/E-stoch-inf/E-20261115-172629-312a82c/sha256sums.txt"
- ],
- "E-20261115-173540-b69c63f": [
-  "status is running: not finished (nrpic-run finish)"
  ]
 }
 ```
