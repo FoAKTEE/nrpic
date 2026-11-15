@@ -432,3 +432,21 @@ unchanged (2e-3 for |n| <= 2, 2e-2 for |n| <= 4), and the largest deviations agr
 those of level 0 (2.7e-5, 7.6e-5, 2.8e-3) within 20 percent. Refuted by a deviation
 above the bounds: the path through the box means would then be inconsistent with the
 slice.
+
+## 2026-11-15, entry 10: outcome of T10
+
+**T10, run core-20261115-162142-3407748** (`noise_level = 1`, otherwise the case of T8;
+figure `fig_rnr.png` of that run, looked at: same picture as level 0 with the lowest
+shells a factor 3 higher).
+- The bounds HOLD: largest |R^NR_n/(W R alpha_n) - 1| after t = 0: 5.6e-5 for |n| <= 2,
+  7.7e-5 for |n| <= 4, 2.8e-3 for all modes (bounds 2e-3, 2e-2); 1.05e-11 at t = 0.
+- "Within 20 percent of level 0" FAILED for the lowest shells: 5.6e-5 against 2.7e-5 at
+  the first dump and 1.34e-5 against 3.7e-6 from N = 2 on (factors 2.1 and 3.6). For
+  |n| <= 4 and for all modes the two levels agree within 1 percent (7.66e-5 against
+  7.59e-5; 2.83e-3 both). [JUDGEMENT, not tested] With level 1 the window and the
+  kick coefficients take H and a from the mesh, whose chi carries the fourth-order
+  error of the step, and the low shells enter first, when that is the only error
+  present; halving the Courant factor would test it. Not followed up: the deviation
+  is 150 times below Track E's bound.
+The repeat of T8 at 32^3 for the figure (run core-20261115-161803-38adbb8) and of T3b
+(run core-20261115-162128-9c13f9f) give the numbers of the first runs.
