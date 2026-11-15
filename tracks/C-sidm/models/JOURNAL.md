@@ -214,3 +214,61 @@ realisations per sigma = 0.02, 0.05, 0.1):
  H (curve_fit, exact reference): |mean bias| < 1 percent; F (curve_fit as G2): within 2.5.
 Refuted if A stays above 1.5 percent for any sigma (then oscillation or window selection
 is the cause, decided by B-E).
+
+## 2026-11-15, entry 5: outcomes M1-M3 at N = 10^4 and D1; prediction T1
+
+Build run C-20261115-170126-b4f74af (N = 10^4, 13 models, 2.5-2.8 s each); check run
+C-20261115-170221-b1a491c (exit 1 because of three failed checks, below).
+
+- M1 PASS: the five King models' `.nrp` and `.tab` files are byte-identical to those of
+  run C-sidm-20261115-120610-b4592be (10 of 10 sha256 equal).
+- M2 PASS: Z(0), eps, R/M, M0/M of evstatic_b against tmb.solve agree to 5.2e-11 or
+  better for all eight b = 0.1 models; the E_b maximum at y0 = 0.3805639 (w0 = 3.1652414)
+  has Z(0) = 0.54041288, 2.4e-8 from criteria.json.
+- M3: 250 checks pass, 3 FAIL: the anisotropic TOV residual (limit 1e-6) is 1.1e-6,
+  1.2e-6, 1.4e-6 for Z(0) = 0.58, 0.60, 0.6348; it rises smoothly with Z(0) from 7.3e-7
+  (0.50) and is 2.2-2.4e-7 for the King models. Every other check passes for every model:
+  Hamiltonian-constraint residual of the table 1.8-3.6e-8, file round trip, ECDFs within
+  1/N, shell counts exact, max E/E0 < 1, shell-moment z at most 1.22, KS p-values of E/E0
+  0.24-0.59; sum m W/psi - M = +2.2e-4 to +3.0e-4 (predicted about 2e-4).
+- Observation on the check itself (equilibria/check_equilibria.py): the KS p-value of the
+  radii of the plain Monte Carlo sample is 0.277 for every model, here and in run
+  C-sidm-20261115-121626-e99907d. The sampler draws radii by inverting the same rest-mass
+  CDF that the test uses, with the same seed (11) for every model, so the statistic only
+  tests the inversion and the uniforms of seed 11, not the radial distribution. The E/E0
+  test (continuum CDF by a separate double integral) and the shell moments are the
+  independent checks. [VERIFIED for the values; the reading is JUDGEMENT]
+
+D1 (run C-20261115-170713-cefe1c2, diag_g2.py): the reference offset is the main cause.
+Mean relative bias (50 realisations; G = as G2, A = exact reference):
+
+| sigma | G | A | B no osc. | C no noise | D oracle window | E boxcar = period | F curve_fit (G) | H curve_fit (A) |
+|---|---|---|---|---|---|---|---|---|
+| 0.02 | +3.34% | -0.84% | -0.04% | -0.84% | +0.08% | -0.02% | +1.01% | +1.28% |
+| 0.05 | +3.51% | -1.01% | -0.01% | -1.02% | +0.17% | -0.03% | +0.93% | +1.82% |
+| 0.1 | +3.77% | -0.49% | +0.04% | -0.53% | +0.25% | +0.00% | +0.89% | +0.04% |
+
+G reproduces +3.3 to +3.8 percent (predicted 2-4: PASS). With the exact reference the
+bias falls to -0.5 to -1.0 percent (A); the prediction |bias| < 1 percent fails narrowly
+for A and C at sigma = 0.05 (-1.01, -1.02 percent) and holds for B, D, E. The residual
+-1 percent needs the oscillation (present in A and C, absent in B) and vanishes with a
+boxcar of one oscillation period (E: below 0.03 percent, rms 0.4 percent, 3-SE coverage
+0.82-1.00). The curve_fit estimator is not better (H up to +1.8 percent; at sigma = 0.1
+its rms is 15-16 percent and its 3-SE coverage 0.12-0.16). Cause of G2 [VERIFIED by A
+against G]: d = y - y(0) subtracts the initial mode amplitude, d = A(e^{sigma t} - 1),
+which steepens ln|d| at the start of the window. Consequences for the threshold runs
+[JUDGEMENT]: smooth over one core oscillation period, start the window well above the
+initial amplitude, and measure the departure from the equilibrium value of the model
+(alpha_c of the initial-data table) rather than from a perturbed first record. A
+multiplicative bias of a few percent in sigma does not move the zero of sigma^2 along a
+sequence, so the threshold location is insensitive to it; error bars should come from
+independent samples (G3: 5.5 percent spread between three seeds).
+
+### Prediction T1 (tov_check.py)
+
+The three TOV failures are the truncation error of the central difference in the check
+(step h = 1e-4 (R - r_in), about 2e-3 M), not a defect of the solved models (the
+structure equations are integrated to rtol 1e-12, and the Hamiltonian-constraint residual
+of the same models is 3e-8): halving h twice reduces the residual by about 4 each time
+(ratios 3.5-4.5) for every b = 0.1 model, and all fall below 1e-6 at h/4. Refuted if a
+ratio is below 2 or a residual stays above 1e-6 at h/4.
