@@ -90,6 +90,8 @@ def run(name, gpu=False, dry=False):
     if gpu:
         cmd += ["--gpu", "--exe", GPU_EXE, "--source-commit", SRC_COMMIT,
                 "--time", "00:20:00"]
+    elif os.environ.get("GAUGE_CPU_EXE"):
+        cmd += ["--exe", os.environ["GAUGE_CPU_EXE"], "--source-commit", SRC_COMMIT]
     cmd += ["--athinput", INPUT,
             f"mesh/nx1={n}", f"mesh/nx2={n}", f"mesh/nx3={n}",
             f"mesh/x1min={-half}", f"mesh/x1max={half}", f"mesh/x2min={-half}",
