@@ -1,0 +1,42 @@
+{
+ "run_id": "F-hills-20261115-144927-b5b0bce",
+ "track": "F-hills",
+ "package": "geodesic_binary (F-pre-2)",
+ "purpose": "V2 lead rerun of t3_time_dilation (check of the geodesic_binary package)",
+ "kind": "scouting",
+ "command": [
+  "/data/haiyangw/nrpic/scratch/F-hills/venv-gb/bin/python",
+  "-I",
+  "tracks/F-hills/geodesic_binary/tests/t3_time_dilation.py",
+  "/data/haiyangw/nrpic/scratch/F-hills/F-hills-20261115-144927-b5b0bce"
+ ],
+ "cwd": "/data/haiyangw/nrpic/wt/F-hills",
+ "git": {
+  "sha": "b5b0bce85a449facea7fce4cd40486fa516096eb",
+  "branch": "track/F-hills",
+  "dirty_package": false
+ },
+ "inputs": [],
+ "parents": [],
+ "resources": {
+  "cores": 1,
+  "gpus": 0,
+  "card_hours": 0.0,
+  "core_hours": 0.0017
+ },
+ "outputs": {
+  "dir": "scratch/F-hills/F-hills-20261115-144927-b5b0bce",
+  "sha256": {
+   "stdout.txt": "cf4221191b905b06903323fd57ea2023933abd1049f2653ff3a0c749eb9c6414",
+   "t3_time_dilation.json": "3fb9794fe1c7cb87280ded22e1781cf349553f1b48ff1cb496486d4b357c1f2a",
+   "t3_time_dilation.npz": "1cfd01d204272fc5fdf657779f43f46f2a8217ff99aa8f239c28616bce9368e6",
+   "t3_time_dilation.pdf": "153c131aff507e1ff4d4f8baac0f0bf103255f4e5f3599475fc11cc24b645629",
+   "t3_time_dilation.png": "92beff0b94123078fa60a7983444e0efc05cbad6ba9b2e584ce255e895c64263"
+  }
+ },
+ "status": "completed",
+ "started": "2026-11-15T14:49:27+00:00",
+ "exit_code": 0,
+ "ended": "2026-11-15T14:49:34+00:00",
+ "wall_time_s": 6.2
+}

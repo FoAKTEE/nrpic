@@ -1,0 +1,45 @@
+{
+ "run_id": "F-hills-20261115-144954-b5b0bce",
+ "track": "F-hills",
+ "package": "geodesic_binary (F-pre-2)",
+ "purpose": "V3 lead rerun of novelty/scripts/scale_estimate.py (check of the novelty package)",
+ "kind": "scouting",
+ "command": [
+  "python3",
+  "tracks/F-hills/novelty/scripts/scale_estimate.py",
+  "/data/haiyangw/nrpic/scratch/F-hills/F-hills-20261115-144954-b5b0bce",
+  "/data/haiyangw/nrpic/wt/F-hills"
+ ],
+ "cwd": "/data/haiyangw/nrpic/wt/F-hills",
+ "git": {
+  "sha": "b5b0bce85a449facea7fce4cd40486fa516096eb",
+  "branch": "track/F-hills",
+  "dirty_package": false
+ },
+ "inputs": [],
+ "parents": [],
+ "resources": {
+  "cores": 1,
+  "gpus": 0,
+  "card_hours": 0.0,
+  "core_hours": 0.0005
+ },
+ "outputs": {
+  "dir": "scratch/F-hills/F-hills-20261115-144954-b5b0bce",
+  "sha256": {
+   "fig_pdis_q10.pdf": "c9f4bb51adfee8052f615c209c027096f70a66cea7b7734b46cff16e252cd29a",
+   "fig_pdis_q10.png": "aa5bcb5a5f952378c94693825f8324ff63b79531c764a4180117e8207f980de7",
+   "fig_rmb_check.pdf": "83f37fd26f8455a5d8541cf60cc556e087147d8a11686c8054ce1ac5391ba7f2",
+   "fig_rmb_check.png": "119c984a4bc09bf8d2746ff65eb8b495c327915f5fa70ef5472b30d15e3deb93",
+   "fig_scale_plane.pdf": "f0647c4ecf9bbc19b7cdb753dfdebe150cc794a4ac7825578e71bd5b669ccbac",
+   "fig_scale_plane.png": "8484c4bdde43b1f307b10d1a8382f5fbbdd9859b3b2d037cdceac0dfc617fab3",
+   "results.json": "eb33c8d8384751e1213fedb72772c67ba18c2653b2a54065bde91a19a2eae3dc",
+   "stdout.txt": "4f184a9a709c64f523f7179d061ca6b461c56483bf81ffbacb13e11ba1f3d8f4"
+  }
+ },
+ "status": "completed",
+ "started": "2026-11-15T14:49:54+00:00",
+ "exit_code": 0,
+ "ended": "2026-11-15T14:49:56+00:00",
+ "wall_time_s": 1.9
+}

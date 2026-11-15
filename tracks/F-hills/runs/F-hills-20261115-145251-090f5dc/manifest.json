@@ -1,0 +1,60 @@
+{
+ "run_id": "F-hills-20261115-145251-090f5dc",
+ "track": "F-hills",
+ "package": "geodesic_binary (F-pre-2)",
+ "purpose": "V5/V6 lead: full Newton and HRNA (hole fixed) from the start states of three_punctures/inputs/hills_q{10,4}_m8.athinput; phase scans at the NR start radius",
+ "kind": "scouting",
+ "command": [
+  "/data/haiyangw/nrpic/scratch/F-hills/venv-gb/bin/python",
+  "tracks/F-hills/stage/G0/checks/lead_checks.py",
+  "v5v6",
+  "/data/haiyangw/nrpic/scratch/F-hills/F-hills-20261115-145251-090f5dc"
+ ],
+ "cwd": "/data/haiyangw/nrpic/wt/F-hills",
+ "git": {
+  "sha": "090f5dccbfdfe3789f22adbc72d21e6259a17703",
+  "branch": "track/F-hills",
+  "dirty_package": false
+ },
+ "inputs": [
+  {
+   "path": "tracks/F-hills/stage/G0/checks/lead_checks.py",
+   "sha256": "5e9d8feb8441c1b2fed24334ac14b2803972f1a2469378819d3bdf938b31d269"
+  },
+  {
+   "path": "tracks/F-hills/three_punctures/inputs/hills_q10_m8.athinput",
+   "sha256": "1423a3bf589994a46f51c0675143c765a2d600e9b4629cf4e325de6dda005046"
+  },
+  {
+   "path": "tracks/F-hills/three_punctures/inputs/hills_q4_m8.athinput",
+   "sha256": "af35dbe8a8d02655fdcd3185e608eda2870a474a731ca25d2ba6166e10ee7949"
+  },
+  {
+   "path": "tracks/F-hills/geodesic_binary/hrna.py",
+   "sha256": "88f77082ef2a3bd499c8dfdb678e8d34c6a7be4aec59da3e2b6e134ed4f60dab"
+  }
+ ],
+ "parents": [],
+ "resources": {
+  "cores": 6,
+  "gpus": 0,
+  "card_hours": 0.0,
+  "core_hours": 0.0505
+ },
+ "outputs": {
+  "dir": "scratch/F-hills/F-hills-20261115-145251-090f5dc",
+  "sha256": {
+   "fig_v5v6_q10.pdf": "f0a718e70bde27b2e7dbeb44ff33cb62e04eb596d8e67ca1c74c2dbba19cd111",
+   "fig_v5v6_q10.png": "fa504512728de8deafbffc03a55e6bff4e0f1c898186452b39fda595c482e385",
+   "fig_v5v6_q4.pdf": "d50819aa80d5030c7fc4289815c1892af6f6c94ae229f7e6c0ce31973eb8552a",
+   "fig_v5v6_q4.png": "19638d1ec8751a5ac8fe11f11f7883e424e8884295b43245816f02f651252346",
+   "stdout.txt": "ee55965f28bddaa440cb5ffd8f3620aa8e0401ad92a68d2d81219d2e559e9745",
+   "v5v6_summary.json": "12e3963850b502d352e7be2ec05861fbb5ef961ce83573053689f3bd07708a62"
+  }
+ },
+ "status": "completed",
+ "started": "2026-11-15T14:52:51+00:00",
+ "exit_code": 0,
+ "ended": "2026-11-15T14:53:21+00:00",
+ "wall_time_s": 30.3
+}

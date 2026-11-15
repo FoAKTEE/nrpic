@@ -1,0 +1,41 @@
+{
+ "run_id": "F-hills-20261115-144935-b5b0bce",
+ "track": "F-hills",
+ "package": "geodesic_binary (F-pre-2)",
+ "purpose": "V2 lead rerun of t4_force_31 (check of the geodesic_binary package)",
+ "kind": "scouting",
+ "command": [
+  "/data/haiyangw/nrpic/scratch/F-hills/venv-gb/bin/python",
+  "-I",
+  "tracks/F-hills/geodesic_binary/tests/t4_force_31.py",
+  "/data/haiyangw/nrpic/scratch/F-hills/F-hills-20261115-144935-b5b0bce"
+ ],
+ "cwd": "/data/haiyangw/nrpic/wt/F-hills",
+ "git": {
+  "sha": "b5b0bce85a449facea7fce4cd40486fa516096eb",
+  "branch": "track/F-hills",
+  "dirty_package": false
+ },
+ "inputs": [],
+ "parents": [],
+ "resources": {
+  "cores": 1,
+  "gpus": 0,
+  "card_hours": 0.0,
+  "core_hours": 0.0012
+ },
+ "outputs": {
+  "dir": "scratch/F-hills/F-hills-20261115-144935-b5b0bce",
+  "sha256": {
+   "stdout.txt": "8837d44ef249aea6080976c7d14ce7575ef5303799d5b9dc0c99198ab5b45a2d",
+   "t4_force_31.json": "888b1e6fedd6090442f550598a7c2f30eba93969b199163ae8870ecb997bbabc",
+   "t4_force_31.pdf": "03fbe8bd4184f491df6bace74a551f37e4bcfd9b30f95dcb16f6401a209896de",
+   "t4_force_31.png": "9e46d973a9d34a60fa8af791d82e262f3aab14a61145905de2aae55376f282cd"
+  }
+ },
+ "status": "completed",
+ "started": "2026-11-15T14:49:35+00:00",
+ "exit_code": 0,
+ "ended": "2026-11-15T14:49:39+00:00",
+ "wall_time_s": 4.3
+}

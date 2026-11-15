@@ -1,0 +1,41 @@
+{
+ "run_id": "F-hills-20261115-144919-b5b0bce",
+ "track": "F-hills",
+ "package": "geodesic_binary (F-pre-2)",
+ "purpose": "V2 lead rerun of t1_metric_checks (check of the geodesic_binary package)",
+ "kind": "scouting",
+ "command": [
+  "/data/haiyangw/nrpic/scratch/F-hills/venv-gb/bin/python",
+  "-I",
+  "tracks/F-hills/geodesic_binary/tests/t1_metric_checks.py",
+  "/data/haiyangw/nrpic/scratch/F-hills/F-hills-20261115-144919-b5b0bce"
+ ],
+ "cwd": "/data/haiyangw/nrpic/wt/F-hills",
+ "git": {
+  "sha": "b5b0bce85a449facea7fce4cd40486fa516096eb",
+  "branch": "track/F-hills",
+  "dirty_package": false
+ },
+ "inputs": [],
+ "parents": [],
+ "resources": {
+  "cores": 1,
+  "gpus": 0,
+  "card_hours": 0.0,
+  "core_hours": 0.0006
+ },
+ "outputs": {
+  "dir": "scratch/F-hills/F-hills-20261115-144919-b5b0bce",
+  "sha256": {
+   "stdout.txt": "3ee7b076d1d18caba13de6fccd77896f08ea6509f530344538a2cbc48dca2815",
+   "t1_flat_binary.pdf": "920fa69c34e7f2e2f46d162194d1be1ec1fe7a9402d0e38628ccb17e97cbfbe6",
+   "t1_flat_binary.png": "f4e43cf1596451f281ec901936e1e9232a0d986d470843a76e31b46618f9affd",
+   "t1_metric_checks.json": "99a876a35d974351ba16254589acdfe1abd6c8b4d275349288fc465b90a4bad0"
+  }
+ },
+ "status": "completed",
+ "started": "2026-11-15T14:49:19+00:00",
+ "exit_code": 0,
+ "ended": "2026-11-15T14:49:21+00:00",
+ "wall_time_s": 2.2
+}

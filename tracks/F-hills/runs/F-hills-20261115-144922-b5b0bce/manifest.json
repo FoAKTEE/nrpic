@@ -1,0 +1,41 @@
+{
+ "run_id": "F-hills-20261115-144922-b5b0bce",
+ "track": "F-hills",
+ "package": "geodesic_binary (F-pre-2)",
+ "purpose": "V2 lead rerun of t2_geodesic_limit (check of the geodesic_binary package)",
+ "kind": "scouting",
+ "command": [
+  "/data/haiyangw/nrpic/scratch/F-hills/venv-gb/bin/python",
+  "-I",
+  "tracks/F-hills/geodesic_binary/tests/t2_geodesic_limit.py",
+  "/data/haiyangw/nrpic/scratch/F-hills/F-hills-20261115-144922-b5b0bce"
+ ],
+ "cwd": "/data/haiyangw/nrpic/wt/F-hills",
+ "git": {
+  "sha": "b5b0bce85a449facea7fce4cd40486fa516096eb",
+  "branch": "track/F-hills",
+  "dirty_package": false
+ },
+ "inputs": [],
+ "parents": [],
+ "resources": {
+  "cores": 1,
+  "gpus": 0,
+  "card_hours": 0.0,
+  "core_hours": 0.0011
+ },
+ "outputs": {
+  "dir": "scratch/F-hills/F-hills-20261115-144922-b5b0bce",
+  "sha256": {
+   "stdout.txt": "600609527c6fadced0a4691380678d5ee2ffdc0ba05c1fd3262cfb2318436526",
+   "t2_geodesic_limit.json": "4d5f8cfcc1d7036a1964ee4e3716419a8c7c1ac07123835320685b9442a3dfd4",
+   "t2_geodesic_limit.pdf": "d0f99667920642519774fe5f3fdf2352652dc7be814bab7967dd5169cb672630",
+   "t2_geodesic_limit.png": "3f5820993f6a147f78f2172c25c5579acbac6b322ba65b124a81cf197f1c5f63"
+  }
+ },
+ "status": "completed",
+ "started": "2026-11-15T14:49:22+00:00",
+ "exit_code": 0,
+ "ended": "2026-11-15T14:49:26+00:00",
+ "wall_time_s": 3.8
+}

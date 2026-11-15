@@ -1,0 +1,47 @@
+{
+ "run_id": "F-hills-20261115-145246-090f5dc",
+ "track": "F-hills",
+ "package": "geodesic_binary (F-pre-2)",
+ "purpose": "V4 lead: independent restricted parabolic problem (SKR prp.tex:229-259) against newton3 coplanar.npz of run F-hills-20261115-130237-cbfaf6b",
+ "kind": "scouting",
+ "command": [
+  "/data/haiyangw/nrpic/scratch/F-hills/venv-gb/bin/python",
+  "tracks/F-hills/stage/G0/checks/lead_checks.py",
+  "v4",
+  "/data/haiyangw/nrpic/scratch/F-hills/F-hills-20261115-145246-090f5dc"
+ ],
+ "cwd": "/data/haiyangw/nrpic/wt/F-hills",
+ "git": {
+  "sha": "090f5dccbfdfe3789f22adbc72d21e6259a17703",
+  "branch": "track/F-hills",
+  "dirty_package": false
+ },
+ "inputs": [
+  {
+   "path": "tracks/F-hills/stage/G0/checks/lead_checks.py",
+   "sha256": "5e9d8feb8441c1b2fed24334ac14b2803972f1a2469378819d3bdf938b31d269"
+  }
+ ],
+ "parents": [],
+ "resources": {
+  "cores": 8,
+  "gpus": 0,
+  "card_hours": 0.0,
+  "core_hours": 0.1517
+ },
+ "outputs": {
+  "dir": "scratch/F-hills/F-hills-20261115-145246-090f5dc",
+  "sha256": {
+   "fig_v4_restricted.pdf": "dd1a8d1bf52d0871375a4f9ad422e69abf7b4e50fceef8cc0fa4b29161cc7d01",
+   "fig_v4_restricted.png": "ba51729fee300d8e577f44a18a2c9a4f8437a565224ae1102e2e3b9a0e9fef85",
+   "stdout.txt": "2297f54d6c9b0597fa0efaab4a96e2699ba2ff7a4bb4b6773e53b7e76cd71e7c",
+   "v4_samples.npz": "474b65d83e343adda74e4df8735a0cb966cf4b456a9abcfa27400d7ebd806b1d",
+   "v4_summary.json": "1ef010131d6fcf119cc73c16e625c0cf0521ca9f4a261c06bd98589a367756de"
+  }
+ },
+ "status": "completed",
+ "started": "2026-11-15T14:52:46+00:00",
+ "exit_code": 0,
+ "ended": "2026-11-15T14:53:54+00:00",
+ "wall_time_s": 68.3
+}

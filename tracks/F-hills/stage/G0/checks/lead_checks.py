@@ -406,7 +406,81 @@ def v5v6(out):
     json.dump(allres, open(os.path.join(out, "v5v6_summary.json"), "w"), indent=1)
 
 
+def v4b(out):
+    """Retrograde D = 0.3, 0.38 with samples that are bound but wide at 30 r_t rerun to 300 r_t."""
+    ref = np.load(os.path.join(SCR, "F-hills-20261115-130237-cbfaf6b", "coplanar.npz"))
+    nph = 600
+    phis = np.linspace(0.0, math.pi, nph, endpoint=False)
+    rows = []
+    with Pool(int(os.environ.get("NPROC", "8"))) as pool:
+        for D in (0.3, 0.38):
+            outs = pool.map(one_restricted, [(D, p, -1, 10.0, 30.0, 1e-11) for p in phis])
+            amb = [i for i, o in enumerate(outs) if o.get("state") == "ambiguous"]
+            re = pool.map(one_restricted, [(D, phis[i], -1, 10.0, 300.0, 1e-11) for i in amb])
+            for i, o in zip(amb, re):
+                outs[i] = o
+            st = np.array([o.get("state", "fail") for o in outs])
+            E = np.array([abs(o.get("E1", 0.0)) for o in outs])
+            dis = st == "disrupted"
+            j = int(np.argmin(abs(ref["D"] - D)))
+            rd = ref["disrupted_ret"][j]
+            rE = np.abs(ref["E2_ret"][j])
+            rows.append(dict(D=D, n_ambiguous_30=len(amb), n_ambiguous_300=int((st == "ambiguous").sum()),
+                             P_dis=float(dis.mean()), P_dis_ref=float(rd.mean()),
+                             Emean_dis=float(E[dis].mean()), Emean_dis_ref=float(rE[rd].mean())))
+            print(rows[-1], flush=True)
+    json.dump(dict(reference_run="F-hills-20261115-130237-cbfaf6b", rows=rows),
+              open(os.path.join(out, "v4b_summary.json"), "w"), indent=1)
+
+
+def v5b(out):
+    """Energy of the ejected member: two-body with M against the barycentre of M + captured."""
+    fs.use_style()
+    import matplotlib.pyplot as plt
+    files = {"q10": ("hills_q10_m8.athinput", 3.0), "q4": ("hills_q4_m8.athinput", 5.0)}
+    fig, axs = plt.subplots(1, 2, figsize=(fs.FULL_WIDTH, 3.0))
+    res = {}
+    for ax, (name, (fn, a0)) in zip(axs, files.items()):
+        m, x, p = read_athinput(os.path.join(WT, "tracks/F-hills/three_punctures/inputs", fn))
+        M, m1, m2 = m[2], m[0], m[1]
+        Eu = m1 * m2 / a0 * (M / (m1 + m2)) ** (1 / 3)
+        ts, Y = newton_full(m, x, p, t_end=1500.0, nout=30001)
+        (E1, E2), X, V = energies_vs_M(Y, m)
+        ie, ic = (0, 1) if E1[-1] > 0 else (1, 0)
+        Ee = E1 if ie == 0 else E2
+        # energy of the ejected member against the barycentre of (M, captured member)
+        mc = M + m[ic]
+        xc = (M * X[:, 2] + m[ic] * X[:, ic]) / mc
+        vc = (M * V[:, 2] + m[ic] * V[:, ic]) / mc
+        dx = X[:, ie] - xc
+        dv = V[:, ie] - vc
+        mu2 = m[ie] * mc / (m[ie] + mc)
+        Ebc = mu2 * (0.5 * np.sum(dv * dv, 1) - (mc + m[ie]) / np.linalg.norm(dx, axis=1))
+        late = ts >= 300
+        res[name] = dict(ejected=ie + 1, E_twobody_M_late_min=float(Ee[late].min() / Eu),
+                         E_twobody_M_late_max=float(Ee[late].max() / Eu),
+                         E_twobody_M_end=float(Ee[-1] / Eu),
+                         E_bary_late_min=float(Ebc[late].min() / Eu),
+                         E_bary_late_max=float(Ebc[late].max() / Eu),
+                         E_bary_end=float(Ebc[-1] / Eu), unit=Eu)
+        print(name, res[name], flush=True)
+        ax.plot(ts, Ee / Eu, color=fs.PAL["blue"], lw=1.0, label="two-body energy with $M$")
+        ax.plot(ts, Ebc / Eu, color=fs.PAL["red"], lw=1.2,
+                label="against the barycentre of $M$ and the captured member")
+        ax.set_xlabel(r"$t\,[M]$")
+        ax.set_ylabel("ejected member's energy [units]")
+        ax.set_title(f"{name}: full Newton from the input file", fontsize=9)
+        ax.set_xlim(0, 1500)
+        lo = min(Ee[late].min(), Ebc[late].min()) / Eu
+        hi = max(Ee[late].max(), Ebc[late].max()) / Eu
+        ax.set_ylim(lo - 0.3, hi + 0.3)
+        ax.legend(frameon=False, fontsize=6.5, loc="lower right")
+    fig.tight_layout()
+    fs.save(fig, os.path.join(out, "fig_v5b_energy"))
+    json.dump(res, open(os.path.join(out, "v5b_summary.json"), "w"), indent=1)
+
+
 if __name__ == "__main__":
     what, outdir = sys.argv[1], sys.argv[2]
     os.makedirs(outdir, exist_ok=True)
-    {"v4": v4, "v5v6": v5v6}[what](outdir)
+    {"v4": v4, "v5v6": v5v6, "v4b": v4b, "v5b": v5b}[what](outdir)
