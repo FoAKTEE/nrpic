@@ -302,6 +302,28 @@ def beta0_spin_I2(sigmaH, delta_th, approx_A=False, epsrel=1e-9):
     return 27.0 / (2 * SQ5 * PI) * val
 
 
+def spin_I2_t2_factor(delta_th):
+    """int (1-4u^2) t2(u)^-5 du / int (1-4u^2) (12 E~(u)/(pi delta_th))^-5 du: the factor by
+    which the exact root t2 (corrected form of 1707.03595:1880-1886, see beta0_spin_I2)
+    changes I2 against the paper's t2 ~ 12 E~/(pi delta_th) (1921)."""
+    d = delta_th
+
+    def t2(u, Ek):
+        disc = Ek * (9 * Ek - (3 + 2 * u) * PI * d)
+        return (18 * Ek - (3 + 2 * u) * PI * d + 6 * np.sqrt(max(disc, 0.0))) / (3 * PI * d)
+
+    def num(u):
+        Ek = float(ellipE(np.sqrt(1 - (u + 0.5) ** 2)))
+        return (1 - 4 * u * u) * t2(u, Ek) ** -5
+
+    def den(u):
+        Ek = float(ellipE(np.sqrt(1 - (u + 0.5) ** 2)))
+        return (1 - 4 * u * u) * (12 * Ek / (PI * d)) ** -5
+
+    return (integrate.quad(num, -0.5, 0.5, epsabs=0, epsrel=1e-11)[0]
+            / integrate.quad(den, -0.5, 0.5, epsabs=0, epsrel=1e-11)[0])
+
+
 def quadrupole_q(A1, A2, A3):
     """q = sqrt(2(mu1^2 - 3 mu2)) / ((3/5) V r0^2) for a uniform ellipsoid with i_k = V A_k^2/5,
     r0 = (A1 A2 A3)^(1/3) [1707.03595:641-645, 712-716]."""

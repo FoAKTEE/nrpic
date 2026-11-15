@@ -238,13 +238,17 @@ def t2(out):
     # appendix integral, with the exact A and with A ~ 9t^2/(10 s3^2) (1919), t2 exact.
     d1 = 12 / 125 * q * q
     t26 = []
-    for s in (0.004, 0.006, 0.0077, 0.01, 0.017):
+    # sigma_H = 0.004 (first registered run) underflows: beta0 ~ exp(-0.0184/sigma^2)
+    ft2 = C.spin_I2_t2_factor(d1)
+    for s in (0.006, 0.0077, 0.01, 0.017):
         Nn = C.beta0_spin(s, d1)
         Ss = C.beta0_spin_semianalytic(d1, s, Eb)
         I2 = C.beta0_spin_I2(s, d1)
         I2a = C.beta0_spin_I2(s, d1, approx_A=True)
+        X = d1 * d1 / (2 * s * s)
         t26.append(dict(sigma=s, N_over_S=Nn / Ss, N_over_I2=Nn / I2, I2_over_I2a=I2 / I2a,
-                        I2a_over_S=I2a / Ss))
+                        I2a_over_S=I2a / Ss, predicted_I2a_over_S=ft2 * (2 + 2 * X + X * X)
+                        / (X * X)))
     a_ok = all(abs(x["N_over_I2"] - 1) < 0.02 for x in t26 if x["sigma"] <= 0.01)
     check("T2.6a", "beta0(1) numerical / I2(exact A), sigma_H <= 0.01",
           ", ".join(f"{x['N_over_I2']:.4f}" for x in t26), "1 within 2 %",
@@ -259,6 +263,11 @@ def t2(out):
           ", ".join(f"{v:.4f}" for v in ca), "constant within 10 %", "1707.03595:1921-1936",
           max(ca) / min(ca) < 1.1, "a constant factor from t2 ~ 12E/(pi delta_th) at finite "
                                    "delta_th")
+    dd = [abs(x["I2a_over_S"] / x["predicted_I2a_over_S"] - 1) for x in t26]
+    check("T2.6d", "I2(approx A)/semi-analytic = t2 factor x (2+2X+X^2)/X^2",
+          ", ".join(f"{x['I2a_over_S']:.4f}/{x['predicted_I2a_over_S']:.4f}" for x in t26),
+          "within 1 %", "1707.03595:1880-1886 (corrected root), 1921", max(dd) < 0.01,
+          f"t2 factor {ft2:.4f}")
     out_t26 = t26
     # figure: production rates and spin distributions
     fs.use_style()
