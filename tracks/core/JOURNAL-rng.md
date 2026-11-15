@@ -135,7 +135,7 @@ P5 Demonstration in the code.
    history files and snapshots to the executable built from the unmodified source, on
    processors and on the card.
 
-## 2026-11-15 12:25 UTC  session core-rng  implementation, scouting
+## 2026-11-15 11:45 UTC  session core-rng  implementation, scouting
 
 Written (uncommitted until the commit that follows this entry): `athenak/src/utils/rng.hpp`,
 `python/nrpic/rng.py`, the unit-test problem generator
@@ -190,9 +190,9 @@ the mean of -ln s: 3.2e-6). If the deviation of 2.5e-5 were a bias it would appe
 about eight standard errors; that outcome refutes the claim that the normal draw is
 exact to the stated accuracy.
 
-## 2026-11-15 12:15 UTC  session core-rng  outcomes of the first registered runs (commit f0258ce)
+## 2026-11-15 12:04 UTC  session core-rng  outcomes of the first registered runs (commit f0258ce)
 
-(The heading of the entry "implementation, scouting" above should read 11:45 UTC.)
+(Clock times of the headings of this file were corrected once, at 12:10 UTC, to the times of the commits; no other text was changed.)
 
 - P1 and P2 confirmed. Run core-20261115-115626-f0258ce: the tables of the processor
   build (run core-20261115-115134-f0258ce), of the card build (run
@@ -245,7 +245,7 @@ Prediction for the registered cell check (processor and card): per level, the sa
 number of cells and the same checksum as the Python twin computes from the geometry, in
 all seven runs. Refuted by one differing checksum.
 
-## 2026-11-15 12:20 UTC  session core-rng  a bound of mine exceeded
+## 2026-11-15 12:08 UTC  session core-rng  a bound of mine exceeded
 
 Run core-20261115-120534-5bdb22c (logarithm against mpmath, 202050 values): largest
 absolute error 3.004e-14 (at s = 57447), above the "below 3e-14" that I had written into
@@ -258,3 +258,50 @@ result does not change from ten steps on (0 of 202050 values between 10 and 14 s
 and the error of the radius sqrt(2 L) is at most 8.4e-8 (for L below 1e-12, probability
 1e-12 per draw) and 4.7e-10 relative for L above 1e-6. The test is rerun with the
 restated bound; the failed run stays on record.
+
+## 2026-11-15 12:15 UTC  session core-rng  the kick against the Python twin, prediction
+
+Looking at the first figure of the kick demonstration (run core-20261115-120913-564b404):
+the accumulated kick of run a1, (u_x with kick minus u_x without) over sigma sqrt(t), is
+visibly wider than the normal density (rms ratio 1.15, lower peak, wider wings). That is
+the geodesic flow, which shears a momentum kick into later momentum changes, not the
+generator; but the panel then shows nothing about the draws. A clean check needs
+dynamics that leave the momentum alone: the same set-up with `bh_mass = 0`, where the
+analytic metric is flat and the push does not change u_i at all. Then
+u_i(end) = u_i(0) + sigma sqrt(dt) * (sum over the cycles of the deviates of this tag),
+which the Python twin can evaluate from the keys (seed, stream tests/16, tag, cycle),
+draw 0 for the first two components and draw 1 for the third.
+
+Prediction (run f1 added to the analytic case of `run_kick_demo.py`, 10000 particles,
+800 steps of 0.05): every momentum component of every particle agrees with the twin to
+better than 1e-13 (the code may fuse the product and the sum of the kick, the twin does
+not, so identical bits are not promised; the sum has 800 terms of about 2e-4); the
+accumulated kick over sigma sqrt(t) has mean within four standard errors of 0 and
+variance within four standard errors of 1. Refuted by a larger difference, which would
+mean that the keys used inside the particle module are not the ones the interface
+document states.
+
+## 2026-11-15 12:25 UTC  session core-rng  statistics: outcome, and one pattern to test
+
+Run core-20261115-120536-5bdb22c (253 tests with a p-value: 81 with the Python twin at
+2e7 keys, 60 each from the sums of the code on processors at 2e8 keys, on the card at
+1e10 and at 1e11 keys): smallest p-value 1.1e-3, four below 1e-2, none below 1e-3;
+largest deviation 3.26 standard errors; the p-values are compatible with a uniform
+distribution (Kolmogorov-Smirnov p = 0.61). P3 holds by its own criteria.
+
+But the two largest deviations are of one kind: the covariance of two words of the same
+generator call, words 0 and 1 at 1e11 keys (-3.26 standard errors, seed 20261116) and
+words 0 and 2 at 1e10 keys (-3.17, seed 20261115); and the pair (0,1) at 1e10 keys was
+-1.25, which is what a real correlation of -1e-5 would give at both sizes. Two values
+beyond 3.1 among the 15 word-pair statistics of this run have probability 4e-4 by
+chance (a few 1e-3 after allowing for my having picked the category afterwards). A
+generator of this family with a linear correlation of 1e-5 between output words would
+contradict what is published about it [BACKGROUND], so I expect chance, but this is
+cheap to settle.
+
+Prediction (before the run): 1e12 generator calls with fourteen new seeds (1001 to 1014,
+a standalone program on 14 cores): each of the six covariances between words of a call
+within 3.5 standard errors of zero (standard error of the correlation 1e-6). A real
+correlation of -1e-5 between words 0 and 1 would show as -10 standard errors and would
+refute the independence of the four words, with consequences for Uniform4, the normal
+pair and the direction.

@@ -11,6 +11,8 @@ test-particle set-ups and compares the particle states bit by bit:
       s1, s3  control key "sequence", uninterrupted and restarted
       d1  key tag, another seed
       n1, n2, n3  mode "direction": two layouts and the restart
+      f1  key tag in flat space (bh_mass = 0): the momenta change only by the kicks
+          and are compared with the sum of the deviates from the Python twin
   --case mesh       D2, problems/tests/rng_kick_mesh.athinput (metric on the mesh):
       m1, m2  key tag on two layouts   m3, m4  the same without the kick
       m5, m6  plunging particles (removed at the lapse threshold), uninterrupted to
@@ -34,6 +36,12 @@ import numpy as np
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 REPO = os.path.abspath(os.path.join(HERE, "..", "..", "..", ".."))
+sys.path.insert(0, os.path.join(REPO, "python"))
+from nrpic import rng  # noqa: E402
+
+SEED = 20261115          # <job> rng_seed of the input files
+SIGMA = 1.0e-3           # <particles> test_kick_sigma
+DT = 0.05                # <particles> dt
 
 
 def read_snapshot(path):
@@ -226,6 +234,47 @@ def main():
         summary["kick_expected_rms"] = 1.0e-3 * np.sqrt(tl)
         expect("accumulated kick within a factor 1.5 of sigma sqrt(t)",
                1.0 / 1.5 < rms / (1.0e-3 * np.sqrt(tl)) < 1.5)
+        # flat space: the momenta change only by the kicks; exactly nstep steps
+        nstep = int(round(tl / DT))
+        f1 = r.run("f1", base + ["particles/bh_mass=0.0", f"time/nlim={nstep}",
+                                 "time/tlim=1.0e6"])
+        _, c0, tag0, df0 = read_snapshot(os.path.join(f1, "kick.part.00000.bin"))
+        _, c2, tag2, df2 = read_snapshot(os.path.join(f1, "kick.part.00002.bin"))
+        u_twin = df0[:, 3:6].copy()
+        amp = SIGMA * np.sqrt(DT)
+        st = rng.stream(rng.STREAM_TESTS, 16)
+        ent = tag0.astype(np.uint64)[:, None]
+        for lo in range(0, nstep, 100):
+            steps = np.arange(lo, min(nstep, lo + 100), dtype=np.uint64)[None, :]
+            z1, z2 = rng.normal2(seed=SEED, stream=st, entity=ent, step=steps, draw=0)
+            z3 = rng.normal(seed=SEED, stream=st, entity=ent, step=steps, draw=1)
+            for c in range(steps.size):
+                u_twin[:, 0] += amp * z1[:, c]
+                u_twin[:, 1] += amp * z2[:, c]
+                u_twin[:, 2] += amp * z3[:, c]
+        dtw = np.abs(df2[:, 3:6] - u_twin)
+        kick = (df2[:, 3:6] - df0[:, 3:6]) / (SIGMA * np.sqrt(nstep * DT))
+        nk = kick.size
+        summary["flat"] = {
+            "cycles": int(c2), "particles": int(tag2.size),
+            "max_abs_difference_code_twin": float(dtw.max()),
+            "values_with_identical_bits": int(np.count_nonzero(
+                df2[:, 3:6].copy().view(np.uint64) == u_twin.view(np.uint64))),
+            "values": int(nk),
+            "kick_mean": float(kick.mean()), "kick_mean_se": float(1.0 / np.sqrt(nk)),
+            "kick_variance": float(np.mean(kick ** 2)),
+            "kick_variance_se": float(np.sqrt(2.0 / nk)),
+        }
+        np.save(os.path.join(top, "flat_kick_code.npy"), kick)
+        np.save(os.path.join(top, "flat_kick_twin.npy"),
+                (u_twin - df0[:, 3:6]) / (SIGMA * np.sqrt(nstep * DT)))
+        # the snapshot header holds the cycle counter before the driver increments it
+        expect("flat space: cycle count and tags as expected",
+               c2 == nstep - 1 and np.array_equal(tag0, tag2))
+        expect("flat space: momenta equal the Python twin to 1e-13", dtw.max() < 1.0e-13)
+        expect("flat space: accumulated kick has mean 0 and variance 1 within 4 standard"
+               " errors", abs(kick.mean()) < 4.0 / np.sqrt(nk)
+               and abs(np.mean(kick ** 2) - 1.0) < 4.0 * np.sqrt(2.0 / nk))
         ref_runs = ["a1", "n1"]
     else:
         inp = os.path.join(REPO, "problems", "tests", "rng_kick_mesh.athinput")

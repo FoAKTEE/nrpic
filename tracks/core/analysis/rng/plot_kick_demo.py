@@ -1,16 +1,16 @@
 #!/usr/bin/env python3
 """Figure of the demonstration of the reproducible kick (run_kick_demo.py).
 
-Left: the accumulated kick, u_x of the kicked run minus u_x of the run without kick,
-against the normal density of width sigma sqrt(t). Right: for every pair of runs that is
-compared, the distribution over the particles of the largest difference of a position or
-momentum component; pairs with identical bits sit in the band at the left.
+Left: the accumulated kick in flat space (run f1), u_i(end) - u_i(0) over sigma sqrt(t),
+from the code and from the Python twin, against the normal density. Right: for every
+pair of runs that is compared, the range (line) and median (dot) over the particles of
+the largest difference of a position or momentum component; pairs with identical bits
+sit in the band at the left (a small open circle there: some particles identical).
 
 Usage: plot_kick_demo.py --out FIG.png label=ANALYTIC_DIR,MESH_DIR [label=...]
 (one entry per build; each directory is the working directory of run_kick_demo.py)
 """
 import argparse
-import json
 import os
 import sys
 
@@ -30,13 +30,13 @@ import matplotlib.pyplot as plt  # noqa: E402
 PAIRS = [
     ("analytic", "a1", "a2", 2, "key tag: 1 and 64 MeshBlocks"),
     ("analytic", "a1", "a3", 2, "key tag: restart"),
-    ("analytic", "n1", "n2", 2, "direction kick: 1 and 64 MeshBlocks"),
-    ("analytic", "n1", "n3", 2, "direction kick: restart"),
+    ("analytic", "n1", "n2", 2, "direction: 1 and 64 MeshBlocks"),
+    ("analytic", "n1", "n3", 2, "direction: restart"),
     ("mesh", "m5", "m6", 1, "mesh metric, removal: restart"),
-    ("mesh", "m1", "m2", 2, "mesh metric, kick: 8 and 64 MeshBlocks"),
-    ("mesh", "m3", "m4", 2, "mesh metric, no kick: 8 and 64 MeshBlocks"),
-    ("analytic", "b1", "b2", 2, "control, key block: 1 and 64 MeshBlocks"),
-    ("analytic", "s1", "s3", 2, "control, key sequence: restart"),
+    ("mesh", "m1", "m2", 2, "mesh metric: 8 and 64 MeshBlocks"),
+    ("mesh", "m3", "m4", 2, "same without kick"),
+    ("analytic", "b1", "b2", 2, "control block: 1 and 64 MeshBlocks"),
+    ("analytic", "s1", "s3", 2, "control sequence: restart"),
     ("analytic", "a1", "d1", 2, "another seed"),
 ]
 ZERO = -19.0          # position of exact zeros on the logarithmic axis
@@ -64,28 +64,26 @@ def main():
         d_an, d_me = dirs.split(",")
         builds.append((label, {"analytic": d_an, "mesh": d_me}))
 
-    fig, ax = plt.subplots(1, 2, figsize=(8.0, 4.2),
-                           gridspec_kw={"width_ratios": [1.0, 1.55]})
-    fig.subplots_adjust(left=0.08, right=0.985, bottom=0.13, top=0.96, wspace=0.95)
+    fig = plt.figure(figsize=(8.0, 4.2))
+    ax = [fig.add_axes([0.075, 0.13, 0.235, 0.83]), fig.add_axes([0.625, 0.13, 0.36, 0.83])]
 
-    # left: the accumulated kick
-    for (label, dirs), c in zip(builds, cols):
-        summ = json.load(open(os.path.join(dirs["analytic"], "summary.json")))
-        _, _, _, x0 = read_snapshot(os.path.join(dirs["analytic"], "a0",
-                                                 "kick.part.00002.bin"))
-        _, _, _, x1 = read_snapshot(os.path.join(dirs["analytic"], "a1",
-                                                 "kick.part.00002.bin"))
-        sig = summ["kick_expected_rms"]
-        du = (x1[:, 3] - x0[:, 3]) / sig
-        h, e = np.histogram(du, bins=np.linspace(-5, 5, 51), density=True)
-        ax[0].step(0.5 * (e[1:] + e[:-1]), h, where="mid", color=c, lw=1.2,
-                   label=f"{label}")
+    # left: the accumulated kick in flat space, code and twin
+    bins = np.linspace(-5, 5, 51)
+    xc = 0.5 * (bins[1:] + bins[:-1])
+    for ib, ((label, dirs), c) in enumerate(zip(builds, cols)):
+        kick = np.load(os.path.join(dirs["analytic"], "flat_kick_code.npy")).ravel()
+        h, _ = np.histogram(kick, bins=bins, density=True)
+        ax[0].step(xc, h, where="mid", color=c, lw=1.2, label=f"code, {label}")
+        if ib == 0:
+            twin = np.load(os.path.join(dirs["analytic"], "flat_kick_twin.npy")).ravel()
+            ht, _ = np.histogram(twin, bins=bins, density=True)
+            ax[0].plot(xc, ht, ".", ms=4, color="k", label="Python twin")
     xx = np.linspace(-5, 5, 400)
     ax[0].plot(xx, np.exp(-0.5 * xx * xx) / np.sqrt(2 * np.pi), label="normal",
                **figstyle.GUIDE)
     ax[0].set_xlim(-5, 5)
     ax[0].set_ylim(0, 0.62)
-    ax[0].set_xlabel(r"$(u_x^{\rm kick} - u_x^{\rm no\ kick})\,/\,\sigma\sqrt{t}$")
+    ax[0].set_xlabel(r"$[u_i(t) - u_i(0)]\,/\,\sigma\sqrt{t}$, flat space")
     ax[0].set_ylabel("probability density")
     ax[0].legend(loc="upper left")
 
@@ -116,10 +114,10 @@ def main():
     ax[1].set_xticks(ticks)
     ax[1].set_xticklabels(["0"] + [f"$10^{{{t}}}$" for t in ticks[1:]])
     ax[1].tick_params(axis="x", which="minor", bottom=False, top=False)
-    ax[1].set_xlabel("largest difference of a particle between the two runs")
+    ax[1].set_xlabel("largest difference per particle")
     for (label, _), c in zip(builds, cols):
         ax[1].plot([], [], "o-", color=c, label=label)
-    ax[1].legend(loc="lower right")
+    ax[1].legend(loc="center", bbox_to_anchor=(0.62, 0.62))
     fig.savefig(args.out, dpi=200)
     print("wrote", args.out)
 
