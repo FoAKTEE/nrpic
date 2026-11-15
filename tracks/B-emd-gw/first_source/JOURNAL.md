@@ -317,3 +317,74 @@ at any dump (G_tot 2.045e-10 against G 2.058e-10 at a = 1001, quadratic cloud; 2
 against 2.231e-10, cubic); the homogeneous traceless part is h0 = 1.8e-6 there, the non-TT
 part 3.6e-5. rms(Lambda h - G_tot) = 2.495e-9 and 4.315e-9 at a = 1001: the P7 numbers and
 reading stand. `results/late_rise_summary.json` is now this run's (spectra dropped).
+
+## Outcomes of P1-P6 at 64^3 (cards)
+
+Runs: card batches B-20261115-164059-d802e82 (eps = 0, 0.3, 0.1; 0.25 card-hours, 5 min per
+run, 12 GB per run) and B-20261115-165353-b592d43 (eps = 1 zero shift and Gamma driver;
+0.17 card-hours); analyses B-20261115-174722-ba1048d and B-20261115-180834-c77a132 (217
+single-precision and 23 double-precision dumps per case, no errors); figures and
+`scan_summary.json`: run B-20261115-181552-8640a38 (an earlier plot run,
+B-20261115-181359-eaae093, had wrong labels and plotted the wrong Weyl component; superseded).
+All four figures looked at (`figs/scan_*.png`).
+
+P1 (null): REFUTED AS WORDED, the null itself holds at round-off. The largest TT amplitude
+of h is at most 2.1e-16 (double) and 2.8e-16 (single) at every dump to a = 140, and of tilde
+A at most 1.1e-16 (double), i.e. at the round-off of metric components of order one; no
+growth through shell crossing. Relative to the rms traceless part, which is small early
+(7e-5 at a = 1.6), the ratio exceeds 1e-12 at the first dumps (h: 2.3e-12 single, 1.7e-12
+double at tau = 0.5-1.0; tilde A up to 2.6e-10 in single precision, 4.2e-12 in double) and
+falls to 1e-14 (h) and 5e-13 (A, double) later. My criterion was normalized to the wrong
+quantity; the meaningful bound is absolute, ~1e-16 of the metric. Lambda h independent of z
+to <= 3.3e-14 (double dumps; GPU atomics). The magnetic Weyl part of the null is 3.9e-13
+(finite-difference round-off of K ~ 1).
+
+P2 (amplitude): CONFIRMED. |c_+/(s g) - 1| <= 0.22 percent (eps = 0.1 and 0.3) and 0.44
+percent (eps = 1) for 2 <= a <= 10, at K1 and with the opposite sign at K2; the junk
+oscillation (period 2.83 in tau, envelope ~ 1/a) is followed through four periods with no
+visible phase error (`figs/scan_kk0.png`). Later the strain departs from the second-order
+value: +1.1 to +2.3 percent at a = 20, +6 to +11 at a = 40, +15 to +30 at a = 60, and it
+grows in the nonlinear stage to 1.6 to 2.5 times s at a = 100-140 (eps = 1 peaks at a ~ 95,
+c_+/s = 2.5).
+
+P3 (linearity): CONFIRMED. c_+/eps for eps = 0.3 and 0.1 differ by at most 0.05 percent for
+a <= 10 (eps = 1 against 0.1: 0.21 percent), and the 0.1/0.3 pair stays closer than the
+pair with eps = 1 later (0.1 against 1.1 percent at a = 20, 0.9 against 14 at a = 60), as
+predicted for corrections in eps^2.
+
+P4 (mode content): REFUTED for 10 < a <= 20. The four box modes carry 99 percent of the TT
+mean square at a <= 5, 93-96 percent at a = 10, but only 84 (eps = 0.1), 83 (0.3) and 74
+(eps = 1) percent at a = 20, and 17-25 percent at a = 100-140: other modes grow earlier than
+my fourth-order estimate allowed. z-independence: confirmed (above).
+
+P5 (gauge piece in the zero-shift gauge): CONFIRMED with G_tot. |G_tot(K1)/c_+| <= 0.55
+(eps = 0.1), 0.60 (0.3), 1.1 (eps = 1) percent for a <= 20; 1.6-4.0 percent at a = 40, up
+to 11 percent at a = 80 (eps = 1). The rms non-TT part grows as a (1e-3 at a = 10, 1.3e-2
+to 2.6e-2 at a = 140). The quadratic piece alone would be 3.5 to 7 percent at a = 20 and is
+mostly cancelled by the cross terms with h0 (see the 32^3 development check).
+
+P6 (second gauge, eps = 1) with G_tot (P6'):
+(a) CONFIRMED: the Gamma-driver run reaches a = 140 with finite fields (rc = 0, 1404 cycles,
+same step sequence), the first passing run of a shift condition in an expanding box with
+particles here (cf. core's note that none existed, tracks/core/outbox/20261115T1510Z__to-B-emd-gw__newton-and-cosmo-findings.md item 3).
+(b) CONFIRMED: rms non-TT part 1.6e-4 to 8.8e-4 against 2.5e-3 to 2.6e-2 in the zero-shift
+run for a >= 10 (15 to 40 times smaller).
+(c) CONFIRMED: the raw difference of c_+(K1) between the gauges is 0.12, 0.36, 1.5, 4.9, 11.5
+percent of |s| at a = 5, 10, 20, 40, 60; after G_tot it is 0.002, 0.008, 0.03, 0.3, 1.2
+percent (median ratio corrected/raw 0.084 over the 89 percent of dumps where the raw
+difference exceeds 1e-3 |s|). It fails only around a ~ 80-110 (shell crossing), where the
+raw difference passes through zero. With G alone (no cross terms) the "corrected"
+difference is 5 times the raw one (median): the cross terms with the homogeneous anisotropy
+are essential.
+(d) CONFIRMED for a <= 64 away from the zero crossings of B: the x amplitude of the magnetic
+Weyl part at K1 differs between the gauges by 5e-5 to 4e-3 of itself up to a = 36 and by
+3e-3 to 6e-3 up to a = 64 (exceptions a = 6.3 and 42, where B passes through zero), against
+1.6e-4 to 8.6e-2 for raw Lambda h; after a ~ 70 both differ by 10 percent or more.
+
+Reading [JUDGEMENT]: the gauge question of the first source is settled to the order that
+matters here: the zero-shift flat TT strain differs from the spatially transverse one by the
+computed G_tot (< 1.1 percent before a = 20, ~10 percent near shell crossing), the second gauge
+confirms that piece quantitatively, and the gauge-invariant (at this order) magnetic Weyl
+part agrees between the gauges where the metric does not. The growth of c_+ after a ~ 20
+(to 2.5 s) is present in both gauges and in B: it is not a gauge effect; whether it is
+converged is P8 (32^3 against 64^3).
