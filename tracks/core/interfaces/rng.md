@@ -78,7 +78,11 @@ the next block; after 64 rejections (probability 1e-43) a fixed value is returne
   zero. Absolute error of `L` below 1e-13, largest found 3.0e-14 [VERIFIED: 202050 values
   against mpmath, run core-20261115-120841-564b404]; the radius `sqrt(2 L)` is then wrong
   by at most 8.4e-8 where `L < 1e-12` (probability 1e-12 per draw) and by 4.7e-10 relative
-  for `L > 1e-6`. |z| does not exceed 7.94 (lattice point `v = (5, 1)`); a radius beyond
+  for `L > 1e-6`. This is the price of identical bits: against the same deviates computed
+  with the library logarithm the 404140 deviates of the test table differ by 11 units in
+  the last place in the median and by at most 1.4e-10 relative [VERIFIED: run
+  core-20261115-123656-0502788, `fig_rng_agreement.png`]; no statistical test of section 7
+  can see it. |z| does not exceed 7.94 (lattice point `v = (5, 1)`); a radius beyond
   7.5 is represented by about 2000 lattice points and one beyond 8 by 45, so the lattice
   is coarse only where the probability per deviate is below 6e-14.
 - Direction: `n = (2 v1 h, 2 v2 h, 1 - 2 s)` in units where `v` is in (-1, 1) and `s` in
@@ -184,7 +188,7 @@ between two divisions when `u` and `P` agree to about 1e-13.
 
 | Statement | Evidence |
 |---|---|
-| The header, compiled into the processor build and the card build, five standalone compilations (`-O0`; `-O2`; `-O3 -march=native` with fused multiply-add allowed and forbidden; 32-bit products), and the Python twin return identical bits for 202070 keys (edge cases of every field, runs of consecutive values, random keys) in all 15 columns: four words, integer, upper half of a product, four uniform, two normal, three direction components | run core-20261115-115626-f0258ce (tables of runs core-20261115-115134-f0258ce and core-20261115-115230-f0258ce); one sha256 for seven tables |
+| The header, compiled into the processor build and the card build, five standalone compilations (`-O0`; `-O2`; `-O3 -march=native` with fused multiply-add allowed and forbidden; 32-bit products), and the Python twin return identical bits for 202070 keys (edge cases of every field, runs of consecutive values, random keys) in all 15 columns: four words, integer, upper half of a product, four uniform, two normal, three direction components | run core-20261115-115626-f0258ce (tables of runs core-20261115-115134-f0258ce and core-20261115-115230-f0258ce); one sha256 for seven tables; figure `tracks/core/notes/rng_figs/fig_rng_agreement.png`; twin after its last change: run core-20261115-123610-1ee600a |
 | The words equal those of `numpy.random.Philox` | same run, 20902 keys, none differing |
 | Statistics: 253 tests (moments of the uniform, normal and direction draws up to the eighth; chi-square of 1024 bins, of pairs and of bits; covariance with the draw of the key in which one field is larger by one, for each of seed, stream, sub-stream, entity, entity_hi, step, draw; between the registered streams; between the words of a call; between kinds; tails of the normal beyond 3, 4, 5, 6) with the Python twin at 2e7 keys and inside the code at 2e8 keys (processor), 1e10 and 1e11 keys (card): smallest p-value 1.1e-3, none below 1e-3, largest deviation 3.26 standard errors, p-values uniform (Kolmogorov-Smirnov p = 0.61) | runs core-20261115-120536-5bdb22c and core-20261115-122300-b6df7bc (the same numbers; final figures); figures `tracks/core/notes/rng_figs/fig_rng_uniform.png`, `fig_rng_normal.png`, `fig_rng_direction.png`, `fig_rng_pvalues.png` |
 | Follow-up of the two largest deviations of that list, both covariances between two words of one call (-3.26 and -3.17 standard errors): 1.008e12 calls with fourteen new seeds give all six covariances within 1.7 standard errors of zero (correlations between -1.6e-6 and +0.5e-6, standard error 1.0e-6); the deviations were chance | run core-20261115-121240-8f4222b |
