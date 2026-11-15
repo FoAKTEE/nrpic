@@ -1,0 +1,206 @@
+{
+  "schema": "nrpic-run-manifest/1",
+  "run_id": "E-20261115-172421-50ac4ce",
+  "track": "E-stoch-inf",
+  "gate": "G0",
+  "kind": "scouting",
+  "purpose": "note v0: data figures (background, freezing, delta-N, noise validation, cost), the two schematics, the ledger and the check of the lead's numbers against the run outputs (predictions N1-N3 of note/JOURNAL.md)",
+  "preregistered_in": null,
+  "launcher": "local",
+  "command": [
+    "bash",
+    "-c",
+    ".venv/bin/python tracks/E-stoch-inf/note/scripts/run_all.py --out \"$NRPIC_RUN_DIR\""
+  ],
+  "cwd": ".",
+  "git": {
+    "sha": "50ac4cedab5c9096b0a13596ea5ee9dbaec4e93f",
+    "branch": "track/E-stoch-inf",
+    "dirty": false,
+    "package": [
+      "tracks/E-stoch-inf/note"
+    ],
+    "outside_package": {
+      "count": 2,
+      "first": [
+        "?? tracks/E-stoch-inf/analysis/scripts/val_cf.py",
+        "?? tracks/E-stoch-inf/ladder/"
+      ]
+    },
+    "merge_base_main": "b9fbf3e6534517c3393000da91c79ce552b254b9",
+    "worktree": "wt/E-stoch-inf"
+  },
+  "code": {
+    "core_tag": "core-v0.3",
+    "athenak_upstream_sha": "c5a0d7f",
+    "kokkos_sha": "6739bc623081648af9e752b616d9671527922cbf",
+    "problem": null
+  },
+  "env": {
+    "host": "anta",
+    "env_hash": "33c1dbb6673b68919eaa332b0add0b58aeac8be843f2071b9d06e2e0e397a96d",
+    "machine_file_sha256": "0321f40f4caeeb2a36624a9fa9809e60bad31071f366b3517ba23ad45698d2d7",
+    "uv_lock_sha256": "5417f6ba318b914aa3800e5d55f7b11fdd8df13c2688bdda7d419240aa1d5863",
+    "track_requirements_sha256": null,
+    "container_digest": null,
+    "compiler": "g++ 11.4.0",
+    "mpi": "none (Athena_ENABLE_MPI=OFF)",
+    "gpu": null,
+    "python": "3.10.12 /data/haiyangw/nrpic/wt/E-stoch-inf/.venv"
+  },
+  "input": null,
+  "inputs": [
+    {
+      "path": "tracks/E-stoch-inf/spec/SPEC.md",
+      "role": "input",
+      "sha256": "7f7edc60a12ecaf29b3787baa366ded52b1432630120b13aac005c3cfaeaf440",
+      "bytes": 35717,
+      "tracked": true
+    },
+    {
+      "path": "tracks/E-stoch-inf/spec/scope/SCOPE.md",
+      "role": "input",
+      "sha256": "4b878ee1c8dcda3abea3f7618ba20c8f8f78f19bfacaef9a0232d191947f832a",
+      "bytes": 17839,
+      "tracked": true
+    },
+    {
+      "path": "tracks/E-stoch-inf/stage/G0/EVIDENCE.md",
+      "role": "input",
+      "sha256": "62930806cae839043ad89387ff4a1d18cf2314f3a18978615825901a9bac3634",
+      "bytes": 11722,
+      "tracked": true
+    },
+    {
+      "path": "tracks/E-stoch-inf/langevin/README.md",
+      "role": "input",
+      "sha256": "fae0a603530d37e69a43ba7d65e574d7d0b2143df96a30b89e2be0802d751084",
+      "bytes": 19823,
+      "tracked": true
+    },
+    {
+      "path": "/data/haiyangw/nrpic/scratch/E-stoch-inf/E-stoch-inf-20261115-122806-ef0d039/quadratic.npz",
+      "role": "input",
+      "sha256": "6fb64b63ff9455c38d1757347c08918b9bd084a687f1ab756a0b9a8b1496b040",
+      "bytes": 1232699,
+      "tracked": false,
+      "location": "main checkout data root"
+    },
+    {
+      "path": "/data/haiyangw/nrpic/scratch/E-stoch-inf/E-stoch-inf-20261115-122806-ef0d039/inflection.npz",
+      "role": "input",
+      "sha256": "a376e88d7b3da78784fac747371dc6629a9a803858a6f3bdf9fc2afa40e53f3c",
+      "bytes": 1428199,
+      "tracked": false,
+      "location": "main checkout data root"
+    },
+    {
+      "path": "/data/haiyangw/nrpic/scratch/E-stoch-inf/E-stoch-inf-20261115-122806-ef0d039/summary.json",
+      "role": "input",
+      "sha256": "2f9f21ae2235b928d7bd86f20330fe332d9c25fbb02a0746cc1e69a6235343b7",
+      "bytes": 12978,
+      "tracked": false,
+      "location": "main checkout data root"
+    },
+    {
+      "path": "/data/haiyangw/nrpic/scratch/E-stoch-inf/E-stoch-inf-20261115-130139-176cdd6/ref_quadratic.json",
+      "role": "input",
+      "sha256": "6b3b748896b44e20b38eb853d7ab31f249b9377e63516174011914e90579e346",
+      "bytes": 20545,
+      "tracked": false,
+      "location": "main checkout data root"
+    },
+    {
+      "path": "/data/haiyangw/nrpic/scratch/E-stoch-inf/E-stoch-inf-20261115-130139-176cdd6/ref_quadratic_samples.npz",
+      "role": "input",
+      "sha256": "fc1eb01c63d2b5b0f935391e94427fa09ac5b44960d53d95198e81a2cd8ea0fd",
+      "bytes": 52195440,
+      "tracked": false,
+      "location": "main checkout data root"
+    },
+    {
+      "path": "/data/haiyangw/nrpic/scratch/E-stoch-inf/E-stoch-inf-20261115-130137-176cdd6/ref_inflection.json",
+      "role": "input",
+      "sha256": "e8becdd6c5358e9a2757dd5e46d29bab42a06958361e961519e566e9146e051f",
+      "bytes": 20119,
+      "tracked": false,
+      "location": "main checkout data root"
+    },
+    {
+      "path": "/data/haiyangw/nrpic/scratch/E-stoch-inf/E-stoch-inf-20261115-130137-176cdd6/ref_inflection_samples.npz",
+      "role": "input",
+      "sha256": "5a42ac34ab2bb2ca3a0ec2ac3c6d4af76fd36c8b5ca2fbf2b92e9ee7ad421ebd",
+      "bytes": 70281626,
+      "tracked": false,
+      "location": "main checkout data root"
+    },
+    {
+      "path": "/data/haiyangw/nrpic/scratch/E-stoch-inf/E-20261115-140116-87c1cc5/cost.json",
+      "role": "input",
+      "sha256": "a73db10925fbe980b91b1a8b3f48232ce4a65f911841b82350a4eff2b2afbe4b",
+      "bytes": 7939,
+      "tracked": false,
+      "location": "main checkout data root"
+    },
+    {
+      "path": "/data/haiyangw/nrpic/scratch/E-stoch-inf/E-20261115-140116-87c1cc5/d2.json",
+      "role": "input",
+      "sha256": "c6845abe4e6844d1eb6f74865fa34e2ee374e2f9d7fa27fdff41b816785674a8",
+      "bytes": 4589,
+      "tracked": false,
+      "location": "main checkout data root"
+    },
+    {
+      "path": "/data/haiyangw/nrpic/scratch/core/core-20261115-143907-cea4c86/summary.json",
+      "role": "input",
+      "sha256": "7e8c64e1852daf8865c668e9e00591eb979a7e4fc5dee98018d1af30faed6417",
+      "bytes": 370,
+      "tracked": false,
+      "location": "main checkout data root"
+    }
+  ],
+  "batch_entries": null,
+  "resources": {
+    "nodes": 1,
+    "gpus": 0,
+    "cores": 2,
+    "walltime_s": null,
+    "wall_limit": null,
+    "segments_max": null,
+    "gpu_hours_requested": 0.0,
+    "gpu_hours": null,
+    "particles": null
+  },
+  "slurm": null,
+  "outputs": {
+    "dir": "scratch/E-stoch-inf/E-20261115-172421-50ac4ce",
+    "sha256sums": "sha256sums.txt",
+    "sha256sums_sha256": null,
+    "bytes": null,
+    "files": null
+  },
+  "status": "running",
+  "exit_code": null,
+  "registered": "2026-11-15T17:24:21Z",
+  "started": null,
+  "ended": null,
+  "parents": [
+    "E-stoch-inf-20261115-122806-ef0d039",
+    "E-stoch-inf-20261115-130139-176cdd6",
+    "E-stoch-inf-20261115-130137-176cdd6",
+    "E-20261115-140502-2957846",
+    "E-20261115-140116-87c1cc5",
+    "E-20261115-135532-3f958a1"
+  ],
+  "notes": "",
+  "budget_at_submit": {
+    "gpu_hours_allotted": 10.0,
+    "cores_allotted": 16,
+    "gpu_hours_used": 0.0,
+    "gpu_hours_reserved": 0.0,
+    "gpu_hours_without_gate": 0.0,
+    "cores_busy": 3,
+    "runs": 48,
+    "allotment_from": "coord/DECISIONS/0006-compute-budget.md + 0014-budgets-after-wave-1.md"
+  }
+}
