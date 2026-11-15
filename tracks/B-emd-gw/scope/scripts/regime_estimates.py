@@ -26,7 +26,7 @@ from nrpic import figstyle as fs  # noqa: E402
 
 # measured throughput and memory (zone-cycles per second on one A100, 1 particle per cell)
 # runs/cosmo/east_d0.01_n64_pcs4b/athena.20261114-072656.log: 64^3, 1404 cycles, 63.8 s
-# runs/cosmo/dav_c256_n128_pcs4bt/athena.20261114-021442.log: 128^3, 1301.8 s
+# runs/cosmo/east_d0.01_n128_tsc/athena.20261114-021442.log: 128^3, 2773 cycles, 1301.8 s
 RATE = {64: 5.770348e6, 128: 4.467127e6}
 MEM_MIB = {64: 1685, 128: 5083}
 DELTA_VIR = 18*np.pi**2        # spherical-collapse overdensity [BACKGROUND]
