@@ -1,0 +1,59 @@
+{
+  "schema": "nrpic-run-manifest/1",
+  "run_id": "C-sidm-20261115-121412-d463e1a",
+  "track": "C-sidm",
+  "gate": "G1",
+  "kind": "scouting",
+  "purpose": "C-pre-3 time scales and Knudsen numbers at the onset (G26 phases, F21 threshold models scaled to 200 Msun and 1.9e9 Msun)",
+  "launcher": "local (tracks/C-sidm/gravothermal/register.py)",
+  "command": [
+    "python3",
+    "-E",
+    "timescales.py",
+    "/data/haiyangw/nrpic/scratch/C-sidm/C-sidm-20261115-120722-38ab057/criteria.json",
+    "/data/haiyangw/nrpic/scratch/C-sidm/C-sidm-20261115-121412-d463e1a"
+  ],
+  "cwd": "wt/C-sidm/tracks/C-sidm/gravothermal",
+  "git": {
+    "sha": "d463e1a3dbdb9373027a3b0d1aba876d9aafe633",
+    "branch": "track/C-sidm",
+    "dirty": false,
+    "merge_base_main": "02348f3de3f6f72eb2da83078637dab586678b13",
+    "worktree": "wt/C-sidm"
+  },
+  "inputs": [
+    {
+      "path": "wt/C-sidm/tracks/C-sidm/gravothermal/timescales.py",
+      "sha256": "ef56ebf3a25657069c8d0f138c903bf2da16b13079c47ac65eeba0348058ce75"
+    },
+    {
+      "path": "scratch/C-sidm/C-sidm-20261115-120722-38ab057/criteria.json",
+      "sha256": "3b1774a99d97087eb90ebc27ce89a1f2722008406c99c50825c86bffb60f6491"
+    }
+  ],
+  "env": {
+    "python": "3.10.12",
+    "threads": 1
+  },
+  "resources": {
+    "nodes": 1,
+    "gpus": 0,
+    "cores": 1,
+    "walltime_s": 0.4,
+    "gpu_hours": 0.0,
+    "core_hours": 0.0001
+  },
+  "outputs": {
+    "dir": "scratch/C-sidm/C-sidm-20261115-121412-d463e1a",
+    "sha256sums": "sha256sums.txt",
+    "sha256sums_sha256": "84f64bc428aa05e32359735625591157ef0ec92a4d1cac424411d2f3f3fd46df",
+    "files": 3
+  },
+  "status": "completed",
+  "exit_code": 0,
+  "registered": "2026-11-15T12:14:12+00:00",
+  "started": "2026-11-15T12:14:12+00:00",
+  "ended": "2026-11-15T12:14:12+00:00",
+  "parents": [],
+  "notes": "parent C-sidm-20261115-120722-38ab057"
+}

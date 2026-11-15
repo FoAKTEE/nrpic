@@ -142,3 +142,33 @@ the splines extrapolate; with uniform nodes from r = 0 the lowest omega^2 at rho
 2.7e-9 (N = 300) and 1.6e-9 (N = 1200), against 0.104 for the next mode. The F21 runs are not
 affected (their structure table starts at r = 0 and their nodes are r- and mass-uniform from
 r = 0; their convergence was monotone). Fixed in pulsation_check.py; rerun registered next.
+
+Outcome P6 (run C-sidm-20261115-121524-5cebcf5, fixed node list) - holds: M_max = 1.637276 at
+rho_c = 3.182422e-3 (agrees with the value I remembered, 1.64 at 3.2e-3); the FEM zero equals
+rho_c(M_max) to 2.7e-8 (N = 300), 1.5e-8 (N = 600), 2.5e-8 (N = 1200). Figure
+figs/fig_polytrope_check.png looked at: M(rho_c) peaks on the dashed line where the FEM
+omega_0^2 crosses zero; the trial curve crosses later, as it must.
+
+Record of a failed invocation: the initial-models run launched one second after the
+time-scales run collided on the run id C-sidm-20261115-121412-d463e1a and stopped at the
+creation of its output directory, before running anything; register.py now waits for a free
+second. The time-scales run with that id is complete and unaffected.
+
+Figures looked at (run C-sidm-20261115-121859-690ff91): sequences b = 0.1 and 0.5 (curves
+through every Table 1 point; vertical lines at the five criteria in the order max E, max B,
+max eps, exact onset, trial root), residuals (three typo outliers labelled, the R and C
+columns at the 1e-3 grid level, the rest at 1e-7 to 1e-4), criteria versus b (the solver's
+Table 2 roots on F21's squares for b = 0.09 ... 5), onset (exact omega_0^2/(4 pi rho_c)
+crosses zero at Z(0) = 0.58-0.64 for gamma = 1 + p/u, 0.68-0.78 for 5/3; the trial curve for
+b = 0.1 returns to positive values at Z(0) > 1.3), EOS (F21 Fig. 2: v = 0.57 at bw ~ 0.34 and
+gamma = 1.59 at bw ~ 0.36 for b = 0.5, as F21 states at main.tex:180), profiles (F21 Fig. 4
+qualitatively: the most unstable criterion has the highest central bw, rho, v and the lowest
+gamma), time scales (ladder from t_coll ~ 1e-22 s to 580 t0 ~ 5e18 s).
+
+Changed my mind about: I expected F21's adiabatic-index criterion to be a conservative but
+close bound; the exact mode shows it is far from tight for these core-halo models (the exact
+onset is 0.05-0.12 lower in Z(0)), and that it can even signal re-stabilisation where the
+exact mode stays unstable (b = 0.1, Z(0) > 1.3).
+
+Open: Gamma_1 of a Juttner gas instead of 1 + p/u; the collisionless (Einstein-Vlasov)
+threshold of the same family (equilibria package); the cause of F21's eps_c(0) column offset.

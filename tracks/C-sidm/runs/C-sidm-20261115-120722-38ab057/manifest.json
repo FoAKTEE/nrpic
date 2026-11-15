@@ -1,0 +1,59 @@
+{
+  "schema": "nrpic-run-manifest/1",
+  "run_id": "C-sidm-20261115-120722-38ab057",
+  "track": "C-sidm",
+  "gate": "G1",
+  "kind": "scouting",
+  "purpose": "C-pre-3 F21 equilibrium sequences b=0.1-0.5, comparison with Tables 1-2, turning points, trial and exact (FEM) instability onsets, EOS curves, profiles",
+  "launcher": "local (tracks/C-sidm/gravothermal/register.py)",
+  "command": [
+    "python3",
+    "-E",
+    "run_sequence.py",
+    "/data/haiyangw/nrpic/scratch/C-sidm/C-sidm-20261115-120717-38ab057/f21_tables.json",
+    "/data/haiyangw/nrpic/scratch/C-sidm/C-sidm-20261115-120722-38ab057"
+  ],
+  "cwd": "wt/C-sidm/tracks/C-sidm/gravothermal",
+  "git": {
+    "sha": "38ab05751c0fa0dda12abe5d65ffb742c91cc906",
+    "branch": "track/C-sidm",
+    "dirty": false,
+    "merge_base_main": "02348f3de3f6f72eb2da83078637dab586678b13",
+    "worktree": "wt/C-sidm"
+  },
+  "inputs": [
+    {
+      "path": "wt/C-sidm/tracks/C-sidm/gravothermal/run_sequence.py",
+      "sha256": "3891f94bd00e5ecbcd9e5d2dc83ece2e059aa286841a3da049959742baa1a2b6"
+    },
+    {
+      "path": "scratch/C-sidm/C-sidm-20261115-120717-38ab057/f21_tables.json",
+      "sha256": "4f44459637b85f23fedf7992cf280cc38b579744259f052eb09992f43852418a"
+    }
+  ],
+  "env": {
+    "python": "3.10.12",
+    "threads": 1
+  },
+  "resources": {
+    "nodes": 1,
+    "gpus": 0,
+    "cores": 1,
+    "walltime_s": 229.7,
+    "gpu_hours": 0.0,
+    "core_hours": 0.0638
+  },
+  "outputs": {
+    "dir": "scratch/C-sidm/C-sidm-20261115-120722-38ab057",
+    "sha256sums": "sha256sums.txt",
+    "sha256sums_sha256": "aa4c1322c845d96e1db5bf75702378912636abaa6244dd2c984444cdd5201535",
+    "files": 8
+  },
+  "status": "completed",
+  "exit_code": 0,
+  "registered": "2026-11-15T12:07:22+00:00",
+  "started": "2026-11-15T12:07:22+00:00",
+  "ended": "2026-11-15T12:11:12+00:00",
+  "parents": [],
+  "notes": "parent C-sidm-20261115-120717-38ab057 (parsed tables)"
+}

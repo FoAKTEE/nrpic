@@ -1,0 +1,54 @@
+{
+  "schema": "nrpic-run-manifest/1",
+  "run_id": "C-sidm-20261115-121524-5cebcf5",
+  "track": "C-sidm",
+  "gate": "G1",
+  "kind": "scouting",
+  "purpose": "C-pre-3 independent check of the radial-pulsation FEM: turning-point theorem on Gamma=2 K=100 polytropes (P6), fixed node list",
+  "launcher": "local (tracks/C-sidm/gravothermal/register.py)",
+  "command": [
+    "python3",
+    "-E",
+    "pulsation_check.py",
+    "/data/haiyangw/nrpic/scratch/C-sidm/C-sidm-20261115-121524-5cebcf5"
+  ],
+  "cwd": "wt/C-sidm/tracks/C-sidm/gravothermal",
+  "git": {
+    "sha": "5cebcf52e45938c1383d157559a4d34d23140398",
+    "branch": "track/C-sidm",
+    "dirty": false,
+    "merge_base_main": "02348f3de3f6f72eb2da83078637dab586678b13",
+    "worktree": "wt/C-sidm"
+  },
+  "inputs": [
+    {
+      "path": "wt/C-sidm/tracks/C-sidm/gravothermal/pulsation_check.py",
+      "sha256": "bd21c93dcbd9f8febcadb6a623a0e68f3af20774c0f2f8a77872c17c9ba85e34"
+    }
+  ],
+  "env": {
+    "python": "3.10.12",
+    "threads": 1
+  },
+  "resources": {
+    "nodes": 1,
+    "gpus": 0,
+    "cores": 1,
+    "walltime_s": 11.7,
+    "gpu_hours": 0.0,
+    "core_hours": 0.0032
+  },
+  "outputs": {
+    "dir": "scratch/C-sidm/C-sidm-20261115-121524-5cebcf5",
+    "sha256sums": "sha256sums.txt",
+    "sha256sums_sha256": "c6ef3cb069c41e4b499a76a6bc1f162d3ba21ee57aca78eb058ac1cd35db32c2",
+    "files": 2
+  },
+  "status": "completed",
+  "exit_code": 0,
+  "registered": "2026-11-15T12:15:24+00:00",
+  "started": "2026-11-15T12:15:24+00:00",
+  "ended": "2026-11-15T12:15:35+00:00",
+  "parents": [],
+  "notes": ""
+}
