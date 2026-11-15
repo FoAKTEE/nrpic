@@ -133,3 +133,24 @@ in scratch/B-emd-gw/tmp/ to debug them; the registered runs follow.
   294-298 (eq. ij). Throughput: the 64^3 log has 1404 cycles, 63.78 s, 5.770e6 zone-cycles/s,
   peak 1685 MiB; the 128^3 log 1301.8 s, 4.467e6 (holds). TESTLOG 1842-1852: a = 17.2 then
   failure (holds).
+
+## 2026-11-15, entry 4: outcome C6; prediction for the drift seen in it
+
+- C6, run `B-20261115-165056-835fddf` (processor exe core-v0.3, own analysis
+  `analysis/v4_lw.json`): x-wave rms error of h_+ after 10 crossings 2.1e-4, 4.5e-6,
+  2.0e-7, 8.1e-8 of A at N = 16, 32, 64, 128: order 5.6 and 4.5, then 1.3 between 64 and
+  128 (a floor near 1e-7 of A = 1e-6, the size of roundoff in second differences,
+  1e-16 N^2; not tested with a larger amplitude). Amplitude loss order 6.9 and 6.7; phase
+  error 2.5e-4, 6.2e-6, 2.6e-7 rad. 50 crossings at N = 32: amplitude 0.9999926,
+  error 2.4e-5. Prediction (order 4 to 6) holds, with the floor at 128.
+  Oblique k = (1,1,0): at t = 0 the TT plus amplitude is 0.5000 A (basis uu - zz) and the
+  longitudinal khat khat : h has rms 0.707 A; the momentum-constraint norm M-norm2 at the
+  first dump is 9.7e-11 against 1.7e-24 for the x-wave. The TT part travels at c with
+  amplitude 0.49999935 A at N = 32 (error 3.8e-6 of A after 5 periods); the rest decays.
+  Prediction holds: the generator's polarization is not transverse for oblique k.
+- Seen, not predicted: a homogeneous drift gxx - 1 = -(gyy + gzz - 2) = 6.6e-10 after 10
+  crossings, independent of N (16 to 128), 1.64e-8 after 50 crossings (factor 25 for a
+  factor 5 in time). Prediction for a test: if it is the second-order (A^2) effect of the
+  wave's anisotropic stress on the mean metric of the box (a Bianchi-I-like shear, the
+  k = 0 mode of item 3's amendment 2), it scales as A^2: 4 times larger at A = 2e-6 and
+  16 times at A = 4e-6 (N = 32, 10 crossings). Refuted by: a linear or no scaling in A.
