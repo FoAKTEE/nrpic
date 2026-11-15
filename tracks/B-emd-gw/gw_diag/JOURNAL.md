@@ -210,3 +210,25 @@ tensor is of Petrov type N with respect to n, so only the outgoing scalar is non
 part of the data is null dust (R_uu ~ hdot^2), which enters E and B only through traces and n n
 terms that mbar mbar does not see. For a superposition with several directions the reverse
 scalar is O(A^2) from the cross terms (not measured here).
+
+## P6 refined (written before validate_athenak.py ran)
+
+Input: run B-emd-gw-20261115-113218-0ea0f74 (periodic_z4c helper; finished, 33 restart files
+t = 0 .. 2 every 1/16, binary weyl output at the same times; AthenaK computes the Weyl scalar at
+the end of the step at which an output time is reached, `z4c_tasks.cpp` CalcWeylScalar, and
+dt = 1/128 divides 1/16, so both refer to the same time). Predictions:
+- my reader and the periodic_z4c reader (`../periodic_z4c/analysis/athena_dumps.py`, written
+  independently) give bit-identical Z4c arrays;
+- h_+ from Lambda(tilde gamma - delta) along +x: amplitude 1e-6 and phase -2 pi t to the evolution
+  error (sub-percent at 32^3, 8 cells... [JUDGEMENT]: 32 cells per wavelength with 6th-order
+  stencils and RK4, two periods: amplitude and phase errors < 1e-3); h_x < 1e-3 of h_+; the non-TT
+  part |h - h^TT| at the level of the O(A^2) and constraint terms (< 1e-3 of A);
+- rho_kin + rho_grad = pi A^2/8 = 3.93e-13 (G = 1) to < 1e-3, constant in time;
+- d_tau h^TT = -2 Lambda(tilde A) against time differences of h^TT between dumps (dt = 1/16):
+  second-order centred difference off by (omega dt)^2/6 = 2.6 %, fourth-order by
+  (omega dt)^4/30 = 7.8e-4 (plus the evolution error);
+- Psi_4 along +x from E, B (6th-order stencils, as AthenaK with nghost = 4): equals
+  hddot_+ = -(2 pi)^2 A sin(2 pi (x - t)) to the evolution error, imaginary part ~0;
+- Psi_4 in AthenaK's radial triad times r against AthenaK's weyl_rpsi4 + i weyl_ipsi4: same
+  convention (D2), agreement to ~1e-5 relative to the maximum (float32 output, identical stencils
+  for a wave that depends on x only). A sign flip or a factor would refute D2.

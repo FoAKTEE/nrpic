@@ -1,0 +1,38 @@
+{
+ "run_id": "B-emd-gw-20261115-115637-175cbca",
+ "owner": "B-emd-gw",
+ "package": "gw_diag",
+ "command": "python3 scripts/validate_weyl.py",
+ "cwd": "/data/haiyangw/nrpic/wt/B-emd-gw/tracks/B-emd-gw/gw_diag",
+ "commit": "175cbca1f87e69b8f16ac9a64f2ce680d26c6e1b",
+ "worktree_dirty_gw_diag": false,
+ "inputs": [
+  {
+   "path": "/data/haiyangw/nrpic/wt/B-emd-gw/tracks/B-emd-gw/gw_diag/scripts/validate_weyl.py",
+   "sha256": "5de028a19a0fd0dbabb304968fd71788848006c2e19b053a9a3baa9fce25f43b"
+  }
+ ],
+ "output_dir": "/data/haiyangw/nrpic/scratch/B-emd-gw/B-emd-gw-20261115-115637-175cbca",
+ "purpose": "Weyl validation rerun with revised figure layout (same computations as B-emd-gw-20261115-115540-2cb33df)",
+ "kind": "production",
+ "cores": 8,
+ "card_hours": 0.0,
+ "env": {
+  "OMP_NUM_THREADS": "8",
+  "OPENBLAS_NUM_THREADS": "8",
+  "MKL_NUM_THREADS": "8"
+ },
+ "started_utc": "2026-11-15T11:56:37+00:00",
+ "status": "completed",
+ "exit_code": 0,
+ "wall_time_s": 21.15,
+ "ended_utc": "2026-11-15T11:56:58+00:00",
+ "outputs_sha256": {
+  "results_weyl.json": "f63e976a9f0a13bb04baa760dc61aabfaa9c7f24768fb34092e126d02190819f",
+  "stdout.txt": "5ee134c8ee0dc0654054d2484ad731571301c9ced3cd31089e9ce828b93850e4",
+  "weyl_convergence.pdf": "2c4378751844dae05b7e7893862a13d8449acdb30a239b8070dc433afeb064d7",
+  "weyl_convergence.png": "8cd963ca9fff1add4774f36b196768e07dd491879646e59fd5987d40f341745f",
+  "weyl_psi4.pdf": "37d5a41efd27970b79efd1ba9edf271e784434fcd41cb7055bfe43c2b5972d15",
+  "weyl_psi4.png": "ed144cafda2ef2fad61ff30b13946a491d5011060eb367eae8ec1072b481089e"
+ }
+}
