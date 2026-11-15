@@ -142,3 +142,63 @@ coordinates (request 2 of `outbox/20261115T1340Z__to-core__newtonian-mode-for-tr
 Without it only the particle snapshots are available (positions and momenta, no
 acceleration), which give Q and Q' of the patch but Q'' and Q''' only by differencing
 snapshots. Not attempted in this package.
+
+## 2026-11-15 17:05 UTC: first outcomes at n = 32 (debug pass of the analysis scripts)
+
+Runs: B-20261115-163556-ad5637f (P1, east32), B-20261115-163558-20244f2 (P2, sin32),
+B-20261115-163613-790095f (N1, N = 32), B-20261115-163620-5b286c1 (N3, N = 32). The
+numbers below come from the analysis scripts run on these outputs in
+`scratch/B-emd-gw/tmp/` while the scripts were being debugged; the cited numbers will be
+those of the registered analysis run (same scripts), entered further down.
+
+P1 at n = 32: **P1a failed, P1b failed.** AthenaK's largest sheet error against the
+continuum, in units of the displacement: 1.39e-3, 2.99e-3, 4.42e-3, 5.76e-3 at a = 2, 5,
+10, 15, against pm.py's 1.1e-4, 6.1e-4, 2.1e-3, 1.7e-3 (5 to 13 times larger, not within
+two); AthenaK - pm.py 1.4e-3 to 5.7e-3 (bound 1e-3). P1c passed: first crossing at
+a = 21.34 against pm.py's 21.55 (1.0 %; the discrete Zel'dovich sheets cross at 21.11).
+P1d passed: plane spread at most 1.3e-15 L before the crossing.
+
+Hypothesis H1 (formed after seeing P1; not yet tested): the excess is the seven-point
+Laplacian of the multigrid solver, which pm.py (spectral) does not have. For the
+fundamental mode along x its eigenvalue is -k^2 [sin(kh/2)/(kh/2)]^2, so the potential
+and, with a gradient accurate to O(h^4) (cubic spline through the nodes; compensated cubic
+cloud), the force are too strong by the factor F = [(kh/2)/sin(kh/2)]^2 = 1 + 3.219e-3 at
+n = 32 (8.04e-4 at n = 64). Linear theory with that force: s = A a^n1 + B a^n2,
+n1,2 = [-1/2 +- sqrt(1/4 + 6F)]/2, A, B from s = s0, ds/da = s0 at a = 1 (the growing
+mode of F = 1). Predicted error of the sheet with the largest displacement, in the units
+of P1: n = 32: 1.41e-3, 2.94e-3, 4.09e-3, 4.79e-3, 5.29e-3 at a = 2, 5, 10, 15, 20;
+n = 64: 3.51e-4, 7.33e-4, 1.02e-3, 1.19e-3, 1.32e-3. The measured n = 32 values above
+agree to 1 % at a = 2 and 5 and fall short by 8 % and 17 % at 10 and 15, where nonlinear
+terms and the lattice error enter; this agreement was noticed after the run, so it is
+not yet a test.
+
+Tests of H1 that can fail:
+- H1a (n = 32 data, computed after this entry): the error is proportional to the
+  displacement sheet by sheet: (x_AK - x_exact)/(x_exact - x0) has the same value
+  (A a^n1 + B a^n2 - a)/(a - 1) for every sheet with |cos k q| > 0.3, within 10 % at
+  a = 2 and 5. A lattice-sampling error would vary from sheet to sheet.
+- H1b (card run B-20261115-163653-f6324ea, still queued when this is written): at n = 64
+  the error against the continuum is 3.5e-4 and 7.3e-4 at a = 2 and 5 within 15 %
+  (falls by 4.0, second order), while pm.py's fell by 2.3 and 1.9.
+- H1c (P2, sin data): the same linear theory with F, carried through
+  I_xx = c0 + c1 D + c2 D^2, D = A a^n1 + B a^n2, reproduces the measured d3I_xx error
+  (1.5-5 % high at n = 32 for 2 <= a <= 15) to within a third of its size at a <= 10,
+  and at n = 64 the d3I error falls by about four.
+
+P2 at n = 32: P2a partly failed: I_xx - c0 within 2.05e-3 of its largest value
+(bound 2e-3: marginal fail), dI_xx 2.6e-3 (fail), d2I_xx 1.6e-2 (fail; d2I_xx contains
+the acceleration and changes sign at a = 13.3, so the errors were normalised by the
+largest exact value for a <= 15 instead of pointwise, a change of the metric made after
+seeing the data). P2b passed at n = 32: d3I_xx rms relative error 2.4 % for
+1.2 <= a <= 15, systematically high (1.6 % at 5-10, 3.2 % at 10-15, 4.7 % at 15-19).
+P2c passed: dI and d2I of yy, zz, xy, xz, yz below 4.1e-13 of max d2I_xx. P2d passed:
+Layzer-Irvine constant to 7.9e-7 of max a|W|.
+
+N1 at N = 32: t_x = 24.066, 0.90 % after the nominal ODE (0.63 % after the
+equivalent-ellipsoid ODE): within N1a. E_avg = 3.21e-4 M c^2 (E/M), 34 % below the ODE
+(raw 33 %); up to one t_k before the crossing 8-10 % below. Q within 0.35 % of max|Q|,
+Q'' within 3.4 %, Q''' averaged within 38 % in the window t <= t_x - 1 (the particle
+Q''' turns over at t ~ 22.3, where R_x ~ 1 cell; figure in the debug directory).
+
+N3 at N = 32: E/(M c^2 (2 alpha)^3.5) = 0.061787 for alpha = 0.05, 0.1, 0.11122237, 0.2
+with a spread of 5.8e-15, t_x/t_turn 2.524849 with a spread of 2.6e-15: N3a passed.
