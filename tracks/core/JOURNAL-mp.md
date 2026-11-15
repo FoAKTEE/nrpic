@@ -238,3 +238,14 @@ the background factor is not below 1e-3.
 **Revised prediction for test 3 (t = 0).** With `approx` and the background factor the
 Hamiltonian norm is below the uncorrected one by a factor of at least 3; with the plain
 sum it is not (it may be larger).
+
+### Outcome of 1a (viii), source ae695ce (processor runs `core-20261115-115118-4745494` to `-115123-`)
+
+Prediction held. Two punctures, dx = 1/16, rms of H over the history cells: 2.868e-3
+without correction, 6.200e-4 with `approx` and the background factor (closed form
+6.178e-4; factor 4.6), 3.834e-3 with the plain sum (`corr_background = false`, as
+before the change). Single-puncture cases unchanged to all printed digits (P = 0.3
+`approx` 6.017e-5, table 4.512e-6, momentum with spin 7.508e-4). Figures regenerated
+and looked at: `figs/static_profile.png`, right panel: the background-rescaled
+correction lies 5 to 10 times below the uncorrected residual along the axis, the plain
+sum above it outside the punctures. [VERIFIED]
