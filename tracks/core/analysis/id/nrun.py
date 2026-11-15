@@ -8,7 +8,9 @@
 The run id is core-<YYYYMMDD-HHMMSS>-<commit7>; outputs go to
 scratch/core/<run_id>/ of the main checkout, the manifest to
 tracks/core/runs/<run_id>/manifest.json of this worktree (command, cwd, commit, inputs
-with sha256, output directory, purpose, kind, wall time, cores or card-hours).
+with sha256, output directory, purpose, kind, wall time, cores or card-hours; the
+card-hours are the time between the start and end stamps of the card log, the wall time
+includes the wait in the queue).
 
 With --athinput the executable (--exe, a processor build by default) is run as
 `athena -i <input> -d <out> <args>` with the output directory as working directory; with
@@ -100,6 +102,21 @@ def main():
                             stderr=subprocess.STDOUT).returncode
     wall = time.time() - t0
 
+    card_s = 0.0
+    if a.gpu:
+        # time on the card: from the start and end stamps of the log of gpu_run.sh
+        # (the wall time above includes the wait in the queue)
+        try:
+            with open(os.path.join(out, "athena.log")) as f:
+                txt = f.read()
+            fmt = "%Y-%m-%dT%H:%M:%S"
+            t_a = txt.split("start=", 1)[1][:19]
+            t_b = txt.rsplit("end=", 1)[1][:19]
+            card_s = (datetime.datetime.strptime(t_b, fmt)
+                      - datetime.datetime.strptime(t_a, fmt)).total_seconds()
+        except (OSError, IndexError, ValueError):
+            card_s = wall
+
     man = {
         "run_id": run_id,
         "owner": "core",
@@ -115,7 +132,7 @@ def main():
         "output_directory": out,
         "wall_time_s": round(wall, 1),
         "cores": a.cores,
-        "card_hours": round(wall / 3600.0, 4) if a.gpu else 0.0,
+        "card_hours": round(card_s / 3600.0, 5) if a.gpu else 0.0,
         "exit_status": rc,
         "started": stamp,
     }

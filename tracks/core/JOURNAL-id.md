@@ -307,3 +307,153 @@ errors of the interior shells are within a factor of three of those of gauge mp.
 (h) Sources extrapolated to the middle of the step (`source_density`,
 `source_extrap`): interior |eps| at dx = 1/2 M not larger than without, and smaller if
 the time lag of the sources is the leading error.
+
+## 2026-11-15, entry 4: test 2, first look, and two further predictions
+
+First look at the 15 runs of test 2 (tag `t2-*`, commit c9aa6d2; numbers and outcome in
+entry 5). Two things were not predicted and decide the next runs:
+- the mesh mean of |H| rises by a factor of 20 or more within the first few steps and
+  then does not fall with resolution (sharp surface, every gauge);
+- with the 1+log lapse the central lapse follows 1 + 6 ln a up to 3.4 and then falls to
+  1.5 within 0.4 M at t = 5.8 M: a lapse front that starts at the surface, where K
+  jumps, arrives at the centre.
+
+### Prediction T2b (smooth edge with the conformal-time lapse), written while the runs were queued, before any of their output was read
+
+Cases `ct-edge2-n064, -n128, -n256` (mesh half-width 32 M) and `ct-edge2-big-n192`
+(half-width 48 M, dx = 1/2 M). Reasoning: the conformal-time lapse has the gauge speed
+alpha sqrt(alpha/3)/sqrt(g_rr), about 0.6, so its lapse front cannot reach the centre
+before t = 17 M; the smooth edge has no jump of K_ij and no momentum sheet.
+Prediction: (i) the rms of H and of M_i in the interior and in the edge region fall
+with resolution at second order at every dump time up to t = 10 M (ratio between
+dx = 1/2 and 1/4 M above 3), unlike every sharp-surface run and unlike `mp-edge2`;
+(ii) largest |eps| of all ball shells at tau = 8 M below 5e-4 at dx = 1/2 M and second
+order; (iii) the residual in the layer next to the mesh boundary does not fall with
+resolution (the outflow condition of Z4c assumes fields that fall as 1/r, the
+Painleve-Gullstrand exterior has K_ij proportional to r^(-3/2)), and with the boundary
+at 48 M the residual in 10 < r < 18 M is the same as with the boundary at 32 M.
+Refuted by an interior residual that does not fall between dx = 1/2 and 1/4 M.
+
+### Prediction T3 (bound ball that turns around), written before the runs
+
+Ball `Ball(M=1, Rb=5, e0=0.16, RE=10)`: 2M/R_b = 0.4, H R_b = 0.283, every shell
+reaches a_max = 1.25 at tau = 9.542 M and then falls (time reverse of
+Oppenheimer-Snyder collapse from R = 6.25 M); isotropic surface radius 4.616 M, central
+psi = 1.0897; sharp surface (the smooth edge is implemented for the marginally bound
+ball only). Mesh half-width 20 M, 80, 160, 320 cells (dx = 1/2, 1/4, 1/8 M; 9, 18, 37
+cells per surface radius), one lattice site per cell, conformal-time lapse with
+Gamma-driver (`bound-ct-*`), to t = 12 M; one run with the 1+log lapse at dx = 1/4 M
+(`bound-mp-n160`).
+Prediction: (i) the shells turn around: the largest areal radius of the core and outer
+shells is within 0.5 per cent of 1.25 R_0 at dx = 1/4 M, reached at a proper time
+within 3 per cent of 9.54 M; (ii) largest |eps| of the ball shells below 1e-2 at
+dx = 1/4 M for tau <= 12 M, first order in dx; (iii) the central lapse equals
+a(tau_c) within 2 per cent until t = 8 M and then stops growing as the ball turns
+around (alpha = a holds while the centre is homogeneous); (iv) with the 1+log lapse
+the front from the surface reaches the centre near t = 3 M and the errors of the core
+shells are at least twice those of the conformal-time run. Refuted by shells that do
+not turn around, by |eps| above 5 per cent, or by a run that ends before t = 12 M.
+
+## 2026-11-15, entry 5: outcome of test 2 (evolution of the marginally bound ball)
+
+Runs: 15 card runs, tag `t2-*`, commit c9aa6d2, 0.21 card-hours in all (ids in
+`tracks/core/analysis/id/test2_numbers.json`; the 1+log sequence is
+`core-20261115-034331-c9aa6d2` (dx = 1 M), `-034340-` (1/2 M), `-034341-` (1/4 M); the
+conformal-time sequence `-034414-`, `-034416-`, `-034433-`; smooth edge `-034703-`,
+`-034705-`, `-034723-`). Analysis `test2_evolution.py`; figures `figs/t2_radius_mp`,
+`t2_radius_ct`, `t2_radius_mp_edge2`, `t2_variants`, `t2_constraints`,
+`t2_constraints_regions`, `t2_Hprofile`, `t2_gauge`, `t2_profiles` (looked at:
+radius_mp, constraints, constraints_regions, Hprofile, gauge, variants). All numbers
+[VERIFIED] by these runs; "largest" is over the tracked particles of a group (2000 ball
+particles in four groups of initial radius, 26 tracers per exterior radius).
+
+(a) Interior shells. Largest |eps| at tau = 8 M, dx = 1, 1/2, 1/4 M:
+
+| gauge, surface | core (R_0 < 0.5 R_b) | mid (0.5 to 0.75) | outer (0.75 to 0.95) | surface (> 0.95) |
+|---|---|---|---|---|
+| 1+log, sharp | 6.2e-3, 2.7e-3, 1.0e-3 | 3.0e-3, 1.25e-3, 4.2e-4 | 3.6e-3, 1.16e-3, 3.7e-4 | 6.8e-3, 4.0e-3, 1.7e-3 |
+| conformal time, sharp | 7.6e-4, 4.0e-4, 1.7e-4 | 1.9e-3, 1.17e-3, 4.0e-4 | 2.2e-3, 1.21e-3, 4.2e-4 | 5.3e-3, 3.9e-3, 1.7e-3 |
+| 1+log, edge w = 2 M | 4.7e-3, 1.26e-3, 4.3e-4 | 1.4e-3, 4.1e-4, 2.4e-4 | 2.2e-3, 6.0e-4, 1.6e-4 | 4.6e-4, 1.5e-4, 5.9e-5 |
+
+The prediction (below 5e-3 at dx = 1 M, below 1.5e-3 at dx = 1/2 M) holds for the
+means (core, 1+log: 2.9e-3, 1.1e-3, 3.8e-4) and for the conformal-time lapse, and fails
+for the largest values of the core with 1+log (6.2e-3, 2.7e-3). Orders between 1.2 and
+1.6: as predicted.
+(b) Surface shell: first order (ratios 1.7 and 2.3), 6.8e-3 at dx = 1 M. Confirmed.
+(c) Tracers at dx = 1/2 M: largest |eps| over the whole run 1.4e-3 at 1.25 R_b (above
+the predicted 1e-3; 3.8e-4 at tau = 8 M), 1.9e-4 at 2 R_b. Marginally failed at
+1.25 R_b, confirmed further out. The tracers at 1.25 R_b feel the surface (first
+order: 2.9e-3, 1.4e-3, 5.8e-4).
+(d) Smooth edge: the edge and outer shells are ten times more accurate than with the
+sharp surface and of second order (outer: ratios 3.7, 3.9); the core is not better
+than with the sharp surface. Partly confirmed: the core error is not a surface effect
+(see the lapse front below).
+(h) Sources extrapolated to the middle of the step: mean core eps at tau = 8 M
+7.5e-4 instead of 1.10e-3, largest 2.4e-3 instead of 2.7e-3 (dx = 1/2 M). Confirmed, a
+modest gain. Eight sites per cell: mean 3.7e-4, largest 2.4e-3. Without the binomial
+pass: no change (1.19e-3, 2.8e-3). Mesh boundary at 48 M instead of 32 M: identical to
+three digits in every group up to tau = 8 M, so the boundary does not reach the
+particles in these runs.
+
+Whole run (to t = 10 M; proper time up to 19 M at the centre with 1+log, 12.4 M with
+the conformal-time lapse), largest |eps|, dx = 1, 1/2, 1/4 M:
+- conformal time, sharp: core 3.3e-3, 1.07e-3, 4.6e-4; mid 3.0e-3, 1.4e-3, 5.4e-4;
+  outer 4.5e-3, 1.7e-3, 5.7e-4; surface 7.2e-3, 4.0e-3, 1.9e-3; tracers at 1.25 R_b
+  3.3e-3, 1.15e-3, 4.2e-4. Converges everywhere.
+- 1+log, sharp: core 7.9e-2, 7.7e-2, 0.245; mid 8.5e-3, 2.7e-3, 1.0e-3; outer 5.8e-3,
+  3.6e-3, 1.0e-3; surface 9.7e-3, 5.6e-3, 2.6e-3. The core does NOT converge: the
+  innermost tracked shells are wrong by several per cent to 25 per cent after
+  t = 5.5 M.
+
+(e) Constraints. Failed, and this is the main finding of the test.
+- Sharp surface, every gauge: the mesh mean of |H| goes from 3.3e-5, 1.6e-5, 8.1e-6
+  (dx = 1, 1/2, 1/4 M) at the start to 2.3e-4 after the FIRST step at every resolution,
+  and stays between 2e-4 and 7e-4. By region (rms of H at t = 2 ... 10 M): surface
+  layer 1.1e-2 falling to 1.6e-3, the same at all three resolutions; interior
+  1e-3 to 4e-3 (conformal time) or 5e-3 to 1.2e-2 (1+log), not falling with resolution;
+  exterior out to 18 M 2e-3 to 3e-3, not falling. For scale 16 pi rho = 1.2e-2 at the
+  start. The residual spreads from the surface at about the speed of light (front at
+  r = 17 M at t = 4 M, `figs/t2_Hprofile`).
+  Cause [JUDGEMENT, supported by the one-step jump and by the smooth-edge runs, in
+  which it could have appeared and did not]: with zero shift the coordinates are
+  comoving with the dust, and in comoving coordinates the exact metric component g_rr =
+  (dR/dr)^2 is discontinuous at a sharp surface for tau > 0, because m'(r) jumps there.
+  One step gives the metric a jump of 2 dt times the jump of K_ij across one cell; its
+  second differences are a curvature of order (Courant number) x (jump of K)/dx, the
+  size of the momentum sheet of test 1. Finite differences cannot converge on it.
+- Smooth edge (1+log): mean |H| 3.4e-6 at the start, 4.5e-6 after the first step
+  (dx = 1/2 M); rms in 16 < r < 18 M: 5.2e-5 and 8.9e-6 at t = 2 M for dx = 1/2 and
+  1/4 M (falls), interior 1.2e-4 and 2.1e-5 at t = 2 M (falls), but not from t = 4 M on
+  (1.75e-4, 1.79e-4), when the lapse front of the 1+log gauge is inside.
+- Layer next to the mesh boundary (r > 22.4 M of 32 M): rms of H 2e-5 at t = 2 M,
+  rising to 7e-4 (1+log) or 3.7e-4 (conformal time) at t = 10 M, the same at all
+  resolutions and for both surfaces: the outflow condition of Z4c
+  (`athenak/src/z4c/z4c_Sbc.cpp:95-125`, d_t f = -v (d_r f + f/r)) is not satisfied by
+  the Painleve-Gullstrand exterior, whose K_ij falls as r^(-3/2). With the boundary at
+  48 M the layer has 1.1e-4 at t = 10 M.
+
+(f) Gauge. 1+log: the central lapse follows 1 + 6 ln a(tau_c) within 5.6e-4 for
+t < 4 M (confirmed) up to 3.08, 3.24, 3.39 at t = 5.25, 5.50, 5.75 M (dx = 1, 1/2,
+1/4 M), then falls to 1.5 - 1.7 within 0.4 to 1 M and stays at 1.68 until t = 10 M.
+The prediction "keeps growing, above 3 at t = 10 M" failed. A lapse front starts at
+the surface, where K jumps from -3H to -3H/2 (the lapse grows half as fast outside),
+runs inwards at the gauge speed and focuses at the centre; behind it the slices are far
+from the dust slices (largest K on the mesh +0.39 against -0.134 at the start,
+smallest chi 0.457), the constraint residual at the front is of the order of
+16 pi rho, and the innermost shells lose accuracy (above). The smooth edge does not
+prevent it (central lapse 3.01 at t = 5.25 M, then 1.69). The largest coordinate speed
+of light at the ball particles is 2.27 to 2.35 at t = 5.5 M (effective Courant number
+0.59 at the nominal 0.25): confirmed; no instability to t = 10 M.
+Conformal-time lapse: central lapse equals a(tau_c) within 4.9e-4 over the whole run
+(dx = 1/2 M; 2.5e-4 at dx = 1/4 M), largest coordinate speed of light 1.13. Confirmed
+and better than predicted: no front reaches the centre before t = 10 M.
+(g) Painleve-Gullstrand shift at the start with the Gamma-driver (eta = 2/M): the
+radial shift at the surface shell is -0.436, -0.161, -0.060, -0.012, -0.006 at t = 0,
+0.5, 1, 2, 4 M (decays as exp(-2t/M)); errors within 30 per cent of the zero-shift
+start. Confirmed. The coordinates do not stay areal.
+Coordinate motion (dx = 1/2 M, end of run): with the conformal-time lapse the core
+stays at its coordinate radius (r/r_0 = 1.014, 1.002 with the shift held at zero)
+while its areal radius grows by 1.50; the surface moves to r/r_0 = 1.13. With 1+log
+the particles move through the mesh, r/r_0 = 1.55 (core), 1.43 (surface), although the
+shift stays below 0.02: the lapse gradient behind the front accelerates the normal
+observers relative to the dust.
