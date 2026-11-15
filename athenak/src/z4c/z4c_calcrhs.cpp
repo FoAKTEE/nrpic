@@ -22,6 +22,8 @@
 #include "z4c/driftcontrol/driftcontrol.hpp"
 #include "z4c/tmunu.hpp"
 #include "coordinates/cell_locations.hpp"
+// after tmunu.hpp: the tracker header defines the macro NDIM
+#include "z4c/compact_object_tracker.hpp"
 
 namespace z4c {
 
@@ -151,6 +153,12 @@ TaskStatus Z4c::CalcRHS(Driver *pdriver, int stage) {
       }
     }
   }
+
+  // Lapse relaxation and tracker-dependent shift damping (z4c_gauge_ext.hpp); both off
+  // unless their parameters are given
+  const GaugeExt gx = MakeGaugeExt(pmy_pack->pz4c->gext, pmy_pack->pz4c->ptracker);
+  const bool gx_leak = (gx.leak_rate > 0.0);
+  const bool gx_eta = (gx.npunc > 0);
 
   bool is_vacuum = (pmy_pack->ptmunu == nullptr) ? true : false;
   Tmunu::Tmunu_vars tmunu;
@@ -707,6 +715,11 @@ TaskStatus Z4c::CalcRHS(Driver *pdriver, int stage) {
                             * (z4c.vKhat(m,k,j,i) - opt.lapse_ref_khat);
     }
 
+    // relaxation of the excess of the lapse over its reference value
+    if (gx_leak) {
+      rhs.alpha(m,k,j,i) += gx.LapseLeak(z4c.alpha(m,k,j,i));
+    }
+
     if (opt.slow_start_lapse) {
       Real W2 = (z4c.chi(m,k,j,i) > opt.chi_min_floor)
                     ? z4c.chi(m,k,j,i) : opt.chi_min_floor;
@@ -717,10 +730,18 @@ TaskStatus Z4c::CalcRHS(Driver *pdriver, int stage) {
     }
 
     // shift vector
+    // damping coefficient: constant, or raised and lowered around the trackers
+    Real shift_eta = opt.shift_eta;
+    if (gx_eta) {
+      shift_eta *= gx.EtaFactor(
+          CellCenterX(i - is, nx1, size.d_view(m).x1min, size.d_view(m).x1max),
+          CellCenterX(j - js, nx2, size.d_view(m).x2min, size.d_view(m).x2max),
+          CellCenterX(k - ks, nx3, size.d_view(m).x3min, size.d_view(m).x3max));
+    }
     for(int a = 0; a < 3; ++a) {
       rhs.beta_u(m,a,k,j,i) = opt.shift_ggamma * z4c.vGam_u(m,a,k,j,i)
                             + opt.shift_advect * Lbeta_u(a);
-      rhs.beta_u(m,a,k,j,i) -= opt.shift_eta * z4c.beta_u(m,a,k,j,i);
+      rhs.beta_u(m,a,k,j,i) -= shift_eta * z4c.beta_u(m,a,k,j,i);
       // FORCE beta = 0
       //rhs.beta_u(m,a,k,j,i) = 0;
     }

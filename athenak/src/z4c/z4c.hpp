@@ -22,6 +22,7 @@
 #include "athena_tensor.hpp"
 #include "geodesic-grid/geodesic_grid.hpp"
 #include "geodesic-grid/spherical_grid.hpp"
+#include "z4c/z4c_gauge_ext.hpp"
 
 // forward declarations
 class Coordinates;
@@ -215,6 +216,7 @@ class Z4c {
     int dc_gaussian_center;
   };
   Options opt;
+  GaugeExtOptions gext;   // lapse relaxation and tracker-dependent shift damping
   Real diss;              // Dissipation parameter
 
   // Boundary communication buffers and functions for u
