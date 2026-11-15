@@ -1,6 +1,7 @@
 """Figures of the gravothermal package (style: python/nrpic/figstyle.py).
 
-    python3 -E make_figures.py <sequence run outdir> <f21_tables.json> <figdir> [<timescales outdir>]
+    python3 -E make_figures.py <sequence run outdir> <f21_tables.json> <figdir>
+                               [<timescales outdir> [<polytrope check outdir>]]
 
 Colour convention of figstyle: blue = published reference (F21 tables), red = this solver;
 yellow, green, orange for further series; black dashed = analytic or printed guide lines.
@@ -63,7 +64,8 @@ def fig_sequence(seqs, crit, t1, out, b="0.1"):
         a.plot(vp, [float(r[f"{k}_paper"]) for r in rows], "o", ms=4, mfc="none",
                color=fs.PAL["blue"], label="F21 Table 1")
         if k == "gavg":
-            a.plot(v, [e["gcr"] for e in seq], color=fs.PAL["yellow"], label=r"$\gamma_{\rm cr}$")
+            a.plot(v, [e["gcr"] for e in seq], color=fs.PAL["yellow"],
+                   label=r"$\gamma_{\rm cr}$, this solver")
             a.plot(vp, [float(r["gcr_paper"]) for r in rows], "s", ms=4, mfc="none",
                    color=fs.PAL["blue"])
             a.set_ylim(1.33, 1.68)
@@ -75,7 +77,7 @@ def fig_sequence(seqs, crit, t1, out, b="0.1"):
             if c.get(tag):
                 a.axvline(c[tag]["v0"], color="grey", lw=1.0, ls=ls, alpha=0.7)
         a.set_xlim(0.05, 0.62)
-    ax[0, 0].legend(loc="lower left", ncol=1)
+    ax[0, 0].legend(loc="center left", ncol=1)
     ax[1, 0].set_xlabel(r"$v(0)/c$")
     ax[1, 1].set_xlabel(r"$v(0)/c$")
     fs.save(fig, os.path.join(out, f"fig_sequence_b{b}"))
@@ -100,10 +102,16 @@ def fig_residuals(t1, t2, out):
     ax.set_xticklabels(cols + [r"$w_0$ T2"], rotation=0, fontsize=8)
     ax.set_ylabel(r"$|X_{\rm here}/X_{\rm F21} - 1|$")
     ax.minorticks_off()
-    ax.set_ylim(1e-9, 30)
+    ax.set_ylim(1e-9, 1e4)
     for b, col in BCOL.items():
         ax.plot([], [], "o", color=col, label=f"b = {b}")
-    ax.legend(loc="upper right", ncol=4)
+    ax.legend(loc="upper left", ncol=4)
+    for i, k in enumerate(cols):
+        for r in t1:
+            d = abs(float(r[f"{k}_rel"]))
+            if d > 1e-2:
+                ax.annotate(f"main.tex:{r['line']}", (i, d), xytext=(6, 4),
+                            textcoords="offset points", fontsize=7)
     fs.save(fig, os.path.join(out, "fig_table_residuals"))
     plt.close(fig)
 
@@ -129,7 +137,9 @@ def fig_omega(seqs, crit, out):
     ax[1].set_ylim(-0.15, 0.35)
     ax[0].set_ylabel(r"$\omega_0^2/(4\pi G\rho_c)$ (exact, FEM)")
     ax[1].set_ylabel(r"$\langle\gamma\rangle-\gamma_{\rm cr}$ (trial $\xi = r e^\Phi$)")
-    ax[0].legend(loc="upper right", ncol=2)
+    ax[0].plot([], [], color="grey", label=r"$\gamma = 1 + p/u$")
+    ax[0].plot([], [], color="grey", ls="--", label=r"$\gamma = 5/3$")
+    ax[0].legend(loc="upper right", ncol=2, fontsize=8)
     fs.save(fig, os.path.join(out, "fig_onset"))
     plt.close(fig)
 
@@ -149,12 +159,14 @@ def fig_criteria(crit, t2, out):
         y = [crit[b][tag]["Z0"] for b in bs if crit[b].get(tag)]
         if x:
             ax.plot(x, y, "o-", color=col, label=lab, ms=4)
-    ax.plot([float(r["b"]) for r in t2], [float(r["Z0_paper"]) for r in t2], "s", ms=5,
+    ax.plot([float(r["b"]) for r in t2], [float(r["Z0_paper"]) for r in t2], "s", ms=6,
             mfc="none", color=fs.PAL["blue"], label=r"F21 Table 2")
+    ax.plot([float(r["b"]) for r in t2], [float(r["Z0_here"]) for r in t2], "x", ms=4,
+            color="k", label=r"Table 2 roots, this solver")
     ax.set_xscale("log")
     ax.set_xlabel(r"$b = kT(R)/mc^2$")
     ax.set_ylabel(r"$Z(0)$ at the criterion")
-    ax.legend(loc="upper right", ncol=1, fontsize=7)
+    ax.legend(loc="lower right", ncol=1, fontsize=7)
     ax.set_xlim(0.08, 6)
     fs.save(fig, os.path.join(out, "fig_criteria_vs_b"))
     plt.close(fig)
@@ -188,12 +200,13 @@ def fig_profiles(prof, out):
 
 def fig_timescales(ts, out):
     rows = [r for r in ts["threshold_models_scaled"] if r["M_msun"] < 1e3]
-    fig, ax = plt.subplots(1, 1, figsize=(fs.FULL_WIDTH / 2 + 0.6, 3.6))
-    fig.subplots_adjust(left=0.2, right=0.97, bottom=0.13, top=0.95)
+    fig, ax = plt.subplots(1, 1, figsize=(fs.FULL_WIDTH, 3.4))
+    fig.subplots_adjust(left=0.04, right=0.98, bottom=0.15, top=0.97)
     g = ts["G26_core_445.8t0"]
     t0 = 0.26 * 3.15576e16
     lines = [
-        (r"$t_{\rm coll}$ (centre, Kn$\to$)", np.median([r["t_coll_c_s"] for r in rows]), "C1"),
+        (r"$t_{\rm coll}$ at the centre ($\sigma/m = 5$ cm$^2$/g)",
+         np.median([r["t_coll_c_s"] for r in rows]), "C1"),
         (r"$R/c$", np.median([r["t_light_s"] for r in rows]), fs.PAL["green"]),
         (r"$t_{\rm dyn}$ (centre)", np.median([r["t_dyn_c_s"] for r in rows]), fs.PAL["red"]),
         (r"G26 core $t_{\rm dyn}$ at 445.8 $t_0$", g["t_dyn_core_yr"] * 3.15576e7, fs.PAL["yellow"]),
@@ -204,16 +217,38 @@ def fig_timescales(ts, out):
     ]
     for i, (lab, t, c) in enumerate(lines):
         ax.plot([t], [i], "o", color=c)
-        ax.text(t * 3, i, lab, va="center", fontsize=8)
+        ax.text(t * 30, i, lab, va="center", fontsize=8)
     ax.set_xscale("log")
     ax.set_yticks([])
-    ax.set_xlim(1e-24, 1e40)
-    ax.set_xlabel("time (s), 200 Msun core at the onset (F21 models, b = 0.1-0.5)")
+    ax.set_ylim(-0.7, len(lines) - 0.3)
+    ax.set_xlim(1e-25, 1e30)
+    ax.set_xlabel(r"time (s); onset models scaled to $M = 200\,M_\odot$; G26 values from SIDM_MS.tex:384, 440, 474, 476")
     fs.save(fig, os.path.join(out, "fig_timescales"))
     plt.close(fig)
 
 
-def main(run, tables, figdir, tsdir=None):
+def fig_polytrope(pc, out):
+    x = np.array(pc["grid"])
+    fig, ax = plt.subplots(1, 2, figsize=(fs.FULL_WIDTH, 3.2))
+    fig.subplots_adjust(left=0.09, right=0.98, bottom=0.15, top=0.95, wspace=0.3)
+    ax[0].semilogx(x, pc["M"], color=fs.PAL["blue"], label=r"TOV, $\Gamma=2$, $K=100$")
+    ax[0].axvline(pc["rhoc_Mmax"], **fs.GUIDE)
+    ax[0].set_xlabel(r"$\rho_{0,c}$")
+    ax[0].set_ylabel(r"$M$")
+    ax[0].legend(loc="lower right")
+    ax[1].semilogx(x, pc["omega2_N600"], color=fs.PAL["red"], label="FEM, N = 600")
+    ax[1].semilogx(x, pc["trial"], color=fs.PAL["yellow"], label=r"trial $\xi = r e^\Phi$")
+    ax[1].axhline(0, color="grey", lw=1.0)
+    ax[1].axvline(pc["rhoc_Mmax"], **fs.GUIDE)
+    ax[1].set_xlabel(r"$\rho_{0,c}$")
+    ax[1].set_ylabel(r"$\omega_0^2$")
+    ax[1].set_ylim(-0.05, 0.05)
+    ax[1].legend(loc="lower left")
+    fs.save(fig, os.path.join(out, "fig_polytrope_check"))
+    plt.close(fig)
+
+
+def main(run, tables, figdir, tsdir=None, polydir=None):
     fs.use_style()
     os.makedirs(figdir, exist_ok=True)
     crit, seqs, eos, prof, t1, t2 = load(run)
@@ -226,6 +261,8 @@ def main(run, tables, figdir, tsdir=None):
     fig_profiles(prof, figdir)
     if tsdir:
         fig_timescales(json.load(open(os.path.join(tsdir, "timescales.json"))), figdir)
+    if polydir:
+        fig_polytrope(json.load(open(os.path.join(polydir, "polytrope_check.json"))), figdir)
     print("figures in", figdir)
 
 

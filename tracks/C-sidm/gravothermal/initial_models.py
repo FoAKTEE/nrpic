@@ -16,6 +16,8 @@ import math
 import os
 import sys
 
+import numpy as np
+
 from scipy.optimize import brentq
 
 import tmb
@@ -31,8 +33,14 @@ def model_at_Z(b, Z, lo, hi):
 def code_units(e):
     b, w0, C = e["b"], e["w0"], e["C"]
     ePhiR = math.sqrt(1.0 - 2.0 * C)                     # lapse at the surface
+    pr = tmb.profiles(b, w0, n=2000)
+    r, rho, M = pr["r"], pr["rho"], pr["M"]
+    i = int(np.argmax(rho < 0.5 * rho[0]))
+    r_core = np.interp(0.5 * rho[0], rho[i::-1], r[i::-1])  # areal radius where rho = rho_c/2
+    r_half = np.interp(0.5 * M[-1], M, r)                    # areal half-mass radius
     return dict(R_over_M=1.0 / C, alpha_c=(1.0 - b * w0) * ePhiR, alpha_R=ePhiR,
-                kT_inf_over_m=b * ePhiR, Ec_over_m=ePhiR, M0_over_M=e["Erest"] / e["E"])
+                kT_inf_over_m=b * ePhiR, Ec_over_m=ePhiR, M0_over_M=e["Erest"] / e["E"],
+                rcore_over_M=r_core / e["E"], rhalf_over_M=r_half / e["E"])
 
 
 def main(crit_path, outdir):
@@ -43,8 +51,9 @@ def main(crit_path, outdir):
          "Code units G = c = 1, M = 1. alpha_c, alpha_R: lapse at the centre and the surface; "
          "the distribution is f(E) proportional to exp(-E/kT_inf) - exp(-E_c/kT_inf) for "
          "E < E_c with E = -p_t/m the conserved energy per unit rest mass; M0/M = E_rest/E.",
-         "", "| b | Z(0) | w0 | R/M | C | alpha_c | kT_inf/m | E_c/m | M0/M | eps | v(0)/c | "
-         "side |", "|---|---|---|---|---|---|---|---|---|---|---|---|"]
+         "r_core: areal radius where rho = rho_c/2; r_half: areal half-mass radius.",
+         "", "| b | Z(0) | w0 | R/M | r_core/M | r_half/M | C | alpha_c | kT_inf/m | E_c/m | "
+         "M0/M | eps | v(0)/c | side |", "|---|---|---|---|---|---|---|---|---|---|---|---|---|---|"]
     for b, c in crit.items():
         bf = float(b)
         lo = 0.2 * c["max_E"]["w0"]
@@ -66,7 +75,8 @@ def main(crit_path, outdir):
             row.update(cu)
             row["side"] = " ".join(side)
             rows.append(row)
-            L.append(f"| {b} | {Z:.2f} | {e['w0']:.6f} | {cu['R_over_M']:.4f} | {e['C']:.5f} | "
+            L.append(f"| {b} | {Z:.2f} | {e['w0']:.6f} | {cu['R_over_M']:.4f} | "
+                     f"{cu['rcore_over_M']:.4f} | {cu['rhalf_over_M']:.4f} | {e['C']:.5f} | "
                      f"{cu['alpha_c']:.5f} | {cu['kT_inf_over_m']:.5f} | {cu['Ec_over_m']:.5f} | "
                      f"{cu['M0_over_M']:.6f} | {e['eps']:.5f} | {e['v0']:.4f} | {row['side']} |")
         out[b] = rows
