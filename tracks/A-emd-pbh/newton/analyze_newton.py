@@ -188,6 +188,30 @@ def first_min_basin(t, c, i):
     return k0, k
 
 
+def first_vertex(t, y, k0, k1, halfwin=10, frac=0.1):
+    """Vertex of a parabola through the records around the FIRST minimum of y = c_i in the
+    basin [k0, k1]: the first record that is the smallest within +-halfwin records; the fit
+    uses the contiguous records around it with A_i < frac A_i(0) (y < frac^2 y(0)), at
+    least three on each side. (After a pancake forms, A_i oscillates below 0.2 A_i(0) for
+    e <~ 0.05, so the whole basin may hold several crossings.)"""
+    k = k0
+    for j in range(k0, k1 + 1):
+        lo, hi = max(0, j - halfwin), min(len(y), j + halfwin + 1)
+        if y[j] <= y[lo:hi].min():
+            k = j
+            break
+    lim = frac ** 2 * y[0]
+    a = k
+    while a - 1 >= 0 and y[a - 1] < lim:
+        a -= 1
+    b = k
+    while b + 1 < len(y) and y[b + 1] < lim:
+        b += 1
+    a, b = min(a, k - 3), max(b, k + 3)
+    a, b = max(a, 0), min(b, len(y) - 1)
+    return vertex(t[a:b + 1], y[a:b + 1])
+
+
 def t_extrap(t, A, A0, lo=0.15, hi=0.35, after=None):
     """Infall-side linear fit of A(t) between lo and hi of A0, extrapolated to A = 0."""
     m = (A < hi * A0) & (A > lo * A0) & (np.gradient(A, t) < 0)
@@ -237,8 +261,7 @@ def analyse_ellipsoid(d):
         return out, curves
     cands.sort()
     _, ax1, (k0, k1) = cands[0]
-    lo, hi = max(0, k0 - 1), min(len(t), k1 + 2)
-    t1a, c1min = vertex(t[lo:hi], c[lo:hi, ax1])
+    t1a, c1min = first_vertex(t, c[:, ax1], k0, k1)
     A0 = A[0, ax1]
     t1b_run = t_extrap(t, A[:, ax1], A0)
     t1b_ref = t_extrap(t, Ai[:, ax1], Ai[0, ax1])
@@ -250,7 +273,8 @@ def analyse_ellipsoid(d):
                t1_vertex_rel=t1a / t1r - 1, t1_extrap=t1b, t1_extrap_rel=t1b / t1r - 1,
                A1_min=float(np.sqrt(max(5 * c1min, 0.0))),
                A1_min_over_dx=float(np.sqrt(max(5 * c1min, 0.0)) / meta["dx"]),
-               A_t1=A_t1, A_t1_rel=[a / b - 1 for a, b in zip(A_t1, out["A_t1_ref"])],
+               A_t1=A_t1, A_t1_rel=[(a / b - 1) if b > 1e-3 * max(out["A_t1_ref"]) else None
+                                    for a, b in zip(A_t1, out["A_t1_ref"])],
                h1=h1, h1_rel=h1 / refc[0]["h"] - 1,
                h1_deltaL=h1 * meta["deltaL"], h1_ref_deltaL=refc[0]["h"] * meta["deltaL"])
     # second collapse (indicative)
@@ -258,8 +282,7 @@ def analyse_ellipsoid(d):
         ax2 = refc[1]["axis"]
         b2 = first_min_basin(t, c, ax2) if ax2 != ax1 else None
         if b2 is not None:
-            lo, hi = max(0, b2[0] - 1), min(len(t), b2[1] + 2)
-            out["t2_vertex"], _ = vertex(t[lo:hi], c[lo:hi, ax2])
+            out["t2_vertex"], _ = first_vertex(t, c[:, ax2], b2[0], b2[1])
             out["t2_vertex_rel"] = out["t2_vertex"] / refc[1]["t"] - 1
     pre = t <= t1r
     out["E_err_max_to_t1"] = float(np.max(np.abs(E[pre] - E[0])) / abs(h["W"][0]))
