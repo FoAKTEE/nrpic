@@ -27,7 +27,7 @@ in VERIFY_RESULTS.md (`nrpic-stage verify`), not here.
   - evidence: kb opens db/current by default; snapshots are mode 0444; harness doctor row kb PASS in wt/kb.
 - [x] **C6** `kb snapshot` run at the end of the stage; its identifier recorded in the package, and every locator cited from the knowledge base carries it (brief 12.10)
   - status: PASS
-  - evidence: Snapshot of this update: kb-20261115-44b7406 (run kb-20261115-183052-0f8245e, db/current); the posted answers name it.
+  - evidence: Snapshot of this update: kb-20261115-a848a06 (run kb-20261115-183921-31d5b77, db/current at the end of the session; kb-20261115-44b7406 one step earlier, run kb-20261115-183052-0f8245e); the posted answers name it.
 
 ## Package (brief 13.3, decision 0012; judged by the session)
 

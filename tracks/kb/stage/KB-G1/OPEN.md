@@ -52,9 +52,9 @@ package stays KB-G1 with what remains.
 
 ## Claims queue (K8, and KB-G3)
 
-- 688 claims (snapshot kb-20261115-44b7406). Of the 618 seeded: 29 checked by a
-  person, 39 unlocated, 33 partial, 1 unresolved, 73 labelled to_verify. The 70 served statements
-  were added with the K8 rules (24 fulltext, 44 to_verify, 2 judgement). The labelled statements of the brief itself (brief 12.8, first item) are not
+- 688 claims (snapshot kb-20261115-a848a06). Of the 618 seeded: 30 checked by a
+  person, 39 unlocated, 33 partial, 1 unresolved (claim 25 verified in W10). The 70 served statements
+  were added with the K8 rules (24 fulltext, 44 to_verify, 2 judgement; claim 674 verified in W10). The labelled statements of the brief itself (brief 12.8, first item) are not
   seeded. KB-G3 needs every statement bearing on the six tracks' G1 processed.
 
 ## Open sub-points of the first answers (wave 1, unchanged)

@@ -411,3 +411,9 @@ locator added. I read 1804.02911 `mnras.tex:757-763` (collision when the members
 supported. `kb claim verify` for both (writer lock), then `kb snapshot`. Expected: both become
 fulltext with status checked; checked 29 -> 31, to_verify 117 -> 115, fulltext 531 -> 533; 688
 claims and 709 papers in the new snapshot. Refuted by any other change.
+
+### W10 outcome (run kb-20261115-183921-31d5b77)
+
+Held. Claims 25 and 674 are fulltext with status checked; checked 29 -> 31, fulltext 531 -> 533,
+to_verify 117 -> 115, partial 36 -> 34; 688 claims. Snapshot `kb-20261115-a848a06.sqlite` =
+db/current. Answer to A posted (`outbox/20261115T183946Z__to-A-emd-pbh__claim-status-s1.md`).

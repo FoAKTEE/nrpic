@@ -98,16 +98,18 @@ Stages that wave 2 built (not KB-G1 criteria; they prepare KB-G2 and KB-G3):
 | K8 claims | built | 618 claims seeded (kb-20261115-154020-7b80ccc) + 70 served statements (W6, kb-20261115-182425-edbae8b) = 688; audit 29/30 (helper) and 9/10 (lead) |
 | K9 QA report | first version | `tracks/kb/claims/QA_REPORT.md` (kb-20261115-155508-2e00432); counts recounted exactly by the lead (W4, kb-20261115-181916-08ebad9); C4 (INSPIRE sample) and the hybrid retrieval part to rerun |
 | K10 commands | built | `kb embed`, `kb search`, `kb eq`, `kb claim`, `kb qa` reachable from `kb/bin/kb` (no stub left but `ingest`'s dispatcher); 173 tests pass |
-| K11 snapshots, watch | done this wave | snapshots kb-20261115-621430e, kb-20261115-3826a68, kb-20261115-44b7406; weekly watch run by the kb session (decision 0015) |
+| K11 snapshots, watch | done this wave | snapshots kb-20261115-621430e, kb-20261115-3826a68, kb-20261115-44b7406, kb-20261115-a848a06; weekly watch run by the kb session (decision 0015) |
 
-Database for the wave-2 numbers: snapshot `kb-data/db/kb-20261115-44b7406.sqlite` (`db/current`,
-run kb-20261115-183052-0f8245e): 709 papers, 688 claims, 98002 vectors, schema 6.
+Database for the wave-2 numbers: snapshot `kb-data/db/kb-20261115-44b7406.sqlite` (run
+kb-20261115-183052-0f8245e): 709 papers, 688 claims, 98002 vectors, schema 6. The last snapshot of
+the session, `kb-20261115-a848a06.sqlite` (= db/current, run kb-20261115-183921-31d5b77), differs
+from it only by claims 25 and 674, verified by the lead's reading (checked 31).
 
 Runs of the lead in wave 2: kb-20261115-181519-d78b8d4 (output misplaced, superseded),
 kb-20261115-181544-94f68f2 (W2), kb-20261115-181916-08ebad9 (W4), kb-20261115-182232-85883d1 (W3),
 kb-20261115-182238-b86d2b5 (W5), kb-20261115-182414-e13b30c (W6 dry), kb-20261115-182425-edbae8b
 (W6), kb-20261115-182505-7e3a0b5 (W7), kb-20261115-182741-7dafdf9 (W8),
-kb-20261115-182907-3f69615 (W9, failed at the tag step), kb-20261115-183052-0f8245e (W9b). All
+kb-20261115-182907-3f69615 (W9, failed at the tag step), kb-20261115-183052-0f8245e (W9b), kb-20261115-183921-31d5b77 (W10). All
 registered with `harness/bin/nrpic-run submit` (the helpers' runs by hand with
 `kb/scripts/registered_run.py`, because submit refused the shared worktree before `--package`
 existed).
