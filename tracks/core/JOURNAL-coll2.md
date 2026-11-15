@@ -632,3 +632,16 @@ summed weight against sigma M alpha0 dt/(2 psi0^6 V) sum N (N - 1): 1.8e-14.
 sum M H at the particles by 3e-16 of their values. `fig_static_homog.png` looked at:
 the per-step rates of the curved runs coincide and follow the flat run within its
 scatter as the gas relaxes; the momentum differences sit at 1e-15.
+
+### Processor checks of the clean build f46f159 (18:30 UTC)
+
+- G2(e) replay: run core-20261115-182109-0b69dbe. Passed: 13 cases, numbers of tested
+  pairs, collisions and updates identical between code and twin (and identical to the
+  run of the 819d588 executable, e.g. 2149 collisions in static_particle, 1553 in
+  kerr_particle); momenta within 1.27e-14 of max(1, |u|); sum_P to 2.1e-14; no pair
+  without a root; untouched particles bit-identical. `fig_replay.png` looked at: every
+  histogram ends below 2e-14, left of the line at 1e-13.
+- Byte regression of seven existing set-ups, release executable core-v0.3 against the
+  clean build: geo, boris, dep, east, os, jeans, binary all files identical (2, 2, 1,
+  12, 16, 5, 1) (runs core-20261115-182302-c03e628 ... -183317-9ee0bde, summary
+  `scratch/core/tmp/coll2/regress_relativistic_f46f159.json`).

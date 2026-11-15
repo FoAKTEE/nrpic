@@ -391,7 +391,8 @@ Limits and open points.
   mass), so such runs need small collision cells, hence many particles, or a correction
   that is not implemented (for example a rescaling of the pair's momenta to conserve
   the energy at the particles' own positions). This is the first thing to settle
-  before science runs of track C.
+  before science runs of track C. Settled in wave 2: cause and correction
+  (`coll_energy = particle`) in section 11.
 - Cell size and rate with a density gradient: in the same cluster the expected number
   of collisions rises by 3.6 percent from cells of 2 M to 1 M and by 1.0 percent from 1
   to 0.5 M (the square of the density averaged over a cell is below the average of the
@@ -619,6 +620,45 @@ by the collision step in the same way.
   collision step of a 1e5-particle Tolman box takes about the same time in both modes
   (wall time of the whole run 387 to 394 s for the four runs of
   core-20261115-164138-cdd7c88, dominated by the implicit push).
+- Lines touched in files shared with other work packages (against main b9fbf3e; line
+  numbers of the new files):
+
+| File | Lines | Change |
+|---|---|---|
+| `athenak/src/CMakeLists.txt` | 139 | `particles/nrpic_perturb.cpp` |
+| `athenak/src/particles/nrpic.cpp` | 275 | `NrpicPerturbInit(pin);` after `NrpicCollideInit(pin);` |
+| | 390-391, 545-546 | `if (pert.on) NrpicPerturbKick(...)` before and after the push in `NrpicPush` |
+| `athenak/src/particles/particles.hpp` | 150-153 | members `energy`, `ext` of `NrpicCollideOptions` (the comment of `ext` says columns 32 to 35; they are 32 to 36) |
+| | 156-166 | struct `NrpicPerturbOptions` |
+| | 326, 330-335 | `coll_pmet`; member `pert` and the two methods of the perturbing force |
+| `athenak/src/pgen/nrpic/nrpic_geodesic.cpp` | 14-17, 19 | file comment, `#include <cmath>` |
+| | 101-153 | `NrpicSetStaticConformal` and its parameters |
+| | 199-227 | the branch `metric_kind = static_conformal` (read only if present) |
+
+  New file: `athenak/src/particles/nrpic_perturb.cpp`. The rest is inside the files of
+  the collision package (`nrpic_collide.{hpp,cpp}`, `python/nrpic/collide.py`).
+
+### 11.6 What is verified
+
+Test bed: `<problem> metric_kind = static_conformal` of `nrpic_geodesic` (deck
+`problems/tests/coll_box_static.athinput`): alpha = alpha0 (1 + alpha_amp cos phi),
+psi = psi0 (1 + psi_amp cos phi), beta^x = shift_amp sin phi on the mesh, periodic box
+of 16 x 4 x 4 cells. Reference: `scbox.pair_reference` (`tracks/core/analysis/collisions/`),
+a Monte Carlo over pairs of one cell with the metric reconstructed as the pusher does
+and the Python twin of the kinematics; it reads no file of the code. Processor runs
+with the serial build of 819d588 or f46f159 (identical `athenak/src`), card runs with
+the clean card build of f46f159.
+
+| Statement | Evidence |
+|---|---|
+| G1, cause. Operator of core-v0.3, one step on frozen particles (8e6), 14 cases: the gain of sum W_p per collision equals the pair model in all (largest \|z\| 1.5); with a homogeneous spatial metric and a lapse gradient dW = 7e-21 and -3e-21 per collision (the lapse does not enter); temperature law psi^-8 gives a loss (-1.43e-4, 23 se), psi^-4 about zero (-7e-6 against +8.3e-5 for uniform temperature); ratios for collision cells of 2 and 4 mesh cells 3.98 and 15.8 (model 4.07, 16.7): second order in the cell size; sum H_p gains 1.5 to 1.8 times as much as sum W_p where the lapse varies too | runs core-20261115-160707-6537687 (code), core-20261115-181655-b4b8e33, -181657-426b4a8, -181700-726905c, -181702-c93920b (reference), core-20261115-182037-e24d0d0 (grading); `fig_gradient.png` |
+| G2, correction, the same 14 cases: change of sum M H_p per collision 3.5e-17 to 3.5e-16 of the rest mass (rounding); sum M u_i to 2e-20 of sum M \|u\|; the energy handed along the modulation in the ten equilibrium states zero within 1.8 se (core-v0.3: -9e-3 to -1.7e-1 per unit cos phi); rejected share and its dependence on cell size and temperature as in the model (6e-4 to 2.3e-2, \|z\| <= 1.2); pairs without a root only where the model has them (5 of 3.7e5 proposals in the hottest case with cells of two mesh cells, model 3.1e-5) | the same runs |
+| A reference that drew the cell uniformly, without the rate factor alpha_c/psi_c^6 of the operator, disagreed with the code by up to 10.8 se in five cases; the corrected reference agrees: the code's rate weighting is the one stated in section 3.4 | runs core-20261115-160136/-160137/-160139-819d588 (old reference), JOURNAL-coll2.md 18:20 UTC |
+| Replay: one collision step of the code reproduced by the Python twin from the dump in 13 cases (the seven of section 8 and `coll_energy` = cell, particle, particle with cells of two mesh cells, with the Cholesky triad and the Boris pusher, with `nanbu` and masses 1:4, in the analytic Kerr-Schild metric of a mass with shift): identical tested pairs, collisions and updates; momenta within 1.3e-14 of max(1, \|u\|); untouched particles bit-identical | runs core-20261115-160914-0656925 (819d588), core-20261115-182109-0b69dbe (f46f159, the same counts); `fig_replay.png` |
+| T12 of track C and G3: constant lapse 0.8 and conformal factor 1.1: `static_conformal` with `coll_energy = cell` byte-identical to the wave-1 generator `homogeneous`; `particle` the same collisions in every step, momenta within 2.8e-14 after 200 steps, no rejection, lam = 1; 248168 collisions against 248192 in the flat box with the cross-section scaled by alpha0 (z = -0.03), i.e. alpha0 psi0^6 times the flat rate per coordinate volume at equal proper density; pair counting to 1.8e-14 | run core-20261115-182101-3a6e046; `fig_static_homog.png` |
+| G4, equilibrium with streaming: Tolman gas in the well (alpha 0.8 to 1.2, psi_amp 0.1), theta_inf = 0.2, 1e5 particles, 57 collisions per particle, two seeds. `particle`: sum M H changes by 6.4e-15 in the collision steps and by -1.4e-7, +6.1e-8 in all (push included); the cos phi mode of ln(theta alpha) stays at -0.24(21) and -0.04(21) percent. `cell`: sum M H grows by 6.5e-3 and 6.2e-3 and the gas ends 3.8 and 3.4 percent colder at the bottom of the well than Tolman's law (a numerical heat flux out of the well) | run core-20261115-164138-cdd7c88 (processor); CARD_G4; `fig_tolman.png` |
+| Relativistic cluster (section 8), two steps at Knudsen number 0.03 on the processor: `cell` raises sum M H by 1.48e-5 and sum M W by 9.6e-6 of their values in 773 collisions; `particle` changes sum M H by 4.8e-18 in 772 collisions, none rejected, none without a root | run core-20261115-160913-0656925; card at Knudsen number 3 over 150 M: CARD_C |
+| Option absent: every output file of the wave-1 collision tests and of the existing set-ups byte-identical to the release executable core-v0.3 or to the wave-1 runs (processor); card: CARD_R | processor: runs listed in JOURNAL-coll2.md (18:10 and REGRESS_F46 entries) |
 
 ## 12. Fluid reference for the short-mean-free-path end (answer to Track C, assessment only)
 
