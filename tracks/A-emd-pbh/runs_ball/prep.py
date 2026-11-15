@@ -54,12 +54,21 @@ def main():
     ap.add_argument("--per-shell", type=int, default=100)
     ap.add_argument("--sample", type=int, default=600)
     ap.add_argument("--seed", type=int, default=7)
+    ap.add_argument("--nlat", type=int, default=None,
+                    help="make a new mass-weighted lattice of n_lat sites across the matter diameter "
+                         "with expball.particles.lattice (76: h = M/4) instead of the n_lat = 38 file of 2t")
     a = ap.parse_args()
     os.makedirs(a.out, exist_ok=True)
     ball = C.ball2t()
 
     # ---------------------------------------------------------------- particles
-    x, u, m, sp = nio.read_nrp(C.LAT2T)
+    if a.nlat:
+        from expball import particles as XP
+        x, u, m, sp = XP.lattice(ball, a.nlat)
+        lat_tag = f"lat{a.nlat}"
+    else:
+        x, u, m, sp = nio.read_nrp(C.LAT2T)
+        lat_tag = "lat38"
     rbar = np.sqrt(np.sum(x * x, axis=1))
     Ri = ball.R_of_rbar(rbar)
     Ri = np.minimum(Ri, ball.R_out)
@@ -78,7 +87,7 @@ def main():
     rest = np.setdiff1d(np.arange(len(m)), track)
     order = np.concatenate([track, rest])
     xo, uo, mo, so = x[order], u[order], m[order], sp[order]
-    pfile = os.path.join(a.out, C.STEM2T + "_lat38_track.nrp")
+    pfile = os.path.join(a.out, C.STEM2T + f"_{lat_tag}_track.nrp")
     nio.write_nrp(pfile, xo, uo, mo, so)
     # check: same records
     x2, u2, m2, s2 = nio.read_nrp(pfile)

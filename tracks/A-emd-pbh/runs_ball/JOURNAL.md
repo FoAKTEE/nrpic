@@ -149,3 +149,94 @@ Amendment of P7, written before any output of the card runs was read: P7 is judg
 drift m(t)/m(0) - 1 at fixed mesh points (SR-1) as well as on m/m_exact - 1, and the
 threshold 1e-2 applies at dx = M/2 only; at dx = M the t = 0 representation error alone
 exceeds it.
+
+## 2026-11-15, entry 3: outcomes of P (SR-1) and Q (SR-2) at dx = M/2 and M
+
+Runs (card, release core-v0.3, registered by hand with `runreg.py`): SR-1 dx = M/2
+A-emd-pbh-20261115-153843-7172b66 (0.104 card-hours); SR-2 dx = M/2
+A-emd-pbh-20261115-153845-7172b66 (0.149); SR-1 and SR-2 dx = M
+A-emd-pbh-20261115-155056-ec1b816 (0.028 together). Analysis run
+A-emd-pbh-20261115-163659-4dbacd0 (`compare.py`, `fields.py`; numbers in
+`<label>_numbers.json` of its output directory; figures copied to `figs/`, every one
+looked at). Two earlier analysis attempts failed on non-finite values and are on record
+(A-emd-pbh-20261115-162133-208f933, -162237-a614467); -162359-d32d331 and -163141-73eb185
+used the constraint columns shifted by one (corrected since; their numbers are not cited).
+Card time so far 0.28 of the 1 card-hour of the package.
+
+### SR-1 (lapse 1, shift 0 held fixed)
+
+- P1 REFUTED. The run becomes non-finite at t = 33.0 (dx = M/2; first cells with a
+  non-positive metric determinant at t = 32.875, within |x| <= 2.75 M) and at t = 30.3
+  (dx = M). Largest |H| on the mesh (cstat): 0.014, 0.042, 0.051, 0.48 at t = 2, 10, 20,
+  30 (dx = M/2); 0.014, 0.098, 0.24, 7.8 (dx = M). Where (`figs/sr1_n256_fields.png`,
+  `sr1_n128_fields.png`): at t = 16.9 a grid-aligned ring of H in the outer part of the
+  ball (r = 6-9 M, the compensating shell and the taper), at t = 30 a ring at the edge of
+  the homogeneous core (peak at x, y = -2.25, -0.75, r ~ 2.4 M), where the collapsing core
+  separates from the shells outside it and the comoving metric steepens. The growth is
+  faster on the coarser mesh, so this is a truncation-error instability of the comoving
+  coordinates, not the signature of an ill-posed system (that would grow faster on the
+  finer mesh) [JUDGEMENT from two resolutions]. The finder (from t = 44.2) and segments
+  2-3 were never reached: no horizon, no crunch; the restart segments were not run.
+  Gauge pathology figures: `figs/sr1_n256_gauge.png` (constraint statistics, H on the x
+  axis against t), `figs/sr1_n256_fields.png`.
+- P2 HOLDS while finite: |r/r_0 - 1| = 0 and |tau - t| < 1e-12 (printed by compare.py);
+  the lapse stays 1 to 4e-13.
+- P3 REFUTED at dx = M/2: core shells, largest |R/R_exact - 1| 1.8e-3 at tau = 8,
+  6.2e-3 at 16.9, 2.7e-2 at 30 (means 2.7e-4, 6.1e-4, -1.8e-3); the bound "below 2e-3 to
+  tau = 30" fails after tau ~ 8. The largest errors sit at the core edge (band
+  R_i = 2.4: mean -1.6e-2 at tau = 30).
+- P4 HOLDS on the mean at dx = M/2: core turnaround proper time 16.871 against 16.894
+  (mean error -0.022 M, -0.13 per cent; largest single particle 0.53 M, a parabola through
+  three records 0.25 M apart on a flat maximum), largest areal radius +0.07 per cent
+  (largest 0.6 per cent). Shells just outside the core: R_i = 2.4 band -0.26 M (-1.6 per
+  cent), 2.6 band -0.37 M (-2.2 per cent), R_i = 3.2 band +0.18 M (+1.0 per cent): the 1
+  per cent bound fails in the band where the instability later grows. At dx = M the core
+  turnaround is 2.50 M early (-14.8 per cent) and R_max -2.5 per cent: dx = M does not
+  resolve the 2.4 M core.
+- P5, P6, P7: not testable (no collapse before the instability). The Misner-Sharp mass on
+  the line drifts by more than 10 per cent by t = 17 at dx = M/2 (drift column of the
+  numbers file), dominated by the grid-scale constraint violation; P7 REFUTED.
+
+### SR-2 (conformal-time lapse, Gamma-driver)
+
+- Q1 HOLDS on the mean at dx = M/2: core turnaround 16.937 against 16.894 (+0.043 M,
+  +0.26 per cent), R_max +0.10 per cent; single particles up to 1.9 M off (flat maximum,
+  wiggles of the lapse pulse). dx = M: -0.82 M (-4.8 per cent).
+- Q2 REFUTED, and this is the main gauge finding: |alpha_c/a(tau_c) - 1| exceeds 1e-3 at
+  t = 4.5, 1e-2 at 5.1, 0.1 at 6.6 (dx = M/2); 2.75, 4.75, 6.5 at dx = M. A lapse pulse
+  reaches the centre from the edge of the homogeneous core, not from the taper (2.4-6 M
+  at ~0.6 c gives t ~ 4-10), and grows the central lapse to 1.85 at t ~ 12 (exact 1.34)
+  at both resolutions: a feature of the gauge, not of the mesh. Afterwards alpha_c stays
+  near 1.2 while the core collapses (exact a -> 0), so the core runs through its proper
+  time much faster than planned: the core's proper time reaches the crunch value 44.45
+  near t = 35 instead of t = 55 (`figs/sr2_n256_gauge.png`, top left).
+- Q3 HOLDS: core-shell |eps| before turnaround 2.0e-3 at tau = 12 (largest), 7.5e-3 at
+  16.9. Later it grows: 4.0e-2 at tau = 30, 0.10 at 40, 0.31 at 44.
+- Q4 REFUTED: no apparent horizon. The finder (from t = 46) found nothing, but the
+  decisive fact is the resolution: the collapsed core sits inside the innermost cells.
+  The largest 2m/R on the x axis (points beyond one cell from the axis) is 0.34, at
+  t = 35.75 (`figs/sr2_n256_horizon.png`, right), and the innermost line point (r = 0.43
+  coordinate) keeps R ~ 0.53-0.6 M throughout, while the first horizon has R = 0.161 M:
+  in these near-Eulerian coordinates the horizon would be smaller than one cell of
+  dx = M/2. The core's dust then passes through the centre and re-expands
+  (`figs/sr2_n256_shells.png`, left; the proper time at the centre reaches 61 M), which
+  a resolved collapse cannot do. Per particle, R(tau) falls through 2m (exact m) for 255
+  core particles 0.23 M late on average (dx = M/2; first tracked particle at 44.495
+  against 44.362 for its shell); 139 particles that should have been trapped never were.
+- Q5 HOLDS: t = 53 reached, no non-finite values; largest |H| 0.077 at t = 44.
+- Energy density at t = 30 shows a grid-aligned clumping of the envelope dust
+  (`figs/sr2_n256_fields.png`, third row): the Gamma-driver moves the coordinates, the
+  lattice no longer matches the cells, and the cubic cloud aliases [JUDGEMENT, not
+  tested].
+
+### Common
+
+- C1 HOLDS: 354.8 s for 336 steps of 256^3 (SR-1) = 6.3e-8 card-s per cell-step; SR-2
+  7.2e-8; within a factor 2 of 8.1e-8.
+- C2 REFUTED on the high side: between dx = M and M/2 the largest core |eps| at
+  tau = 16.9 falls by 9 (SR-1) and 2.8 (SR-2), the mean by 53 (SR-1); the turnaround-time
+  error by 110 (SR-1) and 19 (SR-2). dx = M (2.4 cells across the core) is not in the
+  asymptotic range; an order needs dx = M/4 (entry 4).
+- Horizon-formation time and horizon-mass error against the source paper's 1e-3
+  (main.tex:945, 1484): NOT MEASURED in any of the four runs (SR-1 unstable before the
+  collapse, SR-2 cannot resolve a 0.16 M horizon at dx = M/2 in its coordinates).

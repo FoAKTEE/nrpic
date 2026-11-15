@@ -1,0 +1,66 @@
+{
+  "schema": "nrpic-run/1 (by hand)",
+  "registered_by": "tracks/A-emd-pbh/runs_ball/runreg.py",
+  "harness_refusal": "nrpic-run submit: the worktree is not clean (untracked files of other helpers)",
+  "run_id": "A-emd-pbh-20261115-163659-4dbacd0",
+  "track": "A-emd-pbh",
+  "gate": "G2",
+  "kind": "scouting",
+  "purpose": "analysis of SR-1 and SR-2 at dx = M/2 (A-emd-pbh-20261115-153843-7172b66, -153845-7172b66) and dx = M (A-emd-pbh-20261115-155056-ec1b816): invariants against the exact solution, line compactness, field slices",
+  "launcher": "local",
+  "command": [
+    "bash",
+    "-c",
+    ".venv/bin/python tracks/A-emd-pbh/runs_ball/compare.py --prep /data/haiyangw/nrpic/scratch/A-emd-pbh/A-emd-pbh-20261115-153719-91b03d1 --seg /data/haiyangw/nrpic/scratch/A-emd-pbh/A-emd-pbh-20261115-153843-7172b66/sr1 --gauge sr1 --dx 0.5 --label sr1_n256 --out $NRPIC_RUN_DIR --figdir tracks/A-emd-pbh/runs_ball/figs && .venv/bin/python tracks/A-emd-pbh/runs_ball/compare.py --prep /data/haiyangw/nrpic/scratch/A-emd-pbh/A-emd-pbh-20261115-153719-91b03d1 --seg /data/haiyangw/nrpic/scratch/A-emd-pbh/A-emd-pbh-20261115-153845-7172b66/sr2 --gauge sr2 --dx 0.5 --label sr2_n256 --out $NRPIC_RUN_DIR --figdir tracks/A-emd-pbh/runs_ball/figs && .venv/bin/python tracks/A-emd-pbh/runs_ball/compare.py --prep /data/haiyangw/nrpic/scratch/A-emd-pbh/A-emd-pbh-20261115-153719-91b03d1 --seg /data/haiyangw/nrpic/scratch/A-emd-pbh/A-emd-pbh-20261115-155056-ec1b816/sr1_n128 --gauge sr1 --dx 1.0 --label sr1_n128 --out $NRPIC_RUN_DIR --figdir tracks/A-emd-pbh/runs_ball/figs && .venv/bin/python tracks/A-emd-pbh/runs_ball/compare.py --prep /data/haiyangw/nrpic/scratch/A-emd-pbh/A-emd-pbh-20261115-153719-91b03d1 --seg /data/haiyangw/nrpic/scratch/A-emd-pbh/A-emd-pbh-20261115-155056-ec1b816/sr2_n128 --gauge sr2 --dx 1.0 --label sr2_n128 --out $NRPIC_RUN_DIR --figdir tracks/A-emd-pbh/runs_ball/figs && .venv/bin/python tracks/A-emd-pbh/runs_ball/fields.py --seg /data/haiyangw/nrpic/scratch/A-emd-pbh/A-emd-pbh-20261115-153843-7172b66/sr1 --label sr1_n256 --out $NRPIC_RUN_DIR --figdir tracks/A-emd-pbh/runs_ball/figs && .venv/bin/python tracks/A-emd-pbh/runs_ball/fields.py --seg /data/haiyangw/nrpic/scratch/A-emd-pbh/A-emd-pbh-20261115-153845-7172b66/sr2 --label sr2_n256 --out $NRPIC_RUN_DIR --figdir tracks/A-emd-pbh/runs_ball/figs && .venv/bin/python tracks/A-emd-pbh/runs_ball/fields.py --seg /data/haiyangw/nrpic/scratch/A-emd-pbh/A-emd-pbh-20261115-155056-ec1b816/sr1_n128 --label sr1_n128 --out $NRPIC_RUN_DIR --figdir tracks/A-emd-pbh/runs_ball/figs && .venv/bin/python tracks/A-emd-pbh/runs_ball/fields.py --seg /data/haiyangw/nrpic/scratch/A-emd-pbh/A-emd-pbh-20261115-155056-ec1b816/sr2_n128 --label sr2_n128 --out $NRPIC_RUN_DIR --figdir tracks/A-emd-pbh/runs_ball/figs"
+  ],
+  "cwd": "/data/haiyangw/nrpic/wt/A-emd-pbh",
+  "git": {
+    "sha": "4dbacd0e9de9d6bd88c18d01246264821430a778",
+    "branch": "track/A-emd-pbh",
+    "package_dirty": false
+  },
+  "inputs": [
+    {
+      "path": "tracks/A-emd-pbh/runs_ball/compare.py",
+      "role": "input",
+      "sha256": "b8b15651c6442f3f5cfe26bb010ee36876e3f08c48a35aa93257225b2f5dbac1",
+      "bytes": 39119
+    },
+    {
+      "path": "tracks/A-emd-pbh/runs_ball/fields.py",
+      "role": "input",
+      "sha256": "6ac8f2016bd582276b1b48a71cd5512729a2363d84444a95b11da53380998873",
+      "bytes": 5314
+    },
+    {
+      "path": "tracks/A-emd-pbh/runs_ball/common.py",
+      "role": "input",
+      "sha256": "1d2596d68440d3aa91d7b9f648d7963545b25f35b12fb8a48c371323f176e34a",
+      "bytes": 9454
+    }
+  ],
+  "parents": [
+    "A-emd-pbh-20261115-153843-7172b66",
+    "A-emd-pbh-20261115-153845-7172b66",
+    "A-emd-pbh-20261115-155056-ec1b816",
+    "A-emd-pbh-20261115-153719-91b03d1"
+  ],
+  "resources": {
+    "cores": 4,
+    "gpus": 0,
+    "wall_limit": null,
+    "walltime_s": 267.7,
+    "gpu_hours": null
+  },
+  "outputs": {
+    "dir": "scratch/A-emd-pbh/A-emd-pbh-20261115-163659-4dbacd0",
+    "sha256sums": "sha256sums.txt",
+    "files": 61
+  },
+  "status": "completed",
+  "exit_code": 0,
+  "registered": "2026-11-15T16:36:59Z",
+  "started": "2026-11-15T16:36:59Z",
+  "ended": "2026-11-15T16:41:27Z",
+  "notes": ""
+}
