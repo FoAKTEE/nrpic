@@ -1,21 +1,21 @@
 # Re-verification: kb KB-G1
 
-`harness/bin/nrpic-stage verify kb KB-G1` on 2026-11-15T18:35:17Z, clean export of commit `c65ab4d48ec7` in `scratch/kb/tmp/stage-verify/kb-KB-G1-c65ab4d-20261115T183440Z`. Result: **PASS**.
+`harness/bin/nrpic-stage verify kb KB-G1` on 2026-11-15T18:42:47Z, clean export of commit `57f2684004cc` in `scratch/kb/tmp/stage-verify/kb-KB-G1-57f2684-20261115T184200Z`. Result: **PASS**.
 
 | Check | Result | Message |
 |---|---|---|
 | clean | PASS | worktree clean (outside the stage directory being assembled) |
 | sync | PASS | main is merged into the branch |
-| export | PASS | clean export of c65ab4d48ec7 (HEAD) in /data/haiyangw/nrpic/scratch/kb/tmp/stage-verify/kb-KB-G1-c65ab4d-20261115T183440Z/tree |
+| export | PASS | clean export of 57f2684004cc (HEAD) in /data/haiyangw/nrpic/scratch/kb/tmp/stage-verify/kb-KB-G1-57f2684-20261115T184200Z/tree |
 | size | PASS | no committed file of the track above 5 MB |
 | note | WARN | no tracks/<ID>/note/main.tex (working note) |
-| package | PASS | EVIDENCE.md, OPEN.md, CHECKLIST.md present (decision 0012); REVIEW.md present |
+| package | PASS | EVIDENCE.md, OPEN.md, CHECKLIST.md present (decision 0012); scoping text: stage/KB-G1/SCOPE.md; REVIEW.md present |
 | style | PASS | 1 style copies equal harness/style/SHA256SUMS (figstyle.py) |
 | fig-script | PASS | 1 figures, each with its script |
 | min-figs | PASS | 0 schematics and 1 data figures (brief 13.4 asks at least 0 and 0 at KB-G1) |
-| runs | PASS | 85 run manifests finished (74 hand-written, read as decision 0012 allows), output checksums verified where recorded |
+| runs | PASS | 86 run manifests finished (74 hand-written, read as decision 0012 allows), output checksums verified where recorded |
 | run-notes | WARN | 74 runs read with defaults or not fully re-verifiable (nrpic-run lint) |
-| status | PASS | STATUS.md has 28 lines |
+| status | PASS | STATUS.md has 34 lines |
 | rerun | PASS | 3 of 3 scripts and commands ran cleanly in the export |
 | compare | PASS | 2 regenerated files compared with the committed ones; 0 differ beyond tolerance (rtol 1e-06, atol 1e-12, PNG rms 0.005) |
 | regenerate | PASS | all 2 committed figure files regenerated |

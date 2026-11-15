@@ -1,9 +1,9 @@
 {
   "track": "kb",
   "gate": "KB-G1",
-  "commit": "c65ab4d48ec75fbd9fa9529063ec6e6911f58186",
-  "verified_utc": "2026-11-15T18:35:17Z",
-  "export": "/data/haiyangw/nrpic/scratch/kb/tmp/stage-verify/kb-KB-G1-c65ab4d-20261115T183440Z",
+  "commit": "57f2684004cc7c2fdbf4c19c168557de6f3cddb3",
+  "verified_utc": "2026-11-15T18:42:47Z",
+  "export": "/data/haiyangw/nrpic/scratch/kb/tmp/stage-verify/kb-KB-G1-57f2684-20261115T184200Z",
   "result": "PASS",
   "checks": [
     {
@@ -21,7 +21,7 @@
     {
       "check": "export",
       "status": "PASS",
-      "message": "clean export of c65ab4d48ec7 (HEAD) in /data/haiyangw/nrpic/scratch/kb/tmp/stage-verify/kb-KB-G1-c65ab4d-20261115T183440Z/tree",
+      "message": "clean export of 57f2684004cc (HEAD) in /data/haiyangw/nrpic/scratch/kb/tmp/stage-verify/kb-KB-G1-57f2684-20261115T184200Z/tree",
       "detail": null
     },
     {
@@ -39,7 +39,7 @@
     {
       "check": "package",
       "status": "PASS",
-      "message": "EVIDENCE.md, OPEN.md, CHECKLIST.md present (decision 0012); REVIEW.md present",
+      "message": "EVIDENCE.md, OPEN.md, CHECKLIST.md present (decision 0012); scoping text: stage/KB-G1/SCOPE.md; REVIEW.md present",
       "detail": null
     },
     {
@@ -63,7 +63,7 @@
     {
       "check": "runs",
       "status": "PASS",
-      "message": "85 run manifests finished (74 hand-written, read as decision 0012 allows), output checksums verified where recorded",
+      "message": "86 run manifests finished (74 hand-written, read as decision 0012 allows), output checksums verified where recorded",
       "detail": null
     },
     {
@@ -362,7 +362,7 @@
     {
       "check": "status",
       "status": "PASS",
-      "message": "STATUS.md has 28 lines",
+      "message": "STATUS.md has 34 lines",
       "detail": null
     },
     {
