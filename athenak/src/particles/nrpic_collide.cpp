@@ -248,6 +248,11 @@ void Particles::NrpicCollideInit(ParameterInput *pin) {
   if (!pin->DoesParameterExist("particles", "collisions")) return;
   coll.on = pin->GetBoolean("particles", "collisions");
   if (!coll.on) return;
+  // the Newtonian mode keeps the potential in the lapse slot of the metric arrays,
+  // which the pair probability alpha dt/sqrt(gamma) would read as a lapse
+  if (nropt.newton) {
+    CollFatal("<particles> collisions is not available with pusher = newton");
+  }
   Mesh *pm = pmy_pack->pmesh;
   auto &indcs = pm->mb_indcs;
 
