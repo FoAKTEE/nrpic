@@ -309,3 +309,11 @@ P5 is re-stated with G_tot: |G_tot(K1)| below 5 percent of c_+ for a <= 20.
 P7c (rerun of the cosmology dumps with G_tot): the cross terms are negligible there
 (h0 and Lambda h are far below the non-TT part): rms G_tot within 10 percent of rms G at all
 dumps; the conclusion of P7 unchanged.
+
+## Outcome of P7c, run B-20261115-171804-42e975b (`late_rise.png` replaced by this run's figure, looked at)
+
+CONFIRMED. With the cross terms the spatial-gauge piece changes by at most 0.8 percent in rms
+at any dump (G_tot 2.045e-10 against G 2.058e-10 at a = 1001, quadratic cloud; 2.217e-10
+against 2.231e-10, cubic); the homogeneous traceless part is h0 = 1.8e-6 there, the non-TT
+part 3.6e-5. rms(Lambda h - G_tot) = 2.495e-9 and 4.315e-9 at a = 1001: the P7 numbers and
+reading stand. `results/late_rise_summary.json` is now this run's (spectra dropped).
