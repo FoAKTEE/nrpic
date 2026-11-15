@@ -123,6 +123,15 @@ def cmd_seed(a):
         try:
             _cdb.ensure(con)
             con.commit()
+            if a.rebuild:
+                why = rebuild_refused(lay, con)
+                if why:
+                    print(f"--rebuild refused: {why}", file=sys.stderr)
+                    return 1
+                for t in ("claim_events", "claim_locators", "claim_meta", "claims"):
+                    con.execute(f"DELETE FROM {t}")
+                con.commit()
+                print("rebuild: claim tables emptied (no snapshot holds claims, no label set by a person)")
             res = collect(specs, _store(lay, con), a.source)
             counts = collections.Counter()
             con.execute("BEGIN")
@@ -153,6 +162,23 @@ def cmd_seed(a):
     if a.tsv:
         write_tsv(a.tsv, rows)
     return 0
+
+
+def rebuild_refused(lay, con):
+    """Reason not to empty the claim tables, or ''. Claim ids are stable once published
+    (a snapshot holds them) or once a person has set a label."""
+    n = con.execute("SELECT count(*) FROM claim_meta WHERE label_set_by != 'auto'").fetchone()[0]
+    if n:
+        return f"{n} claims carry a label set by a person"
+    if os.path.exists(lay.db_current):
+        snap = _cdb.connect(os.path.realpath(lay.db_current), ro=True)
+        try:
+            k = snap.execute("SELECT count(*) FROM claims").fetchone()[0]
+        finally:
+            snap.close()
+        if k:
+            return f"snapshot {os.path.basename(os.path.realpath(lay.db_current))} already holds {k} claims"
+    return ""
 
 
 def _summary(rows):
@@ -346,6 +372,8 @@ def register(sub):
     s.add_argument("--dry-run", action="store_true", help="parse and check, write nothing")
     s.add_argument("--tsv", help="write a table of the claims here")
     s.add_argument("--by")
+    s.add_argument("--rebuild", action="store_true",
+                   help="empty the claim tables first; refused once a snapshot holds claims or a person set a label")
     s.set_defaults(fn=cmd_seed)
     s = cs.add_parser("check", help="re-check locators (automatic labels only)")
     s.add_argument("--id", type=int, nargs="+")

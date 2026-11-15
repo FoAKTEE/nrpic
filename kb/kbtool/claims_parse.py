@@ -426,7 +426,15 @@ def split_unit(u, spec, origin_ref):
     # group locators that end at the same place or are separated only by punctuation
     groups = []
     for l in locs:
-        if groups and re.fullmatch(r"[\s,;()`]*", text[groups[-1][-1].pos:l.pos - len(l.raw)] if l.pos - len(l.raw) >= groups[-1][-1].pos else ""):
+        if groups and l.pos - len(l.raw) < groups[-1][-1].pos:
+            groups[-1].append(l)                          # several ranges of one locator ("lines 185, 269-277")
+            continue
+        gap = text[groups[-1][-1].pos:l.pos - len(l.raw)] if groups else None
+        # same group: only punctuation between, or a few words inside one parenthesis
+        # ("(abstract L78-79; criterion L315-331)")
+        if gap is not None and (re.fullmatch(r"[\s,;()`]*", gap) or
+                                (re.fullmatch(r"[\s;,]+[A-Za-z][A-Za-z .]{0,24}", gap) and
+                                 text.rfind("(", 0, l.pos) > text.rfind(")", 0, l.pos - len(l.raw)))):
             groups[-1].append(l)
         else:
             groups.append([l])

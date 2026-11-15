@@ -35,3 +35,26 @@ subdirectories); of the VERIFIED claims at least 70 % reach `located` (the rest
 `partial`: numbers paraphrased, e.g. "1e4" for "10^4", rounded values, numbers from the
 track's own runs). Refuted if fewer than 90 % of locators resolve (the parser assigns
 wrong papers or files) or fewer than 60 % of VERIFIED claims are located.
+
+## P1 outcome (run kb-20261115-153712-595d313, kb.sqlite)
+
+[VERIFIED, run kb-20261115-153712-595d313 stdout.log and `kb claim stats`] 622 claims seeded
+from 9 notes (70 papers): 677 of 679 paper locators resolve (99.7 %); of the 547 statements
+the tracks marked as read at the source (364 explicit, 183 by the note's header) 512 became
+`fulltext` (93.6 %); statuses located 550, partial 31, unlocated 39, unresolved 2; labels
+fulltext 512, to_verify 72, judgement 37, background 1. Prediction held on all three counts.
+Caveat [JUDGEMENT]: 388 of the 550 located claims quote no checkable number, so for them
+"located" means only that the locator resolves; whether the passage supports the statement
+is what P2 measures. Two dry runs before (not registered, scratch/kb/tmp/claims_dev/) fixed
+parser defects: prefix locators "L1340: ...", "lines N" after a file-qualified locator,
+repository files and brief lines taken for paper lines, outbox front matter.
+
+## P2 (prediction, before the manual audit)
+
+Sample: 30 `fulltext` claims drawn with random.Random(20261115) from the 512, plus all 31
+`partial`. I read the cited lines (+-3) in the store myself and judge whether the passage
+supports the statement as worded (track paraphrase allowed; a statement split from its
+locator by the parser counts as a failure). Expected: at least 27 of 30 supported (90 %).
+Refuted if fewer than 24 (80 %): then "located" is too weak to give `fulltext` and the rule
+must change. For the partial ones I expect most missing numbers to be the tracks' own
+values (corrected numbers, own runs, rounding of a range), not wrong locators.

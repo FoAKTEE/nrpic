@@ -269,3 +269,32 @@ def test_label_mapping():
     assert cdb.label_for("JUDGEMENT", "located") == "judgement"
     assert cdb.label_for("BACKGROUND", "unlocated") == "background"
     assert cdb.label_for("UNLABELLED", "located") == "to_verify"
+
+
+def test_two_locators_in_one_parenthesis_stay_one_claim():
+    md = "## arXiv:2508.10070 v1 (`main.tex`)\n- Set-up [VERIFIED]: peak theory plus hoop conjecture (abstract\n" \
+         "  L78-79; criterion L315-331); peaks labelled by nine parameters (L334).\n"
+    cl = cp.parse_note(md, spec("A"), "ref")
+    assert len(cl) == 2
+    assert [(l.line_start, l.line_end) for l in cl[0].locators] == [(78, 79), (315, 331)]
+    assert cl[0].text.startswith("Set-up") and "nine parameters" in cl[1].text
+
+
+def test_commented_out_lines_are_not_fulltext(store):
+    st, _ = store
+    src = os.path.join(st.raw_arxiv, "2609.14218", "v1", "src", "c.tex")
+    with open(src, "w") as f:
+        f.write("text\n% a deleted passage with 0.045\n%   more\nlive 0.045\n")
+    loc = cp.Locator("2609.14218", "v1", "c.tex", 2, 3, "c.tex:2-3", 0)
+    s, d, r = ck.check_claim("mu 0.045 (c.tex:2-3)", [loc], st)
+    assert s == "partial" and d["comment_lines"] == 1 and r[0].comment_only
+    loc = cp.Locator("2609.14218", "v1", "c.tex", 3, 4, "c.tex:3-4", 0)
+    s, d, r = ck.check_claim("mu 0.045", [loc], st)
+    assert s == "located" and not r[0].comment_only
+
+
+def test_one_locator_with_several_ranges_is_one_claim():
+    md = "- **arXiv:2108.01392** (Imbrogno): masses 3:4:5 (`main.tex` lines 185, 269-277, 400). [VERIFIED] Equal.\n"
+    cl = cp.parse_note(md, spec("F", default_label="VERIFIED"), "ref")
+    assert len(cl) == 1 and [l.line_start for l in cl[0].locators] == [185, 269, 400]
+    assert all(c.text for c in cl)

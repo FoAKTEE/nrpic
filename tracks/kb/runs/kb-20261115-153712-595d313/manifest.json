@@ -1,0 +1,51 @@
+{
+ "run_id": "kb-20261115-153712-595d313",
+ "owner": "kb",
+ "command": [
+  "python3",
+  "-I",
+  "kb/kbtool/claims_cli.py",
+  "claim",
+  "seed",
+  "--by",
+  "kb claims helper (seed)",
+  "--tsv",
+  "/data/haiyangw/nrpic/scratch/kb/kb-20261115-153712-595d313/claims_seed.tsv"
+ ],
+ "cwd": "/data/haiyangw/nrpic/wt/kb",
+ "commit": "595d3133e55d9ff6478f00cf10386966c625c3c8",
+ "worktree_dirty_kb": true,
+ "inputs": [
+  {
+   "path": "/data/haiyangw/nrpic/wt/kb/kb/kbtool/claims_parse.py",
+   "sha256": "e64d8fdd5ff021cc8fdf40fbe10279210d6f780f3bc5af007c5cc44549306517"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/wt/kb/kb/kbtool/claims_check.py",
+   "sha256": "5cab033be08b4a10b1e1a618713070e9b791832fd27fd72d6d22aa20b57e7e2a"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/wt/kb/kb/kbtool/claims_db.py",
+   "sha256": "318065fcea2ccd9373bca289c19b989a01898575a05b8c65b2411c75e8d38238"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/wt/kb/kb/kbtool/claims_curated.py",
+   "sha256": "13faf65a2f0c6eebf951adeb62b3d48e2139fc6bb5e5f2f658220a76b5064a0f"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/wt/kb/kb/kbtool/claims_cli.py",
+   "sha256": "a1fb9ee8bf3575ee93567acadc3d99b94ed5c600a6ae286e7e554cdeecf4daa5"
+  }
+ ],
+ "output_dir": "/data/haiyangw/nrpic/scratch/kb/kb-20261115-153712-595d313",
+ "purpose": "K8: seed the claims table from the tracks' wave-1 notes (A, B, C, D, F, core) and the errata requests (C, E); check every locator against the store",
+ "kind": "scouting",
+ "cores": 1,
+ "card_hours": 0,
+ "started_utc": "2026-11-15T15:37:12Z",
+ "started_unix": 1794757032.9250588,
+ "status": "finished",
+ "exit_code": 0,
+ "wall_time_s": 3.14,
+ "finished_utc": "2026-11-15T15:37:16Z"
+}

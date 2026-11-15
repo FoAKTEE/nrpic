@@ -200,6 +200,7 @@ class LocResult:
     flat_end: int = None
     chunk_ids: list = field(default_factory=list)
     window: str = ""         # never stored, never printed: used for the number check only
+    comment_only: bool = False   # every cited line is a TeX comment (brief 12.4: low reliability)
 
 
 class Store:
@@ -304,6 +305,11 @@ class Store:
             r.problem = f"line {loc.line_end} beyond end of file ({n} lines)"
             return r
         r.resolved = True
+        cited = lines[loc.line_start - 1:loc.line_end]
+        r.comment_only = bool(cited) and all(c.lstrip().startswith("%") or not c.strip() for c in cited) \
+            and any(c.strip() for c in cited)
+        if r.comment_only:
+            r.notes.append("cited lines are TeX comments")
         lo = max(0, loc.line_start - 1 - WINDOW)
         hi = min(len(lines), loc.line_end + WINDOW)
         r.window = "\n".join(lines[lo:hi])
@@ -346,10 +352,11 @@ def check_claim(seed_text, locators, store):
     detail = {"locators": len(res), "unresolved": [f"{l.key()}: {r.problem}" for l, r in zip(locators, res) if not r.resolved],
               "numbers": len(nums), "found": found, "rounded": rounded, "missing": missing,
               "notes": sorted({n for r in res for n in r.notes})}
+    detail["comment_lines"] = sum(1 for r in res if r.resolved and r.comment_only)
     if bad:
         status = "unresolved"
-    elif missing:
-        status = "partial"
+    elif missing or detail["comment_lines"]:
+        status = "partial"           # a passage that was commented out is not the published text
     else:
         status = "located"
     return status, detail, res
