@@ -17,6 +17,7 @@ that the release can run without the perturbed initial slice. Predictions and ou
 | `scripts/make_sr_case.py`, `run_sr.sh`, `analyse_sr.py` | slow-roll scouting case from a homogeneous slice (release executable), and its analysis |
 | `scripts/make_u_inputs.py`, `inputs/u64/` | inputs of the noise unit test at the base size (N = 64, nmax2 = 256, 300 steps); `card_batch.list` for the card job |
 | `scripts/proc_u2_u4.sh` | U2 and U4 of the base case on processors (A14 reference, A12) |
+| `scripts/val_base.sh`, `inputs/u64/card_u4.list` | all validations of the base case in one command; U4 on a card |
 | `scripts/val_cf.py`, `scripts/u6_scaled.sh` | the track's noise validator with a cancellation-free window increment in the reference; scaled U6 with the release |
 | `fig/` | figures and JSON summaries copied from the registered runs (all looked at) |
 
@@ -101,8 +102,10 @@ Cannot (or not without help):
    term (1/4) k_i k_j (gt_ij - delta_ij)/k^2 of Phi is missing. In the N = 16 SR run this
    makes every mode 0.48 percent low (a common offset; gt term / R = 4.9e-3). With the
    single-precision bin output of the z4c variables the term is recovered, but only
-   because the amplitude was scaled up to Delta_R ~ 1e-6: at the physical Delta_R ~ 2e-9,
-   gt - delta (~1e-7) is at the float32 resolution of numbers near 1.
+   because the amplitude was scaled up to Delta_R ~ 1e-6 (gt - delta ~ 3e-5). Scaled to
+   the physical Delta_R ~ 2e-9, gt - delta would be ~1e-6 and float32 (6e-8 near 1)
+   would leave the gt term with an error of order 10 percent, about 1e-3 of R
+   [JUDGEMENT: scaled from the run, not run].
 3. The physical norm of M and P1's [M]: the dump's M_i are covariant; their physical norm
    needs gt^ab (5.5e-4 error without it in the plane test); [M] of P1 is not computed by
    the code; `sfa.mom_norm_cells` builds it from the dump without the At terms (a lower
@@ -126,9 +129,10 @@ Cannot (or not without help):
   that R^NR and the physical |M| do not need the single-precision bin output (evidence:
   0.48 percent offset of the dump-only R^NR, 5.5e-4 error of the physical |M|); (b) [M]
   of P1 (PRD_v2.tex:740-743) in the history and as a dump variable, and [H] per cell;
-  (c) a look at the early first-order momentum residual (item 5 above); (d) the initial
-  slice R8 is no longer needed for the slow-roll reproduction at linear order (the
-  homogeneous start works, N = 16), but is still needed to reproduce P1's set-up exactly.
+  (c) a look at the early first-order momentum residual (item 5 above); (d) for the
+  priority of R8: the homogeneous start reproduces linear theory per mode to 1e-4 at
+  N = 16 and 32, so the initial slice may not be needed for the slow-roll G1 check
+  [JUDGEMENT, for the lead], but it is needed to reproduce P1's set-up exactly.
 - E-stoch-inf noise package (owner): form the window increment of `noise/ref/noise_ref.py`
   (lines 155, 159) as sinh(s H dt)/(2 cosh x1 cosh x0), as the code does; `scripts/val_cf.py`
   shows that this alone makes U6 pass.
