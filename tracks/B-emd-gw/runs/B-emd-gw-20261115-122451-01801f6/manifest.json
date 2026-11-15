@@ -24,7 +24,9 @@
  "cores": 1,
  "card_hours": 0.0,
  "started_utc": "2026-11-15T12:24:51+00:00",
- "status": "running",
+ "status": "completed",
  "package": "tracks/B-emd-gw/verify_cosmo",
- "notes": ""
+ "notes": "1403 steps, 813 s, one core, to a = 42. newton_pancake.py with the --ppc option (committed in 413337f, after this manifest's commit 01801f6; the sha256 of the script in inputs is the version run).",
+ "finished_utc": "2026-11-15T12:38:52+00:00",
+ "wall_time_s": 813.0
 }

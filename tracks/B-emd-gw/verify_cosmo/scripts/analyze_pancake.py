@@ -71,7 +71,8 @@ def load_gr(rundir):
     out = {"kind": "gr", "dir": rundir, "n": n, "ncell": idj["n"], "ppc": idj["ppc"],
            "stagger": idj["stagger"], "L": L, "d": d, "t": t,
            "a": (1.0 + 0.5*t)**2, "x": x, "v": v, "q": q, "x0": x[0], "u_perp":
-           np.abs(u[..., 1:]).max(axis=(1, 2)), "alpha": alpha, "gxx": g[..., 0]}
+           np.abs(u[..., 1:]).max(axis=(1, 2)), "alpha": alpha, "gxx": g[..., 0],
+           "tau_p": m[:, :n, 12]}
     c = np.loadtxt(os.path.join(rundir, "east.cstat.hst"))
     out["cstat"] = c
     return out
@@ -207,6 +208,8 @@ def main():
     ap.add_argument("--newton", required=True)
     ap.add_argument("--gr2", default="",
                     help="run directory holding L1_n64_p2 (two particles per cell)")
+    ap.add_argument("--newton2", default="",
+                    help="run directory holding n32_p2 (Newtonian, two particles per cell)")
     ap.add_argument("--out", required=True)
     a = ap.parse_args()
     os.makedirs(a.out, exist_ok=True)
@@ -218,6 +221,8 @@ def main():
         gr["L1_n64_p2"] = load_gr(os.path.join(a.gr2, "L1_n64_p2"))
     nw = {f"N_n{n}": load_newton(os.path.join(a.newton, f"n{n}")) for n in (32, 64)
           if os.path.exists(os.path.join(a.newton, f"n{n}", "newton.npz"))}
+    if a.newton2 and os.path.exists(os.path.join(a.newton2, "n32_p2", "newton.npz")):
+        nw["N_n32_p2"] = load_newton(os.path.join(a.newton2, "n32_p2"))
     if "N_n64" in nw:
         nw["N4_n64"] = load_newton(os.path.join(a.newton, "n64"), scale=4.0)
     runs = {**gr, **nw}
@@ -232,6 +237,15 @@ def main():
             e[f"ev_a{aa:g}"], _ = at(ev, r["a"], aa)
             e[f"rhoL_a{aa:g}"] = lagrangian_density_error(r, aa)
         e["a_cross"] = Z.first_crossing_a(r["x"], r["a"])
+        if "tau_p" in r and np.isfinite(e["a_cross"]):
+            # proper time of the sheets of the first crossing pair at that moment
+            gap = np.diff(r["x"], axis=1)
+            ic = int(np.argmax((gap <= 0.0).any(axis=1)))
+            jc = int(np.argmin(gap[ic]))
+            f = gap[ic - 1, jc]/(gap[ic - 1, jc] - gap[ic, jc])
+            tp = [(1 - f)*r["tau_p"][ic - 1, jj] + f*r["tau_p"][ic, jj] for jj in (jc, jc + 1)]
+            e["a_p_cross_sheets"] = [float((1.0 + 1.5*t)**(2.0/3.0)) for t in tp]
+            e["x_cross_over_L"] = float(np.mod(r["x"][ic, jc], r["L"])/r["L"])
         ag = np.linspace(15.0, 25.0, 20001)
         xzz = np.array([Z.continuum(r["x0"], aa, r["d"], r["L"])[0] for aa in ag])
         e["a_cross_zeldovich_sheets"] = Z.first_crossing_a(xzz, ag)
@@ -248,7 +262,7 @@ def main():
         g, w = gr[gname], nw[nname]
         k = 2.0*np.pi/g["L"]
         dd = {}
-        for aa in A_EVAL + [21.0]:
+        for aa in A_EVAL + [21.0, 25.0, 30.0, 41.9]:
             ig = int(np.argmin(np.abs(g["a"] - aa)))
             xw = np.array([np.interp(g["t"][ig], w["t"], w["x"][:, j])
                            for j in range(g["n"])])
@@ -343,16 +357,19 @@ def make_figures(runs, gr, nw, prof, res, out, prof2=None):
              "L4_n64": dict(color=P["green"], ls="-"),
              "L1_n64_p2": dict(color=P["orange"], ls="-."),
              "N_n32": dict(color=P["blue"], ls=":", lw=1.2),
-             "N_n64": dict(color=P["blue"], ls="--")}
+             "N_n64": dict(color=P["blue"], ls="--"),
+             "N_n32_p2": dict(color=fs.PAL2["sky"], ls="-.")}
     label = {"L1_n32": "GR, $L=1$, 32", "L1_n64": "GR, $L=1$, 64",
              "L1_n96": "GR, $L=1$, 96", "L4_n64": "GR, $L=4$, 64",
              "L1_n64_p2": "GR, $L=1$, 64, 2/cell",
-             "N_n32": "Newton PM, 32", "N_n64": "Newton PM, 64"}
+             "N_n32": "Newton PM, 32", "N_n64": "Newton PM, 64",
+             "N_n32_p2": "Newton PM, 32, 2/cell"}
 
     # 1. errors against Zel'dovich
     fig, axs = plt.subplots(1, 2, figsize=(fs.FULL_WIDTH, 3.3))
     fig.subplots_adjust(left=0.09, right=0.98, bottom=0.14, top=0.95, wspace=0.27)
-    for name in ("N_n32", "N_n64", "L1_n32", "L1_n64", "L1_n96", "L4_n64", "L1_n64_p2"):
+    for name in ("N_n32", "N_n64", "N_n32_p2", "L1_n32", "L1_n64", "L1_n96", "L4_n64",
+                 "L1_n64_p2"):
         if name not in runs:
             continue
         r = runs[name]
@@ -382,6 +399,7 @@ def make_figures(runs, gr, nw, prof, res, out, prof2=None):
         xc = (np.arange(g["n"]) + 0.5)*L/g["n"]
         xf = np.linspace(0, L, 4001)
         fields = list(prof.values())
+        pstat = {}
         for j, aa in enumerate(targets):
             # relativistic: field dump nearest to aa
             af = np.array([(1 + 0.5*f["t"])**2 for f in fields])
@@ -400,6 +418,14 @@ def make_figures(runs, gr, nw, prof, res, out, prof2=None):
             dz_dep = deposit_1d(xzs, w["m_line"], g["n"], L) - 1.0
             # linear dictionary offset of the relativistic density: -2 psi_N, constant
             dict_off = 3.0*hk2*d*np.sin(k*xc)
+            dzc = Z.eulerian_density(xc, af_, d, L) - 1.0
+            pstat[f"a{af_:.2f}"] = {
+                "max_abs_PM_minus_depZ": float(np.abs(dN - dz_dep).max()),
+                "max_abs_GR_minus_depZ": float(np.abs(dE - dz_dep).max()),
+                "max_abs_GR_minus_depZ_minus_dict": float(np.abs(dE - dz_dep - dict_off).max()),
+                "max_abs_depZ_minus_Z": float(np.abs(dz_dep - dzc).max()),
+                "max_contrast_Z_cells": float(dzc.max()), "max_contrast_GR": float(dE.max()),
+                "max_contrast_PM": float(dN.max())}
             ax = axs[0, j]
             ax.plot(xf, rz, **fs.GUIDE, label="Zel'dovich")
             ax.plot(xc, dN, color=P["blue"], ls="none", marker="o", ms=3,
@@ -434,6 +460,9 @@ def make_figures(runs, gr, nw, prof, res, out, prof2=None):
         axs[2, 0].set_ylabel(r"$v\,/\,(\delta/k)$")
         axs[0, 0].legend(loc="upper right", fontsize=7)
         axs[1, 2].legend(loc="upper right", fontsize=7)
+        with open(os.path.join(out, "pancake_profiles.json"), "w") as fh:
+            json.dump(pstat, fh, indent=1)
+        print("profiles", json.dumps(pstat))
         fs.save(fig, os.path.join(out, "pancake_profiles"))
         plt.close(fig)
 

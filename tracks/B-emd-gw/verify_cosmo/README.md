@@ -44,4 +44,31 @@ of this package's runs show the exact commands.
 
 ## Requests
 
-REQUESTS
+To the lead of B-emd-gw (for outbox proposals to orch where the charter changes):
+1. G1, "background error and constraint convergence with the stand-in matter": the
+   stand-in fluid was never run and the particle background it stood in for is
+   verified directly (`VERIFY.md` section 1); propose striking the item or rewording
+   it to the particle background.
+2. G2, "agreement with gevolution in the weak-field regime": under decision 0010 no
+   outside code is run; propose rewording it to the shearing-dust code comparison of
+   arXiv:2003.08014 (gevolution, GRAMSES, Einstein Toolkit, CosmoGRaPH on one test with
+   published numbers; `VERIFY.md` section 3), run in AthenaK, as a B work package.
+3. G2, particle-number convergence: neither the scale-factor error nor the growth has
+   a run at fixed mesh with different particles per cell in the production
+   configuration; a work package of minutes on a card (`VERIFY.md` section 7, items 1
+   and 2).
+4. `cosmo/PLAN.md` (state 06:30) says "one particle per cell is enough with the cubic
+   cloud before collapse". The pancake refutes this where the lattice is stretched:
+   in the void of the plane wave one particle per cell leaves mean H_r = 1.3e-3 and
+   mean M_r = 0.21 at a = 15 and negative energy density after the crossing; two per
+   cell and direction lower both by about 30 (`JOURNAL.md`, P7). Worth a line in
+   `cosmo/README.md` (production configuration) through orch.
+
+To core:
+5. Newtonian mode in AthenaK (decision 0010, consequence 1): the pancake of this package
+   (`inputs/pancake.athinput`, `scripts/zeldovich.py` as the exact reference before
+   crossing, the Newtonian results of run B-emd-gw-20261115-115239-69ab1db) is a ready
+   acceptance test for it. The Python reference `cosmo/newton/pm.py` converges only at
+   first order in the cell size with one particle per cell (`JOURNAL.md`, P1, P8).
+
+To kb: nothing; arXiv:2003.08014, 1505.04756 and 2010.12584 are already in `kb-data/`.
