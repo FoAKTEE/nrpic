@@ -128,6 +128,50 @@ All binary files are written by one rank in native byte order. `<base>` is
 The Z4c history `<base>.z4c.user.hst` holds volume integrals of the squared constraint
 residuals (divide by its Volume column and take the square root for a norm).
 
+## Mesh binary output in double precision (`file_type = bin`, `double_precision = true`)
+
+Upstream's `bin` output writes every value as a 4-byte float, which cannot hold a metric
+component 1 + h with h of 1e-6. With `<outputN> double_precision = true` the values are
+written as they are stored (8 bytes); nothing else of the format changes:
+
+    text lines   "Athena binary output version=1.1", "  size of preheader=5",
+                 "  time=...", "  cycle=...", "  size of location=8",
+                 "  size of variable=8"   (4 without the option),
+                 "  number of variables=N", "  variables:  name1  name2 ...",
+                 "  header offset=H"
+    H bytes      parameter dump (text)
+    per MeshBlock: 10 int32 (ois oie ojs oje oks oke, lx1 lx2 lx3, level above the root),
+                 6 float64 (x1min x1max x2min x2max x3min x3max), then N arrays of
+                 (oke-oks+1)(oje-ojs+1)(oie-ois+1) values, first index fastest
+
+No ghost cells unless `ghost_zones = true`. Any variable or group: `z4c` (22 fields in
+the order chi, gxx, gxy, gxz, gyy, gyz, gzz, Khat, Axx, Axy, Axz, Ayy, Ayz, Azz, Gamx,
+Gamy, Gamz, Theta, alpha, betax, betay, betaz, names with the prefix `z4c_`), `adm`,
+`tmunu` (Sxx, Sxy, Sxz, Syy, Syz, Szz, E, Sx, Sy, Sz: the sources of the last deposit,
+not multiplied by the volume element, also with `source_density = true`), `con`, `weyl`.
+A file holds the state of the time in its header. The parameter is read only if present:
+without it every `bin` file is byte-identical to before. Reader:
+`python/nrpic/athena_bin.py` (`read_bin`, both precisions; uniform meshes are assembled
+to arrays [k, j, i]); upstream's `athenak/vis/python/bin_convert.py` accepts both sizes.
+Example: `problems/tests/lw_oblique.athinput`.
+
+## Field file of the cosmology generator (`NRCOSMO1`) on a box that is not a cube
+
+`athenak/src/pgen/nrpic/nrpic_cosmo.cpp` (`id = file`) reads 8 bytes `NRCOSMO1`, 3 int64
+(n1, n2, n3) and nine arrays of n1 n2 n3 float64, first index fastest (psi, K, alpha,
+Ahat_xx, xy, xz, yy, yz, zz), for a root mesh of n1 x n2 x n3 cells. The three numbers
+need not be equal: `problems/cosmo/make_waves.py` writes such files for boxes of cubic
+cells that are thin in one direction (at least four cells), with the constraint solve of
+`python/nrpic/torus_id.py`. `id.json` beside the file gives the box lengths with all
+digits (`box`); put them into `<mesh> x1max` ... of the run.
+
+## Restart files
+
+Since branch `core/requests-b` the 36 bytes of the mesh restart file that hold the
+never-set coarse indices of the whole mesh (after the 40 bytes ng, nx1, nx2, nx3, is ...
+ke of `mesh_indcs`) are zero; identical runs give identical restart files
+(`docs/UPSTREAM_DEFECTS.md`, item 3).
+
 ## Newtonian mode of the particle module (`<particles> pusher = newton`)
 
 Interface and column table: `tracks/core/interfaces/newtonian_mode.md`; reader:

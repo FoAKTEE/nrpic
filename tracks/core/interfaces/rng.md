@@ -178,7 +178,7 @@ between two divisions when `u` and `P` agree to about 1e-13.
 | Id | Constant (C++ / Python) | Purpose | Owner | Entity, sub-stream |
 |---|---|---|---|---|
 | 0 | none | not to be used: a forgotten stream shows up as 0 | | |
-| 1 | `kStreamInitialData` / `STREAM_INITIAL_DATA` | sampling of particles and fields at the start of a run (step 0) | core, every track | to be fixed by the first user; suggested: entity = tag or cell, sub-stream = species or field |
+| 1 | `kStreamInitialData` / `STREAM_INITIAL_DATA` | sampling of particles and fields at the start of a run (step 0) | core, every track | suggested: entity = tag or cell, sub-stream = species or field. Assigned: sub-stream 16 = jitter of the particle lattice in `problems/cosmo/make_waves.py`, entity = `cell_entity` of the three lattice indices of the site, step 0, draw = axis (0, 1, 2), one uniform deviate each |
 | 2 | `kStreamCollisions` / `STREAM_COLLISIONS` | Monte Carlo collisions, decays | core (collisions), Track C | to be fixed by the collision package; suggested: entity = pair of tags, sub-stream = channel |
 | 3 | `kStreamStochastic` / `STREAM_STOCHASTIC` | stochastic sources of fields | core (scalar field), Track E | to be fixed by the scalar-field package; suggested: entity = cell with level, or mode; sub-stream = field component, with separate sub-streams for cells and modes |
 | 4 | `kStreamTests` / `STREAM_TESTS` | tests of this interface | core | sub-streams 1 to 6: unit test (`rng_test.cpp`); 16: test kick, entity = tag, draws 0 and 1 (mode normal), 0 and 1 (mode direction) |

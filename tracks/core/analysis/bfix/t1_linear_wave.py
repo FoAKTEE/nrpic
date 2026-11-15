@@ -3,6 +3,8 @@
 
 Predictions P1a to P1h: tracks/core/JOURNAL-bfix.md. Stages (all by default):
   algebra  the polarization tensors (python twin of the generator), 400 directions
+  amp      (not in the default list) constraint norms of the corrected oblique data
+           against the amplitude, 1e-7 to 1e-4
   id       initial data read back from the code and the constraints, Track B's case
            lw3d_check (k = (1,1,1) and (1,0,0)) with the new and the baseline executable,
            amplitude scaling, the general directions (1,2,0) and (2,-1,3)
@@ -191,6 +193,29 @@ def stage_id(res, B, exe, out, nproc):
     print("id: scaling", r["amplitude_scaling_k111_new"], r["k120_convergence_new"])
 
 
+# ---------------------------------------------------------------- stage: amp
+
+def stage_amp(res, B, exe, out, nproc):
+    """Scaling of the constraint norms of the corrected oblique data with the amplitude
+    (Track B's case lw3d_check_diag): second order in A means A^4 for the norms."""
+    lw3 = os.path.join(B["pz"], "inputs", "lw_3d.athinput")
+    with open(os.path.join(B["pz"], "cases", "lw3d_check.json")) as f:
+        ov = {c["name"]: c["overrides"] for c in json.load(f)}["lw3d_check_diag"]
+    amps = ["1.0e-7", "1.0e-6", "1.0e-5", "1.0e-4"]
+    jobs = {f"amp_{a}": (exe["new"], lw3, os.path.join(out, "amp", a),
+                         ov + [f"problem/amp={a}"]) for a in amps}
+    recs = bc.run_many(jobs, nproc)
+    r = {"amp": [float(a) for a in amps], "H2": [], "M2": []}
+    for a in amps:
+        c = con_rows(recs[f"amp_{a}"]["rundir"])
+        r["H2"].append(float(c["H2"][0]))
+        r["M2"].append(float(c["M2"][0]))
+    r["H2_ratio_per_decade"] = [r["H2"][i + 1]/r["H2"][i] for i in range(len(amps) - 1)]
+    r["M2_ratio_per_decade"] = [r["M2"][i + 1]/r["M2"][i] for i in range(len(amps) - 1)]
+    res["amp"] = r
+    print("amp:", r)
+
+
 # ---------------------------------------------------------------- stage: evol and pol
 
 def predict3d(B, k, N, T, nsteps, ng=4, sigma=0.5, L=1.0):
@@ -237,7 +262,9 @@ def analyse_dump(B, path, k, amp, ampx, phx, do_weyl=True):
     aref = amp*ep + ampx*ex*np.exp(1j*phx)
     G = np.sum(np.conj(aref)*zc)/np.sum(np.abs(aref)**2)
     out["gain_abs_minus_1"] = float(abs(G) - 1.0)
-    out["gain_phase"] = float(np.angle(G))
+    # zc = a exp(i (w - w_num) t): the phase advance of the code minus the exact one is
+    # -arg(G) (negative: the numerical wave lags), the convention of predict3d
+    out["gain_phase"] = float(-np.angle(G))
     out["tensor_shape_dev"] = float(np.abs(zc - G*aref).max()/atot)
     # diagnostics of gw_diag
     g = Grid((len(d["x"]), len(d["y"]), len(d["z"])),
@@ -457,11 +484,14 @@ def figures(res, out):
         a2 = fs.inch_axes(fig, 4.75, 0.55, 3.0, 2.6)
         for name, col, lab in (("lw3d_check_diag_base", C["blue"], "upstream signs, k = (1,1,1)"),
                                ("lw3d_check_diag_new", C["red"], "corrected, k = (1,1,1)"),
-                               ("lw3d_check_axis_new", C["yellow"], "corrected, k = (1,0,0)"),
                                ("lw3d_check_axis_base", C["green"], "upstream, k = (1,0,0)")):
             c = con[name]
             a1.semilogy(c["t"], c["H2"], color=col, ls="-", label=lab)
             a1.semilogy(c["t"], c["M2"], color=col, ls="--")
+        c = con["lw3d_check_axis_new"]
+        a1.semilogy(c["t"][::2], c["H2"][::2], "o", ms=3, color=C["yellow"],
+                    label="corrected, k = (1,0,0)")
+        a1.semilogy(c["t"][::2], c["M2"][::2], "s", ms=3, mfc="none", color=C["yellow"])
         a1.axhline(1e-20, **fs.THIN)
         a1.text(0.02, 2e-20, "criterion of Track B", fontsize=7)
         tb = res["id"]["track_b_numbers"]
@@ -485,7 +515,17 @@ def figures(res, out):
         a2.set_xticks([16, 32, 64])
         a2.set_xticklabels(["16", "32", "64"])
         a2.xaxis.set_minor_formatter(matplotlib.ticker.NullFormatter())
-        a2.legend(loc="center left", fontsize=7)
+        a2.legend(loc="upper right", fontsize=7)
+        if "amp" in res:
+            am = res["amp"]
+            ai = a2.inset_axes([0.60, 0.30, 0.37, 0.30])
+            A = np.array(am["amp"])
+            ai.loglog(A, am["H2"], "o-", ms=3, color=C["red"])
+            ai.loglog(A, am["M2"], "s--", ms=3, mfc="none", color=C["red"])
+            ai.loglog(A, am["H2"][1]*(A/A[1])**4, color="k", lw=1.0, ls="--")
+            ai.set_xlabel("amplitude A, k = (1,1,1)", fontsize=6.5, labelpad=1)
+            ai.set_title(r"norms and $A^4$", fontsize=6.5, pad=2)
+            ai.tick_params(labelsize=6)
         made += fs.save(fig, os.path.join(out, "t1_constraints"))
         plt.close(fig)
     if "evol" in res:
@@ -577,6 +617,8 @@ def main():
         stage_algebra(res)
     if "id" in st:
         stage_id(res, B, exe, out, a.nproc)
+    if "amp" in st:
+        stage_amp(res, B, exe, out, a.nproc)
     if "evol" in st:
         stage_evol(res, B, exe, out, a.nproc, [int(v) for v in a.evol_n.split(",")])
     if "pol" in st:
