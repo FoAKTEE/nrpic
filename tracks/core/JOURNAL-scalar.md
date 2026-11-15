@@ -399,3 +399,17 @@ densities by 1/sqrt(gamma) and adds the vacuum energy before the solver, the par
 path inside it); the vacuum energy changes the final proper volume by more than 1 percent
 (so the test is not vacuous). Refuted by a difference above 1e-8, which would mean a
 source is counted twice, dropped, or taken at the wrong time level.
+
+### Test 5, outcome (run core-20261115-140626-6699860) [VERIFIED]
+
+The prediction holds with a wide margin: the pair with the vacuum energy agrees to
+7.3e-16 (lapse at the probe), 7.6e-16 (proper volume), 3.5e-16 (deposited energy), the
+proper time of the probe is identical; the pair without it to 7.1e-16, 5.4e-16, 2.3e-16
+(16 steps to t = 0.5). The vacuum energy changes the final proper volume by 19 percent.
+The mean total energy density of the field run starts at 0.14324 = 3/(8 pi) (dust, H0 = 1)
++ 0.6/(8 pi): both parts are in `tmunu_tot`. As stated beforehand, the data violate the
+Hamiltonian constraint with Lambda (rms H = 9.5 percent of [H] at the start); the
+comparison is between two runs from the same data. Figure `fig_particles_field.png`
+(looked at). So particle sources given as step densities and field sources are summed
+correctly in the right-hand side and in the constraints; a dynamical field together with
+particles has not been run.

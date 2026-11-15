@@ -133,9 +133,10 @@ and before every evaluation of the constraints:
   that time, including Lambda).
 
 `u_tmunu` stays what the other modules wrote, so particles and the field coexist
-(request R2). Not yet covered: the constraint statistics of the particle module
-(`.cstat.hst`) still normalise with the particle sources alone; a run with particles and
-field together has not been made [TO VERIFY].
+(request R2; verified with a vacuum energy supplied either way, section 10). Not yet
+covered: the constraint statistics of the particle module (`.cstat.hst`) still normalise
+with the particle sources alone (use `<basename>.sf.hst`); a run with particles and a
+dynamical field together has not been made.
 
 ## 6. Boundaries, refinement, time step, output, restart
 
@@ -240,7 +241,7 @@ field is L^(-3/2) sum R alpha e^(ik.x) (the QFT amplitude of SPEC 5.4).
 | Request | State |
 |---|---|
 | R1 class, task order, Tmunu from the stage's chi and gt | done (sections 2, 4) |
-| R2 additive Tmunu | done in the solver and the constraints; particle `.cstat.hst` not yet (section 5) |
+| R2 additive Tmunu | done in the solver and the constraints, verified to 7.6e-16 (test 5); particle `.cstat.hst` not yet (section 5) |
 | R3 kicks at stage times, sign-safe, projector in qh, off by default, bitwise neutral | done; the projector identity verified on the kick fields, the constraint behaviour in an evolved run only as a smoke test (section 10) |
 | R4 noise without a Fourier library, keys, synthesis | done; checked against `python/nrpic/scalar_field.py` (numpy FFT), not yet against `codebase/ref/synth.py` or the unit test of `NOISE_SPEC.md` (not on the branch when this was written) |
 | R5 stage times | done by lockstep integration |
@@ -293,6 +294,7 @@ the journal. Figures: `tracks/core/notes/scalar_figs/`.
 | Test 3, plane perturbation (A = 0.003 on phi0 = 3, n = (1,1,0), Pi0 = -0.05) from the data of section 8: at t = 0 rms H = 5.6e-7, 8.9e-9, 1.4e-10 and rms M = 1.3e-5, 2.6e-7, 4.3e-9 for N = 16, 32, 64 (orders 5.97, 5.99 and 5.66, 5.91); during the evolution to t = 0.5 orders 5.15 to 6.00 (H) and 5.22 to 5.99 (M); with a uniform momentum instead (control) rms M = 1.5e-3 and no convergence | run core-20261115-134118-836ac86; `fig_plane_constraints.png`, `fig_plane_convergence.png` |
 | Test 4, generic sources (32^3, 2084 modes): coefficients of the synthesized fields equal (shell factor) x (twin alpha) to 2.2e-16 of the rms for frozen, white-in-time and step-window cases, nothing outside the ball (9e-17); shell means of the power within 2.9 sigma (85 shells), mean 1.031 +- 0.022; all dumped fields bit-identical for 1, 8 and 64 MeshBlocks; a restart at cycle 32 gives byte-identical dumps at cycle 64; increments of two steps have phase correlation 1.0 (frozen) and -5e-5 +- 0.06 (white in time); phi and Pi after one step equal the Runge-Kutta response to the sources to 6.6e-16 and 2.6e-15 | run core-20261115-135414-5a6953e (first version core-20261115-134715-1b6bc30, journal entry 4); `fig_noise_power.png` |
 | Test 4, Mukhanov-Sasaki sources (16^3, box 10, 435 modes, 31 shells, slow-roll background, geodesic slicing): lockstep mode functions against SciPy 6.4e-3, 3.7e-4, 2.2e-5 for Courant 0.25, 0.125, 0.0625 (orders 4.12, 4.07); the six fields equal (shell factor) x (twin alpha) x (stencil projector) to 7.1e-17 of the rms; 1 and 8 MeshBlocks bit-identical, restart byte-identical; discrete momentum constraint of the kick fields 4.9e-16 of its terms with the stencil projector, 1.4e-2 with the continuum projector; flipped sign of the Pi kick gives rms H = 1.9e-7 after one step against 2.7e-11, doubling with the amplitude | the same run; `fig_noise_ms.png` |
+| Test 5, particles and field together (dust universe of `problems/cosmo/flrw.athinput`, 32^3 particles, density-form sources, 16 steps): a vacuum energy Lambda = 0.6 from the particle module against the same from a field at rest with the constant potential Lambda/(8 pi) through `tmunu_tot`: lapse at the probe, proper volume and deposited energy agree to 7.6e-16; a field with V = 0 against no field: 7.1e-16. The vacuum energy changes the final volume by 19 percent | run core-20261115-140626-6699860; `fig_particles_field.png` |
 | Statically refined mesh (smoke run): plane wave of test 1 across one refinement level (32^3 root mesh, 120 MeshBlocks, 64 steps) stays stable; rms difference to the exact wave 2.5e-6 (coarse), 6.4e-6 (fine), maximum 1.8e-5, about 100 times the error of a uniform 32^3 mesh | run core-20261115-135434-5a6953e (scouting) |
 | Standard outputs `sf` (bin) and `sf_phi` (vtk) are written and read by `athenak/vis/python/bin_convert.py` | unregistered smoke run, `scratch/core/tmp/sf/out_smoke` |
 | The module compiles in the card build (CUDA 12.6) | `.work/build_gpu_sf`; card runs pending: Slurm job 4427 (`tracks/core/analysis/scalar/gpu_job.sh`: cost at 128^3, tests 2, 4, 3, 1), queued when this was written; each part registers itself under `tracks/core/runs/` with a `summary.json` |
@@ -310,8 +312,9 @@ the journal. Figures: `tracks/core/notes/scalar_figs/`.
   the stochastic graviton sources, a Sommerfeld condition for the field, adaptive
   refinement, several MPI ranks, more than one scalar field.
 - The inflection potential is transcribed from Track E's SPEC, not from the paper.
-- Particles and field in one run: the code paths exist (section 5) and are untested; the
-  constraint statistics of the particle module do not include the field.
+- Particles and field in one run: verified for a field at rest (test 5); not run with a
+  dynamical field. The constraint statistics of the particle module do not include the
+  field.
 - Refined meshes: one smoke run; the order of the error across a refinement boundary and
   the constraint behaviour with a coupled field there are not measured. The stencil
   projector uses the cell size of the root mesh.
