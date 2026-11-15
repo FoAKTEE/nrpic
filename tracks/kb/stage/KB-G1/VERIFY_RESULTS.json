@@ -1,0 +1,398 @@
+{
+  "track": "kb",
+  "gate": "KB-G1",
+  "commit": "be22f7f7f263ab486e217f18a4aa9a1841aff6c1",
+  "verified_utc": "2026-11-15T18:33:30Z",
+  "export": "/data/haiyangw/nrpic/scratch/kb/tmp/stage-verify/kb-KB-G1-be22f7f-20261115T183258Z",
+  "result": "PASS",
+  "checks": [
+    {
+      "check": "clean",
+      "status": "PASS",
+      "message": "worktree clean (outside the stage directory being assembled)",
+      "detail": null
+    },
+    {
+      "check": "sync",
+      "status": "PASS",
+      "message": "main is merged into the branch",
+      "detail": null
+    },
+    {
+      "check": "export",
+      "status": "PASS",
+      "message": "clean export of be22f7f7f263 (HEAD) in /data/haiyangw/nrpic/scratch/kb/tmp/stage-verify/kb-KB-G1-be22f7f-20261115T183258Z/tree",
+      "detail": null
+    },
+    {
+      "check": "size",
+      "status": "PASS",
+      "message": "no committed file of the track above 5 MB",
+      "detail": null
+    },
+    {
+      "check": "note",
+      "status": "WARN",
+      "message": "no tracks/<ID>/note/main.tex (working note)",
+      "detail": null
+    },
+    {
+      "check": "package",
+      "status": "PASS",
+      "message": "EVIDENCE.md, OPEN.md, CHECKLIST.md present (decision 0012); REVIEW.md present",
+      "detail": null
+    },
+    {
+      "check": "style",
+      "status": "PASS",
+      "message": "1 style copies equal harness/style/SHA256SUMS (figstyle.py)",
+      "detail": null
+    },
+    {
+      "check": "fig-script",
+      "status": "PASS",
+      "message": "1 figures, each with its script",
+      "detail": null
+    },
+    {
+      "check": "min-figs",
+      "status": "PASS",
+      "message": "0 schematics and 1 data figures (brief 13.4 asks at least 0 and 0 at KB-G1)",
+      "detail": null
+    },
+    {
+      "check": "runs",
+      "status": "PASS",
+      "message": "85 run manifests finished (74 hand-written, read as decision 0012 allows), output checksums verified where recorded",
+      "detail": null
+    },
+    {
+      "check": "run-notes",
+      "status": "WARN",
+      "message": "74 runs read with defaults or not fully re-verifiable (nrpic-run lint)",
+      "detail": {
+        "kb-20261115-112414-6bb2b7d": [
+          "status 'finished' read as completed",
+          "output directory read from a field other than outputs.dir",
+          "no gate",
+          "status 'finished' read as completed",
+          "no scratch/kb/kb-20261115-112414-6bb2b7d/sha256sums.txt (hand-written manifest; outputs not re-verifiable)"
+        ],
+        "kb-20261115-112522-3ac74c2": [
+          "status 'finished' read as completed",
+          "output directory read from a field other than outputs.dir",
+          "no gate",
+          "status 'finished' read as completed",
+          "no scratch/kb/kb-20261115-112522-3ac74c2/sha256sums.txt (hand-written manifest; outputs not re-verifiable)"
+        ],
+        "kb-20261115-112823-3ac74c2": [
+          "status 'finished' read as completed",
+          "output directory read from a field other than outputs.dir",
+          "no gate",
+          "status 'finished' read as completed",
+          "no scratch/kb/kb-20261115-112823-3ac74c2/sha256sums.txt (hand-written manifest; outputs not re-verifiable)"
+        ],
+        "kb-20261115-124340-9048b83": [
+          "status 'finished' read as completed",
+          "output directory read from a field other than outputs.dir",
+          "no gate",
+          "status 'finished' read as completed",
+          "no scratch/kb/kb-20261115-124340-9048b83/sha256sums.txt (hand-written manifest; outputs not re-verifiable)"
+        ],
+        "kb-20261115-130232-ac33aa1": [
+          "status 'finished' read as completed",
+          "output directory read from a field other than outputs.dir",
+          "no gate",
+          "status 'finished' read as completed",
+          "no scratch/kb/kb-20261115-130232-ac33aa1/sha256sums.txt (hand-written manifest; outputs not re-verifiable)"
+        ],
+        "kb-20261115-130931-c0e0ec8": [
+          "status 'finished' read as completed",
+          "output directory read from a field other than outputs.dir",
+          "no gate",
+          "status 'finished' read as completed",
+          "no scratch/kb/kb-20261115-130931-c0e0ec8/sha256sums.txt (hand-written manifest; outputs not re-verifiable)",
+          "input /data/haiyangw/nrpic/wt/kb/kb/kbtool/code_params.py changed since the run (sha256 differs)",
+          "input /data/haiyangw/nrpic/wt/kb/kb/kbtool/code_symbols.py changed since the run (sha256 differs)"
+        ],
+        "kb-20261115-131150-7350d70": [
+          "status 'finished' read as completed",
+          "output directory read from a field other than outputs.dir",
+          "no gate",
+          "status 'finished' read as completed",
+          "no scratch/kb/kb-20261115-131150-7350d70/sha256sums.txt (hand-written manifest; outputs not re-verifiable)"
+        ],
+        "kb-20261115-131158-7350d70": [
+          "status 'finished' read as completed",
+          "output directory read from a field other than outputs.dir",
+          "no gate",
+          "status 'finished' read as completed",
+          "no scratch/kb/kb-20261115-131158-7350d70/sha256sums.txt (hand-written manifest; outputs not re-verifiable)"
+        ],
+        "kb-20261115-131207-7350d70": [
+          "status 'finished' read as completed",
+          "output directory read from a field other than outputs.dir",
+          "no gate",
+          "status 'finished' read as completed",
+          "no scratch/kb/kb-20261115-131207-7350d70/sha256sums.txt (hand-written manifest; outputs not re-verifiable)"
+        ],
+        "kb-20261115-131627-7350d70": [
+          "status 'finished' read as completed",
+          "output directory read from a field other than outputs.dir",
+          "no gate",
+          "status 'finished' read as completed",
+          "no scratch/kb/kb-20261115-131627-7350d70/sha256sums.txt (hand-written manifest; outputs not re-verifiable)"
+        ],
+        "kb-20261115-131730-b603113": [
+          "status 'finished' read as completed",
+          "output directory read from a field other than outputs.dir",
+          "no gate",
+          "status 'finished' read as completed",
+          "no scratch/kb/kb-20261115-131730-b603113/sha256sums.txt (hand-written manifest; outputs not re-verifiable)"
+        ],
+        "kb-20261115-131809-f7f36ac": [
+          "status 'finished' read as completed",
+          "output directory read from a field other than outputs.dir",
+          "no gate",
+          "status 'finished' read as completed",
+          "no scratch/kb/kb-20261115-131809-f7f36ac/sha256sums.txt (hand-written manifest; outputs not re-verifiable)"
+        ],
+        "kb-20261115-132028-f7f36ac": [
+          "status 'finished' read as completed",
+          "output directory read from a field other than outputs.dir",
+          "no gate",
+          "status 'finished' read as completed",
+          "no scratch/kb/kb-20261115-132028-f7f36ac/sha256sums.txt (hand-written manifest; outputs not re-verifiable)"
+        ],
+        "kb-20261115-132114-932c894": [
+          "status 'finished' read as completed",
+          "output directory read from a field other than outputs.dir",
+          "no gate",
+          "status 'finished' read as completed",
+          "no scratch/kb/kb-20261115-132114-932c894/sha256sums.txt (hand-written manifest; outputs not re-verifiable)"
+        ],
+        "kb-20261115-132730-a51e26e": [
+          "status 'finished' read as completed",
+          "output directory read from a field other than outputs.dir",
+          "no gate",
+          "status 'finished' read as completed",
+          "no scratch/kb/kb-20261115-132730-a51e26e/sha256sums.txt (hand-written manifest; outputs not re-verifiable)"
+        ],
+        "kb-20261115-132750-bb3da03": [
+          "status 'finished' read as completed",
+          "output directory read from a field other than outputs.dir",
+          "no gate",
+          "status 'finished' read as completed",
+          "no scratch/kb/kb-20261115-132750-bb3da03/sha256sums.txt (hand-written manifest; outputs not re-verifiable)"
+        ],
+        "kb-20261115-132754-bb3da03": [
+          "status 'finished' read as completed",
+          "output directory read from a field other than outputs.dir",
+          "no gate",
+          "status 'finished' read as completed",
+          "no scratch/kb/kb-20261115-132754-bb3da03/sha256sums.txt (hand-written manifest; outputs not re-verifiable)"
+        ],
+        "kb-20261115-132806-013c452": [
+          "status 'finished' read as completed",
+          "output directory read from a field other than outputs.dir",
+          "no gate",
+          "status 'finished' read as completed",
+          "no scratch/kb/kb-20261115-132806-013c452/sha256sums.txt (hand-written manifest; outputs not re-verifiable)"
+        ],
+        "kb-20261115-133232-3f7f25a": [
+          "status 'finished' read as completed",
+          "output directory read from a field other than outputs.dir",
+          "no gate",
+          "status 'finished' read as completed",
+          "no scratch/kb/kb-20261115-133232-3f7f25a/sha256sums.txt (hand-written manifest; outputs not re-verifiable)"
+        ],
+        "kb-20261115-133637-3f7f25a": [
+          "status 'finished' read as completed",
+          "output directory read from a field other than outputs.dir",
+          "no gate",
+          "status 'finished' read as completed",
+          "no scratch/kb/kb-20261115-133637-3f7f25a/sha256sums.txt (hand-written manifest; outputs not re-verifiable)"
+        ],
+        "kb-20261115-133803-bbe86cd": [
+          "status 'finished' read as completed",
+          "output directory read from a field other than outputs.dir",
+          "no gate",
+          "status 'finished' read as completed",
+          "no scratch/kb/kb-20261115-133803-bbe86cd/sha256sums.txt (hand-written manifest; outputs not re-verifiable)"
+        ],
+        "kb-20261115-134029-56dbd1c": [
+          "status 'finished' read as completed",
+          "output directory read from a field other than outputs.dir",
+          "no gate",
+          "status 'finished' read as completed",
+          "no scratch/kb/kb-20261115-134029-56dbd1c/sha256sums.txt (hand-written manifest; outputs not re-verifiable)"
+        ],
+        "kb-20261115-134736-0e94ee2": [
+          "status 'finished' read as completed",
+          "output directory read from a field other than outputs.dir",
+          "no gate",
+          "status 'finished' read as completed",
+          "no scratch/kb/kb-20261115-134736-0e94ee2/sha256sums.txt (hand-written manifest; outputs not re-verifiable)"
+        ],
+        "kb-20261115-135137-cf1baba": [
+          "status 'finished' read as completed",
+          "output directory read from a field other than outputs.dir",
+          "no gate",
+          "status 'finished' read as completed",
+          "no scratch/kb/kb-20261115-135137-cf1baba/sha256sums.txt (hand-written manifest; outputs not re-verifiable)"
+        ],
+        "kb-20261115-135323-534eb86": [
+          "status 'finished' read as completed",
+          "output directory read from a field other than outputs.dir",
+          "no gate",
+          "status 'finished' read as completed",
+          "no scratch/kb/kb-20261115-135323-534eb86/sha256sums.txt (hand-written manifest; outputs not re-verifiable)"
+        ],
+        "kb-20261115-135337-45ab9d0": [
+          "status 'finished' read as completed",
+          "output directory read from a field other than outputs.dir",
+          "no gate",
+          "status 'finished' read as completed",
+          "no scratch/kb/kb-20261115-135337-45ab9d0/sha256sums.txt (hand-written manifest; outputs not re-verifiable)",
+          "input /data/haiyangw/nrpic/wt/kb/kb/scripts/code_report.py changed since the run (sha256 differs)"
+        ],
+        "kb-20261115-135445-dfc83c9": [
+          "status 'finished' read as completed",
+          "output directory read from a field other than outputs.dir",
+          "no gate",
+          "status 'finished' read as completed",
+          "no scratch/kb/kb-20261115-135445-dfc83c9/sha256sums.txt (hand-written manifest; outputs not re-verifiable)",
+          "input /data/haiyangw/nrpic/wt/kb/kb/scripts/code_report.py changed since the run (sha256 differs)"
+        ],
+        "kb-20261115-135545-d405f64": [
+          "status 'finished' read as completed",
+          "output directory read from a field other than outputs.dir",
+          "no gate",
+          "status 'finished' read as completed",
+          "no scratch/kb/kb-20261115-135545-d405f64/sha256sums.txt (hand-written manifest; outputs not re-verifiable)"
+        ],
+        "kb-20261115-135554-d405f64": [
+          "status 'finished' read as completed",
+          "output directory read from a field other than outputs.dir",
+          "no gate",
+          "status 'finished' read as completed",
+          "no scratch/kb/kb-20261115-135554-d405f64/sha256sums.txt (hand-written manifest; outputs not re-verifiable)"
+        ],
+        "kb-20261115-135747-5505dbe": [
+          "status 'finished' read as completed",
+          "output directory read from a field other than outputs.dir",
+          "no gate",
+          "status 'finished' read as completed",
+          "no scratch/kb/kb-20261115-135747-5505dbe/sha256sums.txt (hand-written manifest; outputs not re-verifiable)"
+        ],
+        "kb-20261115-140336-29f15a1": [
+          "status 'finished' read as completed",
+          "output directory read from a field other than outputs.dir",
+          "no gate",
+          "status 'finished' read as completed",
+          "no scratch/kb/kb-20261115-140336-29f15a1/sha256sums.txt (hand-written manifest; outputs not re-verifiable)"
+        ],
+        "kb-20261115-140838-29f15a1": [
+          "status 'finished' read as completed",
+          "output directory read from a field other than outputs.dir",
+          "no gate",
+          "status 'finished' read as completed",
+          "no scratch/kb/kb-20261115-140838-29f15a1/sha256sums.txt (hand-written manifest; outputs not re-verifiable)",
+          "input /data/haiyangw/nrpic/kb-data/manifests/inventory.json changed since the run (sha256 differs)"
+        ],
+        "kb-20261115-140851-29f15a1": [
+          "status 'finished' read as completed",
+          "output directory read from a field other than outputs.dir",
+          "no gate",
+          "status 'finished' read as completed",
+          "no scratch/kb/kb-20261115-140851-29f15a1/sha256sums.txt (hand-written manifest; outputs not re-verifiable)",
+          "input /data/haiyangw/nrpic/kb-data/manifests/inventory.json changed since the run (sha256 differs)"
+        ],
+        "kb-20261115-140919-29f15a1": [
+          "status 'finished' read as completed",
+          "output directory read from a field other than outputs.dir",
+          "no gate",
+          "status 'finished' read as completed",
+          "no scratch/kb/kb-20261115-140919-29f15a1/sha256sums.txt (hand-written manifest; outputs not re-verifiable)"
+        ],
+        "kb-20261115-141159-bf9c30f": [
+          "status 'finished' read as completed",
+          "output directory read from a field other than outputs.dir",
+          "no gate",
+          "status 'finished' read as completed",
+          "no scratch/kb/kb-20261115-141159-bf9c30f/sha256sums.txt (hand-written manifest; outputs not re-verifiable)"
+        ],
+        "kb-20261115-141358-9043e03": [
+          "status 'finished' read as completed",
+          "output directory read from a field other than outputs.dir",
+          "no gate",
+          "status 'finished' read as completed",
+          "no scratch/kb/kb-20261115-141358-9043e03/sha256sums.txt (hand-written manifest; outputs not re-verifiable)"
+        ],
+        "kb-20261115-141457-b2e57be": [
+          "status 'finished' read as completed",
+          "output directory read from a field other than outputs.dir",
+          "no gate",
+          "status 'finished' read as completed",
+          "no scratch/kb/kb-20261115-141457-b2e57be/sha256sums.txt (hand-written manifest; outputs not re-verifiable)"
+        ],
+        "kb-20261115-141500-b2e57be": [
+          "status 'finished' read as completed",
+          "output directory read from a field other than outputs.dir",
+          "no gate",
+          "status 'finished' read as completed",
+          "no scratch/kb/kb-20261115-141500-b2e57be/sha256sums.txt (hand-written manifest; outputs not re-verifiable)"
+        ],
+        "kb-20261115-141630-b2e57be": [
+          "status 'finished' read as completed",
+          "output directory read from a field other than outputs.dir",
+          "no gate",
+          "status 'finished' read as completed",
+          "no scratch/kb/kb-20261115-141630-b2e57be/sha256sums.txt (hand-written manifest; outputs not re-verifiable)"
+        ],
+        "kb-20261115-152541-e02d870": [
+          "status 'finished' read as completed",
+          "output directory read from a field other than outputs.dir",
+          "no gate",
+          "status 'finished' read as completed",
+          "no scratch/kb/kb-20261115-152541-e02d870/sha256sums.txt (hand-written manifest; outputs not re-verifiable)"
+        ]
+      }
+    },
+    {
+      "check": "status",
+      "status": "PASS",
+      "message": "STATUS.md has 28 lines",
+      "detail": null
+    },
+    {
+      "check": "rerun",
+      "status": "PASS",
+      "message": "3 of 3 scripts and commands ran cleanly in the export",
+      "detail": null
+    },
+    {
+      "check": "compare",
+      "status": "PASS",
+      "message": "2 regenerated files compared with the committed ones; 0 differ beyond tolerance (rtol 1e-06, atol 1e-12, PNG rms 0.005)",
+      "detail": [
+        [
+          "note/figures/fig_w2_review.png",
+          "PASS",
+          "pixel rms 0.0"
+        ],
+        [
+          "note/figures/fig_w2_review.pdf",
+          "PASS",
+          "regenerated (vector files carry dates; the PNG preview is compared)"
+        ]
+      ]
+    },
+    {
+      "check": "regenerate",
+      "status": "PASS",
+      "message": "all 2 committed figure files regenerated",
+      "detail": null
+    }
+  ]
+}
