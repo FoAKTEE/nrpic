@@ -11,8 +11,8 @@
 WT=/data/haiyangw/nrpic/wt/core-gauge
 PY=$WT/.venv/bin/python
 G=$WT/tracks/core/analysis/gauge
-EXE=/data/haiyangw/nrpic/scratch/core/gauge/exe/athena_gpu_e41c24a
-SRC=e41c24a
+EXE=/data/haiyangw/nrpic/scratch/core/gauge/exe/athena_gpu_b4430da
+SRC=b4430da
 export OMP_NUM_THREADS=1
 nvidia-smi -L
 cd "$WT"

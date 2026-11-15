@@ -22,8 +22,8 @@ INPUT = os.path.join(WT, "problems/ball/ball_leak.athinput")
 # card executable of this package, copied from .work/build_gpu when it was built, and the
 # commit its source equals
 GPU_EXE = os.environ.get("GAUGE_GPU_EXE",
-                         "/data/haiyangw/nrpic/scratch/core/gauge/exe/athena_gpu_e41c24a")
-SRC_COMMIT = os.environ.get("GAUGE_SRC_COMMIT", "e41c24a")
+                         "/data/haiyangw/nrpic/scratch/core/gauge/exe/athena_gpu_b4430da")
+SRC_COMMIT = os.environ.get("GAUGE_SRC_COMMIT", "b4430da")
 
 # lapse: old 1+log (leak off), relaxation times T = 1/lapse_leak
 LAPSE = {
