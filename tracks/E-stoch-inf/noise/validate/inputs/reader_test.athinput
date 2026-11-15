@@ -1,0 +1,51 @@
+# T-N5 of noise/JOURNAL.md: the noise reader (validate/athenak_io.py) on real AthenaK bin
+# output. Linear-wave initial data (athenak/src/pgen/tests/z4c_linear_wave.cpp) with an
+# asymmetric wave vector, written at cycle 0; MeshBlock size set on the command line
+# (meshblock/nx1=nx2=nx3 = 32, 16, 8 for 1, 8, 64 MeshBlocks).
+<job>
+basename  = reader
+
+<mesh>
+nghost    = 3
+nx1       = 32
+x1min     = 0.0
+x1max     = 1.0
+ix1_bc    = periodic
+ox1_bc    = periodic
+nx2       = 32
+x2min     = 0.0
+x2max     = 1.0
+ix2_bc    = periodic
+ox2_bc    = periodic
+nx3       = 32
+x3min     = 0.0
+x3max     = 1.0
+ix3_bc    = periodic
+ox3_bc    = periodic
+
+<meshblock>
+nx1       = 32
+nx2       = 32
+nx3       = 32
+
+<time>
+evolution  = dynamic
+integrator = rk4
+cfl_number = 0.3
+nlim       = 0
+tlim       = 1.0
+
+<z4c>
+diss       = 1
+
+<problem>
+pgen_name = z4c_linear_wave
+amp       = 0.1
+kx1       = 1
+kx2       = 2
+kx3       = 3
+
+<output1>
+file_type   = bin
+variable    = z4c
+dt          = 1.0
