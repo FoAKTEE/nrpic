@@ -311,3 +311,19 @@ than its directory, which the processor script creates at the start.
 Pending in this package: A12 (U4) on processors (run E-20261115-170727-d15df12 continues
 with U4 until about 19:40) and on the card (run E-20261115-180526-6b68c33, Slurm 4479,
 queued).
+
+## 18:50 Close of the package (helper)
+
+Done and tested: the estimators (`sfa.py`, 15 synthetic tests, real-output check against
+the code's history), the base case on the card (U1-U3, U5a/b, U6-U8) and U9/A14, the
+slow-roll scouting case at N = 16 (with control) and 32 with the half-step check. Card
+time used: 0.0153 card-hours (plus at most 0.083 reserved for the U4 card job).
+Not done, left running or queued: A12 at the base size, U4 on processors (inside run
+E-20261115-170727-d15df12, about 19:40; that run must be closed with `nrpic-run finish`)
+and on a card (E-20261115-180526-6b68c33, Slurm 4479, queued); predictions P5 and P5'
+stand untested. Validation command: `scripts/val_base.sh` (README).
+Predictions that failed in this package: the T2a absolute threshold (development run,
+amended before registration), the |M| norm with gt = delta (plane check), PS5 (lockstep
+vs SciPy at N = 32; explained by P8). Open, untested: the early first-order momentum
+residual (README item 5) and the cause of the 8.3e-5 per-mode residual (float32 gt is the
+candidate).
