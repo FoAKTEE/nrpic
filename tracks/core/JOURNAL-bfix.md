@@ -894,3 +894,52 @@ small amplitudes lift it above the truncation error at 32 cells. Test T9
   A = 1e-9 stays below 1e-6 (then the N = 128 floor is not rounding of the fields).
 - P11c: amplitude and phase errors at A = 1e-5 equal those of A = 1e-6 (-4.2907e-7,
   3.0374e-6 rad in T1's sign convention) within 1 per cent.
+
+### Outcome of T9 (run core-20261115-181830-ddc8128, 3 min on 5 processor cores)
+
+Results `results_t9.json`, figure `t9_amp_cpu.png` (looked at: left, the non-TT part and
+max |alpha - 1| over A follow the line proportional to A from 1e-7 (non-TT) or 1e-6
+(alpha) to 1e-5 and turn into floors proportional to 1/A below; right, Psi_4 along -k
+lies on the predicted line proportional to 1/A from 1e-9 to 1e-7 and joins the
+truncation level 1e-7 above). N = 32, one period (74 cycles):
+
+| A | non-TT / A | max abs(alpha - 1) / A^2 | Psi_4 along -k / max | Psi_4 error | amplitude error | phase (rad) |
+|---|---|---|---|---|---|---|
+| 1e-9 | 3.127e-6 | 1.221e5 | 2.653e-5 | 2.644e-5 | -7.436e-7 | -3.445e-6 |
+| 1e-8 | 3.235e-7 | 1.231e3 | 3.391e-6 | 5.780e-6 | -3.987e-7 | -3.048e-6 |
+| 1e-7 | 3.841e-7 | 13.48 | 3.394e-7 | 3.367e-6 | -4.247e-7 | -3.037e-6 |
+| 1e-6 (T1) | 3.3817e-6 | 1.803 | 1.076e-7 | 3.212e-6 | -4.2907e-7 | -3.0374e-6 |
+| 1e-5 | 3.3832e-5 | 1.686 | 8.69e-8 | 3.192e-6 | -4.2908e-7 | -3.0386e-6 |
+
+(Fourier symbol: amplitude -4.2848e-7, phase -3.0339e-6.)
+- P11a PASSED for R2, FAILED as written at A = 1e-7 and for the lapse below 1e-6. From
+  A = 1e-6 to 1e-5 the non-TT part over A grows by 10.004: it is of second order in A
+  (reading R2 holds; Track B's verifier saw the same scaling for the axis wave). At
+  A = 1e-7 it is 3.84e-7, 13.6 per cent above the predicted 3.38e-7: an absolute floor
+  of about 3e-15 that does not depend on A (3.1e-15 and 3.2e-15 at A = 1e-9 and 1e-8)
+  adds 4.6e-15. I had put that floor at 1e-16 (one rounding of gt); it is about thirty
+  roundings, accumulated over 296 stages [JUDGEMENT: the accumulation was not varied].
+  max |alpha - 1| is 1.69 A^2 at A = 1e-5 plus a floor of 1.2e-13 that does not depend
+  on A (1.22e-13, 1.23e-13, 1.35e-13 at A = 1e-9, 1e-8, 1e-7); at A = 1e-6 the sum is
+  1.80 A^2. So "the same at 1e-7, 1e-6, 1e-5 within 10 per cent" fails at 1e-7 (factor
+  8) and holds between 1e-6 and 1e-5 (6.5 per cent). The lapse floor is the size of the
+  rounding of the metric through second differences driving K, eps x 6 x N^2 = 7e-13
+  per unit time at N = 32, integrated over 0.58 [JUDGEMENT].
+- P11b PASSED: Psi_4 along -k is 3.39e-6 at A = 1e-8 and 2.65e-5 at A = 1e-9 (predicted
+  4.9e-6 and 4.9e-5, within a factor three: ratios 0.69 and 0.54), it falls as 1/A from
+  1e-9 to 1e-7 (3.39e-7 at 1e-7: ratios 7.8 and 10.0 per decade), and the Psi_4 error
+  rises to 2.64e-5 at A = 1e-9 (above T1's 3.2e-6). The floor of Psi_4 seen at N = 128 in
+  T4 is rounding of the fields amplified by the differences of gw_diag's Weyl scalar,
+  reading R1; the N^2 factor between 32 and 128 is 23 measured (from 3.39e-8 scaled to
+  A = 1e-6 at N = 32 to 7.8e-7 at N = 128) against 16.
+- P11c PASSED: at A = 1e-5 the amplitude error equals that of 1e-6 to 2e-5 relative and
+  the phase to 4e-4 relative.
+- Not predicted: at A = 1e-9 the amplitude error departs from the symbol by 3.2e-7
+  (rounding in the Fourier coefficient); at A = 1e-6 that is 3e-10 if it scales as 1/A,
+  the size of the departure at N = 128 in T4 (4.7e-10).
+Consequence for Track B: an oblique or axis wave at A = 1e-6 has, after one period, a
+second-order non-TT part of 3.4e-6 A (k = 0 and 2k content, removed by the TT projection
+as the verifier found) and a Psi_4 floor from rounding of about 5e-14 N^2 / A relative
+(7.8e-7 at N = 128). For a convergence study beyond 64 cells use A = 1e-5: the
+second-order part is then 3.4e-5 A in the non-TT fields but the TT amplitude and phase
+are unchanged to 1e-4 of their errors (P11c).
