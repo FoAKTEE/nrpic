@@ -316,8 +316,9 @@ bool CFIsFormat2(const std::string &fname) {
   return false;
 }
 
-//! Extrinsic curvature of the component kc (a table of format 2) on all cells,
-//!   K_ij = psi^4 [KT delta_ij + (KL - KT) n_i n_j],
+//! Extrinsic curvature of the component kc (a table of format 2) on all cells, added to
+//! the curvature already set (zero, or the Bowen-York curvature of the punctures),
+//!   K_ij += psi^4 [KT delta_ij + (KL - KT) n_i n_j],
 //! with psi^4 as set before from all components, and on request the lapse and the shift
 //! beta^i = betar n^i of that table.  Beyond the last row: exterior = pg continues KL
 //! and KT as rbar^(-3/2) and betar as rbar^(-1/2) through the last row (exact for a
@@ -371,7 +372,9 @@ void CFSetExtrinsic(MeshBlockPack *pmbp, const CFComp &kc, const DvceArray1D<Rea
     for (int a=0; a<3; ++a) {
       if (set_shift) { adm.beta_u(m,a,k,j,i) = br*n[a]; }
       for (int b=a; b<3; ++b) {
-        adm.vK_dd(m,a,b,k,j,i) = psi4*(((a == b) ? kt : 0.0) + (kl - kt)*n[a]*n[b]);
+        // added to what the main loop set (zero, or the Bowen-York curvature of
+        // punctures with momentum or spin), so that both kinds of curvature combine
+        adm.vK_dd(m,a,b,k,j,i) += psi4*(((a == b) ? kt : 0.0) + (kl - kt)*n[a]*n[b]);
       }
     }
     if (set_lapse) { adm.alpha(m,k,j,i) = alp; }
