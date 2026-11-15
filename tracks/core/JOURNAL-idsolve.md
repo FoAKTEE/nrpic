@@ -799,3 +799,45 @@ gboost_stencil_n32: six of seven files byte-identical to the build of 7f118b9
 fourth header line only, which now names the residual form and id_vector_tol (a change
 of the text I made, not of a number): held for every number. The relativistic
 regression of this executable is running.
+
+**Regression of the executable to be published held** (runs core-20261115-190741 to
+-191731-f8b263a, report `regress_cpu_a7a32cd.json`): geo 2, boris 2, dep 1, east 12, os
+16, jeans 5, binary 1 files byte-identical to the published executable of 87e189e.
+(The same regression of the build of 7f118b9, runs core-20261115-182847 to
+-183914-b034153, report `regress_cpu_7f118b9.json`, held as well.)
+
+## 2026-11-15, entry 14: second publication, state of the package, next steps
+
+Published (atomic replacement, 19:18 UTC) in `scratch/core/exe/core_id-solver/`:
+`athena_cpu` and `athena_gpu` built from a7a32cd, with `COMMIT` and `READY` (new
+options 1 to 4, examples, what is tested). The processor executable is tested (T0 to
+T4, A to F, V0 to V7). The card executable is NOT yet run on a card: job 4487 (V4) waits
+in the queue; `analyze_card_v4.py` compares its three runs with the processor runs once
+they exist, and READY says so. The first publication (87e189e) stays on disk:
+`scratch/core/tmp/idsolve/exe_87e189e/athena_gpu`, `.work/build_cpu/src/athena`.
+
+State for a reader with no memory:
+- Scalar equation (`id_solve`): done and tested; default mode code drives the monitor's
+  H to 1e-11 at t = 0. Design and interface: `tracks/core/interfaces/id_solver.md`
+  sections 1 to 9; source `athenak/src/particles/nrpic_idsolve.cpp`,
+  `athenak/src/multigrid/multigrid_robin.cpp`.
+- Vector equation (`id_vector`): done and tested on processors; recommended
+  `id_vector_residual = code` (V3: the stencil form spoils data that already satisfy the
+  constraint; V5: mode code lowers the monitor's |M| by 38 for the balls and by 1e5 to
+  6e5 for the moving Gaussian). Interface section 10.
+- What the evolution shows (F): the outflow faces of Z4c dominate |H| over the whole
+  mesh after a few steps whatever the data; in the matter region the solved data keep
+  a violation 5 to 6 times below the trial at dx = 0.5.
+Next steps, in order of use to the tracks [JUDGEMENT]:
+ 1. V4 on a card (job 4487) and the outcome into READY and this journal.
+ 2. A Bowen-York-shaped fill of W at the faces (V2: 0.9 per cent closure error that
+    does not fall with resolution).
+ 3. Refined meshes (section 7: Robin fill on octets, the multigrid's own operator at
+    fine-coarse faces) and punctures (psi = psi_s + u, mode stencil near punctures).
+ 4. Moving matter together with curvature, `nrpic_cosmo id = file`, the vector part on
+    the torus: untested combinations.
+ 5. The outflow face layer of Z4c (F): not of this package, but it decides what a
+    track sees as constraint violation over the whole mesh.
+Harness: `harness/bin/nrpic-run` was not used (it stopped with KeyError 'outputs' on the
+hand-written manifests of wave 1, entry 4); every run of this package is registered by
+hand with `tracks/core/tools/run_registered.py`, same fields.

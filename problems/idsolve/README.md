@@ -24,3 +24,16 @@ cd $D && athena -i <repo>/problems/idsolve/gaussian.athinput mesh/nx1=32 mesh/nx
     mesh/nx3=32 particles/particle_file=gauss_h0p5.nrp
 cat gauss.idsolve.txt       # one record per Newton iteration, last line: summary
 ```
+
+The vector equation (`<particles> id_vector = true`, interface section 10): the
+recommended residual is the constraint monitor, `id_vector_residual = code` (add the line
+to the `<particles>` block; `gaussian_boost.athinput` keeps the stencil form that tests
+V1 and V2 used). Example:
+
+```
+python3 problems/idsolve/make_ic.py gaussian --h 0.5 --out $D
+python3 problems/idsolve/make_ic.py boost --in $D/gauss_h0p5.nrp --u 0.1 --out $D
+cd $D && athena -i <repo>/problems/idsolve/gaussian_boost.athinput mesh/nx1=32 \
+    mesh/nx2=32 mesh/nx3=32 particles/particle_file=gauss_h0p5_u0p1.nrp
+tail -2 gboost.idsolve.txt  # summaries of the scalar and the vector part
+```
