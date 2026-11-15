@@ -182,6 +182,7 @@ def main():
         out["dlnMdress_dlna_end"] = float(np.mean(lg[-5:]))
         out["dress_over_mta_end"] = float(dr[-1] / mta[-1])
         out["mta_dust_over_a_end"] = float((mta[-1] - 1.0) / av[-1])
+        out["mta_over_a_end"] = float(mta[-1] / av[-1])
         # clump and conservation
         com = np.array([x["com"] for x in rows])
         out["clump"] = dict(com_max=float(np.abs(com).max()), com_max_over_dx=float(np.abs(com).max() / R["dx"]),
@@ -219,8 +220,20 @@ def main():
                 r_ta = (mtak * (p["t_i"] + pr["t"]) ** 2 / KAPPA) ** (1.0 / 3.0)
                 ok = (rc >= 4 * R["dx"]) & (rc <= r_ta) & (rp > 0) & (np.array(pr["rho"]) > 0)
                 ratio = np.array(pr["rho"])[ok] / rp[ok]
-                ent[f"ratio_{law}_4dx_rta"] = dict(r=rc[ok].tolist(), ratio=ratio.tolist(),
-                                                   max_dev=float(np.max(np.abs(ratio - 1))) if ok.any() else None)
+                # the outermost caustic of the reference: the steepest fall between two bins
+                # inside 1.5 r_ta; the bins on either side of it are excluded in max_dev_excl
+                lr = np.log(np.where(rp > 0, rp, np.nan))
+                jump = np.where((rc[1:] < 1.5 * r_ta), np.diff(lr), np.nan)
+                jc = int(np.nanargmin(jump)) if np.isfinite(jump).any() else -10
+                near = np.zeros(rc.size, bool)
+                near[max(jc - 1, 0):jc + 3] = True
+                keep = ~near[ok]
+                ent[f"ratio_{law}_4dx_rta"] = dict(
+                    r=rc[ok].tolist(), ratio=ratio.tolist(),
+                    max_dev=float(np.max(np.abs(ratio - 1))) if ok.any() else None,
+                    caustic_r=float(np.sqrt(rc[jc] * rc[jc + 1])) if jc >= 0 else None,
+                    max_dev_excl_caustic=float(np.max(np.abs(ratio[keep] - 1))) if keep.any() else None,
+                    rms_dev_excl_caustic=float(np.sqrt(np.mean((ratio[keep] - 1) ** 2))) if keep.any() else None)
             mtak = np.interp(pr["t"], t, mta)
             r_ta = (mtak * (p["t_i"] + pr["t"]) ** 2 / KAPPA) ** (1.0 / 3.0)
             vr = np.array(pr["vr"])
