@@ -32,6 +32,7 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.abspath(os.path.join(HERE, "..", "..", "..", "..", ".."))
 sys.path.insert(0, os.path.join(ROOT, "python"))
 from nrpic import figstyle as fs  # noqa: E402
+import matplotlib.ticker as mticker  # noqa: E402
 
 E_EULER = math.e
 RAW = "/data/haiyangw/nrpic/kb-data/raw/arxiv"
@@ -288,6 +289,15 @@ def part_V4(out, figdir, rundir):
     res["t_pred_0p045_ratio0p86"] = 0.86 * t_c(0.045)
     res["t_pred_0p045_ratio1p01"] = 1.01 * t_c(0.045)
     res["t_pred_0p045_ratio0p80"] = 0.80 * t_c(0.045)
+    # by-eye read-offs of the verifier from the rendered alpha.pdf (recorded in the JOURNAL
+    # after the first run A-20261115-160935-41f721d; not the track's values)
+    res["readoff_alpha_pdf"] = dict(mu=[0.15, 0.10, 0.075, 0.06, 0.05], t_drop=[46.0, 74.0, 106.0, 145.0, 180.0],
+                                    **{"mu0.05_final": 218.0, "mu0.045_dip": 208.0})
+    res["readoff_ratio_to_tc_rm"] = [t / t_c(m) for m, t in zip(res["readoff_alpha_pdf"]["mu"],
+                                                                res["readoff_alpha_pdf"]["t_drop"])]
+    res["ratio_0p045_dip"] = 208.0 / t_c(0.045)
+    res["ratio_0p05_final_over_first"] = 218.0 / 180.0
+    res["t_0p045_by_two_stage_scaling"] = 208.0 * 218.0 / 180.0
     try:
         res["render_alpha"] = render_pdf(os.path.join(SRC_2609, "alpha.pdf"),
                                          os.path.join(rundir, "src_render"), "alpha", dpi=250)
@@ -301,13 +311,21 @@ def part_V4(out, figdir, rundir):
     ax.loglog(mu, t_c(mu, True), color=fs.PAL["blue"], ls=":", lw=1.0, label="top hat, centre")
     ax.loglog(mu, 0.86 * t_c(mu), color=fs.PAL["red"], ls="--", lw=1.0, label=r"$0.86\,t_c(r_m)$")
     ax.axhline(250, **fs.MASK_LINE)
-    ax.axhline(245, color="grey", lw=0.8, ls=":")
+    ax.text(0.12, 290, "end of the plotted runs, 250 $t_H$", fontsize=7, color="grey")
     ax.axvspan(0.045, 0.05, color="grey", alpha=0.3, lw=0)
+    # verifier's by-eye read-offs of the steep lapse drops in alpha.pdf (src_render/alpha.png)
+    ro = res["readoff_alpha_pdf"]
+    ax.plot(ro["mu"], ro["t_drop"], "o", color="k", ms=4, label="alpha.pdf, steep drop (by eye)")
+    ax.plot([0.05], [ro["mu0.05_final"]], "v", color="k", ms=5, label=r"$\mu=0.05$, final collapse")
+    ax.plot([0.045], [ro["mu0.045_dip"]], "x", color="k", ms=6, label=r"$\mu=0.045$, dip, recovers")
     ax.set_xlabel(r"$\mu$")
     ax.set_ylabel(r"$t/t_H$")
     ax.set_xlim(0.03, 0.4)
     ax.set_ylim(5, 800)
-    ax.legend(fontsize=7, loc="upper right")
+    ax.set_xticks([0.03, 0.05, 0.1, 0.2, 0.4])
+    ax.xaxis.set_major_formatter(mticker.FormatStrFormatter("%g"))
+    ax.xaxis.set_minor_formatter(mticker.NullFormatter())
+    ax.legend(fontsize=7, loc="lower left")
     fs.save(fig, os.path.join(figdir, "fig_V4_timing"))
     fs.plt.close(fig)
     out["V4"] = res
@@ -492,7 +510,7 @@ def constraints_own(ball, N, L):
     return Hres, Mabs, rb[I]
 
 
-def part_V5(out, figdir, Nmax=128, Ns=None):
+def part_V5(out, figdir, Nmax=128, Ns=None, Ntrack=128):
     res = {}
     ball = OwnBall()
     H = ball.H
@@ -536,7 +554,7 @@ def part_V5(out, figdir, Nmax=128, Ns=None):
         res["track_predictions"] = dict(core_tau_ta=pj["core_tau_ta"], core_tau_c=pj["core_tau_c"],
                                         first_horizon=pj["first_horizon"], core_edge=pj["core_edge_shell"])
     # (iii) own 3D constraint convergence, with two deliberately broken variants
-    Ns = Ns or [n for n in (32, 48, 64, 96, 128, 192) if n <= Nmax]
+    Ns = Ns or [n for n in (32, 48, 64, 96, 128, 160, 192) if n <= Nmax]
     L = 1.25 * ball.Rb
     variants = {"own": ball, "flipKL": OwnBall(flipKL=True), "staticKL": OwnBall(staticKL=True),
                 "flipK": OwnBall(flipK=True)}
@@ -568,7 +586,7 @@ def part_V5(out, figdir, Nmax=128, Ns=None):
         src = tmesh.radial_source(tb)
         tr = {"N": [], "p2_H": [], "p2_M": [], "p4_H": [], "p4_M": []}
         regs = {"all": lambda r: np.ones_like(r, dtype=bool)}
-        for N in [n for n in (32, 64, 128) if n <= Nmax]:
+        for N in [n for n in (32, 64, 128, 256) if n <= Ntrack]:
             r = tmesh.residuals(src, N, 1.25 * RB, (2, 4), regs, norm=6 * tb.H ** 2)
             tr["N"].append(N)
             for p in (2, 4):
@@ -593,27 +611,48 @@ def part_V5(out, figdir, Nmax=128, Ns=None):
     out["V5"] = res
     # figures: convergence and the radial data
     fs.use_style()
-    fig, axs = fs.plt.subplots(1, 2, figsize=(fs.FULL_WIDTH, 3.2))
-    fig.subplots_adjust(left=0.09, right=0.98, bottom=0.16, top=0.95, wspace=0.3)
-    cols = {"own": fs.PAL["blue"], "flipKL": fs.PAL["red"], "staticKL": fs.PAL["yellow"],
-            "flipK": fs.PAL["green"]}
+    fig, axs = fs.plt.subplots(1, 2, figsize=(fs.FULL_WIDTH, 3.4))
+    fig.subplots_adjust(left=0.09, right=0.98, bottom=0.30, top=0.96, wspace=0.3)
+    sty = {"own": dict(color=fs.PAL["blue"], marker="o", ms=8, mfc="none", lw=2.5),
+           "flipKL": dict(color=fs.PAL["red"], marker="s", ms=4),
+           "staticKL": dict(color=fs.PAL["yellow"], marker="^", ms=4),
+           "flipK": dict(color=fs.PAL["green"], marker=".", ms=6, lw=1.0, ls="--")}
+    labs = {"own": "own data (expanding)", "flipKL": r"$K_L\to-K_L$ (broken)",
+            "staticKL": r"$K_L$ of a static $\gamma_{RR}$ (broken)",
+            "flipK": r"$K_{ij}\to-K_{ij}$ (collapsing ball)"}
     for i, key in enumerate(("H_L2", "M_L2")):
         ax = axs[i]
-        for name in conv:
+        for name in ("own", "flipKL", "staticKL", "flipK"):
             hh = np.array(conv[name]["h"]) / ball.Rb
-            ax.loglog(hh, conv[name][key], "o-", color=cols[name], ms=4,
-                      label={"own": "own data", "flipKL": r"$K_L\to-K_L$ (broken)",
-                             "staticKL": r"$K_L$ with static $\gamma_{RR}$ (broken)",
-                             "flipK": r"$K_{ij}\to-K_{ij}$ (time reverse)"}[name])
+            ax.loglog(hh, conv[name][key], label=labs[name] if i == 0 else None, **sty[name])
         hh = np.array(conv["own"]["h"]) / ball.Rb
         e = np.array(conv["own"][key])
-        ax.loglog(hh, e[-1] * (hh / hh[-1]) ** 2, **fs.GUIDE, label=r"$\propto h^2$")
+        ax.loglog(hh, e[-1] * (hh / hh[-1]) ** 2, **fs.GUIDE, label=r"$\propto h^2$" if i == 0 else None)
+        ax.set_xticks([0.01, 0.02, 0.04, 0.08])
+        ax.set_xticklabels(["0.01", "0.02", "0.04", "0.08"])
+        ax.xaxis.set_minor_formatter(mticker.NullFormatter())
         ax.set_xlabel(r"$h/R_b$")
-        ax.set_ylabel(("Hamiltonian" if key == "H_L2" else "momentum") + r" $L_2/6H^2$")
-        if i == 1:
-            ax.legend(fontsize=7, loc="lower right")
+        ax.set_ylabel(("Hamiltonian" if key == "H_L2" else "momentum") + r" $L_2/6H^2$, $r<1.15R_b$")
+    fig.legend(loc="lower center", ncol=3, fontsize=7, bbox_to_anchor=(0.5, 0.0))
     fs.save(fig, os.path.join(figdir, "fig_V5_constraints"))
     fs.plt.close(fig)
+    tr = res.get("track_test_rerun_dataset2t")
+    if isinstance(tr, dict) and len(tr["N"]) > 1:
+        fig, ax = fs.plt.subplots(figsize=(fs.COLUMN_WIDTH + 0.6, 3.2))
+        fig.subplots_adjust(left=0.17, right=0.97, bottom=0.15, top=0.96)
+        hN = 1.25 / np.array(tr["N"])
+        for key, c, mk in (("p2_H", fs.PAL["blue"], "o"), ("p2_M", fs.PAL["blue"], "s"),
+                           ("p4_H", fs.PAL["red"], "o"), ("p4_M", fs.PAL["red"], "s")):
+            ax.loglog(hN, tr[key], mk + "-", color=c, ms=4, mfc="none" if key.endswith("M") else c,
+                      label=f"order {key[1]}, " + ("Hamiltonian" if key.endswith("H") else "momentum"))
+        for q, key in ((2, "p2_M"), (4, "p4_H")):
+            e = np.array(tr[key])
+            ax.loglog(hN, e[-1] * (hN / hN[-1]) ** q, **fs.GUIDE)
+        ax.set_xlabel(r"$h/R_b$ (track's octant mesh)")
+        ax.set_ylabel(r"$L_2/6H^2$, all cells, data set 2t")
+        ax.legend(fontsize=7, loc="lower right")
+        fs.save(fig, os.path.join(figdir, "fig_V5_track_test_rerun"))
+        fs.plt.close(fig)
     fig, axs = fs.plt.subplots(1, 3, figsize=(fs.FULL_WIDTH, 2.8))
     fig.subplots_adjust(left=0.07, right=0.99, bottom=0.18, top=0.95, wspace=0.35)
     R = ball.d["R"] / ball.Rb
@@ -678,7 +717,8 @@ def main():
     ap.add_argument("--out", default=os.environ.get("NRPIC_RUN_DIR"),
                     help="output directory (default: NRPIC_RUN_DIR, set by nrpic-run)")
     ap.add_argument("--parts", default="V1,V2,V3,V4,V5,V6")
-    ap.add_argument("--Nmax", type=int, default=128)
+    ap.add_argument("--Nmax", type=int, default=128, help="largest N of the own check (full box)")
+    ap.add_argument("--Ntrack", type=int, default=128, help="largest N of the track's test (octant)")
     a = ap.parse_args()
     os.makedirs(a.out, exist_ok=True)
     out = {}
@@ -694,7 +734,7 @@ def main():
     if "V6" in parts:
         part_V6(out, a.out)
     if "V5" in parts:
-        part_V5(out, a.out, a.Nmax)
+        part_V5(out, a.out, a.Nmax, Ntrack=a.Ntrack)
     with open(os.path.join(a.out, "verify.json"), "w") as fh:
         json.dump(out, fh, indent=1, default=jdump)
     print(json.dumps(out, indent=1, default=jdump)[:20000])

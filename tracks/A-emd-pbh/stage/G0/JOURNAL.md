@@ -91,3 +91,85 @@ horizon-mass error does NOT fall monotonically with spatial resolution at fixed 
 ## Outcomes
 
 (appended below after each run)
+
+### Development of the script (not registered; scratch/A-emd-pbh/tmp/verifier_smoke*)
+
+Three errors of my own, caught by smoke tests before the registered run: (1) a math label
+`\sqrt6` that matplotlib does not parse; (2) in V1 I inverted R_b H_i = q (a_H/a_i)^(1/2) with the
+wrong sign of the exponent (q x^(-1/2)), which gave ceilings of 1.7 and 3.8 instead of 0.069 and
+0.031; corrected to q x^(1/2) before any number was used; (3) a brentq tolerance below scipy's
+floor. The first version of OwnBall also put rho = rho_b in the core (corrected to
+rho_b (1 + Delta + R Delta'/3) before the registered run), and interpolated (m, E) linearly for
+the shell times (2e-6 relative error; replaced by evaluation at the shell).
+
+### Run A-20261115-160935-41f721d (local, 4 cores, 37 s; outputs scratch/A-emd-pbh/A-20261115-160935-41f721d/)
+
+V1 outcome: as predicted. mu_max = 0.03058 (q = 3) and 0.06881 (q = 2) at R_b H_i = 0.9 with the
+mean cap 0.3; central cap 0.02531 (q = 2), e_E times less. The q = 2 mean-cap ceiling is ABOVE
+the particle bracket (0.045, 0.05] for R_b H_i > 0.75 (fig_V1_ball_window.png, looked at): to
+hold mu = 0.05 at q = 2 the start mean contrast must be 0.218, at q = 3 0.49; to hold the hoop
+value mu = 0.45 it must be 1.96 (q = 2). Prediction confirmed: the ball cannot hold the hoop and
+fluid amplitudes, but at q = 2 it does hold the particle bracket of arXiv:2609.14218.
+Anti-trapping: own max 2m/R = 0.23612 at R = 8.26 (data set 2t), equal to the track's
+Ball.summary() 0.23612; below 1, so no anti-trapped round sphere. Confirmed.
+
+V2 outcome: as predicted. sympy: deltabar(r) = (12/5) mu exp(-k^2 r^2/6) at aH = k/sqrt6; r_m =
+sqrt6/k from both the compaction maximum and the paper's condition (MDPBH.tex L709-711);
+deltabar(r_m)/mu = 12/(5 e_E) = 0.88291, delta_c/mu = 2.4, ratio e_E. Exact shells: (2m/R_ta) /
+deltabar_ent = 1.66643 at Delta_i = 1e-4 (limit 5/3, error linear in Delta_i: 1.6438 at 0.1);
+Delta_i (t_c/t_i)^(2/3) -> 1.68661 against 1.68647. fig_V2_conventions.png looked at.
+
+V3 outcome: as predicted. Pancake perimeter by quadrature gives mu_c(e, 0) = 0.21861, 0.34215,
+0.41254, 0.45175, 0.47203, 0.48053 at e = 0.05 ... 0.3, equal to h-hat with E of modulus
+sqrt(1 - x^2) to 5e-15; the parameter convention would give 0.4221 at e = 0.2. The rendered
+thre_p0.pdf (src_render/thre_p0.png, read by eye) has the "Analytic criterion" line at about
+0.45 at e = 0.2 and 0.34 at e = 0.1, i.e. the modulus convention. Prolate/oblate:
+mu_c(0.2, -0.1) = 0.4551, mu_c(0.2, 0.1) = 0.4565.
+
+V4 outcome: arithmetic as predicted (mu_fd(250) = 0.04813, t_c(r_m; 0.045) = 276.6 t_H, 0.86 t_c =
+237.8). The rendered alpha.pdf (src_render/alpha.png, read by eye) shows: the mu = 0.045 curve
+runs to the right edge of the plot at 250 t_H; alpha_0 has a sharp dip at about 205-212 t_H
+(from ~13.5 to ~9) and then stays at 9-9.5 to 250 t_H, with no collapse near 238 t_H. So the
+sub-prediction "mu = 0.045 forms a horizon near 239 t_H" of SCOPE.md section 2 is contradicted
+by the published curve (my prediction holds). The mu = 0.05 curve has the same two-stage
+shape: a first drop at ~178-183 t_H, a plateau, the final collapse ending at ~218 t_H (ratio
+final/first ~1.2). My read-offs of the steep drops: mu = 0.15: 46; 0.10: 74; 0.075: 106; 0.06:
+~145 (ends 152); 0.05: 180 (first), 218 (final); 0.3, e = 0: 12; 0.3, e = 0.2: gradual,
+ends at 25. These agree with the track's by-eye values (24, 46, 74, 106, 144, 199). New
+observation [JUDGEMENT]: the first dip of the 0.045 curve sits at ~0.76 t_c(r_m), as the first
+drop of the 0.05 curve (180/236 = 0.76); the 0.05 run collapsed ~1.2 times later; the same
+factor puts a 0.045 collapse at ~250-255 t_H, just beyond the plotted end. H1 therefore
+survives, but its timing must be predicted from the two-stage shape, not from 0.86 t_c.
+
+V6 outcome: as predicted. s_c = 0.5477 (virial) and 1.5000 (2211.13950); N_lattice = 7.9e4,
+3.7e5, 1.78e6 at deltabar = 0.04, 0.02, 0.01; N_random/N_lattice = 74, 125, 209.
+
+V5 outcome: (a) not run yet (pytest, below). (b) The track's own test function
+(expball.mesh.residuals) on data set 2t (taper 0.1875 R_b, octant L = 1.25 R_b, all cells):
+order 2: H 1.94, 1.98; M 1.78, 1.93; order 4: H 3.39, 3.75; M 2.82, 3.43 (N = 32, 64, 128).
+Order 2 within 0.2 of 2 at the finest pair; order 4 still approaching 4 from below at N = 128.
+(c) My own construction (built from Delta(R) with my own hypergeometric inversion, spline
+derivatives, conformal quadrature) equals the table that AthenaK reads (scratch run
+A-emd-pbh-20261115-130609-947c898) to 3e-15 in psi, 5e-11 H in KL, 2e-14 H in KT, 8e-15 in betar;
+alpha = 1 in every row; KL = KT = -0.0445 < 0 at the centre (expanding in the code's sign). My
+own finite differences on the full box, r < 1.15 R_b, N = 32 ... 128: H L2/6H^2 = 2.5e-2 ...
+1.85e-3, orders 1.87, 1.78, 1.93, 1.96; M 9.7e-2 ... 1.03e-2, orders 1.38, 1.55, 1.74, 1.85
+(approaching 2). (d) Breaking: KL -> -KL plateaus at H 1.09, M 1.89 (order 0); the "static
+metric" KL (= -v' + v E'/(1+2E)) plateaus at H 0.021, M 0.040 (orders -> 0): the checker sees
+the error, and KL = -dv/dR is the right one. K -> -K (time reverse) gives residuals identical to
+the true data to all digits: the constraint test cannot tell an expanding from a collapsing
+ball; the sign is fixed only by the convention and the first evolution step. (e) Shell times:
+own cycloid core tau_ta = 16.89376895004044, tau_c = 44.45420456674754, core-edge tau_AH =
+44.38146574194694 (identical to the track's predictions to all printed digits); first trapped
+shell by minimisation: tau_AH = 44.34927 at R_i = 2.742 (m = 0.0805), the track's 400-shell grid
+gives 44.34942 at R_i = 2.731 (m = 0.0796): agreement to 1.5e-4 in time, the grid is coarse.
+Figures fig_V5_constraints.png (the blue "own" curve is hidden under the identical green
+time-reversed one; redrawn in the next run) and fig_V5_radial.png looked at.
+
+### Prediction for the second run (before it)
+
+Same script with the figure fixes, the track's test to N = 256 (octant) and my own check to
+N = 192: order 4 of the track's test reaches 3.8-3.9 at 128 -> 256 (DERIVATION.md section 7 says
+3.92 H and 3.79 M for the smoothed top-hat without taper); my own order-2 check reaches
+1.9 or more in M. Refuted if the order-4 momentum order stays below 3.6 at the finest pair.
+pytest of expball (run separately): all tests pass; refuted by any failure.
