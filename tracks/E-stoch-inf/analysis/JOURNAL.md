@@ -40,3 +40,11 @@ still forms W(t) - W(t - dt). The lead's earlier validation used core's executab
 - **P6 (cost).** Each card run below one minute; the job below 0.15 card-hours. The
   processor U2 takes 80-120 min (1.35e4 zone-cycles/s of the lead's timing run
   E-20261115-135218-bdf4710 gives 97 min for 64^3 x 300), U4 about half.
+
+## 17:08 Run E-20261115-170651-885fc6e stopped (my error, no result)
+
+The local launcher passes its arguments without a shell, so the literal argument
+`$NRPIC_RUN_DIR` reached the script unexpanded and the runs started writing into a
+directory of that name in the worktree root. Stopped after a minute with `nrpic-run stop`,
+the stray directory removed, the run closed as stopped. Resubmitted with `bash -c`, which
+expands the variable (as in the lead's HANDOFF command).
