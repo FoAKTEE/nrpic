@@ -420,3 +420,32 @@ Slurm job 4464 ran the eight entries in 51 s (0.014 card-hour), all rc 0.
   sub-cycled. Ratio processor/card for the collision part: 96 to 173. Start-up 0.2-4.7 s.
   Prediction (< 1e-8 s per pair, >= 50 times the processor) confirmed.
 Figure `figs/cost_gpu.png` looked at.
+
+## 2026-11-15 D2: outcome (run C-20261115-180434-fd05776)
+
+Lab-frame Moller speed of 2e8 random pairs (se 5e-5 relative) of the T11ab snapshots,
+relative to <v_Mol>(theta_s)/gamma_s^2:
+- seed 1: initial snapshot 1.000501 (z = +10.0), final snapshot 0.999627 (z = -7.5);
+  tested pairs over the run 1.000240(44), between the two;
+- seed 2: initial 1.000241 (z = +4.8), final 1.000234 (z = +4.7); tested 1.000196(40),
+  0.7 se from the initial sample.
+So a sample of 1e6 particles has its own all-pairs mean Moller speed, which differs from
+the ensemble value by several 1e-4 and wanders by as much while collisions redistribute
+the momenta at fixed energy and momentum (seed 1: by 8.7e-4 within the 200 steps). This
+is the finite-sample fluctuation of a pair average (a U-statistic: relative scatter
+~2 sd(h1)/(<v> sqrt N) with h1 the mean Moller speed of one particle against the gas;
+a few 1e-4 at N = 1e6 if the part of h1 not fixed by the conserved energy and momentum
+has sd ~0.1-0.2 of <v>) [JUDGEMENT; the size is inferred from these numbers, not
+computed]. The tested pairs follow the sample (seed 2 within 0.7 se; seed 1 between its
+start and end values). In the gas at rest of T2 the temperature measured from the sample
+absorbs most of this, because there h1 depends mainly on the energy; in the drifting gas
+the anisotropy of the sample (u_x against u_perp) is not fixed by conservation and
+carries it. Cause of the T11(a) sum_P excess: the reference, not the operator. My D2
+prediction (sample ~2e-4 high, tested pairs equal to it within 3 se) held for seed 2 and
+for seed 1 only after allowing for the sample's change during the run.
+Consequence for test design (for the lead): a rate check at the 1e-4 level must compare
+the tested pairs with the sample's own pair mean at the same time (or use sum_P/sum_W
+against a pair Monte Carlo of the same snapshot), not with the ensemble formula; the
+step-to-step standard error does not contain the sample's fluctuation. The criteria of
+T2(b) and T11(a) as written are not affected (both pass), but T2(b)'s 4 se clause is
+fragile in a drifting gas or at higher precision.
