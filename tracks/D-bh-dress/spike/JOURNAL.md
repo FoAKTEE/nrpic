@@ -446,3 +446,30 @@ E <= E_cut; criteria as stated in the prediction.
 Prediction confirmed in all parts: counting 1.35e5 in [1e5, 3e5]; growth 5.4, 4.8, 4.7 per
 decade beyond the first in [4, 6]; deposit inside 16 Gm 8.6e7 in [3e7, 3e8]; total 4.8e8
 in [1e8, 2e9]; dx = 0.125 eight times dx = 0.25 (by construction of the criterion).
+
+## K2 control outcome (slice of the sampling)
+
+Runs: BL-slice IC D-bh-dress-20261115-173649-d343137 (179 s), BL run
+-174807-ba95d18 (6 processes, 400 s), KS run on the main IC -175504-5b843b8 (12 processes,
+201 s), both 48000 particles, 3000 M, snapshots every 20 M; analyses -175512-5b843b8 (BL),
+-175842-16be482 (KS); comparison -175852-16be482 (`figs/slice_control.png`, looked at).
+- The two samples share 44933 of 48000 particles (same seed: the rejection decisions differ
+  only where the Jacobian changes the weight), so their time series are nearly identical
+  and the comparison is differential.
+- Prediction REFUTED: no transient above the noise. Largest |running mean over 100 M - t0|
+  in units of the single-snapshot Poisson sigma: BL 1.26, 1.95, 1.29, 1.94 for 0-4, 4-6,
+  6-10, 10-16 Gm; KS 1.36, 2.04, 1.32, 1.96. The common oscillations (2 % in 10-16 Gm with a
+  period of ~500 M) are the phase noise of the shared orbits.
+- Differential (BL minus KS, counts relative to their own t = 0): 0-4 Gm -2.2 % (0-500 M),
+  -3.4 % (500-3000 M), scatter 5.2 %; 4-6 Gm +1.5 %, +1.4 % (scatter 1.8 %); 6-10 Gm
+  -0.5 %, -0.8 % (0.8 %); 10-16 Gm +0.2 %, +0.1 % (0.4 %); 16-40 Gm +0.1 %, +0.1 %. The
+  offsets set in within the first snapshots (4-6 Gm: +4.5 % at 20 M) and then persist.
+  [JUDGEMENT, not tested further] consistent with a second-order effect: after phase
+  mixing the BL sample is the stationary DF f <1/(1 + x)>_orbit, x = (2r/Delta) v^r_BL,
+  which differs from f at order <x^2> (a few per cent for orbits reaching 4-6 Gm); the
+  noise of the differential comparison is set by the ~3000 non-shared particles (about
+  1 % of the 4-6 Gm count), so the offsets are not significant.
+- Consequence: at N = 48000 the slice Jacobian matters below the noise of these tests;
+  wave 1's Schwarzschild test (sampled without it, pericentres >= 4.2 Gm where x is
+  smaller) is not affected at its precision. The exact KS-slice sampling of sample_kerr.py
+  removes the question for larger N.

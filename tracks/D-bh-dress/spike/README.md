@@ -194,7 +194,14 @@ D-bh-dress-20261115-172335-9e5ccf9, run D-bh-dress-20261115-172611-1e40191: 12 p
   |dLz| max 1.7e-9, |dQ|/max(Q, 1) max 9.5e-6. No particle came within r_+ (smallest
   r 2.288 Gm); 14 went below their predicted pericentre by up to 3.1e-3 Gm (energy error
   near the capture boundary; the 1e-3 threshold predicted was too tight).
-- Control of the slice: CONTROL_PLACEHOLDER
+- Control of the slice (runs -173649-d343137, -174807-ba95d18, -175504-5b843b8, analyses
+  -175512-5b843b8, -175842-16be482, comparison -175852-16be482, `figs/slice_control.png`):
+  the same DF sampled on the BL slice without the Jacobian (the wave-1 scheme) evolves like
+  the exact KS-slice sample within the noise over 3000 M (largest running-mean excursions
+  1.3-2.0 sigma in both); the differential offsets (BL minus KS: -3, +1.4, -0.8, +0.1 % in
+  0-4, 4-6, 6-10, 10-16 Gm) persist rather than decay and are within the noise of the
+  ~3000 non-shared particles. So wave 1's Schwarzschild test is not affected at its
+  precision [JUDGEMENT on the second-order origin; JOURNAL K2 control].
 
 **7. Particle number inside ten horizon radii, Kerr a = 0.8 (r < 16 Gm)** (run
 D-bh-dress-20261115-173114-af8bfcc, `figs/kerr_budget.png`; JOURNAL K3). Equal masses,

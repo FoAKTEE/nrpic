@@ -1,0 +1,61 @@
+{
+ "run_id": "D-bh-dress-20261115-175852-16be482",
+ "track": "D-bh-dress",
+ "package": "D-pre-2 spike",
+ "purpose": "K2 control comparison: KS vs BL slice, inner counts and running means",
+ "kind": "scouting",
+ "command": [
+  "/data/haiyangw/nrpic/wt/D-bh-dress/.venv/bin/python",
+  "compare_slice.py",
+  "--ks",
+  "/data/haiyangw/nrpic/scratch/D-bh-dress/D-bh-dress-20261115-175842-16be482/ks_series.npz",
+  "--bl",
+  "/data/haiyangw/nrpic/scratch/D-bh-dress/D-bh-dress-20261115-175512-5b843b8/bl_series.npz",
+  "--out",
+  "/data/haiyangw/nrpic/scratch/D-bh-dress/D-bh-dress-20261115-175852-16be482",
+  "--w",
+  "100"
+ ],
+ "cwd": "/data/haiyangw/nrpic/wt/D-bh-dress/tracks/D-bh-dress/spike",
+ "env_overrides": {
+  "OMP_NUM_THREADS": "1",
+  "OPENBLAS_NUM_THREADS": "1"
+ },
+ "git": {
+  "sha": "16be48237de09a22c5c74c78d14f350c91359c25",
+  "branch": "track/D-bh-dress",
+  "dirty_spike_dir": false
+ },
+ "inputs": [
+  {
+   "path": "/data/haiyangw/nrpic/wt/D-bh-dress/tracks/D-bh-dress/spike/compare_slice.py",
+   "sha256": "8e641dd48ae0e1969e71781e37c9e7246454ffd5d0a5fdf905fef0a91de479e3"
+  }
+ ],
+ "resources": {
+  "nodes": 1,
+  "cores": 1,
+  "gpus": 0,
+  "card_hours": 0.0,
+  "walltime_s": 1.74
+ },
+ "outputs": {
+  "dir": "/data/haiyangw/nrpic/scratch/D-bh-dress/D-bh-dress-20261115-175852-16be482",
+  "sha256sums": "sha256sums.txt",
+  "files": [
+   "slice_control.json",
+   "slice_control.pdf",
+   "slice_control.png",
+   "stdout.txt"
+  ]
+ },
+ "status": "completed",
+ "exit_code": 0,
+ "started": "2026-11-15T17:58:52+00:00",
+ "ended": "2026-11-15T17:58:53+00:00",
+ "parents": [
+  "D-bh-dress-20261115-175512-5b843b8",
+  "D-bh-dress-20261115-175842-16be482"
+ ],
+ "notes": "Registered by hand with spike/register_run.py."
+}
