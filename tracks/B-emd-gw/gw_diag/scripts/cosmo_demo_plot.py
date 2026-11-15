@@ -11,7 +11,7 @@ import sys
 import numpy as np
 
 HERE = os.path.dirname(os.path.abspath(__file__))
-sys.path.insert(0, "/data/haiyangw/nrpic/wt/B-emd-gw/python")
+sys.path.insert(0, os.path.join(HERE, "..", "..", "..", "..", "python"))
 from nrpic import figstyle as fs  # noqa: E402
 import matplotlib  # noqa: E402
 matplotlib.use("Agg")

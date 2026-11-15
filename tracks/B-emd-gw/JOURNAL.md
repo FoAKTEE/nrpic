@@ -55,3 +55,10 @@ helpers), each with its prediction:
   a = (1 + tau/2)^2 (verify_cosmo reference); the second-order box mean of Khat in a
   closed box with a TT wave grows as pi^2 A^2 t, so alpha - 1 = -(1/6) pi^2 A^2 t^2 for
   d_t alpha = -(1/3) alpha^2 K and -pi^2 A^2 t^2 for 1+log (periodic_z4c item 3).
+- Note before the registered L2 run (13:25Z): a development smoke test of `lead_checks.py`
+  (scratch/B-emd-gw/tmp/smoke_lead, not cited) failed P-L2e as written: Q''' from a
+  five-point difference of Q at h = 1e-3 is limited by rounding of the large t^2 term of Q
+  (1.7e-4 relative in E). The registered check differentiates Q symbolically (sympy) and
+  integrates adaptively; P-L2e is kept (1e-6).
+- Small fix before L1: the gw_diag scripts imported `python/nrpic` through the absolute
+  path of this worktree; now relative, so a clean export uses its own copy.

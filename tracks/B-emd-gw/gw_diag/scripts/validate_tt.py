@@ -14,7 +14,7 @@ import numpy as np
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, os.path.join(HERE, ".."))
-sys.path.insert(0, "/data/haiyangw/nrpic/wt/B-emd-gw/python")
+sys.path.insert(0, os.path.join(HERE, "..", "..", "..", "..", "python"))
 from gwdiag import Grid, tt, analytic  # noqa: E402
 from nrpic import figstyle as fs  # noqa: E402
 import matplotlib  # noqa: E402
