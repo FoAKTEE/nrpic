@@ -319,7 +319,7 @@ Predictions and outcomes, including the failed ones: `tracks/core/JOURNAL-coll.m
 | Reproducibility: with the analytic metric all snapshots are byte-identical for 1, 8, 64 MeshBlocks, for a box whose faces are not binary fractions with 1 and 27, and for a restart from the dump of cycle 37 (1e5 particles, 100 cycles, 5e5 collisions, sub-cycling active); another seed changes every particle. With the metric on the mesh a restart is byte-identical; two divisions are byte-identical in the first box and 5e-15 apart with identical collisions in the second (metric reconstruction of the pusher, `rng.md` section 9). The same on the card. Processor and card: same collisions, momenta 1.8e-15 apart | runs core-20261115-133737-82e2040, core-20261115-133912-f104754, core-20261115-140011-18d4555 (card); `fig_repro.png` |
 | Unequal masses 1:4 with `nanbu`: both classes end at one temperature (difference 0.1 to 0.6 sigma) and Maxwell-Juttner (KS p 0.36 to 0.96); updates per collision 1.538 to 1.539 (20/13); light and heavy particles updated equally often; energy defect -0.0020(21) of the thermal energy after 25 collision times, scatter 0.4 percent (2e5 particles); the defects of the history equal the changes of the snapshots to 7e-15. `equal` refuses the same file with an error naming the masses | run core-20261115-140030-7a0efc0; `fig_unequal.png` |
 | Curved frame: in the homogeneous metric (lapse 0.7, non-diagonal gamma_ij) on the mesh, with the symmetric triad and the midpoint pusher and with the Cholesky triad and the Boris pusher: pair counting exact with alpha/sqrt(gamma); 1993695 and 1992802 collisions against 1993138 in the flat box at the same rate per coordinate time; sum of M W (with gamma^ij) conserved to 1.0e-14, sum of M u_i to 5e-17 of its scale; energy with the metric at the particles changed by the collision steps by 1.2e-14 in total; relaxation to Maxwell-Juttner in the triad components (KS p 0.78, 0.92) | runs core-20261115-140259-8742cdf (card), core-20261115-140147-15c576d (processor: the same numbers of collisions); `fig_curved_box.png` |
-| Relativistic cluster (monoenergetic, y_c = 0.819, 1e4 particles, Z4c with six refinement levels, collision cells of 4^3 mesh cells = 2 M, 150 M = 4.8 dynamical times). Operator on with sigma = 0: byte-identical to operator absent on the processor (2 steps); on the card as close to the baseline as the baseline to its own repeat (lapse 8e-15, positions 3e-13). Knudsen number 30: 470 collisions (sum_P 461.3), central lapse within 0.0024 and mass radii within 2.3 percent of the collisionless run at all times, no particle lost, rest mass identical to the bit, deposit identity 1e-15, pair energies in the cell frame to rounding. The collision steps raise the particle energy (metric at each particle) by 3.9e-6 of its value, CLUSTERD | runs core-20261115-135728-18d4555 (processor), core-20261115-140316-8742cdf (card), CLUSTERDRUN; `fig_cluster.png` |
+| Relativistic cluster (monoenergetic, y_c = 0.819, 1e4 particles, Z4c with six refinement levels, collision cells of 4^3 mesh cells = 2 M, 150 M = 4.8 dynamical times). Operator on with sigma = 0: byte-identical to operator absent on the processor (2 steps); on the card as close to the baseline as the baseline to its own repeat (lapse 8e-15, positions 3e-13). Knudsen number 30: 470 collisions (sum_P 461.3), central lapse within 0.0024 and mass radii within 2.3 percent of the collisionless run at all times, no particle lost, rest mass identical to the bit, deposit identity 1e-15, pair energies in the cell frame to rounding. The collision steps raise the particle energy (metric at each particle) by 3.9e-6 of its value. Knudsen number 3 with collision cells of 2, 1 and 0.5 M: expected collisions 5037, 5219, 5269; energy gain per collision 1.05e-8, 2.3e-9, 1.1e-9 of the particle energy; final central lapse 0.7914, 0.7885, 0.7891 (collisionless 0.8114) | runs core-20261115-135728-18d4555 (processor), core-20261115-140316-8742cdf and core-20261115-142625-67f8c1d (card); `fig_cluster.png` |
 
 Not verified: section 9.
 
@@ -355,9 +355,30 @@ Limits and open points.
   percent. `coll_cell_factor` trades this against the size of the cell. That repeated
   partners are the cause is [JUDGEMENT]; no control separated it from other effects of a
   small cell.
-- Cell size with a gradient (heat conduction, the track's tests T6 to T8) was NOT
-  tested: no run of this package has a temperature or density gradient across cells
-  except the cluster. The dependence of transport coefficients on the cell size is open.
+- Energy in a gravitational field. The collision conserves the pair energy measured
+  with the metric of the cell centre. The energy measured with the metric at each
+  particle, which is what the deposit hands to the spacetime, rises steadily: in the
+  cluster of section 8 by 1.05e-8, 2.3e-9 and 1.1e-9 of its value per collision for
+  collision cells of 2, 1 and 0.5 M (5e-5 of a pair's energy at 2 M), 5.2e-5 in total
+  over 5000 collisions at Knudsen number 3. It falls with the cell size, by 0.22 from 2
+  to 1 M (0.25 for second order) and by 0.10 from 2 to 0.5 M (0.063 for second order;
+  my prediction of second order within 40 percent failed there, at 1.3 particles per
+  occupied cell and with about 10 percent statistical error). Reading [JUDGEMENT]: the
+  partners of a pair sit at different depths of the potential and the collision moves
+  kinetic energy between them without the potential difference being paid. A run over
+  many relaxation times accumulates this gain in proportion to the number of collisions
+  (1e4 particles colliding 1e3 times each at 2 M cells: of order 5 percent of the rest
+  mass), so such runs need small collision cells, hence many particles, or a correction
+  that is not implemented (for example a rescaling of the pair's momenta to conserve
+  the energy at the particles' own positions). This is the first thing to settle
+  before science runs of track C.
+- Cell size and rate with a density gradient: in the same cluster the expected number
+  of collisions rises by 3.6 percent from cells of 2 M to 1 M and by 1.0 percent from 1
+  to 0.5 M (the square of the density averaged over a cell is below the average of the
+  square).
+- Heat conduction (the track's tests T6 to T8) was NOT tested: no run of this package
+  measures a transport coefficient. The dependence of transport coefficients on the
+  cell size is open.
 - `nanbu` conserves energy and momentum only on average: the temperature of a gas of
   2e5 macroparticles with masses 1:4 random-walks by 0.4 percent in 25 collision times.
   Production runs should use equal masses.

@@ -625,3 +625,48 @@ Figure `fig_cluster.png` looked at.
   (2.6e-9 and 6.6e-10 of sum M W), within 40 percent; the number of collisions is
   unchanged within 4 sigma. If the gain does not fall with the cell size, the
   explanation is wrong.
+
+## 2026-11-15 16:40 UTC  outcome of the cell-size follow-up in the cluster; end of the package
+
+### Cluster at Kn = 3 with smaller collision cells: run core-20261115-142625-67f8c1d (card)
+
+Figure `fig_cluster.png` of that run looked at (the two cell sizes give the same lapse
+and radii histories; the cumulative gain of the smaller cells is the lower curve).
+- Gain of the particle energy per collision (of sum M W): 1.05e-8 (cells of 4^3 mesh
+  cells, 2 M; 5001 collisions, run core-20261115-140316-8742cdf), 2.34e-9 (2^3, 1 M;
+  5314 collisions), 1.08e-9 (1^3, 0.5 M; 5183 collisions). Ratios to the largest cell:
+  0.22 and 0.10; second order would give 0.25 and 0.063. The first is within my 40
+  percent band, the second is NOT (65 percent above). Statistical error of each sum
+  about 4, 8 and 10 percent (from the absolute sums; not from repeated runs). So: the
+  gain falls with the cell size, which supports the explanation (it could have stayed
+  constant); its order at the smallest cells is not established. At 0.5 M there are 1.3
+  particles per occupied cell.
+- Expected collisions (sum_P): 5037, 5219, 5269 for 2, 1, 0.5 M: +3.6 percent, then +1.0
+  percent. Collisions: 5001, 5314, 5183 (z against sum_P: -0.5, +1.3, -1.2).
+- Structure at t = 150 M: central lapse 0.7914, 0.7885, 0.7891; 10 percent radius 2.59,
+  2.53, 2.54; 90 percent radius 8.70, 8.60, 8.48 (collisionless: 0.8114, 3.12, 8.22).
+  The three cell sizes give the same evolution to 0.003 in the lapse.
+- Rest mass identical to the bit, no particle lost, deposit identity 1.0e-15, pair
+  defects 1.2 eps in all runs.
+
+### State at the end
+
+Deliverables: `tracks/core/interfaces/collisions.md` (design, options, outputs, what is
+verified, limits, lines touched), `athenak/src/particles/nrpic_collide.{hpp,cpp}` with
+hooks in four shared files, the homogeneous static metric in `nrpic_geodesic.cpp`,
+`python/nrpic/collide.py`, two decks under `problems/tests/`, eleven drivers under
+`tracks/core/analysis/collisions/`, `docs/COLLISIONS.md`, 30 registered runs
+(0.62 card-hours of the three allowed, 3.7 core-hours).
+
+Predictions that failed, all recorded above with their runs: the error model of P3
+(first version); the 1e-12 threshold of P3a (rounding of a long sum); P3b with the
+pairing-based sub-step rule (a bias of -0.1 percent in the rate, removed); the mesh-path
+part of P7 twice (the first box has binary faces; then the mechanism); P8a(iii) (window
+fit against initial slope); P8b for the relaxation rate at small occupation; the
+"random sign" of the energy change at the particles' positions (a steady gain); second
+order of that gain at the smallest cells.
+
+Not done: heat conduction and any transport coefficient (track's T6 to T8); a rate
+check of the `cutoff` cross-section; adaptive refinement, excision with collisions,
+several ranks; a second, independent check of the results (decision 0009), which is
+track C's part.

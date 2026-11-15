@@ -45,9 +45,9 @@ What to watch in a production run:
 - The step enters at first order: a rate nu is high by nu^2 dt_c/2, dt_c = dt/n_sub.
 - In a gravitational field the collision steps raise the particle energy slightly (the
   partners of a pair sit at different depths of the potential): column `dE_particles`
-  with `coll_budget = true`. In the cluster test it was 1e-8 of the particle energy per
-  collision for cells of 2 M; see the interface text, section 9, for its dependence on
-  the cell size.
+  with `coll_budget = true`. In the cluster test it was 1.05e-8, 2.3e-9 and 1.1e-9 of
+  the particle energy per collision for collision cells of 2, 1 and 0.5 M (interface
+  text, section 9). It accumulates with the number of collisions.
 
 ## Tests
 
