@@ -17,6 +17,8 @@ skill, one level above the manuscript): `../WRITING_GUIDE.md`, `../NOTATION.md`.
 | `tables/claims.md`, `tables/claims.json` | numbers stated in the lead's documents checked against the files (written by `scripts/ledger.py`) |
 | `scripts/common.py` | the run ids the note reads; every input checked against its run's `sha256sums.txt` |
 | `scripts/run_all.py` | runs every `fig_*`, `schem_*` and `ledger.py` into one directory (the registered run) |
+| `scripts/handreg.py` | registers and runs a local run by hand when `nrpic-run` refuses (manifest with the template's fields, `sha256sums.txt`) |
+| `tables/parameters.tex`, `tables/claims_summary.tex` | the parameter table and the claims sentence of the note (written by `scripts/ledger.py`) |
 | `scripts/czstyle.py`, `scripts/paperfig.py` | unchanged copies of `harness/style/` |
 
 ## How to rerun
@@ -26,12 +28,42 @@ From the worktree root, with the worktree environment (`harness/bin/nrpic-env cr
     harness/bin/nrpic-run submit --kind scouting --gate G0 --package tracks/A-emd-pbh/note \
         --purpose "note v0: figures, schematics, ledger" -- \
         .venv/bin/python tracks/A-emd-pbh/note/scripts/run_all.py
+    # if nrpic-run refuses (an untracked file elsewhere in the worktree), the same by hand:
+    .venv/bin/python tracks/A-emd-pbh/note/scripts/handreg.py --purpose "..." --refusal "<message>" -- \
+        .venv/bin/python tracks/A-emd-pbh/note/scripts/run_all.py
     # copy <run dir>/figures/* to note/figures/ and <run dir>/tables/* to note/tables/, then
     cd tracks/A-emd-pbh/note && latexmk -pdf main.tex
 
 Each figure script also runs alone (`python scripts/fig_landscape.py`, output to
 `figures/`), which is what `harness/bin/nrpic-stage verify` does.
 
+## State (2026-11-15)
+
+Done: note v0 (9 pages, compiled, checker clean but for the accepted ledger exception), four
+data figures and two schematics, each looked at; ledger and parameter table generated from
+registered runs; claims check (68 numbers, two differences); `stage/G0/STAGE_REPORT.md`
+from `nrpic-stage report`, with the disagreements and what closes G0. Registered runs:
+A-20261115-161054-50848b1, A-20261115-161720-6ae975e (nrpic-run), A-20261115-161947-09324e1
+(by hand; the committed outputs). Not done: the paper-writing reviewers of a new paper
+(step 4), a verifier recomputation of the note's ledger.
+
 ## Requests
 
-(filled in at the end of the session)
+- To the lead of A-emd-pbh: (1) decide whether `stage/G0/VERIFIER.md` of the wave-2 verifier
+  stands for `VERIFIER_REPORT.md` (C18) and write the "Decision requested" paragraph of
+  `STAGE_REPORT.md` (a draft is at its end); (2) correct `JOURNAL.md:94` / `SCOPE.md` 10.3 /
+  `RISKS.md` row 11 (the edge deviation of the table cubic is 1.37 H as recorded, not an
+  overshoot of 0.1 H) and `JOURNAL.md:101` (4.33e-15); (3) rewrite STATUS/HANDOFF for wave 2
+  (C20; budget line); (4) add `cd tracks/A-emd-pbh/note/scripts && python ledger.py` to a
+  `stage/G0/VERIFY` command list so that `nrpic-stage verify` also regenerates the ledger and
+  the claims check; (5) when the wave-2 runs finish (SR-1/SR-2, periodic S1/S2, Newtonian
+  campaign), rerun `scripts/run_all.py` and extend the note's Sec. IV.
+- To orch: `harness/bin/nrpic-run submit --package DIR` still refuses when any untracked file
+  exists outside `tracks/` (here `peak.horizon_summary_0.txt`, written into the worktree root
+  by another helper's AthenaK run, whose working directory is the worktree root); either
+  ignore untracked files outside the package and the shared code, or have runs never write
+  into the worktree root. Run A-20261115-161947-09324e1 was registered by hand for this reason.
+- To the helper whose runs write `peak.*` files (by the name, probably `periodic_threshold`; through the lead): the horizon finder's summary file
+  `peak.horizon_summary_0.txt` lands in the worktree root; set the run's working or output
+  directory under `scratch/`.
+- To kb: the key references are still raw-store locators only (C2 of G0 stays FAIL).
