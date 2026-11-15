@@ -654,3 +654,15 @@ earlier executable; heavy hole Christodoulou mass 10.3996, S_z = 29.9815 (alone:
 10.348; times the background factor 1.0052: 10.402). The heavy horizon is found with
 the mass-scaled tolerance and the flow constant m^2 = 100 in the full configuration.
 [VERIFIED]
+
+### Merge check repeated properly
+
+My first trial merge with `core/id-extrinsic` was read with a grep that treated the
+output as binary and reported nothing; read as text it showed one conflict, in
+`docs/FORMATS.md` (both branches inserted a section at the same place), and none in
+`nrpic_cf.cpp`. The section now stands before "Radial table" (`core/newton` appends at
+the end of that file). Trial merges with `main` (a1c2237), `core/id-extrinsic`
+(6fa6472), `core/newton` (ce329f5), `core/rng` (a6e5c46), `core/nrpic` (c37eeca),
+`core/collisions` (3436846), `core/scalar-field` (b28ecca): no conflict markers.
+[VERIFIED] `CFSetExtrinsic` of `core/id-extrinsic` still assigns `vK_dd` with `=`
+after the main loop (line 369 of its `nrpic_cf.cpp`).

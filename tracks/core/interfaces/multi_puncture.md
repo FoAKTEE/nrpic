@@ -332,8 +332,13 @@ in this estimate.
 - `athenak/src/main.cpp`: one include and two lines after
   `pinput->ModifyFromCmdline(argc, argv)`.
 - New files: the two headers above; nothing added to `CMakeLists.txt`.
-- Merge with `core/id-extrinsic` (state 1311b8e): textually clean (`git merge-tree`).
-  One thing must be changed by whoever merges: its `CFSetExtrinsic` assigns
+- `docs/FORMATS.md`: one new section, placed before "Radial table" because
+  `core/id-extrinsic` inserts after that section and `core/newton` appends at the end.
+- Trial merges (`git merge-tree`) of this branch with `main` (a1c2237),
+  `core/id-extrinsic` (6fa6472), `core/newton` (ce329f5), `core/rng`, `core/nrpic`,
+  `core/collisions` and `core/scalar-field`: no conflict.
+  One thing must be changed by whoever merges `core/id-extrinsic`: its
+  `CFSetExtrinsic` assigns
   `adm.vK_dd(...) = psi4*(...)` in a pass after the main loop, which would erase the
   Bowen-York curvature when a table of format 2 and a moving puncture are used
   together; with `+=` there (the main loop has set zero) both add.
