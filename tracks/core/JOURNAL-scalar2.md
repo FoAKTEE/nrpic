@@ -400,3 +400,26 @@ most 5e-3 for all modes and 5e-4 for |n| <= 2 at every dump (phase error of the 
 order second difference at k dx = pi/4, 1e-4 per radian over about 4 radians, and of
 the integrator). Refuted by a deviation above 2e-2 (the path without window or
 without kicks would then be wrong, or the field equation off).
+
+## 2026-11-15, entry 9: outcome of T9; figures regenerated; a note on the mode files
+
+**T9, run core-20261115-161659-38adbb8** (32^3, nmax2 = 16, no window, no kicks, to t =
+3.2; figure `fig_rnr.png`, looked at: the deviation is flat in time after N = 1.5).
+HOLDS: |R^NR_n/(R alpha_n) - 1| is 5.5e-11 at t = 0 for all 128 modes (2.1e-11 for |n| <=
+2); at the later dumps at most 5.9e-6 for |n| <= 2 and 8.3e-4 for all modes (bounds 5e-4
+and 5e-3), reached by N = 1.6 and constant afterwards within 4 percent: the modes
+cross the horizon and freeze on the linear solution without any source. The largest
+deviations belong to the axis modes |n| = 4 (k dx = pi/4).
+
+Figures with a tidied layout come from repeats with the same executable and inputs:
+T1 run core-20261115-161528-e09c0b1 (numbers identical to -154907-eb68eaa: looked at
+`fig_slice.png`), T2/T3 analysis run core-20261115-161653-e09c0b1 on the data of
+-155040-eb68eaa with the dumps matched by time (looked at `fig_evolve.png`).
+
+Mode files (reference computation, no registered run): `make_case.py --kstart 100`
+starts each mode from Bunch-Davies data where k/(aH) = 100 instead of at N0; for the 54
+shells of the committed mode file the moduli agree with the integration from N0 to
+1.6e-6, the complex phases do not (R differs by 5 percent, dR/dtau by 22 percent of the
+largest value): a start at another time is another phase per shell, i.e. another,
+statistically equivalent realisation. Runs that are compared mode by mode must use one
+mode file. 214 shells take 35 s; the 3413 shells of nmax2 = 4096 about 9 minutes.
