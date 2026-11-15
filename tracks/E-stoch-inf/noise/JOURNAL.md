@@ -113,3 +113,56 @@ this session; sha256 of the extracted file in the manifest).
   (figure fig_check_twin.png of the run), as derived in the amendment.
 - Consequence: the reference uses the AGM path; A1 can then demand agreement to
   rounding of the synthesis, not to the logarithm.
+
+## 2026-11-15 12:57 UTC: outcome T-N1 (runs E-stoch-inf-20261115-125434-742a681, E-stoch-inf-20261115-125603-39cb4dd)
+
+The first run used a z-major half space and a full-cube cost estimate, and its figure had
+a legend over the data; the second run uses the half space of E-pre-2
+(`codebase/ref/synth.py:half_space`, n_x first) and its refined cost formula. Mode counts
+do not depend on the choice of half space (both runs: same numbers).
+- N = 256, n_max = 64: 548958 half-space modes (estimate (2/3) pi 64^3 = 549033, 0.014
+  percent). N = 32 to 256 with n_max = 8: 1054 modes (estimate 1072, 1.7 percent).
+  Prediction holds.
+- Steps at theta = 0.025, sigma = 1: 13038 (8 e-folds), 16298 (10 e-folds); predicted
+  1.3e4. Holds. [TO VERIFY: theta of 2512.14649 is not stated there.]
+- Normal pairs per step: Heaviside window with fresh draws at most 1485 (last e-fold
+  of crossing), mean 81 while modes cross; tanh window (s = 5): every mode has
+  Delta W >= 1e-16 in some step and up to all 548958 in one step, so a stateless frozen
+  generator recomputes all alphas every step: 7.3e-5 s on one card, 3.7e-2 s on one core
+  per set (rng.md costs). Draw cost is negligible against the synthesis.
+- Synthesis cost per field and evaluation (half space, formula of E-pre-2 recomputed):
+  2.50e9 complex multiply-adds with 128^3 MeshBlocks, 5.02e9 with 64^3, 1.35e10 with
+  32^3; an FFT of 256^3 about 2.5e8. Agrees with E-pre-2 (codebase/README.md D2: 2.5e9
+  and 5.0e9).
+
+## 2026-11-15 13:20 UTC: additions to T-N2 to T-N4 before they ran
+
+Written after NOISE_SPEC.md section 10 (criteria) and before the first run of
+validate/selftest.py. Since the morning entry the unit-test transfer changed to the form
+of SPEC 2.4 and DR section 5: in the frozen scheme the code writes the source rate at the
+output time and integrates it (stoch_acc0) with its Runge-Kutta driver; the self-test
+emulates the driver by classical RK4 at the stage times.
+- (c) refined: positions at j h fail A1 and also A9 (A9 is an exact real-space comparison
+  too); every statistical test passes.
+- (m) frozen acc0 integrated with the rate at the step start (no stage times): fails A9
+  only (error O(s hubble dt) = 5e-2 against the 1e-6 criterion).
+- (n) a code that ignores the seed (U8 generated with the seed of U2): fails A15.
+- (o) phases taken at the cell indices instead of the centres, at N = 32 and 64: fails A13.
+- A9 positive control: classical RK4 reproduces the telescoped window to below 1e-6 of
+  the rms (estimate 2e-8). Refuted if A9 fails on correct output.
+- T-N2 also checks the A4 statistic at five lags and the A15 statistic between seeds.
+
+## 2026-11-15 13:30 UTC: development run of the self-test; criterion amended before the registered run
+
+A quick, unregistered run of selftest.py (40 seeds for T-N2, few seeds for T-N3; output in
+scratch/E-stoch-inf/tmp/smoke) found one failure on correct output: Markov/Heaviside,
+cycle 101, A4 with min p x lags = 4.8e-5. In that step only the 12 half-space modes with
+n.n = 6 cross the window, and the lag statistic, a sum of 12 weighted exponentials, is far
+from normal, so its normal-approximation p-value is too small. This is a miscalibration of
+the criterion, not of the code. Amendment (NOISE_SPEC.md section 10, before the registered
+run): the normal-approximation tests (A4, A6 pair, A7, A8 Markov, A15) apply only with at
+least 100 effective modes, the fourth-moment z of A3 only with at least 1000 modes. The
+same run showed all 15 mutants caught; some fail more tests than predicted (for example
+the normalisation mutant also fails A3, A4, A7 and A9, whose statistics are normalised by
+the reference G). A1 divided by zero for an all-zero reference field (Heaviside step
+without crossing); fixed.

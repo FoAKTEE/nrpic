@@ -1,0 +1,27 @@
+{
+ "run_id": "E-stoch-inf-20261115-125603-39cb4dd",
+ "owner": "E-stoch-inf",
+ "package": "noise (E-pre-4)",
+ "kind": "scouting",
+ "purpose": "T-N1 rerun of noise/JOURNAL.md with the half space of E-pre-2 and the refined synthesis cost (N/b)^3 (M b + P b^2 + X b^3); figure layout fixed",
+ "cwd": "/data/haiyangw/nrpic/scratch/E-stoch-inf/E-stoch-inf-20261115-125603-39cb4dd",
+ "command": "python3 /data/haiyangw/nrpic/wt/E-stoch-inf/tracks/E-stoch-inf/noise/ref/count_draws.py --out /data/haiyangw/nrpic/scratch/E-stoch-inf/E-stoch-inf-20261115-125603-39cb4dd",
+ "commit": "39cb4dd",
+ "worktree_dirty_paths": [],
+ "inputs": [
+  {
+   "path": "/data/haiyangw/nrpic/wt/E-stoch-inf/tracks/E-stoch-inf/noise/ref/count_draws.py",
+   "sha256": "6fc43a5f4e007dfe47d89bcc9063d7a70c6f7e7638396353f35c306429e2e349"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/wt/E-stoch-inf/tracks/E-stoch-inf/noise/ref/noise_ref.py",
+   "sha256": "fc59cd78ff4ae7ba48ad150e4dbe0fe3abf7f92d02c4cb3288ca6b883a7b8b9a"
+  }
+ ],
+ "output_dir": "/data/haiyangw/nrpic/scratch/E-stoch-inf/E-stoch-inf-20261115-125603-39cb4dd/",
+ "wall_time": "6.7 s",
+ "cores": 2,
+ "card_hours": 0.0,
+ "status": "completed",
+ "results": "N=256 nmax=64: 548958 hemisphere modes (estimate 549033); steps 8 e-folds 13038, 10 e-folds 16298 at theta 0.025; Heaviside max 1485 per step; tanh max 548958 per step; one set of draws 7.30e-05 s card, 3.67e-02 s core; N=32 nmax=8: 1054 modes\n"
+}

@@ -115,29 +115,53 @@ def window(lat, t, p):
     raise ValueError(f"unknown window {p['window']!r}")
 
 
+def window_rate(lat, t, p):
+    """dW_k/dt of the tanh window: (s/2) sech^2(s ln(k_sigma/k)) hubble."""
+    if p["window"] != "tanh":
+        raise ValueError("the rate form needs the tanh window")
+    x = p["sharpness"] * np.log(p["ksigma0"] * np.exp(p["hubble"] * t) / lat.q)
+    return 0.5 * p["sharpness"] * p["hubble"] / np.cosh(x)**2
+
+
 def base_amplitude(lat, p):
     """amp q^{-3/2} L^{-3/2}: scale-invariant colouring (Delta flat)."""
     return p["amp"] * lat.q**-1.5 * lat.L**-1.5
 
 
-def transfer(lat, comp, t_prev, t_now, p):
-    """G^c_n of the increment of the step from t_prev to t_now (unit test, sec. 8)."""
-    dW = window(lat, t_now, p) - window(lat, t_prev, p)
-    dW = np.where(dW > 0.0, dW, 0.0)
-    g = base_amplitude(lat, p) * (dW if p["scheme"] == "frozen" else np.sqrt(dW))
-    if comp == 0 or comp == 2:
-        return g.astype(complex)
+def component_factor(lat, comp, p):
+    """Factor of component c relative to component 0 (NOISE_SPEC.md, section 8)."""
+    if comp in (0, 2):
+        return np.ones(lat.M, dtype=complex)
     if comp == 1:
-        return g * np.exp(1j * p["phase1"])
+        return np.full(lat.M, np.exp(1j * p["phase1"]))
     if comp == 3:
-        return (g * (lat.mu2 - 1.0 / 3.0)).astype(complex)
+        return (lat.mu2 - 1.0 / 3.0).astype(complex)
     raise ValueError(f"no component {comp}")
 
 
-def acc_transfer(lat, t0, t_now, p):
-    """Frozen scheme: G of the accumulated field (telescoped). Markov scheme: the
-    standard deviation of its coefficients (sqrt of the summed variances)."""
-    dW = window(lat, t_now, p) - window(lat, t0, p)
+def out_time(cycle, p):
+    return p.get("t0", 0.0) + cycle * p["dt"]
+
+
+def transfer(lat, comp, cycle, p):
+    """G^c_n of the field written at `cycle`.
+    frozen: the rate at the output time, amp q^-3/2 L^-3/2 dW/dt (t_cycle);
+    markov: the increment of the step ending at the output time,
+            amp q^-3/2 L^-3/2 sqrt(W(t_cycle) - W(t_cycle - dt))."""
+    t = out_time(cycle, p)
+    if p["scheme"] == "frozen":
+        g = base_amplitude(lat, p) * window_rate(lat, t, p)
+    else:
+        dW = window(lat, t, p) - window(lat, t - p["dt"], p)
+        g = base_amplitude(lat, p) * np.sqrt(np.where(dW > 0.0, dW, 0.0))
+    return g * component_factor(lat, comp, p)
+
+
+def acc_transfer(lat, cycle, p):
+    """Frozen scheme: G of the integrated field a(t) = int_0^t c0 dt' (telescoped,
+    amp q^-3/2 L^-3/2 [W(t) - W(t0)]); the code's integrator reproduces it to its
+    truncation error. Markov: the standard deviation of the summed increments."""
+    dW = window(lat, out_time(cycle, p), p) - window(lat, p.get("t0", 0.0), p)
     dW = np.where(dW > 0.0, dW, 0.0)
     if p["scheme"] == "frozen":
         return (base_amplitude(lat, p) * dW).astype(complex)
@@ -145,42 +169,42 @@ def acc_transfer(lat, t0, t_now, p):
 
 
 def epoch_of(cycle, p):
-    """Step word of the amplitudes used in the increment written at `cycle` (the step
-    from cycle - 1 to cycle): 0 in the frozen scheme, `cycle` in the Markov scheme."""
+    """Step word of the amplitudes of the field written at `cycle`: 0 in the frozen
+    scheme, `cycle` (the step from cycle - 1 to cycle) in the Markov scheme."""
     return 0 if p["scheme"] == "frozen" else int(cycle)
 
 
 def reference_outputs(lat, p, cycles, comps=(0, 1, 2, 3), log="agm", with_acc=True):
     """Coefficients (n in H) of every component at every output cycle, and of the
-    accumulated field of component 0, exactly as the code must produce them."""
+    integrated field of component 0, as the code must produce them."""
     out = {}
-    dt, t0 = p["dt"], p.get("t0", 0.0)
-    amp_cache = {}
+    cache = {}
 
     def amps(dof, ep):
-        key = (dof, ep)
-        if key not in amp_cache:
-            amp_cache[key] = amplitudes(lat, p["seed"], dof, ep, p["amplitudes"], log)
-        return amp_cache[key]
+        if (dof, ep) not in cache:
+            cache[(dof, ep)] = amplitudes(lat, p["seed"], dof, ep, p["amplitudes"], log)
+        return cache[(dof, ep)]
 
     for cyc in cycles:
-        tp, tn = t0 + (cyc - 1) * dt, t0 + cyc * dt
         for c in comps:
-            G = transfer(lat, c, tp, tn, p)
             out[(f"stoch_c{c}", cyc)] = coefficients(
-                G, amps(TEST_DOF[c], epoch_of(cyc, p)), p["amplitudes"])
+                transfer(lat, c, cyc, p), amps(TEST_DOF[c], epoch_of(cyc, p)),
+                p["amplitudes"])
     if with_acc:
-        last = max(cycles)
-        acc = np.zeros(lat.M, dtype=complex)
-        for m in range(1, last + 1):
-            tp, tn = t0 + (m - 1) * dt, t0 + m * dt
-            G = transfer(lat, 0, tp, tn, p)
-            if np.any(G != 0):
-                acc = acc + coefficients(G, amps(0, epoch_of(m, p)), p["amplitudes"])
-            if p["scheme"] == "markov" and m not in cycles:
-                amp_cache.pop((0, epoch_of(m, p)), None)     # keep memory bounded
-            if m in cycles:
-                out[("stoch_acc0", m)] = acc.copy()
+        if p["scheme"] == "frozen":
+            for cyc in cycles:
+                out[("stoch_acc0", cyc)] = coefficients(acc_transfer(lat, cyc, p),
+                                                        amps(0, 0), p["amplitudes"])
+        else:
+            acc = np.zeros(lat.M, dtype=complex)
+            for m in range(1, max(cycles) + 1):
+                G = transfer(lat, 0, m, p)
+                if np.any(G != 0):
+                    acc = acc + coefficients(G, amps(0, m), p["amplitudes"])
+                if m not in cycles:
+                    cache.pop((0, m), None)          # keep memory bounded
+                else:
+                    out[("stoch_acc0", m)] = acc.copy()
     return out
 
 
@@ -217,6 +241,6 @@ def default_params(**kw):
     p = dict(seed=20261115, scheme="frozen", amplitudes="hemisphere", N=64, L=2.5,
              x0=-1.25, nmax2=256, window="tanh", sharpness=5.0, ksigma0=0.9, hubble=1.0,
              amp=1.0, phase1=np.pi / 3.0, dt=0.01, t0=0.0, nsteps=400,
-             cycles=(100, 101, 200, 400))
+             cycles=(100, 101, 200, 300))
     p.update(kw)
     return p
