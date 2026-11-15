@@ -162,3 +162,20 @@ core, dM0 = dm/sqrt(1+2E) > dm), core turnaround tau_ta = 16.894, core crunch
 tau_c = 44.454, first trapped sphere at R_i = 2.74 with m = 0.0804 at tau_AH = 44.349,
 no shell crossing before the core crunch (all from the figure runs). Stratified total rest
 mass exact to 1e-13; lattice total equal after the surface correction.
+
+Note (12:20 UTC). The data sets of runs A-emd-pbh-20261115-121707-6bfb707 and
+-121710-6bfb707 are superseded by -121749-90764e1 (flat) and -121753-90764e1 (smoothed
+top-hat): the only change is the table header (rbar_last was printed as "np.float64(..)",
+and the flat ball listed a meaningless first-horizon entry); data rows identical in
+construction.
+
+## 2026-11-15 12:20 UTC, P8: end-to-end check of the two data sets (scripts/check_dataset.py)
+
+Prediction. (a) Table fields (drbar = rbar_m/4000) give the same order-4 residuals as the
+exact fields in the smooth region within 1 percent at N = 64 and 128. (b) The residuals
+computed directly from the mesh file (64^3 over [-10, 10]^3, h = 0.3125, the same h as the
+octant N = 32 of the convergence run) agree with the N = 32, p = 4 values of that run within
+20 percent (different cells sampled); for the flat ball H = 0 to rounding. (c) Particle
+files: u_i = 0 exactly; stratified sum m = M0 to 1e-13, lattice to 1e-12; no particle
+beyond rbar_m; rms dH/6H^2 of the stratified file ~0.455 and of the lattice file ~0.05
+(the noise run at N = 1e5).
