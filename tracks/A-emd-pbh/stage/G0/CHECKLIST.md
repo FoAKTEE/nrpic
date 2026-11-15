@@ -1,6 +1,6 @@
 # Checklist: A-emd-pbh G0
 
-Collected by `harness/bin/nrpic-stage collect A-emd-pbh G0` on 2026-11-15T16:21:05Z from `coord/CHARTER.md` (last changed in b7b431d) and the brief (sections 13.3 and 13.4).
+Collected by `harness/bin/nrpic-stage collect A-emd-pbh G0` on 2026-11-15T18:34:05Z from `coord/CHARTER.md` (last changed in b7b431dd) and the brief (sections 13.3 and 13.4).
 For each item set `status:` to PASS, FAIL or NA (OPEN until judged) and give the evidence: run ids,
 figure files, KB locators, commits. `nrpic-stage report` reads this file; the automated checks are
 in VERIFY_RESULTS.md (`nrpic-stage verify`), not here.
@@ -10,9 +10,9 @@ in VERIFY_RESULTS.md (`nrpic-stage verify`), not here.
 - [x] **C1** Problem statement, parameter ranges, exit criteria, test plan
   - status: PASS
   - evidence: scope/SCOPE.md sections 1, 3, 5, 7 and the lead's section 10 (amplitude convention 10.1, set-up order 10.2); stage/G0/EVIDENCE.md
-- [ ] **C2** The statements of the key references verified in the knowledge base
-  - status: FAIL
-  - evidence: verified at the raw store with file:line locators (scope/REFERENCES.md; seven locators re-read by the lead, SCOPE.md 10.5), not yet knowledge-base entries: outbox 20261115T1320Z__to-kb__ingest-s1-references.md
+- [x] **C2** The statements of the key references verified in the knowledge base
+  - status: PASS
+  - evidence: knowledge-base snapshot kb-20261115-3826a68 (kb-data/db/current, read-only): all twelve S1 key references ingested (parse ok: 2609.14218 v1, 2610.23218 v1, 1609.01588 v2, 1707.03595 v4, 2211.13950 v3, 2507.18312 v3, 2508.10070 v1, 2109.04896 v3, 2306.11810 v2, 2605.04487 v2, 1611.07906 v2, 1901.04498 v2); 170 claims tagged A-emd-pbh with resolved file:line locators, 152 verified by the kb claims check, among them mu_c in (0.32, 0.33] (claim 21, MDPBH.tex:L766-768) and the constraint caveat (claim 30). Qualification: the particle bracket (claim 25, MDPBH.tex:L1101-1103) and 17 others are still 'to_verify' in the kb (seeded without a [VERIFIED] label); the lead read claim 25 at the source in this session (stage/REVIEW-wave2.md, criteria2) and asked kb to update its status (outbox)
 - [x] **C3** Risk list
   - status: PASS
   - evidence: RISKS.md (16 rows); SCOPE.md section 8
@@ -42,7 +42,7 @@ in VERIFY_RESULTS.md (`nrpic-stage verify`), not here.
 
 - [x] **C9** Track A. The threshold line is built in the periodic box (the expanding ball holds only amplitudes below the comparison amplitudes of arXiv:2609.14218; lead's evidence in `scope/SCOPE.md`); the expanding ball stays the spherical verification case and the set-up for isolated collapses. The G1 scan-design criterion is met on the reference-based design; the Newtonian-mode runs are G2 work. (0013)
   - status: PASS
-  - evidence: applied: the note builds the threshold line in the periodic box and keeps the ball for verification (note Sec. III A, B). Qualification from the verifier (stage/G0/VERIFIER.md C1c) and the note's Fig. 1: a ball of two compaction radii reaches the particle bracket of arXiv:2609.14218 at R_b H_i = 0.9; both ball sizes stay far below the hoop line
+  - evidence: applied: the threshold line is built in the periodic box, the ball stays the verification case (note Sec. III A, B; SCOPE.md 10.2). The ruling's stated reason is partly wrong (verifier C1c, confirmed by the lead's run A-20261115-182314-bebd0cf: a q = 2 ball holds the particle bracket (0.045, 0.05], not the hoop or fluid amplitudes); SCOPE.md 4, 8, 10.9(a) and RISKS row 4 corrected; correction proposed to orch (outbox). The ruling stands on the source's own data in the box
 
 ## Minimum figures at G0 (brief 13.4)
 
@@ -63,7 +63,7 @@ in VERIFY_RESULTS.md (`nrpic-stage verify`), not here.
 
 - [x] **C14** Package documents of decision 0012: STAGE_REPORT.md (nrpic-stage report), EVIDENCE.md, OPEN.md and this CHECKLIST.md in the stage directory; REVIEW.md where the lead rechecked helpers; the scoping text in SCOPE.md or SCOPING.md beside them or in the scope directory, named in the report (no REPORT.md needed)
   - status: PASS
-  - evidence: STAGE_REPORT.md (nrpic-stage report), EVIDENCE.md, OPEN.md, CHECKLIST.md in stage/G0; scoping text scope/SCOPE.md (named in the report); no REVIEW.md: the lead's re-check of the helpers is JOURNAL.md entry 2026-11-15T12:57Z (L1-L8)
+  - evidence: STAGE_REPORT.md (nrpic-stage report), EVIDENCE.md, OPEN.md, CHECKLIST.md in stage/G0; the lead's re-check of the helpers is ../REVIEW-wave2.md (wave 2) and JOURNAL.md entry 2026-11-15T12:57Z (wave 1); scoping text scope/SCOPE.md (named in the report)
 - [x] **C15** Data figures drawn with /zoom-figure-style from registered run outputs, one script per figure, every PNG looked at
   - status: PASS
   - evidence: figstyle (python/nrpic/figstyle.py), one script per figure set (scope_calc.py, lead_crosscheck.py, scouting_predictions.py, helper scripts); PNGs looked at: stage/G0/EVIDENCE.md 'Figures looked at'
@@ -74,11 +74,11 @@ in VERIFY_RESULTS.md (`nrpic-stage verify`), not here.
   - status: PASS
   - evidence: check_manuscript.py --compile on note/main.tex: 0 undefined references, 0 undefined citations, 0 overfull boxes; candidates only in 5.5/5.8 for run ids in the ledger appendix and harness names in the ledger scripts, accepted by the note's guide (../WRITING_GUIDE.md, exception 1); captions within five lines on the rendered pages (looked at)
 - [ ] **C18** Verifier subagent (fresh context) wrote VERIFIER_REPORT.md; every number of the Supplemental Material recomputed from the manifests
-  - status: OPEN
-  - evidence: a fresh verifier (wave 2) is writing stage/G0/VERIFIER.md (runs A-20261115-160935-41f721d, -161239-1c41333, -161253-e506d90): C1a/b, C2, C3, C4a, C5, C6, C7 confirmed, C1c and C4b wrong, C8 model not confirmed; the ledger of the note is recomputed from the run outputs by note/scripts/ledger.py (claims check: 68 numbers of the lead's documents, 66 agree, note/tables/claims.md); a verifier's recomputation of the note's ledger is not done
+  - status: FAIL
+  - evidence: a fresh verifier wrote stage/G0/VERIFIER.md (taken as VERIFIER_REPORT.md under decision 0012; sections 1-3 committed in 0ac9951 before the track's summaries were read; runs A-20261115-160935-41f721d, -161239-1c41333, -161253-e506d90; reproduced exactly by the lead, A-20261115-182514-3bb6846): C1a/b, C2, C3, C4a, C5, C6, C7 confirmed, C1c and C4b wrong (corrected, ../REVIEW-wave2.md section 3), C8 now confirmed by the measured cost. Not met: the note's ledger appendix (every number with its run id) was recomputed from the manifests by note/scripts/ledger.py with checksum checks (run A-20261115-161947-09324e1), but not by a verifier; closing it needs a fresh verifier to rerun ledger.py and check the rows
 - [x] **C19** Null results and failed runs are on record (manifests and JOURNAL)
   - status: PASS
   - evidence: failed and superseded runs kept with manifests (stage/G0/EVIDENCE.md, status failed/stopped); failed predictions in the helpers' journals and JOURNAL.md
 - [x] **C20** STATUS.md, JOURNAL.md and HANDOFF.md are current
   - status: PASS
-  - evidence: rewritten in this session (commit of the lead session)
+  - evidence: rewritten in the lead session of wave 2 (STATUS.md, JOURNAL.md entry, HANDOFF.md, RISKS.md)
