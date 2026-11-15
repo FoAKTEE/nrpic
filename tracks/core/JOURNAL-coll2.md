@@ -597,3 +597,38 @@ reference has a share 3.1e-5 of the proposals without a root there (expected 11 
 criterion contradicted the reference; it is restated as "n_noroot consistent with the
 reference share". Unscattered pairs bias nothing that is conserved; they lower the rate
 by their share.
+
+## 2026-11-15 18:25 UTC  clean builds of f46f159; T12/G3 passed; the card crash and its likely cause
+
+Builds from a `git archive` snapshot of f46f159 (`athenak/src` identical to 819d588):
+`.work/build_gpu_f46f159` (293 s), `.work/build_cpu_f46f159`; frozen copies
+`scratch/core/tmp/coll2/exe/f46f159/athena_{gpu,cpu}` (sha256 82a05ada..., adbf1b16...).
+
+Evidence for the stale-object cause of the card crash (before any card run of the new
+build): in the old card build directory the objects that include `particles.hpp`
+and were finished between 07:40:10 and 07:40:34 local time (vtk_prtcl, particles_pushers,
+particles, particles_tasks, nrpic_kick, nrpic_curvature, nrpic_newton, pgen, nrpic_io)
+were completed 2 to 26 s after the header changed (07:40:08); a card compilation of
+such a file takes tens of seconds, so they were compiled from the old class layout,
+and the incremental build of 07:44 did not redo them (their objects are newer than the
+header). `particles.cpp.o` (construction of the particle module) is among them. The
+processor build of 07:35-07:43 compiled every such object at 07:43, after the last
+header change; its executable passed every byte regression. The card smoke test of
+job 4482/4483 decides it: the clean card build must run the decks.
+
+### T12 of track C and G3: run core-20261115-182101-3a6e046 (processor, f46f159). Passed.
+
+5e4 particles, 200 steps, alpha0 = 0.8, psi0 = 1.1, two-temperature start, 16 x 4 x 4
+cells. (a) `static_conformal` without amplitudes with `coll_energy = cell`: every
+snapshot byte-identical to the wave-1 generator `homogeneous` with gamma_ij = psi0^4
+delta_ij. (b) `coll_energy = particle`: the same n_tested and n_coll in every step as
+`cell` (248168 collisions), no rejection, no pair without a root, lam = 1 exactly,
+momenta within 2.8e-14 at the end (criterion 1e-9), positions within 1.2e-12.
+(c) 248168 collisions against 248192 in the flat box with the cross-section scaled by
+alpha0 (ratio 0.99990, z = -0.03): the rate per coordinate time and coordinate volume
+is alpha0 psi0^6 times the flat value at the same proper density (track C's T12);
+summed weight against sigma M alpha0 dt/(2 psi0^6 V) sum N (N - 1): 1.8e-14.
+(d) sum M u_i: at most 2.2e-18 of sum M |u|. (e) collision steps change sum M W and
+sum M H at the particles by 3e-16 of their values. `fig_static_homog.png` looked at:
+the per-step rates of the curved runs coincide and follow the flat run within its
+scatter as the gas relaxes; the momentum differences sit at 1e-15.
