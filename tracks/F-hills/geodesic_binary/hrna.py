@@ -534,12 +534,31 @@ _WK = None
 
 def run_encounter(law="hrna", coords="sch", spin=0.0, mb=1e-6, q12=1.0, a0=1.013, beta=None,
                   rp=None, phase=0.0, sense=1, r0_rt=50.0, rf_rt=150.0, rtol=1e-12, atol=1e-14,
-                  record=0, r_plunge=None, max_steps=20_000_000, t_max=None, M=1.0):
+                  record=0, r_plunge=None, max_steps=20_000_000, t_max=None, M=1.0,
+                  m1=None, m2=None, a=None, D=None, theta=None, varphi=None, e_b=0.0, e_orb=1.0):
     """Run one encounter and return the outcome dictionary of README.md (plus the trajectory
-    if record > 0: up to `record` accepted steps)."""
+    if record > 0: up to `record` accepted steps).
+
+    Aliases with the names of tracks/F-hills/newton3 (HillsSetup): m1, m2 (instead of mb, q12),
+    a (= a0), D = rp/r_t (= 1/beta), varphi = +pi/2 (prograde) or -pi/2 (retrograde) with
+    theta = pi/2 (coplanar only).  `phase` here is the binary phase at release (2404
+    convention), not newton3's effective phase at pericentre."""
     global _WK
     if _WK is None:
         _WK = _work()
+    if e_b != 0.0 or e_orb != 1.0:
+        raise NotImplementedError("circular binary on a parabolic(-like) orbit only")
+    if m1 is not None or m2 is not None:
+        mb = m1 + m2
+        q12 = m2 / m1
+    if a is not None:
+        a0 = a
+    if D is not None:
+        beta = 1.0 / D
+    if theta is not None or varphi is not None:
+        if abs((theta if theta is not None else math.pi / 2) - math.pi / 2) > 1e-12:
+            raise NotImplementedError("coplanar encounters only")
+        sense = 1 if (varphi if varphi is not None else math.pi / 2) > 0 else -1
     y0, info = initial_state(law, coords, spin, mb, q12, a0, beta, rp, phase, sense, r0_rt, M)
     lawc = LAW_NEWTON if law == "newton" else LAW_HRNA
     cc = COORDS_CKS if coords == "cks" else COORDS_SCH
@@ -590,7 +609,23 @@ def summarize(lawc, cc, M, a, m1, m2, a0, y, diag, T0):
         plunged = 3
     em = max(eps1 if diag[6] == 0 else -1e300, eps2 if diag[7] == 0 else -1e300)
     t_peri = float(diag[0])
+    # outcome code of tracks/F-hills/newton3 (threebody.py): 0 survived, 1 m1 bound / m2 free,
+    # 2 m2 bound / m1 free, 3 both bound, 4 both free; 6 (here only) a member was captured
+    if plunged:
+        outcome = 6
+    elif Eb < 0:
+        outcome = 0
+    elif eps1 < 0 <= eps2:
+        outcome = 1
+    elif eps2 < 0 <= eps1:
+        outcome = 2
+    elif eps1 < 0 and eps2 < 0:
+        outcome = 3
+    else:
+        outcome = 4
+    E_unit = m1 * m2 / a0 * (M / mb) ** (1 / 3)              # newton3 energy unit
     return dict(
+        outcome=outcome, E1_u=m1 * eps1 / E_unit, E2_u=m2 * eps2 / E_unit,
         separated=bool(Eb > 0 or plunged > 0), Eb_end=Eb, eb_end=eb,
         ab_end=(-mb / (2 * Eb) if Eb < 0 else math.inf),
         eps1=eps1, eps2=eps2, L1=L1, L2=L2, eps_cm=Ec - 1.0, L_cm=Lc,

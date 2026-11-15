@@ -87,3 +87,57 @@ the deviation exceeds 1e-2, or if it follows (1 - 2M/r)^(1/2) or no dilation ins
   amplitude scales with v^2 = mb/(4 a0). The cause named above is confirmed: the 1/Gamma^2 of
   each member makes a Newtonian-circular binary eccentric at order v^2 in HRNA (a property of
   the model with the paper's initial data, not an integration error).
+
+### T3 outcome (runs F-hills-20261115-130058-00c6bf4, F-hills-20261115-130124-76059c5)
+
+- 153 periods between r = 219 and 9.2 r_g. Proper period between maxima (CM proper time)
+  vs 2 pi/sqrt(2k/m + M/r^3): max deviation 1.1e-4 for r_mid >= 13.4 r_g (the last midpoint
+  above 10 r_g; one period spans about 4 r_g there); 1.2e-3 at r_mid = 9.2 r_g, where the
+  midpoint assignment of a period that spans r = 11 to 7 dominates. Without the tidal term the
+  deviation is 6.3e-4 at 13.4 r_g. Coordinate-time frequency vs the paper's f0 (1 - 2M/r):
+  7.7e-6 at 200 r_g, 7.9e-4 at 13.4 r_g. Prediction (< 1e-3 for 10 <= r <= 200 after
+  averaging) holds over the measured range r_mid >= 13.4 r_g; the static law (1-2M/r)^(1/2) is
+  excluded by 10 percent at 13 r_g (figure t3_time_dilation.png inspected).
+- This reproduces 2404 appendix B (free-fall experiment; the paper shows it as a figure only,
+  appendix.tex:68 "excellent agreement").
+
+## S1 reproduction scan of 2404 section IV (before running)
+
+Setup 2404/article.tex:317-318, :348: mb = 1e-6, a0 = 1.013, r_t = 101.3 r_g, r0 = 50 r_t,
+stop at r_cm > 150 r_t (or, here, at the CM apocentre if the CM is left bound with apocentre
+> 10 r_t, or a member captured); beta = 0.1 ... 10 (100 values, the paper used 200), 400
+phases in [0, pi); Newton and HRNA (Schwarzschild coordinates); prograde and retrograde.
+Separation fraction s.f. = fraction of the 400 phases with E_b > 0 at the end (the paper
+refines the two phase boundaries by bisection; with 400 phases the s.f. resolution is 0.0025).
+
+Predictions from printed statements of 2404 (refutation thresholds in brackets):
+P1 retrograde onset of separation: HRNA beta ~ 2, Newton beta ~ 2.5 (article.tex:475,
+   :795) [refuted if the first beta with s.f. > 0.01 differs by more than 0.3 from these].
+P2 prograde s.f. "essentially the same" for the two laws (article.tex:473, :788)
+   [refuted if |s.f.(HRNA) - s.f.(Newton)| > 0.05 for any beta <= 9].
+P3 retrograde s.f.(HRNA) exceeds Newton by up to 30 percent at fixed beta (article.tex:475,
+   :795) [refuted if the largest relative excess over beta in [3, 10] is below 10 or above
+   60 percent].
+P4 retrograde mean v_inf of HRNA up to 30 percent (article.tex:593) or 500 km/s
+   (article.tex:797) above Newton [refuted if the largest excess is below 10 percent or
+   above 60 percent].
+P5 prograde, beta > 9: the maximum v_inf of HRNA exceeds Newton by up to 2000 km/s
+   (article.tex:591, :790) [refuted if the excess is below 500 km/s or above 4000 km/s].
+P6 retrograde survivors bound to the hole after the passage (eps_cm < 0): > 50 percent of
+   HRNA survivors for beta > 8 against about 30 percent for Newton (article.tex:760); all
+   retrograde encounters with 0.5 <~ beta <~ 1.2 survive and essentially all of them end
+   bound (article.tex:762) [refuted if the HRNA fraction for beta > 8 is below 40 percent or
+   the Newtonian above 45 percent].
+P7 single encounters (HRNA, beta = 5): prograde phi = 1.41 separates with r_cm(t_s) = 31 r_g;
+   retrograde phi = 1.57 separates with r_cm(t_s) = 107 r_g; retrograde phi = 2.04 survives
+   (article.tex:379-433). Figure 1 (beta = 8, retrograde, r0 = 10 r_t): phi = 0.5 separates,
+   0.3 survives wider, 0.2 survives tighter and eccentric (article.tex:189). [Single phases
+   depend on the exact release conventions (footnote at article.tex:313); a mismatch in one of
+   them refutes only the claim that our conventions equal the paper's.]
+   Already seen in the smoke test before this entry (not a registered run): r_cm(t_s) = 31.1
+   and 107.6 r_g, but t_s = -0.020 and +0.109 T0 against the printed -0.01 and 0.08 T0.
+   [VERIFIED by Barker's equation, independent of any code] On the Newtonian parabola with
+   r_p = 20.26 r_g the CM needs t = sqrt(2 r_p^3/M)(D + D^3/3), D = sqrt(r/r_p - 1), i.e.
+   648 M = 0.101 T0 from pericentre to r = 107 r_g, so the printed pair (0.08 T0, 107 r_g)
+   cannot hold with T0 = 6406 M; both printed t_s match ours if their time unit is
+   sqrt(2) T0 = 9060 M [JUDGEMENT; to be stated as an inconsistency of 2404, not resolved].
