@@ -147,6 +147,8 @@ def test_fetch_ingest_query_watch_links(env):
     assert set(insp) == {"main", "particles_gr", "feature/nrpic-deposit"}
     assert insp["main"]["coupling_hits"] == [] and insp["main"]["pushers"] == ["drift", "leap_frog"]
     assert len(insp["particles_gr"]["coupling_hits"]) == 1 and "tmunu" in insp["particles_gr"]["coupling_hits"][0]
+    assert insp["particles_gr"]["backreaction_hits"] == insp["particles_gr"]["coupling_hits"]
+    assert code_watch.verdict(snap) == (["particles_gr"], [])
     assert snap["flagged_names"] == ["feature/nrpic-deposit"]
     assert snap["added"] == [] and snap["moved"] == {}
     # the branch moves upstream: the next watch reports it and the changed file

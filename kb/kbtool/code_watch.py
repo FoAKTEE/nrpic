@@ -40,6 +40,7 @@ BRIEF_BRANCHES = ["particles_gr", "feature/particles-infrastructure", "particles
                   "fix/update-prtcl", "tracer_particle", "collapse", "project/tidal-interactions", "id_solve",
                   "id_solve_porting", "project/collapse_relaxation"]                 # brief line 130
 COUPLING_RE = r"z4c|tmunu|\badm\b|padm|adm::|deposit"                             # brief line 125, case-insensitive
+BACK_RE = re.compile(r"tmunu|deposit", re.I)                                       # sources handed to the spacetime
 
 
 def _stamp():
@@ -116,6 +117,10 @@ def inspect_branch(gd, work, name, sha):
                                  if x.count("/") >= 2})
     for k in ("coupling_hits", "z4c_mentions_particles", "nrpic_vlasov_in_src"):
         out[k] = [x.split(":", 1)[1][:240] if x.startswith(sha) else x[:240] for x in out[k]]
+    # the brief's test lumps two things together: reading the spacetime (z4c, adm) and acting
+    # back on it (tmunu, deposit); the second is the coupling of the paper
+    out["backreaction_hits"] = [x for x in out["coupling_hits"] if BACK_RE.search(x.split(":", 2)[-1])]
+    out["metric_hits"] = [x for x in out["coupling_hits"] if x not in out["backreaction_hits"]]
     return out
 
 
@@ -191,8 +196,9 @@ def watch(lay, work, fetch=True, out_md=None, log=print):
 
 
 def verdict(snap):
+    """(branches whose src/particles mentions tmunu or deposit, branches with nrpic/vlasov under src/)."""
     insp = snap.get("inspection") or {}
-    with_hits = sorted(b for b, d in insp.items() if d["coupling_hits"])
+    with_hits = sorted(b for b, d in insp.items() if d.get("backreaction_hits"))
     with_nrpic = sorted(b for b, d in insp.items() if d["nrpic_vlasov_in_src"])
     return with_hits, with_nrpic
 
@@ -204,7 +210,8 @@ def summary_line(snap):
                 f"{len(snap['removed'])} removed, {len(snap['moved'])} moved (no clone)")
     hits, nrp = verdict(snap)
     return (f"watch {snap['at']}: {len(snap['branches'])} branches inspected; main {snap['head_sha'][:12]}; "
-            f"branches whose src/particles mentions z4c/tmunu/adm/deposit: {len(hits)}; with nrpic/vlasov in src: "
+            f"branches whose src/particles mentions tmunu/deposit: {len(hits)}; z4c/adm only: "
+            f"{sum(1 for d in insp.values() if d['metric_hits'] and not d['backreaction_hits'])}; with nrpic/vlasov in src: "
             f"{len(nrp)}; new {len(snap['added'])}, removed {len(snap['removed'])}, moved {len(snap['moved'])}")
 
 
@@ -227,25 +234,30 @@ def report_md(snap):
     L.append(f"- names containing pic, vlasov, nrpic or deposit (brief 12.7): "
              + (", ".join(f"`{b}`" for b in snap["flagged_names"]) or "none"))
     L += ["", "## Branches named in brief line 130", "", "| branch | tip | commit date | particles files | pushers | "
-          "src/particles lines with z4c/tmunu/adm/deposit |", "|---|---|---|---|---|---|"]
+          "src/particles lines with tmunu/deposit | with z4c/adm |", "|---|---|---|---|---|---|---|"]
     for b in BRIEF_BRANCHES:
         d = insp.get(b)
         if not snap["brief_branches"].get(b):
-            L.append(f"| `{b}` | absent | | | | |")
+            L.append(f"| `{b}` | absent | | | | | |")
         elif d:
             L.append(f"| `{b}` | {d['sha'][:12]} | {d.get('commit_date', '')[:10]} | {len(d['particles_files'])} | "
-                     f"{', '.join(d.get('pushers') or []) or '-'} | {len(d['coupling_hits'])} |")
+                     f"{', '.join(d.get('pushers') or []) or '-'} | {len(d['backreaction_hits'])} | "
+                     f"{len(d['metric_hits'])} |")
         else:
-            L.append(f"| `{b}` | {snap['brief_branches'][b][:12]} | (not inspected) | | | |")
+            L.append(f"| `{b}` | {snap['brief_branches'][b][:12]} | (not inspected) | | | | |")
     if insp:
         hits, nrp = verdict(snap)
         L += ["", "## Particle-spacetime coupling (test of brief line 125, every branch)", ""]
+        anyhit = sorted(b for b, d in insp.items() if d["coupling_hits"])
         L.append(f"Branches inspected: {len(insp)} of {len(snap['branches'])}. Branches whose `src/particles` has a "
-                 f"line matching `{COUPLING_RE}` (case-insensitive): {len(hits)}.")
-        for b in hits:
+                 f"line matching `{COUPLING_RE}` (case-insensitive, the test of brief line 125): {len(anyhit)}. "
+                 f"Of these, lines with `tmunu` or `deposit` (matter handed to the spacetime): {len(hits)} branches; "
+                 f"the others only read the metric (`z4c`, `adm`).")
+        for b in anyhit:
             d = insp[b]
-            L.append(f"- `{b}` {d['sha'][:12]} ({d.get('commit_date', '')[:10]}): {len(d['coupling_hits'])} lines, e.g.")
-            for x in d["coupling_hits"][:6]:
+            L.append(f"- `{b}` {d['sha'][:12]} ({d.get('commit_date', '')[:10]}): {len(d['backreaction_hits'])} "
+                     f"tmunu/deposit lines, {len(d['metric_hits'])} z4c/adm lines, e.g.")
+            for x in (d["backreaction_hits"][:4] + d["metric_hits"][:3]):
                 L.append(f"    - `{x[:160]}`")
         L.append("")
         L.append(f"Branches with `nrpic` or `vlasov` anywhere under `src/`: {len(nrp)}"
@@ -263,11 +275,12 @@ def report_md(snap):
                   f"- modules that mention tmunu: {', '.join(m['tmunu_users'])}"]
         rel = sorted(b for b in insp if RELATED_RE.search(b))
         L += ["", "## Particle-related branches by name", "", "| branch | commit date | subject | particles files | "
-              "pushers | coupling lines |", "|---|---|---|---|---|---|"]
+              "pushers | tmunu/deposit lines | z4c/adm lines |", "|---|---|---|---|---|---|---|"]
         for b in rel:
             d = insp[b]
             L.append(f"| `{b}` | {d.get('commit_date', '')[:10]} | {d.get('subject', '')[:50]} | "
-                     f"{len(d['particles_files'])} | {', '.join(d.get('pushers') or []) or '-'} | {len(d['coupling_hits'])} |")
+                     f"{len(d['particles_files'])} | {', '.join(d.get('pushers') or []) or '-'} | "
+                     f"{len(d['backreaction_hits'])} | {len(d['metric_hits'])} |")
         ch = {b: d["changed_paths"] for b, d in insp.items() if d.get("changed_paths")}
         L += ["", "## Changes of src/particles and src/z4c since the previous snapshot", ""]
         if prev_has_inspection(snap):
@@ -281,7 +294,7 @@ def report_md(snap):
     if insp:
         hits, nrp = verdict(snap)
         if hits:
-            msg.append("src/particles mentions z4c/tmunu/adm/deposit on: " + ", ".join(hits))
+            msg.append("src/particles mentions tmunu/deposit on: " + ", ".join(hits))
         if nrp:
             msg.append("nrpic or vlasov under src/ on: " + ", ".join(nrp))
         ch = sorted(b for b, d in insp.items() if d.get("changed_paths"))

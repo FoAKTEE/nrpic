@@ -352,3 +352,74 @@ C3 stored bibliography entries equal the count of \bibitem in the .bbl or flat t
 C4 every \label inside a display environment of flat.tex is in some stored equation row
    (expect 100 %); no stored label absent from flat.tex.
 C5 at most 1 % of the citation keys lack a bibliography entry.
+
+### Outcome K2-P6 (re-ingestion kb-20261115-132028-f7f36ac; checks kb-20261115-132114-932c894)
+
+- Re-ingestion: 45 ok, 2 review, 0 failed; titles 44 of 47 as predicted (held).
+- C1 held: 14 of 14 papers with a 00README.json; the heuristics alone pick the same main file.
+- C2 failed as worded, code fault: key sets equal for 7 of 7 .bib files, but 2 of 1070 eprint
+  or doi values differed, both in 2601.17117/refs.bib, where an entry has lines
+  `//eprint = "..."` (not BibTeX); my parser stopped at the first such line and lost the
+  entry's later fields (its doi). Fixed (skip to the next comma at depth 0), test added.
+- C3 held: 39 of 39 papers with a .bbl or thebibliography have as many stored entries as
+  \bibitem in the text.
+- C4 inconclusive as run: the checker's regex knew only literal \begin{equation} etc., so the
+  labels of equations written with shorthands (\be..\ee, 7 papers) showed as "extra", and in
+  2507.18312 the definition \newcommand{\be}{\begin{equation}} in the preamble opened a
+  regex span that swallowed \label{sec:RV} ("missing"). Both are checker faults; the checker
+  now reads the body only and writes the paper's environment shorthands out first. Rerun below.
+- C5 held: 2 of 7710 citation keys lack an entry (1011.4920 "*martin-garcia:web", 2507.18312
+  "Deluca", absent from that paper's .bbl).
+- Found by reading the output (export of 2611.12831): pylatexenc 2.11 drops the argument of
+  \texttt, \textsf, \textup, \textmd and \mbox, so "on top of the performance-portable
+  \texttt{AthenaK} code" became "... performance-portable code"; and it raises on \href (the
+  whole chunk then fell back to the stdlib converter). Fixed before the next ingestion; test
+  added. Figures fig_papers_k2.png and fig_citations_k3.png of that run inspected: parse
+  scores mostly above 0.95; body chunks mostly 200-400 words, a tail of shorter section ends;
+  the citation matrix is dominated by the diagonal (G07, G14).
+
+### Prediction K2-P7: full ingestion after the download, and checks C1-C5 on it
+
+When the download run kb-20261115-124340-9048b83 has finished: `kb verify-downloads` shows the
+manifest complete except for a few failures; then `kb ingest arxiv --all --jobs 8` (priority
+order 3, 2, 1). Expected: at most 3 % of the manifest papers fail to parse (failures from
+PDF-only or exotic sources); at least 85 % 'ok'; wall time under 15 min; arXiv-id rate of the
+bibliography entries 55-75 %; fraction of distinct citation edges inside the corpus rises to
+10-30 % (the corpus is the field's core literature). Checks: C1 all agree; C2 all equal;
+C3 at least 97 % of papers agree; C4 at least 99 % of the labels inside display environments
+are stored; C5 at most 1 % of keys without entry. Refuted by any number outside these ranges.
+
+### Outcome P2, P3 (runs kb-20261115-130931-c0e0ec8, -131150-, -131158-, -131207-7350d70)
+
+- P2 held: the masked-text parser and the tree-sitter extractor agree on every
+  ParameterInput call: upstream AthenaK 1165 of 1165 (338 C/C++ files), this tree at main
+  1259 of 1259 (347), Athena++ 999 of 999 (371), Parthenon 384 of 384 (374); none found by
+  only one of them [VERIFIED: `scratch/kb/<run>/crosscheck_*.json`].
+- P3 held: column-0 method definitions found by the line pattern and present as method
+  symbols of the index: upstream AthenaK 886 of 886, this tree 924 of 924, Athena++ 1563 of
+  1563, Parthenon 508 of 508.
+- Limits of the two tests: both extractors see `#if 0` blocks and both use the same
+  macro blanking and string unescaping; a call hidden behind a macro of the code itself
+  would be missed by both.
+
+### Scouting ingest (run kb-20261115-131627-7350d70) and two fixes found with the unit tests
+
+- 64 repositories indexed (63 clones + local/nrpic) in about 10 min (gkeyll alone 232 s);
+  database 379 MB: 68037 files, 305733 symbols, 157178 chunks (177 MB of text), 3489
+  parameter rows. Kokkos contributed 35 "parameter" rows that are calls of another
+  interface (no literal block anywhere); the params table now takes rows only from a
+  repository that defines the ParameterInput class (AthenaK, Athena++, Parthenon, this
+  tree). The unit test `test_cpp_symbols` (first run: 1 failure) showed that tree-sitter
+  ends a `#define` node at column 0 of the next line (end line one too late) and that a
+  blanked KOKKOS_INLINE_FUNCTION line cut the doc comment off; both fixed in
+  `code_symbols.py`, test passes. The production ingest below is run with the fixes.
+
+### Prediction P5 (before the first `kb watch upstream`)
+
+P5 The bare shallow clone of all 124 branch tips of IAS-Astrophysics/athenak and the
+   inspection of every branch show: (a) no branch whose `src/particles` mentions tmunu or
+   deposit (no matter handed to the spacetime); (b) at least one branch (particles_gr with
+   its relativistic pushers in a given spacetime) whose `src/particles` mentions z4c or adm
+   (reading the metric), which brief line 130 says it does not; (c) no nrpic or vlasov
+   anywhere under `src/`; (d) no branch name containing pic, vlasov, nrpic or deposit;
+   (e) main still c5a0d7f. Refuted if (a) or (c) fails: then the coupling would be public.
