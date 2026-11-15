@@ -174,3 +174,56 @@ Predictions for the reruns, written before they run:
      the first pass (run 123524 to 123530): sigma_i = 0.02 and 0.05 capture all of the
      collapsed dust by a/a_i = 4 (as before), sigma_i = 0.1 captures more than 92 %,
      sigma_i = 0.2 more than 69 %.
+
+## 2026-11-15T13:00Z  outcome of Test 3; shell runs D-bh-dress-20261115-123516/123518/
+## 123520/123522-cff68f1, 124330..124338-75000d9, 124552-5d687b5; analysis runs
+## D-bh-dress-20261115-125449-60a62b8 (failed: empty fit range), 125507-a75a911,
+## 125613-248fdaf (the one quoted)
+
+Superseded, kept on record: 123524..123530-cff68f1 (capture rule not scaled to the hole
+mass), 123522-cff68f1 (eps = 0.1 with s = 5M: M_ta = 11.87 M at a/a_i = 100 against 56.87 M
+in closed form; softening of the dust's own gravity suppresses the turnaround), analysis
+125507 (splashback by the maximum radius). Figures in `figs/` looked at: growth, profiles
+(eps 0.01, 0.03), selfsim_check, phase_space, angular_momentum.
+3a. Holds: absorbing run (s = 0), all 2759 shells that turned around: max relative error
+    of the turnaround time 3.8e-7, of the absorption time at 2M 1.6e-6 (2573 shells,
+    `shells_absorb_e0.01.json`). The passing runs have no shell with r_i > 100 s, so they
+    are not checked this way; their M_ta agrees with the closed form to 1.4e-3 (eps 0.01)
+    and 1.8e-3 (eps 0.03) over a/a_i <= 8 (analysis.json, checks).
+3b. Holds where checked: c(2) = 0.262678 against the scoping's 0.262699 (8e-5); c(4) =
+    0.4076, c(8) = 0.4843. c(10) not checked (the unsoftened runs stop at a/a_i = 8).
+    Note for the lead: the scoping JOURNAL's "over a quadrupling 1.63 M" disagrees with its
+    own table (M_ta/M = 2.628 at a/a_i = 4); this package finds 2.630.
+3c. Holds: M_bh against the closed form to 4e-15 at every snapshot; (M_bh - M)/(M a/a_i) =
+    0.096, 0.207, 0.277 at a/a_i = 2, 4, 8, rising towards 0.356 (not reached by 8). The
+    hole doubles at a/a_i = 4.52. Infall profile: slope -1.42 on [3M, 0.1 r_ta] (a/a_i = 4
+    and 8, eps 0.01; a/a_i = 8, eps 0.03), -1.37 on [3M, 0.3 r_ta]; the curve
+    Mdot/(4 pi r^2 (2 M_bh/r)^(1/2)) lies on the shells below ~0.2 r_ta (figure). So
+    r^(-3/2) holds where the hole dominates, flattening outwards as the infall speed falls
+    below free fall from infinity.
+3d'. Mixed: slope on [0.02, 0.2] at a/a_i ~ 100 is -2.468 against test 2's -2.396 on the
+    same bins (holds, within 0.1); dress/M_ta = 0.606 against 2.0255^(-2/3) = 0.625 (holds,
+    3 %); M_ta = 55.99 against 56.87 (refuted at 1 %: 1.5 % low, softening); rho on
+    [0.03, 0.3] within 32 % per bin, not 20 % (refuted; the bins hold ~30 shells of
+    ~0.1 M, and the cumulative mass agrees to 10.6 %). The figure shows the approach to
+    test 2 moving inwards with a: at a/a_i ~ 10 the shells are below test 2 inside
+    lambda ~ 0.05, at 30 and 100 they agree within the bin scatter down to lambda ~ 0.01.
+    The splashback (radius holding 99 % of the dust that passed the centre) is 0.38-0.43
+    r_ta for a/a_i <= 8 in all three eps, but 0.50 at 30 and 0.94 at 100 for eps = 0.1:
+    a few per cent of the mass in light shells (log-spaced masses 1e-6 to 0.1 M) heated
+    by heavy ones over thousands of orbits. Discreteness of the shell model, not the
+    continuum; open (equal-mass shells would settle it). Test 2: lambda_1 = 0.355.
+3e. Holds: dress = 0.189 M at a/a_i = 2 and 0.820 M at 4 (eps 0.01); 0.187/0.818
+    (eps 0.03), 0.180/0.808 (eps 0.1): independent of eps to 1.5 % (Newtonian scaling).
+    Dress reaches 0.25, 0.5, 1, 2 M at a/a_i = 2.22, 3.03, 4.54, 7.44.
+3f (first pass). Refuted for sigma_i = 0.1: 92 % captured (fixed rule), not 30-80 %.
+3f'. Holds: sigma_i = 0.02 and 0.05 capture all collapsed dust (0.83 M and 0.77 M) by
+    a/a_i = 4; sigma_i = 0.1 captures 97.4 % (0.576 of 0.591 M), sigma_i = 0.2 74.0 %
+    (0.211 of 0.285 M). The dispersion also lowers M_ta at a/a_i = 4 from 2.63 to 2.60,
+    2.47, 2.10, 1.47 M. Conclusion [JUDGEMENT]: at the scales a full-relativity run can
+    reach (r_ta of tens of M), cold or warm dust gives no dress that survives capture;
+    a surviving dress needs L > 4 M_bh, i.e. tangential speeds that also change the infall.
+Local growth exponent d ln M/d ln a of the dress: > 3/2 for a/a_i < 4.5, 1.3 at 8, -> 1
+by a/a_i ~ 30 (eps 0.1 run). The a^(3/2) law of 1805.09034 (main.tex:216-218) and the
+self-similar a^1 cannot be told apart in a run that ends at a/a_i <= 8; both differ from
+what these runs will see, which the shell reference predicts directly.
