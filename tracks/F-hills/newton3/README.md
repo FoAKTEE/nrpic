@@ -75,9 +75,10 @@ on the final positions to 1e-6 m.
 Numbers carry run ids; [VERIFIED] here means reproduced by a registered run of this
 package against the printed source (locator), [JUDGEMENT] is interpretation.
 
-**P0 tests** (run F-hills-20261115-130253-6fc800e): 9 tests pass (a tenth, the JSON round
-trip, was added later and passes in the pytest run of the same file). Two tolerances I
-predicted were a factor ~10 too tight; SciPy's DOP853 shows the same numbers (JOURNAL).
+**P0 tests** (run F-hills-20261115-130253-6fc800e: 9 pass; rerun at the final code,
+run F-hills-20261115-133436-8bfc259: all 10 pass, including the JSON round trip). Two
+tolerances I predicted were a factor ~10 too tight; SciPy's DOP853 shows the same numbers
+(JOURNAL).
 
 **P1, coplanar restricted, against SKR's text** (scan F-hills-20261115-130237-cbfaf6b,
 deep points at rtol 1e-13 F-hills-20261115-132156-efddfc0, analysis
