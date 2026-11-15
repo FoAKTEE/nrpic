@@ -276,3 +276,16 @@ runs and applied by the script; a first draft of this line carried an uncomputed
 particles, interface 5.8; here about 5 V cycles); about 1000, 500 and 450 cycles; in total
 0.1-0.3 card-hours, inside the 0.42 card-hours of the Slurm limit (25 minutes). Refuted if
 the job is killed at the limit.
+
+### P8 outcome (run A-20261115-152758-1579711, completed; registered with nrpic-run)
+
+Wall time for 30 cycles including start-up (start-up from the first `elapsed` line of each
+log): 64^3/3.4e4 particles 11.3 s (0.7 s start-up; 0.35 s per cycle); 128^3/2.7e5 88.7 s
+(4.7 s; 2.8 s per cycle); 128^3/2.1e6 296.3 s (11.5 s; 9.5 s per cycle); 256^3/2.7e5 428.0 s
+(28.6 s; 13.3 s per cycle); deformed ball e = 0.2 at 128^3/2.7e5 90.3 s (2.8 s per cycle).
+Five cases ran at once on a machine with load 18-33. P8 holds for 64^3, 128^3/2.7e5 and
+256^3 (13.3 s inside 8-25 s); fails for 128^3/2.1e6 (9.5 s against 1-3 s; particle work
+about 3.5 microseconds per particle and cycle, not in the estimate). The interim reading
+above (18 and 27 s per cycle) was too high: it counted records written while the start-up
+and the other cases competed. The plan of entry 6 is unchanged by the final numbers
+(a 128^3/2.1e6 top-hat of about 1000 cycles would still take 2.6 hours on one core).
