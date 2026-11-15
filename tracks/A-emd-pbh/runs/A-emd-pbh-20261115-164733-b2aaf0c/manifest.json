@@ -1,0 +1,64 @@
+{
+  "schema": "nrpic-run/1 (by hand)",
+  "registered_by": "tracks/A-emd-pbh/runs_ball/runreg.py",
+  "harness_refusal": "nrpic-run submit: the worktree is not clean (untracked files of other helpers)",
+  "run_id": "A-emd-pbh-20261115-164733-b2aaf0c",
+  "track": "A-emd-pbh",
+  "gate": "G2",
+  "kind": "scouting",
+  "purpose": "resolution summary of SR-1/SR-2 at dx = M and M/2 (analysis A-emd-pbh-20261115-163659-4dbacd0)",
+  "launcher": "local",
+  "command": [
+    ".venv/bin/python",
+    "tracks/A-emd-pbh/runs_ball/summary.py",
+    "--prep",
+    "/data/haiyangw/nrpic/scratch/A-emd-pbh/A-emd-pbh-20261115-153719-91b03d1",
+    "--run",
+    "/data/haiyangw/nrpic/scratch/A-emd-pbh/A-emd-pbh-20261115-163659-4dbacd0:sr1_n128:1.0",
+    "--run",
+    "/data/haiyangw/nrpic/scratch/A-emd-pbh/A-emd-pbh-20261115-163659-4dbacd0:sr1_n256:0.5",
+    "--run",
+    "/data/haiyangw/nrpic/scratch/A-emd-pbh/A-emd-pbh-20261115-163659-4dbacd0:sr2_n128:1.0",
+    "--run",
+    "/data/haiyangw/nrpic/scratch/A-emd-pbh/A-emd-pbh-20261115-163659-4dbacd0:sr2_n256:0.5",
+    "--out",
+    "$NRPIC_RUN_DIR",
+    "--figdir",
+    "tracks/A-emd-pbh/runs_ball/figs"
+  ],
+  "cwd": "/data/haiyangw/nrpic/wt/A-emd-pbh",
+  "git": {
+    "sha": "b2aaf0c1a10c051ca90e36f83bd7fda76e12e136",
+    "branch": "track/A-emd-pbh",
+    "package_dirty": false
+  },
+  "inputs": [
+    {
+      "path": "tracks/A-emd-pbh/runs_ball/summary.py",
+      "role": "input",
+      "sha256": "e9b15391a51498de15772c35eaa301c86634e392fa87121a10920d899cebf87e",
+      "bytes": 6006
+    }
+  ],
+  "parents": [
+    "A-emd-pbh-20261115-163659-4dbacd0"
+  ],
+  "resources": {
+    "cores": 2,
+    "gpus": 0,
+    "wall_limit": null,
+    "walltime_s": 2.9,
+    "gpu_hours": null
+  },
+  "outputs": {
+    "dir": "scratch/A-emd-pbh/A-emd-pbh-20261115-164733-b2aaf0c",
+    "sha256sums": "sha256sums.txt",
+    "files": 4
+  },
+  "status": "completed",
+  "exit_code": 0,
+  "registered": "2026-11-15T16:47:33Z",
+  "started": "2026-11-15T16:47:33Z",
+  "ended": "2026-11-15T16:47:36Z",
+  "notes": ""
+}
