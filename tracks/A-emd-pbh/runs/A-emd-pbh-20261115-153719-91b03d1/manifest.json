@@ -1,0 +1,56 @@
+{
+  "schema": "nrpic-run/1 (by hand)",
+  "registered_by": "tracks/A-emd-pbh/runs_ball/runreg.py",
+  "harness_refusal": "nrpic-run submit: the worktree is not clean (untracked files of other helpers)",
+  "run_id": "A-emd-pbh-20261115-153719-91b03d1",
+  "track": "A-emd-pbh",
+  "gate": "G2",
+  "kind": "scouting",
+  "purpose": "runs_ball prep: tracked-particle order of data set 2t and exact references (turnaround, trapping, crunch, m_AH(tau), central a and rho, SR-1 step plan) for SR-1/SR-2",
+  "launcher": "local",
+  "command": [
+    ".venv/bin/python",
+    "tracks/A-emd-pbh/runs_ball/prep.py",
+    "--out",
+    "$NRPIC_RUN_DIR"
+  ],
+  "cwd": "/data/haiyangw/nrpic/wt/A-emd-pbh",
+  "git": {
+    "sha": "91b03d1b2ee5ac378d8336562b6de7184e73643e",
+    "branch": "track/A-emd-pbh",
+    "package_dirty": false
+  },
+  "inputs": [
+    {
+      "path": "/data/haiyangw/nrpic/scratch/A-emd-pbh/A-emd-pbh-20261115-130609-947c898/expball_smooth_tophat_HRb0p5_dc1_R10p3_R20p75_w0p1875_lat38.nrp",
+      "role": "input",
+      "sha256": "78e26f59632546b7230c213dd0292782cf7ba4196c0d1c6308246f75adc27f2f",
+      "bytes": 1726096
+    },
+    {
+      "path": "tracks/A-emd-pbh/runs_ball/prep.py",
+      "role": "input",
+      "sha256": "84a3cb5ff5227e65278d0e5c05acd48cc86de663f59ead0c6ad014d4a560aa5b",
+      "bytes": 10825
+    }
+  ],
+  "parents": [],
+  "resources": {
+    "cores": 4,
+    "gpus": 0,
+    "wall_limit": null,
+    "walltime_s": 60.3,
+    "gpu_hours": null
+  },
+  "outputs": {
+    "dir": "scratch/A-emd-pbh/A-emd-pbh-20261115-153719-91b03d1",
+    "sha256sums": "sha256sums.txt",
+    "files": 6
+  },
+  "status": "completed",
+  "exit_code": 0,
+  "registered": "2026-11-15T15:37:19Z",
+  "started": "2026-11-15T15:37:19Z",
+  "ended": "2026-11-15T15:38:19Z",
+  "notes": ""
+}
