@@ -93,3 +93,51 @@ Predictions:
   for byte (the option restores the released rule exactly).
 The correction is refuted if (b) leaves the band or (c) differs from (b); the claim that
 the option preserves the released behaviour is refuted if (d) differs from (a).
+
+Outcome of the T1 regression (run core-20261115-154303-da69f6a; numbers from
+`tracks/core/analysis/dfix/t1_tracer.py`, figure `figs/t1_regress.png`, looked at)
+[VERIFIED]:
+- (a) release: photon; last record at t = 15.6 M and r = 15.55 M (it leaves through a
+  corner region of the cube), `n_escaped = 1`. The prediction "before t = 15 M" FAILED by
+  0.6 M: I had taken r = 12 M as the edge, the cube reaches 12 sqrt(2) M in the orbital
+  plane. The qualitative prediction (photon, escapes) holds.
+- (b) corrected: r in [7.999998, 8.001151] M over 300 M; relative errors 2.6e-7 in E and
+  5.05e-6 in L_z. Inside the record of the old entry ([8.0000, 8.0012], 8.4e-7, 5.1e-6).
+- (c) equals (b) byte for byte (192128 bytes); (d) equals (a) byte for byte (10048
+  bytes).
+Not refuted. H1 is the cause on the static mesh as well; the correction restores the
+recorded behaviour and the option reproduces the released one exactly.
+
+### T2 The restart defect (request D `restart-skips-dump`)
+
+Read [VERIFIED]: `Driver::Finalize` (driver.cpp, lines 655-661 at 3da9086) calls
+`WriteOutputFile` of every output; every writer then does `last_time += dt` (for the
+restart writer `outputs/restart.cpp` lines 196-200), also when the final output is not
+on the schedule. The parameter dump inside the restart file carries the advanced values,
+so the continued run waits for `last_time + dt` and skips one scheduled output of every
+kind (`scripts/README.md`, "Restart caveats", first item, records the same).
+
+Correction [JUDGEMENT]: in `Driver::Finalize` a final output that falls between two
+scheduled times (single-precision test `time < last_time + dt`, the comparison of
+`Driver::Execute`) leaves the schedule where it was: `last_time` is set back by dt before
+the writer adds it (so that the dump inside the restart file is unadvanced too) and
+restored exactly afterwards. A final output on the schedule (run ending at tlim) behaves
+as before. One hook, `driver/driver.cpp`, in the loop of `Driver::Finalize`; no writer is
+touched.
+
+Set-up: `problems/tests/restart_schedule.athinput` (static mesh metric, one tracer;
+restart dumps every 50 M, tables every 25 M, tlim = 300 M), script
+`tracks/core/analysis/dfix/t2_restart.py`.
+
+Predictions (written before the run):
+- uninterrupted, either executable: restart files at t = 0, 50, ..., 300 (seven), tables
+  at 0, 25, ..., 300 (thirteen);
+- release core-v0.3, stopped at the cycle limit at t = 123.4 M and continued from the
+  file written there: the restart dump of t = 150 M and the table of t = 125 M are
+  missing (next restart dump at 200 M, next table at 150 M);
+- corrected, the same sequence: nothing missing; the extra files at t = 123.4 M exist;
+  the final particle state equals that of the uninterrupted run bit for bit;
+- corrected, stopped at the wall clock limit (`-t 00:00:03`, particle step 0.002 M so
+  that the run lasts about ten seconds) and continued: nothing missing.
+The correction is refuted if a scheduled output is missing in a corrected case, or if the
+uninterrupted corrected run writes other files than the release.
