@@ -151,3 +151,14 @@ allowed, Newton for y in w = sqrt(1 - y) (regular at turnaround) with a polish i
 10 s. Regression tests added (batch independence). 32 tests pass.
 Consequence: every figure and number is regenerated with the fixed code; the runs
 115552 and 115659 (figures) used the old solver and are superseded by the rerun below.
+
+## 2026-11-15 12:17 UTC (before the runs started at 12:17:07), P7: the two data sets (scripts/make_dataset.py)
+
+Prediction. Data set 1 (flat, H R_b = 0.5, M = 1): R_b = 8, H = 1/16, t_i = 32/3,
+psi = 1, rest mass = Misner-Sharp mass = 1 (E = 0), max 2m/R = 0.25, no shell turns
+around, R_b(tau) = 8 (1 + 3 tau/32)^(2/3). Data set 2 (smoothed top-hat delta_c = 1,
+R1 = 0.3 R_b, R2 = 0.75 R_b, same envelope): M = 1, rest mass slightly above 1 (bound
+core, dM0 = dm/sqrt(1+2E) > dm), core turnaround tau_ta = 16.894, core crunch
+tau_c = 44.454, first trapped sphere at R_i = 2.74 with m = 0.0804 at tau_AH = 44.349,
+no shell crossing before the core crunch (all from the figure runs). Stratified total rest
+mass exact to 1e-13; lattice total equal after the surface correction.

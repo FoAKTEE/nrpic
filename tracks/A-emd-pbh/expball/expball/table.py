@@ -38,7 +38,7 @@ def write_format2(path, ball, drbar, rbar_max=None, exterior="pg", shift="ltb", 
         fh.write(f"# exterior = {exterior}\n")
         for k, v in (header or {}).items():
             fh.write(f"# {k} = {v}\n")
-        fh.write(f"# N = {N}\n# drbar = {drbar!r}\n# rbar_last = {rb[-1]!r}\n")
+        fh.write(f"# N = {N}\n# drbar = {float(drbar)!r}\n# rbar_last = {float(rb[-1])!r}\n")
         fh.write(f"# shift = {shift}\n")
         for r in rows:
             fh.write(" ".join(f"{x:.17e}" for x in r) + "\n")

@@ -1,0 +1,88 @@
+{
+  "run_id": "A-emd-pbh-20261115-121707-6bfb707",
+  "owner": "A-emd-pbh",
+  "purpose": "A-pre-1 data set: expanding dust ball, model flat, H R_b = 0.5",
+  "kind": "production",
+  "command": "python3 scripts/make_dataset.py --model flat --HRb 0.5",
+  "cwd": "/data/haiyangw/nrpic/wt/A-emd-pbh/tracks/A-emd-pbh/expball",
+  "commit": "6bfb707e3c042d015832ad2ef92bd1ec54007a38",
+  "worktree_dirty_in_package": true,
+  "host": "anta",
+  "inputs": [],
+  "output_dir": "/data/haiyangw/nrpic/scratch/A-emd-pbh/A-emd-pbh-20261115-121707-6bfb707",
+  "wall_time_s": 2.35,
+  "cores": 4,
+  "card_hours": 0.0,
+  "status": "ok",
+  "outputs": [
+    {
+      "path": "/data/haiyangw/nrpic/scratch/A-emd-pbh/A-emd-pbh-20261115-121707-6bfb707/expball_flat_HRb0p5.json",
+      "sha256": "70cdc84c9ee7f5a68b9fbe6a5970f4e521ea897574cfbbf7823295185b0c30aa"
+    },
+    {
+      "path": "/data/haiyangw/nrpic/scratch/A-emd-pbh/A-emd-pbh-20261115-121707-6bfb707/expball_flat_HRb0p5.tab",
+      "sha256": "43a1ac6ac363e823aada753988ee6d6feeeab6a58f767e75c996aa1fa6716fef"
+    },
+    {
+      "path": "/data/haiyangw/nrpic/scratch/A-emd-pbh/A-emd-pbh-20261115-121707-6bfb707/expball_flat_HRb0p5_lat58.nrp",
+      "sha256": "67db099c4dda48bc0c7bd86d7f5c09a2c45d1cdbc5b930b428f518810a32c2df"
+    },
+    {
+      "path": "/data/haiyangw/nrpic/scratch/A-emd-pbh/A-emd-pbh-20261115-121707-6bfb707/expball_flat_HRb0p5_mesh64.npz",
+      "sha256": "18f8c2533eca1f0251a7ed1eb40d7d2b644e3b330539d741fcecfd66a049be95"
+    },
+    {
+      "path": "/data/haiyangw/nrpic/scratch/A-emd-pbh/A-emd-pbh-20261115-121707-6bfb707/expball_flat_HRb0p5_shells.txt",
+      "sha256": "c8301e67803ebabd5401ae6cd83f47b888f146f0e29d810b35ba66950b01663c"
+    },
+    {
+      "path": "/data/haiyangw/nrpic/scratch/A-emd-pbh/A-emd-pbh-20261115-121707-6bfb707/expball_flat_HRb0p5_strat_N100000_s1.nrp",
+      "sha256": "d56345b5f26ee844a4aa54c23ffd0ae747e5ffd78a1da742c90629dd01de6ad8"
+    }
+  ],
+  "results": {
+    "summary": {
+      "H": 0.0625,
+      "Rb": 8.0,
+      "HRb": 0.5,
+      "edge_width": 0.0,
+      "M_misner_sharp": 1.0,
+      "rho_b": 0.0004662742473395371,
+      "t_i": 10.666666666666666,
+      "hubble_radius": 16.0,
+      "rbar_matter": 8.0,
+      "rest_mass": 0.9999999999999999,
+      "psi_centre": 1.0,
+      "max_2m_over_R": 0.24998766682711096,
+      "R_at_max_2m_over_R": 7.999802666800001,
+      "anti_trapped_surface_on_slice": false,
+      "interp_rbar_max": 12.8,
+      "profile": "flat"
+    },
+    "predictions": {
+      "n_shells": 400,
+      "t_i": 10.666666666666666,
+      "first_horizon": {
+        "tau_ah": Infinity,
+        "R_i": 0.02,
+        "m": 1.5625e-08,
+        "index": 0
+      },
+      "ball_edge_R_at_tau": {
+        "0.0": 8.0,
+        "10.0": 12.43324412691225,
+        "50.0": 25.490064051603746,
+        "100.0": 38.05532108553291
+      },
+      "R_b_law": "R_b(tau) = R_b (1 + 3 H tau/2)^(2/3) (expands for ever)"
+    },
+    "files": {
+      "table": "expball_flat_HRb0p5.tab",
+      "particles_stratified": "expball_flat_HRb0p5_strat_N100000_s1.nrp",
+      "particles_lattice": "expball_flat_HRb0p5_lat58.nrp",
+      "mesh": "expball_flat_HRb0p5_mesh64.npz",
+      "shells": "expball_flat_HRb0p5_shells.txt"
+    }
+  },
+  "dataset": true
+}

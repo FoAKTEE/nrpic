@@ -107,6 +107,8 @@ def main(argv=None):
                 fh.write(" ".join(f"{v:.15e}" for v in row) + "\n")
         files["shells"] = f4
         pred = sh.summary()
+        if not np.any(sh.bound):
+            pred["first_horizon"] = None          # no shell is bound: no horizon ever
         if a.model != "flat":
             core = Ri <= ball.prof.R1
             pred.update(core_tau_ta=float(sh.tau_ta[core][0]), core_tau_c=float(sh.tau_c[core][0]),
