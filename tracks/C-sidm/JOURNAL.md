@@ -38,3 +38,24 @@ Helper packages under review (their own journals hold their predictions and outc
   w0 = 3.50 and 3.58 and negative at 3.595 and 3.68 for N = 600 and 1200 (gravothermal's
   onset w0 = 3.5871, Z(0) = 0.6348). Refuted by a sign pattern that moves the zero out of
   [3.58, 3.595] or depends on N.
+
+## 2026-11-15T13:25Z  session C-sidm lead (wave 1 review)  outcome L1, prediction L1b
+
+- outcome L1 (run C-sidm-20261115-131135-3077a99, 608 s, 4 threads): FAILED in two items,
+  held in the rest. Held: collide 62 + 3 tests pass; gravothermal unit tests pass; the
+  three scope outputs (948, 2451, 2853 numbers) and the equilibria checks (318 numbers,
+  243/243 pass flags) are identical to the registered outputs. Failed: (1) gravothermal's
+  polytrope check differs at 5e-10 relative in omega^2 (N = 600) and 1.5e-10 in the zero
+  location; its conclusion (FEM zero at the mass maximum to 2.7e-8, 1.5e-8, 2.5e-8) is
+  unchanged; the original ran with one thread, the rerun with four. (2) The T6-0 rerun
+  differs: 0/31 snapshots identical and the analysis' noise statistic changes by 28 percent,
+  although the analysis still passes ("pass_collisionless": true). Positions in step.nrp are
+  identical, momenta are not; `make_box.py` changed after the original run (commit abd9c2e:
+  for an odd population, n//2 mirrored pairs plus one particle at rest instead of
+  (n+1)//2 pairs truncated; the step box has n1 = 33333), so the rerun at HEAD used other
+  initial momenta. No cause is claimed yet; L1b tests both explanations.
+- prediction L1b (`review/rerun_followup.sh`): (a) the polytrope check with one thread is
+  byte-identical to run C-sidm-20261115-121524-5cebcf5; (b) T6-0 with the collide code of
+  commit 313d399 (git archive) reproduces step.nrp, the 31 snapshots and the history of run
+  C-sidm-20261115-121302-313d399 byte for byte with the same processor executable. Refuted
+  by any differing file.
