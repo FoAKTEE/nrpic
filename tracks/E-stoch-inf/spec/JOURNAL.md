@@ -72,3 +72,15 @@ Refuted if the measured ratio for L^(-3/2) is not 1 within the stated scatter.
   a factor below 0.1 (expected near exp(-4) = 0.02). Refuted if any ratio exceeds 0.1;
   then the drift has another origin (numerical, or the initial data) and the cause stays
   open.
+
+## 2026-11-15 12:58 UTC: prediction for T4 (initial data against the linear constraints)
+
+While writing SPEC.md section 6, re-deriving delta-Pi at t* in the geodesic gauge from
+2502.06783 eqs. (14)-(16) gave an extra term -sqrt(2 eps1) Mpl H Psi_B compared with the
+printed eq. (17) (it comes from dot(Phi^NR) = dot(Phi_B) - H dot(chi), dot(chi) = Psi_G -
+Psi_B). Prediction (T4, symbolic, script ref/ic_constraint_check.py): with the re-derived
+delta-Pi the linear Hamiltonian constraint of 2502.06783 eq. (9) vanishes identically, with
+the printed one it leaves a first-order residual; the momentum constraint vanishes for both,
+and delta-K = 3 (dot Phi_B + H Psi_B) equals 3 eps1 H (R - Phi_B). Refuted if the printed
+form is the one that satisfies the Hamiltonian constraint (then my derivation is wrong), or
+if neither does (then a convention is misread, e.g. the Laplacian or delta-rho).
