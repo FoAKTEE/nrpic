@@ -22,6 +22,7 @@ import sys
 HERE = os.path.dirname(os.path.abspath(__file__))
 WT = os.path.abspath(os.path.join(HERE, "..", "..", "..", ".."))
 SCRATCH = "/data/haiyangw/nrpic/scratch/core"
+PUBLISHED = os.path.join(SCRATCH, "exe", "core_clump-curvature")
 sys.path.insert(0, HERE)
 import run_static as rs  # noqa: E402
 
@@ -96,6 +97,22 @@ def main():
     with open(os.path.join(top, "card_check.json"), "w") as f:
         json.dump(out, f, indent=1)
     print("CARD CHECK PASSED" if ok else "CARD CHECK FAILED")
+    # the published executables (decision 0013): leave the verdict beside them
+    if os.path.isdir(PUBLISHED):
+        import hashlib
+        import time
+        with open(a.new, "rb") as f:
+            sha = hashlib.sha256(f.read()).hexdigest()
+        with open(os.path.join(PUBLISHED, "CARD_CHECK"), "w") as f:
+            f.write(("PASSED" if ok else "FAILED") + " " + time.strftime(
+                "%Y-%m-%dT%H:%M:%SZ", time.gmtime()) + "\n"
+                f"card executable tested: {a.new}\nsha256 {sha} (compare with athena_gpu)\n"
+                f"output: {top}/card_check.json\n")
+            for k, v in out["regression"].items():
+                f.write(f"regression {k} against {a.base}: {v['report']}\n")
+            for k, v in out["curvature"].items():
+                f.write(f"{k}: card and processor records at t = 0 differ by "
+                        f"{v['max_rel_diff_H2_M2_Mx2']:.1e} (relative)\n")
     return 0 if ok else 1
 
 
