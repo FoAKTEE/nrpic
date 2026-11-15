@@ -90,10 +90,12 @@ member crosses r < 2.5 r_g (Schwarzschild) / r_+ + 0.05 r_g (Kerr-Schild) moving
 | r_p = 10 to 4 r_g (S2) | retrograde s.f. HRNA 0.92-1.0 vs Newton 0.59-0.66; mean v_inf within 3 percent; a member captured in most encounters below 5 r_g | F-hills-20261115-134255-a3c22f8 |
 | coordinate dependence (S3) | Kerr-Schild vs Schwarzschild: s.f. within 0.005 | F-hills-20261115-130922-634fb86 |
 | Kerr a = +-0.9 (S4) | retrograde s.f.: a = -0.9 > 0 > +0.9 by 0.04-0.05 at beta >= 5 | F-hills-20261115-133124-c799a81 |
+| tolerance (C1) | rtol 1e-10 vs 1e-12: at most 2 of 400 outcomes change | F-hills-20261115-142810-aad3f24 |
+| release radius (C2, 2404 app. C) | HRNA retrograde s.f. 0.6975 / 0.6725 / 0.68 at r0 = 20 / 50 / 70 r_t, Newton flat; cause open | F-hills-20261115-135732-cace755 |
 
 Figures: `figures/` (copies of the inspected PNGs); summaries: `results/*.json` (from the
-analysis run above). Not done: tolerance scan C1, the 1PN law, inclined encounters, the
-2402.02178 comparison; C2 (r0 dependence) see JOURNAL.
+analysis run above). Not done: the 1PN law, inclined encounters, the 2402.02178 comparison,
+the cause of the r0 dependence (C2).
 
 ## Requests
 

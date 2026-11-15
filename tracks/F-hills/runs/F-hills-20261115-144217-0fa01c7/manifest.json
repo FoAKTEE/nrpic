@@ -1,0 +1,49 @@
+{
+ "run_id": "F-hills-20261115-144217-0fa01c7",
+ "track": "F-hills",
+ "package": "geodesic_binary (F-pre-2)",
+ "purpose": "A5 analysis of C2 (r0 dependence at beta=4.7, 2404 appendix C)",
+ "kind": "scouting",
+ "command": [
+  "/data/haiyangw/nrpic/scratch/F-hills/venv-gb/bin/python",
+  "-I",
+  "tracks/F-hills/geodesic_binary/analysis_c2.py",
+  "/data/haiyangw/nrpic/scratch/F-hills/F-hills-20261115-135732-cace755",
+  "/data/haiyangw/nrpic/scratch/F-hills/F-hills-20261115-144217-0fa01c7"
+ ],
+ "cwd": "/data/haiyangw/nrpic/wt/F-hills",
+ "git": {
+  "sha": "0fa01c7d0d2d6d05c7d135852808f41f48352670",
+  "branch": "track/F-hills",
+  "dirty_package": false
+ },
+ "inputs": [
+  {
+   "path": "tracks/F-hills/geodesic_binary/analysis_c2.py",
+   "sha256": "eaf2278914526b245e904b108791c6451e38c47b6714b169e58a02e9da37c0d9"
+  }
+ ],
+ "parents": [
+  "F-hills-20261115-135732-cace755"
+ ],
+ "resources": {
+  "cores": 1,
+  "gpus": 0,
+  "card_hours": 0.0,
+  "core_hours": 0.0004
+ },
+ "outputs": {
+  "dir": "scratch/F-hills/F-hills-20261115-144217-0fa01c7",
+  "sha256": {
+   "c2_r0.pdf": "cc8927cfc4539165127f9a507cb353d487341ba97a25d0ffc19beb715e2fad50",
+   "c2_r0.png": "60f155facba3e04c8e319fa1860e262e221ed5044d14fad503a9cbaa5c1c5595",
+   "c2_summary.json": "153930fcaa535de33ef01eb9d6299c5c7e5ca63ebe93d04bc853274dc6271985",
+   "stdout.txt": "547d7e079d32519225aab68d7709ec2a5c9384a7c75a182b9657521d480ac434"
+  }
+ },
+ "status": "completed",
+ "started": "2026-11-15T14:42:17+00:00",
+ "exit_code": 0,
+ "ended": "2026-11-15T14:42:18+00:00",
+ "wall_time_s": 1.5
+}

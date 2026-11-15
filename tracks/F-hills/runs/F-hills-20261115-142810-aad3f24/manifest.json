@@ -1,0 +1,57 @@
+{
+ "run_id": "F-hills-20261115-142810-aad3f24",
+ "track": "F-hills",
+ "package": "geodesic_binary (F-pre-2)",
+ "purpose": "C1 tolerance check: rtol=1e-10 at beta=3,8 (and 4.7), both laws and senses, 400 phases, against S1/C2 (rtol=1e-12)",
+ "kind": "scouting",
+ "command": [
+  "/data/haiyangw/nrpic/scratch/F-hills/venv-gb/bin/python",
+  "-I",
+  "tracks/F-hills/geodesic_binary/scan.py",
+  "--out",
+  "/data/haiyangw/nrpic/scratch/F-hills/F-hills-20261115-142810-aad3f24/c1_rtol1e-10.npz",
+  "--betas",
+  "3,4.7,8",
+  "--rtol",
+  "1e-10",
+  "--nphi",
+  "400",
+  "--workers",
+  "6"
+ ],
+ "cwd": "/data/haiyangw/nrpic/wt/F-hills",
+ "git": {
+  "sha": "aad3f240d428057fe0102c6cbbf19cd4a09246df",
+  "branch": "track/F-hills",
+  "dirty_package": false
+ },
+ "inputs": [
+  {
+   "path": "tracks/F-hills/geodesic_binary/hrna.py",
+   "sha256": "88f77082ef2a3bd499c8dfdb678e8d34c6a7be4aec59da3e2b6e134ed4f60dab"
+  },
+  {
+   "path": "tracks/F-hills/geodesic_binary/scan.py",
+   "sha256": "17f86b62c7b8f9b6ce07be6812b54ac4e5c13b86a9ccbdd54b3b6d0b1e3fbeb5"
+  }
+ ],
+ "parents": [],
+ "resources": {
+  "cores": 6,
+  "gpus": 0,
+  "card_hours": 0.0,
+  "core_hours": 0.0444
+ },
+ "outputs": {
+  "dir": "scratch/F-hills/F-hills-20261115-142810-aad3f24",
+  "sha256": {
+   "c1_rtol1e-10.npz": "63ed0a11099b824e56148f173e9790a7d536e4d9329be362506c1097ffd80b56",
+   "stdout.txt": "230a03d0f2cd78eb23b7c90ffec8053585dfbc8ff2297f18c4191bb06e99338e"
+  }
+ },
+ "status": "completed",
+ "started": "2026-11-15T14:28:10+00:00",
+ "exit_code": 0,
+ "ended": "2026-11-15T14:28:37+00:00",
+ "wall_time_s": 26.7
+}

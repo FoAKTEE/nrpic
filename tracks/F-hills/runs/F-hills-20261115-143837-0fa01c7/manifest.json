@@ -1,0 +1,63 @@
+{
+ "run_id": "F-hills-20261115-143837-0fa01c7",
+ "track": "F-hills",
+ "package": "geodesic_binary (F-pre-2)",
+ "purpose": "A4 analysis of C1 (rtol 1e-10 vs 1e-12), second attempt",
+ "kind": "scouting",
+ "command": [
+  "/data/haiyangw/nrpic/scratch/F-hills/venv-gb/bin/python",
+  "-I",
+  "tracks/F-hills/geodesic_binary/analysis_c1.py",
+  "/data/haiyangw/nrpic/scratch/F-hills/F-hills-20261115-142810-aad3f24/c1_rtol1e-10.npz",
+  "/data/haiyangw/nrpic/scratch/F-hills/F-hills-20261115-130405-ce17dcf/s1.npz",
+  "/data/haiyangw/nrpic/scratch/F-hills/F-hills-20261115-135732-cace755/c2_r50.npz",
+  "/data/haiyangw/nrpic/scratch/F-hills/F-hills-20261115-143837-0fa01c7"
+ ],
+ "cwd": "/data/haiyangw/nrpic/wt/F-hills",
+ "git": {
+  "sha": "0fa01c7d0d2d6d05c7d135852808f41f48352670",
+  "branch": "track/F-hills",
+  "dirty_package": false
+ },
+ "inputs": [
+  {
+   "path": "tracks/F-hills/geodesic_binary/analysis_c1.py",
+   "sha256": "c985ee921f15012e133aae0e6b065c3d7ccf8081c45d179026a88e03678bf493"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/scratch/F-hills/F-hills-20261115-142810-aad3f24/c1_rtol1e-10.npz",
+   "sha256": "63ed0a11099b824e56148f173e9790a7d536e4d9329be362506c1097ffd80b56"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/scratch/F-hills/F-hills-20261115-130405-ce17dcf/s1.npz",
+   "sha256": "6791a6c2382b319a5ae4849d0ed2c6f0b8ccb50f6ce406bb621d4a10a1338176"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/scratch/F-hills/F-hills-20261115-135732-cace755/c2_r50.npz",
+   "sha256": "2399ba11de847adaf8f224f1fc2af1249e061461f398d81b31ce6e6d0046bb3a"
+  }
+ ],
+ "parents": [
+  "F-hills-20261115-142810-aad3f24",
+  "F-hills-20261115-130405-ce17dcf",
+  "F-hills-20261115-135732-cace755"
+ ],
+ "resources": {
+  "cores": 1,
+  "gpus": 0,
+  "card_hours": 0.0,
+  "core_hours": 0.0001
+ },
+ "outputs": {
+  "dir": "scratch/F-hills/F-hills-20261115-143837-0fa01c7",
+  "sha256": {
+   "c1_summary.json": "687eff8e8cdb0f445b1a4a537c5cdfdbc9527081dccc6ca9abb5d0fd926679d9",
+   "stdout.txt": "b8c53e51eda92ffa4e3d0c607dd97af6622c7cf54b6db190f4bc27015ad0d7d1"
+  }
+ },
+ "status": "completed",
+ "started": "2026-11-15T14:38:37+00:00",
+ "exit_code": 0,
+ "ended": "2026-11-15T14:38:37+00:00",
+ "wall_time_s": 0.4
+}

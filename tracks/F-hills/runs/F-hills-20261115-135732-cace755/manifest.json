@@ -1,0 +1,52 @@
+{
+ "run_id": "F-hills-20261115-135732-cace755",
+ "track": "F-hills",
+ "package": "geodesic_binary (F-pre-2)",
+ "purpose": "C2 release-radius convergence at beta=4.7 (2404 appendix C): r0=20,50,70 r_t, both laws; HRNA also with the Gamma-corrected initial binary",
+ "kind": "scouting",
+ "command": [
+  "bash",
+  "-c",
+  "for r in 20 50 70; do /data/haiyangw/nrpic/scratch/F-hills/venv-gb/bin/python -I tracks/F-hills/geodesic_binary/scan.py --out /data/haiyangw/nrpic/scratch/F-hills/F-hills-20261115-135732-cace755/c2_r$r.npz --betas 4.7 --r0_rt $r --nphi 400 --workers 6 && /data/haiyangw/nrpic/scratch/F-hills/venv-gb/bin/python -I tracks/F-hills/geodesic_binary/scan.py --out /data/haiyangw/nrpic/scratch/F-hills/F-hills-20261115-135732-cace755/c2g_r$r.npz --laws hrna --ic_gamma --betas 4.7 --r0_rt $r --nphi 400 --workers 6 || exit 1; done"
+ ],
+ "cwd": "/data/haiyangw/nrpic/wt/F-hills",
+ "git": {
+  "sha": "cace75590afa77b6e9d240b28e126ecbed760104",
+  "branch": "track/F-hills",
+  "dirty_package": false
+ },
+ "inputs": [
+  {
+   "path": "tracks/F-hills/geodesic_binary/hrna.py",
+   "sha256": "88f77082ef2a3bd499c8dfdb678e8d34c6a7be4aec59da3e2b6e134ed4f60dab"
+  },
+  {
+   "path": "tracks/F-hills/geodesic_binary/scan.py",
+   "sha256": "17f86b62c7b8f9b6ce07be6812b54ac4e5c13b86a9ccbdd54b3b6d0b1e3fbeb5"
+  }
+ ],
+ "parents": [],
+ "resources": {
+  "cores": 6,
+  "gpus": 0,
+  "card_hours": 0.0,
+  "core_hours": 4.4581
+ },
+ "outputs": {
+  "dir": "scratch/F-hills/F-hills-20261115-135732-cace755",
+  "sha256": {
+   "c2_r20.npz": "b3a2495a2e951f52d6e5001a970bf0b7111d15cb012b686e58adb220dff9547c",
+   "c2_r50.npz": "2399ba11de847adaf8f224f1fc2af1249e061461f398d81b31ce6e6d0046bb3a",
+   "c2_r70.npz": "4abe65edd1b8e28c3e62ec7954247fd49b13e317e6fb311a3b22a8788027a724",
+   "c2g_r20.npz": "145a07e723d676927709637cf0d37a7416cb8cf0fec7d35a8c4e221f37ff5441",
+   "c2g_r50.npz": "246b39f5b0485108b00c4e47f4387f8367cbffff22a1d8f97c5b1dabbca47de0",
+   "c2g_r70.npz": "9b8591d09a2c6c5141e25cd06d2d17870442a50c93c251f9b6cb60b0a93d75b7",
+   "stdout.txt": "9f81866e277f5a1e0425704c6ce25c8ef53172c699167919a3bbebcec298a735"
+  }
+ },
+ "status": "completed",
+ "started": "2026-11-15T13:57:32+00:00",
+ "exit_code": 0,
+ "ended": "2026-11-15T14:42:07+00:00",
+ "wall_time_s": 2674.8
+}

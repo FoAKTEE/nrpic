@@ -383,5 +383,33 @@ not meaningful.
 4. Kerr (equatorial): a = -0.9 raises and a = +0.9 lowers the retrograde s.f. by 0.04-0.05
    relative to a = 0 at beta >= 5; prograde unchanged; Kerr-Schild and Schwarzschild coordinates
    agree to 0.005 in s.f. 2402.02178 is not reproduced (needs inclined binaries; different model).
-5. Open: C1 (tolerance) not run; C2 (r0 dependence) running at the time of writing (run
-   F-hills-20261115-135732-cace755); 1PN law not implemented; inclined encounters.
+5. Convergence: tolerance (C1) changes at most 2 of 400 outcomes; the release radius (C2)
+   moves the HRNA retrograde s.f. by 1 percent between 50 and 70 r_t (as in 2404) and by 3.7
+   percent from 20 r_t; its cause is open (the initial-eccentricity candidate was tested and
+   rejected). Open: 1PN law, inclined encounters, 2402.02178, the cause of the r0 dependence,
+   rotation reversal of the beta = 5, phi = 2.04 example, the factor 2 in a/R at beta = 8.5.
+
+### C1 outcome (run F-hills-20261115-142810-aad3f24; analysis F-hills-20261115-143837-0fa01c7;
+### first analysis attempt F-hills-20261115-143824-2c937bc failed on a syntax error)
+
+rtol = 1e-10 against 1e-12 at beta = 3, 4.7, 8, both laws and senses: at most 2 of 400 phases
+change outcome (s.f. difference <= 0.005), median relative change of v_inf 1e-6 to 2e-5.
+Prediction holds. (rtol = 1e-13 was checked only on the single encounter of the smoke test:
+eps1 to 1e-8 relative, t_s to 1e-5 T0.)
+
+### C2 outcome (run F-hills-20261115-135732-cace755, 2675 s on 6 cores; analysis
+### F-hills-20261115-144217-0fa01c7; figure c2_r0.png inspected)
+
+beta = 4.7, s.f. at r0 = 20 / 50 / 70 r_t:
+- Newton: prograde 0.9875 / 0.985 / 0.985, retrograde 0.46 / 0.4625 / 0.46 (spread at the phase
+  resolution). Holds.
+- HRNA, 2404 initial data: prograde 0.99 / 0.995 / 0.995, retrograde 0.6975 / 0.6725 / 0.68
+  (relative spread 3.7 percent; 1.1 percent between 50 and 70 r_t). Like 2404 (stall at ~1e-2,
+  appendix.tex:217) for r0 >= 50 r_t; larger at 20 r_t. The tolerance contributes <= 0.005 (C1),
+  so the dependence belongs to the model.
+- HRNA with the Gamma-corrected initial binary: retrograde 0.70 / 0.6775 / 0.6775 (spread 3.3
+  percent). The candidate cause (initial non-circularity from the 1/Gamma^2 of the pair force)
+  is NOT supported: correcting it leaves the r0 dependence in place. Cause open [TO VERIFY];
+  next candidates, untested: the anisotropic coordinate distance (g^rr = 1 - 2M/r) that
+  distorts the binary during the infall, and the Newtonian (coordinate-time) phase of the
+  released binary.
