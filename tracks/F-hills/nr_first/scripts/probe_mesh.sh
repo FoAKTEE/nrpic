@@ -10,7 +10,7 @@ EXE=/data/haiyangw/nrpic/.work/build_cpu_v03/src/athena
 WT=/data/haiyangw/nrpic/wt/F-hills
 Q4=$WT/tracks/F-hills/three_punctures/inputs/hills_q4_m8.athinput
 S=$WT/tracks/F-hills/nr_first/inputs/single_P025.athinput
-OUT=$(cd "${1:?outdir}" && pwd)
+OUT=$(cd "${1:-${NRPIC_RUN_DIR:?outdir}}" && pwd)
 : > "$OUT/counts.txt"
 
 count_tree() {  # <dir> <input> [args...]: athena -m in <dir>, prints the number of blocks

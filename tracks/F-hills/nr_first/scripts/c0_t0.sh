@@ -12,7 +12,7 @@ set -euo pipefail
 EXE=/data/haiyangw/nrpic/.work/build_cpu_v03/src/athena
 WT=/data/haiyangw/nrpic/wt/F-hills
 Q4=$WT/tracks/F-hills/three_punctures/inputs/hills_q4_m8.athinput
-OUT=$(cd "${1:?outdir}" && pwd)
+OUT=$(cd "${1:-${NRPIC_RUN_DIR:?outdir}}" && pwd)
 NONE="problem/comp0_corr=none problem/comp1_corr=none problem/comp2_corr=none"
 : > "$OUT/cases.txt"
 
