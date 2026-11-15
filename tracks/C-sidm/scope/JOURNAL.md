@@ -99,3 +99,18 @@ P4, run `C-sidm-20261115-115400-eb8b752` (3.4 s): CONFIRMED by a wide margin.
   M/16, collapsing models), all at N = 1e4 on one A100; particle work 4.1e-8 s per
   particle and cycle from the 2.1e6-particle periodic run (an estimate: the Z4c share of
   that run is taken from the throughput of docs/TESTLOG.md:46, not measured in it).
+
+## 2026-11-15 12:30 UTC, reading results that change the plan; package closed
+
+- arXiv:2105.05556 (fetched after the runs; it is the "Gunther:2021pbf" of Wu and Most)
+  shows that for core-halo families the collisionless threshold can lie beyond the first
+  binding-energy maximum, with two stability changes for some models (paper.tex:612).
+  The King b = 0.1 family is core-halo (R/H_c = 21-36, run ...115400), so its eps_b
+  maximum (Z(0) = 0.540) is treated in SCOPE.md as a lower bound, not as the threshold.
+  No run of this package tested this; it is a reading.
+- arXiv:2602.17487 has no collision operator (grep of all its files); recorded as a
+  brief correction.
+- Correction to my commit 5aacad7: its message says 15 sources; REFERENCES.md lists 14
+  read at the source.
+- Not done here: no AthenaK run; no specification of C-pre-1/C-pre-2; no King initial
+  data in the code; collision cost unmeasured.
