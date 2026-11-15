@@ -48,6 +48,10 @@ def extract(a):
     ref = LL.reference_for(modes, a.modefile, t_end, t_eval=t_dumps)
     alpha = modes.alpha()
     kshell = np.sqrt(modes.shell_n2.astype(float))
+    # the reference with the stencil's k^2 (SCOPE 4, A2) for the modes of A2
+    sub = np.nonzero(modes.n2 <= a.nmax2 / 4.0)[0]
+    ref_st = LL.reference_modes_stencil(modes, a.modefile, t_end, t_dumps, sub)
+    lin_st_all = []
     out = dict(times=[], cycles=[], efolds_dump=[], efolds_ref=[], rmsH=[], meanH=[],
                rmsM=[], aniso_rms_rel=[])
     rnr_all, lin_all, w_all = [], [], []
@@ -71,6 +75,9 @@ def extract(a):
         lin = a.scale * LL.L_BOX**-1.5 * (w * rk)[modes.shell_of] * alpha
         lin_all.append(lin)
         w_all.append(w[modes.shell_of])
+        rs, _ = ref_st.modes(t)
+        lin_st_all.append(a.scale * LL.L_BOX**-1.5 * ref_st.window(t, modes.k[sub]) * rs
+                          * alpha[sub])
         if has_metric:
             rnr, aniso, _ = LL.curvature(modes, flds)
             rnr_all.append(rnr)
@@ -90,6 +97,7 @@ def extract(a):
              shell_of=modes.shell_of, alpha=alpha,
              rnr=np.array(rnr_all) if has_metric else np.zeros((0, modes.M)),
              lin=np.array(lin_all), w=np.array(w_all),
+             sub_stencil=sub, lin_stencil=np.array(lin_st_all),
              kshell=kshell, Nk=nk_shell, Hk=hk_shell, eps1k=e1k_shell,
              con=con, a1_phi=a1["phi"], a1_Pi=a1["Pi"], a1_K=a1["K"],
              **{k: np.array(v) for k, v in out.items() if k not in ("A1_max",)})
@@ -163,6 +171,12 @@ def judge(a):
                      n_half=int(sel_half.sum()), max_D_all=float(d[last].max()),
                      worst_n2_half=int(n2[sel_half][np.argmax(d[last, sel_half])]),
                      pass_=bool(d[last, sel_half].max() < 0.02))
+    sub = z["sub_stencil"]
+    d_st = np.abs(rnr[:, sub] / z["lin_stencil"] - 1.0)
+    res["A2"].update(stencil_reference=dict(
+        max_D_half=float(d_st[last].max()), median_D_half=float(np.median(d_st[last])),
+        n=int(sub.size), pass_=bool(d_st[last].max() < 0.02),
+        max_rel_diff_references=float(np.abs(z["lin_stencil"][last] / lin[last, sub] - 1).max())))
     # A2 history (modes with W > 1/2)
     hist = []
     for i in range(len(t)):

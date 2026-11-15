@@ -267,6 +267,28 @@ class LinearReference:
         return brentq(lambda t: self.background(t)["lna"] - n_target, 0.0, t_end)
 
 
+def k2_stencil(n, nmesh):
+    """k^2 of the sixth-order centred second difference of AthenaK (NGHOST = 4,
+    athenak/src/utils/finite_diff.hpp:218-241) for wave vectors n (M, 3) on an N^3 mesh
+    of the box 2 pi: sum over axes of -(c0 + 2 sum_m c_m cos(m theta))/h^2."""
+    th = 2.0 * np.pi * np.asarray(n, float) / nmesh
+    sym = -49.0 / 18.0 + 3.0 * np.cos(th) - 0.3 * np.cos(2 * th) + (2.0 / 90.0) * np.cos(3 * th)
+    h = L_BOX / nmesh
+    return (-sym / h**2).sum(axis=1)
+
+
+def reference_modes_stencil(modes, modefile, t_end, t_eval, sel):
+    """Reference for the modes `sel` (indices) with the k^2 of the stencil, one ODE per
+    wave vector (initial values of its shell; window with |n|)."""
+    n2f, r0, dr0 = read_modefile(modefile)
+    idx = np.searchsorted(n2f, modes.n2[sel])
+    if not np.array_equal(n2f[idx], modes.n2[sel]):
+        raise ValueError("mode file does not cover the shells")
+    k2 = k2_stencil(modes.n[sel], modes.N)
+    return LinearReference(modes.k[sel], r0[idx], dr0[idx], t_end, k2_shell=k2,
+                           t_eval=t_eval)
+
+
 def read_modefile(path):
     d = np.atleast_2d(np.loadtxt(path))
     return d[:, 0].astype(np.int64), d[:, 1] + 1j * d[:, 2], d[:, 3] + 1j * d[:, 4]
