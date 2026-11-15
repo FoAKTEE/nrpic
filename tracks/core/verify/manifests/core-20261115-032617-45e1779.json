@@ -66,5 +66,7 @@
   "n_checks": 10,
   "n_failed": 4,
   "judge": "/data/haiyangw/nrpic/scratch/core/core-20261115-032617-45e1779/judge.json"
- }
+ },
+ "variant": "newtonian",
+ "note": "first pass: the run script used the current default of make_east.py (Newtonian displacement), not the construction of the earlier run; failed 4 of 10 checks; kept on record (JOURNAL.md 03:55)"
 }

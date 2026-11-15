@@ -26,7 +26,7 @@ and named), OPEN (not done).
 | Row of section 10 | Core-sheet criterion | Verdict | Re-run today |
 |---|---|---|---|
 | 1. Geodesics on a fixed background | order and conserved quantities on fixed Kerr | PASS | G: `core-20261115-032625-45e1779`, 104 of 104 checks |
-| 2. Oppenheimer-Snyder collapse (CORE part) | horizon-mass error of the order of the paper's | PASS at 9328 lattice particles; random samples at 10^4 larger (0.3 to 0.5 percent) | O: `core-20261115-032614-45e1779` (see JOURNAL.md) |
+| 2. Oppenheimer-Snyder collapse (CORE part) | horizon-mass error of the order of the paper's | PASS at 9328 lattice particles; random samples at 10^4 larger (0.3 to 0.5 percent) | O: `core-20261115-032614-45e1779`, 13 of 13 checks |
 | 3. Oblate and prolate collapse (CORE part) | prolate collapse | PARTIAL: horizon at the paper's time, mass 3 to 5 percent low, one resolution; oblate not done | none (45 M at 10^4 particles exceeds this package's card time) |
 | 4. Einstein-Vlasov steady states and stability threshold (CORE part) | stability of relativistic clusters | PARTIAL: all five models of the sequence end as in the paper; collapse times 1.4 to 1.75 times later; threshold not located as a number; growing oscillation of the stable model unexplained | none |
 
@@ -88,8 +88,11 @@ Evidence.
 - Re-read today (`ladder_numbers.json`): first apparent horizon 16.3894 M, mass
   1.000353; largest |M_AH/M - 1| from formation to 60 M 1.34e-3; 1.000093 at 20 M,
   0.998762 at 40 M, 0.998670 at 60 M; all 9328 particles removed by 19.74 M.
-- Regression O today (card release executable, to 25 M): see JOURNAL.md for the full
-  check list.
+- Regression O today (card release executable, initial data regenerated bitwise
+  identical, to 25 M): `core-20261115-032614-45e1779`, 13 of 13 checks; first horizon
+  16.3894 M, mass 1.000352575670864 (earlier ...862); central lapse equal to the earlier
+  run to 2.4e-15 before the horizon; largest |M_AH/M - 1| to 25 M 6.3e-4; deposition
+  identity 1.0e-15; figure `figs/regress_os_core-20261115-032614-45e1779.png` (inspected).
 
 | Quantity | Paper | Earlier (`runs/os/nocap_sc`) |
 |---|---|---|
