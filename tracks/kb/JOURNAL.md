@@ -401,3 +401,13 @@ tagged as before. Embed: 102 chunks and 243 equations embedded, 43398 and 54259 
 0 orphaned; `kb embed --check --work`: 0 missing, 0 stale. Snapshot
 `kb-data/db/kb-20261115-44b7406.sqlite` = db/current: 709 papers, 688 claims, 98002 vectors
 (43500 chunks, 54502 equations); claims 1-618 digest unchanged.
+
+### W10 prediction: two claims verified by reading (A's request claim-status-s1; F's collision_deep)
+
+I read 2609.14218 `MDPBH.tex:1101-1103` (horizon for mu >= 0.05, none for mu <= 0.045) and
+`:1084`, `:1095` (e = 0.2, caption of fig:alpha_p): claim 25 is supported, with the e = 0.2
+locator added. I read 1804.02911 `mnras.tex:757-763` (collision when the members come closer than
+2 R_star, about a fifth of the separation; "about 5-7 %" for D < 0.1 at line 762): claim 674 is
+supported. `kb claim verify` for both (writer lock), then `kb snapshot`. Expected: both become
+fulltext with status checked; checked 29 -> 31, to_verify 117 -> 115, fulltext 531 -> 533; 688
+claims and 709 papers in the new snapshot. Refuted by any other change.
