@@ -234,3 +234,14 @@ Removing the dust inside R_w = 3M (0.012 M) acts on the outer shells like a seed
 0.988 M (energy E = -(M - 0.012)/r_i). Expect at a/a_i = 4: M_ta in [2.58, 2.62] M
 (no-core value 2.627), dress in [0.77, 0.81] M (0.818), M_bh in [1.79, 1.83] M (1.833);
 at a/a_i = 2 all three lower by 1-4 %. Refuted outside these ranges.
+
+## 2026-11-15T13:15Z  outcome for the vacuum-core set-ups, runs
+## D-bh-dress-20261115-125957-d087954 (absorbing), D-bh-dress-20261115-130000-d087954 (passing)
+
+Holds at a/a_i = 4: M_ta = 2.595 (absorbing) and 2.593 (passing) M, dress = 0.796 M,
+M_bh = 1.811 M, all inside the stated ranges. Refuted for the dress at a/a_i = 2: 0.1725
+against 0.187 without the core, 7.7 % lower, not 1-4 %: the first dress is made of the
+innermost dust, which is what the core removes (M_ta -1.0 %, M_bh -1.2 % there, as
+predicted). Turnaround and absorption times against the closed forms: 5.0e-6 and 4.2e-6.
+RUNS.md now quotes these numbers for the proposed runs; its density tables remain those of
+the set-up without the core (stated there).

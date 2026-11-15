@@ -93,10 +93,14 @@ checks the mode against this package's shells, independently.
   together with a shell reference at s = 0.75 M (request 4).
 - Outputs: particle snapshots at a/a_i = 1.5, 2, 3, 4; radial profiles; per particle a
   flag or counter of passages through the centre (request 2).
-- Predictions (shell run pass_e0.03_s0.5, D-bh-dress-20261115-123520-cff68f1, s = 0.5 M):
-  M_ta = 1.524, 2.627 M and dress = 0.187, 0.818 M at a/a_i = 2, 4; r_ta = 16.0, 40.3 M;
-  99 % of the passed dust inside 6.4, 16.1 M. Density rho/rho_b(t) (rho_b = 1.34e-5 and
-  1.68e-6 M^-2 at a/a_i = 2, 4):
+- Predictions for this set-up (shell run pass_e0.03_s0.5_rw3,
+  D-bh-dress-20261115-130000-d087954, s = 0.5 M, vacuum core 3 M): M_ta = 1.505, 2.045,
+  2.593 M and dress = 0.173, 0.472, 0.796 M at a/a_i = 2, 3, 4. Without the vacuum core
+  (pass_e0.03_s0.5, D-bh-dress-20261115-123520-cff68f1): M_ta = 1.524, 2.627 M, dress =
+  0.187, 0.818 M; r_ta = 16.0, 40.3 M; 99 % of the passed dust inside 6.4, 16.1 M; and
+  the density rho/rho_b(t) below (rho_b = 1.34e-5 and 1.68e-6 M^-2 at a/a_i = 2, 4; the
+  profile of the vacuum-core set-up was not tabulated, its inner bins at a/a_i = 2 are
+  expected lower):
 
   | r/M | 1 | 2 | 4 | 8 | 16 | 32 |
   |---|---|---|---|---|---|---|
@@ -107,8 +111,9 @@ checks the mode against this package's shells, independently.
   inside ~2 cells depend on the softening.) The inner profile is not r^(-9/4) at these
   times: slope -2.66 on [3, 10] M at a/a_i = 2 and -1.85 at 4. The dust that was already
   bound to the seed at t_i dominates there.
-- Refuted if the dress mass at a/a_i = 4 differs from 0.818 M by more than 5 % or M_ta by
-  more than 2 %, or the profile at r >= 4 cells differs by more than 30 % per bin.
+- Refuted if the dress mass at a/a_i = 4 differs from 0.796 M by more than 5 % or M_ta
+  from 2.593 M by more than 2 %, or the profile at r >= 4 cells differs from the shell
+  reference of the same set-up and softening by more than 30 % per bin.
 - Cost: not estimated here (Newtonian-mode throughput on a card not yet measured by core);
   [JUDGEMENT] well under one card-hour for ~5e3 steps.
 - Second Newtonian-mode run (after this one agrees): eps = 0.03 to a/a_i = 30-100 on a
@@ -131,10 +136,12 @@ particle flux through the horizon"; the infall profile in the strong field.
   expansion in K_ij (format-2 table, `tracks/core/interfaces/spherical_id_format2.md` on
   `core/id-extrinsic`); ball edge at R_ball,i = 18.4 M, vacuum (Schwarzschild) outside.
   Same particle set as the Newtonian-mode run (2e6).
-- Predictions (absorbing shell run absorb_e0.03, D-bh-dress-20261115-124552-5d687b5,
-  capture at 2M): horizon mass 1.073, 1.198, 1.502, 1.833 M at a/a_i = 1.5, 2, 3, 4
-  (t = 40.8, 62.9, 115.5, 177.8 M); M_ta = 1.522, 2.627 M at a/a_i = 2, 4; no dust inside
-  the infall stream's single stream (no crossing); density rho/rho_b(t):
+- Predictions for this set-up (absorbing shell run absorb_e0.03_rw3,
+  D-bh-dress-20261115-125957-d087954, vacuum core 3 M, capture at 2M): hole mass 1.060,
+  1.183, 1.484, 1.811 M at a/a_i = 1.5, 2, 3, 4 (dust proper time t = 40.8, 62.9, 115.5,
+  177.8 M); M_ta = 1.507, 2.049, 2.595 M at a/a_i = 2, 3, 4; one stream everywhere (no
+  crossing). Without the vacuum core (absorb_e0.03, D-bh-dress-20261115-124552-5d687b5):
+  hole 1.198, 1.833 M at a/a_i = 2, 4, and the density rho/rho_b(t):
 
   | r/M | 4 | 8 | 16 | 32 |
   |---|---|---|---|---|
