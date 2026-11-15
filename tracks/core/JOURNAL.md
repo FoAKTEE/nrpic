@@ -53,3 +53,19 @@ P5 Combined initial data (new test, needs the fix 0f11630): K_ij of a run with a
    same table with a momentum-free puncture plus K_ij of a format-1 table with the same
    u(r) and the moving puncture. Without the fix the Bowen-York part would be missing
    (difference of order P psi^-2/r^2). Refuted by a difference above 1e-13 of max|K|.
+
+### P5, first outcome and revised criterion (15:04Z, before the rerun)
+- Run core-20261115-150315-23eca56 (merged processor executable): K(comb) - [K(A) + K(B)]
+  is 9.96e-8 of max|K| at most, while K(comb) - K(A) = K(B) is of order one (5.9 in
+  K_yy): the Bowen-York part is present, but my criterion of 1e-15 failed. Cause, not
+  yet tested when this is written: the `.bin` dumps are single precision (the interfaces
+  helper had recorded it, diagnostics.md), so each of the three stored values carries a
+  float32 rounding; I predicted with double precision in mind. A failed prediction of the
+  analysis, kept on record.
+- Revised criterion (written before the rerun): point by point
+  |Kc - (Ka + Kb)| <= (ulp32(Kc) + ulp32(Ka) + ulp32(Kb))/2; PASS if no point of any
+  component exceeds it. Refuted by a single point above the bound.
+- The first combined runs inside core-20261115-145448-3629622 (processors) and
+  core-20261115-145939-3629622 (card) failed before P5 started: the command line set
+  parameters that regress_cf.athinput does not have (AthenaK refuses them). The P5 input
+  is now written by the script.

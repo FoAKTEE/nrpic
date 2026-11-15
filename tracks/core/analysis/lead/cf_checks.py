@@ -147,22 +147,35 @@ def main():
             "B": [f"problem/comp0_file={tab0}"]}
     for lab, extra in runs.items():
         run(a.new, os.path.join(top, "P5", lab), inp, common + extra)
+    # The .bin dumps hold single precision: each stored value is the double value rounded
+    # to float32, so comb = A + B can hold only to the rounding of the three dumps,
+    # |Kc - (Ka + Kb)| <= (ulp(Kc) + ulp(Ka) + ulp(Kb))/2 point by point (float32 ulps).
+    # Without the fix of 0f11630, Kc = Ka and the difference is |Kb| (order one).
     comps = ["Kxx", "Kxy", "Kxz", "Kyy", "Kyz", "Kzz"]
     res = {}
     for c in comps:
         kc = kfield(os.path.join(top, "P5", "comb"), c)
         ka = kfield(os.path.join(top, "P5", "A"), c)
         kb = kfield(os.path.join(top, "P5", "B"), c)
-        scale = max(np.max(np.abs(kc)), 1e-300)
-        res[c] = {"max|K_comb|": float(scale),
-                  "max|K_comb-(K_A+K_B)|": float(np.max(np.abs(kc - (ka + kb)))),
+        d = np.abs(kc.astype(np.float64) - (ka.astype(np.float64) + kb.astype(np.float64)))
+        bound = 0.5 * (np.spacing(np.abs(kc).astype(np.float32)).astype(np.float64)
+                       + np.spacing(np.abs(ka).astype(np.float32)).astype(np.float64)
+                       + np.spacing(np.abs(kb).astype(np.float32)).astype(np.float64))
+        res[c] = {"dtype": str(kc.dtype),
+                  "max|K_comb|": float(np.max(np.abs(kc))),
+                  "max|K_comb-(K_A+K_B)|": float(np.max(d)),
+                  "max ratio to float32 rounding bound": float(np.max(d / bound)),
+                  "points above bound": int(np.sum(d > bound * (1 + 1e-12))),
                   "max|K_comb-K_A|": float(np.max(np.abs(kc - ka))),
                   "max|K_B|": float(np.max(np.abs(kb)))}
         print(f"P5 {c}: {res[c]}", flush=True)
-    worst = max(v["max|K_comb-(K_A+K_B)|"] / v["max|K_comb|"] for v in res.values())
-    summary["P5"] = {"components": res, "worst_relative": worst, "pass": worst < 1e-13}
-    print(f"P5 worst relative difference {worst:.3e}: "
-          f"{'PASS' if worst < 1e-13 else 'FAIL'}", flush=True)
+    worst = max(v["max ratio to float32 rounding bound"] for v in res.values())
+    nabove = sum(v["points above bound"] for v in res.values())
+    ok5 = nabove == 0
+    summary["P5"] = {"components": res, "worst_ratio_to_bound": worst,
+                     "points_above_bound": nabove, "pass": ok5}
+    print(f"P5 largest difference / float32 rounding bound {worst:.3f}, points above the "
+          f"bound {nabove}: {'PASS' if ok5 else 'FAIL'}", flush=True)
 
     # figure: K_yy along the x axis through the puncture height
     import matplotlib
@@ -213,7 +226,8 @@ def main():
     fig.savefig(os.path.join(top, "fig_cf_combined.png"), dpi=150)
     with open(os.path.join(top, "summary.json"), "w") as fp:
         json.dump(summary, fp, indent=1)
-    ok = all(v["identical"] for v in summary["P2"].values()) and summary["P5"]["pass"]
+    ok = all(v["identical"] for v in summary["P2"].values()) and \
+        summary.get("P5", {}).get("pass", True)
     sys.exit(0 if ok else 1)
 
 
