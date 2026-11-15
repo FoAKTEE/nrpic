@@ -1,0 +1,46 @@
+{
+ "run_id": "core-20261115-162506-d5e3f28",
+ "owner": "core",
+ "command": [
+  "/data/haiyangw/nrpic/wt/core-bfix/.venv/bin/python",
+  "/data/haiyangw/nrpic/wt/core-bfix/tracks/core/analysis/bfix/t1_linear_wave.py",
+  "--exe-new",
+  "/data/haiyangw/nrpic/wt/core-bfix/.work/exe/athena_cpu_w1",
+  "--exe-base",
+  "/data/haiyangw/nrpic/wt/core-bfix/.work/athena_cpu_base",
+  "--out",
+  ".",
+  "--nproc",
+  "1",
+  "--stages",
+  "evol",
+  "--evol-n",
+  "64"
+ ],
+ "cwd": "/data/haiyangw/nrpic/scratch/core/core-20261115-162506-d5e3f28",
+ "commit": "d5e3f28",
+ "source_modified_since_commit": false,
+ "inputs": [
+  {
+   "path": ".work/exe/athena_cpu_w1",
+   "sha256": "c32a1389c06e58887cd3c38bb92512d413b91eaa8153baac170ac889f7ceeced"
+  },
+  {
+   "path": "problems/tests/lw_oblique.athinput",
+   "sha256": "6b001b1ffcb024fa0d6b9b0ad33c80808483c99344499fb1b3774680caeedc3e"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/wt/core-bfix/.venv/bin/python",
+   "sha256": "d6bca2b84e73c7775a0dd5e6a76899cfe4ee62863d7c8f88513811d1fda23f49",
+   "role": "executable"
+  }
+ ],
+ "output_directory": "/data/haiyangw/nrpic/scratch/core/core-20261115-162506-d5e3f28",
+ "purpose": "T6: oblique linear wave k=(1,1,1), one period, N=64 on one processor core, stage evol of t1_linear_wave.py (P7)",
+ "kind": "scouting",
+ "tag": "T6",
+ "state": "running",
+ "cores": 1,
+ "card_hours": 0.0,
+ "started_utc": "2026-11-15T16:25:06Z"
+}

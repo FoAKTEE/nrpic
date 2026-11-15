@@ -616,3 +616,22 @@ the floor at 128 cells); max |h_x| / A below 1e-8; gw_diag's Psi_4 against the a
 value below 3.2e-6 / 2^4 = 2e-7 times a factor three; constraints at the floor of P1c.
 Refuted if the phase error is off by more than 10 per cent or the errors do not fall
 from N = 32.
+
+### P8 What restores the constraint level within ten steps: prediction (before T7)
+
+Observation of T3: data that satisfy the Hamiltonian constraint as `ADMConstraints`
+evaluates it (rms 3.1e-8 plain, 1.9e-6 jittered) show 1.65e-4 and 6.9e-2 at t = 0.10.
+Hypothesis [JUDGEMENT until T7]: the evolution preserves a different discrete constraint
+than the one that is evaluated. `ADMConstraints` takes the Ricci scalar from second
+differences of the ADM metric; the Theta equation of the Z4c right-hand side takes it
+from the conformal variables with the evolved Gamma^i. The two agree up to the truncation
+error: of order (k h)^6/140 = 2.6e-5 of the source term for the 16-cell wave (times
+16 pi E = 7.2: 1.9e-4, the level seen) and of order one for sources at the mesh
+frequency. If so, the level reached at t = 0.1 does not depend on the time step.
+Alternative: an error of the time integration (start of the source extrapolation,
+splitting of particles and fields), which would fall with the step.
+Test T7 (`t7_constraint_drift.py`): the initial data `plane4_fd` and `jit4_fd` of T3,
+run to t = 0.3 with `dt_expansion` = 0.01 (as T3) and 0.0025 (a quarter of the step).
+Prediction: H rms at t = 0.1 and 0.2 changes by less than 20 per cent between the two
+steps, for both lattices. Refuted (and the alternative supported) if it falls by a factor
+of about four or sixteen with the smaller step.
