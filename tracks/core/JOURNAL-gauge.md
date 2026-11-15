@@ -679,3 +679,23 @@ the size of region 1, because with three root MeshBlocks per direction the nest 
 the centre forces level 1 nearly everywhere; at 1.2e4 zone-cycles per second that is
 about 13 h for 10 M. Stopped by process id after 107 s (run
 core-20261115-183458-b4430da, exit -15). ES stays with card job 4477.
+
+### Outcome of the two bound-ball runs at cells M/2 (analysis run core-20261115-190224-2bd57ac, the first registered by `nrpic-run submit`; figure `figs/ball_g_bound_dx0p5.png`, looked at)
+
+| T | run | central lapse: largest deviation, t <= 9 M | core | mid | outer | surface | mean abs(H) t = 12 M / t = 2 M | largest R/R_0 (core ... surface) |
+|---|---|---|---|---|---|---|---|---|
+| 0.125 M | core-20261115-180421-b4430da | 0.17 per cent | 1.09e-2 | 8.8e-3 | 1.27e-2 | 1.03e-2 | 2.29 | 1.2437 ... 1.2479 |
+| 0.25 M | core-20261115-161021-b4430da | 1.4 per cent | 1.25e-2 | 8.9e-3 | 1.19e-2 | 1.09e-2 | 2.32 | 1.2434 ... 1.2468 |
+| 0.5 M | core-20261115-180422-b4430da | 3.6 per cent (t = 4.6 M) | 1.73e-2 | 9.4e-3 | 1.11e-2 | 1.16e-2 | 2.23 | 1.2419 ... 1.2455 |
+
+Prediction: T = 0.5 M deviation 3 to 5 per cent: confirmed (3.6; 3.9 at cells M/4, so
+independent of resolution as in L1); core above T = 0.25 M, between 1.3e-2 and 2.5e-2:
+confirmed (1.73e-2). T = 0.125 M stable (growth 2.29 < 10), deviation within 1 per
+cent: confirmed (0.17); core within 20 per cent of T = 0.25 M: confirmed (13 per cent
+lower). Not refuted: the core error falls monotonically as T falls, at fixed
+resolution; the other groups do not depend on T (they are set by the resolution: the
+same groups at cells M/4 are 2 to 3 times smaller). After the turnaround (t > 10 M) the
+central lapse of the shortest T falls below its homogeneous reference (0.878 against
+0.919 at t = 12 M): from there on it is plain 1+log in a contracting region.
+Recommendation unchanged and sharpened: the shortest T that the step allows is the
+safest; T <= 0.1 R/sqrt(2 alpha) is enough for 2 per cent.
