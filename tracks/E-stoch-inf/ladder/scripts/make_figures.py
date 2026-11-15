@@ -96,15 +96,14 @@ def fig_a2(res, out):
 
 
 def fig_a3(res, out):
-    z = load(res, "P256.npz")
-    a3 = load(res, "P256_judge_a3.npz")
-    tag = "P256"
-    if z is None or a3 is None:
-        z, a3, tag = load(res, "L128p.npz"), load(res, "L128p_judge_a3.npz"), "L128p"
-    if z is None or a3 is None:
+    for tag in ("P256", "Q128p", "L128p", "L64p", "L32p"):
+        z, a3 = load(res, f"{tag}.npz"), load(res, f"{tag}_judge_a3.npz")
+        if z is not None and a3 is not None:
+            break
+    else:
         return
-    fig, axs = plt.subplots(1, 2, figsize=(fs.FULL_WIDTH, 3.2))
-    fig.subplots_adjust(left=0.09, right=0.98, bottom=0.15, top=0.93, wspace=0.28)
+    fig, axs = plt.subplots(1, 3, figsize=(fs.FULL_WIDTH, 3.0))
+    fig.subplots_adjust(left=0.08, right=0.99, bottom=0.16, top=0.91, wspace=0.36)
     ax = axs[0]
     nd = z["efolds_ref"]
     q_nr = np.abs(z["rnr"])**2
@@ -118,45 +117,59 @@ def fig_a3(res, out):
         x = nd - nk
         p4 = np.interp(nk + 4, nd, q_nr[:, m])
         l4 = np.interp(nk + 4, nd, q_lin[:, m])
-        s = x >= 3.0
-        ax.plot(x[s], q_nr[s, m] / p4, "-", color=fs.PAL["red"], lw=0.6, alpha=0.5)
-        ax.plot(x[s], q_lin[s, m] / l4, ":", color=fs.PAL["blue"], lw=0.6, alpha=0.5)
+        sl = x >= 3.0
+        ax.plot(x[sl], q_nr[sl, m] / p4, "-", color=fs.PAL["red"], lw=0.6, alpha=0.5)
+        ax.plot(x[sl], q_lin[sl, m] / l4, ":", color=fs.PAL["blue"], lw=0.6, alpha=0.5)
     xx = np.linspace(4, 8.1, 50)
     ax.plot(xx, np.exp(-4 * e1m * (xx - 4)), **fs.GUIDE)
-    ax.text(5.6, np.exp(-4 * e1m * 1.8) - 0.03, r"FLRW lattice, $e^{-4\epsilon_1\Delta\mathcal{N}}$",
-            fontsize=8)
+    ax.text(5.9, 0.905, r"FLRW lattice" "\n" r"$e^{-4\epsilon_1(\mathcal{N}-\mathcal{N}_k-4)}$",
+            fontsize=7)
     fs.band(ax, xx, 0.99 + 0 * xx, 1.01 + 0 * xx, fs.PAL["red"])
-    ax.plot([], [], "-", color=fs.PAL["red"], label=r"NR $|R^{\rm NR}_n|^2$")
-    ax.plot([], [], ":", color=fs.PAL["blue"], label="full MS (reference)")
+    ax.plot([], [], "-", color=fs.PAL["red"], label=r"NR")
+    ax.plot([], [], ":", color=fs.PAL["blue"], label="full MS")
     ax.set_xlabel(r"$\mathcal{N}-\mathcal{N}_k$")
     ax.set_ylabel(r"$|R_n|^2/|R_n|^2(\mathcal{N}_k+4)$")
     ax.set_ylim(0.78, 1.04)
-    ax.legend(fontsize=8, loc="lower left")
-    ax.set_title(f"{tag}: {a3['idx'].size} modes with "
-                 r"$\mathcal{N}_f-\mathcal{N}_k\geq6$", fontsize=9)
-    ax = axs[1]
+    ax.legend(fontsize=7, loc="center left")
+    ax.set_title(f"{tag}: {a3['idx'].size} modes, "
+                 r"$\mathcal{N}_f-\mathcal{N}_k\geq6$", fontsize=8)
     k = np.sqrt(a3["n2"])
-    ax.plot(k, a3["drift_nr"], ".", ms=2, color=fs.PAL["red"], label="NR")
-    ax.plot(k, a3["drift_lin"], ".", ms=1.2, color=fs.PAL["blue"], label="full MS")
-    ax.axhline(2.5e-3, **fs.GUIDE)
-    ax.axhline(-2.5e-3, **fs.GUIDE)
-    ax.axhline(-4 * e1m, **fs.REF_LINE)
-    ax.text(1.05, -4 * e1m + 0.002, r"$-4\epsilon_1$ (FLRW lattice)", fontsize=8)
+    ax = axs[1]
+    ax.plot(k, np.abs(a3["ratio"]), ".", ms=2, color=fs.PAL["red"])
+    ax.axhline(0.01, **fs.GUIDE)
+    ax.axhline(1 - np.exp(-4 * e1m * 2), **fs.REF_LINE)
+    ax.text(1.05, 0.0135, "A3 threshold", fontsize=7)
+    ax.text(1.05, 0.11, "FLRW lattice", fontsize=7)
+    ax.set_yscale("log")
+    ax.set_ylim(top=1.0)
     ax.set_xlabel(r"$|n|$")
-    ax.set_ylabel(r"$d\ln|R_n|^2/d\mathcal{N}$ from $\mathcal{N}_k+4$")
-    ax.set_ylim(-0.06, 0.01)
-    ax.legend(fontsize=8, loc="center right")
+    ax.set_ylabel(r"$|Q_n(\mathcal{N}_f)/Q_n(\mathcal{N}_k+4)-1|$")
+    ax = axs[2]
+    ax.plot(k, np.abs(a3["drift_nr"]), ".", ms=2.5, color=fs.PAL["red"], label="NR")
+    ax.plot(k, np.abs(a3["drift_lin"]), ".", ms=1.2, color=fs.PAL["blue"], label="full MS")
+    ax.axhline(2.5e-3, **fs.GUIDE)
+    ax.axhline(4 * e1m, **fs.REF_LINE)
+    ax.text(1.05, 3.2e-3, "A3 threshold", fontsize=7)
+    ax.text(1.05, 4 * e1m * 1.25, r"$4\epsilon_1$ (FLRW lattice)", fontsize=7)
+    ax.set_yscale("log")
+    ax.set_ylim(top=0.3)
+    ax.set_xlabel(r"$|n|$")
+    ax.set_ylabel(r"$|d\ln|R_n|^2/d\mathcal{N}|$ from $\mathcal{N}_k+4$")
+    ax.legend(fontsize=7, loc="lower right")
     fs.save(fig, os.path.join(out, "fig_a3_freezing"))
     plt.close(fig)
 
 
 def fig_spectrum(res, out):
-    s = load(res, "P256_judge_spec.npz")
-    if s is None:
+    for tag in ("P256", "Q128p", "L128p", "L64p", "L32p"):
+        s = load(res, f"{tag}_judge_spec.npz")
+        if s is not None:
+            break
+    else:
         return
     fig, axs = plt.subplots(2, 1, figsize=(fs.COLUMN_WIDTH + 1.5, 4.6), sharex=True,
                             gridspec_kw=dict(height_ratios=[2, 1]))
-    fig.subplots_adjust(left=0.16, right=0.97, bottom=0.10, top=0.97, hspace=0.0)
+    fig.subplots_adjust(left=0.19, right=0.97, bottom=0.10, top=0.97, hspace=0.0)
     ax = axs[0]
     ax.plot(s["k"], s["d_nr"], ".", ms=2.5, color=fs.PAL["red"], label=r"NR, shells")
     ax.plot(s["k"], s["d_ens"], "-", color=fs.PAL["blue"], label="full MS (ensemble)")
@@ -164,7 +177,7 @@ def fig_spectrum(res, out):
     ax.set_xscale("log")
     ax.set_yscale("log")
     ax.set_ylabel(r"$\Delta_\mathcal{R}(k)$ at $\mathcal{N}_f$")
-    ax.legend(fontsize=8, loc="lower left")
+    ax.legend(fontsize=8, loc="lower left", title=tag, title_fontsize=8)
     ax = axs[1]
     sig = 1 / np.sqrt(s["cnt"])
     fs.band(ax, s["k"], 1 - sig, 1 + sig, fs.PAL["blue"])
@@ -173,6 +186,9 @@ def fig_spectrum(res, out):
     ax.plot(s["k"], s["d_nr"] / s["d_lin"], "-", color="k", lw=1.0,
             label=r"NR / reference with the same $\alpha_n$")
     ax.axhline(1.0, **fs.MASK_LINE)
+    ax.set_xticks([1, 2, 4, 8, 16, 32, 64])
+    ax.get_xaxis().set_major_formatter(matplotlib.ticker.ScalarFormatter())
+    ax.get_xaxis().set_minor_formatter(matplotlib.ticker.NullFormatter())
     ax.set_xlabel(r"$k/k_\sigma^*$")
     ax.set_ylabel("ratio")
     ax.set_ylim(0.0, 2.0)
