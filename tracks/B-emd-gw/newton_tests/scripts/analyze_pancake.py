@@ -348,9 +348,9 @@ def sin_figure(rows, out):
     axs[2].set_xlabel(r"scale factor $a$")
     axs[0].legend(loc="upper left")
     axs[1].legend(loc="lower right", ncol=2, fontsize=7)
-    axs[2].legend(loc="lower right")
+    axs[2].legend(loc="lower left", ncol=2, fontsize=8)
     axs[1].set_ylim(1e-8, 1)
-    axs[2].set_ylim(1e-5, 10)
+    axs[2].set_ylim(1e-6, 10)
     return fs.save(fig, os.path.join(out, "pancake_sin_moments"))
 
 

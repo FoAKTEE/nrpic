@@ -79,4 +79,47 @@ two case directories first). Test H1b of `JOURNAL.md` is decided by that run.
 
 ## Requests
 
-REQUESTS_BODY
+To core (Newtonian mode; the earlier request is
+`tracks/B-emd-gw/outbox/20261115T1340Z__to-core__newtonian-mode-for-track-b.md`):
+1. N2 cannot be run without a history of one particle species: time, a, the mass of the
+   species, its centroid, and its second moment about that centroid in physical
+   coordinates r = a x with the first three derivatives in cosmic time (or the
+   comoving moments and their conformal-time derivatives, from which this package can
+   form the physical ones). The current columns sum over all particles about the origin
+   with wrapped positions, so a patch cannot be separated from its background. Repeats
+   item 2 of the earlier request; it is now the only blocker of N2.
+2. The seven-point Laplacian sets the error of the mode in the pancake at the
+   resolutions Track B will use (H1 of `JOURNAL.md`, confirmed at n = 16 and 32): the
+   force on a mode with kh = 2 pi/32 is too strong by (kh)^2/12 = 3.2e-3, which gives
+   1.4e-3 of the displacement at a = 2 and 2.4 % rms in the jerk d3I_xx, against
+   1.1e-4 for the spectral pm.py with the same particles. Request: say whether a
+   fourth-order option on periodic uniform meshes is planned (a Mehrstellen stencil
+   with source correction, or a spectral solve for the periodic root grid), so that
+   the Newtonian reference does not carry a larger error than the GR run it is
+   compared with; otherwise Track B quotes the second-order error with every
+   comparison.
+3. Low priority, documentation: the history's d3I is the one-step difference quotient;
+   for the ellipsoid with eight particles per cell the averaged and the raw quadrupole
+   energies differ by under 1 % (N = 64), so the raw column is usable there; with one
+   particle per cell core's note 5.4 found 8.6 % rms. Worth a line in
+   `newtonian_mode.md` that the particle number per cell, not the step, sets it.
+
+To the lead of B-emd-gw:
+4. The card run B-20261115-163653-f6324ea (P1 and P2 at n = 64, 0.4 card-hours reserved,
+   Slurm job 4459) was still queued when this package closed. When it has run:
+   `harness/bin/nrpic-run finish B-20261115-163653-f6324ea`, then the pancake analysis
+   with the n = 64 cases (command under Rerun). It decides H1b (predicted error 3.5e-4
+   and 7.3e-4 of the displacement at a = 2 and 5).
+5. G1 criterion 2 of `stage/G1/STATUS.md` ("the Newtonian baseline reproduces the scaling
+   of the literature"): the N-body part now exists in the code (N1, N3 here); the lead
+   decides whether the first-order convergence of the energy to the first crossing
+   (N1) is enough for the criterion or whether a finer mesh is wanted (refined meshes
+   in the Newtonian mode are not verified, `newtonian_mode.md` section 6).
+6. The 2605.04487 benchmark as N-body: N1 gives the crossing time to 0.2 % and the
+   energy to the first crossing to about 20 % at N = 64 in a few minutes of one
+   processor; the semi-analytic factor of about ten between the ODE energy and the
+   Zel'dovich estimate on [t_turn, t_col] (BASELINE.md T4) is reproduced by particles
+   (N1 values against 5.15e-5 M c^2).
+
+To orch: none (the harness commands worked; the one failed analysis run was a relative
+path of mine).

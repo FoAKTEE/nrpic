@@ -257,3 +257,48 @@ were therefore wrong because they assumed the lattice error dominates both codes
 core's interface note 5.6 found the two codes comparable with the cloud-in-cell options,
 where the cloud error is larger. The n = 64 card run (H1b) remains the test of the
 second-order fall at the resolution of the verify_cosmo comparison.
+
+## 2026-11-15 17:05 UTC: registered pancake analysis B-20261115-170156-2d69627
+
+(The first attempt, B-20261115-170149-75036cf, failed: relative paths to `scratch/` do
+not resolve from the worktree root; kept on record.) All P1, P2 and H1 numbers of the
+entries above are reproduced by this run (`results/pancake.json`, figures
+`figs/pancake_east.png`, `figs/pancake_sin_moments.png`, both looked at). Additional
+numbers from it:
+- P1 at n = 16: crossing of neighbouring sheets at a = 21.87 (n = 32: 21.34; pm.py
+  n = 32: 21.55; discrete Zel'dovich sheets 21.44 and 21.11): the crossing approaches
+  the exact one from late, as a force that is too strong would not do on its own
+  [JUDGEMENT: near the caustic the force is smoothed over the cloud, which delays it].
+- Plane symmetry at n = 16 and 32: largest spread of x within a lattice plane 8.9e-16
+  and 1.3e-15 L before the crossing (P1d).
+- The record times of AthenaK and pm.py agree exactly except the last record (end time
+  not on the step grid).
+- P2 at n = 16: I_xx - c0 within 8.1e-3, dI_xx 1.05e-2, d2I_xx 6.4e-2 of their largest
+  values; d3I_xx rms 9.3 % (n = 32: 2.0e-3, 2.6e-3, 1.6e-2, 2.4 %): all four fall by
+  about four from n = 16 to 32, second order. The early transient of the d3I error
+  (a < 2, up to 50 % at n = 16) is reproduced by the H1 linear solution (the decaying
+  mode that the stronger force excites from growing-mode data; dashed curves of the
+  bottom panel).
+
+## 2026-11-15 17:40 UTC: card run B-20261115-163653-f6324ea (P1, P2 at n = 64): H1b
+
+The card job (Slurm 4459) started at 17:22 and ran both pancakes in 321 s (0.089
+card-hours of the 0.4 reserved). Numbers from the debug pass of the analysis on these
+outputs (the registered analysis below repeats them):
+- H1b **passed**: largest sheet error against the continuum 3.507e-4 and 7.42e-4 at
+  a = 2 and 5 against the predicted 3.508e-4 and 7.33e-4 (0.0 % and +1.2 %); the fall
+  from n = 32 is 3.96 at a = 2.
+- P1 at n = 64: 3.5e-4, 7.4e-4, 1.20e-3, 1.41e-3 at a = 2, 5, 10, 15 against pm.py's
+  4.8e-5, 3.3e-4, 1.02e-3, 8.3e-4. P1a (within two of pm.py) fails at a = 2 and 5
+  (7.3, 2.3) and passes at 10 and 15 (1.2, 1.7). P1b passes at n = 64: AthenaK - pm.py
+  falls from n = 32 by 4.0, 4.0, 4.0, 4.1 at a = 2, 5, 10, 15 (bound: at least two),
+  but its size (3.5e-4 to 1.4e-3) is above the 1e-3 stated for n = 32 only at a = 15.
+  P1c passes: crossing at a = 21.16 against pm.py's 21.22 (-0.3 %). P1d: plane spread
+  6.7e-16 L.
+- P2 at n = 64: I_xx - c0, dI_xx, d2I_xx within 5.1e-4, 6.6e-4, 3.9e-3 of their largest
+  values (each a fall of 4.0 from n = 32); d3I_xx rms 0.61 % for 1.2 <= a <= 15 (n = 32:
+  2.35 %), P2b passes; off-diagonal and transverse derivatives below 6.0e-14 of
+  max d2I_xx; Layzer-Irvine 2.1e-7.
+- H1c at n = 64: mean signed d3I error 0.31 %, 0.40 %, 0.71 % (bands 2-5, 5-10, 10-15)
+  against 0.17 %, 0.28 %, 0.36 % from H1; both fall by four from n = 32. H1 carries half
+  to three quarters of the jerk error at every resolution; the rest is also second order.

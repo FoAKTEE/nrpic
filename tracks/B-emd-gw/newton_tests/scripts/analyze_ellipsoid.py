@@ -387,6 +387,21 @@ def main():
         r, s = case_analysis(n, case)
         res["N1_N%d" % n] = r
         rows[n], S[n] = r, s
+    ns = sorted(rows)
+    if len(ns) >= 3:
+        # observed order and Richardson extrapolation from the three finest meshes
+        # (each doubling the last); [JUDGEMENT] meaningful only if the order is steady
+        n1, n2, n3 = ns[-3:]
+        conv = {}
+        for key in ("E_avg", "E_raw", "t_x"):
+            f1, f2, f3 = rows[n1][key], rows[n2][key], rows[n3][key]
+            p = np.log2(abs((f1 - f2)/(f2 - f3)))
+            conv[key] = {"values": [f1, f2, f3], "order": float(p),
+                         "richardson": float(f3 + (f3 - f2)/(2.0**p - 1.0))}
+        conv["E_ode_equivalent_finest"] = rows[n3]["ode"]["equivalent"]["E"]
+        conv["E_ode_nominal"] = rows[n3]["ode"]["nominal"]["E"]
+        conv["t_x_ode_nominal"] = rows[n3]["ode"]["nominal"]["t_x"]
+        res["N1_convergence"] = conv
     dtrow = None
     if a.dtcheck:
         n, case = pairs([a.dtcheck])[0]
