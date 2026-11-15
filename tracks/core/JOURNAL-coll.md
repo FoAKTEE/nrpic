@@ -400,3 +400,58 @@ per step there, so the same two particles are paired and collide repeatedly, whi
 exchanges energy inside the pair instead of mixing the populations; the decay should be
 slower (by an amount I cannot predict), while the number of collisions stays right.
 For 6 particles per cell and more I expect no difference beyond 4 sigma.
+
+## 2026-11-15 14:40 UTC  outcome P8b; prediction for unequal masses; card jobs
+
+### P8b: run core-20261115-135219-42c8489 (4e5 particles, two seeds)
+
+Figure `fig_cells.png` looked at.
+- Pair counting against the cell populations of the last snapshot: 3.7e-13 to 4.9e-12
+  at every size, 2^3 to 64^3 collision cells (50000 to 1.5 particles per cell, where
+  118000 of 262144 cells hold a pair), below the rounding bound. Passed.
+- Collisions against sum_P: |z| <= 1.6; summed weight against nominal: within 1e-3
+  (allowed 1.3e-2). Passed: the number of collisions does not depend on the cell size.
+- (32,1) = (64,2) and (16,1) = (64,4): final snapshots byte-identical. Passed: the
+  blocks of f^3 mesh cells are the cells of the coarser mesh.
+- Decay rate of theta_1 - theta_2 over nu_0: 0.957(12), 0.951(6), 0.948(6) for 50000,
+  781, 98 particles per cell; 0.926(4) for 12.2 (-2.6 percent, z = -4.2); 0.879(5) for
+  1.5 (-7.5 percent, z = -11). My first prediction ("the same within noise at every
+  size") FAILED; the restated one holds at 1.5 per cell and FAILED marginally at 12 per
+  cell, where I expected nothing beyond 4 sigma. Consistent with repeated partners:
+  particles move 0.035 (0.07) cell per step and stay about one (half a) collision time
+  in a cell of the 32^3 (64^3) mesh, so with few particles per cell the same pairs meet
+  again and exchange energy among themselves. This is a statement about this box (slow
+  particles, cells of the order of the mean free path); the mechanism was not isolated
+  by a control (for example the same occupation with fast-moving particles), so it is
+  [JUDGEMENT]. Consequence for users, [VERIFIED] here: the relaxation rate is within one
+  percent for about 100 particles per collision cell and low by a few percent for about
+  10; the collision count is unbiased throughout.
+
+### Prediction for unequal masses, before the run
+
+`run_unequal.py`: two classes of equal number, masses 1 : 4, theta 0.03 (light) and
+0.01 (heavy), 2e5 particles, 25 collision times, four seeds with `nanbu`.
+- `coll_weights = equal` on this file: the run stops at the first collision step with
+  the error that names the two masses.
+- Both classes end at the same temperature within 4 sigma and are Maxwell-Juttner (KS
+  p > 1e-3 against the temperature of the final energy). A pairwise exactly conserving
+  scheme would leave the heavy class colder per unit mass (equipartition per
+  macroparticle: factor 4 in theta), far outside.
+- Momentum updates per collision at late times: 20/13 = 1.538 (pair probabilities
+  light-light : heavy-heavy : mixed = 1 : 4 : 8 for equal numbers and one temperature,
+  updates 2, 2, 5/4), within 4 sigma.
+- In one step the light and the heavy particles receive the same number of updates
+  within 4 sigma of the Poisson error (every macroparticle changes momentum at the rate
+  of its physical particles, whatever its mass).
+- Energy and momentum are not conserved pair by pair: the cumulative defects of the
+  history equal the change measured from the snapshots (to 1e-9 of the thermal energy),
+  and their mean over the seeds is zero within 4 standard errors. Expected size of the
+  energy random walk: about 1e-2 of the thermal energy [JUDGEMENT: sqrt(collisions) x
+  theta/N].
+
+### Card jobs
+
+The node has four cores in all. My first submission (job 4419, part A, with `-c 4`,
+queued 13:35 UTC) would have kept the second card idle while a one-core job ran on the
+first; cancelled and resubmitted with two cores (4424 part A, 4425 part B, 14:36 UTC).
+4424 started at 14:38 UTC.
