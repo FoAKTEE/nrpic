@@ -94,3 +94,76 @@ max(3 sd of the pairing, 0.5 percent): [24.25, 24.58] and [242.5, 245.8]; no tru
 probability, no unusable cell. Refuted by any failure; a sum_P outside the band would mean
 the cell geometry, the volume or the lapse factor of the code differs from my reading of
 the interface.
+
+## 2026-11-15 Entry 3: predictions for the six card runs (Test 3), written before submission
+
+Runs: `inputs/cc{1,2}_kn{inf,10,1}.athinput`, release card executable
+`.work/build_gpu_v03/src/athena`, 300 M each, three Slurm jobs of two runs
+(`inputs/batch_{1,2,3}.list`). Predicted cost: 3.3-4.3 s per M (first paper's 3.27 s per M
+on the same mesh at N = 10^4; particle and collision work at N = 10^5 adds little:
+4.1e-8 s per particle and cycle from G0, run C-sidm-20261115-115400-eb8b752, gives 20 s per
+run; core's operator 1e6 particles x 200 steps in 2-4 s) so 1000-1300 s per run, 0.6-0.75
+card-hours per job, about 2 card-hours in all. Analysis: `analyze.py`.
+
+Budgets (G2 criterion "the budgets of conserved quantities close in curved spacetime"):
+
+- P3.1 Rest mass: sum_m bit-identical at every record in all six runs; n_excised =
+  n_escaped = 0 (excision needs alpha < 0.1; a particle cannot reach 512 M from r < 13 M in
+  300 M). Refuted by any change.
+- P3.2 Deposit identity int_E = sum_mW to 1e-12 relative at every record.
+- P3.3 Cell-frame pair energy: largest |dE| per collision in any record below 8 eps of the
+  pair energy (core's criterion); sum of dP at rounding; n_trunc = 0, n_bad_cells = 0,
+  max_P <= 0.12.
+- P3.4 Energy at the particles' metric (coll_budget): the summed dE_particles over sum M W
+  is positive and equals the predicted defect per collision (1.74e-10 for CC1, 1.26e-10 for
+  CC2) times the number of collisions within a factor two (the prediction used the static
+  metric and the initial distribution): about 2.0e-5 (CC1, Kn = 10), 2.0e-4 (CC1, Kn = 1),
+  1.4e-5 and 1.4e-4 (CC2). Refuted if negative or outside the factor two.
+- P3.5 The two histories describe one energy: sum_MW_particles of `cc.coll.hst` and sum_mW
+  of `cc.nrpic.hst` at the same cycle agree to 1e-12 relative.
+
+Collision counts:
+
+- P3.6 First collision step: sum_P within the bands of Test 2 (CC1: [24.25, 24.58] and
+  [242.5, 245.8]; CC2: 23.692 and 236.92 within 0.63 and 0.5 percent: [23.54, 23.84],
+  [235.7, 238.1]).
+- P3.7 Over the run: |collisions - sum of sum_P| / sqrt(sum of sum_P) < 4; collisions within
+  10 percent of the constant-rate prediction at Kn = 10 (1.172e5, 1.137e5) and within 25
+  percent at Kn = 1 (1.172e6, 1.137e6), where the structure changes [JUDGEMENT on both
+  tolerances].
+
+Collisionless controls (the first paper's stable cluster, `paper/sections/tables/tab_outcomes.tex`
+lines 104-110 and 118-119: half swing of alpha_c growing from 0.005 to 0.018 over
+100-500 M, ranges of r10 and r90 of 0.18 and 0.07 over 0-300 M, mean Lorentz factor
+changed by 1.5e-3 at most, every particle kept):
+
+- P3.8 cc2_kninf (stable side) and cc1_kninf (threshold): every particle kept;
+  |alpha_c - alpha_c,eq| <= 0.02 (cc1_kninf: a slow drift up to 0.03 allowed);
+  ranges of r10 <= 0.2 and of r90 <= 0.1 of their initial values; mean Lorentz factor
+  changed by <= 2e-3; an oscillation of alpha_c with a period of 20-40 M (core radial
+  period pi (3/(4 pi E_c))^(1/2) = 22.0 M and 23.6 M with E_c of the model JSON, the paper's
+  formula, which gave 66 M against a measured 75 M for y_c = 0.819). No collapse of the
+  threshold model within 300 M [JUDGEMENT: its growth rate is zero by construction; the
+  code's collapse times in the first paper were later than the published ones].
+- P3.9 Killing energies of the controls: fraction with E_K > E0 at 300 M <= 0.017 (the
+  initial fraction within 1 percent of E0; metric oscillations of order 1e-2 at most);
+  no particle with E_K > 1; |change of sum M E_K| <= 1e-3 M.
+
+What collisions change within 300 M [JUDGEMENT, from the relaxation estimates above and
+equilibria/CONVERSION.md]:
+
+- P3.10 Kn = 10 (2.3 collisions per particle): fraction with E_K > E0 at 300 M in
+  [0.04, 0.12] (linear 0.119 and 0.116 is the upper end; collisions also scatter tail
+  particles back); unbound fraction (E_K > 1) in [0.003, 0.010]; alpha_c within 0.005 and
+  r50 within 2 percent of the control at all snapshot times.
+- P3.11 Kn = 1 (23 collisions per particle): fraction with E_K > E0 in [0.1, 0.6] (the
+  linear estimate 1.19 saturates); unbound fraction in [0.02, 0.15] (the initial rate gives
+  0.10; a relaxed core keeps a Maxwell-Juttner tail above the escape energy); the mass
+  beyond 2 rbar_s at 300 M comparable to the unbound fraction; evaporation leaves the
+  remainder more bound, so alpha_c at 300 M is below the control's by more than 0.01 (core
+  contraction). Refuted if alpha_c ends above the control's mean of the last 50 M. CC1 at
+  Kn = 1 does not form a horizon within 300 M (alpha_min > 0.1) [60 percent confidence; a
+  collapse would show that collisions drive the threshold model unstable within tens of
+  collision times].
+- P3.12 Constraint norm: H-norm2 of the collisional runs at 300 M within a factor 1.5 of
+  the control's (the energy defect of P3.4 is below the constraint noise).
