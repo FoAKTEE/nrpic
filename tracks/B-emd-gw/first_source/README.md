@@ -116,8 +116,10 @@ To core:
    shift condition in an expanding background"): the Gamma driver `shift_Gamma = 0.75`,
    `shift_eta = 1`, `shift_advect = 1`, `lapse_advect = 1` with the conformal-time lapse ran
    to a = 140 through shell crossing at delta = 0.01, 64^3, 8 particles per cell (run
-   B-20261115-165353-b592d43, case cw_eps1_gd), and its coordinates differ from the
-   zero-shift run exactly by the time integral of the shift (to 5e-4); uniform mesh only.
+   B-20261115-165353-b592d43, case cw_eps1_gd; also at 32^3, B-20261115-165525-f7c2004);
+   its coordinates differ from the zero-shift run by the time integral of the shift to 5e-4
+   (checked by hand at tau = 1.9 on the 32^3 runs, not a registered analysis); uniform mesh
+   only.
 5. Restart files carry the particles (380 MB per dump at 2.1M particles, 12 GB per run here):
    the double-precision Z4c dump without particles of the wave-1 request
    (`outbox/20261115T1340Z__to-core__gw-analysis-output.md`, item 1) is what the scan needs;
