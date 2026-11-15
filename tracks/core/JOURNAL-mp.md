@@ -629,3 +629,19 @@ prediction held).
 the reference first carried a number for the 1/16 run, 0.1284, that I had not computed;
 the values now given, 0.1278 at t = 10.47 and the displacements, are read from the
 tracker files of `core-20261115-115342-7a60df2` and `core-20261115-121047-0c197fb`.)
+
+### The last three card runs wait behind seven jobs of other owners; substitutes on processors (predictions before they run)
+
+Queued on the cards and not started: the regression with the final executable, the
+three black holes to t = 1 with the final executable, and the single hole with
+`shift_eta = 20`. The scheduler's estimate for them is several hours. Substitutes that
+answer the same questions on processors:
+ - Three black holes, one cycle, final processor executable (`time/nlim=1`; the finder
+   searches after the first step): prediction as for the card run: three horizons at
+   the first search, heavy hole 10.40 +- 0.05 with S_z = 30 +- 0.1, light holes 0.541
+   and 0.550 (the values at t = 0 of the 16 M run).
+ - Shift damping: `problems/tests/puncture_setup_restart.athinput` (m = 1, P = 0.3,
+   S = 0.2, cells 1/8) for 52 cycles (t = 1.625) with `shift_eta` = 2 and 20.
+   Prediction: the tracker speed at the end is at least five times smaller with 20
+   than with 2. If the two agree within a factor 2 the damping does not explain the
+   heavy tracker of test 3.
