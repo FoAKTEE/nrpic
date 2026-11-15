@@ -16,7 +16,8 @@ def run_case(exe, rundir, inp, args):
     os.makedirs(rundir, exist_ok=True)
     t0 = time.time()
     with open(os.path.join(rundir, "athena.log"), "w") as log:
-        proc = subprocess.run([exe, "-i", inp] + list(args) + ["-d", rundir], cwd=rundir,
+        flag = "-r" if inp.endswith(".rst") else "-i"
+        proc = subprocess.run([exe, flag, inp] + list(args) + ["-d", rundir], cwd=rundir,
                               stdout=log, stderr=subprocess.STDOUT)
     if proc.returncode != 0:
         raise RuntimeError(f"{rundir}: exit status {proc.returncode}")
