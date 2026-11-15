@@ -47,3 +47,26 @@ the record it reads):
   (c) REPORT section 3 "R/M = 20-26, r_core/M = 1.5-2.1" for Z(0) = 0.40-0.80: the
   initial-model run gives 19.8-28.1 and 1.27-2.56 over that range.
   Each is checked by the script; a claim the files support is marked as agreeing.
+
+## 2026-11-15 N1 outcome (run C-20261115-170415-385069e, nrpic-run, completed, 1 core)
+
+- P1 held: all 63 input files carry a recorded sha256 and match it (23 through
+  `sha256sums.txt`, 40 through the manifest's own output list of a wave-1 run; common.py
+  learned both forms before the run).
+- P2 held: 0.5404129, 0.6348166, 0.7792440, 0.7500060; King y0 = 0.3340322 at
+  Z0 = 0.5119106; mono y_c = 0.6796101 at z_c = 0.4552905; panel (b) crosses zero at the
+  two onsets and is positive at the maximum (PNG looked at).
+- P3 held: K = 168.8954, 154.33-206.49; Kn_c(200 M_sun, 5 cm^2/g) = 6.77e-20 to 9.06e-20,
+  1.9e9 M_sun: 6.43e-13 to 8.61e-13 (PNG looked at).
+- P4 held: 5.172e-7 at theta = 1e-3, 2.46e-14 at theta = 100; rate deviations -1.30 to
+  +0.98; T0 3.22e-3 and 0.330 of the tolerances.
+- P5 held, including the ensemble numbers: 1.808e-12 L, relative 0, max 1.846, 1.848,
+  1.846, rms 1.012, 1.010, 0.823 (identical to `step_step.json` of run -121302); so the
+  analysis change of abd9c2e does not move this test.
+- P6 held: 23 claims, 20 agree, the three predicted ones differ (files win):
+  (a) Table 1: B at 2.43e-4, eps and ec0 at 1.3e-4 (line 503); the 1.1e-4 bound holds for
+  E and E_rest only; (b) the fastest gravothermal phase is >= 8.5e4 dynamical times
+  (not 1e5); (c) R/M = 19.8-28.1 and r_core/M = 1.27-2.56 over Z(0) = 0.40-0.80 (the quoted
+  20-26 and 1.5-2.1 fit narrower ranges). One more rounding noted but counted as agreeing:
+  King solvers agree to 3.5e-8 (quoted "3e-8"). `tables/claims.md`.
+- All six PNGs of the run were opened from `note/figures/` after copying.

@@ -1,0 +1,186 @@
+[
+ {
+  "doc": "stage/G1/STATUS.md item 2",
+  "claim": "Table 1: 56 rows, all columns within 1.1e-4 relative except R (printed on a 1e-3 grid) and three printed typos",
+  "file_value": "56 rows; largest outside R and the typos: B 2.43e-04 (line 503); typos [('491', 'C'), ('493', 'p0'), ('516', 'C')]",
+  "agrees": false,
+  "run": "C-sidm-20261115-120722-38ab057",
+  "note": "B, eps and ec0 exceed 1.1e-4 at line 503 (w0 = 4.5): the bound holds for E and E_rest only"
+ },
+ {
+  "doc": "stage/G1/STATUS.md item 2",
+  "claim": "Table 2: 14 roots, w0 within 1.1e-4",
+  "file_value": "14 rows, w0 1.10e-04",
+  "agrees": true,
+  "run": "C-sidm-20261115-120722-38ab057",
+  "note": ""
+ },
+ {
+  "doc": "stage/G0/REPORT.md 2.3",
+  "claim": "fluid onset Z(0) = 0.6348 (b = 0.1, gamma = 1 + p/u)",
+  "file_value": "0.634817",
+  "agrees": true,
+  "run": "C-sidm-20261115-120722-38ab057",
+  "note": ""
+ },
+ {
+  "doc": "STATUS.md",
+  "claim": "eps max at Z(0) = 0.5404 (b = 0.1)",
+  "file_value": "0.540413",
+  "agrees": true,
+  "run": "C-sidm-20261115-120722-38ab057",
+  "note": ""
+ },
+ {
+  "doc": "stage/G1/STATUS.md item 2",
+  "claim": "adiabatic-index root w0 = 4.05115",
+  "file_value": "4.051148",
+  "agrees": true,
+  "run": "C-sidm-20261115-120722-38ab057",
+  "note": ""
+ },
+ {
+  "doc": "stage/G1/STATUS.md item 2",
+  "claim": "onset Z(0) = 0.6348 (b = 0.1) to 0.5790 (b = 0.5)",
+  "file_value": "0.6348 to 0.5790",
+  "agrees": true,
+  "run": "C-sidm-20261115-120722-38ab057",
+  "note": ""
+ },
+ {
+  "doc": "stage/G1/STATUS.md item 2",
+  "claim": "polytrope check: zero at the mass maximum to 3e-8",
+  "file_value": "2.7e-08, 1.5e-08, 2.5e-08",
+  "agrees": true,
+  "run": "C-sidm-20261115-121524-5cebcf5",
+  "note": ""
+ },
+ {
+  "doc": "STATUS.md",
+  "claim": "three independent equilibrium solvers agree to 3e-8",
+  "file_value": "thermal core eps 2.0e-08; King fraction 3.5e-08",
+  "agrees": true,
+  "run": "C-sidm-20261115-131130-3077a99",
+  "note": "King: 3.5e-8 (rounded to 3e-8)"
+ },
+ {
+  "doc": "stage/G1/STATUS.md item 3",
+  "claim": "King y_max 0.33403",
+  "file_value": "0.334032",
+  "agrees": true,
+  "run": "C-sidm-20261115-115348-eb8b752",
+  "note": ""
+ },
+ {
+  "doc": "stage/G0/REPORT.md 3",
+  "claim": "monoenergetic threshold y_c = 0.67961",
+  "file_value": "0.679610",
+  "agrees": true,
+  "run": "C-sidm-20261115-115344-eb8b752",
+  "note": ""
+ },
+ {
+  "doc": "stage/G1/STATUS.md item 3",
+  "claim": "243 pass flags of the 13 models",
+  "file_value": "243 of 243",
+  "agrees": true,
+  "run": "C-sidm-20261115-121626-e99907d",
+  "note": ""
+ },
+ {
+  "doc": "stage/G0/REPORT.md 2.2",
+  "claim": "K = 168.9 for the King threshold model; 154-206 over the 13 models; scope convention 198.6",
+  "file_value": "168.90; 154.3-206.5; 198.64",
+  "agrees": true,
+  "run": "C-sidm-20261115-131130-3077a99",
+  "note": ""
+ },
+ {
+  "doc": "stage/G0/REPORT.md 2.2",
+  "claim": "sigma/m = sigma~ x 1.097e-23 cm^2/g x (M/M_sun)",
+  "file_value": "1.0966e-23",
+  "agrees": true,
+  "run": "C-sidm-20261115-131130-3077a99",
+  "note": ""
+ },
+ {
+  "doc": "stage/G0/REPORT.md 1",
+  "claim": "200 M_sun core, sigma/m = 5: Kn_c = 4.5e-20 to 1.8e-19 (scope's H convention)",
+  "file_value": "4.51e-20 to 1.82e-19",
+  "agrees": true,
+  "run": "C-sidm-20261115-115400-eb8b752",
+  "note": "track definition over the 13 models: 6.8e-20 to 9.1e-20"
+ },
+ {
+  "doc": "stage/G0/REPORT.md 1",
+  "claim": "1.9e9 M_sun core: Kn_c = 4e-13 to 2e-12",
+  "file_value": "4.28e-13 to 1.73e-12",
+  "agrees": true,
+  "run": "C-sidm-20261115-115400-eb8b752",
+  "note": ""
+ },
+ {
+  "doc": "stage/G0/REPORT.md 1",
+  "claim": "every phase before the dynamical instability lasts at least 1e5 dynamical times of the then-current core",
+  "file_value": "t0/t_dyn >= 8.521e+05; fastest phase >= 8.521e+04",
+  "agrees": false,
+  "run": "C-sidm-20261115-121412-d463e1a",
+  "note": "the fastest phase (t_c ~ 0.1 t_0) gives a lower bound of 8.5e4, not 1e5"
+ },
+ {
+  "doc": "stage/G0/REPORT.md 3",
+  "claim": "thermal core b = 0.1, Z(0) = 0.40-0.80: R/M = 20-26, r_core/M = 1.5-2.1, central lapse 0.56-0.71",
+  "file_value": "R/M 19.76-28.11; r_core/M 1.268-2.555; alpha_c 0.556-0.714",
+  "agrees": false,
+  "run": "C-sidm-20261115-121748-4e8d6b5",
+  "note": "R/M and r_core/M quoted for a narrower range of Z(0); lapse agrees"
+ },
+ {
+  "doc": "STATUS.md",
+  "claim": "closed-form Moller rate confirmed to 5e-7 by a 3D quadrature",
+  "file_value": "5.17e-07",
+  "agrees": true,
+  "run": "C-sidm-20261115-131130-3077a99",
+  "note": "5.2e-7, rounded"
+ },
+ {
+  "doc": "STATUS.md",
+  "claim": "core's kernels pass T0 on 208 vectors (3.2e-16, 1.32 eps)",
+  "file_value": "208 cases, 3.22e-16, 1.322 eps, pass True",
+  "agrees": true,
+  "run": "C-sidm-20261115-132624-13a77db",
+  "note": ""
+ },
+ {
+  "doc": "stage/G1/STATUS.md item 4",
+  "claim": "T6-0 positions exact to 1.8e-12 L",
+  "file_value": "1.808e-12",
+  "agrees": true,
+  "run": "C-sidm-20261115-121302-313d399",
+  "note": ""
+ },
+ {
+  "doc": "stage/G1/STATUS.md 4",
+  "claim": "King threshold model: central spacing 0.293 M at N = 1e4; H_c = 1.436 M",
+  "file_value": "0.2930; 1.4359",
+  "agrees": true,
+  "run": "C-sidm-20261115-122915-cdc395c",
+  "note": ""
+ },
+ {
+  "doc": "stage/G0/OPEN.md 12",
+  "claim": "momentum-constraint integral 1.42 times the reference",
+  "file_value": "1.4191",
+  "agrees": true,
+  "run": "C-sidm-20261115-125308-54870b9",
+  "note": ""
+ },
+ {
+  "doc": "stage/G0/CHECKLIST.md C4",
+  "claim": "unit costs 1.67, 3.28-3.71, 14.2-17.5 s per M",
+  "file_value": "1.671; 3.279-3.710; 14.17-17.48",
+  "agrees": true,
+  "run": "C-sidm-20261115-115400-eb8b752",
+  "note": ""
+ }
+]
