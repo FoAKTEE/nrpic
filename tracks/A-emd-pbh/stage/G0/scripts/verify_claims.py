@@ -676,7 +676,7 @@ def part_V6(out, figdir):
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--out", default=os.environ.get("NRPIC_RUN_DIR"),
-                    help="output directory (default: \$NRPIC_RUN_DIR set by nrpic-run)")
+                    help="output directory (default: NRPIC_RUN_DIR, set by nrpic-run)")
     ap.add_argument("--parts", default="V1,V2,V3,V4,V5,V6")
     ap.add_argument("--Nmax", type=int, default=128)
     a = ap.parse_args()
