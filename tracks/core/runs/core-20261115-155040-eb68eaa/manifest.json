@@ -1,0 +1,45 @@
+{
+ "run_id": "core-20261115-155040-eb68eaa",
+ "owner": "core",
+ "track": "core",
+ "gate": "G2",
+ "purpose": "T2 slow-roll background against the Friedmann equations from the initial slice (8 e-folds, Courant 0.25 and 0.125) and T3 constraint ratios in time with the even and odd parts in the amplitude and the negative control (processors, 32^3)",
+ "kind": "scouting",
+ "command": [
+  ".venv/bin/python",
+  "tracks/core/analysis/scalar2/t23_evolve.py",
+  "--exe",
+  ".work/exe/athena_cpu_a58e95b",
+  "--out",
+  "/data/haiyangw/nrpic/scratch/core/core-20261115-155040-eb68eaa",
+  "--workers",
+  "7"
+ ],
+ "cwd": "/data/haiyangw/nrpic/wt/core-scalar2",
+ "commit": "eb68eaa04d46d5aad4ecdf57875e7a7735f0d17c",
+ "branch": "core/scalar-2",
+ "uncommitted_changes": [],
+ "inputs": [
+  {
+   "path": ".work/exe/athena_cpu_a58e95b",
+   "sha256": "c69266ec765c8296b005871c6865991f2a5ac59f7ebd2ac3f03d383b57f9439e"
+  },
+  {
+   "path": "problems/scalar/sr_stochastic.athinput",
+   "sha256": "d1ad721d9b2b495b49782ca31a3c18efc24f1eb58c23eeff29d3fc12747efea6"
+  },
+  {
+   "path": "tracks/core/analysis/scalar2/t23_evolve.py",
+   "sha256": "015efcc7574a31693c4935d7e33d5429a5e5c1f87a886475351891bcafd51b2b"
+  }
+ ],
+ "output_directory": "/data/haiyangw/nrpic/scratch/core/core-20261115-155040-eb68eaa",
+ "outputs": {
+  "dir": "scratch/core/core-20261115-155040-eb68eaa"
+ },
+ "host": "anta",
+ "start_utc": "2026-11-15T15:50:40Z",
+ "cores": 7,
+ "registered_by": "tracks/core/analysis/scalar2/runreg.py (by hand: nrpic-run submit fails with KeyError 'outputs')",
+ "status": "running"
+}
