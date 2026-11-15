@@ -5,7 +5,7 @@ core mass M, for sigma/m = 5 cm^2/g (band over the 13 models) and 1-100 cm^2/g (
 the King threshold model), against the planned scan Kn_c = 0.3-100; (b) the conversion
 constant K = sigma_tilde * Kn_c of the 13 particle models against their central redshift.
 Kn_c = K * c_M * (M/M_sun) / (sigma/m), c_M = cgs_per_code_at_1Msun (run xchk, X4).
-Reads runs xchk (X4), models (index.json), times (scaled F21 models, cross-check only).
+Reads runs xchk (X4), models (index.json), times (scaled thermal-core models, cross-check only).
 """
 import os
 import sys
@@ -21,7 +21,7 @@ import matplotlib.pyplot as plt  # noqa: E402
 
 STEM = "fig_knudsen"
 SCAN = (0.3, 100.0)            # planned Kn_c range (stage/G0/REPORT.md section 3, a design choice)
-M_SEED_FLUID = 200.0           # horizon mass of the fluid model, 2601.17117 SIDM_MS.tex:476
+M_SEED_FLUID = 200.0           # black-hole mass of the fluid model, 2601.17117 SIDM_MS.tex:481
 M_SEED_J1205 = 1.9e9           # seed of the J1205-0000 benchmark, 2108.11967 main.tex:349
 
 
@@ -57,7 +57,7 @@ def main():
     axa.set_yticks(10.0 ** np.arange(-24, 5, 4))
     axa.set_xlabel(r"core mass $M/M_\odot$")
     axa.set_ylabel(r"central Knudsen number $\mathrm{Kn}_c$")
-    axa.legend(loc="center", bbox_to_anchor=(0.52, 0.53), fontsize=7.5, handlelength=1.6)
+    axa.legend(frameon=False, loc="center", bbox_to_anchor=(0.52, 0.53), fontsize=7.5, handlelength=1.6)
     axa.text(0.03, 0.92, "(a)", transform=axa.transAxes, fontsize=9)
 
     styles = {"king": ("o", cz.PAL["green"], "King"),
@@ -70,7 +70,7 @@ def main():
     axb.set_xlabel(r"central redshift $z_c$")
     axb.set_ylabel(r"$K=\tilde\sigma\,\mathrm{Kn}_c$")
     axb.set_ylim(140, 215)
-    axb.legend(loc="upper right", fontsize=7.5, handlelength=1.0)
+    axb.legend(frameon=False, loc="upper right", fontsize=7.5, handlelength=1.0)
     axb.text(0.05, 0.92, "(b)", transform=axb.transAxes, fontsize=9)
 
     cz.save(fig, os.path.join(out, STEM))

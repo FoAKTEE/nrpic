@@ -45,7 +45,7 @@ def main():
         ("radial perturbation of a steady state", NEW),
         ("rotating cores", NEW),
     ])
-    column(ax, 10.3, "Evolution", "AthenaK, release core-v0.3", [
+    column(ax, 10.3, "Evolution", "AthenaK: spacetime, particles, collisions", [
         ("Z4c with particles: deposit, push", EXISTS),
         ("excision, apparent-horizon finder", EXISTS),
         ("Monte Carlo collisions in mesh cells", EXISTS),

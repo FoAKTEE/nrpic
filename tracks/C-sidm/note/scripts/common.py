@@ -25,7 +25,7 @@ RUNS = {
     "kncost": "C-sidm-20261115-115400-eb8b752",      # Knudsen numbers (scope H), costs
     "models": "C-sidm-20261115-120610-b4592be",      # 13 near-threshold particle models
     "collref": "C-sidm-20261115-120703-9b3e868",     # collision references R1-R7
-    "f21": "C-sidm-20261115-120722-38ab057",         # F21 sequences, criteria, FEM onset
+    "thermal": "C-sidm-20261115-120722-38ab057",         # thermal-core sequences, criteria, pulsation onsets
     "t60": "C-sidm-20261115-121302-313d399",         # AthenaK collisionless step T6-0
     "times": "C-sidm-20261115-121412-d463e1a",       # time scales at the onset
     "poly": "C-sidm-20261115-121524-5cebcf5",        # FEM check on Gamma = 2 polytropes

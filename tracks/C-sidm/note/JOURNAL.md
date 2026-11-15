@@ -70,3 +70,14 @@ the record it reads):
   20-26 and 1.5-2.1 fit narrower ranges). One more rounding noted but counted as agreeing:
   King solvers agree to 3.5e-8 (quoted "3e-8"). `tables/claims.md`.
 - All six PNGs of the run were opened from `note/figures/` after copying.
+
+## 2026-11-15 N2 prediction: rerun after layout and naming changes
+
+Changes since N1 (no change of what is read or computed): the ledger table is split in two
+(it was taller than a page), the parameter table is narrower (labels, four decimals of y),
+every legend has `frameon=False` explicitly (the style already sets it), the run key `f21`
+is renamed `thermal`, the architecture schematic names the code without its release tag.
+Prediction: every number printed by the scripts and every claim verdict is identical to N1
+(23 claims, 3 differ); the data PNGs look the same; only `ledger.tex`, `parameters.tex` and
+`schem_architecture.png` change. A changed number would mean a script change leaked into
+the computation.

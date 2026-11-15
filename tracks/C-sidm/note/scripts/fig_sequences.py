@@ -5,7 +5,7 @@ b = 0.1 against the central redshift, solver curve and the printed rows of the s
 table; (b) the lowest squared radial-pulsation frequency of the same models (finite
 elements) for the two adiabatic indices, normalised at the binding-energy maximum;
 (c) the King and monoenergetic families with the particle models built for the runs.
-Reads runs f21 (sequences, criteria, table comparison), king, mono, models (common.RUNS).
+Reads runs thermal (sequences, criteria, table comparison), king, mono, models (common.RUNS).
 """
 import csv
 import os
@@ -25,9 +25,9 @@ STEM = "fig_sequences"
 
 def main():
     out = cm.out_dir("figures")
-    seq = cm.load_json("f21", "sequences.json")["0.1"]
-    crit = cm.load_json("f21", "criteria.json")["0.1"]
-    rows = list(csv.DictReader(open(cm.run_file("f21", "table1_compare.csv"))))
+    seq = cm.load_json("thermal", "sequences.json")["0.1"]
+    crit = cm.load_json("thermal", "criteria.json")["0.1"]
+    rows = list(csv.DictReader(open(cm.run_file("thermal", "table1_compare.csv"))))
     king = cm.load_json("king", "king_sequence.json")
     mono = cm.load_json("mono", "seq_monoenergetic.json")
     idx = cm.load_json("models", "index.json")
@@ -58,7 +58,7 @@ def main():
     axa.set_ylim(0.0, 0.039)
     axa.set_xlabel(r"central redshift $Z(0)$")
     axa.set_ylabel(r"binding energy fraction")
-    axa.legend(loc="lower right", fontsize=7.5, handlelength=1.4)
+    axa.legend(frameon=False, loc="lower right", fontsize=7.5, handlelength=1.4)
     axa.text(0.04, 0.93, "(a)  $b=0.1$", transform=axa.transAxes, fontsize=8.5)
 
     # (b) lowest pulsation frequency, normalised at the binding-energy maximum
@@ -74,7 +74,7 @@ def main():
     axb.set_ylim(-4.0, 2.2)
     axb.set_xlabel(r"central redshift $Z(0)$")
     axb.set_ylabel(r"$\omega_0^2/\omega_0^2(\epsilon_{\max})$")
-    axb.legend(loc="lower left", fontsize=7.5, handlelength=1.4)
+    axb.legend(frameon=False, loc="lower left", fontsize=7.5, handlelength=1.4)
     axb.text(0.04, 0.93, "(b)  $b=0.1$", transform=axb.transAxes, fontsize=8.5)
 
     # (c) King (b = 1) and monoenergetic families
@@ -102,7 +102,7 @@ def main():
     axc.set_ylim(0.0, 0.039)
     axc.set_xlabel(r"central redshift $z_c$")
     axc.set_ylabel(r"binding energy fraction")
-    axc.legend(loc="lower right", fontsize=7.0, handlelength=1.3, labelspacing=0.25)
+    axc.legend(frameon=False, loc="lower right", fontsize=7.0, handlelength=1.3, labelspacing=0.25)
     axc.text(0.04, 0.93, "(c)", transform=axc.transAxes, fontsize=8.5)
 
     cz.save(fig, os.path.join(out, STEM))

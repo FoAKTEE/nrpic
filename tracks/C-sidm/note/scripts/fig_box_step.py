@@ -106,7 +106,7 @@ def main():
         if k == 0:
             ax.set_ylabel("left slab, per unit area")
         if k == 1:
-            ax.legend(loc="lower right", fontsize=7.5, handlelength=1.5)
+            ax.legend(frameon=False, loc="lower right", fontsize=7.5, handlelength=1.5)
     cz.save(fig, os.path.join(out, STEM))
     cm.report_checks(STEM)
     print(f"{STEM}: snapshots {len(files)}; max position error / L = {max(perr) / L:.3e}; "

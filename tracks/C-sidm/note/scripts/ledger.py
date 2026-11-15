@@ -46,9 +46,9 @@ def e(x, n=2):
 def main():
     out = cm.out_dir("tables")
     # ---------------- spherical baseline ----------------
-    crit = cm.load_json("f21", "criteria.json")
-    rows1 = list(csv.DictReader(open(cm.run_file("f21", "table1_compare.csv"))))
-    rows2 = list(csv.DictReader(open(cm.run_file("f21", "table2_compare.csv"))))
+    crit = cm.load_json("thermal", "criteria.json")
+    rows1 = list(csv.DictReader(open(cm.run_file("thermal", "table1_compare.csv"))))
+    rows2 = list(csv.DictReader(open(cm.run_file("thermal", "table2_compare.csv"))))
     cols = ["E", "Erest", "B", "eps", "Z0", "ec0", "rho0", "p0", "v0", "gavg", "gcr"]
     typos, worst = [], {}
     for r in rows1:
@@ -64,27 +64,27 @@ def main():
     rmax = max(abs(float(r["R_rel"])) for r in rows1)
     w2 = max(abs(float(r["w0_rel"])) for r in rows2)
     add("baseline", "rows of the two printed tables of Ref.~\\cite{Feng:2021instab} compared",
-        f"{len(rows1)}; {len(rows2)}", "f21")
+        f"{len(rows1)}; {len(rows2)}", "thermal")
     add("baseline", "largest relative difference, columns other than the radius (column, line)",
-        f"{e(wmax[0])} ({cmax}, {wmax[1]})", "f21")
+        f"{e(wmax[0])} ({cmax}, {wmax[1]})", "thermal")
     add("baseline", "largest relative difference of the radius (printed to three digits)",
-        e(rmax), "f21")
+        e(rmax), "thermal")
     add("baseline", "printed values off by more than ten percent (line, column)",
-        ", ".join(f"{l} {c}" for l, c in typos), "f21")
-    add("baseline", "largest relative difference of the root $w_0$ of the second table", e(w2), "f21")
+        ", ".join(f"{l} {c}" for l, c in typos), "thermal")
+    add("baseline", "largest relative difference of the root $w_0$ of the second table", e(w2), "thermal")
     c1 = crit["0.1"]
     add("baseline", "$b=0.1$: binding-energy maximum, $w_0$; $Z(0)$; $\\epsilon$; $v(0)$",
         f"{g(c1['max_eps']['w0'], 6)}; {g(c1['max_eps']['Z0'], 5)}; "
-        f"{g(c1['max_eps']['eps'], 5)}; {g(c1['max_eps']['v0'], 4)}", "f21")
+        f"{g(c1['max_eps']['eps'], 5)}; {g(c1['max_eps']['v0'], 4)}", "thermal")
     on = c1["omega2_zero_F21gamma"]
     add("baseline", "$b=0.1$: pulsation onset, $\\Gamma=1+p/u$, $w_0$; $Z(0)$; $\\epsilon$; $v(0)$",
-        f"{g(on['w0'], 6)}; {g(on['Z0'], 5)}; {g(on['eps'], 5)}; {g(on['v0'], 4)}", "f21")
+        f"{g(on['w0'], 6)}; {g(on['Z0'], 5)}; {g(on['eps'], 5)}; {g(on['v0'], 4)}", "thermal")
     add("baseline", "$b=0.1$: pulsation onset with $\\Gamma=5/3$, $Z(0)$; trial criterion $w_0$, $Z(0)$",
         f"{g(c1['omega2_zero_gamma53']['Z0'], 5)}; {g(c1['gavg_eq_gcr']['w0'], 6)}, "
-        f"{g(c1['gavg_eq_gcr']['Z0'], 5)}", "f21")
+        f"{g(c1['gavg_eq_gcr']['Z0'], 5)}", "thermal")
     add("baseline", "$b=0.2, 0.3, 0.5$: $Z(0)$ of the binding-energy maximum; of the onset ($1+p/u$)",
         ", ".join(g(crit[b]["max_eps"]["Z0"], 4) for b in ("0.2", "0.3", "0.5")) + "; " +
-        ", ".join(g(crit[b]["omega2_zero_F21gamma"]["Z0"], 4) for b in ("0.2", "0.3", "0.5")), "f21")
+        ", ".join(g(crit[b]["omega2_zero_F21gamma"]["Z0"], 4) for b in ("0.2", "0.3", "0.5")), "thermal")
     poly = cm.load_json("poly", "polytrope_check.json")
     add("baseline", "pulsation zero against the mass maximum, $\\Gamma=2$ polytropes, three resolutions",
         ", ".join(e(abs(v), 1) for v in poly["rel_diff"].values()), "poly")
@@ -247,19 +247,19 @@ def main():
     claim("stage/G1/STATUS.md item 2", "Table 1: 56 rows, all columns within 1.1e-4 relative "
           "except R (printed on a 1e-3 grid) and three printed typos",
           f"56 rows; largest outside R and the typos: {cmax} {wmax[0]:.2e} (line {wmax[1]}); "
-          f"typos {typos}", wmax[0] <= 1.15e-4, "f21",
+          f"typos {typos}", wmax[0] <= 1.15e-4, "thermal",
           "B, eps and ec0 exceed 1.1e-4 at line 503 (w0 = 4.5): the bound holds for E and E_rest only")
     claim("stage/G1/STATUS.md item 2", "Table 2: 14 roots, w0 within 1.1e-4",
-          f"{len(rows2)} rows, w0 {w2:.2e}", len(rows2) == 14 and w2 <= 1.15e-4, "f21")
+          f"{len(rows2)} rows, w0 {w2:.2e}", len(rows2) == 14 and w2 <= 1.15e-4, "thermal")
     claim("stage/G0/REPORT.md 2.3", "fluid onset Z(0) = 0.6348 (b = 0.1, gamma = 1 + p/u)",
-          f"{on['Z0']:.6f}", abs(on["Z0"] - 0.6348) < 5e-5, "f21")
+          f"{on['Z0']:.6f}", abs(on["Z0"] - 0.6348) < 5e-5, "thermal")
     claim("STATUS.md", "eps max at Z(0) = 0.5404 (b = 0.1)", f"{c1['max_eps']['Z0']:.6f}",
-          abs(c1["max_eps"]["Z0"] - 0.5404) < 5e-5, "f21")
+          abs(c1["max_eps"]["Z0"] - 0.5404) < 5e-5, "thermal")
     claim("stage/G1/STATUS.md item 2", "adiabatic-index root w0 = 4.05115",
-          f"{c1['gavg_eq_gcr']['w0']:.6f}", abs(c1["gavg_eq_gcr"]["w0"] - 4.05115) < 5e-6, "f21")
+          f"{c1['gavg_eq_gcr']['w0']:.6f}", abs(c1["gavg_eq_gcr"]["w0"] - 4.05115) < 5e-6, "thermal")
     claim("stage/G1/STATUS.md item 2", "onset Z(0) = 0.6348 (b = 0.1) to 0.5790 (b = 0.5)",
           f"{on['Z0']:.4f} to {crit['0.5']['omega2_zero_F21gamma']['Z0']:.4f}",
-          abs(crit["0.5"]["omega2_zero_F21gamma"]["Z0"] - 0.5790) < 5e-5, "f21")
+          abs(crit["0.5"]["omega2_zero_F21gamma"]["Z0"] - 0.5790) < 5e-5, "thermal")
     claim("stage/G1/STATUS.md item 2", "polytrope check: zero at the mass maximum to 3e-8",
           ", ".join(f"{abs(v):.1e}" for v in poly["rel_diff"].values()),
           max(abs(v) for v in poly["rel_diff"].values()) < 3.05e-8, "poly")
@@ -323,37 +323,45 @@ def main():
     sect = {"baseline": "Spherical baseline", "models": "Particle models and Knudsen number",
             "collisions": "Collision operator: references and kernel test",
             "box": "Minkowski box in the code", "scales": "Time scales and costs"}
+    parts = [(("baseline", "models"), "tab:ledger",
+              "Numerical ledger. Every number of this note with the registered run that "
+              "produced it."),
+             (("collisions", "box", "scales"), "tab:ledger2",
+              "Numerical ledger, continued.")]
     with open(os.path.join(out, "ledger.tex"), "w") as f:
         f.write("% generated by scripts/ledger.py from registered run outputs; do not edit\n")
-        f.write("\\begin{table*}\n\\caption{Numerical ledger. Every number of this note with "
-                "the registered run that produced it.}\n\\label{tab:ledger}\n"
-                "\\begin{ruledtabular}\n\\footnotesize\n"
-                "\\begin{tabular}{p{0.47\\textwidth}p{0.25\\textwidth}l}\n"
-                "Quantity & Value & Run \\\\\n\\hline\n")
-        last = None
-        for s, q, v, k in ROWS:
-            if s != last:
-                f.write(f"\\multicolumn{{3}}{{l}}{{\\emph{{{sect[s]}}}}} \\\\\n")
-                last = s
-            f.write(f"{q} & {v} & \\texttt{{\\scriptsize {R[k]}}} \\\\\n")
-        f.write("\\end{tabular}\n\\end{ruledtabular}\n\\end{table*}\n")
+        for secs, label, cap in parts:
+            f.write(f"\\begin{{table*}}\n\\caption{{{cap}}}\n\\label{{{label}}}\n"
+                    "\\begin{ruledtabular}\n\\footnotesize\n"
+                    "\\begin{tabular}{p{0.44\\textwidth}p{0.30\\textwidth}l}\n"
+                    "Quantity & Value & Run \\\\\n\\hline\n")
+            last = None
+            for s_, q, v, k in ROWS:
+                if s_ not in secs:
+                    continue
+                if s_ != last:
+                    f.write(f"\\multicolumn{{3}}{{l}}{{\\emph{{{sect[s_]}}}}} \\\\\n")
+                    last = s_
+                f.write(f"{q} & {v} & \\texttt{{\\scriptsize {R[k]}}} \\\\\n")
+            f.write("\\end{tabular}\n\\end{ruledtabular}\n\\end{table*}\n")
     km_ = [m for m in idx["models"] if m["family"] == "king" and "threshold" in m["role"]][0]
     with open(os.path.join(out, "parameters.tex"), "w") as f:
         f.write("% generated by scripts/ledger.py from registered run outputs; do not edit\n")
         f.write("\\begin{table}\n\\caption{The equilibrium models at the instability criteria. "
-                "$Z(0)$ or $z_c$: central redshift; $\\epsilon$: binding-energy fraction; "
-                "$R$: areal radius; $M$: ADM mass.}\n\\label{tab:parameters}\n"
-                "\\begin{ruledtabular}\n\\begin{tabular}{lcccc}\n"
-                "Model & parameter & $Z(0)$ & $\\epsilon$ & $R/M$ \\\\\n\\hline\n")
-        for lab, r in (("thermal core, $\\epsilon$ maximum", c1["max_eps"]),
-                       ("thermal core, onset $1+p/u$", on),
-                       ("thermal core, onset $5/3$", c1["omega2_zero_gamma53"]),
-                       ("thermal core, trial", c1["gavg_eq_gcr"])):
+                "Thermal core: $b=0.1$. $Z(0)$, $z_c$: central redshift; $\\epsilon$: "
+                "binding-energy fraction; $R$: areal radius; $M$: ADM mass.}\n"
+                "\\label{tab:parameters}\n"
+                "\\begin{ruledtabular}\n\\begin{tabular}{llccc}\n"
+                "Model & label & $Z(0)$, $z_c$ & $\\epsilon$ & $R/M$ \\\\\n\\hline\n")
+        for lab, r in (("thermal, $\\epsilon$ max.", c1["max_eps"]),
+                       ("thermal, onset $1+p/u$", on),
+                       ("thermal, onset $5/3$", c1["omega2_zero_gamma53"]),
+                       ("thermal, trial", c1["gavg_eq_gcr"])):
             f.write(f"{lab} & $w_0={r['w0']:.4f}$ & {r['Z0']:.4f} & {r['eps']:.5f} & "
                     f"{r['R'] / r['E']:.2f} \\\\\n")
-        f.write(f"King threshold & $y_0={km['y0']:.5f}$ & {km['Z0']:.4f} & {km['eps_b']:.5f} & "
-                f"{km['R'] / km['M']:.2f} \\\\\n")
-        f.write(f"monoenergetic threshold & $y_c={mm['yc']:.5f}$ & {mm['zc']:.4f} & "
+        f.write(f"King, $\\epsilon$ max. & $y_0={km['y0']:.5f}$ & {km['Z0']:.4f} & "
+                f"{km['eps_b']:.5f} & {km['R'] / km['M']:.2f} \\\\\n")
+        f.write(f"monoen., $\\epsilon$ max. & $y_c={mm['yc']:.5f}$ & {mm['zc']:.4f} & "
                 f"{mm['Eb_over_M0']:.5f} & {mm['R_over_M']:.2f} \\\\\n")
         f.write("\\end{tabular}\n\\end{ruledtabular}\n\\end{table}\n")
     with open(os.path.join(out, "claims.json"), "w") as f:

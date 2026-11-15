@@ -57,7 +57,7 @@ def main():
     axa.set_xlim(5e-4, 200)
     axa.set_xlabel(r"temperature $\theta=T/m$")
     axa.set_ylabel(r"$\langle v_{\rm M\o l}\rangle$")
-    axa.legend(loc="lower right", fontsize=7.5)
+    axa.legend(frameon=False, loc="lower right", fontsize=7.5)
     axa.text(0.04, 0.9, "(a)", transform=axa.transAxes, fontsize=9)
 
     axb.plot(th, rq, "o-", ms=3.5, color=cz.PAL["red"], label="closed form vs quadrature")
@@ -67,7 +67,7 @@ def main():
     axb.set_xlim(5e-4, 200)
     axb.set_xlabel(r"temperature $\theta$")
     axb.set_ylabel("relative difference")
-    axb.legend(loc="lower left", fontsize=7.5)
+    axb.legend(frameon=False, loc="lower left", fontsize=7.5)
     axb.text(0.92, 0.9, "(b)", transform=axb.transAxes, fontsize=9)
 
     axc.axhspan(-2, 2, color="0.85", lw=0)
@@ -86,7 +86,7 @@ def main():
     axc.set_ylim(-4, 4)
     axc.set_xlabel(r"temperature $\theta$")
     axc.set_ylabel("deviation / standard error")
-    axc.legend(loc="lower center", fontsize=7.0, ncol=3, columnspacing=0.5, handletextpad=0.1)
+    axc.legend(frameon=False, loc="lower center", fontsize=7.0, ncol=3, columnspacing=0.5, handletextpad=0.1)
     axc.text(0.015, 0.9, "(c)", transform=axc.transAxes, fontsize=9)
 
     flags = list(t0["flags"].keys())
@@ -104,7 +104,7 @@ def main():
     axd.minorticks_off()
     axd.set_yticks([1e-4, 1e-3, 1e-2, 1e-1, 1, 1e1, 1e2])
     axd.set_ylabel("largest error / tolerance")
-    axd.legend(loc="upper right", fontsize=7.5)
+    axd.legend(frameon=False, loc="upper right", fontsize=7.5)
     axd.text(-0.45, 1.35, "tolerance", fontsize=7.5, ha="left")
     axd.text(0.015, 0.9, "(d)", transform=axd.transAxes, fontsize=9)
 

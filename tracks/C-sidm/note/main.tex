@@ -1,0 +1,208 @@
+\documentclass[aps,prd,twocolumn,10pt,superscriptaddress,nofootinbib,longbibliography,floatfix]{revtex4-2}
+
+\usepackage{amsmath,amssymb,amsfonts}
+\usepackage{bm}
+\usepackage{graphicx}
+\usepackage{xcolor}
+\usepackage{hyperref}
+\graphicspath{{figures/}}
+\hypersetup{colorlinks=true,linkcolor=blue,citecolor=blue,urlcolor=blue}
+
+\newcommand{\dd}{\mathrm{d}}
+\newcommand{\Kn}{\mathrm{Kn}}
+\newcommand{\vM}{v_{\text{M\o l}}}
+\newcommand{\sigmam}{\sigma_m}
+\newcommand{\sigt}{\tilde\sigma}
+
+\begin{document}
+
+\title{Relativistic collapse of a self-interacting dark-matter core:\\ Scope, set-up, and first tests (working note v0)}
+
+\author{Track C of the numerical-relativity particle-in-cell cosmology program}
+
+\date{Working note v0, state of 15 November 2026}
+
+\begin{abstract}
+When the core of a halo of self-interacting dark matter has conducted its heat outward for long enough, it contracts until its particles move close to the speed of light and it falls into a black hole. How much of the core ends in the black hole is known only from spherical fluid models, whose closure fails where the mean free path of the particles grows. This working note scopes a calculation that answers the question with collisionless particles coupled to numerical relativity in three dimensions, extended by a relativistic Monte Carlo collision operator, so that one number, the Knudsen number, moves the core from the collisionless to the fluid regime. It fixes the equilibrium families the runs start from, the definition of the Knudsen number and its conversion to a cross-section, and the tests that the collision operator must pass before it is used in curved spacetime. Real cores have Knudsen numbers twelve to twenty orders of magnitude below what particles can resolve, so the planned scan is a bridge between the two limits, anchored at the fluid end by the exact pulsation onset of the same equilibrium. For the thermal core of the scan, the turning point of the binding energy and the fluid pulsation onsets for two adiabatic indices separate along the sequence, which locates the window inside which collisions can move the threshold. The references of the collision operator agree with independent checks, the code's collision kernels reproduce exact test vectors far inside their tolerances, and the code moves particles in a collisionless box exactly. The collisional box tests are under way, and the first cluster runs with collisions are specified.
+\end{abstract}
+
+\maketitle
+
+\section{Introduction}\label{sec:intro}
+
+Dark-matter particles that scatter elastically off each other conduct heat inside a halo. A self-gravitating core has a negative heat capacity: when it loses heat to the halo around it, it contracts and becomes hotter, so the heat flow continues and the core runs away in a gravothermal collapse \cite{Balberg:2002gt,Koda:2011sidm}. The collapse ends when the velocity dispersion of the core approaches the speed of light and general relativity makes the core dynamically unstable \cite{Balberg:2002bh,Feng:2021instab}. The black hole that forms is a candidate seed for the massive black holes that the James Webb Space Telescope finds early in cosmic history \cite{Feng:2021seed,Feng:2025lrd,Shen:2025lrd}, so the fraction of the core that ends in the black hole matters for that interpretation.
+
+The estimates of this fraction come from fluid models. A conducting fluid follows the gravothermal phase and agrees with Monte Carlo $N$-body simulations in the transitional regime of mean free paths \cite{Koda:2011sidm}. Equilibria of a truncated thermal distribution give the onset of the relativistic instability through the turning point of the binding energy and through an adiabatic criterion for radial pulsations \cite{Feng:2021instab}. The only time-dependent relativistic calculation is a spherical fluid with heat flux in the Misner--Sharp form, which follows the core to horizon formation and finds a black hole that holds a tiny fraction of the halo \cite{Gu:2026sidm}; its authors point out that a rigorous treatment requires the collisional Boltzmann equation \cite{Gu:2026sidm}. For collisionless relativistic clusters the turning point of the binding energy marks the onset of instability of the King and polytropic families, and the collapse then takes every particle into the black hole \cite{Gunther:2020ev}; core--halo families can stay stable beyond the first turning point \cite{Gunther:2021ev}.
+
+This track computes the collapse with particles. The numerical-relativity particle-in-cell method of Wu and Most \cite{Wu:2026nrpic} evolves macroparticles on geodesics together with the spacetime and has followed relativistic clusters through their instability. Here the method, rebuilt in the code AthenaK, gains a relativistic Monte Carlo collision operator, so that a single dimensionless number, the Knudsen number of the core, moves the matter from the collisionless regime to the collision-dominated one. The relaxation time of a real core exceeds its dynamical time by many orders of magnitude, so the runs start from an equilibrium close to the instability threshold. The work is carried out by large-language-model agents under human direction.
+
+This note records the scoping stage and the tests done so far:
+\begin{itemize}
+\item the Knudsen numbers of real cores lie far below anything that particles can resolve, so the planned scan is a bridge between the collisionless and the fluid limits, anchored at the fluid end (Sec.~\ref{sec:knudsen});
+\item along the thermal-core sequence of the scan the turning point of the binding energy and the fluid pulsation onsets separate, and the closure of the fluid decides where its onset sits (Sec.~\ref{sec:t-sequences});
+\item the references of the collision operator agree with independent checks, and the code's collision kernels reproduce exact test vectors (Sec.~\ref{sec:t-collisions});
+\item the code moves particles exactly in a collisionless periodic box and reads the equilibrium models as initial data (Secs.~\ref{sec:t-box} and \ref{sec:t-id}).
+\end{itemize}
+Section~\ref{sec:problem} states the problem, Sec.~\ref{sec:setup} the set-up and the numerical methods, Sec.~\ref{sec:tests} the tests, and Sec.~\ref{sec:plan} the plan to the next gates and what is open. Table~\ref{tab:parameters} holds the parameters of the equilibrium models, and Tables~\ref{tab:ledger} and \ref{tab:ledger2} every number of the note with the registered run that produced it.
+
+\section{From gravothermal collapse to a relativistic instability}\label{sec:problem}
+
+\subsection{Two clocks}\label{sec:clocks}
+
+Two times govern the core. The relaxation time, the time for collisions to carry heat across the core, sets the pace of the gravothermal collapse. The dynamical time, the free-fall time of the core, sets the pace of the relativistic instability. In the fluid calculation of Ref.~\cite{Gu:2026sidm} even the fastest phase of the collapse lasts tens of thousands of dynamical times of the core, and the approach to the horizon far longer (Table~\ref{tab:ledger2}). Following that history step by step at the resolution of the dynamical time is out of reach. The calculation therefore starts from an equilibrium core close to the threshold of the relativistic instability and asks what happens next, with the collisions switched on at a chosen strength.
+
+\subsection{Equilibrium families}\label{sec:families}
+
+A static, spherically symmetric, isotropic solution of the Einstein--Vlasov system has a distribution function $f$ that depends on the phase-space coordinates only through the Killing energy per unit rest mass, $E=-u_t$, which every particle conserves. Three families serve the track. The truncated thermal family has the thermal kernel
+\begin{equation}\label{eq:kernel}
+f(E)=A\left[\exp\!\left(\frac{1-E/E_c}{b}\right)-1\right]\quad (E<E_c),
+\end{equation}
+and $f=0$ above the cutoff energy $E_c$, where $A$ is a normalization and $b=k_BT(R)/m$ is the temperature at the edge $R$ in units of the particle mass $m$. Since the temperature follows the Tolman law, this kernel is the truncated Maxwell--Boltzmann distribution of Ref.~\cite{Feng:2021instab}, whose sequence at fixed $b$ is labelled by $w_0$, the central cutoff kinetic energy over the local temperature. A small $b$ gives a hot, dense core inside an extended envelope; we call the member with $b=0.1$ the thermal core, and it is the primary family of the scan, the one Ref.~\cite{Gu:2026sidm} uses for its onset. The member with $b=1$ is the King model of Ref.~\cite{Gunther:2020ev}, labelled by the central value $y_0$ of its potential variable. The monoenergetic family of Ref.~\cite{Wu:2026nrpic} gives every particle the same Killing energy and is labelled by $y_c$, the central value of the squared ratio of central to surface lapse. The King and monoenergetic families serve verification: their collisionless thresholds are known \cite{Gunther:2020ev,Wu:2026nrpic}.
+
+Along each sequence the central redshift to infinity, written $Z(0)$ for the thermal core and $z_c$ for the other two families, grows monotonically, and the binding-energy fraction $\epsilon=(M_0-M)/M_0$, with $M_0$ the rest mass and $M$ the ADM mass, rises to a maximum and falls again. Table~\ref{tab:parameters} lists the models at the instability criteria of Sec.~\ref{sec:t-sequences}.
+
+\subsection{The Knudsen number}\label{sec:knudsen}
+
+The Knudsen number compares the mean free path of the particles with the size of the system. Following the gravothermal literature \cite{Balberg:2002gt,Gu:2026sidm} we take the mean free path $\lambda$ and the gravitational scale height $H$ at the centre,
+\begin{equation}\label{eq:kn}
+\lambda=\frac{1}{\rho_0\sigmam},\qquad H=\left(\frac{v_1^2}{4\pi\rho_0}\right)^{1/2},\qquad \Kn_c=\frac{\lambda_c}{H_c},
+\end{equation}
+where $\rho_0$ is the rest-mass density, $\sigmam$ the cross-section per unit mass, and $v_1^2=(p+2p_T)/(3\rho_0)$ the squared one-dimensional velocity dispersion built from the radial and tangential pressures $p$ and $p_T$. In code units, with $G=c=1$ and the ADM mass $M$ as the unit, the cross-section per unit mass becomes a number $\sigt$, and each equilibrium model has its conversion constant
+\begin{equation}\label{eq:conversion}
+\sigt\,\Kn_c=K\equiv\frac{1}{\rho_{0c}H_c}.
+\end{equation}
+The constant varies little across the thirteen particle models of the track [Fig.~\ref{fig:knudsen}(b)], and a factor fixed by the physical units turns $\sigt$ into centimetres squared per gram for a given core mass.
+
+Figure~\ref{fig:knudsen}(a) places real cores on this scale. For the cross-sections favoured by halo observations, a core of the black-hole mass found by the fluid calculation \cite{Gu:2026sidm} has a central Knudsen number some twenty orders of magnitude below unity, and a core as massive as the seed of the quasar benchmark of Ref.~\cite{Feng:2021instab} still lies a dozen orders below. Real relativistic cores are perfect fluids on their dynamical time. Particles resolve a collision length only if each collision cell is smaller than the mean free path and holds enough particles, so the particle number grows as $\Kn^{-3}$; the planned scan covers central Knudsen numbers from a few tenths to a hundred. The scan therefore maps the bridge from the collisionless to the fluid limit, and every statement about real seeds goes through its small-$\Kn$ end, which we anchor with the exact pulsation onset of the same equilibrium treated as a fluid.
+
+\begin{figure*}
+\centering
+\includegraphics[width=\textwidth]{fig_knudsen.pdf}
+\caption{Knudsen numbers of real cores and of the planned scan. (a) Central Knudsen number of the near-threshold models scaled to a core mass, for cross-sections per unit mass of $1$--$100\,$cm$^2$/g (light band, King threshold model) and $5\,$cm$^2$/g (dark band, all thirteen models); the red band is the planned scan, the dashed lines the black-hole mass of the fluid calculation \cite{Gu:2026sidm} and the seed of the quasar benchmark \cite{Feng:2021instab}. (b) Conversion constant of the thirteen particle models against their central redshift.}
+\label{fig:knudsen}
+\end{figure*}
+
+\subsection{Observables}\label{sec:observables}
+
+The track measures two things. The first is the collisionless instability threshold of each family, located with three-way convergence in particle number, cell size and domain size and compared with the turning point of the binding energy; for the King and monoenergetic families it reproduces the literature, for the thermal core it is new. The second is the collapsed mass fraction $f_{\rm BH}=M_{\rm BH}/M$, the mass of the apparent horizon at its formation and at the end of a run over the ADM mass, against the central Knudsen number, for thermal cores on both sides of the collisionless threshold and converged in particle number and collision step. Without collisions the King collapse takes every particle \cite{Gunther:2020ev}; whether a thermal core leaves its envelope behind, and how collisions change that, is the science question.
+
+\section{Set-up and numerical methods}\label{sec:setup}
+
+\subsection{The calculation}\label{sec:architecture}
+
+The calculation has three parts (Fig.~\ref{fig:architecture}). The initial data are equilibrium models written as tables of the metric and as particle samples of the distribution function. The evolution couples the particles to the spacetime and adds the collisions. The analysis compares the runs with reference solutions computed outside the code: the collision rate, relaxation, conduction and entropy of a Maxwell--J\"uttner gas, the slab sums of a periodic box, and the radial-pulsation onset of each equilibrium. Every simulation capability lives in the one code; the track specifies what the code must do, supplies the reference solutions and tests, and checks the implementation.
+
+\begin{figure*}
+\centering
+\includegraphics[width=0.92\textwidth]{schem_architecture.png}
+\caption{Architecture of the calculation. Green blocks exist and are tested, slate blocks exist for another family or setting and are carried over, red blocks are still to be written. The purple pills are the deliverables.}
+\label{fig:architecture}
+\end{figure*}
+
+\subsection{Relativistic Monte Carlo collisions}\label{sec:collisions}
+
+Collisions are added by direct-simulation Monte Carlo in the cells of the mesh. Once per time step, after the particles have moved, the particles of each collision cell are paired at random. A tested pair $(i,j)$ collides with the pair probability
+\begin{equation}\label{eq:pairprob}
+P_{ij}=\frac{(N-1)\,\sigmam\,M_i\,\vM\,\alpha\,\Delta t}{\sqrt{\gamma}\,\Delta x\,\Delta y\,\Delta z},
+\end{equation}
+where $N$ is the number of particles in the cell, $M_i$ the rest mass of a macroparticle (all equal), $\alpha$ the lapse, $\gamma$ the determinant of the spatial metric at the cell centre, and $\Delta t$ and $\Delta x\,\Delta y\,\Delta z$ the coordinate step and cell volume, so that the denominator and $\alpha\Delta t$ are the proper volume and the proper time. The Moller speed of the pair,
+\begin{equation}\label{eq:moller}
+\vM=\frac{\sqrt{\gamma_{\rm rel}^2-1}}{W_iW_j},\qquad \gamma_{\rm rel}=-u_i\cdot u_j,
+\end{equation}
+with $W=(1+u^2)^{1/2}$ the Lorentz factor of each particle in the frame of the normal observer at the cell centre, makes the number of collisions per unit four-volume a Lorentz scalar. A pair that collides scatters elastically and isotropically in its centre-of-momentum frame, which conserves its four-momentum to rounding. In the Newtonian limit the scheme reduces to the one of Koda and Shapiro \cite{Koda:2011sidm} with a cell as kernel. Each pairing, acceptance and direction draws its random numbers from a counter keyed by the seed, the step and the particle tags, so that a run gives the same particles for any division of the mesh among processors.
+
+For a Maxwell--J\"uttner gas at temperature $\theta=T/m$ the same rule gives the Moller-averaged rate per particle,
+\begin{equation}\label{eq:rate}
+\Gamma=\rho_0\sigmam\langle\vM\rangle,\qquad \langle\vM\rangle=\frac{4K_3(2\zeta)}{\zeta K_2(\zeta)^2},
+\end{equation}
+with $\zeta=1/\theta$ and $K_\nu$ the modified Bessel functions of the second kind. At low temperature the average tends to $\sqrt{16\theta/\pi}$, the hard-sphere rate of the gravothermal literature \cite{Balberg:2002gt}; at high temperature it tends to unity. This Moller-averaged rate is the reference of the collision-rate test.
+
+\subsection{Numerical methods}\label{sec:methods}
+
+The spacetime is evolved in the Z4c formulation on the mesh of AthenaK, and the macroparticles move on geodesics of the evolving metric; their stress-energy is deposited on the mesh with cloud kernels, and an apparent-horizon finder with excision of its interior follows the black hole \cite{Wu:2026nrpic}. The cluster initial data are the equilibrium models in conformally flat isotropic coordinates, read as radial tables of the metric functions together with a particle file sampled from the distribution function. The collision step acts after the push on the particles that each mesh block owns, in the orthonormal frame of the normal observer at the cell centre, with the metric of the end of the step. The box tests use the flat metric in a periodic domain and the particle push alone.
+
+\section{Tests so far}\label{sec:tests}
+
+\subsection{Equilibrium sequences and onsets}\label{sec:t-sequences}
+
+The spherical baseline is an independent solver for each family. The thermal-core solver reproduces the two printed tables of Ref.~\cite{Feng:2021instab} row by row; the remaining differences are small, the radius column is printed coarsely, and three printed entries are misprints (Table~\ref{tab:ledger}). A second, independently written solver agrees with it to the level of the integration tolerances, and three solvers agree on the King sequence.
+
+Figure~\ref{fig:sequences}(a) shows the binding-energy fraction of the thermal core with the printed rows. Three criteria mark the onset of instability along the sequence, in increasing central redshift: the maximum of the binding energy, the zero of the lowest squared radial-pulsation frequency $\omega_0^2$ of the same profile treated as a perfect fluid with the adiabatic index $\Gamma=1+p/u$ of Ref.~\cite{Feng:2021instab} ($u$ the thermal energy density), and the trial-function criterion of that reference. The pulsation onset comes from a Rayleigh--Ritz finite-element solution of Chandrasekhar's equation; on polytropes, where the zero must coincide with the maximum of the mass, it does so to the accuracy of the solver. Figure~\ref{fig:sequences}(b) shows how the onset moves with the closure: with $\Gamma=5/3$ the zero lies beyond the trial criterion. For the same adiabatic index the trial criterion is sufficient for instability, so the exact onset lies below it, as found.
+
+These criteria separate because they answer different questions. The turning point of the binding energy marks the collisionless onset of the King and polytropic families \cite{Gunther:2020ev}, while the pulsation onset is the threshold of a fluid whose collisions keep it in local equilibrium, and it depends on the adiabatic index. A core with a finite Knudsen number lies between these limits, and the scan measures where its threshold falls. For core--halo families the collisionless onset itself can move away from the turning point \cite{Gunther:2021ev}, so for the thermal core it is measured.
+
+Figure~\ref{fig:sequences}(c) shows the two verification families. The King maximum reproduces the printed value of Ref.~\cite{Gunther:2020ev}, the monoenergetic maximum falls between the stable and the collapsing models of Ref.~\cite{Wu:2026nrpic}, and the five printed models of that reference are reproduced to their printed digits. The thirteen particle models built for the runs (King and polytropic models on both sides of the turning point, and shells of Ref.~\cite{Andreasson:2006ev}) pass every offline check of their sampling and constraints.
+
+\begin{figure*}
+\centering
+\includegraphics[width=\textwidth]{fig_sequences.pdf}
+\caption{Equilibrium sequences. (a) Binding-energy fraction of the thermal core ($b=0.1$) against the central redshift, solver (line) and printed rows of Ref.~\cite{Feng:2021instab} (circles); vertical lines: binding-energy maximum (dotted), pulsation onset with $\Gamma=1+p/u$ (dashed), trial criterion (dash-dotted). (b) Lowest squared pulsation frequency, normalized at the binding-energy maximum, for two adiabatic indices; dashed lines at the zeros. (c) King and monoenergetic families with their maxima (stars), the particle models and the models of Ref.~\cite{Wu:2026nrpic}.}
+\label{fig:sequences}
+\end{figure*}
+
+\subsection{Collision references and kernels}\label{sec:t-collisions}
+
+The collision operator was specified before it existed in the code, with references independent of the code. Figure~\ref{fig:collisions}(a,b) compares the Moller-averaged rate with a three-dimensional quadrature over both momenta that bypasses the reduction to one integral: the two agree to the resolution of the quadrature at all temperatures. Monte Carlo averages over independently sampled pairs reproduce the rate, the exact relaxation rate of two populations at different temperatures, and the entropy estimator within two standard errors [Fig.~\ref{fig:collisions}(c)]. The relaxation of a hot gas is far slower than its non-relativistic form predicts (Table~\ref{tab:ledger2}). The rate and covariance tests are designed so that a code using the difference of the three-velocities in place of the Moller speed fails them.
+
+The code's collision kernels were then fed exact test vectors, pairs whose expected outcomes were computed in sixty-digit arithmetic over many decades of temperature and bulk Lorentz factor. Under three compiler settings every case passes: the largest error of a post-collision velocity is a small fraction of its tolerance, and the four-momentum of each pair is conserved to about one unit roundoff [Fig.~\ref{fig:collisions}(d)]. Two independently written drivers of this test agree.
+
+\begin{figure*}
+\centering
+\includegraphics[width=0.9\textwidth]{fig_collisions.pdf}
+\caption{References of the collision operator and the kernel test. (a) Moller-averaged speed of a Maxwell--J\"uttner gas, closed form (line) and three-dimensional quadrature (circles), with the low-temperature limit (dashed). (b) Relative difference of the two, and of the quadrature at two resolutions. (c) Monte Carlo checks in units of their standard error; grey band: two standard errors. (d) Largest error of the code's kernels over the test vectors, as a fraction of its tolerance, for three compiler settings.}
+\label{fig:collisions}
+\end{figure*}
+
+\subsection{Particles in a periodic box}\label{sec:t-box}
+
+The box tests of the collision operator start from the collisionless limit, which has an exact solution. Two slabs of a periodic Minkowski box hold Maxwell--J\"uttner gases at equal pressure and different temperatures; without collisions every particle streams on a straight line, and the mass and energy in the left slab follow a closed form for an infinite sample. Figure~\ref{fig:box} shows the code's slab sums: they equal those of straight-line streaming of the same sample to rounding, the positions agree with it to rounding, and both follow the ensemble curve within the sampling noise. The analysis of the box tests is thereby checked on the code's own output. The collisional tests (replay of one collision step, conservation, rate, relaxation, entropy, conduction at long and short mean free path, convergence, reproducibility and Lorentz covariance) run on the code's operator in the current stage; a first run has fixed the formats of its outputs, and the rate test has its cross-sections and steps.
+
+\begin{figure*}
+\centering
+\includegraphics[width=\textwidth]{fig_box_step.pdf}
+\caption{Free streaming between two reservoirs in a periodic Minkowski box ($\theta=0.02$ and $0.01$ at equal pressure). Rest mass, energy and kinetic energy in the left slab per unit transverse area against time in units of the box crossing time of the cold gas: the code (dots), straight-line streaming of the same particles (dashed), and the exact ensemble curve with two standard deviations of the sampling noise (blue).}
+\label{fig:box}
+\end{figure*}
+
+\subsection{Initial data in the code}\label{sec:t-id}
+
+The code reads the King threshold model, its metric table and its particle file, and starts the evolution: the particle count and the total rest mass equal those of the model to rounding, and the Hamiltonian-constraint norm is close to that of an earlier monoenergetic set-up. The momentum-constraint norm is larger than in that set-up, and its cause is open (Sec.~\ref{sec:plan}).
+
+\section{Plan and open questions}\label{sec:plan}
+
+Figure~\ref{fig:timeline} shows the gates of the track. The scoping gate is complete with this note. The baseline gate needs the collisional box tests on the code's operator; the spherical baseline it also asks for is met (Sec.~\ref{sec:t-sequences}). The capability gate locates the collisionless thresholds of the three families with three-way convergence and closes the conservation budgets of the collisions in curved spacetime, first on a static curved metric with an exact answer. The science gate gives the collapsed mass fraction against the Knudsen number for thermal cores on both sides of the collisionless threshold.
+
+Five items stand between the gates. (i) Particle models of the thermal core, by carrying the King sampler over to the thermal kernel with $b=0.1$. (ii) A recipe for the radial perturbation of an equilibrium and the extraction of the growth rate of the radial mode, checked on the monoenergetic runs of Ref.~\cite{Wu:2026nrpic}. (iii) The fluid onset with the adiabatic index of a J\"uttner gas, which lies below $5/3$ at relativistic temperatures, as the small-$\Kn$ anchor. (iv) The cost of a collision, which fixes how small a Knudsen number the computing time reaches; the particle number grows as $\Kn^{-3}$ and the collision term is stiff at small $\Kn$. (v) The momentum-constraint excess of Sec.~\ref{sec:t-id}. The capability and science gates need more computing time than the current allotment.
+
+\begin{figure*}
+\centering
+\includegraphics[width=0.92\textwidth]{schem_timeline.png}
+\caption{Stage timeline. Each gate (circle) with its evidence (box above) and what the step to it needs (below); the marker shows the present state.}
+\label{fig:timeline}
+\end{figure*}
+
+\section{Summary}\label{sec:summary}
+
+Real relativistic cores of self-interacting dark matter are collision-dominated by a margin of some twenty orders of magnitude, so a particle calculation reaches them only through a bridge: a scan in the Knudsen number from collisionless clusters to the fluid limit, with the exact pulsation onset of the same equilibrium as its anchor. Along the thermal-core sequence the collisionless turning point and the fluid onset separate, and the collision rate decides where between them a real core turns unstable; that window is what the scan resolves. The collision operator that drives the scan conserves each pair's four-momentum to rounding and counts collisions with a Lorentz-invariant speed, and its references, its kernels and the collisionless box agree with exact answers. What remains before the science runs is to test the operator in the box and in curved spacetime, and to measure the collisionless thresholds with convergence.
+
+\begin{acknowledgments}
+This note, its figures and the calculations behind it were produced by large-language-model agents (Claude, Anthropic) working in the program's repository under human direction; the agents' records of predictions and outcomes are kept with the runs.
+\end{acknowledgments}
+
+\appendix
+
+\section{Parameters of the models}\label{app:parameters}
+
+Table~\ref{tab:parameters} lists the equilibrium models at the instability criteria of Sec.~\ref{sec:t-sequences}, in units of the ADM mass.
+
+\input{tables/parameters}
+
+\section{Numerical ledger}\label{app:ledger}
+
+Tables~\ref{tab:ledger} and \ref{tab:ledger2} give every number behind this note with the registered run that produced it; the inputs of each figure and table were checked against the checksums their runs recorded. The figures and tables were made in run C-20261115-170415-385069e. Numbers quoted from the literature, with their locators in the arXiv sources: the black hole of the fluid calculation, about $200\,M_\odot$ at $580\,t_0$ for a fiducial halo with $\sigma/m=5\,$cm$^2$/g, a collapse fraction of about $3\times10^{-8}$ (Ref.~\cite{Gu:2026sidm}, \texttt{SIDM\_MS.tex} lines 68, 384, 481); the seed of the J1205-0000 benchmark, $1.9\times10^{9}\,M_\odot$ (Ref.~\cite{Feng:2021instab}, \texttt{main.tex} line 349); the printed King thresholds $y_{\max}=0.334$ and $y_{\rm zero}=0.784$ (Ref.~\cite{Gunther:2020ev}, \texttt{paper.tex} line 953); the printed binding-energy maximum $0.0352$ at $Z(0)=0.548$ for $b=0.1$ (Ref.~\cite{Feng:2021instab}, \texttt{main.tex} line 280); the agreement of $N$-body and conducting fluid for $\Kn\ge1$ (Ref.~\cite{Koda:2011sidm}, \texttt{sidm1.tex} lines 1482--1491). The second driver of the kernel test is core's run core-20261115-132556-a7dc8ab (the same largest errors to all printed digits). \input{tables/claims_summary}: the stage documents bound the deviation from the printed table of Ref.~\cite{Feng:2021instab} by a value that three columns exceed at one row, give the fastest gravothermal phase as at least $10^5$ dynamical times where the run gives a lower bound of $8.5\times10^4$, and quote radius ranges of the thermal-core models that hold for a narrower range of central redshift than stated.
+
+\input{tables/ledger}
+
+\bibliography{references}
+
+\end{document}
