@@ -1,0 +1,5 @@
+# Commands nrpic-stage verify runs in the clean export (cwd = export root, the worktree's venv).
+# Unit tests of the expanding-ball package (A-pre-1, criterion T1) and of the amplitude
+# conversion and LTB profile (A-pre-2, criterion T2).
+python -B -m pytest -q -p no:cacheprovider --basetemp=/data/haiyangw/nrpic/scratch/A-emd-pbh/tmp/pytest_g1_expball tracks/A-emd-pbh/expball/tests
+cd tracks/A-emd-pbh/criteria && python -B -m pytest -q -p no:cacheprovider --basetemp=/data/haiyangw/nrpic/scratch/A-emd-pbh/tmp/pytest_g1_criteria test_criteria2.py
