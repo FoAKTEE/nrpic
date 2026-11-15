@@ -469,3 +469,153 @@ Requests.
 - Added: `coll_sigma_model`, `coll_sigma_w`.
 - Sub-cycling `measured`: the number of sub-steps comes from the two largest speeds of
   the cell, not from the first pairing (section 3.7): the track's rule biases the rate.
+
+## 11. Collisions with the metric at each particle (`coll_energy = particle`, wave 2)
+
+Work package coll2, branch `core/collisions-2`. Predictions, failed predictions and
+outcomes: `tracks/core/JOURNAL-coll2.md`. Evidence for every number: section 11.6.
+
+### 11.1 The defect of core-v0.3 and its cause
+
+The operator of sections 1 to 10 takes both momenta of a pair to the triad of the cell
+centre, scatters there, and writes the covariant components back. It conserves the sum
+of u_i and the sum of W_c = sqrt(1 + gamma_c^ij u_i u_j) of the pair exactly, with the
+metric gamma_c of the cell centre. The energy with the metric at each particle,
+W_p = sqrt(1 + gamma^ij(x_p) u_i u_j), is what the deposit hands to the spacetime; it is
+not conserved, and in the cluster of section 8 it grew steadily (1e-9 to 1e-8 of the
+particle energy per collision).
+
+Cause [VERIFIED by the test of section 11.6, rows G1, in which each of three
+consequences could have failed]: for a conformally flat metric, with
+eps_p = (psi_c/psi_p)^4 - 1, one collision changes the pair's energy at its own
+positions by (eps_a - eps_b) x (energy moved from b to a in the cell frame), to first
+order. The mean of this product is not zero when the kinetic energy seen in the cell
+frame is correlated with the position inside the cell: for a gas of local temperature
+theta ~ psi^-s the mean gain per collision is (1 - s/4) theta <(eps_a - eps_b)^2>,
+second order in the cell size and in the gradient, positive for a gas of uniform
+temperature or in equilibrium in a potential well (hotter where psi is larger), about
+zero at s = 4, negative beyond. The lapse does not enter: with a homogeneous spatial
+metric the sum of W_p is conserved to rounding whatever the gradient of the lapse. In
+the cluster (s < 4, hotter where deeper) this is a steady gain, as seen.
+
+### 11.2 What a pair must conserve
+
+Neither W at the cell centre nor W_p is the conserved energy. In a stationary metric
+the geodesic motion conserves, per particle, the energy conjugate to the time
+coordinate,
+
+    H = alpha W - beta^i u_i,        W = sqrt(1 + gamma^ij u_i u_j),
+
+with the metric at the particle (the Hamiltonian that the pushers integrate,
+`nrpic_kernels.hpp`), together with u_i where the metric does not depend on x^i: the
+canonical four-momentum (-H, u_i) = p_mu / m in the coordinate basis. A collision at
+one point conserves the sum of p_mu of the two partners; with the partners at two
+points of a cell, the sums of H_p and of u_i, each term with the metric at its own
+particle, are what carries over to the system as a whole: for particles that source
+the spacetime, the change of the total mass caused by a redistribution of momenta at
+fixed positions is, to first order, the sum of M delta H with the fields held fixed
+[JUDGEMENT: the velocity-dependent terms of the first post-Newtonian N-body energy,
+v^2 (1 + 3U)/2 + 3 v^4/8 per unit mass, are the expansion of alpha W with
+alpha = 1 - U, psi^4 = 1 + 2U; own algebra, not checked against a source]. The
+operator of core-v0.3 violates the sum of H_p by about 1.5 times the defect of the sum
+of W_p in a weak field (section 11.6).
+
+### 11.3 Algorithm (`nrpic_collide.hpp`: `CollEnergy`, `CollCentre`, `CollScatterRel`, `CollEnergyRoot`, `CollBalance`)
+
+Where the pair is evaluated: in the frame of the cell centre, as before (section 3):
+one lapse, one volume element and one triad per cell set the probability (rate per
+coordinate time alpha_c/sqrt(det gamma_c)) and the axes of the random direction; cells,
+pairing, sub-steps and random-number keys are unchanged. How the outgoing momenta are
+carried back: as covariant components u_i, unchanged (the canonical momenta, which the
+pushers integrate), and the size of the momentum exchanged is then fixed with the
+metric at each particle.
+
+Before the cells are processed, lapse, shift and inverse spatial metric are
+reconstructed at every colliding particle with the reconstruction of the pusher (mesh
+metric at t^{n+1}: `interp` hermite or bspline; analytic metric: the functor) and
+expressed in the triad of its cell: b_(m) = e^(m)_i beta^i,
+g_(mn) = e^(m)_i e^(n)_j gamma^ij. With triad momenta u_(m) of the cell,
+h_p(u) = alpha_p (W_p - 1) - b_p.u is the kinetic part of H_p and
+v_p(u) = dh_p/du = alpha_p g_p u/W_p - b_p the coordinate velocity of the particle.
+
+For a tested pair (a, b) with P = u_a + u_b:
+
+1. Transfer. dl = -(W0/(2 alpha_c)) [d + q (q.d)], q = P/2, d = v_a(q) - v_b(q),
+   W0 = sqrt(1 + |q|^2): the first Newton step from P/2 towards the split of P at
+   which both particles have the same coordinate velocity (the minimum of the pair's
+   energy at fixed P). The pair of the cell frame is u~_a = u_a - dl, u~_b = u_b + dl.
+   For equal metrics dl = 0.
+2. Probability: equation (1) of section 3.4 with the Moller speed (and the
+   cross-section) of u~_a, u~_b; acceptance with u[0] as before.
+3. Collision of the cell frame: direction nhat (key as before); wv = u~_a' - P/2 of the
+   standard collision of u~_a, u~_b.
+4. Energy: u_a' = P/2 + dl + lam wv, u_b' = P - u_a', with lam > 0 the root of
+   h_a(u_a') + h_b(u_b') = h_a(u_a) + h_b(u_b). The left side is convex in lam and below
+   the right side at lam = 0 when the split lies inside the energy surface, so the root
+   is unique; Newton iteration from lam = 1 until the residual is below 16 units in the
+   last place of the energies. If the split lies outside (a pair whose relative
+   velocity is not resolved against the metric difference) or no root is found, the
+   pair is left unscattered and counted (`n_noroot`).
+5. Detailed balance: the collision takes place with probability min(1, R), decided by
+   u[2] of the acceptance key, R the ratio of the rate of the reverse collision to that
+   of the forward one, both as densities on the surface of constant P and energy. A
+   proposal reaches the point c + r L nhat (c the split of step 4, L the stretch of the
+   centre-of-momentum frame, det L = gamma = E/sqrt(s)), and on the surface
+   delta(F) d^3q = gamma r^2 dOmega/(dF/dr), so its density is
+   (1/4 pi)(dF/dr)/(gamma r^2) and
+   R = [P' (dF/dr)_rev/(gamma' r_rev^2)] / [P (dF/dr)_fwd/(gamma r_fwd^2)],
+   primes for the state after the collision, P the proposal probability (sigma v_Mol),
+   r_fwd = lam p*, r_rev = |L'^-1 (u_a - c)|, (dF/dr)_rev = (v_a - v_b).(u_a - c)/r_rev.
+   For equal metrics R = 1 identically (the density is then the invariant two-body
+   phase space; checked by hand and to 1.2e-15 by the twin). Rejected collisions are
+   counted (`n_balance`).
+
+Why step 1: without the transfer the scheme conserves the same quantities, but in an
+equilibrium state it moves energy on average from the partner that is hotter in the
+cell frame to the other one (out of a potential well). In the non-relativistic limit a
+pair in two conformally flat metrics is a pair of two different inertial masses
+psi^4/alpha in the canonical variables; its elastic collision about the common
+coordinate velocity has the equilibrium "equal temperature at infinity", Tolman's law.
+Why step 5: beyond that limit the rate of the scheme is not symmetric between a state
+and its outcome, at first order in the metric difference times the temperature;
+without step 5 the reference of section 11.6 shows an energy transfer along the
+modulation in equilibrium of 6 percent of that of core-v0.3 at theta = 0.05 and two
+thirds of it, of the opposite sign, at theta = 0.3.
+
+### 11.4 What is conserved, and what holds to which order
+
+| Statement | `coll_energy = particle`, equal rest masses |
+|---|---|
+| rest mass of every macroparticle | unchanged (bit) |
+| mass shell | exact: W is computed from u with the metric at the particle |
+| sum of M u_i of a pair (covariant components) | rounding (u_b' = P - u_a') |
+| sum of M H_p of a pair, H = alpha W - beta^i u_i with the metric at each particle | rounding: at most 16 units in the last place of the kinetic energies (h excludes the rest energy alpha, which does not change) |
+| particles that do not collide | unchanged (bit) |
+| equilibrium f = F(H) of a stationary metric, F = exp(-H/T) | left unchanged by the collision step, given the cell populations: the transition rate between two states of a pair is symmetric (step 5) [JUDGEMENT: derivation in the journal and in `CollBalance`; tested at theta = 0.05 and 0.3 to the statistical errors of section 11.6] |
+| sum of M W_p (deposited energy) | changes at first order in the metric difference per collision, as it must when energy moves between two depths of a potential; no mean drift in equilibrium |
+| angular momentum of a pair about a centre, x^i u_j - x^j u_i | not conserved: changes by (x_a - x_b) x Delta u_a per collision (first order in the separation, zero mean in a non-rotating state), as in core-v0.3 and any scheme whose partners sit at different points |
+| covariant sum of the four-momenta at one point (parallel transport) | not used: the covariant components of two points are added in the coordinate basis; the difference from a transported sum is first order in the separation times the connection, and it is what the canonical sum above accounts for |
+| collision rate | first order in the cell size: lapse, volume element and triad are those of the cell centre, the Moller speed that of the transferred momenta; rejections of step 5 lower it by their share (0.6e-3 to 6e-3 of the proposals in the tests at theta = 0.05, 0.6 to 2.3 percent at 0.2 and 0.3) |
+| direction of scattering | isotropic in the triad of the cell centre; for a spatial metric with shear across the cell anisotropic at a particle's own frame at first order in the metric difference |
+| transport (heat conduction, viscosity) | the cell-size error of any such scheme; not measured here |
+
+With `coll_weights = nanbu` and unequal masses the pair conserves these quantities in
+expectation only, as in section 3.6. A metric that changes in time (Z4c) is taken at
+t^{n+1}; H is then the instantaneous Hamiltonian and its sum over a pair is conserved
+by the collision step in the same way.
+
+### 11.5 Options, outputs, cost
+
+- `<particles> coll_energy = cell | particle`, read only if present (absent: the
+  operator of core-v0.3, every output byte-identical to it). Its presence, with either
+  value, adds history columns 32 to 36 (section 5), takes the budget of `coll_budget`
+  particle by particle inside the cells, and writes dumps of version 2.
+- With `coll_energy = cell` and the option present the particles evolve exactly as with
+  the option absent (only the history gains columns).
+- Watch `n_noroot` and `n_balance` against `n_coll`: in the tests at most 1.4e-5 and
+  2.3e-2 of the proposals.
+- Cost: one metric reconstruction per colliding particle and step, and per pair a
+  Newton iteration (typically two to four steps). Measured on the processor: the
+  collision step of a 1e5-particle Tolman box takes about the same time in both modes
+  (wall time of the whole run 387 to 394 s for the four runs of
+  core-20261115-164138-cdd7c88, dominated by the implicit push).
