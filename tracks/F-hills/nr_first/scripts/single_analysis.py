@@ -12,7 +12,7 @@ Per run (directories named S1, S2, S3, and any other names given):
 Reference values (python/nrpic/bowen_york.py, recomputed here): ADM mass of the data with the
 second-order correction m + (5/8) P^2/m and of the full solution; P/M_ADM; sqrt(M_ADM^2 - P^2).
 Writes <out>/single_analysis.json and fig_single_{junk,gauge}.{png,pdf}.
-Usage: single_analysis.py <out> <run dir> [<run dir> ...]
+Usage: single_analysis.py <out> [--P=<momentum>] <run dir> [<run dir> ...]
 """
 import json
 import math
@@ -29,8 +29,8 @@ import nrread as nr  # noqa: E402
 from nrpic import bowen_york as by  # noqa: E402
 from nrpic import figstyle as fs  # noqa: E402
 
-P, MBARE = 0.25, 1.0
-RADII = (30, 40, 50)
+P, MBARE = 0.25, 1.0        # momentum of the package's input; --P=<value> for another run
+RADII = (30, 40, 50)        # default; a run with other spheres uses those it has
 COL = {"S1": fs.PAL["blue"], "S2": fs.PAL["red"], "S3": fs.PAL["yellow"],
        "S2g": fs.PAL["green"]}
 DESC = {"S1": r"S1: $h=m/16$, $\eta m=2$", "S2": r"S2: $h=m/8$, $\eta m=0.25$",
@@ -43,8 +43,12 @@ def window_mean(t, y, t0, t1):
 
 
 def main():
+    global P
     out = sys.argv[1]
-    runs = sys.argv[2:]
+    runs = [a for a in sys.argv[2:] if not a.startswith("--P=")]
+    for a in sys.argv[2:]:
+        if a.startswith("--P="):
+            P = float(a[4:])
     os.makedirs(out, exist_ok=True)
     m_adm2 = by.adm_mass_approx(MBARE, P)
     m_full = by.solve_axisym(MBARE, P=P)["m_adm"]
@@ -85,7 +89,9 @@ def main():
                                 M_t0=float(np.sqrt(hst["M2"][0])))
         e["junk"] = {}
         wav = {}
-        for R in RADII:
+        have = sorted(int(f[-8:-4]) for f in os.listdir(os.path.join(rd, "waveforms"))
+                      if f.startswith("rpsi4_real_"))
+        for R in (RADII if all(r in have for r in RADII) else have):
             try:
                 tw, modes = nr.read_rpsi4(rd, R)
             except (OSError, ValueError) as err:

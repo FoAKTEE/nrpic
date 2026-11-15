@@ -341,3 +341,15 @@ members' masses (three_punctures PLAN section 5: 2.5e-3 M per member without it 
 Note: the first version of the test wrote its JSON into the directory it read (C0's
 `approx_L10`); moved to the run directory of F-20261115-181805-f9c3473, and the script now
 writes to `$NRPIC_RUN_DIR`.
+
+## 2026-11-15 E3a. The single-puncture analysis on core's run A (prediction)
+
+Before the card runs start: `scripts/single_analysis.py` (with `nrread.py`) on core's
+registered run A of test 1b, core-20261115-121046-0c197fb (m = 1, P = 0.3 corrected, cells
+m/16, eta m = 2, 40 m, spheres 10 and 14 m; read only). Prediction: it reproduces the numbers
+core published for that run (interface `multi_puncture.md` section 8, test 1b): horizon mass
+1.0107 at the first search, constant to 2e-4; tracker speed ratios 0.48, 0.55, 0.61 of
+P/M_ADM over t = 10-20, 20-30, 30-40 (to +-0.02; core's M_ADM may be the full solution
+1.0547 or the second order 1.0563, a 0.15 percent difference); H norm 2.3e-6 at t = 0.
+Refuted if any differs beyond these tolerances (then my readers or my reading of core's
+definitions are wrong).
