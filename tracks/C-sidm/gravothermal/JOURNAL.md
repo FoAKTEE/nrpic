@@ -75,3 +75,60 @@ The trial function xi = r e^Phi gives an upper bound to the lowest omega^2 (Rayl
 the exact zero of the fundamental mode of Chandrasekhar's equation with Gamma = 1 + p/u
 lies at smaller w0 than the trial root: for b = 0.1 between w0 = 3.0 and 4.05. Refuted
 (and a bug indicated) if the exact zero lies above the trial root.
+
+## 2026-11-15  helper gravothermal  (outcomes of runs C-sidm-20261115-120715/120717/120722-38ab057)
+
+Runs: C-sidm-20261115-120715-38ab057 (unit tests, all pass), C-sidm-20261115-120717-38ab057
+(table parse: 56 rows of Table 1, 14 of Table 2), C-sidm-20261115-120722-38ab057 (sequences).
+
+Outcome P1 (Table 1 row by row) - holds, with three printed typos and one column off:
+- M^ and E^_rest: median 1.5e-6, max 1.1e-4 relative (row main.tex:503, b = 0.1, w0 = 4.5;
+  the deviation grows with central concentration, as expected from a fixed-step RK4 in F21).
+- B^ max 2.4e-4, eps max 1.3e-4; Z(0) max 2.1e-5; rho^(0), p^(0), v(0) max 3.7e-6;
+  <gamma> max 5.1e-6 absolute, gamma_cr max 1.6e-5 absolute. R^ max 9.9e-4 absolute: the
+  printed R^ sits below the exact surface by less than one step of 1e-3 (truncation to F21's
+  grid), so C printed = M^/R^(printed) is up to 0.25 per cent high.
+- Typos, confirmed against the paper's own other columns: main.tex:516 (b = 0.2, w0 = 0.05)
+  C = 4.0e-4 for M^/R^ = 4.0e-3; main.tex:491 (b = 0.1, w0 = 0.3) C = 1.41053e-2 for
+  M^/R^ = 1.141e-2 (digit transposition, not predicted); main.tex:493 (b = 0.1, w0 = 1.1)
+  p^(0) = 1.09378e-3 for 1.09e-2 (factor 10).
+- FAILED part: eps_c(0)/mc^2 deviates from b w0/(1 - b w0) by up to 1.3e-4 (main.tex:498),
+  above the 2e-5 I predicted for local quantities, although F21's Z(0) is consistent with the
+  exact eps_c(0). Cause not established; F21 presumably evaluated this column at its first
+  grid point off the centre (a shift of w by ~5e-4 there would explain it) [TO VERIFY with
+  the authors' data files, which are not fetched].
+
+Outcome P2 - holds. Exact maxima (b = 0.1): E^ = 3.47261e-2 at v(0) = 0.2279 (paper grid
+3.47240e-2 at 0.225), B^ = 8.48864e-4 at v(0) = 0.3970 (paper 8.48824e-4 at 0.395),
+eps = 0.0351789 at Z(0) = 0.5404, w0 = 3.1652 (paper grid 0.0351754 at Z = 0.548, w0 = 3.2).
+For b = 0.1 ... 0.5, eps_max = 0.03518-0.03557 at Z(0) = 0.540-0.514 (paper: 0.0352-0.0356 at
+0.548-0.522, grid values). Root <gamma> = gamma_cr: w0 = 4.05115, 1.73634, 1.12525, 0.66244
+(paper 4.05150, 1.73635, 1.12526, 0.662445); Table 2 roots for b = 0.09 ... 5.0 within
+1.1e-4 relative in w0, 2.1e-3 in R^ and C (grid), 2.1e-4 in Z(0), 3e-6 in <gamma>.
+
+Outcome P3 - holds: moments of f(E) equal F21's integrals to 1.2e-14 (unit test 3).
+
+Outcome P4 - partly refuted. Along the F21 structures gamma_cr does not rise without bound:
+for b = 0.1 it peaks at 1.646 < 5/3 (w0 = 4.92, Z(0) = 1.02) and falls again, so the
+trial-function criterion with gamma = 5/3 never fires for b = 0.1 (the refutation clause of
+P4). For b = 0.2, 0.3, 0.5 gamma_cr = 5/3 is reached at Z(0) = 0.777, 0.752, 0.737, lower
+than the 1.0-1.2 I guessed by extrapolating Table 1. The exact (FEM) fluid onset with a
+fixed gamma = 5/3 does exist for every b: Z(0) = 0.779 (b = 0.1), 0.700, 0.687, 0.679.
+
+Outcome P5 - holds. The exact fundamental mode with gamma = 1 + p/u (finite elements,
+converged to 2e-5 relative between N = 800 and 1600, never above the trial value) crosses
+zero at w0 = 3.5871 for b = 0.1 (inside the predicted 3.0-4.05), Z(0) = 0.635; for
+b = 0.2, 0.3, 0.5 at Z(0) = 0.592, 0.584, 0.579. So the trial function xi = r e^Phi is far
+from the eigenfunction of these core-halo structures: at the trial root (b = 0.1,
+w0 = 4.0515) the exact omega_0^2 = -3.59 (hatted units) against -6.7e-4 for the trial.
+
+### Prediction P6 (independent check of the FEM operator: turning-point theorem)
+
+The operator of the FEM was checked only against F21's own closed form (eta = 1), which
+comes from the same printed pulsation equation; a typo there would pass that check. For a
+barotropic sequence whose perturbations obey the same EOS (polytrope p = K rho_0^Gamma,
+rho = rho_0 + p/(Gamma - 1), Gamma_1 = Gamma), omega_0^2 = 0 exactly at the maximum of
+M(rho_c) [BACKGROUND, Harrison-Thorne-Wakano-Wheeler]. Prediction: for Gamma = 2, K = 100
+(G = c = Msun = 1) the FEM zero and the maximum of M agree in rho_c to < 1e-3 relative, and
+M_max is about 1.64 at rho_c about 3.2e-3 [BACKGROUND, value from memory, not a source].
+Refuted if the FEM zero misses the mass maximum by more than 1 per cent in rho_c.

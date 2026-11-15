@@ -319,45 +319,29 @@ def structure(b, w0, n1=4000, n2=4000):
     return eq, r[keep], M[keep], w[keep]
 
 
-def pulsation(b, w0, N=600, gamma_mode="F21", nmodes=1):
-    """Lowest omega^2 of Chandrasekhar's radial pulsation equation (main.tex:201-206).
+def fem_lowest(nodes, coeff, nmodes=1):
+    """Rayleigh-Ritz (finite elements) for Chandrasekhar's radial pulsation equation.
 
-    Sturm-Liouville form with zeta = r^2 e^{-Phi} xi (G = c = 1, hatted units):
+    Sturm-Liouville form with zeta = r^2 e^{-Phi} xi (G = c = 1):
         -(P zeta')' + Q zeta = omega^2 W zeta,
         P = e^{3Phi+Lambda} gamma p / r^2,  W = e^{3Lambda+Phi} (rho + p) / r^2,
         Q = e^{3Phi+Lambda} [4 p'/r + 8 pi e^{2Lambda} p (rho + p) - p'^2/(rho + p)] / r^2,
-    obtained by multiplying main.tex:202-204 by e^{2Phi+Lambda} and setting xi = e^Phi zeta/r^2.
-    Rayleigh-Ritz with zeta = r^3 eta(r), eta piecewise linear on N elements (free at both
-    ends; the centre condition xi(0) = 0 is built in, the surface condition Delta p = 0 is
-    natural). eta = 1 is F21's trial function xi = r e^Phi, so the result is never above
-    the trial value; for eta = 1, Rayleigh = 9 P0 (<gamma> - gamma_cr).
-    gamma_mode: "F21" (gamma = 1 + p/u) or a number (fixed gamma, e.g. 5/3).
-    Returns dict(omega2=[lowest nmodes], trial=Rayleigh(eta=1), check=Rayleigh(1)/(9 P0) -
-    which equals <gamma> - gamma_cr, eta=(nodes, eigenvector of the lowest mode))."""
-    from scipy.interpolate import CubicSpline
+    obtained by multiplying F21 main.tex:202-204 by e^{2Phi+Lambda} with xi = e^Phi zeta/r^2.
+    zeta = r^3 eta(r), eta piecewise linear on the nodes (free at both ends: xi(0) = 0 is
+    built in, Delta p = 0 at the surface is natural). eta = 1 is F21's trial function
+    xi = r e^Phi. coeff(r) returns (M, rho, p, gamma, e^Phi) at the radii r (e^Phi up to a
+    constant factor). Returns (omega^2 of the lowest nmodes, eigenvectors, trial Rayleigh
+    quotient, Rayleigh(eta = 1)/(9 P0) = <gamma> - gamma_cr)."""
     from scipy.linalg import eigh
-    eq, rt, Mt, wt = structure(b, w0)
-    R = eq["R"]
-    Msp = CubicSpline(rt, Mt)
-    wsp = CubicSpline(rt, wt)
-    # nodes: half uniform in r, half uniform in enclosed mass
-    mf = Mt / Mt[-1]
-    nodes = np.unique(np.concatenate((np.linspace(0.0, R, N // 2 + 1),
-                                      np.interp(np.linspace(0.0, 1.0, N // 2 + 1), mf, rt))))
     xg, wg = np.polynomial.legendre.leggauss(5)
     h = np.diff(nodes)
     rq = (nodes[:-1, None] + 0.5 * h[:, None] * (xg[None, :] + 1.0)).ravel()
     wq = (0.5 * h[:, None] * wg[None, :]).ravel()
     tq = np.tile(0.5 * (xg + 1.0), len(h))            # local coordinate in [0, 1]
     el = np.repeat(np.arange(len(h)), len(xg))
-    M = Msp(rq)
-    w = np.clip(wsp(rq), 0.0, None)
-    rho, p, gam = local_vec(b, w)
-    if gamma_mode != "F21":
-        gam = np.full_like(gam, float(gamma_mode))
+    M, rho, p, gam, eP = coeff(rq)
     e2L = 1.0 / (1.0 - 2.0 * M / rq)
     eL = np.sqrt(e2L)
-    eP = 1.0 - b * w
     dp = -(rho + p) * (M + 4 * np.pi * p * rq ** 3) / (rq * (rq - 2 * M))
     with np.errstate(invalid="ignore", divide="ignore"):
         q3 = np.where(rho + p > 0, dp ** 2 / np.where(rho + p > 0, rho + p, 1.0), 0.0)
@@ -374,13 +358,36 @@ def pulsation(b, w0, N=600, gamma_mode="F21", nmodes=1):
         za = 3 * rq ** 2 * phi[a] + rq ** 3 * dphi[a]
         for c in (0, 1):
             zc = 3 * rq ** 2 * phi[c] + rq ** 3 * dphi[c]
-            ka = wq * (Pc * za * zc + Qc * rq ** 6 * phi[a] * phi[c])
-            mb = wq * (Wc * rq ** 6 * phi[a] * phi[c])
-            np.add.at(A, (el + a, el + c), ka)
-            np.add.at(B, (el + a, el + c), mb)
+            np.add.at(A, (el + a, el + c), wq * (Pc * za * zc + Qc * rq ** 6 * phi[a] * phi[c]))
+            np.add.at(B, (el + a, el + c), wq * (Wc * rq ** 6 * phi[a] * phi[c]))
     one = np.ones(n)
     trial = one @ A @ one / (one @ B @ one)
     P0 = np.sum(wq * eP ** 3 * eL * p * rq ** 2)
     ev, vec = eigh(A, B, subset_by_index=[0, nmodes - 1])
-    return dict(omega2=ev, trial=trial, check=(one @ A @ one) / (9.0 * P0), eq=eq,
+    return ev, vec, trial, (one @ A @ one) / (9.0 * P0)
+
+
+def pulsation(b, w0, N=600, gamma_mode="F21", nmodes=1):
+    """Lowest omega^2 of the radial pulsation equation (main.tex:201-206) for the F21 model
+    (b, w0), with gamma = 1 + p/u ("F21") or a fixed number (e.g. 5/3); see `fem_lowest`.
+    Nodes: half uniform in r, half uniform in enclosed mass. Returns dict(omega2, trial,
+    check = <gamma> - gamma_cr from the Rayleigh quotient of eta = 1, eq, eta)."""
+    from scipy.interpolate import CubicSpline
+    eq, rt, Mt, wt = structure(b, w0)
+    R = eq["R"]
+    Msp = CubicSpline(rt, Mt)
+    wsp = CubicSpline(rt, wt)
+    mf = Mt / Mt[-1]
+    nodes = np.unique(np.concatenate((np.linspace(0.0, R, N // 2 + 1),
+                                      np.interp(np.linspace(0.0, 1.0, N // 2 + 1), mf, rt))))
+
+    def coeff(rq):
+        w = np.clip(wsp(rq), 0.0, None)
+        rho, p, gam = local_vec(b, w)
+        if gamma_mode != "F21":
+            gam = np.full_like(gam, float(gamma_mode))
+        return Msp(rq), rho, p, gam, 1.0 - b * w
+
+    ev, vec, trial, check = fem_lowest(nodes, coeff, nmodes)
+    return dict(omega2=ev, trial=trial, check=check, eq=eq,
                 eta=(nodes, vec[:, 0] / vec[np.argmax(np.abs(vec[:, 0])), 0]))
