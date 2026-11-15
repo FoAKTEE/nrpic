@@ -1,0 +1,69 @@
+{
+ "run_id": "D-bh-dress-20261115-175512-5b843b8",
+ "track": "D-bh-dress",
+ "package": "D-pre-2 spike",
+ "purpose": "K2 control analysis: BL-slice run",
+ "kind": "scouting",
+ "command": [
+  "/data/haiyangw/nrpic/wt/D-bh-dress/.venv/bin/python",
+  "analyze_kerr.py",
+  "--ic",
+  "/data/haiyangw/nrpic/scratch/D-bh-dress/D-bh-dress-20261115-173649-d343137",
+  "--ref",
+  "/data/haiyangw/nrpic/scratch/D-bh-dress/D-bh-dress-20261115-172646-ed6a510",
+  "--runs",
+  "/data/haiyangw/nrpic/scratch/D-bh-dress/D-bh-dress-20261115-174807-ba95d18/kerr_0",
+  "/data/haiyangw/nrpic/scratch/D-bh-dress/D-bh-dress-20261115-174807-ba95d18/kerr_1",
+  "/data/haiyangw/nrpic/scratch/D-bh-dress/D-bh-dress-20261115-174807-ba95d18/kerr_2",
+  "/data/haiyangw/nrpic/scratch/D-bh-dress/D-bh-dress-20261115-174807-ba95d18/kerr_3",
+  "/data/haiyangw/nrpic/scratch/D-bh-dress/D-bh-dress-20261115-174807-ba95d18/kerr_4",
+  "/data/haiyangw/nrpic/scratch/D-bh-dress/D-bh-dress-20261115-174807-ba95d18/kerr_5",
+  "--out",
+  "/data/haiyangw/nrpic/scratch/D-bh-dress/D-bh-dress-20261115-175512-5b843b8",
+  "--tag",
+  "bl",
+  "--nofigs"
+ ],
+ "cwd": "/data/haiyangw/nrpic/wt/D-bh-dress/tracks/D-bh-dress/spike",
+ "env_overrides": {
+  "OMP_NUM_THREADS": "1",
+  "OPENBLAS_NUM_THREADS": "1"
+ },
+ "git": {
+  "sha": "5b843b894d976eb0e11079f053ad2f3679027c7c",
+  "branch": "track/D-bh-dress",
+  "dirty_spike_dir": false
+ },
+ "inputs": [
+  {
+   "path": "/data/haiyangw/nrpic/wt/D-bh-dress/tracks/D-bh-dress/spike/analyze_kerr.py",
+   "sha256": "be9ad807e9f09902511b621625b83ad8d28735d89dd238e31138308005de4c61"
+  }
+ ],
+ "resources": {
+  "nodes": 1,
+  "cores": 1,
+  "gpus": 0,
+  "card_hours": 0.0,
+  "walltime_s": 8.84
+ },
+ "outputs": {
+  "dir": "/data/haiyangw/nrpic/scratch/D-bh-dress/D-bh-dress-20261115-175512-5b843b8",
+  "sha256sums": "sha256sums.txt",
+  "files": [
+   "bl_analysis.json",
+   "bl_series.npz",
+   "stdout.txt"
+  ]
+ },
+ "status": "completed",
+ "exit_code": 0,
+ "started": "2026-11-15T17:55:12+00:00",
+ "ended": "2026-11-15T17:55:21+00:00",
+ "parents": [
+  "D-bh-dress-20261115-174807-ba95d18",
+  "D-bh-dress-20261115-173649-d343137",
+  "D-bh-dress-20261115-172646-ed6a510"
+ ],
+ "notes": "Registered by hand with spike/register_run.py (nrpic-run refuses the shared worktree)."
+}
