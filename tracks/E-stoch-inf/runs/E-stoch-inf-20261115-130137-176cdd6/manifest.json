@@ -1,0 +1,67 @@
+{
+  "run_id": "E-stoch-inf-20261115-130137-176cdd6",
+  "owner": "E-stoch-inf",
+  "command": "python3 tracks/E-stoch-inf/langevin/scripts/ref_spec.py inflection 1000000",
+  "cwd": "/data/haiyangw/nrpic/wt/E-stoch-inf",
+  "commit": "176cdd6c42e9652fb1719b220f63f78287957861",
+  "inputs": [
+    {
+      "path": "tracks/E-stoch-inf/langevin/scripts/ref_spec.py",
+      "sha256": "3731c51406f15d1131fe846522feea04e3184c8615faecf4e5147dd6cf57cbba"
+    },
+    {
+      "path": "tracks/E-stoch-inf/langevin/sdn/__init__.py",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "tracks/E-stoch-inf/langevin/sdn/exact.py",
+      "sha256": "7be55ee95dc2ab302ded9b626ab5839baa539403cef4b1aa01f3e395b596ad90"
+    },
+    {
+      "path": "tracks/E-stoch-inf/langevin/sdn/langevin.py",
+      "sha256": "6c1fcd125e5b07f9babfb0b2c827aa50d910f231b395046841fa6b6ebf198c96"
+    },
+    {
+      "path": "tracks/E-stoch-inf/langevin/sdn/linear.py",
+      "sha256": "1e19d0c8a5b5292ad0b2ef6416ab8216b3e8748583cd4a828bde105f7afe5c8b"
+    },
+    {
+      "path": "tracks/E-stoch-inf/langevin/sdn/models.py",
+      "sha256": "8d06d58cfe370f3d7b3df494dc72634b44ec814030a874152105cd6d51e38763"
+    }
+  ],
+  "output_dir": "/data/haiyangw/nrpic/scratch/E-stoch-inf/E-stoch-inf-20261115-130137-176cdd6",
+  "purpose": "Reference delta-N statistics, inflection (USR) case of the reproduction spec: lattice-band noise, sigma = 1, 0.1, 0.01, de Sitter, lattice DOS, linear limit; linear band variances",
+  "kind": "production",
+  "launcher": "local",
+  "cores": 8,
+  "card_hours": 0.0,
+  "started_utc": "2026-11-15T13:01:37+00:00",
+  "status": "completed",
+  "exit_code": 0,
+  "wall_time_s": 433.6,
+  "core_hours": 0.964,
+  "finished_utc": "2026-11-15T13:08:51+00:00",
+  "outputs": [
+    {
+      "path": "ref_inflection.json",
+      "sha256": "e8becdd6c5358e9a2757dd5e46d29bab42a06958361e961519e566e9146e051f"
+    },
+    {
+      "path": "ref_inflection_pdf.png",
+      "sha256": "31cd595995883da7808e6856e6ef2f3e847f4e9a916256502e45322c029e3efa"
+    },
+    {
+      "path": "ref_inflection_samples.npz",
+      "sha256": "5a42ac34ab2bb2ca3a0ec2ac3c6d4af76fd36c8b5ca2fbf2b92e9ee7ad421ebd"
+    },
+    {
+      "path": "ref_inflection_setup.png",
+      "sha256": "51c3fa30b82e7d814ee5435ec413d49620af033f5cd842db87469f8d1c695b2d"
+    },
+    {
+      "path": "stdout.txt",
+      "sha256": "7be20981badcbf3ac95653f77902aedb763874482dbebeb4e072439385792d2c"
+    }
+  ]
+}

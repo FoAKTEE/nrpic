@@ -1,0 +1,67 @@
+{
+  "run_id": "E-stoch-inf-20261115-130139-176cdd6",
+  "owner": "E-stoch-inf",
+  "command": "python3 tracks/E-stoch-inf/langevin/scripts/ref_spec.py quadratic 1000000",
+  "cwd": "/data/haiyangw/nrpic/wt/E-stoch-inf",
+  "commit": "176cdd6c42e9652fb1719b220f63f78287957861",
+  "inputs": [
+    {
+      "path": "tracks/E-stoch-inf/langevin/scripts/ref_spec.py",
+      "sha256": "3731c51406f15d1131fe846522feea04e3184c8615faecf4e5147dd6cf57cbba"
+    },
+    {
+      "path": "tracks/E-stoch-inf/langevin/sdn/__init__.py",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "tracks/E-stoch-inf/langevin/sdn/exact.py",
+      "sha256": "7be55ee95dc2ab302ded9b626ab5839baa539403cef4b1aa01f3e395b596ad90"
+    },
+    {
+      "path": "tracks/E-stoch-inf/langevin/sdn/langevin.py",
+      "sha256": "6c1fcd125e5b07f9babfb0b2c827aa50d910f231b395046841fa6b6ebf198c96"
+    },
+    {
+      "path": "tracks/E-stoch-inf/langevin/sdn/linear.py",
+      "sha256": "1e19d0c8a5b5292ad0b2ef6416ab8216b3e8748583cd4a828bde105f7afe5c8b"
+    },
+    {
+      "path": "tracks/E-stoch-inf/langevin/sdn/models.py",
+      "sha256": "8d06d58cfe370f3d7b3df494dc72634b44ec814030a874152105cd6d51e38763"
+    }
+  ],
+  "output_dir": "/data/haiyangw/nrpic/scratch/E-stoch-inf/E-stoch-inf-20261115-130139-176cdd6",
+  "purpose": "Reference delta-N statistics, quadratic (SR) case of the reproduction spec: lattice-band noise, sigma = 1, 0.1, 0.01, de Sitter, lattice DOS, linear limit; linear band variances",
+  "kind": "production",
+  "launcher": "local",
+  "cores": 8,
+  "card_hours": 0.0,
+  "started_utc": "2026-11-15T13:01:39+00:00",
+  "status": "completed",
+  "exit_code": 0,
+  "wall_time_s": 344.6,
+  "core_hours": 0.766,
+  "finished_utc": "2026-11-15T13:07:24+00:00",
+  "outputs": [
+    {
+      "path": "ref_quadratic.json",
+      "sha256": "6b3b748896b44e20b38eb853d7ab31f249b9377e63516174011914e90579e346"
+    },
+    {
+      "path": "ref_quadratic_pdf.png",
+      "sha256": "c618da1b243a6492f1333a9e4af6d9d57bec49f12701b031f733d427409e8391"
+    },
+    {
+      "path": "ref_quadratic_samples.npz",
+      "sha256": "fc1eb01c63d2b5b0f935391e94427fa09ac5b44960d53d95198e81a2cd8ea0fd"
+    },
+    {
+      "path": "ref_quadratic_setup.png",
+      "sha256": "a1a319b1f9c955d65e401eb6e4b8917195606923f127a5489161219f68701603"
+    },
+    {
+      "path": "stdout.txt",
+      "sha256": "c2fa31bb71d0063904f1e7b0fe409625658f2e962d25ee5b9bcb8e439f758aaa"
+    }
+  ]
+}
