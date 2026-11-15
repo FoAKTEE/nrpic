@@ -297,11 +297,53 @@ section 9.
 
 ## 8. What is verified
 
-(filled from the runs; see the end of this file)
+Processor runs use the serial build, card runs one A100. "Box": periodic Minkowski box,
+`problems/tests/coll_box.athinput`, problem generator `nrpic_geodesic` with the analytic
+Kerr-Schild functor at `bh_mass = 0` (the fixed-metric path; the functor is exactly
+flat). Drivers: `tracks/core/analysis/collisions/` (table at the end of this section).
+Predictions and outcomes, including the failed ones: `tracks/core/JOURNAL-coll.md`.
+
+| Statement | Evidence |
+|---|---|
+| Kernels: for the 208 equal-mass test vectors of the track (outputs from a 60-digit evaluation) the scattered momenta are within 2.6e-16 of max(1, \|u\|) (3.2e-16 with contraction), the pair energy within 1.32 eps and the pair momentum within 0.63 eps of the pair energy, the Moller speed within 1.04e-15; four compilations of the header and the Python twin | run core-20261115-132556-a7dc8ab; `fig_kernel_test.png` |
+| One collision step of the code is reproduced by the Python twin written from this text, in seven cases (sub-cycling; cell factor 2; `conservative`; `cutoff`; `nanbu` with masses 1:4; homogeneous curved metric with the symmetric triad, and with the Cholesky triad and the Boris pusher): cell indices, n_sub and number of updates of each of 20000 particles, n_tested, n_coll, n_updated identical; sum_P to 2e-14; momenta to 8.9e-16 (flat) and 9.8e-15 (curved); particles without an update bit-identical | run core-20261115-134644-466dcfd; `fig_replay.png` |
+| Option absent: every output file of five existing set-ups is byte-identical to the baseline built from 94dc093 (36 files, processor). On the card the two set-ups whose baseline is reproducible run to run are identical; in the other three exactly the files that differ between two runs of the baseline differ (2, 2, 3 files), the other 21 are identical | runs core-20261115-132618-1a050f3 (first source), FINALREG (final source), core-20261115-135757-18d4555 (card) |
+| Operator on with sigma = 0: snapshots byte-identical to the run without the option | runs core-20261115-133533-0ca5e3b, core-20261115-135816-18d4555 (card) |
+| Pair counting, volume and time factor: sum_W equals sigma M dt/(2 V) sum N (N - 1) of the cell populations counted from the snapshot, to rounding (at most 5.4e-12 on the processor, where the bound of the sum is 1e-10; 4e-16 on the card), for 1.5 to 50000 particles per cell, with sub-cycling, with cell factors 2 and 4, and with lapse 0.7 and sqrt(det gamma) = 1.104 | runs core-20261115-133533-0ca5e3b, core-20261115-135219-42c8489, core-20261115-140259-8742cdf |
+| Rate: the mean Moller speed of the tested pairs equals that of random pairs of the actual particles (\|z\| <= 1.7) and of a Maxwell-Juttner gas at the sample temperature to 7.7e-5, at theta = 0.01, 0.1, 1, 10, with and without sub-cycling (1e6 particles, 1.5e6 and 1.5e7 collisions per run); collisions = sum_P within 1.6 sigma; summed weight = (1/2) N rho_0 sigma dt per step within 6e-5 | run core-20261115-133533-0ca5e3b; card: core-20261115-135816-18d4555 (the same numbers of collisions, digit for digit); `fig_rate_history.png`, `fig_rate_summary.png` |
+| Conservation, equal masses: the exactly rounded sums of M W over 1e6 particles before and after up to 1.5e7 collisions are equal to the last bit (one run of four in the relaxation test differs by one unit in the last place); every momentum component changes by less than 5e-19 of sum M \|u\|; mean pair defect 0.5 eps of the pair energy | runs core-20261115-133533-0ca5e3b, core-20261115-134036-5684674; `fig_rate_conservation.png` |
+| Relaxation: monoenergetic shells (u0 = 0.3, 2) and two-temperature starts (0.03/0.01, 3/1) end as Maxwell-Juttner at the temperature of the conserved energy: KS p 0.26 to 0.90 (4e5 particles), <u^2/W>/3 = theta_eq within 0.06 sigma, both populations within 0.52 sigma | run core-20261115-134036-5684674; card: core-20261115-135932-18d4555; `fig_relax_distributions.png`, `fig_relax_temperatures.png` |
+| Entropy: the estimate rises monotonically (largest decrease 2.4 sd/sqrt 2 of the estimator at fixed energy) by 2.63, 2.77, 0.048, 0.123 to s_MJ + bias within 1.4 sd; the gap falls four decades | the same runs; `fig_relax_entropy.png` |
+| Time step: the decay rate of theta_1 - theta_2 is nu_inf + s dt_c with s = 0.716(59) (1e6 particles) and 0.744(32) (4e6, card) against the forward-Euler value nu_inf^2/2 = 0.69: first order in the collision sub-step. A step four times too large for a plain collision step (nu_0 dt = 0.4), sub-cycled, lies on the same line at dt/<n_sub> (z = -1.3, -1.5). Initial slope at dt -> 0: 1.000(4) and 0.995(4) of the non-relativistic closed form (track: 0.995 relativistically) | runs core-20261115-134511-0607ce8, core-20261115-140021-18d4555 (card); `fig_conv_dt.png` |
+| Cell size, homogeneous gas: the number of collisions does not depend on the cell size (within 1e-3, 2^3 to 64^3 collision cells); blocks of f^3 cells give byte-identical states to the coarser mesh; the relaxation rate is 0.957(12), 0.951(6), 0.948(6) of nu_0 for 50000, 781, 98 particles per cell, 0.926(4) for 12 and 0.879(5) for 1.5 | run core-20261115-135219-42c8489; `fig_cells.png` |
+| Reproducibility: with the analytic metric all snapshots are byte-identical for 1, 8, 64 MeshBlocks, for a box whose faces are not binary fractions with 1 and 27, and for a restart from the dump of cycle 37 (1e5 particles, 100 cycles, 5e5 collisions, sub-cycling active); another seed changes every particle. With the metric on the mesh a restart is byte-identical; two divisions are byte-identical in the first box and 5e-15 apart with identical collisions in the second (metric reconstruction of the pusher, `rng.md` section 9). The same on the card. Processor and card: same collisions, momenta 1.8e-15 apart | runs core-20261115-133737-82e2040, core-20261115-133912-f104754, core-20261115-140011-18d4555 (card); `fig_repro.png` |
+| Unequal masses 1:4 with `nanbu`: both classes end at one temperature (difference 0.1 to 0.6 sigma) and Maxwell-Juttner (KS p 0.36 to 0.96); updates per collision 1.538 to 1.539 (20/13); light and heavy particles updated equally often; energy defect -0.0020(21) of the thermal energy after 25 collision times, scatter 0.4 percent (2e5 particles); the defects of the history equal the changes of the snapshots to 7e-15. `equal` refuses the same file with an error naming the masses | run core-20261115-140030-7a0efc0; `fig_unequal.png` |
+| Curved frame: in the homogeneous metric (lapse 0.7, non-diagonal gamma_ij) on the mesh, with the symmetric triad and the midpoint pusher and with the Cholesky triad and the Boris pusher: pair counting exact with alpha/sqrt(gamma); 1993695 and 1992802 collisions against 1993138 in the flat box at the same rate per coordinate time; sum of M W (with gamma^ij) conserved to 1.0e-14, sum of M u_i to 5e-17 of its scale; energy with the metric at the particles changed by the collision steps by 1.2e-14 in total; relaxation to Maxwell-Juttner in the triad components (KS p 0.78, 0.92) | runs core-20261115-140259-8742cdf (card), CURVEDCPU (processor); `fig_curved_box.png` |
+| Relativistic cluster | CLUSTER |
+
+Not verified: section 9.
+
+Drivers (each writes `summary.json` with the field `ok` and its figures into the run
+directory; run through `tracks/core/analysis/rng/runreg.py`):
+
+| Driver | Test |
+|---|---|
+| `run_kernel_test.py`, `kernel_test.cpp` | kernels against the track's vectors |
+| `run_replay.py` | one step against the Python twin |
+| `run_rate.py` | rate, conservation, null runs |
+| `run_relax.py` | relaxation, entropy |
+| `run_conv_dt.py` | time step |
+| `run_cells.py` | cell size, cell factor |
+| `run_repro.py` | MeshBlock divisions, restart, seed |
+| `run_unequal.py` | unequal masses |
+| `run_curved_box.py` | homogeneous curved metric |
+| `run_cluster.py` | relativistic cluster |
+| `gpu_job.sh` | the card runs, by part |
+| `make_box.py`, `common.py` | particle files of the box (draws from the initial-data stream of `rng.md`: entity = tag, step 0, sub-stream 0, draws 0-2 position, 3 speed, 4 direction) |
 
 ## 9. Limits, open points, lines touched in shared files
 
-(filled at the end)
+LIMITS
 
 ## 10. Differences from the track's specification (SPEC.md at 4c76ca8)
 

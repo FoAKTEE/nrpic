@@ -521,3 +521,14 @@ absent" can therefore hold only on the processor (checked there on a short run),
 the card the null run is compared with a repeat of the baseline: its difference from
 the baseline (central lapse over the run, positions at the end) must not exceed ten
 times the difference between the two baseline runs.
+
+### Prediction for the refined mesh, before the run (15:25 UTC)
+
+`run_smr.py`: periodic box with the octant [100, 100.5]^3 refined by one level, 2e5
+Maxwell-Juttner particles, 40 steps, MeshBlocks of 16^3 and 8^3 cells and
+`coll_cell_factor` 1 and 2. Predicted: level and collision cell of every particle as
+assigned from the geometry (octant: 64 cells per unit length, elsewhere 32); summed
+weight = sigma M dt/2 x sum over the cells of both levels of N (N - 1)/V_cell to
+rounding; collisions = sum_P within 4 sigma; total weight within 2 percent of the
+nominal rate (it does not depend on the cell size); snapshots byte-identical for the two
+MeshBlock divisions; no warning about MeshBlock edges.
