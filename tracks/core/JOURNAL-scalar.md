@@ -237,3 +237,60 @@ parameters the driver overrides (`lambda`, ...). Input completed; all parts repe
   omega t (omega dt)^4/120 with dt = 1/32. They fall by 16.0, 16.6, 15.7, 16.0 per
   halving of the step (orders 4.00, 4.06, 3.98, 4.00). The table agrees with the quartic
   potential it tabulates to 9.1e-10 (prediction 1e-9: holds).
+
+### Test 1, follow-up (run core-20261115-134423-836ac86, analysis only) [VERIFIED]
+
+Both new predictions hold. Fitting Omega and r: Omega - omega_h = -1.21e-8 to -1.34e-8 in
+all twelve cases (bound 4.0e-8); the value is -omega (omega dt)^4/120 = -1.336e-8, the
+phase error of classical RK4; r - omega/omega_h = -1.2e-10. Amplitude loss without
+dissipation: 0.992, 0.998, 0.9995, 1.0000 of (omega_h dt)^6/144 per step for Courant 0.4
+to 0.05. With dissipation 0.5: measured rate 4.0816e-5, stencil 3.3574e-5, integrator
+7.266e-6, measured/(sum) = 0.9994. So the dispersion relation of the code is that of the
+stencils, and the dissipation term is the one of the spacetime variables. Figures
+`fig_wave_convergence.png`, `fig_wave_diss_potentials.png` (looked at; margins corrected
+afterwards).
+
+## 2026-11-15, entry 3: test 3, and the first look at test 4
+
+### Test 3, outcome (run core-20261115-134118-836ac86) [VERIFIED]
+
+| N | rms H, t = 0 | rms M, t = 0 | rms H, t = 0.25 | rms M, t = 0.25 | rms H, t = 0.5 | rms M, t = 0.5 |
+|---|---|---|---|---|---|---|
+| 16 | 5.56e-7 | 1.31e-5 | 3.66e-5 | 2.01e-5 | 1.64e-5 | 3.28e-6 |
+| 32 | 8.88e-9 | 2.59e-7 | 7.47e-7 | 5.26e-7 | 4.63e-7 | 7.48e-8 |
+| 64 | 1.40e-10 | 4.31e-9 | 1.17e-8 | 9.08e-9 | 8.65e-9 | 2.00e-9 |
+| control 16 | 9.12e-3 | 1.50e-3 | 3.07e-3 | 1.49e-3 | 6.57e-4 | 6.45e-4 |
+| control 32 | 9.12e-3 | 1.51e-3 | 3.06e-3 | 1.48e-3 | 6.70e-4 | 6.42e-4 |
+
+([H] = 4.67.) (a) holds for H (orders 5.97, 5.99 at t = 0) and for M between 32 and 64
+(5.91); M between 16 and 32 is 5.66, 0.04 outside the band (N = 16 is not yet
+asymptotic). (c) holds: the control does not converge (orders 0.00 +- 0.03) and its
+momentum constraint is 1.5e-3, 6e3 times that of the data at N = 32.
+(b) the general statement holds (orders between 4 and 6: H 5.15 to 5.61 between 16 and
+32, 5.72 to 6.00 between 32 and 64; M 5.26 to 5.62 and 5.22 to 5.99), but my specific
+claim for H FAILED: I expected order 4 from the time truncation of the homogeneous part.
+That part is only 3e-13 of [H] at these steps (test 2); the constraint error is the
+spatial truncation of the perturbation and converges at nearly sixth order with a fixed
+Courant factor. Figures `fig_plane_constraints.png`, `fig_plane_convergence.png` (looked
+at).
+
+### Test 4, before the registered run
+
+- A debugging run of part A in a scratch directory (not registered, 32 cycles) showed the
+  coefficients of the synthesized field within 8e-16 of the rms of the twin's
+  prescription; a debugging run of part B showed orders 4.1 of the lockstep data,
+  bit-identical fields for 1 and 8 MeshBlocks and through a restart. Numbers are quoted
+  from the registered run only.
+- The constraint histories of that debugging run show what P4 (f) cannot show in an
+  evolved run on this coarse test mesh (k h up to 2.4, k dt up to 0.6): after the first
+  step the momentum constraint is 2.7e-12 with either projector and doubles with the
+  amplitude, i.e. a first-order residual, 5e-4 of that with the flipped sign.
+  [JUDGEMENT, not tested: the discretisation of the evolution inside the step, not the
+  kick.] So (f) is checked on the kick itself. Prediction, written before the registered
+  run was read: the discrete momentum constraint of the dumped kick fields,
+  D_i I_R - sum_j D_j T_ij with the sixth-order difference, relative to D_i I_R, is below
+  1e-12 with the stencil projector and between 1e-3 and 0.3 with the continuum projector
+  at the dump near t = 2 (modes with k h near 1.2 are in the window, where the stencil
+  wave number is 1.3 percent below k). Flipped sign of the Pi kick: Hamiltonian violation
+  after the first step more than 100 times that of the correct sign, and twice as large
+  with twice the amplitude (first order).

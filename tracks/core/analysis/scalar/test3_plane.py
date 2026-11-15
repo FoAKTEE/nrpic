@@ -82,7 +82,7 @@ def main():
     ax[0].legend(loc="lower right")
     ax[1].set_xlabel("conformal time")
     ax[1].set_ylabel(r"rms $|M|$")
-    ax[1].legend(loc="center right", fontsize=8)
+    ax[1].legend(loc="lower center", fontsize=7, ncol=2)
     fs.save(fig, os.path.join(top, "fig_plane_constraints"))
     plt.close(fig)
 
