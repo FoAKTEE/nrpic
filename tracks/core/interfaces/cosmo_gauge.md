@@ -129,3 +129,63 @@ The global step is shared by all levels and by the particles (`pusher.md` sectio
    executable it runs with until the processor build is current.
 3. The tracker-dependent eta and kappa1 of the paper are a candidate capability for
    Track D and F (several black holes with a mass hierarchy), to be specified there.
+
+## 7. Wave 2: lapse for expanding matter, shift damping for unequal masses (branch `core/gauge`)
+
+Source: `athenak/src/z4c/z4c_gauge_ext.hpp` (new), hooks in `z4c.hpp` (one include, one
+member `gext`), `z4c.cpp` (one line after the `shift_eta` read), `z4c_calcrhs.cpp` (one
+include after `tmunu.hpp`, one call `AddGaugeExt(...)` between the main loop and the
+dissipation loop). Both terms are added in a loop of their own after the main loop and
+only if switched on; their parameters are read only if present, so inputs without them
+run and write byte for byte as release core-v0.3 [VERIFIED, regression R: cases geo,
+boris, dep, east, os (runs core-20261115-160056 ... -160129-b4430da,
+core-20261115-160623-b6ea4a1) and a binary puncture with trackers (core-20261115-180234-
+3f710a3 against -b4430da), every output file identical]. Journal:
+`tracks/core/JOURNAL-gauge.md`; analysis and figures `tracks/core/analysis/gauge/`.
+
+### 7.1 Lapse relaxation (`lapse_leak`)
+
+    d_t alpha = [section 1] - (alpha/T) max(ln(alpha/alpha_0), 0),   1/T = lapse_leak,
+                                                                    alpha_0 = lapse_leak_alpha
+
+Why this one [JUDGEMENT, derivation in the journal, entry 1]. With 1+log and zero shift,
+alpha - 2 ln sqrt(gamma) is constant along the normal observers, so two regions that
+expand at different rates (a ball and its exterior) build a lapse step that grows
+without bound (3 ln a at the surface of a marginally bound ball); the gauge wave carries
+it inward as the front of wave 1. With the term, d_t ln alpha = -2 (K - K_m) with
+K_m = -ln(alpha/alpha_0)/(2T) the running mean of K over the time T: the lapse reacts to
+the change of the expansion, not to its integral; a homogeneous region tends to
+alpha = exp(6 T H) (bounded) instead of 1 + 6 ln a. The term has no derivative (the
+principal part, hence the hyperbolicity, stays that of 1+log), needs no reference
+solution, no stored field and no knowledge of where the matter is, and vanishes where
+alpha <= alpha_0: a collapsing region and a black hole are sliced by plain 1+log.
+Not chosen: 1+log against a reference K_ref(t, x) (with the unperturbed solution as
+reference the lapse of an overdensity of contrast 1.65 reaches zero, long before
+turnaround; Track A's toy found the same, `GAUGE.md` C3); max(0, K) and softplus
+(geodesic slicing where the matter expands: weakly hyperbolic; the fixed lapse of wave 1
+was unstable, `JOURNAL-id.md` entry 8); a blend of conformal time and 1+log by radius or
+chi (a front source at the blend radius); `lapse_kdriver` (a box mean, dominated by the
+exterior of a ball); `lapse_volume` (the same unbounded step).
+
+Tests [VERIFIED, runs in the journal, entries 3 and 4]:
+
+| test | set-up | old 1+log | new |
+|---|---|---|---|
+| L1 marginally bound ball, R_b = 10 M, sharp surface, cells M/2, t = 10 M | largest abs(R/R_exact - 1) of the core shells (invariant: areal radius at the shells' proper time) | 7.65e-2 (does not converge: 7.9e-2 at cells 1 M) | T = 1 M: 1.16e-3 (3.08e-3 at 1 M); T = 2 M: 2.07e-3 |
+| L1, same | central lapse against the homogeneous value of the same condition | front: 3.24 at t = 5.6 M, then 1.76 (homogeneous 4.47 at 8 M) | within 2.8 per cent (T = 1 M), 0.2 per cent (T = 0.5 M), 13 per cent (T = 2 M) |
+| L1, smooth edge (2 M), cells M/2 | core, mid, outer, edge abs(eps) | 1.2e-2, 1.3e-3, 1.4e-3, 3.6e-4 | T = 1 M: 5.9e-4, 3.0e-4, 5.1e-4, 1.7e-4 |
+| L1, largest coordinate speed of light at the particles | | 2.32 | 1.13 (T = 1 M) |
+| L2 bound ball R_b = 5 M, e0 = 0.16, cells M/4, t = 12 M | core, mid, outer, surface abs(eps) | conformal-time lapse of wave 1: 0.11, 2.6e-2, 1.7e-2, 1.3e-2 | T = 0.5 M: 9.2e-3, 2.5e-3, 4.3e-3, 6.4e-3; T = 1 M: 3.3e-2, 4.4e-3, 5.8e-3, 6.7e-3 |
+| L2 turnaround | largest R/R_0 (exact 1.25) | | 1.2478 to 1.2496 (T = 0.5 M) |
+| P puncture alone, cells m/8, 10 M | | | identical to plain 1+log byte for byte (the lapse never exceeds 1) |
+
+Choice of T (from L1 and L2): the departure of the central lapse from the homogeneous
+value is set by the ratio of T to the time a gauge wave needs to cross the expanding
+region, t_c = R/sqrt(2 alpha): T/t_c <= 0.075 gave at most 1.4 per cent, 0.15 gave 2.8
+to 3.9 per cent, 0.3 gave 13 to 20 per cent (a dip that arrives from the surface at
+t ~ t_c, focused by the spherical geometry). Short T costs nothing measurable: T = dx/8
+(rate x step = 2) ran as well as T = dx/2 on the marginally bound ball. Rule
+[JUDGEMENT]: **T <= 0.1 R/sqrt(2 alpha)** for the smallest expanding region of radius R
+that should be followed, and lapse_leak x dt below about 2.7 (explicit fourth-order
+step; dt is the global step, set by the finest level). For balls of 5 to 10 M: T = 0.25
+to 0.5 M. Untested: `lapse_leak_alpha` other than 1.

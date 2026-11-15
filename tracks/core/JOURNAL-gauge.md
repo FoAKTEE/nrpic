@@ -619,3 +619,45 @@ column 30 is the largest lapse over all active cells of the mesh
 t = 0 to 500 M it lies between 0.99530 and 0.99722. Since the term is exactly zero for
 alpha <= 1, that run is what `lapse_leak` would give [JUDGEMENT: the records are 0.3125
 M apart; between them the lapse would have to rise by 2.8e-3 above every recorded value].
+
+## 2026-11-15, entry 5: outcome of E1 on processors; the width of the damping profile
+
+### Outcome of E1 (one boosted hole, m = 1, small mesh, t = 4.9 m; analysis run core-20261115-183240-4a9b0b8, figure `figs/punc_g_e1.png`, looked at)
+
+Runs: (a) eta = 2 core-20261115-160350-b4430da, (c) eta = 20 -160351-, (d) eta_0 = 20
+with the profile and M_ref = 0.1 -160349-, (b) eta = 0.2 -160355-, (e) eta_0 = 0.2 with
+the profile and M_ref = 10 -160346-. Tracker speed (ratio to (a)) at t = 1.6, 3.0, 4.9 m:
+
+| run | eta at the hole / far away | 1.6 m | 3.0 m | 4.9 m |
+|---|---|---|---|---|
+| (a) | 2 / 2 | 0.0514 | 0.0843 | 0.1069 |
+| (c) | 20 / 20 | 0.0060 (0.12) | 0.0153 (0.18) | 0.0231 (0.22) |
+| (d) | 2 / 20, width 2 m | 0.0325 (0.63) | 0.0486 (0.58) | 0.0587 (0.55) |
+| (b) | 0.2 / 0.2 | 0.1011 (1.97) | 0.1748 (2.07) | 0.2109 (1.97) |
+| (e) | 2 / 0.2, width 2 m | 0.0551 (1.07) | 0.0986 (1.17) | 0.1357 (1.27) |
+
+Horizon mass at the end 1.01108 to 1.01110 in all five (20 searches each), Hamiltonian
+norms within 20 per cent of each other. Prediction: (d) within 20 per cent of (a):
+FAILS (45 per cent slower; not refuted by the 50 per cent threshold); (c) at least 5
+times slower than (a): fails narrowly (4.6 times at 4.9 m, 8.6 times at 1.6 m); horizon
+mass of (d) within 1e-3 of (a): confirmed (1e-5); (b) not slower than (a): confirmed
+(twice as fast); (e) within 20 per cent of (a): FAILS narrowly (27 per cent at 4.9 m,
+7 and 17 per cent at 1.6 and 3 m). Reading [JUDGEMENT]: the profile of the paper (width
+2 m) moves the tracker speed most of the way from the constant-eta value towards the
+value of the hole's own units, but not all the way: the shift that carries the puncture
+builds up over a region of several m, where the profile has already risen (falling)
+towards eta_0 (at r = 2 m the factor is half-way). None of these speeds has settled at
+t = 5 m (all still rising; the physical speed of this hole is about 0.3), so the
+comparison is of the transient, which is what slowed the heavy tracker in wave 1.
+Case (e) is Track F's light member scaled to its own units (eta m = 0.2 far away, 2 at
+the hole: Track F's q = 10 input with shift_eta = 2/M, M_ref = M): constant eta leaves
+it 97 per cent off the eta m = 2 reference, the profile 27 per cent.
+
+### Prediction for wider profiles (written before the runs)
+
+Processor runs as (d) and (e) with `shift_eta_width` = 4 and 8 (tags `g-e1-prof02-w4`,
+`g-e1-prof02-w8`, `g-e1-prof20-w8`), t = 5 m. [JUDGEMENT] The ratio to (a) at 4.9 m
+moves towards 1 monotonically with the width: (e) w = 4: 1.10 to 1.20, w = 8: 1.02 to
+1.10; (d) w = 8: 0.75 to 0.92. Horizon masses as in (a) within 1e-4. Refuted if a
+wider profile is not closer to 1 than width 2 (then the width is not what limits the
+profile, and a factor on kappa_1 or the Gamma coefficient would be the next candidate).
