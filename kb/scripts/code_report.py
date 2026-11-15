@@ -171,10 +171,11 @@ def fig_repos(rows, path):
     col = {"this": fs.PAL["red"], "core": fs.PAL["blue"], "dep": fs.PAL["yellow"], "ref": fs.PAL["green"],
            "tool": "grey"}
     n = len(names)
-    fig = plt.figure(figsize=(fs.FULL_WIDTH, 0.13 * n + 1.2))
-    h = (0.13 * n) / (0.13 * n + 1.2)
-    ax1 = fig.add_axes([0.30, 0.75 / (0.13 * n + 1.2), 0.32, h])
-    ax2 = fig.add_axes([0.65, 0.75 / (0.13 * n + 1.2), 0.32, h], sharey=ax1)
+    H = 0.13 * n + 1.5
+    fig = plt.figure(figsize=(fs.FULL_WIDTH, H))
+    h = (0.13 * n) / H
+    ax1 = fig.add_axes([0.30, 0.75 / H, 0.32, h])
+    ax2 = fig.add_axes([0.65, 0.75 / H, 0.32, h], sharey=ax1)
     y = np.arange(n)[::-1]
     ax1.barh(y, loc, color=[col[r] for r in roles], height=0.75)
     ax1.set_xscale("log")
@@ -188,10 +189,10 @@ def fig_repos(rows, path):
     ax2.set_xscale("log")
     ax2.set_xlabel("count (+0.5)")
     ax2.tick_params(axis="y", which="both", labelleft=False)
-    for r, c in col.items():
-        ax1.barh([], [], color=c, label=r)
-    ax1.legend(loc="lower right", fontsize=6, ncol=1)
-    ax2.legend(loc="lower right", fontsize=6)
+    from matplotlib.patches import Patch
+    ax1.legend(handles=[Patch(color=c, label=f"role {r}") for r, c in col.items()], loc="lower left",
+               bbox_to_anchor=(0.0, 1.0), fontsize=6.5, ncol=3, handlelength=1.0, columnspacing=0.8)
+    ax2.legend(loc="lower left", bbox_to_anchor=(0.0, 1.0), fontsize=6.5, ncol=1)
     ax1.set_ylim(-0.7, n - 0.3)
     fs.save(fig, path)
     plt.close(fig)
@@ -200,7 +201,7 @@ def fig_repos(rows, path):
 def fig_params(lay, comp_all, path):
     fs.use_style()
     fig = plt.figure(figsize=(fs.FULL_WIDTH, 3.4))
-    ax = fig.add_axes([0.08, 0.17, 0.36, 0.72])
+    ax = fig.add_axes([0.08, 0.17, 0.42, 0.72])
     keys = [k for k, _ in COMPARE if comp_all.get(k)]
     sts = [("literal", fs.PAL["blue"]), ("computed", fs.PAL["green"]), ("pattern", fs.PAL["orange"]),
            ("comment_block", "lightgrey"), ("other_block", fs.PAL["yellow"]), ("unmatched", fs.PAL["red"])]
@@ -211,15 +212,16 @@ def fig_params(lay, comp_all, path):
         ax.bar(x, v, bottom=bottom, color=c, width=0.6, label=st.replace("_", " "))
         bottom += v
     ax.axhline(0.9, **fs.GUIDE)
-    ax.text(len(keys) - 0.5, 0.91, "P4 threshold", ha="right", va="bottom", fontsize=7)
+    ax.text(-0.45, 0.885, "P4 threshold 0.9", ha="left", va="top", fontsize=7)
     ax.set_xticks(x)
-    ax.set_xticklabels([{"IAS-Astrophysics__athenak": "AthenaK", "local__nrpic": "this tree",
+    ax.set_xticklabels([{"IAS-Astrophysics__athenak": "AthenaK\nupstream", "local__nrpic": "this\ntree",
                          "PrincetonUniversity__athena": "Athena++"}[k] for k in keys])
     ax.tick_params(axis="x", which="minor", bottom=False, top=False)
     ax.set_ylabel("fraction of input-file parameter lines")
     ax.set_ylim(0, 1.0)
-    ax.legend(loc="lower left", fontsize=7, ncol=2)
-    ax2 = fig.add_axes([0.58, 0.17, 0.39, 0.72])
+    ax.set_xlim(-0.5, len(keys) + 0.9)
+    ax.legend(loc="center right", fontsize=7, ncol=1, handlelength=1.0)
+    ax2 = fig.add_axes([0.64, 0.17, 0.33, 0.72])
     for key, colr, lab, dy in (("IAS-Astrophysics__athenak", fs.PAL["blue"], "AthenaK upstream", -0.2),
                                ("local__nrpic", fs.PAL["red"], "this tree", 0.2)):
         ps = [p for p in jl(os.path.join(lay.build, "code", key, "params.jsonl"))
