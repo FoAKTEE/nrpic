@@ -1,0 +1,125 @@
+{
+  "schema": "nrpic-run-manifest/1",
+  "run_id": "kb-20261115-182238-b86d2b5",
+  "track": "kb",
+  "gate": "G2",
+  "kind": "scouting",
+  "purpose": "kb lead W5: independent rescoring of the embed helper's retrieval results, vector integrity, model hash, tag reading sample; read-only on db/current",
+  "preregistered_in": null,
+  "launcher": "local",
+  "command": [
+    "python3",
+    "-I",
+    "tracks/kb/analysis/lead_checks/w2_embed_check.py",
+    "/data/haiyangw/nrpic/kb-data/db/kb-20261115-621430e.sqlite",
+    "/data/haiyangw/nrpic/kb-data",
+    "/data/haiyangw/nrpic/wt/kb/kb/.venv/models/BAAI__bge-small-en-v1.5/5c38ec7c405ec4b44b94cc5a9bb96e735b38267a/model.safetensors",
+    "3c9f31665447c8911517620762200d2245a2518d6e7208acc78cd9db317e21ad",
+    "/data/haiyangw/nrpic/scratch/kb/kb-20261115-164540-5aca10c/results.json",
+    "/data/haiyangw/nrpic/scratch/kb/kb-20261115-164558-5aca10c/results.json"
+  ],
+  "cwd": ".",
+  "git": {
+    "sha": "b86d2b53167778c10ef6e008104fd88db6c670d3",
+    "branch": "kb/main",
+    "dirty": false,
+    "merge_base_main": "b9fbf3e6534517c3393000da91c79ce552b254b9",
+    "worktree": "wt/kb"
+  },
+  "code": {
+    "core_tag": "core-v0.3",
+    "athenak_upstream_sha": "c5a0d7f",
+    "kokkos_sha": "6739bc623081648af9e752b616d9671527922cbf",
+    "problem": null
+  },
+  "env": {
+    "host": "anta",
+    "env_hash": "33c1dbb6673b68919eaa332b0add0b58aeac8be843f2071b9d06e2e0e397a96d",
+    "machine_file_sha256": "0321f40f4caeeb2a36624a9fa9809e60bad31071f366b3517ba23ad45698d2d7",
+    "uv_lock_sha256": "5417f6ba318b914aa3800e5d55f7b11fdd8df13c2688bdda7d419240aa1d5863",
+    "track_requirements_sha256": null,
+    "container_digest": null,
+    "compiler": "g++ 11.4.0",
+    "mpi": "none (Athena_ENABLE_MPI=OFF)",
+    "gpu": null,
+    "python": "3.10.12 /usr"
+  },
+  "input": null,
+  "inputs": [
+    {
+      "path": "/data/haiyangw/nrpic/scratch/kb/kb-20261115-164540-5aca10c/results.json",
+      "role": "input",
+      "sha256": "a4a62e25583533aea7e391fbe30b5f21f7904a99840c984de2c9697e3e3ca82d",
+      "bytes": 87178,
+      "tracked": false,
+      "location": "main checkout data root"
+    },
+    {
+      "path": "/data/haiyangw/nrpic/scratch/kb/kb-20261115-164558-5aca10c/results.json",
+      "role": "input",
+      "sha256": "b12d68c7c6e94853c7ad4f3c083f781acb1a784d5fab4ab50db54f978e181d0c",
+      "bytes": 242668,
+      "tracked": false,
+      "location": "main checkout data root"
+    },
+    {
+      "path": "tracks/kb/analysis/lead_checks/w2_embed_check.py",
+      "role": "argv",
+      "sha256": "8f58b2038da131f67416c540ac9a1c532a75400864bb70a4a6e3e4d05f061c5e",
+      "bytes": 6540,
+      "tracked": true
+    },
+    {
+      "path": "/data/haiyangw/nrpic/kb-data/db/kb-20261115-621430e.sqlite",
+      "role": "argv",
+      "sha256": "621430e5758fd887ec946bd7300e2523fa177d5298d7f383031b19326fbb4fe5",
+      "bytes": 1006657536,
+      "tracked": false,
+      "location": "main checkout data root"
+    },
+    {
+      "path": "kb/.venv/models/BAAI__bge-small-en-v1.5/5c38ec7c405ec4b44b94cc5a9bb96e735b38267a/model.safetensors",
+      "role": "argv",
+      "sha256": "3c9f31665447c8911517620762200d2245a2518d6e7208acc78cd9db317e21ad",
+      "bytes": 133466304,
+      "tracked": false
+    }
+  ],
+  "batch_entries": null,
+  "resources": {
+    "nodes": 1,
+    "gpus": 0,
+    "cores": 1,
+    "walltime_s": null,
+    "wall_limit": null,
+    "segments_max": null,
+    "gpu_hours_requested": 0.0,
+    "gpu_hours": null,
+    "particles": null
+  },
+  "slurm": null,
+  "outputs": {
+    "dir": "scratch/kb/kb-20261115-182238-b86d2b5",
+    "sha256sums": "sha256sums.txt",
+    "sha256sums_sha256": null,
+    "bytes": null,
+    "files": null
+  },
+  "status": "running",
+  "exit_code": null,
+  "registered": "2026-11-15T18:22:40Z",
+  "started": null,
+  "ended": null,
+  "parents": [],
+  "notes": "",
+  "budget_at_submit": {
+    "gpu_hours_allotted": 0.0,
+    "cores_allotted": 8,
+    "gpu_hours_used": 0.0,
+    "gpu_hours_reserved": 0.0,
+    "gpu_hours_without_gate": 0.0,
+    "cores_busy": 0,
+    "runs": 78,
+    "allotment_from": "coord/DECISIONS/0006-compute-budget.md + 0014-budgets-after-wave-1.md"
+  }
+}
