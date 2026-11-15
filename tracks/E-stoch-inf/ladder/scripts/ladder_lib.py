@@ -163,18 +163,35 @@ class LinearReference:
     d2R/dt2 + (3 - eps2) H dR/dt + (k/a)^2 R = 0, eps1 = 4 pi Pi^2/H^2,
     eps2 = -dln eps1/dN = 6 + 2 V'/(H Pi) - 2 eps1, in code time from t = 0."""
 
-    def __init__(self, k_shell, r0, dr0, t_end, k2_shell=None, rtol=1e-12):
+    def __init__(self, k_shell, r0, dr0, t_end, k2_shell=None, rtol=1e-12, t_eval=None):
+        """t_eval: the times at which the modes are wanted (then no dense output of the
+        modes is kept, which would hold several GB for the 3414 shells of nmax2 = 4096);
+        without it the modes have a dense output."""
         from scipy.integrate import solve_ivp
         self.k = np.asarray(k_shell, float)
         self.k2 = self.k**2 if k2_shell is None else np.asarray(k2_shell, float)
         m = self.k.size
         self.m = m
+        self.bg = solve_ivp(lambda t, y: self._rhs_bg(y), (0.0, t_end), [PHI0, PI0, 0.0],
+                            method="DOP853", rtol=1e-13, atol=1e-15, dense_output=True)
         y0 = np.concatenate([[PHI0, PI0, 0.0], r0.real, r0.imag, dr0.real, dr0.imag])
         scale = np.concatenate([[1.0, 1.0, 1.0], np.full(4 * m, 1e-5)])
-        self.sol = solve_ivp(self._rhs, (0.0, t_end), y0, method="DOP853", rtol=rtol,
-                             atol=1e-14 * scale, dense_output=True)
-        if self.sol.status != 0:
+        if t_eval is None:
+            self.sol = solve_ivp(self._rhs, (0.0, t_end), y0, method="DOP853", rtol=rtol,
+                                 atol=1e-14 * scale, dense_output=True)
+            self.t_eval = None
+        else:
+            self.t_eval = np.asarray(sorted(set(float(x) for x in t_eval)))
+            self.sol = solve_ivp(self._rhs, (0.0, t_end), y0, method="DOP853", rtol=rtol,
+                                 atol=1e-14 * scale, t_eval=self.t_eval)
+        if self.sol.status != 0 or self.bg.status != 0:
             raise RuntimeError(self.sol.message)
+
+    def _rhs_bg(self, y):
+        phi, pi = y[0], y[1]
+        v, dv = potential(phi)
+        hub = np.sqrt((8.0 * np.pi / 3.0) * (0.5 * pi * pi + v))
+        return [pi, -3.0 * hub * pi - dv, hub]
 
     @staticmethod
     def hubble(phi, pi):
@@ -204,7 +221,7 @@ class LinearReference:
         return out
 
     def background(self, t):
-        y = self.sol.sol(t)
+        y = self.bg.sol(t)
         phi, pi, lna = y[0], y[1], y[2]
         v, dv = potential(phi)
         hub = self.hubble(phi, pi)
@@ -214,7 +231,13 @@ class LinearReference:
                     eps1=eps1, eps2=eps2)
 
     def modes(self, t):
-        y = self.sol.sol(t)
+        if self.t_eval is None:
+            y = self.sol.sol(t)
+        else:
+            i = int(np.argmin(np.abs(self.t_eval - t)))
+            if abs(self.t_eval[i] - t) > 1e-12:
+                raise ValueError(f"time {t} not among t_eval")
+            y = self.sol.y[:, i]
         m = self.m
         return y[3:3 + m] + 1j * y[3 + m:3 + 2 * m], \
             y[3 + 2 * m:3 + 3 * m] + 1j * y[3 + 3 * m:3 + 4 * m]
@@ -249,11 +272,11 @@ def read_modefile(path):
     return d[:, 0].astype(np.int64), d[:, 1] + 1j * d[:, 2], d[:, 3] + 1j * d[:, 4]
 
 
-def reference_for(modes, modefile, t_end, k2="continuum"):
+def reference_for(modes, modefile, t_end, t_eval=None):
     """LinearReference on the shells of `modes` from the mode file."""
     n2f, r0, dr0 = read_modefile(modefile)
     idx = np.searchsorted(n2f, modes.shell_n2)
     if not np.array_equal(n2f[idx], modes.shell_n2):
         raise ValueError("mode file does not cover the shells")
     ks = np.sqrt(modes.shell_n2.astype(float))
-    return LinearReference(ks, r0[idx], dr0[idx], t_end)
+    return LinearReference(ks, r0[idx], dr0[idx], t_end, t_eval=t_eval)

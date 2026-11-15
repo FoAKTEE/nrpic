@@ -42,10 +42,10 @@ def extract(a):
     has_metric = "gxx" in names
     has_con = "H" in names
     modes = LL.Modes(a.nmesh, a.nmax2)
-    t_last = LL.read_header(dumps[-1])["time"]
+    t_dumps = [LL.read_header(f)["time"] for f in dumps]
     con = LL.read_con(a.run)
-    t_end = max(t_last, con[-1, 0]) + 0.05
-    ref = LL.reference_for(modes, a.modefile, t_end)
+    t_end = max(max(t_dumps), con[-1, 0]) + 0.05
+    ref = LL.reference_for(modes, a.modefile, t_end, t_eval=t_dumps)
     alpha = modes.alpha()
     kshell = np.sqrt(modes.shell_n2.astype(float))
     out = dict(times=[], cycles=[], efolds_dump=[], efolds_ref=[], rmsH=[], meanH=[],
