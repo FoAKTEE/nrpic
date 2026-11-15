@@ -41,6 +41,9 @@ def main(out, nproc):
 
 
 if __name__ == "__main__":
-    a = sys.argv[1:]
-    out = a[0] if a else os.environ["NRPIC_RUN_DIR"]
-    main(out, int(a[1]) if len(a) > 1 else 8)
+    import argparse
+    ap = argparse.ArgumentParser()
+    ap.add_argument("outdir", nargs="?", default=os.environ.get("NRPIC_RUN_DIR"))
+    ap.add_argument("--nproc", type=int, default=4)
+    a = ap.parse_args()
+    main(a.outdir, a.nproc)

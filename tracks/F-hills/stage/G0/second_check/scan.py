@@ -103,8 +103,10 @@ def main(out, nproc, nph):
 
 
 if __name__ == "__main__":
-    a = sys.argv[1:]
-    out = a[0] if a else os.environ["NRPIC_RUN_DIR"]
-    nproc = int(a[1]) if len(a) > 1 else int(os.environ.get("NRPIC_CORES", "12"))
-    nph = int(a[2]) if len(a) > 2 else 180
-    main(out, nproc, nph)
+    import argparse
+    ap = argparse.ArgumentParser()
+    ap.add_argument("outdir", nargs="?", default=os.environ.get("NRPIC_RUN_DIR"))
+    ap.add_argument("--nproc", type=int, default=6)
+    ap.add_argument("--nphase", type=int, default=180)
+    a = ap.parse_args()
+    main(a.outdir, a.nproc, a.nphase)
