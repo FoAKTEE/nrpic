@@ -1,0 +1,94 @@
+{
+  "schema": "nrpic-run-manifest/1",
+  "run_id": "E-20261115-135218-bdf4710",
+  "track": "E-stoch-inf",
+  "gate": "G0",
+  "kind": "scouting",
+  "purpose": "L-U smoke: time of one 4-cycle run of the noise unit test (U1, 64^3, power model) with core's processor executable of core/scalar-field 836ac86",
+  "preregistered_in": null,
+  "launcher": "local",
+  "command": [
+    "bash",
+    "-c",
+    "python3 tracks/E-stoch-inf/analysis/lead/u_runs.py --exe /data/haiyangw/nrpic/wt/core-scalar/.work/exe/athena_cpu_836ac86 --base tracks/E-stoch-inf/analysis/lead/inputs/u_base.athinput --out \"$NRPIC_RUN_DIR\" --threads 4 --jobs 1 --smoke"
+  ],
+  "cwd": ".",
+  "git": {
+    "sha": "bdf471024418ee657239eeeaf3987ff48821998a",
+    "branch": "track/E-stoch-inf",
+    "dirty": false,
+    "merge_base_main": "a1c223753952674ee38819dc45043591dddc3022",
+    "worktree": "wt/E-stoch-inf"
+  },
+  "code": {
+    "core_tag": null,
+    "athenak_upstream_sha": "c5a0d7f",
+    "kokkos_sha": "6739bc623081648af9e752b616d9671527922cbf",
+    "problem": null
+  },
+  "env": {
+    "host": "anta",
+    "env_hash": "0279f117f9b5066d0d8f22b387f643d57a7ce55d3c210ad3e0a880c49ae63266",
+    "machine_file_sha256": "fb54b7387bc058c778fdd2fec12e58d67459a657278df6a87d04f63daccb1968",
+    "uv_lock_sha256": "5417f6ba318b914aa3800e5d55f7b11fdd8df13c2688bdda7d419240aa1d5863",
+    "track_requirements_sha256": null,
+    "container_digest": null,
+    "compiler": "g++ 11.4.0",
+    "mpi": "none (Athena_ENABLE_MPI=OFF)",
+    "gpu": null,
+    "python": "3.10.12 /data/haiyangw/nrpic/wt/E-stoch-inf/.venv"
+  },
+  "input": null,
+  "inputs": [
+    {
+      "path": "tracks/E-stoch-inf/analysis/lead/inputs/u_base.athinput",
+      "role": "input",
+      "sha256": "5d82c682a0b08c8b99db30cdb59ca98b344fad419d4f9fe27c1de67cab525ee5",
+      "bytes": 2061,
+      "tracked": true
+    },
+    {
+      "path": "/data/haiyangw/nrpic/wt/core-scalar/.work/exe/athena_cpu_836ac86",
+      "role": "input",
+      "sha256": "65ff216207233e873c3c945b58b54340af5a5a8419aad001882f318626a00144",
+      "bytes": 240469096,
+      "tracked": false,
+      "location": "main checkout data root"
+    }
+  ],
+  "batch_entries": null,
+  "resources": {
+    "nodes": 1,
+    "gpus": 0,
+    "cores": 4,
+    "walltime_s": null,
+    "wall_limit": "00:20:00",
+    "segments_max": null,
+    "gpu_hours_requested": 0.0,
+    "gpu_hours": null,
+    "particles": null
+  },
+  "slurm": null,
+  "outputs": {
+    "dir": "scratch/E-stoch-inf/E-20261115-135218-bdf4710",
+    "sha256sums": "sha256sums.txt",
+    "sha256sums_sha256": null,
+    "bytes": null,
+    "files": null
+  },
+  "status": "running",
+  "exit_code": null,
+  "registered": "2026-11-15T13:52:18Z",
+  "started": null,
+  "ended": null,
+  "parents": [],
+  "notes": "",
+  "budget_at_submit": {
+    "gpu_hours_allotted": 10.0,
+    "cores_allotted": 16,
+    "gpu_hours_used": 0.0,
+    "gpu_hours_reserved": 0.0,
+    "cores_busy": 0,
+    "runs": 30
+  }
+}
