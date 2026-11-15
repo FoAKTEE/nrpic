@@ -606,3 +606,8 @@ literally and the five runs wrote into a directory named `$NRPIC_RUN_DIR` in the
 worktree. Stopped with `nrpic-run stop`, the partial output moved to
 `scratch/core/core-20261115-175447-764390e/out_unexpanded/`, closed as stopped. The
 driver now takes the run directory from the environment and refuses an unexpanded one.
+
+Rerun of T12 registered as core-20261115-175842-7d54ff5 (five cores, started 17:58Z).
+Figure-only repeat of the card comparison (analysis of the files of
+core-20261115-163549-7be94e4 and the card run -155404-24c88e3, no AthenaK run): the
+summary must equal that of -163549-7be94e4 in every number; only `fig_card.png` changes.

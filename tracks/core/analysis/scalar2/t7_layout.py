@@ -4,7 +4,8 @@ from the initial slice for 20 steps with 1, 8 and 64 MeshBlocks and through a re
 cycle 10.  Dumps at cycles 0, 10 and 20 (layout NRSFDMP2 with the metric and the
 constraints).
 
-    python3 t7_layout.py --exe EXE --out DIR [--card-run DIR2/card32]
+    python3 t7_layout.py --exe EXE [--out DIR] [--card-run DIR2/card32]
+                         [--analyse-only --data DIR0]
 
 Compares the fields of the dumps bit by bit between the layouts, the dump files byte by
 byte between the restarted and the uninterrupted run and, with --card-run, every field
@@ -34,11 +35,17 @@ def dumps(rundir):
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--exe", required=True)
-    ap.add_argument("--out", required=True)
+    ap.add_argument("--out", default=os.environ.get("NRPIC_RUN_DIR"),
+                    help="default: $NRPIC_RUN_DIR of nrpic-run")
     ap.add_argument("--card-run")
     ap.add_argument("--analyse-only", action="store_true")
+    ap.add_argument("--data", help="with --analyse-only: directory of an earlier "
+                    "execution (summary and figure go to --out)")
     a = ap.parse_args()
+    if not a.out or "$" in a.out:
+        ap.error(f"--out missing or unexpanded: {a.out!r}")
     out = os.path.abspath(a.out)
+    data = os.path.abspath(a.data) if (a.analyse_only and a.data) else out
     os.makedirs(out, exist_ok=True)
     exe = os.path.abspath(a.exe)
     # the example input with a restart file every 10 cycles
@@ -55,7 +62,7 @@ def main():
         rst = sorted(glob.glob(os.path.join(out, "mb16", "rst", "*.00001.rst")))[0]
         walls.append(common.run_case(exe, os.path.join(out, "mb16_rst"), rst, []))
         summ["wall_s"] = walls
-    d = {k: dumps(os.path.join(out, k)) for k in ("mb32", "mb16", "mb8", "mb16_rst")}
+    d = {k: dumps(os.path.join(data, k)) for k in ("mb32", "mb16", "mb8", "mb16_rst")}
     summ["dump_cycles"] = {k: sorted(v) for k, v in d.items()}
 
     # ---- layouts: fields bit by bit
@@ -77,8 +84,8 @@ def main():
         rs[c] = bool(filecmp.cmp(d["mb16"][c][0], d["mb16_rst"][c][0], shallow=False))
     summ["restart_dump_files_identical"] = rs
     # histories of the layouts: largest relative difference of a column
-    h1 = np.loadtxt(os.path.join(out, "mb32", "sr.sf.con.hst"))
-    h8 = np.loadtxt(os.path.join(out, "mb16", "sr.sf.con.hst"))
+    h1 = np.loadtxt(os.path.join(data, "mb32", "sr.sf.con.hst"))
+    h8 = np.loadtxt(os.path.join(data, "mb16", "sr.sf.con.hst"))
     with np.errstate(divide="ignore", invalid="ignore"):
         rel = np.abs(h8 - h1)/np.abs(h1)
     summ["con_history_layout_max_rel_diff"] = float(np.nanmax(rel[:, 2:]))
@@ -105,7 +112,7 @@ def main():
         names = sf.CON_HIST_VARS
         summ["card_con_history_max_rel_diff"] = {names[i]: float(np.nanmax(rel[:, i]))
                                                  for i in range(2, len(names))}
-        hp = np.loadtxt(os.path.join(out, "mb32", "sr.sf.hst"))
+        hp = np.loadtxt(os.path.join(data, "mb32", "sr.sf.hst"))
         hg = np.loadtxt(os.path.join(os.path.abspath(a.card_run), "sr.sf.hst"))
         with np.errstate(divide="ignore", invalid="ignore"):
             rel = np.abs(hg - hp)/np.abs(hp)
