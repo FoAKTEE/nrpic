@@ -64,6 +64,15 @@ Format 2 (`r u KL KT alpha betar`, extrinsic curvature and shift) is specified i
 `coord/INTERFACES/spherical_id_format2.md` (PROVISIONAL) and is implemented on branch
 `core/id-extrinsic`, not in this source.
 
+Tests by component: `table` with `lapse = one` DT "Dust collapse, R_0 = 5 M, 9328
+lattice particles"; `table` with `lapse = table` DT "Stable cluster y_c = 0.819, 10^4
+stratified particles", DT "Consistent initial data for perturbed clusters";
+`puncture` with `lapse = precollapsed` DT "Test particles around an evolved puncture",
+"Horizon mass of a vacuum puncture: calibration", "Test particles around a head-on
+collision of two black holes"; `spheroid` DT "Prolate collapse, complete to 45 M";
+`gaussian` with `table` and `lapse = isotropic` DT "Cluster with two overdensities ..."
+entries (`problems/jeans/jeans.athinput` lines 205-216).
+
 What the generator guarantees: the Hamiltonian constraint in the continuum for the
 conformal sources it is given. What it does not check: that the particles carry those
 sources. The particle generator must place equal-mass particles with coordinate density
@@ -83,6 +92,12 @@ otherwise the momentum constraint of `K_ij = 0` is violated.
 | `id_file` | (file) | `NRCOSMO1`, 3 int64 (n1 n2 n3) equal to the root mesh, then 9 float64 arrays of n3 n2 n1 values, first index fastest: psi, K, alpha, Ahat_xx, Ahat_xy, Ahat_xz, Ahat_yy, Ahat_yz, Ahat_zz at the root cell centres; refined blocks get periodic cubic Lagrange interpolation |
 | `noise_amp`, `noise_atilde`, `noise_theta`, `noise_gamma`, `noise_seed` | 0, `noise_amp`, `noise_amp`, `noise_amp`, 1 | white noise on the evolved fields (robustness test of arXiv:1904.07841): a counter-based generator (splitmix64 of the global cell index, the field component and the seed), the same in a ghost cell and in its periodic image, so the noise does not depend on the MeshBlock layout |
 
+Tests: `id = flrw` CT "C0, first test: homogeneous dust universe" and test D1 of this
+package; `id = file` CT "C1: constraint-solved initial data ..."; interpolation onto
+refined blocks CT "E1, third step: static refinement around the overdensity" (initial
+relative Hamiltonian constraint 4e-5 on refined blocks against 2e-11 on the uniform
+mesh); noise CT "C5, tests A0 and A of paper 2" and its follow-up.
+
 What the file generator guarantees (`cosmo/ic/cosmo_id.py`, lines 1-20 and 219-243): the
 Hamiltonian and momentum constraints on the torus, solved spectrally with the particles
 held fixed and with E and S_i formed exactly as the code forms them (same cloud shape,
@@ -96,7 +111,8 @@ density error of 3.8e-7 that grew like spatial curvature).
 
 No `<z4c>`; with an `<adm>` block and `metric = mesh` the mesh holds Cartesian
 Kerr-Schild data from `bh_mass`, `bh_spin`, reset also on restart. The particles are test
-particles.
+particles. Tests: DT "Pusher kernels" (analytic and lattice metrics), "Mesh path (CPU)"
+(mesh metric), "Test-particle clusters in Schwarzschild and Kerr".
 
 ## 4. Particle generators and what each guarantees
 
