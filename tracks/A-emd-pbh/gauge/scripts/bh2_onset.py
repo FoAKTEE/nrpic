@@ -133,6 +133,7 @@ def main():
     ax.axhline(a_crit, **MASK_LINE)
     ax.axvline(t_crit, **GUIDE, label=r"T2 limit, $0.25\,\alpha = C_{\rm crit}$")
     ax.set_ylabel(r"largest lapse")
+    ax.set_ylim(0.0, 6.0)  # the last records of bh2 carry the broken state
     ax.set_xlabel(r"conformal time $t$")
     ax.legend(loc="upper left", fontsize=8)
     for ext in ("png", "pdf"):
