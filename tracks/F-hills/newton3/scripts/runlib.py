@@ -44,12 +44,24 @@ def package_inputs():
 
 def start_run(purpose, kind="scouting", cores=1, extra_inputs=(), notes="", preregistered=None):
     sha = _git("rev-parse", "HEAD")
-    now = _dt.datetime.now(_dt.timezone.utc)
-    run_id = f"F-hills-{now:%Y%m%d-%H%M%S}-{sha[:7]}"
-    outdir = os.path.join(SCRATCH, run_id)
-    os.makedirs(outdir, exist_ok=False)
-    mdir = os.path.join(WT, "tracks", "F-hills", "runs", run_id)
-    os.makedirs(mdir, exist_ok=False)
+    # other helpers of F-hills register runs in the same second: retry on a collision
+    for _ in range(30):
+        now = _dt.datetime.now(_dt.timezone.utc)
+        run_id = f"F-hills-{now:%Y%m%d-%H%M%S}-{sha[:7]}"
+        outdir = os.path.join(SCRATCH, run_id)
+        mdir = os.path.join(WT, "tracks", "F-hills", "runs", run_id)
+        if os.path.exists(outdir) or os.path.exists(mdir):
+            time.sleep(1.1)
+            continue
+        try:
+            os.makedirs(outdir, exist_ok=False)
+            os.makedirs(mdir, exist_ok=False)
+        except FileExistsError:
+            time.sleep(1.1)
+            continue
+        break
+    else:
+        raise RuntimeError("could not allocate a run id")
     inputs = package_inputs() + [{"path": p, "sha256": sha256(p)} for p in extra_inputs]
     dirty_pkg = _git("status", "--porcelain", "--", "tracks/F-hills/newton3")
     man = {

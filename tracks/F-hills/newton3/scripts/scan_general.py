@@ -65,9 +65,16 @@ def task(args):
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--workers", type=int, default=8)
+    ap.add_argument("--only-B", default=None,
+                    help="comma-separated D values: run only part B at these D (supplement)")
     args = ap.parse_args()
+    global D_A, D_B
+    if args.only_B:
+        D_A = np.array([])
+        D_B = np.array([float(x) for x in args.only_B.split(",")])
     run = runlib.start_run("P2: restricted scan over orientation: isotropic disruption probability "
-                           "and mean ejection energy vs D; inclination dependence at fixed D",
+                           "and mean ejection energy vs D; inclination dependence at fixed D"
+                           + (f" (supplement: part B only at D = {args.only_B})" if args.only_B else ""),
                            cores=args.workers, preregistered="tracks/F-hills/newton3/JOURNAL.md#P2")
     jobs = [("A", D) for D in D_A[::-1]] + [("B", D) for D in D_B[::-1]]
     res = {}
@@ -85,7 +92,8 @@ def main():
            "varphi_B": np.linspace(0, 2 * np.pi, N_AZ, endpoint=False),
            "phase_B": np.linspace(0, np.pi, N_PHA_B, endpoint=False)}
     for k in ("E2", "disrupted", "survived", "ambiguous", "rmin", "ok"):
-        out[f"{k}_A"] = np.stack([res[("A", D)][k].reshape(N_ORI, N_PHA) for D in D_A])
+        if D_A.size:
+            out[f"{k}_A"] = np.stack([res[("A", D)][k].reshape(N_ORI, N_PHA) for D in D_A])
         out[f"{k}_B"] = np.stack([res[("B", D)][k].reshape(N_TH, N_AZ, N_PHA_B) for D in D_B])
     np.savez_compressed(os.path.join(run["dir"], "general.npz"), **out)
     runlib.finish_run(run)
