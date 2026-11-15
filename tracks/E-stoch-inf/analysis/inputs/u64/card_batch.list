@@ -1,0 +1,12 @@
+# Noise unit test, base case (NOISE_SPEC section 9: N = 64, nmax2 = 256, 300 steps) on one
+# A100 with the release executable. U2 of this list is U9 (U2 on a card, test A14).
+# U4 (restart) runs on processors (scripts/proc_u2_u4.sh): the batch launcher checksums
+# every deck at submission, so a restart file produced inside the job cannot be listed.
+U1 tracks/E-stoch-inf/analysis/inputs/u64/U1.athinput
+U2 tracks/E-stoch-inf/analysis/inputs/u64/U2.athinput
+U3 tracks/E-stoch-inf/analysis/inputs/u64/U3.athinput
+U5a tracks/E-stoch-inf/analysis/inputs/u64/U5a.athinput
+U5b tracks/E-stoch-inf/analysis/inputs/u64/U5b.athinput
+U6 tracks/E-stoch-inf/analysis/inputs/u64/U6.athinput
+U7 tracks/E-stoch-inf/analysis/inputs/u64/U7.athinput
+U8 tracks/E-stoch-inf/analysis/inputs/u64/U8.athinput
