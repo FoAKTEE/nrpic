@@ -130,3 +130,43 @@ Tests and predictions:
    positions to 1e-6; three horizons from the first search, members 0.125 Lambda-close
    (0.128-0.132 M), heavy 1.00-1.01 M [JUDGEMENT from core's 0.541/0.550 for holes of 0.5
    and 10.40 for 10 with spin].
+
+## 2026-11-15 Incidents of the first submissions (no result lost)
+
+- Runs F-20261115-173106-57c4b4c (E1) and F-20261115-173112-a9e18a3 (E2) were stopped by me
+  (kill by process id) after three minutes: AthenaK writes the tracker files
+  (`<base>.co_<n>.txt`) and horizon summaries into the working directory, not into `-d`, so
+  they landed in the worktree root and made the tree dirty. The stray files are kept in
+  `stray_from_worktree_root/` of the two run directories. Fixed in the scripts (athena runs
+  inside each case directory); reruns F-20261115-173543-29e87e8 (E1) and
+  F-20261115-173547-a02af7d (E2).
+- The processor build of the release is serial (`-DAthena_ENABLE_OPENMP=OFF`, cmake flags in
+  the card manifest; one core at 100 percent in `ps`): the first two runs asked for 8 cores
+  and used one. The reruns ask for one.
+- Run F-20261115-173719-923135a (E4 test 1): the output argument `'$NRPIC_RUN_DIR'` was passed
+  literally (no shell), so the output went to a directory of that name in the worktree root;
+  moved to `out/` of the run directory. The scripts now take the run directory from the
+  environment when no argument is given.
+
+## 2026-11-15 E4 test 1, outcome (run F-20261115-173719-923135a, synthetic Newtonian trajectory)
+
+7 of 10 checks passed. [VERIFIED, figure `out/fig_test_nrread_synthetic.png` of the run, read]
+- Passed: three trackers; merged rows across a restart overlap (t = 600-700 written twice):
+  24001 rows, every time once, in order; positions read back exactly; horizon rows with the
+  duplicates removed (1501 each); the ejected member is m1 (comp0); its barycentric energy at
+  the end +1.31187 units, the lead's V5b value +1.31187 (run F-hills-20261115-145559-a314517);
+  the two-body energy with M alone oscillates over 0.734 units.
+- FAILED prediction: the barycentric energy is constant to 1.54e-4 units after t = 300, not
+  1e-4. The lead's V5b has the same range (late max - min = 1.54e-4, `v5b_summary.json`), so
+  it is the coupling to the captured member's orbit, not the reader; my threshold was too
+  tight. The test now uses 2e-4 and says why.
+- Failed check of my own helper: the velocity from positions (line fit over 1 M) was off by
+  8.3e-4 (one-sided windows at the ends see the acceleration as a bias). Changed to the
+  derivative of a quadratic fit; rerun below.
+- Failed check of the test's integrator: total energy conserved to 1.2e-9, not 1e-10
+  (DOP853, rtol 1e-12, 1500 M with close passes); threshold 1e-8 is enough for a test of
+  readers.
+Reading of the figure [JUDGEMENT]: for the ejected member the barycentric energy is the
+conserved one (flat from t = 120 on); for the captured member it is the two-body energy with M
+(flat at -1.63 units from t = 120 on). In the 280 M of the passage both settle by t = 120 in
+Newtonian dynamics.

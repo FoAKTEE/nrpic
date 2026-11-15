@@ -291,18 +291,19 @@ def common_times(trackers, keys=None, dt=None):
 
 
 def velocity_from_positions(t, x, window=1.0):
-    """Velocity from tracker positions by a least-squares line over +-window/2 in time
-    (an alternative to the tracker's own v = -beta, which is the same quantity at the
-    tracker; the fit smooths the step-to-step noise)."""
+    """Velocity from tracker positions: derivative at the centre of a least-squares
+    quadratic over +-window/2 in time (one-sided at the ends; the quadratic removes the
+    bias of the acceleration there). An alternative to the tracker's own v = -beta, which
+    is the same quantity at the tracker; the fit smooths the step-to-step noise."""
     v = np.empty_like(x)
     h = 0.5 * window
     lo = np.searchsorted(t, t - h)
     hi = np.searchsorted(t, t + h, side="right")
     for k in range(len(t)):
         a, b = lo[k], hi[k]
-        if b - a < 3:
-            a, b = max(0, k - 1), min(len(t), k + 2)
+        if b - a < 4:
+            a, b = max(0, k - 2), min(len(t), k + 3)
         tt = t[a:b] - t[k]
         for c in range(x.shape[1]):
-            v[k, c] = np.polyfit(tt, x[a:b, c], 1)[0]
+            v[k, c] = np.polyfit(tt, x[a:b, c], 2)[1]
     return v
