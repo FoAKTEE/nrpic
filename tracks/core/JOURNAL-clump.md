@@ -413,3 +413,20 @@ particles, 12 minutes per run on one core, `fig_clump_evolution.png`).
   curvature (peak 0.04), noise of a few 1e-3 with it.
 
 **R, regression** and **G, card check**: see the entries below when they have finished.
+
+### Prediction for T7 (written 2026-11-15T16:12Z, before the run): clumps beside a puncture
+
+`problems/tests/clump_puncture.athinput`: two Gaussian clumps (0.2, sigma 1) at x = -3
+and +3 with momenta -0.04 and +0.04 along y, the second with spin 0.02 along z, and a
+Bowen-York puncture of bare mass 1 at (0, 5, 0) with momentum 0.1 along x; 128 cells,
+lattice particles with equal momentum shares, masses from psi with the puncture's
+m/2r. Projection A of the momentum constraint on the smooth field of the clumps over
+the cells within 4 sigma of a clump centre (`puncture_clump_check.py`).
+- all curvatures: A = 0.000 +- 0.005, and the norm of M near the clumps below 0.01 of
+  the norm of T (cloud and filter as in T1, plus the truncation error of the puncture's
+  curvature 6 away);
+- clumps' momenta and spin zero in the curvature: A = 1.00 +- 0.01;
+- puncture's momentum zero: A as in the first case (the puncture's curvature is
+  divergence free at the clumps).
+Refuted if the first or third A is not near zero (the clump curvature does not combine
+with a puncture, or psi with the puncture is not the psi of the code).
