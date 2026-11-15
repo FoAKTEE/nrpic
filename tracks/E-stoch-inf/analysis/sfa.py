@@ -3,7 +3,7 @@
 Reader and estimators named by the lead (tracks/E-stoch-inf/stage/G1/STATUS.md): the
 curvature perturbation R^NR (P-c of spec/SPEC.md section 7.1), per-mode amplitudes and
 their ratio to linear theory (A2, freezing of SPEC 7.3), shell spectra, and constraint
-ratios |H|/[H], |M|/[M] (P-d, P-e; P1:735-745). No simulation code: everything here reads
+ratios |H|/[H], |M|/[M] (P-d, P-e; PRD_v2.tex:740-743). No simulation code: everything here reads
 what the release executable writes (coord/INTERFACES/scalar_field.md section 6).
 
 Inputs, all from one run directory:
@@ -279,7 +279,7 @@ def d1(f, h, axis, nghost=4):
 
 
 def ham_norm_cells(d, aa=None):
-    """[H] per cell, |R| + (2/3) K^2 + |At_ij At^ij| + 16 pi |E| (P1:736-740 with
+    """[H] per cell, |R| + (2/3) K^2 + |At_ij At^ij| + 16 pi |E| (2512.14649 PRD_v2.tex:740 with
     Mpl^-2 rho = 8 pi E), with the three-Ricci scalar recovered from the dumped H =
     R + (2/3) K^2 - At At - 16 pi E. aa: At_ij At^ij per cell, or None: then it is left out
     (a term of second order in the perturbations; the code's [H] keeps it)."""
@@ -291,7 +291,7 @@ def ham_norm_cells(d, aa=None):
 
 def mom_norm_cells(d, nghost=4, at_terms=None):
     """[M] = sqrt(sum_i [M_i]^2) per cell with [M_i] = |(2/3) d_i K| + |8 pi S_i|, S_i =
-    -Pi d_i phi (P1:741-744 with Mpl^-2 J_i = 8 pi S_i). The At terms of P1 are added
+    -Pi d_i phi (PRD_v2.tex:741-743 with Mpl^-2 J_i = 8 pi S_i). The At terms of P1 are added
     when at_terms (array [3, ...] of |gt^kl d_k At_il| + |3 gt^kl At_ik d_l chi/(2 chi)|)
     is given; without them [M] is a lower bound of P1's (same order: all terms are first
     order in the perturbations on the background)."""

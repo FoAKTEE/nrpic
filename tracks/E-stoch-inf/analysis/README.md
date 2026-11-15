@@ -110,7 +110,7 @@ Cannot (or not without help):
 - core: (a) add gt_ij and At_ij (or Phi of P-c directly) to the double-precision dump, so
   that R^NR and the physical |M| do not need the single-precision bin output (evidence:
   0.48 percent offset of the dump-only R^NR, 5.5e-4 error of the physical |M|); (b) [M]
-  of P1 (PRD_v2.tex:738-744) in the history and as a dump variable, and [H] per cell;
+  of P1 (PRD_v2.tex:740-743) in the history and as a dump variable, and [H] per cell;
   (c) a look at the early first-order momentum residual (item 5 above); (d) the initial
   slice R8 is no longer needed for the slow-roll reproduction at linear order (the
   homogeneous start works, N = 16), but is still needed to reproduce P1's set-up exactly.
