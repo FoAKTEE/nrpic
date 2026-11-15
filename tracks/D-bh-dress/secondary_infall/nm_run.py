@@ -48,6 +48,10 @@ def main():
     ap.add_argument("--onestep", action="store_true",
                     help="one step of 1e-6 with a snapshot after it (field measurement)")
     ap.add_argument("--exe", default=EXE_CPU)
+    ap.add_argument("--shift_cells", type=float, nargs=3, default=[0.0, 0.0, 0.0],
+                    help="displace the configuration by this many cells: 0.5 0.5 0.5 puts the "
+                         "clump at a cell centre instead of a mesh vertex")
+    ap.add_argument("--tlim", type=float, default=0.0, help="end time (default: a_end)")
     a = ap.parse_args()
     if not a.out:
         sys.exit("no output directory: give --out or run under nrpic-run")
@@ -55,11 +59,12 @@ def main():
     ic = [sys.executable, os.path.join(HERE, "nm_ic.py"), "--out", a.out, "--kind", a.kind,
           "--aend", str(a.aend), "--L", str(a.L), "--edge_fac", str(a.edge_fac),
           "--ndust", str(a.ndust), "--nclump", str(a.nclump), "--rclump", str(a.rclump)]
+    ic += ["--shift"] + [str(c * 2 * a.L / a.nx) for c in a.shift_cells]
     subprocess.run(ic, check=True, stdout=subprocess.DEVNULL)
     with open(os.path.join(a.out, "setup.json")) as f:
         p = json.load(f)
     mb = a.mb if a.mb > 0 else a.nx // 2
-    tlim = p["tlim"]
+    tlim = a.tlim if a.tlim > 0 else p["tlim"]
     over = [f"mesh/nx{i}={a.nx}" for i in (1, 2, 3)]
     over += [f"mesh/x{i}min={-a.L}" for i in (1, 2, 3)] + [f"mesh/x{i}max={a.L}" for i in (1, 2, 3)]
     over += [f"meshblock/nx{i}={mb}" for i in (1, 2, 3)]

@@ -338,3 +338,24 @@ snapshot times of the runs (the matched reference); the criteria below apply to 
    1.5-2 h. One core each.
 Refuted where a number falls outside the stated band; then name the cause only after a
 run that could have shown otherwise.
+
+## 2026-11-15T17:20Z  observation during N128/N64 (before any snapshot was analysed): the clump runs off the vertex
+
+The history (`infall.newton.hst`, column P_x) of N128 grows exponentially from rounding:
+-6.8e-18 (t = 0), -2e-13 (5 M), -6.3e-12 (7.9 M), -9.3e-11 (10.1 M), -1.4e-9 (12.4 M), an
+e-folding time of about 0.85 M; N64: -1.6e-15 (5 M) to -6.9e-12 (25 M), about 2.3 M. The ratio
+2.7 is close to 2^(3/2) = 2.83, i.e. a rate ~ (G M/dx^3)^(1/2). Hypothesis [JUDGEMENT, to be
+tested]: the self-force of a compact mass in this scheme (cloud-in-cell deposit, Catmull-Rom
+gather; interface 5.2: "a particle feels its own field ... 0.5 m/dx^2 ... vanishes at a cell
+centre") makes the mesh vertex where the clump sits an UNSTABLE equilibrium; the symmetric
+set-up only delays the run-off until rounding errors have grown.
+
+## 2026-11-15T17:22Z  prediction S1: stability of the clump at a vertex and at a cell centre
+
+Clump alone (19952 particles, r < 0.3 M, mass 1, 3000 massless tracers), nx = 64, box +-68 M
+(dx 2.125 M), fixed step 0.1, to t = 40 M, the clump displaced by 0.05 dx along x from
+(V) a mesh vertex, (C) a cell centre. Prediction: (V) the displacement grows exponentially
+with e-folding 1.5-3.5 M (the 2.3 M of N64) until it reaches 0.2-0.5 dx, then oscillates about
+a stable point; (C) the displacement stays below 0.1 dx (oscillation about the cell centre).
+Refuted if (V) does not grow, or (C) grows too (then neither point is stable and the clump
+stand-in is unusable without the fixed point mass of core's request).

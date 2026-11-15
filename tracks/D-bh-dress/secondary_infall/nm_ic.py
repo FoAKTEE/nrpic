@@ -100,6 +100,8 @@ def main():
     ap.add_argument("--rmin", type=float, default=0.05)
     ap.add_argument("--rmax", type=float, default=30.0)
     ap.add_argument("--seed", type=int, default=7)
+    ap.add_argument("--shift", type=float, nargs=3, default=[0.0, 0.0, 0.0],
+                    help="displacement of the whole configuration (e.g. to a cell centre)")
     a = ap.parse_args()
     os.makedirs(a.out, exist_ok=True)
     p = derived(a)
@@ -136,6 +138,8 @@ def main():
     else:
         p.update(n_tracer=0)
     x, u, m = np.concatenate(xs), np.concatenate(us), np.concatenate(ms)
+    x = x + np.asarray(a.shift)[None, :]
+    p["shift"] = list(a.shift)
     nio.write_nrp(os.path.join(a.out, "particles.nrp"), x, u, m)
     p.update(kind=a.kind, n_total=len(m), tag_clump=[0, p["n_clump"]],
              tag_dust=[p["n_clump"], p["n_clump"] + p["n_dust"]],
