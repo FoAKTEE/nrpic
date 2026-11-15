@@ -148,7 +148,7 @@ def main():
         _, rt = series(cases[name], "bin", "rms_TT")
         _, rg = series(cases[name], "bin", "rms_Gtot")
         a = ref.a_of_tau(t)
-        lab = name.replace("cw_", "").replace("p", ".").replace("_gd", " (Gamma driver)")
+        lab = r"$\epsilon=%g$" % EPS[name] + (" (Gamma driver)" if name.endswith("_gd") else "")
         ax[0].loglog(a, nt, color=col[name], label=lab)
         ax[1].semilogx(a, bf, color=col[name])
         ax[2].loglog(a, np.abs(cg / c), color=col[name])
@@ -202,17 +202,23 @@ def main():
         ax[1].loglog(a, np.abs(cor0 / s1), color=fs.PAL["yellow"], ls=":", label=r"after $-G$ (no cross terms)")
         ax[1].set_ylabel(r"difference between the gauges $/|s|$")
         ax[1].legend(fontsize=7)
-        tz2, bz = series(cases["cw_eps1"], "rst", "B_K1_plus", 0)
-        tg2, bg = series(cases["cw_eps1_gd"], "rst", "B_K1_plus", 0)
-        tz3, bxz = series(cases["cw_eps1"], "rst", "B_K1_cross", 0)
+        # B of a + wave at K1 is a x pattern with sin(K1.x): the imaginary part of c - i s
+        tz2, bz = series(cases["cw_eps1"], "rst", "B_K1_cross", 1)
+        tg2, bg = series(cases["cw_eps1_gd"], "rst", "B_K1_cross", 1)
+        _, hz2 = series(cases["cw_eps1"], "rst", "h_K1_plus", 0)
+        _, hg2 = series(cases["cw_eps1_gd"], "rst", "h_K1_plus", 0)
         m2 = min(len(tz2), len(tg2))
         if m2:
             a2 = ref.a_of_tau(tz2[:m2])
-            ax[2].semilogx(a2, bz[:m2], "o-", color=fs.PAL["blue"], ms=3, label="zero shift")
-            ax[2].semilogx(a2, bg[:m2], "s--", color=fs.PAL["green"], ms=3, label="Gamma driver")
-            ax[2].set_ylabel(r"$\Lambda B$: + amplitude at $K_1$ (cos part)")
+            sel = a2 > 1.5
+            dB = np.abs(bz[:m2] - bg[:m2]) / np.maximum(np.abs(bz[:m2]), np.abs(bg[:m2]))
+            dh = np.abs(hz2[:m2] - hg2[:m2]) / np.maximum(np.abs(hz2[:m2]), np.abs(hg2[:m2]))
+            ax[2].loglog(a2[sel], dB[sel], "o-", color=fs.PAL["red"], ms=3, label=r"magnetic Weyl $B$ ($\times$, sin part)")
+            ax[2].loglog(a2[sel], dh[sel], "s--", color="k", ms=3, label=r"$\Lambda h$ ($+$, cos part)")
+            ax[2].set_ylabel(r"relative difference between the gauges at $K_1$")
             ax[2].legend(fontsize=7)
-            summ["P6_B"] = {"a": a2.tolist(), "zero_shift": bz[:m2].tolist(), "gamma_driver": bg[:m2].tolist()}
+            summ["P6_B"] = {"a": a2.tolist(), "B_zero_shift": bz[:m2].tolist(), "B_gamma_driver": bg[:m2].tolist(),
+                            "rel_diff_B": dB.tolist(), "rel_diff_h": dh.tolist()}
         for x in ax:
             x.set_xlabel(r"$a$")
         fig.tight_layout()
