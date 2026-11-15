@@ -21,6 +21,20 @@ Arrays on the mesh have shape (n1, n2, n3) and are indexed [i, j, k] = (x, y, z)
 centres are at (i + 1/2) h_x and so on; the box is [0, L1) x [0, L2) x [0, L3).
 Units G = c = 1. Options of the deposit (as `<particles>` of the code) are passed as a
 `Deposit` object instead of module variables.
+
+Derivatives. By default (`Torus(n, L)`) they are spectral, as in `cosmo/ic/cosmo_id.py`:
+the data then satisfy the constraints of the code up to the truncation error of its
+finite differences, which is negligible for smooth data and of order one for the part of
+the sources near the mesh frequency (a particle lattice displaced at random). With
+`Torus(n, L, fd_order=6)` (4 and 2 for `nghost` = 3 and 2) the derivatives are the centred
+differences of the code: the Hamiltonian residual is the one the code evaluates
+(`Z4c::ADMConstraints`: Ricci scalar of gamma_ij = psi^4 delta_ij from first and second
+differences of psi^4), to rounding, and the vector equation is solved with the first
+difference applied twice. The momentum constraint of the code then holds up to the
+product-rule error of the differences (noise of the sources times the relative change of
+psi over a cell). The eight modes whose first differences all vanish (zero or the mesh
+frequency in every direction) cannot be solved for; their part of the momentum source is
+dropped and reported (`rdrop`).
 """
 from dataclasses import dataclass
 
@@ -28,7 +42,7 @@ import numpy as np
 from scipy import ndimage
 
 __all__ = ["Deposit", "Torus", "deposit", "interp", "compensate_density", "binomial",
-           "a_squared", "sources", "residuals", "solve"]
+           "a_squared", "sources", "hamiltonian", "residuals", "solve"]
 
 
 @dataclass
@@ -140,25 +154,50 @@ def compensate_density(fields, c, lim=0.0, c2=0.0):
     return out
 
 
-class Torus:
-    """Spectral operators on the box of n = (n1, n2, n3) cells and lengths L."""
+# centred differences of athenak/src/utils/finite_diff.hpp: first derivative (offsets
+# 1, 2, ...) and second derivative (offsets 0, 1, 2, ...), by order of accuracy
+FD1 = {2: [0.5], 4: [2.0/3.0, -1.0/12.0], 6: [0.75, -0.15, 1.0/60.0]}
+FD2 = {2: [-2.0, 1.0], 4: [-2.5, 4.0/3.0, -1.0/12.0],
+       6: [-49.0/18.0, 1.5, -0.15, 1.0/90.0]}
 
-    def __init__(self, n, L):
+
+class Torus:
+    """Derivative operators on the box of n = (n1, n2, n3) cells and lengths L, applied
+    in Fourier space: spectral (fd_order = None) or the centred differences of the code
+    of order fd_order (2, 4 or 6; 2 (nghost - 1) for the code)."""
+
+    def __init__(self, n, L, fd_order=None):
         self.n, self.L = _three(n), _three(L)
         self.h = tuple(self.L[d]/self.n[d] for d in range(3))
+        self.fd_order = fd_order
         k1 = 2.0*np.pi*np.fft.fftfreq(self.n[0], d=self.h[0])
         k2 = 2.0*np.pi*np.fft.fftfreq(self.n[1], d=self.h[1])
         k3 = 2.0*np.pi*np.fft.rfftfreq(self.n[2], d=self.h[2])
         self.k = np.meshgrid(k1, k2, k3, indexing="ij")
-        self.k2 = self.k[0]**2 + self.k[1]**2 + self.k[2]**2
-        # first derivatives: the Nyquist mode of an even grid has no derivative
-        self.kd = [np.array(kk) for kk in self.k]
-        if self.n[0] % 2 == 0:
-            self.kd[0][self.n[0]//2, :, :] = 0.0
-        if self.n[1] % 2 == 0:
-            self.kd[1][:, self.n[1]//2, :] = 0.0
-        if self.n[2] % 2 == 0:
-            self.kd[2][:, :, self.n[2]//2] = 0.0
+        if fd_order is None:
+            self.k2 = self.k[0]**2 + self.k[1]**2 + self.k[2]**2
+            # first derivatives: the Nyquist mode of an even grid has no derivative
+            self.kd = [np.array(kk) for kk in self.k]
+            if self.n[0] % 2 == 0:
+                self.kd[0][self.n[0]//2, :, :] = 0.0
+            if self.n[1] % 2 == 0:
+                self.kd[1][:, self.n[1]//2, :] = 0.0
+            if self.n[2] % 2 == 0:
+                self.kd[2][:, :, self.n[2]//2] = 0.0
+            # operator of the vector equation, as in cosmo/ic/cosmo_id.py
+            self.k2v = self.k2
+        else:
+            c1, c2 = FD1[fd_order], FD2[fd_order]
+            self.kd, self.k2 = [], 0.0
+            for d in range(3):
+                th = self.k[d]*self.h[d]
+                self.kd.append(2.0*sum(c*np.sin((m + 1)*th) for m, c in enumerate(c1))
+                               / self.h[d])
+                self.k2 = self.k2 - (c2[0] + 2.0*sum(c*np.cos((m + 1)*th)
+                                                     for m, c in enumerate(c2[1:])))/self.h[d]**2
+            # the vector equation contains the first difference applied twice
+            self.k2v = self.kd[0]**2 + self.kd[1]**2 + self.kd[2]**2
+        self.rdrop = 0.0
 
     def fft(self, f):
         return np.fft.rfftn(f)
@@ -182,12 +221,18 @@ class Torus:
         traceless Ahat_ij = d_i W_j + d_j W_i - (2/3) delta_ij d_k W_k as six arrays
         (xx, xy, xz, yy, yz, zz)."""
         Rk = [self.fft(r) for r in R]
-        k, k2 = self.kd, self.k2.copy()
-        k2[0, 0, 0] = 1.0
+        k, k2 = self.kd, self.k2v.copy()
+        # modes without a solution: the mean, and with differences the modes whose
+        # first differences all vanish
+        null = k2 <= 1e-12*np.abs(self.k2v).max()
+        null[0, 0, 0] = True
+        k2[null] = 1.0
         kR = k[0]*Rk[0] + k[1]*Rk[1] + k[2]*Rk[2]
         Wk = [-(Rk[i] - 0.25*k[i]*kR/k2)/k2 for i in range(3)]
+        ntot = self.n[0]*self.n[1]*self.n[2]
+        self.rdrop = float(max(np.abs(r[null]).max() for r in Rk)/ntot)
         for w in Wk:
-            w[0, 0, 0] = 0.0
+            w[null] = 0.0
         divW = 1j*(k[0]*Wk[0] + k[1]*Wk[1] + k[2]*Wk[2])
         A = []
         for a in range(3):
@@ -220,10 +265,26 @@ def sources(tor, x, u, m, psi, dep):
     return E, S, W
 
 
+def hamiltonian(tor, psi, K, A, E):
+    """Hamiltonian residual: the first constraint above with all terms on the left. With
+    differences (tor.fd_order) it is -(psi^5/8) times the constraint as the code
+    evaluates it: Ricci scalar of gamma_ij = f delta_ij, f = psi^4, from differences of
+    f, R = -2 sum_i D_ii f / f^2 + (3/2) sum_i (D_i f)^2 / f^3."""
+    if tor.fd_order is None:
+        return (tor.lap(psi) - K*K*psi**5/12.0 + a_squared(A)/(8.0*psi**7)
+                + 2.0*np.pi*psi**5*E)
+    f = psi**4
+    F = tor.fft(f)
+    lapf = tor.ifft(-tor.k2*F)
+    grad2 = sum(tor.ifft(1j*kd*F)**2 for kd in tor.kd)
+    ricci = -2.0*lapf/f**2 + 1.5*grad2/f**3
+    hc = ricci + (2.0/3.0)*K*K - a_squared(A)/psi**12 - 16.0*np.pi*E
+    return -(psi**5/8.0)*hc
+
+
 def residuals(tor, psi, K, A, E, S):
-    """Hamiltonian residual (the first constraint above, all terms on the left) and the
-    three momentum residuals."""
-    ham = tor.lap(psi) - K*K*psi**5/12.0 + a_squared(A)/(8.0*psi**7) + 2.0*np.pi*psi**5*E
+    """Hamiltonian residual (see `hamiltonian`) and the three momentum residuals."""
+    ham = hamiltonian(tor, psi, K, A, E)
     dK = tor.grad(K)
     Ak = [tor.fft(a) for a in A]
     idx = {(0, 0): 0, (0, 1): 1, (0, 2): 2, (1, 1): 3, (1, 2): 4, (2, 2): 5}
@@ -250,8 +311,7 @@ def solve(tor, x, u, m, K, dep=None, psi0=None, tol=1e-12, maxit=200, verbose=Fa
         R = [(2.0/3.0)*psi**6*dK[i] + 8.0*np.pi*psi**6*S[i] for i in range(3)]
         rmean = [float(r.mean()) for r in R]
         _, A = tor.solve_vector([r - r.mean() for r in R])
-        ham = (tor.lap(psi) - K*K*psi**5/12.0 + a_squared(A)/(8.0*psi**7)
-               + 2.0*np.pi*psi**5*E)
+        ham = hamiltonian(tor, psi, K, A, E)
         err = float(np.abs(ham).max())
         hist.append(err)
         if verbose:
@@ -260,4 +320,5 @@ def solve(tor, x, u, m, K, dep=None, psi0=None, tol=1e-12, maxit=200, verbose=Fa
             break
         sigma = float((5.0*K*K*psi**4/12.0 + 2.0*np.pi*psi**4*E).mean())
         psi = psi + tor.solve_helmholtz(-ham, sigma)
-    return {"psi": psi, "A": A, "E": E, "S": S, "W": W, "hist": hist, "rmean": rmean}
+    return {"psi": psi, "A": A, "E": E, "S": S, "W": W, "hist": hist, "rmean": rmean,
+            "rdrop": tor.rdrop}

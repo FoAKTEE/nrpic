@@ -10,6 +10,8 @@ of cosmo/README.md, from a = 1 to conformal time 5.5 (past the first shell cross
   thinx  4 x 16 x 16 with the waves (0, 1, 0.5): the thin4 run with the axes exchanged
   plane4 16 x 16 x 4, plane wave (1, 0, 0)      jit4   the same with the lattice displaced
                                                        by 0.3 cells in y and z (seed 7)
+  plane4_fd, jit4_fd  the last two with the constraints solved with the sixth-order
+                      differences of the code (make_waves.py --fd-order 6)
 
     python3 t3_thin_jitter.py --exe EXE [--out DIR] [--stages ic,run,ana]
 """
@@ -46,6 +48,10 @@ CASES = {
     "plane4": dict(n=(16, 16, 4), ratios=(1.0, 0.0, 0.0)),
     "jit4": dict(n=(16, 16, 4), ratios=(1.0, 0.0, 0.0), jitter=0.3, jitter_axes=(1, 2),
                  seed=7),
+    # the same two with the constraints solved with the differences of the code
+    "plane4_fd": dict(n=(16, 16, 4), ratios=(1.0, 0.0, 0.0), fd_order=6),
+    "jit4_fd": dict(n=(16, 16, 4), ratios=(1.0, 0.0, 0.0), jitter=0.3, jitter_axes=(1, 2),
+                    seed=7, fd_order=6),
 }
 IC_ONLY = {
     "jit4_again": dict(n=(16, 16, 4), ratios=(1.0, 0.0, 0.0), jitter=0.3,
@@ -92,7 +98,7 @@ def make_ic(out, name, spec):
     x, u, m, r, K, alpha, info, fid = mw.build(
         DELTA, n, PPC, L=n[0]*H, ratios=spec["ratios"], dep=tid.Deposit(**DEP),
         jitter=spec.get("jitter", 0.0), jitter_axes=spec.get("jitter_axes", ()),
-        seed=spec.get("seed", 1), verbose=False)
+        seed=spec.get("seed", 1), fd_order=spec.get("fd_order"), verbose=False)
     write_nrp(os.path.join(d, "particles.nrp"), x, u, m)
     mw.write_fields(os.path.join(d, "fields.bin"), r["psi"], K, alpha, r["A"])
     np.savez(os.path.join(d, "fiducial.npz"), **fid)
@@ -407,7 +413,7 @@ def stage_ana(res, B, out):
     r["sources"] = src
     # ---- jittered against plain plane wave: constraint norms of the history
     con = {}
-    for name in ("plane4", "jit4", "thin4", "cube"):
+    for name in ("plane4", "jit4", "plane4_fd", "jit4_fd", "thin4", "cube"):
         hs = glob.glob(os.path.join(run[name]["rundir"], "*.z4c.user.hst")) \
             or glob.glob(os.path.join(run[name]["rundir"], "*.hst"))
         names, h = bc.read_hst([p for p in hs if "z4c" in p][0])
@@ -416,17 +422,30 @@ def stage_ana(res, B, out):
         con[name] = {"t": h[ok, 0].tolist(), "H_rms": np.sqrt(h[ok, 3]/vol).tolist(),
                      "M_rms": np.sqrt(h[ok, 4]/vol).tolist()}
     r["constraints_history"] = con
+    order = ("jit4", "plane4", "jit4_fd", "plane4_fd")
     r["jitter_run"] = {
-        "H_rms_first": [con["jit4"]["H_rms"][0], con["plane4"]["H_rms"][0]],
-        "H_rms_last": [con["jit4"]["H_rms"][-1], con["plane4"]["H_rms"][-1]],
-        "M_rms_first": [con["jit4"]["M_rms"][0], con["plane4"]["M_rms"][0]]}
+        "order": list(order), "t_first": [con[n]["t"][0] for n in order],
+        "H_rms_first": [con[n]["H_rms"][0] for n in order],
+        "M_rms_first": [con[n]["M_rms"][0] for n in order],
+        "H_rms_last": [con[n]["H_rms"][-1] for n in order],
+        "M_rms_last": [con[n]["M_rms"][-1] for n in order],
+        "H_rms_max": [max(con[n]["H_rms"]) for n in order],
+        "E16pi_max_first": 16*np.pi*float(athena_bin.read_bin(
+            dumps(run["plane4"]["rundir"], "tmunu")[0])["tmunu_E"].max())}
+    r["jitter_run"]["tool_residuals"] = {
+        n: {k: json.load(open(os.path.join(res["ic_dirs"][n], "id.json")))[k]
+            for k in ("max_hamiltonian_residual", "max_momentum_residual",
+                      "dropped_momentum_source_modes", "fd_order")} for n in order}
     # y-z dependence that the jitter puts into the plane wave (z4c_chi at the end)
     j = athena_bin.read_bin(dumps(run["jit4"]["rundir"], "z4c")[-1])
     p = athena_bin.read_bin(dumps(run["plane4"]["rundir"], "z4c")[-1])
     def yzdep(a):
         return float(np.abs(a - a.mean(axis=(0, 1), keepdims=True)).max()/np.abs(a).max())
-    r["jitter_run"]["yz_dependence_chi_end"] = [yzdep(j["z4c_chi"]), yzdep(p["z4c_chi"])]
-    r["jitter_run"]["chi_mean_end"] = [float(j["z4c_chi"].mean()), float(p["z4c_chi"].mean())]
+    jf = athena_bin.read_bin(dumps(run["jit4_fd"]["rundir"], "z4c")[-1])
+    r["jitter_run"]["yz_dependence_chi_end"] = [yzdep(j["z4c_chi"]), yzdep(p["z4c_chi"]),
+                                                yzdep(jf["z4c_chi"])]
+    r["jitter_run"]["chi_mean_end"] = [float(j["z4c_chi"].mean()), float(p["z4c_chi"].mean()),
+                                       float(jf["z4c_chi"].mean())]
     res["ana"] = r
     for name in ("thin8", "thin4"):
         last = r[f"{name}_vs_cube"][-1]
@@ -498,14 +517,17 @@ def figures(res, out):
     # bottom right: constraint history, jittered against plain
     b2 = fs.inch_axes(fig, 4.75, 0.55, 3.0, 2.2)
     con = an["constraints_history"]
-    for name, col, lab in (("plane4", C["blue"], "plane wave, thin 16 x 16 x 4"),
-                           ("jit4", C["red"], "the same, lattice jittered in y and z"),
-                           ("thin4", C["green"], "crossed waves, thin")):
-        b2.semilogy(con[name]["t"], con[name]["H_rms"], color=col, label=lab)
-        b2.semilogy(con[name]["t"], con[name]["M_rms"], color=col, ls="--")
-    b2.set_xlabel("conformal time")
+    for name, col, lab in (("plane4", C["blue"], "plane wave, spectral solve"),
+                           ("jit4", C["red"], "jittered lattice, spectral solve"),
+                           ("plane4_fd", C["green"], "plane wave, solve with differences"),
+                           ("jit4_fd", C["yellow"], "jittered, solve with differences")):
+        tt = np.array(con[name]["t"]) + 0.02       # the first record is at t = 0
+        b2.loglog(tt, con[name]["H_rms"], color=col, label=lab)
+        b2.loglog(tt, con[name]["M_rms"], color=col, ls="--")
+    b2.set_xlabel("conformal time + 0.02")
     b2.set_ylabel("rms of H (solid) and of M (dashed)")
-    b2.legend(loc="upper right", fontsize=6.5)
+    b2.set_ylim(1e-10, 30)
+    b2.legend(loc="upper right", fontsize=6, ncol=2)
     made = fs.save(fig, os.path.join(out, "t3_thin_jitter"))
     plt.close(fig)
     return made

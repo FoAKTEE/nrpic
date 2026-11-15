@@ -25,7 +25,10 @@ lattice aligned with the mesh (--ppc per cell and direction; shifted by half a s
 for odd ppc), displaced by xi_i = d_i cos(k_i q_i)/k_i; the masses carry the rest of the
 density with the exact Jacobian. The conformal factor and the traceless extrinsic
 curvature follow from the constraints for these particles (nrpic.torus_id.solve), with
-the cloud, compensation and filter of the run.
+the cloud, compensation and filter of the run. With --fd-order 6 the constraints are
+solved with the sixth-order differences of the code (nghost = 4) instead of spectral
+derivatives: the Hamiltonian constraint as the code evaluates it then holds to the
+tolerance of the solve also for a noisy lattice (see nrpic/torus_id.py).
 
 Jitter (--jitter A --jitter-axes y,z --seed N): after the displacement every particle is
 moved by A h (2 u - 1) along each named axis, u uniform in (0, 1), before the constraint
@@ -88,7 +91,7 @@ def jitter_offsets(site, amp_cells, axes, seed, h):
 
 def build(delta, n, ppc=1, L=4.0, H=1.0, ratios=(1.0, 0.9, 1.1), dep=None,
           zero_velocity=False, outer=18, verbose=True, stagger=None,
-          displacement="newtonian", jitter=0.0, jitter_axes=(), seed=1):
+          displacement="newtonian", jitter=0.0, jitter_axes=(), seed=1, fd_order=None):
     dep = tid.Deposit() if dep is None else dep
     n = (n,)*3 if np.isscalar(n) else tuple(int(v) for v in n)
     h = L/n[0]
@@ -97,7 +100,7 @@ def build(delta, n, ppc=1, L=4.0, H=1.0, ratios=(1.0, 0.9, 1.1), dep=None,
     rho0 = 3.0*H*H/(8.0*np.pi)
     d = [delta*r for r in ratios]
     hk2 = [(H/k[i])**2 for i in range(3)]
-    tor = tid.Torus(n, Lb)
+    tor = tid.Torus(n, Lb, fd_order)
 
     def newtonian_fields(x, y, z):
         """delta_N, psi_N, the density contrast of the dictionary and the velocity."""
@@ -223,7 +226,8 @@ def build(delta, n, ppc=1, L=4.0, H=1.0, ratios=(1.0, 0.9, 1.1), dep=None,
         "zero_velocity": zero_velocity, "N": int(len(m)), "stagger": bool(stagger),
         "displacement": displacement, "displacement_factor": cz,
         "jitter": jitter, "jitter_axes": [("x", "y", "z")[a] for a in jitter_axes],
-        "seed": seed, "jitter_substream": JITTER_SUBSTREAM,
+        "seed": seed, "jitter_substream": JITTER_SUBSTREAM, "fd_order": fd_order,
+        "dropped_momentum_source_modes": r["rdrop"],
         "max_jitter_over_h": float(np.abs(jit).max()/h),
         "max_displacement_over_h": float(np.abs(xi).max()/h),
         "total_rest_mass": float(m.sum()), "rho0_volume": rho0*Lb[0]*Lb[1]*Lb[2],
@@ -272,6 +276,10 @@ def main():
                          "(-A, A)) along --jitter-axes")
     ap.add_argument("--jitter-axes", default="y,z")
     ap.add_argument("--seed", type=int, default=1)
+    ap.add_argument("--fd-order", type=int, default=0, choices=(0, 2, 4, 6),
+                    help="solve the constraints with the centred differences of the code "
+                         "of this order (6 for nghost = 4) instead of spectral "
+                         "derivatives; recommended with --jitter")
     ap.add_argument("--quiet", action="store_true")
     ap.add_argument("--out", required=True)
     a = ap.parse_args()
@@ -291,7 +299,7 @@ def main():
         a.delta, n, a.ppc, a.L, a.H0, ratios=ratios, dep=dep,
         zero_velocity=a.zero_velocity, stagger=(False if a.no_stagger else None),
         displacement=a.displacement, jitter=a.jitter, jitter_axes=axes, seed=a.seed,
-        verbose=not a.quiet)
+        fd_order=(a.fd_order or None), verbose=not a.quiet)
     os.makedirs(a.out, exist_ok=True)
     write_nrp(os.path.join(a.out, "particles.nrp"), x, u, m)
     write_fields(os.path.join(a.out, "fields.bin"), r["psi"], K, alpha, r["A"])

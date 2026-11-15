@@ -238,3 +238,43 @@ not above (Track B's item 4 of periodic_z4c); (ii) a first-order remnant of rela
 within 1 per cent; under (ii) the ratio from 1e-6 to 1e-5 would be 9.80e3 for H^2 and
 9.92e3 for M^2 (the remnant would be 2.0 and 0.8 per cent of the norms at 1e-6). I expect
 (i). Refuted if the ratios from 1e-6 to 1e-5 are below 9.9e3.
+
+### Trials before the registered runs T2 and T3 (unregistered, to debug the drivers)
+
+Outputs under `scratch/core/tmp/bfix/dbg2`, `dbg2b`, `dbg3`, `ic1`, `ic2`. No number of
+the record is taken from them, but two of them changed the tests, so they are on record:
+
+- The first version of the padding stage of T2 compared the baseline and the new
+  executable on the oblique linear wave, where the two differ by design (the generator
+  fix); the stage now uses the periodic cosmology case of the regression set with a
+  restart output added.
+- The trial of T3 showed that prediction P4d is wrong by three orders of magnitude: in
+  the code the jittered lattice starts with a Hamiltonian residual of rms 9e-2 against
+  3e-5 for the plain lattice, although the constraint solve of the tool had converged
+  to 7e-12. Reading [JUDGEMENT at this point]: the tool solves with spectral derivatives
+  (as `cosmo/ic/cosmo_id.py`), the code evaluates the constraints with sixth-order
+  differences; for sources near the mesh frequency, which only a noisy lattice has, the
+  two operators differ by order one. The trial also showed a momentum residual of the
+  tool itself of 1.8e-2 for the jittered thin box: the spectral first derivative has no
+  Nyquist mode, and in a box four cells thick a quarter of all modes lie on that plane.
+
+Consequence: `python/nrpic/torus_id.py` gets an option `fd_order` (make_waves.py
+`--fd-order 6`): the Hamiltonian residual is then the one the code evaluates (Ricci
+scalar of psi^4 delta_ij from first and second differences), the vector equation uses the
+first difference applied twice. Default unchanged (spectral; files identical to before:
+checked by `cmp` on the plane-wave and the jittered data of the trial).
+
+### P4e Constraint solve with the differences of the code: prediction (before T3)
+
+Cases added to T3: `plane4_fd` and `jit4_fd` (the plane wave in the thin box, plain and
+jittered, solved with `fd_order = 6`). Prediction for the first row of the Z4c history
+(t = 0, constraints of the initial data as the code evaluates them after its first
+deposit): the rms of H falls by at least three orders of magnitude for the jittered
+lattice (below 1e-4, from about 9e-2) and by at least two for the plain one (below
+3e-7, from about 3e-5); what remains is the difference between the code's and the tool's
+interpolation of psi to the particles and rounding. The rms of M of the jittered lattice
+falls by at least a factor ten (limited by the product-rule error of the differences and
+by the eight modes that have no solution). Refuted if H of `jit4_fd` stays above 1e-3:
+then the reading above (spectral against finite differences) is wrong.
+P4d as written (factor three) is already refuted by the trial; the registered run records
+the numbers.
