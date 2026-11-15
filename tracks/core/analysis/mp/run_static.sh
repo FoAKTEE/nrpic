@@ -2,6 +2,7 @@
 # Test 1a of tracks/core/JOURNAL-mp.md: Bowen-York data on the mesh at t = 0, on
 # processors (one core per run, eight at a time).  Tables are written first into
 # scratch/core/tmp by python/nrpic/bowen_york.py.
+#   run_static.sh [regular expression selecting labels]     default: all
 set -euo pipefail
 WT=/data/haiyangw/nrpic/wt/core-mp
 TMP=/data/haiyangw/nrpic/scratch/core/tmp
@@ -37,8 +38,10 @@ done
 TWO="problem/ncomp=2 problem/comp0_x1=-1.5 problem/comp0_p1=0.0 problem/comp0_p2=0.3 problem/comp1_type=puncture problem/comp1_mass=0.5 problem/comp1_x1=1.5 problem/comp1_p2=-0.3 problem/comp1_s3=0.1"
 for n in 64 128; do
   add "--label s_two_none_n$n --purpose 'Test 1a (vii): two punctures with momenta and a spin, no correction' -- $(res $n) $TWO"
-  add "--label s_two_approx_n$n --purpose 'Test 1a (vii): two punctures, closed-form corrections' -- $(res $n) $TWO problem/comp0_corr=approx problem/comp1_corr=approx"
+  add "--label s_two_approx_n$n --purpose 'Test 1a (viii): two punctures, closed-form corrections with the background factor' -- $(res $n) $TWO problem/comp0_corr=approx problem/comp1_corr=approx"
 done
+add "--label s_two_approxiso_n128 --purpose 'Test 1a (viii): two punctures, plain sum of isolated closed-form corrections' -- $(res 128) $TWO problem/comp0_corr=approx problem/comp1_corr=approx problem/corr_background=false"
 
 # -d: xargs must not strip the quotes of the purpose strings
-printf '%s\n' "${jobs_list[@]}" | xargs -d '\n' -P 8 -I{} bash -c "$N {}"
+printf '%s\n' "${jobs_list[@]}" | grep -E -- "--label ${1:-.*} " \
+  | xargs -d '\n' -P 8 -I{} bash -c "$N {}"

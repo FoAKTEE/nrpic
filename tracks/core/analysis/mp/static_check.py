@@ -30,7 +30,8 @@ LABELS = (
     + ["s_p0.3_tablelin_n128"]
     + [f"s_p{p}_{c}_n128" for p in ("0.1", "0.2", "0.4") for c in ("none", "approx")]
     + [f"s_{k}_{c}_n{n}" for k in ("spin", "ps", "two") for c in ("none", "approx")
-       for n in (64, 128)])
+       for n in (64, 128)]
+    + ["s_two_approxiso_n128"])
 
 
 def analyse(label):
@@ -105,25 +106,28 @@ def main():
 
     # ---- figure 1: convergence and scaling with the momentum
     fig, ax = plt.subplots(1, 3, figsize=(figstyle.FULL_WIDTH, 2.9))
-    fig.subplots_adjust(left=0.085, right=0.985, bottom=0.17, top=0.93, wspace=0.42)
+    fig.subplots_adjust(left=0.085, right=0.985, bottom=0.17, top=0.9, wspace=0.42)
     dxs = np.array([res[f"s_p0.3_none_n{n}"]["dx"] for n in (32, 64, 128)])
     cols = {"none": figstyle.PAL["blue"], "approx": figstyle.PAL["red"],
-            "table": figstyle.PAL["green"]}
-    names = {"none": "no correction", "approx": "closed form", "table": "table"}
+            "table": figstyle.PAL["green"], "approxiso": figstyle.PAL["yellow"]}
+    names = {"none": "no correction", "approx": "closed form", "table": "table",
+             "approxiso": "closed form, plain sum"}
     for c in ("none", "approx", "table"):
         v = [res[f"s_p0.3_{c}_n{n}"]["dH"] for n in (32, 64, 128)]
         ax[0].loglog(dxs, v, "o-", color=cols[c], label=names[c])
     ax[0].loglog(dxs, res["s_p0.3_none_n128"]["dH"] * (dxs / dxs[-1])**6, **figstyle.GUIDE)
     ax[0].text(0.11, 2.0e-1, r"$\Delta x^6$", fontsize=9)
     ax[0].set_xlabel(r"cell size $\Delta x/m$")
-    ax[0].set_ylabel(r"rms$(H-H_{\rm closed})$ / rms$(H_{\rm BL})$, $r\geq0.75m$")
+    ax[0].set_ylabel(r"rms$(H-H_{\rm closed})$ / rms$(H_{\rm BL})$")
+    ax[0].set_title(r"$P=0.3m$, cells with $r\geq0.75m$", fontsize=9)
     ax[0].legend(fontsize=8, loc="lower right")
     for c in ("none", "approx", "table"):
         v = [res[f"s_p0.3_{c}_n{n}"]["Mrms"] for n in (32, 64, 128)]
         ax[1].loglog(dxs, v, "o-", color=cols[c], label=names[c])
     ax[1].loglog(dxs, res["s_p0.3_none_n128"]["Mrms"] * (dxs / dxs[-1])**6, **figstyle.GUIDE)
     ax[1].set_xlabel(r"cell size $\Delta x/m$")
-    ax[1].set_ylabel(r"rms momentum residual, $\psi\leq2$")
+    ax[1].set_ylabel("rms momentum residual")
+    ax[1].set_title(r"$P=0.3m$, cells with $\psi\leq2$", fontsize=9)
     ps = np.array([0.1, 0.2, 0.3, 0.4])
     for c in ("none", "approx"):
         v = [res[f"s_p{p}_{c}_n128"]["Hrms"] for p in ("0.1", "0.2", "0.3", "0.4")]
@@ -140,8 +144,16 @@ def main():
     ax[2].text(0.22, h3 * 0.25, r"$P^2$", fontsize=9)
     ax[2].text(0.22, h3a * 0.12, r"$P^4$", fontsize=9)
     ax[2].set_xlabel(r"momentum $P/m$")
-    ax[2].set_ylabel(r"rms $H$, $\psi\leq2$, $\Delta x=m/16$")
+    ax[2].set_ylabel(r"rms $H$")
+    ax[2].set_title(r"$\Delta x=m/16$, cells with $\psi\leq2$", fontsize=9)
+    ax[2].set_xticks(ps)
+    ax[2].set_xticks([], minor=True)
+    ax[2].set_xticklabels(["0.1", "0.2", "0.3", "0.4"])
     ax[2].legend(fontsize=8, loc="lower right")
+    for a in ax[:2]:
+        a.set_xticks(dxs)
+        a.set_xticks([], minor=True)
+        a.set_xticklabels(["1/4", "1/8", "1/16"])
     print("figure:", mc.savefig(fig, "static_convergence"))
 
     # ---- figure 2: residual along the line of cells nearest the x axis, dx = 1/16
@@ -149,7 +161,8 @@ def main():
     fig.subplots_adjust(left=0.085, right=0.985, bottom=0.16, top=0.93, wspace=0.05)
     for a, (case, title) in zip(ax, (("p0.3", r"one puncture, $P=0.3m$ along $x$"),
                                      ("two", "two punctures with momenta and a spin"))):
-        for c in ("none", "approx") + (("table",) if case == "p0.3" else ()):
+        extra = ("table",) if case == "p0.3" else ("approxiso",)
+        for c in ("none", "approx") + extra:
             p = profs[f"s_{case}_{c}_n128"]
             a.semilogy(p["x"], np.abs(p["Hcode"]), color=cols[c], label=names[c])
             a.semilogy(p["x"], np.abs(p["Han"]), color="k", lw=0.8, ls="--")
@@ -162,7 +175,8 @@ def main():
         a.set_ylim(1e-11, 3e0)
         a.set_xlim(-4, 4)
     ax[0].set_ylabel(r"$|H|$ on the cells nearest the $x$ axis")
-    ax[0].legend(fontsize=8, loc="upper right")
+    ax[0].legend(fontsize=8, loc="lower center")
+    ax[1].legend(fontsize=8, loc="lower center")
     print("figure:", mc.savefig(fig, "static_profile"))
 
 

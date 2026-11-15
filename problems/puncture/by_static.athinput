@@ -7,7 +7,8 @@
 #   problem/comp0_s3=0.4                                     spin
 #   problem/comp0_corr=approx                                closed-form correction
 #   problem/comp0_corr=table problem/comp0_corr_file=f.tab   tabulated correction
-#   problem/ncomp=2 problem/comp1_type=puncture ...          second puncture
+#   problem/ncomp=2 problem/comp1_p2=-0.3 ...                second puncture
+#   problem/corr_background=false                            plain sum of corrections
 
 <comment>
 problem   = Bowen-York initial data on the mesh, no evolution
@@ -79,6 +80,7 @@ comp1_s1        = 0.0
 comp1_s2        = 0.0
 comp1_s3        = 0.0
 comp1_corr      = none
+corr_background = true
 lapse           = precollapsed
 
 <output1>
