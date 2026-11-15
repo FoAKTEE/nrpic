@@ -198,3 +198,12 @@ K -> -K identical to the true data. fig_V5_constraints.png and fig_V5_track_test
 looked at (straight lines of slope 2 and 4 at the fine end; the broken variants flat).
 Order 4 of the track's test is reached only at N = 256 (3.92 H, 3.79 M), within 0.2 of 4 for
 H and 0.21 short for M; order 2 within 0.07 at the finest pair.
+
+### After VERIFIER.md sections 1-3 were committed (0ac9951)
+
+Read the lead's journal entry (L1-L8), STATUS.md, RISKS.md, stage/G0/EVIDENCE.md, OPEN.md,
+stage/G1/STATUS.md and the proposal to orch; wrote VERIFIER.md section 4. One of my points had
+to be qualified by what I read: weak point 3 (a 0.161 M horizon on M/2-M/8 meshes) does not
+apply to SR-1, whose geodesic slicing keeps the coordinates comoving (horizon at coordinate
+radius ~2.7 M); it stays for SR-2 and moving-puncture gauges. Recorded as an amendment, the
+original text kept. No other conclusion changed.

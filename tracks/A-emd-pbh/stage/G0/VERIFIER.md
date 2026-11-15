@@ -219,3 +219,61 @@ prediction table, and the runs under `runs_ball/` and `periodic_threshold/`.
    before the horizon-formation time can converge. The constraint test of G1 cannot detect a
    time-reversed ball (C5, limit 1), and the horizon-mass convergence asked at G2 goes beyond
    what the source paper's own Oppenheimer-Snyder test showed (C7).
+
+Amendment to point 3, written after reading `stage/G1/STATUS.md` section 3 (section 4 below):
+SR-1 uses geodesic slicing with zero shift, so its coordinates are comoving and the first
+horizon sits at coordinate radius ~2.7 M (about five cells at dx = M/2), as the track states;
+for SR-1 the small areal radius is a metric effect, not a mesh one. The concern stands for
+gauges whose coordinates follow the collapse (SR-2 with the Gamma-driver shift, and any
+moving-puncture gauge of the G2 convergence runs at M/4 and M/8) and for the cost model's
+twelve cells per horizon radius.
+
+## 4. Comparison with the track's own review (read after sections 1-3 were committed)
+
+What I read afterwards: `JOURNAL.md` (the lead's entry 2026-11-15T12:57Z, predictions and
+outcomes L1-L8, which is the track's review of its helpers; there is no REVIEW.md),
+`STATUS.md`, `RISKS.md`, `stage/G0/EVIDENCE.md`, `stage/G0/OPEN.md`, `stage/G1/STATUS.md`, the
+proposal `outbox/20261115T1320Z__to-orch__threshold-line-in-periodic-box.md`.
+
+Agreements. Every number I recomputed equals the track's: the T1-T4 scoping numbers (L1),
+the data-set-2 and 2t core times (L5, L7: 16.894, 44.454, core edge 44.3815), the refined first
+trapped sphere (L8 and STATUS: R_i = 2.742, m = 0.0805, the same as my minimisation, while the
+data set's JSON still carries the 400-shell grid value 2.731, 0.0796), the constraint orders of
+G1 T1 (my rerun of the track's test on data set 2t gives at N = 256 exactly the smoothed-top-hat
+orders of DERIVATION.md section 7, 3.75/3.92 H and 3.43/3.79 M), the 32 unit tests, the
+measured 5.41 card-hours, the G2 target numbers of main.tex. My construction of data set 2t is
+a third generator, independent of expball and of core's `python/nrpic/expanding_ball.py`; the
+lead's L2 compared those two on the sharp marginally bound ball only, mine extends the agreement
+to the bound smooth core with the C^4 taper, i.e. to the table that the scouting runs read.
+
+Differences (not in the track's review or documents):
+
+1. C1c. The track says the ball "holds only mu <= 0.031 (q = 3) or 0.069 (q = 2) ... the
+   comparison amplitudes of arXiv:2609.14218 (0.045 to 1) need the periodic box" (proposal to
+   orch; SCOPE.md 4; RISKS.md row 4 "certain"); decision 0013 repeats it. The numbers are right,
+   the inference is not: 0.069 > 0.05, so the q = 2 ball holds the particle bracket. The lead's
+   L1 reproduced the arithmetic and did not test the inference.
+2. C4b. SCOPE.md section 2 predicts a horizon at 239 t_H for mu = 0.045 under H1; the published
+   alpha_0 curve has none to 250 t_H. The track's review never compared its predictions with the
+   source figures (L1 reproduces the script, whose read-offs are inputs). The
+   finite-duration cutoff is labelled with arXiv:1707.03595:925 while the numbers use the top-hat
+   version (C4 qualification); RISKS.md row 9 inherits the label.
+3. C5 limit 1. The track's G1 T1 does not say that the constraint test is blind to K -> -K; it
+   notes only that AthenaK's t = 0 norms are not yet measured. The time orientation of the
+   table is fixed by convention alone until SR-1/SR-2 run.
+4. C7. The track quotes the source paper's horizon-mass error as the G2 target (SCOPE.md 10.4)
+   but not, from the same lines, that the source saw no monotonic convergence with resolution;
+   no risk row covers a G2 criterion stricter than the reference test.
+5. C6. The unknown order-unity coefficient of the lattice law N^(-4/9) is not stated; the
+   track's response (N-convergence of every bracket, RISKS.md row 8) is the right remedy.
+6. Weak point 1 is in the track's risk list (row 5, phase-1 capability) as a schedule risk; the
+   track does not say that its G0/G1 evidence leaves the phase-1 path untested.
+7. Weak point 3 (small horizon) is answered for SR-1 by the comoving coordinates (amendment
+   above) and the request to core for finder keys; it is not discussed for SR-2 or for the
+   G2 convergence meshes.
+
+Checked by the track and not by me: the Newtonian references and snapshot analysis
+(`newton/`, P1-P7), the gauge toys and von Neumann limits (`gauge/`), the 37 checks of the
+criteria package and its prediction table, the particle-noise runs, core's generator and table
+reader against expball (L2, L3), core's bound test ball (L4), the exterior K (L6), the
+conformal-time coordinate times of SR-2 (L8).
