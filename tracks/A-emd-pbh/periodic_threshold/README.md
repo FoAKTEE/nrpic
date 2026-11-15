@@ -48,22 +48,11 @@ P=tracks/A-emd-pbh/periodic_threshold/scripts
 
 The exact command of every run is in its manifest.
 
-## Pending at the time of writing
+## Scouting runs
 
-The card runs S2 (A-emd-pbh-20261115-155754-8422a4a, Slurm job 4448) and S1
-(A-emd-pbh-20261115-160349-9d232d2, job 4451) were queued behind about ten jobs. When
-`scratch/A-emd-pbh/<run_id>/batch.list.status` exists, close and analyse them:
-
-```
-.venv/bin/python -I tracks/A-emd-pbh/periodic_threshold/scripts/card_run.py finish A-emd-pbh-20261115-155754-8422a4a
-.venv/bin/python -I tracks/A-emd-pbh/periodic_threshold/scripts/card_run.py finish A-emd-pbh-20261115-160349-9d232d2
-S=/data/haiyangw/nrpic/scratch/A-emd-pbh
-.venv/bin/python -I tracks/A-emd-pbh/periodic_threshold/scripts/register_run.py --purpose "S1/S2 analysis" -- \
-  .venv/bin/python -I tracks/A-emd-pbh/periodic_threshold/scripts/analyse_scouting.py \
-  --run S1=$S/A-emd-pbh-20261115-160349-9d232d2/run --run S2=$S/A-emd-pbh-20261115-155754-8422a4a/run --out {OUT}
-```
-
-then compare with the predictions S1/S2 in JOURNAL.md and fill DESIGN.md section 7.
+S2 (A-emd-pbh-20261115-155754-8422a4a) and S1 (A-emd-pbh-20261115-160349-9d232d2) ran
+and are closed (`scripts/card_run.py finish`); analysis A-emd-pbh-20261115-171930-878a114.
+Results: DESIGN.md section 7, JOURNAL.md.
 
 ## Requests
 

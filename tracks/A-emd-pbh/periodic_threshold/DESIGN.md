@@ -27,7 +27,11 @@ Summary.
 4. The horizon finder gives the same mass in a periodic mesh as in the calibrated
    outflow mesh, reports nothing in the homogeneous universe, and does not wrap
    coordinates: the peak must sit at the box centre.
-5. Scouting runs: section 7.
+5. Scouting runs (section 7, 0.47 card-hours): S2 (mu = 0.03) runs to 250 t_H without a
+   horizon but with constraint maxima above 0.1 after ~45 t_H; S1 (mu = 0.3) collapses
+   its lapse from ~10 t_H and blows up at 21.9 t_H without a horizon (UNDECIDED), the
+   failure of the cosmo E1 runs. The gauge for collapse in an expanding box and the
+   consistency of the refined levels are the blockers of the line.
 
 ---
 
@@ -330,8 +334,8 @@ references predict opposite outcomes for it.
 
 | Run | mu | t_end | run id | Slurm job | state |
 |---|---|---|---|---|---|
-| S2 | 0.03 | tau = 28.9 (250 t_H) | A-emd-pbh-20261115-155754-8422a4a | 4448 | STATE_S2 |
-| S1 | 0.3 | tau = 16 (49.6 t_H) | A-emd-pbh-20261115-160349-9d232d2 | 4451 | STATE_S1 |
+| S2 | 0.03 | tau = 28.9 (250 t_H) | A-emd-pbh-20261115-155754-8422a4a | 4448 | completed, 0.284 card-hours |
+| S1 | 0.3 | tau = 16 (49.6 t_H) | A-emd-pbh-20261115-160349-9d232d2 | 4451 | non-finite fields from tau = 11.70 (21.9 t_H); 0.181 card-hours |
 
 Before them: S0, a processor dry run of the S2 configuration for two cycles (run
 A-emd-pbh-20261115-161829-dba94f6): 288 blocks, relative Hamiltonian constraint 5.0e-3
@@ -340,7 +344,61 @@ levels; it found two defects of my output blocks (fixed before the card runs sta
 JOURNAL.md) and one of the finder (summary file written into the working directory, not
 the output directory).
 
-RESULTS_PLACEHOLDER
+Analysis run A-emd-pbh-20261115-171930-878a114 (`scripts/analyse_scouting.py`);
+figures `figures/fig_scouting_histories.png`, `figures/fig_scouting_profiles_S1.png`,
+`figures/fig_scouting_profiles_S2.png` (looked at) [VERIFIED in those runs]:
+
+**S2 (mu = 0.03, clearly below).** Ran to 250.9 t_H. No horizon in 45 finder calls; no
+crash; every particle kept; lapse alpha/a >= 0.94 everywhere and within 3e-3 of a(tau)
+at |k x| = 4. Central density E_max/Ebar 13 at 130 t_H (first Zel'dovich axis: 133 t_H),
+106 at 200, 744 at 250 t_H; the sheet normal to z forms, with density spikes at
+y = +-0.4/k and a central dip by 200-250 t_H (caustics of the sheet [JUDGEMENT]). But
+the constraints are not under control: H_r max 1e-2 at tau = 3.2 (1.5 t_H), 0.1 at 45 t_H,
+0.4 / 0.84 / 1.66 at 130 / 160 / 200 t_H; H_r mean 5e-3 to 130 t_H, 0.07-0.22 after 160 t_H.
+Outcome class: NO-BH ("late") as far as the run goes, but the constraint bound of
+section 6 cannot be checked on the refined mesh and the maxima suggest it fails after
+~100 t_H.
+
+**S1 (mu = 0.3, above the particle threshold of arXiv:2609.14218, below the hoop line).**
+The central lapse falls relative to a from tau ~ 7: alpha/a = 0.57 at 11.3 t_H, 0.43 at
+16.2 t_H, 0.14 at 21.9 t_H (smallest lapse 0.032 a, off centre); E_max/Ebar 400 at 11 t_H,
+3.6e4 at 21.4 t_H. No apparent horizon was found (44 calls, every one before the
+blow-up returned "not found"). At tau = 11.70 (21.9 t_H) the fields became non-finite in
+one record (chi_min -> -inf, K_max ~ 1e47, every particle flagged excised); the step fell
+to 1e-244, grew back by about two per cycle, and the code integrated the non-finite state
+to tlim without stopping. Outcome class: UNDECIDED. The paper's particle run at mu = 0.05
+(and H1) would put the horizon near 13-16 t_H; here the lapse collapses over 10-22 t_H
+without a horizon before the blow-up.
+
+**What breaks, in order of importance** [readings JUDGEMENT unless a run is named]:
+1. The gauge and/or the resolution at the collapse: the E1 gauge (conformal-time lapse,
+   K driver, zero shift) carries the collapse to a lapse of 3 per cent of a and then the
+   conformal factor turns negative, the failure of cosmo E1 (`cosmo/TESTLOG.md` 744-763)
+   reproduced on the peak (S1). No horizon is found on the way. This blocks every BH
+   bracket: request 6 (gauge) and, for the shift, a driver that is stable on refined
+   blocks (cosmo E1, 809-825).
+2. Constraint violation on refined levels from the start and growing with the density:
+   0.08-0.18 of the perturbation at t = 0 (T2b, S0), H_r max above 0.1 in both runs
+   before anything collapses. Two sources are in the data and the deposit: interpolated
+   root-mesh data on refined blocks, and clouds kept on the root level (one particle per
+   root cell) and spread as constants over fine cells, visible as staircases in E
+   (figures). The cure under test: a nested particle lattice and the solve on refined
+   levels (requests 1, 2); a run that would separate the two (eight particles per root
+   cell, same mesh) is the next scouting run.
+3. No stop on non-finite fields: S1 spent the last 4.3 of 16 time units (about a third
+   of its 0.18 card-hours) on a non-finite state (request 7).
+4. Finder diagnostics: a failed search returns NaN without a reason, so "no horizon"
+   and "the finder could not converge" look alike (request 8).
+5. Cost: 0.17 s per step for 1.18e6 cells and 2.6e5 particles on one card (S2: 5,919
+   steps in 1,023 s; S1: 4,078 in 653 s), 1.3 times the unit-cost model of section 6;
+   the line-mesh estimate of section 6 becomes about 9 card-hours per run with static
+   nesting.
+
+Next scouting runs, in this order, once the items above move: (i) S1 with eight particles
+per root cell (separates item 2 from the gauge); (ii) S1 with the gauge candidates of
+section 3 as core provides them; (iii) S1 with adaptive refinement after the one-line fix
+(request 3), which also cuts the cost; (iv) S1 started from core's phase-1 data at
+eps_i = 0.2 (request 1).
 
 ## 8. Requests
 
@@ -356,7 +414,13 @@ To core:
 5. Output on refined meshes: field dumps of the particle module on multilevel meshes, or
    the L2 norms of H and 16 pi E inside and outside a sphere in a history file; the
    proper-volume mean of K and the lapse at a fixed point far from the peak.
-6. A lapse for collapse in an expanding box (wave-2 `gauge`): candidates in section 3.
+6. A lapse for collapse in an expanding box (wave-2 `gauge`): candidates in section 3;
+   S1 shows the present one carries the collapse to alpha = 0.03 a and then fails.
+7. Stop a run when the fields become non-finite (S1 integrated a non-finite state for a
+   third of its card time).
+8. Horizon finder: write a reason with a failed search (smallest expansion reached,
+   iterations, points outside the mesh), and take its output path relative to `-d`
+   (S0 wrote into the working directory).
 
 To orch: `nrpic-run` refuses the shared worktree while other helpers hold untracked
 files; runs were registered by hand (README.md).
