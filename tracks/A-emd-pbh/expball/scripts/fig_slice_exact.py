@@ -41,7 +41,7 @@ def main():
         cols = dict(flat=fs.PAL["blue"], tophat=fs.PAL["yellow"], smooth_tophat=fs.PAL["red"])
         R = np.linspace(1e-3, 1.4 * RB, 3000)
         fig, axes = plt.subplots(2, 3, figsize=(8.0, 4.8), sharex=True)
-        fig.subplots_adjust(left=0.08, right=0.99, bottom=0.1, top=0.97, wspace=0.3, hspace=0.08)
+        fig.subplots_adjust(left=0.1, right=0.99, bottom=0.1, top=0.97, wspace=0.42, hspace=0.08)
         res = {}
         for name, b in balls.items():
             c = b.at(R)
@@ -60,7 +60,7 @@ def main():
                              min_f=float(c["f"].min()), rho_min=float(c["rho"][R < b.Rb].min() / b.rho_b))
         axes[0, 0].set_ylabel(r"$\rho/\rho_b$"); axes[0, 0].legend(fontsize=8)
         axes[0, 1].set_ylabel(r"$\Delta$ (mean contrast inside $R$)")
-        axes[0, 2].set_ylabel(r"$K_L/H$ (solid), $K_T/H$ (dashed)")
+        axes[0, 2].set_ylabel(r"$K_L/H$ (solid), $K_T/H$ (dash)")
         axes[1, 0].set_ylabel(r"$\psi - 1$")
         axes[1, 1].set_ylabel(r"$2m/R$")
         axes[1, 1].axhline(0.25, **fs.MASK_LINE)
@@ -72,51 +72,59 @@ def main():
         f1 = fs.save(fig, os.path.join(run.out, "fig_initial_slice"))
         plt.close(fig)
         # exact shells
-        fig, axes = plt.subplots(2, 2, figsize=(8.0, 6.0))
-        fig.subplots_adjust(left=0.09, right=0.98, bottom=0.08, top=0.96, wspace=0.25, hspace=0.25)
+        fig, axes = plt.subplots(2, 3, figsize=(8.0, 5.6))
+        fig.subplots_adjust(left=0.08, right=0.98, bottom=0.08, top=0.95, wspace=0.34, hspace=0.32)
         for row, name in enumerate(("smooth_tophat", "tophat")):
             b = balls[name]
             Ri = np.linspace(RB / 40, RB, 40)
             sh = exact.Shells(b, Ri)
             fine = exact.Shells(b, np.linspace(RB / 2000, RB, 2000))
             fh = fine.first_horizon()
-            tmax = 1.15 * float(np.min(fine.tau_c[fine.bound]))
-            tau = np.linspace(0, tmax, 1500)
-            Rt = sh.R(tau)
-            ax = axes[row, 0]
-            cmap = fs.series_colors(len(Ri))
-            for k in range(len(Ri)):
-                alive = (tau <= sh.tau_c[k]) if sh.bound[k] else np.ones_like(tau, bool)
-                ax.plot(tau[alive], Rt[k][alive] / RB, color=cmap[k], lw=0.8)
-            bb = sh.bound & (sh.tau_c < tmax)
-            ax.plot(sh.tau_ta[bb], sh.R_max[bb] / RB, "o", ms=2.5, color="k", label="turnaround")
-            ok = fine.bound & (fine.tau_ah < tmax)
-            ax.plot(fine.tau_ah[ok], 2 * fine.m[ok] / RB, color=fs.PAL["red"], lw=1.5,
-                    label=r"$R = 2m$ (trapped sphere)")
-            ax.plot([fh["tau_ah"]], [2 * fh["m"] / RB], "*", ms=9, color=fs.PAL["red"])
-            ax.set_xlim(0, tmax)
-            ax.set_ylim(0, 2.6)
-            ax.set_ylabel(r"$R/R_b$")
-            ax.set_xlabel(r"proper time $\tau$ [$M$]", labelpad=-2)
-            ax.set_title(name.replace("_", " ") + r": world lines of shells", fontsize=10)
-            ax.legend(fontsize=7, loc="upper left")
-            ax = axes[row, 1]
-            for key, lab, cc in (("tau_ta", r"$\tau_{\rm ta}$", fs.PAL["blue"]),
-                                 ("tau_ah", r"$\tau_{\rm AH}$", fs.PAL["red"]),
-                                 ("tau_c", r"$\tau_{\rm c}$", "k")):
-                v = getattr(fine, key)
-                ax.plot(fine.R_i / RB, np.where(fine.bound, v, np.nan) / b.t_i, color=cc, label=lab,
-                        ls="--" if key == "tau_c" else "-")
+            tcore = float(fine.tau_c[0])
+            tmax = 1.15 * tcore
+            for col, (t0, t1, rmax) in enumerate(((0, tmax, 2.6), (0.94 * tcore, 1.005 * tcore, 0.04))):
+                ax = axes[row, col]
+                tau = np.linspace(t0, t1, 3000)
+                Rs = Ri if col == 0 else np.linspace(RB / 400, 0.5 * RB, 60)
+                shp = sh if col == 0 else exact.Shells(b, Rs)
+                Rt = shp.R(tau)
+                cmap = fs.series_colors(len(Rs))
+                for k in range(len(Rs)):
+                    alive = (tau <= shp.tau_c[k]) if shp.bound[k] else np.ones_like(tau, bool)
+                    ax.plot(tau[alive], Rt[k][alive] / RB, color=cmap[k], lw=0.7)
+                if col == 0:
+                    bb = sh.bound & (sh.tau_c < tmax)
+                    ax.plot(sh.tau_ta[bb], sh.R_max[bb] / RB, "o", ms=2.5, color="k", label="turnaround")
+                ok = fine.bound & (fine.tau_ah < t1)
+                ax.plot(fine.tau_ah[ok], 2 * fine.m[ok] / RB, color=fs.PAL["red"], lw=1.5,
+                        label=r"$R = 2m$ reached")
+                ax.plot([fh["tau_ah"]], [2 * fh["m"] / RB], "*", ms=9, color=fs.PAL["red"],
+                        label="first trapped sphere" if col == 1 else None)
+                ax.set_xlim(t0, t1)
+                ax.set_ylim(0, rmax)
+                ax.set_xlabel(r"proper time $\tau$ [$M$]", labelpad=-2)
+                if col == 0:
+                    ax.set_ylabel(r"$R/R_b$")
+                    ax.set_title(name.replace("_", " ") + ": shells", fontsize=10)
+                else:
+                    ax.axvline(tcore, **fs.MASK_LINE)
+                    ax.set_title("zoom on the crunch of the core", fontsize=10)
+                ax.legend(fontsize=7, loc="upper left" if col == 0 else "upper right")
+            ax = axes[row, 2]
+            sel = fine.bound & (fine.R_i < 0.5 * RB)
+            ax.plot(fine.R_i[sel] / RB, fine.tau_ah[sel] - tcore, color=fs.PAL["red"],
+                    label=r"$\tau_{\rm AH} - \tau_{\rm c}^{\rm core}$")
+            ax.plot(fine.R_i[sel] / RB, -(4.0 / 3.0) * fine.m[sel], **fs.GUIDE,
+                    label=r"$-\frac{4}{3} m$")
+            ax.plot([fh["R_i"] / RB], [fh["tau_ah"] - tcore], "*", ms=9, color=fs.PAL["red"])
             ax.axvline(b.prof.R1 / RB, **fs.MASK_LINE)
-            ax.axvline(b.prof.R2 / RB, **fs.MASK_LINE)
-            ax.set_yscale("log")
-            ax.set_ylim(1, 300)
+            ax.set_ylim(-0.25, 0.25)
             ax.set_xlabel(r"shell label $R_i/R_b$", labelpad=-2)
-            ax.set_ylabel(r"proper time / $t_i$")
-            ax.legend(fontsize=8)
+            ax.set_ylabel(r"[$M$]")
+            ax.legend(fontsize=7, loc="lower left")
             tsc = sh.shell_crossing(np.linspace(0, 0.999 * float(np.min(sh.tau_c[sh.bound])), 3000))
             res[name].update(first_horizon=fh, core_tau_ta=float(fine.tau_ta[0]),
-                             core_tau_c=float(fine.tau_c[0]), shell_crossing_before_first_crunch=tsc,
+                             core_tau_c=tcore, shell_crossing_before_first_crunch=tsc,
                              t_i=b.t_i)
         f2 = fs.save(fig, os.path.join(run.out, "fig_exact_shells"))
         plt.close(fig)

@@ -1,0 +1,79 @@
+{
+  "run_id": "A-emd-pbh-20261115-115552-c4a583e",
+  "owner": "A-emd-pbh",
+  "purpose": "A-pre-1: figures of the initial slice (flat, top-hat, smoothed top-hat) and of the exact shell evolution",
+  "kind": "production",
+  "command": "python3 scripts/fig_slice_exact.py",
+  "cwd": "/data/haiyangw/nrpic/wt/A-emd-pbh/tracks/A-emd-pbh/expball",
+  "commit": "c4a583e4850c829c953dabdd8e36f93a8c4e578a",
+  "worktree_dirty_in_package": true,
+  "host": "anta",
+  "inputs": [],
+  "output_dir": "/data/haiyangw/nrpic/scratch/A-emd-pbh/A-emd-pbh-20261115-115552-c4a583e",
+  "wall_time_s": 7.63,
+  "cores": 4,
+  "card_hours": 0.0,
+  "status": "ok",
+  "outputs": [
+    {
+      "path": "/data/haiyangw/nrpic/scratch/A-emd-pbh/A-emd-pbh-20261115-115552-c4a583e/fig_exact_shells.pdf",
+      "sha256": "6bd7e49454929e768758f0c175fab4bbe5cee46374b045661ce6728cfcd9ef49"
+    },
+    {
+      "path": "/data/haiyangw/nrpic/scratch/A-emd-pbh/A-emd-pbh-20261115-115552-c4a583e/fig_exact_shells.png",
+      "sha256": "83925e6f26f8c6effe37847394383524ba4b397dcbdfd994ad757b8cc742bdd9"
+    },
+    {
+      "path": "/data/haiyangw/nrpic/scratch/A-emd-pbh/A-emd-pbh-20261115-115552-c4a583e/fig_initial_slice.pdf",
+      "sha256": "87b0913420f0dc74c9b523344ff63bc5bc9933dedb71f45dd018a181bbc266ae"
+    },
+    {
+      "path": "/data/haiyangw/nrpic/scratch/A-emd-pbh/A-emd-pbh-20261115-115552-c4a583e/fig_initial_slice.png",
+      "sha256": "7a53f196f336a6152db5e4f17df2a20ba1cf2657ae96c56a4d5f0e3bef47c6f9"
+    },
+    {
+      "path": "/data/haiyangw/nrpic/scratch/A-emd-pbh/A-emd-pbh-20261115-115552-c4a583e/slice_exact.json",
+      "sha256": "78cc5c2d1e6246233164692a08ec655cd40e6fc4711af6ec051f2cede1ea3399"
+    }
+  ],
+  "results": {
+    "flat": {
+      "psi_centre": 1.0,
+      "max_2m_over_R": 0.24998451591165502,
+      "min_f": 1.0,
+      "rho_min": 1.0
+    },
+    "tophat": {
+      "psi_centre": 1.0084659642305955,
+      "max_2m_over_R": 0.24998451591165502,
+      "min_f": 0.9664403760574783,
+      "rho_min": 0.9316239316239313,
+      "first_horizon": {
+        "tau_ah": 44.381465741946926,
+        "R_i": 2.4,
+        "m": 0.05399999999999999,
+        "index": 599
+      },
+      "core_tau_ta": 16.89376895004043,
+      "core_tau_c": 44.454204566747535,
+      "shell_crossing_before_first_crunch": Infinity,
+      "t_i": 10.666666666666666
+    },
+    "smooth_tophat": {
+      "psi_centre": 1.0138359079478492,
+      "max_2m_over_R": 0.24998451591165502,
+      "min_f": 0.9371553903547204,
+      "rho_min": 0.43666931148786237,
+      "first_horizon": {
+        "tau_ah": 44.34927021035344,
+        "R_i": 2.74,
+        "m": 0.08035172544574115,
+        "index": 684
+      },
+      "core_tau_ta": 16.89376895004043,
+      "core_tau_c": 44.454204566747535,
+      "shell_crossing_before_first_crunch": Infinity,
+      "t_i": 10.666666666666666
+    }
+  }
+}

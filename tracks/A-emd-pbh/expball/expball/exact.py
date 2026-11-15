@@ -73,17 +73,20 @@ def _solve_eta(q, bound):
         eta = np.where(q < 1.0, np.cbrt(6.0 * q), np.log(2 * q + 1) + 1.0)
         fun, der = _sinh_minus_x, lambda e: 2.0 * np.sinh(0.5 * e) ** 2
     eta = np.clip(eta, lo, hi)
-    for _ in range(100):
+    for _ in range(200):
         r = fun(eta) - q
+        conv = np.abs(r) <= 4e-16 * np.maximum(np.abs(q), 1e-300)
+        if np.all(conv):
+            break
         lo = np.where(r < 0, eta, lo)
         hi = np.where(r > 0, eta, hi)
         d = der(eta)
         en = np.where(d > 0, eta - r / np.where(d > 0, d, 1.0), 0.5 * (lo + hi))
-        en = np.where((en <= lo) | (en >= hi), 0.5 * (lo + hi), en)
-        if np.all(np.abs(en - eta) <= 2e-16 * np.maximum(eta, 1e-300)):
-            eta = en
+        en = np.where((en < lo) | (en > hi) | ~np.isfinite(en), 0.5 * (lo + hi), en)
+        step_done = np.abs(en - eta) <= 4e-16 * np.maximum(eta, 1e-300)
+        eta = np.where(conv, eta, en)   # converged entries are never moved again
+        if np.all(conv | step_done):
             break
-        eta = en
     return eta
 
 

@@ -106,7 +106,7 @@ Prediction.
 Refuted: a smooth-region order below p - 0.5 at the two finest pairs, or any of the
 above all-cells statements failing.
 
-## 2026-11-15 11:59 UTC, P5: initial-slice and exact-shell figures (scripts/fig_slice_exact.py)
+## 2026-11-15 11:55 UTC, P5: initial-slice and exact-shell figures (scripts/fig_slice_exact.py)
 
 Prediction (H R_b = 0.5, M = 1, R_b = 8, t_i = 32/3; core delta_c = 1, R1 = 2.4, R2 = 6).
 - max 2m/R on the slice = 0.25 (at R_b) for all three models; no anti-trapped sphere.
@@ -120,7 +120,7 @@ Prediction (H R_b = 0.5, M = 1, R_b = 8, t_i = 32/3; core delta_c = 1, R1 = 2.4,
   no shell crossing before the first crunch.
 Refuted by any of these failing.
 
-## 2026-11-15 11:59 UTC, P6: particle noise (scripts/run_noise.py)
+## 2026-11-15 11:55 UTC, P6: particle noise (scripts/run_noise.py)
 
 Set-up: CIC deposit on 64^3 cells over [-10, 10]^3 (h = 0.3125), rms of
 dH/6H^2 = (rho - rho_dep)/rho_b over rbar < 0.8 rbar_m, N = 1e4 ... 1e6.
@@ -131,3 +131,23 @@ rms below 0.1 x mc at N >= 1e5, not following N^-1/2 (aliasing of lattice and me
 error falls faster, roughly as (a/h)^2). Mean (bias) consistent with zero for the flat ball;
 for the smoothed top-hat a bias of order h^2 grad^2 rho/rho_b ~ 1e-3 may show at large N.
 Refuted by an mc slope outside [-0.55, -0.45] or an amplitude off by more than 10 percent.
+
+## 2026-11-15 12:16 UTC, defect found and fixed in the root solvers (before any result was used)
+
+What happened. The convergence run A-emd-pbh-20261115-115339-044312f stalled in the
+smoothed top-hat (interpolant build at 100 percent CPU for minutes) and the noise run
+A-emd-pbh-20261115-115559-c4a583e was about to enter the same stage; both were stopped by
+PID at about 12:02 UTC and registered by hand as "aborted" with their partial logs (flat,
+flat_taper, tophat lines of the first; flat lines of the second).
+Cause, established by tracing the iteration (session calls, not registered): in
+y_of_Delta and exact._solve_eta a converged iterate equal to a bracket end was declared
+"outside the bracket" and replaced by the bracket midpoint (y = -5e7 for Delta = 1); the
+loops recovered only by running to their caps (200 and 100 iterations), hence the
+slowness; a first attempt to stop earlier (tolerance change) turned the flaw into wrong
+values (interpolant error 0.6 percent instead of 1e-14), which the interpolant check
+caught. Fix: residual-based stopping, converged entries frozen, bracket test with equality
+allowed, Newton for y in w = sqrt(1 - y) (regular at turnaround) with a polish in y for
+|y| < 1/2, active set. Interpolant build 100 s -> 3 s, error 1.8e-14; unit tests 190 s ->
+10 s. Regression tests added (batch independence). 32 tests pass.
+Consequence: every figure and number is regenerated with the fixed code; the runs
+115552 and 115659 (figures) used the old solver and are superseded by the rerun below.

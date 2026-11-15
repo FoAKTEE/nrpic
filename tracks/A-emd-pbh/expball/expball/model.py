@@ -65,21 +65,38 @@ def y_of_Delta(D):
     if np.any(D <= -1.0) or np.any(D >= DELTA_MAX):
         raise ValueError("Delta must lie in (-1, 9 pi^2/16 - 1): shell not yet at turnaround")
     target = D / (1.0 + np.sqrt(1.0 + D))          # sqrt(1+D) - 1 without cancellation
-    y = np.clip(5.0 * D / 3.0, -50.0, 0.9)
-    lo = np.full_like(D, -1e8)
-    hi = np.ones_like(D)
-    for _ in range(200):
-        r = Fm1(y) - target
-        lo = np.where(r < 0, y, lo)
-        hi = np.where(r > 0, y, hi)
-        yn = y - r / dF(y)
-        bad = (yn <= lo) | (yn >= hi)
-        yn = np.where(bad, 0.5 * (lo + hi), yn)
-        if np.all(np.abs(yn - y) <= 1e-16 * np.maximum(1.0, np.abs(y))):
-            y = yn
+    # Newton in w = sqrt(1 - y): g(w) = F(1 - w^2) - 1 - target is regular at the
+    # turnaround (w -> 0) where F'(y) diverges like (1 - y)^(-1/2); g decreases with w.
+    shape = D.shape
+    tg = target.ravel()
+    w = np.sqrt(1.0 - np.clip(5.0 * D.ravel() / 3.0, -50.0, 0.95))
+    lo = np.zeros_like(w)
+    hi = np.full_like(w, 1e5)
+    act = np.arange(w.size)
+    for _ in range(100):
+        if act.size == 0:
             break
-        y = yn
-    return y
+        wa, ta = w[act], tg[act]
+        ya = 1.0 - wa * wa
+        r = Fm1(ya) - ta
+        conv = np.abs(r) <= 4e-16 * np.maximum(np.abs(ta), 1e-300)
+        lo[act] = np.where(r > 0, wa, lo[act])   # g > 0: root at larger w
+        hi[act] = np.where(r < 0, wa, hi[act])
+        d = -2.0 * wa * dF(ya)
+        wn = wa - r / d
+        l, h = lo[act], hi[act]
+        bad = (wn < l) | (wn > h) | ~np.isfinite(wn)
+        wn = np.where(bad, 0.5 * (l + h), wn)
+        step_done = np.abs(wn - wa) <= 2e-16 * wa
+        w[act] = np.where(conv, wa, wn)
+        act = act[~(conv | step_done)]
+    y = 1.0 - w * w
+    # polish in y where the relative precision of 1 - w^2 is poor (|y| small, F' ~ 0.3)
+    sm = np.abs(y) < 0.5
+    for _ in range(3):
+        ys = y[sm]
+        y[sm] = ys - (Fm1(ys) - tg[sm]) / dF(ys)
+    return y.reshape(shape)
 
 
 def smoothstep4(u):
@@ -439,7 +456,7 @@ class Ball:
             phi = np.log(x) - self.G(x) - np.log(rb[s])
             xn = x - phi * x * np.sqrt(c["f"])
             xn = np.clip(xn, 0.5 * x, np.minimum(2.0 * x, self.R2))
-            done = np.all(np.abs(xn - x) <= 4e-16 * x)
+            done = np.all((np.abs(xn - x) <= 2e-15 * x) | (np.abs(phi) <= 4e-16))
             x = xn
             if done:
                 break

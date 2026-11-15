@@ -1,0 +1,22 @@
+{
+  "run_id": "A-emd-pbh-20261115-115339-044312f",
+  "owner": "A-emd-pbh",
+  "purpose": "G1 of A-pre-1: FD constraint residuals vs resolution (orders (2, 4), N = [32, 64, 128, 256]) and table interpolation error vs spacing",
+  "kind": "production",
+  "command": "python3 scripts/run_convergence.py",
+  "cwd": "/data/haiyangw/nrpic/wt/A-emd-pbh/tracks/A-emd-pbh/expball",
+  "commit": "044312f",
+  "inputs": [],
+  "output_dir": "/data/haiyangw/nrpic/scratch/A-emd-pbh/A-emd-pbh-20261115-115339-044312f",
+  "cores": 4,
+  "card_hours": 0.0,
+  "status": "aborted",
+  "error": "killed by the helper (kill <pid>) at about 12:02 UTC: the smoothed top-hat interpolant build was too slow because y_of_Delta and R_of_rbar ran to their iteration caps (convergence tolerance at the last bit oscillated); partial.log holds the lines printed before the kill (flat, flat_taper, tophat for the convergence run; flat for the noise run)",
+  "outputs": [
+    {
+      "path": "/data/haiyangw/nrpic/scratch/A-emd-pbh/A-emd-pbh-20261115-115339-044312f/partial.log",
+      "sha256": "81bcf1bc8fafff41e91657a615715498d20e3235fcc09cbdbdc5df2dc83b3edf"
+    }
+  ],
+  "manifest_written_by_hand": true
+}

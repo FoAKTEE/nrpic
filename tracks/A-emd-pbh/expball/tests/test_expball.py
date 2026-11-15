@@ -36,6 +36,31 @@ def test_y_of_Delta_inverse_and_linear_limit():
     assert abs(M.y_of_Delta(np.array([1e-8]))[0] / 1e-8 - 5 / 3) < 1e-6
 
 
+def test_y_of_Delta_independent_of_batch():
+    """Regression: a converged iterate equal to a bracket end must not be sent to the
+    bracket middle (found at 12:05 UTC: y(1) = -5e7 for a constant batch)."""
+    ref = M.y_of_Delta(np.array([1.0]))[0]
+    assert ref == pytest.approx(0.7463786180, rel=1e-9)
+    for D in (np.full(7, 1.0), np.array([0.3, 1.0, 1.0, 0.0, 1e-15]), np.full(3000, 1.0)):
+        y = M.y_of_Delta(D)
+        assert np.all(np.abs(y[D == 1.0] - ref) < 1e-15)
+    D = np.random.default_rng(4).uniform(-0.6, 4.5, 5000)
+    y = M.y_of_Delta(D)
+    # near turnaround (Delta -> 4.55) hyp2f1 itself limits the residual to ~1e-14
+    assert np.max(np.abs(1 + M.Fm1(y) - np.sqrt(1 + D)) / np.sqrt(1 + D)) < 5e-14
+
+
+def test_solve_eta_independent_of_batch():
+    q = np.concatenate([np.full(50, 1.234), np.logspace(-40, 0.79, 50),
+                        np.linspace(0, 2 * math.pi, 50)])
+    eta = exact._solve_eta(q, True)
+    assert np.max(np.abs(exact._x_minus_sin(eta) - q) / np.maximum(q, 1e-300)) < 1e-14
+    assert np.ptp(eta[:50]) == 0.0
+    qh = np.logspace(-30, 3, 60)
+    eh = exact._solve_eta(qh, False)
+    assert np.max(np.abs(exact._sinh_minus_x(eh) - qh) / qh) < 1e-14
+
+
 # ------------------------------------------------------------------ the slice
 def test_flat_ball(balls):
     b = balls["flat"]
