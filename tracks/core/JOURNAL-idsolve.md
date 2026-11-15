@@ -212,3 +212,143 @@ also showed two faults of entry 2, which I correct here before the registered ru
    dx = 2, 1, 0.5 (N = 32, 64, 128) instead of 1, 0.5, 0.25: N = 256 does not fit the
    processor runs of this session. The predictions of T2 (b) scale as dx^2 (1.5e-3,
    4e-4, 1e-4 times a number of order one).
+
+## 2026-11-15, entry 4: outcomes of T0 to T4 (source of commit 87e189e, processor build)
+
+Registration: `harness/bin/nrpic-run submit` and `status` stop with
+`KeyError: 'outputs'` (`harness/bin/nrpic-run` line 163, `is_live`, reading the
+hand-written manifests of wave 1 in `tracks/core/runs/`). All runs of this package are
+therefore registered by hand with `tracks/core/tools/run_registered.py` (same fields).
+Case names and run ids: `tracks/core/analysis/idsolve/runs.json`; numbers:
+`gauss_numbers.json`, `ball_numbers.json`, `torus_numbers.json` there; figures:
+`figs/`. I looked at every figure.
+
+A fault of my test runner, not of the code: two runs started in the same second get the
+same run id and the second stops in `run_registered.py` (`os.makedirs`). The first
+launch of T1 lost `gauss_code_n32` and `gauss_code_n32_comp` that way; the runner now
+starts runs 1.2 s apart and the two cases were rerun (ids below). No run directory holds
+two runs.
+
+**T0 regression: prediction held.** Baseline: the executable built from the unchanged
+source in the same build directory (`.work/base_cpu/athena`), new: 87e189e. Every
+output file identical byte for byte: geo 2 files, boris 2, dep 1, east 12, os 16
+(statically refined mesh with Z4c), jeans 5 (and its result lines of the log),
+binary 1 (multigrid on four refinement levels) (runs core-20261115-154817 to
+-155952-87e189e, report `regress_cpu_87e189e.json`); Newtonian mode: isolated ball
+with the multipole boundary 11 files, periodic expanding wave 9 files (runs
+core-20261115-160219 to -160227-87e189e, report `regress_newton_87e189e.json`).
+Card build: not compared (see T5).
+
+**T1 Gaussian, K = 0.** Runs gauss_*: stencil N = 32, 64, 128:
+core-20261115-155048, -155050, -155053-87e189e; code: -160207, -155051, -155054.
+- Independent reference: the same discrete system (cloud-in-cell density of the
+  particle file, seven-point Laplacian, Robin closure) solved by a sparse direct
+  Newton iteration in scipy (`idref.solve_isolated`) at N = 32: largest difference of
+  psi 1.1e-13. The code solves what the design says.
+- (a) held: mode stencil 4 outer iterations at every resolution (residual
+  1, 3.6e-2, 8.6e-6, 3.1e-9, 1.3e-13 at N = 32); mode code 16 to 17, with factors
+  0.49 between the last residuals for four ghost cells (0.51 predicted at the Nyquist
+  wavenumber), 0.32 for three (1/3 predicted; run -155115), and 5 iterations of
+  Newton type for two (run -155052).
+- (b) held: 2 conjugate-gradient steps per linear solve in mode stencil, at most 3 in
+  mode code; 32 to 41 V cycles (stencil), 78 to 101 (code) per solve of the problem.
+- (c), amended form, held: relative error of psi - 1 at the innermost cells, mode
+  stencil: -9.10e-3, -2.43e-3, -6.17e-4 (dx = 1, 0.5, 0.25; factors 3.75, 3.93)
+  against -1.09e-2, -2.73e-3, -6.8e-4 before screening: 0.83, 0.89, 0.90 of the
+  prediction.
+- (d), amended form, held: mode code, four ghost cells: -1.92e-2, -5.22e-3, -1.33e-3
+  (factors 3.68, 3.92) against -2.34e-2, -5.86e-3, -1.46e-3: 0.82, 0.89, 0.91. With
+  `deposit_comp_c = 1/12`: -3.00e-3, -6.54e-4 against -2.60e-3, -6.51e-4. The profile
+  of the error over radius, divided by (dx/s)^2, is the same curve at the three
+  resolutions and follows -2 pi rhot s^2 (3/32) (figure `gauss_error`).
+- Not predicted: with two ghost cells the error at the centre is -8.8e-4 at dx = 0.5,
+  a third of that of mode stencil. The second-order monitor of the code is built from
+  differences of psi^4 and is not the seven-point Laplacian of psi; I had assumed the
+  two agree. They agree in the linearisation (hence the Newton-type convergence), not
+  in their truncation error.
+- (e), amended form, held: error at the face centres 8.3e-5, 2.1e-5, 5.2e-6 (factor
+  4.0, 4.0); the monopole 2 r (psi - 1) at the faces is 1.00257, 1.00065, 1.00016.
+  The original (e) ("below 1e-5 at dx = 0.5") failed: 2.1e-5.
+- (f): before the solve max|H| = 0.405, 0.458, 0.473 (limit 0.4786; the 1.197 of
+  entry 2 was my arithmetic error). After, mode code: 1.5e-11, 1.1e-11, 2.6e-11 in the
+  solver and 1.4e-11, 1.1e-11, 2.0e-11 in the first field dump of the run away from
+  the faces (the state the evolution starts from). After, mode stencil: 4.72e-3,
+  1.42e-3, 3.72e-4 (factors 3.3, 3.8). Within four cells of an outflow face the monitor
+  of the run reads up to 1.9e-3 in every mode: the ghost cells of the Z4c boundary
+  condition, as for any initial data (figure `gauss_H`).
+- Cost on one processor core (build with assertions): 3.7, 29, 253 s (stencil) and 10,
+  87, 655 s (code) at N = 32, 64, 128 with 9.2e4, 7.4e5, 5.9e6 particles.
+
+**T2 expanding ball with its table.** Runs ball_*; sharp surface, mode code, no
+filter: core-20261115-160245, -160250, -160259-87e189e (dx = 2, 1, 0.5).
+- (a) held: before the solve max|H| = 6.3e-3, 5.8e-3, 6.0e-3 (16 pi rho = 1.2e-2),
+  rms 4.0e-4, 2.7e-4, 1.9e-4 (factor 1.5, 1.4, as sqrt(dx)); after, mode code:
+  max|H| 1.3e-12, 1.4e-12, 2.1e-12 in the solver and in the field dump away from the
+  faces. Mode stencil leaves max|H| = 2.0e-3 at every resolution (the density jump in
+  one cell), rms 1.4e-4, 9.1e-5, 6.6e-5.
+- (b) held: max|psi - 1| = 2.33e-3, 5.19e-4, 1.20e-4 (factors 4.5, 4.3), that is 0.39,
+  0.35, 0.32 times 2 pi rho dx^2. With one filter pass (as `problems/ball`): 3.27e-3,
+  7.5e-4, 1.78e-4.
+- (c) held: smooth edge 4.2e-4, 1.10e-4, 2.8e-5 (factors 3.84, 3.96); (psi - 1)/dx^2
+  is one curve at the three resolutions (figure `ball_psi`).
+- (d) failed at the two coarser meshes: the monopole 2 r (psi - 1) at the faces is
+  -3.1e-2, -4.6e-3, -6.3e-4 M (dx = 2, 1, 0.5; factors 6.6, 7.3), predicted below
+  1e-3 M. The solve lowers the mass of the data by 3 per cent when the ball is five
+  cells in radius. With the smooth edge it is +2.1e-3, +4.5e-4, +1.1e-4 M (factors
+  4.7, 4.1): fifteen times smaller at dx = 2. These runs could have shown the same
+  monopole and did not, so the sharp surface (the jump of KL of the table sampled at
+  cell centres against the ragged lattice surface) is the cause of the larger one.
+- 28 to 29 outer iterations (code), 3 (stencil); at most 3 conjugate-gradient steps.
+
+**T3 the ball with a triaxial strain of 0.05.** Runs tri_*: code -160408, -160419,
+-160448; stencil -160415, -160421, -160511; without the solve -160418, -160440, -160538.
+- (a) held: before the solve max|H| = 8.2e-3, 1.01e-2, 1.22e-2; rms over the mesh
+  4.16e-4, 3.28e-4, 3.24e-4: flat between dx = 1 and 0.5.
+- (b): after the solve, mode code: max|H| 1.3e-12, 1.4e-12, 2.2e-12, rms 1.5e-13,
+  7.1e-14, 8.1e-14 at dx = 2, 1, 0.5 (held). Mode stencil: max|H| 2.5e-3, 2.7e-3,
+  2.6e-3 (not falling, as predicted), rms 1.38e-4, 9.9e-5, 8.3e-5: factors 1.4 and
+  1.2 per halving, not the factor 2 I predicted for the rms (failed).
+- (c): the quadrupole of the solved psi, half the difference of psi - 1 on the x and
+  z axes at r = 15, is 4.15e-4, 4.21e-4, 4.20e-4 at the three resolutions (the same to
+  1.5 per cent); the largest |psi - 1| is 3.3e-3, 1.79e-3, 1.46e-3 (1.5e-3 predicted
+  for the quadrupole part; the two finer meshes differ by 22 per cent because the
+  monopole error of the sharp surface of T2 is added at the coarser one). Sign: psi
+  is raised along the stretched axis and lowered along the compressed one (figure
+  `tri_slice`).
+- (d) as stated: the momentum constraint is not solved; its rms over the mesh is
+  2.66e-3, 2.69e-3, 3.57e-3 without and 2.67e-3, 2.69e-3, 3.57e-3 with the solve, and
+  its maximum (2.1e-2, 4.7e-2, 9.8e-2) grows as 1/dx at the sharp surface, a property
+  of the trial data known from wave 1.
+- Seen in the figure, not predicted: the strained lattice (spacing h (1 + e)) beats
+  against the mesh, and the deposited density carries a moire of period h/e = 5 cells
+  of a few per cent; the solve absorbs it into psi.
+
+**T4 plane wave on the torus against cosmo/ic.** Runs torus_*: stencil, one particle
+per cell, N = 32, 64: core-20261115-155120, -155203; eight per cell: -155135, -155219;
+code: -155123, -155211, -155142, -155220.
+- (a) held: mode stencil against `cosmo_id.solve` with the seven-point symbol: largest
+  difference of psi 7.8e-14, 5.7e-14 (one particle per cell), 2.3e-12, 4.6e-14 (eight);
+  the deposited E agrees to 6e-14, 5e-14, 1.7e-12, 4e-14.
+- (b) failed in the maximum norm, held for the wave: against the spectral reference
+  the largest difference is 2.28e-5, 5.9e-6 (one per cell) and 1.95e-5, 5.2e-6 (eight)
+  against 1.2e-5, 3e-6 predicted. A Fourier split of the difference of the two
+  references along x, which could have shown a fundamental of 2e-5, gives a
+  fundamental of 1.143e-5 and 2.87e-6 (the prediction to one per cent) and a remainder
+  of up to 1.2e-5 (one per cell) or 9.6e-6 (eight) at N = 32: the cloud-in-cell
+  density of a displaced lattice has structure at the scale of the cells, where the
+  two symbols differ most. Eight particles per cell reduce it only by a fifth.
+- (c) held: the mean of psi equals that of the seven-point reference to 1.6e-14,
+  6.7e-15, 1.9e-12, 3.4e-15; it is 1 - 6.38e-5.
+- (d) held: 3 conjugate-gradient steps per linear solve.
+- (e): mode code leaves max|H| = 8.2e-10, 9.4e-10, 1.15e-9, 7.3e-10 (before: 0.89,
+  0.90, 0.73, 0.80); I predicted "below 1e-9" and one case is 15 per cent above. The
+  tolerance is on F = psi^5 H/8 relative to the largest term (about 1.6 here), so the
+  bound on H is 8 * 1e-10 * 1.6 = 1.3e-9: my prediction did not convert it. The
+  difference to the spectral reference is 9.7e-7, 2.4e-7 (one per cell), 1.45e-6,
+  3.2e-7 (eight), below (b) as predicted. 23 to 24 outer iterations, factor 0.48-0.50.
+- Not predicted, and the reason for the default `id_residual = code`: after a solve in
+  mode stencil the monitor of the run reads max|H| = 3.7e-2, 3.6e-2 (one per cell) and
+  4.7e-2, 4.3e-2 (eight) at N = 32, 64: 0.7 per cent of 16 pi rho and not falling
+  with resolution, because the density has structure at the scale of the cells at
+  every resolution.
+- Amplitude of psi: 5.17e-3 to 5.21e-3 (linear theory 5.22e-3).

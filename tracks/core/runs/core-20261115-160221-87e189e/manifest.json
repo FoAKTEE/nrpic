@@ -1,0 +1,47 @@
+{
+ "run_id": "core-20261115-160221-87e189e",
+ "owner": "core",
+ "command": [
+  "/data/haiyangw/nrpic/wt/core-idsolve/.work/build_cpu/src/athena",
+  "-i",
+  "isolated.athinput",
+  "particles/particle_file=newton_ball32.nrp",
+  "mesh/nx1=32",
+  "mesh/nx2=32",
+  "mesh/nx3=32",
+  "meshblock/nx1=16",
+  "meshblock/nx2=16",
+  "meshblock/nx3=16",
+  "time/nlim=5",
+  "particles/dt=0.002",
+  "particles/snap_dt=0.004"
+ ],
+ "cwd": "/data/haiyangw/nrpic/scratch/core/core-20261115-160221-87e189e",
+ "commit": "87e189e",
+ "source_modified_since_commit": false,
+ "inputs": [
+  {
+   "path": "problems/newton/isolated.athinput",
+   "sha256": "e668150c18e0424b03d52e82ea3ab4c916bb29f50165be23dad58374bbadbc7d"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/scratch/core/idsolve_ic/newton_ball32.nrp",
+   "sha256": "cede74ef470a7cffb304bb43d3e2e6dad2d2536fb40d74f2688c9b0fdb2e2416"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/wt/core-idsolve/.work/build_cpu/src/athena",
+   "sha256": "65e3a59ffc0eeb22cee5ae4f81bd8560dc6518fb32562f63abd6771f6e6a814a",
+   "role": "executable"
+  }
+ ],
+ "output_directory": "/data/haiyangw/nrpic/scratch/core/core-20261115-160221-87e189e",
+ "purpose": "regression of the Newtonian mode, case isolated, executable new",
+ "kind": "scouting",
+ "tag": "regress-newton-isolated-new",
+ "state": "finished",
+ "wall_time_s": 0.64,
+ "exit_status": 0,
+ "cores": 1,
+ "card_hours": 0.0,
+ "started_utc": "2026-11-15T16:02:21Z"
+}
