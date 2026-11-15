@@ -190,3 +190,35 @@ start distance matters more because the tidal field at 10 r_t is not negligible
   on the phase grid). If SKR's retrograde curve reaches zero near 0.41 the 0.44 of the text
   is a statement about a different quantity or a typo; if it reaches zero at 0.44 the
   discrepancy is real and its cause is open.
+
+## 2026-11-15 P7 outcome (run F-hills-20261115-132703-0bfc352), P6 outcome (run F-hills-20261115-132433-7d0c6dd); prediction P8
+
+- found (P7): SKR fig. 4 and fig. 7 curves read from the EPS. Prograde: P_dis within
+  0.004 of SKR for D < 0.3 (median 0.0014; largest 0.037 at the steep edge D = 2.07);
+  <|E|> median relative difference 0.17 percent, max|E| 0.08 percent (90th pct 1.1).
+  Retrograde: <|E|> 0.2 percent, max|E| 0.3 percent, but P_dis is systematically BELOW
+  SKR's curve: -0.008 at D = 0.01, -0.03 at 0.1, -0.066 at 0.3, -0.16 at 0.4, and SKR's
+  curve reaches zero at D = 0.445 (their text: 0.44) where mine does at 0.41. Prediction
+  P7 holds for prograde and for the energies, fails for the retrograde P_dis.
+- observation (not yet a cause): the missing retrograde disruptions match the number of my
+  retrograde survivors whose final semi-major axis exceeds about 3 a (D = 0.1: 0.030 vs
+  0.032; 0.3: 0.066 vs 0.076; 0.36: 0.095 vs 0.113; 0.4: 0.16 vs 0.19), while prograde
+  survivors are almost never that wide and prograde agrees. My survivors are bound (two-body
+  energy < 0) with apocentre inside half the Hill radius at 30 r_t, and P5 showed that the
+  classification does not change between 30 and 100 r_t, so I hold them as survivors.
+  Hypothesis H1: SKR count widened survivors as disrupted (a separation or energy criterion
+  at a finite time).
+- found (P6): start radius 40 vs 80 r_t: P_dis within 0.25 points and <|E|> within 0.25
+  percent at all six D (converged, prediction holds). k0 = 10 vs 80: P_dis -0.17, -0.09,
+  0.0, +0.26, +1.41, -2.17 points and <|E|> -1.8, +0.2, +0.3, +0.4, +0.2, -2.7 percent at
+  D = 1e-3, 0.1, 0.5, 1, 1.5, 2. The P_dis bound of 2 points is exceeded at D = 2
+  (2.2 points): prediction P6 fails narrowly there. SKR's fig. 4 at D = 1.5 (0.797) sits
+  with my k0 = 10 value (0.792), not with the converged one (0.777): consistent with SKR's
+  stated start of 10 r_t.
+- prediction P8 (before the run): (i) BKRS's fig. 2 (dis_with_D.eps, read as text) has a
+  coplanar retrograde curve; if H1 is about SKR's criterion only, BKRS's retrograde curve
+  lies on mine (within 0.02) and their isotropic curve within 0.015 of mine. If BKRS's
+  retrograde curve lies on SKR's, both used the same criterion and I test H1 directly:
+  (ii) counting my survivors with a_f > X a as disrupted, one X between 2 and 4 brings my
+  retrograde P_dis within 0.01 of SKR's at every D < 0.44 while leaving prograde within
+  0.005. H1 is refuted if no single X does this.

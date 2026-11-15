@@ -1,0 +1,35 @@
+{
+  "coplanar_run": "F-hills-20261115-130237-cbfaf6b",
+  "supplement_run": "F-hills-20261115-132156-efddfc0",
+  "digitised_from": "/data/haiyangw/nrpic/kb-data/raw/arxiv/0911.1136/v1/src/figs/fig4.eps, fig7.eps",
+  "P_pro": {
+    "max_abs_diff": 0.037345436878020624,
+    "median_abs_diff": 0.0014145729112856609,
+    "D_of_max": 2.0744736128109755,
+    "max_abs_diff_D<0.3": 0.00410562170323947,
+    "SKR_curve_last_D_with_P>0.002": 2.0744736128109755
+  },
+  "P_ret": {
+    "max_abs_diff": 0.21011162179908077,
+    "median_abs_diff": 0.007636685033342916,
+    "D_of_max": 0.41801203876188353,
+    "max_abs_diff_D<0.3": 0.06573023068381928,
+    "SKR_curve_last_D_with_P>0.002": 0.4446136106363392
+  },
+  "Em_pro": {
+    "median_rel_diff": 0.0016598605412001316,
+    "p90_rel_diff": 0.0032839386378275674
+  },
+  "Em_ret": {
+    "median_rel_diff": 0.0019847228823046525,
+    "p90_rel_diff": 0.00593691197582135
+  },
+  "Ex_pro": {
+    "median_rel_diff": 0.0008367147236610232,
+    "p90_rel_diff": 0.010916285772064192
+  },
+  "Ex_ret": {
+    "median_rel_diff": 0.0031758900368371434,
+    "p90_rel_diff": 0.017593218766069965
+  }
+}
