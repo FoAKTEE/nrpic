@@ -179,8 +179,8 @@ Card time so far 0.28 of the 1 card-hour of the package.
   2-3 were never reached: no horizon, no crunch; the restart segments were not run.
   Gauge pathology figures: `figs/sr1_n256_gauge.png` (constraint statistics, H on the x
   axis against t), `figs/sr1_n256_fields.png`.
-- P2 HOLDS while finite: |r/r_0 - 1| = 0 and |tau - t| < 1e-12 (printed by compare.py);
-  the lapse stays 1 to 4e-13.
+- P2 HOLDS while finite: |r/r_0 - 1| < 1e-14 and |tau - t| < 6.3e-12 for every tracked
+  particle (`sr1_coordinates` of the numbers file); the central lapse stays 1 to 4e-13.
 - P3 REFUTED at dx = M/2: core shells, largest |R/R_exact - 1| 1.8e-3 at tau = 8,
   6.2e-3 at 16.9, 2.7e-2 at 30 (means 2.7e-4, 6.1e-4, -1.8e-3); the bound "below 2e-3 to
   tau = 30" fails after tau ~ 8. The largest errors sit at the core edge (band
