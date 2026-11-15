@@ -67,12 +67,57 @@ def collect(d):
             "final_state": [float(x) for x in tr[-1]]}
 
 
+def figure(res, out):
+    sys.path.insert(0, os.path.join(REPO, "python"))
+    import matplotlib
+    matplotlib.use("Agg")
+    import matplotlib.pyplot as plt
+    from nrpic import figstyle as fs
+    fs.use_style()
+    fig, ax = plt.subplots(figsize=(fs.FULL_WIDTH, 3.2))
+    fig.subplots_adjust(left=0.24, right=0.98, bottom=0.16, top=0.96)
+    names = [("old_u", "release, uninterrupted"),
+             ("old_c", "release, cycle limit"),
+             ("old_w", "release, wall clock"),
+             ("new_u", "corrected, uninterrupted"),
+             ("new_c", "corrected, cycle limit"),
+             ("new_w", "corrected, wall clock")]
+    for k, (c, lab) in enumerate(names):
+        v = res["cases"][c]
+        y = len(names) - 1 - k
+        col = fs.PAL["blue"] if c.startswith("old") else fs.PAL["red"]
+        ax.plot(v["rst_times"], [y + 0.15]*len(v["rst_times"]), "s", color=col, ms=6)
+        ax.plot(v["tab_times"], [y - 0.15]*len(v["tab_times"]), "|", color=col, ms=9, mew=1.5)
+        ax.plot(v["rst_missing"], [y + 0.15]*len(v["rst_missing"]), "s", mfc="none", mec="k", ms=9)
+        ax.plot(v["tab_missing"], [y - 0.15]*len(v["tab_missing"]), "o", mfc="none", mec="k", ms=9)
+        if "stop_time" in v:
+            ax.plot([v["stop_time"]]*2, [y - 0.4, y + 0.4], **fs.MASK_LINE)
+    ax.set_yticks(range(len(names)))
+    ax.set_yticklabels([n[1] for n in names][::-1])
+    ax.tick_params(axis="y", which="minor", left=False, right=False)
+    ax.set_ylim(-0.6, len(names) - 0.4)
+    ax.set_xlim(-8, 308)
+    ax.set_xlabel(r"time of the output, $t/M$")
+    ax.plot([], [], "s", color="grey", ms=6, label="restart file")
+    ax.plot([], [], "|", color="grey", ms=9, mew=1.5, label="table")
+    ax.plot([], [], "s", mfc="none", mec="k", ms=8, label="scheduled, not written")
+    ax.plot([], [], color="grey", lw=1.5, alpha=0.4, label="stop")
+    ax.set_ylim(-0.6, len(names) + 0.3)
+    ax.legend(loc="upper center", ncol=4, fontsize=8)
+    fs.save(fig, out)
+
+
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument("--old", required=True)
-    ap.add_argument("--new", required=True)
+    ap.add_argument("--old")
+    ap.add_argument("--new")
     ap.add_argument("--fig")
+    ap.add_argument("--replot", help="run directory of an earlier run: only redraw the figure")
     args = ap.parse_args()
+    if args.replot:
+        res = json.load(open(os.path.join(args.replot, "t2_restart.json")))
+        figure(res, args.fig)
+        return 0
     run = os.environ.get("NRPIC_RUN_DIR")
     if not run:
         sys.exit("NRPIC_RUN_DIR is not set (start through runreg.py)")
@@ -120,38 +165,7 @@ def main():
           res["new_c_final_state_maxdiff"])
 
     if args.fig:
-        sys.path.insert(0, os.path.join(REPO, "python"))
-        import matplotlib
-        matplotlib.use("Agg")
-        import matplotlib.pyplot as plt
-        from nrpic import figstyle as fs
-        fs.use_style()
-        fig, ax = plt.subplots(figsize=(fs.FULL_WIDTH, 3.2))
-        fig.subplots_adjust(left=0.37, right=0.98, bottom=0.16, top=0.96)
-        names = [("old_u", "release core-v0.3, uninterrupted"),
-                 ("old_c", "release core-v0.3, stopped at t = 123.4"),
-                 ("old_w", "release core-v0.3, stopped at the wall clock"),
-                 ("new_u", "corrected, uninterrupted"),
-                 ("new_c", "corrected, stopped at t = 123.4"),
-                 ("new_w", "corrected, stopped at the wall clock")]
-        for k, (c, lab) in enumerate(names):
-            v = res["cases"][c]
-            y = len(names) - 1 - k
-            col = fs.PAL["blue"] if c.startswith("old") else fs.PAL["red"]
-            ax.plot(v["rst_times"], [y + 0.15]*len(v["rst_times"]), "s", color=col, ms=6)
-            ax.plot(v["tab_times"], [y - 0.15]*len(v["tab_times"]), "|", color=col, ms=9, mew=1.5)
-            ax.plot(v["rst_missing"], [y + 0.15]*len(v["rst_missing"]), "s", mfc="none", mec="k", ms=9)
-            ax.plot(v["tab_missing"], [y - 0.15]*len(v["tab_missing"]), "o", mfc="none", mec="k", ms=9)
-            if "stop_time" in v:
-                ax.plot([v["stop_time"]]*2, [y - 0.4, y + 0.4], **fs.MASK_LINE)
-        ax.set_yticks(range(len(names)))
-        ax.set_yticklabels([n[1] for n in names][::-1])
-        ax.tick_params(axis="y", which="minor", left=False, right=False)
-        ax.set_ylim(-0.6, len(names) - 0.4)
-        ax.set_xlim(-8, 308)
-        ax.set_xlabel(r"time of the output, $t/M$ (squares: restart files; bars: tables; "
-                      "open symbols: scheduled, not written)", fontsize=8)
-        fs.save(fig, args.fig)
+        figure(res, args.fig)
     return 0
 
 

@@ -167,3 +167,17 @@ reach that branch. Second version of the hook: the interval `out_params.dt` is z
 the writer runs (no writer uses it for anything but the advance; checked with grep over
 `outputs/*.cpp`), so `last_time` is unchanged bit for bit and never negative. Prediction
 for the rerun: all three corrected cases complete; the release cases as before.
+
+Outcome of T2, second version (run core-20261115-154901-d8ad7ec; figure
+`tracks/core/analysis/dfix/figs/t2_restart.png`, looked at) [VERIFIED]:
+- uninterrupted, release and corrected: restart files at 0, 50, ..., 300 M, thirteen
+  tables; the same file lists for both executables;
+- release, cycle limit at t = 123.4 M: dump of 150 M and table of 125 M missing;
+  release, wall clock (stopped at t = 68.4 M): dump of 100 M and table of 75 M missing;
+- corrected, cycle limit: nothing missing, extra files at 123.4 M, final particle state
+  equal to the uninterrupted run bit for bit;
+- corrected, wall clock (stopped at t = 26.7 M, i.e. before the first interval had
+  passed, the case the first version got wrong): nothing missing.
+Not refuted. Request D `restart-skips-dump` is met for every output kind with a `dt`
+schedule. Line of `scripts/README.md` "Every wall-clock stop ... is skipped" is corrected
+with this change.
