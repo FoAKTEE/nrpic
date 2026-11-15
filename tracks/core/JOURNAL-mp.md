@@ -396,3 +396,21 @@ the four runs queued behind it (`-120040-`, `-120041-`, `-120043-`, `-120044-`, 
 started). New wave zone: cells of 1/2 within 15.9 of the origin (the eight level-1
 blocks around it), spheres at 10 and 14; initial mesh 428 MeshBlocks (`athena -m 1`).
 Predictions unchanged, with "the sphere at 14" for the energy.
+
+(Note on this file: the two references to check scripts under `scratch/core/tmp/` in
+the entries above were replaced by the in-tree script
+`tracks/core/analysis/mp/check_bowen_york.py`, which contains the same checks and was
+rerun: all pass, same numbers.)
+
+### Outcome of the restart check (processors; `core-20261115-120935-9211dcd` uninterrupted, `core-20261115-121543-2e16f45` restarted from its dump of cycle 4)
+
+The restarted run has its tracker and its finder (built from the parameters in the
+dump) and the two tracers. Tracker rows of cycles 4 to 7: identical in all 19 printed
+digits. Horizon summary at t = 0.125 and 0.1875: identical in all 16 digits (masses
+1.023427462744472, 1.018949192206834). Particle history: identical. Z4c history
+(six printed digits): identical except the last digit of the Theta norm at one time
+(7.17374e-07 against 7.17375e-07). Prediction held within what the files print; the
+"1e-10" could only be tested on the tracker and horizon files. Observation: on this
+coarse mesh (cells 1/8, puncture with momentum 0.3 and spin 0.2 off the block
+corners) the finder returns no horizon at t = 0 and 0.0625 and finds it from
+t = 0.125 on, in both runs. [VERIFIED]
