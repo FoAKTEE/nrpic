@@ -267,4 +267,60 @@ decision 0010 item 4; not part of this package.
 
 ## 9. Cost
 
-EVIDENCE_COST
+| Configuration | Zone-cycles per second | Relative |
+|---|---|---|
+| Z4c alone (puncture, 64^3, 32^3 MeshBlocks, nghost 4, RK4), one core of a Xeon 8360Y | 1.494e4 | 1 |
+| Z4c with the coupled scalar field, no stochastic sources | 1.337e4 | 1.118 |
+| the same with the Mukhanov-Sasaki sources: ball n_max = 16, 8538 modes, 214 shells, six fields synthesized at every stage | 1.239e4 | 1.206 (1.079 over the field alone) |
+
+Run core-20261115-135423-5a6953e (four steps each). So the field costs 12 percent of a
+Z4c step and the synthesis 8 percent at 64^3 with n_max = N/4 on one core [VERIFIED]. On
+a card: pending (section 10). The synthesis cost per cell grows with the number of
+distinct n_x (n_max + 1) and, for small MeshBlocks, with the number of modes per cell
+(design review D2).
+
+## 10. What is verified
+
+All on processors (serial build), executable frozen per commit under `.work/exe/`.
+Predictions were written before the runs; failed predictions and their follow-up are in
+the journal. Figures: `tracks/core/notes/scalar_figs/`.
+
+| Statement | Evidence |
+|---|---|
+| Existing behaviour unchanged: five existing set-ups (analytic metric; mesh metric with deposit; refined mesh with deposit and excision; Z4c with particle sources; restart files with removal), 36 output files byte-identical between the executable of the unmodified source and the one with the module | run core-20261115-132758-ba37619 (first source: all 36 identical). Final source, run core-20261115-135417-5a6953e: 33 identical, the three mesh restart files differ in 35 bytes each. Those bytes are the nine coarse-mesh indices of `Mesh::mesh_indcs`, which nothing sets and `restart.cpp` writes raw: bytes 8252 to 8287, exactly that range, in all three files (run core-20261115-140328-5a6953e). They are heap content and differ between two executables whose allocation history differs; they are not read back meaningfully. The data of the files are identical |
+| Test 1, Klein-Gordon plane wave of a test field on flat spacetime (m = 5, n = (1,1,0), box 1): frequency equals that of the stencils, omega_h, to -1.2e-8 ... -1.34e-8 (the phase error of RK4 at dt = 1/512) in twelve runs; spatial orders 1.99, 3.96, 5.92 for nghost 2, 3, 4; temporal order 3.9993 to 3.9999 with errors equal to the classical RK4 estimate to four digits; dissipation 0.5 damps at 0.9994 of (stencil + integrator); five potentials against the ordinary differential equation converge at orders 3.98 to 4.06 (2.2e-6, 1.5e-5, 7.2e-7, 3.8e-7 at Courant 0.25 over ten time units); the table reproduces the potential it tabulates to 9.1e-10 | runs core-20261115-133809-836ac86, core-20261115-134423-836ac86 (analysis); `fig_wave_convergence.png`, `fig_wave_diss_potentials.png` |
+| Test 2, homogeneous slow roll (m = 0.1, phi0 = 3, attractor momentum) with the evolved metric against the Friedmann and Klein-Gordon equations: conformal-time lapse `d_t alpha = -(1/3) alpha^2 K` to a = 3.77, relative differences at Courant 0.25 of 2.9e-7 (a), 2.2e-10 (phi, K), 5.4e-8 (alpha), ratios 15.3 to 15.8 per halving of the step; geodesic slicing to a = 123 (4.81 e-folds), 5.0e-9 (a), field and K on the rounding floor 7e-13; eps1 within 0.994 to 0.997 of 1/(4 pi phi^2); rms H below 5e-12 of [H], momentum constraint below 6.3e-15 | run core-20261115-133955-836ac86; `fig_flrw_conformal.png`, `fig_flrw_geodesic.png` |
+| Test 3, plane perturbation (A = 0.003 on phi0 = 3, n = (1,1,0), Pi0 = -0.05) from the data of section 8: at t = 0 rms H = 5.6e-7, 8.9e-9, 1.4e-10 and rms M = 1.3e-5, 2.6e-7, 4.3e-9 for N = 16, 32, 64 (orders 5.97, 5.99 and 5.66, 5.91); during the evolution to t = 0.5 orders 5.15 to 6.00 (H) and 5.22 to 5.99 (M); with a uniform momentum instead (control) rms M = 1.5e-3 and no convergence | run core-20261115-134118-836ac86; `fig_plane_constraints.png`, `fig_plane_convergence.png` |
+| Test 4, generic sources (32^3, 2084 modes): coefficients of the synthesized fields equal (shell factor) x (twin alpha) to 2.2e-16 of the rms for frozen, white-in-time and step-window cases, nothing outside the ball (9e-17); shell means of the power within 2.9 sigma (85 shells), mean 1.031 +- 0.022; all dumped fields bit-identical for 1, 8 and 64 MeshBlocks; a restart at cycle 32 gives byte-identical dumps at cycle 64; increments of two steps have phase correlation 1.0 (frozen) and -5e-5 +- 0.06 (white in time); phi and Pi after one step equal the Runge-Kutta response to the sources to 6.6e-16 and 2.6e-15 | run core-20261115-135414-5a6953e (first version core-20261115-134715-1b6bc30, journal entry 4); `fig_noise_power.png` |
+| Test 4, Mukhanov-Sasaki sources (16^3, box 10, 435 modes, 31 shells, slow-roll background, geodesic slicing): lockstep mode functions against SciPy 6.4e-3, 3.7e-4, 2.2e-5 for Courant 0.25, 0.125, 0.0625 (orders 4.12, 4.07); the six fields equal (shell factor) x (twin alpha) x (stencil projector) to 7.1e-17 of the rms; 1 and 8 MeshBlocks bit-identical, restart byte-identical; discrete momentum constraint of the kick fields 4.9e-16 of its terms with the stencil projector, 1.4e-2 with the continuum projector; flipped sign of the Pi kick gives rms H = 1.9e-7 after one step against 2.7e-11, doubling with the amplitude | the same run; `fig_noise_ms.png` |
+| Statically refined mesh (smoke run): plane wave of test 1 across one refinement level (32^3 root mesh, 120 MeshBlocks, 64 steps) stays stable; rms difference to the exact wave 2.5e-6 (coarse), 6.4e-6 (fine), maximum 1.8e-5, about 100 times the error of a uniform 32^3 mesh | run core-20261115-135434-5a6953e (scouting) |
+| Standard outputs `sf` (bin) and `sf_phi` (vtk) are written and read by `athenak/vis/python/bin_convert.py` | unregistered smoke run, `scratch/core/tmp/sf/out_smoke` |
+| The module compiles in the card build (CUDA 12.6) | `.work/build_gpu_sf`; card runs pending: Slurm job 4427 (`tracks/core/analysis/scalar/gpu_job.sh`: cost at 128^3, tests 2, 4, 3, 1), queued when this was written; each part registers itself under `tracks/core/runs/` with a `summary.json` |
+
+## 11. Limits and open points
+
+- Card: nothing has run on a card yet (job queued). Layout independence and the twin
+  agreement are properties of integer arithmetic and of sums in a fixed order, but on the
+  card they are [TO VERIFY] until the job has run.
+- First-order residual of the momentum constraint in the evolved Mukhanov-Sasaki run on
+  the coarse test mesh (2.7e-12 after one step with either projector; journal entry 4):
+  not explained by a test. Track E's test L5 on a resolved mesh decides.
+- Not implemented: the perturbed initial slice of SPEC 5.3 (request R8), level 2 of the
+  stochastic backreaction, a stencil k^2 in the mode equation, [M] of arXiv:2512.14649,
+  the stochastic graviton sources, a Sommerfeld condition for the field, adaptive
+  refinement, several MPI ranks, more than one scalar field.
+- The inflection potential is transcribed from Track E's SPEC, not from the paper.
+- Particles and field in one run: the code paths exist (section 5) and are untested; the
+  constraint statistics of the particle module do not include the field.
+- Refined meshes: one smoke run; the order of the error across a refinement boundary and
+  the constraint behaviour with a coupled field there are not measured. The stencil
+  projector uses the cell size of the root mesh.
+- The driver's `rk4` drifts a constant by about 1.4e-15 per step (coefficients given to
+  15 digits); this bounds the agreement of long geodesic-slicing runs (test 2).
+- The restart header holds 36 unset bytes (`Mesh::mesh_indcs`); a regression that compares
+  restart files byte by byte across two executables has to mask them, or the mesh
+  constructor has to zero them (request to main/core, not done here because it changes
+  restart files of existing runs).
+- Time step: no limit from the mass term or from the expansion; in conformal time during
+  inflation the step covers a growing number of e-folds (use geodesic slicing, as the
+  SPEC does).

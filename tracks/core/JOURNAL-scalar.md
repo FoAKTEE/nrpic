@@ -343,3 +343,40 @@ Mukhanov-Sasaki model (16^3, box 10, 435 modes in 31 shells, slow-roll backgroun
   levels as level 0. Track E's test L5 on a resolved mesh has to settle whether the
   residual first-order part is the discretisation of the evolution.
 Figures `fig_noise_power.png`, `fig_noise_ms.png` (looked at; legends moved afterwards).
+
+## 2026-11-15, entry 5: repeat of test 4, final regression, cost, refined mesh, card
+
+- Test 4 repeated with the window increment without cancellation and the phase estimator
+  (run core-20261115-135414-5a6953e): both predictions of entry 4 hold. All twin cases
+  at most 2.2e-16 of the rms (white in time 3e-17 to 6e-17); phase correlation 1.0
+  (frozen), -4.7e-5 with band 0.062 (white in time). Everything else unchanged (lockstep
+  orders 4.12, 4.07; fields 7.1e-17; layouts and restarts identical; kick identity
+  4.9e-16 and 1.37e-2).
+- Final regression (run core-20261115-135417-5a6953e): c1 to c4 identical, c5 reported
+  "differs": the three mesh restart files, 35 bytes each. P-reg as written is REFUTED for
+  these three files; the cause was then tested, not assumed. Hypothesis: the bytes are
+  never-set members of a struct written raw into the restart header, so their content is
+  heap history, which my one-line change of `parameter_input.cpp` (a longer list of
+  block names) shifts. It could have failed: the differing bytes could have lain
+  anywhere. They lie at 8252 to 8287 in all three files, exactly the nine coarse-mesh
+  indices of `Mesh::mesh_indcs` after the ten set ones (offset of "<par_end>" + 10 + 8 +
+  72 + 40) (run core-20261115-140328-5a6953e). The particle restart files, histories and
+  all other outputs are identical. The first regression (ba37619) had happened to see
+  the same heap content in both executables.
+- Cost on one core at 64^3 (run core-20261115-135423-5a6953e): Z4c 1.494e4, with the
+  field 1.337e4, with the Mukhanov-Sasaki sources (8538 modes, six fields per stage)
+  1.239e4 zone-cycles per second.
+- Refined mesh, smoke run (core-20261115-135434-5a6953e): the wave of test 1 crosses one
+  refinement level for 64 steps without growth; rms difference to the exact wave 2.5e-6
+  on the coarse and 6.4e-6 on the fine level, maximum 1.8e-5; a uniform 32^3 mesh would
+  give 7e-8. No prediction had been written for the size of this error (smoke run).
+- Standard outputs: `variable = sf` (bin) and `sf_phi` (vtk) written and read back with
+  `bin_convert.py` (unregistered smoke run).
+- Card: the module builds with CUDA 12.6 (`.work/build_gpu_sf`, 742 s with four jobs).
+  Slurm job 4427 (`gpu_job.sh`: cost at 128^3, tests 2, 4, 3, 1) was submitted at 14:04
+  UTC and was pending behind other owners' jobs. Prediction for the card, before it
+  runs: the same verdicts as on processors; dumps bit-identical between layouts on the
+  card; coefficients against the twin below 1e-12 of the rms (the card may contract
+  products and sums differently, so not necessarily 1e-16); lockstep data identical to
+  the processor run to rounding (they are integrated on the host); cost of the field
+  below 25 percent and of the sources below 25 percent of a Z4c step at 128^3.
