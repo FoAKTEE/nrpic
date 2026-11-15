@@ -9,7 +9,7 @@ athenak/build*/
 problems/**/out/
 problems/**/*.rst
 problems/**/slurm-*.out
-runs/
+/runs/
 *.o
 *.pyc
 __pycache__/
@@ -37,3 +37,5 @@ kb-data/
 scratch/
 cache/
 locks/
+# per-worktree Python environments and builds
+.venv/

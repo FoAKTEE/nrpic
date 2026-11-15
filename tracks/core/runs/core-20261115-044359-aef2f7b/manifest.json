@@ -1,0 +1,72 @@
+{
+ "run_id": "core-20261115-044359-aef2f7b",
+ "owner": "core",
+ "package": "id",
+ "tag": "t3cpu-bound-gs0-n064",
+ "purpose": "evolution of the expanding ball against the exact solution: bound-gs0-n064 (cells 64, half-width 16, gauge gs0, start shift zero, q = 1, ball --Rb 5 --e0 0.16 --RE 10, extra particles/source_density=true particles/source_extrap=true)",
+ "kind": "scouting",
+ "command": [
+  "/data/haiyangw/nrpic/wt/core-id/.work/build_cpu/src/athena",
+  "-i",
+  "/data/haiyangw/nrpic/wt/core-id/problems/ball/ball.athinput",
+  "-d",
+  "/data/haiyangw/nrpic/scratch/core/core-20261115-044359-aef2f7b",
+  "mesh/nx1=64",
+  "mesh/nx2=64",
+  "mesh/nx3=64",
+  "mesh/x1min=-16.0",
+  "mesh/x1max=16.0",
+  "mesh/x2min=-16.0",
+  "mesh/x2max=16.0",
+  "mesh/x3min=-16.0",
+  "mesh/x3max=16.0",
+  "meshblock/nx1=32",
+  "meshblock/nx2=32",
+  "meshblock/nx3=32",
+  "time/tlim=12.0",
+  "particles/traj_dcycle=2",
+  "particles/traj_ntrack=2078",
+  "particles/particle_file=/data/haiyangw/nrpic/scratch/core/id/ic_ball/t2_bound_h0p5.nrp",
+  "problem/comp0_file=/data/haiyangw/nrpic/scratch/core/id/ic_ball/t2_bound_h0p5.tab",
+  "problem/shift=zero",
+  "z4c/lapse_oplog=0.0",
+  "z4c/lapse_harmonic=0.0",
+  "z4c/lapse_advect=0.0",
+  "z4c/shift_Gamma=0.0",
+  "z4c/shift_eta=0.0",
+  "z4c/shift_advect=0.0",
+  "particles/source_density=true",
+  "particles/source_extrap=true"
+ ],
+ "cwd": "/data/haiyangw/nrpic/scratch/core/core-20261115-044359-aef2f7b",
+ "commit": "aef2f7be2474ab6875a6385ac9227f2e31e556f2",
+ "worktree_dirty": true,
+ "inputs": [
+  {
+   "path": "/data/haiyangw/nrpic/wt/core-id/problems/ball/ball.athinput",
+   "sha256": "70a2cfe3b2f3e7de633ff750d0f312a99b0276c1d143f2f9ee3130fcf26630bf"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/wt/core-id/.work/build_cpu/src/athena",
+   "sha256": "7d1292d0e73ac41a53dbd9225dbaeaa6c8861220d83762de8d37dea618f01515"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/scratch/core/id/ic_ball/t2_bound_h0p5.nrp",
+   "sha256": "4fb8218acb69274cf10f30342bc6142bcdf6ce1c73022095db66d086fec58e63"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/scratch/core/id/ic_ball/t2_bound_h0p5.tab",
+   "sha256": "31a0f780183d816338982c2a39457e1075f08f65f71e863ec43fa427590c0bbf"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/scratch/core/id/ic_ball/t2_bound_h0p5.json",
+   "sha256": "134fab5ed7eb53eed944bdbab3df59df8f4b9f572a3357c2704862e685c85aeb"
+  }
+ ],
+ "output_directory": "/data/haiyangw/nrpic/scratch/core/core-20261115-044359-aef2f7b",
+ "wall_time_s": 1796.5,
+ "cores": 1,
+ "card_hours": 0.0,
+ "exit_status": 0,
+ "started": "20261115-044359"
+}

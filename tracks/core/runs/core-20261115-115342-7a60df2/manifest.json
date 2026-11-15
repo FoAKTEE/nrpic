@@ -1,0 +1,32 @@
+{
+ "run_id": "core-20261115-115342-7a60df2",
+ "label": "b_ref_v0.2844",
+ "owner": "core",
+ "purpose": "Test 1b reference: stock generator z4c_boosted_puncture, rest mass 1.0112, velocity 0.2844, same mesh, to t = 40",
+ "kind": "scouting",
+ "command": "srun -p preempt --gres=gpu:1 -c 1 -t 00:40:00 -J b_ref_v0.284 /bin/bash -c date +%s.%N > .t_start; \"$@\"; rc=$?; date +%s.%N > .t_end; exit $rc athena /data/haiyangw/nrpic/wt/core-mp/.work/build_gpu/src/athena -i boosted_ref.athinput -d /data/haiyangw/nrpic/scratch/core/core-20261115-115342-7a60df2",
+ "cwd": "/data/haiyangw/nrpic/scratch/core/core-20261115-115342-7a60df2",
+ "commit": "7a60df2",
+ "source_dirty": false,
+ "inputs": [
+  {
+   "path": "problems/puncture/boosted_ref.athinput",
+   "sha256": "05c6a7994ad79e7a7bfb7318e7a46aae1b890a71810ebf92b06562c0513b1b89"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/wt/core-mp/.work/build_gpu/src/athena",
+   "sha256": "ba08b4da17b627a4bf1103c6014fb10203a821c130dcd195017cecf7559f0040",
+   "role": "executable"
+  }
+ ],
+ "output_directory": "/data/haiyangw/nrpic/scratch/core/core-20261115-115342-7a60df2",
+ "resources": "1 card (A100), 1 core",
+ "started_utc": "2026-11-15T11:53:42Z",
+ "status": "stopped",
+ "exit_code": 143,
+ "wall_time_s": 486.9,
+ "queue_wait_s": 0.0,
+ "card_hours": 0.1194,
+ "core_hours": 0.1352,
+ "note": "stopped by scancel at cycle 1340 (t = 10.47) to free the card; the data up to there are used as the resolution check of the reference. Card time from the log: 387 s at cycle 1200, about 430 s in all; the wall time recorded above includes 34 s in the queue."
+}

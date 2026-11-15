@@ -1,0 +1,39 @@
+{
+ "run_id": "core-20261115-144000-cea4c86",
+ "owner": "core",
+ "purpose": "Scalar field test 1 on one A100: Klein-Gordon plane wave (orders, dissipation, potentials)",
+ "kind": "production",
+ "command": [
+  "python3",
+  "/data/haiyangw/nrpic/wt/core-scalar/tracks/core/analysis/scalar/test1_wave.py",
+  "--exe",
+  "/data/haiyangw/nrpic/wt/core-scalar/.work/exe/athena_gpu_61cb001",
+  "--workers",
+  "2"
+ ],
+ "cwd": "/data/haiyangw/nrpic/scratch/core/core-20261115-144000-cea4c86",
+ "commit": "cea4c8691e68a048dfa239252de8e84b83607efd",
+ "branch": "core/scalar-field",
+ "uncommitted_changes": [],
+ "inputs": [
+  {
+   "path": ".work/exe/athena_gpu_61cb001",
+   "sha256": "ec18791ea5173014c9d49593fb65d5089c515e42135bbaa6f7a239c6b056017c"
+  },
+  {
+   "path": "tracks/core/analysis/scalar/test1_wave.py",
+   "sha256": "35ffca644c15bd9b24b3dab54f88bdeb7d37419315ee48aad3093406d2822855"
+  },
+  {
+   "path": "problems/scalar/kg_wave.athinput",
+   "sha256": "b46ede8f59adea5b651c97b5e238884483b004e894d2d642c784276f07eee5b2"
+  }
+ ],
+ "output_directory": "/data/haiyangw/nrpic/scratch/core/core-20261115-144000-cea4c86",
+ "host": "anta",
+ "start_utc": "2026-11-15T14:40:00Z",
+ "cores": 1,
+ "wall_time_s": 81.25,
+ "exit_status": 0,
+ "card_hours": 0.0226
+}

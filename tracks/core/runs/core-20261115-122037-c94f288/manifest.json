@@ -1,0 +1,31 @@
+{
+ "run_id": "core-20261115-122037-c94f288",
+ "label": "s_ps_approx_n64",
+ "owner": "core",
+ "purpose": "Test 1a (vi): momentum and spin not parallel, closed-form correction with cross term",
+ "kind": "scouting",
+ "command": "/data/haiyangw/nrpic/wt/core-mp/.work/build_cpu/src/athena -i by_static.athinput -d /data/haiyangw/nrpic/scratch/core/core-20261115-122037-c94f288 mesh/nx1=64 mesh/nx2=64 mesh/nx3=64 problem/comp0_p1=0.3 problem/comp0_s2=0.2 problem/comp0_s3=0.4 problem/comp0_corr=approx",
+ "cwd": "/data/haiyangw/nrpic/scratch/core/core-20261115-122037-c94f288",
+ "commit": "c94f288",
+ "source_dirty": false,
+ "inputs": [
+  {
+   "path": "problems/puncture/by_static.athinput",
+   "sha256": "72fbbf75a3b53f34a565c1a5b30353f326e7584928a31dd80cd4dca7295833fe"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/wt/core-mp/.work/build_cpu/src/athena",
+   "sha256": "7af716a87f3623825126f62ec149dcebdbd833b6bb4de4b52ba6564f5bc5a0a0",
+   "role": "executable"
+  }
+ ],
+ "output_directory": "/data/haiyangw/nrpic/scratch/core/core-20261115-122037-c94f288",
+ "resources": "1 core",
+ "started_utc": "2026-11-15T12:20:37Z",
+ "status": "done",
+ "exit_code": 0,
+ "wall_time_s": 2.7,
+ "queue_wait_s": 0.0,
+ "card_hours": 0.0,
+ "core_hours": 0.0008
+}

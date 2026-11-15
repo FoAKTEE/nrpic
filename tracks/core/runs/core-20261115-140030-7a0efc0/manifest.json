@@ -1,0 +1,34 @@
+{
+ "run_id": "core-20261115-140030-7a0efc0",
+ "owner": "core",
+ "purpose": "Unequal rest masses (nanbu): two classes 1:4, 2e5 particles, 25 collision times, four seeds; refusal with coll_weights = equal; processor",
+ "kind": "production",
+ "command": [
+  "python3",
+  "/data/haiyangw/nrpic/wt/core-coll/tracks/core/analysis/collisions/run_unequal.py",
+  "/data/haiyangw/nrpic/scratch/core/core-20261115-140030-7a0efc0",
+  "--nproc",
+  "5"
+ ],
+ "cwd": "/data/haiyangw/nrpic/scratch/core/core-20261115-140030-7a0efc0",
+ "commit": "7a0efc049fe6886d00509dfa07534654352e7e1c",
+ "branch": "core/collisions",
+ "uncommitted_changes": [],
+ "inputs": [
+  {
+   "path": ".work/build_cpu/src/athena",
+   "sha256": "5c78d0a795d66086b030c3dbbbc5408982a238870b1a1d402afe04ea1e153ae2"
+  },
+  {
+   "path": "problems/tests/coll_box.athinput",
+   "sha256": "a06c76bba0baa646a929f0eb020d342bd2ce5210031b51dc44f48d320080cc4a"
+  }
+ ],
+ "output_directory": "/data/haiyangw/nrpic/scratch/core/core-20261115-140030-7a0efc0",
+ "host": "anta",
+ "start_utc": "2026-11-15T14:00:30Z",
+ "cores": 5,
+ "wall_time_s": 73.27,
+ "exit_status": 0,
+ "core_hours": 0.1018
+}

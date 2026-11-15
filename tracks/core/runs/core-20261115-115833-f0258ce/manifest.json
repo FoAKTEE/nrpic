@@ -1,0 +1,51 @@
+{
+ "run_id": "core-20261115-115833-f0258ce",
+ "owner": "core",
+ "purpose": "Demonstration D2 on processors: test kick with the metric on a uniform mesh (128^3 cells), 10000 particles to t = 40; two MeshBlock layouts with and without kick; restart with particles removed at the lapse threshold",
+ "kind": "production",
+ "command": [
+  "python3",
+  "/data/haiyangw/nrpic/wt/core-rng/tracks/core/analysis/rng/run_kick_demo.py",
+  "--exe",
+  "/data/haiyangw/nrpic/wt/core-rng/.work/build_cpu/src/athena",
+  "--case",
+  "mesh",
+  "--np",
+  "10000",
+  "--tlim",
+  "40"
+ ],
+ "cwd": "/data/haiyangw/nrpic/scratch/core/core-20261115-115833-f0258ce",
+ "commit": "f0258ce872fa1b3ed94dc5d85f75bbbad50d06bb",
+ "branch": "core/rng",
+ "uncommitted_changes": [
+  "M tracks/core/JOURNAL-rng.md",
+  "?? athenak/src/utils/rng_mesh.hpp",
+  "?? tracks/core/analysis/rng/run_agreement.py"
+ ],
+ "inputs": [
+  {
+   "path": "problems/tests/rng_kick_mesh.athinput",
+   "sha256": "aaf8db76cf1f674310f7c929b33d853fc6040d5a8cebe5f5f61323f96fd9e1d0"
+  },
+  {
+   "path": "tracks/core/analysis/rng/run_kick_demo.py",
+   "sha256": "b7f7286f554c23e9483dcd7583281a21332c1b797d87f0a735801aa3577c903e"
+  },
+  {
+   "path": "problems/cluster_test/make_cluster.py",
+   "sha256": "ce491d3d109cb9749352ee6b01e4593b22636dc9e1763f50ddfcdeb54485cf98"
+  },
+  {
+   "path": ".work/build_cpu/src/athena",
+   "sha256": "1aed285ee103078bdddd6c3f1538a039469eeba6afa9f11d59e04dfb5bbf7a18"
+  }
+ ],
+ "output_directory": "/data/haiyangw/nrpic/scratch/core/core-20261115-115833-f0258ce",
+ "host": "anta",
+ "start_utc": "2026-11-15T11:58:34Z",
+ "cores": 1,
+ "wall_time_s": 329.81,
+ "exit_status": 0,
+ "core_hours": 0.0916
+}

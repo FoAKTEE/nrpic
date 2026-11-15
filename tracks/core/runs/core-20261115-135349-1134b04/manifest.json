@@ -1,0 +1,38 @@
+{
+ "run_id": "core-20261115-135349-1134b04",
+ "owner": "core",
+ "purpose": "P10 collisions in a static homogeneous curved metric on the mesh (lapse 0.7, non-diagonal spatial metric): symmetric triad with midpoint pusher, Cholesky triad with Boris pusher, flat reference; 2e5 particles, 20 collision times; processor",
+ "kind": "production",
+ "command": [
+  "python3",
+  "/data/haiyangw/nrpic/wt/core-coll/tracks/core/analysis/collisions/run_curved_box.py",
+  "/data/haiyangw/nrpic/scratch/core/core-20261115-135349-1134b04",
+  "--nproc",
+  "3"
+ ],
+ "cwd": "/data/haiyangw/nrpic/scratch/core/core-20261115-135349-1134b04",
+ "commit": "1134b04915f3eb0d20bd2dd0235e82576ae9afb7",
+ "branch": "core/collisions",
+ "uncommitted_changes": [],
+ "inputs": [
+  {
+   "path": ".work/build_cpu/src/athena",
+   "sha256": "5c78d0a795d66086b030c3dbbbc5408982a238870b1a1d402afe04ea1e153ae2"
+  },
+  {
+   "path": "problems/tests/coll_box.athinput",
+   "sha256": "a06c76bba0baa646a929f0eb020d342bd2ce5210031b51dc44f48d320080cc4a"
+  },
+  {
+   "path": "problems/tests/coll_box_curved.athinput",
+   "sha256": "00ddc9bebc7b5291858bcfbcc3a052997a6ad1b9193ac1a4e6dc0a8909b73748"
+  }
+ ],
+ "output_directory": "/data/haiyangw/nrpic/scratch/core/core-20261115-135349-1134b04",
+ "host": "anta",
+ "start_utc": "2026-11-15T13:53:50Z",
+ "cores": 3,
+ "wall_time_s": 419.98,
+ "exit_status": 1,
+ "core_hours": 0.35
+}

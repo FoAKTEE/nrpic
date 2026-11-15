@@ -1,0 +1,37 @@
+{
+ "run_id": "core-20261115-121240-8f4222b",
+ "owner": "core",
+ "purpose": "Covariances between the four words of one generator call from 1.008e12 calls (14 seeds, standalone build): follow-up of two deviations beyond three standard errors in run core-20261115-120536-5bdb22c",
+ "kind": "production",
+ "command": [
+  "python3",
+  "/data/haiyangw/nrpic/wt/core-rng/tracks/core/analysis/rng/run_words_corr.py",
+  "--n",
+  "7.2e10"
+ ],
+ "cwd": "/data/haiyangw/nrpic/scratch/core/core-20261115-121240-8f4222b",
+ "commit": "8f4222bd839ebfa006f6547be7d207e238e74e96",
+ "branch": "core/rng",
+ "uncommitted_changes": [],
+ "inputs": [
+  {
+   "path": "tracks/core/analysis/rng/words_corr.cpp",
+   "sha256": "52dba0f6774a02d0f691d162ce009280eba201c83cd17b2c2d2dfe4987f8088a"
+  },
+  {
+   "path": "tracks/core/analysis/rng/run_words_corr.py",
+   "sha256": "d50b4e918985d2193653145674f90c5ae329a74f601ba33ce491ed80897a9796"
+  },
+  {
+   "path": "athenak/src/utils/rng.hpp",
+   "sha256": "6f3ef87dfd65ecec4ab9dadd3e28c9d693824c8081049beb75581c55d6656bdd"
+  }
+ ],
+ "output_directory": "/data/haiyangw/nrpic/scratch/core/core-20261115-121240-8f4222b",
+ "host": "anta",
+ "start_utc": "2026-11-15T12:12:40Z",
+ "cores": 14,
+ "wall_time_s": 1254.12,
+ "exit_status": 0,
+ "core_hours": 4.8771
+}

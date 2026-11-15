@@ -1,0 +1,51 @@
+{
+ "run_id": "core-20261115-120536-5bdb22c",
+ "owner": "core",
+ "purpose": "Statistical checks of the random numbers: Python twin with 2e7 keys per test, and the sums accumulated in the code on processors (2e8 keys) and on the card (1e10 and 1e11 keys)",
+ "kind": "production",
+ "command": [
+  "python3",
+  "/data/haiyangw/nrpic/wt/core-rng/tracks/core/analysis/rng/stat_tests.py",
+  "--n",
+  "20000000",
+  "--stat",
+  "processor=/data/haiyangw/nrpic/scratch/core/core-20261115-115134-f0258ce/rngtest.rng_stat.txt",
+  "--stat",
+  "card=/data/haiyangw/nrpic/scratch/core/core-20261115-115230-f0258ce/rngtest.rng_stat.txt",
+  "--stat",
+  "card, 1e11=/data/haiyangw/nrpic/scratch/core/core-20261115-115355-f0258ce/rngtest.rng_stat.txt"
+ ],
+ "cwd": "/data/haiyangw/nrpic/scratch/core/core-20261115-120536-5bdb22c",
+ "commit": "5bdb22c3c5e2ec9e375b4b3eaf417c23c04578dc",
+ "branch": "core/rng",
+ "uncommitted_changes": [],
+ "inputs": [
+  {
+   "path": "python/nrpic/rng.py",
+   "sha256": "888abf5b241f8bbe3fe2e344af3eaf2d349011ce42ebf3d0f48d03edd72052a2"
+  },
+  {
+   "path": "tracks/core/analysis/rng/stat_tests.py",
+   "sha256": "e7f906c1af85f0aad18df28f784cf0fbb042257edf92fe99a9d9885bcc2f45bf"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/scratch/core/core-20261115-115134-f0258ce/rngtest.rng_stat.txt",
+   "sha256": "e80c0e1a9386e14f4a9f4beaa2fcf4838f69cf6c2a46155030c4e4ae0cd89674"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/scratch/core/core-20261115-115230-f0258ce/rngtest.rng_stat.txt",
+   "sha256": "ea045041465ec2bc9b30960afe76981f84406ae5c1e8ef89066a3f3bece5cf74"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/scratch/core/core-20261115-115355-f0258ce/rngtest.rng_stat.txt",
+   "sha256": "bb379fdd1df8e43e72dfb0920c6dc10812a34eccff9b11c49ce7a1e35ab47c7f"
+  }
+ ],
+ "output_directory": "/data/haiyangw/nrpic/scratch/core/core-20261115-120536-5bdb22c",
+ "host": "anta",
+ "start_utc": "2026-11-15T12:05:36Z",
+ "cores": 1,
+ "wall_time_s": 208.22,
+ "exit_status": 0,
+ "core_hours": 0.0578
+}

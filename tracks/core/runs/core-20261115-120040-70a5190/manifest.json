@@ -1,0 +1,32 @@
+{
+ "run_id": "core-20261115-120040-70a5190",
+ "label": "b16_ref_v0.2844",
+ "owner": "core",
+ "purpose": "Test 1b (C): stock generator z4c_boosted_puncture, rest mass 1.0112, velocity 0.2844, same mesh as (A), to t = 40",
+ "kind": "scouting",
+ "command": "srun -p preempt --gres=gpu:1 -c 1 -t 00:35:00 -J b16_ref_v0.2 /bin/bash -c date +%s.%N > .t_start; \"$@\"; rc=$?; date +%s.%N > .t_end; exit $rc athena /data/haiyangw/nrpic/wt/core-mp/.work/build_gpu/src/athena -i boosted_ref.athinput -d /data/haiyangw/nrpic/scratch/core/core-20261115-120040-70a5190",
+ "cwd": "/data/haiyangw/nrpic/scratch/core/core-20261115-120040-70a5190",
+ "commit": "70a5190",
+ "source_dirty": false,
+ "inputs": [
+  {
+   "path": "problems/puncture/boosted_ref.athinput",
+   "sha256": "7b7f5bdc15b90b20edd0299ec0c0acfdeea36a5de35109ee342395a2cf164247"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/wt/core-mp/.work/build_gpu/src/athena",
+   "sha256": "ba08b4da17b627a4bf1103c6014fb10203a821c130dcd195017cecf7559f0040",
+   "role": "executable"
+  }
+ ],
+ "output_directory": "/data/haiyangw/nrpic/scratch/core/core-20261115-120040-70a5190",
+ "resources": "1 card (A100), 1 core",
+ "started_utc": "2026-11-15T12:00:40Z",
+ "status": "cancelled",
+ "exit_code": 1,
+ "wall_time_s": 576.2,
+ "queue_wait_s": 0.0,
+ "card_hours": 0.0,
+ "core_hours": 0.1601,
+ "note": "cancelled in the queue before it started (scancel): input superseded (oversized wave zone)"
+}

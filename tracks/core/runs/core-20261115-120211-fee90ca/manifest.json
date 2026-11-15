@@ -1,0 +1,40 @@
+{
+ "run_id": "core-20261115-120211-fee90ca",
+ "owner": "core",
+ "command": [
+  "/data/haiyangw/nrpic/wt/core-newton/.work/athena_cpu_9d84282",
+  "-r",
+  "newton.00001.rst"
+ ],
+ "cwd": "/data/haiyangw/nrpic/scratch/core/core-20261115-120211-fee90ca",
+ "commit": "fee90ca",
+ "source_modified_since_commit": true,
+ "inputs": [
+  {
+   "path": "/data/haiyangw/nrpic/scratch/core/core-20261115-120135-fee90ca/rst/newton.00001.rst",
+   "sha256": "c23e0fc9e521851fa10ff23c5bb0e7a81d4fe3a855a7eee95f5297d752b5d5fb"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/scratch/core/core-20261115-120135-fee90ca/rst/newton.00001.rst.prt",
+   "sha256": "4de980d753f5b549d4f06cbd7756d3cf68650f8ed83b0574edabb1531445290a"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/scratch/core/core-20261115-120135-fee90ca/rst/newton.00001.rst.prt.nwt",
+   "sha256": "ba9f9dd6b7204c51df7ca1cb01902b2a8289a87cfa21b557968cbb4f8fcaef46"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/wt/core-newton/.work/athena_cpu_9d84282",
+   "sha256": "71ff0dac2f3166871a92a20363fac51510191d912647c72a1f6e3df9c47f12f7",
+   "role": "executable"
+  }
+ ],
+ "output_directory": "/data/haiyangw/nrpic/scratch/core/core-20261115-120211-fee90ca",
+ "purpose": "T5 restart, plane wave N=32, continued from the dump at t=0.5 of core-20261115-120135-fee90ca",
+ "kind": "scouting",
+ "tag": "restart-wave-cont",
+ "wall_time_s": 18.09,
+ "exit_status": 0,
+ "cores": 1,
+ "card_hours": 0.0,
+ "started_utc": "2026-11-15T12:02:11Z"
+}

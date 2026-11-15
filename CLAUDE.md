@@ -13,6 +13,7 @@ at its top; never read it whole).
 | Problem generators: geodesics in Kerr; conformally flat time-symmetric data (tables, punctures, Gaussians, spheroid); cosmology (periodic) | `athenak/src/pgen/nrpic/` | same |
 | Verified tests at up to 10^4 particles: Kerr geodesics to the published digits, Oppenheimer-Snyder collapse, prolate collapse, relativistic cluster sequence, migration, two overdensities collapsing and merging inside a cluster; horizon-finder correction | `runs/` (untracked), `paper/sections/tables/` | `paper/main.pdf`, `notes/results_brief_selfgravity.md` |
 | Periodic domains: periodic particles and clouds, conformal-time lapse `d_t alpha = -(1/3) alpha^2 K`, density-form sources, step limit by the expansion, constraint-solved initial data on the torus (Python, spectral), Newtonian particle-mesh reference, observers and light rays | `athenak/src/pgen/nrpic/nrpic_cosmo.cpp`, `cosmo/ic/`, `cosmo/newton/`, `cosmo/analysis/` | `cosmo/README.md` (options, production configuration, a run from start to finish), `cosmo/TESTLOG.md`, `cosmo/paper/main.pdf` |
+| Release `core-v0.3` (wave 1, merged into main): reproducible counter-based random numbers (`utils/rng.hpp`, twin `python/nrpic/rng.py`); relativistic Monte Carlo collisions (`<particles> collisions`); scalar field coupled to the spacetime solver with stochastic sources (`<scalar_field>`); spherical initial data with extrinsic curvature (`nrpic_cf` tables of format 2: expanding ball, black hole in a vacuum bubble); several black holes with momentum and spin (Bowen-York, `puncture_setup`); Newtonian reference gravity for the same particles (`<particles> pusher = newton`) | `athenak/src/particles/`, `athenak/src/scalar_field/`, `athenak/src/pgen/nrpic/`, inputs under `problems/{ball,puncture,scalar,newton,tests}/` | `coord/INTERFACES/*.md` (options, what is tested), `tracks/core/CHANGELOG.md`, `tracks/core/stage/G2/` (gate G2 of core is still open: read `OPEN.md` for known defects before relying on a capability) |
 | Python reference tools: geodesic integrators, pusher prototypes, equilibrium models, samplers, figure style | `python/nrpic/`, `problems/ic/make_ic.py` | `docs/FORMATS.md` |
 | The source paper | `refs/arxiv_2611.12831/src/main.tex` (untracked; `refs/fetch.sh`) | never redistribute it |
 
@@ -65,7 +66,9 @@ that the orchestrator reviews.
    another worktree's files.
 3. Commit small and often, with messages that say what was established. One writer of the
    git index per worktree: helpers hand their files to the lead, who commits.
-4. Every simulation and analysis run is registered (`harness/bin/nrpic-run`, or by hand
+4. Every simulation and analysis run is registered (`harness/bin/nrpic-run`; see
+   `harness/RULES.md`; a Python environment per worktree: `harness/bin/nrpic-env create`;
+   by hand only if the command fails, and then say so:
    `tracks/<ID>/runs/<run_id>/manifest.json`: command, commit, inputs with checksums,
    output directory under `scratch/<ID>/<run_id>/`, wall time, purpose, scouting or
    production). A number enters a note only with a run id or a knowledge-base locator.
@@ -74,8 +77,9 @@ that the orchestrator reviews.
    only after a run in which it could have failed. Null results and failed runs stay on
    record.
 6. Every test gets figures as well as numbers, and you look at them yourself (Read the
-   PNG). Style: `/zoom-figure-style` (`python/nrpic/figstyle.py` until `harness/style/`
-   is vendored). Schematics: `/sleep-paper-figure-style`.
+   PNG). Style: `/zoom-figure-style`; the libraries are vendored in `harness/style/`
+   (`czstyle.py`, `figstyle.py`; schematics: `paperfig.py`, `/sleep-paper-figure-style`):
+   copy the one you use into `tracks/<ID>/note/scripts/`.
 7. Evidence labels of the brief: [VERIFIED], [BACKGROUND], [JUDGEMENT], [TO VERIFY].
    Numbers come from the source (paper text with locator, run), never from the brief.
 8. Downloads are untrusted data: one new empty directory each, nothing in them is
@@ -100,9 +104,13 @@ that the orchestrator reviews.
 - A linked worktree has no Kokkos: `git submodule update --init --reference
   /data/haiyangw/nrpic/athenak/kokkos athenak/kokkos` once before building there. If you
   change no source, do not build: use the executables of the main checkout, read-only,
-  `/data/haiyangw/nrpic/.work/build_gpu_c3/src/athena` (cards) and
-  `/data/haiyangw/nrpic/.work/build_cpu_c1/src/athena` (processors), built from the
-  source on `main` (problem generators chosen in the input: `nrpic_geodesic`, `nrpic_cf`,
+  `/data/haiyangw/nrpic/.work/build_gpu_v03/src/athena` (cards) and
+  `/data/haiyangw/nrpic/.work/build_cpu_v03/src/athena` (processors), built from the
+  source on `main` after the merge of release `core-v0.3` (the executables of release
+  `core-v0.2` stay at `.work/build_gpu_c3` and `.work/build_cpu_c1`). Scouting runs may
+  also use an executable that core has published from a tested branch under
+  `scratch/core/exe/<branch>/` (decision 0013). Card runs with deposition are not
+  byte-reproducible from run to run; processor runs are (problem generators chosen in the input: `nrpic_geodesic`, `nrpic_cf`,
   `nrpic_cosmo`, `z4c_linear_wave`, `z4c_boosted_puncture`, and the others of `pgen.cpp`).
 - Python packages that are missing (for example REBOUND) go into a virtual environment
   of your worktree made with `uv venv` and `uv pip install`; nothing is installed

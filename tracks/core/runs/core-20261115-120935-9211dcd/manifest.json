@@ -1,0 +1,31 @@
+{
+ "run_id": "core-20261115-120935-9211dcd",
+ "label": "psr_full",
+ "owner": "core",
+ "purpose": "Restart check of puncture_setup: eight cycles uninterrupted, with tracers",
+ "kind": "scouting",
+ "command": "/data/haiyangw/nrpic/wt/core-mp/.work/build_cpu/src/athena -i puncture_setup_restart.athinput -d /data/haiyangw/nrpic/scratch/core/core-20261115-120935-9211dcd",
+ "cwd": "/data/haiyangw/nrpic/scratch/core/core-20261115-120935-9211dcd",
+ "commit": "9211dcd",
+ "source_dirty": false,
+ "inputs": [
+  {
+   "path": "problems/tests/puncture_setup_restart.athinput",
+   "sha256": "97b1261d2c0780f49cf42fb12ec72690d3b36ba0bb3978377b85edbb263c3e88"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/wt/core-mp/.work/build_cpu/src/athena",
+   "sha256": "706185bfbbe808d36cfd72cbf79ba0fc1ed8430689cb4b8cedafecc7100c96ea",
+   "role": "executable"
+  }
+ ],
+ "output_directory": "/data/haiyangw/nrpic/scratch/core/core-20261115-120935-9211dcd",
+ "resources": "1 core",
+ "started_utc": "2026-11-15T12:09:37Z",
+ "status": "done",
+ "exit_code": 0,
+ "wall_time_s": 366.5,
+ "queue_wait_s": 0.0,
+ "card_hours": 0.0,
+ "core_hours": 0.1018
+}

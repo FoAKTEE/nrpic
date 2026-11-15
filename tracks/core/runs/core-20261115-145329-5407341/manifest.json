@@ -1,0 +1,50 @@
+{
+ "run_id": "core-20261115-145329-5407341",
+ "owner": "core",
+ "command": [
+  "/data/haiyangw/nrpic/wt/core/.work/build_cpu_base/src/athena",
+  "-i",
+  "east.athinput",
+  "mesh/nx1=16",
+  "mesh/nx2=16",
+  "mesh/nx3=16",
+  "meshblock/nx1=8",
+  "meshblock/nx2=8",
+  "meshblock/nx3=8",
+  "time/nlim=20",
+  "particles/snap_dt=0.2",
+  "particles/traj_ntrack=46"
+ ],
+ "cwd": "/data/haiyangw/nrpic/scratch/core/core-20261115-145329-5407341",
+ "commit": "5407341",
+ "source_modified_since_commit": false,
+ "inputs": [
+  {
+   "path": "problems/cosmo/east.athinput",
+   "sha256": "61890ec7060b7505b8679e8a58aef4c1668e55a9a6d3b2aaf90e88ec5efcdd81"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/scratch/core/regress/ic/east16/particles.nrp",
+   "sha256": "26461e6b099b1b73d99a74f055a62e1fe58cd42de344a696261f03ff09e360b9"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/scratch/core/regress/ic/east16/fields.bin",
+   "sha256": "9c4f2216b0dff12b2a03c590ce1b93a346fe2ba158eeb9517a29307b2c3023c1"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/wt/core/.work/build_cpu_base/src/athena",
+   "sha256": "b4529af75ffca0f411ea112e4b58f52fb0f4a84f24989fa02bc9bf282f0fc63f",
+   "role": "executable"
+  }
+ ],
+ "output_directory": "/data/haiyangw/nrpic/scratch/core/core-20261115-145329-5407341",
+ "purpose": "regression of the relativistic mode, case east, executable baseline",
+ "kind": "scouting",
+ "tag": "regress-east-baseline",
+ "state": "finished",
+ "wall_time_s": 7.28,
+ "exit_status": 0,
+ "cores": 1,
+ "card_hours": 0.0,
+ "started_utc": "2026-11-15T14:53:29Z"
+}

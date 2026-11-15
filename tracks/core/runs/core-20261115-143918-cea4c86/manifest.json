@@ -1,0 +1,39 @@
+{
+ "run_id": "core-20261115-143918-cea4c86",
+ "owner": "core",
+ "purpose": "Scalar field test 2 on one A100: homogeneous slow roll against Friedmann and Klein-Gordon",
+ "kind": "production",
+ "command": [
+  "python3",
+  "/data/haiyangw/nrpic/wt/core-scalar/tracks/core/analysis/scalar/test2_flrw.py",
+  "--exe",
+  "/data/haiyangw/nrpic/wt/core-scalar/.work/exe/athena_gpu_61cb001",
+  "--workers",
+  "2"
+ ],
+ "cwd": "/data/haiyangw/nrpic/scratch/core/core-20261115-143918-cea4c86",
+ "commit": "cea4c8691e68a048dfa239252de8e84b83607efd",
+ "branch": "core/scalar-field",
+ "uncommitted_changes": [],
+ "inputs": [
+  {
+   "path": ".work/exe/athena_gpu_61cb001",
+   "sha256": "ec18791ea5173014c9d49593fb65d5089c515e42135bbaa6f7a239c6b056017c"
+  },
+  {
+   "path": "tracks/core/analysis/scalar/test2_flrw.py",
+   "sha256": "e90bbe7aa6e0fe540c3c54a3415cda7bc8ef722c305fb5b8f250ba3790a26311"
+  },
+  {
+   "path": "problems/scalar/flrw_slowroll.athinput",
+   "sha256": "a08feab93a4080c046a94530702662005b8523074e60203dd1dc02a51853b58f"
+  }
+ ],
+ "output_directory": "/data/haiyangw/nrpic/scratch/core/core-20261115-143918-cea4c86",
+ "host": "anta",
+ "start_utc": "2026-11-15T14:39:18Z",
+ "cores": 1,
+ "wall_time_s": 17.52,
+ "exit_status": 0,
+ "card_hours": 0.0049
+}
