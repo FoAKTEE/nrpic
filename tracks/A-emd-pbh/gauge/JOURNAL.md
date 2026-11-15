@@ -189,3 +189,16 @@ than the top-hat with the same lapse-maximum epoch. Consequence: the toy orders 
 conditions in the expansion phase (lapse growth, exact pointwise relations) and the step
 cost; its freezing epochs are qualitative only and do not rank the background-subtracted
 conditions. That ranking needs runs of the code (requests in `GAUGE.md`).
+
+## 04:20: deliverables written; what is not done
+
+`GAUGE.md` and `DIAGNOSTICS.md` written from the reading and T1-T4; `README.md` lists
+contents, the rerun and the requests. Two corrections found while writing: the finder's
+mass column is the Christodoulou mass (`fastflow.cpp:821`), not the irreducible mass
+named in `paper/sections/method.tex:197` (equal at zero spin; use the area column); the
+run manifests cannot be committed because the ignore rule `runs/` also matches
+`tracks/<ID>/runs/` (left on disk, request to the orchestrator).
+Not done: no run of the code (G-R1 to G-R4 need cards, source from core, or A-pre-1's
+tables); the spin bias of the finder in an expanding background is derived, not
+measured; the exterior K of the expanding ball, -(3/2)(2M/r^3)^(1/2), is my derivation
+and awaits A-pre-1; the toy's freezing epochs are qualitative (T4 refuted).
