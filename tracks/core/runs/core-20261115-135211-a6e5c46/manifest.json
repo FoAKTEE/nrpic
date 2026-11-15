@@ -1,0 +1,40 @@
+{
+ "run_id": "core-20261115-135211-a6e5c46",
+ "owner": "core",
+ "purpose": "Random-number unit test on one A100, final source: table of draws, cost per call from 4e9 keys",
+ "kind": "production",
+ "command": [
+  "/data/haiyangw/nrpic/wt/core-rng/.work/exe/athena_gpu_34da199",
+  "-i",
+  "/data/haiyangw/nrpic/wt/core-rng/problems/tests/rng_test.athinput",
+  "problem/key_file=/data/haiyangw/nrpic/scratch/core/core-20261115-115134-f0258ce/keys.bin",
+  "problem/ntime=4e9",
+  "-d",
+  "."
+ ],
+ "cwd": "/data/haiyangw/nrpic/scratch/core/core-20261115-135211-a6e5c46",
+ "commit": "a6e5c4606c5cb3b902838987709c66f1c86f412a",
+ "branch": "core/rng",
+ "uncommitted_changes": [],
+ "inputs": [
+  {
+   "path": ".work/exe/athena_gpu_34da199",
+   "sha256": "6ea0777c4ef8a9c9cfbf1726b4502494fbcf55f7e92d1d7295c2aaf91428ec82"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/scratch/core/core-20261115-115134-f0258ce/keys.bin",
+   "sha256": "6ed04d7cdf79302c2938f4cbf591cb182abdf0045125d801320a15305279d1ae"
+  },
+  {
+   "path": "problems/tests/rng_test.athinput",
+   "sha256": "5687bba79b5039b2a15bc8445a033a20f93c5b93c1fa4b4e154ab706c28682b9"
+  }
+ ],
+ "output_directory": "/data/haiyangw/nrpic/scratch/core/core-20261115-135211-a6e5c46",
+ "host": "anta",
+ "start_utc": "2026-11-15T13:52:11Z",
+ "cores": 1,
+ "wall_time_s": 3.78,
+ "exit_status": 0,
+ "card_hours": 0.001
+}

@@ -1,0 +1,29 @@
+{
+ "run_id": "core-20261115-142155-e8f40ee",
+ "owner": "core",
+ "purpose": "Regression case c5 of run core-20261115-141416-3f7ca07: differing bytes of the restart files against the unset range of the restart header (analysis only)",
+ "kind": "production",
+ "command": [
+  "python3",
+  "/data/haiyangw/nrpic/wt/core-scalar/tracks/core/analysis/scalar/check_rst_diff.py",
+  "/data/haiyangw/nrpic/scratch/core/core-20261115-141416-3f7ca07",
+  "c5"
+ ],
+ "cwd": "/data/haiyangw/nrpic/scratch/core/core-20261115-142155-e8f40ee",
+ "commit": "e8f40eea56606452c1aa0b1f88e3d4d10d2dea88",
+ "branch": "core/scalar-field",
+ "uncommitted_changes": [],
+ "inputs": [
+  {
+   "path": "tracks/core/analysis/scalar/check_rst_diff.py",
+   "sha256": "83822b8541c2cec87db2e3d499359354bfab287b11285765c1c9e1aadae74d40"
+  }
+ ],
+ "output_directory": "/data/haiyangw/nrpic/scratch/core/core-20261115-142155-e8f40ee",
+ "host": "anta",
+ "start_utc": "2026-11-15T14:21:55Z",
+ "cores": 1,
+ "wall_time_s": 4.19,
+ "exit_status": 0,
+ "core_hours": 0.0012
+}

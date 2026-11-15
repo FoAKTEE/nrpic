@@ -687,3 +687,35 @@ Open, in order of use to Tracks A and D:
 4. an outer boundary condition for exteriors whose K_ij falls as r^(-3/2);
 5. second agent: nobody but this session has checked these results; Track A's own
    generator is the independent check of `expanding_ball.py`.
+
+## 2026-11-15T15:08Z, lead entry: the nine card runs after the session (partial outcomes)
+
+The nine runs left in the queue all finished with exit status 0 (manifests copied into
+`tracks/core/runs/` by the lead: core-20261115-042001/042007/042024/042025/042139/042140-
+abc5fe2, -045249-aef2f7b, -054801/055107-6fa6472; 0.41 card-hours together, not counted in
+the 0.58 of the package report). Analysis run core-20261115-145804-3629622
+(`test2_evolution.py --prefix t2`, then `--prefix t3`), read by the lead, not by the
+package author:
+- T2c (sources extrapolated, smooth edge, conformal-time lapse): largest |eps| of the
+  core shells at tau = 8 M 7.15e-4, 1.10e-4, 2.54e-5 at dx = 1, 1/2, 1/4 M (ratio 4.3 from
+  1/2 to 1/4: second order), against 7.63e-4, 3.16e-4, 1.46e-4 without extrapolation.
+  The core-error part of T2c HOLDS; the H offset at the centre was not read.
+- T2d (production deposit: cubic cloud, compensation, spline metric): core |eps| at
+  tau = 8 M 1.30e-5 (dx = 1/2 M) and 2.65e-6 (1/4 M), 24 and 55 times below ct-edge2 at
+  equal dx; all groups below 3e-5. Mesh mean of |H| at t = 10 M is unchanged
+  (2.35e-4, 2.32e-4 against 2.40e-4, 2.38e-4): it is dominated by something the deposit
+  does not change (the outer boundary layer is a candidate, entry 6). The interior rms of
+  H that T2d names was not read: T2d is OPEN; the particle errors point to lattice and
+  deposit noise as the main error of ct-edge2 [JUDGEMENT until the interior H is read].
+  Figures `figs/t2_radius_ct_edge2_prod.png`, `figs/t2_radius_gs0_edge2_ext.png` looked at.
+- T2e (lapse 1, shift 0): gs0-edge2-ext reaches t = 10 M, central lapse 1.000, proper
+  time 10.000; core |eps| at tau = 8 M 1.66e-4 and 4.10e-5 (second order), mid 1.98e-4 at
+  dx = 1/2 M (criterion (iii) "below 2e-4 over the whole run": at the edge, whole run not
+  read). The sharp surface (gs0-ext-n128) has outer and surface errors 1.44e-2 and
+  1.92e-2 at tau = 8 M, ten times those of ct-n128 (1.21e-3, 3.90e-3): T2e REFUTED for
+  the sharp surface.
+- T3: the analysis crashed on t3-bound-gs0-n160 (all particles removed after the
+  instability; `region_constraints` takes the maximum of an empty array) and skipped
+  t3-bound-ct-n320 ("tracked particles were removed during the run"; cause not looked
+  at). T3 stays OPEN; the script needs to skip runs without particles.
+`test2_numbers.json` (2.1 MB) is committed as `test2_numbers.json.gz` only.

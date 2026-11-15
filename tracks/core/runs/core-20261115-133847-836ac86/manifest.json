@@ -1,0 +1,45 @@
+{
+ "run_id": "core-20261115-133847-836ac86",
+ "owner": "core",
+ "purpose": "Scalar field test 2: homogeneous slow roll in a quadratic potential with the evolved metric against the Friedmann and Klein-Gordon equations, conformal-time lapse and geodesic slicing, three Courant factors",
+ "kind": "production",
+ "command": [
+  "python3",
+  "/data/haiyangw/nrpic/wt/core-scalar/tracks/core/analysis/scalar/test2_flrw.py",
+  "--exe",
+  "/data/haiyangw/nrpic/wt/core-scalar/.work/exe/athena_cpu_836ac86",
+  "--workers",
+  "4"
+ ],
+ "cwd": "/data/haiyangw/nrpic/scratch/core/core-20261115-133847-836ac86",
+ "commit": "836ac869c9fa7d20ac77e616b4ae8b95500f7ecc",
+ "branch": "core/scalar-field",
+ "uncommitted_changes": [
+  "?? problems/scalar/kg_wave_smr.athinput"
+ ],
+ "inputs": [
+  {
+   "path": ".work/exe/athena_cpu_836ac86",
+   "sha256": "65ff216207233e873c3c945b58b54340af5a5a8419aad001882f318626a00144"
+  },
+  {
+   "path": "problems/scalar/flrw_slowroll.athinput",
+   "sha256": "a08feab93a4080c046a94530702662005b8523074e60203dd1dc02a51853b58f"
+  },
+  {
+   "path": "tracks/core/analysis/scalar/test2_flrw.py",
+   "sha256": "4b0290f47dc1b39ed0731a521295f22019f31ac86d5e1339324b88fb6cff4117"
+  },
+  {
+   "path": "python/nrpic/scalar_field.py",
+   "sha256": "44003fc8f64412513ac34b4e908b4e7f43d79d23694c4378a02267afcc5ffb8e"
+  }
+ ],
+ "output_directory": "/data/haiyangw/nrpic/scratch/core/core-20261115-133847-836ac86",
+ "host": "anta",
+ "start_utc": "2026-11-15T13:38:47Z",
+ "cores": 4,
+ "wall_time_s": 48.13,
+ "exit_status": 0,
+ "core_hours": 0.0535
+}
