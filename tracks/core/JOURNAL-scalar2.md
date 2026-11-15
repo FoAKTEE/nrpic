@@ -206,3 +206,67 @@ R(t) of the lockstep record of the same dump.
   kicks), or by a drift of the lowest modes after their entry (no freezing).
 - P8c With the negative control `noise_pi_sign = -1` the ratio departs from 1 by more
   than 10 percent for the modes that have entered.
+
+## 2026-11-15, entry 4: outcomes of T1, T4 (processor part), T5 (processors)
+
+Executable of all processor runs: `.work/exe/athena_cpu_a58e95b` (sha256 c69266ec...9439e),
+built from the source of commit a58e95b; the later commits change no source.
+
+**T1, run core-20261115-154907-eb68eaa** (20 runs of zero steps, 11.5 s of AthenaK;
+figure `fig_slice.png`, looked at: the slice coefficients fall with |n| as the window
+does, code minus twin sits at 1e-18 to 1e-21; the three constraint lines have slopes 2,
+1, 1; the odd part of H of the printed form lies on the prediction down to the rounding
+floor near 1e-16, where the corrected form sits at all |n|).
+- P1a HOLDS. Code against twin, largest deviation over the 1054 modes relative to the
+  rms coefficient: delta phi 3.6e-10, delta Pi 5.6e-13, chi - 1 4.2e-11, delta K 3.3e-10;
+  without the window 5.3e-11, 7.6e-14, 8.0e-11, 4.5e-11. Largest coefficient outside the
+  mode set 4.0e-10 of the rms. gt - delta, At and alpha - 1 are exactly 0.
+- P1b HOLDS. <|H|/[H]> = 2.625e-12, 6.553e-13, 1.630e-13 for s = 1, 1/2, 1/4 (factors
+  4.005, 4.021); <|M|/[M]> = 1.462e-5, 7.310e-6, 3.655e-6 (2.0000, 1.9999); <|M|>
+  5.038e-12, 1.259e-12, 3.149e-13 (4.0000, 3.9997). <[H]> = 12.0000013, <[M]> = 3.62e-7.
+  Without the window (all 1054 modes at full amplitude): <|H|/[H]> = 3.94e-10 and
+  9.84e-11 (factor 4.0000), <|M|/[M]> = 1.30e-4 and 6.48e-5 (2.0000).
+- P1c HOLDS. Odd part, corrected delta Pi and stencil k2: rms O(H) = 2.7e-14 against an
+  even part of 4.648e-11 and a largest linear term of 1.59e-6 (ratio 1.7e-8); rms O(M_i)
+  = 1.06e-15 against 3.2e-12 to 3.9e-12. The even part equals the field to 5.8e-4 (H)
+  and 3e-4 (M_i).
+- P1d HOLDS, with one correction of the wording. Printed delta Pi: rms O(H) = 1.759e-8
+  (387 times the even part), its coefficients equal -4 eps1 H^2 Psi_n alpha_n within
+  6.1e-7 of their rms; <|H|/[H]> = 1.2003e-9, 6.001e-10, 3.001e-10 (factors 2.0000). The
+  momentum constraint is unchanged at first order (odd part 1.06e-15 as before), but
+  its second-order part changes by 1.1 percent (rms M_x 3.858e-12 against 3.902e-12),
+  because delta Pi enters 8 pi delta Pi d_i delta phi; "unchanged" was too strong.
+- P1e HOLDS. Continuum k2 at N = 16: the three |n| = 1 coefficients of O(H) equal -4
+  (k2_stencil - k2) Psi_n alpha_n within 1.6e-5; relative size of the k2 error 6.39e-6;
+  rms O(H) = 1.02e-11 (stencil k2 at N = 16: 6.9e-15). At N = 32: 1.02e-7, rms O(H) =
+  1.6e-13 against 2.7e-14 with the stencil k2, coefficients within 0.26 percent of the
+  prediction.
+
+**T4 processor part, run core-20261115-155719-383321a** (20 steps; dumps at cycles 0,
+10, 20 with 22 fields each). HOLDS: 1, 8 and 64 MeshBlocks give bit-identical fields
+(66 comparisons each, largest difference 0); the run restarted at cycle 10 writes a
+dump at cycle 20 that is byte-identical to that of the uninterrupted run. The columns
+of `.sf.con.hst` differ between the layouts by at most 2.7e-14 relative (order of the
+sums), the two maxima not at all; the first e-fold entry is pure rounding (1e-13). No
+figure: the result is "all differences are zero".
+
+**T5 processors, runs core-20261115-155122-eb68eaa (U1 to U8, validation with Track E's
+files as committed at 6330493) and core-20261115-160103-3fde433 (the same outputs
+against a copy of the reference with the cancellation-free increment)**. Scaled base
+case of the lead (N = 32, nmax2 = 100, 120 cycles); U4 = U2 restarted at cycle 60;
+U5a/U5b N = 16 and 32 with nmax2 = 36.
+- Frozen tanh (U1, U2, U3, U4, U5a/b, U8): every test passes, failed 0. A1 5.3e-14; A11
+  1, 8, 64 MeshBlocks bit-identical; A12 restart bit-identical; A13 3.0e-15; A10
+  3.6e-15; A15 passes. Markov Heaviside (U7): every test passes, A1 2.4e-15.
+- Markov tanh (U6) with the reference as written: A1 FAILS at 9.77e-11 (bound 1e-11), as
+  predicted; every other test passes.
+- With `window_increment` in the reference (dW = sinh(s hubble dt)/(2 cosh x1 cosh x0)):
+  A1 = 3.3e-15 for Markov tanh, 3.7e-15 for frozen tanh, 2.4e-15 for Markov Heaviside;
+  failed 0 in all three. HOLDS: the code needed no change; the remaining 1e-10 was the
+  cancellation in the reference. The change of the reference is Track E's to make
+  (13 lines; diff in `scratch/core/tmp/scalar2/Etree_patched/.../noise_ref.py`, quoted
+  in the interface proposal).
+- Figures looked at: `val_markov_tanh/fig_val_markov_tanh.png` of the second run (shell
+  spectrum scattered about 1 inside the band but for one three-mode shell at 0.38, which
+  the exact Gamma test accepts; correlation function on the expectation; |xi/G|^2
+  exponential).
