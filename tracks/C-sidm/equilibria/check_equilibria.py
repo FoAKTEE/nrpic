@@ -149,9 +149,10 @@ def check_turning_point(ymax_king):
     y_M = minimize_scalar(lambda v: -ev.integrate(fam, v)["M"], bounds=(ys[i - 1], ys[i + 1]),
                           method="bounded", options=dict(xatol=1e-9)).x
     record("king_mass_radius", "y0 of first M maximum", round(float(y_M), 5),
-           ok=ymax_king < y_M, y_max_binding=ymax_king,
-           claim="2009.08163 lines 1160-1167: the binding-energy maximum lies before the "
-                 "first turning point of the mass-radius curve")
+           ok=y_M < ymax_king, y_max_binding=ymax_king,
+           claim="2009.08163 lines 1160-1167: the y_max point lies 'to the left of the first "
+                 "turning point' of the mass-radius spiral; states stay stable past the turning "
+                 "point, i.e. the first M maximum comes before the E_b maximum along y0")
     FIG["king_MR_y"] = ys
     FIG["king_MR_M"] = M
     FIG["king_MR_R"] = R
@@ -192,7 +193,7 @@ def energy_cdf(md, nx=1500, nr=6000):
     for i, xv in enumerate(xs):
         eps = xv * ey
         g = np.clip(eps * eps - em2, 0.0, None) ** (fam.l + 0.5)
-        pdf[i] = np.trapz(wr * ey * eps * g, rp) * float(fam.phi(xv))
+        pdf[i] = np.trapezoid(wr * ey * eps * g, rp) * float(fam.phi(xv))
     cdf = np.concatenate([[0.0], np.cumsum(0.5 * (pdf[1:] + pdf[:-1]) * np.diff(xs))])
     return xs, pdf / cdf[-1], cdf / cdf[-1]
 

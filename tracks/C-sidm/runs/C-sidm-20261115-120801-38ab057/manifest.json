@@ -63,5 +63,14 @@
   "OPENBLAS_NUM_THREADS": "4"
  },
  "started_utc": "2026-11-15T12:08:01+00:00",
- "status": "running"
+ "status": "failed",
+ "exit_code": 1,
+ "finished_utc": "2026-11-15T12:15:24+00:00",
+ "wall_time_s": 443.1,
+ "core_hours": 0.4924,
+ "outputs": {
+  "files": 3,
+  "sha256sums": "sha256sums.txt",
+  "sha256sums_sha256": "2245d74e4b26b65eb9b3164566153e8169566579e11caa39625c8a7a6c81e988"
+ }
 }

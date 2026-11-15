@@ -110,3 +110,29 @@ Prediction (thresholds of python/tests/test_initial_data.py where it has one):
    change of Table 1).
 
 Refuted if any of 1-7 fails; for 8, failures are recorded with their size.
+
+### Test 2, first outcome: run C-sidm-20261115-120801-38ab057 (checks of run C-sidm-20261115-120610-b4592be)
+
+- Paper values: all eight 2009.08163 entries within 1e-3 (seven within half a printed unit).
+  gr-qc/0601112: Case 1 10/10 rows, Case 2 9/10 (row Z_c = 0.39: 0.0406 vs 0.040, outside
+  the rounding range by 7e-5), Case 4 8/9 (row 0.69: 0.0262 vs 0.025, outside by 1.9e-4).
+  E_b maxima at Z_c = 0.3963 (Case 1), 0.4056 (Case 2), 0.4088 (Case 4). Case 1 and 2
+  maxima lie between the table's last stable and first unstable A > 1 rows (0.39 / 0.43,
+  0.39 / 0.42). Case 4 does not: the table has A > 1 stable at Z_c = 0.41 and 0.44, unstable
+  at 0.52, while the E_b maximum is at 0.409. [JUDGEMENT] The E_b curve is flat there (0.0405
+  at 0.41, 0.0403 at 0.44) and the growth time of the unstable mode diverges at the threshold,
+  so a finite-time evolution can call a slightly unstable state stable; this does not
+  affect the equilibria, but a threshold measured by evolution should be bracketed with
+  growth-rate fits, not with stable/unstable labels.
+- Newtonian limit (prediction 6): rho_c/rho_mean = 11.4096, 23.4249, 54.2424 for k = 0.5, 1,
+  1.5 at y0 = 1e-3, within 1 percent of Lane-Emden n = 2, 2.5, 3 (independent ODE). Holds.
+- Prediction 7 FAILED as written: the first maximum of M along the King sequence (amplitude 1)
+  is at y0 = 0.0982, before the E_b maximum at 0.3340. Re-reading 2009.08163 lines 1160-1167:
+  the y_max point lies "to the left of the first turning point" and states "remain stable even
+  after the turning point principle would predict their instability", i.e. the paper claims
+  exactly the ordering computed here; my prediction had the inequality reversed (misreading,
+  not a defect of the models). The check is corrected and the run repeated.
+- All per-model checks (1-5) passed for the 13 models. The particle identity sum m W/psi - 1
+  is +1e-5 to +2.5e-4 for the 13 files (same seed for all, hence correlated). Over 12 seeds
+  of the King threshold model at N = 10^4 (debugging, not registered): stratified mean
+  -4.4e-5, standard deviation 1.7e-4; plain Monte Carlo standard deviation 4.1e-4. Statistical.
