@@ -315,3 +315,27 @@ from a = 1 to ~1000 (cosmo/TESTLOG.md, C5). All [JUDGEMENT]:
 Run B-emd-gw-20261115-120531-40a3597 FAILED at the first dump (ZeroDivisionError): the initial
 data of the cosmology runs are conformally flat, tilde gamma = delta exactly, so h and its non-TT
 part are zero at a = 1. Guarded (ratio recorded as null) and rerun.
+
+## Outcome of the cosmology scouting, runs B-emd-gw-20261115-120846-d1509b5 (diagnostics) and -121143-0eace55 (figure, ratios)
+
+Figure `figs/cosmo_tt.png`; numbers in `results_cosmo.json`, `cosmo_ratios.json` of the two runs.
+(1) PASSED: 14 dumps per run read (8 MeshBlocks... 128^3, L = 2.70 code units), a from 1.00 to 1000.99.
+(2) PASSED: rms h^TT / rms(non-TT) between 3e-3 (a = 12) and 5e-5; at a = 1 both are zero
+    (conformally flat initial data, see the failed first run).
+(3) PASSED: rho_GW/rho_bar from 1.3e-17 (a = 12) to 2.8e-12 (quadratic) / 1.3e-11 (cubic) at a = 1001.
+    Not predicted: the TT part is nearly frozen, rms h^TT = 1.2e-9 from a = 12 to a ~ 550 in both
+    runs, and its energy is almost all gradient energy (rho_kin/rho_grad ~ 3e-3 at a = 12, ~2e-2 at
+    a = 1001). So it is not freely propagating radiation; rho_kin + rho_grad and the Isaacson
+    2 rho_kin differ by orders of magnitude here. Interpretation [JUDGEMENT, not tested]: the
+    second-order tensor mode induced by the scalar potential (|Phi| <= 7e-5 at the start,
+    cosmo/TESTLOG.md C5, so Phi^2 ~ 1e-9), which is constant in a matter era. rho_K of
+    arXiv:2111.09163 (our rho_kin) is the quantity with a kinetic meaning.
+(4) PASSED with a twist: below the power cut-off (|k|L/2pi <= 6) the two deposits agree to 1 %
+    (a = 12) .. 9 % (a = 1001); in 10 <= |k|L/2pi <= 60 the quadratic cloud carries 56x (a = 12)
+    to 1100x (a = 72) more TT energy than the compensated cubic cloud until a ~ 550 — deposit
+    noise; after a ~ 650 (nonlinear stage) the cubic cloud has 1.5-3.9x more. The early
+    high-k TT content is particle/deposit noise (the brief's main risk for this track), and the
+    diagnostic separates it from the low-k part by its deposit dependence.
+(5) PASSED: at the last dump of the quadratic run rms B/rms E = 2.9e-3 and rms(Lambda E)/rms E =
+    9.7e-3: the Weyl field of the box is the Coulomb-type tidal part; Psi_4 along x (rms 4.9e-10)
+    is not a wave measure here.

@@ -1,0 +1,40 @@
+{
+ "run_id": "B-emd-gw-20261115-121143-0eace55",
+ "owner": "B-emd-gw",
+ "package": "gw_diag",
+ "command": "python3 scripts/cosmo_demo_plot.py /data/haiyangw/nrpic/scratch/B-emd-gw/B-emd-gw-20261115-120846-d1509b5/results_cosmo.json",
+ "cwd": "/data/haiyangw/nrpic/wt/B-emd-gw/tracks/B-emd-gw/gw_diag",
+ "commit": "0eace553e77d18963141bb0490fd5a8d155b257c",
+ "worktree_dirty_gw_diag": false,
+ "inputs": [
+  {
+   "path": "/data/haiyangw/nrpic/scratch/B-emd-gw/B-emd-gw-20261115-120846-d1509b5/results_cosmo.json",
+   "sha256": "2ed9897652f9d8193b595190c7fba8f31e0c25edc75ee373d1d458ca1efe5b6c"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/wt/B-emd-gw/tracks/B-emd-gw/gw_diag/scripts/cosmo_demo_plot.py",
+   "sha256": "210d2837795cf735625bcdd3b08c7049d2297f995fe6e131d578d2b6b9ab3dd5"
+  }
+ ],
+ "output_dir": "/data/haiyangw/nrpic/scratch/B-emd-gw/B-emd-gw-20261115-121143-0eace55",
+ "purpose": "scouting: figure and run-to-run TT spectrum ratios from results_cosmo.json of run B-emd-gw-20261115-120846-d1509b5",
+ "kind": "scouting",
+ "cores": 1,
+ "card_hours": 0.0,
+ "env": {
+  "OMP_NUM_THREADS": "1",
+  "OPENBLAS_NUM_THREADS": "1",
+  "MKL_NUM_THREADS": "1"
+ },
+ "started_utc": "2026-11-15T12:11:43+00:00",
+ "status": "completed",
+ "exit_code": 0,
+ "wall_time_s": 1.79,
+ "ended_utc": "2026-11-15T12:11:44+00:00",
+ "outputs_sha256": {
+  "cosmo_ratios.json": "e6d62079b14f30dd3fd0c281ea0d0b5f56aa90fd1888c6aef951d4f8c0f3332b",
+  "cosmo_tt.pdf": "eecece6dc8b3f2dfafad71c04efc08256546630f9dc505e20f14772b946dda42",
+  "cosmo_tt.png": "2d2fd2b7bf898e7093be5ad6e76ea11c00e489c179814b0246e5e0c7d5026d38",
+  "stdout.txt": "a60ae687141c9bab5c669709fb443cea86400c9c48c83bb0072eb85c745c85bd"
+ }
+}

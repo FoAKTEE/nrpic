@@ -15,6 +15,7 @@ code here. Status: deliverables exist and are tested (see "Validation"); open it
 | `tests/` | pytest unit tests (14; two of them need real files, see below) |
 | `scripts/validate_tt.py`, `validate_weyl.py`, `validate_athenak.py` | validation runs with figures and JSON |
 | `scripts/registered.py` | runs a command as a registered run (manifest in `../runs/<run_id>/`) |
+| `scripts/cosmo_demo.py`, `cosmo_demo_plot.py` | scouting: the diagnostics on restart dumps of full-GR cosmology runs |
 | `figs/` | PNG copies of the validation figures (PDFs in the run directories) |
 | `JOURNAL.md` | predictions and outcomes, including the failed ones |
 
@@ -128,6 +129,13 @@ Each validation takes 7-40 s on 4-8 cores. Outputs land in
 | d_tau h^TT from tilde A against time differences of the dumps | equals the truncation of the differences (2.55e-2 vs 2.57e-2; 7.8e-4 vs 7.9e-4) | same |
 | AthenaK weyl output vs gwdiag radial-triad Psi_4 | 3e-7..1.8e-6 at t_n - 7 dt; output lags by waveform_dt - dt | same |
 | readers: own vs periodic_z4c reader bit-identical; synthetic multi-block rst with trackers; real cosmology rst (8 blocks) and NRFIELD | pass | unit tests |
+
+Scouting on existing full-GR cosmology dumps (`runs/cosmo/dav_c256_n128_{t,pcs4bt}`, 128^3,
+a = 1..1000; runs B-emd-gw-20261115-120846-d1509b5 and -121143-0eace55, `figs/cosmo_tt.png`):
+a nearly frozen TT part (rms h^TT = 1.2e-9 from a = 12 to ~550, deposit-independent, almost all
+gradient energy; [JUDGEMENT] the second-order induced tensor mode) plus high-k TT power that
+depends on the deposit by up to 1100x before the nonlinear stage (deposit noise);
+rho_GW/rho_bar reaches 3e-12 .. 1e-11 at a = 1000; rms B/E = 3e-3, rms(Lambda E)/E = 1e-2.
 
 ## Not done / open
 
