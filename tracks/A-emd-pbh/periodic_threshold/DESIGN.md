@@ -153,6 +153,19 @@ needed for mu >= 0.5, i.e. for the hoop line (0.45 at e = 0.2) and above.
 
 ### 2.3 Needed (request 1 to core)
 
+Where it fits [VERIFIED by reading branch `core/id-solver`, worktree `wt/core-idsolve`,
+`tracks/core/interfaces/id_solver.md` sections 1-2 and the inner-iteration paragraph]:
+core's wave-2 solver solves the scalar constraint on the uniform periodic mesh with the
+code's own deposit, holding K and Abar of the generator's trial state fixed, by Newton
+steps with conjugate gradients preconditioned by the Poisson multigrid; it names the
+divergence of the plain fixed-point iteration for large sigma, which is what T4 hit at
+mu = 0.5 in `cosmo_id.solve`. Not in its wave: the vector (momentum) equation and refined
+meshes. So the phase-1 generator can be: the gradient-expansion trial state (psi_GE,
+K = -3H, Abar_GE) in a field file for `nrpic_cosmo`, particles carrying E and J of that
+state, and core's solver for psi. Held fixed, Abar_GE differs from the longitudinal
+solution by 1.3 per cent of its maximum at mu = 0.03 (T4), the size of the momentum
+constraint left without the vector equation.
+
 The phase-1 generator (already requested in wave 1,
 `outbox/20261115T1320Z__to-core__phase1-generator-and-gauge-options.md`), made precise by
 T1 [JUDGEMENT]:
