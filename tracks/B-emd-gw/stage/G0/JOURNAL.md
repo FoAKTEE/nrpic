@@ -167,3 +167,16 @@ in scratch/B-emd-gw/tmp/ to debug them; the registered runs follow.
   to scratch/B-emd-gw/v5_placeholder/ instead of its run directory, and without the
   AthenaK part. It stays on record; not used. The script now takes "-" for the run
   directory, and C7 is rerun.
+
+## 2026-11-15, entry 6: outcomes C7, C8; VERIFIER.md sections 1-3 written before reading REVIEW.md
+
+- C7, run `B-20261115-170546-4507b05` (figure read): all predictions hold (TT read-back
+  1e-10 A; Psi_4 = d_t^2 h_+ - i d_t^2 h_x to 8.7e-7 spectral, 9e-5 sixth order at 24
+  cells, independent of direction, polarization and a = 1 or 3; gauge nulls second order;
+  AthenaK x-wave: TT and Psi_4 agree to 1.8e-7 A). Track tests: 17 passed, 2 skipped
+  (run `B-20261115-165608-171ff45`).
+- C8, run `B-20261115-170518-c1b61a3` (figure read): local exponents 3.495 and 1.500 at
+  small alpha, drifting to 3.22 and 1.63 at alpha = 0.2; prediction (3.5 +- 0.1, 1.5 +- 0.05)
+  holds at small amplitude, the overall fit over alpha 0.002-0.22 is 3.43 and 1.52. Not
+  predicted: dividing by (1 + z_e) at t_col gives 2.43 for Omega today.
+- VERIFIER.md sections 1-3 committed before stage/G0/REVIEW.md is read.
