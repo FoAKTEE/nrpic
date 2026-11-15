@@ -173,3 +173,28 @@ N = 192: order 4 of the track's test reaches 3.8-3.9 at 128 -> 256 (DERIVATION.m
 3.92 H and 3.79 M for the smoothed top-hat without taper); my own order-2 check reaches
 1.9 or more in M. Refuted if the order-4 momentum order stays below 3.6 at the finest pair.
 pytest of expball (run separately): all tests pass; refuted by any failure.
+
+### Run A-20261115-161253-e506d90 (pytest of expball, local, 4 cores; output in its run.log)
+
+Outcome: 32 passed in 19 s (run with -B and no cache provider, temporary files in
+scratch/A-emd-pbh/tmp/pytest_verifier, nothing written into the package). As predicted. No
+figure: a pass/fail suite; the constraint figures of the next run cover what it tests.
+
+### Run A-20261115-161239-1c41333 (second pass, local, 4 cores, 122 s)
+
+V1-V4, V6: same numbers as the first run (the code paths did not change). V4 adds my read-offs
+as data: ratios t_drop/t_c(r_m) = 1.01, 0.89, 0.82, 0.81, 0.76 for mu = 0.15, 0.10, 0.075,
+0.06, 0.05 (first drop of 0.05); the 0.045 dip at 0.75 t_c(r_m); the two-stage scaling puts a
+0.045 collapse at 252 t_H. fig_V4_timing.png looked at: the read-offs lie between 0.76 and 1.01
+of the top-hat curve of the r_m shell, the 0.86 line passes through the middle, and the 0.045
+cross sits below the 0.86 line, where the curve shows no collapse.
+
+V5 outcome: as predicted. Track's test on data set 2t to N = 256 (octant): order 2 H 1.94,
+1.98, 2.00; M 1.78, 1.93, 1.98; order 4 H 3.39, 3.75, 3.92; M 2.82, 3.43, 3.79 (all cells,
+L2). My own check to N = 192 (full box, r < 1.15 R_b): H orders 1.87, 1.78, 1.93, 1.96, 1.97,
+1.98; M 1.38, 1.55, 1.74, 1.85, 1.90, 1.93; H L2/6H^2 = 8.3e-4 and M 4.7e-3 at h = R_b/77.
+Broken variants: KL -> -KL flat at 1.09 / 1.89; static-metric KL flat at 0.0216 / 0.0399;
+K -> -K identical to the true data. fig_V5_constraints.png and fig_V5_track_test_rerun.png
+looked at (straight lines of slope 2 and 4 at the fine end; the broken variants flat).
+Order 4 of the track's test is reached only at N = 256 (3.92 H, 3.79 M), within 0.2 of 4 for
+H and 0.21 short for M; order 2 within 0.07 at the finest pair.
