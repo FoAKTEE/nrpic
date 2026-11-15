@@ -1,0 +1,72 @@
+{
+  "schema": "nrpic-run-manifest/1",
+  "run_id": "D-20261115-170803-d988f59",
+  "track": "D-bh-dress",
+  "gate": "G1",
+  "kind": "scouting",
+  "purpose": "nm_field: analysis of the field calibration runs F1, F2 (mesh kernel of the clump)",
+  "preregistered_in": null,
+  "launcher": "local (hand registration)",
+  "registered_by": "hand: tracks/D-bh-dress/secondary_infall/nm_register.py, because harness/bin/nrpic-run submit refused (an untracked file of another helper in the worktree root); see the package README, Requests",
+  "command": [
+    ".venv/bin/python",
+    "tracks/D-bh-dress/secondary_infall/nm_field.py",
+    "--run",
+    "nx=64:/data/haiyangw/nrpic/scratch/D-bh-dress/D-20261115-170112-d70352c",
+    "--run",
+    "nx=128:/data/haiyangw/nrpic/scratch/D-bh-dress/D-20261115-170122-7c4da35",
+    "--run",
+    "nx=128 with dust:/data/haiyangw/nrpic/scratch/D-bh-dress/D-20261115-170124-1b2ea1a"
+  ],
+  "cwd": ".",
+  "git": {
+    "sha": "d988f5966745402618743e7a39b499857d43f08c",
+    "branch": "track/D-bh-dress",
+    "dirty": false,
+    "package": [
+      "tracks/D-bh-dress/secondary_infall"
+    ]
+  },
+  "code": {
+    "core_tag": "core-v0.3",
+    "problem": "nrpic_newton"
+  },
+  "env": {
+    "host": "anta",
+    "python": "3.10.12",
+    "OMP_NUM_THREADS": "1"
+  },
+  "inputs": [
+    {
+      "path": ".venv/bin/python",
+      "sha256": "d6bca2b84e73c7775a0dd5e6a76899cfe4ee62863d7c8f88513811d1fda23f49",
+      "bytes": 5937704
+    },
+    {
+      "path": "tracks/D-bh-dress/secondary_infall/nm_field.py",
+      "sha256": "a6a6ede255681902c703b9a7a582bccde0af8ecb9b992b1c07927728aa156d0b",
+      "bytes": 9561
+    }
+  ],
+  "resources": {
+    "cores": 1,
+    "gpus": 0,
+    "card_hours": 0.0,
+    "walltime_s": null
+  },
+  "outputs": {
+    "dir": "scratch/D-bh-dress/D-20261115-170803-d988f59",
+    "sha256sums": "sha256sums.txt",
+    "bytes": null
+  },
+  "status": "running",
+  "exit_code": null,
+  "started": "2026-11-15T17:08:03Z",
+  "ended": null,
+  "parents": [
+    "D-20261115-170112-d70352c",
+    "D-20261115-170122-7c4da35",
+    "D-20261115-170124-1b2ea1a"
+  ],
+  "notes": ""
+}
