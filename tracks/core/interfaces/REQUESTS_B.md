@@ -14,8 +14,8 @@ review `tracks/B-emd-gw/stage/G0/REVIEW.md`. Order of work: what closes Track B'
 | 2 | gw-analysis-output, restart padding | ACCEPTED, done | the 36 bytes are the never-set coarse indices of `Mesh::mesh_indcs`; now zero |
 | 2 | gw-analysis-output, item 2 (Fourier modes in situ) | DEFERRED | after the track has measured the volume of the double-precision dumps |
 | 3 | weyl-output-timing | ACCEPTED, done | confirmed at the source; opt-in fix `<z4c> waveform_at_new_time = true`; the default keeps upstream's labels |
-| 4 | thin-periodic-boxes | ACCEPTED, in work | yes, down to 4 cells (see section 4); initial data for non-cubic boxes: `problems/cosmo/make_waves.py` |
-| 5 | lattice-jitter-option | ACCEPTED, in work | `make_waves.py --jitter A --jitter-axes y,z --seed N` (new tool; `cosmo/ic/` is outside core's ownership) |
+| 4 | thin-periodic-boxes | ACCEPTED, done | yes, down to 4 cells (see section 4); initial data for non-cubic boxes: `problems/cosmo/make_waves.py` |
+| 5 | lattice-jitter-option | ACCEPTED, done | `make_waves.py --jitter A --jitter-axes y,z --seed N` (new tool; `cosmo/ic/` is outside core's ownership) |
 | 6 | initial-data-tt-part | DEFERRED | not on the G1 path; design in section 6; subtract the decaying part in analysis meanwhile |
 | 7 | newtonian-mode-for-track-b, item 1 | DONE in core-v0.3 | `<particles> pusher = newton` is on main (609a875) |
 | 7 | newtonian-mode-for-track-b, items 2-3 | DEFERRED | item 2 yes (next core package); item 3 after the periodic pancake test |
@@ -25,24 +25,40 @@ review `tracks/B-emd-gw/stage/G0/REVIEW.md`. Order of work: what closes Track B'
 
 - The polarization tensor of the upstream file has the wrong sign of `axy` and `ayz`
   (docs/UPSTREAM_DEFECTS.md, item 1; independent derivation in the journal). The upstream
-  tensor is transverse for wave vectors with k2 = 0 and along the axes, and for no other.
-  Both signs are flipped: e+ = theta theta - phi phi for every k.
+  tensor is transverse for wave vectors with k2 = 0 and along the axes, and for no other
+  (so slightly more than "only along an axis"); for k = (1,1,1) the norm of e.khat is
+  0.943 and its largest component 0.770. Both signs are flipped: e+ = theta theta -
+  phi phi for every k.
 - New options, read only if present in `<problem>`: `amp_cross` (amplitude of
   ex = theta phi + phi theta) and `phase_cross` (radians). `amp_cross = amp`,
   `phase_cross = pi/2` is a circular wave of helicity +2 in gw_diag's convention,
-  `-pi/2` of helicity -2.
+  `-pi/2` of helicity -2. The plus and cross tensors are those of gw_diag's `pol_basis`
+  (by derivation for every direction off the x3 axis; measured for k = (1,1,1)).
 - `<basename>-errs.dat` now holds the L1 errors against the exact linear solution at the
   final time (before: against the initial data, right only after whole periods).
 - A general oblique direction (k1 h, k2 h, k3 h not all equal) is transverse in the
   continuum only: the discrete divergence of the data differs from zero by the truncation
   error of the first derivative, so the constraints of the initial data fall as h^6
-  instead of vanishing. Along (1,1,1) and along the axes they vanish to second order in
-  the amplitude at every resolution.
+  (measured for k = (1,2,0): factors 3377 and 3391 in the squared integrals from 16 to 32
+  cells) until they reach the second-order floor. Along (1,1,1) and along the axes they
+  are at that floor at every resolution.
+- Measured (T1, run core-20261115-154120-9c92f68; T1s core-20261115-160040-26eb826):
+  Track B's case lw3d_check_diag gives 1.3852e-9 and 1.5576e-9 with the upstream signs
+  (the track's numbers) and 4.59e-21 and 1.07e-21 corrected, scaling as A^4 (second
+  order: the wave's own energy; a circular wave of the same amplitudes has 1.40e-20,
+  above the track's 1e-20 because it carries twice the energy). Oblique evolution over
+  one period: amplitude and phase errors equal the Fourier-symbol prediction to 0.2 per
+  cent at 16 and 32 cells; gw_diag's h_x is below 1e-9 A and its Psi_4 agrees with the
+  analytic value to 9.2e-5 and 3.2e-6. Track B's `lw_x_prod` table and every number of
+  `validate_athenak.py` are reproduced with the new executable.
 - Example: `problems/tests/lw_oblique.athinput`. Test: `tracks/core/analysis/bfix/
-  t1_linear_wave.py` (it runs Track B's own cases `lw3d_check`, `lw_x_prod`,
-  `lw3d_dump_N32` and its `validate_athenak.py` on the new executable).
+  t1_linear_wave.py`.
 - For Track B: `periodic_z4c/analysis/refsol.tt_polarization` copies the upstream signs
-  on purpose; flip `xy` and `yz` there to obtain the reference of the corrected generator.
+  on purpose; flip `xy` and `yz` there to obtain the reference of the corrected generator
+  (python twin: `tracks/core/analysis/bfix/bfix_common.pol_tensors`). The 64^3 oblique
+  run on a card is in core's card test T4 (journal, P5a), queued at the time of writing.
+- Kept as upstream has it: the generator fills the Z4c variables only, so `adm` and `con`
+  outputs and the history row at t = 0 hold zeros; use `variable = z4c` at t = 0.
 
 ## 2. Output for the gravitational-wave analysis
 
@@ -52,54 +68,92 @@ review `tracks/B-emd-gw/stage/G0/REVIEW.md`. Order of work: what closes Track B'
   No ghost cells unless `ghost_zones = true`. Works for every variable or group:
   `z4c` (22 fields: chi, gt_ij, Khat, At_ij, Gamma^i, Theta, alpha, beta^i), `adm`
   (gamma_ij, K_ij, psi4, alpha, beta^i), `tmunu`, `con`, `weyl`. Without the parameter the
-  files are byte-identical to before.
+  files are byte-identical to before (regression: seven set-ups, journal P2b).
+- Measured (T2, run core-20261115-160138-26eb826): the 22 fields equal the active cells
+  of the restart file of the same time bit for bit; the default output is the same
+  numbers rounded to float32.
+- Sources (item 3): `variable = tmunu` with the option gives E, S_i, S_ij of the last
+  deposit: E itself, not multiplied by the volume element, also with
+  `source_density = true`; the `z4c`, `tmunu` and `con` outputs of one output time
+  belong to one time level (the constraint recomputed from the dumps equals `con_H` to
+  1e-9 of the source term; T3, run core-20261115-160633-7d80187). After shell crossing E
+  can be slightly negative next to a caustic unless `deposit_comp_limit` is set.
 - Reader: `python/nrpic/athena_bin.py` (`read_bin`, both precisions). Track B's
   `gwdiag.readers.read_bin` and `periodic_z4c/analysis/athena_dumps.read_bin` assume
   4 bytes; upstream's `athenak/vis/python/bin_convert.py` accepts both.
 - Times: a mesh output is written after the step in which the time passes
-  `last_time + dt`; the file holds the state of the time printed in its header (the
-  Z4c state, the ADM variables and, with depositing particles, the sources of that time
-  level). The time step is not shortened to hit the output time: with `dt_expansion`
-  the outputs fall on step boundaries after the requested times.
+  `last_time + dt`; the file holds the state of the time printed in its header. The time
+  step is not shortened to hit the output time: with `dt_expansion` the outputs fall on
+  step boundaries after the requested times (0.505, ..., 3.021 for dt = 0.5 in T3).
 - Volume: 22 x 8 bytes per cell (46 MB at 64^3, 369 MB at 128^3) for `z4c`; 17 x 8 for
-  `adm`.
+  `adm`; 10 x 8 for `tmunu`.
 - In-situ Fourier modes (item 2): deferred. Reason: a new reduction on the device for
   about 365 modes times 12 fields with its own file format and test, while the dumps
   already give the analysis everything; to be decided on Track B's measured volumes.
-- Restart files: identical runs now give identical restart files (section "padding" of
-  the journal); files written before the fix restart as before.
+- Restart files: identical runs now give identical restart files; they differ from the
+  old ones in the 36 padding bytes only, and old files restart as before (T2).
 
 ## 3. Weyl output timing
 
-Confirmed by the source (journal, "Source reading", item 2): the Weyl scalar is computed
-after the update, from the state of t + dt, in the step that starts at a waveform time,
-and both the mesh array and the rows of `waveforms/*.txt` are labelled with the time at
-the start of that step. So the extracted waveforms carry the one-step offset (the row
-labelled t is Psi_4 of t + dt), and a `weyl` mesh output written at t_n holds the scalar
-of t_(n-1) + dt when the two cadences are equal. `<z4c> waveform_at_new_time = true`
-chooses and labels by the time at the end of the step: the row labelled t is Psi_4 of t,
-and a `weyl` mesh output at a waveform time holds the scalar of its own time. Default
-false: existing waveform runs keep their bytes. Tracks A, D, F: turn it on for new runs,
-or shift the time axis of existing waveforms by +dt.
+Confirmed by the source (journal, "Source reading", item 2) and by measurement: the Weyl
+scalar is computed after the update, from the state of t + dt, in the step that starts at
+a waveform time, and both the mesh array and the rows of `waveforms/*.txt` are labelled
+with the time at the start of that step. So the extracted waveforms carry the one-step
+offset (the row labelled t is Psi_4 of t + dt), and a `weyl` mesh output written at t_n
+holds the scalar of t_(n-1) + dt when the two cadences are equal.
+`<z4c> waveform_at_new_time = true` chooses and labels by the time at the end of the
+step: the row labelled t is Psi_4 of t, and a `weyl` mesh output at a waveform time holds
+the scalar of its own time. Measured with Track B's own fit (`validate_athenak.py`):
+-7 steps by default, 0 steps with the option; the waveform series of the default leads
+by omega dt = 0.049087 rad (T1, T2). Default false: existing waveform runs keep their
+bytes. With the option there is no row at t = 0. Tracks A, D, F: turn it on for new
+runs, or shift the time axis of existing waveforms by +dt.
 
 ## 4. Thin periodic boxes
 
-See the journal entry P3 for the measured statement. Nothing in `nrpic_cosmo`, the
-deposit (clouds, filter, compensation), the gather or the Z4c exchange is tied to a
-cubic mesh; `mesh.cpp` asks for at least 4 cells per direction. Initial data: the
-generator reads an n1 x n2 x n3 field file; `cosmo/ic/` writes cubic ones only, so
-`problems/cosmo/make_waves.py` (solver `python/nrpic/torus_id.py`) builds the wave data
-of East et al. on any box with cubic cells.
+Yes. Measured (T3, run core-20261115-160633-7d80187): crossed waves (1, 0.5, 0),
+delta = 0.1, production configuration (cubic cloud with compensation, cubic-spline
+gather, `dt_expansion = 0.01`), eight particles per cell, from a = 1 through the first
+shell crossing to a = 13.9: boxes of 16 x 16 x 8 and 16 x 16 x 4 cells with one
+MeshBlock in z give the fields of the 16^3 cube to 3e-10 of their maxima at every dump
+(1e-12 at the end; the cube's own dependence on z is of the same size) and the particles
+to 7e-14 cells; a box thin in x agrees with the thin-z one after exchanging the axes to
+1e-12. Four cells is the minimum that `mesh.cpp` accepts. Cost is proportional to the
+number of layers. Not yet run on a card (card test T4 queued).
+
+Initial data: the generator reads an n1 x n2 x n3 field file; `cosmo/ic/` writes cubic
+ones only and is outside core's ownership, so `problems/cosmo/make_waves.py` (solver
+`python/nrpic/torus_id.py`) builds the wave data of East et al. on any box of cubic
+cells, `--n 256,256,16`; for a cube it reproduces `cosmo/ic/make_east.py` to rounding,
+and thin data equal the layers of the cube's. Put `box` of its `id.json` into
+`<mesh> x1max, x2max, x3max`, and the probe positions inside the box.
 
 ## 5. Lattice jitter
 
 `problems/cosmo/make_waves.py --jitter A --jitter-axes y,z --seed N`: every particle is
 displaced by a uniform random amount in (-A, A) cells along the named axes, before the
 constraint solve; the deviates come from the counter-based generator of the code
-(`python/nrpic/rng.py`) keyed by seed, lattice index and axis, so they do not depend on
-the order of the particles or on the box; recorded in `id.json`. `cosmo/ic/make_east.py`
-is left as it is (outside core's ownership); the orchestrator decides whether it gets the
-option too.
+(`python/nrpic/rng.py`, stream initial data, sub-stream 16) keyed by seed, lattice site
+and axis, so they do not depend on the order of the particles or on the box; recorded in
+`id.json`. `cosmo/ic/make_east.py` is left as it is (outside core's ownership); the
+orchestrator decides whether it gets the option too.
+
+What Track B should know before the null run (T3):
+- With the spectral constraint solve (the default, as in `cosmo/ic`) the jittered data
+  satisfy the constraints of the tool but not those of the code: the code evaluates them
+  with sixth-order differences, which differ from spectral derivatives by order one near
+  the mesh frequency, where a noisy lattice has power. For A = 0.3 cells the code's
+  Hamiltonian residual at t = 0 is 8.7e-2 rms (source term 7.2) against 2.9e-5 for the
+  plain lattice. `--fd-order 6` solves with the code's differences: 1.9e-6.
+- That gain does not survive ten steps: at t = 0.1 the residual is 6.9e-2 whichever
+  solve was used, and the two runs agree to two digits from t = 0.5. The constraint level
+  of a run with a noisy lattice is set by the evolution, about one per cent of the source
+  term at the start, falling with the expansion (cause not identified, journal). The
+  null run will therefore measure the TT content of an evolution with constraint
+  violations of that size; a smaller jitter lowers both in proportion [JUDGEMENT: not
+  run].
+- In a box four cells thick a quarter of all Fourier modes lie on the mesh frequency of
+  that direction; prefer 16 layers for the null run.
 
 ## 6. Initial data with a TT part (deferred)
 
@@ -128,4 +182,24 @@ On request core publishes an executable built with `PROBLEM=z4c/z4c_gauge_wave`.
 
 ## Lines of shared files touched (for the merge with the other core branch)
 
-Listed in `tracks/core/JOURNAL-bfix.md`, section "Files and lines".
+Line numbers of the new file; `git diff 4ebb05f core/requests-b -- athenak/` shows them.
+All of it went in with commit 9c92f68; the source has not changed since.
+
+| File | Lines | What |
+|---|---|---|
+| `athenak/src/pgen/tests/z4c_linear_wave.cpp` | 8-20, 118-155, 172-190, 209-210 | header note; tensor (two signs), cross tensor, time of the solution; kernel; comment of the error routine |
+| `athenak/src/outputs/outputs.hpp` | 151 | `OutputParameters::double_precision` |
+| `athenak/src/outputs/outputs.cpp` | 277-281 | reads `double_precision` for `file_type = bin` |
+| `athenak/src/outputs/binary.cpp` | 77-80, 100, 145, 222-236 | value size; header line; block size; double branch of the data loop |
+| `athenak/src/mesh/mesh.hpp` | 160 | declaration of `ZeroUnusedMeshIndcs` |
+| `athenak/src/mesh/mesh.cpp` | 356-375 | call at the end of the constructor; the function |
+| `athenak/src/mesh/build_tree.cpp` | 363 | call after the restart header is read |
+| `athenak/src/z4c/z4c.hpp` | 236-241 | `waveform_at_new_time`, `WeylStepTime()` |
+| `athenak/src/z4c/z4c.cpp` | 233-238 | reads the option |
+| `athenak/src/z4c/z4c_tasks.cpp` | 406-420; 429, 449, 465, 483, 501, 520, 539, 559, 577 | `WeylStepTime()`; one line in each of the nine Weyl and waveform tasks |
+| `athenak/src/z4c/z4c_wave_extr.cpp` | 201-203 | time label of the waveform rows |
+
+New files: `problems/tests/lw_oblique.athinput`, `problems/cosmo/make_waves.py`,
+`python/nrpic/athena_bin.py`, `python/nrpic/torus_id.py`, `docs/UPSTREAM_DEFECTS.md`;
+additions to `docs/FORMATS.md` (three sections before "Newtonian mode") and one row of
+`tracks/core/interfaces/rng.md` (sub-stream 16 of the initial-data stream).
