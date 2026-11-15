@@ -88,8 +88,9 @@ one time scale, t_turn, so at fixed beta/alpha, gamma/alpha
 
 with F = 0.0969 (A), 0.1185 (B), 0.0946 (C), tau_x = 2.544, 2.389, 2.502 for the shape of
 the 2605 benchmark (spread over alpha = 0.01-0.3 below 3e-13). This is the single-patch
-origin of the delta^(7/2) and sigma^(7/2) laws. A comoving softening length keeps the
-symmetry; what breaks it is relativity. With R(t_turn) ~ (t_turn/t_k)^(2/3) c t_k:
+origin of the delta^(7/2) and sigma^(7/2) laws. A comoving softening length at fixed
+particle number keeps the symmetry (comoving sizes at t = tau t_turn do not depend on
+alpha); what breaks it is relativity, and a window that starts at t_k [JUDGEMENT]. With R(t_turn) ~ (t_turn/t_k)^(2/3) c t_k:
 GM/(R c^2) ~ (t_k/t_turn)^(2/3) ~ alpha and (v/c)^2 ~ (R/c t_turn)^2 ~ alpha, so the
 relativistic correction to E_GW should start at relative order alpha [JUDGEMENT; the
 prediction that the code comparison tests].
@@ -113,7 +114,11 @@ term of its comoving equation, l. 290-296, plus the force of all patch particles
 0.1 percent; the embedded model A is 8 percent later. Since the patch carries the full
 mass of its Lagrangian sphere (l. 1000-1002), model B counts the background density inside
 the patch on top of the patch matter; in linear theory it would not reproduce the growing
-mode the initial data assume. Model B radiates 22 percent more than A up to the first
+mode of the density contrast (the patch would feel about 2 rho_b from the start). Model A
+reproduces the isotropic growing mode but, lacking an external tidal field, not the
+anisotropic part of the Zel'dovich deformation [JUDGEMENT; the role of the external tide:
+BACKGROUND, Bond & Myers 1996, not fetched]; neither model is the full cosmological
+problem, which the periodic runs of section 4 are. Model B radiates 22 percent more than A up to the first
 crossing. Not settled: the sigma = 0.01 snapshot times of the same shape (file names l.
 2654-2659, not described as events) scaled by t_turn fall between A and B. Consequence: a
 code run with a consistent background (section 4) should not be expected to reproduce the
