@@ -233,4 +233,5 @@ and the energy defect is sharp in this model at N = 10^5: about 100 per cell in 
 needs M/2 cells (coll_cell_factor = 2 on the M/4 mesh), where the defect is 6.5e-10 per
 collision, 7.6e-4 of sum M W over 300 M at Kn = 1 and about 8e-3 at Kn = 0.1 (at the
 initial rate). The x-axis labels of the first version of the figure overlapped; the script
-now labels the four sizes (cosmetic; numbers unchanged).
+now labels the four sizes; the rerun C-20261115-175709-e5d0e07 gives a byte-identical
+cells.json and the figure in `figs/`.
