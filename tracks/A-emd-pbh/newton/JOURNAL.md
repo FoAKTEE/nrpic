@@ -205,3 +205,72 @@ interface section 5.8) and `newton_mg_tol = 1e-6` (5.6 instead of 16.6 cycles, s
 section): seconds per cycle 0.1-0.4 at 64^3, 1-3 at 128^3 (2.7e5 and 2.1e6 particles),
 8-25 at 256^3. Refuted if any case is off by more than a factor 3; then the campaign plan
 (256^3 cases on processors) is revised before it is submitted.
+
+### P8 first reading (run A-20261115-152758-1579711, 30 cycles, while the two large cases still ran)
+
+64^3 with 3.4e4 particles: 11.3 s for 30 cycles including about 1 s of start-up (0.35 s per
+cycle); 128^3 with 2.7e5: 88.7 s (2.8 s per cycle); 128^3 with 2.1e6: about 18 s per cycle;
+256^3 with 2.7e5: about 27 s per cycle (the last two read from the records written while
+running; final numbers in entry 6). P8 holds for 64^3 and 128^3/2.7e5, fails for 128^3 with
+2.1e6 (18 s against 1-3 s: the particle work, about 7 microseconds per particle and cycle,
+was not in the estimate) and is at the edge for 256^3. Consequence: the top-hat series on
+processors is mesh {32, 64, 128}^3 x lattice spacing {0.1, 0.05, 0.025}; the 2.1e6-particle
+cases go to one card job (campaign `card`); no 256^3 run (about 0.5-1 card-hour each at an
+estimated 1-2 s per cycle and 2000 cycles, beyond this package's half card-hour).
+
+## 2026-11-15 (wave 2), entry 6: predictions for the top-hat, the first scan points and the card runs (before the runs)
+
+### P9: spherical top-hat against the cycloid (campaign `tophat`, processors; card `card`)
+
+Zel'dovich sphere lambda = 0.1 at a0 = 1 (a0 lambda = 0.1): R0 = 0.900, V0 = 0.800 at
+t0 = 2/3; cycloid through these data of the sampled ball (R_L = R_vol): turnaround
+t_ta = 4.875, R_max = 2.127, collapse t_c = 9.748 (values for hxi = 0.05; each run uses its
+own R_vol). Box [-3, 3]^3, multipole boundary, cloud-in-cell, no filter, cfl 0.2,
+newton_mg_tol 1e-6. Initial radius 4.8, 9.6, 19 cells at 32, 64, 128^3; at turnaround 11, 23,
+45 cells. Expected [JUDGEMENT from core's ball and collapse tests, interface sections 5.3-5.4]:
+(a) turnaround: |t_ta/t_ta,cyc - 1| < 3e-3 and |R_max/R_max,cyc - 1| < 2e-3 at 128^3 with
+    hxi <= 0.05; < 1e-2 at 64^3; error falling with dx at order >= 1;
+(b) infall: the time at R = 0.25 R_max within 5e-3 of the cycloid at 128^3, 1-2e-2 at
+    64^3, falling at order >= 1 (ratio >= 1.7 per doubling of the mesh);
+(c) softened collapse: the minimum of R lies within -0.5 to +1.5 percent of t_c at 128^3,
+    closer at finer mesh; R_min between 0.5 and 3 cells;
+(d) particle number at 128^3: hxi = 0.1 (4.2e3 particles, spacing 1.9 cells at the start and
+    4.5 at turnaround) has a largest radius error R_err at least twice that of hxi = 0.05;
+    the difference between hxi = 0.025 and 0.0125 (card) is below 1e-3 in t_ta and t_0.25;
+(e) step: cfl 0.1 against 0.2 (128^3, hxi 0.05) changes t_ta and t_0.25 by less than 1e-3;
+(f) energy K + W conserved to 3e-3 of |W_0| up to t_0.25 at 128^3.
+Refuted by: no convergence with dx in (a)-(c); a turnaround error above 1 percent at 128^3;
+a step effect above 1e-3.
+
+### P10: first scan points of SCAN.md against the isolated ellipsoid (campaign `scan`)
+
+Paper start a0 = 1/(2 alpha) (axis 1 at rest), delta_L = 0.2 unless named, 128^3 over
+[-1.5 A_max, 1.5 A_max]^3 (A_max the largest semi-axis of the reference up to 1.35 t_1),
+lattice hxi = 0.025 (2.7e5 particles), run to 1.35 t_1. Reference first collapses (sampled
+ball, R_vol = 1.000107 for hxi = 0.025 is applied by the script): e = 0.05, 0.1, 0.2, 0.3
+(p = 0): t_1 = 22.78, 20.47, 16.63, 13.76 (nominal radius); hoop line h_1 delta_L = 0.359,
+0.592, 0.855, 0.968 (`tables/ellipsoid_first_collapse.csv`).
+(a) the first-collapse axis is axis 1 in every case; for p = -e (alpha = beta, a spindle)
+    axes 1 and 2 reach their minima within 0.5 percent of each other;
+(b) t_1 (vertex estimator) within 1 percent of the reference for every e at 128^3 (SCAN.md
+    acceptance ii), late rather than early (the outer layers lag where the cloud smears the
+    density jump, as in core's collapse test); the extrapolation estimator agrees with the
+    vertex estimator to 0.5 percent;
+(c) the two other semi-axes at t_1 within 1 percent and h_1 within 2 percent of the reference;
+(d) amplitude: delta_L = 0.05, 0.2, 0.6 at e = 0.1 in boxes scaled with the patch are the same
+    computation in scaled units (G M fixed, every step and tolerance criterion scale free);
+    t_1 delta_L^(3/2) and h_1 delta_L agree to 1e-6. Refuted (a code unit defect) if not;
+(e) lattice rotated at random against the deformation axes (e = 0.2): t_1 within 0.3 percent
+    of the aligned lattice;
+(f) resolution at e = 0.1 and 0.2: 64^3 has a larger t_1 error than 128^3; hxi = 0.05 and
+    0.025 differ by less than 0.5 percent in t_1; hxi = 0.0125 (card) less than 0.2 percent;
+(g) energy conserved to 1e-3 of |W_0| until t_1 (SCAN.md acceptance iv);
+(h) second collapse (indicative, no tolerance): within 10 percent of the idealized
+    pass-through reference.
+
+### P11: card cost (campaign `card`, one batch job: top-hat 64^3 and 128^3 with 2.1e6 particles, e = 0.2 with 2.1e6)
+
+0.2-0.6 s per cycle at 128^3 on one A100 (core: 0.65 s per step with 13 V cycles and 1.4e5
+particles, interface 5.8; here about 5 V cycles); about 1000, 500 and 450 cycles; in total
+0.1-0.3 card-hours, inside the 0.42 card-hours of the Slurm limit (25 minutes). Refuted if
+the job is killed at the limit.

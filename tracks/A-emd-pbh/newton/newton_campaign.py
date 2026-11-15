@@ -71,13 +71,14 @@ CAMPAIGNS = {
     "cost": [tophat_case("th_n064_h050", 64, 0.05), tophat_case("th_n128_h025", 128, 0.025),
              tophat_case("th_n256_h025", 256, 0.025), tophat_case("th_n128_h0125", 128, 0.0125),
              ell_case("e0p2_n128_h025", 0.2, 0.2, 0.0)],
-    # spherical top-hat: mesh x particle number, and the step
-    "tophat": [tophat_case("th_n064_h050", 64, 0.05), tophat_case("th_n064_h025", 64, 0.025),
-               tophat_case("th_n128_h050", 128, 0.05), tophat_case("th_n128_h025", 128, 0.025),
-               tophat_case("th_n128_h0125", 128, 0.0125),
-               tophat_case("th_n256_h025", 256, 0.025),
-               tophat_case("th_n256_h0125", 256, 0.0125),
-               tophat_case("th_n128_h025_cfl01", 128, 0.025, cfl=0.1)],
+    # spherical top-hat on processors: mesh {32, 64, 128}^3 x lattice spacing {0.1, 0.05,
+    # 0.025} (4.2e3, 3.4e4, 2.7e5 particles), and the step (cfl 0.1 against 0.2)
+    "tophat": [tophat_case(f"th_n{nx:03d}_h{int(round(h * 1000)):03d}", nx, h)
+               for nx in (32, 64, 128) for h in (0.1, 0.05, 0.025)]
+              + [tophat_case("th_n128_h050_cfl01", 128, 0.05, cfl=0.1)],
+    # on a card: 2.1e6 particles (lattice spacing 0.0125) at 64^3 and 128^3
+    "tophat_card": [tophat_case("th_n064_h0125", 64, 0.0125),
+                    tophat_case("th_n128_h0125", 128, 0.0125)],
     # first points of SCAN.md: ellipticity at delta_L = 0.2 (p = 0), prolateness at e = 0.2,
     # amplitude at e = 0.1, lattice rotation, mesh and particle number at e = 0.1 and 0.2
     "scan": [ell_case("e0p05", 0.2, 0.05, 0.0), ell_case("e0p1", 0.2, 0.1, 0.0),
@@ -88,9 +89,10 @@ CAMPAIGNS = {
              ell_case("e0p1_n064", 0.2, 0.1, 0.0, nx=64), ell_case("e0p2_n064", 0.2, 0.2, 0.0, nx=64),
              ell_case("e0p1_h050", 0.2, 0.1, 0.0, hxi=0.05),
              ell_case("e0p2_h050", 0.2, 0.2, 0.0, hxi=0.05)],
-    "scan256": [ell_case("e0p1_n256", 0.2, 0.1, 0.0, nx=256),
-                ell_case("e0p2_n256", 0.2, 0.2, 0.0, nx=256)],
+    # on a card: particle number 2.1e6 at e = 0.2 (third point of the N series)
+    "scan_card": [ell_case("e0p2_h0125", 0.2, 0.2, 0.0, hxi=0.0125)],
 }
+CAMPAIGNS["card"] = CAMPAIGNS["tophat_card"] + CAMPAIGNS["scan_card"]
 
 
 def prepare(case, root, nlim=None):
@@ -164,6 +166,9 @@ def main():
     ap.add_argument("--only", default=None)
     ap.add_argument("--nlim", type=int, default=None)
     ap.add_argument("--out", default=os.environ.get("NRPIC_RUN_DIR"))
+    ap.add_argument("--prepare-only", action="store_true",
+                    help="write the particle files and batch.list (lines `<name> <deck> "
+                         "[args]` for `nrpic-run submit --launcher batch --list`) and stop")
     a = ap.parse_args()
     if not a.out:
         sys.exit("no output directory: set NRPIC_RUN_DIR or --out")
@@ -173,6 +178,19 @@ def main():
         cases = [c for c in cases if c["name"] in keep]
     nlim = a.nlim if a.nlim is not None else (30 if a.campaign == "cost" else None)
     prepared = [prepare(c, a.out, nlim) for c in cases]
+    if a.prepare_only:
+        # card runs: the harness writes each run into <its run dir>/<name>/ and passes the
+        # executable; keep the deck and the overrides, drop the executable and -d
+        with open(os.path.join(a.out, "batch.list"), "w") as f:
+            for (d, args, pfile, n), c in zip(prepared, cases):
+                f.write(" ".join([c["name"], DECK] + args[5:]) + "\n")
+        inputs = [dict(path=pfile, sha256=sha256(pfile), n=n) for d, args, pfile, n in prepared]
+        with open(os.path.join(a.out, "prepared.json"), "w") as f:
+            json.dump(dict(campaign=a.campaign, deck=DECK, deck_sha256=sha256(DECK),
+                           inputs=inputs), f, indent=1)
+            f.write("\n")
+        print(open(os.path.join(a.out, "batch.list")).read())
+        return
     # longest cases first
     order = sorted(range(len(prepared)), key=lambda k: -(cases[k]["nx"] ** 3 + 30 * prepared[k][3]))
     t0 = time.time()
