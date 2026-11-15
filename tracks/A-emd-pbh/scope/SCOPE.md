@@ -88,7 +88,8 @@ top-hat shell, 2M/R_ta = (5/3) deltabar_ent (arXiv:2507.18312 L304-316).
 
 Time. Cosmic time of the background in units of t_H, the time at r_m a H = 1 (for the
 ball: the proper time of comoving particles in its unperturbed outer layers; for the
-periodic box: the background time read from the boundary-averaged lapse history).
+periodic box: the background time integrated from the volume-averaged expansion,
+H = -<K>/3, along the box-averaged lapse).
 
 Outcome of one run at amplitude A with end time t_end:
 - BH: an apparent horizon is found at t_AH <= t_end in at least three consecutive searches
