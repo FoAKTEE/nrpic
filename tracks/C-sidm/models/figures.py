@@ -7,6 +7,7 @@ python/nrpic/figstyle.py).
 --onset   run directory of fluid_onset.py      -> fig_fluid_onset.{pdf,png}
 --checks  run directories of check_models.py   -> fig_models.{pdf,png}
 --growth  run directory of validate_growth.py  -> fig_growth.{pdf,png}
+--smoke   run directory of equilibria/smoke_athenak.py -> fig_smoke.{pdf,png}
 Default output: $NRPIC_RUN_DIR.
 """
 
@@ -254,12 +255,51 @@ def fig_growth(d, out):
     return fs.save(fig, os.path.join(out, "fig_growth"))
 
 
+def fig_smoke(d, out):
+    """AthenaK read test (equilibria/smoke_athenak.py output): constraint norms at t = 0 and
+    the particle energy over the two cycles, b = 0.1 model against the paper's y_c = 0.819."""
+    sys.path.insert(0, os.path.join(HERE, "..", "equilibria"))
+    from smoke_athenak import read_hst
+    S = json.load(open(os.path.join(d, "smoke.json")))
+    fig = plt.figure(figsize=(fs.FULL_WIDTH, 3.0))
+    ax1 = fig.add_axes([0.11, 0.16, 0.36, 0.74])
+    ax2 = fig.add_axes([0.6, 0.16, 0.38, 0.74])
+    cases = (("new", r"$b=0.1$, $E_b$ max., $N=10^5$", fs.PAL["red"]),
+             ("ref_st0819", r"monoenergetic $y_c=0.819$, $N=10^4$", fs.PAL["blue"]))
+    for i, (name, lab, c) in enumerate(cases):
+        cz, rz = read_hst(os.path.join(d, name, "smoke.z4c.user.hst"))
+        z = dict(zip(cz, np.array(rz).T))
+        V = z["Volume"][0]
+        vals = [np.sqrt(z["H-norm2"][0] / V), np.sqrt(z["M-norm2"][0] / V)]
+        ax1.bar(np.arange(2) + (i - 0.5) * 0.35, vals, width=0.35, color=c, label=lab)
+        cn, rn = read_hst(os.path.join(d, name, "smoke.nrpic.hst"))
+        n = dict(zip(cn, np.array(rn).T))
+        ax2.plot(n["ncycle"], n["sum_mW"] / n["sum_mW"][0] - 1, "-o", color=c, ms=3,
+                 label=lab.split(",")[0] + r": $\sum mW$")
+        ax2.plot(n["ncycle"], n["int_E"] / n["sum_mW"][0] - 1, "--s", color=c, ms=3, mfc="none",
+                 label=r"$\int E\sqrt{\gamma}\,dV$")
+    ax1.set_xticks([0, 1])
+    ax1.set_xticklabels([r"$\|H\|_2$ at $t=0$", r"$\|M\|_2$ at $t=0$"])
+    ax1.set_yscale("log")
+    lo_, hi_ = ax1.get_ylim()
+    ax1.set_ylim(lo_, hi_ * 8)
+    ax1.set_ylabel("volume-normalised norm")
+    ax1.legend(loc="upper left", fontsize=7)
+    ax2.set_xlabel("cycle")
+    ax2.set_ylabel(r"relative to $\sum mW$ at $t=0$")
+    ax2.legend(loc="best", fontsize=7)
+    ax2.text(0.02, 0.04, f"alpha_probe(0) = {S['new']['nrpic_first']['alpha_probe']:.5f}",
+             transform=ax2.transAxes, fontsize=7)
+    return fs.save(fig, os.path.join(out, "fig_smoke"))
+
+
 def main(argv=None):
     p = argparse.ArgumentParser(description=__doc__,
                                 formatter_class=argparse.RawDescriptionHelpFormatter)
     p.add_argument("--onset")
     p.add_argument("--checks", nargs="*")
     p.add_argument("--growth")
+    p.add_argument("--smoke")
     p.add_argument("--out", default=os.environ.get("NRPIC_RUN_DIR"))
     a = p.parse_args(argv)
     fs.use_style()
@@ -271,6 +311,8 @@ def main(argv=None):
         made += fig_models(a.checks, a.out)
     if a.growth:
         made += fig_growth(a.growth, a.out)
+    if a.smoke:
+        made += fig_smoke(a.smoke, a.out)
     print("\n".join(made))
     return 0
 
