@@ -18,6 +18,7 @@ parameter list written to restart files):
     coll_cell_factor = 4           # collision cell = 4^3 mesh cells (1, 2 or 4)
     coll_pmax        = 0.1         # largest pair probability per sub-step aimed at
     coll_budget      = true        # optional: energy with the metric at the particles
+    coll_energy      = particle    # in a gravitational field: see below
 
 and `<job> rng_seed = N` (members of an ensemble differ in the seed only). All colliding
 particles must have the same rest mass (`coll_weights = equal`, the default; a run with
@@ -43,11 +44,20 @@ What to watch in a production run:
 - `n_trunc` must stay zero (a pair probability above one); `max_nsub` shows how much
   the cells sub-cycle.
 - The step enters at first order: a rate nu is high by nu^2 dt_c/2, dt_c = dt/n_sub.
-- In a gravitational field the collision steps raise the particle energy slightly (the
-  partners of a pair sit at different depths of the potential): column `dE_particles`
-  with `coll_budget = true`. In the cluster test it was 1.05e-8, 2.3e-9 and 1.1e-9 of
-  the particle energy per collision for collision cells of 2, 1 and 0.5 M (interface
-  text, section 9). It accumulates with the number of collisions.
+- In a gravitational field set `coll_energy = particle`. Without it (the operator of
+  release core-v0.3, `coll_energy = cell`) a pair conserves its energy with the metric
+  of the cell centre only, and the collision steps raise the energy of the particles
+  steadily: in the cluster test by 1.05e-8, 2.3e-9 and 1.1e-9 of the particle energy
+  per collision for collision cells of 2, 1 and 0.5 M, and the energy at infinity
+  (alpha W - beta^i u_i) by 1.5 times as much; they also carry heat out of a potential
+  well in equilibrium. With `coll_energy = particle` every pair conserves the sum of
+  u_i and the sum of alpha W - beta^i u_i with the metric at each particle to rounding,
+  and an equilibrium of a static metric stays an equilibrium (interface text, section
+  11). The option costs one metric reconstruction per colliding particle and step.
+  Watch `n_noroot` (pairs left unscattered) and `n_balance` (collisions rejected for
+  detailed balance): both should stay small against `n_coll`. The option is read only
+  if present; its presence adds history columns 32 to 36 (`dH_particles`: the change of
+  the canonical energy in the collision step, with `coll_budget = true`).
 
 ## Tests
 
@@ -70,7 +80,13 @@ All drivers are in `tracks/core/analysis/collisions/`; each writes `summary.json
 | `run_repro.py` | MeshBlock divisions, restart, seed | 1 min, 6 cores |
 | `run_unequal.py` | unequal masses | 1.5 min, 5 cores |
 | `run_curved_box.py` | homogeneous curved metric on the mesh | 7 min, 3 cores (20 s on a card) |
-| `run_cluster.py` | relativistic cluster with and without collisions | card: 4.3 min per run |
+| `run_cluster.py` | relativistic cluster with and without collisions; `--energy cell,particle` runs both values of `coll_energy` | card: 4.3 min per run |
+| `gradient_ref.py`, `scbox.py` | reference of the pair model in the static metric with a gradient (no file of the code is read) | 10 min per group of cases |
+| `run_gradient.py` | one collision step on frozen particles in that metric, both values of `coll_energy`, against the reference | 30 min, 6 cores |
+| `run_tolman.py` | equilibrium in a potential well with streaming and collisions, both values | card: seconds; processor: 15 min at 1e5 particles |
+| `run_static_homog.py` | constant lapse and conformal factor (test T12 of track C); the two values of `coll_energy` coincide | 5 min, 4 cores |
+| `run_perturb.py` | the perturbing force `perturb_gamma` | 2 s |
+| `rerun_wave1.py` | reruns the box tests with a new executable and compares all output files with wave 1 or with the release executable | 20 min |
 
 Card: `sbatch -p preempt --gres=gpu:1 -c 2 -t 00:30:00 $C/gpu_job.sh <A|B|C|D> <card
 executable> <baseline card executable>` from the root of the worktree (two cores: the
@@ -79,4 +95,24 @@ node has four in all).
 Decks: `problems/tests/coll_box.athinput` (periodic Minkowski box: `nrpic_geodesic` with
 the analytic Kerr-Schild functor at `bh_mass = 0`), `problems/tests/coll_box_curved.athinput`
 (the same box with `<problem> metric_kind = homogeneous`: constant lapse and constant
-non-diagonal spatial metric on the mesh).
+non-diagonal spatial metric on the mesh), `problems/tests/coll_box_static.athinput`
+(`<problem> metric_kind = static_conformal`: lapse alpha0 (1 + alpha_amp cos phi),
+conformal factor psi0 (1 + psi_amp cos phi), shift beta^x = shift_amp sin phi, periodic
+in the box; all amplitudes zero: a constant lapse and conformal factor),
+`problems/tests/coll_box_ks.athinput` (analytic Kerr-Schild metric of a mass, for the
+kinematics in a metric with shift that is not conformally flat).
+
+## Perturbing an equilibrium (`perturb_gamma`)
+
+`athenak/src/particles/nrpic_perturb.cpp`: during `[perturb_tstart, perturb_tstart +
+perturb_time]` every particle with rest mass feels the radial force
+du_i/dt = perturb_gamma (x - c)^i/|x - c| about the centre `perturb_x1..3` (outwards for
+a positive value). It is the perturbation of the characteristic system of
+arXiv:2009.08163 (`paper.tex` line 848) in the canonical variables of the pushers: the
+flow of the added Hamiltonian -perturb_gamma |x - c|, which conserves the phase-space
+density and hence every Casimir functional; no new initial data are needed. The force
+is applied as two half kicks around the push (second order; the impulse over a run is
+perturb_gamma x perturb_time whatever the step). Choose `perturb_tstart` and
+`perturb_time` as multiples of the step: otherwise the last, partial kick adds an error
+of second order with an irregular coefficient. Absent or zero: no effect at all.
+Example: `problems/tests/perturb_flat.athinput`; test `run_perturb.py`.

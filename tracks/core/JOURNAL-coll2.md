@@ -388,3 +388,85 @@ start, 16 x 4 x 4 cells):
     sigma M alpha0 dt/(2 psi0^6 V_cell) x sum N (N - 1) of the cell populations to 1e-10.
 (d) sum M u_i conserved to 1e-12 of sum M |u| in all four runs; (e) the collision
     steps change sum M W and sum M H at the particles by less than 1e-12 relative.
+
+## 2026-11-15 17:10 UTC  outcomes on the processor: replay, cluster (two steps), wave-1 reruns, first G4
+
+### G2(e) replay: run core-20261115-160914-0656925. Passed.
+
+Thirteen cases, 20000 particles each, collision step of cycle 5 replayed by the Python
+twin from the dump: the seven cases of wave 1 and `static_cell`, `static_particle`
+(12 sub-steps), `static_particle_factor2`, `static_particle_cholesky_boris`,
+`static_particle_nanbu` (18 sub-steps, masses 1:4), `kerr_particle` (analytic
+Kerr-Schild metric of a mass 20 at distance 173: shift, spatial metric not conformally
+flat). In all: numbers of tested pairs and of collisions equal (e.g. 55913 and 2149
+for static_particle), n_sub and updates per particle equal, sum_P to 6.9e-15, pairs
+without a root 0 in code and twin, largest |lam - 1| equal to 1e-15 (0.18, 0.38, 0.18,
+0.14, 0.005), momenta within 1.3e-14 of max(1, |u|) (criterion 1e-13), untouched
+particles bit-identical. Figure `fig_replay.png` looked at (all histograms left of
+1e-13; the legend covers part of the histograms).
+
+### Cp cluster, two steps on the processor: run core-20261115-160913-0656925. Passed.
+
+Relativistic cluster y_c = 0.819 with Z4c and six refinement levels, 1e4 particles,
+collision cells of 2 M, cross-section of Kn = 0.03, two steps (0.25 M).
+- `coll_energy = cell`: 773 collisions (sum_P 798.8); the collision steps raise
+  sum M H by 1.48e-5 of its value and sum M W by 9.6e-6 (ratio 1.55; predicted
+  about 1.5): 1.9e-8 and 1.2e-8 per collision (wave 1: 1.05e-8 of sum M W at Kn = 3).
+- `coll_energy = particle`: 772 collisions (sum_P 796.9); change of sum M H in the
+  collision steps 4.8e-18 of its value (predicted below 1e-12); no pair without a
+  root, none rejected, largest |lam - 1| 1.6e-3; sum M W changes by -4.7e-6 (first
+  order, either sign); pair defect 0.10 units in the last place.
+- Both: rest mass identical to the bit, deposit identity 3.7e-15, lapse at the end
+  within 1.4e-7 of the collisionless run.
+
+### Reruns of wave 1 on the processor, executable built from 819d588, options absent
+
+`rerun_wave1.py` (summary `scratch/core/tmp/coll2/rerun_wave1_819d588.json`): every
+driver exits with status 0 (its own criteria). Output files against the run
+directories of wave 1: replay 31 files, repro 135, smr 17, unequal 23, cells 57,
+conv_dt 46, curved 23: all byte-identical (runs core-20261115-160336-819d588,
+-160751-6537687, -160907-5c63a43, -160921-0656925, -161109-0656925, -161222-0656925,
+-162952-74b3e87; kernel test -160318-819d588 has no comparable file). rate
+(-161512-0656925): 9 of 43 files differ; relax (-162041-0656925): 4 of 116. All
+differing files are `box.coll.hst`: the wave-1 runs of these two tests
+(core-20261115-133533-0ca5e3b, -134036-5684674) were made with an earlier build of
+wave 1 whose history had 26 columns (file sizes 86265 against 105146 bytes) and a
+different order of the sum in column sum_MW (differences 4e-16 relative, 61 to 142
+rows); the snapshots are identical. So the wave-1 directory is not a valid reference
+for these two; they are rerun against the release executable (below). The three
+existing regressions started at 15:52 (regress_relativistic, rng/run_regression,
+lead/cf_checks) ran while the processor executable was rebuilt at 16:02 and are
+discarded; rerun below with the frozen copy of the executable.
+
+### G4, processor version at theta_inf = 0.05: run core-20261115-162714-abf9d27. Partly failed.
+
+The analysis stopped with an error: bins of the temperature profile at the top of the
+well are empty. At theta_inf = 0.05 the well (alpha from 0.8 to 1.2) is eight
+temperatures deep and the density contrast is e^8; I had not looked at the density
+before choosing the temperature. From the histories (evaluated by hand): 57
+collisions per particle in 400 steps;
+- `particle`: change of sum M H in the collision steps 2.4e-15 of its value in both
+  seeds (2.84e6 collisions; predicted below 1e-12), total change including the push
+  -8.7e-9 and +7.7e-9 (predicted below 1e-6); 1903 and 1900 collisions rejected
+  (6.7e-4), none without a root. Passed.
+- `cell`: sum M H grows by 8.22e-4 and 8.47e-4. Predicted band 2.8e-3 to 8.5e-3:
+  FAILED, by a factor 3.4. Reason, checked: the band used the gain per collision of
+  the reference with uniform density (2.0e-4); the gas sits at the bottom of the well
+  where the gradient vanishes. The reference with the equilibrium density and cells
+  weighted by their collision rate (run core-20261115-163914-74b3e87) gives 4.07e-5
+  (0.17e-5) per collision; the code shows 4.25e-5 and 3.50e-5 in the first five steps
+  (35000 collisions each, standard error about 1.3e-5) and then 2.5e-5 to 2.9e-5: the
+  rate falls as the state leaves Tolman's law.
+
+### G4 restated before the rerun (17:12 UTC)
+
+theta_inf = 0.2 (density contrast e^2), 1e5 particles, 400 steps, two seeds, mean
+free path one cell at the mean density; reference of the initial state (same run):
+gain of H_a + H_b per collision 3.62e-4 (0.09e-4) for `cell`, 2.7e-16 for `particle`,
+rejected share 5.7e-3.
+`particle`: change of sum M H in the collision steps below 1e-12 of its value, total
+below 1e-6; cos phi amplitude of ln(theta alpha), late-time mean, within 0.5 percent
+of zero; no pair without a root.
+`cell`: gain per collision in the first collision time equal to the reference within
+4 standard errors; total growth between 0.3 and 1.2 of what the initial rate would
+give; amplitude of ln(theta alpha) between -2 and -10 percent (my estimate -5).

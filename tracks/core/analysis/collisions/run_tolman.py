@@ -7,7 +7,8 @@ with the metric at each particle (coll_energy = particle).
                 [--lam-cells 1.0] [--theta 0.05] [--seeds 2]
 
 Metric: problems/tests/coll_box_static.athinput with alpha = 1 - 0.2 cos phi,
-psi = 1 + 0.1 cos phi (16 x 4 x 4 cells). Particles: f ~ exp(-alpha W/theta_inf), the
+psi = 1 + 0.1 cos phi (16 x 4 x 4 cells), theta_inf = 0.2 by default (density contrast
+of the well about e^2; at theta_inf = 0.05 it is e^8 and the top of the well is empty). Particles: f ~ exp(-alpha W/theta_inf), the
 exact equilibrium of the collisionless and of the collisional equation in this metric
 (local temperature theta_inf/alpha, Tolman's law; coordinate density ~ psi^6 K2(z)/z
 exp(-z), z = alpha/theta_inf). Mean free path = lam-cells mesh cells.
@@ -44,20 +45,30 @@ def mode_amplitudes(met, snap, theta_inf):
     w2 = np.bincount(ib, weights=w*w, minlength=NBIN)/cnt
     xc = met.xmin + (np.arange(NBIN) + 0.5)*met.length/NBIN
     alp, _, psi4 = met.at(xc)
-    th = np.array([collide.mj_theta_from_w(v) for v in wm])
-    # standard error of theta of a bin: dtheta = dW/(dW/dtheta)
-    dwdt = np.array([(collide.mj_mean_w(t*1.001) - collide.mj_mean_w(t*0.999))/(0.002*t)
-                     for t in th])
-    th_se = np.sqrt((w2 - wm*wm)/cnt)/dwdt
+    good = cnt >= 200                       # bins with too few particles are left out
+    th = np.full(NBIN, np.nan)
+    th_se = np.full(NBIN, np.nan)
+    for i in np.nonzero(good)[0]:
+        th[i] = collide.mj_theta_from_w(wm[i])
+        # standard error of theta of a bin: dtheta = dW/(dW/dtheta)
+        dwdt = (collide.mj_mean_w(th[i]*1.001) - collide.mj_mean_w(th[i]*0.999))/(0.002*th[i])
+        th_se[i] = np.sqrt((w2[i] - wm[i]*wm[i])/cnt[i])/dwdt
     lt = np.log(th*alp/theta_inf)
     ph = 2.0*np.pi*(xc - met.xmin)/met.length
-    a_t = 2.0*np.mean(lt*np.cos(ph))
-    a_t_se = 2.0*np.sqrt(np.sum((th_se/th*np.cos(ph))**2))/NBIN
-    ln_n = np.log(cnt/cnt.mean()/psi4**1.5)
-    a_n = 2.0*np.mean(ln_n*np.cos(ph))
-    return dict(a_T=float(a_t), a_T_se=float(a_t_se), a_n=float(a_n),
-                mean_lnT=float(np.mean(lt)), profile_T=(th*alp/theta_inf).tolist(),
-                profile_T_se=(th_se*alp/theta_inf).tolist(), xc=xc.tolist())
+    # weighted least squares of ln(theta alpha/theta_inf) = c0 + a cos(phi)
+    wts = np.where(good, (th/np.where(good, th_se, 1.0))**2, 0.0)
+    amat = np.stack([np.ones(NBIN), np.cos(ph)], axis=1)
+    nmat = amat.T @ (wts[:, None]*amat)
+    cov = np.linalg.inv(nmat)
+    coef = cov @ (amat.T @ (wts*np.where(good, lt, 0.0)))
+    ln_n = np.log(np.maximum(cnt, 1)/cnt.mean()/psi4**1.5)
+    wn = np.where(good, cnt, 0.0)
+    cn = np.linalg.inv(amat.T @ (wn[:, None]*amat)) @ (amat.T @ (wn*ln_n))
+    return dict(a_T=float(coef[1]), a_T_se=float(np.sqrt(cov[1, 1])), a_n=float(cn[1]),
+                mean_lnT=float(coef[0]), bins_used=int(np.count_nonzero(good)),
+                profile_T=[float(v) if g else None for v, g in zip(th*alp/theta_inf, good)],
+                profile_T_se=[float(v) if g else None
+                              for v, g in zip(th_se*alp/theta_inf, good)], xc=xc.tolist())
 
 
 def main():
@@ -68,12 +79,19 @@ def main():
     ap.add_argument("--steps", type=int, default=600)
     ap.add_argument("--nproc", type=int, default=4)
     ap.add_argument("--lam-cells", type=float, default=1.0)
-    ap.add_argument("--theta", type=float, default=0.05)
+    ap.add_argument("--theta", type=float, default=0.2)
+    ap.add_argument("--ref", default="",
+                    help="reference file of gradient_ref.py --tolman for this state: the "
+                         "change of H_a + H_b per collision of coll_energy = cell")
     ap.add_argument("--seeds", type=int, default=2)
     ap.add_argument("--dt", type=float, default=0.01)
     args = ap.parse_args()
     out = os.path.abspath(args.out)
     os.makedirs(out, exist_ok=True)
+    ref = None
+    if args.ref:
+        with open(args.ref) as fp:
+            ref = json.load(fp)["results"]["cell"]
     met = scbox.Metric(nx=16, a_alpha=-0.2, a_psi=0.1)
     th = args.theta
     sigma = 1.0/(args.lam_cells*met.dx)            # rho_0 = 1 (coordinate density)
@@ -128,6 +146,7 @@ def main():
                  dH_total_rel=float((h["sum_MH_particles"][-1] - e0)/e0),
                  dH_collisions_rel=float(cum_h[-1]/e0),
                  dH_per_collision=float(cum_h[-1]/(mass*ncoll)),
+                 mean_H=float(e0/(mass*args.n)),
                  dW_collisions_rel=float(cum_w[-1]/e0),
                  dPy_over_scale=float(dpy), dPz_over_scale=float(dpz),
                  a_T=[a["a_T"] for a in amps], a_T_se=[a["a_T_se"] for a in amps],
@@ -138,6 +157,11 @@ def main():
                  a_n_late=float(np.mean([a["a_n"] for a in late])), a_n0=amps[0]["a_n"],
                  profile_T_end=amps[-1]["profile_T"],
                  profile_T_end_se=amps[-1]["profile_T_se"], xc=amps[-1]["xc"])
+        # the first collision time: until every particle has collided once on average
+        cc = np.cumsum(h["n_coll"])
+        k1 = int(np.searchsorted(cc, 0.5*args.n)) + 1
+        r["dH_per_collision_first"] = float(cum_h[k1 - 1]/(mass*cc[k1 - 1]))
+        r["collisions_first"] = int(cc[k1 - 1])
         summary["runs"][name] = r
         series[name] = (h["time"], (h["sum_MH_particles"] - e0)/e0, cum_h/e0)
     ok = True
@@ -148,11 +172,21 @@ def main():
                      dH_collisions=bool(abs(r["dH_collisions_rel"]) < 1e-12),
                      a_T=bool(abs(r["a_T_late"]) < 0.005), noroot=bool(r["n_noroot"] == 0))
         else:
-            # 2e-4 per collision and unit rest mass in the initial state (reference
-            # well_tolman): between 0.5 and 1.5 of that times the collisions per particle
-            lo = 0.5*1.0e-4*r["collisions_per_particle"]
-            c = dict(dH_grows=bool(lo < r["dH_collisions_rel"] < 3.0*lo),
-                     a_T=bool(-0.10 < r["a_T_late"] < -0.02))
+            # reference per collision and unit rest mass in the initial state: in the
+            # first collision time the code must show it within 4 standard errors;
+            # over the run the gain is positive and at most what that rate would give
+            # (the state leaves Tolman's law towards the operator's own stationary state)
+            c = dict(dH_grows=bool(r["dH_collisions_rel"] > 0.0))
+            if ref is not None:
+                se = np.hypot(ref["dH_sd"]/np.sqrt(r["collisions_first"]), ref["dH_se"])
+                r["dH_first_ref"] = ref["dH"]
+                r["dH_first_z"] = float((r["dH_per_collision_first"] - ref["dH"])/se)
+                exp = 0.5*r["collisions_per_particle"]*ref["dH"]/r["mean_H"]
+                r["dH_collisions_initial_rate"] = float(exp)
+                c["dH_first_rate"] = bool(abs(r["dH_first_z"]) < 4.0)
+                c["dH_total_band"] = bool(0.3*exp < r["dH_collisions_rel"] < 1.2*exp)
+            c.update(
+                a_T=bool(-0.10 < r["a_T_late"] < -0.02))
         checks[name] = c
         ok = ok and all(c.values())
     summary["checks"] = checks
@@ -184,8 +218,9 @@ def main():
                         marker="o", ms=2.5)
         if seed == "0":
             xc = (np.array(r["xc"]) - met.xmin)/met.length
-            axs[2].errorbar(xc, r["profile_T_end"], yerr=r["profile_T_end_se"], color=col,
-                            lw=0.9, marker="o", ms=2.5)
+            pt = np.array([np.nan if v is None else v for v in r["profile_T_end"]])
+            pe = np.array([np.nan if v is None else v for v in r["profile_T_end_se"]])
+            axs[2].errorbar(xc, pt, yerr=pe, color=col, lw=0.9, marker="o", ms=2.5)
     for ax in axs:
         ax.axhline(1.0 if ax is axs[2] else 0.0, **fs.GUIDE)
     axs[0].set_xlabel(r"$t/t_{\rm coll}$")

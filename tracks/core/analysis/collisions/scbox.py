@@ -79,6 +79,15 @@ def theta_local(met, x, theta0, s_alpha=0.0, s_psi=0.0):
     return theta0*(alp/met.alpha0)**(-s_alpha)*(psi4/met.psi0**4)**(-0.25*s_psi)
 
 
+def tolman_density(met, x, theta_inf):
+    """Coordinate density (not normalised) of the equilibrium f ~ exp(-alpha W/theta_inf)
+    of the static metric without shift: psi^6 4 pi K2(z)/z with z = alpha/theta_inf."""
+    from scipy import special
+    alp, _, psi4 = met.at(x)
+    z = alp/theta_inf
+    return psi4**1.5*special.kve(2, z)*np.exp(-(z - z.min()))/z
+
+
 def sample_umag(theta, uq, ngrid=257):
     """|u| of Maxwell-Juttner distributions at the temperatures theta[...] for the
     uniform deviates uq[...]: inverse distributions tabulated on a grid of temperatures
@@ -117,10 +126,7 @@ def make_particles(path, met, n, seed, theta0, s_alpha=0.0, s_psi=0.0, lengths=N
         x0 = met.xmin + lengths[0]*uni[0]
     else:
         xg = met.xmin + np.linspace(0.0, lengths[0], 40001)
-        alp, _, psi4 = met.at(xg)
-        th = theta_local(met, xg, theta0, 1.0, 0.0)
-        z = 1.0/th
-        dens = psi4**1.5*special.kve(2, z)*np.exp(-(z - z.min()))*th
+        dens = tolman_density(met, xg, theta0/met.alpha0)
         cdf = np.concatenate(([0.0], np.cumsum(0.5*(dens[1:] + dens[:-1])*np.diff(xg))))
         cdf /= cdf[-1]
         x0 = np.interp(uni[0], cdf, xg)
@@ -149,7 +155,7 @@ def energies(met, x, u):
 
 
 def pair_reference(met, npair, seed, theta0, s_alpha=0.0, s_psi=0.0, f=1, mode="cell",
-                   chunk=1000000, balance=True):
+                   chunk=1000000, balance=True, density="uniform"):
     """Monte Carlo over pairs of one collision cell (see the module text). Returns a
     dict: mean change per collision of W_a + W_b and of H_a + H_b (metric at each
     particle), their standard errors, the slope c of the regression of the change of
@@ -159,6 +165,17 @@ def pair_reference(met, npair, seed, theta0, s_alpha=0.0, s_psi=0.0, f=1, mode="
     gen = np.random.default_rng(seed)
     ncell = met.nx//f
     h = met.dx*f
+    if density == "tolman":
+        # positions with the equilibrium density; a cell is chosen in proportion to its
+        # number of tested pairs times the factor alpha/psi^6 of the pair probability
+        xg = met.xmin + np.linspace(0.0, met.length, 16000*ncell + 1)
+        dens = tolman_density(met, xg, theta0/met.alpha0)
+        cdf = np.concatenate(([0.0], np.cumsum(0.5*(dens[1:] + dens[:-1])*np.diff(xg))))
+        cdf /= cdf[-1]
+        cedge = cdf[::16000]
+        ac, p4c = met.cell(np.arange(ncell), f)
+        pc = np.diff(cedge)**2*ac/p4c**1.5
+        pc /= pc.sum()
     acc = dict(w=0.0, dw=0.0, dw2=0.0, dh=0.0, dh2=0.0, sxy=0.0, sxx=0.0, sxy2=0.0,
                noroot=0.0, w2=0.0, dlam=0.0, wdw2=0.0, wdh2=0.0, wxy2=0.0, rej=0.0,
                rmax=0.0, wall=0.0)
@@ -166,10 +183,16 @@ def pair_reference(met, npair, seed, theta0, s_alpha=0.0, s_psi=0.0, f=1, mode="
     while done < npair:
         nb = min(chunk, npair - done)
         done += nb
-        ic = gen.integers(0, ncell, nb)
-        x0 = met.xmin + ic*h
-        xa = x0 + h*gen.random(nb)
-        xb = x0 + h*gen.random(nb)
+        if density == "tolman":
+            ic = gen.choice(ncell, size=nb, p=pc)
+            x0 = met.xmin + ic*h
+            xa = np.interp(cedge[ic] + (cedge[ic + 1] - cedge[ic])*gen.random(nb), cdf, xg)
+            xb = np.interp(cedge[ic] + (cedge[ic + 1] - cedge[ic])*gen.random(nb), cdf, xg)
+        else:
+            ic = gen.integers(0, ncell, nb)
+            x0 = met.xmin + ic*h
+            xa = x0 + h*gen.random(nb)
+            xb = x0 + h*gen.random(nb)
         alc, psi4c = met.cell(ic, f)
         sc = np.sqrt(psi4c)                       # S of the cell: u_i = sc u_(i)
         st = {}

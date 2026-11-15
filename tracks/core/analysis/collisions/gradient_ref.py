@@ -53,7 +53,24 @@ def main():
     ap.add_argument("--only", default="")
     ap.add_argument("--no-balance", action="store_true",
                     help="particle mode without the detailed-balance acceptance")
+    ap.add_argument("--tolman", type=float, default=0.0,
+                    help="instead of the cases: the equilibrium of the well (alpha_amp "
+                         "-0.2, psi_amp 0.1) at this theta_inf, positions with the "
+                         "equilibrium density, cells weighted with their collision rate")
     args = ap.parse_args()
+    if args.tolman > 0.0:
+        met = scbox.Metric(nx=16, a_alpha=-0.2, a_psi=0.1)
+        res = {}
+        for mode in ("cell", "particle"):
+            r = scbox.pair_reference(met, args.npair, 77, args.tolman, 1.0, 0.0, 1, mode,
+                                     density="tolman")
+            res[mode] = r
+            print(f"tolman theta_inf {args.tolman} {mode:8s} dW = {r['dW']:+.4e} "
+                  f"({r['dW_se']:.1e})  dH = {r['dH']:+.4e} ({r['dH_se']:.1e})  "
+                  f"rejected {r['rejected']:.2e}  noroot {r['noroot']:.1e}", flush=True)
+        with open(args.out, "w") as fp:
+            json.dump(dict(theta_inf=args.tolman, results=res), fp, indent=1)
+        return 0
     names = [n for n in args.only.split(",") if n] or list(CASES)
     res = {}
     for k, name in enumerate(names):
