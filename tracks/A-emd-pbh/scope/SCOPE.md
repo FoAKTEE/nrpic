@@ -241,3 +241,60 @@ runs to 400 t_H (~5-10 card-hours). G2 tests about 20-30 card-hours. Processor-o
 (references, A6 once core/newton exists) is within the 16-core limit.
 
 The model is untested on a PBH run; the first scouting runs check it (JOURNAL.md T5).
+
+## 10. Lead's decisions and corrections at G0 (2026-11-15, after the independent re-check)
+
+Added by the lead of A-emd-pbh; sections 1-9 above are the helper's text, unchanged. The
+re-check (predictions L1-L8 in `../JOURNAL.md`, entry 2026-11-15T12:57Z) and the gate items
+are in `../stage/G0/` (`CHECKLIST.md`, `EVIDENCE.md`, `OPEN.md`).
+
+**10.1 Amplitude convention (correction).** Section 3 uses deltabar_ent = (12/(5e)) mu =
+0.883 mu (mean linear contrast inside r_m at r_m aH = 1); the criteria package
+(`../criteria/README.md`, "Parameters") uses the central linear contrast at the same epoch,
+delta_c = 12 mu/5 (MDPBH.tex:907-908 at aH = k/sqrt6). They differ by Euler's number e for
+the Gaussian profile. Both are kept; every table names its measure; delta_c = e deltabar_ent
+converts [VERIFIED as arithmetic from the two definitions; JUDGEMENT to keep both]. Ratios
+of thresholds do not depend on the choice.
+
+**10.2 Order of the set-ups** [JUDGEMENT]. G2 is passed on the spherical ball, as the
+charter's sheet requires. The threshold line for the comparison with arXiv:2609.14218 is
+built in phase 1 (periodic box, that paper's initial data on top of `nrpic_cosmo`), with
+ball runs at mu <= 0.03 as the boundary cross-check (T3, section 4). Proposed to the
+orchestrator: `../outbox/20261115T1320Z__to-orch__threshold-line-in-periodic-box.md`.
+
+**10.3 No sharp edges in evolution runs.** A sharp ball surface leaves a constraint residual
+that does not fall with resolution (core's test 2, `tracks/core/JOURNAL-id.md` entry 5 on
+branch `core/id-extrinsic`) and an O(1/h) momentum band offline (expball G1); the C^4 edge
+taper converges (momentum orders 1.99 and 3.90 over all cells, run
+A-emd-pbh-20261115-122121-aa1c84d, rerun A-emd-pbh-20261115-130402-f5566fb with identical
+numbers) [VERIFIED]. Expball tables of sharp balls carry no `breaks` line, so a cubic
+through the KL jump smears it over two rows with ~10 % overshoot (run
+A-20261115-130257-a7374a4, `fig_crosscheck.png`); sharp tables are for offline tests only.
+
+**10.4 G2 horizon-mass target, now verified.** The source paper's Oppenheimer-Snyder test
+gives Delta M/M_ADM <~ 1e-3 for its fiducial run (refs/arxiv_2611.12831/src/main.tex:945) and
+RMS errors 2.061e-3, 9.362e-4, 7.347e-4 over its AMR particle sequence A1-A3 (main.tex:1484)
+[VERIFIED]. This replaces the [TO VERIFY] of section 7 (G2).
+
+**10.5 Reference locators re-read by the lead** [VERIFIED, each found as stated]:
+MDPBH.tex:766-768, 907-908, 1101-1103, 1141-1145; Main.tex (2507.18312):310, 314-316, 483-489;
+Spin_PBH.tex:919-927; main_v3.tex (2605.04487):2277, 2279. The statements are in the raw store
+only, not yet knowledge-base entries (kb request in the outbox).
+
+**10.6 First full-relativity scouting runs** (to start when `core/id-extrinsic` is merged):
+SR-1 and SR-2 on data set 2t (run A-emd-pbh-20261115-130609-947c898), specified with their
+predicted times in `../stage/G1/STATUS.md` section 3 (predictions run
+A-20261115-130948-5a2b58a).
+
+**10.7 Compute to G2** (unit cost 8.1e-8 card-seconds per cell and step, measured by core,
+run core-20261115-040406-1311b8e): SR-1 0.15 and SR-2 0.16 card-hours (256^3, dx = M/2);
+spherical convergence 10-25 card-hours (uniform mesh at M/4, static refinement at M/8);
+G-R1 0.3; Newtonian-mode scan <= 11 (`../newton/SCAN.md` section 6); H1 runs 5-10. About
+25-50 card-hours to G2, inside the 60 of decision 0006. The G3 scan (~155, band 50-470) needs
+a raise, asked when G2 passes.
+
+**10.8 Stage timeline** [JUDGEMENT]: G0 complete with the note v0 and the two schematics
+(next session); G1 with G0 (two of three criteria met, the scan design waits for
+`core/newton`); G2 after the merge of `core/id-extrinsic` and `core/newton` (months 2-4); G3
+needs the phase-1 generator, Track B's slicing for a periodic box and the card-hour raise
+(month 9).
