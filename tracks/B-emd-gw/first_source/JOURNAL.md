@@ -232,3 +232,21 @@ gamma^(1/6)) is below 10 percent of rms delta ln alpha, and delta ln alpha and
 delta ln gamma^(1/6) are anticorrelated (correlation below -0.9). Refuted if the product
 varies as much as the lapse: then the slicing differs from the Newtonian one at first order,
 the gauge products are not suppressed as argued, and the argument fails.
+
+## Outcome of P9, run B-20261115-170610-c82b10c (`slicing_check.json`, `.png`, looked at)
+
+CONFIRMED. On both cosmology runs rms delta ln alpha = 2.00e-5 to 2.03e-5 at every dump from
+a = 1 to 1001 (constant, the size of Phi), rms delta ln gamma^(1/6) the same, correlation
+-0.99999 at a = 1 to -0.9991 at a = 121, and rms delta ln(alpha gamma^(1/6)) = 0.4 to 4
+percent of the lapse variation for a <= 121 (below the 10 percent of the prediction), growing
+as a to 33 percent at a = 1001. So the first-order slicing is Newtonian; the departure grows
+like a second-order quantity (Phi delta).
+
+## P10 (written before scripts/slicing_products.py ran)
+
+With T = 2E/eta (zero shift, E from the scalar part of h, growing as eta^2) the slicing
+products Lambda[dT dT] and Lambda[T d_eta h^S] are below rms G by the factor 4/(k eta)^2 or
+so; at a = 1001 (eta ~ 63, the G spectrum peaking at |k|L/2pi = 5) that is ~1e-5 [JUDGEMENT,
+order-one coefficients of the transformation not derived]. Prediction: both below 1e-2 of
+rms G at every dump after a = 100. Refuted if either reaches rms G: then the slicing could
+matter as much as the spatial piece and P7's reading would need the slicing computed.
