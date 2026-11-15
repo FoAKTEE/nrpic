@@ -206,8 +206,11 @@ def main():
         # profiles against the references and the self-similar solution
         rc = np.sqrt(LEDGES[1:] * LEDGES[:-1])
         prof = []
+        pa = np.array([x["a"] for x in R["profiles"]])
+        want = {int(np.argmin(np.abs(pa - aa))) for aa in (2.0, 4.0, 8.0)
+                if np.min(np.abs(pa / aa - 1)) < 0.05} | {len(pa) - 1}
         for kk, pr in enumerate(R["profiles"]):
-            if not any(abs(pr["a"] - aa) < 0.03 for aa in (2.0, 3.0, 4.0, 8.0)) and kk != len(R["profiles"]) - 1:
+            if kk not in want:
                 continue
             rho_b = p["rho_i"] * (p["t_i"] / (p["t_i"] + pr["t"])) ** 2
             ent = dict(a=pr["a"], t=pr["t"], rho=pr["rho"])
@@ -270,7 +273,8 @@ def main():
     with open(os.path.join(a.out, "nm_analysis.json"), "w") as f:
         json.dump(summary, f, indent=1)
 
-    cols = {"N128": fs.PAL["red"], "N64": fs.PAL["yellow"], "N128L": fs.PAL["green"]}
+    series = [fs.PAL["red"], fs.PAL["yellow"], fs.PAL["green"], fs.PAL["orange"]]
+    cols = {lab: series[i % len(series)] for i, lab in enumerate(order)}
     lsty = {"kernel": "-", "plummer": "--", "point": ":"}
 
     # ---------- figure 1: growth
@@ -370,7 +374,7 @@ def main():
     for lab in order:
         R = runs[lab]
         for ent in R["prof"]:
-            if not (abs(ent["a"] - 4.0) < 0.03 or abs(ent["a"] - 8.0) < 0.03):
+            if not (abs(ent["a"] / 4.0 - 1) < 0.05 or abs(ent["a"] / 8.0 - 1) < 0.05):
                 continue
             rho = np.array(ent["rho"])
             ok = rho > 0

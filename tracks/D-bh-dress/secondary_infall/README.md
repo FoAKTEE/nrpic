@@ -2,9 +2,10 @@
 
 Newtonian secondary infall of collisionless dust onto a point mass (the black hole) in an
 Einstein-de Sitter background, as semi-analytic references and a spherical-shell
-reference calculation (decision 0010: no standalone simulation code; the particle version
-runs later in AthenaK's Newtonian mode, branch `core/newton`, and in full relativity).
-From these references it fixes the parameters of the AthenaK runs: `RUNS.md`.
+reference calculation (decision 0010: no standalone simulation code), and (wave 2) the
+particle version in AthenaK's Newtonian mode (release core-v0.3, `<particles> pusher =
+newton`): section "Wave 2" below. From the references it fixes the parameters of the
+AthenaK runs: `RUNS.md`.
 
 Units G = c = 1, M = initial mass of the hole, eps = H_i M, t_i = 2/(3 eps). The set-up is
 the scoping run's (`../scope/`): uniform dust in the unperturbed Hubble flow at t_i around
@@ -53,4 +54,5 @@ Python 3.10 with numpy 2.2, scipy 1.15, matplotlib 3.10 (no extra packages).
 
 ## Requests
 
-See `RUNS.md`, section "Requests to other owners".
+Wave 1: see `RUNS.md`, section "Requests to other owners". Wave 2: section "Wave 2",
+"Requests" below.
