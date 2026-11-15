@@ -142,3 +142,59 @@ innermost of 8 log bins in 5-20 Gm holds the fewest. Prediction: for E_cut = 0.9
 3e4 particles in total give 100 per bin (10 %); the requirement grows like
 N(<r_apo)/N(<20) ~ (r_apo/20)^(2/3) (number profile of a rho ~ r^-7/3 spike), i.e. about
 4.6x per decade of the largest apocentre. Refuted if the growth per decade is outside 3-7x.
+
+## P2 outcome
+
+Runs: initial data D-bh-dress-20261115-123734-25227d4 (10.7 s); run A
+D-bh-dress-20261115-123755-25227d4 (12 CPU processes, 1151 s, 3.8 core-hours, 48000
+particles x 400000 steps); run B D-bh-dress-20261115-123801-25227d4 (94 s); run B2
+D-bh-dress-20261115-123936-72cd01e (154 s); analyses D-bh-dress-20261115-125739-a18d74d
+(A), -124246-aa9dee7 (B), -124249-aa9dee7 (B2), -124257-aa9dee7 (B vs B2); a first analysis
+of A, D-bh-dress-20261115-125724-464611f, FAILED (empty-array reduction when no species-1
+particle is present; fixed in a18d74d and rerun). No card-hour used. Figures looked at:
+`figs/stationarity_profile.png`, `figs/stationarity_time.png`, `figs/invariants_losscone.png`,
+`figs/losscone_dt0.05.png`, `figs/losscone_dt0.025.png`, `figs/crossing_dt.png`.
+Sampler checks (ic_summary.json): no envelope violation in 192000 orbit trials and in the
+phase sampling; 52 of 52800 grid nodes had no orbit (E at the ISCO or lambda at the circular
+end) and carry weight 0; converted states reproduce E and L to 4e-16 and 1.1e-15.
+
+P2a confirmed: chi^2/dof = 1.48 at t = 0 (dof 23, band 0.12-1.89).
+P2b confirmed: chi^2/dof over the 81 snapshots median 0.98, range 0.44-1.69, no trend.
+    Counts in 4-6 / 6-10 / 10-20 / 20-50 Gm (expected 207 / 1983 / 9114 / 26365) stayed
+    within -2.9 ... +2.7 sigma, -2.7 ... +1.6, -2.2 ... +1.3, -1.8 ... +1.3 sigma at every
+    snapshot; late-half means 0.976 (sigma 0.070), 0.994 (0.022), 0.999 (0.011),
+    0.998 (0.006) of the expected value. The binned profile stays on the reference for
+    20000 M, i.e. 9 radial periods of the widest orbits and about 100 of orbits with a
+    semi-major axis of 10 Gm.
+P2c: |dE/E| (max over snapshots) median 8.5e-9, 99th percentile 6.5e-7, max 1.3e-6
+    (confirmed; the error grows steeply towards small pericentre, 1.3e-6 at r_p = 4.2 Gm,
+    1e-11 at 80 Gm). |dL/L| median 1.6e-12, p99 3.6e-11, max 1.9e-10: the prediction
+    "< 1e-10" FAILED by a factor 2 for particles with pericentres of 4-5 Gm; L_z is a
+    quadratic invariant of the implicit midpoint rule, so I expect this to be the
+    accumulation of the fixed-point tolerance (1e-12) over 4e5 steps [JUDGEMENT, not tested].
+P2d confirmed: none of the 48000 species-0 particles reached r < 2 in 20000 M.
+P2e confirmed: all 1200 loss-cone probes (q < 0) crossed r = 2, none of the 1200 probes
+    outside (q > 0) did, for |q| from 1e-4 to 1e-1, in both B and B2. No particle came back
+    out of r < 2 and no snapshot record was non-finite. Crossing time measured from the last
+    snapshot outside (exact remaining infall time with the particle's own E, L): every probe
+    crosses EARLIER than the exact geodesic, by -0.024 M (median) and at most -0.75 M with
+    dt = 0.05, by -0.0060 M and at most -0.19 M with dt = 0.025; the ratio is 3.997 (median;
+    3.98 / 4.00 / 4.00 in the |q| decades 1e-4, 1e-3, 1e-2), and the offset scales as 1/|q|
+    (`figs/crossing_dt.png`): a second-order phase error of the pusher, amplified by the
+    whirl near the unstable circular orbit. With the coarse 2 M snapshots the first-inside
+    test was within [t_pred - 1, t_pred + 2) for all probes, as predicted.
+
+## P3 outcome (run D-bh-dress-20261115-123848-72cd01e, 17.5 s)
+
+Total equal-mass N for 100 (400) particles in each of 8 log bins in 5-20 Gm, DF truncated
+at E <= E_cut (largest apocentre in brackets): 1 - E_cut = 1e-2 (113 Gm): 3.0e4 (1.2e5);
+1e-3 (1.0e3 Gm): 2.8e5 (1.1e6); 1e-4 (1.0e4 Gm): 1.5e6 (6.1e6); 1e-5 (1.0e5 Gm): 7.4e6
+(3.0e7); 1e-6 (1.0e6 Gm): 3.5e7 (1.4e8). Fraction of the particles inside 20 Gm: 0.236,
+0.025, 0.0047, 0.00097, 0.00021. The predicted 3e4 for E_cut = 0.99 is confirmed; the
+growth per decade of apocentre is 9.5x, 5.4x, 4.8x, 4.7x: the first decade is outside the
+predicted 3-7x (FAILED there; the truncation at E_cut = 0.99 removes part of the density
+inside 20 Gm itself, see the full-DF curve of `figs/stationarity_profile.png`), the later
+ones approach the asymptotic (10)^(2/3) = 4.64 as predicted.
+Deposit noise for a self-gravitating run (scaling of docs/results_cluster_test.md 2(d):
+relative L2 noise 0.24-0.28 at 1.1 particles per occupied cell, N^-1/2): 6.4e7 particles
+inside 20 Gm for 5 % noise on cells of 0.25 Gm [JUDGEMENT, extrapolated].
