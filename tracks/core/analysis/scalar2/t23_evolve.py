@@ -67,7 +67,7 @@ def main():
     summ = dict(exe=os.path.abspath(a.exe), n=a.n)
     if not a.analyse_only:
         cases = [(os.path.join(out, k), INP, base + x) for k, x in spec.items()]
-        walls = common.run_many(a.exe, cases, a.workers)
+        walls = common.run_many(os.path.abspath(a.exe), cases, a.workers)
         summ["wall_s"] = dict(zip(spec, walls))
 
     hist = {k: sf.read_history(os.path.join(out, k, "sr.sf.hst")) for k in spec}

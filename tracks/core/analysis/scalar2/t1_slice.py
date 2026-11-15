@@ -64,7 +64,7 @@ def main():
         add("con32_" + tag(s), 32, NMAX2, s, ["problem/slice_k2=continuum"])
     for s in (1.0, 0.5):
         add("now_" + tag(s), 32, NMAX2, s, ["problem/slice_window=false"])
-    walls = common.run_many(a.exe, cases, a.workers)
+    walls = common.run_many(os.path.abspath(a.exe), cases, a.workers)
     data = {name: load(os.path.join(out, name)) for name in runs}
     summ = dict(exe=os.path.abspath(a.exe), case={k: case[k] for k in (
         "phi0", "pi0", "mass", "h_star_planck", "eps1", "eps2", "length")},
