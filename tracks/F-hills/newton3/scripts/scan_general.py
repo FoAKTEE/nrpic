@@ -27,6 +27,7 @@ D_A = np.unique(np.round(np.concatenate([np.logspace(-4, -1, 7), np.arange(0.15,
                                           [1.95, 2.05, 2.15]]), 6))
 D_B = np.array([1e-5, 1e-2, 0.1, 0.3, 0.5, 1.0, 1.5, 2.0])
 CHUNK = 8192
+RTOL = 1e-10
 
 
 def _run_chunked(D, th, vp, ph):
@@ -34,10 +35,11 @@ def _run_chunked(D, th, vp, ph):
     parts = []
     for i in range(0, n, CHUNK):
         sl = slice(i, i + CHUNK)
-        o = R.run(D, th[sl], vp[sl], ph[sl], k0=10.0, k_end=30.0)
+        o = R.run(D, th[sl], vp[sl], ph[sl], k0=10.0, k_end=30.0, rtol=RTOL, atol=RTOL * 1e-3)
         amb = o["ambiguous"] & o["ok"]
         if amb.any():
-            o2 = R.run(D, th[sl][amb], vp[sl][amb], ph[sl][amb], k0=10.0, k_end=300.0)
+            o2 = R.run(D, th[sl][amb], vp[sl][amb], ph[sl][amb], k0=10.0, k_end=300.0,
+                       rtol=RTOL, atol=RTOL * 1e-3)
             for k in ("E2", "disrupted", "survived", "ambiguous", "rmin", "af", "ef", "ok"):
                 o[k][amb] = o2[k]
         parts.append(o)
@@ -67,8 +69,10 @@ def main():
     ap.add_argument("--workers", type=int, default=8)
     ap.add_argument("--only-B", default=None,
                     help="comma-separated D values: run only part B at these D (supplement)")
+    ap.add_argument("--rtol", type=float, default=1e-10)
     args = ap.parse_args()
-    global D_A, D_B
+    global D_A, D_B, RTOL
+    RTOL = args.rtol
     if args.only_B:
         D_A = np.array([])
         D_B = np.array([float(x) for x in args.only_B.split(",")])

@@ -3,7 +3,9 @@
 (a) rtol in {1e-10, 1e-12, 1e-13} for D in {1e-5, 1.8e-5, 3.2e-5, 1e-4, 1e-3, 0.1, 1},
     coplanar prograde, 600 phases in [0, pi);
 (b) k_end in {30, 100} and k0 in {10, 20} at rtol 1e-10 for D in {1e-3, 0.1, 1, 2}.
-Run: cd tracks/F-hills/newton3 && OMP_NUM_THREADS=1 python3 scripts/convergence.py [--workers 8]
+(c) --k0-scan (P6): k0 in {10, 20, 40, 80} for D in {1e-3, 0.1, 0.5, 1, 1.5, 2}, coplanar
+    prograde, 1200 phases, rtol 1e-12.
+Run: cd tracks/F-hills/newton3 && OMP_NUM_THREADS=1 python3 scripts/convergence.py [--k0-scan] [--workers 8]
 """
 import argparse
 import json
@@ -22,8 +24,9 @@ PH = np.linspace(0, np.pi, 600, endpoint=False)
 
 
 def task(a):
-    D, rtol, k0, k_end = a
-    o = R.run(D, np.pi / 2, np.pi / 2, PH, k0=k0, k_end=k_end, rtol=rtol, atol=rtol * 1e-3)
+    D, rtol, k0, k_end = a[:4]
+    ph = PH if len(a) == 4 else np.linspace(0, np.pi, a[4], endpoint=False)
+    o = R.run(D, np.pi / 2, np.pi / 2, ph, k0=k0, k_end=k_end, rtol=rtol, atol=rtol * 1e-3)
     ok = o["ok"]
     d = o["disrupted"] & ok
     return a, {"P": float(d.sum() / ok.sum()), "Emean": float(np.abs(o["E2"][d]).mean()),
@@ -34,7 +37,22 @@ def task(a):
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--workers", type=int, default=8)
+    ap.add_argument("--k0-scan", action="store_true")
     args = ap.parse_args()
+    if args.k0_scan:
+        run = runlib.start_run("P6: start-radius convergence of the restricted results (k0 = 10..80 r_t)",
+                               cores=args.workers, preregistered="tracks/F-hills/newton3/JOURNAL.md#P6")
+        jobs = [(D, 1e-12, k0, 30.0, 1200) for D in (1e-3, 0.1, 0.5, 1.0, 1.5, 2.0)
+                for k0 in (10.0, 20.0, 40.0, 80.0)]
+        with Pool(args.workers) as pool:
+            res = dict(pool.map(task, jobs))
+        out = {f"D={a[0]:g} k0={a[2]:g}": v for a, v in res.items()}
+        with open(os.path.join(run["dir"], "k0scan.json"), "w") as fh:
+            json.dump(out, fh)
+        for k, v in out.items():
+            print(f"{k:24s} P={v['P']:.4f} <|E|>={v['Emean']:.4f} fail={v['fail']} amb={v['amb']}")
+        runlib.finish_run(run)
+        return
     run = runlib.start_run("P5: convergence of restricted results with rtol, end radius and start "
                            "radius", cores=args.workers,
                            preregistered="tracks/F-hills/newton3/JOURNAL.md#P5")

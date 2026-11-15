@@ -28,15 +28,19 @@ def d_grid():
     return np.unique(np.round(g, 6))
 
 
+RTOL = 1e-10
+
+
 def task(args):
     D, prograde = args
     ph_skr = np.linspace(0, np.pi, N_PHA, endpoint=False)
     th, vp, ph = R.coplanar_phase(ph_skr, prograde)
-    o = R.run(D, th, vp, ph, k0=10.0, k_end=30.0)
+    o = R.run(D, th, vp, ph, k0=10.0, k_end=30.0, rtol=RTOL, atol=RTOL * 1e-3)
     amb = o["ambiguous"] & o["ok"]
     n_rerun = int(amb.sum())
     if n_rerun:
-        o2 = R.run(D, th, vp, np.asarray(ph)[amb], k0=10.0, k_end=300.0)
+        o2 = R.run(D, th, vp, np.asarray(ph)[amb], k0=10.0, k_end=300.0, rtol=RTOL,
+                   atol=RTOL * 1e-3)
         for k in ("E2", "disrupted", "survived", "ambiguous", "rmin", "af", "ef", "ok"):
             o[k][amb] = o2[k]
     keep = ("E2", "disrupted", "survived", "ambiguous", "rmin", "af", "ok", "nacc")
@@ -46,11 +50,16 @@ def task(args):
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--workers", type=int, default=8)
+    ap.add_argument("--rtol", type=float, default=1e-10)
+    ap.add_argument("--D-list", default=None, help="comma-separated D values (supplement run)")
     args = ap.parse_args()
+    global RTOL
+    RTOL = args.rtol
     run = runlib.start_run("P1: coplanar restricted scan, disruption probability and ejection "
-                           "energy vs penetration factor, both directions, 3000 phases per D",
+                           "energy vs penetration factor, both directions, 3000 phases per D"
+                           + (f" (supplement at rtol {args.rtol:g}: D = {args.D_list})" if args.D_list else ""),
                            cores=args.workers, preregistered="tracks/F-hills/newton3/JOURNAL.md#P1")
-    Ds = d_grid()
+    Ds = d_grid() if not args.D_list else np.array([float(x) for x in args.D_list.split(",")])
     jobs = [(D, pro) for D in Ds[::-1] for pro in (True, False)]
     res = {}
     with Pool(args.workers) as pool:

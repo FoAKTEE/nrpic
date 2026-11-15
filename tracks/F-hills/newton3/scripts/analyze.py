@@ -31,6 +31,7 @@ import runlib  # noqa: E402
 
 fs.use_style()
 FIG = os.path.join(PKG, "figures")
+D_TRUST = 1e-4   # restricted results below this D are not converged at rtol 1e-10 (JOURNAL P5)
 RES = os.path.join(PKG, "results")
 RED, BLUE, YEL, GRN, ORA = fs.PAL["red"], fs.PAL["blue"], fs.PAL["yellow"], fs.PAL["green"], fs.PAL["orange"]
 
@@ -75,9 +76,13 @@ def coplanar(run_id):
     src = _src(run_id, "coplanar.npz")
     run = runlib.start_run(f"analysis of {run_id} (P1 coplanar)", extra_inputs=[src],
                            preregistered="tracks/F-hills/newton3/JOURNAL.md#P1")
-    Z = np.load(src)
-    D, ph = Z["D"], Z["phase_skr"]
+    Z0 = np.load(src)
+    keep = Z0["D"] >= D_TRUST * (1 - 1e-9)
+    Z = {k: (np.asarray(Z0[k])[keep] if k.rsplit("_", 1)[-1] in ("pro", "ret") else Z0[k])
+         for k in Z0.files}
+    D, ph = Z["D"][keep], Z["phase_skr"]
     S = {"source_run": run_id, "phases_per_D": int(ph.size), "phase_range": "[0, pi)",
+         "discarded_D_below": D_TRUST, "discarded_reason": "rtol 1e-10 not converged (JOURNAL P5)",
          "D_grid": [float(x) for x in D]}
     stat = {}
     for tag in ("pro", "ret"):
@@ -159,14 +164,14 @@ def coplanar(run_id):
     axs[2].set_ylabel(r"$\max |E|$")
     axs[2].set_xscale("log")
     axs[2].set_xlabel(r"$D = r_p / r_t$", labelpad=-1)
-    axs[2].set_xlim(8e-6, 3)
+    axs[2].set_xlim(8e-5, 3)
     _save(fig, run, "fig_coplanar_pdis_energy")
 
     # ---- figure: energy vs phase in the deep limit (SKR fig. 6 analogue)
     fig, ax = plt.subplots(figsize=(fs.COLUMN_WIDTH * 1.25, 3.2))
     fig.subplots_adjust(left=0.14, right=0.97, bottom=0.15, top=0.97)
     phf = np.concatenate([ph - np.pi, ph]) / np.pi
-    picks = [(1e-5, RED, "-"), (1e-2, GRN, "-."), (0.03, "k", "--")]
+    picks = [(1e-4, RED, "-"), (1e-2, GRN, "-."), (0.03, "k", "--")]
     Dl = list(D)
     for Dv, col, ls in picks:
         i = int(np.argmin(np.abs(np.log(D) - np.log(Dv))))
@@ -215,11 +220,13 @@ def coplanar(run_id):
 
 
 # ============================================================================ P2
-def general(run_id, coplanar_run=None):
+def general(run_id, coplanar_run=None, supplement_run=None):
     src = _src(run_id, "general.npz")
     extra = [src]
     if coplanar_run:
         extra.append(_src(coplanar_run, "coplanar.npz"))
+    if supplement_run:
+        extra.append(_src(supplement_run, "general.npz"))
     run = runlib.start_run(f"analysis of {run_id} (P2 general orientation)", extra_inputs=extra,
                            preregistered="tracks/F-hills/newton3/JOURNAL.md#P2")
     Z = np.load(src)
@@ -245,9 +252,19 @@ def general(run_id, coplanar_run=None):
     S["max_abs_Emean_rel_dev_D<=1"] = float(np.max(np.abs(Em / Efit - 1)[m1]))
     S["max_abs_Emean_rel_dev_D<=1.5"] = float(np.max(np.abs(Em / Efit - 1)[m15]))
     S["Dmax_last_disrupting"] = float(D[np.where(P > 0)[0].max()])
-    # part B: inclination
-    DB, th = Z["D_B"], Z["theta_B"]
-    okB, disB, EB = Z["ok_B"], Z["disrupted_B"], Z["E2_B"]
+    # part B: inclination (D below D_TRUST discarded; supplement run merged in)
+    th = Z["theta_B"]
+    kB = Z["D_B"] >= D_TRUST * (1 - 1e-9)
+    DB, okB, disB, EB = Z["D_B"][kB], Z["ok_B"][kB], Z["disrupted_B"][kB], Z["E2_B"][kB]
+    if supplement_run:
+        Y = np.load(_src(supplement_run, "general.npz"))
+        DB = np.concatenate([Y["D_B"], DB])
+        okB = np.concatenate([Y["ok_B"], okB])
+        disB = np.concatenate([Y["disrupted_B"], disB])
+        EB = np.concatenate([Y["E2_B"], EB])
+        o = np.argsort(DB)
+        DB, okB, disB, EB = DB[o], okB[o], disB[o], EB[o]
+        S["supplement_run"] = supplement_run
     PB = np.zeros((DB.size, th.size))
     EBm = np.zeros((DB.size, th.size))
     for i in range(DB.size):
@@ -548,6 +565,7 @@ if __name__ == "__main__":
     if which == "example":
         example()
     elif which == "general":
-        general(sys.argv[2], sys.argv[3] if len(sys.argv) > 3 else None)
+        general(sys.argv[2], sys.argv[3] if len(sys.argv) > 3 else None,
+                sys.argv[4] if len(sys.argv) > 4 else None)
     else:
         {"coplanar": coplanar, "p3": p3, "p4": p4, "finiteq": finiteq}[which](sys.argv[2])

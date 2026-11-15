@@ -137,3 +137,30 @@ start distance matters more because the tidal field at 10 r_t is not negligible
   converge (then the cause is not the tolerance) or (c) misses. If (b) holds, the deep
   limit is quoted from D = 1e-4 (and the rtol 1e-13 points), and the D < 1e-4 values of
   the two scans are discarded.
+
+## 2026-11-15 P5 outcome (run F-hills-20261115-131754-907e5fe); prediction P6
+
+- found (a): D = 1e-3, 0.1, 1 are converged at rtol 1e-10 (P_dis and <|E|> identical to
+  four digits at 1e-12 and 1e-13). D = 1e-4 is NOT (P 0.8150 vs 0.8100, <|E|> 1.092 vs
+  1.038 at rtol 1e-10 vs 1e-13): prediction (a) refuted at D = 1e-4; the safe limit of
+  the rtol 1e-10 scans is D >= 1e-3.
+- found (b): the suspected cause holds; the anomaly is the tolerance. At rtol 1e-12 and
+  1e-13 the rise of P_dis at small D disappears: P_dis = 0.808, 0.808, 0.808, 0.810 at
+  D = 1e-5, 1.8e-5, 3.2e-5, 1e-4 (rtol 1e-13, coplanar prograde, 600 phases), i.e. 19.0-
+  19.2 percent survival against SKR's 19 percent for the radial problem (prp.tex:748-749).
+  <|E|> at D = 1e-5 is 1.165 (1e-12) vs 1.046 (1e-13): still moving at D = 1e-5, so the
+  deep-limit energy is taken from D = 1e-4 at rtol 1e-12 (1.038, converged).
+- found (c): end radius 30 -> 100 r_t changes nothing (P identical, <|E|> < 0.1 percent):
+  confirmed. Start radius 10 -> 20 r_t: P_dis +0.0 (D = 0.1), -0.5 points (D = 1),
+  -0.17 (D = 1e-3), +1.7 points (D = 2); <|E|> +2.6 percent (D = 1e-3), +0.4 (0.1),
+  +0.1 (1), +3.8 (2). Prediction (c) refuted at D = 1e-3 and D = 2: the start radius of
+  10 r_t (SKR prp.tex:599) is not converged at the percent level everywhere.
+- decision: results of the rtol 1e-10 scans are used for D >= 1e-3 only; the deep points
+  are recomputed at rtol 1e-13 (coplanar, D = 1e-5 .. 5.6e-4) and 1e-12 (inclination scan
+  at D = 1e-4); the literature comparisons keep the papers' start radius 10 r_t, and the
+  start-radius dependence is measured separately (P6) and stated as a systematic.
+- prediction P6 (written before the run): with k0 in {10, 20, 40, 80} r_t at D in
+  {1e-3, 0.1, 0.5, 1, 1.5, 2} (coplanar prograde, 1200 phases, rtol 1e-12), P_dis and
+  <|E|> converge in k0: k0 = 40 and 80 agree within 0.3 points and 0.5 percent, and the
+  k0 = 10 values differ from k0 = 80 by at most 2 points and 4 percent. Refuted if 40 vs 80
+  still differ by more, or the k0 = 10 offsets exceed these bounds.
