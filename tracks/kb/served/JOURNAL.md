@@ -126,3 +126,19 @@ verify-downloads, `kb ingest arxiv --new --extras` ingests exactly these five, a
 four with parse_status ok (the 2003 and 2006 sources may land on the review list).
 Refuted if a fetch fails, an id is not a TeX e-print, or two or more parse as
 review/failed.
+
+Outcome S5 (runs kb-20261115-154525-248806f fetch, kb-20261115-154547-12ef9f0
+verify-downloads, kb-20261115-154612-4703404 ingest): prediction held. All five stored
+ok with TeX (2505.15903 v2 tar; 0707.1350 v1 single gzip-tex; astro-ph/0608642 v1 tar;
+gr-qc/0305023 v1 tar; 1003.4681 v1 tar); manifest still 683 ok + 1 problem, 24 extras;
+ingest: all five ok (scores 0.93-1.00; sections 5-21, equations 6-102, bibliography
+33-86), gr-qc/9412071 skipped as before.
+
+## S6 17:00 Weekly upstream watch of AthenaK (prediction)
+
+Previous watch: run kb-20261115-132754-bb3da03 at 13:27:54Z (main c5a0d7f, 124 branches,
+none named pic/vlasov/nrpic/deposit, no `src/particles` line with tmunu or deposit on any
+branch). Prediction for `kb watch upstream` now (3.5 h later): main still c5a0d7f; 124
+branches with at most two moved, none new with a flagged name; still no branch hands
+particle stress-energy to Z4c; hence no message to core is needed. Refuted if main moved,
+a flagged branch appeared, or any branch's `src/particles` gained a tmunu/deposit line.
