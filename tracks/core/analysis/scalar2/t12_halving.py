@@ -100,6 +100,7 @@ def parts(dirs, tmax):
             mp, mm = mvec(f[sp]), mvec(f[sm])
             row["H_odd_" + tag] = rms(0.5*(hp - hm))
             row["H_c2_" + tag] = rms(0.5*(hp + hm) - h0)
+            row["H_c2_mean_" + tag] = float((0.5*(hp + hm) - h0).mean())
             row["H_minus_H0_" + tag] = rms(hp - h0)
             row["M_odd_" + tag] = rms(mnorm(0.5*(mp - mm)))
             row["M_even_" + tag] = rms(mnorm(0.5*(mp + mm)))
@@ -114,6 +115,8 @@ def parts(dirs, tmax):
 
 def window_stats(fac, lo, hi):
     sel = (fac["efolds"] >= lo) & (fac["efolds"] <= hi)
+    if not sel.any():
+        return None
     return {k: [float(fac[k][sel].min()), float(fac[k][sel].max())] for k in ("F_H", "F_M")}
 
 
@@ -176,31 +179,38 @@ def main():
     fs = common.style()
     import matplotlib.pyplot as plt
     col = {32: fs.PAL["red"], 64: fs.PAL["green"], 128: fs.PAL["blue"]}
-    fig, ax = plt.subplots(2, 2, figsize=(fs.FULL_WIDTH, 6.4))
-    fig.subplots_adjust(left=0.085, right=0.985, bottom=0.075, top=0.975, wspace=0.25,
+    fig, ax = plt.subplots(2, 2, figsize=(fs.FULL_WIDTH, 6.9))
+    fig.subplots_adjust(left=0.085, right=0.985, bottom=0.07, top=0.915, wspace=0.25,
                         hspace=0.24)
+
+    def guides(p, marks, ymax):
+        for v, txt in marks:
+            p.axhline(v, **fs.MASK_LINE)
+            p.text(3.15, v + 0.04*ymax, txt, ha="right", va="bottom", fontsize=7,
+                   color="grey")
+        p.set_ylim(0.0, ymax)
+        p.set_xlim(-0.1, 3.25)
     p = ax[0, 0]
     for n in sorted(fac):
         p.plot(fac[n]["efolds"], fac[n]["F_H"], color=col[n], label=f"$N={n}$, record")
         p.plot([r["efolds"] for r in prt[n]], [r["G_H"] for r in prt[n]], "o", ms=3.5,
-               mfc="none", color=col[n], label=f"$N={n}$, $H-H_0$ from dumps")
-    for v in (4.0, 2.0, 1.0):
-        p.axhline(v, **fs.MASK_LINE)
-    p.set_ylim(0.0, 4.6)
+               mfc="none", color=col[n], label=f"$N={n}$, $H-H_0$, dumps")
+    top = max(4.6, 1.1*max(float(np.max(fac[n]["F_H"])) for n in fac))
+    guides(p, ((4.0, "second order"), (2.0, "first order"), (1.0, "independent of $s$")),
+           top)
     p.set_xlabel("e-folds after $N_*$", labelpad=1)
     p.set_ylabel(r"$\langle|H|/[H]\rangle_{s=1}\,/\,\langle|H|/[H]\rangle_{s=1/2}$")
-    p.legend(loc="lower left", fontsize=7.5, ncol=2)
+    p.legend(loc="lower center", bbox_to_anchor=(0.5, 1.0), fontsize=7, ncol=2)
     p = ax[0, 1]
     for n in sorted(fac):
         p.plot(fac[n]["efolds"], fac[n]["F_M"], color=col[n], label=f"$N={n}$, record")
         p.plot([r["efolds"] for r in prt[n]], [r["G_M"] for r in prt[n]], "s", ms=3.5,
-               mfc="none", color=col[n], label=f"$N={n}$, rms $|M|$ from dumps")
-    for v in (4.0, 2.0, 1.0):
-        p.axhline(v, **fs.MASK_LINE)
-    p.set_ylim(0.0, 4.6)
+               mfc="none", color=col[n], label=f"$N={n}$, rms $|M|$, dumps")
+    guides(p, ((4.0, "rms $|M|$: second order"), (2.0, "record: second order"),
+               (1.0, "record: first order")), 4.6)
     p.set_xlabel("e-folds after $N_*$", labelpad=1)
     p.set_ylabel(r"$\langle|M|/[M]\rangle_{s=1}\,/\,\langle|M|/[M]\rangle_{s=1/2}$")
-    p.legend(loc="lower left", fontsize=7.5, ncol=2)
+    p.legend(loc="lower center", bbox_to_anchor=(0.5, 1.0), fontsize=7, ncol=2)
     p = ax[1, 0]
     for n in sorted(prt):
         e = [r["efolds"] for r in prt[n]]
@@ -229,7 +239,7 @@ def main():
     p.set_yscale("log")
     p.set_xlabel("e-folds after $N_*$", labelpad=1)
     p.set_ylabel(r"largest $|R^{\rm NR}_n/(W R\,\alpha_n)-1|$")
-    p.legend(loc="lower right", fontsize=7, ncol=2)
+    p.legend(loc="upper left", fontsize=7, ncol=2)
     fig.savefig(os.path.join(out, "fig_halving.png"), dpi=200)
     print("T12 done:", os.path.join(out, "summary.json"))
 
