@@ -1,0 +1,67 @@
+{
+ "run_id": "D-bh-dress-20261115-123952-72cd01e",
+ "track": "D-bh-dress",
+ "package": "D-pre-2 spike",
+ "purpose": "P2 analysis of run B (loss-cone boundary, dt=0.05)",
+ "kind": "scouting",
+ "command": [
+  "python3",
+  "analyze_spike.py",
+  "--ic",
+  "/data/haiyangw/nrpic/scratch/D-bh-dress/D-bh-dress-20261115-123734-25227d4",
+  "--runs",
+  "/data/haiyangw/nrpic/scratch/D-bh-dress/D-bh-dress-20261115-123801-25227d4/spike_lc",
+  "--out",
+  "/data/haiyangw/nrpic/scratch/D-bh-dress/D-bh-dress-20261115-123952-72cd01e"
+ ],
+ "cwd": "/data/haiyangw/nrpic/wt/D-bh-dress/tracks/D-bh-dress/spike",
+ "env_overrides": {
+  "OMP_NUM_THREADS": "2",
+  "OPENBLAS_NUM_THREADS": "2"
+ },
+ "git": {
+  "sha": "72cd01e16eb1abfa8b4eb44971e06d7bb3da7bdb",
+  "branch": "track/D-bh-dress",
+  "dirty_spike_dir": true
+ },
+ "inputs": [
+  {
+   "path": "/data/haiyangw/nrpic/wt/D-bh-dress/tracks/D-bh-dress/spike/analyze_spike.py",
+   "sha256": "3a9da0d9b47140ec53075feba954561c5723051b73f5ea11655321443eeb05e7"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/scratch/D-bh-dress/D-bh-dress-20261115-123734-25227d4/ic_meta.npz",
+   "sha256": "58de4c5b8046681806abb46fe476be49074bd0f95cfebeb73ade9fcea5928fc4"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/scratch/D-bh-dress/D-bh-dress-20261115-123734-25227d4/ic_summary.json",
+   "sha256": "e4fc2e13ba3d4b6815c83b015b9db920ee8b7f1ad35bb8f26edf0978bb2902f5"
+  }
+ ],
+ "resources": {
+  "nodes": 1,
+  "cores": 2,
+  "gpus": 0,
+  "card_hours": 0.0,
+  "walltime_s": 2.74
+ },
+ "outputs": {
+  "dir": "/data/haiyangw/nrpic/scratch/D-bh-dress/D-bh-dress-20261115-123952-72cd01e",
+  "sha256sums": "sha256sums.txt",
+  "files": [
+   "analysis.json",
+   "losscone.pdf",
+   "losscone.png",
+   "stdout.txt"
+  ]
+ },
+ "status": "completed",
+ "exit_code": 0,
+ "started": "2026-11-15T12:39:52+00:00",
+ "ended": "2026-11-15T12:39:55+00:00",
+ "parents": [
+  "D-bh-dress-20261115-123801-25227d4",
+  "D-bh-dress-20261115-123734-25227d4"
+ ],
+ "notes": "Registered by hand with spike/register_run.py."
+}

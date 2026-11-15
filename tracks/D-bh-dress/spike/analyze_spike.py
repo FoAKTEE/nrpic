@@ -53,14 +53,16 @@ def losscone_figure(out, tt, s0, s1, fate, tpred, first_in, meta, q, snap_dt):
     a = axs[0]
     pl = s1 & fate
     cr = np.isfinite(first_in)
-    a.plot(tpred[pl & cr], first_in[pl & cr] - tpred[pl & cr], ".", ms=3, color=P["red"],
-           label="plunging, crossed")
-    a.axhspan(0, snap_dt, color=P["blue"], alpha=0.2, label="[t_pred, t_pred + snapshot interval)")
+    d = np.load(out / "crossing.npz")
+    off = d["tmeas"] - d["tpred"]
+    a.loglog(np.abs(d["q"])[off < 0], -off[off < 0], ".", ms=3, color=P["red"],
+             label="crossed earlier than predicted")
+    a.loglog(np.abs(d["q"])[off >= 0], off[off >= 0], ".", ms=3, color=P["blue"],
+             label="crossed later than predicted")
     miss = pl & ~cr
-    if miss.any():
-        a.plot(tpred[miss], np.zeros(miss.sum()), "x", color="k", label="plunging, not crossed")
-    a.set_xlabel(r"predicted crossing time $t_{\rm pred}/Gm$")
-    a.set_ylabel(r"first snapshot inside $-\ t_{\rm pred}$ [$Gm$]")
+    a.set_xlabel(r"distance to the separatrix $|q|$, $L^2 = L_c^2(1-|q|)$")
+    a.set_ylabel(r"$|t_{\rm cross} - t_{\rm pred}|$ [$Gm$]")
+    a.set_title(f"{int(cr[pl].sum())} of {int(pl.sum())} plunging probes crossed", fontsize=9)
     a.legend(loc="upper right", fontsize=7)
     b = axs[1]
     qq = q[s1]
@@ -110,6 +112,7 @@ def main():
     left_after_in = np.zeros(ntot, bool)     # r > 2 after having been inside (bogus)
     maxdE = np.zeros(ntot); maxdL = np.zeros(ntot)
     present = np.zeros(ntot, bool)           # particles of the analysed runs
+    last_out = np.full((ntot, 4), np.nan)    # (t, r, E, L) at the last snapshot outside
     nonfinite = 0
     for k in range(nsnap):
         for r, s in zip(runs, snaps):
@@ -130,6 +133,9 @@ def main():
                 E = kerr.energy("cks", x[out_], u[out_], a=0.0, M=1.0)
                 L = np.linalg.norm(np.cross(x[out_], u[out_]), axis=1)
                 g = gid[out_]
+                upd = ~np.isfinite(first_in[g])
+                last_out[g[upd]] = np.stack([np.full(upd.sum(), t), rr[out_][upd], E[upd],
+                                             L[upd]], axis=1)
                 dE = np.abs(E / E0[g] - 1); dL = np.abs(L / L0[g] - 1)
                 maxdE[g] = np.maximum(maxdE[g], dE); maxdL[g] = np.maximum(maxdL[g], dL)
                 if k == nsnap - 1:
@@ -167,6 +173,28 @@ def main():
     }
     sel = s1 & fate & crossed
     dts = first_in[sel] - tpred[sel]            # measured minus predicted, in [0, snap_dt)
+    # crossing time from the last snapshot outside: exact remaining infall time with the
+    # particle's own (E, L) at that snapshot (ingoing), int_2^r (E r/sqrt(V) - 2)/(r-2) dr
+    from scipy.integrate import quad
+
+    def remaining(E, L, r0):
+        V = lambda r: E * E - (1 - 2 / r) * (1 + L * L / r**2)  # noqa
+        f = lambda r: (E * r / np.sqrt(max(V(r), 1e-300)) - 2) / (r - 2)  # noqa
+        return quad(f, 2.0 + 1e-13, r0, limit=400, epsabs=1e-10, epsrel=1e-10)[0]
+
+    tmeas = np.full(ntot, np.nan)
+    for g in np.where(sel)[0]:
+        t_, r_, e_, l_ = last_out[g]
+        tmeas[g] = t_ + remaining(e_, l_, r_)
+    off = tmeas - tpred
+    res["losscone"]["crossing_time_offset_meas_minus_pred"] = {
+        "median": float(np.nanmedian(off[sel])), "min": float(np.nanmin(off[sel])),
+        "max": float(np.nanmax(off[sel])),
+        "p01_p99": [float(np.nanquantile(off[sel], 0.01)), float(np.nanquantile(off[sel], 0.99))],
+        "abs_max_for_|q|>1e-2": float(np.nanmax(np.abs(off[sel & (np.abs(q) > 1e-2)])))
+        if np.any(sel & (np.abs(q) > 1e-2)) else None}
+    np.savez(out / "crossing.npz", gid=np.where(sel)[0], q=q[sel], tpred=tpred[sel],
+             tmeas=tmeas[sel], first_in=first_in[sel])
     snap_dt = float(np.median(np.diff(times)))
     res["losscone"]["first_snapshot_inside_minus_predicted"] = {
         "min": float(dts.min()) if dts.size else None,
