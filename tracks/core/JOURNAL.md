@@ -5,7 +5,7 @@ Append-only, newest at the bottom, one entry per session:
 did / found / evidence / changed my mind about / open. Predictions are written here before
 a test runs, outcomes after.
 
-## 2026-11-15T14:53Z  session core-lead (integration of wave 1)  commits 74ed745..  runs: see below
+## 2026-11-15T14:53Z  session core-lead (integration of wave 1)  commits 74ed745..048bd93 (and this edit)  runs: core-20261115-065452..150426, list in stage/G2/EVIDENCE.md
 
 Helpers of this wave and their own journals: interfaces (`tracks/core/interfaces/JOURNAL.md`),
 verify (`tracks/core/verify/JOURNAL.md`), id (`JOURNAL-id.md`), rng (`JOURNAL-rng.md`),
