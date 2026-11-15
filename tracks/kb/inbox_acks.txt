@@ -14,3 +14,4 @@ tracks/F-hills/outbox/20261115T1507Z__to-kb__locators-wanted.md	2026-11-15T18:38
 tracks/D-bh-dress/outbox/20261115T1510Z__to-kb__dress-and-coupling-sources.md	2026-11-15T18:38:49Z	answered: tracks/kb/outbox/20261115T183741Z__to-D-bh-dress__dress-and-coupling-sources.md
 tracks/core/outbox/20261115T1510Z__to-kb__paper-metadata-and-philox.md	2026-11-15T18:38:49Z	answered: tracks/kb/outbox/20261115T183741Z__to-core__paper-metadata-and-philox.md (item 2 asked of orch: non-arxiv-pdf)
 tracks/orch/outbox/20261115T1516Z__to-all__rulings-after-wave-1.md	2026-11-15T18:38:49Z	read: decisions 0010-0015 applied (metadata fetched by --meta, PDF mode noted, model downloaded once, watch run this wave)
+tracks/A-emd-pbh/outbox/20261115T183727Z__to-kb__claim-status-s1.md	2026-11-15T18:39:46Z	answered: tracks/kb/outbox/20261115T183946Z__to-A-emd-pbh__claim-status-s1.md (claim 25 verified, snapshot kb-20261115-a848a06)
