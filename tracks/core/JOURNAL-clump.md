@@ -557,3 +557,28 @@ the curvature.
    0.131 that K_ij = 0 withholds; prediction 2 of the rerun). Refuted by a mass
    difference above 0.010 (then the curvature changes the excess) or a spin difference
    below 0.005.
+
+### Re-check of the derivation and of the Python reference (run `core-20261115-175320-3de5b3d`)
+
+Session 1 ran `derive_smeared_by.py` and `check_smeared_by.py` without a run id; both
+rerun registered at the branch tip. Prediction: every line `ok`, the same numbers as in
+"Checks without simulation". Outcome: HELD. `ALL IDENTITIES HOLD` (momentum and spin:
+Poisson equations, vector equation, both closed forms, divergence, trace, `Abar^2`,
+power series of Q to t^13, I4 to t^15, C to t^13, limits r -> 0 and r -> infinity);
+reference: divergence 1.557e-11 (momentum), 3.145e-11 (spin), 1.688e-11 (both);
+`P_ADM = P`, `J_ADM = S` to 2.1e-14; far field 3.0e-16; sigma -> 0 2.6e-6;
+second-order mass 1.034348 P^2/sigma and 0.094032 S^2/sigma^3. Independently of the
+script, I redid by hand the power series of Q and of C that `ClumpMoments` in
+`nrpic_clump_curvature.hpp` sums (from erf and t exp(-t^2)); they agree with the code's
+coefficients `4/sqrt(pi) (-1)^k/(k!(2k+3))` and `8/(3 sqrt(pi)) (-1)^(k+1) k/(k!(2k+3))`,
+and the 14 terms used below t = 0.5 leave a remainder near 4e-20. [VERIFIED]
+
+### Figures of session 1 looked at again before relying on them
+
+`fig_clump_convergence.png`, `fig_clump_jeans_t0.png`, `fig_clump_evolution.png`,
+`fig_clump_hamiltonian.png`, `fig_clump_puncture.png`: each shows what the tables above
+state (curvature norms 0.019, 3e-3, 1e-4 at 32, 64, 128 cells against 0.15-0.17
+without; noise reaching the lattice value at 10^6 particles; the two lobes of M_y
+gone with the curvature; H-norm flat with the curvature and rising six-fold without;
+second-order H on the P^2 line; the clumps' lobes gone beside the puncture, the
+puncture's own truncation error left at its position).
