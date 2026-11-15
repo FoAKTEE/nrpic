@@ -82,13 +82,16 @@ All drivers are in `tracks/core/analysis/collisions/`; each writes `summary.json
 | `run_curved_box.py` | homogeneous curved metric on the mesh | 7 min, 3 cores (20 s on a card) |
 | `run_cluster.py` | relativistic cluster with and without collisions; `--energy cell,particle` runs both values of `coll_energy` | card: 4.3 min per run |
 | `gradient_ref.py`, `scbox.py` | reference of the pair model in the static metric with a gradient (no file of the code is read) | 10 min per group of cases |
-| `run_gradient.py` | one collision step on frozen particles in that metric, both values of `coll_energy`, against the reference | 30 min, 6 cores |
+| `run_gradient.py` | one collision step on frozen particles in that metric, both values of `coll_energy`, against the reference (`--regrade` grades an earlier run against another reference) | 30 min, 6 cores |
+| `make_static_example.py` | particle file of the example deck `coll_box_static.athinput` (Tolman gas) | seconds |
 | `run_tolman.py` | equilibrium in a potential well with streaming and collisions, both values | card: seconds; processor: 15 min at 1e5 particles |
 | `run_static_homog.py` | constant lapse and conformal factor (test T12 of track C); the two values of `coll_energy` coincide | 5 min, 4 cores |
 | `run_perturb.py` | the perturbing force `perturb_gamma` | 2 s |
 | `rerun_wave1.py` | reruns the box tests with a new executable and compares all output files with wave 1 or with the release executable | 20 min |
 
-Card: `sbatch -p preempt --gres=gpu:1 -c 2 -t 00:30:00 $C/gpu_job.sh <A|B|C|D> <card
+Card, wave 2 (`coll_energy`, regression, smoke test first): `$C/gpu_job3.sh <parts R, N, C> <card
+executable> <release card executable> <python> [<publish dir>]`. Wave 1:
+`sbatch -p preempt --gres=gpu:1 -c 2 -t 00:30:00 $C/gpu_job.sh <A|B|C|D> <card
 executable> <baseline card executable>` from the root of the worktree (two cores: the
 node has four in all).
 
