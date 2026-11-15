@@ -25,8 +25,12 @@ FIGS = WT / "tracks" / "core" / "verify" / "figs"
 MIRROR = WT / "tracks" / "core" / "verify" / "manifests"
 CRITERIA = HERE / "criteria.json"
 
-EXE_GPU = MAIN / ".work" / "build_gpu_c3" / "src" / "athena"
-EXE_CPU = MAIN / ".work" / "build_cpu_c1" / "src" / "athena"
+# release executables of the main checkout; NRPIC_EXE_GPU / NRPIC_EXE_CPU name others
+# (the lead's integration pass runs the suite on the executables of a merged source)
+EXE_GPU = Path(os.environ.get("NRPIC_EXE_GPU",
+                              MAIN / ".work" / "build_gpu_c3" / "src" / "athena"))
+EXE_CPU = Path(os.environ.get("NRPIC_EXE_CPU",
+                              MAIN / ".work" / "build_cpu_c1" / "src" / "athena"))
 OLD_RUNS = MAIN / "runs"                   # earlier results (untracked, read-only)
 
 
