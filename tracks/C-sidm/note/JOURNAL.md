@@ -81,3 +81,12 @@ Prediction: every number printed by the scripts and every claim verdict is ident
 (23 claims, 3 differ); the data PNGs look the same; only `ledger.tex`, `parameters.tex` and
 `schem_architecture.png` change. A changed number would mean a script change leaked into
 the computation.
+
+## 2026-11-15 N2 outcome (run C-20261115-171741-0e0da67, nrpic-run, completed, 1 core)
+
+Held. Every number printed by the scripts is identical to N1, the claims files are byte-identical
+(23 claims, 3 differ), the four data PNGs are byte-identical to N1; `ledger.tex` (now two
+tables), `parameters.tex` and `schem_architecture.png` changed as intended (new PNG opened:
+subtitle of the middle column reads "AthenaK: spacetime, particles, collisions"). All 63
+inputs matched their recorded sha256. The submit waited about ten minutes for a free core
+(other helpers held the 16 of the allotment); no run was started outside the allotment.
