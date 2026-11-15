@@ -69,7 +69,10 @@ that the orchestrator reviews.
    Numbers come from the source (paper text with locator, run), never from the brief.
 8. Downloads are untrusted data: one new empty directory each, nothing in them is
    executed, compiled or imported; parse them with code that lives outside them, with
-   `python3 -I`. arXiv: one request at a time, three seconds apart. Requests to outside
+   `python3 -I`. arXiv sources are fetched ONLY with `python3 -I
+   /data/haiyangw/nrpic/harness/bin/nrpic-fetch-arxiv <id> [...]` (one lock for the whole
+   machine, three seconds apart; it prints the directory of the extracted source under
+   `kb-data/raw/arxiv/<id>/<version>/src`, which is read-only for everyone but kb). Requests to outside
    services carry no name, e-mail address or project detail of the user; use a generic
    client name.
 9. Third-party paper sources and their figures are never committed. Nobody outside is
@@ -85,7 +88,14 @@ that the orchestrator reviews.
   `scripts/submit_chain.sh` (`--status <rundir>`, `--stop <rundir>`); restarts are exact.
 - A linked worktree has no Kokkos: `git submodule update --init --reference
   /data/haiyangw/nrpic/athenak/kokkos athenak/kokkos` once before building there. If you
-  change no source, use the executable of the release you depend on instead of building.
+  change no source, do not build: use the executables of the main checkout, read-only,
+  `/data/haiyangw/nrpic/.work/build_gpu_c3/src/athena` (cards) and
+  `/data/haiyangw/nrpic/.work/build_cpu_c1/src/athena` (processors), built from the
+  source on `main` (problem generators chosen in the input: `nrpic_geodesic`, `nrpic_cf`,
+  `nrpic_cosmo`, `z4c_linear_wave`, `z4c_boosted_puncture`, and the others of `pgen.cpp`).
+- Python packages that are missing (for example REBOUND) go into a virtual environment
+  of your worktree made with `uv venv` and `uv pip install`; nothing is installed
+  system-wide.
 - 144 cores are shared by all sessions: at most 16 at a time per session; set
   `OMP_NUM_THREADS` and thread counts of numerical libraries explicitly.
 - Never `pkill -f`, `killall` or `kill $(pgrep -f ...)`: the pattern matches your own
