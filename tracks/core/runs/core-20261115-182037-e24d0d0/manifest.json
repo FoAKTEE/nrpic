@@ -1,0 +1,89 @@
+{
+  "schema": "nrpic-run-manifest/1",
+  "run_id": "core-20261115-182037-e24d0d0",
+  "track": "core",
+  "gate": "G2",
+  "kind": "scouting",
+  "purpose": "G1 G2 regraded: code numbers of run core-20261115-160707-6537687 against the pair-model reference with the cell rate alpha_c/psi_c^6 (runs -181655, -181657, -181700, -181702); prediction JOURNAL-coll2.md 18:40 UTC",
+  "preregistered_in": null,
+  "launcher": "local",
+  "command": [
+    "bash",
+    "-c",
+    "python3 tracks/core/analysis/collisions/run_gradient.py \"$NRPIC_RUN_DIR\" --regrade /data/haiyangw/nrpic/scratch/core/core-20261115-160707-6537687/summary.json --ref /data/haiyangw/nrpic/scratch/core/core-20261115-181655-b4b8e33/ref.json --ref /data/haiyangw/nrpic/scratch/core/core-20261115-181657-426b4a8/ref.json --ref /data/haiyangw/nrpic/scratch/core/core-20261115-181700-726905c/ref.json --ref /data/haiyangw/nrpic/scratch/core/core-20261115-181702-c93920b/ref.json > \"$NRPIC_RUN_DIR/regrade.log\" 2>&1"
+  ],
+  "cwd": ".",
+  "git": {
+    "sha": "e24d0d0ae503ba24a77fbd2b1e95111775e1de45",
+    "branch": "core/collisions-2",
+    "dirty": false,
+    "merge_base_main": "b9fbf3e6534517c3393000da91c79ce552b254b9",
+    "worktree": "wt/core-coll2"
+  },
+  "code": {
+    "core_tag": "core-v0.3",
+    "athenak_upstream_sha": "c5a0d7f",
+    "kokkos_sha": "6739bc623081648af9e752b616d9671527922cbf",
+    "problem": null
+  },
+  "env": {
+    "host": "anta",
+    "env_hash": "33c1dbb6673b68919eaa332b0add0b58aeac8be843f2071b9d06e2e0e397a96d",
+    "machine_file_sha256": "0321f40f4caeeb2a36624a9fa9809e60bad31071f366b3517ba23ad45698d2d7",
+    "uv_lock_sha256": "5417f6ba318b914aa3800e5d55f7b11fdd8df13c2688bdda7d419240aa1d5863",
+    "track_requirements_sha256": null,
+    "container_digest": null,
+    "compiler": "g++ 11.4.0",
+    "mpi": "none (Athena_ENABLE_MPI=OFF)",
+    "gpu": null,
+    "python": "3.10.12 /data/haiyangw/nrpic/wt/core-coll2/.venv"
+  },
+  "input": null,
+  "inputs": [
+    {
+      "path": "/data/haiyangw/nrpic/scratch/core/core-20261115-160707-6537687/summary.json",
+      "role": "input",
+      "sha256": "206eb3786ae9b8febff43f562cc2e0aef4d6351cd84525a2f741e3f1123543fb",
+      "bytes": 41772,
+      "tracked": false,
+      "location": "main checkout data root"
+    }
+  ],
+  "batch_entries": null,
+  "resources": {
+    "nodes": 1,
+    "gpus": 0,
+    "cores": 1,
+    "walltime_s": null,
+    "wall_limit": null,
+    "segments_max": null,
+    "gpu_hours_requested": 0.0,
+    "gpu_hours": null,
+    "particles": null
+  },
+  "slurm": null,
+  "outputs": {
+    "dir": "scratch/core/core-20261115-182037-e24d0d0",
+    "sha256sums": "sha256sums.txt",
+    "sha256sums_sha256": null,
+    "bytes": null,
+    "files": null
+  },
+  "status": "running",
+  "exit_code": null,
+  "registered": "2026-11-15T18:20:37Z",
+  "started": null,
+  "ended": null,
+  "parents": [],
+  "notes": "",
+  "budget_at_submit": {
+    "gpu_hours_allotted": 40.0,
+    "cores_allotted": 16,
+    "gpu_hours_used": 2.4337,
+    "gpu_hours_reserved": 0.5,
+    "gpu_hours_without_gate": 4.4616,
+    "cores_busy": 10,
+    "runs": 801,
+    "allotment_from": "coord/DECISIONS/0006-compute-budget.md + 0014-budgets-after-wave-1.md"
+  }
+}
