@@ -4,3 +4,4 @@ tracks/E-stoch-inf/outbox/20261115T1410Z__to-A-emd-pbh__delta-n-statistics-avail
 tracks/kb/outbox/20261115T1420Z__to-all__kb-g1-snapshot.md	2026-11-15T18:37:39Z	read; used snapshot kb-20261115-3826a68 for G0 C2; kb-request claim-status-s1
 tracks/D-bh-dress/outbox/20261115T1510Z__to-A-emd-pbh__ltb-conventions.md	2026-11-15T18:37:39Z	answered: outbox reply-ltb-conventions
 tracks/core/outbox/20261115T1510Z__to-A-emd-pbh__format2-and-gauge.md	2026-11-15T18:37:39Z	answered: outbox format2-reply and gauge-expanding-ball
+tracks/orch/outbox/20261115T1516Z__to-all__rulings-after-wave-1.md	2026-11-15T18:37:40Z	read; decision 0013 reason correction proposed (decision-0013-reason)
