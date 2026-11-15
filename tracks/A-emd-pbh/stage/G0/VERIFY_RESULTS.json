@@ -1,15 +1,15 @@
 {
   "track": "A-emd-pbh",
   "gate": "G0",
-  "commit": "fe07201c5770077937b84f4d2775cea90c8a8fe4",
-  "verified_utc": "2026-11-15T16:30:01Z",
-  "export": "/data/haiyangw/nrpic/scratch/A-emd-pbh/tmp/stage-verify/A-emd-pbh-G0-fe07201-20261115T162124Z",
+  "commit": "8737de9b04e16d40c3a4c35c5b317cfee4b4fbc6",
+  "verified_utc": "2026-11-15T18:49:04Z",
+  "export": "/data/haiyangw/nrpic/scratch/A-emd-pbh/tmp/stage-verify/A-emd-pbh-G0-8737de9-20261115T183831Z",
   "result": "FAIL",
   "checks": [
     {
       "check": "clean",
-      "status": "FAIL",
-      "message": "5 uncommitted paths: commit them first (tracks/A-emd-pbh/periodic_threshold/JOURNAL.md, tracks/A-emd-pbh/runs/A-emd-pbh-20261115-153843-7172b66/manifest.json, peak.horizon_summary_0.txt, tracks/A-emd-pbh/criteria/scouting_table.py, tracks/A-emd-pbh/runs/A-emd-pbh-20261115-161829-dba94f6/)",
+      "status": "PASS",
+      "message": "worktree clean (outside the stage directory being assembled)",
       "detail": null
     },
     {
@@ -21,7 +21,7 @@
     {
       "check": "export",
       "status": "PASS",
-      "message": "clean export of fe07201c5770 (HEAD) in /data/haiyangw/nrpic/scratch/A-emd-pbh/tmp/stage-verify/A-emd-pbh-G0-fe07201-20261115T162124Z/tree",
+      "message": "clean export of 8737de9b04e1 (HEAD) in /data/haiyangw/nrpic/scratch/A-emd-pbh/tmp/stage-verify/A-emd-pbh-G0-8737de9-20261115T183831Z/tree",
       "detail": null
     },
     {
@@ -69,32 +69,23 @@
     {
       "check": "runs",
       "status": "FAIL",
-      "message": "6 of 96 runs have problems",
+      "message": "1 of 130 runs have problems",
       "detail": {
-        "A-emd-pbh-20261115-153415-dc27b98": [
-          "status is running: not finished (nrpic-run finish)"
-        ],
-        "A-emd-pbh-20261115-153843-7172b66": [
-          "status is submitted: not finished (nrpic-run finish)"
-        ],
-        "A-emd-pbh-20261115-153845-7172b66": [
-          "status is submitted: not finished (nrpic-run finish)"
-        ],
-        "A-emd-pbh-20261115-155056-ec1b816": [
-          "status is submitted: not finished (nrpic-run finish)"
-        ],
-        "A-emd-pbh-20261115-155754-8422a4a": [
-          "status is submitted: not finished (nrpic-run finish)"
-        ],
-        "A-emd-pbh-20261115-160349-9d232d2": [
-          "status is submitted: not finished (nrpic-run finish)"
+        "A-20261115-182329-ad14d95": [
+          "output not in sha256sums.txt: misplaced_output/fig_scouting_histories.pdf",
+          "output not in sha256sums.txt: misplaced_output/fig_scouting_profiles_S2.png",
+          "output not in sha256sums.txt: misplaced_output/scouting_summary.json",
+          "output not in sha256sums.txt: misplaced_output/fig_scouting_histories.png",
+          "output not in sha256sums.txt: misplaced_output/fig_scouting_profiles_S2.pdf",
+          "output not in sha256sums.txt: misplaced_output/fig_scouting_profiles_S1.pdf",
+          "output not in sha256sums.txt: misplaced_output/fig_scouting_profiles_S1.png"
         ]
       }
     },
     {
       "check": "run-notes",
       "status": "WARN",
-      "message": "65 runs read with defaults or not fully re-verifiable (nrpic-run lint)",
+      "message": "78 runs read with defaults or not fully re-verifiable (nrpic-run lint)",
       "detail": {
         "A-emd-pbh-20261115-112500-61acbec": [
           "no scratch/A-emd-pbh/A-emd-pbh-20261115-112500-61acbec/sha256sums.txt (hand-written manifest; outputs not re-verifiable)",
@@ -252,7 +243,7 @@
     {
       "check": "status",
       "status": "PASS",
-      "message": "STATUS.md has 32 lines",
+      "message": "STATUS.md has 35 lines",
       "detail": null
     },
     {

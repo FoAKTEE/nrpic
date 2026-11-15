@@ -76,7 +76,7 @@ the registered analysis is not reproducible from its outputs.
 | A-20261115-182314-bebd0cf | own checks, third pass (the numbers quoted below) | `review_wave2.json`, `fig_review_wave2.png` (looked at) |
 | A-20261115-182200-532a5f6 | rerun of runs_ball `compare.py`, SR-1/SR-2 at dx = M/2 and M | numbers JSON identical to A-emd-pbh-20261115-163659-4dbacd0 (all four labels) |
 | A-20261115-182657-53da696 | analysis of the dx = M/4 runs and three-resolution summary (`after_m4.sh` commands) | new: prediction R outcome, `runs_ball/JOURNAL.md` entry 6 |
-| A-20261115-182329-ad14d95 | rerun of `analyse_scouting.py` | my fault: `--out '$NRPIC_RUN_DIR'` unexpanded wrote into the worktree root; output moved into the run directory (`misplaced_output/`), superseded |
+| A-20261115-182329-ad14d95 | rerun of `analyse_scouting.py` | my fault: `--out '$NRPIC_RUN_DIR'` unexpanded wrote into the worktree root; output moved to `scratch/A-emd-pbh/tmp/misplaced_output_A-20261115-182329-ad14d95/` (outside the run directory, so that its checksums verify); superseded |
 | A-20261115-182347-8ee3fcc | rerun of `analyse_scouting.py` | summary JSON and every PNG byte-identical to A-emd-pbh-20261115-171930-878a114 |
 | A-20261115-182402-a46812c | rerun of `analyze_newton.py` and `gr_range.py` | `newton_tophat.csv`, `newton_scan.csv` (all cells but wall time), `gr_scan_range.csv` identical to -164420-4528861 / -164757-b8bc9a3 and to the committed tables |
 | A-20261115-182502-dae304d | rerun of criteria2: `check_criteria2.py`, `scouting_table.py`, the T2 checks of `check_criteria.py`, pytest | results JSON identical (0 differences), T2 20 checks 0 failed as in -163358-9b2d048, table identical except its run-id line, 10 tests pass |

@@ -127,3 +127,49 @@ files; content in SCOPE.md section 10, EVIDENCE.md, CHECKLIST.md); working note 
 two schematics; fresh verifier; the scouting runs wait for the merge of core/id-extrinsic.
 Helper journals: `scope/JOURNAL.md`, `expball/JOURNAL.md`, `criteria/JOURNAL.md`,
 `newton/JOURNAL.md`, `gauge/JOURNAL.md`.
+
+## 2026-11-15T18:50Z  session lead-wave2  commits 9290489..(this commit)  runs A-20261115-182021-6cb33de, -182210-d1478a0, -182314-bebd0cf, -182200-532a5f6, -182657-53da696, -182329-ad14d95, -182347-8ee3fcc, -182402-a46812c, -182502-dae304d, -182514-3bb6846
+
+- prediction: written in `stage/REVIEW-wave2.md` section 0 and committed (6cb33de) before
+  any check ran: every helper analysis reproduces exactly from its registered outputs; my
+  own reader (`analysis/review_wave2.py`) confirms the helpers' numbers within stated bands
+  (B1-B8, P1-P4, N1-N4, C1-C2); I predicted that the periodic helper's "1.5 t_H" and "45 t_H"
+  were conversion errors (1.2 and 35-36 t_H) and that SR-2 at dx = M/4 would miss the eps
+  bound of prediction R.
+- did: closed the two dx = M/4 card runs (runreg.py finish) and analysed them with nrpic-run
+  (A-20261115-182657-53da696; runs_ball/JOURNAL.md entry 6); reran every helper's analysis
+  (runs_ball, periodic, newton, criteria2, verifier) from the registered outputs; wrote an
+  independent reader of trajectories, histories and Newtonian moments; read the source lines
+  behind the criteria2 and verifier claims; corrected SCOPE.md (10.9), the periodic DESIGN.md,
+  RISKS.md, G1/STATUS.md; judged the G0 and G1 checklists, wrote G1 EVIDENCE/OPEN and VERIFY;
+  posted 18 outbox messages (11 core, 3 orch, 1 kb, B, D) and acknowledged 8 inbox messages.
+- found: all six reruns reproduce exactly (numbers JSON, CSV tables, results JSON, verify.json;
+  PNGs byte-identical for the periodic analysis). My predictions held except my bracketed
+  guess on SR-2 (its eps part of R2 holds, 3.7e-4; its turnaround part fails, +0.031 M > 0.02).
+  dx = M/4: core-shell errors at tau = 16.894 fall at apparent order 3.0 (SR-1) and 4.3 (SR-2)
+  from M/2; the turnaround-time error falls only from -0.022 to -0.013 M (SR-1). The SR-2
+  lapse pulse is the same at three resolutions (peak 1.80, 1.86, 1.87). The time orientation of
+  data set 2t is confirmed by evolution (verifier C5 limit closed). Verifier C1c and C4b are
+  right: a q = 2 ball holds mu <= 0.0688 (contains the particle bracket); no horizon for
+  mu = 0.045 by 250 t_H (MDPBH.tex:1102-1103). The 1707.03595 typo found by criteria2 is real
+  (the source's own limit at Spin_PBH.tex:1925-1926 needs pi). nrpic_cosmo never sets
+  user_ref_func (mesh_refinement.cpp:243 calls it). The KB snapshot holds all twelve S1
+  references with 152 of 170 Track-A claims verified.
+- corrections to earlier entries of this journal (the lines stay as written): line 94, the
+  table interpolation at a sharp edge deviates from the exact step by up to 0.0855 = 1.37 H
+  including the smeared jump (A-20261115-130257-a7374a4); "overshoot of about 0.1 H" was not
+  what the run recorded. Line 101: the exterior K check gives 4.33e-15, not "below 4.3e-15".
+- my own faults, on record: run A-20261115-182021-6cb33de ignored the time offset t0 of the
+  Newtonian histories (part N void, fixed); run A-20261115-182329-ad14d95 passed
+  '$NRPIC_RUN_DIR' unexpanded and wrote into a directory of that name in the worktree root
+  (moved into the run directory, rerun as A-20261115-182347-8ee3fcc).
+- evidence: figures looked at: runs_ball fig_resolution_summary (two versions),
+  sr2_n256_horizon, sr1_n256L32_fields; periodic fig_scouting_histories, fig_t1_solve_change;
+  newton fig_newton_scan_summary, fig_newton_gr_range; my fig_review_wave2 (two versions).
+- changed my mind about: the reason for the periodic box (the ball can hold the particle
+  bracket at q = 2; the box is chosen because it uses the source's data unchanged); data set 2t
+  as the G2 horizon case (its first horizon is too small; a data set with a horizon of several
+  M is needed); the turnaround time as the G2 convergence measure (the shell radius at fixed
+  proper time converges cleanly, the parabola estimator of the turnaround time does not).
+- open: a slicing that reaches a horizon (core); C18 verifier and C11 data-flow schematic;
+  note Sec. IV with the wave-2 runs; data set 2h.

@@ -1,12 +1,12 @@
 # Re-verification: A-emd-pbh G0
 
-`harness/bin/nrpic-stage verify A-emd-pbh G0` on 2026-11-15T16:30:01Z, clean export of commit `fe07201c5770` in `scratch/A-emd-pbh/tmp/stage-verify/A-emd-pbh-G0-fe07201-20261115T162124Z`. Result: **FAIL**.
+`harness/bin/nrpic-stage verify A-emd-pbh G0` on 2026-11-15T18:49:04Z, clean export of commit `8737de9b04e1` in `scratch/A-emd-pbh/tmp/stage-verify/A-emd-pbh-G0-8737de9-20261115T183831Z`. Result: **FAIL**.
 
 | Check | Result | Message |
 |---|---|---|
-| clean | FAIL | 5 uncommitted paths: commit them first (tracks/A-emd-pbh/periodic_threshold/JOURNAL.md, tracks/A-emd-pbh/runs/A-emd-pbh-20261115-153843-7172b66/manifest.json, peak.horizon_summary_0.txt, tracks/A-emd-pbh/criteria/scouting_table.py, tracks/A-emd-pbh/runs/A-emd-pbh-20261115-161829-dba94f6/) |
+| clean | PASS | worktree clean (outside the stage directory being assembled) |
 | sync | PASS | main is merged into the branch |
-| export | PASS | clean export of fe07201c5770 (HEAD) in /data/haiyangw/nrpic/scratch/A-emd-pbh/tmp/stage-verify/A-emd-pbh-G0-fe07201-20261115T162124Z/tree |
+| export | PASS | clean export of 8737de9b04e1 (HEAD) in /data/haiyangw/nrpic/scratch/A-emd-pbh/tmp/stage-verify/A-emd-pbh-G0-8737de9-20261115T183831Z/tree |
 | size | PASS | no committed file of the track above 5 MB |
 | note | PASS | tracks/<ID>/note/main.tex present |
 | package | PASS | EVIDENCE.md, OPEN.md, CHECKLIST.md present (decision 0012); scoping text: scope/SCOPE.md |
@@ -14,9 +14,9 @@
 | style | PASS | 2 style copies equal harness/style/SHA256SUMS (czstyle.py, paperfig.py) |
 | fig-script | PASS | 6 figures, each with its script |
 | min-figs | PASS | 2 schematics and 4 data figures (brief 13.4 asks at least 2 and 0 at G0) |
-| runs | FAIL | 6 of 96 runs have problems |
-| run-notes | WARN | 65 runs read with defaults or not fully re-verifiable (nrpic-run lint) |
-| status | PASS | STATUS.md has 32 lines |
+| runs | FAIL | 1 of 130 runs have problems |
+| run-notes | WARN | 78 runs read with defaults or not fully re-verifiable (nrpic-run lint) |
+| status | PASS | STATUS.md has 35 lines |
 | rerun | PASS | 6 of 6 scripts and commands ran cleanly in the export |
 | compare | PASS | 12 regenerated files compared with the committed ones; 0 differ beyond tolerance (rtol 1e-06, atol 1e-12, PNG rms 0.005) |
 | regenerate | PASS | all 12 committed figure files regenerated |
@@ -25,23 +25,14 @@
 
 ```
 {
- "A-emd-pbh-20261115-153415-dc27b98": [
-  "status is running: not finished (nrpic-run finish)"
- ],
- "A-emd-pbh-20261115-153843-7172b66": [
-  "status is submitted: not finished (nrpic-run finish)"
- ],
- "A-emd-pbh-20261115-153845-7172b66": [
-  "status is submitted: not finished (nrpic-run finish)"
- ],
- "A-emd-pbh-20261115-155056-ec1b816": [
-  "status is submitted: not finished (nrpic-run finish)"
- ],
- "A-emd-pbh-20261115-155754-8422a4a": [
-  "status is submitted: not finished (nrpic-run finish)"
- ],
- "A-emd-pbh-20261115-160349-9d232d2": [
-  "status is submitted: not finished (nrpic-run finish)"
+ "A-20261115-182329-ad14d95": [
+  "output not in sha256sums.txt: misplaced_output/fig_scouting_histories.pdf",
+  "output not in sha256sums.txt: misplaced_output/fig_scouting_profiles_S2.png",
+  "output not in sha256sums.txt: misplaced_output/scouting_summary.json",
+  "output not in sha256sums.txt: misplaced_output/fig_scouting_histories.png",
+  "output not in sha256sums.txt: misplaced_output/fig_scouting_profiles_S2.pdf",
+  "output not in sha256sums.txt: misplaced_output/fig_scouting_profiles_S1.pdf",
+  "output not in sha256sums.txt: misplaced_output/fig_scouting_profiles_S1.png"
  ]
 }
 ```
