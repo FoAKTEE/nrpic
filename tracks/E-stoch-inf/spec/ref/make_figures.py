@@ -107,7 +107,7 @@ def fig_freezing(msdir, out):
 def fig_spectra(msdir, out):
     fig, axs = plt.subplots(2, 2, figsize=(fs.FULL_WIDTH, 5.0), sharex="col",
                             gridspec_kw=dict(height_ratios=[2, 1]))
-    fig.subplots_adjust(left=0.10, right=0.98, bottom=0.10, top=0.94, hspace=0.0, wspace=0.28)
+    fig.subplots_adjust(left=0.13, right=0.98, bottom=0.10, top=0.94, hspace=0.0, wspace=0.32)
     for j, name in enumerate(("quadratic", "inflection")):
         d, r = load(msdir, name)
         kd = np.array(r["k_over_dk"])
