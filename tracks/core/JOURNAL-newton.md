@@ -166,3 +166,46 @@ control; the numbers below are of commit 728637a) [VERIFIED]:
   probes are too few to measure an order; the force on 846 tracers is the measurement.
 - force of the mass on itself times dx^2: components up to 0.36, 0.58, 0.47 at the
   three resolutions: of order 0.5 m/dx^2 as predicted (prediction 4 held).
+
+Repeat of T1 and T2 with commit 9d84282 (runs: point core-20261115-115136-9d84282,
+core-20261115-115145-9d84282, core-20261115-115155-9d84282; ball
+core-20261115-115137-9d84282, core-20261115-115146-9d84282, core-20261115-115203-9d84282).
+The startup solves now converge (27, 26, 25 V cycles to a defect of 5e-13, 6e-12, 6e-11;
+5 cycles at the next step). T1: the same numbers as before to all printed digits.
+
+T2, first analysis, against the ideal ball of radius 1 [VERIFIED]:
+- away from the surface: rms error 7.98e-4, 3.80e-4, 3.37e-4 (orders 1.07, 0.17): a
+  floor. Prediction 1 FAILED as analysed.
+- shell |r - 1| < dx: 2.25e-2, 1.24e-2, 6.7e-3 (orders 0.86, 0.89); maximum over all
+  tracers 6.9e-2, 3.6e-2, 1.6e-2: first order at the surface, prediction 2 held.
+Hypothesis for the floor, to be tested (it can fail): the reference, not the code. The
+lattice has 1 099 136 points inside the unit sphere, 0.097 per cent more than (4 pi/3)
+64^3 = 1 098 067, so the particles sample a ball of density M/(N h^3), 0.097 per cent
+below 3M/(4 pi): the interior field is lower by that fraction, of the size of the floor.
+Test: repeat the analysis with the radius of the homogeneous ball of the same mass and
+that density, 1.000324. If the hypothesis is right the error away from the surface falls
+at second order to N = 128; if a floor of the same size remains, the cause is elsewhere
+(the multipole boundary would be the next suspect).
+
+Outcome of the test of the hypothesis (same six runs, analysis with the radius 1.000324
+of the ball the lattice samples; `tracks/core/analysis/newton/field_ball.json`,
+`field_ball.png`; the analysis against the nominal radius is kept as
+`field_ball_ideal_radius.*`) [VERIFIED]: the floor is gone.
+- away from the surface (|r - R| > 0.25, 1340 tracers): rms error in units of GM/R^2
+  7.25e-4, 1.83e-4, 5.09e-5 at N = 32, 64, 128; orders 1.99 and 1.85. Prediction 1 of T2
+  holds with the corrected reference (second order; below 1e-3 at N = 128).
+- shell |r - R| < dx: 2.23e-2, 1.22e-2, 6.4e-3 (orders 0.87, 0.93); maximum over all
+  tracers 6.8e-2, 3.6e-2, 1.5e-2: first order at the surface (prediction 2 held).
+- potential at the nine probes: maximum relative error 6.43e-3, 1.60e-3, 3.94e-4, orders
+  2.01 and 2.02 (prediction 3 held).
+The hypothesis could have failed and did not. What I had wrong was the reference: a
+lattice ball is not the ideal ball at the 1e-3 level.
+Figures inspected: `field_point.png` (force times r^2 scatters around -1 inside about
+four cells and tends to it beyond; the relative error follows (dx/r)^2 for all three
+resolutions on one curve), `field_ball.png` (interior and exterior on the exact curve;
+error peaked at the surface; inside r = 0.8 the three resolutions share an error of 1e-5
+to 1e-4 that rises with r and does not depend on N: the cubic shape of the lattice ball,
+again a property of the particle set).
+
+T1 potential, corrected statement: rms over the eight probes 3.9e-3, 9.4e-4, 6.5e-4; one
+probe is not monotonic (see above).

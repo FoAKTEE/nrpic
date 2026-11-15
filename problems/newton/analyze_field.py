@@ -56,6 +56,16 @@ def probes(rundir):
     return np.array(pos), np.array(phi)
 
 
+def dx_axis(ax, dxs):
+    """Logarithmic axis of the cell size with one labelled tick per resolution."""
+    ax.set_xscale("log")
+    ax.set_xticks(dxs)
+    ax.set_xticklabels(["1/%d" % round(1.0/d) for d in dxs])
+    ax.xaxis.set_minor_locator(matplotlib.ticker.NullLocator())
+    ax.set_xlim(dxs.min()/1.25, dxs.max()*1.25)
+    ax.set_xlabel(r"$\Delta x$")
+
+
 def order(e, dx):
     """Measured orders between consecutive resolutions."""
     return [float(np.log(e[i]/e[i+1])/np.log(dx[i]/dx[i+1])) for i in range(len(e) - 1)]
@@ -69,18 +79,26 @@ def main():
     ap.add_argument("--out", required=True)
     ap.add_argument("--box", type=float, default=4.0)
     ap.add_argument("--dt", type=float, default=1.0e-6)
+    ap.add_argument("--ideal-radius", action="store_true",
+                    help="ball: reference with the nominal radius instead of the radius "
+                         "of the ball of the same mass and the density of the lattice")
     a = ap.parse_args()
     meta = json.load(open(a.ic))
     c = np.array(meta["center"])
     gm = meta["mass"]
     nm = meta["nmassive"]
     rad = meta.get("radius", 0.0)
+    if a.kind == "ball" and not a.ideal_radius:
+        # The lattice points inside the sphere are not exactly (4 pi/3)(R/h)^3 in number
+        # (here 0.1 per cent more), so the particles sample a homogeneous ball of the
+        # same mass whose density is M/(N h^3): its radius is used for the reference.
+        rad = (3.0*nm*meta["spacing"]**3/(4.0*np.pi))**(1.0/3.0)
     runs = sorted([(int(r.split(":")[0]), r.split(":", 1)[1]) for r in a.run])
     os.makedirs(a.out, exist_ok=True)
     fs.use_style()
     cols = fs.SERIES
 
-    res = dict(kind=a.kind, runs={}, N=[n for n, _ in runs])
+    res = dict(kind=a.kind, runs={}, N=[n for n, _ in runs], reference_radius=rad)
     data = []
     for n, d in runs:
         dx = a.box/n
@@ -116,9 +134,13 @@ def main():
         mx = np.array([np.max(d["err"][far]/d["ge"][far]) for d in data])
         sel = data[0]["pr"] >= 0.4               # probes away from the mass
         prel = np.array([np.max(d["perr"][sel]/np.abs(d["pe"][sel])) for d in data])
+        prms = np.array([np.sqrt(np.mean((d["perr"][sel]/d["pe"][sel])**2)) for d in data])
         res.update(far_rms_rel=rms.tolist(), far_max_rel=mx.tolist(),
                    far_rms_order=order(rms, dxs), probe_max_rel=prel.tolist(),
-                   probe_order=order(prel, dxs),
+                   probe_rms_rel=prms.tolist(), probe_rms_order=order(prms, dxs),
+                   probe_each_rel=[((d["perr"]/np.abs(d["pe"]))[sel]).tolist()
+                                   for d in data],
+                   probe_distance=data[0]["pr"][sel].tolist(),
                    self_force_dx2=[(d["self"]*d["dx"]**2).tolist() for d in data])
         for d in data:
             x = d["r"]/d["dx"]
@@ -159,11 +181,11 @@ def main():
         ax.set_ylabel(r"$|\mathbf{g}-\mathbf{g}_{\rm exact}|/g_{\rm exact}$")
         ax = axs[2]
         ax.plot(dxs, rms, "o-", color=cols[1], label=r"force, rms, $r\geq0.5$")
-        ax.plot(dxs, prel, "s-", color=cols[0], label="potential, probes")
+        ax.plot(dxs, prms, "s-", color=cols[0], label="potential, rms, 8 probes")
         ax.plot(dxs, rms[0]*(dxs/dxs[0])**2, **fs.GUIDE)
-        ax.set_xscale("log")
         ax.set_yscale("log")
-        ax.set_xlabel(r"$\Delta x$")
+        dx_axis(ax, dxs)
+        ax.set_ylim(1e-4, 1e-1)
         ax.set_ylabel("relative error")
         ax.legend(loc="upper left", fontsize=8)
     else:
@@ -210,16 +232,18 @@ def main():
         ax.legend(loc="lower right", markerscale=4, handletextpad=0.2, fontsize=8)
         ax = axs[2]
         ax.plot(dxs, rms, "o-", color=cols[1], label=r"force, rms, $|r-R|>0.25$")
-        ax.plot(dxs, rms_shell, "^-", color=cols[2], label=r"force, rms, $|r-R|<\Delta x$")
+        ax.plot(dxs, rms_shell, "^-", color=cols[2],
+                label=r"force, rms, $|r-R|<\Delta x$")
         ax.plot(dxs, prel, "s-", color=cols[0], label="potential, probes")
         ax.plot(dxs, rms[0]*(dxs/dxs[0])**2, **fs.GUIDE)
-        ax.set_xscale("log")
         ax.set_yscale("log")
-        ax.set_xlabel(r"$\Delta x$")
+        dx_axis(ax, dxs)
+        ax.set_ylim(1e-5, 2.0)
         ax.set_ylabel(r"error")
         ax.legend(loc="upper left", fontsize=7)
-    fig.savefig(os.path.join(a.out, "field_%s.png" % a.kind), dpi=200)
-    with open(os.path.join(a.out, "field_%s.json" % a.kind), "w") as f:
+    stem = "field_%s%s" % (a.kind, "_ideal_radius" if a.ideal_radius else "")
+    fig.savefig(os.path.join(a.out, stem + ".png"), dpi=200)
+    with open(os.path.join(a.out, stem + ".json"), "w") as f:
         json.dump(res, f, indent=1)
         f.write("\n")
     print(json.dumps(res, indent=1))
