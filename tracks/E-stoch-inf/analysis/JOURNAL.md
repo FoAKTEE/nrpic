@@ -221,3 +221,31 @@ inputs/u64/U2.athinput --run PROC/U2`): every test passes, A1 below 1e-13 of the
 frozen increment has no square root, so the reference's cancellation costs at most one
 unit in the last place of dW against values of order 1e-2), A10 below 1e-14. This is the
 first validation at the base size (the lead's was at N = 32).
+
+## 17:59 Outcome PS1-PS6 at N = 32 (run E-20261115-172347-a297a96, no control)
+
+- PS1: largest <|H|>/<[H]> 2.14e-8 (at ln a ~ 1.5), decaying afterwards. Holds.
+- PS2: per-mode ratio at ln a = 7.8 for k <= k_max/2 with the gt term: max 1.0e-4 (rms
+  3.2e-5); all modes max 3.8e-3 (the deviations grow towards |n| = 7-8). Holds (bound 2
+  percent).
+- PS3: gt term / R^NR 4.9e-3; without it a common -0.49 percent. Holds.
+- PS4: 89 modes, largest |drift| 3.4e-4 per e-fold (NR) and 3.3e-4 (lockstep W R). Holds.
+- PS5 FAILED: lockstep R_q against SciPy 1.42e-3 > 1e-3 (N = 16: 7.3e-4). The largest
+  difference appears at the first dump and stays constant (figure), i.e. it is made while
+  the modes are deep inside the horizon; N = 32 carries modes to k/(aH) = 36 at the start
+  against 18 at N = 16 with the same omega dt per step. Candidate cause: RK4 truncation of
+  the lockstep integration at the step of the mesh [not yet tested; P8 below tests it].
+- PS6: 2110 s of processor time. Holds.
+Not predicted: in fig_sr_permode_N32 the NR coefficients of |n| = 5.5 and 8 sit at
+|c|^2 ~ 1e-21 between ln a = 0.7 and 2, far above L^-3 |W R|^2 (1e-30 to 1e-24), before
+these modes reach the window; the level is that of products of the modes already in
+(R_rms 1e-5 to 1e-4 there, squared), so mode coupling at second order is the likely
+source [JUDGEMENT; harmless once the modes enter, where the curves join].
+
+## 18:00 Prediction P8: is the lockstep difference of PS5 the time step?
+
+N = 16 case of run E-20261115-172349-0bdb97d again with cfl_number = 0.125 (half the step).
+If RK4 truncation sets the lockstep-SciPy difference, it falls by about 16 (order 4) from
+7.3e-4, i.e. below 1e-4 (refuted if it falls by less than 8). Decision rule for the
+per-mode residual (8.3e-5 at k <= k_max/2, no prediction of its cause): if it falls by 8
+or more it is temporal; if it changes by less than a factor 2 it is not.
