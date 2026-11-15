@@ -84,6 +84,12 @@ Derived here (checked by the tests and by the agreement with the tables):
   the TOV equation since d ln(1 - b w)/dr = Phi'. F21's printed e^{2 Phi} (`main.tex:197`)
   is not correct as printed (the exponent needs a minus sign, a factor 2, and 4 pi G in
   front of p r'^3); F21's own numbers, e.g. Z(0), follow the correct form.
+  Note (wave 2, verifier finding V4, `../stage/G0/VERIFIER.md`): `tmb.pulsation` passes
+  1 - b w (`tmb.py:389`), i.e. the lapse normalised to 1 at the surface, to the
+  finite-element solver, so the omega^2 it returns is measured in the proper time of a
+  surface observer; in the time at infinity multiply by 1 - 2C (C = M/R): -3.59 here is
+  -3.315 at infinity (verifier, run C-20261115-170630-1037f6a). Zeros of omega^2, hence
+  every onset quoted in this package, are unaffected.
 - **The F21 core is an exact Einstein-Vlasov steady state** [VERIFIED by derivation and test
   P3]: with T e^Phi = const and (mu + mc^2) e^Phi = const, f = A (e^{-E/kT_inf} -
   e^{-E_c/kT_inf}) for E < E_c, with E the conserved (Killing) energy and E_c = mc^2 e^{Phi(R)}.

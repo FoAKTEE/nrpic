@@ -144,3 +144,15 @@ the track's references `collide/REFERENCES/` only where TESTS.md names them).
   confirmed from the run outputs (Table 1 B at w0 = 4.5 above 1.1e-4; fastest phase bound
   8.5e4 < 1e5; R/M and r_core/M ranges wider than 20-26 and 1.5-2.1 for Z(0) = 0.40-0.80).
   Refuted if the files support the lead's original wording.
+- outcome L8-L11 (run C-20261115-193332-48771b4, 30 min on 2 cores; figures rv_box,
+  rv_models, rv_scan, rv_note looked at): all held. Details in `stage/REVIEW-wave2.md`.
+  Beyond the predictions: the T4 ratio moves by up to 0.4 percent (0.5-1.4 se) when the
+  0.15 tau_rel window takes one snapshot more (sample tau_rel vs design tau_rel); the
+  J_pu onset (1 + p/u of an untruncated Juttner gas at the Tolman temperature) coincides
+  with the eps maximum to 3e-5 in Z(0) (0.54038 vs 0.54041), not explained; my E/E0 maxima
+  of the particle files (0.99997 for tmb01_Z0p5404) differ from the JSON's 0.99992 (both
+  below 1; not chased). The verifier suite rerun gives byte-identical JSON (5/5).
+- prediction L12 (`rv_kn.py`, K = 1/(rho_0c H_c) of the 13 wave-2 models from their JSON):
+  King y0 = 0.334032 gives 168.9 +- 0.1 (run C-sidm-20261115-131130-3077a99) and
+  tmb01_Z0p5404 142.6 +- 0.1 (verifier, run C-20261115-170630-1037f6a); K falls with Z(0)
+  along each family. Refuted by either value off by more than 0.1.

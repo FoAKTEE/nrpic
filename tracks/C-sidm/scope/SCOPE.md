@@ -65,12 +65,21 @@ fractional binding energy at 0.540 (our run) and the adiabatic-index criterion a
 (2108.11967 main.tex:286, 286, our run, 274). For collisionless matter the third is a
 lower bound of the dynamical threshold and, for the families tested so far without a
 strong core-halo structure, the threshold itself (section 3.4). For a collision-dominated gas without conduction
-(Kn -> 0) perturbations are adiabatic with gamma = 1 + p/u, and the fourth is the relevant
-(sufficient) criterion. Between them, heat conduction on a time ~ t_dyn (Kn ~ 1) makes
+(Kn -> 0) perturbations are adiabatic. The adiabatic-index criterion at 0.750 uses a trial
+function and is sufficient for instability only; the exact radial-pulsation onset with
+F21's gamma = 1 + p/u lies at Z(0) = 0.6348 (run C-sidm-20261115-120722-38ab057; verifier
+V4: 0.63482, run C-20261115-170630-1037f6a). Between them, heat conduction on a time ~ t_dyn (Kn ~ 1) makes
 the response non-adiabatic, the regime of gravothermal evolution. Prediction to be
-tested in G1/G2: a King b = 0.1 model with 0.54 < Z(0) < 0.75 collapses when
+tested in G1/G2: a King b = 0.1 model with 0.540 < Z(0) < 0.635 collapses when
 collisionless and survives the dynamical time when Kn_c << 1, then evolves secularly at a
-rate that depends on Kn. The mass-fraction curve is then expected to be non-monotonic
+rate that depends on Kn.
+[Corrected 2026-11-15, wave 2, after the verifier's finding V4b (`stage/G0/VERIFIER.md`):
+the first version used the trial root 0.750 as the fluid threshold. With the adiabatic
+index a collision-dominated (Juttner) gas actually has, Gamma_1 = 1 + 1/c_v at the
+energy-matched temperature, the onset moves to Z(0) = 0.5331, below the eps maximum, and
+this window closes (run C-20261115-165315-7b473b8, rechecked with the verifier's operator in
+run C-20261115-193332-48771b4); see `stage/G0/REPORT.md` decision 3 and
+`stage/REVIEW-wave2.md`.] The mass-fraction curve is then expected to be non-monotonic
 in Kn. Whether this ordering holds in the kinetic, three-dimensional calculation is the
 first science result of the track.
 
@@ -221,8 +230,12 @@ core.
 - Only the weak form holds in general: Gunther, Straub and Rein (arXiv:2105.05556, cited
   by Wu and Most as Gunther:2021pbf, 2611.12831 main.tex:1006) confirm stability up to the
   first maximum but give "strong evidence against" instability setting in there
-  (paper.tex:88-89, definitions 139-141); for core-halo models built from piecewise
-  linear ansatz functions the onset sits near the second maximum (paper.tex:581), and
+  (paper.tex:88-89, definitions 139-141); for their piecewise linear ansatz functions with
+  small i, close to the k = 1 polytrope, the onset sits near the second binding-energy
+  maximum (paper.tex:581); for 100 <= i <= 250, where the second maximum has disappeared,
+  the change of stability cannot be deduced from the binding energy at all (paper.tex:599;
+  i = 200 has its maximum at z_c = 0.394 and stays stable to 0.787) [corrected in wave 2
+  after the verifier's finding V8, `stage/G0/VERIFIER.md`]; and
   for 255 <= i <= 290 stability changes twice, e.g. i = 270: stable for z_c <= 0.492,
   unstable, stable again for 0.712 <= z_c <= 0.964, unstable beyond 0.983
   (paper.tex:612). Their working definition of "stable" is no collapse within 1000 M
@@ -245,6 +258,13 @@ thresholds.
 
 ## 4. Knudsen number and the conversion to cross-section per unit mass
 
+**Superseded by the track definition (wave 2 note).** The lead fixed one Knudsen number
+in `stage/G0/REPORT.md` decision 2: lambda = 1/(rho_0 sigma_m), H = (v1^2/(4 pi rho_0))^1/2
+with the rest-mass density rho_0, K = 1/(rho_0c H_c), sigma~ = K/Kn_c; it is written into
+`collide/SPEC.md` section 1.1 and `equilibria/CONVERSION.md`. The text below (H on the
+energy density) is the scoping proposal of wave 1 and differs from it by a factor of about
+1.18 (verifier V5).
+
 **Definition (to be fixed in the collision-operator specification) [JUDGEMENT].**
 lambda = 1/(n sigma) = m/(rho_0 sigma) in the local rest frame, rho_0 rest-mass density,
 sigma the invariant (centre-of-momentum) cross-section;
@@ -262,7 +282,7 @@ maximum) (run C-sidm-20261115-115400-eb8b752).
 **Physical Knudsen numbers [VERIFIED by the run, inputs from the references].** For
 sigma/m = 5 cm^2/g (the fiducial value of 2601.17117 SIDM_MS.tex:384; observed range
 1-100 cm^2/g, line 156) and a near-threshold core of M = 200 M_sun (its seed,
-SIDM_MS.tex:476): Kn_c = 4.5e-20 to 1.8e-19 across the six candidate models; for
+SIDM_MS.tex:481): Kn_c = 4.5e-20 to 1.8e-19 across the six candidate models; for
 M = 1.9e9 M_sun (the J1205-0000 benchmark seed of 2108.11967 main.tex:324): 4e-13 to
 2e-12. The cross-section that would make Kn_c = 1 at 200 M_sun is 2e-19 to 9e-19
 cm^2/g. Figure `figures/fig_knudsen.png`, left.

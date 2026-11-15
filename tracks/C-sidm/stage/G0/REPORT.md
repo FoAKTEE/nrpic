@@ -59,8 +59,10 @@ sub-step (G3).
 With sigma/m = 5 cm^2/g (`SIDM_MS.tex:384`) a near-threshold core of 200 M_sun has
 Kn_c = 4.5e-20 to 1.8e-19 and one of 1.9e9 M_sun 4e-13 to 2e-12 (run
 C-sidm-20261115-115400-eb8b752; scope's H convention, section 2 item 2). Every phase of
-the gravothermal history before the dynamical instability lasts at least 1e5 dynamical
-times of the then-current core (run C-sidm-20261115-121412-d463e1a). Physical relativistic
+the gravothermal history before the dynamical instability lasts at least 8.5e4 dynamical
+times of the then-current core (fastest phase t_c ~ 0.1 t_0; run
+C-sidm-20261115-121412-d463e1a; corrected in wave 2 from "1e5" after the note helper's
+claims check, `note/tables/claims.md`). Physical relativistic
 SIDM cores are perfect fluids on the dynamical time. The code reaches Kn_c of about
 0.3-100 (section 3). The scan therefore maps the bridge from the collisionless to the fluid
 limit, and a statement about physical seeds must go through its Kn -> 0 end, anchored by
@@ -95,6 +97,18 @@ the exact fluid onset of the same equilibrium (section 2 item 3).
    at two resolutions by review X5). A collision-dominated Juttner gas has the lower
    adiabatic index Gamma_1 = 1 + 1/c_v at intermediate temperatures [BACKGROUND]; its
    onset is still to be computed (`OPEN.md`).
+   **Revised in wave 2 (lead, [JUDGEMENT]; `../REVIEW-wave2.md`).** The anchor is now the
+   onset with the Juttner Gamma_1 at the energy-matched temperature (<W>_J(theta_E) = rho/n,
+   what collisions conserve locally): Z(0) = 0.5331 for b = 0.1 (models helper, run
+   C-20261115-165315-7b473b8, finite elements; lead recheck with the verifier's Rayleigh-Ritz
+   operator and own Juttner functions, run C-20261115-193332-48771b4: 0.53306). Systematic of
+   the temperature definition: 0.5317 at theta = p/n; F21's own gamma = 1 + p/u gives
+   0.6348 and stays the comparison with F21's model; the Tolman temperature of the
+   truncated distribution (0.4125) is not a local kinetic temperature and is not used. The
+   anchor lies 0.0074 in Z(0) below the collisionless eps maximum (0.5404), so at Kn -> 0
+   the models with 0.533 < Z(0) < 0.540 are fluid-unstable while (if the eps maximum is the
+   collisionless threshold) collisionless-stable. Caveat: the background is F21's truncated
+   distribution, not a Juttner sphere.
 4. **Gates.** G1 holds the charter's two criteria (C-pre-1 tests pass on core's
    implementation; baseline reproduced) plus the generic G1 items. The collisionless
    threshold scans run in wave 2 as G2 work with the existing executable (scouting until
@@ -104,7 +118,7 @@ the exact fluid onset of the same equilibrium (section 2 item 3).
 
 | Quantity | Range | Source / reason |
 |---|---|---|
-| F21 b = 0.1 models (primary) | Z(0) = 0.40-0.80, w0 = 2.5-4.2; eps maximum Z(0) = 0.5404, fluid onset (gamma = 1 + p/u) 0.6348, trial criterion 0.7500; R/M = 20-26, r_core/M = 1.5-2.1, central lapse 0.56-0.71 | runs C-sidm-20261115-120722-38ab057, -121748-4e8d6b5; review X2 (two solvers agree to 2e-8) |
+| F21 b = 0.1 models (primary) | Z(0) = 0.40-0.80, w0 = 2.5-4.2; eps maximum Z(0) = 0.5404, fluid onset (gamma = 1 + p/u) 0.6348, Juttner Gamma_1 onset 0.5331 (wave 2), trial criterion 0.7500; R/M = 19.8-28.1, r_core/M = 1.27-2.56, central lapse 0.56-0.71 (ranges corrected in wave 2 from "20-26" and "1.5-2.1", which hold for a narrower Z(0) range; note helper's claims check) | runs C-sidm-20261115-120722-38ab057, -121748-4e8d6b5; review X2 (two solvers agree to 2e-8) |
 | F21 b = 0.2-0.5 (robustness) | Z(0) = 0.50-0.70 | same runs |
 | King b = 1 (verification) | y0 = 0.314-0.354 (Z_c 0.479-0.545), threshold y0 = 0.334032; R/M = 13.3-14.0 | runs -120610-b4592be, -121626-e99907d; review X3 (two solvers agree to 3e-8) |
 | Monoenergetic (verification) | y_c = 0.64-0.74 (z_c 0.355-0.526), threshold y_c = 0.67961 | run -115344-eb8b752 (reproduced bit for bit by the review rerun) |
@@ -166,7 +180,7 @@ row marked "helper" (read by the scope helper, locator given there).
 | Fiducial halo, sigma = 5 cm^2/g, t_0 = 0.26 Gyr | 2601.17117 `SIDM_MS.tex:384` |
 | P = (gamma - 1) eps rho, gamma = 5/3 stated for the non-relativistic case | 2601.17117 `SIDM_MS.tex:341-344` |
 | lambda = 1/(rho sigma), H = (v^2/(4 pi rho))^{1/2}, a = sqrt(16/pi), b = 25 sqrt(pi)/32, kappa^-1 = kappa_SMFP^-1 + kappa_LMFP^-1, C = 0.75 | 2601.17117 `SIDM_MS.tex:233` |
-| Onset when the dispersion approaches c (citing 2108.11967); horizon at 580 t_0, m ~ 3e-8 M, ~200 M_sun | 2601.17117 `SIDM_MS.tex:476`, abstract `:64-71` |
+| Onset when the dispersion approaches c (citing 2108.11967); horizon at 580 t_0, m ~ 3e-8 M, ~200 M_sun | 2601.17117 `SIDM_MS.tex:476` (all three numbers; repeated at `:481`); abstract `:68-69` (3e-8 only) |
 | A rigorous treatment needs the collisional Boltzmann equation (Gurian:2025zpc); pressure factor f_P | 2601.17117 `SIDM_MS.tex:672-676` |
 | P-bar < 0.1 per step; neighbour distance r_k <~ lambda | 1101.3097 `sidm1.tex:667-673, 680-692` |
 | b = 25 sqrt(pi)/32 ~ 1.38; footnote: BSI's 1.002 "should be 25 pi/32" | 1101.3097 `sidm1.tex:408-412` |
@@ -183,7 +197,7 @@ row marked "helper" (read by the scope helper, locator given there).
 | Z_c printed as 1/sqrt(alpha(0)) - 1 (the tables follow 1/alpha(0) - 1, run C-sidm-20261115-121626-e99907d) | gr-qc/0601112 `ssevnum7.tex:694` |
 | The continuum solver the brief names for collisions is collisionless ("in the absence of collisions or sources") | 2602.17487 `results.tex:18` |
 | Wu-Most models y_c, z_c, R/M, M_0/M; collapse at 109 M and 73 M | 2611.12831 `main.tex:1024-1028` |
-| Seed fraction 1e-8 to 1e-6 of the halo (helper) | astro-ph/0111176 `:289-291` per scope `SCOPE.md` 1 |
+| Seed fraction 1e-8 to 1e-6 of the halo (helper; re-read by the lead in wave 2) | astro-ph/0111176 v3 `SMBH_SIDM_Xiv2.tex:289-291` |
 
 ## 7. Risks
 

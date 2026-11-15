@@ -143,6 +143,29 @@ option (request to core). Pass: collisions per coordinate step and coordinate vo
 equal alpha0 psi0^6 times the flat value for the same proper density and temperature
 (SPEC.md 5), within 4 sigma; conservation as in T1 for the covariant sum M u_i.
 
+## 2a. Clarifications after the wave-2 runs (lead, 2026-11-15)
+
+Written after the box tests of `../box_tests/` ran on core-v0.3, at the helper's request;
+no criterion is loosened. The helper declared each reading in `../box_tests/JOURNAL.md`
+before the run it concerns.
+- T1: `nrpic.hst` holds `sum_mW` = 0 without deposition (`coord/INTERFACES/diagnostics.md`
+  line 46), so the drift of sum M W over 1e4 steps is read from the exactly rounded sums
+  of the snapshots (or `coll.hst` `sum_MW`, the same sum in a flat box).
+- T2(b): theta in <v_Mol>(theta) is the gas temperature from <W - 1> of the initial
+  snapshot, the quantity T2(c) names; with the nominal temperature of the generator the
+  4-standard-error clause fails by sampling noise of the temperature alone (z up to 35.6,
+  run C-20261115-165500-c67e036).
+- T11(c): pass if the end-state lab means <W>, <u_x>, <u_x^2/W>, <u_y^2/W> equal those of
+  the drifting Maxwell-Juttner gas MJ(theta_f, beta_f) fixed by the conserved lab energy
+  and momentum within 4 standard errors, and KS p > 1e-3 for lab u_x and |u_perp|.
+- Precision of rate checks: below about 1e-4 the all-pairs mean Moller speed of a sample
+  of 1e6 particles differs from the ensemble value by itself (diagnostic D2, run
+  C-20261115-180434-fd05776); a rate check at that level compares the tested pairs with
+  the sample's own pair mean (or sum_P/sum_W with a pair Monte Carlo of the same
+  snapshot), not with the closed form.
+- T10b: in wave 2 only the T2 statistics were compared on the card (run
+  C-20261115-180525-94ddd22); the T4 comparison is still open.
+
 ## 3. Order and cost
 
 T0, T0b, T1, T2 first (processors, minutes). Then T3-T5 and T11 (1e6 particles, about

@@ -38,6 +38,17 @@ conservation lines 586-596) [VERIFIED].
   free path lambda = 1/(rho_0 sigma_m) = 1/(n sigma_tot) (the definition of Balberg,
   Shapiro & Inagaki, `SIDMGT_Xiv2.tex` line 389, and Koda & Shapiro line 409 [VERIFIED];
   the hard-sphere mean free path of a Maxwellian gas is lambda/sqrt 2, line 392).
+- Knudsen number of a cluster run (track definition, `stage/G0/REPORT.md` decision 2;
+  written here in wave 2 after the verifier's finding V5): Kn_c = lambda_c/H_c with
+  lambda_c = 1/(rho_0c sigma_m) at the centre and H_c = (v1_c^2/(4 pi rho_0c))^{1/2},
+  v1^2 = p/rho_0 (one-dimensional dispersion), rho_0 the rest-mass density. Then
+  sigma_m = K/Kn_c in code units (M_ADM = 1) with K = 1/(rho_0c H_c), a property of the
+  equilibrium: K = 168.9 for the King b = 1 threshold model (y0 = 0.334032; run
+  C-sidm-20261115-131130-3077a99), 142.6 for the F21 b = 0.1 model at the eps maximum and
+  84.1 at the trial root (verifier, run C-20261115-170630-1037f6a); table for all models in
+  `../equilibria/CONVERSION.md`. Other conventions met in the packages and the literature
+  (H on the energy density, scope: factor 1.18; transport mean free path, equilibria: 0.77;
+  lambda/R, gravothermal) are not used to label runs.
 - Moller speed of two particles a, b with four-velocities u_a, u_b in any frame:
   gamma_rel = -u_a . u_b = W_a W_b - u_a . u_b (spatial dot), W = sqrt(1 + |u|^2),
       v_Mol = sqrt(gamma_rel^2 - 1) / (W_a W_b),     0 <= v_Mol < 2.
@@ -179,9 +190,14 @@ Hence:
 - P_max = max over tested pairs of P_ij must stay below `coll_pmax` (default 0.1, the
   bound Koda & Shapiro use, `sidm1.tex` lines 667-673 [VERIFIED]). The operator does not
   shrink the global step; it sub-cycles: per cell, n_sub = ceil(P_bound / coll_pmax) with
-  P_bound = (N - 1) sigma_m M_max v_bound alpha dt / V, v_bound = the largest v_Mol of the
-  cell's tested pairs evaluated on the first pairing, or 2 (the absolute bound) if
-  `coll_subcycle = conservative`; each sub-step re-pairs (new keys) with dt/n_sub.
+  P_bound = (N - 1) sigma_m M_max v_bound alpha dt / V, v_bound = min(v_1 + v_2, 2) with
+  v_1, v_2 the two largest speeds of the cell's particles in its frame (core's `measured`
+  rule, `coord/INTERFACES/collisions.md` lines 178-183; adopted in wave 2 at core's request:
+  the first-pairing rule of the first version of this text made n_sub depend on one pairing
+  and biased the rate by -0.10 to -0.12 percent, run core-20261115-132842-b33b7f3), or 2
+  (the absolute bound) if `coll_subcycle = conservative`; each sub-step re-pairs (new
+  keys) with dt/n_sub. The box tests of wave 2 ran with this rule (T2 rate within 1e-4,
+  `../box_tests/README.md`).
   n_sub is capped by `coll_nsub_max` (default 1000); a pair with P > 1 after the cap is
   counted (`n_truncated`), clipped to 1, and is a test failure in every test of TESTS.md.
 - Short-mean-free-path regime: n_sub ~ dt Gamma / 0.1 sub-steps per step; the cost is
