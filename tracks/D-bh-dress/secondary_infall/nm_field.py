@@ -71,7 +71,7 @@ def plummer_fit(d, rmax_cells=4.0):
 
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument("--out", required=True)
+    ap.add_argument("--out", default=os.environ.get("NRPIC_RUN_DIR", ""))
     ap.add_argument("--run", action="append", required=True)
     a = ap.parse_args()
     os.makedirs(a.out, exist_ok=True)
