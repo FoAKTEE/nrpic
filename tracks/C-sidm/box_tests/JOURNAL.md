@@ -402,3 +402,21 @@ which clears the operator and puts the offset in the boosted generator or in my 
 reference for the drifting gas. Refuted if the random-pair mean equals the reference
 within 3 se while the tested pairs stay 2e-4 above it: that would point at the operator's
 pair statistics in a drifting gas (to be reported to core with this reproduction).
+
+## 2026-11-15 Card: outcome (runs C-20261115-170447-cb3b230, analysis C-20261115-180525-94ddd22)
+
+Slurm job 4464 ran the eight entries in 51 s (0.014 card-hour), all rc 0.
+- T10b PASS: in the four 200-step runs the card takes the same tested pairs and the same
+  collisions as the processor at every step (n_tested and n_coll identical record by
+  record), sum_P within 9e-14, final momenta within 8.9e-15 (not bitwise: the card's
+  arithmetic differs in the last digits); T2(a)-(c) and T1 pass on the card with the same
+  z values as the processor runs. Prediction confirmed.
+- Cost on one A100, 1e6 particles, 32^3 cells, from the `elapsed` lines (cycles 100 to
+  2000 of the long runs): 3.25 ms per step with collisions at one sub-step, 6.37 ms with
+  2.79 sub-steps on average, 1.18 ms without collisions; the collision part costs
+  3.9e-9 s per tested pair (2.1e-9 s per particle and step) and 3.4e-9 s per tested pair
+  when sub-cycled. The 200-step runs give 3.5e-9 to 4.2e-9. Processor (one core, same
+  problems): 5.7e-7 to 6.7e-7 s per tested pair at one sub-step, 3.3e-7 to 3.5e-7
+  sub-cycled. Ratio processor/card for the collision part: 96 to 173. Start-up 0.2-4.7 s.
+  Prediction (< 1e-8 s per pair, >= 50 times the processor) confirmed.
+Figure `figs/cost_gpu.png` looked at.
