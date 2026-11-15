@@ -609,3 +609,21 @@ identical; T3 59 of 59 identical once the run directory is masked; T2: all 13 fi
 differ outside the wall-clock cases are equal once masked, and the 13 that still differ
 all belong to the wall-clock cases (their stop times differ). As predicted: the
 published executables reproduce the first runs of T1 to T3 byte for byte.
+
+### End of session dfix-2
+
+Published: `scratch/core/exe/core_requests-adf/{athena_cpu,athena_gpu,COMMIT,READY}`
+(source 3f75eb8; sha256 17ee5e28... and f423de38..., the executables of every test run
+since core-20261115-161025-3f75eb8 and of the card checks). `READY` is a copy of
+`tracks/core/analysis/dfix/READY.txt`. Answers to the tracks:
+`tracks/core/outbox/20261115T1815Z__to-{D-bh-dress,A-emd-pbh,F-hills}__dfix-answers.md`.
+State of every test: `interfaces/REQUESTS_ADF.md` section 4; lines of shared files:
+section 5. Runs of this session were registered with `harness/bin/nrpic-run` (the
+failure of dfix-1, KeyError 'outputs', is gone after the merge of main); the card-check
+manifest of dfix-1 was completed by hand (its registering process had ended).
+Open: the card cases that did not run (T5, T7, mem2700, bench16, bench32, t1_accept);
+a merger during an evolution for the pair horizon; the deferred requests of section 1.
+Lessons: time a case on the target device before putting it into a card job (the
+Kepler case cost 0.8 card-hours that a processor does in minutes); a byte regression
+must mask the run directory in the parameter dump of continued runs and the stored
+last_time of final off-schedule outputs.
