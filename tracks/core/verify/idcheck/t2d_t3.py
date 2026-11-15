@@ -156,7 +156,10 @@ def main():
                             traj_cut_time=tr_cut, traj_t_end=float(d["t"][-1]),
                             tau_centre_end=float(np.max(d["tau"][-1])),
                             hst=hst_summary(d), regions=reg, skipped=skipped,
-                            groups=t2.group_numbers(d))
+                            groups=t2.group_numbers(d),
+                            cstat=dict(t=d["cstat"][:, 0].tolist(),
+                                       H_max=[float(v) if np.isfinite(v) else None
+                                              for v in d["cstat"][:, 8]]))
         hs = res["t3"][k]["hst"]
         print(f"T3 {k:16s} {m['run_id']} dx={d['dx']:.3f} traj to t={float(d['t'][-1]):.2f}"
               f" (cut {tr_cut}), first loss {hs['first_loss_time']}, np_end {hs['np_end']},"
@@ -177,7 +180,7 @@ def figures(res):
     os.makedirs(FIGS, exist_ok=True)
     # ---- T2d: interior rms of H against time, and at t = 8, 10 M against dx
     fig, ax = plt.subplots(1, 3, figsize=(fs.FULL_WIDTH, 3.0))
-    fig.subplots_adjust(left=0.08, right=0.98, bottom=0.16, top=0.90, wspace=0.36)
+    fig.subplots_adjust(left=0.08, right=0.98, bottom=0.16, top=0.90, wspace=0.45)
     fam = [("ct-edge2", "CIC, Hermite", fs.PAL["red"]),
            ("ct-edge2-ext", "CIC, extrapolated sources", fs.PAL["yellow"]),
            ("ct-edge2-prod", "production deposit", fs.PAL["blue"])]
@@ -203,12 +206,12 @@ def figures(res):
         ax[0].plot([], [], color="k", ls=ls, label=r"$\Delta x=%g\,M$" % dxv)
     for f, lab, c in fam:
         ax[0].plot([], [], color=c, label=lab)
-    ax[0].legend(fontsize=7, ncol=1, loc="lower right")
+    ax[0].legend(fontsize=6.5, ncol=2, loc="upper left", handlelength=1.4, columnspacing=0.6)
     ax[0].set_title("interior", fontsize=10)
     ax[1].set_title(r"boundary layer ($r>0.7\,L$)", fontsize=10)
     for a in ax[:2]:
         a.set_xlabel(r"coordinate time $t/M$", labelpad=-2)
-        a.set_ylim(1e-6, 2e-3)
+        a.set_ylim(1e-6, 1e-2)
     ax[0].set_ylabel(r"rms of $H$ in the region")
     ax[2].set_xlabel(r"cell size $\Delta x/M$", labelpad=-2)
     ax[2].set_ylabel(r"interior rms $H$, $t=8$ (open), $10\,M$")
@@ -232,22 +235,21 @@ def figures(res):
                    label=r"%s, $\Delta x=%g$" % (k.rsplit("-n", 1)[0].replace("bound-", ""), v["dx"]))
         if h["first_loss_time"] is not None:
             ax[0].axvline(h["first_loss_time"], color=c, lw=0.8, ls=":")
-        reg = v["regions"]
-        ax[2].semilogy([r["time"] for r in reg], [r["interior"]["H_rms"] if r["interior"] else np.nan
-                                                  for r in reg], "o-", color=c, ms=3)
+        cs = v["cstat"]
+        ax[2].semilogy(cs["t"], [np.nan if x is None else x for x in cs["H_max"]], color=c)
         g = v["groups"]
         tau = [2, 4, 6, 8, 10, 12]
         y = [max((g[n].get(f"tau{t}", {}).get("maxabs", np.nan) for n in ("core", "mid", "outer")),
                  default=np.nan) for t in tau]
         ax[1].semilogy(tau, y, "s-", color=c, ms=3)
-    ax[0].set_ylim(-0.5, 3.0)
+    ax[0].set_ylim(-1.6, 3.0)
     ax[0].set_xlabel(r"coordinate time $t/M$", labelpad=-2)
     ax[0].set_ylabel("lapse at the centre (clipped)")
-    ax[0].legend(fontsize=6.5, loc="upper left")
+    ax[0].legend(fontsize=6.5, loc="lower left", ncol=2, handlelength=1.2, columnspacing=0.8)
     ax[1].set_xlabel(r"proper time of the shells $\tau/M$", labelpad=-2)
     ax[1].set_ylabel(r"largest $|R/R_{\rm exact}-1|$, ball shells")
     ax[2].set_xlabel(r"coordinate time $t/M$", labelpad=-2)
-    ax[2].set_ylabel(r"interior rms $H$")
+    ax[2].set_ylabel(r"largest $|H|$ on the mesh")
     fs.save(fig, os.path.join(FIGS, "id_t3_bound"))
     plt.close(fig)
 
