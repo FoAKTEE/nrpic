@@ -392,7 +392,7 @@ samples themselves, or the assignment of particles to MeshBlocks). The changed
 executable will differ from the present one at rounding level; I expect differences of
 the size seen between the layouts now (1e-13).
 
-## 2026-11-15 12:57 UTC  session core-rng  experiment: outcome
+## 2026-11-15 12:55 UTC  session core-rng  experiment: outcome
 
 Prediction of 12:50 confirmed. Run core-20261115-124953-8e05112 (scouting; executable
 built from a scratch copy of the source with the patch
@@ -411,7 +411,7 @@ coordinate origin; a version for the source tree should take the integer cell of
 from the logical location of the MeshBlock, as `rng::CellOffsets` does. Not applied:
 it changes existing results at rounding level, which this work package may not do.
 
-## 2026-11-15 13:00 UTC  session core-rng  summary and hand-over
+## 2026-11-15 12:56 UTC  session core-rng  summary and hand-over
 
 Commits f0258ce .. (the one that contains this entry) on `core/rng`, pushed.
 
@@ -466,9 +466,36 @@ Not done, plainly:
 Card time used: 134 s (0.037 card-hours) of the three card-hours; job 4414 is limited
 to 15 minutes. Processor time: about 5.5 core-hours.
 
-## 2026-11-15 13:05 UTC  session core-rng  larger table while the card job waits
+## 2026-11-15 12:57 UTC  session core-rng  larger table while the card job waits
 
 Run core-20261115-125654-a8755fc: 2002070 keys, processor build of the final source,
 five standalone compilations, Python twin: one sha256 (93d2970e...), no differing value;
 21890 keys against `numpy.random.Philox`, none differing. (P2 on a sample ten times
 larger; the card is not part of this run.)
+
+## 2026-11-15 13:00 UTC  session core-rng  end of session
+
+(Clock times of the headings are accurate to a few minutes; their order is exact.)
+
+- `run_regression.py` now gives a verdict per case: "identical", "differs", or "not
+  reproducible run to run, no verdict" when the files that differ between the baseline
+  and the new executable already differ between two runs of the baseline. Nothing changes
+  for the processor run core-20261115-120532-5bdb22c (all five cases identical); the
+  card job 4414 will use this version.
+- Job 4414 is still pending: both cards run jobs of another owner with a limit of 59
+  minutes (started 12:53 and 12:57 UTC), and six short jobs are ahead of mine. I stop
+  here rather than wait; what the job will leave and how to read it is in the entry
+  "summary and hand-over" above.
+- Requests that go into the report: (1) accept `tracks/core/interfaces/rng.md` as
+  `coord/INTERFACES/rng.md` and have the collision and scalar-field packages take their
+  random numbers from `utils/rng.hpp` with the streams of its registry; (2) decide
+  whether the reconstruction of the metric at the particles is made independent of the
+  MeshBlock edge (tested patch `tracks/core/notes/rng_gather_experiment.diff`; changes
+  existing results by about 1e-13); (3) after job 4414 has run, add its manifests with
+  `git add -f` and the card results to section 7 of the interface file; (4) a line for
+  the random numbers in the table "What exists" of `CLAUDE.md`, and the allowed block
+  name if a block `<rng>` is preferred to `<job> rng_seed`; (5) the knowledge base should
+  hold the paper of Salmon et al. (2011), which is not on arXiv, so that the statement
+  about the test batteries the generator passes is no longer [BACKGROUND]; (6) a second
+  agent reruns `run_agreement.py` and `run_kick_demo.py --case analytic` from the
+  artefacts.

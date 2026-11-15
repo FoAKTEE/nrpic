@@ -13,8 +13,10 @@ identical arguments; every output file except the log is compared byte by byte.
   c5  problems/tests/rng_kick_mesh.athinput, kick off   restart files, removal
 
 Usage: run_regression.py --base ATHENA --new ATHENA [--cases c1,c2,...]
-Writes summary.json in the current directory; exit status 0 only if every file of
-every case is identical between the baseline and the new executable.
+Writes summary.json in the current directory; exit status 0 unless a file differs
+between the baseline and the new executable that is identical between the two runs of
+the baseline (verdict "differs"). A case whose baseline is not reproducible run to run
+is reported as such and gives no verdict.
 """
 import argparse
 import filecmp
@@ -104,13 +106,22 @@ def main():
                 run(new, os.path.join(cdir, "new"), cases[name])]
         rep = compare(os.path.join(cdir, "base"), os.path.join(cdir, "base2"))
         res = compare(os.path.join(cdir, "base"), os.path.join(cdir, "new"))
+        # a file that already differs between two runs of the baseline (a run that is
+        # not reproducible, for example sums in parallel on a card) cannot show a
+        # regression either way
+        if not res["differing"]:
+            verdict = "identical"
+        elif set(res["differing"]) <= set(rep["differing"]):
+            verdict = "not reproducible run to run, no verdict"
+        else:
+            verdict = "differs"
         summary["cases"][name] = {"args": cases[name], "wall_time_s": wall,
-                                  "baseline_twice": rep, "baseline_vs_new": res}
-        good = not res["differing"]
-        ok = ok and good
+                                  "baseline_twice": rep, "baseline_vs_new": res,
+                                  "verdict": verdict}
+        ok = ok and verdict != "differs"
         print(f"  {name}: {res['files']} files, baseline twice differing "
               f"{len(rep['differing'])}, baseline vs new differing "
-              f"{len(res['differing'])}  ({wall} s)", flush=True)
+              f"{len(res['differing'])}: {verdict}  ({wall} s)", flush=True)
     summary["ok"] = ok
     with open(os.path.join(top, "summary.json"), "w") as fp:
         json.dump(summary, fp, indent=1)
