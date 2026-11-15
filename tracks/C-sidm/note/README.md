@@ -56,7 +56,11 @@ Done: note v0 (10 pages, compiled with latexmk, every page read), checker clean 
 text (remaining hits: run ids and file names in the ledger appendix and the scripts, accepted
 by exception 1 of the guide; one overfull box of 1 pt in the parameter table); four data
 figures and two schematics, each PNG opened; ledger and parameter table from registered runs;
-claims check; `stage/G0/STAGE_REPORT.md` from `nrpic-stage report`.
+claims check; `stage/G0/CHECKLIST.md` collected again and its wave-2 items filled (C18 and C20
+left OPEN for the lead); `nrpic-stage verify` run on d567429 (the note's checks pass; `clean`
+and `runs` fail on other helpers' work and wave-1 manifests); `stage/G0/STAGE_REPORT.md` from
+`nrpic-stage report` (verdict FAIL until C18, C20 and verify are settled), with a section of
+this helper's notes and a draft of the decision paragraph.
 
 Not done: the reviewer step of the paper-writing procedure for a new paper (300- and 1000-word
 versions read by first-year-student reviewers, Sec. 10 of the skill); a fresh-context
@@ -91,4 +95,11 @@ Differences between the lead's documents and the files (the files win; `tables/c
 - To orch: `nrpic-run submit` refuses while other helpers of the same owner hold the 16
   cores of the allotment, even for a one-core, twenty-second analysis run; N2 waited about
   ten minutes in a retry loop. A small reserve for short analysis runs (or a queue) would help.
+- To orch: `nrpic-stage verify` reads the input paths of the wave-1 gravothermal manifests
+  (`wt/C-sidm/...`, `kb-data/...`, relative to the main checkout) inside the worktree and
+  reports them as "no longer present"; and it fails those 10 manifests for missing
+  `preregistered_in`, `code`, `input` because they declare the `nrpic-run-manifest/1` schema
+  (decision 0012 says hand manifests are checked for what they record). Either resolve such
+  paths against the main checkout and read these manifests as hand-written, or tell the lead
+  to rewrite them. Details: `../stage/G0/VERIFY_RESULTS.md`, `../stage/G0/STAGE_REPORT.md`.
 - To kb: unchanged from wave 1 (key references are raw-store locators only; checklist C2).
