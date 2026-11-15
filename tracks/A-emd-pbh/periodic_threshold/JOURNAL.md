@@ -434,3 +434,28 @@ unchanged to 1e-16), no unconverged push.
   background time of the collapse definition is usable (prediction "within ten per cent
   to tau ~ 20": confirmed, by a wide margin).
 - Nothing broke: no crash, no non-positive metric determinant, no lapse collapse.
+
+## 2026-11-15, S1 outcome (run A-emd-pbh-20261115-160349-9d232d2; analysis of both A-emd-pbh-20261115-171930-878a114; figures looked at)
+
+Slurm COMPLETED, 653 s = 0.181 card-hours, 4,078 steps; but **the fields became
+non-finite at tau = 11.70 (t = 21.9 t_H)** and the run carried them to tlim:
+- before: central lapse alpha/a 0.81 (tau = 5, 2.9 t_H), 0.75 (6.2 t_H), 0.57 (11.3 t_H),
+  0.43 (16.2 t_H), 0.14 at tau = 11.70 (21.9 t_H); smallest lapse alpha_min/a 0.032 there,
+  off centre (the y line shows minima at y = +-0.5/k by 14.7 t_H); E_max/Ebar 4.8, 19,
+  403, 6,500, 36,000 at tau = 5, 7, 9, 11, 11.6 (with jumps where the cloud level moves);
+  Theta max 1e-3 to 0.27; H_r max 0.047 at t = 0 (ten times S0 at mu = 0.03: linear, as
+  T2b), 0.16 at tau = 5, 1.4 from tau = 9; M_r max about 1.6;
+- at tau = 11.70, in one record: chi_min -> -inf, K_max = 1e47, Theta = 7e46, every
+  particle flagged as excised (np = 0), the step fell to 1e-244 and grew back by a factor
+  of about two per cycle until it reached the Courant step again at tau = 11.71; the run
+  then integrated non-finite fields to tau = 16 without stopping;
+- no apparent horizon in 44 finder calls from tau = 6 to the end (every call before the
+  blow-up returned NaN, i.e. not found).
+Against the predictions: (a) refuted (H_r max 0.16 at the first pancake, above 0.1; it
+was 0.047 at t = 0); (b) confirmed (the central lapse falls relative to a from tau ~ 7);
+(c) undecided: no horizon by 21.9 t_H, where H1 and the particle runs of
+arXiv:2609.14218 expect one near 13-16 t_H, and no halt either (the lapse kept falling,
+the density kept rising); (d) confirmed in kind, not in time: the run ends with a
+non-positive conformal factor (chi -> -inf; the cosmo E1 failure) at tau = 11.7, later
+than the predicted "before tau ~ 10". Outcome class of SCOPE.md section 3: UNDECIDED.
+Card-hours of both scouting runs: 0.465 of the 1.5 allowed.

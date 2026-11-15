@@ -40,15 +40,31 @@
  ],
  "output_dir": "/data/haiyangw/nrpic/scratch/A-emd-pbh/A-emd-pbh-20261115-160349-9d232d2",
  "outputs": {
-  "dir": "scratch/A-emd-pbh/A-emd-pbh-20261115-160349-9d232d2"
+  "dir": "scratch/A-emd-pbh/A-emd-pbh-20261115-160349-9d232d2",
+  "sha256sums": "sha256sums.txt"
  },
  "launcher": "batch (scripts/gpu_batch.sh), one card",
  "slurm_wall": "00:40:00",
  "slurm_job": "4451",
  "cores": 1,
- "card_hours": null,
+ "card_hours": 0.1814,
  "registered_by": "hand (scripts/card_run.py): nrpic-run refuses the worktree while other helpers' untracked files are present",
- "status": "submitted",
+ "status": "completed",
  "started": "2026-11-15T16:03:49.345439+00:00",
- "notes": "Input deck edited after submission and before the job started (the batch list reads it at run time): the tab outputs of the first version wrote three outputs into one file name and asked for adm_alpha, which AthenaK does not output with Z4c (found by the processor dry run S0, A-emd-pbh-20261115-161829-dba94f6). The run uses the deck of the commit that records this note; sha256 above is the edited deck."
+ "notes": "Input deck edited after submission and before the job started (the batch list reads it at run time): the tab outputs of the first version wrote three outputs into one file name and asked for adm_alpha, which AthenaK does not output with Z4c (found by the processor dry run S0, A-emd-pbh-20261115-161829-dba94f6). The run uses the deck of the commit that records this note; sha256 above is the edited deck.",
+ "slurm_state": "COMPLETED",
+ "wall_time_s": 653,
+ "slurm_start": "2026-11-15T09:07:34",
+ "slurm_end": "2026-11-15T09:18:27",
+ "slurm_exit": "0:0",
+ "batch_status": "09:18:27 rc=0 /data/haiyangw/nrpic/scratch/A-emd-pbh/A-emd-pbh-20261115-160349-9d232d2/run",
+ "athena_log_tail": [
+  "",
+  "MeshBlock-cycles = 1174464",
+  "cpu time used  = 6.482866e+02",
+  "zone-cycles/cpu_second = 7.420491e+06",
+  "particle-updates/cpu_second = 9.692614e+05",
+  "# exit=0 end=2026-11-15T09:18:27-08:00 gpu_mem_baseline_MiB=14 gpu_mem_peak_MiB=10385"
+ ],
+ "ended": "2026-11-15T17:19:30.271996+00:00"
 }
