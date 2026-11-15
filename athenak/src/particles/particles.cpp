@@ -119,6 +119,7 @@ Particles::Particles(MeshBlockPack *ppack, ParameterInput *pin) :
 Particles::~Particles() {
   if (pbval_tm != nullptr) {delete pbval_tm;}
   if (pbval_phi != nullptr) {delete pbval_phi;}
+  if (pbval_ids != nullptr) {delete pbval_ids;}
 }
 
 //----------------------------------------------------------------------------------------

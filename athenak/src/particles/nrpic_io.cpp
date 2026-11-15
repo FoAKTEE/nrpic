@@ -1234,6 +1234,7 @@ void Particles::NrpicStartup(bool res_flag) {
   Mesh *pm = pmy_pack->pmesh;
   if (!res_flag) {
     NrpicCreateParticles();
+    NrpicSolveInitialData();    // <particles> id_solve (nrpic_idsolve.cpp)
   }
   NrpicInitializeSources();
   if (res_flag) {

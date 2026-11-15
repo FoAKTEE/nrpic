@@ -167,3 +167,48 @@ with `cosmo/ic/cosmo_id.py` from the same particle file: (i) its spectral solve,
 **T5 card build.** The Gaussian case at dx = 0.5 on one A100 gives the same iteration
 counts and psi to 1e-12 relative to the processor run (sums are reduced in another
 order). At most 0.2 card-hours in all.
+
+## 2026-11-15, entry 3: amendments of the predictions, before any registered test run
+
+The solver compiled at the first attempt (processor build). Three smoke runs in
+`scratch/core/tmp/idsolve/` (not registered; no number of them is used as a result)
+showed that it runs to convergence in both modes on Robin faces and on the torus. They
+also showed two faults of entry 2, which I correct here before the registered runs.
+
+1. **Arithmetic error in T1 (f), a failed prediction.** I wrote rhot(0) = 0.01985. The
+   normalised Gaussian with m = 1, s = 2 has rhot(0) = m/(2 pi s^2)^(3/2) = 7.937e-3.
+   The monitor before the solve (psi = 1) is therefore max|H| = 16 pi rhot psi_ex at the
+   innermost cells, at most 16 pi * 7.937e-3 * 1.1995 = 0.4786 (the smoke run at
+   dx = 1 printed 0.405; its innermost cell centres are at r = 0.87), not 1.197. The
+   same slip made sigma(0) = 2 pi rhot/psi = 0.042, not 0.104: the screening of the
+   error is about 5 per cent (k^2 about 3/s^2 = 0.75), not "a few per cent to ten".
+2. **Lattice effect in T1 (c), (d), derived now [JUDGEMENT].** The particles sit on a
+   lattice of spacing dx/2, at +-dx/4 and +-3dx/4 from a cell centre, with
+   cloud-in-cell weights 3/4 and 1/4: the deposit has the second moment (3/16) dx^2
+   per direction instead of the dx^2/6 of a continuum of particles, so the cloud term
+   is -(3/32)(dx/s)^2, not -(dx/s)^2/12. Amended predictions for the relative error of
+   psi - 1 at the centre (dx = 1, 0.5, 0.25), before screening:
+   (c) mode `stencil`: (-3/32 + 1/20)(dx/s)^2 = -1.09e-2, -2.7e-3, -6.8e-4;
+   (d) mode `code`, four ghost cells: -(3/32)(dx/s)^2 = -2.3e-2, -5.9e-3, -1.5e-3; with
+       `deposit_comp_c = 1/12` the pass removes (1/12)(dx/s)^2 of it and -(dx/s)^2/96
+       remains (-2.6e-3, -6.5e-4): still second order with this lattice;
+       `deposit_comp_c = 3/32` would remove it to fourth order.
+   The innermost cell centres are off the centre (r = 0.87 dx), where the error
+   relative to psi - 1 is a few per cent smaller.
+   (e) amended: the error at the faces is the far field of the error of the monopole,
+   (psi - 1) times the relative change of the integral of Etilde/psi, a few 1e-3 of
+   0.032 at dx = 1 (of order 1e-4), falling by 4 per halving; "below 1e-5 at dx = 0.5"
+   was too tight. Refuted if it does not fall by about 4 per halving.
+3. **T4, the lattice of the cell centres is a degenerate case.** With one particle per
+   cell at the cell centres every particle sits at the kink of the cloud-in-cell
+   weight; where the displacement changes sign (x = 0 and x = L/2) the deposited
+   density jumps within one cell (seen in the smoke run). The comparison with
+   `cosmo/ic` uses the same deposit and is not affected ((a), (c), (d) stand), but (b)
+   and (e) assumed a smooth density. I keep the case as registered in entry 2 and add
+   the lattice with eight particles per cell (`--ppc 2`), for which (b) and (e) are
+   the predictions; for one particle per cell I expect the difference to the spectral
+   reference to be several times larger than (b) near the two planes.
+4. **T2, T3 resolutions.** Box half-width 32 as in `problems/ball`; resolutions
+   dx = 2, 1, 0.5 (N = 32, 64, 128) instead of 1, 0.5, 0.25: N = 256 does not fit the
+   processor runs of this session. The predictions of T2 (b) scale as dx^2 (1.5e-3,
+   4e-4, 1e-4 times a number of order one).
