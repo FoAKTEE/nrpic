@@ -1,0 +1,5 @@
+# Card runs of newton_tests (nrpic-run submit --launcher batch --list): the 64^3 pancakes
+# of P1 (east data, to a = 42) and P2 (sin data, to a = 25). Particle files from run
+# B-20261115-163629-a96748c. One line per run: <name> <athinput> [athena args...].
+east64 tracks/B-emd-gw/newton_tests/inputs/pancake.athinput mesh/nx1=64 mesh/nx2=64 mesh/nx3=64 meshblock/nx1=32 meshblock/nx2=32 meshblock/nx3=32 particles/dt=0.00390625 particles/traj_ntrack=64 particles/particle_file=/data/haiyangw/nrpic/scratch/B-emd-gw/B-20261115-163629-a96748c/east64/particles.nrp
+sin64 tracks/B-emd-gw/newton_tests/inputs/pancake.athinput mesh/nx1=64 mesh/nx2=64 mesh/nx3=64 meshblock/nx1=32 meshblock/nx2=32 meshblock/nx3=32 particles/dt=0.00390625 particles/traj_ntrack=0 particles/hist_dcycle=1 time/tlim=8.0 particles/particle_file=/data/haiyangw/nrpic/scratch/B-emd-gw/B-20261115-163629-a96748c/sin64/particles.nrp
