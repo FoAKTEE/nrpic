@@ -278,15 +278,24 @@ decision 0010 item 4; not part of this package.
 | Z4c with the coupled scalar field, no stochastic sources | 1.337e4 | 1.118 |
 | the same with the Mukhanov-Sasaki sources: ball n_max = 16, 8538 modes, 214 shells, six fields synthesized at every stage | 1.239e4 | 1.206 (1.079 over the field alone) |
 
-Run core-20261115-135423-5a6953e (four steps each). So the field costs 12 percent of a
-Z4c step and the synthesis 8 percent at 64^3 with n_max = N/4 on one core [VERIFIED]. On
-a card: pending (section 10). The synthesis cost per cell grows with the number of
+| Z4c alone, 128^3, 64^3 MeshBlocks, one A100 | 1.983e7 | 1 |
+| with the coupled scalar field | 1.389e7 | 1.428 |
+| with the Mukhanov-Sasaki sources: n_max = 32, 68532 modes, 854 shells, six fields at every stage | 1.204e7 | 1.647 (1.153 over the field alone) |
+
+Runs core-20261115-135423-5a6953e (processor, four steps each) and
+core-20261115-143907-cea4c86 (card, twenty steps each). So the field costs 12 percent of
+a Z4c step on one core and 43 percent on the card, the synthesis 8 and 15 percent, with
+n_max = N/4 [VERIFIED]. The card figure for the field is larger than expected (the
+prediction was below 25 percent; journal entry 9); where the time goes (boundary
+exchange of a second variable set, the separate kernels for sources and right-hand
+side) has not been profiled. The synthesis cost per cell grows with the number of
 distinct n_x (n_max + 1) and, for small MeshBlocks, with the number of modes per cell
 (design review D2).
 
 ## 10. What is verified
 
-All on processors (serial build), executable frozen per commit under `.work/exe/`.
+On processors (serial build) and, for tests 1 to 4 and the cost, on one A100 (last row);
+executables frozen per commit under `.work/exe/`.
 Predictions were written before the runs; failed predictions and their follow-up are in
 the journal. Figures: `tracks/core/notes/scalar_figs/`.
 
@@ -302,13 +311,13 @@ the journal. Figures: `tracks/core/notes/scalar_figs/`.
 | Test 6, advective terms: the wave of test 1 with a uniform shift +-(0.3, 0.2, 0) has the coordinate frequency omega -+ k.beta to 6.2e-4, 1.2e-5, 2.0e-7 (N = 8, 16, 32; orders 5.65, 5.91) and 3.3e-4, 7.4e-6, 1.2e-7 for the other sign; amplitude loss of the upwinded stencils 3.8e-3, 3.5e-5, 2.7e-7 | run core-20261115-140852-3f7ca07; `fig_wave_shift.png` |
 | Statically refined mesh (smoke run): plane wave of test 1 across one refinement level (32^3 root mesh, 120 MeshBlocks, 64 steps) stays stable; rms difference to the exact wave 2.5e-6 (coarse), 6.4e-6 (fine), maximum 1.8e-5, about 100 times the error of a uniform 32^3 mesh | run core-20261115-135434-5a6953e (scouting) |
 | Standard outputs `sf` (bin) and `sf_phi` (vtk) are written and read by `athenak/vis/python/bin_convert.py` | unregistered smoke run, `scratch/core/tmp/sf/out_smoke` |
-| The module compiles in the card build (CUDA 12.6) | `.work/build_gpu_sf`; card runs pending: Slurm job 4427 (`tracks/core/analysis/scalar/gpu_job.sh`: cost at 128^3, tests 2, 4, 3, 1), queued when this was written; each part registers itself under `tracks/core/runs/` with a `summary.json` |
+| On one A100 (card build of commit 61cb001, Slurm job 4427, 134 s of card time in all): tests 1 to 4 give the same verdicts and, to the digits quoted above, the same numbers as on processors: spatial orders 1.99, 3.96, 5.92, temporal 3.9997, dissipation 0.9994; slow roll 2.9e-7 (a) at Courant 0.25 with ratios 15.5, 15.7; constraint orders of the plane perturbation 5.15 to 6.00; coefficients of the generic sources against the twin 2.2e-16 of the rms, all dumped fields bit-identical for 1, 8 and 64 MeshBlocks and through a restart on the card, lockstep orders 4.12, 4.07, Mukhanov-Sasaki fields 7.2e-17, kick identity 5.0e-16 against 1.37e-2 | runs core-20261115-144000-cea4c86 (test 1), core-20261115-143918-cea4c86 (test 2), core-20261115-143954-cea4c86 (test 3), core-20261115-143936-cea4c86 (test 4), core-20261115-143907-cea4c86 (cost) |
 
 ## 11. Limits and open points
 
-- Card: nothing has run on a card yet (job queued). Layout independence and the twin
-  agreement are properties of integer arithmetic and of sums in a fixed order, but on the
-  card they are [TO VERIFY] until the job has run.
+- Card: tests 1 to 4 and the cost have run on one A100; tests 5 and 6, the refined-mesh
+  run and the regression of existing set-ups have not (the regression on a card needs a
+  card build of the unmodified source).
 - First-order residual of the momentum constraint in the evolved Mukhanov-Sasaki run on
   the coarse test mesh (2.7e-12 after one step with either projector; journal entry 4):
   not explained by a test. Track E's test L5 on a resolved mesh decides.

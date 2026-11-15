@@ -465,3 +465,27 @@ frozen; an evolved shift (Gamma driver) with a field has not been run.
 - Not done in this package: the perturbed initial slice of SPEC 5.3; level 2; [M]; the
   card runs (job 4427 pending); a dynamical field with particles; an evolved shift;
   convergence on refined meshes; adaptive refinement; several ranks.
+
+## 2026-11-15, entry 9: card runs (Slurm job 4427, one A100, executable of commit 61cb001)
+
+The job started at 14:39 UTC and took 134 s of card time for its five parts (runs
+core-20261115-143907, -143918, -143936, -143954, -144000, all with the suffix cea4c86,
+the commit of the worktree when the job ran; the executable is `.work/exe/
+athena_gpu_61cb001`, its checksum is in the manifests).
+- Predictions of entry 5 that hold: same verdicts as on processors in tests 1 to 4;
+  dumps bit-identical between 1, 8 and 64 MeshBlocks and through a restart on the card;
+  coefficients against the twin 2.2e-16 of the rms (bound 1e-12); lockstep errors
+  6.368e-3, 3.653e-4, 2.174e-5, the same digits as on processors; cost of the sources
+  15 percent of a step with the field (bound 25).
+- Prediction that FAILED: the field costs 43 percent of a Z4c step at 128^3 on the card
+  (1.983e7 against 1.389e7 zone-cycles per second), not below 25; on one core it is 12
+  percent. Not profiled; candidates [JUDGEMENT]: the boundary exchange of a second set of
+  variables and the separate kernels for the sources and the right-hand side, whose
+  fixed costs weigh more on a card at 128^3 with eight MeshBlocks.
+- Numbers on the card: spatial orders 1.991, 3.957, 5.918; temporal 3.9997; dissipation
+  0.9994 of stencil plus integrator; slow roll a to 2.88e-7 at Courant 0.25 (ratios
+  15.5, 15.7; geodesic 16.2, 15.8); plane perturbation rms H = 5.561e-7, 8.885e-9,
+  1.397e-10 at t = 0 and the same orders as on processors; kick identity 4.96e-16 and
+  1.367e-2; flipped sign 1.904e-7 against 2.660e-11.
+The figures of the card runs are the same plots as those of the processor runs (same
+drivers); I looked at the summaries, not at each card figure again.
