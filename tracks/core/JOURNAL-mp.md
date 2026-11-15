@@ -495,3 +495,45 @@ with the final executable is to show the three horizons together.
    fixed set-up): three horizons from the first search; heavy hole: Christodoulou mass
    10.40 +- 0.05 (10.348 alone, times the background factor 1.005), S_z = 30 +- 0.1;
    light holes 0.5358 and 0.5448 as in the first card run.
+
+### Outcome of test 3, evolution (card run `core-20261115-120834-d08c476`, executable of 7a60df2, to t = 16)
+
+Numbers from `tracks/core/analysis/mp/multi_check.py` (`multi_check.json`), figure
+`figs/triple_evolution.png` (looked at).
+ - Ran to the end: 1024 cycles in 574 s (0.159 card-hours), 8.8e6 zone-cycles per
+   second, 1100 MeshBlocks at the start, 1226 at the end (168 created, 42 removed),
+   peak card memory 63.1 GB with the block limit 2400 and three finders. History volume
+   constant to 2e-5, all norms finite. Prediction held.
+ - Light horizons found in all 64 searches. Masses: A 0.5410 at t = 0, between 0.5353
+   and 0.5483, 0.5483 at the end; B 0.5497, between 0.5448 and 0.5589, 0.5578 at the
+   end. Inside the predicted ranges; they scatter by one percent during the first
+   2.5 M (the transient of the punctures on cells of m/8) and then rise by 0.5 percent
+   to t = 16. Spins below 1.2e-3.
+ - Heavy horizon: never found (64 searches). Prediction FAILED; cause found and fixed
+   (the finder tolerance `hmean_tol`, entries above), to be shown in the short run with
+   the final executable.
+ - Trackers: light holes moved by (+1.05, +1.09) and (+2.48, +1.20), along their
+   momenta (prediction held), speeds 0.099 and 0.201 at the end, that is 0.63 and 0.70
+   of P/m (0.158 and 0.287), still rising. The line between them turned by +0.14 rad,
+   separation 10.00. The heavy hole's tracker moved by (+2.4e-4, +3.0e-4): hardly at
+   all, and not toward -x, -y. Prediction FAILED.
+   Candidate explanation [JUDGEMENT, not tested yet]: the tracker follows minus the
+   shift, the shift is damped at the rate `shift_eta` = 2 in code units, that is
+   eta m = 1 for the light holes and 20 for the heavy one, so the shift at the heavy
+   puncture builds up twenty times more slowly in units of its own mass; 16 time units
+   are 1.6 m of the heavy hole.
+ - Constraint norms (history): H 8.5e-6 at t = 0, peak 5.2e-3 at t = 2.0, 7.8e-5 at
+   the end; momentum 4.7e-7, peak 5.6e-5, 3.9e-5 at the end. Prediction "within a
+   factor 30" FAILED: the norm rises 600 times in the first two M and settles nine
+   times above its start. The rise comes with the gauge transient of the light
+   punctures on cells of m/8 (the horizon masses scatter at the same time); the
+   residual of the initial data (2e-6 closed form) is far below what the evolution of
+   the punctures produces on this mesh. The quality of the initial data cannot be
+   read from the evolved norm at this resolution.
+
+**Prediction for a test of the explanation of the slow heavy tracker** (card, short):
+the single hole of 1b (E) (m = 1, P = 0.043, S = 0.3) run again with
+`z4c/shift_eta = 20` to t = 5. If the damping is the reason, the tracker speed at
+t = 1.6 is at least five times smaller than in run (E) with `shift_eta = 2`, and the
+displacement at t = 1.6 is below 1e-3. If the speeds are equal within a factor 2 the
+explanation is wrong.
