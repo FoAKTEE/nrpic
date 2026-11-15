@@ -514,3 +514,46 @@ exactly six parameters added (`comp1_p1..3`, `comp2_p1..3`), none removed, none 
 but the free text of `<comment>`, and every override of the run present in its input
 file. Refuted by any other difference: then the rerun would change more than the
 curvature, and the input must be corrected before it is scheduled.
+
+### Outcome of check I (run `core-20261115-174714-25dc565`, `check_jeans_mc_input.json`)
+
+HELD. 176 parameters in what run `n1e4_v19` used (input file plus its 35 overrides, every
+override present in the input file), 182 in `problems/jeans/jeans_mc.athinput`: the six
+clump momenta added (the values T5 used), `<comment> problem` reworded, nothing else
+added, removed or changed. So the rerun changes the initial data by the curvature only;
+what else can differ is the executable (`.work/build_gpu_v7` then, this branch's card
+executable now) and the card's run-to-run scatter. The input file is left unchanged
+after this check (its header's start line still works by hand; the registered way is
+the script below).
+
+### The rerun, prepared (not run): `tracks/core/analysis/clump/rerun_jeans_mc.sh`
+
+- Inputs staged read-only with checksums in `scratch/core/clump-rerun/inputs/`
+  (`particles.nrp` 7270917f..., `envelope.tab` 7ea9ca27..., the bytes of `n1e4_v19`),
+  named by absolute path on the command line, because the chain launcher of `nrpic-run`
+  creates the run directory itself.
+- One registered chain on one card: `--gpu-hours 8 --athena-wall 00:50:00`, at most 8
+  segments (7.9 card-hours reserved, below the eight of decision 0014), executable
+  `scratch/core/exe/core_clump-curvature/athena_gpu`. Cost estimate [VERIFIED for the old
+  executable, JUDGEMENT for this one]: `n1e4_v19` reached 100 M in 13 segments of 25 min
+  (`runs/jeans/n1e4_v19/chain/events.log`: 20:12Z on 11-13 to 02:06Z on 11-14, cycle
+  25600), 5.4 card-hours; the new executable's speed on this case is not measured.
+- `--control`: the same input, particles and executable with the clump momenta zero.
+
+### Prediction for the control of the rerun (written before either run)
+
+[JUDGEMENT] Why a control: card runs with deposition are not byte-reproducible, the
+executable is not the one of `n1e4_v19`, and no second complete run of this
+configuration exists; without the control a change of `M_AH(100 M)` cannot be laid to
+the curvature.
+1. Control (K_ij = 0, this executable): `M_AH(100 M) = 1.025 +- 0.010`, chi and S
+   within 0.01 of `n1e4_v19` (0.085, 0.0890), common horizon first found at 57 +- 3 M.
+   Refuted if it differs from `n1e4_v19` by more than 0.010 in mass: then the change of
+   executable or the scatter matters at the level of the excess, and the comparison of
+   the rerun is against the control only.
+2. Rerun minus control: `|M_AH(rerun) - M_AH(control)| < 0.010` at 100 M (the excess is
+   not caused by the start's momentum-constraint violation; prediction 1 of the rerun);
+   `S(rerun) - S(control) > 0.015` at 100 M (the curvature gives the slice J_ADM =
+   0.131 that K_ij = 0 withholds; prediction 2 of the rerun). Refuted by a mass
+   difference above 0.010 (then the curvature changes the excess) or a spin difference
+   below 0.005.
