@@ -66,6 +66,10 @@ processor run exist (CARD, PROC = their run directories):
   (one crossing shell only at this output cadence); Markov-tanh passes with the
   cancellation-free reference (A1 4.0e-15) and fails A1 at 8.5e-10 with the reference as
   it is. [VERIFIED by run]
+- U9 and A14 (E-20261115-184748-9b010fa): U2 on the card against U2 on processors (run
+  E-20261115-170727-d15df12, 6012 s on one core): six fields at four cycles agree to
+  2.2e-15 of the rms (not bitwise; bound 1e-12); the processor U2 alone passes A0-A10
+  with the same statistics as the card. [VERIFIED by run]
 - Slow-roll scouting case, N = 16 and 32 (E-20261115-172349-0bdb97d,
   E-20261115-172347-a297a96): see below.
 
@@ -111,8 +115,10 @@ Cannot (or not without help):
 
 ## Pending (not done by this package; list for the lead)
 
-- Processor run E-20261115-170727-d15df12 (U2 at the base size, about 98 min, then U4
-  about 50 min): A12 on processors and the reference of A14.
+- A12 at the base size: U4 on processors runs inside E-20261115-170727-d15df12 (after U2,
+  until about 19:40; close the run with `harness/bin/nrpic-run finish
+  E-20261115-170727-d15df12`), and on a card as E-20261115-180526-6b68c33 (Slurm 4479).
+  Validate with `scripts/val_base.sh CARD PROC OUT CARD_U4/U4` (prediction P5, P5').
 
 ## Requests
 

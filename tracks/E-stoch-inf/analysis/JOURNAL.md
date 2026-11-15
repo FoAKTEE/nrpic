@@ -297,7 +297,7 @@ about 19:40. A14 (P4) is validated as soon as U2 is complete, alone
 also gives A0-A10 on the processor U2: P7). `val_base.sh` now looks for U4's dumps rather
 than its directory, which the processor script creates at the start.
 
-## 18:49 Outcome P4, P7 (validation run E-20261115-184748-9b010fa)
+## 18:48 Outcome P4, P7 (validation run E-20261115-184748-9b010fa)
 
 - P4 holds: U9 (U2 on the card, run E-20261115-170645-3b21217) against U2 on processors
   (run E-20261115-170727-d15df12, 6012 s, 1.31e4 zone-cycles/s): six fields at four
