@@ -21,6 +21,8 @@ import time
 
 WT = "/data/haiyangw/nrpic/wt/D-bh-dress"
 PKG = "tracks/D-bh-dress/stage/G0"
+# the verifier's own files inside the stage directory (the lead's stage documents live there too)
+MINE = [PKG + "/verify", PKG + "/figs", PKG + "/JOURNAL.md", PKG + "/README.md", PKG + "/VERIFIER.md"]
 
 
 def sha(p):
@@ -40,7 +42,7 @@ def main():
     ap.add_argument("cmd", nargs=argparse.REMAINDER)
     a = ap.parse_args()
     cmd = a.cmd[1:] if a.cmd and a.cmd[0] == "--" else a.cmd
-    dirty = subprocess.run(["git", "status", "--porcelain", "--", PKG], cwd=WT, capture_output=True,
+    dirty = subprocess.run(["git", "status", "--porcelain", "--"] + MINE, cwd=WT, capture_output=True,
                            text=True).stdout.strip()
     if dirty:
         sys.exit("package directory not committed:\n" + dirty)
@@ -67,7 +69,7 @@ def main():
                           "submit refused (an untracked file of another helper, es.horizon_summary_0.txt, in "
                           "the worktree root); see stage/G0/README.md, Requests"),
         "command": cmd, "cwd": WT,
-        "git": {"sha": sha_full, "branch": "track/D-bh-dress", "package": [PKG], "package_clean": True},
+        "git": {"sha": sha_full, "branch": "track/D-bh-dress", "package": MINE, "package_clean": True},
         "code": {"core_tag": "core-v0.3"},
         "env": {"host": os.uname().nodename, "OMP_NUM_THREADS": str(a.cores)},
         "inputs": [{"path": q, "sha256": sha(q), "bytes": os.path.getsize(q)} for q in a.input],
