@@ -21,7 +21,7 @@ P = "D-bh-dress-20261115-"
 RUNS = {
     "scoping": P + "120304-795eee9",        # scope calculation (turnaround, cost model)
     "scoping_lead": P + "145611-5259f48",   # lead's identical rerun
-    "sym": P + "042626-f3da881",            # 48 symbolic identities of D-pre-1
+    "sym": P + "042626-f3da881",            # 48 symbolic identities of the bubble benchmark
     "sym_lead": P + "065141-5fdc744",       # lead's rerun (local-time id)
     "es_data": P + "043445-b782009",        # Einstein-Straus data set, first-run copy
     "es_checked": P + "042653-f3da881",     # the same rows, used by the checks

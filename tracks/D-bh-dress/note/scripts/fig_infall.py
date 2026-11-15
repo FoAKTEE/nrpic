@@ -1,4 +1,4 @@
-"""Figure: Newtonian secondary infall onto a seed in a matter era (D-pre-3) and capture.
+"""Figure: Newtonian secondary infall onto a seed in a matter era and capture.
 
 Reads the self-similar solution of run selfsim (selfsimilar_profile.npz, selfsimilar.txt
 values via selfsimilar.json) and the shell calculations of run shells_ana (analysis.json).
@@ -68,7 +68,7 @@ def main():
     b.set_ylim(1e-2, 1e2)
     b.set_xlabel(r"$a/a_i$")
     b.set_ylabel(r"mass $/M$")
-    b.legend(loc="lower right", fontsize=6.5, handlelength=1.6)
+    b.legend(frameon=False, loc="lower right", fontsize=6.5, handlelength=1.6)
     b.text(0.05, 0.9, "(b)", transform=b.transAxes)
 
     am = sh["angmom"]

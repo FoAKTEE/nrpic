@@ -1,4 +1,4 @@
-"""Figure: horizon-mass history of a vacuum puncture, the noise floor of the null test (D-pre-4).
+"""Figure: horizon-mass history of a vacuum puncture, the noise floor of the null test.
 
 Reads the raw finder output punc.horizon_summary_0.txt of the two card runs drift8 (M/8)
 and drift16 (M/16), 500 M each, and the helper's floors (drift_ana, drift_drift.json).
@@ -61,14 +61,14 @@ def main():
     a.set_ylim(-1.0, 2.0)
     a.set_xlabel(r"coordinate time $t/M$")
     a.set_ylabel(r"$(M_{\rm AH}-M)/M\ [10^{-3}]$")
-    a.legend(loc="lower right")
+    a.legend(frameon=False, loc="lower right")
     a.text(0.03, 0.92, "(a)", transform=a.transAxes)
     b.set_xlim(0, 500)
     b.set_ylim(-5, 35)
     b.axhline(0, color="k", lw=0.6)
     b.set_xlabel(r"coordinate time $t/M$")
     b.set_ylabel(r"$\bar M_{\rm AH}(t)/\bar M_{\rm AH}(50M)-1\ [10^{-5}]$")
-    b.legend(loc="upper left")
+    b.legend(frameon=False, loc="upper left")
     b.text(0.92, 0.92, "(b)", transform=b.transAxes)
     cz.save(fig, os.path.join(out, STEM))
     with open(os.path.join(out, STEM + "_numbers.json"), "w") as fh:

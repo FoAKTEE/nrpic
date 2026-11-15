@@ -1,0 +1,261 @@
+{
+ "schema": "nrpic-run/1 (by hand)",
+ "registered_by": "tracks/D-bh-dress/note/scripts/handreg.py",
+ "harness_refusal": "nrpic-run: not clean where the run's code lives; commit first: ?? es.horizon_summary_0.txt (another helper's AthenaK output in the worktree root)",
+ "run_id": "D-bh-dress-20261115-171128-38634d6",
+ "track": "D-bh-dress",
+ "gate": "G0",
+ "kind": "scouting",
+ "purpose": "note v0 of D-bh-dress: data figures, schematics, ledger and claims check from registered wave-1 outputs (predictions P1-P6 in tracks/D-bh-dress/note/JOURNAL.md)",
+ "launcher": "local",
+ "command": [
+  ".venv/bin/python",
+  "tracks/D-bh-dress/note/scripts/run_all.py"
+ ],
+ "cwd": "/data/haiyangw/nrpic/wt/D-bh-dress",
+ "git": {
+  "sha": "38634d6e80b4e00f42292676ef428345597a1607",
+  "branch": "track/D-bh-dress",
+  "package_dirty": false,
+  "merge_base_main": "b9fbf3e6534517c3393000da91c79ce552b254b9"
+ },
+ "inputs": [
+  {
+   "path": "/data/haiyangw/nrpic/scratch/D-bh-dress/D-bh-dress-20261115-043445-b782009/es.json",
+   "sha256": "efc9c995d737e31d2b7d4a5284fe08d683d395f610647a60368bf51aed7f072e",
+   "bytes": 3592
+  },
+  {
+   "path": "/data/haiyangw/nrpic/scratch/D-bh-dress/D-bh-dress-20261115-043445-b782009/es.tab",
+   "sha256": "ec5a277b88b3cd8bb2b9c2c4eba0fe887ccb92dfe8759af283d9b3ffc1ac6c29",
+   "bytes": 901240
+  },
+  {
+   "path": "/data/haiyangw/nrpic/scratch/D-bh-dress/D-bh-dress-20261115-043445-b782009/es_reference.csv",
+   "sha256": "b7b204b3661b8b4a7028726555ee39e08d889098d7f2d932eec9e39a9c1ee8de",
+   "bytes": 623330
+  },
+  {
+   "path": "/data/haiyangw/nrpic/scratch/D-bh-dress/D-bh-dress-20261115-145950-23fa1c7/first_run_plan.json",
+   "sha256": "0c7ff28238b5c6ff4289dc36df8216af661222a7ce3e528f197c87f910d50c92",
+   "bytes": 3019
+  },
+  {
+   "path": "/data/haiyangw/nrpic/scratch/D-bh-dress/D-bh-dress-20261115-042704-f3da881/offline_check.json",
+   "sha256": "80dfc386b0c8aa1e8530d3b9cc4d6fb0ca8271b73ae08bf0204ef77cb395e61b",
+   "bytes": 23696
+  },
+  {
+   "path": "/data/haiyangw/nrpic/scratch/D-bh-dress/D-bh-dress-20261115-043406-4df1e76/code_t0.json",
+   "sha256": "3d2a0776d23ab2235657c29170a52b5ac7f49fb3fb9305f6701c89b968d8a4d8",
+   "bytes": 4234
+  },
+  {
+   "path": "/data/haiyangw/nrpic/scratch/D-bh-dress/D-bh-dress-20261115-043406-4df1e76/log.txt",
+   "sha256": "6673e5dc8ed7d67dbdc70277608f1e7dfe7475a9ec890d11b6dbe9c935e8d8eb",
+   "bytes": 4235
+  },
+  {
+   "path": "/data/haiyangw/nrpic/scratch/D-bh-dress/D-bh-dress-20261115-042626-f3da881/log.txt",
+   "sha256": "e8994a9878f5424dfbafb12cad4f29a571e12129a97667e0afabca4a79a5832f",
+   "bytes": 4951
+  },
+  {
+   "path": "/data/haiyangw/nrpic/scratch/D-bh-dress/D-bh-dress-20261115-065141-5fdc744/log.txt",
+   "sha256": "e8994a9878f5424dfbafb12cad4f29a571e12129a97667e0afabca4a79a5832f",
+   "bytes": 4951
+  },
+  {
+   "path": "/data/haiyangw/nrpic/scratch/D-bh-dress/D-bh-dress-20261115-121313-284ec4f/punc.horizon_summary_0.txt",
+   "sha256": "94b36a251640ccb0a5df78db643aebaef13d538a81c9f5e88f979afb2f05cad4",
+   "bytes": 229080
+  },
+  {
+   "path": "/data/haiyangw/nrpic/scratch/D-bh-dress/D-bh-dress-20261115-121314-284ec4f/punc.horizon_summary_0.txt",
+   "sha256": "32739acabe33929ce695ee6c0b63f2f692e107e9e71d32ae2b9762818adce035",
+   "bytes": 460423
+  },
+  {
+   "path": "/data/haiyangw/nrpic/scratch/D-bh-dress/D-bh-dress-20261115-130954-49ed46f/drift_drift.json",
+   "sha256": "caa4e6084da0fd008972e7f841f13518f4377acc7180d8ccc4f28d22f554cc32",
+   "bytes": 47623
+  },
+  {
+   "path": "/data/haiyangw/nrpic/scratch/D-bh-dress/D-bh-dress-20261115-145546-5259f48/lead_drift_recheck.json",
+   "sha256": "b9efc9443e81fc3e0eee735819f8de094b45bbfa13844f675c82bf36b556c82c",
+   "bytes": 1009
+  },
+  {
+   "path": "/data/haiyangw/nrpic/scratch/D-bh-dress/D-bh-dress-20261115-145636-5259f48/reference_curves.npz",
+   "sha256": "ee62ae9bf7e74894ce49560961c0e93d1a1716d8e77b35a97f12b72a2b0536fd",
+   "bytes": 45084
+  },
+  {
+   "path": "/data/haiyangw/nrpic/scratch/D-bh-dress/D-bh-dress-20261115-145636-5259f48/reference.json",
+   "sha256": "a45a66730acd4941c3fbf2e600b5656bf291430cd523e5a83998ee65ddcf7c8d",
+   "bytes": 7906
+  },
+  {
+   "path": "/data/haiyangw/nrpic/scratch/D-bh-dress/D-bh-dress-20261115-125739-a18d74d/analysis.json",
+   "sha256": "0f5a32e151e81a4174c3aa11b8cf1caf914257e73de212bd538088629b5951ab",
+   "bytes": 8480
+  },
+  {
+   "path": "/data/haiyangw/nrpic/scratch/D-bh-dress/D-bh-dress-20261115-124246-aa9dee7/analysis.json",
+   "sha256": "5f3c563b22e21d9d9b81df1fb156f39b0e263a1527a396f416890c507d92fd72",
+   "bytes": 849
+  },
+  {
+   "path": "/data/haiyangw/nrpic/scratch/D-bh-dress/D-bh-dress-20261115-124249-aa9dee7/analysis.json",
+   "sha256": "b00a0501080979ef98ba8d9e7bd88a67c7b49dbb0e05b9210547d21faccf4591",
+   "bytes": 854
+  },
+  {
+   "path": "/data/haiyangw/nrpic/scratch/D-bh-dress/D-bh-dress-20261115-122051-bf0d6b1/rd_checks.json",
+   "sha256": "a601126b166786a65187a0a78b827e273a069497765fe7d94c32f0ca5485e792",
+   "bytes": 16442
+  },
+  {
+   "path": "/data/haiyangw/nrpic/scratch/D-bh-dress/D-bh-dress-20261115-123813-97afeea/selfsimilar_profile.npz",
+   "sha256": "d8b610648ec743f3d69ddc76a8fe5037f0863e2a35e6f7e2ce878b88a5f63bb0",
+   "bytes": 32444
+  },
+  {
+   "path": "/data/haiyangw/nrpic/scratch/D-bh-dress/D-bh-dress-20261115-123813-97afeea/selfsimilar.json",
+   "sha256": "0a62cf55e777b76c40ce114e79ace300cb44a627d03f8451ac087ac84ed355b2",
+   "bytes": 4656
+  },
+  {
+   "path": "/data/haiyangw/nrpic/scratch/D-bh-dress/D-bh-dress-20261115-125613-248fdaf/analysis.json",
+   "sha256": "e5e4b13abf67c0edaf3e4e667a72e57b9a5c80a32565e606d6afbb480f34f5cc",
+   "bytes": 26565
+  },
+  {
+   "path": "/data/haiyangw/nrpic/scratch/D-bh-dress/D-bh-dress-20261115-145610-5259f48/lead_infall_recheck.json",
+   "sha256": "cf0a015893fba70784214a1b1d47b2a38c6a682940c00ff41a1f1ed25252a5e1",
+   "bytes": 2211
+  },
+  {
+   "path": "/data/haiyangw/nrpic/scratch/D-bh-dress/D-bh-dress-20261115-120304-795eee9/scoping.json",
+   "sha256": "45c2db76ecaddaf7fb489028b8fbf88214a3ffa240b53d499c341d0d1bd51d9a",
+   "bytes": 33404
+  },
+  {
+   "path": "tracks/D-bh-dress/runs/D-bh-dress-20261115-121313-284ec4f/manifest.json",
+   "sha256": "d42d7dd8e4ed0b20804ae9783e8b458e1edb57b1c400c4d3c70fcefdada1acca",
+   "bytes": 2782
+  },
+  {
+   "path": "tracks/D-bh-dress/runs/D-bh-dress-20261115-121314-284ec4f/manifest.json",
+   "sha256": "aca6d9771c61fa2624146a19267e65bfd579ba58e1e10107af4264c2543650c3",
+   "bytes": 3099
+  },
+  {
+   "path": "tracks/D-bh-dress/stage/G0/REPORT.md",
+   "sha256": "78d5dd74b2690befa51bbaaeed438f2cde4008d53b97e4c3cfa077b2e959ae71",
+   "bytes": 12438
+  },
+  {
+   "path": "tracks/D-bh-dress/stage/G1/STATUS.md",
+   "sha256": "3c1546b0204edd3d6996131d042cba1d328e0959b5029967a220305c1bea276a",
+   "bytes": 7080
+  },
+  {
+   "path": "tracks/D-bh-dress/STATUS.md",
+   "sha256": "d85b5339f2b2f00e2cf682f492c499657d172e0fe5a7c614932f219afe09d9c2",
+   "bytes": 2508
+  },
+  {
+   "path": "tracks/D-bh-dress/note/scripts/common.py",
+   "sha256": "3dce515fe820efec65925bf8cacab06469339be1350a3df036066ab06b13160a",
+   "bytes": 5756
+  },
+  {
+   "path": "tracks/D-bh-dress/note/scripts/czstyle.py",
+   "sha256": "36f90808fe3a9eccffb2ddd52407d4cafcef3a32c5ee716d33cc58401cc846a8",
+   "bytes": 8424
+  },
+  {
+   "path": "tracks/D-bh-dress/note/scripts/fig_constraints.py",
+   "sha256": "9beed18fb6d36f7e956cbea22619d9ea8eb1cbbde2151c17fcabce189a2cd4f7",
+   "bytes": 4692
+  },
+  {
+   "path": "tracks/D-bh-dress/note/scripts/fig_es.py",
+   "sha256": "f92bad943d7f0d409a73ae5f2b35fc19ce3cd4ebb0010f26733afbca108b6694",
+   "bytes": 7350
+  },
+  {
+   "path": "tracks/D-bh-dress/note/scripts/fig_floor.py",
+   "sha256": "1392c25b12733535abd12ade1328f985891ed4f028c2b61a1a6715fcb627a026",
+   "bytes": 3622
+  },
+  {
+   "path": "tracks/D-bh-dress/note/scripts/fig_infall.py",
+   "sha256": "ca1dde079f42d8ac5b3e3bb22b582577313d0e393ab62ecdbaa9df73d734ec22",
+   "bytes": 4570
+  },
+  {
+   "path": "tracks/D-bh-dress/note/scripts/fig_spike.py",
+   "sha256": "9bec88b2e4582133c7cf4c53c3af15c5ce417271beef8a70ef7ef443881b0d83",
+   "bytes": 5080
+  },
+  {
+   "path": "tracks/D-bh-dress/note/scripts/handreg.py",
+   "sha256": "0d894976576cda8a6d9b32edcd23a6e922a4222520f6d4b76c61cfa092e8ccf8",
+   "bytes": 4363
+  },
+  {
+   "path": "tracks/D-bh-dress/note/scripts/ledger.py",
+   "sha256": "a1bd12b76493e167d45bc96e8f2621c461e859e1feaaf9d814c2f5cd7d3f4365",
+   "bytes": 25271
+  },
+  {
+   "path": "tracks/D-bh-dress/note/scripts/paperfig.py",
+   "sha256": "0c73c7e3ba560d2d3f8200e8f1bca72b83f7a5085c19e639dd00d74e60fc7979",
+   "bytes": 13442
+  },
+  {
+   "path": "tracks/D-bh-dress/note/scripts/run_all.py",
+   "sha256": "0b35d193c503ee3845aa266f864be4db4a03a6c787c6e61d9e4ab3e26960e5b2",
+   "bytes": 1657
+  },
+  {
+   "path": "tracks/D-bh-dress/note/scripts/schem_architecture.py",
+   "sha256": "d45eb764e18928fb85f44db847e746ce7db5526e68d762370f0eae04a7e7313f",
+   "bytes": 4075
+  },
+  {
+   "path": "tracks/D-bh-dress/note/scripts/schem_timeline.py",
+   "sha256": "96f2594ab25a571201f3b7103014bec2dad194e7ee8711415c300c35880da861",
+   "bytes": 3460
+  },
+  {
+   "path": ".venv/bin/python",
+   "sha256": "d6bca2b84e73c7775a0dd5e6a76899cfe4ee62863d7c8f88513811d1fda23f49",
+   "bytes": 5937704
+  },
+  {
+   "path": "tracks/D-bh-dress/note/scripts/run_all.py",
+   "sha256": "0b35d193c503ee3845aa266f864be4db4a03a6c787c6e61d9e4ab3e26960e5b2",
+   "bytes": 1657
+  }
+ ],
+ "parents": [],
+ "resources": {
+  "cores": 2,
+  "gpus": 0,
+  "walltime_s": 10.38,
+  "gpu_hours": 0.0
+ },
+ "outputs": {
+  "dir": "scratch/D-bh-dress/D-bh-dress-20261115-171128-38634d6",
+  "sha256sums": "sha256sums.txt",
+  "files": 24
+ },
+ "status": "completed",
+ "exit_code": 0,
+ "started": "2026-11-15T17:11:28+00:00",
+ "ended": "2026-11-15T17:11:38+00:00",
+ "notes": "registered by hand because harness/bin/nrpic-run refused (see harness_refusal)"
+}

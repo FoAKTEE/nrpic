@@ -1,4 +1,4 @@
-"""Figure: the Einstein-Straus slice and its exact evolution (D-pre-1).
+"""Figure: the Einstein-Straus slice and its exact evolution.
 
 Reads the data set of run es_data (format-2 table es.tab, es.json, es_reference.csv) and
 the lead's first-run plan (first_run_plan.json). Panel (a): extrinsic curvature K^r_r,
@@ -111,7 +111,7 @@ def main():
     a.set_ylim(-0.95, 4.2)
     a.set_xlabel(r"areal radius $R/M$")
     a.set_ylabel("curvature, density")
-    a.legend(loc="upper right", handlelength=1.6)
+    a.legend(frameon=False, loc="upper right", handlelength=1.6)
     a.text(0.035, 0.93, "(a)", transform=a.transAxes)
     a.text(2.15, 0.2, "time-\nsymmetric", fontsize=7.5)
     a.text(12.0, -0.75, "vacuum bubble", fontsize=8, ha="center")
@@ -138,7 +138,7 @@ def main():
     b.set_ylim(1.5, 400)
     b.set_xlabel(r"proper time $\tau/M$")
     b.set_ylabel(r"areal radius $R/M$")
-    b.legend(loc="lower right", fontsize=8, handlelength=1.8, bbox_to_anchor=(1.0, 0.09))
+    b.legend(frameon=False, loc="lower right", fontsize=8, handlelength=1.8, bbox_to_anchor=(1.0, 0.09))
     b.text(0.025, 0.93, "(b)", transform=b.transAxes)
     cz.save(fig, os.path.join(out, STEM))
     nums = dict(P3=dict(max_rel_wall_vs_closed=p3_wall, max_abs_mass_minus_1=p3_mass,

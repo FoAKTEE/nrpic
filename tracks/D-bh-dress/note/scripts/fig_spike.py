@@ -1,4 +1,4 @@
-"""Figure: the probe-limit density spike around a Schwarzschild black hole (D-pre-2).
+"""Figure: the probe-limit density spike around a Schwarzschild black hole.
 
 Reads the semi-analytic reference of run spike_ref (reference_curves.npz, reference.json)
 and the stationarity analysis of the AthenaK geodesic run (spike_ana, analysis.json).
@@ -44,7 +44,7 @@ def main():
     a.set_yticks([0, 0.5, 1.0])
     a.set_xlabel(r"$r/Gm$")
     a.set_ylabel(r"$\rho\ [10^8\,{\rm GeV\,cm^{-3}}]$")
-    a.legend(loc="upper right", fontsize=7, handlelength=1.6)
+    a.legend(frameon=False, loc="upper right", fontsize=7, handlelength=1.6)
     a.text(0.05, 0.9, "(a)", transform=a.transAxes)
 
     k = "m4e+06"
@@ -57,7 +57,7 @@ def main():
     b.set_ylim(1e9, 1e19)
     b.set_xlabel(r"$r/Gm$")
     b.set_ylabel(r"$\rho\ [{\rm GeV\,cm^{-3}}]$")
-    b.legend(loc="lower right", fontsize=7, handlelength=1.6)
+    b.legend(frameon=False, loc="lower right", fontsize=7, handlelength=1.6)
     b.text(0.86, 0.9, "(b)", transform=b.transAxes)
     b.set_xticks([10, 100, 1000])
 
@@ -80,7 +80,7 @@ def main():
     c.set_ylim(0.6, 1.25)
     c.set_xlabel(r"time $t\ [10^3 M]$")
     c.set_ylabel("count / equilibrium count")
-    c.legend(loc="lower center", fontsize=7, ncol=2, handlelength=1.2, columnspacing=0.8)
+    c.legend(frameon=False, loc="lower center", fontsize=7, ncol=2, handlelength=1.2, columnspacing=0.8)
     c.text(0.05, 0.9, "(c)", transform=c.transAxes)
     cz.save(fig, os.path.join(out, STEM))
     cf = ref["constf"]

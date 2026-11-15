@@ -1,0 +1,195 @@
+\documentclass[aps,prd,twocolumn,10pt,superscriptaddress,nofootinbib,longbibliography,floatfix]{revtex4-2}
+
+\usepackage{amsmath,amssymb,amsfonts}
+\usepackage{bm}
+\usepackage{graphicx}
+\usepackage{xcolor}
+\usepackage{hyperref}
+\graphicspath{{figures/}}
+\hypersetup{colorlinks=true,linkcolor=blue,citecolor=blue,urlcolor=blue}
+
+\newcommand{\dd}{\mathrm{d}}
+\newcommand{\Ham}{\mathcal{H}}
+\newcommand{\Mom}{\mathcal{M}}
+\newcommand{\MAH}{M_{\rm AH}}
+
+\begin{document}
+
+\title{Black-hole growth in an expanding collisionless medium:\\ Scope, an exact benchmark, and first baselines (working note v0)}
+
+\author{Track D of the numerical-relativity particle-in-cell cosmology program}
+
+\date{Working note v0, state of 15 November 2026}
+
+\begin{abstract}
+A black hole born in a matter-dominated universe grows by swallowing the collisionless dark matter that falls back onto it, and the matter that survives the fall forms a dense dress whose shape near the horizon, and whose effect on the merger of two dressed black holes, has so far been computed only in Newtonian gravity or around a fixed black hole. The same setting tests a recent claim that black holes gain mass as the universe expands, independently of what they accrete. This working note scopes a program that answers the three questions with a particle-in-cell method coupled to numerical relativity. It states the questions and the observables, constructs an exact benchmark in which a black hole sits in a vacuum bubble inside an expanding ball of dust and keeps its mass exactly, and reports the baselines established so far: the benchmark data satisfy the constraint equations at the order of the differences that check them, both offline and inside the evolution code; the horizon mass of an isolated black hole holds to a small, measured floor until waves from the outer boundary arrive; the relativistic density spike of matter on fixed orbits around a black hole is reproduced and stays in equilibrium when its particles are moved by the code; and the Newtonian infall around a seed shows that at the scales a full-relativity run reaches, the black hole swallows nearly all cold and moderately warm matter. The first evolution of the benchmark is specified with its prediction and waits for a slicing condition suited to a black hole in expanding matter.
+\end{abstract}
+
+\maketitle
+
+\section{Introduction}\label{sec:intro}
+
+A black hole that forms or sits in a universe dominated by pressureless matter is surrounded by matter that is still expanding with the Hubble flow. Shell by shell this matter decelerates, turns around and falls back. Matter with little angular momentum falls into the black hole and makes it grow; matter with enough angular momentum misses the horizon, passes the center and settles into a bound, dense dress. In Newtonian gravity the secondary infall onto a seed is self-similar, and the dress approaches a density profile proportional to $r^{-9/4}$ \cite{Adamek:2019wimp,Boudaud:2021spikes}. Such dresses enter the estimated merger rate of primordial black-hole binaries \cite{Kavanagh:2018dress}. Near the horizon the Newtonian picture fails: around a fixed Schwarzschild black hole the density of a slowly grown spike vanishes at four gravitational radii and peaks above the Newtonian value \cite{Sadeghian:2013spike}, and around a Kerr black hole the spike depends on the spin \cite{Ferrer:2017kerr}. The growth of the black hole itself, and the shape of the dress while the black hole grows, need the full Einstein equations. Full-relativity calculations of black-hole growth in the early universe exist for fluids and scalar fields \cite{deJong:2021pbh,Ning:2026rd}; the literature read so far contains none with collisionless particles.
+
+The same configuration speaks to a separate question. Farrah et al.\ reported that the masses of supermassive black holes grow with the scale factor $a$ as $a^k$ with $k$ near three and attributed this to a cosmological coupling of black holes with vacuum-energy interiors \cite{Farrah:2023coupling}; nonsingular black holes give $k=1$ \cite{Cadoni:2023nonsingular}. The same authors assign $k=0$ to a Kerr black hole, so a vacuum black hole is predicted to keep its mass by both sides of the debate. A black hole in an expanding particle medium, evolved without symmetry assumptions, turns this prediction into a numerical null test with an exact reference.
+
+The numerical-relativity particle-in-cell method of Wu and Most \cite{Wu:2026nrpic} evolves macroparticles on geodesics of a spacetime that their deposited stress-energy sources through the Z4c equations, with moving punctures and an apparent-horizon finder on an adaptive mesh. This program uses a version of that method in the code AthenaK. The work is carried out by large-language-model agents under human direction.
+
+This note records the scoping stage and the baselines that need no new code; Fig.~\ref{fig:architecture} shows which parts of the calculation exist and which are new. Section~\ref{sec:problem} states the three questions and their observables. Section~\ref{sec:setup} constructs the benchmark and describes the method. Section~\ref{sec:tests} reports four baselines:
+\begin{enumerate}
+\item the benchmark data satisfy the constraints at fourth order offline and faster inside the code, and the bubble wall follows its exact motion;
+\item the horizon mass of an isolated black hole holds to a measured floor until boundary waves arrive;
+\item the probe-limit spike is reproduced and stays in equilibrium on the code's geodesics;
+\item at the scales a full-relativity run reaches, the black hole captures nearly all infalling matter.
+\end{enumerate}
+Section~\ref{sec:plan} gives the plan and what is open. Table~\ref{tab:parameters} holds the parameters, and Tables~\ref{tab:ledger1}--\ref{tab:ledger4} every number of the note with the registered run that produced it.
+
+\begin{figure*}
+\includegraphics[width=\textwidth]{schem_architecture.png}
+\caption{Architecture of the calculation. Each column lists the parts of one stage: initial data, evolution in AthenaK, and analysis against references. Green parts exist, slate parts exist for another setting and have to be carried over, red parts are new. The violet pills are the deliverables.}
+\label{fig:architecture}
+\end{figure*}
+
+\section{Three questions}\label{sec:problem}
+
+\subsection{Growth law}
+
+The first question is how fast the black hole grows. The observable is the apparent-horizon mass,
+\begin{equation}
+\MAH=\sqrt{A/16\pi},
+\end{equation}
+with $A$ the area of the apparent horizon, against the scale factor measured by distant dust: the areal radius of a comoving dust shell against the proper time of its particles. Coordinate time is gauge dependent and is used only for bookkeeping. In Newtonian gravity the mass that has turned around grows, once the seed is small against it, as
+\begin{equation}
+M_{\rm ta}-M\simeq\left(\frac{4}{3\pi}\right)^{2/3}M\,\frac{a}{a_i},
+\end{equation}
+with $M$ the seed mass and $a_i$ the scale factor at the start; the approach to this rate is slow (Sec.~\ref{sec:tests}). Cold matter that falls radially from turnaround is captured, so a cold run measures the growth law directly.
+
+\subsection{Spike in the strong field}
+
+The second question is the density of the bound matter within some tens of gravitational radii. A particle that falls from rest at large distance is captured when its specific angular momentum satisfies
+\begin{equation}
+L<4M,
+\end{equation}
+the capture condition of a Schwarzschild black hole of mass $M$. Matter that turns around at a radius $r_{\rm ta}$ survives the fall only with a tangential speed above about $4M/r_{\rm ta}$. A run in full relativity reaches turnaround radii of tens of $M$ (Table~\ref{tab:ledger4}), where this speed is a sizable fraction of the speed of light. The spike is therefore a question about warm or rotating matter, and the Newtonian $r^{-9/4}$ dress and the strong-field spike belong to different regimes.
+
+\subsection{Null test of cosmological coupling}
+
+The third question is whether the horizon mass of a vacuum black hole changes with the expansion beyond what it accretes. Writing $M\propto a^k$, a run gives the estimator
+\begin{equation}
+k_{\rm eff}=\frac{\Delta\ln\left(\MAH-\Delta M_{\rm in}\right)}{\Delta\ln a},
+\end{equation}
+with $\Delta M_{\rm in}$ the energy that crossed the horizon, measured in two ways: from the particles removed at the horizon, and from the change of the Misner-Sharp mass on a surrounding sphere minus the flux through it. The difference of the two is a systematic error. A floor far above the measured one still bounds $|k|$ far below one over a doubling of $a$, so the test is limited by systematics. In a neighborhood filled with matter the area mass itself drifts: for a McVittie black hole in an Einstein-de Sitter background \cite{Gaur:2023flrw}
+\begin{equation}
+\frac{\dd\ln\MAH}{\dd\ln a}=-12\,(MH)^2,
+\end{equation}
+with $H$ the Hubble rate. Inside a vacuum bubble this term is absent.
+
+An upper limit on $k_{\rm eff}$ shows that the method creates no spurious coupling, and that a vacuum black hole in an expanding particle medium behaves as Birkhoff's theorem and the exact solutions require. Its scope is the vacuum black hole: black holes with matter or vacuum energy inside the horizon, the averaging argument that links coupling to dark energy, and the observed black holes lie outside it.
+
+\section{Set-up}\label{sec:setup}
+
+\subsection{Black hole in a vacuum bubble}
+
+The benchmark cuts a vacuum bubble out of a marginally bound, expanding ball of dust and places a black hole at its center, in the manner of Einstein and Straus; outside the ball the spacetime is Schwarzschild of the total mass. The innermost dust shell, the wall, is comoving, so the mass inside it stays constant, and by Birkhoff's theorem so does the mass of the black hole. A marginally bound shell starting at areal radius $R_{\rm in}$ moves on the wall law
+\begin{equation}
+R_w(\tau)=\left[R_{\rm in}^{3/2}+\tfrac{3}{2}\,(2M)^{1/2}\,\tau\right]^{2/3},
+\end{equation}
+with $\tau$ the proper time of its particles. Every number of the benchmark thus has an exact value: the horizon mass is $M$ on every spherical slice, and every shell follows its own Lema\^itre-Tolman-Bondi motion.
+
+The initial slice is conformally flat, $\gamma_{ij}=\psi^4\delta_{ij}$, with
+\begin{equation}
+\psi=1+u+\frac{m_p}{2\bar r},
+\end{equation}
+where $\bar r$ is the conformal radius, $u$ a regular function, $m_p$ the bare mass of the puncture, and $R=\psi^2\bar r$ the areal radius. Near the black hole the slice is the time-symmetric Schwarzschild slice; across the bubble the extrinsic curvature rises as $K^\theta{}_\theta=-f\,(2M/R^3)^{1/2}$, with a smooth slicing function $f$ that goes from zero to one, and in the dust the slice is the comoving Einstein-de Sitter slice with $K^r{}_r=K^\theta{}_\theta=-H$. Smooth dust edges keep the data infinitely differentiable. Figure~\ref{fig:es} shows the slice and the exact motion of its shells; Table~\ref{tab:parameters} lists the parameters. The wall lies some tens of $M$ out, so that the expansion time is long against the time on which the black hole settles, and the dust stays far from the finely resolved region around the puncture.
+
+\begin{figure*}
+\includegraphics[width=\textwidth]{fig_es.pdf}
+\caption{Black hole in a vacuum bubble inside expanding dust. (a) Extrinsic curvature in units of the plateau Hubble rate $H$ and dust density from the Hamiltonian constraint, against areal radius; grey lines mark the regions of Table~\ref{tab:parameters}. (b) Exact areal radius against proper time: wall (black), outer dust edge (dashed), dust shells (blue), tracers that fall into the black hole (red); circles mark the checkpoints of the first run.}
+\label{fig:es}
+\end{figure*}
+
+\subsection{Black hole in dust that reaches it}
+
+The growth law needs dust down to the black hole. The same construction with the bubble shrunk to a few $M$ gives a slice in which every shell carries the energy of the unperturbed Hubble flow around a point mass. This holds exactly when the black hole carries the mass of the removed dust core in addition to $M$; each shell then follows the radial Kepler law in proper time and areal radius, and the horizon mass on any spherical slice is the mass of the shell that sits at $R=2m$. The Newtonian shells of Sec.~\ref{sec:tests} are the reference for this set-up.
+
+\subsection{Numerical methods}
+
+The spacetime is evolved with the Z4c equations in AthenaK, with $1+\log$ slicing and a Gamma-driver shift around a moving puncture, on a mesh refined around the black hole. Particles move on geodesics of the evolved metric, interpolated to their positions, and their stress-energy is deposited on the mesh. The initial data enter as radial tables of $u$, $K^r{}_r$ and $K^\theta{}_\theta$ superposed with a puncture; dust particles sit on a cubic lattice and carry the exact density. The apparent-horizon finder uses derivatives of the interpolated metric, and particles inside a fixed fraction of the found horizon are removed. Two defaults of the code differ from these settings and are set explicitly in every input. With $1+\log$ slicing the lapse along the dust grows as
+\begin{equation}
+\alpha=1+6\ln a,
+\end{equation}
+which shortens the time step and can send a front from a dust edge toward the black hole; a slicing condition suited to a black hole in expanding dust is the main open item of the method (Sec.~\ref{sec:plan}).
+
+\section{Tests so far}\label{sec:tests}
+
+\subsection{The benchmark and its constraints}
+
+The construction was checked symbolically, identity by identity, twice. The data satisfy the Hamiltonian and momentum constraints at the order of the differences that check them (Fig.~\ref{fig:constraints}): in a radial check every region away from the puncture converges at fourth order, and in a three-dimensional check in seven cubic boxes the largest residuals converge at fourth order as well. Inside AthenaK, at the start of an evolution, the code's own residuals fall faster than fourth order in the middle of the curvature transition, where its derivative stencils are of higher order; at the inner dust edge the momentum residual converges more slowly, near third order, and near the puncture the Hamiltonian residual is of order one at both spacings, as expected at a puncture. The density deposited by the lattice particles equals the exact density to rounding error. Evaluated directly on the table columns, the Hamiltonian constraint returns the plateau density to rounding error and zero density in the exterior; inside the bubble it returns a small density that grows fourfold when the table spacing doubles, the truncation error of the second-order differences used for this check. The wall column of the reference agrees with the wall law to rounding error, and the mass inside the wall is exactly $M$. The tracers released in the transition start with the expansion of the slice; their arrival at $R=2M$ follows the infall law of their own energy, which is what the first run will compare with.
+
+\begin{figure*}
+\includegraphics[width=\textwidth]{fig_constraints.pdf}
+\caption{Constraint residuals of the benchmark data against the grid spacing. (a) Radial check with fourth-order differences in the regions of the slice; the dashed line is proportional to $h^4$. (b) Cubic boxes in three dimensions: offline check (open markers, thin lines) and the residuals AthenaK computes at the start (filled markers, thick lines); solid lines Hamiltonian, dashed lines momentum constraint.}
+\label{fig:constraints}
+\end{figure*}
+
+\subsection{Horizon-mass floor}
+
+The null test needs to know how well the code holds the mass of a black hole whose mass is constant. An isolated puncture of unit mass, the black hole of the benchmark without the dust, was evolved to $500M$ at two resolutions (Fig.~\ref{fig:floor}). After the initial gauge transient the horizon mass sits slightly above $M$ at the coarser resolution and slightly below at the finer one. At the finer resolution the running mean holds to the floor of Table~\ref{tab:ledger2} until about $210M$; between $220M$ and $255M$ both resolutions show the same excursion, of the same size, which marks it as a disturbance from outside the black hole; its attribution to the outer boundary remains to be tested. The smallest detectable change, the sum of the largest drift of the running mean, the spread between finder settings and twice the scatter, is the floor of the null test for windows that end before the excursion. The measured spin stays many orders of magnitude below $M^2$. The floor belongs to an asymptotically flat black hole; the benchmark with dust and a different exterior needs its own control with the same mesh and gauge.
+
+\begin{figure*}
+\includegraphics[width=\textwidth]{fig_floor.pdf}
+\caption{Apparent-horizon mass of an isolated black hole at two resolutions. (a) Horizon mass minus the bare mass. (b) Running mean over $20M$ relative to its value at $50M$; the blue band is the smallest detectable change at the finer resolution for windows that start at $50M$ and end before $210M$. Grey: the excursion seen at both resolutions.}
+\label{fig:floor}
+\end{figure*}
+
+\subsection{Spike in the probe limit}
+
+Around a fixed Schwarzschild black hole the density of a spike that grows adiabatically follows from matching the actions of the orbits before and after the growth. For a constant distribution function this calculation reproduces the published relativistic profile \cite{Sadeghian:2013spike}: it vanishes at $4Gm$ and peaks above the Newtonian profile of Gondolo and Silk (Fig.~\ref{fig:spike}a). Moving the Newtonian inner edge from $8Gm$ to $4Gm$ overestimates the peak. For a spike grown from a Hernquist cusp, the canonical-action form agrees with the curve of Ferrer et al.\ \cite{Ferrer:2017kerr} (Fig.~\ref{fig:spike}b); the earlier form misses a factor $r^2/\Delta$ that Ferrer et al.\ point out, and lies above it near the peak. A sample of particles drawn from the equilibrium and moved by AthenaK on the analytic Schwarzschild metric for $20\,000M$ keeps the equilibrium counts in every radial shell within their Poisson scatter (Fig.~\ref{fig:spike}c), with energy and angular momentum conserved to high accuracy. Probes placed just inside the capture boundary all cross the horizon and probes just outside all stay out, with crossing times that converge at second order in the time step.
+
+\begin{figure*}
+\includegraphics[width=\textwidth]{fig_spike.pdf}
+\caption{Density spike of dark matter around a Schwarzschild black hole on fixed orbits. (a) Constant distribution function: relativistic profile and the Newtonian profile cut at $8Gm$ and at $4Gm$. (b) Spike grown from a Hernquist cusp around a black hole of $4\times10^6$ solar masses. (c) Particle counts of the code in four radial shells over the equilibrium count, with bands of one Poisson standard deviation; $M=Gm$.}
+\label{fig:spike}
+\end{figure*}
+
+\subsection{Secondary infall and capture}
+
+The Newtonian infall around a seed in an Einstein-de Sitter background sets the scales of the full-relativity runs. The self-similar solution approaches the $r^{-9/4}$ power law only deep inside the turnaround radius (Fig.~\ref{fig:infall}a): the apocenters of a shell shrink over many orbits, so the local slope reaches its asymptotic value only several decades in. At the radii a run resolves, from a few thousandths to a few tenths of the turnaround radius, the profile is steeper. The shell calculations give the turned-around mass, the mass of a black hole that absorbs radial dust, and the mass of the dress that forms when the dust may pass the center (Fig.~\ref{fig:infall}b). They agree with a closed form computed independently. The black hole doubles its mass within a few doublings of the scale factor, and the approach of the turned-around mass to its asymptotic rate takes two decades in $a$. Warm dust shows how small the dress stays at reachable scales (Fig.~\ref{fig:infall}c): with an initial dispersion of a few hundredths of the speed of light all collapsed dust is captured, and even at the largest dispersion considered about three quarters of it is. The cold runs therefore measure the growth law, and a surviving dress requires tangential speeds that also change the infall itself.
+
+\begin{figure*}
+\includegraphics[width=\textwidth]{fig_infall.pdf}
+\caption{Newtonian secondary infall onto a seed of mass $M$ in a matter era. (a) Self-similar density over the frozen-in power law $\lambda^{-9/4}$ (dashed) against $\lambda=r/r_{\rm ta}$; the grey line marks the outermost caustic. (b) Turned-around mass, dress of passing dust, and black-hole mass for absorbed radial dust; dashed: the asymptotic rate. (c) Captured fraction at $a/a_i=4$, $\epsilon=0.01$, against the initial dispersion.}
+\label{fig:infall}
+\end{figure*}
+
+\section{Plan and open items}\label{sec:plan}
+
+The first full-relativity run evolves the benchmark, with the outer dust edge moved inward to reduce the cost, at two resolutions, together with a vacuum control that uses the same table without dust, the same mesh, slicing and length. The prediction, fixed before the run, is that the horizon mass changes by less than the floor of the control, at the level the isolated black hole shows at the same resolution; that the wall tracers follow the wall law; that the inner tracers arrive at the horizon at the proper times of the infall law and are removed; and that no dust enters the bubble. A horizon-mass change in the run above three times the floor of the control would mean that the dust couples to the black hole through the slicing, the deposit or the boundary. The modelled cost lies within the card-time allotted to the track (Table~\ref{tab:ledger1}).
+
+Three items block this run. The release executable for the cards moves massless tracers wrongly, so no particle push on the cards is trusted until it is explained; the slicing condition for a black hole inside expanding dust is open, since $1+\log$ slicing grows along the dust and the alternatives send fronts from sharp surfaces; and the data set has to be regenerated with the smaller ball and checked again. The baselines lack the Kerr spike and the infall computed with particles in the Newtonian mode of the code, and the scoping package lacks a check by an independent agent that sees only the artefacts. Figure~\ref{fig:timeline} places these items between the gates.
+
+\begin{figure*}
+\includegraphics[width=\textwidth]{schem_timeline.png}
+\caption{Stages of the track. The five gates with what each requires, the present position, and what is needed between gates; the time labels are the program's targets.}
+\label{fig:timeline}
+\end{figure*}
+
+\section{Summary}\label{sec:summary}
+
+Three rules carry the scoping. A vacuum black hole in a comoving vacuum bubble keeps its mass exactly, so the benchmark gives the null test an exact answer and any change of the horizon mass measures the method. At the turnaround radii a full-relativity run reaches, the capture condition swallows nearly all cold and warm dust, so cold runs measure the growth law and the strong-field dress is a question about matter with substantial angular momentum. The Newtonian $r^{-9/4}$ profile holds only far inside the turnaround radius, so a comparison with it needs the self-similar solution itself, at the scale factors a run reaches. Open questions are how the dress forms when the black hole grows while the dress settles, and whether the strong-field spike survives a growing, spinning black hole.
+
+\appendix
+
+\section{Parameters}\label{app:parameters}
+
+\input{tables/parameters}
+
+\section{Numerical ledger}\label{app:ledger}
+
+Every number of this note, with the registered run that produced it. Quantities are in units of the black-hole mass $M$ unless stated.
+
+\input{tables/ledger}
+
+\bibliography{references}
+
+\end{document}

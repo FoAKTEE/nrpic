@@ -56,7 +56,7 @@ def main():
     a.set_xlabel(r"radial spacing $h/M$")
     a.set_ylabel("largest constraint residual")
     a.set_ylim(1e-12, 1e-4)
-    a.legend(loc="upper left", fontsize=7.5, handlelength=1.8)
+    a.legend(frameon=False, loc="upper left", fontsize=7.5, handlelength=1.8)
     a.text(0.92, 0.06, "(a)", transform=a.transAxes)
 
     boxes = [("start of transition", cz.PAL["green"]), ("mid transition", cz.PAL["blue"]),
@@ -86,7 +86,7 @@ def main():
     b.set_xlabel(r"grid spacing $h/M$")
     b.set_ylabel("largest residual in the box")
     b.set_ylim(1e-11, 10.0)
-    b.legend(loc="upper left", fontsize=7.0, handlelength=1.6, ncol=2, columnspacing=0.8)
+    b.legend(frameon=False, loc="upper left", fontsize=7.0, handlelength=1.6, ncol=2, columnspacing=0.8)
     b.text(0.92, 0.06, "(b)", transform=b.transAxes)
     cz.save(fig, os.path.join(out, STEM))
     with open(os.path.join(out, STEM + "_numbers.json"), "w") as f:
