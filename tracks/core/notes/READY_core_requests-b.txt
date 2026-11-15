@@ -1,0 +1,78 @@
+READY of core/requests-b (work package bfix, requests of Track B). Written 2026-11-15.
+Evidence and every number: branch core/requests-b, tracks/core/JOURNAL-bfix.md and
+tracks/core/interfaces/REQUESTS_B.md (git show core/requests-b:<path>).
+
+STATUS
+  athena_cpu  processor executable: TESTED (tests T1, T1s, T2, T3 below; byte regression
+              of seven existing set-ups against the source of release core-v0.3).
+  athena_gpu  card executable: built from the same source, NOT YET RUN ON A CARD when
+              this file was written. Its card test T4 (oblique wave N = 16..128, byte
+              regression of three set-ups without deposit against the release card
+              executable, thin boxes, a 256 x 256 x 16 box) is Slurm job 4452, queued.
+              Until a section "CARD TEST" at the end of this file says it passed, use
+              athena_gpu for scouting only and check your first run against a processor
+              run. The only device code that changed is the kernel of the linear-wave
+              generator.
+Everything not named below behaves as release core-v0.3 (byte-identical outputs in the
+regression; restart files differ in 36 padding bytes, see 5).
+
+NEW OPTIONS (each is read only if present in the input; a parameter can be set on the
+command line only if the input file has it)
+
+1. Linear-wave generator, <problem> pgen_name = z4c_linear_wave
+   - corrected polarization tensor: any wave vector (kx1, kx2, kx3) now gives a
+     transverse-traceless wave (upstream: only kx2 = 0 or along an axis);
+   - amp_cross, phase_cross: cross polarization ex with its own amplitude and phase
+     (amp_cross = amp, phase_cross = 1.5707963267948966: circular wave);
+   - <basename>-errs.dat: L1 errors against the exact solution at the final time.
+   Example: problems/tests/lw_oblique.athinput
+     athena_cpu -i problems/tests/lw_oblique.athinput -d RUN mesh/nx1=16 mesh/nx2=16 \
+       mesh/nx3=16 meshblock/nx1=16 meshblock/nx2=16 meshblock/nx3=16
+   Tested (T1 core-20261115-154120-9c92f68, T1s core-20261115-160040-26eb826): tensor read
+   back from the code; constraints of Track B's case lw3d_check_diag 4.59e-21, 1.07e-21
+   (upstream 1.385e-9, 1.558e-9), scaling as A^4; general direction (1,2,0) converging
+   as h^12; one period of k = (1,1,1) at 16 and 32 cells within 0.2 per cent of the
+   Fourier-symbol prediction; cross and circular waves through gw_diag; Track B's
+   lw_x_prod and validate_athenak.py numbers reproduced.
+   Note: this generator leaves the ADM variables and the constraints empty at t = 0
+   (as upstream): use variable = z4c for the initial dump.
+
+2. Mesh output in double precision, <outputN> file_type = bin
+   - double_precision = true: 8-byte values, header line "size of variable=8"; any
+     variable or group (z4c, adm, tmunu, con, weyl); no ghost cells.
+   Example: <output1> of problems/tests/lw_oblique.athinput. Reader:
+   python/nrpic/athena_bin.py (read_bin; both precisions). docs/FORMATS.md.
+   Tested (T2 core-20261115-160138-26eb826, T3 core-20261115-160633-7d80187): equal to the
+   restart file bit for bit; tmunu holds E, S_i, S_ij of the time of the file (E itself);
+   z4c, tmunu and con of one output time belong to one time level.
+
+3. Time label of the Weyl scalar and of the waveforms, <z4c>
+   - waveform_at_new_time = true: the scalar is computed and labelled at the end of the
+     step (default: upstream, the row labelled t is Psi_4 of t + dt and a weyl mesh output
+     lags by waveform_dt - dt).
+   Example: add the line to <z4c> of
+   tracks/B-emd-gw/periodic_z4c/inputs/lw_3d.athinput (branch track/B-emd-gw).
+   Tested (T1, T2): Track B's fit of the lag gives 0 steps with the option, -7 without;
+   the default waveform series leads by omega dt.
+
+4. Thin periodic boxes and the lattice jitter (no source change; initial-data tool)
+   problems/cosmo/make_waves.py with python/nrpic/torus_id.py:
+     python3 problems/cosmo/make_waves.py --delta 0.01 --n 256,256,16 --ratios 1,0.3,0 \
+       --ppc 2 --shape pcs --dep-comp-c 0.16666666666666666 \
+       --dep-comp-c2 0.4666666666666667 --out DIR
+     ... --ratios 1,0,0 --jitter 0.3 --jitter-axes y,z --seed 7 [--fd-order 6]
+   then problems/cosmo/east.athinput with mesh/nx1.. and mesh/x1max.. from DIR/id.json
+   (key "box"), meshblock/nx3 = the number of layers, the probes inside the box, and the
+   production options of cosmo/README.md.
+   Tested (T3): 16 x 16 x 8 and 16 x 16 x 4 (one MeshBlock in z) equal the 16^3 cube to
+   3e-10 through shell crossing, particles to 7e-14 cells; four cells is the minimum.
+   Jitter: uniform, reproducible by seed, the same for a lattice site in any box.
+   Read section 5 of REQUESTS_B.md before a null run: with a noisy lattice the
+   constraint residual of the evolution is about one per cent of the source term
+   whichever constraint solve is used.
+
+5. Restart files: the 36 never-set bytes of the header are zero; identical runs give
+   identical restart files; old restart files are read as before (T2).
+
+NOT IN THIS BUILD: in-situ Fourier modes; initial data with a TT part; species selection
+in the Newtonian history; z4c_gauge_wave as a built-in generator (REQUESTS_B.md).

@@ -521,3 +521,60 @@ output directory of T3. That file now carries the added keys `from_dir`, `jcheck
   discrete continuity equation with the code's differences, so the part of the sources
   near the mesh frequency drives Khat and with it the term K^2 of the constraint before
   the metric follows. `--fd-order` therefore cleans the initial slice only.
+
+### Publication (2026-11-15T16:21Z)
+
+`/data/haiyangw/nrpic/scratch/core/exe/core_requests-b/`: `athena_cpu`
+(sha256 c32a1389...ceeced, the executable of T1 to T3), `athena_gpu` (sha256
+5a35c8f1...11b9aa, built from the same source, not yet run on a card), `COMMIT`
+(9c92f68: `athenak/` has not changed since; last source edit 15:32:15 UTC, processor
+build 15:33:20, card build 15:37:23), `READY` (options with one example each, what is
+tested, and the open card test in its STATUS block). Copies of the two text files:
+`tracks/core/notes/READY_core_requests-b.txt`, `COMMIT_core_requests-b.txt`.
+[JUDGEMENT] READY is written although the card test has not run: the processor
+executable is what Track B needs first (thin N x 4 x 4 waves, 16^3 and 32^3 oblique
+checks, initial data), the only device code changed is the generator's kernel, and the
+file says in its first block that the card executable is untested. If the orchestrator
+prefers, rename READY until T4 has passed.
+
+### State at the end of the session work (card test pending)
+
+Card job 4452 (`tracks/core/analysis/bfix/gpu_job.sh`, test T4, limit 30 minutes, at most
+0.5 card-hours) was submitted at 16:07Z and is still pending behind eleven jobs of other
+sessions (two cards). Card time used by this package so far: none. When it runs it
+registers itself (`tracks/core/tools/run_registered.py`, tag T4; the manifest appears
+under `tracks/core/runs/` in this worktree, uncommitted) and writes `results_t4.json`
+with the figures into its output directory; predictions P5a to P5d above. To finish:
+read `scratch/core/tmp/bfix/slurm-4452.out`, enter the outcome here, append a section
+"CARD TEST" to the READY file, commit the manifest.
+
+Not done in this package:
+- T4 (above): nothing of this branch has run on a card.
+- The oblique convergence at 64^3 and above (Track B's G1 item) is part of T4 only.
+- No second agent has checked these results (CLAUDE.md, models and roles): the analysis
+  uses Track B's own readers, reference solutions and diagnostics as the independent
+  implementation, but the runs and the judgement are this session's.
+- The cause of the constraint level that the evolution restores within ten steps
+  (outcome of T3) is not identified.
+- Requests deferred or declined: REQUESTS_B.md sections 2 (Fourier modes), 6, 7, 8.
+- `tracks/core/STATUS.md`, `HANDOFF.md`, `CHANGELOG.md` and `stage/G2/` are the core
+  lead's and were not touched (another core branch is open at the same time); this
+  journal and `interfaces/REQUESTS_B.md` are the record of the package. OPEN item 15 of
+  the G2 package (restart padding) is closed by this branch.
+
+How to rerun (each prints its run id; `W` = this worktree, executables as published):
+```
+python3 tracks/core/tools/run_registered.py --purpose "..." --cores 8 --tag T1 -- \
+  $W/.venv/bin/python $W/tracks/core/analysis/bfix/t1_linear_wave.py \
+  --exe-new EXE_NEW --exe-base EXE_BASE --out . [--stages algebra,id,amp,evol,pol,errs,trackb]
+... t2_output.py --exe-new EXE_NEW --exe-base EXE_BASE --t1-dir <T1 output> \
+  --regress-report tracks/core/analysis/bfix/results/regress_cpu_w1.json --out .
+... t3_thin_jitter.py --exe EXE_NEW --out .
+python3 tracks/core/tools/regress_relativistic.py --exe-a EXE_BASE --exe-b EXE_NEW \
+  --cases geo,boris,dep,east,os,jeans,binary --out report.json
+sbatch --export=ALL,T3DIR=<T3 output>,IC256=<dir of make_waves.py --n 256,256,16> \
+  tracks/core/analysis/bfix/gpu_job.sh
+```
+T1 and T2 need the snapshot of Track B's packages (`git archive track/B-emd-gw
+tracks/B-emd-gw/periodic_z4c tracks/B-emd-gw/gw_diag python/nrpic | tar -x -C
+scratch/core/tmp/bfix/B`; used at 767eb93).
