@@ -1,0 +1,59 @@
+# JOURNAL of the package note (F-hills, wave 2): working note v0, schematics, stage report
+
+Helper of owner F-hills. Units G = c = 1, M = 1 (heavy black hole). Labels: [VERIFIED]
+measured in a registered run named here or read at a locator; [BACKGROUND]; [JUDGEMENT];
+[TO VERIFY]. Run ids as `harness/bin/nrpic-run` writes them; manifests under
+`tracks/F-hills/runs/<run_id>/`, outputs under `scratch/F-hills/<run_id>/`. Every entry:
+prediction (before the run), then the outcome, also when the prediction failed.
+
+## 2026-11-15 N1. Time series of the two baselines for the first passages (prediction)
+
+What: `scripts/passage_curves.py` as a registered analysis run (processor, one core, python
+of `scratch/F-hills/venv-gb` for numba). From the start states of the q = 4 input of wave 2
+(`nr_first/inputs/p1_q4.athinput`) and the q = 10 input of wave 1
+(`three_punctures/inputs/hills_q10_m8.athinput`): full Newton, Newton with the black hole
+fixed, HRNA with the black hole fixed; distances of the members from M against time and the
+member energies (two-body with M; against the barycentre of M and the other member). The
+figure script `fig_passage.py` reads its output.
+
+Prediction [the functions are the lead's and nr_first's, read only; the numbers they printed
+are VERIFIED in their runs]: every number agrees in its fourth significant digit with the
+earlier runs.
+- q = 4 (E6, run F-20261115-174102-ffa764f; V5b, F-hills-20261115-145559-a314517): full
+  Newton ejects m1 with +1.3119 units against the barycentre, the captured m2 has two-body
+  energy -1.627 units and closest approach 5.777 M; HRNA ejects m2 with +0.9703 units and
+  binds m1 (-0.49995 units, first pericentre 7.262 M); hole-fixed Newton ejects m1 with
+  +1.835 units, m2 bound with closest approach 6.107 M.
+- q = 10 (V5, V5b, V6, runs F-hills-20261115-145251-090f5dc, -145559-a314517): full Newton
+  ejects m1 with +1.6127 units against the barycentre, its two-body energy with M swings
+  between 1.474 and 1.845 units after t = 300, m2 bound with closest approach 5.641 M; HRNA
+  plunges m1 (r < 2.5 M, closest 2.472 M) and ejects m2 with +1.159 units; hole-fixed Newton
+  ejects m1 with +1.887 units, m2 closest 5.862 M.
+Refuted if any of these differs in the fourth significant digit (then the functions or the
+inputs changed since those runs).
+
+## 2026-11-15 N2. Figures, ledger and claims check (prediction)
+
+What: `scripts/run_all.py` as a registered analysis run: the data figures (restricted
+Newtonian scan, geodesic scan of 2404, pericentre scan of the two baselines, passage time
+series, MeshBlock counts and cost), the two schematics, the ledger and parameter tables, and
+`scripts/ledger.py`'s check of numbers in the lead's documents against the files.
+
+Predictions [JUDGEMENT]:
+1. Every input file matches the sha256 its run recorded (sha256sums.txt, or the manifest);
+   wave-1 runs without a record are reported as such.
+2. The numbers the figure scripts recompute equal those of the analysis runs they come from:
+   restricted coplanar scan (runs F-hills-20261115-130237-cbfaf6b with the deep supplement
+   -132156-efddfc0; analysis -133222-9cb10db): last disrupting D 2.085 (prograde) and 0.405
+   (retrograde), deep-limit P_dis 0.8075 and 0.8014, max |E| 27.15 at D = 0.1; geodesic scan
+   (S1 summary of -142554-c10b371): separated fraction at beta = 3 of 0.98, 0.295, 0.985, 0.51
+   (prograde Newton, retrograde Newton, prograde HRNA, retrograde HRNA); pericentre scan (V7,
+   -145915-71abf93) as tabulated in `JOURNAL.md` of the track.
+3. Claims check: the numbers of `STATUS.md`, `stage/G0/SCOPING.md` sections 3, 4, 6, 9 and
+   `stage/G1/STATUS.md` agree with the files, except where the record already shows a change:
+   the card-hour allotment (40 in the lead's text; 50 since decision 0014), the release state
+   of the multi-puncture capability (now in core-v0.3, CLAUDE.md), the "captures" wording of
+   the headline for what the files call a plunge (r < 2.5 M), and the m/16 count at q = 4 at
+   t = 0 (2416 in SCOPING section 9 with puncture radius 1.2; 2514 in E1 with the input's
+   radius). Refuted if a number of the lead's text has no source in the files or differs
+   from it beyond rounding.

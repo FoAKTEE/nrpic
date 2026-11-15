@@ -1,0 +1,12 @@
+# LaTeX build outputs (main.pdf is committed)
+*.aux
+*.log
+*.out
+*.fls
+*.fdb_latexmk
+*.blg
+*.bbl
+*Notes.bib
+*.synctex.gz
+__pycache__/
+build/
