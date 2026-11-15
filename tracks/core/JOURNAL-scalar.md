@@ -447,3 +447,21 @@ One number of the prediction FAILED narrowly: 1.23e-5 at N = 16 for the positive
 not below 1e-5 (the bound was a guess of the error constant; the order is as predicted
 or better). Figure `fig_wave_shift.png` (looked at). The shift here is uniform and
 frozen; an evolved shift (Gamma driver) with a field has not been run.
+
+## 2026-11-15, entry 8: closing checks on processors
+
+- Regression repeated with the source after the last change to a problem generator (run
+  core-20261115-141416-3f7ca07): c1 to c4 identical, c5 the same three restart files,
+  35 bytes each, all inside the unset range 8252 to 8287 (run
+  core-20261115-142155-e8f40ee).
+- Source lines of the module wrapped to 90 columns (commit e8f40ee); the executable
+  reproduces the numbers of tests 2 and 4B exactly, including the bit-identical layouts
+  and the restart (run core-20261115-141546-e8f40ee).
+- Track E's reference synthesis `codebase/ref/synth.py` (track/E-stoch-inf at 6330493),
+  fed with the shell factors of the record, the twin amplitudes and the stencil
+  projector, reproduces the six fields of the code: per-MeshBlock sums within 4.8e-15 of
+  the rms, its FFT reference within 2.6e-15 (run core-20261115-142227-e8f40ee; no
+  prediction written beforehand beyond P4 (a), 1e-12).
+- Not done in this package: the perturbed initial slice of SPEC 5.3; level 2; [M]; the
+  card runs (job 4427 pending); a dynamical field with particles; an evolved shift;
+  convergence on refined meshes; adaptive refinement; several ranks.
