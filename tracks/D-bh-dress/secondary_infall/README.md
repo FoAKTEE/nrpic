@@ -48,7 +48,7 @@ otherwise), one core each:
     python3 $S/register_run.py $S/analyze.py "analysis" -- --ss <test-2 output dir> \
         --shells <the test-3 output dirs>
 
-Wall times on one core: test 1 15 s, test 2 2 min, shells 2 s to 6 min each, analysis 1 min.
+Wall times on one core: test 1 15 s, test 2 2 min, shells 2 s to 11 min each, analysis 6 s.
 Python 3.10 with numpy 2.2, scipy 1.15, matplotlib 3.10 (no extra packages).
 
 ## Requests

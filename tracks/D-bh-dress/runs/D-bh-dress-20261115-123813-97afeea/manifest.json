@@ -1,0 +1,72 @@
+{
+ "run_id": "D-bh-dress-20261115-123813-97afeea",
+ "track": "D-bh-dress",
+ "package": "secondary_infall",
+ "gate": "G1",
+ "purpose": "Test 2 of D-pre-3 (repeat with smooth profile and noise-aware convergence): self-similar collisionless infall onto a point-mass seed in Einstein-de Sitter (inner slope, caustics, normalisation against the frozen-in estimate)",
+ "kind": "scouting",
+ "command": [
+  "python3",
+  "tracks/D-bh-dress/secondary_infall/selfsimilar.py",
+  "--out",
+  "/data/haiyangw/nrpic/scratch/D-bh-dress/D-bh-dress-20261115-123813-97afeea",
+  "--taumax",
+  "300"
+ ],
+ "cwd": "/data/haiyangw/nrpic/wt/D-bh-dress",
+ "env_overrides": {
+  "OMP_NUM_THREADS": "1",
+  "OPENBLAS_NUM_THREADS": "1",
+  "MKL_NUM_THREADS": "1"
+ },
+ "git": {
+  "sha": "97afeea9fc1af1ba7df06c80f2e8f43d218426ae",
+  "branch": "track/D-bh-dress",
+  "dirty_package": false
+ },
+ "code": {
+  "core_tag": null,
+  "problem": null,
+  "interpreter": "python3 3.10.12"
+ },
+ "inputs": [
+  {
+   "path": "/data/haiyangw/nrpic/wt/D-bh-dress/tracks/D-bh-dress/secondary_infall/selfsimilar.py",
+   "sha256": "ec78b236d9ba4d7e082aed4ac2bdf3267431bc356157cbef92904453c6d2400e"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/wt/D-bh-dress/tracks/D-bh-dress/secondary_infall/common.py",
+   "sha256": "49f79f43d1abbe9b4f4d6609efdd8152e87cf73beead654e9f9a3a937d1a804a"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/wt/D-bh-dress/python/nrpic/figstyle.py",
+   "sha256": "5d3b78ad8c2c02e428b675e3d7e35a32cbc8f053d1aeedd4fde66f27da55676e"
+  }
+ ],
+ "resources": {
+  "nodes": 1,
+  "cores": 1,
+  "gpus": 0,
+  "card_hours": 0.0,
+  "walltime_s": 110.56,
+  "particles": 0
+ },
+ "outputs": {
+  "dir": "/data/haiyangw/nrpic/scratch/D-bh-dress/D-bh-dress-20261115-123813-97afeea",
+  "sha256sums": "sha256sums.txt",
+  "files": [
+   "selfsimilar.json",
+   "selfsimilar.pdf",
+   "selfsimilar.png",
+   "selfsimilar.txt",
+   "selfsimilar_profile.npz",
+   "stdout.txt"
+  ]
+ },
+ "status": "completed",
+ "exit_code": 0,
+ "started": "2026-11-15T12:38:13Z",
+ "ended": "2026-11-15T12:40:04Z",
+ "parents": [],
+ "notes": "Registered by register_run.py of tracks/D-bh-dress/secondary_infall (helper of D-bh-dress). Predictions and outcome: tracks/D-bh-dress/secondary_infall/JOURNAL.md."
+}
