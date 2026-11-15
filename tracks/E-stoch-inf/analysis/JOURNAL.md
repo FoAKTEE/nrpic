@@ -171,9 +171,32 @@ W was still about 1e-4.
   at every dump.
 - PS6 cost: N = 16 below 5 min per run; N = 32 between 30 and 60 min (one core).
 
-## 17:27 Prediction P3' (same as P3, scaled case on processors, while the card waits)
+## 17:24 Prediction P3' (same as P3, scaled case on processors, while the card waits)
 
 U6 of the lead's scaled base case (N = 32, 120 steps, `lead/inputs/u_base32.athinput` with
 noise_scheme = markov) with the release processor executable (`scripts/u6_scaled.sh`):
 with the reference as it is, A1 fails between 1e-11 and 1e-8 of the rms; with the
 cancellation-free reference (`scripts/val_cf.py`) every test passes, A1 below 1e-11.
+
+## 17:31 Outcome PS1-PS6 at N = 16 (run E-20261115-172349-0bdb97d, with the control)
+
+All predictions hold (`fig/analyse_sr_N16.json`; figures `fig/fig_sr_permode_N16.png`,
+`fig_sr_constraints_N16.png`, `fig_sr_spectrum_N16.png`, looked at).
+- PS1: largest <|H|>/<[H]> 2.07e-8 at ln a = 1.52 (R_rms = 8.4e-4 there, 1.55e-3 at the
+  end), then decaying to 8.3e-13; control 1.26e-5 at the same time, 610 times larger.
+  rms M/rms [M]: at most 2.2e-3 (first order, as P1:745 says |M|/[M] should be), control
+  0.2-0.4. Not predicted: before the modes enter (ln a = 0.27-0.78, R_rms 1.7e-8 to
+  1.9e-6) rms M/rms [M] is already 5e-6 to 5e-5, i.e. not second order in R there; the
+  same window in the control is 0.30. Cause not tested; a candidate is the continuum k^2
+  of the mode equation against the stencil Laplacian of the evolution (interface 7.4),
+  which would leave a first-order residual while the modes are sub-horizon [TO VERIFY].
+- PS2: per-mode ratio R^NR_n/(L^-3/2 W R alpha) - 1 at ln a = 7.8 for k <= k_max/2:
+  max 8.3e-5 (rms 3.9e-5) with the gt term; all modes max 3.9e-3 (one at |n| = 4).
+- PS3: gt term / R^NR at the end 4.9e-3 (rms); without it every mode is low by a common
+  -0.48 percent (mean -4.82e-3), i.e. the dump alone gives R^NR to 0.5 percent here.
+- PS4: 101 modes with N_f - N_k >= 5: largest |d ln|c|^2/dN| from N_k + 4 on is 3.3e-4 for
+  the NR field (with or without gt) and 3.3e-4 for the lockstep W R itself, against the
+  2.5e-3 bound and the FLRW-lattice -4 eps1 = -0.042.
+- PS5: lockstep R_q against SciPy 7.3e-4 at most (RK4 truncation while the modes are
+  sub-horizon; it does not grow afterwards).
+- PS6: 2 min per run.
