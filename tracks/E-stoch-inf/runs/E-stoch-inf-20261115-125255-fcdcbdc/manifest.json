@@ -1,0 +1,35 @@
+{
+ "run_id": "E-stoch-inf-20261115-125255-fcdcbdc",
+ "owner": "E-stoch-inf",
+ "package": "noise (E-pre-4)",
+ "kind": "scouting",
+ "purpose": "T-N0 of noise/JOURNAL.md: draws re-implemented from rng.md (philox_ref.py, AGM and library logarithm) against core's twin python/nrpic/rng.py of core/rng 8e05112 on all modes of the unit-test lattice (N=64, nmax2=256) and 2000 random keys",
+ "cwd": "/data/haiyangw/nrpic/scratch/E-stoch-inf/E-stoch-inf-20261115-125255-fcdcbdc",
+ "command": "python3 /data/haiyangw/nrpic/wt/E-stoch-inf/tracks/E-stoch-inf/noise/ref/check_twin.py --twin /data/haiyangw/nrpic/scratch/E-stoch-inf/tmp/rng_twin/rng.py --out /data/haiyangw/nrpic/scratch/E-stoch-inf/E-stoch-inf-20261115-125255-fcdcbdc",
+ "commit": "fcdcbdc",
+ "worktree_dirty_paths": [],
+ "inputs": [
+  {
+   "path": "/data/haiyangw/nrpic/wt/E-stoch-inf/tracks/E-stoch-inf/noise/ref/check_twin.py",
+   "sha256": "bfef8d453a454aeb12d7c52777741032b5eb82d3df59bfc4c64480b8969d1124"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/wt/E-stoch-inf/tracks/E-stoch-inf/noise/ref/philox_ref.py",
+   "sha256": "911a77cc4eafb1baaa3865cf02f1b1ea809892e86399b75d2b701694573e3df8"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/wt/E-stoch-inf/tracks/E-stoch-inf/noise/ref/noise_ref.py",
+   "sha256": "8edfe581c6355c46c46594d7f30e179a2f3c33722ef4a9cea02b01cff6ad10ea"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/scratch/E-stoch-inf/tmp/rng_twin/rng.py",
+   "sha256": "da4ad2266506ffb733639df0e83f374fe87dd0173d341c11304c5bb36d85e92e"
+  }
+ ],
+ "output_dir": "/data/haiyangw/nrpic/scratch/E-stoch-inf/E-stoch-inf-20261115-125255-fcdcbdc/",
+ "wall_time": "7.9 s",
+ "cores": 2,
+ "card_hours": 0.0,
+ "status": "completed",
+ "results": "{\"lattice_modes\": 8538, \"lattice_keys\": 153684, \"lattice_words_differing\": 0, \"lattice_agm_deviates_not_bit_identical\": 0, \"random_keys\": 2000, \"random_words_differing\": 0, \"random_agm_deviates_not_bit_identical\": 0, \"libm_max_abs_dev\": 1.158812629187267e-12, \"libm_median_abs_dev\": 1.1102230246251565e-15, \"libm_frac_nonzero\": 0.9570644959787616, \"prediction_holds\": false}"
+}

@@ -95,3 +95,21 @@ logarithm (ten steps, pi/2 over the mean minus 32 ln 2, clamped at zero): deviat
 bit-identical to the twin; (ii) library logarithm: max deviation below 1e-9 over the test
 keys, median below 1e-15. The reference uses (i) for the exact-reconstruction test A1.
 Refuted if (i) is not bit-identical.
+
+## 2026-11-15 12:53 UTC: outcome T-N0 (run E-stoch-inf-20261115-125255-fcdcbdc)
+
+Twin taken from `core/rng` at 8e05112 (the branch moved from 8e0eeb1 since the start of
+this session; sha256 of the extracted file in the manifest).
+- Raw words: 0 of 153684 lattice keys x 2 blocks and 0 of 2000 random keys differ.
+  [VERIFIED] rng.md sections 2-3 define the words completely; numpy.random.Philox
+  reproduces them.
+- Normal pairs with the documented AGM logarithm: bit-identical for all 307368 lattice
+  deviates and all 4000 random-key deviates. Prediction (i) holds: the document is
+  complete enough to re-implement the normal draw bit for bit.
+- Library logarithm: max |dz| = 1.16e-12, median 1.11e-15, 96 percent differ in some
+  bit. Prediction (ii) holds for the maximum (below 1e-9) and fails narrowly for the
+  median (1.11e-15 against "below 1e-15"): a few ulp of O(1) numbers, as one should
+  have expected for a different logarithm. The deviations lie under 3e-14/sqrt(2L)
+  (figure fig_check_twin.png of the run), as derived in the amendment.
+- Consequence: the reference uses the AGM path; A1 can then demand agreement to
+  rounding of the synthesis, not to the logarithm.
