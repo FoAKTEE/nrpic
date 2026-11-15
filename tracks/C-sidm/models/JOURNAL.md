@@ -174,3 +174,43 @@ the verdicts did not allow for that. No JSON was written. Numbers from run.log:
 
 Change for the rerun: the verdicts handle a missing fit (`evaluable: false`); the fits are
 unchanged, so G1-G5 numbers must repeat exactly.
+
+## 2026-11-15, entry 4: outcomes G1-G6 (run C-20261115-170346-298a1ba) and predictions D1
+
+Rerun with the fits unchanged: every number of entry 3 repeats (G1 18/18; G2 biases +3.3,
++2.9, +1.8 percent, 3-SE coverage 0.58, 0.90, 0.86; G3 seeds 0.0655, 0.0606, 0.0602;
+G4 +14, -33, -27 percent; G5 rates 0.1716, 0.1645). New in the JSON:
+
+- G2 curve_fit estimator (A e^{sigma t} + C on the unsmoothed records): mean bias +1.0,
+  +0.7, -2.0 percent.
+- G3 plain: not evaluable with the fixed window (above lo at the first smoothed point).
+- G5 lead PASS: t_AH - t(alpha_c = 0.2) = 3.3 M (y_c = 0.500), 1.8 M (0.605), 1.1 M
+  (0.756 compressed), all within 0-6 M. Order sigma(0.605) < sigma(0.500) holds in the
+  central values (0.1645 < 0.1716) but not beyond one SE (0.017-0.021): not significant.
+  Kicked against unperturbed y_c = 0.5: 2.76 times (FAIL).
+- G6: over 9 settings (smoothing 5, 10, 20 M x windows (0.003, 0.03), (0.005, 0.05),
+  (0.01, 0.1)) the rates that exist stay within 7, 8, 18 percent of the default for the
+  three compensated samples (limit 20), but 3, 3 and 2 settings find no window (the
+  smallest lo lies below the departure of the first smoothed point). As written ("change
+  by less than 20 percent"), PASS for the rates; the missing windows are recorded.
+
+Figures `figs/fig_growth.png` (looked at): the three compensated samples grow in parallel
+over 12-60 M between departures 0.01 and 0.1 of alpha_c; the plain-filter run starts at
+0.015 and stays above the others by a factor 2-3 (consistent with a larger initial
+amplitude, not tested by a fit); the r10 departures are dominated by a step and a plateau
+over 10-30 M before they grow, which is why their rates scatter (G4); in the kicked runs
+the fitted segment is the start of the plunge after the last oscillation.
+
+### Prediction D1 (diag_g2.py): why the log-linear fit is biased in G2
+
+The departure is measured from the first record, d = y - y(0). For a pure mode
+y(0) already holds the initial amplitude A, so d = A (e^{sigma t} - 1) and ln|d| lies
+below sigma t + ln A by -ln(1 - A/d): 0.105 at the window start (d = lo = 10 A) and 0.010
+at its end (d = hi). The slope is then too steep by about (0.105 - 0.010)/ln(hi/lo) =
+4.1 percent of sigma [derivation, JUDGEMENT on its size]. Prediction for diag_g2.py (50
+realisations per sigma = 0.02, 0.05, 0.1):
+ G (as G2) reproduces biases of +2 to +4 percent;
+ A, B, C, D, E (exact reference 0): |mean bias| < 1 percent for every sigma;
+ H (curve_fit, exact reference): |mean bias| < 1 percent; F (curve_fit as G2): within 2.5.
+Refuted if A stays above 1.5 percent for any sigma (then oscillation or window selection
+is the cause, decided by B-E).
