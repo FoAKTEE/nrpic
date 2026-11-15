@@ -91,6 +91,67 @@ consequences:
 4. A fixed point mass would remove 2 and 3 and let the softening be chosen; with a random
    (not lattice-symmetric) dust the clump would be kicked off the cell centre and jiggle.
 
+### Results (run ids in `JOURNAL.md`, wave 2)
+
+Runs with the clump at a cell centre: N128c (dx = 1.06 M, D-20261115-171503-4262f03), N64c
+(2.125 M, -171505-62940f4), both to a/a_i = 4; N128Lc (2.75 M, box +-176 M, -171507-d1058a9) to
+a/a_i = 8. Reference: the shells of `shells.py` with the measured mesh kernel at the same
+times (`nm_shells.py`); final analysis D-20261115-190541-e27453d.
+
+Run value, in brackets the kernel shells matched to that run (masses in M; from
+`nm_growth_cellcentre.txt`, interpolated to the round a/a_i):
+
+| | N128c | N64c | N128Lc |
+|---|---|---|---|
+| M_ta at a/a_i = 2 | 1.5063 (1.5065) | 1.5064 (1.5058) | 1.5077 (1.5059) |
+| M_ta at a/a_i = 4 | 2.5966 (2.5956) | 2.5966 (2.5934) | 2.5962 (2.5937) |
+| M_ta at a/a_i = 8 | | | 4.8159 (4.8019) |
+| dress at a/a_i = 2 | 0.1744 (0.1735) | 0.1736 (0.1712) | 0.1751 (0.1694) |
+| dress at a/a_i = 4 | 0.7975 (0.7976) | 0.7966 (0.7954) | 0.7977 (0.7940) |
+| dress at a/a_i = 8 | | | 2.1537 (2.1515) |
+| largest M_ta deviation after a/a_i = 1.5 | 0.10 % | 0.12 % | 0.31 % |
+| profile, 4 dx to r_ta, outside the caustic bins | 12 % (rms 6.5 %) at 4 | 6.3 % at 4 | 26 % (rms 14 %) at 8 |
+
+- Growth of the bound mass: the turnaround mass and the dress agree with the matched shell
+  reference to 0.1-0.3 % and 0.01-0.15 % at the end (0.5 % for N128Lc at a/a_i = 4), and the
+  three runs agree with each other to 0.2 % at a/a_i = 4, independent of dx from 1.06 to 2.75 M
+  (`figs/nm_growth.png`). The three force laws of the reference differ at the end by up to
+  1.4 % (M_ta) and 1.9 % (dress), Plummer lowest; at a/a_i = 2 the Plummer dress lies up to
+  9 % below the kernel's (N128L, s = 1.68 M). The wave-1 numbers (Plummer s = 0.5 M: 2.593
+  and 0.796 M at a/a_i = 4) agree with N128c within 0.2 %.
+- Density profile: agrees with the matched shells within the bin scatter from 4 dx to
+  r_ta except at the outermost caustic (16-20 M at a/a_i = 4), where the run has 1.3-1.9 times
+  the reference: in N128c a few per cent of the dress lie up to 2.4 dx beyond the shells'
+  caustic (r_sp99 18.4 against 15.9 M; r_sp90 agrees within 0.3 dx); cause open
+  (`figs/nm_profiles.png`, `figs/nm_phase.png`).
+- Against the self-similar solution (wave-1 test 2): at a/a_i = 4 the profile in units of
+  r_ta lies at 0.46-0.93 of the self-similar rho/rho_b for lambda = 0.1-0.3; at a/a_i = 8
+  (N128Lc) within 25 % on [0.1, 0.3], and still below inside lambda ~ 0.06 (slope about -1.7,
+  not -9/4, where the seed dominates); the caustic is at lambda ~ 0.4 as in the solution
+  (`figs/nm_selfsim.png`). Masses: dress/M_ta = 0.307 (a/a_i = 4) and 0.447 (8) against the
+  self-similar 0.625; M_ta/(M a/a_i) = 0.649 and 0.602, approaching 0.565 from above; local
+  growth exponent of the dress 1.70 at 4 and 1.25 at 8. The r^(-9/4) regime is not reached by
+  a/a_i = 8; it needs the second Newtonian-mode run of `RUNS.md` (a/a_i = 30-100), which a
+  uniform mesh on processors cannot afford.
+- Runs with the clump at a mesh vertex (N128, N64, N128L): masses still within 1 % (M_ta) and
+  2.3 % (dress), but the clump leaves the vertex at a/a_i = 1.75, 2.8, 3.4, the inner dress is
+  heated and the caustic destroyed (`figs/nm_profiles_vertex.png`, `figs/nm_phase_vertex.png`,
+  `figs/nm_clump_vertex.png`).
+- Field calibration and clump stability: `figs/nm_field.png`, `figs/nm_clumpstab.png`;
+  `kernel_nx64.txt`, `kernel_nx128.txt` (measured kernels), `nm_growth_cellcentre.txt` (growth
+  tables of the three cell-centred runs with their references).
+
+### Not done
+
+- No run with a fixed point mass (core's executable was not published); the clump stand-in
+  is what was run. The cause of the dust tail beyond the caustic in N128c is not established.
+- No run to a/a_i = 30-100 (the self-similar regime); no refined mesh (multigrid octets
+  unverified, interface section 6); no card run (0 card-hours used).
+- Energy is not a usable check with the clump (its sub-cell self-interaction does not conserve
+  K + W); no other conservation test of the dust alone was made.
+- `harness/bin/nrpic-run` was used for the first four runs only; the rest are hand-registered
+  (`nm_register.py`), see Requests.
+
 ### Files
 
 | File | What it is |
@@ -133,3 +194,31 @@ From the worktree root, package committed. Each line is one registered run (one 
 Wall times on one core of the loaded machine: one-step runs 1-7 s; S1 75 s; N64 26-30 min
 (2.2 s per step, the 520k particles dominate); N128 and N128L 1-2 h (about 3 s per step);
 shells 2 s to 12 min; analysis 35 s.
+
+### Requests (wave 2)
+
+1. core: the fixed point mass of the Newtonian mode (outbox newtonian-mode-point-mass; work
+   package on `core/requests-adf`) is needed, with evidence now: a compact clump at a mesh
+   vertex is linearly unstable (e-folding about 2.5 M at dx = 2.125 M, scaling like
+   (dx^3/GM)^(1/2); runs D-20261115-171245-a89f225, -170700-b2c6d6e, -170703-46ddffa,
+   -170706-71431c6), at a cell centre stable, and its sub-cell self-interaction does not
+   conserve energy (S1-C, D-20261115-171247-cde0674). Please add to
+   `coord/INTERFACES/newtonian_mode.md` (sections 5.2 and 6) that a vertex is an unstable
+   equilibrium of the self-force for a compact massive object and that the energy of such an
+   object is not conserved. Once the executable is published this package reruns N128c with
+   it (one line in `nm_run.py`: the clump replaced by `newton_pm_mass`).
+2. core: whether the same self-force instability applies in the relativistic mode to compact
+   particle clumps (shared deposit and gather kernels); relevant for clump binaries (Track F)
+   and collapsed cores (Track C) [TO VERIFY; not tested here].
+3. orch (harness): `nrpic-run submit --package` refuses the run when an untracked file lies
+   in the worktree root (here `es.horizon_summary_0.txt`, written into the cwd by another
+   helper's AthenaK run); it could record such files as it does for `tracks/<ID>/`. Twenty-four
+   runs of this package were registered by hand instead (`nm_register.py`); their manifests
+   carry `registered_by` and lack the environment hashes that `submit` records.
+4. D-bh-dress lead: the outcome for `stage/G1/STATUS.md` (D-pre-3, AthenaK Newtonian mode):
+   the first Newtonian-mode run agrees with the matched shell reference (masses 0.1-0.3 %,
+   profile within the bin scatter outside the caustic); the self-similar regime is not
+   reached; the hole stand-in must sit at a cell centre. The other helper whose run writes
+   `es.horizon_summary_0.txt` into the worktree root should run AthenaK with `-d`.
+5. core or orch: the processor executable is Serial (one core); these runs are particle-bound
+   (about 3 s per step for 520k particles), so an OpenMP processor build would shorten them.

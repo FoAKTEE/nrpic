@@ -83,6 +83,15 @@ eps = 0.01 shell runs scaled by (eps/0.01)^(-2/3); the eps = 0.03 runs give r_sp
 
 ## 3. First Newtonian-mode run (AthenaK, `core/newton`, pusher = newton)
 
+Outcome (wave 2, README "Wave 2", JOURNAL from "Wave 2"): run on the release processor
+executable with the hole as a 19952-particle clump at a cell centre (no fixed point mass yet),
+eps = 0.03, dust edge 18.35 M, 5e5 particles, nx = 64 and 128 to a/a_i = 4 and nx = 128 in a
++-176 M box to a/a_i = 8. M_ta and the dress agree with the shell reference matched to the
+mesh softening to 0.1-0.5 %; the profile within the bin scatter outside the outermost
+caustic. The prediction below (dress 0.796 M, M_ta 2.593 M at a/a_i = 4) holds within 0.2 %.
+The clump must not sit at a mesh vertex (unstable). The parameters of this section (2e6
+particles, 384^3 cells, a card) were not used: 5e5 particles and one core per run sufficed.
+
 Purpose: the Newtonian reference of the full-relativity run below, same particles, gravity
 the only difference (interface `tracks/core/interfaces/newtonian_mode.md` on `core/newton`);
 checks the mode against this package's shells, independently.

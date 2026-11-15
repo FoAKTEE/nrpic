@@ -448,7 +448,7 @@ D-20261115-180251-ffafe32): N64c analysed with every other snapshot (6.2 M apart
 and the dress at a/a_i = 2 within 0.15 % of the full sampling (+1.26 % against +1.40 % from the
 kernel shells). The snapshot spacing does not limit the mass measurements.
 
-## 2026-11-15T19:12Z  prediction: is the excess density beyond the outermost caustic a shift or a smearing?
+## 2026-11-15T19:05Z  prediction: is the excess density beyond the outermost caustic a shift or a smearing?
 
 Analysis D-20261115-190403-0bdb9b7 (cell-centred runs) shows at a/a_i = 4 the bin 16-20 M at
 1.89 (N128c), 1.31 (N64c), 1.75 (N128Lc) times the kernel shells and the bin inside it low
@@ -457,3 +457,53 @@ Analysis D-20261115-190403-0bdb9b7 (cell-centred runs) shows at a/a_i = 4 the bi
 sharp caustic by the cloud (one cell), |r_sp99(run) - r_sp99(shells)| < 0.5 dx; if the run's
 streams turn around farther out, the difference exceeds 1 dx. Expectation [JUDGEMENT]:
 smearing, i.e. below 0.5 dx in all three; for the vertex runs (heated dress) above 1 dx.
+
+## 2026-11-15T19:08Z  outcome for N128c (D-20261115-171503-4262f03), N128Lc (-171507-d1058a9) and
+## the vertex runs N128 (-170700-b2c6d6e), N128L (-170706-71431c6); caustic test
+
+Analyses: D-20261115-190403-0bdb9b7 and D-20261115-190541-e27453d (cell centre, identical
+numbers; the second adds splashback radii), D-20261115-185248-9dc7934 and
+D-20261115-190543-783d7be (vertex). Figures `figs/nm_*.png` are copies of the last two.
+Against the kernel shells (N128: D-20261115-170824-788678f; N128L: -170834-ac15adf):
+1. M_ta holds: largest deviation after a/a_i = 1.5: 0.10 % (N128c), 0.31 % (N128Lc).
+   N128c: 1.506, 2.048, 2.597 M at a/a_i = 2, 3, 4; N128Lc: 1.508, 2.046, 2.596, 3.702, 4.816 M
+   at 2, 3, 4, 6, 8 (kernel shells 4.802 at 8).
+2. Dress holds: N128c -0.01 % at a/a_i = 4 (0.7975 M), +0.55 % at 2; N128Lc +0.10 % at 8
+   (2.154 M), +3.4 % at 2. All three cell-centred runs agree with each other to 0.2 % at
+   a/a_i = 4 (0.7966-0.7977 M): no dependence on dx between 1.06 and 2.75 M.
+3. Profile (4 dx <= r <= r_ta): N128c 11.7 % at a/a_i = 2 (holds), 89 % at 4 (refuted, the
+   caustic bin 16-20 M at 1.89 and the bin inside at 0.72; elsewhere at most 12 %, rms 6.5 %);
+   N128Lc 0.5 % at 1.95, 75 % at 3.97 (caustic bin; elsewhere 1.3 %), 26 % at 8 (holds, rms
+   14 %). Inside 2 dx again no systematic flattening (refuted as in N64c).
+4. Self-similar solution: at a/a_i = 4 the run lies at 0.54-0.93 (N128c) and 0.46-0.83 (N128Lc)
+   of the self-similar rho/rho_b for lambda = 0.11-0.28 (refuted: not within 30 % over the
+   whole range); at a/a_i = 8 (N128Lc) 0.75, 1.09, 1.11, 0.81, 0.95 at lambda = 0.11-0.29: the
+   profile has reached the self-similar one within 25 % on [0.1, 0.3]; inside lambda ~ 0.06
+   it stays below (slope about -1.7 against -9/4; the seed dominates there). Masses hold:
+   dress/M_ta = 0.307 (4), 0.447 (8), predicted 0.3, 0.45 (self-similar 0.625);
+   M_ta/(M a/a_i) = 0.649 (4), 0.602 (8), predicted 0.65, 0.60; local growth exponent of the
+   dress d ln M_dr/d ln a = 1.70 at 4 and 1.25 at 8 (wave 1: 1.3 at 8).
+5. Clump at the cell centre holds: centre of mass within 1.4e-4 dx (N128c), 6.6e-4 dx (N128Lc);
+   90 % radius at most 0.35 dx and 0.14 dx; total momentum at most 9.8e-4 and 2.6e-3 M c
+   (a bounded oscillation along (1,1,1), seeded by the box faces, which are not symmetric
+   about the cell centre). Energy refuted as in N64c: K + W off by up to 6.1 % (end -3.3 %)
+   in N128c and 1.6 % (end -0.4 %) in N128Lc, of |W(0)| = 1.61 and 1.99; clump-dominated (S1-C).
+   Vertex runs, prediction holds: the clump leaves the vertex at a/a_i = 1.75 (N128), 2.8 (N64),
+   3.4 (N128L), i.e. earlier for smaller dx; its centre moves up to 3.6 dx (N128), 0.9 dx (N64),
+   0.86 dx (N128L), its 90 % radius grows to 0.9-1.5 dx, and K + W drops by 3-8 %.
+6. Holds for the cell-centred runs (no particle lost). Vertex runs: N128 loses 6783 particles
+   (1.0 % of the mass), N128L 649 (0.15 %): dust and clump particles flung out of the box.
+7. Cost: N128c 6527 s (prediction 75-90 min refuted), N128Lc 5357 s (holds), N128 6311 s,
+   N128L 5133 s; about 3 s per step on one core, particle-bound.
+Despite the wandering clump, the vertex runs keep M_ta within 1.0 % (N128), 0.4 % (N128L) and
+the dress within 2.3 % and 1.5 %; the inner profile and the caustic are destroyed
+(`figs/nm_profiles_vertex.png`, `figs/nm_phase_vertex.png`).
+
+Caustic test (prediction 19:05Z): r_sp99 (radius with 99 % of the dust that passed its
+pericentre) run minus kernel shells: N128c +0.28 dx at a/a_i = 2, +2.38 dx at 4 (18.37 against
+15.85 M; refuted: not smearing); r_sp90 agrees (15.58 against 15.29 M, +0.27 dx), so a few per
+cent of the dress sit beyond the shells' caustic. N64c +0.93 dx at 2 (refuted), +0.40 dx at 4;
+N128Lc +0.46, +0.55 (borderline), +0.03 dx at 1.95, 3.97, 8. Vertex runs: +17 to +57 dx at
+a/a_i = 4 and 8 (holds: heated). Cause of the N128c tail not established; candidate
+[JUDGEMENT, untested]: dust heated by the time-varying sub-cell potential of the cold clump
+(N128c has the largest energy error, 3.3 %); a run with core's fixed point mass would test it.
