@@ -252,3 +252,65 @@ moves toward +x, so what they record is not clean radiation.
    visible in the evolved norm at this resolution after the gauge transient.
  - E (P = 0.043, S = 0.3): pulse energy 1.7e-4 (r = 14), 6.3e-5 (r = 10) of m; the spin
    part of Bowen-York data rings as well.
+
+## 2026-11-15 predictions for T5, a cheaper variant at q = 4 (before the runs)
+
+Why: one q = 10 passage at m/8 costs the whole F-hills allotment (T3b). Variant: M = 1,
+m1 = m2 = 0.125 (q = M/m_b = 4), a_b = 20 m_b = 5 M (plunge bound 4 q^(2/3) = 10.1 m_b),
+the same D = 1.2378 as the first configuration, so r_t = 7.94 and r_p = 9.83;
+coplanar prograde; start 4 r_t.
+ - Newtonian (newton3 driver, 360 phases): disrupted fraction between 0.6 and 0.9 (the
+   finite mass ratio matters more at q = 4 [JUDGEMENT]); members closer than 4 M to M in
+   fewer than 5 percent of the phases (members at r_p +- a_b/2 = 7.3 to 12.3); a clean
+   window of at least 30 degrees. Refuted outside these.
+ - Mesh (domain +-256, root cells 8, finest m/8 = 0.0156 on level 9, heavy at M/8,
+   wave zone cells 2 within 48 and 4 within 100): 1300 to 1900 MeshBlocks at the start;
+   one passage (about 270 M) 10 to 20 card-hours at m/8, and m/16 below 2400 MeshBlocks
+   with radii 1.2. Refuted outside these ranges.
+
+## 2026-11-15 outcomes of T5, runs `F-hills-20261115-131832-907e5fe` (Newtonian, 50 s) and `-131933-907e5fe` (mesh, 8 s)
+
+Figures `figures/fig_newton_phase_q4.png`, `fig_newton_choice_q4.png`,
+`fig_mesh_count_b_D256q4.png` looked at.
+ - Disrupted fraction 0.844 (start 4 r_t) and 0.794 (10 r_t): held (0.6-0.9).
+ - Members closer than 4 M: 0.300 and 0.189 of the phases: FAILED (predicted below 0.05).
+   The minimum sits at 3.8-3.9 M for the phases near 0-30 and 170-220 deg, after the
+   separation, on the captured member's later orbits (the integration runs to 30 r_t
+   outbound, many returns); in the clean window it is 5 to 7 M.
+ - Clean window 36 degrees (109 to 145 deg), 100 clean phases: held. Chosen phase
+   127 deg: m1 ejected, E1 = +1.44, E2 = -1.54 units (unit 4.96e-3 M), same class from
+   both starts; outcome agreement between the starts over all phases 0.939.
+ - Mesh at m/8 (cells 0.0156, 10 levels, domain +-256): 1716 MeshBlocks at the start
+   (held, 1300-1900), at most 2080 and on average 1744 along 270 M: 15.2 card-hours per
+   passage (14.5-16.5): held (10-20). Radii 1.2: 14.3.
+ - m/16 below 2400 with radii 1.2: FAILED at the margin: 2416 at the start, at most 2654
+   (radii 1.8: 2514, at most 2864); 41 and 45 card-hours per passage.
+
+## 2026-11-15 reading of core's own analysis of test 1b (journal-mp on core/multi-puncture, 8e60c74), after T4
+
+Core analysed the same runs (`boost_check.py`), removing a constant and a linear drift
+from the news (time integral of r psi4) instead of my quadratic in r psi4 outside a
+window. Their energies through r = 14: A 1.42e-4, B 1.59e-4, C 5.9e-5 (floor), D
+(P = 0.6) 1.91e-3; above the floor A is about 1e-4 m, and D/A gives E about
+1.3e-2 (P/m)^4 m, "good to a factor two at best". Mine for A at r = 14 is 1.8e-3: the two
+background models differ by a factor ten on the same data, which says the near-zone
+signal at r = 10-14 dominates and neither number is a clean junk energy. Agreement on
+the sign of the effect: B exceeds A by 12 percent (theirs) or falls short by 9 percent
+(mine): the correction does not change the junk. For the plan I take core's scaling as
+the central estimate and my number as the upper bound, and request a clean measurement
+(single hole, spheres at 40-80 m). Core also measured that the tracker speed is
+0.55-0.62 of P/M_ADM at t = 20-40 for every momentum and for the exact boosted slice
+(gauge, not data), and that the uncorrected puncture settles 0.6 percent lighter.
+
+## 2026-11-15 plan written; what is not done
+
+Runs `F-hills-20261115-132220-efddfc0` and `-132430-7d0c6dd` (plan numbers; the second
+adds the t = 0 outputs and the single-puncture input, numbers identical by diff).
+`PLAN.md` written from the outcomes above. Checked while writing: the heavy hole moves
+5.5 M in 248 M on the Newtonian track (q = 10; 13.3 M for q = 4), and the ejected member
+is 69 M from the origin 168 M after the pericentre (it crosses the 40 and 48 spheres
+after the burst). Not done: no run of the code of `core/multi-puncture` (task rule:
+named for the lead as R0-R4); the binary's own conformal-flatness junk is not estimated;
+the gauge of the members (eta m = 0.1) is not tested; the flyby energy formula has no
+locator yet; my binding-energy and radiated-energy analysis for the passage is a plan,
+not a script, apart from the energy integral in `scripts/junk_energy.py`.

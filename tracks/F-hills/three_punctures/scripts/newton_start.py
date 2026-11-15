@@ -31,9 +31,16 @@ from nrpic import figstyle as fs  # noqa: E402
 
 ARGS = sys.argv[1:]
 CHOOSE = None
-if ARGS and ARGS[0] == "--choose":
-    CHOOSE = (ARGS[1], float(ARGS[2]))
-    ARGS = ARGS[3:]
+ONLY = None
+while ARGS and ARGS[0].startswith("--"):
+    if ARGS[0] == "--choose":          # --choose NAME PHASE_DEG | --choose NAME auto
+        CHOOSE = (ARGS[1], None if ARGS[2] == "auto" else float(ARGS[2]))
+        ARGS = ARGS[3:]
+    elif ARGS[0] == "--only":          # --only NAME[,NAME...]: scan only these
+        ONLY = ARGS[1].split(",")
+        ARGS = ARGS[2:]
+    else:
+        raise SystemExit(f"unknown option {ARGS[0]}")
 OUT = ARGS[0]
 FIG = os.path.join(WT, "tracks/F-hills/three_punctures/figures")
 NPH = 360
@@ -44,7 +51,10 @@ CONFIGS = {
     "fid": dict(M=1.0, m1=0.05, m2=0.05, a=3.0, rp=6.0),     # D = 0.93
     "wide": dict(M=1.0, m1=0.05, m2=0.05, a=4.0, rp=8.0),    # D = 0.93
     "far": dict(M=1.0, m1=0.05, m2=0.05, a=3.0, rp=8.0),     # D = 1.24
+    # q = 4, a_b = 20 m_b, the same D = 8 / 6.4633 = 1.2378 as "far"
+    "q4": dict(M=1.0, m1=0.125, m2=0.125, a=5.0, rp=1.2378 * 5.0 * 4.0 ** (1.0 / 3.0)),
 }
+SEL = [k for k in CONFIGS if (ONLY is None and k != "q4") or (ONLY is not None and k in ONLY)]
 
 
 def scan(cfg, k0):
@@ -98,7 +108,8 @@ def main():
     os.makedirs(OUT, exist_ok=True)
     res = {"phases": PHASES.tolist(), "configs": {}}
     scans = {}
-    for name, cfg in CONFIGS.items():
+    for name in SEL:
+        cfg = CONFIGS[name]
         s0 = HillsSetup(**cfg)
         r4 = scan(cfg, 4.0)
         r10 = scan(cfg, 10.0)
@@ -138,7 +149,7 @@ def main():
 
     # tidal distortion on the approach: 36 phases, integrate from 10 r_t, read at 4 r_t
     distort = {}
-    for name in ("fid", "wide"):
+    for name in [k for k in ("fid", "wide", "q4") if k in SEL]:
         cfg = CONFIGS[name]
         rt = HillsSetup(**cfg).r_t
         aa, ee = [], []
@@ -154,8 +165,11 @@ def main():
 
     # chosen phase for run 1: centre of the longest good window of the fiducial, else wide
     choice = None
-    if CHOOSE is not None:
+    if CHOOSE is not None and CHOOSE[1] is not None:
         choice = (CHOOSE[0], int(round(CHOOSE[1] / 360.0 * NPH)) % NPH)
+    elif CHOOSE is not None:
+        g = res["configs"][CHOOSE[0]]["good_window"]
+        choice = (CHOOSE[0], (g["start_index"] + g["length"] // 2) % NPH)
     for name in (() if choice is not None else ("fid", "wide")):
         g = res["configs"][name]["good_window"]
         if g["length"] >= 10:
@@ -210,10 +224,11 @@ def main():
     # ---- figures ----
     fs.use_style()
     import matplotlib.pyplot as plt
-    fig, axes = plt.subplots(3, 3, figsize=(fs.FULL_WIDTH, 6.6), sharex=True)
+    fig, axes = plt.subplots(3, len(SEL), figsize=(fs.FULL_WIDTH, 6.6), sharex=True,
+                             squeeze=False)
     fig.subplots_adjust(left=0.09, right=0.98, bottom=0.08, top=0.95, hspace=0.08, wspace=0.28)
     deg = np.degrees(PHASES)
-    for j, name in enumerate(CONFIGS):
+    for j, name in enumerate(SEL):
         c = res["configs"][name]
         r4, r10 = scans[name]
         ax = axes[0, j]
@@ -246,7 +261,8 @@ def main():
             ax.set_ylabel(r"min member distance to $M$")
     for ax in axes.ravel():
         ax.set_xlim(0, 360)
-    p1 = fs.save(fig, os.path.join(OUT, "fig_newton_phase"))
+    tag = "" if ONLY is None else "_" + "_".join(SEL)
+    p1 = fs.save(fig, os.path.join(OUT, "fig_newton_phase" + tag))
     plt.close(fig)
 
     if res["choice"] is not None:
@@ -282,7 +298,7 @@ def main():
         ax2.set_xlabel("t - t_peri [M]")
         ax2.set_ylabel("separation [M]")
         ax2.legend(loc="lower right", fontsize=8)
-        p2 = fs.save(fig, os.path.join(OUT, "fig_newton_choice"))
+        p2 = fs.save(fig, os.path.join(OUT, "fig_newton_choice" + tag))
         plt.close(fig)
         p1 += p2
     for p in p1:

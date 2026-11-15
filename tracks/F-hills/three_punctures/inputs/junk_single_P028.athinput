@@ -1,0 +1,99 @@
+# Run R2 of tracks/F-hills/three_punctures/PLAN.md (proposal; not run): junk radiation
+# of one Bowen-York puncture with P/m = 0.28 (the members of the first configuration),
+# closed-form correction, measured on spheres at 40, 60, 80 m (core's test 1b had
+# 10 and 14). m = 1 at x = -10 moving along +x; cells m/16 at the puncture, 1 within 88.
+# Variant with no correction: problem/comp0_corr=none. Variant for the gauge
+# calibration of the members (eta m = 0.1): z4c/shift_eta=0.1.
+
+<comment>
+problem   = junk of one Bowen-York puncture, P/m = 0.28
+
+<job>
+basename  = junk1
+
+<mesh>
+nghost    = 4
+nx1       = 64
+x1min     = -256.0
+x1max     = 256.0
+ix1_bc    = outflow
+ox1_bc    = outflow
+nx2       = 64
+x2min     = -256.0
+x2max     = 256.0
+ix2_bc    = outflow
+ox2_bc    = outflow
+nx3       = 64
+x3min     = -256.0
+x3max     = 256.0
+ix3_bc    = outflow
+ox3_bc    = outflow
+
+<meshblock>
+nx1       = 16
+nx2       = 16
+nx3       = 16
+
+<mesh_refinement>
+refinement          = adaptive
+num_levels          = 8
+max_nmb_per_rank    = 2400
+ncycle_check        = 4
+refinement_interval = 8
+
+<z4c_amr>
+method            = tracker
+radius_0_rad      = 88.0
+radius_0_reflevel = 3
+
+<time>
+evolution  = dynamic
+integrator = rk4
+cfl_number = 0.25
+nlim       = -1
+tlim       = 110.0
+ndiag      = 100
+
+<z4c>
+lapse_oplog     = 2.0
+lapse_harmonicf = 1.0
+lapse_harmonic  = 0.0
+lapse_advect    = 1.0
+shift_Gamma     = 0.75
+shift_eta       = 2.0
+shift_advect    = 1.0
+diss            = 0.5
+chi_div_floor   = 1.0e-5
+damp_kappa1     = 0.02
+damp_kappa2     = 0.0
+tracker_mode    = ode
+nrad_wave_extraction = 3
+extraction_radius_0  = 40.0
+extraction_radius_1  = 60.0
+extraction_radius_2  = 80.0
+extraction_nlev      = 10
+waveform_dt          = 0.25
+
+<problem>
+pgen_name       = nrpic_cf
+ncomp           = 1
+comp0_type      = puncture
+comp0_mass      = 1.0
+comp0_x1        = -10.0
+comp0_x2        = 0.0
+comp0_x3        = 0.0
+comp0_p1        = 0.28
+comp0_p2        = 0.0
+comp0_p3        = 0.0
+comp0_corr      = approx
+lapse           = precollapsed
+puncture_setup  = true
+puncture_radius = 1.8
+
+<output1>
+file_type = hst
+dt        = 0.5
+
+<output2>
+file_type = rst
+dt        = 10.0

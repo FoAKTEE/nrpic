@@ -34,7 +34,15 @@ EXE = "/data/haiyangw/nrpic/.work/build_cpu_c1/src/athena"
 sys.path.insert(0, os.path.join(WT, "python"))
 from nrpic import figstyle as fs  # noqa: E402
 
-NEWTON, OUT = sys.argv[1], sys.argv[2]
+ARGS = sys.argv[1:]
+DOM = None          # --dom NAME HALF NROOT LFINE_M8 LEVEL_WZ: one domain, wave zone level given
+while ARGS and ARGS[0].startswith("--"):
+    if ARGS[0] == "--dom":
+        DOM = (ARGS[1], float(ARGS[2]), int(ARGS[3]), int(ARGS[4]), int(ARGS[5]))
+        ARGS = ARGS[6:]
+    else:
+        raise SystemExit(f"unknown option {ARGS[0]}")
+NEWTON, OUT = ARGS[0], ARGS[1]
 FIG = os.path.join(WT, "tracks/F-hills/three_punctures/figures")
 CFL = 0.25
 RATE = {"median": 2201.0, "slow": 2022.0, "fast": 2310.0}
@@ -124,28 +132,32 @@ def main():
     X = np.array(tr["x"])
     sel = np.arange(0, t.size, 5)            # every 10 M
     # domains: (name, half width, root cells, finest level for m/8)
-    doms = {"D409": (409.6, 64, 11), "D205": (204.8, 64, 10)}
+    doms = {"D409": (409.6, 64, 11, 3), "D205": (204.8, 64, 10, 2)}
+    tracked = {"D205"}
+    if DOM is not None:
+        doms = {DOM[0]: DOM[1:]}
+        tracked = {DOM[0]}
+    mlight = min(ms)
     res = {"exe": EXE, "rate_MB_cycles_per_s": RATE, "cfl": CFL, "T_pass": T_PASS,
            "cases": {}, "tracks": {}}
-    for dname, (half, nroot, l8) in doms.items():
-        h0 = 2 * half / nroot
-        lwz = l8 - 8                           # level with cells 1.6 (h0 / 2^lwz = 1.6)
+    for dname, (half, nroot, l8, lwz) in doms.items():
+        h0 = 2 * half / nroot                  # lwz: level of the inner wave zone
         shells = [(48.0, lwz), (100.0, lwz - 1)]
         wz = sphere_regions(half, nroot, shells)
         for dl, rfac in itertools.product((0, 1), (1.8, 1.2)):
             lf = l8 + dl
             hf = h0 / 2 ** lf
-            if dname == "D409" and rfac == 1.2:
+            if dname not in tracked and rfac == 1.2:
                 continue
             regs = puncture_regions(x0, ms, lf, rfac)
-            key = f"{dname}_m{round(0.05 / hf)}_r{rfac}"
+            key = f"{dname}_m{round(mlight / hf)}_r{rfac}"
             n0, per0 = count(key + "_nowz", half, nroot, lf + 1, regs)
             n1, per1 = count(key + "_wz", half, nroot, lf + 1, regs + wz)
-            res["cases"][key] = dict(h_fine=hf, cells_per_m=0.05 / hf, total_nowz=n0,
+            res["cases"][key] = dict(h_fine=hf, cells_per_m=mlight / hf, total_nowz=n0,
                                      total_wz=n1, per_level_nowz=per0, per_level_wz=per1,
                                      n_wz_regions=len(wz))
             print(f"{key}: no wave zone {n0}, wave zone {n1}  {per1}")
-            if dname == "D205":
+            if dname in tracked:
                 rows = []
                 for i in sel:
                     p = [X[i, k] for k in order]
@@ -194,7 +206,7 @@ def main():
     ax2.set_xlabel(r"$t - t_{\rm peri}$ [M] (Newtonian positions)")
     ax2.set_ylabel("MeshBlocks")
     ax2.legend(loc="upper left", fontsize=7)
-    for pth in fs.save(fig, os.path.join(OUT, "fig_mesh_count_b")):
+    for pth in fs.save(fig, os.path.join(OUT, "fig_mesh_count_b" + ("" if DOM is None else "_" + DOM[0]))):
         if pth.endswith(".png"):
             shutil.copy(pth, FIG)
 

@@ -1,0 +1,56 @@
+{
+ "run_id": "F-hills-20261115-131944-360a12e",
+ "track": "F-hills",
+ "package": "geodesic_binary (F-pre-2)",
+ "purpose": "S4 equatorial Kerr HRNA (CKS), spin +0.9 and -0.9, beta 3,5,8,10,12,15, 200 phases, both senses",
+ "kind": "production",
+ "command": [
+  "/data/haiyangw/nrpic/scratch/F-hills/venv-gb/bin/python",
+  "-I",
+  "tracks/F-hills/geodesic_binary/scan.py",
+  "--out",
+  "/data/haiyangw/nrpic/scratch/F-hills/F-hills-20261115-131944-360a12e/s4.npz",
+  "--spins",
+  "0.9,-0.9",
+  "--betas",
+  "3,5,8,10,12,15",
+  "--nphi",
+  "200",
+  "--workers",
+  "6"
+ ],
+ "cwd": "/data/haiyangw/nrpic/wt/F-hills",
+ "git": {
+  "sha": "360a12e269d07c9e629682e6dd2b803d9b61bca5",
+  "branch": "track/F-hills",
+  "dirty_package": false
+ },
+ "inputs": [
+  {
+   "path": "tracks/F-hills/geodesic_binary/hrna.py",
+   "sha256": "ea521fc08a0f70ff67aceb965336330e72b0c9e88daf5873403c6c49e04da966"
+  },
+  {
+   "path": "tracks/F-hills/geodesic_binary/scan.py",
+   "sha256": "7654b3a1f9e542960a0843eb88c145c1b9a0d8073e56d0af90078a4bece74d66"
+  }
+ ],
+ "parents": [],
+ "resources": {
+  "cores": 6,
+  "gpus": 0,
+  "card_hours": 0.0,
+  "core_hours": 0.6475
+ },
+ "outputs": {
+  "dir": "scratch/F-hills/F-hills-20261115-131944-360a12e",
+  "sha256": {
+   "stdout.txt": "26664e80d4803fc88f83ea76c11e1989f4a109521b368d19011dd41ff8a3cd48"
+  }
+ },
+ "status": "failed",
+ "started": "2026-11-15T13:19:44+00:00",
+ "exit_code": 1,
+ "ended": "2026-11-15T13:26:12+00:00",
+ "wall_time_s": 388.5
+}

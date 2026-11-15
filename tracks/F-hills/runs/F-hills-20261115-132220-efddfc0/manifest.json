@@ -1,0 +1,53 @@
+{
+ "run_id": "F-hills-20261115-132220-efddfc0",
+ "track": "F-hills",
+ "package": "three_punctures (F-pre-3, F-pre-4 plan)",
+ "purpose": "Plan numbers: closed-form scales, burst and quasinormal wavelengths, flyby energy, ADM corrections, background factors for the q = 10 and q = 4 configurations; writes the proposed inputs (not run)",
+ "kind": "scouting",
+ "command": [
+  "python3",
+  "tracks/F-hills/three_punctures/scripts/plan_numbers.py",
+  "/data/haiyangw/nrpic/scratch/F-hills/F-hills-20261115-130755-982aba0/newton_start.json",
+  "/data/haiyangw/nrpic/scratch/F-hills/F-hills-20261115-131832-907e5fe/newton_start.json",
+  "/data/haiyangw/nrpic/scratch/F-hills/F-hills-20261115-132220-efddfc0"
+ ],
+ "cwd": "/data/haiyangw/nrpic/wt/F-hills",
+ "git": {
+  "sha": "efddfc0faf03a72f46d07d47ea5a54bbda4914ba",
+  "branch": "track/F-hills",
+  "dirty_package": true
+ },
+ "inputs": [
+  {
+   "path": "tracks/F-hills/three_punctures/scripts/plan_numbers.py",
+   "sha256": "2bb73888d68ec4459b071773461a0ac229d91adb0dd134abbd6965ab43b96769"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/scratch/F-hills/F-hills-20261115-130755-982aba0/newton_start.json",
+   "sha256": "b786160b9e3c6e38956abd065848385f23b84875b65f93eeacac869755be61d7"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/scratch/F-hills/F-hills-20261115-131832-907e5fe/newton_start.json",
+   "sha256": "0cfba17e70c70451529288b680690b7d713aa12599b41a12df5f0110fbf5c75d"
+  }
+ ],
+ "parents": [],
+ "resources": {
+  "cores": 1,
+  "gpus": 0,
+  "card_hours": 0.0,
+  "core_hours": 3e-05
+ },
+ "outputs": {
+  "dir": "scratch/F-hills/F-hills-20261115-132220-efddfc0",
+  "sha256": {
+   "plan_numbers.json": "8db98e2eccb6ad26b4e251257254ba97a039a9d234304e303501a62e1f3e6e07",
+   "stdout.txt": "b44bef3dfca7cf78bf1e59c091dcce64866238bf25e9a4916681e20f6323b488"
+  }
+ },
+ "status": "completed",
+ "exit_code": 0,
+ "started": "2026-11-15T13:22:20+00:00",
+ "ended": "2026-11-15T13:22:20+00:00",
+ "wall_time_s": 0.1
+}

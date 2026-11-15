@@ -1,0 +1,145 @@
+# First Hills passage, q = M/m_b = 10: M = 1, m1 = m2 = 0.05, a_b = 3, r_p = 8
+# (D = 1.24), coplanar prograde, binary phase 130 deg, start at 4 r_t = 25.85.
+# Positions and momenta: newton3 driver integrated from 10 r_t and read at 4 r_t
+# (run F-hills-20261115-130755-982aba0). Members at m/8 (cells 0.00625, level 10),
+# heavy hole at M/10 (level 6, set by puncture_setup). Wave zone: cells 1.6 within
+# 48 and 3.2 within 100 (free at t = 0, run F-hills-20261115-131348-634fb86).
+# Cost: 39 card-hours for 240 M (same run). Needs core/multi-puncture.
+
+<comment>
+problem   = Hills passage, q10_ab3_rp8 (proposal of tracks/F-hills/three_punctures; not run)
+
+<job>
+basename  = hills
+
+<mesh>
+nghost    = 4
+nx1       = 64
+x1min     = -204.8
+x1max     = 204.8
+ix1_bc    = outflow
+ox1_bc    = outflow
+nx2       = 64
+x2min     = -204.8
+x2max     = 204.8
+ix2_bc    = outflow
+ox2_bc    = outflow
+nx3       = 64
+x3min     = -204.8
+x3max     = 204.8
+ix3_bc    = outflow
+ox3_bc    = outflow
+
+<meshblock>
+nx1       = 16
+nx2       = 16
+nx3       = 16
+
+<mesh_refinement>
+refinement          = adaptive
+num_levels          = 11
+max_nmb_per_rank    = 2700      # T3b: at most 2332 (q = 10) / 2080 (q = 4) at m/8; check the card memory
+ncycle_check        = 4
+refinement_interval = 8
+
+<z4c_amr>
+method            = tracker
+radius_0_rad      = 48.0
+radius_0_reflevel = 2
+radius_1_rad      = 100.0
+radius_1_reflevel = 1
+
+<time>
+evolution  = dynamic
+integrator = rk4
+cfl_number = 0.25
+nlim       = -1
+tlim       = 250.0
+ndiag      = 100
+
+<z4c>
+lapse_oplog     = 2.0
+lapse_harmonicf = 1.0
+lapse_harmonic  = 0.0
+lapse_advect    = 1.0
+shift_Gamma     = 0.75
+shift_eta       = 2.0       # eta M = 2 for the heavy hole, eta m = 0.1 for a member
+shift_advect    = 1.0
+diss            = 0.5
+chi_div_floor   = 1.0e-5
+damp_kappa1     = 0.02
+damp_kappa2     = 0.0
+tracker_mode    = ode
+nrad_wave_extraction = 4
+extraction_radius_0  = 40.0
+extraction_radius_1  = 48.0
+extraction_radius_2  = 70.0
+extraction_radius_3  = 90.0
+extraction_nlev      = 10
+waveform_dt          = 0.25
+
+<problem>
+pgen_name       = nrpic_cf
+ncomp           = 3
+comp0_type      = puncture
+comp0_mass      = 0.05
+comp0_x1        = -7.6708833347
+comp0_x2        = -20.9805512842
+comp0_x3        = 0.0
+comp0_p1        = 0.0086107420
+comp0_p2        = 0.0113253216
+comp0_p3        = 0.0
+comp0_corr      = approx
+comp1_type      = puncture
+comp1_mass      = 0.05
+comp1_x1        = -10.2464505378
+comp1_x2        = -22.4765397699
+comp1_x3        = 0.0
+comp1_p1        = 0.0134261864
+comp1_p2        = 0.0034298220
+comp1_p3        = 0.0
+comp1_corr      = approx
+comp2_type      = puncture
+comp2_mass      = 1
+comp2_x1        = 0.8958666936
+comp2_x2        = 2.1728545527
+comp2_x3        = 0.0
+comp2_p1        = -0.0220369284
+comp2_p2        = -0.0147551435
+comp2_p3        = 0.0
+comp2_corr      = approx
+corr_background = true
+lapse           = precollapsed
+puncture_setup  = true
+puncture_radius = 1.8
+
+<output1>
+file_type = hst
+dt        = 0.5
+
+<output2>
+file_type = bin
+variable  = z4c_alpha
+slice_x3  = 0.001
+dt        = 10.0
+
+<output3>
+file_type = bin
+variable  = con_H
+slice_x3  = 0.001
+dt        = 10.0
+
+<output4>
+file_type = rst
+dt        = 5.0
+
+# full fields once at the start, for the constraint check of the data (run R0)
+<output5>
+file_type = bin
+variable  = con
+dt        = 1.0e6
+
+<output6>
+file_type = bin
+variable  = adm_psi4
+dt        = 1.0e6
