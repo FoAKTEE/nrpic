@@ -60,8 +60,10 @@ Four hypotheses for their low particle threshold, each with the run that decides
   collapse time of the compaction shell for mu <= 0.15 (slope -1.31), and the amplitude
   whose collapse time is 250 t_H is mu_fd = 0.048 (0.044 with the measured ratio), inside
   their bracket (0.045, 0.05] (T2) [VERIFIED as arithmetic; the reading is JUDGEMENT].
-  If H1 holds, mu = 0.045 forms a horizon near 0.86 t_c(r_m) = 239 t_H and mu = 0.04 near
-  285 t_H; if it fails (a halted halo), no horizon by 400 t_H and the central density and
+  If H1 holds, mu = 0.045 forms a horizon after 250 t_H: the source's own mu = 0.045 run
+  shows none by 250 t_H (MDPBH.tex:1102-1103; alpha.pdf read by eye by the verifier), so
+  the earlier estimate 0.86 t_c(r_m) = 239 t_H was wrong (verifier C4b, correction 10.9);
+  the two-stage shape of the mu = 0.05 curve puts it near 250-280 t_H [JUDGEMENT]; if it fails (a halted halo), no horizon by 400 t_H and the central density and
   lapse return. Decided by the same data run to 400 t_H (phase 1, two runs).
 - H2 (constraint violation). The black holes below the hoop line are produced by the
   constraint violation at particle crossings. Decided by the same runs at two mesh
@@ -108,7 +110,10 @@ set is reported and no threshold is quoted. Primary t_end = 250 t_H (the length 
 particle runs of arXiv:2609.14218, for the comparison); every BH run records t_AH, so
 A_c(t_end') for t_end' < t_end follows from the same runs; the NO-BH run just below A_c
 is continued to 1000 t_H or to the halt plus 0.3 t_c. The finite-duration part is the
-known cutoff delta_fd = (t_H/t_end)^(2/3) (arXiv:1707.03595 L925); the result is stated
+known cutoff in its top-hat form, mean contrast in r_m at horizon entry
+1.686 (t_H/t_end)^(2/3), mu_fd(250 t_H) = 0.048 (the literal delta_fd = (t_H/t_end)^(2/3) of
+arXiv:1707.03595 L925 has threshold 1 instead of 1.686 and would give 0.0285; correction
+10.9); the result is stated
 as A_c(t_end) together with this cutoff, and only the part above the cutoff is attributed
 to the halting physics.
 
@@ -134,8 +139,11 @@ derivations_to_check.md item 1 [to be re-derived by expball]), so it starts at
 a_i/a_H = (q/(R_b H_i))^2 (T3). With the mean contrast in r_m at most 0.3 at the start,
 the ball holds mu <= 0.031 (q = 3) or mu <= 0.069 (q = 2) at R_b H_i = 0.9; with the
 central contrast at most 0.3, 2.7 times less (T3, `results/fig_design.png` left). So the
-ball covers the exact-solution tests and the small-amplitude end, not the comparison
-amplitudes [VERIFIED as arithmetic]. Recommendation to the lead [JUDGEMENT]: build the
+ball covers the exact-solution tests, the small-amplitude end and, at q = 2 with the
+mean-contrast cap, the particle bracket (0.045, 0.05] of arXiv:2609.14218 (mu = 0.05 needs a
+start contrast of 0.218), but not the hoop amplitude (0.45 needs 1.96) or the fluid
+amplitudes [VERIFIED as arithmetic; corrected in wave 2, 10.9: the earlier text said the ball
+holds none of the comparison amplitudes]. Recommendation to the lead [JUDGEMENT]: build the
 threshold line in phase 1 and use phase 0 for the section-10 tests, the small-amplitude
 end (mu <= 0.03) and the dispersion axis; this reverses the order of the brief.
 
@@ -213,7 +221,7 @@ Gate criteria (charter 9.4, made concrete):
 | Curvature at caustics not convergent (arXiv:1611.07906 L97-112) | diagnostics | outcomes from horizons and constraints, not from peak curvature |
 | Particle noise halts or seeds collapse near threshold | low amplitudes | lattice loading and N from T4b; N-convergence of every bracket |
 | Threshold depends on the run length | all | definition of section 3; A_c(t_end) with the cutoff stated |
-| Ball cannot hold comparison amplitudes | phase 0 | phase 1 for the line (T3) |
+| Ball holds the particle bracket of arXiv:2609.14218 only at q = 2, not the hoop or fluid amplitudes (10.9) | phase 0 | phase 1 for the line (T3; decision 0013) |
 | Ball edge and outer shells leaving the domain | phase 0 | q and box convergence; spherical outer layers do not act on the interior [BACKGROUND] |
 | Small horizon in a large box (M_BH ~ 1e-2 of the Hubble mass in arXiv:2109.04896 L241) | resolution, cost | dx_AH = 0.06 M_BH (twelve cells per coordinate horizon radius, docs/TESTLOG.md M/128 chain) in the cost model; refinement by trackers |
 | Initial data with dispersion not available | s axis | request to core; s axis last |
@@ -268,8 +276,10 @@ branch `core/id-extrinsic`) and an O(1/h) momentum band offline (expball G1); th
 taper converges (momentum orders 1.99 and 3.90 over all cells, run
 A-emd-pbh-20261115-122121-aa1c84d, rerun A-emd-pbh-20261115-130402-f5566fb with identical
 numbers) [VERIFIED]. Expball tables of sharp balls carry no `breaks` line, so a cubic
-through the KL jump smears it over two rows with ~10 % overshoot (run
-A-20261115-130257-a7374a4, `fig_crosscheck.png`); sharp tables are for offline tests only.
+through the KL jump smears it over two rows: the largest deviation from the exact step is
+0.0855 = 1.37 H (run A-20261115-130257-a7374a4, `fig_crosscheck.png`; it includes the smeared
+jump, the overshoot alone was not measured; the earlier "~10 % overshoot" was not what the run
+recorded, correction 10.9); sharp tables are for offline tests only.
 
 **10.4 G2 horizon-mass target, now verified.** The source paper's Oppenheimer-Snyder test
 gives Delta M/M_ADM <~ 1e-3 for its fiducial run (refs/arxiv_2611.12831/src/main.tex:945) and
@@ -298,3 +308,23 @@ a raise, asked when G2 passes.
 `core/newton`); G2 after the merge of `core/id-extrinsic` and `core/newton` (months 2-4); G3
 needs the phase-1 generator, Track B's slicing for a periodic box and the card-hour raise
 (month 9).
+
+**10.9 Corrections after the wave-2 review (lead, 2026-11-15; `stage/REVIEW-wave2.md`).**
+(a) Ball window (verifier C1c, confirmed by the lead's run A-20261115-182314-bebd0cf): at
+R_b H_i = 0.9 with the mean contrast in r_m capped at 0.3, a q = 2 ball holds mu <= 0.0688,
+which contains the particle bracket (0.045, 0.05]; the statement "the ball holds none of the
+comparison amplitudes" was wrong. The periodic box stays the place of the threshold line
+because it uses the source's own data unchanged and holds the hoop and fluid amplitudes
+[JUDGEMENT]; a q = 2 ball can test H1 at e = 0.2 once non-spherical ball data exist.
+(b) H1 timing (verifier C4b): no horizon for mu = 0.045 by 250 t_H in the source
+(MDPBH.tex:1102-1103); the 239 t_H estimate is withdrawn. (c) The finite-duration cutoff
+used is the top-hat form 1.686 (t_H/t_end)^(2/3) (mu_fd(250 t_H) = 0.048), not the literal
+formula of arXiv:1707.03595 L925 (0.0285). (d) Table interpolation at a sharp edge: largest
+deviation 1.37 H including the smeared jump (10.3). (e) The G1 constraint test cannot tell
+the ball from its time reverse (verifier C5); the time orientation is now confirmed by
+evolution: in SR-1 and SR-2 the core shells expand and turn around at proper time 16.87 and
+16.94 (exact 16.894; runs A-emd-pbh-20261115-153843-7172b66, -153845-7172b66, analysis
+A-emd-pbh-20261115-163659-4dbacd0, lead's check A-20261115-182314-bebd0cf). (f) The G2
+horizon-mass criterion asks more than the source paper's own Oppenheimer-Snyder test showed
+(no monotonic convergence of the horizon mass with resolution, refs/arxiv_2611.12831/src/
+main.tex:945, 1484-1485; verifier C7): RISKS.md row 17.
