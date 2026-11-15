@@ -125,6 +125,15 @@ def analyse(d, yc, label):
         if m.any():
             win.append([float(t0), float(ac[m].mean()), float(ac[m].min()), float(ac[m].max())])
     res["windows50"] = win
+    # added after the round-1 runs (JOURNAL 15:56Z): departure from equilibrium and, on the
+    # unstable side of the turning point, the equal-binding member it may migrate to
+    last = t >= t[-1] - 50.0
+    res["mean_alpha_last50"] = float(ac[last].mean())
+    res["departure_last50"] = float(ac[last].mean() / a0 - 1.0)
+    tp = stc.binding_energy_maximum()["yc"]
+    if yc < tp:
+        mt = stc.migration_target(yc)
+        res["migration_target"] = dict(yc=float(mt["yc"]), alpha_c=float(mt["alpha_c"]))
     res["radii"] = mass_radii(d)
     return res
 
@@ -146,7 +155,10 @@ def main():
               f"M_AH={r['M_AH_last']} alpha<0.3 at {r['t_alpha_below_0p3']} "
               f"mean alpha 200-300={r['mean_alpha_200_300']} (eq {r['alpha_c_eq']:.4f}) "
               f"range before collapse [{r['alpha_min_before_collapse']:.3f}, "
-              f"{r['alpha_max_before_collapse']:.3f}]")
+              f"{r['alpha_max_before_collapse']:.3f}]; last 50 M mean {r['mean_alpha_last50']:.4f}"
+              f" (departure {r['departure_last50']:+.4f})"
+              + (f"; migration target alpha_c {r['migration_target']['alpha_c']:.4f}"
+                 if 'migration_target' in r else ""))
     if a.earlier:
         for name, yc, lab in EARLIER:
             d = os.path.join("/data/haiyangw/nrpic/runs/st", name)
@@ -177,13 +189,18 @@ def figure(res):
         ax[0].plot(r["t"], np.array(r["alpha_c"]) / r["alpha_c_eq"], color=c, lw=1.2, label=lab)
         if r["t_first_AH"] is not None:
             ax[0].axvline(r["t_first_AH"], color=c, ls=":", lw=1.0)
+        if "migration_target" in r:
+            ax[0].axhline(r["migration_target"]["alpha_c"] / r["alpha_c_eq"], color=c, ls=":",
+                          lw=1.0)
         rr = r["radii"]
         ax[1].plot(rr["t"], rr["r50"], color=c, lw=1.2)
         ax[1].plot(rr["t"], rr["r90"], color=c, lw=1.2, ls="--")
     ax[0].set_ylim(0.0, 1.25)
+    ax[0].text(0.97, 0.06, "dotted: equal-binding (migration) target", transform=ax[0].transAxes,
+               ha="right", fontsize=6.5)
     ax[0].set_xlabel(r"$t/M$", labelpad=-2)
     ax[0].set_ylabel(r"central lapse / equilibrium value")
-    ax[0].legend(fontsize=7, loc="lower left")
+    ax[0].legend(fontsize=6.5, loc="lower left", ncol=2)
     ax[1].set_xlabel(r"$t/M$", labelpad=-2)
     ax[1].set_ylabel(r"$r_{50}$ (solid), $r_{90}$ (dashed) [$M$]")
     ax[1].set_ylim(0.0, None)
