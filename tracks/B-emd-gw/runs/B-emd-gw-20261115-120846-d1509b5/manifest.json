@@ -1,0 +1,148 @@
+{
+ "run_id": "B-emd-gw-20261115-120846-d1509b5",
+ "owner": "B-emd-gw",
+ "package": "gw_diag",
+ "command": "python3 scripts/cosmo_demo.py /data/haiyangw/nrpic/runs/cosmo/dav_c256_n128_t /data/haiyangw/nrpic/runs/cosmo/dav_c256_n128_pcs4bt",
+ "cwd": "/data/haiyangw/nrpic/wt/B-emd-gw/tracks/B-emd-gw/gw_diag",
+ "commit": "d1509b5fb5b3a6dfdeae5c55ecae57e3aca55fcd",
+ "worktree_dirty_gw_diag": false,
+ "inputs": [
+  {
+   "path": "/data/haiyangw/nrpic/runs/cosmo/dav_c256_n128_t/rst/east.00000.rst",
+   "sha256": "8c051eba81e650d656b10d1a3e6f60019e25defbe528af7638280e28dcd03f85"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/runs/cosmo/dav_c256_n128_t/rst/east.00001.rst",
+   "sha256": "fb5713ee00759976cd08a51f2f860a0adca9542e9a265f52ccbc9ee56634b48d"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/runs/cosmo/dav_c256_n128_t/rst/east.00002.rst",
+   "sha256": "f0158b9b038bac7c0b15cbe25b142f03cf6baa8ddb63aaa70fb74bc687cbf887"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/runs/cosmo/dav_c256_n128_t/rst/east.00003.rst",
+   "sha256": "1ba670349aa231174864476afa8d44201f6696ce8c219ce391f868e646fe375e"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/runs/cosmo/dav_c256_n128_t/rst/east.00004.rst",
+   "sha256": "7c989db2a4e786325306832e9b74df2cd8d28a1f59c1ca7b2f65a40fd85f19ab"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/runs/cosmo/dav_c256_n128_t/rst/east.00005.rst",
+   "sha256": "d12b069d5285b9dc1c843740d189e12fdc3b36a3336905a87de122398c1e2563"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/runs/cosmo/dav_c256_n128_t/rst/east.00006.rst",
+   "sha256": "185a55d628489192d86b2820a42102badd70c4b44d5ec7a5a8af91b5eef17bee"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/runs/cosmo/dav_c256_n128_t/rst/east.00007.rst",
+   "sha256": "e4310f906506d554a3624eb70a78e19ce539ef3e448af0460ab0e9b14631e08c"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/runs/cosmo/dav_c256_n128_t/rst/east.00008.rst",
+   "sha256": "08184ce74bec9cb3b7907b2d843d5938aabc2cd6c1568297a3c7ddbf513f5b15"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/runs/cosmo/dav_c256_n128_t/rst/east.00009.rst",
+   "sha256": "15211f565b0857de3c9248fe4d5e553df43af6cfb65c94ec107c0dde9593adae"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/runs/cosmo/dav_c256_n128_t/rst/east.00010.rst",
+   "sha256": "d63ddfacb188ffe29c7bbd06704b222f819673eecc313886e0153243aff01aea"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/runs/cosmo/dav_c256_n128_t/rst/east.00011.rst",
+   "sha256": "d44430b3ef33deccc8fbe0d384dcd02dff88f5354d8cc966f76f7105c244988d"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/runs/cosmo/dav_c256_n128_t/rst/east.00012.rst",
+   "sha256": "48b31633bf602441aa84aeda71088ef98e60b6702315ea2d8a3451845cdfe1da"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/runs/cosmo/dav_c256_n128_t/rst/east.00013.rst",
+   "sha256": "d95a6382e32277d328b8c550465bf44840e1668df65f4b711ddcbd905590c8a0"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/runs/cosmo/dav_c256_n128_pcs4bt/rst/east.00000.rst",
+   "sha256": "447c55260cf47a727981a67f7255d6cfd88c24c65d0433da84462eacc8c3aa93"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/runs/cosmo/dav_c256_n128_pcs4bt/rst/east.00001.rst",
+   "sha256": "b204bb00618ec3f51db25cb1dab95e110ef546ae05bfb52f92aec8b9fe0ea6a5"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/runs/cosmo/dav_c256_n128_pcs4bt/rst/east.00002.rst",
+   "sha256": "e80c84063752a8edaf20233a419de5f58177e718ccfb3661fdaed3a76bc54165"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/runs/cosmo/dav_c256_n128_pcs4bt/rst/east.00003.rst",
+   "sha256": "c57b364b5d2bc91466bbc8d6a950811c0c717873674cc43f4904f0065a535194"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/runs/cosmo/dav_c256_n128_pcs4bt/rst/east.00004.rst",
+   "sha256": "48c5fc949bc508be3bcfa14b79be78a2cacdf10c241f68f2abd46aa892f6f318"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/runs/cosmo/dav_c256_n128_pcs4bt/rst/east.00005.rst",
+   "sha256": "6c88a0754cfeee82f4d3b3d92ecb7cf9f6901a1eef314619e2124d65a9cc1a62"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/runs/cosmo/dav_c256_n128_pcs4bt/rst/east.00006.rst",
+   "sha256": "95281d44a503192e401069105420dd900c9e718ac0d83b6eaeffc434db348dcc"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/runs/cosmo/dav_c256_n128_pcs4bt/rst/east.00007.rst",
+   "sha256": "9435ef2e9f6166f0713c5470511b7bca9e53640169bbded947cc2fee758a00c4"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/runs/cosmo/dav_c256_n128_pcs4bt/rst/east.00008.rst",
+   "sha256": "5324e518fbad22b265c9ec454115a486308fb498840216c6289c6ffec6663477"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/runs/cosmo/dav_c256_n128_pcs4bt/rst/east.00009.rst",
+   "sha256": "72abe1a997773685a1c13947849621a561e2251b300b3b9667e993e14fa39217"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/runs/cosmo/dav_c256_n128_pcs4bt/rst/east.00010.rst",
+   "sha256": "7a1db2944aa04c90814261063f0c8a02dfd7577a38701a3e4a44a211ea28c762"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/runs/cosmo/dav_c256_n128_pcs4bt/rst/east.00011.rst",
+   "sha256": "ea6ade8b426ff0c434e36448b5473b511f2daf3b7905a526c39d6d162821ee40"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/runs/cosmo/dav_c256_n128_pcs4bt/rst/east.00012.rst",
+   "sha256": "2c91eeba8d178d0a831a70cd34b919bcd19466036f642ca1ef26d38a415ed6af"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/runs/cosmo/dav_c256_n128_pcs4bt/rst/east.00013.rst",
+   "sha256": "7f8954ece85c49589948e67e6cedd0959878fdfc0e8f741d39a332994c68a763"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/wt/B-emd-gw/tracks/B-emd-gw/gw_diag/scripts/cosmo_demo.py",
+   "sha256": "3f2380ac9a54dd63a3e3cb69be184f589cbe1fe282486aca6c8c6edb72549e3e"
+  }
+ ],
+ "output_dir": "/data/haiyangw/nrpic/scratch/B-emd-gw/B-emd-gw-20261115-120846-d1509b5",
+ "purpose": "scouting: TT energy spectrum, TT/non-TT ratio and Weyl parts on the restart dumps of the full-GR cosmology runs dav_c256_n128_t and dav_c256_n128_pcs4bt (rerun after the zero-division fix)",
+ "kind": "scouting",
+ "cores": 8,
+ "card_hours": 0.0,
+ "env": {
+  "OMP_NUM_THREADS": "8",
+  "OPENBLAS_NUM_THREADS": "8",
+  "MKL_NUM_THREADS": "8"
+ },
+ "started_utc": "2026-11-15T12:08:46+00:00",
+ "status": "completed",
+ "exit_code": 0,
+ "wall_time_s": 108.69,
+ "ended_utc": "2026-11-15T12:10:49+00:00",
+ "outputs_sha256": {
+  "cosmo_tt.pdf": "7e0500946e7c28e4a3ad3ffe41a2ea482e87a3ce4698b1ab0b11e6e7815fff80",
+  "cosmo_tt.png": "2c68006d22a2c1e16b5c22c301d83f12d9b328b8b585770c08f8e5eddd518c51",
+  "results_cosmo.json": "2ed9897652f9d8193b595190c7fba8f31e0c25edc75ee373d1d458ca1efe5b6c",
+  "stdout.txt": "c5d402c362aee399f03527ee88f4c43920e3f28a44be31ea1e897701a24dae63"
+ }
+}
