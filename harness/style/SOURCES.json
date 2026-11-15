@@ -1,0 +1,29 @@
+{
+  "vendored_utc": "2026-11-15T11:35:27Z",
+  "files": {
+    "czstyle.py": {
+      "from": "~/.claude/skills/synced/55b19010-69ae-4a47-8cd8-76d59de5998b_e47098cb-fcb1-438d-84d0-ef8fb13c4de1/zoom-figure-style/SKILL.md",
+      "how": "section 9 code block",
+      "source_sha256": "68be3438dada125a6fe7bffad2bfeb277b90c4165ef4cac57600d426d87e7741",
+      "sha256": "36f90808fe3a9eccffb2ddd52407d4cafcef3a32c5ee716d33cc58401cc846a8"
+    },
+    "cyclic_zoom.mplstyle": {
+      "from": "czstyle.write_mplstyle()",
+      "how": "generated",
+      "sha256": "2071f4e2dbeaf21cdf982827d8de5d22bd2fe81bc60565c014e2b71aa561060c"
+    },
+    "paperfig.py": {
+      "from": "~/.claude/skills/synced/55b19010-69ae-4a47-8cd8-76d59de5998b_e47098cb-fcb1-438d-84d0-ef8fb13c4de1/sleep-paper-figure-style/scripts/paperfig.py",
+      "how": "copied",
+      "source_sha256": "0c73c7e3ba560d2d3f8200e8f1bca72b83f7a5085c19e639dd00d74e60fc7979",
+      "sha256": "0c73c7e3ba560d2d3f8200e8f1bca72b83f7a5085c19e639dd00d74e60fc7979"
+    },
+    "figstyle.py": {
+      "from": "python/nrpic/figstyle.py",
+      "how": "copied",
+      "source_sha256": "5d3b78ad8c2c02e428b675e3d7e35a32cbc8f053d1aeedd4fde66f27da55676e",
+      "sha256": "5d3b78ad8c2c02e428b675e3d7e35a32cbc8f053d1aeedd4fde66f27da55676e"
+    }
+  },
+  "not_found": []
+}

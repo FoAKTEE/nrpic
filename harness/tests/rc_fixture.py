@@ -275,3 +275,108 @@ class Checks:
         bad = [w for c, w in self.rows if not c]
         print(f"== {self.title}: {len(self.rows) - len(bad)}/{len(self.rows)} passed")
         return 1 if bad else 0
+
+
+# ------------------------------------------------------------------ a dummy working note
+
+FIG_LINES = r'''"""Style self-test, data figure: reference curve, a noisy method with its 10-90 % band (one column)."""
+import numpy as np
+from czstyle import *
+
+use_style()
+x = np.logspace(-1, 1, 60)
+ref = x ** -1.5
+rng = np.random.default_rng(1)
+draws = ref[None, :] * (1 + 0.15 * rng.standard_normal((200, x.size)))
+lo, mid, hi = np.percentile(draws, [10, 50, 90], axis=0)
+fig, ax = plt.subplots(figsize=(4.0, 3.0))
+fig.subplots_adjust(left=0.17, right=0.96, bottom=0.15, top=0.96)
+ax.plot(x, ref, color=PAL["blue"], label="exact")
+ax.plot(x, mid, color=PAL["red"], label="NRPIC")
+band(ax, x, lo, hi, PAL["red"])
+ax.plot(x, 0.5 * x ** -1.5, **GUIDE, label=r"$\propto r^{-3/2}$")
+ax.set(xscale="log", yscale="log", xlabel=r"$r/M$", ylabel=r"$\rho\,M^2$")
+ax.legend(ncol=2, loc="upper right")
+save(fig, "../figures/fig_style_lines")
+'''
+
+FIG_MOSAIC = r'''"""Style self-test, data figure: three touching slice panels with zoom boxes (full width)."""
+import numpy as np
+from czstyle import *
+
+use_style()
+fig, axes, cax = slice_mosaic(1, 3, bottom=0.46)   # 0.36 cut the x labels by 0.04 in
+halves = [8.0, 2.0, 0.5]
+for j, L in enumerate(halves):
+    ax = axes[0, j]
+    g = np.linspace(-L, L, 200)
+    X, Y = np.meshgrid(g, g)
+    rho = 1e-3 + np.exp(-(X ** 2 + Y ** 2) / 0.5) + 0.3 * np.exp(-((X - 1.5) ** 2 + Y ** 2) / 0.05)
+    im = ax.imshow(rho, extent=(-L, L, -L, L), origin="lower", cmap=CMAP["dens"],
+                   norm=LogNorm(1e-3, 1.5), interpolation="none", rasterized=True)
+    ax.set_aspect("equal")
+    slice_ticks(ax, L, show_y=(j == 0))
+    if j + 1 < len(halves):
+        zoom_marker(ax, halves[j + 1], L, connect="right")
+    ax.set_xlabel(r"$x/M$")
+    if j == 0:
+        ax.set_ylabel(r"$y/M$")
+tall_colorbar(fig, im, cax, r"$\rho\,M^2$")
+save(fig, "../figures/fig_style_mosaic")
+'''
+
+SCHEM = r'''"""Style self-test, schematic: track architecture with the status legend (exists / to be ported / new)."""
+import paperfig as pf
+
+fig, ax = pf.canvas(30, 9)
+pf.panel(ax, 0.5, 0.5, 29.0, 8.0)
+pf.block(ax, 1.5, 4.0, 7.5, 1.6, "Z4c + NRPIC (exists)", fill=pf.GREEN_DARK, size=10)
+pf.block(ax, 11.25, 4.0, 7.5, 1.6, "periodic gauge (port)", fill=pf.SLATE, size=10)
+pf.block(ax, 21.0, 4.0, 7.5, 1.6, "track diagnostic (new)", fill=pf.RED, size=10)
+pf.arrow(ax, (9.0, 4.8), (11.25, 4.8))
+pf.arrow(ax, (18.75, 4.8), (21.0, 4.8))
+pf.legend_box(ax, 8.0, 1.2, 14.0, 1.3, [("block:" + pf.GREEN_DARK, "exists"),
+              ("block:" + pf.SLATE, "to be ported"), ("block:" + pf.RED, "new")])
+pf.text(ax, 15.0, 7.3, "Architecture of the dummy track", size=12, bold=True)
+pf.save(fig, "../figures/schem_architecture")
+'''
+
+MAIN_TEX = r'''\documentclass[aps,prd,reprint]{revtex4-2}
+\begin{document}
+\title{Dummy working note}
+\maketitle
+\section{Introduction}
+Placeholder text of the stage-check rehearsal.
+\end{document}
+'''
+
+
+def seed_note(wt, owner, commit=True):
+    """Copy the vendored style files into tracks/<owner>/note/scripts/ and write three figure scripts
+    and a minimal main.tex (figures are produced by running the scripts, see run_note_scripts)."""
+    note = os.path.join(wt, "tracks", owner, "note")
+    scripts = os.path.join(note, "scripts")
+    os.makedirs(scripts, exist_ok=True)
+    os.makedirs(os.path.join(note, "figures"), exist_ok=True)
+    for fn in ("czstyle.py", "cyclic_zoom.mplstyle", "paperfig.py"):
+        shutil.copyfile(os.path.join(wt, "harness", "style", fn), os.path.join(scripts, fn))
+    for fn, text in (("fig_style_lines.py", FIG_LINES), ("fig_style_mosaic.py", FIG_MOSAIC),
+                     ("schem_architecture.py", SCHEM)):
+        open(os.path.join(scripts, fn), "w").write(text)
+    open(os.path.join(note, "main.tex"), "w").write(MAIN_TEX)
+    return note
+
+
+def run_note_scripts(wt, owner):
+    """Run every fig_*.py and schem_*.py of the note through nrpic-env exec; returns {script: result}."""
+    scripts = os.path.join(wt, "tracks", owner, "note", "scripts")
+    out = {}
+    for fn in sorted(os.listdir(scripts)):
+        if re_fig(fn):
+            out[fn] = sh([os.path.join(wt, "harness", "bin", "nrpic-env"), "exec", "--cwd", scripts, "--",
+                          "python", fn], cwd=wt, check=False, timeout=300)
+    return out
+
+
+def re_fig(fn):
+    return fn.endswith(".py") and (fn.startswith("fig_") or fn.startswith("schem_"))
