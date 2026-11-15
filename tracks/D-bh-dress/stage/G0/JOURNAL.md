@@ -143,3 +143,13 @@ predictions of entry 1 (written down here before the registered runs):
 - C7: sympy gives M_MS = m + H^2 R^3/2 exactly for McVittie, R_h/(2m) = 1 + 4 h^2 + 48 h^4,
   d ln M_AH/d ln a = -12 h^2 - 240 h^4 (h = m H); exact roots: -1.20e-3, -1.10e-2,
   -0.151 at h = 0.01, 0.03, 0.1.
+
+## Entry 5: C4 set-up (own radial-shell code), prediction restated
+
+Debug run at a_f/a_i = 20, N = 1000 (scratch/tmp, unregistered): density slope fits
+-2.2 to -2.7 depending on the range (caustics), enclosed-mass slope -2.11 to -2.28; the seed
+(1.3 M with the inner dust) is still comparable to the dust inside 0.05 r_ta there. The
+registered run goes to a_f/a_i = 100 (and 300) with N = 2000-4000, softening 1-2 M and two
+step sizes. Prediction (entry 1, unchanged): slope -2.25 +- 0.1 between 0.05 and 0.3 r_ta
+for the enclosed-mass estimate at a_f/a_i = 100 and 300; refuted outside +-0.15. The
+density-bin fits are expected to scatter more (caustics of radial orbits).
