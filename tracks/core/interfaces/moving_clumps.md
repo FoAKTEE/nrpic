@@ -232,3 +232,14 @@ control of the rerun"). Figure of the predictions on the record of `n1e4_v19`:
   `--puncture`, `--lattice-h`, `--lattice-rcut`. New: `python/nrpic/smeared_bowen_york.py`,
   `problems/clump/*.athinput`, `problems/tests/clump_static.athinput`,
   `problems/jeans/jeans_mc.athinput`.
+
+## 10. Executables for scouting runs (decision 0013)
+
+`/data/haiyangw/nrpic/scratch/core/exe/core_clump-curvature/`: `athena_gpu`,
+`athena_cpu` (built from commit e1a4d0c8; the tip differs in two comment lines),
+`COMMIT`, `examples/` (`clump_moving`, `clump_spin`, `clump_puncture`, `jeans_mc`),
+`generator/` (`python/nrpic` and `problems/ic` of the same commit; run
+`generator/problems/ic/make_ic.py` from there), `SHA256SUMS`, `READY` (options, one
+example each, what is tested and what is not). The package used as a track would use
+it reproduces the example run byte for byte (check P, run
+`core-20261115-181951-0d85b96`).

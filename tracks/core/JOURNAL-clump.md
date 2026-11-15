@@ -613,3 +613,38 @@ generator of the branch did in run `core-20261115-160625-1311116`; the published
 `athena_cpu` with `examples/clump_moving.athinput` and `time/nlim=1` prints the line of
 the smeared curvature and writes the same history file as that run, byte for byte.
 Refuted by any differing byte (then the package is not what was tested).
+
+### Outcome of check P (run `core-20261115-181951-0d85b96`)
+
+HELD. With the published generator, example and `athena_cpu`: `particles.nrp` and
+`clump.z4c.user.hst` byte-identical to run `core-20261115-160625-1311116`, the log line
+"NRPIC: smeared Bowen-York curvature on 1 Gaussian component(s)" printed, and
+`athenak.problem` of the JSON equal (comp0_p1 = 0.06000000000015703); the JSON file
+itself differs only in the output directory it records.
+
+### Dry run of the prepared rerun (nothing started)
+
+`rerun_jeans_mc.sh --dry-run` and `--control --dry-run` pass every check of
+`nrpic-run submit` (clean tree, executable, budget): launcher chain, 8 segments, 7.87
+card-hours requested each, inputs with sha256 (particles 7270917f, table 7ea9ca27,
+`athena_gpu` 661b5534, `jeans_mc.athinput` 91fb0774), core's G2 budget at that moment
+2.43 card-hours used and 0.5 reserved of 40. Rerun and control together ask 15.7
+card-hours; each is below the eight of decision 0014.
+
+### Handoff of package clump (for a reader with no memory)
+
+Done: derivation (momentum and spin), source (`nrpic_clump_curvature.hpp` and two
+hooks), generator (`make_ic.py clumps`, `jeans --clump-curvature`), tests P0, T1-T7, R,
+G, I, P (all registered except P0 and the derivation of session 1, rerun in
+`core-20261115-175320-3de5b3d`), interface proposal `interfaces/moving_clumps.md`,
+executables published in `scratch/core/exe/core_clump-curvature/` (READY), the rerun
+prepared with its control and predictions.
+Run next (the orchestrator's decision, from the root of `wt/core-clump`, tree clean):
+`tracks/core/analysis/clump/rerun_jeans_mc.sh` and
+`tracks/core/analysis/clump/rerun_jeans_mc.sh --control`; then compare `M_AH`, S and
+the first common-horizon time at 100 M with the predictions above and the figure
+`figs/fig_clump_rerun_prediction.png`.
+Open: equilibrium (table) clumps with momentum (Track F's object (b)); correction of
+psi at second order; the outflow-boundary layer of the momentum constraint; the drift
+of the summed particle momenta (T6); an evolution with spin, on more than one rank and
+of a single clump on a refined mesh.
