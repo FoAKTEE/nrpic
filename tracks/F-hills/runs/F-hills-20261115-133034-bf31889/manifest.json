@@ -1,0 +1,129 @@
+{
+  "run_id": "F-hills-20261115-133034-bf31889",
+  "track": "F-hills",
+  "package": "newton3 (F-pre-1)",
+  "gate": "G1",
+  "purpose": "analysis of F-hills-20261115-130239-cbfaf6b (P2 general orientation)",
+  "preregistered_in": "tracks/F-hills/newton3/JOURNAL.md#P2",
+  "kind": "scouting",
+  "command": [
+    "/usr/bin/python3",
+    "scripts/analyze.py",
+    "general",
+    "F-hills-20261115-130239-cbfaf6b",
+    "F-hills-20261115-130237-cbfaf6b",
+    "F-hills-20261115-132159-efddfc0"
+  ],
+  "cwd": "/data/haiyangw/nrpic/wt/F-hills/tracks/F-hills/newton3",
+  "git": {
+    "sha": "bf31889b13b505d4a4b090a77392f2c60b5d3ed6",
+    "branch": "track/F-hills",
+    "dirty_package": true,
+    "merge_base_main": "a1c223753952674ee38819dc45043591dddc3022"
+  },
+  "code": {
+    "core_tag": null,
+    "athenak": "not used (reference ODE solution, decision 0010)"
+  },
+  "env": {
+    "host": "anta",
+    "python": "3.10.12",
+    "numpy": "2.2.6",
+    "scipy": "1.15.3"
+  },
+  "inputs": [
+    {
+      "path": "tracks/F-hills/newton3/hills3/__init__.py",
+      "sha256": "0325364972e07f4ddc48d25f7faf0df9fa42aaee5ffd0a0cb89015b0695ebb76"
+    },
+    {
+      "path": "tracks/F-hills/newton3/hills3/integrate.py",
+      "sha256": "9163e563f7a90fec5d705fbe6b50365946158c65ffaedd8c80730ac3ecae7af9"
+    },
+    {
+      "path": "tracks/F-hills/newton3/hills3/orbits.py",
+      "sha256": "208fd9a68210007dfbc850f8c892e901abfe08b359708673a45d75517ac95b11"
+    },
+    {
+      "path": "tracks/F-hills/newton3/hills3/reference.py",
+      "sha256": "f28662c8d91828717b553eed9a34296a72d7a8d485f01fdee5b953bbf06e7bf5"
+    },
+    {
+      "path": "tracks/F-hills/newton3/hills3/restricted.py",
+      "sha256": "fcac01ffdaa79827642ef44e910c9b0baa80c3189e1de517ae592ab781c10e31"
+    },
+    {
+      "path": "tracks/F-hills/newton3/hills3/threebody.py",
+      "sha256": "ce9578e17ad58a448f565ed149658f2dcf52861969cacf1b669e3390b2e165a6"
+    },
+    {
+      "path": "tracks/F-hills/newton3/scripts/analyze.py",
+      "sha256": "b09fc274b4e4c99fc27606ed0c87d03b89fb6e14c42c8d0240f9466c7d29970c"
+    },
+    {
+      "path": "tracks/F-hills/newton3/scripts/compare_full.py",
+      "sha256": "f366a8ea55a6480dcd81105ec13d816914988448954567cea33da768caeaf717"
+    },
+    {
+      "path": "tracks/F-hills/newton3/scripts/convergence.py",
+      "sha256": "1e377cbd0962848a7bdbdf924012b3ad28a3862858417a4722eb03be9f3b2d04"
+    },
+    {
+      "path": "tracks/F-hills/newton3/scripts/digitize_bkrs.py",
+      "sha256": "2feb025973a687c9bd21cda4d51897c31ec064fc823e4872f501f9a8bbe4bb6c"
+    },
+    {
+      "path": "tracks/F-hills/newton3/scripts/digitize_skr.py",
+      "sha256": "b4b4688096902a7f41c5ce87cf92ed301678b3fddb94362313ad1ef85f580db2"
+    },
+    {
+      "path": "tracks/F-hills/newton3/scripts/run_tests.py",
+      "sha256": "c04b89017bef1895020136a0397d94ed90a25a7b00b48bbedfc9b1c8a7902d9a"
+    },
+    {
+      "path": "tracks/F-hills/newton3/scripts/runlib.py",
+      "sha256": "2ef8be8b833533fb8bc119b7ce4fdb4f2e46d271f808956206e7127e1be50a36"
+    },
+    {
+      "path": "tracks/F-hills/newton3/scripts/scan_coplanar.py",
+      "sha256": "04191d9f27fa5a5430f5645207313b3cc195786cb9b17a16c50a19509e93513a"
+    },
+    {
+      "path": "tracks/F-hills/newton3/scripts/scan_general.py",
+      "sha256": "736247184c314ba395a8fff48511e47be91549c6c00ce3b8ef57c168c1fc04a9"
+    },
+    {
+      "path": "/data/haiyangw/nrpic/scratch/F-hills/F-hills-20261115-130239-cbfaf6b/general.npz",
+      "sha256": "e56955017cbbe50dcc980c89070902769da0f2bf83af3770520999b1caa1a369"
+    },
+    {
+      "path": "/data/haiyangw/nrpic/scratch/F-hills/F-hills-20261115-130237-cbfaf6b/coplanar.npz",
+      "sha256": "5954e34f8eb97e92b0c0120a78a4bbea8b358f2335daaeb52cafa86757f1b685"
+    },
+    {
+      "path": "/data/haiyangw/nrpic/scratch/F-hills/F-hills-20261115-132159-efddfc0/general.npz",
+      "sha256": "ca4a8bdff387412547acbd7523ebb976217f4de225084828f6f84a716d7c3282"
+    }
+  ],
+  "resources": {
+    "nodes": 1,
+    "gpus": 0,
+    "cores": 1,
+    "card_hours": 0.0
+  },
+  "outputs": {
+    "dir": "scratch/F-hills/F-hills-20261115-133034-bf31889",
+    "sha256sums": "sha256sums.txt",
+    "files": 0
+  },
+  "status": "failed",
+  "exit_code": 1,
+  "started": "2026-11-15T13:30:34+00:00",
+  "ended": "2026-11-15T13:30:53+00:00",
+  "walltime_s": 0.0,
+  "core_hours": 0.0,
+  "notes": "",
+  "results": {
+    "error": "ValueError: ambiguous_A not sliced to the kept D (fixed in the next commit)"
+  }
+}

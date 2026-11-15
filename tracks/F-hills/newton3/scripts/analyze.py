@@ -263,7 +263,7 @@ def general(run_id, coplanar_run=None, supplement_run=None):
          "P_minus_fit": (P - Pfit).tolist(), "Emean": Em.tolist(), "Emean_fit_BKRS": Efit.tolist(),
          "Emean_rel_dev": (Em / Efit - 1).tolist(), "E_top1pc": E99.tolist(),
          "P_collision_rmin_lt_0.2a": Pc.tolist(), "n_fail": int((~ok).sum()),
-         "n_ambiguous": int((Z["ambiguous_A"] & ok).sum()), "n_total": int(ok.size)}
+         "n_ambiguous": int((Z["ambiguous_A"][kA] & ok).sum()), "n_total": int(ok.size)}
     m1 = D <= 1.0 + 1e-9
     m18 = D <= 1.8 + 1e-9
     m15 = D <= 1.5 + 1e-9
@@ -316,10 +316,12 @@ def general(run_id, coplanar_run=None, supplement_run=None):
     a.plot(D, P, "o-", color=RED, ms=3, lw=1.0, label="this work (isotropic)")
     if coplanar_run:
         C = np.load(_src(coplanar_run, "coplanar.npz"))
-        Dcp = C["D"]
+        kc = C["D"] >= D_TRUST * (1 - 1e-9)
+        Dcp = C["D"][kc]
         for tag, ls, col, lab in (("pro", "-", YEL, "this work, coplanar prograde"),
                                   ("ret", "--", GRN, "this work, coplanar retrograde")):
-            Pcp = np.array([C[f"disrupted_{tag}"][i][C[f"ok_{tag}"][i]].mean() for i in range(Dcp.size)])
+            dc, oc = C[f"disrupted_{tag}"][kc], C[f"ok_{tag}"][kc]
+            Pcp = np.array([dc[i][oc[i]].mean() for i in range(Dcp.size)])
             a.plot(Dcp, Pcp, color=col, ls=ls, lw=1.0, label=lab)
     a.set_ylabel(r"$P_{\rm dis}$")
     a.set_ylim(0, 1.05)
