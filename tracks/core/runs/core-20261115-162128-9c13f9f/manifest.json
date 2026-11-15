@@ -1,0 +1,45 @@
+{
+ "run_id": "core-20261115-162128-9c13f9f",
+ "owner": "core",
+ "track": "core",
+ "gate": "G2",
+ "purpose": "T3b, repeat of run core-20261115-161040-760b515 for the figure with the tidied layout (same executable and input)",
+ "kind": "scouting",
+ "command": [
+  ".venv/bin/python",
+  "tracks/core/analysis/scalar2/t3b_parts.py",
+  "--exe",
+  ".work/exe/athena_cpu_a58e95b",
+  "--prev",
+  "/data/haiyangw/nrpic/scratch/core/core-20261115-155040-eb68eaa",
+  "--out",
+  "/data/haiyangw/nrpic/scratch/core/core-20261115-162128-9c13f9f"
+ ],
+ "cwd": "/data/haiyangw/nrpic/wt/core-scalar2",
+ "commit": "9c13f9ff968a5ff1aa15300f8827184f3ef08cd0",
+ "branch": "core/scalar-2",
+ "uncommitted_changes": [],
+ "inputs": [
+  {
+   "path": ".work/exe/athena_cpu_a58e95b",
+   "sha256": "c69266ec765c8296b005871c6865991f2a5ac59f7ebd2ac3f03d383b57f9439e"
+  },
+  {
+   "path": "problems/scalar/sr_stochastic.athinput",
+   "sha256": "d1ad721d9b2b495b49782ca31a3c18efc24f1eb58c23eeff29d3fc12747efea6"
+  },
+  {
+   "path": "tracks/core/analysis/scalar2/t3b_parts.py",
+   "sha256": "da64a1cffa9274e7508658c57402589db090606e05de62fff7c38d760976b873"
+  }
+ ],
+ "output_directory": "/data/haiyangw/nrpic/scratch/core/core-20261115-162128-9c13f9f",
+ "outputs": {
+  "dir": "scratch/core/core-20261115-162128-9c13f9f"
+ },
+ "host": "anta",
+ "start_utc": "2026-11-15T16:21:29Z",
+ "cores": 1,
+ "registered_by": "tracks/core/analysis/scalar2/runreg.py (by hand: nrpic-run submit fails with KeyError 'outputs')",
+ "status": "running"
+}

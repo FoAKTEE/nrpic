@@ -423,3 +423,12 @@ shells of the committed mode file the moduli agree with the integration from N0 
 largest value): a start at another time is another phase per shell, i.e. another,
 statistically equivalent realisation. Runs that are compared mode by mode must use one
 mode file. 214 shells take 35 s; the 3413 shells of nmax2 = 4096 about 9 minutes.
+
+T10 (added, predicted before it runs): the case of T8 at 32^3 with `noise_level = 1`
+(background of the sources from the box means of the mesh at every stage). The mesh
+scale factor differs from the lockstep one by the fourth-order error of chi (5.5e-6
+after 8 e-folds), so the window moves by that much. Prediction: the bounds of P8b hold
+unchanged (2e-3 for |n| <= 2, 2e-2 for |n| <= 4), and the largest deviations agree with
+those of level 0 (2.7e-5, 7.6e-5, 2.8e-3) within 20 percent. Refuted by a deviation
+above the bounds: the path through the box means would then be inconsistent with the
+slice.

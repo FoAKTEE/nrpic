@@ -46,7 +46,7 @@ def analyse(rundir, n, n2, al, length, windowed=True):
         sh = tab[:, 0].astype(int)
         idx = np.searchsorted(sh, n2)
         r = (tab[:, 1] + 1j*tab[:, 2])[idx]
-        a = np.exp(head["ln_a"])
+        a = head["a"]       # scale factor of the background of the sources
         w, _ = inf.window(n2, length, a, head["H"], head["eps1"])
         if not windowed:      # all modes in from the start, no sources
             w = np.ones(n2.size)
@@ -86,6 +86,7 @@ def main():
     ap.add_argument("--analyse-only", action="store_true")
     ap.add_argument("--no-control", action="store_true")
     ap.add_argument("--nmax2", type=int, default=NMAX2)
+    ap.add_argument("--level", type=int, default=0, help="noise_level")
     ap.add_argument("--no-window", action="store_true",
                     help="slice_window = false and the three kicks off: the initial-value "
                          "problem without sources; reference R alpha of the record")
@@ -95,7 +96,8 @@ def main():
     args = [f"scalar_field/noise_mode_file={MODES}", f"time/tlim={a.tlim}",
             "scalar_field/dump_dt=0.4", "scalar_field/dump_noise=false",
             "scalar_field/dump_constraints=false",
-            f"scalar_field/noise_nmax2={a.nmax2}"] + common.mesh_args(a.n)
+            f"scalar_field/noise_nmax2={a.nmax2}",
+            f"scalar_field/noise_level={a.level}"] + common.mesh_args(a.n)
     if a.no_window:
         args += ["problem/slice_window=false", "scalar_field/noise_kick_pi=false",
                  "scalar_field/noise_kick_k=false", "scalar_field/noise_kick_a=false"]
