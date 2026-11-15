@@ -65,9 +65,13 @@ the earlier files. The executables are the release executables named in CLAUDE.m
 
 ## Not done in this package
 
-- No new run of the prolate collapse or the cluster sequence (each 45 to 2500 M at 10^4
-  particles, beyond this package's card time); their ladder rows rest on the earlier run
-  files, re-read today.
+- No new run of the prolate collapse or the cluster sequence: they are not in the suite
+  this package was asked for, and their ladder rows rest on the earlier run files,
+  re-read today. From their logs, the prolate run to 45 M took 0.48 card-hours
+  (`runs/prolate/e09_v8`), a stable cluster to 300 M 0.14 (`runs/st/yc0819_v4`), the
+  y_c = 0.500 collapse to 120 M 0.58 (`runs/st/yc0500_v5`), the y_c = 0.605 collapse to
+  300 M 1.18 (two segments, `runs/st/yc0605_v5`) (athena "cpu time used", one card):
+  the first two would fit a later regression pass.
 - The regression does not exercise the cosmology production configuration (B-spline
   clouds, compensation passes, spline interpolation, step limit, alternative lapse
   conditions), the level cap, the restart path or refined periodic meshes.
