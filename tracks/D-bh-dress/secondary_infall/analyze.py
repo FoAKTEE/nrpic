@@ -58,12 +58,24 @@ def growth(r):
     if np.any(~np.isnan(r["cf_t_abs"])):
         out["mbh_cf"] = np.array([1.0 + m0[r["cf_t_abs"] <= t].sum() for t in ts])
     out["rta"] = np.array([ta_radius(r, t) for t in ts])
-    # outermost radius of dust that has passed the centre (splashback) at each snapshot
-    rs = []
+    # outer edge of the dust that has passed the centre: radius holding 99 % of its mass
+    # (the maximum is set by very light inner shells heated by heavy ones, a discreteness
+    # effect of log-spaced shell masses; analysis run D-bh-dress-20261115-125507-a75a911)
+    rs, rmax = [], []
     for k in range(ts.size):
         sel = passed[k]
-        rs.append(float(np.max(np.abs(r["snap_r"][k][sel]))) if sel.any() else np.nan)
+        if not sel.any():
+            rs.append(np.nan)
+            rmax.append(np.nan)
+            continue
+        rr = np.abs(r["snap_r"][k][sel])
+        mm = r["snap_m"][k][sel]
+        o = np.argsort(rr)
+        cm = np.cumsum(mm[o]) / mm.sum()
+        rs.append(float(rr[o][np.searchsorted(cm, 0.99)]))
+        rmax.append(float(rr.max()))
     out["rsp"] = np.array(rs)
+    out["rsp_max"] = np.array(rmax)
     return out
 
 
@@ -198,6 +210,7 @@ def main():
     res["selfsim"]["ss_slope_0.02_0.2"] = float(np.polyfit(np.log(lc[fs_]), np.log(rho_ss[fs_]), 1)[0])
     ksp = [i for i, av in enumerate(rP["snap_a"]) if av >= 80.0]
     res["selfsim"]["a100_lambda_sp"] = float(np.mean(gP["rsp"][ksp] / gP["rta"][ksp]))
+    res["selfsim"]["a100_lambda_sp_max"] = float(np.mean(gP["rsp_max"][ksp] / gP["rta"][ksp]))
     res["selfsim"]["a100_dress_over_mta"] = float(np.mean(gP["dress"][ksp] / gP["mta"][ksp]))
     res["selfsim"]["a100_c"] = float((gP["mta"][-1] - 1.0) / gP["a"][-1])
     res["selfsim"]["a100_mta"] = float(gP["mta"][-1])
@@ -377,6 +390,9 @@ def main():
                 sl = (rcen > lo) & (rcen < hi) & (rho_p > 0)
                 fits[lab] = float(np.polyfit(np.log(rcen[sl]), np.log(rho_p[sl]), 1)[0]) \
                     if sl.sum() >= 3 else None
+            sl = (rc_l > 3.0) & (rc_l < 0.1 * rt)
+            fits["absorb_3_0.1rta"] = float(np.polyfit(np.log(rc_l[sl]), np.log(rho_l[sl]), 1)[0]) \
+                if sl.sum() >= 3 else None
             sl = (rc_l > 3.0) & (rc_l < 0.3 * rt)
             fits["absorb_3_0.3rta"] = float(np.polyfit(np.log(rc_l[sl]), np.log(rho_l[sl]), 1)[0]) \
                 if sl.sum() >= 3 else None
@@ -386,7 +402,7 @@ def main():
                                     rta=rt, t=float(t))
         axs[0].set_ylabel(r"$\rho/\rho_b(t)$")
         axs[0].legend(loc="lower left", fontsize=6.5)
-        axs[2].text(0.97, 0.95, "grey: $r_{\\rm ta}$\ndotted: outermost\ndust that passed $r=0$",
+        axs[2].text(0.97, 0.95, "grey: $r_{\\rm ta}$\ndotted: 99 % of the dust\nthat passed $r=0$ is inside",
                     transform=axs[2].transAxes, ha="right", va="top", fontsize=7)
         fs.save(fig, os.path.join(a.out, f"profiles_eps{eps_s}"))
         with open(os.path.join(a.out, f"profiles_eps{eps_s}.json"), "w") as f:
