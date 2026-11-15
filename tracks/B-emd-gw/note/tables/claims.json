@@ -1,0 +1,433 @@
+[
+ {
+  "doc": "stage/G0/REPORT.md",
+  "phrase": "virial frequency 0.81-3.57",
+  "stated": [
+   0.81,
+   3.57
+  ],
+  "actual": [
+   0.81,
+   3.569
+  ],
+  "rtol": 0.01,
+  "note": "",
+  "line": 46,
+  "agree": true
+ },
+ {
+  "doc": "stage/G0/REPORT.md",
+  "phrase": "pancake void H_r 1.3e-3 and M_r 0.21 at a = 15",
+  "stated": [
+   0.0013,
+   0.21
+  ],
+  "actual": [
+   0.001289,
+   0.2112
+  ],
+  "rtol": 0.05,
+  "note": "the values are box means (`Hr_mean`, `Mr_mean`); the dumps place most of the violation in the void",
+  "line": 50,
+  "agree": true
+ },
+ {
+  "doc": "stage/G0/REPORT.md",
+  "phrase": "two per direction about 30 times",
+  "stated": [
+   30,
+   30
+  ],
+  "actual": [
+   30.35,
+   33.47
+  ],
+  "rtol": 0.15,
+  "note": "",
+  "line": 50,
+  "agree": true
+ },
+ {
+  "doc": "stage/G0/REPORT.md",
+  "phrase": "0.018 card-h at 64^3",
+  "stated": [
+   0.018,
+   0.36,
+   5.8,
+   0.36
+  ],
+  "actual": [
+   0.0175,
+   0.3617,
+   5.787,
+   0.3617
+  ],
+  "rtol": 0.05,
+  "note": "",
+  "line": 132,
+  "agree": true
+ },
+ {
+  "doc": "stage/G0/REPORT.md",
+  "phrase": "(a = 560): 0.037, 0.76, 12.1, 0.76",
+  "stated": [
+   0.037,
+   0.76,
+   12.1,
+   0.76
+  ],
+  "actual": [
+   0.03662,
+   0.7567,
+   12.11,
+   0.7567
+  ],
+  "rtol": 0.05,
+  "note": "",
+  "line": 134,
+  "agree": true
+ },
+ {
+  "doc": "stage/G0/REPORT.md",
+  "phrase": "Used this wave: 0.48 card-h",
+  "stated": [
+   0.48
+  ],
+  "actual": [
+   0.481
+  ],
+  "rtol": 0.01,
+  "note": "",
+  "line": 134,
+  "agree": true
+ },
+ {
+  "doc": "stage/G0/REPORT.md",
+  "phrase": "lapse = scale factor to 1e-7 at a = 4 and 36",
+  "stated": [
+   1e-07,
+   1e-07
+  ],
+  "actual": [
+   1.914e-07,
+   7.002e-08
+  ],
+  "rtol": 0.5,
+  "note": "order of magnitude only: the value at a = 4 is 1.9e-7",
+  "line": 88,
+  "agree": false
+ },
+ {
+  "doc": "stage/G0/REPORT.md",
+  "phrase": "amplitude 3e-7, phase 1.2e-6 rad at 32^3",
+  "stated": [
+   3e-07,
+   1.2e-06
+  ],
+  "actual": [
+   2.974e-07,
+   1.248e-06
+  ],
+  "rtol": 0.05,
+  "note": "",
+  "line": 90,
+  "agree": true
+ },
+ {
+  "doc": "stage/G0/REPORT.md",
+  "phrase": "plane symmetry to 1e-12",
+  "stated": [
+   1e-12
+  ],
+  "actual": [
+   1.254e-12
+  ],
+  "rtol": 0.5,
+  "note": "largest transverse velocity 1.3e-12 (96 cells, a = 26.3); positions to 4.5e-14 L",
+  "line": 91,
+  "agree": true
+ },
+ {
+  "doc": "stage/G0/REPORT.md",
+  "phrase": "1.8 % of the static value at a = 60",
+  "stated": [
+   0.018
+  ],
+  "actual": [
+   0.01818
+  ],
+  "rtol": 0.03,
+  "note": "",
+  "line": 119,
+  "agree": true
+ },
+ {
+  "doc": "stage/G1/STATUS.md",
+  "phrase": "48 random waves to 2.6e-12",
+  "stated": [
+   48,
+   2.6e-12
+  ],
+  "actual": [
+   48.0,
+   2.627e-12
+  ],
+  "rtol": 0.02,
+  "note": "",
+  "line": 16,
+  "agree": true
+ },
+ {
+  "doc": "stage/G1/STATUS.md",
+  "phrase": "amplitude within 3e-7, phase within 1.2e-6 rad, rho",
+  "stated": [
+   3e-07,
+   1.2e-06,
+   6e-07
+  ],
+  "actual": [
+   2.974e-07,
+   1.248e-06,
+   5.932e-07
+  ],
+  "rtol": 0.05,
+  "note": "",
+  "line": 20,
+  "agree": true
+ },
+ {
+  "doc": "stage/G1/STATUS.md",
+  "phrase": "matching the Fourier symbol of the scheme to 1 % up to 64 cells",
+  "stated": [
+   0.01
+  ],
+  "actual": [
+   0.0955
+  ],
+  "rtol": 0.0,
+  "note": "the production phase error at 64 cells departs by 9.5 % (periodic_z4c/README.md says \"10 percent for the production phase at 64\"); the other errors to 1 %",
+  "line": 22,
+  "agree": false
+ },
+ {
+  "doc": "stage/G1/STATUS.md",
+  "phrase": "within 0.034",
+  "stated": [
+   0.034
+  ],
+  "actual": [
+   0.03365
+  ],
+  "rtol": 0.02,
+  "note": "",
+  "line": 38,
+  "agree": true
+ },
+ {
+  "doc": "stage/G1/STATUS.md",
+  "phrase": "to\n  3e-13",
+  "stated": [
+   3e-13
+  ],
+  "actual": [
+   2.591e-13
+  ],
+  "rtol": 0.2,
+  "note": "",
+  "line": 39,
+  "agree": true
+ },
+ {
+  "doc": "stage/G1/STATUS.md",
+  "phrase": "(22.536, 29.097)",
+  "stated": [
+   0.01,
+   0.0009
+  ],
+  "actual": [
+   0.01052,
+   0.0009455
+  ],
+  "rtol": 0.1,
+  "note": "",
+  "line": 40,
+  "agree": true
+ },
+ {
+  "doc": "stage/G1/STATUS.md",
+  "phrase": "21.027 against 21.03",
+  "stated": [
+   21.027
+  ],
+  "actual": [
+   21.03
+  ],
+  "rtol": 0.0001,
+  "note": "",
+  "line": 41,
+  "agree": true
+ },
+ {
+  "doc": "stage/G1/STATUS.md",
+  "phrase": "1e-3 in position to a = 15 at 64 cells",
+  "stated": [
+   0.001
+  ],
+  "actual": [
+   0.001016
+  ],
+  "rtol": 0.05,
+  "note": "",
+  "line": 43,
+  "agree": true
+ },
+ {
+  "doc": "stage/G1/STATUS.md",
+  "phrase": "4.1e-4 at 32 cells",
+  "stated": [
+   0.00041
+  ],
+  "actual": [
+   0.0004077
+  ],
+  "rtol": 0.02,
+  "note": "",
+  "line": 45,
+  "agree": true
+ },
+ {
+  "doc": "stage/G1/STATUS.md",
+  "phrase": "lapse = scale factor to 1.9e-7",
+  "stated": [
+   1.9e-07,
+   7e-08
+  ],
+  "actual": [
+   1.914e-07,
+   7.002e-08
+  ],
+  "rtol": 0.02,
+  "note": "",
+  "line": 53,
+  "agree": true
+ },
+ {
+  "doc": "stage/G1/STATUS.md",
+  "phrase": "0.48 card-hours",
+  "stated": [
+   0.48
+  ],
+  "actual": [
+   0.481
+  ],
+  "rtol": 0.01,
+  "note": "",
+  "line": 80,
+  "agree": true
+ },
+ {
+  "doc": "stage/G1/STATUS.md",
+  "phrase": "missed by a factor 144-392",
+  "stated": [
+   144,
+   392
+  ],
+  "actual": [
+   143.7,
+   391.6
+  ],
+  "rtol": 0.01,
+  "note": "",
+  "line": 49,
+  "agree": true
+ },
+ {
+  "doc": "STATUS.md",
+  "phrase": "budget:      0.48 GPU-hours",
+  "stated": [
+   0.48
+  ],
+  "actual": [
+   0.481
+  ],
+  "rtol": 0.01,
+  "note": "",
+  "line": 35,
+  "agree": true
+ },
+ {
+  "doc": "stage/G0/REVIEW.md",
+  "phrase": "-1.64e-10 (conformal time) and -9.87e-10",
+  "stated": [
+   -1.64e-10,
+   -9.87e-10
+  ],
+  "actual": [
+   -1.645e-10,
+   -9.87e-10
+  ],
+  "rtol": 0.005,
+  "note": "",
+  "line": 66,
+  "agree": true
+ },
+ {
+  "doc": "stage/G0/REVIEW.md",
+  "phrase": "Fourier coefficient\n  (5/12)|phi_x phi_y| = 1.3858e-5",
+  "stated": [
+   1.3858e-05
+  ],
+  "actual": [
+   1.386e-05
+  ],
+  "rtol": 0.0001,
+  "note": "",
+  "line": 38,
+  "agree": true
+ },
+ {
+  "doc": "tracks/B-emd-gw/verify_cosmo/JOURNAL.md",
+  "phrase": "16.1 times the L = 1 value",
+  "stated": [
+   16.1
+  ],
+  "actual": [
+   16.13
+  ],
+  "rtol": 0.005,
+  "note": "",
+  "line": 131,
+  "agree": true
+ },
+ {
+  "doc": "stage/G1/STATUS.md",
+  "phrase": "constraint 1.6e-9, 1.1e-10, 3.2e-11 at 8, 16, 32 cells over a thousandfold expansion",
+  "stated": [
+   1.6e-09,
+   1.1e-10,
+   3.2e-11
+  ],
+  "actual": [
+   1.61e-09,
+   1.05e-10,
+   3.19e-11,
+   3.11e-08,
+   2.48e-09,
+   2.98e-09
+  ],
+  "rtol": 0.05,
+  "line": 56,
+  "agree": false,
+  "note": "values at t = 100 Mpc/h, early in the run (agree there: yes); at the end of the thousandfold expansion (t = 3000 Mpc/h) the relative Hamiltonian constraint is 3.1e-8, 2.5e-9, 3.0e-9 and does not fall from 16 to 32 cells; the fourth-order convergence holds for the error of chi (cosmo/analysis/daverio_a.json, committed file of the cosmology extension)"
+ },
+ {
+  "doc": "stage/G1/STATUS.md",
+  "phrase": "exist on `core/newton` (tip ce329f5, not on main)",
+  "stated": "not on main",
+  "actual": "on main (release core-v0.3)",
+  "rtol": null,
+  "line": 47,
+  "agree": false,
+  "note": "written before wave 1 was merged; the mode, its interface document coord/INTERFACES/newtonian_mode.md and the quadrupole history are on main now"
+ }
+]
