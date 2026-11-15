@@ -1,0 +1,64 @@
+{
+  "schema": "nrpic-run/1 (by hand)",
+  "registered_by": "tracks/A-emd-pbh/runs_ball/runreg.py",
+  "harness_refusal": "nrpic-run submit: the worktree is not clean (untracked files of other helpers)",
+  "run_id": "A-emd-pbh-20261115-162133-208f933",
+  "track": "A-emd-pbh",
+  "gate": "G2",
+  "kind": "scouting",
+  "purpose": "analysis of SR-1 dx = M/2 segment 1 (run A-emd-pbh-20261115-153843-7172b66): comparison with the exact solution in invariants, field slices",
+  "launcher": "local",
+  "command": [
+    "bash",
+    "-c",
+    ".venv/bin/python tracks/A-emd-pbh/runs_ball/compare.py --prep /data/haiyangw/nrpic/scratch/A-emd-pbh/A-emd-pbh-20261115-153719-91b03d1 --seg /data/haiyangw/nrpic/scratch/A-emd-pbh/A-emd-pbh-20261115-153843-7172b66/sr1 --gauge sr1 --dx 0.5 --label sr1_n256 --out $NRPIC_RUN_DIR --figdir tracks/A-emd-pbh/runs_ball/figs && .venv/bin/python tracks/A-emd-pbh/runs_ball/fields.py --seg /data/haiyangw/nrpic/scratch/A-emd-pbh/A-emd-pbh-20261115-153843-7172b66/sr1 --label sr1_n256 --out $NRPIC_RUN_DIR --figdir tracks/A-emd-pbh/runs_ball/figs"
+  ],
+  "cwd": "/data/haiyangw/nrpic/wt/A-emd-pbh",
+  "git": {
+    "sha": "208f933d97db638670aa27f3fe5faf7572e881d0",
+    "branch": "track/A-emd-pbh",
+    "package_dirty": false
+  },
+  "inputs": [
+    {
+      "path": "tracks/A-emd-pbh/runs_ball/compare.py",
+      "role": "input",
+      "sha256": "3c40efd39f4f65df4ba1c37485ba5ea3535410a756fba3a3d31fc7fb2ec3ab7d",
+      "bytes": 35493
+    },
+    {
+      "path": "tracks/A-emd-pbh/runs_ball/fields.py",
+      "role": "input",
+      "sha256": "03cdc6459c66ea9b60d81bbf9a49bd2ded4b0c85fa6cf08937e5b82bf1db7e5b",
+      "bytes": 4547
+    },
+    {
+      "path": "tracks/A-emd-pbh/runs_ball/common.py",
+      "role": "input",
+      "sha256": "1d2596d68440d3aa91d7b9f648d7963545b25f35b12fb8a48c371323f176e34a",
+      "bytes": 9454
+    }
+  ],
+  "parents": [
+    "A-emd-pbh-20261115-153843-7172b66",
+    "A-emd-pbh-20261115-153719-91b03d1"
+  ],
+  "resources": {
+    "cores": 4,
+    "gpus": 0,
+    "wall_limit": null,
+    "walltime_s": 25.2,
+    "gpu_hours": null
+  },
+  "outputs": {
+    "dir": "scratch/A-emd-pbh/A-emd-pbh-20261115-162133-208f933",
+    "sha256sums": "sha256sums.txt",
+    "files": 11
+  },
+  "status": "failed",
+  "exit_code": 1,
+  "registered": "2026-11-15T16:21:33Z",
+  "started": "2026-11-15T16:21:33Z",
+  "ended": "2026-11-15T16:21:59Z",
+  "notes": ""
+}
