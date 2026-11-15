@@ -68,3 +68,21 @@ changed my mind about: the size of the dust region. Marginally bound dust shells
 independently, so the Einstein-Straus null test needs only a thick shell outside the
 bubble (1.5 R_w), not a ball out to the Hubble radius; that is what makes eps = 0.01 to
 0.03 affordable (SCOPE.md, section 7).
+
+## 2026-11-15T12:40Z  helper (G0 scoping)  commits 795eee9..(this)  runs D-bh-dress-20261115-120304-795eee9
+
+Correction to the outcome entry above, item 3: the garbled parenthesis should read "the
+relative offset from 0.5648 is 1.2e-2 at a/a_i = 100 and 1.3e-3 at 1000, i.e. it falls
+as 1/a".
+did: wrote SCOPE.md, REFERENCES.md, README.md; fetched 1707.06302, 1204.3568, 1801.01083
+in addition (18 sources read in all).
+found: (1) the arXiv sources cite Bertschinger 1985 for two different dress slopes
+(1805.09034: 3/2; 1901.08528: 9/4); (2) 1305.2619 has no Kerr numbers, 1707.06302 does;
+(3) 2302.07878 itself assigns k = 0 to Kerr, so the null test cannot test the claim;
+(4) in the full-NR regime (r_ta = 16-34 M after one doubling at eps = 0.03-0.01) cold dust
+is inside the capture cone L < 4 M unless its tangential speed at turnaround is 0.12-0.25:
+cold runs measure the growth law, a spike needs dispersion or tidal torques [JUDGEMENT];
+(5) the McVittie apparent horizon gives a definitional drift d ln M_AH / d ln a =
+-12 (m H)^2 [JUDGEMENT, derived here, needs a second agent].
+open: no second-agent review; the cold-infall growth law 0.356 (a/a_i) M is derived, not
+computed; the cost model's two hand-evaluated rows (SCOPE.md section 7, marked).
