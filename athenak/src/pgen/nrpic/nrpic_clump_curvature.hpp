@@ -11,7 +11,7 @@
 //!
 //! On a conformally flat slice, gamma_ij = psi^4 delta_ij, K_ij = psi^-2 Abar_ij, K = 0,
 //! the momentum constraint with particles reads (flat indices)
-//!   d_j Abar_ij = 8 pi Stilde_i,   Stilde_i = psi^6 S_i = sum_p m_p u_(i,p) delta^3(x-x_p),
+//!   d_j Abar_ij = 8 pi Stilde_i,  Stilde_i = psi^6 S_i = sum_p m_p u_(i,p) delta(x-x_p),
 //! the coordinate density of the covariant particle momentum; psi drops out, the equation
 //! is linear, and the curvatures of clumps and of Bowen-York punctures add.  For a
 //! Gaussian component at x_c with width sigma, g = (2 pi sigma^2)^(-3/2)
@@ -28,7 +28,7 @@
 //! Far from the clump this is the Bowen-York curvature of P and S plus the regular term
 //! 3 sigma^2/(2 r^4) [..]; at the centre it vanishes.  Derivation and symbolic check:
 //! tracks/core/analysis/clump/derive_smeared_by.py; reference twin:
-//! python/nrpic/smeared_bowen_york.py; interface: tracks/core/interfaces/moving_clumps.md.
+//! python/nrpic/smeared_bowen_york.py; interface tracks/core/interfaces/moving_clumps.md.
 //!
 //! The particles must carry that momentum density: P = sum_p m_p u_p of the clump's
 //! particles, and for the constraint to hold in the continuum every particle the

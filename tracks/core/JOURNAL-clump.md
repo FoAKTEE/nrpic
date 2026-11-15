@@ -463,3 +463,25 @@ puncture, and it checks the curvature without going through its divergence.
   clumps' curvature and the puncture's is in it, so directions and relative signs of the
   two kinds of curvature agree with the reference.
 Both at the single precision of the dumps. [VERIFIED]
+
+### Outcome of the card check G (Slurm job 4443, run `core-20261115-163141-ee2a188`, 20.6 s, 0.0057 card-hours)
+
+HELD. Card executable of this branch against the release card executable
+`.work/build_gpu_v03`: `regress_cf.athinput` IDENTICAL (16 files), `by_static.athinput`
+IDENTICAL (5 files). `clump_static.athinput` on the card at 64 cells without and with
+the curvature, 128 cells with it, and the spin case at 64 cells: H-norm2, M-norm2 and
+Mx-norm2 of the record at t = 0 equal the processor records in all six printed digits
+(relative difference 0.0). The driver had been run once with the processor executables
+before the job started (run `core-20261115-161311-c1d6d64`), so that the queued job
+could not fail on the script.
+
+### Two comment lines shortened after the tests (2026-11-15T16:45Z)
+
+Lines 14 and 31 of `nrpic_clump_curvature.hpp` were 93 and 91 characters long (the
+tree keeps 90); both are comments. After shortening them (same number of lines) the
+processor executable rebuilds byte-identically (sha256 53c0d32b...), so every processor
+test above holds for the source at the branch tip. The card executable does not rebuild
+byte-identically (sha256 a3b4766e... against 661b5534... of the tested one; I did not
+test whether two card builds of one source ever agree), so the tested card executable
+was kept (`.work/keep/athena_gpu_e1a4d0c`, copied back to `.work/build_gpu/src/athena`)
+and is the one that is published.
