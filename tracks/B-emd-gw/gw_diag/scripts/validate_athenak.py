@@ -18,7 +18,7 @@ import numpy as np
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, os.path.join(HERE, ".."))
 sys.path.insert(0, "/data/haiyangw/nrpic/wt/B-emd-gw/python")
-from gwdiag import tt, weyl, readers  # noqa: E402
+from gwdiag import tt, weyl, readers, analytic  # noqa: E402
 from nrpic import figstyle as fs  # noqa: E402
 import matplotlib  # noqa: E402
 matplotlib.use("Agg")
@@ -145,6 +145,37 @@ for f in rst:
         keep_x = {"p4x": p4x, "ana": ana, "x": g.axes()[0], "t": t}
     wrows.append(row)
 RES["weyl"] = wrows
+
+# ---- timing of AthenaK's weyl output: fit the time t* at which the analytic wave (through
+# gwdiag, radial triad, 6th order) matches the file written at t_n; the step is
+# dt = 1/128 (tlim, cfl and nx of the deck; checked from the restart header below)
+dstep = readers.read_rst(rst[1])["dt"]
+g = readers.read_rst(rst[0])["grid"]
+X, Y, Z = g.mesh()
+r = np.sqrt(X ** 2 + Y ** 2 + Z ** 2)
+
+
+def ana_radial(t):
+    w = [analytic.Wave((1, 0, 0), -1j * A, 0.0)]      # h = A e_+ sin(2 pi (x - t))
+    gm, Km, _ = analytic.wave_adm(w, g, t=t)
+    E, B = weyl.electric_magnetic(gm, Km, g, order=6)
+    return r * weyl.psi4(E, B, gm, g, direction=None)
+
+
+fit = []
+for n in (2, 5, 9, 16, 23, 31):
+    wb = readers.read_bin(wbin[n])
+    ath = wb["weyl_rpsi4"] + 1j * wb["weyl_ipsi4"]
+    offs = np.arange(-10, 3)              # in steps
+    errs = [mx(ana_radial(wb["time"] + o * dstep) - ath) / mx(ath) for o in offs]
+    i = int(np.argmin(errs))
+    fine = np.linspace(offs[i] - 0.5, offs[i] + 0.5, 41)
+    ef = [mx(ana_radial(wb["time"] + o * dstep) - ath) / mx(ath) for o in fine]
+    j = int(np.argmin(ef))
+    fit.append({"n": n, "file_time": wb["time"], "best_offset_steps": float(fine[j]),
+                "err_at_best": float(ef[j]), "err_at_offset0": float(errs[list(offs).index(0)]),
+                "err_at_integer_best": float(errs[i]), "integer_best": int(offs[i])})
+RES["weyl_output_timing"] = {"dt_step": float(dstep), "fits": fit}
 with open(os.path.join(OUT, "results_athenak.json"), "w") as f:
     json.dump(RES, f, indent=1)
 
@@ -192,8 +223,11 @@ ax1.set_title(f"t = {keep_x['t']:.4f}", fontsize=10)
 ax1.legend(loc="lower left", fontsize=7)
 ax1.set_ylim(-60, 75)
 if keep:
-    m = keep["mine"].ravel()
+    m = ana_radial(keep["t"] - 7 * dstep).ravel()
+    m0 = keep["mine"].ravel()
     a = keep["ath"].ravel()
+    ax2.plot(a.real / A, m0.real / A, ".", ms=1.0, color="grey", alpha=0.4,
+             label=r"vs dump at $t_n$ (real)", rasterized=True)
     ax2.plot(a.real / A, m.real / A, ".", ms=1.5, color=C["red"], label="real part", rasterized=True)
     ax2.plot(a.imag / A, m.imag / A, ".", ms=1.5, color=C["blue"], label="imaginary part",
              rasterized=True)
@@ -201,7 +235,7 @@ if keep:
     ax2.plot([-lim, lim], [-lim, lim], **fs.GUIDE, label="equality")
     ax2.set_xlabel(r"AthenaK $r\Psi_4 / A$ (weyl output)")
     ax2.set_ylabel(r"gwdiag $r\Psi_4 / A$ (radial triad)")
-    ax2.set_title(f"all cells, t = {keep['t']:.4f}", fontsize=10)
+    ax2.set_title(f"file of $t_n$ = {keep['t']:.4f} vs gwdiag at $t_n - 7\,dt$", fontsize=9)
     ax2.legend(loc="upper left", fontsize=7)
 save(fig, "athenak_psi4")
 summ = {"reader": RES["reader_crosscheck"],
@@ -213,5 +247,6 @@ summ = {"reader": RES["reader_crosscheck"],
         "psi4x_err_range": [min(w["psi4x_err_vs_analytic"] for w in wrows),
                             max(w["psi4x_err_vs_analytic"] for w in wrows)],
         "radial_vs_athenak": [w.get("radial_vs_athenak_max_rel") for w in wrows],
-        "radial_vs_athenak_neg": [w.get("radial_vs_athenak_max_rel_neg") for w in wrows]}
+        "radial_vs_athenak_neg": [w.get("radial_vs_athenak_max_rel_neg") for w in wrows],
+        "weyl_output_timing": RES["weyl_output_timing"]}
 print(json.dumps(summ, indent=1))

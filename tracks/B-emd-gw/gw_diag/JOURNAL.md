@@ -232,3 +232,30 @@ dt = 1/128 divides 1/16, so both refer to the same time). Predictions:
 - Psi_4 in AthenaK's radial triad times r against AthenaK's weyl_rpsi4 + i weyl_ipsi4: same
   convention (D2), agreement to ~1e-5 relative to the maximum (float32 output, identical stencils
   for a wave that depends on x only). A sign flip or a factor would refute D2.
+
+## Outcome of P6, run B-emd-gw-20261115-115846-214d142 (input run B-emd-gw-20261115-113218-0ea0f74)
+
+- Readers: my read_rst and the periodic_z4c reader give bit-identical arrays (lw3.00005.rst). PASSED.
+- TT on AthenaK output (33 dumps, t = 0..2): |h_+|/A within [0.9999997, 1.00000002], phase error
+  <= 1.25e-6 rad, rho_GW/rho_ref within [0.9999994, 1.0000000], max|h_x|/A = 8e-25, non-TT part
+  max|h - h^TT|/A = 2.7e-5. PASSED, far inside the predicted 1e-3.
+- d_tau h^TT = -2 Lambda(tilde A) against time differences of the dumps: median relative difference
+  2.550e-2 (second order; predicted 2.570e-2) and 7.78e-4 (fourth order; predicted 7.93e-4). PASSED:
+  the residual is the truncation of the time difference itself, so -2 Lambda(tilde A) is the time
+  derivative of h^TT to better than 1e-5.
+- Psi_4 along +x from E, B (6th order): matches hddot_+ = -(2 pi)^2 A sin(2 pi (x - t)) to
+  2.6e-7 .. 1.4e-6 relative. PASSED.
+- Psi_4 in AthenaK's radial triad times r against AthenaK's weyl output written at the same t_n:
+  FAILED as predicted: max relative difference 0.21 .. 0.58 (sign right: the negated comparison
+  gives ~2). Diagnosis (inline scan, then built into the script): the weyl file written at t_n
+  matches my Psi_4 of the dump at t_(n-1) to 3e-2 .. 7e-2 and the analytic wave through gwdiag at
+  t_n - 7.00 dt (dt = 1/128 = the step; output interval 8 steps) to ~1e-4 at every file tested
+  (n = 4, 5, 9, 16, 31). So AthenaK's weyl output at an output time holds the Weyl scalar of one
+  step after the previous waveform time, i.e. it lags by waveform_dt - dt. Plausible mechanism
+  [TO VERIFY by core]: InitRecvWeyl sets last_output_time when time >= last + waveform_dt and
+  CalcWeylScalar runs only when time == last_output_time at the last stage, so the scalar is
+  computed at the first step past a waveform time, then written by the mesh output of the NEXT
+  output time. The convention D2 (sign and normalization) is confirmed at that time.
+Prediction for the rerun with the timing fit built in: integer offset -7 steps at every file
+tested (n = 2, 5, 9, 16, 23, 31), residual at the best fractional offset < 2e-4 and within 1e-3 of
+-7.00 steps.
