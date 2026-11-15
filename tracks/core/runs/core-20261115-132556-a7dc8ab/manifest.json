@@ -1,0 +1,36 @@
+{
+ "run_id": "core-20261115-132556-a7dc8ab",
+ "owner": "core",
+ "purpose": "P0 kernel unit test of nrpic_collide.hpp against the 60-digit test vectors of track C (4c76ca8), four compilations and the Python twin",
+ "kind": "production",
+ "command": [
+  "python3",
+  "/data/haiyangw/nrpic/wt/core-coll/tracks/core/analysis/collisions/run_kernel_test.py",
+  "/data/haiyangw/nrpic/scratch/core/core-20261115-132556-a7dc8ab"
+ ],
+ "cwd": "/data/haiyangw/nrpic/scratch/core/core-20261115-132556-a7dc8ab",
+ "commit": "a7dc8ab706f3d088e6496e12170c0776fecc541a",
+ "branch": "core/collisions",
+ "uncommitted_changes": [],
+ "inputs": [
+  {
+   "path": "athenak/src/particles/nrpic_collide.hpp",
+   "sha256": "66450f747cc79cce735cbf7dfb83dc3cd237f15f498bef057bb10d9f8e1bfe7f"
+  },
+  {
+   "path": "python/nrpic/collide.py",
+   "sha256": "caa3e6b3dc5ade2cb064f9020d8a8e80c508127919d4859bb14fa211da8214d4"
+  },
+  {
+   "path": "tracks/core/analysis/collisions/kernel_test.cpp",
+   "sha256": "52243bf8ad459d3010772d6948564bd34e6514ee57f84477ac6f4ea691673acc"
+  }
+ ],
+ "output_directory": "/data/haiyangw/nrpic/scratch/core/core-20261115-132556-a7dc8ab",
+ "host": "anta",
+ "start_utc": "2026-11-15T13:25:56Z",
+ "cores": 1,
+ "wall_time_s": 2.69,
+ "exit_status": 0,
+ "core_hours": 0.0007
+}

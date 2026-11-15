@@ -1,0 +1,34 @@
+{
+ "run_id": "core-20261115-133912-f104754",
+ "owner": "core",
+ "purpose": "P7 reproducibility with a second box whose faces are not binary fractions: two-temperature box, 1e5 particles, 100 cycles; layouts, restart, other seed; analytic and mesh metric; processor",
+ "kind": "production",
+ "command": [
+  "python3",
+  "/data/haiyangw/nrpic/wt/core-coll/tracks/core/analysis/collisions/run_repro.py",
+  "/data/haiyangw/nrpic/scratch/core/core-20261115-133912-f104754",
+  "--nproc",
+  "6"
+ ],
+ "cwd": "/data/haiyangw/nrpic/scratch/core/core-20261115-133912-f104754",
+ "commit": "f1047545cfd15177e47d2ba0b10d67e94bc61719",
+ "branch": "core/collisions",
+ "uncommitted_changes": [],
+ "inputs": [
+  {
+   "path": ".work/build_cpu/src/athena",
+   "sha256": "878140937f61094ff5c00b1d4ab097e992fc2281509278d3fb7d45077d3fe88f"
+  },
+  {
+   "path": "problems/tests/coll_box.athinput",
+   "sha256": "a06c76bba0baa646a929f0eb020d342bd2ce5210031b51dc44f48d320080cc4a"
+  }
+ ],
+ "output_directory": "/data/haiyangw/nrpic/scratch/core/core-20261115-133912-f104754",
+ "host": "anta",
+ "start_utc": "2026-11-15T13:39:13Z",
+ "cores": 6,
+ "wall_time_s": 55.4,
+ "exit_status": 0,
+ "core_hours": 0.0923
+}

@@ -1,0 +1,40 @@
+{
+ "run_id": "core-20261115-133017-b33b7f3",
+ "owner": "core",
+ "purpose": "driver check of run_relax.py at small size (20000 particles, 8^3 cells)",
+ "kind": "scouting",
+ "command": [
+  "python3",
+  "/data/haiyangw/nrpic/wt/core-coll/tracks/core/analysis/collisions/run_relax.py",
+  "/data/haiyangw/nrpic/scratch/core/core-20261115-133017-b33b7f3",
+  "--n",
+  "20000",
+  "--nx",
+  "8",
+  "--nproc",
+  "4"
+ ],
+ "cwd": "/data/haiyangw/nrpic/scratch/core/core-20261115-133017-b33b7f3",
+ "commit": "b33b7f3aa08a852f6b36494be9612409287e0232",
+ "branch": "core/collisions",
+ "uncommitted_changes": [
+  "?? tracks/core/analysis/collisions/run_relax.py"
+ ],
+ "inputs": [
+  {
+   "path": ".work/build_cpu/src/athena",
+   "sha256": "fb4e0051555771ee231466fb017a47086ce10697a95a3e3afdb44b295b46ede5"
+  },
+  {
+   "path": "problems/tests/coll_box.athinput",
+   "sha256": "a06c76bba0baa646a929f0eb020d342bd2ce5210031b51dc44f48d320080cc4a"
+  }
+ ],
+ "output_directory": "/data/haiyangw/nrpic/scratch/core/core-20261115-133017-b33b7f3",
+ "host": "anta",
+ "start_utc": "2026-11-15T13:30:17Z",
+ "cores": 4,
+ "wall_time_s": 10.12,
+ "exit_status": 0,
+ "core_hours": 0.0112
+}

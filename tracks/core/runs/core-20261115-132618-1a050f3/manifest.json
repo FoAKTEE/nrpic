@@ -1,0 +1,35 @@
+{
+ "run_id": "core-20261115-132618-1a050f3",
+ "owner": "core",
+ "purpose": "P1 regression: five existing set-ups, executable with the collision operator (option absent) against the baseline built from 94dc093, processor",
+ "kind": "production",
+ "command": [
+  "python3",
+  "/data/haiyangw/nrpic/wt/core-coll/tracks/core/analysis/rng/run_regression.py",
+  "--base",
+  "/data/haiyangw/nrpic/wt/core-coll/.work/build_cpu_base/src/athena",
+  "--new",
+  "/data/haiyangw/nrpic/wt/core-coll/.work/build_cpu/src/athena"
+ ],
+ "cwd": "/data/haiyangw/nrpic/scratch/core/core-20261115-132618-1a050f3",
+ "commit": "1a050f33fa4b1426ddd0915a9e73c40feb842e4d",
+ "branch": "core/collisions",
+ "uncommitted_changes": [],
+ "inputs": [
+  {
+   "path": ".work/build_cpu/src/athena",
+   "sha256": "fb4e0051555771ee231466fb017a47086ce10697a95a3e3afdb44b295b46ede5"
+  },
+  {
+   "path": ".work/build_cpu_base/src/athena",
+   "sha256": "8dc4a35d513476b84137b98de19f36c6279faad41731827f6df6e7db07dbb7e6"
+  }
+ ],
+ "output_directory": "/data/haiyangw/nrpic/scratch/core/core-20261115-132618-1a050f3",
+ "host": "anta",
+ "start_utc": "2026-11-15T13:26:18Z",
+ "cores": 1,
+ "wall_time_s": 440.08,
+ "exit_status": 0,
+ "core_hours": 0.1222
+}
