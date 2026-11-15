@@ -565,3 +565,61 @@ Numbers from `multi_check.py` (`multi_check.json`), figure `figs/binary_evolutio
    the closed-form residual with the correction is 5.6e-6), peak 2.2e-3 at t = 1.25,
    8.4e-4 at t = 30; momentum 1.8e-6, peak 5.6e-4, 4.6e-4 at the end. Bounded, but as
    in test 3 set by the evolution of the punctures, not by the initial data.
+
+### Outcome of test 1b (card runs, executable of 7a60df2, finest cells 1/16)
+
+Runs: (A) `core-20261115-121046-0c197fb` P = 0.3 `approx`; (B) `-121049-` P = 0.3
+`none`; (C) `-121047-` stock generator v = 0.2844; (D) `-121052-` P = 0.6 `approx` to
+t = 30; (E) `-121050-` P = 0.043, S = 0.3 `approx`; and the stopped 1/32 reference
+`core-20261115-115342-7a60df2` (to t = 10.5). Numbers from `boost_check.py`
+(`boost_check.json`); figures `figs/boost_evolution.png`, `figs/boost_waves.png`
+(both looked at). Each 40 M run: 554 to 575 s (0.154 to 0.160 card-hours), 7.7e6
+zone-cycles per second, 428 MeshBlocks at the start and 456 at the end (block count
+prediction held).
+
+| run | mean tracker speed 10-20 | 20-30 | 30-40 | at the end | horizon mass first | last |
+|---|---|---|---|---|---|---|
+| A | 0.1365 | 0.1582 | 0.1748 | 0.1813 | 1.01072 | 1.01081 |
+| B | 0.1384 | 0.1595 | 0.1760 | 0.1825 | 1.00009 | 1.00459 |
+| C | 0.1327 | 0.1554 | 0.1726 | 0.1793 | 1.01099 | 1.01094 |
+| D | 0.2333 | 0.2727 | (ends at 30) | 0.2928 | 1.04462 | 1.04108 |
+| E | 0.0197 | 0.0226 | 0.0249 | 0.0257 | 1.03531 | 1.03464 |
+
+ - Direction: all trackers move along +P. Held.
+ - Speed. (A) over 30 < t < 40: 0.1748 = 0.615 of P/M_ADM (0.2844): inside the revised
+   band [0.6, 1.05], at its lower edge; the original prediction (within 10 percent of
+   P/M_ADM between t = 20 and 40) FAILED. (A), (B), (C) agree within 2 percent in every
+   window (predicted 15): the Bowen-York puncture and the stock boosted slice move
+   alike from t = 5 on, and the 1/32 reference lies on the 1/16 one where it exists
+   (0.1279 at t = 10.47 against 0.1284). So the slow rise is the gauge (the shift
+   builds up slowly), not the data and not the resolution.
+ - Speed against momentum: the ratio of the tracker speed to P/M_ADM is the same for
+   the three momenta at equal times: over 20 < t < 30 it is 0.556 (P = 0.3), 0.547
+   (P = 0.6, M_ADM = 1.204), 0.545 (P = 0.043 with spin, M_ADM = 1.036 to second
+   order); over 10 < t < 20 it is 0.48, 0.47, 0.47. The tracker speed is proportional
+   to P/M_ADM with a factor that depends on time only. The corrected and uncorrected
+   data cannot be told apart by it (0.7 percent), as expected.
+ - Horizon mass. (A): 1.01072 at the first search, 1.01081 at the end (predicted
+   1.011 +- 0.005; sqrt(M_ADM^2 - P^2) = 1.0112); constant to 2e-4. (B): 1.00009,
+   that is 1.05 percent lower (predicted "up to one percent"), dips to 0.997 at t = 5
+   and rises to 1.0046: the uncorrected data settle to a hole 0.6 percent lighter than
+   the corrected ones. (D): 1.0446 falling to 1.0411 (full solution: sqrt(1.20401^2 -
+   0.36) = 1.0439). (E): 1.0353 (Christodoulou), S = 0.2997 at every search (predicted
+   0.30 +- 0.01: held; sign as given).
+ - Hamiltonian norm (history): at t = 0 2.3e-6 (A), 5.4e-5 (B), 5.6e-7 (C), 3.2e-5 (D),
+   7.5e-6 (E); from t = 8 on all runs sit at 2e-5 (the 1/32 reference at 3.8e-6). The
+   correction lowers the initial norm 23 times; after the gauge transient the norm is
+   that of the evolved puncture on this mesh, the same for the exact boosted slice.
+ - Burst of radiation, energy through the spheres over the run (news with constant and
+   linear drift removed; without the removal in brackets):
+   r = 14: A 1.42e-4 (9.0e-4), B 1.59e-4 (9.5e-4), C 5.9e-5 (4.9e-4), D 1.91e-3
+   (1.2e-2), E 7.3e-6 (3.8e-4); r = 10: A 2.9e-4, B 3.2e-4, C 2.4e-4, D 1.74e-3,
+   E 1.6e-5. The stock boosted slice (C) has no burst in its data; its numbers are the
+   floor of this estimate (the field of a hole moving off-centre inside the sphere and
+   the gauge transient): 6e-5 at 14 and 2.4e-4 at 10. Above that floor: (A) about
+   1e-4 m at 14 (not resolved at 10), (D) 1.8e-3 m at both radii, a ratio of 16 to 20
+   for twice the momentum, that is E about 1.3e-2 (P/m)^4 m. (B) exceeds (A) by 12
+   percent; (E) is below the floor. Predictions held (below 1e-3 for A and E, B above
+   A); the estimate is good to a factor two at best.
+ - Early reference observation stands: the stock generator's tracker starts at 0.280,
+   falls to 0.040 by t = 1.5 and then follows the same curve as the Bowen-York data.

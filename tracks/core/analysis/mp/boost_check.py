@@ -49,8 +49,12 @@ def load(label):
     base = CASES[label][0]
     if not os.path.exists(os.path.join(d, base + ".co_0.txt")):
         return None
-    out = {"man": man, "dir": d, "trk": mc.read_tracker(os.path.join(d, base + ".co_0.txt")),
-           "hst": mc.read_hst(os.path.join(d, base + ".z4c.user.hst"))}
+    try:
+        out = {"man": man, "dir": d,
+               "trk": mc.read_tracker(os.path.join(d, base + ".co_0.txt")),
+               "hst": mc.read_hst(os.path.join(d, base + ".z4c.user.hst"))}
+    except ValueError:        # a run that has just started: no rows yet
+        return None
     out["hor"], out["hor_missed"] = mc.read_horizon(
         os.path.join(d, base + ".horizon_summary_0.txt"))
     out["waves"] = {}
@@ -66,8 +70,9 @@ def load(label):
 def mean_speed(trk, t0, t1):
     """Mean coordinate speed between t0 and t1 from the tracker positions."""
     t, x = trk["t"], trk["x"]
-    if t[-1] < t1 - 1e-6:
+    if t[-1] < t1 - 0.1:
         return float("nan")
+    t1 = min(t1, t[-1])
     xa = np.array([np.interp(t0, t, x[:, a]) for a in range(3)])
     xb = np.array([np.interp(t1, t, x[:, a]) for a in range(3)])
     return float(np.linalg.norm(xb - xa) / (t1 - t0))
@@ -146,18 +151,20 @@ def main():
     for lab, r in runs.items():
         _, name, col, p = CASES[lab]
         trk, hor, h = r["trk"], r["hor"], r["hst"]
-        ax[0, 0].plot(trk["t"], trk["v"][:, 0], color=col, label=name)
+        ax[0, 0].plot(trk["t"], trk["v"][:, 0], color=col)
         ax[0, 1].plot(trk["t"], trk["x"][:, 0] - trk["x"][0, 0], color=col)
-        ax[1, 0].plot(hor["t"], hor["mass"], color=col)
+        ax[1, 0].plot(hor["t"], hor["mass"], color=col, label=name)
         ax[1, 1].semilogy(h["time"], np.sqrt(h["H-norm2"] / h["Volume"]), color=col)
     for p, c in ((0.3, figstyle.PAL["red"]), (0.6, figstyle.PAL["green"])):
         ax[0, 0].axhline(p / madm[p], color=c, lw=1.0, ls="--")
+    ax[0, 0].text(1.0, 0.3 / madm[0.3] + 0.008, r"$P/M_{\rm ADM}$, $P=0.3$", fontsize=8)
+    ax[0, 0].text(1.0, 0.6 / madm[0.6] + 0.008, r"$P/M_{\rm ADM}$, $P=0.6$", fontsize=8)
     ax[0, 0].set_ylabel(r"tracker speed $-\beta^x$")
     ax[0, 0].set_ylim(0.0, 0.55)
-    ax[0, 0].legend(fontsize=7.5, ncol=2, loc="upper left")
     ax[0, 1].set_ylabel(r"tracker displacement $x-x_0$")
     ax[1, 0].set_ylabel("horizon mass")
-    ax[1, 0].set_ylim(0.99, 1.24)
+    ax[1, 0].set_ylim(0.99, 1.36)
+    ax[1, 0].legend(fontsize=7.5, loc="upper left")
     ax[1, 1].set_ylabel(r"norm of $H$ (history)")
     for a in ax[1]:
         a.set_xlabel(r"$t/m$")
@@ -167,6 +174,7 @@ def main():
     # ---- figure 2: dominant modes at the outer sphere and cumulative energy
     fig, ax = plt.subplots(1, 2, figsize=(figstyle.FULL_WIDTH, 2.9))
     fig.subplots_adjust(left=0.085, right=0.985, bottom=0.16, top=0.95, wspace=0.26)
+    rad = 0.0
     for lab, r in runs.items():
         if not r["waves"]:
             continue
@@ -180,10 +188,11 @@ def main():
         ax[1].semilogy(ts[1:], cum[1:], color=col)
     ax[0].set_yscale("log")
     ax[0].set_xlabel(r"$t/m$")
-    ax[0].set_ylabel(r"$|r\psi_4|$, $l=2$, sphere at 16")
+    ax[0].set_ylabel(r"$|r\psi_4|$, $l=2$, sphere at %g" % rad)
     ax[0].legend(fontsize=7.5, loc="lower right")
     ax[1].set_xlabel(r"$t/m$")
-    ax[1].set_ylabel("energy through the sphere at 16")
+    ax[1].set_ylabel("energy through the sphere at %g" % rad)
+    ax[1].set_ylim(1e-8, 1e-3)
     print("figure:", mc.savefig(fig, "boost_waves"))
 
 
