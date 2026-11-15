@@ -43,7 +43,9 @@
  "purpose": "regression of the relativistic mode, case os, executable new",
  "kind": "scouting",
  "tag": "regress-os-new",
- "state": "running",
+ "state": "finished",
+ "wall_time_s": 268.37,
+ "exit_status": 0,
  "cores": 4,
  "card_hours": 0.0,
  "started_utc": "2026-11-15T18:33:45Z"

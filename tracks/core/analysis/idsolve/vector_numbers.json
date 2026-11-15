@@ -248,5 +248,35 @@
    "P_sum": 0.11410473957527244,
    "P_rel_err": 0.01771078860646491
   }
+ },
+ "V3": {
+  "sphere": {
+   "run": "core-20261115-183655-f406d54",
+   "status": "exit 0, wall 67.9 s, output /data/haiyangw/nrpic/scratch/core/core-20261115-183655-f406d54",
+   "summary": "vector equation: relative residual 2.733161e-02 -> 4.544402e-12, 320 V cycles; max|M| of the monitor 7.783900e-04 -> 9.938907e-04",
+   "outer_iterations": 22,
+   "H_max_after": 1.070115e-12,
+   "relv_final": 4.544402e-12,
+   "M_monitor_before": 0.00077839,
+   "M_monitor_after": 0.0009938907,
+   "LW_max": 0.001051584751800132,
+   "Abar_max": 0.04423134172397873,
+   "W_max": 0.0006973263975102039,
+   "LW_over_Abar": 0.02377465188287621
+  },
+  "strained": {
+   "run": "core-20261115-183804-b034153",
+   "status": "exit 0, wall 77.4 s, output /data/haiyangw/nrpic/scratch/core/core-20261115-183804-b034153",
+   "summary": "vector equation: relative residual 2.733161e-02 -> 1.832493e-12, 359 V cycles; max|M| of the monitor 7.783900e-04 -> 9.941025e-04",
+   "outer_iterations": 24,
+   "H_max_after": 2.163389e-12,
+   "relv_final": 1.832493e-12,
+   "M_monitor_before": 0.00077839,
+   "M_monitor_after": 0.0009941025,
+   "LW_max": 0.0012033062220913851,
+   "Abar_max": 0.04427422857785373,
+   "W_max": 0.0014509091999931178,
+   "LW_over_Abar": 0.027178479687690982
+  }
  }
 }

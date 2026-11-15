@@ -647,3 +647,40 @@ signs are wrong).
 same numbers of outer iterations (17), conjugate-gradient steps and V cycles; psi and
 W_i equal to 1e-12 relative (sums are reduced in another order); at most 0.02
 card-hours. Refuted if the iteration counts differ or psi or W differ by more than 1e-9.
+
+**V3 outcome** (runs core-20261115-183655-f406d54 sphere, -183804-b034153 strained; the
+second id carries the commit of an unrelated journal commit made while the first ran;
+source 7f118b9 in both; numbers `vector_numbers.json` key V3):
+- (a) held: 22 and 24 outer iterations, max|H| 1.1e-12 and 2.2e-12, vector residual
+  4.5e-12 and 1.8e-12 relative.
+- (b) held: max|L W| is 2.4 and 2.7 per cent of max|Abar| (1.05e-3, 1.20e-3 against
+  4.4e-2).
+- (c) failed: the monitor's max|M| rises from 7.78e-4 to 9.94e-4 (both runs). From the
+  dumps (`ball.idvector.bin`): the mean |M| over the mesh doubles, 7.08e-6 -> 1.47e-5,
+  in the interior (1.52e-5 -> 3.07e-5), in the edge shell 7 <= r < 13.5
+  (1.88e-4 -> 3.27e-4) and outside (7.9e-7 -> 4.5e-6). The values before the solve are
+  the same for the sphere and the strained ball to all digits printed: the strain does
+  not enter M (S_i = 0), as the amendment of entry 8 says.
+- Reading [JUDGEMENT]: the table curvature satisfies the continuum momentum constraint,
+  and the sixth-order monitor sees only its small truncation error; the stencil form
+  removes the residual of a second-order operator, and the correction L W carries that
+  operator's own O(dx^2) error into K_ij, which the monitor sees. The stencil form helps
+  where the trial violates the constraint at the level of the source (V2: max|M| 2e-2 ->
+  1.9e-4 for moving matter with Abar(trial) = 0) and hurts, by a factor 2, data whose
+  trial already satisfies it.
+
+**V5 (code-mode residual for the vector part), prediction before coding.** Option
+`id_vector_residual = code`: F_i = psi^6 M_i of the monitor in place of the stencil form,
+the same preconditioned Richardson step. The symbol of the monitor's operator per
+direction, g6(k) g2(k) over the seven-point lambda(k), lies in [0, 1] (0 at the Nyquist
+wavenumber, 0.73 at k dx = pi/2, 1 for long waves) [derived], so with the relaxation 6/7
+every mode but the Nyquist ones decays; the residual stalls at the level of the
+source's content near the Nyquist wavenumber. Stop rule: relv <= id_tol, or no fall by
+more than 5 per cent over 5 outer iterations after the scalar part has converged
+("stalled", reported). Predictions:
+ (a) smooth ball (sphere and strained, 64 cells): the monitor's mean |M| after the solve
+     at least 3 times below its value before (7.08e-6), max|H| at the tolerance;
+ (b) moving Gaussian (64 cells): the iteration stalls (deposit noise near the Nyquist
+     wavenumber) with the monitor's max|M| below that of the stencil form (5.3e-5);
+ (c) no divergence in any case.
+Refuted if (a) the mean |M| does not fall below the value before, or anything diverges.
