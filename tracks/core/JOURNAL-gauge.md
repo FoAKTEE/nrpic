@@ -227,3 +227,81 @@ cent and that of the light hole equals that of the eta = 8 run within 15 per cen
 the end of the run; both horizons are found in every search, masses within 2e-3 of the
 constant-eta runs; constraint norms within a factor 1.5 of them. Refuted by a light
 tracker more than 40 per cent off the eta = 8 run or a lost horizon.
+
+## 2026-11-15, entry 2: set-up of the runs, and the numbers of prediction ES
+
+Written before any result of this package was read (the first processor runs were
+started at 15:46 UTC and had not finished).
+
+Registration. `harness/bin/nrpic-run submit` (and `budget`) end with
+`KeyError: 'outputs'` in `budget_state` -> `is_live` (line 163): the command reads the
+hand-written manifests of wave 1 under `tracks/core/runs/`, which have no `outputs`
+entry. Runs of this package are therefore registered by hand through
+`tracks/core/analysis/gauge/grun.py` (a copy of `analysis/id/nrun.py` with UTC run ids
+and a `--source-commit` option) and by `tracks/core/tools/run_registered.py` (the
+regression). `harness/bin/nrpic-env create --no-kokkos` worked (venv hash 0279f117...).
+
+Executables. `.work/build_cpu`, `.work/build_gpu` of this worktree, built from the
+working tree whose `athenak/src` equals commit e41c24a (`git diff e41c24a HEAD --
+athenak/src` is empty); copies pinned for the card jobs:
+`/data/haiyangw/nrpic/scratch/core/gauge/exe/athena_{cpu,gpu}_e41c24a` (sha256
+8ac29c06..., 6ce2268c...).
+
+Processors. The serial processor executable does about 1.2e4 zone-cycles per second
+(64^3 ball: 22 s per cycle), so processors carry only the 64-cell ball runs and the bound
+ball at 80 cells (1.7 h); everything else waits for a card. The queue held six jobs of
+other sessions when this was written. Two processor runs of the first batch
+(`bound-mp-n080`, `bound-ct-n080`: old lapses on the bound ball, already measured in wave
+1 as `t3-bound-ct-n080/-n160`, `t3-bound-mp-n160`) were stopped by process id after five
+minutes to free two cores for input checks; their manifests record the non-zero exit.
+
+Card plan (at most one card-hour): job 1 (`analysis/gauge/gpu_job1.sh`): L1 at cells
+M/2 (five runs), L2 at M/4 (two runs), L3, ES; job 2 (`gpu_job2.sh`): E2 (three runs),
+E1 (three runs), P (two runs), E1 under-damped side (two runs). Estimated 37 minutes of
+card time in all [JUDGEMENT from 8e6 zone-cycles per second, `multi_puncture.md`
+section 5].
+
+Inputs written for the tests: `problems/ball/ball_leak.athinput` (L1, L2),
+`problems/ball/ball_collapse.athinput` (L3: mesh, refinement, deposit rules, excision and
+finder of `problems/os/os_amr.athinput` at this problem's scale),
+`problems/puncture/by_eta.athinput` (P, E1), `problems/puncture/by_unequal.athinput`
+(E2), `problems/es/es_gauge.athinput` (ES).
+
+Test E1, amendment written before its runs: the under-damped side is added, (b) constant
+eta = 0.2 (a light hole in the units of a heavy one: Track F's members at eta m = 0.1)
+and (e) eta_0 = 0.2 with the profile and M_ref = 10 (eta = 2 at the hole). Prediction
+[JUDGEMENT, weak]: the tracker of (b) is not slower than that of (a); (e) lies within
+20 per cent of (a) at t = 5 m.
+
+### Prediction ES, with numbers
+
+Data set: Track D's generator at commit 3276791 of `track/D-bh-dress`
+(`tracks/D-bh-dress/einstein_straus/make_es.py --Rb 56 --w_out 4 --hp 2.0 --tau_max 60`,
+copied to `scratch/core/tmp/gauge/es_tools/`), output
+`/data/haiyangw/nrpic/scratch/core/gauge/ic_es/` (`es.json`: M = 1, bare puncture mass
+1.0239688282062387, wall (innermost dust) at 36 M, Schuecking radius 40 M, plateau
+H = 5.5812e-3/M, outermost dust 60 M, total mass 2.7397 M, 87128 dust particles on a
+lattice of 2 M, 140 tracers). This is the parameter set Track D names for ES-1 (G1
+STATUS), with a lattice of 2 M instead of 1 M. Mesh of `es_gauge.athinput`: cells 2 M
+over the whole mesh (half-width 96 M), halving to M/8 within 2 M of the puncture. Gauge:
+1+log with advection, `lapse_leak = 0.25` (T = 4 M), Gamma-driver eta = 2, start lapse
+psi^-2, zero shift. 30 M of coordinate time.
+
+Exact references (`es_reference.csv`): wall tracers (tags 56-69, R_0 = 36 M) at
+38.318, 40.574, 42.763 M at tau = 10, 20, 30 M; tracers at R_0 = 6 M (tags 0-13) reach
+R = 2M near tau = 15.0 M (R = 1.855 M at tau = 15 M); tracers at 48 M (tags 84-97, in
+the plateau) at 50.640, 53.221, 55.733 M. Reference lapse of the plateau (the equation of
+`lapse_ref.py` with H(tau) of the plateau and the start value psi^-2 = 0.979 at
+r = 48 M): 1.090, 1.121, 1.125, 1.123, 1.119, 1.114 at t = 5, 10, 15, 20, 25, 30 M
+(plain 1+log: 1.153, 1.349, 1.565, 1.801, 2.055, 2.326).
+
+Prediction: (1) |M_AH(t)/M_AH(10 M) - 1| below 1e-3 for 10 M <= t <= 30 M;
+M_AH(10 M) within 5e-3 of M = 1 (Track D expects +1.5e-3 at cells M/8); (2) wall tracers
+within 5e-3 of the exact radius at their proper time up to the end (cells of 2 M at a
+wall of 36 M); the tracers at 48 M within 3e-3; (3) the lapse at the tracers at 48 M
+within 3 per cent of the reference above, and the largest lapse on the mesh below 1.16;
+(4) the smallest areal radius of a dust particle at t = 30 M is not below the wall
+tracers' radius by more than one cell (2 M); (5) the tracers of the group at 6 M are
+removed (lapse excision at 0.05) at a proper time between 13 and 16 M. Refuted by a
+horizon-mass drift above 3e-3, a wall error above 2 per cent, a dust lapse above 1.3, or a
+run that ends early.
