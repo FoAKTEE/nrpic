@@ -958,3 +958,30 @@ thin4 and plane4 runs of both. Noise injection estimated as in T4b: eps x 6 / h^
 - P12b: the card runs carry more z noise than the processor runs from t = 1 on, by less
   than a factor 30.
 - P12c: the cube (16 layers) has the noise level of thin8 and thin4 within a factor 10.
+
+### Outcome of T10 (run core-20261115-182405-22bafeb, analysis of existing dumps)
+
+Results `results_t10.json`, figure `t10_zgrow_t3.png` (looked at: the eight curves, four
+set-ups on processors and on the card, lie on top of each other; the z noise of At rises
+from 2e-16 at t = 0 to 1e-14 at t = 0.5 and then decays to 1.3e-15 at t = 5.5; that of gt
+rises to 1e-14 and stays flat).
+- P12a PASSED: the largest z departure of At at t = 5.5 is 1.22e-15 to 1.57e-15 in the
+  eight runs (bound 1e-11); its mean factor per dump over the last eight dumps is 0.80 to
+  0.83, so the noise decays through the first shell crossing. gt: 9.6e-15 to 1.26e-14 at
+  the end, factor 1.02 to 1.06 per dump; Gamma^x,y: 9.4e-14 to 1.3e-13, factor 0.97 to
+  1.03; Khat and Theta decay (0.79 to 0.84). The components that vanish exactly (Axz,
+  gxz, Gamma^z) carry the same levels. Relative to the x-y variation of the fields with
+  content: At 1.5e-12 at most, Theta 2.2e-10 at most.
+- P12b FAILED: the card runs are not noisier than the processor runs. Ratios card over
+  processor of the At departure at t = 1: 0.99 (cube), 1.06 (thin8), 0.81 (thin4), 1.13
+  (plane4). The noise is not made by the order of the atomic additions; on both devices
+  it comes from rounding that differs from layer to layer (the particle positions, and
+  so the cloud weights, of different layers differ in their last bits) [JUDGEMENT: not
+  separated]. At t = 0 the processor's gt already differs between layers by 1e-16 where
+  the card's is exactly z independent [not explained; the initial data are the same
+  file].
+- P12c PASSED: the cube has the level of thin8 and thin4 (At at t = 1: 9.40e-15 against
+  9.63e-15 and 9.75e-15).
+For Track B: at 16 cells per wavelength and delta = 0.1 the noise does not grow through
+the first shell crossing to a = 13.9. In the 256 x 256 x 16 box (h = 1/64) it is about
+twenty times larger at t = 1 (At 1.8e-13); its course to a = 9 is P10c of T8, pending.
