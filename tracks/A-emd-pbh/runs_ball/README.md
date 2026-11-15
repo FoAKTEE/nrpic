@@ -27,14 +27,11 @@ see the Requests. Figures of the pathologies: `figs/sr1_n256_gauge.png`,
 `figs/sr2_n256_fields.png`, `figs/sr2_n256_horizon.png`, `figs/sr2_n128_gauge.png`;
 resolution comparison `figs/fig_resolution_summary.png`.
 
-Pending when this was written: the dx = M/4 runs to t = 20 (prediction R, JOURNAL entry
-4): A-emd-pbh-20261115-164539-0b18e84 (SR-1, Slurm job 4461) and
-A-emd-pbh-20261115-164541-0b18e84 (SR-2, job 4462), queued. When they have finished:
-
-    cd /data/haiyangw/nrpic/wt/A-emd-pbh
-    for r in A-emd-pbh-20261115-164539-0b18e84 A-emd-pbh-20261115-164541-0b18e84; do
-      .venv/bin/python tracks/A-emd-pbh/runs_ball/runreg.py finish $r; done
-    bash tracks/A-emd-pbh/runs_ball/after_m4.sh      # registered analysis + three-resolution summary
+dx = M/4 to t = 20 (prediction R, JOURNAL entry 4; outcome entry 6, written by the lead):
+A-emd-pbh-20261115-164539-0b18e84 (SR-1) and -164541-0b18e84 (SR-2), analysis
+A-20261115-182657-53da696. R1, R3, R4 hold; R2 holds for SR-1 (mean turnaround error
+-0.0125 M, core |eps| at tau = 16.894 7.6e-4) and fails for SR-2 on the turnaround time
+(+0.031 M); core-shell errors fall at apparent order 3.0-4.3 between M/2 and M/4.
 
 ## What is here
 

@@ -287,3 +287,31 @@ chosen as before. Cost about 0.12 card-hours per gauge.
   core_requests-b and core_scalar-2 were published, neither with a lapse option).
 - Card time: 0.28 card-hours used (0.104 + 0.149 + 0.028); the two pending runs ask at
   most 2 x 0.25 by their wall limits (about 0.12 each expected).
+
+## 2026-11-15, entry 6 (lead of A-emd-pbh): outcome of prediction R (dx = M/4 to t = 20)
+
+Runs closed with `runreg.py finish` by the lead: A-emd-pbh-20261115-164539-0b18e84 (SR-1,
+357 s = 0.099 card-hours) and -164541-0b18e84 (SR-2, 361 s = 0.100), both exit 0 at t = 20.
+Analysis with the commands of `after_m4.sh`, registered with `harness/bin/nrpic-run` (the
+tree was clean): run A-20261115-182657-53da696 (`sr*_n256L32_*` figures and the updated
+`fig_resolution_summary.png` in `figs/`, looked at). The lead's own reader agrees
+(A-20261115-182314-bebd0cf: SR-1 mean dtau_ta -0.0125 M, largest core |eps| at 16.894
+7.5e-4; SR-2 +0.0306 M, 3.4e-4).
+- R1 HOLDS: both runs finite to t = 20.
+- R2 HOLDS for SR-1 (mean turnaround error -0.0125 M, -0.074 per cent; largest core |eps|
+  at tau = 16.894 7.6e-4 < 2.5e-3); for SR-2 the eps part holds (3.7e-4 < 3e-3) and the
+  turnaround part FAILS (+0.031 M > 0.02 M). Apparent orders between M/2 and M/4: core
+  |eps| at 16.894 3.0 (SR-1) and 4.3 (SR-2), at tau = 8 3.2 and 3.1; R_max 2.2 and 2.3;
+  mean turnaround time 0.85 and 0.50. The turnaround time from a parabola through records
+  0.25 M apart on a flat maximum is not in a clean power law; no order is claimed for it.
+  Caveats: the dx = M/4 runs use a smaller domain ([-32, 32]^3) and a lattice with h = M/4
+  (eight times more particles), so this is the joint limit of mesh and lattice.
+- R3 HOLDS: SR-1 largest |H| at t = 20 is 0.040 (0.051 at M/2, 0.24 at M); but the run ends
+  before the exponential phase that blows up the coarser runs after t ~ 20, so whether the
+  finer mesh delays the blow-up is not tested.
+- R4 HOLDS: SR-2 |alpha_c/a - 1| > 0.1 first at t = 6.625 (6.5 and 6.625 at M and M/2);
+  central lapse peak 1.866 at t = 12.6 (1.80, 1.86): the pulse is a property of the gauge.
+- Seen in `sr1_n256L32_fields.png`: at t = 16.9 the constraint-damping variable Theta is
+  -5e-4 near |x| = 20, a signal from the outflow boundary at 32 M travelling inward through
+  vacuum; the envelope edge is at R ~ 18 M then, the core is not reached before t = 20.
+
