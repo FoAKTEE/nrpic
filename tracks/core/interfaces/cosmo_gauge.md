@@ -184,11 +184,15 @@ value is set by the ratio of T to the time a gauge wave needs to cross the expan
 region, t_c = R/sqrt(2 alpha): T/t_c <= 0.075 gave at most 1.4 per cent, 0.15 gave 2.8
 to 3.9 per cent, 0.3 gave 13 to 20 per cent (a dip that arrives from the surface at
 t ~ t_c, focused by the spherical geometry). Short T costs nothing measurable: T = dx/8
-(rate x step = 2) ran as well as T = dx/2 on the marginally bound ball. Rule
+(rate x step = 2) ran as well as T = dx/2 on the marginally bound ball, and on the bound
+ball at cells M/2 the core error falls monotonically with T (1.73e-2, 1.25e-2, 1.09e-2
+for T = 0.5, 0.25, 0.125 M; the other shell groups do not depend on T). Rule
 [JUDGEMENT]: **T <= 0.1 R/sqrt(2 alpha)** for the smallest expanding region of radius R
-that should be followed, and lapse_leak x dt below about 2.7 (explicit fourth-order
-step; dt is the global step, set by the finest level). For balls of 5 to 10 M: T = 0.25
-to 0.5 M. Untested: `lapse_leak_alpha` other than 1.
+that should be followed, as short as the step allows, and lapse_leak x dt below about
+2.7 (explicit fourth-order step; dt is the global step, set by the finest level). For
+balls of 5 to 10 M: T = 0.125 to 0.5 M. In the limit of small T the condition is 1+log
+with the lapse capped at alpha_0 where the matter expands. Untested: `lapse_leak_alpha`
+other than 1.
 
 ### 7.3 A puncture inside expanding dust (Track D)
 
