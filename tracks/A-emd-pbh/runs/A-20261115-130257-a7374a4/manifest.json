@@ -54,7 +54,7 @@
     "nodes": 1,
     "gpus": 0,
     "cores": 2,
-    "walltime_s": null,
+    "walltime_s": 7.766,
     "wall_limit": null,
     "segments_max": null,
     "gpu_hours_requested": 0.0,
@@ -65,15 +65,15 @@
   "outputs": {
     "dir": "scratch/A-emd-pbh/A-20261115-130257-a7374a4",
     "sha256sums": "sha256sums.txt",
-    "sha256sums_sha256": null,
-    "bytes": null,
-    "files": null
+    "sha256sums_sha256": "e893dcd87922edbc40d6aaa506083d323847e54db8c6479a0dd9378558636ae5",
+    "bytes": 280505,
+    "files": 4
   },
-  "status": "running",
-  "exit_code": null,
+  "status": "completed",
+  "exit_code": 0,
   "registered": "2026-11-15T13:02:57Z",
-  "started": null,
-  "ended": null,
+  "started": "2026-11-15T13:02:57Z",
+  "ended": "2026-11-15T13:03:05Z",
   "parents": [],
   "notes": "core python exported by git archive core/id-extrinsic (aef2f7be) into scratch/A-emd-pbh/tmp/core_id_python",
   "budget_at_submit": {
@@ -83,5 +83,6 @@
     "gpu_hours_reserved": 0.0,
     "cores_busy": 8,
     "runs": 50
-  }
+  },
+  "finished": "2026-11-15T13:03:05Z"
 }
