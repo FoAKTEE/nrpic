@@ -1,0 +1,2 @@
+# job A: production of the paper's set-up at 256^3 (A2, A3, spectrum, cost)
+P256 tracks/E-stoch-inf/ladder/inputs/sr_base.athinput mesh/nx1=256 mesh/nx2=256 mesh/nx3=256 meshblock/nx1=256 meshblock/nx2=256 meshblock/nx3=256 scalar_field/noise_nmax2=4096 scalar_field/noise_mode_file=/data/haiyangw/nrpic/wt/E-stoch-inf/tracks/E-stoch-inf/ladder/inputs/modes_n4096.txt scalar_field/noise_mode_scale=1.0 time/tlim=8.5
