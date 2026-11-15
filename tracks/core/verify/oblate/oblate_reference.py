@@ -151,7 +151,46 @@ def main():
     except Exception as err:  # the private helper may change
         print(f"SKIP  prolate comparison: {err}")
     print("ALL PASS" if allok else "SOME CHECKS FAILED")
+    figure()
     return 0 if allok else 1
+
+
+def figure():
+    """Phi_N along the equatorial and polar axes against the far field, and psibar in
+    the x-z plane, for the oblate case a = 10 M, b = 4.36 M (e = 0.9)."""
+    from nrpic import figstyle as fs
+    import matplotlib
+    matplotlib.use("Agg")
+    import matplotlib.pyplot as plt
+    fs.use_style()
+    a, b = 10.0, 10.0 * math.sqrt(1 - 0.81)
+    fig, ax = plt.subplots(1, 2, figsize=(fs.FULL_WIDTH, 3.2))
+    fig.subplots_adjust(left=0.09, right=0.97, bottom=0.16, top=0.93, wspace=0.3)
+    r = np.linspace(0.0, 40.0, 801)
+    px = phi_N(r, 0 * r, 0 * r, a, b)[0]
+    pz = phi_N(0 * r, 0 * r, r, a, b)[0]
+    ax[0].plot(r, px, color=fs.PAL["blue"], label=r"along $x$ (equatorial)")
+    ax[0].plot(r, pz, color=fs.PAL["red"], label=r"along $z$ (polar)")
+    rr = r[r > 5]
+    ax[0].plot(rr, -0.5 / rr, **fs.GUIDE, label=r"$-M/(2r)$")
+    ax[0].axvline(a, **fs.MASK_LINE)
+    ax[0].axvline(b, **fs.MASK_LINE)
+    ax[0].set_xlabel(r"distance from the centre [$M$]", labelpad=-2)
+    ax[0].set_ylabel(r"$\Phi_N$")
+    ax[0].legend(fontsize=7)
+    x = np.linspace(-20, 20, 401)
+    X, Z = np.meshgrid(x, x)
+    P = 1.0 - phi_N(X, 0 * X, Z, a, b)[0]
+    im = ax[1].contourf(X, Z, P, levels=20, cmap=fs.CMAP["dens"])
+    t = np.linspace(0, 2 * math.pi, 300)
+    ax[1].plot(a * np.cos(t), b * np.sin(t), color="w", lw=1.0)
+    ax[1].set_aspect("equal")
+    ax[1].set_xlabel(r"$x/M$", labelpad=-2)
+    ax[1].set_ylabel(r"$z/M$")
+    fig.colorbar(im, ax=ax[1], label=r"$\bar\psi=1-\Phi_N$")
+    out = os.path.join(WT, "tracks", "core", "verify", "figs", "oblate_reference")
+    fs.save(fig, out)
+    print("figure", out + ".png")
 
 
 if __name__ == "__main__":
