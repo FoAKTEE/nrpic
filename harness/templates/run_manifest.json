@@ -1,0 +1,23 @@
+{
+  "run_id": "<ID short>-<YYYYMMDD-HHMMSS>-<commit7>",
+  "track": "<owner id>",
+  "gate": "G<k>",
+  "purpose": "<what the run is for, in one line>",
+  "preregistered_in": "tracks/<ID>/stage/G<k>/PLAN.md#<anchor>",
+  "kind": "scouting | production",
+  "command": ["<argv of the run>"],
+  "git": { "sha": "<full sha>", "branch": "<branch>", "dirty": false, "merge_base_main": "<full sha>" },
+  "code": { "core_tag": "<core-vX.Y or null>", "athenak_upstream_sha": "c5a0d7f", "kokkos_sha": "<sha>",
+            "problem": "<pgen name>", "cmake_flags": [] },
+  "env":  { "host": "<host>", "machine_file_sha256": "<sha256>", "uv_lock_sha256": "<sha256>", "container_digest": null,
+            "compiler": "<compiler>", "mpi": "<mpi or null>", "gpu": "<gpu or null>" },
+  "input": { "file": "problems/<...>.athinput", "sha256": "<sha256>", "overrides": {} },
+  "resources": { "nodes": 1, "gpus": 0, "walltime_s": 0, "particles": 0 },
+  "outputs": { "dir": "scratch/<ID>/<run_id>", "sha256sums": "sha256sums.txt", "bytes": 0 },
+  "status": "registered | running | completed | failed",
+  "exit_code": null,
+  "started": "<UTC ISO 8601>",
+  "ended": null,
+  "parents": [],
+  "notes": ""
+}
