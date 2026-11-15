@@ -239,3 +239,33 @@ index placement changes the internal orbit at order v^2 ~ 1e-2 of the separation
 Relative orbit: max difference 4.2e-8 a0 (a = 0) and 4.3e-8 a0 (a = 0.9); member 1 position
 1.8e-8 and 1.9e-8 r_g, over the whole passage (the binary separates in both). Prediction holds:
 the 3+1 form with the projected force is the same model as Eq. CoordtEqs, to integration error.
+
+### P7 rerun with the paper's units (run F-hills-20261115-134350-d16b473, figures/ex_*.png)
+
+Same trajectories (identical numbers). For beta = 5, retrograde, phi = 2.04: E_b goes from
+-1 to -1.68 E_b0 and E_cm from 0 to +0.17 E_b0 across pericentre; the paper's panel
+(Figures/SR-5-130.pdf, bottom right, looked at only) shows the same two levels (about -1.7 and
++0.15 to +0.2). The remaining difference to the text is only the remark on rotation reversal.
+
+### S4 outcome (run F-hills-20261115-133124-c799a81; a = 0 from S3, run F-hills-20261115-130922-634fb86)
+
+Separation fraction (200 phases for a = +-0.9, 400 for a = 0):
+
+| beta (r_p/r_g) | pro a=+0.9 | pro a=0 | pro a=-0.9 | retro a=+0.9 | retro a=0 | retro a=-0.9 |
+|---|---|---|---|---|---|---|
+| 3 (33.8) | 0.975 | 0.985 | 0.975 | 0.475 | 0.512 | 0.550 |
+| 5 (20.3) | 0.985 | 0.990 | 0.995 | 0.645 | 0.710 | 0.750 |
+| 8 (12.7) | 1.000 | 0.998 | 0.995 | 0.805 | 0.860 | 0.905 |
+| 10 (10.1) | 1.000 | 0.998 | 0.990 | 0.865 | 0.912 | 0.965 |
+| 12 (8.4) | 0.990 | - | 0.995 | 0.890 | - | 0.985 |
+| 15 (6.8) | 1.000 | - | 1.000 | 0.930 | - | 0.995 |
+
+K1 holds at every beta (retrograde binaries: a = -0.9 > a = 0 > a = +0.9, by 0.04-0.05 on each
+side at beta >= 5). K2 holds (prograde differences <= 0.01). A member is captured in 64.5
+(prograde) and 34 percent (retrograde) of the a = -0.9, beta = 15 encounters (r_p = 6.75 r_g,
+just outside r_mb = 5.66 r_g), and in at most 0.5 percent elsewhere.
+Abnormal endings: 6 of 4800 runs stopped on step-size underflow, all near-head-on collisions of
+the point masses (a_min = 4e-9 to 1e-7 a0) close to pericentre, where the Newtonian pair force
+drives the members to near-light speed and the model is meaningless; 2 runs lost both members
+(the same pathology); 6 runs (a = -0.9, retrograde, beta = 15, separated) reached t_max. These
+14 runs are reported, not removed; they change no s.f. above by more than 0.005.
