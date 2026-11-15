@@ -100,3 +100,45 @@ they can refute it.
   the label said "to 250 t_H": now every halo run is followed to the halt plus 0.3 t_c,
   stated in the label; (iii) layout (legends over data, clipped label, log tick labels).
   The second run supersedes this one for figures and numbers; it stays on record.
+
+## 2026-11-15, outcomes of run `A-emd-pbh-20261115-112625-e854f12` (commit e854f12)
+
+Numbers: `results/scope_numbers.json` (copy of the run's output); figures `results/fig_*.png`,
+each looked at.
+
+- T1 HOLDS. Eigenvalues of -grad D at r = 0 by finite differences against the closed form:
+  relative 1.0e-7 to 3.9e-7 for four (mu, e, p); h-hat of 2609.14218 against h of
+  1609.01588: equal to 2e-16; h-hat(e, 0) = 0.219, 0.342, 0.413, 0.452, 0.472, 0.481 at
+  e = 0.05 ... 0.30, largest deviation from the by-eye read-off 0.0025.
+  h-hat(0.2, 0) = 0.452: at e = 0.2 the Zel'dovich-hoop criterion asks for mu > 0.45.
+- T2 HOLDS by its stated criterion, with one point outside. Mean-contrast formula
+  deltabar(r) = (12/5) mu exp(-k^2 r^2/6) checked numerically to 2e-4 of the central value.
+  Read-offs against [t_c(0), t_c(r_m)]: mu = 0.15, 0.10, 0.075, 0.06, 0.05 inside, at
+  1.01, 0.89, 0.82, 0.80, 0.84 of t_c(r_m); mu = 0.3 (e = 0.2) OUTSIDE: 24 t_H against
+  t_c(r_m) = 16.1 t_H (1.49 times), so at large amplitude the anisotropy delays the
+  collapse beyond the top-hat shell; mu = 0.3, e = 0 (11.5 t_H) inside [3.6, 16.1].
+  Slope of the read-offs for mu <= 0.15: -1.31 (predicted -1.5 +- 0.3: inside, at the
+  shallow side). Finite-duration amplitude: mu_fd(250 t_H) = 0.048 from t_c(r_m), 0.044
+  with the median measured ratio 0.86; t_c(r_m) at mu = 0.045 is 277 t_H. The paper's
+  particle bracket (0.045, 0.05] contains these values. So the numbers allow the reading
+  that the reported particle threshold is the run length; they do not show it. The test
+  that decides: the same data run to 400 t_H (SCOPE.md, hypothesis H1).
+- T3 HOLDS. a_i/a_H = (q / R_b H_i)^2; with R_b H_i = 0.9: q = 3 gives a_i/a_H = 11.1 and
+  mu <= 0.031 (mean contrast in r_m <= 0.3 at the start), q = 2 gives 4.9 and
+  mu <= 0.069. If instead the central linear contrast is to stay <= 0.3, the limits are
+  2.7 times lower (0.011, 0.025). The ball cannot host the comparison amplitudes of
+  2609.14218 except at q = 2 near R_b H_i = 0.9; phase 1 (periodic) is needed for them.
+- T4 HOLDS. s_c = 0.55 (virial, 5/3 coefficient) and 1.5 (2211.13950); both independent
+  of the amplitude at this order. T4b HOLDS: lattice N = 7.9e4 and random N = 5.8e6 at
+  deltabar_ent = 0.04; lattice N = 1.8e6 at 0.01.
+- T5: measured n1e4_v19 = 5.41 card-hours (13 segments, 19475 s, 0.761 s per cycle,
+  3.4e6 to 8.0e6 zone-cycles/s). Particle cost from cosmo/TESTLOG.md 1.0e-7 s per particle
+  per step. Model per ball run: 1.1 to 3.5 card-hours (median 2.4 at 10^6 particles for
+  deltabar_ent = 0.02-0.04); first scan of 65 runs: about 155 card-hours. Inside the
+  predicted ranges (1-3 per run; 100-200 in total). The model is untested against a PBH
+  run; the first scouting runs refute or confirm it (factor-3 band).
+
+Note on the manifests: `tracks/A-emd-pbh/runs/<run_id>/manifest.json` exist on disk, but
+the repository's `.gitignore` line `runs/` (line 12) also matches `tracks/*/runs/`, so git
+refuses them and CLAUDE.md forbids committing ignored paths. Copies are committed under
+`scope/run_manifests/`; README.md, section Requests, asks orch for an exception.
