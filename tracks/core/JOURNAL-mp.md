@@ -414,3 +414,22 @@ digits. Horizon summary at t = 0.125 and 0.1875: identical in all 16 digits (mas
 coarse mesh (cells 1/8, puncture with momentum 0.3 and spin 0.2 off the block
 corners) the finder returns no horizon at t = 0 and 0.0625 and finds it from
 t = 0.125 on, in both runs. [VERIFIED]
+
+### Final source (hooks moved, 3b7e537): verification of the rebuilt processor executable
+
+ - `problems/tests/regress_cf.athinput`: run `core-20261115-121953-c94f288` against the
+   executable of `main` (`core-20261115-113321-a5197ba`): all 13 data files identical
+   byte for byte. [VERIFIED]
+ - Bowen-York cases against the build before the move: `s_two_approx_n64`
+   (`core-20261115-122035-c94f288` against `-115119-4745494`) identical byte for byte;
+   `s_p0.3_table_n64` and `s_ps_approx_n64` (`-122036-`, `-122037-` against
+   `-114158-c89b6e3`, `-114227-c89b6e3`): field data identical, the files differ only
+   in the parameter dump of their header (the line `corr_background` added to the
+   input since). [VERIFIED]
+ - Trial merge with `core/id-extrinsic` (1311b8e) by `git merge-tree`: no conflict
+   markers. Its `CFSetExtrinsic` assigns `vK_dd` after the main loop: with a table of
+   format 2 and a moving puncture in the same run the Bowen-York curvature would be
+   overwritten; `+=` there fixes it (not my file to change on that branch).
+ - The card executable of the final source is built in `.work/build_gpu_final`; the
+   runs already queued use the build of 7a60df2 (same kernel code; only the place of
+   the reader call and of a log line differ).
