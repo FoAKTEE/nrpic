@@ -1,17 +1,18 @@
 # RISKS of kb
 
-Updated 2026-11-15 (kb lead, wave 1). Likelihood and effect: low / medium / high.
+Updated 2026-11-15 (kb lead, wave 2). Likelihood and effect: low / medium / high.
 
 | Risk | Likelihood | Effect | Watch | Response |
 |---|---|---|---|---|
-| Parse errors hidden behind a good quality score give tracks wrong equation numbers or locators (found twice this session: \nc aliases, composite shorthands; 28 papers) | medium | high | independent counts on drawn papers (journal L5, L10, L11); equation rows per paper against `\begin{equation` counts | K9: a sampled independent-count check in `kb qa run`; notes cite the snapshot id so a later fix can be traced |
-| No sanctioned metadata path: no titles/abstracts for 36/27 papers, no cross-check with brief 16, 17661 unresolved bibliography entries; KB-G2 blocked | high | medium | outbox `__to-orch__metadata-path` | parse what the store has; ask once per week |
-| Paper text or third-party figures leave the machine through commits (reports, curated statements) | low | high | `git diff --stat` before each commit; reports carry ids and counts only | own wording in curated files; nothing under kb-data is committed |
-| A download escapes its directory or is executed | low | high | `kb verify-downloads` checks members, links, exec bits, sizes | never run code from kb-data/raw; propose limits in nrpic-fetch-arxiv (outbox) |
-| Upstream AthenaK publishes a particle-spacetime coupling and nobody notices | medium | medium | `kb watch upstream` (baseline 2026-11-15, no scheduler) | outbox `__to-orch__watch-scheduler`; run it at the start of each kb session |
-| Tracks treat `claimed` paper-code links as verified | medium | medium | `kb link list` shows status | core names tests (outbox `__to-core__paper-code-links`) |
-| Equation numbers of real papers cannot be checked against LaTeX output (no .aux, no compiling downloads) | medium | medium | cross-check against `\ref`-resolved numbers in the papers' own text | label numbers as computed by kb; check against the PDF when one is stored |
-| Snapshots fill the disk (0.81 GB each, four now) | high | low | `du -sh kb-data/db` | keep the last three and those cited in notes; prune others by name |
-| Embedding stage too slow on 8 cores, or no model approved | medium | low | timed scouting run on 1000 chunks | full-text search (exists) until vectors exist; outbox `__to-orch__embedding-model` |
-| Other sessions add store entries at any time, so counts move between runs | high | low | verify-downloads reports extras | numbers always with a run id |
-| A long-running writer keeps an old module after a fix (lock, parser) | low | medium | process list before a fix lands | restart writers after fixes; one writer at a time |
+| Parse errors hidden behind a good quality score give tracks wrong equation numbers or locators (wave 1: 28 papers; wave 2: astro-ph/0003278 with sections in its source and none in the database) | medium | high | three independent counters agree on the K9 sample (W4); C2 now separates "no sectioning command" from "command present, nothing extracted" | `kb qa run` with the sampled count each stage; notes cite the snapshot id so a later fix can be traced |
+| A track takes a `located` claim for a checked one: the automatic check proves only that the locator resolves and the numbers occur, not that the passage says it | medium | high | `kb claim show` gives status and checked_by; audits 29/30 (helper) and 9/10 (lead) supported | only `checked` claims count as read by a person; parser fragments (claim 193) found by audits; audit 10 claims per wave |
+| Retrieval misses the answer location although the paper is found (answer location 23/32, paper 28/32; four of ten FIRST_QUESTIONS missed by every mode) | high | medium | golden set and the ten held-out questions, rescored independently | `--text-only` when the words are known; finer chunks or windowed vectors, chosen on one set and checked on the other |
+| KB-G2 cannot be judged: no thresholds or hit level in CHARTER; one manifest paper not ingested | high | medium | coord/REQUESTS.md | outbox kb-g2-thresholds, kb-g2-hit-level; PDF reader for gr-qc/9412071 next session |
+| Paper text or third-party figures leave the machine through commits (wave 2: a run wrote a reading sample into the worktree through a literal `$NRPIC_RUN_DIR`; deleted, never committed) | low | high | `git status` and sizes before each commit; pre-commit hook not installed (decision 0008) | scripts read the run directory from the environment; proposal to orch (nrpic-run-literal-run-dir) |
+| Two writers of the claims layer undo each other (wave 2: a `--rebuild` deleted 330 rows of another helper) | low | medium | ingest_log of kb.sqlite; digest of claims before and after each load (W6) | rebuild touches only rows of its own seed (guard, test); claim ids frozen once a snapshot holds them; one writer at a time under locks/kb-writer.lock |
+| A download escapes its directory or is executed | low | high | `kb verify-downloads`; the fetch command's limits and content checks (decision 0015) | never run code from kb-data/raw; read with python3 -I code outside it |
+| Upstream AthenaK publishes a particle-spacetime coupling and nobody notices | medium | medium | `kb watch upstream` each wave (decision 0015); last run kb-20261115-154646-234060c: unchanged | run it at the start of each kb session |
+| Tracks treat `claimed` paper-code links as verified | medium | medium | `kb link list` shows status | core names tests (outbox paper-code-links, open since wave 1) |
+| Runs exceed kb's core allotment when registered by hand (wave 2: 12 and 16 threads) | medium | low | nrpic-run enforces 8 | register every run with nrpic-run submit |
+| Snapshots fill the disk (up to 1 GB each, eight now, 6.1 GB) | medium | low | `du -sh kb-data/db` | keep the ones cited in notes; prune others by name |
+| New papers lack tags and vectors because ingest does not call those steps | medium | low | `kb embed --check --work` | run tags, embed, check, snapshot after every ingest (W9b); later: call them from ingest |

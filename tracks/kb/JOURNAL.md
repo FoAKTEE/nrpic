@@ -417,3 +417,34 @@ claims and 709 papers in the new snapshot. Refuted by any other change.
 Held. Claims 25 and 674 are fulltext with status checked; checked 29 -> 31, fulltext 531 -> 533,
 to_verify 117 -> 115, partial 36 -> 34; 688 claims. Snapshot `kb-20261115-a848a06.sqlite` =
 db/current. Answer to A posted (`outbox/20261115T183946Z__to-A-emd-pbh__claim-status-s1.md`).
+
+### Session summary (kb lead, wave 2, 2026-11-15T18:10-19:05Z)
+
+Commits d78b8d46..(this commit) on kb/main. Runs (all with nrpic-run submit): kb-20261115-181519-d78b8d4
+(misplaced output), -181544-94f68f2 (W2), -181916-08ebad9 (W4), -182232-85883d1 (W3),
+-182238-b86d2b5 (W5), -182414-e13b30c and -182425-edbae8b (W6), -182505-7e3a0b5 (W7),
+-182741-7dafdf9 (W8), -182907-3f69615 (W9, failed at the tag step), -183052-0f8245e (W9b),
+-183921-31d5b77 (W10). 0 card-hours.
+
+- did: rechecked the serve, claims and embed packages from their registered outputs with my own
+  code and read all their figures (stage/REVIEW-wave2.md, figure note/figures/fig_w2_review.png);
+  fixed the test fixture, the claim parser's table-row defect, the wiring of kb claim and kb qa,
+  and my own equation counter; loaded the 70 uncovered served statements as claims; fetched the
+  arXiv-API and INSPIRE metadata of all 708 ids; found, fetched and ingested 2201.09277 (C) and
+  2107.06643 (D) by DOI; verified claims 25 (A's request) and 674 by reading; four snapshots
+  (3826a68, 44b7406, a848a06 final); KB-G0 package written, KB-G1 updated, both verified with
+  nrpic-stage verify (PASS) and reported (FAIL only for the missing verifier report); 16 outbox
+  messages (10 answers incl. A's new request, 1 to all, 5 to orch); 11 inbox messages
+  acknowledged; created wt/kb/.venv for the stage verifier.
+- found: the helpers' numbers hold wherever I recomputed them (QA counts exactly, retrieval
+  rescoring identically, vectors complete, model hash equal); their failed predictions are on
+  record as written. Wrong: one "not found" in the F answer (0.07 is printed as "5-7 %"),
+  outdated snapshot and metadata statements in the drafts, claim 193 a parser fragment, two
+  embedding runs above kb's 8 cores, the helpers' journal times. My own instruments failed twice
+  (W2 number matcher, eqcount trailing-row rule) and were caught by reading the source.
+- changed my mind about: "numbers found at the locator" as a quality signal across checkers:
+  two independent matchers disagreed on 24 of 330 statements and the stricter one was wrong
+  every time I read; agreement between matchers is not evidence, reading is.
+- open: KB-G2 (one paper, thresholds, retrieval at the answer location), K1 metadata into the
+  papers table, K9 rerun with C4, the brief's own statements as claims, K7 module descriptions;
+  requests to orch listed in STATUS.md.
