@@ -402,3 +402,21 @@ Prediction for the follow-up (case list `t4_conv_cpu.list`, step 0.001, same par
 files): ratios of the largest distance (step 0.002 over 0.001) between 3 and 5 for
 both orbits of both cases, and of the drift of C in the comoving case between 3 and 5.
 Refuted (and the softening rule suspect) if a ratio is near one.
+
+Outcome of T6 (run core-20261115-161129-f905e98 and its fourteen sub-runs
+core-20261115-161130-f905e98 to -162357-bcde1a1; report `t6_regress.json` and
+`relativistic.json` in the run directory) [VERIFIED]:
+- geo (2 files), boris (2), dep (1), east (12), os (16, restart files included),
+  binary (1), mesh_static: identical;
+- jeans: `bin/JeansWave.hydro_w.00001.bin` differs; newton_ball, newton_point,
+  newton_wave: the last restart file differs (16, 10, 10 other files identical).
+The prediction "no exception" FAILED. I read the four differences byte by byte: in each
+file exactly one text line of the parameter dump differs, the `last_time` of the output
+block that wrote the file (0.1 against 0; 0.15 against 0.1; 1e+30 against 0, twice), and
+everything behind the dump is identical. All four files are the extra output of a run
+that stops at the cycle limit between two scheduled times: the released writer stored
+the advanced `last_time` in the file, the corrected `Driver::Finalize` stores the
+unadvanced one. That is the correction of T2, seen in the header of the file itself; I
+had not thought of the dump inside binary dumps. No field, particle or history value
+differs in any case. A byte regression of the integration must therefore mask the
+`last_time` lines of final off-schedule files (as it masks the 36 unset header bytes).
