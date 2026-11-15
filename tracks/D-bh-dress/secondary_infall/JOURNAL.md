@@ -245,3 +245,41 @@ innermost dust, which is what the core removes (M_ta -1.0 %, M_bh -1.2 % there, 
 predicted). Turnaround and absorption times against the closed forms: 5.0e-6 and 4.2e-6.
 RUNS.md now quotes these numbers for the proposed runs; its density tables remain those of
 the set-up without the core (stated there).
+
+# Wave 2: first Newtonian-mode run (helper newton_infall, 2026-11-15)
+
+Executable: release core-v0.3 processor build `/data/haiyangw/nrpic/.work/build_cpu_v03/src/athena`
+(Serial Kokkos, one core per run). The release has no fixed point mass
+(`outbox/20261115T1510Z__to-core__newtonian-mode-point-mass.md`; core's `core/requests-adf`
+has it in work, no executable published: `scratch/core/exe/core_requests-adf/READY` absent).
+The hole is therefore a CLUMP: 19952 equal-mass particles of total mass 1 on a cubic lattice
+inside r < 0.3 M, cold, at the origin, which is a vertex of the mesh (`nm_ic.py`). Dust:
+500032 equal-mass particles on the lattice (i + 1/2) h, h = 0.372 M, for 3 M <= r < 18.35 M
+(1.2 x the initial radius of the shell that turns around at a/a_i = 4), Hubble flow
+v = eps x, eps = 0.03. The system is symmetric under the 48 reflections and axis
+permutations; so is the mesh about the origin. Box [-68, 68]^3 M, isolated, multipole
+boundary of order 4.
+
+## 2026-11-15T17:10Z  predictions: field calibration and timing probe
+
+F1 (clump alone, 3000 massless tracers at rest, log-uniform in r on [0.05, 30] M, one step
+of 1e-6; nx = 64 and 128, dx = 2.125 and 1.0625 M). The radial acceleration g_r r^2/M:
+(a) rms relative error below 1e-2 for r > 4 dx and below 3e-3 for r > 16 dx (core's point
+mass, interface section 5.2: 6e-3 at 8-16 cells, 1.3-1.7e-3 beyond 16 cells);
+(b) inside ~2 dx the force is softened; a Plummer law g = M r/(r^2 + s^2)^(3/2) fitted on
+r < 4 dx gives s_eff in [0.5, 1.0] dx at both resolutions (so s_eff scales with dx);
+(c) the transverse force inside 2 dx up to ~30 per cent of the radial (anisotropic softening,
+interface 5.2: 0.23-0.57 relative error inside 2 cells).
+Refuted if (a) fails by more than a factor 2, or s_eff lies outside [0.3, 1.5] dx.
+
+F2 (clump + dust + tracers, nx = 128, one step): g_r r^2 against 1 + (4 pi/3) rho_i
+(r^3 - 27) for 3 M < r < R_edge: rms relative error below 1e-2 on [4 dx, R_edge - 2 dx]
+(the dust lattice h = 0.37 M is finer than dx = 1.06 M; the density jumps at 3 M and at the
+edge are smeared over one cell, interface 5.3). Inside the vacuum core (0.3 < r < 3 M) the
+dust contributes no force to below 1 per cent of the clump's. Refuted if either fails by
+more than a factor 2.
+
+P1 (timing, nx = 128, 20 steps, 520k particles): 1-3 s per step on one core with
+newton_mg_tol = 1e-6 (interface 5.8: 3.2 s at 128^3 and 1.4e5 particles with threshold 0,
+13-19 V cycles; the tolerance cuts the cycles to a third). Refuted if above 6 s per step
+(then the 128^3 run to a/a_i = 4, ~1500 steps, does not fit a few hours on processors).

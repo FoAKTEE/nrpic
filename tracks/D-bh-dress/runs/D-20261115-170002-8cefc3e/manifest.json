@@ -122,7 +122,7 @@
   "parents": [
     "D-bh-dress-20261115-043445-b782009"
   ],
-  "notes": "",
+  "notes": "Hand note of the verifier, added after finish: the command passed --out as the literal string '$NRPIC_RUN_DIR' (no shell expansion in the local launcher), so the script wrote its outputs into a directory of that name in the worktree root. They were moved unchanged into the output directory after the run: v1_es_slice.json sha256 effb8e77d7605de8e69e0a419e89d9df5ea4f0ebd783b3adfdf8c20c5b407308, v1_es_slice.pdf b934d86d1b2304c2f525a47280b212550a674a0a1d65f862e49a41eff5cf1cf1, v1_es_slice.png 047cd509f1ff2b46367ad6268411d3a319eeb096fc4f4be30e9626f95654f5b0 (not in sha256sums.txt, which nrpic-run wrote before the move). The figure was also copied to tracks/D-bh-dress/stage/G0/figs/v1_es_slice.png. Later verifier scripts default --out to $NRPIC_RUN_DIR.",
   "budget_at_submit": {
     "gpu_hours_allotted": 30.0,
     "cores_allotted": 16,
