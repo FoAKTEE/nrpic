@@ -88,8 +88,8 @@ def t1(out):
     # figure: reproduction of Fig. 1 of 1609.01588
     fs.use_style()
     fig = plt.figure(figsize=(fs.FULL_WIDTH, 3.4))
-    ax = fs.inch_axes(fig, 0.75, 0.5, 3.2, 2.75)
-    ax2 = fs.inch_axes(fig, 4.65, 0.5, 3.2, 2.75)
+    ax = fs.inch_axes(fig, 0.75, 0.58, 3.2, 2.7)
+    ax2 = fs.inch_axes(fig, 4.65, 0.58, 3.2, 2.7)
     sg = np.geomspace(1e-5, 1, 200)
     ax.plot(sig, np.log10(b0), color=fs.PAL["red"], label="exact double integral (this work)")
     ax.plot([m[0] for m in mc], [math.log10(m[1]) for m in mc], "o", color=fs.PAL["red"],
@@ -168,11 +168,22 @@ def t2(out):
     ok1 = np.all(abs(r1 - 1) < 0.2)
     check("T2.4c", "beta0(1) numerical/semi-analytic (q=sqrt2), sigma<=0.02",
           f"{np.nanmin(r1):.3f}..{np.nanmax(r1):.3f}", "within 20%", "1707.03595:1359-1362", ok1)
+    # T2.5 asymptotics: 2nd order threshold -> 0 with sigma, 1st order threshold fixed
+    r5 = [C.beta0_spin(s, (0.4 * s) ** (2 / 3))
+          / C.beta0_spin_semianalytic((0.4 * s) ** (2 / 3), s, Eb) for s in (1e-4, 1e-5)]
+    check("T2.5a", "beta0(2) numerical/semi-analytic at sigma=1e-4, 1e-5",
+          f"{r5[0]:.4f}, {r5[1]:.4f}", "-> 1", "1707.03595:1321-1329",
+          r5[1] < r5[0] and abs(r5[1] - 1) < 0.03)
+    r6 = [C.beta0_spin(s, 12 / 125 * q * q)
+          / C.beta0_spin_semianalytic(12 / 125 * q * q, s, Eb) for s in (0.0077, 0.006)]
+    check("T2.5b", "beta0(1) numerical/semi-analytic at sigma=0.0077, 0.006 (q=sqrt2)",
+          f"{r6[0]:.3f}, {r6[1]:.3f}", "< 1 and falling", "1707.03595:1321-1329, 1345",
+          r6[1] < r6[0] < 1, "finite delta_th: dropped (1.5+2u^2)/s3^2 term in A [JUDGEMENT]")
     # figure: production rates and spin distributions
     fs.use_style()
     fig = plt.figure(figsize=(fs.FULL_WIDTH, 3.4))
-    ax = fs.inch_axes(fig, 0.75, 0.5, 3.2, 2.75)
-    ax2 = fs.inch_axes(fig, 4.65, 0.5, 3.2, 2.75)
+    ax = fs.inch_axes(fig, 0.75, 0.58, 3.2, 2.7)
+    ax2 = fs.inch_axes(fig, 4.65, 0.58, 3.2, 2.7)
     ax.plot(sig, pai, color="k", label=r"$P_{ai}$ numerical")
     ax.plot(sig, 0.05556 * sig ** 5, color="k", ls=":", lw=1.0)
     ax.plot(sig, b2, color=fs.PAL["red"], label="2nd order numerical")
@@ -231,8 +242,8 @@ def t3(out):
           "jump for (1,0),(1,1),(1/2,1); none for (1,2),(2,1)", "2211.13950:565-571", allok)
     fs.use_style()
     fig = plt.figure(figsize=(fs.FULL_WIDTH, 3.4))
-    ax = fs.inch_axes(fig, 0.75, 0.5, 3.2, 2.75)
-    ax2 = fs.inch_axes(fig, 4.65, 0.5, 3.2, 2.75)
+    ax = fs.inch_axes(fig, 0.75, 0.58, 3.2, 2.7)
+    ax2 = fs.inch_axes(fig, 4.65, 0.58, 3.2, 2.7)
     s0 = np.geomspace(1e-4, 1, 1500)
     cols = [fs.PAL["red"], fs.PAL["orange"], fs.PAL["green"], "grey", fs.PAL["blue"]]
     for (mu, L), col in zip(pairs, cols):
@@ -302,8 +313,8 @@ def t4(out):
           "2507.18312:635-637", 0.003 < ar < 0.03, "order of magnitude only")
     fs.use_style()
     fig = plt.figure(figsize=(fs.FULL_WIDTH, 3.4))
-    ax = fs.inch_axes(fig, 0.75, 0.5, 3.2, 2.75)
-    ax2 = fs.inch_axes(fig, 4.65, 0.5, 3.2, 2.75)
+    ax = fs.inch_axes(fig, 0.75, 0.58, 3.2, 2.7)
+    ax2 = fs.inch_axes(fig, 4.65, 0.58, 3.2, 2.7)
     for d, col in zip((0.3, 0.1, 0.03), fs.SERIES[:3]):
         th = np.linspace(1e-3, 2 * np.pi, 2000)
         t, a, R = C.tophat_ltb(d, th)
@@ -373,8 +384,8 @@ def t5(out, quick):
                   abs(rb / table_b[s] - 1) < 0.05 and abs(mbar / table_m[s] - 1) < 0.05)
         fs.use_style()
         fig = plt.figure(figsize=(fs.FULL_WIDTH, 3.4))
-        ax = fs.inch_axes(fig, 0.75, 0.5, 3.2, 2.75)
-        ax2 = fs.inch_axes(fig, 4.65, 0.5, 3.2, 2.75)
+        ax = fs.inch_axes(fig, 0.75, 0.58, 3.2, 2.7)
+        ax2 = fs.inch_axes(fig, 4.65, 0.58, 3.2, 2.7)
         ss = sorted(res)
         ax.plot(ss, [res[s][3] for s in ss], "o-", color=fs.PAL["red"], ms=4,
                 label="numerical (this work)")

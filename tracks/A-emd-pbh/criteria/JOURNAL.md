@@ -118,3 +118,35 @@ T5 (2508.10070, peak statistics)
   a factor 3 in a_end.
 - S.5 Spin at delta = 0.1, sigma_H = 0.01: 1707 a*(2) = 0.13, 2507 zeta^2/delta^(5/2) =
   0.20, 2508 typical 0.043 (sigma_H/6)^(1/2) = 0.0018 and zero for an aligned ellipsoid.
+
+### Outcome of the full check run A-emd-pbh-20261115-113446-024989f (35 checks, 4 failed)
+
+Passed: T1.1 (normalisation 1.00000000), T1.2a (E-bar 1.1817), T1.2c (0.01338, 0.1280), T1.3
+(KP 0.0220 vs "0.02"), T1.4a (1.0068 at 1e-3), T1.4b (2.018 at 0.1), T1.5 (Monte Carlo
+0.00092 +- 0.00002 / 0.01451 +- 0.00006 / 0.13966 +- 0.00017 vs 0.00091 / 0.01451 /
+0.13964), T2.1 (2.378), T2.2a-c, T2.3a (0.636), T2.3b (0.0405), T2.4b (0.986-1.000), T3.1-3,
+T4.1-3, T5.1 (2e-15), T5.2 (1.0840, 19.5 times 0.05556), T5.3 at all five sigma*
+(beta/sigma-bar^5 = 1.084, 1.122, 1.508, 2.769, 0.672; Mbar/M* = 14.70, 14.70, 14.71, 15.45,
+18.08 against 1.08, 1.12, 1.51, 2.77, 0.67 and 14.7, 14.7, 14.7, 15.5, 18.1). T1.6 (visual):
+my Fig. reproduces Fig. 1 of 1609.01588 (power law to sigma ~ 0.01, log beta0 = -0.85 at
+sigma = 1, crossing of the radiation curve near sigma ~ 0.08).
+
+Failed:
+- T1.2b 0.05555 vs 0.05556 and T2.2d 3.248e-14 vs 3.244e-14: last printed digit. T2.2e
+  (prefactors recomputed with E-bar = 1.182 exactly) gives 3.244e-14 but then 1.919e-7 instead
+  of 1.921e-7: the two coefficients of 1707.03595 were evaluated with different roundings of
+  E-bar. Immaterial (relative 2e-4 and 1e-3).
+- T2.4a beta0(2) numerical/semi-analytic = 1.41-2.30 for sigma = 1e-3-3.4e-3, not within 20
+  percent. Follow-up (interactive, then T2.5a in the next registered run): 1.408 at 1e-3,
+  1.072 at 1e-4, 1.015 at 1e-5, so the semi-analytic formula is the sigma -> 0 asymptote but
+  reached slowly (delta_th/sigma = 5.4, 11.7, 25). The paper's "agrees for sigma <~ 0.005"
+  refers to a log plot over 30 decades; my 20 percent band was the wrong reading of it.
+- T2.4c beta0(1) (q = sqrt2) numerical/semi-analytic = 0.65-1.38 for sigma = 0.0077-0.017.
+  Splitting the t integral at the kinks of max(z*, delta/(3t)) and tightening epsrel to
+  1e-10 changes nothing (3.01294e-138 both ways at sigma = 0.0077); the u integrand is smooth
+  (trapezoid on 41 points agrees with quad to 5e-4). At fixed delta_th/sigma = 25 the ratio is
+  1.02, 1.04, 1.07 for delta_th = 0.003, 0.0125, 0.05 but 0.65 for 0.192. Candidate cause
+  [JUDGEMENT]: the semi-analytic derivation keeps A ~ (9/10)(t/s3)^2 and drops
+  (3/2 + 2u^2)/s3^2, whose contribution to the exponent grows like delta_th^4/sigma^2 when
+  delta_th is held fixed. Prediction for T2.5b: the ratio keeps falling, below 0.65 at sigma =
+  0.006; refuted if it rises back towards 1.

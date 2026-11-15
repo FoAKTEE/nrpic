@@ -43,7 +43,7 @@ def thresholds_vs_e(e, sigmaH, aend):
                                                 np.nan)
     out["R3 Kerr bound (1707.03595)"] = np.full_like(e, C.spin_threshold(0, 1, sigmaH)[0])
     out["R8 dispersion (2211.13950)"] = np.full_like(e, float(C.vd_delta_th(sigmaH, 1, 1)))
-    out["R9 top hat zeta^(2/5) (2507.18312)"] = np.full_like(e, C.profile_threshold(2.5 * sigmaH))
+    out["R9 top hat (2507.18312)"] = np.full_like(e, C.profile_threshold(2.5 * sigmaH))
     out["R4 duration (1707.03595)"] = np.full_like(e, 1.0 / aend)
     return out
 
@@ -72,12 +72,20 @@ def main():
         cols = [fs.PAL["red"], fs.PAL["orange"], fs.PAL["green"], fs.PAL["blue"],
                 fs.PAL["yellow"], "grey"]
         for (k, v), col in zip(th.items(), cols):
-            axA.plot(e, v, color=col, label=k, ls="-" if k.startswith(("R1", "R2")) else "--")
+            axA.plot(e, v, color=col, ls="-" if k.startswith(("R1", "R2")) else "--")
+            if k.startswith(("R1", "R2")):
+                i = np.argmin(abs(e - 0.17))
+                axA.text(0.17, v[i] * (0.62 if k.startswith("R1") else 1.18), k, color=col,
+                         fontsize=7, ha="center")
+            else:
+                axA.text(0.248, v[-1] * 1.08, k, color=col, fontsize=7, ha="right",
+                         va="bottom")
         pp = np.linspace(-1, 1, 41)
         band = np.array([[C.hoop_threshold_delta(x, f * x) for f in pp] for x in e])
         axA.fill_between(e, band.min(1), band.max(1), color=fs.PAL["red"], alpha=0.2, lw=0)
-        axA.plot([0.2], [0.045 * MU_TO_DELTA], "*", color="k", ms=9,
-                 label="2609.14218 particles (1145)")
+        axA.plot([0.2], [0.045 * MU_TO_DELTA], "*", color="k", ms=9)
+        axA.text(0.195, 0.045 * MU_TO_DELTA, "2609.14218\nparticles", fontsize=7, ha="right",
+                 va="center")
         axA.annotate("", xy=(0.2, 2.6), xytext=(0.2, 0.95 * MU_TO_DELTA),
                      arrowprops=dict(arrowstyle="->", color="k", lw=1.0))
         axA.text(0.205, 2.45, "dust: horizon\nonly above", fontsize=7, va="top")
@@ -86,7 +94,6 @@ def main():
         axA.set_xlim(0, 0.25)
         axA.set_xlabel(r"ellipticity $e$  ($p=0$)", labelpad=-2)
         axA.set_ylabel(r"threshold $\delta_{\rm th}$ at horizon entry")
-        axA.legend(loc="lower right", fontsize=6, ncol=1)
         axA.text(0.01, 2.5, r"$\sigma_H=0.01$, $a_{\rm end}/a_H=100$", fontsize=8)
         summary["thresholds_sigmaH_0.01"] = {k: [float(v[0]), float(v[np.argmin(abs(e - 0.1))]),
                                                  float(v[np.argmin(abs(e - 0.2))])]
@@ -102,7 +109,8 @@ def main():
             a2 = C.spin_a2(1.0, s, d)
             ok = d >= C.spin_threshold(0, 1, s)[0]
             axB.plot(d[ok], a2[ok], color=col, label=fr"1707: $a_{{*(2)}}$, $\sigma_H={s}$")
-            axB.plot(d, C.profile_spin_rms(2.5 * s, d), color=col, ls="--")
+            ok9 = d >= C.profile_threshold(2.5 * s)
+            axB.plot(d[ok9], C.profile_spin_rms(2.5 * s, d[ok9]), color=col, ls="--")
             axB.axhline(0.043 * math.sqrt(s / 6), color=col, ls=":", lw=1.0)
         axB.plot([], [], color="k", ls="--", label=r"2507: $\zeta^2/\delta^{5/2}$")
         axB.plot([], [], color="k", ls=":", lw=1.0,
@@ -120,7 +128,7 @@ def main():
                  label=r"2211: $\sigma_v R<3M$  ($\sigma_{v,H}<1.5$)")
         axC.plot(hr, math.sqrt(0.3) * hr ** 2, color=fs.PAL["red"],
                  label=r"2507 virial  ($\sigma_{v,H}<0.548$)")
-        axC.set_xlabel(r"$H R$ on the initial slice", labelpad=-2)
+        axC.set_xlabel(r"$H R$ on the initial slice")
         axC.set_ylabel(r"critical $\sigma_{v}$ on the initial slice")
         axC.legend(loc="upper left", fontsize=7)
         axC.set_xlim(0, 1)
@@ -172,7 +180,7 @@ def main():
         summary["grid"] = "delta in [0.01, 1] (81 log), e in [0, 0.25] (51), p = 0"
         fig = plt.figure(figsize=(fs.FULL_WIDTH, 3.3))
         for k, s in enumerate((0.003, 0.01, 0.03)):
-            ax = fs.inch_axes(fig, 0.65 + k * 2.45, 0.5, 2.25, 2.6)
+            ax = fs.inch_axes(fig, 0.65 + k * 2.2, 0.5, 2.0, 2.5)
             V = maps[s]
             n = sum(np.nan_to_num(V[i]) for i in ids)
             im = ax.pcolormesh(dgrid, egrid, n, cmap="viridis", vmin=0, vmax=5, shading="nearest",
@@ -183,13 +191,15 @@ def main():
                        colors=[fs.PAL["orange"]], linewidths=1.5)
             ax.plot([0.045 * MU_TO_DELTA], [0.2], "*", color="w", ms=9, mec="k")
             ax.set_xscale("log")
+            ax.set_xticks([0.01, 0.1, 1])
+            ax.set_xticklabels(["0.01", "0.1", "1"])
             ax.set_xlabel(r"$\delta$", labelpad=-2)
             if k == 0:
                 ax.set_ylabel(r"$e$  ($p=0$)")
             else:
                 ax.set_yticklabels([])
             ax.set_title(fr"$\sigma_H={s}$", fontsize=9)
-        cax = fs.inch_axes(fig, 0.65 + 3 * 2.45 - 0.1, 0.5, 0.1, 2.6)
+        cax = fs.inch_axes(fig, 0.65 + 3 * 2.2 - 0.05, 0.5, 0.08, 2.5)
         cb = fig.colorbar(im, cax=cax)
         cb.set_label("criteria predicting collapse (of 5)")
         fs.save(fig, os.path.join(out, "scan_verdict_map"))

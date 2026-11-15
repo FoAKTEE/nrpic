@@ -145,8 +145,20 @@ def _beta0_tu(sigma, delta_th=0.0, epsrel=1e-7):
                                  epsrel=epsrel, limit=200)[0]
         # t > 0: the weight sits at t ~ 1/s3 for small sigma (1609.01588:1306-1309)
         f = lambda tau: integrand_t(tau / s3, u, Ek) / s3
-        pos = (integrate.quad(f, 0.0, 1.0, epsabs=0, epsrel=epsrel, limit=200)[0]
-               + integrate.quad(f, 1.0, np.inf, epsabs=0, epsrel=epsrel, limit=200)[0])
+        cuts = [0.0, 1.0]
+        if delta_th > 0:
+            # kinks where z* = delta_th/(3t): pi d t^2 + (2 pi d c - 12 E) t + pi d c^2 = 0
+            c = 2 * u / 3 + 1
+            qa, qb, qc = PI * delta_th, 2 * PI * delta_th * c - 12 * Ek, PI * delta_th * c * c
+            disc = qb * qb - 4 * qa * qc
+            if disc > 0:
+                for r in ((-qb - np.sqrt(disc)) / (2 * qa), (-qb + np.sqrt(disc)) / (2 * qa)):
+                    if r > 0:
+                        cuts.append(r * s3)
+        cuts = sorted(set(cuts))
+        pos = sum(integrate.quad(f, lo, hi, epsabs=0, epsrel=epsrel, limit=400)[0]
+                  for lo, hi in zip(cuts[:-1], cuts[1:]))
+        pos += integrate.quad(f, cuts[-1], np.inf, epsabs=0, epsrel=epsrel, limit=400)[0]
         return (1 - 4 * u * u) * (neg + pos)
 
     val = integrate.quad(inner, -0.5, 0.5, epsabs=0, epsrel=epsrel, limit=200)[0]
