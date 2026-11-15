@@ -35,8 +35,21 @@
  ],
  "slurm_job": "4434",
  "slurm_wall_limit": "00:50:00",
- "state": "submitted",
+ "state": "finished",
  "submitted_utc": "2026-11-15T15:28:45Z",
- "card_hours": null,
- "registration": "by hand (tracks/core/verify/ladder2/cards.py)"
+ "card_hours": 0.3442,
+ "registration": "by hand (tracks/core/verify/ladder2/cards.py)",
+ "slurm_state": "COMPLETED",
+ "runs": {
+  "prolate_m8": {
+   "log": "/data/haiyangw/nrpic/scratch/core/core-20261115-152845-5728b1d/prolate_m8/athena.20261115-080418.log",
+   "start": "2026-11-15T08:04:18-08:00",
+   "cpu_time_s": 1221.565,
+   "finished": true,
+   "last_time": 45.0,
+   "rc": "rc=0"
+  }
+ },
+ "wall_time_s": 1239,
+ "finished_utc": "2026-11-15T16:25:09Z"
 }

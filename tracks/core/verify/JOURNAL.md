@@ -430,3 +430,42 @@ period near 50 M and a swing that grows from +-0.004 in the first 50 M to +-0.05
 0.819 (half swing up to 0.022) - the growing oscillation of OPEN.md item 3, here at
 M/4 and with the stable runs also drifting down by about 0.01 in the last 100 M.
 Card time so far 1.19 card-hours (round 1).
+
+## 16:28Z Outcome: prolate collapse at finest cells M/8 (ladder row 3, second resolution)
+
+Card job 4434, run `core-20261115-152845-5728b1d` (exit 0, 1222 s athena cpu time, 0.344
+card-hours by sacct; predicted under 0.25: refuted, minor); analysis
+`core-20261115-162509-c691fb8` (`ladder2/prolate_compare.py`, M/16 = `runs/prolate/e09_v8`
+re-read by the same script: 32.00 M, 0.9291, 0.9666, 0.9489, 1203 at 27.75 M, as in
+LADDER.md). Figures `figs/prolate_resolution.png`, `figs/prolate_mosaic.png` (looked at;
+the copies of these two files committed in d74357f and a654cd7 were drafts from an
+unregistered dry test that compared e09_v8 with itself, now replaced).
+
+| quantity | M/16 (e09_v8) | M/8 (wave 2) |
+|---|---|---|
+| first apparent horizon (search every 0.25 / 0.5 M) | 32.00 M, M_AH 0.9291 | 32.25 M, M_AH 0.9249 |
+| largest M_AH (time) | 0.9666 (33.75 M) | 0.9570 (33.75 M) |
+| M_AH at 44.75 M | 0.9489 | 0.9444 |
+| largest Kretschmann scalar 20-31 M (time, z) | 1203 (27.75 M, -0.66 M) | 101 (26.25 M, +0.81 M) |
+| largest Kretschmann scalar over the run | 1203 (27.75 M) | 110 (37.0 M, near the origin) |
+| first particle removal; all removed | 33.78 M; yes | 35.34 M; yes |
+| largest sqrt(H-norm2) (time) | 6.31 (27.5 M) | 5.43 (32.0 M) |
+| largest MeshBlock count | 1352 | 1128 |
+
+(i) CONFIRMED: first horizon at 32.25 M, within 31.5-33.0 and one search interval (0.5 M
+at M/8) of the M/16 run; the paper's statement that detection times vary by less than
+0.1 M (main.tex line 975) cannot be tested at the 0.5 M cadence of this run.
+(ii) Partly REFUTED: the peak curvature is far below the M/16 value (101 against 1203,
+twelve times lower for a factor two in cell size, consistent with an unresolved caustic,
+main.tex 975) and on the axis within |z| < 3 M, but its maximum over the run is after the
+horizon (110 at 37 M), not in 25-30 M as I wrote; in 20-31 M the peak is at 26.25 M.
+(iii) The largest horizon mass is lower at M/8 (0.9570) than at M/16 (0.9666), the end
+value too (0.9444 vs 0.9489): the deficit shrinks with resolution (4.3 to 3.3 per cent at
+the maximum), so it is at least partly a mesh effect. Two resolutions do not give an
+order; a first-order extrapolation would still leave about 2.4 per cent [JUDGEMENT, not
+a measurement]. The particle number is the same in both runs, so its share is untested.
+(iv) CONFIRMED: all 10^4 particles removed (rest mass 1.0981 removed).
+Row 3, prolate part: horizon formation at the paper's time at two resolutions; the
+horizon-mass deficit falls with resolution but is 3 per cent at the finer one. Oblate:
+not run (source work, README request 2; reference potential ready).
+Card time so far: 1.19 + 0.34 = 1.53 card-hours.
