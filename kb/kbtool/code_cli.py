@@ -4,7 +4,7 @@ kbtool.cli:
     kb fetch-repos [--repo R ...] [--refresh] [--dry-run] [--work DIR]
     kb ingest repo [--repo R ... | --all] [--this [--ref REF]]     (routed from `kb ingest`)
     kb code "SYMBOL or text" [--repo R] [--kind function|class|param|file|text] [-k N] [--db PATH]
-    kb link add|list|check|load ...
+    kb link add|list|check|load|explicit ...
     kb watch upstream [--no-fetch]
 """
 import argparse
@@ -92,6 +92,15 @@ def cmd_link(a):
         rep = L.check_links(lay, a.file, db=a.db)
         sys.stdout.write(L.format_check(rep))
         return 0 if rep["n_bad"] == 0 else 1
+    if a.action == "explicit":
+        from .brief import load_github_manifest
+        from .paths import kb_manifest_dir
+        repos = [r["repo"] for r in load_github_manifest(os.path.join(kb_manifest_dir(), "github.tsv"))]
+        rows = L.explicit_links(lay, repos)
+        print("paper_id\tversion\tfile\tline\trepository\tin_manifest")
+        for r in rows:
+            print("\t".join(str(x) if x is not None else "" for x in r[:5]) + "\t" + ("yes" if r[5] else "no"))
+        return 0
     if a.action == "list":
         rows = L.list_links(lay, paper=a.paper, db=a.db)
         for r in rows:
@@ -140,7 +149,7 @@ def register(sub, data_root_getter=None):
     s.set_defaults(fn=cmd_code)
 
     s = sub.add_parser("link", help="K7: paper-code links (impl_links)")
-    s.add_argument("action", choices=("add", "list", "check", "load"))
+    s.add_argument("action", choices=("add", "list", "check", "load", "explicit"))
     s.add_argument("--paper")
     s.add_argument("--eq", help="equation label or number in the paper")
     s.add_argument("--repo")

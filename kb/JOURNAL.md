@@ -502,3 +502,43 @@ P5 The bare shallow clone of all 124 branch tips of IAS-Astrophysics/athenak and
 Counts as in K2-P7 within 1 % (papers by status identical; equation rows change by less than
 1 %); C4: of the 16 missing labels only the 13 checker artifacts remain; C1, C3, C5, C6 as
 before. Refuted by any change of the per-status paper counts or by a real missing label.
+
+### Outcome P5 (run kb-20261115-132754-bb3da03; snapshot kb-data/meta/github/watch/IAS-Astrophysics__athenak/20261115T132754Z.json)
+
+- 124 branches, none new, removed or moved since the clone record of 13:02:32 UTC; main
+  c5a0d7f9155a (2026-09-11). Bare shallow clone of all tips: 2.9 s, 17 MB; inspection of the
+  124 branches with git plumbing 4 min (wall time of the run 245.6 s).
+- (a) held: no branch has a line with tmunu or deposit under `src/particles`. (b) held:
+  7 branches read the metric in `src/particles` (z4c/adm lines): particles_gr and
+  temp/static-monopole (pushers boris, only_gr, full_gr, gca_gr; e.g. `ADM[3][3]` in
+  `gca_gr.cpp`), and circumbinary_radiation, circumbinary_stable, flash-beam,
+  port-radsrc-rr-tweaks-to-dyn-radiation, project/m1_vs_boltzmann (a null_geodesic pusher
+  that requires an `<adm>` block). This corrects brief line 130 for particles_gr, which says
+  its particle module has no reference to adm (the brief's search was presumably case
+  sensitive; the hits are `ADM` in code and comments) [VERIFIED: watch snapshot, report
+  `kb/reports/code_watch_upstream.md`]. (c) held: nrpic or vlasov nowhere under `src/` on any
+  branch; `src/z4c` mentions particles on no branch. (d) held: no branch name with pic,
+  vlasov, nrpic or deposit. (e) held.
+- Answer to the package question: on 2026-11-15 13:28 UTC the particle-spacetime coupling of
+  arXiv:2611.12831 (particles handing their stress-energy to Z4c) is not public in
+  IAS-Astrophysics/athenak on any of its 124 branches. The brief's two unread branches
+  (id_solve_porting 1319500b2037, project/collapse_relaxation 8f19675f6ac1) are now read:
+  stock particle module, no coupling. Modules that mention tmunu on main: dyn_grmhd, mesh,
+  outputs, tasklist, z4c.
+
+### The first production ingest stopped, and why (run kb-20261115-132750-bb3da03)
+
+- The re-ingest replaces a repository's rows. With `PRAGMA foreign_keys = ON` and no index
+  on `symbols.file_id`, `code_chunks.file_id`, `params.file_id`, every deleted
+  `code_files` row scans those tables (300k + 157k rows) for references: AthenaK did not
+  finish in 3 min 46 s where the first ingest (nothing to delete) took 6 s. I stopped it by
+  its process id; the transaction rolled back. Migration `0004_code_indexes.sql` adds the
+  indexes (schema version 4); the ingest was restarted as run kb-20261115-133232-3f7f25a.
+
+### Prediction P6 (before `kb link check` on the production index)
+
+P6 All 25 curated links of `kb/curated/paper_code_links.tsv` pass `kb link check`: each line
+   range exists in the stored source of 2611.12831 v1, each equation label lies in its
+   range, each symbol is in the index of local/nrpic at the stated path, and each of the
+   parameters named is read by the code with that block and name. Refuted by any link
+   with a problem that is not a typing error of mine in the table.
