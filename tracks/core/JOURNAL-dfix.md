@@ -181,3 +181,48 @@ Outcome of T2, second version (run core-20261115-154901-d8ad7ec; figure
 Not refuted. Request D `restart-skips-dump` is met for every output kind with a `dt`
 schedule. Line of `scripts/README.md` "Every wall-clock stop ... is skipped" is corrected
 with this change.
+
+### T3 Accretion diagnostics (requests D `accretion-diagnostics`, `analytic-metric-excision`)
+
+Implemented (new file `athenak/src/particles/nrpic_accretion.cpp`; hooks listed in
+`tracks/core/interfaces/REQUESTS_ADF.md`): record of removed particles
+(`removal_record`), counts of particles, rest mass and energy m E through coordinate
+spheres about a fixed centre or a puncture tracker (`acc_nsphere`, `acc_radius<n>`,
+`acc_tracker`), pericentre counter in a new integer slot (`peri_count`), the lapse
+threshold and the removal of flagged particles for the analytic metrics. E is
+alpha W - beta^i u_i at the particle. New options are read only if present, so the
+parameter dump inside the restart files of existing inputs does not change.
+
+Set-up: `problems/tests/accretion_static.athinput` and
+`tracks/core/analysis/dfix/t3_accretion.py`: Schwarzschild in Kerr-Schild coordinates,
+static mesh metric (dx = 0.25 M) and the analytic metric; three dust shells of 64
+particles at rest at r0 = 6, 8, 11 M and two families of four bound orbits, (p, e) =
+(10, 0.3) and (9, 0.2), started at the apocentre; lapse threshold 0.62 (r = 1.2489 M);
+spheres at 4 and 10 M; 800 M, step 0.05 M. References, computed by the script before
+the run, independent of the code (closed forms and quadrature in Schwarzschild
+coordinates, mapped to Kerr-Schild time): E = (1 - 2/r0)^(1/2) = 0.816497, 0.866025,
+0.904534; times to reach the threshold 19.2874, 28.9256, 45.4598 M; pericentre times
+172.60, 520.87 M and 152.12, 458.43, 764.74 M; crossings of r = 10 M inwards at 16.82 M
+(shell 3), 111.5, 459.8 M and 63.5, 369.8, 676.1 M, outwards at 235.1, 583.3 M and 242.2,
+548.5 M.
+
+Predictions (written before the run):
+- sphere 4 M at the end: 192 inwards, none outwards, sum of m E 0.165572 (mesh within
+  1e-3 relative: the metric is interpolated; analytic within 1e-5);
+- sphere 10 M at the end: 84 inwards (64 + 4 x 2 + 4 x 3), 16 outwards, sums of m E
+  0.077018 and 0.015311 (same tolerances);
+- at every record, for both spheres: (rest mass inside now) - (inside at t = 0) =
+  m_in - m_out - m_excised to rounding (1e-15), and the same for the numbers exactly;
+- removal record: 192 records, all reason 2 (lapse), none of species 3, 4; each at a
+  time in [t_exc, t_exc + 0.05 M] within 0.01 M (analytic) or 0.1 M (mesh), at
+  r <= 1.2489 M, lapse below 0.62, pericentre count 0; E at removal equal to the exact
+  value within 1e-4 (analytic) and within 5 per cent (mesh: five cells from the
+  singularity);
+- pericentre counters in the snapshot at 800 M: 2 for each particle of the first
+  family, 3 for the second, 0 for every remaining infall particle (there are none left);
+  the history counts of "one or more" and "two or more" passages step at the exact
+  pericentre times;
+- stopped at cycle 8000 and continued: `acc.acc.hst`, `acc.removed.bin`,
+  `acc.nrpic.hst` and the last snapshot identical to the uninterrupted run, byte for
+  byte.
+Refuted if a count differs, if the identity fails, or if the continued run differs.

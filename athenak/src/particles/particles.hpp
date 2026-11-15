@@ -9,6 +9,7 @@
 //  \brief definitions for Particles class
 
 #include <cstdint>
+#include <cstdio>
 #include <map>
 #include <memory>
 #include <string>
@@ -18,6 +19,7 @@
 #include "parameter_input.hpp"
 #include "tasklist/task_list.hpp"
 #include "bvals/bvals.hpp"
+#include "particles/nrpic_external.hpp"
 
 // forward declarations
 
@@ -36,7 +38,9 @@ enum class ParticleType {cosmic_ray, nrpic};
 // <particles> zero_mass = null); m = -t_e < 0: null particle (light ray) emitted at the
 // time t_e, whose proper-time slot holds the affine parameter
 enum NrpicRealIndex {IPM=6, IPTAU=7, NRPIC_NRDATA=8};
-enum NrpicIntIndex  {PSP=2, NRPIC_NIDATA=3};       // species
+// species; state of the pericentre counter (2 x number of passages + 1 while the
+// particle approaches the centre; nrpic_accretion.cpp)
+enum NrpicIntIndex  {PSP=2, PPERI=3, NRPIC_NIDATA=4};
 // Layout of the metric arrays seen by the pushers
 enum NrpicMetricIndex {NRM_ALP=0, NRM_BX=1, NRM_BY=2, NRM_BZ=3, NRM_GXX=4, NRM_GXY=5,
                        NRM_GXZ=6, NRM_GYY=7, NRM_GYZ=8, NRM_GZZ=9, NRM_NVAR=10};
@@ -154,6 +158,37 @@ struct NrpicCollideOptions {
   std::uint64_t seed = 0;    // seed of the run (<job> rng_seed)
   int face_maxlev = -1;      // finest level of the tabulated face positions
   bool face_warned = false;  // the warning about MeshBlock edges has been printed
+};
+
+//----------------------------------------------------------------------------------------
+//! \struct NrpicAccOptions
+//! \brief options of the accretion diagnostics (nrpic_accretion.cpp): record of removed
+//! particles, particle flux through coordinate spheres, pericentre counter
+
+struct NrpicAccOptions {
+  bool on = false;           // spheres or pericentre counter: the push is bracketed
+  bool record = false;       // <particles> removal_record: <basename>.removed.bin
+  int nsphere = 0;           // acc_nsphere: number of flux spheres (at most 4)
+  Real radius[4] = {0.0, 0.0, 0.0, 0.0};   // acc_radius1 .. acc_radius4 (coordinate)
+  int tracker = -1;          // acc_tracker: puncture tracker that carries the centre
+  Real center[3] = {0.0, 0.0, 0.0};        // acc_x1 .. acc_x3: fixed centre otherwise
+  bool peri = false;         // peri_count: count pericentre passages of each particle
+  Real peri_rmax = -1.0;     // > 0: only passages closer to the centre than this
+  int dcycle = 0;            // acc_dcycle: cycles between records of <basename>.acc.hst
+};
+
+//----------------------------------------------------------------------------------------
+//! \struct NrpicExternalOptions
+//! \brief external gravity of the Newtonian mode (nrpic_external.hpp): a fixed point
+//! mass and the linear acceleration of a homogeneous background
+
+struct NrpicExternalOptions {
+  Real pm_mass = 0.0;        // newton_pm_mass: mass of the point mass (0: none)
+  Real pm_x[3] = {0.0, 0.0, 0.0};          // newton_pm_x1 .. x3: its position
+  Real pm_soft = 0.0;        // newton_pm_soft: softening length s of -G M/(r^2 + s^2)^(1/2)
+  bool pm_soft_physical = false;           // newton_pm_soft_frame = physical: s/a
+  Real bg_t0 = 0.0;          // newton_bg_t0 > 0: acceleration -(2/9) x/(t0 + t)^2 of
+                             // a matter-era background (no expansion of the coordinates)
 };
 
 //----------------------------------------------------------------------------------------
@@ -318,7 +353,32 @@ class Particles {
   void NrpicCollideInit(ParameterInput *pin);
   TaskStatus NrpicCollide(Driver *pdriver, int stage);
 
+  // ---- accretion diagnostics (particles/nrpic_accretion.cpp) ----
+  NrpicAccOptions acc;
+  Real acc_c0[3] = {0.0, 0.0, 0.0};   // centre at t^n
+  Real acc_c1[3] = {0.0, 0.0, 0.0};   // centre at t^{n+1}
+  DvceArray1D<Real> acc_dold;         // distance of each particle to the centre at t^n
+  // per sphere, summed since the start: number, rest mass and energy m E of the
+  // particles that crossed inwards (0-2) and outwards (3-5)
+  Real acc_flux[4][6] = {{0.0, 0.0, 0.0, 0.0, 0.0, 0.0}, {0.0, 0.0, 0.0, 0.0, 0.0, 0.0},
+                         {0.0, 0.0, 0.0, 0.0, 0.0, 0.0}, {0.0, 0.0, 0.0, 0.0, 0.0, 0.0}};
+  Real acc_e_excised = 0.0;           // sum of m E of the excised particles
+  bool acc_restart_read = false;      // the state above came from a restart file
+  void NrpicAccInit(ParameterInput *pin);
+  void NrpicAccCentre(Real c[3]);
+  void NrpicAccSaveCentre();
+  void NrpicAccBeforePush();
+  void NrpicAccAfterPush();
+  void NrpicAccRecordRemoved(const bool after_push);
+  void NrpicAccStartRecord();
+  bool acc_after_push = false;        // NrpicRemoveFlagged is called behind a push
+  void NrpicAccWriteHistory(Real time, int ncycle, bool header);
+  void NrpicAccWriteRestart(std::FILE *fp);
+  void NrpicAccReadRestart(std::FILE *fp, const int np, HostArray2D<int> &ih);
+  void NrpicAccWriteSnapshot(std::FILE *fp);
+
   // ---- Newtonian mode of the nrpic module (particles/nrpic_newton.cpp) ----
+  NrpicExternalOptions next;        // fixed point mass, background acceleration
   // The potential of the Poisson equation is held in the lapse slot of met1 (the
   // other slots hold the flat metric), so that the deposit and the interpolation of
   // the relativistic mode serve unchanged.
@@ -341,6 +401,8 @@ class Particles {
   std::vector<double> nw_state_restart;    // diagnostic state read from a restart file
 
   void NrpicNewtonInit(ParameterInput *pin);
+  nrpic::NewtonExternal NrpicNewtonExternal(const Real time);
+  Real NrpicNewtonScale(const Real time);
   void NrpicNewtonInitialize();
   void NrpicNewtonPotential();
   void NrpicNewtonKick(const Real dt_kick, const Real time);
