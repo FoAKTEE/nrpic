@@ -224,3 +224,43 @@ string `$NRPIC_RUN_DIR` as output directory (my quoting; nrpic-run does not expa
 its files landed in a directory of that name in the worktree. They held paper text (reading
 sample), were never committed and were deleted; the manifest stays on record. The script now
 takes its output directory from the environment; rerun below.
+
+### W2 outcome (run kb-20261115-181544-94f68f2; rows.tsv, summary.json, sample.txt in its scratch directory)
+
+- Locators: held. 372 of 372 locators lie inside their stored files (my own line count).
+- Number verdicts: refuted as worded, and the cause is my instrument. 24 statements the helper
+  calls "all numbers in the cited lines" fail my check. I read 16 of them at the source: in
+  all 16 the helper is right and my extraction or matcher is wrong (percent and rounding forms:
+  0.9 vs "90\%", 22.5 vs "22.536", 0.226 vs "0.2260", 0.001 vs "0.1\%", 0.1 vs "10^{-1}";
+  single-line locators inside the text taken for numbers: 854, 785, 631, 606, 462, 509, 506,
+  808; an arXiv id fragment 0110561). For the manual entries (errata of C, D) the helper checks
+  the hand-written expected values, not every number of the statement, so the tracks' own
+  values (D's 2.59, 9.2, +45/+14 per cent; C's corrected 0.45, 0.52) are rightly not sought.
+- Of the helper's 13 "number not found": 12 confirmed by reading (track-derived or eye-read
+  values, a truncation 0.98 of the printed 0.988, a range read as numbers). One is wrong:
+  BKRS collision_deep, 1804.02911 `mnras.tex:762` prints "about 5-7 \%", so 0.07 IS at the
+  locator; the draft answer to F says otherwise and is corrected before posting.
+- My matcher also has one false positive (an exponent alone matched: 4.0e-3 "found" via
+  2.40464 x 10^{-3}); the helper rightly flags 4.0e-3 as not printed.
+- Reading sample: held, 12 of 12 statements supported by the cited lines as worded
+  (2508.10070 x2, 2404.16270 x2, 1604.06065, 2403.15126, 1901.04498, 1804.02911, 2609.14218 x2,
+  2402.02178, 2507.18312).
+- Also confirmed: the claim id ranges in the nine drafts equal db/current (A 1-170, B 171-228,
+  C 229-303 and 304-331, D 332-420, F 421-452, core 453-602, E 603-609, C errata 610-618); the
+  six fetched papers have status ok and their source.bin hashes equal the records; the two watch
+  snapshots (13:27:54Z, 15:46:46Z) have the same 124 tips and main c5a0d7f. By my own count of
+  numbered environments in 2502.06783 `main_V2PRD.tex`, line 320 lies in equation 23
+  (label eq:eqInitialConditions, starting line 317) and equation 17 is eq:Bardeen (line 248),
+  the definition of Psi_G, which may be what E's "(17)" refers to.
+
+### W4 prediction: independent recount of the claims helper's QA numbers (snapshot kb-20261115-621430e)
+
+Own SQL and counter (`w2_claims_check.py`), read-only. Expected: papers not ok 25 (review 23,
+pdf 1, failed 1); bibliography entries with an arXiv id 38775 of 64712 (59.9 %); distinct
+(citing, cited arXiv) edges 38406 with 5700 inside the corpus (14.8 %); claims fulltext 507,
+to_verify 73, judgement 37, background 1, statuses checked 29, located 516, partial 33,
+unlocated 39, unresolved 1; no arXiv id stored in two versions. C8: on the sample papers whose
+source is one .tex without \input, my counter equals the database wherever the helper counted
+no shorthand macro (my counter expands none). Reading audit of 10 unchecked fulltext claims
+(seed 20261116): at least 9 supported. Refuted by any other count, a difference on a
+shorthand-free single-file paper, or fewer than 8 supported claims.
