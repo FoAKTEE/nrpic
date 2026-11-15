@@ -77,3 +77,57 @@ C3. Puncture region (r < 3): no convergence claimed (the throat at rbar = 0.52 M
 Refuted by: a transition residual that does not fall, or exceeds 10 times the offline
 value at the same spacing (that would point to a mismatch in how the code assembles
 K_ij = psi^4 [...] with the puncture, a sign, or the mixed-component convention).
+
+## 2026-11-15, entry 4: outcomes of entries 1-3
+
+Symbolic (run D-bh-dress-20261115-042626-f3da881, 48 identities, all pass):
+- S1 confirmed. The multipliers of the identity are dm/dl = 4 pi R^2 (rho R' - S_l R KT)
+  + (R^2 R'/4) Ham - (R^3 KT/2) Mom (my first guess of the second multiplier, -R^2 KT/2,
+  was wrong by a factor R; the script now checks -R^3 KT/2).
+- S2 confirmed: Misner-Sharp relation and KL = d(R KT)/dR for every slice t = T(R);
+  alpha = W and beta^R = alpha R KT for the stationary slicing; T'(R) of the f family.
+- S3 confirmed; the expansion identities pass numerically at three points (sympy cannot
+  remove the square-root branches symbolically) and the product rule with general m
+  symbolically.
+- S4 confirmed: a = 0.976592 < 1, so m_p = 1.023969 M, u(0) = -0.023408 (data-set run
+  D-bh-dress-20261115-042653-f3da881). Item 2's psi = 1 + m/(2 rbar) is refuted for the code's
+  normalization.
+- S5 confirmed.
+
+Offline check (run D-bh-dress-20261115-042704-f3da881):
+- N1 partly as predicted, partly mis-specified. At the spacings I predicted
+  (0.1, 0.05, 0.025 M) the 1D Hamiltonian residual of the transition is already at the
+  round-off floor, so I changed to spacings per region (0.04 to 0.005 M inside rbar(R0),
+  0.8 to 0.1 M beyond) before the registered run. Then: momentum residual fourth order
+  (3.80/3.95/3.99 transition, 3.44/3.61/3.85 inner edge, 3.60/3.74/3.93 outer edge); the
+  Hamiltonian residual is fourth order in the transition (3.92-3.98) and at round-off
+  where psi is harmonic or 1. Not predicted: the radial fourth-order Laplacian
+  D2 + (2/r) D1 is exact for psi = a + b/r (D2(r psi) = r D2 psi + 2 D1 psi for these
+  stencils), so the 1D test is blind in the puncture region; the 3D test covers it.
+- N2 confirmed: 3D orders 3.85-4.07 (finest pair) in all seven boxes, 3.49 for the
+  inner-edge momentum residual at the coarsest pair (pre-asymptotic, C-infinity step).
+- N3 confirmed: table error 1.0e-9 relative (KL), 6.5e-13 (u); table- and exact-field 3D
+  residuals agree within 11 per cent (largest at h = 1/16 M, where the table error first
+  shows), except where both are at round-off. Not predicted: the lapse column is
+  interpolated to only 4.5e-6 next to rbar = 0 (alpha = psi^-2 ~ rbar^2/(a rbar + b)^2);
+  harmless (gauge), and `lapse = precollapsed` gives the same lapse exactly.
+- N4 confirmed: throat at rbar = 0.524256 M = M/(2 a^2); no anti-trapped sphere
+  (figs/es_expansions.png, looked at).
+
+Start-time check inside AthenaK (runs D-bh-dress-20261115-043002-d51c7f2,
+D-bh-dress-20261115-043033-4df1e76, analysis D-bh-dress-20261115-043406-4df1e76):
+- C1 confirmed in its refutation clause, and the code is far below my fourth-order values:
+  in the box "mid transition" max |H| 8.4e-9 -> 1.4e-10, max |M| 2.4e-8 -> 4.4e-10 between
+  dx = 1 and 1/2 M (order 5.9, 5.8; the code's derivative stencils are of higher order).
+  Over the whole region 4 < r < 30 (which includes the steep start of the transition) the
+  orders are 5.3 (H) and 4.7 (M). So nrpic_cf assembles K_ij = psi^4 [...] with the full
+  psi (table + puncture) and the mixed components as the interface says.
+- C2 confirmed: E - rho at most 1.1e-13 (relative 3e-8, float32); at the inner edge H
+  order 4.9, M order 3.2 (max |M| 1.1e-5 -> 1.1e-6; offline at h = 1/2 M: 2.4e-6).
+- C3 as expected: H of order 1 near the puncture at both spacings.
+Figures looked at: figs/es_profiles, es_expansions, es_reference, es_particles,
+check_1d, check_3d, code_t0.
+
+Data set for the first run regenerated with plain-float header values as run
+D-bh-dress-20261115-043445-b782009 (table and particle rows byte-identical to the checked
+ones: sha256 of the table rows 815cc84f..., particle files equal by cmp).
