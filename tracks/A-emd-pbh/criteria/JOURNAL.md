@@ -172,3 +172,106 @@ Failed:
 - T2.5b: 0.656 (0.0077), 0.398 (0.006): the prediction (keeps falling below 0.65) held. The
   candidate cause stays [JUDGEMENT] until the dropped term is put back into the asymptotic
   evaluation.
+
+## 2026-11-15  helper criteria2 (wave 2)  session 1
+
+Task: amplitude conversion in `predict.py` with a test; the spherical LTB profile of
+arXiv:2609.14218 in expball-compatible form with its threshold statement; the four failures
+of wave 1 examined; prediction tables for the periodic scouting runs S1/S2 and for SR-1.
+
+### Sources read for this session
+
+2609.14218 v1 MDPBH.tex 480-550 (initial data, H_i = 5k at 549), 552-830 (LTB metric 564,
+equation 573, S(x) 593-619, t_b = 0 at 625, m(r) 680, ktilde(r) 695, profile 704, r_m 709,
+entry 714, t_H 718, singularity time 743, nakedness procedure 748-753, threshold 766-768),
+833-983 (aspherical profile 839, D 892, eigenvalues 907-908, hoop line 913-918);
+2507.18312 v3 Main.tex 150-220 (compaction function and delta_m, 194-205; Gaussian K, 188);
+1707.03595 v4 Spin_PBH.tex 1285-1365 (semi-analytic formulas and the agreement statements),
+1403-1425 (caption of the production-rate figure: I = 1, q = sqrt 2), 1811-1925 (appendix:
+derivation of the semi-analytic formula, A ~ 9t^2/(10 s3^2) for t >~ 1);
+1609.01588 v2 apj_nonsphericalpbh.tex 1300-1345 (derivation of 0.05556, E-bar).
+The figure of 1707.03595 (`WsWide20170622v2.eps`, a GIMP raster) was decoded as data by a
+script of mine in `scratch/A-emd-pbh/tmp/criteria2/eps_raster.py` (ASCII85 + run-length, no
+PostScript interpreted) and viewed: log10 beta0 from -30 to 0, sigma_H from 1e-5 to 1; the
+2nd-order curves are drawn from sigma_H ~ 2.5e-4, the 1st-order curves from ~0.017 (where
+they leave the frame at -30). Not committed (third-party figure).
+
+### Exploratory numbers (interactive, not registered; repeated in the registered runs below)
+
+mpmath (30 digits): E-bar = 1.1816596669; c = 0.0555549716; the code's `Ebar()` gives the
+same 1.1816596669 to 1e-15. **The wave-1 entry above that says "my E-bar = 1.18174" and
+"c = 0.05556 needs E-bar = 1.18168" is wrong in both numbers** (1.1817 was the four-decimal
+print); the true distance of c from the printed 0.05556 is 5e-7 relative, below the
+rounding boundary 0.055555 by 2.8e-8.
+
+### Predictions (written before any run of this session)
+
+A. Amplitude conversion (`predict.py: amplitude_measures`, test `test_criteria2.py`):
+- A1 For ln Psi = (mu/2) exp(-k^2 r^2/6) the central linear contrast at entry is
+  delta_c = 12 mu/5 and the mean inside r_m is deltabar = 12 mu/(5 e); quadrature of
+  -(2/5) r_m^2 lap(zeta) reproduces both to 1e-10 (ratio = Euler's e).
+- A2 On a Cartesian grid with e = 0.2, p = 0 and with e = 0.25, p = -0.1: the ball average of
+  the same field inside r_m equals 12 mu/(5e) within 2e-3 (voxel error), the Hessian at the
+  centre gives the eigenvalues (4 mu/5)(1+3e+p, 1-2p, 1-3e+p) of MDPBH.tex:908 at
+  k^2/(aH)^2 = 6 within 1e-4: the anisotropic part does not change either measure.
+  Refuted if the ball average moves with e or p by more than the voxel error.
+- A3 2507.18312:188 consistency: zeta(0) = (5e/12) delta_m with delta_m = deltabar(mu)
+  returns mu to 1e-12 (the Gaussian K of 2507.18312 is the same Gaussian zeta).
+- A4 Nonlinear compaction C_max = (3/5)[1 - (1 + r zeta')^2] at r_m (MDPBH.tex:695, 709 with
+  2507.18312:198-205) = deltabar (1 - mu/e): 0.2560 at mu = 0.33; the maximum over r on a
+  fine grid is at k r = sqrt 6 and equals the closed form to 1e-9.
+- A5 The hoop line: 12/5 hhat(0.2, 0) from MDPBH.tex:918 (own implementation) equals
+  `hoop_threshold_delta(0.2, 0)` = 1.084 to 1e-12, i.e. R1's delta is the central contrast.
+
+L. LTB profile of 2609.14218 in expball form (`ltb2609.py`, same test file):
+- L1 Linear limit (mu = 1e-4, slice with H R_m = 0.3): Delta(R) = C(r)/(H rhat)^2 (rhat = r
+  Psi^2) to relative 1e-3.
+- L2 Crunch times of `expball.exact.Shells` on a Ball made with the profile equal
+  t_s(r) = (pi/3) m ktilde^(-3/2) of MDPBH.tex:743 (own implementation, 2609 conventions) to
+  1e-8 relative for shells inside the cutoff, mu in {0.01, 0.03}.
+- L3 Areal radius of the shells from `expball.exact` equals R = r m^(1/3) t^(2/3) S(x) of
+  MDPBH.tex:593-619 (own implementation of S) to 1e-8 at three times.
+- L4 The expball ball (H R_b < 1, every shell expanding on the slice: Delta < 9pi^2/16 - 1)
+  holds mu only up to mu_max ~ 0.443 (H R_b)^2/q^2: 0.040 +- 0.004 for q = R_b/r_m = 3 and
+  0.090 +- 0.009 for q = 2 at H R_b = 0.9; the binding condition is the turnaround of the
+  central shell before the slice. So the LTB threshold mu_c in (0.32, 0.33] of
+  MDPBH.tex:766-768 cannot be tested in the ball; it belongs to the periodic box. Refuted
+  if mu_max is outside these bands (then my reading of the binding constraint is wrong).
+- L5 No shell crossing before the central crunch for mu <= 0.5 (t_s(r) increasing).
+
+F. The four failures of wave 1:
+- F1 T1.2b: c = 0.0555549716 rounds to 0.05555; the paper's 0.05556 is what a two-step
+  rounding (to 0.0555550, then to four digits) gives; any E-bar in [1.1816170, 1.1816595]
+  gives it; the exact E-bar lies 1.7e-7 above that interval. Explained, not a code error.
+- F2 T2.2d: the ratio of the two printed prefactors of 1707.03595 (1.921e-7/3.244e-14),
+  which does not depend on E-bar, differs from the exact ratio 0.4^6/(12/125)^9 by 1.2e-3,
+  three times the largest rounding effect (4.1e-4): no single E-bar gives both. 1.921e-7
+  needs E-bar in [1.18163, 1.18176] (contains the exact value), 3.244e-14 needs
+  [1.18195, 1.18202] (contains 1.182). Explained: the paper used two values of E-bar.
+- F3 T2.4a, corrected to what the paper states (agreement on its figure, 30 decades): over
+  the window it plots (beta0(2) >= 1e-30, sigma_H <= 0.005) max |log10(num/semi)| <= 0.5;
+  I expect 0.36 near sigma_H = 0.0034-0.005, and the ratio falling monotonically to 1 as
+  sigma_H -> 0 (T2.5a). Refuted if the band is exceeded.
+- F4 T2.4c, corrected likewise: window beta0(1) >= 1e-30 (sigma_H >~ 0.017) to 0.04;
+  max |log10 ratio| <= 0.5 (expected <= 0.2).
+- F5 T2.6, the cause of the 1st-order drift (wave 1, [JUDGEMENT]): with I2 the [t2, inf)
+  part of the appendix integral (1707.03595, eq. t-integral) evaluated with the exact A and
+  with A ~ 9t^2/(10 s3^2): (a) numerical beta0(1) / I2(exact A) = 1 within 2 % at
+  sigma_H = 0.006, 0.0077, 0.01, 0.017; (b) I2(exact A)/I2(approx A) < 1, falling towards
+  small sigma_H, and equal to numerical/semi-analytic within 10 %; (c) I2(approx A)/semi-
+  analytic is constant within 10 % over the same sigma_H. Refuted if (a) or (b) fails.
+
+P. Prediction tables (`scouting_table.py`):
+- P1 SR-1 (data set 2t): the homogeneous core (Delta = 1 inside R_i = 2.4, H = 1/16) has the
+  linear contrast 0.5642 on the slice and delta_H = 0.02015 at the horizon entry of its
+  edge; criteria R5 (exact top hat of 2507.18312) then puts R = 2M of the core edge at
+  tau = 44.381, equal to expball's exact value to 1e-6 relative (both are the same closed
+  FLRW region). Refuted beyond 1e-6: then the mapping (Delta, H R) -> delta_H is wrong.
+  R1 for a sphere (Zel'dovich point collapse at a/a_H = 3/delta) comes at a/a_H ~ 149,
+  after the run's end (crunch at a/a_H ~ 84): the Zel'dovich time is 1.8 times the exact one.
+- P2 S1 (mu = 0.5, e = 0.2, eps_i = 1, 64^3 lattice): R1 yes (mu > 0.452, margin 10 %); top-hat
+  time of the compaction shell ~ 7.5 t_H (periodic helper's P0); spherical LTB (e = 0) of the
+  same mu: first trapped sphere earlier than the top-hat time of r_m (inner shells are denser).
+  S2 (mu = 0.03): R1 no; top-hat time ~ 508 t_H > 250 t_H; R4 at t_end = 250 t_H is "yes" in
+  the central measure (0.072 > 0.0252) and marginal in the mean (0.0265 > 0.0252);
+  2609.14218's particle bracket (0.045, 0.05] says no.

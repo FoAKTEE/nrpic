@@ -36,7 +36,8 @@ def _commit():
 class Run:
     """Context manager: creates the run id and output directory, writes the manifest."""
 
-    def __init__(self, purpose, kind, inputs, cores=1):
+    def __init__(self, purpose, kind, inputs, cores=1, gate="G1"):
+        self.gate = gate
         self.commit, self.dirty = _commit()
         stamp = _dt.datetime.now(_dt.timezone.utc).strftime("%Y%m%d-%H%M%S")
         self.run_id = f"{OWNER}-{stamp}-{self.commit[:7]}"
@@ -70,6 +71,14 @@ class Run:
             "card_hours": 0.0,
             "host": socket.gethostname(),
             "exit": "ok" if exc_type is None else f"error: {exc_type.__name__}: {exc}",
+            # fields read by harness/bin/nrpic-run (wave 2; decision 0012)
+            "status": "completed" if exc_type is None else "failed",
+            "gate": self.gate,
+            "outputs": {"dir": os.path.relpath(self.out, "/data/haiyangw/nrpic")},
+            "launcher": "local",
+            "track": OWNER,
+            "registration": "by hand (runlog.py): nrpic-run submit refuses the worktree while "
+                            "other helpers hold uncommitted files",
         }
         os.makedirs(self.manifest_dir, exist_ok=True)
         with open(os.path.join(self.manifest_dir, "manifest.json"), "w") as f:

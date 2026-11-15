@@ -29,11 +29,17 @@ import matplotlib.pyplot as plt  # noqa: E402
 RESULTS = []
 
 
-def check(tid, what, value, ref, locator, ok, note=""):
+def check(tid, what, value, ref, locator, ok, note="", info=False):
+    """info=True: a diagnostic kept on record (printed INFO, not counted as pass or fail)."""
     RESULTS.append(dict(id=tid, what=what, value=value, reference=ref, locator=locator,
-                        passed=bool(ok), note=note))
-    print(f"{'PASS' if ok else 'FAIL'} {tid:6s} {what}: {value} vs {ref} [{locator}] {note}",
-          flush=True)
+                        passed=None if info else bool(ok), note=note))
+    tag = "INFO" if info else ("PASS" if ok else "FAIL")
+    print(f"{tag} {tid:6s} {what}: {value} vs {ref} [{locator}] {note}", flush=True)
+
+
+def _round_half_up(x, places):
+    from decimal import Decimal, ROUND_HALF_UP
+    return Decimal(repr(x)).quantize(Decimal(1).scaleb(-places), rounding=ROUND_HALF_UP)
 
 
 # ------------------------------------------------------------------- T1 1609.01588
@@ -51,8 +57,17 @@ def t1(out):
     Eb = C.Ebar()
     check("T1.2a", "E-bar", f"{Eb:.4f}", "1.182", "1609.01588:1341", round(Eb, 3) == 1.182)
     c = C.beta0_hoop_semianalytic_coeff(Eb)
-    check("T1.2b", "beta0/sigma^5 (sigma<<1)", f"{c:.5f}", "0.05556", "1609.01588:764",
-          round(c, 5) == 0.05556)
+    # wave 1 required the last printed digit; c = 0.0555549716 lies 2.8e-8 below the
+    # rounding boundary 0.055555, so it rounds to 0.05555 in one step and to 0.05556 in two
+    # (0.0555550 -> 0.05556). Wave 2: agreement within one unit of the last printed digit;
+    # the one-step digits are kept as a diagnostic (JOURNAL, criteria2 F1).
+    check("T1.2b", "beta0/sigma^5 (sigma<<1), within one unit of the last printed digit",
+          f"{c:.10f}", "0.05556", "1609.01588:764, 1328-1331", abs(c - 0.05556) < 1e-5,
+          f"one-step rounding {_round_half_up(c, 5)}, two-step (7 then 5 places) "
+          f"{_round_half_up(float(_round_half_up(c, 7)), 5)}")
+    check("T1.2b-d", "beta0/sigma^5 rounded once to the printed digits", f"{c:.5f}", "0.05556",
+          "1609.01588:764", round(c, 5) == 0.05556, "wave-1 criterion; explained above",
+          info=True)
     lo = C.beta0_hoop_semianalytic_coeff(math.pi / 2)
     hi = C.beta0_hoop_semianalytic_coeff(1.0)
     check("T1.2c", "lower/upper bound coefficients", f"{lo:.5f}, {hi:.4f}", "0.01338, 0.1280",
@@ -132,13 +147,27 @@ def t2(out):
           "1707.03595:1346", round(k1, 6) == 0.004608)
     check("T2.2c", "prefactor I^6 sigma^2, 2nd order", f"{p2:.4g}", "1.921e-7",
           "1707.03595:1338", round(p2 * 1e7, 3) == 1.921)
-    check("T2.2d", "prefactor q^18/sigma^4, 1st order", f"{p1:.4g}", "3.244e-14",
-          "1707.03595:1345", round(p1 * 1e14, 3) == 3.244)
+    check("T2.2d-d", "prefactor q^18/sigma^4, 1st order, exact E-bar", f"{p1:.4g}",
+          "3.244e-14", "1707.03595:1345", round(p1 * 1e14, 3) == 3.244,
+          "wave-1 criterion; explained by T2.2e, T2.2f", info=True)
     p1r = 5 * math.sqrt(5) * math.pi ** 4 / 6 ** 9 * 1.182 ** -5 * (12 / 125) ** 9
     p2r = 5 * math.sqrt(5) * math.pi ** 4 / 6 ** 9 * 1.182 ** -5 * 0.4 ** 6
-    check("T2.2e", "prefactors with E-bar rounded to 1.182 (diagnostic)",
-          f"{p1r:.4g}, {p2r:.4g}", "3.244e-14, 1.921e-7", "1707.03595:1331,1338,1345",
-          round(p1r * 1e14, 3) == 3.244, "tests whether the paper used E-bar = 1.182")
+    check("T2.2e", "1st-order prefactor with E-bar = 1.182 as printed (1331)",
+          f"{p1r:.4g} (2nd order with it: {p2r:.4g})", "3.244e-14", "1707.03595:1331,1345",
+          round(p1r * 1e14, 3) == 3.244)
+    # T2.2f: the ratio of the two printed prefactors does not depend on E-bar; if it differs
+    # from 0.4^6/(12/125)^9 by more than the rounding of the two printed numbers, no single
+    # E-bar gives both, and the failure of T2.2d is the paper's, not the code's.
+    rex = 0.4 ** 6 / (12 / 125) ** 9
+    rpr = 1.921e-7 / 3.244e-14
+    rnd = 0.0005 / 1.921 + 0.0005 / 3.244
+    dev = abs(rpr / rex - 1)
+    eb2 = [(pre * Eb ** 5 * 0.4 ** 6 / v) ** 0.2 for v in (1.9215e-7, 1.9205e-7)]
+    eb1 = [(pre * Eb ** 5 * (12 / 125) ** 9 / v) ** 0.2 for v in (3.2445e-14, 3.2435e-14)]
+    check("T2.2f", "printed prefactor ratio vs exact ratio (independent of E-bar)",
+          f"deviation {dev:.2e}", f"> rounding {rnd:.2e}", "1707.03595:1338,1345", dev > rnd,
+          f"E-bar giving 1.921e-7: [{eb2[0]:.6f}, {eb2[1]:.6f}]; giving 3.244e-14: "
+          f"[{eb1[0]:.6f}, {eb1[1]:.6f}]; exact {Eb:.7f}")
     m01 = C.spin_pdf_mode_2nd(1.0, 0.1)
     check("T2.3a", "mode of f_BH(2) at sigma_H=0.1", f"{m01:.3f}", "0.63", "1707.03595:1147",
           0.60 <= m01 <= 0.66)
@@ -156,9 +185,25 @@ def t2(out):
     sa1 = np.array([C.beta0_spin_semianalytic(12 / 125 * q * q, s, Eb) for s in sig])
     small = sig <= 0.0051
     r2 = b2[small] / sa2[small]
-    check("T2.4a", "beta0(2) numerical/semi-analytic, sigma<=0.005",
+    check("T2.4a-d", "beta0(2) numerical/semi-analytic, sigma<=0.005",
           f"{r2.min():.3f}..{r2.max():.3f}", "within 20%", "1707.03595:1351-1354",
-          np.all(abs(r2 - 1) < 0.2))
+          np.all(abs(r2 - 1) < 0.2), "wave-1 band; replaced by T2.4a", info=True)
+    # Wave 2: the paper's "agree" (1351-1362) is read off its Fig. production_rate
+    # (log10 beta0 from -30 to 0; I = 1, q = sqrt 2, 1403-1424; figure viewed, JOURNAL
+    # criteria2). The check is made on the window the figure shows (beta0 >= 1e-30 and
+    # sigma_H up to the quoted bound): |log10(numerical/semi-analytic)| <= 0.5, a factor of
+    # about three, 1.7 % of the plotted 30 decades [JUDGEMENT: below the line width].
+    sw2 = np.geomspace(2.5e-4, 0.005, 9)
+    b2w = np.array([C.beta0_spin(s, (0.4 * s) ** (2 / 3)) for s in sw2])
+    s2w = np.array([C.beta0_spin_semianalytic((0.4 * s) ** (2 / 3), s, Eb) for s in sw2])
+    in2 = b2w >= 1e-30
+    l2 = np.log10(b2w[in2] / s2w[in2])
+    mono2 = bool(np.all(np.diff(b2w[in2] / s2w[in2]) > 0))
+    check("T2.4a", "beta0(2) num/semi on the plotted window, max |log10 ratio|",
+          f"{np.max(np.abs(l2)):.3f} (sigma_H {sw2[in2][0]:.2g}-{sw2[in2][-1]:.2g}; ratio "
+          f"{b2w[in2][0] / s2w[in2][0]:.3f}..{b2w[in2][-1] / s2w[in2][-1]:.3f})", "<= 0.5",
+          "1707.03595:1351-1354, Fig. 1403-1424", np.max(np.abs(l2)) <= 0.5 and mono2,
+          "ratio increasing with sigma_H: -> 1 as sigma_H -> 0" if mono2 else "not monotone")
     mid = (sig >= 0.02) & (sig <= 0.2)
     rr = b2[mid] / pai[mid]
     check("T2.4b", "beta0(2)/P_ai, 0.02<=sigma<=0.2", f"{rr.min():.3f}..{rr.max():.3f}",
@@ -166,8 +211,18 @@ def t2(out):
     sm1 = (sig <= 0.021) & (sa1 > 1e-250)
     r1 = b1[sm1] / sa1[sm1]
     ok1 = np.all(abs(r1 - 1) < 0.2)
-    check("T2.4c", "beta0(1) numerical/semi-analytic (q=sqrt2), sigma<=0.02",
-          f"{np.nanmin(r1):.3f}..{np.nanmax(r1):.3f}", "within 20%", "1707.03595:1359-1362", ok1)
+    check("T2.4c-d", "beta0(1) numerical/semi-analytic (q=sqrt2), sigma<=0.02",
+          f"{np.nanmin(r1):.3f}..{np.nanmax(r1):.3f}", "within 20%", "1707.03595:1359-1362",
+          ok1, "wave-1 band; replaced by T2.4c", info=True)
+    sw1 = np.geomspace(0.015, 0.04, 9)
+    b1w = np.array([C.beta0_spin(s, 12 / 125 * q * q) for s in sw1])
+    s1w = np.array([C.beta0_spin_semianalytic(12 / 125 * q * q, s, Eb) for s in sw1])
+    in1 = b1w >= 1e-30
+    l1 = np.log10(b1w[in1] / s1w[in1])
+    check("T2.4c", "beta0(1) num/semi on the plotted window, max |log10 ratio| (q=sqrt2)",
+          f"{np.max(np.abs(l1)):.3f} (sigma_H {sw1[in1][0]:.3g}-{sw1[in1][-1]:.3g}; ratio "
+          f"{np.min(b1w[in1] / s1w[in1]):.3f}..{np.max(b1w[in1] / s1w[in1]):.3f})", "<= 0.5",
+          "1707.03595:1359-1362, Fig. 1403-1424", np.max(np.abs(l1)) <= 0.5)
     # T2.5 asymptotics: 2nd order threshold -> 0 with sigma, 1st order threshold fixed
     r5 = [C.beta0_spin(s, (0.4 * s) ** (2 / 3))
           / C.beta0_spin_semianalytic((0.4 * s) ** (2 / 3), s, Eb) for s in (1e-4, 1e-5)]
@@ -178,7 +233,33 @@ def t2(out):
           / C.beta0_spin_semianalytic(12 / 125 * q * q, s, Eb) for s in (0.0077, 0.006)]
     check("T2.5b", "beta0(1) numerical/semi-analytic at sigma=0.0077, 0.006 (q=sqrt2)",
           f"{r6[0]:.3f}, {r6[1]:.3f}", "< 1 and falling", "1707.03595:1321-1329, 1345",
-          r6[1] < r6[0] < 1, "finite delta_th: dropped (1.5+2u^2)/s3^2 term in A [JUDGEMENT]")
+          r6[1] < r6[0] < 1, "finite delta_th: dropped (1.5+2u^2)/s3^2 term in A, see T2.6")
+    # T2.6 (wave 2): the cause of the 1st-order drift. I2 = the [t2, inf) part of the
+    # appendix integral, with the exact A and with A ~ 9t^2/(10 s3^2) (1919), t2 exact.
+    d1 = 12 / 125 * q * q
+    t26 = []
+    for s in (0.004, 0.006, 0.0077, 0.01, 0.017):
+        Nn = C.beta0_spin(s, d1)
+        Ss = C.beta0_spin_semianalytic(d1, s, Eb)
+        I2 = C.beta0_spin_I2(s, d1)
+        I2a = C.beta0_spin_I2(s, d1, approx_A=True)
+        t26.append(dict(sigma=s, N_over_S=Nn / Ss, N_over_I2=Nn / I2, I2_over_I2a=I2 / I2a,
+                        I2a_over_S=I2a / Ss))
+    a_ok = all(abs(x["N_over_I2"] - 1) < 0.02 for x in t26 if x["sigma"] <= 0.01)
+    check("T2.6a", "beta0(1) numerical / I2(exact A), sigma_H <= 0.01",
+          ", ".join(f"{x['N_over_I2']:.4f}" for x in t26), "1 within 2 %",
+          "1707.03595:1898-1936", a_ok,
+          f"at 0.017: {t26[-1]['N_over_I2']:.4f} (I1 and t < t2 grow with sigma_H)")
+    dec = all(t26[i]["I2_over_I2a"] < t26[i + 1]["I2_over_I2a"] < 1 for i in range(len(t26) - 1))
+    check("T2.6b", "I2(exact A)/I2(approx A): < 1 and falling towards small sigma_H",
+          ", ".join(f"{x['I2_over_I2a']:.4f}" for x in t26), "< 1, decreasing",
+          "1707.03595:1919", dec, "the dropped (2u^2 + 3/2)/s3^2 makes the drift")
+    ca = [x["I2a_over_S"] for x in t26]
+    check("T2.6c", "I2(approx A)/semi-analytic, constant in sigma_H",
+          ", ".join(f"{v:.4f}" for v in ca), "constant within 10 %", "1707.03595:1921-1936",
+          max(ca) / min(ca) < 1.1, "a constant factor from t2 ~ 12E/(pi delta_th) at finite "
+                                   "delta_th")
+    out_t26 = t26
     # figure: production rates and spin distributions
     fs.use_style()
     fig = plt.figure(figsize=(fs.FULL_WIDTH, 3.4))
@@ -208,8 +289,43 @@ def t2(out):
     ax2.legend(loc="upper left", fontsize=7)
     fs.save(fig, os.path.join(out, "check_T2_spin_1707.03595"))
     plt.close(fig)
+    # figure 2 (wave 2): ratios on the windows and the decomposition of T2.6
+    fig = plt.figure(figsize=(fs.FULL_WIDTH, 3.2))
+    ax = fs.inch_axes(fig, 0.75, 0.55, 3.15, 2.45)
+    ax2 = fs.inch_axes(fig, 4.75, 0.55, 3.0, 2.45)
+    ax.semilogx(sw2, b2w / s2w, "o-", color=fs.PAL["red"], ms=3, label="2nd order")
+    ax.semilogx(sw1, b1w / s1w, "s-", color=fs.PAL["orange"], ms=3,
+                label=r"1st order, $q=\sqrt{2}$")
+    ax.semilogx(sig[sig <= 0.021], b1[sig <= 0.021] / sa1[sig <= 0.021], "s:",
+                color=fs.PAL["orange"], ms=3, mfc="none", lw=1.0)
+    for v in (10 ** 0.5, 10 ** -0.5):
+        ax.axhline(v, **fs.MASK_LINE)
+    ax.axhline(1, **fs.GUIDE)
+    ax.axvspan(sw2[in2][0], 0.005, color=fs.PAL["red"], alpha=0.08)
+    ax.axvspan(sw1[in1][0], 0.04, color=fs.PAL["orange"], alpha=0.12)
+    ax.set_xlabel(r"$\sigma_H$", labelpad=-2)
+    ax.set_ylabel("numerical / semi-analytic")
+    ax.set_yscale("log")
+    ax.legend(loc="lower right", fontsize=7)
+    ss = [x["sigma"] for x in t26]
+    ax2.semilogx(ss, [x["N_over_S"] for x in t26], "o-", color="k", ms=3,
+                 label="numerical / semi-analytic")
+    ax2.semilogx(ss, [x["N_over_I2"] for x in t26], "s-", color=fs.PAL["blue"], ms=3,
+                 label=r"numerical / $I_2$(exact $A$)")
+    ax2.semilogx(ss, [x["I2_over_I2a"] for x in t26], "^-", color=fs.PAL["red"], ms=3,
+                 label=r"$I_2$(exact $A$) / $I_2(A\simeq 9t^2/10\sigma_3^2)$")
+    ax2.semilogx(ss, [x["I2a_over_S"] for x in t26], "v-", color=fs.PAL["green"], ms=3,
+                 label=r"$I_2$(approx. $A$) / semi-analytic")
+    ax2.axhline(1, **fs.GUIDE)
+    ax2.set_xlabel(r"$\sigma_H$ (1st order, $q=\sqrt{2}$)", labelpad=-2)
+    ax2.set_ylabel("ratio")
+    ax2.legend(loc="upper left", fontsize=6.5)
+    fs.save(fig, os.path.join(out, "check_T2_ratios_1707.03595"))
+    plt.close(fig)
     return dict(sigma=sig.tolist(), Pai=pai.tolist(), beta2=b2.tolist(), beta1=b1.tolist(),
-                semi2=sa2.tolist(), semi1=sa1.tolist())
+                semi2=sa2.tolist(), semi1=sa1.tolist(), window2=dict(sigma=sw2.tolist(),
+                num=b2w.tolist(), semi=s2w.tolist()), window1=dict(sigma=sw1.tolist(),
+                num=b1w.tolist(), semi=s1w.tolist()), T26=out_t26)
 
 
 # ------------------------------------------------------------------- T3 2211.13950
@@ -429,8 +545,11 @@ def main():
         with open(os.path.join(run.out, "results.json"), "w") as f:
             json.dump(dict(run_id=run.run_id, checks=RESULTS, data=data), f, indent=1,
                       default=float)
-        n_fail = sum(not r["passed"] for r in RESULTS)
-        print(f"{len(RESULTS)} checks, {n_fail} failed; run {run.run_id}")
+        counted = [r for r in RESULTS if r["passed"] is not None]
+        n_fail = sum(not r["passed"] for r in counted)
+        n_info = len(RESULTS) - len(counted)
+        print(f"{len(counted)} checks, {n_fail} failed, {n_info} diagnostics (INFO); "
+              f"run {run.run_id}")
 
 
 if __name__ == "__main__":

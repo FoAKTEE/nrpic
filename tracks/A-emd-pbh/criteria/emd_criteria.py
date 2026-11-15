@@ -265,6 +265,43 @@ def beta0_spin(sigmaH, delta_th):
     return _beta0_tu(sigmaH, delta_th=delta_th)
 
 
+def beta0_spin_I2(sigmaH, delta_th, approx_A=False, epsrel=1e-9):
+    """The part I2 of the appendix of 1707.03595: the integral over t in [t2(u), inf), where
+    z0 = z_th = delta_th/(3t), of the exact rewrite (eq. t-integral, 1898-1902; z integral
+    in closed form F(A, z), 1902; root t2(u) of z* = z_th, 1880-1886, '+' branch). With
+    approx_A the paper's simplification A ~ 9 t^2/(10 s3^2) (1919) is used inside F while
+    t2 and z_th stay exact, so the effect of the dropped (2u^2 + 3/2)/s3^2 can be isolated.
+    The paper then evaluates I2 asymptotically (1931-1936) to get 1325-1329."""
+    s3 = sigmaH / SQ5
+    d = delta_th
+
+    def inner(u):
+        Ek = float(ellipE(np.sqrt(1 - (u + 0.5) ** 2)))
+        disc = Ek * (9 * Ek - (3 + 2 * u) * PI * d)
+        if disc < 0:
+            return 0.0
+        # The printed root (1880-1886) has the denominator 3 delta_th; solving z* = z_th,
+        # pi d t^2 + (2 pi d c - 12 E) t + pi d c^2 = 0 with c = (3 + 2u)/3, gives 3 pi delta_th,
+        # which also reproduces the paper's own limit t2 ~ 12 E/(pi delta_th) (1921): a typo
+        # of the paper [VERIFIED by this derivation and by t2 against the kinks of _beta0_tu].
+        t2 = (18 * Ek - (3 + 2 * u) * PI * d + 6 * np.sqrt(disc)) / (3 * PI * d)
+
+        def f(t):
+            A = 0.9 * (t / s3) ** 2 if approx_A else \
+                0.9 * (t / s3) ** 2 + 2 * (u / s3) ** 2 + 1.5 / s3 ** 2
+            z = d / (3 * t)
+            X = A * z * z
+            return (2 + 2 * X + X * X) / (A * s3 * s3) ** 3 * np.exp(-X)
+
+        # substitution t = t2 / w, w in (0, 1]: dt = t2 dw / w^2
+        g = lambda w: f(t2 / w) * t2 / (w * w) if w > 0 else 0.0
+        return (1 - 4 * u * u) * integrate.quad(g, 0.0, 1.0, epsabs=0, epsrel=epsrel,
+                                                limit=400)[0]
+
+    val = integrate.quad(inner, -0.5, 0.5, epsabs=0, epsrel=epsrel, limit=200)[0]
+    return 27.0 / (2 * SQ5 * PI) * val
+
+
 def quadrupole_q(A1, A2, A3):
     """q = sqrt(2(mu1^2 - 3 mu2)) / ((3/5) V r0^2) for a uniform ellipsoid with i_k = V A_k^2/5,
     r0 = (A1 A2 A3)^(1/3) [1707.03595:641-645, 712-716]."""
