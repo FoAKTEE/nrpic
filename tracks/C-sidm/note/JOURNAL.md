@@ -90,3 +90,14 @@ tables), `parameters.tex` and `schem_architecture.png` changed as intended (new 
 subtitle of the middle column reads "AthenaK: spacetime, particles, collisions"). All 63
 inputs matched their recorded sha256. The submit waited about ten minutes for a free core
 (other helpers held the 16 of the allotment); no run was started outside the allotment.
+
+## 2026-11-15 Stage check (no prediction was written before it; recorded as such)
+
+`harness/bin/nrpic-stage verify C-sidm G0` on d567429 (clean export, harness stage check, not
+a registered run): the note's checks pass (note, note-pdf, style copies, one script per
+figure, 2 schematics and 4 data figures, 6 of 6 scripts rerun in the export, 12 regenerated
+files equal to the committed ones within rtol 1e-6 and PNG rms 0.005); `clean` fails on
+other helpers' uncommitted files, `runs` on 7 unfinished wave-2 runs of other helpers and the
+10 wave-1 gravothermal manifests (fields of the nrpic-run schema missing). Then
+`nrpic-stage collect` and `report`: verdict FAIL (C18 and C20 OPEN for the lead, verify FAIL).
+Committed in b74c46b.
