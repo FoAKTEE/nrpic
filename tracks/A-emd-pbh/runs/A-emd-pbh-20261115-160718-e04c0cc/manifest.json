@@ -1,0 +1,40 @@
+{
+ "run_id": "A-emd-pbh-20261115-160718-e04c0cc",
+ "owner": "A-emd-pbh",
+ "track": "A-emd-pbh",
+ "gate": "G2",
+ "package": "periodic_threshold",
+ "purpose": "T4: gradient-expansion data on the CMC slice solved with cosmo_id.solve at eps_i = 0.2 (feasibility for the phase-1 generator)",
+ "kind": "scouting",
+ "command": [
+  ".venv/bin/python",
+  "-I",
+  "tracks/A-emd-pbh/periodic_threshold/scripts/t4_cmc_route.py",
+  "--out",
+  "/data/haiyangw/nrpic/scratch/A-emd-pbh/A-emd-pbh-20261115-160718-e04c0cc"
+ ],
+ "cwd": "/data/haiyangw/nrpic/wt/A-emd-pbh",
+ "commit": "e04c0cca65a165a657e6ede5feaada0193ba7948",
+ "git": {
+  "sha": "e04c0cca65a165a657e6ede5feaada0193ba7948",
+  "branch": "track/A-emd-pbh",
+  "package_dirty": false
+ },
+ "host": "anta",
+ "inputs": [],
+ "output_dir": "/data/haiyangw/nrpic/scratch/A-emd-pbh/A-emd-pbh-20261115-160718-e04c0cc",
+ "outputs": {
+  "dir": "scratch/A-emd-pbh/A-emd-pbh-20261115-160718-e04c0cc",
+  "sha256sums": "sha256sums.txt"
+ },
+ "cores": 2,
+ "card_hours": 0.0,
+ "parents": [],
+ "registered_by": "hand (scripts/register_run.py): nrpic-run refuses the worktree while other helpers' untracked files are present",
+ "status": "completed",
+ "started": "2026-11-15T16:07:18.305294+00:00",
+ "notes": "",
+ "wall_time_s": 226.87,
+ "exit_code": 0,
+ "ended": "2026-11-15T16:11:05.200359+00:00"
+}

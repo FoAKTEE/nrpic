@@ -311,3 +311,21 @@ below 1e-6, since the cell-centred cloud deposits exactly; with two binomial pas
 compensation c_CMC is of the order (kh)^4 smoothing of delta, 1e-3 to 1e-2. Refuted if
 the solve stagnates or diverges at mu = 0.5 (then the tool's iteration, not the slice,
 limits the amplitude) or if c_CMC exceeds 0.05 with the filter.
+
+### T4 outcome (run A-emd-pbh-20261115-160718-e04c0cc)
+
+- mu = 0.03, eps_i = 0.2: **confirmed**. The solve converges in 9 (10) iterations to
+  residual 6e-12 (3e-12); c_CMC = 7.5e-10 without the filter (the cell-centred cloud
+  deposits exactly) and 3.4e-5 with two binomial passes and compensation, against
+  c = 0.38 and no convergence for make_field at the same start (T1). The solved Ahat
+  differs from the gradient-expansion Ahat by 1.3 per cent of its maximum (the solve's
+  Ahat is longitudinal; the transverse-traceless part and the removed mean of S remain).
+- mu = 0.5: **refuted** by my own criterion: the solve diverges (NaN) with and without
+  the filter, started from psi = 1. Reading [JUDGEMENT]: the iteration of
+  `cosmo_id.solve` preconditions with the constant mean of sigma = (5/12) K^2 psi^4 +
+  2 pi psi^4 E; at mu = 0.5 psi^4 is 2.7 at the peak (Psi = 1.28), the local sigma
+  exceeds the mean by more than the mean itself, and the low-wavenumber error grows. So
+  the amplitude limit is the solver's iteration, not the slice.
+Written before T4b: started from psi = psi_GE instead of 1, mu = 0.5 converges if the
+divergence came from the start, and diverges again if it is the iteration (my reading
+predicts divergence); mu = 0.3 from psi = 1: converges (psi^4 = 1.8 at the peak).

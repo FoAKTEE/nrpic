@@ -58,7 +58,7 @@ def ge_fields(tor, zeta, aH=1.0, H=1.0):
     return psi, A, K, E*psi**6, Sh
 
 
-def run_case(mu, e, eps, n, nfilter, compensate):
+def run_case(mu, e, eps, n, nfilter, compensate, start_ge=False):
     k = eps
     L = 20.0/k
     tor = cid.Torus(n, L)
@@ -73,14 +73,15 @@ def run_case(mu, e, eps, n, nfilter, compensate):
     m = Eh.ravel()*h**3/W
     cid.SHAPE = "cic"
     t0 = time.time()
-    r = cid.solve(tor, x, u, m, K, psi0=None, nfilter=nfilter, compensate=compensate,
+    r = cid.solve(tor, x, u, m, K, psi0=(psi_ge if start_ge else None), nfilter=nfilter,
+                  compensate=compensate,
                   tol=1e-11, maxit=200)
     ham, mom = cid.residuals(tor, r["psi"], K, r["A"], r["E"], r["S"])
     pert = float(np.abs(psi_ge - psi_ge.mean()).max())
     dpsi = r["psi"] - psi_ge
     return {
         "mu": mu, "e": e, "eps_i": eps, "n": n, "nfilter": nfilter,
-        "compensate": compensate, "iterations": len(r["hist"]),
+        "compensate": compensate, "start_ge": start_ge, "iterations": len(r["hist"]),
         "residual_final": r["hist"][-1], "wall_s": time.time() - t0,
         "max_abs_ham": float(np.abs(ham).max()),
         "max_abs_mom": float(max(np.abs(v).max() for v in mom)),
@@ -100,9 +101,18 @@ def run_case(mu, e, eps, n, nfilter, compensate):
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--out", required=True)
+    ap.add_argument("--b", action="store_true", help="T4b: mu = 0.5 from psi_GE, mu = 0.3")
     a = ap.parse_args()
     os.makedirs(a.out, exist_ok=True)
     rows = []
+    if a.b:
+        for mu, sg in ((0.5, True), (0.3, False)):
+            r = run_case(mu, 0.2, 0.2, 64, 0, False, start_ge=sg)
+            rows.append(r)
+            print({k: v for k, v in r.items() if k != "line"}, flush=True)
+        with open(os.path.join(a.out, "t4b_results.json"), "w") as f:
+            json.dump(rows, f, indent=1)
+        return
     for mu in (0.03, 0.5):
         for nf, cp in ((0, False), (2, True)):
             r = run_case(mu, 0.2, 0.2, 64, nf, cp)

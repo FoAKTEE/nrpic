@@ -1,0 +1,56 @@
+{
+ "run_id": "A-emd-pbh-20261115-160557-962be1a",
+ "owner": "A-emd-pbh",
+ "track": "A-emd-pbh",
+ "gate": "G2",
+ "package": "periodic_threshold",
+ "purpose": "T2/T3 figure from the first run and its repeat",
+ "kind": "scouting",
+ "command": [
+  ".venv/bin/python",
+  "-I",
+  "tracks/A-emd-pbh/periodic_threshold/scripts/fig_t2t3.py",
+  "--first",
+  "/data/haiyangw/nrpic/scratch/A-emd-pbh/A-emd-pbh-20261115-154250-527a6d1",
+  "--repeat",
+  "/data/haiyangw/nrpic/scratch/A-emd-pbh/A-emd-pbh-20261115-154740-69e8f8b",
+  "--out",
+  "/data/haiyangw/nrpic/scratch/A-emd-pbh/A-emd-pbh-20261115-160557-962be1a"
+ ],
+ "cwd": "/data/haiyangw/nrpic/wt/A-emd-pbh",
+ "commit": "962be1ad20a3ea2bcb40463ad795e13b4d15385e",
+ "git": {
+  "sha": "962be1ad20a3ea2bcb40463ad795e13b4d15385e",
+  "branch": "track/A-emd-pbh",
+  "package_dirty": false
+ },
+ "host": "anta",
+ "inputs": [
+  {
+   "path": "/data/haiyangw/nrpic/scratch/A-emd-pbh/A-emd-pbh-20261115-154250-527a6d1/t2t3_results.json",
+   "sha256": "c098d77246b5c7d143af3460d0d3a3d5db0dcf514fd7b68c1751fef9515c6444"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/scratch/A-emd-pbh/A-emd-pbh-20261115-154740-69e8f8b/t2t3_results.json",
+   "sha256": "566bd2627b7fed1a614f461a7f50b85ce016fd24a11bdbca71b0cfa7ef03fb87"
+  }
+ ],
+ "output_dir": "/data/haiyangw/nrpic/scratch/A-emd-pbh/A-emd-pbh-20261115-160557-962be1a",
+ "outputs": {
+  "dir": "scratch/A-emd-pbh/A-emd-pbh-20261115-160557-962be1a",
+  "sha256sums": "sha256sums.txt"
+ },
+ "cores": 1,
+ "card_hours": 0.0,
+ "parents": [
+  "A-emd-pbh-20261115-154250-527a6d1",
+  "A-emd-pbh-20261115-154740-69e8f8b"
+ ],
+ "registered_by": "hand (scripts/register_run.py): nrpic-run refuses the worktree while other helpers' untracked files are present",
+ "status": "completed",
+ "started": "2026-11-15T16:05:57.042321+00:00",
+ "notes": "",
+ "wall_time_s": 1.74,
+ "exit_code": 0,
+ "ended": "2026-11-15T16:05:58.801822+00:00"
+}
