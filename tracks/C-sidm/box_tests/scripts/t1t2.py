@@ -199,9 +199,9 @@ def figures(results, out, tag):
     cols = {"0.001": fs.PAL["blue"], "0.1": fs.PAL["red"], "1.0": fs.PAL["yellow"],
             "10.0": fs.PAL["green"]}
     fig = plt.figure(figsize=(fs.FULL_WIDTH, 3.4))
-    ax1 = fig.add_axes([0.07, 0.14, 0.26, 0.8])
-    ax2 = fig.add_axes([0.40, 0.14, 0.26, 0.8])
-    ax3 = fig.add_axes([0.73, 0.14, 0.25, 0.8])
+    ax1 = fig.add_axes([0.08, 0.15, 0.24, 0.79])
+    ax2 = fig.add_axes([0.42, 0.15, 0.23, 0.79])
+    ax3 = fig.add_axes([0.75, 0.15, 0.23, 0.79])
     xs, labels = [], []
     k = 0
     for name, r in sorted(results.items()):
@@ -223,17 +223,17 @@ def figures(results, out, tag):
         xs.append(k); labels.append(f"{r['theta']}\n{r['var'][0]}{r['seed']}")
         k += 1
     ax1.axhline(1, **fs.GUIDE)
-    ax1.set_xlabel("step"); ax1.set_ylabel(r"$\Sigma P$ per step / expectation")
+    ax1.set_xlabel("step"); ax1.set_ylabel(r"$\Sigma P$ per step / expected")
     ax1.legend(loc="upper right", fontsize=7, ncol=2)
     ax1.set_ylim(0.985, 1.02)
     ax2.axhspan(-0.005, 0.005, color="grey", alpha=0.15)
     ax2.axhline(0, **fs.GUIDE)
     ax2.set_xticks(xs); ax2.set_xticklabels(labels, fontsize=6)
-    ax2.set_ylabel(r"mean $\Sigma P$/expectation $-$ 1")
+    ax2.set_ylabel(r"$\overline{\Sigma P}$/expected $-$ 1  (x: nominal $\theta$)", fontsize=8)
     ax3.axhspan(-4, 4, color="grey", alpha=0.15)
     ax3.axhline(0, **fs.GUIDE)
     ax3.set_xticks(xs); ax3.set_xticklabels(labels, fontsize=6)
-    ax3.set_ylabel(r"$(n_{\rm coll}-\Sigma P)/\sqrt{\Sigma P}$;  $\triangle$: $10^3(\bar v_{\rm Mol}/\langle v_{\rm Mol}\rangle-1)$",
+    ax3.set_ylabel(r"$z_a$;  $\triangle$: $10^3(\bar v_{\rm Mol}/\langle v_{\rm Mol}\rangle-1)$",
                    fontsize=8)
     bl.os.makedirs(out, exist_ok=True)
     fs.save(fig, os.path.join(out, f"t2_rate_{tag}"))
