@@ -17,7 +17,7 @@ import paths  # noqa: E402,F401
 from fslib import reference as ref  # noqa: E402
 from nrpic import figstyle as fs  # noqa: E402
 
-out = sys.argv[1]
+out = sys.argv[1] if len(sys.argv) > 1 else os.environ["NRPIC_RUN_DIR"]
 os.makedirs(out, exist_ok=True)
 tau = np.linspace(0.0, ref.tau_of_a(140.0), 4001)
 g, gp = ref.g_of_tau(tau)

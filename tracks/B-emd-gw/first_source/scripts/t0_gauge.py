@@ -26,7 +26,7 @@ def rms(x):
     return float(np.sqrt(np.mean(np.einsum("ab...,ab...->...", x, x))))
 
 
-out = sys.argv[1]
+out = sys.argv[1] if len(sys.argv) > 1 else os.environ["NRPIC_RUN_DIR"]
 os.makedirs(out, exist_ok=True)
 g = Grid((32, 32, 32), (4.0, 4.0, 4.0), (0.0, 0.0, 0.0))
 eps = np.logspace(-4, -2, 9)
