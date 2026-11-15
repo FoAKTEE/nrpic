@@ -450,3 +450,10 @@ against a pair Monte Carlo of the same snapshot), not with the ensemble formula;
 step-to-step standard error does not contain the sample's fluctuation. The criteria of
 T2(b) and T11(a) as written are not affected (both pass), but T2(b)'s 4 se clause is
 fragile in a drifting gas or at higher precision.
+
+## 2026-11-15 Record of runs not named above
+
+C-20261115-165428-20023eb: pipeline check of `t1t2.py` at N = 2e4, 20 steps, theta = 0.1
+(not a test; it showed overlapping labels in the first T2 figure, fixed before the T2 run).
+All 18 runs of this package are registered with nrpic-run and closed (17 completed, one
+failed: C-20261115-165742-2c645f8, the first T10 attempt, driver defect described above).
