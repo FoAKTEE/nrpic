@@ -66,3 +66,33 @@ Claims on which the plan of `scope/SCOPE.md` rests (my choice):
   Prediction: the measured card-hours of D-pre-4 lie within a factor 1.5 of the model;
   the source facts hold at the cited lines (lines may have moved after the core-v0.3
   merge). Refuted if a run cost more than 1.5 times the model or a source fact is false.
+
+## Entry 2: C1 outcome (run D-20261115-170002-8cefc3e), C1b prediction
+
+C1 outcome, from `es.tab` rows only (v1_es_slice.py; figure figs/v1_es_slice.png, looked
+at): Misner-Sharp mass 1 +- 2.7e-10 in the vacuum transition (4 < R < 35.5), 1 +- 3e-14
+in the time-symmetric part and on the inner sheet; plateau m - H^2 R^3/2 within +-9.5e-13
+(the matching "dust mass removed = M" is exact; effective sharp-wall radius
+(2M/H^2)^(1/3) = 40.04 M); H from KT, KL and from the Hamiltonian density agree to 3e-13
+relative; momentum residual of order 4.00, 3.99 in the transition and 3.99-3.90 at the
+smooth dust edges (h = 0.02 to 0.16 M); Hamiltonian density at round-off (1e-15) in the
+dust and 1e-12 in the vacuum transition (no convergence there: a floor of the table itself,
+1e-12 against KT^2 ~ 1e-3...1e-5, harmless); no anti-trapped row; throat at rbar = 0.52
+(grid) against b/a = 0.5243; u constant = a - 1 inside rbar 3, M = a m_p = 1, while
+m_p = M would give 0.9766. Negative control (KL := KT in the transition): residual 8.7e-4
+at every spacing, so the check has teeth. Reference curves of es_reference.csv equal my
+closed forms to 7e-16. Particle file: 140 tracers of mass 1e-30, dust from rbar = 36.23
+outward, all u_i = 0, cumulative dust mass equal to m(R) - M to 3e-4 at R = 40 and 3e-8 in
+total (lattice discreteness at the start of the ramp: 14 percent at R = 37 of a mass of
+7e-6). Prediction of C1 confirmed. Not checked here: the data at the G2 parameters
+(eps = 0.03, 0.01); this data set has eps = H M = 5.58e-3 (R_w = 40 M).
+Run-registration slip: the first run passed --out '$NRPIC_RUN_DIR' literally; outputs moved
+into the run directory by hand, said so in the manifest notes.
+
+C1b prediction (rerun of the t = 0 code check on the release processor executable
+core-v0.3 instead of the wave-1 branch build 408df57): on the same table the release gives
+the same constraint fields cell by cell to round-off (<= 1e-12 of the field scale) unless
+core changed the format-2 reader or the constraint stencils at the merge; in either case
+the regional maxima keep converging at order >= 3 in the transition and at the inner dust
+edge between dx = 1 and 1/2 M. Refuted by a cell difference above 1e-9 relative without a
+changelog entry, or by an order below 2.
