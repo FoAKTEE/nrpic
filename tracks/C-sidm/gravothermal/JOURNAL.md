@@ -132,3 +132,13 @@ M(rho_c) [BACKGROUND, Harrison-Thorne-Wakano-Wheeler]. Prediction: for Gamma = 2
 (G = c = Msun = 1) the FEM zero and the maximum of M agree in rho_c to < 1e-3 relative, and
 M_max is about 1.64 at rho_c about 3.2e-3 [BACKGROUND, value from memory, not a source].
 Refuted if the FEM zero misses the mass maximum by more than 1 per cent in rho_c.
+
+Outcome P6, first attempt (run C-sidm-20261115-121400-d463e1a): M_max = 1.637276 at
+rho_c = 3.182422e-3 (Gamma = 2, K = 100); FEM zero at rho_c = 3.2096e-3 (N = 300),
+3.1610e-3 (N = 600), 3.1837e-3 (N = 1200): within 1 per cent, but not monotone in N. A probe
+(unregistered, this session) showed the cause: the node list had an extra node at the TOV
+start radius r0 = 1e-6, so the first element [0, 1e-6] had quadrature points below r0 where
+the splines extrapolate; with uniform nodes from r = 0 the lowest omega^2 at rho_c(M_max) is
+2.7e-9 (N = 300) and 1.6e-9 (N = 1200), against 0.104 for the next mode. The F21 runs are not
+affected (their structure table starts at r = 0 and their nodes are r- and mass-uniform from
+r = 0; their convergence was monotone). Fixed in pulsation_check.py; rerun registered next.

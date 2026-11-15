@@ -65,7 +65,10 @@ def omega2(rhoc, N=600):
     rr = np.linspace(s.t[0], R, 6000)
     yy = s.sol(rr)
     Msp, Psp, Qsp = CubicSpline(rr, yy[0]), CubicSpline(rr, yy[1]), CubicSpline(rr, yy[2])
-    nodes = np.unique(np.concatenate(([0.0], np.linspace(s.t[0], R, N))))
+    # uniform nodes from r = 0; an extra node at the start radius r0 = 1e-6 of the TOV
+    # solve made a tiny first element whose quadrature points fell below r0, where the
+    # splines extrapolate, and shifted omega^2 by ~5e-4 (probe of 2026-11-15, JOURNAL)
+    nodes = np.linspace(0.0, R, N)
 
     def coeff(rq):
         q = np.clip(Qsp(rq), 0.0, None)

@@ -53,10 +53,15 @@ def main():
     if dirty:
         sys.exit(f"refused: uncommitted changes under {rel_pkg}:\n{dirty}")
     sha = git("rev-parse", "HEAD")
-    now = dt.datetime.now(dt.timezone.utc)
-    run_id = f"{OWNER}-{now.strftime('%Y%m%d-%H%M%S')}-{sha[:7]}"
-    outdir = os.path.join(HOME, "scratch", OWNER, run_id)
-    os.makedirs(outdir)
+    while True:      # one run id per second: wait for a free one
+        now = dt.datetime.now(dt.timezone.utc)
+        run_id = f"{OWNER}-{now.strftime('%Y%m%d-%H%M%S')}-{sha[:7]}"
+        outdir = os.path.join(HOME, "scratch", OWNER, run_id)
+        try:
+            os.makedirs(outdir)
+            break
+        except FileExistsError:
+            time.sleep(1.0)
     argv = [c.replace("{OUT}", outdir) for c in cmd]
     inputs = []
     for p in a.input + [x for x in argv if os.path.isfile(x)]:
