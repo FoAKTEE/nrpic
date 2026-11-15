@@ -74,3 +74,19 @@ C8. B-pre-4: the Newtonian (Zel'dovich) baseline reproduces the literature scali
     E_(1/3)(i w t_col)|^2 times lambda^4 gives exponents 3.5 +- 0.1 and 1.5 +- 0.05 for
     scaled lambda. Refuted by: other exponents. Expected limitation: this is a
     semi-analytic baseline; the N-body part of B-pre-4 waits for AthenaK's Newtonian mode.
+
+## 2026-11-15, entry 2: added prediction for C6 (before the AthenaK runs)
+
+Reading `athenak/src/pgen/tests/z4c_linear_wave.cpp` lines 104-112 for the oblique break
+test: with phi = atan2(kx1, kx2) the generator's a_ij equals my e1e1 - e2e2
+(e1 = d khat/d theta, e2 = (cos phi, -sin phi, 0)) in xx, yy, xz, zz but has the opposite
+sign in xy and yz. For k = (1,1,0) that gives a = -khat khat + zz: traceless, not
+transverse. Prediction for the oblique runs `ob_N16`, `ob_N32`: the momentum-constraint
+norm at the first dump is at the first-order level (orders of magnitude above the
+x-wave's), and the TT plus amplitude in the basis uu - zz is A/2 (the TT part of a),
+travelling at c; the longitudinal khat khat : h part does not travel as a wave.
+Refuted by: a TT amplitude of A, or constraint norms like the x-wave's.
+For the x-waves (`x_N16` to `x_N128`, 10 crossings; `x_N32_long`, 50): order of the rms
+error of h_+ between 4 and 6 at t = 10; amplitude loss and phase error falling with N.
+Trial runs of the symbolic (C1, C4, C5), crossed-wave (C2) and junk (C3) scripts were made
+in scratch/B-emd-gw/tmp/ to debug them; the registered runs follow.
