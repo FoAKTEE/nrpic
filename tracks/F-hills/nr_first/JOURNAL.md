@@ -423,3 +423,11 @@ with the baselines of E6. Prediction: receding member m1 (comp0); at the end its
 energy +1.3119 units and m2's two-body energy with M -1.6265 units (E6); the binary wider
 than 2 x 5 between t = 115 and 116; no history and no waveforms reported (absent), the
 script does not fail on their absence. Refuted otherwise.
+
+## 2026-11-15 E9, outcome (run F-20261115-183737-49f0a7f; figure `fig_p1_analysis.png` of the run, read)
+
+Met [VERIFIED, `p1_analysis.json` of the run]: receding member m1 (comp0); at t = 1500 its
+barycentric energy +1.31187 units (two-body with M +1.6404), m2's two-body energy with M
+-1.62654 units; binary wider than 10 M from t = 115.19; the merged segments and the horizon
+files read; absent history and waveforms skipped. Only change after the run: a shorter label
+of the energy panel (it was cut off in the figure).

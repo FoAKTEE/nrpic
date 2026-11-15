@@ -135,7 +135,8 @@ def main():
         a.axhline(base["newton"]["E_ejected_bc_u"], color=fs.PAL["blue"], **{k: v for k, v in fs.GUIDE.items() if k != "color"})
         a.axhline(base["hrna"]["E2_u"], color=fs.PAL["red"], ls=":", lw=1.5)
     a.set_ylim(-4, 4)
-    a.set_ylabel("member energy [units]; solid: barycentric, dashed: with M")
+    a.set_ylabel("member energy [units]")
+    a.set_title("solid: against barycentre of M + other; dashed: with M", fontsize=8)
     a = ax[1, 0]
     for n, col in ((0, fs.PAL["blue"]), (1, fs.PAL["red"]), (2, "k")):
         if n in hz and len(hz[n][0]["mass"]):
