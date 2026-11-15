@@ -1,0 +1,69 @@
+{
+ "run_id": "D-bh-dress-20261115-123516-cff68f1",
+ "track": "D-bh-dress",
+ "package": "secondary_infall",
+ "gate": "G1",
+ "purpose": "Test 3 of D-pre-3: spherical-shell reference, configuration absorb_e0.01 (turnaround and absorption against closed forms; dress mass, hole mass and profiles for the AthenaK run parameters)",
+ "kind": "scouting",
+ "command": [
+  "python3",
+  "tracks/D-bh-dress/secondary_infall/shells.py",
+  "--out",
+  "/data/haiyangw/nrpic/scratch/D-bh-dress/D-bh-dress-20261115-123516-cff68f1",
+  "--config",
+  "absorb_e0.01"
+ ],
+ "cwd": "/data/haiyangw/nrpic/wt/D-bh-dress",
+ "env_overrides": {
+  "OMP_NUM_THREADS": "1",
+  "OPENBLAS_NUM_THREADS": "1",
+  "MKL_NUM_THREADS": "1"
+ },
+ "git": {
+  "sha": "cff68f19dc89f14506eee7af8721b2f95ec30c9a",
+  "branch": "track/D-bh-dress",
+  "dirty_package": false
+ },
+ "code": {
+  "core_tag": null,
+  "problem": null,
+  "interpreter": "python3 3.10.12"
+ },
+ "inputs": [
+  {
+   "path": "/data/haiyangw/nrpic/wt/D-bh-dress/tracks/D-bh-dress/secondary_infall/shells.py",
+   "sha256": "caec6454eb4eb8bed5cf607904aa9b2d0747ad2b1743da1deeb6b70c7b152347"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/wt/D-bh-dress/tracks/D-bh-dress/secondary_infall/common.py",
+   "sha256": "49f79f43d1abbe9b4f4d6609efdd8152e87cf73beead654e9f9a3a937d1a804a"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/wt/D-bh-dress/python/nrpic/figstyle.py",
+   "sha256": "5d3b78ad8c2c02e428b675e3d7e35a32cbc8f053d1aeedd4fde66f27da55676e"
+  }
+ ],
+ "resources": {
+  "nodes": 1,
+  "cores": 1,
+  "gpus": 0,
+  "card_hours": 0.0,
+  "walltime_s": 4.33,
+  "particles": 0
+ },
+ "outputs": {
+  "dir": "/data/haiyangw/nrpic/scratch/D-bh-dress/D-bh-dress-20261115-123516-cff68f1",
+  "sha256sums": "sha256sums.txt",
+  "files": [
+   "shells_absorb_e0.01.json",
+   "shells_absorb_e0.01.npz",
+   "stdout.txt"
+  ]
+ },
+ "status": "completed",
+ "exit_code": 0,
+ "started": "2026-11-15T12:35:16Z",
+ "ended": "2026-11-15T12:35:20Z",
+ "parents": [],
+ "notes": "Registered by register_run.py of tracks/D-bh-dress/secondary_infall (helper of D-bh-dress). Predictions and outcome: tracks/D-bh-dress/secondary_infall/JOURNAL.md."
+}

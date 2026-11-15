@@ -1,0 +1,67 @@
+{
+ "run_id": "D-bh-dress-20261115-122303-4e8e8af",
+ "track": "D-bh-dress",
+ "package": "secondary_infall",
+ "gate": "G1",
+ "purpose": "Test 2 of D-pre-3: Bertschinger-type self-similar collisionless infall onto a point-mass seed in Einstein-de Sitter by fixed-point iteration (inner slope, caustics, normalisation against the frozen-in estimate)",
+ "kind": "scouting",
+ "command": [
+  "python3",
+  "tracks/D-bh-dress/secondary_infall/selfsimilar.py",
+  "--out",
+  "/data/haiyangw/nrpic/scratch/D-bh-dress/D-bh-dress-20261115-122303-4e8e8af",
+  "--taumax",
+  "300"
+ ],
+ "cwd": "/data/haiyangw/nrpic/wt/D-bh-dress",
+ "env_overrides": {
+  "OMP_NUM_THREADS": "1",
+  "OPENBLAS_NUM_THREADS": "1",
+  "MKL_NUM_THREADS": "1"
+ },
+ "git": {
+  "sha": "4e8e8afb8138a9d36fe44b50c99ca5420f37e605",
+  "branch": "track/D-bh-dress",
+  "dirty_package": false
+ },
+ "code": {
+  "core_tag": null,
+  "problem": null,
+  "interpreter": "python3 3.10.12"
+ },
+ "inputs": [
+  {
+   "path": "/data/haiyangw/nrpic/wt/D-bh-dress/tracks/D-bh-dress/secondary_infall/selfsimilar.py",
+   "sha256": "0a06ae61b27c059ba97948171f47987cde96185006490d56ebd1dc39a25de993"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/wt/D-bh-dress/tracks/D-bh-dress/secondary_infall/common.py",
+   "sha256": "49f79f43d1abbe9b4f4d6609efdd8152e87cf73beead654e9f9a3a937d1a804a"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/wt/D-bh-dress/python/nrpic/figstyle.py",
+   "sha256": "5d3b78ad8c2c02e428b675e3d7e35a32cbc8f053d1aeedd4fde66f27da55676e"
+  }
+ ],
+ "resources": {
+  "nodes": 1,
+  "cores": 1,
+  "gpus": 0,
+  "card_hours": 0.0,
+  "walltime_s": 850.16,
+  "particles": 0
+ },
+ "outputs": {
+  "dir": "/data/haiyangw/nrpic/scratch/D-bh-dress/D-bh-dress-20261115-122303-4e8e8af",
+  "sha256sums": "sha256sums.txt",
+  "files": [
+   "stdout.txt"
+  ]
+ },
+ "status": "failed",
+ "exit_code": -15,
+ "started": "2026-11-15T12:23:03Z",
+ "ended": "2026-11-15T12:37:13Z",
+ "parents": [],
+ "notes": "Registered by register_run.py of tracks/D-bh-dress/secondary_infall (helper of D-bh-dress). Predictions and outcome: tracks/D-bh-dress/secondary_infall/JOURNAL.md."
+}

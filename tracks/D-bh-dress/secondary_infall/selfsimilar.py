@@ -28,6 +28,7 @@ import time
 
 import numpy as np
 from scipy.integrate import solve_ivp
+from scipy.ndimage import gaussian_filter1d
 
 from common import load_figstyle, KAPPA, PI
 
@@ -38,9 +39,14 @@ LGRID = L0 + DL * np.arange(NL)              # ln lambda on [1e-9, 1]
 
 
 class MassProfile:
+    """ln m on the ln lambda grid, cubic Hermite interpolation (continuous force
+    derivative: piecewise-linear interpolation made the adaptive integrator take ~40
+    times more steps, run D-bh-dress-20261115-122303-4e8e8af)."""
+
     def __init__(self, lnm):
         self.lnm = np.asarray(lnm, float).copy()
         self.lst = self.lnm.tolist()
+        self.dl = (np.gradient(self.lnm, DL) * DL).tolist()   # slope per grid step
 
     def __call__(self, lam):
         if lam <= 0.0:
@@ -55,10 +61,14 @@ class MassProfile:
         if i >= NL - 1:
             return math.exp(self.lst[-1])
         f = x - i
-        return math.exp(self.lst[i] * (1.0 - f) + self.lst[i + 1] * f)
+        f2 = f * f
+        f3 = f2 * f
+        y = ((2 * f3 - 3 * f2 + 1) * self.lst[i] + (f3 - 2 * f2 + f) * self.dl[i]
+             + (-2 * f3 + 3 * f2) * self.lst[i + 1] + (f3 - f2) * self.dl[i + 1])
+        return math.exp(y)
 
 
-def orbit(mp, taumax, soft, rtol=1e-9):
+def orbit(mp, taumax, soft, rtol=1e-8):
     s2 = soft * soft
     p89 = -8.0 / 9.0
 
@@ -74,7 +84,7 @@ def orbit(mp, taumax, soft, rtol=1e-9):
     return sol
 
 
-def mass_from_orbit(sol, taumax, nu=400_000):
+def mass_from_orbit(sol, taumax, nu=1_500_000):
     ut = taumax ** (-2.0 / 3.0)
     u = np.linspace(1.0, ut, nu)                 # tau increasing
     tau = u ** -1.5
@@ -91,7 +101,7 @@ def mass_from_orbit(sol, taumax, nu=400_000):
     F = lambda yv: np.searchsorted(absL, yv) / absL.size
     yv = lam[:, None] * ug[None, :] ** (-4.0 / 3.0)
     integrand = F(yv)                                           # (NL, nug)
-    m_tail = np.trapz(integrand, ug, axis=1) + 1e-16 * integrand[:, 0]
+    m_tail = np.trapezoid(integrand, ug, axis=1) + 1e-16 * integrand[:, 0]
     return m_main + m_tail, dict(u=u, tau=tau, L=Y[0], V=Y[1], x=x, ut=ut,
                                  lamap_tail=absL[-1] * taumax ** (-8.0 / 9.0))
 
@@ -119,8 +129,8 @@ def main():
     ap.add_argument("--out", required=True)
     ap.add_argument("--taumax", type=float, default=300.0)
     ap.add_argument("--soft", type=float, default=1e-5)
-    ap.add_argument("--maxit", type=int, default=40)
-    ap.add_argument("--tol", type=float, default=1e-3)
+    ap.add_argument("--maxit", type=int, default=30)
+    ap.add_argument("--tol", type=float, default=2e-3)
     ap.add_argument("--mix", type=float, default=0.5)
     a = ap.parse_args()
     os.makedirs(a.out, exist_ok=True)
@@ -132,10 +142,17 @@ def main():
         mp = MassProfile(lnm)
         sol = orbit(mp, a.taumax, a.soft)
         m_new, aux = mass_from_orbit(sol, a.taumax)
-        lnm_new = np.log(np.maximum(m_new, 1e-300))
-        sel = (lam > 1e-6) & (lam < 0.98)
+        # light smoothing (3 grid cells, 3.5 % in lambda) of the sampled profile before it
+        # drives the next orbit: blurs the caustic kinks slightly, cuts the steps 7-fold
+        lnm_new = gaussian_filter1d(np.log(np.maximum(m_new, 1e-300)), 3.0, mode="nearest")
+        # convergence measured where m > ~0.01 (below lambda ~ 1e-3 the sampled m is
+        # noise-limited at a few per cent; run D-bh-dress-20261115-122303-4e8e8af)
+        sel = (lam > 1e-3) & (lam < 0.98)
         dmax = float(np.max(np.abs(lnm_new[sel] - lnm[sel])))
-        hist.append(dict(it=it, dmax=dmax, nfev=int(sol.nfev), wall=time.time() - t0))
+        sel6 = (lam > 1e-6) & (lam < 0.98)
+        dmax6 = float(np.max(np.abs(lnm_new[sel6] - lnm[sel6])))
+        hist.append(dict(it=it, dmax=dmax, dmax_1e6=dmax6, nfev=int(sol.nfev),
+                         wall=time.time() - t0))
         print(f"iteration {it}: max |d ln m| = {dmax:.3e}  nfev = {sol.nfev}  "
               f"{time.time() - t0:.1f} s", flush=True)
         lnm = (1.0 - a.mix) * lnm + a.mix * lnm_new
