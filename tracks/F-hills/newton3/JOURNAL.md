@@ -164,3 +164,29 @@ start distance matters more because the tidal field at 10 r_t is not negligible
   <|E|> converge in k0: k0 = 40 and 80 agree within 0.3 points and 0.5 percent, and the
   k0 = 10 values differ from k0 = 80 by at most 2 points and 4 percent. Refuted if 40 vs 80
   still differ by more, or the k0 = 10 offsets exceed these bounds.
+
+## 2026-11-15 P1 analysed (run F-hills-20261115-132435-7d0c6dd); prediction P7
+
+- found (P1, against SKR's printed numbers; coplanar scan F-hills-20261115-130237-cbfaf6b
+  for D >= 1e-3 plus the rtol 1e-13 deep supplement F-hills-20261115-132156-efddfc0):
+  prograde: last disrupting D = 2.085, none at 2.090 (SKR 2.1: agrees to its rounding);
+  P_dis maximal 0.988 at D = 0.16 (SKR 0.15), range 0.984-0.988 for 0.06 < D < 0.3
+  (SKR 0.980-0.988); max |E| = 27.15 at D = 0.1 (SKR 27.3); deep survival 19.3 percent at
+  D = 1e-5 (SKR radial 19); survival windows at D = 1e-5: 0.693-0.886 pi and
+  -0.307 to -0.114 pi (SKR 0.69-0.88 and -0.31 to -0.12); <sqrt|E|> = 0.999 (SKR 0.99).
+  retrograde: max |E| 1.84 (SKR 1.8); deep survival 19.9 percent; BUT last disrupting
+  D = 0.405, none at 0.410, against SKR's 0.44 (prp.tex:778-779, 847): prediction P1
+  (0.44 +- 0.03) refuted for the retrograde edge. D-uniform energy averages: prograde
+  1.47 (SKR 1.46) when D is uniform and the average is over disrupted cases; retrograde
+  0.55 (that definition) or 0.47 (unweighted over the disrupting range) against SKR 0.50;
+  both directions together 1.38 (SKR 1.36). SKR do not state the definition; I do not
+  claim a match for the retrograde value. Survivors that are harder than initially:
+  87 percent at D = 1e-5 (SKR 'about 90 percent', radial).
+- prediction P7 (before the digitiser runs): SKR's fig. 4 curves (read from the MATLAB EPS
+  in kb-data) and mine agree to within 0.02 in P_dis for D < 0.3 in both directions; the
+  largest differences sit at the edges (retrograde near 0.4-0.44, prograde near 2.0-2.1).
+  Fig. 7 (phase-averaged and maximal |E| for fixed a): median relative difference below
+  3 percent for <|E|>, below 15 percent for max|E| (a narrow-spike statistic that depends
+  on the phase grid). If SKR's retrograde curve reaches zero near 0.41 the 0.44 of the text
+  is a statement about a different quantity or a typo; if it reaches zero at 0.44 the
+  discrepancy is real and its cause is open.

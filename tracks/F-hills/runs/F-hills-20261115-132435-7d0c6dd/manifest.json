@@ -1,0 +1,285 @@
+{
+  "run_id": "F-hills-20261115-132435-7d0c6dd",
+  "track": "F-hills",
+  "package": "newton3 (F-pre-1)",
+  "gate": "G1",
+  "purpose": "analysis of F-hills-20261115-130237-cbfaf6b (P1 coplanar) with deep supplement F-hills-20261115-132156-efddfc0",
+  "preregistered_in": "tracks/F-hills/newton3/JOURNAL.md#P1",
+  "kind": "scouting",
+  "command": [
+    "/usr/bin/python3",
+    "scripts/analyze.py",
+    "coplanar",
+    "F-hills-20261115-130237-cbfaf6b",
+    "F-hills-20261115-132156-efddfc0"
+  ],
+  "cwd": "/data/haiyangw/nrpic/wt/F-hills/tracks/F-hills/newton3",
+  "git": {
+    "sha": "7d0c6dd82a4c2e5ec5af58db61dd5d1361ccdac8",
+    "branch": "track/F-hills",
+    "dirty_package": true,
+    "merge_base_main": "a1c223753952674ee38819dc45043591dddc3022"
+  },
+  "code": {
+    "core_tag": null,
+    "athenak": "not used (reference ODE solution, decision 0010)"
+  },
+  "env": {
+    "host": "anta",
+    "python": "3.10.12",
+    "numpy": "2.2.6",
+    "scipy": "1.15.3"
+  },
+  "inputs": [
+    {
+      "path": "tracks/F-hills/newton3/hills3/__init__.py",
+      "sha256": "0325364972e07f4ddc48d25f7faf0df9fa42aaee5ffd0a0cb89015b0695ebb76"
+    },
+    {
+      "path": "tracks/F-hills/newton3/hills3/integrate.py",
+      "sha256": "9163e563f7a90fec5d705fbe6b50365946158c65ffaedd8c80730ac3ecae7af9"
+    },
+    {
+      "path": "tracks/F-hills/newton3/hills3/orbits.py",
+      "sha256": "208fd9a68210007dfbc850f8c892e901abfe08b359708673a45d75517ac95b11"
+    },
+    {
+      "path": "tracks/F-hills/newton3/hills3/reference.py",
+      "sha256": "f28662c8d91828717b553eed9a34296a72d7a8d485f01fdee5b953bbf06e7bf5"
+    },
+    {
+      "path": "tracks/F-hills/newton3/hills3/restricted.py",
+      "sha256": "fcac01ffdaa79827642ef44e910c9b0baa80c3189e1de517ae592ab781c10e31"
+    },
+    {
+      "path": "tracks/F-hills/newton3/hills3/threebody.py",
+      "sha256": "ce9578e17ad58a448f565ed149658f2dcf52861969cacf1b669e3390b2e165a6"
+    },
+    {
+      "path": "tracks/F-hills/newton3/scripts/analyze.py",
+      "sha256": "416c76094d1e79f8e007e14c728d72f76348acf6fc9face24f19b17e40336553"
+    },
+    {
+      "path": "tracks/F-hills/newton3/scripts/compare_full.py",
+      "sha256": "f366a8ea55a6480dcd81105ec13d816914988448954567cea33da768caeaf717"
+    },
+    {
+      "path": "tracks/F-hills/newton3/scripts/convergence.py",
+      "sha256": "1e377cbd0962848a7bdbdf924012b3ad28a3862858417a4722eb03be9f3b2d04"
+    },
+    {
+      "path": "tracks/F-hills/newton3/scripts/run_tests.py",
+      "sha256": "c04b89017bef1895020136a0397d94ed90a25a7b00b48bbedfc9b1c8a7902d9a"
+    },
+    {
+      "path": "tracks/F-hills/newton3/scripts/runlib.py",
+      "sha256": "2ef8be8b833533fb8bc119b7ce4fdb4f2e46d271f808956206e7127e1be50a36"
+    },
+    {
+      "path": "tracks/F-hills/newton3/scripts/scan_coplanar.py",
+      "sha256": "04191d9f27fa5a5430f5645207313b3cc195786cb9b17a16c50a19509e93513a"
+    },
+    {
+      "path": "tracks/F-hills/newton3/scripts/scan_general.py",
+      "sha256": "736247184c314ba395a8fff48511e47be91549c6c00ce3b8ef57c168c1fc04a9"
+    },
+    {
+      "path": "/data/haiyangw/nrpic/scratch/F-hills/F-hills-20261115-130237-cbfaf6b/coplanar.npz",
+      "sha256": "5954e34f8eb97e92b0c0120a78a4bbea8b358f2335daaeb52cafa86757f1b685"
+    },
+    {
+      "path": "/data/haiyangw/nrpic/scratch/F-hills/F-hills-20261115-132156-efddfc0/coplanar.npz",
+      "sha256": "0dd21ed34e773e54c291b69bb8b40f39e3442efd5f07da986c1b3bea9d9e72b6"
+    }
+  ],
+  "resources": {
+    "nodes": 1,
+    "gpus": 0,
+    "cores": 1,
+    "card_hours": 0.0
+  },
+  "outputs": {
+    "dir": "scratch/F-hills/F-hills-20261115-132435-7d0c6dd",
+    "sha256sums": "sha256sums.txt",
+    "files": 7
+  },
+  "status": "completed",
+  "exit_code": 0,
+  "started": "2026-11-15T13:24:35+00:00",
+  "ended": "2026-11-15T13:24:38+00:00",
+  "walltime_s": 3.3,
+  "core_hours": 0.001,
+  "notes": "",
+  "results": {
+    "pro": {
+      "Dmax_last_disrupting": 2.085,
+      "Dmax_first_nondisrupting": 2.09,
+      "P_at_Dmin": 0.8074741408074741,
+      "D_min": 1e-05,
+      "survival_deep": 0.19252585919252585,
+      "P_max": 0.988,
+      "D_at_P_max": 0.16,
+      "Emax": 27.14573863257421,
+      "D_at_Emax": 0.1,
+      "Emean_deep": 1.0455156311039817,
+      "vmean_deep": 0.9992004997041651,
+      "n_fail": 127,
+      "n_ambiguous": 11,
+      "n_total": 477000,
+      "survivors_harder_deep": 0.8700173310225303,
+      "at_D=1e-4": {
+        "D": 0.0001,
+        "P": 0.8122081387591727,
+        "Emean": 1.0363478185916837,
+        "vmean": 0.9942914690348514,
+        "survival": 0.18779186124082725,
+        "survivors_harder": 0.8701067615658363,
+        "survival_windows_pi": [
+          [
+            0.6996666666666665,
+            0.7733333333333333
+          ],
+          [
+            0.7743333333333332,
+            0.8873333333333333
+          ],
+          [
+            -0.30033333333333345,
+            -0.22666666666666668
+          ],
+          [
+            -0.2256666666666668,
+            -0.11266666666666669
+          ]
+        ]
+      },
+      "P_range_0.06_0.3": [
+        0.9836666666666667,
+        0.988
+      ],
+      "survival_windows_deep_pi": [
+        [
+          0.6926666666666665,
+          0.7693333333333333
+        ],
+        [
+          0.7703333333333333,
+          0.771
+        ],
+        [
+          0.7716666666666666,
+          0.8856666666666666
+        ],
+        [
+          -0.30733333333333346,
+          -0.2306666666666667
+        ],
+        [
+          -0.22966666666666669,
+          -0.22899999999999998
+        ],
+        [
+          -0.2283333333333334,
+          -0.1143333333333334
+        ]
+      ],
+      "Emean_Duniform_disrupted_weighted_0_2.1": 1.4715986273242148,
+      "_num_0_2.1": 2.508476813859287,
+      "_den_0_2.1": 1.7045930644964056,
+      "Emean_Duniform_unweighted_0_2.1": 1.3804034992183887,
+      "Emean_Duniform_disrupted_weighted_0_Dmax": 1.4715986273242148,
+      "_num_0_Dmax": 2.508476813859287,
+      "_den_0_Dmax": 1.7045930644964056,
+      "Emean_Duniform_unweighted_0_Dmax": 1.3804034992183887
+    },
+    "ret": {
+      "Dmax_last_disrupting": 0.405,
+      "Dmax_first_nondisrupting": 0.41,
+      "P_at_Dmin": 0.8014018691588785,
+      "D_min": 1e-05,
+      "survival_deep": 0.19859813084112155,
+      "P_max": 0.8014018691588785,
+      "D_at_P_max": 1e-05,
+      "Emax": 1.837810369914442,
+      "D_at_Emax": 1e-05,
+      "Emean_deep": 1.0405133480240951,
+      "vmean_deep": 0.9966078058993968,
+      "n_fail": 92,
+      "n_ambiguous": 55,
+      "n_total": 477000,
+      "survivors_harder_deep": 0.8686868686868687,
+      "at_D=1e-4": {
+        "D": 0.0001,
+        "P": 0.7943238731218698,
+        "Emean": 1.0202662405585725,
+        "vmean": 0.9856261684115317,
+        "survival": 0.2056761268781302,
+        "survivors_harder": 0.865040650406504,
+        "survival_windows_pi": [
+          [
+            0.11533333333333332,
+            0.237
+          ],
+          [
+            0.23766666666666666,
+            0.23766666666666666
+          ],
+          [
+            0.239,
+            0.31866666666666665
+          ],
+          [
+            0.31933333333333336,
+            0.32166666666666666
+          ],
+          [
+            -0.8846666666666667,
+            -0.763
+          ],
+          [
+            -0.7623333333333333,
+            -0.7623333333333333
+          ],
+          [
+            -0.761,
+            -0.6813333333333333
+          ],
+          [
+            -0.6806666666666666,
+            -0.6783333333333333
+          ]
+        ]
+      },
+      "P_range_0.06_0.3": [
+        0.40166666666666667,
+        0.6126666666666667
+      ],
+      "survival_windows_deep_pi": [
+        [
+          0.11533333333333332,
+          0.23299999999999998
+        ],
+        [
+          0.23466666666666663,
+          0.3143333333333333
+        ],
+        [
+          -0.8846666666666667,
+          -0.767
+        ],
+        [
+          -0.7653333333333334,
+          -0.6856666666666666
+        ]
+      ],
+      "Emean_Duniform_disrupted_weighted_0_2.1": 0.5479153271257743,
+      "_num_0_2.1": 0.10518273747428497,
+      "_den_0_2.1": 0.19196896357334464,
+      "Emean_Duniform_unweighted_0_2.1": 0.4659689272413108,
+      "Emean_Duniform_disrupted_weighted_0_Dmax": 0.5479153271257744,
+      "_num_0_Dmax": 0.10518273747428498,
+      "_den_0_Dmax": 0.19196896357334461,
+      "Emean_Duniform_unweighted_0_Dmax": 0.4659689272413108
+    }
+  }
+}
