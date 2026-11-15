@@ -16,6 +16,12 @@ regular part obeys (same source, lines 207-215, with u there equal to 1 + u here
 
     lap u = -(1/8) Abar_ij Abar^ij (psi_BL + u)^-7,     u -> 0 at infinity.
 
+With other punctures nearby, psi_BL near puncture c is Lambda_c + m_c/(2 r) with
+Lambda_c = 1 + sum_{j != c} m_j/(2 d_cj) nearly constant, and the local solution is the
+isolated one rescaled: u_c = Lambda_c u_isolated(m_c/Lambda_c, P_c/Lambda_c^4,
+S_c/Lambda_c^4) (argument ``lam`` of :func:`approx_u`, option ``--background`` of the
+table writer).
+
 For one puncture with P and S along one axis the source is axisymmetric and even in
 mu = n.axis:
 
@@ -115,9 +121,17 @@ def approx_u2p(R):
     return out
 
 
-def approx_u(x, pos, m, P=(0.0, 0.0, 0.0), S=(0.0, 0.0, 0.0)):
+def approx_u(x, pos, m, P=(0.0, 0.0, 0.0), S=(0.0, 0.0, 0.0), lam=1.0):
     """Correction u of one puncture to second order in P and S, closed form
-    [arXiv:0711.1165v2, second.tex lines 222-271]."""
+    [arXiv:0711.1165v2, second.tex lines 222-271].
+
+    ``lam`` is the background conformal factor Lambda = 1 + sum_j m_j/(2 d_j) of the
+    other punctures at this one. Near the puncture the equation is then
+    lap u = -(1/8) Abar^2 (Lambda + m/2r + u)^-7, whose solution is
+    Lambda u_isolated(m/Lambda, P/Lambda^4, S/Lambda^4)."""
+    if lam != 1.0:
+        return lam * approx_u(x, pos, m / lam, np.asarray(P, dtype=float) / lam**4,
+                              np.asarray(S, dtype=float) / lam**4)
     P = np.asarray(P, dtype=float)
     S = np.asarray(S, dtype=float)
     d, r = _disp(x, pos)
@@ -343,12 +357,19 @@ def _main():
                     help="second-order solution (source with u = 0)")
     ap.add_argument("--dr", type=float, default=None, help="table spacing (m/100)")
     ap.add_argument("--rlast", type=float, default=None, help="table end (200 m)")
+    ap.add_argument("--background", type=float, default=0.0,
+                    help="Lambda - 1 = sum of m_j/(2 d_j) over the other punctures")
     ap.add_argument("--out", required=True)
     a = ap.parse_args()
-    sol = solve_axisym(a.mass, a.momentum, a.spin, lmax=a.lmax, nonlinear=not a.linear)
+    lam = 1.0 + a.background
+    sol = solve_axisym(a.mass / lam, a.momentum / lam**4, a.spin / lam**4, lmax=a.lmax,
+                       nonlinear=not a.linear)
+    sol["ul"] = lam * sol["ul"]
+    sol["u0_centre"] *= lam
     dr = a.dr if a.dr is not None else a.mass / 100.0
     rlast = a.rlast if a.rlast is not None else 200.0 * a.mass
-    write_table(a.out, sol, dr, rlast)
+    write_table(a.out, sol, dr, rlast,
+                comment=f"background = {a.background:.17g} (table = Lambda u_isolated)")
     print(f"{a.out}: l = {sol['lvals']}, iterations = {sol['iterations']}, "
           f"m_adm = {sol['m_adm']:.10f}, u(0) = {sol['u0_centre']:.10f}")
 

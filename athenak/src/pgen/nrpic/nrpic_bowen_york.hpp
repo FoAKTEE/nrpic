@@ -26,8 +26,16 @@
 //!   table   multipoles u(r, mu) = sum_l u_l(r) P_l(mu) about one axis, read from a file
 //!           (docs/FORMATS.md; python/nrpic/bowen_york.py writes the solution of the full
 //!           equation for an isolated puncture with P and S along one axis)
-//! Either removes the residual of an isolated puncture to the stated order; the cross
-//! terms between punctures, of relative size (m/d)^2 at separation d, remain.
+//! Either removes the residual of an isolated puncture to the stated order.  Near a
+//! puncture c the other punctures add the nearly constant amount
+//!   Lambda_c - 1 = sum_{j != c} m_j/(2 d_cj)
+//! to psi, which changes the source by the factor ((Lambda_c + m_c/2r)/(1 + m_c/2r))^-7;
+//! the sum of isolated corrections then overshoots and can leave a larger residual than
+//! no correction at all (tracks/core/interfaces/multi_puncture.md).  The local equation
+//! with that background is the isolated one with rescaled parameters, so that
+//!   u_c = Lambda_c u_isolated(m_c/Lambda_c, P_c/Lambda_c^4, S_c/Lambda_c^4),
+//! which approx uses unless <problem> corr_background = false.  A table is used as it
+//! is.  The cross terms of the curvatures of different punctures remain.
 //!
 //! Input, in <problem>, for a component c of type puncture:
 //!   comp<c>_p1, _p2, _p3    linear momentum (default 0)
@@ -36,6 +44,8 @@
 //!   comp<c>_corr_file       table: file name
 //!   comp<c>_corr_axis1..3   table: symmetry axis; default the axis of the file header,
 //!                           else the direction of P, else that of S
+//!   corr_background         approx: rescale with the background of the other
+//!                           punctures (default true)
 
 #include <cmath>
 #include <cstdio>
@@ -62,6 +72,7 @@ struct BYPuncture {
   Real p[3];             // linear momentum
   Real s[3];             // spin
   int corr;              // correction of the conformal factor
+  Real lam;              // approx: background conformal factor of the other punctures
   Real axis[3];          // table: symmetry axis (unit vector)
   int ncol, ntab, off;   // table: multipole columns, rows, offset of the first column
   int lmax;              // table: highest multipole order
@@ -130,15 +141,19 @@ Real BYApproxU2P(const Real R) {
 //----------------------------------------------------------------------------------------
 //! \fn Real BYApprox
 //! \brief second-order correction of an isolated puncture with momentum and spin
-//! (arXiv:0711.1165, Eqs. 1 to 6) at displacement d, distance r
+//! (arXiv:0711.1165, Eqs. 1 to 6) at displacement d, distance r, with mass m/Lambda and
+//! momenta P/Lambda^4, S/Lambda^4, times Lambda (Lambda = b.lam, 1 without background)
 
 KOKKOS_INLINE_FUNCTION
 Real BYApprox(const BYPuncture &b, const Real d[3], const Real r) {
-  const Real R = 2.0*r/b.m;
+  const Real mt = b.m/b.lam;
+  const Real lam4 = b.lam*b.lam*b.lam*b.lam;
+  const Real R = 2.0*r/mt;
   const Real l1 = 1.0/(1.0 + R);
   const Real l2 = l1*l1, l3 = l2*l1, l4 = l2*l2, l5 = l4*l1;
-  const Real cp[3] = {2.0*b.p[0]/b.m, 2.0*b.p[1]/b.m, 2.0*b.p[2]/b.m};
-  const Real jf = 4.0/(b.m*b.m);
+  const Real pf = 2.0/(lam4*mt);
+  const Real cp[3] = {pf*b.p[0], pf*b.p[1], pf*b.p[2]};
+  const Real jf = 4.0/(lam4*mt*mt);
   const Real cj[3] = {jf*b.s[0], jf*b.s[1], jf*b.s[2]};
   const Real p2 = cp[0]*cp[0] + cp[1]*cp[1] + cp[2]*cp[2];
   const Real j2 = cj[0]*cj[0] + cj[1]*cj[1] + cj[2]*cj[2];
@@ -156,9 +171,9 @@ Real BYApprox(const BYPuncture &b, const Real d[3], const Real r) {
   if (p2 > 0.0 && j2 > 0.0) {
     const Real c[3] = {cp[1]*cj[2] - cp[2]*cj[1], cp[2]*cj[0] - cp[0]*cj[2],
                        cp[0]*cj[1] - cp[1]*cj[0]};
-    u += (2.0/b.m)*(c[0]*d[0] + c[1]*d[1] + c[2]*d[2])*(1.0 + 5.0*R + 10.0*R*R)*l5/80.0;
+    u += (2.0/mt)*(c[0]*d[0] + c[1]*d[1] + c[2]*d[2])*(1.0 + 5.0*R + 10.0*R*R)*l5/80.0;
   }
-  return u;
+  return b.lam*u;
 }
 
 //! cubic (four-point Lagrange) interpolation in a uniform table starting at r = 0
@@ -332,6 +347,7 @@ inline BYSet BYRead(ParameterInput *pin, const int ncomp, std::vector<Real> &tab
       b.s[a] = BYGetReal(pin, pre + "s" + std::to_string(a+1), 0.0);
       b.axis[a] = 0.0;
     }
+    b.lam = 1.0;
     b.ncol = 0; b.ntab = 0; b.off = 0; b.lmax = 0; b.dr = 1.0; b.rlast = 0.0;
     for (int q=0; q<kBYMaxCol; ++q) {
       b.l[q] = 0;
@@ -350,6 +366,21 @@ inline BYSet BYRead(ParameterInput *pin, const int ncomp, std::vector<Real> &tab
     } else if (corr.compare("approx") == 0) {
       b.corr = kBYCorrApprox;
       if (!(b.m > 0.0)) BYFatal("<problem> " + pre + "corr = approx needs mass > 0");
+      // background conformal factor of the other punctures at this one
+      const bool bg = pin->DoesParameterExist("problem", "corr_background") ?
+                      pin->GetBoolean("problem", "corr_background") : true;
+      for (int o=0; o<ncomp && bg; ++o) {
+        const std::string po = "comp" + std::to_string(o) + "_";
+        if (o == c || pin->GetString("problem", po + "type").compare("puncture") != 0) {
+          continue;
+        }
+        const Real dx = BYGetReal(pin, po + "x1", 0.0) - b.x[0];
+        const Real dy = BYGetReal(pin, po + "x2", 0.0) - b.x[1];
+        const Real dz = BYGetReal(pin, po + "x3", 0.0) - b.x[2];
+        const Real dist = std::sqrt(dx*dx + dy*dy + dz*dz);
+        if (!(dist > 0.0)) BYFatal("two punctures at the same position");
+        b.lam += 0.5*pin->GetReal("problem", po + "mass")/dist;
+      }
     } else if (corr.compare("table") == 0) {
       b.corr = kBYCorrTable;
       const bool has_axis =

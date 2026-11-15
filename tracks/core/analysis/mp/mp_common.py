@@ -61,15 +61,20 @@ def read_bin(path):
             par[blk][k.strip()] = v.strip()
     xs, ys, zs, dxs = [], [], [], []
     n1, n2, n3 = fd["nx1_out_mb"], fd["nx2_out_mb"], fd["nx3_out_mb"]
+    # each block: x1min, x1max, x2min, x2max, x3min, x3max (outputs/binary.cpp; the
+    # docstring of bin_convert.py says otherwise). A sliced direction has one cell and
+    # the full extent of the block: its coordinate is then the block centre, not the
+    # position of the slice.
     for g in fd["mb_geometry"]:
-        x = g[0] + (np.arange(n1) + 0.5) * g[3]
-        y = g[1] + (np.arange(n2) + 0.5) * g[4]
-        z = g[2] + (np.arange(n3) + 0.5) * g[5]
+        d1, d2, d3 = (g[1] - g[0]) / n1, (g[3] - g[2]) / n2, (g[5] - g[4]) / n3
+        x = g[0] + (np.arange(n1) + 0.5) * d1
+        y = g[2] + (np.arange(n2) + 0.5) * d2
+        z = g[4] + (np.arange(n3) + 0.5) * d3
         Z, Y, X = np.meshgrid(z, y, x, indexing="ij")
         xs.append(X.ravel())
         ys.append(Y.ravel())
         zs.append(Z.ravel())
-        dxs.append(np.full(X.size, g[3]))
+        dxs.append(np.full(X.size, d1))
     var = {k: np.concatenate([np.asarray(a, dtype=np.float64).ravel() for a in v])
            for k, v in fd["mb_data"].items()}
     return (fd["time"], par, np.concatenate(xs), np.concatenate(ys), np.concatenate(zs),
@@ -145,13 +150,20 @@ def punctures(par, rundir):
                 ax = p["P"] if np.any(p["P"] != 0.0) else p["S"]
             p["axis"] = np.asarray(ax, dtype=float)
         out.append(p)
+    # background conformal factor of the other punctures (approx only)
+    bg = pr.get("corr_background", "true").split()[0].lower() in ("true", "1")
+    for c, p in enumerate(out):
+        p["lam"] = 1.0
+        if p["corr"] == "approx" and bg:
+            p["lam"] += sum(0.5 * q["m"] / np.linalg.norm(q["pos"] - p["pos"])
+                            for j, q in enumerate(out) if j != c)
     return out
 
 
 def correction(pts, p):
     """Correction u_c of one puncture at pts as the generator evaluates it."""
     if p["corr"] == "approx":
-        return by.approx_u(pts, p["pos"], p["m"], p["P"], p["S"])
+        return by.approx_u(pts, p["pos"], p["m"], p["P"], p["S"], lam=p.get("lam", 1.0))
     if p["corr"] == "table":
         return by.eval_table(p["table"], pts, p["pos"], p["axis"])
     return np.zeros(len(pts))
@@ -174,9 +186,10 @@ def closed_forms(pts, puncs):
     """psi, K_ij (N,3,3) and the Hamiltonian residual H = -8 psi^-5 lap(u) - psi^-12
     Abar^2 at pts for a list of punctures with their corrections. The Laplacian of a
     correction is known in closed form: lap u_c = -(1/8) psi_c^-7 Abar_c^2 with
-    psi_c = 1 + m_c/(2 r_c) for `approx` and for a table of the second-order solution,
-    and with psi_c = 1 + m_c/(2 r_c) + u_c for a table of the full solution (header
-    entry nonlinear = 1), up to the accuracy of the table."""
+    psi_c = Lambda_c + m_c/(2 r_c) for `approx` (Lambda_c the background factor, 1 for
+    an isolated puncture) and for a table of the second-order solution, and with
+    psi_c = 1 + m_c/(2 r_c) + u_c for a table of the full solution (header entry
+    nonlinear = 1), up to the accuracy of the table."""
     psi = by.psi_bl(pts, puncs)
     ab = 0.0
     lap = np.zeros(len(pts))
@@ -186,7 +199,8 @@ def closed_forms(pts, puncs):
         if p["corr"] in ("approx", "table"):
             _, r = by._disp(pts, p["pos"])
             uc = correction(pts, p)
-            psic = 1.0 + 0.5 * p["m"] / r
+            lam = p.get("lam", 1.0) if p["corr"] == "approx" else 1.0
+            psic = lam + 0.5 * p["m"] / r
             if p["corr"] == "table" and p["table"]["meta"].get("nonlinear") == "1":
                 psic = psic + uc
             lap += -0.125 * np.sum(a * a, axis=(-1, -2)) / psic**7

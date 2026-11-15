@@ -40,4 +40,5 @@ for n in 64 128; do
   add "--label s_two_approx_n$n --purpose 'Test 1a (vii): two punctures, closed-form corrections' -- $(res $n) $TWO problem/comp0_corr=approx problem/comp1_corr=approx"
 done
 
-printf '%s\n' "${jobs_list[@]}" | xargs -P 8 -I{} bash -c "$N {}"
+# -d: xargs must not strip the quotes of the purpose strings
+printf '%s\n' "${jobs_list[@]}" | xargs -d '\n' -P 8 -I{} bash -c "$N {}"

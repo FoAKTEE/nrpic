@@ -150,3 +150,91 @@ ones.
    factor of at least 3; what remains is the cross terms and the fourth order.
  - Junk radiation: a burst in psi_4 passing the extraction spheres at the light-travel
    time; its energy below 1e-3 of the total mass. [JUDGEMENT]
+
+### Outcome of R (regression)
+
+- Processors, `problems/tests/regress_cf.athinput` (table, Gaussian, spheroid and
+  puncture in one run, two cycles): runs `core-20261115-113321-a5197ba` (executable built
+  from `main`) and `core-20261115-113400-a5197ba` (this branch). All twelve binary dumps
+  (z4c, adm, con at cycles 0 to 2 and the end) and the history are identical byte for
+  byte. [VERIFIED]
+- Card, `problems/puncture/tracers_headon.athinput`, 24 cycles with the finder on from
+  t = 0: runs `core-20261115-113546-a5197ba` (old) and `core-20261115-113600-a5197ba`
+  (new). Trackers, horizon summary, particle history, trajectories, metric at the
+  particles, Z4c history and the particle restart files are identical byte for byte.
+  [VERIFIED]
+- The mesh restart files differ in 35 bytes (processors) and 7 bytes (card) at one
+  place, offsets 8896-8931 and 15943-15949: inside the binary header after `<par_end>`,
+  where both executables write uninitialised memory (the bytes are fragments of
+  parameter text and of symbol names, different in each executable). Everything after
+  it, 90 MB of field data, is identical. This is not caused by the change; the prediction
+  "apart from nothing" was too strict for these files. [VERIFIED]
+- Two earlier card runs (`-113512-`, `-113513-`) failed at start: the command line can
+  only change parameters that exist in the input (`output2/dcycle`). Failed manifests
+  kept.
+
+### Outcome of 1a (first pass, source a1fe80f)
+
+Runs: the 31 registered runs with labels `s_*` of `run_static.sh`
+(`core-20261115-114152-c89b6e3` to `-114238-`); numbers from
+`tracks/core/analysis/mp/static_check.py`. Earlier launches of the same labels are
+marked superseded or failed in their manifests (quotes stripped by xargs; parameters
+missing from the input; a comment line with a second '=' that the stock binary reader
+cannot parse).
+ - K_ij on the mesh equals `psi^-2 Abar_ij` to 2e-8 to 5e-8 of its largest value, for
+   momentum, spin, both, and two punctures (the output is single precision). The
+   Hamiltonian residual minus that of the same mesh with P = 0 equals
+   `-psi^-12 Abar^2` to 2.5e-6, 3.3e-7, 5.0e-8 at dx = 1/4, 1/8, 1/16: the part of the
+   residual that comes from the curvature is algebraic. [VERIFIED]
+ - (i) holds: over the cells with r >= 0.75 the difference between the residual of the
+   code and the closed form is 1.88, 1.84e-2, 3.15e-4 of the closed form's rms at
+   dx = 1/4, 1/8, 1/16 (factors 102 and 58 per halving; sixth order is 64).
+ - (ii) holds: rms over the history cells 1.665e-4, 6.661e-4, 1.499e-3, 2.665e-3 for
+   P = 0.1, 0.2, 0.3, 0.4 (1 : 4.00 : 9.00 : 16.01), equal to the closed form to four
+   digits.
+ - (iii) holds: momentum residual 6.96e-8, 1.393e-7, 2.089e-7, 2.785e-7 (linear in P);
+   6.89e-4, 1.99e-5, 2.09e-7 at dx = 1/4, 1/8, 1/16.
+ - (iv) holds: with `approx` the rms is 6.017e-5 (code) against 5.990e-5 (closed form)
+   at P = 0.3, 0.040 of the uncorrected 1.499e-3; closed form 7.77e-7, 1.22e-5, 5.99e-5,
+   1.81e-4 for P = 0.1 to 0.4 (P^4 with higher-order terms; the code value at P = 0.1,
+   5.5e-6, is the truncation error of the puncture itself, 5.4e-6 with P = 0).
+ - (v) holds: with the table of the full solution the rms is 3.77e-2, 5.11e-4, 4.51e-6
+   at dx = 1/4, 1/8, 1/16: at dx = 1/16 it is the truncation error of the puncture
+   (5.44e-6 with P = 0) and 0.3 percent of the uncorrected residual. A table of the
+   second-order solution reproduces `approx` to all printed digits (6.017e-5).
+ - (vi) holds: spin 0.4: 2.598e-3 (code) / 2.599e-3 (closed form) without, 2.944e-4 /
+   2.939e-4 with `approx`; momentum and spin not parallel: 4.748e-3 / 4.749e-3 and
+   7.508e-4 / 7.504e-4 (the cross term is in).
+ - (vii) holds as stated (code 2.868e-3 / closed form 2.869e-3 without correction,
+   3.834e-3 / 3.834e-3 with `approx`), but shows what I had not expected: for two
+   punctures 3 apart (masses 1 and 0.5) the sum of isolated corrections leaves a
+   LARGER residual than no correction (3.83e-3 against 2.87e-3).
+ Figures looked at: `figs/static_convergence.png` (sixth-order lines, P^2 and P^4),
+ `figs/static_profile.png` (code on top of the closed form outside r = 0.6; the table
+ case on top of the P = 0 truncation curve; two punctures: red not below blue).
+
+### Changed my mind: the isolated corrections need the background factor
+
+Closed forms only (no simulation; `scratch/core/tmp/bg_check.py`), rms of H over the
+cells with psi_BL <= 2: two punctures 3 apart 2.87e-3 (none), 3.88e-3 (isolated
+corrections); binary of test 2 (d = 10): 2.41e-4, 3.89e-5; a light moving puncture 20
+from a ten times heavier one at rest: 1.29e-3, 3.03e-3. Reason: near puncture c the
+others add Lambda_c - 1 = sum m_j/(2 d_cj) to psi, the source carries psi^-7, and the
+isolated correction, made for psi_c = 1 + m_c/2r, overshoots by
+((Lambda_c + m_c/2r)/(1 + m_c/2r))^7. The local equation with a constant background is
+the isolated one with m/Lambda, P/Lambda^4, S/Lambda^4, and its solution times Lambda
+is the correction (derivation in `nrpic_bowen_york.hpp`). The same closed-form check
+gives 6.23e-4, 5.60e-6 and 4.21e-5 for the three cases. This goes into `approx` as the
+default (`corr_background = true`); `false` keeps the plain sum of arXiv:0711.1165.
+[JUDGEMENT until the code run below]
+
+**Prediction 1a (viii), before the rerun with the new source.** Two punctures of
+(vii) with `approx` and the background factor: the residual of the code equals the
+closed form with Lambda (rms 6.2e-4 at dx = 1/16, a factor 4.6 below no correction);
+with `corr_background = false` the old value 3.83e-3 returns; the single-puncture
+cases are unchanged to all printed digits (Lambda = 1). Refuted if the code value with
+the background factor is not below 1e-3.
+
+**Revised prediction for test 3 (t = 0).** With `approx` and the background factor the
+Hamiltonian norm is below the uncorrected one by a factor of at least 3; with the plain
+sum it is not (it may be larger).
