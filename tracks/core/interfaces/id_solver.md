@@ -226,7 +226,7 @@ and with `id_dump = true` `<basename>.idsolve.bin`; formats in `docs/FORMATS.md`
 | `athenak/src/particles/nrpic.cpp` | 276 | `NrpicIdSolveInit(pin);` at the end of `NrpicInit` |
 | `athenak/src/particles/nrpic_io.cpp` | 1237 | `NrpicSolveInitialData();` after `NrpicCreateParticles()` in `NrpicStartup` |
 | `athenak/src/particles/particles.cpp` | 122 | delete `pbval_ids` in the destructor |
-| `athenak/src/particles/particles.hpp` | 152-167, 363-370 | `NrpicIdSolveOptions` (with `vector`); members and methods of the solver |
+| `athenak/src/particles/particles.hpp` | 152-170, 365-372 | `NrpicIdSolveOptions` (with `vector`, `vec_residual`, `vec_tol`); members and methods of the solver |
 | `docs/FORMATS.md` | 142-152 | the output files of the solver |
 
 ## 7. What refined meshes and punctures will need later
