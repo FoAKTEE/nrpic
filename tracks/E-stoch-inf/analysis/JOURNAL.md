@@ -296,3 +296,18 @@ about 19:40. A14 (P4) is validated as soon as U2 is complete, alone
 (`validate_noise.py --input inputs/u64/U2.athinput --run PROC/U2 --card CARD/U2`, which
 also gives A0-A10 on the processor U2: P7). `val_base.sh` now looks for U4's dumps rather
 than its directory, which the processor script creates at the start.
+
+## 18:49 Outcome P4, P7 (validation run E-20261115-184748-9b010fa)
+
+- P4 holds: U9 (U2 on the card, run E-20261115-170645-3b21217) against U2 on processors
+  (run E-20261115-170727-d15df12, 6012 s, 1.31e4 zone-cycles/s): six fields at four
+  cycles, largest difference 2.2e-15 of the rms, not bitwise. A14 passes (<= 1e-12).
+- P7 holds: the processor U2 passes A0-A10 alone (A9 not applicable); A1 9.8e-14 (bound
+  1e-13, just inside; the same value as the card's U1, so it is the reference's increment
+  at cycle 300, not the platform), A8 1.4e-13, A10 5.1e-15. The statistical tests give the
+  same numbers as the card's U1 to the digits shown (same amplitudes, layout-independent
+  synthesis).
+- P6 (processor part) holds: 6012 s for U2 against the predicted 80-120 min.
+Pending in this package: A12 (U4) on processors (run E-20261115-170727-d15df12 continues
+with U4 until about 19:40) and on the card (run E-20261115-180526-6b68c33, Slurm 4479,
+queued).
