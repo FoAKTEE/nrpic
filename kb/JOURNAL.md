@@ -555,3 +555,21 @@ P6 All 25 curated links of `kb/curated/paper_code_links.tsv` pass `kb link check
   the rest from run kb-20261115-132806-013c452). Migration 0005 adds the five indexes.
   Prediction: with them, the full re-ingestion returns to under 6 min. If it does not, the
   cause is elsewhere.
+
+### Writer-lock starvation (run kb-20261115-133232-3f7f25a stopped) and its fix
+
+- The second production attempt wrote 8 repositories, then waited more than 5 min for
+  `locks/kb-writer.lock` (process in `do_select`, CPU time constant) while the paper ingest
+  (pid 2747510) held it paper after paper. `kbtool/lock.py` polled with LOCK_NB every 0.5 s
+  and missed the short gaps between two holds; at 600 s it would have raised LockTimeout and
+  ended the ingest. I stopped it by its process id.
+- Test written to fail on the old lock: a holder that keeps the lock 100 ms, releases it for
+  2 ms and re-takes it. Old lock (`git show 3f7f25a:kb/kbtool/lock.py`): timeout after 4.02 s
+  in 3 of 3 trials. New lock (waits in the kernel with flock LOCK_EX, SIGALRM for the timeout
+  in the main thread, polling elsewhere): obtained in under 2 s in 4 of 4 runs
+  (`tests/test_code_lockfair.py`). A first version of the test with no gap at all failed
+  for the new lock once in a full-suite run: flock gives no hand-off, so a holder that
+  re-takes the lock within microseconds can still win every race [VERIFIED; limit stated in
+  the test]. The papers helper's running process still has the old module loaded; its next
+  start picks up the new one.
+- Remaining 55 repositories and local/nrpic: run kb-20261115-134736-0e94ee2 (fair lock).

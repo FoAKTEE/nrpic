@@ -72,6 +72,80 @@ A registered run: `python3 -I kb/scripts/registered_run.py --purpose "..." -- <c
   brief section 16 (`papers.title_matches_brief`); repositories (none downloaded); AthenaK
   branch tips for the upstream watch. See Requests.
 
+## Code: K6-K7 (repositories, code index, parameter index, paper-code links, upstream watch)
+
+Under decision 0010 the repositories are read and indexed only: nothing in a clone is
+built, run or imported. Modules `kbtool/code_*.py`, `kbtool/links_*.py`; journal entries
+"K6-K7 helper" in `JOURNAL.md` (predictions R1, P2-P6 and outcomes).
+
+| Path | What |
+|---|---|
+| `kbtool/code_fetch.py` | `kb fetch-repos`: `git clone --depth 1` of each manifest repository into a new directory, moved into `kb-data/raw/github/<owner>__<repo>/` (files made read-only); record `kb-data/meta/github/<owner>__<repo>.json` (url, commit, dates, default branch, licence, size, command; AthenaK: all remote branch tips). git runs with the user's configuration off (no credential helper, no prompt, https only, no submodules, no LFS, symlinks as files, fsck) |
+| `kbtool/code_symbols.py` | symbols: C/C++/CUDA with tree-sitter (Kokkos/CUDA attribute macros blanked to the same length), Python with `ast`, Fortran with line patterns |
+| `kbtool/code_params.py` | every ParameterInput call (`Get*`, `GetOrAdd*`, `Set*`, `DoesParameterExist`, `DoesBlockExist`) with block, name, default, line; athinput parser; inputs-against-code comparison |
+| `kbtool/code_index.py` | `kb ingest repo [--repo R ... \| --all] [--this [--ref main]]`: files, symbols, parameters, chunks into `kb-data/build/code/<key>/` and the tables repos, code_files, symbols, code_chunks, code_fts, params. `--this` indexes this repository (repo_id `local/nrpic`: athenak/src, python/nrpic, cosmo, problems) from git objects at a ref |
+| `kbtool/code_query.py` | `kb code "SYMBOL or text" [--repo R\|this\|athenak] [--kind function\|class\|param\|file\|text]`: exact symbols, then parameters (`name`, `block/name`, `<block> name`), files, symbol prefixes, full text (BM25) |
+| `kbtool/code_watch.py` | `kb watch upstream`: ls-remote diff of IAS-Astrophysics/athenak against the last snapshot, bare shallow clone of all branch tips, inspection of every branch (src/particles, src/z4c, pushers, coupling lines), snapshot `kb-data/meta/github/watch/...` and a report with a message for core |
+| `kbtool/links_paper_code.py` | `kb link check\|load\|list\|add\|explicit`: curated links checked against the paper source and the index, loaded into impl_links; repository addresses found in the stored paper sources |
+| `curated/paper_code_links.tsv` | 25 links from statements of the method of arXiv:2611.12831 (line ranges and labels of the stored v1 source) to functions of this repository, with parameters, evidence (core's interface documents on core/nrpic) and named tests; all `claimed` |
+| `migrations/0004_code_indexes.sql` | indexes on the code tables (without them a re-ingest is quadratic in foreign-key checks) |
+| `scripts/code_crosscheck.py` | test P2/P3: second, tree-sitter parameter extractor; column-0 method definitions against the symbol index |
+| `scripts/code_report.py`, `scripts/fig_code_watch.py` | reports and figures below |
+| `reports/code_index.md`, `code_params.md`, `code_params_*.tsv`, `code_links_check.txt`, `code_links_explicit.tsv`, `code_watch_upstream.md`, `fig_code_*.png` | results (no paper text, no code fragments of repositories without a licence) |
+| `tests/test_code_*.py` | 31 tests: parameter parser, symbols, clone/ingest/query/watch/links end to end on a local file:// remote, licence rules, fair writer lock |
+
+Rerun (all registered as runs with `scripts/registered_run.py`):
+
+```bash
+cd /data/haiyangw/nrpic/wt/kb
+uv pip install --python kb/.venv/bin/python -e 'kb[k0,code]'      # tree-sitter (requirements-k6.lock)
+(cd kb && .venv/bin/python -m pytest tests/test_code_*.py --basetemp=/data/haiyangw/nrpic/scratch/kb/tmp/pytest-code)
+python3 -I kb/bin/kb fetch-repos [--repo owner/name] [--refresh]   # about 3 min for all 63
+kb/.venv/bin/python -I kb/bin/kb ingest repo --all --this --ref main  # about 15 min; needs the venv (tree-sitter)
+python3 -I kb/bin/kb link check > kb/reports/code_links_check.txt && python3 -I kb/bin/kb link load
+python3 -I kb/bin/kb watch upstream --report kb/reports/code_watch_upstream.md   # weekly
+kb/.venv/bin/python -I kb/scripts/code_report.py kb/reports
+python3 -I kb/bin/kb snapshot                                      # readers use db/current
+python3 -I kb/bin/kb code NrpicDepositSources ; python3 -I kb/bin/kb code "z4c/kappa1" --kind param
+```
+
+## Papers: K2-K3 (TeX structure, bibliography, citation graph)
+
+Modules `kbtool/tex_*.py`, `kbtool/bib_*.py`, `kbtool/papers_*.py`; journal entries "K2-K3
+helper" in `JOURNAL.md` (predictions D2, K2-P1 to K2-P8 and outcomes). Everything under
+`kb-data/raw` is read as text from outside the tree; nothing in it is compiled or executed
+(pdflatex runs only on synthetic documents the tests write, to read LaTeX's own numbers).
+
+| Path | What |
+|---|---|
+| `kbtool/tex_files.py` | main file (00README.json/.XXX hints, `\documentclass`+`\begin{document}`, `\input` graph, .bbl name, size); flattening of `\input`, `\include`, `\subfile`, `\import`, `\subimport` inside the tree only (no `..`, absolute paths or links; depth, size and cycle limits) with a source map offset -> file, line, column; comments (`%`, `comment` environment, `\iffalse..\fi`) stripped with TeX semantics and kept separately |
+| `kbtool/tex_macros.py` | `\newcommand`, `\renewcommand`, `\providecommand`, `\def` (undelimited parameters), `\DeclareMathOperator`; text-level expansion with optional arguments, bounded in depth and size; environment shorthands (`\be` -> `\begin{equation}`) |
+| `kbtool/tex_structure.py` | title, authors, abstract; section tree (number, title, label, character range; appendix A, A.1); display equations (equation, align, gather, multline, eqnarray, flalign, alignat, `\[ \]`, `$$`), one row per numbered line group, numbers as LaTeX computes them (checked against pdflatex .aux for article, `\numberwithin`, revtex4-2); figures and tables (caption, label, files, number); footnotes; `\cite` with keys and offsets; label map |
+| `kbtool/tex_text.py` | plain text (pylatexenc 2.11 with fixes for `\texttt`, `\textsf`, `\mbox`, `\href`; `\ref` -> computed numbers; stdlib fallback); sentences; chunks of 200-400 words with about 15 % overlap, never cut inside a display equation; equation normalisation (`tex_norm`) and symbols |
+| `kbtool/bib_parse.py` | .bbl (natbib/REVTeX `\bibitem`, biblatex `\entry`), .bib (tolerant parser, standard library), inline thebibliography; arXiv ids (new form with month and length check, old form with the archive list), DOIs, eprint field; source preference |
+| `kbtool/bib_resolve.py` | corpus resolution (written arXiv id, corpus DOI, fuzzy title ratio >= 0.93), citation edges and `in_corpus`, `kb frontier`, `kb cites`, group matrix and group check |
+| `kbtool/papers_ingest.py` | `kb ingest arxiv`: parse (parallel) and write (serial, writer lock, one transaction per paper) into papers, sections, chunks(+fts), equations(+fts), figures, bib_entries, citations and `kb-data/build/tex/<id_>/{flat.tex, doc.json, sourcemap.json}`; quality score and `parse_status` ok / review / pdf / failed; only downloads that `check_paper` verifies |
+| `kbtool/papers_cli.py` | `kb ingest arxiv [--id ID ... \| --priority N ... \| --all \| --new] [--extras] [--jobs 8]`, `kb resolve-bib`, `kb frontier [-n 50]`, `kb cites ID [--in\|--out] [--context]`, `kb export ID`, `kb show ID --abstract\|--section N\|--eq LABEL\|--fig N`, the paper counts of `kb status` |
+| `migrations/0003_papers_k2.sql`, `0005_papers_fk_indexes.sql` | locators (character ranges into flat.tex and its sha256, figure/table kind, bibliography source, cite key and offset); indexes on the foreign-key child columns |
+| `scripts/papers_checks.py` | independent checks C1-C6 (main file without hints vs 00README; .bib vs bibtexparser; entry counts vs `\bibitem`; labels in display environments; keys without entries; blind fuzzy matching vs written ids) and the figures `fig_papers_k2.png`, `fig_citations_k3.png` |
+| `reports/papers_k2k3.md`, `reports/fig_papers_k2.png`, `reports/fig_citations_k3.png` | results of the final runs (counts and ids only, no paper text) |
+| `tests/test_tex_*.py`, `test_bib_parse.py`, `test_papers_ingest.py` | 50 tests: comments, paths, flattening, main file, numbering against pdflatex, macros, text, chunks, identifiers, .bbl/.bib, ingestion end to end on a synthetic store |
+
+Rerun (each registered with `scripts/registered_run.py`):
+
+```bash
+cd /data/haiyangw/nrpic/wt/kb
+(cd kb && .venv/bin/python -m pytest tests/test_tex_*.py tests/test_bib_parse.py tests/test_papers_ingest.py)
+python3 -I kb/bin/kb fetch-missing --priority 3 2 1        # one process, exec of nrpic-fetch-arxiv
+python3 -I kb/bin/kb verify-downloads --report kb/reports/verify-downloads.md
+python3 -I kb/bin/kb ingest arxiv --all --extras --jobs 8  # re-executes under kb/.venv; about 5-7 min
+kb/.venv/bin/python -I kb/scripts/papers_checks.py <out_dir>
+python3 -I kb/bin/kb snapshot ; python3 -I kb/bin/kb status
+python3 -I kb/bin/kb show 2611.12831 --eq eq:vlasov ; python3 -I kb/bin/kb frontier -n 50
+```
+
+State: see `reports/papers_k2k3.md` (filled from the runs named there).
+
 ## Requests
 
 1. **orch: ignore list.** The pattern `runs/` of the shared `.gitignore` also matches
@@ -101,3 +175,24 @@ A registered run: `python3 -I kb/scripts/registered_run.py --purpose "..." -- <c
    (2611.12831, 1711.06681, 1908.05683, 1904.07841, 1905.08890, 2001.07968, 1101.3555,
    1111.2997). Once the store holds them, `CLAUDE.md` could point readers at
    `kb-data/raw/arxiv/<id>/<v>/src` instead.
+6. **orch: PostScript-only papers** (K2-K3). Two manifest ids have no TeX source: arXiv
+   serves gr-qc/9412071 as a gzipped PostScript file, which `nrpic-fetch-arxiv` stores as
+   `src/main.tex` with status ok (kb verify-downloads: "not an e-print"); astro-ph/9407016 is a
+   tar of PostScript files only. Turning PostScript into text needs an interpreter
+   (ghostscript), which would execute the downloaded program; brief 12.2 has `source.pdf` for
+   this case. Proposal: a `--pdf` mode of the fetch command (same lock and gap) that stores
+   `https://arxiv.org/pdf/<id>` as `source.pdf`; kb then extracts text with pdftotext as it
+   does for 2201.03458.
+7. **orch: metadata, again** (K2-K3). 36 ingested papers have no `\title` (custom title pages,
+   plain TeX, theses; 18 of them are why 23 papers are on the review list) and 27 no abstract
+   environment; the abstract-similarity part of the quality score and every INSPIRE look-up
+   of bibliography entries without an identifier (17661 entries, 27.5 %) wait for Request 2.
+8. **orch: grouping of brief section 16** (K3, brief 12.5 last item) [JUDGEMENT]: 53.2 % of
+   the in-corpus citation edges stay inside one group (6.4 % expected at random), so the
+   grouping agrees with the citation clusters overall. Five papers with at least 10 in-corpus
+   out-edges cite no paper of their own group: 2211.08133 (G06; cites G07), 2505.01495 (G02;
+   G06), 1807.11562 (G02; G07), 1905.07345 (G19; G08 93 %), 2304.13284 (G06; G13 100 %).
+   Candidates for regrouping; the orchestrator decides.
+9. **orch: frontier** (K3, brief 12.5): `kb frontier -n 50` (list in
+   `reports/papers_k2k3.md`) is the weekly list of works cited most by the corpus but absent
+   from it; all 50 are outside the manifest; additions are the orchestrator's decision.

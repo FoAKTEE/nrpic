@@ -1,6 +1,8 @@
-"""The writer lock is not starved by a writer that releases and re-takes it in a loop (seen
-on 2026-11-15: the code ingest waited minutes while the paper ingest took the lock paper
-after paper; kbtool.lock now waits in the kernel)."""
+"""The writer lock is not starved by a writer that releases it for a few milliseconds
+between long holds (seen on 2026-11-15: the code ingest waited minutes while the paper
+ingest took the lock paper after paper; kbtool.lock now waits in the kernel and is woken at
+the unlock). A holder that re-takes the lock with no gap at all can still win every race:
+flock gives no hand-off guarantee."""
 import fcntl
 import multiprocessing as mp
 import os
@@ -15,12 +17,15 @@ def _churn(path, seconds, ready):
     fcntl.flock(fd, fcntl.LOCK_EX)
     ready.set()
     while time.monotonic() - t0 < seconds:
-        time.sleep(0.05)                       # hold
+        time.sleep(0.1)                        # hold (one paper)
         fcntl.flock(fd, fcntl.LOCK_UN)
-        try:
-            fcntl.flock(fd, fcntl.LOCK_EX | fcntl.LOCK_NB)   # re-take at once, as a polling writer would
-        except BlockingIOError:
-            fcntl.flock(fd, fcntl.LOCK_EX)
+        time.sleep(0.002)                      # a short gap between two papers
+        while True:                            # re-take, polling as kbtool.lock did
+            try:
+                fcntl.flock(fd, fcntl.LOCK_EX | fcntl.LOCK_NB)
+                break
+            except BlockingIOError:
+                time.sleep(0.002)
     os.close(fd)
 
 
