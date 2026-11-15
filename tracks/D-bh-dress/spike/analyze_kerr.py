@@ -110,6 +110,7 @@ def main():
     rc = np.zeros((nsnap, len(RANGES)))
     lzm = np.zeros((nsnap, len(RANGES)))
     lzsem = np.zeros((nsnap, len(RANGES)))
+    inrange = np.zeros((ntot, len(RANGES)))      # snapshots each particle spends in a range
     contrast = np.zeros((nsnap, 2))
     rmin = np.full(ntot, np.inf)
     maxdE = np.zeros(ntot); maxdL = np.zeros(ntot); maxdQ = np.zeros(ntot)
@@ -132,6 +133,7 @@ def main():
             m = (rr >= lo) & (rr < hi)
             rc[k, i] = m.sum(); lzm[k, i] = lz[m].mean() if m.any() else np.nan
             lzsem[k, i] = lz[m].std() / np.sqrt(max(m.sum(), 1))
+            inrange[np.nonzero(present)[0][m], i] += 1
         inn = rr < 16.0
         contrast[k] = [np.sum(inn & (mu < 1 / 3)), np.sum(inn & (mu >= 2 / 3))]
         gi = np.nonzero(present)[0]
@@ -165,6 +167,13 @@ def main():
             # least-squares slope of counts/expected per 1e4 M with its standard error
             # (snapshots treated as independent: a lower bound on the error)
             "trend_per_1e4M": [float(v) for v in _trend(times, c / e)],
+            # time-averaged count S = sum_i p_i (p_i: fraction of snapshots particle i spends
+            # in the range); its sampling error over independent orbit draws is
+            # sqrt(N var(p)), the right error for comparing the time average with the reference
+            "time_avg_over_expected": float(inrange[present, i].sum() / nsnap / e),
+            "time_avg_sigma_rel": float(np.sqrt(N * np.var(inrange[present, i] / nsnap)) / e),
+            "time_avg_z": float((inrange[present, i].sum() / nsnap - e)
+                                / np.sqrt(N * np.var(inrange[present, i] / nsnap))),
             "Lz_mean_ref": float(lref), "Lz_mean_t0": float(lzm[0, i]),
             "Lz_sem_t0": float(lzsem[0, i]),
             "Lz_z_t0": float((lzm[0, i] - lref) / lzsem[0, i]),
