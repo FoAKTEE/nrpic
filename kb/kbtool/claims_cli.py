@@ -24,6 +24,7 @@ if __name__ == "__main__" and not __package__:                      # run as a s
 import argparse  # noqa: E402
 import collections  # noqa: E402
 import json  # noqa: E402
+import sqlite3  # noqa: E402
 import subprocess  # noqa: E402
 
 from . import __version__  # noqa: E402
@@ -128,10 +129,11 @@ def cmd_seed(a):
                 if why:
                     print(f"--rebuild refused: {why}", file=sys.stderr)
                     return 1
+                own = [(r[0],) for r in con.execute("SELECT claim_id FROM claim_meta WHERE " + _cdb.OWN_SEED)]
                 for t in ("claim_events", "claim_locators", "claim_meta", "claims"):
-                    con.execute(f"DELETE FROM {t}")
+                    con.executemany(f"DELETE FROM {t} WHERE claim_id=?", own)
                 con.commit()
-                print("rebuild: claim tables emptied (no snapshot holds claims, no label set by a person)")
+                print(f"rebuild: {len(own)} claims of the K8 seed removed; rows of other writers kept")
             res = collect(specs, _store(lay, con), a.source)
             counts = collections.Counter()
             con.execute("BEGIN")
@@ -167,13 +169,15 @@ def cmd_seed(a):
 def rebuild_refused(lay, con):
     """Reason not to empty the claim tables, or ''. Claim ids are stable once published
     (a snapshot holds them) or once a person has set a label."""
-    n = con.execute("SELECT count(*) FROM claim_meta WHERE label_set_by != 'auto'").fetchone()[0]
+    n = con.execute("SELECT count(*) FROM claim_meta WHERE label_set_by != 'auto' AND " + _cdb.OWN_SEED).fetchone()[0]
     if n:
-        return f"{n} claims carry a label set by a person"
+        return f"{n} claims of the seed carry a label set by a person"
     if os.path.exists(lay.db_current):
         snap = _cdb.connect(os.path.realpath(lay.db_current), ro=True)
         try:
             k = snap.execute("SELECT count(*) FROM claims").fetchone()[0]
+        except sqlite3.Error:
+            k = 0
         finally:
             snap.close()
         if k:
@@ -184,13 +188,13 @@ def rebuild_refused(lay, con):
 def _summary(rows):
     by_t = collections.defaultdict(collections.Counter)
     for r in rows:
-        by_t[r["track"]][r["status"]] += 1
-        by_t[r["track"]]["label:" + str(r["label"])] += 1
-    for t in sorted(by_t, key=str):
+        by_t[str(r["track"])][str(r["status"])] += 1
+        by_t[str(r["track"])]["label:" + str(r["label"])] += 1
+    for t in sorted(by_t):
         c = by_t[t]
         print(f"{t:12s} " + " ".join(f"{k}={v}" for k, v in sorted(c.items())))
-    tot = collections.Counter(r["status"] for r in rows)
-    lab = collections.Counter(r["label"] for r in rows)
+    tot = collections.Counter(str(r["status"]) for r in rows)
+    lab = collections.Counter(str(r["label"]) for r in rows)
     print(f"total {len(rows)}: " + ", ".join(f"{k} {v}" for k, v in sorted(tot.items())) +
           " | labels " + ", ".join(f"{k} {v}" for k, v in sorted(lab.items(), key=lambda x: str(x[0]))))
 

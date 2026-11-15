@@ -85,3 +85,19 @@ resolve; located 545, partial 33, unlocated 39, unresolved 1; fulltext 507, to_v
 judgement 37, background 1). The 29 audited claims were then marked checked by a person
 (run kb-20261115-154041-7b80ccc; `kb claim verify`, checked_by "kb claims helper (manual
 read, audit P2)"). From here on the claim ids are not rebuilt (`--rebuild` refuses).
+
+## Incident (found 15:45 UTC): my --rebuild removed another helper's claims
+
+[VERIFIED, ingest_log of kb.sqlite] The serve helper loaded 330 claims (origin `served:*`,
+claims table only, no side tables) at 15:37:51 (run kb-20261115-153751-e164901). My two
+`--rebuild` seeds (15:39:43, run kb-20261115-153942-e70f45d; 15:40:23, run
+kb-20261115-154020-7b80ccc) emptied the whole claims table and so deleted those 330 rows;
+`SELECT count(*) FROM claims WHERE origin LIKE 'served:%'` is now 0. The guard I wrote
+checked only snapshots and people's labels, not other writers. Their module calls that
+load superseded (its `sync-k8` removes the served rows and re-adds the uncovered ones
+through the K8 side tables, seed_key `served:<key>`), but any claim id taken from that run
+no longer exists. Fixed: rebuild, re-check and stale-marking touch only rows of the K8
+seed (`claims_db.OWN_SEED`: seed_key not `served:*`, not `manual-*`); test
+`test_rebuild_and_stale_leave_other_writers_rows`. Request to the lead: have the serve
+package re-run its `sync-k8` and not reply to the tracks with ids of run
+kb-20261115-153751-e164901.

@@ -298,3 +298,34 @@ def test_one_locator_with_several_ranges_is_one_claim():
     cl = cp.parse_note(md, spec("F", default_label="VERIFIED"), "ref")
     assert len(cl) == 1 and [l.line_start for l in cl[0].locators] == [185, 269, 400]
     assert all(c.text for c in cl)
+
+
+def test_rebuild_and_stale_leave_other_writers_rows(tmp_path, monkeypatch):
+    """Incident of 2026-11-15: a --rebuild emptied the whole claims table, removing 330 rows
+    another helper had loaded (origin served:*). Rebuild and stale-marking touch only rows
+    of the K8 seed."""
+    from kbtool import claims_cli
+    data = tmp_path / "kb-data"
+    (data / "db").mkdir(parents=True)
+    monkeypatch.setenv("KB_LOCK", str(tmp_path / "kb-writer.lock"))
+    con = cdb.connect(str(data / "db" / "kb.sqlite"))
+    con.executescript(open(os.path.join(os.path.dirname(os.path.dirname(__file__)), "schema.sql")).read())
+    cdb.ensure(con)
+    seed = cp.parse_note(NOTE_D, spec("D"), "ref")[0]
+    own, _ = cdb.upsert_seed(con, seed, "abc1234", ("unlocated", {}, []), "t", "tool")
+    con.execute("INSERT INTO claims(text, label, origin) VALUES ('bare row', 'to_verify', 'served:x1')")
+    bare = con.execute("SELECT max(claim_id) FROM claims").fetchone()[0]
+    con.execute("INSERT INTO claims(text, label, origin) VALUES ('served with meta', 'fulltext', 'served:x2')")
+    sv = con.execute("SELECT max(claim_id) FROM claims").fetchone()[0]
+    con.execute("INSERT INTO claim_meta(claim_id, seed_key, origin_path, status, label_set_by) "
+                "VALUES (?, 'served:x2', ?, 'located', 'auto')", (sv, seed.origin_path))
+    con.commit()
+    assert cdb.mark_stale(con, seed.origin_path, set(), "t") == 1          # the own row only
+    assert con.execute("SELECT status FROM claim_meta WHERE claim_id=?", (sv,)).fetchone()[0] == "located"
+    con.commit()
+    con.close()
+    assert claims_cli.main(["--data-root", str(data), "claim", "seed", "--rebuild", "--source", "nobody"]) == 0
+    con = cdb.connect(str(data / "db" / "kb.sqlite"))
+    ids = {r[0] for r in con.execute("SELECT claim_id FROM claims")}
+    assert own not in ids and bare in ids and sv in ids
+    assert con.execute("SELECT count(*) FROM claim_meta WHERE claim_id=?", (sv,)).fetchone()[0] == 1

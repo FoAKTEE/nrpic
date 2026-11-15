@@ -49,6 +49,10 @@ STATUSES = ("located", "partial", "unresolved", "unlocated", "checked", "refuted
 SOURCE_TO_LABEL = {"BACKGROUND": "background", "JUDGEMENT": "judgement", "TO VERIFY": "to_verify",
                    "UNLABELLED": "to_verify", "UNLOCATED": "to_verify"}
 AUTO = "auto"
+# rows written by `kb claim seed` (other writers: 'served:<key>' of the serve package,
+# 'manual-<id>' of `kb claim add`); seeding, re-checking, stale-marking and --rebuild touch
+# only these
+OWN_SEED = "seed_key NOT LIKE 'served:%' AND seed_key NOT LIKE 'manual-%'"
 
 
 def utcnow():
@@ -146,8 +150,8 @@ def upsert_seed(con, seed, commit, checked, by, tool):
 def mark_stale(con, origin_path, keep_keys, by):
     """Claims of a note that are no longer in it: status stale (never deleted)."""
     n = 0
-    for cid, key, st in con.execute("SELECT claim_id, seed_key, status FROM claim_meta WHERE origin_path=?",
-                                    (origin_path,)).fetchall():
+    for cid, key, st in con.execute("SELECT claim_id, seed_key, status FROM claim_meta WHERE origin_path=? AND "
+                                    + OWN_SEED, (origin_path,)).fetchall():
         if key not in keep_keys and st != "stale":
             con.execute("UPDATE claim_meta SET status='stale' WHERE claim_id=?", (cid,))
             event(con, cid, by, "stale", None, None, st, "stale", "no longer in the note")
