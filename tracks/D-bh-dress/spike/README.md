@@ -148,7 +148,9 @@ rerun D-bh-dress-20261115-171615-8adbbdd that compares at our nodes; JOURNAL K1;
   at theta = pi/3, 3.640 Gm on the axis. Counter-rotating orbits enter at
   r_mb- = 2 + a + 2 sqrt(1 + a) (kinks of the planar curves).
 - [VERIFIED] E_min(10 Gm, equator) against figemin to 5.9e-5 for 0.1 <= a <= 0.99;
-  C_crit = 10.32 (Gm)^2 for a = 0.75, E = 0.97, Lz = 2 (caption: 10.3); on the axis the
+  C_crit = 10.32 (Gm)^2 for a = 0.75, E = 0.97, Lz = 2 (caption: 10.3; development probe,
+  the registered check evaluated it at r = 30 Gm, outside the bound region, and printed
+  7.09: a mistake of the check, JOURNAL K1 item 7); on the axis the
   general routine equals FdRW's closed form eq. (825) to 4e-5.
 - [VERIFIED] Planar orbits: FdRW's figequator1 is 0.2500-0.2505 times their eq. (584) as
   printed (prefactor 8 f/sqrt(r)) at a = 0, 0.5, 0.8; shapes then agree within 3.3 %.
@@ -227,6 +229,8 @@ DF truncated at E <= E_cut:
   no loss-cone probes in Kerr (the analytic-metric excision request of wave 1 is still
   open; the stationary DF has an empty loss cone, so the check did not need it).
 - No self-gravitating run (outside this package).
+- The C_crit caption check inside kerr_reference.py still evaluates at r = 30 Gm (the
+  correct value 10.32 comes from a development probe); fix the check before the next run.
 
 ## Requests
 
@@ -268,6 +272,6 @@ DF truncated at E <= E_cut:
   45 % in fig_rho_hern.
 - **lead (D-bh-dress)**: wave 1's Schwarzschild stationarity sample (sample_spike.py) was
   drawn uniformly in Schwarzschild time and put on the Kerr-Schild slice without the
-  Jacobian 1 + (2/(r-2)) v^r; the control of item 6 says whether that matters at the
-  precision of the wave-1 test. The Kerr baseline of D-pre-2 is now in place for G1 with
-  the open Hernquist difference stated.
+  Jacobian 1 + (2/(r-2)) v^r; the control of item 6 shows this is below the noise at
+  N = 48000, so no rerun is needed; sample_kerr.py samples exactly. The Kerr baseline of
+  D-pre-2 is in place for G1 with the open Hernquist difference to FdRW stated (item 5).
