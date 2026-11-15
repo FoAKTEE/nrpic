@@ -83,3 +83,22 @@ raw values 0.062059, 0.077205; t_x/t_turn the same to 1e-12. Refuted otherwise.
 Note and verifier packages: no new runs. The note's four disagreements
 (`note/tables/claims.md`) and the verifier's WRONG and NOT CONFIRMED items are checked by
 reading the files they cite (outcomes in `../REVIEW-wave2.md`).
+
+## R10 (written before the rerun of three verifier analyses)
+
+`scripts/rv_verifier.sh` reruns the verifier's v2_crossed.py (C2), v3_junk.py (C3) and
+v6_za_scaling.py (C8) on the current commit and compares their JSON leaf by leaf with the
+registered outputs of runs B-20261115-165119-efd5ee7, -165123-9cb1745, -170518-c1b61a3.
+Prediction: every numeric leaf agrees to 1e-12 relative (deterministic scripts, same
+libraries). Refuted by a larger difference. Independent of the verifier's code: my own
+g(tau) of R1 gives the junk envelope |g - 1| at a = 60 of 1.8 percent of the static value
+(verifier 1.807 from the exact envelope) and (5/12)|phi_x phi_y| = 1.5399e-5 at eps = 1
+(verifier, Fourier magnitude).
+
+## Note package (no run): one sentence of the note corrected
+
+The note (`note/main.tex` line 145) said "the resolved part at low wave numbers stays
+frozen" about the late TT rise; the first-source helper corrected that reading in its own
+journal (band sums, lines 195-205) and R6b rechecks it. The sentence now states the growth
+below the twentieth harmonic; main.pdf recompiled (latexmk, 10 pages, no undefined
+references).
