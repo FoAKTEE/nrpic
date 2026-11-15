@@ -4,8 +4,12 @@ Owner: orchestrator (branch `main`). State on 2026-11-15T15:50Z, read through gi
 outbox of every owner branch (`tracks/<ID>/outbox/`, the sender's own branches only, as
 `nrpic-ctx` reads them) at the tips core/nrpic b17f40d, kb/main ca81acd, track/A-emd-pbh
 dc27b98, track/B-emd-gw 767eb93, track/C-sidm 904eb96, track/D-bh-dress 3276791,
-track/E-stoch-inf 6330493, track/F-hills dd48b3e, main 7064a61. All messages were sent on
-2026-11-15 (UTC time given).
+track/E-stoch-inf 6330493, track/F-hills dd48b3e, main 2267b92. All messages were sent on
+2026-11-15 (UTC time given). The harness fix 2267b92 on main (nrpic-run reads the hand-written
+manifests of wave 1, `nrpic-run lint`, a local Python run without the worktree's `.venv` is
+refused with the fix) answers A's `harness-manifests-and-ignore` item 2, C's
+`nrpic-run-manifest-schema` and E's `harness-and-brief-notes` item 1; the tracks receive it
+with their next `nrpic-ctx sync`.
 
 A request is open while no file answers it: a decision under `coord/DECISIONS/`, a commit on
 main, an interface document under `coord/INTERFACES/`, a reply message, or the requester's
@@ -19,9 +23,6 @@ answering files are listed in `coord/digests/2026-W46.md`.
 
 | From | Slug | Sent | Reply by | State | Still asked (one line) |
 |---|---|---|---|---|---|
-| A-emd-pbh | harness-manifests-and-ignore | 13:20Z | 11-22 | ruled, not built | item 2: `nrpic-run` stops with KeyError 'outputs' in `is_live` on a manifest without `outputs.dir`; treat it as not live, name the malformed manifest, check the venv at the first `submit` (item 1 done in 2e8ae30; 0012 rules that the harness reads the hand manifests of wave 1; still failing in wave 2: commits 920d573 on core/requests-adf, dc27b98 on track/A-emd-pbh) |
-| C-sidm | nrpic-run-manifest-schema | 13:20Z | 11-22 | ruled, not built | make `nrpic-run` tolerate or migrate the hand schema of wave 1 (KeyError 'dir' in `is_live`), or name the fields to add, so the budget counts those runs |
-| E-stoch-inf | harness-and-brief-notes | 14:10Z | 12-06 | partly; ruled, not built | item 1: `is_live` treats a manifest without `outputs` as not live; the audit flags non-standard statuses (items 2-3 answered by 0012, item 4 in `coord/BRIEF_ERRATA.md`) |
 | E-stoch-inf | g0-decision-requested | 14:10Z | 11-22 | partly | the group's decision on the feasibility gate (0013 records the orchestrator's ruling "continue to G1 and G2", pending the group), and whether G0 may pass with the note and schematics following at G1 |
 | D-bh-dress | brief-and-notes-corrections | 15:10Z | 11-29 | partly | item 6: an artefact-only second-agent review of `scope/SCOPE.md` section 3, `einstein_straus/DERIVATION.md` sections 3-4 and the LTB mapping with an over-massive hole (items 1-5 are in `coord/BRIEF_ERRATA.md` and the derivations note; the wave-2 plan names a D verifier without these items) |
 | F-hills | compute-allotment-and-mass-ratio | 15:07Z | 11-22 | partly | the allotment for G2 (about 120 card-hours; G3 about 500), a decision for the user (G1 raised to 50 in 0014; q = 4 accepted in 0013) |
