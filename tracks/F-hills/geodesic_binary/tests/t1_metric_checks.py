@@ -57,7 +57,7 @@ def main(outdir):
     mb, a0 = 1e-6, 1.0
     m1 = m2 = mb / 2
     w = math.sqrt(mb / a0 ** 3)
-    y0 = np.array([0.5, 0, 0, 0, 0.5 * w, 0, -0.5, 0, 0, 0, -0.5 * w, 0])
+    y0 = np.array([100.5, 0, 0, 0, 0.5 * w, 0, 99.5, 0, 0, 0, -0.5 * w, 0])  # CM off the origin
     T0 = 2 * math.pi / w
     out = hrna.integrate(hrna.LAW_HRNA, hrna.COORDS_SCH, hrna.PAIR_GRAVITY, 0.0, 0.0, m1, m2, 0.0,
                          0.0, y0, T0 / 200, 1e-12, 1e-16, 1e300, 1e300, 0.0, 100 * T0, 10 ** 7,
