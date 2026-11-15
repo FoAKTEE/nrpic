@@ -1,0 +1,69 @@
+{
+  "schema": "nrpic-run-manifest/1",
+  "run_id": "D-20261115-171532-ba23a99",
+  "track": "D-bh-dress",
+  "gate": "G1",
+  "kind": "scouting",
+  "purpose": "G0/G1 verifier C3 and C5: turnaround and absorption of cold dust around a point mass in EdS (closed-form Kepler orbits, own parametrisation) against SCOPE.md section 4, and the exact Schwarzschild capture threshold of a particle at turnaround",
+  "preregistered_in": "tracks/D-bh-dress/stage/G0/JOURNAL.md",
+  "launcher": "local (hand registration)",
+  "registered_by": "hand: tracks/D-bh-dress/stage/G0/verify/hand_run.py, because harness/bin/nrpic-run submit refused (an untracked file of another helper, es.horizon_summary_0.txt, in the worktree root); see stage/G0/README.md, Requests",
+  "command": [
+    ".venv/bin/python",
+    "tracks/D-bh-dress/stage/G0/verify/v3_turnaround_capture.py"
+  ],
+  "cwd": "/data/haiyangw/nrpic/wt/D-bh-dress",
+  "git": {
+    "sha": "ba23a99cd5b90f4c4779a584e94d464eefeb22a8",
+    "branch": "track/D-bh-dress",
+    "package": [
+      "tracks/D-bh-dress/stage/G0"
+    ],
+    "package_clean": true
+  },
+  "code": {
+    "core_tag": "core-v0.3"
+  },
+  "env": {
+    "host": "anta",
+    "OMP_NUM_THREADS": "1"
+  },
+  "inputs": [],
+  "resources": {
+    "nodes": 1,
+    "cores": 1,
+    "gpus": 0,
+    "card_hours": 0.0,
+    "walltime_s": 2.32
+  },
+  "outputs": {
+    "dir": "scratch/D-bh-dress/D-20261115-171532-ba23a99",
+    "files": [
+      {
+        "path": "run.log",
+        "sha256": "0805049ee2003b6a7c482d683efd78f2206fca9241b5cec9d8850386051b0d60",
+        "bytes": 5547
+      },
+      {
+        "path": "v3_turnaround_capture.json",
+        "sha256": "377f420fd7ef1e3ad62729b3b35a2e19fbcb252c75865aa16e13f024f34f1974",
+        "bytes": 5546
+      },
+      {
+        "path": "v3_turnaround_capture.pdf",
+        "sha256": "60244c6baca2ac75ac3f004864e21661dda6ebae43abe724af63f54d092b2c9e",
+        "bytes": 25580
+      },
+      {
+        "path": "v3_turnaround_capture.png",
+        "sha256": "7af6828be2009886a629b50bd1197fd130827997aa2d0f786ee53ddd3cbc392d",
+        "bytes": 105210
+      }
+    ]
+  },
+  "status": "completed",
+  "exit_code": 0,
+  "started": "2026-11-15T17:15:32Z",
+  "ended": "2026-11-15T17:15:34Z",
+  "parents": []
+}
