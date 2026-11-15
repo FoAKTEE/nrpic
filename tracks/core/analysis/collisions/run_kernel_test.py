@@ -68,7 +68,10 @@ def main():
     per_case = {}
     for name, r in results.items():
         err_u = np.max(np.abs(r[:, 4:10] - exp), axis=1)/scale
-        err_v = np.abs(r[:, 1] - vexp)/np.maximum(vexp, 1e-300)
+        # Moller speed: relative error, except where the reference is the rounding
+        # noise of an exact zero (identical velocities: 4e-31 at 60 digits)
+        err_v = np.where(vexp > 1e-25, np.abs(r[:, 1] - vexp)/np.maximum(vexp, 1e-300),
+                         np.abs(r[:, 1] - vexp))
         # conservation at 50 digits, in units of eps x pair energy
         de = np.empty(len(cases))
         dp = np.empty(len(cases))
@@ -88,7 +91,8 @@ def main():
             "max_energy_defect_eps": float(de.max()),
             "max_momentum_defect_eps": float(dp.max()),
             "identical_bits_to_O0": bool(np.array_equal(r, results["O0"])),
-            "pass": bool(err_u.max() <= 1e-13 and de.max() <= 4.0 and dp.max() <= 4.0),
+            "pass": bool(err_u.max() <= 1e-13 and de.max() <= 4.0 and dp.max() <= 4.0
+                         and err_v.max() <= 1e-13),
         }
     summary["ok"] = all(b["pass"] for b in summary["builds"].values())
     with open(os.path.join(out, "summary.json"), "w") as fp:
