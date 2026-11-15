@@ -1,0 +1,359 @@
+#!/usr/bin/python3 -I
+"""Environment of one worktree (brief sections 11.4 and 11.6): uv venv, Kokkos, builds, identity.
+
+    harness/bin/nrpic-env [-C <worktree>] create [--no-kokkos] [--no-venv]
+    harness/bin/nrpic-env [-C <worktree>] exec [--set K=V]... [--threads N] [--cwd DIR] -- <cmd> [args...]
+    harness/bin/nrpic-env [-C <worktree>] hash [--json]
+    harness/bin/nrpic-env [-C <worktree>] vars [--export]
+    harness/bin/nrpic-env [-C <worktree>] kokkos
+    harness/bin/nrpic-env [-C <worktree>] build gpu|cpu [--problem P] [--debug] [--name N]
+    harness/bin/nrpic-env [-C <worktree>] check
+    harness/bin/nrpic-env lock                  (main checkout only: regenerate harness/env/uv.lock)
+
+The worktree is the one holding this copy of the command (or -C). Nothing is read from the
+caller's environment: `exec` builds PATH, the toolchain and the NRPIC_* variables from the
+machine file harness/env/machines/<host>.sh and the passwd entry; extra variables are passed
+explicitly with --set. The venv is <worktree>/.venv, installed from harness/env/uv.lock (plus
+tracks/<ID>/env/requirements.txt if the branch has one) as copies, never links; build
+directories are <worktree>/build/<name>, real directories inside the worktree. Kokkos is checked
+out with `git submodule update --init --reference <main checkout>/athenak/kokkos athenak/kokkos`.
+The environment hash is the sha256 of the machine file, uv.lock and container digest combined.
+"""
+import json
+import os
+import shlex
+import sys
+
+sys.path.insert(0, os.path.join(os.path.dirname(os.path.realpath(__file__)), "..", "lib"))
+import nrpic_harness as H  # noqa: E402
+
+
+def usage():
+    print(__doc__)
+    sys.exit(2)
+
+
+def parse_sets(args):
+    sets, rest = {}, []
+    i = 0
+    while i < len(args):
+        a = args[i]
+        if a == "--set":
+            kv = args[i + 1]
+            i += 2
+        elif a.startswith("--set="):
+            kv = a[len("--set="):]
+            i += 1
+        else:
+            rest.append(a)
+            i += 1
+            continue
+        k, sep, v = kv.partition("=")
+        if not sep or not k.replace("_", "").isalnum() or k[0].isdigit():
+            raise H.HarnessError(f"--set expects NAME=VALUE, got {kv!r}")
+        sets[k] = v
+    return sets, rest
+
+
+def core_cap(wt):
+    try:
+        return H.budget_table(wt).get(wt.owner, {}).get("cores", 16)
+    except H.HarnessError:
+        return 16
+
+
+# ------------------------------------------------------------------ create
+
+def venv_ok(wt):
+    venv = os.path.join(wt.root, ".venv")
+    if os.path.islink(venv):
+        raise H.HarnessError(f"{venv} is a symbolic link; environments are never shared or linked")
+    return venv
+
+
+def create_venv(wt):
+    venv = venv_ok(wt)
+    proj = os.path.join(wt.root, "harness", "env")
+    if not os.path.isfile(os.path.join(proj, "uv.lock")):
+        raise H.HarnessError(f"no {proj}/uv.lock on this branch; run `git merge --no-edit main` first")
+    env = H.build_env(wt)
+    py = env.get("UV_PYTHON", "/usr/bin/python3")
+    cmd = ["uv", "sync", "--frozen", "--no-install-project", "--project", proj, "--python", py]
+    print("+ " + " ".join(cmd), flush=True)
+    r = H.run(cmd, env=env, check=False, capture=False)
+    if r.returncode != 0:
+        raise H.HarnessError("uv sync failed")
+    extra = H.track_extra_requirements(wt)
+    if extra:
+        cmd = ["uv", "pip", "install", "--python", os.path.join(venv, "bin", "python"), "-r", extra]
+        print("+ " + " ".join(cmd), flush=True)
+        if H.run(cmd, env=env, check=False, capture=False).returncode != 0:
+            raise H.HarnessError(f"installing {extra} failed")
+    ident = H.env_identity(wt)
+    pyver = H.run([os.path.join(venv, "bin", "python"), "-c", "import sys; print(sys.version.split()[0])"],
+                  env=env).stdout.strip()
+    H.write_json(os.path.join(venv, "nrpic-env.json"),
+                 {"created": H.utcnow(), "worktree": wt.root, "branch": wt.branch, "python": pyver,
+                  **ident})
+    print(f"venv: {venv} (python {pyver}), env hash {ident['env_hash']}")
+
+
+def kokkos(wt):
+    sub = "athenak/kokkos"
+    line = H.git(wt.root, "ls-tree", "HEAD", sub)
+    if not line:
+        raise H.HarnessError(f"{sub} is not a submodule on this branch")
+    want = line.split()[2]
+    path = os.path.join(wt.root, sub)
+    if os.path.isfile(os.path.join(path, "CMakeLists.txt")):
+        have = H.git(path, "rev-parse", "HEAD", check=False)
+        if have == want:
+            print(f"kokkos: present at {want[:12]} in {path}")
+            return
+        raise H.HarnessError(f"{path} is at {have[:12]}, the branch pins {want[:12]}; "
+                             f"inspect it (git -C {path} status) before changing anything")
+    if wt.is_main:
+        raise H.HarnessError("the main checkout has no Kokkos checkout; that is the reference for "
+                             "every worktree and is set up by hand (git submodule update --init)")
+    ref = os.path.join(wt.home, sub)
+    if not os.path.isfile(os.path.join(ref, "CMakeLists.txt")):
+        raise H.HarnessError(f"reference checkout {ref} is missing")
+    env = H.build_env(wt)
+    base = ["git", "-C", wt.root]
+    tail = ["submodule", "update", "--init", "--reference", ref, sub]
+    print("+ " + " ".join(base + tail), flush=True)
+    r = H.run(base + tail, env=env, check=False, capture=False, timeout=900)
+    if r.returncode != 0:
+        # no network or the remote refused: the reference checkout holds every object needed
+        alt = base + ["-c", f"submodule.{sub}.url={ref}", "-c", "protocol.file.allow=always"] + tail
+        print("first attempt failed; retrying from the reference checkout only:\n+ " + " ".join(alt),
+              flush=True)
+        r = H.run(alt, env=env, check=False, capture=False, timeout=900)
+        if r.returncode != 0:
+            raise H.HarnessError("git submodule update failed")
+    have = H.git(path, "rev-parse", "HEAD")
+    if have != want:
+        raise H.HarnessError(f"kokkos checked out at {have[:12]}, expected {want[:12]}")
+    print(f"kokkos: {want[:12]} checked out in {path}, objects from {ref}")
+
+
+def cmd_create(wt, args):
+    no_kokkos = "--no-kokkos" in args
+    no_venv = "--no-venv" in args
+    H.machine_file(wt)                          # refuse early on an unknown host
+    if not no_venv:
+        create_venv(wt)
+    if not no_kokkos and not wt.is_main:
+        kokkos(wt)
+    print(f"environment of {wt.root} ready; hash {H.env_identity(wt)['env_hash']}")
+
+
+# ------------------------------------------------------------------ exec / hash / vars
+
+def cmd_exec(wt, args):
+    if "--" not in args:
+        raise H.HarnessError("usage: nrpic-env exec [--set K=V]... [--threads N] [--cwd DIR] -- <cmd> ...")
+    k = args.index("--")
+    opts, cmd = args[:k], args[k + 1:]
+    if not cmd:
+        raise H.HarnessError("nothing to execute after --")
+    sets, opts = parse_sets(opts)
+    threads, cwd = 1, None
+    i = 0
+    while i < len(opts):
+        if opts[i] == "--threads":
+            threads = int(opts[i + 1])
+            i += 2
+        elif opts[i] == "--cwd":
+            cwd = opts[i + 1]
+            i += 2
+        else:
+            raise H.HarnessError(f"unknown exec option {opts[i]!r}")
+    cap = core_cap(wt)
+    if threads < 1 or threads > cap:
+        raise H.HarnessError(f"--threads {threads}: the allotment of {wt.owner} is {cap} cores "
+                             "at a time (decision 0006)")
+    env = H.build_env(wt, threads=threads, extra=sets)
+    if not os.path.isdir(os.path.join(wt.root, ".venv")):
+        print(f"nrpic-env: note: {wt.root}/.venv does not exist (run nrpic-env create); "
+              "python3 is the system interpreter without user site packages", file=sys.stderr)
+    os.makedirs(env["MPLCONFIGDIR"], exist_ok=True)
+    if cwd:
+        os.chdir(cwd)
+    try:
+        os.execvpe(cmd[0], cmd, env)
+    except FileNotFoundError:
+        raise H.HarnessError(f"command not found in the environment's PATH: {cmd[0]}")
+
+
+def cmd_hash(wt, args):
+    ident = H.env_identity(wt)
+    if "--json" in args:
+        print(json.dumps(ident, indent=2))
+    else:
+        print(ident["env_hash"])
+
+
+def cmd_vars(wt, args):
+    vals = H.nrpic_vars(wt)
+    vals["NRPIC_ENV_HASH"] = H.env_identity(wt)["env_hash"]
+    for k, v in vals.items():
+        print(f"export {k}={shlex.quote(v)}" if "--export" in args else f"{k}={v}")
+
+
+# ------------------------------------------------------------------ build
+
+def cmd_build(wt, args):
+    if not args or args[0] not in ("gpu", "cpu"):
+        raise H.HarnessError("usage: nrpic-env build gpu|cpu [--problem P] [--debug] [--name N]")
+    kind, rest = args[0], args[1:]
+    problem, debug, name = None, False, None
+    i = 0
+    while i < len(rest):
+        if rest[i] == "--problem":
+            problem = rest[i + 1]
+            i += 2
+        elif rest[i] == "--debug":
+            debug = True
+            i += 1
+        elif rest[i] == "--name":
+            name = rest[i + 1]
+            i += 2
+        else:
+            raise H.HarnessError(f"unknown build option {rest[i]!r}")
+    if name is None:
+        name = kind + (f"-{os.path.basename(problem)}" if problem else "") + ("-debug" if debug else "")
+    if "/" in name or name.startswith("."):
+        raise H.HarnessError(f"--name {name!r}: a plain directory name under build/")
+    bdir = os.path.join(wt.root, "build", name)
+    p = wt.root
+    for part in ("build", name):
+        p = os.path.join(p, part)
+        if os.path.islink(p):
+            raise H.HarnessError(f"{p} is a symbolic link; build directories are never shared")
+    if not os.path.isfile(os.path.join(wt.root, "athenak", "kokkos", "CMakeLists.txt")):
+        raise H.HarnessError("no Kokkos in this worktree: run `harness/bin/nrpic-env create` "
+                             "(or `nrpic-env kokkos`) first")
+    script = os.path.join(wt.root, "scripts", f"build_{kind}.sh")
+    sets = {"JOBS": str(min(16, core_cap(wt)))}
+    if problem:
+        sets["PROBLEM"] = problem
+    if debug:
+        sets["DEBUG"] = "1"
+    env = H.build_env(wt, extra=sets)
+    os.makedirs(bdir, exist_ok=True)
+    print(f"+ {script} {bdir}   ({', '.join(f'{k}={v}' for k, v in sets.items())})", flush=True)
+    os.execvpe(script, [script, bdir], env)
+
+
+# ------------------------------------------------------------------ check
+
+def scan_symlinks(wt):
+    """Symbolic links in the worktree that point outside it (.git, .venv and build trees skipped)."""
+    bad = []
+    for dirpath, dirnames, filenames in os.walk(wt.root):
+        rel = os.path.relpath(dirpath, wt.root)
+        keep = []
+        for d in dirnames:
+            full = os.path.join(dirpath, d)
+            if os.path.islink(full):
+                bad.append(full) if not wt.inside(os.path.realpath(full)) else None
+                continue
+            if rel == "." and (d in (".git", ".venv", "wt") or d.startswith("build")):
+                continue
+            keep.append(d)
+        dirnames[:] = keep
+        for fn in filenames:
+            full = os.path.join(dirpath, fn)
+            if os.path.islink(full) and not wt.inside(os.path.realpath(full)):
+                bad.append(full)
+    return bad
+
+
+def cmd_check(wt, args):
+    rows = []
+
+    def row(tag, ok, msg):
+        rows.append((tag, ok, msg))
+        print(f"[{tag:7s}] {'PASS' if ok is True else ('WARN' if ok is None else 'FAIL')}  {msg}")
+
+    row("wt", wt.owner is not None, f"{wt.root} on {wt.branch} (owner {wt.owner})")
+    venv = os.path.join(wt.root, ".venv")
+    if os.path.islink(venv):
+        row("venv", False, f"{venv} is a symbolic link")
+    elif not os.path.isdir(venv):
+        row("venv", None, f"{venv} missing (nrpic-env create)")
+    else:
+        env = H.build_env(wt)
+        pref = H.run(["python", "-c", "import sys; print(sys.prefix)"], env=env).stdout.strip()
+        meta = os.path.join(venv, "nrpic-env.json")
+        lock_sha = H.env_identity(wt)["uv_lock_sha256"]
+        stale = os.path.isfile(meta) and H.read_json(meta).get("uv_lock_sha256") != lock_sha
+        row("venv", os.path.realpath(pref) == os.path.realpath(venv) and not stale,
+            f"sys.prefix={pref}" + ("; uv.lock changed since create, re-run create" if stale else ""))
+    links = scan_symlinks(wt)
+    row("links", not links, "no symbolic link points outside the worktree" if not links
+        else "links out of the worktree: " + ", ".join(links[:5]))
+    bad_builds = []
+    for d in sorted(os.listdir(wt.root)):
+        if not d.startswith("build"):
+            continue
+        full = os.path.join(wt.root, d)
+        if os.path.islink(full):
+            bad_builds.append(f"{d} is a link")
+            continue
+        for cache in [os.path.join(full, "CMakeCache.txt")] + [
+                os.path.join(full, s, "CMakeCache.txt") for s in (os.listdir(full) if os.path.isdir(full) else [])]:
+            if os.path.isfile(cache):
+                for line in open(cache, errors="replace"):
+                    if line.startswith("CMAKE_HOME_DIRECTORY:INTERNAL="):
+                        src = line.split("=", 1)[1].strip()
+                        if not (wt.inside(src) or src.startswith(wt.scratch() + os.sep)):
+                            bad_builds.append(f"{os.path.relpath(cache, wt.root)} builds {src}")
+    row("build", not bad_builds, "build directories are this worktree's own" if not bad_builds
+        else "; ".join(bad_builds))
+    kpath = os.path.join(wt.root, "athenak", "kokkos")
+    if os.path.isfile(os.path.join(kpath, "CMakeLists.txt")):
+        want = H.git(wt.root, "ls-tree", "HEAD", "athenak/kokkos").split()[2]
+        have = H.git(kpath, "rev-parse", "HEAD", check=False)
+        row("kokkos", have == want, f"athenak/kokkos at {have[:12]} (branch pins {want[:12]})")
+    else:
+        row("kokkos", None, "athenak/kokkos not checked out (needed only for builds)")
+    v = H.nrpic_vars(wt)
+    ok = (v["NRPIC_WT"] == wt.root and v["NRPIC_SCRATCH"] == os.path.join(wt.home, "scratch", wt.owner or "")
+          and v["NRPIC_TRACK"] == wt.owner)
+    row("env", ok, " ".join(f"{k}={v[k]}" for k in ("NRPIC_TRACK", "NRPIC_WT", "NRPIC_SCRATCH", "NRPIC_KB")))
+    return 0 if all(ok is not False for _, ok, _ in rows) else 1
+
+
+def cmd_lock(wt, args):
+    if not wt.is_main:
+        raise H.HarnessError("uv.lock is regenerated on main only (shared pinned versions need a proposal)")
+    env = H.build_env(wt)
+    proj = os.path.join(wt.root, "harness", "env")
+    r = H.run(["uv", "lock", "--project", proj, "--python", env.get("UV_PYTHON", "/usr/bin/python3")],
+              env=env, check=False, capture=False)
+    return r.returncode
+
+
+def main(argv):
+    try:
+        c_opt, rest = H.strip_options_prefix(argv)
+        if not rest or rest[0] in ("-h", "--help", "help"):
+            usage()
+        sub, args = rest[0], rest[1:]
+        wt = H.worktree_from_args(__file__, c_opt)
+        fn = {"create": cmd_create, "exec": cmd_exec, "hash": cmd_hash, "vars": cmd_vars,
+              "kokkos": lambda w, a: kokkos(w), "build": cmd_build, "check": cmd_check,
+              "lock": cmd_lock}.get(sub)
+        if fn is None:
+            usage()
+        rc = fn(wt, args)
+        return rc or 0
+    except H.HarnessError as e:
+        print(f"nrpic-env: {e}", file=sys.stderr)
+        return 1
+
+
+if __name__ == "__main__":
+    sys.exit(main(sys.argv[1:]))

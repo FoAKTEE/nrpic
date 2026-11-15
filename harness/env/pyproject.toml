@@ -1,0 +1,21 @@
+# Python environment of every worktree (brief section 11.4): `harness/bin/nrpic-env create`
+# installs exactly harness/env/uv.lock into <worktree>/.venv (uv sync --frozen, copies, no links).
+# The pins are the versions that the existing analysis code of this repository was run with
+# (user site of anta on 2026-11-15). A track adds packages on its own branch in
+# tracks/<ID>/env/requirements.txt; changing a pin here needs a proposal to the orchestrator.
+[project]
+name = "nrpic-env"
+version = "0.1.0"
+requires-python = ">=3.10,<3.11"
+dependencies = [
+    "numpy==2.2.6",
+    "scipy==1.15.3",
+    "matplotlib==3.10.8",
+    "h5py==3.16.0",
+    "mpmath==1.3.0",
+    "sympy==1.14.0",
+    "pytest==9.0.2",
+]
+
+[tool.uv]
+package = false

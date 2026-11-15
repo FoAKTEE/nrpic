@@ -1,0 +1,944 @@
+#!/usr/bin/python3 -I
+"""Register, start, query and close runs (brief sections 11.6 and 13.1; decision 0006).
+
+    harness/bin/nrpic-run [-C <wt>] submit --kind scouting|production --gate G<k> --purpose TEXT
+                          [--launcher local|batch|chain] [options] [-- <command or athinput> ...]
+    harness/bin/nrpic-run [-C <wt>] status [<run_id>]
+    harness/bin/nrpic-run [-C <wt>] finish <run_id> [--status completed|failed|stopped]
+    harness/bin/nrpic-run [-C <wt>] verify <run_id>
+    harness/bin/nrpic-run [-C <wt>] budget
+    harness/bin/nrpic-run [-C <wt>] stop <run_id>
+
+Launchers (one registered run each):
+  local   a command on the processors, run through `nrpic-env exec` with --cores threads, in the
+          worktree root, output in $NRPIC_RUN_DIR; blocking unless --background.
+              nrpic-run submit --kind scouting --gate G1 --purpose "..." -- python3 tracks/X/analysis/a.py
+  batch   several short AthenaK runs in one Slurm job on one card: wraps scripts/gpu_batch.sh.
+          --list FILE, lines `<name> <athinput | file.rst> [athena args...]`; each run lands in
+          scratch/<ID>/<run_id>/<name>/. --wall hh:mm:ss is the Slurm limit (default 00:45:00).
+  chain   one AthenaK run longer than an hour: wraps scripts/submit_chain.sh.
+              nrpic-run submit --launcher chain --gpu-hours 6 ... -- problems/x.athinput time/tlim=200
+          The chain is capped at floor(gpu-hours / 59 min) segments, at least one (MAX_SEGMENTS).
+
+What submit does, in order: refuses a dirty worktree (untracked files count); refuses a run
+beyond the allotment of coord/DECISIONS/0006 on main (GPU-hours to the gate named by --gate,
+summed over every branch of the owner; cores at a time for local runs); refuses a production run
+without --preregistered, or for gate G<k> before the tag stage/<ID>/G<k-1>-pass-* exists; checksums
+the inputs (files named with --input, files on the command line, input decks, the executable);
+writes tracks/<ID>/runs/<run_id>/manifest.json and commits it (path-limited) on the own branch;
+creates scratch/<ID>/<run_id>/ and starts the run. finish records exit status, wall time, GPU-hours
+and sha256sums.txt of the output directory and commits the manifest again; verify recomputes the
+checksums. Run id: <ID short>-<YYYYMMDD-HHMMSS UTC>-<commit7>.
+
+Relative paths (inputs, list, input deck, executable, plan) are relative to the worktree root.
+Common options: --input PATH (repeatable), --parent RUN_ID (repeatable), --preregistered
+PATH[#anchor], --notes TEXT, --particles N, --dry-run. local: --cores N (default 1), --wall
+hh:mm:ss (kill after), --background. batch/chain: --exe PATH (default: NRPIC_GPU_EXE of the machine
+file), --gpu-hours H. chain: --check-cmd CMD, --athena-wall hh:mm:ss (default 00:50:00).
+"""
+import datetime as dt
+import fcntl
+import json
+import math
+import os
+import re
+import signal
+import subprocess
+import sys
+import time
+
+sys.path.insert(0, os.path.join(os.path.dirname(os.path.realpath(__file__)), "..", "lib"))
+import nrpic_harness as H  # noqa: E402
+
+SCHEMA = "nrpic-run-manifest/1"
+ATHENAK_UPSTREAM = "c5a0d7f"          # decision 0001: the vendored AthenaK is upstream c5a0d7f + NRPIC
+FINAL = ("completed", "failed", "stopped")
+ACTIVE = ("registered", "running", "submitted")
+CARD_LAUNCHERS = ("batch", "chain")
+
+
+def hms_to_s(s):
+    m = re.fullmatch(r"(\d+):(\d\d):(\d\d)", s or "")
+    if not m:
+        raise H.HarnessError(f"time {s!r} is not hh:mm:ss")
+    return int(m.group(1)) * 3600 + int(m.group(2)) * 60 + int(m.group(3))
+
+
+def iso_to_epoch(s):
+    s = s.strip().replace("Z", "+00:00")
+    return dt.datetime.fromisoformat(s).timestamp()
+
+
+# ------------------------------------------------------------------ manifests of an owner
+
+def manifest_path(wt, run_id):
+    return os.path.join(wt.root, "tracks", wt.owner, "runs", run_id, "manifest.json")
+
+
+def outdir_of(wt, run_id):
+    return os.path.join(wt.home, "scratch", wt.owner, run_id)
+
+
+def status_rank(m):
+    return {"completed": 3, "failed": 3, "stopped": 3, "running": 2, "submitted": 2}.get(m.get("status"), 1)
+
+
+def all_manifests(wt):
+    """Every manifest of the owner, on every branch of the owner and on main, plus the files of this
+    worktree; for a run seen several times the most advanced state wins (finished > active)."""
+    owner = wt.owner
+    best = {}
+
+    def offer(m, prio):
+        rid = m.get("run_id")
+        if not rid:
+            return
+        key = (status_rank(m), prio)
+        if rid not in best or key > best[rid][0]:
+            best[rid] = (key, m)
+
+    refs = H.git(wt.root, "for-each-ref", "--format=%(refname:short)", "refs/heads").splitlines()
+    branches = [b for b in refs if H.owner_of(b) == owner and b != wt.branch] + ["main"]
+    for br in branches:
+        names = H.git(wt.root, "ls-tree", "-r", "--name-only", br, "--", f"tracks/{owner}/runs",
+                      check=False).splitlines()
+        for n in names:
+            if n.endswith("/manifest.json"):
+                r = H.run(["git", "-C", wt.root, "show", f"{br}:{n}"], check=False)
+                if r.returncode == 0:
+                    try:
+                        offer(json.loads(r.stdout), 0)
+                    except json.JSONDecodeError:
+                        pass
+    rdir = os.path.join(wt.root, "tracks", owner, "runs")
+    if os.path.isdir(rdir):
+        for d in sorted(os.listdir(rdir)):
+            p = os.path.join(rdir, d, "manifest.json")
+            if os.path.isfile(p):
+                try:
+                    offer(H.read_json(p), 1)
+                except json.JSONDecodeError:
+                    pass
+    return {rid: v[1] for rid, v in best.items()}
+
+
+def pid_alive(pid):
+    try:
+        os.kill(int(pid), 0)
+        return True
+    except (OSError, ValueError, TypeError):
+        return False
+
+
+def slurm_active(env, job_ids):
+    states = {}
+    for j in job_ids:
+        r = H.run(["squeue", "-h", "-j", str(j), "-o", "%T"], env=env, check=False)
+        s = r.stdout.strip()
+        if r.returncode == 0 and s:
+            states[str(j)] = s
+    return states
+
+
+def launch_info(outdir):
+    p = os.path.join(outdir, ".nrpic", "launch.json")
+    return H.read_json(p) if os.path.isfile(p) else {}
+
+
+def chain_job_ids(outdir):
+    ids = []
+    ev = os.path.join(outdir, "chain", "events.log")
+    if os.path.isfile(ev):
+        for line in open(ev, errors="replace"):
+            m = re.search(r"submitted job (\d+)", line)
+            if m and m.group(1) not in ids:
+                ids.append(m.group(1))
+    return ids
+
+
+def is_live(wt, m, env):
+    """Is an unfinished run still holding resources? (local: process alive; cards: job queued)"""
+    if m.get("status") in FINAL:
+        return False
+    od = os.path.join(wt.home, m["outputs"]["dir"])
+    info = launch_info(od)
+    if m.get("launcher") == "local":
+        if os.path.isfile(os.path.join(od, ".nrpic", "result.json")):
+            return False
+        return info.get("host") == H.host() and pid_alive(info.get("pid"))
+    ids = list(info.get("job_ids", [])) + chain_job_ids(od)
+    if m.get("launcher") == "chain":
+        st = open(os.path.join(od, "chain", "STATUS")).read().strip() if os.path.isfile(
+            os.path.join(od, "chain", "STATUS")) else ""
+        if st in ("DONE", "FAILED", "STOPPED"):
+            return bool(slurm_active(env, ids))
+        return True if st in ("QUEUED", "RUNNING") or not ids else bool(slurm_active(env, ids))
+    return bool(slurm_active(env, ids)) or not ids
+
+
+def gpu_hours_counted(m, live):
+    r = m.get("resources", {})
+    if m.get("launcher") not in CARD_LAUNCHERS:
+        return 0.0
+    if m.get("status") in FINAL:
+        return float(r.get("gpu_hours") or 0.0)
+    return float(r.get("gpu_hours_requested") or 0.0) if live or m.get("status") in ACTIVE else 0.0
+
+
+def budget_state(wt, env, gate):
+    table = H.budget_table(wt)
+    if wt.owner not in table:
+        raise H.HarnessError(f"owner {wt.owner!r} has no row in the budget table of decision 0006")
+    allot = table[wt.owner]
+    ms = all_manifests(wt)
+    used = reserved = 0.0
+    cores_busy = 0
+    for m in ms.values():
+        live = is_live(wt, m, env)
+        if m.get("gate") == gate:
+            h = gpu_hours_counted(m, live)
+            if m.get("status") in FINAL:
+                used += h
+            else:
+                reserved += h
+        if m.get("launcher") == "local" and live:
+            cores_busy += int(m.get("resources", {}).get("cores") or 1)
+    return {"gpu_hours_allotted": allot["gpu_hours"], "cores_allotted": allot["cores"],
+            "gpu_hours_used": round(used, 4), "gpu_hours_reserved": round(reserved, 4),
+            "cores_busy": cores_busy, "runs": len(ms)}
+
+
+# ------------------------------------------------------------------ inputs and code provenance
+
+def input_record(wt, path, role):
+    p = os.path.abspath(path)
+    if not os.path.isfile(p):
+        raise H.HarnessError(f"input {path!r} is not a file")
+    rec = {"path": os.path.relpath(p, wt.root) if wt.inside(p) else p, "role": role,
+           "sha256": H.sha256_file(p), "bytes": os.path.getsize(p)}
+    if wt.inside(p):
+        r = H.run(["git", "-C", wt.root, "ls-files", "--error-unmatch", "--", os.path.relpath(p, wt.root)],
+                  check=False)
+        rec["tracked"] = r.returncode == 0
+    else:
+        rec["tracked"] = False
+        rec["location"] = "main checkout data root" if p.startswith(wt.home + os.sep) else "outside"
+    return rec
+
+
+def athinput_problem(path):
+    try:
+        text = open(path, errors="replace").read()
+    except OSError:
+        return None
+    blk = re.search(r"^\s*<problem>(.*?)(^\s*<|\Z)", text, re.S | re.M)
+    if blk:
+        m = re.search(r"^\s*pgen_name\s*=\s*([A-Za-z0-9_./-]+)", blk.group(1), re.M)
+        if m:
+            return m.group(1)
+    return None
+
+
+def overrides_of(args):
+    out = {}
+    for a in args:
+        m = re.fullmatch(r"([A-Za-z0-9_]+/[A-Za-z0-9_]+)=(.*)", a)
+        if m:
+            out[m.group(1)] = m.group(2)
+    return out
+
+
+def exe_provenance(exe):
+    info = {"exe": exe, "exe_sha256": H.sha256_file(exe), "cmake_flags": None, "toolchain": None}
+    bdir = os.path.dirname(os.path.dirname(os.path.realpath(exe)))
+    ca = os.path.join(bdir, ".configure_args")
+    if os.path.isfile(ca):
+        info["cmake_flags"] = [l.rstrip("\n") for l in open(ca) if l.startswith("-D")]
+    bl = os.path.join(bdir, "build.log")
+    if os.path.isfile(bl):
+        for line in open(bl, errors="replace"):
+            m = re.search(r"toolchain: (.*)$", line)
+            if m:
+                info["toolchain"] = m.group(1).strip()
+                break
+    return info
+
+
+def code_block(wt, exe=None, problem=None):
+    tag = H.run(["git", "-C", wt.root, "describe", "--tags", "--abbrev=0", "--match", "core-v*", "HEAD"],
+                check=False).stdout.strip() or None
+    kline = H.git(wt.root, "ls-tree", "HEAD", "athenak/kokkos", check=False)
+    code = {"core_tag": tag, "athenak_upstream_sha": ATHENAK_UPSTREAM,
+            "kokkos_sha": kline.split()[2] if kline else None, "problem": problem}
+    if exe:
+        code.update(exe_provenance(exe))
+    return code
+
+
+def env_block(wt, env, card):
+    ident = H.env_identity(wt)
+    gxx = H.run(["g++", "-dumpfullversion"], env=env, check=False).stdout.strip() or None
+    venv_py = os.path.join(wt.root, ".venv", "bin", "python")
+    py = H.run([venv_py if os.path.exists(venv_py) else "python3", "-c",
+                "import sys; print(sys.version.split()[0], sys.prefix)"], env=env, check=False).stdout.strip()
+    return {"host": ident["host"], "env_hash": ident["env_hash"],
+            "machine_file_sha256": ident["machine_file_sha256"], "uv_lock_sha256": ident["uv_lock_sha256"],
+            "track_requirements_sha256": ident["track_requirements_sha256"],
+            "container_digest": None, "compiler": f"g++ {gxx}" if gxx else None,
+            "mpi": "none (Athena_ENABLE_MPI=OFF)", "gpu": env.get("NRPIC_GPU_NAME") if card else None,
+            "python": py or None}
+
+
+# ------------------------------------------------------------------ submit
+
+def parse_submit(args):
+    o = {"kind": None, "gate": None, "purpose": None, "launcher": "local", "inputs": [], "parents": [],
+         "preregistered": None, "notes": "", "particles": None, "cores": 1, "wall": None,
+         "background": False, "exe": None, "gpu_hours": None, "list": None, "check_cmd": None,
+         "athena_wall": "00:50:00", "dry_run": False, "command": []}
+    if "--" in args:
+        k = args.index("--")
+        args, o["command"] = args[:k], args[k + 1:]
+    multi = {"--input": "inputs", "--parent": "parents"}
+    single = {"--kind": "kind", "--gate": "gate", "--purpose": "purpose", "--launcher": "launcher",
+              "--preregistered": "preregistered", "--notes": "notes", "--particles": "particles",
+              "--cores": "cores", "--wall": "wall", "--exe": "exe", "--gpu-hours": "gpu_hours",
+              "--list": "list", "--check-cmd": "check_cmd", "--athena-wall": "athena_wall"}
+    i = 0
+    while i < len(args):
+        a = args[i]
+        if a in ("--background", "--dry-run"):
+            o[a[2:].replace("-", "_")] = True
+            i += 1
+            continue
+        key, val = (a.split("=", 1) + [None])[:2] if a.startswith("--") and "=" in a else (a, None)
+        if key in multi or key in single:
+            if val is None:
+                if i + 1 >= len(args):
+                    raise H.HarnessError(f"{key} needs a value")
+                val = args[i + 1]
+                i += 2
+            else:
+                i += 1
+            if key in multi:
+                o[multi[key]].append(val)
+            else:
+                o[single[key]] = val
+            continue
+        raise H.HarnessError(f"unknown submit option {a!r} (the command goes after --)")
+    if o["kind"] not in ("scouting", "production"):
+        raise H.HarnessError("--kind scouting|production is required")
+    if o["gate"] not in H.GATES:
+        raise H.HarnessError("--gate G0..G4 is required (the gate whose GPU-hour allotment the run uses)")
+    if not o["purpose"]:
+        raise H.HarnessError("--purpose is required")
+    if o["launcher"] not in ("local", "batch", "chain"):
+        raise H.HarnessError("--launcher local|batch|chain")
+    o["cores"] = int(o["cores"])
+    if o["gpu_hours"] is not None:
+        o["gpu_hours"] = float(o["gpu_hours"])
+    if o["particles"] is not None:
+        o["particles"] = float(o["particles"])
+    return o
+
+
+def new_run_id(wt):
+    head7 = wt.head()[:7]
+    for _ in range(10):
+        rid = f"{wt.short}-{time.strftime('%Y%m%d-%H%M%S', time.gmtime())}-{head7}"
+        if not os.path.exists(manifest_path(wt, rid)) and not os.path.exists(outdir_of(wt, rid)):
+            return rid
+        time.sleep(1.1)
+    raise H.HarnessError("could not find a free run id")
+
+
+def check_production(wt, o):
+    if o["kind"] != "production":
+        return
+    if not o["preregistered"]:
+        raise H.HarnessError("a production run needs --preregistered <path>[#anchor] (the plan that "
+                             "pre-registered it, committed on this branch)")
+    p = o["preregistered"].split("#", 1)[0]
+    if not os.path.isfile(os.path.join(wt.root, p)):
+        raise H.HarnessError(f"--preregistered {p}: no such file in {wt.root}")
+    k = int(o["gate"][1])
+    if k >= 1:
+        prev = f"stage/{wt.owner}/G{k - 1}-pass-*"
+        tags = H.git(wt.root, "tag", "--list", prev)
+        if not tags:
+            raise H.HarnessError(f"no production runs for {o['gate']} before the sign-off of G{k - 1}: "
+                                 f"no tag {prev} exists (brief 13.3). Register it as scouting, or wait "
+                                 "for the orchestrator's tag.")
+
+
+def submit(wt, args):
+    o = parse_submit(args)
+    owner = wt.require_owner()
+    if owner == "orch" or not os.path.isdir(wt.track_dir()):
+        raise H.HarnessError(f"no tracks/{owner}/ in {wt.root}: runs are registered by an owner in its worktree")
+    if wt.branch == "HEAD":
+        raise H.HarnessError("detached HEAD: check out your branch first")
+    lockdir = os.path.join(wt.home, "locks")
+    os.makedirs(lockdir, exist_ok=True)
+    lockf = open(os.path.join(lockdir, f"nrpic-run.{os.path.basename(wt.root)}.lock"), "w")
+    fcntl.flock(lockf, fcntl.LOCK_EX)
+    dirty = wt.dirty()
+    if dirty:
+        raise H.HarnessError("the worktree is not clean; commit first so that the manifest's commit is "
+                             "the complete code of the run:\n  " + "\n  ".join(dirty[:20]))
+    check_production(wt, o)
+    env = H.build_env(wt)
+    card = o["launcher"] in CARD_LAUNCHERS
+    run_id = new_run_id(wt)
+    outdir = outdir_of(wt, run_id)
+    inputs, problem, exe, command, entries, primary, deck = [], None, None, [], [], None, None
+    def wpath(p):                      # relative paths are relative to the worktree root
+        return p if os.path.isabs(p) else os.path.join(wt.root, p)
+
+    for p in o["inputs"]:
+        inputs.append(input_record(wt, wpath(p), "input"))
+    seg_h = hms_to_s(env.get("NRPIC_CHAIN_SEGMENT", "00:59:00")) / 3600.0
+    req_h = 0.0
+    if o["launcher"] == "local":
+        if not o["command"]:
+            raise H.HarnessError("local: give the command after --")
+        for a in o["command"][1:]:
+            cand = os.path.join(wt.root, a) if not os.path.isabs(a) else a
+            if os.path.isfile(cand) and not any(r["path"] in (a, cand) for r in inputs):
+                inputs.append(input_record(wt, cand, "argv"))
+        command = list(o["command"])
+    else:
+        exe = os.path.abspath(wpath(o["exe"]) if o["exe"] else env.get("NRPIC_GPU_EXE", ""))
+        if not os.path.isfile(exe) or not os.access(exe, os.X_OK):
+            raise H.HarnessError(f"executable not found: {exe} (--exe)")
+        inputs.append(input_record(wt, exe, "exe"))
+        if o["launcher"] == "batch":
+            if not o["list"]:
+                raise H.HarnessError("batch: --list FILE with lines `<name> <athinput> [args...]`")
+            lst = os.path.abspath(wpath(o["list"]))
+            inputs.append(input_record(wt, lst, "list"))
+            for n, line in enumerate(open(lst), 1):
+                s = line.strip()
+                if not s or s.startswith("#"):
+                    continue
+                parts = s.split()
+                if len(parts) < 2 or not re.fullmatch(r"[A-Za-z0-9._-]+", parts[0]):
+                    raise H.HarnessError(f"{lst}:{n}: expected `<name> <athinput> [args...]`")
+                deck = parts[1] if os.path.isabs(parts[1]) else os.path.join(wt.root, parts[1])
+                inputs.append(input_record(wt, deck, f"athinput:{parts[0]}"))
+                entries.append({"name": parts[0], "input": os.path.abspath(deck), "args": parts[2:],
+                                "overrides": overrides_of(parts[2:]), "problem": athinput_problem(deck)})
+            if not entries:
+                raise H.HarnessError(f"{lst}: no runs listed")
+            if len({e["name"] for e in entries}) != len(entries):
+                raise H.HarnessError(f"{lst}: names must be unique")
+            wall = o["wall"] or "00:45:00"
+            if hms_to_s(wall) > hms_to_s(env.get("NRPIC_SLURM_MAX_TIME", "01:00:00")):
+                raise H.HarnessError(f"--wall {wall} exceeds the partition limit; use --launcher chain")
+            o["wall"] = wall
+            req_h = o["gpu_hours"] if o["gpu_hours"] is not None else hms_to_s(wall) / 3600.0
+            problems = sorted({e["problem"] for e in entries if e["problem"]})
+            problem = problems[0] if len(problems) == 1 else (problems or None)
+            command = [os.path.join("scripts", "gpu_batch.sh"), os.path.join(outdir, "batch.list")]
+            primary = entries[0]
+        else:
+            if not o["command"]:
+                raise H.HarnessError("chain: give `-- <athinput> [athena args...]`")
+            if o["gpu_hours"] is None:
+                raise H.HarnessError("chain: --gpu-hours H is required (it caps the number of segments)")
+            deck = os.path.abspath(wpath(o["command"][0]))
+            inputs.append(input_record(wt, deck, "athinput"))
+            problem = athinput_problem(deck)
+            nseg = max(1, math.floor(o["gpu_hours"] / seg_h + 1e-9))   # --gpu-hours is a ceiling
+            req_h = nseg * seg_h
+            o["segments"] = nseg
+            command = [os.path.join("scripts", "submit_chain.sh"), outdir, deck] + o["command"][1:]
+            primary = {"input": deck, "args": o["command"][1:], "overrides": overrides_of(o["command"][1:])}
+    if o["launcher"] == "local" and o["wall"]:
+        hms_to_s(o["wall"])
+
+    # budget (decision 0006)
+    b = budget_state(wt, env, o["gate"])
+    if card:
+        if b["gpu_hours_used"] + b["gpu_hours_reserved"] + req_h > b["gpu_hours_allotted"] + 1e-9:
+            raise H.HarnessError(
+                f"refused: beyond the allotment of decision 0006 for {owner} toward {o['gate']}: "
+                f"{b['gpu_hours_used']:.2f} GPU-hours used and {b['gpu_hours_reserved']:.2f} reserved of "
+                f"{b['gpu_hours_allotted']:.0f}; this run asks {req_h:.2f}. Raising an allotment is "
+                "asked of the user (through the orchestrator).")
+    else:
+        if o["cores"] < 1 or b["cores_busy"] + o["cores"] > b["cores_allotted"]:
+            raise H.HarnessError(f"refused: {o['cores']} cores asked, {b['cores_busy']} busy in live local "
+                                 f"runs of {owner}, allotment {b['cores_allotted']} at a time (decision 0006)")
+
+    sha = wt.head()
+    manifest = {
+        "schema": SCHEMA,
+        "run_id": run_id,
+        "track": owner,
+        "gate": o["gate"],
+        "kind": o["kind"],
+        "purpose": o["purpose"],
+        "preregistered_in": o["preregistered"],
+        "launcher": o["launcher"],
+        "command": command,
+        "cwd": "." if o["launcher"] == "local" else os.path.relpath(outdir, wt.home),
+        "git": {"sha": sha, "branch": wt.branch, "dirty": False,
+                "merge_base_main": H.git(wt.root, "merge-base", "HEAD", "main", check=False) or None,
+                "worktree": os.path.relpath(wt.root, wt.home)},
+        "code": code_block(wt, exe, problem),
+        "env": env_block(wt, env, card),
+        "input": ({"file": os.path.relpath(primary["input"], wt.root) if wt.inside(primary["input"])
+                   else primary["input"], "sha256": H.sha256_file(primary["input"]),
+                   "overrides": primary["overrides"]} if primary else None),
+        "inputs": inputs,
+        "batch_entries": [{"name": e["name"], "input": os.path.relpath(e["input"], wt.root)
+                           if wt.inside(e["input"]) else e["input"], "args": e["args"]} for e in entries] or None,
+        "resources": {"nodes": 1, "gpus": 1 if card else 0, "cores": 1 if card else o["cores"],
+                      "walltime_s": None, "wall_limit": o["wall"] if o["launcher"] != "chain" else None,
+                      "segments_max": o.get("segments"), "gpu_hours_requested": round(req_h, 4) if card else 0.0,
+                      "gpu_hours": None, "particles": o["particles"]},
+        "slurm": ({"partition": env.get("NRPIC_PARTITION", "preempt"), "job_name": run_id, "job_ids": []}
+                  if card else None),
+        "outputs": {"dir": os.path.relpath(outdir, wt.home), "sha256sums": "sha256sums.txt",
+                    "sha256sums_sha256": None, "bytes": None, "files": None},
+        "status": "running" if o["launcher"] == "local" else "submitted",
+        "exit_code": None,
+        "registered": H.utcnow(),
+        "started": None,
+        "ended": None,
+        "parents": o["parents"],
+        "notes": o["notes"],
+        "budget_at_submit": b,
+    }
+    if o["dry_run"]:
+        print(json.dumps(manifest, indent=2))
+        print("(dry run: nothing written, nothing started)")
+        return 0
+
+    mpath = manifest_path(wt, run_id)
+    os.makedirs(os.path.dirname(mpath))
+    os.makedirs(os.path.join(outdir, ".nrpic"))
+    H.write_json(mpath, manifest)
+    rel = os.path.relpath(mpath, wt.root)
+    H.commit_paths(wt, [rel], f"{wt.short}(run): register {run_id}",
+                   body=f"{o['kind']} run, {o['launcher']} launcher, toward {o['gate']}: {o['purpose']}",
+                   trailers=[("Run-Id", run_id), ("Gate", o["gate"])], force_add=True)
+    fcntl.flock(lockf, fcntl.LOCK_UN)
+    print(f"registered {run_id}: manifest {rel} committed; output {outdir}")
+
+    if o["launcher"] == "local":
+        H.write_json(os.path.join(outdir, ".nrpic", "launch.json"),
+                     {"command": command, "cores": o["cores"], "wall": o["wall"], "host": H.host()})
+        if o["background"]:
+            p = subprocess.Popen([sys.executable, "-I", os.path.realpath(__file__), "-C", wt.root, "_wrap", run_id],
+                                 stdin=subprocess.DEVNULL, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL,
+                                 start_new_session=True, env=H.boot_env(), cwd=wt.root)
+            print(f"running in the background (wrapper pid {p.pid}); log {outdir}/run.log; "
+                  f"close it with: harness/bin/nrpic-run finish {run_id}")
+            return 0
+        rc = wrap(wt, run_id, echo=True)
+        finish(wt, [run_id])
+        return 0 if rc == 0 else 1
+
+    # card launchers: the repository's own scripts submit the job
+    sets = {"ATHENA_EXE": exe, "JOB_NAME": run_id, "PARTITION": env.get("NRPIC_PARTITION", "preempt")}
+    if o["launcher"] == "batch":
+        with open(os.path.join(outdir, "batch.list"), "w") as f:
+            for e in entries:
+                f.write(" ".join([os.path.join(outdir, e["name"]), e["input"]] + e["args"]) + "\n")
+        sets["TIME"] = o["wall"]
+        argv = [os.path.join(wt.root, "scripts", "gpu_batch.sh"), os.path.join(outdir, "batch.list")]
+    else:
+        sets.update({"MAX_SEGMENTS": str(o["segments"]), "SLURM_TIME": env.get("NRPIC_CHAIN_SEGMENT", "00:59:00"),
+                     "ATHENA_WALL": o["athena_wall"]})
+        if o["check_cmd"]:
+            sets["CHECK_CMD"] = o["check_cmd"]
+        argv = [os.path.join(wt.root, "scripts", "submit_chain.sh"), outdir, deck] + o["command"][1:]
+    jenv = H.build_env(wt, extra=sets)
+    jenv["NRPIC_RUN_ID"], jenv["NRPIC_RUN_DIR"] = run_id, outdir
+    started = H.utcnow()
+    r = H.run(argv, env=jenv, cwd=wt.root, check=False)
+    sys.stdout.write(r.stdout)
+    sys.stderr.write(r.stderr)
+    ids = re.findall(r"(?:submitted job|job) (\d+)", r.stdout)
+    H.write_json(os.path.join(outdir, ".nrpic", "launch.json"),
+                 {"argv": argv, "set": sets, "submitted": started, "job_ids": ids[:1], "rc": r.returncode,
+                  "host": H.host()})
+    if r.returncode != 0 or not ids:
+        H.write_json(os.path.join(outdir, ".nrpic", "result.json"),
+                     {"exit_code": r.returncode or 1, "error": "submission failed", "started": started,
+                      "ended": H.utcnow()})
+        print(f"submission failed; closing {run_id} as failed", file=sys.stderr)
+        finish(wt, [run_id])
+        return 1
+    print(f"submitted {run_id} as Slurm job {ids[0]}; query: harness/bin/nrpic-run status {run_id}; "
+          f"close when done: harness/bin/nrpic-run finish {run_id}")
+    return 0
+
+
+def wrap(wt, run_id, echo=False):
+    """Run a local run's command (in the foreground, or inside the detached wrapper)."""
+    outdir = outdir_of(wt, run_id)
+    info = H.read_json(os.path.join(outdir, ".nrpic", "launch.json"))
+    env = H.build_env(wt, threads=int(info.get("cores", 1)))
+    env["NRPIC_RUN_ID"], env["NRPIC_RUN_DIR"] = run_id, outdir
+    os.makedirs(env["MPLCONFIGDIR"], exist_ok=True)
+    info["pid"] = os.getpid()
+    H.write_json(os.path.join(outdir, ".nrpic", "launch.json"), info)
+    started = H.utcnow()
+    t0 = time.time()
+    timeout = hms_to_s(info["wall"]) if info.get("wall") else None
+    rc, err = None, None
+    with open(os.path.join(outdir, "run.log"), "w") as log:
+        log.write(f"# nrpic-run {run_id} start={started} host={H.host()} cwd={wt.root}\n"
+                  f"# cmd: {' '.join(info['command'])}\n")
+        log.flush()
+        try:
+            p = subprocess.Popen(info["command"], cwd=wt.root, env=env, stdout=subprocess.PIPE,
+                                 stderr=subprocess.STDOUT, text=True, start_new_session=True)
+        except OSError as e:
+            rc, err = 127, repr(e)
+            p = None
+        if p is not None:
+            def on_term(signum, frame):
+                try:
+                    os.killpg(p.pid, signal.SIGTERM)
+                except OSError:
+                    pass
+            signal.signal(signal.SIGTERM, on_term)
+            for line in p.stdout:
+                log.write(line)
+                log.flush()
+                if echo:
+                    sys.stdout.write(line)
+                if timeout and time.time() - t0 > timeout:
+                    os.killpg(p.pid, signal.SIGTERM)
+                    err = f"killed at the wall limit {info['wall']}"
+            rc = p.wait()
+        ended = H.utcnow()
+        log.write(f"# exit={rc} end={ended}\n")
+    H.write_json(os.path.join(outdir, ".nrpic", "result.json"),
+                 {"exit_code": rc, "started": started, "ended": ended, "walltime_s": round(time.time() - t0, 3),
+                  "error": err})
+    return rc
+
+
+# ------------------------------------------------------------------ finish / verify
+
+def sha256sums(outdir):
+    lines, total, n = [], 0, 0
+    for dirpath, dirnames, filenames in os.walk(outdir):
+        rel = os.path.relpath(dirpath, outdir)
+        if rel == ".":
+            dirnames[:] = [d for d in dirnames if d != ".nrpic"]
+        dirnames.sort()
+        for fn in sorted(filenames):
+            full = os.path.join(dirpath, fn)
+            relf = os.path.normpath(os.path.join(rel, fn))
+            if relf == "sha256sums.txt" or os.path.islink(full) or not os.path.isfile(full):
+                continue
+            lines.append(f"{H.sha256_file(full)}  {relf}")
+            total += os.path.getsize(full)
+            n += 1
+    path = os.path.join(outdir, "sha256sums.txt")
+    with open(path, "w") as f:
+        f.write("\n".join(lines) + ("\n" if lines else ""))
+    return H.sha256_file(path), total, n
+
+
+def segment_wall(logs):
+    tot, first, last = 0.0, None, None
+    for lg in logs:
+        start = end = None
+        for line in open(lg, errors="replace"):
+            m = re.search(r"\bstart=(\S+)", line)
+            if m and start is None:
+                start = m.group(1)
+            m = re.search(r"\bend=(\S+)", line)
+            if m:
+                end = m.group(1)
+        if start and end:
+            try:
+                a, b = iso_to_epoch(start), iso_to_epoch(end)
+            except ValueError:
+                continue
+            tot += max(0.0, b - a)
+            first = start if first is None or a < iso_to_epoch(first) else first
+            last = end if last is None or b > iso_to_epoch(last) else last
+    return tot, first, last
+
+
+def sacct_elapsed(env, ids):
+    tot, ok = 0.0, False
+    for j in ids:
+        r = H.run(["sacct", "-n", "-X", "-P", "-j", str(j), "-o", "ElapsedRaw"], env=env, check=False)
+        vals = [v for v in r.stdout.split() if v.isdigit()]
+        if r.returncode == 0 and vals:
+            tot += float(vals[0])
+            ok = True
+    return tot if ok else None
+
+
+def finish(wt, args):
+    if not args:
+        raise H.HarnessError("usage: nrpic-run finish <run_id> [--status completed|failed|stopped]")
+    run_id = args[0]
+    force = None
+    if "--status" in args:
+        force = args[args.index("--status") + 1]
+        if force not in FINAL:
+            raise H.HarnessError("--status completed|failed|stopped")
+    wt.require_owner()
+    mpath = manifest_path(wt, run_id)
+    if not os.path.isfile(mpath):
+        raise H.HarnessError(f"no manifest {os.path.relpath(mpath, wt.root)} on this branch")
+    m = H.read_json(mpath)
+    if m.get("status") in FINAL and not force:
+        print(f"{run_id} is already {m['status']}")
+        return 0
+    outdir = os.path.join(wt.home, m["outputs"]["dir"])
+    env = H.build_env(wt)
+    info = launch_info(outdir)
+    res_p = os.path.join(outdir, ".nrpic", "result.json")
+    res = H.read_json(res_p) if os.path.isfile(res_p) else None
+    status, rc, started, ended, wall, gpu_h = None, None, None, None, None, None
+    launcher = m.get("launcher")
+    if launcher == "local":
+        if res is None:
+            if info.get("host") == H.host() and pid_alive(info.get("pid")) and not force:
+                raise H.HarnessError(f"{run_id} is still running (pid {info.get('pid')})")
+            status, rc = force or "failed", None
+        else:
+            rc = res.get("exit_code")
+            status = force or ("completed" if rc == 0 else "failed")
+            started, ended, wall = res.get("started"), res.get("ended"), res.get("walltime_s")
+    else:
+        ids = list(info.get("job_ids", []))
+        for j in chain_job_ids(outdir):
+            if j not in ids:
+                ids.append(j)
+        live = slurm_active(env, ids)
+        if live and not force:
+            raise H.HarnessError(f"{run_id}: Slurm job(s) still active: {live}")
+        if res is not None and res.get("error"):             # submission failed
+            status, rc = force or "failed", res.get("exit_code")
+            started, ended = res.get("started"), res.get("ended")
+        elif launcher == "batch":
+            lst = os.path.join(outdir, "batch.list")
+            want = [l for l in open(lst) if l.strip() and not l.startswith("#")] if os.path.isfile(lst) else []
+            got = []
+            stp = lst + ".status"
+            if os.path.isfile(stp):
+                got = [int(x) for x in re.findall(r"rc=(\d+)", open(stp).read())]
+            rc = 0 if (got and len(got) == len(want) and all(x == 0 for x in got)) else (
+                next((x for x in got if x != 0), 1))
+            status = force or ("completed" if rc == 0 else "failed")
+            logs = [os.path.join(dp, f) for dp, _, fs in os.walk(outdir) for f in fs
+                    if re.fullmatch(r"athena\.\d{8}-\d{6}\.log", f)]
+            wall_logs, started, ended = segment_wall(sorted(logs))
+            wall = sacct_elapsed(env, ids)
+            if wall is None:
+                wall = wall_logs
+            gpu_h = wall / 3600.0
+        else:
+            stf = os.path.join(outdir, "chain", "STATUS")
+            st = open(stf).read().strip() if os.path.isfile(stf) else "NONE"
+            if st not in ("DONE", "FAILED", "STOPPED") and not force:
+                raise H.HarnessError(f"{run_id}: chain status is {st}; wait, or stop it "
+                                     f"(nrpic-run stop {run_id}) and finish again")
+            status = force or {"DONE": "completed", "FAILED": "failed", "STOPPED": "stopped"}.get(st, "failed")
+            rc = 0 if st == "DONE" else 1
+            logs = sorted(os.path.join(outdir, "chain", f) for f in os.listdir(os.path.join(outdir, "chain"))
+                          if re.fullmatch(r"seg\d+\.job.*\.log", f)) if os.path.isdir(
+                os.path.join(outdir, "chain")) else []
+            wall, started, ended = segment_wall(logs)
+            el = sacct_elapsed(env, ids)
+            gpu_h = (el if el is not None else wall) / 3600.0
+        m["slurm"]["job_ids"] = ids
+    sums_sha, nbytes, nfiles = sha256sums(outdir) if os.path.isdir(outdir) else (None, 0, 0)
+    m["status"] = status
+    m["exit_code"] = rc
+    m["started"] = started or m.get("started") or info.get("submitted")
+    m["ended"] = ended or H.utcnow()
+    m["resources"]["walltime_s"] = round(wall, 3) if wall is not None else None
+    if launcher in CARD_LAUNCHERS:
+        m["resources"]["gpu_hours"] = round(gpu_h or 0.0, 4)
+    m["outputs"].update({"sha256sums_sha256": sums_sha, "bytes": nbytes, "files": nfiles})
+    m["finished"] = H.utcnow()
+    H.write_json(mpath, m)
+    rel = os.path.relpath(mpath, wt.root)
+    H.commit_paths(wt, [rel], f"{wt.short}(run): finish {run_id} ({status})",
+                   body=f"exit code {rc}; wall time {m['resources']['walltime_s']} s; "
+                        f"{nfiles} output files, {nbytes} bytes, checksums in "
+                        f"{m['outputs']['dir']}/sha256sums.txt",
+                   trailers=[("Run-Id", run_id), ("Gate", m.get("gate", ""))], force_add=True)
+    print(f"finished {run_id}: {status} (exit {rc}); manifest committed; "
+          f"{nfiles} files checksummed in {outdir}/sha256sums.txt")
+    return 0
+
+
+def verify(wt, args):
+    if not args:
+        raise H.HarnessError("usage: nrpic-run verify <run_id>")
+    run_id = args[0]
+    m = find_manifest(wt, run_id)
+    outdir = os.path.join(wt.home, m["outputs"]["dir"])
+    sums = os.path.join(outdir, "sha256sums.txt")
+    problems = []
+    if m.get("status") not in FINAL:
+        problems.append(f"status is {m.get('status')}: not finished")
+    if not os.path.isfile(sums):
+        problems.append(f"missing {sums}")
+    else:
+        if m["outputs"].get("sha256sums_sha256") and H.sha256_file(sums) != m["outputs"]["sha256sums_sha256"]:
+            problems.append("sha256sums.txt differs from the one recorded in the manifest")
+        listed = set()
+        for line in open(sums):
+            if not line.strip():
+                continue
+            digest, rel = line.rstrip("\n").split("  ", 1)
+            listed.add(rel)
+            p = os.path.join(outdir, rel)
+            if not os.path.isfile(p):
+                problems.append(f"missing output {rel}")
+            elif H.sha256_file(p) != digest:
+                problems.append(f"changed output {rel}")
+        for dirpath, dirnames, filenames in os.walk(outdir):
+            rel = os.path.relpath(dirpath, outdir)
+            if rel == ".":
+                dirnames[:] = [d for d in dirnames if d != ".nrpic"]
+            for fn in filenames:
+                relf = os.path.normpath(os.path.join(rel, fn))
+                if relf != "sha256sums.txt" and relf not in listed and not os.path.islink(os.path.join(dirpath, fn)):
+                    problems.append(f"output not in sha256sums.txt: {relf}")
+    for rec in m.get("inputs", []):
+        p = rec["path"] if os.path.isabs(rec["path"]) else os.path.join(wt.root, rec["path"])
+        if rec.get("tracked"):
+            blob = H.run(["git", "-C", wt.root, "show", f"{m['git']['sha']}:{rec['path']}"], check=False)
+            if blob.returncode != 0:
+                problems.append(f"input {rec['path']} not in commit {m['git']['sha'][:7]}")
+                continue
+        if os.path.isfile(p):
+            if H.sha256_file(p) != rec["sha256"]:
+                problems.append(f"input {rec['path']} changed since the run (sha256 differs)")
+        else:
+            problems.append(f"input {rec['path']} no longer present (not verifiable)")
+    if problems:
+        print(f"verify {run_id}: FAIL")
+        for p in problems:
+            print("  - " + p)
+        return 1
+    n = sum(1 for l in open(sums) if l.strip())
+    print(f"verify {run_id}: PASS ({n} output files and {len(m.get('inputs', []))} inputs match)")
+    return 0
+
+
+def find_manifest(wt, run_id):
+    wt.require_owner()
+    p = manifest_path(wt, run_id)
+    if os.path.isfile(p):
+        return H.read_json(p)
+    ms = all_manifests(wt)
+    if run_id in ms:
+        return ms[run_id]
+    raise H.HarnessError(f"no manifest for {run_id} on the branches of {wt.owner}")
+
+
+# ------------------------------------------------------------------ status / budget / stop
+
+def status(wt, args):
+    env = H.build_env(wt)
+    if args:
+        m = find_manifest(wt, args[0])
+        outdir = os.path.join(wt.home, m["outputs"]["dir"])
+        print(json.dumps(m, indent=2))
+        live = is_live(wt, m, env)
+        print(f"\nlive: {live}")
+        if m.get("launcher") == "chain" and os.path.isdir(os.path.join(outdir, "chain")):
+            r = H.run([os.path.join(wt.root, "scripts", "submit_chain.sh"), "--status", outdir], env=env, check=False)
+            print(r.stdout.rstrip())
+        elif m.get("launcher") == "batch":
+            stp = os.path.join(outdir, "batch.list.status")
+            if os.path.isfile(stp):
+                print(open(stp).read().rstrip())
+            ids = launch_info(outdir).get("job_ids", [])
+            print(f"slurm: {slurm_active(env, ids) or 'not queued'} (jobs {ids})")
+        elif os.path.isfile(os.path.join(outdir, "run.log")):
+            print("".join(open(os.path.join(outdir, "run.log"), errors="replace").readlines()[-5:]).rstrip())
+        return 0
+    ms = all_manifests(wt)
+    print(f"{'run_id':32s} {'gate':4s} {'kind':10s} {'launch':6s} {'status':10s} {'GPU-h':>7s}  purpose")
+    for rid in sorted(ms):
+        m = ms[rid]
+        st = m.get("status")
+        if st not in FINAL:
+            st = st + ("*" if is_live(wt, m, env) else "?")
+        r = m.get("resources", {})
+        gh = r.get("gpu_hours") if r.get("gpu_hours") is not None else r.get("gpu_hours_requested")
+        print(f"{rid:32s} {m.get('gate', ''):4s} {m.get('kind', ''):10s} {m.get('launcher', ''):6s} "
+              f"{st:10s} {gh or 0:7.2f}  {m.get('purpose', '')[:60]}")
+    print("(* live; ? registered but no live process or job: close it with finish)")
+    return 0
+
+
+def budget(wt, args):
+    env = H.build_env(wt)
+    wt.require_owner()
+    for g in H.GATES:
+        b = budget_state(wt, env, g)
+        if g == H.GATES[0]:
+            print(f"owner {wt.owner}: {b['gpu_hours_allotted']:.0f} GPU-hours to the next gate, "
+                  f"{b['cores_allotted']} cores at a time (decision 0006); {b['cores_busy']} cores busy now")
+        if b["gpu_hours_used"] or b["gpu_hours_reserved"]:
+            print(f"  {g}: used {b['gpu_hours_used']:.2f}, reserved {b['gpu_hours_reserved']:.2f}, "
+                  f"left {b['gpu_hours_allotted'] - b['gpu_hours_used'] - b['gpu_hours_reserved']:.2f}")
+    return 0
+
+
+def stop(wt, args):
+    if not args:
+        raise H.HarnessError("usage: nrpic-run stop <run_id>")
+    m = find_manifest(wt, args[0])
+    outdir = os.path.join(wt.home, m["outputs"]["dir"])
+    env = H.build_env(wt)
+    if m.get("launcher") == "chain":
+        r = H.run([os.path.join(wt.root, "scripts", "submit_chain.sh"), "--stop", outdir], env=env, check=False)
+        print(r.stdout.rstrip() or r.stderr.rstrip())
+    elif m.get("launcher") == "batch":
+        for j in launch_info(outdir).get("job_ids", []):
+            H.run(["scancel", str(j)], env=env, check=False)
+            print(f"scancel {j}")
+    else:
+        pid = launch_info(outdir).get("pid")
+        if pid and pid_alive(pid):
+            os.kill(int(pid), signal.SIGTERM)
+            print(f"sent SIGTERM to wrapper pid {pid}")
+    print(f"then: harness/bin/nrpic-run finish {args[0]}")
+    return 0
+
+
+def main(argv):
+    try:
+        c_opt, rest = H.strip_options_prefix(argv)
+        if not rest or rest[0] in ("-h", "--help", "help"):
+            print(__doc__)
+            return 2
+        sub, args = rest[0], rest[1:]
+        wt = H.worktree_from_args(__file__, c_opt)
+        if sub == "_wrap":
+            wrap(wt, args[0])
+            return 0
+        fn = {"submit": submit, "status": status, "finish": finish, "verify": verify, "budget": budget,
+              "stop": stop}.get(sub)
+        if fn is None:
+            print(__doc__)
+            return 2
+        return fn(wt, args) or 0
+    except H.HarnessError as e:
+        print(f"nrpic-run: {e}", file=sys.stderr)
+        return 1
+
+
+if __name__ == "__main__":
+    sys.exit(main(sys.argv[1:]))
