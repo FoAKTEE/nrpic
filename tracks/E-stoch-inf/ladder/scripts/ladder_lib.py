@@ -224,14 +224,20 @@ class LinearReference:
         x = SHARPNESS * np.log(SIGMA * b["a"] * b["H"] / k)
         return 0.5 * (1.0 + np.tanh(x))
 
-    def crossing_efold(self, k, t_end):
-        """N_k with k = a H on the reference background (k >= 1)."""
+    def crossing(self, k, t_end):
+        """Time, e-fold, H and eps1 where k = a H on the reference background (k >= 1);
+        t = 0 where a H >= k already at the start."""
         from scipy.optimize import brentq
-        out = np.empty(np.size(k))
-        for i, kk in enumerate(np.atleast_1d(k)):
+        k = np.atleast_1d(np.asarray(k, float))
+        tk = np.zeros(k.size)
+        for i, kk in enumerate(k):
             f = lambda t: np.log(self.background(t)["a"] * self.background(t)["H"] / kk)
-            out[i] = 0.0 if f(0.0) >= 0.0 else self.background(brentq(f, 0.0, t_end))["lna"]
-        return out
+            tk[i] = 0.0 if f(0.0) >= 0.0 else brentq(f, 0.0, t_end, xtol=1e-12)
+        b = self.background(tk)
+        return tk, b["lna"], b["H"], b["eps1"]
+
+    def crossing_efold(self, k, t_end):
+        return self.crossing(k, t_end)[1]
 
     def efold_time(self, n_target, t_end):
         from scipy.optimize import brentq
