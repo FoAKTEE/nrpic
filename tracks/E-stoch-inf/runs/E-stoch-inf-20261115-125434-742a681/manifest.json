@@ -1,0 +1,27 @@
+{
+ "run_id": "E-stoch-inf-20261115-125434-742a681",
+ "owner": "E-stoch-inf",
+ "package": "noise (E-pre-4)",
+ "kind": "scouting",
+ "purpose": "T-N1 of noise/JOURNAL.md: hemisphere modes, normal pairs per step (Heaviside and tanh windows), step counts and evaluation cost at the resolutions of 2512.14649 and of the unit test",
+ "cwd": "/data/haiyangw/nrpic/scratch/E-stoch-inf/E-stoch-inf-20261115-125434-742a681",
+ "command": "python3 /data/haiyangw/nrpic/wt/E-stoch-inf/tracks/E-stoch-inf/noise/ref/count_draws.py --out /data/haiyangw/nrpic/scratch/E-stoch-inf/E-stoch-inf-20261115-125434-742a681",
+ "commit": "742a681",
+ "worktree_dirty_paths": [],
+ "inputs": [
+  {
+   "path": "/data/haiyangw/nrpic/wt/E-stoch-inf/tracks/E-stoch-inf/noise/ref/count_draws.py",
+   "sha256": "0c6aa371b1a165adbcdd6bc739a6ae8f06b5c2480084d1761634ecbf61753798"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/wt/E-stoch-inf/tracks/E-stoch-inf/noise/ref/noise_ref.py",
+   "sha256": "8edfe581c6355c46c46594d7f30e179a2f3c33722ef4a9cea02b01cff6ad10ea"
+  }
+ ],
+ "output_dir": "/data/haiyangw/nrpic/scratch/E-stoch-inf/E-stoch-inf-20261115-125434-742a681/",
+ "wall_time": "5.0 s",
+ "cores": 2,
+ "card_hours": 0.0,
+ "status": "completed",
+ "results": "N=256 nmax=64: 548958 hemisphere modes (estimate 549033); steps 8 e-folds 13038, 10 e-folds 16298 at theta 0.025; Heaviside max 1485 per step; tanh max 548958 per step; one set of draws 7.30e-05 s card, 3.67e-02 s core; N=32 nmax=8: 1054 modes\n"
+}

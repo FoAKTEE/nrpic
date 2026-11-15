@@ -55,14 +55,18 @@ def per_step_counts(q, N, theta, sigma, Ntot, s=5.0):
     return dict(dNe=dNe, nsteps=nsteps, t=t, heavi=heavi, tsub=tsub, tanh=tanh_cnt)
 
 
-def eval_cost(N, nmax, b):
+def eval_cost(lat, b):
     """Complex multiply-adds per evaluation of one component on the whole mesh:
-    separable partial sums per MeshBlock of b^3 cells over the (2 nmax + 1)^3 cube of
-    wave vectors, and one complex FFT of N^3 points (5 N^3 log2 N^3 real flops, counted
-    here as flops / 8 complex multiply-adds for comparison)."""
-    K = 2 * nmax + 1
+    separable partial sums per MeshBlock of b^3 cells over the half-space modes,
+    (N/b)^3 (M b + P b^2 + X b^3) with M modes, P distinct (n_x, n_y), X distinct n_x
+    (the formula of E-pre-2, codebase/ref/synth.py:synth_ops, recomputed here), and one
+    complex FFT of N^3 points (5 N^3 log2 N^3 real flops / 8 per multiply-add)."""
+    N = lat.N
+    M = lat.M
+    P = len(np.unique(lat.n[:, :2], axis=0))
+    X = len(np.unique(lat.n[:, 0]))
     nblocks = (N // b)**3
-    sep = nblocks * (K**3 * b + K**2 * b**2 + K * b**3)
+    sep = nblocks * (M * b + P * b**2 + X * b**3)
     fft = 5 * N**3 * np.log2(float(N**3)) / 8.0
     return float(sep), float(fft)
 
@@ -90,9 +94,9 @@ def main():
                    normal2_calls_per_set=int(lat.M),
                    card_seconds_per_set=lat.M * NS_CARD * 1e-9,
                    core_seconds_per_set=lat.M * NS_CORE * 1e-9)
-        for b in (32, 64):
+        for b in (32, 64, 128):
             if N % b == 0 and b <= N:
-                sep, fft = eval_cost(N, int(np.sqrt(nmax2)), b)
+                sep, fft = eval_cost(lat, b)
                 row[f"separable_cmadd_per_eval_b{b}"] = sep
                 row["fft_cmadd_equiv_per_eval"] = fft
         for Ntot in ntots:
@@ -139,16 +143,20 @@ def main():
     ax[0].set_xlabel(r"e-folds since start, $\ln(k_\sigma/k_{\min})$")
     ax[0].set_ylabel("normal pairs per step")
     ax[0].set_title(r"$N=256$, $n_{\max}=64$, $\theta=0.025$", fontsize=10)
-    ax[0].legend(loc="lower right", fontsize=8)
+    ax[0].legend(loc="upper center", bbox_to_anchor=(0.55, 0.84), fontsize=8)
     Ns = [r["N"] for r in table[1:5]]
     sep = [r.get("separable_cmadd_per_eval_b32", np.nan) for r in table[1:5]]
     fft = [r["fft_cmadd_equiv_per_eval"] for r in table[1:5]]
-    sepP = table[0]["separable_cmadd_per_eval_b32"]
+    sepP = table[0]["separable_cmadd_per_eval_b128"]
     fftP = table[0]["fft_cmadd_equiv_per_eval"]
-    ax[1].loglog(Ns, sep, "o-", color=fs.PAL["blue"], label=r"partial sums, $n_{\max}=8$")
+    ax[1].loglog(Ns, sep, "o-", color=fs.PAL["blue"], label=r"partial sums, $n_{\max}=8$, $b=32$")
     ax[1].loglog(Ns, fft, "s-", color=fs.PAL["red"], label="FFT")
     ax[1].loglog([256], [sepP], "o", mfc="none", color=fs.PAL["blue"], ms=8,
-                 label=r"partial sums, $n_{\max}=64$")
+                 label=r"partial sums, $n_{\max}=64$, $b=128$")
+    from matplotlib.ticker import NullFormatter
+    ax[1].set_xticks([32, 64, 128, 256])
+    ax[1].set_xticklabels(["32", "64", "128", "256"])
+    ax[1].xaxis.set_minor_formatter(NullFormatter())
     ax[1].set_xlabel(r"$N$")
     ax[1].set_ylabel("complex multiply-adds per field")
     ax[1].legend(loc="upper left", fontsize=8)

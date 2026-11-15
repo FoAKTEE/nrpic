@@ -23,7 +23,8 @@ TEST_DOF = {0: 0, 1: 0, 2: 1, 3: 0}
 class Lattice:
     """Modes of one hemisphere with 0 < n.n <= nmax2 on an N^3 mesh of side L.
 
-    Hemisphere H: n_z > 0, or n_z = 0 and n_y > 0, or n_z = n_y = 0 and n_x > 0.
+    Hemisphere H (the half space of E-pre-2, codebase/ref/synth.py:half_space):
+    n_x > 0, or n_x = 0 and n_y > 0, or n_x = n_y = 0 and n_z > 0.
     Order: n_z slowest, n_x fastest (consecutive entities along rows)."""
 
     def __init__(self, N, L, nmax2):
@@ -35,8 +36,8 @@ class Lattice:
         nz, ny, nx = np.meshgrid(r, r, r, indexing="ij")
         n = np.stack([nx.ravel(), ny.ravel(), nz.ravel()], axis=1).astype(np.int64)
         n2 = (n * n).sum(axis=1)
-        hemi = (n[:, 2] > 0) | ((n[:, 2] == 0) & (n[:, 1] > 0)) | \
-               ((n[:, 2] == 0) & (n[:, 1] == 0) & (n[:, 0] > 0))
+        hemi = (n[:, 0] > 0) | ((n[:, 0] == 0) & (n[:, 1] > 0)) | \
+               ((n[:, 0] == 0) & (n[:, 1] == 0) & (n[:, 2] > 0))
         keep = hemi & (n2 >= 1) & (n2 <= self.nmax2)
         self.n = n[keep]
         self.n2 = n2[keep]
