@@ -318,3 +318,14 @@ analysis now records it (3 dumps skipped: no ball particle left) instead of cras
 The crash of `test2_evolution.py --prefix t3` is thus worked around in
 `idcheck/t2d_t3.py`; `analysis/id/test2_evolution.py` itself is unchanged (not this
 package's file): request to the lead in README.md.
+
+## 15:47Z Oblate reference (prediction before the check run)
+
+`oblate/oblate_reference.py`: closed form of the potential of a homogeneous oblate
+spheroid (atan counterpart of the prolate formulas of `python/nrpic/spheroid.py`),
+derived here by the substitution s = sqrt(b^2 + u). Prediction: the closed form equals
+adaptive quadrature of the defining integrals to 1e-10 relative; a^2 b (2 J_a + J_b) = 2
+inside to 1e-12; the finite-difference Laplacian is 4 pi rho_N inside and 0 outside to
+1e-5 (h = 1e-3, second-order truncation); Phi_N is continuous at the surface and tends
+to -M/(2r); the same quadrature reproduces the prolate I, J_a, J_b of spheroid.py.
+Refuted by any of these failing (a wrong sign or factor in the derivation).
