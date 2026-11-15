@@ -220,7 +220,10 @@ def units(md, spec):
         if not line.strip():
             flush()
             continue
-        if RE_TABLE.match(line):
+        # a table row starts with "|"; inside a bullet or paragraph, a continuation line that
+        # starts with "|" (e.g. "|Q_ij| from ...") but does not end with "|" is text, not a row
+        # (wave-2 lead audit: claim 193 of snapshot kb-20261115-621430e lost its statement so)
+        if RE_TABLE.match(line) and (cur is None or line.rstrip().endswith("|")):
             flush()
             if RE_TABLE_SEP.match(line.strip().strip("|").strip() or "---") and set(line.strip()) <= set("|-: "):
                 continue

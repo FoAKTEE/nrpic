@@ -280,6 +280,18 @@ def test_two_locators_in_one_parenthesis_stay_one_claim():
     assert cl[0].text.startswith("Set-up") and "nine parameters" in cl[1].text
 
 
+def test_bullet_continuation_starting_with_pipe_is_not_a_table_row():
+    """Lead audit W4: a wrapped bullet whose next line starts with |Q_ij| stays one claim."""
+    md = "## arXiv:2605.04487 v2 (`main_v3.tex`)\n- Particle load: relaxation lowers the initial\n" \
+         "  |Q_ij| from about 1e-1 (random) to 1e-14, \"to reduce artificial emission seeded\n" \
+         "  purely by shot noise\" (2234-2238).\n" \
+         "| 2605.04487 (v2) | a real table row |\n"
+    cl = cp.parse_note(md, spec("B", default_label="VERIFIED", bare_numbers=True), "ref")
+    texts = [c.text for c in cl]
+    assert any(t.startswith("Particle load") and "shot noise" in t and "|Q_ij|" in t for t in texts)
+    assert not any(t.startswith("purely by shot noise") for t in texts)
+
+
 def test_commented_out_lines_are_not_fulltext(store):
     st, _ = store
     src = os.path.join(st.raw_arxiv, "2609.14218", "v1", "src", "c.tex")

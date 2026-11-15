@@ -17,14 +17,19 @@ def run(argv):
     return cli.main(argv)
 
 
-@pytest.mark.parametrize("cmd", ["ingest", "claim", "qa"])
-def test_stubs_exit_3(cmd, capsys):
-    assert run([cmd, "x"]) == 3
-    assert "not built yet" in capsys.readouterr().err
+def test_no_stub_left():
+    """Every subcommand of brief 12.10 is built (claim and qa wired in wave 2 by the lead)."""
+    p = cli.parser()
+    names = set(p._subparsers._group_actions[0].choices)
+    assert {"claim", "qa", "search", "embed", "eq", "ingest"} <= names
+    for name in ("claim", "qa"):
+        a = p.parse_args([name] + (["stats"] if name == "claim" else ["golden"]))
+        assert a.fn is not cli.cmd_stub
 # `code`, `link`, `watch upstream`, `fetch-repos` and `ingest repo` are built (K6-K7):
 # tests in test_code_*.py. `ingest arxiv`, `resolve-bib`, `frontier`, `cites`, `export` and the
 # text views of `show` are built (K2-K3): tests in test_papers_*.py, test_tex_*.py, test_bib_*.py
 # `embed`, `search` and `eq` are built (K4-K5): tests in test_embed_*.py
+# `claim` (K8) and `qa` (K9) are built: tests in test_claims.py, test_qa_*.py
 
 
 def test_init_verify_status_snapshot(store, capsys):

@@ -264,3 +264,39 @@ source is one .tex without \input, my counter equals the database wherever the h
 no shorthand macro (my counter expands none). Reading audit of 10 unchecked fulltext claims
 (seed 20261116): at least 9 supported. Refuted by any other count, a difference on a
 shorthand-free single-file paper, or fewer than 8 supported claims.
+
+### W4 outcome (run kb-20261115-181916-08ebad9)
+
+- Counts: held exactly. Not ok 25 (review 23, pdf 1, failed 1); 38775 of 64712 bibliography
+  entries with an arXiv id (59.9 %); 38406 distinct citation edges, 5700 inside the corpus
+  (14.8 %); claims fulltext 507, to_verify 73, judgement 37, background 1; statuses checked 29,
+  located 516, partial 33, unlocated 39, unresolved 1; no id stored in two versions.
+- C8 third count: held. 36 of the 41 sampled papers are one .tex without \input; my counter
+  equals the database on 30, and all 6 differences are papers where the helper counted shorthand
+  macros (1105.5280, 2102.05690, 2208.05018, 2209.02735, 2311.17644, 2410.17987), which my
+  counter does not expand. Every shorthand-free single-file paper agrees (the corrected counter
+  gives 63 for 2408.09964, the trailing-row case).
+- Reading audit: held, 9 of 10 supported (claims 125, 127, 205, 254, 311, 389, 396, 555, 600).
+  Claim 193 is a parser fragment: its text is only `purely by shot noise" (2234-2238)`. Cause,
+  checked in the parser and by a test that fails without the fix: B's bullet wraps onto a line
+  starting with `|Q_ij|`, which `claims_parse.units` took for a markdown table row, flushing the
+  bullet. Fixed (a continuation inside a bullet or paragraph is a table row only if it also ends
+  with `|`), test `test_bullet_continuation_starting_with_pipe_is_not_a_table_row`. Claim 193
+  itself stays as it is until the next seed (ids are frozen; no rebuild).
+- astro-ph/0003278 (0 sections): flat.tex has `\section` at its lines 61 and 124 and an abstract
+  environment, but doc.json has no section, no abstract and one equation (status review, score
+  0.56). The cause lies in the K2 extractor and is not established here; listed as open.
+
+### W3 and W5 predictions
+
+W3 as written above (counter 16 on the helper's probe; pdflatex a0 = 1, m1 = 2, a1 = 3,
+a2 = 6 and counter 6 on mine).
+
+W5, independent recheck of the embed helper (`w2_embed_check.py`, read-only on db/current):
+my own rescoring of their registered top-10 lists (chunk -> paper and flat range from the
+database, -> source lines by my own bisection of sourcemap.json) gives the same hits@10 per mode
+(ten: text 4, vector 4, hybrid 5; K9: text 21, vector 17, hybrid 23), at most one different per
+mode (boundary rounding of the line map). Vectors: one model, dimension 384, 43398 chunk and
+54259 equation vectors, 0 owners without a vector, 0 vectors without an owner, norms 1 within
+1e-3; model weights sha256 equal to kb/EMBEDDING.md. Tags: of 18 sampled tagged equations (2 per
+tag) at least 14 correct by my reading. Refuted by any larger difference.

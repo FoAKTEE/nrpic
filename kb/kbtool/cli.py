@@ -20,6 +20,8 @@ from .paths import KB_DIR, default_brief, fetch_command, kb_manifest_dir, layout
 from . import code_cli as _code_cli          # K6-K7: fetch-repos, ingest repo, code, link, watch
 from . import papers_cli as _papers_cli      # K2-K3: ingest arxiv, resolve-bib, frontier, cites, export, show views
 from . import embed_cli as _embed_cli        # K4-K5: embed, search, eq
+from . import claims_cli as _claims_cli      # K8: claim seed/check/list/show/add/verify/refute/stats
+from . import qa_cli as _qa_cli              # K9: qa run, qa golden
 
 NOT_YET = 3
 
@@ -305,9 +307,13 @@ def parser():
     _code_cli.register(sub)                    # fetch-repos, code, link, watch (kbtool/code_cli.py)
     _papers_cli.register(sub)                  # resolve-bib, frontier, cites, export (kbtool/papers_cli.py)
     _embed_cli.register(sub)                   # embed, search, eq (kbtool/embed_cli.py)
+    _claims_cli.register(sub)                  # claim (kbtool/claims_cli.py)
+    _qa_cli.register(sub)                      # qa (kbtool/qa_cli.py)
 
+    built = set(_code_cli.CLAIMS) | set(_papers_cli.CLAIMS) | set(_embed_cli.CLAIMS) \
+        | set(_claims_cli.CLAIMS) | set(_qa_cli.CLAIMS)
     for name, (stage, what) in STUBS.items():
-        if name in _code_cli.CLAIMS or name in _papers_cli.CLAIMS or name in _embed_cli.CLAIMS:
+        if name in built:
             continue
         s = sub.add_parser(name, help=f"[{stage}, not built] {what}")
         s.add_argument("args", nargs=argparse.REMAINDER)
