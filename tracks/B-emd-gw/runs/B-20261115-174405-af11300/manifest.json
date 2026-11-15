@@ -1,0 +1,109 @@
+{
+  "schema": "nrpic-run-manifest/1",
+  "run_id": "B-20261115-174405-af11300",
+  "track": "B-emd-gw",
+  "gate": "G1",
+  "kind": "scouting",
+  "purpose": "newton_tests analysis of N1 (ellipsoid N = 32, 64, 128 and step check against the model-C ODE) and N3 (self-similarity at N = 32, 64)",
+  "preregistered_in": null,
+  "launcher": "local",
+  "command": [
+    "bash",
+    "-c",
+    "python3 tracks/B-emd-gw/newton_tests/scripts/analyze_ellipsoid.py --out $NRPIC_RUN_DIR --run 32:/data/haiyangw/nrpic/scratch/B-emd-gw/B-20261115-163613-790095f/ell32 --run 64:/data/haiyangw/nrpic/scratch/B-emd-gw/B-20261115-163615-7bc8b30/ell64 --run 128:/data/haiyangw/nrpic/scratch/B-emd-gw/B-20261115-163617-085c093/ell128 --dtcheck 64:/data/haiyangw/nrpic/scratch/B-emd-gw/B-20261115-163618-ea94065/ell64_dt01 --selfsim 32:/data/haiyangw/nrpic/scratch/B-emd-gw/B-20261115-163620-5b286c1 --selfsim 64:/data/haiyangw/nrpic/scratch/B-emd-gw/B-20261115-163621-0ae44f1 > $NRPIC_RUN_DIR/stdout.txt"
+  ],
+  "cwd": ".",
+  "git": {
+    "sha": "af11300dccaa35c6cbfba066b2fe13e9f8308eb5",
+    "branch": "track/B-emd-gw",
+    "dirty": false,
+    "package": [
+      "tracks/B-emd-gw/newton_tests"
+    ],
+    "outside_package": {
+      "count": 0,
+      "first": []
+    },
+    "merge_base_main": "b9fbf3e6534517c3393000da91c79ce552b254b9",
+    "worktree": "wt/B-emd-gw"
+  },
+  "code": {
+    "core_tag": "core-v0.3",
+    "athenak_upstream_sha": "c5a0d7f",
+    "kokkos_sha": "6739bc623081648af9e752b616d9671527922cbf",
+    "problem": null
+  },
+  "env": {
+    "host": "anta",
+    "env_hash": "33c1dbb6673b68919eaa332b0add0b58aeac8be843f2071b9d06e2e0e397a96d",
+    "machine_file_sha256": "0321f40f4caeeb2a36624a9fa9809e60bad31071f366b3517ba23ad45698d2d7",
+    "uv_lock_sha256": "5417f6ba318b914aa3800e5d55f7b11fdd8df13c2688bdda7d419240aa1d5863",
+    "track_requirements_sha256": null,
+    "container_digest": null,
+    "compiler": "g++ 11.4.0",
+    "mpi": "none (Athena_ENABLE_MPI=OFF)",
+    "gpu": null,
+    "python": "3.10.12 /data/haiyangw/nrpic/wt/B-emd-gw/.venv"
+  },
+  "input": null,
+  "inputs": [
+    {
+      "path": "tracks/B-emd-gw/newton_tests/scripts/analyze_ellipsoid.py",
+      "role": "input",
+      "sha256": "d8e711bab6e80db7fc86ac950bc601928b310af7e61517d8d1bb4c9433a3b077",
+      "bytes": 20653,
+      "tracked": true
+    },
+    {
+      "path": "tracks/B-emd-gw/baseline/scripts/ellipsoid.py",
+      "role": "input",
+      "sha256": "63e5a2f2ea7b1e8fb898833f51bd1ef6acaf70318c087b647850b3220ed5be8a",
+      "bytes": 10642,
+      "tracked": true
+    }
+  ],
+  "batch_entries": null,
+  "resources": {
+    "nodes": 1,
+    "gpus": 0,
+    "cores": 1,
+    "walltime_s": null,
+    "wall_limit": null,
+    "segments_max": null,
+    "gpu_hours_requested": 0.0,
+    "gpu_hours": null,
+    "particles": null
+  },
+  "slurm": null,
+  "outputs": {
+    "dir": "scratch/B-emd-gw/B-20261115-174405-af11300",
+    "sha256sums": "sha256sums.txt",
+    "sha256sums_sha256": null,
+    "bytes": null,
+    "files": null
+  },
+  "status": "running",
+  "exit_code": null,
+  "registered": "2026-11-15T17:44:05Z",
+  "started": null,
+  "ended": null,
+  "parents": [
+    "B-20261115-163613-790095f",
+    "B-20261115-163615-7bc8b30",
+    "B-20261115-163617-085c093",
+    "B-20261115-163618-ea94065",
+    "B-20261115-163620-5b286c1",
+    "B-20261115-163621-0ae44f1"
+  ],
+  "notes": "supersedes B-20261115-174251-3698196 (legend of the self-similarity figure moved; numbers identical)",
+  "budget_at_submit": {
+    "gpu_hours_allotted": 40.0,
+    "cores_allotted": 16,
+    "gpu_hours_used": 0.0892,
+    "gpu_hours_reserved": 1.1667,
+    "gpu_hours_without_gate": 0.481,
+    "cores_busy": 5,
+    "runs": 119,
+    "allotment_from": "coord/DECISIONS/0006-compute-budget.md + 0014-budgets-after-wave-1.md"
+  }
+}
