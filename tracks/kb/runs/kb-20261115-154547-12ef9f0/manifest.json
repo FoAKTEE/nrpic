@@ -1,0 +1,27 @@
+{
+ "run_id": "kb-20261115-154547-12ef9f0",
+ "owner": "kb",
+ "command": [
+  "python3",
+  "-I",
+  "kb/bin/kb",
+  "verify-downloads",
+  "--report",
+  "/data/haiyangw/nrpic/scratch/kb/kb-20261115-154547-12ef9f0/verify-downloads.md"
+ ],
+ "cwd": "/data/haiyangw/nrpic/wt/kb",
+ "commit": "12ef9f07924abd055ef787f42ce53e91be5f69e1",
+ "worktree_dirty_kb": true,
+ "inputs": [],
+ "output_dir": "/data/haiyangw/nrpic/scratch/kb/kb-20261115-154547-12ef9f0",
+ "purpose": "kb serve: verify-downloads after the fetch of five identifiers",
+ "kind": "scouting",
+ "cores": 1,
+ "card_hours": 0,
+ "started_utc": "2026-11-15T15:45:47Z",
+ "started_unix": 1794757547.7114036,
+ "status": "finished",
+ "exit_code": 1,
+ "wall_time_s": 18.8,
+ "finished_utc": "2026-11-15T15:46:06Z"
+}
