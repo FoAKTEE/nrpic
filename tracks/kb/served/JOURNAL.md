@@ -142,3 +142,24 @@ branch). Prediction for `kb watch upstream` now (3.5 h later): main still c5a0d7
 branches with at most two moved, none new with a flagged name; still no branch hands
 particle stress-energy to Z4c; hence no message to core is needed. Refuted if main moved,
 a flagged branch appeared, or any branch's `src/particles` gained a tmunu/deposit line.
+
+Outcome S6 (run kb-20261115-154646-234060c): prediction held. Main still c5a0d7f9155a; 124
+branches, 0 new, 0 removed, 0 moved since 13:27:54Z; no flagged branch name; 0 branches
+whose `src/particles` mentions tmunu or deposit, 7 that read the metric (z4c/adm) as
+before; the report's message for core: nothing to report. Report
+`watch/code_watch_upstream.md`; figure `watch/fig_code_watch.png` (made afterwards from the
+run's snapshot JSON with `kb/scripts/fig_code_watch.py`, read: 117 stock branches, 7 that
+read the metric, none red).
+
+## S7 17:15 Coverage criterion of the K8 mapping corrected
+
+While writing the answers I found that S4's criterion (same track, paper, file and
+overlapping lines) counts a K8 claim from a different note about the same passage as
+covering a served statement: D's request annotations were "covered" by claims of D's
+`scope/REFERENCES.md` (for example claim 332, a general statement on 1305.2619), and F's
+SCOPING rows by claims of F's `novelty/NOVELTY.md`. `scripts/map_to_k8.py` now also requires
+the same note (claim_meta.origin_path equals the statement's document). A dry check with
+the new criterion on S4's checked.jsonl was run before this entry (so this is not a
+prediction made blind): 258 of 330 covered; not covered: F 57, D 7, B 7, C 1.
+Prediction for the registered rerun: the same 258 / 72 split (the check counts as in S4);
+refuted if it differs, which would mean the K8 claims changed between the two runs.
