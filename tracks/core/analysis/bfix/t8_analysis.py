@@ -112,8 +112,8 @@ def stage_amp(res, B, new, t4):
     res["amp_ratios"] = ratios
 
 
-def stage_zgrow(res, new):
-    rd = os.path.join(new, "big4")
+def stage_zgrow(res, rd, key="zgrow"):
+    """z departure per z4c dump of the thin-box run in rd (stored as res[key])."""
     files = sorted(glob.glob(os.path.join(rd, "bin", "east.z4c.0*.bin")))
     groups = {"At": ["Axx", "Axy", "Ayy", "Azz"], "Axz": ["Axz"], "gt": ["gxx", "gxy", "gyy", "gzz"],
               "gxz": ["gxz"], "chi": ["chi"], "alpha": ["alpha"], "Khat": ["Khat"],
@@ -155,8 +155,8 @@ def stage_zgrow(res, new):
          "terminated": [ln for ln in log.splitlines() if "Terminating" in ln][-1:]}
     dl = bc.z4c_from_bin(athena_bin.read_bin(files[-1]))
     r["a_end"] = float(1.0/np.sqrt(dl["chi"].mean()))
-    res["zgrow"] = r
-    print("zgrow: t", [round(t, 3) for t in ts])
+    res[key] = r
+    print(f"{key}: t", [round(t, 3) for t in ts])
     for g in groups:
         print(f"  {g:6s} absdev", " ".join(f"{v:.2e}" for v in ser[g]))
     print("  growth t=1 to end", {g: f"{v:.3g}" for g, v in r["growth_t1_to_end"].items()})
@@ -269,7 +269,7 @@ def main():
         stage_amp(res, B, a.new, a.t4)
         bc.save_json(res, resfile)
     if "zgrow" in st:
-        stage_zgrow(res, a.new)
+        stage_zgrow(res, os.path.join(a.new, "big4"))
         bc.save_json(res, resfile)
     print("figures:", figures(res, out))
 

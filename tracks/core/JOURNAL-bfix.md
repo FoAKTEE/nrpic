@@ -943,3 +943,18 @@ as the verifier found) and a Psi_4 floor from rounding of about 5e-14 N^2 / A re
 (7.8e-7 at N = 128). For a convergence study beyond 64 cells use A = 1e-5: the
 second-order part is then 3.4e-5 A in the non-TT fields but the TT amplitude and phase
 are unchanged to 1e-4 of their errors (P11c).
+
+### P12 The z noise through shell crossing: prediction (before T10)
+
+T8's box stops at a = 9 before any shell crossing. T3's runs (processors) and their
+repetition in T4 (card) go through the first crossing (delta = 0.1, 16 cells per
+wavelength, h = 0.25, a = 1 to 13.9, twelve double dumps). Analysis T10
+(`t10_zgrow_t3.py`, the noise-history stage of `t8_analysis.py`) of the cube, thin8,
+thin4 and plane4 runs of both. Noise injection estimated as in T4b: eps x 6 / h^2 =
+1.1e-14 per unit time in At at h = 0.25 [JUDGEMENT].
+- P12a: in every run the largest absolute z departure of At at t = 5.5 is below 1e-11 and
+  its mean growth factor per dump (0.5 in time) over the last eight dumps is below 1.5.
+  Refuted (an instability through shell crossing) if a run exceeds 1e-9 or grows faster.
+- P12b: the card runs carry more z noise than the processor runs from t = 1 on, by less
+  than a factor 30.
+- P12c: the cube (16 layers) has the noise level of thin8 and thin4 within a factor 10.
