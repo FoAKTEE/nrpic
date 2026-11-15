@@ -1,0 +1,78 @@
+{
+ "schema": "nrpic-run-manifest/1",
+ "run_id": "B-emd-gw-20261115-115752-840e994",
+ "track": "B-emd-gw",
+ "package": "baseline",
+ "gate": "G1",
+ "kind": "scouting",
+ "purpose": "B-pre-4 baseline checks T1-T8, second run with corrected figure labels and the T8 box-side key; numbers expected identical to B-emd-gw-20261115-115529-58c7f50",
+ "preregistered_in": "tracks/B-emd-gw/baseline/JOURNAL.md (2026-11-15T11:44Z and 11:48Z entries)",
+ "launcher": "local",
+ "command": "OMP_NUM_THREADS=4 python3 tracks/B-emd-gw/baseline/scripts/run_baseline.py /data/haiyangw/nrpic/scratch/B-emd-gw/B-emd-gw-20261115-115752-840e994",
+ "cwd": "/data/haiyangw/nrpic/wt/B-emd-gw",
+ "git": {
+  "sha": "840e9940cbe9c3dffde4c8acd1671ab7f001aa34",
+  "branch": "track/B-emd-gw",
+  "dirty": true,
+  "worktree": "wt/B-emd-gw",
+  "dirty_note": "uncommitted files of other packages only; the files of this package were committed at 840e994"
+ },
+ "commit": "840e9940cbe9c3dffde4c8acd1671ab7f001aa34",
+ "inputs": [
+  {
+   "path": "tracks/B-emd-gw/baseline/scripts/run_baseline.py",
+   "sha256": "32fbb5d745bcde27efb7f8754adcaf8e45cced25211d8ac92d9c941faa340b1e",
+   "tracked": true,
+   "at_commit": "840e994"
+  },
+  {
+   "path": "tracks/B-emd-gw/baseline/scripts/ellipsoid.py",
+   "sha256": "63e5a2f2ea7b1e8fb898833f51bd1ef6acaf70318c087b647850b3220ed5be8a",
+   "tracked": true,
+   "at_commit": "840e994"
+  },
+  {
+   "path": "python/nrpic/figstyle.py",
+   "sha256": "5d3b78ad8c2c02e428b675e3d7e35a32cbc8f053d1aeedd4fde66f27da55676e",
+   "tracked": true,
+   "at_commit": "840e994"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/kb-data/raw/arxiv/2403.15126/v1/src/pII_GW_Vir_C2_Arx.tex",
+   "sha256": "55aae56679db2e28a366d86bb61bb662df15bbc17fcf0cd456ba676a9012659b",
+   "tracked": false,
+   "note": "source of benchmark parameters and stated numbers (locators in the script and JOURNAL); read, not executed"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/kb-data/raw/arxiv/2605.04487/v2/src/main_v3.tex",
+   "sha256": "2c3e042939c1ae77ea1b0b15771669b62a5a7c8940bd4a9bb4d32d915ad56c2e",
+   "tracked": false,
+   "note": "source of benchmark parameters and stated numbers (locators in the script and JOURNAL); read, not executed"
+  }
+ ],
+ "resources": {
+  "nodes": 1,
+  "gpus": 0,
+  "cores": 4,
+  "walltime_s": 40.037298477,
+  "gpu_hours": 0.0,
+  "gpu_hours_requested": 0.0
+ },
+ "outputs": {
+  "dir": "scratch/B-emd-gw/B-emd-gw-20261115-115752-840e994",
+  "sha256sums": "sha256sums.txt",
+  "sha256sums_sha256": "945c3c08067db88be48c57bfa709f01b4df75b0403a8fb5efbe3e55f373abdbf",
+  "files": 9
+ },
+ "output_dir": "/data/haiyangw/nrpic/scratch/B-emd-gw/B-emd-gw-20261115-115752-840e994",
+ "wall_time_s": 40.037298477,
+ "cores": 4,
+ "card_hours": 0.0,
+ "status": "completed",
+ "exit_code": 0,
+ "registered": "2026-11-15T11:57:52Z",
+ "started": "2026-11-15T11:57:52Z",
+ "ended": "2026-11-15T11:58:32Z",
+ "parents": [],
+ "notes": "Registered by hand by the helper of the baseline package (nrpic-run refuses the worktree while other helpers have uncommitted files). Analysis run: ODEs, closed forms, Fourier sums; no simulation code. Supersedes the figures of B-emd-gw-20261115-115529-58c7f50 (wrong glyph Q'' for Q''' in two labels, overlapping legend, ZA drawn past its collapse, T8 JSON key box_side_..._over_RL held the side in units c t_k)."
+}
