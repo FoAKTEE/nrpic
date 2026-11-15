@@ -167,3 +167,73 @@ continuum projector it is of the order (k h)^6; flipping the sign of the Pi kick
 first-order Hamiltonian violation. (Track E's test L5; run here only as a smoke test.)
 Refuted by any bit difference in (a) alphas or (c), by a shell outside its band, or by a
 first-order momentum violation with the stencil projector.
+
+## 2026-11-15, entry 2: build, regression, outcomes of tests 1 and 2
+
+### Build and regression [VERIFIED]
+
+- The module builds on processors (`.work/build_cpu_sf`, 74 s). Commits ba37619 (module),
+  5384d02 (block name `scalar_field` allowed in `parameter_input.cpp`), 836ac86 (inputs).
+- P-reg holds: run core-20261115-132758-ba37619, five cases, 36 files, baseline twice and
+  baseline against the new executable all byte-identical. (Repeated with the final
+  executable at the end of the package.)
+- Found on the way: Z4c with the driver's `rk4` does not keep a constant state constant to
+  the last bit. The coefficients of the low-storage scheme are given to 15 digits, so a
+  constant drifts by about 1.4e-15 per step (lapse 1 - 1.7e-15 after 16 steps of flat
+  space, 1 - 7.4e-13 after 512 steps). This is the existing integrator, not the scalar
+  field; it sets the rounding floor of the geodesic-slicing test below.
+
+### Test 2, outcome (run core-20261115-133955-836ac86) [VERIFIED]
+
+A first run (core-20261115-133847-836ac86) is void: the driver passed `pi0` as the text
+`np.float64(...)`, which the code read as 0; the errors of 3e-3 that did not converge
+showed it. Repeat with a plain number:
+
+| Gauge | Courant | steps | a at the end | rel. diff. of a | of phi | of K | of alpha | max rms H / [H] |
+|---|---|---|---|---|---|---|---|---|
+| conformal | 0.5 | 39 | 3.7662 | 4.5e-6 | 3.4e-9 | 3.4e-9 | 8.1e-7 | 5.0e-12 |
+| conformal | 0.25 | 77 | 3.7662 | 2.9e-7 | 2.2e-10 | 2.2e-10 | 5.4e-8 | 2.9e-13 |
+| conformal | 0.125 | 154 | 3.7662 | 1.8e-8 | 1.4e-11 | 1.4e-11 | 3.5e-9 | 1.5e-13 |
+| geodesic | 0.5 | 256 | 123.08 | 8.2e-8 | 3.8e-13 | 3.5e-13 | 3.6e-13 | 1.3e-13 |
+| geodesic | 0.25 | 512 | 123.08 | 5.0e-9 | 7.5e-13 | 7.4e-13 | 7.4e-13 | 1.2e-13 |
+| geodesic | 0.125 | 1024 | 123.08 | 3.2e-10 | 1.5e-12 | 1.5e-12 | 1.5e-12 | 1.2e-13 |
+
+P2 holds: below 1e-5 at Courant 0.25 (2.9e-7), ratios per halving of the step 15.5 and
+15.7 (a), 15.3 and 15.8 (phi, K) in conformal time, 16.2 and 15.8 (a) in geodesic slicing;
+there the field, K and the lapse sit on the rounding floor of the integrator (the
+difference doubles with the number of steps). eps1 = 4 pi Pi^2/H^2 is 0.994 to 0.997 of
+1/(4 pi phi^2). Momentum constraint below 6.3e-15, rms of phi about its mean 4e-14, the
+Hamiltonian constraint starts at 2.2e-16 of [H] and stays below 5e-12. Figures
+`fig_flrw_conformal.png`, `fig_flrw_geodesic.png` (looked at).
+
+### Test 1, outcome (run core-20261115-133809-836ac86) [VERIFIED]
+
+The first run (core-20261115-133146-5384d02) stopped in part d: the input file lacked the
+parameters the driver overrides (`lambda`, ...). Input completed; all parts repeated.
+
+- (b) holds: errors against the semi-discrete solution 2.535e-4, 1.585e-5, 9.907e-7,
+  6.192e-8 for Courant 0.4 to 0.05; orders 3.9993, 3.9998, 3.9999. The errors equal the
+  estimate of classical RK4, omega t (omega dt)^4/120/sqrt 2, to four digits: for a
+  linear problem the low-storage scheme has the amplification factor of classical RK4.
+- (a) spatial orders hold: 1.99, 3.96, 5.92 for nghost 2, 3, 4. The frequency part FAILED
+  as analysed: the straight-line fit of the phase differs from omega_h by 0.5 to 1 percent
+  of omega_h - omega in all twelve cases (2.5e-7 absolute at N = 16, nghost 4, against the
+  bound 4.0e-8). Suspected cause: the initial momentum uses the continuum omega, so on
+  the mesh the data are a travelling plus a small standing wave, amplitude cos(Omega t) +
+  i (omega/Omega) sin(Omega t), and a straight line through that phase is biased.
+  New prediction, before the re-analysis: fitting Omega and the ratio r gives
+  |Omega - omega_h| below the bound 4.0e-8 in all twelve cases and r = omega/omega_h. If
+  not, the cause is something else.
+- (c) FAILED as predicted: measured decay rate 4.1e-5 against 3.4e-5 from the stencil
+  (ratio 1.21, band 5 percent). (The journal's "2 sigma t" was loose: sigma is the decay
+  rate of the amplitude, 2 sigma that of the energy.) Suspected cause: the amplitude loss
+  of RK4 itself, (omega dt)^6/144 per step = 7.1e-6 per unit time at Courant 0.25, which
+  I left out. New prediction, before the re-analysis: measured / (stencil + integrator)
+  within 2 percent of 1, and the amplitude loss of the runs of part b (no dissipation)
+  equals (omega_h dt)^6/144 per step within 5 percent for Courant 0.4 and 0.2.
+- (d) the number FAILED, the physics holds: differences to the ordinary differential
+  equation at Courant 0.25 are 2.2e-6 (quadratic), 1.5e-5 (quartic), 7.2e-7 (plateau),
+  3.8e-7 (inflection), not below 1e-7; the bound ignored that the phase error grows as
+  omega t (omega dt)^4/120 with dt = 1/32. They fall by 16.0, 16.6, 15.7, 16.0 per
+  halving of the step (orders 4.00, 4.06, 3.98, 4.00). The table agrees with the quartic
+  potential it tabulates to 9.1e-10 (prediction 1e-9: holds).

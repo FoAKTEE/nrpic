@@ -57,8 +57,16 @@ def main():
     ap.add_argument("--exe", required=True)
     ap.add_argument("--parts", default="abcd")
     ap.add_argument("--workers", type=int, default=12)
+    ap.add_argument("--reuse", default=None,
+                    help="analyse the case directories of an earlier run instead of running")
     args = ap.parse_args()
-    top = os.getcwd()
+    out = os.getcwd()
+    top = os.path.abspath(args.reuse) if args.reuse else out
+
+    def run_or_reuse(cases, workers):
+        if args.reuse:
+            return [0.0]*len(cases)
+        return run_many(args.exe, cases, workers)
     summary = {"exe": os.path.abspath(args.exe)}
     omega = np.sqrt(MASS**2 + KVEC @ KVEC)
 
@@ -73,16 +81,28 @@ def main():
                                                     f"time/cfl_number={dt*n}",
                                                     "time/tlim=1.0",
                                                     "scalar_field/dump_dt=0.125"]))
-        wall = run_many(args.exe, cases, args.workers)
+        wall = run_or_reuse(cases, args.workers)
         res = {}
+        from scipy.optimize import least_squares
         for (rd, _, _), w in zip(cases, wall):
             t, c = phase_series(rd)
             ph = np.unwrap(np.angle(c))
-            om = np.polyfit(t, ph, 1)[0]
+            om_phase = np.polyfit(t, ph, 1)[0]
+            # The data phi = cos(k.x), Pi = omega sin(k.x) with the continuum omega are a
+            # travelling wave plus a small standing wave on the mesh: the amplitude is
+            # cos(Omega t) + i r sin(Omega t), r = omega/Omega.  A straight line through
+            # the phase is biased by the standing part; fit Omega and r instead.
+            fit = least_squares(
+                lambda p: np.concatenate([c.real - np.cos(p[0]*t),
+                                          c.imag - p[1]*np.sin(p[0]*t)]),
+                [om_phase, 1.0], xtol=1e-15, ftol=1e-15, gtol=1e-15)
+            om = fit.x[0]
             name = os.path.basename(rd)
             ng, n = int(name.split("_")[1][2:]), int(name.split("_")[2][1:])
-            res[name] = dict(ng=ng, n=n, omega_meas=om, omega_h=omega_h(n, ng),
-                             omega=omega, amp_end=abs(c[-1]), wall_s=w)
+            res[name] = dict(ng=ng, n=n, omega_meas=om, omega_phase_fit=om_phase,
+                             ratio_fit=fit.x[1], fit_residual=float(np.abs(fit.fun).max()),
+                             omega_h=omega_h(n, ng), omega=omega, amp_end=abs(c[-1]),
+                             wall_s=w)
         orders = {}
         for ng in ngs:
             hh = np.array([1.0/n for n in ns])
@@ -97,7 +117,7 @@ def main():
         cases = [(os.path.join(top, f"b_cfl{c}"), INP,
                   mesh_args(n, n, 8) + [f"time/cfl_number={c}", "time/tlim=1.0",
                                         "scalar_field/dump_dt=1.0"]) for c in cfls]
-        wall = run_many(args.exe, cases, args.workers)
+        wall = run_or_reuse(cases, args.workers)
         oh = omega_h(n, ng)
         res = {}
         for (rd, _, _), w, c in zip(cases, wall, cfls):
@@ -109,8 +129,13 @@ def main():
             # exact solution of the semi-discrete equations for the initial data
             # phi = cos(k.x), Pi = omega sin(k.x)
             ex = np.cos(ph)*np.cos(oh*t) + (omega/oh)*np.sin(ph)*np.sin(oh*t)
+            # amplitude loss of the integrator alone (no dissipation): the travelling
+            # part exp(i omega_h t) of the amplitude, against (omega_h dt)^6/144 per step
+            amp = mode_amplitude(d)
+            trav = abs(amp.real + 1j*amp.imag*oh/omega)
             res[str(c)] = dict(cfl=c, dt=c/n, time=t, err_l2=float(np.sqrt(np.mean((phi - ex)**2))),
-                               wall_s=w)
+                               amp_loss=float(1.0 - trav),
+                               amp_loss_rk4=float((oh*c/n)**6/144.0*t/(c/n)), wall_s=w)
         e = np.array([res[str(c)]["err_l2"] for c in cfls])
         summary["b"] = dict(cases=res, omega_h=oh,
                             order=float(np.polyfit(np.log(cfls), np.log(e), 1)[0]),
@@ -122,18 +147,23 @@ def main():
     if "c" in args.parts:
         n, ng, diss = 16, 4, 0.5
         rd = os.path.join(top, "c_diss")
-        wall = run_many(args.exe, [(rd, INP, mesh_args(n, n, 8) + [
+        wall = run_or_reuse([(rd, INP, mesh_args(n, n, 8) + [
             "time/tlim=2.0", f"scalar_field/diss={diss}", "scalar_field/dump_dt=0.125"])], 1)
         t, c = phase_series(rd)
-        rate = -np.polyfit(t, np.log(np.abs(c)), 1)[0]
+        oh = omega_h(n, ng)
+        trav = np.abs(c.real + 1j*c.imag*oh/omega)     # travelling part of the amplitude
+        rate = -np.polyfit(t, np.log(trav), 1)[0]
         pred = sum(sfr.diss_rate(k/n, 1.0/n, diss, ng) for k in KVEC)
+        dtc = 0.25/n
+        rk = (oh*dtc)**6/144.0/dtc                     # amplitude loss of RK4 per time
         summary["c"] = dict(rate_meas=float(rate), rate_pred=float(pred),
-                            ratio=float(rate/pred), wall_s=wall[0],
-                            t=t.tolist(), amp=np.abs(c).tolist())
+                            ratio=float(rate/pred), rate_rk4=float(rk),
+                            ratio_with_rk4=float(rate/(pred + rk)), wall_s=wall[0],
+                            t=t.tolist(), amp=trav.tolist())
 
     # ---------------------------------------------------------------- d: potentials
     if "d" in args.parts:
-        tab = os.path.join(top, "quartic_table.txt")
+        tab = os.path.join(out, "quartic_table.txt")
         vq, dvq = sfr.potential("quartic", mass=1.0, lam=3.0)
         xs = np.linspace(-2.0, 2.0, 2001)
         np.savetxt(tab, np.column_stack([xs, vq(xs), dvq(xs)]), fmt="%.17e",
@@ -160,7 +190,7 @@ def main():
                                   "problem/amp=0.0", "problem/phi0=1.0", "problem/pi0=0.3",
                                   f"time/cfl_number={cfl}", "time/tlim=10.0",
                                   "scalar_field/dump_dt=-1.0"]))
-        wall = run_many(args.exe, cases, args.workers)
+        wall = run_or_reuse(cases, args.workers)
         res = {}
         for (name, cfl), (rd, _, _), w in zip(keys, cases, wall):
             h = sfr.read_history(os.path.join(rd, "kg.sf.hst"))
@@ -180,20 +210,21 @@ def main():
                                                     / res[f"{n}_0.125"]["max_err_phi"]))
                                    for n in pots})
 
-    with open(os.path.join(top, "summary.json"), "w") as fp:
+    with open(os.path.join(out, "summary.json"), "w") as fp:
         json.dump(summary, fp, indent=1)
-    figures(top, summary)
+    figures(out, summary)
 
 
 def figures(top, s):
     import matplotlib
     matplotlib.use("Agg")
     import matplotlib.pyplot as plt
+    import matplotlib.ticker
     from nrpic import figstyle as fs
     fs.use_style()
     if "a" in s and "b" in s:
         fig, ax = plt.subplots(1, 2, figsize=(fs.FULL_WIDTH, 3.2))
-        fig.subplots_adjust(left=0.09, right=0.98, bottom=0.15, top=0.95, wspace=0.28)
+        fig.subplots_adjust(left=0.11, right=0.98, bottom=0.15, top=0.95, wspace=0.36)
         cols = {2: fs.PAL["yellow"], 3: fs.PAL["blue"], 4: fs.PAL["red"]}
         for ng in (2, 3, 4):
             cs = [c for c in s["a"]["cases"].values() if c["ng"] == ng]
@@ -201,7 +232,7 @@ def figures(top, s):
             e = np.array([abs(c["omega_meas"] - c["omega"])/c["omega"] for c in cs])
             eh = np.array([abs(c["omega_h"] - c["omega"])/c["omega"] for c in cs])
             ax[0].loglog(n, e, "o", color=cols[ng], ms=5,
-                         label=f"order {2*ng-2}: fit {s['a']['spatial_order'][str(ng) if str(ng) in s['a']['spatial_order'] else ng]:.2f}")
+                         label=f"order {2*ng-2}: fit {s['a']['spatial_order'][ng]:.2f}")
             ax[0].loglog(n, eh, **fs.GUIDE)
         ax[0].set_xlabel("cells per box side N")
         ax[0].set_ylabel(r"$|\omega_{\rm measured}-\omega|/\omega$")
@@ -216,19 +247,26 @@ def figures(top, s):
                      label=f"code, fitted order {s['b']['order']:.2f}")
         ax[1].loglog(dt, e[0]*(dt/dt[0])**4, **fs.GUIDE, label=r"$\propto \Delta t^4$")
         ax[1].set_xlabel(r"time step $\Delta t$")
-        ax[1].set_ylabel(r"rms error of $\phi$ against semi-discrete solution")
+        ax[1].set_ylabel(r"rms error of $\phi$")
+        ax[1].set_xticks([3e-3, 1e-2, 3e-2])
+        ax[1].set_xticklabels(["0.003", "0.01", "0.03"])
+        ax[1].xaxis.set_minor_formatter(matplotlib.ticker.NullFormatter())
         ax[1].legend(loc="upper left")
         fs.save(fig, os.path.join(top, "fig_wave_convergence"))
         plt.close(fig)
     if "c" in s and "d" in s:
         fig, ax = plt.subplots(1, 2, figsize=(fs.FULL_WIDTH, 3.2))
-        fig.subplots_adjust(left=0.09, right=0.98, bottom=0.15, top=0.95, wspace=0.28)
+        fig.subplots_adjust(left=0.11, right=0.98, bottom=0.15, top=0.95, wspace=0.36)
         t, a = np.array(s["c"]["t"]), np.array(s["c"]["amp"])
         ax[0].semilogy(t, a, "o", color=fs.PAL["red"], ms=4, label="code, dissipation 0.5")
-        ax[0].semilogy(t, np.exp(-s["c"]["rate_pred"]*t), **fs.GUIDE,
-                       label=r"$\exp(-\sigma t)$ of the stencil")
+        ax[0].semilogy(t, np.exp(-(s["c"]["rate_pred"] + s["c"]["rate_rk4"])*t), **fs.GUIDE,
+                       label="stencil and integrator")
+        ax[0].semilogy(t, np.exp(-s["c"]["rate_pred"]*t), color="k", lw=1.0, ls=":",
+                       label="stencil alone")
         ax[0].set_xlabel("time")
-        ax[0].set_ylabel("amplitude of the wave")
+        ax[0].set_ylabel("amplitude")
+        ax[0].set_yscale("linear")
+        ax[0].ticklabel_format(axis="y", useOffset=False)
         ax[0].legend(loc="lower left")
         names = ["quadratic", "quartic", "plateau", "inflection", "table"]
         x = np.arange(len(names))

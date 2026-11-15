@@ -21,8 +21,8 @@ from nrpic import scalar_field as sfr
 
 INP = os.path.join(PROB, "flrw_slowroll.athinput")
 MASS, PHI0 = 0.1, 3.0
-H0SR = np.sqrt(4.0*np.pi/3.0)*MASS*PHI0
-PI0 = -MASS**2*PHI0/(3.0*H0SR)
+H0SR = float(np.sqrt(4.0*np.pi/3.0)*MASS*PHI0)
+PI0 = float(-MASS**2*PHI0/(3.0*H0SR))
 CFLS = [0.5, 0.25, 0.125]
 GAUGES = {"conformal": (["z4c/lapse_harmonic=0.3333333333333333"], 1.2),
           "geodesic": (["z4c/lapse_harmonic=0.0"], 8.0)}

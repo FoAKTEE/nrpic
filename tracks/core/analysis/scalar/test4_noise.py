@@ -199,8 +199,8 @@ def part_b(exe, top, workers):
                             os.path.join(top, "B_cfl0.25", "rst", "ms.00001.rst"), [])], 1)
     res = {"wall_s": wall, "H0": h0}
 
-    def last(case):
-        f = sorted(glob.glob(os.path.join(top, "B_" + case, "ms.sf.*.dump")))[-1]
+    def last(case, which=-1):
+        f = sorted(glob.glob(os.path.join(top, "B_" + case, "ms.sf.*.dump")))[which]
         return sfr.read_dump(f), sfr.read_modes(f.replace(".dump", ".modes"))
 
     # (e) lockstep integration against SciPy at the time of the last dump
@@ -229,24 +229,56 @@ def part_b(exe, top, workers):
 
     # (a) fields against the shell factors of the record, the twin amplitudes and the
     # projector of the stencil
-    d, (head, rows) = last("cfl0.25")
     alpha = sfr.mode_alpha(SEED_B, 0, 0, n)
-    smap = {int(s): rows[i, 5] + 1j*rows[i, 6] for i, s in enumerate(rows[:, 0])}
-    sh = np.array([smap[int(s)] for s in n2])
     qh = np.stack([sfr.d1_symbol(2.0*np.pi*n[:, i]/N_B, 4) for i in range(3)], axis=1)
     q2 = (qh**2).sum(axis=1)
     pr = [np.ones(len(n)), qh[:, 0]**2/q2, qh[:, 0]*qh[:, 1]/q2, qh[:, 0]*qh[:, 2]/q2,
           qh[:, 1]**2/q2, qh[:, 1]*qh[:, 2]/q2]
-    fld = {}
-    for f in range(6):
-        cref = sh*alpha*pr[f]
-        c, fh = sfr.analyse(d["fields"][f"noise{f}"], n)
+    res["fields_vs_prescription"] = {}
+    for which in (1, -1):
+        d, (head, rows) = last("cfl0.25", which)
+        smap = {int(s): rows[i, 5] + 1j*rows[i, 6] for i, s in enumerate(rows[:, 0])}
+        sh = np.array([smap[int(s)] for s in n2])
         rms = np.sqrt(np.mean(d["fields"]["noise0"]**2))
-        fld[f"field{f}"] = float(np.abs(c - cref).max()/rms)
-    res["fields_vs_prescription"] = fld
-    res["noise_rms"] = float(np.sqrt(np.mean(d["fields"]["noise0"]**2)))
-    st = shell_stats(analyse0(d, n), sh.astype(complex), n2)
-    res["shell_table"] = st.tolist()
+        fld = {"time": d["time"], "rms_I_R": float(rms)}
+        for f in range(6):
+            cref = sh*alpha*pr[f]
+            c, fh = sfr.analyse(d["fields"][f"noise{f}"], n)
+            fld[f"field{f}"] = float(np.abs(c - cref).max()/rms)
+        # the shell factors of the record against SciPy at the same time
+        ref = sfr.ms_reference(v, dv, PHI0, PI0, shells, r0, dr0, L_B, [d["time"]])
+        fld["shell_vs_scipy"] = float(np.max(np.abs(rows[:, 5] + 1j*rows[:, 6]
+                                                    - ref["shell"][0]))
+                                      / np.max(np.abs(ref["shell"][0])))
+        res["fields_vs_prescription"][f"dump{which}"] = fld
+        if which == 1:
+            st = shell_stats(analyse0(d, n), sh.astype(complex), n2)
+            res["shell_table"] = st.tolist()
+
+    # (f) the kick itself: discrete momentum constraint of the kick fields,
+    # D_i I_R - sum_j D_j T_ij with the sixth-order first difference, relative to D_i I_R
+    def kick_momentum(case):
+        dd, _ = last(case, 1)
+        f = dd["fields"]
+        hcell = L_B/N_B
+
+        def d1(a, ax):
+            out = np.zeros_like(a)
+            for m, cf in enumerate(sfr.D1_COEF[4]):
+                out += cf*(np.roll(a, -(m + 1), axis=ax) - np.roll(a, m + 1, axis=ax))
+            return out/hcell
+        ir = f["noise0"]
+        t = {(0, 0): f["noise1"], (0, 1): f["noise2"], (0, 2): f["noise3"],
+             (1, 1): f["noise4"], (1, 2): f["noise5"]}
+        t[(2, 2)] = ir - t[(0, 0)] - t[(1, 1)]
+        num, den = 0.0, 0.0
+        for i in range(3):
+            div = sum(d1(t[(min(i, j), max(i, j))], j) for j in range(3))
+            num += np.mean((d1(ir, i) - div)**2)
+            den += np.mean(d1(ir, i)**2)
+        return float(np.sqrt(num/den))
+    res["kick_momentum_residual"] = {c: kick_momentum(c) for c in ("cfl0.25", "continuum")}
+    d, (head, rows) = last("cfl0.25")
 
     # (c) layout and restart
     d1, _ = last("b16")
@@ -261,7 +293,8 @@ def part_b(exe, top, workers):
     for case in ("nonoise", "cfl0.25", "continuum", "flip", "level1", "double",
                  "double_continuum", "double_flip"):
         hst = sfr.read_history(os.path.join(top, "B_" + case, "ms.sf.hst"))
-        con[case] = dict(H_rel_max=float((hst["H_rms"]/hst["H_norm"]).max()),
+        con[case] = dict(H_rms_step1=float(hst["H_rms"][1]), M_rms_step1=float(hst["M_rms"][1]),
+                         H_rel_max=float((hst["H_rms"]/hst["H_norm"]).max()),
                          M_rms_max=float(hst["M_rms"].max()),
                          H_rms_max=float(hst["H_rms"].max()),
                          rms_phi_max=float(hst["rms_phi"].max()),
