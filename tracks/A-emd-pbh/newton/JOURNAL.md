@@ -289,3 +289,54 @@ about 3.5 microseconds per particle and cycle, not in the estimate). The interim
 above (18 and 27 s per cycle) was too high: it counted records written while the start-up
 and the other cases competed. The plan of entry 6 is unchanged by the final numbers
 (a 128^3/2.1e6 top-hat of about 1000 cycles would still take 2.6 hours on one core).
+
+## 2026-11-15 (wave 2), entry 7: outcomes
+
+### P9 outcome, processors (campaign run A-emd-pbh-20261115-153409-dc27b98, 2301 s wall, 6 cores; analysis run A-emd-pbh-20261115-161309-9d3703a; the first analysis run A-emd-pbh-20261115-161253-b8c1dc9 failed on an option the script did not have)
+
+Signed relative errors against the cycloid of each sample (`tables/newton_tophat.csv`,
+`figs/fig_newton_tophat*.png`; card point hxi = 0.0125 in entry 8):
+
+| mesh | hxi (N) | t_ta | R_max | t at 0.25 R_max | t of min R | R_min/dx | energy |
+|---|---|---|---|---|---|---|---|
+| 32^3 | 0.025 (268096) | +1.44e-2 | +8.6e-3 | +2.01e-2 | +6.2e-3 | 2.4 | 1.3e-3 |
+| 64^3 | 0.025 | +3.15e-3 | +1.87e-3 | +3.82e-3 | +1.03e-3 | 2.2 | 4.5e-4 |
+| 128^3 | 0.025 | +7.16e-4 | +4.31e-4 | +8.39e-4 | +2.59e-4 | 2.1 | 9.5e-5 |
+| 32^3 | 0.05 (33552) | +1.47e-2 | +8.8e-3 | +2.05e-2 | +6.5e-3 | 2.5 | 1.4e-3 |
+| 64^3 | 0.05 | +3.30e-3 | +2.00e-3 | +4.17e-3 | +1.19e-3 | 2.3 | 5.0e-4 |
+| 128^3 | 0.05 | +1.98e-3 | +1.05e-3 | +3.27e-3 | +1.65e-3 | 3.5 | 5.5e-4 |
+| 128^3, cfl 0.1 | 0.05 | +2.07e-3 | +1.10e-3 | +3.36e-3 | +1.71e-3 | 3.5 | 5.5e-4 |
+| 32^3 | 0.1 (4224) | +1.43e-2 | +8.5e-3 | +2.21e-2 | +6.7e-3 | 2.6 | 1.4e-3 |
+| 64^3 | 0.1 | +7.13e-3 | +3.51e-3 | +1.44e-2 | +7.9e-3 | 3.6 | 1.5e-3 |
+| 128^3 | 0.1 | -6.4e-4 | +5.0e-3 | +1.51e-2 | +1.19e-2 | 7.9 | 1.5e-3 |
+
+(energy: largest |K + W - E_0|/|W_0| up to the cycloid time of R = 0.25 R_max.)
+
+- (a) holds and is exceeded: at hxi = 0.025 the turnaround error falls by 4.6 and 4.4 per
+  doubling of the mesh (second order, predicted order >= 1); 7.2e-4 at 128^3 (< 3e-3),
+  R_max 4.3e-4 (< 2e-3); 64^3 3.2e-3 (< 1e-2). Every error is positive: the run turns
+  around late and too far out, as if bound slightly less than the exact top-hat.
+- (b) holds at 128^3 (8.4e-4 < 5e-3) with second-order convergence (ratios 5.3, 4.6); at
+  64^3 the error is 3.8e-3, below the predicted band 1-2e-2 (the prediction was too
+  pessimistic, not refuted in the direction that matters).
+- (c) holds for hxi = 0.025: the softened collapse comes +0.026 per cent after t_c at
+  128^3 and approaches t_c with the mesh (6.2e-3, 1.0e-3, 2.6e-4); R_min = 2.1-2.4 cells.
+  Fails for the coarser lattices at 128^3: R_min = 3.5 cells (hxi 0.05) and 7.9 cells
+  (hxi 0.1), outside 0.5-3: the particle spacing, not the mesh, sets the size of the
+  softened core there.
+- (d), processor part, holds: at 128^3 the largest radius error (in units of R_max, up to
+  0.25 R_max) is 6.5e-2 for hxi = 0.1 against 1.6e-2 for 0.05 (factor 4) and 4.4e-3 for
+  0.025. Particle discreteness dominates at 128^3 for hxi >= 0.05: refining the mesh from
+  64^3 to 128^3 at hxi = 0.05 gains only a factor 1.7 in t_ta, against 4.4 at hxi = 0.025.
+  Reading [JUDGEMENT]: the mesh-limited, second-order regime needs a lattice spacing below
+  about one cell at turnaround (hxi = 0.025 at 128^3: 0.5 cell at the start, 1.1 at
+  turnaround; hxi = 0.05: 2.2 cells at turnaround).
+- (e) holds: cfl 0.1 against 0.2 changes t_ta by 8e-5 and t_0.25 by 9e-5 (< 1e-3); the
+  step is not the limiting error.
+- (f) holds: 9.5e-5 at 128^3, hxi = 0.025.
+
+### P11 first reading (card job 4435 of run A-emd-pbh-20261115-153437-dc27b98)
+
+The job waited in the queue behind core's verification runs (about 35 minutes) and ran
+the two top-hat cases in 4.5 and 4.6 minutes (0.37 s per cycle at 128^3 with 2.1e6
+particles, inside 0.2-0.6). Final card-hours in entry 8.

@@ -341,8 +341,8 @@ def fig_tophat_conv(rows, out):
         dxs = np.array(sorted({r["dx"] for r in base}))
         y0 = [r[key] for r in base if r["dx"] == dxs.max() and r["hxi"] == 0.025]
         if y0 and np.isfinite(y0[0]):
-            ax.plot(dxs, y0[0] * (dxs / dxs.max()) ** 2, **fs.THIN, ls=(0, (1, 3)),
-                    label=r"$\propto\Delta x^2$" if k == 0 else None)
+            ax.plot(dxs, y0[0] * (dxs / dxs.max()) ** 2, color=fs.PAL["blue"], lw=1.0,
+                    ls="-.", label=r"$\propto\Delta x^2$" if k == 0 else None)
         ax.set_xscale("log", base=2)
         ax.set_yscale("symlog", linthresh=1e-4)
         ax.axhline(0.0, color="grey", lw=0.6)
@@ -360,7 +360,7 @@ def fig_tophat_conv(rows, out):
     ax.axhline(0.0, color="grey", lw=0.6)
     ax.set_xlabel(r"$N$ ($128^3$)")
     ax.set_title("particle number", fontsize=8)
-    ax.legend(loc="upper right", fontsize=5.5)
+    ax.legend(loc="lower left", fontsize=5.5)
     fs.save(fig, os.path.join(out, "fig_newton_tophat_conv"))
     plt.close(fig)
 
