@@ -92,7 +92,7 @@ built, run or imported. Modules `kbtool/code_*.py`, `kbtool/links_*.py`; journal
 | `scripts/code_crosscheck.py` | test P2/P3: second, tree-sitter parameter extractor; column-0 method definitions against the symbol index |
 | `scripts/code_report.py`, `scripts/fig_code_watch.py` | reports and figures below |
 | `reports/code_index.md`, `code_params.md`, `code_params_*.tsv`, `code_links_check.txt`, `code_links_explicit.tsv`, `code_watch_upstream.md`, `fig_code_*.png` | results (no paper text, no code fragments of repositories without a licence) |
-| `tests/test_code_*.py` | 31 tests: parameter parser, symbols, clone/ingest/query/watch/links end to end on a local file:// remote, licence rules, fair writer lock |
+| `tests/test_code_*.py` | 20 tests: parameter parser, symbols, clone/ingest/query/watch/links end to end on a local file:// remote, licence rules, fair writer lock |
 
 Rerun (all registered as runs with `scripts/registered_run.py`):
 
@@ -108,6 +108,28 @@ kb/.venv/bin/python -I kb/scripts/code_report.py kb/reports
 python3 -I kb/bin/kb snapshot                                      # readers use db/current
 python3 -I kb/bin/kb code NrpicDepositSources ; python3 -I kb/bin/kb code "z4c/kappa1" --kind param
 ```
+
+Results (2026-11-15; journal "K6-K7 helper"):
+
+- 63 of 63 manifest repositories cloned (run `kb-20261115-130232-ac33aa1`, 156 s, 1.74 GB of
+  checkouts); no name failed to resolve. Commits and licences: `reports/code_index.md`.
+- Code index of 64 repositories (runs `kb-20261115-133232-3f7f25a` and
+  `kb-20261115-134736-0e94ee2`): 68037 files, 305733 symbols, 157184 chunks, 3454
+  parameter rows; snapshot `kb-20261115-c8703d7.sqlite` (`db/current`). Cross-checks P2/P3:
+  two independent parameter extractors agree on all calls (AthenaK 1165, this tree 1259,
+  Athena++ 999, Parthenon 384) and all column-0 method definitions are symbols.
+- Parameter index: `reports/code_params.md` (the `<particles>` options of NRPIC with
+  defaults and lines), full tables `reports/code_params_*.tsv`; input files against code:
+  99.3 % (this tree) and 98.7 % (AthenaK) of the non-comment lines are read; `<z4c> nco` is
+  set in inputs and read by no code.
+- Paper-code links: 25 of 25 pass `kb link check` (`reports/code_links_check.txt`), all
+  `claimed`; repository addresses in 121 stored paper sources: `reports/code_links_explicit.tsv`
+  (none in 2611.12831).
+- Upstream watch (run `kb-20261115-132754-bb3da03`, `reports/code_watch_upstream.md`,
+  `fig_code_watch.png`): main still c5a0d7f; 124 branches, all inspected; no branch hands
+  particle stress-energy to Z4c (no tmunu or deposit in any `src/particles`), no nrpic or
+  vlasov anywhere; 7 branches read the metric in `src/particles` (particles_gr and six
+  others), which corrects brief line 130 for particles_gr.
 
 ## Papers: K2-K3 (TeX structure, bibliography, citation graph)
 
@@ -195,4 +217,23 @@ State: see `reports/papers_k2k3.md` (filled from the runs named there).
    Candidates for regrouping; the orchestrator decides.
 9. **orch: frontier** (K3, brief 12.5): `kb frontier -n 50` (list in
    `reports/papers_k2k3.md`) is the weekly list of works cited most by the corpus but absent
-   from it; all 50 are outside the manifest; additions are the orchestrator's decision.
+   from it; 49 of the 50 are outside the manifest (the 50th is gr-qc/9412071, in the manifest
+   but PostScript only, Request 6); additions are the orchestrator's decision.
+10. **orch (brief line 130, section 2.2):** the K6 watch corrects one statement: on
+   particles_gr (8b04c1a8589d) `src/particles` does refer to the ADM metric (`ADM[3][3]` in
+   `gca_gr.cpp`, comments in `boris_gr.cpp`; relativistic pushers in a given spacetime). The
+   conclusion stands: no branch hands particle stress-energy to Z4c
+   (`reports/code_watch_upstream.md`). Request 4 is answered by this package: all 63
+   repositories are cloned for reading only with `kb fetch-repos`; a weekly
+   `kb watch upstream` needs a scheduler (orch's choice).
+11. **core:** please review `curated/paper_code_links.tsv` (25 links from statements of the
+   method of 2611.12831 to functions at main, derived from your interface documents) and
+   name the test that upgrades each link from `claimed` to `verified` (`kb link add ...
+   --status verified --evidence <run id>`). Inputs set `<z4c> nco` (problems/jeans/jeans.athinput
+   line 127), which no code reads.
+12. **kb (papers helper):** `kbtool/lock.py` now waits in the kernel (the old 0.5 s poll was
+   starved by the paper ingest re-taking the lock paper after paper; test
+   `tests/test_code_lockfair.py`); a running process keeps the old module until restarted.
+   Migration numbers: 0004 is the code indexes; 0003 and 0005 are yours.
+13. **orch:** `kb ingest repo` needs `kb/.venv` (tree-sitter); `kb code` and the rest run under
+   the system `python3 -I`.

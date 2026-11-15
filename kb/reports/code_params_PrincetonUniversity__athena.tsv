@@ -1,0 +1,984 @@
+block	name	type	access	default	path	line	function
+chem_radiation	CR	Real	get_or_add	2e-16	src/chem_rad/integrators/six_ray.cpp	52	ChemRadIntegrator::ChemRadIntegrator
+chem_radiation	CR	Real	get_or_add	2e-16	src/pgen/chem_onecell_sixray.cpp	89	Mesh::InitUserMeshData
+chem_radiation	CR	Real	get_or_add	2e-16	src/pgen/chem_pdr_moving.cpp	59	Mesh::InitUserMeshData
+chem_radiation	CR	Real	get_or_add	2e-16	src/pgen/chem_uniform.cpp	72	MeshBlock::ProblemGenerator
+chem_radiation	CR	Real	get_or_add	2e-16	src/pgen/chem_uniform_sixray.cpp	90	Mesh::InitUserMeshData
+chem_radiation	CR	Real	get_or_add	2e-16	src/pgen/read_vtk.cpp	72	Mesh::InitUserMeshData
+chem_radiation	G0	Real	get_or_add	0.	src/chem_rad/integrators/six_ray.cpp	44	ChemRadIntegrator::ChemRadIntegrator
+chem_radiation	G0	Real	get_or_add	0.	src/pgen/chem_onecell_sixray.cpp	81	Mesh::InitUserMeshData
+chem_radiation	G0	Real	get_or_add	0.	src/pgen/chem_pdr_moving.cpp	51	Mesh::InitUserMeshData
+chem_radiation	G0	Real	get		src/pgen/chem_turb.cpp	119	MeshBlock::ProblemGenerator
+chem_radiation	G0	Real	get		src/pgen/chem_uniform.cpp	71	MeshBlock::ProblemGenerator
+chem_radiation	G0	Real	get_or_add	0.	src/pgen/chem_uniform_sixray.cpp	82	Mesh::InitUserMeshData
+chem_radiation	G0	Real	get_or_add	0.	src/pgen/read_vtk.cpp	64	Mesh::InitUserMeshData
+chem_radiation	G0_inner_x1	Real	get_or_add	G0	src/chem_rad/integrators/six_ray.cpp	46	ChemRadIntegrator::ChemRadIntegrator
+chem_radiation	G0_inner_x1	Real	get_or_add	G0	src/pgen/chem_onecell_sixray.cpp	83	Mesh::InitUserMeshData
+chem_radiation	G0_inner_x1	Real	get_or_add	G0	src/pgen/chem_pdr_moving.cpp	53	Mesh::InitUserMeshData
+chem_radiation	G0_inner_x1	Real	get_or_add	G0	src/pgen/chem_uniform_sixray.cpp	84	Mesh::InitUserMeshData
+chem_radiation	G0_inner_x1	Real	get_or_add	G0	src/pgen/read_vtk.cpp	66	Mesh::InitUserMeshData
+chem_radiation	G0_inner_x2	Real	get_or_add	G0	src/chem_rad/integrators/six_ray.cpp	47	ChemRadIntegrator::ChemRadIntegrator
+chem_radiation	G0_inner_x2	Real	get_or_add	G0	src/pgen/chem_onecell_sixray.cpp	84	Mesh::InitUserMeshData
+chem_radiation	G0_inner_x2	Real	get_or_add	G0	src/pgen/chem_pdr_moving.cpp	54	Mesh::InitUserMeshData
+chem_radiation	G0_inner_x2	Real	get_or_add	G0	src/pgen/chem_uniform_sixray.cpp	85	Mesh::InitUserMeshData
+chem_radiation	G0_inner_x2	Real	get_or_add	G0	src/pgen/read_vtk.cpp	67	Mesh::InitUserMeshData
+chem_radiation	G0_inner_x3	Real	get_or_add	G0	src/chem_rad/integrators/six_ray.cpp	48	ChemRadIntegrator::ChemRadIntegrator
+chem_radiation	G0_inner_x3	Real	get_or_add	G0	src/pgen/chem_onecell_sixray.cpp	85	Mesh::InitUserMeshData
+chem_radiation	G0_inner_x3	Real	get_or_add	G0	src/pgen/chem_pdr_moving.cpp	55	Mesh::InitUserMeshData
+chem_radiation	G0_inner_x3	Real	get_or_add	G0	src/pgen/chem_uniform_sixray.cpp	86	Mesh::InitUserMeshData
+chem_radiation	G0_inner_x3	Real	get_or_add	G0	src/pgen/read_vtk.cpp	68	Mesh::InitUserMeshData
+chem_radiation	G0_outer_x1	Real	get_or_add	G0	src/chem_rad/integrators/six_ray.cpp	49	ChemRadIntegrator::ChemRadIntegrator
+chem_radiation	G0_outer_x1	Real	get_or_add	G0	src/pgen/chem_onecell_sixray.cpp	86	Mesh::InitUserMeshData
+chem_radiation	G0_outer_x1	Real	get_or_add	G0	src/pgen/chem_pdr_moving.cpp	56	Mesh::InitUserMeshData
+chem_radiation	G0_outer_x1	Real	get_or_add	G0	src/pgen/chem_uniform_sixray.cpp	87	Mesh::InitUserMeshData
+chem_radiation	G0_outer_x1	Real	get_or_add	G0	src/pgen/read_vtk.cpp	69	Mesh::InitUserMeshData
+chem_radiation	G0_outer_x2	Real	get_or_add	G0	src/chem_rad/integrators/six_ray.cpp	50	ChemRadIntegrator::ChemRadIntegrator
+chem_radiation	G0_outer_x2	Real	get_or_add	G0	src/pgen/chem_onecell_sixray.cpp	87	Mesh::InitUserMeshData
+chem_radiation	G0_outer_x2	Real	get_or_add	G0	src/pgen/chem_pdr_moving.cpp	57	Mesh::InitUserMeshData
+chem_radiation	G0_outer_x2	Real	get_or_add	G0	src/pgen/chem_uniform_sixray.cpp	88	Mesh::InitUserMeshData
+chem_radiation	G0_outer_x2	Real	get_or_add	G0	src/pgen/read_vtk.cpp	70	Mesh::InitUserMeshData
+chem_radiation	G0_outer_x3	Real	get_or_add	G0	src/chem_rad/integrators/six_ray.cpp	51	ChemRadIntegrator::ChemRadIntegrator
+chem_radiation	G0_outer_x3	Real	get_or_add	G0	src/pgen/chem_onecell_sixray.cpp	88	Mesh::InitUserMeshData
+chem_radiation	G0_outer_x3	Real	get_or_add	G0	src/pgen/chem_pdr_moving.cpp	58	Mesh::InitUserMeshData
+chem_radiation	G0_outer_x3	Real	get_or_add	G0	src/pgen/chem_uniform_sixray.cpp	89	Mesh::InitUserMeshData
+chem_radiation	G0_outer_x3	Real	get_or_add	G0	src/pgen/read_vtk.cpp	71	Mesh::InitUserMeshData
+chem_radiation	n_frequency	Integer	get_or_add	1	src/chem_rad/chem_rad.cpp	29	ChemRadiation::ChemRadiation
+chem_radiation	n_frequency	Integer	get_or_add	1	src/chemistry/network/gow17.cpp	295	ChemNetwork::ChemNetwork
+chem_radiation	n_frequency	Integer	get_or_add	1	src/chemistry/network/kida.cpp	265	ChemNetwork::ChemNetwork
+chem_radiation	output_zone_sec	Boolean	get_or_add	false	src/chem_rad/chem_rad.cpp	30	ChemRadiation::ChemRadiation
+chem_radiation	shielding_fraction_cell	Real	get_or_add	0.5	src/chem_rad/integrators/six_ray.cpp	53	ChemRadIntegrator::ChemRadIntegrator
+chemistry	{"abstol_"+pmy_spec_->chemnet.species_names[i]}	Real	get_or_add	-1	src/chemistry/cvode.cpp	93	ODEWrapper::Initialize
+chemistry	CR	Real	get_or_add	2e-16	src/pgen/chem_turb.cpp	120	MeshBlock::ProblemGenerator
+chemistry	Leff_CO_max	Real	get_or_add	3.0e20	src/chemistry/network/gow17.cpp	341	ChemNetwork::ChemNetwork
+chemistry	Leff_CO_max	Real	get_or_add	3.0e20	src/chemistry/network/kida.cpp	126	ChemNetwork::ChemNetwork
+chemistry	Yi	Real	get_or_add	1e-3	src/chemistry/network/kida.cpp	88	ChemNetwork::ChemNetwork
+chemistry	Z_PAH	Real	get		src/chemistry/network/kida.cpp	66	ChemNetwork::ChemNetwork
+chemistry	Z_d	Real	get		src/chemistry/network/kida.cpp	78	ChemNetwork::ChemNetwork
+chemistry	Z_g	Real	get_or_add	1.	src/chemistry/network/kida.cpp	52	ChemNetwork::ChemNetwork
+chemistry	Zdg	Real	get_or_add	1.	src/chemistry/network/gow17.cpp	287	ChemNetwork::ChemNetwork
+chemistry	Zdg	Real	get		src/pgen/chem_Pn_grid.cpp	70	MeshBlock::ProblemGenerator
+chemistry	a_d	Real	get_or_add	1e-5	src/chemistry/network/kida.cpp	56	ChemNetwork::ChemNetwork
+chemistry	abstol	Real	get_or_add	1.0e-12	src/chemistry/cvode.cpp	91	ODEWrapper::Initialize
+chemistry	abstol_E	Real	get_or_add	-1	src/chemistry/cvode.cpp	100	ODEWrapper::Initialize
+chemistry	cfl_cool_sub	Real	get_or_add	0.1	src/chemistry/forward_euler.cpp	51	ODEWrapper::ODEWrapper
+chemistry	fac_dtmax	Real	get_or_add	10.	src/chemistry/cvode.cpp	62	ODEWrapper::ODEWrapper
+chemistry	h_init	Real	get_or_add	-1	src/chemistry/cvode.cpp	106	ODEWrapper::Initialize
+chemistry	isH2RVcooling	Boolean	get_or_add	true	src/chemistry/network/gow17.cpp	327	ChemNetwork::ChemNetwork
+chemistry	is_Tcap_2body	Boolean	get_or_add	false	src/chemistry/network/kida.cpp	113	ChemNetwork::ChemNetwork
+chemistry	is_cr_shielding	Boolean	get_or_add	false	src/chemistry/network/gow17.cpp	325	ChemNetwork::ChemNetwork
+chemistry	is_fixed_PAH	Boolean	get_or_add	false	src/chemistry/network/kida.cpp	64	ChemNetwork::ChemNetwork
+chemistry	is_fixed_Zd	Boolean	get_or_add	false	src/chemistry/network/kida.cpp	62	ChemNetwork::ChemNetwork
+chemistry	maxerrtest	Integer	get_or_add	7	src/chemistry/cvode.cpp	116	ODEWrapper::Initialize
+chemistry	maxhnil	Integer	get_or_add	10	src/chemistry/cvode.cpp	118	ODEWrapper::Initialize
+chemistry	maxorder	Integer	get_or_add	2	src/chemistry/cvode.cpp	114	ODEWrapper::Initialize
+chemistry	maxsteps	Integer	get_or_add	1000	src/chemistry/cvode.cpp	112	ODEWrapper::Initialize
+chemistry	mu_iso	Real	get		src/chemistry/network/gow17.cpp	319	ChemNetwork::ChemNetwork
+chemistry	mu_iso	Real	get		src/chemistry/network/kida.cpp	106	ChemNetwork::ChemNetwork
+chemistry	network_dir	String	get		src/chemistry/network/kida.cpp	123	ChemNetwork::ChemNetwork
+chemistry	nsub_max	Integer	get_or_add	1e5	src/chemistry/forward_euler.cpp	53	ODEWrapper::ODEWrapper
+chemistry	o2pH2	Real	get_or_add	3.	src/chemistry/network/kida.cpp	87	ChemNetwork::ChemNetwork
+chemistry	output_zone_sec	Boolean	get_or_add	false	src/chemistry/cvode.cpp	61	ODEWrapper::ODEWrapper
+chemistry	output_zone_sec	Boolean	get_or_add	false	src/chemistry/forward_euler.cpp	50	ODEWrapper::ODEWrapper
+chemistry	phi_PAH	Real	get_or_add	0.4	src/chemistry/network/kida.cpp	54	ChemNetwork::ChemNetwork
+chemistry	reltol	Real	get_or_add	1.0e-2	src/chemistry/cvode.cpp	60	ODEWrapper::ODEWrapper
+chemistry	rho_d	Real	get_or_add	2.	src/chemistry/network/kida.cpp	58	ChemNetwork::ChemNetwork
+chemistry	stldet	Integer	get_or_add	0	src/chemistry/cvode.cpp	120	ODEWrapper::Initialize
+chemistry	temp_dust_thermo	Real	get_or_add	10.	src/chemistry/network/kida.cpp	121	ChemNetwork::ChemNetwork
+chemistry	temp_max_cool_nm	Real	get_or_add	1.0e9	src/chemistry/network/gow17.cpp	333	ChemNetwork::ChemNetwork
+chemistry	temp_max_cool_nm	Real	get_or_add	1.0e9	src/chemistry/network/kida.cpp	119	ChemNetwork::ChemNetwork
+chemistry	temp_max_heat	Real	get_or_add	inf	src/chemistry/network/gow17.cpp	330	ChemNetwork::ChemNetwork
+chemistry	temp_max_rates	Real	get_or_add	inf	src/chemistry/network/gow17.cpp	338	ChemNetwork::ChemNetwork
+chemistry	temp_min_cool	Real	get_or_add	1.	src/chemistry/network/gow17.cpp	331	ChemNetwork::ChemNetwork
+chemistry	temp_min_cool	Real	get_or_add	1.	src/chemistry/network/kida.cpp	117	ChemNetwork::ChemNetwork
+chemistry	temp_min_rates	Real	get_or_add	1.	src/chemistry/network/gow17.cpp	335	ChemNetwork::ChemNetwork
+chemistry	temp_min_rates	Real	get_or_add	1.	src/chemistry/network/kida.cpp	115	ChemNetwork::ChemNetwork
+chemistry	use_previous_h	Boolean	get_or_add	true	src/chemistry/cvode.cpp	108	ODEWrapper::Initialize
+chemistry	user_jac	Boolean	get_or_add	false	src/chemistry/cvode.cpp	110	ODEWrapper::Initialize
+chemistry	xC	Real	get_or_add	1.6e-4	src/chemistry/network/gow17.cpp	290	ChemNetwork::ChemNetwork
+chemistry	xHe	Real	get_or_add	0.1	src/chemistry/network/gow17.cpp	288	ChemNetwork::ChemNetwork
+chemistry	xO	Real	get_or_add	3.2e-4	src/chemistry/network/gow17.cpp	291	ChemNetwork::ChemNetwork
+chemistry	xSi	Real	get_or_add	1.7e-6	src/chemistry/network/gow17.cpp	292	ChemNetwork::ChemNetwork
+chemistry	xi_cr	Real	get_or_add	2e-16	src/chemistry/network/H2.cpp	57	ChemNetwork::ChemNetwork
+chemistry	xi_cr	Real	get_or_add	2e-16	src/pgen/chem_H2.cpp	178	Mesh::UserWorkAfterLoop
+chemistry	yfloor	Real	get_or_add	1e-3	src/chemistry/forward_euler.cpp	52	ODEWrapper::ODEWrapper
+coord	a	Real	get		src/coordinates/gr_user.cpp	65	Coordinates::Initialize
+coord	a	Real	get		src/coordinates/kerr-schild.cpp	76	Coordinates::Initialize
+coord	a	Real	get		src/pgen/gr_torus.cpp	114	Mesh::InitUserMeshData
+coord	h	Real	get_or_add	1.0	src/pgen/gr_torus.cpp	117	Mesh::InitUserMeshData
+coord	m	Real	get		src/coordinates/gr_user.cpp	64	Coordinates::Initialize
+coord	m	Real	get		src/coordinates/kerr-schild.cpp	75	Coordinates::Initialize
+coord	m	Real	get		src/coordinates/schwarzschild.cpp	51	Coordinates::Initialize
+coord	m	Real	get		src/pgen/gr_torus.cpp	113	Mesh::InitUserMeshData
+cr	max_opacity	Real	get_or_add	BIG_NUMBER	src/cr/cr.cpp	251	CosmicRay::CosmicRay
+cr	src_flag	Integer	get_or_add	1	src/cr/cr.cpp	253	CosmicRay::CosmicRay
+cr	taucell	Real	get_or_add	1.0	src/cr/integrators/cr_integrators.cpp	85	CRIntegrator::CRIntegrator
+cr	vflx	Integer	get_or_add	0	src/cr/integrators/cr_integrators.cpp	86	CRIntegrator::CRIntegrator
+cr	vlim	Real	get_or_add	0.9	src/cr/cr.cpp	250	CosmicRay::CosmicRay
+cr	vmax	Real	get_or_add	1.0	src/cr/cr.cpp	249	CosmicRay::CosmicRay
+cr	vs_flag	Integer	get_or_add	1	src/cr/cr.cpp	252	CosmicRay::CosmicRay
+crdiffusion	Dpara	Real	get		src/crdiffusion/crdiffusion.cpp	45	CRDiffusion::CRDiffusion
+crdiffusion	Dperp	Real	get		src/crdiffusion/crdiffusion.cpp	46	CRDiffusion::CRDiffusion
+crdiffusion	Lambda	Real	get		src/crdiffusion/crdiffusion.cpp	47	CRDiffusion::CRDiffusion
+crdiffusion	fas	Boolean	get_or_add	ffas_	src/crdiffusion/mg_crdiffusion.cpp	54	MGCRDiffusionDriver::MGCRDiffusionDriver
+crdiffusion	ix1_bc	String	get_or_add	"none"	src/crdiffusion/mg_crdiffusion.cpp	100	MGCRDiffusionDriver::MGCRDiffusionDriver
+crdiffusion	ix2_bc	String	get_or_add	"none"	src/crdiffusion/mg_crdiffusion.cpp	104	MGCRDiffusionDriver::MGCRDiffusionDriver
+crdiffusion	ix3_bc	String	get_or_add	"none"	src/crdiffusion/mg_crdiffusion.cpp	108	MGCRDiffusionDriver::MGCRDiffusionDriver
+crdiffusion	mgmode	String	get_or_add	"none"	src/crdiffusion/mg_crdiffusion.cpp	76	MGCRDiffusionDriver::MGCRDiffusionDriver
+crdiffusion	niteration	Integer	get_or_add	-1	src/crdiffusion/mg_crdiffusion.cpp	53	MGCRDiffusionDriver::MGCRDiffusionDriver
+crdiffusion	npostsmooth	Real	get_or_add	2	src/crdiffusion/mg_crdiffusion.cpp	59	MGCRDiffusionDriver::MGCRDiffusionDriver
+crdiffusion	npresmooth	Real	get_or_add	2	src/crdiffusion/mg_crdiffusion.cpp	58	MGCRDiffusionDriver::MGCRDiffusionDriver
+crdiffusion	omega	Real	get_or_add	1.0	src/crdiffusion/mg_crdiffusion.cpp	56	MGCRDiffusionDriver::MGCRDiffusionDriver
+crdiffusion	output_defect	Boolean	get_or_add	false	src/crdiffusion/crdiffusion.cpp	49	CRDiffusion::CRDiffusion
+crdiffusion	ox1_bc	String	get_or_add	"none"	src/crdiffusion/mg_crdiffusion.cpp	102	MGCRDiffusionDriver::MGCRDiffusionDriver
+crdiffusion	ox2_bc	String	get_or_add	"none"	src/crdiffusion/mg_crdiffusion.cpp	106	MGCRDiffusionDriver::MGCRDiffusionDriver
+crdiffusion	ox3_bc	String	get_or_add	"none"	src/crdiffusion/mg_crdiffusion.cpp	110	MGCRDiffusionDriver::MGCRDiffusionDriver
+crdiffusion	prolongation	String	get_or_add	"trilinear"	src/crdiffusion/mg_crdiffusion.cpp	72	MGCRDiffusionDriver::MGCRDiffusionDriver
+crdiffusion	show_defect	Boolean	get_or_add	fshowdef_	src/crdiffusion/mg_crdiffusion.cpp	60	MGCRDiffusionDriver::MGCRDiffusionDriver
+crdiffusion	smoother	String	get_or_add	"jacobi-rb"	src/crdiffusion/mg_crdiffusion.cpp	61	MGCRDiffusionDriver::MGCRDiffusionDriver
+crdiffusion	steady	Boolean	get_or_add	false	src/crdiffusion/mg_crdiffusion.cpp	57	MGCRDiffusionDriver::MGCRDiffusionDriver
+crdiffusion	threshold	Real	get_or_add	-1.0	src/crdiffusion/mg_crdiffusion.cpp	52	MGCRDiffusionDriver::MGCRDiffusionDriver
+gravity	auto_mporigin	Boolean	get_or_add	true	src/gravity/mg_gravity.cpp	100	MGGravityDriver::MGGravityDriver
+gravity	fas	Boolean	get_or_add	ffas_	src/gravity/mg_gravity.cpp	49	MGGravityDriver::MGGravityDriver
+gravity	fill_ghost	Boolean	get_or_add	false	src/gravity/gravity.cpp	60	Gravity::Gravity
+gravity	ix1_bc	String	get_or_add	"none"	src/gravity/mg_gravity.cpp	86	MGGravityDriver::MGGravityDriver
+gravity	ix2_bc	String	get_or_add	"none"	src/gravity/mg_gravity.cpp	90	MGGravityDriver::MGGravityDriver
+gravity	ix3_bc	String	get_or_add	"none"	src/gravity/mg_gravity.cpp	94	MGGravityDriver::MGGravityDriver
+gravity	mgmode	String	get_or_add	"none"	src/gravity/mg_gravity.cpp	54	MGGravityDriver::MGGravityDriver
+gravity	mporder	Integer	get_or_add	0	src/gravity/mg_gravity.cpp	99	MGGravityDriver::MGGravityDriver
+gravity	mporigin_x1	Real	get		src/gravity/mg_gravity.cpp	122	MGGravityDriver::MGGravityDriver
+gravity	mporigin_x2	Real	get		src/gravity/mg_gravity.cpp	123	MGGravityDriver::MGGravityDriver
+gravity	mporigin_x3	Real	get		src/gravity/mg_gravity.cpp	124	MGGravityDriver::MGGravityDriver
+gravity	niteration	Integer	get_or_add	-1	src/gravity/mg_gravity.cpp	48	MGGravityDriver::MGGravityDriver
+gravity	nodipole	Boolean	get_or_add	false	src/gravity/mg_gravity.cpp	101	MGGravityDriver::MGGravityDriver
+gravity	npostsmooth	Real	get_or_add	npostsmooth_	src/gravity/mg_gravity.cpp	51	MGGravityDriver::MGGravityDriver
+gravity	npresmooth	Real	get_or_add	npresmooth_	src/gravity/mg_gravity.cpp	50	MGGravityDriver::MGGravityDriver
+gravity	omega	Real	get_or_add	1.15	src/gravity/mg_gravity.cpp	46	MGGravityDriver::MGGravityDriver
+gravity	output_defect	Boolean	get_or_add	false	src/gravity/gravity.cpp	56	Gravity::Gravity
+gravity	ox1_bc	String	get_or_add	"none"	src/gravity/mg_gravity.cpp	88	MGGravityDriver::MGGravityDriver
+gravity	ox2_bc	String	get_or_add	"none"	src/gravity/mg_gravity.cpp	92	MGGravityDriver::MGGravityDriver
+gravity	ox3_bc	String	get_or_add	"none"	src/gravity/mg_gravity.cpp	96	MGGravityDriver::MGGravityDriver
+gravity	show_defect	Boolean	get_or_add	fshowdef_	src/gravity/mg_gravity.cpp	53	MGGravityDriver::MGGravityDriver
+gravity	threshold	Real	get_or_add	-1.0	src/gravity/mg_gravity.cpp	47	MGGravityDriver::MGGravityDriver
+hydro	EOS_dens_lim_field	String	get_or_add	"LogDensLim"	src/utils/eos_table_class.cpp	83	ReadHDF5Table
+hydro	EOS_espec_lim_field	String	get_or_add	"LogEspecLim"	src/utils/eos_table_class.cpp	85	ReadHDF5Table
+hydro	EOS_ratio_field	String	get_or_add	"ratios"	src/utils/eos_table_class.cpp	93	ReadHDF5Table
+hydro	InversionPrecision	Real	get_or_add	prec	src/eos/general/hydrogen.cpp	173	EquationOfState::InitEosConstants
+hydro	active	String	get_or_add	"true"	src/mesh/mesh.cpp	98	Mesh::Mesh
+hydro	active	String	get_or_add	"true"	src/mesh/mesh.cpp	648	Mesh::Mesh
+hydro	beta_min	Real	get_or_add	0.0	src/eos/adiabatic_mhd_gr.cpp	56	EquationOfState::EquationOfState
+hydro	beta_min	Real	get_or_add	0.0	src/eos/adiabatic_mhd_sr.cpp	47	EquationOfState::EquationOfState
+hydro	dens_pow	Real	get_or_add	dens_pow	src/eos/general/eos_table.cpp	68	EquationOfState::InitEosConstants
+hydro	dfloor	Real	get_or_add	std::sqrt(1024*float_min)	src/eos/adiabatic_hydro.cpp	28	EquationOfState::EquationOfState
+hydro	dfloor	Real	get_or_add	std::sqrt(1024*float_min)	src/eos/adiabatic_hydro_gr.cpp	52	EquationOfState::EquationOfState
+hydro	dfloor	Real	get_or_add	std::sqrt(1024*float_min)	src/eos/adiabatic_hydro_sr.cpp	42	EquationOfState::EquationOfState
+hydro	dfloor	Real	get_or_add	std::sqrt(1024*float_min)	src/eos/adiabatic_mhd.cpp	29	EquationOfState::EquationOfState
+hydro	dfloor	Real	get_or_add	std::sqrt(1024*float_min)	src/eos/adiabatic_mhd_gr.cpp	52	EquationOfState::EquationOfState
+hydro	dfloor	Real	get_or_add	std::sqrt(1024*float_min)	src/eos/adiabatic_mhd_sr.cpp	43	EquationOfState::EquationOfState
+hydro	dfloor	Real	get_or_add	std::sqrt(1024*float_min)	src/eos/general/general_hydro.cpp	38	EquationOfState::EquationOfState
+hydro	dfloor	Real	get_or_add	std::sqrt(1024*float_min)	src/eos/general/general_mhd.cpp	37	EquationOfState::EquationOfState
+hydro	dfloor	Real	get_or_add	std::sqrt(1024*float_min)	src/eos/isothermal_hydro.cpp	28	EquationOfState::EquationOfState
+hydro	dfloor	Real	get_or_add	std::sqrt(1024*float_min)	src/eos/isothermal_mhd.cpp	29	EquationOfState::EquationOfState
+hydro	dfloor	Real	get_or_add	(1024*(float_min))	src/pgen/chem_turb.cpp	63	MeshBlock::ProblemGenerator
+hydro	dfloor	Real	get_or_add	(1024*(float_min))	src/pgen/disk.cpp	93	Mesh::InitUserMeshData
+hydro	dfloor	Real	get_or_add	(1024*(float_min))	src/pgen/strat.cpp	169	MeshBlock::ProblemGenerator
+hydro	efloor		exists		src/eos/general/general_hydro.cpp	47	EquationOfState::EquationOfState
+hydro	efloor	Real	get		src/eos/general/general_hydro.cpp	48	EquationOfState::EquationOfState
+hydro	efloor		exists		src/eos/general/general_mhd.cpp	46	EquationOfState::EquationOfState
+hydro	efloor	Real	get		src/eos/general/general_mhd.cpp	47	EquationOfState::EquationOfState
+hydro	eos_egas_unit	Real	get_or_add	1.0	src/eos/general/general_hydro.cpp	42	EquationOfState::EquationOfState
+hydro	eos_egas_unit	Real	get_or_add	1.0	src/eos/general/general_mhd.cpp	41	EquationOfState::EquationOfState
+hydro	eos_egas_unit	Real	get_or_add	1.0	src/utils/eos_table_class.cpp	134	EosTable::EosTable
+hydro	eos_file_name	String	get		src/pgen/eos_test.cpp	50	MeshBlock::ProblemGenerator
+hydro	eos_file_name	String	get		src/utils/eos_table_class.cpp	137	EosTable::EosTable
+hydro	eos_file_type	String	get_or_add	"auto"	src/utils/eos_table_class.cpp	138	EosTable::EosTable
+hydro	eos_read_ratios	Boolean	get_or_add	true	src/utils/eos_table_class.cpp	81	ReadHDF5Table
+hydro	eos_read_ratios	Boolean	get_or_add	true	src/utils/eos_table_class.cpp	116	ReadAsciiTable
+hydro	eos_rho_unit	Real	get_or_add	1.0	src/eos/general/general_hydro.cpp	40	EquationOfState::EquationOfState
+hydro	eos_rho_unit	Real	get_or_add	1.0	src/eos/general/general_mhd.cpp	39	EquationOfState::EquationOfState
+hydro	eos_rho_unit	Real	get_or_add	1.0	src/utils/eos_table_class.cpp	133	EosTable::EosTable
+hydro	gamma	Real	get		src/chemistry/network/G14Sod.cpp	154	ChemNetwork::ChemNetwork
+hydro	gamma	Real	get		src/chemistry/network/gow17.cpp	307	ChemNetwork::ChemNetwork
+hydro	gamma	Real	get		src/chemistry/network/kida.cpp	94	ChemNetwork::ChemNetwork
+hydro	gamma	Real	get		src/eos/adiabatic_hydro.cpp	27	EquationOfState::EquationOfState
+hydro	gamma	Real	get		src/eos/adiabatic_hydro_gr.cpp	51	EquationOfState::EquationOfState
+hydro	gamma	Real	get		src/eos/adiabatic_hydro_sr.cpp	41	EquationOfState::EquationOfState
+hydro	gamma	Real	get		src/eos/adiabatic_mhd.cpp	28	EquationOfState::EquationOfState
+hydro	gamma	Real	get		src/eos/adiabatic_mhd_gr.cpp	51	EquationOfState::EquationOfState
+hydro	gamma	Real	get		src/eos/adiabatic_mhd_sr.cpp	42	EquationOfState::EquationOfState
+hydro	gamma	Real	get_or_add	2.	src/eos/general/general_hydro.cpp	37	EquationOfState::EquationOfState
+hydro	gamma	Real	get_or_add	2.	src/eos/general/general_hydro.cpp	49	EquationOfState::EquationOfState
+hydro	gamma	Real	get_or_add	2.	src/eos/general/general_hydro.cpp	53	EquationOfState::EquationOfState
+hydro	gamma	Real	get_or_add	2.	src/eos/general/general_mhd.cpp	36	EquationOfState::EquationOfState
+hydro	gamma	Real	get_or_add	2.	src/eos/general/general_mhd.cpp	48	EquationOfState::EquationOfState
+hydro	gamma	Real	get_or_add	2.	src/eos/general/general_mhd.cpp	52	EquationOfState::EquationOfState
+hydro	gamma	Real	get		src/pgen/chem_H2.cpp	185	Mesh::UserWorkAfterLoop
+hydro	gamma	Real	get		src/pgen/cpaw.cpp	78	Mesh::InitUserMeshData
+hydro	gamma	Real	get		src/pgen/disk.cpp	88	Mesh::InitUserMeshData
+hydro	gamma	Real	get		src/pgen/field_loop_poles.cpp	88	Mesh::InitUserMeshData
+hydro	gamma	Real	get		src/pgen/gr_linear_wave.cpp	89	Mesh::InitUserMeshData
+hydro	gamma	Real	get		src/pgen/gr_torus.cpp	121	Mesh::InitUserMeshData
+hydro	gamma	Real	get		src/pgen/jeans.cpp	85	Mesh::InitUserMeshData
+hydro	gamma	Real	get		src/pgen/jgg.cpp	94	Mesh::InitUserMeshData
+hydro	gamma	Real	get		src/pgen/linear_wave.cpp	91	Mesh::InitUserMeshData
+hydro	gamma	Real	get		src/pgen/ssheet.cpp	82	Mesh::InitUserMeshData
+hydro	gamma_max	Real	get_or_add	1000.0	src/eos/adiabatic_hydro_gr.cpp	55	EquationOfState::EquationOfState
+hydro	gamma_max	Real	get_or_add	1000.0	src/eos/adiabatic_hydro_sr.cpp	45	EquationOfState::EquationOfState
+hydro	gamma_max	Real	get_or_add	1000.0	src/eos/adiabatic_mhd_gr.cpp	57	EquationOfState::EquationOfState
+hydro	gamma_max	Real	get_or_add	1000.0	src/eos/adiabatic_mhd_sr.cpp	48	EquationOfState::EquationOfState
+hydro	grav_acc1	Real	get_or_add	0.0	src/hydro/srcterms/hydro_srcterms.cpp	68	HydroSourceTerms::HydroSourceTerms
+hydro	grav_acc2	Real	get_or_add	0.0	src/hydro/srcterms/hydro_srcterms.cpp	71	HydroSourceTerms::HydroSourceTerms
+hydro	grav_acc3	Real	get_or_add	0.0	src/hydro/srcterms/hydro_srcterms.cpp	74	HydroSourceTerms::HydroSourceTerms
+hydro	iso_sound_speed	Real	get		src/chemistry/network/gow17.cpp	320	ChemNetwork::ChemNetwork
+hydro	iso_sound_speed	Real	get		src/chemistry/network/kida.cpp	107	ChemNetwork::ChemNetwork
+hydro	iso_sound_speed	Real	get		src/eos/isothermal_hydro.cpp	27	EquationOfState::EquationOfState
+hydro	iso_sound_speed	Real	get		src/eos/isothermal_mhd.cpp	28	EquationOfState::EquationOfState
+hydro	iso_sound_speed	Real	get		src/pgen/chem_H2.cpp	73	MeshBlock::ProblemGenerator
+hydro	iso_sound_speed	Real	get		src/pgen/chem_H2.cpp	184	Mesh::UserWorkAfterLoop
+hydro	iso_sound_speed	Real	get		src/pgen/chem_Pn_grid.cpp	57	MeshBlock::ProblemGenerator
+hydro	iso_sound_speed	Real	get		src/pgen/chem_onecell_sixray.cpp	103	MeshBlock::ProblemGenerator
+hydro	iso_sound_speed	Real	get		src/pgen/chem_turb.cpp	58	MeshBlock::ProblemGenerator
+hydro	iso_sound_speed	Real	get		src/pgen/chem_uniform.cpp	50	MeshBlock::ProblemGenerator
+hydro	iso_sound_speed	Real	get		src/pgen/chem_uniform_sixray.cpp	104	MeshBlock::ProblemGenerator
+hydro	iso_sound_speed	Real	get		src/pgen/disk.cpp	90	Mesh::InitUserMeshData
+hydro	iso_sound_speed	Real	get		src/pgen/field_loop_poles.cpp	86	Mesh::InitUserMeshData
+hydro	iso_sound_speed	Real	get		src/pgen/jeans.cpp	90	Mesh::InitUserMeshData
+hydro	iso_sound_speed	Real	get		src/pgen/jgg.cpp	97	Mesh::InitUserMeshData
+hydro	iso_sound_speed	Real	get		src/pgen/linear_wave.cpp	94	Mesh::InitUserMeshData
+hydro	iso_sound_speed	Real	get		src/pgen/ssheet.cpp	85	Mesh::InitUserMeshData
+hydro	k_adi	Real	get		src/pgen/gr_bondi.cpp	63	Mesh::InitUserMeshData
+hydro	pfloor	Real	get_or_add	std::sqrt(1024*float_min)	src/eos/adiabatic_hydro.cpp	29	EquationOfState::EquationOfState
+hydro	pfloor	Real	get_or_add	std::sqrt(1024*float_min)	src/eos/adiabatic_hydro_gr.cpp	53	EquationOfState::EquationOfState
+hydro	pfloor	Real	get_or_add	std::sqrt(1024*float_min)	src/eos/adiabatic_hydro_sr.cpp	43	EquationOfState::EquationOfState
+hydro	pfloor	Real	get_or_add	std::sqrt(1024*float_min)	src/eos/adiabatic_mhd.cpp	30	EquationOfState::EquationOfState
+hydro	pfloor	Real	get_or_add	std::sqrt(1024*float_min)	src/eos/adiabatic_mhd_gr.cpp	53	EquationOfState::EquationOfState
+hydro	pfloor	Real	get_or_add	std::sqrt(1024*float_min)	src/eos/adiabatic_mhd_sr.cpp	44	EquationOfState::EquationOfState
+hydro	pfloor	Real	get_or_add	pressure_floor_	src/eos/general/general_hydro.cpp	50	EquationOfState::EquationOfState
+hydro	pfloor	Real	get_or_add	std::sqrt(1024*float_min)	src/eos/general/general_hydro.cpp	52	EquationOfState::EquationOfState
+hydro	pfloor	Real	get_or_add	pressure_floor_	src/eos/general/general_mhd.cpp	49	EquationOfState::EquationOfState
+hydro	pfloor	Real	get_or_add	std::sqrt(1024*float_min)	src/eos/general/general_mhd.cpp	51	EquationOfState::EquationOfState
+hydro	pfloor	Real	get_or_add	(1024*(float_min))	src/pgen/chem_turb.cpp	64	MeshBlock::ProblemGenerator
+hydro	pfloor	Real	get_or_add	(1024*(float_min))	src/pgen/strat.cpp	170	MeshBlock::ProblemGenerator
+hydro	pgas_min	Real	get_or_add	pressure_floor_	src/eos/adiabatic_hydro_gr.cpp	58	EquationOfState::EquationOfState
+hydro	pgas_min	Real	get_or_add	pressure_floor_	src/eos/adiabatic_mhd_gr.cpp	60	EquationOfState::EquationOfState
+hydro	pgas_min	Real	get		src/pgen/gr_geodesic_infall.cpp	87	MeshBlock::ProblemGenerator
+hydro	pgas_min	Real	get		src/pgen/gr_torus.cpp	139	Mesh::InitUserMeshData
+hydro	pgas_pow	Real	get_or_add	0.0	src/eos/adiabatic_hydro_gr.cpp	59	EquationOfState::EquationOfState
+hydro	pgas_pow	Real	get_or_add	0.0	src/eos/adiabatic_mhd_gr.cpp	61	EquationOfState::EquationOfState
+hydro	pgas_pow	Real	get		src/pgen/gr_geodesic_infall.cpp	88	MeshBlock::ProblemGenerator
+hydro	pgas_pow	Real	get		src/pgen/gr_torus.cpp	140	Mesh::InitUserMeshData
+hydro	rho_min	Real	get_or_add	density_floor_	src/eos/adiabatic_hydro_gr.cpp	56	EquationOfState::EquationOfState
+hydro	rho_min	Real	get_or_add	density_floor_	src/eos/adiabatic_mhd_gr.cpp	58	EquationOfState::EquationOfState
+hydro	rho_min	Real	get		src/pgen/gr_geodesic_infall.cpp	85	MeshBlock::ProblemGenerator
+hydro	rho_min	Real	get		src/pgen/gr_torus.cpp	137	Mesh::InitUserMeshData
+hydro	rho_pow	Real	get_or_add	0.0	src/eos/adiabatic_hydro_gr.cpp	57	EquationOfState::EquationOfState
+hydro	rho_pow	Real	get_or_add	0.0	src/eos/adiabatic_mhd_gr.cpp	59	EquationOfState::EquationOfState
+hydro	rho_pow	Real	get		src/pgen/gr_geodesic_infall.cpp	86	MeshBlock::ProblemGenerator
+hydro	rho_pow	Real	get		src/pgen/gr_torus.cpp	138	Mesh::InitUserMeshData
+hydro	sfloor	Real	get_or_add	std::sqrt(1024*float_min)	src/eos/adiabatic_hydro.cpp	30	EquationOfState::EquationOfState
+hydro	sfloor	Real	get_or_add	std::sqrt(1024*float_min)	src/eos/adiabatic_hydro_gr.cpp	54	EquationOfState::EquationOfState
+hydro	sfloor	Real	get_or_add	std::sqrt(1024*float_min)	src/eos/adiabatic_hydro_sr.cpp	44	EquationOfState::EquationOfState
+hydro	sfloor	Real	get_or_add	std::sqrt(1024*float_min)	src/eos/adiabatic_mhd.cpp	31	EquationOfState::EquationOfState
+hydro	sfloor	Real	get_or_add	std::sqrt(1024*float_min)	src/eos/adiabatic_mhd_gr.cpp	54	EquationOfState::EquationOfState
+hydro	sfloor	Real	get_or_add	std::sqrt(1024*float_min)	src/eos/adiabatic_mhd_sr.cpp	45	EquationOfState::EquationOfState
+hydro	sfloor	Real	get_or_add	std::sqrt(1024*float_min)	src/eos/general/general_hydro.cpp	39	EquationOfState::EquationOfState
+hydro	sfloor	Real	get_or_add	std::sqrt(1024*float_min)	src/eos/general/general_mhd.cpp	38	EquationOfState::EquationOfState
+hydro	sfloor	Real	get_or_add	std::sqrt(1024*float_min)	src/eos/isothermal_hydro.cpp	29	EquationOfState::EquationOfState
+hydro	sfloor	Real	get_or_add	std::sqrt(1024*float_min)	src/eos/isothermal_mhd.cpp	30	EquationOfState::EquationOfState
+hydro	sigma_max	Real	get_or_add	0.0	src/eos/adiabatic_mhd_gr.cpp	55	EquationOfState::EquationOfState
+hydro	sigma_max	Real	get_or_add	0.0	src/eos/adiabatic_mhd_sr.cpp	46	EquationOfState::EquationOfState
+job	problem_id	String	get		src/outputs/outputs.cpp	226	Outputs::Outputs
+loadbalancing	balancer	String	get_or_add	"default"	src/mesh/mesh.cpp	313	Mesh::Mesh
+loadbalancing	balancer	String	get_or_add	"default"	src/mesh/mesh.cpp	315	Mesh::Mesh
+loadbalancing	balancer	String	get_or_add	"default"	src/mesh/mesh.cpp	776	Mesh::Mesh
+loadbalancing	balancer	String	get_or_add	"default"	src/mesh/mesh.cpp	778	Mesh::Mesh
+loadbalancing	interval	Real	get_or_add	10	src/mesh/mesh.cpp	318	Mesh::Mesh
+loadbalancing	interval	Real	get_or_add	10	src/mesh/mesh.cpp	781	Mesh::Mesh
+loadbalancing	tolerance	Real	get_or_add	0.5	src/mesh/mesh.cpp	317	Mesh::Mesh
+loadbalancing	tolerance	Real	get_or_add	0.5	src/mesh/mesh.cpp	780	Mesh::Mesh
+mesh	derefine_count	Integer	get_or_add	10	src/mesh/mesh_refinement.cpp	37	MeshRefinement::MeshRefinement
+mesh	ix1_bc	String	get_or_add	"none"	src/mesh/mesh.cpp	83	Mesh::Mesh
+mesh	ix1_bc	String	get_or_add	"none"	src/mesh/mesh.cpp	96	Mesh::Mesh
+mesh	ix1_bc	String	get_or_add	"none"	src/mesh/mesh.cpp	633	Mesh::Mesh
+mesh	ix1_bc	String	get_or_add	"none"	src/mesh/mesh.cpp	646	Mesh::Mesh
+mesh	ix1_bc	String	get		src/pgen/gr_torus.cpp	191	Mesh::InitUserMeshData
+mesh	ix2_bc	String	get_or_add	"none"	src/mesh/mesh.cpp	85	Mesh::Mesh
+mesh	ix2_bc	String	get_or_add	"none"	src/mesh/mesh.cpp	635	Mesh::Mesh
+mesh	ix2_bc	String	get_or_add	"none"	src/orbital_advection/orbital_advection.cpp	219	OrbitalAdvection::OrbitalAdvection
+mesh	ix3_bc	String	get_or_add	"none"	src/mesh/mesh.cpp	87	Mesh::Mesh
+mesh	ix3_bc	String	get_or_add	"none"	src/mesh/mesh.cpp	637	Mesh::Mesh
+mesh	ix3_bc	String	get_or_add	"none"	src/orbital_advection/orbital_advection.cpp	229	OrbitalAdvection::OrbitalAdvection
+mesh	num_threads	Integer	get_or_add	1	src/mesh/mesh.cpp	115	Mesh::Mesh
+mesh	num_threads	Integer	get_or_add	1	src/mesh/mesh.cpp	665	Mesh::Mesh
+mesh	numlevel	Integer	get_or_add	1	src/mesh/mesh.cpp	323	Mesh::Mesh
+mesh	numlevel	Integer	get_or_add	1	src/mesh/mesh.cpp	523	Mesh::Mesh
+mesh	numlevel	Integer	get_or_add	1	src/mesh/mesh.cpp	786	Mesh::Mesh
+mesh	numlevel	Integer	get_or_add	1	src/mesh/mesh.cpp	910	Mesh::Mesh
+mesh	nx1	Integer	get		src/mesh/mesh.cpp	81	Mesh::Mesh
+mesh	nx1	Integer	get		src/mesh/mesh.cpp	631	Mesh::Mesh
+mesh	nx2	Integer	get		src/mesh/mesh.cpp	81	Mesh::Mesh
+mesh	nx2	Integer	get		src/mesh/mesh.cpp	631	Mesh::Mesh
+mesh	nx3	Integer	get		src/mesh/mesh.cpp	82	Mesh::Mesh
+mesh	nx3	Integer	get		src/mesh/mesh.cpp	632	Mesh::Mesh
+mesh	ox1_bc	String	get_or_add	"none"	src/mesh/mesh.cpp	84	Mesh::Mesh
+mesh	ox1_bc	String	get_or_add	"none"	src/mesh/mesh.cpp	634	Mesh::Mesh
+mesh	ox1_bc	String	get		src/pgen/gr_torus.cpp	192	Mesh::InitUserMeshData
+mesh	ox2_bc	String	get_or_add	"none"	src/mesh/mesh.cpp	86	Mesh::Mesh
+mesh	ox2_bc	String	get_or_add	"none"	src/mesh/mesh.cpp	636	Mesh::Mesh
+mesh	ox2_bc	String	get_or_add	"none"	src/orbital_advection/orbital_advection.cpp	220	OrbitalAdvection::OrbitalAdvection
+mesh	ox3_bc	String	get_or_add	"none"	src/mesh/mesh.cpp	88	Mesh::Mesh
+mesh	ox3_bc	String	get_or_add	"none"	src/mesh/mesh.cpp	638	Mesh::Mesh
+mesh	ox3_bc	String	get_or_add	"none"	src/orbital_advection/orbital_advection.cpp	230	OrbitalAdvection::OrbitalAdvection
+mesh	refinement	String	get_or_add	"none"	src/mesh/mesh.cpp	91	Mesh::Mesh
+mesh	refinement	String	get_or_add	"none"	src/mesh/mesh.cpp	93	Mesh::Mesh
+mesh	refinement	String	get_or_add	"none"	src/mesh/mesh.cpp	641	Mesh::Mesh
+mesh	refinement	String	get_or_add	"none"	src/mesh/mesh.cpp	643	Mesh::Mesh
+mesh	x1max	Real	get		src/mesh/mesh.cpp	76	Mesh::Mesh
+mesh	x1max	Real	get		src/mesh/mesh.cpp	626	Mesh::Mesh
+mesh	x1min	Real	get		src/mesh/mesh.cpp	75	Mesh::Mesh
+mesh	x1min	Real	get		src/mesh/mesh.cpp	625	Mesh::Mesh
+mesh	x1rat	Real	get_or_add	1.0	src/mesh/mesh.cpp	78	Mesh::Mesh
+mesh	x1rat	Real	get_or_add	1.0	src/mesh/mesh.cpp	628	Mesh::Mesh
+mesh	x2max	Real	get		src/mesh/mesh.cpp	77	Mesh::Mesh
+mesh	x2max	Real	get		src/mesh/mesh.cpp	627	Mesh::Mesh
+mesh	x2min	Real	get		src/mesh/mesh.cpp	75	Mesh::Mesh
+mesh	x2min	Real	get		src/mesh/mesh.cpp	625	Mesh::Mesh
+mesh	x2rat	Real	get_or_add	1.0	src/mesh/mesh.cpp	79	Mesh::Mesh
+mesh	x2rat	Real	get_or_add	1.0	src/mesh/mesh.cpp	629	Mesh::Mesh
+mesh	x2rat	Real	get		src/pgen/gr_torus.cpp	115	Mesh::InitUserMeshData
+mesh	x3max	Real	get		src/mesh/mesh.cpp	77	Mesh::Mesh
+mesh	x3max	Real	get		src/mesh/mesh.cpp	627	Mesh::Mesh
+mesh	x3min	Real	get		src/mesh/mesh.cpp	76	Mesh::Mesh
+mesh	x3min	Real	get		src/mesh/mesh.cpp	626	Mesh::Mesh
+mesh	x3rat	Real	get_or_add	1.0	src/mesh/mesh.cpp	80	Mesh::Mesh
+mesh	x3rat	Real	get_or_add	1.0	src/mesh/mesh.cpp	630	Mesh::Mesh
+meshblock	nx1	Integer	get_or_add	mesh_size.nx1	src/mesh/mesh.cpp	235	Mesh::Mesh
+meshblock	nx1	Integer	get_or_add	mesh_size.nx1	src/mesh/mesh.cpp	751	Mesh::Mesh
+meshblock	nx2	Integer	get_or_add	mesh_size.nx2	src/mesh/mesh.cpp	237	Mesh::Mesh
+meshblock	nx2	Integer	get_or_add	mesh_size.nx2	src/mesh/mesh.cpp	752	Mesh::Mesh
+meshblock	nx3	Integer	get_or_add	mesh_size.nx3	src/mesh/mesh.cpp	241	Mesh::Mesh
+meshblock	nx3	Integer	get_or_add	mesh_size.nx3	src/mesh/mesh.cpp	753	Mesh::Mesh
+{op.block_name}	cartesian_vector	Boolean	get_or_add	false	src/outputs/outputs.cpp	307	Outputs::Outputs
+{op.block_name}	data_format	String	get_or_add	"%12.5e"	src/outputs/outputs.cpp	320	Outputs::Outputs
+{op.block_name}	data_format	String	get_or_add	"%12.5e"	src/outputs/outputs.cpp	325	Outputs::Outputs
+{op.block_name}	data_format		exists		src/outputs/outputs.cpp	339	Outputs::Outputs
+{op.block_name}	data_format	String	get		src/outputs/outputs.cpp	340	Outputs::Outputs
+{op.block_name}	dcycle	Integer	get_or_add	0	src/outputs/outputs.cpp	209	Outputs::Outputs
+{op.block_name}	dt	Real	get_or_add	0.0	src/outputs/outputs.cpp	208	Outputs::Outputs
+{op.block_name}	dt	Real	get		src/pgen/jgg.cpp	180	Mesh::InitUserMeshData
+{op.block_name}	dt	Real	get		src/pgen/ssheet.cpp	123	Mesh::InitUserMeshData
+{op.block_name}	file_number	Integer	get_or_add	0	src/outputs/outputs.cpp	225	Outputs::Outputs
+{op.block_name}	file_type	String	get		src/outputs/outputs.cpp	231	Outputs::Outputs
+{op.block_name}	file_type	String	get		src/pgen/jgg.cpp	181	Mesh::InitUserMeshData
+{op.block_name}	file_type	String	get		src/pgen/ssheet.cpp	124	Mesh::InitUserMeshData
+{op.block_name}	ghost_zones	Boolean	get_or_add	false	src/outputs/outputs.cpp	297	Outputs::Outputs
+{op.block_name}	id	String	get_or_add	define_id	src/outputs/outputs.cpp	230	Outputs::Outputs
+{op.block_name}	mesh_data	Boolean	get_or_add	true	src/outputs/outputs.cpp	345	Outputs::Outputs
+{op.block_name}	next_time	Real	get_or_add	pm->time	src/outputs/outputs.cpp	207	Outputs::Outputs
+{op.block_name}	next_time	Real	get_or_add	time	src/pgen/jgg.cpp	179	Mesh::InitUserMeshData
+{op.block_name}	next_time	Real	get_or_add	time	src/pgen/ssheet.cpp	122	Mesh::InitUserMeshData
+{op.block_name}	orbital_system	Boolean	get_or_add	false	src/outputs/outputs.cpp	301	Outputs::Outputs
+{op.block_name}	variable	String	get		src/outputs/outputs.cpp	314	Outputs::Outputs
+{op.block_name}	vmax	Real	get		src/outputs/outputs.cpp	131	vmin_vmax_check
+{op.block_name}	vmin	Real	get		src/outputs/outputs.cpp	130	vmin_vmax_check
+{op.block_name}	x1_slice		exists		src/outputs/outputs.cpp	234	Outputs::Outputs
+{op.block_name}	x1_slice	Real	get		src/outputs/outputs.cpp	235	Outputs::Outputs
+{op.block_name}	x1_sum	Boolean	get_or_add	false	src/outputs/outputs.cpp	274	Outputs::Outputs
+{op.block_name}	x2_slice		exists		src/outputs/outputs.cpp	247	Outputs::Outputs
+{op.block_name}	x2_slice	Real	get		src/outputs/outputs.cpp	248	Outputs::Outputs
+{op.block_name}	x2_sum	Boolean	get_or_add	false	src/outputs/outputs.cpp	281	Outputs::Outputs
+{op.block_name}	x3_slice		exists		src/outputs/outputs.cpp	260	Outputs::Outputs
+{op.block_name}	x3_slice	Real	get		src/outputs/outputs.cpp	261	Outputs::Outputs
+{op.block_name}	x3_sum	Boolean	get_or_add	false	src/outputs/outputs.cpp	288	Outputs::Outputs
+orbital_advection	OAorder	Integer	get_or_add	0	src/hydro/srcterms/hydro_srcterms.cpp	41	HydroSourceTerms::HydroSourceTerms
+orbital_advection	OAorder	Integer	get_or_add	0	src/mesh/mesh.cpp	95	Mesh::Mesh
+orbital_advection	OAorder	Integer	get_or_add	0	src/mesh/mesh.cpp	645	Mesh::Mesh
+orbital_advection	Omega0	Real	get_or_add	0.0	src/hydro/srcterms/hydro_srcterms.cpp	78	HydroSourceTerms::HydroSourceTerms
+orbital_advection	Omega0	Real	get_or_add	0.0	src/orbital_advection/orbital_advection.cpp	60	OrbitalAdvection::OrbitalAdvection
+orbital_advection	Omega0	Real	get_or_add	0.0	src/orbital_advection/orbital_advection.cpp	66	OrbitalAdvection::OrbitalAdvection
+orbital_advection	Omega0	Real	get_or_add	0.0	src/orbital_advection/orbital_advection.cpp	70	OrbitalAdvection::OrbitalAdvection
+orbital_advection	Omega0	Real	get_or_add	0.0	src/pgen/disk.cpp	95	Mesh::InitUserMeshData
+orbital_advection	Omega0	Real	get		src/pgen/jgg.cpp	125	Mesh::InitUserMeshData
+orbital_advection	Omega0	Real	get		src/pgen/ssheet.cpp	95	Mesh::InitUserMeshData
+orbital_advection	Omega0	Real	get		src/pgen/strat.cpp	85	Mesh::InitUserMeshData
+orbital_advection	qshear	Real	get_or_add	0.0	src/hydro/srcterms/hydro_srcterms.cpp	79	HydroSourceTerms::HydroSourceTerms
+orbital_advection	qshear	Real	get_or_add	0.0	src/orbital_advection/orbital_advection.cpp	61	OrbitalAdvection::OrbitalAdvection
+orbital_advection	qshear	Real	get		src/pgen/jgg.cpp	124	Mesh::InitUserMeshData
+orbital_advection	qshear	Real	get		src/pgen/ssheet.cpp	94	Mesh::InitUserMeshData
+orbital_advection	qshear	Real	get		src/pgen/strat.cpp	84	Mesh::InitUserMeshData
+orbital_advection	shboxcoord	Integer	get_or_add	1	src/bvals/bvals.cpp	143	BoundaryValues::BoundaryValues
+orbital_advection	shboxcoord	Integer	get_or_add	1	src/hydro/srcterms/hydro_srcterms.cpp	80	HydroSourceTerms::HydroSourceTerms
+orbital_advection	shboxcoord	Integer	get_or_add	1	src/orbital_advection/orbital_advection.cpp	62	OrbitalAdvection::OrbitalAdvection
+{output_params.block_name}	xdmf	Integer	get_or_add	1	src/outputs/athena_hdf5.cpp	834	ATHDF5Output<h5out_t>::WriteOutputFile
+{pib->block_name}	level	Integer	get		src/mesh/mesh.cpp	369	Mesh::Mesh
+{pib->block_name}	x1max	Real	get		src/mesh/mesh.cpp	354	Mesh::Mesh
+{pib->block_name}	x1min	Real	get		src/mesh/mesh.cpp	353	Mesh::Mesh
+{pib->block_name}	x2max	Real	get		src/mesh/mesh.cpp	357	Mesh::Mesh
+{pib->block_name}	x2min	Real	get		src/mesh/mesh.cpp	356	Mesh::Mesh
+{pib->block_name}	x3max	Real	get		src/mesh/mesh.cpp	364	Mesh::Mesh
+{pib->block_name}	x3min	Real	get		src/mesh/mesh.cpp	363	Mesh::Mesh
+problem	{"r_init_"+pscalars->chemnet.species_names[ispec]}	Real	get_or_add	-1	src/pgen/chem_G14Sod.cpp	107	MeshBlock::ProblemGenerator
+problem	{"r_init_"+pscalars->chemnet.species_names[ispec]}	Real	get_or_add	-1	src/pgen/chem_Pn_grid.cpp	152	MeshBlock::ProblemGenerator
+problem	{"r_init_"+pscalars->chemnet.species_names[ispec]}	Real	get_or_add	-1	src/pgen/chem_onecell_sixray.cpp	171	MeshBlock::ProblemGenerator
+problem	{"r_init_"+pscalars->chemnet.species_names[ispec]}	Real	get_or_add	-1	src/pgen/chem_pdr_moving.cpp	149	MeshBlock::ProblemGenerator
+problem	{"r_init_"+pscalars->chemnet.species_names[ispec]}	Real	get_or_add	-1	src/pgen/chem_turb.cpp	149	MeshBlock::ProblemGenerator
+problem	{"r_init_"+pscalars->chemnet.species_names[ispec]}	Real	get_or_add	-1	src/pgen/chem_uniform.cpp	103	MeshBlock::ProblemGenerator
+problem	{"r_init_"+pscalars->chemnet.species_names[ispec]}	Real	get_or_add	-1	src/pgen/chem_uniform_sixray.cpp	155	MeshBlock::ProblemGenerator
+problem	{"r_init_"+pscalars->chemnet.species_names[ispec]}	Real	get_or_add	-1	src/pgen/read_vtk.cpp	404	MeshBlock::ProblemGenerator
+problem	Bdir	Integer	get_or_add	1	src/pgen/hgb.cpp	146	MeshBlock::ProblemGenerator
+problem	Bx	Real	get		src/pgen/gr_linear_wave.cpp	101	Mesh::InitUserMeshData
+problem	By	Real	get		src/pgen/gr_linear_wave.cpp	102	Mesh::InitUserMeshData
+problem	Bz	Real	get		src/pgen/gr_linear_wave.cpp	103	Mesh::InitUserMeshData
+problem	GM	Real	get_or_add	0.0	src/hydro/srcterms/hydro_srcterms.cpp	39	HydroSourceTerms::HydroSourceTerms
+problem	GM	Real	get_or_add	0.0	src/orbital_advection/orbital_advection.cpp	65	OrbitalAdvection::OrbitalAdvection
+problem	GM	Real	get_or_add	0.0	src/orbital_advection/orbital_advection.cpp	69	OrbitalAdvection::OrbitalAdvection
+problem	GM	Real	get_or_add	0.0	src/pgen/disk.cpp	77	Mesh::InitUserMeshData
+problem	LHS_T_cgs	Real	get		src/pgen/chem_G14Sod.cpp	60	MeshBlock::ProblemGenerator
+problem	LHS_rho_cgs	Real	get		src/pgen/chem_G14Sod.cpp	58	MeshBlock::ProblemGenerator
+problem	M	Real	get_or_add	1.0	src/pgen/poisson.cpp	95	MeshBlock::ProblemGenerator
+problem	Mach	Real	get		src/pgen/shk_cloud.cpp	77	MeshBlock::ProblemGenerator
+problem	RHS_T_cgs	Real	get		src/pgen/chem_G14Sod.cpp	61	MeshBlock::ProblemGenerator
+problem	RHS_rho_cgs	Real	get		src/pgen/chem_G14Sod.cpp	59	MeshBlock::ProblemGenerator
+problem	Tl		exists		src/pgen/shock_tube.cpp	340	MeshBlock::ProblemGenerator
+problem	Tl	Real	get		src/pgen/shock_tube.cpp	341	MeshBlock::ProblemGenerator
+problem	Tr		exists		src/pgen/shock_tube.cpp	358	MeshBlock::ProblemGenerator
+problem	Tr	Real	get		src/pgen/shock_tube.cpp	359	MeshBlock::ProblemGenerator
+problem	a	Real	get		src/pgen/kh.cpp	430	MeshBlock::ProblemGenerator
+problem	a0	Real	get_or_add	1.0	src/pgen/poisson.cpp	96	MeshBlock::ProblemGenerator
+problem	a0	Real	get_or_add	1.0	src/pgen/poisson.cpp	101	MeshBlock::ProblemGenerator
+problem	a_width	Real	get_or_add	10.0	src/pgen/mignone_advection.cpp	68	Mesh::InitUserMeshData
+problem	alpha	Real	get		src/pgen/magnoh.cpp	72	Mesh::InitUserMeshData
+problem	alpha	Real	get_or_add	1.0	src/pgen/mignone_advection.cpp	67	Mesh::InitUserMeshData
+problem	amp	Real	get_or_add	0.0	src/pgen/collapse.cpp	238	Mesh::InitUserMeshData
+problem	amp	Real	get		src/pgen/field_loop.cpp	71	MeshBlock::ProblemGenerator
+problem	amp	Real	get		src/pgen/gr_linear_wave.cpp	85	Mesh::InitUserMeshData
+problem	amp	Real	get		src/pgen/hb3.cpp	72	Mesh::InitUserMeshData
+problem	amp	Real	get		src/pgen/hgb.cpp	132	MeshBlock::ProblemGenerator
+problem	amp	Real	get		src/pgen/jeans.cpp	62	Mesh::InitUserMeshData
+problem	amp	Real	get		src/pgen/jgg.cpp	103	Mesh::InitUserMeshData
+problem	amp	Real	get		src/pgen/kh.cpp	81	MeshBlock::ProblemGenerator
+problem	amp	Real	get		src/pgen/kh.cpp	161	MeshBlock::ProblemGenerator
+problem	amp	Real	get		src/pgen/kh.cpp	223	MeshBlock::ProblemGenerator
+problem	amp	Real	get		src/pgen/kh.cpp	292	MeshBlock::ProblemGenerator
+problem	amp	Real	get		src/pgen/kh.cpp	433	MeshBlock::ProblemGenerator
+problem	amp	Real	get		src/pgen/linear_wave.cpp	81	Mesh::InitUserMeshData
+problem	amp	Real	get_or_add	1.e-6	src/pgen/resist.cpp	61	MeshBlock::ProblemGenerator
+problem	amp	Real	get		src/pgen/rt.cpp	108	MeshBlock::ProblemGenerator
+problem	amp	Real	get_or_add	1.e-6	src/pgen/scalar_diff.cpp	58	MeshBlock::ProblemGenerator
+problem	amp	Real	get		src/pgen/ssheet.cpp	98	Mesh::InitUserMeshData
+problem	amp	Real	get		src/pgen/strat.cpp	165	MeshBlock::ProblemGenerator
+problem	amp	Real	get		src/pgen/user_outflow_test.cpp	96	MeshBlock::ProblemGenerator
+problem	amp	Real	get_or_add	1.e-6	src/pgen/visc.cpp	55	MeshBlock::ProblemGenerator
+problem	ang_2	Real	get_or_add	-999.9	src/pgen/cpaw.cpp	74	Mesh::InitUserMeshData
+problem	ang_2	Real	get_or_add	-999.9	src/pgen/jeans.cpp	64	Mesh::InitUserMeshData
+problem	ang_2	Real	get_or_add	-999.9	src/pgen/linear_wave.cpp	83	Mesh::InitUserMeshData
+problem	ang_2_vert	Boolean	get_or_add	false	src/pgen/linear_wave.cpp	86	Mesh::InitUserMeshData
+problem	ang_3	Real	get_or_add	-999.9	src/pgen/cpaw.cpp	75	Mesh::InitUserMeshData
+problem	ang_3	Real	get_or_add	-999.9	src/pgen/jeans.cpp	65	Mesh::InitUserMeshData
+problem	ang_3	Real	get_or_add	-999.9	src/pgen/linear_wave.cpp	84	Mesh::InitUserMeshData
+problem	ang_3_vert	Boolean	get_or_add	false	src/pgen/linear_wave.cpp	87	Mesh::InitUserMeshData
+problem	angle	Real	get		src/pgen/blast.cpp	63	MeshBlock::ProblemGenerator
+problem	angle	Real	get		src/pgen/rt.cpp	213	MeshBlock::ProblemGenerator
+problem	b0	Real	get		src/pgen/blast.cpp	62	MeshBlock::ProblemGenerator
+problem	b0	Real	get		src/pgen/kh.cpp	121	MeshBlock::ProblemGenerator
+problem	b0	Real	get		src/pgen/kh.cpp	183	MeshBlock::ProblemGenerator
+problem	b0	Real	get		src/pgen/kh.cpp	251	MeshBlock::ProblemGenerator
+problem	b0	Real	get		src/pgen/kh.cpp	389	MeshBlock::ProblemGenerator
+problem	b0	Real	get		src/pgen/kh.cpp	457	MeshBlock::ProblemGenerator
+problem	b0	Real	get		src/pgen/rt.cpp	145	MeshBlock::ProblemGenerator
+problem	b0	Real	get		src/pgen/rt.cpp	212	MeshBlock::ProblemGenerator
+problem	b_center	Real	get_or_add	0.0	src/pgen/mignone_advection.cpp	69	Mesh::InitUserMeshData
+problem	b_par	Real	get		src/pgen/cpaw.cpp	71	Mesh::InitUserMeshData
+problem	b_perp	Real	get		src/pgen/cpaw.cpp	72	Mesh::InitUserMeshData
+problem	beta	Real	get		src/pgen/chem_turb.cpp	83	MeshBlock::ProblemGenerator
+problem	beta	Real	get		src/pgen/field_loop_poles.cpp	96	Mesh::InitUserMeshData
+problem	beta	Real	get		src/pgen/hb3.cpp	73	Mesh::InitUserMeshData
+problem	beta	Real	get		src/pgen/hgb.cpp	136	MeshBlock::ProblemGenerator
+problem	beta	Real	get		src/pgen/jgg.cpp	109	Mesh::InitUserMeshData
+problem	beta	Real	get		src/pgen/magnoh.cpp	73	Mesh::InitUserMeshData
+problem	beta	Real	get		src/pgen/shk_cloud.cpp	80	MeshBlock::ProblemGenerator
+problem	beta	Real	get		src/pgen/strat.cpp	174	MeshBlock::ProblemGenerator
+problem	black_body	Integer	get_or_add	0.0	src/pgen/thermal_multigroup.cpp	59	MeshBlock::ProblemGenerator
+problem	bphi	Real	get		src/pgen/magnoh.cpp	78	Mesh::InitUserMeshData
+problem	bsq_over_rho	Real	get		src/pgen/gr_bondi.cpp	67	Mesh::InitUserMeshData
+problem	bx	Real	get		src/pgen/gr_blast.cpp	78	MeshBlock::ProblemGenerator
+problem	bx	Real	get		src/pgen/jet.cpp	54	Mesh::InitUserMeshData
+problem	bx	Real	get		src/pgen/quirk.cpp	146	MeshBlock::ProblemGenerator
+problem	bx0	Real	get		src/pgen/rotor.cpp	50	MeshBlock::ProblemGenerator
+problem	bxjet	Real	get		src/pgen/jet.cpp	64	Mesh::InitUserMeshData
+problem	bxl	Real	get		src/pgen/gr_shock_tube.cpp	98	MeshBlock::ProblemGenerator
+problem	bxl	Real	get		src/pgen/shock_tube.cpp	346	MeshBlock::ProblemGenerator
+problem	bxr	Real	get		src/pgen/gr_shock_tube.cpp	111	MeshBlock::ProblemGenerator
+problem	bxr	Real	get		src/pgen/shock_tube.cpp	364	MeshBlock::ProblemGenerator
+problem	by	Real	get		src/pgen/gr_blast.cpp	79	MeshBlock::ProblemGenerator
+problem	by	Real	get		src/pgen/jet.cpp	55	Mesh::InitUserMeshData
+problem	byjet	Real	get		src/pgen/jet.cpp	65	Mesh::InitUserMeshData
+problem	byl	Real	get		src/pgen/gr_shock_tube.cpp	99	MeshBlock::ProblemGenerator
+problem	byl	Real	get		src/pgen/shock_tube.cpp	347	MeshBlock::ProblemGenerator
+problem	byr	Real	get		src/pgen/gr_shock_tube.cpp	112	MeshBlock::ProblemGenerator
+problem	byr	Real	get		src/pgen/shock_tube.cpp	365	MeshBlock::ProblemGenerator
+problem	bz	Real	get		src/pgen/gr_blast.cpp	80	MeshBlock::ProblemGenerator
+problem	bz	Real	get		src/pgen/jet.cpp	56	Mesh::InitUserMeshData
+problem	bz	Real	get		src/pgen/magnoh.cpp	79	Mesh::InitUserMeshData
+problem	bzjet	Real	get		src/pgen/jet.cpp	66	Mesh::InitUserMeshData
+problem	bzl	Real	get		src/pgen/gr_shock_tube.cpp	100	MeshBlock::ProblemGenerator
+problem	bzl	Real	get		src/pgen/shock_tube.cpp	348	MeshBlock::ProblemGenerator
+problem	bzr	Real	get		src/pgen/gr_shock_tube.cpp	113	MeshBlock::ProblemGenerator
+problem	bzr	Real	get		src/pgen/shock_tube.cpp	366	MeshBlock::ProblemGenerator
+problem	center_x1	Real	get_or_add	0.50	src/pgen/slotted_cylinder.cpp	53	Mesh::InitUserMeshData
+problem	center_x2	Real	get_or_add	0.75	src/pgen/slotted_cylinder.cpp	54	Mesh::InitUserMeshData
+problem	compute_error	Boolean	get_or_add	false	src/pgen/blast.cpp	221	Mesh::UserWorkAfterLoop
+problem	compute_error	Boolean	get_or_add	false	src/pgen/chem_H2.cpp	168	Mesh::UserWorkAfterLoop
+problem	compute_error	Boolean	get_or_add	false	src/pgen/cpaw.cpp	123	Mesh::UserWorkAfterLoop
+problem	compute_error	Boolean	get_or_add	false	src/pgen/gr_linear_wave.cpp	86	Mesh::InitUserMeshData
+problem	compute_error	Boolean	get_or_add	false	src/pgen/jeans.cpp	154	Mesh::UserWorkAfterLoop
+problem	compute_error	Boolean	get_or_add	false	src/pgen/linear_wave.cpp	191	Mesh::UserWorkAfterLoop
+problem	compute_error	Boolean	get_or_add	false	src/pgen/mignone_advection.cpp	110	Mesh::UserWorkAfterLoop
+problem	compute_error	Boolean	get_or_add	false	src/pgen/rad_linearwave.cpp	67	Mesh::UserWorkAfterLoop
+problem	compute_error	Boolean	get_or_add	false	src/pgen/shock_tube.cpp	53	Mesh::UserWorkAfterLoop
+problem	compute_error	Boolean	get_or_add	false	src/pgen/slotted_cylinder.cpp	80	Mesh::UserWorkAfterLoop
+problem	d	Real	get		src/pgen/jet.cpp	48	Mesh::InitUserMeshData
+problem	d	Real	get		src/pgen/magnoh.cpp	75	Mesh::InitUserMeshData
+problem	d0	Real	get_or_add	1.0	src/pgen/hgb.cpp	110	MeshBlock::ProblemGenerator
+problem	d0	Real	get_or_add	1.0	src/pgen/jgg.cpp	91	Mesh::InitUserMeshData
+problem	d_in	Real	get		src/pgen/lw_implode.cpp	35	MeshBlock::ProblemGenerator
+problem	d_out	Real	get		src/pgen/lw_implode.cpp	38	MeshBlock::ProblemGenerator
+problem	damb	Real	get_or_add	1.0	src/pgen/blast.cpp	57	MeshBlock::ProblemGenerator
+problem	data_file	String	get		src/pgen/gr_mhd_inflow.cpp	71	Mesh::InitUserMeshData
+problem	dataset_b1	String	get		src/pgen/from_array.cpp	61	MeshBlock::ProblemGenerator
+problem	dataset_b2	String	get		src/pgen/from_array.cpp	62	MeshBlock::ProblemGenerator
+problem	dataset_b3	String	get		src/pgen/from_array.cpp	63	MeshBlock::ProblemGenerator
+problem	dataset_cons	String	get		src/pgen/from_array.cpp	55	MeshBlock::ProblemGenerator
+problem	dir	Real	get_or_add	1	src/pgen/cpaw.cpp	76	Mesh::InitUserMeshData
+problem	dir_input	String	get		src/pgen/chem_Pn_grid.cpp	69	MeshBlock::ProblemGenerator
+problem	direction	Real	get_or_add	0	src/pgen/cr_diffusion.cpp	134	MeshBlock::ProblemGenerator
+problem	divb	Boolean	get_or_add	false	src/pgen/field_loop_poles.cpp	83	Mesh::InitUserMeshData
+problem	djet	Real	get		src/pgen/jet.cpp	58	Mesh::InitUserMeshData
+problem	dl	Real	get		src/pgen/gr_shock_tube.cpp	91	MeshBlock::ProblemGenerator
+problem	dl	Real	get		src/pgen/shock_tube.cpp	335	MeshBlock::ProblemGenerator
+problem	dr	Real	get		src/pgen/gr_shock_tube.cpp	104	MeshBlock::ProblemGenerator
+problem	dr	Real	get		src/pgen/shock_tube.cpp	353	MeshBlock::ProblemGenerator
+problem	drat	Real	get_or_add	1.0	src/pgen/blast.cpp	59	MeshBlock::ProblemGenerator
+problem	drat	Real	get_or_add	1.0	src/pgen/field_loop.cpp	73	MeshBlock::ProblemGenerator
+problem	drat	Real	get		src/pgen/kh.cpp	80	MeshBlock::ProblemGenerator
+problem	drat	Real	get		src/pgen/kh.cpp	432	MeshBlock::ProblemGenerator
+problem	drat	Real	get_or_add	3.0	src/pgen/rt.cpp	110	MeshBlock::ProblemGenerator
+problem	drat	Real	get		src/pgen/shk_cloud.cpp	78	MeshBlock::ProblemGenerator
+problem	drho_rho0	Real	get_or_add	0.0	src/pgen/kh.cpp	294	MeshBlock::ProblemGenerator
+problem	dslope	Real	get_or_add	0.0	src/pgen/disk.cpp	82	Mesh::InitUserMeshData
+problem	energy	Real	get		src/pgen/unit_test.cpp	43	Mesh::InitUserMeshData
+problem	eos_loop	Boolean	get_or_add	false	src/pgen/eos_test.cpp	42	MeshBlock::ProblemGenerator
+problem	er	Real	get_or_add	10.0	src/pgen/thermal_relaxation.cpp	49	MeshBlock::ProblemGenerator
+problem	er	Real	get_or_add	10.0	src/pgen/thermal_relaxation_amr.cpp	53	MeshBlock::ProblemGenerator
+problem	er_1	Real	get_or_add	10.0	src/pgen/thermal_multigroup.cpp	51	MeshBlock::ProblemGenerator
+problem	er_2	Real	get_or_add	20.0	src/pgen/thermal_multigroup.cpp	52	MeshBlock::ProblemGenerator
+problem	er_3	Real	get_or_add	30.0	src/pgen/thermal_multigroup.cpp	53	MeshBlock::ProblemGenerator
+problem	error_output	Boolean	get_or_add	false	src/pgen/jgg.cpp	102	Mesh::InitUserMeshData
+problem	error_output	Boolean	get_or_add	false	src/pgen/ssheet.cpp	107	Mesh::InitUserMeshData
+problem	eta_ad	Real	get_or_add	0.0	src/field/field_diffusion/field_diffusion.cpp	40	FieldDiffusion::FieldDiffusion
+problem	eta_hall	Real	get_or_add	0.0	src/field/field_diffusion/field_diffusion.cpp	39	FieldDiffusion::FieldDiffusion
+problem	eta_ohm	Real	get_or_add	0.0	src/field/field_diffusion/field_diffusion.cpp	38	FieldDiffusion::FieldDiffusion
+problem	eta_ohm	Real	get_or_add	0.25	src/pgen/resist.cpp	63	MeshBlock::ProblemGenerator
+problem	exponentiate_table	Boolean	get_or_add	false	src/pgen/eos_test.cpp	41	MeshBlock::ProblemGenerator
+problem	f	Real	get		src/pgen/collapse.cpp	237	Mesh::InitUserMeshData
+problem	fH1	Real	get_or_add	0.	src/pgen/chem_H2.cpp	69	MeshBlock::ProblemGenerator
+problem	fH1	Real	get_or_add	0.	src/pgen/chem_H2.cpp	173	Mesh::UserWorkAfterLoop
+problem	field_config	String	get		src/pgen/gr_torus.cpp	144	Mesh::InitUserMeshData
+problem	{flux_name.str().c_str()}	Real	get		src/pgen/gr_torus.cpp	186	Mesh::InitUserMeshData
+problem	four_pi_G	Real	get		src/pgen/binary_gravity.cpp	54	Mesh::InitUserMeshData
+problem	four_pi_G	Real	get		src/pgen/chem_turb.cpp	44	Mesh::InitUserMeshData
+problem	four_pi_G	Real	get		src/pgen/from_array.cpp	47	Mesh::InitUserMeshData
+problem	four_pi_G	Real	get		src/pgen/poisson.cpp	46	Mesh::InitUserMeshData
+problem	four_pi_G	Real	get		src/pgen/poisson.cpp	66	MeshBlock::ProblemGenerator
+problem	four_pi_G	Real	get		src/pgen/poisson.cpp	233	Mesh::UserWorkAfterLoop
+problem	four_pi_G	Real	get		src/pgen/turb.cpp	40	Mesh::InitUserMeshData
+problem	gaussian_mean	Real	get_or_add	0.5	src/pgen/chem_H2.cpp	71	MeshBlock::ProblemGenerator
+problem	gaussian_mean	Real	get_or_add	0.5	src/pgen/chem_H2.cpp	174	Mesh::UserWorkAfterLoop
+problem	gaussian_std	Real	get_or_add	0.1	src/pgen/chem_H2.cpp	72	MeshBlock::ProblemGenerator
+problem	gaussian_std	Real	get_or_add	0.1	src/pgen/chem_H2.cpp	175	Mesh::UserWorkAfterLoop
+problem	ifield	Integer	get_or_add	1	src/pgen/hb3.cpp	76	Mesh::InitUserMeshData
+problem	ifield	Integer	get_or_add	1	src/pgen/hgb.cpp	137	MeshBlock::ProblemGenerator
+problem	ifield	Integer	get_or_add	1	src/pgen/strat.cpp	173	MeshBlock::ProblemGenerator
+problem	index_dens	Integer	get		src/pgen/from_array.cpp	56	MeshBlock::ProblemGenerator
+problem	index_etot	Integer	get		src/pgen/from_array.cpp	60	MeshBlock::ProblemGenerator
+problem	index_mom1	Integer	get		src/pgen/from_array.cpp	57	MeshBlock::ProblemGenerator
+problem	index_mom2	Integer	get		src/pgen/from_array.cpp	58	MeshBlock::ProblemGenerator
+problem	index_mom3	Integer	get		src/pgen/from_array.cpp	59	MeshBlock::ProblemGenerator
+problem	input_filename	String	get		src/pgen/from_array.cpp	54	MeshBlock::ProblemGenerator
+problem	ipert	Integer	get_or_add	1	src/pgen/hb3.cpp	75	Mesh::InitUserMeshData
+problem	ipert	Integer	get_or_add	1	src/pgen/hgb.cpp	72	Mesh::InitUserMeshData
+problem	ipert	Integer	get_or_add	1	src/pgen/jgg.cpp	101	Mesh::InitUserMeshData
+problem	ipert	Integer	get		src/pgen/ssheet.cpp	88	Mesh::InitUserMeshData
+problem	ipert	Integer	get_or_add	1	src/pgen/strat.cpp	166	MeshBlock::ProblemGenerator
+problem	iprob	Integer	get		src/pgen/field_loop.cpp	74	MeshBlock::ProblemGenerator
+problem	iprob	Integer	get		src/pgen/kh.cpp	53	Mesh::InitUserMeshData
+problem	iprob	Integer	get		src/pgen/mignone_advection.cpp	71	Mesh::InitUserMeshData
+problem	iprob	Integer	get_or_add	1	src/pgen/poisson.cpp	69	MeshBlock::ProblemGenerator
+problem	iprob	Integer	get_or_add	0	src/pgen/resist.cpp	60	MeshBlock::ProblemGenerator
+problem	iprob	Integer	get		src/pgen/rt.cpp	109	MeshBlock::ProblemGenerator
+problem	iprob	Integer	get_or_add	0	src/pgen/scalar_diff.cpp	57	MeshBlock::ProblemGenerator
+problem	iprob	Integer	get_or_add	0	src/pgen/visc.cpp	54	MeshBlock::ProblemGenerator
+problem	is_const_Cv	Boolean	get_or_add	true	src/chemistry/network/H2.cpp	60	ChemNetwork::ChemNetwork
+problem	is_joined_vtk	Integer	get_or_add	0	src/pgen/read_vtk.cpp	91	MeshBlock::ProblemGenerator
+problem	ix	Integer	get		src/pgen/chem_onecell_sixray.cpp	107	MeshBlock::ProblemGenerator
+problem	iy	Integer	get		src/pgen/chem_onecell_sixray.cpp	108	MeshBlock::ProblemGenerator
+problem	iz	Integer	get		src/pgen/chem_onecell_sixray.cpp	109	MeshBlock::ProblemGenerator
+problem	kappa_aniso	Real	get_or_add	0.0	src/hydro/hydro_diffusion/hydro_diffusion.cpp	68	HydroDiffusion::HydroDiffusion
+problem	kappa_es	Real	get_or_add	0.0	src/pgen/thermal_multigroup.cpp	58	MeshBlock::ProblemGenerator
+problem	kappa_iso	Real	get_or_add	0.0	src/hydro/hydro_diffusion/hydro_diffusion.cpp	67	HydroDiffusion::HydroDiffusion
+problem	l	Real	get		src/pgen/gr_torus.cpp	129	Mesh::InitUserMeshData
+problem	mass	Real	get		src/pgen/collapse.cpp	235	Mesh::InitUserMeshData
+problem	mass_val	Real	get		src/pgen/unit_test.cpp	50	Mesh::InitUserMeshData
+problem	mphi	Real	get_or_add	1.0	src/pgen/magnoh.cpp	83	Mesh::InitUserMeshData
+problem	mu	Real	get		src/chemistry/network/G14Sod.cpp	152	ChemNetwork::ChemNetwork
+problem	mu	Real	get		src/pgen/chem_G14Sod.cpp	53	MeshBlock::ProblemGenerator
+problem	mu	Real	get_or_add	0.0	src/pgen/collapse.cpp	239	Mesh::InitUserMeshData
+problem	muH	Real	get		src/chemistry/network/G14Sod.cpp	153	ChemNetwork::ChemNetwork
+problem	nH	Real	get		src/pgen/chem_H2.cpp	67	MeshBlock::ProblemGenerator
+problem	nH	Real	get		src/pgen/chem_H2.cpp	171	Mesh::UserWorkAfterLoop
+problem	nH	Real	get		src/pgen/chem_onecell_sixray.cpp	100	MeshBlock::ProblemGenerator
+problem	nH	Real	get		src/pgen/chem_turb.cpp	57	MeshBlock::ProblemGenerator
+problem	nH	Real	get		src/pgen/chem_uniform.cpp	47	MeshBlock::ProblemGenerator
+problem	nH	Real	get		src/pgen/chem_uniform_sixray.cpp	101	MeshBlock::ProblemGenerator
+problem	nH_max	Real	get		src/pgen/chem_Pn_grid.cpp	54	MeshBlock::ProblemGenerator
+problem	nH_min	Real	get		src/pgen/chem_Pn_grid.cpp	53	MeshBlock::ProblemGenerator
+problem	ncycle	Integer	get_or_add	1	src/pgen/binary_gravity.cpp	193	Mesh::UserWorkAfterLoop
+problem	ncycle	Integer	get_or_add	100	src/pgen/fft.cpp	107	Mesh::UserWorkAfterLoop
+problem	ncycle	Integer	get		src/pgen/poisson.cpp	147	Mesh::UserWorkAfterLoop
+problem	ndamb	Real	get		src/pgen/unit_test.cpp	77	MeshBlock::ProblemGenerator
+problem	ndin	Real	get		src/pgen/unit_test.cpp	53	Mesh::InitUserMeshData
+problem	ndin	Real	get		src/pgen/unit_test.cpp	78	MeshBlock::ProblemGenerator
+problem	njeans	Real	get		src/pgen/collapse.cpp	295	Mesh::InitUserMeshData
+problem	njeans	Real	get		src/pgen/jeans.cpp	63	Mesh::InitUserMeshData
+problem	njeans	Real	get		src/pgen/jeans.cpp	76	Mesh::InitUserMeshData
+problem	nu_aniso	Real	get_or_add	0.0	src/hydro/hydro_diffusion/hydro_diffusion.cpp	35	HydroDiffusion::HydroDiffusion
+problem	nu_iso	Real	get_or_add	0.0	src/hydro/hydro_diffusion/hydro_diffusion.cpp	34	HydroDiffusion::HydroDiffusion
+problem	nu_iso	Real	get_or_add	0.25	src/pgen/visc.cpp	57	MeshBlock::ProblemGenerator
+problem	nu_scalar_iso	Real	get_or_add	0.25	src/pgen/scalar_diff.cpp	60	MeshBlock::ProblemGenerator
+problem	nu_scalar_iso	Real	get_or_add	0.0	src/scalars/scalars.cpp	49	PassiveScalars::PassiveScalars
+problem	num_data_lines	Integer	get		src/pgen/gr_mhd_inflow.cpp	67	Mesh::InitUserMeshData
+problem	num_flux_radii	Integer	get_or_add	0	src/pgen/gr_torus.cpp	180	Mesh::InitUserMeshData
+problem	num_x	Real	get		src/pgen/gr_blast.cpp	67	MeshBlock::ProblemGenerator
+problem	num_y	Real	get		src/pgen/gr_blast.cpp	68	MeshBlock::ProblemGenerator
+problem	nw	Real	get_or_add	1e-1	src/pgen/chem_pdr_moving.cpp	75	MeshBlock::ProblemGenerator
+problem	nwx	Integer	get_or_add	1	src/pgen/hb3.cpp	74	Mesh::InitUserMeshData
+problem	nwx	Integer	get_or_add	1	src/pgen/hgb.cpp	163	MeshBlock::ProblemGenerator
+problem	nwx	Integer	get_or_add	1	src/pgen/jgg.cpp	110	Mesh::InitUserMeshData
+problem	nwx	Integer	get		src/pgen/ssheet.cpp	99	Mesh::InitUserMeshData
+problem	nwx	Integer	get_or_add	1	src/pgen/strat.cpp	144	MeshBlock::ProblemGenerator
+problem	nwy	Integer	get_or_add	1	src/pgen/hgb.cpp	178	MeshBlock::ProblemGenerator
+problem	nwy	Integer	get_or_add	1	src/pgen/jgg.cpp	106	Mesh::InitUserMeshData
+problem	nwy	Integer	get_or_add	1	src/pgen/jgg.cpp	111	Mesh::InitUserMeshData
+problem	nwy	Integer	get		src/pgen/ssheet.cpp	100	Mesh::InitUserMeshData
+problem	nwz	Integer	get_or_add	1	src/pgen/jgg.cpp	115	Mesh::InitUserMeshData
+problem	omega	Real	get_or_add	1.0	src/pgen/slotted_cylinder.cpp	56	Mesh::InitUserMeshData
+problem	omega_x1	Real	get_or_add	0.50	src/pgen/slotted_cylinder.cpp	57	Mesh::InitUserMeshData
+problem	omega_x2	Real	get_or_add	0.50	src/pgen/slotted_cylinder.cpp	58	Mesh::InitUserMeshData
+problem	omegatff	Real	get_or_add	0.0	src/pgen/collapse.cpp	248	Mesh::InitUserMeshData
+problem	p	Real	get		src/pgen/jet.cpp	49	Mesh::InitUserMeshData
+problem	p0	Real	get		src/pgen/hgb.cpp	112	MeshBlock::ProblemGenerator
+problem	p0	Real	get		src/pgen/jgg.cpp	93	Mesh::InitUserMeshData
+problem	p0	Real	get		src/pgen/rotor.cpp	49	MeshBlock::ProblemGenerator
+problem	p0_over_r0	Real	get_or_add	0.0025	src/pgen/disk.cpp	86	Mesh::InitUserMeshData
+problem	p_in	Real	get		src/pgen/lw_implode.cpp	36	MeshBlock::ProblemGenerator
+problem	p_out	Real	get		src/pgen/lw_implode.cpp	39	MeshBlock::ProblemGenerator
+problem	pamb	Real	get_or_add	1.0	src/pgen/blast.cpp	56	MeshBlock::ProblemGenerator
+problem	pamb	Real	get		src/pgen/unit_test.cpp	42	Mesh::InitUserMeshData
+problem	pamb	Real	get		src/pgen/unit_test.cpp	76	MeshBlock::ProblemGenerator
+problem	pcoeff	Real	get		src/pgen/magnoh.cpp	74	Mesh::InitUserMeshData
+problem	pert_amp	Real	get_or_add	0.0	src/pgen/gr_torus.cpp	175	Mesh::InitUserMeshData
+problem	pert_kr	Real	get_or_add	0.0	src/pgen/gr_torus.cpp	176	Mesh::InitUserMeshData
+problem	pert_kz	Real	get_or_add	0.0	src/pgen/gr_torus.cpp	177	Mesh::InitUserMeshData
+problem	perturb	Real	get_or_add	0.0	src/pgen/magnoh.cpp	82	Mesh::InitUserMeshData
+problem	pgas	Real	get		src/pgen/gr_linear_wave.cpp	94	Mesh::InitUserMeshData
+problem	pgas_inner	Real	get		src/pgen/gr_blast.cpp	73	MeshBlock::ProblemGenerator
+problem	pgas_outer	Real	get		src/pgen/gr_blast.cpp	75	MeshBlock::ProblemGenerator
+problem	pjet	Real	get		src/pgen/jet.cpp	59	Mesh::InitUserMeshData
+problem	pl	Real	get		src/pgen/gr_shock_tube.cpp	92	MeshBlock::ProblemGenerator
+problem	pl	Real	get		src/pgen/shock_tube.cpp	343	MeshBlock::ProblemGenerator
+problem	pot_amp	Real	get		src/pgen/gr_torus.cpp	171	Mesh::InitUserMeshData
+problem	pot_pgas_cutoff	Real	get		src/pgen/gr_torus.cpp	161	Mesh::InitUserMeshData
+problem	pot_pgas_pow	Real	get		src/pgen/gr_torus.cpp	160	Mesh::InitUserMeshData
+problem	pot_r_max	Real	get		src/pgen/gr_torus.cpp	156	Mesh::InitUserMeshData
+problem	pot_r_min	Real	get		src/pgen/gr_torus.cpp	155	Mesh::InitUserMeshData
+problem	pot_r_num	Real	get		src/pgen/gr_torus.cpp	157	Mesh::InitUserMeshData
+problem	pot_r_pow	Real	get		src/pgen/gr_torus.cpp	147	Mesh::InitUserMeshData
+problem	pot_rho_cutoff	Real	get		src/pgen/gr_torus.cpp	149	Mesh::InitUserMeshData
+problem	pot_rho_pow	Real	get		src/pgen/gr_torus.cpp	148	Mesh::InitUserMeshData
+problem	pot_samples	Real	get		src/pgen/gr_torus.cpp	151	Mesh::InitUserMeshData
+problem	pot_samples	Real	get		src/pgen/gr_torus.cpp	163	Mesh::InitUserMeshData
+problem	pot_theta_min	Real	get		src/pgen/gr_torus.cpp	158	Mesh::InitUserMeshData
+problem	pot_theta_num	Real	get		src/pgen/gr_torus.cpp	159	Mesh::InitUserMeshData
+problem	pr	Real	get		src/pgen/gr_shock_tube.cpp	105	MeshBlock::ProblemGenerator
+problem	pr	Real	get		src/pgen/shock_tube.cpp	361	MeshBlock::ProblemGenerator
+problem	prat	Real	get		src/pgen/blast.cpp	58	MeshBlock::ProblemGenerator
+problem	pres	Real	get		src/pgen/cpaw.cpp	81	Mesh::InitUserMeshData
+problem	pres	Real	get_or_add	1.0	src/pgen/strat.cpp	179	MeshBlock::ProblemGenerator
+problem	print_table	Boolean	get_or_add	false	src/pgen/eos_test.cpp	40	MeshBlock::ProblemGenerator
+problem	prograde	Boolean	get		src/pgen/gr_torus.cpp	124	Mesh::InitUserMeshData
+problem	pslope	Real	get_or_add	0.0	src/pgen/disk.cpp	87	Mesh::InitUserMeshData
+problem	r0	Real	get_or_add	1.0	src/pgen/disk.cpp	78	Mesh::InitUserMeshData
+problem	r0	Real	get		src/pgen/rotor.cpp	51	MeshBlock::ProblemGenerator
+problem	r1	Real	get		src/pgen/rotor.cpp	52	MeshBlock::ProblemGenerator
+problem	r_crit	Real	get		src/pgen/gr_bondi.cpp	64	Mesh::InitUserMeshData
+problem	r_edge	Real	get		src/pgen/gr_torus.cpp	125	Mesh::InitUserMeshData
+problem	r_init	Real	get_or_add	0.	src/pgen/chem_G14Sod.cpp	63	MeshBlock::ProblemGenerator
+problem	r_init	Real	get		src/pgen/chem_Pn_grid.cpp	56	MeshBlock::ProblemGenerator
+problem	r_init	Real	get_or_add	0.	src/pgen/chem_onecell_sixray.cpp	102	MeshBlock::ProblemGenerator
+problem	r_init	Real	get_or_add	0.	src/pgen/chem_pdr_moving.cpp	71	MeshBlock::ProblemGenerator
+problem	r_init	Real	get_or_add	0.	src/pgen/chem_turb.cpp	59	MeshBlock::ProblemGenerator
+problem	r_init	Real	get_or_add	0.	src/pgen/chem_uniform.cpp	49	MeshBlock::ProblemGenerator
+problem	r_init	Real	get_or_add	0.	src/pgen/chem_uniform_sixray.cpp	103	MeshBlock::ProblemGenerator
+problem	r_init	Real	get		src/pgen/read_vtk.cpp	112	MeshBlock::ProblemGenerator
+problem	r_peak	Real	get		src/pgen/gr_torus.cpp	126	Mesh::InitUserMeshData
+problem	r_peak_max	Real	get		src/pgen/gr_torus.cpp	128	Mesh::InitUserMeshData
+problem	rad	Real	get		src/pgen/field_loop.cpp	70	MeshBlock::ProblemGenerator
+problem	radius	Real	get		src/pgen/blast.cpp	54	MeshBlock::ProblemGenerator
+problem	radius	Real	get		src/pgen/gr_blast.cpp	71	MeshBlock::ProblemGenerator
+problem	radius	Real	get_or_add	0.15	src/pgen/slotted_cylinder.cpp	52	Mesh::InitUserMeshData
+problem	radius	Real	get		src/pgen/unit_test.cpp	51	Mesh::InitUserMeshData
+problem	radius	Real	get		src/pgen/unit_test.cpp	79	MeshBlock::ProblemGenerator
+problem	ramp	Real	get_or_add	0.0	src/pgen/blast.cpp	55	MeshBlock::ProblemGenerator
+problem	regime	Integer	get_or_add	8	src/pgen/rad_linearwave.cpp	199	MeshBlock::ProblemGenerator
+problem	rho	Real	get		src/pgen/gr_linear_wave.cpp	93	Mesh::InitUserMeshData
+problem	rho0	Real	get		src/pgen/disk.cpp	81	Mesh::InitUserMeshData
+problem	rho0	Real	get		src/pgen/field_loop_poles.cpp	81	Mesh::InitUserMeshData
+problem	rho_inner	Real	get		src/pgen/gr_blast.cpp	72	MeshBlock::ProblemGenerator
+problem	rho_max	Real	get		src/pgen/gr_torus.cpp	131	Mesh::InitUserMeshData
+problem	rho_outer	Real	get		src/pgen/gr_blast.cpp	74	MeshBlock::ProblemGenerator
+problem	rhocrit	Real	get		src/pgen/collapse.cpp	246	Mesh::InitUserMeshData
+problem	rjet	Real	get		src/pgen/jet.cpp	68	Mesh::InitUserMeshData
+problem	s_height	Real	get_or_add	0.25	src/pgen/slotted_cylinder.cpp	61	Mesh::InitUserMeshData
+problem	s_init	Real	get_or_add	0.	src/chemistry/network/kida.cpp	71	ChemNetwork::ChemNetwork
+problem	s_init_g+	Real	get_or_add	sinit	src/chemistry/network/kida.cpp	73	ChemNetwork::ChemNetwork
+problem	s_init_g-	Real	get_or_add	sinit	src/chemistry/network/kida.cpp	74	ChemNetwork::ChemNetwork
+problem	s_init_g0	Real	get_or_add	sinit	src/chemistry/network/kida.cpp	72	ChemNetwork::ChemNetwork
+problem	s_width	Real	get_or_add	0.05	src/pgen/slotted_cylinder.cpp	60	Mesh::InitUserMeshData
+problem	scalars	String	get		src/pgen/read_vtk.cpp	116	MeshBlock::ProblemGenerator
+problem	shock_dir	Integer	get		src/pgen/gr_shock_tube.cpp	61	MeshBlock::ProblemGenerator
+problem	shock_dir	Integer	get		src/pgen/shock_tube.cpp	56	Mesh::UserWorkAfterLoop
+problem	shock_dir	Integer	get		src/pgen/shock_tube.cpp	310	MeshBlock::ProblemGenerator
+problem	shock_dir	Integer	get		src/pgen/twoibw.cpp	43	MeshBlock::ProblemGenerator
+problem	sigma	Real	get_or_add	1.e3	src/pgen/cr_diffusion.cpp	142	MeshBlock::ProblemGenerator
+problem	sigma	Real	get		src/pgen/kh.cpp	431	MeshBlock::ProblemGenerator
+problem	sigma	Real	get_or_add	100.0	src/pgen/thermal_relaxation.cpp	51	MeshBlock::ProblemGenerator
+problem	sigma	Real	get_or_add	100.0	src/pgen/thermal_relaxation_amr.cpp	55	MeshBlock::ProblemGenerator
+problem	sigma_1	Real	get_or_add	100.0	src/pgen/thermal_multigroup.cpp	55	MeshBlock::ProblemGenerator
+problem	sigma_2	Real	get_or_add	200.0	src/pgen/thermal_multigroup.cpp	56	MeshBlock::ProblemGenerator
+problem	sigma_3	Real	get_or_add	300.0	src/pgen/thermal_multigroup.cpp	57	MeshBlock::ProblemGenerator
+problem	src_amp	Real	get		src/pgen/source_time_test.cpp	65	Mesh::InitUserMeshData
+problem	src_omega	Real	get		src/pgen/source_time_test.cpp	66	Mesh::InitUserMeshData
+problem	t0	Real	get_or_add	0.5	src/pgen/resist.cpp	62	MeshBlock::ProblemGenerator
+problem	t0	Real	get_or_add	0.5	src/pgen/scalar_diff.cpp	59	MeshBlock::ProblemGenerator
+problem	t0	Real	get_or_add	0.5	src/pgen/visc.cpp	56	MeshBlock::ProblemGenerator
+problem	temperature	Real	get		src/pgen/collapse.cpp	236	Mesh::InitUserMeshData
+problem	temperature	Real	get		src/pgen/gr_mhd_inflow.cpp	64	Mesh::InitUserMeshData
+problem	test	Boolean	get_or_add	false	src/pgen/linear_wave.cpp	169	Mesh::InitUserMeshData
+problem	tgas	Real	get_or_add	1.0	src/pgen/thermal_multigroup.cpp	54	MeshBlock::ProblemGenerator
+problem	tgas	Real	get_or_add	1.0	src/pgen/thermal_relaxation.cpp	50	MeshBlock::ProblemGenerator
+problem	tgas	Real	get_or_add	1.0	src/pgen/thermal_relaxation_amr.cpp	54	MeshBlock::ProblemGenerator
+problem	thr	Real	get		src/pgen/blast.cpp	43	Mesh::InitUserMeshData
+problem	thr	Real	get		src/pgen/chem_H2.cpp	49	Mesh::InitUserMeshData
+problem	thr	Real	get		src/pgen/kh.cpp	56	Mesh::InitUserMeshData
+problem	thr	Real	get		src/pgen/resist.cpp	45	Mesh::InitUserMeshData
+problem	thr	Real	get		src/pgen/scalar_diff.cpp	42	Mesh::InitUserMeshData
+problem	thr	Real	get		src/pgen/slotted_cylinder.cpp	68	Mesh::InitUserMeshData
+problem	thr	Real	get		src/pgen/visc.cpp	38	Mesh::InitUserMeshData
+problem	tilt_angle	Real	get_or_add	0.0	src/pgen/gr_torus.cpp	134	Mesh::InitUserMeshData
+problem	ul	Real	get		src/pgen/gr_shock_tube.cpp	93	MeshBlock::ProblemGenerator
+problem	ul	Real	get		src/pgen/shock_tube.cpp	336	MeshBlock::ProblemGenerator
+problem	ur	Real	get		src/pgen/gr_shock_tube.cpp	106	MeshBlock::ProblemGenerator
+problem	ur	Real	get		src/pgen/shock_tube.cpp	354	MeshBlock::ProblemGenerator
+problem	user_bc	Integer	get		src/pgen/user_outflow_test.cpp	83	Mesh::InitUserMeshData
+problem	v0	Real	get_or_add	0	src/pgen/cr_diffusion.cpp	136	MeshBlock::ProblemGenerator
+problem	v0	Real	get_or_add	0	src/pgen/cr_diffusion.cpp	138	MeshBlock::ProblemGenerator
+problem	v0	Real	get_or_add	0	src/pgen/cr_diffusion.cpp	140	MeshBlock::ProblemGenerator
+problem	v0	Real	get		src/pgen/rotor.cpp	48	MeshBlock::ProblemGenerator
+problem	v_par	Real	get		src/pgen/cpaw.cpp	73	Mesh::InitUserMeshData
+problem	vboost	Real	get_or_add	0.0	src/pgen/kh.cpp	296	MeshBlock::ProblemGenerator
+problem	vectors	String	get		src/pgen/read_vtk.cpp	117	MeshBlock::ProblemGenerator
+problem	vel	Real	get		src/pgen/unit_test.cpp	52	Mesh::InitUserMeshData
+problem	vel	Real	get		src/pgen/unit_test.cpp	80	MeshBlock::ProblemGenerator
+problem	vflow	Real	get		src/pgen/field_loop.cpp	72	MeshBlock::ProblemGenerator
+problem	vflow	Real	get		src/pgen/kh.cpp	52	Mesh::InitUserMeshData
+problem	vflow	Real	get_or_add	0.0	src/pgen/linear_wave.cpp	82	Mesh::InitUserMeshData
+problem	vl	Real	get		src/pgen/gr_shock_tube.cpp	94	MeshBlock::ProblemGenerator
+problem	vl	Real	get		src/pgen/shock_tube.cpp	337	MeshBlock::ProblemGenerator
+problem	vr	Real	get		src/pgen/gr_shock_tube.cpp	107	MeshBlock::ProblemGenerator
+problem	vr	Real	get		src/pgen/magnoh.cpp	76	Mesh::InitUserMeshData
+problem	vr	Real	get		src/pgen/shock_tube.cpp	355	MeshBlock::ProblemGenerator
+problem	vtkfile	String	get		src/pgen/read_vtk.cpp	115	MeshBlock::ProblemGenerator
+problem	vx	Real	get		src/pgen/gr_linear_wave.cpp	95	Mesh::InitUserMeshData
+problem	vx	Real	get		src/pgen/jet.cpp	50	Mesh::InitUserMeshData
+problem	vx_kms	Real	get_or_add	0	src/pgen/chem_H2.cpp	68	MeshBlock::ProblemGenerator
+problem	vx_kms	Real	get_or_add	0	src/pgen/chem_H2.cpp	172	Mesh::UserWorkAfterLoop
+problem	vx_kms	Real	get_or_add	0	src/pgen/chem_onecell_sixray.cpp	101	MeshBlock::ProblemGenerator
+problem	vx_kms	Real	get		src/pgen/chem_pdr_moving.cpp	70	MeshBlock::ProblemGenerator
+problem	vx_kms	Real	get_or_add	0	src/pgen/chem_uniform.cpp	48	MeshBlock::ProblemGenerator
+problem	vx_kms	Real	get_or_add	0	src/pgen/chem_uniform_sixray.cpp	102	MeshBlock::ProblemGenerator
+problem	vxjet	Real	get		src/pgen/jet.cpp	60	Mesh::InitUserMeshData
+problem	vy	Real	get		src/pgen/gr_linear_wave.cpp	96	Mesh::InitUserMeshData
+problem	vy	Real	get		src/pgen/jet.cpp	51	Mesh::InitUserMeshData
+problem	vy0	Real	get_or_add	0.0	src/pgen/field_loop_poles.cpp	82	Mesh::InitUserMeshData
+problem	vyjet	Real	get		src/pgen/jet.cpp	61	Mesh::InitUserMeshData
+problem	vz	Real	get		src/pgen/gr_linear_wave.cpp	97	Mesh::InitUserMeshData
+problem	vz	Real	get		src/pgen/jet.cpp	52	Mesh::InitUserMeshData
+problem	vzjet	Real	get		src/pgen/jet.cpp	62	Mesh::InitUserMeshData
+problem	wave_flag	Integer	get		src/pgen/gr_linear_wave.cpp	78	Mesh::InitUserMeshData
+problem	wave_flag	Integer	get		src/pgen/linear_wave.cpp	80	Mesh::InitUserMeshData
+problem	width	Real	get		src/pgen/user_outflow_test.cpp	97	MeshBlock::ProblemGenerator
+problem	wl	Real	get		src/pgen/gr_shock_tube.cpp	95	MeshBlock::ProblemGenerator
+problem	wl	Real	get		src/pgen/shock_tube.cpp	338	MeshBlock::ProblemGenerator
+problem	wr	Real	get		src/pgen/gr_shock_tube.cpp	108	MeshBlock::ProblemGenerator
+problem	wr	Real	get		src/pgen/shock_tube.cpp	356	MeshBlock::ProblemGenerator
+problem	x0	Real	get_or_add	0.0	src/pgen/field_loop.cpp	106	MeshBlock::ProblemGenerator
+problem	x10	Real	get_or_add	0.	src/pgen/resist.cpp	64	MeshBlock::ProblemGenerator
+problem	x10	Real	get_or_add	0.	src/pgen/scalar_diff.cpp	61	MeshBlock::ProblemGenerator
+problem	x10	Real	get_or_add	0.	src/pgen/visc.cpp	58	MeshBlock::ProblemGenerator
+problem	x1_0	Real	get_or_add	0.0	src/pgen/blast.cpp	69	MeshBlock::ProblemGenerator
+problem	x1_0	Real	get_or_add	0.0	src/pgen/blast.cpp	232	Mesh::UserWorkAfterLoop
+problem	x20	Real	get_or_add	0.	src/pgen/resist.cpp	65	MeshBlock::ProblemGenerator
+problem	x20	Real	get_or_add	0.	src/pgen/scalar_diff.cpp	62	MeshBlock::ProblemGenerator
+problem	x20	Real	get_or_add	0.	src/pgen/visc.cpp	59	MeshBlock::ProblemGenerator
+problem	x2_0	Real	get_or_add	0.0	src/pgen/blast.cpp	70	MeshBlock::ProblemGenerator
+problem	x2_0	Real	get_or_add	0.0	src/pgen/blast.cpp	233	Mesh::UserWorkAfterLoop
+problem	x30	Real	get_or_add	0.	src/pgen/scalar_diff.cpp	63	MeshBlock::ProblemGenerator
+problem	x3_0	Real	get_or_add	0.0	src/pgen/blast.cpp	71	MeshBlock::ProblemGenerator
+problem	x3_0	Real	get_or_add	0.0	src/pgen/blast.cpp	234	Mesh::UserWorkAfterLoop
+problem	x_spacing	Real	get		src/pgen/gr_blast.cpp	69	MeshBlock::ProblemGenerator
+problem	xc	Real	get_or_add	1.0	src/pgen/field_loop_poles.cpp	92	Mesh::InitUserMeshData
+problem	xshock	Real	get		src/pgen/chem_G14Sod.cpp	72	MeshBlock::ProblemGenerator
+problem	xshock	Real	get		src/pgen/gr_shock_tube.cpp	62	MeshBlock::ProblemGenerator
+problem	xshock	Real	get		src/pgen/shock_tube.cpp	313	MeshBlock::ProblemGenerator
+problem	y0	Real	get_or_add	0.0	src/pgen/field_loop.cpp	107	MeshBlock::ProblemGenerator
+problem	y_spacing	Real	get		src/pgen/gr_blast.cpp	70	MeshBlock::ProblemGenerator
+problem	yc	Real	get_or_add	0.0	src/pgen/field_loop_poles.cpp	93	Mesh::InitUserMeshData
+problem	zc	Real	get_or_add	0.0	src/pgen/field_loop_poles.cpp	94	Mesh::InitUserMeshData
+radiation	Advection	Integer	get_or_add	1	src/nr_radiation/integrators/rad_integrators.cpp	71	RadIntegrator::RadIntegrator
+radiation	Compton	Integer	get_or_add	0	src/nr_radiation/integrators/rad_integrators.cpp	65	RadIntegrator::RadIntegrator
+radiation	Compton_t	Integer	get_or_add	0	src/nr_radiation/integrators/rad_integrators.cpp	66	RadIntegrator::RadIntegrator
+radiation	CorrectFlux	Integer	get_or_add	0	src/nr_radiation/integrators/rad_integrators.cpp	72	RadIntegrator::RadIntegrator
+radiation	SRJ_P	Integer	get_or_add	0	src/nr_radiation/implicit/radiation_implicit.cpp	66	IMRadiation::IMRadiation
+radiation	Split_compton	Integer	get_or_add	0	src/nr_radiation/integrators/rad_integrators.cpp	67	RadIntegrator::RadIntegrator
+radiation	T_unit	Real	get_or_add	1.e7	src/nr_radiation/radiation.cpp	105	NRRadiation::NRRadiation
+radiation	angle_flag	Integer	get_or_add	0	src/mesh/meshblock.cpp	127	MeshBlock::MeshBlock
+radiation	angle_flag	Integer	get_or_add	0	src/mesh/meshblock.cpp	335	MeshBlock::MeshBlock
+radiation	angle_flag	Integer	get_or_add	0	src/nr_radiation/radiation.cpp	97	NRRadiation::NRRadiation
+radiation	cfl_rad	Real	get_or_add	1.0	src/nr_radiation/implicit/radiation_implicit.cpp	61	IMRadiation::IMRadiation
+radiation	crat	Real	get		src/nr_radiation/radiation.cpp	115	NRRadiation::NRRadiation
+radiation	density_unit	Real	get_or_add	1.0	src/nr_radiation/radiation.cpp	106	NRRadiation::NRRadiation
+radiation	doppler_flag	Integer	get_or_add	1	src/nr_radiation/integrators/rad_integrators.cpp	75	RadIntegrator::RadIntegrator
+radiation	electron_scattering	Real	get_or_add	0.34	src/nr_radiation/radiation.cpp	109	NRRadiation::NRRadiation
+radiation	error_limit	Real	get_or_add	1.e-6	src/nr_radiation/implicit/radiation_implicit.cpp	60	IMRadiation::IMRadiation
+radiation	frequency_max	Real	get_or_add	1	src/nr_radiation/radiation.cpp	213	NRRadiation::NRRadiation
+radiation	frequency_min	Real	get_or_add	0	src/nr_radiation/radiation.cpp	210	NRRadiation::NRRadiation
+radiation	frequency_ratio	Real	get_or_add	1.0	src/nr_radiation/radiation.cpp	216	NRRadiation::NRRadiation
+radiation	gas_error	Real	get_or_add	1.e-6	src/nr_radiation/integrators/rad_integrators.cpp	81	RadIntegrator::RadIntegrator
+radiation	gas_error	Real	get_or_add	1.e-6	src/nr_radiation/integrators/rad_integrators.cpp	82	RadIntegrator::RadIntegrator
+radiation	implicit_ang_flux	Integer	get_or_add	0	src/nr_radiation/integrators/rad_integrators.cpp	73	RadIntegrator::RadIntegrator
+radiation	iteration	Integer	get_or_add	1	src/nr_radiation/implicit/radiation_implicit.cpp	62	IMRadiation::IMRadiation
+radiation	iterative_compton	Integer	get_or_add	5	src/nr_radiation/integrators/rad_integrators.cpp	80	RadIntegrator::RadIntegrator
+radiation	iterative_tgas	Integer	get_or_add	5	src/nr_radiation/integrators/rad_integrators.cpp	79	RadIntegrator::RadIntegrator
+radiation	length_unit	Real	get_or_add	1.0	src/nr_radiation/radiation.cpp	107	NRRadiation::NRRadiation
+radiation	log_frequency_spacing	Integer	get_or_add	1	src/nr_radiation/radiation.cpp	218	NRRadiation::NRRadiation
+radiation	max_map_bin	Integer	get_or_add	0	src/nr_radiation/integrators/rad_integrators.cpp	84	RadIntegrator::RadIntegrator
+radiation	molecular_weight	Real	get_or_add	0.6	src/nr_radiation/radiation.cpp	108	NRRadiation::NRRadiation
+radiation	n_frequency	Integer	get_or_add	1	src/mesh/meshblock.cpp	122	MeshBlock::MeshBlock
+radiation	n_frequency	Integer	get_or_add	1	src/mesh/meshblock.cpp	330	MeshBlock::MeshBlock
+radiation	n_frequency	Integer	get_or_add	1	src/nr_radiation/radiation.cpp	206	NRRadiation::NRRadiation
+radiation	nlimit	Integer	get_or_add	100	src/nr_radiation/implicit/radiation_implicit.cpp	59	IMRadiation::IMRadiation
+radiation	nmu	Integer	get		src/mesh/meshblock.cpp	123	MeshBlock::MeshBlock
+radiation	nmu	Integer	get		src/mesh/meshblock.cpp	331	MeshBlock::MeshBlock
+radiation	nmu	Integer	get		src/nr_radiation/radiation.cpp	92	NRRadiation::NRRadiation
+radiation	npsi	Integer	get_or_add	0	src/mesh/meshblock.cpp	126	MeshBlock::MeshBlock
+radiation	npsi	Integer	get_or_add	0	src/mesh/meshblock.cpp	334	MeshBlock::MeshBlock
+radiation	npsi	Integer	get_or_add	0	src/nr_radiation/radiation.cpp	96	NRRadiation::NRRadiation
+radiation	nzeta	Integer	get_or_add	0	src/mesh/meshblock.cpp	124	MeshBlock::MeshBlock
+radiation	nzeta	Integer	get_or_add	0	src/mesh/meshblock.cpp	332	MeshBlock::MeshBlock
+radiation	nzeta	Integer	get_or_add	0	src/nr_radiation/radiation.cpp	94	NRRadiation::NRRadiation
+radiation	omega	Real	get_or_add	1.0	src/nr_radiation/implicit/radiation_implicit.cpp	65	IMRadiation::IMRadiation
+radiation	polar_angle	Integer	get_or_add	0	src/mesh/meshblock.cpp	128	MeshBlock::MeshBlock
+radiation	polar_angle	Integer	get_or_add	0	src/mesh/meshblock.cpp	336	MeshBlock::MeshBlock
+radiation	polar_angle	Integer	get_or_add	0	src/nr_radiation/radiation.cpp	98	NRRadiation::NRRadiation
+radiation	prat	Real	get		src/nr_radiation/radiation.cpp	114	NRRadiation::NRRadiation
+radiation	red_or_black	Integer	get_or_add	0	src/nr_radiation/implicit/radiation_implicit.cpp	63	IMRadiation::IMRadiation
+radiation	reduced_factor	Real	get_or_add	1.0	src/nr_radiation/radiation.cpp	128	NRRadiation::NRRadiation
+radiation	res_gray	Integer	get_or_add	0	src/nr_radiation/radiation.cpp	220	NRRadiation::NRRadiation
+radiation	rotate_phi	Integer	get_or_add	0	src/nr_radiation/radiation.cpp	101	NRRadiation::NRRadiation
+radiation	rotate_theta	Integer	get_or_add	0	src/nr_radiation/radiation.cpp	100	NRRadiation::NRRadiation
+radiation	source_flag	Integer	get_or_add	1	src/nr_radiation/radiation.cpp	135	NRRadiation::NRRadiation
+radiation	tau_scheme	Integer	get_or_add	1	src/nr_radiation/integrators/rad_integrators.cpp	64	RadIntegrator::RadIntegrator
+radiation	taucell	Real	get_or_add	5	src/nr_radiation/integrators/rad_integrators.cpp	63	RadIntegrator::RadIntegrator
+radiation	taucell	Real	get_or_add	5	src/nr_radiation/radiation.cpp	130	NRRadiation::NRRadiation
+radiation	unit	Integer	get_or_add	0	src/nr_radiation/radiation.cpp	104	NRRadiation::NRRadiation
+radiation	vmax	Real	get_or_add	0.9	src/nr_radiation/radiation.cpp	103	NRRadiation::NRRadiation
+time	cfl_number	Real	get		src/mesh/mesh.cpp	102	Mesh::Mesh
+time	cfl_number	Real	get		src/mesh/mesh.cpp	652	Mesh::Mesh
+time	cfl_number	Real	get		src/task_list/time_integrator.cpp	907	TimeIntegratorTaskList::TimeIntegratorTaskList
+time	correct_err	Boolean	get_or_add	false	src/reconstruct/reconstruction.cpp	46	Reconstruction::Reconstruction
+time	correct_ic	Boolean	get_or_add	false	src/reconstruct/reconstruction.cpp	45	Reconstruction::Reconstruction
+time	cr_xorder	Integer	get_or_add	2	src/cr/integrators/cr_integrators.cpp	41	CRIntegrator::CRIntegrator
+time	cr_xorder	Integer	get_or_add	2	src/reconstruct/reconstruction.cpp	295	Reconstruction::Reconstruction
+time	dt_diagnostics	Integer	get_or_add	-1	src/mesh/mesh.cpp	105	Mesh::Mesh
+time	dt_diagnostics	Integer	get_or_add	-1	src/mesh/mesh.cpp	655	Mesh::Mesh
+time	ext_preserving	Boolean	get_or_add	true	src/reconstruct/reconstruction.cpp	43	Reconstruction::Reconstruction
+time	floor_ppm_fast	Boolean	get_or_add	false	src/reconstruct/reconstruction.cpp	42	Reconstruction::Reconstruction
+time	integrator	String	get_or_add	"vl2"	src/bvals/bvals.cpp	184	BoundaryValues::BoundaryValues
+time	integrator	String	get_or_add	"vl2"	src/field/field.cpp	54	Field::Field
+time	integrator	String	get_or_add	"vl2"	src/hydro/hydro.cpp	70	Hydro::Hydro
+time	integrator	String	get_or_add	"vl2"	src/nr_radiation/radiation.cpp	237	NRRadiation::NRRadiation
+time	integrator	String	get_or_add	"vl2"	src/scalars/scalars.cpp	66	PassiveScalars::PassiveScalars
+time	integrator	String	get_or_add	"vl2"	src/task_list/time_integrator.cpp	80	TimeIntegratorTaskList::TimeIntegratorTaskList
+time	ncycle_out	Integer	get_or_add	1	src/mesh/mesh.cpp	104	Mesh::Mesh
+time	ncycle_out	Integer	get_or_add	1	src/mesh/mesh.cpp	654	Mesh::Mesh
+time	nlim	Integer	get_or_add	-1	src/mesh/mesh.cpp	103	Mesh::Mesh
+time	nlim	Integer	get_or_add	-1	src/mesh/mesh.cpp	653	Mesh::Mesh
+time	nlim	Integer	get		src/pgen/poisson.cpp	70	MeshBlock::ProblemGenerator
+time	nlim	Integer	get		src/pgen/poisson.cpp	142	Mesh::UserWorkAfterLoop
+time	rad_xorder	Integer	get_or_add	2	src/nr_radiation/integrators/rad_integrators.cpp	49	RadIntegrator::RadIntegrator
+time	rad_xorder	Integer	get_or_add	2	src/reconstruct/reconstruction.cpp	291	Reconstruction::Reconstruction
+time	start_time	Real	get_or_add	0.0	src/mesh/mesh.cpp	99	Mesh::Mesh
+time	start_time	Real	get_or_add	0.0	src/mesh/mesh.cpp	649	Mesh::Mesh
+time	sts_integrator	String	get_or_add	"rkl2"	src/field/field.cpp	63	Field::Field
+time	sts_integrator	String	get_or_add	"rkl2"	src/hydro/hydro.cpp	78	Hydro::Hydro
+time	sts_integrator	String	get_or_add	"rkl2"	src/mesh/mesh.cpp	106	Mesh::Mesh
+time	sts_integrator	String	get_or_add	"rkl2"	src/mesh/mesh.cpp	656	Mesh::Mesh
+time	sts_integrator	String	get_or_add	"rkl2"	src/scalars/scalars.cpp	73	PassiveScalars::PassiveScalars
+time	sts_max_dt_ratio	Real	get_or_add	-1.0	src/mesh/mesh.cpp	107	Mesh::Mesh
+time	sts_max_dt_ratio	Real	get_or_add	-1.0	src/mesh/mesh.cpp	657	Mesh::Mesh
+time	sts_max_dt_ratio	Real	get_or_add	-1.0	src/task_list/sts_task_list.cpp	46	SuperTimeStepTaskList::SuperTimeStepTaskList
+time	tlim	Real	get		src/mesh/mesh.cpp	100	Mesh::Mesh
+time	tlim	Real	get		src/mesh/mesh.cpp	650	Mesh::Mesh
+time	tlim	Real	get_or_add	1.0	src/pgen/mignone_advection.cpp	70	Mesh::InitUserMeshData
+time	xorder	String	get_or_add	"2"	src/bvals/bvals.cpp	129	BoundaryValues::BoundaryValues
+time	xorder	String	get_or_add	"2"	src/mesh/mesh.cpp	257	Mesh::Mesh
+time	xorder	String	get_or_add	"2"	src/reconstruct/reconstruction.cpp	49	Reconstruction::Reconstruction
+turbulence	dedt	Real	get		src/fft/turbulence.cpp	55	TurbulenceDriver::TurbulenceDriver
+turbulence	dtdrive	Real	get		src/fft/turbulence.cpp	50	TurbulenceDriver::TurbulenceDriver
+turbulence	expo	Real	get_or_add	2	src/fft/turbulence.cpp	54	TurbulenceDriver::TurbulenceDriver
+turbulence	f_shear	Real	get_or_add	-1	src/fft/turbulence.cpp	53	TurbulenceDriver::TurbulenceDriver
+turbulence	nhigh	Integer	get_or_add	pm->mesh_size.nx1/2	src/fft/turbulence.cpp	47	TurbulenceDriver::TurbulenceDriver
+turbulence	nlow	Integer	get_or_add	0	src/fft/turbulence.cpp	46	TurbulenceDriver::TurbulenceDriver
+turbulence	rseed	Integer	get_or_add	-1	src/fft/turbulence.cpp	44	TurbulenceDriver::TurbulenceDriver
+turbulence	tcorr	Real	get		src/fft/turbulence.cpp	52	TurbulenceDriver::TurbulenceDriver
+turbulence	turb_flag	Integer	get_or_add	0	src/mesh/mesh.cpp	112	Mesh::Mesh
+turbulence	turb_flag	Integer	get_or_add	0	src/mesh/mesh.cpp	662	Mesh::Mesh
+units	length		exists		src/units/units.cpp	145	Units::Units
+units	length	Real	get		src/units/units.cpp	154	Units::Units
+units	length_cgs	Real	get		src/units/units.cpp	170	Units::Units
+units	length_unit	String	get_or_add	"pc"	src/units/units.cpp	130	Units::Units
+units	mass		exists		src/units/units.cpp	144	Units::Units
+units	mass	Real	get		src/units/units.cpp	164	Units::Units
+units	mass_cgs	Real	get		src/units/units.cpp	169	Units::Units
+units	mass_per_hydrogen	Real	get_or_add	1.4	src/units/units.cpp	34	Units::Units
+units	mass_unit	String	get_or_add	"Msun"	src/units/units.cpp	138	Units::Units
+units	ndensity		exists		src/units/units.cpp	143	Units::Units
+units	ndensity	Real	get		src/units/units.cpp	162	Units::Units
+units	ndensity_unit	String	get_or_add	"n/cm^3"	src/units/units.cpp	136	Units::Units
+units	time		exists		src/units/units.cpp	141	Units::Units
+units	time	Real	get		src/units/units.cpp	156	Units::Units
+units	time_cgs	Real	get		src/units/units.cpp	171	Units::Units
+units	time_unit	String	get_or_add	"Myr"	src/units/units.cpp	132	Units::Units
+units	unit_system	String	get_or_add	"ism"	src/units/units.cpp	33	Units::Units
+units	velocity		exists		src/units/units.cpp	142	Units::Units
+units	velocity	Real	get		src/units/units.cpp	158	Units::Units
+units	velocity_unit	String	get_or_add	"km/s"	src/units/units.cpp	134	Units::Units

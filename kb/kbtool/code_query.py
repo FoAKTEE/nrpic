@@ -76,6 +76,10 @@ def search(lay, q, repo=None, kind="any", k=20, db=None):
             if blk is None and kind == "param":
                 for row in con.execute(sql.replace("p.name = :nm", "p.block = :nm"), dict(args, nm=nm)):
                     add(row, "param-block")
+            if not any(h["kind"] == "param" for h in hits) and re.match(r"^[\w\-\.]+$", nm):
+                for row in con.execute(sql.replace("p.name = :nm", "p.name LIKE '%' || :nm || '%'"),
+                                       dict(args, nm=nm, blk=blk)):
+                    add(row, "param-substring")
         if kind in ("any", "file") and len(hits) < k and (("/" in q or "." in q) or kind == "file"):
             for row in con.execute("SELECT f.repo_id, f.path, NULL AS line, f.loc AS line_end, 'file' AS kind, "
                                    "f.path AS label, f.lang AS signature, NULL AS sym_id FROM code_files f "

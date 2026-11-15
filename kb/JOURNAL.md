@@ -607,3 +607,36 @@ P4' With a computed name matched against the literals of its expression (status 
    unmatched is a list of genuinely unread or misspelled options and of names built from a
    plain variable (no literal to match). Refuted if more than 3 % of the non-comment lines of
    either stay unmatched.
+
+### Outcome P4' (run kb-20261115-135445-dfc83c9; reports from run kb-20261115-135545-d405f64)
+
+- P4' held. Share of input lines outside the `<comment>` block that the code reads
+  (literal, computed block, or computed name fitting its pattern): this tree 2505 of 2522 =
+  99.3 %; upstream AthenaK 8328 of 8436 = 98.7 %; Athena++ 4552 of 4568 = 99.6 %. Of the
+  pattern matches, this tree has 338 and AthenaK 101 (weaker evidence, see the status
+  definition in `kbtool/code_params.py`).
+- What stays unmatched in this tree (17 lines): 15 are names built into an intermediate
+  variable before the call (`radius_<n>_rad` in `z4c/z4c_amr.cpp` line 52, `field_time<n>` in
+  `particles/nrpic.cpp` line 127: read, but no literal reaches the call), and 2 are
+  `<z4c> nco` (`problems/jeans/jeans.athinput` line 127 and one more input), which no code
+  of this tree reads [VERIFIED: `git grep` on main; report `kb/reports/code_params.md`].
+  Upstream AthenaK keeps 99 unmatched lines, among them `<z4c> nco` (7 inputs) and the
+  misspelled `ghozt_zones` of two output blocks.
+- Figures `kb/reports/fig_code_params.png` (left: status shares per tree, P4 threshold
+  dashed; right: reads per block) and `fig_code_repos.png` (lines, symbols, chunks per
+  repository) inspected. Repositories in Perl, Go, Rust, Haskell or Mathematica (LaTeXML,
+  direnv, git-lfs, ripgrep, KerrGeodesics; pandoc almost so) have no symbols: the index
+  extracts symbols for C/C++/CUDA, Python and Fortran only.
+
+### State at the end of the package (14:00 UTC)
+
+- Database: snapshot `kb-data/db/kb-20261115-c8703d7.sqlite` is `db/current` and holds the
+  code index of 64 repositories (63 clones + local/nrpic at main a1c2237), 3454 parameter
+  rows of the four ParameterInput codes, 25 curated links in impl_links.
+- `kb code` answers from both trees (`kb/reports/code_query_examples.txt`); tests: 20 in
+  `tests/test_code_*.py`, the whole kb suite 107 passed (`.venv/bin/python -m pytest`).
+- Not done in this package: module descriptions of src/z4c, src/particles, src/pgen,
+  src/mesh, src/bvals and the order of the task list (brief 12.7, third item); symbols for
+  languages other than C/C++/Python/Fortran; links verified by a test (all 25 are
+  `claimed`); the explicit links are listed, not loaded into impl_links; names built in an
+  intermediate variable are not followed by the parameter comparison.
