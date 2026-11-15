@@ -131,3 +131,59 @@ P11 Stable relativistic cluster y_c = 0.819 (first paper, `problems/st`), 1e4 pa
    recorded in `docs/TESTLOG.md` (lapse 0.804 to 0.838); no particle lost; sum of rest
    mass identical to the bit; the pair defects are rounding; the change of the history
    sum_mW attributable to collisions is below 1e-4 of its value.
+
+## 2026-11-15 13:20-13:30 UTC  first build, smoke run, kernel test
+
+- Processor and card builds compile (`.work/build_cpu`, `.work/build_gpu`).
+- Smoke run (build check, not registered, no number taken from it for a result):
+  20000 Maxwell-Juttner particles at theta = 0.1 in 8^3 cells, 50 steps, sigma = 8:
+  about 494 collisions per step, sum of M W constant to 4e-15. Files in
+  `scratch/core/coll-tmp/smoke1/`. Mistake: I first ran it in `scratch/core/tmp/smoke1/`,
+  a directory of another core session (its `ball.*` files, written at 11:28 UTC, are
+  untouched), and overwrote the `athena.log` there; my build logs
+  `scratch/core/tmp/build_{cpu,gpu}{,_base}.out` may likewise have replaced files of
+  the same name. From here on this package writes only under `scratch/core/coll-tmp/`
+  and `scratch/core/<run_id>/`.
+- The smoke run shows that the error model of prediction P3 is wrong, before P3 was
+  run: sum_P per step was 492.60 +- 0.23 (scatter between steps) against the nominal
+  494.45, i.e. -0.37 percent or 8 "standard errors". Two effects are not in the scatter
+  between steps: (i) the cell populations hardly change in 50 steps, so
+  sum_c N_c (N_c - 1) is one draw of a random number with relative standard deviation
+  sqrt((4/mu + 2/mu^2)/C) (mu particles per cell, C cells: 1.4 percent here, 0.2 percent
+  for 1e6 particles in 32^3 cells); (ii) the sample of 20000 has its own temperature
+  (sum M W = 1.16649 against 1.16699 for theta = 0.1) and its own shape.
+  Added to the history: column 27, sum_W (sum_P without the Moller speed), so that the
+  pair counting and the kinematics can be tested separately.
+
+### P3 restated before the run (13:30 UTC); the first version is superseded
+
+P3a (exact, pair counting): at the cycle of the last snapshot,
+   sum_W = sigma M dt/(2 V_cell) sum_c N_c (N_c - 1) with N_c counted from the snapshot
+   positions, to 1e-12 relative, with and without sub-cycling.
+P3b (kinematics): sum_P/sum_W summed over the run equals the mean Moller speed of
+   random pairs of the actual particles (4e6 pairs from the first and the last snapshot)
+   within 4 standard errors, and <v_Mol>(theta_s) of a Maxwell-Juttner gas at the
+   temperature theta_s of the sample (from its sum M W) within 0.3 percent.
+   theta in {0.01, 0.1, 1, 10}. |v_a - v_b| instead of v_Mol would be high by tens of
+   percent at theta >= 1.
+P3c (counting): collisions over the run = sum of sum_P within 4 sqrt(sum_P).
+P3d (unconditional rate): sum of sum_W over the run = (1/2) N_tot rho_0 sigma dt x steps
+   within 4 x sqrt((4/mu + 2/mu^2)/C) relative (one frozen configuration as the
+   conservative error), i.e. 0.8 percent for 1e6 particles in 32^3 cells.
+P3e the gas stays Maxwell-Juttner: |u| at the end against MJ(theta_s),
+   Kolmogorov-Smirnov p > 1e-3.
+Runs: 1e6 particles, 32^3 cells, 200 steps of dt = 0.01, Gamma dt = 0.015 with
+`coll_pmax = 1` (no sub-cycling) and Gamma dt = 0.15 with `coll_pmax = 0.1`.
+
+### Outcome P0 (13:26 UTC), run core-20261115-132556-a7dc8ab
+
+Passed. 208 of the 209 vectors apply (one has unequal physical masses, which the kernel
+does not treat: one species). Largest error of u' over max(1, |u|): 2.6e-16 (-O0, -O2,
+-O3 without contraction, Python twin), 3.2e-16 with contraction; pair energy within
+1.32 eps, momentum within 0.63 eps of the pair energy; Moller speed within 1.04e-15
+relative (the case of identical velocities gives exactly 0, the 60-digit reference
+4e-31). The three compilations without contraction give identical bits; the Python twin
+differs from them in the last place in some outputs. Figure `fig_kernel_test.png` in the
+run directory (looked at: all points three orders below the tolerance). The first run of
+the driver (core-20261115-132525-e67ed74) reported a relative error 1 of the Moller
+speed for that one case; the driver's metric was wrong, not the kernel.
