@@ -172,3 +172,75 @@ Scouting (small, unregistered, in `scratch/core/tmp/rng/`; the registered runs f
   scouting run).
 - Cost on one core (serial build, 10^6 keys): generator call 28 ns, single uniform
   22 ns, normal pair 93 ns, direction 40 ns.
+
+## 2026-11-15 11:55 UTC  session core-rng  first registered runs, one thing to follow up
+
+Run core-20261115-115230-f0258ce (card, 1e10 keys): the table has the checksum of the
+processor table of the scouting run (6527e84f...). Looking at the raw sums before the
+analysis script: the second moments of both members of the normal pair are low,
+-1.84 and -1.64 standard errors; they are not independent tests (z1^2 + z2^2 = -2 ln s),
+and their sum is 2.46 standard errors below 2 N (mean of -ln s = 0.9999754 with standard
+error 1.0e-5). One such value among about a hundred statistics is expected, but it is
+the one quantity that would show an error of the logarithm or of the rejection step, so
+it gets its own test.
+
+Prediction (before the run): with 1e11 keys and another seed (20261116) on the card the
+sum of the two second moments is within three standard errors of 2 N (standard error of
+the mean of -ln s: 3.2e-6). If the deviation of 2.5e-5 were a bias it would appear as
+about eight standard errors; that outcome refutes the claim that the normal draw is
+exact to the stated accuracy.
+
+## 2026-11-15 12:15 UTC  session core-rng  outcomes of the first registered runs (commit f0258ce)
+
+(The heading of the entry "implementation, scouting" above should read 11:45 UTC.)
+
+- P1 and P2 confirmed. Run core-20261115-115626-f0258ce: the tables of the processor
+  build (run core-20261115-115134-f0258ce), of the card build (run
+  core-20261115-115230-f0258ce) and of five standalone compilations (-O0; -O2; -O3
+  -march=native with and without fused multiply-add; -O2 with the portable 32-bit
+  products) have the same sha256 (6527e84f...); the Python twin reproduces all 15 columns
+  of the 202070 keys without a differing bit; `numpy.random.Philox` reproduces the words
+  of 20902 keys. The binary compiled with fused multiply-add allowed contains one such
+  instruction and gives the same table.
+- Follow-up of the low second moment (prediction of 11:55): run
+  core-20261115-115355-f0258ce, 1e11 keys, seed 20261116: sum of the second moments of
+  the pair +0.53 standard errors from 2 N (mean of -ln s = 1.0000017 +- 3.2e-6); single
+  members +0.49 and +0.26. The value of -2.46 at 1e10 keys was a fluctuation; no bias at
+  the 1e-5 level. Prediction confirmed.
+- P5, D1 confirmed on processors, run core-20261115-115701-f0258ce (10000 particles,
+  t = 40, 800 steps): key tag: 0 of 10000 particles differ between 1 and 64 MeshBlocks
+  and between the uninterrupted and the restarted run, in both kick modes; checksums of
+  the kicks identical in 801 (layouts) and 401 (restart) cycles. Controls: key block,
+  10000 of 10000 particles differ between the layouts (largest momentum difference
+  0.050); key sequence, 10000 differ after the restart (0.029); other seed, 10000 differ.
+  Accumulated kick: rms 7.28e-3 against sigma sqrt(t) = 6.32e-3 (ratio 1.15).
+- P5, D2 confirmed on processors, run core-20261115-115833-f0258ce (10000 particles):
+  checksums identical for 8 and 64 MeshBlocks in 801 cycles; states differ for 9042
+  particles by at most 1.2e-13 (positions) and 8.0e-15 (momenta) with the kick, 9048
+  particles, 1.1e-13 and 7.8e-15 without it; restart of the plunging set (9073 of 10000
+  particles removed by t = 50) bit-identical, checksums identical in 201 cycles.
+- P4, card: refuted in the favourable direction. Run core-20261115-115230-f0258ce:
+  3.9e10 generator calls per second (0.026 ns per call), normal pair 0.133 ns, direction
+  0.043 ns; I had predicted 1 to 2 x 10^9 calls per second, a factor 20 to 40 too slow
+  (I underestimated the integer throughput of the card). Processor (run
+  core-20261115-115134-f0258ce) to be read from the time file in the summary below.
+- Regression (scouting, `scratch/core/tmp/rng/rg0`): five existing set-ups, 36 output
+  files, byte-identical between the unmodified and the new processor executable. The
+  registered run follows on the final commit.
+
+Added after these runs (not in the plan of 11:30): `athenak/src/utils/rng_mesh.hpp`
+(`CellOffsets`, `WrapIndex`) and the part `cell_check` of the unit test, because the
+second client of the interface (stochastic sources, track E) keys draws by cells and
+needs an entity that does not depend on the MeshBlocks. Scouting
+(`scratch/core/tmp/rng/cc1`, before any prediction was written): the checksum per level
+is the same for 1, 8 and 64 MeshBlocks on a uniform mesh and equal to the Python twin.
+My first expectation for a mesh with two refinement levels was wrong: AthenaK refines
+more MeshBlocks than the regions ask for (to keep neighbours within one level), and
+which ones depends on the MeshBlock size, so the coarser levels do not hold the same
+cells in the two divisions (71 against 309 MeshBlocks). The finest level does, and
+agrees. The comparison is therefore made on a mesh with one refined octant (all levels)
+and on the finest level of the two-level mesh.
+
+Prediction for the registered cell check (processor and card): per level, the same
+number of cells and the same checksum as the Python twin computes from the geometry, in
+all seven runs. Refuted by one differing checksum.

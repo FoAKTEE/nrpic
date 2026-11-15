@@ -5,6 +5,9 @@
 #                           compared with the Python twin by tracks/core/analysis/rng/compare_table.py
 #   nstat                   statistical sums and histograms -> rngtest.rng_stat.txt
 #   ntime                   cost per call                   -> rngtest.rng_time.txt
+#   cell_check              draws keyed by cells: one checksum per refinement level, the same
+#                           for every division into MeshBlocks -> rngtest.rng_cells.txt
+#                           (tracks/core/analysis/rng/run_cell_check.py)
 # Example (paths relative to the run directory):
 #   athena -i rng_test.athinput problem/key_file=keys.bin problem/nstat=1e8 problem/ntime=1e7
 # The mesh is a dummy and no cycle is taken.
@@ -60,3 +63,4 @@ table_file = rng_table.bin
 nstat      = 0
 ntime      = 0
 nrepeat    = 3
+cell_check = false           # true: draws keyed by the cells of this mesh -> rngtest.rng_cells.txt

@@ -20,6 +20,10 @@
 //!   ntime       number of keys of the timing loops (default 0: skipped); the cost per
 //!               call goes to <basename>.rng_time.txt
 //!   nrepeat     repetitions of each timing loop, the fastest counts (default 3)
+//!   cell_check  = true: draws keyed by the cells of the mesh of the run
+//!               (utils/rng_mesh.hpp); per refinement level the number of cells and a
+//!               checksum that does not depend on the division into MeshBlocks go to
+//!               <basename>.rng_cells.txt
 //! The seed of the statistical and timing parts is <job> rng_seed.
 
 #include <algorithm>
@@ -38,6 +42,7 @@
 #include "mesh/mesh.hpp"
 #include "pgen/pgen.hpp"
 #include "utils/rng.hpp"
+#include "utils/rng_mesh.hpp"
 
 namespace {
 
@@ -404,6 +409,46 @@ void ProblemGenerator::RngTest(ParameterInput *pin, const bool restart) {
           s += d[0] + d[1] + d[2];
         }, sum);
     report("direction", t);
+    std::fclose(fp);
+  }
+
+  // ---- 4. draws keyed by the cells of the mesh ----------------------------------------
+  if (pin->GetOrAddBoolean("problem", "cell_check", false)) {
+    MeshBlockPack *pmbp = pmy_mesh_->pmb_pack;
+    auto &indcs = pmy_mesh_->mb_indcs;
+    const int is = indcs.is, js = indcs.js, ks = indcs.ks;
+    const int nmb = pmbp->nmb_thispack;
+    const std::uint64_t st = rng::Stream(rng::kStreamTests, 6);
+    auto off = rng::CellOffsets(pmbp);
+    const std::string fname = basename + ".rng_cells.txt";
+    std::FILE *fp = std::fopen(fname.c_str(), "w");
+    if (fp == nullptr) RngFatal("cannot open " + fname);
+    std::fprintf(fp, "# draws keyed by cells: level, cells, checksum of the active "
+                 "cells\n");
+    std::fprintf(fp, "meshblocks %d\n", nmb);
+    const int nlev = pmy_mesh_->max_level - pmy_mesh_->root_level + 1;
+    for (int lev=0; lev<nlev; ++lev) {
+      std::uint64_t csum = 0;
+      std::int64_t ncell = 0;
+      Kokkos::parallel_reduce("rng_cells",
+        Kokkos::MDRangePolicy<DevExeSpace, Kokkos::Rank<4>>(
+          {0, ks, js, is}, {nmb, indcs.ke+1, indcs.je+1, indcs.ie+1}),
+      KOKKOS_LAMBDA(const int m, const int k, const int j, const int i,
+                    std::uint64_t &lsum, std::int64_t &lnc) {
+        if (off(m,3) != lev) return;
+        const rng::Key key{seed, st, rng::CellEntity(off(m,0) + (i - is),
+                                                     off(m,1) + (j - js),
+                                                     off(m,2) + (k - ks)),
+                           3, static_cast<std::uint64_t>(off(m,3))};
+        const std::uint64_t zb = Kokkos::bit_cast<std::uint64_t>(rng::Normal(key, 0));
+        lsum += rng::Bits(key, 0) ^ ((zb << 17) | (zb >> 47));
+        lnc += 1;
+      }, Kokkos::Sum<std::uint64_t>(csum), Kokkos::Sum<std::int64_t>(ncell));
+      std::fprintf(fp, "level %d cells %" PRId64 " checksum %016" PRIx64 "\n", lev,
+                   ncell, csum);
+      std::cout << "RNG test: level " << lev << ", " << ncell << " cells, checksum "
+                << std::hex << csum << std::dec << std::endl;
+    }
     std::fclose(fp);
   }
   return;
