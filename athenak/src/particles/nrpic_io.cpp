@@ -1226,6 +1226,35 @@ void Particles::NrpicReadRestart(const std::string &fname) {
 }
 
 //----------------------------------------------------------------------------------------
+//! \fn  void Particles::NrpicReportMassless
+//! \brief prints how many particles carry no rest mass and how they are pushed, so that
+//! a tracer is never silently moved as a photon (or the reverse)
+
+void Particles::NrpicReportMassless() {
+  const int np = nprtcl_thispack;
+  if (np == 0 || global_variable::my_rank != 0) return;
+  auto pr = prtcl_rdata;
+  int nzero = 0, nneg = 0;
+  Kokkos::parallel_reduce("nrpic_massless", Kokkos::RangePolicy<DevExeSpace>(0, np),
+  KOKKOS_LAMBDA(const int p, int &lz, int &ln) {
+    if (pr(IPM,p) == 0.0) { lz += 1; }
+    if (pr(IPM,p) < 0.0) { ln += 1; }
+  }, Kokkos::Sum<int>(nzero), Kokkos::Sum<int>(nneg));
+  if (nzero > 0) {
+    const bool null_mesh = nropt.zero_mass_null && nropt.metric == NrpicMetric::mesh &&
+                           pusher == ParticlesPusher::nrpic_midpoint;
+    std::cout << "NRPIC: " << nzero << " particle(s) with m = 0 are pushed as "
+              << (null_mesh ? "null particles" : "tracers on timelike geodesics")
+              << " (<particles> zero_mass = " << (nropt.zero_mass_null ? "null" : "tracer")
+              << ")" << std::endl;
+  }
+  if (nneg > 0) {
+    std::cout << "NRPIC: " << nneg << " particle(s) with m < 0 are light rays, emitted "
+              << "at t = -m" << std::endl;
+  }
+}
+
+//----------------------------------------------------------------------------------------
 //! \fn  void Particles::NrpicStartup
 //! \brief called once from Driver::Initialize: builds the mesh state of the module and,
 //! for a new run, writes the initial diagnostics
@@ -1236,6 +1265,7 @@ void Particles::NrpicStartup(bool res_flag) {
     NrpicCreateParticles();
   }
   NrpicInitializeSources();
+  NrpicReportMassless();
   if (res_flag) {
     // field dumps of earlier times were written before the restart
     while (field_next < nfield_times && field_times[field_next] < pm->time + 0.5*pm->dt) {

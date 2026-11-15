@@ -52,3 +52,44 @@ Predictions, written before the runs (release executables of core-v0.3, unchange
 H1 is refuted if R2 still shows the outward motion or the removal (then the reading of
 the momenta or the push itself is at fault), or if R1 on processors is healthy while the
 card run is not (then the defect is in the card build).
+
+Registration: `harness/bin/nrpic-run submit` stops in `budget_state()` with
+`KeyError: 'outputs'` (line 163, `is_live`: a hand-written manifest of wave 1 under
+`tracks/core/runs/` has no `outputs` key). Runs of this package are therefore registered
+by hand with `tracks/core/analysis/dfix/runreg.py` (same fields; the manifest is written
+before the command starts). Reported in the requests of this package.
+
+First look, before the runs ended (R1, R2 need about two minutes per cycle on one core;
+run core-20261115-152835-920d573, records of cycle 4, t = 0.125 M) [VERIFIED]: R1 speeds
+0.72603, 0.78467, 0.82271 for tags 0 to 2 and no record of tag 5; R2 speeds 0.32334,
+0.29592, 0.27385 and tag 5 present. Both as predicted to four digits. The outcome entry
+follows when the runs and the card runs R3, R4 (queued behind other owners' jobs) end.
+
+### T1 correction and its regression (written before the regression runs)
+
+Correction [JUDGEMENT]: a particle with m = 0 is a tracer on a timelike geodesic for
+every metric source (the meaning of the seven tracer inputs under `problems/`, and what
+the analytic-metric branches always did); null particles are the light rays, m = -t_e < 0
+(`cosmo/ic/ray_ic.py` writes nothing else). The rule of releases core-v0.2 and core-v0.3
+stays available as `<particles> zero_mass = null` (default `tracer`). At start-up the
+code prints how many particles have m = 0 and how they are pushed. Changed lines:
+`particles.hpp` (comment of `NrpicRealIndex`, `NrpicOptions::zero_mass_null`,
+`NrpicReportMassless`), `nrpic.cpp` (`NrpicInit`: option; `NrpicPush`: `eps`),
+`nrpic_io.cpp` (`NrpicReportMassless`, called from `NrpicStartup`).
+
+Regression set-up: `problems/tests/tracer_mesh_circular.athinput`, the static mesh
+metric of `docs/TESTLOG.md` "Mesh path (CPU, 2026-11-13)" (Schwarzschild, Kerr-Schild,
+dx = 0.25 M, circular orbit at r = 8 M, dt = 0.1 M, 300 M; record of that entry: r in
+[8.0000, 8.0012] M, relative errors 8.4e-7 in E, 5.1e-6 in L_z), particle with m = 0.
+
+Predictions:
+- (a) release executable core-v0.3 (it ignores `zero_mass`): the particle is a photon; it
+  leaves the mesh (|x^i| = 12 M) before t = 15 M and is counted as escaped.
+- (b) corrected executable: r stays in [8.0000, 8.0012] M for 300 M, relative errors of
+  E = alpha W - beta^i u_i and L_z below 1e-6 and 6e-6 (the record of the old entry).
+- (c) corrected executable, `p0_m = 1e-300`: trajectory file identical to (b), byte for
+  byte.
+- (d) corrected executable, `zero_mass = null`: trajectory file identical to (a), byte
+  for byte (the option restores the released rule exactly).
+The correction is refuted if (b) leaves the band or (c) differs from (b); the claim that
+the option preserves the released behaviour is refuted if (d) differs from (a).

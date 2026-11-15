@@ -31,8 +31,10 @@ enum class ParticleType {cosmic_ray, nrpic};
 // Additional array indices used by particles of type "nrpic".  Positions are stored in
 // IPX,IPY,IPZ and the covariant spatial four-velocity components u_i (momentum per unit
 // rest mass) in IPVX,IPVY,IPVZ.
-// rest mass (zero: null particle, no sources) and proper time (affine parameter of a
-// null particle)
+// rest mass and proper time.  m > 0: particle with sources; m = 0: tracer, a test
+// particle on a timelike geodesic without sources (a null particle only with
+// <particles> zero_mass = null); m = -t_e < 0: null particle (light ray) emitted at the
+// time t_e, whose proper-time slot holds the affine parameter
 enum NrpicRealIndex {IPM=6, IPTAU=7, NRPIC_NRDATA=8};
 enum NrpicIntIndex  {PSP=2, NRPIC_NIDATA=3};       // species
 // Layout of the metric arrays seen by the pushers
@@ -110,6 +112,11 @@ struct NrpicOptions {
   Real newton_cfl = 0.0;       // > 0: step at most this fraction of dx/max|dx/dt|
   Real newton_mg_tol = 0.0;    // > 0: the Poisson solve may end when the defect norm
                                // is this fraction of the norm of the source
+  // ---- meaning of a particle without rest mass (<particles> zero_mass) ----
+  bool zero_mass_null = false; // false (tracer): m = 0 is a test particle on a timelike
+                               // geodesic that carries no sources; true (null): m = 0
+                               // follows a null geodesic on the mesh metric, the rule of
+                               // releases core-v0.2 and core-v0.3
 };
 
 //----------------------------------------------------------------------------------------
@@ -282,6 +289,7 @@ class Particles {
   void NrpicProbe(Real dt);
   void NrpicInitializeSources();
   void NrpicStartup(bool res_flag);
+  void NrpicReportMassless();
   void NrpicWriteHistory(Real time, int ncycle, bool header);
   void NrpicWriteConstraintStats(Real time, bool header);
   void NrpicWriteLine(Real time, bool header);

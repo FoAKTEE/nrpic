@@ -149,6 +149,20 @@ void Particles::NrpicInit(ParameterInput *pin) {
     nropt.probes[n][1] = pin->GetReal("particles", pre + "x2");
     nropt.probes[n][2] = pin->GetReal("particles", pre + "x3");
   }
+  {
+    // meaning of a particle without rest mass.  tracer: a test particle on a timelike
+    // geodesic (what the tracer inputs of problems/ have always meant); null: a null
+    // geodesic on the mesh metric, which releases core-v0.2 and core-v0.3 applied to
+    // every m = 0 particle.  Light rays carry m = -t_e < 0 and are null in either case.
+    const std::string zm = pin->GetOrAddString("particles", "zero_mass", "tracer");
+    if (zm != "tracer" && zm != "null") {
+      std::cout << "### FATAL ERROR in " << __FILE__ << " at line " << __LINE__
+                << std::endl << "<particles> zero_mass must be tracer or null"
+                << std::endl;
+      std::exit(EXIT_FAILURE);
+    }
+    nropt.zero_mass_null = (zm == "null");
+  }
   nropt.lambda     = pin->GetOrAddReal("particles", "lambda", 0.0);
   nropt.source_density = pin->GetOrAddBoolean("particles", "source_density", false);
   nropt.source_extrap  = pin->GetOrAddBoolean("particles", "source_extrap", false);
@@ -401,6 +415,7 @@ TaskStatus Particles::NrpicPush(Driver *pdriver, int stage) {
   const NrpicMetric msrc = nropt.metric;
   const Real bh_mass = nropt.mass, bh_spin = nropt.spin, lat_dx = nropt.lattice_dx;
   const Real alpha_exc = nropt.alpha_exc;
+  const bool zm_null = nropt.zero_mass_null;
 
   // apparent-horizon excision: particles inside ah_exc_factor times the minimum
   // coordinate radius of a found horizon are removed
@@ -451,15 +466,16 @@ TaskStatus Particles::NrpicPush(Driver *pdriver, int stage) {
   KOKKOS_LAMBDA(const int p, int &lnun, int &lmxit) {
     Real x[3] = {pr(IPX,p), pr(IPY,p), pr(IPZ,p)};
     Real u[3] = {pr(IPVX,p), pr(IPVY,p), pr(IPVZ,p)};
-    // a particle without rest mass follows a null geodesic (midpoint pusher only);
     // a negative mass -t_e marks a null particle that waits at its position until the
-    // time t_e (a light ray emitted during the run)
+    // time t_e (a light ray emitted during the run; midpoint pusher on the mesh metric
+    // only).  A particle with m = 0 is a tracer on a timelike geodesic, as on the
+    // analytic metrics, unless <particles> zero_mass = null asks for a null geodesic.
     // The ray leaves at the step time nearest to t_e. Until then its momentum slots
     // hold the coordinate direction c^i of emission; at the launch they are replaced
     // by k_i = gamma_ij c^j / sqrt(gamma_kl c^k c^l), the null momentum of unit
     // frequency for the normal observer at the point of emission. The proper-time slot
     // of a null particle accumulates its affine parameter and is zero until the launch.
-    const Real eps = (pr(IPM,p) > 0.0) ? 1.0 : 0.0;
+    const Real eps = (pr(IPM,p) > 0.0 || (pr(IPM,p) == 0.0 && !zm_null)) ? 1.0 : 0.0;
     if (pr(IPM,p) < 0.0 && tnow + 0.5*dt < -pr(IPM,p)) return;
     const bool launch = (pr(IPM,p) < 0.0 && pr(IPTAU,p) == 0.0);
     Real dtau = 0.0;
