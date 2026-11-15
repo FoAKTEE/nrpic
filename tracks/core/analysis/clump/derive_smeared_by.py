@@ -199,7 +199,8 @@ for name, e, want in (
     lim = sp.limit(e, Rs, 0)
     good = sp.simplify(lim - want) == 0
     ok = ok and good
-    print(("ok    " if good else "FAIL  ") + f"limit r -> 0 of {name} = {sp.simplify(want / g0)} g(0)"
+    print(("ok    " if good else "FAIL  ")
+          + f"limit r -> 0 of {name} = {sp.simplify(want / g0)} g(0)"
           + ("" if good else f"   got {sp.simplify(lim / g0)} g(0)"))
 for name, e, want in (("Q", QR, 1), ("I4", I4R, 3 * sig**2), ("C", CR, 1)):
     good = sp.simplify(sp.limit(e, Rs, sp.oo) - want) == 0

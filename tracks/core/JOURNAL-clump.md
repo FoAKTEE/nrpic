@@ -447,3 +447,19 @@ curvature of a puncture add in the code, and the particle masses computed from p
 the puncture's m/2r are consistent with the code's psi. The whole-box norm with all
 curvatures (7.3e-7 against 5.7e-9 without the puncture's momentum) is the truncation
 error at the puncture, as in the wave-1 tests of `multi_puncture.md`.
+
+### Addendum to T3 and T7: the curvature field itself, through the Hamiltonian residual
+
+`tracks/core/analysis/clump/spin_h_check.py` on the dumps of runs
+`core-20261115-154749-e1a4d0c` (T3, 128 cells) and `core-20261115-160935-3fc3bbc` (T7).
+No separate prediction was written: it is the identity of T2 (`H(with) - H(without) =
+-psi^-12 Abar_ij Abar_ij`, algebraic) applied to the spin term and to the sum with a
+puncture, and it checks the curvature without going through its divergence.
+- Spin, S = 0.04: largest difference from the closed form of the Python reference
+  2.3e-10 (peak of the closed form 5.289e-5), norms 3.6601357e-4 against 3.6601357e-4.
+- Two clumps and a puncture: `H(all) - H(puncture only)` against
+  `-psi^-12 (Abar_all^2 - Abar_puncture^2)` on the 2.09e6 cells farther than 1 from the
+  puncture: largest difference 6.7e-9 (peak 1.539e-4). The cross term between the
+  clumps' curvature and the puncture's is in it, so directions and relative signs of the
+  two kinds of curvature agree with the reference.
+Both at the single precision of the dumps. [VERIFIED]
