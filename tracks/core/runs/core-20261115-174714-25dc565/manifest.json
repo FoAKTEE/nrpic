@@ -1,0 +1,112 @@
+{
+  "schema": "nrpic-run-manifest/1",
+  "run_id": "core-20261115-174714-25dc565",
+  "track": "core",
+  "gate": "G2",
+  "kind": "scouting",
+  "purpose": "Check I of JOURNAL-clump: prepared rerun input problems/jeans/jeans_mc.athinput against the input and overrides run jeans/n1e4_v19 used, parameter by parameter",
+  "preregistered_in": null,
+  "launcher": "local",
+  "command": [
+    "python3",
+    "tracks/core/analysis/clump/check_jeans_mc_input.py",
+    "--out",
+    "tracks/core/analysis/clump/check_jeans_mc_input.json"
+  ],
+  "cwd": ".",
+  "git": {
+    "sha": "25dc5655cdfc4236bb1a50741f3cc40f34be1297",
+    "branch": "core/clump-curvature",
+    "dirty": false,
+    "merge_base_main": "b9fbf3e6534517c3393000da91c79ce552b254b9",
+    "worktree": "wt/core-clump"
+  },
+  "code": {
+    "core_tag": "core-v0.3",
+    "athenak_upstream_sha": "c5a0d7f",
+    "kokkos_sha": "6739bc623081648af9e752b616d9671527922cbf",
+    "problem": null
+  },
+  "env": {
+    "host": "anta",
+    "env_hash": "33c1dbb6673b68919eaa332b0add0b58aeac8be843f2071b9d06e2e0e397a96d",
+    "machine_file_sha256": "0321f40f4caeeb2a36624a9fa9809e60bad31071f366b3517ba23ad45698d2d7",
+    "uv_lock_sha256": "5417f6ba318b914aa3800e5d55f7b11fdd8df13c2688bdda7d419240aa1d5863",
+    "track_requirements_sha256": null,
+    "container_digest": null,
+    "compiler": "g++ 11.4.0",
+    "mpi": "none (Athena_ENABLE_MPI=OFF)",
+    "gpu": null,
+    "python": "3.10.12 /data/haiyangw/nrpic/wt/core-clump/.venv"
+  },
+  "input": null,
+  "inputs": [
+    {
+      "path": "/data/haiyangw/nrpic/runs/jeans/n1e4_v19/chain/input.athinput",
+      "role": "input",
+      "sha256": "e74bc6a61b79d254bb450536b9398fa1ad48665978bf77b4365ba7478ad4f515",
+      "bytes": 5258,
+      "tracked": false,
+      "location": "main checkout data root"
+    },
+    {
+      "path": "/data/haiyangw/nrpic/runs/jeans/n1e4_v19/chain/config.sh",
+      "role": "input",
+      "sha256": "ec8f5085215efaf03b38dfc22e65c6b5f0c26e0c7d076f7afdc30c2ae8727f8e",
+      "bytes": 1156,
+      "tracked": false,
+      "location": "main checkout data root"
+    },
+    {
+      "path": "problems/jeans/jeans_mc.athinput",
+      "role": "input",
+      "sha256": "91fb0774183dc470f559824ae0b9e3eabc7b22daff393ddcc72bf2cebe49ea01",
+      "bytes": 6511,
+      "tracked": true
+    },
+    {
+      "path": "tracks/core/analysis/clump/check_jeans_mc_input.py",
+      "role": "argv",
+      "sha256": "80a46765757e703a6ca6fc1a1fc06c0ccc896ca49eb201cdda00a1ee558a2683",
+      "bytes": 3478,
+      "tracked": true
+    }
+  ],
+  "batch_entries": null,
+  "resources": {
+    "nodes": 1,
+    "gpus": 0,
+    "cores": 1,
+    "walltime_s": null,
+    "wall_limit": null,
+    "segments_max": null,
+    "gpu_hours_requested": 0.0,
+    "gpu_hours": null,
+    "particles": null
+  },
+  "slurm": null,
+  "outputs": {
+    "dir": "scratch/core/core-20261115-174714-25dc565",
+    "sha256sums": "sha256sums.txt",
+    "sha256sums_sha256": null,
+    "bytes": null,
+    "files": null
+  },
+  "status": "running",
+  "exit_code": null,
+  "registered": "2026-11-15T17:47:14Z",
+  "started": null,
+  "ended": null,
+  "parents": [],
+  "notes": "",
+  "budget_at_submit": {
+    "gpu_hours_allotted": 40.0,
+    "cores_allotted": 16,
+    "gpu_hours_used": 2.4337,
+    "gpu_hours_reserved": 0.0,
+    "gpu_hours_without_gate": 3.4324,
+    "cores_busy": 2,
+    "runs": 711,
+    "allotment_from": "coord/DECISIONS/0006-compute-budget.md + 0014-budgets-after-wave-1.md"
+  }
+}
