@@ -212,3 +212,12 @@ sits in the reference `noise/ref/noise_ref.py` (W(t) - W(t - dt)), which the noi
 package should change to the sinh/cosh form (request in README). Figure
 `fig/fig_val_u6_scaled_cf.png` looked at: the shell means scatter inside the band except
 the 3-mode shell |n| = 1 at cycle 120 (0.38), which the exact Gamma test of A2 accepts.
+
+## 17:42 Prediction P7: processor U2 of the base case alone (before the card job runs)
+
+The card job is twelfth in the queue. As soon as the processor U2 (64^3, 300 steps, frozen,
+8 MeshBlocks) exists, it is validated alone (A0-A10, `validate_noise.py --input
+inputs/u64/U2.athinput --run PROC/U2`): every test passes, A1 below 1e-13 of the rms (the
+frozen increment has no square root, so the reference's cancellation costs at most one
+unit in the last place of dW against values of order 1e-2), A10 below 1e-14. This is the
+first validation at the base size (the lead's was at N = 32).
