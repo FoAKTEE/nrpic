@@ -221,3 +221,14 @@ failed (exit 2): I edited `build_ic.sh` (mesh size as a variable) while bash was
 reading it, and the closing loop of the script broke after make_east.py had finished. The
 outputs are those of make_east.py and are used. Lesson: never edit a script that a running
 job executes.
+
+## P9 (written before scripts/slicing_check.py ran): is the code's slicing Newtonian at first order?
+
+The scaling argument for the slicing products above rests on "Gauge" (i): the code's first-
+order gauge is the Newtonian one. Test on the same cosmology dumps (and later on the scan):
+in the Newtonian gauge alpha gamma^(1/6) = a^2 at first order, while alpha and gamma^(1/6)
+carry +Phi and -Phi. Prediction: in the linear stage (a <= 100) rms delta ln(alpha
+gamma^(1/6)) is below 10 percent of rms delta ln alpha, and delta ln alpha and
+delta ln gamma^(1/6) are anticorrelated (correlation below -0.9). Refuted if the product
+varies as much as the lapse: then the slicing differs from the Newtonian one at first order,
+the gauge products are not suppressed as argued, and the argument fails.
