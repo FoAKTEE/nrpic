@@ -26,6 +26,8 @@ Labels: [VERIFIED] recomputed or rerun here with the run id given; [JUDGEMENT] m
 | E-20261115-174515-4d30c15 | V6/V7, first attempt | failed (my error: run directory passed unexpanded) |
 | E-20261115-174600-81652ff | V6/V7: release processor executable, core's MS deck, 11 AthenaK runs | completed |
 | E-20261115-180056-d62ee5a | V2b: nonlinearity of the USR box (delta N proxy) | completed |
+| E-20261115-180348-d799c68 | V7: cost arithmetic from the track's inputs and my operation count | completed |
+| E-20261115-180445-e72dad6 | V7 addendum: the same, calibrated with core's card measurement | completed |
 
 All on processors (no card time; none was allotted to this package). Figures in `fig/`,
 JSON in `results/`; every figure was looked at before it was relied on.
@@ -191,6 +193,79 @@ the 1e6-realisation reference statistics were not rerun.
    The delta-N reference's end surface also needs care near the inflection point. G2 should state
    the validity window explicitly.
 
+## Addendum to V7, written after reading the track's review: calibration with core's card measurement
+
+The stage report (C4) cites a card measurement by core that I had not seen: run
+core-20261115-143907-cea4c86 (`scratch/core/.../summary.json`: one A100, 128^3, 64^3
+MeshBlocks, nmax2 = 1024: Z4c 1.983e7, with the field 1.389e7, with field and sources 1.204e7
+zone-cycles/s). Calibrating my operation count with it gives an effective synthesis rate of
+1.3e12 flop/s (the track assumed 3e12) and, per 256^3 realisation (MeshBlocks 128^3 / 64^3 /
+32^3): theta = 0.25: SR 0.60 / 0.74 / 1.21, USR 0.74 / 0.92 / 1.51 card-hours; theta = 0.025:
+SR 5.99 / 7.41 / 12.13, USR 7.45 / 9.21 / 15.09. [run E-20261115-180445-e72dad6; extrapolation
+from 128^3 assumes the same per-cell cost at 256^3, JUDGEMENT] At theta = 0.25 the margin to
+the downgrade threshold holds for every MeshBlock size; at theta = 0.025 both cases exceed it
+for every MeshBlock size.
+
 ## Comparison with the track's own review
 
-(written after the verdicts above; see the next section of this file)
+Read only after the verdicts and the three weak points above were committed (commit d799c68):
+`EVIDENCE.md` (the lead's verification), `OPEN.md`, `CHECKLIST.md`, `STAGE_REPORT.md`,
+`VERIFY_RESULTS.md`, `../G1/STATUS.md`, `../../RISKS.md`, `../../note/scripts/costmodel.py`.
+No `REVIEW.md` exists; the lead's review is EVIDENCE section 2-3.
+
+Agreements (same conclusion by a different route):
+- V1: the lead's own integrator and mine agree with SPEC 6 to the printed digits. One small
+  difference: the lead reports USR eps1(N*) = 1.31625e-2 and H* = 9.362350e-6. SPEC has
+  1.3164e-2 and 9.36232e-6, and I get 1.316389e-2 and 9.362319e-6. My integrator supports the
+  helper's numbers; the lead's are off by 1.1e-4 and 3e-6 relative, perhaps from a different
+  N* convention. This is irrelevant for the plan.
+- V2: the lead checked one SR mode and one USR mode (deformed/full 2.08 at the mode leaving at
+  N*+0.7, k = 2 dk); I get 2.069 at k = 2 dk and cover twelve shells per case. Same SR slopes.
+- V3, V4: the lead re-derived both errata by hand. I add an independent symbolic check, a
+  numerical draw test and the size of the printed form's violation (1.1e-3 of [H] at
+  crossing).
+- V8: the lead's rerun with 1e5 realisations gives a variance ratio of 1.4433 +- 0.0067 at
+  sigma = 1. My analytic de Sitter value is 13/9 = 1.4444, and the lattice factor 1.0805 is
+  identical.
+- The track's T1-T4 reproduce bit for bit in my rerun as in the lead's (E-20261115-135531-0c4e629).
+
+Differences (what my verification adds or contradicts):
+1. **Courant factor and cost are coupled (V7; my weak point 1).** OPEN item 7 says the
+   recommendation "does not hinge" on the measured cost because the threshold is ten times
+   above the estimate. C4 recomputes with core's measurement (0.57-0.71 SR, 0.71-0.88 USR) and
+   keeps the conclusion. That is right at theta = 0.25 only. The track's range covers 64^3-128^3
+   MeshBlocks and theta = 0.25. It does not state that at P2's theta = 0.025, which R13 keeps
+   as the fallback if L6 shows a dependence, the calibrated cost is 6.0-15 card-hours per
+   realisation, above the 5 card-hour threshold of SCOPE 4.5. If L6 forces theta = 0.025, the
+   track meets its own downgrade criterion. The track's estimate also does not account for
+   the 4-5 percent longer cosmic time from N* to N_f (my figures are about 5 percent above
+   C4's for the same MeshBlocks), or for the larger synthesis cost of MeshBlocks smaller than
+   64^3.
+2. **The MS model with kicks has now run (V6).** The lead's L-U runs tested the power model on
+   836ac86, and SCOPE 6 and R2 note that the kicks had never run. My V6 runs core's MS deck on
+   the release: bit identity across layouts and restart holds with kicks and coupling on, and
+   the Pi-sign negative control raises the constraints by 3e2-5e4. That is first evidence on
+   R2's "kick signs". It is not the planned single-kick test L5, and it does not test the
+   amplitude (A2).
+3. **The release differs from what SCOPE 6 read.** SCOPE 6 and EVIDENCE 3 cite 836ac86; the
+   release core-v0.3 contains the cancellation-free window increment (cpp:572-577) that OPEN
+   item 9 asks for. I did not rerun the Markov-tanh A1 test; other helpers' runs on v0.3 were
+   in progress.
+4. **USR near the diffusion-dominated border (my weak point 3) is not in RISKS.** R6
+   (geodesic slicing, outliers R ~ 10) and R11 (formalism debated) are near, but neither
+   names three findings. The background reaches drift/diffusion of about 1 at N_f. A delta-N
+   end surface at N*+10 sits just past the stationary inflection point, where kicked paths
+   stall. The linear-noise, level-0 set-up of G3 would be fed into that regime by any larger
+   box. My V2b also gives the track a positive result that is not in its documents: the per-mode
+   USR test A3 is not spoiled by delta-N nonlinearity (f_NL = 0.011, response linear to a few
+   percent up to 6 H/2pi kicks).
+5. **The G1 dependency (my weak point 2) agrees with R1 and G1/STATUS.** I confirm in the
+   release source that the pgen has only `wave`, `flrw` and `plane`
+   (scalar_field_tests.cpp:74-80).
+6. Not covered by me but checked by the lead: the Langevin benchmarks (<N>, var N), the noise
+   validator's self-test and U1-U8, codebase D1-D4 and memory, and the processor throughput.
+   Not covered by either: the unit mapping of SPEC 2.5 and the extraction factors E6 (hand
+   derivations, OPEN item 8), the end-of-inflation delta-N statistics, the importance sampling.
+7. Naming: CHECKLIST C18 and STAGE_REPORT look for `VERIFIER_REPORT.md`, but this package was
+   asked to write `VERIFIER.md`. The stage check will report the verifier as missing until the
+   lead links or renames it.

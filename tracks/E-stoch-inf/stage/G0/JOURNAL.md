@@ -209,3 +209,13 @@ run; in the N = 256 box no noise enters then (last mode at N*+4.2), but any larg
 cut would feed noise computed from a classical level-0 background into a diffusion-dominated
 phase. The proxy is separate-universe delta N, not NR; gradients and the NR extraction are not
 in it.
+
+## After the verdicts (commit d799c68): the track's review read, cost recalibrated
+
+The stage report cites core's card measurement core-20261115-143907-cea4c86 (128^3, 64^3
+MeshBlocks: field +43 percent, sources +15 percent on top). No prediction was written for
+this arithmetic; it is a recomputation, not a test. Run E-20261115-180445-e72dad6: effective
+synthesis rate 1.3e12 flop/s; per 256^3 realisation at theta = 0.25: SR 0.60-1.21, USR
+0.74-1.51 card-hours (MeshBlocks 128^3 to 32^3); at theta = 0.025: SR 6.0-12.1, USR 7.5-15.1,
+above the 5 card-hour downgrade threshold for every MeshBlock size. Comparison with the
+track's review: VERIFIER.md, last section.
