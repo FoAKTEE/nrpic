@@ -122,3 +122,14 @@ First run: 10 passed, 2 failed.
   16^3 to 32^3 (order 3.9). The plane-wave tests could not see the bug (it is O(A^2), A = 1e-8).
 After the two corrections: 12 passed, 2 skipped (the real-file reader tests need GWDIAG_RST /
 GWDIAG_NRFIELD).
+
+## Amendments to P5 (written before validate_tt.py ran)
+
+- After the P1(c) outcome the expected error of quantities built from (gamma, K) is O(A^2)
+  relative plus round-off ~1e-16/A: at A = 1e-6 per mode, below 1e-9 (not 1e-5).
+- With no pair k_m = -k_n among the modes, the spatial average of each mode is time
+  independent, so rho_kin and rho_grad are separately constant, not oscillating (the original
+  P5 sentence is wrong on its face). They oscillate in antiphase only for standing waves; a
+  standing-wave case (modes at m and -m with equal amplitudes) is added: prediction
+  rho_kin + rho_grad constant to < 1e-9 while rho_kin/rho_ref swings between 0 and 2 for a
+  single standing mode.
