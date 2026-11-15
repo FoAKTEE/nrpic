@@ -465,3 +465,10 @@ Not done, plainly:
 
 Card time used: 134 s (0.037 card-hours) of the three card-hours; job 4414 is limited
 to 15 minutes. Processor time: about 5.5 core-hours.
+
+## 2026-11-15 13:05 UTC  session core-rng  larger table while the card job waits
+
+Run core-20261115-125654-a8755fc: 2002070 keys, processor build of the final source,
+five standalone compilations, Python twin: one sha256 (93d2970e...), no differing value;
+21890 keys against `numpy.random.Philox`, none differing. (P2 on a sample ten times
+larger; the card is not part of this run.)

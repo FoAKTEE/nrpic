@@ -1,0 +1,44 @@
+{
+ "run_id": "core-20261115-125654-a8755fc",
+ "owner": "core",
+ "purpose": "Agreement on a table ten times larger (2002070 keys): processor build of the final source, five standalone compilations, Python twin, numpy.random.Philox",
+ "kind": "production",
+ "command": [
+  "bash",
+  "-c",
+  "python3 /data/haiyangw/nrpic/wt/core-rng/tracks/core/analysis/rng/make_keys.py keys.bin 2000000 && /data/haiyangw/nrpic/wt/core-rng/.work/exe/athena_cpu_34da199 -i /data/haiyangw/nrpic/wt/core-rng/problems/tests/rng_test.athinput problem/key_file=keys.bin -d . > athena.log 2>&1 && python3 /data/haiyangw/nrpic/wt/core-rng/tracks/core/analysis/rng/run_agreement.py --keys keys.bin rng_table.bin"
+ ],
+ "cwd": "/data/haiyangw/nrpic/scratch/core/core-20261115-125654-a8755fc",
+ "commit": "a8755fccf77d07acb98cf87825541eba4e1c853b",
+ "branch": "core/rng",
+ "uncommitted_changes": [],
+ "inputs": [
+  {
+   "path": ".work/exe/athena_cpu_34da199",
+   "sha256": "41ba3c329568f727a0deb2f1710fdd6b5dcacca17260fc9511484080bb6d022e"
+  },
+  {
+   "path": "tracks/core/analysis/rng/make_keys.py",
+   "sha256": "04698e74e8471b6e21ef03ab8f0b261567bc34ae3b416acecad826b16c7813fa"
+  },
+  {
+   "path": "tracks/core/analysis/rng/run_agreement.py",
+   "sha256": "502493031da72799f99d75f2ec8f30a7b6d918e36b49bfbe1079a84cd03ae553"
+  },
+  {
+   "path": "python/nrpic/rng.py",
+   "sha256": "da4ad2266506ffb733639df0e83f374fe87dd0173d341c11304c5bb36d85e92e"
+  },
+  {
+   "path": "athenak/src/utils/rng.hpp",
+   "sha256": "6f3ef87dfd65ecec4ab9dadd3e28c9d693824c8081049beb75581c55d6656bdd"
+  }
+ ],
+ "output_directory": "/data/haiyangw/nrpic/scratch/core/core-20261115-125654-a8755fc",
+ "host": "anta",
+ "start_utc": "2026-11-15T12:56:55Z",
+ "cores": 1,
+ "wall_time_s": 23.34,
+ "exit_status": 0,
+ "core_hours": 0.0065
+}
