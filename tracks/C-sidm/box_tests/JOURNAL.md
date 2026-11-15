@@ -220,3 +220,27 @@ Predictions:
 - T1 over the 3000-step runs: per-step criterion holds; exactly rounded sum M W unchanged
   to < 1e-15 relative.
 Refuted by any of the four runs failing a criterion.
+Started as run C-20261115-170539-28432c3 (A runs: 50 steps in 32 s; B runs: ~0.6 s/step).
+
+## 2026-11-15 T1 over 1e4 steps, T9: predictions (before the runs)
+
+T1 long (`scripts/t1long.py`): twotemp theta_1 = 0.3, theta_2 = 0.1, 1e5 particles, 16^3
+cells, sigma = 4, dt = 0.01, 1e4 steps, seeds 1 and 2 (~1e3 collisions per step, ~1e7 in
+the run, ~200 per particle). Prediction: the exactly rounded sum M W of the snapshots
+every 1000 steps equals the initial one to the last bit or within 1e-16 relative (T1/T2
+showed bit equality after 1.4e7 collisions); the coll.hst sum_MW (a plain floating sum)
+moves by < 1e-14; per-step criterion with the same margin as in T2 (~1e-7 of the bound);
+n_trunc = 0. Refuted by a drift above 1e-11 or any step above the bound.
+
+T9 (`scripts/t9.py`): `make_box unequal` (8e5 of mass M at theta_A = 0.03, 2e5 of mass 4M
+at theta_B = 0.01), sigma = 1, 16^3 cells, nanbu, dt = 0.02 tau_rel = 0.0997, 750 steps
+(15 tau_rel = 74.8), 8 seeds; plus the seed-1 file with coll_weights = equal for one
+step. Predictions: both classes end at one temperature (|z| < 4 in all 8 seeds) and pass
+KS against MJ at their final temperature (p > 1e-3); the energy drift per seed is a
+random walk of relative size ~1e-3 of the thermal energy (core: 0.4 percent scatter
+after 25 collision times with 2e5 particles; with 1e6 particles and ~15 tau_rel I expect
+~0.1-0.2 percent), with a mean over the 8 seeds within 4 se of zero; the same for the
+momentum components; updates per collision 1.53-1.54 (20/13 = 1.538 if the Moller
+speeds of the three pair kinds were equal); the run with coll_weights = equal exits
+non-zero at start-up with a message that names the masses. Refuted by any seed failing,
+by a mean drift beyond 4 se, or by the equal-weights run proceeding.
