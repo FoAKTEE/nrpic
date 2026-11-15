@@ -83,12 +83,22 @@ def main():
         rball = np.sqrt(1.5 / (dth_ref * (1 + 3 * e + p)))
         lam1 = max(el.abg_from_dep(dth_ref, e, p))
         a0 = 0.5 / lam1
+        a1 = float(th.a_of_t(t1))
+        # resolution of the 128^3 run, carried to the threshold amplitude: cells across the
+        # short semi-axis at the start, and that cell in units of the patch mass M = r_g/2
+        lam02 = np.asarray(el.abg_from_dep(0.2, e, p))
+        a002 = 0.5 / lam02.max()
+        A1_02 = float((a002 * (1.0 - a002 * lam02)).min())
+        cells = A1_02 / run[0]["dx"] if run else float("nan")
+        A1_th_over_M = 2.0 * A1_02 * 0.2 / dth_ref
         rows.append(dict(e=e, p=p, deltaL_th_ref=dth_ref, deltaL_th_run=dth_run,
                          run_over_ref=dth_run / dth_ref - 1, t1_rel_run=t1_rel_run,
                          sr_delay_t1=rs["t1_over_tk"] / rn["t1_over_tk"] - 1,
                          v1_infall=v1, t1_over_t0=t1 / t0, t1_over_tk=t1 / th.T_K,
-                         a0=a0, Rball_max_over_RL=rball, a0_for_Rball_1p5=1.5 ** 2,
-                         start_delay_for_1p5=(1.5 ** 2 / a0),
+                         a0=a0, a1=a1, Rball_max_over_RL=rball,
+                         Rball_max_at_t1_over_RL=float(np.sqrt(a1)),
+                         cells_short_axis_run=cells, A1_start_th_over_M=A1_th_over_M,
+                         dx_over_M_same_cells=A1_th_over_M / cells,
                          seeds=" ".join(f"{s * dth_ref:.3f}" for s in SEEDS)))
     os.makedirs(a.out, exist_ok=True)
     keys = list(rows[0].keys())
