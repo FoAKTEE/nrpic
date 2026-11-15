@@ -90,3 +90,46 @@ For the x-waves (`x_N16` to `x_N128`, 10 crossings; `x_N32_long`, 50): order of 
 error of h_+ between 4 and 6 at t = 10; amplitude loss and phase error falling with N.
 Trial runs of the symbolic (C1, C4, C5), crossed-wave (C2) and junk (C3) scripts were made
 in scratch/B-emd-gw/tmp/ to debug them; the registered runs follow.
+
+## 2026-11-15, entry 3: outcomes C1-C5 (registered runs)
+
+- C1, run `B-20261115-165114-277a0eb` (`v1_symbolic.json`): every prediction holds.
+  TT along x keeps only (S_yy - S_zz)/2 and S_yz; SO(2) and the 90-degree rotation both
+  force S_xy = S_xz = S_yz = 0, S_yy = S_zz; translations alone allow diag(0, s, -s) with
+  nonzero TT; the reflection y -> -y alone leaves S_yy - S_zz. The divergence-free
+  traceless E(2) tensor is f = C/Y^3 (one global mode). The projection of K on it is
+  -d_t(X/Y)/alpha per unit x: a total time derivative only for a lapse independent of x
+  (the caveat I expected; the scope states it for unit lapse implicitly).
+- C4, same run: with transverse metric a^2 and dust at rest, dD/dt = -(3/2) H (D - C),
+  D = C + B/t: a coordinate constant plus the decaying mode, no growing mode. With a
+  curvature perturbation zeta(x) in the whole spatial metric the growing mode
+  E = (9/10) t^(2/3) solves the linearized Hamiltonian constraint. Holds.
+- C5, same run: conformal Newtonian gauge with static Phi satisfies
+  d_t alpha = -(1/3) alpha^2 K exactly; the initial alpha / gamma^(1/6) of make_east.py
+  equals the Newtonian one. Holds, with two notes: the code uses Khat = K - 2 Theta in the
+  lapse equation (z4c_calcrhs.cpp lines 694-699), so alpha/gamma^(1/6) drifts by
+  (2/3) alpha Theta (zero in the continuum); and `cosmo_id.py` builds Ahat = LW
+  (longitudinal), so the initial K^TT is zero to second order and h^TT = 0 exactly.
+- C2, run `B-20261115-165119-efd5ee7` (`v2_crossed.json`, figure read): the term-by-term
+  source with the dust stress of make_east.py and a polarization-tensor projection give
+  h_+ = -(5/6) phi_x phi_y cos(K.x), Fourier |h_+| = 1.5399e-5 at delta = 0.01, eps = 1,
+  L = 4, to 1e-14 over the eps scan; only (+-k,+-k,0) carry TT; plane wave exactly 0;
+  three waves: 12 modes. Without the dust stress the coefficient is 3/5 of it (1/2), so
+  the reference depends on including rho v v. Fraction measure of the scope: with its
+  source (10/3) dPhi dPhi it is min(sqrt(3) eps, 1/2) to 3e-16, so the crossover is
+  eps = 1/(2 sqrt3) = 0.289, not 0.18 (a grid point of the scope's scan); with the full
+  source the same measure is 1.24 eps, saturating at 0.69. The measure is not physical
+  (it depends on which non-TT terms are counted). Peak potential 1.8238 delta;
+  id.json of runs/cosmo/east_d0.01_n64_pcs4b: max_abs_psiN = 0.018216 (holds).
+- C3, run `B-20261115-165123-9cb1745` (figure read): Bessel solution and numerical
+  integration agree to 1.1e-10; slope of the maxima -0.9972 (a = 10 to 100), spread of
+  envelope*a 0.66 percent from the maxima, 0.23 percent for the exact envelope; at a = 60
+  1.807 percent (exact envelope) against the scope's 1.818 percent. Holds. Note: the junk
+  is 33 percent of the static value at a = 3 and 10 percent at a = 10.
+- Locators checked at the source (kb-data): 2403.15126 lines 1005, 1031, 1074 say
+  delta^(7/2), omega_peak propto sigma^(3/2), Omega propto sigma^(7/2) = A_s^(7/4);
+  2605.04487 lines 2277-2281 (99 percent by t/t_k = 45.0, shell crossing 22.5), 2395-2405
+  (0.4-0.5 c at sigma = 0.1), 2512 and 2625 (several, about 3 orders); 1604.06065 lines
+  294-298 (eq. ij). Throughput: the 64^3 log has 1404 cycles, 63.78 s, 5.770e6 zone-cycles/s,
+  peak 1685 MiB; the 128^3 log 1301.8 s, 4.467e6 (holds). TESTLOG 1842-1852: a = 17.2 then
+  failure (holds).
