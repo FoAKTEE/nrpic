@@ -69,13 +69,13 @@
     "bytes": 3287,
     "files": 1
   },
-  "status": "completed",
+  "status": "superseded",
   "exit_code": 0,
   "registered": "2026-11-15T19:37:56Z",
   "started": "2026-11-15T19:37:56Z",
   "ended": "2026-11-15T19:37:58Z",
   "parents": [],
-  "notes": "",
+  "notes": "Lead, 2026-11-15T19:40Z: the literal argument '{out}' was not substituted by nrpic-run, so the outputs went to <worktree>/{out}/; they were moved into misplaced_out/ of this run directory (not in sha256sums.txt). Superseded by the rerun with --out defaulting to $NRPIC_RUN_DIR.",
   "budget_at_submit": {
     "gpu_hours_allotted": 30.0,
     "cores_allotted": 16,

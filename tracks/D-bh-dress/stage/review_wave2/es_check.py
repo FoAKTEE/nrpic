@@ -127,7 +127,7 @@ def leaf_blocks(half_root=192.0, nroot=96, nb=24, regions=((1, 95.9), (2, 47.9),
 
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument("--out", required=True)
+    ap.add_argument("--out", default=os.environ.get("NRPIC_RUN_DIR"))
     args = ap.parse_args()
     os.makedirs(args.out, exist_ok=True)
     out = {}

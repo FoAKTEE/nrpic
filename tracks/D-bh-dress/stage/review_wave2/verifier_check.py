@@ -54,7 +54,7 @@ def capture_threshold(rta):
 
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument("--out", required=True)
+    ap.add_argument("--out", default=os.environ.get("NRPIC_RUN_DIR"))
     args = ap.parse_args()
     os.makedirs(args.out, exist_ok=True)
     out = {"W7": {}, "W8": {}, "W9": {}}
