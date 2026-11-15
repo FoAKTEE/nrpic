@@ -578,3 +578,18 @@ sbatch --export=ALL,T3DIR=<T3 output>,IC256=<dir of make_waves.py --n 256,256,16
 T1 and T2 need the snapshot of Track B's packages (`git archive track/B-emd-gw
 tracks/B-emd-gw/periodic_z4c tracks/B-emd-gw/gw_diag python/nrpic | tar -x -C
 scratch/core/tmp/bfix/B`; used at 767eb93).
+
+### P6 Generator on several MeshBlocks and across a restart: prediction (before T5)
+
+While the card job waits. Oblique wave k = (1,1,1), 16^3, one period, new processor
+executable (`t5_blocks_restart.py`).
+- P6a: with eight MeshBlocks of 8^3 the final Z4c dump (double precision) equals that of
+  the single-MeshBlock run bit for bit (the Z4c update is the same arithmetic per cell;
+  only particle runs depend on the block layout), and the error file is identical.
+  Refuted by one differing value.
+- P6b: a circular wave (amp = amp_cross = 1e-6, phase_cross = pi/2) restarted from a
+  restart file written at about a quarter of the period ends with the fields of the
+  uninterrupted run to 1e-11 (a Z4c restart is not bitwise, scripts/README.md) and with
+  an error file whose RMS-L1 differs by less than 10 per cent. If the restart lost the
+  new parameters or scaled the end time twice, the error would be of order A = 1e-6 or
+  the run would end at another time: that would refute it.
