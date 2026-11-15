@@ -1,0 +1,52 @@
+{
+ "run_id": "core-20261115-155404-24c88e3",
+ "owner": "core",
+ "track": "core",
+ "gate": "G2",
+ "purpose": "Card runs of package scalar2 on one A100 (one Slurm job): T4 32^3 case for the comparison with processors, T3d ladder N = 32, 64, 128 with nmax2 = 64 and mode functions scaled by +-1, U9 (U2 of Track E's scaled noise base case), Track E's full noise base case U1-U8 (64^3 x 300), cost of a step at 128^3 and 256^3",
+ "kind": "scouting",
+ "command": [
+  "bash",
+  "-c",
+  ".venv/bin/python tracks/core/analysis/scalar2/card_prepare.py --out /data/haiyangw/nrpic/scratch/core/core-20261115-155404-24c88e3 --u2 /data/haiyangw/nrpic/scratch/core/core-20261115-155122-eb68eaa/U2/u.athinput --etree /data/haiyangw/nrpic/scratch/core/tmp/scalar2/Etree && sbatch --wait -p preempt --gres=gpu:1 -c 1 -t 00:20:00 -J core-sf2 -o /data/haiyangw/nrpic/scratch/core/core-20261115-155404-24c88e3/slurm.out tracks/core/analysis/scalar2/card_job.sh /data/haiyangw/nrpic/wt/core-scalar2/.work/exe/athena_gpu_a58e95b /data/haiyangw/nrpic/scratch/core/core-20261115-155404-24c88e3"
+ ],
+ "cwd": "/data/haiyangw/nrpic/wt/core-scalar2",
+ "commit": "24c88e324b0d5b26ac343072f79a46efe4a0f5c4",
+ "branch": "core/scalar-2",
+ "uncommitted_changes": [],
+ "inputs": [
+  {
+   "path": ".work/exe/athena_gpu_a58e95b",
+   "sha256": "dd716bc93cab1494725d76bec55b434c965608fa50fcabb88ee05f9f355226b1"
+  },
+  {
+   "path": "problems/scalar/sr_stochastic.athinput",
+   "sha256": "d1ad721d9b2b495b49782ca31a3c18efc24f1eb58c23eeff29d3fc12747efea6"
+  },
+  {
+   "path": "problems/scalar/sr_stochastic_modes.txt",
+   "sha256": "3e885408a9a1122f93997d46092b3a4141afac15415b73027556e75f82424031"
+  },
+  {
+   "path": "tracks/core/analysis/scalar2/card_job.sh",
+   "sha256": "976c1ff6ffebb110dc8c0539ac0b8532987e3211b264517f849cb56b422b8806"
+  },
+  {
+   "path": "tracks/core/analysis/scalar2/card_prepare.py",
+   "sha256": "4d3eade20b4cdb3d684dde909d5e0b69deeb84fd2a8e095926113bb4b15ce1cc"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/scratch/core/core-20261115-155122-eb68eaa/U2/u.athinput",
+   "sha256": "2806cfa9c522977e207774c1aab6de393f0d958cff73a5517fa70988533fee4f"
+  }
+ ],
+ "output_directory": "/data/haiyangw/nrpic/scratch/core/core-20261115-155404-24c88e3",
+ "outputs": {
+  "dir": "scratch/core/core-20261115-155404-24c88e3"
+ },
+ "host": "anta",
+ "start_utc": "2026-11-15T15:54:05Z",
+ "cores": 1,
+ "registered_by": "tracks/core/analysis/scalar2/runreg.py (by hand: nrpic-run submit fails with KeyError 'outputs')",
+ "status": "running"
+}
