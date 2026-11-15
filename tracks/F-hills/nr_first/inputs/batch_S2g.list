@@ -1,0 +1,2 @@
+# nr_first: S2 repeated with core's mass-scaled shift damping (eta m = 2 at the hole, 0.25 far); core_gauge executable
+S2g tracks/F-hills/nr_first/inputs/single_P025_profile.athinput -t 00:28:00

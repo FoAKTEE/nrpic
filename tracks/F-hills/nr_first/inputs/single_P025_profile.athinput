@@ -1,0 +1,123 @@
+# VARIANT S2g (nr_first): the light member's damping with core's mass-scaled shift damping
+# (branch core/gauge, <z4c> shift_eta_profile; eta(x) = eta_0 [1 + (M_ref/m - 1)/(1 + r^2/(4 m^2))]
+# for one hole): eta_0 = 0.25 (= 2/M of the passage in units of the member, M = 8 m) and
+# M_ref = 8, so eta m = 2 at the hole and 0.25 far away. Needs core's executable
+# scratch/core/exe/core_gauge/athena_gpu (READY); not run with the release.
+# Single Bowen-York puncture with the momentum of a light member of the q = 4 passage
+# (members m = 0.125 with |P|/m = 0.234 and 0.268: tracks/F-hills/three_punctures/inputs/
+# hills_q4_m8.athinput). Here m = 1, P/m = 0.25 along +x, closed-form correction (approx),
+# starting at the origin. Used for (package nr_first, JOURNAL.md):
+#   S3  this file as it is: cells m/8 at the puncture (the resolution of the members in
+#       the passage), eta m = 2 (shift_eta = 2)
+#   S2  z4c/shift_eta=0.25: eta m = 0.25, the light member's damping in the q = 4 passage
+#       (one shift_eta = 2/M for all holes)
+#   S1  mesh_refinement/num_levels=8: cells m/16, eta m = 2 (junk at the higher resolution)
+# Wave zone: cells 1 m within 56 m (16.8 cells per wavelength of the l = 2 quasinormal
+# mode 2 pi/0.3737 m), spheres at 30, 40, 50 m about the origin.
+
+<comment>
+problem   = single Bowen-York puncture, P/m = 0.25 (nr_first)
+
+<job>
+basename  = single
+
+<mesh>
+nghost    = 4
+nx1       = 64
+x1min     = -256.0
+x1max     = 256.0
+ix1_bc    = outflow
+ox1_bc    = outflow
+nx2       = 64
+x2min     = -256.0
+x2max     = 256.0
+ix2_bc    = outflow
+ox2_bc    = outflow
+nx3       = 64
+x3min     = -256.0
+x3max     = 256.0
+ix3_bc    = outflow
+ox3_bc    = outflow
+
+<meshblock>
+nx1       = 16
+nx2       = 16
+nx3       = 16
+
+<mesh_refinement>
+refinement          = adaptive
+num_levels          = 7
+max_nmb_per_rank    = 1600
+ncycle_check        = 4
+refinement_interval = 8
+
+<z4c_amr>
+method            = tracker
+radius_0_rad      = 56.0
+radius_0_reflevel = 3
+
+<time>
+evolution  = dynamic
+integrator = rk4
+cfl_number = 0.25
+nlim       = -1
+tlim       = 90.0
+ndiag      = 100
+
+<z4c>
+lapse_oplog     = 2.0
+lapse_harmonicf = 1.0
+lapse_harmonic  = 0.0
+lapse_advect    = 1.0
+shift_Gamma     = 0.75
+shift_eta       = 0.25
+shift_eta_profile = true
+shift_eta_mref  = 8.0
+shift_advect    = 1.0
+diss            = 0.5
+chi_div_floor   = 1.0e-5
+damp_kappa1     = 0.02
+damp_kappa2     = 0.0
+tracker_mode    = ode
+nrad_wave_extraction = 3
+extraction_radius_0  = 30.0
+extraction_radius_1  = 40.0
+extraction_radius_2  = 50.0
+extraction_nlev      = 10
+waveform_dt          = 0.25
+
+<problem>
+pgen_name       = nrpic_cf
+ncomp           = 1
+comp0_type      = puncture
+comp0_mass      = 1.0
+comp0_x1        = 0.0
+comp0_x2        = 0.0
+comp0_x3        = 0.0
+comp0_p1        = 0.25
+comp0_p2        = 0.0
+comp0_p3        = 0.0
+comp0_corr      = approx
+lapse           = precollapsed
+puncture_setup  = true
+puncture_radius = 1.8
+
+<output1>
+file_type = hst
+dt        = 0.25
+
+<output2>
+file_type = bin
+variable  = z4c_alpha
+slice_x3  = 0.001
+dt        = 10.0
+
+<output3>
+file_type = bin
+variable  = con_H
+slice_x3  = 0.001
+dt        = 10.0
+
+<output4>
+file_type = rst
+dt        = 10.0
