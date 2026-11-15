@@ -239,3 +239,29 @@ is suspect and the control 0.605 on the same mesh runs next.
 Card time: about 0.25 card-hours per run (0.2 s per cycle at about 450 blocks, 4800
 cycles); four runs and the prolate run about 1.3 card-hours; round 2 (two models inside
 the bracket) about 0.5.
+
+## 15:40Z Open id analysis (T2d, T3): what I expect, written before my analysis run
+
+Not blind: before writing this I read the region numbers that the lead's analysis run
+`core-20261115-145804-3629622` left in `analysis/id/test2_numbers.json.gz` (interior rms
+of H for `ct-edge2-prod-n128/-n256`: 2.54e-5, 5.51e-6 at t = 8 M; 2.62e-5, 1.24e-5 at
+10 M) and the history files of the t3 runs (`t3-bound-ct-n320`,
+`core-20261115-042001-abc5fe2`: central lapse 1.249 at t = 7.97 M, then 1e71 and all
+211062 particles removed between 8.4 and 9.4 M, exit status 0; `t3-bound-gs0-n160`,
+`core-20261115-055107-6fa6472`: particles lost from 4.56 M, as the processor run
+core-20261115-044359-aef2f7b). The test of the predictions is therefore the one written
+in `JOURNAL-id.md` before those runs (T2d; T3 (i)-(iv)); my run re-derives the numbers
+with a script that does not crash on these runs (`idcheck/t2d_t3.py`).
+Expectations: (a) T2d: interior rms of H of the production deposit at dx = 1/4 M below
+5e-5 at t = 8 and 10 M and not above the dx = 1/2 M value: CONFIRMED by the lead's
+numbers; my run reproduces them to the printed digits (same code, same files) or I have
+a reading error. (b) The rms of H in the boundary layer (r > 0.7 of the half-width) is
+the same in every smooth-edge run (3.7e-4 at 10 M), i.e. the mesh mean of |H| quoted in
+the lead entry is the boundary layer, not the ball. (c) T3: at dx = 1/8 M the run breaks
+down when the lapse front reaches the centre (t near 8.4 M), so T3 (iii) and the
+"run ends before t = 12 M" refutation clause hold at the finest mesh: T3 REFUTED at
+dx = 1/8 M; the turnaround numbers at 1/8 M exist only up to the breakdown (tau of the
+shells about 8 M, before the turnaround at 9.54 M). (d) `bound-mp-n160` (1+log): the
+lapse front reaches the centre near t = 3 M (central lapse 0.72 at 4 M after 1.71 at
+2 M): T3 (iv) confirmed in timing; its core errors at least twice those of
+`bound-ct-n160` (prediction (iv)).
