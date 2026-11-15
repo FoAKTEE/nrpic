@@ -141,3 +141,13 @@ Predictions (written before the run):
   that the run lasts about ten seconds) and continued: nothing missing.
 The correction is refuted if a scheduled output is missing in a corrected case, or if the
 uninterrupted corrected run writes other files than the release.
+
+Runs: core-20261115-154650-cf9f921 failed at once (relative path of the executable, no
+physics run). core-20261115-154659-cf9f921: the three deterministic predictions hold
+(numbers in the outcome below), but the wall-clock case ended at the time limit: 150000
+cycles take less than the three seconds I allowed, so it tested nothing. Changed before
+the next run: particle step 1e-4 M and `-t 00:00:02` (a hand trial stopped at
+t = 24.85 M with "Terminating on wall clock limit"), and the wall-clock case is run with
+the release executable too. Added prediction: release, stopped at the wall clock near
+t = 25 M and continued: the restart dump of t = 50 M and the table of the next scheduled
+time are missing; corrected: nothing missing.

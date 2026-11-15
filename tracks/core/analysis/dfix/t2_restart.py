@@ -9,8 +9,8 @@ Runs problems/tests/restart_schedule.athinput (restart dumps every 50 M, tables 
   u        uninterrupted
   c        stopped at the cycle limit nlim = 1234 (t = 123.4), continued from the restart
            file written at the stop
-  w        (corrected executable only) stopped at the wall clock limit (-t 00:00:03, with
-           the particle step 0.002 so that the run lasts longer), continued
+  w        stopped at the wall clock limit (-t 00:00:02, with the particle step 1e-4 M so
+           that the run lasts about half a minute), continued
 and lists the times of the restart files and tables each case wrote. Writes
 t2_restart.json into the run directory and the figure PREFIX.png.
 """
@@ -90,15 +90,16 @@ def main():
         res["cases"][tag + "_c"] = dict(collect(d), stop=last_message(d, "athena1.log"),
                                         stop_time=stop_t, restart_file=os.path.basename(newest),
                                         stop2=last_message(d, "athena2.log"))
-    d = os.path.join(run, "new_w")
-    athena(args.new, d, ["-i", INPUT, "particles/dt=0.002", "particles/traj_dcycle=500",
-                         "particles/hist_dcycle=500", "-t", "00:00:03"], "athena1.log")
-    newest = sorted(glob.glob(os.path.join(d, "rst", "rsch.*.rst")))[-1]
-    stop_t = rst_time(newest)
-    athena(args.new, d, ["-r", newest], "athena2.log")
-    res["cases"]["new_w"] = dict(collect(d), stop=last_message(d, "athena1.log"), stop_time=stop_t,
-                                 restart_file=os.path.basename(newest),
-                                 stop2=last_message(d, "athena2.log"))
+    for tag, exe in (("old", args.old), ("new", args.new)):
+        d = os.path.join(run, tag + "_w")
+        athena(exe, d, ["-i", INPUT, "particles/dt=0.0001", "particles/traj_dcycle=10000",
+                        "particles/hist_dcycle=10000", "-t", "00:00:02"], "athena1.log")
+        newest = sorted(glob.glob(os.path.join(d, "rst", "rsch.*.rst")))[-1]
+        stop_t = rst_time(newest)
+        athena(exe, d, ["-r", newest], "athena2.log")
+        res["cases"][tag + "_w"] = dict(collect(d), stop=last_message(d, "athena1.log"),
+                                        stop_time=stop_t, restart_file=os.path.basename(newest),
+                                        stop2=last_message(d, "athena2.log"))
 
     def missing(times, sched):
         return [s for s in sched if not any(abs(t - s) < 0.11 for t in times)]
@@ -125,10 +126,11 @@ def main():
         import matplotlib.pyplot as plt
         from nrpic import figstyle as fs
         fs.use_style()
-        fig, ax = plt.subplots(figsize=(fs.FULL_WIDTH, 2.9))
-        fig.subplots_adjust(left=0.30, right=0.98, bottom=0.17, top=0.96)
+        fig, ax = plt.subplots(figsize=(fs.FULL_WIDTH, 3.2))
+        fig.subplots_adjust(left=0.37, right=0.98, bottom=0.16, top=0.96)
         names = [("old_u", "release core-v0.3, uninterrupted"),
                  ("old_c", "release core-v0.3, stopped at t = 123.4"),
+                 ("old_w", "release core-v0.3, stopped at the wall clock"),
                  ("new_u", "corrected, uninterrupted"),
                  ("new_c", "corrected, stopped at t = 123.4"),
                  ("new_w", "corrected, stopped at the wall clock")]
