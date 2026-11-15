@@ -170,3 +170,28 @@ Reading of the figure [JUDGEMENT]: for the ejected member the barycentric energy
 conserved one (flat from t = 120 on); for the captured member it is the two-body energy with M
 (flat at -1.63 units from t = 120 on). In the 280 M of the passage both settle by t = 120 in
 Newtonian dynamics.
+
+## 2026-11-15 E4 test 1 rerun (run F-20261115-173821-b2c969a)
+
+10/10 checks passed after the fixes (velocity from positions within 3.0e-5 of the true one;
+barycentric energy range 1.54e-4 = V5b's). [VERIFIED]
+
+## 2026-11-15 E5. Tracker files across chain segments (prediction)
+
+Found while preparing P1 (reading the source, [VERIFIED] at the locators): AthenaK opens the
+tracker file `<base>.co_<n>.txt` with truncation at every start, also on a restart
+(`athenak/src/z4c/compact_object_tracker.cpp` line 78, `ofile.open(ofname)`), while the
+horizon summaries, the history and the waveforms are appended (`fastflow.cpp` line 252,
+`outputs/history.cpp` line 420, `z4c_wave_extr.cpp` lines 153, 176). `scripts/submit_chain.sh`
+restarts every segment in the same run directory and keeps no copies, so a chained passage
+would keep the trajectories of its last segment only. Remedy without source change:
+`scripts/athena_keep_trackers.sh`, given as the executable, copies the tracker files to
+`trk_keep/<time>/` before it starts the real executable; `nrread.read_trackers` joins them.
+Test `scripts/test_keep_trackers.sh` (processors, small mesh): segment 1 to cycle 8, segment 2
+restarted from the end of segment 1 to cycle 12.
+Prediction: the live file after segment 2 starts at cycle 8 (or 9) - the truncation is real;
+the wrapper kept one copy; the merged tracker has cycles 0-12 once each; a cycle written by
+both segments has identical positions (processor runs are byte reproducible); the horizon
+summary has no duplicate times after the reader. Refuted if the live file still holds
+cycles 0-7 (then the truncation reading of the source is wrong and the wrapper is not
+needed).
