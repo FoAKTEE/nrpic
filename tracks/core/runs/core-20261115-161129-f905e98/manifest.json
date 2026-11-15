@@ -41,5 +41,9 @@
  "host": "anta",
  "start_utc": "2026-11-15T16:11:29Z",
  "cores": 1,
- "status": "running"
+ "status": "failed",
+ "wall_time_s": 1052.44,
+ "exit_status": 1,
+ "end_utc": "2026-11-15T16:29:02Z",
+ "core_hours": 0.2923
 }

@@ -420,3 +420,22 @@ unadvanced one. That is the correction of T2, seen in the header of the file its
 had not thought of the dump inside binary dumps. No field, particle or history value
 differs in any case. A byte regression of the integration must therefore mask the
 `last_time` lines of final off-schedule files (as it masks the 36 unset header bytes).
+
+Outcome of the T1 reproduction (processor run core-20261115-152835-920d573, still
+running at this entry: 28 of 32 cycles, about two minutes per cycle on one loaded core;
+card run core-20261115-154030-5ba192a, 245 s of card time, Slurm job 4438; figure
+`tracks/core/analysis/dfix/figs/t1_repro.png`, looked at) [VERIFIED]:
+- R1 (release, m = 0, processors): `n_excised = 1` in the first history record
+  (t = 0.3125 M: Track D's "excised at t = 0.31 M"), tag 5 absent from the first
+  trajectory record on; speeds 0.72603, 0.78467, 0.82271 (predicted 0.7260, 0.7847,
+  0.8227);
+- R2 (release, m = 1e-300, processors): nothing removed; speeds 0.32334, 0.29592,
+  0.27385 (predicted 0.3233, 0.2959, 0.2739); radii 6.000, 8.000, 10.000 at t = 0.875 M;
+- R3, R4 (card): the same speeds to the five digits printed, the same removal; with
+  m = 0 the tracers are at r = 15.7, 17.3, 18.9 M at t = 20 M (Track D: "leave outward
+  near light speed"); with m = 1e-300 at 6.44, 8.34, 10.27 M (the slow outward drift of
+  the coordinates of a moving-puncture slice, known from `single_v3`).
+H1 is not refuted in any of the three ways it could have been: the positive mass
+restores the motion with the unchanged executable, processors and card agree, and the
+speeds are the null and the timelike ones. Cause: the null rule for m = 0 on the mesh
+metric. The card build has no defect of its own.

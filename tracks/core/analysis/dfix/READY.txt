@@ -1,0 +1,73 @@
+READY: executables of branch core/requests-adf (work package dfix of core)
+
+athena_cpu   serial processor build (scripts/build_cpu.sh)
+athena_gpu   card build (scripts/build_gpu.sh, CUDA 12.6, one A100)
+COMMIT       the commit both were built from
+Source release they extend: core-v0.3. Everything of core-v0.3 runs unchanged; the
+output files of existing set-ups are identical byte for byte (test T6: 7 relativistic
+and gravity cases, 3 Newtonian-mode cases, 1 static-mesh case) with one exception by
+design: the extra output written when a run stops between two scheduled times now
+stores the unadvanced last_time (correction 2).
+Details, predictions and outcomes: tracks/core/JOURNAL-dfix.md and
+tracks/core/interfaces/REQUESTS_ADF.md on the branch. Test scripts:
+tracks/core/analysis/dfix/. All tests below ran on processors; see "Card" at the end.
+
+Corrections (no option needed)
+1. Tracers: a particle with m = 0 follows a timelike geodesic on every metric source
+   (releases core-v0.2 and core-v0.3 pushed it as a photon on the mesh metric; a tracer
+   at rest was removed in its first step). Light rays are m = -t_e < 0, unchanged.
+   The released rule: <particles> zero_mass = null.
+   Example: problems/tests/tracer_mesh_circular.athinput (and every tracer input of
+   problems/puncture/, unchanged). Tested: T1 (reproduction with the release on
+   processors and on a card; circular orbit on a static mesh metric within the recorded
+   band for 300 M; zero_mass = null byte-identical to the release).
+2. Restart: a run stopped at the wall clock or cycle limit and continued writes every
+   scheduled output (restart dumps and every other kind with a dt schedule).
+   Example: problems/tests/restart_schedule.athinput. Tested: T2.
+3. Analytic metrics: <particles> alpha_exc acts there too, and particles flagged for
+   removal are removed and counted in n_excised, m_excised. Tested: T3 (analytic case).
+
+New options (all off by default)
+4. Accretion diagnostics, <particles>:
+     removal_record = true                 <basename>.removed.bin, one record of 20
+                                           doubles per removed particle (docs/FORMATS.md);
+                                           also needed for the column mE_excised
+     acc_nsphere = 2  acc_radius1 = 4.0  acc_radius2 = 10.0
+     acc_x1 = acc_x2 = acc_x3 = 0.0        fixed centre, or
+     acc_tracker = 0                       centre on puncture tracker 0
+     peri_count = true  [peri_rmax = R]    pericentre passages per particle (last block
+                                           of the snapshots, field 19 of the removal
+                                           record, history columns 11-14)
+     acc_dcycle = 20                       cadence of <basename>.acc.hst
+   Energy: E = alpha W - beta^i u_i at the particle (instantaneous; exact where the
+   spacetime is stationary). Work in the Newtonian mode as well.
+   Example: problems/tests/accretion_static.athinput (particle file written by
+   tracks/core/analysis/dfix/t3_accretion.py). Tested: T3 against exact Schwarzschild
+   geodesics on the mesh and the analytic metric (counts exact, sums of m E to 7e-8,
+   content identity to 8e-17, removal times in the predicted step, counters exact,
+   continued run byte-identical); T4 in the Newtonian mode (counts and counters exact).
+   Not tested: with a moving puncture (acc_tracker), with self-gravitating matter in an
+   evolved spacetime, on refined meshes, with the Boris pusher.
+   Limit: the counter counts noise for orbits without radial motion (circular).
+5. Newtonian mode, <particles>:
+     newton_pm_mass = 1.0  newton_pm_x1 = newton_pm_x2 = newton_pm_x3 = 0.0
+     newton_pm_soft = 0.5  newton_pm_soft_frame = comoving | physical
+                                           fixed point mass, potential
+                                           -G M/(r^2 + s^2)^(1/2), not deposited
+     newton_bg_t0 = 6.77                   background acceleration -(2/9) x/(t0 + t)^2
+                                           (newton_expansion = none only)
+   Examples: problems/tests/newton_point_mass.athinput (isolated),
+   problems/tests/newton_point_mass_periodic.athinput (expanding periodic box).
+   Tested: T4 (Kepler orbits to 7e-5, softened circular orbits to 5e-5, background
+   growing and decaying modes to 3e-7, comoving softening in the expanding box to 2e-4
+   against an ODE solution; see the journal for the physical softening). Not tested:
+   on refined meshes, with massive self-gravitating matter around the seed.
+6. Common horizon of one pair among several punctures, <fastflow>:
+     num_horizons = <single-hole surfaces + 1>
+     use_puncture_3 = -1  punc_pair_a_3 = 0  punc_pair_b_3 = 1
+     wait_until_punc_are_close_3 = true  use_puncture_massweighted_center_3 = true
+     [merger_distance_3 = 1.0]  initial_radius_3 = ...  (and the flow parameters)
+   Example: problems/tests/pair_horizon.athinput. Tested: T5 (found for the close pair
+   of three punctures, mass 1.0199 against 1.0208 expected; not searched by the
+   released rule; the far pair and the all-puncture surface wait). Not tested: a merger
+   during an evolution.

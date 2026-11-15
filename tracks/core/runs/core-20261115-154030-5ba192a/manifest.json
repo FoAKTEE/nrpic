@@ -41,5 +41,10 @@
  "host": "anta",
  "start_utc": "2026-11-15T15:40:31Z",
  "cores": 1,
- "status": "running"
+ "status": "completed",
+ "wall_time_s": 2922.35,
+ "exit_status": 0,
+ "end_utc": "2026-11-15T16:29:13Z",
+ "card_hours": 0.0681,
+ "card_time_source": "Slurm elapsed"
 }
