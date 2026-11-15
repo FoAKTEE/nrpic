@@ -57,10 +57,74 @@ nrpic-run submit --launcher local ... -- python3 tracks/B-emd-gw/first_source/sc
 nrpic-run submit --launcher local --cores 4 ... -- env NWORK=4 python3 tracks/B-emd-gw/first_source/scripts/late_rise.py runs/cosmo/dav_c256_n128_t runs/cosmo/dav_c256_n128_pcs4bt
 ```
 
-## State
+## State (end of the package, 2026-11-15)
 
-See the end of this file (rewritten at the end of the package).
+Established (numbers and run ids in `JOURNAL.md`; figures in `figs/`, looked at):
+
+1. First GW source at 64^3 on the cards (runs B-20261115-164059-d802e82,
+   B-20261115-165353-b592d43; 0.43 card-hours of the 1.5 allowed): the box-mode strain
+   c_+(k, k, 0) follows the second-order Poisson-gauge value s g(tau), s = -(5/6) phi_x phi_y
+   = -3.08e-5 eps, including the junk oscillation of the conformally flat start, to 0.22
+   percent (eps = 0.1, 0.3) and 0.44 percent (eps = 1) for 2 <= a <= 10; linear in eps to
+   0.05 percent; departures of 1-2 percent at a = 20, 6-11 at a = 40, and growth to 1.6-2.5
+   times s after shell crossing (a ~ 80-140). The TT field stays quasi-static
+   (rho_kin/rho_grad <= 0.04); rho_GW/rho_bar up to 3.5e-6 (eps = 1).
+2. Null (eps = 0): TT amplitudes of h and tilde A at the round-off of the metric (<= 2.8e-16)
+   through shell crossing; the relative criterion 1e-12 of the scope was mis-normalized and
+   fails at the first dumps only because the traceless part is then small.
+3. Gauge. `fslib/gauge.py` computes the spatial-gauge piece of the flat TT projection to
+   second order, G_tot = G + cross terms (test T0 and `tests/`, 6 pass). A second spatial
+   gauge (Gamma-driver shift, same slicing; the run reached a = 140) confirms it: the raw
+   difference of c_+ between the gauges (0.4 percent of s at a = 10, 11 percent at a = 60)
+   falls to 0.008 and 1.2 percent after G_tot; without the cross terms with the homogeneous
+   anisotropy of the box the correction fails (found on the 32^3 companion, journal). The
+   magnetic Weyl part agrees between the gauges where raw Lambda h does not.
+4. Wave-1 caveat (late TT rise in the full-GR cosmology dumps, `stage/G0/REVIEW.md` lines
+   98-102): NOT a second-order gauge effect. G_tot ~ 0.15 (rms non-TT)^2 is a tenth of the
+   rise and sits at low k; slicing products are 1e-5 of it; the first-order slicing is
+   Newtonian (P9). The rise lies at the grid scale (|k|L/2pi >= 20: 93-97 percent),
+   depends on the deposit there by a factor 1.9 and is quasi-static (rho_kin/rho_grad ~
+   0.02): unresolved small-scale structure or noise, an upper bound rho_GW/rho_bar < 3e-12
+   (quadratic cloud) and < 1.3e-11 (cubic) at a = 1001; the resolved band below 20 grows by
+   8-10 percent (k < 10) and twentyfold (10-20), deposit-independent.
+
+Not done / open:
+- P8 (32^3 against 64^3) and the 32^3 versions of P1-P6: see the end of `JOURNAL.md` (the
+  processor runs B-20261115-165525-f7c2004 take ~2 h).
+- The late growth of c_+ after shell crossing is not shown to converge (two meshes only, one
+  particle loading); 128^3 and a jittered-lattice null are the next runs.
+- G_tot removes the spatial gauge; the slicing gauge is bounded by a scaling argument with
+  measured generators (P10), not computed exactly; the York (covariant) TT part is still not
+  implemented.
+- P4 failed: other modes take up to 26 percent of the TT power by a = 20.
 
 ## Requests
 
-See the end of this file.
+To the B-emd-gw lead:
+1. Adopt `fslib/gauge.py` (gauge_piece_total) into `gw_diag` as the gauge-corrected flat TT
+   strain; report c_+ raw and corrected in every scan.
+2. Close `stage/G0/OPEN.md` item 9 with P7-P10 (journal) and item 7 in part: before a ~ 20 the
+   code's zero-shift strain equals the Poisson-gauge second-order strain to < 1.1 percent
+   (G_tot) with the slicing Newtonian at first order (P9).
+3. Re-word the null criterion of `scope/SCOPE.md` section 6 to an absolute bound (TT amplitude
+   at the round-off of the metric, ~1e-15), and the mode-content expectation (P4).
+
+To core:
+4. Information for `tracks/core/interfaces/cosmo_gauge.md` section 2 ("no passing test of a
+   shift condition in an expanding background"): the Gamma driver `shift_Gamma = 0.75`,
+   `shift_eta = 1`, `shift_advect = 1`, `lapse_advect = 1` with the conformal-time lapse ran
+   to a = 140 through shell crossing at delta = 0.01, 64^3, 8 particles per cell (run
+   B-20261115-165353-b592d43, case cw_eps1_gd), and its coordinates differ from the
+   zero-shift run exactly by the time integral of the shift (to 5e-4); uniform mesh only.
+5. Restart files carry the particles (380 MB per dump at 2.1M particles, 12 GB per run here):
+   the double-precision Z4c dump without particles of the wave-1 request
+   (`outbox/20261115T1340Z__to-core__gw-analysis-output.md`, item 1) is what the scan needs;
+   single-precision `bin` is adequate for the box modes (a = 1 to 140 agree with the
+   double-precision dumps where both exist) but not for the null test of tilde A.
+6. The processor build is serial: 7.5 s per cycle at 32^3 with 262,144 particles; an OpenMP
+   processor build would make processor companions practical.
+
+To orch (harness):
+7. `nrpic-run submit --launcher local` passes argv without expanding variables: a literal
+   `'$NRPIC_RUN_DIR'` argument made a directory of that name in the worktree root (moved, see
+   journal). Worth a line in `harness/RULES.md` ("the run directory is in the environment").
