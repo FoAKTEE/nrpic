@@ -107,3 +107,59 @@ with its own input): frozen validation passes A0-A10 and A11 (1, 8, 64 MeshBlock
 bit-identical), A12 (restart at cycle 60 bit-identical), A13 (N = 16 against 32 within
 eps_m), A15 (seeds); Markov Heaviside passes; Markov tanh fails A1 only, as before (the
 contract is not loosened after seeing data). Refuted by any other failure.
+
+### Outcomes of the follow-up runs (14:08Z)
+
+- L-U3 (validations E-20261115-140502-2957846): holds. Frozen tanh: every test passes,
+  A1 4.1e-14, A11 bit-identical for 1 vs 8 and 1 vs 64 MeshBlocks, A12 restart at cycle 60
+  bit-identical, A13 2.4e-15 (N = 16 vs 32), A15 seeds independent. Markov Heaviside: all
+  pass. Markov tanh: A1 only fails (1.07e-10 vs 1e-11), as predicted; the contract stays at
+  1e-11. A1 passing in the frozen scheme confirms core's dump convention (the dump at
+  cycle m holds the increment of the step ending at m: noise request C5 answered by data).
+  The diagnostic part of this run failed on a syntax error in lu_diag.py (keyword names);
+  rerun as E-20261115-140553-0b75e1e.
+- L-U2 (diagnostic E-20261115-140553-0b75e1e, `fig_lu_diag.png` looked at): main part
+  holds: in U6 the modes with dW > 1e-6 agree to 4e-14 of their base amplitude, the
+  differences grow like 1/sqrt(dW) for modes past crossing (sqrt of a difference of numbers
+  near 1; one ulp of W between libm and numpy exp). U1 sits at the 1e-15 floor. Refuted as
+  worded: "every mode below the line 3 x 2u/(2 sqrt dW)": at dW ~ 0.1 points reach 1.5 times
+  the line, which is the FFT rounding floor (~1e-15) that the line omits. Cause of the A1
+  excess named after this run: conditioning, not keys, times or stage bookkeeping.
+- The A2 shell means of core's output at shells 1-7 equal those of the noise helper's
+  synthetic self-test (1.58, 0.98, 1.08, 1.19, 0.91, ...): same amplitudes because they are
+  keyed by wave vector whatever N is.
+
+### Did / found / changed my mind about / open
+
+Did: reran the four helper packages from their commits (runs E-20261115-135531-0c4e629,
+-135532-5ec2b09, -140116-87c1cc5, -140502-f70b223), checked their central claims by
+independent code (L-B, L-N) and by derivation (L-I), read core's noise and kick code
+against SPEC, ran core's generator through the noise validator (L-U), fixed two small
+defects (validator inputs for U5; manifest status values that broke `nrpic-run budget`),
+aligned SPEC 5.3, 5.4, 2.5, 10 and added A8, wrote the G0 package (spec/scope/SCOPE.md v1 with
+the owner's decisions and the recommendation; stage/G0/CHECKLIST.md, EVIDENCE.md, OPEN.md),
+stage/G1/STATUS.md, RISKS.md, nine outbox messages, acknowledged C-sidm's stream-2 note.
+Helpers' journals: spec/JOURNAL.md, codebase/JOURNAL.md, langevin/JOURNAL.md,
+noise/JOURNAL.md.
+
+Found: everything the helpers claimed and the lead re-ran holds; the defects were in
+wording (SPEC 5.3), cross-package consistency (SPEC 5.4 keys), and the validator's U5
+handling. Core's generator is right to rounding; one test-only scheme needs a
+cancellation-free window increment.
+
+Changed my mind about: the processor build as the place for the noise unit test (it runs
+Z4c serially; the specified 64^3 x 300 case is 95 min per run), and about the G0 needing
+an FFT request (superseded by the wave-vector keys and the separable synthesis).
+
+Open: G0 products (REVTeX note v0, schematics, verifier report); group decision; G1 waits
+for core's initial slice, diagnostics, card build; the R^NR analysis code is Track E's next
+item; U9 and the 64^3 base case on a card. Tool guard: `stage/G0/REPORT.md` could not be
+written (subagent report-file guard); the scoping content is in spec/scope/SCOPE.md.
+
+L-R langevin (run E-20261115-140502-f70b223, 14:10Z): holds. V2 identical (94 leaves);
+quadratic reference at 1e5 realisations within 3 standard errors of the helper's 1e6 run at
+every variant (sigma = 0.01: 0.9966 +- 0.0043 against 0.9981; sigma = 1: 1.4433 +- 0.0067
+against 1.4492, inside the predicted 0.01).
+Side effect found and repaired: the langevin scripts also write into `langevin/results/`
+and `langevin/fig/`, so the 1e5 rerun overwrote the committed 1e6 reference files in the
+worktree; restored from git before committing (HANDOFF trap).

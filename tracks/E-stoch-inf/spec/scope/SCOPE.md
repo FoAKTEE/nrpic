@@ -156,7 +156,25 @@ homogeneous slow roll in conformal and geodesic gauge at Courant 0.5, 0.25, 0.12
 (core-20261115-133955-836ac86).
 
 The lead's runs with core's processor executable (`wt/core-scalar/.work/exe/athena_cpu_836ac86`,
-sha256 65ff2162...00144, read only): LU_RESULTS
+sha256 65ff2162...00144, read only) [VERIFIED by run]: the noise unit test of
+`../../noise/NOISE_SPEC.md` section 9 in a scaled base case (N = 32, nmax2 = 100, 120
+cycles; the 64^3 x 300 case costs 95 min per run on the serial processor build, run
+E-20261115-135218-bdf4710). Runs E-20261115-135523-a32c3a6 (U1-U8), validations
+E-20261115-140502-2957846, diagnostic E-20261115-140553-0b75e1e:
+- frozen tanh: every test passes; exact reconstruction from the keys to 4.1e-14 of the rms
+  (A1), 1, 8 and 64 MeshBlocks bit-identical (A11), restart bit-identical (A12), N = 16
+  against 32 to 2.4e-15 (A13), seeds independent (A15), spectrum, Gaussianity, correlation
+  function, band limit (A2-A4, A10). This also confirms the dump convention (increment of
+  the step ending at the dump cycle).
+- Markov Heaviside: every test passes.
+- Markov tanh: every test passes except A1 (1.07e-10 against 1e-11): sqrt(W(t) - W(t - dt))
+  for modes long past crossing amplifies a one-ulp difference of W between libm and numpy;
+  active modes agree to 4e-14 of their amplitude (`fig_lu_diag.png` of the diagnostic
+  run). A numerical-hygiene request to core (cancellation-free increment); the
+  Mukhanov-Sasaki model uses frozen amplitudes and closed-form window derivatives and is
+  not affected.
+Not yet exercised by any run: the Mukhanov-Sasaki model, the kicks, the coupling of the
+field to Z4c under noise.
 
 ## 7. Risks
 
@@ -186,8 +204,44 @@ percent; synthesis at 3e12 flop/s on the card.
 Checked by hand: 256^3 = 1.68e7 cells at 2e7 zone-cycles/s is 0.84 s per step, 0.97 s with
 15 percent, plus 4-14 percent synthesis. 512^3 needs 157-204 GB and does not fit one card.
 
-## 9. Recommendation to the group
+## 9. Recommendation to the group [JUDGEMENT]
 
-RECOMMENDATION
+**Continue** to G1 and G2 (reproduce the SR and USR cases of P1 in AthenaK) at the scope of
+section 4, and decide the scope of G3 (tail statistics, S11 deliverable 2) at G2, once the
+cost of one realisation has been measured on a card. Not shrink now, not downgrade.
+
+Reasons:
+1. The specification is complete and its numbers are reproduced independently (two
+   integrators for the backgrounds and the freezing reference; the delta-Pi erratum
+   re-derived from P2's own dictionary; the delta-N benchmark by a second method).
+2. The implementation already exists in the code base the group chose: core's
+   `core/scalar-field` (836ac86) has the field, the kicks in the specified form, the
+   stencil-consistent projector, mode functions integrated in lockstep with the RK stages
+   and the noise without a Fourier library; its generator passes the validation written
+   before the code existed, bit-identical across MeshBlock layouts and restart (section 6).
+3. Cost: about 1.5-2 card-hours to G2 at Courant 0.25 against 10 allotted; one 256^3
+   realisation 0.4-0.5 card-hours, ten times below the downgrade threshold.
+4. The downgrade path costs nothing extra: the delta-N solvers and reference statistics
+   for both potentials exist now and can serve Track A whatever is decided.
+
+Cost of continuing to G2: core's work package (initial slice at N*, constraint and output
+diagnostics, card build, interface document; outbox 2026-11-15T14:10Z), Track E's analysis
+of AthenaK output (R^NR, per-mode amplitudes, constraint ratios), about 2 card-hours.
+
+Conditions under which the recommendation turns to shrink or downgrade: the freezing
+criterion A3 fails in SR at level 0 and level 1 (downgrade, section 4 item 5); a measured
+256^3 realisation above 5 card-hours (downgrade); at G2, 1e3 realisations (400-500
+card-hours) beyond any allotment the group will grant (shrink G3 to smaller boxes or to
+importance-sampled delta-N with a few NR realisations as a check).
 
 The decision to continue, shrink or downgrade is the group's; this document stops here.
+
+## 10. Stage timeline [JUDGEMENT]
+
+| Gate | Content | Depends on | Indicative (charter 9.2) |
+|---|---|---|---|
+| G0 | this package; group decision | orch | week 2 (now) |
+| G1 | SR case: A1-A7 at 256^3 and the ladder | core: initial slice, diagnostics, card build; E: R^NR analysis | week 8 |
+| G2 | USR case; sensitivity L9; first cost measurements of many realisations | G1 | month 4 |
+| G3 | tail statistics vs delta-N (A8); compaction function | G2 decision on scope | month 9 |
+| G4 | paper | G3 | month 12 |
