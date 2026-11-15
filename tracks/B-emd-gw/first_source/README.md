@@ -27,7 +27,9 @@ the section "State" below.
 | `scripts/t0_gauge.py` | T0: G on exact pure-gauge Minkowski data (slopes) |
 | `scripts/late_rise.py` | P7/P7b: G, G_A, energies and spectra on the cosmology dumps |
 | `scripts/slicing_check.py`, `scripts/slicing_products.py` | P9/P10: first-order slicing; size of the slicing products |
-| `scripts/analyze_scan.py`, `scripts/plot_scan.py` | P1-P6, P8: diagnostics of the scan runs, figures and `scan_summary.json` |
+| `scripts/analyze_scan.py`, `scripts/plot_scan.py` | P1-P6: diagnostics of the scan runs, figures and `scan_summary.json` |
+| `scripts/compare_res.py` | P8: 32^3 against 64^3 |
+| `results/` | small JSON copies of the run outputs (summaries of the scan at 64^3 and 32^3, the reference, T0, the cosmology-dump checks) |
 | `figs/` | PNG copies of the figures that were looked at |
 | `JOURNAL.md` | predictions (written before each run) and outcomes |
 
@@ -89,10 +91,10 @@ Established (numbers and run ids in `JOURNAL.md`; figures in `figs/`, looked at)
    8-10 percent (k < 10) and twentyfold (10-20), deposit-independent.
 
 Not done / open:
-- P8 (32^3 against 64^3) and the 32^3 versions of P1-P6: see the end of `JOURNAL.md` (the
-  processor runs B-20261115-165525-f7c2004 take ~2 h).
-- The late growth of c_+ after shell crossing is not shown to converge (two meshes only, one
-  particle loading); 128^3 and a jittered-lattice null are the next runs.
+- The late growth of c_+ after shell crossing agrees between 32^3 (processor runs
+  B-20261115-165525-f7c2004) and 64^3 to 0.5 percent up to a = 80 and 3 percent at a = 100
+  (P8), but two meshes with one particle loading are not a convergence study: 128^3, more
+  particles per cell and a jittered-lattice null are the next runs.
 - G_tot removes the spatial gauge; the slicing gauge is bounded by a scaling argument with
   measured generators (P10), not computed exactly; the York (covariant) TT part is still not
   implemented.

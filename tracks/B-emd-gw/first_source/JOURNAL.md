@@ -400,3 +400,29 @@ Check of the single-precision dumps (same analysis runs, bin and rst written at 
 cycle, 22 common dumps per case): c_+(K1) agrees to 4.1e-5 (eps = 1) and 3.2e-4 (eps = 0.1)
 relative, G_tot(K1) to 5e-7 and 2e-6 of c_+. The time series from the bin dumps are
 therefore good to well below the effects discussed above.
+
+## Outcomes at 32^3 (processors) and P8
+
+Runs: initial data B-20261115-165357-37d0477 (P0 at 32^3: Hamiltonian residuals 7e-13 to
+1.2e-11, momentum <= 1e-16); processor scan B-20261115-165525-f7c2004 (five serial runs,
+1.8 h, 7.5 s per cycle, all rc = 0; the Gamma-driver case also reaches a = 140); analysis
+B-20261115-184650-2d155b6; figures and summary B-20261115-184817-aefdbbc
+(`results/scan_summary_32.json`, `figs/scan_kk0_32.png`, `figs/scan_secondgauge_32.png`,
+looked at); comparison B-20261115-184814-fe015de (`figs/res_compare.png`, looked at).
+
+At 32^3 the outcomes of P1-P6 repeat those at 64^3: P2 0.20, 0.19, 0.38 percent (eps = 0.1,
+0.3, 1; a = 2-10); P3 0.07 percent; P4 refuted the same way (box share 0.84, 0.83, 0.74 at
+a = 20); P5 |G_tot/c_+| <= 1.1 percent for a <= 20; P6 median corrected/raw 0.093 (quadratic
+piece alone 5.3); P1 absolute TT amplitudes at round-off, relative ratio above 1e-12 only at
+the first dumps (h 2.2e-12 single, 3.5e-13 double).
+
+P8: CONFIRMED, and more. c_+(K1) at 32^3 and 64^3 agree to <= 0.06 percent at a = 5-40 in
+all four cases (largest |difference| for a <= 20: 0.09 percent for eps = 1 and the Gamma
+driver; 0.45 and 0.62 percent for eps = 0.1 and 0.3, at the first dumps where c_+ is
+small), 0.07-0.2 percent at a = 60, 0.4-0.5 percent at a = 80 (zero shift; -1.9 percent
+Gamma driver) and within 3.2 percent at a = 100; the largest excursions, 5-7 percent, are
+at a = 90-130 for eps = 1 where c_+ oscillates fast. The rms non-TT part agrees to 3e-4
+(a <= 40) and 0.3 percent (a = 100). So the growth of the box-mode strain to 2-2.5 s
+after shell crossing is independent of the mesh at these two resolutions (same particle
+loading, two per cell and direction) [JUDGEMENT: two meshes and one loading are not a
+convergence study; particle number and the 128^3 mesh are the missing legs].
