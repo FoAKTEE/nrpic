@@ -22,7 +22,8 @@ the seed.
 | `selfsimilar.py` | test 2: the self-similar collisionless infall onto a point-mass seed (Bertschinger type), fixed-point iteration |
 | `shells.py` | test 3: spherical dust shells with shell crossing; centre passing (Newtonian-mode reference) or absorbing (capture by the hole, full-relativity proxy); optional tangential velocity dispersion with capture for L < 4 M_bh |
 | `analyze.py` | combines tests 2 and 3, checks against the closed forms, growth curves, predicted profiles, run-parameter table with the scoping cost model |
-| `figs/` | copies of the figures of the registered runs (the run id is in each caption line below) |
+| `figs/` | copies of the figures of the registered runs (run ids below) |
+| `run_plan_D-bh-dress-20261115-125613-248fdaf.txt` | the run-parameter and cost table of the analysis run (copied from its output) |
 
 ## Figures (all looked at; run ids in `JOURNAL.md`)
 
@@ -41,7 +42,8 @@ otherwise), one core each:
     python3 $S/register_run.py $S/rd_checks.py "test 1"
     python3 $S/register_run.py $S/selfsimilar.py "test 2" -- --taumax 300
     for c in absorb_e0.01 absorb_e0.03 pass_e0.01_s0.5 pass_e0.03_s0.5 pass_e0.1_s0.5_a100 \
-             absorbL_e0.01_sig0.02 absorbL_e0.01_sig0.05 absorbL_e0.01_sig0.1 absorbL_e0.01_sig0.2; do
+             absorbL_e0.01_sig0.02 absorbL_e0.01_sig0.05 absorbL_e0.01_sig0.1 absorbL_e0.01_sig0.2 \
+             absorb_e0.03_rw3 pass_e0.03_s0.5_rw3; do
         python3 $S/register_run.py $S/shells.py "test 3 $c" -- --config $c; done
     python3 $S/register_run.py $S/analyze.py "analysis" -- --ss <test-2 output dir> \
         --shells <the test-3 output dirs>
