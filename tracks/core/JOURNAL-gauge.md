@@ -661,3 +661,21 @@ moves towards 1 monotonically with the width: (e) w = 4: 1.10 to 1.20, w = 8: 1.
 1.10; (d) w = 8: 0.75 to 0.92. Horizon masses as in (a) within 1e-4. Refuted if a
 wider profile is not closer to 1 than width 2 (then the width is not what limits the
 profile, and a factor on kappa_1 or the Gamma coefficient would be the next candidate).
+
+### A coarse processor version of ES (prediction written before the run)
+
+Card job 4477 (ES, L3) has about ten jobs of other sessions ahead. As insurance, ES runs
+on one processor with the dust region at cells of 4 M instead of 2 M (refined region 1
+shrunk to the puncture nest; the nest to M/8 within 2 M unchanged), T = 2 M, to
+t = 10 M (tag `g-es-leak2-coarse`). Prediction [JUDGEMENT]: (1) |M_AH(t)/M_AH(5 M) - 1|
+below 1e-3 for 5 <= t <= 10 M (same nest as the card run); (2) wall tracers (R_0 = 36 M)
+within 1e-2 of the exact radius at their proper time (cells of 4 M at the wall); (3) lapse
+at the tracers at 48 M within 2 per cent of the reference 1.062 and 1.064 at t = 5 and
+10 M, largest lapse on the mesh below 1.09; (4) no dust particle inside the wall
+tracers' radius by more than one cell. Refuted by a horizon-mass drift above 3e-3 or a
+dust lapse above 1.3.
+Outcome: not run. The static refinement makes 440 MeshBlocks (1.8e6 cells) whatever
+the size of region 1, because with three root MeshBlocks per direction the nest around
+the centre forces level 1 nearly everywhere; at 1.2e4 zone-cycles per second that is
+about 13 h for 10 M. Stopped by process id after 107 s (run
+core-20261115-183458-b4430da, exit -15). ES stays with card job 4477.
