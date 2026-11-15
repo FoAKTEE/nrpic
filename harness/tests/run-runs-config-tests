@@ -1,21 +1,30 @@
 #!/bin/bash
 # Runs the self-tests of nrpic-run, nrpic-env, nrpic-stage, the vendored figure libraries, the
 # proposed hooks, the proposed Claude Code configuration, nrpic-fetch-arxiv (loopback server only)
-# and the pre-commit hook. Each builds its own scratch
-# repository under <main checkout>/scratch/harness/ and never touches live branches or worktrees.
+# and the pre-commit hook. Each builds its own scratch repository under <main checkout>/scratch/harness/
+# and never touches live branches or worktrees. The full output of each test is kept in
+# <main checkout>/scratch/harness/logs/<test>-<UTC>.log (named for a test that failed).
 #   harness/tests/run-runs-config-tests [--full]     (--full: the dummy run of test_nrpic_run lasts 30 s)
 # Exit status: number of test files that failed.
 set -u
 PATH=/usr/local/bin:/usr/bin:/bin
 here=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
+home=$(dirname "$(git -C "$here" rev-parse --path-format=absolute --git-common-dir)")
+logs=$home/scratch/harness/logs
+mkdir -p "$logs"
+stamp=$(date -u +%Y%m%dT%H%M%SZ)
 fail=0
 for t in test_nrpic_env.py test_nrpic_run.py test_style.py test_nrpic_stage.py test_hooks.py test_claude_config.py \
          test_fetch_arxiv.py test_precommit.py; do
   args=()
   [[ $t == test_nrpic_run.py && ${1:-} == --full ]] && args=(--full)
-  line=$(/usr/bin/python3 -I "$here/$t" "${args[@]}" 2>&1 | tee /dev/stderr | grep -E '^== .*: [0-9]+/[0-9]+ passed' | tail -1)
+  log=$logs/${t%.py}-$stamp.log
+  /usr/bin/python3 -I "$here/$t" "${args[@]}" > "$log" 2>&1
+  line=$(grep -E '^== .*: [0-9]+/[0-9]+ passed' "$log" | tail -1)
   echo "$t: ${line:-no summary (crashed?)}"
-  [[ $line =~ :\ ([0-9]+)/([0-9]+)\ passed ]] && [[ ${BASH_REMATCH[1]} == "${BASH_REMATCH[2]}" ]] || fail=$((fail + 1))
-done 2>/dev/null
+  if [[ $line =~ :\ ([0-9]+)/([0-9]+)\ passed ]] && [[ ${BASH_REMATCH[1]} == "${BASH_REMATCH[2]}" ]]; then :; else
+    fail=$((fail + 1)); echo "  failed checks:"; grep -E '^  FAIL' -A3 "$log" | head -20; echo "  log: $log"
+  fi
+done
 echo "runs+config self-tests: $fail file(s) with failures"
 exit $fail
