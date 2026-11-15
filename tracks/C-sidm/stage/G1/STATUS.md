@@ -9,14 +9,15 @@ track and an implementation by core. Run ids are under `tracks/C-sidm/runs/`; th
 runs of the lead are C-sidm-20261115-131130-3077a99 (cross-checks X1-X5) and
 C-sidm-20261115-131135-3077a99 (reruns of every package); see `../G0/REVIEW.md`.
 
-**Verdict: G1 NOT MET.** One criterion is blocked on core (the operator is not committed);
-the baseline and the specifications are done and independently checked.
+**Verdict: G1 NOT MET.** The baseline and the specifications are done and independently
+checked; core committed the operator at the end of this session (3436846, untested by core),
+and its kernels pass the track's T0; the box tests T0b-T12 have not run.
 
 ## 1. Track-specific criteria
 
 | # | Criterion | Status | Evidence |
 |---|---|---|---|
-| 1 | All tests of C-pre-1 pass (collision operator) | NOT MET: blocked | What the track specified: `collide/SPEC.md` (algorithm, options, outputs, curved-spacetime frame), `collide/TESTS.md` (T0-T12, pass criteria fixed before any run), `collide/REFERENCES/` (62 tests pass, rerun in -131135; closed-form rate checked by an independent 3D quadrature to 5e-7, X1), 209 kernel test vectors, box analysis tested on synthetic data and on the collisionless AthenaK run T6-0 (run C-sidm-20261115-121302-313d399, reproduced bit for bit in -131135). What core implemented: nothing committed. `core/collisions` = 94dc093, the merge of `core/rng`, no collision code (`git log`, `git diff main...core/collisions`, checked at 13:28Z). An uncommitted draft in `wt/core-coll` (13:09-13:11Z: `athenak/src/particles/nrpic_collide.hpp`, 190 lines; `tracks/core/interfaces/collisions.md`, 303 lines) follows SPEC.md: probability (P), Moller speed, keys K1-K3 on stream 2, equal-mass fatal error, sub-cycling, dump for the replay. Its section 10 lists the differences: global cell index with face correction; default triad `symmetric` (the Boris gauge) instead of Cholesky; per-step history; global equal-mass check; an extra velocity-dependent cross-section model. Check of the implementation against the references: not possible (no executable, no runs). |
+| 1 | All tests of C-pre-1 pass (collision operator) | NOT MET: T0 passed, the rest waits for core | What the track specified: `collide/SPEC.md` (algorithm, options, outputs, curved-spacetime frame), `collide/TESTS.md` (T0-T12, pass criteria fixed before any run), `collide/REFERENCES/` (62 tests pass, rerun in -131135; closed-form rate checked by an independent 3D quadrature to 5e-7, X1), 209 kernel test vectors, box analysis tested on synthetic data and on the collisionless AthenaK run T6-0 (run C-sidm-20261115-121302-313d399, reproduced byte for byte at its commit, run -132327-eab8e41). What core implemented: commit 3436846 on `core/collisions` (13:19Z): `tracks/core/interfaces/collisions.md` (design, adopts SPEC eq. P, the Moller speed, keys K1-K3 on stream 2, equal-mass fatal error, sub-cycling, before/after dump), kernels `athenak/src/particles/nrpic_collide.hpp`, task `nrpic_collide.cpp`, predictions P0-P11 in `tracks/core/JOURNAL-coll.md`; its message says the processor build compiles and nothing is tested yet. Differences from SPEC listed in its section 10: global cell index with face correction; default triad `symmetric` (Boris gauge) instead of Cholesky; per-step history; global equal-mass check; an extra velocity-dependent cross-section model. Check against the track's references: T0 on the committed kernels (CollGammaRelM1, CollMoller, CollScatter compiled standalone at -O0, -O2, -O3 -march=native with contraction) PASSES on all 208 equal-mass vectors: largest error 3.2e-16 of max(1, |u|) (criterion 1e-13), pair four-momentum conserved to 1.32 eps (criterion 4 eps) (run C-sidm-20261115-132624-13a77db, `fig_t0_kernel.png` looked at); core's own driver, committed minutes later (1a050f3, run core-20261115-132556-a7dc8ab), reports 3.3e-16 and 1.4 eps, so two independent drivers agree. T0b-T12 need an executable of `core/collisions` that has passed core's own checks: not run. |
 | 2 | The baseline is reproduced (C-pre-3) | MET | F21 = arXiv:2108.11967: Table 1, 56 rows, all columns within 1.1e-4 relative except R, which F21 prints on a 1e-3 grid, and three printed typos (`main.tex:491, 493, 516`); Table 2, 14 roots, w0 within 1.1e-4 (run C-sidm-20261115-120722-38ab057, `gravothermal/figs/fig_table_residuals.png`, looked at). Criteria: eps maximum Z(0) = 0.5404 (b = 0.1), adiabatic-index root w0 = 4.05115 (F21 4.0515). An independent second solver (scope) agrees to 2e-8 in eps and 2e-9 in Z(0), and both match four F21 rows transcribed by the lead (X2, `fig_review_tmb.png`, looked at). Beyond F21: exact radial-pulsation onset Z(0) = 0.6348 (b = 0.1) to 0.5790 (b = 0.5) with gamma = 1 + p/u, the finite-element solver checked on Gamma = 2 polytropes (zero at the mass maximum to 3e-8, run -121524-5cebcf5, reproduced in -131135) and by a sign change between w0 = 3.58 and 3.595 at two resolutions (X5, `fig_review_onset.png`, looked at). 2601.17117 prints no sequence of its own; its time scales are recorded with locators (run -121412-d463e1a). |
 
 ## 2. Common G1 evidence (charter 9.2)
@@ -38,8 +39,8 @@ the baseline and the specifications are done and independently checked.
 
 ## 4. First cluster runs with collisions, for wave 2
 
-Preconditions: core's operator committed with `tracks/core/interfaces/collisions.md`; T0,
-T1, T2 and T10 of `collide/TESTS.md` passed on processors; T0b run with `triad = cholesky`
+Preconditions: core's operator (committed in 3436846) past core's own predictions P0-P11; T1,
+T2 and T10 of `collide/TESTS.md` passed on processors; T0b run with `triad = cholesky`
 (or the replay taught the symmetric triad). Then, with the processor or card executable of
 `core/collisions`, registered as scouting, predictions in `JOURNAL.md` first:
 

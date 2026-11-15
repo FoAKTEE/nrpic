@@ -1,0 +1,41 @@
+{
+ "schema": "nrpic-run-manifest/1 (by hand)",
+ "run_id": "C-sidm-20261115-132624-13a77db",
+ "owner": "C-sidm",
+ "package": "review (lead)",
+ "kind": "scouting",
+ "purpose": "lead review L7: test T0 of collide/TESTS.md on core's committed collision kernels (nrpic_collide.hpp at 3436846), 208 equal-mass vectors, three compiler flag sets",
+ "command": [
+  "python3",
+  "tracks/C-sidm/review/t0_kernel.py",
+  "3436846607c787b260415af5dd22fbadb275e93a"
+ ],
+ "cwd": "/data/haiyangw/nrpic/wt/C-sidm",
+ "commit": "13a77db417155c78e4796e20f083363bf2e92950",
+ "inputs": {
+  "tracks/C-sidm/review/t0_kernel.py": "d59c64f210ea6236d03e7f57888a08c0ee91e2c5349b927949b657ccfe6ea182",
+  "tracks/C-sidm/review/t0_kernel.cpp": "f3500313e7c0121b608378eaa9a22a3b3e35c3ea0c04a11d2b362a8354441bee",
+  "tracks/C-sidm/collide/REFERENCES/test_vectors.json": "16d8064306c662f5a7bc02ad13269c0685af68054d02737e17ac72046096722e"
+ },
+ "output_dir": "/data/haiyangw/nrpic/scratch/C-sidm/C-sidm-20261115-132624-13a77db",
+ "outputs": {
+  "dir": "/data/haiyangw/nrpic/scratch/C-sidm/C-sidm-20261115-132624-13a77db"
+ },
+ "cores": 1,
+ "card_hours": 0.0,
+ "notes": "",
+ "started_utc": "2026-11-15T13:26:24.256914+00:00",
+ "status": "completed",
+ "wall_time_s": 2.0,
+ "exit_status": 0,
+ "finished_utc": "2026-11-15T13:26:26.242392+00:00",
+ "outputs_sha256": {
+  "fig_t0_kernel.pdf": "9634f5aad89dda845882342bc4d7b3354284b1b52e6761321dc54c77ba1a97ff",
+  "fig_t0_kernel.png": "85aeb67b735a335f36bfc217903b2d6fbc69560e32bce609dedf1e5477582172",
+  "nrpic_collide.hpp": "66450f747cc79cce735cbf7dfb83dc3cd237f15f498bef057bb10d9f8e1bfe7f",
+  "t0.json": "49be146ddd129593be1236fba35398cb48525360a9221c32b78d6b24abce7b83",
+  "t0_O0": "0581ecaf76ea8674410cd01fc43608202cc8914e3fa470913e0d983f7f602df3",
+  "t0_O2": "142f29bde30e5a1094984b2185eb54903ca86268f7baf7fe28094a405317f974",
+  "t0_O3native_fma": "a5473d34f8d92713d5ca82ca7568578971886dc97ddf0d96ae9ea2aabc84d847"
+ }
+}

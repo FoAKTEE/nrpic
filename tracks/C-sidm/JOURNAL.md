@@ -76,3 +76,29 @@ Helper packages under review (their own journals hold their predictions and outc
   1e-13 max(1, |u|) of the 60-digit reference (expected ~1e-15, like the oracle), pair
   four-momentum conserved to 4 eps of the pair energy, v_Mol within 1e-13 relative.
   Refuted by any failing case. The unequal-mass vector is outside an equal-mass kernel.
+
+## 2026-11-15T13:40Z  session C-sidm lead (wave 1 review)  commits 06a05c7..(this entry's commit)  runs C-sidm-20261115-131130-3077a99, -131135-3077a99, -132327-eab8e41, -132624-13a77db
+
+- outcome L7 (run C-sidm-20261115-132624-13a77db, 2 s): held for the T0 criteria: all 208
+  equal-mass vectors pass at -O0, -O2 and -O3 -march=native with contraction; largest
+  error 3.2e-16 of max(1, |u|), pair four-momentum within 1.32 eps. Refuted in my own
+  extra v_Mol criterion for one vector: "identical_velocities" returns v_Mol = 0 exactly
+  against a reference of 4.3e-31, which is the round-off of the 60-digit evaluation of an
+  exact zero (207 others within 1e-13). Core found the same and compares absolutely there
+  (a7dc8ab); its own T0 (1a050f3, run core-20261115-132556-a7dc8ab) gives 3.3e-16 and 1.4 eps.
+- did: reviewed the four helper packages from their artefacts (`stage/G0/REVIEW.md`);
+  reran every test and reference run (L1, L1b); independent cross-checks X1-X5 (L2-L6, all
+  held); re-read 27 source statements at file:line; opened 29 of 35 figures; wrote the G0
+  package (`stage/G0/REPORT.md`, `EVIDENCE.md`, `OPEN.md`, `CHECKLIST.md`), the G1 status,
+  11 outbox messages, STATUS, HANDOFF, RISKS.
+- decided [JUDGEMENT, REPORT section 2]: S3 family = F21 truncated Maxwell-Boltzmann at
+  b = 0.1 (King b = 1 and monoenergetic for verification); Kn = lambda_c/H_c with
+  lambda = 1/(rho0 sigma_m), H = (v1^2/(4 pi rho0))^1/2 (K = 168.9 for the King threshold
+  model); Kn -> 0 anchor = exact pulsation onset; collisionless scans are G2 work in wave 2.
+- changed my mind about: scope's G1 item (a) (moved to G2); scope's Kn (energy density in H,
+  factor 1.18) and equilibria's Kn (transport mean free path, factor 0.77) replaced by one
+  track definition.
+- open: `stage/G0/OPEN.md` (working note, schematics, fresh verifier, Juttner Gamma_1 onset,
+  F21 b = 0.1 particle files, growth-rate pipeline, literature); G1 waits for core's tested
+  executable (T0b-T12); helper journals: `scope/JOURNAL.md`, `collide/JOURNAL.md`,
+  `gravothermal/JOURNAL.md`, `equilibria/JOURNAL.md`.

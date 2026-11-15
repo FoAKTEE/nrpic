@@ -4,13 +4,15 @@ Written for a reader with no memory of the last session (lead of wave 1, 2026-11
 
 State: G0 package written (`stage/G0/`: REPORT, EVIDENCE, OPEN, REVIEW, CHECKLIST), awaiting
 the orchestrator. G1 is NOT met: the baseline (F21) and the specifications are done and
-independently checked, but core has not committed the collision operator, so none of the
-collisional tests T0-T12 has run. No card time used.
+independently checked; core committed the operator at the end of the session (3436846,
+then 1a050f3) and its kernels pass the track's T0 (run C-sidm-20261115-132624-13a77db), but
+no box test T0b-T12 has run. No card time used.
 Owner: C-sidm, branch `track/C-sidm`, worktree `/data/haiyangw/nrpic/wt/C-sidm`.
 Run next: `cd /data/haiyangw/nrpic/wt/C-sidm && git merge --no-edit main && git log --oneline -5 core/collisions`
-(if core has committed the operator and `tracks/core/interfaces/collisions.md`: build or
-take its processor executable, then run T0 with `collide/REFERENCES/test_vectors.json` and
-T1, T2, T10 of `collide/TESTS.md`, each registered with
+(read `tracks/core/JOURNAL-coll.md` and `tracks/core/interfaces/collisions.md` on that
+branch; once core's predictions P0-P11 are checked and a processor executable of
+`core/collisions` exists, run T1, T2, T10 of `collide/TESTS.md` with the option names of
+core's interface, each registered with
 `python3 tracks/C-sidm/review/register.py --purpose ... -- <command>`, predictions in
 `JOURNAL.md` first).
 

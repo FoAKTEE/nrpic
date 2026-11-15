@@ -41,6 +41,7 @@ Paths relative to the worktree root `wt/C-sidm` unless absolute. Manifests:
 | C-sidm-20261115-130010-69e27db | equilibria | figures from the registered outputs | identical PNGs |
 | C-sidm-20261115-131130-3077a99 | review | cross-checks X1-X5 | L2-L6 held (`REVIEW.md`) |
 | C-sidm-20261115-131135-3077a99 | review | reruns of every package against the registered outputs | L1: tests pass, 3 scope + equilibria outputs identical; polytrope check (threads) and T6-0 (changed code) not bit-identical |
+| C-sidm-20261115-132624-13a77db | review | T0 of TESTS.md on core's committed kernels (3436846), 208 vectors, three flag sets | PASS: 3.2e-16 of max(1,|u|), 1.32 eps; `fig_t0_kernel.png` in its scratch directory |
 | C-sidm-20261115-132327-eab8e41 | review | follow-up L1b: polytrope check with one thread; T6-0 with the code of 313d399 | `JOURNAL.md`, `REVIEW.md` |
 
 ## Sources read at the source by the lead
@@ -50,6 +51,6 @@ Third-party sources and figures are not committed.
 
 ## Branches read
 
-`core/collisions` at 94dc093 (no collision code); `core/rng` (`tracks/core/interfaces/rng.md`);
+`core/collisions` at 94dc093 (no collision code) until 3436846 (operator, 13:19Z) and 1a050f3 (core's kernel test); `core/rng` (`tracks/core/interfaces/rng.md`);
 uncommitted draft of core in `wt/core-coll` (read only): `tracks/core/interfaces/collisions.md`,
 `athenak/src/particles/nrpic_collide.hpp`.

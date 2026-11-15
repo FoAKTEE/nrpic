@@ -51,7 +51,12 @@ figure of the four packages opened (PNG read). Predictions L1-L6 were written in
   rate n^2 sigma <v_Mol>/2 (checked by hand), the odd-N triangle keeps the expected count
   per particle; the b-constant sources (`sidm1.tex:408-412`, `SIDM_MS.tex:233`,
   `SIDMGT_Xiv2.tex:394`, `smbh.tex:116`) and 2602.17487 `results.tex:18` re-read.
-- Not confirmed: anything about core's implementation (not committed); the unequal-weight
+- Core's implementation: its kernels (commit 3436846) pass T0 on all 208 equal-mass vectors at
+  three flag sets (run C-sidm-20261115-132624-13a77db: 3.2e-16 of max(1, |u|), 1.32 eps);
+  the identical-velocity vector's reference v_Mol (4.3e-31) is 60-digit round-off of an
+  exact zero (kernel: 0), harmless for T0, which does not test v_Mol. Nothing else of the
+  operator could be checked (no tested executable yet).
+- Not confirmed: the unequal-weight
   no-go (SPEC 4.4, [JUDGEMENT]); the relativistic conduction and the Sonine factor
   (no source read).
 - Wrong or to fix: (1) `RNG_REQUIREMENTS.md` was written against core's uncommitted draft;
