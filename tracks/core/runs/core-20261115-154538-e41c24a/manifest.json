@@ -1,0 +1,50 @@
+{
+ "run_id": "core-20261115-154538-e41c24a",
+ "owner": "core",
+ "command": [
+  "/data/haiyangw/nrpic/.work/build_cpu_v03/src/athena",
+  "-i",
+  "os_smr_dev.athinput",
+  "mesh/nx1=64",
+  "mesh/nx2=64",
+  "mesh/nx3=64",
+  "meshblock/nx1=16",
+  "meshblock/nx2=16",
+  "meshblock/nx3=16",
+  "time/nlim=3",
+  "particles/particle_file=os_R5_lattice_N2176_s1.nrp",
+  "problem/comp0_file=os_R5_lattice_N2176_s1.tab",
+  "particles/snap_dt=0.05",
+  "output2/dt=0.1"
+ ],
+ "cwd": "/data/haiyangw/nrpic/scratch/core/core-20261115-154538-e41c24a",
+ "commit": "e41c24a",
+ "source_modified_since_commit": true,
+ "inputs": [
+  {
+   "path": "problems/os/os_smr_dev.athinput",
+   "sha256": "3058636b423f13501b3c9b4150019e2bb50200d741f43c27cb246f41e3145267"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/scratch/core/regress/ic/os/os_R5_lattice_N2176_s1.nrp",
+   "sha256": "e7596d888ba57770b60e912d0d238f077808bc08ab22385eebbe122f385e94b1"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/scratch/core/regress/ic/os/os_R5_lattice_N2176_s1.tab",
+   "sha256": "f2b5e5bf91f31e1beeda277b330a592d2f1e851e346f2080d2865ac6ca80bf6e"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/.work/build_cpu_v03/src/athena",
+   "sha256": "d983155bb21befedbd123d54d84fcfc12a875ee0aaa0baa36f5a51261041c25c",
+   "role": "executable"
+  }
+ ],
+ "output_directory": "/data/haiyangw/nrpic/scratch/core/core-20261115-154538-e41c24a",
+ "purpose": "regression of the relativistic mode, case os, executable baseline",
+ "kind": "scouting",
+ "tag": "regress-os-baseline",
+ "state": "running",
+ "cores": 1,
+ "card_hours": 0.0,
+ "started_utc": "2026-11-15T15:45:38Z"
+}

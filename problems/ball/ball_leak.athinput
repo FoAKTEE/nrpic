@@ -1,0 +1,108 @@
+# Expanding dust ball with the lapse of wave 2: 1+log slicing whose excess over 1 relaxes
+# on the time T = 1/lapse_leak (athenak/src/z4c/z4c_gauge_ext.hpp),
+#   d_t alpha = beta^i d_i alpha - 2 alpha Khat - lapse_leak alpha max(ln(alpha/lapse_leak_alpha), 0).
+# In the expanding ball the lapse tends to exp(6 T H) instead of growing as 1 + 6 ln a,
+# the lapse step at the surface stays near 3 T H, and where the lapse is below 1
+# (contraction, black holes) the condition is the plain 1+log one.
+# z4c/lapse_leak=0.0 on the command line gives the old condition with this file.
+# Everything else as problems/ball/ball.athinput (initial data: problems/ic/make_ball.py;
+# give particles/particle_file, problem/comp0_file and particles/traj_ntrack on the
+# command line).  Choose T of several cells and at least a few tens of time steps, and
+# 6 T H below about 0.5.  Tests and numbers: tracks/core/interfaces/cosmo_gauge.md,
+# tracks/core/JOURNAL-gauge.md.
+
+<comment>
+problem   = expanding dust ball, 1+log lapse with relaxation of its excess
+
+<job>
+basename  = ball
+
+<mesh>
+nghost    = 4
+nx1       = 128
+x1min     = -32.0
+x1max     = 32.0
+ix1_bc    = outflow
+ox1_bc    = outflow
+nx2       = 128
+x2min     = -32.0
+x2max     = 32.0
+ix2_bc    = outflow
+ox2_bc    = outflow
+nx3       = 128
+x3min     = -32.0
+x3max     = 32.0
+ix3_bc    = outflow
+ox3_bc    = outflow
+
+<meshblock>
+nx1       = 32
+nx2       = 32
+nx3       = 32
+
+<time>
+evolution  = dynamic
+integrator = rk4
+cfl_number = 0.25
+nlim       = -1
+tlim       = 10.0
+ndiag      = 10
+
+<z4c>
+lapse_oplog     = 2.0
+lapse_harmonicf = 1.0
+lapse_harmonic  = 0.0
+lapse_volume    = 0.0
+lapse_advect    = 1.0
+lapse_leak      = 1.0      # 1/T of the relaxation of the excess lapse (0: plain 1+log)
+lapse_leak_alpha = 1.0     # reference lapse
+shift_Gamma     = 0.75
+shift_eta       = 2.0
+shift_advect    = 1.0
+diss            = 0.5
+chi_div_floor   = 1.0e-5
+damp_kappa1     = 0.02
+damp_kappa2     = 0.0
+excise_chi      = 0.0      # constraint norms over the whole mesh (chi falls as the ball expands)
+
+<particles>
+particle_type  = nrpic
+pusher         = midpoint
+metric         = mesh
+interp         = hermite
+tolerance      = 1.0e-10
+max_iterations = 50
+deposit        = true
+deposit_shape  = cic
+deposit_comp_c = 0.0      # compensation of the cloud (cosmo/README.md)
+deposit_comp_c2 = 0.0
+nfilter        = 1
+filter_compensate = false
+source_density = false
+source_extrap  = false
+alpha_exc      = -1.0
+hist_dcycle    = 1
+cstat_dcycle   = 1
+traj_dcycle    = 4
+traj_ntrack    = 0
+snap_dt        = 2.0
+field_constraints = true
+field_time1    = 2.0
+field_time2    = 4.0
+field_time3    = 6.0
+field_time4    = 8.0
+field_time5    = 10.0
+particle_file  = ball.nrp
+
+<problem>
+pgen_name  = nrpic_cf
+ncomp      = 1
+comp0_type = table
+comp0_file = ball.tab
+lapse      = table
+lapse_comp = 0
+shift      = zero
+
+<output1>
+file_type = hst
+dt        = 0.25
