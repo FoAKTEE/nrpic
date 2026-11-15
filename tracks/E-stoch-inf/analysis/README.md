@@ -59,6 +59,13 @@ processor run exist (CARD, PROC = their run directories):
   A1 3.3e-15 and all tests pass with a cancellation-free reference; 9.8e-11 (fails 1e-11)
   with the reference as it is. The defect is in `noise/ref/noise_ref.py`, not in the
   code. [VERIFIED by run]
+- Noise unit test at the base size (N = 64, nmax2 = 256, 300 steps) on one A100 with the
+  release (card run E-20261115-170645-3b21217, 55 s, 0.0153 card-hours; validation
+  E-20261115-180533-24a7781): frozen scheme passes A0-A11, A13, A15 (A1 9.8e-14; A11
+  bit-identical for 1, 8, 64 MeshBlocks on the card; A13 3.5e-15); Markov-Heaviside passes
+  (one crossing shell only at this output cadence); Markov-tanh passes with the
+  cancellation-free reference (A1 4.0e-15) and fails A1 at 8.5e-10 with the reference as
+  it is. [VERIFIED by run]
 - Slow-roll scouting case, N = 16 and 32 (E-20261115-172349-0bdb97d,
   E-20261115-172347-a297a96): see below.
 
@@ -104,9 +111,6 @@ Cannot (or not without help):
 
 ## Pending (not done by this package; list for the lead)
 
-- Card job E-20261115-170645-3b21217 (Slurm 4465, U1-U3, U5a, U5b, U6-U8 at the base size;
-  U2 of the batch is U9), queued at the time of writing; then the validations above and
-  P1-P4, P6 of the journal. Close with `harness/bin/nrpic-run finish <run_id>`.
 - Processor run E-20261115-170727-d15df12 (U2 at the base size, about 98 min, then U4
   about 50 min): A12 on processors and the reference of A14.
 

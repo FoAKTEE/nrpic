@@ -273,7 +273,7 @@ files, so U4 can now run on a card too:
 - P5' (A12 on the card): U4 = card U2 restarted at cycle 150 on a card
   (`inputs/u64/card_u4.list`) gives dumps at cycles 200 and 300 bit-identical to card U2.
 
-## 18:09 Outcome P1-P3 on the card (validation run E-20261115-180533-24a7781)
+## 18:06 Outcome P1-P3 on the card (validation run E-20261115-180533-24a7781)
 
 - P1 holds: frozen scheme on the card, every test passes; A1 9.8e-14, A8 1.4e-13, A10
   4.8e-15; A11 bit-identical for 1, 8 and 64 MeshBlocks on the card; A13 3.5e-15 (N = 32
