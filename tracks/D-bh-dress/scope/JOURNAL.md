@@ -37,3 +37,34 @@ turnaround of every shell twice, in closed form and by integrating the equation 
    transient is not negligible: the coefficient of item 3 is off by more than 10 percent
    at a/a_i = 2. (If it is within 10 percent already at a/a_i = 2, the transient is
    smaller than I think.)
+
+## 2026-11-15T12:05Z  outcome of run D-bh-dress-20261115-120304-795eee9
+
+Output `scratch/D-bh-dress/D-bh-dress-20261115-120304-795eee9/` (scoping_table.txt,
+scoping.json); figure `figs/scoping_estimates.png` (looked at: the four epsilon curves of
+the top-left panel coincide, the frozen-in density follows the -9/4 guide beyond a few
+turnaround radii of the first shell, the card-hour panel shows the vacuum lines below the
+bubble markers).
+1. Holds. Largest |t_ta(ODE)/t_ta(closed form) - 1| = 1.6e-8 (eps = 0.003), r_max 1.1e-8.
+2. Holds to round-off: max |E r_i / M + 1| = 1.5e-10, the cancellation of the two
+   background terms of order (eps r_i)^2.
+3. Holds as a limit, fails at the stated threshold: the coefficient is 0.5641 at
+   a/a_i = 1000 (0.13 percent below 0.5648) but 0.5581 at a/a_i = 100 (1.2 percent below);
+   it enters the 1 percent band only at a/a_i = 121.5. The approach is ~1/a (0.12 and
+   0.013 percent... i.e. 1.2e-2 at 100, 1.3e-3 at 1000), the O(M/M_b) terms of r_max and
+   of the enclosed mass, not the decaying mode as I had assumed. Independent of epsilon:
+   holds (identical to all printed digits for the four values).
+4. Holds: d ln r_ta / d ln a = 1.3314 (0.15 percent from 4/3) at a/a_i = 100 and 1.3331 at
+   1000; d ln rho_ta / d ln r_ta = -2.2533 and -2.2503.
+5. Holds: the coefficient is 0.2627 at a/a_i = 2, 53 percent below the limit; 0.4997 at
+   a/a_i = 10. Consequence for the run plan: over one doubling of a the dust that has
+   turned around is 0.525 M (M_ta = 1.525 M including the hole), over a quadrupling
+   1.63 M; r_ta = 33.4 M (eps = 0.01) and 16.1 M (eps = 0.03) at a/a_i = 2.
+Cost model check (not predicted beforehand, recorded as found): the production run
+`jeans/n1e4_v19` (matter, AMR, three horizons) took 19476 s for 3.05e7 block-cycles, 1.45
+times what the vacuum-puncture rate (9.27e6 zone-cycles/s) gives; matter runs are
+therefore costed with the run's own rate 6.4e6 zone-cycles/s.
+changed my mind about: the size of the dust region. Marginally bound dust shells evolve
+independently, so the Einstein-Straus null test needs only a thick shell outside the
+bubble (1.5 R_w), not a ball out to the Hubble radius; that is what makes eps = 0.01 to
+0.03 affordable (SCOPE.md, section 7).

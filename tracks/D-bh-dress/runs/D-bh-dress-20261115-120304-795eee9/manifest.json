@@ -1,0 +1,133 @@
+{
+ "run_id": "D-bh-dress-20261115-120304-795eee9",
+ "track": "D-bh-dress",
+ "gate": "G0",
+ "purpose": "G0 scoping: turnaround mass and radius of cold dust around a point mass in EdS (closed form against integrated orbits), Einstein-Straus scales, and the card-hour estimate of Track D runs from measured AthenaK throughput",
+ "kind": "scouting",
+ "command": [
+  "python3",
+  "tracks/D-bh-dress/scope/scoping_estimates.py",
+  "--out",
+  "/data/haiyangw/nrpic/scratch/D-bh-dress/D-bh-dress-20261115-120304-795eee9"
+ ],
+ "cwd": "/data/haiyangw/nrpic/wt/D-bh-dress",
+ "env_overrides": {
+  "OMP_NUM_THREADS": "1",
+  "OPENBLAS_NUM_THREADS": "1"
+ },
+ "git": {
+  "sha": "795eee9db40f21fedcd52acc644632c82114424a",
+  "branch": "track/D-bh-dress",
+  "dirty": false,
+  "merge_base_main": "a1c223753952674ee38819dc45043591dddc3022"
+ },
+ "code": {
+  "core_tag": null,
+  "problem": null,
+  "interpreter": "python3 (numpy 2.2.6, scipy 1.15.3, matplotlib 3.10.8)"
+ },
+ "inputs": [
+  {
+   "path": "/data/haiyangw/nrpic/runs/puncture/hcal/dx4/athena.log",
+   "sha256": "2c5d16dc63bb41b2a16183d5e44152cdb62c672f181df000f2f355b9506dd847"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/runs/puncture/hcal/dx8_tight/athena.log",
+   "sha256": "ea20d131ebd71d2962751263fe188b1232920715ecc12f1962abeb8116b87a30"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/runs/puncture/hcal/dx16/athena.log",
+   "sha256": "d5332e857d26f7bc4af2fae2f8ef8e8814cc722790ecfad75c600b06d878f9a8"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/runs/jeans/n1e4_v19/chain/seg001.job4255.a1.log",
+   "sha256": "9aedcfa1aa5db63a97055a9dd63c77fb564468613dbc6d736aac328f781f5ac9"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/runs/jeans/n1e4_v19/chain/seg002.job4256.a1.log",
+   "sha256": "ae1a7502d715806dfcedeccf352177d2f94e7f1d872cbce3e0029abbf17dd16c"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/runs/jeans/n1e4_v19/chain/seg003.job4258.a1.log",
+   "sha256": "a335a3f9b4522f5607721db9f6d79de0bb5dca8cb51f77db92f8cdda6e62167b"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/runs/jeans/n1e4_v19/chain/seg004.job4259.a1.log",
+   "sha256": "4e0e7fddbdcb9b96b51a70dd422984811bfe373bb469a29d64f791ab3176a76a"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/runs/jeans/n1e4_v19/chain/seg005.job4261.a1.log",
+   "sha256": "2f9d2c7ac7334d9e49f6505dacbc89f2d29079f63ad3ac711da4367344b71daa"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/runs/jeans/n1e4_v19/chain/seg006.job4262.a1.log",
+   "sha256": "e27e28185a0abe65d180a493d532b9ec43e82c522863f11659a43ee5e9c0081e"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/runs/jeans/n1e4_v19/chain/seg007.job4264.a1.log",
+   "sha256": "8fcb94f796fbdbc096637c29e99b24d1fec20fc81f2019c42e9c679fe13346b5"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/runs/jeans/n1e4_v19/chain/seg008.job4265.a1.log",
+   "sha256": "f3bb458e80d1ab3608b630adcfbf1bf81398a55f9ab8bea04af44c7b4c601c4a"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/runs/jeans/n1e4_v19/chain/seg009.job4267.a1.log",
+   "sha256": "d7c6bdbef86ecc5377f2f4a192829b33cc2e10aee25950d3937f5f1257bf97e3"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/runs/jeans/n1e4_v19/chain/seg010.job4268.a1.log",
+   "sha256": "2dc827275f4c0198e30b8edff4809bb810bb25abf70f04976208b7073c617e1f"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/runs/jeans/n1e4_v19/chain/seg011.job4274.a1.log",
+   "sha256": "ef845b4103bef31e8ac61251eda0cf40b3198947068e6465b2a10b627f557b57"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/runs/jeans/n1e4_v19/chain/seg012.job4276.a1.log",
+   "sha256": "177dcfad6c2fd5927e141fcd72c98cbfdaf7b816da6aa0ac5d54b8b77ec93a60"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/runs/jeans/n1e4_v19/chain/seg013.job4283.a1.log",
+   "sha256": "55cb65aea401198ffbdcbef0b2fb9fce59df7752475e5ab93f61eb5d849583de"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/runs/cosmo/east_d0.01_n64_pcs/athena.20261114-012440.log",
+   "sha256": "7740658f8d6c7e0786e40cd74d0ca9f9ada26b3235ded8bcb857517c4672c490"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/wt/D-bh-dress/python/nrpic/figstyle.py",
+   "sha256": "5d3b78ad8c2c02e428b675e3d7e35a32cbc8f053d1aeedd4fde66f27da55676e"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/wt/D-bh-dress/tracks/D-bh-dress/scope/scoping_estimates.py",
+   "sha256": "885ea0ffd505ca31f0a7563967d42c32292bddaceba5cf0311cea09fd89abea8"
+  }
+ ],
+ "resources": {
+  "nodes": 1,
+  "cores": 1,
+  "gpus": 0,
+  "card_hours": 0.0,
+  "walltime_s": 2.75,
+  "particles": 0
+ },
+ "outputs": {
+  "dir": "/data/haiyangw/nrpic/scratch/D-bh-dress/D-bh-dress-20261115-120304-795eee9",
+  "sha256sums": "sha256sums.txt",
+  "files": [
+   "scoping.json",
+   "scoping_table.txt",
+   "scoping.pdf",
+   "scoping.png",
+   "stdout.txt",
+   "run_record.txt"
+  ]
+ },
+ "status": "completed",
+ "exit_code": 0,
+ "started": "2026-11-15T12:03:04Z",
+ "ended": "2026-11-15T12:03:07Z",
+ "parents": [],
+ "notes": "Registered by hand (helper of D-bh-dress; nrpic-run refuses a worktree shared with other helpers). Figure copied to tracks/D-bh-dress/scope/figs/scoping_estimates.png. Predictions and outcome: tracks/D-bh-dress/scope/JOURNAL.md."
+}
