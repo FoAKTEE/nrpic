@@ -70,3 +70,33 @@ V8 Source locators the threshold choice rests on (SCOPE 1, 3.3, 3.4, 6, 7): at l
 
 Reruns: the package scripts that support V1-V3, V5 (scope/scripts), the tests of
 `gravothermal/test_tmb.py` and `collide/REFERENCES/tests`.
+
+## 2026-11-15, outcomes
+
+Development runs of the scripts were made in `scratch/C-sidm/tmp/verifier/` (not registered);
+the registered run C-20261115-170630-1037f6a (commit 1037f6a) reproduces them. Reruns of the
+track's scripts: run C-20261115-170716-e81ba08.
+
+- V1 held. y_c,max = 0.6796102, z_c = 0.455290, E_b/M0 = 0.0360576, R/M = 6.55243; zero at
+  0.3904461; Wu-Most rows within R/M 1e-5, M0/M 5e-7, z_c 4.3e-4; Newtonian limit approached
+  linearly in 1 - y_c. Rerun of the scope script: 0.6796101.
+- V2 held, with one overshoot of my tolerance: B^ at w0 = 4.5 differs by 2.4e-4 (> 2e-4);
+  M^ and E^rest differ by 1.1e-4 there, so B^ = E^rest - M^ carries both; F21's fixed-step
+  RK4 is the stated cause in the gravothermal package, my solver runs at rtol 1e-11. All
+  criteria to the printed digits (eps max Z(0) = 0.54041, trial root Z(0) = 0.75001).
+- V3 held: y_max = 0.334032, y_zero = 0.784518. The "second route" turned out to be the same
+  ODE (y = ln W_c), so the numerical check is against the printed values only.
+- V4 held: polytrope limit zero at rho_c = 3.1824222e-3 vs mass maximum 3.1824221e-3; onset
+  b = 0.1 Z(0) = 0.63482, b = 0.5 0.57904; gamma = 5/3 0.77927. Unexpected: my omega_0^2 at
+  w0 = 4.0515 is -3.315 against the package's -3.59; the factor 1.084 = 1/(1 - 2C) traced to
+  the lapse normalisation in tmb.py:389 (surface lapse 1). Not an onset change.
+- V4b (not predicted; fell out of V4): SCOPE.md section 1's fluid window ends at 0.635, not 0.75.
+- V5 held as predicted, including the split: SCOPE's convention gives 1.530 times
+  CONVERSION's sigma~ for "Kn_c = 1" (198.64 vs 129.82, King b = 1), 1.532 for King b = 0.1.
+  After reading REPORT.md: the lead fixed a fourth convention (K = 168.9), not yet propagated.
+- V6 held: pulls within 1.75 standard errors at seven temperatures; 62 reference tests pass;
+  test_tmb 14 PASS.
+- V7 held for N (597-1586 at Kn_c = 1) and costs (within 0.2 percent). Sub-steps: mine 1.6-3.4
+  at Kn_c = 0.1 against the scope's 2-7; cause found in knudsen_costs.py (non-relativistic t_r,
+  no lapse): conservative, so the claim holds as an upper estimate.
+- V8: 35 locators read; one mis-described (2105.05556:581), the rest as quoted.

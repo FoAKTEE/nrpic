@@ -221,5 +221,69 @@ maximum and need not sit near any extremum.
 
 ## 3. Comparison with the track's own review
 
-(Written after reading `stage/G0/{REVIEW,REPORT,EVIDENCE,OPEN,CHECKLIST}.md`,
-`stage/G1/STATUS.md`, `STATUS.md`, `HANDOFF.md`; see below.)
+Written after sections 1 and 2 were committed (aade80f), from `stage/G0/REVIEW.md`,
+`stage/G0/REPORT.md`, `stage/G0/OPEN.md`, `stage/G1/STATUS.md` and `STATUS.md`. Sections 1
+and 2 are left as they were written; where the track had already dealt with a point, it is
+said here.
+
+**Agreements.** Every number I recomputed agrees with the lead's cross-checks X1-X5 (runs
+C-sidm-20261115-131130-3077a99, -131135-3077a99) and with the packages: monoenergetic
+maximum, F21 rows and criteria, King y_max, fluid onset 0.6348 (the lead by a sign change at
+two finite-element resolutions, I by a different basis and a polytrope limit), closed-form
+Moller rate (the lead by 3D quadrature, I by Monte Carlo with my own sampler), log costs.
+The lead's constant of REPORT decision 2, K = 1/(rho0_c H_c) with H on rho0, is 168.90 for the
+King threshold model from my run's outputs as well, and its cell-based particle rule of
+REPORT section 3 follows from my numbers: 20 M0/(rho0_c lambda^3) = 1699 Kn^-3 and
+10 x 27 M0/(rho0_c lambda^3) = 22934 Kn^-3 (arithmetic on the outputs of run
+C-20261115-170630-1037f6a). I also re-read astro-ph/0111176:289-291, which the review lists
+as not re-read: it says 1e-8 to 1e-6 of the halo, as quoted.
+
+**Differences.**
+
+1. Knudsen number (my V5, weak point 1). The lead found the same split and fixed a
+   definition in REPORT decision 2 (lambda = 1/(rho0 sigma_m), H on rho0, K = 168.9), which
+   I did not know when writing section 2. So there are four values of sigma~ for
+   "Kn_c = 1" on the King threshold model in the package (SCOPE 198.6, decision 2 168.9,
+   CONVERSION 129.8, gravothermal lambda/R 17.8), and for the primary F21 b = 0.1 model
+   K = 142.6 (my run; not printed anywhere in the package). The decision has not reached
+   `collide/SPEC.md` (no Knudsen number at all; core's option takes sigma/m), CONVERSION.md
+   (tables still in the l-based Kn) or SCOPE.md section 4. Weak point 1 therefore stands as a
+   propagation problem, smaller than I first rated it.
+2. SCOPE.md section 1 (my V4b). REVIEW lists no error in the scope's hypothesis; REPORT
+   decision 3 adopts 0.6348 as the fluid anchor, so the REPORT is consistent, but the
+   scoping text the REPORT relies on still calls the trial root 0.750 "the relevant
+   (sufficient) criterion" for Kn -> 0 and predicts survival up to Z(0) = 0.75. Under
+   decision 0012 that text is part of the package and needs the correction.
+3. 2105.05556:581 (my V8). REVIEW states that every locator of SCOPE.md was re-read and is
+   correct. The locator is right but the reading is not: line 581 is about small i (close to
+   the k = 1 polytrope), and for the core-halo cases (100 <= i <= 250) the onset is unrelated
+   to the binding-energy extrema (paper.tex:599, i = 200: maximum at z_c = 0.394, stable to
+   0.787). REPORT section 1 and risk 2 quote only lines 88-89 and 612 and are correct.
+4. Lapse normalisation of the pulsation eigenvalue (my V4). REVIEW: gravothermal "Wrong or
+   to fix: nothing found". The eigenvalue of `tmb.pulsation` is computed with
+   e^Phi = 1 - b w (tmb.py:389), not with (1 - b w)(1 - 2C)^{1/2} as README line 83 says, so
+   the quoted -3.59 and -6.7e-4 are in the time of an observer at the surface (mine: -3.315,
+   -6.18e-4 at infinity; ratio 1/(1 - 2C) = 1.084). No onset changes.
+5. Sub-step estimate (my V7). Not covered by the review (it leaves the G2/G3 estimates
+   unconfirmed). The scope's 2-7 (0.1) and 18-65 (0.01) sub-steps are conservative by
+   1.6-1.9 (non-relativistic t_r and coordinate step taken as proper time).
+6. Monoenergetic family (my V1, weak point 3). Not in the review: no stability theorem covers
+   a non-decreasing f(E). REPORT decision 4 already moved the monoenergetic scan from G1 to
+   G2 and keeps the family for verification only, which lowers the weight of this point.
+7. What the review checked and I did not: core's kernels against the T0 vectors (run
+   C-sidm-20261115-132624-13a77db), the T6-0 collisionless AthenaK run and its bitwise
+   rerun, the 243 offline checks of the equilibria package (samplers, constraint, file
+   round trip), the AthenaK read test of the King files, the RNG requirements. G1 STATUS
+   says "NOT MET" (box tests T0b-T12 wait for core); I have nothing to add or remove there.
+
+**Brief 13.3 item.** OPEN.md item 3 asks for a fresh-context verifier report
+(`VERIFIER_REPORT.md`); this file is that report under the name the work package gave it.
+
+## 4. Not checked by me
+
+- Core's collision operator (core-v0.3) against the references: no box run of mine.
+- The dynamical thresholds themselves (no AthenaK evolution was run here); V1-V3 confirm the
+  binding-energy extrema only, V4 the fluid onset of F21's operator.
+- The fluid onset with a Juttner Gamma_1 (OPEN item 6): not computed.
+- The equilibria particle files, samplers and their AthenaK read test; the T6-0 run.
+- The cost of a collision and the G3 "20 s per M" (nothing has measured them).
