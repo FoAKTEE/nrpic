@@ -14,7 +14,7 @@ full dumps bin/hills.con.00000.bin, bin/hills.adm_psi4.00000.bin and the history
   diff    the norm of code - closed (truncation error)
 in all cells and by region (within 1 M of a member, within 4 M of the heavy hole, rest).
 Writes <out>/c0_constraints.json and fig_c0_constraints.{png,pdf}.
-Usage: c0_constraints.py <c0 run directory> [outdir]   (outdir default: the run directory)
+Usage: c0_constraints.py <c0 run directory> [outdir]   (outdir default: $NRPIC_RUN_DIR)
 """
 import json
 import os
@@ -74,7 +74,7 @@ def analyse(d):
 
 def main():
     run = sys.argv[1]
-    out = sys.argv[2] if len(sys.argv) > 2 else run
+    out = sys.argv[2] if len(sys.argv) > 2 else os.environ["NRPIC_RUN_DIR"]
     res, prof = {}, {}
     for kind, nl in CASES:
         name = f"{kind}_L{nl}"

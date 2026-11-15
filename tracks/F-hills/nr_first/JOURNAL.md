@@ -242,3 +242,17 @@ lower edge); m/16 inside 2400-3700. 2514 blocks at m/16 fit one card at t = 0 (s
 (b) Not done: the single-puncture probe needs 186 s per cycle on one processor core (the
 processor build is serial; the machine's load was 40), so 16 cycles at m/8 and m/16 would
 take about two hours. Stopped by process id; the card runs S1-S3 print the same counts.
+
+## 2026-11-15 E7. P1 smoke test on a card (prediction)
+
+What: `inputs/p1_q4.athinput` with `time/nlim=400` (t = 1.5625 M) on one card, release card
+executable (batch run). Purpose: the numbers the cost of P1 rests on, measured on the actual
+input, and the first rows of its trackers and finders for the readers.
+Predictions [JUDGEMENT, from E1 and wave 1]: 1716 MeshBlocks at the start, between 1716 and
+2000 at cycle 400 (the wave-zone criteria fall inside the padding of the punctures); rate
+1800-2400 MeshBlock-cycles per second; card memory 55-75 GB at 2700 slots (26 MB per slot,
+three finders); three horizons from the first search, members 0.128-0.132 M (bare 0.125 times
+the background factor about 1.03 plus the momentum), heavy 1.00-1.01 M; trackers start at the
+input positions; no non-finite value. Cost then [arithmetic]: 71680 cycles for 280 M at
+dt = 0.25 x 0.015625; at the measured rate and a mean of 1.11 times the t = 0 count (core's
+growth in its three-hole run) about 15-19 card-hours.

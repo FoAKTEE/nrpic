@@ -1,0 +1,2 @@
+# nr_first E7: the P1 input on a card for 400 cycles (t = 1.5625 M): MeshBlocks, rate, card memory, first horizons
+P1smoke tracks/F-hills/nr_first/inputs/p1_q4.athinput time/nlim=400 time/ndiag=50 -t 00:20:00
