@@ -1,0 +1,14 @@
+# Machine-specific files that a new linked worktree needs but git does not bring (brief 11.2:
+# untracked files do not come along, and .worktreeinclude applies only to worktrees that Claude
+# Code creates itself). `harness/bin/nrpic-wt new` copies each entry from the main checkout into
+# the new worktree: regular files only (never a symbolic link, never into an existing file), and
+# only while the entry is untracked in the main checkout (a tracked file arrives with the checkout).
+#
+# One path per line, relative to the main checkout; a trailing / copies a directory's files.
+# Build products (build*/, .work/) and virtual environments (.venv/) are never listed: each
+# worktree builds its own (brief 11.4). Kokkos is not copied either: `nrpic-wt new --kokkos`
+# runs `git submodule update --init --reference <main>/athenak/kokkos athenak/kokkos`.
+#
+# State on 2026-11-15: the machine file harness/env/machines/anta.sh is tracked, so nothing on
+# this machine needs copying yet. Example of an entry:
+# harness/env/machines/anta.local.sh

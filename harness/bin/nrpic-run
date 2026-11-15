@@ -783,53 +783,14 @@ def verify(wt, args):
         raise H.HarnessError("usage: nrpic-run verify <run_id>")
     run_id = args[0]
     m = find_manifest(wt, run_id)
-    outdir = os.path.join(wt.home, m["outputs"]["dir"])
-    sums = os.path.join(outdir, "sha256sums.txt")
-    problems = []
-    if m.get("status") not in FINAL:
-        problems.append(f"status is {m.get('status')}: not finished")
-    if not os.path.isfile(sums):
-        problems.append(f"missing {sums}")
-    else:
-        if m["outputs"].get("sha256sums_sha256") and H.sha256_file(sums) != m["outputs"]["sha256sums_sha256"]:
-            problems.append("sha256sums.txt differs from the one recorded in the manifest")
-        listed = set()
-        for line in open(sums):
-            if not line.strip():
-                continue
-            digest, rel = line.rstrip("\n").split("  ", 1)
-            listed.add(rel)
-            p = os.path.join(outdir, rel)
-            if not os.path.isfile(p):
-                problems.append(f"missing output {rel}")
-            elif H.sha256_file(p) != digest:
-                problems.append(f"changed output {rel}")
-        for dirpath, dirnames, filenames in os.walk(outdir):
-            rel = os.path.relpath(dirpath, outdir)
-            if rel == ".":
-                dirnames[:] = [d for d in dirnames if d != ".nrpic"]
-            for fn in filenames:
-                relf = os.path.normpath(os.path.join(rel, fn))
-                if relf != "sha256sums.txt" and relf not in listed and not os.path.islink(os.path.join(dirpath, fn)):
-                    problems.append(f"output not in sha256sums.txt: {relf}")
-    for rec in m.get("inputs", []):
-        p = rec["path"] if os.path.isabs(rec["path"]) else os.path.join(wt.root, rec["path"])
-        if rec.get("tracked"):
-            blob = H.run(["git", "-C", wt.root, "show", f"{m['git']['sha']}:{rec['path']}"], check=False)
-            if blob.returncode != 0:
-                problems.append(f"input {rec['path']} not in commit {m['git']['sha'][:7]}")
-                continue
-        if os.path.isfile(p):
-            if H.sha256_file(p) != rec["sha256"]:
-                problems.append(f"input {rec['path']} changed since the run (sha256 differs)")
-        else:
-            problems.append(f"input {rec['path']} no longer present (not verifiable)")
+    problems, notes, n = H.verify_run(wt.home, wt.root, m)
+    for x in notes:
+        print("  note: " + x)
     if problems:
         print(f"verify {run_id}: FAIL")
         for p in problems:
             print("  - " + p)
         return 1
-    n = sum(1 for l in open(sums) if l.strip())
     print(f"verify {run_id}: PASS ({n} output files and {len(m.get('inputs', []))} inputs match)")
     return 0
 
