@@ -188,10 +188,14 @@ def run_all(a):
     tinp = os.path.join(idlib.WT, "problems/idsolve/torus.athinput")
     gnrp = run_tests.ic_gauss(0.5)
     wnrp = run_tests.ic_wave(32, 1)
-    cases = {"gauss_code_n32": (ginp, gnrp, run_tests.mesh_args(32, 16) + [
-                 "particles/id_residual=code", "particles/particle_file=gauss_h0p5.nrp"]),
-             "torus_code_p1_n32": (tinp, wnrp, run_tests.mesh_args(32, 16) + [
-                 "particles/id_residual=code", "particles/particle_file=wave_n32.nrp"])}
+    cases = {}
+    if not a.v0_only or "gauss" in a.v0_only:
+        cases["gauss_code_n32"] = (ginp, gnrp, run_tests.mesh_args(32, 16) + [
+                 "particles/id_residual=code", "particles/particle_file=gauss_h0p5.nrp"])
+    if not a.v0_only or "torus" in a.v0_only:
+        cases["torus_code_p1_n32"] = (tinp, wnrp, run_tests.mesh_args(32, 16) + [
+                 "particles/id_residual=code",
+                 "particles/particle_file=" + os.path.basename(wnrp)])
     for name, (inp, nrp, args) in cases.items():
         ids = {}
         for label, exe in (("published", a.base), ("new", a.exe)):
@@ -208,8 +212,10 @@ def run_all(a):
         v0[name] = dict(published=ids["published"][0], new=ids["new"][0], files=files,
                         differ=diff)
         print("V0 %s: %d files compared, differ: %s" % (name, len(files), diff), flush=True)
-    res["V0"] = v0
+    res.setdefault("V0", {}).update(v0)
     idlib.save_json(OUT, res)
+    if a.v0_only:
+        return
     # V1, V2
     binp = os.path.join(idlib.WT, "problems/idsolve/gaussian_boost.athinput")
     runs = res.get("runs", {})
@@ -368,6 +374,8 @@ def main():
     ap.add_argument("--base", default="/data/haiyangw/nrpic/scratch/core/exe/core_id-solver/"
                                       "athena_cpu")
     ap.add_argument("--analyze", action="store_true", help="analysis of earlier runs only")
+    ap.add_argument("--v0-only", default="", help="rerun V0 only for these cases "
+                    "(gauss, torus), then analyse")
     a = ap.parse_args()
     if not a.analyze:
         run_all(a)

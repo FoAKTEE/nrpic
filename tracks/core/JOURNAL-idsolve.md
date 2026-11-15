@@ -573,3 +573,57 @@ momentum (1/8 pi) times the flux of Abar_xj through the faces of the box equals
 sum m u_x to 1 per cent at N = 32 (truncation of the 1/r^2 tail at the faces).
 Refuted if the error does not fall by at least a factor 2.5 per halving, or the
 momentum is off by more than 5 per cent.
+
+## 2026-11-15, entry 10: outcome of V0 to V2 (source 7f118b9, processor build)
+
+Executable `.work/build_cpu_vec/src/athena` built from 7f118b9 (the run ids carry ca15f8b,
+the commit of the test script; `athenak/src` is the same). Smoke runs before the
+registered ones in `scratch/core/tmp/idsolve/smoke_vec/` (not registered, no number used).
+Script `run_vector.py`, numbers `vector_numbers.json`, figure `vector_gauss` (looked at).
+
+**V0 held.** Without `id_vector` the new executable writes the same bytes as the
+published one: gauss_code_n32 (runs core-20261115-183042 published, -183055 new) and
+torus_code_p1_n32 (-183447, -183458-ca15f8b), six files each (idsolve.txt, idsolve.bin,
+field dump, three histories). The first launch of the torus pair (-183107, -183109) was
+void: my script named the particle file wrong (exit 1 at start). The relativistic
+regression without `id_solve` is running (entry 11).
+
+**V1 held** (runs gboost_stencil_n32 -183111, gboost_code_n32 -183121,
+gboost_stencil_n64 -183134, gboost_code_n64 -183239-ca15f8b):
+ (a) the right side of the code equals 8 pi times the numpy cloud-in-cell deposit of
+     m u_x to 6.9e-16, 7.6e-16 relative (y and z components exactly zero);
+ (b) the compact operator applied in numpy, with the Robin fill of `MGRobinFill`, to the
+     W of the code reproduces the right side to 4.8e-11, 6.0e-11 (stencil) and 8.1e-15,
+     3.0e-14 (code mode, which iterates further for the scalar part) relative;
+ (c) the vector residual falls by 0.13 to 0.14 per outer iteration (the 1/7 of the
+     relaxation 6/7 for eigenvalues in [1, 4/3]); 12 outer iterations in mode stencil,
+     17 in mode code (prediction: at most 30);
+ (d) mode code: max|H| after the solve 1.6e-11, 1.1e-11.
+ The scalar part in mode stencil now needs 12 outer iterations instead of 4: Abar^2
+ changes while W converges.
+
+**V2.** W of the code against the semi-analytic continuum W:
+- held: relative error of W_x at the innermost cells -1.175e-2 (dx = 1) and -3.59e-3
+  (dx = 0.5), factor 3.27 (3 to 5 predicted), 1.07 and 1.31 times the predicted
+  0.044 (dx/sigma)^2, |W_x| of the code the smaller. W is the same in both modes (the
+  vector part is in stencil form in both), to 1e-11.
+- failed: the error at the face centres is 8.6e-3 at N = 32 (below 1e-2 as predicted)
+  and 9.3e-3 at N = 64: it does not fall with resolution (predicted: at least as dx).
+  The error scaled by (dx/sigma)^2 is one curve near the centre and grows by 4 at the
+  faces (figure, middle panel): a closure error that does not depend on the cell size.
+  Cause, not tested by a separate run [JUDGEMENT]: the Robin fill makes r W equal in a
+  ghost cell and its mirror across the face; the far field of a moving source
+  (Bowen-York, r W_i = -(7 P_i + n_i n.P)/4) depends on the direction, which changes
+  between ghost and mirror away from the face centre, and the extended source adds
+  terms falling as 1/r^3. For a scale-free far field this relative error does not
+  fall with the box size either. A fill with the Bowen-York shape of the deposited P
+  would remove the first part.
+- failed: the ADM momentum from (1/8 pi) times the flux of (L W)_xj through the
+  outermost cell centres is 3.6 per cent (N = 32) and 1.8 per cent (N = 64) above
+  sum m u_x = 0.11410 (1 per cent predicted at N = 32; refuted only above 5 per cent):
+  first order, the order of my flux diagnostic (central differences at the outermost
+  cell centres), not of the solution, whose discrete divergence theorem holds to the
+  tolerance by (b).
+- The monitor of the code: max|M| falls from 2.03e-2 to 1.86e-4 (N = 32) and from
+  2.29e-2 to 5.34e-5 (N = 64), a factor 3.5 per halving: the stencil form leaves the
+  monitor at truncation level, falling with resolution.

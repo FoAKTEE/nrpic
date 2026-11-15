@@ -6,10 +6,11 @@ Interface, design, results and limits: `tracks/core/interfaces/id_solver.md`.
 
 | File | Purpose |
 |---|---|
-| `make_ic.py` | particle files: `gaussian` (known solution), `strain` (triaxial ball), `wave` (torus) |
+| `make_ic.py` | particle files: `gaussian` (known solution), `strain` (triaxial ball), `boost` (a copy with u_x set), `wave` (torus) |
 | `gaussian.athinput` | Gaussian density at rest, K = 0, Robin faces, against the exact psi of `nrpic_cf` |
 | `ball.athinput` | expanding dust ball with the curvature of its table of format 2 (`problems/ic/make_ball.py`) |
 | `torus.athinput` | plane wave in a homogeneous expanding universe (`nrpic_cosmo`), against `cosmo/ic` |
+| `gaussian_boost.athinput` | the Gaussian with every particle moving (u_x = 0.1): the vector equation (`id_vector = true`) against a semi-analytic continuum solution |
 
 The scripts that run the tests, compare with the references and draw the figures are in
 `tracks/core/analysis/idsolve/` (`run_tests.py`, `analyze_*.py`); predictions and

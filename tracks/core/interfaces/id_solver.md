@@ -180,6 +180,7 @@ of a restart file unless `id_solve` is present (`NrpicIdSolveInit`, the pattern 
 | `id_lin_maxit` | 50 | conjugate-gradient steps per linear solve |
 | `id_mg_tol` | 1e-3 | defect over source at which a preconditioner (multigrid) solve ends |
 | `id_dump` | `false` | write `<basename>.idsolve.bin` (fields, `docs/FORMATS.md`) |
+| `id_vector` | absent (off) | `true`: also solve the vector equation for W_i, Abar_ij = Abar_ij(trial) + (L W)_ij (section 10); with `id_dump` also `<basename>.idvector.bin` |
 
 **Options, `<gravity>` block** (required: it creates the multigrid Poisson solver).
 
@@ -223,8 +224,8 @@ and with `id_dump = true` `<basename>.idsolve.bin`; formats in `docs/FORMATS.md`
 | `athenak/src/particles/nrpic.cpp` | 276 | `NrpicIdSolveInit(pin);` at the end of `NrpicInit` |
 | `athenak/src/particles/nrpic_io.cpp` | 1237 | `NrpicSolveInitialData();` after `NrpicCreateParticles()` in `NrpicStartup` |
 | `athenak/src/particles/particles.cpp` | 122 | delete `pbval_ids` in the destructor |
-| `athenak/src/particles/particles.hpp` | 152-166, 362-369 | `NrpicIdSolveOptions`; members and methods of the solver |
-| `docs/FORMATS.md` | 142-150 | the two output files |
+| `athenak/src/particles/particles.hpp` | 152-167, 363-370 | `NrpicIdSolveOptions` (with `vector`); members and methods of the solver |
+| `docs/FORMATS.md` | 142-152 | the output files of the solver |
 
 ## 7. What refined meshes and punctures will need later
 

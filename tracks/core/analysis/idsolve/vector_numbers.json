@@ -1,0 +1,252 @@
+{
+ "V0": {
+  "gauss_code_n32": {
+   "published": "core-20261115-183042-ca15f8b",
+   "new": "core-20261115-183055-ca15f8b",
+   "files": [
+    "gauss.cstat.hst",
+    "gauss.field.00000.bin",
+    "gauss.idsolve.bin",
+    "gauss.idsolve.txt",
+    "gauss.nrpic.hst",
+    "gauss.z4c.user.hst"
+   ],
+   "differ": []
+  },
+  "torus_code_p1_n32": {
+   "published": "core-20261115-183447-ca15f8b",
+   "new": "core-20261115-183458-ca15f8b",
+   "files": [
+    "torus.cstat.hst",
+    "torus.field.00000.bin",
+    "torus.idsolve.bin",
+    "torus.idsolve.txt",
+    "torus.nrpic.hst",
+    "torus.z4c.user.hst"
+   ],
+   "differ": []
+  }
+ },
+ "runs": {
+  "gboost_stencil_n32": {
+   "run": "core-20261115-183111-ca15f8b",
+   "status": "exit 0, wall 9.1 s, output /data/haiyangw/nrpic/scratch/core/core-20261115-183111-ca15f8b",
+   "n": 32,
+   "mode": "stencil",
+   "dx": 1.0,
+   "particle_file": "/data/haiyangw/nrpic/scratch/core/idsolve_ic/gauss_h0p5_u0p1.nrp"
+  },
+  "gboost_code_n32": {
+   "run": "core-20261115-183121-ca15f8b",
+   "status": "exit 0, wall 11.3 s, output /data/haiyangw/nrpic/scratch/core/core-20261115-183121-ca15f8b",
+   "n": 32,
+   "mode": "code",
+   "dx": 1.0,
+   "particle_file": "/data/haiyangw/nrpic/scratch/core/idsolve_ic/gauss_h0p5_u0p1.nrp"
+  },
+  "gboost_stencil_n64": {
+   "run": "core-20261115-183134-ca15f8b",
+   "status": "exit 0, wall 63.0 s, output /data/haiyangw/nrpic/scratch/core/core-20261115-183134-ca15f8b",
+   "n": 64,
+   "mode": "stencil",
+   "dx": 0.5,
+   "particle_file": "/data/haiyangw/nrpic/scratch/core/idsolve_ic/gauss_h0p25_u0p1.nrp"
+  },
+  "gboost_code_n64": {
+   "run": "core-20261115-183239-ca15f8b",
+   "status": "exit 0, wall 88.1 s, output /data/haiyangw/nrpic/scratch/core/core-20261115-183239-ca15f8b",
+   "n": 64,
+   "mode": "code",
+   "dx": 0.5,
+   "particle_file": "/data/haiyangw/nrpic/scratch/core/idsolve_ic/gauss_h0p25_u0p1.nrp"
+  }
+ },
+ "analysis": {
+  "gboost_code_n32": {
+   "run": "core-20261115-183121-ca15f8b",
+   "n": 32,
+   "mode": "code",
+   "dx": 1.0,
+   "summary": "vector equation: relative residual 1.000000e+00 -> 3.255030e-15, 284 V cycles; max|M| of the monitor 2.025158e-02 -> 1.858206e-04",
+   "outer_iterations": 17,
+   "rhs_vs_deposit_rel": 6.852694775113801e-16,
+   "rhs_yz_rel": 0.0,
+   "operator_check_rel": 8.051916360758715e-15,
+   "relv_factors": [
+    0.0713561,
+    0.12737030190831616,
+    0.13534939410130087,
+    0.13713698326129564,
+    0.137899300584891,
+    0.1384263659361184,
+    0.1388331566913365,
+    0.1391710637269923,
+    0.1394525691388331,
+    0.1396941938176999,
+    0.13990358873326353,
+    0.14008509408705191,
+    0.14030879962753434,
+    0.14065432267297517,
+    0.1414215140462021,
+    0.15116285383580227,
+    0.32478619686352217
+   ],
+   "relv_final": 3.25503e-15,
+   "M_monitor_before": 0.02025158,
+   "M_monitor_after": 0.0001858206,
+   "H_max_after": 1.555342e-11,
+   "Wx_centre_code": -0.08097257252670137,
+   "Wx_centre_ref": -0.08193568201022661,
+   "rel_err_Wx_inner": -0.011754457397511353,
+   "rel_err_Wx_faces": [
+    -0.008553578683354178,
+    -0.008553578683354563,
+    0.0021108968093397477,
+    0.002110896809339815,
+    0.002110896809339916,
+    0.0021108968093397477
+   ],
+   "rel_err_Wx_face_max": 0.008553578683354563,
+   "P_flux": 0.11822614734725398,
+   "P_sum": 0.1141047395755342,
+   "P_rel_err": 0.0361195142905657
+  },
+  "gboost_code_n64": {
+   "run": "core-20261115-183239-ca15f8b",
+   "n": 64,
+   "mode": "code",
+   "dx": 0.5,
+   "summary": "vector equation: relative residual 1.000000e+00 -> 1.010328e-14, 323 V cycles; max|M| of the monitor 2.292183e-02 -> 5.339288e-05",
+   "outer_iterations": 17,
+   "rhs_vs_deposit_rel": 7.567996429124746e-16,
+   "rhs_yz_rel": 0.0,
+   "operator_check_rel": 2.989358589504275e-14,
+   "relv_factors": [
+    0.07537312,
+    0.13171673137585388,
+    0.13918490927739913,
+    0.14034862868663944,
+    0.1406034061805021,
+    0.1407373546007374,
+    0.14083544813737858,
+    0.14092741152121602,
+    0.1410080633991106,
+    0.1410834012243663,
+    0.14115699435942483,
+    0.14122064919952257,
+    0.14123361575112628,
+    0.1419194436109965,
+    0.15000000825846074,
+    0.19499997577518313,
+    0.5705131426706368
+   ],
+   "relv_final": 1.010328e-14,
+   "M_monitor_before": 0.02292183,
+   "M_monitor_after": 5.339288e-05,
+   "H_max_after": 1.086031e-11,
+   "Wx_centre_code": -0.08361576828599054,
+   "Wx_centre_ref": -0.08391742716848316,
+   "rel_err_Wx_inner": -0.0035947108088402605,
+   "rel_err_Wx_faces": [
+    -0.009277142843819247,
+    -0.009277142843819728,
+    0.00173379510751366,
+    0.0017337951075132505,
+    0.001733795107513387,
+    0.0017337951075135235
+   ],
+   "rel_err_Wx_face_max": 0.009277142843819728,
+   "P_flux": 0.11612562450939508,
+   "P_sum": 0.11410473957527244,
+   "P_rel_err": 0.01771078871609455
+  },
+  "gboost_stencil_n32": {
+   "run": "core-20261115-183111-ca15f8b",
+   "n": 32,
+   "mode": "stencil",
+   "dx": 1.0,
+   "summary": "vector equation: relative residual 1.000000e+00 -> 2.375761e-11, 195 V cycles; max|M| of the monitor 2.025158e-02 -> 1.831849e-04",
+   "outer_iterations": 12,
+   "rhs_vs_deposit_rel": 8.565868468892251e-16,
+   "rhs_yz_rel": 0.0,
+   "operator_check_rel": 4.751384449272905e-11,
+   "relv_factors": [
+    0.0713561,
+    0.12737030190831616,
+    0.13534939410130087,
+    0.13713698326129564,
+    0.137899300584891,
+    0.1384263659361184,
+    0.1388331566913365,
+    0.1391710637269923,
+    0.13945258521071685,
+    0.13969394721835368,
+    0.13990381957879608,
+    0.14009924694976325
+   ],
+   "relv_final": 2.375761e-11,
+   "M_monitor_before": 0.02025158,
+   "M_monitor_after": 0.0001831849,
+   "H_max_after": 0.00471033,
+   "Wx_centre_code": -0.08097257252108025,
+   "Wx_centre_ref": -0.08193568201022661,
+   "rel_err_Wx_inner": -0.011754457466115132,
+   "rel_err_Wx_faces": [
+    -0.008553578786439735,
+    -0.008553578786439203,
+    0.0021108967013026237,
+    0.0021108967013025903,
+    0.0021108967013026914,
+    0.0021108967013025903
+   ],
+   "rel_err_Wx_face_max": 0.008553578786439735,
+   "P_flux": 0.11822614733489316,
+   "P_sum": 0.1141047395755342,
+   "P_rel_err": 0.03611951418223702
+  },
+  "gboost_stencil_n64": {
+   "run": "core-20261115-183134-ca15f8b",
+   "n": 64,
+   "mode": "stencil",
+   "dx": 0.5,
+   "summary": "vector equation: relative residual 1.000000e+00 -> 3.020501e-11, 228 V cycles; max|M| of the monitor 2.292183e-02 -> 5.319402e-05",
+   "outer_iterations": 12,
+   "rhs_vs_deposit_rel": 7.567996429124746e-16,
+   "rhs_yz_rel": 0.0,
+   "operator_check_rel": 6.041970493163174e-11,
+   "relv_factors": [
+    0.07537312,
+    0.13171673137585388,
+    0.13918490927739913,
+    0.14034862868663944,
+    0.1406034061805021,
+    0.1407373546007374,
+    0.14083544813737858,
+    0.1409274300234868,
+    0.14100791359690282,
+    0.14108427744631408,
+    0.14115413729088833,
+    0.14121888147950398
+   ],
+   "relv_final": 3.020501e-11,
+   "M_monitor_before": 0.02292183,
+   "M_monitor_after": 5.319402e-05,
+   "H_max_after": 0.001421079,
+   "Wx_centre_code": -0.08361576827966288,
+   "Wx_centre_ref": -0.08391742716848316,
+   "rel_err_Wx_inner": -0.0035947108842438414,
+   "rel_err_Wx_faces": [
+    -0.009277142944898288,
+    -0.009277142944897988,
+    0.0017337949966423692,
+    0.0017337949966419936,
+    0.001733794996642642,
+    0.0017337949966424035
+   ],
+   "rel_err_Wx_face_max": 0.009277142944898288,
+   "P_flux": 0.11612562449688582,
+   "P_sum": 0.11410473957527244,
+   "P_rel_err": 0.01771078860646491
+  }
+ }
+}
