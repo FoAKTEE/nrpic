@@ -39,8 +39,9 @@
  "purpose": "T6: oblique linear wave k=(1,1,1), one period, N=64 on one processor core, stage evol of t1_linear_wave.py (P7)",
  "kind": "scouting",
  "tag": "T6",
- "state": "running",
+ "state": "stopped",
  "cores": 1,
  "card_hours": 0.0,
- "started_utc": "2026-11-15T16:25:06Z"
+ "started_utc": "2026-11-15T16:25:06Z",
+ "note": "stopped after cycle 0 (athena.log written 16:25 UTC, empty run.log): the process ended with session bfix-1; no number of it is used. The N = 64 case of P7 ran on the card in T4 (core-20261115-170758-f5f58f4). State set by hand in session bfix-2."
 }

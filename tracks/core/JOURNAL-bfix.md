@@ -684,3 +684,104 @@ Note after T7 on the two candidates [JUDGEMENT, by hand, no run]:
   the deposit were not looked at).
 This is the constraint-compatible deposition of the brief's direction M3; it is outside
 this package.
+
+## 2026-11-15 session bfix-2 (wave 2, continued)
+
+Start 18:02Z: `git merge --no-edit main` (harness fixes of wave 2, 4b9e24f; `git diff
+9c92f68 HEAD -- athenak/` is empty, so the published executables still match the source).
+Read again: CLAUDE.md, charter to "Owners", decisions 0010, 0013, 0014, the rulings after
+wave 1, the brief at lines 493-553, 688-706, 834-860, this journal. Track B's outbox has no
+new message to core since 767eb93 (`git diff --name-status 767eb93 track/B-emd-gw --
+tracks/B-emd-gw/outbox/` is empty; branch at 0cb312a), and nothing on its branch names the
+published executables yet.
+
+Registration: `harness/bin/nrpic-run` reads every manifest after the harness fixes of
+wave 2 (`coord/digests/harness-wave-2.md`, row 13), so the runs of this session are
+registered with it; the hand-written manifests of session bfix-1 stay as they are.
+
+Bookkeeping of session bfix-1, done by hand:
+- T6 (core-20261115-162506-d5e3f28, P7) stopped after cycle 0 (athena.log of 16:25Z,
+  empty run.log): the process ended with the session. Manifest state set to `stopped`;
+  no number of it is used. The N = 64 case of P7 ran on the card inside T4.
+- T4 (core-20261115-170758-f5f58f4, Slurm job 4452) ran 17:07:58Z to 17:11Z and was not
+  yet on record. Its manifest gave `card_hours` 0.5 (the reservation passed on the
+  command line); the job used 183.7 s of one A100, 0.051 card-hours, now in
+  `card_hours` (reservation kept as `card_hours_reserved`).
+
+### Outcome of T4 (run core-20261115-170758-f5f58f4, 183.7 s on one A100)
+
+Card executable `.work/exe/athena_gpu_w1` (sha256 5a35c8f1...11b9aa, the published
+`athena_gpu`), release card executable `.work/build_gpu_v03/src/athena` (f9f2dc12...).
+Results `results_t4.json`, log `run.log` in the output directory. Figures looked at:
+`t1_evolution.png` (code on the exact h_xx, h_xy and Psi_4 at N = 128; right panel: the
+amplitude and phase errors on the dashed Fourier-symbol lines from 16 to 64, the
+amplitude error crossing zero at 128, the Psi_4 error turning up after 64, max |h_x|/A
+flat near 1e-9 from 32 on) and `t3_thin_jitter.png` (the card version of the T3 figure;
+the same picture as on the processors).
+
+- P5a PASSED for N = 16 to 64; at N = 128 PASSED on the alternative it allowed (rounding
+  floor); FAILED as written for the order of Psi_4. Card against processor (T1): amplitude
+  error -3.5219332e-5 against -3.5219723e-5 (N = 16) and -4.2917e-7 against -4.2907e-7
+  (N = 32); phase -6.32071e-5 against -6.32070e-5 and -3.03771e-6 against -3.03736e-6:
+  equal to three significant digits (P5a's bound), at most 2.4e-4 relative. N = 64:
+  amplitude -7.760e-9 against the symbol's -7.878e-9 (1.5 per cent), phase -1.758e-7
+  against -1.750e-7 (0.45 per cent). N = 128: amplitude +2.68e-10 against -2.03e-10
+  (wrong sign: the floor), phase -1.361e-8 against -1.071e-8 (factor 1.27). Psi_4 of
+  gw_diag against the analytic value 9.17e-5, 3.21e-6, 3.26e-7, 8.08e-7: order 4.8 from 16
+  to 32, 3.3 from 32 to 64 (not "about fifth order to 64 cells"), and it rises to 128.
+  Constraint norms at the end H^2 3.9e-21, 3.8e-21, 5.2e-21, 3.0e-20; M^2 1.2e-21 to
+  5.1e-21. Error files (exact solution at the final time) RMS-L1 5.33e-11, 5.93e-12,
+  5.70e-12, 5.70e-12.
+  P7 (written for the processor) is answered by the card's N = 64 case: phase within 10
+  per cent (0.45), amplitude within 30 per cent (1.5), max |h_x|/A 1.1e-9 below 1e-8,
+  Psi_4 3.3e-7 below 6e-7: PASSED on all four bounds.
+- Not predicted, recorded before any reading is tested: (i) the non-TT part of the metric
+  at the final time (gw_diag, max |h - h^TT|/A) is 3.381e-6, 3.381e-6, 3.386e-6, 3.390e-6
+  for N = 16, 32, 64, 128 (7e-11 to 1e-10 at t = 0): it does not depend on the
+  resolution, and it sets the floor of the pointwise metric error (max |gt - exact|/A
+  5.39e-6, 3.49e-6, 3.39e-6 at 32, 64, 128) while the Fourier coefficient of the wave
+  keeps converging. (ii) Psi_4 along -k (zero for the exact wave) is 5.3e-6, 1.2e-7,
+  1.8e-7, 7.8e-7 of the maximum: from 64 to 128 it grows by 4.4, close to N^2. Readings
+  [JUDGEMENT until P10 below is tested]: (i) is of second order in A (the gauge and the
+  trace respond to the wave at order A^2, independently of h); (ii) and the turn of the
+  Psi_4 error are rounding of gamma = 1 + A h amplified by second differences, about
+  eps sum|c| / (A k^2 h^2) = 9e-8 per point at N = 128.
+- P5b PASSED for two of three set-ups, VOID for the third: geodesic with the midpoint
+  pusher and with the Boris pusher, 2 output files each, identical byte for byte between
+  the release and the new card executable. The Z4c puncture benchmark
+  (`problems/tests/z4c_bench.athinput`) has no output block, so the comparison covered 0
+  files (the log was excluded): an error of the driver, not a result. Repeated in T8
+  below with an output block.
+- P5c PASSED: the eight cases of T3 on the card; thin 16 x 16 x 8 and x 4 against the
+  cube at most 2.9e-10 and 3.3e-10 over the dumps (Theta, early), 1.2e-12 and 1.3e-12 at
+  the end; z dependence inside the runs 2.4e-10 (thin) and 2.6e-10 (cube); box thin in x
+  against thin4 with the axes exchanged 9.2e-13; particles at the end 8.1e-14 cells (x, y),
+  7.9e-15 (z); every particle kept in every case. The source check of P2e on the card:
+  python's Hamiltonian from the double dumps against the code's con_H 6.5e-12, 6.8e-11,
+  6.1e-10 of 16 pi E (processor: the same digits). The jitter cases give the processor's
+  numbers to three digits (H rms at t = 0: 8.73e-2, 2.91e-5, 1.89e-6, 3.08e-8).
+- P5d PASSED in part, REFUTED on its bound for the z dependence. Track B's box 256 x 256
+  x 16 (one particle per cell and direction, 1 048 576 particles, waves (1, 0.3, 0),
+  delta = 0.01, one MeshBlock of 128 x 128 x 16 per quarter): ended on the time limit
+  t = 1 (a = 2.250, 256 cycles) with every particle, 59.3 s wall, 4.67e6 zone-cycles per
+  second (prediction: above 3e6), z4c dump in double precision 184.6 MB. The largest
+  z dependence at t = 1 over the eight fields of T3's list, relative to each field's
+  maximum, is 8.4e-6: above the refutation bound 1e-6 I wrote. Which field it is, and
+  whether it matters for the gravitational-wave fields, is test T4b below.
+
+### P9 Where the z dependence of the 256 x 256 x 16 box sits: prediction (before T4b)
+
+Analysis T4b (`t4b_zdep.py`) of the two dumps of T4's big run (t = 0 and t = 1): for every
+variable of the `z4c`, `tmunu` and `con` dumps, the largest departure of any z-layer from
+layer 0 (absolute), relative to the field's largest absolute value and relative to its
+variation in the x-y plane (max minus min of layer 0).
+- P9a: the 8.4e-6 is Theta measured against its own maximum (Theta is a constraint
+  variable, small in this run: H rms 4.7e-8 at t = 1). For chi, alpha, Khat and the
+  components of gt and At the departure is below 1e-10 of the maximum and below 1e-7 of
+  the x-y variation.
+- P9b: at t = 0 every field is z independent to below 1e-14 of its maximum (the data of
+  one layer repeated, up to the rounding of the FFTs of the tool; Theta zero).
+- P9c: the energy density E of `tmunu` departs from z independence by less than 1e-13 of
+  its maximum (atomic additions in a different order on the card: rounding).
+Refuted, and a z instability of the thin box that matters for Track B indicated, if chi,
+alpha, gt or At depart by more than 1e-9 of their x-y variation.
