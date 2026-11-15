@@ -311,10 +311,11 @@ the last bit, T1 per step passes. Wall 1930-2000 s for 3000 steps (0.65 s per st
   form at theta = 0.01. A tighter T4 needs more particles or more seeds (open item O3).
   The non-relativistic rate (4.2 times the exact one at theta_2 = 1) and |v_a - v_b|
   (1.27 times) are excluded by a wide margin.
-- T3 at 15 tau_rel: KS p = 0.084, 0.77, 0.99, 0.92; <u^2/W>/3 - theta_eq = -1.6e-3,
-  -1.1e-3, -0.07, -0.005 se units... precisely: |<u^2/W>/3 - theta_eq| < 0.01 se in all
-  four; both populations at theta_eq within 2.2 se (largest: theta_2 = 1e-3 s2,
-  theta_1 = 2.00604e-3 vs theta_eq 2.00424e-3).
+- T3 at 15 tau_rel: KS p = 0.084, 0.77, 0.99, 0.92; |<u^2/W>/3 - theta_eq| = 3.5e-9,
+  1.8e-9, 8.1e-6, 6.3e-6, i.e. < 0.01 se in all four (energy is exact); population
+  temperatures at the end differ from theta_eq by -6.4e-7/+6.4e-7 and +1.8e-6/-1.8e-6
+  (theta_2 = 1e-3; se ~2.3e-6) and -1.2e-3/+1.2e-3, +9e-5/-9e-5 (theta_2 = 1; se ~1.7e-3),
+  all below 1 se.
 - T5: s(0) - s_mixture = -2.8e-4, -3.6e-4, -2.6e-4, -1.5e-4 (se 1.5e-3, 2.4e-3); the
   entropy rises monotonically (no pair 0.25 tau_rel apart decreases beyond 4 sqrt 2 se);
   s(end) - s_MJ(theta_eq) = -2.5e-5, +1.0e-5, +3.2e-5, +4.3e-5 (< 0.03 se). The gaps
@@ -323,3 +324,31 @@ Figures `relax_T345_*.png` (four, looked at): temperatures follow the two-MJ gui
 equilibrium, the entropy climbs from the mixture value to s_MJ, the final |u| histogram
 lies on MJ(theta_eq). The T4 window is too compressed there to judge the slope by eye;
 a zoom is made by `t4zoom.py` at the end.
+
+## 2026-11-15 T9: outcome (run C-20261115-170814-8a54b43)
+
+PASS. Eight seeds, 1e6 macroparticles (8e5 of M, 2e5 of 4M), nanbu, 750 steps to 15.0
+tau_rel, 1.51e7 collisions per run, n_sub up to 5, n_trunc 0, rest masses unchanged to
+the bit.
+- Same temperature at the end: z = (theta_A - theta_B)/sigma from -1.16 to +0.56.
+- Maxwell-Juttner at the class's own final temperature (declared criterion): KS p from
+  0.089 to 0.93 for both classes in all seeds. Against theta_eq of the initial energy
+  (reported): p down to 1.7e-4 (seed 3, class A), because nanbu's energy random-walks:
+  seed 3 ended 0.49 percent of the thermal energy above its start, so its temperature is
+  above theta_eq.
+- Drifts of the exactly rounded sums over the run: energy dE/E_kin = +0.0019, -0.0015,
+  +0.0049, +0.0029, +0.0019, +0.0027, -0.0008, +0.0020; mean dE = 5.4e-5 (se 2.2e-5,
+  z = +2.42); momenta z = +0.40, +2.19, +1.08. Within the criterion (4 se). Six of eight
+  energy drifts are positive and the mean is +0.18(7) percent of the thermal energy: a
+  bias of nanbu's energy at this level is neither shown nor excluded by eight seeds
+  [JUDGEMENT]; core's own run found -0.0020(21) (collisions.md section 8). Open item O4.
+- Updates per collision 1.5398-1.5402 (prediction 1.53-1.54; 20/13 = 1.538 for equal
+  Moller speeds of the three pair kinds).
+- coll_weights = equal on the same file: rc 1 at start-up with "### FATAL ERROR in nrpic
+  collisions / <particles> coll_weights = equal, but the colliding particles have unequal
+  rest masses (smallest and largest: 6.25e-07 and 2.5e-06); use equal masses or
+  coll_weights = nanbu".
+Prediction confirmed, except that my expectation of a 0.1-0.2 percent energy scatter was
+low: the per-seed scatter is 0.2 percent around a +0.18 percent mean. Figure
+`figs/t9_unequal_cpu.png` looked at (the right panel's label overlaps the middle panel;
+cosmetic).
