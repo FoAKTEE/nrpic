@@ -208,11 +208,19 @@ def main():
         # ---------------- example tables for the README
         examples = [dict(delta=0.1, e=0.0, sigmaH=0.01), dict(delta=0.1, e=0.1, sigmaH=0.01),
                     dict(delta=0.1, e=0.2, sigmaH=0.01), dict(delta=0.3, e=0.02, sigmaH=0.01),
-                    dict(delta=0.03, e=0.0, sigmaH=0.003, aend=100.0)]
+                    dict(delta=0.03, e=0.0, sigmaH=0.003, aend=100.0),
+                    dict(delta=0.1, e=0.2, sigmaH=0.01, sigv=0.1 / 0.3 ** 2, HR_ini=0.3,
+                         aend=30.0),
+                    dict(delta=0.03, e=0.0, sigmaH=None, npart=1e5, HR_ini=0.3),
+                    dict(delta=0.03, e=0.0, sigmaH=None, npart=1e5, HR_ini=0.3,
+                         noise="lattice"),
+                    dict(delta=0.03, e=0.0, sigmaH=None, npart=1e6, HR_ini=0.3)]
         with open(os.path.join(out, "example_tables.txt"), "w") as f:
             for ex in examples:
-                rows = P.predict(ex["delta"], ex["e"], 0.0, 0.0, ex.get("aend", math.inf),
-                                 ex["sigmaH"])
+                rows = P.predict(ex["delta"], ex["e"], 0.0, ex.get("sigv", 0.0),
+                                 ex.get("aend", math.inf), ex["sigmaH"],
+                                 npart=ex.get("npart"), HR_ini=ex.get("HR_ini"),
+                                 noise=ex.get("noise", "poisson"))
                 P.print_table(rows, ex, out=f)
                 f.write("\n")
         with open(os.path.join(out, "scan_summary.json"), "w") as f:
