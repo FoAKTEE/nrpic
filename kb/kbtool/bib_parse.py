@@ -168,43 +168,17 @@ def parse_bib(text):
                 break
             name = fm.group(1).lower()
             j = fm.end()
-            if j < len(body) and body[j] == "{":
-                g, e = M.read_group(body, j)
-                if g is None:
-                    break
-                val, j = g, e
-            elif j < len(body) and body[j] == '"':
-                e = j + 1
-                depth = 0
-                while e < len(body):
-                    if body[e] == "\\":
-                        e += 2
-                        continue
-                    if body[e] == "{":
-                        depth += 1
-                    elif body[e] == "}":
-                        depth -= 1
-                    elif body[e] == '"' and depth == 0:
-                        break
-                    e += 1
-                val, j = body[j + 1:e], e + 1
-            else:
-                vm = re.compile(r"[^,}\s]+").match(body, j)
-                val = vm.group(0) if vm else ""
-                j = vm.end() if vm else j
-            # concatenation with #
-            while True:
+            val, j = _bib_value(body, j)
+            if val is None:
+                break
+            while True:                                   # concatenation with #
                 cm = re.compile(r"\s*#\s*").match(body, j)
                 if not cm:
                     break
-                j = cm.end()
-                if j < len(body) and body[j] == "{":
-                    g, e = M.read_group(body, j)
-                    val += g or ""
-                    j = e
-                else:
-                    vm = re.compile(r"[^,}\s]+").match(body, j)
-                    j = vm.end() if vm else j
+                more, j = _bib_value(body, cm.end())
+                if more is None:
+                    break
+                val += more
             fields[name] = val.strip()
             cm = re.compile(r"\s*,").match(body, j)
             if cm:
@@ -213,6 +187,30 @@ def parse_bib(text):
                 break
         out.append({"cite_key": key, "type": typ, "fields": fields, "raw": text[m.start():i]})
     return out
+
+
+def _bib_value(body, j):
+    """One BibTeX value at body[j:]: {braced}, "quoted" or a bare word. Returns (text, end)."""
+    if j < len(body) and body[j] == "{":
+        g, e = M.read_group(body, j)
+        return (g, e) if g is not None else (None, j)
+    if j < len(body) and body[j] == '"':
+        e, depth = j + 1, 0
+        while e < len(body):
+            c = body[e]
+            if c == "\\":
+                e += 2
+                continue
+            if c == "{":
+                depth += 1
+            elif c == "}":
+                depth -= 1
+            elif c == '"' and depth == 0:
+                break
+            e += 1
+        return body[j + 1:e], e + 1
+    vm = re.compile(r"[^,}#\s]+").match(body, j)
+    return (vm.group(0), vm.end()) if vm else ("", j)
 
 
 def bib_entry_ids(e):
@@ -250,6 +248,9 @@ def bbl_entry_ids(e):
     f = e.get("fields") or {}
     text = raw + " " + " ".join(f.values())
     ids = arxiv_ids(text)
+    ep = re.sub(r"v\d+$", "", (f.get("eprint") or "").strip())
+    if ep and (valid_new_id(ep) or OLD_RE.fullmatch(ep)) and ep.lower() not in [i.lower() for i in ids]:
+        ids.insert(0, ep.lower() if "/" in ep else ep)          # biblatex \field{eprint}{<bare id>}
     arx = ids[0] if ids else arxiv_from_doi(text)
     ds = dois(text)
     eprint = f.get("eprint")

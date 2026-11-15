@@ -13,11 +13,12 @@ from kbtool import db, lock
 
 def test_init_creates_brief_schema_and_migrations(store):
     created, applied = db.init_db(store.layout)
-    assert created and applied == [2]
+    assert created and applied == [v for v, _ in db.migrations()]      # 2, 3, ...
     con = sqlite3.connect(store.layout.db_work)
     names = db.tables(con)
     assert db.EXPECTED_TABLES <= names and db.MIGRATION_TABLES <= names
-    assert [r[0] for r in con.execute("SELECT version FROM schema_version ORDER BY version")] == [1, 2]
+    assert [r[0] for r in con.execute("SELECT version FROM schema_version ORDER BY version")] == \
+        [1] + [v for v, _ in db.migrations()]
     assert con.execute("PRAGMA journal_mode").fetchone()[0] == "wal"
     # the FTS5 tables of the brief work
     con.execute("INSERT INTO papers(paper_id, title) VALUES ('2611.12831', 't')")
@@ -29,7 +30,7 @@ def test_init_creates_brief_schema_and_migrations(store):
     created, applied = db.init_db(store.layout)               # idempotent
     assert not created and applied == []
     con = sqlite3.connect(store.layout.db_work)
-    assert con.execute("SELECT count(*) FROM schema_version").fetchone()[0] == 2
+    assert con.execute("SELECT count(*) FROM schema_version").fetchone()[0] == 1 + len(db.migrations())
     con.close()
 
 
@@ -50,7 +51,7 @@ def test_snapshot_is_frozen_and_current_moves(store):
     assert stat.S_IMODE(os.stat(final).st_mode) == 0o444
     assert os.readlink(store.layout.db_current) == name
     ro = db.connect_ro(store.layout.db_current)
-    assert ro.execute("SELECT max(version) FROM schema_version").fetchone()[0] == 2
+    assert ro.execute("SELECT max(version) FROM schema_version").fetchone()[0] == db.latest_version()
     with pytest.raises(sqlite3.OperationalError):
         ro.execute("INSERT INTO ingest_log(step) VALUES ('x')")
     ro.close()

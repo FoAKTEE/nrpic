@@ -261,3 +261,43 @@ P4 inputs against code. Of the parameter lines of the input files (upstream: 867
    inputs/; this tree: problems/), at least 90 % name a parameter the code reads with the
    same literal block and name, or reads by that name under a block computed at run time
    (numbered output blocks). Refuted below 90 %.
+### K2-K3 helper, continued: predictions written before the tests ran (labels K2-P1 and K2-P2
+### are the P1 and P2 of the K2-K3 section above)
+
+K2-P3 test_tex_text and test_bib_parse: macro expansion with optional arguments, \def with
+   parameters, \DeclareMathOperator, bounded recursion; \be/\ee aliases found as equations;
+   refs replaced by computed numbers; sentence splitter keeps "Eq.", "et al." and initials;
+   chunks within 100..520 words, consecutive chunks overlap, no chunk boundary inside a display
+   equation; arXiv ids (new with month/length check, old with archive list, versions dropped,
+   bare numbers rejected), DOIs, REVTeX and biblatex .bbl, .bib (@string, #, parentheses,
+   quoted values) equal to bibtexparser 2.1 on the fields compared; source preference .bbl >
+   .bib (cited entries only) > inline thebibliography.
+K2-P4 test_papers_ingest (synthetic store): two papers ingested; sections 1, 2, A; equations
+   (1) eq:geo from method.tex line 2 through the source map and (A1) eq:app written with
+   \be..\ee; char ranges index flat.tex whose sha256 is in papers; chunk kinds abstract, body,
+   appendix, caption, footnote, comment; FTS hits; bibliography resolved by arXiv id (2) and by
+   fuzzy title to the other corpus paper (1); in-corpus edges 2 of 4 distinct edges; re-ingest
+   leaves counts unchanged; frontier lists the two absent ids; a download with a planted file
+   is not ingested. Refuted by any failure due to the code.
+
+### Outcomes of K2-P1 to K2-P4 (kb/tests, `cd kb && .venv/bin/python -m pytest`)
+
+- K2-P1 held at the first run (9 tests).
+- K2-P2 held for the code: for all three documents every label number computed by
+  tex_structure equals the number in LaTeX's .aux (article: sections, equations 1-12 incl. 4a/4b,
+  T, appendix A, A.1, B; numberwithin: 1.1 ...; revtex4-2: equations 1-9, A1, A2, B1, figures,
+  tables). The first run failed for three reasons, all in the test: class-internal labels
+  (FirstPage, LastPage, LastBibItem) were compared; REVTeX numbers tables in roman numerals
+  (tab:one = "I"); I had expected multline to be (8), LaTeX says (7) and so does the code.
+- K2-P3: first run 5 failures. Code faults (fixed): pylatexenc turns ~ into U+00A0 (now a
+  space); a biblatex \field{eprint}{<bare id>} was not read as an arXiv id; the .bib parser
+  stopped at `journal = prd # " 100"` (a quoted string after #), losing later fields; symbols
+  listed both \mathrm{d} and d. Test faults: I expected the space after a zero-argument macro
+  to vanish (TeX drops it; the code keeps it on purpose).
+- K2-P4: first run failures were the test's (it ran `kb init`, which copies SOURCE.json from
+  the manifest directory; a short synthetic paper scores 'review', not 'ok') and one code
+  fault: a stray space before the full stop in citation contexts ("[cit.] ."); and `kb
+  frontier` read "in the manifest" from the downloads table, empty before a verify run (now from
+  kb/manifests/arxiv.tsv).
+- Existing tests of K0-K1 that hard-coded schema version 2 now use db.latest_version() and
+  db.migrations(). Whole suite: 85 passed.

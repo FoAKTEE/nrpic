@@ -8,7 +8,7 @@ import sys
 import pytest
 
 from conftest import KB_DIR, TEX, make_tar
-from kbtool import cli
+from kbtool import cli, db
 
 KB = os.path.join(KB_DIR, "bin", "kb")
 
@@ -17,13 +17,13 @@ def run(argv):
     return cli.main(argv)
 
 
-@pytest.mark.parametrize("cmd", ["search", "frontier", "ingest", "resolve-bib", "embed", "eq",
-                                 "cites", "claim", "export", "qa"])
+@pytest.mark.parametrize("cmd", ["search", "ingest", "embed", "eq", "claim", "qa"])
 def test_stubs_exit_3(cmd, capsys):
     assert run([cmd, "x"]) == 3
     assert "not built yet" in capsys.readouterr().err
 # `code`, `link`, `watch upstream`, `fetch-repos` and `ingest repo` are built (K6-K7):
-# tests in test_code_*.py
+# tests in test_code_*.py. `ingest arxiv`, `resolve-bib`, `frontier`, `cites`, `export` and the
+# text views of `show` are built (K2-K3): tests in test_papers_*.py, test_tex_*.py, test_bib_*.py
 
 
 def test_init_verify_status_snapshot(store, capsys):
@@ -46,7 +46,7 @@ def test_init_verify_status_snapshot(store, capsys):
     capsys.readouterr()
     assert run(["--data-root", store.data, "status", "--json"]) == 0
     st = json.loads(capsys.readouterr().out)
-    assert st["schema_version_db"] == 2 and st["snapshot"].startswith("kb-")
+    assert st["schema_version_db"] == db.latest_version() and st["snapshot"].startswith("kb-")
     assert st["raw_arxiv_entries"] == 1 and st["rows"]["downloads"] == 2
 
 
@@ -78,7 +78,8 @@ def test_show_download_record(store, capsys):
     assert run(["--data-root", store.data, "show", "arXiv:2611.12831"]) == 0
     res = json.loads(capsys.readouterr().out)
     assert res["status"] == "ok" and res["group"] == "G01" and res["priority"] == 3
-    assert run(["--data-root", store.data, "show", "2611.12831", "--abstract"]) == 3
+    # the text views are K2 (kbtool.papers_cli); a paper that is not ingested gives exit 1
+    assert run(["--data-root", store.data, "show", "2611.12831", "--abstract"]) == 1
 
 
 def test_wrapper_runs_isolated_from_any_directory(store, tmp_path):

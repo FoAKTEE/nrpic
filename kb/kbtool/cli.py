@@ -18,6 +18,7 @@ from . import inventory as _inv
 from .lock import writer_lock
 from .paths import KB_DIR, default_brief, fetch_command, kb_manifest_dir, layout
 from . import code_cli as _code_cli          # K6-K7: fetch-repos, ingest repo, code, link, watch
+from . import papers_cli as _papers_cli      # K2-K3: ingest arxiv, resolve-bib, frontier, cites, export, show views
 
 NOT_YET = 3
 
@@ -190,11 +191,12 @@ def status_dict(lay):
                 except Exception:
                     counts[t] = None
             st["rows"] = counts
+            st.update(_papers_cli.status_counts(con))          # K2-K3 (kbtool/papers_cli.py)
             try:
                 st["downloads_by_status"] = dict(con.execute(
                     "SELECT status, count(*) FROM downloads WHERE in_manifest=1 GROUP BY status").fetchall())
                 st["downloads_checked_at"] = con.execute("SELECT max(checked_at) FROM downloads").fetchone()[0]
-                st["parse_failures"] = None          # K2
+                pass
             except Exception:
                 pass
         finally:
@@ -222,9 +224,7 @@ def cmd_show(a):
     """K1 part: the manifest row and the download check of one paper. The text views
     (--abstract, --section, --eq, --fig) come with K2."""
     if a.abstract or a.section or a.eq or a.fig:
-        print("kb show --abstract/--section/--eq/--fig: filled by stage K2 (TeX structure); not built yet",
-              file=sys.stderr)
-        return NOT_YET
+        return _papers_cli.show_views(a)                        # K2 (kbtool/papers_cli.py)
     lay = layout(a.data_root)
     rows = {r["id"]: r for r in _brief.load_arxiv_manifest(os.path.join(kb_manifest_dir(), "arxiv.tsv"))}
     pid = a.paper_id.replace("arXiv:", "")
@@ -237,6 +237,8 @@ def cmd_show(a):
 def cmd_stub(a):
     if a.cmd == "ingest" and a.args[:1] == ["repo"]:            # K6 (kbtool.code_cli)
         return _code_cli.cmd_ingest_repo(a.args[1:], data_root=a.data_root)
+    if a.cmd == "ingest" and a.args[:1] == ["arxiv"]:           # K2-K3 (kbtool.papers_cli)
+        return _papers_cli.cmd_ingest_arxiv(a.args[1:], data_root=a.data_root)
     stage, what = STUBS[a.cmd]
     print(f"kb {a.cmd}: {what}; filled by stage {stage} of brief section 12, not built yet", file=sys.stderr)
     return NOT_YET
@@ -298,9 +300,10 @@ def parser():
     s.set_defaults(fn=cmd_show)
 
     _code_cli.register(sub)                    # fetch-repos, code, link, watch (kbtool/code_cli.py)
+    _papers_cli.register(sub)                  # resolve-bib, frontier, cites, export (kbtool/papers_cli.py)
 
     for name, (stage, what) in STUBS.items():
-        if name in _code_cli.CLAIMS:
+        if name in _code_cli.CLAIMS or name in _papers_cli.CLAIMS:
             continue
         s = sub.add_parser(name, help=f"[{stage}, not built] {what}")
         s.add_argument("args", nargs=argparse.REMAINDER)

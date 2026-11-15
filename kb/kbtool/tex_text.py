@@ -11,6 +11,8 @@ import re
 from . import tex_macros as M
 
 try:                                                     # optional (kb/.venv)
+    import logging as _logging
+    _logging.getLogger("pylatexenc").setLevel(_logging.CRITICAL)
     from pylatexenc.latex2text import LatexNodes2Text
     from pylatexenc import latex2text as _l2t, latexwalker as _lw
     CONVERTER = "pylatexenc " + __import__("pylatexenc").__version__
@@ -118,6 +120,7 @@ def to_text(tex, labels=None, macros=None):
             out = _stdlib_text(t)
     else:
         out = _stdlib_text(t)
+    out = out.replace("\u00a0", " ")
     out = re.sub(r"[ \t\r\f\v]+", " ", out)
     out = re.sub(r" *\n *", "\n", out)
     out = re.sub(r"\n{3,}", "\n\n", out)
@@ -132,7 +135,17 @@ SENT_END = re.compile(r"(?<=[.!?])[\"')\]]*\s+(?=[A-Z0-9\\$(\[])")
 
 
 def sentences(text):
-    """Split plain text into sentences (rule-based; abbreviations and initials kept)."""
+    """Split plain text into sentences (rule-based; abbreviations and initials kept). Blank
+    lines and headings (lines starting with the section sign that pylatexenc writes) end a
+    sentence too."""
+    out = []
+    for para in re.split(r"\n\s*\n", text):
+        para = "\n".join(l for l in para.split("\n") if not l.lstrip().startswith("\u00a7"))
+        out += _sentences(para)
+    return out
+
+
+def _sentences(text):
     out, start = [], 0
     for m in SENT_END.finditer(text):
         before = text[start:m.start()]
@@ -296,9 +309,10 @@ def symbols(tex_norm):
     """Set of symbols of a normalized equation: Greek letters and similar, single Latin
     letters, and styled letters (\\mathcal{L}, \\mathbb{R}, ...)."""
     out = set()
-    for m in re.finditer(r"\\(mathcal|mathbb|mathrm|mathbf|mathfrak|mathsf|boldsymbol|bm|vec|hat|tilde|bar)\{([A-Za-z])\}",
-                         tex_norm):
+    styled = re.compile(r"\\(mathcal|mathbb|mathrm|mathbf|mathfrak|mathsf|boldsymbol|bm|vec|hat|tilde|bar)\{([A-Za-z])\}")
+    for m in styled.finditer(tex_norm):
         out.add(f"\\{m.group(1)}{{{m.group(2)}}}")
+    tex_norm = styled.sub(" ", tex_norm)
     for m in re.finditer(r"\\([A-Za-z]+)", tex_norm):
         if m.group(1) in GREEK:
             out.add("\\" + m.group(1))
