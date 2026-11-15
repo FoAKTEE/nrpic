@@ -206,6 +206,10 @@ void ProblemGenerator::NrpicConformallyFlat(ParameterInput *pin, const bool rest
       CFFatal("<problem> " + pre + "type = '" + type + "' not recognized");
     }
   }
+  // Bowen-York momentum and spin of the punctures, corrections of their psi
+  std::vector<Real> bytab_h;
+  const nrpic_by::BYSet by = nrpic_by::BYRead(pin, ncomp, bytab_h);
+  const DvceArray1D<Real> bytab = nrpic_by::BYDeviceTable(bytab_h);
 
   const std::string lapse = pin->GetOrAddString("problem", "lapse", "one");
   const int lcomp = pin->GetOrAddInteger("problem", "lapse_comp", 0);
@@ -224,11 +228,6 @@ void ProblemGenerator::NrpicConformallyFlat(ParameterInput *pin, const bool rest
   } else {
     CFFatal("<problem> lapse = '" + lapse + "' not recognized");
   }
-
-  // Bowen-York momentum and spin of the punctures, corrections of their psi
-  std::vector<Real> bytab_h;
-  const nrpic_by::BYSet by = nrpic_by::BYRead(pin, ncomp, bytab_h);
-  const DvceArray1D<Real> bytab = nrpic_by::BYDeviceTable(bytab_h);
 
   // tables on the device
   const int ntot = static_cast<int>(utab_h.size());
@@ -321,10 +320,6 @@ void ProblemGenerator::NrpicConformallyFlat(ParameterInput *pin, const bool rest
   if (global_variable::my_rank == 0) {
     std::cout << "NRPIC: conformally flat initial data with " << ncomp
               << " component(s), lapse = " << lapse << std::endl;
-    if (by.n > 0) {
-      std::cout << "NRPIC: Bowen-York curvature or correction on " << by.n
-                << " puncture(s)" << std::endl;
-    }
   }
   return;
 }

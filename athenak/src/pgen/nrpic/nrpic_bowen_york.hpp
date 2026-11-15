@@ -56,6 +56,7 @@
 #include <vector>
 
 #include "athena.hpp"
+#include "globals.hpp"
 #include "parameter_input.hpp"
 
 namespace nrpic_by {
@@ -406,6 +407,10 @@ inline BYSet BYRead(ParameterInput *pin, const int ncomp, std::vector<Real> &tab
       BYFatal("<problem> " + pre + "corr = '" + corr + "' not recognized");
     }
     ++by.n;
+  }
+  if (by.n > 0 && global_variable::my_rank == 0) {
+    std::cout << "NRPIC: Bowen-York curvature or correction on " << by.n
+              << " puncture(s)" << std::endl;
   }
   return by;
 }
