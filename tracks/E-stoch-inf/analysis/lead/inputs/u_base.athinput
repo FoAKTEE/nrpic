@@ -1,0 +1,89 @@
+# Unit test of core's noise generator (tracks/E-stoch-inf/noise/NOISE_SPEC.md section 9,
+# runs U1-U9 in the options of core's scalar_field_noise.cpp, branch core/scalar-field at
+# 836ac86). Fields generated and dumped, no kicks (noise_c_phi = noise_c_pi = 0), flat
+# spacetime, coupling off. Variants override options on the command line:
+#   U1 meshblock 64^3 (this file), U2 32^3, U3 16^3, U4 U2 restarted at cycle 150,
+#   U5a/U5b noise_nmax2 = 64 at N = 32 (cfl 0.125) and N = 64 (same dt),
+#   U6 noise_scheme = markov, U7 markov with noise_window = heaviside, U8 rng_seed 20261116.
+# dt = cfl dx = 0.25 x 2.5/64 = 0.009765625 (exact in binary), 300 steps.
+
+<comment>
+problem   = E-stoch-inf validation of the noise generator (power model)
+
+<job>
+basename  = u
+rng_seed  = 20261115
+
+<mesh>
+nghost    = 4
+nx1       = 64
+x1min     = -1.25
+x1max     = 1.25
+ix1_bc    = periodic
+ox1_bc    = periodic
+nx2       = 64
+x2min     = -1.25
+x2max     = 1.25
+ix2_bc    = periodic
+ox2_bc    = periodic
+nx3       = 64
+x3min     = -1.25
+x3max     = 1.25
+ix3_bc    = periodic
+ox3_bc    = periodic
+
+<meshblock>
+nx1       = 64
+nx2       = 64
+nx3       = 64
+
+<time>
+evolution  = dynamic
+integrator = rk4
+cfl_number = 0.25
+nlim       = 300
+tlim       = 100.0
+ndiag      = 50
+
+<z4c>
+lapse_oplog     = 0.0
+lapse_harmonic  = 0.0
+lapse_advect    = 0.0
+shift_Gamma     = 0.0
+shift_eta       = 0.0
+shift_advect    = 0.0
+diss            = 0.0
+damp_kappa1     = 0.0
+damp_kappa2     = 0.0
+
+<scalar_field>
+couple          = false
+potential       = quadratic
+mass            = 0.0
+diss            = 0.0
+hist_dcycle     = 50
+dump_dcycle     = 100
+noise           = power
+noise_scheme    = frozen
+noise_window    = tanh
+noise_sharpness = 5.0
+noise_nmax2     = 256
+noise_amp       = 1.0
+noise_tilt      = 0.0
+noise_ksigma0   = 0.9
+noise_hubble    = 1.0
+noise_t0        = 0.0
+noise_c_phi     = 0.0
+noise_c_pi      = 0.0
+noise_pi_dof    = 1
+
+<problem>
+pgen_name  = scalar_field
+id         = wave
+phi0       = 0.0
+pi0        = 0.0
+amp        = 0.0
+
+<output1>
+file_type  = rst
+dcycle     = 150
