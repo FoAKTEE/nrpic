@@ -127,3 +127,17 @@ The follow-up code of D4(b), run in `ref/`: for h in (4e-4, 2e-4, 1e-4, 5e-5) co
 `synth.window_dt` with centred first and second differences of `synth.window` at the 61
 times of d4_stages_window.py (H = 1, eps1 = 0.01, eps2 = -0.02, s = 5); output
 `d4b_hscan.log`.
+
+## 2026-11-15 13:10 UTC: review written; what it rests on
+
+`DESIGN_REVIEW.md` and `README.md` written. Cost table from `ref/cost.py` (run
+E-stoch-inf-20261115-123936-b2ec5c7, `figs/cost.json`): 256^3 realisation 0.36 to 0.51
+card-hours at theta = 0.25 (per-step or per-stage noise), 3.6 to 5.1 at theta = 0.025.
+These rest on two unmeasured assumptions: a 15 percent overhead of the field and 3e12
+flop/s for the synthesis. The memory figures rest on the processor build standing in for
+the card build. The interface document of `core/scalar-field` did not exist at 12:55 UTC
+(branch at a9fec22), so no comparison was made; section 9 of the review lists what it
+must state. Read alongside the parallel specification `tracks/E-stoch-inf/spec/SPEC.md`.
+The review agrees with it on the equations, the gauge and the stage-time evaluation, and
+differs on one point: the SPEC asks core for a GPU FFT (its section 10, item 3), while the
+review shows that none is needed (request R7).
