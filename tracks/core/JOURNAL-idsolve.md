@@ -352,3 +352,26 @@ code: -155123, -155211, -155142, -155220.
   with resolution, because the density has structure at the scale of the cells at
   every resolution.
 - Amplitude of psi: 5.17e-3 to 5.21e-3 (linear theory 5.22e-3).
+
+## 2026-11-15, entry 5: prediction for the evolution and restart check (before the runs)
+
+(The commit message of entry 4 says "five failed predictions"; the count in the entry
+is six: T1 (f) value, T1 (e) original bound, T2 (d), T3 (b) rms, T4 (b) maximum norm,
+T4 (e) bound.)
+
+`check_evolution.py`, source 87e189e, processor build.
+A. Gaussian at 32 cells, solved in mode code, 8 cycles, restart dump at cycle 4, then
+   a run from the dump. Predictions: the run from the dump prints no solve and writes no
+   `idsolve.txt` (the call sits in the branch of a new run); its constraint records at
+   cycles 5 to 8 equal those of the uninterrupted run to rounding (relative 1e-10 or
+   better in the extrema of chi, K, E; a Z4c restart is not bitwise). During the 8
+   cycles the mean of |H| over the mesh stays below 1e-4 (it starts at the tolerance
+   in the interior; the boundary layer of the outflow faces and the time integration
+   raise it). Refuted if the solver runs after the restart, if the histories differ by
+   more than 1e-8 relative, or if a value is not finite.
+B. Triaxial ball at 64 cells, 8 cycles, without the solve and with it. Predictions: both
+   run to the end with finite values; at the first record the mean of |H| is the trial
+   value without the solve and at least 1e3 times smaller with it; after 8 cycles
+   (t = 2) the run with the solve still has the smaller mean |H| (by at least a factor
+   3: the momentum constraint is violated equally in both and feeds H during the
+   evolution). Refuted if the run with the solve has the larger H at the end, or fails.
