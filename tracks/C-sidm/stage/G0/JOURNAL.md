@@ -100,3 +100,6 @@ track's scripts: run C-20261115-170716-e81ba08.
   at Kn_c = 0.1 against the scope's 2-7; cause found in knudsen_costs.py (non-relativistic t_r,
   no lapse): conservative, so the claim holds as an upper estimate.
 - V8: 35 locators read; one mis-described (2105.05556:581), the rest as quoted.
+- Reruns (run C-20261115-170716-e81ba08, finished): all six steps exit 0; scope JSONs
+  byte-identical to the original runs -115344, -115348, -115400; equilibria `knudsen.json`
+  equal to the committed `results/knudsen.json` (Kn sigma~ = 129.8 at the King threshold).

@@ -12,7 +12,7 @@ Runs (processors, 0 card-hours):
 | Run id | What |
 |---|---|
 | C-20261115-170630-1037f6a | my own code, `verifier/run_all.sh`: V1 to V7 (outputs `scratch/C-sidm/<run>/{mono,king,puls,rate,costs}`) |
-| C-20261115-170716-e81ba08 | rerun of the track's scripts and tests: `scope/scripts/{seq_monoenergetic,king_sequence,knudsen_costs}.py`, `gravothermal/test_tmb.py`, `collide/REFERENCES/tests` (pytest), `equilibria/knudsen.py` |
+| C-20261115-170716-e81ba08 | rerun of the track's scripts and tests: `scope/scripts/{seq_monoenergetic,king_sequence,knudsen_costs}.py`, `gravothermal/test_tmb.py`, `collide/REFERENCES/tests` (pytest), `equilibria/knudsen.py`; all exit 0; the three scope JSONs are byte-identical to those of runs C-sidm-20261115-115344/115348/115400-eb8b752, `knudsen.json` equal to `equilibria/results/knudsen.json`; test_tmb ALL PASS; 62 pytest pass |
 
 Figures (copies of the first run's PNGs, each looked at): `verifier/figs/fig_v{1..7}_*.png`.
 My code shares nothing with the track's: own structure equations and closures
