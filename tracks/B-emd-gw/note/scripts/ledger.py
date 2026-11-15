@@ -47,6 +47,7 @@ def load():
     d["bl"] = common.load_json("baseline", "baseline_results.json")
     d["lc"] = common.load_json("lead_checks", "lead_checks.json")
     d["cd"] = common.load_json("cosmo_dumps", "results_cosmo.json")
+    d["lr"] = common.load_json("late_rise", "late_rise.json")
     return d
 
 
@@ -126,6 +127,11 @@ def values(d):
         last = rows[-1]
         cdv += [frozen["rms_hTT"], last["a"], last["rms_hTT"], last["rms_h_nonTT"]**2]
     v["cosmo_tt"] = (cdv, "cosmo_dumps")
+    lrv = []
+    for run in ("dav_c256_n128_t", "dav_c256_n128_pcs4bt"):
+        r = d["lr"]["runs"][run][-1]
+        lrv += [r["rms_TT"], r["rms_G"], r["rms_TT_minus_G"], r["rho_kin"]/r["rho_grad"]]
+    v["late_rise"] = (lrv, "late_rise")
     fl = d["fl"]
     v["flrw"] = ([fl["flrw_n32_cpu_sd"]["max_rel_err_lapse"], fl["dtexp_test/lim"]["max_rel_err_lapse"],
                   fl["dtexp_test/lim"]["Hr_max_end"]], "flrw")
@@ -165,6 +171,7 @@ LEDGER = [
         ("ak_t2", "AthenaK wave at $t=2$, 32 cells: amplitude, phase (rad), energy density; largest $\\Psi_4$ error over the dumps"),
         ("weyl_lag", "lag of the code's own Weyl output (steps); step size"),
         ("cosmo_tt", "earlier three-wave relativistic dumps (two deposits): rms $h^{\\rm TT}$ at $a\\approx36$; $a$ of the last dump; rms $h^{\\rm TT}$ there; square of the rms non-TT part there"),
+        ("late_rise", "the same dumps at $a\\approx1000$, two deposits: rms $h^{\\rm TT}$; rms of the spatial-gauge piece; rms after its removal; kinetic over gradient energy of the TT part"),
     ]),
     ("First source and regime", [
         ("cw_dev", "largest relative departure of the $(k,k,0)$ amplitude from $\\frac{5}{12}|\\phi_x\\phi_y|$; largest TT strain of the plane wave"),

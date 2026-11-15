@@ -33,6 +33,7 @@ RUNS = {
     "pancake_nw": "B-emd-gw-20261115-115239-69ab1db",     # Newtonian particle-mesh reference
     "pancake_nw_p2": "B-emd-gw-20261115-122451-01801f6",  # the same, two per cell and direction
     "cosmo_dumps": "B-emd-gw-20261115-120846-d1509b5",    # projection of earlier three-wave relativistic dumps
+    "late_rise": "B-20261115-164616-a6d9477",             # spatial-gauge piece on those dumps (first-source helper)
     "flrw": "B-emd-gw-20261115-115414-7ffbde1",           # homogeneous runs against the exact solution
     "baseline": "B-emd-gw-20261115-115752-840e994",       # semi-analytic baseline T1-T8
 }
