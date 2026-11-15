@@ -272,3 +272,19 @@ registered run; their predictions are P1, P2, P3 (17:05). The card U2 wrote its 
 files, so U4 can now run on a card too:
 - P5' (A12 on the card): U4 = card U2 restarted at cycle 150 on a card
   (`inputs/u64/card_u4.list`) gives dumps at cycles 200 and 300 bit-identical to card U2.
+
+## 18:09 Outcome P1-P3 on the card (validation run E-20261115-180533-24a7781)
+
+- P1 holds: frozen scheme on the card, every test passes; A1 9.8e-14, A8 1.4e-13, A10
+  4.8e-15; A11 bit-identical for 1, 8 and 64 MeshBlocks on the card; A13 3.5e-15 (N = 32
+  against 64); A15 z = 1.46; A2, A3, A4, A7 inside their bounds (A9 not applicable: the
+  power model has no integrated field).
+- P2 holds, with little power: Markov-Heaviside (U7) passes, A1 2.6e-15; with dumps every
+  100 cycles only the shell |n|^2 = 37 crosses inside a dumped step (figure), so A3, A4, A8
+  are not applicable and A2 rests on one shell. The scaled case of the lead (dumps every 40
+  cycles) is the stronger test of this scheme.
+- P3 holds: Markov-tanh (U6) with the reference as it is fails A1 at 8.5e-10 (inside the
+  predicted 1e-11 to 1e-8); with the cancellation-free reference A1 is 4.0e-15 and every
+  test passes. Same verdict as P3' on processors.
+Figures `fig/fig_val_card_frozen.png`, `fig_val_card_markov_tanh_cf.png`,
+`fig_val_card_markov_heaviside.png` looked at.
