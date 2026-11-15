@@ -393,3 +393,40 @@ mesh at M/4 vs M/8-M/16 [to be stated as such, not as a property of the cluster]
 collapses, the 0.64 and 0.66 runs migrate because they are close to y_c*.
 Card time after this: about 1.2 (round 1) + 0.25 (prolate) + 0.6 (round 2) + 0.24
 (control) = 2.3 of the 2.5 allowed; nothing further will be submitted.
+
+## 16:07Z Outcome of bisection round 1 (registered analysis core-20261115-160501-ee15e0f)
+
+Card jobs 4432 (y_c 0.70, 0.66; run core-20261115-152842-5728b1d, 0.593 card-hours) and
+4433 (0.72, 0.64; core-20261115-152843-5728b1d, 0.596). All four reach 300 M with exit
+status 0, every particle kept, no apparent horizon, central lapse never below 0.638.
+Figure `figs/cluster_threshold.png` (looked at).
+
+By the rule fixed at 15:30Z (mean central lapse over 200-300 M against alpha_c, 0.03):
+| y_c | alpha_c (equilibrium) | mean 200-300 M | verdict by the rule | equal-binding target alpha_c |
+|---|---|---|---|---|
+| 0.72 | 0.7207 | 0.7079 | STABLE | -- |
+| 0.70 | 0.7039 | 0.6920 | STABLE | -- |
+| 0.66 | 0.6713 | 0.7005 | STABLE (offset +0.029, at the edge of 0.03) | 0.7034 |
+| 0.64 | 0.6554 | 0.7221 | UNDECIDED (offset +0.067) | 0.7205 |
+No model collapses on this mesh: the collapse part of the prediction is REFUTED (0.64
+was to collapse between 150 and 300 M). By the rule the bisection gives no bracket (no
+COLLAPSE; the lowest STABLE is 0.66, below y_c* = 0.6796), i.e. the rule as written does
+not locate the threshold with these runs.
+Reading [JUDGEMENT, after the runs]: the two models below y_c* leave their equilibrium
+outward and settle, in the 100 M mean, at the central lapse of the stable member with the
+same E_b/M_0 (0.7005 vs 0.7034; 0.7221 vs 0.7205), which is the migration the paper
+describes for unstable members (its Sec. "Cluster Migration"; our earlier unperturbed
+y_c = 0.5 migration run reached 0.814 against 0.833530 in the paper). The two models
+above y_c* stay at their equilibrium in the mean (offsets -0.012, -0.013) and do not move
+towards any other member. On that reading the threshold lies between 0.66 and 0.70,
+bracketing y_c* = 0.6796. What the rule missed: migration is a departure without
+collapse; a criterion "mean central lapse moves to the equal-binding member" would have
+to be fixed before round 2's outcome is read, and is written here now: round 2 (0.69,
+0.67) and the control are judged by both the 15:30Z rule and this migration criterion
+(|mean 200-300 M - alpha_c(target)| < |mean 200-300 M - alpha_c(own)|).
+Also seen, and not explained: in all four runs the central lapse oscillates with a
+period near 50 M and a swing that grows from +-0.004 in the first 50 M to +-0.05 to
++-0.08 after 200 M (0.72: 0.656-0.742), larger than in the earlier M/2 static runs of
+0.819 (half swing up to 0.022) - the growing oscillation of OPEN.md item 3, here at
+M/4 and with the stable runs also drifting down by about 0.01 in the last 100 M.
+Card time so far 1.19 card-hours (round 1).
