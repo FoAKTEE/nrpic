@@ -78,9 +78,22 @@ around after pericentre beyond 10 r_t (bound CM; 2404 does not say how it treats
 member crosses r < 2.5 r_g (Schwarzschild) / r_+ + 0.05 r_g (Kerr-Schild) moving inwards
 (captured; that member is then frozen and the pair force switched off).
 
-## Results
+## Results (details, run ids and failed predictions in `JOURNAL.md`)
 
-See the end of `JOURNAL.md` ("Summary") for the numbers with run ids.
+| what | result | run |
+|---|---|---|
+| single-body limit vs python/nrpic (T2) | positions within 3e-8 r_g over 2800 M, Schwarzschild and Kerr a = 0.9 | F-hills-20261115-125918-9518508 |
+| time dilation, 2404 appendix B (T3) | proper period vs tide-corrected prediction 1.1e-4; f follows f0(1-2M/r) | F-hills-20261115-130124-76059c5 |
+| 3+1 force form for AthenaK (T4) | relative orbit within 4e-8 a0 of Eq. CoordtEqs | F-hills-20261115-133219-90eeecd |
+| 2404 single encounters (Figs. 1, 3-5) | 6/6 outcomes, r_cm(t_s) = 31.1 and 107.6 r_g (paper 31, 107) | F-hills-20261115-134350-d16b473 |
+| 2404 Sec. IV scan (S1, 160000 encounters) | s.f. within 0.0225 of the paper's figure, mean v_inf within 0.7 percent; onsets 1.9 (HRNA) and 2.5 (Newton) | F-hills-20261115-130405-ce17dcf, analysis F-hills-20261115-142554-c10b371 |
+| r_p = 10 to 4 r_g (S2) | retrograde s.f. HRNA 0.92-1.0 vs Newton 0.59-0.66; mean v_inf within 3 percent; a member captured in most encounters below 5 r_g | F-hills-20261115-134255-a3c22f8 |
+| coordinate dependence (S3) | Kerr-Schild vs Schwarzschild: s.f. within 0.005 | F-hills-20261115-130922-634fb86 |
+| Kerr a = +-0.9 (S4) | retrograde s.f.: a = -0.9 > 0 > +0.9 by 0.04-0.05 at beta >= 5 | F-hills-20261115-133124-c799a81 |
+
+Figures: `figures/` (copies of the inspected PNGs); summaries: `results/*.json` (from the
+analysis run above). Not done: tolerance scan C1, the 1PN law, inclined encounters, the
+2402.02178 comparison; C2 (r0 dependence) see JOURNAL.
 
 ## Requests
 

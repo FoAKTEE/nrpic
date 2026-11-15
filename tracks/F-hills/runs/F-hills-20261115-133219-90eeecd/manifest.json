@@ -1,0 +1,58 @@
+{
+ "run_id": "F-hills-20261115-133219-90eeecd",
+ "track": "F-hills",
+ "package": "geodesic_binary (F-pre-2)",
+ "purpose": "T4 HRNA force in 3+1 (x,u_i) form vs CoordtEqs, Kerr-Schild a=0 and 0.9",
+ "kind": "scouting",
+ "command": [
+  "/data/haiyangw/nrpic/scratch/F-hills/venv-gb/bin/python",
+  "-I",
+  "tracks/F-hills/geodesic_binary/tests/t4_force_31.py",
+  "/data/haiyangw/nrpic/scratch/F-hills/F-hills-20261115-133219-90eeecd"
+ ],
+ "cwd": "/data/haiyangw/nrpic/wt/F-hills",
+ "git": {
+  "sha": "90eeecd1d1b7f58b400abaff959e8f2158127c13",
+  "branch": "track/F-hills",
+  "dirty_package": false
+ },
+ "inputs": [
+  {
+   "path": "tracks/F-hills/geodesic_binary/hrna.py",
+   "sha256": "dad4079cc8b3c18c823ed4d5bcd331db3c9b0ab524ad2279d81271830a2dd736"
+  },
+  {
+   "path": "tracks/F-hills/geodesic_binary/tests/t4_force_31.py",
+   "sha256": "5bca7f757d899f7efe008a5222ddd66e427807178b555b43dc04438cdd2dbf0c"
+  },
+  {
+   "path": "python/nrpic/geodesic.py",
+   "sha256": "fd74546f6b8f86450b3ded27eab3d73e4484a5c9e6a5736b5d7ebeeb966a7242"
+  },
+  {
+   "path": "python/nrpic/kerr.py",
+   "sha256": "7993012d30c5ca8b5530a6e74662cfacd79af47e1babb81f45651e8ac9dacdf6"
+  }
+ ],
+ "parents": [],
+ "resources": {
+  "cores": 1,
+  "gpus": 0,
+  "card_hours": 0.0,
+  "core_hours": 0.0012
+ },
+ "outputs": {
+  "dir": "scratch/F-hills/F-hills-20261115-133219-90eeecd",
+  "sha256": {
+   "stdout.txt": "8837d44ef249aea6080976c7d14ce7575ef5303799d5b9dc0c99198ab5b45a2d",
+   "t4_force_31.json": "888b1e6fedd6090442f550598a7c2f30eba93969b199163ae8870ecb997bbabc",
+   "t4_force_31.pdf": "b8bfe39a9653854863bd005b27260845908d97507414ab0690dfe61584e119ed",
+   "t4_force_31.png": "9e46d973a9d34a60fa8af791d82e262f3aab14a61145905de2aae55376f282cd"
+  }
+ },
+ "status": "completed",
+ "started": "2026-11-15T13:32:19+00:00",
+ "exit_code": 0,
+ "ended": "2026-11-15T13:32:24+00:00",
+ "wall_time_s": 4.2
+}

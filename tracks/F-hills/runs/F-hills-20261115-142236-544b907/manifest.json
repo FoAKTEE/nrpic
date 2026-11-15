@@ -1,0 +1,99 @@
+{
+ "run_id": "F-hills-20261115-142236-544b907",
+ "track": "F-hills",
+ "package": "geodesic_binary (F-pre-2)",
+ "purpose": "A1 analysis of S1-S4 against 2404 (digitized figures), strong-field extension, Kerr",
+ "kind": "scouting",
+ "command": [
+  "bash",
+  "tracks/F-hills/geodesic_binary/run_analysis.sh",
+  "/data/haiyangw/nrpic/scratch/F-hills/F-hills-20261115-142236-544b907",
+  "/data/haiyangw/nrpic/scratch/F-hills/F-hills-20261115-130405-ce17dcf/s1.npz",
+  "/data/haiyangw/nrpic/scratch/F-hills/F-hills-20261115-134255-a3c22f8/s2.npz",
+  "/data/haiyangw/nrpic/scratch/F-hills/F-hills-20261115-130922-634fb86/s3.npz",
+  "/data/haiyangw/nrpic/scratch/F-hills/F-hills-20261115-133124-c799a81/s4.npz"
+ ],
+ "cwd": "/data/haiyangw/nrpic/wt/F-hills",
+ "git": {
+  "sha": "544b907be75c5311c55834299b2baa25561932df",
+  "branch": "track/F-hills",
+  "dirty_package": false
+ },
+ "inputs": [
+  {
+   "path": "tracks/F-hills/geodesic_binary/run_analysis.sh",
+   "sha256": "1163476f59e36ac6f429a2a7c688ed715448ca095bffca39ff28de9411617950"
+  },
+  {
+   "path": "tracks/F-hills/geodesic_binary/analysis_s1.py",
+   "sha256": "f2e6fe64d90d693eeb9e652763cc8ac1ad7107ff16c7198a4aedbc73183304f6"
+  },
+  {
+   "path": "tracks/F-hills/geodesic_binary/analysis_strong.py",
+   "sha256": "e9d8c6ad4ff1d9280c1268f0717af6b0ac34654fa574ba7414c475d5a552451b"
+  },
+  {
+   "path": "tracks/F-hills/geodesic_binary/analysis_kerr.py",
+   "sha256": "5da678f6c3e8e213e48250b93bda99198cbf1a73465ac8de04f1fe1cfd1a201d"
+  },
+  {
+   "path": "tracks/F-hills/geodesic_binary/digitize_2404.py",
+   "sha256": "fc3ce7f24d610123c3958647d95f21607f00406d1f63810ca6e54ad591e08728"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/scratch/F-hills/F-hills-20261115-130405-ce17dcf/s1.npz",
+   "sha256": "6791a6c2382b319a5ae4849d0ed2c6f0b8ccb50f6ce406bb621d4a10a1338176"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/scratch/F-hills/F-hills-20261115-134255-a3c22f8/s2.npz",
+   "sha256": "a9072ce0fcf6c7079ef2c7f884fcc4a8b1bca8223b36f16b2f9451aaa65c3f78"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/scratch/F-hills/F-hills-20261115-130922-634fb86/s3.npz",
+   "sha256": "fa96f49196c1bd8d490f5867869c2bbbc05056abf2adc59f0a879674f9434af2"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/scratch/F-hills/F-hills-20261115-133124-c799a81/s4.npz",
+   "sha256": "2d71a515f84ac1923f252529736783ffd1ef754f57a5a11e5ebc0ea90b1bb0ed"
+  }
+ ],
+ "parents": [
+  "F-hills-20261115-130405-ce17dcf",
+  "F-hills-20261115-134255-a3c22f8",
+  "F-hills-20261115-130922-634fb86",
+  "F-hills-20261115-133124-c799a81"
+ ],
+ "resources": {
+  "cores": 1,
+  "gpus": 0,
+  "card_hours": 0.0,
+  "core_hours": 0.0117
+ },
+ "outputs": {
+  "dir": "scratch/F-hills/F-hills-20261115-142236-544b907",
+  "sha256": {
+   "kerr_sepfrac.pdf": "ffc2daee3f962bee663e32571e21f0a8f6d0b0cb1ee46dce62d1990079007249",
+   "kerr_sepfrac.png": "afecae3b3d4f5136923fe4108478434d061a9070f1186cf353daf162c7c2cf51",
+   "kerr_summary.json": "754931413c085b2a2e2d2e1848ba34f0735cd6f5c7b4d0bda845b082e762b812",
+   "s1_bound.pdf": "8a0427f9efdd2b4751b559f4a025e83dc8a779a55586eb59f48859a9d27a3995",
+   "s1_bound.png": "e7bd0eeeb98bf4983db488b09bd2dc384d451b4e6085c90634dc288b382350be",
+   "s1_sepfrac.pdf": "050c310a54e12e861138289259ed156fbdaf240a4d89ba6d1d1efcd3c249ad03",
+   "s1_sepfrac.png": "2d9df7a783acd0ba7cdee23a9709e38eb1a55fd2523d415cf522348ef2897936",
+   "s1_summary.json": "7be1f2b3978c70a6b8ef2d0d282e106ad7d1223ec5d8c0158e90369934ea0ef1",
+   "s1_vinf.pdf": "55a021bb820106f22c049e9574abe204344a917c23024ec45efbd79897a7f39f",
+   "s1_vinf.png": "3be365546b54ffa8678d205f6445fdc646b6c50b7a83c8375013eb1025c353d1",
+   "stdout.txt": "cea3c90c56bc4ad5ad7d0864b2073336e9147e6019906c8e70b141c27ee41df1",
+   "strong_rp.pdf": "efe885a869da34c1694e5edebe9558bf3990bed52bb724ea18dc5c8ad9d81c00",
+   "strong_rp.png": "4e84baf09b22863baa2c7a549fd9072bfb4450db850dac5cc2865121376a4e27",
+   "strong_summary.json": "5799077ca799d578209e32e1cbae8c7c7cfc8b7933a519592942dd06368df0f2",
+   "digitized/frac-surv-Rgr-2.json": "4c991ae0eb4fe83cf0639425fdf36175cb2a3f30ce4da186d946e5d02c926a44",
+   "digitized/sep_fraction.json": "49975c71b0c48b86c15d439d92510d71607b8ed3290b334e3b65b0fb8e10a488",
+   "digitized/v8-asymp.json": "539ac5f4e0a9be07dac7c419b78eefe945446709107b06b6be109b872ef921b6"
+  }
+ },
+ "status": "completed",
+ "started": "2026-11-15T14:22:36+00:00",
+ "exit_code": 0,
+ "ended": "2026-11-15T14:23:18+00:00",
+ "wall_time_s": 42.0
+}

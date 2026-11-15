@@ -1,0 +1,55 @@
+{
+ "run_id": "F-hills-20261115-130405-ce17dcf",
+ "track": "F-hills",
+ "package": "geodesic_binary (F-pre-2)",
+ "purpose": "S1 reproduction of 2404 section IV: beta 0.1-10 (100), 400 phases, Newton and HRNA (sch), pro- and retrograde",
+ "kind": "production",
+ "command": [
+  "/data/haiyangw/nrpic/scratch/F-hills/venv-gb/bin/python",
+  "-I",
+  "tracks/F-hills/geodesic_binary/scan.py",
+  "--out",
+  "/data/haiyangw/nrpic/scratch/F-hills/F-hills-20261115-130405-ce17dcf/s1.npz",
+  "--betas",
+  "0.1:10:100",
+  "--nphi",
+  "400",
+  "--workers",
+  "8"
+ ],
+ "cwd": "/data/haiyangw/nrpic/wt/F-hills",
+ "git": {
+  "sha": "ce17dcfa3e57c418d2dff7492183e7d0d484af02",
+  "branch": "track/F-hills",
+  "dirty_package": false
+ },
+ "inputs": [
+  {
+   "path": "tracks/F-hills/geodesic_binary/hrna.py",
+   "sha256": "ea521fc08a0f70ff67aceb965336330e72b0c9e88daf5873403c6c49e04da966"
+  },
+  {
+   "path": "tracks/F-hills/geodesic_binary/scan.py",
+   "sha256": "6107fcdaa6c8705bce20f432510219ff4ca9becc274c2b21eed108812fab8e68"
+  }
+ ],
+ "parents": [],
+ "resources": {
+  "cores": 8,
+  "gpus": 0,
+  "card_hours": 0.0,
+  "core_hours": 10.4332
+ },
+ "outputs": {
+  "dir": "scratch/F-hills/F-hills-20261115-130405-ce17dcf",
+  "sha256": {
+   "s1.npz": "6791a6c2382b319a5ae4849d0ed2c6f0b8ccb50f6ce406bb621d4a10a1338176",
+   "stdout.txt": "70ec803d1dd2c12657b6e7a417f43418bdc855bd3b4e2880792265124adc1e4c"
+  }
+ },
+ "status": "completed",
+ "started": "2026-11-15T13:04:05+00:00",
+ "exit_code": 0,
+ "ended": "2026-11-15T14:22:20+00:00",
+ "wall_time_s": 4695.0
+}

@@ -1,0 +1,99 @@
+{
+ "run_id": "F-hills-20261115-142409-858982c",
+ "track": "F-hills",
+ "package": "geodesic_binary (F-pre-2)",
+ "purpose": "A2 analysis of S1-S4 (near-collisions excluded from speeds, bound a/R)",
+ "kind": "scouting",
+ "command": [
+  "bash",
+  "tracks/F-hills/geodesic_binary/run_analysis.sh",
+  "/data/haiyangw/nrpic/scratch/F-hills/F-hills-20261115-142409-858982c",
+  "/data/haiyangw/nrpic/scratch/F-hills/F-hills-20261115-130405-ce17dcf/s1.npz",
+  "/data/haiyangw/nrpic/scratch/F-hills/F-hills-20261115-134255-a3c22f8/s2.npz",
+  "/data/haiyangw/nrpic/scratch/F-hills/F-hills-20261115-130922-634fb86/s3.npz",
+  "/data/haiyangw/nrpic/scratch/F-hills/F-hills-20261115-133124-c799a81/s4.npz"
+ ],
+ "cwd": "/data/haiyangw/nrpic/wt/F-hills",
+ "git": {
+  "sha": "858982cf4829809ee2fabe7484931b19a7ebe0c6",
+  "branch": "track/F-hills",
+  "dirty_package": false
+ },
+ "inputs": [
+  {
+   "path": "tracks/F-hills/geodesic_binary/run_analysis.sh",
+   "sha256": "1163476f59e36ac6f429a2a7c688ed715448ca095bffca39ff28de9411617950"
+  },
+  {
+   "path": "tracks/F-hills/geodesic_binary/analysis_s1.py",
+   "sha256": "0a268e89056c9f98dc5e96c1b326e8364d215b77c06907dbc8a001c0883b956a"
+  },
+  {
+   "path": "tracks/F-hills/geodesic_binary/analysis_strong.py",
+   "sha256": "ca2f49730c035626e1d64d45fa9a794202017b6db68d28f0ace38ebd5cb9c68f"
+  },
+  {
+   "path": "tracks/F-hills/geodesic_binary/analysis_kerr.py",
+   "sha256": "5da678f6c3e8e213e48250b93bda99198cbf1a73465ac8de04f1fe1cfd1a201d"
+  },
+  {
+   "path": "tracks/F-hills/geodesic_binary/digitize_2404.py",
+   "sha256": "fc3ce7f24d610123c3958647d95f21607f00406d1f63810ca6e54ad591e08728"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/scratch/F-hills/F-hills-20261115-130405-ce17dcf/s1.npz",
+   "sha256": "6791a6c2382b319a5ae4849d0ed2c6f0b8ccb50f6ce406bb621d4a10a1338176"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/scratch/F-hills/F-hills-20261115-134255-a3c22f8/s2.npz",
+   "sha256": "a9072ce0fcf6c7079ef2c7f884fcc4a8b1bca8223b36f16b2f9451aaa65c3f78"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/scratch/F-hills/F-hills-20261115-130922-634fb86/s3.npz",
+   "sha256": "fa96f49196c1bd8d490f5867869c2bbbc05056abf2adc59f0a879674f9434af2"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/scratch/F-hills/F-hills-20261115-133124-c799a81/s4.npz",
+   "sha256": "2d71a515f84ac1923f252529736783ffd1ef754f57a5a11e5ebc0ea90b1bb0ed"
+  }
+ ],
+ "parents": [
+  "F-hills-20261115-130405-ce17dcf",
+  "F-hills-20261115-134255-a3c22f8",
+  "F-hills-20261115-130922-634fb86",
+  "F-hills-20261115-133124-c799a81"
+ ],
+ "resources": {
+  "cores": 1,
+  "gpus": 0,
+  "card_hours": 0.0,
+  "core_hours": 0.0116
+ },
+ "outputs": {
+  "dir": "scratch/F-hills/F-hills-20261115-142409-858982c",
+  "sha256": {
+   "kerr_sepfrac.pdf": "5beed59378f3f21fa7aa3e009d620c2379326c27bcaaea4da4153a802119dfb9",
+   "kerr_sepfrac.png": "afecae3b3d4f5136923fe4108478434d061a9070f1186cf353daf162c7c2cf51",
+   "kerr_summary.json": "754931413c085b2a2e2d2e1848ba34f0735cd6f5c7b4d0bda845b082e762b812",
+   "s1_bound.pdf": "b7f7c3f32c5751244a4f55a4b025b344030769eb3750537ecd6c2e4f4d8f3a39",
+   "s1_bound.png": "e7bd0eeeb98bf4983db488b09bd2dc384d451b4e6085c90634dc288b382350be",
+   "s1_sepfrac.pdf": "2a4ea7e266aed32f832ff722e6f7681d37e055513eba36b7d6ecc7a6a110785f",
+   "s1_sepfrac.png": "2d9df7a783acd0ba7cdee23a9709e38eb1a55fd2523d415cf522348ef2897936",
+   "s1_summary.json": "339263bb1196b57bb8076e8330af2574868b407607796de8e5ab945013d69051",
+   "s1_vinf.pdf": "381aeda69a8ae22631c4beb7159099f3be89adbd9e1e3fda55d12793bef05d6b",
+   "s1_vinf.png": "5b6228450f5d26b3f5ebad0a7413613ccfafeb6fc38f18bdff6d03757bcfe1dd",
+   "stdout.txt": "9ff7fde844a5e1e440e6d50266ecac39a5ef23b34c9cebd1a90062ca324da362",
+   "strong_rp.pdf": "2720c85391298e8135cc9e27f2e86beecbf62392619dc19b11ae7bf440bb9eb5",
+   "strong_rp.png": "442be725a77f68958ae37d3f0221ae95c9970332a3dcf1a45660f8ac7b64e8ce",
+   "strong_summary.json": "0f6ff30327104c3d0b5941d5d1b5c609cef275052f82814ca9af79f7a8997282",
+   "digitized/frac-surv-Rgr-2.json": "4c991ae0eb4fe83cf0639425fdf36175cb2a3f30ce4da186d946e5d02c926a44",
+   "digitized/sep_fraction.json": "49975c71b0c48b86c15d439d92510d71607b8ed3290b334e3b65b0fb8e10a488",
+   "digitized/v8-asymp.json": "539ac5f4e0a9be07dac7c419b78eefe945446709107b06b6be109b872ef921b6"
+  }
+ },
+ "status": "completed",
+ "started": "2026-11-15T14:24:09+00:00",
+ "exit_code": 0,
+ "ended": "2026-11-15T14:24:50+00:00",
+ "wall_time_s": 41.8
+}

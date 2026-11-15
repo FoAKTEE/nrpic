@@ -304,3 +304,84 @@ near-collisions excluded.)
   whirling near r_p, so the flat-space CM never passed 150 r_t (outcome and energies final).
   18 runs lost both members; 4 stopped on step underflow and 74 of 48000 have a_min < 1e-4 a0
   (point-mass near-collisions, excluded from captures and speeds, kept in the s.f.).
+
+### S1 outcome (run F-hills-20261115-130405-ce17dcf, 160000 encounters, 4695 s on 8 cores;
+### analysis F-hills-20261115-142554-c10b371, figures s1_sepfrac, s1_vinf, s1_bound inspected)
+
+Against the curves read from the paper's vector figures (digitize_2404.py; locators
+Figures/sep_fraction.pdf, v8-asymp.pdf, frac-surv-Rgr-2.pdf of 2404):
+- separation fraction: max |difference| 0.005 (retro Newton), 0.0225 (retro HRNA), 0.016 (pro
+  Newton), 0.022 (pro HRNA); mean |difference| 0.001-0.005. The curves lie on each other.
+- mean v_inf of separated encounters: max relative difference 0.4-0.7 percent in all four
+  cases. Maximum v_inf at beta = 10, retrograde: 3364 vs 3366 km/s (HRNA), 2876 vs 2877 km/s
+  (Newton); prograde 17946 vs 17149 (HRNA) and 13906 vs 14861 km/s (Newton) (the prograde
+  maximum is a narrow spike in phase).
+- bound fraction of retrograde survivors: max |difference| 0.02 (Newton), 0.06 (HRNA) for
+  beta >= 1.
+Checks against the printed statements:
+- P1 holds: retrograde onset beta = 1.9 (HRNA), 2.5 (Newton) (paper ~2 and 2.5).
+- P2 FAILED at one point only: max |s.f.(HRNA) - s.f.(Newton)| (prograde, beta <= 9) is
+  0.0575 at beta = 0.5, on the steep prograde onset; 0.0175 for 1 <= beta <= 9.
+- P3 FAILED as I stated it (relative excess 10-60 percent): the relative excess reaches
+  73 percent at beta = 3 (s.f. 0.51 vs 0.295); the absolute excess for beta in [3, 10] reaches
+  0.33 (beta = 10: 0.91 vs 0.58). Since our curves coincide with the paper's figure, the
+  paper's "up to 30%" (article.tex:475, :795) is the absolute difference in s.f.
+  (percentage points) [JUDGEMENT on the wording, the numbers are the figure's].
+- P4 holds away from the onset: for beta >= 3.5 the retrograde mean v_inf of HRNA exceeds
+  Newton by up to 34.8 percent and 556 km/s (paper: up to 30 percent, article.tex:593; up to
+  500 km/s, :797); including the onset region (beta 2-3.5, Newton barely separating) 154
+  percent and 1015 km/s.
+- P5 FAILED marginally: prograde, beta > 9, max v_inf of HRNA minus Newton = 4040 km/s
+  (refutation level 4000; paper "up to 2000 km/s", article.tex:591). The paper's own band edges
+  at beta = 10 differ by 2290 km/s; our HRNA maximum is 4.6 percent above and our Newton
+  maximum 6.4 percent below them. A maximum over 400 phases of a narrow phase spike is not a
+  robust statistic.
+- P6 holds: fraction of retrograde survivors left bound to the hole, mean over beta > 8: 0.537
+  (HRNA) and 0.352 (Newton) (paper > 50 and ~30 percent, article.tex:760); for 0.5 <= beta <= 1.2
+  no retrograde binary separates and at least 88 (HRNA) and 100 percent (Newton) of the
+  survivors are bound (paper: essentially all, :762).
+- Consistency parameter a/R (2404 Eq. 9): the maximum over the run (any time) reaches 0.20 at
+  beta = 10 (prograde) as the paper says ("as large as 0.2", article.tex:279); retrograde 0.055
+  at beta = 8.5, against "alpha ~ 0.1" in the paper's two examples at beta = 8.5
+  (appendix.tex:8, Fig. alpha) [TO VERIFY: factor 2; the paper's per-phase values were not
+  read from Fig. alpha_beta]. While the instantaneous Newtonian E_b < 0 (my alpha_max) a/R stays
+  below 0.006, because E_b is positive near pericentre for every binary (tidal shear).
+- Abnormal endings: 77 runs at t_max (not examined individually), 29 step underflows and 951
+  runs with a_min < 1e-4 a0 (point-mass near-collisions; kept in the s.f., excluded from the
+  speeds); 7 members captured (all at the deepest beta).
+
+### S3 outcome (run F-hills-20261115-130922-634fb86; analysis F-hills-20261115-142554-c10b371)
+
+HRNA in Kerr-Schild (a = 0) against Schwarzschild coordinates, beta = 3, 5, 8, 10: |delta s.f.|
+<= 0.005 in all eight cases (2 to 19 of 400 phases change outcome); mean v_inf differs by
+0.2-1.4 percent. Prediction holds: the coordinate dependence of HRNA is below the s.f.
+resolution here.
+
+### S2 addendum, Q4 (analysis F-hills-20261115-142554-c10b371)
+
+a/R at any time, maximum over phases (near-collisions excluded): prograde 0.15 (beta = 8.5),
+0.20 (10), 0.47 (15); retrograde 0.055, 0.073, 0.15. Q4 holds for prograde, fails for
+retrograde (0.15 < 0.2). Beyond beta = 15 the maximum is dominated by captured members and is
+not meaningful.
+
+## Summary of the package (2026-11-15)
+
+1. Model implemented (`hrna.py`) and validated: metrics (T1), single-body limit against
+   python/nrpic to 3e-8 r_g in Schwarzschild and Kerr a = 0.9 (T2), flat-space limit with the
+   order-v^2 HRNA eccentricity understood (T1b), the time dilation of 2404 appendix B to 1e-4
+   (T3), the 3+1 form of the force that AthenaK's pushers would use to 4e-8 a0 (T4).
+2. Reproduction of 2404: six single encounters (outcomes 6/6, r_cm at separation to 1 percent;
+   printed t_s differ by sqrt(2), which the CM orbit alone shows to be an inconsistency of the
+   paper's numbers or units); separation fraction, ejection speed and bound fraction against
+   the paper's figures to 0.02 in s.f. and 0.7 percent in mean v_inf; printed onsets and excesses
+   reproduced, with the paper's "30%" for the s.f. being percentage points.
+3. Pericentres of a few r_g (beta 10-25, r_p 10-4 r_g): HRNA separates retrograde binaries
+   almost always (0.92 at r_p = 9.6 to 1.0 at 4 r_g; Newton 0.59-0.66); the mean ejection
+   speed stays within 3 percent of Newton (prograde) or below it (retrograde); below r_p ~ 5 r_g
+   the hole captures a member in most encounters (0.78/0.69 at r_p = 4.6 r_g, ~1 at 4.05 r_g).
+   HRNA is outside its own consistency regime there (a/R up to ~0.5).
+4. Kerr (equatorial): a = -0.9 raises and a = +0.9 lowers the retrograde s.f. by 0.04-0.05
+   relative to a = 0 at beta >= 5; prograde unchanged; Kerr-Schild and Schwarzschild coordinates
+   agree to 0.005 in s.f. 2402.02178 is not reproduced (needs inclined binaries; different model).
+5. Open: C1 (tolerance) not run; C2 (r0 dependence) running at the time of writing (run
+   F-hills-20261115-135732-cace755); 1PN law not implemented; inclined encounters.
