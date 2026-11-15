@@ -89,3 +89,35 @@ exponentially after that. Refuted if the two runs separate clearly (factor 2) be
 t = 1.0 (a = 2.25), or if bh1 shows the same growth in the same interval. If refuted,
 the instability is not the time step, and the refined-block explanation of the cosmology
 log stands.
+
+## 03:55: debug runs (unregistered, `scratch/A-emd-pbh/tmp/`), and a fourth test
+
+Debug invocations of `vonneumann.py` (17 points per dimension) and `lapse_toy.py` ran
+into `scratch/A-emd-pbh/tmp/` to find script errors; their numbers are not used. Seen in
+them before the registered runs: T2 limit 0.660 for the shift mode with `diss = 0.5`
+(inside the predicted 0.6 to 0.8); toy maxima 19.0 (plain 1+log) and 3.03 (damped), as
+predicted. While checking the column layout of `east.cstat.hst` I also saw the bh1 and
+bh2 records at t = 1.06, 1.31, 1.56, 1.81 (bh2/bh1 of the largest relative Hamiltonian
+constraint about 0.9, 1.4, 2.6, 4.4), after the T3 prediction was written.
+
+The toy froze the top-hat at or before its turnaround under every background-subtracted
+condition (K - K_b, the mean-curvature driver, K + 2/tau_local), whereas 2610.23218 reports
+for K + 2/tau_local a lapse minimum near 0.5 only after the collapse time
+(`main.tex:218-222`), with a shift and an inhomogeneous peak. So the toy may freeze too
+early: it lacks the term `-D^i D_i alpha` of the K equation, which pushes K down where
+the lapse has a minimum. T4 measures this on a run of this code.
+
+### T4 Toy against the 3D lapse driver run (analysis of existing output)
+
+`runs/cosmo/east_d0.05_n64_kd` (conformal-time lapse plus `lapse_kdriver = 1`, zero
+shift, 64 cells): the lapse at the overdensity (probe at x_i = 1) relative to the largest
+lapse falls to 7.5 percent at a = 20.5 (cosmo TESTLOG 617-624). The toy's collapse epoch X
+is set so that its top-hat lapse peaks at the same background a as the 3D probe lapse;
+then the ratios after the peak are compared.
+Prediction: a rough estimate (driver rate alpha_b (K_c - K_b), about 2 per unit
+conformal time at a = 15 to 20) gives a fall by e^-2.7, i.e. a ratio of order 7 percent,
+so I expect agreement within a factor 2 at the last finite record of the 3D run.
+Refuted if the toy's ratio there is more than a factor 2 away from the 3D one; a toy far
+below the 3D value would mean the lapse-gradient term (absent from the toy) slows the
+lapse collapse, and the toy's freezing statements for the subtracted conditions cannot be
+used.
