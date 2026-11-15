@@ -1,0 +1,44 @@
+{
+ "run_id": "A-emd-pbh-20261115-164757-b8bc9a3",
+ "owner": "A-emd-pbh",
+ "helper": "newton",
+ "launcher": "local",
+ "kind": "scouting",
+ "purpose": "Proposed range of the full-relativity scan, with ball-radius bound at t_1 and resolution in units of M (supersedes A-emd-pbh-20261115-164450-4528861; analysis A-emd-pbh-20261115-164420-4528861)",
+ "commit": "b8bc9a3552856a657eab19a653ed708e3a630e6e",
+ "branch": "track/A-emd-pbh",
+ "cwd": "/data/haiyangw/nrpic/wt/A-emd-pbh",
+ "inputs": [
+  {
+   "path": "tracks/A-emd-pbh/newton/gr_range.py",
+   "sha256": "7d42f3db63c302423035321bb0608e6c613b5f262184fc4021895fe1958d6a68"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/scratch/A-emd-pbh/A-emd-pbh-20261115-164420-4528861/newton_results.json",
+   "sha256": "926f64becc9a0abf91f150a70d8006639ef7489e36c9a7cd7bed17fd1a4a9b6b"
+  }
+ ],
+ "outputs": {
+  "dir": "scratch/A-emd-pbh/A-emd-pbh-20261115-164757-b8bc9a3"
+ },
+ "output_dir": "/data/haiyangw/nrpic/scratch/A-emd-pbh/A-emd-pbh-20261115-164757-b8bc9a3/",
+ "registered": "2026-11-15T16:47:57+00:00",
+ "machine": "anta",
+ "notes": "registered by hand: harness/bin/nrpic-run submit refused (worktree not clean: untracked files of other helpers of A-emd-pbh in the same worktree)",
+ "command": [
+  ".venv/bin/python",
+  "tracks/A-emd-pbh/newton/gr_range.py",
+  "--results",
+  "/data/haiyangw/nrpic/scratch/A-emd-pbh/A-emd-pbh-20261115-164420-4528861/newton_results.json"
+ ],
+ "cores": 1,
+ "card_hours": 0.0,
+ "status": "completed",
+ "exit_code": 0,
+ "wall_time_s": 4.5,
+ "core_hours": 0.0012,
+ "ended": "2026-11-15T16:48:01+00:00",
+ "sha256sums": "sha256sums.txt",
+ "sha256sums_sha256": "70079e2c0322e36c05cab0966e04473119990fc553d36047d12113cd71e1c003",
+ "n_output_files": 4
+}
