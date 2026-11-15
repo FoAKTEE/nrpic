@@ -31,6 +31,38 @@ tabulated lapse is used, `alpha = (1 - M/2r)/(1 + M/2r)`.
 Interpolation inside the table is cubic, so `dr` should resolve the profile
 (at least a few thousand points across the matter).
 
+## Puncture correction table (`*.tab`, format `mp1`)
+
+Regular correction `u_c` of the conformal factor of one Bowen-York puncture
+(`<problem> comp<c>_corr = table`, `comp<c>_corr_file`), as multipoles about one axis
+through the puncture:
+
+    u_c(x) = sum_q u_{l_q}(r) P_{l_q}(mu),   r = |x - x_c|,   mu = (x - x_c).axis / r,
+
+with `P_l` the Legendre polynomials. Plain text. Header lines begin with `#`; those of
+the form `# key = value` are read:
+
+| key | value | required |
+|---|---|---|
+| `l` | the multipole orders of the data columns, in order, each between 0 and 12, at most six | yes |
+| `tail` | one exponent per column: beyond the last row the column continues as `u_l(r_N) (r_N/r)^tail` | no (default `l + 1`, the exterior harmonic) |
+| `axis` | three numbers, the symmetry axis (normalised by the reader) | no |
+| `format`, `mass`, `momentum`, `spin`, `nonlinear`, `m_adm`, `u_centre`, `columns` | written by the table writer for the reader of the file; ignored by the code (`nonlinear = 1`: full solution of the puncture equation, `0`: second order in momentum and spin) | no |
+
+Each data row is `r  u_{l_1}  u_{l_2} ...` on a uniform grid `r_k = k dr`, `k = 0 .. N-1`,
+starting at `r = 0`, with at least eight rows. Interpolation is four-point Lagrange
+(cubic), as for the radial table. The axis is, in this order: `comp<c>_corr_axis1..3` of
+the input, the `axis` of the header, the direction of the momentum, the direction of
+the spin. The table is added to `psi` as it is (no rescaling); `psi` enters the lapse
+options `isotropic` and `precollapsed`.
+
+Writer: `python3 -m nrpic.bowen_york --mass m --momentum P --spin S [--lmax 8]
+[--linear] [--background d] [--dr ..] [--rlast ..] --out file.tab` (momentum and spin
+along the axis; even orders `l = 0, 2, .., lmax`; `dr = m/100` and `rlast = 200 m` by
+default; `--background d` writes `Lambda u(m/Lambda, P/Lambda^4, S/Lambda^4)` with
+`Lambda = 1 + d` for a puncture in the conformal factor of others,
+`d = sum_j m_j/(2 d_j)`).
+
 ## Run outputs of the particle module
 
 All binary files are written by one rank in native byte order. `<base>` is
