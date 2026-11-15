@@ -222,3 +222,47 @@ start distance matters more because the tidal field at 10 r_t is not negligible
   (ii) counting my survivors with a_f > X a as disrupted, one X between 2 and 4 brings my
   retrograde P_dis within 0.01 of SKR's at every D < 0.44 while leaving prograde within
   0.005. H1 is refuted if no single X does this.
+
+## 2026-11-15 outcomes of P2, P3, P4, P8 and the finite mass-ratio scan
+
+- P8 (run F-hills-20261115-132942-2f7ad7f): (i) BKRS fig. 2 read from the EPS: isotropic
+  curve within 0.009 of mine (median 0.0025), coplanar prograde within 0.005 for D < 0.3;
+  their coplanar retrograde curve lies ABOVE mine like SKR's (up to 0.06 for D < 0.3), so
+  BKRS used SKR's criterion. (ii) H1 survives a test that could have failed: counting my
+  survivors with a_f > 3.5 a as disrupted brings my retrograde P_dis within 0.009 of SKR's
+  curve at every D <= 0.6 and puts the edge at 0.445 (SKR: 0.44); prograde stays within
+  0.0024 for D < 0.3. X = 3 and X = 4 are worse (0.087, 0.075), so the match is specific.
+  I still do not know SKR's actual criterion; H1 is a reproduction, not their stated rule.
+- P2 (analysis F-hills-20261115-133200-05ee76a): holds. P_dis within 0.0094 of the BKRS
+  fit for D <= 1 and 0.013 for D <= 1.8 (predicted 0.015); mean |E| within 1.7 percent for
+  D <= 1.5 (predicted 3); deep plateau 0.876-0.878; min P_dis 0.804 near theta = pi/2;
+  energy ratio pi/2 over 0 between 1.44 and 1.71 for D = 1e-4 .. 0.3 (BKRS 1.4-1.7);
+  collision probability 5.4-7.3 percent for D < 0.1 and 14.2 percent near D = 1.6. One
+  miss in wording: I predicted survivors only for theta > 0.15 pi; with my threshold
+  (P_dis < 0.999) the first theta with survivors at D = 1e-4 is 0.117 pi. BKRS say the
+  surviving probability becomes "significant" above 0.15 pi; at 0.117-0.15 pi my P_dis is
+  0.99-0.999, so not significant. Three analysis attempts failed on my own indexing bugs
+  (runs F-hills-20261115-133009/133013-2f7ad7f, F-hills-20261115-133034-bf31889, recorded
+  as failed) before the fixed analysis ran.
+- P3 (analysis F-hills-20261115-133203-05ee76a): first half holds: at M/m = 1e6 the
+  median relative difference is 6.0e-4 (D = 1) and 7.3e-4 (D = 0.1), SKR's single example
+  2.4e-4 (SKR quote 0.1 percent). Second half only partly: for D = 1 the difference falls
+  by 2.1-2.6 per decade of M/m between 1e3 and 1e6, as (m/M)^(1/3) predicts, but for
+  D = 0.1 it falls by 4.5-5.7 per decade, closer to (m/M)^(2/3). I have no tested cause.
+  At M/m = 10: 26 and 59 percent, with 11 and 25 percent of the phases changing fate.
+- P4 (analysis F-hills-20261115-133205-05ee76a): refuted as worded. Starting at 10 instead
+  of 40 r_t keeps the outcome of 95 percent (M/m = 1e6) and 97 percent (M/m = 10) of the
+  phases, not > 99 percent; energy change within 0.6 and 0.8 percent (prediction held).
+  The figure shows the cause directly: the curves shift sideways, i.e. the tidal field
+  before 10 r_t shifts the effective phase, so individual phases near window edges change
+  fate while phase averages do not (P6). Consequence for F-pre-3: compare NR with the
+  driver started from the same initial data, not from the same effective phase.
+- finite mass ratio (scan F-hills-20261115-132019-bfe00a9, analysis
+  F-hills-20261115-133207-05ee76a): measured, no prediction beyond P3's "tens of percent".
+  Isotropic P_dis at M/m = 10 within 0.04 of the restricted limit for D >= 0.3, higher at
+  D = 0.1 (0.93 vs 0.86, 8.6 percent both captured); phase-averaged |dE| 0.49-0.79 of the
+  restricted value for 0.1 <= D <= 1; coplanar retrograde disruption extends to D = 0.5
+  (37 percent) where the restricted limit has none.
+- status of the package: deliverables exist and are tested (driver, restricted reference,
+  reproductions with locators, figures looked at). Open: eccentric binaries and
+  non-parabolic orbits not compared with the literature; no second-agent check yet.
