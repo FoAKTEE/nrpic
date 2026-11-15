@@ -29,3 +29,11 @@ problems/kerr/ref/*.npz
 __pycache__/
 *.pyc
 refs/arxiv_*/
+
+# NRPIC-cosmology program (brief section 11.1): linked worktrees and data roots live inside the
+# main checkout and are never tracked
+wt/
+kb-data/
+scratch/
+cache/
+locks/

@@ -1,0 +1,5 @@
+# one glob per line: paths outside tracks/core/ that this owner may edit
+athenak/src/**
+python/nrpic/**
+problems/**
+scripts/**

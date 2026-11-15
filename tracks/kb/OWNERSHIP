@@ -1,0 +1,2 @@
+# one glob per line: paths outside tracks/kb/ that this owner may edit
+kb/**
