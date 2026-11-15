@@ -49,3 +49,25 @@ written as predictions before each check runs and outcomes after.
 - L6 (exterior extrinsic curvature). On the Painleve-Gullstrand exterior of expball's
   ball, K = KL + 2 KT = -(3/2) sqrt(2M/R^3) to 1e-14 relative (the gauge helper's
   derivation), and K jumps from -3H inside to -(3/2)H outside at a sharp edge.
+
+### Predictions L7-L8, written 13:14 UTC before the runs
+
+- L7 (data set 2t for the first scouting runs). expball's generator with the data-set-2
+  core and a C^4 edge taper of half width w = 1.5 M (`--edge-width 0.1875`, matter edge
+  at rbar = 9.5 M) and a lattice of n_lat = 38 across the matter (spacing exactly
+  h = 0.5 M, sites at (k + 1/2) h, so they sit at the cell centres of a dx = 0.5 M mesh with
+  a cell face at the origin; n_lat = 76 for dx = 0.25 M): the predicted core times are those
+  of data set 2 to all digits (tau_ta = 16.894, first trapped sphere 44.349 at R_i = 2.74,
+  crunch 44.454; the taper is outside the core and spherical shells outside do not act on
+  the inside); M = m(R_out) ~ 1.01; check_dataset passes as for data set 2. Refuted by any
+  change of the core times or a failed end-to-end check.
+- L8 (gauge-dependent coordinate times, closed-form estimates before the script). For the
+  homogeneous core: geodesic slicing (lapse 1, shift 0) has t = tau, and the radial
+  coordinate speed of light in the core grows as R_i/R, so a fixed step cfl dx stays below
+  the von Neumann limit C v <= 0.62 (gauge T2) only while R/R_i > cfl/0.62: cfl = 0.25 holds
+  to R/R_i = 0.40, near tau ~ 42; reaching the first trapped sphere (R/R_i ~ 0.06) needs
+  cfl <~ 0.03 in the last stage. Conformal-time lapse: alpha_core = R/R_i, coordinate time
+  t = int dtau R_i/R = (T0 R_i/A) Delta-eta, giving core turnaround at t ~ 13.8 M,
+  core at tau = 44.349 near t ~ 49.5 M and the crunch near t ~ 54.9 M, with the coordinate
+  speed of light ~1 throughout (no step problem). Refuted if the script's values differ
+  from these estimates by more than 1 per cent.
