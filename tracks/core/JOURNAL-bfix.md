@@ -785,3 +785,77 @@ variation in the x-y plane (max minus min of layer 0).
   its maximum (atomic additions in a different order on the card: rounding).
 Refuted, and a z instability of the thin box that matters for Track B indicated, if chi,
 alpha, gt or At depart by more than 1e-9 of their x-y variation.
+
+### Outcome of T4b (run core-20261115-180817-4a0566d, analysis of T4's big run on processors)
+
+Results `results_t4b_big.json`, figure `t4b_zdep_big.png` (looked at: left, per variable
+the departure of the z-layers from layer 0 at t = 1; right, the map of Axz in layer 8
+minus layer 0, which is white noise at the mesh scale, amplitude 1e-13, without any trace
+of the two waves).
+- P9a PASSED for the source of the 8.4e-6, FAILED for At, and its refutation clause is
+  met. The 8.4e-6 is Theta: departure 2.67e-13 absolute, Theta's maximum 3.17e-8. chi,
+  alpha, Khat, gt: at most 6.2e-13 of the maximum (Khat) and 4.7e-11 to 8.2e-11 of the
+  x-y variation (gt), as predicted. At: 1.2e-13 to 1.8e-13 absolute in every component,
+  3.3e-9 to 6.6e-9 of the maximum (predicted below 1e-10) and 2.4e-9 to 4.9e-9 of the x-y
+  variation (predicted below 1e-7, but above the 1e-9 I named as the sign of an
+  instability). Gamma^x, Gamma^y: 2.5e-12, 2.0e-12 absolute (3e-9 of the x-y variation).
+  The components that vanish in the exact problem carry the same absolute noise as those
+  with content (Axz 1.7e-13, Ayz 1.5e-13, gxz 1.6e-14, Gamma^z 2.4e-12): the departure is
+  noise added at the mesh scale, not a modulation of the solution. Whether it grows like
+  an instability cannot be told from two dumps: P10c below.
+- P9b PASSED for chi (1.3e-15 of the maximum), Khat (2.9e-16), alpha and gt (exactly z
+  independent), FAILED as written for At and Gamma: 1.48e-16 absolute in Axx, Ayy, Azz
+  (up to 1.6e-12 of their maximum 1e-4) and 2.8e-14 in Gamma (whose exact value is 0).
+  The rounding of quantities of order one, relative to fields that are small or zero.
+- P9c PASSED at t = 0 (E: 4.0e-15 of its maximum), FAILED at t = 1 (4.5e-13, bound
+  1e-13): the particles move in the noisy metric, so E inherits the noise.
+- Size of what is seen [JUDGEMENT, by hand]: rounding of chi (order one) through the
+  sixth-order second difference, eps sum|c| / h^2 = 1.1e-16 x 6.0 / 2.44e-4 = 2.7e-12 per
+  unit time in the right-hand side of At (h = 1/64); the con_H dump of t = 0 has a z
+  departure of 8.5e-11, of the size of this estimate times the factors of H. Accumulated
+  over 256 steps of dt = 3.9e-3 it gives 1e-13 (random walk) to 1e-11 (coherent): the
+  measured 1.8e-13 sits at the low end.
+
+### P10 Card test T8: predictions (before the two jobs are submitted)
+
+Two batch runs of `harness/bin/nrpic-run` on one A100 each (lists
+`tracks/core/analysis/bfix/inputs/t8_base.list` with the release card executable,
+`t8_new.list` with the published `athena_gpu`), analysed afterwards on processors by
+`t8_analysis.py` (a registered local run). Reservation 0.17 + 0.33 card-hours; this
+package has used 0.051 of its one card-hour. Parse check of the two new inputs with the
+processor executable at `time/nlim=0` (unregistered, `scratch/core/tmp/bfix/t8check`):
+both start and write their first dumps.
+
+- P10a (Z4c benchmark on the card, the regression P5b missed): the benchmark with three
+  output blocks added (`z4c` and `con` dumps every 10 cycles in single precision, the
+  history every 5) gives the same files byte for byte with the release and the new card
+  executable. Refuted by one differing byte.
+- P10b (what sets the floors of the oblique wave; k = (1,1,1), one period, N = 64 and 128,
+  A = 1e-7 and 1e-5, with T4's A = 1e-6). Reading R2: the non-TT part of the metric is of
+  second order in A, so max |h - h^TT|/A is 3.4e-7 at A = 1e-7 and 3.4e-5 at A = 1e-5
+  (each within 10 per cent of ten times less and more than at 1e-6, at both N), and the
+  pointwise error max |gt - exact|/A follows it at both N. Reading R1: Psi_4 along -k at
+  N = 128 is rounding amplified by second differences, so it rises by a factor 5 to 20 from
+  A = 1e-6 to 1e-7 (7.8e-7 to about 7.8e-6 of the maximum), and the Psi_4 error at N = 128
+  rises from 8.1e-7 to between 4e-6 and 1.6e-5. The amplitude error at N = 128 departs from
+  the Fourier symbol by 4.7e-10 at A = 1e-6; under R1 it departs by 2e-9 to 1e-8 at
+  A = 1e-7 and lies within 30 per cent of the symbol's -2.03e-10 at A = 1e-5, where the
+  phase lies within 10 per cent of the symbol's -1.071e-8. At N = 64 and A = 1e-5 the
+  amplitude and phase errors equal those of A = 1e-6 within 3 per cent (the third-order
+  frequency shift is of relative size A^2 = 1e-10). R2 is refuted if the non-TT part over
+  A does not grow tenfold from 1e-6 to 1e-5; R1 if Psi_4 along -k at N = 128 does not rise
+  by at least five from 1e-6 to 1e-7.
+- P10c (the noise of the thin box over time; the 256 x 256 x 16 box of T4 continued to
+  t = 4, a = 9, z4c dumps in double precision every 0.25): the run ends on the time limit
+  with all 1 048 576 particles; the largest absolute z departure of At (and of Axz alone)
+  and of gt grows from t = 1 to t = 4 by less than a factor 100 (At: from 1.8e-13 to below
+  2e-11), and over the last eight dumps the growth factor per 0.25 falls below 1.5.
+  Expected [JUDGEMENT]: accumulated rounding, linear in the number of steps (factor 4),
+  times the linear growth of dust perturbations, proportional to a (factor 4). Refuted,
+  and an instability of the thin box indicated, if the departure grows by a constant
+  factor above 1.5 per 0.25 to t = 4 or exceeds 1e-9 absolute.
+- P10d (the new polarization parameters on the card): the circular wave (amp = amp_cross
+  = 1e-6, phase_cross = pi/2, N = 16, one period) gives an error file with RMS-L1
+  7.5617e-11 within 1e-4 relative (processor, T5: 7.561707e-11), and its final dump
+  differs from the processor's (T1, stage pol, case circular) by less than 1e-9 A in every
+  component of gt and At (card and processor differ by rounding, 4e-10 A in T4).
