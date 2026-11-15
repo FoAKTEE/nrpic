@@ -429,3 +429,23 @@ manifest is kept.
 - State of the four wave-1 failures: T1.2b and T2.2d explained (rounding in the paper; two
   values of E-bar); T2.4a and T2.4c corrected to the paper's actual statement and passing; the
   cause of the 1st-order drift demonstrated (T2.6).
+
+### Prediction for the scan repeat (written before it)
+
+`predict.py` R5 now returns n/a instead of "no" for delta >= 0.6. scan_disagreement.py uses
+predict() for its example tables and the verdict pairs R1-R3, R1-R8, R1-R9, R8-R9 (no R5), so
+`scan_summary.json` stays identical to the wave-1 run A-emd-pbh-20261115-120425-80492f8;
+`example_tables.txt` changes only in R5 lines with delta >= 0.6 (if any). Refuted by any other
+difference.
+
+Outcome (run A-emd-pbh-20261115-163443-c0b21e5): confirmed; scan_summary.json equal to the
+wave-1 run apart from its run_id, example_tables.txt byte-identical (no example has
+delta >= 0.6).
+
+### State at the end of the session
+
+Done: amplitude conversion in predict.py with tests (A1-A5); LTB profile of 2609.14218 in
+expball form with its threshold statement and tests (L1-L5); the four wave-1 failures
+explained or corrected, the 1st-order drift of 1707.03595 decomposed (T2.6a-d); prediction
+tables for SR-1, S1, S2. Not done: the null-geodesic (nakedness) computation that would
+recompute mu_c; a second agent's check of these results.

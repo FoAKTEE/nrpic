@@ -1,0 +1,38 @@
+{
+  "run_id": "A-emd-pbh-20261115-163443-c0b21e5",
+  "command": "python scan_disagreement.py",
+  "cwd": "/data/haiyangw/nrpic/wt/A-emd-pbh/tracks/A-emd-pbh/criteria",
+  "commit": "c0b21e5a1b97436cecc43bbe171fcb92fe134cc1",
+  "worktree_dirty_in_package": true,
+  "inputs": [
+    {
+      "path": "tracks/A-emd-pbh/criteria/emd_criteria.py",
+      "sha256": "295bd47ab5f45d2d9f53bf005a070c99e0ce4ff8e65462b0011b27831c34b05c"
+    },
+    {
+      "path": "tracks/A-emd-pbh/criteria/predict.py",
+      "sha256": "463fc2769ec74d5f92ff3484937e90c6598dcf2d6fcc7650f17aed8a9459608d"
+    },
+    {
+      "path": "tracks/A-emd-pbh/criteria/scan_disagreement.py",
+      "sha256": "0b0aaaa2741a5ff1e10939a6d65c0b73ca14adce0147beb5cee9d9f6352f8eb1"
+    }
+  ],
+  "output_dir": "/data/haiyangw/nrpic/scratch/A-emd-pbh/A-emd-pbh-20261115-163443-c0b21e5",
+  "purpose": "A-pre-2: scan the analytic criteria over the brief's range (e, p, delta, sigma_v, a_end) and record where they disagree",
+  "kind": "scouting",
+  "started_utc": "2026-11-15T16:34:43+00:00",
+  "wall_time_s": 5.8,
+  "cores": 1,
+  "card_hours": 0.0,
+  "host": "anta",
+  "exit": "ok",
+  "status": "completed",
+  "gate": "G1",
+  "outputs": {
+    "dir": "scratch/A-emd-pbh/A-emd-pbh-20261115-163443-c0b21e5"
+  },
+  "launcher": "local",
+  "track": "A-emd-pbh",
+  "registration": "by hand (runlog.py): nrpic-run submit refuses the worktree while other helpers hold uncommitted files"
+}
