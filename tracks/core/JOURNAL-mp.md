@@ -474,3 +474,13 @@ radius 10, constant 100, `hmean_tol_0 = 1000`): the flow contracts from radius 1
 the horizon near 5 and stops with Christodoulou mass 10.348 +- 0.005 and S_z = 29.98
 within 400 steps. Refuted by a failure (negative radius, no convergence): then the
 scaling of the flow constant with m^2 is wrong for a first guess twice too large.
+
+### Outcome of the check of the finder fix (processors, `core-20261115-122832-1cf6d89`)
+
+Prediction held: from a first guess of radius 10 with flow constant 100 and
+`hmean_tol_0 = 1000` the flow contracts monotonically (radius 10, 9.37, 8.81, ...,
+5.07; integrated expansion 187 falling to 1.9) and stops at step 31 with Christodoulou
+mass 10.3483 (irreducible 10.2443) and S_z = 29.981. The flow constant m^2 is stable
+for a first guess twice too large. [VERIFIED] The three-black-hole card run in
+progress was started before the fix and will have no heavy horizon; a short card run
+with the final executable is to show the three horizons together.
