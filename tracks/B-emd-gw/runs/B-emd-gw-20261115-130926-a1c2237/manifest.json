@@ -1,0 +1,37 @@
+{
+ "run_id": "B-emd-gw-20261115-130926-a1c2237",
+ "command": "bash tracks/B-emd-gw/analysis/lead_recheck.sh /data/haiyangw/nrpic/scratch/B-emd-gw/<run_id> 2fb3dbff41a1dcba59577c9f8410ff4501f06f2c",
+ "cwd": "/data/haiyangw/nrpic/wt/B-emd-gw",
+ "commit": "a1c223753952674ee38819dc45043591dddc3022",
+ "worktree_dirty": false,
+ "inputs": [
+  {
+   "path": "tracks/B-emd-gw/analysis/lead_recheck.sh",
+   "sha256": "2b983c4cf33d69aacaf40b6c96682a46b48354ee9197e0514de472eb633e26ef"
+  },
+  {
+   "path": "tracks/B-emd-gw/analysis/compare_results.py",
+   "sha256": "d296146f081977f744a4b619b4b55d9f1c43d9bdfe22f656effc40a7b873e277"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/.work/build_cpu_c1/src/athena",
+   "sha256": "91f2e2c23a6301047ed4fe06ffe153d100fe6c121d0b6632087637b525547403"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/scratch/B-emd-gw/ids/puregauge_N64_k1.5.bin",
+   "sha256": "eb054283d37bbf603c096d3a16801e9b9298f7458d9a89272b241e4acc840b6d"
+  }
+ ],
+ "output_dir": "/data/haiyangw/nrpic/scratch/B-emd-gw/B-emd-gw-20261115-130926-a1c2237",
+ "purpose": "Lead re-check L1 of the five wave-1 packages: clean git-archive export of commit 2fb3dbff41a1dcba59577c9f8410ff4501f06f2c; all analysis scripts and tests rerun, results compared leaf by leaf with the committed/original results (compare_results.py); four periodic_z4c AthenaK cases re-executed with the release processor executable and compared byte by byte with the original runs",
+ "kind": "scouting",
+ "cores": 8,
+ "card_hours": 0.0,
+ "started_utc": "2026-11-15T13:09:26+00:00",
+ "status": "stopped",
+ "package": "tracks/B-emd-gw/analysis",
+ "notes": "processors only: 4 AthenaK serial runs in parallel plus python steps at 4 threads (8 cores at most) STOPPED after about 19 s by the lead (kill of its process group): the registration helper analysis/register.py resolved the repository one directory too high, so the id and the field 'commit' carry main's a1c2237 instead of the worktree commit 2fb3dbf that the command ran, and the manifest was first written outside the worktree (moved here). Replaced by the correctly registered rerun; outputs of this stopped run are incomplete and not cited.",
+ "commit_of_code_run": "2fb3dbff41a1dcba59577c9f8410ff4501f06f2c",
+ "finished_utc": "2026-11-15T13:09:45+00:00",
+ "wall_time_s": 19.0
+}

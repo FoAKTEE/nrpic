@@ -62,3 +62,8 @@ helpers), each with its prediction:
   integrates adaptively; P-L2e is kept (1e-6).
 - Small fix before L1: the gw_diag scripts imported `python/nrpic` through the absolute
   path of this worktree; now relative, so a clean export uses its own copy.
+- 13:09Z: first launch of L1 registered as B-emd-gw-20261115-130926-a1c2237 and stopped
+  after 19 s: `analysis/register.py` (copied from verify_cosmo, one level shallower)
+  resolved the main checkout, so id and commit carried main's a1c2237 and the manifest
+  landed outside the worktree (moved into `runs/`, status stopped, not cited). Fixed with
+  a depth assertion; L1 relaunched below.

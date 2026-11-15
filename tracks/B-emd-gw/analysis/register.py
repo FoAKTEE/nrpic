@@ -16,8 +16,11 @@ import json
 import os
 import subprocess
 
+# this file is tracks/B-emd-gw/analysis/register.py: three levels below the worktree root
+# (the verify_cosmo original sits four levels down)
 WT = os.path.abspath(os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "..",
-                                  "..", ".."))
+                                  ".."))
+assert os.path.isfile(os.path.join(WT, "tracks", "B-emd-gw", "OWNERSHIP")), WT
 OWNER = "B-emd-gw"
 SCRATCH = "/data/haiyangw/nrpic/scratch/" + OWNER
 
