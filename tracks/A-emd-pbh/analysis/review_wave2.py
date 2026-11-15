@@ -367,6 +367,7 @@ def figure(series, B, P, N, path):
     ax[0, 0].set_ylabel(r"SR-1: max $|H|$")
     ax[0, 0].legend(frameon=False, fontsize=8)
     ax[0, 0].set_xlim(0, 34)
+    ax[0, 0].set_ylim(1e-3, 1e1)
     ax[0, 1].set_xlabel("t / M")
     ax[0, 1].set_ylabel(r"SR-2: central lapse $\alpha_c$")
     ax[0, 1].axhline(RMAX_RI, **fs.GUIDE)
@@ -388,6 +389,9 @@ def figure(series, B, P, N, path):
     xx = np.array([0.25, 1.0])
     ax[0, 2].loglog(xx, 0.02 * (xx / 0.25) ** 2, **fs.GUIDE, label="second order")
     ax[0, 2].set_xlabel("dx / M")
+    ax[0, 2].set_xticks([0.25, 0.5, 1.0])
+    ax[0, 2].set_xticklabels(["1/4", "1/2", "1"])
+    ax[0, 2].xaxis.set_minor_formatter(matplotlib.ticker.NullFormatter())
     ax[0, 2].set_ylabel("error")
     ax[0, 2].legend(frameon=False, fontsize=7)
     for lab, c in (("S1", fs.PAL["red"]), ("S2", fs.PAL["blue"])):
