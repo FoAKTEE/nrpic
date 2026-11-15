@@ -27,9 +27,9 @@ date
 # L2, cells M/4
 $PY $G/ball_runs.py --gpu --jobs 1 --exact --only bound-leak1-n160,bound-leak05-n160
 date
-# ES, new lapse T = 4 M
-$PY $G/grun.py --gpu --exe $EXE --source-commit $SRC --time 00:20:00 --tag gc-es-leak4 \
-  --purpose "Einstein-Straus data of Track D for 30 M, lapse relaxation T = 4 M (test ES)" \
+# ES, new lapse T = 2 M
+$PY $G/grun.py --gpu --exe $EXE --source-commit $SRC --time 00:20:00 --tag gc-es-leak2 \
+  --purpose "Einstein-Straus data of Track D for 30 M, lapse relaxation T = 2 M (test ES)" \
   --inputs $ES/es.nrp $ES/es.tab $ES/es.json $ES/es_reference.csv \
   --athinput $WT/problems/es/es_gauge.athinput particles/particle_file=$ES/es.nrp \
   problem/comp0_file=$ES/es.tab -t 00:08:00

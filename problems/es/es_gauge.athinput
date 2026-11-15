@@ -5,8 +5,8 @@
 # with the gauge a puncture inside expanding dust needs (test ES of
 # tracks/core/JOURNAL-gauge.md):
 #   lapse  1+log with advection and relaxation of its excess over 1 (z4c/lapse_leak =
-#          1/T, here T = 4 M: two dust cells); the puncture is sliced by plain 1+log,
-#          the dust lapse stays near exp(6 T H) = 1.14 instead of growing as 1 + 6 ln a;
+#          1/T, here T = 2 M: one dust cell); the puncture is sliced by plain 1+log,
+#          the dust lapse stays near exp(6 T H) = 1.07 instead of growing as 1 + 6 ln a;
 #          z4c/lapse_leak=0.0 gives the old condition;
 #   shift  Gamma-driver with eta = 2/M, zero at the start;
 #   start  lapse psi^-2 from the table, dust at rest in the coordinates.
@@ -83,7 +83,7 @@ lapse_oplog     = 2.0
 lapse_harmonicf = 1.0
 lapse_harmonic  = 0.0
 lapse_advect    = 1.0
-lapse_leak      = 0.25     # 1/T of the relaxation of the excess lapse (0: plain 1+log)
+lapse_leak      = 0.5      # 1/T of the relaxation of the excess lapse (0: plain 1+log)
 lapse_leak_alpha = 1.0     # reference lapse
 shift_Gamma     = 0.75
 shift_eta       = 2.0

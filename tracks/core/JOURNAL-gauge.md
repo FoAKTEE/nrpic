@@ -446,3 +446,20 @@ lapse within 1.5 per cent of its reference until t = 9 M; shell errors not large
 with T = 0.5 M. Refuted by an instability (growth of the Hamiltonian residual by more
 than ten between t = 2 M and t = 12 M, or not-a-number), which would mean that the
 relaxation must not be faster than a few time steps.
+
+### Second amendment of test ES, written before the run (card job 4449 still queued)
+
+The first look at the bound-ball runs shows where the disturbance of the new lapse
+comes from: it reaches the centre at t = 3 to 4 M, the travel time of a gauge wave from
+the surface at speed sqrt(2 alpha), as one dip (central lapse 1.42 -> 0.85 -> 1.34 at
+t = 3, 4, 5 M for T = 2 M; 1.228 -> 1.005 for T = 1 M; 1.105 -> 1.056 for T = 0.5 M).
+It is the start-up of the relaxation: the run starts with lapse 1 everywhere, the
+lapse rises to its local equilibrium within about T, and where the equilibrium differs
+(across the surface) a pulse leaves, of a size that grows faster than linearly with T.
+For the Einstein-Straus run I therefore halve the relaxation time: T = 2 M
+(`lapse_leak = 0.5` in `problems/es/es_gauge.athinput`, T H = 0.011; tag `gc-es-leak2`).
+The queued job reads the input when it starts. Reference lapse of the plateau for T = 2 M
+(`ref_plateau`): 1.062, 1.064, 1.062, 1.060, 1.057, 1.055 at t = 5, 10, 15, 20, 25, 30 M,
+largest 1.064; proper time 10.53, 21.15, 31.72 M at t = 10, 20, 30 M. Prediction (3)
+becomes: lapse at the tracers at 48 M within 2 per cent of these values, largest lapse
+on the mesh below 1.09. The other items of prediction ES are unchanged.
