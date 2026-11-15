@@ -172,6 +172,20 @@ extras; 701 papers ingested (676 ok, 23 review, 1 PDF only, 1 failed: astro-ph/9
 TeX); 64248 bibliography entries, 60.1 % with an arXiv id; 14.8 % of the citation edges inside
 the corpus. Snapshot `kb-data/db/kb-20261115-5ba1ab3.sqlite` is `db/current` (schema 5).
 
+## State after the lead session (2026-11-15 14:30 UTC)
+
+- `db/current` is `kb-data/db/kb-20261115-f2fcda5.sqlite` (run kb-20261115-141500-b2e57be),
+  schema 5: 701 papers, 53862 equations (was 52755), 64 repositories, 3454 parameter rows.
+- Fixed by the lead, each with a test written first: definitions through an alias of
+  `\newcommand` (`\newcommand{\nc}{\newcommand}` then `\nc{\beq}{...}`; `tex_macros.collect`),
+  shorthands for several environments (`\bea` = `\begin{equation}\begin{aligned}`;
+  `tex_macros.env_aliases`, `tex_structure.scan_math`), and `kb export` headings of sections
+  that begin with a subsection (`papers_cli.cmd_export`). 28 papers re-ingested (runs
+  kb-20261115-141159-bf9c30f, kb-20261115-141358-9043e03); 110 tests pass.
+- New scripts: `scripts/p3_ingestion_table.py` (priority-3 table of the KB-G1 package),
+  `scripts/fig_lead_equations.py` (figure of the lead's checks L10/L11).
+- Gate package KB-G1 and the lead's checks: `tracks/kb/stage/KB-G1/`, `tracks/kb/JOURNAL.md`.
+
 ## Requests
 
 1. **orch: ignore list.** The pattern `runs/` of the shared `.gitignore` also matches

@@ -1,10 +1,10 @@
 {
- "at": "2026-11-15T13:58:06Z",
+ "at": "2026-11-15T14:15:13Z",
  "bib": {
   "bib_entries": 64248,
-  "citations": 103808,
+  "citations": 103807,
   "citations_in_corpus": 12313,
-  "citations_with_arxiv": 62780,
+  "citations_with_arxiv": 62779,
   "citations_without_bib_entry": 910,
   "doi_only": 7951,
   "edges": 38268,
@@ -27,8 +27,8 @@
  "bib_resolution_rate": 0.6014,
  "chunks_by_kind": {
   "abstract": 674,
-  "appendix": 2219,
-  "body": 29712,
+  "appendix": 2218,
+  "body": 29714,
   "caption": 6584,
   "comment": 27966,
   "footnote": 3914
@@ -39,9 +39,9 @@
   "ok": 683,
   "problem": 1
  },
- "downloads_checked_at": "2026-11-15T13:27:48Z",
+ "downloads_checked_at": "2026-11-15T14:03:53Z",
  "edges_in_corpus_fraction": 0.1477,
- "equations_labelled": 25595,
+ "equations_labelled": 26314,
  "manifest_arxiv": 684,
  "manifest_arxiv_by_priority": {
   "1": 477,
@@ -89,31 +89,31 @@
   "astro-ph/9607124",
   "0710.0879"
  ],
- "parse_score_mean": 0.9629,
+ "parse_score_mean": 0.9637,
  "raw_arxiv_entries": 702,
  "raw_github_entries": 63,
  "rows": {
   "bib_entries": 64248,
-  "chunks": 71069,
-  "citations": 103808,
+  "chunks": 71070,
+  "citations": 103807,
   "claims": 0,
   "code_files": 68037,
   "downloads": 702,
   "embeddings": 0,
-  "equations": 52755,
+  "equations": 53862,
   "papers": 701,
   "params": 3454,
   "repo_downloads": 63,
   "repos": 64
  },
  "rows_k2": {
-  "chunks": 71069,
-  "equations": 52755,
+  "chunks": 71070,
+  "equations": 53862,
   "figures": 6655,
   "sections": 13186
  },
  "schema_version_code": 5,
  "schema_version_db": 5,
- "snapshot": "kb-20261115-5ba1ab3.sqlite",
+ "snapshot": "kb-20261115-f2fcda5.sqlite",
  "tool": "kbtool 0.1.0"
 }

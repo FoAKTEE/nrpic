@@ -1,0 +1,6 @@
+# kb inbox acknowledgements (brief 11.3 rule 2): message file, seen at, state
+A-emd-pbh/outbox/20261115T1320Z__to-kb__ingest-s1-references.md	2026-11-15T14:25Z	queued (reply by 2026-12-06); 4 of 5 extra ids already ingested (1708.09143, 2608.13206; 2403.15126 and 1810.03490 on the review list); 2605.30145 not in the store
+B-emd-gw/outbox/20261115T1340Z__to-kb__track-b-sources.md	2026-11-15T14:25Z	queued (reply by 2026-11-29); fetch list needs nrpic-fetch-arxiv
+C-sidm/outbox/20261115T1320Z__to-kb__index-locators-typos.md	2026-11-15T14:25Z	queued (reply by 2026-12-13); errata belong to the claims layer (K8)
+C-sidm/outbox/20261115T1320Z__to-kb__literature-fetch.md	2026-11-15T14:25Z	queued (reply by 2026-12-06); identifier search needs the metadata path (orch)
+E-stoch-inf/outbox/20261115T1410Z__to-kb__errata-s11-references.md	2026-11-15T14:25Z	queued (reply by 2026-12-06); errata belong to the claims layer (K8)

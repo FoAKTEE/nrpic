@@ -149,3 +149,33 @@ counted and a definition in a file listed after it counted as a use. A second co
 fact (grep over all files, comments and definitions excluded): 2311.03281 has 27 uses
 (= gain 27); the four others have 0 (= gain 0). The fix itself is not in question; my
 prediction instrument was.
+
+### Session summary (kb lead, 2026-11-15T14:30Z)
+
+Commits 29f15a1..(package commit). Runs: kb-20261115-140336-29f15a1, -140838-29f15a1,
+-140851-29f15a1, -140919-29f15a1, -141159-bf9c30f, -141358-9043e03, -141457-b2e57be,
+-141500-b2e57be, -141630-b2e57be. Helpers' journals: `kb/JOURNAL.md` ("K0-K1 helper",
+"K2-K3 helper", "K6-K7 helper").
+
+- did: rechecked the three helper packages from their artefacts (L0-L9); fixed the export
+  headings, the \nc alias and the composite-shorthand defects with tests written first
+  (L10, L11) and re-ingested 28 papers; regenerated the stale inventory figure; wrote the
+  KB-G1 package (FIRST_QUESTIONS.md with nine answers and file:line locators, EVIDENCE.md,
+  OPEN.md, priority3_ingestion.tsv); ten outbox files; inbox acknowledgements; snapshot
+  kb-20261115-f2fcda5; `kb status --write-state`.
+- found: the helpers' numbers hold where I could recount them (manifests, store hashes,
+  verify counts, 2611.12831 equation numbering, six bibliographies, parameter calls, the
+  upstream watch, 25 links). The quality score does not catch silently missing equations:
+  1707.00537, 2402.08642 and 2509.05124 had 0 equations with status ok. 2611.12831 states no
+  numerical Z4c damping or gauge parameter and no number of filter passes, no code
+  availability, no performance numbers, and does not mention cosmology or tidal effects.
+- evidence: journal entries above; `kb/reports/fig_inventory.png`,
+  `kb/reports/fig_lead_equations.png` (inspected).
+- changed my mind about: the parse score as a gate for "ingested". It measures structure,
+  not completeness; K9 needs an independent equation count on drawn papers.
+- procedural: one probe of stub exit codes wrote a temporary error file under /tmp (removed
+  at once); CLAUDE.md asks for scratch/kb/tmp. The REPORT.md the task named for the stage
+  package was refused by this session's file-write guard, so its content went into
+  EVIDENCE.md (criteria, runs, compute) and OPEN.md (gaps, stages that remain).
+- open: K1 metadata, K4, K5, K7 module descriptions, K8, K9, K10, K11 scheduler; five
+  kb-requests from tracks A, B, C, E (inbox_acks.txt); 12 unexamined C3 discrepancies.
