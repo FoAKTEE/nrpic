@@ -1,0 +1,63 @@
+{
+ "run_id": "D-bh-dress-20261115-173114-af8bfcc",
+ "track": "D-bh-dress",
+ "package": "D-pre-2 spike",
+ "purpose": "K3: particle number to resolve the Kerr spike (a=0.8) inside 10 r_+ = 16 Gm, counting and deposit criteria",
+ "kind": "scouting",
+ "command": [
+  "/data/haiyangw/nrpic/wt/D-bh-dress/.venv/bin/python",
+  "kerr_budget.py",
+  "--out",
+  "/data/haiyangw/nrpic/scratch/D-bh-dress/D-bh-dress-20261115-173114-af8bfcc",
+  "--np",
+  "4"
+ ],
+ "cwd": "/data/haiyangw/nrpic/wt/D-bh-dress/tracks/D-bh-dress/spike",
+ "env_overrides": {
+  "OMP_NUM_THREADS": "4",
+  "OPENBLAS_NUM_THREADS": "4"
+ },
+ "git": {
+  "sha": "af8bfcc170ecde083f2c2ebf644939f347015978",
+  "branch": "track/D-bh-dress",
+  "dirty_spike_dir": false
+ },
+ "inputs": [
+  {
+   "path": "/data/haiyangw/nrpic/wt/D-bh-dress/tracks/D-bh-dress/spike/kerr_budget.py",
+   "sha256": "f40de19cb4cb40924c8fe500f38c44dd75d3cd8d18fa801e06e2ec2409f3d412"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/wt/D-bh-dress/tracks/D-bh-dress/spike/kerr_lib.py",
+   "sha256": "dfea5727333f60d5528e1581e8677286acd5d9a2eed28a046503250812ca848f"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/wt/D-bh-dress/tracks/D-bh-dress/spike/spike_lib.py",
+   "sha256": "c6ddd1260ac7cf587775d1c115e2e301e49f5e1f3d7eec85b7546aaa773d96ff"
+  }
+ ],
+ "resources": {
+  "nodes": 1,
+  "cores": 4,
+  "gpus": 0,
+  "card_hours": 0.0,
+  "walltime_s": 288.37
+ },
+ "outputs": {
+  "dir": "/data/haiyangw/nrpic/scratch/D-bh-dress/D-bh-dress-20261115-173114-af8bfcc",
+  "sha256sums": "sha256sums.txt",
+  "files": [
+   "kerr_budget.json",
+   "kerr_budget.pdf",
+   "kerr_budget.png",
+   "kerr_budget_grid.npz",
+   "stdout.txt"
+  ]
+ },
+ "status": "completed",
+ "exit_code": 0,
+ "started": "2026-11-15T17:31:14+00:00",
+ "ended": "2026-11-15T17:36:02+00:00",
+ "parents": [],
+ "notes": "Registered by hand with spike/register_run.py (nrpic-run refuses the shared worktree)."
+}
