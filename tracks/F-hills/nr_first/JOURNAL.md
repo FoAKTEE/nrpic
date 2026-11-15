@@ -276,3 +276,51 @@ wrapper. [VERIFIED, `run.log`, `run/single.co_0.txt`, `seg1_co_0.txt` of the run
 Follow-up: `scripts/check_keep_trackers.py` repeats the checks on the same output with the
 convention above, plus continuity of the position across the junction (prediction: all
 pass; refuted if the merged rows are not 0-11 or the position jumps at row 8).
+
+## 2026-11-15 E5 follow-up, outcome (run F-20261115-181049-ab04d03)
+
+7/7 checks passed on the same output with AthenaK's row convention: segment 1 rows 0-7, the
+live file after the restart rows 8-11 only, the kept copy equal to segment 1, merged rows 0-11
+once each with a constant step 0.125, and the position at row 8 within 1.2e-5 of the
+quadratic extrapolation of rows 5-7 (third difference 1.1e-5). [VERIFIED] The wrapper and
+the merging reader are ready for the chain of P1.
+
+## 2026-11-15 E2, outcome (C0: run F-20261115-173547-a02af7d; analysis F-20261115-181053-d52f22d)
+
+Numbers [VERIFIED, `c0_constraints.json` of the analysis run; the norm recomputed from the
+dumps equals the history file's to the printed digits, volume 1.3660e8 both]:
+
+| case | blocks | code | closed form | code - closed |
+|---|---|---|---|---|
+| none, m/4 | 1128 | 1.207e-2 | 1.633e-5 | 1.207e-2 |
+| none, m/8 | 1716 | 5.024e-5 | 1.635e-5 | 4.833e-5 |
+| none, m/16 | 2514 | 1.633e-5 | 1.635e-5 | 2.465e-7 |
+| approx, m/4 | 1128 | 1.191e-2 | 4.899e-7 | 1.191e-2 |
+| approx, m/8 | 1716 | 4.713e-5 | 4.909e-7 | 4.711e-5 |
+| approx, m/16 | 2514 | 5.514e-7 | 4.908e-7 | 2.298e-7 |
+| plain sum, m/8 | 1716 | 4.709e-5 | 3.018e-6 | 4.688e-5 |
+
+At m/8 the residual near the members (r < 1 M) is 4.57e-5 (approx) and near the heavy hole
+(r < 4 M) 1.15e-5; elsewhere 1.0e-7, equal to the closed form. Order of the truncation error
+(log2 of successive ratios of code - closed): 7.96 and 7.62 (none), 7.98 and 7.68 (approx).
+Figure `fig_c0_constraints.png` of the analysis run, read: at m/16 the profile of |H| through
+m1 lies on the closed form outside about 0.1 M of the puncture for both variants; at m/4 the
+corrected data's residual is wrong by orders of magnitude within 0.4 M.
+
+Against the predictions:
+1. FAILED at m/8 in the code's norm: approx (4.713e-5) and plain sum (4.709e-5) are equal to
+   0.1 percent and only 6 percent below none (5.02e-5); ratio none/approx 1.07, not 2-30. At
+   m/8 truncation at the punctures is about 100 times the residual of the corrected data.
+   The order approx < plain < none holds in the closed form (4.9e-7 < 3.0e-6 < 1.6e-5) and in
+   the code at m/16 (ratio none/approx 29.6).
+2. FAILED in its first half: the `none` norm falls by 3.1 from m/8 to m/16 (truncation still
+   larger than the algebraic residual at m/8). Second half met: at m/16 it equals the closed
+   form within 0.1 percent.
+3. Met: the `approx` norm falls 85 times from m/8 to m/16 and is 1.12 times its closed form at
+   m/16. The resolution-independent residual of the corrected data is 1/33 of the
+   uncorrected one, just outside the predicted 1/30-1/3 (the correction does better).
+4. FAILED on the high side: order 7.6-8.0, not 3-7 (pre-asymptotic; I name no cause).
+Reading for P1 [JUDGEMENT]: at the passage's resolution m/8 the t = 0 constraint violation
+is set by the mesh, not by the data; the data's own violation (4.9e-7 with the correction,
+1.6e-5 without) is visible only from m/16 on. The correction is still needed for the
+members' masses (three_punctures PLAN section 5: 2.5e-3 M per member without it at q = 10).

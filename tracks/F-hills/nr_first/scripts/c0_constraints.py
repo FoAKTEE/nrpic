@@ -99,7 +99,8 @@ def main():
 
     fs.use_style()
     import matplotlib.pyplot as plt
-    fig, ax = plt.subplots(1, 2, figsize=(fs.FULL_WIDTH, 3.2))
+    from matplotlib.lines import Line2D
+    fig, ax = plt.subplots(1, 2, figsize=(fs.FULL_WIDTH, 3.4))
     for kind in ("none", "approx", "plain"):
         nls = [nl for k, nl in CASES if k == kind and f"{kind}_L{nl}" in res]
         if not nls:
@@ -108,18 +109,29 @@ def main():
         code = [res[f"{kind}_L{nl}"]["all"]["code"] for nl in nls]
         clo = [res[f"{kind}_L{nl}"]["all"]["closed"] for nl in nls]
         dif = [res[f"{kind}_L{nl}"]["all"]["diff"] for nl in nls]
-        ax[0].loglog(h, code, "o-", color=COLOR[kind], label=LABEL[kind] + ": code")
-        ax[0].loglog(h, clo, "s--", color=COLOR[kind], mfc="none", lw=1.0, label="closed form")
-        ax[0].loglog(h, dif, "^:", color=COLOR[kind], lw=1.0, label="code - closed form")
+        ax[0].loglog(h, code, "o-", color=COLOR[kind], ms=5)
+        ax[0].loglog(h, clo, "s--", color=COLOR[kind], mfc="none", lw=1.0, ms=6)
+        ax[0].loglog(h, dif, "^:", color=COLOR[kind], lw=1.0, ms=4)
     hh = np.array([1 / 4, 1 / 16])
     if "approx_L10" in res:
         ref = res["approx_L10"]["all"]["diff"]
-        ax[0].loglog(hh, ref * (hh / 0.125) ** 4, **fs.THIN, ls="-.")
-        ax[0].text(0.07, ref * 0.5 ** 4 * 0.6, r"$\propto h^4$", fontsize=8)
-    ax[0].set_xlabel(r"finest cell $h/m$ at the members")
+        ax[0].loglog(hh, ref * (hh / 0.125) ** 8, **fs.THIN, ls="-.")
+        ax[0].text(0.105, ref * 0.4, r"$\propto h^8$", fontsize=8)
+    ax[0].set_xticks([1 / 4, 1 / 8, 1 / 16])
+    ax[0].set_xticklabels([r"$m/4$", r"$m/8$", r"$m/16$"])
+    ax[0].minorticks_off()
+    ax[0].set_xlim(0.3, 0.05)
+    ax[0].set_xlabel(r"finest cell at the members")
     ax[0].set_ylabel(r"$\langle H^2\rangle^{1/2}$ at $t=0$")
-    ax[0].legend(frameon=False, fontsize=6, loc="lower right", ncol=1)
-    ax[0].invert_xaxis()
+    h1 = [Line2D([], [], color=COLOR[k], lw=2) for k in ("none", "approx", "plain")]
+    l1 = ax[0].legend(h1, [LABEL[k] for k in ("none", "approx", "plain")], frameon=False,
+                      fontsize=6.5, loc="upper right")
+    ax[0].add_artist(l1)
+    h2 = [Line2D([], [], color="k", marker="o", ls="-"),
+          Line2D([], [], color="k", marker="s", mfc="none", ls="--"),
+          Line2D([], [], color="k", marker="^", ls=":")]
+    ax[0].legend(h2, ["code (history norm)", "closed form, same cells", "code $-$ closed form"],
+                 frameon=False, fontsize=6.5, loc="lower left")
     for name, ls in (("none_L11", "-"), ("approx_L11", "-"), ("approx_L9", ":")):
         if name not in prof:
             continue
