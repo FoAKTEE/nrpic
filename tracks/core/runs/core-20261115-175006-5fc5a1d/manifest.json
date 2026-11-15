@@ -1,0 +1,113 @@
+{
+  "schema": "nrpic-run-manifest/1",
+  "run_id": "core-20261115-175006-5fc5a1d",
+  "track": "core",
+  "gate": "G2",
+  "kind": "scouting",
+  "purpose": "Figure of the prediction for the prepared rerun of the two-overdensity case, on the horizon record of run jeans/n1e4_v19 (JOURNAL-clump, rerun and control predictions)",
+  "preregistered_in": null,
+  "launcher": "local",
+  "command": [
+    "python3",
+    "tracks/core/analysis/clump/rerun_prediction_fig.py",
+    "--out",
+    "/data/haiyangw/nrpic/scratch/core/clump-rerun/fig"
+  ],
+  "cwd": ".",
+  "git": {
+    "sha": "5fc5a1d62a44aeb4f57da6aaff2f8653d60ffa82",
+    "branch": "core/clump-curvature",
+    "dirty": false,
+    "merge_base_main": "b9fbf3e6534517c3393000da91c79ce552b254b9",
+    "worktree": "wt/core-clump"
+  },
+  "code": {
+    "core_tag": "core-v0.3",
+    "athenak_upstream_sha": "c5a0d7f",
+    "kokkos_sha": "6739bc623081648af9e752b616d9671527922cbf",
+    "problem": null
+  },
+  "env": {
+    "host": "anta",
+    "env_hash": "33c1dbb6673b68919eaa332b0add0b58aeac8be843f2071b9d06e2e0e397a96d",
+    "machine_file_sha256": "0321f40f4caeeb2a36624a9fa9809e60bad31071f366b3517ba23ad45698d2d7",
+    "uv_lock_sha256": "5417f6ba318b914aa3800e5d55f7b11fdd8df13c2688bdda7d419240aa1d5863",
+    "track_requirements_sha256": null,
+    "container_digest": null,
+    "compiler": "g++ 11.4.0",
+    "mpi": "none (Athena_ENABLE_MPI=OFF)",
+    "gpu": null,
+    "python": "3.10.12 /data/haiyangw/nrpic/wt/core-clump/.venv"
+  },
+  "input": null,
+  "inputs": [
+    {
+      "path": "/data/haiyangw/nrpic/runs/jeans/n1e4_v19/jeans.horizon_summary_0.txt",
+      "role": "input",
+      "sha256": "5f0698aba6a01a7798c78e9284c17936d195bbec1f06ae6845df3e26059c3774",
+      "bytes": 334971,
+      "tracked": false,
+      "location": "main checkout data root"
+    },
+    {
+      "path": "/data/haiyangw/nrpic/runs/jeans/n1e4_v19/jeans.horizon_summary_1.txt",
+      "role": "input",
+      "sha256": "a752647bf9c927562a05da4de17725b8057765c99fd569c5aafa4383899c1cf9",
+      "bytes": 335352,
+      "tracked": false,
+      "location": "main checkout data root"
+    },
+    {
+      "path": "/data/haiyangw/nrpic/runs/jeans/n1e4_v19/jeans.horizon_summary_2.txt",
+      "role": "input",
+      "sha256": "3712a6958796addc93b7eecaf095ffa7bfcf811650bcd436b69d5262ca27d565",
+      "bytes": 158615,
+      "tracked": false,
+      "location": "main checkout data root"
+    },
+    {
+      "path": "tracks/core/analysis/clump/rerun_prediction_fig.py",
+      "role": "argv",
+      "sha256": "8d4bf2fc803a45eb76a6d33fb6d806f3a922e9256d4358483385ec99ef88fa4d",
+      "bytes": 4257,
+      "tracked": true
+    }
+  ],
+  "batch_entries": null,
+  "resources": {
+    "nodes": 1,
+    "gpus": 0,
+    "cores": 1,
+    "walltime_s": null,
+    "wall_limit": null,
+    "segments_max": null,
+    "gpu_hours_requested": 0.0,
+    "gpu_hours": null,
+    "particles": null
+  },
+  "slurm": null,
+  "outputs": {
+    "dir": "scratch/core/core-20261115-175006-5fc5a1d",
+    "sha256sums": "sha256sums.txt",
+    "sha256sums_sha256": null,
+    "bytes": null,
+    "files": null
+  },
+  "status": "running",
+  "exit_code": null,
+  "registered": "2026-11-15T17:50:07Z",
+  "started": null,
+  "ended": null,
+  "parents": [],
+  "notes": "",
+  "budget_at_submit": {
+    "gpu_hours_allotted": 40.0,
+    "cores_allotted": 16,
+    "gpu_hours_used": 2.4337,
+    "gpu_hours_reserved": 0.0,
+    "gpu_hours_without_gate": 3.4324,
+    "cores_busy": 2,
+    "runs": 713,
+    "allotment_from": "coord/DECISIONS/0006-compute-budget.md + 0014-budgets-after-wave-1.md"
+  }
+}
