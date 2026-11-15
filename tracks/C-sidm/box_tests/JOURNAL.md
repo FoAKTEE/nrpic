@@ -101,3 +101,11 @@ step being taken; whether that equals the dump's `cycle` field or differs by one
 stated; the replay tries cycle, cycle - 1, cycle + 1 and records which reproduces the code
 (a mismatch of the documented key would be a finding, not a failure of the operator).
 Refuted by any differing tested or accepted pair, or a momentum beyond 1e-13.
+
+T10 first attempt (run C-20261115-165742-2c645f8, failed, exit 1): a defect of my driver,
+not of the code. The restart directory holds `box.NNNNN.rst` and `box.NNNNN.rst.prt`; the
+driver resumed from every file, including the `.prt` particle files (the run from
+`box.00000.rst.prt` stopped at once), and a resumed run in a new directory appends to
+`box.coll.hst` without a header, which my reader refused. Fixed: only `*.rst` files; a
+history without a header gets the column order of collisions.md section 5 (asserted equal
+to the header of the fresh runs). Rerun below with the predictions unchanged.

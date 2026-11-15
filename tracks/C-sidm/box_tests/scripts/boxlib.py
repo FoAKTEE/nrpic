@@ -92,12 +92,22 @@ def run_many(jobs, nproc):
         return [f.result() for f in futs]
 
 
+COLL_COLUMNS = ("time ncycle n_part n_cells n_tested sum_P n_coll n_updated n_trunc max_P "
+                "max_nsub mean_nsub min_N mean_N max_dx_mfp sum_MW sum_Mu1 sum_Mu2 sum_Mu3 "
+                "dE dP1 dP2 dP3 abs_dE abs_dP n_bad_cells sum_W sum_MW_species0 "
+                "sum_M_species0 sum_MW_particles dE_particles").split()
+
+
 def coll_history(rundir, base="box"):
-    """(dict name -> column array) of <base>.coll.hst."""
+    """(dict name -> column array) of <base>.coll.hst. A run resumed from a restart file
+    in a new directory appends records without a header: the column order of
+    collisions.md section 5 (checked against the header of the fresh runs) is used."""
     head, h = snap.read_history(os.path.join(rundir, f"{base}.coll.hst"))
     ci = snap.history_columns(head)
-    if not ci:
-        raise RuntimeError(f"no column names in the header of {rundir}/{base}.coll.hst: {head}")
+    if ci:
+        assert [k for k, _ in sorted(ci.items(), key=lambda kv: kv[1])] == list(COLL_COLUMNS)
+    else:
+        ci = {k: i for i, k in enumerate(COLL_COLUMNS)}
     h = np.atleast_2d(h)
     return {k: h[:, i] for k, i in ci.items()}
 

@@ -65,7 +65,7 @@ def main():
     rr = bl.run_many(jobs, 4)
     res = dict(meta=meta, runs={os.path.basename(j[0]): dict(rc=r["rc"], wall=r["wall"])
                                 for j, r in zip(jobs, rr)})
-    rsts = sorted(os.listdir(os.path.join(out, "mb8", "rst")))
+    rsts = sorted(p for p in os.listdir(os.path.join(out, "mb8", "rst")) if p.endswith(".rst"))
     jobs2 = []
     for k, fn in enumerate(rsts):
         rd = os.path.join(out, f"rst{k}")
