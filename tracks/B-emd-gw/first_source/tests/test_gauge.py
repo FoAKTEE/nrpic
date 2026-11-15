@@ -66,6 +66,56 @@ def test_slicing_part_is_not_removed():
     assert abs(s_res - 2.0) < 0.1, s_res
 
 
+def _A_target_at(points, coefs, ks, phases):
+    """Symmetric traceless field sum_n c_n sin(k_n.x + p_n) at the given points (3, ...)."""
+    A = np.zeros((3, 3) + points.shape[1:])
+    for c, k, p in zip(coefs, ks, phases):
+        A += c[:, :, None, None, None] * np.sin(np.einsum("a,a...->...", k, points) + p)
+    return A
+
+
+def residual_A(eps_xi, amp_A=1e-4, n=32, seed=7):
+    g = Grid((n, n, n), (4.0, 4.0, 4.0), (0.0, 0.0, 0.0))
+    rng = np.random.default_rng(seed)
+    L = 4.0
+    xis = [analytic.random_modefield(g, eps_xi * L / (2 * np.pi), 3, 2, seed + 10 * a + 1) for a in range(3)]
+    xi = np.array([x.val() for x in xis])
+    J = np.eye(3)[:, :, None, None, None] + np.array([x.grad() for x in xis])
+    X = np.array(g.mesh())
+    ks, coefs, ph = [], [], []
+    for _ in range(4):
+        m = rng.integers(-2, 3, size=3)
+        while not m.any():
+            m = rng.integers(-2, 3, size=3)
+        ks.append(2 * np.pi * m / L)
+        c = rng.normal(size=(3, 3))
+        c = 0.5 * (c + c.T)
+        c -= np.eye(3) * np.trace(c) / 3
+        coefs.append(amp_A * c / np.abs(c).max())
+        ph.append(rng.uniform(0, 2 * np.pi))
+    A_T_disp = _A_target_at(X + xi, coefs, ks, ph)                 # A_T(x' + xi)
+    A_T = _A_target_at(X, coefs, ks, ph)                           # A_T(x')
+    detJ = tt.det3(J)
+    Ap = detJ ** (-2.0 / 3.0) * np.einsum("ki...,kl...,lj...->ij...", J, A_T_disp, J)
+    gamma = np.einsum("mi...,mj...->ij...", J, J)
+    ginv, d = tt.inv3(gamma)
+    h = d ** (-1.0 / 3.0) * gamma - np.eye(3)[:, :, None, None, None]
+    LA = tt.tt_project(Ap, g)
+    LAT = tt.tt_project(A_T, g)
+    GA = gauge.gauge_piece_A(h, Ap, g)
+    return rms(LA - LAT), rms(LA - GA - LAT)
+
+
+def test_gauge_piece_of_A():
+    eps = np.array([4e-3, 2e-3, 1e-3, 5e-4])
+    r = np.array([residual_A(e) for e in eps])
+    s_raw = np.polyfit(np.log(eps), np.log(r[:, 0]), 1)[0]
+    s_res = np.polyfit(np.log(eps), np.log(r[:, 1]), 1)[0]
+    assert abs(s_raw - 1.0) < 0.05, s_raw
+    assert abs(s_res - 2.0) < 0.1, s_res
+    assert np.all(r[:, 1] < 0.05 * r[:, 0])
+
+
 def test_tt_wave_survives_the_correction():
     g = Grid((32, 32, 32), (4.0, 4.0, 4.0), (0.0, 0.0, 0.0))
     waves = [analytic.Wave((1, 1, 0), 1e-6, 0.0), analytic.Wave((0, 1, 2), 0.0, 5e-7)]

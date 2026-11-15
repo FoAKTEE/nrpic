@@ -120,6 +120,14 @@ def analyse(path, with_gauge=True, with_weyl=False, weyl_order=6):
             r[f"G_{K}_cross"] = [float(hx.real), float(hx.imag)]
         r["box_mode_fraction_corrected"] = (box_mode_power(Th - Gh, g) / ms_fourier(Th - Gh, g)
                                             if ms_fourier(Th - Gh, g) > 0 else None)
+        GA = gauge.gauge_piece_A(h, gauge.traceless(At), g)
+        GAh = tt.tensor_rfft(GA)
+        r["rms_GA"] = np.sqrt(ms_fourier(GAh, g))
+        r["rms_TT_A_minus_GA"] = np.sqrt(ms_fourier(TA - GAh, g))
+        pa = pol_amps(-2.0 * GAh, g)
+        for K, (hp, hx) in pa.items():
+            r[f"GA_{K}_plus"] = [float(hp.real), float(hp.imag)]       # in units of hdot = -2 A
+            r[f"GA_{K}_cross"] = [float(hx.real), float(hx.imag)]
     if with_weyl:
         gamma, K, _, _ = readers.z4c_to_adm(d)
         E, B = weyl.electric_magnetic(gamma, K, g, order=weyl_order)

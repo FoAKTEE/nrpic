@@ -123,3 +123,34 @@ summary) and are used. P0 for them: CONFIRMED. Hamiltonian residual 4.8e-12, 1.3
 momentum 3.1e-17, 1.1e-16, 1.5e-16 (eps = 0, 0.1, 0.3); max |psi_N| 6.07e-3, 6.68e-3, 7.89e-3;
 max |Ahat| 1.27e-4 to 1.60e-4; largest displacement 0.10 cells; 2,097,152 particles each
 (`eps*.log` of the run). eps = 1 is rebuilt in a separate run, without a timeout.
+
+## T0 and the reference (runs B-20261115-164221-6a6b779, B-20261115-164157-40b9f6d)
+
+T0, outcome: CONFIRMED. On exact pure-gauge Minkowski data (32^3, two seeds, eps = 1e-4 to
+1e-2) the fitted slopes are 2.000 for Lambda h and 3.000 to 3.001 for Lambda h - G with the
+slicing off; with the slicing on both stay at 2.000 (G does not touch the slicing part).
+Dealiasing (3/2 padding) changes nothing at these smooth fields (slopes equal to 1e-13).
+Figure `t0_gauge.png` of the run, looked at. Unit tests (`tests/test_gauge.py`, 5 pass): the
+inverse xi(h) reproduces the traceless non-TT part to 1e-12; a TT wave under a random
+spatial gauge is recovered after the correction to below 1 percent of the raw error; the
+companion piece G_A of tilde A (added after T0, see below) removes the first-order term
+(raw slope 1.00, residual slope 2.0).
+
+Reference (run B-20261115-164157-40b9f6d; `reference.json`, figure `reference.png`, looked
+at): s = -3.0797e-5 eps; g = 1.0993, 1.0336, 1.0140, 1.0089, 1.0073 at a = 10, 20, 40,
+60, 140; |g - 1| envelope falls as 1/a (check 3A reproduced); period 2.83 in tau. Predicted
+c_+(K1)/eps = -3.385e-5 at a = 10 (on a crest of the junk), -3.183e-5 at a = 20. The
+outputs of this run were first written to a directory literally named `$NRPIC_RUN_DIR` in the
+worktree root (nrpic-run does not expand the variable in argv; my error); I moved the four
+files into the run directory after `finish` (`sha256sums.moved.txt` there) and removed the
+empty directory. The scripts now default to the environment variable.
+
+## P7b (written before the run on the cosmology dumps)
+
+Companion of G for the extrinsic curvature: tilde A transforms like the conformal metric,
+so Lambda tilde A' = Lambda tilde A_T + G_A, G_A = Lambda[M^T A + A M - (2/3)(tr M) A +
+(xi . grad) A] (fslib/gauge.py, gauge_piece_A, tested as above). rho_kin of the wave-1
+scouting (`gw_diag/figs/cosmo_tt.png`, middle panel) rises from ~1e-19 rho_bar at a ~ 100 to
+3e-14 .. 2e-13 at a = 1000. Prediction: if this rise is the spatial-gauge piece, rho_kin
+computed from Lambda tilde A - G_A is below 10 percent of the raw value at the last dump in
+both runs. Refuted if it is above 50 percent there.

@@ -132,6 +132,50 @@ def gauge_piece(h, grid, pad=True, return_parts=False):
     return G, {"xi": xi, "M": Mg, "G_hat": Gh}
 
 
+def gauge_piece_A(h, At, grid, pad=True):
+    """Spatial-gauge piece of Lambda tilde A for the same displacement xi (from h).
+
+    tilde A = det(gamma)^(-1/3) (K - gamma K/3) transforms like the conformal metric,
+    tilde A'(x') = det(J)^(-2/3) J^T tilde A_T(x' + xi) J, so to second order
+        Lambda tilde A' = Lambda tilde A_T + G_A,
+        G_A = Lambda[M^T A + A M - (2/3)(tr M) A + (xi . grad) A],
+    with A the measured tilde A (its first-order part is the same in both coordinates).
+    Returns G_A in real space."""
+    X = xi_hat_from_h(h, grid)
+    k = grid.kvec(real=True)
+    Mh = 1j * k[None, :] * X[:, None]
+    FA = tt.tensor_rfft(At)
+    FA[:, :, grid.nyquist_mask(real=True)] = 0.0
+    dAh = 1j * k[:, None, None] * FA[None]            # [c, i, j] = d_c A_ij
+    shp = tuple(int(3 * n // 2) for n in grid.shape) if pad else grid.shape
+    if pad:
+        M = np.fft.irfftn(_pad(Mh, grid, shp), s=shp, axes=AX)
+        A = np.fft.irfftn(_pad(FA, grid, shp), s=shp, axes=AX)
+        xi = np.fft.irfftn(_pad(X, grid, shp), s=shp, axes=AX)
+        dA = np.fft.irfftn(_pad(dAh, grid, shp), s=shp, axes=AX)
+    else:
+        M = np.fft.irfftn(Mh, s=shp, axes=AX)
+        A = np.fft.irfftn(FA, s=shp, axes=AX)
+        xi = np.fft.irfftn(X, s=shp, axes=AX)
+        dA = np.fft.irfftn(dAh, s=shp, axes=AX)
+    trM = np.einsum("aa...->...", M)
+    Q = (np.einsum("ki...,kj...->ij...", M, A) + np.einsum("ik...,kj...->ij...", A, M)
+         - (2.0 / 3.0) * trM * A + np.einsum("c...,cij...->ij...", xi, dA))
+    Qh = np.fft.rfftn(Q, axes=AX)
+    if pad:
+        Qh = _unpad(Qh, grid, shp)
+    _, kk, kh = tt._khat(grid)
+    Gh = tt.lambda_apply(Qh, kh)
+    Gh[:, :, 0, 0, 0] = 0.0
+    Gh[:, :, grid.nyquist_mask(real=True)] = 0.0
+    G = np.empty((3, 3) + grid.shape)
+    for a in range(3):
+        for b in range(a, 3):
+            G[a, b] = np.fft.irfftn(Gh[a, b], s=grid.shape, axes=AX)
+            G[b, a] = G[a, b]
+    return G
+
+
 def nonTT_traceless(h, grid):
     """Traceless non-TT part of h (k != 0), real space."""
     hT = traceless(h)
