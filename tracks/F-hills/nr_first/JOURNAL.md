@@ -431,3 +431,17 @@ barycentric energy +1.31187 units (two-body with M +1.6404), m2's two-body energ
 -1.62654 units; binary wider than 10 M from t = 115.19; the merged segments and the horizon
 files read; absent history and waveforms skipped. Only change after the run: a shorter label
 of the energy panel (it was cut off in the figure).
+
+## 2026-11-15 State at hand-over (19:50 UTC)
+
+Done and checked: E1 (trees), E2 (t = 0 constraints against resolution), E3a (the analysis
+reproduces core's test 1b), E4 tests 1 and 3, E5 (tracker truncation and the wrapper), E6
+(baselines of P1), E8 (the missing m2 horizon at m/8), E9 (passage analysis on synthetic
+files). P1 is prepared (README, "P1") and not submitted.
+Not done: E3 (S3, S2) and E7 (P1 smoke) are queued on the cards (jobs 4474, 4476; no card
+time used so far); their predictions above stand and their outcomes are not recorded; S1
+withdrawn; the S2 repeat with core's mass-scaled shift damping waits for core's READY. The
+commands to close and analyse the pending runs are in README, "Pending".
+Card-hours used by this package: 0 (reserved for the two queued jobs: at most 1.4).
+Processor time: about 1.6 core-hours (C0 35 min, wrapper test 22 min, finder diagnostic 13 min,
+stopped probes 13 min, analyses).

@@ -128,12 +128,32 @@ be missing in early searches; no non-finite values; history Volume constant.
 
 ## Pending (not done by this package)
 
-- Card runs queued since 17:36 UTC behind six jobs of other owners: S3 + S2 (job 4474), P1
-  smoke (4476); S1 (4475) withdrawn. Their analysis commands are above.
-- The repeat of the light single-puncture run with core's mass-scaled shift damping: core
-  has not published `scratch/core/exe/core_gauge/READY` (branch `core/gauge` has
-  `shift_eta_profile` in progress).
-- `test_nrread.py three` on a three-hole run with more than one horizon search (E7 output).
+- Card jobs queued since 17:36 UTC, still pending at 19:50 UTC behind two chained segments of
+  D-bh-dress: S3 + S2 (run F-20261115-173601-2fae2dc, Slurm job 4474, at most 2 x 28 min) and
+  the P1 smoke test (run F-20261115-174602-c6879fe, job 4476, at most 20 min). S1 (job 4475)
+  was withdrawn. The predictions E3 and E7 stand in `JOURNAL.md`; their outcomes are not
+  recorded. When the jobs have ended, from the worktree root:
+
+      harness/bin/nrpic-run finish F-20261115-173601-2fae2dc
+      harness/bin/nrpic-run finish F-20261115-174602-c6879fe
+      S=/data/haiyangw/nrpic/scratch/F-hills/F-20261115-173601-2fae2dc
+      P=/data/haiyangw/nrpic/scratch/F-hills/F-20261115-174602-c6879fe
+      harness/bin/nrpic-run submit --kind scouting --gate G1 --package tracks/F-hills/nr_first \
+          --cores 1 --parent F-20261115-173601-2fae2dc --purpose "nr_first E3: analysis of S3 and S2" \
+          -- python tracks/F-hills/nr_first/scripts/single_analysis.py - $S/S3 $S/S2
+      ... --purpose "nr_first E4 test 2" -- python tracks/F-hills/nr_first/scripts/test_nrread.py single $S/S3 $S/S2
+      ... --purpose "nr_first E4 test 3 on the card" -- python tracks/F-hills/nr_first/scripts/test_nrread.py three $P/P1smoke
+      ... --purpose "nr_first E7: P1 smoke" -- python tracks/F-hills/nr_first/scripts/p1_analysis.py $P/P1smoke \
+          --baselines=tracks/F-hills/nr_first/results/baselines_p1.json
+
+  ($S and $P are expanded by your shell before nrpic-run sees them). For E7 read
+  also `$P/P1smoke/athena.*.log` (MeshBlocks, "zone-cycles/cpu_second", the last cycle's wall
+  time) and the peak of `$P/P1smoke/athena.*.gpumem.csv` (card memory at 2700 slots).
+- The repeat of S2 with core's mass-scaled shift damping (`inputs/batch_S2g.list`,
+  `--exe /data/haiyangw/nrpic/scratch/core/exe/core_gauge/athena_gpu`): core had not
+  published `scratch/core/exe/core_gauge/READY` by 19:50 UTC (branch `core/gauge` has the
+  option `shift_eta_profile`).
+- The optional S1 (m/16): `inputs/batch_S1.list`, about 0.7 card-hours.
 
 ## Requests
 

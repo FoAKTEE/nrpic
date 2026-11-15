@@ -12,7 +12,7 @@ Per run (directories named S1, S2, S3, and any other names given):
 Reference values (python/nrpic/bowen_york.py, recomputed here): ADM mass of the data with the
 second-order correction m + (5/8) P^2/m and of the full solution; P/M_ADM; sqrt(M_ADM^2 - P^2).
 Writes <out>/single_analysis.json and fig_single_{junk,gauge}.{png,pdf}.
-Usage: single_analysis.py <out> [--P=<momentum>] <run dir> [<run dir> ...]
+Usage: single_analysis.py <out | - for $NRPIC_RUN_DIR> [--P=<momentum>] <run dir> [...]
 """
 import json
 import math
@@ -44,7 +44,7 @@ def window_mean(t, y, t0, t1):
 
 def main():
     global P
-    out = sys.argv[1]
+    out = sys.argv[1] if sys.argv[1] != "-" else os.environ["NRPIC_RUN_DIR"]
     runs = [a for a in sys.argv[2:] if not a.startswith("--P=")]
     for a in sys.argv[2:]:
         if a.startswith("--P="):
