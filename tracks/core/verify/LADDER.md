@@ -56,7 +56,7 @@ relative errors of E, L_z, Q):
 | Boris Cholesky, Hermite lattice | 2.0e-6, 3.8e-6, 5.3e-5 | 2.046e-6, 3.788e-6, 5.289e-5 | 2.046e-6, 3.788e-6, 5.289e-5 |
 
 - Order in dt of the final position error, analytic metric, pairwise between 0.005,
-  0.01, 0.02 M: 2.0000 and 2.0003 (midpoint), 1.9998 and 1.9991 (Boris symmetric),
+  0.01, 0.02 M: 2.0001 and 2.0003 (midpoint), 1.9998 and 1.9991 (Boris symmetric),
   1.9997 and 1.9989 (Boris Cholesky), equal to the earlier values to 6e-7. Paper: "Both
   methods are second-order accurate" (main.tex line 837).
 - Pericentre 1.898325 M at 98.95 M against the exact 1.898327 M at 98.948 M
@@ -96,7 +96,7 @@ Evidence.
 
 | Quantity | Paper | Earlier (`runs/os/nocap_sc`) |
 |---|---|---|
-| central proper time at which the central lapse leaves the lapse bound by 1e-2 | about 3.5 M (table tab:outcomes_dust) | 3.53 M |
+| central proper time at which the central lapse leaves the lapse bound by 1e-2 | tau_c about 3.5 M (main.tex lines 926, 943) | 3.53 M |
 | first apparent horizon | not given in text | 16.39 M |
 | M_AH/M at formation; largest deviation 16-60 M; at 60 M | <~ 1e-3 (fiducial, 60 M) | 1.0004; 1.34e-3; 0.9987 |
 | same with the published lattice mass rule (`runs/os/nocap_v4`) | | 1.0114; 1.19e-2; 1.0099 (the particles carry 1.18 percent more mass than the initial metric) |
@@ -104,7 +104,8 @@ Evidence.
 
 Verdict: PASS for the lattice at 9328 particles with consistent masses: the error at
 formation (3.5e-4) and its largest value to 60 M (1.3e-3) are of the order of the
-paper's 1e-3 at 100 times fewer particles [VERIFIED, run files]. The random samples at
+paper's 1e-3 at 107 times fewer particles (the paper's fiducial lattice: n_lat = 124,
+998,592 particles, main.tex line 917) [VERIFIED, run files]. The random samples at
 this particle number reach 0.3 to 0.5 percent at 60 M, larger than the paper's 2e-3 at
 1.25e5 particles; consistent with the paper's trend in N (main.tex 1484) but the trend
 is not measured here [JUDGEMENT]. Open: a particle-number sequence with five seeds as in
@@ -123,7 +124,8 @@ paper: that statement is about the dust collapse (main.tex 945, 1371-1373).
 
 Evidence: `docs/TESTLOG.md` lines 1149-1170, 1329-1345, 1527-1616; table
 tab:outcomes_prolate; run `runs/prolate/e09_v8` (10^4 Monte Carlo particles, finest
-cells M/16, four filter passes with compensation; the paper uses 2e6 and M/64).
+cells M/16, four filter passes with compensation; the paper uses 2e6 particles and
+cells down to M/64, main.tex lines 967 and 969).
 
 | Quantity | Paper | Earlier (`runs/prolate/e09_v8`, re-read today) |
 |---|---|---|
