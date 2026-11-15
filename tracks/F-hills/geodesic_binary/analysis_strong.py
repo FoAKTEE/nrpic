@@ -24,16 +24,24 @@ def load(path):
 
 
 def stats(d, meta, law, sense):
+    """Per beta: s.f.; capture (a member crossed r < 2.5 r_g inwards); point-mass near-collision
+    (a_min < 1e-4 a0, where the Newtonian pair force drives the members to relativistic speed
+    and the model is meaningless: reported, excluded from capture and speed statistics);
+    runs stopped at t_max; ejection speed of the escaping member (also when its companion was
+    captured)."""
     i, j = meta["laws"].index(law), meta["senses"].index(sense)
     sep = d["separated"][i, j] > 0
-    cap = d["plunged"][i, j] > 0
+    coll = d["a_min"][i, j] < 1e-4
+    cap = (d["plunged"][i, j] > 0) & ~coll
+    tmax = d["status"][i, j] == 2
     v = d["vinf"][i, j] * C_KMS
-    clean = sep & ~cap                      # separated with both members escaping capture
-    vm = np.array([v[b][clean[b]].mean() if clean[b].any() else np.nan for b in range(sep.shape[0])])
-    vx = np.array([v[b][clean[b]].max() if clean[b].any() else np.nan for b in range(sep.shape[0])])
-    epsmax = np.maximum(d["eps1"][i, j], d["eps2"][i, j])
-    em = np.array([epsmax[b][clean[b]].mean() if clean[b].any() else np.nan for b in range(sep.shape[0])])
-    return dict(sf=sep.mean(-1), cap=cap.mean(-1), v_mean=vm, v_max=vx, eps_ej_mean=em,
+    ej = sep & ~coll & (v > 0)
+    nb = sep.shape[0]
+    vm = np.array([v[b][ej[b]].mean() if ej[b].any() else np.nan for b in range(nb)])
+    vx = np.array([v[b][ej[b]].max() if ej[b].any() else np.nan for b in range(nb)])
+    vmed = np.array([np.median(v[b][ej[b]]) if ej[b].any() else np.nan for b in range(nb)])
+    return dict(sf=sep.mean(-1), cap=cap.mean(-1), coll=coll.mean(-1), tmax=tmax.mean(-1),
+                v_mean=vm, v_max=vx, v_med=vmed,
                 alpha_med=np.median(d["alpha_all"][i, j], -1), alpha_max=d["alpha_all"][i, j].max(-1),
                 bad=((d["status"][i, j] >= 2) & (d["status"][i, j] != 5)).sum(-1))
 
@@ -67,6 +75,7 @@ def main(s1, s2, outdir):
         c = S[f"{sn}_hrna"]["cap"]
         chk[f"Q3_{sn}_capture_frac_beta25"] = float(c[-1])
         chk[f"Q3_{sn}_first_beta_with_capture"] = float(betas[np.argmax(c > 0)]) if (c > 0).any() else None
+        chk[f"Q3_{sn}_capture_frac_beta22.5"] = float(c[np.argmin(np.abs(betas - 22.5))])
     for sn in ("pro", "retro"):
         chk[f"Q4_{sn}_alpha_all_max_beta15"] = float(S[f"{sn}_hrna"]["alpha_max"][np.argmin(np.abs(betas - 15))])
         chk[f"Q4_{sn}_alpha_all_median_beta15"] = float(S[f"{sn}_hrna"]["alpha_med"][np.argmin(np.abs(betas - 15))])
@@ -76,13 +85,15 @@ def main(s1, s2, outdir):
         chk[f"{nm}_runs_a_min_below_1e-4_a0"] = int((dd["a_min"] < 1e-4).sum())
         chk[f"{nm}_runs_total"] = int(dd["status"].size)
     table = []
-    for b in (1, 2, 3, 5, 10, 15, 20, 25):
+    for b in (1, 2, 3, 5, 10, 15, 18, 20, 22, 24, 25):
         k = int(np.argmin(np.abs(betas - b)))
         row = dict(beta=float(betas[k]), rp=float(rp[k]))
         for key in S:
             row[f"sf_{key}"] = float(S[key]["sf"][k])
             row[f"vmean_kms_{key}"] = (float(S[key]["v_mean"][k]) if np.isfinite(S[key]["v_mean"][k]) else None)
             row[f"cap_{key}"] = float(S[key]["cap"][k])
+            row[f"tmax_{key}"] = float(S[key]["tmax"][k])
+            row[f"coll_{key}"] = float(S[key]["coll"][k])
         table.append(row)
     out = dict(checks=chk, table=table, r_t=rt, E0=E0,
                series={k: {kk: np.asarray(vv).tolist() for kk, vv in v.items()} for k, v in S.items()},

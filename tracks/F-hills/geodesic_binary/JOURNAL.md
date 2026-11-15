@@ -269,3 +269,38 @@ the point masses (a_min = 4e-9 to 1e-7 a0) close to pericentre, where the Newton
 drives the members to near-light speed and the model is meaningless; 2 runs lost both members
 (the same pathology); 6 runs (a = -0.9, retrograde, beta = 15, separated) reached t_max. These
 14 runs are reported, not removed; they change no s.f. above by more than 0.005.
+
+### S2 outcome (run F-hills-20261115-134255-a3c22f8; 48000 encounters, 859 s on 6 cores)
+
+| beta | r_p/r_g | s.f. pro N / H | s.f. retro N / H | <v_inf> pro N / H [km/s] | <v_inf> retro N / H | captured H pro / retro |
+|---|---|---|---|---|---|---|
+| 10.5 | 9.65 | 0.988 / 0.998 | 0.585 / 0.923 | 3558 / 3643 | 2346 / 2512 | 0 / 0 |
+| 15 | 6.75 | 0.980 / 0.998 | 0.618 / 0.983 | 3452 / 3571 | 2466 / 2483 | 0 / 0 |
+| 18 | 5.63 | 0.973 / 0.995 | 0.635 / 0.993 | 3373 / 3406 | 2504 / 2478 | 0 / 0 |
+| 20 | 5.06 | 0.965 / 0.998 | 0.640 / 0.998 | 3312 / 3393 | 2540 / 2464 | 0.158 / 0 |
+| 22 | 4.60 | 0.958 / 1.000 | 0.645 / 0.998 | 3272 / 3380 | 2567 / 1384 | 0.775 / 0.688 |
+| 24 | 4.22 | 0.950 / 1.000 | 0.653 / 1.000 | 3245 / 3367 | 2581 / 479 | 0.930 / 0.980 |
+| 25 | 4.05 | 0.948 / 1.000 | 0.655 / 1.000 | 3233 / 3308 | 2590 / - | 0.975 / 1.000 |
+
+(N Newton, H HRNA; <v_inf> over separated encounters whose escaping member is unbound, also
+when the companion was captured; "captured": a member crossed r < 2.5 r_g inwards, point-mass
+near-collisions excluded.)
+- Q1 holds: HRNA retrograde s.f. >= 0.9925 for beta >= 18 (0.9975 at beta = 20); the Newtonian
+  retrograde s.f. stays <= 0.655 up to beta = 25.
+- Q2 FAILED: the mean ejection speed of HRNA is within +0.4 to +3 percent of Newton (prograde)
+  for beta = 15-25 and equal or lower (retrograde, -3 percent at beta = 20); the predicted
+  > 20 percent excess does not exist in the mean. At beta >= 22 the retrograde mean drops
+  (1384, 479 km/s) because most encounters now lose a member to the hole and the escaping one
+  is barely unbound.
+- Q3 FAILED in magnitude: captures start where predicted (beta = 20 prograde, 21 retrograde)
+  but reach 0.78 / 0.69 at beta = 22 and 0.975 / 1.0 at beta = 25 (predicted < 0.3). Below
+  r_p ~ 5 r_g the Hills outcome "one member bound, one ejected" is replaced by "one member
+  captured by the hole, the other ejected or bound".
+- Q4 partly: alpha_all at beta = 15 reaches 0.47 (median 0.34) for prograde, only 0.15 (median
+  0.13) for retrograde encounters. Prograde HRNA results at beta >~ 10 are outside the
+  self-consistency regime a/R << 1 of 2404 Eq. (9).
+- Abnormal endings: 97 HRNA retrograde runs at beta = 21-24 reached t_max; all 97 are separated
+  pairs with one bound and one unbound member that left in very different directions after
+  whirling near r_p, so the flat-space CM never passed 150 r_t (outcome and energies final).
+  18 runs lost both members; 4 stopped on step underflow and 74 of 48000 have a_min < 1e-4 a0
+  (point-mass near-collisions, excluded from captures and speeds, kept in the s.f.).
