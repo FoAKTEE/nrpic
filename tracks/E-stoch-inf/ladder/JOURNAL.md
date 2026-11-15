@@ -205,3 +205,21 @@ and L64m to t = 4.5): the odd part of H at N = 64 is 2^5.3 to 2^6 times smaller 
 every dump of the entry (after interpolation to common times, since the dump times differ
 by up to one step between resolutions); the even part (box mean removed) agrees with
 N = 32 within 10 percent where it dominates the noise of the decomposition.
+
+## Entry 3, 2026-11-15 17:42Z: the inputs checked against Track E's own reference
+
+Prediction (written before the run): the mode files of core's `make_case.py` agree with
+Track E's E-pre-1 reference `spec/ref/ms_reference.py` (own background and Bunch-Davies
+integration, sympy potential) within 1e-8 at N* for shells started at the same point, and
+phi0, pi0 of the input agree with that background within 1e-12.
+
+Outcome, run E-20261115-174008-7aee5ff: R_k and dR_k/dtau within 7.2e-10 (complex values,
+`modes_n64.txt`, from N0, six shells up to |n|^2 = 64) and 4.2e-11 (`modes_n4096.txt`, from
+k/aH = 100, seven shells up to 4096); moduli within 2e-11; H*/Mpl, phi*, pi* in code units
+equal to 1e-15. Confirmed. So the inputs are those of the specification, and the
+comparisons of A2-A3 (which start the reference from the file values) and of the spectrum
+against the slow-roll formula test the evolution, not the input.
+
+Also checked (dry tests, not results): the reference with t_eval at the dump times gives the
+same N = 32 numbers as with dense output to the last digit printed; the 256^3 reference
+(548958 modes, 3414 shells) takes 0.7 s, the amplitudes 4.6 s.
