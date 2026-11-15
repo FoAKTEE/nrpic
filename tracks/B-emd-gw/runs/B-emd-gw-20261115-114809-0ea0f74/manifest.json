@@ -1,0 +1,33 @@
+{
+ "run_id": "B-emd-gw-20261115-114809-0ea0f74",
+ "name": "awa_gw_A0.01_N100_T20",
+ "set": "awa_gw",
+ "command": "/data/haiyangw/nrpic/.work/build_cpu_c1/src/athena -i /data/haiyangw/nrpic/wt/B-emd-gw/tracks/B-emd-gw/periodic_z4c/inputs/gauge.athinput -d /data/haiyangw/nrpic/scratch/B-emd-gw/B-emd-gw-20261115-114809-0ea0f74 mesh/nx1=100 meshblock/nx1=100 mesh/x1max=0.9999937498535093 mesh/x2max=0.039999749994140375 mesh/x3max=0.039999749994140375 z4c/lapse_oplog=0.0 z4c/lapse_harmonic=1.0 z4c/lapse_volume=0.0 z4c/lapse_kdriver=0.0 z4c/lapse_advect=0.0 z4c/shift_Gamma=0.0 z4c/shift_alpha2Gamma=0.0 z4c/shift_H=0.0 z4c/shift_eta=0.0 z4c/shift_advect=0.0 problem/id_file=/data/haiyangw/nrpic/scratch/B-emd-gw/ids/gaugewave_N100_A0.01.bin time/tlim=20.0 output1/slice_x2=0.01499990624780264 output1/slice_x3=0.01499990624780264 output2/slice_x2=0.01499990624780264 output2/slice_x3=0.01499990624780264 output1/dt=0.0625 output2/dt=0.0625",
+ "cwd": "/data/haiyangw/nrpic/scratch/B-emd-gw/B-emd-gw-20261115-114809-0ea0f74",
+ "commit": "0ea0f74753c6284d536c3924eba1da3614ce22d5",
+ "worktree_dirty": true,
+ "inputs": [
+  {
+   "path": "tracks/B-emd-gw/periodic_z4c/inputs/gauge.athinput",
+   "sha256": "d77b7fe418c04e86369f0d2a288690d55ad2cf5653cf413fbe7d80bfde025586"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/.work/build_cpu_c1/src/athena",
+   "sha256": "91f2e2c23a6301047ed4fe06ffe153d100fe6c121d0b6632087637b525547403"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/scratch/B-emd-gw/ids/gaugewave_N100_A0.01.bin",
+   "sha256": "7d9a24935bf47d532edb85fea38b78b18459610cfe2bcb6bd1f1bc48cdfe385a"
+  }
+ ],
+ "output_dir": "/data/haiyangw/nrpic/scratch/B-emd-gw/B-emd-gw-20261115-114809-0ea0f74",
+ "purpose": "Apples-with-Apples gauge wave A = 0.01, harmonic slicing, zero shift, in proper-length coordinates (box 0.9999937498535093)",
+ "kind": "production",
+ "cores": 1,
+ "card_hours": 0.0,
+ "env": {
+  "OMP_NUM_THREADS": "1"
+ },
+ "started_utc": "2026-11-15T11:48:09+00:00",
+ "status": "running"
+}

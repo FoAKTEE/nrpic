@@ -1,0 +1,61 @@
+[
+ {
+  "name": "lw_x_prod_A1e-5_N128",
+  "set": "lw_x_roundoff",
+  "input": "inputs/lw_x.athinput",
+  "overrides": [
+   "mesh/nx1=128",
+   "meshblock/nx1=128",
+   "mesh/x1max=1.0",
+   "mesh/x2max=0.03125",
+   "mesh/x3max=0.03125",
+   "output1/slice_x2=0.01171875",
+   "output1/slice_x3=0.01171875",
+   "problem/amp=1e-05"
+  ],
+  "purpose": "TT wave along x at 128 cells: test whether the departure from the Fourier prediction scales as 1/A (roundoff of 1+h); conformal-time lapse, under which the second-order homogeneous drift leaves the coordinate light speed fixed",
+  "kind": "scouting"
+ },
+ {
+  "name": "lw_x_refconf_A1e-6_N128",
+  "set": "lw_x_roundoff",
+  "input": "inputs/lw_x.athinput",
+  "overrides": [
+   "mesh/nx1=128",
+   "meshblock/nx1=128",
+   "mesh/x1max=1.0",
+   "mesh/x2max=0.03125",
+   "mesh/x3max=0.03125",
+   "output1/slice_x2=0.01171875",
+   "output1/slice_x3=0.01171875",
+   "problem/amp=1e-06",
+   "mesh/nghost=3",
+   "time/cfl_number=0.3",
+   "z4c/diss=1.0",
+   "z4c/damp_kappa1=0.0"
+  ],
+  "purpose": "TT wave along x at 128 cells: test whether the departure from the Fourier prediction scales as 1/A (roundoff of 1+h); conformal-time lapse, under which the second-order homogeneous drift leaves the coordinate light speed fixed",
+  "kind": "scouting"
+ },
+ {
+  "name": "lw_x_refconf_A1e-5_N128",
+  "set": "lw_x_roundoff",
+  "input": "inputs/lw_x.athinput",
+  "overrides": [
+   "mesh/nx1=128",
+   "meshblock/nx1=128",
+   "mesh/x1max=1.0",
+   "mesh/x2max=0.03125",
+   "mesh/x3max=0.03125",
+   "output1/slice_x2=0.01171875",
+   "output1/slice_x3=0.01171875",
+   "problem/amp=1e-05",
+   "mesh/nghost=3",
+   "time/cfl_number=0.3",
+   "z4c/diss=1.0",
+   "z4c/damp_kappa1=0.0"
+  ],
+  "purpose": "TT wave along x at 128 cells: test whether the departure from the Fourier prediction scales as 1/A (roundoff of 1+h); conformal-time lapse, under which the second-order homogeneous drift leaves the coordinate light speed fixed",
+  "kind": "scouting"
+ }
+]

@@ -145,3 +145,54 @@ harmonic slicing stays smooth (f = 1 satisfies the shock-avoidance condition
 lapses (f = alpha/3, chi^(-1/2)/3) not at all, so these may steepen and form gauge
 shocks (a jump in the lapse, a crash or grid-scale noise). The time of failure, if
 any, is recorded.
+
+## Outcome P2 (oblique data), 2026-11-15 11:50 UTC
+
+Runs B-emd-gw-20261115-113216-0ea0f74 (k = (1,1,1)), -113217- (k = (1,0,0)),
+`analysis/ana_check3d.py`, `figs/lw3d_check.png`, `tables/lw3d_check.json`.
+Prediction confirmed, also in value: k = (1,1,1) gives M-norm2 = 1.558e-9 (predicted
+from the generator's e_ij: 1.559e-9) and H-norm2 = 1.385e-9 (predicted 1.385e-9; the
+Hamiltonian constraint is violated as well, since k.e.k = -4/3 != 0), largest |H| =
+5.24e-5 (predicted 5.26e-5); k = (1,0,0) gives 1.2e-22 and 3.9e-22. The oblique data of
+`z4c_linear_wave` are not a gravitational wave.
+
+## Outcome P1 (TT wave along x), first pass, 2026-11-15 12:00 UTC
+
+Runs: lw_x_prod N = 16..128 B-emd-gw-20261115-113219/113220/113221/113222-0ea0f74,
+lw_x_ref B-emd-gw-20261115-113223/113227/113231/113232-0ea0f74, lw_x_nodiss
+B-emd-gw-20261115-113236/113254-0ea0f74; `analysis/ana_lw.py`, `tables/lw_x.md`,
+`figs/lw_x_history.png`, `figs/lw_x_convergence.png`.
+- Confirmed for N = 16, 32, 64 in all sets: amplitude and phase errors at t = 10 equal
+  the Fourier-symbol prediction to better than 1 percent (prod 16: -1.718e-4 / -2.494e-4
+  rad against -1.718e-4 / -2.493e-4; ref 32: -2.840e-4 / -5.233e-4 against the same
+  digits), except prod N = 64 phase (-2.63e-7 against -2.40e-7, 10 percent).
+- Measurement artefact found and removed: the table header prints the time with seven
+  digits; when the outputs do not fall on steps (ref set) this puts a sawtooth of up to
+  3e-6 rad on the phase after t = 1 (visible in the first version of the history
+  figure). The analysis now takes the time as cycle * cfl / N.
+- Refuted in part: at N = 128 the errors leave the prediction. prod: phase -8.6e-8
+  against -1.27e-8, amplitude +3.7e-9 against -2.1e-10; ref: phase -1.18e-6 against
+  -2.05e-6, linear in time (a frequency offset of +1.4e-8 relative), while ref N = 64 is
+  within 0.6 percent. The departure grows about fourfold from N = 64 to 128.
+- Refuted: the fields that vanish at first order reach 2e-10 (alpha - 1, prod) and
+  1e-9 (alpha - 1, ref, 1+log) at t = 10, not < 1e-12. They are independent of N and grow
+  as t^2: the box mean of Khat grows as pi^2 A^2 t (9.8e-12 at t = 1, 9.9e-11 at t = 10;
+  pi^2 A^2 = 9.87e-12), the source alpha At_ij At^ij of d_t Khat averaged over the box
+  (the energy of the wave acting on the homogeneous mode of a closed box; the data are
+  constraint-satisfying only at first order), and alpha - 1 follows from the slicing:
+  -(1/6) pi^2 A^2 t^2 = -1.6e-10 for the conformal-time lapse (measured -1.6e-10 to
+  -1.8e-10), -pi^2 A^2 t^2 = -9.9e-10 for 1+log (measured -1.0e-9). My estimate "A^2"
+  had left out pi^2 t^2.
+
+### P1b. Prediction for the follow-up set lw_x_roundoff (written before the runs)
+
+Hypothesis: the departure at N = 128 comes from the rounding of 1 + h in double
+precision (absolute 1.1e-16, so relative 1e-10 in h at A = 1e-6, amplified by 1/dx^2 in
+the second derivatives); it should scale as N^2/A. The second-order homogeneous drift
+does not shift the phase under the conformal-time lapse (alpha chi^(1/2) is constant,
+so the coordinate light speed is unchanged), so these runs use that lapse.
+Prediction: (a) lw_x_refconf_A1e-6_N128 (ref numerics, conformal lapse) reproduces the
+ref departure: phase -1.2e-6 +- 0.2e-6 (the gauge is not the cause); (b) at A = 1e-5 the
+departure falls tenfold: refconf phase within 5 percent of -2.05e-6, prod phase between
+-2e-8 and -0.6e-8 (prediction -1.27e-8). Refuted if the A = 1e-5 departures stay at the
+A = 1e-6 level.

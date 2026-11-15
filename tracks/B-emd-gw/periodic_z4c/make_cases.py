@@ -120,6 +120,21 @@ def main():
                               "amplitude error of RK4 alone",
                       kind="scouting"))
     sets["lw_x_nodiss"] = c
+    # follow-up: is the floor at N = 128 roundoff of 1 + h (deviation ~ 1/A)?
+    c = []
+    refnum = ["mesh/nghost=3", "time/cfl_number=0.3", "z4c/diss=1.0", "z4c/damp_kappa1=0.0"]
+    for nm, extra, A in (("prod_A1e-5", [], 1e-5), ("refconf_A1e-6", refnum, 1e-6),
+                         ("refconf_A1e-5", refnum, 1e-5)):
+        o, s = thin(128)
+        c.append(dict(name=f"lw_x_{nm}_N128", set="lw_x_roundoff", input="inputs/lw_x.athinput",
+                      overrides=o + [f"output1/slice_x2={s!r}", f"output1/slice_x3={s!r}",
+                                     f"problem/amp={A!r}"] + extra,
+                      purpose="TT wave along x at 128 cells: test whether the departure "
+                              "from the Fourier prediction scales as 1/A (roundoff of 1+h); "
+                              "conformal-time lapse, under which the second-order "
+                              "homogeneous drift leaves the coordinate light speed fixed",
+                      kind="scouting"))
+    sets["lw_x_roundoff"] = c
 
     # ---- 3D box
     period3 = 1.0/np.sqrt(3.0)

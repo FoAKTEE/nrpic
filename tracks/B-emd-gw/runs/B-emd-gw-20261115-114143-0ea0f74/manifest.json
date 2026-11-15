@@ -1,0 +1,33 @@
+{
+ "run_id": "B-emd-gw-20261115-114143-0ea0f74",
+ "name": "gauge_nl_kdriver_N128",
+ "set": "gauge_nl",
+ "command": "/data/haiyangw/nrpic/.work/build_cpu_c1/src/athena -i /data/haiyangw/nrpic/wt/B-emd-gw/tracks/B-emd-gw/periodic_z4c/inputs/gauge.athinput -d /data/haiyangw/nrpic/scratch/B-emd-gw/B-emd-gw-20261115-114143-0ea0f74 mesh/nx1=128 meshblock/nx1=128 mesh/x1max=1.0 mesh/x2max=0.03125 mesh/x3max=0.03125 z4c/lapse_oplog=0.0 z4c/lapse_harmonic=0.3333333333333333 z4c/lapse_volume=0.0 z4c/lapse_kdriver=1.0 z4c/lapse_advect=0.0 z4c/shift_Gamma=0.0 z4c/shift_alpha2Gamma=0.0 z4c/shift_H=0.0 z4c/shift_eta=0.0 z4c/shift_advect=0.0 problem/id_file=/data/haiyangw/nrpic/scratch/B-emd-gw/ids/puregauge_N128_k1.5.bin output1/slice_x2=0.01171875 output1/slice_x3=0.01171875 output2/slice_x2=0.01171875 output2/slice_x3=0.01171875",
+ "cwd": "/data/haiyangw/nrpic/scratch/B-emd-gw/B-emd-gw-20261115-114143-0ea0f74",
+ "commit": "0ea0f74753c6284d536c3924eba1da3614ce22d5",
+ "worktree_dirty": true,
+ "inputs": [
+  {
+   "path": "tracks/B-emd-gw/periodic_z4c/inputs/gauge.athinput",
+   "sha256": "d77b7fe418c04e86369f0d2a288690d55ad2cf5653cf413fbe7d80bfde025586"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/.work/build_cpu_c1/src/athena",
+   "sha256": "91f2e2c23a6301047ed4fe06ffe153d100fe6c121d0b6632087637b525547403"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/scratch/B-emd-gw/ids/puregauge_N128_k1.5.bin",
+   "sha256": "ae78a2fceac7bf665b40622d58779938cd0c75e1c18c780cef96c68c39779f4e"
+  }
+ ],
+ "output_dir": "/data/haiyangw/nrpic/scratch/B-emd-gw/B-emd-gw-20261115-114143-0ea0f74",
+ "purpose": "pure-gauge data K_xx = 1.5 sin(2 pi x), gauge kdriver: nonlinear behaviour (steepening, gauge shocks, failure time)",
+ "kind": "scouting",
+ "cores": 1,
+ "card_hours": 0.0,
+ "env": {
+  "OMP_NUM_THREADS": "1"
+ },
+ "started_utc": "2026-11-15T11:41:43+00:00",
+ "status": "running"
+}
