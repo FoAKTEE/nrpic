@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 # All card runs of the random-number work package in one allocation (short job):
+#   (from the root of the worktree)
 #   sbatch -p preempt --gres=gpu:1 -c 4 -t 00:15:00 -J core-rng -o <log> \
 #          tracks/core/analysis/rng/gpu_job.sh <card exe> <baseline card exe> \
 #          <key file> <processor D1 directory> <processor D2 directory>
@@ -7,7 +8,10 @@
 # time inside the allocation.
 set -uo pipefail
 EXE=$1; BASE=$2; KEYS=$3; D1REF=$4; D2REF=$5
-REPO=$(cd "$(dirname "${BASH_SOURCE[0]}")/../../../.." && pwd)
+# sbatch runs a copy of this script from its spool directory: the repository is the
+# directory the job was submitted from
+REPO=${SLURM_SUBMIT_DIR:?submit with sbatch from the root of the worktree}
+[[ -f $REPO/tracks/core/analysis/rng/runreg.py ]] || { echo "not a worktree: $REPO"; exit 1; }
 R=tracks/core/analysis/rng
 cd "$REPO"
 nvidia-smi -L

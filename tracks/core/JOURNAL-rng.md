@@ -305,3 +305,31 @@ within 3.5 standard errors of zero (standard error of the correlation 1e-6). A r
 correlation of -1e-5 between words 0 and 1 would show as -10 standard errors and would
 refute the independence of the four words, with consequences for Uniform4, the normal
 pair and the direction.
+
+## 2026-11-15 12:30 UTC  session core-rng  outcomes; a card job lost to my own script
+
+- Kick against the Python twin (prediction of 12:15): confirmed. Run
+  core-20261115-121609-fb0491a (final source, processor): in flat space, 10000 particles,
+  800 kicks, every momentum component equals the initial value plus the sum of the twin's
+  deviates to 1.7e-16 (25287 of 30000 values with identical bits; the rest differ in the
+  last place, as expected if the compiler fuses the product and the sum of the kick). The
+  accumulated kick over sigma sqrt(t) has mean 0.0032 +- 0.0058 and variance
+  1.0082 +- 0.0082. The same run repeats the first demonstration on the final source:
+  0 of 10000 particles differ between 1 and 64 MeshBlocks and after the restart (both
+  kick modes), all 10000 differ in each of the three controls.
+- Regression on processors: run core-20261115-120532-5bdb22c, five existing set-ups, 36
+  output files (5, 3, 14, 4, 10), all byte-identical between the executable built from
+  the unmodified source and the one of commit 34da199; the baseline run twice is
+  identical to itself in every case.
+- Cell check on processors: run core-20261115-120535-5bdb22c, all seven runs equal to
+  the Python twin (prediction of 12:04 confirmed).
+- Logarithm, rerun with the restated bound: run core-20261115-120841-564b404, passes
+  (largest error 3.004e-14).
+- Cost of the Python twin: run core-20261115-121342-8f4222b, 0.55 microseconds per
+  generator call, 0.78 per normal pair, 0.74 per direction (2^20 keys at a time).
+- Card job 4395 (all card runs in one allocation) started at 12:22 UTC, far earlier than
+  the queue estimate, and failed within one second: `gpu_job.sh` located the repository
+  from its own path, and sbatch runs a copy of the script from its spool directory. No
+  run was started, one second of card time. Corrected (the repository is the directory
+  the job is submitted from) and resubmitted as job 4414, which is again behind 16 jobs
+  of other owners.
