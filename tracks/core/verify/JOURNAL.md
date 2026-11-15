@@ -368,3 +368,28 @@ Prediction: 0.69 STABLE (with the same late drift), 0.67 COLLAPSE or UNDECIDED (
 growth time near the threshold may exceed 300 M); if 0.67 is STABLE by the rule, the
 threshold at this resolution and noise lies below y_c* - 0.01, i.e. the cluster is more
 stable than the turning point says (which the collapse of 0.605 bounds from below).
+
+## 15:56Z Not predicted: y_c = 0.66 and 0.64 expand instead of collapsing; control run
+
+Partial records (to 150 M) of `st_yc0p660` and `st_yc0p640`: the central lapse RISES,
+0.673 -> 0.723 (0.66) and 0.657 -> 0.721 (0.64), means over 25 M windows climbing from
+75 M on; no horizon. The models leave their equilibria outward, towards the stable
+member of equal binding fraction (migration, paper section "Cluster Migration"):
+`st_cluster.migration_target` gives alpha_c = 0.7034 for y_c = 0.66 and 0.7205 for 0.64.
+My prediction (0.64 collapses between 150 and 300 M; 0.66 collapses or is undecided) is
+REFUTED in its collapse part. The fate rule fixed at 15:30Z has no class for migration:
+it will call these runs UNDECIDED (late mean lapse more than 0.03 from alpha_c, no
+collapse). I keep the rule and its verdicts, and report the departure and its target
+separately as a reading [JUDGEMENT, written after seeing the runs]: a model that leaves
+its equilibrium monotonically, inward or outward, is on the unstable side.
+Earlier, on the finer AMR mesh (cells M/8 early, M/16 at collapse), the kicked 0.605
+model collapsed (horizon 191 M, `runs/st/yc0605_v5`). A difference of mesh could change
+the direction of departure (collapse or migration) without moving the threshold.
+Control, submitted now: y_c = 0.605, same protocol and mesh as round 1 (finest M/4), to
+250 M (0.24 card-hours). Prediction: it leaves its equilibrium within 150 M; collapse
+(as on the AMR mesh) or migration towards alpha_c = 0.7519 (its equal-binding member,
+y_c = 0.7561). If it migrates, the direction of departure at y_c < y_c* depends on the
+mesh at M/4 vs M/8-M/16 [to be stated as such, not as a property of the cluster]; if it
+collapses, the 0.64 and 0.66 runs migrate because they are close to y_c*.
+Card time after this: about 1.2 (round 1) + 0.25 (prolate) + 0.6 (round 2) + 0.24
+(control) = 2.3 of the 2.5 allowed; nothing further will be submitted.

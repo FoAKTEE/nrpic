@@ -1,4 +1,77 @@
-# verify: verification ladder, regression suite, release proposal (core, wave 1)
+# verify: verification ladder, regression suite, release proposal, G2 figures (core)
+
+Work package "verify" of owner core. Wave 1 (below the line): C3 of brief section 9.3 as
+a re-verification of what exists, regression suite, tag proposal. Wave 2 (this section):
+ladder rows 3 and 4 on release core-v0.3, the open analysis of the initial data with
+extrinsic curvature (T2d, T3), the figures of the G2 stage check.
+
+## Wave 2 (2026-11-15)
+
+| Path | Content |
+|---|---|
+| `ladder2/make_ics.py` | initial data of the card runs (make_ic.py: prolate e = 0.9, b = 10 M; clusters of the monoenergetic sequence with the one-percent kick and the equilibrium table, protocol of `runs/st/yc0605_v5`), turning point of E_b/M_0, card job lists |
+| `ladder2/cards.py` | card runs registered by hand (`submit`, `finish`): Slurm job through `scripts/gpu_batch.sh` with the release card executable, manifest with inputs and sha256 |
+| `ladder2/cluster_fate.py` | fate of each cluster run by the rule fixed in JOURNAL.md (15:30Z), mass radii, binding-energy curve; figure `figs/cluster_threshold` |
+| `ladder2/prolate_compare.py` | prolate collapse at finest cells M/16 (`runs/prolate/e09_v8`) against M/8 (wave 2): horizon, curvature, constraint; figures `figs/prolate_resolution`, `figs/prolate_mosaic` (slice mosaic with zoom boxes, check C11) |
+| `idcheck/t2d_t3.py` | T2d and T3 of `JOURNAL-id.md` from the runs of `analysis/id`, robust to runs that lost their particles; figures `figs/id_t2d_interior`, `figs/id_t3_bound` |
+| `oblate/oblate_reference.py` | potential of a homogeneous oblate spheroid (closed form, checks), the reference an oblate component of `nrpic_cf` needs; figure `figs/oblate_reference` |
+| `figscripts/convergence3.py` | three-way convergence of the coupled module (particle number, mesh, gauge and boundary) from existing runs; figure `figs/convergence_three_way` (check C9) |
+| `figscripts/schem_ladder.py`, `ladder_status.json` | schematic of the ladder with verdicts (check C8); `figs/schem_ladder` |
+| `figscripts/schem_architecture.py` | architecture (exists / wave 1 / to be built) and gate timeline (check C13); `figs/schem_architecture` |
+| `figscripts/paperfig.py` | copy of `harness/style/paperfig.py` (schematic style) |
+
+WAVE2_RESULTS_PLACEHOLDER
+
+### How to rerun (wave 2)
+
+Hand registration (see Requests, item 1): `tracks/core/tools/run_registered.py` for
+processor runs, `ladder2/cards.py` for card runs. From the worktree:
+
+```
+python3 tracks/core/tools/run_registered.py --purpose "..." -- python3 $PWD/tracks/core/verify/ladder2/make_ics.py --out .
+python3 tracks/core/verify/ladder2/cards.py submit --list <IC run dir>/job_a.list --purpose "..."
+python3 tracks/core/verify/ladder2/cards.py finish <run_id>          # after the job ends
+python3 tracks/core/tools/run_registered.py --purpose "..." -- python3 $PWD/tracks/core/verify/ladder2/cluster_fate.py <run dir>/st_yc0p700 ... --earlier
+python3 tracks/core/tools/run_registered.py --purpose "..." -- python3 $PWD/tracks/core/verify/ladder2/prolate_compare.py --m16 /data/haiyangw/nrpic/runs/prolate/e09_v8 --m8 <run dir>/prolate_m8
+python3 tracks/core/tools/run_registered.py --purpose "..." -- python3 $PWD/tracks/core/verify/idcheck/t2d_t3.py
+python3 tracks/core/tools/run_registered.py --purpose "..." -- python3 $PWD/tracks/core/verify/oblate/oblate_reference.py
+python3 tracks/core/tools/run_registered.py --purpose "..." -- python3 $PWD/tracks/core/verify/figscripts/convergence3.py --out $PWD/tracks/core/verify/figs/convergence_three_way
+python3 tracks/core/verify/figscripts/schem_ladder.py; python3 tracks/core/verify/figscripts/schem_architecture.py
+```
+
+### Requests (wave 2)
+
+To orch:
+1. `harness/bin/nrpic-run submit` stops with `KeyError: 'outputs'` in `is_live`
+   (`harness/bin/nrpic-run` line 163) on the hand-written manifests of wave 1 (they carry
+   `output_directory` and `state`, not `outputs.dir` and `status`), so no core run can be
+   registered through it. Every run of this package is registered by hand
+   (`tracks/core/tools/run_registered.py`, `ladder2/cards.py`). Proposal: skip, or read
+   with `.get`, manifests without the harness schema in `budget_state`.
+
+To core (lead):
+2. Oblate collapse (ladder row 3) needs source work: an oblate `spheroid` component in
+   `athenak/src/pgen/nrpic/nrpic_cf.cpp` (now refused for a > b, line 485) and an oblate
+   sampler in `python/nrpic/spheroid.py`. The potential is in `oblate/oblate_reference.py`
+   (closed form with atan in place of atanh; checked against quadrature to 4e-12, run
+   core-20261115-154359-d74357f); the sampler's closed-form cumulative mass carries over
+   unchanged (psibar is quadratic inside). Then one card run as `e09_v8` with a > b.
+3. Apply the fix of `idcheck/t2d_t3.py` to `tracks/core/analysis/id/test2_evolution.py`
+   (cut tracked records at the first removal; skip dumps without ball particles), or
+   point `--prefix t3` users to the verify script.
+4. Bound ball at dx = M/8 with the conformal-time lapse blows up when the lapse front
+   reaches the centre (largest |H| at the front 0.135, 6.4, 184 -> inf at dx = 1/2,
+   1/4, 1/8 M): add to OPEN.md item 7 (lapse front) that the front steepens without
+   bound with resolution; OPEN.md item 11 (status 0 after NaN) hit again.
+5. STAGE package: the figures for checks C8, C9, C11, C13 are in `figs/`
+   (`schem_ladder`, `convergence_three_way`, `prolate_mosaic`, `schem_architecture`);
+   CHECKLIST.md and EVIDENCE.md are the lead's to update.
+
+
+---
+
+# Wave 1
+
 
 Work package "verify" of owner core: C3 of brief section 9.3 as a re-verification of
 what exists, and the proposal for the tags core-v0.1 and core-v0.2.
