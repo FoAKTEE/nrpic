@@ -262,3 +262,28 @@ chosen as before. Cost about 0.12 card-hours per gauge.
 - R4 SR-2: |alpha_c/a - 1| exceeds 0.1 first between t = 6.0 and 7.0 (6.5 and 6.6 at
   dx = M and M/2) and the central lapse peaks at 1.8-1.9 near t = 12: the pulse is a
   property of the gauge.
+
+## 2026-11-15, entry 5: state at the end of the session
+
+- Resolution summary of dx = M and M/2: run A-emd-pbh-20261115-164733-b2aaf0c
+  (`figs/fig_resolution_summary.png`, looked at): the SR-2 lapse pulse is the same curve at
+  both resolutions; the SR-1 constraint violation grows exponentially after t ~ 20 with
+  about the same rate at both resolutions, from a level 5 times lower on the finer mesh.
+  Apparent orders between dx = M and M/2 (largest core |eps| at tau = 16.9): 3.2 (SR-1),
+  1.5 (SR-2); turnaround-time error: 6.8 (SR-1), 4.2 (SR-2). Orders above 2 say that dx = M
+  is outside the asymptotic range, so no order is claimed from this pair.
+- The finder branch of `compare.py` (exact horizon mass of the same slice from the tracked
+  particles' proper times) was exercised on a synthetic horizon file over the SR-2 dx = M
+  outputs (scratch/A-emd-pbh/tmp/fake_finder, not a result): it runs, and it returns no
+  exact horizon for a slice whose particles have not reached their trapping time, as it
+  should. It has not met a real horizon.
+- PENDING (queued, Slurm estimate several hours): dx = M/4 runs to t = 20,
+  A-emd-pbh-20261115-164539-0b18e84 (SR-1, job 4461) and -164541-0b18e84 (SR-2, job 4462),
+  prediction R in entry 4; close them with `runreg.py finish` and analyse them with
+  `after_m4.sh` (README). Their outcome is not in this journal.
+- NOT DONE: SR-1 restart segments (moot: unstable before t = 42); horizon-formation time
+  and horizon-mass error (no horizon in any run; Requests in README); repeat of SR-1 with
+  a new lapse condition (no `scratch/core/exe/core_gauge/READY` during the session; only
+  core_requests-b and core_scalar-2 were published, neither with a lapse option).
+- Card time: 0.28 card-hours used (0.104 + 0.149 + 0.028); the two pending runs ask at
+  most 2 x 0.25 by their wall limits (about 0.12 each expected).
