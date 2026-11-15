@@ -124,6 +124,18 @@ All binary files are written by one rank in native byte order. `<base>` is
 | `<base>.curv.hst` | text, every `curv_dt`: time, maximum of the absolute Kretschmann scalar over cells with lapse above the excision value and its position, maximum energy density and its position, slice file number |
 | `<base>.curv.NNNNN.bin` | `curv_slice = true`: 8 bytes `NRPCURV1`, float64 time, int64 number of records, records of 7 float64 (x, z, dx, I, E, alpha, sqrt(gamma)) for the cells cut by the plane y = `curv_plane_y` (the y of a record is the centre of the cell containing that plane) |
 | `rst/<base>.NNNNN.rst.prt` | particle restart file next to each mesh restart file: 8 bytes `NRPRST02`, int64 N, 7 float64 of module state, 4 int64 of counters, N records of 7 float64, N records of 3 int32 (grid ID, tag, species) |
+| `<base>.removed.bin` | with `<particles> removal_record = true`: 8 bytes `NRPREM01`, int64 20, then one record of 20 float64 per removed particle: time, tag, species, reason (1 left the mesh, 2 lapse below `alpha_exc`, 3 inside a horizon, 4 state not finite), x^i, u_i, rest mass, proper time, alpha, beta^i, W, E = alpha W - beta^i u_i, distance to the centre of the accretion diagnostics, pericentre passages. Reasons 2 to 4: state and metric at the start of the step of the removal; reason 1: state after the push, metric fields zero |
+| `<base>.acc.hst` | with `removal_record`, `acc_nsphere > 0` or `peri_count`: text, columns named in the header (`tracks/core/interfaces/REQUESTS_ADF.md` section 2.3) |
+
+Additions that appear only when the option is on: with `<particles> peri_count = true` a
+snapshot ends with N int32 (pericentre passages of each particle), after the N float64
+of proper time that every snapshot carries; with any accretion diagnostic on, the
+particle restart file ends with a block `NRPACC01` (28 float64, int64 N, N int32).
+
+Rest mass in every particle record: m > 0 a particle with sources; m = 0 a tracer on a
+timelike geodesic without sources (a null particle only with `<particles> zero_mass =
+null`, the rule of releases core-v0.2 and core-v0.3 on the mesh metric); m = -t_e < 0 a
+light ray emitted at t_e.
 
 The Z4c history `<base>.z4c.user.hst` holds volume integrals of the squared constraint
 residuals (divide by its Volume column and take the square root for a norm).
