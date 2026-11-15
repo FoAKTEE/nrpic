@@ -1,0 +1,51 @@
+{
+ "run_id": "core-20261115-121855-fcd63c2",
+ "owner": "core",
+ "purpose": "Statistical checks of the random numbers, final figures: Python twin with 2e7 keys per test, sums accumulated in the code on processors (2e8 keys) and on the card (1e10 keys; 1e11 keys with a second seed)",
+ "kind": "production",
+ "command": [
+  "python3",
+  "/data/haiyangw/nrpic/wt/core-rng/tracks/core/analysis/rng/stat_tests.py",
+  "--n",
+  "20000000",
+  "--stat",
+  "processor=/data/haiyangw/nrpic/scratch/core/core-20261115-115134-f0258ce/rngtest.rng_stat.txt",
+  "--stat",
+  "card=/data/haiyangw/nrpic/scratch/core/core-20261115-115230-f0258ce/rngtest.rng_stat.txt",
+  "--stat",
+  "card, second seed=/data/haiyangw/nrpic/scratch/core/core-20261115-115355-f0258ce/rngtest.rng_stat.txt"
+ ],
+ "cwd": "/data/haiyangw/nrpic/scratch/core/core-20261115-121855-fcd63c2",
+ "commit": "fcd63c2436403c5cc89c274e3427e9f9687c5000",
+ "branch": "core/rng",
+ "uncommitted_changes": [],
+ "inputs": [
+  {
+   "path": "python/nrpic/rng.py",
+   "sha256": "888abf5b241f8bbe3fe2e344af3eaf2d349011ce42ebf3d0f48d03edd72052a2"
+  },
+  {
+   "path": "tracks/core/analysis/rng/stat_tests.py",
+   "sha256": "452bfe45c2bc0f590b0b07e63a3ff532fcb4a8d94b18242ee6cbe244727ce599"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/scratch/core/core-20261115-115134-f0258ce/rngtest.rng_stat.txt",
+   "sha256": "e80c0e1a9386e14f4a9f4beaa2fcf4838f69cf6c2a46155030c4e4ae0cd89674"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/scratch/core/core-20261115-115230-f0258ce/rngtest.rng_stat.txt",
+   "sha256": "ea045041465ec2bc9b30960afe76981f84406ae5c1e8ef89066a3f3bece5cf74"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/scratch/core/core-20261115-115355-f0258ce/rngtest.rng_stat.txt",
+   "sha256": "bb379fdd1df8e43e72dfb0920c6dc10812a34eccff9b11c49ce7a1e35ab47c7f"
+  }
+ ],
+ "output_directory": "/data/haiyangw/nrpic/scratch/core/core-20261115-121855-fcd63c2",
+ "host": "anta",
+ "start_utc": "2026-11-15T12:18:55Z",
+ "cores": 1,
+ "wall_time_s": 209.02,
+ "exit_status": 0,
+ "core_hours": 0.0581
+}
