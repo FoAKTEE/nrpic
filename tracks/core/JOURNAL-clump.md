@@ -430,3 +430,20 @@ the cells within 4 sigma of a clump centre (`puncture_clump_check.py`).
   divergence free at the clumps).
 Refuted if the first or third A is not near zero (the clump curvature does not combine
 with a puncture, or psi with the puncture is not the psi of the code).
+
+### Outcome of T7 (run `core-20261115-160935-3fc3bbc`, three cases at t = 0, 80 s)
+
+The run id shows that the prediction above was written at 16:09Z, not 16:12Z (the
+entry and the run were one command; order as stated).
+
+| case | A | norm of M near the clumps | M-norm2 (history, whole box) |
+|---|---|---|---|
+| all curvatures | -0.00032 | 8.30e-5 (6.1e-4 of T, 0.13667) | 7.262e-7 |
+| clumps' momenta and spin zero in the curvature | +0.99968 | 0.13663 | 1.016e-2 |
+| puncture's momentum zero | -0.00032 | 8.30e-5 | 5.71e-9 |
+
+HELD, all three. The smeared curvature of two clumps (one with spin) and the Bowen-York
+curvature of a puncture add in the code, and the particle masses computed from psi with
+the puncture's m/2r are consistent with the code's psi. The whole-box norm with all
+curvatures (7.3e-7 against 5.7e-9 without the puncture's momentum) is the truncation
+error at the puncture, as in the wave-1 tests of `multi_puncture.md`.
