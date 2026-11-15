@@ -203,3 +203,20 @@ regime. The Kn = 10 to 0.01 scan probes the transition between the two limits.
 
 After run D only the docstring of knudsen.py was edited (a locator); the code that ran is
 commit cdc395c.
+
+## Test 4: AthenaK reads the new files (prediction, before the run)
+
+Smoke test on the processors (`/data/haiyangw/nrpic/.work/build_cpu_c1/src/athena`, built
+from main; no source change): `nrpic_cf` with the table and 10^4-particle file of the King
+threshold model, two cycles on a small static mesh (root dx = 8 M, finest dx = 0.5 M
+inside |x| < 16 M), and the same deck with the paper's monoenergetic y_c = 0.819 model
+written by `problems/ic/make_ic.py st --yc 0.819 --N 10000 --seed 1` as a reference that
+is known to work (R/M = 9.96 against 13.63).
+
+Prediction: both runs start and finish two cycles; the first NRPIC history record has
+np = 10000, sum m = M0 = 1.036901881 and sum m W equal to the deposited int E sqrt(gamma)
+dV to round-off (deposition conserves it). The initial Hamiltonian-constraint integral
+H-norm2 of the King run is within a factor 3 of the reference run, and probably lower,
+because the King density vanishes smoothly (rho ~ y^{5/2}) while the monoenergetic density
+has a kink at the surface. Refuted if `nrpic_cf` rejects or misreads the files (np or sum m
+wrong), or if the King H-norm2 exceeds the reference by more than a factor 3.
