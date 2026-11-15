@@ -1,0 +1,89 @@
+{
+ "run_id": "D-bh-dress-20261115-123029-4df1e76",
+ "track": "D-bh-dress",
+ "package": "D-pre-2 spike",
+ "purpose": "P1: SFW relativistic spike (constant f, Hernquist) recomputed by its own method and compared with the digitized SFW Figs. 1, 3 and FdRW fig_rho_a, fig_rho_hern",
+ "kind": "scouting",
+ "command": [
+  "python3",
+  "spike_reference.py",
+  "--out",
+  "/data/haiyangw/nrpic/scratch/D-bh-dress/D-bh-dress-20261115-123029-4df1e76"
+ ],
+ "cwd": "/data/haiyangw/nrpic/wt/D-bh-dress/tracks/D-bh-dress/spike",
+ "env_overrides": {
+  "OMP_NUM_THREADS": "4",
+  "OPENBLAS_NUM_THREADS": "4"
+ },
+ "git": {
+  "sha": "4df1e765e70609a215e86cb584c1391c5532cdea",
+  "branch": "track/D-bh-dress",
+  "dirty_spike_dir": false
+ },
+ "inputs": [
+  {
+   "path": "/data/haiyangw/nrpic/kb-data/raw/arxiv/1305.2619/v1/src/SFWpaper.tex",
+   "sha256": "bd41d470556d73da255dc6c9a697b787232ad6a25f4326956ed07118be431b16"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/kb-data/raw/arxiv/1305.2619/v1/src/phasespace2.pdf",
+   "sha256": "5bc1f590556751e6d25e7f47c53f856665389c938cdd48802f7d79729b261cbb"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/kb-data/raw/arxiv/1305.2619/v1/src/bhhernquist.pdf",
+   "sha256": "b951401ee07d3f92a9ffd7eb355e3651dce33d9dd1c029e0c7f41a59eb0a6302"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/kb-data/raw/arxiv/1707.06302/v2/src/kerrdm.tex",
+   "sha256": "ccbaecf63d610aea6bac07fc44a43fe13cecf2a2eb414d9d431ae33f598eed1b"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/kb-data/raw/arxiv/1707.06302/v2/src/fig_rho_a.pgf",
+   "sha256": "564db2628a1c0cd25d4eeccc7cbe16400a4f523112113f231df082fb0be41519"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/kb-data/raw/arxiv/1707.06302/v2/src/fig_rho_hern.pgf",
+   "sha256": "e3804c8e87735b64aa07b4f2f5bd85a0179f1853c4025970b7130856f92195c0"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/wt/D-bh-dress/tracks/D-bh-dress/spike/spike_lib.py",
+   "sha256": "c6ddd1260ac7cf587775d1c115e2e301e49f5e1f3d7eec85b7546aaa773d96ff"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/wt/D-bh-dress/tracks/D-bh-dress/spike/spike_reference.py",
+   "sha256": "f390cab14fd4a585b624d6c889cdeddc4b73d8203e57df3ca8247f3f658957db"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/wt/D-bh-dress/tracks/D-bh-dress/spike/paper_curves.py",
+   "sha256": "96f780d925511fae09e42f64f4554fe46aacac06bcda5c353233e443c60a8d16"
+  }
+ ],
+ "resources": {
+  "nodes": 1,
+  "cores": 4,
+  "gpus": 0,
+  "card_hours": 0.0,
+  "walltime_s": 134.06
+ },
+ "outputs": {
+  "dir": "/data/haiyangw/nrpic/scratch/D-bh-dress/D-bh-dress-20261115-123029-4df1e76",
+  "sha256sums": "sha256sums.txt",
+  "files": [
+   "paper_curves.json",
+   "ref_constf.pdf",
+   "ref_constf.png",
+   "ref_hernquist.pdf",
+   "ref_hernquist.png",
+   "reference.json",
+   "reference_curves.npz",
+   "reference_table.txt",
+   "stdout.txt"
+  ]
+ },
+ "status": "completed",
+ "exit_code": 0,
+ "started": "2026-11-15T12:30:29+00:00",
+ "ended": "2026-11-15T12:32:43+00:00",
+ "parents": [],
+ "notes": "Registered by hand with spike/register_run.py."
+}

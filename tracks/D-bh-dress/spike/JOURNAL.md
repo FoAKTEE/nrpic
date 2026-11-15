@@ -51,3 +51,85 @@ Predictions, each with what refutes it:
 5. Relativistic/GS ratio at the peak (Hernquist): SFW text (line 124) "2-3 times higher";
    at r > 50 R_S the two agree "with standard results". Refuted if our peak ratio is
    outside 2-4 or the curves differ by more than 5 % beyond 100 R_S.
+
+## P1 outcome (run D-bh-dress-20261115-123029-4df1e76, 132 s, 4 cores)
+
+Numbers from `scratch/D-bh-dress/D-bh-dress-20261115-123029-4df1e76/reference.json`;
+figures `figs/ref_constf.png`, `figs/ref_hernquist.png` (looked at).
+1. Constant f [VERIFIED against SFW Fig. 1]: our relativistic peak 0.8699e8 GeV/cm^3 at
+   r = 7.579 Gm, digitized 0.8699e8 at 7.580 Gm; GS peak 0.3359e8 at 16.00 Gm, digitized
+   0.3359e8 at 16.02 Gm. Largest deviation from the digitized curves 0.26 % (relativistic,
+   8.5-95 Gm) and 2.2 % (GS, only at its steep edge 8.5-9 Gm); 0.38 % against the FdRW
+   Schwarzschild curve (fig_rho_a). Zero points 4 Gm and 8 Gm (by construction of the
+   limits; E_min checked by brute force). Peak ratio relativistic/GS 2.59: inside the
+   predicted 2.5-3.5 (SFW text: "a factor of three"). GS with 8 -> 4 Gm peaks 9.2 % above the
+   relativistic curve, not "about 15 %" (SFW line 443): this prediction FAILED. Since our
+   curves reproduce SFW's own Fig. 1 to 0.3 %, the 15 % of the text does not follow from
+   their figure [JUDGEMENT].
+2. Hernquist, m = 4e6 M_sun, canonical action [VERIFIED against FdRW fig_rho_hern]:
+   largest deviation 1.0 %, median -0.07 % at 5-39 Gm; peak 2.437e18 GeV/cm^3 at
+   7.75 Gm (digitized 2.439e18 at 7.73 Gm). The spike meets the initial Hernquist profile
+   at 12.42 pc (FdRW: 12.4 pc). With the SFW-printed action the curve is 3-10 % higher
+   than FdRW's: FdRW's Schwarzschild curve uses the corrected (canonical) action.
+3. SFW Fig. 3 [VERIFIED to 0.04 dex]: with m = 1.0e6 M_sun our relativistic curve (SFW
+   action) agrees with the digitized SFW Fig. 3 to 0.039 dex at most (median 0.010) for
+   0.45 < log10(r/R_S) < 4, our canonical curve to 0.030 dex, our GS curve with the
+   non-relativistic one to 0.033 dex. Peaks: SFW 10^19.399 at log10(r/R_S) = 0.591; ours
+   10^19.412 at 0.583 (SFW action), 10^19.390 at 0.588 (canonical). So SFW Fig. 3 was drawn
+   for m = 1e6 M_sun (or a Schwarzschild radius of 9.6e-8 pc), not the 4e6 M_sun of their
+   Sec. V [JUDGEMENT from the fit; the red Hernquist line of Fig. 3 gives the same m
+   independently]. The digitization cannot tell which action SFW used (difference 0.02 dex
+   at the peak). Beyond log10(r/R_S) = 4 SFW's curves bend to a slope of about -1.9 while
+   ours keep -7/3 = -(9-2 gamma)/(4-gamma) for gamma = 1 [BACKGROUND formula]; the
+   relativistic and Newtonian curves of SFW bend alike, so this is a feature of their
+   numerics, not of relativity [JUDGEMENT].
+4. Canonical vs printed action: the printed (SFW) action gives +6.9 % at 6 Gm, +5.2 % at
+   7.7 Gm, +4.3 % at 10 Gm, +1.9 % at 95 Gm, +1.1 % at 210 Gm, +0.3 % at 1e3 Gm. The
+   prediction "below 1 % beyond 100 Gm" FAILED (it is 1.9 % at 95 Gm and falls below 1 % only
+   beyond about 250 Gm); the peak value (5 %) was as predicted.
+5. Hernquist peak ratio relativistic/GS: 3.39 (canonical), 3.57 (SFW action), inside the
+   predicted 2-4 (SFW text: "2-3 times"). Beyond 100 R_S the canonical and GS curves differ
+   by 0.92 % at most (predicted < 5 %).
+Checks: E_min (SFW eq. 3.17) = brute-force scan to 1e-5 at 9 radii; Hernquist table
+delta error median 7e-6, max 1e-4 (11 of 400 test points outside the table, none of the
+density evaluations was); Kepler limit at E = 1 - 1e-6, L = 300: I_r 2557.97 vs 2557.93,
+T_r 2.22145e9 vs 2.22144e9.
+
+## P2 AthenaK probe test (prediction, written before the registered runs)
+
+Development probes (unregistered, `scratch/D-bh-dress/tmp/`, 2400 + 200 particles, 500 and
+1500 M) showed: CPU executable 1.2-1.4e6 particle updates per second per core; in the
+analytic Kerr-Schild mode there is NO excision (`NrpicExcise` acts only for metric = mesh,
+athenak/src/particles/nrpic.cpp:627): a particle that crosses r = 2 continues to r ~ 0.004,
+its push turns non-finite, it is flagged (PGID = -2) and keeps its last finite state, but it
+is never removed; so "removed" is measured here as "KS r < 2 in a snapshot". In the probe all
+100 predicted plungers crossed and none of the 100 bound near-separatrix probes did; four
+plungers with |q| = 1.4e-4 ... 1.5e-2 crossed up to 0.36 M EARLIER than the exact geodesic
+(checked with an ODE solution to 1e-8 M), which I attribute to the pusher's energy error
+near the unstable circular orbit (to be tested by halving dt, P2e).
+
+Setup: initial data `sample_spike.py` (seed 20261115): species 0, 48000 particles from the
+final DF (canonical action, m = 4e6 M_sun, M = 1e12, a = 20 kpc) with E <= E_cut = 0.99
+(apocentres <= ~92 Gm), 12 files; species 1, 2400 loss-cone probes (E in [0.95, 0.99],
+L^2 = L_c^2 (1 +- q), q log-uniform in [1e-4, 1e-1]). Run A: 12 CPU processes, species 0,
+dt = 0.05 M, t = 0 ... 20000 M (9 radial periods of the widest orbit, ~100 of an orbit with
+semi-major axis 10 Gm), snapshots every 250 M. Run B: species 1, dt = 0.05, 1500 M,
+snapshots every 2 M. Run B2: as B with dt = 0.025.
+
+Predictions and refutation criteria:
+P2a (sampler) at t = 0 the binned species-0 counts (log bins 4-92 Gm, bins with more than 20
+    expected) agree with the reference dN/dr = 4 pi r^2 rho / sqrt(1-2/r) of the truncated DF:
+    chi^2/dof within 1 +- 3 sqrt(2/dof). Refuted otherwise.
+P2b (stationarity) chi^2/dof stays within the same band at every snapshot, with no trend;
+    the counts in 4-6, 6-10, 10-20 and 20-50 Gm stay within 3 sigma (Poisson) of the
+    expected value at every snapshot, and their late-half means within 3 sigma/sqrt(1)
+    (snapshots are correlated, no averaging gain is assumed). Refuted by a drift in any range.
+P2c (invariants) max over snapshots of |dE/E|: median < 1e-8, max < 1e-5 (pericentres down
+    to 4.2 Gm); |dL/L| < 1e-10 (midpoint rule conserves L_z exactly for a = 0). Refuted above.
+P2d (empty loss cone) no species-0 particle reaches r < 2 (orbits within lambda < 1e-8 of the
+    separatrix were not drawn). Refuted by any crossing.
+P2e (loss-cone boundary) every species-1 particle inside the loss cone (q < 0) crosses r = 2,
+    none outside (q > 0) does, for |q| >= 1e-4; the first snapshot inside lies in
+    [t_pred - 1 M, t_pred + 2 M); with dt halved (B2) the early crossings shrink by about
+    4x (second order). Refuted by any misclassified particle, or by offsets that do not
+    shrink with dt.
