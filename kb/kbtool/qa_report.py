@@ -238,6 +238,20 @@ def c6_duplicates(con):
 def c7_retrieval(lay, db_path, hybrid=False, k=10):
     from . import embed_search as S
     out = {"k": k, "questions": len(_gold.QUESTIONS), "modes": {}}
+    # Guard (in this process only) for a defect of embed_search.Locator.lines: an empty
+    # sourcemap (PDF-only 2201.03458, failed astro-ph/9407016) raises IndexError; such a hit
+    # then has no source range. Reported to the lead (tracks/kb/claims/README.md, Requests).
+    if not getattr(S.Locator.lines, "_qa_guard", False):
+        _orig = S.Locator.lines
+
+        def _lines(self, pid, start, end):
+            try:
+                return _orig(self, pid, start, end)
+            except IndexError:
+                out.setdefault("empty_sourcemap_hits", set()).add(pid)
+                return None
+        _lines._qa_guard = True
+        S.Locator.lines = _lines
     modes = ["text"] + (["hybrid"] if hybrid else [])
     emb, model = None, None
     if hybrid:
@@ -268,6 +282,8 @@ def c7_retrieval(lay, db_path, hybrid=False, k=10):
                 "mrr_paper": sum(1.0 / r["paper_rank"] for r in rows if r["paper_rank"]) / len(rows)}
     finally:
         con.close()
+    if "empty_sourcemap_hits" in out:
+        out["empty_sourcemap_hits"] = sorted(out["empty_sourcemap_hits"])
     return out
 
 
@@ -446,6 +462,9 @@ def markdown(rep):
       f"hit within the top {c['k']} chunks. Vectors stored for {c.get('vectors')} of {c.get('chunks')} chunks.")
     if c.get("hybrid_error"):
         a(f"- Hybrid mode not run: {c['hybrid_error']}.")
+    if c.get("empty_sourcemap_hits"):
+        a(f"- Hits of papers with an empty source map (no line range; `embed_search.Locator.lines` raises "
+          f"IndexError there, guarded in this run): {', '.join(c['empty_sourcemap_hits'])}.")
     for mode, d in c["modes"].items():
         a(f"- **{mode}**: paper hit rate {d['paper_hits']}/{c['questions']} ({_pc(d['paper_hit_rate'])}), locator "
           f"hit rate {d['locator_hits']}/{c['questions']} ({_pc(d['locator_hit_rate'])}), mean reciprocal rank of "
