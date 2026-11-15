@@ -1,0 +1,36 @@
+{
+ "run_id": "core-20261115-121543-2e16f45",
+ "label": "psr_restart",
+ "owner": "core",
+ "purpose": "Restart check of puncture_setup: cycles 5 to 8 from the restart dump of cycle 4 of core-20261115-120935-9211dcd",
+ "kind": "scouting",
+ "command": "/data/haiyangw/nrpic/wt/core-mp/.work/build_cpu/src/athena -r /data/haiyangw/nrpic/scratch/core/core-20261115-120935-9211dcd/rst/psr.00001.rst -d /data/haiyangw/nrpic/scratch/core/core-20261115-121543-2e16f45",
+ "cwd": "/data/haiyangw/nrpic/scratch/core/core-20261115-121543-2e16f45",
+ "commit": "2e16f45",
+ "source_dirty": false,
+ "inputs": [
+  {
+   "path": "problems/tests/puncture_setup_restart.athinput",
+   "sha256": "97b1261d2c0780f49cf42fb12ec72690d3b36ba0bb3978377b85edbb263c3e88"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/wt/core-mp/.work/build_cpu/src/athena",
+   "sha256": "706185bfbbe808d36cfd72cbf79ba0fc1ed8430689cb4b8cedafecc7100c96ea",
+   "role": "executable"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/scratch/core/core-20261115-120935-9211dcd/rst/psr.00001.rst",
+   "sha256": "0e6ee604a5afd33877bb8cd21cf0a918b2e6379aeb8fdd16a175a8fecec1bda4",
+   "role": "restart file"
+  }
+ ],
+ "output_directory": "/data/haiyangw/nrpic/scratch/core/core-20261115-121543-2e16f45",
+ "resources": "1 core",
+ "started_utc": "2026-11-15T12:15:44Z",
+ "status": "done",
+ "exit_code": 0,
+ "wall_time_s": 188.0,
+ "queue_wait_s": 0.0,
+ "card_hours": 0.0,
+ "core_hours": 0.0522
+}

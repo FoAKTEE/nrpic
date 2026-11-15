@@ -1,0 +1,35 @@
+{
+ "run_id": "core-20261115-113400-a5197ba",
+ "label": "regress_cf_new",
+ "owner": "core",
+ "purpose": "Regression R: nrpic_cf with every component type, executable of this branch",
+ "kind": "scouting",
+ "command": "/data/haiyangw/nrpic/wt/core-mp/.work/build_cpu/src/athena -i regress_cf.athinput -d /data/haiyangw/nrpic/scratch/core/core-20261115-113400-a5197ba",
+ "cwd": "/data/haiyangw/nrpic/scratch/core/core-20261115-113400-a5197ba",
+ "commit": "a5197ba",
+ "source_dirty": false,
+ "inputs": [
+  {
+   "path": "problems/tests/regress_cf.athinput",
+   "sha256": "27090f25b36f3b237dd33570a80329f66d381f02b647d37138c781b379a7f60c"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/scratch/core/tmp/regress.tab",
+   "sha256": "3e3d9fedc1b91595b3598c88c054a93682563d53053d7697abc318a9bcd7dd03"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/wt/core-mp/.work/build_cpu/src/athena",
+   "sha256": "14fac5bec922887288e9615912f7d3983bb424e16a74f97fe26beebe157d0355",
+   "role": "executable"
+  }
+ ],
+ "output_directory": "/data/haiyangw/nrpic/scratch/core/core-20261115-113400-a5197ba",
+ "resources": "1 core",
+ "started_utc": "2026-11-15T11:34:01Z",
+ "status": "done",
+ "exit_code": 0,
+ "wall_time_s": 38.4,
+ "queue_wait_s": 0.0,
+ "card_hours": 0.0,
+ "core_hours": 0.0107
+}

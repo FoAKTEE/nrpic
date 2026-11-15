@@ -1,0 +1,26 @@
+{
+ "run_id": "core-20261115-123325-6855046",
+ "label": "b16_spin0.3_eta20",
+ "owner": "core",
+ "purpose": "Test of the explanation of the slow heavy tracker: run (E) of 1b (m = 1, P = 0.043, S = 0.3) with shift_eta = 20 instead of 2, to t = 5",
+ "kind": "scouting",
+ "command": "srun -p preempt --gres=gpu:1 -c 1 -t 00:10:00 -J b16_spin0.3_ /bin/bash -c date +%s.%N > .t_start; (while true; do nvidia-smi --query-gpu=memory.used --format=csv,noheader,nounits >> .gpumem 2>/dev/null; sleep 5; done) & smp=$!; \"$@\"; rc=$?; kill $smp; date +%s.%N > .t_end; exit $rc athena /data/haiyangw/nrpic/wt/core-mp/.work/build_gpu/src/athena -i by_boost.athinput -d /data/haiyangw/nrpic/scratch/core/core-20261115-123325-6855046 problem/comp0_p1=0.043 problem/comp0_s3=0.3 z4c/shift_eta=20.0 time/tlim=5.0",
+ "cwd": "/data/haiyangw/nrpic/scratch/core/core-20261115-123325-6855046",
+ "commit": "6855046",
+ "source_dirty": false,
+ "inputs": [
+  {
+   "path": "problems/puncture/by_boost.athinput",
+   "sha256": "0bbfa826a83a9718fa1b1e46706425a75e2595be6ae9a9b38d77176db6f5ba6e"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/wt/core-mp/.work/build_gpu/src/athena",
+   "sha256": "ba08b4da17b627a4bf1103c6014fb10203a821c130dcd195017cecf7559f0040",
+   "role": "executable"
+  }
+ ],
+ "output_directory": "/data/haiyangw/nrpic/scratch/core/core-20261115-123325-6855046",
+ "resources": "1 card (A100), 1 core",
+ "started_utc": "2026-11-15T12:33:25Z",
+ "status": "running"
+}

@@ -1,0 +1,26 @@
+{
+ "run_id": "core-20261115-123046-fbf578f",
+ "label": "t3_triple_final_short",
+ "owner": "core",
+ "purpose": "Test 3 with the final executable (finder tolerance scaled with the mass): three black holes to t = 1, three horizons",
+ "kind": "scouting",
+ "command": "srun -p preempt --gres=gpu:1 -c 1 -t 00:10:00 -J t3_triple_fi /bin/bash -c date +%s.%N > .t_start; (while true; do nvidia-smi --query-gpu=memory.used --format=csv,noheader,nounits >> .gpumem 2>/dev/null; sleep 5; done) & smp=$!; \"$@\"; rc=$?; kill $smp; date +%s.%N > .t_end; exit $rc athena /data/haiyangw/nrpic/wt/core-mp/.work/build_gpu_final/src/athena -i by_triple.athinput -d /data/haiyangw/nrpic/scratch/core/core-20261115-123046-fbf578f time/tlim=1.0",
+ "cwd": "/data/haiyangw/nrpic/scratch/core/core-20261115-123046-fbf578f",
+ "commit": "fbf578f",
+ "source_dirty": false,
+ "inputs": [
+  {
+   "path": "problems/puncture/by_triple.athinput",
+   "sha256": "76506fd8f806c96da1322c2c1ba5b26caa628905c3b4e4b01291e9cc6ef99622"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/wt/core-mp/.work/build_gpu_final/src/athena",
+   "sha256": "ff741daee4f212b72e1928a2a15392de0c04c01de8c5532c70a66f088fd8a454",
+   "role": "executable"
+  }
+ ],
+ "output_directory": "/data/haiyangw/nrpic/scratch/core/core-20261115-123046-fbf578f",
+ "resources": "1 card (A100), 1 core",
+ "started_utc": "2026-11-15T12:30:46Z",
+ "status": "running"
+}
