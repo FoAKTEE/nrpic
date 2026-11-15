@@ -45,7 +45,8 @@ def _dirs(seed, sub, n, draw):
 
 
 def make_box(path, kind, n, seed=1, theta=0.1, theta2=None, u0=0.3, mass_ratio=4.0,
-             xmin=BOX_MIN, length=BOX_LEN, lengths=None, mode_eps=0.0, drift=0.0):
+             xmin=BOX_MIN, length=BOX_LEN, lengths=None, mode_eps=0.0, drift=0.0,
+             gmat=None):
     """Particle file for the periodic box: total rest mass rho_0 x volume with
     rho_0 = 1. Positions uniform random (a Poisson-like occupation of the cells).
     kind: mj (Maxwell-Juttner at theta), shell (|u| = u0), twotemp (first half theta,
@@ -53,6 +54,10 @@ def make_box(path, kind, n, seed=1, theta=0.1, theta2=None, u0=0.3, mass_ratio=4
     mass_ratio in relative units, equal numbers, twotemp momenta), mode (isobaric
     temperature mode along x: T = theta (1 + eps cos kx), n = n0/(1 + eps cos kx)).
     All draws come from the initial-data stream of nrpic.rng (entity = tag, step 0).
+    gmat: constant spatial metric gamma_ij (3x3) of a homogeneous curved box; the
+    distribution described above is then that of the triad components, the file holds
+    u_j = S[j][m] u_(m) with the Cholesky factor S, and the rest masses are multiplied
+    by sqrt(det gamma) so that the proper density stays rho_0 = 1.
     Returns a dict of metadata."""
     lengths = [length]*3 if lengths is None else list(lengths)
     vol = lengths[0]*lengths[1]*lengths[2]
@@ -103,6 +108,10 @@ def make_box(path, kind, n, seed=1, theta=0.1, theta2=None, u0=0.3, mass_ratio=4
         gam = 1.0/np.sqrt(1.0 - drift*drift)
         w = np.sqrt(1.0 + np.sum(u*u, axis=1))
         u[:, 0] = gam*(u[:, 0] + drift*w)
+    if gmat is not None:
+        gmat = np.asarray(gmat, dtype=np.float64)
+        u = u @ np.linalg.cholesky(gmat).T
+        m = m*np.sqrt(np.linalg.det(gmat))
     write_nrp(path, x, u, m, sp)
     return dict(kind=kind, n=n, seed=seed, theta=theta, theta2=theta2, u0=u0,
                 mass_ratio=mass_ratio, lengths=lengths, rho0=float(np.sum(m)/vol),

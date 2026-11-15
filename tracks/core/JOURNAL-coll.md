@@ -338,3 +338,16 @@ s = nu_inf^2/2 within 15 percent (first order with the forward-Euler coefficient
 (ii) the sub-cycled run lies on the same line at its mean sub-step dt/<n_sub>, far from
 the value nu_inf + s 0.32 of a plain step; (iii) nu_inf/nu_0 between 0.95 and 1.02 (the
 fit window is not the initial slope: the populations leave the Maxwellian form).
+
+### Prediction for the replay test, before the run (14:10 UTC)
+
+`run_replay.py`: the Python twin, written from the interface text, repeats the collision
+step of cycle 5 from the dump of the code, in seven cases (flat box with sub-cycling;
+`coll_cell_factor = 2`; `coll_subcycle = conservative`; cross-section model `cutoff`;
+unequal masses with `nanbu`; homogeneous curved metric on the mesh with the symmetric
+triad; the same with the Cholesky triad and the Boris pusher). Predicted for every case:
+cell indices recomputed from the positions equal those of the dump; n_sub and the number
+of momentum updates of every particle equal; n_tested, n_coll, n_updated equal to the
+history record; sum_P within 1e-11; momenta after the step within 1e-13 max(1, |u|);
+particles without an update bit-identical before and after. Any mismatch refutes either
+the code or the interface text.
