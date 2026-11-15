@@ -177,3 +177,13 @@ is an input convention that changed when light rays were added, not a mis-push; 
 card's push of massive tracers is checked by ES-1 itself. Request to core: positive
 p<n>_m in those two inputs (or an explicit option for null particles), and an answer to
 the outbox blocker on this basis.
+
+Smoke runs before submission (processor executable, 2 cycles each): D-20261115-170326-dfb2a02
+(16^3 blocks: 1280 MeshBlocks; superseded; its horizon summary was written into the working
+directory of the command, not into -d, and was moved into that run directory as
+`es.horizon_summary_0.txt.from_cwd`: fastflow writes the summary relative to the cwd) and
+D-20261115-172413-6412daf (24^3 blocks: 344 MeshBlocks as designed; history finite, 696828
+particles kept, M_AH(t = 0) = 0.99239, minimum lapse 0.0307; the 1+log lapse at x = 46.5 M
+rises at 0.0334/M over the first two steps, -2K = 0.0335/M as in A2). ES-1 and V-1 were
+submitted as chains D-20261115-172726-60ba4c2 (Slurm 4472) and D-20261115-172730-c6d151b
+(Slurm 4473), two segments of at most 59 min each.

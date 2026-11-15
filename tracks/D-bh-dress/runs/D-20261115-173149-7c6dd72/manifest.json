@@ -1,0 +1,212 @@
+{
+  "schema": "nrpic-run-manifest/1",
+  "run_id": "D-20261115-173149-7c6dd72",
+  "track": "D-bh-dress",
+  "gate": "G1",
+  "kind": "scouting",
+  "purpose": "G0/G1 verifier C4 (second run): own radial-shell code with velocity step limit, N = 2000-16000 and a smaller step at a/a_i = 100, enclosed-mass profile against the track's self-similar m(lambda) (run D-bh-dress-20261115-123813-97afeea)",
+  "preregistered_in": "tracks/D-bh-dress/stage/G0/JOURNAL.md",
+  "launcher": "local (hand registration)",
+  "registered_by": "hand: tracks/D-bh-dress/stage/G0/verify/hand_run.py, because harness/bin/nrpic-run submit refused (an untracked file of another helper, es.horizon_summary_0.txt, in the worktree root); see stage/G0/README.md, Requests",
+  "command": [
+    "bash",
+    "tracks/D-bh-dress/stage/G0/verify/v4_driver2.sh"
+  ],
+  "cwd": "/data/haiyangw/nrpic/wt/D-bh-dress",
+  "git": {
+    "sha": "7c6dd7271fb9944e68dbbb05c88d57279c955416",
+    "branch": "track/D-bh-dress",
+    "package": [
+      "tracks/D-bh-dress/stage/G0/verify",
+      "tracks/D-bh-dress/stage/G0/figs",
+      "tracks/D-bh-dress/stage/G0/JOURNAL.md",
+      "tracks/D-bh-dress/stage/G0/README.md",
+      "tracks/D-bh-dress/stage/G0/VERIFIER.md"
+    ],
+    "package_clean": true
+  },
+  "code": {
+    "core_tag": "core-v0.3"
+  },
+  "env": {
+    "host": "anta",
+    "OMP_NUM_THREADS": "5"
+  },
+  "inputs": [
+    {
+      "path": "/data/haiyangw/nrpic/scratch/D-bh-dress/D-bh-dress-20261115-123813-97afeea/selfsimilar_profile.npz",
+      "sha256": "d8b610648ec743f3d69ddc76a8fe5037f0863e2a35e6f7e2ce878b88a5f63bb0",
+      "bytes": 32444
+    }
+  ],
+  "resources": {
+    "nodes": 1,
+    "cores": 5,
+    "gpus": 0,
+    "card_hours": 0.0,
+    "walltime_s": 497.03
+  },
+  "outputs": {
+    "dir": "scratch/D-bh-dress/D-20261115-173149-7c6dd72",
+    "files": [
+      {
+        "path": "N16000.log",
+        "sha256": "a548ff0d537d9800b37156f5ba8bd46c3ff3ded0a371c7f06cc5b873ac244219",
+        "bytes": 887
+      },
+      {
+        "path": "N2000.log",
+        "sha256": "4ac83b12afb7684496b79cf1904396cf18447aebded4ced7ea9487be9b1b6fb5",
+        "bytes": 885
+      },
+      {
+        "path": "N4000.log",
+        "sha256": "77eea472208feb68ed0d8bc7ade52300075719549cddeb935cbe0ed6e5f554b3",
+        "bytes": 885
+      },
+      {
+        "path": "N4000_eta0.0125.log",
+        "sha256": "b8d46a4125aaf21b9a1acbb2d8547580eb020775e1608eed8f4f3b8084ea3b08",
+        "bytes": 900
+      },
+      {
+        "path": "N8000.log",
+        "sha256": "77a400aec04f11fb8a00161ffeb8be3fbbf87814a306634e2334b2cda9de72fb",
+        "bytes": 887
+      },
+      {
+        "path": "run.log",
+        "sha256": "0cec9665dbe87819b42d8fd5ef99759a5e469b402a1d280f6f2e5dbfb36b97bb",
+        "bytes": 2186
+      },
+      {
+        "path": "v4b_compare.json",
+        "sha256": "958612ed1dfc8635e56779e1e398349f439ef9163fda80a8df14216869e902bf",
+        "bytes": 2185
+      },
+      {
+        "path": "v4b_compare.pdf",
+        "sha256": "1a882ef2920187b119ba2fd0ee3d4cdc653da5629c09e572545d07d3692693f4",
+        "bytes": 87448
+      },
+      {
+        "path": "v4b_compare.png",
+        "sha256": "ca565fb29a7bb3633d684175b6dbc4a289414247705f7265432c42faaac5980a",
+        "bytes": 152677
+      },
+      {
+        "path": "N2000/v4_shells.json",
+        "sha256": "e6774867cc77725753f475559fdf600911f7f5d1af00c51fa9256563424edf0f",
+        "bytes": 884
+      },
+      {
+        "path": "N2000/v4_shells.npz",
+        "sha256": "b96280a6024519d00ec90d708b085112f4f3d0cec09f4773ee74355b8114f578",
+        "bytes": 51744
+      },
+      {
+        "path": "N2000/v4_shells.pdf",
+        "sha256": "31c7cc1093d449995b4c5026eab3feed2f2da6c1e5c3e3bb6ae93b31500e7286",
+        "bytes": 48887
+      },
+      {
+        "path": "N2000/v4_shells.png",
+        "sha256": "77aeb4b73963c80ae5a44fb253893d1ad3f5079eefc89a7029ba87a52b816f39",
+        "bytes": 74916
+      },
+      {
+        "path": "N4000/v4_shells.json",
+        "sha256": "d2c6b4cdafae02863c2fb10bc5c29e793611dd6db0186102a0f4355b477f183e",
+        "bytes": 884
+      },
+      {
+        "path": "N4000/v4_shells.npz",
+        "sha256": "80f8ff1e1c558c520b9cb40691e848b08b926f4865beeb12d31be0f57f772053",
+        "bytes": 99744
+      },
+      {
+        "path": "N4000/v4_shells.pdf",
+        "sha256": "699db267f53d40ee16876d9d85446147fc832f88652a7f1c7e9a5a480e51211c",
+        "bytes": 72453
+      },
+      {
+        "path": "N4000/v4_shells.png",
+        "sha256": "583333f5fd614461c54919289655b2d497d02ebcc33801b509caef2164e8fa92",
+        "bytes": 85393
+      },
+      {
+        "path": "N16000/v4_shells.json",
+        "sha256": "63ca7e649397af8e35554e387061d1dc4b3fa74caf5d6edcaf4f0db09c58a8cb",
+        "bytes": 886
+      },
+      {
+        "path": "N16000/v4_shells.npz",
+        "sha256": "d009815d5385667000e090bbaf925bc24c772bd2ab48218830212093b8ebee43",
+        "bytes": 387744
+      },
+      {
+        "path": "N16000/v4_shells.pdf",
+        "sha256": "8a8ab2cded1a3851bc2193bb67777fca78f9f1e92766b89576ed78616c619df9",
+        "bytes": 205153
+      },
+      {
+        "path": "N16000/v4_shells.png",
+        "sha256": "c5d3228095b18a92f9415bc7d932516832dac39b5bb8d225a7ccdd4226aa5cdf",
+        "bytes": 96309
+      },
+      {
+        "path": "N4000_eta0.0125/v4_shells.json",
+        "sha256": "cfd044144e23d7a0f5a519477d7e4f464d8e3e34ba1f11a2849e00e151f6eed9",
+        "bytes": 899
+      },
+      {
+        "path": "N4000_eta0.0125/v4_shells.npz",
+        "sha256": "7d49a8d6844b1216599b6ab8b017df6992cde4190f96476c0ed1979fe8233f34",
+        "bytes": 99744
+      },
+      {
+        "path": "N4000_eta0.0125/v4_shells.pdf",
+        "sha256": "c3d51e11bc17c056cd31efa1b70b08639e9c1ec009008320293be5d6893818d4",
+        "bytes": 72357
+      },
+      {
+        "path": "N4000_eta0.0125/v4_shells.png",
+        "sha256": "0da5564a4b3f1ed575f969d37a733ebaa9512e8c389f4933f4fb92524780cada",
+        "bytes": 85207
+      },
+      {
+        "path": "N8000/v4_shells.json",
+        "sha256": "40f3a22e0101f5615158065aa4c1b0d78ed9bfea4ed0feb3617c48eb6bbd2078",
+        "bytes": 886
+      },
+      {
+        "path": "N8000/v4_shells.npz",
+        "sha256": "b0e86b4b92c531e7ac57ded68c7d5e87c08f348cc196b925a609dee848675747",
+        "bytes": 195744
+      },
+      {
+        "path": "N8000/v4_shells.pdf",
+        "sha256": "008cdef2a9d941445d4ab90b2e0a68ce5de8423f6bdcb644fe9882dd65661d17",
+        "bytes": 118207
+      },
+      {
+        "path": "N8000/v4_shells.png",
+        "sha256": "aaf516436d1af619abde3702334a4520d7df47f2e02d4639837222906336fd1f",
+        "bytes": 90657
+      },
+      {
+        "path": "figs_variants/v4_shells.png",
+        "sha256": "0da5564a4b3f1ed575f969d37a733ebaa9512e8c389f4933f4fb92524780cada",
+        "bytes": 85207
+      }
+    ]
+  },
+  "status": "completed",
+  "exit_code": 0,
+  "started": "2026-11-15T17:31:49Z",
+  "ended": "2026-11-15T17:40:06Z",
+  "parents": [
+    "D-bh-dress-20261115-123813-97afeea",
+    "D-20261115-171733-633d422"
+  ]
+}

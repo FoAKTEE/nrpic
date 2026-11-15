@@ -214,7 +214,7 @@ def analyse_tracers(run, base, model, groups):
     per = {}
     for g in groups:
         rec = dict(index=g["index"], R0=g["R0"], m=g["m"], E=g["E"], n_tracks=0)
-        rel_all, cross, tau_end, R0meas = [], [], [], []
+        rel_all, cross, tcross, tau_end, R0meas = [], [], [], [], []
         for tag in g["tags"]:
             if tag not in tracks:
                 continue
@@ -228,6 +228,7 @@ def analyse_tracers(run, base, model, groups):
             ok = np.isfinite(rel) & (R > 2.2)
             rel_all.append(rel[ok])
             cross.append(crossing(tau, R))
+            tcross.append(crossing(d["t"], R))
             tau_end.append(float(tau[-1]))
             R0meas.append(float(R[0]))
         if rec["n_tracks"]:
@@ -245,6 +246,7 @@ def analyse_tracers(run, base, model, groups):
                 rec[f"max_abs_rel_tau<={T:g}"] = float(max(vals)) if vals else None
             rec["R_at_t0"] = [min(R0meas), max(R0meas)]
             rec["tau_cross_2M"] = cross
+            rec["t_cross_2M"] = tcross
             cr = [c for c in cross if c is not None]
             rec["tau_cross_2M_mean"] = float(np.mean(cr)) if cr else None
             rec["tau_cross_2M_spread"] = float(np.ptp(cr)) if cr else None
