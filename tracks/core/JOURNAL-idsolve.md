@@ -641,3 +641,9 @@ amendment), so W only absorbs the discretisation of the table and the term
  (c) the monitor's max|M| after the solve is at least 2 times below its value before.
 Refuted if (a) fails or W is comparable to Abar(trial) (then the right side or its
 signs are wrong).
+
+**V4 card, prediction before the job.** gboost_code_n64 with the card build of 7f118b9
+(`card_vector.sh`, one A100) against the processor run core-20261115-183239-ca15f8b: the
+same numbers of outer iterations (17), conjugate-gradient steps and V cycles; psi and
+W_i equal to 1e-12 relative (sums are reduced in another order); at most 0.02
+card-hours. Refuted if the iteration counts differ or psi or W differ by more than 1e-9.
