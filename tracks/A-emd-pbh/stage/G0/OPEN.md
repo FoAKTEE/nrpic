@@ -27,9 +27,7 @@ Items of `CHECKLIST.md` that are not PASS, with the smallest action that closes 
 6. **References not read**: arXiv:1708.09143 (section-10 row "Szekeres", test A4),
    2403.15126 (waveforms), 2605.30145 (spherical CDM-peak collapse), 1810.03490
    (inhomogeneity criterion); 2608.13206 only for its gauge part.
-7. **criteria rerun**: started as A-20261115-130252-01e8b64 (`check_criteria.py`, about
-   14 minutes); its outcome is recorded in `stage/G1/STATUS.md` and `JOURNAL.md` if it
-   finished within the session, otherwise it is listed there as pending.
+7. (closed) criteria rerun: A-20261115-130252-01e8b64 reproduced all 432 values.
 8. **`nrpic-stage verify`** not run: it needs `note/scripts/` and a `stage/G0/VERIFY` command
    list, which come with item 2.
 9. **Amplitude convention** settled in SCOPE.md 10.1, but `criteria/predict.py` does not yet

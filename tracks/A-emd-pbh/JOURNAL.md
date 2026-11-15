@@ -71,3 +71,59 @@ written as predictions before each check runs and outcomes after.
   core at tau = 44.349 near t ~ 49.5 M and the crunch near t ~ 54.9 M, with the coordinate
   speed of light ~1 throughout (no step problem). Refuted if the script's values differ
   from these estimates by more than 1 per cent.
+
+### Outcomes of L1-L8 (written 13:19 UTC)
+
+- L1 holds for every package. First attempt failed: the five `nrpic-run local` reruns ran in
+  the worktree venv, which did not exist (no matplotlib; runs A-20261115-125927-6d2c1e6 and
+  A-20261115-125932-{f221206, b90223c, 5a90432, 574c747}, kept as failed). After
+  `nrpic-env create --no-kokkos` (numpy 2.2.6, scipy 1.15.3, matplotlib 3.10.8, sympy 1.14.0,
+  the versions the helpers used): scope A-20261115-130252-7877b7a, 291 numbers identical;
+  expball A-20261115-130252-c744ff7, sym 27/27, 36/36, 11/11, 32 tests pass, convergence
+  (child -130402-f5566fb) 901 values identical, noise (-130639-947c898) identical, data-set
+  checks ok; criteria A-20261115-130252-01e8b64 (child -130256-a7374a4), 37 checks with the
+  same four failures, 432 values identical; newton A-20261115-130252-f408a99 (children
+  -130252-4290486, -130300-efc25b0), `validate.json` identical, self-test t1 to 1.2e-5;
+  gauge A-20261115-130252-4290486, T1-T4 JSON identical. One traceability remark: gauge
+  T4's quoted 0.068 vs 0.36 at a = 20.47 was read by hand from the history file; the
+  script prints 0.12 vs 0.37 at a = 20.0 (same conclusion).
+- L2 holds: expball and core generators agree to 5.4e-16 (KL), 5.3e-16 (KT), 4.8e-15
+  (betar), 0 (u) at every radius, including next to the edge (run A-20261115-130257-a7374a4).
+- L3 holds: the two table evaluators agree to 7e-18. Found on the way: expball's sharp-ball
+  table has no `breaks` line, so the cubic smears the KL jump over two rows with an overshoot
+  of about 0.1 H (figure looked at); sharp tables are for offline tests only.
+- L4 holds: turnaround 9.542048138750, R = 2M at 25.407847821, crunch 26.897059616 from the
+  three codes, largest disagreement 1.1e-14. (Core's `ltb_radius` fails for 0-d input; the
+  script passes arrays.)
+- L5 holds: y = 0.746379, R_max/R_i = 1.33980, tau_ta = 16.8938, tau_c = 44.4542,
+  core edge trapped at 44.3815; expball's first horizon 44.3493 at R_i = 2.74, unchanged
+  with a 1.6 M taper.
+- L6 holds: exterior K/(-(3/2) sqrt(2M/R^3)) - 1 below 4.3e-15; K/H = -3 inside, -1.5 at the
+  outer side of a sharp edge.
+- L7 holds: data set 2t (run A-emd-pbh-20261115-130609-947c898; M = 1.00959, rest mass
+  1.01590, 28768 lattice sites at h = 0.5 M) has the core times of data set 2 to all digits;
+  end-to-end check A-emd-pbh-20261115-130846-947c898 ok. Its CIC check on the checker's own
+  64^3 mesh (h = 0.3125) shows the lattice/mesh beat (rms 0.58), irrelevant on a dx = 0.5 M
+  mesh where the sites sit on the cell centres (core's test 1: rounding).
+- L8 holds within 0.17 per cent (run A-20261115-130948-5a2b58a): conformal-time coordinate
+  times 13.823 (turnaround), 49.506 (core at tau = 44.349), 54.964 (crunch); geodesic
+  slicing reaches the step limit at cfl 0.25 at tau = 42.30; four cfl stages, 0.15
+  card-hours; SR-2 0.16 card-hours. First trapped sphere refined: R_i = 2.742, m = 0.0805.
+
+### Session summary
+
+did: re-checked the five helper packages from their artefacts (L1-L8); normalized and
+committed all run manifests; created the worktree venv; wrote data set 2t and the
+predictions of the first two scouting runs; G0 evidence, open list and checklist; G1 status
+and checklist; lead's decisions in `scope/SCOPE.md` section 10; risks; seven outbox messages.
+found: every helper number reproduces; the two independent generators (expball, core) agree
+to rounding; two amplitude conventions differ by the factor e (SCOPE.md 10.1); the source
+paper's OS horizon-mass error is <~ 1e-3 (main.tex:945, 1484); geodesic slicing needs a
+shrinking step near the crunch.
+changed my mind about: the order of the brief; the threshold line goes to the periodic box
+(proposal to orch), the ball keeps the G2 tests.
+open: REPORT.md of stage/G0 could not be written (the session's harness refuses report
+files; content in SCOPE.md section 10, EVIDENCE.md, CHECKLIST.md); working note v0 and the
+two schematics; fresh verifier; the scouting runs wait for the merge of core/id-extrinsic.
+Helper journals: `scope/JOURNAL.md`, `expball/JOURNAL.md`, `criteria/JOURNAL.md`,
+`newton/JOURNAL.md`, `gauge/JOURNAL.md`.

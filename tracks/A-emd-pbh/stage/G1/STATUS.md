@@ -94,10 +94,11 @@ coordinate) [TO VERIFY with core]; changing `cfl_number` at a restart [TO VERIFY
 
 ## 4. The lead's rerun of the criteria package
 
-Run A-20261115-130252-01e8b64 (`check_criteria.py`, full, about 14 minutes on one core;
-`predict.py` example). Outcome: recorded in `../../JOURNAL.md` (entry 2026-11-15T12:57Z,
-outcome of L1) when it finished; if it had not finished when this package was committed it
-is listed as pending in `../../STATUS.md`.
+Run A-20261115-130252-01e8b64 (`check_criteria.py`, full, 14.6 minutes on one core;
+`predict.py` example), child run A-emd-pbh-20261115-130256-a7374a4: 37 checks, the same four
+failures (T1.2b, T2.2d last printed digit; T2.4a, T2.4c agreement bands), and all 432 values
+of `results.json` identical to the helper's final run A-emd-pbh-20261115-115120-2eb3117.
+Prediction L1 holds for this package.
 
 ## 5. Interface proposals and requests sent (outbox)
 

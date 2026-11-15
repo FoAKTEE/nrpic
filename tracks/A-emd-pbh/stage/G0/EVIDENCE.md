@@ -28,7 +28,7 @@ from the committed scripts (prediction L1, `JOURNAL.md` entry 2026-11-15T12:57Z)
 | A-emd-pbh-20261115-113152-cd9539e | newton | reference tables and scan figures | completed | |
 | A-emd-pbh-20261115-113807-e02c969, -113822-87cba08 | newton | snapshot-analysis self-test (first superseded) | completed | A-emd-pbh-20261115-130300-efc25b0: t1 to 1.2e-5 |
 | A-emd-pbh-20261115-113223-5581665, -113244-8e0363b, -113446-024989f, -114638-35ca5e4, -115122-2eb3117, -115232-bee5b2e | criteria | first checks, scan, figure fixes | completed | |
-| A-emd-pbh-20261115-115120-2eb3117 | criteria | final check run, 37 checks, 33 pass | completed | A-20261115-130252-01e8b64 (see `stage/G1/STATUS.md`) |
+| A-emd-pbh-20261115-115120-2eb3117 | criteria | final check run, 37 checks, 33 pass | completed | A-20261115-130252-01e8b64, child A-emd-pbh-20261115-130256-a7374a4: same 4 failures, 432 values identical |
 | A-emd-pbh-20261115-120425-80492f8 | criteria | scan over the brief's range; example tables | completed | |
 | A-emd-pbh-20261115-113608-374a41a, -113614-374a41a | gauge | T1 lapse toy (first has figure defects) | completed | A-20261115-130252-4290486: JSON identical |
 | A-emd-pbh-20261115-113755-cac3c4b, -113807-43300e5 | gauge | T2 von Neumann (one superseded) | completed | same: identical |
