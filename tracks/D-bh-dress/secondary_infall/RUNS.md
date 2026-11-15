@@ -32,8 +32,8 @@ Two consequences for the design [JUDGEMENT]:
    time and areal radius [BACKGROUND: the LTB equation; the mapping is my derivation,
    to be checked]. Without shell crossing (the absorbing case never crosses), the closed
    forms of `common.kepler_radial` are then exact in proper time and areal radius, with
-   M(r) the Misner-Sharp mass, which exceeds the rest mass of a shell by the factor
-   (1 + 2E)^(1/2) ~ 1 - M/r_i (a few per cent). The first full-relativity run therefore
+   M(r) the Misner-Sharp mass, which is smaller than the rest mass of a shell by the
+   factor (1 + 2E)^(1/2) ~ 1 - M/r_i (the binding energy, a few per cent). The first full-relativity run therefore
    has an exact reference.
 
 ## 2. The parameters
@@ -56,8 +56,13 @@ boundary at max(128 M, 1.25 R_ball, 0.71 T)):
 | 0.1 | 4 | 47 | 0.380 | 18.1 | 7.4 | 8.3 | 33.0 | 0.31 / 0.35 | 0.76 |
 | 0.1 | 8 | 144 | 0.205 | 44.7 | 19.4 | 11.0 | 88.2 | 1.5 / 5.2 | 10.7 |
 
+r_ta and r_sp (radius holding 99 % of the dust that passed the centre) are those of the
+eps = 0.01 shell runs scaled by (eps/0.01)^(-2/3); the eps = 0.03 runs give r_sp = 6.4 and
+16.1 M at a/a_i = 2, 4 directly.
+
 - Hole mass against the mass inside turnaround: M/M_ta = 0.656, 0.380, 0.205 at a/a_i =
-  2, 4, 8, for every eps. For the dust to dominate (M/M_ta < 0.5) a/a_i > 2.8 is needed.
+  2, 4, 8, for every eps. For the dust to dominate (M/M_ta < 0.5) a/a_i > 2.9 is needed (M_ta = 2.07 M at
+  a/a_i = 3, shell run absorb_e0.03).
 - Radii the mesh must cover: from the horizon (dx_min = M/16 to M/32, as in the
   scoping's puncture anchors) to R_ball(T) = 1.2 r_i(M_ta(T) - M) a_end, where
   r_i(mu) = (2 mu/eps^2)^(1/3): by Birkhoff's theorem dust outside the last shell that
@@ -86,8 +91,8 @@ checks the mode against this package's shells, independently.
 - Seed: mass M = 1 fixed at the origin (request 1 below; otherwise one heavy particle).
 - Dust: uniform ball 3 M <= r <= R_ball,i = 18.4 M (rest mass 2.81 M; the vacuum core of
   radius R_w = 3 M matches the full-relativity data, where it contains the horizon, and
-  removes 0.012 M of dust), velocities v = eps r radial, cold. N = 2e6 equal-mass particles (1.41e-6 M each); the dress at a/a_i = 4
-  then holds ~5.8e5 particles.
+  removes 0.012 M of dust), velocities v = eps r radial, cold. N = 2e6 equal-mass
+  particles (1.41e-6 M each); the dress at a/a_i = 4 then holds ~5.6e5 particles.
 - Domain: isolated, `mg_bc = multipole`, half-width >= 92 M (1.25 R_ball(T)); uniform
   mesh 384^3 (dx = 0.48 M) if the multigrid fits on one card, else 256^3 (dx = 0.72 M)
   together with a shell reference at s = 0.75 M (request 4).
@@ -151,9 +156,10 @@ particle flux through the horizon"; the infall profile in the strong field.
   following Mdot/(4 pi r^2 (2 M_bh/r)^(1/2)) below ~0.2 r_ta. These are Newtonian
   numbers. By the LTB mapping of section 1 the growth is exact in dust proper time and
   Misner-Sharp mass up to the rest-to-Misner-Sharp factor; a shell enters the horizon at
-  R = 2 M_bh, a few M of proper time before the fixed r = 2M where the proxy absorbs it. The code's coordinate time differs from the
-  dust's proper time under the moving-puncture gauge, so compare per shell (by particle
-  label), not per coordinate time (request 5).
+  R = 2 M_bh, a few M of proper time before the fixed r = 2M where the proxy absorbs it.
+  The code's coordinate time differs from the dust's proper time under the
+  moving-puncture gauge, so compare per shell (by particle label), not per coordinate
+  time (request 5).
 - Refuted if the horizon mass, as a function of the label of the last particle shell
   inside it, differs from M(r) of that shell by more than the noise floor of D-pre-4 plus
   the particle-shot noise of a shell; or if the mass growth and the integrated flux of
