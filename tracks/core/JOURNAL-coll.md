@@ -455,3 +455,69 @@ The node has four cores in all. My first submission (job 4419, part A, with `-c 
 queued 13:35 UTC) would have kept the second card idle while a one-core job ran on the
 first; cancelled and resubmitted with two cores (4424 part A, 4425 part B, 14:36 UTC).
 4424 started at 14:38 UTC.
+
+## 2026-11-15 15:05 UTC  card results (parts A, B); unequal masses; P11 restated
+
+### Card, part A (job 4424, 0.037 card-hours)
+
+- P1 on the card: run core-20261115-135757-18d4555. c1 (analytic metric) and c2 (mesh
+  metric, one particle with deposit): all files identical between the baseline and the
+  new executable. c3, c4, c5: the baseline is not reproducible run to run on the card in
+  2, 2 and 3 files (`tpc.nrpic.hst`, `tpc.trajmet.bin`; `flrw.cstat.hst`,
+  `flrw.nrpic.hst`; the three `.rst` files), and exactly these files differ between
+  baseline and new; the other 12, 2 and 7 files are identical. So: no file differs that
+  the baseline reproduces, and no verdict on the files it does not. (The same limit is
+  recorded for the card regression of the random-number package.)
+- P9, rate: run core-20261115-135816-18d4555. All eight runs pass with the criteria of
+  P3. The numbers of collisions are those of the processor run, digit for digit
+  (1500395, 15000024, 1500294, 14998415, 1501865, 14998790, 1501368, 14998645), and so
+  are the z values; 1e6 particles x 200 steps take 2 to 4 s.
+- P9, relaxation: run core-20261115-135932-18d4555. All four starts pass; KS p,
+  entropy values and population temperatures equal those of the processor run to the
+  printed digits.
+
+### Card, part B (job 4425, 0.013 card-hours)
+
+- P9, reproducibility: run core-20261115-140011-18d4555. On the card: analytic path
+  byte-identical for 1, 8, 64 MeshBlocks, for the second box with 1 and 27, and across
+  the restart; mesh path byte-identical in the first box, 5.8e-15 apart in the second
+  with identical collisions; restart identical. Passed.
+  Processor against card (same input, runs core-20261115-133912-f104754 and
+  core-20261115-140011-18d4555): the last snapshots are NOT byte-identical (98143 of 1e5
+  particles differ, by at most 1.8e-15 in u and 6e-13 in x), with the same 496813
+  collisions: as predicted in P9 (contraction of products and sums), and without a
+  flipped acceptance in 5e6 tests.
+- P8a on the card with 4e6 particles: run core-20261115-140021-18d4555. nu_inf =
+  1.1792(16), slope 0.744(32) against nu_inf^2/2 = 0.695; decay rates 1.2388(17),
+  1.2095(27), 1.1931(18), 1.1874(18); sub-cycled 1.2022(12) at dt_c = 0.0348 against
+  1.2051 on the line (z = -1.5; mean n_sub 9.2). Initial slope 1.3123(25), 1.2689(7),
+  1.2577(29), 1.2505(16); Richardson value of the two finest steps 1.2433(43), i.e.
+  0.995(4) of the non-relativistic closed form: the track's exact relativistic value is
+  0.995 (SPEC.md section 6, its run C-sidm-20261115-120703-9b3e868). Passed.
+
+### Unequal masses: run core-20261115-140030-7a0efc0 (processor, 2e5 particles, 4 seeds)
+
+Passed. Figure `fig_unequal.png` looked at.
+- `coll_weights = equal`: the run stops with "<particles> coll_weights = equal, but the
+  colliding particles have unequal rest masses (smallest and largest:
+  1.9999999999999999e-06 and 7.9999999999999996e-06) ...".
+- `nanbu`: light and heavy class end at the same temperature (difference 0.1 to 0.6
+  sigma; 0.01407 against 0.01407 in seed 1) and are Maxwell-Juttner (KS p 0.36 to 0.96).
+- Momentum updates per collision at late times 1.538, 1.539, 1.539, 1.539 against 20/13
+  = 1.5385 (z = -1.7, +0.7, +1.8, +3.4; my standard error ignores the fluctuation of
+  the pair mix).
+- One step (cycle 300): updates of light and heavy particles 5033/4940, 4980/4921,
+  4987/4994, 4988/5082 (|z| < 1).
+- Energy defect over the thermal energy after 25 collision times (3.26e6 collisions):
+  -8e-5, -6.3e-3, -4.3e-3, +2.9e-3; mean -0.0020(21), scatter 0.4 percent. Momentum
+  defect: scatter 3.2e-3 of sum M |u|, mean 1.8 sigma. The defects summed from the
+  history equal the changes measured from the snapshots to 7e-15.
+
+### P11 restated before the run (the null part)
+
+The card regression shows that runs with deposit are not reproducible run to run on
+the card. The null prediction "operator on with sigma = 0 is byte-identical to operator
+absent" can therefore hold only on the processor (checked there on a short run), and on
+the card the null run is compared with a repeat of the baseline: its difference from
+the baseline (central lapse over the run, positions at the end) must not exceed ten
+times the difference between the two baseline runs.

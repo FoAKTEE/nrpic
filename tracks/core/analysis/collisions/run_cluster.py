@@ -82,7 +82,10 @@ def main():
     base = [f"particles/particle_file={os.path.join(ic, 'st.nrp')}",
             f"problem/comp0_file={os.path.join(ic, 'st.tab')}", f"time/tlim={args.tlim}",
             f"particles/snap_dt={args.snap_dt}"]
-    runs = {"off": (DECK, base), "sigma0": (deck_coll, base)}
+    # "off2" repeats "off": on a card the deposit adds with atomic operations in an
+    # order that changes from run to run, so two runs of the same input differ at
+    # rounding level; the null run "sigma0" is judged against that difference
+    runs = {"off": (DECK, base), "off2": (DECK, base), "sigma0": (deck_coll, base)}
     sig = {}
     for kn in kns:
         sig[kn] = 1.0/(rho0_c*radius*kn)
@@ -129,7 +132,12 @@ def main():
         r0 = np.array([mass_radii(s) for s in snaps["off"]])
         k = min(len(rr), len(r0))
         r["radii_max_rel_diff_to_off"] = float(np.max(np.abs(rr[:k]/r0[:k] - 1.0)))
-        if name != "off":
+        sa, sb = snaps[name][-1], snaps["off"][-1]
+        if len(sa["tag"]) == len(sb["tag"]):
+            ia, ib = np.argsort(sa["tag"]), np.argsort(sb["tag"])
+            r["end_max_dx_to_off"] = float(np.max(np.abs(sa["x"][ia] - sb["x"][ib])))
+            r["end_max_du_to_off"] = float(np.max(np.abs(sa["u"][ia] - sb["u"][ib])))
+        if name not in ("off", "off2"):
             c = collide.read_history(os.path.join(out, name, "st.coll.hst"))
             nc = np.maximum(c["n_coll"], 1.0)
             mp = float(snaps[name][0]["m"][0])
@@ -160,7 +168,20 @@ def main():
     summary["null_history_identical"] = bool(filecmp.cmp(
         os.path.join(out, "off", "st.nrpic.hst"), os.path.join(out, "sigma0", "st.nrpic.hst"),
         shallow=False))
-    good = summary["null_snapshots_identical"]
+    s_off2 = common.snapshots(os.path.join(out, "off2"), "st")
+    summary["baseline_twice_snapshots_identical"] = bool(
+        len(s_off) == len(s_off2) and all(filecmp.cmp(a, b, shallow=False)
+                                          for a, b in zip(s_off, s_off2)))
+    # the null run must be as close to the baseline as the baseline is to itself:
+    # identical if the baseline is reproducible, otherwise within ten times the
+    # difference between its two runs
+    r0, r2 = summary["runs"]["sigma0"], summary["runs"]["off2"]
+    if summary["baseline_twice_snapshots_identical"]:
+        good = summary["null_snapshots_identical"]
+    else:
+        good = (r0["lapse_max_diff_to_off"] <= 10.0*r2["lapse_max_diff_to_off"] + 1e-14
+                and r0["end_max_dx_to_off"] <= 10.0*r2["end_max_dx_to_off"] + 1e-12)
+    summary["null_ok"] = bool(good)
     for name, r in summary["runs"].items():
         good = good and r["rest_mass_identical"] and r["n_excised"] == 0 \
             and r["n_escaped"] == 0 and r["deposit_identity"] < 1e-12
@@ -183,18 +204,18 @@ def main():
     fig, axs = plt.subplots(2, 2, figsize=(8.0, 5.0))
     fig.subplots_adjust(left=0.09, right=0.985, bottom=0.09, top=0.97, wspace=0.27,
                         hspace=0.24)
-    cols = dict(zip(runs, ["k", fs.PAL["blue"], fs.PAL["red"], fs.PAL["yellow"],
+    cols = dict(zip(runs, ["k", "grey", fs.PAL["blue"], fs.PAL["red"], fs.PAL["yellow"],
                            fs.PAL["green"]]))
     for name in runs:
         h = hst[name]
-        ls = ":" if name == "sigma0" else "-"
+        ls = ":" if name in ("sigma0", "off2") else "-"
         axs[0, 0].plot(h["time"], h["alpha_probe"], color=cols[name], ls=ls, lw=1.2,
                        label=name)
         tt = np.array([s["time"] for s in snaps[name]])
         rr = np.array([mass_radii(s) for s in snaps[name]])
         for j in range(3):
             axs[0, 1].plot(tt, rr[:, j], color=cols[name], ls=ls, lw=1.2)
-        if name != "off":
+        if name not in ("off", "off2"):
             c = collide.read_history(os.path.join(out, name, "st.coll.hst"))
             axs[1, 0].plot(c["time"], np.cumsum(c["n_coll"]), color=cols[name], ls=ls, lw=1.2)
             axs[1, 1].plot(c["time"], np.cumsum(c["dE_particles"])/c["sum_MW_particles"][0],
