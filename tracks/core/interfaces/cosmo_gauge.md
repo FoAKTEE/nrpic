@@ -189,3 +189,23 @@ t ~ t_c, focused by the spherical geometry). Short T costs nothing measurable: T
 that should be followed, and lapse_leak x dt below about 2.7 (explicit fourth-order
 step; dt is the global step, set by the finest level). For balls of 5 to 10 M: T = 0.25
 to 0.5 M. Untested: `lapse_leak_alpha` other than 1.
+
+### 7.3 A puncture inside expanding dust (Track D)
+
+[JUDGEMENT, from 7.1 and test P] What it needs: (1) the lapse of 7.1, 1+log with
+advection plus `lapse_leak`: at the hole the lapse is below 1 and the term is exactly
+zero, so the puncture is sliced as in every verified isolated-system run (test P: a
+puncture alone with and without the term gives identical output files over 10 M; the
+largest lapse of Track D's 500 M run D-bh-dress-20261115-121313-284ec4f is 0.9972,
+`punc.nrpic.hst` column 30, so that history is what the term gives); in the dust the
+lapse tends to exp(6 T H) (1.07 for T = 2 M at Track D's H = 5.58e-3/M) instead of
+1 + 6 ln a (4.9 at tau = 200 M); (2) the Gamma-driver with `shift_eta` = 2/M and zero
+shift at the start (dust at rest in the coordinates); (3) `lapse = table` (psi^-2) or
+`precollapsed`; (4) an outer boundary further from the dust than the light travel
+time of the run: the outflow condition is not transparent for the Painleve-Gullstrand
+exterior, whose K_ij falls as r^(-3/2) (`JOURNAL-id.md` entry 5; no transparent
+boundary is offered here). Nothing else in the source. Choice of T: the dust region of
+Track D's data is 24 M thick (wall at 36 M, outer edge at 60 M), so T <= 2 M
+(T/t_c <= 0.1 with t_c = 24 M/sqrt(2)); with 6 T H = 0.07 the lapse excess is small
+anyway. Input: `problems/es/es_gauge.athinput` (T = 2 M, cells 2 M in the dust, M/8 at
+the hole, boundary at 96 M, 30 M).

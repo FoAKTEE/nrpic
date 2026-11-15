@@ -108,7 +108,8 @@ def main():
     numbers = {}
     os.makedirs(FIGS, exist_ok=True)
     fs.use_style()
-    col = [fs.PAL["blue"], fs.PAL["red"], fs.PAL["green"], fs.PAL["yellow"], fs.PAL["orange"]]
+    col = [fs.PAL["blue"], fs.PAL["red"], fs.PAL["green"], fs.PAL["yellow"], fs.PAL["orange"],
+           "0.55", "k", "tab:purple"]
 
     # ---------------------------------------------------------------- P
     if "p-plain" in runs and "p-leak1" in runs:
@@ -150,18 +151,21 @@ def main():
     # ---------------------------------------------------------------- E1
     e1 = [("e1-eta2", r"$\eta=2$ (reference)"), ("e1-eta20", r"$\eta=20$"),
           ("e1-prof20", r"$\eta_0=20$, profile to 2"), ("e1-eta02", r"$\eta=0.2$"),
-          ("e1-prof02", r"$\eta_0=0.2$, profile to 2")]
+          ("e1-prof02", r"$\eta_0=0.2$, profile to 2"),
+          ("e1-prof02-w4", r"$\eta_0=0.2$, profile, width 4"),
+          ("e1-prof02-w8", r"$\eta_0=0.2$, profile, width 8"),
+          ("e1-prof20-w8", r"$\eta_0=20$, profile, width 8")]
     e1 = [(k, lab) for k, lab in e1 if k in runs]
     if e1:
         numbers["E1"] = {}
         fig, ax = plt.subplots(1, 3, figsize=(fs.FULL_WIDTH, 2.9))
-        fig.subplots_adjust(left=0.08, right=0.985, bottom=0.17, top=0.95, wspace=0.36)
+        fig.subplots_adjust(left=0.08, right=0.985, bottom=0.17, top=0.95, wspace=0.52)
         for (k, lab), c in zip(e1, col):
             r = runs[k]
             tr, hz = r["trackers"][0], r["horizons"][0]
             v = np.linalg.norm(tr["v"], axis=1)
             ax[0].plot(tr["t"], v, color=c, label=lab)
-            ax[1].plot(hz["t"], hz["mass"], color=c)
+            ax[1].plot(hz["t"], hz["mass"] - 1.0, color=c)
             ax[2].semilogy(r["hst"]["t"], r["hst"]["H"], color=c)
             numbers["E1"][k] = dict(
                 run_id=r["run_id"], t_end=float(tr["t"][-1]),
@@ -177,7 +181,7 @@ def main():
         ax[0].set_ylabel(r"tracker speed $|\beta|$ at the puncture")
         ax[0].legend(fontsize=7)
         ax[1].set_xlabel(r"time $t/m$", labelpad=-2)
-        ax[1].set_ylabel(r"horizon mass $M_{\rm AH}/m$")
+        ax[1].set_ylabel(r"horizon mass $M_{\rm AH}/m - 1$")
         ax[2].set_xlabel(r"time $t/m$", labelpad=-2)
         ax[2].set_ylabel(r"norm of the Hamiltonian constraint")
         fs.save(fig, os.path.join(FIGS, f"punc_{pre}_e1"))
