@@ -224,10 +224,14 @@ def tex_num(x, sig=4):
 
 
 def write_ledger(v, res, out):
-    rid = {k: "\\texttt{" + r + "}" for k, r in (("spec", SPEC_RUN), ("lead", LEAD_RUN),
-                                                  ("dnq", DN["quadratic"]), ("dni", DN["inflection"]),
-                                                  ("val", VAL_RUN), ("cost", costmodel.CODEBASE),
-                                                  ("core", costmodel.CORE))}
+    runs = [("spec", SPEC_RUN, "background and mode functions, full and deformed"),
+            ("lead", LEAD_RUN, "independent background, freezing and delta-N checks"),
+            ("dnq", DN["quadratic"], "stochastic delta N, slow roll"),
+            ("dni", DN["inflection"], "stochastic delta N, ultra-slow roll"),
+            ("val", VAL_RUN, "validation of the code's noise generator"),
+            ("cost", costmodel.CODEBASE, "cost model and synthesis operation counts"),
+            ("core", costmodel.CORE, "measured card throughput of the code (core)")]
+    rid = {k: f"R{n}" for n, (k, _, _) in enumerate(runs, 1)}
     q, i = "quadratic", "inflection"
     rows = [
         ("Background, SR: first slow-roll parameter at the start", tex_num(v[f"{q}.eps1_star"]), rid["spec"]),
@@ -274,24 +278,24 @@ def write_ledger(v, res, out):
          rid["cost"] + ", " + rid["core"]),
         ("Cost: memory of a $256^3$ run (GB)", f"${v['cost.quadratic.256.mem']:.1f}$", rid["cost"]),
     ]
-    L = ["% written by scripts/ledger.py from registered run outputs; do not edit",
-         "\\begin{table*}",
+    L = ["\\begin{table*}",
          "\\caption{\\label{tab:ledger}Numerical ledger: the numbers behind the statements and "
          "figures of this note, each with the registered run that produced it.}",
          "\\begin{ruledtabular}", "\\footnotesize",
-         "\\begin{tabular}{p{0.50\\textwidth}p{0.20\\textwidth}p{0.24\\textwidth}}",
+         "\\begin{tabular}{p{0.56\\textwidth}p{0.26\\textwidth}p{0.08\\textwidth}}",
          "Quantity & Value & Run \\\\", "\\hline"]
     for a, b, c in rows:
         L.append(f"{a} & {b} & {c} \\\\")
+    L += ["\\hline", "\\multicolumn{3}{l}{Registered runs:} \\\\"]
+    for n, (k, r, what) in enumerate(runs, 1):
+        L.append(f"\\multicolumn{{3}}{{l}}{{R{n}\\quad\\texttt{{{r}}}\\quad {what}}} \\\\")
     L += ["\\end{tabular}", "\\end{ruledtabular}", "\\end{table*}"]
     open(os.path.join(out, "ledger.tex"), "w").write("\n".join(L) + "\n")
 
 
 def write_parameters(v, out):
     q, i = "quadratic", "inflection"
-    L = ["% written by scripts/ledger.py; paper values from arXiv:2512.14649, derived values from run "
-         + SPEC_RUN,
-         "\\begin{table}",
+    L = ["\\begin{table*}",
          "\\caption{\\label{tab:parameters}Parameters of the two test cases.}",
          "\\begin{ruledtabular}", "\\footnotesize",
          "\\begin{tabular}{lll}",
@@ -302,12 +306,12 @@ def write_parameters(v, out):
          f"derived & $\\phi_0={v[f'{q}.phi0']:.4f}\\,M_\\mathrm{{Pl}}$ & $H_0={v[f'{i}.H0']*1e6:.4f}\\times10^{{-6}}M_\\mathrm{{Pl}}$ \\\\",
          f" & $m={v[f'{q}.m']*1e6:.5f}\\times10^{{-6}}M_\\mathrm{{Pl}}$ & $\\mathrm{{d}}\\phi/\\mathrm{{d}}N={v[f'{i}.dphidN0']:.6f}\\,M_\\mathrm{{Pl}}$ \\\\",
          f"$N_*-N_0$, $N_f-N_*$ & ${v[f'{q}.Nstar']:g}$, ${v[f'{q}.Nf']-v[f'{q}.Nstar']:g}$ & ${v[f'{i}.Nstar']:g}$, ${v[f'{i}.Nf']-v[f'{i}.Nstar']:g}$ \\\\",
-         "lattice & \\multicolumn{2}{l}{$256^3$ cells, $L\\,k_{\\sigma*}=2\\pi$, noise up to $k_\\mathrm{max}=64\\,\\Delta k$} \\\\",
+         "lattice & \\multicolumn{2}{l}{$256^3$ cells, $L\\,k_{\\sigma*}=2\\pi$, $k_\\mathrm{max}=64\\,\\Delta k$} \\\\",
          "window & \\multicolumn{2}{l}{$\\tanh$ profile, steepness $s=5$, $\\sigma=1$} \\\\",
-         "gauge & \\multicolumn{2}{l}{geodesic slicing, zero shift, no constraint damping} \\\\",
-         "Courant factor & \\multicolumn{2}{l}{$0.25$; temporal test at $0.125$ and $0.0625$} \\\\",
-         "coefficients of the noise & \\multicolumn{2}{l}{Friedmann background (level 0); box means (level 1) as a variant} \\\\",
-         "\\end{tabular}", "\\end{ruledtabular}", "\\end{table}"]
+         "gauge & \\multicolumn{2}{l}{geodesic slicing, zero shift, undamped} \\\\",
+         "Courant factor & \\multicolumn{2}{l}{$0.25$; tests at $0.125$, $0.0625$} \\\\",
+         "noise coefficients & \\multicolumn{2}{l}{Friedmann background; box means as a variant} \\\\",
+         "\\end{tabular}", "\\end{ruledtabular}", "\\end{table*}"]
     open(os.path.join(out, "parameters.tex"), "w").write("\n".join(L) + "\n")
 
 

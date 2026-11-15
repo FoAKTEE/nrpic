@@ -1,0 +1,609 @@
+{
+ "claims": [
+  {
+   "id": "c01",
+   "doc": "spec/scope/SCOPE.md",
+   "line": 42,
+   "printed": "-14.0950",
+   "computed": -14.09499517165185,
+   "agree": true,
+   "what": "SR phi0"
+  },
+  {
+   "id": "c02",
+   "doc": "spec/scope/SCOPE.md",
+   "line": 42,
+   "printed": "1.73494e-6",
+   "computed": 1.7349447958987207e-06,
+   "agree": true,
+   "what": "SR mass"
+  },
+  {
+   "id": "c03",
+   "doc": "spec/scope/SCOPE.md",
+   "line": 42,
+   "printed": "1.1107e-2",
+   "computed": 0.011107104834030802,
+   "agree": true,
+   "what": "SR eps1 at N*"
+  },
+  {
+   "id": "c04",
+   "doc": "spec/scope/SCOPE.md",
+   "line": 42,
+   "printed": "0.102682",
+   "computed": 0.10268195909777693,
+   "agree": true,
+   "what": "USR dphi/dN at N0"
+  },
+  {
+   "id": "c05",
+   "doc": "spec/scope/SCOPE.md",
+   "line": 42,
+   "printed": "9.5902e-6",
+   "computed": 9.590197622297404e-06,
+   "agree": true,
+   "what": "USR H0"
+  },
+  {
+   "id": "c06",
+   "doc": "spec/scope/SCOPE.md",
+   "line": 42,
+   "printed": "2.52",
+   "computed": 2.5237,
+   "agree": true,
+   "what": "USR onset (eps2 = 3), lead's integrator"
+  },
+  {
+   "id": "c07",
+   "doc": "spec/scope/SCOPE.md",
+   "line": 42,
+   "printed": "6.55",
+   "computed": 6.549799999999999,
+   "agree": true,
+   "what": "USR end (eps2 = 3), lead's integrator"
+  },
+  {
+   "id": "c08",
+   "doc": "spec/scope/SCOPE.md",
+   "line": 42,
+   "printed": "9.7e-13",
+   "computed": 9.715988955123588e-13,
+   "agree": true,
+   "what": "USR minimum eps1"
+  },
+  {
+   "id": "c09",
+   "doc": "spec/scope/SCOPE.md",
+   "line": 48,
+   "printed": "1304",
+   "computed": 1304.0,
+   "agree": true,
+   "what": "SR steps at 256^3, Courant 0.25"
+  },
+  {
+   "id": "c10",
+   "doc": "spec/scope/SCOPE.md",
+   "line": 48,
+   "printed": "1630",
+   "computed": 1630.0,
+   "agree": true,
+   "what": "USR steps at 256^3, Courant 0.25"
+  },
+  {
+   "id": "c11",
+   "doc": "spec/scope/SCOPE.md",
+   "line": 196,
+   "printed": "0.36",
+   "computed": 0.36383577086556135,
+   "agree": true,
+   "what": "SR card-hours, model, noise once per step"
+  },
+  {
+   "id": "c12",
+   "doc": "spec/scope/SCOPE.md",
+   "line": 196,
+   "printed": "0.41",
+   "computed": 0.40720966091171673,
+   "agree": true,
+   "what": "SR card-hours, model, noise per stage"
+  },
+  {
+   "id": "c13",
+   "doc": "spec/scope/SCOPE.md",
+   "line": 197,
+   "printed": "0.45",
+   "computed": 0.45479471358195167,
+   "agree": true,
+   "what": "USR card-hours, model, per step"
+  },
+  {
+   "id": "c14",
+   "doc": "spec/scope/SCOPE.md",
+   "line": 197,
+   "printed": "0.51",
+   "computed": 0.5090120761396459,
+   "agree": true,
+   "what": "USR card-hours, model, per stage"
+  },
+  {
+   "id": "c15",
+   "doc": "spec/scope/SCOPE.md",
+   "line": 196,
+   "printed": "20",
+   "computed": 19.661353558930937,
+   "agree": true,
+   "what": "memory of a 256^3 run, GB"
+  },
+  {
+   "id": "c16",
+   "doc": "spec/scope/SCOPE.md",
+   "line": 191,
+   "printed": "0.15",
+   "computed": 0.6465877292768594,
+   "agree": false,
+   "what": "overhead of field and sources over Z4c (assumed in SCOPE; measured by core)"
+  },
+  {
+   "id": "c17",
+   "doc": "spec/scope/SCOPE.md",
+   "line": 202,
+   "printed": "0.5",
+   "computed": 0.7061363562736312,
+   "agree": false,
+   "what": "card-hours of one 256^3 SR realisation (upper end), measured throughput"
+  },
+  {
+   "id": "c18",
+   "doc": "spec/scope/SCOPE.md",
+   "line": 202,
+   "printed": "0.5",
+   "computed": 0.882670445342039,
+   "agree": false,
+   "what": "card-hours of one 256^3 USR realisation (upper end), measured throughput"
+  },
+  {
+   "id": "c19",
+   "doc": "spec/SPEC.md",
+   "line": 499,
+   "printed": "0.30",
+   "computed": 0.6465877292768594,
+   "agree": false,
+   "what": "overhead of field and sources over Z4c (assumed in SPEC 11.2; measured by core)"
+  },
+  {
+   "id": "c20",
+   "doc": "spec/SPEC.md",
+   "line": 304,
+   "printed": "1.3164e-2",
+   "computed": 0.013163891927146126,
+   "agree": true,
+   "what": "USR eps1 at N*, reference run"
+  },
+  {
+   "id": "c21",
+   "doc": "spec/SPEC.md",
+   "line": 304,
+   "printed": "1.3164e-2",
+   "computed": 0.013162474729286385,
+   "agree": false,
+   "what": "USR eps1 at N*, lead's integrator"
+  },
+  {
+   "id": "c22",
+   "doc": "spec/SPEC.md",
+   "line": 306,
+   "printed": "1.350e-2",
+   "computed": 0.013495891193667914,
+   "agree": true,
+   "what": "SR eps1 at N_f"
+  },
+  {
+   "id": "c23",
+   "doc": "spec/SPEC.md",
+   "line": 306,
+   "printed": "1.008e-12",
+   "computed": 1.0083020370608432e-12,
+   "agree": true,
+   "what": "USR eps1 at N_f"
+  },
+  {
+   "id": "c24",
+   "doc": "spec/SPEC.md",
+   "line": 308,
+   "printed": "-2.69e-2",
+   "computed": -0.026872466136511737,
+   "agree": true,
+   "what": "SR eps2 at N_f"
+  },
+  {
+   "id": "c25",
+   "doc": "spec/SPEC.md",
+   "line": 308,
+   "printed": "-2.76e-2",
+   "computed": -0.02761549874687329,
+   "agree": true,
+   "what": "USR eps2 at N_f"
+  },
+  {
+   "id": "c26",
+   "doc": "spec/SPEC.md",
+   "line": 395,
+   "printed": "1.010",
+   "computed": 1.0104084514014269,
+   "agree": true,
+   "what": "SR full power at N_f over the estimate at crossing, lowest mode value"
+  },
+  {
+   "id": "c27",
+   "doc": "spec/SPEC.md",
+   "line": 395,
+   "printed": "1.012",
+   "computed": 1.0120526273155566,
+   "agree": true,
+   "what": "same, highest"
+  },
+  {
+   "id": "c28",
+   "doc": "spec/SPEC.md",
+   "line": 399,
+   "printed": "-0.051",
+   "computed": -0.050891842779959374,
+   "agree": true,
+   "what": "SR deformed drift per e-fold, smallest magnitude"
+  },
+  {
+   "id": "c29",
+   "doc": "spec/SPEC.md",
+   "line": 399,
+   "printed": "-0.055",
+   "computed": -0.05515578329045858,
+   "agree": true,
+   "what": "SR deformed drift per e-fold, largest magnitude"
+  },
+  {
+   "id": "c30",
+   "doc": "spec/SPEC.md",
+   "line": 400,
+   "printed": "0.65",
+   "computed": 0.6543682744413954,
+   "agree": true,
+   "what": "SR deformed/full at N_f, k = dk"
+  },
+  {
+   "id": "c31",
+   "doc": "spec/SPEC.md",
+   "line": 400,
+   "printed": "0.79",
+   "computed": 0.7935452264042538,
+   "agree": true,
+   "what": "SR deformed/full at N_f, k = 64 dk"
+  },
+  {
+   "id": "c32",
+   "doc": "spec/SPEC.md",
+   "line": 402,
+   "printed": "8.40",
+   "computed": 8.401649431963776,
+   "agree": true,
+   "what": "USR deformed/full at N_f, k = dk"
+  },
+  {
+   "id": "c33",
+   "doc": "spec/SPEC.md",
+   "line": 402,
+   "printed": "1.18",
+   "computed": 1.1801420801807532,
+   "agree": true,
+   "what": "USR deformed/full, k = 4 dk"
+  },
+  {
+   "id": "c34",
+   "doc": "spec/SPEC.md",
+   "line": 402,
+   "printed": "1.07",
+   "computed": 1.0673911849344764,
+   "agree": true,
+   "what": "USR deformed/full, k = 5.7 dk"
+  },
+  {
+   "id": "c35",
+   "doc": "spec/SPEC.md",
+   "line": 403,
+   "printed": "1.003",
+   "computed": 1.00278712521266,
+   "agree": true,
+   "what": "USR deformed/full, k = 11.3 dk"
+  },
+  {
+   "id": "c36",
+   "doc": "spec/SPEC.md",
+   "line": 404,
+   "printed": "1.017",
+   "computed": 1.0167595344229414,
+   "agree": true,
+   "what": "USR full power at N_f, k = 64 dk"
+  },
+  {
+   "id": "c37",
+   "doc": "spec/SPEC.md",
+   "line": 398,
+   "printed": "2.5e-4",
+   "computed": 0.0002533000973803179,
+   "agree": true,
+   "what": "SR full drift magnitude, smallest"
+  },
+  {
+   "id": "c38",
+   "doc": "spec/SPEC.md",
+   "line": 398,
+   "printed": "1.9e-3",
+   "computed": 0.0018877490279515959,
+   "agree": true,
+   "what": "SR full drift magnitude, largest"
+  },
+  {
+   "id": "c39",
+   "doc": "spec/SPEC.md",
+   "line": 367,
+   "printed": "1.0805",
+   "computed": 1.080490190759789,
+   "agree": true,
+   "what": "SR lattice sum over continuum, band dk-64 dk"
+  },
+  {
+   "id": "c40",
+   "doc": "spec/SPEC.md",
+   "line": 370,
+   "printed": "0.42",
+   "computed": 0.42331385133679356,
+   "agree": true,
+   "what": "excess variance at sigma = 1, USR"
+  },
+  {
+   "id": "c41",
+   "doc": "spec/SPEC.md",
+   "line": 370,
+   "printed": "0.45",
+   "computed": 0.4492306047741059,
+   "agree": true,
+   "what": "excess variance at sigma = 1, SR"
+  },
+  {
+   "id": "c42",
+   "doc": "stage/G0/EVIDENCE.md",
+   "line": 38,
+   "printed": "1.0108",
+   "computed": 1.01076568701417,
+   "agree": true,
+   "what": "lead's SR mode: full power at N_f over the slow-roll estimate"
+  },
+  {
+   "id": "c43",
+   "doc": "stage/G0/EVIDENCE.md",
+   "line": 39,
+   "printed": "-5.8e-4",
+   "computed": -0.0005848537188469052,
+   "agree": true,
+   "what": "lead's SR mode: full slope"
+  },
+  {
+   "id": "c44",
+   "doc": "stage/G0/EVIDENCE.md",
+   "line": 40,
+   "printed": "-0.0519",
+   "computed": -0.0518600035543888,
+   "agree": true,
+   "what": "lead's SR mode: deformed slope"
+  },
+  {
+   "id": "c45",
+   "doc": "stage/G0/EVIDENCE.md",
+   "line": 40,
+   "printed": "-0.0513",
+   "computed": -0.05125524803499263,
+   "agree": true,
+   "what": "lead's SR mode: -4 eps1"
+  },
+  {
+   "id": "c46",
+   "doc": "stage/G0/EVIDENCE.md",
+   "line": 40,
+   "printed": "0.70",
+   "computed": 0.6994537336113975,
+   "agree": true,
+   "what": "lead's SR mode: deformed/full at N_f"
+  },
+  {
+   "id": "c47",
+   "doc": "stage/G0/EVIDENCE.md",
+   "line": 42,
+   "printed": "2.08",
+   "computed": 2.0799458771379884,
+   "agree": true,
+   "what": "lead's USR mode: deformed/full at N_f"
+  },
+  {
+   "id": "c48",
+   "doc": "stage/G0/EVIDENCE.md",
+   "line": 115,
+   "printed": "4.1e-14",
+   "computed": 4.113289669380628e-14,
+   "agree": true,
+   "what": "frozen scheme, A1"
+  },
+  {
+   "id": "c49",
+   "doc": "stage/G0/EVIDENCE.md",
+   "line": 115,
+   "printed": "2.4e-15",
+   "computed": 2.3558762301696242e-15,
+   "agree": true,
+   "what": "frozen scheme, A13"
+  },
+  {
+   "id": "c50",
+   "doc": "stage/G0/EVIDENCE.md",
+   "line": 115,
+   "printed": "1.07e-10",
+   "computed": 1.0681295015356706e-10,
+   "agree": true,
+   "what": "Markov-tanh scheme, A1"
+  },
+  {
+   "id": "c51",
+   "doc": "langevin/README.md",
+   "line": 106,
+   "printed": "3.9248e-10",
+   "computed": 3.924759284695695e-10,
+   "agree": true,
+   "what": "SR linear band variance"
+  },
+  {
+   "id": "c52",
+   "doc": "langevin/README.md",
+   "line": 106,
+   "printed": "0.79884",
+   "computed": 0.7988384012056265,
+   "agree": true,
+   "what": "USR linear band variance"
+  },
+  {
+   "id": "c53",
+   "doc": "langevin/README.md",
+   "line": 107,
+   "printed": "0.9997",
+   "computed": 0.9997336636348377,
+   "agree": true,
+   "what": "USR lattice over continuum"
+  },
+  {
+   "id": "c54",
+   "doc": "langevin/README.md",
+   "line": 109,
+   "printed": "0.9981",
+   "computed": 0.9981111381205033,
+   "agree": true,
+   "what": "SR var/var_lin at sigma = 0.01"
+  },
+  {
+   "id": "c55",
+   "doc": "langevin/README.md",
+   "line": 109,
+   "printed": "1.0001",
+   "computed": 1.0001114080379894,
+   "agree": true,
+   "what": "USR var/var_lin at sigma = 0.01"
+  },
+  {
+   "id": "c56",
+   "doc": "langevin/README.md",
+   "line": 116,
+   "printed": "1.0050",
+   "computed": 1.0050087330115096,
+   "agree": true,
+   "what": "SR var/var_lin at sigma = 0.1"
+  },
+  {
+   "id": "c57",
+   "doc": "langevin/README.md",
+   "line": 116,
+   "printed": "1.0055",
+   "computed": 1.0055453425542573,
+   "agree": true,
+   "what": "USR var/var_lin at sigma = 0.1"
+  },
+  {
+   "id": "c58",
+   "doc": "langevin/README.md",
+   "line": 117,
+   "printed": "1.4492",
+   "computed": 1.449230604774106,
+   "agree": true,
+   "what": "SR var/var_lin at sigma = 1"
+  },
+  {
+   "id": "c59",
+   "doc": "langevin/README.md",
+   "line": 117,
+   "printed": "1.4233",
+   "computed": 1.4233138513367936,
+   "agree": true,
+   "what": "USR var/var_lin at sigma = 1"
+  }
+ ],
+ "inputs": [
+  {
+   "run": "E-20261115-135532-3f958a1",
+   "file": "bg/lead_bg.json",
+   "sha256": "b12c9c960206ff1af6f6dabd39c4a41dcdd3d3d2211f569ca967cbe4be662f4a",
+   "checksum": "manifest"
+  },
+  {
+   "run": "E-20261115-140116-87c1cc5",
+   "file": "cost.json",
+   "sha256": "a73db10925fbe980b91b1a8b3f48232ce4a65f911841b82350a4eff2b2afbe4b",
+   "checksum": "manifest"
+  },
+  {
+   "run": "E-20261115-140116-87c1cc5",
+   "file": "d2.json",
+   "sha256": "c6845abe4e6844d1eb6f74865fa34e2ee374e2f9d7fa27fdff41b816785674a8",
+   "checksum": "manifest"
+  },
+  {
+   "run": "E-20261115-140502-2957846",
+   "file": "val_frozen/validation.json",
+   "sha256": "26e80d92dd2fb4a74f89d8570ce2ac8b618b07dfac8a9127bb8f216dadcf3ca4",
+   "checksum": "manifest"
+  },
+  {
+   "run": "E-20261115-140502-2957846",
+   "file": "val_markov_heaviside/validation.json",
+   "sha256": "b0684e18882f942e798c7c96e1362c1f0a9615620903336648d8824ec7349ee9",
+   "checksum": "manifest"
+  },
+  {
+   "run": "E-20261115-140502-2957846",
+   "file": "val_markov_tanh/validation.json",
+   "sha256": "3eb4e982acf26a0a000f0898859b1bc58bf36126a863650df321b4c7c3ccdddf",
+   "checksum": "manifest"
+  },
+  {
+   "run": "E-stoch-inf-20261115-122806-ef0d039",
+   "file": "inflection.npz",
+   "sha256": "a376e88d7b3da78784fac747371dc6629a9a803858a6f3bdf9fc2afa40e53f3c",
+   "checksum": "manifest"
+  },
+  {
+   "run": "E-stoch-inf-20261115-122806-ef0d039",
+   "file": "quadratic.npz",
+   "sha256": "6fb64b63ff9455c38d1757347c08918b9bd084a687f1ab756a0b9a8b1496b040",
+   "checksum": "manifest"
+  },
+  {
+   "run": "E-stoch-inf-20261115-122806-ef0d039",
+   "file": "summary.json",
+   "sha256": "2f9f21ae2235b928d7bd86f20330fe332d9c25fbb02a0746cc1e69a6235343b7",
+   "checksum": "manifest"
+  },
+  {
+   "run": "E-stoch-inf-20261115-130137-176cdd6",
+   "file": "ref_inflection.json",
+   "sha256": "e8becdd6c5358e9a2757dd5e46d29bab42a06958361e961519e566e9146e051f",
+   "checksum": "manifest"
+  },
+  {
+   "run": "E-stoch-inf-20261115-130139-176cdd6",
+   "file": "ref_quadratic.json",
+   "sha256": "6b3b748896b44e20b38eb853d7ab31f249b9377e63516174011914e90579e346",
+   "checksum": "manifest"
+  },
+  {
+   "run": "core-20261115-143907-cea4c86",
+   "file": "summary.json",
+   "sha256": "7e8c64e1852daf8865c668e9e00591eb979a7e4fc5dee98018d1af30faed6417",
+   "checksum": "not recorded by the run; read value"
+  }
+ ]
+}

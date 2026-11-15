@@ -65,7 +65,7 @@ def main():
     a.axvline(4.0, **cz.MASK_LINE)
     a.set_xlabel(r"$N-N_k$")
     a.set_ylabel(r"$\Delta_\mathcal{R}(N)\,/\,\Delta_\mathcal{R}(N_k+4)$")
-    a.legend(loc="upper right", fontsize=7, handlelength=2.2)
+    a.legend(frameon=False, loc="upper right", fontsize=7, handlelength=2.2)
     a.text(0.4, 0.86, "full (blue)\ndeformed (red)", fontsize=7.5, va="center")
     a.set_title("(a) slow roll", fontsize=9, loc="left")
 
@@ -78,7 +78,7 @@ def main():
     b.axhline(1.0, **cz.GUIDE)
     b.set_xlabel(r"$k/\Delta k$")
     b.set_ylabel(r"$\Delta^\mathrm{def}_\mathcal{R}/\Delta_\mathcal{R}$ at $N_f$")
-    b.legend(loc="upper right", fontsize=7.5)
+    b.legend(frameon=False, loc="upper right", fontsize=7.5)
     b.set_ylim(0.5, 15)
     b.set_title("(b) end of the run", fontsize=9, loc="left")
     cz.save(fig, os.path.join(out, "fig_freezing"))

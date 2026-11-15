@@ -53,7 +53,7 @@ def main():
     ax.set_ylabel("card-hours per realisation")
     ax.plot([], [], "o", mfc="none", color="grey", ms=4.5, label="model at scoping")
     ax.plot([], [], "o", color="grey", ms=4.0, label="measured throughput")
-    ax.legend(loc="lower right", fontsize=6.8, handletextpad=0.3)
+    ax.legend(frameon=False, loc="lower right", fontsize=6.8, handletextpad=0.3)
     cz.save(fig, os.path.join(out, "fig_cost"))
     for r in rows:
         print(r)

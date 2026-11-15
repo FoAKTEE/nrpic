@@ -1,0 +1,221 @@
+\documentclass[aps,prd,twocolumn,10pt,superscriptaddress,nofootinbib,longbibliography,floatfix]{revtex4-2}
+
+\usepackage{amsmath,amssymb,amsfonts}
+\usepackage{bm}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{xcolor}
+\usepackage{hyperref}
+\graphicspath{{figures/}}
+\hypersetup{colorlinks=true,linkcolor=blue,citecolor=blue,urlcolor=blue}
+
+\newcommand{\dd}{\mathrm{d}}
+\newcommand{\Mpl}{M_\mathrm{Pl}}
+\newcommand{\Ham}{\mathcal{H}}
+\newcommand{\Mom}{\mathcal{M}}
+
+\begin{document}
+
+\title{Stochastic inflation in numerical relativity:\\ Specification, reference solutions and cost at the feasibility gate (working note v0)}
+
+\author{Track E of the numerical-relativity particle-in-cell cosmology program}
+
+\date{Working note v0, state of 15 November 2026}
+
+\begin{abstract}
+The abundance of primordial black holes is set by the rare, large curvature perturbations of inflation, and the standard tool for their statistics, stochastic delta N, rests on a separate-universe approximation whose validity at sudden transitions to ultra-slow roll is disputed. Launay, Rigopoulos and Shellard added the quantum noise to the full Einstein--scalar-field equations as stochastic sources and evolved one slow-roll and one ultra-slow-roll case. This working note scopes the reproduction of those two cases in the numerical-relativity code of this program, as the first step towards tail statistics computed without the separate-universe approximation. It fixes the equations, the coarse-graining window, the gauge, the initial slice and the acceptance criteria, among them a freezing test per Fourier mode that needs a single realization. It corrects the momentum of the initial slice and the normalization of the random draw as printed in the source papers. It provides reference solutions for the freezing of super-horizon modes with and without metric perturbations, and stochastic delta-N statistics for the same potentials and noise band. It validates the noise generator of the code against a contract written before the code existed: in the scheme the reproduction uses, the generator matches its reference to rounding error and gives identical fields across domain decompositions and restarts. With the throughput of the code measured on one graphics card, one realization costs well below the threshold at which the track would be downgraded, and the track recommends proceeding to the slow-roll reproduction.
+\end{abstract}
+
+\maketitle
+
+\section{Introduction}\label{sec:intro}
+
+Primordial black holes form where the comoving curvature perturbation of inflation is large enough for a region to collapse once it re-enters the Hubble radius. Their abundance therefore depends on the far tail of the distribution of the curvature perturbation, many standard deviations away from the mean. In models where the inflaton crosses a nearly flat stretch of its potential, a phase of ultra-slow roll (USR) amplifies the perturbations on the scales that leave the Hubble radius during it, and quantum diffusion of the field dominates over its classical drift. Stochastic inflation describes this diffusion: the long-wavelength part of the field obeys a Langevin equation driven by the short-wavelength modes that cross a coarse-graining scale, and the stochastic delta-N formalism converts the distribution of first-passage times into the distribution of the curvature perturbation \cite{Fujita:2013alg,Jackson:2022is}. Applied to USR, it has been used to compute the distribution of the compaction function that decides collapse \cite{Raatikainen:2023cf,Raatikainen:2025kicks}.
+
+Stochastic delta N evolves each coarse-grained patch as a separate homogeneous universe. This separate-universe approximation is disputed at the sudden transitions into and out of USR \cite{Jackson:2023su}. Lattice simulations of the field on a fixed expanding background keep the gradients \cite{Caravano:2024usr}; without metric perturbations, however, the super-horizon curvature perturbation fails to freeze, and its power decays even in slow roll \cite{Barker:2026lattice}. Launay, Rigopoulos and Shellard therefore added the stochastic sources to the full Einstein--scalar-field system in its 3+1 form \cite{Launay:2024sigr}, built Bunch--Davies initial data for numerical relativity \cite{Launay:2025bd}, and evolved a slow-roll (SR) and a USR case with a BSSN code \cite{Launay:2025sinr}; the thesis of Launay collects the material with corrections \cite{Launay:2026thesis}. Their tests use one realization per case. Large samples, tail statistics and the hand-over to black-hole formation are open.
+
+This program applies a version of the numerical-relativity particle-in-cell code of Wu and Most \cite{Wu:2026nrpic}, built in AthenaK \cite{Stone:2024athenak}, to cosmology. Its Track E asks whether the same code, extended with a scalar field and the stochastic sources, reproduces the two cases of Ref.~\cite{Launay:2025sinr} at an affordable cost per realization; only then do tail statistics in full general relativity become a realistic goal. The work is carried out by large-language-model agents under human direction. This note records the feasibility gate: (i) a specification of the reproduction with acceptance criteria, including a freezing test per Fourier mode (Sec.~\ref{sec:problem}); (ii) the set-up in the code and the corrected initial slice (Sec.~\ref{sec:setup}); (iii) reference solutions for the freezing of super-horizon modes and for stochastic delta N, and the validation of the code's noise generator (Sec.~\ref{sec:tests}); (iv) the cost of one realization with the measured throughput of the code, and the decision the gate asks for (Sec.~\ref{sec:cost}).
+Section~\ref{sec:open} lists what is open. The parameters are in Appendix~\ref{app:parameters}, the corrections to the source papers in Appendix~\ref{app:errata}, and every number with the registered run that produced it in Appendix~\ref{app:ledger}.
+
+\section{The problem and the test cases}\label{sec:problem}
+
+\subsection{Stochastic sources in the Einstein--scalar-field equations}\label{sec:sources}
+
+The quantum modes of the inflaton become classical once they are stretched beyond the Hubble radius. Stochastic inflation keeps the long-wavelength part of the fields as the evolved variables and adds, as a source, the modes that cross a coarse-graining scale $k_\sigma=\sigma aH$ at each moment, where $a$ is the scale factor, $H$ the Hubble rate and $\sigma$ a parameter of order one. Following Ref.~\cite{Launay:2025sinr}, the crossing is smoothed by the window
+\begin{equation}\label{eq:window}
+W_k(t)=\tfrac12\left\{1+\tanh\!\left[s\,\ln\frac{k_\sigma(t)}{k}\right]\right\},
+\end{equation}
+with steepness $s$. Every source derives from the linear comoving curvature perturbation $\mathcal{R}_k(t)\,\alpha_{\bm k}$, where $\mathcal{R}_k$ is the mode function of the Mukhanov--Sasaki equation and $\alpha_{\bm k}$ a complex unit Gaussian drawn once per wave vector. In e-folds $N$ the mode equation reads
+\begin{equation}\label{eq:ms}
+\mathcal{R}_k''+(3-\epsilon_1-\epsilon_2)\,\mathcal{R}_k'+\left(\frac{k}{aH}\right)^2\mathcal{R}_k=0,
+\end{equation}
+with the slow-roll parameters $\epsilon_1=-\dd\ln H/\dd N$ and $\epsilon_2=-\dd\ln\epsilon_1/\dd N$ in the sign convention of the source papers, so that $\epsilon_2=6$ in exact USR. The dimensionless power of a mode is $\Delta_\mathcal{R}=k^3|\mathcal{R}_k|^2/(2\pi^2)$. The curvature source is
+\begin{equation}\label{eq:SR}
+S_\mathcal{R}=\left\{\mathcal{R}_k\ddot W_k+\left[2\dot{\mathcal{R}}_k+(3-\epsilon_2)H\mathcal{R}_k\right]\dot W_k\right\}\alpha_{\bm k},
+\end{equation}
+and all field sources follow from it through the linear dictionary of the coarse-grained perturbations \cite{Launay:2024sigr,Launay:2025sinr}:
+\begin{equation}\label{eq:sources}
+\begin{aligned}
+S_\Pi&=\sqrt{2\epsilon_1}\,\Mpl\,S_\mathcal{R},\qquad S_K=-\epsilon_1S_\mathcal{R},\\
+S_{\tilde A_{ij}}&=\epsilon_1\left(\frac{\delta_{ij}}{3}-\frac{k_ik_j}{k^2}\right)S_\mathcal{R},
+\end{aligned}
+\end{equation}
+for the momentum $\Pi$ of the scalar field $\phi$, the trace $K$ of the extrinsic curvature and its conformal trace-free part $\tilde A_{ij}$. The conformal metric, the conformal factor and the constraints carry no source; the constraints are then satisfied up to second order in the noise. These are the stochastic sources. Their coefficients can be taken from the Friedmann background (level 0 of the stochastic backreaction), from box means (level 1) or from local values (level 2) \cite{Launay:2025sinr}.
+
+\subsection{The two test cases}\label{sec:cases}
+
+The SR case is the quadratic potential $\tfrac12m^2\phi^2$ on its attractor; the USR case is the Higgs-like potential with a stationary inflection point of Ref.~\cite{Launay:2025sinr}, in which the field rolls onto the flat stretch and its velocity decays as $a^{-3}$ until it has crossed it. The simulation starts $N_*-N_0$ e-folds after the Bunch--Davies time $N_0$ of the mode functions and lasts until $N_f$; the box is periodic with $256$ cells per side, its size is chosen so that the longest mode enters the window at the start, and the noise reaches up to $k_\mathrm{max}=64\,\Delta k$, half the Nyquist wave number. Figure~\ref{fig:background} shows the background of both cases as computed by the reference integrator of the track, and Table~\ref{tab:parameters} lists the parameters. Over the run of the USR case the first slow-roll parameter falls by about ten orders of magnitude, while the modes enter the window during the first four e-folds, partly before and partly during USR.
+
+\begin{figure*}
+\includegraphics[width=\textwidth]{fig_background}
+\caption{Background of the two test cases against the e-folds since the start of the simulation. Top: first slow-roll parameter; bottom: second, in the convention of the source papers (dashed: zero, and the USR threshold three). Blue band: the lattice modes enter the noise window; red band: ultra-slow roll.}
+\label{fig:background}
+\end{figure*}
+
+\subsection{Acceptance criteria}\label{sec:criteria}
+
+Reference~\cite{Launay:2025sinr} reports agreement of its spectra with linear theory in words. The reproduction fixes criteria that a single realization can pass or fail, because the code and the reference share the Gaussian numbers $\alpha_{\bm k}$ of each wave vector. Its central criterion concerns freezing. Without metric perturbations the Mukhanov--Sasaki equation acquires an extra term \cite{Barker:2026lattice}, and in slow roll a super-horizon mode then decays as
+\begin{equation}\label{eq:decay}
+\frac{\dd\ln\Delta_\mathcal{R}}{\dd N}=-4\epsilon_1,
+\end{equation}
+since $\mathcal{R}^2$ follows $H^4$. With metric perturbations the gradient correction decays as $e^{-2\,\delta N}$ after crossing, and the mode freezes. The freezing criterion compares, for every lattice mode that left the window at least six e-folds before the end, the measured power ratio between $N_k+4$ and $N_f$ with the same ratio of the full Mukhanov--Sasaki solution; the deformed equation of the fixed-background lattice misses it by about twenty times the tolerance. In USR only the longest modes discriminate, and there the comparison is with the full solution at the end of the run. The further criteria are: the box means of the background, the power of each mode against $W_k\mathcal{R}_k\alpha_{\bm k}$ for modes up to half the noise cutoff, second-order constraint violations with a sign-flipped source as negative control, convergence in space at the order of the stencils and in time at the order of the integrator, and bit-identical noise across domain decompositions and restarts. They carry the labels A1--A7; A8 compares one-point statistics with stochastic delta N. Their tolerances are fixed in the track's scoping text.
+
+\section{Set-up and numerical methods}\label{sec:setup}
+
+\subsection{The calculation in the code}\label{sec:code}
+
+Figure~\ref{fig:architecture} shows the calculation in three states. The evolution runs in the program's AthenaK: the Z4c system with the constraint-damping variable switched off, which is BSSN, in geodesic slicing with zero shift on a periodic mesh; a minimally coupled scalar field whose stress--energy enters the spacetime solver; and the stochastic hook, which advances the mode functions of every lattice wave vector together with the field, synthesizes the source fields and adds them to the right-hand sides of $\Pi$, $K$ and $\tilde A_{ij}$. The release of the code merged in this wave contains all of these. The initial slice at the start, the analysis of the output in terms of the curvature perturbation, and the per-mode freezing check are still to be written; the box-mean coefficients (level 1) and the constraint ratios exist in other parts of the code and have to be carried over. Level 2 is left for later; Ref.~\cite{Launay:2025sinr} reports that switching it off changes the spectrum by a small fraction, and the reproduction states the difference.
+
+\begin{figure*}
+\includegraphics[width=0.92\textwidth]{schem_architecture}
+\caption{Architecture of the track's calculation. Left: what the run starts from; centre: the evolution in AthenaK; right: references and analysis outside the code. Colours mark what exists in the program now, what exists elsewhere in the code and must be carried over, and what is new; the purple pills are the deliverables of the track.}
+\label{fig:architecture}
+\end{figure*}
+
+\subsection{The noise}\label{sec:noise}
+
+The code draws $\alpha_{\bm k}$ from a counter-based generator keyed by the wave vector, so the same realization appears at every resolution and in every decomposition of the mesh into blocks, and it synthesizes the real-space source on each block as a separable sum over the modes, without a Fourier library. The source papers integrate the window over each step with the mode functions frozen and treat the result as a Stratonovich increment. With the Gaussian numbers drawn once and a smooth window, the source of each realization is a smooth function of time; the code therefore evaluates it at the time of each Runge--Kutta stage, with the window derivatives in closed form, and the integrator keeps its order. Three noise schemes exist for tests: the frozen draw above, and two Markov schemes that draw new numbers in every step with a smooth or a step-like window.
+
+\subsection{The initial slice}\label{sec:slice}
+
+At the start the fields carry the coarse-grained linear perturbation $W\mathcal{R}$ in geodesic slicing, with the residual gauge freedom fixed as in Ref.~\cite{Launay:2025bd}. In terms of the Bardeen potential $\Phi_B=\Psi_B=-\epsilon_1Ha^2k^{-2}\dot{\mathcal{R}}$ the momentum perturbation of the field is
+\begin{equation}\label{eq:dPi}
+\begin{split}
+\delta\Pi={}&\sqrt{2\epsilon_1}\,\Mpl\left(\dot{\mathcal{R}}-\dot\Phi_B-H\Psi_B\right)\\
+&-\epsilon_2\sqrt{\epsilon_1/2}\;H\Mpl\left(\mathcal{R}-\Phi_B\right).
+\end{split}
+\end{equation}
+The printed initial data of Ref.~\cite{Launay:2025bd} carry, in place of the $H\Psi_B$ term, a term in the lapse potential of the geodesic gauge, which vanishes there; with the printed form the linearized Hamiltonian constraint is violated at first order, with the form above it holds identically. The term follows from the gauge dictionary of the same paper once the time derivative of the gauge shift is kept. This is the corrected momentum of the initial slice; Appendix~\ref{app:errata} lists it with the other corrections.
+
+\subsection{Numerical methods}\label{sec:methods}
+
+Spatial derivatives are centred sixth-order differences, matching Ref.~\cite{Launay:2025sinr}; Kreiss--Oliger dissipation and constraint damping are off. Time integration is the low-storage fourth-order Runge--Kutta scheme of the code, and the mode functions are advanced with the same stage coefficients, so that each stage evaluates its sources at its own time. With Courant factor $\theta$ the number of steps is
+\begin{equation}\label{eq:steps}
+N_T=\frac{N\sigma\,\Delta N}{2\pi\theta},
+\end{equation}
+for $N$ cells per side and $\Delta N$ e-folds \cite{Launay:2025sinr}; the reproduction uses $\theta=0.25$ and tests one half and one quarter of it. The reference solutions outside the code are ordinary differential equations: the background and the full and deformed Mukhanov--Sasaki equations for every lattice shell from Bunch--Davies data, solved by two independent integrators, and a phase-space Langevin solver with first-passage detection for stochastic delta N.
+
+\section{Reference solutions and tests}\label{sec:tests}
+
+\subsection{Freezing of super-horizon modes}\label{sec:freezing}
+
+Figure~\ref{fig:freezing} is the reference for the freezing criterion. With metric perturbations, the power of every slow-roll mode approaches its final value within a few e-folds of crossing and stays there, at the slow-roll estimate at crossing to within a percent-level offset; after four e-folds the remaining drift is far below the tolerance. The deformed equation decays at the rate four times the first slow-roll parameter, integrated along the background, for all modes alike, and ends a third below the full power for the longest mode. In USR the two equations differ only for the modes that crossed the window about an e-fold or more before the onset of USR: there the deformed power at the end exceeds the full one by up to a factor of eight, and from about ten lattice spacings on the two agree within a percent. A second, independent integration of one mode per case reproduces these slopes and ratios.
+
+\begin{figure}
+\includegraphics[width=\columnwidth]{fig_freezing}
+\caption{Freezing of super-horizon modes. (a) Slow roll: power of four modes, divided by its value four e-folds after the mode crossed the window scale, with metric perturbations (blue) and without (red); dotted: the decay rate of the deformed equation. (b) Deformed over full power at the end of the run, for every lattice shell.}
+\label{fig:freezing}
+\end{figure}
+
+\subsection{Stochastic delta N for the same potentials}\label{sec:deltaN}
+
+The comparison outside numerical relativity evolves the background field and its velocity under the noise of the same lattice band, with the noise covariance taken from the linear modes, and measures the number of e-folds to a surface of uniform field fifteen e-folds after the start. The Langevin solver reproduces the analytic first-passage moments of the drift--diffusion problem and the closed-form distribution of quadratic inflation \cite{Fujita:2013alg,Jackson:2022is}. Figure~\ref{fig:deltan} shows the result for both potentials. With a narrow window, $\sigma=0.01$, the variance equals the linear variance of the band and the distribution is Gaussian to four standard deviations in slow roll, with a small positive skewness in USR. With $\sigma=1$, the coarse-graining of the numerical-relativity runs, the variance exceeds the linear value by more than forty percent in both cases, because a mode handed to the separate universe at Hubble crossing still carries gradient energy: evolved without gradients, a massless mode ends at $13/9$ of its frozen power. Criterion A8 therefore compares the one-point statistics of the numerical-relativity runs with the $\sigma=0.01$ reference and with the lattice sum of the band, which in slow roll exceeds the continuum integral (dotted line).
+
+\begin{figure}
+\includegraphics[width=\columnwidth]{fig_deltan}
+\caption{Stochastic delta N for the two test cases. (a) Distribution of the number of e-folds about its mean, in units of the linear standard deviation of the noise band, for $\sigma=0.01$; dashed: unit Gaussian. (b) Variance over the linear variance against the coarse-graining parameter; dotted: lattice sum of the band in slow roll.}
+\label{fig:deltan}
+\end{figure}
+
+\subsection{Reproducible noise in the code}\label{sec:noisetest}
+
+Before the code existed, the track wrote the noise contract: sixteen tests on the dumped source fields, from the exact reconstruction of each field from its keys, through the spectrum per shell, Gaussianity, correlations and the band limit, to bit-identity across MeshBlock layouts and restarts and independence of seeds. A self-test with planted errors confirmed that the validator catches each kind of error. Figure~\ref{fig:noise} shows the validation of the code's generator, built from the scalar-field branch before the release, in a scaled base case on processors. The frozen scheme passes every test, with the fields bit-identical for one, eight and sixty-four MeshBlocks and through a restart, and the same coefficients at two resolutions to rounding error. The Markov scheme with a step window passes every applicable test. The Markov scheme with the smooth window passes all tests except the exact reconstruction, which it misses by an order of magnitude: for modes long past crossing the window increment is a difference of two numbers close to one, and the code and the reference evaluate the window with different math libraries. Modes still entering agree to rounding error. The frozen draw, which the reproduction uses, involves no such difference, and the released code forms the increment of the smooth window as a quotient of hyperbolic functions, which avoids it; the validation of the released code is under way (Sec.~\ref{sec:open}).
+
+\begin{figure}
+\includegraphics[width=\columnwidth]{fig_noise}
+\caption{Validation of the code's noise generator for three noise schemes. Each test statistic is divided by its pass threshold, so a test passes at or left of the dashed line; left-pointing markers at the edge are results that are exactly zero, such as bit-identical fields.}
+\label{fig:noise}
+\end{figure}
+
+\subsection{Corrections to the source papers}\label{sec:errata}
+
+The specification read the equations at their sources and checked them by independent derivation or by registered calculations. Besides the momentum of the initial slice (Sec.~\ref{sec:slice}), the printed prefactors of the random draw give too much power by powers of $2\pi$, the importance-sampling weight of Ref.~\cite{Jackson:2022is} carries a sign that moves its expectation far from unity, for a finite ultraviolet boundary the leading pole of the first-passage distribution is the lowest eigenvalue of the problem, in place of the value stated as leading in general, the Friedmann denominator of Ref.~\cite{Launay:2025sinr} lacks a factor, and the USR interval in its text lies about one e-fold later than in its own figure. The spectra and constraints that Refs.~\cite{Launay:2025bd,Launay:2025sinr} report agree with the corrected forms, so their codes presumably use them. Appendix~\ref{app:errata} lists the corrections.
+
+\section{Cost and the decision at the gate}\label{sec:cost}
+
+The scoping model priced one step from the measured throughput of the spacetime solver alone, plus an assumed overhead for the field and the sources and an assumed rate of the synthesis. The code's measured throughput on one card, with the field and with the stochastic sources at the noise band of a $128^3$ box, replaces both assumptions: the overhead is about four times the assumed one. Scaling only the synthesis with its operation count to $256^3$, one realization of either case costs about one and a half times the scoping model, still far below the downgrade threshold of the track (Fig.~\ref{fig:cost}). The two production runs and the convergence ladder to the USR gate then fit in the allotment of the track several times over. A thousand realizations for tail statistics would cost several hundred card-hours; that scope is decided at the USR gate.
+
+\begin{figure}
+\includegraphics[width=\columnwidth]{fig_cost}
+\caption{Card-hours of one realization against the number of cells per side, at Courant factor one quarter. Open markers: the model at scoping; filled markers: the same step counts with the measured throughput of the code (bars: the range of block sizes at $256^3$). Dashed: downgrade threshold; dotted: allotment to the next gate.}
+\label{fig:cost}
+\end{figure}
+
+The feasibility gate asks the group to continue, to shrink or to downgrade. The specification is complete, the implementation exists in the code the program chose, its noise generator passes the contract in the scheme the reproduction uses, and the cost is affordable; the track recommends continuing to the slow-roll and USR reproductions and deciding the scope of the tail statistics at the USR gate. The orchestrator's provisional ruling is the same. Figure~\ref{fig:timeline} places the gates in time and states what each step needs. The recommendation turns to a downgrade, to a supplier of delta-N statistics for the primordial-black-hole track, if the slow-roll freezing criterion fails at levels 0 and 1, or if a measured realization exceeds the threshold.
+
+\begin{figure*}
+\includegraphics[width=0.92\textwidth]{schem_timeline}
+\caption{Stage timeline of the track. Circles: the five gates at their indicative times (green: feasibility and slow roll; slate: ultra-slow roll; red: tail statistics and paper). Boxes: what each gate requires. Dashed brackets: what the step between two gates needs.}
+\label{fig:timeline}
+\end{figure*}
+
+\section{What is open}\label{sec:open}
+
+The slow-roll gate needs, from the code project, the initial slice of Sec.~\ref{sec:slice} synthesized with the same Gaussian numbers as the sources, for which the track supplies the mode table and the transfer coefficients of each lattice shell; and, from the track, the extraction of the curvature perturbation from the evolved fields, the per-mode amplitudes, and the constraint ratios. The validation of the noise generator is repeated on the released executables at the full base size and on a card, where the card run is compared with the processor run; those runs are under way. The cost at $256^3$ is an extrapolation from one measured box size until a production run measures it. The key statements of the references are verified at their sources and wait to enter the knowledge base of the program as claims. Parts of the helpers' work await an independent re-check: the end-of-inflation statistics after USR, the importance sampling of the phase-space solver, the extraction factors of the curvature perturbation and the unit mapping, which the first runs will exercise. The verifier report of the gate is still to be written.
+
+\section{Summary}\label{sec:summary}
+
+A reproduction of stochastic inflation in numerical relativity can be judged on a single realization, because the code and its reference share the Gaussian number of every wave vector: the power of each mode must freeze where the full Mukhanov--Sasaki equation freezes, and a background lattice without metric perturbations would visibly fail. The separate-universe reference must use a narrow window, because the coarse-graining of the numerical-relativity runs inflates the delta-N variance by modes that still carry gradients. The noise of the code is a deterministic function of its keys, so it is reproducible across resolutions, decompositions and restarts by construction, and the tests confirm it. The open question for the next gate is physical: whether the curvature perturbation evolved with full metric backreaction freezes as linear theory says, first in slow roll and then through the USR transitions where the separate-universe approximation is in doubt.
+
+\begin{acknowledgments}
+This note, its figures and the calculations behind them were produced by large-language-model agents (Claude) working in the program's repository under human direction. Third-party paper sources were read in the program's local store, which keeps them private.
+\end{acknowledgments}
+
+\appendix
+
+\section{Parameters}\label{app:parameters}
+
+Table~\ref{tab:parameters} lists the parameters of the two test cases. The printed parameters are those of Ref.~\cite{Launay:2025sinr}; the derived ones come from the track's reference integrator, and an independent integrator agrees with them.
+
+\input{tables/parameters}
+
+\section{Corrections to the source papers}\label{app:errata}
+
+Table~\ref{tab:errata} lists the corrections found while writing the specification. Each was checked by a registered calculation or an independent derivation; the locators are in the track's specification.
+
+\begin{table*}
+\caption{\label{tab:errata}Corrections to the source papers.}
+\begin{ruledtabular}
+\footnotesize
+\begin{tabular}{p{0.19\textwidth}p{0.42\textwidth}p{0.27\textwidth}}
+Item & Correction & Check \\
+\hline
+Momentum of the initial slice \cite{Launay:2025bd} & the printed term in the lapse potential vanishes in geodesic slicing; the slice needs $-\sqrt{2\epsilon_1}\Mpl H\Psi_B$ & linearized Hamiltonian constraint symbolic: nonzero printed, zero corrected; re-derived from the gauge dictionary \\
+Random-draw normalization \cite{Launay:2025bd,Launay:2026thesis} & field $=L^{-3/2}$ times the inverse transform of amplitude times draw; the two printed prefactors are mutually inconsistent and give too much power by powers of $2\pi$ & measured shell power against the target \\
+Importance-sampling weight \cite{Jackson:2022is} & sign of the exponent: with the printed sign the expected weight is far from unity & expected weight unity within errors \\
+Leading pole \cite{Jackson:2022is} & for a finite ultraviolet boundary the leading pole is the lowest eigenvalue of the first-passage problem, and the closed form is smooth through the stated value & closed form against the Sturm--Liouville eigenvalues \\
+Friedmann equation \cite{Launay:2025sinr} & denominator lacks $3\Mpl^2$; the ``very shallow maximum'' is an exact stationary inflection point at $\phi=-\sqrt2\,v$ & reading; double root of the potential's slope \\
+USR interval \cite{Launay:2025sinr} & the text places USR about one e-fold later than its own background figure & two independent background integrators \\
+\end{tabular}
+\end{ruledtabular}
+\end{table*}
+
+\section{Numerical ledger}\label{app:ledger}
+
+Table~\ref{tab:ledger} lists the numbers behind the statements and figures of this note with the registered runs that produced them; the figures and both tables are made by one registered run of the note's scripts, which check each input against the checksum its run manifest records. The same run recomputes the numbers printed in the track's scoping documents from the run outputs: they agree to their printed digits, except the assumed overhead of the field and the sources and the cost per realization that follows from it, which the measured throughput replaces (Sec.~\ref{sec:cost}), and one fourth digit of the USR background between the two independent integrators.
+
+\input{tables/ledger}
+
+\bibliography{references}
+
+\end{document}

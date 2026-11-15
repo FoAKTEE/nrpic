@@ -65,7 +65,7 @@ def main():
     a.set_ylim(1e-6, 1.0)
     a.set_xlabel(r"$(\mathcal{N}-\langle\mathcal{N}\rangle)/\sigma_\mathrm{lin}$")
     a.set_ylabel("probability density")
-    a.legend(loc="upper right", fontsize=7)
+    a.legend(frameon=False, loc="lower center", fontsize=7)
     a.set_title(r"(a) $\sigma=0.01$", fontsize=9, loc="left")
     b.axhline(1.0, **cz.GUIDE)
     b.set_xscale("log")
@@ -73,7 +73,7 @@ def main():
     b.set_ylim(0.9, 1.55)
     b.set_xlabel(r"coarse-graining parameter $\sigma$")
     b.set_ylabel(r"$\mathrm{var}\,\mathcal{N}\,/\,\sigma_\mathrm{lin}^2$")
-    b.legend(loc="upper left", fontsize=7)
+    b.legend(frameon=False, loc="upper left", fontsize=7)
     b.set_title("(b) variance", fontsize=9, loc="left")
     cz.save(fig, os.path.join(out, "fig_deltan"))
 

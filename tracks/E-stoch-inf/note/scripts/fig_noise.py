@@ -105,7 +105,7 @@ def main():
     ax.xaxis.set_minor_locator(matplotlib.ticker.LogLocator(base=10.0, subs=(1.0,), numticks=20))
     ax.xaxis.set_minor_formatter(matplotlib.ticker.NullFormatter())
     ax.set_xlabel("statistic / pass threshold")
-    ax.legend(loc="upper center", bbox_to_anchor=(0.32, 1.13), fontsize=6.5, ncol=2,
+    ax.legend(frameon=False, loc="upper center", bbox_to_anchor=(0.32, 1.13), fontsize=6.5, ncol=2,
               handletextpad=0.2, columnspacing=0.6)
     cz.save(fig, os.path.join(out, "fig_noise"))
 

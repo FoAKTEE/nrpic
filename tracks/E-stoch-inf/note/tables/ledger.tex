@@ -1,0 +1,45 @@
+% written by scripts/ledger.py from registered run outputs; do not edit
+\begin{table*}
+\caption{\label{tab:ledger}Numerical ledger: the numbers behind the statements and figures of this note, each with the registered run that produced it.}
+\begin{ruledtabular}
+\footnotesize
+\begin{tabular}{p{0.56\textwidth}p{0.26\textwidth}p{0.08\textwidth}}
+Quantity & Value & Run \\
+\hline
+Background, SR: first slow-roll parameter at the start & $0.01111$ & R1 \\
+Background, SR: first slow-roll parameter at the end & $0.0135$ & R1 \\
+Background, USR: first slow-roll parameter at the start & $0.01316$ & R1 \\
+Background, USR: interval with $\epsilon_2>3$ (e-folds after the start) & $2.524$--$6.550$ & R2 \\
+Background, USR: minimum of the first slow-roll parameter & $9.716\times10^{-13}$ & R1 \\
+Freezing, SR: full power at the end over the slow-roll estimate at crossing & $1.0104$--$1.0121$ & R1 \\
+Freezing, SR: drift of $\ln\Delta_\mathcal{R}$ per e-fold, full, from $N_k+3$ & $-1.89e-03$ to $-2.53e-04$ & R1 \\
+Freezing, SR: drift per e-fold, deformed & $-0.0552$ to $-0.0509$ & R1 \\
+Freezing, SR: deformed over full power at the end, $k=\Delta k$ and $64\,\Delta k$ & $0.654$, $0.794$ & R1 \\
+Freezing, USR: deformed over full power at the end, $k=\Delta k$, $4\,\Delta k$ & $8.40$, $1.180$ & R1 \\
+Freezing, USR: full power at the end, $k=64\,\Delta k$ & $1.0168$ & R1 \\
+Freezing, independent check: SR slopes full, deformed; $-4\epsilon_1$ & $-5.8e-04$, $-0.0519$; $-0.0513$ & R2 \\
+$\delta N$, SR: linear variance of the band & $3.9248\times10^{-10}$ & R3 \\
+$\delta N$, USR: linear variance of the band & $0.79884$ & R4 \\
+$\delta N$: lattice sum over continuum, SR, USR & $1.0805$, $0.9997$ & R3, R4 \\
+$\delta N$, SR: variance over linear at $\sigma=0.01,\,0.1,\,1$ & $0.9981$, $1.0050$, $1.4492$ & R3 \\
+$\delta N$, USR: variance over linear at $\sigma=0.01,\,0.1,\,1$ & $1.0001$, $1.0055$, $1.4233$ & R4 \\
+$\delta N$: skewness at $\sigma=0.01$, SR, USR & $0.003$, $0.038$ & R3, R4 \\
+Noise: reconstruction from the keys, frozen, Markov-step, Markov-tanh (tolerance $10^{-11}$) & $4.1\times10^{-14}$, $2.4\times10^{-15}$, $1.07\times10^{-10}$ & R5 \\
+Noise: frozen scheme, $N$ against $2N$ & $2.4\times10^{-15}$ & R5 \\
+Cost: Z4c; with field; with sources (zone-cycles per second, $128^3$) & $1.98\times10^{7}$; $1.39\times10^{7}$; $1.2\times10^{7}$ & R7 \\
+Cost: overhead of field and sources over Z4c, assumed; measured & $0.15$; $0.65$ & R6, R7 \\
+Cost, SR $256^3$: steps; card-hours model; measured throughput & $1304$; $0.41$; $0.57$--$0.71$ & R6, R7 \\
+Cost, USR $256^3$: steps; card-hours model; measured throughput & $1630$; $0.51$; $0.71$--$0.88$ & R6, R7 \\
+Cost: memory of a $256^3$ run (GB) & $19.7$ & R6 \\
+\hline
+\multicolumn{3}{l}{Registered runs:} \\
+\multicolumn{3}{l}{R1\quad\texttt{E-stoch-inf-20261115-122806-ef0d039}\quad background and mode functions, full and deformed} \\
+\multicolumn{3}{l}{R2\quad\texttt{E-20261115-135532-3f958a1}\quad independent background, freezing and delta-N checks} \\
+\multicolumn{3}{l}{R3\quad\texttt{E-stoch-inf-20261115-130139-176cdd6}\quad stochastic delta N, slow roll} \\
+\multicolumn{3}{l}{R4\quad\texttt{E-stoch-inf-20261115-130137-176cdd6}\quad stochastic delta N, ultra-slow roll} \\
+\multicolumn{3}{l}{R5\quad\texttt{E-20261115-140502-2957846}\quad validation of the code's noise generator} \\
+\multicolumn{3}{l}{R6\quad\texttt{E-20261115-140116-87c1cc5}\quad cost model and synthesis operation counts} \\
+\multicolumn{3}{l}{R7\quad\texttt{core-20261115-143907-cea4c86}\quad measured card throughput of the code (core)} \\
+\end{tabular}
+\end{ruledtabular}
+\end{table*}
