@@ -115,10 +115,17 @@ def params_md(lay, rep, out):
         n = len(rows)
         if n:
             ok = c["literal"] + c["computed"]
+            okp = ok + c["pattern"]
             L.append(f"- input files: {len({r['file'] for r in rows})} with {n} parameter lines; literal {c['literal']}, "
-                     f"computed block {c['computed']}, name read under another block {c['other_block']}, unmatched "
-                     f"{c['unmatched']}; literal or computed: {ok} = {100.0 * ok / n:.1f} %")
+                     f"computed block {c['computed']}, computed name fitting its pattern {c['pattern']}, `<comment>` "
+                     f"block {c['comment_block']}, name read under another block {c['other_block']}, unmatched "
+                     f"{c['unmatched']}; literal or computed block: {ok} = {100.0 * ok / n:.1f} %; with the patterns: "
+                     f"{okp} = {100.0 * okp / n:.1f} %; without the <comment> lines: "
+                     f"{100.0 * okp / max(1, n - c['comment_block']):.1f} %")
             um = collections.Counter((r["block"], r["name"]) for r in rows if r["status"] in ("unmatched", "other_block"))
+            L.append("")
+            L.append("Unmatched lines are typing errors in input files, options that the code no longer reads, or names "
+                     "built from a plain variable (no literal to match, for example `<particles> field_time1`).")
             if um:
                 L += ["", "Input parameters not read with that block and name (count of input lines, first file):", "",
                       "| block | name | lines | status | first file |", "|---|---|---|---|---|"]
@@ -195,8 +202,8 @@ def fig_params(lay, comp_all, path):
     fig = plt.figure(figsize=(fs.FULL_WIDTH, 3.4))
     ax = fig.add_axes([0.08, 0.17, 0.36, 0.72])
     keys = [k for k, _ in COMPARE if comp_all.get(k)]
-    sts = [("literal", fs.PAL["blue"]), ("computed", fs.PAL["green"]), ("other_block", fs.PAL["yellow"]),
-           ("unmatched", fs.PAL["red"])]
+    sts = [("literal", fs.PAL["blue"]), ("computed", fs.PAL["green"]), ("pattern", fs.PAL["orange"]),
+           ("comment_block", "lightgrey"), ("other_block", fs.PAL["yellow"]), ("unmatched", fs.PAL["red"])]
     x = np.arange(len(keys))
     bottom = np.zeros(len(keys))
     for st, c in sts:

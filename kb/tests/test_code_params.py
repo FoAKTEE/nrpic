@@ -69,3 +69,14 @@ def test_athinput_and_comparison():
                                       ("src/athinput.cpp", True), ("README.md", False)])
 def test_is_athinput(path, yes):
     assert P.is_athinput(path) == yes
+
+
+def test_computed_names_match_by_pattern():
+    code = [{"block": "z4c", "block_literal": True, "name": '"co_" + nstr + "_type"', "name_literal": False},
+            {"block": "particles", "block_literal": True, "name": 'pre + "x1"', "name_literal": False},
+            {"block": "particles", "block_literal": True, "name": "key", "name_literal": False}]
+    ins = [("f", 1, "z4c", "co_0_type", "puncture"), ("f", 2, "z4c", "co_0_mass", "1"),
+           ("f", 3, "particles", "probe1_x1", "0"), ("f", 4, "hydro", "probe1_x1", "0"),
+           ("f", 5, "particles", "field_time1", "2"), ("f", 6, "comment", "problem", "x")]
+    assert [r["status"] for r in P.compare_inputs(ins, code)] == ["pattern", "unmatched", "pattern", "unmatched",
+                                                                   "unmatched", "comment_block"]

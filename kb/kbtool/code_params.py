@@ -223,6 +223,18 @@ def is_athinput(path):
     return base.startswith("athinput") or base.endswith(".athinput")
 
 
+def name_pattern(expr):
+    """Regex for a parameter name the code builds at run time, from the string literals of
+    the expression in order: `"co_" + nstr + "_type"` -> ^co_.*_type$, `pre + "x1"` ->
+    ^.*x1$. None when the expression has no literal (a plain variable)."""
+    lits = re.findall(r'"((?:[^"\\\n]|\\.)*)"', expr or "")
+    if not lits:
+        return None
+    e = expr.strip()
+    body = ".*".join(re.escape(x) for x in lits)
+    return re.compile(("^" if e.startswith('"') else "^.*") + body + ("$" if e.endswith('"') else ".*$"))
+
+
 def compare_inputs(input_params, code_params):
     """Match parameters set in input files against parameters read by the code.
 
@@ -232,19 +244,33 @@ def compare_inputs(input_params, code_params):
       literal     the code reads (block, name) with both as string literals
       computed    the code reads `name` (literal) with a block computed at run time
                   (for example the numbered <outputN> blocks)
+      pattern     the code builds the name at run time and the name fits the literals of that
+                  expression (weaker evidence: `pre + "x1"` fits any name ending in x1)
+      other_block the name is read, but only under another literal block
+      comment_block  the <comment> block (documentation only)
       unmatched   no read of this name in the indexed code
     """
     lit = {(p["block"], p["name"]) for p in code_params if p["block_literal"] and p["name_literal"]}
     by_name = {p["name"] for p in code_params if p["name_literal"]}
     comp = {p["name"] for p in code_params if p["name_literal"] and not p["block_literal"]}
+    pats = []                                          # (block or None if computed, regex)
+    for p in code_params:
+        if not p["name_literal"]:
+            rx = name_pattern(p["name"])
+            if rx is not None:
+                pats.append((p["block"] if p["block_literal"] else None, rx))
     rows = []
     for f, line, block, name, value in input_params:
         if (block, name) in lit:
             st = "literal"
         elif name in comp:
             st = "computed"
+        elif any((b is None or b == block) and rx.match(name) for b, rx in pats):
+            st = "pattern"                             # the name is built at run time and fits the pattern
         elif name in by_name:
             st = "other_block"                         # the name is read, but under another literal block
+        elif block == "comment":
+            st = "comment_block"                       # AthenaK's documentation block, not read by any code
         else:
             st = "unmatched"
         rows.append({"file": f, "line": line, "block": block, "name": name, "value": value, "status": st})

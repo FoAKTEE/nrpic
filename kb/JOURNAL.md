@@ -573,3 +573,37 @@ P6 All 25 curated links of `kb/curated/paper_code_links.tsv` pass `kb link check
   the test]. The papers helper's running process still has the old module loaded; its next
   start picks up the new one.
 - Remaining 55 repositories and local/nrpic: run kb-20261115-134736-0e94ee2 (fair lock).
+
+### Outcome P6 (run kb-20261115-135323-534eb86)
+
+- P6 held: 25 of 25 curated links pass `kb link check` (line ranges, labels in range,
+  symbols at the stated paths, 22 named parameters read with that block and name) against
+  the production index; loaded into impl_links (25 rows, status claimed). Output
+  `kb/reports/code_links_check.txt`. The check is able to fail: the unit test's bad row
+  (wrong lines, label, symbol, parameter) gives 4 problems.
+- Explicit links: 339 repository addresses in the stored sources of 121 papers, 23 distinct
+  manifest repositories among them (`kb/reports/code_links_explicit.tsv`). The source of
+  2611.12831 itself contains no repository address (no code-availability link); AthenaK's
+  address occurs in 2409.10383, 2409.10384 and 2409.16053.
+
+### Outcome P4 (run kb-20261115-135337-45ab9d0): refuted for this tree
+
+- Upstream AthenaK: 8670 input lines, literal 6356, computed block 1871, other block 9,
+  unmatched 434: 94.9 % (held). Athena++: 4886 lines, 92.8 % (held). This tree (29 input
+  files under problems/): 2549 lines, literal 1816, computed block 351, unmatched 382:
+  85.0 %, below the 90 % of the prediction: refuted as stated.
+- Reading the unmatched list: most are names the code builds at run time
+  (`<particles> p0_x1` ... read as `pre + "x1"`, `<z4c> co_0_type` read as
+  `"co_" + nstr + "_type"`, fastflow `center_x_0`, probes `probe1_x1`), which my comparison
+  only allowed for computed blocks, not computed names; and the `<comment>` block (27 lines),
+  which AthenaK keeps as documentation (`athenak/src/parameter_input.cpp` line 106).
+  Hypothesis, not yet a cause: the code reads nearly all of these.
+
+### Prediction P4' (before the rerun with computed-name patterns)
+
+P4' With a computed name matched against the literals of its expression (status `pattern`,
+   weaker evidence) and the `<comment>` block counted apart, at least 97 % of the
+   non-comment input lines of this tree and of upstream AthenaK are read; what stays
+   unmatched is a list of genuinely unread or misspelled options and of names built from a
+   plain variable (no literal to match). Refuted if more than 3 % of the non-comment lines of
+   either stay unmatched.
