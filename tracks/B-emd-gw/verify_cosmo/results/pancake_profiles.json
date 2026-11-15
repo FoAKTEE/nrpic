@@ -1,0 +1,29 @@
+{
+ "a5.00": {
+  "max_abs_PM_minus_depZ": 0.0006244322641739686,
+  "max_abs_GR_minus_depZ": 0.004827553345613467,
+  "max_abs_GR_minus_depZ_minus_dict": 0.0011418765427235367,
+  "max_abs_depZ_minus_Z": 0.011643847341692992,
+  "max_contrast_Z_cells": 0.3118605282226323,
+  "max_contrast_GR": 0.3179466365246604,
+  "max_contrast_PM": 0.3137800293150882
+ },
+ "a15.00": {
+  "max_abs_PM_minus_depZ": 0.006510666051935732,
+  "max_abs_GR_minus_depZ": 0.013122573946469984,
+  "max_abs_GR_minus_depZ_minus_dict": 0.016917541615443614,
+  "max_abs_depZ_minus_Z": 0.21083977987206381,
+  "max_contrast_Z_cells": 2.394406592486617,
+  "max_contrast_GR": 2.3748781566649177,
+  "max_contrast_PM": 2.385779098997112
+ },
+ "a20.00": {
+  "max_abs_PM_minus_depZ": 0.00530657918612043,
+  "max_abs_GR_minus_depZ": 0.08366643266659679,
+  "max_abs_GR_minus_depZ_minus_dict": 0.08746140033557043,
+  "max_abs_depZ_minus_Z": 2.4580409912091072,
+  "max_contrast_Z_cells": 4.837972831693018,
+  "max_contrast_GR": 7.212347390076577,
+  "max_contrast_PM": 7.292539976793048
+ }
+}

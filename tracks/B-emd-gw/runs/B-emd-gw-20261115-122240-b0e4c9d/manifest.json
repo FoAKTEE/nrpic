@@ -1,0 +1,44 @@
+{
+ "run_id": "B-emd-gw-20261115-122240-b0e4c9d",
+ "command": "OMP_NUM_THREADS=2 python3 tracks/B-emd-gw/verify_cosmo/scripts/analyze_pancake.py --gr /data/haiyangw/nrpic/scratch/B-emd-gw/B-emd-gw-20261115-115217-69ab1db --newton /data/haiyangw/nrpic/scratch/B-emd-gw/B-emd-gw-20261115-115239-69ab1db --gr2 /data/haiyangw/nrpic/scratch/B-emd-gw/B-emd-gw-20261115-115902-a3207d7 --out /data/haiyangw/nrpic/scratch/B-emd-gw/<run_id>",
+ "cwd": "/data/haiyangw/nrpic/wt/B-emd-gw",
+ "commit": "b0e4c9d8fda3760a8cb99ecc5cdfbd9c516469ef",
+ "worktree_dirty": true,
+ "inputs": [
+  {
+   "path": "tracks/B-emd-gw/verify_cosmo/scripts/analyze_pancake.py",
+   "sha256": "6b52cc49584e7df7ae4544aeeb3a8f0cbfb6d502fc9d803b25698cc6f9b7bc75"
+  },
+  {
+   "path": "tracks/B-emd-gw/verify_cosmo/scripts/zeldovich.py",
+   "sha256": "ee971d4db2bcbc4b327cec0b6c177a5a1cdece5b191db0bf7d31905015685fb9"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/scratch/B-emd-gw/B-emd-gw-20261115-115239-69ab1db/n32/newton.npz",
+   "sha256": "778f8005926b8751f77550bbdc53a29690bbc9bc3d4d8a406b78dc220a381319"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/scratch/B-emd-gw/B-emd-gw-20261115-115239-69ab1db/n64/newton.npz",
+   "sha256": "663362aaccc64543be4a38e7a09dbad3ce5e0e15236f8a6904a36d1099791a5f"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/scratch/B-emd-gw/B-emd-gw-20261115-115217-69ab1db/L1_n64/east.traj.bin",
+   "sha256": "b028a5f7d6d94901c8804d76e8a2b69b36c6c05a8b853259a467dd4484891fac"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/scratch/B-emd-gw/B-emd-gw-20261115-115902-a3207d7/L1_n64_p2/east.traj.bin",
+   "sha256": "e8f730a84722dc11a3f5d323afafe0ea4edbfa4b7220678d11a9d3c03728492e"
+  }
+ ],
+ "output_dir": "/data/haiyangw/nrpic/scratch/B-emd-gw/B-emd-gw-20261115-122240-b0e4c9d",
+ "purpose": "analysis: pancake runs (relativistic L1 32/64/96, L4 64, L1 64 two per cell; Newtonian 32/64) against the Zel'dovich solution; crossing times, constraints before and after crossing, plane symmetry, figures",
+ "kind": "scouting",
+ "cores": 2,
+ "card_hours": 0.0,
+ "started_utc": "2026-11-15T12:22:40+00:00",
+ "status": "completed",
+ "package": "tracks/B-emd-gw/verify_cosmo",
+ "notes": "parents: B-emd-gw-20261115-115217-69ab1db, B-emd-gw-20261115-115239-69ab1db, B-emd-gw-20261115-115902-a3207d7 first analysis (without the Newtonian 64-cell run's masses in the profile residual and without the P8 run); superseded by B-emd-gw-20261115-123852-ea4475c",
+ "finished_utc": "2026-11-15T12:39:43+00:00",
+ "wall_time_s": 240.0
+}

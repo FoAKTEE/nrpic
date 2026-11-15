@@ -374,15 +374,15 @@ def make_figures(runs, gr, nw, prof, res, out, prof2=None):
             continue
         r = runs[name]
         m = (r["a"] > 1.05) & (r["a"] < 21.5)
-        axs[0].semilogy(r["a"][m], r["ex"][m], label=label[name], **style[name])
-        axs[1].semilogy(r["a"][m], r["ev"][m], **style[name])
+        axs[0].semilogy(r["a"][m], r["ex"][m], **style[name])
+        axs[1].semilogy(r["a"][m], r["ev"][m], label=label[name], **style[name])
     for ax in axs:
         ax.axvline(21.0, **fs.MASK_LINE)
         ax.set_xlabel(r"$a$")
         ax.set_xlim(1, 21.5)
     axs[0].set_ylabel(r"max $|x - x_{\rm Z}|\,/\,[(a-1)\delta/k]$")
     axs[1].set_ylabel(r"max $|v - v_{\rm Z}|\,/\,[a^{1/2}\delta/k]$")
-    axs[0].legend(loc="upper left", ncol=2, fontsize=8)
+    axs[1].legend(loc="lower right", ncol=2, fontsize=7)
     fs.save(fig, os.path.join(out, "pancake_errors"))
     plt.close(fig)
 

@@ -184,3 +184,43 @@ particles, about 15 min on one core). Prediction: position error at a = 10 below
 (the 64-cell, one-per-cell value) where 32 cells with one per cell gave 2.05e-3; velocity
 error below 1.8e-3. Refuted if the position error at a = 10 stays above 1.5e-3, in which
 case the force interpolation or the step, not the deposit, sets the error.
+
+## P8 outcome, and the final analysis (12:39)
+
+Run B-emd-gw-20261115-122451-01801f6 (Newtonian, 32 cells, two particles per cell and
+direction, 813 s). Position error against Zel'dovich at a = 10: 4.1e-4 (32 cells one per
+cell 2.05e-3, 64 cells one per cell 1.02e-3); velocity 3.6e-4 (3.4e-3, 1.8e-3); at a = 15
+3.5e-4 and 1.9e-3. Prediction (below 1.0e-3 and 1.8e-3 at a = 10): holds. So the
+first-order convergence of the reference at one particle per cell is the lattice
+sampling of the deposit, as proposed, not the force interpolation or the step. The
+crossing is set by the mesh: 21.41 at 32 cells with two per cell against 21.55 with one
+(exact sheets 21.007 and 21.117).
+Final analysis B-emd-gw-20261115-123852-ea4475c (supersedes B-emd-gw-20261115-122240-b0e4c9d;
+`results/pancake.json`, `results/pancake_profiles.json`). Additional numbers:
+- Proper time of the first crossing sheets (relativistic runs; a_p = (1 + 1.5 tau)^(2/3)):
+  21.776, 21.348, 21.236 (L = 1 at 32, 64, 96 cells), 21.304 (64, two per cell), 22.280
+  (L = 4, 64 cells), against the coordinate labels 21.808, 21.379, 21.267, 21.335, 22.846.
+  At equal cells the L = 4 crossing comes 4.4 percent later in the proper time of the
+  crossing sheets than the L = 1 crossing (22.280 against 21.348), 6.9 percent later in
+  the coordinate label [JUDGEMENT: with relativistic corrections 16 times smaller at
+  L = 1, this is the relativistic delay of the crossing at L = 4 to within about 0.5
+  percent; the Newtonian proper time at the pancake has not been computed].
+- Eulerian density on the mesh (64 cells, L = 1): the Newtonian density equals the deposit
+  of the exact Zel'dovich sheets (same cloud, same compensation, Newtonian masses) to
+  6.2e-4 at a = 5 and 6.5e-3 at a = 15 (largest over cells); the relativistic energy
+  density equals it to 4.8e-3 at a = 5, of which the linear dictionary term -2 psi_N =
+  3 (H0/k)^2 d sin kx (amplitude 3.8e-3) accounts for all but 1.1e-3; at a = 15 the
+  remainder is 1.7e-2 (nonlinear dictionary terms not modelled). The deposit itself
+  differs from the continuum Zel'dovich density by 1.2e-2 (a = 5), 0.21 (a = 15, void) and
+  2.5 (a = 20: the peak sits on a cell face, so the continuum density at the nearest
+  cell centres has contrast 4.8, while both runs and the deposit of the exact sheets
+  put 7.2 into those two cells).
+- After the crossing (L = 1, 64 cells) the relativistic and Newtonian sheets differ by
+  4.8e-3, 5.1e-3, 4.7e-3 of (a - 1) d/k in position at a = 25, 30, 42, the size of the
+  offset before the crossing; at L = 4 by 7.6e-2, 8.0e-2, 7.3e-2. Phase space through
+  the crossing: `figs/pancake_phase.png` (inspected: the L = 1 relativistic runs at 64
+  and 96 cells lie on the Newtonian spiral; the L = 4 spiral lags).
+Figures, all inspected: `figs/pancake_errors.png`, `pancake_profiles.png`,
+`pancake_grdiff.png`, `pancake_phase.png`, `pancake_constraints.png`,
+`pancake_constraint_profiles.png`, `pancake_ppc.png`, `flrw_recheck.png`.
+Card time of the package: 0.284 + 0.197 = 0.48 card-hours.
