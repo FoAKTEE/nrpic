@@ -198,3 +198,56 @@ ones approach the asymptotic (10)^(2/3) = 4.64 as predicted.
 Deposit noise for a self-gravitating run (scaling of docs/results_cluster_test.md 2(d):
 relative L2 noise 0.24-0.28 at 1.1 particles per occupied cell, N^-1/2): 6.4e7 particles
 inside 20 Gm for 5 % noise on cells of 0.25 Gm [JUDGEMENT, extrapolated].
+
+# Wave 2: the Kerr spike baseline (helper kerr_spike, 2026-11-15)
+
+Reference: Ferrer, da Rosa & Will 2017, arXiv:1707.06302 ("FdRW"), fetched again with
+nrpic-fetch-arxiv (v2, `kb-data/raw/arxiv/1707.06302/v2/src/kerrdm.tex`, 1709 lines).
+Method read at the source: currents eqs. (397)-(413) (lines 394-416), capture criteria
+(lines 462-473), adiabatic invariants (lines 525-549), constant f and MC (lines 709-765),
+Hernquist (lines 840-920), planar orbits (appendix B, lines 1318-1703).
+
+## Development (not registered, scratch/D-bh-dress/tmp/kerr_dev/), seen before the predictions
+
+- `kerr_lib.py`: the capture boundary is computed as C_crit(E, Lz; r) = min over
+  r_+ < r' <= r of C_V(r') = P/Delta (R is linear in C, so "R < 0 somewhere inside r" is
+  exactly FdRW's two criteria); integration variables l = Lz/sin(theta) (cosine-mapped),
+  phi with C = C_U + (C_V - C_U)(1 - cos phi)/2, E = E_min + (1 - E_min) s^2.
+- Bugs found and fixed in development: (i) the endpoint test of the C_crit search was
+  fragile (a minimum at r itself passed as interior: E_min(4.2 Gm) came out 0.9775 instead
+  of SFW's 0.97996); (ii) the first grid in r' (log-spaced from r_+) was too coarse near r;
+  (iii) composite Gauss-Legendre in l converged slowly at the inner edge (1/sqrt edges):
+  replaced by l = l_mid - l_half cos(psi).
+- After the fixes, a = 0: E_min equals SFW eq. (3.17) to 2e-8 for 4.05 <= r <= 6 and 5e-7
+  beyond; constant-f density equals spike_lib.rho_constf_rel to 2e-4 at 4.05-20 Gm;
+  Hernquist density equals SpikeModel.rho_rel (canonical) to 3e-4 at 5-20 Gm.
+- a = 0.8, equator, constant f: rho(10 Gm) = 0.8889e8 GeV/cm^3 at two resolutions
+  (7e-5 apart); E_min(10 Gm) full phase space 0.928463, planar orbits 0.928462.
+- A coarse dry run of kerr_reference.py (--nr 6, 62 s) showed: E_min(10 Gm) against the
+  digitized figemin to 6e-5; the planar-orbit curves of figequator1 are 0.2507-0.2510 of
+  eq. (584) as printed (a factor 1/4); peak ratios (coarse grid, peaks unresolved):
+  constant f 1.221 (a = 0.8 / 0), Hernquist 1.35 (0.8 / 0.5), 1.55 (0.8 / 0).
+
+## K1 prediction (before the registered run of kerr_reference.py --nr 44)
+
+1. a = 0 through the Kerr code: constant-f and Hernquist densities equal the wave-1
+   Schwarzschild references (spike_lib) to < 1e-3 for 4.05 < r < 40 Gm. Refuted above 1e-3.
+2. Constant f, equator, a = 0.5 and 0.8 (fig_rho_a): within 2 % of the digitized curves
+   where they exceed 10 % of their peak (FdRW's MC: "<~ 1 %", line 758); peaks
+   0.926e8 at 7.25 Gm and 1.058e8 at 6.53 Gm (digitized) within 1.5 % and 0.3 Gm.
+3. Constant f, a = 0.8, theta = 0 and pi/3 (fig_rho_theta): within 3 %.
+4. Hernquist (m = 4e6 Msun, M = 1e12 Msun, r_s = 20 kpc), equator a = 0.5, 0.8
+   (fig_rho_hern) and a = 0.8 at theta = 0, pi/3 (fig_angle_hern): within 3 %; peaks
+   2.81e18 at 7.11 Gm and 4.08e18 at 5.07 Gm within 3 % and 0.3 Gm.
+5. Inner edge at the equator equals r_mb+ = 2 - a + 2 sqrt(1 - a) (FdRW eq. mborbit) to
+   1e-4: 2.9142 (a = 0.5), 2.0944 (a = 0.8). Refuted above 1e-3.
+6. E_min(10 Gm, equator) vs a: within 2e-4 of figemin for 0.1 <= a <= 0.99.
+7. C_crit(a = 0.75, E = 0.97, Lz = 2) = 10.3 (crit_orbit caption, line 498): ours in
+   [10.25, 10.35].
+8. The general routine on the axis equals FdRW's closed form eq. (825) to 1e-3.
+9. Planar orbits (figequator1, a = 0, 0.5, 0.8): after one constant scale factor the
+   shapes agree within 3 %; the factor is the same for the three spins (about 1/4).
+10. Text claims: constant f, peak a = 0.8 / a = 0 = 1.20-1.24 ("20 %", line 213); Hernquist
+    peak ratios equal the digitized ones within 2 % (1.45 for 0.8 / 0.5, 1.67 for 0.8 / 0),
+    so the text's "approximately 35 %" (line 929) is not what the figure shows, its
+    "around 70 %" (line 199) is.
