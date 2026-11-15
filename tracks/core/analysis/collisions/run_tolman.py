@@ -148,7 +148,10 @@ def main():
                      dH_collisions=bool(abs(r["dH_collisions_rel"]) < 1e-12),
                      a_T=bool(abs(r["a_T_late"]) < 0.005), noroot=bool(r["n_noroot"] == 0))
         else:
-            c = dict(dH_grows=bool(2e-3 < r["dH_collisions_rel"] < 6e-3),
+            # 2e-4 per collision and unit rest mass in the initial state (reference
+            # well_tolman): between 0.5 and 1.5 of that times the collisions per particle
+            lo = 0.5*1.0e-4*r["collisions_per_particle"]
+            c = dict(dH_grows=bool(lo < r["dH_collisions_rel"] < 3.0*lo),
                      a_T=bool(-0.10 < r["a_T_late"] < -0.02))
         checks[name] = c
         ok = ok and all(c.values())

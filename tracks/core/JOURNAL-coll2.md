@@ -358,3 +358,17 @@ Cp Cluster on the processor, two steps (0.25 M) with a cross-section 100 times t
    sum M H (between 3e-6 and 5e-5; few collisions, wide band). Same refutation as C.
 G4 and the replay cases of coll_energy run on the processor now with the predictions
 already written.
+
+### G4 on the processor: first attempt stopped (16:45 UTC), run core-20261115-160912-0656925
+
+Stopped by me after 17 minutes (the four AthenaK processes killed by process id; the
+driver then exits with status 1 and the manifest records a failed run): fewer than
+100 of 600 steps done. The implicit midpoint push with the mesh metric and tolerance
+1e-13 costs about 20 microseconds per particle and step on one core, i.e. more than
+three hours for 1e6 particles and 600 steps. No result. The card would do it in
+seconds (job 4454, queued). Processor version, same predictions: 1e5 particles (391
+per cell), 400 steps (31 collision times); the standard error of the temperature
+mode of one snapshot is then about 0.4 percent, of the late-time mean about 0.2
+percent, enough for the predicted -2 to -10 percent against zero. The growth of
+sum M H in `cell` over 31 collision times is predicted between 1.5e-3 and 5e-3
+(restated for the shorter run: 15.5 collisions per particle times 2e-4).
