@@ -145,14 +145,17 @@ def analyse_tophat(d):
         out[f"t_{f}"] = tf
         out[f"t_{f}_ref"] = tr_
         out[f"t_{f}_rel"] = tf / tr_ - 1
-    k = int(np.argmin(R))
+    complete = t[-1] >= 1.02 * cyc["t_c"]
+    k = int(np.argmin(R)) if complete else len(R) - 1
     sl = slice(max(0, k - 3), min(len(t), k + 4))
     t_min, _ = vertex(t[sl], R[sl] ** 2)
-    out.update(t_min=t_min, t_min_rel=t_min / cyc["t_c"] - 1, R_min=float(R[k]),
+    if not complete:
+        t_min = float("nan")
+    out.update(complete=bool(complete), t_min=t_min, t_min_rel=t_min / cyc["t_c"] - 1, R_min=float(R[k]),
                R_min_over_dx=float(R[k] / meta["dx"]),
                t_end_reached=float(t[-1]))
     upto = t <= out["t_0.25_ref"]
-    out["R_err_max"] = float(np.max(np.abs(R[upto] / Rref[upto] - 1)))
+    out["R_err_max"] = float(np.max(np.abs(R[upto] - Rref[upto])) / cyc["R_max"])
     E = h["K"] + h["W"]
     out["E_err_max"] = float(np.max(np.abs(E[upto] - E[0])) / abs(h["W"][0]))
     return out, dict(t=t, R=R, Rref=Rref)
@@ -226,9 +229,12 @@ def analyse_ellipsoid(d):
                wall_s=info.get("wall_s"), t_end_reached=float(t[-1]))
     if len(refc) > 1:
         out.update(t2_ref=refc[1]["t"], axis2_ref=refc[1]["axis"])
-    if not cands:
-        out["t1"] = float("nan")
-        return out, dict(t=t, A=A, tr=tr, Ar=Ar)
+    E = h["K"] + h["W"]
+    curves = dict(t=t, A=A, tr=tr, Ar=Ar, Ai=Ai, dE=(E - E[0]) / abs(h["W"][0]))
+    out["complete"] = bool(t[-1] >= 1.05 * t1r)
+    if not cands or not out["complete"]:
+        out["t1_vertex"] = float("nan")
+        return out, curves
     cands.sort()
     _, ax1, (k0, k1) = cands[0]
     lo, hi = max(0, k0 - 1), min(len(t), k1 + 2)
@@ -256,75 +262,105 @@ def analyse_ellipsoid(d):
             out["t2_vertex"], _ = vertex(t[lo:hi], c[lo:hi, ax2])
             out["t2_vertex_rel"] = out["t2_vertex"] / refc[1]["t"] - 1
     pre = t <= t1r
-    E = h["K"] + h["W"]
     out["E_err_max_to_t1"] = float(np.max(np.abs(E[pre] - E[0])) / abs(h["W"][0]))
+    pre9 = t <= 0.9 * t1r
+    out["E_err_max_to_0p9t1"] = float(np.max(np.abs(E[pre9] - E[0])) / abs(h["W"][0]))
     early = t <= 0.8 * t1r
     out["A_err_max_to_0p8t1"] = float(np.max(np.abs(A[early] / Ai[early] - 1)))
-    return out, dict(t=t, A=A, tr=tr, Ar=Ar)
+    return out, curves
 
 
 # --------------------------------------------------------------------------- figures
+MESH_COL = {32: fs.PAL["yellow"], 64: fs.PAL["red"], 128: fs.PAL["blue"], 256: "k"}
+HXI_LS = {0.1: ":", 0.05: "--", 0.025: "-", 0.0125: "-."}
+
+
 def fig_tophat(rows, curves, out):
+    """Top: R(t) for the finest lattice at each mesh and the cycloid. Bottom: (R - R_cyc)/R_max
+    for every run, colour by mesh, line style by lattice spacing."""
     fs.use_style()
-    fig = plt.figure(figsize=(fs.COLUMN_WIDTH, 4.6))
-    ax1 = fs.inch_axes(fig, 0.75, 2.35, 3.05, 2.05)
-    ax2 = fs.inch_axes(fig, 0.75, 0.5, 3.05, 1.75)
-    cols = fs.series_colors(len(rows))
-    cyc_t = np.linspace(curves[0]["t"][0], rows[0]["t_c_ref"], 600)
-    any_meta = rows[0]
-    for r, cv, col in zip(rows, curves, cols):
-        lab = f"$N_x={r['nx']}$, $h_\\xi={r['hxi']}$" + (f", cfl {r['cfl']}" if r["cfl"] != 0.2 else "")
-        ax1.plot(cv["t"], cv["R"], color=col, lw=1.0, label=lab)
+    fig = plt.figure(figsize=(fs.COLUMN_WIDTH, 4.8))
+    ax1 = fs.inch_axes(fig, 0.75, 2.55, 3.05, 2.05)
+    ax2 = fs.inch_axes(fig, 0.75, 0.5, 3.05, 1.95)
+    ref_k = max(range(len(rows)), key=lambda k: (rows[k]["n"], -rows[k]["dx"]))
+    tr = curves[ref_k]["t"]
+    ax1.plot(tr, curves[ref_k]["Rref"], **fs.GUIDE, label="cycloid")
+    for nx in sorted({r["nx"] for r in rows}):
+        cand = [k for k, r in enumerate(rows) if r["nx"] == nx and r["cfl"] == 0.2]
+        k = min(cand, key=lambda k: rows[k]["hxi"])
+        ax1.plot(curves[k]["t"], curves[k]["R"], color=MESH_COL[nx], lw=1.2,
+                 label=f"${nx}^3$, $h_\\xi={rows[k]['hxi']}$")
+    for r, cv in zip(rows, curves):
         upto = cv["t"] <= r["t_0.1_ref"]
-        ax2.plot(cv["t"][upto], cv["R"][upto] / cv["Rref"][upto] - 1, color=col, lw=1.0)
-    ax1.plot(curves[0]["t"], curves[0]["Rref"], **fs.GUIDE, label="cycloid")
+        col = MESH_COL[r["nx"]] if r["cfl"] == 0.2 else "grey"
+        ax2.plot(cv["t"][upto], (cv["R"][upto] - cv["Rref"][upto]) / r["R_max_ref"], color=col,
+                 ls=HXI_LS.get(r["hxi"], "-"), lw=1.0)
     for key in ("t_ta_ref", "t_c_ref"):
-        ax1.axvline(any_meta[key], **fs.MASK_LINE)
-        ax2.axvline(any_meta[key], **fs.MASK_LINE)
+        for ax in (ax1, ax2):
+            ax.axvline(rows[ref_k][key], **fs.MASK_LINE)
     ax1.set_ylabel(r"$R/r_g$")
     ax1.set_xticklabels([])
-    ax1.legend(loc="upper right", fontsize=6, ncol=1)
-    ax2.set_xlabel(r"$t/(r_g/c)$")
-    ax2.set_ylabel(r"$R/R_{\rm cyc}-1$")
-    ax2.set_yscale("symlog", linthresh=1e-3)
+    ax1.legend(loc="lower center", fontsize=6.5)
+    ax2.set_xlabel(r"$t\,[r_g/c]$")
+    ax2.set_ylabel(r"$(R-R_{\rm cyc})/R_{\max}$")
+    ax2.set_yscale("symlog", linthresh=1e-4)
+    for hv, ls in HXI_LS.items():
+        if any(r["hxi"] == hv for r in rows):
+            ax2.plot([], [], color="k", ls=ls, lw=1.0, label=f"$h_\\xi={hv}$")
+    if any(r["cfl"] != 0.2 for r in rows):
+        ax2.plot([], [], color="grey", lw=1.0, label="cfl 0.1")
+    ax2.legend(loc="upper left", fontsize=6, ncol=2)
     for ax in (ax1, ax2):
-        ax.set_xlim(curves[0]["t"][0], 1.06 * any_meta["t_c_ref"])
+        ax.set_xlim(tr[0], 1.06 * rows[ref_k]["t_c_ref"])
     fs.save(fig, os.path.join(out, "fig_newton_tophat"))
     plt.close(fig)
 
 
 def fig_tophat_conv(rows, out):
+    """Signed relative errors of turnaround, infall time at R = 0.25 R_max and the softened
+    collapse, against the mesh spacing (lines: lattice spacing) and against the particle
+    number on the 128^3 mesh."""
     fs.use_style()
-    fig = plt.figure(figsize=(fs.FULL_WIDTH, 2.7))
-    keys = [("t_ta_rel", r"$|t_{\rm ta}/t_{\rm ta,cyc}-1|$"),
-            ("t_0.25_rel", r"$|t_{0.25}/t_{0.25,cyc}-1|$"),
-            ("t_min_rel", r"$|t_{\min R}/t_{c}-1|$")]
-    hx = sorted({r["hxi"] for r in rows})
-    cols = dict(zip(hx, fs.series_colors(len(hx))))
+    fig = plt.figure(figsize=(fs.FULL_WIDTH, 2.6))
+    keys = [("t_ta_rel", r"$t_{\rm ta}/t_{\rm ta}^{\rm cyc}-1$"),
+            ("t_0.25_rel", r"$t_{0.25}/t_{0.25}^{\rm cyc}-1$"),
+            ("t_min_rel", r"$t_{\min R}/t_{c}^{\rm cyc}-1$")]
+    base = [r for r in rows if r["cfl"] == 0.2]
     for k, (key, lab) in enumerate(keys):
-        ax = fs.inch_axes(fig, 0.7 + k * 2.45, 0.5, 1.95, 2.0)
-        for hv in hx:
-            rr = sorted([r for r in rows if r["hxi"] == hv and r["cfl"] == 0.2],
+        ax = fs.inch_axes(fig, 0.72 + k * 1.95, 0.5, 1.45, 1.75)
+        for hv, ls in HXI_LS.items():
+            rr = sorted([r for r in base if r["hxi"] == hv and np.isfinite(r[key])],
                         key=lambda r: r["dx"])
-            ax.loglog([r["dx"] for r in rr], [abs(r[key]) for r in rr], "o-", color=cols[hv],
-                      ms=3, label=f"$h_\\xi={hv}$")
-            for r in rr:
-                if r[key] < 0:
-                    ax.plot(r["dx"], abs(r[key]), "o", mfc="white", mec=cols[hv], ms=5)
+            if rr:
+                ax.plot([r["dx"] for r in rr], [r[key] for r in rr], "o", color="k", ls=ls,
+                        ms=3, lw=1.0, label=f"$h_\\xi={hv}$")
         for r in rows:
-            if r["cfl"] != 0.2:
-                ax.plot(r["dx"], abs(r[key]), "s", color="k", ms=4, mfc="none",
+            if r["cfl"] != 0.2 and np.isfinite(r[key]):
+                ax.plot(r["dx"], r[key], "s", color="grey", ms=5, mfc="none",
                         label="cfl 0.1" if k == 0 else None)
-        dxs = np.array(sorted({r["dx"] for r in rows}))
-        ref = [abs(r[key]) for r in rows if r["dx"] == dxs.max()]
-        if ref:
-            y0 = np.median(ref)
-            ax.plot(dxs, y0 * (dxs / dxs.max()) ** 2, **fs.THIN, ls=":", label=r"$\propto\Delta x^2$" if k == 0 else None)
-            ax.plot(dxs, y0 * (dxs / dxs.max()), **fs.THIN, ls="--", label=r"$\propto\Delta x$" if k == 0 else None)
-        ax.set_xlabel(r"$\Delta x/r_g$")
-        ax.set_ylabel(lab)
+        dxs = np.array(sorted({r["dx"] for r in base}))
+        y0 = [r[key] for r in base if r["dx"] == dxs.max() and r["hxi"] == 0.025]
+        if y0 and np.isfinite(y0[0]):
+            ax.plot(dxs, y0[0] * (dxs / dxs.max()) ** 2, **fs.THIN, ls=(0, (1, 3)),
+                    label=r"$\propto\Delta x^2$" if k == 0 else None)
+        ax.set_xscale("log", base=2)
+        ax.set_yscale("symlog", linthresh=1e-4)
+        ax.axhline(0.0, color="grey", lw=0.6)
+        ax.set_xlabel(r"$\Delta x\,[r_g]$")
+        ax.set_title(lab, fontsize=8)
         if k == 0:
-            ax.legend(loc="lower right", fontsize=6)
+            ax.legend(loc="lower right", fontsize=5.5)
+    ax = fs.inch_axes(fig, 0.72 + 3 * 1.95, 0.5, 1.2, 1.75)
+    rr = sorted([r for r in base if r["nx"] == 128], key=lambda r: r["n"])
+    for (key, lab), mk in zip(keys, ("o", "s", "^")):
+        ax.plot([r["n"] for r in rr], [r[key] for r in rr], marker=mk, color="k", ms=3, lw=1.0,
+                label=lab.split("/")[0] + "$")
+    ax.set_xscale("log")
+    ax.set_yscale("symlog", linthresh=1e-4)
+    ax.axhline(0.0, color="grey", lw=0.6)
+    ax.set_xlabel(r"$N$ ($128^3$)")
+    ax.set_title("particle number", fontsize=8)
+    ax.legend(loc="upper right", fontsize=5.5)
     fs.save(fig, os.path.join(out, "fig_newton_tophat_conv"))
     plt.close(fig)
 
@@ -339,20 +375,54 @@ def fig_scan_axes(rows, curves, out, name):
     for k, (r, cv) in enumerate(zip(rows, curves)):
         i, j = divmod(k, ncol)
         ax = fs.inch_axes(fig, 0.6 + j * (pw + 0.35), 0.45 + (nrow - 1 - i) * (ph + 0.35), pw, ph)
-        for a, ls in zip(range(3), ("-", "--", ":")):
-            ax.plot(cv["tr"] / r["t1_ref"], np.abs(cv["Ar"][:, a]) / r["half"] * 1.5, color="k", lw=1.0, ls=ls)
-            ax.plot(cv["t"] / r["t1_ref"], cv["A"][:, a] / r["half"] * 1.5, color=fs.SERIES[a], lw=1.0, ls=ls,
-                    alpha=0.85)
+        amax = r["half"] / 1.5
+        for a in range(3):
+            ax.plot(cv["t"] / r["t1_ref"], cv["A"][:, a] / amax, color=fs.SERIES[a], lw=2.2,
+                    alpha=0.6, label=f"$A_{a + 1}$ AthenaK" if k == 0 else None)
+            ax.plot(cv["tr"] / r["t1_ref"], np.abs(cv["Ar"][:, a]) / amax, color="k", lw=0.8,
+                    ls="--", label="ellipsoid" if (k == 0 and a == 0) else None)
         ax.axvline(1.0, **fs.MASK_LINE)
         ax.set_xlim(cv["t"][0] / r["t1_ref"], cv["t"][-1] / r["t1_ref"])
         ax.set_ylim(0, None)
-        ax.text(0.03, 0.06, r["name"] + f"\n$\\delta_L={r['deltaL']:g}$, $e={r['e']:.2g}$, $p={r['p']:.2g}$",
-                transform=ax.transAxes, fontsize=6, va="bottom")
+        ax.text(0.03, 0.06, r["name"] + f"\n$\\delta_L={r['deltaL']:g}$, $e={r['e'] + 0:.2f}$, "
+                f"$p={round(r['p'], 3) + 0:+.2f}$, ${r['nx']}^3$, $N={r['n']:.2g}$",
+                transform=ax.transAxes, fontsize=5.5, va="bottom")
+        if k == 0:
+            ax.legend(loc="upper right", fontsize=5.5)
         if i == nrow - 1:
             ax.set_xlabel(r"$t/t_1^{\rm ref}$")
         if j == 0:
             ax.set_ylabel(r"$A_i/A_{\max}^{\rm ref}$")
     fs.save(fig, os.path.join(out, name))
+    plt.close(fig)
+
+
+def fig_scan_dev(rows, curves, out):
+    """A_i/A_i^ref - 1 up to 0.95 t_1 for each case (three panels, one per axis), and the
+    energy error (K + W - E_0)/|W_0| against t/t_1."""
+    fs.use_style()
+    fig = plt.figure(figsize=(fs.FULL_WIDTH, 2.9))
+    cols = fs.series_colors(len(rows))
+    for a in range(4):
+        ax = fs.inch_axes(fig, 0.7 + a * 1.85, 0.5, 1.4, 1.65)
+        for r, cv, col in zip(rows, curves, cols):
+            x = cv["t"] / r["t1_ref"]
+            if a < 3:
+                m = x <= 0.95
+                y = cv["A"][m, a] / cv["Ai"][m, a] - 1
+                ax.plot(x[m], y, color=col, lw=0.9, label=r["name"] if a == 0 else None)
+            else:
+                m = x <= 1.3
+                ax.plot(x[m], cv["dE"][m], color=col, lw=0.9)
+        ax.set_yscale("symlog", linthresh=1e-5)
+        ax.axhline(0.0, color="grey", lw=0.6)
+        ax.set_xlabel(r"$t/t_1^{\rm ref}$")
+        ax.set_title(f"$A_{a + 1}/A_{a + 1}^{{\\rm ref}}-1$" if a < 3 else r"$(E-E_0)/|W_0|$",
+                     fontsize=8)
+        if a == 3:
+            ax.axvline(1.0, **fs.MASK_LINE)
+    fig.legend(loc="upper center", ncol=7, fontsize=5, frameon=False, bbox_to_anchor=(0.5, 1.0))
+    fs.save(fig, os.path.join(out, "fig_newton_scan_dev"))
     plt.close(fig)
 
 
@@ -484,9 +554,12 @@ def main():
                    "t1_vertex_rel", "t1_extrap", "t1_extrap_rel", "A_t1_ref", "A_t1",
                    "A_t1_rel", "h1_ref", "h1", "h1_rel", "h1_ref_deltaL", "h1_deltaL",
                    "A1_min_over_dx", "t2_ref", "t2_vertex", "t2_vertex_rel",
-                   "A_err_max_to_0p8t1", "E_err_max_to_t1"])
+                   "A_err_max_to_0p8t1", "E_err_max_to_0p9t1", "E_err_max_to_t1", "complete"])
         fig_scan_axes(rows, curves, a.out, "fig_newton_scan_axes")
-        fig_scan_summary(rows, a.out)
+        fig_scan_dev(rows, curves, a.out)
+        done = [r for r in rows if r.get("complete")]
+        if done:
+            fig_scan_summary(done, a.out)
     with open(os.path.join(a.out, "newton_results.json"), "w") as f:
         json.dump(res, f, indent=1, default=float)
         f.write("\n")
