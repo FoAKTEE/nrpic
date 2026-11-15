@@ -150,3 +150,25 @@ Failed:
   (3/2 + 2u^2)/s3^2, whose contribution to the exponent grows like delta_th^4/sigma^2 when
   delta_th is held fixed. Prediction for T2.5b: the ratio keeps falling, below 0.65 at sigma =
   0.006; refuted if it rises back towards 1.
+
+### Outcome of the scan (runs A-emd-pbh-20261115-114638-35ca5e4, -115122-2eb3117, -115232-bee5b2e, -120425-80492f8; the last three differ only in figure labels and added example tables, scan_summary.json identical)
+
+- S.1 confirmed: hoop threshold 0.821 (e = 0.1), 1.084 (e = 0.2); 2609.14218 particles 0.108;
+  factor 10.0.
+- S.2 not refuted (ratio >= 1 everywhere): peak/ball threshold ratio 1.0022-1.543; the upper
+  end slightly exceeds the 1.5 I wrote.
+- S.3 confirmed: R8-R9 disagree on 0.259, 0.247, 0.259 of the grid at sigma_H = 0.003, 0.01,
+  0.03; R1-R3 on 0.87, 0.70, 0.56.
+- S.4 confirmed: 3/(1+3e), 1, 1.686 (delta = 0.01), 1.583 (delta = 0.3); top-hat turnaround
+  1.0624.
+- S.5 confirmed: 0.126, 0.198, 0.0018.
+- Figures viewed: scan_criteria_overview (four panels) and scan_verdict_map (three panels);
+  first versions had overlapping labels and a colour bar outside the figure, fixed.
+
+### Outcome of T2.5 (run A-emd-pbh-20261115-115120-2eb3117)
+
+- T2.5a: 1.0719 (1e-4), 1.0149 (1e-5): the second-order semi-analytic formula of 1707.03595 is
+  the asymptote of the integral 1304-1308, approached like (sigma/delta_th)^2.
+- T2.5b: 0.656 (0.0077), 0.398 (0.006): the prediction (keeps falling below 0.65) held. The
+  candidate cause stays [JUDGEMENT] until the dropped term is put back into the asymptotic
+  evaluation.

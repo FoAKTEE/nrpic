@@ -82,7 +82,7 @@ separated scales and order-unity factors dropped (2211.13950:209-245, 375); LTB 
 shell crossing and O(1) coefficients set to one (2507.18312:206-215, 585); Gaussian peaks,
 first-order spin frozen at t_c (2508.10070:229-243, 482).
 
-Example (run A-emd-pbh-20261115-115232-bee5b2e, `example_tables.txt`, abridged):
+Example (run A-emd-pbh-20261115-120425-80492f8, `example_tables.txt`, abridged):
 
 ```
 python3 predict.py --delta 0.1 --e 0.1 --sigmaH 0.01
@@ -124,7 +124,7 @@ Range: the threshold surface of S1 deliverable 1 (amplitude x ellipticity x prol
 velocity dispersion, brief line 347) and the comparison of the minimum publishable unit with
 2609.14218 and 1609.01588 (line 362): e in [0, 0.25] with p = 0 as in 2609.14218
 (MDPBH.tex:966), p in [-e, e] as a band, delta in [0.01, 1], sigma_H = 0.003, 0.01, 0.03.
-Numbers from run A-emd-pbh-20261115-115232-bee5b2e (`scan_summary.json`, figures
+Numbers from run A-emd-pbh-20261115-120425-80492f8 (`scan_summary.json`, figures
 `scan_criteria_overview`, `scan_verdict_map`).
 
 1. **The hoop criterion against everything else.** R1 needs delta >= (36/pi) e E/(1+3e+p)^2:
