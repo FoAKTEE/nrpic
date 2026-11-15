@@ -53,6 +53,9 @@ def main():
     ap.add_argument("--only", default="")
     ap.add_argument("--no-balance", action="store_true",
                     help="particle mode without the detailed-balance acceptance")
+    ap.add_argument("--no-cell-rate", action="store_true",
+                    help="draw the collision cells uniformly instead of in proportion "
+                         "to alpha_c/psi_c^6 (the references before 18:40 UTC)")
     ap.add_argument("--tolman", type=float, default=0.0,
                     help="instead of the cases: the equilibrium of the well (alpha_amp "
                          "-0.2, psi_amp 0.1) at this theta_inf, positions with the "
@@ -79,7 +82,8 @@ def main():
         res[name] = {}
         for mode in ("cell", "particle"):
             r = scbox.pair_reference(met, args.npair, 1000 + k, theta_of(name), sa, sp, f,
-                                     mode, balance=not args.no_balance)
+                                     mode, balance=not args.no_balance,
+                                     cell_rate=not args.no_cell_rate)
             res[name][mode] = r
             print(f"{name:18s} {mode:8s} dW = {r['dW']:+.4e} ({r['dW_se']:.1e})  "
                   f"dH = {r['dH']:+.4e} ({r['dH_se']:.1e})  slope = {r['slope']:+.4e} "
@@ -88,7 +92,8 @@ def main():
                   f"max|R-1| {r['max_abs_R_minus_1']:.2e}", flush=True)
     with open(args.out, "w") as fp:
         json.dump(dict(theta0=THETA0, hot=HOT, cases=CASES, results=res,
-                       balance=not args.no_balance), fp, indent=1)
+                       balance=not args.no_balance, cell_rate=not args.no_cell_rate),
+                  fp, indent=1)
     return 0
 
 

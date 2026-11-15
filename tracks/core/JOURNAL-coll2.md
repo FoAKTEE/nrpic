@@ -470,3 +470,99 @@ of zero; no pair without a root.
 `cell`: gain per collision in the first collision time equal to the reference within
 4 standard errors; total growth between 0.3 and 1.2 of what the initial rate would
 give; amplitude of ln(theta alpha) between -2 and -10 percent (my estimate -5).
+
+## 2026-11-15 18:10-18:40 UTC  second session of coll2: outcomes of the runs left unrecorded
+
+Merged `main` (b9fbf3e: harness and coord only, no change under `athenak/src`). The
+previous session of this package ended after submitting the runs below; their manifests
+were untracked (committed now, bdfb72d). Outcomes, read from the run directories:
+
+### G1, G2 on the processor: run core-20261115-160707-6537687 (8e6 particles, 14 cases). Mixed.
+
+Against the registered reference of 16:20 (runs core-20261115-160136/-160137/-160139-819d588):
+- G1 (operator of core-v0.3) passed in its structural parts: (a) lapse_tolman and
+  lapse_iso dW = +6.6e-21 and -3.3e-21 per collision (the lapse does not enter);
+  (b) psi_inverted dW = -1.43e-4 (negative, 23 standard errors), psi_null -7.3e-6
+  (below a quarter of psi_iso +8.33e-5); (c) cell-size ratios f2/iso 3.98 (reference
+  3.91, se 0.28), f4/iso and iso/half within 4 se. So the candidate cause, the spatial
+  metric differing between the partners' positions with a temperature that is
+  correlated with position, survives a test in which (a), (b) or (c) could each have
+  failed.
+- G2 (coll_energy = particle) passed (a) |dH| per collision 3.5e-17 to 3.5e-16 in all
+  14 cases (criterion 1e-15), (b) sum M u_i to 2e-20, (d) the slope in the ten
+  equilibrium states is zero within 4 se.
+- FAILED as written, five cases: psi_inverted slope z = +4.6 (cell) and +6.7 (particle);
+  well_tolman_f2 dW(cell) z = -4.5 and rejected share z = -4.0; well_tolman_hot rejected
+  z = -8.0; well_tolman_hot_f2 rejected z = -10.8 and 5 pairs without a root (G2(c)
+  said none; the reference of 16:20 had already shown up to 3e-5 of the proposals
+  without a root in this case, 5 of 3.6e5 = 1.4e-5: the prediction contradicted the
+  reference, my error). The deficits are systematic: in all five "well" cases dW(cell)
+  of the code is 7 to 15 percent below the reference (z -2.3 to -4.5) and the rejected
+  share 3 to 11 percent below; the psi-only cases agree.
+- Figure `fig_gradient.png` looked at: the dots sit on the bars except in the well
+  cases and the slope of psi_inverted.
+
+Candidate cause of the deficits [JUDGEMENT, tested next]: the reference, not the code.
+`scbox.pair_reference` with uniform density draws the collision cell uniformly, but the
+pair probability of the operator carries the factor alpha_c/sqrt(det gamma_c) =
+alpha_c/psi_c^6 of the cell (rate per coordinate time and coordinate volume; the
+reference applies this factor only in its "tolman" branch). Where the temperature (or
+the metric gradient) is correlated with alpha/psi^6 the weighted mean differs: in the
+well, deep cells (alpha small, psi large) are hotter and collide less in the code.
+
+### G4 at theta_inf = 0.2: run core-20261115-164138-cdd7c88. Passed.
+
+1e5 particles, 400 steps of 0.01, 57 collisions per particle, two seeds.
+- `particle`: change of sum M H in the collision steps 6.41e-15 of its value (both
+  seeds), total including the push -1.39e-7 and +6.1e-8 (criterion 1e-6); cos phi
+  amplitude of ln(theta alpha), late mean, -0.24 (0.21) and -0.04 (0.21) percent
+  (criterion 0.5 percent); no pair without a root; 16255 and 16183 collisions rejected
+  (5.7e-3 of the proposals; reference 5.7e-3).
+- `cell`: sum M H grows by 6.47e-3 and 6.18e-3 (0.77 and 0.74 of the initial rate
+  8.4e-3; band 0.3 to 1.2); gain per collision in the first collision time 2.93e-4 and
+  3.77e-4 against the reference 3.62e-4 (z -1.2, +0.3); temperature amplitude -3.8
+  (0.2) and -3.4 (0.2) percent: the gas ends colder at the bottom of the well than
+  Tolman's law, as predicted (band -2 to -10 percent).
+- `fig_tolman.png` looked at: the energy of `cell` rises linearly over 50 collision
+  times; its temperature mode falls to -4 percent within 8 collision times and stays;
+  the `particle` mode scatters about zero; the end profile of `cell` is hotter at the
+  top of the well (x/L = 0.5), the empty top bins (density contrast e^2) are skipped.
+
+### R on the processor (executable of 819d588, options absent). Passed.
+
+`regress_relativistic.py` geo, boris, dep, east, os, jeans, binary: all files identical
+(runs core-20261115-164154 ... -165211-cdd7c88); rng `run_regression.py` c1-c5
+identical, baseline twice identical (core-20261115-165253-cdd7c88); `cf_checks.py` P2
+16 + 9 files identical, P5 combined curvature within float32 rounding (largest 0.998
+of the bound) (core-20261115-170028-cdd7c88); wave-1 rate and relax against fresh runs
+of the release executable: 43 and 116 files compared, none differs
+(core-20261115-164153-cdd7c88, -165050-cdd7c88; baselines -164615, -165337).
+
+### Card jobs 4453 (R), 4454 (N), 4455 (C): every run of the new executable crashed
+
+All runs of `scratch/core/tmp/coll2/exe/819d588/athena_gpu` ended with SIGSEGV (exit
+-11) after the mesh summary, before the particle file is read, with and without the new
+options (runs core-20261115-171107, -171146, -171154, -171207, -171830, -171836,
+-172012, -172059, -172122, -172223-cdd7c88); the release executable ran the same decks
+in the same jobs. Card time spent: 0.07 card-hours. Candidate cause [JUDGEMENT, to be
+tested]: a stale object in the incremental card build. `particles.hpp` (class
+Particles gains members) changed at 07:40:08 local time while the first card build
+(finished 07:42) was compiling; the incremental build at 07:44 recompiled only 13 of
+the files that include it, so objects compiled from the old class layout may have been
+linked. Test: a clean card build from a snapshot of the source (f46f159, identical
+`athenak/src` to 819d588) must run the same decks; if it also crashes, the cause is in
+the source and is searched there.
+
+### Prediction for the corrected reference (18:40 UTC, before the run)
+
+Reference rerun with the cell drawn in proportion to alpha_c/psi_c^6 (uniform positions;
+`pair_reference(..., cell_rate=True)`, 4e6 pairs per case, the 14 cases), and the code
+numbers of run core-20261115-160707-6537687 graded again against it (no new code run):
+(a) every case of G1 and G2(d) within 4 combined standard errors, including the
+    rejected shares; (b) the reference values in the psi-only cases with s_psi = 0 move
+    by less than 2 standard errors (the weight psi^-6 enters there only at second
+    order); (c) in the five well cases the reference dW(cell) falls by 4 to 15 percent;
+    psi_inverted slope rises towards the code (+5.9e-2).
+Refuted by: a case beyond 4 se after the change, or a well case whose reference does not
+move: then the code and the pair model differ in something else and the cause above is
+wrong.

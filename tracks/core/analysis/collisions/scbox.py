@@ -155,16 +155,25 @@ def energies(met, x, u):
 
 
 def pair_reference(met, npair, seed, theta0, s_alpha=0.0, s_psi=0.0, f=1, mode="cell",
-                   chunk=1000000, balance=True, density="uniform"):
+                   chunk=1000000, balance=True, density="uniform", cell_rate=True):
     """Monte Carlo over pairs of one collision cell (see the module text). Returns a
     dict: mean change per collision of W_a + W_b and of H_a + H_b (metric at each
     particle), their standard errors, the slope c of the regression of the change of
     H of a particle on its cos(phi) minus the mean of cos(phi) over its cell (energy
     handed down the modulation per collision), and the share of pairs without a root
-    (mode "particle")."""
+    (mode "particle").
+    cell_rate (uniform density): the cell of a pair is drawn in proportion to the
+    factor alpha_c/sqrt(det gamma_c) = alpha_c/psi_c^6 of the operator's pair
+    probability (proper time over proper volume of the cell); False draws the cells
+    uniformly, as the references of runs core-20261115-160136/-160137/-160139-819d588
+    did (JOURNAL-coll2.md, 18:40 UTC)."""
     gen = np.random.default_rng(seed)
     ncell = met.nx//f
     h = met.dx*f
+    if density != "tolman" and cell_rate:
+        ac, p4c = met.cell(np.arange(ncell), f)
+        pc_uni = ac/p4c**1.5
+        pc_uni = pc_uni/pc_uni.sum()
     if density == "tolman":
         # positions with the equilibrium density; a cell is chosen in proportion to its
         # number of tested pairs times the factor alpha/psi^6 of the pair probability
@@ -189,7 +198,10 @@ def pair_reference(met, npair, seed, theta0, s_alpha=0.0, s_psi=0.0, f=1, mode="
             xa = np.interp(cedge[ic] + (cedge[ic + 1] - cedge[ic])*gen.random(nb), cdf, xg)
             xb = np.interp(cedge[ic] + (cedge[ic + 1] - cedge[ic])*gen.random(nb), cdf, xg)
         else:
-            ic = gen.integers(0, ncell, nb)
+            if cell_rate:
+                ic = gen.choice(ncell, size=nb, p=pc_uni)
+            else:
+                ic = gen.integers(0, ncell, nb)
             x0 = met.xmin + ic*h
             xa = x0 + h*gen.random(nb)
             xb = x0 + h*gen.random(nb)

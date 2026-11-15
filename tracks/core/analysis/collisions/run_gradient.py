@@ -15,6 +15,12 @@ H = alpha W - beta^x u_x with the metric at each particle, from the history colu
 dE_particles, dH_particles and again from the dump (metric at the particles as dumped);
 the regression slope of the change of H of a particle on cos(phi) minus its cell mean;
 the change of sum M u_i (exact sums). Writes summary.json and fig_gradient.png.
+
+  run_gradient.py OUT --ref REF.json --regrade OLD/summary.json
+
+grades the code numbers of an earlier run (its summary.json) against other reference
+files without running the code again (the dumps of that run are gone; the numbers
+graded are those analyse() stored).
 """
 import argparse
 import json
@@ -33,6 +39,12 @@ DT = 1.0e-6
 PTARGET = 0.08
 LENGTHS = [1.0, 0.25, 0.25]
 NCELL = 16*4*4
+
+
+# the numbers analyse() returns (kept in summary.json; --regrade grades them again)
+ANALYSED = ("n_coll", "sum_P", "max_P", "max_nsub", "n_trunc", "n_noroot", "max_dlam",
+            "n_balance", "dW_hist", "dH_hist", "dW_dump", "dH_dump", "slope",
+            "dP_over_scale", "untouched_identical", "pair_dE_hist", "pair_abs_dE_hist")
 
 
 def analyse(rd, met, f, theta0):
@@ -88,6 +100,8 @@ def main():
     ap.add_argument("--nproc", type=int, default=6)
     ap.add_argument("--cases", default="")
     ap.add_argument("--keep-dumps", action="store_true")
+    ap.add_argument("--regrade", default="",
+                    help="summary.json of an earlier run: grade its code numbers only")
     args = ap.parse_args()
     out = os.path.abspath(args.out)
     os.makedirs(out, exist_ok=True)
@@ -99,9 +113,17 @@ def main():
             ref = r
         else:
             ref["results"].update(r["results"])
-    names = [c for c in args.cases.split(",") if c] or list(ref["results"])
+    old = None
+    if args.regrade:
+        with open(args.regrade) as fp:
+            old = json.load(fp)
+    names = [c for c in args.cases.split(",") if c] or (
+        list(old["cases"]) if old else list(ref["results"]))
     jobs, meta = [], {}
     for k, name in enumerate(names):
+        if old is not None:
+            meta[name] = {q: old["cases"][name][q] for q in ("case", "particles", "sigma")}
+            continue
         aa, apsi, ash, sa, sp, f = gradient_ref.CASES[name]
         met = gradient_ref.metric(name)
         ic = os.path.join(out, name + ".nrp")
@@ -123,14 +145,21 @@ def main():
                 "particles/coll_dump_cycle=0", "particles/snap_dt=-1.0",
                 f"job/rng_seed={900 + k}"]
             jobs.append((args.exe, DECK, rd, ov))
-    res = common.run_many(jobs, args.nproc)
-    if any(r[0] != 0 for r in res):
-        print("a run failed:", [r[0] for r in res])
-        sys.exit(1)
-    summary = dict(n=args.n, dt=DT, theta0=ref["theta0"], hot=ref.get("hot"), exe=args.exe,
-                   exe_sha256=common.sha256(args.exe),
-                   ref=[os.path.abspath(pth) for pth in args.ref],
-                   wall_s=[round(r[1], 1) for r in res], cases={})
+    if old is None:
+        res = common.run_many(jobs, args.nproc)
+        if any(r[0] != 0 for r in res):
+            print("a run failed:", [r[0] for r in res])
+            sys.exit(1)
+        summary = dict(n=args.n, dt=DT, theta0=ref["theta0"], hot=ref.get("hot"),
+                       exe=args.exe, exe_sha256=common.sha256(args.exe),
+                       ref=[os.path.abspath(pth) for pth in args.ref],
+                       wall_s=[round(r[1], 1) for r in res], cases={})
+    else:
+        summary = dict(n=old["n"], dt=old["dt"], theta0=ref["theta0"], hot=ref.get("hot"),
+                       exe=old["exe"], exe_sha256=old["exe_sha256"],
+                       ref=[os.path.abspath(pth) for pth in args.ref],
+                       regraded_from=os.path.abspath(args.regrade),
+                       wall_s=old["wall_s"], cases={})
     ok = True
     for name in names:
         f = gradient_ref.CASES[name][5]
@@ -138,7 +167,10 @@ def main():
         entry = dict(meta[name])
         for mode in ("cell", "particle"):
             rd = os.path.join(out, name + "_" + mode)
-            r = analyse(rd, met, f, gradient_ref.theta_of(name))
+            if old is None:
+                r = analyse(rd, met, f, gradient_ref.theta_of(name))
+            else:
+                r = {q: old["cases"][name][mode][q] for q in ANALYSED}
             rf = ref["results"][name][mode]
             # rejected collisions: share of the proposals, against the reference
             nprop = r["n_coll"] + r["n_balance"] + r["n_noroot"]
@@ -157,7 +189,7 @@ def main():
             r["budget_vs_dump"] = [abs(r["dW_hist"] - r["dW_dump"]),
                                    abs(r["dH_hist"] - r["dH_dump"])]
             entry[mode] = r
-            if not args.keep_dumps:
+            if old is None and not args.keep_dumps:
                 os.remove(os.path.join(rd, "box.coll_dump.0.bin"))
         c, p = entry["cell"], entry["particle"]
         homog_space = (gradient_ref.CASES[name][1] == 0.0)
