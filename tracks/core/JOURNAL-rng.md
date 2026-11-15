@@ -362,3 +362,106 @@ to 1e-1). Copies in `tracks/core/notes/rng_figs/`.
 State at this point: every deliverable exists and every processor test passes. On the
 card: table, sums and cost are done; the kick demonstration, the cell check and the
 regression wait in the queue (job 4414).
+
+## 2026-11-15 12:50 UTC  session core-rng  experiment while the card job waits: a reconstruction that does not see the MeshBlock edge
+
+Housekeeping first: the ignore rule `runs/` also matches `tracks/core/runs/`, so my
+manifests had not been in any commit; they are now added explicitly (22 runs, commit
+8e05112), as the other branches do. The card time in the manifests of runs
+core-20261115-115230-f0258ce and core-20261115-115355-f0258ce is now the elapsed time of
+the Slurm jobs (16 s and 116 s); the wall time of the commands had included the queue.
+Card time used so far: 134 s (jobs 4371, 4372, 4376, 4395).
+
+The one place where a division into MeshBlocks changes particle states is the
+reconstruction of the metric at a particle (`nrpic_mesh.hpp`, `MeshMetric::Gather`):
+`xi = (x - xmin) / dx - 1/2` is rounded after the edge of the particle's own MeshBlock has
+been subtracted. This is outside my work package (existing behaviour must stay
+bit-identical), but the request to change it is worth more with a test. Experiment, on a
+copy of the source in scratch, nothing committed to `athenak/src`: form the cell
+coordinate from the position alone, `t = x / dx - 1/2`, take the fraction `t - floor(t)`
+for the weights and get the local cell index by subtracting the integer cell offset of
+the MeshBlock edge. For a mesh whose MeshBlock edges are integer multiples of dx from
+the coordinate origin (true for the test mesh) the weights then depend on the position
+only.
+
+Prediction: with this change the mesh-metric set-up of demonstration D2 (10000 particles,
+800 steps, uniform mesh of 128^3 cells) gives bit-identical particle states for 8 and 64
+MeshBlocks, without the kick and with it. Refuted by any differing particle; that would
+mean there is a second source of layout dependence that I have not seen (the metric
+samples themselves, or the assignment of particles to MeshBlocks). The changed
+executable will differ from the present one at rounding level; I expect differences of
+the size seen between the layouts now (1e-13).
+
+## 2026-11-15 12:57 UTC  session core-rng  experiment: outcome
+
+Prediction of 12:50 confirmed. Run core-20261115-124953-8e05112 (scouting; executable
+built from a scratch copy of the source with the patch
+`tracks/core/notes/rng_gather_experiment.diff`): 0 of 10000 particles differ between 8
+and 64 MeshBlocks, without the kick (m3, m4) and with it (m1, m2); the restart with
+removal stays bit-identical; the checksums of the kicks equal those of the repository
+executable (run core-20261115-115833-f0258ce). The driver reports "FAIL" for the two
+lines that expect a difference, which is the point of the experiment, hence exit status
+1. So in this set-up the reconstruction is the only place where the division into
+MeshBlocks enters the particle states: the cause is named after a run in which it could
+have failed. Against the repository executable the patched one differs in about 9070 of
+10000 particles by at most 1.3e-13 (positions) and 7.9e-15 (momenta) after 800 steps,
+and by 1.4e-13 and 9.0e-14 in the 927 survivors of the plunging set; the same particles
+survive. The patch assumes MeshBlock edges at integer multiples of dx from the
+coordinate origin; a version for the source tree should take the integer cell offset
+from the logical location of the MeshBlock, as `rng::CellOffsets` does. Not applied:
+it changes existing results at rounding level, which this work package may not do.
+
+## 2026-11-15 13:00 UTC  session core-rng  summary and hand-over
+
+Commits f0258ce .. (the one that contains this entry) on `core/rng`, pushed.
+
+Deliverables (all exist):
+- `athenak/src/utils/rng.hpp` (generator and draws), `athenak/src/utils/rng_mesh.hpp`
+  (cell entities), `python/nrpic/rng.py` (twin).
+- `athenak/src/pgen/unit_tests/rng_test.cpp` and `problems/tests/rng_test.athinput`
+  (unit test in the code), `athenak/src/particles/nrpic_kick.cpp` and
+  `problems/tests/rng_kick_analytic.athinput`, `rng_kick_mesh.athinput` (demonstration).
+- `tracks/core/interfaces/rng.md` (proposal for `coord/INTERFACES/rng.md`),
+  `docs/RNG.md` (use and tests), drivers `tracks/core/analysis/rng/`, figures
+  `tracks/core/notes/rng_figs/`, manifests `tracks/core/runs/` (added with `git add -f`:
+  the ignore rule `runs/` matches them).
+
+Lines touched in files that other branches also edit:
+`athenak/src/CMakeLists.txt` 137 and 167 (two source files added);
+`athenak/src/pgen/pgen.hpp` 86 (declaration `RngTest`); `athenak/src/pgen/pgen.cpp`
+985-986 (dispatch of `rng_test`); `athenak/src/particles/particles.hpp` 11
+(`#include <cstdint>`), 106-120 (`struct NrpicKickOptions`), 267-271 (member and two
+functions at the end of the public part of `Particles`); `athenak/src/particles/nrpic.cpp`
+271 (last line of `NrpicInit`) and 537 (before the return of `NrpicPush`). All additions,
+no line changed or removed.
+
+Predictions and outcomes: P1, P2 confirmed; P3 holds (two follow-ups, both chance);
+P4 processor within the stated factor (generator call 20.5 ns against "10 to 20",
+normal pair 67 ns against "about 100", direction 28 ns against "25 to 30"), card
+refuted (20 to 40 times faster than predicted); P5 confirmed on processors, including
+the two controls and the prediction that mesh-metric states are not bit-identical;
+two statements of mine were wrong and are corrected in place: the bound on |n|^2 - 1
+(4.4e-16, not below 4e-16) and the bound on the logarithm (3.0e-14 found, claim now
+1e-13).
+
+Not done, plainly:
+- On the card only the table of draws, the statistical sums and the cost were run.
+  The kick demonstration (D1, D2), the cell check, the regression and the table from
+  the final source on the card are one Slurm job, 4414 (`gpu_job.sh`, executable
+  `.work/exe/athena_gpu_34da199`, built from the source of commit 34da199; later commits
+  changed comments, scripts and the Python twin only), still queued behind other owners'
+  jobs at the time of this entry. When it has run: five new directories
+  `scratch/core/core-<date>-<time>-<commit>/` and manifests under `tracks/core/runs/`
+  (ignored by git: add with `git add -f`); the log is
+  `scratch/core/tmp/rng/slurm/gpu_job-4414.out`; each driver's `summary.json` has the
+  field `ok`, and the kick drivers compare their checksums with the processor runs
+  core-20261115-121609-fb0491a and core-20261115-115833-f0258ce. Expected: all `ok`,
+  the table with sha256 6527e84f..., except possibly the regression: whether deposits
+  on the card are reproducible run to run is itself part of that test (the baseline is
+  run twice).
+- Independence of the number of ranks: the particle module runs on one rank.
+- Adaptive refinement during a run; tags created during a run.
+- A check by a second agent that did not write the code.
+
+Card time used: 134 s (0.037 card-hours) of the three card-hours; job 4414 is limited
+to 15 minutes. Processor time: about 5.5 core-hours.

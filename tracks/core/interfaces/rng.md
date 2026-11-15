@@ -222,7 +222,12 @@ for each of 512^3 cells costs 0.018 s on the card and 9 s on one core.
   metric at a particle forms `(x - xmin) / dx` with the lower edge of the particle's own
   MeshBlock (`athenak/src/particles/nrpic_mesh.hpp`, line 91), which rounds differently
   for different edges. The differences stay at 1e-13 over 800 steps in the test above.
-  Making the reconstruction independent of the edge would change existing results at
+  An experiment on a copy of the source (patch `tracks/core/notes/rng_gather_experiment.diff`,
+  not applied) forms the cell coordinate from the position alone; with it the same test
+  gives 0 of 10000 differing particles between 8 and 64 MeshBlocks, with and without the
+  kick, so the reconstruction is the only source of the difference there; the patched
+  executable differs from the present one by up to 1.4e-13 in positions [VERIFIED: run
+  core-20261115-124953-8e05112, scouting]. Applying it changes existing results at
   rounding level and needs a decision (request in the report of this work package).
 - The particle module runs on a single rank (`nrpic.cpp`, `NrpicInit`); the generator has
   no rank dependence, but the independence of the number of ranks is untested until the
