@@ -439,3 +439,11 @@ caustic of N64c at a/a_i = 4 lies in the bin 16-20 M, lambda = 0.39-0.49, and th
 jump in the same 0.1-dex binning lies at lambda ~ 0.37-0.40: the caustic positions agree within
 the bin width; what differs is the density inside it (run 0.5-0.7 of the self-similar value
 for lambda = 0.1-0.3, flatter than lambda^(-9/4) inside lambda ~ 0.1).
+
+## 2026-11-15T18:03Z  sampling test of the snapshot-based turnaround and pericentre detection
+
+Not predicted beforehand (first run as a debug run in scratch/tmp, then registered as
+D-20261115-180251-ffafe32): N64c analysed with every other snapshot (6.2 M apart instead of
+3.1 M) gives M_ta and dress at a/a_i = 4 identical to all printed digits (2.59656, 0.79662 M)
+and the dress at a/a_i = 2 within 0.15 % of the full sampling (+1.26 % against +1.40 % from the
+kernel shells). The snapshot spacing does not limit the mass measurements.
