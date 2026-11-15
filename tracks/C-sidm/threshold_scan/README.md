@@ -58,19 +58,24 @@ The IC run directory is fixed in `common.IC_RUN`; another one needs `make_decks.
 
 ## Requests
 
-- core: (1) a dynamically accessible perturbation of `nrpic_cf` models (the lead's open
-  request "perturbation-recipe" of 13:20Z; 2009.08163 lines 846-866); the prepared scan A
-  uses the first paper's coherent one-percent kick meanwhile. (2) A pair-energy correction
-  at the particles' own metric before the short-mean-free-path runs of G3: predicted defect
-  in the King threshold model with M/4 collision cells at N = 10^5 is +1.7e-10 of sum M W
-  per collision (run C-20261115-170404-af74c6d), 2e-4 over 300 M at Kn = 1 and about 2e-3
-  at Kn = 0.1. (3) A diagnostic of the spacetime's energy (ADM mass by a surface integral,
-  or a Komar-type volume integral) in a history file, so that the energy budget can be
-  closed against the spacetime and not only through the matter sums.
-- orchestrator: card time for `SCAN.md` (about 22-24 card-hours of C's 45 toward the next
-  gate); these decks cannot run on processors (about 140 s per cycle on four threads, run
-  C-20261115-172003-6422b6a, against 4800 cycles per 300 M).
-- C-sidm lead: choose the perturbation of scan A (kick or the dynamically accessible
-  force); the collision cells of CC1/CC2 hold 2.3 particles on average (about 20 in the
-  core): fine for counts and budgets, low for relaxation fidelity (core's advice: about 100
-  per cell); for G3 consider `coll_cell_factor = 2` or N = 10^6.
+- core: (1) a pair-energy correction of the collision step at the particles' own metric
+  before science runs: the defect is +1.2-1.7e-10 of sum M W per collision on M/4 cells at
+  the start, second order in the cell side (run C-20261115-175709-e5d0e07), and reaches
+  1.6-1.7e-3 before the collapse at Kn = 1 (run C-20261115-191420-8538aa4). (2) A run whose
+  state turns non-finite should stop with a nonzero status (seen here: cc1_kn1 at 204 M,
+  cc2_kn1 at 162 M, cc1_kn10 at 290 M, all exit 0; core's G2 OPEN item 11). (3) Collisions
+  on an adaptive mesh are not exercised (collisions.md section 9); block C of SCAN.md needs
+  them. (4) A dynamically accessible perturbation of `nrpic_cf` models (the lead's open
+  request "perturbation-recipe"); scan A uses the first paper's kick meanwhile. (5) A
+  spacetime energy diagnostic (ADM mass by a surface integral) in a history file: the
+  Killing-energy sum of the particles is no budget while the metric evolves (Entry 6, P3.9).
+- orchestrator: card time for `SCAN.md` (about 26-28 card-hours of C's 45 toward the next
+  gate; 43.27 left); these decks cannot run on processors (about 140 s per cycle on four
+  threads, run C-20261115-172003-6422b6a).
+- C-sidm lead: (1) the result to place: both King models collapse with collisions at
+  Kn = 10 and 1 although neither collapses without them, so the collisional threshold lies
+  below y0 = 0.314 (block D brackets it); (2) choose the perturbation of scan A;
+  (3) collision cells hold 2.3 particles on average (16 in the core) at N = 10^5 with M/4
+  cells; about 100 per cell needs M/2 cells, where the defect is four times larger
+  (Entry 5); (4) the outward excursion of the collisionless controls is unexplained and
+  bears on the G2 threshold location.
