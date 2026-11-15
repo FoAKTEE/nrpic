@@ -63,18 +63,19 @@
     "cores": 1,
     "gpus": 1,
     "wall_limit": "00:40:00",
-    "walltime_s": null,
-    "gpu_hours": null
+    "walltime_s": 375.0,
+    "gpu_hours": 0.1042
   },
   "outputs": {
     "dir": "scratch/A-emd-pbh/A-emd-pbh-20261115-153843-7172b66",
-    "sha256sums": "sha256sums.txt"
+    "sha256sums": "sha256sums.txt",
+    "files": 719
   },
-  "status": "submitted",
-  "exit_code": null,
+  "status": "completed",
+  "exit_code": 0,
   "registered": "2026-11-15T15:38:43Z",
   "started": "2026-11-15T15:38:43Z",
-  "ended": null,
+  "ended": "2026-11-15T16:21:05Z",
   "notes": "",
   "batch_entries": [
     {
@@ -92,6 +93,9 @@
       "4436"
     ],
     "submit_stdout": "submitted job 4436 for 1 runs",
-    "submit_rc": 0
+    "submit_rc": 0,
+    "states": [
+      "COMPLETED"
+    ]
   }
 }
