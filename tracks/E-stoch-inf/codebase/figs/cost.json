@@ -1,0 +1,352 @@
+{
+ "inputs": {
+  "z4c_gpu_zcps": [
+   20000000.0,
+   "docs/TESTLOG.md:46, Z4c uniform 128^3, RK4, nghost 4, one A100"
+  ],
+  "z4c_cpu_zcps": [
+   15000.0,
+   "run E-stoch-inf-20261115-122727-a1c2237 (D1), one core"
+  ],
+  "efolds_quad": [
+   8.0,
+   "2512.14649 PRD_v2.tex:420, N_f - N* ~ 8 (quadratic)"
+  ],
+  "efolds_usr": [
+   10.0,
+   "2512.14649 PRD_v2.tex:420, N_f - N* ~ 10 (inflection)"
+  ],
+  "sigma": [
+   1.0,
+   "2512.14649 PRD_v2.tex:519"
+  ],
+  "theta_ic_paper": [
+   0.025,
+   "2502.06783 main_V2PRD.tex:492 (Courant factor of the companion initial-condition runs; not stated in 2512.14649)"
+  ],
+  "theta_athenak": [
+   0.25,
+   "cosmo/TESTLOG.md:18 (step of a quarter cell, production)"
+  ],
+  "sf_rhs_overhead": [
+   0.15,
+   "[JUDGEMENT] scalar-field RHS, Tmunu, kick: +15 percent of Z4c"
+  ],
+  "gpu_fp64_eff": [
+   3000000000000.0,
+   "[JUDGEMENT] sustained FP64 flop/s of the synthesis on an A100"
+  ],
+  "flops_per_cmac": [
+   8.0,
+   "complex multiply-add"
+  ],
+  "fields_per_synthesis": [
+   6,
+   "S_R and five components of k_i k_j S_R / k^2 (review 5.3)"
+  ]
+ },
+ "rows": [
+  {
+   "N": 64,
+   "block": 64,
+   "case": "quadratic",
+   "theta": 0.25,
+   "noise_per": "step",
+   "steps": 326,
+   "sec_per_step": 0.015179474944,
+   "synthesis_share": 0.0069959563418216745,
+   "card_hours": 0.0013743721078767906,
+   "memory_GB": 0.4051127976811066
+  },
+  {
+   "N": 64,
+   "block": 64,
+   "case": "quadratic",
+   "theta": 0.25,
+   "noise_per": "stage",
+   "steps": 326,
+   "sec_per_step": 0.015498059776,
+   "synthesis_share": 0.027408577727762146,
+   "card_hours": 0.0014032172496691612,
+   "memory_GB": 0.4051127976811066
+  },
+  {
+   "N": 64,
+   "block": 64,
+   "case": "quadratic",
+   "theta": 0.025,
+   "noise_per": "step",
+   "steps": 3259,
+   "sec_per_step": 0.015179474944,
+   "synthesis_share": 0.0069959563418216745,
+   "card_hours": 0.013743721078767908,
+   "memory_GB": 0.4051127976811066
+  },
+  {
+   "N": 64,
+   "block": 64,
+   "case": "quadratic",
+   "theta": 0.025,
+   "noise_per": "stage",
+   "steps": 3259,
+   "sec_per_step": 0.015498059776,
+   "synthesis_share": 0.027408577727762146,
+   "card_hours": 0.014032172496691614,
+   "memory_GB": 0.4051127976811066
+  },
+  {
+   "N": 64,
+   "block": 64,
+   "case": "inflection",
+   "theta": 0.25,
+   "noise_per": "step",
+   "steps": 407,
+   "sec_per_step": 0.015179474944,
+   "synthesis_share": 0.0069959563418216745,
+   "card_hours": 0.0017179651348459884,
+   "memory_GB": 0.4051127976811066
+  },
+  {
+   "N": 64,
+   "block": 64,
+   "case": "inflection",
+   "theta": 0.25,
+   "noise_per": "stage",
+   "steps": 407,
+   "sec_per_step": 0.015498059776,
+   "synthesis_share": 0.027408577727762146,
+   "card_hours": 0.0017540215620864517,
+   "memory_GB": 0.4051127976811066
+  },
+  {
+   "N": 64,
+   "block": 64,
+   "case": "inflection",
+   "theta": 0.025,
+   "noise_per": "step",
+   "steps": 4074,
+   "sec_per_step": 0.015179474944,
+   "synthesis_share": 0.0069959563418216745,
+   "card_hours": 0.017179651348459887,
+   "memory_GB": 0.4051127976811066
+  },
+  {
+   "N": 64,
+   "block": 64,
+   "case": "inflection",
+   "theta": 0.025,
+   "noise_per": "stage",
+   "steps": 4074,
+   "sec_per_step": 0.015498059776,
+   "synthesis_share": 0.027408577727762146,
+   "card_hours": 0.017540215620864514,
+   "memory_GB": 0.4051127976811066
+  },
+  {
+   "N": 128,
+   "block": 128,
+   "case": "quadratic",
+   "theta": 0.25,
+   "noise_per": "step",
+   "steps": 652,
+   "sec_per_step": 0.12225463091199999,
+   "synthesis_share": 0.013646852471387552,
+   "card_hours": 0.022138230130369457,
+   "memory_GB": 2.463815606059048
+  },
+  {
+   "N": 128,
+   "block": 128,
+   "case": "quadratic",
+   "theta": 0.25,
+   "noise_per": "stage",
+   "steps": 652,
+   "sec_per_step": 0.127259803648,
+   "synthesis_share": 0.05244046789871722,
+   "card_hours": 0.02304458161206979,
+   "memory_GB": 2.463815606059048
+  },
+  {
+   "N": 128,
+   "block": 128,
+   "case": "quadratic",
+   "theta": 0.025,
+   "noise_per": "step",
+   "steps": 6519,
+   "sec_per_step": 0.12225463091199999,
+   "synthesis_share": 0.013646852471387552,
+   "card_hours": 0.22138230130369455,
+   "memory_GB": 2.463815606059048
+  },
+  {
+   "N": 128,
+   "block": 128,
+   "case": "quadratic",
+   "theta": 0.025,
+   "noise_per": "stage",
+   "steps": 6519,
+   "sec_per_step": 0.127259803648,
+   "synthesis_share": 0.05244046789871722,
+   "card_hours": 0.23044581612069792,
+   "memory_GB": 2.463815606059048
+  },
+  {
+   "N": 128,
+   "block": 128,
+   "case": "inflection",
+   "theta": 0.25,
+   "noise_per": "step",
+   "steps": 815,
+   "sec_per_step": 0.12225463091199999,
+   "synthesis_share": 0.013646852471387552,
+   "card_hours": 0.027672787662961818,
+   "memory_GB": 2.463815606059048
+  },
+  {
+   "N": 128,
+   "block": 128,
+   "case": "inflection",
+   "theta": 0.25,
+   "noise_per": "stage",
+   "steps": 815,
+   "sec_per_step": 0.127259803648,
+   "synthesis_share": 0.05244046789871722,
+   "card_hours": 0.02880572701508724,
+   "memory_GB": 2.463815606059048
+  },
+  {
+   "N": 128,
+   "block": 128,
+   "case": "inflection",
+   "theta": 0.025,
+   "noise_per": "step",
+   "steps": 8149,
+   "sec_per_step": 0.12225463091199999,
+   "synthesis_share": 0.013646852471387552,
+   "card_hours": 0.2767278766296182,
+   "memory_GB": 2.463815606059048
+  },
+  {
+   "N": 128,
+   "block": 128,
+   "case": "inflection",
+   "theta": 0.025,
+   "noise_per": "stage",
+   "steps": 8149,
+   "sec_per_step": 0.127259803648,
+   "synthesis_share": 0.05244046789871722,
+   "card_hours": 0.2880572701508724,
+   "memory_GB": 2.463815606059048
+  },
+  {
+   "N": 256,
+   "block": 128,
+   "case": "quadratic",
+   "theta": 0.25,
+   "noise_per": "step",
+   "steps": 1304,
+   "sec_per_step": 1.004610748416,
+   "synthesis_share": 0.03973760830146837,
+   "card_hours": 0.36383577086556135,
+   "memory_GB": 19.661353558930937
+  },
+  {
+   "N": 256,
+   "block": 128,
+   "case": "quadratic",
+   "theta": 0.25,
+   "noise_per": "stage",
+   "steps": 1304,
+   "sec_per_step": 1.124373233664,
+   "synthesis_share": 0.14201984615343366,
+   "card_hours": 0.40720966091171673,
+   "memory_GB": 19.661353558930937
+  },
+  {
+   "N": 256,
+   "block": 128,
+   "case": "quadratic",
+   "theta": 0.025,
+   "noise_per": "step",
+   "steps": 13038,
+   "sec_per_step": 1.004610748416,
+   "synthesis_share": 0.03973760830146837,
+   "card_hours": 3.6383577086556134,
+   "memory_GB": 19.661353558930937
+  },
+  {
+   "N": 256,
+   "block": 128,
+   "case": "quadratic",
+   "theta": 0.025,
+   "noise_per": "stage",
+   "steps": 13038,
+   "sec_per_step": 1.124373233664,
+   "synthesis_share": 0.14201984615343366,
+   "card_hours": 4.0720966091171675,
+   "memory_GB": 19.661353558930937
+  },
+  {
+   "N": 256,
+   "block": 128,
+   "case": "inflection",
+   "theta": 0.25,
+   "noise_per": "step",
+   "steps": 1630,
+   "sec_per_step": 1.004610748416,
+   "synthesis_share": 0.03973760830146837,
+   "card_hours": 0.45479471358195167,
+   "memory_GB": 19.661353558930937
+  },
+  {
+   "N": 256,
+   "block": 128,
+   "case": "inflection",
+   "theta": 0.25,
+   "noise_per": "stage",
+   "steps": 1630,
+   "sec_per_step": 1.124373233664,
+   "synthesis_share": 0.14201984615343366,
+   "card_hours": 0.5090120761396459,
+   "memory_GB": 19.661353558930937
+  },
+  {
+   "N": 256,
+   "block": 128,
+   "case": "inflection",
+   "theta": 0.025,
+   "noise_per": "step",
+   "steps": 16297,
+   "sec_per_step": 1.004610748416,
+   "synthesis_share": 0.03973760830146837,
+   "card_hours": 4.547947135819517,
+   "memory_GB": 19.661353558930937
+  },
+  {
+   "N": 256,
+   "block": 128,
+   "case": "inflection",
+   "theta": 0.025,
+   "noise_per": "stage",
+   "steps": 16297,
+   "sec_per_step": 1.124373233664,
+   "synthesis_share": 0.14201984615343366,
+   "card_hours": 5.090120761396459,
+   "memory_GB": 19.661353558930937
+  }
+ ],
+ "cpu": [
+  {
+   "N": 64,
+   "case": "quadratic",
+   "steps": 326,
+   "core_hours": 1.8196760808168895
+  },
+  {
+   "N": 64,
+   "case": "inflection",
+   "steps": 407,
+   "core_hours": 2.274595101021112
+  }
+ ]
+}

@@ -1,0 +1,118 @@
+{
+ "rows": [
+  {
+   "case": "n32mb32",
+   "N": 32,
+   "block": 32,
+   "nblocks": 1,
+   "n_interior": 32768,
+   "n_shell": 31232,
+   "rss_bytes": 69435392.0,
+   "zone_cycles_per_s": 14532.52,
+   "fit_bytes": 68784694.52347638,
+   "fit_rel_err": -0.009371265255096795
+  },
+  {
+   "case": "n32mb16",
+   "N": 32,
+   "block": 16,
+   "nblocks": 8,
+   "n_interior": 32768,
+   "n_shell": 77824,
+   "rss_bytes": 126689280.0,
+   "zone_cycles_per_s": 14945.74,
+   "fit_bytes": 127339977.47652367,
+   "fit_rel_err": 0.005136168399754615
+  },
+  {
+   "case": "mb64",
+   "N": 64,
+   "block": 64,
+   "nblocks": 1,
+   "n_interior": 262144,
+   "n_shell": 111104,
+   "rss_bytes": 327860224.0,
+   "zone_cycles_per_s": 15224.63,
+   "fit_bytes": 326727347.0828935,
+   "fit_rel_err": -0.0034553655313385168
+  },
+  {
+   "case": "mb32",
+   "N": 64,
+   "block": 32,
+   "nblocks": 8,
+   "n_interior": 262144,
+   "n_shell": 249856,
+   "rss_bytes": 499470336.0,
+   "zone_cycles_per_s": 15220.98,
+   "fit_bytes": 501106266.646364,
+   "fit_rel_err": 0.0032753309425046506
+  },
+  {
+   "case": "mb16",
+   "N": 64,
+   "block": 16,
+   "nblocks": 64,
+   "n_interior": 262144,
+   "n_shell": 622592,
+   "rss_bytes": 970051584.0,
+   "zone_cycles_per_s": 15429.68,
+   "fit_bytes": 969548530.2707423,
+   "fit_rel_err": -0.0005185845140145418
+  }
+ ],
+ "fit": {
+  "c0_bytes": 7024469.93449243,
+  "bytes_per_interior_cell": 686.9165365907957,
+  "bytes_per_shell_cell": 1256.7668903040712
+ },
+ "single_slope": {
+  "c0_bytes": -21049074.360021267,
+  "bytes_per_cell": 1079.285246655367
+ },
+ "extrapolation": [
+  {
+   "N": 64,
+   "block": 64,
+   "vacuum_GB": 0.32672734708289347,
+   "scalar_field_GB": 0.4051127976811066
+  },
+  {
+   "N": 128,
+   "block": 64,
+   "vacuum_GB": 2.564647487121701,
+   "scalar_field_GB": 3.191731091907406
+  },
+  {
+   "N": 128,
+   "block": 128,
+   "vacuum_GB": 1.9733034757607069,
+   "scalar_field_GB": 2.463815606059048
+  },
+  {
+   "N": 256,
+   "block": 64,
+   "vacuum_GB": 20.46800860743216,
+   "scalar_field_GB": 25.484677445717796
+  },
+  {
+   "N": 256,
+   "block": 128,
+   "vacuum_GB": 15.737256516544209,
+   "scalar_field_GB": 19.661353558930937
+  },
+  {
+   "N": 512,
+   "block": 64,
+   "vacuum_GB": 163.69489756991584,
+   "scalar_field_GB": 203.82824827620092
+  },
+  {
+   "N": 512,
+   "block": 128,
+   "vacuum_GB": 125.84888084281222,
+   "scalar_field_GB": 157.24165718190608
+  }
+ ],
+ "note": "host resident memory of the Kokkos processor build; a proxy for the device memory of the card build [JUDGEMENT]"
+}
