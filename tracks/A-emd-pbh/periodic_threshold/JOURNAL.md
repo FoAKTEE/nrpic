@@ -459,3 +459,14 @@ the density kept rising); (d) confirmed in kind, not in time: the run ends with 
 non-positive conformal factor (chi -> -inf; the cosmo E1 failure) at tau = 11.7, later
 than the predicted "before tau ~ 10". Outcome class of SCOPE.md section 3: UNDECIDED.
 Card-hours of both scouting runs: 0.465 of the 1.5 allowed.
+
+## 2026-11-15, lead's review note (appended by the lead of A-emd-pbh; `stage/REVIEW-wave2.md`)
+
+Reproduced: `analyse_scouting.py` rerun from the registered outputs (run A-20261115-182347-8ee3fcc)
+gives the summary and the figures of A-emd-pbh-20261115-171930-878a114 byte for byte. The lead's
+own reader (run A-20261115-182314-bebd0cf) confirms S1 non-finite at tau = 11.709 (21.9 t_H), H_r
+max 0.047 at t = 0, alpha/a 0.136 at the last finite record, and S2 alpha_min/a >= 0.943. Two
+conversions in the S2 outcome above are wrong: with t/t_H = ((1 + tau/2)^2/6)^(3/2) (P0),
+tau = 3.24 is 1.2 t_H (not 1.5) and tau = 14.14 is 35.8 t_H (DESIGN.md said 45); DESIGN.md
+corrected, the entry above is left as written.
+

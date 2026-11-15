@@ -28,7 +28,7 @@ Summary.
    outflow mesh, reports nothing in the homogeneous universe, and does not wrap
    coordinates: the peak must sit at the box centre.
 5. Scouting runs (section 7, 0.47 card-hours): S2 (mu = 0.03) runs to 250 t_H without a
-   horizon but with constraint maxima above 0.1 after ~45 t_H; S1 (mu = 0.3) collapses
+   horizon but with constraint maxima above 0.1 after ~36 t_H (lead's correction, was 45); S1 (mu = 0.3) collapses
    its lapse from ~10 t_H and blows up at 21.9 t_H without a horizon (UNDECIDED), the
    failure of the cosmo E1 runs. The gauge for collapse in an expanding box and the
    consistency of the refined levels are the blockers of the line.
@@ -353,7 +353,7 @@ crash; every particle kept; lapse alpha/a >= 0.94 everywhere and within 3e-3 of 
 at |k x| = 4. Central density E_max/Ebar 13 at 130 t_H (first Zel'dovich axis: 133 t_H),
 106 at 200, 744 at 250 t_H; the sheet normal to z forms, with density spikes at
 y = +-0.4/k and a central dip by 200-250 t_H (caustics of the sheet [JUDGEMENT]). But
-the constraints are not under control: H_r max 1e-2 at tau = 3.2 (1.5 t_H), 0.1 at 45 t_H,
+the constraints are not under control: H_r max 1e-2 at tau = 3.2 (1.2 t_H), 0.1 at tau = 14.1 (36 t_H; lead's correction of 1.5 and 45 t_H, `stage/REVIEW-wave2.md`),
 0.4 / 0.84 / 1.66 at 130 / 160 / 200 t_H; H_r mean 5e-3 to 130 t_H, 0.07-0.22 after 160 t_H.
 Outcome class: NO-BH ("late") as far as the run goes, but the constraint bound of
 section 6 cannot be checked on the refined mesh and the maxima suggest it fails after
