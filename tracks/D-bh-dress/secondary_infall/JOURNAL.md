@@ -248,6 +248,9 @@ the set-up without the core (stated there).
 
 # Wave 2: first Newtonian-mode run (helper newton_infall, 2026-11-15)
 
+(Header times are UTC and agree with the commits that recorded them; the first version of
+these headers carried estimated times, corrected at 17:51Z.)
+
 Executable: release core-v0.3 processor build `/data/haiyangw/nrpic/.work/build_cpu_v03/src/athena`
 (Serial Kokkos, one core per run). The release has no fixed point mass
 (`outbox/20261115T1510Z__to-core__newtonian-mode-point-mass.md`; core's `core/requests-adf`
@@ -260,7 +263,7 @@ v = eps x, eps = 0.03. The system is symmetric under the 48 reflections and axis
 permutations; so is the mesh about the origin. Box [-68, 68]^3 M, isolated, multipole
 boundary of order 4.
 
-## 2026-11-15T17:10Z  predictions: field calibration and timing probe
+## 2026-11-15T17:00Z  predictions: field calibration and timing probe
 
 F1 (clump alone, 3000 massless tracers at rest, log-uniform in r on [0.05, 30] M, one step
 of 1e-6; nx = 64 and 128, dx = 2.125 and 1.0625 M). The radial acceleration g_r r^2/M:
@@ -284,7 +287,7 @@ newton_mg_tol = 1e-6 (interface 5.8: 3.2 s at 128^3 and 1.4e5 particles with thr
 13-19 V cycles; the tolerance cuts the cycles to a third). Refuted if above 6 s per step
 (then the 128^3 run to a/a_i = 4, ~1500 steps, does not fit a few hours on processors).
 
-## 2026-11-15T17:20Z  outcome F1, F2, P1 (runs D-20261115-170112-d70352c nx 64, -170122-7c4da35 nx 128,
+## 2026-11-15T17:04Z  outcome F1, F2, P1 (runs D-20261115-170112-d70352c nx 64, -170122-7c4da35 nx 128,
 ## -170124-1b2ea1a nx 128 with dust, -170127-877c84f timing; analysis registered next as nm_field)
 
 F1 holds. (a) rms relative error of g_r beyond 4 cells 9.4e-3 (nx 64) and 7.9e-3 (nx 128);
@@ -303,7 +306,7 @@ and at most 1.9e-3; peaks at the two density jumps (3 M, 18.35 M), as interface 
 P1 holds: 20 steps in 56.8 s of processor time with setup, about 2.7 s per step at
 128^3 with 520k particles; the step stayed at the upper limit 0.25 (no fast particles yet).
 
-## 2026-11-15T17:25Z  predictions: the Newtonian-mode infall runs N128 (nx 128, box +-68 M,
+## 2026-11-15T17:05Z  predictions: the Newtonian-mode infall runs N128 (nx 128, box +-68 M,
 ## dx 1.0625 M, to a/a_i = 4), N64 (nx 64, same box, dx 2.125 M) and N128L (nx 128, box
 ## +-176 M, dx 2.75 M, dust edge 24.5 M, to a/a_i = 8)
 
@@ -339,7 +342,7 @@ snapshot times of the runs (the matched reference); the criteria below apply to 
 Refuted where a number falls outside the stated band; then name the cause only after a
 run that could have shown otherwise.
 
-## 2026-11-15T17:20Z  observation during N128/N64 (before any snapshot was analysed): the clump runs off the vertex
+## 2026-11-15T17:11Z  observation during N128/N64 (before any snapshot was analysed): the clump runs off the vertex
 
 The history (`infall.newton.hst`, column P_x) of N128 grows exponentially from rounding:
 -6.8e-18 (t = 0), -2e-13 (5 M), -6.3e-12 (7.9 M), -9.3e-11 (10.1 M), -1.4e-9 (12.4 M), an
@@ -350,7 +353,7 @@ gather; interface 5.2: "a particle feels its own field ... 0.5 m/dx^2 ... vanish
 centre") makes the mesh vertex where the clump sits an UNSTABLE equilibrium; the symmetric
 set-up only delays the run-off until rounding errors have grown.
 
-## 2026-11-15T17:22Z  prediction S1: stability of the clump at a vertex and at a cell centre
+## 2026-11-15T17:12Z  prediction S1: stability of the clump at a vertex and at a cell centre
 
 Clump alone (19952 particles, r < 0.3 M, mass 1, 3000 massless tracers), nx = 64, box +-68 M
 (dx 2.125 M), fixed step 0.1, to t = 40 M, the clump displaced by 0.05 dx along x from
@@ -360,7 +363,7 @@ a stable point; (C) the displacement stays below 0.1 dx (oscillation about the c
 Refuted if (V) does not grow, or (C) grows too (then neither point is stable and the clump
 stand-in is unusable without the fixed point mass of core's request).
 
-## 2026-11-15T17:16Z  outcome S1 (runs D-20261115-171245-a89f225 vertex, -171247-cde0674 cell centre;
+## 2026-11-15T17:14Z  outcome S1 (runs D-20261115-171245-a89f225 vertex, -171247-cde0674 cell centre;
 ## analysis D-20261115-171414-93fdf13, figure figs/nm_clumpstab.png)
 
 (V) holds in part: from 0.05 dx the displacement grows (0.095 dx at t = 3 M, 0.21 at 5 M:
@@ -378,10 +381,10 @@ order (G M/dx)^(1/2)/2 once rounding has grown (N128 near t ~ 25 M, N64 near ~ 9
 |P| = 3.6e-7 at t = 70 M). They are kept running as the record of that failure mode; the
 set-up is repeated with the configuration centred on a cell centre.
 
-## 2026-11-15T17:18Z  prediction for N128c, N64c, N128Lc (as N128, N64, N128L, whole
+## 2026-11-15T17:15Z  prediction for N128c, N64c, N128Lc (as N128, N64, N128L, whole
 ## configuration displaced by (1/2, 1/2, 1/2) dx so that the clump sits at a cell centre)
 
-Items 1-4, 6, 7 of the 17:25Z prediction unchanged (same matched references; the shell runs
+Items 1-4, 6, 7 of the 17:05Z prediction unchanged (same matched references; the shell runs
 are D-20261115-170824-788678f, -170826-20d5d4a, -170827-ba851f0 for N128; -170829-0d86d49,
 -170831-b379b65 for N64; -170834-ac15adf, -170837-af64029, -170839-187b91b for N128L).
 Item 5 replaced: the clump's centre of mass stays within 0.05 dx of the cell centre for the
@@ -390,7 +393,7 @@ symmetric about the cell centre, so the boundary seeds a small offset; the dust 
 symmetric about the clump); K + W within 1 % of |W(0)|. In the vertex runs, by contrast,
 the clump displacement exceeds 0.3 dx before the end (N128 and N128L at least).
 
-## 2026-11-15T17:55Z  outcome for N64c (cell centre, D-20261115-171505-62940f4) and N64 (vertex,
+## 2026-11-15T17:48Z  outcome for N64c (cell centre, D-20261115-171505-62940f4) and N64 (vertex,
 ## D-20261115-170703-46ddffa); analysis D-20261115-174734-a688058 (nm_analysis.json, figures)
 
 Matched references: shells with the nx 64 kernel (D-20261115-170829-0d86d49), Plummer
@@ -431,7 +434,7 @@ its 90 % radius grows to 1.1 dx and one clump particle reaches 15.9 M; at a/a_i 
 density inside 2 M is 2-7 times below the reference, the outermost caustic is smeared
 (deviation 104 % at the caustic, 35 % outside it), dust is flung out to 60 M at up to 0.8 c
 (`nm_phase.png`), and K + W ends 7.4 % low.
-Correction (17:58Z, after looking at `nm_selfsim.png` of the same analysis): the outermost
+Correction (17:49Z, after looking at `nm_selfsim.png` of the same analysis): the outermost
 caustic of N64c at a/a_i = 4 lies in the bin 16-20 M, lambda = 0.39-0.49, and the self-similar
 jump in the same 0.1-dex binning lies at lambda ~ 0.37-0.40: the caustic positions agree within
 the bin width; what differs is the density inside it (run 0.5-0.7 of the self-similar value
