@@ -368,6 +368,68 @@ def analyze():
     return 0
 
 
+def v3(a):
+    """Test V3: the smooth ball and its strained copy with the vector equation (mode
+    code, 64 cells): the curvature terms of the right side."""
+    res = idlib.load_json(OUT)
+    tmp = os.path.join(idlib.SCRATCH, "tmp", "idsolve")
+    with open(os.path.join(idlib.WT, "problems/idsolve/ball.athinput")) as f:
+        txt = f.read()
+    key = "id_dump        = true"
+    if key not in txt:
+        raise RuntimeError("ball.athinput: '%s' not found" % key)
+    txt = txt.replace(key, "id_vector      = true\n" + key)
+    binp = os.path.join(tmp, "ball_vector.athinput")
+    with open(binp, "w") as f:
+        f.write(txt)
+    out = {}
+    for label, (nrp, tab) in (("sphere", run_tests.ic_ball(0.5, 2.0)),
+                              ("strained", run_tests.ic_tri(0.5, 0.05, 2.0))):
+        rid, st = registered("initial-data solver, test V3: smooth ball (%s) with the vector "
+                             "equation, mode code, 64 cells" % label, "idsolve-v3-" + label,
+                             [binp, nrp, tab],
+                             [a.exe, "-i", "ball_vector.athinput"] + run_tests.mesh_args(64, 32)
+                             + ["particles/id_residual=code", "particles/nfilter=0",
+                                "particles/particle_file=" + os.path.basename(nrp),
+                                "problem/comp0_file=" + os.path.basename(tab)])
+        print("V3 %s %s %s" % (label, rid, st), flush=True)
+        d = idlib.run_dir(rid)
+        t, last = idlib.read_idsolve_txt(os.path.join(d, "ball.idsolve.txt"))
+        v = read_idvector_bin(os.path.join(d, "ball.idvector.bin"))
+        n = v["n"][0]
+        W = [v["Wx"], v["Wy"], v["Wz"]]
+        h = 64.0/n
+        Pp = [robin_pad(w, -32.0, 32.0, 1) for w in W]
+        sl = slice(1, -1)
+
+        def dcen(arr, ax):
+            sp_ = [sl, sl, sl]
+            sm_ = [sl, sl, sl]
+            sp_[ax] = slice(2, None)
+            sm_[ax] = slice(0, -2)
+            return (arr[tuple(sp_)] - arr[tuple(sm_)])/(2.0*h)
+        dW = [[dcen(Pp[b], ax) for b in range(3)] for ax in range(3)]
+        div = dW[0][0] + dW[1][1] + dW[2][2]
+        lw2 = np.zeros_like(div)
+        for i in range(3):
+            for j in range(3):
+                lij = dW[i][j] + dW[j][i] - (2.0/3.0*div if i == j else 0.0)
+                lw2 += lij*lij
+        ds = idlib.read_idsolve_bin(os.path.join(d, "ball.idsolve.bin"))
+        out[label] = dict(run=rid, status=st, summary=last, outer_iterations=int(t.shape[0] - 1),
+                          H_max_after=float(t[-1, 4]), relv_final=float(t[-1, 13]),
+                          M_monitor_before=float(t[0, 16]), M_monitor_after=float(t[-1, 16]),
+                          LW_max=float(np.sqrt(lw2).max()),
+                          Abar_max=float(np.sqrt(ds["A2"]).max()),
+                          W_max=float(max(np.abs(w).max() for w in W)))
+        out[label]["LW_over_Abar"] = out[label]["LW_max"]/out[label]["Abar_max"]
+        for k, val in out[label].items():
+            print("   %-18s %s" % (k, val))
+    res["V3"] = out
+    idlib.save_json(OUT, res)
+    return 0
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--exe", default=os.path.join(idlib.WT, ".work/build_cpu_vec/src/athena"))
@@ -376,7 +438,10 @@ def main():
     ap.add_argument("--analyze", action="store_true", help="analysis of earlier runs only")
     ap.add_argument("--v0-only", default="", help="rerun V0 only for these cases "
                     "(gauss, torus), then analyse")
+    ap.add_argument("--v3", action="store_true", help="test V3 only")
     a = ap.parse_args()
+    if a.v3:
+        return v3(a)
     if not a.analyze:
         run_all(a)
     return analyze()
