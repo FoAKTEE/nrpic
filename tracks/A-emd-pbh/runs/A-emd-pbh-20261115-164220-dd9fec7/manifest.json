@@ -1,0 +1,48 @@
+{
+ "run_id": "A-emd-pbh-20261115-164220-dd9fec7",
+ "owner": "A-emd-pbh",
+ "helper": "newton",
+ "launcher": "local",
+ "kind": "scouting",
+ "purpose": "Final analysis of the Newtonian-mode runs: top-hat (A-emd-pbh-20261115-153409-dc27b98 and card A-emd-pbh-20261115-153437-dc27b98) against the cycloid, scan (A-emd-pbh-20261115-153415-dc27b98 and card) against the isolated ellipsoid (P9, P10)",
+ "commit": "dd9fec73f65c7f4fc0b7af8e267bf5ed19038bf2",
+ "branch": "track/A-emd-pbh",
+ "cwd": "/data/haiyangw/nrpic/wt/A-emd-pbh",
+ "inputs": [
+  {
+   "path": "tracks/A-emd-pbh/newton/analyze_newton.py",
+   "sha256": "a2c7bcd444817a157ba8ac6f609b0b5ad93f1b7b60ca3f3abd9963d98b09a9f9"
+  }
+ ],
+ "outputs": {
+  "dir": "scratch/A-emd-pbh/A-emd-pbh-20261115-164220-dd9fec7"
+ },
+ "output_dir": "/data/haiyangw/nrpic/scratch/A-emd-pbh/A-emd-pbh-20261115-164220-dd9fec7/",
+ "registered": "2026-11-15T16:42:20+00:00",
+ "machine": "anta",
+ "notes": "registered by hand: harness/bin/nrpic-run submit refused (worktree not clean: untracked files of other helpers of A-emd-pbh in the same worktree)",
+ "command": [
+  ".venv/bin/python",
+  "tracks/A-emd-pbh/newton/analyze_newton.py",
+  "--tophat",
+  "/data/haiyangw/nrpic/scratch/A-emd-pbh/A-emd-pbh-20261115-153409-dc27b98",
+  "/data/haiyangw/nrpic/scratch/A-emd-pbh/A-emd-pbh-20261115-153437-dc27b98",
+  "--scan",
+  "/data/haiyangw/nrpic/scratch/A-emd-pbh/A-emd-pbh-20261115-153415-dc27b98",
+  "/data/haiyangw/nrpic/scratch/A-emd-pbh/A-emd-pbh-20261115-153437-dc27b98",
+  "--prep",
+  "/data/haiyangw/nrpic/scratch/A-emd-pbh/A-emd-pbh-20261115-153424-dc27b98",
+  "--snap-cases",
+  "e0p05,e0p2,e0p2_pm"
+ ],
+ "cores": 1,
+ "card_hours": 0.0,
+ "status": "completed",
+ "exit_code": 0,
+ "wall_time_s": 25.6,
+ "core_hours": 0.0071,
+ "ended": "2026-11-15T16:42:45+00:00",
+ "sha256sums": "sha256sums.txt",
+ "sha256sums_sha256": "51a1c0b329500e6b47badc789cf5608ed14f6940752aa9e195fd1455ba970bc4",
+ "n_output_files": 20
+}

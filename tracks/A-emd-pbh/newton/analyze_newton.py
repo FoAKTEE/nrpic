@@ -286,6 +286,7 @@ def analyse_ellipsoid(d):
             out["t2_vertex_rel"] = out["t2_vertex"] / refc[1]["t"] - 1
     pre = t <= t1r
     out["E_err_max_to_t1"] = float(np.max(np.abs(E[pre] - E[0])) / abs(h["W"][0]))
+    out["E_err_max_run"] = float(np.max(np.abs(E - E[0])) / abs(h["W"][0]))
     pre9 = t <= 0.9 * t1r
     out["E_err_max_to_0p9t1"] = float(np.max(np.abs(E[pre9] - E[0])) / abs(h["W"][0]))
     early = t <= 0.8 * t1r
@@ -420,9 +421,13 @@ def fig_scan_axes(rows, curves, out, name):
     plt.close(fig)
 
 
-def fig_scan_dev(rows, curves, out):
+def fig_scan_dev(rows_all, curves_all, out):
     """A_i/A_i^ref - 1 up to 0.95 t_1 for each case (three panels, one per axis), and the
     energy error (K + W - E_0)/|W_0| against t/t_1."""
+    keep = [k for k, r in enumerate(rows_all) if r["nx"] == 128 and abs(r["hxi"] - 0.025) < 1e-9
+            and r["rotate"] is None and abs(r["deltaL"] - 0.2) < 1e-9]
+    rows = [rows_all[k] for k in keep]
+    curves = [curves_all[k] for k in keep]
     fs.use_style()
     fig = plt.figure(figsize=(fs.FULL_WIDTH, 2.9))
     cols = fs.series_colors(len(rows))
@@ -449,39 +454,63 @@ def fig_scan_dev(rows, curves, out):
     plt.close(fig)
 
 
+def _style(r):
+    """Marker by resolution, colour by prolateness, open marker for the rotated lattice."""
+    if r["nx"] == 64:
+        mk, lab = "s", "$64^3$, $h_\\xi=0.025$"
+    elif abs(r["hxi"] - 0.05) < 1e-9:
+        mk, lab = "^", "$128^3$, $h_\\xi=0.05$"
+    elif abs(r["hxi"] - 0.0125) < 1e-9:
+        mk, lab = "D", "$128^3$, $h_\\xi=0.0125$ (card)"
+    elif abs(r["deltaL"] - 0.2) > 1e-9:
+        mk, lab = "x", "$128^3$, $\\delta_L=0.05, 0.6$"
+    else:
+        mk, lab = "o", "$128^3$, $h_\\xi=0.025$"
+    p = round(r["p"], 6)
+    col = fs.PAL["blue"] if p == 0 else (fs.PAL["red"] if p > 0 else fs.PAL["yellow"])
+    if r.get("rotate") is not None:
+        lab = "rotated lattice"
+    return mk, col, lab
+
+
 def fig_scan_summary(rows, out):
     fs.use_style()
-    fig = plt.figure(figsize=(fs.FULL_WIDTH, 2.7))
-    base = [r for r in rows if r["nx"] == 128 and r["hxi"] == 0.025 and r["rotate"] is None
-            and r["deltaL"] == 0.2 and r["p"] == 0.0]
-    base.sort(key=lambda r: r["e"])
+    fig = plt.figure(figsize=(fs.FULL_WIDTH, 2.8))
+    base = [r for r in rows if r["nx"] == 128 and abs(r["hxi"] - 0.025) < 1e-9
+            and r["rotate"] is None and abs(r["deltaL"] - 0.2) < 1e-9]
     ax = fs.inch_axes(fig, 0.7, 0.5, 2.0, 2.0)
     ee = np.linspace(0.02, 0.32, 60)
     ref_h = [el.first_collapse(1.0, e, 0.0)["h1"] for e in ee]
-    ax.plot(ee, ref_h, **fs.GUIDE, label="ellipsoid ref.")
-    ax.plot([r["e"] for r in base], [r["h1_deltaL"] for r in base], "o", color=fs.PAL["red"],
-            ms=4, label="AthenaK, $128^3$")
-    oth = [r for r in rows if r not in base and r["p"] == 0.0 and "t1" not in r or False]
-    ax.set_xlabel("$e$ ($p=0$)")
-    ax.set_ylabel(r"$h_1\,\delta_L$ (hoop line, $\delta_{L,\rm th}$)")
-    ax.legend(loc="lower right", fontsize=6)
-    ax2 = fs.inch_axes(fig, 3.35, 0.5, 2.0, 2.0)
-    for r in rows:
-        mk = "o" if (r["nx"] == 128 and r["hxi"] == 0.025) else ("s" if r["nx"] != 128 else "^")
-        col = fs.PAL["blue"] if r["p"] == 0 else (fs.PAL["red"] if r["p"] > 0 else fs.PAL["yellow"])
-        ax2.plot(r["e"] + (0.004 if r["nx"] == 64 else -0.004 if r["nx"] == 256 else 0.0),
-                 100 * r["t1_vertex_rel"], mk, color=col, ms=3.5, mfc="none" if r.get("rotate") else col)
-    ax2.axhline(0.0, **fs.THIN)
-    ax2.set_xlabel("$e$")
-    ax2.set_ylabel(r"$t_1/t_1^{\rm ref}-1$ [%]")
-    ax3 = fs.inch_axes(fig, 6.0, 0.5, 1.85, 2.0)
-    for r in rows:
-        mk = "o" if (r["nx"] == 128 and r["hxi"] == 0.025) else ("s" if r["nx"] != 128 else "^")
-        col = fs.PAL["blue"] if r["p"] == 0 else (fs.PAL["red"] if r["p"] > 0 else fs.PAL["yellow"])
-        ax3.plot(r["e"], 100 * r["h1_rel"], mk, color=col, ms=3.5, mfc="none" if r.get("rotate") else col)
-    ax3.axhline(0.0, **fs.THIN)
-    ax3.set_xlabel("$e$")
-    ax3.set_ylabel(r"$h_1/h_1^{\rm ref}-1$ [%]")
+    ax.plot(ee, ref_h, **fs.GUIDE, label="ellipsoid ($p=0$)")
+    for pp, mk, lab in ((0.0, "o", "AthenaK $p=0$"), (0.2, "^", "AthenaK $p=+0.2$"),
+                        (-0.2, "v", "AthenaK $p=-0.2$")):
+        sel = [r for r in base if abs(r["p"] - pp) < 1e-6]
+        ax.plot([r["e"] for r in sel], [r["h1_deltaL"] for r in sel], mk, color="k", ms=4,
+                mfc="none" if pp else "k", label=lab)
+        if pp:
+            ax.plot([0.2], [el.first_collapse(1.0, 0.2, pp)["h1"]], "+", color=fs.PAL["red"],
+                    ms=7, label="ellipsoid $p=\\pm0.2$" if pp > 0 else None)
+    ax.set_xlabel("$e$")
+    ax.set_ylabel(r"$h_1\,\delta_L$ (Newtonian hoop amplitude)")
+    ax.legend(loc="lower right", fontsize=5.5)
+    seen = set()
+    for k, (key, ylab) in enumerate((("t1_vertex_rel", r"$t_1/t_1^{\rm ref}-1$ [%]"),
+                                      ("h1_rel", r"$h_1/h_1^{\rm ref}-1$ [%]"))):
+        axk = fs.inch_axes(fig, 3.35 + k * 2.35, 0.5, 1.85, 2.0)
+        for r in rows:
+            mk, col, lab = _style(r)
+            dx = {"s": 0.006, "^": -0.006, "D": 0.012, "x": -0.012}.get(mk, 0.0)
+            show = (lab not in seen) and k == 1
+            seen.add(lab) if show else None
+            axk.plot(r["e"] + dx, 100 * r[key], mk, color=col, ms=3.5,
+                     mfc="none" if (r.get("rotate") is not None or mk in "x") else col,
+                     label=lab if show else None)
+        axk.axhline(0.0, **fs.THIN)
+        axk.set_xlabel("$e$  (blue $p=0$, red $p>0$, yellow $p<0$)" if k == 0 else "$e$",
+                       fontsize=7 if k == 0 else None)
+        axk.set_ylabel(ylab)
+        if k == 1:
+            axk.legend(loc="upper right", fontsize=5)
     fs.save(fig, os.path.join(out, "fig_newton_scan_summary"))
     plt.close(fig)
 
@@ -508,6 +537,9 @@ def fig_snapshots(d, out, label):
         ax.plot(x[sel, 0], x[sel, 2], ",", color=fs.PAL["blue"], alpha=0.5)
         ax.set_xlim(-half, half)
         ax.set_ylim(-half, half)
+        tk = np.round(np.array([-0.6, 0.0, 0.6]) * half, 1)
+        ax.set_xticks(tk)
+        ax.set_yticks(tk)
         ax.set_aspect("equal")
         ax.set_title(f"$t/t_1^{{\\rm ref}}={(t + meta['t0']) / t1r:.3f}$", fontsize=7)
         ax.set_xlabel("$x/r_g$")
@@ -580,7 +612,8 @@ def main():
                    "t1_vertex_rel", "t1_extrap", "t1_extrap_rel", "A_t1_ref", "A_t1",
                    "A_t1_rel", "h1_ref", "h1", "h1_rel", "h1_ref_deltaL", "h1_deltaL",
                    "A1_min_over_dx", "t2_ref", "t2_vertex", "t2_vertex_rel",
-                   "A_err_max_to_0p8t1", "E_err_max_to_0p9t1", "E_err_max_to_t1", "complete"])
+                   "A_err_max_to_0p8t1", "E_err_max_to_0p9t1", "E_err_max_to_t1", "E_err_max_run",
+                   "complete"])
         fig_scan_axes(rows, curves, a.out, "fig_newton_scan_axes")
         fig_scan_dev(rows, curves, a.out)
         done = [r for r in rows if r.get("complete")]
