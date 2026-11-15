@@ -1,0 +1,331 @@
+key	owner	paper_id	track_locator	kb_locator	numbers_found/near/n	not_found	claim_ids	source	labels	statuses	seed_keys
+A-emd-pbh/2609.14218/01	A-emd-pbh	2609.14218	MDPBH.tex:264-268	kb:2609.14218v1 sec 2.1 chunk 108812 eq (2.2) flat 13095-13343	-		1	k8	fulltext	located	1f242d661ed0dc365910
+A-emd-pbh/2609.14218/02	A-emd-pbh	2609.14218	MDPBH.tex:509-547	kb:2609.14218v1 sec 3 chunk 108817 eq (3.4),(3.5),(3.8),(3.9) flat 22084-23781	-		2	k8	fulltext	located	5332519aaa985d6e1165
+A-emd-pbh/2609.14218/03	A-emd-pbh	2609.14218	MDPBH.tex:839	kb:2609.14218v1 sec 5 chunk 108826 eq (5.1) flat 36844-36972	-		3	k8	fulltext	located	886135f73b23aef3fee6
+A-emd-pbh/2609.14218/04	A-emd-pbh	2609.14218	MDPBH.tex:842-846	kb:2609.14218v1 sec 5 chunk 108826 eq (5.2) flat 37105-37411	-		4	k8	fulltext	located	af9c00163358d6fd259f
+A-emd-pbh/2609.14218/05	A-emd-pbh	2609.14218	MDPBH.tex:549	kb:2609.14218v1 sec 3 chunk 108817 flat 23782-23877	1/1/1		5	k8	fulltext	located	2b23f69c510edd8f44c9
+A-emd-pbh/2609.14218/06	A-emd-pbh	2609.14218	MDPBH.tex:709-719	kb:2609.14218v1 sec 4.3 chunk 108822 eq (4.14),(4.15),(4.16) flat 29446-29941	2/2/2		6	k8	fulltext	located	4bd87aa499a54391f8d9
+A-emd-pbh/2609.14218/07	A-emd-pbh	2609.14218	MDPBH.tex:476-487	kb:2609.14218v1 sec 2.3 chunk 108816 eq (2.24) flat 20815-21660	1/1/2	11	7,8,9	k8	to_verify,fulltext,to_verify	partial,located,located	8a15669339585adbb071,ab4e71770b98ecb890f9,61b62b1ca38198bb4b84
+A-emd-pbh/2609.14218/08	A-emd-pbh	2609.14218	MDPBH.tex:483	kb:2609.14218v1 sec 2.3 chunk 108816 flat 21236-21378	-		7,8,9	k8	to_verify,fulltext,to_verify	partial,located,located	8a15669339585adbb071,ab4e71770b98ecb890f9,61b62b1ca38198bb4b84
+A-emd-pbh/2609.14218/09	A-emd-pbh	2609.14218	MDPBH.tex:452-457	kb:2609.14218v1 sec 2.2 chunk 108814,108815 eq (2.20) flat 19834-20255	-		10	k8	fulltext	located	c0c32076d7d9a8f08eb5
+A-emd-pbh/2609.14218/10	A-emd-pbh	2609.14218	MDPBH.tex:460	kb:2609.14218v1 sec 2.2 chunk 108814,108815 eq (2.21) flat 20315-20398	-		11	k8	fulltext	checked	da8f09c29a4deaa0f076
+A-emd-pbh/2609.14218/11	A-emd-pbh	2609.14218	MDPBH.tex:466-469	kb:2609.14218v1 sec 2.2 chunk 108815 eq (2.22),(2.23) flat 20533-20743	-		12	k8	fulltext	located	d4d5eadef36549b7c9a4
+A-emd-pbh/2609.14218/12	A-emd-pbh	2609.14218	MDPBH.tex:1019-1026	kb:2609.14218v1 sec 6.1 chunk 108830 eq (6.2),(6.3),(6.4) flat 45699-46032	-		13	k8	fulltext	located	84b5dfbad95620a1918b
+A-emd-pbh/2609.14218/13	A-emd-pbh	2609.14218	MDPBH.tex:1053-1060	kb:2609.14218v1 sec 6.1 chunk 108830 eq (6.9) flat 46955-47525	-		14	k8	fulltext	located	2c12b90e173261907fd4
+A-emd-pbh/2609.14218/14	A-emd-pbh	2609.14218	MDPBH.tex:1064-1074	kb:2609.14218v1 sec 6.2 chunk 108831 eq (6.10) flat 47558-48307	-		15,19,20	k8	fulltext,fulltext,judgement	located,located,located	99fd12d17174bdefaf01,98719b31f0f5efc70dbe,b6689c2c0bfb84392c8a
+A-emd-pbh/2609.14218/15	A-emd-pbh	2609.14218	MDPBH.tex:776; MDPBH.tex:942	kb:2609.14218v1 sec 4.4 chunk 108824 flat 33403-33439; kb:2609.14218v1 sec 5.2 chunk 108828 flat 41367-41445	1/1/1		16	k8	fulltext	located	7f7376df39743f9d9ef1
+A-emd-pbh/2609.14218/16	A-emd-pbh	2609.14218	MDPBH.tex:1095	kb:2609.14218v1 sec 6.3 chunk 108832,108849 figure 7 flat 49322-49401	1/1/1		17	k8	fulltext	located	d7f913971b5a5668820c
+A-emd-pbh/2609.14218/17	A-emd-pbh	2609.14218	MDPBH.tex:1482	kb:2609.14218v1 sec B chunk 108842 flat 68734-68823	1/1/1		18	k8	fulltext	located	c75aff6a8eaf1026a549
+A-emd-pbh/2609.14218/18	A-emd-pbh	2609.14218	MDPBH.tex:1065-1066	kb:2609.14218v1 sec 6.2 chunk 108831 flat 47632-47813	-		15,19,20	k8	fulltext,fulltext,judgement	located,located,located	99fd12d17174bdefaf01,98719b31f0f5efc70dbe,b6689c2c0bfb84392c8a
+A-emd-pbh/2609.14218/19	A-emd-pbh	2609.14218	MDPBH.tex:766-768	kb:2609.14218v1 sec 4.3 chunk 108823 flat 32273-33014	2/2/2		21	k8	fulltext	located	2f6b241995d966272932
+A-emd-pbh/2609.14218/20	A-emd-pbh	2609.14218	MDPBH.tex:960-967	kb:2609.14218v1 sec 5.2 chunk 108828 flat 42273-43026	7/7/7		22	k8	fulltext	located	35f25a74e7a328a7e7e7
+A-emd-pbh/2609.14218/21	A-emd-pbh	2609.14218	MDPBH.tex:173-174	kb:2609.14218v1 chunk 108807,108808 flat 4422-4624	-		23	k8	fulltext	located	c276aa36ea38a22ffe25
+A-emd-pbh/2609.14218/22	A-emd-pbh	2609.14218	MDPBH.tex:1085-1086	kb:2609.14218v1 sec 6.3 chunk 108832 flat 48810-48921	1/2/2		24	k8	fulltext	located	24b05b3765a3e5d75f87
+A-emd-pbh/2609.14218/23	A-emd-pbh	2609.14218	MDPBH.tex:1101-1103	kb:2609.14218v1 sec 6.3 chunk 108832 flat 49513-49801	2/2/3	0.2	25	k8	to_verify	partial	7870c3d14fa717330f52
+A-emd-pbh/2609.14218/24	A-emd-pbh	2609.14218	MDPBH.tex:1145	kb:2609.14218v1 sec 6.3 chunk 108833 flat 51794-51911	1/1/1		26	k8	fulltext	located	4a66bdbb0be53a40b10d
+A-emd-pbh/2609.14218/25	A-emd-pbh	2609.14218	MDPBH.tex:177	kb:2609.14218v1 chunk 108807,108808 flat 4792-4926	-		27	k8	fulltext	located	8e581bcb5297c73d9f3e
+A-emd-pbh/2609.14218/26	A-emd-pbh	2609.14218	MDPBH.tex:1122-1124; MDPBH.tex:1138	kb:2609.14218v1 sec 6.3 chunk 108832,108833 flat 50775-51151; kb:2609.14218v1 sec 6.3 chunk 108833 flat 51532-51685	1/1/2	250	28	k8	to_verify	partial	40564efa8dc607c60d33
+A-emd-pbh/2609.14218/27	A-emd-pbh	2609.14218	MDPBH.tex:1141-1142	kb:2609.14218v1 sec 6.3 chunk 108833 flat 51687-51794	-		29	k8	fulltext	located	8ffb68b5675aefe761bd
+A-emd-pbh/2609.14218/28	A-emd-pbh	2609.14218	MDPBH.tex:1148-1149; MDPBH.tex:1176-1186	kb:2609.14218v1 sec 6.3 chunk 108833 flat 52047-52222; kb:2609.14218v1 sec 6.3 chunk 108833,108856 flat 53047-54332	-		30	k8	fulltext	located	cf4c570fb04470ed9f0a
+A-emd-pbh/2609.14218/29	A-emd-pbh	2609.14218	MDPBH.tex:907-908	kb:2609.14218v1 sec 5.1 chunk 108827 eq (5.13) flat 40450-40576	1/1/1		31	k8	fulltext	checked	771e8db2a655c604fbd5
+A-emd-pbh/2609.14218/30	A-emd-pbh	2609.14218	MDPBH.tex:918	kb:2609.14218v1 sec 5.1 chunk 108827 eq (5.15) flat 40811-40906	-		32	k8	fulltext	located	3653359e3030584bd17e
+A-emd-pbh/2609.14218/31	A-emd-pbh	2609.14218	MDPBH.tex:987	kb:2609.14218v1 sec 5.2 chunk 108828 flat 43744-43798	-		33	k8	fulltext	located	df1285bc02f41b4a639f
+A-emd-pbh/2609.14218/32	A-emd-pbh	2609.14218	MDPBH.tex:941	kb:2609.14218v1 sec 5.2 chunk 108828 flat 41327-41367	-		34	k8	to_verify	located	d1677103e5e413e598a5
+A-emd-pbh/2610.23218/01	A-emd-pbh	2610.23218	main.tex:63-67	kb:2610.23218v1 sec 2 chunk 109000 eq (2) flat 9484-10219	-		35	k8	fulltext	located	8e37b2051ece135491fa
+A-emd-pbh/2610.23218/02	A-emd-pbh	2610.23218	main.tex:72-74	kb:2610.23218v1 sec 2 chunk 109000 eq (3) flat 10750-10882	-		36	k8	fulltext	located	64600c71116afd5d1a19
+A-emd-pbh/2610.23218/03	A-emd-pbh	2610.23218	main.tex:76	kb:2610.23218v1 sec 2 chunk 109000,109001 flat 10897-11439	1/1/1		37	k8	fulltext	located	2ec594775feb935f39ea
+A-emd-pbh/2610.23218/04	A-emd-pbh	2610.23218	main.tex:78; main.tex:272-275	kb:2610.23218v1 sec 2 chunk 109001 flat 11440-12090; kb:2610.23218v1 sec 6 chunk 109020 eq (21) flat 40547-41443	1/1/1		38	k8	fulltext	located	cfe042224baa60f125bf
+A-emd-pbh/2610.23218/05	A-emd-pbh	2610.23218	main.tex:270	kb:2610.23218v1 sec 6 chunk 109020 flat 40110-40546	1/1/1		39,47	k8	fulltext,fulltext	located,located	302a23baa7115d45add4,716996c0e5527f23df7e
+A-emd-pbh/2610.23218/06	A-emd-pbh	2610.23218	main.tex:104-111	kb:2610.23218v1 sec 3 chunk 109002,109003 eq (7) flat 13974-14757	-		40	k8	fulltext	located	4590bf31c361b90d690b
+A-emd-pbh/2610.23218/07	A-emd-pbh	2610.23218	main.tex:113; main.tex:161	kb:2610.23218v1 sec 3 chunk 109003,109050 flat 14758-15454; kb:2610.23218v1 sec 4.1 chunk 109009 flat 23238-23680	1/1/1		41	k8	fulltext	located	6092fcbd81409ccccd00
+A-emd-pbh/2610.23218/08	A-emd-pbh	2610.23218	main.tex:170-177	kb:2610.23218v1 sec 4.2 chunk 109010,109011 eq (12) flat 24593-26031	1/1/1		42	k8	fulltext	located	0e6c13358b49e0b0efa6
+A-emd-pbh/2610.23218/09	A-emd-pbh	2610.23218	main.tex:208	kb:2610.23218v1 sec 5 chunk 109013,109014 flat 29801-30913	1/1/1		43	k8	fulltext	located	6b9f1c3160b3d52f16f0
+A-emd-pbh/2610.23218/10	A-emd-pbh	2610.23218	main.tex:213-222	kb:2610.23218v1 sec 5 chunk 109014,109015,109016 eq (16) flat 32080-34134	1/1/1		44	k8	fulltext	located	5d51e0b1b445fb4e0e32
+A-emd-pbh/2610.23218/11	A-emd-pbh	2610.23218	main.tex:226-236	kb:2610.23218v1 sec 5 chunk 109016 eq (17),(18) flat 34135-34941	1/1/1		45	k8	fulltext	located	5f982f1b059b285a7825
+A-emd-pbh/2610.23218/12	A-emd-pbh	2610.23218	main.tex:240-250	kb:2610.23218v1 sec 5 chunk 109017,109018 eq (20),(19) flat 35491-37470	1/1/1		46	k8	fulltext	located	9217707af3f997238371
+A-emd-pbh/2610.23218/13	A-emd-pbh	2610.23218	main.tex:199-202; main.tex:270	kb:2610.23218v1 sec 5 chunk 109012,109013 eq (15) flat 28477-29485; kb:2610.23218v1 sec 6 chunk 109020 flat 40110-40546	-		39,47	k8	fulltext,fulltext	located,located	302a23baa7115d45add4,716996c0e5527f23df7e
+A-emd-pbh/2610.23218/14	A-emd-pbh	2610.23218	main.tex:294	kb:2610.23218v1 sec 6 chunk 109021,109022 flat 43795-44711	2/2/2		48	k8	fulltext	located	fa02d845d6cf9e5f7d7e
+A-emd-pbh/2610.23218/15	A-emd-pbh	2610.23218	main.tex:297-300	kb:2610.23218v1 sec 6 chunk 109022 eq (22) flat 45428-46014	-		49	k8	fulltext	located	518202795618143c8cff
+A-emd-pbh/2610.23218/16	A-emd-pbh	2610.23218	main.tex:307	kb:2610.23218v1 sec 6 chunk 109023,109053 flat 46995-48232	-		50	k8	fulltext	located	466c5a6b7b1cd15e8449
+A-emd-pbh/2610.23218/17	A-emd-pbh	2610.23218	main.tex:352-360	kb:2610.23218v1 sec 7.1 chunk 109027,109028,109029 flat 54590-56698	-		51	k8	fulltext	checked	54a76a8e8aa6d5c8f689
+A-emd-pbh/2610.23218/18	A-emd-pbh	2610.23218	main.tex:386	kb:2610.23218v1 sec 7.2 chunk 109031 flat 60121-60642	-		52	k8	fulltext	located	deea87fbbecd5a094066
+A-emd-pbh/2610.23218/19	A-emd-pbh	2610.23218	main.tex:440	kb:2610.23218v1 sec 7.3 chunk 109034 flat 67744-69072	-		53	k8	fulltext	located	10a0f9c26d297c3a7e94
+A-emd-pbh/2610.23218/20	A-emd-pbh	2610.23218	main.tex:51	kb:2610.23218v1 sec 1 chunk 108997,108998,109049 flat 5504-7000	-		54	k8	to_verify	located	922252a2dc94a2f23c17
+A-emd-pbh/1609.01588/01	A-emd-pbh	1609.01588	apj_nonsphericalpbh.tex:381-383	kb:1609.01588v2 sec 2.1 chunk 108263 eq (1) flat 9339-9426	-		55	k8	fulltext	checked	022644d3626bbf4e07c1
+A-emd-pbh/1609.01588/02	A-emd-pbh	1609.01588	apj_nonsphericalpbh.tex:414-418; apj_nonsphericalpbh.tex:463	kb:1609.01588v2 sec 2.1 chunk 108263 eq (4),(5) flat 10630-10872; kb:1609.01588v2 sec 2.2 chunk 108264 flat 12209-12280	-		56	k8	fulltext	located	10561c0e33c7708314a7
+A-emd-pbh/1609.01588/03	A-emd-pbh	1609.01588	apj_nonsphericalpbh.tex:478-490	kb:1609.01588v2 sec 2.2 chunk 108264 eq (12),(13),(11) flat 12885-13356	-		57	k8	fulltext	located	c4292e2e7be5eb1530ee
+A-emd-pbh/1609.01588/04	A-emd-pbh	1609.01588	apj_nonsphericalpbh.tex:503	kb:1609.01588v2 sec 2.2 chunk 108264 eq (15) flat 13787-13825	-		58	k8	fulltext	located	d801a34c890cf5271173
+A-emd-pbh/1609.01588/05	A-emd-pbh	1609.01588	apj_nonsphericalpbh.tex:537	kb:1609.01588v2 sec 2.2 chunk 108265 eq (19) flat 15187-15224	-		59	k8	fulltext	located	9613e2d4bf73fab4eab3
+A-emd-pbh/1609.01588/06	A-emd-pbh	1609.01588	apj_nonsphericalpbh.tex:583-584	kb:1609.01588v2 sec 2.3 chunk 108266 flat 17001-17118	-		60	k8	fulltext	located	ccd82925133940feca17
+A-emd-pbh/1609.01588/07	A-emd-pbh	1609.01588	apj_nonsphericalpbh.tex:596-613	kb:1609.01588v2 sec 2.3 chunk 108266,108267 eq (26),(28),(27) flat 17490-18075	-		61	k8	fulltext	located	d018f8e49c678e4165b4
+A-emd-pbh/1609.01588/08	A-emd-pbh	1609.01588	apj_nonsphericalpbh.tex:619-631	kb:1609.01588v2 sec 2.3 chunk 108267 flat 18274-18854	-		62,168	k8	fulltext,to_verify	located,located	4d9ab256ed2ec3b8dda2,24df97cde91a6fa3fe2e
+A-emd-pbh/1609.01588/09	A-emd-pbh	1609.01588	apj_nonsphericalpbh.tex:637-693	kb:1609.01588v2 sec 3.1 chunk 108268 eq (30),(33),(29),(32) flat 18992-21458	-		63	k8	fulltext	located	02b2ec302a7c36ecadcc
+A-emd-pbh/1609.01588/10	A-emd-pbh	1609.01588	apj_nonsphericalpbh.tex:226; apj_nonsphericalpbh.tex:764	kb:1609.01588v2 chunk 108257 flat 2812-2884; kb:1609.01588v2 sec 3.3 chunk 108270 eq (37) flat 24731-24768	1/1/1		64	k8	fulltext	located	eb1ff07332e3cb6cae86
+A-emd-pbh/1609.01588/11	A-emd-pbh	1609.01588	apj_nonsphericalpbh.tex:771	kb:1609.01588v2 sec 3.3 chunk 108270 eq (38) flat 25003-25059	2/2/2		65	k8	fulltext	located	6302f66433a8b3d3b08c
+A-emd-pbh/1609.01588/12	A-emd-pbh	1609.01588	apj_nonsphericalpbh.tex:698-699	kb:1609.01588v2 sec 3.2 chunk 108269 eq (34) flat 21606-21757	-		66	k8	fulltext	located	96512f6781c7baa38683
+A-emd-pbh/1609.01588/13	A-emd-pbh	1609.01588	apj_nonsphericalpbh.tex:807-809	kb:1609.01588v2 sec 3.3 chunk 108270,108271 flat 26414-26581	-		67	k8	fulltext	located	d7c0e4b12e0fdd0608cf
+A-emd-pbh/1609.01588/14	A-emd-pbh	1609.01588	apj_nonsphericalpbh.tex:745-747	kb:1609.01588v2 sec 3.2 chunk 108283 figure 1 flat 23879-24093	1/1/1		68	k8	to_verify	located	75f68af865765d52dd45
+A-emd-pbh/1707.03595/01	A-emd-pbh	1707.03595	Spin_PBH.tex:369-735	kb:1707.03595v4 sec 3 chunk 108384,108385,108386 eq (23),(25),(27),(28) figure 1 flat 14740-28939	-		69	k8	fulltext	located	2816691791ac0edaed5e
+A-emd-pbh/1707.03595/02	A-emd-pbh	1707.03595	Spin_PBH.tex:826-868	kb:1707.03595v4 sec 4.2 chunk 108392 eq (61),(62) flat 32794-34459	-		70	k8	fulltext	located	61a1439c3c511e6e66c6
+A-emd-pbh/1707.03595/03	A-emd-pbh	1707.03595	Spin_PBH.tex:894	kb:1707.03595v4 sec 4.2 chunk 108393 flat 35563-35615	-		71	k8	fulltext	located	d3e975f5153aa2a00681
+A-emd-pbh/1707.03595/04	A-emd-pbh	1707.03595	Spin_PBH.tex:900-907	kb:1707.03595v4 sec 4.2 chunk 108393 eq (63),(64) flat 35764-36006	-		72	k8	fulltext	located	5ff5af424abf976ea23b
+A-emd-pbh/1707.03595/05	A-emd-pbh	1707.03595	Spin_PBH.tex:948	kb:1707.03595v4 sec 4.3 chunk 108394 flat 37587-37671	-		73	k8	fulltext	located	e646b72939ce771ccf6f
+A-emd-pbh/1707.03595/06	A-emd-pbh	1707.03595	Spin_PBH.tex:953-962	kb:1707.03595v4 sec 4.3 chunk 108394 eq (66),(67) flat 37857-38170	0/0/2	12 125	74	k8	to_verify	partial	0250ac007e40814b1971
+A-emd-pbh/1707.03595/07	A-emd-pbh	1707.03595	Spin_PBH.tex:919-927	kb:1707.03595v4 sec 4.2 chunk 108393 eq (65) flat 36568-36947	-		75	k8	fulltext	located	1eff3f068160fcaf01d2
+A-emd-pbh/1707.03595/08	A-emd-pbh	1707.03595	Spin_PBH.tex:81-86	kb:1707.03595v4 chunk 108378 flat 2507-2827	-		76	k8	fulltext	located	5b15900a41dc3ba507ad
+A-emd-pbh/1707.03595/09	A-emd-pbh	1707.03595	Spin_PBH.tex:76-77	kb:1707.03595v4 chunk 108378 flat 2261-2375	1/1/1		77	k8	fulltext	located	80416e4978a23edc358b
+A-emd-pbh/1707.03595/10	A-emd-pbh	1707.03595	Spin_PBH.tex:93-95	kb:1707.03595v4 chunk 108378 flat 3127-3264	3/3/3		78	k8	fulltext	located	539be2361f395f6feef9
+A-emd-pbh/2211.13950/01	A-emd-pbh	2211.13950	MD_threshold10.tex:198-245	kb:2211.13950v3 sec 2 chunk 108512,108513,108514 flat 11192-15185	-		79	k8	fulltext	located	9b8270b77f84f1b90ccf
+A-emd-pbh/2211.13950/02	A-emd-pbh	2211.13950	MD_threshold10.tex:282	kb:2211.13950v3 sec 2 chunk 108516 eq (1) flat 18573-18636	-		80	k8	fulltext	located	7759b3f31a33dbb53669
+A-emd-pbh/2211.13950/03	A-emd-pbh	2211.13950	MD_threshold10.tex:298-301	kb:2211.13950v3 sec 2 chunk 108516 eq (4) flat 19428-19752	-		81	k8	fulltext	located	9503213c7bc71e2c369c
+A-emd-pbh/2211.13950/04	A-emd-pbh	2211.13950	MD_threshold10.tex:330-334	kb:2211.13950v3 sec 3 chunk 108518 eq (5) flat 21596-21966	-		82	k8	fulltext	located	eb72214e46548cfe093b
+A-emd-pbh/2211.13950/05	A-emd-pbh	2211.13950	MD_threshold10.tex:349-360	kb:2211.13950v3 sec 3 chunk 108518,108519 eq (8),(9) flat 23033-23904	-		83	k8	fulltext	located	20acf220d58758e86f58
+A-emd-pbh/2211.13950/06	A-emd-pbh	2211.13950	MD_threshold10.tex:423-427; MD_threshold10.tex:550-563	kb:2211.13950v3 sec 4 chunk 108521 eq (14),(15) flat 28604-29076; kb:2211.13950v3 sec 4 chunk 108523 eq (23) flat 36455-37047	-		84,85	k8	fulltext,fulltext	located,located	ca0ee7960a63b6036d13,0cf204499971fe93bedf
+A-emd-pbh/2211.13950/07	A-emd-pbh	2211.13950	MD_threshold10.tex:102-103; MD_threshold10.tex:606-607	kb:2211.13950v3 chunk 108507 flat 3845-4051; kb:2211.13950v3 sec 4 chunk 108525 flat 39841-40076	-		86	k8	fulltext	located	6a1e8ef690471bf3baaa
+A-emd-pbh/2211.13950/08	A-emd-pbh	2211.13950	MD_threshold10.tex:375	kb:2211.13950v3 sec 3 chunk 108519 flat 24916-25043	-		87	k8	fulltext	located	815b1cb20015f3d007ae
+A-emd-pbh/2211.13950/09	A-emd-pbh	2211.13950	MD_threshold10.tex:440-442	kb:2211.13950v3 sec 4 chunk 108521,108522 flat 30149-30380	-		88	k8	fulltext	located	15b6d596d1d818ab9129
+A-emd-pbh/2211.13950/10	A-emd-pbh	2211.13950	MD_threshold10.tex:613-640	kb:2211.13950v3 sec 5 chunk 108526 eq (27),(25),(26) flat 40382-42392	-		89	k8	to_verify	located	00fd6c93199cfed43356
+A-emd-pbh/2507.18312/01	A-emd-pbh	2507.18312	Main.tex:222-226	kb:2507.18312v3 sec 3 chunk 108584,108629 eq (29) flat 22178-24322	-		90	k8	fulltext	located	51c339f4d75dca76d3b1
+A-emd-pbh/2507.18312/02	A-emd-pbh	2507.18312	Main.tex:234-238	kb:2507.18312v3 sec 3 chunk 108585,108586 eq (31) flat 25550-27646	-		91	k8	fulltext	checked	74d245bd99ecb4d28e06
+A-emd-pbh/2507.18312/03	A-emd-pbh	2507.18312	Main.tex:240	kb:2507.18312v3 sec 3 chunk 108587,108630 flat 27647-29318	-		92	k8	fulltext	located	dba0765fafaf6a16b609
+A-emd-pbh/2507.18312/04	A-emd-pbh	2507.18312	Main.tex:242	kb:2507.18312v3 sec 3 chunk 108587,108588 flat 29319-29986	-		93	k8	fulltext	located	7ba6ec31752970666059
+A-emd-pbh/2507.18312/05	A-emd-pbh	2507.18312	Main.tex:310	kb:2507.18312v3 sec 4.1 chunk 108589 flat 34389-34608	-		94	k8	fulltext	located	fd1d2864b0bfdd67ffd8
+A-emd-pbh/2507.18312/06	A-emd-pbh	2507.18312	Main.tex:314-316	kb:2507.18312v3 sec 4.1 chunk 108589 eq (37) flat 34665-34826	-		95	k8	fulltext	located	4d69bf50741695c07848
+A-emd-pbh/2507.18312/07	A-emd-pbh	2507.18312	Main.tex:338	kb:2507.18312v3 sec 4.1 chunk 108590 eq (42) flat 37680-37720	-		96	k8	fulltext	located	0d9d757a547527cb6c6d
+A-emd-pbh/2507.18312/08	A-emd-pbh	2507.18312	Main.tex:399; Main.tex:402-408	kb:2507.18312v3 sec 4.2 chunk 108595 eq (51) flat 45523-45594; kb:2507.18312v3 sec 4.2 chunk 108595 eq (52) flat 45831-46056	1/1/1		97	k8	fulltext	located	5c13b6eafcabda7ba235
+A-emd-pbh/2507.18312/09	A-emd-pbh	2507.18312	Main.tex:87	kb:2507.18312v3 chunk 108574 flat 1660-2736	-		97	k8	fulltext	located	5c13b6eafcabda7ba235
+A-emd-pbh/2507.18312/10	A-emd-pbh	2507.18312	Main.tex:635	kb:2507.18312v3 sec 7 chunk 108610 eq (78) flat 76298-76341	-		98	k8	fulltext	located	2e6c69413a1cc6bc937c
+A-emd-pbh/2507.18312/11	A-emd-pbh	2507.18312	Main.tex:478	kb:2507.18312v3 sec 5 chunk 108598 flat 51990-53381	-		99	k8	fulltext	located	df72c77fb838cea29c14
+A-emd-pbh/2507.18312/12	A-emd-pbh	2507.18312	Main.tex:483-489	kb:2507.18312v3 sec 5.1 chunk 108600 eq (57) flat 53908-55237	1/1/1		100	k8	fulltext	located	005ed6285f364d4b69d1
+A-emd-pbh/2507.18312/13	A-emd-pbh	2507.18312	Main.tex:522-523	kb:2507.18312v3 sec 5.2 chunk 108601 eq (62) flat 58268-58396	-		101	k8	fulltext	located	1d9f01c6d860be27df8e
+A-emd-pbh/2507.18312/14	A-emd-pbh	2507.18312	Main.tex:537-538	kb:2507.18312v3 sec 5.2 chunk 108602 figure 5 flat 59883-60065	2/2/2		102	k8	fulltext	located	4e008e45fc6f384a4584
+A-emd-pbh/2507.18312/15	A-emd-pbh	2507.18312	Main.tex:542	kb:2507.18312v3 sec 5.2 chunk 108602,108603 flat 60291-61121	-		103	k8	fulltext	located	4212ea9d4cec6073e5e0
+A-emd-pbh/2507.18312/16	A-emd-pbh	2507.18312	Main.tex:547-551	kb:2507.18312v3 sec 5.3 chunk 108604,108605 flat 61338-64012	4/4/4		104,105	k8	fulltext,fulltext	located,located	6e96838019d25a8c23d9,46391e55441220070bd9
+A-emd-pbh/2507.18312/17	A-emd-pbh	2507.18312	Main.tex:549	kb:2507.18312v3 sec 5.3 chunk 108604 flat 62113-63085	-		104,105	k8	fulltext,fulltext	located,located	6e96838019d25a8c23d9,46391e55441220070bd9
+A-emd-pbh/2508.10070/01	A-emd-pbh	2508.10070	main.tex:78-79	kb:2508.10070v1 chunk 108660 flat 2594-2957	-		106	k8	fulltext	located	531f4fc883a79321aebd
+A-emd-pbh/2508.10070/02	A-emd-pbh	2508.10070	main.tex:315-331	kb:2508.10070v1 sec 3.3 chunk 108675 eq (34),(35),(33) flat 29553-31610	-		106	k8	fulltext	located	531f4fc883a79321aebd
+A-emd-pbh/2508.10070/03	A-emd-pbh	2508.10070	main.tex:334	kb:2508.10070v1 sec 3.3 chunk 108676 flat 31779-31939	-		107	k8	fulltext	located	4dd172d6486223081f4e
+A-emd-pbh/2508.10070/04	A-emd-pbh	2508.10070	main.tex:339-353	kb:2508.10070v1 sec 3.3 chunk 108676,108677 eq (36) flat 33011-34485	-		108	k8	fulltext	located	b140da765d026057d1be
+A-emd-pbh/2508.10070/05	A-emd-pbh	2508.10070	main.tex:80	kb:2508.10070v1 chunk 108660 flat 2957-3085	-		109	k8	fulltext	located	432d66f89a02620d161b
+A-emd-pbh/2508.10070/06	A-emd-pbh	2508.10070	main.tex:82; main.tex:504; main.tex:680	kb:2508.10070v1 chunk 108660 flat 3205-3387; kb:2508.10070v1 sec 4 chunk 108682,108683,108713 flat 47050-47678; kb:2508.10070v1 sec 6 chunk 108690 flat 62858-63063	-		110	k8	fulltext	located	4e9112b45a86cf25d2bf
+A-emd-pbh/2508.10070/07	A-emd-pbh	2508.10070	main.tex:657-659; main.tex:682-684	kb:2508.10070v1 sec 5 chunk 108689 eq (60) flat 61302-61417; kb:2508.10070v1 sec 6 chunk 108690,108691 flat 63155-63585	2/2/2		111	k8	fulltext	located	4b5e43653250c99c96ec
+A-emd-pbh/2508.10070/08	A-emd-pbh	2508.10070	main.tex:661-670	kb:2508.10070v1 sec 5 chunk 108711 table 5 flat 61516-62008	-		111	k8	fulltext	located	4b5e43653250c99c96ec
+A-emd-pbh/2508.10070/09	A-emd-pbh	2508.10070	main.tex:902-990	kb:2508.10070v1 sec B.1 chunk 108700,108701,108702 eq (B1),(B2),(B3),(B4) flat 82116-87476	-		112	k8	fulltext	located	ea06564d784ec0226577
+A-emd-pbh/2508.10070/10	A-emd-pbh	2508.10070	main.tex:689	kb:2508.10070v1 sec 6 chunk 108691 flat 63689-63932	-		113	k8	to_verify	located	f68a9c173856c4e51113
+A-emd-pbh/2508.10070/11	A-emd-pbh	2508.10070	main.tex:691-692	kb:2508.10070v1 sec 6 chunk 108691,108692 flat 63933-64890	-		114	k8	to_verify	located	bb14689c11a106c4424e
+A-emd-pbh/2109.04896/01	A-emd-pbh	2109.04896	PBH_formation.tex:127-133; PBH_formation.tex:344; PBH_formation.tex:371	kb:2109.04896v3 sec 1 chunk 108733,108734,108758 eq (8) flat 13825-14824; kb:2109.04896v3 sec A.2 flat 43494-43927; kb:2109.04896v3 sec A.2 flat 45481-45712	2/2/2		115	k8	fulltext	located	eec4bfd4456c89907e47
+A-emd-pbh/2109.04896/02	A-emd-pbh	2109.04896	PBH_formation.tex:135-139	kb:2109.04896v3 sec 1 chunk 108734 eq (9) flat 14825-15740	-		116	k8	fulltext	located	0e90aaa9691508ddd07c
+A-emd-pbh/2109.04896/03	A-emd-pbh	2109.04896	PBH_formation.tex:145-164	kb:2109.04896v3 sec 1 chunk 108735,108759 eq (10),(12),(13),(14) flat 16859-18795	-		117	k8	fulltext	located	9434f335f19313293737
+A-emd-pbh/2109.04896/04	A-emd-pbh	2109.04896	PBH_formation.tex:143	kb:2109.04896v3 sec 1 chunk 108735 flat 16269-16858	-		118	k8	fulltext	located	0dadfd67efa4ee305906
+A-emd-pbh/2109.04896/05	A-emd-pbh	2109.04896	PBH_formation.tex:357	kb:2109.04896v3 sec A.2 flat 44686-44934	-		119	k8	fulltext	located	4b554d4de70c6ed8fafe
+A-emd-pbh/2109.04896/06	A-emd-pbh	2109.04896	PBH_formation.tex:294-318	kb:2109.04896v3 sec A.1 eq (A1),(A2),(A3),(A4) flat 40121-42450	3/3/3		120	k8	fulltext	located	ca3b08f5783364711d64
+A-emd-pbh/2109.04896/07	A-emd-pbh	2109.04896	PBH_formation.tex:354; PBH_formation.tex:375	kb:2109.04896v3 sec A.2 chunk 108755 figure 9 flat 44237-44672; kb:2109.04896v3 sec B flat 45777-46247	3/3/3		121	k8	fulltext	located	145b06e67bddd9298bc8
+A-emd-pbh/2109.04896/08	A-emd-pbh	2109.04896	PBH_formation.tex:58	kb:2109.04896v3 chunk 108727 flat 1521-2478	-		122,123	k8	fulltext,fulltext	located,located	0ab4178108957b2195b8,c8af3781fa034b3c4829
+A-emd-pbh/2109.04896/09	A-emd-pbh	2109.04896	PBH_formation.tex:172-231	kb:2109.04896v3 sec 2 chunk 108737,108738,108739 eq (16),(18),(19),(15) figure 2, figure 3 flat 20332-31419	-		122,125	k8	fulltext,fulltext	located,located	0ab4178108957b2195b8,75fc8ac093b117bf3a09
+A-emd-pbh/2109.04896/10	A-emd-pbh	2109.04896	PBH_formation.tex:58; PBH_formation.tex:241	kb:2109.04896v3 chunk 108727 flat 1521-2478; kb:2109.04896v3 sec 3 chunk 108742 flat 31970-32784	1/1/1		122,123,124	k8	fulltext,fulltext,fulltext	located,located,located	0ab4178108957b2195b8,c8af3781fa034b3c4829,386052c075c46e7512c8
+A-emd-pbh/2109.04896/11	A-emd-pbh	2109.04896	PBH_formation.tex:241-243	kb:2109.04896v3 sec 3 chunk 108742,108743 flat 31970-33824	-		123,124	k8	fulltext,fulltext	located,located	c8af3781fa034b3c4829,386052c075c46e7512c8
+A-emd-pbh/2109.04896/12	A-emd-pbh	2109.04896	PBH_formation.tex:179	kb:2109.04896v3 sec 2.1 chunk 108748 figure 2 flat 22280-23197	4/4/4		122,125	k8	fulltext,fulltext	located,located	0ab4178108957b2195b8,75fc8ac093b117bf3a09
+A-emd-pbh/2306.11810/01	A-emd-pbh	2306.11810	Spinning_PBHs.tex:188-217	kb:2306.11810v2 sec 1.2 chunk 108784,108785 eq (10),(11),(13a),(13b) flat 17155-19671	-		126	k8	fulltext	located	879f00d9c184bbb881d4
+A-emd-pbh/2306.11810/02	A-emd-pbh	2306.11810	Spinning_PBHs.tex:79; Spinning_PBHs.tex:257; Spinning_PBHs.tex:270	kb:2306.11810v2 chunk 108775 flat 2344-2915; kb:2306.11810v2 sec 2.1 chunk 108787 flat 23561-24482; kb:2306.11810v2 sec 3 chunk 108789 flat 26732-27246	2/2/2		127	k8	fulltext	located	cef81d8b00ce3839f347
+A-emd-pbh/2306.11810/03	A-emd-pbh	2306.11810	Spinning_PBHs.tex:267	kb:2306.11810v2 sec 2.2 chunk 108788 flat 26055-26684	1/1/1		128	k8	fulltext	located	ee065e9c93f92c828d3e
+A-emd-pbh/2306.11810/04	A-emd-pbh	2306.11810	Spinning_PBHs.tex:273-277	kb:2306.11810v2 sec 3 chunk 108789,108790,108800 eq (16) flat 27483-28618	2/2/2		129	k8	fulltext	located	534e0239b38f273b9c6d
+A-emd-pbh/2306.11810/05	A-emd-pbh	2306.11810	Spinning_PBHs.tex:383	kb:2306.11810v2 sec C flat 39206-39738	3/3/3		130	k8	fulltext	located	5d0de0c7cc33b11b62c3
+A-emd-pbh/2306.11810/06	A-emd-pbh	2306.11810	Spinning_PBHs.tex:279	kb:2306.11810v2 sec 3 chunk 108790 flat 28619-29175	-		131	k8	to_verify	located	fc79583540f7159da79b
+A-emd-pbh/2605.04487/01	A-emd-pbh	2605.04487	main_v3.tex:189	kb:2605.04487v2 sec 1 chunk 109066,109067 flat 9814-10486	-		132	k8	fulltext	located	d0169d0f366b1e2f58aa
+A-emd-pbh/2605.04487/02	A-emd-pbh	2605.04487	main_v3.tex:206-340	kb:2605.04487v2 sec 2.1 chunk 109070,109071,109072 eq (4),(9),(13),(8) flat 13671-18796	-		133,134	k8	fulltext,fulltext	located,located	a896042c773b69d0f66a,976d0d638cf06a1b055a
+A-emd-pbh/2605.04487/03	A-emd-pbh	2605.04487	main_v3.tex:297	kb:2605.04487v2 sec 2.1 chunk 109070 flat 16566-16764	-		133,134	k8	fulltext,fulltext	located,located	a896042c773b69d0f66a,976d0d638cf06a1b055a
+A-emd-pbh/2605.04487/04	A-emd-pbh	2605.04487	main_v3.tex:2174-2238	kb:2605.04487v2 sec 3 chunk 109101,109102,109103 flat 80308-86868	-		135	k8	fulltext	located	9092540a49aec50fcfa2
+A-emd-pbh/2605.04487/05	A-emd-pbh	2605.04487	main_v3.tex:1172-1187	kb:2605.04487v2 sec 2.4 chunk 109087 eq (93),(92) flat 51022-51833	-		136	k8	fulltext	located	8a08e8db2adcffe72e65
+A-emd-pbh/2605.04487/06	A-emd-pbh	2605.04487	main_v3.tex:1036-1063; main_v3.tex:2277	kb:2605.04487v2 sec 2.3 chunk 109083,109084 eq (81),(82),(83),(84) flat 44859-46794; kb:2605.04487v2 sec 4.1 chunk 109107,109108,109171 flat 90544-92044	-		137,143	k8	fulltext,fulltext	located,located	1ce30c94bd8e5a21463b,0e90e9c4917d597b7334
+A-emd-pbh/2605.04487/07	A-emd-pbh	2605.04487	main_v3.tex:1532-1543	kb:2605.04487v2 sec 2.4 chunk 109090,109091 eq (127) flat 59823-60484	-		138	k8	fulltext	located	be8ed4ee57fd04951913
+A-emd-pbh/2605.04487/08	A-emd-pbh	2605.04487	main_v3.tex:2146	kb:2605.04487v2 sec 3 chunk 109100 flat 78550-79223	-		139	k8	fulltext	located	98bf2d72090c5366d8ca
+A-emd-pbh/2605.04487/09	A-emd-pbh	2605.04487	main_v3.tex:510	kb:2605.04487v2 sec 2.1 chunk 109073,109074 flat 25016-25357	1/1/1		140	k8	fulltext	located	240e54d102cf0bbddc4f
+A-emd-pbh/2605.04487/10	A-emd-pbh	2605.04487	main_v3.tex:2275; main_v3.tex:2365	kb:2605.04487v2 sec 4.1 chunk 109107 flat 89858-90543; kb:2605.04487v2 sec 4.1 chunk 109113 flat 103785-104424	4/4/4		141	k8	fulltext	located	5cda35209e6bda0b64a2
+A-emd-pbh/2605.04487/11	A-emd-pbh	2605.04487	main_v3.tex:1568	kb:2605.04487v2 sec 2.5 flat 61529-61581	-		142	k8	fulltext	located	e9257b08a3569f13384d
+A-emd-pbh/2605.04487/12	A-emd-pbh	2605.04487	main_v3.tex:2277	kb:2605.04487v2 sec 4.1 chunk 109107,109108,109171 flat 90544-92044	-		137,143	k8	fulltext,fulltext	located,located	1ce30c94bd8e5a21463b,0e90e9c4917d597b7334
+A-emd-pbh/2605.04487/13	A-emd-pbh	2605.04487	main_v3.tex:2281	kb:2605.04487v2 sec 4.1 chunk 109108,109109 flat 92738-94320	2/2/2		144	k8	fulltext	located	e2c43bacef549a443edc
+A-emd-pbh/2605.04487/14	A-emd-pbh	2605.04487	main_v3.tex:2400-2402	kb:2605.04487v2 sec 4.1 chunk 109113 flat 106049-106349	3/3/3		145	k8	fulltext	located	7d1e038cae9c53d9c762
+A-emd-pbh/2605.04487/15	A-emd-pbh	2605.04487	main_v3.tex:2354	kb:2605.04487v2 sec 4.1 chunk 109112,109113 flat 102277-103776	-		146	k8	fulltext	located	987ecce9b82f8d757898
+A-emd-pbh/1611.07906/01	A-emd-pbh	1611.07906	asymflat.tex:445-513	kb:1611.07906v2 sec 3.1 chunk 105590 eq (23),(25),(26),(27) flat 15414-17753	-		147	k8	fulltext	located	c301bcc706e364557f43
+A-emd-pbh/1611.07906/02	A-emd-pbh	1611.07906	asymflat.tex:526-533	kb:1611.07906v2 sec 3.1 chunk 105590 eq (30) flat 17753-18078	-		148	k8	fulltext	located	e1994aa0a4e0e5645788
+A-emd-pbh/1611.07906/03	A-emd-pbh	1611.07906	asymflat.tex:536-559	kb:1611.07906v2 sec 3.1 chunk 105591 eq (32),(31) flat 18080-19009	-		149	k8	fulltext	located	7ab417ad78082a37c958
+A-emd-pbh/1611.07906/04	A-emd-pbh	1611.07906	asymflat.tex:566-567	kb:1611.07906v2 sec 3.2 chunk 105592 flat 19087-19185	-		150	k8	fulltext	located	8b8e1e6525d1a122a639
+A-emd-pbh/1611.07906/05	A-emd-pbh	1611.07906	asymflat.tex:368-389	kb:1611.07906v2 sec 2.3 chunk 105587 eq (21) flat 12263-13233	-		151	k8	fulltext	located	e027036783260bd40f16
+A-emd-pbh/1611.07906/06	A-emd-pbh	1611.07906	asymflat.tex:432	kb:1611.07906v2 sec 2.4 chunk 105589 flat 15176-15248	-		152	k8	fulltext	checked	7f50dd4c89381631b58e
+A-emd-pbh/1611.07906/07	A-emd-pbh	1611.07906	asymflat.tex:393	kb:1611.07906v2 sec 2.4 chunk 105588 flat 13271-13354	-		153	k8	fulltext	located	c448eeaf16cdae29d2d3
+A-emd-pbh/1611.07906/08	A-emd-pbh	1611.07906	asymflat.tex:344-366	kb:1611.07906v2 sec 2.2 chunk 105586 eq (19),(20) flat 11559-12262	-		154	k8	fulltext	located	9e00bda2b528833cad9d
+A-emd-pbh/1611.07906/09	A-emd-pbh	1611.07906	asymflat.tex:570-601	kb:1611.07906v2 sec 3.2 chunk 105592,105593 eq (33),(34),(35) flat 19330-20685	6/6/6		155	k8	fulltext	located	568b70b6e6c2497dd1ce
+A-emd-pbh/1611.07906/10	A-emd-pbh	1611.07906	asymflat.tex:97-112; asymflat.tex:603-606	kb:1611.07906v2 chunk 105580 flat 2079-2930; kb:1611.07906v2 sec 3.2 chunk 105593 flat 20686-20954	-		156	k8	fulltext	located	a58a25dc9fb1834cb854
+A-emd-pbh/1611.07906/11	A-emd-pbh	1611.07906	asymflat.tex:838-857	kb:1611.07906v2 sec 3.3 chunk 105597 flat 28928-29790	-		157	k8	fulltext	located	cea522cefff734aa7173
+A-emd-pbh/1901.04498/01	A-emd-pbh	1901.04498	main.tex:195-199	kb:1901.04498v2 chunk 176408 flat 8825-9112	4/4/4		158	k8	fulltext	located	8309cc9cccc9420b459f
+A-emd-pbh/1901.04498/02	A-emd-pbh	1901.04498	main.tex:227-228	kb:1901.04498v2 chunk 176409 flat 10818-10921	-		159	k8	fulltext	located	d01fc68ebd7c020a11b9
+A-emd-pbh/1901.04498/03	A-emd-pbh	1901.04498	main.tex:204-207	kb:1901.04498v2 chunk 176408,176409 flat 9306-9618	-		160	k8	fulltext	located	17a55e85afe2a98e2d77
+A-emd-pbh/1901.04498/04	A-emd-pbh	1901.04498	main.tex:210-221	kb:1901.04498v2 chunk 176408,176409 flat 9780-10580	-		161	k8	fulltext	located	606a92df7f11de1c3e0d
+A-emd-pbh/1901.04498/05	A-emd-pbh	1901.04498	main.tex:229-234; main.tex:442	kb:1901.04498v2 chunk 176409,176410 flat 10921-11351; kb:1901.04498v2 sec A flat 21275-21347	5/5/5		162	k8	fulltext	located	0fcda8a77c6cba9f1a38
+A-emd-pbh/1901.04498/06	A-emd-pbh	1901.04498	main.tex:238-253	kb:1901.04498v2 chunk 176410 flat 11430-12275	1/1/1		163	k8	fulltext	located	28186d73e892554336b7
+A-emd-pbh/1901.04498/07	A-emd-pbh	1901.04498	main.tex:284	kb:1901.04498v2 chunk 176411 flat 13565-13681	1/1/1		164	k8	fulltext	checked	a844e7c4677343558ca3
+A-emd-pbh/1901.04498/08	A-emd-pbh	1901.04498	main.tex:292	kb:1901.04498v2 chunk 176411 flat 13964-14046	4/4/4		165	k8	fulltext	located	41f1ed7bd8c0a0f0beb6
+B-emd-gw/2403.15126/01	B-emd-gw	2403.15126	pII_GW_Vir_C2_Arx.tex:173-175	kb:2403.15126v1 chunk 121745,121746 flat 3529-4923	-		171	k8	fulltext	located	3e78b9d1173110043414
+B-emd-gw/2403.15126/02	B-emd-gw	2403.15126	pII_GW_Vir_C2_Arx.tex:427-503	kb:2403.15126v1 sec 2.1 chunk 121758,121759,121760 eq (2),(3),(8),(1) flat 25656-31057	-		172	k8	fulltext	located	dc3505835d9b6f4128fc
+B-emd-gw/2403.15126/03	B-emd-gw	2403.15126	pII_GW_Vir_C2_Arx.tex:611	kb:2403.15126v1 sec 2.2 chunk 121763 flat 36582-36750	-		173	k8	fulltext	located	516c254986b009aa0450
+B-emd-gw/2403.15126/04	B-emd-gw	2403.15126	pII_GW_Vir_C2_Arx.tex:667-669	kb:2403.15126v1 sec 2.2 chunk 121764 flat 39250-39570	1/1/1		174	k8	fulltext	located	0169967e0c09b82f259d
+B-emd-gw/2403.15126/05	B-emd-gw	2403.15126	pII_GW_Vir_C2_Arx.tex:879-882	kb:2403.15126v1 sec 3.1 chunk 121771 eq (19) flat 51761-52011	-		175	k8	fulltext	located	069b341bdfe3fdef3e38
+B-emd-gw/2403.15126/06	B-emd-gw	2403.15126	pII_GW_Vir_C2_Arx.tex:884-887	kb:2403.15126v1 sec 3.1 chunk 121771 flat 52176-52718	-		176	k8	fulltext	located	75b8654b87505425ab19
+B-emd-gw/2403.15126/07	B-emd-gw	2403.15126	pII_GW_Vir_C2_Arx.tex:898	kb:2403.15126v1 sec 3.1 chunk 121771 eq (21) flat 53293-53377	-		177	k8	fulltext	located	db7ceceb3ec27c48b55d
+B-emd-gw/2403.15126/08	B-emd-gw	2403.15126	pII_GW_Vir_C2_Arx.tex:903	kb:2403.15126v1 sec 3.1 chunk 121771 eq (22) flat 53634-53734	-		178	k8	fulltext	checked	e5671404134db95de545
+B-emd-gw/2403.15126/09	B-emd-gw	2403.15126	pII_GW_Vir_C2_Arx.tex:911-918	kb:2403.15126v1 sec 3.1 chunk 121771 eq (23) flat 54266-54847	-		179	k8	fulltext	located	f0fd451153466bfde767
+B-emd-gw/2403.15126/10	B-emd-gw	2403.15126	pII_GW_Vir_C2_Arx.tex:959-961	kb:2403.15126v1 sec 3.2 chunk 121773 eq (25) flat 57037-57322	-		180	k8	fulltext	located	654bfbbdac76d824b620
+B-emd-gw/2403.15126/11	B-emd-gw	2403.15126	pII_GW_Vir_C2_Arx.tex:1007	kb:2403.15126v1 sec 3.2 chunk 121773 flat 60674-60773	-		181	k8	fulltext	checked	6a09c605f6afa77ac6c0
+B-emd-gw/2403.15126/12	B-emd-gw	2403.15126	pII_GW_Vir_C2_Arx.tex:1031	kb:2403.15126v1 sec 3.2 chunk 121774,121775 flat 63460-63715	-		182	k8	fulltext	located	99c48152aa23206c0a19
+B-emd-gw/2403.15126/13	B-emd-gw	2403.15126	pII_GW_Vir_C2_Arx.tex:1074	kb:2403.15126v1 sec 3.2 chunk 121776 flat 66607-67329	-		183	k8	fulltext	located	9f8de90b28d2fcac2c52
+B-emd-gw/2403.15126/14	B-emd-gw	2403.15126	pII_GW_Vir_C2_Arx.tex:312	kb:2403.15126v1 sec 1 chunk 121751 flat 13730-14265	-		184	k8	fulltext	located	23d5efcd6f0f2e83313c
+B-emd-gw/2403.15126/15	B-emd-gw	2403.15126	pII_GW_Vir_C2_Arx.tex:1501-1509	kb:2403.15126v1 sec 4.3 chunk 121792 eq (35) flat 98344-98789	-		185	k8	fulltext	located	548687972c980ed8f69f
+B-emd-gw/2605.04487/01	B-emd-gw	2605.04487	main_v3.tex:171	kb:2605.04487v2 chunk 109063 flat 5204-6790	-		187	k8	fulltext	located	341b79b642ebce48789d
+B-emd-gw/2605.04487/02	B-emd-gw	2605.04487	main_v3.tex:206-213	kb:2605.04487v2 sec 2.1 chunk 109070 flat 13671-14269	-		188	k8	fulltext	located	83768b635cf8ce3907e8
+B-emd-gw/2605.04487/03	B-emd-gw	2605.04487	main_v3.tex:695	kb:2605.04487v2 sec 2.1 chunk 109076 flat 31287-32058	-		189	k8	fulltext	located	abafdeef5bffa8e3ef16
+B-emd-gw/2605.04487/04	B-emd-gw	2605.04487	main_v3.tex:1568-1590	kb:2605.04487v2 sec 2.5 chunk 109092,109093 flat 61529-63232	-		190	k8	fulltext	located	0b2711b897ddf4383a7e
+B-emd-gw/2605.04487/05	B-emd-gw	2605.04487	main_v3.tex:1741-1850	kb:2605.04487v2 sec 2.5 chunk 109094,109095 eq (148),(150),(151),(152) flat 66531-68380	-		191	k8	fulltext	located	9b0e7d6c4e61de326ce5
+B-emd-gw/2605.04487/06	B-emd-gw	2605.04487	main_v3.tex:2891	kb:2605.04487v2 sec A.5 chunk 109141 eq (186) flat 167587-167618	-		192	k8	fulltext	located	035514f13abd210316ad
+B-emd-gw/2605.04487/07	B-emd-gw	2605.04487	main_v3.tex:2234-2238	kb:2605.04487v2 sec 3 chunk 109103,109104,109105 flat 84858-86868	2/2/2		193	k8	fulltext	located	0870e0dc79a35d319956
+B-emd-gw/2605.04487/08	B-emd-gw	2605.04487	main_v3.tex:2275-2281	kb:2605.04487v2 sec 4.1 chunk 109107,109108,109109 flat 89858-94320	6/6/6		194	k8	fulltext	located	8173015903a77853081a
+B-emd-gw/2605.04487/09	B-emd-gw	2605.04487	main_v3.tex:2395-2405	kb:2605.04487v2 sec 4.1 chunk 109113 flat 105603-106579	4/4/4		195	k8	fulltext	located	bbedf9da6f042286aaf0
+B-emd-gw/2605.04487/10	B-emd-gw	2605.04487	main_v3.tex:2365; main_v3.tex:2616	kb:2605.04487v2 sec 4.1 chunk 109113 flat 103785-104424; kb:2605.04487v2 sec 5 chunk 109130,109131 flat 142045-143245	4/4/4		196	k8	fulltext	checked	59538c39d3ebe45c59a6
+B-emd-gw/2605.04487/11	B-emd-gw	2605.04487	main_v3.tex:2354	kb:2605.04487v2 sec 4.1 chunk 109112,109113 flat 102277-103776	-		197	k8	fulltext	located	85377c3b9ae0b2020be8
+B-emd-gw/2605.04487/12	B-emd-gw	2605.04487	main_v3.tex:2512	kb:2605.04487v2 sec 4.2 chunk 109120,109121 flat 122625-124017	-		198	k8	fulltext	checked	943adbc7516ee20b81de
+B-emd-gw/2605.04487/13	B-emd-gw	2605.04487	main_v3.tex:2625	kb:2605.04487v2 sec 5 chunk 109132 flat 144956-145745	-		199	k8	fulltext	located	0665c5d0db87e76b213a
+B-emd-gw/2605.04487/14	B-emd-gw	2605.04487	main_v3.tex:2576-2581	kb:2605.04487v2 sec 4.3 chunk 109127,109174 eq (178) flat 135680-135841	-		200	k8	fulltext	located	165b2fb03b11d9d294f3
+B-emd-gw/2605.04487/15	B-emd-gw	2605.04487	main_v3.tex:2630	kb:2605.04487v2 sec 5 chunk 109133 flat 146466-147450	-		201	k8	fulltext	located	1102abeca83b28d08f1b
+B-emd-gw/2111.09163/01	B-emd-gw	2111.09163	prd_v1.tex:68-80	kb:2111.09163v2 chunk 115350 flat 1947-3353	-		203	k8	to_verify	partial	0c180fad0bacb65171bb
+B-emd-gw/2111.09163/02	B-emd-gw	2111.09163	prd_v1.tex:76	kb:2111.09163v2 chunk 115350 flat 2974-3330	-		203	k8	to_verify	partial	0c180fad0bacb65171bb
+B-emd-gw/2111.09163/03	B-emd-gw	2111.09163	prd_v1.tex:160-187	kb:2111.09163v2 sec 2.1 chunk 115355,115356 eq (2),(1),(3) flat 8172-10699	-		204	k8	fulltext	located	ad61597cd0a1d61bc0a9
+B-emd-gw/2111.09163/04	B-emd-gw	2111.09163	prd_v1.tex:260	kb:2111.09163v2 sec 2.3 chunk 115359 eq (14),(15) flat 15336-15429	-		205,206	k8	fulltext,fulltext	located,located	840fe087cf24d884fefa,e69e8667cbf7313f6e83
+B-emd-gw/2111.09163/05	B-emd-gw	2111.09163	prd_v1.tex:237-270	kb:2111.09163v2 sec 2.3 chunk 115359,115360 eq (11),(12),(10),(13) flat 14061-16628	-		205,206	k8	fulltext,fulltext	located,located	840fe087cf24d884fefa,e69e8667cbf7313f6e83
+B-emd-gw/2111.09163/06	B-emd-gw	2111.09163	prd_v1.tex:272-274	kb:2111.09163v2 sec 2.3 chunk 115360,115361,115388 flat 16952-17859	-		207	k8	fulltext	located	9669947e1f8a66ac6a91
+B-emd-gw/2111.09163/07	B-emd-gw	2111.09163	prd_v1.tex:369-426	kb:2111.09163v2 sec 4 chunk 115366,115367,115368 eq (22),(24),(25),(27) flat 25381-29985	-		208	k8	fulltext	located	f2cbcef53bfe8e7f2704
+B-emd-gw/2111.09163/08	B-emd-gw	2111.09163	prd_v1.tex:647	kb:2111.09163v2 sec 6 chunk 115377,115378 flat 45944-46306	0/0/2	629 660	209	k8	to_verify	partial	3188305fccbf33ac4ba3
+B-emd-gw/1604.06065/01	B-emd-gw	1604.06065	compendium_arxiv.tex:142-154	kb:1604.06065v2 sec 2 chunk 107687,107688 eq (1) flat 11627-13310	-		211	k8	fulltext	located	098231b7fb1601333ec8
+B-emd-gw/1604.06065/02	B-emd-gw	1604.06065	compendium_arxiv.tex:294-298	kb:1604.06065v2 sec 2.2 chunk 107696 eq (10) flat 28962-29375	-		212	k8	fulltext	checked	bb36d83f36b527ca5bdd
+B-emd-gw/1604.06065/03	B-emd-gw	1604.06065	compendium_arxiv.tex:1394	kb:1604.06065v2 sec C chunk 107756 flat 138914-139039	-		213	k8	fulltext	located	cef87d1f5e3a74b1cb39
+B-emd-gw/1604.06065/04	B-emd-gw	1604.06065	compendium_arxiv.tex:1427-1444	kb:1604.06065v2 sec C chunk 107758,107759,107789 flat 142628-144413	-		214	k8	fulltext	located	cd1a57c34ef2e81541f2
+B-emd-gw/1604.06065/05	B-emd-gw	1604.06065	compendium_arxiv.tex:1446-1452	kb:1604.06065v2 sec C chunk 107759 eq (82) flat 144414-145207	-		215	k8	fulltext	located	0431ed50b8c12c1279ac
+B-emd-gw/1704.04307/01	B-emd-gw	1704.04307	nonlinear_cosmo_reference.tex:38-48	kb:1704.04307v1 chunk 115239 flat 966-1738	-			added	fulltext	located	-
+B-emd-gw/2608.13206/01	B-emd-gw	2608.13206	PRD.tex:38-39	kb:2608.13206v3 chunk 108192 flat 1661-2980	-			added	fulltext	located	-
+B-emd-gw/2610.23218/01	B-emd-gw	2610.23218	main.tex:39-41	kb:2610.23218v1 chunk 108995 flat 1727-3066	-			added	fulltext	located	-
+B-emd-gw/2610.23218/02	B-emd-gw	2610.23218	main.tex:51	kb:2610.23218v1 sec 1 chunk 108997,108998,109049 flat 5504-7000	-		219,220	k8	to_verify,judgement	partial,partial	b952b363b952c28aa06b,e3ba1ebd0e5816f0ccdc
+B-emd-gw/2207.03125/01	B-emd-gw	2207.03125	paper.tex:97	kb:2207.03125v2 chunk 114839,114840 flat 2141-2158	-			added	fulltext	located	-
+B-emd-gw/2207.03125/02	B-emd-gw	2207.03125	paper.tex:184-205	kb:2207.03125v2 sec 2 chunk 114849,114850,114871 eq (12),(13),(10),(11) flat 16270-20790	-		221,222	k8	fulltext,judgement	located,located	86e3ec81db43588098d0,1397f0c0a1a79468f246
+B-emd-gw/2501.13046/01	B-emd-gw	2501.13046	main.tex:62-103	kb:2501.13046v2 sec 1 chunk 114892,114893,114894 eq (1),(2),(3) figure 1 flat 2707-8867	-		223	k8	fulltext	checked	6c3c745cba353769c653
+B-emd-gw/1505.04756/01	B-emd-gw	1505.04756	finalpaper.tex:65	kb:1505.04756v2 chunk 117168 flat 2219-2236	-			added	fulltext	located	-
+B-emd-gw/1505.04756/02	B-emd-gw	1505.04756	finalpaper.tex:204; finalpaper.tex:315	kb:1505.04756v2 chunk 117174 flat 12821-12882; kb:1505.04756v2 chunk 117180 flat 22102-22333	-			added	fulltext	located	-
+B-emd-gw/2010.12584/01	B-emd-gw	2010.12584	nLPT-arxiv-v2.tex:142	kb:2010.12584v2 chunk 132696 flat 3084-3101	-			added	fulltext	located	-
+B-emd-gw/2010.12584/02	B-emd-gw	2010.12584	nLPT-arxiv-v2.tex:404-407	kb:2010.12584v2 sec 4 chunk 132709,132710 flat 30063-31334	-		226	k8	to_verify	partial	6599da6d6f98afbec8e7
+B-emd-gw/2010.12584/03	B-emd-gw	2010.12584	nLPT-arxiv-v2.tex:956	kb:2010.12584v2 sec E flat 71778-72050	-		227,228	k8	fulltext,judgement	located,located	e6b45358dc521fbc46d4,d62e47027d75620073e2
+C-sidm/2108.11967/r6-01	C-sidm	2108.11967	main.tex:280	kb:2108.11967v2 sec 3.3 chunk 109255,109256 flat 26940-27767	10/10/10		232,304	k8	fulltext,fulltext	located,located	3e4eb6d851460ddee53c,05f753399dc666fa0323
+C-sidm/2108.11967/r6-02	C-sidm	2108.11967	main.tex:274	kb:2108.11967v2 sec 3.3 chunk 109254,109255 flat 25377-26249	10/10/10		231,305	k8	fulltext,fulltext	located,located	040357b0d8a0195e943f,058b92c4b5a09096ffe8
+C-sidm/2108.11967/r6-03	C-sidm	2108.11967	main.tex:283	kb:2108.11967v2 sec 3.3 chunk 109256 flat 27769-28496	2/2/2		234,306	k8	fulltext,fulltext	located,located	6b1314017664436ee663,3253ed19a56d61accf2d
+C-sidm/2108.11967/r6-04	C-sidm	2108.11967	main.tex:202-219	kb:2108.11967v2 sec 3.1 chunk 109251 eq (11),(12),(10) flat 17687-19339	-		307	k8	fulltext	located	87da77b9420728a3f3a0
+C-sidm/2108.11967/r6-05	C-sidm	2108.11967	main.tex:492; main.tex:495; main.tex:498; main.tex:501	kb:2108.11967v2 sec D flat 60643-60968; kb:2108.11967v2 sec D flat 61574-61900; kb:2108.11967v2 sec D flat 62505-62830; kb:2108.11967v2 sec D flat 63432-63775	5/5/6	8e-5	239,308	k8	fulltext,to_verify	located,partial	e030a694d8155d5ee04c,ab1636783c4d8a45a6b1
+C-sidm/2108.11967/r6-06	C-sidm	2108.11967	main.tex:491; main.tex:493	kb:2108.11967v2 sec D flat 60341-60643; kb:2108.11967v2 sec D flat 60968-61271	2/2/2		239,309,610,611	k8	fulltext,fulltext,judgement,judgement	located,located,partial,partial	e030a694d8155d5ee04c,d5196d476a13e1a8930e,783bd66ca8ceb54377e6,3a4869f3aea32d38af31
+C-sidm/2601.17117/r6-07	C-sidm	2601.17117	SIDM_MS.tex:384	kb:2601.17117v2 sec 2.4 chunk 109290 flat 29811-30443	1/1/1		244,310	k8	fulltext,fulltext	located,located	b17ade670e57d9409d4f,94156ba1c726907c7af5
+C-sidm/2601.17117/r6-08	C-sidm	2601.17117	SIDM_MS.tex:341-344	kb:2601.17117v2 sec 2.2 chunk 109287,109288 eq (23) flat 25311-25744	-		240,241,242,311	k8	fulltext,fulltext,fulltext,fulltext	located,located,located,located	f248b20be2c7083fc7c1,677c2cced7680a98bc6e,2c8405494c71271c9194,25f5fa2713dbc3f347ba
+C-sidm/2601.17117/r6-09	C-sidm	2601.17117	SIDM_MS.tex:233	kb:2601.17117v2 sec 2.1 chunk 109285 flat 19125-20432	4/4/4		243,312,617	k8	fulltext,fulltext,judgement	located,located,located	315e6af6b852531fad62,ac79648898cd76e1171d,33b46234744f539bf12a
+C-sidm/2601.17117/r6-10	C-sidm	2601.17117	SIDM_MS.tex:476	kb:2601.17117v2 sec 3.3 chunk 109299 flat 49429-50715	3/3/3		249,313	k8	fulltext,fulltext	located,located	9e6dbb6c8e0e48a960f7,9f11e8f4dd6589f01ce4
+C-sidm/2601.17117/r6-11	C-sidm	2601.17117	SIDM_MS.tex:64-71	kb:2601.17117v2 chunk 109276 flat 2801-3377	1/1/3	580 200	240,301,314	k8	fulltext,fulltext,fulltext	located,located,located	f248b20be2c7083fc7c1,7450809a7e4e7e32ec6d,ec42eb83851005d4e74c
+C-sidm/2601.17117/r6-12	C-sidm	2601.17117	SIDM_MS.tex:672-676	kb:2601.17117v2 sec A chunk 109310 eq (A13) flat 70612-72286	-		252,315	k8	fulltext,fulltext	located,located	3adea84fa2d30b51e5c8,0f17992221b41376d698
+C-sidm/1101.3097/r6-13	C-sidm	1101.3097	sidm1.tex:667-673; sidm1.tex:680-692	kb:1101.3097v2 sec 3.1 chunk 166061 eq (15) flat 35849-36087; kb:1101.3097v2 sec 3.1 chunk 166061 eq (16) flat 36498-37162	1/1/1		295,316	k8	fulltext,fulltext	located,located	f5c956821881ccd99b97,b4216ad3e21a252c0e85
+C-sidm/1101.3097/r6-14	C-sidm	1101.3097	sidm1.tex:408-412	kb:1101.3097v2 sec 2.2 chunk 166054,166099 flat 22801-23116	6/6/6		317,616	k8	fulltext,judgement	located,located	d438db1fef4ce7351033,6362edec4155ddf17665
+C-sidm/1101.3097/r6-15	C-sidm	1101.3097	sidm1.tex:1482-1491	kb:1101.3097v2 sec 6 chunk 166084 flat 79391-80074	1/1/1		297,318	k8	fulltext,fulltext	located,located	fc8499d195fd51550b82,f9d38ea14cb474fa960d
+C-sidm/astro-ph/0110561/r6-16	C-sidm	astro-ph/0110561	SIDMGT_Xiv2.tex:309-323	kb:astro-ph/0110561v2 sec 2 chunk 122666 eq (3) flat 18195-18978	1/1/1		279,319	k8	fulltext,fulltext	checked,located	abbe5014299724a124dc,b416138ee96dc384399c
+C-sidm/astro-ph/0110561/r6-17	C-sidm	astro-ph/0110561	SIDMGT_Xiv2.tex:388-409	kb:astro-ph/0110561v2 sec 3 chunk 122668,122669 eq (10),(11) flat 22448-23664	3/3/3		320,618	k8	fulltext,judgement	located,located	e6745c615313916f7eb3,188081b87520754173b8
+C-sidm/2010.15132/r6-18	C-sidm	2010.15132	smbh.tex:116	kb:2010.15132v3 sec 2 chunk 122780,122781 flat 9740-10868	1/1/1		286,321	k8	fulltext,fulltext	located,located	d4019b19ced2b7f2933c,801b3c200e70a4660d2e
+C-sidm/2010.15132/r6-19	C-sidm	2010.15132	smbh.tex:151	kb:2010.15132v3 sec 3 chunk 122783 flat 16417-17210	2/2/2		287,322	k8	fulltext,fulltext	located,located	9b7d395fd1127936bfea,de88cabfb3f0b6d27eca
+C-sidm/2506.17641/r6-20	C-sidm	2506.17641	sidmacc.tex:74	kb:2506.17641v3 chunk 122811 flat 4798-5745	4/4/4		289,323	k8	fulltext,fulltext	located,located	ce0e9584fba3102dc9ba,cdf9243ca3742f4c5ccf
+C-sidm/2009.08163/r6-21	C-sidm	2009.08163	paper.tex:953-956	kb:2009.08163v1 sec 4 chunk 127556 table 1 flat 48883-49070	8/8/8		262,324	k8	fulltext,fulltext	located,located	ec6ea903ee5e11ae1994,2cfb796757b7ea2fe42d
+C-sidm/2009.08163/r6-22	C-sidm	2009.08163	paper.tex:1190-1193	kb:2009.08163v1 sec 4.3 chunk 127561 flat 85415-85631	-		265,325	k8	fulltext,fulltext	located,located	6486378418ebb0becaa9,9a432626b597298d3399
+C-sidm/2105.05556/r6-23	C-sidm	2105.05556	paper.tex:88-89	kb:2105.05556v1 chunk 127711 flat 1980-2801	-		326	k8	fulltext	located	7c8aaffad8e5437a130c
+C-sidm/2105.05556/r6-24	C-sidm	2105.05556	paper.tex:612	kb:2105.05556v1 sec 5.2 chunk 127743 flat 83058-84217	4/4/4		270,327	k8	fulltext,fulltext	located,located	dbdec9ebe67e89b2df0e,34cb15a2be51d78f2cec
+C-sidm/gr-qc/0601112/r6-25	C-sidm	gr-qc/0601112	ssevnum7.tex:694	kb:gr-qc/0601112v1 sec 4 chunk 111519 flat 27229-27294	-		257,328,614	k8	to_verify,fulltext,judgement	located,located,located	bf49d1c4af86dc5d29f7,bc2f1e08ae58166b8572,4bde463e6314aab18177
+C-sidm/2602.17487/r6-26	C-sidm	2602.17487	results.tex:18	kb:2602.17487v1 sec 2.1 chunk 131293 flat 12617-12784	-		274,329	k8	fulltext,fulltext	located,located	fcc737039ef753ef2617,673c93fbb9c039b256b1
+C-sidm/2611.12831/r6-27	C-sidm	2611.12831	main.tex:1024-1028	kb:2611.12831v1 sec 3.4.1 chunk 105379 table 1 flat 99783-100127	2/2/2		275,330	k8	fulltext,fulltext	located,located	db54f409b4fc48a53871,aa746045bb85b7c68e3d
+C-sidm/r6-/unparsed-186	C-sidm	astro-ph/0111176			0/0/2	1e-8 1e-6		no-locator	-	-	-
+F-hills/0911.1136/s8-01	F-hills	0911.1136	prp.tex:85-88	kb:0911.1136v1 sec 1 chunk 110405 flat 4226-4438	-			added	fulltext	located	-
+F-hills/0911.1136/s8-02	F-hills	0911.1136	prp.tex:229-259	kb:0911.1136v1 sec 2.1 chunk 110410 eq (8),(9),(10),(12) flat 12436-13451	-			added	fulltext	located	-
+F-hills/0911.1136/s8-03	F-hills	0911.1136	prp.tex:345-357	kb:0911.1136v1 sec 2.3 chunk 110413 eq (22) flat 16984-17524	-			added	fulltext	located	-
+F-hills/0911.1136/s8-04	F-hills	0911.1136	prp.tex:597-599	kb:0911.1136v1 sec 4 chunk 110423,110424 flat 30135-30345	1/1/1			added	fulltext	located	-
+F-hills/0911.1136/s8-05	F-hills	0911.1136	prp.tex:748-749; prp.tex:784-785	kb:0911.1136v1 sec 5.1 chunk 110429 flat 37457-37551; kb:0911.1136v1 sec 5.2 chunk 110430 flat 39149-39304	1/1/1			added	fulltext	located	-
+F-hills/0911.1136/s8-06	F-hills	0911.1136	prp.tex:846-854	kb:0911.1136v1 sec 5.2 chunk 110431 flat 42231-42765	5/5/5			added	fulltext	located	-
+F-hills/1804.02911/s8-07	F-hills	1804.02911	mnras.tex:368-379	kb:1804.02911v1 sec 3.1 chunk 110495 eq (8) flat 21570-22285	1/1/1			added	fulltext	located	-
+F-hills/2404.16270/s8-08	F-hills	2404.16270	article.tex:194	kb:2404.16270v1 sec 2 chunk 110644 flat 12379-13062	1/1/1		442	k8	fulltext	located	3da808f82a4e46e289ee
+F-hills/2404.16270/s8-09	F-hills	2404.16270	article.tex:244-256	kb:2404.16270v1 sec 2.1 chunk 110646 eq (8) flat 17122-17710	-			added	fulltext	located	-
+F-hills/2404.16270/s8-10	F-hills	2404.16270	article.tex:272-274	kb:2404.16270v1 sec 2.2 chunk 110647 eq (11) flat 18450-18951	0/0/1	0.1		added	to_verify	partial	-
+F-hills/2404.16270/s8-11	F-hills	2404.16270	appendix.tex:6-8	kb:2404.16270v1 sec A chunk 110683 flat 75913-76687	1/1/1			added	fulltext	located	-
+F-hills/2402.02178/s8-12	F-hills	2402.02178	main.tex:224-225	kb:2402.02178v1 sec 1 chunk 110808 flat 10252-10386	-		445	k8	fulltext	located	2a42c57058a7d7282bed
+F-hills/2406.11985/s8-13	F-hills	2406.11985	TBH3.tex:703-711	kb:2406.11985v1 sec 6 chunk 175390,175391 flat 47683-48184	2/2/2		427,451	k8	fulltext,fulltext	located,located	9792c3d47cd165786de5,3d94926e08b45bac8e1c
+F-hills/0710.0879/s8-14	F-hills	0710.0879	first.tex:141-146; first.tex:291	kb:0710.0879v2 chunk 125969,125970 flat 5704-6122; kb:0710.0879v2 chunk 125972 table 2 flat 12794-12869	5/5/5			added	fulltext	located	-
+F-hills/1004.1353/s8-15	F-hills	1004.1353	Punc_N.tex:185-194; Punc_N.tex:1238-1261	kb:1004.1353v2 sec 1 chunk 126031 flat 7114-7901; kb:1004.1353v2 sec 3.2.1 chunk 126051,126052 flat 51796-53221	-			added	fulltext	located	-
+F-hills/s8-/unparsed-157	F-hills	?			-			no-locator	-	-	-
+F-hills/0911.1136/ref-SKR-Dmax_prograde	F-hills	0911.1136	prp.tex:846-847; prp.tex:777-778	kb:0911.1136v1 sec 5.2 chunk 110431 flat 42231-42351; kb:0911.1136v1 sec 5.2 chunk 110430 flat 38706-38827	1/1/1			added	to_verify	located	-
+F-hills/0911.1136/ref-SKR-Dmax_retrograde	F-hills	0911.1136	prp.tex:846-847; prp.tex:778-779	kb:0911.1136v1 sec 5.2 chunk 110431 flat 42231-42351; kb:0911.1136v1 sec 5.2 chunk 110430 flat 38756-38855	1/1/1			added	to_verify	located	-
+F-hills/0911.1136/ref-SKR-D_best_prograde	F-hills	0911.1136	prp.tex:737-738; prp.tex:854	kb:0911.1136v1 sec 5.1 chunk 110429 flat 36755-36860; kb:0911.1136v1 sec 5.2 chunk 110431 flat 42687-42765	1/1/1			added	to_verify	located	-
+F-hills/0911.1136/ref-SKR-P_prograde_0.06_0.3	F-hills	0911.1136	prp.tex:1086-1087	kb:0911.1136v1 sec 8 chunk 110437,110438 flat 54842-54964	1/1/2	0.98		added	to_verify	partial	-
+F-hills/0911.1136/ref-SKR-P_deep_saturation	F-hills	0911.1136	prp.tex:735-736	kb:0911.1136v1 sec 5.1 chunk 110429 flat 36689-36755	0/1/1			added	to_verify	located	-
+F-hills/0911.1136/ref-SKR-survival_radial	F-hills	0911.1136	prp.tex:748-749	kb:0911.1136v1 sec 5.1 chunk 110429 flat 37457-37551	1/1/1			added	to_verify	located	-
+F-hills/0911.1136/ref-SKR-survivors_harder_radial	F-hills	0911.1136	prp.tex:752-753	kb:0911.1136v1 sec 5.1 chunk 110429 flat 37679-37801	1/1/1			added	to_verify	located	-
+F-hills/0911.1136/ref-SKR-survival_windows_radial_pi	F-hills	0911.1136	prp.tex:785	kb:0911.1136v1 sec 5.2 chunk 110430 flat 39186-39304	4/4/4			added	to_verify	located	-
+F-hills/0911.1136/ref-SKR-Emax_prograde	F-hills	0911.1136	prp.tex:848-849; prp.tex:832-834	kb:0911.1136v1 sec 5.2 chunk 110431 flat 42351-42440; kb:0911.1136v1 sec 5.2 chunk 110430 flat 41443-41643	1/1/1			added	to_verify	located	-
+F-hills/0911.1136/ref-SKR-Emax_retrograde	F-hills	0911.1136	prp.tex:848-849	kb:0911.1136v1 sec 5.2 chunk 110431 flat 42351-42440	1/1/1			added	to_verify	located	-
+F-hills/0911.1136/ref-SKR-Emean_prograde_Duniform	F-hills	0911.1136	prp.tex:850-853	kb:0911.1136v1 sec 5.2 chunk 110431 flat 42440-42687	1/1/1			added	to_verify	located	-
+F-hills/0911.1136/ref-SKR-Emean_retrograde_Duniform	F-hills	0911.1136	prp.tex:850-853	kb:0911.1136v1 sec 5.2 chunk 110431 flat 42440-42687	1/1/1			added	to_verify	located	-
+F-hills/0911.1136/ref-SKR-Emean_both_Duniform	F-hills	0911.1136	prp.tex:850-853	kb:0911.1136v1 sec 5.2 chunk 110431 flat 42440-42687	1/1/1			added	to_verify	located	-
+F-hills/0911.1136/ref-SKR-vmean_deep	F-hills	0911.1136	prp.tex:993-994	kb:0911.1136v1 sec 7 chunk 110434 flat 49155-49317	1/1/1			added	to_verify	located	-
+F-hills/0911.1136/ref-SKR-full_vs_restricted	F-hills	0911.1136	prp.tex:631	kb:0911.1136v1 sec 4.1 chunk 110425 flat 32063-32144	1/1/1			added	to_verify	located	-
+F-hills/0911.1136/ref-SKR-phase_sampling	F-hills	0911.1136	prp.tex:763-764	kb:0911.1136v1 sec 5.1 chunk 110442 figure 4 flat 38076-38182	-			added	to_verify	located	-
+F-hills/0911.1136/ref-SKR-start_radius	F-hills	0911.1136	prp.tex:599	kb:0911.1136v1 sec 4 chunk 110423,110424 flat 30272-30345	-			added	to_verify	located	-
+F-hills/1201.4794/ref-KHSR-full_vs_restricted	F-hills	1201.4794	ms.tex:604-605	kb:1201.4794v1 sec 6.1 chunk 125201 flat 30900-31042	1/1/1			added	to_verify	located	-
+F-hills/1201.4794/ref-KHSR-deep_disruption_e1	F-hills	1201.4794	ms.tex:677-679	kb:1201.4794v1 sec 6.1 chunk 125202 flat 35450-35627	1/1/1			added	to_verify	located	-
+F-hills/1201.4794/ref-KHSR-dE_definition	F-hills	1201.4794	ms.tex:1102-1103	kb:1201.4794v1 sec 8 chunk 125215 figure 1 flat 58272-58369	-			added	to_verify	located	-
+F-hills/1201.4794/ref-KHSR-start_radius	F-hills	1201.4794	ms.tex:617-618	kb:1201.4794v1 sec 6.1 chunk 125201,125222 flat 31696-31848	-			added	to_verify	located	-
+F-hills/1201.4794/ref-KHSR-spike_prograde_D0.1	F-hills	1201.4794	ms.tex:307-309	kb:1201.4794v1 sec 3 chunk 125192,125220 flat 14405-14627	1/1/1			added	to_verify	located	-
+F-hills/1804.02911/ref-BKRS-Pdis_fit	F-hills	1804.02911	mnras.tex:372-376; mnras.tex:377-379	kb:1804.02911v1 sec 3.1 chunk 110495 eq (8) flat 21820-22036; kb:1804.02911v1 sec 3.1 chunk 110495 flat 22036-22285	6/6/6			added	to_verify	located	-
+F-hills/1804.02911/ref-BKRS-Emean_fit	F-hills	1804.02911	mnras.tex:433-439; mnras.tex:440-441	kb:1804.02911v1 sec 3.1 chunk 110496 eq (9) flat 25545-25890; kb:1804.02911v1 sec 3.1 chunk 110496,110497 flat 25890-26055	6/6/6			added	to_verify	located	-
+F-hills/1804.02911/ref-BKRS-Dmax_all	F-hills	1804.02911	mnras.tex:361-362	kb:1804.02911v1 sec 3.1 chunk 110495 flat 21122-21263	1/1/1		424	k8	fulltext	located	c27e74eb376401bed4eb
+F-hills/1804.02911/ref-BKRS-P_deep_plateau	F-hills	1804.02911	mnras.tex:368-370	kb:1804.02911v1 sec 3.1 chunk 110495 flat 21570-21746	1/1/1			added	to_verify	located	-
+F-hills/1804.02911/ref-BKRS-P_at_1e-3_and_0.1	F-hills	1804.02911	mnras.tex:606	kb:1804.02911v1 sec 3.2 chunk 110504 flat 40323-40914	1/1/1			added	to_verify	located	-
+F-hills/1804.02911/ref-BKRS-coplanar_saturation	F-hills	1804.02911	mnras.tex:380-383	kb:1804.02911v1 sec 3.1 chunk 110495,110496 flat 22285-22535	1/1/1			added	to_verify	located	-
+F-hills/1804.02911/ref-BKRS-deep_Emean_Emax	F-hills	1804.02911	mnras.tex:462	kb:1804.02911v1 sec 3.1 chunk 110497 flat 27284-27336	2/2/2			added	to_verify	located	-
+F-hills/1804.02911/ref-BKRS-survivor_theta_range_pi	F-hills	1804.02911	mnras.tex:507-509	kb:1804.02911v1 sec 3.1 chunk 110498,110499 flat 30314-30668	2/2/2			added	to_verify	located	-
+F-hills/1804.02911/ref-BKRS-deep_P_min_theta_pi2	F-hills	1804.02911	mnras.tex:509	kb:1804.02911v1 sec 3.1 chunk 110498,110499 flat 30512-30668	1/1/1			added	to_verify	located	-
+F-hills/1804.02911/ref-BKRS-Emean_ratio_pi2_over_0	F-hills	1804.02911	mnras.tex:524-525	kb:1804.02911v1 sec 3.1 chunk 110499 flat 32018-32151	2/2/2			added	to_verify	located	-
+F-hills/1804.02911/ref-BKRS-radial_vs_parabolic	F-hills	1804.02911	mnras.tex:506	kb:1804.02911v1 sec 3.1 chunk 110498 flat 30074-30314	1/1/1			added	to_verify	located	-
+F-hills/1804.02911/ref-BKRS-collision_deep	F-hills	1804.02911	mnras.tex:757-763	kb:1804.02911v1 sec 4 chunk 110510 flat 51253-51721	0/1/2	0.07		added	to_verify	partial	-
+F-hills/1804.02911/ref-BKRS-collision_peak	F-hills	1804.02911	mnras.tex:763-764	kb:1804.02911v1 sec 4 chunk 110510 flat 51654-51783	2/2/2			added	to_verify	located	-
+F-hills/1804.02911/ref-BKRS-Dmax_eccentric_prograde	F-hills	1804.02911	mnras.tex:623-624	kb:1804.02911v1 sec 3.3 chunk 110505 flat 41960-42112	4/4/4			added	to_verify	located	-
+F-hills/1804.02911/ref-BKRS-sampling	F-hills	1804.02911	mnras.tex:352-357	kb:1804.02911v1 sec 3.1 chunk 110495 flat 20545-20966	-			added	to_verify	located	-
+F-hills/1804.02911/ref-BKRS-sampling_convergence	F-hills	1804.02911	mnras.tex:605-606	kb:1804.02911v1 sec 3.2 chunk 110504 flat 40242-40914	-			added	to_verify	located	-
+C-sidm/erratum/2108.11967-T1-w0.3	C-sidm	2108.11967	main.tex:491	kb:2108.11967v2 sec D flat 60341-60643	1/1/2	1.141e-2	239,309,610	k8	fulltext,fulltext,judgement	located,located,partial	e030a694d8155d5ee04c,d5196d476a13e1a8930e,783bd66ca8ceb54377e6
+C-sidm/erratum/2108.11967-T1-w1.1	C-sidm	2108.11967	main.tex:493	kb:2108.11967v2 sec D flat 60968-61271	1/1/1		239,309,611	k8	fulltext,fulltext,judgement	located,located,partial	e030a694d8155d5ee04c,d5196d476a13e1a8930e,3a4869f3aea32d38af31
+C-sidm/erratum/2108.11967-T1-C4e-4	C-sidm	2108.11967	main.tex:516	kb:2108.11967v2 sec D flat 64812-65115	1/1/2	4.0e-3	239,612	k8	fulltext,judgement	located,partial	e030a694d8155d5ee04c,49dda857692adbdb1b52
+C-sidm/erratum/2108.11967-e2Phi	C-sidm	2108.11967	main.tex:197	kb:2108.11967v2 sec 3.1 chunk 109251 eq (9) flat 17398-17551	-		613	k8	judgement	located	3fa3769e7b1703300b38
+C-sidm/erratum/gr-qc_0601112-Zc-def	C-sidm	gr-qc/0601112	ssevnum7.tex:694	kb:gr-qc/0601112v1 sec 4 chunk 111519 flat 27229-27294	-		257,328,614	k8	to_verify,fulltext,judgement	located,located,located	bf49d1c4af86dc5d29f7,bc2f1e08ae58166b8572,4bde463e6314aab18177
+C-sidm/erratum/gr-qc_0601112-T3-Zc	C-sidm	gr-qc/0601112	ssevnum7.tex:811-812	kb:gr-qc/0601112v1 sec 4 chunk 111521 table 3 flat 31788-31872	2/2/2		255,259,615	k8	fulltext,to_verify,judgement	located,partial,partial	79db68bd922df9ed1582,40bcb56ea0c3ef6dd4e4,dbca70e21fef8b3b00a9
+C-sidm/note/1101.3097-b	C-sidm	1101.3097	sidm1.tex:410	kb:1101.3097v2 sec 2.2 chunk 166054 flat 22931-22993	2/2/2		317,616	k8	fulltext,judgement	located,located	d438db1fef4ce7351033,6362edec4155ddf17665
+C-sidm/note/2601.17117-b	C-sidm	2601.17117	SIDM_MS.tex:233	kb:2601.17117v2 sec 2.1 chunk 109285 flat 19125-20432	2/2/2		243,312,617	k8	fulltext,fulltext,judgement	located,located,located	315e6af6b852531fad62,ac79648898cd76e1171d,33b46234744f539bf12a
+C-sidm/note/astro-ph_0110561-b	C-sidm	astro-ph/0110561	SIDMGT_Xiv2.tex:394	kb:astro-ph/0110561v2 sec 3 chunk 122668,122669 flat 22767-22832	2/2/2		320,618	k8	fulltext,judgement	located,located	e6745c615313916f7eb3,188081b87520754173b8
+C-sidm/note/1101.3097-footnote-b	C-sidm	1101.3097	sidm1.tex:411-412	kb:1101.3097v2 sec 2.2 chunk 166054,166099 flat 22993-23116	3/3/3		317,616	k8	fulltext,judgement	located,located	d438db1fef4ce7351033,6362edec4155ddf17665
+E-stoch-inf/erratum/2502.06783-dPi-PsiG	E-stoch-inf	2502.06783	main_V2PRD.tex:320; main_V2PRD.tex:490	kb:2502.06783v3 sec 2.3 chunk 152987 eq (23) flat 29714-29950; kb:2502.06783v3 sec 3.3 chunk 153000,153001 flat 51907-52315	-		603	k8	judgement	partial	ef264a18a894616a3fbf
+E-stoch-inf/erratum/2502.06783-draw-prefactor	E-stoch-inf	2502.06783	main_V2PRD.tex:876-884	kb:2502.06783v3 sec C chunk 153024 eq (C6) flat 101201-101630	-		604	k8	judgement	located	0b4c69614cfd99c0b8a3
+E-stoch-inf/erratum/2610.32592-draw-prefactor	E-stoch-inf	2610.32592	appendix.tex:487-491	kb:2610.32592v1 sec G chunk 153921 eq (345a),(345b) flat 617010-617404	-		605	k8	judgement	located	aa23afd3d4a9fc5989ba
+E-stoch-inf/erratum/2206.11234-IS-weight-sign	E-stoch-inf	2206.11234	method.tex:78; method.tex:151	kb:2206.11234v2 sec 2.2 chunk 177648 eq (15) flat 30282-30506; kb:2206.11234v2 sec 2.4 chunk 177652 eq (20) flat 37876-38018	-		606	k8	judgement	located	9c52d2a61d95b6633b25
+E-stoch-inf/erratum/2206.11234-leading-pole	E-stoch-inf	2206.11234	appendix.tex:168-173	kb:2206.11234v2 sec - chunk 177675,177676 eq (50) flat 88332-89066	-		607	k8	judgement	located	eca3c130892772de7ff9
+E-stoch-inf/erratum/2512.14649-Friedmann	E-stoch-inf	2512.14649	PRD_v2.tex:108	kb:2512.14649v2 sec 2.1 chunk 153569 eq (1) flat 9585-9648	-		608	k8	judgement	located	c90d01696d3e03f9c5a2
+E-stoch-inf/erratum/2512.14649-inflection	E-stoch-inf	2512.14649	PRD_v2.tex:534	kb:2512.14649v2 sec 3.3 chunk 153588 flat 50547-51301	-		609	k8	judgement	located	9c5970ed141d98f48bee
+D-bh-dress/erratum/1305.2619-radial-action	D-bh-dress	1305.2619	SFWpaper.tex:413-419; SFWpaper.tex:585-588	kb:1305.2619v1 sec 3.2 chunk 166875 eq (31) flat 34300-34513; kb:1305.2619v1 sec 4.1 chunk 166880 eq (47) flat 42661-42865	-		332	k8	fulltext	located	03738b7d20f8a5fe53ba
+D-bh-dress/note/1707.06302-footnote-SFW	D-bh-dress	1707.06302	kerrdm.tex:918-920	kb:1707.06302v2 sec 4 chunk 176017,176018,176056 flat 870055-870256	-			added	fulltext	located	-
+D-bh-dress/judgement/1305.2619-fig3-mass	D-bh-dress	1305.2619	SFWpaper.tex:696-702; SFWpaper.tex:808	kb:1305.2619v1 sec 4.2 chunk 166894 figure 3 flat 49965-50433; kb:1305.2619v1 sec 5 chunk 166886 flat 56142-56483	1/1/1			added	judgement	located	-
+D-bh-dress/erratum/1305.2619-15pc-factor3	D-bh-dress	1305.2619	SFWpaper.tex:443	kb:1305.2619v1 sec 3.3 chunk 166876 flat 36325-36847	1/1/1		339	k8	fulltext	located	88204591739559f85ca6
+D-bh-dress/erratum/1707.06302-spin-boost	D-bh-dress	1707.06302	kerrdm.tex:929-931	kb:1707.06302v2 sec 4 chunk 176018 flat 870709-870940	2/2/2			added	to_verify	located	-
+D-bh-dress/note/1805.09034-B85-slope	D-bh-dress	1805.09034	main.tex:195-200	kb:1805.09034v3 sec 2.2 chunk 122919 eq (13) flat 15688-15878	-		364,369	k8	fulltext,fulltext	located,located	5421a01fb911dee97f1d,390ecc9ddcdf59a866a8
+D-bh-dress/note/1901.08528-B85-slope	D-bh-dress	1901.08528	PBH-UCMH-ArXiv-v2.tex:235	kb:1901.08528v2 sec 2.3 chunk 123001 flat 20533-21737	-		351,356,370,415	k8	fulltext,fulltext,to_verify,background	located,located,partial,located	cce71050a8667fb775f4,e7747dca562041db3914,9eccd18c04da138b1e0f,6d06b8d3b49303325008
+F-hills/2404.16270/readme-CoordtEqs	F-hills	2404.16270	article.tex:246-256	kb:2404.16270v1 sec 2.1 chunk 110646 eq (8) flat 17329-17710	-			added	to_verify	located	-
+F-hills/2402.02178/readme-kerr-claim	F-hills	2402.02178	main.tex:592-597	kb:2402.02178v1 sec 3.2 chunk 110820,110838 figure 5 flat 30791-30968	-			added	to_verify	located	-
+F-hills/2404.16270/readme-1PN	F-hills	2404.16270	appendix.tex:117-134	kb:2404.16270v1 sec C chunk 110688 eq (C2),(C1) flat 85081-87573	-			added	to_verify	located	-

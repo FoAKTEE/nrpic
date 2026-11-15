@@ -98,3 +98,14 @@ run (fewer or more only if the K8 helper re-seeds in between); 62 uncovered with
 locator (F 53, B 7, D 2-3, E 1), 2 without a paper locator; nothing written to the
 database (the sync step rolls back). Refuted if a check count differs or any claims row
 changes because of this run.
+
+Outcome S4 (run kb-20261115-154254-b4a4d3d): prediction held. 330 statements, 372 locators
+all resolved inside the stored sources; numbers 117 exact / 2 near / 13 missing; 266
+statements covered by K8 claims, 62 not (with a locator), 2 without a paper locator; the
+claim tables are unchanged by the run (618 claims, 618 claim_meta, 647 claim_events before
+and after). Figure `fig_locator_check.png` read: panel (a) shows A, C and E fully covered by
+the K8 seed, F mostly not (its SCOPING section 8 and `reference.py` are not K8 sources);
+panel (b) shows numbers found at the locator for 117 of 132 statements. Published:
+`claims/served_claims.tsv` (one row per statement: track locator, kb locator with section,
+chunk, equation numbers, number check, K8 claim ids, labels, statuses, seed keys),
+`claims/uncovered_seed.jsonl`, `claims/summary.json`.
