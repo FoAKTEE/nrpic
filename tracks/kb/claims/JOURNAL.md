@@ -58,3 +58,30 @@ locator by the parser counts as a failure). Expected: at least 27 of 30 supporte
 Refuted if fewer than 24 (80 %): then "located" is too weak to give `fulltext` and the rule
 must change. For the partial ones I expect most missing numbers to be the tracks' own
 values (corrected numbers, own runs, rounding of a range), not wrong locators.
+
+## P2 outcome (audit of the first seed, kb-20261115-153712-595d313)
+
+[VERIFIED, my reading of the cited lines in kb-data/raw, claim ids of that seed] 29 of 30
+sampled `fulltext` claims are supported by the cited passage as worded (prediction >= 27
+held). The one failure (id 108, "criterion L315-331)") was a parser split: two locators
+inside one parenthesis, "(abstract L78-79; criterion L315-331)", became two claims, the
+second without its statement. Fixed (grouping of locators inside one parenthesis, test
+`test_two_locators_in_one_parenthesis_stay_one_claim`); a second defect found while fixing
+it (several ranges of one locator, "lines 185, 269-277, 400", split into empty claims) was
+fixed and tested too. Remarks on the 29 [JUDGEMENT]: 3 are supported but terse fragments
+("initial lapse L460", "maximal slicing (L432)", "Summary and features: lines 62-103");
+2 carry the track's own one-line verdict or a repository remark appended after the
+locator (ids 436, 596 of the final seed); none was wrong. New rule from the audit: a
+statement whose cited lines are all TeX comments is not `fulltext` (status partial, note
+"cited lines are TeX comments"); 2 claims of the final seed fall under it.
+Partial claims (33 in the final seed): reading the missing numbers, they are the tracks'
+own values (corrected table entries of the errata, e.g. 0.45/0.52 for printed 0.045/0.052;
+"8e-5" between two solvers; "in our variables" of F), numbers of the Brief column of
+core's table that the evidence column cites elsewhere, three line ranges of B's
+"Abstract: 68-80" style read as numbers, and the 2 comment cases. None points at a wrong
+paper or file [JUDGEMENT, from the `missing` lists in the seed table].
+Final seed: run kb-20261115-154020-7b80ccc (618 claims, 70 papers, 677/679 locators
+resolve; located 545, partial 33, unlocated 39, unresolved 1; fulltext 507, to_verify 73,
+judgement 37, background 1). The 29 audited claims were then marked checked by a person
+(run kb-20261115-154041-7b80ccc; `kb claim verify`, checked_by "kb claims helper (manual
+read, audit P2)"). From here on the claim ids are not rebuilt (`--rebuild` refuses).
