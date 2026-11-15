@@ -107,7 +107,7 @@ stamp, see below) and my own quadrature of a, m_p (scratch/D-bh-dress/tmp/lead/e
   an artefact-only verification in the sense of CLAUDE.md (models and roles); a fresh
   verifier is still needed for the gate (stage/G0/OPEN.md).
 
-## 2026-11-15T15:20Z  session lead-wave1 (Opus)  commits 5fdc744..(this commit)  runs D-bh-dress-20261115-065141-5fdc744, -145546-5259f48, -145610-5259f48, -145611-5259f48, -145636-5259f48, -145950-23fa1c7
+## 2026-11-15T15:20Z  session lead-wave1 (Opus)  commits 5259f48..d157621  runs D-bh-dress-20261115-065141-5fdc744, -145546-5259f48, -145610-5259f48, -145611-5259f48, -145636-5259f48, -145950-23fa1c7
 
 - did: merged main (up to date); re-checked the five helper packages from their artefacts
   (predictions L1-L6 and outcomes above); fixed three wording defects (McVittie ray family
