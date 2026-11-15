@@ -1,0 +1,74 @@
+{
+  "schema": "nrpic-run/1 (by hand)",
+  "registered_by": "tracks/A-emd-pbh/runs_ball/runreg.py",
+  "harness_refusal": "nrpic-run submit: the worktree is not clean (untracked files of other helpers)",
+  "run_id": "A-emd-pbh-20261115-153856-9d731b1",
+  "track": "A-emd-pbh",
+  "gate": "G2",
+  "kind": "scouting",
+  "purpose": "SR-1 (geodesic slicing) of data set 2t on processors, dx = M (128^3 over [-64,64]^3), three segments with restarts (cfl 0.25 to 42.0, 0.03125 to 44.3568, 0.0078125 to 44.4472); release core-v0.3 processor executable",
+  "launcher": "local",
+  "command": [
+    "bash",
+    "tracks/A-emd-pbh/runs_ball/run_cpu.sh",
+    "sr1",
+    "/data/haiyangw/nrpic/scratch/A-emd-pbh/A-emd-pbh-20261115-153719-91b03d1",
+    "1705",
+    "128",
+    "32",
+    "$NRPIC_RUN_DIR"
+  ],
+  "cwd": "/data/haiyangw/nrpic/wt/A-emd-pbh",
+  "git": {
+    "sha": "9d731b17eee1d7e3ad3e606c2c80463aa37c1d3b",
+    "branch": "track/A-emd-pbh",
+    "package_dirty": false
+  },
+  "inputs": [
+    {
+      "path": "tracks/A-emd-pbh/runs_ball/sr1.athinput",
+      "role": "input",
+      "sha256": "a6453ec9e6c5a1c2c36f22cbbd94e4aed0a2aa87a1c1570c7eca2f410164bc01",
+      "bytes": 3593
+    },
+    {
+      "path": "tracks/A-emd-pbh/runs_ball/run_cpu.sh",
+      "role": "input",
+      "sha256": "6b629fe7dbecdcfa20a544810e8c9d4298d8c30fd13239100f6e028bf6f982a3",
+      "bytes": 1941
+    },
+    {
+      "path": "/data/haiyangw/nrpic/.work/build_cpu_v03/src/athena",
+      "role": "input",
+      "sha256": "d983155bb21befedbd123d54d84fcfc12a875ee0aaa0baa36f5a51261041c25c",
+      "bytes": 246469568
+    },
+    {
+      "path": "/data/haiyangw/nrpic/scratch/A-emd-pbh/A-emd-pbh-20261115-153719-91b03d1/expball_smooth_tophat_HRb0p5_dc1_R10p3_R20p75_w0p1875_lat38_track.nrp",
+      "role": "input",
+      "sha256": "ff9ef69a5033c6b853e222fa14858a18152defdf3715a29e4deaabbad951ec06",
+      "bytes": 1726096
+    }
+  ],
+  "parents": [
+    "A-emd-pbh-20261115-153719-91b03d1"
+  ],
+  "resources": {
+    "cores": 8,
+    "gpus": 0,
+    "wall_limit": null,
+    "walltime_s": 686.1,
+    "gpu_hours": null
+  },
+  "outputs": {
+    "dir": "scratch/A-emd-pbh/A-emd-pbh-20261115-153856-9d731b1",
+    "sha256sums": "sha256sums.txt",
+    "files": 28
+  },
+  "status": "stopped",
+  "exit_code": 143,
+  "registered": "2026-11-15T15:38:57Z",
+  "started": "2026-11-15T15:38:57Z",
+  "ended": "2026-11-15T15:50:23Z",
+  "notes": " Stopped by the helper (kill of the athena PID) after 11 min at cycle 3: the release processor executable runs on one thread (NLWP 1), about 200 s per cycle at 128^3 on the loaded machine, so the run would need ~19 h; dx = M moved to the cards."
+}
