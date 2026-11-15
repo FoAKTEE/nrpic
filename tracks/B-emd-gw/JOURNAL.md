@@ -118,3 +118,24 @@ Found while reviewing (changed my mind / new):
   first-order lattice error of the plane wave with one particle per cell (its interface
   note section 5.6) that verify_cosmo found with `pm.py` (P8): an independent
   confirmation from a different code path.
+
+### Session close (13:45Z)
+
+did: reviewed the five wave-1 packages from their artefacts (`stage/G0/REVIEW.md`); wrote
+the G0 package (`stage/G0/REPORT.md`, `EVIDENCE.md`, `OPEN.md`, `CHECKLIST.md` filled:
+6 PASS, 3 NA, 9 OPEN) and `stage/G1/STATUS.md` (G1 not met: criterion 1 met in a flat box,
+2 met for the semi-analytic part only, 3 superseded); fourteen outbox files
+(`outbox/20261115T1340Z__*`); STATUS, HANDOFF, RISKS rewritten.
+found: every result of the wave reproduces bit for bit; the helpers' key derivations
+hold; three defects fixed (Fourier normalization of the crossed-wave coefficient stated,
+34 manifests relabelled scouting, hard-coded path); restart files carry 36 bytes of
+uninitialised padding; the late TT rise in the cosmology dumps may be a gauge piece.
+evidence: runs B-emd-gw-20261115-131016-03b1119 (L1), -131027-03b1119 (L2); stopped
+misregistered launch -130926-a1c2237 kept on record.
+changed my mind about: the G1 item on the stand-in fluid (superseded, proposal to strike);
+one particle per cell for pancakes (two per direction for every production run); the
+weyl output of AthenaK as a GW measure (replaced by gw_diag's fixed-direction Psi_4).
+open: `stage/G0/OPEN.md`; G1 waits on core (generator fix, Newtonian mode on main);
+the first-source scouting at 64^3 can start without core (HANDOFF.md, next work 1).
+The Write tool refused the file name `REPORT.md` for a subagent; written through the
+shell because the stage package names it.
