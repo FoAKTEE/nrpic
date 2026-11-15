@@ -645,3 +645,12 @@ answer the same questions on processors:
    Prediction: the tracker speed at the end is at least five times smaller with 20
    than with 2. If the two agree within a factor 2 the damping does not explain the
    heavy tracker of test 3.
+
+### Outcome: three horizons with the final source (processors, `core-20261115-131206-372e977`, one cycle)
+
+Prediction held. First search of the three finders: light holes 0.5409674769678748 and
+0.5497393844448359, the same digits as the first search of the 16 M card run with the
+earlier executable; heavy hole Christodoulou mass 10.3996, S_z = 29.9815 (alone:
+10.348; times the background factor 1.0052: 10.402). The heavy horizon is found with
+the mass-scaled tolerance and the flow constant m^2 = 100 in the full configuration.
+[VERIFIED]

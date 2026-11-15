@@ -22,5 +22,10 @@
  "output_directory": "/data/haiyangw/nrpic/scratch/core/core-20261115-131206-372e977",
  "resources": "1 core",
  "started_utc": "2026-11-15T13:12:06Z",
- "status": "running"
+ "status": "done",
+ "exit_code": 0,
+ "wall_time_s": 454.5,
+ "queue_wait_s": 0.0,
+ "card_hours": 0.0,
+ "core_hours": 0.1263
 }

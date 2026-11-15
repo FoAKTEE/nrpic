@@ -74,7 +74,8 @@ unless the input has its own. Rules:
   it a hole of mass 10 is rejected at the first step, hence `100 max(1, m)`;
 - values the input file gives itself in `<fastflow>` are kept (a common-horizon finder
   can be added by hand with an index beyond the punctures and a larger
-  `num_horizons`); tracker parameters `co_<n>_*` in the input are an error;
+  `num_horizons`; not tested); tracker parameters `co_<n>_*` in the input are an
+  error;
 - a restart takes everything from the parameters stored in the restart file; the
   set-up routine runs only for new runs.
 
@@ -260,6 +261,7 @@ Predictions and outcomes in full: `tracks/core/JOURNAL-mp.md`. Scripts and figur
 | 3, binary and a hole ten times heavier (mass 10 against 1), t = 0 | `H` norm of the code 2.25e-5 none, 8.5e-6 background factor, 1.50e-5 plain sum; closed form on the same cells 2.15e-5, 2.2e-6, 1.23e-5 (the rest is truncation at the light holes on cells of m/8) | processors `core-20261115-120210-212dce7`, `-120209-`, `-120211-` |
 | 3, the same evolved 16 M | runs; three trackers; light horizons in all 64 searches (0.541 and 0.550 at t = 0, +1.3 and +1.5 percent at the end); heavy horizon not found (finder tolerance, fixed since); heavy tracker moves 4e-4 in 16 M; `H` norm 8.5e-6, peak 5.2e-3 at t = 2, 7.8e-5 at the end; momentum norm peak 5.6e-5 | `core-20261115-120834-d08c476` |
 | Finder on the heavy spinning hole (m = 10, S = 30, cells m/10) | found from a first guess of radius m/2 for flow constants 1 to 100 (mass 10.348, `S_z` = 29.98); from the first guess of radius m used when other holes are far: rejected at step 0 with `hmean_tol = 100`, found in 31 steps with 1000 and flow constant 100 (mass 10.3483, `S_z` = 29.981) | processors `core-20261115-122312-8e699b1` to `-122316-`, `-122626-` to `-122630-`, `-122832-1cf6d89` |
+| 3 with the final source, one cycle | three horizons at the first search: light holes 0.54097 and 0.54974 (the digits of the 16 M run), heavy hole 10.3996 with `S_z` = 29.98 | processors `core-20261115-131206-372e977` |
 | Restart and particles with `puncture_setup` | tracker and horizon output identical in all printed digits after a restart; two tracers carried along | processors `core-20261115-120935-9211dcd`, `-121543-2e16f45` |
 | Burst of radiation ("junk") | energy through a sphere at 14 m over 40 m, drift of the news removed: 1.4e-4 m (`P` = 0.3 corrected), 1.6e-4 m (uncorrected), 1.9e-3 m (`P` = 0.6), 7e-6 m (`S` = 0.3, `P` = 0.043); the stock boosted slice, which has no burst, gives 6e-5 m: the floor of this estimate. Above the floor: about 1.3e-2 (P/m)^4 m | runs A to E above |
 
@@ -302,7 +304,8 @@ in this estimate.
    of 6e-5 m from the near field of a hole moving inside the extraction sphere; the
    number for three holes is an estimate.
 8. The heavy horizon of the three-black-hole configuration was missed in the 16 M
-   run (set-up tolerance, fixed); see the last rows of section 8 for the check.
+   run (set-up tolerance, fixed) and is found at the first search with the final
+   source; it has not been followed in time.
 9. Apparent-horizon finder: stopping rule and absolute tolerance as described in
    sections 2 and 4; no common-horizon finder is set automatically.
 10. Not run here: self-gravitating matter around a moving puncture; more than one
