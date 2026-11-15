@@ -1,8 +1,9 @@
 """Lead check L5: count numbered display lines of a single-file LaTeX source, independently
 of kbtool. Reads the file as text; nothing is compiled. Rules (amsmath): equation = 1 line;
-align/gather/multline/eqnarray = top-level rows split at \\\\ outside aligned/split/cases/
-array/matrix environments and braces; a trailing \\\\ before \\end is dropped for ams
-environments (kept for eqnarray); rows with \\nonumber or \\notag are not numbered; starred
+multline = 1 line; align/gather/eqnarray/flalign/alignat = top-level rows split at \\\\
+outside aligned/split/cases/array/matrix environments and braces; an empty last row after a
+trailing \\\\ IS numbered (pdflatex, run kb-20261115-155344-596b4ce; the wave-1 rule that
+dropped it was wrong, corrected in wave 2, check W3); rows with \\nonumber or \\notag are not numbered; starred
 environments are not numbered; \\tag rows are counted separately.
 Usage: python3 -I eqcount.py main.tex
 """
@@ -23,7 +24,7 @@ for m in pat.finditer(body):
     env, star, inner = m.group(1), m.group(2), m.group(3)
     if star:
         continue
-    if env == "equation":
+    if env in ("equation", "multline"):
         rows = [inner]
     else:
         # split at top-level \\ : blank out inner environments first
@@ -36,8 +37,6 @@ for m in pat.finditer(body):
         for c in cuts:
             rows.append(inner[prev:c]); prev = c + 2
         rows.append(inner[prev:])
-        if env != "eqnarray" and rows and not rows[-1].strip():
-            rows = rows[:-1]
     for r in rows:
         if "\\nonumber" in r or "\\notag" in r:
             continue

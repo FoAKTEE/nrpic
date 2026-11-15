@@ -179,3 +179,42 @@ Commits 29f15a1..(package commit). Runs: kb-20261115-140336-29f15a1, -140838-29f
   EVIDENCE.md (criteria, runs, compute) and OPEN.md (gaps, stages that remain).
 - open: K1 metadata, K4, K5, K7 module descriptions, K8, K9, K10, K11 scheduler; five
   kb-requests from tracks A, B, C, E (inbox_acks.txt); 12 unexamined C3 discrepancies.
+
+## 2026-11-15T18:10Z  session kb lead, wave 2 (review of serve, claims, embed; packages)
+
+Merged main (3b8a5c9). Helpers' journals: `tracks/kb/served/JOURNAL.md`,
+`tracks/kb/claims/JOURNAL.md`, `tracks/kb/embed/JOURNAL.md`. My checks are W1, W2, ...;
+predictions before each run, outcomes after.
+
+### W1 prediction: kb test fixture without NRPIC_HOME
+
+Defect confirmed first: `pytest -x` without NRPIC_HOME stops at `tests/conftest.py:89`,
+AttributeError: `nrpic_fetch_arxiv` has no `unpack` (main's f9ab6c7). Fix: the fixture loads
+the worktree's own `harness/bin/nrpic-fetch-arxiv` and a shim `fetch_unpack` mirrors
+`fetch_source`'s layout (check_eprint + safe_extract; a refused blob is stored as main.tex as
+in wave 1). Prediction: the whole suite passes without NRPIC_HOME, with as many tests as the
+embed helper counted with it (174). Refuted if any test fails or the count differs.
+
+### W1 outcome
+
+Held. `pytest` in kb/ without NRPIC_HOME: 174 passed (32.9 s); `kb/serve_tests.py` 6 OK.
+The fixture now reads `harness/bin/nrpic-fetch-arxiv` of the worktree (`tests/conftest.py`).
+
+### W2 prediction: independent recheck of the serve locator check (run kb-20261115-154906-f19880f)
+
+My own checker `tracks/kb/analysis/lead_checks/w2_serve_check.py` (no kbtool or serve code;
+own number extraction, TeX variants 10^{-3}, percentages) reads the helper's 330 statements and
+the raw store. Expected: all 372 locators lie inside their stored files; of the 13 statements
+the helper flags with a number not found, I flag at least 10 too; at most 5 statements the
+helper calls "all numbers in the cited lines" get a missing number from me. Refuted if any
+locator is outside its file or more than 5 helper-exact statements fail my check (their
+matcher too lenient). Reading sample (12 statements, seed 20261116, my reading of the cited
+lines): at least 10 supported as worded; refuted below 9.
+
+### W3 prediction: the lead's equation counter after the fix
+
+`eqcount.py` no longer drops an empty last row after a trailing `\\` and counts multline as
+one line. On the helper's synthetic probe (run kb-20261115-155344-596b4ce, 16 labels up to
+z5 = 16) it must give 16 numbered lines; on my synthetic probe
+`scratch/kb/tmp/w3probe/probe_multline.tex` pdflatex must give a0 = 1, m1 = 2, a1 = 3,
+a2 = 6 and the counter 6. Refuted by any other number.

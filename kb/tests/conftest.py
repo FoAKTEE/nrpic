@@ -1,6 +1,7 @@
 """Fixtures: a synthetic kb-data store laid out exactly as harness/bin/nrpic-fetch-arxiv
-writes it (its own `unpack` function is loaded from the harness, which is this
-repository's code), with its own writer lock, so no test touches the real kb-data."""
+writes it (its extraction functions are loaded from this worktree's copy of the harness,
+which is this repository's code at the tested commit), with its own writer lock, so no test
+touches the real kb-data."""
 import gzip
 import hashlib
 import importlib.machinery
@@ -19,7 +20,9 @@ sys.path.insert(0, KB_DIR)
 
 from kbtool import paths  # noqa: E402
 
-FETCH = os.path.join(paths.nrpic_home(), "harness", "bin", "nrpic-fetch-arxiv")
+# The worktree's own copy (kb/ sits at the repository root), not the main checkout's: the
+# fixture must match the code of the commit under test, whatever NRPIC_HOME says.
+FETCH = os.path.join(os.path.dirname(KB_DIR), "harness", "bin", "nrpic-fetch-arxiv")
 
 
 def load_fetch_module():
@@ -31,6 +34,36 @@ def load_fetch_module():
 
 
 FETCHMOD = load_fetch_module()
+
+
+def fetch_unpack(blob, dest):
+    """Extract an e-print into dest (new) as the fetch command does; returns (kind, skipped).
+
+    The command of wave 1 had `unpack(blob, dest)`; main's f9ab6c7 replaced it by
+    `check_eprint` + `safe_extract` inside `fetch_source`. This mirrors fetch_source's
+    layout: pdf -> src/paper.pdf, tar -> safe extraction, otherwise src/main.tex. A blob the
+    new command refuses (HTML, empty) is stored as main.tex, as the wave-1 command stored it,
+    so tests of old store entries keep their meaning."""
+    if hasattr(FETCHMOD, "unpack"):
+        return FETCHMOD.unpack(blob, dest)
+    os.makedirs(dest)
+    try:
+        kind, data, _content = FETCHMOD.check_eprint(blob)
+    except FETCHMOD.Refused:
+        data = gzip.decompress(blob) if blob[:2] == b"\x1f\x8b" else blob
+        with open(os.path.join(dest, "main.tex"), "wb") as f:
+            f.write(data)
+        return "single-file", []
+    if kind == "pdf":
+        with open(os.path.join(dest, "paper.pdf"), "wb") as f:
+            f.write(data)
+        return "pdf", []
+    if kind == "tar":
+        skipped, oversize, _has_tex = FETCHMOD.safe_extract(data, dest)
+        return "tar", skipped + oversize
+    with open(os.path.join(dest, "main.tex"), "wb") as f:
+        f.write(data)
+    return "single-file", []
 
 TEX = b"\\documentclass{revtex4-2}\n\\begin{document}\n\\title{T}\n\\section{A}\nx\n\\end{document}\n"
 
@@ -86,7 +119,7 @@ class Store:
         os.makedirs(vdir)
         with open(os.path.join(vdir, "source.bin"), "wb") as f:
             f.write(blob)
-        kind, skipped = FETCHMOD.unpack(blob, os.path.join(vdir, "src"))
+        kind, skipped = fetch_unpack(blob, os.path.join(vdir, "src"))
         if record:
             v = version.split(".")[0]           # the fetch records "v1" for a directory "v1.retry1"
             rec = {"id": aid, "status": status, "url": "https://arxiv.org/e-print/" + aid, "version": v,
