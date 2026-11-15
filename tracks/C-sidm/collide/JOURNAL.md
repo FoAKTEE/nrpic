@@ -191,3 +191,48 @@ give an initial two-temperature rate 1.266 times the correct one at (theta_1, th
 lab-frame pair average is 0.931 against <v_Mol> = 0.628, which equals
 <v_Mol>_rest/gamma_b^2 = 0.6277 as SPEC.md section 2 requires. So T4 at theta_2 = 1 and
 T11(a) refute the wrong speed by 27 and 48 percent; T4 at theta_2 = 1e-3 cannot.
+
+## 2026-11-15 T4 criterion corrected before any run
+
+The first text of T4 fitted a straight line to theta_1 - theta_2 over [0, 0.1 tau_rel]
+and asked for 5 percent agreement with the exact initial slope; for an exponential decay
+the mean slope over that window is exp-averaged, (1 - e^-0.1)/0.1 = 0.951 of the initial
+one, i.e. the criterion would fail a correct code. Changed (no collisional run exists):
+quadratic fit over [0, 0.15 tau_rel], linear coefficient (bias of order 0.15^2/6, 0.4
+percent). TESTS.md and `analysis/an_box.py` updated together.
+
+## 2026-11-15 Prediction P-pipe: the analysis on synthetic snapshots
+
+`analysis/tests/test_pipeline.py` writes a twotemp box (theta_1 = 3e-3, theta_2 = 1e-3,
+N = 2e5) and synthetic snapshots in which each population is resampled from
+Maxwell-Juttner at the temperatures of the two-MJ model (`relax.two_mj_model`, whose
+initial slope is the exact one), at 0.01 tau_rel spacing up to 0.15 tau_rel and at 12
+tau_rel (all at theta_eq). This tests the pipeline, not physics. Prediction: an_box
+relax recovers the exact initial slope within its 4-sigma and 5-percent criterion
+(T4_pass), T3_pass (end state Maxwell-Juttner at theta_eq), and T5 s(0) = s_mix and
+s(end) = s_eq within 4 standard errors; monotonicity may fail because the synthetic
+two-MJ snapshots resample independently (their noise is 1.4 standard errors of the
+difference), so only the two end values are predicted. Refuted if any predicted item
+fails.
+
+Amendment to P-pipe and T4 (before running the pipeline test): synthetic snapshots
+resampled independently are far noisier than a run (in a run the same particles carry the
+initial sampling noise forward and only collision noise enters), so the synthetic early
+snapshots rescale each population's four-velocities to the model temperature instead
+(common initial noise, as in a run). The slope's standard error is taken from the fit
+residuals, and the T4 criterion becomes |slope - exact| <= 4 se + 0.01 |exact| and
+<= 0.05 |exact| (the 0.01 covers the deterministic bias of the quadratic over 0.15 tau,
+estimated 0.4 percent). Prediction P-pipe otherwise unchanged; T4_pass predicted with a
+ratio within 1 percent of 1.
+
+## 2026-11-15 Outcome P-pipe: confirmed (`analysis/tests/test_pipeline.py`, 3 passed)
+
+Synthetic twotemp box (2e5 particles, theta_1 = 3e-3, theta_2 = 1e-3): T4 slope
+-1.3394e-4 against the exact -1.3422e-4 (ratio 0.998, residual standard error 3.6e-8;
+the non-relativistic closed form gives -1.3505e-4, 0.6 percent off at these
+temperatures), T4_pass; end state KS p = 0.096, <u^2/W>/3 = 1.9978e-3 against
+theta_eq = 2.0020e-3 (1.2 standard errors), T3_pass; s(0) - s_mix = -0.0014 and
+s(end) - s_eq = -0.0033 against a standard error of 0.0034, T5_pass. `repro` detects a
+one-ulp change; the mode sample has number-mode amplitude -eps within noise and no
+kinetic-energy-density mode (isobaric). Figure `figs/pipeline_relax_synthetic.png`
+(looked at; the panel layout was corrected after the first look, labels overlapped).

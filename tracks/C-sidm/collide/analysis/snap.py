@@ -64,6 +64,16 @@ def snapshots(rundir, base):
     return sorted(files, key=key)
 
 
+def history_columns(head):
+    """Column names from a header line '# [1]=time [2]=ncycle ...' -> {name: index0}."""
+    import re as _re
+    cols = {}
+    for h in head:
+        for k, name in _re.findall(r"\[(\d+)\]=(\S+)", h):
+            cols[name] = int(k) - 1
+    return cols
+
+
 def read_history(path):
     head = []
     rows = []
@@ -90,3 +100,17 @@ def W_flat(u):
 def kinetic_flat(u):
     u2 = np.sum(u * u, axis=-1)
     return u2 / (np.sqrt(1.0 + u2) + 1.0)
+
+
+def write_snapshot(path, time, cycle, x, u, m, tag=None, species=None):
+    """Write NRPSNAP1 (used only to test the analysis on synthetic data)."""
+    n = x.shape[0]
+    rec = np.empty((n, 7), dtype="<f8")
+    rec[:, 0:3] = x; rec[:, 3:6] = u; rec[:, 6] = m
+    tg = np.arange(n, dtype="<i4") if tag is None else np.asarray(tag, "<i4")
+    sp = np.zeros(n, "<i4") if species is None else np.asarray(species, "<i4")
+    with open(path, "wb") as fh:
+        fh.write(b"NRPSNAP1")
+        fh.write(np.array([time], "<f8").tobytes())
+        fh.write(np.array([n, cycle], "<i8").tobytes())
+        fh.write(rec.tobytes()); fh.write(tg.tobytes()); fh.write(sp.tobytes())

@@ -9,8 +9,8 @@ mean free path lambda = 1/(rho_0 sigma/m), mean collision time 1/Gamma, the box,
 recommended mesh and step). Positions are a Poisson process (independent uniform draws)
 in the box [x0, x0 + Lx) x [y0, y0 + Ly) x [z0, z0 + Lz); x0 = y0 = z0 = 10 keeps the box
 away from the origin of the Kerr-Schild functor (bh_mass = 0 makes it flat, but it
-divides by r). Momenta are drawn in mirrored pairs (u, -u) within each population, so
-every population has zero net momentum exactly. All macroparticles have the same rest
+divides by r). Momenta are drawn in mirrored pairs (u, -u) within each population (an odd
+population gets one particle at rest), so every population has zero net momentum. All macroparticles have the same rest
 mass M = rho_0 V / N unless KIND = unequal. Units G = c = 1, particle mass scale m = 1:
 u is the four-velocity per unit mass, theta = T/m.
 """
@@ -32,9 +32,11 @@ X0 = 10.0
 
 
 def mirrored(n, theta, rng, sampler=None):
-    h = (n + 1) // 2
+    """n four-velocities in mirrored pairs (u, -u); for odd n the last one is at rest, so
+    the sum is zero exactly (to the rounding of the sum)."""
+    h = n // 2
     u = mj.sample_u(h, theta, rng, sampler)
-    out = np.concatenate([u, -u])[:n]
+    out = np.concatenate([u, -u, np.zeros((n - 2 * h, 3))])
     return out
 
 

@@ -65,9 +65,13 @@ both populations (tags) at theta_eq within 4 sigma.
 
 T4 Two-temperature initial rate. Same runs, snapshots every 0.01 tau_rel up to
 0.15 tau_rel. Population temperatures theta_i(t) from their mean kinetic energies
-(`mj.theta_from_kinetic`); linear fit of theta_1 - theta_2 over [0, 0.1 tau_rel]. Pass:
-slope within 4 standard errors of the fit and within 5 percent of
-`relax.dtheta_dt` (exact initial rate, quadrature; at theta_2 = 1e-3 the
+(`mj.theta_from_kinetic`); quadratic fit of theta_1 - theta_2 over [0, 0.15 tau_rel], the
+linear coefficient is the initial slope (a straight line over [0, 0.1 tau_rel] is biased
+low by about 5 percent by the curvature of an exponential decay; changed on 2026-11-15
+before any collisional run, JOURNAL.md). Pass:
+|slope - exact| <= 4 se + 0.01 |exact| (se from the fit residuals, which carry the
+collision noise of the run; 0.01 covers the bias of the fit window) and <= 0.05 |exact|,
+exact = `relax.dtheta_dt` (exact initial rate, quadrature; at theta_2 = 1e-3 the
 non-relativistic closed form agrees with it to 0.5 percent). Refutes the use of
 |v_a - v_b| instead of v_Mol at theta_2 = 1: that rate is 1.27 times the correct one
 (`REFERENCES/tests/test_rate.py::test_noninvariant_relative_speed_is_refuted`, Monte
