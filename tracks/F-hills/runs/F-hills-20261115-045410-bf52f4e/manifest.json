@@ -1,0 +1,146 @@
+{
+ "run_id": "F-hills-20261115-045410-bf52f4e",
+ "track": "F-hills",
+ "package": "novelty",
+ "kind": "scouting",
+ "status": "superseded",
+ "purpose": "Measured cost of the repository's black-hole runs (n1e4_v19, vacuum punctures, core three-BH test) and cost model of the Hills passages",
+ "launcher": "local",
+ "command": "OMP_NUM_THREADS=1 python3 tracks/F-hills/novelty/scripts/compute_estimate.py /data/haiyangw/nrpic/scratch/F-hills/F-hills-20261115-045410-bf52f4e /data/haiyangw/nrpic /data/haiyangw/nrpic/scratch/F-hills/F-hills-20261115-045407-bf52f4e/results.json",
+ "cwd": "/data/haiyangw/nrpic/wt/F-hills",
+ "git": {
+  "sha": "bf52f4ed5e47aa9bb603c91df18bc6a0ffd3c083",
+  "branch": "track/F-hills"
+ },
+ "inputs": [
+  {
+   "path": "tracks/F-hills/novelty/scripts/compute_estimate.py",
+   "git_rev": "bf52f4e",
+   "sha256": "b4054f989bb50328b11b5054318274f5536b683d164aeb6c80fb5b9478aaa18c",
+   "bytes": 10053
+  },
+  {
+   "path": "/data/haiyangw/nrpic/scratch/F-hills/F-hills-20261115-045407-bf52f4e/results.json",
+   "sha256": "eb33c8d8384751e1213fedb72772c67ba18c2653b2a54065bde91a19a2eae3dc",
+   "bytes": 27084
+  },
+  {
+   "path": "/data/haiyangw/nrpic/runs/puncture/headon_v4/athena.20261113-062239.log",
+   "sha256": "05f3be29911657349e1a05ec11063bf5a7eef977a4f5b59308bb9e6c42821940",
+   "bytes": 5268
+  },
+  {
+   "path": "/data/haiyangw/nrpic/runs/puncture/single_v3/athena.20261113-043413.log",
+   "sha256": "ee069e355fa9ad113bf4670efd278149ebee19a9688901a017ed3b1c42cd5d72",
+   "bytes": 4395
+  },
+  {
+   "path": "/data/haiyangw/nrpic/runs/puncture/hcal/dx16/athena.20261113-051024.log",
+   "sha256": "d5332e857d26f7bc4af2fae2f8ef8e8814cc722790ecfad75c600b06d878f9a8",
+   "bytes": 3262
+  },
+  {
+   "path": "/data/haiyangw/nrpic/runs/puncture/hcal/dx8_fixed/athena.20261113-062219.log",
+   "sha256": "8837456ead5665887cc494c3a45ca2c7220a3c029551390fdae752990805eb9b",
+   "bytes": 1849
+  },
+  {
+   "path": "/data/haiyangw/nrpic/scratch/core/core-20261115-120834-d08c476/athena.log",
+   "sha256": "45446faa117e2bd9f5aacc3856017f0f188fbae5725e8fc87a0133643a88387a",
+   "bytes": 2148
+  },
+  {
+   "path": "/data/haiyangw/nrpic/runs/cosmo/dav_c704_n64_k/athena.20261114-033334.log",
+   "sha256": "cd16a789df9590bc331aa7b6c877d9aa763d0c23fd115c9a289a959f53c07128",
+   "bytes": 1525
+  },
+  {
+   "path": "/data/haiyangw/nrpic/runs/jeans/n1e4_v19/chain/events.log",
+   "sha256": "cfe05c5ac8abbd59fe755113077e7549cf8362da373630c396bb71e62e4bede1",
+   "bytes": 18092
+  },
+  {
+   "path": "/data/haiyangw/nrpic/runs/jeans/n1e4_v19/chain/latest.log",
+   "sha256": "55cb65aea401198ffbdcbef0b2fb9fce59df7752475e5ab93f61eb5d849583de",
+   "bytes": 12277
+  },
+  {
+   "path": "/data/haiyangw/nrpic/runs/jeans/n1e4_v19/chain/seg001.job4255.a1.log",
+   "sha256": "9aedcfa1aa5db63a97055a9dd63c77fb564468613dbc6d736aac328f781f5ac9",
+   "bytes": 4303
+  },
+  {
+   "path": "/data/haiyangw/nrpic/runs/jeans/n1e4_v19/chain/seg002.job4256.a1.log",
+   "sha256": "ae1a7502d715806dfcedeccf352177d2f94e7f1d872cbce3e0029abbf17dd16c",
+   "bytes": 12082
+  },
+  {
+   "path": "/data/haiyangw/nrpic/runs/jeans/n1e4_v19/chain/seg003.job4258.a1.log",
+   "sha256": "a335a3f9b4522f5607721db9f6d79de0bb5dca8cb51f77db92f8cdda6e62167b",
+   "bytes": 12080
+  },
+  {
+   "path": "/data/haiyangw/nrpic/runs/jeans/n1e4_v19/chain/seg004.job4259.a1.log",
+   "sha256": "4e0e7fddbdcb9b96b51a70dd422984811bfe373bb469a29d64f791ab3176a76a",
+   "bytes": 12014
+  },
+  {
+   "path": "/data/haiyangw/nrpic/runs/jeans/n1e4_v19/chain/seg005.job4261.a1.log",
+   "sha256": "2f9d2c7ac7334d9e49f6505dacbc89f2d29079f63ad3ac711da4367344b71daa",
+   "bytes": 11948
+  },
+  {
+   "path": "/data/haiyangw/nrpic/runs/jeans/n1e4_v19/chain/seg006.job4262.a1.log",
+   "sha256": "e27e28185a0abe65d180a493d532b9ec43e82c522863f11659a43ee5e9c0081e",
+   "bytes": 11964
+  },
+  {
+   "path": "/data/haiyangw/nrpic/runs/jeans/n1e4_v19/chain/seg007.job4264.a1.log",
+   "sha256": "8fcb94f796fbdbc096637c29e99b24d1fec20fc81f2019c42e9c679fe13346b5",
+   "bytes": 12033
+  },
+  {
+   "path": "/data/haiyangw/nrpic/runs/jeans/n1e4_v19/chain/seg008.job4265.a1.log",
+   "sha256": "f3bb458e80d1ab3608b630adcfbf1bf81398a55f9ab8bea04af44c7b4c601c4a",
+   "bytes": 12300
+  },
+  {
+   "path": "/data/haiyangw/nrpic/runs/jeans/n1e4_v19/chain/seg009.job4267.a1.log",
+   "sha256": "d7c6bdbef86ecc5377f2f4a192829b33cc2e10aee25950d3937f5f1257bf97e3",
+   "bytes": 12687
+  },
+  {
+   "path": "/data/haiyangw/nrpic/runs/jeans/n1e4_v19/chain/seg010.job4268.a1.log",
+   "sha256": "2dc827275f4c0198e30b8edff4809bb810bb25abf70f04976208b7073c617e1f",
+   "bytes": 12151
+  },
+  {
+   "path": "/data/haiyangw/nrpic/runs/jeans/n1e4_v19/chain/seg011.job4274.a1.log",
+   "sha256": "ef845b4103bef31e8ac61251eda0cf40b3198947068e6465b2a10b627f557b57",
+   "bytes": 11883
+  },
+  {
+   "path": "/data/haiyangw/nrpic/runs/jeans/n1e4_v19/chain/seg012.job4276.a1.log",
+   "sha256": "177dcfad6c2fd5927e141fcd72c98cbfdaf7b816da6aa0ac5d54b8b77ec93a60",
+   "bytes": 12016
+  },
+  {
+   "path": "/data/haiyangw/nrpic/runs/jeans/n1e4_v19/chain/seg013.job4283.a1.log",
+   "sha256": "55cb65aea401198ffbdcbef0b2fb9fce59df7752475e5ab93f61eb5d849583de",
+   "bytes": 12277
+  }
+ ],
+ "output_dir": "scratch/F-hills/F-hills-20261115-045410-bf52f4e",
+ "outputs": [
+  "fig_cost.pdf",
+  "fig_cost.png",
+  "results.json",
+  "stderr.txt",
+  "stdout.txt",
+  "wall.txt"
+ ],
+ "wall_seconds": 1.1025006771087646,
+ "cores": 1,
+ "gpu_hours": 0.0,
+ "notes": "Numbers identical to F-hills-20261115-045438-f62d553; figure panels too close, redrawn there."
+}

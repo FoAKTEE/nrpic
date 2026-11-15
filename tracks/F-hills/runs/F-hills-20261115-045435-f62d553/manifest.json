@@ -1,0 +1,71 @@
+{
+ "run_id": "F-hills-20261115-045435-f62d553",
+ "track": "F-hills",
+ "package": "novelty",
+ "kind": "scouting",
+ "status": "completed",
+ "purpose": "Re-derive and check the scale estimate of brief line 275 (tidal radius in r_g, plunge bound, Peters time, passage times, Newtonian disruption window, published NR three-body configurations)",
+ "launcher": "local",
+ "command": "OMP_NUM_THREADS=1 python3 tracks/F-hills/novelty/scripts/scale_estimate.py /data/haiyangw/nrpic/scratch/F-hills/F-hills-20261115-045435-f62d553 /data/haiyangw/nrpic/wt/F-hills",
+ "cwd": "/data/haiyangw/nrpic/wt/F-hills",
+ "git": {
+  "sha": "f62d5532df825dbbf9067aec247dc67dc981a4b7",
+  "branch": "track/F-hills"
+ },
+ "inputs": [
+  {
+   "path": "tracks/F-hills/novelty/scripts/scale_estimate.py",
+   "git_rev": "f62d553",
+   "sha256": "ce068a9e500029ba269699d784989bca50a2f220f6ca9205957d7352305af976",
+   "bytes": 16085
+  },
+  {
+   "path": "python/nrpic/figstyle.py",
+   "git_rev": "f62d553",
+   "sha256": "5d3b78ad8c2c02e428b675e3d7e35a32cbc8f053d1aeedd4fde66f27da55676e",
+   "bytes": 7953
+  },
+  {
+   "path": "/data/haiyangw/nrpic/kb-data/raw/arxiv/2406.11985/v1/src/massratio_table.tex",
+   "sha256": "1bd089ffd687959907eac4f7c23ba744774df0785e70cf555a81d18b1720ce24",
+   "bytes": 2597
+  },
+  {
+   "path": "/data/haiyangw/nrpic/kb-data/raw/arxiv/1804.02911/v1/src/mnras.tex",
+   "sha256": "9edba6ace7cfd679fc522e8efc0d0d3ff9a7b2ddf7f4d4ec00fffeeab57c4461",
+   "bytes": 56591
+  },
+  {
+   "path": "/data/haiyangw/nrpic/kb-data/raw/arxiv/0911.1136/v1/src/prp.tex",
+   "sha256": "d90b50bd1445c69838aa19647444b1cfad0e29e110dd3565655bda058d866b13",
+   "bytes": 58386
+  },
+  {
+   "path": "/data/haiyangw/nrpic/kb-data/raw/arxiv/2404.16270/v1/src/article.tex",
+   "sha256": "fd2a157088af0a713438e776e688bac3f0d9f239b5037988b28082e71d596b2f",
+   "bytes": 80747
+  },
+  {
+   "path": "/data/haiyangw/nrpic/kb-data/raw/arxiv/2505.03934/v2/src/apssamp.tex",
+   "sha256": "4af14142098c3a998aaea22bf72c326e848999c0e42b23f937d3632633764aef",
+   "bytes": 91895
+  }
+ ],
+ "output_dir": "scratch/F-hills/F-hills-20261115-045435-f62d553",
+ "outputs": [
+  "fig_pdis_q10.pdf",
+  "fig_pdis_q10.png",
+  "fig_rmb_check.pdf",
+  "fig_rmb_check.png",
+  "fig_scale_plane.pdf",
+  "fig_scale_plane.png",
+  "results.json",
+  "stderr.txt",
+  "stdout.txt",
+  "wall.txt"
+ ],
+ "wall_seconds": 2.160539388656616,
+ "cores": 1,
+ "gpu_hours": 0.0,
+ "notes": "Final. Predictions A1-A5 of novelty/JOURNAL.md held. Figures looked at: fig_scale_plane, fig_rmb_check, fig_pdis_q10."
+}

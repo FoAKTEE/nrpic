@@ -61,3 +61,50 @@ Run B, `scripts/compute_estimate.py` (cost):
 - B4. One vacuum passage at q = 10, a_b = 30 r_gb, r_p = 6 r_g, from r0 = 4 r_t, cells m/8 at
   the light holes: 15 to 40 card-hours; at m/32 above 100 card-hours. Refuted if m/8 is
   below 5 or above 80 card-hours.
+
+## 2026-11-15 outcomes of runs A and B
+
+Run A, final `F-hills-20261115-045435-f62d553` (results copied to
+`results/scale_F-hills-20261115-045435-f62d553.json`; figures `figures/fig_scale_plane.png`,
+`fig_rmb_check.png`, `fig_pdis_q10.png`, all looked at). Earlier attempts on record: `-045124-ae6bca8`
+FAILED at import (`python3 -I` hides the user site-packages that hold numpy; the analysis
+scripts read only repository files, so they run without -I; the INSPIRE scripts that read
+downloads keep -I); `-045332-ae6bca8` and `-045407-bf52f4e` superseded (same numbers, legends
+redrawn).
+- A1 held: 18.566, 86.177, 400.000 for q = 10, 100, 1000; the brief's 19, 86, 400 are these
+  rounded. [VERIFIED]
+- A2 held: Schwarzschild root r_mb = 4.000000000000001, L = 4.0; Kerr roots against the
+  closed form, largest difference 1.8e-15 (prograde) and 5.3e-15 (retrograde) over
+  0 <= a <= 0.99. The isotropic radius of r_mb is 2.914 M. [VERIFIED]
+- A3 held: 6328.125 GM/c^3 closed form and quadrature. [VERIFIED]
+- A4 held: Schwarzschild over Newton 1.0156, 1.0038, 1.00075 at r_p = 50, 200, 1000 M. For
+  q = 10, a_b = 30 r_gb (r_t = 6.46 r_g), r_p = 6 r_g: in-and-out coordinate time 163, 223,
+  285 GM/c^3 from r0 = 3, 4, 5 r_t (Newtonian in-time 54, 80, 107: the relativistic passage
+  is 40 to 50 percent longer). The binary period is 103 GM/c^3, so the binary turns about
+  twice during the passage. "A few hundred GM/c^3" holds for starts within 5 r_t.
+- A5 held: 2406.11985 8:1:1 at D/r_t = 4.12, 18:1:1 at 5.81 (q = 4.00 and 9.00,
+  a_b = 9.90 r_gb). New observation (not predicted): their a_b of 9.9 r_gb lies BELOW the
+  Schwarzschild plunge bound for both (10.1 at q = 4, 17.3 at q = 9): such binaries could
+  not be separated by any parabolic passage before plunging. The same holds for core's
+  scouting input `by_triple.athinput` (q = 10, a_b = 10 r_gb, bound 18.6; Newtonian
+  r_p = 3 r_g < 4 r_g): it tests the machinery, not a Hills encounter.
+- Correction to the brief (not predicted): the box "q = 10-30, a_b = 20-60 r_gb" of line 275
+  is not all above the plunge bound: at q = 30 separation needs a_b >= 38.6 r_gb, at q = 20
+  29.5 r_gb (fig_scale_plane, left: lower right corner of the shaded box under the dashed
+  line). [VERIFIED by the closed form; the bound itself assumes r_t = a_b q^(1/3) with
+  prefactor 1, which is an order-of-magnitude criterion (2404.16270 article.tex l. 180)]
+
+Run B, final `F-hills-20261115-045438-f62d553` (results `results/cost_...json`, figure
+`figures/fig_cost.png`, looked at); `-045410-bf52f4e` superseded (same numbers).
+- B1 held: n1e4_v19 used 5.41 card-hours of compute (13 segments, 19475 s), 5.89 h from the
+  first submission to the end including queue gaps, for 100 M; peak card memory 79155 MiB.
+- B2 held: vacuum rates 2022 to 2310 MeshBlock-cycles per second (median 2201); core's
+  three-BH run 2140. n1e4_v19 ran at 1440 to 1950 while the two black holes inspiralled
+  with particles, and dropped to 830 to 1150 after the merger with 790 MeshBlocks (cause not
+  isolated; candidate: the common-horizon finder, which runs only then).
+- B3 held: model 0.1546 card-hours against 0.1588 measured (3 percent).
+- B4 held: q = 10, a_b = 30, r_p = 6 r_g, r0 = 4 r_t: 23.6 card-hours at m/8 (25.7 at the
+  slowest vacuum rate), 60.9 at m/16, 149 at m/32 (2073 MeshBlocks, under the card limit
+  of about 2400). q = 4, a_b = 20 r_gb, r_p = 6 r_g: 11.9, 30.6, 74.9. The block model
+  (+380 MeshBlocks per level, +150 for the larger domain) is a JUDGEMENT taken from core's
+  interface note (190 leaves per level and hole), not measured for these configurations.
