@@ -72,3 +72,31 @@ T5 (2508.10070, peak statistics)
 - T5.3 The numerical monochromatic integral reproduces Table V (beta/sigma-bar^5 = 1.08,
   1.12, 1.51, 2.77, 0.67 at sigma* = 1e-5, 1e-3, 1e-2, 5e-2, 0.1) and Table IV (Mbar/M* =
   14.7, 14.7, 14.7, 15.5, 18.1) within 5 percent. Refuted if any differs by more.
+
+### Outcome of the first two check runs (code at 5581665)
+
+- Run A-emd-pbh-20261115-113223-5581665 (T3, T4): 7 of 7 passed. T4.1a: a(t_max) delta =
+  1.0625 from both the formula 3(6 pi)^(2/3)/20 and the maximum of the exact LTB solution
+  (relative difference 1e-14); my predicted "1.0631" was an arithmetic slip of mine, the
+  paper prints "about 1.06". T3.4 (visual, thresholds.pdf of 2211.13950 viewed): all five
+  lower branches and the upper branches of (1,1), (1/2,1), (2,1) coincide with the paper's
+  curves at the values read off (e.g. 0.025, 0.011, 0.0023 at sigma0 = 1e-4; 2.4e-3 and
+  3.3e-4 for (1,1) at 0.05 and 1). One difference: eq. 551-563 gives for (mu, L) = (1, 2) an
+  upper branch from (0.0183, 0.0183) falling onto the (1,1) branch at 0.0498, which the
+  paper's figure does not draw (it shows a dashed continuation of the lower branch instead).
+  My reading of the geometry (non-formation triangle bounded by sigma = (k/k)^-4 and
+  sigma = delta^(5/2) k/k, apex at the merge point) agrees with the equation, not the figure
+  [JUDGEMENT].
+- Run A-emd-pbh-20261115-113244-8e0363b (T1, T2, T5 quick): 13 of 22 passed. The double
+  integral of 1609.01588 came out low by a factor sigma3^6: a bug of mine (the integrand was
+  multiplied by s3^6 where the absorbed prefactor needs s3^-6). Direct evaluation at sigma =
+  1 gives 0.13964, Monte Carlo 0.13966 +- 0.00017. Fixed in emd_criteria._beta0_tu; all
+  failures of T1.4, T1.5, T2.4a, T2.4c came from it. Remaining genuine last-digit misses:
+  T1.2b 0.05555 vs printed 0.05556 (my E-bar = 1.18174, paper "1.182"; c = 0.05556 needs
+  E-bar = 1.18168, a 5e-5 relative difference) and T2.2d 3.248e-14 vs 3.244e-14. A diagnostic
+  check T2.2e (prefactors with E-bar rounded to 1.182) is added to test whether the paper
+  used the rounded value.
+- With the fix: beta0(sigma)/(c sigma^5) - 1 = 6.75 sigma for sigma <= 1e-3 (1.0000068 at
+  1e-6), so the exact integral tends to the semi-analytic coefficient of 1609.01588 App. B;
+  ratio 2.02 at sigma = 0.1. Monochromatic peak integral at sigma* = 1e-3: beta/sigma-bar^5 =
+  1.122, Mbar/M* = 14.697 (3 s of CPU).

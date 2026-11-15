@@ -61,7 +61,7 @@ def t1(out):
     check("T1.3", "Khlopov-Polnarev coefficient", f"{kp:.4f}", "0.02", "1609.01588:931",
           0.015 < kp < 0.025, "paper prints one digit")
     # T1.4 exact double integral
-    sig = np.geomspace(1e-4, 1.0, 17)
+    sig = np.geomspace(1e-5, 1.0, 21)
     b0 = np.array([C.beta0_hoop(s) for s in sig])
     ratio = b0 / (c * sig ** 5)
     i3 = np.argmin(abs(sig - 1e-3))
@@ -134,6 +134,11 @@ def t2(out):
           "1707.03595:1338", round(p2 * 1e7, 3) == 1.921)
     check("T2.2d", "prefactor q^18/sigma^4, 1st order", f"{p1:.4g}", "3.244e-14",
           "1707.03595:1345", round(p1 * 1e14, 3) == 3.244)
+    p1r = 5 * math.sqrt(5) * math.pi ** 4 / 6 ** 9 * 1.182 ** -5 * (12 / 125) ** 9
+    p2r = 5 * math.sqrt(5) * math.pi ** 4 / 6 ** 9 * 1.182 ** -5 * 0.4 ** 6
+    check("T2.2e", "prefactors with E-bar rounded to 1.182 (diagnostic)",
+          f"{p1r:.4g}, {p2r:.4g}", "3.244e-14, 1.921e-7", "1707.03595:1331,1338,1345",
+          round(p1r * 1e14, 3) == 3.244, "tests whether the paper used E-bar = 1.182")
     m01 = C.spin_pdf_mode_2nd(1.0, 0.1)
     check("T2.3a", "mode of f_BH(2) at sigma_H=0.1", f"{m01:.3f}", "0.63", "1707.03595:1147",
           0.60 <= m01 <= 0.66)
@@ -211,7 +216,7 @@ def t3(out):
                     abs(math.exp(-4 * x) / sm - 1))
     check("T3.2", "three boundaries meet at (delta^-1/2, delta^2)", f"max rel. dev {worst:.1e}",
           "0", "2211.13950:423-426,468", worst < 1e-12)
-    pairs = [(1, 0), (1, 1), (1, 2), (0.5, 1), (2, 1)]
+    pairs = [(1, 0), (1, 2), (1, 1), (0.5, 1), (2, 1)]   # (1,1) drawn over (1,2)
     allok = True
     jumps = {}
     for mu, L in pairs:
@@ -229,12 +234,12 @@ def t3(out):
     ax = fs.inch_axes(fig, 0.75, 0.5, 3.2, 2.75)
     ax2 = fs.inch_axes(fig, 4.65, 0.5, 3.2, 2.75)
     s0 = np.geomspace(1e-4, 1, 1500)
-    cols = [fs.PAL["red"], fs.PAL["green"], fs.PAL["orange"], "grey", fs.PAL["blue"]]
+    cols = [fs.PAL["red"], fs.PAL["orange"], fs.PAL["green"], "grey", fs.PAL["blue"]]
     for (mu, L), col in zip(pairs, cols):
         d = C.vd_delta_th(s0, mu, L)
         sc = C.vd_sigma_cr(mu, L)
         ax.plot(s0[s0 < sc], d[s0 < sc], color=col, label=fr"$\mu={mu:g}$, $L={L:g}$")
-        ax.plot(s0[s0 >= sc], d[s0 >= sc], color=col)
+        ax.plot(s0[s0 >= sc], d[s0 >= sc], color=col, ls="--" if (mu, L) == (1, 2) else "-")
     ax.set_xscale("log")
     ax.set_yscale("log")
     ax.set_ylim(1e-7, 1)
@@ -258,7 +263,8 @@ def t3(out):
     ax2.set_ylabel(r"$\ln\sigma_{\delta,\rm ent}$")
     ax2.set_ylim(-12, 0)
     ax2.legend(loc="lower left", fontsize=7)
-    ax2.set_title(r"$\tilde\delta=\tilde\delta_{\rm th}=e^{-2.8}$", fontsize=9)
+    ax2.text(2.95, -0.6, r"$\tilde\delta=\tilde\delta_{\rm th}=e^{-2.8}$", ha="right", va="top",
+             fontsize=9)
     fs.save(fig, os.path.join(out, "check_T3_dispersion_2211.13950"))
     plt.close(fig)
     return dict(jumps={k: list(v) for k, v in jumps.items()})

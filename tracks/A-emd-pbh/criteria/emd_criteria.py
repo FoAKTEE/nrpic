@@ -133,7 +133,8 @@ def _beta0_tu(sigma, delta_th=0.0, epsrel=1e-7):
                 return 0.0
             zl = max(zl, delta_th / (3 * t))
         X = A * zl * zl
-        return (2 + 2 * X + X * X) / A ** 3 * np.exp(-X) * s3 ** 6
+        # A^-3 / s3^6 = (A s3^2)^-3: the prefactor 1/s3^6 of 1609.01588:1296 absorbed
+        return (2 + 2 * X + X * X) / (A * s3 * s3) ** 3 * np.exp(-X)
 
     def inner(u):
         Ek = float(ellipE(np.sqrt(1 - (u + 0.5) ** 2)))
@@ -149,7 +150,7 @@ def _beta0_tu(sigma, delta_th=0.0, epsrel=1e-7):
         return (1 - 4 * u * u) * (neg + pos)
 
     val = integrate.quad(inner, -0.5, 0.5, epsabs=0, epsrel=epsrel, limit=200)[0]
-    return 27.0 / (2 * SQ5 * PI) * val / s3 ** 6
+    return 27.0 / (2 * SQ5 * PI) * val
 
 
 def beta0_hoop(sigma):
