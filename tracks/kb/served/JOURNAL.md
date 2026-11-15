@@ -165,7 +165,8 @@ Prediction for the registered rerun: the same 258 / 72 split (the check counts a
 refuted if it differs, which would mean the K8 claims changed between the two runs.
 
 Outcome S7 (run kb-20261115-154906-f19880f): prediction held: 258 covered by a K8 claim of
-the same note, 70 not covered with a locator (F 55, B 7, D 7, C 0 with a locator), 2 without
+the same note, 70 not covered with a locator (F 56, B 7, D 7, C 0), 2 without
 a paper locator; check counts as in S4. Figure re-read: D now shows its 7 annotations as not
-in the K8 layer (3 fulltext-ready, 2 to_verify, 2 judgement), F 55 of 57. Published files in
+in the K8 layer (3 fulltext-ready, 2 to_verify, 2 judgement), F 56 of 57 (the 57th has no
+paper locator). Published files in
 `claims/` and `fig_locator_check.png` replaced by this run's.
