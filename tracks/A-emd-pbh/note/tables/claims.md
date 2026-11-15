@@ -86,3 +86,4 @@ Inputs read:
 - `A-20261115-130257-a7374a4/crosscheck.json`: sha256 ok
 - `A-emd-pbh-20261115-153719-91b03d1/exact.json`: sha256 ok
 - `A-20261115-130948-5a2b58a/scouting_predictions.json`: sha256 ok
+- `A-emd-pbh-20261115-130609-947c898/expball_smooth_tophat_HRb0p5_dc1_R10p3_R20p75_w0p1875.json`: no sha256sums.txt (wave-1 run)

@@ -18,6 +18,7 @@ the manuscript preamble; add no new packages.
 | delta_fd | `\delta_{\rm fd}` | amplitude that collapses exactly at t_end | Sec. II |
 | mu_fd | `\mu_{\rm fd}` | the same in mu | Sec. II |
 | h-hat(e, p) | `\hat h` | Zel'dovich-hoop function of Yoo et al. | Sec. II |
+| E(k) (elliptic) | `\mathsf{E}` | complete elliptic integral of the second kind, kept apart from the binding energy E | Sec. II C |
 | A_c | `A_c` | threshold amplitude in any of the measures | Sec. II |
 | r_m | `r_m` | comoving compaction radius of the profile | Sec. II |
 | R | `R` | areal radius | Sec. III |

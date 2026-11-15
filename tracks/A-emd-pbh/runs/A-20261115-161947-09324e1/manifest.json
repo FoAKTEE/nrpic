@@ -1,0 +1,51 @@
+{
+ "schema": "nrpic-run/1 (by hand)",
+ "registered_by": "tracks/A-emd-pbh/note/scripts/handreg.py",
+ "harness_refusal": "harness/bin/nrpic-run submit --package tracks/A-emd-pbh/note: 'not clean where the run's code lives: ?? peak.horizon_summary_0.txt' (an untracked file another helper's run writes into the worktree root)",
+ "run_id": "A-20261115-161947-09324e1",
+ "track": "A-emd-pbh",
+ "gate": "G0",
+ "kind": "scouting",
+ "purpose": "note v0 of A-emd-pbh (third run, final scripts): data figures, schematics, parameter table, ledger, check of the lead's documents; reads only registered outputs",
+ "launcher": "local",
+ "command": [
+  ".venv/bin/python",
+  "tracks/A-emd-pbh/note/scripts/run_all.py"
+ ],
+ "cwd": "/data/haiyangw/nrpic/wt/A-emd-pbh",
+ "git": {
+  "sha": "09324e1b2bd3ac9a3139936b2f88f4bb0f3eed13",
+  "branch": "track/A-emd-pbh",
+  "package_dirty": false,
+  "merge_base_main": "b9fbf3e6534517c3393000da91c79ce552b254b9"
+ },
+ "inputs": [
+  {
+   "path": ".venv/bin/python",
+   "sha256": "d6bca2b84e73c7775a0dd5e6a76899cfe4ee62863d7c8f88513811d1fda23f49",
+   "bytes": 5937704
+  },
+  {
+   "path": "tracks/A-emd-pbh/note/scripts/run_all.py",
+   "sha256": "d9cf1323581b2259aa0263bc45caf880a44060d5095365071472f87753c96c2e",
+   "bytes": 1635
+  }
+ ],
+ "parents": [],
+ "resources": {
+  "cores": 1,
+  "gpus": 0,
+  "walltime_s": 8.22,
+  "gpu_hours": 0.0
+ },
+ "outputs": {
+  "dir": "scratch/A-emd-pbh/A-20261115-161947-09324e1",
+  "sha256sums": "sha256sums.txt",
+  "files": 18
+ },
+ "status": "completed",
+ "exit_code": 0,
+ "started": "2026-11-15T16:19:47+00:00",
+ "ended": "2026-11-15T16:19:55+00:00",
+ "notes": "registered by hand because harness/bin/nrpic-run refused (see harness_refusal)"
+}
