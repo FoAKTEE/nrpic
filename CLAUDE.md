@@ -19,6 +19,17 @@ at its top; never read it whole).
 So the brief's risk "the coupling is not public" is retired here (decision 0002): core
 documents, re-verifies and tags what exists, then builds what the tracks need next.
 
+## One code base (decision 0010)
+
+Everything is built on top of this repository's AthenaK. A simulation capability
+(collisions, scalar fields, stochastic sources, Newtonian reference gravity, moving black
+holes, initial data for the code) is written into `athenak/src/` by core, never as a
+standalone code and never by adopting, building or running an outside simulation code.
+Outside the source tree live only exact and semi-analytic reference solutions, analysis of
+AthenaK output, figures, notes, the knowledge base and the harness. A track that needs a
+capability specifies it, supplies reference solutions and tests, and checks core's
+implementation independently.
+
 ## The program in one screen
 
 Six science tracks, core and the knowledge base advance in parallel, each in its own

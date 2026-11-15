@@ -26,6 +26,11 @@ the shared implementation (core) and the knowledge base (kb), in parallel.
 3. Layout, pushing, budgets, configuration, sessions and models: decisions 0001, 0003,
    0006, 0008, 0009.
 4. Paths: the brief's `src/` is `athenak/src/`, its `inputs/` is `problems/`.
+5. One code base (decision 0010): the brief's standalone prototypes (collision operator,
+   stochastic scalar field, Newtonian baselines, outside comparison codes) are replaced by
+   source work in this repository's AthenaK. Where a sheet below says "standalone",
+   "prototype", REBOUND, gevolution, GRChombo or GRTeclyn, read: specification, reference
+   solutions and tests by the track; implementation in `athenak/src/` by core.
 
 ## Owners
 
@@ -41,8 +46,8 @@ the shared implementation (core) and the knowledge base (kb), in parallel.
 | E-stoch-inf | `wt/E-stoch-inf` | `track/E-stoch-inf` | S11 (feasibility gate first) | E-pre-1 to E-pre-4 |
 | F-hills | `wt/F-hills` | `track/F-hills` | S12 | F-pre-5, F-pre-1, F-pre-2, then F-pre-3 |
 
-Budgets: decision 0006. Open decisions for the group: 0002 (request to the authors), 0004,
-0005, 0006, 0007, 0008.
+Budgets: decision 0006. Open decisions for the group: 0002 (request to the authors), 0005,
+0006, 0007, 0008.
 
 ## Text of the brief, sections 9.2 to 9.11 and 10
 
