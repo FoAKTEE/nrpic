@@ -182,7 +182,7 @@ ratio_id = sp.sqrt(1 + 2*pN)/sp.sqrt(1 - 2*pN)
 ratio_newt = (alpha/sp.sqrt(1 - 2*Phi)/A_).subs(Phi, pN)
 res["C5_initial_ratio_equals_Newtonian_ratio"] = bool(zero(ratio_id - ratio_newt))
 
-out = sys.argv[1]
+out = sys.argv[1] if len(sys.argv) > 1 else os.environ["NRPIC_RUN_DIR"]
 os.makedirs(out, exist_ok=True)
 with open(os.path.join(out, "v1_symbolic.json"), "w") as fh:
     json.dump(res, fh, indent=1)

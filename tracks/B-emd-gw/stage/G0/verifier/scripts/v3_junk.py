@@ -35,7 +35,7 @@ def u(fun, x, deriv=False):
 
 
 def main():
-    out = sys.argv[1]
+    out = sys.argv[1] if len(sys.argv) > 1 else os.environ["NRPIC_RUN_DIR"]
     os.makedirs(out, exist_ok=True)
     K = np.sqrt(2.0)*2*np.pi/4.0
     hs = 1.0

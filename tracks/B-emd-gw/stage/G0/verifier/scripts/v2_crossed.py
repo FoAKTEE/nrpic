@@ -120,7 +120,7 @@ def analyse(n, L, ratios, delta, with_kinetic=True):
 
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument("out")
+    ap.add_argument("out", nargs="?", default=os.environ.get("NRPIC_RUN_DIR"))
     ap.add_argument("--n", type=int, default=16)
     ap.add_argument("--L", type=float, default=4.0)
     ap.add_argument("--delta", type=float, default=0.01)

@@ -3,7 +3,7 @@
 # production numerics of tracks/B-emd-gw/periodic_z4c/inputs/lw_x.athinput (read-only,
 # used with command-line overrides), processor executable of release core-v0.3.
 #
-#   v4_lw_runs.sh OUTDIR
+#   v4_lw_runs.sh [OUTDIR]     (default $NRPIC_RUN_DIR, as set by nrpic-run)
 #
 # Cases (each in OUTDIR/<name>/, run in parallel, one thread each, at most 8 at a time):
 #   x_N{16,32,64,128}  k = (1,0,0), thin box N x 4 x 4, 10 periods, dumps every 0.5
@@ -12,7 +12,8 @@
 #                      (input ../inputs/lw_oblique.athinput: lw_x.athinput with kx2 = 1,
 #                      x2max = 1; slices along x)
 set -u
-OUT=${1:?outdir}
+OUT=${1:-${NRPIC_RUN_DIR:?no output directory}}
+HERE=$(cd "$(dirname "$0")" && pwd)
 EXE=/data/haiyangw/nrpic/.work/build_cpu_v03/src/athena
 IN=/data/haiyangw/nrpic/wt/B-emd-gw/tracks/B-emd-gw/periodic_z4c/inputs/lw_x.athinput
 INOB=/data/haiyangw/nrpic/wt/B-emd-gw/tracks/B-emd-gw/stage/G0/verifier/inputs/lw_oblique.athinput
@@ -52,3 +53,4 @@ oblique 16 ob_N16 &
 oblique 32 ob_N32 &
 wait
 grep -H "exit" "$OUT"/*/athena.log
+python3 "$HERE/v4_lw_analysis.py" "$OUT" "$OUT/analysis"
