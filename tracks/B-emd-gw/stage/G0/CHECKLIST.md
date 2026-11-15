@@ -24,13 +24,13 @@ in VERIFY_RESULTS.md (`nrpic-stage verify`), not here.
 
 - [x] **C5** Working note v0
   - status: PASS
-  - evidence: tracks/B-emd-gw/note/main.pdf (10 pages; REVTeX 4.2), sources tracks/B-emd-gw/note/main.tex; figures and tables from registered run B-20261115-165231-9e29328 (supersedes B-20261115-165138-cb53c14); guide and notation tracks/B-emd-gw/WRITING_GUIDE.md, NOTATION.md; pages read (note JOURNAL.md, outcomes)
+  - evidence: tracks/B-emd-gw/note/main.pdf (10 pages; REVTeX 4.2), sources tracks/B-emd-gw/note/main.tex; figures and tables from registered run B-20261115-165556-a399d4e (supersedes B-20261115-165138-cb53c14 and -165231-9e29328); guide and notation tracks/B-emd-gw/WRITING_GUIDE.md, NOTATION.md; pages read (note JOURNAL.md, outcomes)
 - [x] **C6** Architecture schematic
   - status: PASS
-  - evidence: tracks/B-emd-gw/note/figures/schem_architecture.png (script tracks/B-emd-gw/note/scripts/schem_architecture.py, run B-20261115-165231-9e29328); Fig. 2 of the note; looked at
+  - evidence: tracks/B-emd-gw/note/figures/schem_architecture.png (script tracks/B-emd-gw/note/scripts/schem_architecture.py, run B-20261115-165556-a399d4e); Fig. 2 of the note; looked at
 - [x] **C7** Stage timeline
   - status: PASS
-  - evidence: tracks/B-emd-gw/note/figures/schem_timeline.png (script tracks/B-emd-gw/note/scripts/schem_timeline.py, run B-20261115-165231-9e29328); Fig. 6 of the note; REPORT.md section 8 is the table it draws; looked at
+  - evidence: tracks/B-emd-gw/note/figures/schem_timeline.png (script tracks/B-emd-gw/note/scripts/schem_timeline.py, run B-20261115-165556-a399d4e); Fig. 6 of the note; REPORT.md section 8 is the table it draws; looked at
 
 ## Track-specific criteria of B-emd-gw for G0 (9.5 Track B: gravitational waves from EMD structure formation (S2))
 
@@ -48,10 +48,10 @@ in VERIFY_RESULTS.md (`nrpic-stage verify`), not here.
 
 - [x] **C10** Schematic: Track architecture (three states: exists, to be ported, new)
   - status: PASS
-  - evidence: tracks/B-emd-gw/note/figures/schem_architecture.png: exists (green), to be ported (slate), new (red), in three columns (initial data, evolution, analysis); run B-20261115-165231-9e29328
+  - evidence: tracks/B-emd-gw/note/figures/schem_architecture.png: exists (green), to be ported (slate), new (red), in three columns (initial data, evolution, analysis); run B-20261115-165556-a399d4e
 - [x] **C11** Schematic: Stage timeline
   - status: PASS
-  - evidence: tracks/B-emd-gw/note/figures/schem_timeline.png: gates G0-G4 with targets and the needs between gates; run B-20261115-165231-9e29328
+  - evidence: tracks/B-emd-gw/note/figures/schem_timeline.png: gates G0-G4 with targets and the needs between gates; run B-20261115-165556-a399d4e
 - [x] **C12** Data figure: None required
   - status: NA
   - evidence: none required
@@ -69,7 +69,7 @@ in VERIFY_RESULTS.md (`nrpic-stage verify`), not here.
   - evidence: all data figures from registered runs with one script each, project figstyle; looked at by the helpers and by the lead (list in JOURNAL.md entry 2026-11-15T13:05Z and REVIEW.md)
 - [x] **C16** Schematics drawn with /sleep-paper-figure-style: track architecture (exists / to be ported / new) and the gate timeline
   - status: PASS
-  - evidence: both schematics with harness/style/paperfig.py (unchanged copy in tracks/B-emd-gw/note/scripts/, sha256 as harness/style/SHA256SUMS), sleep-paper style; run B-20261115-165231-9e29328
+  - evidence: both schematics with harness/style/paperfig.py (unchanged copy in tracks/B-emd-gw/note/scripts/, sha256 as harness/style/SHA256SUMS), sleep-paper style; run B-20261115-165556-a399d4e
 - [x] **C17** Working note written with /paper-writing; its manuscript checker passed with --compile
   - status: PASS
   - evidence: written with /paper-writing (guide and notation one level above tracks/B-emd-gw/note); checker check_manuscript.py --compile: 0 undefined references or citations, 0 overfull boxes, every principle clean in the main text; remaining hits are run ids and file names in the ledger appendix and the scripts, accepted by exception 1 of WRITING_GUIDE.md; step 4 of the new-paper procedure (reviewer subagents) not run

@@ -76,7 +76,7 @@ expansion are the values of the first record (t = 100 Mpc/h) of `cosmo/analysis/
   first-source helper published the outcome of its late-rise analysis (run
   B-20261115-164616-a6d9477, commit 9719b17) while this package was being written, and the
   note's text on that rise had to follow it.
-- B-20261115-165231-9e29328 (nrpic-run, 1 core): the run the note uses. `note/figures/` and
+- B-20261115-165231-9e29328 (nrpic-run, 1 core): second full run, superseded by the next (nrpic-stage verify flagged the y label of fig_baseline cut at the figure edge; margin widened, commit 91026b8). `note/figures/` and
   `note/tables/` are copies of its `figures/` and `tables/`. A first submit at 16:51Z was
   refused (16 cores busy in other helpers' local runs, decision 0006); retried a minute later.
 
@@ -127,3 +127,9 @@ lower by a factor of two, the early transient the verify_cosmo journal reports (
 
 Not done: step 4 of the paper-writing procedure for a new paper (reviewer subagents with
 the 1000-word version; no subagent tool in this session); `nrpic-stage verify` (see below).
+
+## Registered run used by the note (17:00Z)
+
+B-20261115-165556-a399d4e (nrpic-run, 1 core; one refusal for busy cores before it): the run
+the note uses; `note/figures/` and `note/tables/` are copies of its outputs. Numbers and the
+claims check are those of the previous run (only the margin of one figure changed).
