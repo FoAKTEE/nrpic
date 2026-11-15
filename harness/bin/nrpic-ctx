@@ -797,11 +797,12 @@ def audit_text(repo, since=None, only=None):
             notes.append(f"figure without a script: tracks/{oid}/note/figures/{f}.* (no note/scripts/{f}.py)")
         sd = os.path.join(scratch, oid)
         if os.path.isdir(sd):
-            for d in sorted(os.listdir(sd)):
-                if d in ("tmp",) or d.startswith(".") or not os.path.isdir(os.path.join(sd, d)):
-                    continue
-                if d not in manifests:
-                    notes.append(f"run directory without a committed manifest: scratch/{oid}/{d}")
+            loose = [d for d in sorted(os.listdir(sd)) if d != "tmp" and not d.startswith(".")
+                     and os.path.isdir(os.path.join(sd, d)) and d not in manifests]
+            if loose:
+                ex = ", ".join(loose[:3]) + (" ..." if len(loose) > 3 else "")
+                notes.append(f"{len(loose)} run director{'y' if len(loose) == 1 else 'ies'} in scratch/{oid}/ without a "
+                             f"committed tracks/{oid}/runs/<run_id>/manifest.json on {oid}'s branches (e.g. {ex})")
     for w in repo.worktrees():
         if w.get("bare") or not os.path.isdir(w["path"]):
             continue

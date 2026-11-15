@@ -125,6 +125,14 @@ def main():
         L.append(f"| {name} | {ok} | {bad} |")
     L += ["", f"Total: {summ['passed']} checks passed, {summ['failed']} failed (scratch repository `{summ['root']}/repo`, "
           f"{'removed after the passing run' if summ['failed'] == 0 else 'kept for inspection'}).", ""]
+    a1 = au.stdout.split("## 1.")[1].split("## 2.")[0] if "## 1." in au.stdout else ""
+    a1 = [ln for ln in a1.splitlines() if ln.startswith(("**`", "- `", "- note"))]
+    a3 = [ln for ln in au.stdout.split("## Notes")[1].splitlines() if "ignore rule" in ln] if "## Notes" in au.stdout else []
+    summary = re.search(r"^Findings: .*$", au.stdout, re.M)
+    L += ["## Findings on the live repository (from the audit below)", ""]
+    L += (["Commits outside the owner's paths (section 1):", ""] + a1 + [""]) if a1 else ["Section 1: no commit outside the owner's paths.", ""]
+    L += a3 + ([""] if a3 else [])
+    L += [f"{summary.group(0) if summary else ''}", ""]
     L += ["## Commands", "",
           "Run `harness/tests/test_ctx.py` (self-test, about 20 s) and `harness/tests/acceptance_ctx.py` (this file) "
           "from the main checkout. Usage: `harness/RULES.md`.", ""]
