@@ -325,3 +325,54 @@ tests.
    cent at five cells per radius, T2 (d)); a smooth edge of two cells removes most of it.
 10. A `<gravity>` block in a run with a gas adds Newtonian self-gravity of the gas; the
     solver is meant for particle runs without gas.
+
+## 10. The vector equation (option `id_vector`), design before coding
+
+Written before any source line of this part [JUDGEMENT unless labelled].
+
+**Equation.** With Abar_ij = Abar_ij(trial) + (L W)_ij,
+(L W)_ij = d_i W_j + d_j W_i - (2/3) delta_ij d_k W_k, the momentum constraint
+psi^-10 d_j Abar_ij - (2/3) psi^-4 d_i K = 8 pi S^i [BACKGROUND] becomes, multiplied by
+psi^10 (S^i = psi^-4 S_i, and psi^6 S_i = Stilde_i is the deposit of m u_i per
+coordinate volume, independent of psi for fixed u_i),
+
+    lap W_i + (1/3) d_i d_j W_j = 8 pi Stilde_i + (2/3) psi^6 d_i K - d_j Abar_ij(trial).   (2)
+
+The code's monitor gives psi^6 M_i = left side minus right side of (2) with its own
+differences.
+
+**Why not mode `code` for (2).** The monitor differentiates the stored K_ij once; with
+K_ij = psi^-2 (L W)_ij formed by central first differences the composite operator is a
+product of two central first differences, whose symbol vanishes at the Nyquist
+wavenumber of every direction (sin(k dx) = 0). A deposited source has content there
+(cloud and lattice), which that operator cannot reach: a residual of the monitor cannot
+be driven to the tolerance in general. (2) is therefore solved in stencil form, with the
+compact operator
+    (Delta_L W)_i = lap_7 W_i + (1/3) [ (W_i(+e_i) - 2 W_i + W_i(-e_i))/dx^2
+                    + sum_{j != i} (4-point mixed difference of W_j)/(4 dx^2) ],
+whose symbol is not singular, and the right side with central differences of K and
+Abar(trial). (L W)_ij is formed with central first differences. With
+`id_residual = code` the scalar equation keeps its mode; the monitor M is reported, not
+driven to zero.
+
+**Iteration.** One outer iteration of the existing solver evaluates both residuals with
+one deposit; the scalar correction is computed as before (Abar^2 now includes L W); the
+vector correction is one preconditioned Richardson step
+    W <- W - P^-1 F,   P^-1 F = lap_7^-1 F - (1/4) lap_7^-1 grad lap_7^-1 div F,
+which inverts the continuum vector Laplacian exactly (div W = (3/4) lap^-1 div F) and
+costs four multigrid solves. Fourier analysis of the compact operator on a periodic
+mesh gives eigenvalues of P^-1 Delta_L between 1 and 4/3: an error factor of at most
+1/3 per iteration. Convergence: both relative residuals below `id_tol`; the scale of (2)
+is the largest sum over its terms of their absolute values.
+
+**Faces.** W, div F and every correction use the Robin fill (1/r about the centre): the
+far field of an isolated momentum (Bowen-York, W_i = -(7 P_i + n_i n.P)/(4 r)
+[BACKGROUND]) has r W_i depending on the direction only. On the torus (2) is solvable
+only when the mean of its right side vanishes (total momentum zero); the mean is
+removed from F before the test and reported in the record.
+
+**Interface.** `<particles> id_vector = true` (read only if present; requires
+`id_solve`); outputs: extra columns in `<basename>.idsolve.txt` (max and rms of F of (2),
+max of the monitor's |M|) and with `id_dump` a file `<basename>.idvector.bin` (W_i,
+right side of (2), F of (2), the monitor's M_i after and before the solve). Without the
+option the solver runs exactly as before.

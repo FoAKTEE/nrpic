@@ -48,7 +48,9 @@
  "purpose": "initial-data solver, test F: smooth triaxial ball with the settings of test E at 64 cells to t = 2 with field dumps, solve code",
  "kind": "scouting",
  "tag": "idsolve-evo-res-code-n64",
- "state": "running",
+ "state": "finished",
+ "wall_time_s": 226.8,
+ "exit_status": 0,
  "cores": 1,
  "card_hours": 0.0,
  "started_utc": "2026-11-15T18:13:18Z"

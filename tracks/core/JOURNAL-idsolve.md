@@ -534,3 +534,42 @@ written, and add my present expectation: (d') the shell mean |M| at t = 0 in the
 unsolved run falls by at least a factor 2 from dx = 1 to dx = 0.5. Consequence for the
 design whatever F shows: for these data the vector equation corrects only the
 (2/3)(psi^-6 - 1) d_i K that the scalar solve itself introduces.
+
+## 2026-11-15, entry 9: the vector equation, predictions before any source line
+
+Design: `tracks/core/interfaces/id_solver.md`, section 10 (stencil form of the momentum
+constraint with a compact vector Laplacian; Richardson iteration with the four-Poisson
+preconditioner; Robin faces; option `id_vector`). Tests, predictions [JUDGEMENT]:
+
+**V0 regression.** Without `id_vector`, the new executable writes the same bytes as the
+published one (`scratch/core/exe/core_id-solver/athena_cpu`, 87e189e) for the solve and
+the first dumps of gauss_code_n32 (T1) and torus_code_p1_n32 (T4), and for the
+relativistic regression cases without `id_solve`. Refuted if any byte differs.
+
+**V1 boosted Gaussian, the discrete system.** The T1 Gaussian (m = 1, sigma = 2, box
+half-width 16) with every particle given u_x = 0.1 (`make_ic.py boost`), K = 0,
+Abar(trial) = 0, so that (2) reads Delta_L W = 8 pi Stilde and decouples from psi.
+N = 32 and 64, `id_residual = stencil` and `code`.
+ (a) the right side written by the code equals 8 pi times the cloud-in-cell deposit of
+     m u_x computed in numpy from the particle file, to 1e-13 relative;
+ (b) the compact operator applied in numpy (Robin fill as in `MGRobinFill`, directions
+     in turn) to the W of the code reproduces that right side to the tolerance:
+     max|Delta_L W - s| / max|s| below 1e-9;
+ (c) the vector residual falls by a factor of at most 1/3 per outer iteration; the
+     solve ends in at most 30 outer iterations in either mode;
+ (d) the scalar part reaches the tolerance as before (mode code: max|H| about 1e-11).
+Refuted if (a) or (b) fails by more than a factor 100, or the iteration does not
+converge.
+
+**V2 boosted Gaussian against the continuum.** Semi-analytic W of the continuum
+problem lap W_i + (1/3) d_i d_j W_j = 8 pi P f(r) e_x with the radial profile f of the
+deposit (rhot psi_ex), from W = (7/8) V - (1/8)(grad U + x_j grad V_j), lap V = 8 pi P f
+e_x, lap U = -8 pi P x f (radial integrals). Predictions: the error of W_x at the
+innermost cells is second order (factor 3 to 5 from dx = 1 to 0.5) and of size
+0.3 to 3 times 0.044 (dx/sigma)^2 relative (the cloud-and-lattice term -(3/32) and the
+seven-point term +(1/20) of T1 (c)), with |W_x| of the code the smaller; at the face
+centres the error is below 1e-2 relative at N = 32 and falls at least as dx. The ADM
+momentum (1/8 pi) times the flux of Abar_xj through the faces of the box equals
+sum m u_x to 1 per cent at N = 32 (truncation of the 1/r^2 tail at the faces).
+Refuted if the error does not fall by at least a factor 2.5 per halving, or the
+momentum is off by more than 5 per cent.
