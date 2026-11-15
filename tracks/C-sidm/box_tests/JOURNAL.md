@@ -73,3 +73,31 @@ Predictions:
 - Cost (processor, one core, 1e6 particles): about 0.5 s per step with collisions at one
   sub-step and 0.25 s without (core's numbers, collisions.md section 9), i.e. ~5e-7 s per
   tested pair. Refuted (as a number to plan with) if more than twice that.
+
+## 2026-11-15 T10 and T0b: predictions (before the runs)
+
+T10 (`scripts/t10.py`): twotemp box theta_1 = 0.3, theta_2 = 0.1, 1e5 particles, 16^3
+cells, sigma = 5, dt = 0.02 (P_bound ~ 0.16, so n_sub ~ 2: sub-cycling active), 100
+cycles, rng_seed 7; 1, 8 and 64 MeshBlocks; resumed from every restart file of the
+8-block run (written every 37 cycles); rng_seed 8 as the negative control. MPI ranks: not
+run, the release processor build has no MPI (CMakeCache: Athena_ENABLE_MPI=OFF).
+Prediction: final snapshots bit-identical for 1, 8, 64 blocks and for every restart
+(core reports the same with its own box, collisions.md section 8); the coll.hst integer
+columns identical record by record; seed 8 changes more than 99 percent of the particles
+(~2.5e5 collisions over 1e5 particles: each collides ~5 times). Refuted by any bit
+difference, or by seed 8 leaving most particles unchanged.
+
+T0b (`scripts/t0b.py`, `scripts/replay.py`): the replay is written from the text of
+collisions.md (sections 3.1-3.7, 4, 5) with the track's oracle and `python/nrpic/rng.py`,
+without core's twin `python/nrpic/collide.py`. T2 box at theta = 0.1, 1e4 particles, 4^3
+cells, dump of cycle 20, triad = cholesky; variants plain (n_sub = 1), sub (sigma x 25) and
+f2 (8^3 mesh, coll_cell_factor 2), seeds 1 and 2. Prediction: for every particle the cell
+index, n_sub and the number of updates agree with the dump; n_tested and n_coll agree with
+the coll.hst record of cycle 20; sum_P to < 1e-13 relative; collided momenta within ~1e-15
+of max(1, |u|) (oracle and kernel agree to 3e-16 on the T0 vectors; a particle that
+collides in several sub-steps accumulates a few such errors); untouched particles
+bit-identical. The key cycle: collisions.md 3.10 says the key uses `pmesh->ncycle` of the
+step being taken; whether that equals the dump's `cycle` field or differs by one is not
+stated; the replay tries cycle, cycle - 1, cycle + 1 and records which reproduces the code
+(a mismatch of the documented key would be a finding, not a failure of the operator).
+Refuted by any differing tested or accepted pair, or a momentum beyond 1e-13.
