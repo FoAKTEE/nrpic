@@ -164,3 +164,19 @@ slab sums lie within about 3 sampling-noise units of the exact ensemble curve
 (`conduction.step_collisionless`) at all times. Refuted by a position error above 1e-9 L
 (a wrapping or pusher defect), a change of u above 1e-12, or ensemble deviations
 systematically above 4 noise units (an error in the reference or in the sampler).
+
+## 2026-11-15 Outcome T6-0: confirmed (run C-sidm-20261115-121302-313d399)
+
+53 s on 4 cores, 1501 cycles, 3.6e6 particle updates per cpu second. Largest position
+error against x0 + (u/W) t (mod L): 1.8e-12 L; u unchanged bit for bit (0.0); slab sums of
+the code equal the free-streaming sums of the sample exactly (relative difference 0.0);
+deviation from the exact ensemble curve at most 1.85 sampling-noise units, rms 1.01, 1.01,
+0.82 (rest mass, energy, kinetic energy; noise from 64 resamplings). Sample temperatures
+0.02026 and 0.009997 (target 0.02, 0.01; 2 and 0.03 standard errors of a mean of 3.3e4
+and 6.7e4 mirrored samples). Figure `figs/T6_0_step_collisionless.png` (looked at): the
+transient is over within about one crossing time and is resolved by only six snapshots at
+snap_dt = 1; the collisional T6 runs need snap_dt <= 0.1 L/<|v|>. The kinetic energy of
+the hot slab first drops (fast particles leave first) and then overshoots, in the exact
+curve as well as in the run. So the Minkowski box (analytic kerr_schild with bh_mass = 0,
+periodic mesh, box away from r = 0) works with the existing code, and the T6 pipeline is
+ready for the collisional runs.
