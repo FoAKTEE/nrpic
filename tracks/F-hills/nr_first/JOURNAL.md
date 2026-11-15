@@ -412,3 +412,14 @@ the optional resolution partner of the junk measurement. Cancelled (scancel thro
 `nrpic-run stop`) before it started; no card time used. It can be resubmitted with
 `inputs/batch_S1.list` when S3 and S2 have given the rate. E3's prediction 3 (S1 against
 S3 within a factor two) stays untested.
+
+## 2026-11-15 E9. The passage analysis on the synthetic three-body files (prediction)
+
+What: `scripts/p1_analysis.py` (the readers applied to a passage: distances, member energies,
+horizons, history, waveforms) on the synthetic run directory of E4 test 1 (run
+F-20261115-173821-b2c969a, `run/`: the full Newtonian q = 4 trajectory to t = 1500 in
+AthenaK's tracker format, split into two segments with an overlap, and horizon summaries),
+with the baselines of E6. Prediction: receding member m1 (comp0); at the end its barycentric
+energy +1.3119 units and m2's two-body energy with M -1.6265 units (E6); the binary wider
+than 2 x 5 between t = 115 and 116; no history and no waveforms reported (absent), the
+script does not fail on their absence. Refuted otherwise.
