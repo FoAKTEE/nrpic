@@ -155,9 +155,13 @@ P1:711's remark that RK4 degrades to Euler-Maruyama convergence applies to white
   (`driver/driver.cpp:144-175`), not classical RK4, and the Z4c right-hand side reads
   `pmesh->time` for every stage (`z4c_calcrhs.cpp:44`). A time-dependent source needs the
   stage abscissae c_s of that scheme. [VERIFIED code; request to core]
-- Scalar field, sources and FFT: none exist in AthenaK yet (CLAUDE.md "What exists"; branches
-  `core/scalar-field`, `core/rng` checked on 2026-11-15: no scalar field, random numbers
-  proposed in `tracks/core/interfaces/rng.md` on `core/rng`). [VERIFIED]
+- Scalar field, sources and FFT: none existed on `main` when this was written (CLAUDE.md "What
+  exists"). Update by the lead, 2026-11-15 14:00Z: `core/scalar-field` (836ac86, not yet
+  merged) has the field (`athenak/src/scalar_field/`), sources through `Tmunu::tmunu_tot`, the
+  stochastic hook with the kicks of 2.2 and the window derivatives of section 3, mode
+  functions integrated in lockstep with the RK stages, and the noise synthesised without an
+  FFT (DESIGN_REVIEW 6.2); level 2 backreaction and the initial slice of 5.3 are not there.
+  [VERIFIED by reading the source; tests: owner JOURNAL, check L-U]
 
 ## 3. Window function
 
@@ -230,12 +234,19 @@ Phi_B = -eps1 H a^2 k^-2 dot R (P2:251-255), Psi_B = Phi_B:
     delta K   = 3 (dot Phi_B + H Psi_B) = 3 eps1 H (R - Phi_B)
     dot Phi_B = eps1 H R + eps1 (1 + eps1) H^2 a^2 k^-2 dot R      (R ddot from the MS equation)
 
-**Erratum.** The printed P2 eq. (17) (P2:320) lacks the term -sqrt(2 eps1) Mpl H Psi_B in
-delta Pi. The symbolic check of run E-stoch-inf-20261115-123146-82d2fd4 (`ref/ic_constraint_check.py`)
+**Erratum.** The printed P2 eq. (17) (P2:319-322) carries the term -sqrt(2 eps1) H Mpl Psi_G
+in delta Pi, which vanishes in the geodesic gauge (Psi_G = B_G = 0, P2:490); the term the data
+need is -sqrt(2 eps1) Mpl H Psi_B. The symbolic check of run E-stoch-inf-20261115-123146-82d2fd4 (`ref/ic_constraint_check.py`)
 gives a linear Hamiltonian residual 4 eps1^2 H^3 a^2 k^-2 dot R with the printed form and 0 with
 the form above; the momentum constraint vanishes for both, and the two expressions for
-delta K agree identically. [VERIFIED by run] Since P1 and P2 report second-order Hamiltonian
-violations, their code presumably uses the complete form [JUDGEMENT].
+delta K agree identically. [VERIFIED by run] The lead re-derived the term from P2's own
+dictionary (2026-11-15, owner JOURNAL, check L-I): delta Pi^NR = d/dt delta phi^NR - phidot_b
+Psi_G (P2:308) with delta phi^NR = sqrt(2 eps1) Mpl (R - Phi_B + H chi^NR) and chi^NR =
+int (Psi_G - Psi_B) dt + chi_0 (P2:262, 270); at t* with chi_0 = 0 the derivative of the
+H chi^NR part gives + sqrt(2 eps1) Mpl H (Psi_G - Psi_B), the Psi_G parts cancel, and
+-sqrt(2 eps1) Mpl H Psi_B remains, for any Psi_G. The printed equation drops the chi-dot term.
+[VERIFIED by derivation] Since P1 and P2 report second-order Hamiltonian violations, their
+code presumably uses the complete form [JUDGEMENT].
 
 With coarse-graining, substitute R -> W R and dot R -> d(W R)/dt in these formulas and take
 dot Phi_B from the unsourced MS equation applied to (R^>, dot R^>); any pair (R, dot R) is valid
@@ -258,9 +269,15 @@ first order].
   printed prefactors give powers (2 pi)^3 and (2 pi)^(3/2) too large (measured 241.8 and 15.35,
   expected 248.1 and 15.75). Their spectra agree with linear theory, so their code is right
   and the text is not [JUDGEMENT].
-- In this repository the white noise must come from the counter-based generator of
-  `core/rng` (Philox-4x64, key = seed, stream, cell entity, step 0), so that the draw does not
-  depend on the MeshBlock layout (brief M11; `tracks/core/interfaces/rng.md` on `core/rng`).
+- In this repository the amplitudes come from the counter-based generator of `core/rng`
+  (Philox-4x64), keyed **by wave vector**, not by cell: one complex unit Gaussian alpha_n per
+  wave vector n of a half space, stream Stream(3, 2^16 + dof), entity CellEntity(n + 2^20),
+  step = epoch (0 for the frozen draw), draw 0 (`../noise/NOISE_SPEC.md` section 4,
+  `../codebase/DESIGN_REVIEW.md` 6.2; core's `scalar_field_noise.cpp` on `core/scalar-field`
+  836ac86 uses these keys). This gives the same realisation at every N and in every
+  MeshBlock layout and needs no forward transform; real-space white noise keyed by cell (the
+  papers' route, P2:463) would give a different realisation at each N. [Aligned by the lead
+  on 2026-11-15 at the request L1 of the noise package; earlier text keyed by cell.]
 
 ## 6. The two test cases
 
@@ -298,8 +315,12 @@ difference is at the right end of the quadratic panels (eps2 -2.659e-2 against a
 -2.62e-2, V 2.234e-2 against 2.22e-2 at cN = 7.6) (`fig/fig_background.png`). The text's "USR from
 N ~ 3.5 until N ~ 8" (P1:534) is about one e-fold later than its own Fig. 1. The field ends at
 phi = -0.2798 Mpl, where |V'| is smallest (P2:579: inflection at |phi| ~ 0.28 Mpl); V' does not
-change sign on the path, so the "very shallow maximum" of P1:534 is not a maximum of V [TO VERIFY:
-what the text refers to; harmless for the reproduction].
+change sign on the path, so the "very shallow maximum" of P1:534 is not a maximum of V. The
+langevin package showed that the printed potential has an exact stationary inflection point
+(a double root of V') at phi = -sqrt2 v = -0.2800 Mpl (`../langevin/README.md`); the field
+creeps past it. [VERIFIED; harmless for the reproduction, which stops at N_f.] A second text
+error: P1:108 writes H^2 = V/(1 - pi^2/(6 Mpl^2)) without the factor 3 Mpl^2 of the
+Friedmann denominator (lead, read at the source).
 
 ## 7. Acceptance quantities
 
@@ -339,6 +360,19 @@ No tolerance is given for P-a, P-b or P-g (U12).
   difference must fall at the order of the integrator, since the forcing is smooth (2.4).
 - **A7 reproducibility** (brief M11, row "Reproducible random numbers"): same seed, different
   MeshBlock layout, rank count and restart time give the same fields to FFT round-off.
+  (With the separable synthesis of core the fields are bit-identical across MeshBlock
+  layouts and restarts: `../noise/NOISE_SPEC.md` A11, A12.)
+- **A8 one-point statistics against stochastic delta-N** (added by the lead at the request
+  of the langevin package): a variance of R^NR or delta-N on the 256^3 lattice is compared
+  with the **lattice sum** of the band dk to 64 dk (1.0805 times the continuum integral in the
+  quadratic case, run E-stoch-inf-20261115-130139-176cdd6), never with the continuum. The
+  separate-universe Langevin numbers with sigma = 1 (the coarse-graining of the NR runs) are
+  **not** a reference: they overestimate the variance by 42-45 percent; the reference is
+  sigma <= 0.01 with an end surface at least 3 e-folds after the last noise
+  (`../langevin/README.md`).
+
+The thresholds A1-A8 and of 7.3 are fixed at G0 by the owner in
+`../stage/G0/REPORT.md` section 4.
 
 ### 7.3 Criterion for the freezing of super-horizon modes
 
@@ -434,7 +468,10 @@ argument of section 2.4. E14 BZ:204 writes eps = d ln H/dN (sign); the decay R^2
    and either k^2 or the stencil's discrete k^2; level 2 later: the real-space form of 2.3);
    per stage one inverse FFT of S_R and of k_i k_j/k^2 S_R (six components, or five plus the
    trace identity). Needs a GPU FFT (cuFFT through Kokkos or Kokkos-FFT); a single card holds
-   a 256^3 run [JUDGEMENT].
+   a 256^3 run [JUDGEMENT]. Superseded (lead, 2026-11-15): no forward FFT is needed when the
+   amplitudes are keyed by wave vector (5.4); the inverse transform is the per-MeshBlock
+   separable synthesis of `../codebase/DESIGN_REVIEW.md` 6.2 (request R4 there), which core
+   implemented.
 4. Initial data at N* (section 5.3) from a background table and the R_k(N*) table that this
    track supplies.
 5. Diagnostics: box means; the relative constraint magnitudes [H], [M] of P1:735-745; R^NR of
