@@ -703,3 +703,22 @@ amendment: the trial's M is truncation-level and the evolution makes M of 4e-5 i
 steps with and without the scalar solve]: the mean |H| at t = 2 within 20 per cent of
 the scalar-only solved run of E (5.31e-5), and the mean |M| at t = 2 within 20 per cent
 of E (4.26e-5). Refuted if either is lower by more than a factor 2.
+
+**V5 first launch: the ball runs did not converge (a fault of my stop rule).** Runs
+core-20261115-184348 (sphere), -184637 (strained), -184927 (moving Gaussian), V6
+-185053-4ff75bd. The moving Gaussian held (b): it ended at id_vector_tol after 17 outer
+iterations, max|H| 1.1e-11, the monitor's max|M| 2.29e-2 -> 1.19e-8 (stencil form:
+5.3e-5). The two balls and the V6 evolution stopped with "did NOT converge" after 60
+outer iterations (fatal error, no evolution): the vector residual of the monitor fell
+by 0.6 to 0.8 per iteration for ten iterations, then by 0.92 to 0.97 (1.47e-2 ->
+5.8e-4 at iteration 10, 1.3e-4 at 20, 2.45e-5 at 60), and the scalar residual, coupled
+through Abar^2, followed it (1.4e-7 at 60); my stall rule (5 per cent over five
+iterations, after the scalar converged) never applied. The monitor's max|M| fell from
+7.78e-4 to 1.02e-6 meanwhile ((c), no divergence, held). Changed before the rerun: W is
+frozen once the vector residual is at id_vector_tol or has fallen by less than a factor 2
+over ten outer iterations ("stalled"); the scalar part then converges with the frozen W.
+Stencil form unchanged. Predictions for the rerun: (a) both balls end by the stall rule
+within 60 outer iterations (from the record above: near iteration 32, vector residual
+about 6e-5) with max|H| at the tolerance and the monitor's mean |M| at least 3 times
+below the value before (7.08e-6); (b) the moving Gaussian ends at id_vector_tol as before;
+V6 as predicted above.

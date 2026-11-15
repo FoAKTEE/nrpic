@@ -817,6 +817,7 @@ void Particles::NrpicSolveInitialData() {
   int cyc_total_vec = 0;
   std::vector<Real> relv_hist;       // vector residual per outer iteration
   bool vstalled = false;             // id_vector_residual = code: the residual stalled
+  bool vfrozen = false;              // id_vector_residual = code: W no longer updated
   for (iter = 0; ; ++iter) {
     evaluate(nm);
     vol_mesh = nm.vol;
@@ -849,14 +850,20 @@ void Particles::NrpicSolveInitialData() {
     Real lin_res = 0.0;
     ncycle_lin = 0;
     ncycle_vec = 0;
-    // with the monitor as vector residual, modes at the Nyquist wavenumber cannot be
-    // removed (first differences of first differences): the vector part ends when its
-    // residual falls by less than 5 per cent over five outer iterations
-    if (vec && vec_code && rel <= ids.tol && relv > ids.vec_tol && iter >= 10 &&
-        relv_hist[iter-5] <= 1.05*relv) {
-      vstalled = true;
+    // with the monitor as vector residual (id_vector_residual = code) the slowest modes
+    // decay slowly and those at the Nyquist wavenumber not at all (first differences of
+    // first differences): W is frozen once its residual is at id_vector_tol, or when it
+    // fell by less than a factor 2 over the last ten outer iterations ("stalled"); the
+    // scalar part then converges with the frozen W
+    if (vec && vec_code && !vfrozen) {
+      if (relv <= ids.vec_tol) {
+        vfrozen = true;
+      } else if (iter >= 10 && relv_hist[iter-10] < 2.0*relv) {
+        vfrozen = true;
+        vstalled = true;
+      }
     }
-    if (rel <= ids.tol && (!vec || relv <= ids.vec_tol || vstalled)) {
+    if (rel <= ids.tol && (!vec || (vec_code ? vfrozen : relv <= ids.vec_tol))) {
       converged = true;
     } else if (iter < ids.maxit) {
       if (periodic && !(sigmean > 0.0)) {
@@ -894,7 +901,7 @@ void Particles::NrpicSolveInitialData() {
       lin_res = (bnorm > 0.0) ? rnorm/bnorm : 0.0;
       cg_total += cg_steps;
       cyc_total += ncycle_lin;
-      if (vec) {
+      if (vec && !vfrozen) {
         vector_step();
         cyc_total_vec += ncycle_vec;
       }

@@ -181,6 +181,8 @@ of a restart file unless `id_solve` is present (`NrpicIdSolveInit`, the pattern 
 | `id_mg_tol` | 1e-3 | defect over source at which a preconditioner (multigrid) solve ends |
 | `id_dump` | `false` | write `<basename>.idsolve.bin` (fields, `docs/FORMATS.md`) |
 | `id_vector` | absent (off) | `true`: also solve the vector equation for W_i, Abar_ij = Abar_ij(trial) + (L W)_ij (section 10); with `id_dump` also `<basename>.idvector.bin` |
+| `id_vector_residual` | `stencil` | residual of the vector part: `stencil` (compact second-order form) or `code` (psi^6 M_i of the constraint monitor; section 10, V5) |
+| `id_vector_tol` | `id_tol` (stencil), 1e-6 (code) | tolerance of the vector part, relative to the largest sum of the absolute terms of (2) |
 
 **Options, `<gravity>` block** (required: it creates the multigrid Poisson solver).
 
@@ -398,3 +400,16 @@ level (stencil form by design, see above). (3) Tested with K = 0 and Abar(trial)
 ball tables they are the curvature of the trial). (4) On the torus the mean of the
 right side must vanish; not tested on the torus. (5) Uniform meshes, one rank, as the
 scalar part.
+
+**Mode code for the vector part (added after V3, before its registered runs).** V3
+showed that the stencil form doubles the monitor's |M| for data that already satisfy
+the continuum constraint. With `id_vector_residual = code` the residual is
+F_i = psi^6 M_i of the monitor and the step is the same P^-1. The symbol of the
+monitor's operator per direction over that of the seven-point Laplacian,
+g6(k) g2(k) / lambda(k), lies in [0, 1] [derived], 0 at the Nyquist wavenumber, so every
+mode but those decays with the relaxation 6/7 and the modes near the Nyquist wavenumber
+decay slowly (a smoke run: 3 per cent per outer iteration below 1e-6). Hence its own
+tolerance `id_vector_tol` (default 1e-6) and a stall rule (less than 5 per cent over five
+outer iterations once the scalar part has converged: the vector part ends and the record
+says "stalled"). The argument at the top of this section still holds: the Nyquist
+content of a deposited source cannot be removed; mode code takes everything else.
