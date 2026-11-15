@@ -1,0 +1,12 @@
+# build outputs of latexmk
+*.aux
+*.log
+*.fls
+*.fdb_latexmk
+*.out
+*.bbl
+*.blg
+*Notes.bib
+*.synctex.gz
+*.toc
+__pycache__/
