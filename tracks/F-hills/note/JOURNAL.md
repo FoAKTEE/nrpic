@@ -57,3 +57,22 @@ Predictions [JUDGEMENT]:
    t = 0 (2416 in SCOPING section 9 with puncture radius 1.2; 2514 in E1 with the input's
    radius). Refuted if a number of the lead's text has no source in the files or differs
    from it beyond rounding.
+
+## 2026-11-15 N1, outcome (run F-20261115-174648-25514db, 66 s on one core)
+
+Prediction met in every number [VERIFIED, `passage_summary.json` of the run]:
+- q = 4: full Newton ejects m1 with +1.31187 units against the barycentre (spread 1.54e-4
+  after t = 300), m2 captured with two-body energy -1.6265 units and closest approach
+  5.7771 M (pericentres at t = 122.1 and 250.9); HRNA ejects m2 with +0.97030 units, m1 bound
+  (-0.49995) with first pericentre 7.2616 M at t = 121.0; hole-fixed Newton ejects m1 with
+  +1.8348 units, m2 closest 6.1067 M. Same digits as E6.
+- q = 10: full Newton ejects m1 with +1.61267 units (spread 3.2e-5 after t = 300), its
+  two-body energy with M swings between 1.4745 and 1.8453 units; m2 bound, closest
+  5.64124 M (the lead's V5 printed 5.641254 from output every 0.1 M; this run samples every
+  0.05 M, so the minimum moved in the sixth digit); HRNA: m1 reaches 2.4719 M at t = 97.12
+  and is stopped there (plunge), m2 ejected with +1.15885 units; hole-fixed Newton ejects m1
+  with +1.88742 units, m2 closest 5.86240 M. Same digits as V5, V5b, V6.
+Figure `fig_passage` (draft, read): in the planned run windows (280 M at q = 4, 250 M at
+q = 10) the two baselines differ in kind from t of about 100 M on: at q = 4 Newton sends m1
+out and keeps m2 between 5.8 and 9.7 M, the geodesic baseline sends m2 out and keeps m1 on a
+wide orbit; at q = 10 the geodesic m1 plunges at t = 97 M while Newton's m1 leaves.
