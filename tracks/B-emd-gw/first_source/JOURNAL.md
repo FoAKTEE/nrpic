@@ -212,3 +212,12 @@ core-v0.3) run now on five cores. The k-mode wavelength is 32 cells there, so be
 crossing the box modes are resolved at both meshes. Predictions: P0-P6 hold at 32^3 with the
 same thresholds; c_+(K1) at 32^3 and 64^3 agree to 1 percent for a <= 20 once both exist
 (refuted otherwise); after shell crossing they may differ.
+
+## Initial data eps = 1, run B-20261115-164104-886798f
+
+P0 for eps = 1: CONFIRMED (Hamiltonian residual 3.9e-12, momentum 2.5e-16, max |psi_N|
+1.21e-2, max |Ahat| 3.9e-4; 2,097,152 particles; files complete). The run is recorded as
+failed (exit 2): I edited `build_ic.sh` (mesh size as a variable) while bash was still
+reading it, and the closing loop of the script broke after make_east.py had finished. The
+outputs are those of make_east.py and are used. Lesson: never edit a script that a running
+job executes.
