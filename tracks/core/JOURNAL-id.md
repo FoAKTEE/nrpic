@@ -616,3 +616,74 @@ conformal-time lapse has the same pathology as 1+log, only slower: speed about 0
 (arrival there near t = 17 M). After the front the innermost shells lose accuracy.
 Rms of H: interior 8e-3 to 4e-2 (16 pi rho_0 = 9.6e-2), surface layer 3e-2 falling to
 1.4e-3, the same at both resolutions (sharp surface).
+
+## 2026-11-15, entry 8: source extrapolation, fixed gauge, state at the end
+
+The cards were occupied by other owners from 04:10 on; what follows uses the card runs
+that got through and four processor runs at 64 cells (tags `t2cpu-*`, `t3cpu-*`). The
+processor run `core-20261115-041245-1311b8e` (bound ball, conformal time, dx = 1/2 M,
+half-width 16 M) reproduces the card run `core-20261115-040525-1311b8e` (half-width
+20 M) in every ball-shell number to the printed digits, so the two executables agree
+and the boundary at 16 M does not reach the ball shells before tau = 12 M.
+
+### Outcome of prediction T2c (sources extrapolated), dx = 1 and 1/2 M
+
+Runs `core-20261115-041111-1311b8e` (dx = 1 M), `core-20261115-041112-1311b8e`
+(1/2 M); the run at dx = 1/4 M was still queued. Offset of H at the centre over
+16 pi E at t = 2 M: 4.1e-4 (dx = 1 M; 4.1e-3 without), 2.8e-6 (dx = 1/2 M; 1.8e-3
+without); at t = 4 M and dx = 1/2 M 4.8e-5. Below 1e-4 at dx = 1/2 M as predicted, not
+at dx = 1 M (the edge is four cells wide there). Core shells at tau = 8 M: largest
+|eps| 7.2e-4 and 1.10e-4 (without: 7.6e-4, 3.2e-4), mean -4.0e-5 at dx = 1/2 M
+(without +2.1e-4): smaller, and better than second order between these two meshes.
+Whole run, dx = 1/2 M: core 4.6e-4, mid 6.3e-4, outer 3.6e-4, edge 2.7e-4. Confirmed
+as far as run.
+
+### Outcome of prediction T2e (lapse and shift held fixed), processor runs at 64 cells
+
+Runs `core-20261115-044357-aef2f7b` (smooth edge, dx = 1 M),
+`core-20261115-044358-aef2f7b` (sharp, dx = 1 M), `core-20261115-044359-aef2f7b` (bound
+ball, dx = 1/2 M).
+(ii) Confirmed: the particles stay at their coordinates (r/r_0 - 1 = 0 to the printed
+digits) and their proper time is 10.000000 M at t = 10 M.
+(iii) Smooth edge, dx = 1 M: largest |eps| over the run core 9.4e-4, mid 1.35e-3, outer
+8.9e-4, edge 7.5e-4, against 1.8e-3, 1.2e-3, 1.8e-3, 6.8e-4 for the conformal-time run
+with the same sources: comparable, somewhat better in the core. But the rms of H in the
+edge region grows steadily, 3.6e-4, 6.7e-4, 1.1e-3, 1.6e-3, 2.2e-3 at t = 2 ... 10 M
+(conformal time: 2.8e-4 falling to 5.9e-5). Sharp surface: outer and surface shells
+1.6e-2 (conformal time 4.5e-3, 7.2e-3), surface residual 1.2e-2 growing to 2.1e-2.
+(i), (iv) REFUTED for the bound ball: the run becomes unstable. Largest |H| 0.28,
+0.29, 0.53, 0.97, 3.2 at t = 0, 1, 2, 3, 4 M, largest Theta 0.014, 0.018, 0.029, 0.15,
+then not-a-number at t = 4.9 M; all particles are removed as non-finite. The code
+runs on to the end and exits with status 0. So the gauge of the exact solution is not
+usable in this formulation with a sharp surface: the growth in the edge region of the
+weaker ball is probably the same instability at a lower rate [JUDGEMENT; the card
+runs at dx = 1/2 and 1/4 M, queued, would show whether the rate grows with
+resolution, the signature of an ill-posed system].
+Trap for everyone: a run that has gone to not-a-number ends "successfully" with zero
+particles; check the particle number in `<base>.nrpic.hst` (column 3).
+
+### State at the end of this session
+
+Done and tested: table format 2 in `nrpic_cf` (reader, K_ij, lapse and shift options),
+Python reader, writer and evaluator, reference generator (marginally bound ball, sharp
+or smooth edge; bound ball), offline constraint check, symbolic check, format-1
+regression, tests 0, 1, 2, and test 3 at two resolutions.
+
+Card runs still queued when the session ended (driver `test2_runs.py`, tags as
+listed; their predictions are T2c, T2d, T2e, T3 above; `test2_evolution.py` and
+`test2_evolution.py --prefix t3` pick them up when they have finished):
+`t2-ct-edge2-ext-n256`, `t2-ct-edge2-prod-n128`, `t2-ct-edge2-prod-n256`,
+`t2-gs0-edge2-ext-n128`, `t2-gs0-edge2-ext-n256`, `t2-gs0-ext-n128`,
+`t3-bound-ct-n320`, `t3-bound-mp-n160`, `t3-bound-gs0-n160`.
+
+Open, in order of use to Tracks A and D:
+1. a lapse condition that does not send a front from the surface to the centre (both
+   1+log and the conformal-time lapse do; a fixed lapse is unstable). Candidates not
+   tried: a driver towards the dust slicing built on the particle four-velocity, the
+   `lapse_kdriver` and `lapse_volume` conditions of `cosmo/`, a smooth edge wide
+   enough that the front is weak;
+2. T2d (is the late interior residual of the smooth-edge runs lattice noise?): untested;
+3. a smooth edge for the bound ball (`Ball` has it for the marginally bound one only);
+4. an outer boundary condition for exteriors whose K_ij falls as r^(-3/2);
+5. second agent: nobody but this session has checked these results; Track A's own
+   generator is the independent check of `expanding_ball.py`.

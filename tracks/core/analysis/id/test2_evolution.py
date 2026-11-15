@@ -187,7 +187,12 @@ def main():
     a = ap.parse_args()
     pre = a.prefix
     mans = idlib.manifests(pre + "-")
-    runs = {tag[len(pre) + 1:]: load(m) for tag, m in sorted(mans.items())}
+    runs = {}
+    for tag, m in sorted(mans.items()):
+        try:
+            runs[tag[len(pre) + 1:]] = load(m)
+        except ValueError as err:           # a run that went unstable and lost its particles
+            print(f"SKIPPED {tag} ({m['run_id']}): {err}")
     numbers = {}
     for k, d in runs.items():
         cs = d["cstat"]
@@ -249,9 +254,10 @@ def figures(pre, runs, numbers):
     fams = {}
     for k in runs:
         fams.setdefault(k.rsplit("-n", 1)[0], []).append(k)
-    fams = {f: sorted(v, key=lambda k: -runs[k]["dx"]) for f, v in fams.items() if len(v) >= 2}
+    multi = {f: sorted(v, key=lambda k: -runs[k]["dx"]) for f, v in fams.items() if len(v) >= 2}
+    fams = multi or {f: v for f, v in fams.items()}
     main = "mp" if "mp" in fams else next(iter(fams))
-    dxv = runs[fams[main][1]]["dx"]
+    dxv = runs[fams[main][min(1, len(fams[main]) - 1)]]["dx"]
 
     # ---- radius against proper time, and its error, for one sequence of resolutions
     for fam, keys in fams.items():
@@ -382,7 +388,7 @@ def figures(pre, runs, numbers):
     fig.subplots_adjust(left=0.09, right=0.98, bottom=0.15, top=0.95, wspace=0.26)
     for k, c in zip(seq, fs.series_colors(max(len(seq), 1))):
         reg = numbers[k]["regions"]
-        for rec, ls in zip((reg[2], reg[-1]), (":", "-")):
+        for rec, ls in zip((reg[min(2, len(reg) - 1)], reg[-1]), (":", "-")):
             ax[0].semilogy(rec["profile"]["r"], np.maximum(rec["profile"]["H"], 1e-20), color=c,
                            ls=ls, label=r"$\Delta x=%g$, $t=%g$" % (numbers[k]["dx"], rec["time"]))
     ax[0].legend(fontsize=7, ncol=2)

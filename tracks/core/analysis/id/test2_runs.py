@@ -4,9 +4,10 @@ exact solution, for several gauges, resolutions and settings.
 
 Generates the initial data with problems/ic/make_ball.py (with exterior tracers and a
 sample of 2000 tracked ball particles) and starts the registered card runs through
-nrun.py (tag t2-<case> or t3-<case>), two at a time.
+nrun.py (tag t2-<case> or t3-<case>), two at a time; with --cpu on processors (tag
+t2cpu-<case>, t3cpu-<case>; 64 cells at most, half an hour per run).
 
-    test2_runs.py [--only SUBSTRING] [--jobs 2] [--dry]
+    test2_runs.py [--only SUBSTRING[,SUBSTRING]] [--exact] [--jobs 2] [--dry] [--cpu]
 """
 import argparse
 import concurrent.futures as cf
@@ -82,12 +83,15 @@ CASES = {
     "gs0-edge2-ext-n128": ("t2", 128, 32.0, EDGE2, 1, "gs0", "zero", 10.0, EXT),
     "gs0-edge2-ext-n256": ("t2", 256, 32.0, EDGE2, 1, "gs0", "zero", 10.0, EXT),
     "gs0-ext-n128": ("t2", 128, 32.0, SHARP, 1, "gs0", "zero", 10.0, EXT),
+    "gs0-edge2-ext-n064": ("t2", 64, 32.0, EDGE2, 1, "gs0", "zero", 10.0, EXT),
+    "gs0-ext-n064": ("t2", 64, 32.0, SHARP, 1, "gs0", "zero", 10.0, EXT),
     # test 3: bound ball that turns around (R_b = 5 M, a_max = 1.25, tau = 9.54 M)
     "bound-ct-n080": ("t3", 80, 20.0, BOUND, 1, "ct", "zero", 12.0, []),
     "bound-ct-n160": ("t3", 160, 20.0, BOUND, 1, "ct", "zero", 12.0, []),
     "bound-ct-n320": ("t3", 320, 20.0, BOUND, 1, "ct", "zero", 12.0, []),
     "bound-mp-n160": ("t3", 160, 20.0, BOUND, 1, "mp", "zero", 12.0, []),
     "bound-gs0-n160": ("t3", 160, 20.0, BOUND, 1, "gs0", "zero", 12.0, EXT),
+    "bound-gs0-n064": ("t3", 64, 16.0, BOUND, 1, "gs0", "zero", 12.0, EXT),
 }
 
 
@@ -111,7 +115,7 @@ def make_ic(case):
     return stem
 
 
-def run(name, dry=False):
+def run(name, dry=False, cpu=False):
     case = CASES[name]
     pre, n, half, ball, q, gauge, shift, tlim, extra = case
     stem = os.path.join(IC, make_ic(case))
@@ -124,10 +128,12 @@ def run(name, dry=False):
            "--purpose", f"evolution of the expanding ball against the exact solution: {name} "
                         f"(cells {n}, half-width {half:g}, gauge {gauge}, start shift {shift}, "
                         f"q = {q}, ball {' '.join(ball)}, extra {' '.join(extra) or 'none'})",
-           "--tag", f"{pre}-{name}", "--inputs", stem + ".nrp", stem + ".tab", stem + ".json",
-           "--gpu", "--exe", os.path.join(WT, ".work/build_gpu/src/athena"),
-           "--time", "00:40:00",
-           "--athinput", os.path.join(WT, "problems/ball/ball.athinput"),
+           "--tag", f"{pre}{'cpu' if cpu else ''}-{name}",
+           "--inputs", stem + ".nrp", stem + ".tab", stem + ".json"]
+    if not cpu:
+        cmd += ["--gpu", "--exe", os.path.join(WT, ".work/build_gpu/src/athena"),
+                "--time", "00:40:00"]
+    cmd += ["--athinput", os.path.join(WT, "problems/ball/ball.athinput"),
            f"mesh/nx1={n}", f"mesh/nx2={n}", f"mesh/nx3={n}",
            f"mesh/x1min={-half}", f"mesh/x1max={half}", f"mesh/x2min={-half}",
            f"mesh/x2max={half}", f"mesh/x3min={-half}", f"mesh/x3max={half}",
@@ -148,13 +154,17 @@ def main():
     ap.add_argument("--only", default="")
     ap.add_argument("--jobs", type=int, default=2)
     ap.add_argument("--dry", action="store_true")
+    ap.add_argument("--cpu", action="store_true",
+                    help="run on processors (tag prefix t2cpu, t3cpu); small meshes only")
+    ap.add_argument("--exact", action="store_true", help="--only names are exact")
     a = ap.parse_args()
-    names = [k for k in CASES if any(s in k for s in a.only.split(","))]
+    sel = a.only.split(",")
+    names = [k for k in CASES if (k in sel if a.exact else any(s in k for s in sel))]
     os.makedirs(IC, exist_ok=True)
     for k in names:
         make_ic(CASES[k])
     with cf.ThreadPoolExecutor(max_workers=a.jobs) as ex:
-        for res in ex.map(lambda k: run(k, a.dry), names):
+        for res in ex.map(lambda k: run(k, a.dry, a.cpu), names):
             print(*res, flush=True)
 
 
