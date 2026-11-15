@@ -1,0 +1,223 @@
+\documentclass[aps,prd,twocolumn,10pt,superscriptaddress,nofootinbib,longbibliography,floatfix]{revtex4-2}
+
+\usepackage{amsmath,amssymb,amsfonts}
+\usepackage{bm}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{xcolor}
+\usepackage{hyperref}
+\graphicspath{{figures/}}
+\hypersetup{colorlinks=true,linkcolor=blue,citecolor=blue,urlcolor=blue}
+
+\newcommand{\dd}{\mathrm{d}}
+\newcommand{\Ham}{\mathcal{H}}
+\newcommand{\Mom}{\mathcal{M}}
+\newcommand{\TT}{\Lambda}
+\newcommand{\Hc}{\mathcal{H}_c}
+
+\begin{document}
+
+\title{Gravitational waves from structure formation in an early matter era:\\ Scope, set-up, and first tests (working note v0)}
+
+\author{Track B of the numerical-relativity particle-in-cell cosmology program}
+
+\date{Working note v0, state of 15 November 2026}
+
+\begin{abstract}
+An early era dominated by pressureless matter lets small density fluctuations grow into collapsed structure long before the radiation era begins, and the collapse, virialization and merging of that structure radiate gravitational waves. Every estimate of this signal so far uses Newtonian gravity and the quadrupole formula, although the matter reaches a sizable fraction of the speed of light near the emission peak. This working note scopes a calculation of the signal in full general relativity, with collisionless particles coupled to a numerical-relativity evolution of the spacetime in a periodic expanding box. An exactly plane-symmetric pancake radiates nothing, so the first source is a family of two crossed sine waves whose single-wave member is a built-in null and whose strain before shell crossing has a closed form at second order. The tests done so far show that the box propagates an exact gravitational wave with the errors its finite differences predict, that two independent diagnostics recover the wave from the code's output, and that a plane-wave pancake evolves through shell crossing in full general relativity with every particle kept. Its departure from the Newtonian solution is converged and grows with the square of the ratio of the Hubble radius to the wavelength, and its constraint violation before crossing is the sampling error of a stretched particle lattice, which a finer lattice removes. A semi-analytic Newtonian baseline reproduces the power law of the literature. The note closes with the scan that comes next and the questions it leaves open.
+\end{abstract}
+
+\maketitle
+
+\section{Introduction}\label{sec:intro}
+
+If the early universe passed through an era dominated by pressureless matter, for example a heavy field oscillating before it decays, density fluctuations grew linearly with the scale factor instead of logarithmically, and fluctuations of small primordial amplitude collapsed into halos within the era. The formation, virialization and merging of these halos radiate gravitational waves, a stochastic background that could be the only observable trace of such an era. Two box calculations computed this background from Newtonian $N$-body simulations \cite{Eggemeier:2022gw,Fernandez:2023gw}, the second coupled to a lattice for the radiation, and its authors note that a fully relativistic treatment of gravity is needed to resolve the spectrum at higher frequencies. Two further calculations followed single collapsing patches, a Zel'dovich ellipsoid \cite{Dalianis:2024gw} and an $N$-body ellipsoid \cite{Escriva:2026gw}, with the flat-space quadrupole formula. The representative case of Ref.~\cite{Escriva:2026gw} reaches mean peculiar speeds of a large fraction of the speed of light at the emission peak, where its authors expect relativistic corrections. The question of this track is therefore twofold: how much gravitational radiation the structure of an early matter era produces, and in which range the Newtonian estimates can be trusted.
+
+Full numerical relativity evolves the metric itself, so the radiative degrees of freedom are part of the solution and no quadrupole formula is needed. The numerical-relativity particle-in-cell method of Wu and Most \cite{Wu:2026nrpic} couples macroparticles on geodesics to the Z4c evolution of the spacetime; this program applies a version of that method, extended to periodic expanding domains, in the code AthenaK \cite{Stone:2024athenak}. Particles are essential here: a pressureless fluid stops at the first shell crossing, while the emission peaks after it. The work is carried out by large-language-model agents under human direction.
+
+This note records the scoping stage. Section~\ref{sec:problem} asks what radiates, fixes the first source and gives its second-order strain. Section~\ref{sec:setup} describes the calculation and its numerical methods. Section~\ref{sec:tests} reports the tests done so far:
+(i) the periodic box propagates an exact linear wave with the errors its stencils predict;
+(ii) the flat transverse-traceless projection and the Weyl scalar recover that wave from the code's output;
+(iii) a plane-wave pancake evolves through shell crossing in full relativity, with a converged departure from Newtonian gravity that grows with the square of the ratio of the Hubble radius to the wavelength;
+(iv) the homogeneous background follows the exact solution;
+(v) a semi-analytic Newtonian baseline reproduces the power law of the literature.
+Section~\ref{sec:plan} gives the plan and what is open. Table~\ref{tab:parameters} holds the parameters of the scenarios, and Table~\ref{tab:ledger} every number behind the note with the registered run that produced it.
+
+\section{What radiates}\label{sec:problem}
+
+\subsection{The plane-symmetric null}\label{sec:null}
+
+The minimum calculation one would write down first is a plane-symmetric pancake: one sine wave of the density in a periodic box, collapsing along one axis into a sheet. It radiates nothing. Data that depend on $x$ alone are invariant under translations and rotations in the $y$--$z$ plane, the Euclidean group $E(2)$. Every symmetric tensor with this symmetry has the form $\mathrm{diag}(A,B,B)$ plus terms along $x$, and the transverse-traceless (TT) projector along the $x$ axis annihilates all of them, so the TT part vanishes at every nonzero wave number. On the torus one global mode survives: the traceless, divergence-free tensor $\mathrm{diag}(1,-\tfrac12,-\tfrac12)$ divided by the cube of the transverse scale factor, an anisotropic mean expansion of the whole box, which carries no radiation. Both statements were checked symbolically and rederived independently.
+
+The same symmetry restricts the relativistic pancake itself. With a transverse metric that depends on time alone, the Einstein equations admit a longitudinal metric of the Zel'dovich form, the transverse one times one plus a growth factor times a profile, only when the growth factor is constant, a relabelling of $x$, or decays as $1/t$. The naive relativistic form of the pancake is thus the decaying mode, and the reference solution of the relativistic pancake has to come from the planar members of the Szekeres class of dust solutions \cite{Bolejko:2018silent}, which we have yet to derive.
+
+\subsection{The first source: crossed waves}\label{sec:source}
+
+The source is therefore a family. Take the potential of two crossed sine waves of unequal amplitude in a box of side $L$,
+\begin{equation}\label{eq:potential}
+\Phi = \phi_x\sin kx + \phi_y\sin ky,\qquad \phi_i = -\frac32\left(\frac{H}{k}\right)^2\delta\,r_i,
+\end{equation}
+with $k=2\pi/L$, $H$ the Hubble rate of the initial slice, $\delta$ the linear density contrast there, and amplitude ratios $r=(1,\epsilon,0)$. The member $\epsilon=0$ is the plane-symmetric pancake, the null of the family; for $\epsilon>0$ the products of the two waves source the modes $\mathbf K=(k,\pm k,0)$, which are TT. The weak-field equation for the tensor part of the metric, $\dd s^2=a^2[-(1+2\Phi)\dd\tau^2+(1-2\Phi)\delta_{ij}\dd x^i\dd x^j+h_{ij}\dd x^i\dd x^j]$, is \cite{Adamek:2016gevolution}
+\begin{equation}\label{eq:tensor}
+\begin{split}
+\tfrac12 h''_{ij} + \Hc h'_{ij} - \tfrac12\nabla^2 h_{ij} = \TT_{ij}{}^{kl}\big[&8\pi G a^2\Pi_{kl} - 2\partial_k\Phi\,\partial_l\Phi\\
+&- 4\Phi\,\partial_k\partial_l\Phi\big],
+\end{split}
+\end{equation}
+where $\tau$ is conformal time, $\Hc$ the conformal Hubble rate, $\Pi_{kl}$ the anisotropic stress and $\TT$ the TT projector. In the matter era the potential is constant, the velocity is $-(2/3\Hc)\nabla\Phi$, and the projection of $\Phi\,\partial_k\partial_l\Phi$ equals minus that of $\partial_k\Phi\,\partial_l\Phi$, so the source reduces to $\tfrac{10}{3}\TT[\partial\Phi\,\partial\Phi]$. Its quasi-static solution at $\mathbf K=(k,k,0)$ is the crossed-wave strain
+\begin{equation}\label{eq:strain}
+h_+ = -\frac56\,\phi_x\phi_y\cos(\mathbf K\cdot\mathbf x),
+\end{equation}
+in the polarization basis $e_+ = uu - zz$ with $u=(1,-1,0)/\sqrt2$; the mode $(k,-k,0)$ carries the opposite sign in its own basis. The strain is linear in $\epsilon$ and of second order in $\delta$. Projecting the source of the weak-field equation on a grid reproduces the coefficient to rounding error over three decades of $\epsilon$, and gives the same amplitude for two and for three equal waves [Fig.~\ref{fig:source}(a)]. The derivation was redone independently by a second agent in real space.
+
+\begin{figure}[t]
+\includegraphics[width=\columnwidth]{fig_source.pdf}
+\caption{The first source. (a) TT strain of the $(k,k,0)$ mode against the second-wave ratio (circles) and the closed form (line); diamonds: three equal waves, three-wave data. (b) Virial frequency at collapse over the lowest box wave number for three box sizes; squares: earlier relativistic runs; dotted: $k_1$, $\sqrt2\,k_1$.}
+\label{fig:source}
+\end{figure}
+
+The initial data of the code are conformally flat, so the TT part starts at zero and approaches the crossed-wave strain through an oscillation, the junk radiation of the data. Writing $h_+(\tau)=h_s\,g(\tau)$ with $h_s$ the static value above, the junk equation
+\begin{equation}\label{eq:junk}
+g'' + 2\Hc g' + |\mathbf K|^2 (g-1) = 0,\qquad g(0)=g'(0)=0,
+\end{equation}
+gives an oscillation about one whose envelope falls as $1/a$, the decay of a free wave in the matter era. Both the static strain and the decaying oscillation are predictions for the code before shell crossing.
+
+\subsection{The radiation band and the relativistic depth}\label{sec:band}
+
+A halo radiates near its virial frequency at collapse. For a box of side $L$ the lowest radiating modes are $k_1=2\pi/L$ and $\sqrt2\,k_1$, so the box size decides whether the box modes sample the radiation band or only the near field of the collapse [Fig.~\ref{fig:source}(b)]. In a box of four initial Hubble radii the virial frequency at collapse crosses the two lowest modes within the planned amplitudes; in a box of two it stays below them at small amplitude. The box of four initial Hubble radii is our choice for the first source, with two and eight as the size leg.
+
+The size of the relativistic corrections follows from the depth of the potential,
+\begin{equation}\label{eq:depth}
+\psi_N = \frac32\left(\frac{H}{k}\right)^2\delta,
+\end{equation}
+which grows with the square of the box size in Hubble radii. Before shell crossing, Newtonian $N$-body evolution with Zel'dovich data already contains the first-order relativistic effects in a suitable gauge \cite{Fidler:2015za}; the relativistic content of the signal enters through $\psi_N$, through the gauge of the projection, and after shell crossing through the strong compression of the multi-stream region.
+
+\section{The calculation}\label{sec:setup}
+
+\subsection{The expanding periodic box}\label{sec:box}
+
+The universe is a periodic box filled with collisionless particles that start on a lattice displaced by the Zel'dovich growing mode of the potential above. The constraints are solved on the torus spectrally for conformally flat data, following the construction of East, Wojtak and Pretorius \cite{East:2019ev}, which this program's cosmology extension reproduced. The slicing is the conformal-time slicing
+\begin{equation}\label{eq:slicing}
+\partial_t\alpha = -\tfrac13\alpha^2 K,
+\end{equation}
+with lapse $\alpha$ and the trace $K$ of the extrinsic curvature; for the homogeneous matter era it keeps $\alpha=a$, so the coordinate time is conformal time. The shift is zero. This is the slicing of the earlier relativistic structure-formation runs of this program; harmonic slicing and the $1+\log$ condition are the gauge leg of the convergence tests. Figure~\ref{fig:architecture} shows the parts of the calculation, which of them exist and which are new.
+
+\begin{figure*}[t]
+\includegraphics[width=\textwidth]{schem_architecture.png}
+\caption{Architecture of the calculation. Columns: initial data, evolution in the code, and analysis with the reference solutions outside the code. Green: exists in this program; slate: exists for another setting and is carried over; red: to be written. Bottom: the deliverables of the problem.}
+\label{fig:architecture}
+\end{figure*}
+
+\subsection{Gravitational-wave diagnostics}\label{sec:diag}
+
+Two diagnostics measure the radiation. The first is the flat TT projection of the conformal metric perturbation and of the extrinsic curvature in Fourier space, $\TT_{ij,kl}=P_{ik}P_{jl}-\tfrac12P_{ij}P_{kl}$ with $P_{ij}=\delta_{ij}-\hat k_i\hat k_j$. It gives the strain $h^{\rm TT}_{ij}$, its two polarizations and helicities, the spectrum per wave number, and the energy density
+\begin{equation}\label{eq:rhoK}
+\rho_K = \frac{M_{\rm pl}^2}{2}K^{\rm TT}_{ij}K_{\rm TT}^{ij} = \frac{\langle h'^{\rm TT}_{ij}h'^{ij}_{\rm TT}\rangle}{64\pi G}
+\end{equation}
+of Ota, Macpherson and Coulton \cite{Ota:2021tt}, where the second form holds for $K_{ij}=-\tfrac12 h'_{ij}$; it is half of the Isaacson energy, the kinetic half. The second diagnostic is the Weyl tensor: its electric and magnetic parts on the slice and the scalar $\Psi_4$ on a null tetrad fixed along the wave direction, which equals $\ddot h_+ - i\,\ddot h_\times$ for a plane wave.
+
+The flat projection is exact at first order. At second order the TT part depends on the slicing and on the spatial coordinates \cite{Hwang:2017gauge}, and the York decomposition on the curved slice, which removes the spatial part of this dependence, is still to be implemented. The magnetic Weyl part vanishes at first order for scalar perturbations and is the gauge-robust check of a second-order signal.
+
+\subsection{Numerical methods}\label{sec:methods}
+
+The spacetime is evolved with the Z4c formulation of AthenaK \cite{Stone:2024athenak} with finite differences of high order, Kreiss--Oliger dissipation, fourth-order Runge--Kutta time integration and constraint damping. The particles follow geodesics; their energy-momentum is deposited with a cubic cloud and a compensation of its smoothing, and the metric is interpolated to them with cubic splines \cite{Wu:2026nrpic}. The step is limited by the expansion as well as by the light crossing of a cell.
+
+Three Newtonian references come with the same initial data. The plane wave has an exact Zel'dovich solution up to shell crossing, written for the discrete sheets of the particle lattice. A particle-mesh code evolves the same particles in Newtonian gravity through shell crossing. For isolated patches, the Zel'dovich ellipsoid and the homogeneous-ellipsoid equations give the quadrupole radiation of Refs.~\cite{Dalianis:2024gw,Escriva:2026gw}. The code now also has a Newtonian mode for the same particles, with the quadrupole history written during the run; its runs are the next baseline (Sec.~\ref{sec:plan}).
+
+\section{Tests so far}\label{sec:tests}
+
+\subsection{Linear waves in the periodic box}\label{sec:linear}
+
+A TT wave of amplitude $10^{-6}$ travelling along $x$ in a vacuum box of one wavelength was evolved for ten crossings at four resolutions and with two sets of numerics, those of the cosmology runs and those of the upstream test input [Fig.~\ref{fig:waves}(a)]. The amplitude error falls at the order of the dissipation term, the phase error at the order of the derivative stencils and the time integrator, and both follow the prediction from the Fourier symbol of the scheme, written before the runs. The largest departure from that prediction is in the phase error at the finest resolution before the floor; at the finest resolution the error stops falling because the perturbation $1+h$ is rounded, and the departure there scales as the inverse amplitude. Fields that vanish at first order grow as the square of the amplitude times the square of the time, the closed-box backreaction of the wave on the mean expansion, with the lapse change of the slicing in use; a second agent derived both coefficients.
+
+The upstream generator of linear waves writes data that are TT only for wave vectors along an axis: for an oblique wave vector two signs of its polarization tensor are reversed, and the data violate both constraints at first order. Flipping the two signs makes the tensor transverse for every direction. The oblique test therefore waits for that fix in the code. A gauge wave in harmonic slicing converges at the order of the scheme. A record of the lapse and shift options in a vacuum box shows that the conformal-time slicing, like the volume slicing, forms a gauge shock within two crossings when the extrinsic curvature varies across the box by a sizable fraction of the wave number, while harmonic slicing stays smooth; this bounds the regime in which the production slicing can be trusted after collapse.
+
+\begin{figure}[t]
+\includegraphics[width=\columnwidth]{fig_waves.pdf}
+\caption{A linear wave in the periodic vacuum box. (a) Amplitude (filled) and phase (open) errors after ten crossings, two sets of numerics; lines: Fourier-symbol prediction. (b) Departure of the projected strain, its energy density and the fixed-direction $\Psi_4$ from the exact wave, one run with 32 cells.}
+\label{fig:waves}
+\end{figure}
+
+\subsection{The diagnostics on code output}\label{sec:diagtests}
+
+On analytic fields, a superposition of random TT waves, the projection returns the energy of every spectral shell to rounding error, separates the helicities, and assigns nothing to a pure-gauge or scalar field at first order. On the dumps of an AthenaK wave over two periods [Fig.~\ref{fig:waves}(b)], the projected amplitude and phase depart from the exact wave by the discretization error of the evolution itself, consistent with the convergence test at the same resolution, and the energy density follows. The fixed-direction $\Psi_4$ computed from the same dumps equals the second time derivative of the exact strain to the same level. The code's own Weyl output lags the dump by a fixed number of steps and uses a tetrad built from the radial direction, so its value depends on the position for a plane wave; the fixed-direction scalar replaces it for this problem.
+
+Applied to the dumps of an earlier relativistic run of three crossed waves, the projection finds a TT strain that freezes at the expected size before collapse and rises late, after the scale factor has grown by several hundred. The late rise coincides with the square of the non-TT part of the metric reaching the TT level, the size of the second-order gauge piece of the flat projection in zero shift; until the gauge test of Sec.~\ref{sec:plan} has run, the rise is a candidate gauge effect.
+
+\subsection{The pancake through shell crossing}\label{sec:pancake}
+
+The plane-wave pancake, the null member of the family, was evolved in full relativity with amplitude $\delta=0.05$ in boxes of one and four initial Hubble radii, at three resolutions and with one and with two particles per cell and direction, to twice the scale factor of the first crossing. Every run reached the end with every particle kept, and the plane symmetry held to rounding error in positions and transverse velocities through the multi-stream region. The first crossing comes slightly later than for the exact Zel'dovich sheets, more so at coarse resolution, where the cloud smooths a sheet thinner than a cell, and approaches the exact value with resolution; the Newtonian particle-mesh run shows the same.
+
+The relativistic coordinate positions depart from the Newtonian ones by a smooth pattern of the first and second harmonics of the box, with no structure at the cell scale. This departure is the same at 32, 64 and 96 cells and with two particles per cell and direction, so it is a property of the solution in these coordinates. Divided by 16, the ratio of $(H/k)^2$ between the two boxes, the departure in the large box falls on top of the small-box curves after the first few units of time [Fig.~\ref{fig:pancake}(a)]: the relativistic correction to the coordinate trajectories scales as $(H/k)^2\delta$, as the depth of the potential predicts. In the proper time of the crossing sheets the large box also crosses later. The early mismatch of the large box is an oscillation with a period close to one light crossing of the box, a transient of the initial data that we have yet to identify.
+
+\begin{figure}[t]
+\includegraphics[width=\columnwidth]{fig_pancake.pdf}
+\caption{The plane-wave pancake in full relativity. (a) Largest relativistic minus Newtonian position of the sheets, relative to their displacement, for boxes of one and four initial Hubble radii (the latter divided by 16). (b) Box mean of the relative Hamiltonian constraint. Dotted: first shell crossing.}
+\label{fig:pancake}
+\end{figure}
+
+The constraints first failed a prediction. With one particle per cell the mean violation grows long before crossing and is almost independent of the mesh [Fig.~\ref{fig:pancake}(b)]. It sits in the underdense half of the box, where the lattice is stretched beyond the cell size and the cubic cloud deposits a density with a ripple at the lattice scale: depositing the exact Zel'dovich sheet positions with the code's cloud reproduces the ripple, while the particles themselves move as a smooth flow. Two particles per cell and direction lower the mean violations by a factor that grows as the void stretches, beyond an order of magnitude for both constraints as crossing approaches, and keep the energy density positive in the void after crossing. After crossing the violation sits at the pancake for either lattice. Every production run therefore uses two particles per cell and direction. The same lattice sampling sets the first-order convergence of the Newtonian particle-mesh reference with one particle per cell.
+
+\subsection{The homogeneous background}\label{sec:background}
+
+The homogeneous runs of the cosmology extension, re-read against the exact matter-era solution, keep the lapse equal to the scale factor to the error of the time integration over a growth of the scale factor by more than an order of magnitude when the step is limited by the expansion, and in the earlier mesh study the error of the conformal factor converges at fourth order early in a thousandfold expansion. A run in the full production configuration and a convergence study in particle number are still missing.
+
+\subsection{The Newtonian baseline}\label{sec:baseline}
+
+In the Zel'dovich approximation a triaxial patch of mass $M$ with deformation eigenvalues $\lambda_i$ radiates, between two times $t_1$ and $t_2$ in units of the time at which linear theory sets the scale, the Zel'dovich energy
+\begin{equation}\label{eq:za}
+E_{\rm GW} = \frac{8}{15}\,M c^2 S\left[t_2^{1/3}-t_1^{1/3}\right],
+\end{equation}
+with the shape factor $S=\tfrac16\sum_i(3\lambda_i^2-\sum_j\lambda_j^2)^2$ ($G=c=1$ inside the bracket); a second agent checked it by quadrature. The spectra of Refs.~\cite{Dalianis:2024gw,Escriva:2026gw} follow from it exactly. Over a population of patches the energy and the spectral peak grow as the $7/2$ power of the amplitude and the peak frequency as the $3/2$ power, the scaling quoted by Ref.~\cite{Dalianis:2024gw}, up to amplitudes of order $10^{-2}$; at larger amplitudes the local slopes depart from these values [Fig.~\ref{fig:baseline}]. The power law has a simple origin: the single-patch Newtonian problem is exactly self-similar, so its energy is a fixed multiple of $Mc^2$ times the $7/2$ power of the deformation.
+
+\begin{figure}[t]
+\includegraphics[width=\columnwidth]{fig_baseline.pdf}
+\caption{Semi-analytic Newtonian baseline: a Zel'dovich ellipsoid with the quadrupole formula. (a) Radiated energy and spectral peak against the linear amplitude, with the $7/2$ power law. (b) Local logarithmic slopes of the energy, the peak and the peak frequency; dashed: $7/2$ and $3/2$.}
+\label{fig:baseline}
+\end{figure}
+
+Two comparisons with the literature are open. The shell-crossing times of Ref.~\cite{Escriva:2026gw} are reproduced closely only by a literal reading of its force law, in which the patch also attracts the background inside it, and the prefactor of the peak energy density of Ref.~\cite{Dalianis:2024gw} is missed by a factor between one and four hundred, with the cause unknown. The Newtonian $N$-body baseline in the code's Newtonian mode replaces these readings at the next gate.
+
+\subsection{Independent rechecks}\label{sec:recheck}
+
+Every result above was recomputed by a second agent from a clean export of the committed scripts and reproduced to the last bit; the key derivations (the plane-symmetric null, the crossed-wave strain, the polarization sign, the Zel'dovich energy, the sheet modes and the closed-box backreaction) were redone with code written independently of the first agents. The figures of this note were drawn from the outputs of the registered runs, each checked against the checksum its run recorded where one exists and against the copy committed by the run's package.
+
+\section{Plan and open questions}\label{sec:plan}
+
+The rows of the program's verification suite held by this track are the matter-era background, the growth of linear perturbations, linear waves in a periodic box, the plane-symmetric pancake through shell crossing, the weak-field multi-code comparison, and, shared with the primordial-black-hole track, Szekeres-type dust. Under the program's ruling the multi-code row is the shearing-dust comparison of Ref.~\cite{Adamek:2020shearing}, run in this code against its published numbers, together with full relativity against the Newtonian mode of the code on the same particles. Figure~\ref{fig:timeline} places the gates in time.
+
+\begin{figure*}[t]
+\includegraphics[width=\textwidth]{schem_timeline.png}
+\caption{Stage timeline of the track. Circles: the five gates at their target times (green: scoping; slate: baseline and verified capability; red: science and paper). Boxes: what each gate requires. Dashed brackets: what the step between two gates needs.}
+\label{fig:timeline}
+\end{figure*}
+
+The next runs are the first-source scan: the crossed waves with $\epsilon=0$, $0.1$, $0.3$ and $1$ at $\delta=0.01$ in the box of four initial Hubble radii, with two particles per cell and direction, dumps of the metric through shell crossing, and a second run of $\epsilon=1$ with a driven shift as the spatial-gauge leg. The predictions were written before the initial data were made: the null run carries no TT part at any nonzero wave number through crossing; before crossing the $(k,k,0)$ strain equals the crossed-wave strain times the junk solution, linear in $\epsilon$; the spatial-gauge piece of the flat projection, computed from the measured non-TT part, stays small before crossing and accounts for the difference between the two spatial gauges. The same correction applied to the earlier three-wave dumps decides whether their late rise is a gauge effect.
+
+Open at this stage, in the order in which they block the gates: the oblique-wave test and a wave in an expanding box with both diagnostics, which need the polarization fix of the upstream generator; the Newtonian-mode baseline of the plane wave and of the ellipsoid; a jittered particle lattice for the noise floor after shell crossing, the main risk of the problem; the second-order reference strain carried to the code's slicing, and the York TT part on the curved slice; the relativistic reference of the plane pancake from the planar Szekeres class; particle-number convergence of the background and of the growth rate; thin periodic boxes for the convergence leg at the finest resolution; the reading of the two Newtonian box results \cite{Eggemeier:2022gw,Fernandez:2023gw} and of the report of a secular third-order term, against which the relativistic spectrum is to be compared.
+
+\section{Summary}\label{sec:summary}
+
+A plane-symmetric pancake radiates nothing, because its symmetry leaves no transverse-traceless part at any wave number; the first source is therefore two crossed waves, whose single-wave member is the null and whose strain before crossing is fixed in closed form by the product of the two potentials. The code propagates gravitational waves in a periodic box with the errors its stencils predict, and two independent diagnostics read them off its output. The first full-relativity pancake runs through shell crossing with every particle kept; its departure from Newtonian gravity is a converged property of the solution that grows with the square of the box size in Hubble radii, and its constraint violation is the sampling error of a stretched lattice, which a finer lattice removes. What remains before the signal itself is measured is gauge: which part of a second-order TT strain in the code's coordinates is radiation.
+
+\begin{acknowledgments}
+The calculations, the code and this note were produced by large-language-model agents under human direction, within the numerical-relativity particle-in-cell cosmology program.
+\end{acknowledgments}
+
+\appendix
+
+\section{Parameters}\label{app:parameters}
+
+Table~\ref{tab:parameters} lists the physical and simulation parameters of the scenarios of this note.
+
+\input{tables/parameters}
+
+\section{Numerical ledger}\label{app:ledger}
+
+Table~\ref{tab:ledger} gives every number behind this note with the registered run that produced it. The outputs of each run are checked against the checksums the run recorded, where it recorded them, and against the copies committed by the run's package. The statements taken from papers were read at their sources: the $7/2$ scaling in Ref.~\cite{Dalianis:2024gw}, \texttt{pII\_GW\_Vir\_C2\_Arx.tex} line 1074; the crossing times and the peculiar speeds of Ref.~\cite{Escriva:2026gw}, \texttt{main\_v3.tex} lines 2276--2279 and 2395--2405, its redshift coefficient at line 2542; the energy density of the TT part, Ref.~\cite{Ota:2021tt}, \texttt{prd\_v1.tex} lines 258--262; the tensor equation, Ref.~\cite{Adamek:2016gevolution}, \texttt{compendium\_arxiv.tex} lines 142 and 294--298; the methods of the two box calculations, Refs.~\cite{Eggemeier:2022gw,Fernandez:2023gw}, from their abstracts, \texttt{main.tex} line 82 and lines 107--115. The fourth-order mesh convergence of the homogeneous background is the earlier mesh study of the cosmology extension (its analysis file \texttt{cosmo/analysis/daverio\_a.json}), re-read by the track. The figures and tables were made from these runs in the registered run of the note package named in its journal. \input{tables/claims_summary}: the order of magnitude given for the lapse error of the homogeneous run at the smaller scale factor; the agreement with the Fourier-symbol prediction, stated without the larger departure of the phase error at the finest resolution; the Hamiltonian constraint of the earlier mesh study, quoted for a thousandfold expansion with the values of its first record, while at the end of that expansion it stops falling between the two finest meshes; and the Newtonian mode of the code, described as absent from the main branch, a statement written before the first wave of the program was merged. In each case the files hold, and the sentences of this note follow them.
+
+\input{tables/ledger}
+
+\bibliography{references}
+
+\end{document}
