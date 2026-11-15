@@ -38,15 +38,15 @@ def rhs(tau, s):
     return [v, -0.5 / y**2 - y / (4.0 * tau**2)]
 
 
-def turnaround(y0, tau0, dense=False):
+def turnaround(y0, tau0, dense=False, method="DOP853", rtol=1e-12):
     def ev(tau, s):
         return s[1]
     ev.terminal = True
     ev.direction = -1
     # turnaround happens by tau ~ (y0^3/tau0^1.5)^2 scale; integrate generously
     t_end = tau0 + 1e3 * max(1.0, (y0**3 / tau0**1.5) ** 2) + 1e3
-    sol = solve_ivp(rhs, (tau0, t_end), [y0, y0 / (2.0 * tau0)], method="DOP853",
-                    rtol=1e-12, atol=1e-14 * y0, events=ev, dense_output=dense)
+    sol = solve_ivp(rhs, (tau0, t_end), [y0, y0 / (2.0 * tau0)], method=method,
+                    rtol=rtol, atol=1e-14 * y0, events=ev, dense_output=dense)
     tau_ta = float(sol.t_events[0][0])
     y_ta = float(sol.y_events[0][0][0])
     out = dict(y0=y0, tau0=tau0, S=y0**3 / (2 * tau0**2), tau_ta=tau_ta, y_ta=y_ta,
@@ -99,7 +99,16 @@ def boost_mc(n, xmax=1e3, npart=4_000_000, seed=20261115):
     rc = np.sqrt(edges[1:] * edges[:-1])
     rho = h * (mtot / npart) / vol                       # in units of A (rho_fi = r^-n)
     # exact expectation for the truncated apocentre range, per bin centre
-    expect = np.array([boost_quad(n, xmax / x) for x in rc])
+    # bin average of the exact expectation (rho ~ r^-n varies across a bin: comparing
+    # with the value at the bin centre biases the ratio by ~1 %; run
+    # D-bh-dress-20261115-121936-5c715b5)
+    expect = []
+    for lo, hi in zip(edges[:-1], edges[1:]):
+        x = np.geomspace(lo, hi, 9)
+        f = np.array([boost_quad(n, xmax / xx) for xx in x]) * x ** (2.0 - n)
+        num = np.trapz(f, x)
+        expect.append(num / ((hi**3 - lo**3) / 3.0))
+    expect = np.array(expect) * rc**n               # same normalisation as ratio
     err = np.sqrt(np.maximum(h, 1)) * (mtot / npart) / vol
     return dict(rc=rc, ratio=rho * rc**n, expect=expect, err=err * rc**n, counts=h)
 
@@ -122,6 +131,12 @@ def main():
             d_tau=r["tau_ta"] - tta, d_y=r["y_ta"] - yta, d_eta=r["eta"] - eta,
             y_eq_over_y_ta=r["y_eq"] / r["y_ta"],
             analytic_at_eq_over_y_ta=(2 * r["tau_eq"] ** 2) ** (1 / 3) / r["y_ta"]))
+
+    # 1a, second integrator (implicit Radau) for the same four rows
+    res["table1_radau"] = []
+    for (y0, *_rest) in TABLE1:
+        r = turnaround(y0, 1e-3, method="Radau", rtol=1e-11)
+        res["table1_radau"].append(dict(y0=y0, tau_ta=r["tau_ta"], y_ta=r["y_ta"], eta=r["eta"]))
 
     # 1b, 1c: dependence on how deep in the expansion-dominated regime the start is
     S = np.geomspace(10.0, 1e8, 29)
@@ -224,8 +239,8 @@ def main():
     fig, ax = plt.subplots(figsize=(fs.COLUMN_WIDTH, 2.8))
     fig.subplots_adjust(left=0.17, right=0.97, bottom=0.17, top=0.96)
     ax.errorbar(mc["rc"], mc["ratio"], yerr=mc["err"], fmt="o", ms=3, color=fs.PAL["red"],
-                label="Monte Carlo, apocentres on [1, 1000]")
-    ax.plot(mc["rc"], mc["expect"], color=fs.PAL["blue"], label="quadrature, same range")
+                label="Monte Carlo (bins), apocentres on [1, 1000]")
+    ax.plot(mc["rc"], mc["expect"], color=fs.PAL["blue"], label="quadrature, same range, bin average")
     ax.axhline(boost_closed(2.25), **fs.GUIDE)
     ax.set_xscale("log")
     ax.set_xlabel(r"$r$ (units of the smallest apocentre)")
@@ -238,6 +253,9 @@ def main():
         f.write("# Table 1 of 2106.07480 (tau0 = 1e-3): mine vs printed\n")
         for d in res["table1"]:
             f.write(" ".join(f"{k}={v:.6g}" for k, v in d.items()) + "\n")
+        f.write("# same rows, Radau rtol 1e-11\n")
+        for d in res["table1_radau"]:
+            f.write(" ".join(f"{k}={v:.7g}" for k, v in d.items()) + "\n")
         f.write("# scan of the start parameter S\n")
         for d in res["scan"]:
             f.write(" ".join(f"{k}={v:.7g}" for k, v in d.items()) + "\n")
