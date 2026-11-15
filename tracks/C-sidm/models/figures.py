@@ -120,12 +120,20 @@ def fig_models(dirs, out):
         r = F[f"prof_{tag}_r"]
         n = F[f"prof_{tag}_n"]
         a.semilogy(r, n / n[0], color=col, label=lab)
-        rb = F[f"r_{tag}_sample"]
-        h, e = np.histogram(rb, bins=60, range=(0, r.max()))
-        a.semilogy(0.5 * (e[1:] + e[:-1]), np.maximum(h, 0.5) / np.max(h) * 1.0, color=col,
-                   ls="none", marker=".", ms=3, alpha=0.6)
+        # sample: counts per radial bin over the continuum expectation, times n/n_c
+        Fb = D[-1]
+        rb = Fb[f"r_{tag}_sample"]
+        e = np.linspace(0, r.max(), 61)
+        h = np.histogram(rb, bins=e)[0]
+        dm = 4 * np.pi * r ** 2 * Fb[f"prof_{tag}_psi"] ** 6 * n     # rest mass per dr
+        cm = np.concatenate([[0], np.cumsum(0.5 * (dm[1:] + dm[:-1]) * np.diff(r))])
+        expct = len(rb) * np.diff(np.interp(e, r, cm)) / cm[-1]
+        rc = 0.5 * (e[1:] + e[:-1])
+        ok = (h > 0) & (expct > 0)
+        a.semilogy(rc[ok], (h[ok] / expct[ok]) * np.interp(rc[ok], r, n) / n[0], color=col,
+                   ls="none", marker=".", ms=3, alpha=0.7)
     a.set_xlabel(r"isotropic radius $\bar r/M$")
-    a.set_ylabel(r"$n/n_c$ (lines); radial counts (dots)")
+    a.set_ylabel(r"$n/n_c$ (lines); file, $N=10^5$ (dots)")
     a.set_ylim(1e-5, 2)
     a.legend(loc="upper right")
     a = ax[1, 0]
@@ -150,7 +158,8 @@ def fig_models(dirs, out):
                       rotation=60, fontsize=7)
     a.axhline(1e-3, **fs.GUIDE)
     a.set_ylabel("particle form of the constraint")
-    a.legend(loc="lower left", fontsize=8)
+    a.set_ylim(1e-5, 2e-3)
+    a.legend(loc="upper left", bbox_to_anchor=(0.0, 0.86), fontsize=8)
     return fs.save(fig, os.path.join(out, "fig_models"))
 
 
