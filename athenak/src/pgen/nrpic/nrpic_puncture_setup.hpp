@@ -23,7 +23,9 @@
 //!   reflevel  comp<c>_level, default puncture_level - round(log2(mass/lightest mass)),
 //!             puncture_level by default the finest level, <mesh_refinement> num_levels-1
 //!   flow_alpha_beta_const_<n> = mass^2 (the flow step relative to the radius scales as
-//!             this constant over the mass squared), mass_tol_<n> = 1e-5 mass
+//!             this constant over the mass squared), mass_tol_<n> = 1e-5 mass,
+//!             hmean_tol_<n> = 100 max(1, mass) (the integrated expansion of the first
+//!             guess grows in proportion to the mass)
 //! puncture_horizons = false leaves out the finders.  Parameters the input file sets
 //! itself are kept, except the tracker parameters, which are an error to set twice.
 
@@ -172,7 +174,8 @@ inline void NrpicPunctureSetup(ParameterInput *pin) {
       if (!pin->DoesParameterExist("fastflow", "flow_alpha_beta_const" + s)) {
         SetupSetReal(pin, "fastflow", "flow_alpha_beta_const" + s, mass[n]*mass[n]);
       }
-      pin->GetOrAddReal("fastflow", "hmean_tol" + s, 100.0);
+      // bound on the surface integral of the expansion, which grows with the mass
+      pin->GetOrAddReal("fastflow", "hmean_tol" + s, 100.0*fmax(1.0, mass[n]));
       if (!pin->DoesParameterExist("fastflow", "mass_tol" + s)) {
         SetupSetReal(pin, "fastflow", "mass_tol" + s, 1.0e-5*mass[n]);
       }

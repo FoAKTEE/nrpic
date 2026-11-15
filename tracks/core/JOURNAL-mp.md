@@ -433,3 +433,44 @@ t = 0.125 on, in both runs. [VERIFIED]
  - The card executable of the final source is built in `.work/build_gpu_final`; the
    runs already queued use the build of 7a60df2 (same kernel code; only the place of
    the reader call and of a log line differ).
+
+### Test 3 started; heavy horizon not found in the first searches; diagnostic
+
+Card run `core-20261115-120834-d08c476` (t3) at t = 1: light horizons found from the
+first search (0.5358 and 0.5448, inside the predicted ranges), heavy horizon not found
+(nan rows). Two explanations, to be told apart by four one-cycle runs on processors
+with the verbose finder (`problems/tests/by_horizon_coarse.athinput`: the heavy hole
+alone, same cells of m/10, flow constant 100, 25, 5, 1), written before they finish:
+ - H1, the flow constant m^2 = 100 is too large: the flow overshoots with 100 and
+   converges with a smaller constant;
+ - H2, the mesh at m/10 is too coarse for the finder at the start: no constant
+   converges at the first search (the restart check on cells of m/8 also missed the
+   first two searches and then found the horizon).
+ Prediction [JUDGEMENT]: H2, and the card run finds the heavy horizon later.
+
+### Outcome of the finder diagnostic: neither hypothesis; the cause is `hmean_tol`
+
+Processor runs, one cycle, the heavy hole alone on cells of m/10:
+ - first guess a sphere of radius m/2 (what the finder takes for a single puncture),
+   flow constants 100, 25, 5, 1 (`core-20261115-122312-8e699b1`, `-122314-`,
+   `-122315-`, `-122316-`): horizon found in every case, Christodoulou mass 10.348
+   (irreducible 10.244), S_z = 29.981 for S = 30 (sign and size of the Bowen-York
+   spin confirmed by the finder's integral). [VERIFIED] The search stops after two or
+   three steps because the stopping rule is "mass changed by less than mass_tol": with
+   a small flow constant it stops where it started (constant 1: radius 5.0001 after
+   one step), so a too small constant passes for convergence.
+ - first guess a sphere of radius m = 10 (what the finder takes when other punctures
+   are far away, as in the three-black-hole run), same four constants
+   (`-122626-`, `-122627-`, `-122628-`, `-122630-`): every search ends at step 0 with
+   "Failed, hmean > 100": the surface integral of the expansion is 186.6 there, and
+   the tolerance `hmean_tol` = 100 that `puncture_setup` writes (the value of the
+   existing inputs) is an absolute number while the integral grows in proportion to
+   the mass. H1 (constant too large) and H2 (mesh too coarse) are both wrong; my
+   prediction of H2 failed.
+ Fix: `puncture_setup` writes `hmean_tol_<n> = 100 max(1, m)`.
+
+**Prediction before the check of the fix** (processors, same input, first guess of
+radius 10, constant 100, `hmean_tol_0 = 1000`): the flow contracts from radius 10 to
+the horizon near 5 and stops with Christodoulou mass 10.348 +- 0.005 and S_z = 29.98
+within 400 steps. Refuted by a failure (negative radius, no convergence): then the
+scaling of the flow constant with m^2 is wrong for a first guess twice too large.
