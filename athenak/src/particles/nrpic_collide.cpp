@@ -118,6 +118,7 @@ struct CollStats {
   Real h_part = 0.0;           // sum of M (alpha W - beta^i u_i), metric at each particle
   Real dh_part = 0.0;          // its change over the collision step
   std::int64_t n_noroot = 0;   // accepted pairs left unscattered (coll_energy = particle)
+  std::int64_t n_balance = 0;  // collisions rejected by the detailed-balance test
   Real max_dlam = 0.0;         // largest |lam - 1| of the energy correction
 
   KOKKOS_INLINE_FUNCTION
@@ -146,6 +147,7 @@ struct CollStats {
     h_part += o.h_part;
     dh_part += o.dh_part;
     n_noroot += o.n_noroot;
+    n_balance += o.n_balance;
     max_dlam = (o.max_dlam > max_dlam) ? o.max_dlam : max_dlam;
   }
 };
@@ -273,7 +275,7 @@ void CollWriteHistory(const std::string &fname, const bool header, const bool re
                  "[27]=sum_W [28]=sum_MW_species0 [29]=sum_M_species0 "
                  "[30]=sum_MW_particles [31]=dE_particles%s\n",
                  ext ? " [32]=sum_MH_particles [33]=dH_particles [34]=n_noroot "
-                       "[35]=max_dlam" : "");
+                       "[35]=max_dlam [36]=n_balance" : "");
   }
   if (record) {
     const double mean_nsub = (st.n_cells > 0) ?
@@ -291,8 +293,8 @@ void CollWriteHistory(const std::string &fname, const bool header, const bool re
                  st.de, st.dp[0], st.dp[1], st.dp[2], st.abs_de, st.abs_dp, st.n_bad,
                  st.sum_w, st.sum_mw0, st.sum_m0, st.e_part, st.de_part);
     if (ext) {
-      std::fprintf(fp, " %.17e %.15e %" PRId64 " %.15e", st.h_part, st.dh_part,
-                   st.n_noroot, st.max_dlam);
+      std::fprintf(fp, " %.17e %.15e %" PRId64 " %.15e %" PRId64, st.h_part,
+                   st.dh_part, st.n_noroot, st.max_dlam, st.n_balance);
     }
     std::fprintf(fp, "\n");
   }
@@ -884,17 +886,37 @@ TaskStatus Particles::NrpicCollide(Driver *pdriver, int stage) {
             if (pmode) {
               // relative momentum of the collision in the cell frame, then the new
               // momenta on the surface of constant canonical energy of the pair
-              Real wv[3], ca[3], pt[3], vv[3], lam, res;
+              Real wv[3], ca[3], pt[3], va0[3], vb0[3], lam, res, df;
               nrpic::CollScatterRel(uat, ubt, wa, wb, g1, nh, wv);
               for (int a=0; a<3; ++a) {
                 pt[a] = ua[a] + ub[a];
                 ca[a] = 0.5*pt[a] + dl[a];
               }
-              ha0 = nrpic::CollEnergy(oma, ua, vv);
-              hb0 = nrpic::CollEnergy(omb, ub, vv);
+              ha0 = nrpic::CollEnergy(oma, ua, va0);
+              hb0 = nrpic::CollEnergy(omb, ub, vb0);
               if (!nrpic::CollEnergyRoot(oma, omb, pt, ca, wv, ha0 + hb0, uan, ubn, lam,
-                                         res)) {
+                                         res, df)) {
                 ls.n_noroot += 1;
+                return;
+              }
+              // detailed balance: the collision takes place with the probability
+              // min(1, R), R the ratio of the reverse to the forward rate (third
+              // uniform deviate of the acceptance key)
+              Real uatn[3], ubtn[3], wan, wbn;
+              for (int a=0; a<3; ++a) {
+                uatn[a] = uan[a] - dl[a];
+                ubtn[a] = ubn[a] + dl[a];
+              }
+              const Real g1n = nrpic::CollGammaRelM1(uatn, ubtn, wan, wbn);
+              const Real qa[3] = {ua[0] - ca[0], ua[1] - ca[1], ua[2] - ca[2]};
+              const Real dv[3] = {va0[0] - vb0[0], va0[1] - vb0[1], va0[2] - vb0[2]};
+              const Real rbal = nrpic::CollBalance(
+                  nrpic::CollSigma(model, sigma0, sigw, g1)*nrpic::CollMoller(g1, wa, wb),
+                  g1, wa + wb, lam, df, qa, dv,
+                  nrpic::CollSigma(model, sigma0, sigw, g1n)
+                  *nrpic::CollMoller(g1n, wan, wbn), g1n, wan + wbn, pt);
+              if (!(rbal >= 1.0) && !(uu[2] < rbal)) {
+                ls.n_balance += 1;
                 return;
               }
               ls.max_dlam = fmax(ls.max_dlam, fabs(lam - 1.0));

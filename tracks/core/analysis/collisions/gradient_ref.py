@@ -16,6 +16,9 @@ import scbox
 
 THETA0 = 0.05
 # name: (a_alpha, a_psi, a_shift, s_alpha, s_psi, f)
+# The cases "*_hot" use the temperature HOT of cases with the same metric: the residual
+# of a scheme that is exact only in the non-relativistic limit grows with it.
+HOT = 0.3
 CASES = {
     "psi_iso":      (0.0, 0.1, 0.0, 0.0, 0.0, 1),
     "psi_iso_f2":   (0.0, 0.1, 0.0, 0.0, 0.0, 2),
@@ -28,7 +31,14 @@ CASES = {
     "well_tolman":  (-0.2, 0.1, 0.0, 1.0, 0.0, 1),
     "well_tolman_f2": (-0.2, 0.1, 0.0, 1.0, 0.0, 2),
     "well_shift":   (-0.2, 0.1, 0.05, 1.0, 0.0, 1),
+    "psi_iso_hot":  (0.0, 0.1, 0.0, 0.0, 0.0, 1),
+    "well_tolman_hot": (-0.2, 0.1, 0.0, 1.0, 0.0, 1),
+    "well_tolman_hot_f2": (-0.2, 0.1, 0.0, 1.0, 0.0, 2),
 }
+
+
+def theta_of(name):
+    return HOT if "_hot" in name else THETA0
 
 
 def metric(name):
@@ -41,6 +51,8 @@ def main():
     ap.add_argument("out")
     ap.add_argument("--npair", type=int, default=4000000)
     ap.add_argument("--only", default="")
+    ap.add_argument("--no-balance", action="store_true",
+                    help="particle mode without the detailed-balance acceptance")
     args = ap.parse_args()
     names = [n for n in args.only.split(",") if n] or list(CASES)
     res = {}
@@ -49,14 +61,17 @@ def main():
         met = metric(name)
         res[name] = {}
         for mode in ("cell", "particle"):
-            r = scbox.pair_reference(met, args.npair, 1000 + k, THETA0, sa, sp, f, mode)
+            r = scbox.pair_reference(met, args.npair, 1000 + k, theta_of(name), sa, sp, f,
+                                     mode, balance=not args.no_balance)
             res[name][mode] = r
-            print(f"{name:16s} {mode:8s} dW = {r['dW']:+.4e} ({r['dW_se']:.1e})  "
+            print(f"{name:18s} {mode:8s} dW = {r['dW']:+.4e} ({r['dW_se']:.1e})  "
                   f"dH = {r['dH']:+.4e} ({r['dH_se']:.1e})  slope = {r['slope']:+.4e} "
                   f"({r['slope_se']:.1e})  noroot {r['noroot']:.1e}  "
-                  f"max|lam-1| {r['max_dlam']:.2e}", flush=True)
+                  f"max|lam-1| {r['max_dlam']:.2e}  rejected {r['rejected']:.2e}  "
+                  f"max|R-1| {r['max_abs_R_minus_1']:.2e}", flush=True)
     with open(args.out, "w") as fp:
-        json.dump(dict(theta0=THETA0, cases=CASES, results=res), fp, indent=1)
+        json.dump(dict(theta0=THETA0, hot=HOT, cases=CASES, results=res,
+                       balance=not args.no_balance), fp, indent=1)
     return 0
 
 

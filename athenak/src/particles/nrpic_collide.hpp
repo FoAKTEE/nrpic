@@ -249,15 +249,16 @@ void CollScatterRel(const Real ua[3], const Real ub[3], const Real wa, const Rea
 //! (a pair whose relative velocity is not resolved against the difference of the
 //! metric): the caller leaves the pair as it is.  res is F at the returned momenta: at
 //! most 16 units in the last place of the energies involved, or, if the iteration ends
-//! without reaching that, 1e-12 of them.
+//! without reaching that, 1e-12 of them.  df = dF/dlam = wv.(v_a' - v_b') there.
 
 KOKKOS_INLINE_FUNCTION
 bool CollEnergyRoot(const CollOwnMetric &ma, const CollOwnMetric &mb, const Real pt[3],
                     const Real ca[3], const Real wv[3], const Real e0, Real uan[3],
-                    Real ubn[3], Real &lam, Real &res) {
+                    Real ubn[3], Real &lam, Real &res, Real &df) {
   const Real cb[3] = {pt[0] - ca[0], pt[1] - ca[1], pt[2] - ca[2]};
   Real va[3], vb[3];
   lam = 0.0;
+  df = 0.0;
   res = CollEnergy(ma, ca, va) + CollEnergy(mb, cb, vb) - e0;
   if (!(res < 0.0)) return false;
   lam = 1.0;
@@ -271,14 +272,60 @@ bool CollEnergyRoot(const CollOwnMetric &ma, const CollOwnMetric &mb, const Real
     const Real eb = CollEnergy(mb, ubn, vb);
     res = ea + eb - e0;
     scale = fabs(ea) + fabs(eb) + fabs(e0);
-    if (fabs(res) <= 3.6e-15*scale) return true;
-    const Real df = wv[0]*(va[0] - vb[0]) + wv[1]*(va[1] - vb[1]) + wv[2]*(va[2] - vb[2]);
+    df = wv[0]*(va[0] - vb[0]) + wv[1]*(va[1] - vb[1]) + wv[2]*(va[2] - vb[2]);
     if (!(df > 0.0)) return false;
+    if (fabs(res) <= 3.6e-15*scale) return true;
     lam -= res/df;
     if (!(lam > 0.0)) return false;          // also a lam that is not a number
   }
   // the last momenta belong to the lam before the last correction
   return (fabs(res) <= 1.0e-12*scale);
+}
+
+//----------------------------------------------------------------------------------------
+//! \fn CollBalance
+//! \brief ratio R of the rates of the reverse and of the forward collision of a pair
+//! treated with CollCentre and CollEnergyRoot, both taken as densities on the surface
+//! of constant pair momentum and canonical energy.  Accepting the forward collision
+//! with probability min(1, R) makes the transition rate symmetric between the two
+//! states (detailed balance), so that the canonical distribution exp(-H/T) of the
+//! particles, the equilibrium in a stationary metric, is left unchanged by the
+//! collisions, to all orders in the momenta and in the difference of the metric
+//! between the partners.  For equal metrics R = 1 identically.
+//!
+//! A collision is proposed with the probability P(state) of the state, proportional to
+//! sigma v_Mol of the momenta u~ in the cell frame, and with an isotropic direction
+//! nhat; the new momentum of a is c + r L nhat, c the split of CollCentre, L the
+//! stretch of the centre-of-momentum frame (L = 1 + (gamma - 1) e e^T along the pair
+//! momentum, det L = gamma = E/sqrt(s)) and r fixed by the energy.  On the surface
+//! F = 0 the measure is delta(F) d^3q = det L r^2 dOmega/(dF/dr), so the density of the
+//! proposal is (1/4 pi) (dF/dr)/(gamma r^2), and
+//!   R = [P' (dF/dr)_rev/(gamma' r_rev^2)] / [P (dF/dr)_fwd/(gamma r_fwd^2)]
+//! with primed quantities from the state after the collision, r_fwd = lam p*, and for
+//! the reverse move the ray from c to the old momentum: r_rev = |L'^-1 (u_a - c)|,
+//! (dF/dr)_rev = (v_a - v_b).(u_a - c)/r_rev.
+//! Arguments: pv = sigma v_Mol before (any common factor), g1, et = W~_a + W~_b of the
+//! pair before; lam and df from CollEnergyRoot; qa = u_a - c and dv = v_a - v_b before;
+//! pvn, g1n, etn of the momenta after the collision in the cell frame; pt the pair
+//! momentum.
+
+KOKKOS_INLINE_FUNCTION
+Real CollBalance(const Real pv, const Real g1, const Real et, const Real lam,
+                 const Real df, const Real qa[3], const Real dv[3], const Real pvn,
+                 const Real g1n, const Real etn, const Real pt[3]) {
+  // forward: (dF/dr) = df/p*, r = lam p*, gamma = et/sqrt(s)
+  const Real ps = sqrt(0.5*g1);
+  const Real rs = sqrt(4.0 + 2.0*g1);
+  const Real fwd = df*rs/(et*lam*lam*ps*ps*ps);
+  // reverse: L'^-1 q = q - (q.P) P/(E' (E' + sqrt(s')))
+  const Real rsn = sqrt(4.0 + 2.0*g1n);
+  const Real qp = qa[0]*pt[0] + qa[1]*pt[1] + qa[2]*pt[2];
+  const Real c = qp/(etn*(etn + rsn));
+  const Real y[3] = {qa[0] - c*pt[0], qa[1] - c*pt[1], qa[2] - c*pt[2]};
+  const Real rr = sqrt(y[0]*y[0] + y[1]*y[1] + y[2]*y[2]);
+  const Real dq = dv[0]*qa[0] + dv[1]*qa[1] + dv[2]*qa[2];
+  const Real rev = dq*rsn/(etn*rr*rr*rr);
+  return (pvn*rev)/(pv*fwd);
 }
 
 //----------------------------------------------------------------------------------------

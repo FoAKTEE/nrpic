@@ -204,3 +204,70 @@ S  Perturbation (`perturb_gamma`): for one particle at rest in flat space the mo
    after the interval is gamma T_pert x/r to rounding for any step size that does or
    does not divide T_pert; with the option absent the outputs are byte-identical (part
    of R).
+
+## 2026-11-15 16:00 UTC  the reference refutes part of the design before any code run; detailed balance added
+
+Harness: `harness/bin/nrpic-run submit ... --dry-run` fails in this worktree with
+`KeyError: 'outputs'` (nrpic-run line 163, `is_live`: it reads the hand-written manifests
+of wave 1, which have no field `outputs`). Runs of this package are therefore registered
+by hand with `tracks/core/analysis/rng/runreg.py` (the helper of wave 1), which writes
+`tracks/core/runs/<run_id>/manifest.json` with the same run-id pattern. Request to orch.
+
+Reference at 4e6 pairs per case (run core-20261115-155153-5a61782, the kinematics as
+first designed, i.e. without the acceptance step described below). Operator of
+core-v0.3: psi_iso dW = +8.59e-5 (0.17e-5), f2 +3.356e-4, f4 +1.299e-3, half amplitude
++2.07e-5, psi_null -1.23e-5 (0.18e-5), psi_inverted -1.312e-4, lapse_tolman dW = -1e-19,
+dH = +2.75e-5, lapse_iso dW = 4e-20, dH = -1.1e-6 (0.95e-6), well_tolman dW = +1.300e-4,
+dH = +2.025e-4. These stand as the reference of G1.
+
+New kinematics, as first designed: dH = 3.5e-17 to 1.1e-16 everywhere (the residual of
+the root is always of one sign: the iteration approaches the root from the side F > 0).
+But the slope in the equilibrium states is NOT zero: psi_iso +1.14e-3 (0.37e-3),
+psi_iso_f2 +1.48e-3 (0.19e-3), psi_iso_f4 +1.25e-3 (0.10e-3), psi_iso_half +0.84e-3
+(0.38e-3); lapse_tolman +0.18e-3 (0.37e-3). So where the spatial metric varies, the
+collision still hands energy up the modulation in equilibrium, about 6 percent of what
+core-v0.3 hands down (-1.9e-2), independent of the cell size, hence of first order in
+the metric difference. This is the term I had listed as "relativistic corrections of
+order theta times the metric difference"; my prediction G2(d) ("zero within 4 standard
+errors") would have passed at the statistics of the code run (standard error 1.3e-3)
+and is false at 4e6 pairs. Recorded as a failed prediction, found by the reference.
+
+Cause [JUDGEMENT, tested below]: the transition rate between two states of a pair is
+not symmetric. The collision is proposed with a rate proportional to the Moller speed
+of the old state and an isotropic direction in the frame of the old state; in one
+metric the density of that proposal on the surface of constant pair momentum and
+energy is (1/4 pi) sqrt(s)/(E_a' E_b' p*), and together with v_Mol = p* sqrt(s)/(E_a E_b)
+the rate s/(E_a E_b E_a' E_b') is symmetric (the invariant phase space). With two
+metrics the surface is deformed and the product is no longer symmetric at first order
+in the metric difference times theta.
+
+Change (source and twin, before any run): `nrpic::CollBalance` computes
+R = rate(new -> old)/rate(old -> new), both as densities on the surface: with the ray
+construction u_a' = c + r L nhat (L the stretch of the centre-of-momentum frame,
+det L = gamma) the measure delta(F) d^3q is gamma r^2 dOmega/(dF/dr), so the density of
+a proposal is (1/4 pi)(dF/dr)/(gamma r^2), with dF/dr from the velocities at the end
+point. The collision takes place with probability min(1, R) (third uniform deviate of
+the acceptance key, unused so far). For equal metrics I checked the algebra by hand:
+(v_a' - v_b').L nhat = E p*/(E_a' E_b'), so the density is the invariant one and R = 1;
+the twin gives |R - 1| <= 1.2e-15 for six random pairs. History column 36 `n_balance`
+counts the rejected collisions.
+
+Quick reference with the acceptance step (1e6 pairs): slope psi_iso -0.96e-3 (0.74e-3),
+psi_iso_f4 +0.22e-3 (0.19e-3) [was +1.25e-3 (0.10e-3)], well_tolman -0.35e-3 (0.74e-3);
+at theta0 = 0.3: psi_iso_hot +5.2e-3 (4.5e-3), well_tolman_hot -4.1e-3 (4.4e-3);
+rejected 1.2e-3 to 6e-3 of the proposals at theta0 = 0.05, 0.8 to 1.3 percent at 0.3.
+
+### Predictions restated (16:00 UTC, before the registered reference and any code test)
+
+G2(d) restated. Reference with the acceptance step, 4e6 pairs (to be run now, and
+again with `--no-balance` for the hot cases): in the equilibrium states psi_iso,
+psi_iso_f2, psi_iso_f4, psi_iso_half, lapse_tolman, well_tolman, well_tolman_f2,
+psi_iso_hot, well_tolman_hot, well_tolman_hot_f2 the slope is zero within 4 standard
+errors (standard errors 1e-4 to 4e-4 at theta0 = 0.05); without the acceptance step
+the hot cases show a slope that differs from zero by more than 4 standard errors and
+is larger, relative to the slope of core-v0.3, than at theta0 = 0.05. Refuted by a
+slope beyond 4 standard errors in any equilibrium state with the acceptance step (the
+derivation of R would then be wrong). The code must then reproduce the reference
+slopes within 4 combined standard errors, and its number of rejected collisions over
+the number proposed must equal the reference share within 4 sigma (binomial).
+G2(a)-(c), (e), G1, G3, G4, R, S stand as written.

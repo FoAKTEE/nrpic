@@ -103,7 +103,7 @@ def sample_umag(theta, uq, ngrid=257):
 
 
 def make_particles(path, met, n, seed, theta0, s_alpha=0.0, s_psi=0.0, lengths=None,
-                   weight="uniform"):
+                   weight="uniform", mass_ratio=1.0):
     """Particle file: positions uniform in the box (weight = "uniform") or with the
     coordinate density of the equilibrium f ~ exp(-alpha W/theta_inf) of the static
     metric without shift (weight = "tolman"): the integral of f over the covariant
@@ -131,6 +131,10 @@ def make_particles(path, met, n, seed, theta0, s_alpha=0.0, s_psi=0.0, lengths=N
     _, _, psi4 = met.at(x[:, 0])
     u = (umag*np.sqrt(psi4))[:, None]*nh
     m = np.full(n, lengths[0]*lengths[1]*lengths[2]/n)
+    if mass_ratio != 1.0:
+        # every second particle heavier by mass_ratio, same total rest mass
+        m1 = lengths[0]*lengths[1]*lengths[2]/((n - n//2) + mass_ratio*(n//2))
+        m = np.where(np.arange(n) % 2 == 1, mass_ratio*m1, m1)
     write_nrp(path, x, u, m, np.zeros(n, dtype=np.int32))
     return dict(n=n, seed=seed, theta0=theta0, s_alpha=s_alpha, s_psi=s_psi,
                 lengths=lengths, sha256=common.sha256(path))
@@ -145,7 +149,7 @@ def energies(met, x, u):
 
 
 def pair_reference(met, npair, seed, theta0, s_alpha=0.0, s_psi=0.0, f=1, mode="cell",
-                   chunk=1000000):
+                   chunk=1000000, balance=True):
     """Monte Carlo over pairs of one collision cell (see the module text). Returns a
     dict: mean change per collision of W_a + W_b and of H_a + H_b (metric at each
     particle), their standard errors, the slope c of the regression of the change of
@@ -156,7 +160,8 @@ def pair_reference(met, npair, seed, theta0, s_alpha=0.0, s_psi=0.0, f=1, mode="
     ncell = met.nx//f
     h = met.dx*f
     acc = dict(w=0.0, dw=0.0, dw2=0.0, dh=0.0, dh2=0.0, sxy=0.0, sxx=0.0, sxy2=0.0,
-               noroot=0.0, w2=0.0, dlam=0.0, wdw2=0.0, wdh2=0.0, wxy2=0.0)
+               noroot=0.0, w2=0.0, dlam=0.0, wdw2=0.0, wdh2=0.0, wxy2=0.0, rej=0.0,
+               rmax=0.0, wall=0.0)
     done = 0
     while done < npair:
         nb = min(chunk, npair - done)
@@ -185,6 +190,7 @@ def pair_reference(met, npair, seed, theta0, s_alpha=0.0, s_psi=0.0, f=1, mode="
             wgt = collide.moller(g1, wa, wb)
             uan, ubn = collide.scatter(a["uh"], b["uh"], nh, g1, wa, wb)
             ok = np.ones(nb, dtype=bool)
+            noroot = ~ok
             lam = np.ones(nb)
         else:
             def own(p):
@@ -202,7 +208,21 @@ def pair_reference(met, npair, seed, theta0, s_alpha=0.0, s_psi=0.0, f=1, mode="
             wv = collide.scatter_rel(uat, ubt, nh, g1, wa, wb)
             pt = a["uh"] + b["uh"]
             h0 = collide.own_energy(*oma, a["uh"])[0] + collide.own_energy(*omb, b["uh"])[0]
-            uan, ubn, lam, _, ok = collide.energy_root(oma, omb, pt, 0.5*pt + dl, wv, h0)
+            ha0, va0 = collide.own_energy(*oma, a["uh"])
+            hb0, vb0 = collide.own_energy(*omb, b["uh"])
+            ca = 0.5*pt + dl
+            uan, ubn, lam, _, ok = collide.energy_root(oma, omb, pt, ca, wv, h0)
+            noroot = ~ok
+            if balance:
+                # detailed balance: the collision takes place with probability min(1, R)
+                g1n, wan, wbn = collide.gamma_rel_m1(uan - dl, ubn + dl)
+                rbal = collide.balance(wgt, g1, wa + wb, lam, collide.energy_root.df,
+                                       a["uh"] - ca, va0 - vb0,
+                                       collide.moller(g1n, wan, wbn), g1n, wan + wbn, pt)
+                rej = ok & ~(rbal >= 1.0) & ~(gen.random(nb) < rbal)
+                acc["rej"] += np.sum(wgt*rej)
+                acc["rmax"] = max(acc["rmax"], float(np.nanmax(np.abs(rbal[ok] - 1.0))))
+                ok = ok & ~rej
         ua1 = np.where(ok[:, None], uan*sc[:, None], a["u"])
         ub1 = np.where(ok[:, None], ubn*sc[:, None], b["u"])
         wa0, ha0 = energies(met, xa, a["u"])
@@ -211,6 +231,10 @@ def pair_reference(met, npair, seed, theta0, s_alpha=0.0, s_psi=0.0, f=1, mode="
         wb1, hb1 = energies(met, xb, ub1)
         dw = (wa1 - wa0) + (wb1 - wb0)
         dh = (ha1 - ha0) + (hb1 - hb0)
+        # statistics per collision that takes place; proposals in proportion to wgt
+        acc["wall"] += wgt.sum()
+        acc["noroot"] += np.sum(wgt*noroot)
+        wgt = wgt*ok
         acc["w"] += wgt.sum()
         acc["w2"] += np.sum(wgt*wgt)
         acc["dw"] += np.sum(wgt*dw)
@@ -225,7 +249,6 @@ def pair_reference(met, npair, seed, theta0, s_alpha=0.0, s_psi=0.0, f=1, mode="
         acc["sxy2"] += np.sum((wgt*xy)**2)
         acc["sxx"] += np.sum(wgt*xx2)
         acc["wxy2"] += np.sum(wgt*xy*xy)
-        acc["noroot"] += np.sum(wgt*(~ok))
         acc["dlam"] = max(acc["dlam"], float(np.max(np.abs(lam[ok] - 1.0))) if ok.any()
                           else 0.0)
     w = acc["w"]
@@ -241,4 +264,6 @@ def pair_reference(met, npair, seed, theta0, s_alpha=0.0, s_psi=0.0, f=1, mode="
                 slope=acc["sxy"]/acc["sxx"], slope_se=float(np.sqrt(acc["sxy2"])/acc["sxx"]),
                 slope_sd=float(np.sqrt(max(acc["wxy2"]/w - (acc["sxy"]/w)**2, 0.0))
                                / (acc["sxx"]/w)),
-                mean_vmol=w/npair, noroot=acc["noroot"]/w, max_dlam=acc["dlam"])
+                mean_vmol=acc["wall"]/npair, noroot=acc["noroot"]/acc["wall"],
+                max_dlam=acc["dlam"], rejected=acc["rej"]/acc["wall"],
+                max_abs_R_minus_1=acc["rmax"], balance=balance)

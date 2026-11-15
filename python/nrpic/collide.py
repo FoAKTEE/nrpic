@@ -21,7 +21,7 @@ from . import rng
 
 __all__ = [
     "gamma_rel_m1", "moller", "sigma_m", "scatter", "triad", "replay", "read_dump",
-    "own_energy", "centre", "scatter_rel", "energy_root", "own_metric_triad",
+    "own_energy", "centre", "scatter_rel", "energy_root", "own_metric_triad", "balance",
     "read_snapshot", "read_history", "mj_mean_w", "mj_theta_from_w", "mj_vmol",
     "mj_entropy", "mj_cdf", "mj_sample", "entropy_estimate", "isotropic",
     "relax_rate_nr",
@@ -148,7 +148,8 @@ def scatter_rel(ua, ub, nhat, g1, wa, wb):
 def energy_root(ma, mb, pt, ca, wv, e0):
     """New momenta u_a' = ca + lam wv, u_b' = pt - u_a' with the sum of the canonical
     energies equal to e0 (nrpic::CollEnergyRoot; the same iteration and stopping rules,
-    for arrays of pairs). Returns (uan, ubn, lam, res, ok)."""
+    for arrays of pairs). Returns (uan, ubn, lam, res, ok); the derivative
+    dF/dlam = wv.(v_a' - v_b') at the returned momenta is left in energy_root.df."""
     pt = np.atleast_2d(np.asarray(pt, dtype=np.float64))
     ca = np.atleast_2d(np.asarray(ca, dtype=np.float64))
     wv = np.atleast_2d(np.asarray(wv, dtype=np.float64))
@@ -170,6 +171,7 @@ def energy_root(ma, mb, pt, ca, wv, e0):
     uan = np.array(ca)
     ubn = np.array(cb)
     scale = np.zeros(n)
+    dfe = np.zeros(n)
     with np.errstate(divide="ignore", invalid="ignore"):
         for _ in range(40):
             act = ~done
@@ -185,14 +187,15 @@ def energy_root(ma, mb, pt, ca, wv, e0):
             ubn = np.where(act[:, None], ub_i, ubn)
             res = np.where(act, r_i, res)
             scale = np.where(act, sc_i, scale)
-            conv = act & (np.abs(r_i) <= 3.6e-15*sc_i)
-            done = done | conv
-            act = act & ~conv
             df = np.sum(wv*(va - vb), axis=-1)
+            dfe = np.where(act, df, dfe)
             bad = act & ~(df > 0.0)
             ok = ok & ~bad
             done = done | bad
             act = act & ~bad
+            conv = act & (np.abs(r_i) <= 3.6e-15*sc_i)
+            done = done | conv
+            act = act & ~conv
             lam_new = lam - r_i/np.where(df > 0.0, df, 1.0)
             lam = np.where(act, lam_new, lam)
             bad = act & ~(lam > 0.0)
@@ -200,7 +203,26 @@ def energy_root(ma, mb, pt, ca, wv, e0):
             done = done | bad
     late = ~done
     ok = ok & ~(late & ~(np.abs(res) <= 1.0e-12*scale))
+    energy_root.df = dfe
     return uan, ubn, lam, res, ok
+
+
+def balance(pv, g1, et, lam, df, qa, dv, pvn, g1n, etn, pt):
+    """Ratio R of the reverse to the forward rate of a collision treated with `centre`
+    and `energy_root` (nrpic::CollBalance); the collision takes place with the
+    probability min(1, R)."""
+    ps = np.sqrt(0.5*g1)
+    rs = np.sqrt(4.0 + 2.0*g1)
+    fwd = df*rs/(et*lam*lam*ps*ps*ps)
+    rsn = np.sqrt(4.0 + 2.0*g1n)
+    qp = np.sum(qa*pt, axis=-1)
+    c = qp/(etn*(etn + rsn))
+    y = qa - np.asarray(c)[..., None]*pt
+    rr = np.sqrt(np.sum(y*y, axis=-1))
+    dq = np.sum(dv*qa, axis=-1)
+    rev = dq*rsn/(etn*rr*rr*rr)
+    with np.errstate(divide="ignore", invalid="ignore"):
+        return (pvn*rev)/(pv*fwd)
 
 
 def own_metric_triad(s_mat, alp, beta, ginv):
@@ -284,7 +306,7 @@ HIST_COLUMNS = ["time", "ncycle", "n_part", "n_cells", "n_tested", "sum_P", "n_c
                 "dP1", "dP2", "dP3", "abs_dE", "abs_dP", "n_bad_cells", "sum_W",
                 "sum_MW_species0", "sum_M_species0", "sum_MW_particles", "dE_particles",
                 # with <particles> coll_energy present:
-                "sum_MH_particles", "dH_particles", "n_noroot", "max_dlam"]
+                "sum_MH_particles", "dH_particles", "n_noroot", "max_dlam", "n_balance"]
 
 
 def read_history(path):
@@ -339,7 +361,7 @@ def replay(d, cycle=None):
     nsub_of = np.zeros(n, dtype=np.int64)
     nupd = np.zeros(n, dtype=np.int64)
     info = dict(n_tested=0, sum_p=0.0, n_coll=0, n_upd=0, pairs=[], max_p=0.0,
-                n_noroot=0, max_dlam=0.0)
+                n_noroot=0, max_dlam=0.0, n_balance=0)
     pmode = d.get("energy", 0) == 1
     for idx in _cell_groups(d["level"], d["cell"]):
         nc = len(idx)
@@ -420,12 +442,21 @@ def replay(d, cycle=None):
                 if pmode:
                     wv = scatter_rel(uat[None, :], ubt[None, :], nh[None, :], g1, wa, wb)
                     pt = ua + ub
-                    ha0, _ = own_energy(*oma, ua)
-                    hb0, _ = own_energy(*omb, ub)
-                    uan, ubn, lam, _, okr = energy_root(oma, omb, pt, 0.5*pt + dl, wv,
-                                                        ha0 + hb0)
+                    ha0, va0 = own_energy(*oma, ua)
+                    hb0, vb0 = own_energy(*omb, ub)
+                    ca = 0.5*pt + dl
+                    uan, ubn, lam, _, okr = energy_root(oma, omb, pt, ca, wv, ha0 + hb0)
                     if not okr[0]:
                         info["n_noroot"] += 1
+                        continue
+                    g1n, wan, wbn = gamma_rel_m1(uan - dl, ubn + dl)
+                    sg = sigma_m(d["model"], d["sigma"], d["w"], g1)
+                    sgn = sigma_m(d["model"], d["sigma"], d["w"], g1n)
+                    rbal = balance(sg*moller(g1, wa, wb), g1, wa + wb, lam,
+                                   energy_root.df, ua - ca, va0 - vb0,
+                                   sgn*moller(g1n, wan, wbn), g1n, wan + wbn, pt)
+                    if not (rbal[0] >= 1.0) and not (float(uu[2]) < rbal[0]):
+                        info["n_balance"] += 1
                         continue
                     info["max_dlam"] = max(info["max_dlam"], abs(float(lam[0]) - 1.0))
                 else:
