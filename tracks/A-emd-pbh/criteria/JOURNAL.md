@@ -275,3 +275,138 @@ P. Prediction tables (`scouting_table.py`):
   S2 (mu = 0.03): R1 no; top-hat time ~ 508 t_H > 250 t_H; R4 at t_end = 250 t_H is "yes" in
   the central measure (0.072 > 0.0252) and marginal in the mean (0.0265 > 0.0252);
   2609.14218's particle bracket (0.045, 0.05] says no.
+
+### Outcome A and L (run A-emd-pbh-20261115-161543-36e461d; repeated with layout-only figure changes as A-emd-pbh-20261115-162306-80396e4, results_criteria2.json byte-identical; pytest of the same functions A-emd-pbh-20261115-162524-d32d331, 10 passed)
+
+Code faults found before the registered run (development runs in `scratch/A-emd-pbh/tmp/criteria2/dev`, not registered): my A1 test input had lap(zeta)(0) = -mu k^2/2 instead of -mu k^2 (a slip of mine in the test, not in predict.py); the y-solver of ltb2609 rejected a converged Newton step as "outside the bracket" (wn == lo) and fell into bisection onto a wrong root (y = -1.9 at kappa = 0.0048), which made R(r) non-monotonic; fixed (strict bracket test, Newton in w = sqrt(1 - y)).
+
+- A1 confirmed: quadrature gives r_m, delta_c, deltabar to 9e-12, 2e-11, 4e-16; ratio = e.
+- A2 confirmed, better than predicted: ball average 0.088291039 for all four (e, p), relative 3.0e-7
+  from 12 mu/(5e) (the second-difference Laplacian), the same to 6e-11 relative between the four cases;
+  eigenvalues at the centre equal (4mu/5)(1+3e+p, 1-2p, 1-3e+p) within 4.6e-6 of 0.8 mu.
+- A3 confirmed: zeta(0) = (5e/12) deltabar returns mu to 2e-16; round trips 2e-16.
+- A4 confirmed: maximum of (3/5)(1 - (1 + r zeta')^2) at k r = sqrt 6 (grid spacing), C_max =
+  deltabar (1 - mu/e) to 7e-14: 0.02619 (mu 0.03), 0.2493 (0.32), 0.2560 (0.33), 0.3603 (0.5).
+- A5 confirmed: 12/5 hhat(0.2, 0) = 1.0841937 = R1's delta_th to 2e-16 (also e = 0.1, 0.25 with
+  p = -0.1, 0.2 with p = 0.1): R1's amplitude is the central contrast. The hoop line in mu is
+  0.4517 at e = 0.2, in deltabar 0.399.
+- L1 prediction (1e-3 at mu = 1e-4) **refuted**: relative deviation from linear theory 2.2e-3 at
+  mu = 1e-4 and 2.2e-4 at mu = 1e-5, i.e. proportional to Delta (2.7e-3, 2.7e-4 at the centre),
+  and (deviation)/Delta = 0.809524 = 17/21 to 3e-7: the second-order coefficient of the mean
+  contrast in spherical collapse. My tolerance ignored that a slice at a/a_H = 11 carries an
+  order-Delta nonlinear correction; the test now checks the 17/21.
+- L2/L3 confirmed, far below the tolerance: expball shells built from the profile have the
+  slice age t_i to 4e-16, crunch times equal (pi/3) m ktilde^(-3/2) (MDPBH.tex:743) to 9e-16,
+  R = 2M times to 7e-16, areal radii equal the S(x) form (593-619) to 3e-15 at 0.1, 0.5, 0.9 of
+  the central crunch; mu = 0.005, 0.01, 0.015 in a ball with H R_b = 0.9, r_m = R_b/4.5.
+- L4 partly refuted: mu_max = 0.0435 for q = 3 (inside my band 0.040 +- 0.004) but 0.112 for
+  q = 2 (outside 0.090 +- 0.009). The binding condition is the one I named (central shell at
+  turnaround on the slice), but kappa(0) = 4 mu e^(-2 mu)/(H r_m)^2 carries Psi(0)^-4 = e^(-2mu),
+  which my leading-order band left out; mu_max = 0.0184 for q = 4.5. Construction succeeds at
+  0.999 mu_max and is refused at 1.001 mu_max for all three q. So the expanding ball holds the
+  2609.14218 profile only for mu <~ 0.04 (q = 3) to 0.11 (q = 2), far below the LTB threshold
+  mu_c in (0.32, 0.33]: that threshold can only be tested in the periodic box [VERIFIED as
+  arithmetic], as decision 0013 already places the threshold line.
+- L5 confirmed: t_s(r) increasing and R(t, r) increasing in r up to 0.99 t_s(0) for mu = 0.01,
+  0.1, 0.32, 0.33, 0.5 (no shell crossing before the central crunch). New: the earliest
+  marginally trapped sphere is the centre itself at the central crunch (t_ah(r) increases
+  outward from t_s(0)) for all five mu, so with t_b = 0 the apparent horizon emerges from the
+  central singularity, as the paper says of its slices (778-779). Central crunch t_s(0)/t_H =
+  607, 25.1, 8.50, 8.36, 7.47 for mu = 0.01, 0.1, 0.32, 0.33, 0.5; in closed form
+  t_s(0)/t_H = (108 pi/576) e^(3mu) mu^(-3/2), i.e. the linear top-hat crunch time of the
+  central contrast 12 mu/5 times e^(3 mu) (the Psi(0)^6 of m(r), 680).
+- Figures viewed: fig_amplitude (profiles of the two measures; thresholds of the literature in
+  mu, delta_c, deltabar), fig_ltb2609 (Delta(R) and the local contrast on the slice with the
+  taper; residuals expball vs closed forms at 1e-16 to 1e-14; t_s and t_ah against r; the
+  compaction function peaking at r_m). First versions had overlapping labels, fixed.
+
+### Outcome P (run A-emd-pbh-20261115-162303-80396e4: `scouting_predictions.md`, `.json`, figure)
+
+The table uses the initial data only. The first SR-1 card segment had already run when I
+computed it (runs_ball commit 208f933, whose subject I read afterwards: "fields non-finite from
+t = 33"); nothing from that run enters the table.
+
+- P1 confirmed: core Delta = 1, y = 0.74638, linear contrast on the slice 0.56423, horizon entry
+  of the core edge at a_H/a_i = 0.035717, delta_H = 0.020152. R5 (exact top hat of
+  2507.18312) against expball's exact shells: turnaround 16.893769 (difference 0), R = 2M of
+  the core edge 44.381466 (2.2e-16), crunch 44.454205 (0). Zel'dovich point collapse of the
+  sphere (R1, R2 with e = p = 0) at a/a_H = 148.9, tau = 120.1, after the planned end 44.37
+  (a/a_H = 83.6), as predicted. Two facts the table adds: (i) with the planned end 44.37 the
+  core edge (44.381) is not yet trapped, only the first trapped sphere of the data set
+  (44.349, R_i = 2.731, in the smoothing region) is; (ii) R10 (lattice noise, [JUDGEMENT]
+  extension) says "no" for SR-1 (b_min = 0.12 > b_BH = 0.034 with 463 core particles), but in
+  geodesic slicing (alpha = 1, beta = 0) u_i = 0 solves the geodesic equation, so particles at
+  rest stay at rest and the lattice cannot generate a dispersion: R10 does not apply to SR-1
+  [JUDGEMENT]; it would apply to SR-2. The compaction function of data set 2t peaks outside
+  the homogeneous core (R = 3.63 M, C_max = 0.0377), so the threshold measure deltabar of
+  SCOPE.md section 3 for this data set is 0.0377, not the core's 0.0202.
+- P2, S1 (mu = 0.5): delta_c = 1.2, deltabar = 0.4415, C_max = 0.3603. R1 "yes" (first axis at
+  1.95 t_H) in the central measure, "no" in the mean (0.44 < 1.084): by A5 the hoop row is
+  defined with the central measure, so "yes" is its verdict. R5 in the central measure is
+  outside the top-hat formula (delta >= 0.6, b_BH >= 1); **the wave-1 code printed "no" there,
+  a defect of mine now corrected to n/a**; in the mean it gives R = 2M of r_m at 6.07 t_H.
+  My prediction "spherical LTB of the same mu: first trapped sphere earlier than the top-hat
+  time of r_m" is **refuted**: the exact LTB (e = 0) first traps the centre at its crunch,
+  7.47 t_H, later than the linear top-hat time 6.07 t_H; the r_m shell is trapped at 15.4 t_H.
+  At mu = 0.5 the linear measures are poor: the exact central crunch is the linear one times
+  e^(3 mu) = 4.5 (L5). S1's planned end, 30 t_H, is after all of these.
+- P2, S2 (mu = 0.03): delta_c = 0.072, deltabar = 0.02649. R1 no (first axis at 133 t_H); top
+  hat of r_m (mean): R = 2M at 507 t_H, crunch 508 t_H (> 250, as predicted); R4 at 250 t_H yes
+  in both measures (0.072 and 0.0265 > 0.0252; marginal in the mean, as predicted); 2609.14218
+  particles: no; LTB e = 0 verdict: globally naked, no PBH. But in the central measure R5 puts
+  R = 2M of the central region at 112 t_H, and the exact spherical LTB of mu = 0.03 crunches
+  its centre at 124 t_H, both inside the planned 250 t_H; R10 (lattice noise, ~2017 particles
+  in r_m) says the collapse halts. So the statement of the periodic helper's S2 plan that
+  "every criterion predicts no horizon by 250 t_H" holds for the hoop line, the top hat of the
+  compaction shell and the particle runs of 2609.14218, not for the central-region rows:
+  something happens at the centre (a pancake at 133 t_H for e = 0.2, a central crunch near
+  110-125 t_H for e = 0) inside the run [JUDGEMENT on which applies; the numbers are
+  arithmetic].
+- Figure viewed (fig_scouting_predictions): formation epochs per criterion against the end of
+  each run; first version had the legend outside the canvas and overlapping labels, fixed.
+
+### Outcome F (run A-emd-pbh-20261115-162<see below>, full check_criteria.py at commit 6c820fb)
+
+The first attempt, run A-emd-pbh-20261115-161542-36e461d, failed at T1.2b on my own code
+(decimal conversion of a numpy float, `repr` of numpy 2 floats); fixed in 6c820fb; the failed
+manifest is kept.
+
+- F1 (T1.2b) confirmed: c = 0.0555549716 (E-bar = 1.1816597, equal to mpmath); one-step rounding
+  0.05555, two-step 0.05556. The corrected check (within one unit of the last printed digit)
+  passes; the wave-1 digit check stays as diagnostic T1.2b-d. The wave-1 journal's
+  explanation (E-bar 1.18174 vs 1.18168) is withdrawn above.
+- F2 (T2.2d) confirmed: printed ratio deviates from the exact one by 1.22e-3, rounding allows
+  4.14e-4 (T2.2f); 1.921e-7 needs E-bar in [1.181633, 1.181756], 3.244e-14 needs
+  [1.181945, 1.182018]; exact 1.1816597; with E-bar = 1.182 the 1st-order prefactor is
+  3.244e-14 (T2.2e). The two printed prefactors of 1707.03595 cannot come from one E-bar; the
+  code is right.
+- F3 (T2.4a) confirmed, closer to the band than I expected: on the plotted window (2.5e-4 to
+  0.005) the ratio rises monotonically from 1.139 to 3.038, max |log10| = 0.483 at
+  sigma_H = 0.005 (I expected 0.36 there; the wave-1 grid did not include 0.005). Within the
+  0.5 band, 1.6 % of the figure's 30 decades.
+- F4 (T2.4c) confirmed: plotted window 0.0192 to 0.04 (beta0(1) >= 1e-30 from 0.0192), ratio
+  1.448 to 2.319, max |log10| = 0.365 (I expected <= 0.2: refuted in size, inside the band).
+- F5 (T2.6) **failed as coded**: I added sigma_H = 0.004 to the list in the code without
+  checking; there beta0 underflows (exponent -0.0184/sigma^2 ~ -1150) and the nan made all
+  three checks fail. At the four sigma_H of the prediction: (a) numerical/I2 = 1.0028,
+  1.0060, 1.0120 at 0.006, 0.0077, 0.01 (within 2 %, confirmed) but 1.0416 at 0.017 (my "within
+  2 % at 0.017" refuted: the [t1, t2] and t < 0 parts grow with sigma_H); (b) I2(exact
+  A)/I2(approx A) = 0.258, 0.423, 0.591, 0.828, below 1 and falling towards small sigma_H
+  (confirmed), but **not** equal to numerical/semi-analytic within 10 % (0.398, 0.656, -, 1.363):
+  refuted, because (c) I2(approx A)/semi-analytic = 1.538, 1.542, 1.549, 1.581 is a constant
+  factor of ~1.55 (constant within 3 %, confirmed). So the drift of the 1st-order formula
+  with sigma_H is entirely the dropped (2u^2 + 3/2)/s3^2 in A (now demonstrated), and on top
+  of it the closed form is low by a sigma-independent 1.55, which partly compensates the drift
+  near sigma_H ~ 0.012, the reason the two curves look alike on the paper's figure.
+  The root formula t_{1,2}(u) printed at Spin_PBH.tex:1880-1886 has 3 delta_th in the
+  denominator; solving z* = z_th gives 3 pi delta_th, which also gives the paper's own limit
+  t2 ~ 12 E/(pi delta_th) (1921) [VERIFIED by derivation]; a typo of the paper; the code uses
+  the corrected root (with the printed one I2 was 140 times too small, development run).
+
+### Prediction for T2.6d and the repeat of T2 (written before the repeat)
+
+- T2.6 repeated at sigma_H = 0.006, 0.0077, 0.01, 0.017 only (no underflow there).
+- T2.6d: the constant factor of (c) is the approximation t2 ~ 12 E~/(pi delta_th) of 1921:
+  I2(approx A)/semi-analytic = [int (1-4u^2) t2(u)^-5 du / int (1-4u^2) (12 E~(u)/(pi
+  delta_th))^-5 du] x (2 + 2X + X^2)/X^2 at X = delta_th^2/(2 sigma_H^2), within 1 %, at all
+  four sigma_H. Refuted beyond 1 % (then another approximation of the appendix contributes).
