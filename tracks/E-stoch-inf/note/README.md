@@ -25,8 +25,7 @@ Registered runs of this package: E-20261115-172421-50ac4ce (failed: scratch root
 the harness variable `NRPIC_SCRATCH`; JOURNAL 17:24), E-20261115-172442-78cf53e (completed;
 superseded: legend of fig_deltan on the data, ledger column too narrow),
 E-20261115-173135-858482f (completed; superseded: exponent format in two ledger rows), and
-the run whose id is in the last commit touching `figures/` and `tables/` (see `JOURNAL.md`,
-final entry), whose outputs are the committed figures and tables.
+**E-20261115-173402-641b6e2** (completed), whose outputs are the committed figures and tables.
 
 ## How to rerun
 

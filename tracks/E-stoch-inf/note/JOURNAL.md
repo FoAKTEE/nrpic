@@ -52,3 +52,38 @@ the environment variable `NRPIC_SCRATCH`, which the harness sets to the owner's 
 directory (`scratch/E-stoch-inf`), so the paths doubled the owner directory. No figure was
 written. The variable is renamed (`NOTE_SCRATCH_ROOT`, default the machine's scratch root);
 the run is repeated from the next commit. Predictions N1-N3 are unchanged.
+
+## 17:36 Outcomes (runs E-20261115-172442-78cf53e, -173135-858482f, -173402-641b6e2)
+
+Three completed registered runs of `scripts/run_all.py`; the first two were superseded for
+layout only (legend of fig_deltan on the data points, ledger column too narrow for the run
+ids, exponent format of two ledger rows); every recomputed number is the same in all three.
+The committed figures and tables are the outputs of **E-20261115-173402-641b6e2** (copied
+from its run directory; the PNGs are byte-identical to the drafts that were looked at).
+
+- **N1: held, with the differences listed.** Of 59 numbers printed in SPEC.md, SCOPE.md,
+  EVIDENCE.md and langevin/README.md, 54 agree within half a unit of the last printed digit
+  (`tables/claims.md`). The 5 that differ: the assumed overhead of field and sources over
+  Z4c (SCOPE 15 percent, SPEC 11.2 30 percent; measured 64.7 percent, c16, c19), the
+  per-realisation cost that follows from it (c17, c18; see N2), and USR eps1(N*) of the
+  lead's integrator (1.31625e-2 against the printed 1.3164e-2 of the reference run, c21,
+  already recorded in EVIDENCE.md). No number derived from a run output disagreed with the
+  run it cites.
+- **N2: held.** With core's measured throughput (run core-20261115-143907-cea4c86) and the
+  synthesis scaled by its operation count, one 256^3 realisation at Courant 0.25 costs
+  0.571-0.706 card-hours (SR, 1304 steps, 1.58-1.95 s per step) and 0.714-0.883 (USR, 1630
+  steps), 1.40-1.73 times the scoping model (0.407, 0.509) and 5.7-8.8 times below the
+  5 card-hour threshold. Inside the predicted ranges (0.5-0.9 SR, 0.6-1.1 USR). Still an
+  extrapolation from 128^3 (MeshBlock 64^3, k_max = 32 dk) to 256^3: a card run at 256^3
+  can refute it.
+- **N3: held.** Every input passed its checksum against the manifest (the core run records
+  no output checksums: its `summary.json` is read with sha256 printed in `claims.md`); each of
+  the seven figures repeated with pixel rms 0 (`repeat.json` of each run).
+
+Figures looked at (Read of the PNG): fig_background, fig_freezing, fig_deltan, fig_noise,
+fig_cost, schem_architecture, schem_timeline; compiled pages 1-9 of main.pdf looked at
+(captions within five lines). Checker (`check_manuscript.py --compile`): 0 undefined
+references or citations, 0 overfull boxes; remaining candidates are the run ids of the ledger
+appendix and the document names in the scripts (exception 1 of ../WRITING_GUIDE.md).
+Not done: the reviewer subagents of step 4 of the paper-writing procedure (no subagent tool
+in this session).
