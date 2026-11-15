@@ -345,3 +345,37 @@ has a Hamiltonian residual H0 that is uniform (spatial standard deviation below 
 and lies between 2.0e-11 and 3.5e-11 at the dumps t = 0.44 to 2.85; the second-order
 part C2(s) = E(s) - H0 has rms C2(1)/rms C2(1/2) = 4 +- 0.2 at each of these dumps.
 Refuted if H0 is not uniform or if the ratio is not 4.
+
+## 2026-11-15, entry 7: outcomes of T3b and T6
+
+**T3b, run core-20261115-161040-760b515** (one run at s = 0, 210 s; dumps of run
+core-20261115-155040-eb68eaa matched by time, t = 0 to 2.85; figure `fig_parts.png`,
+looked at: three separate families of curves, the control two to five orders above).
+- HOLDS: the Hamiltonian residual of the s = 0 run is uniform (standard deviation at
+  most 1.3e-26) and equals 3.03e-11 at t = 0.44, 3.24e-11 to 3.26e-11 afterwards
+  (2.5e-12 to 2.9e-12 of [H]); its momentum constraint is rounding (below 3e-15).
+- HOLDS: the second-order part C2(s) = E(s) - H0 has rms C2(1)/rms C2(1/2) = 4.002,
+  4.004, 4.002, 3.994, 3.997, 3.995, 4.005, 3.999 at the eight dumps; the odd parts
+  2.000 (H and M), the even part of M 4.000.
+- Sizes at s = 1 (rms): second-order part of H 4.6e-11 at t = 0, 1.7e-11 at N = 0.44,
+  about 1e-11 to N = 2.0, 9e-13 at N = 2.4; odd part of H 6.5e-12 at N = 0.44, 6.6e-10
+  at N = 2.4 (5.7e-11 of [H]); odd part of |M| up to 8.1e-10 at N = 2.8. So at 32^3,
+  where the highest shell has four cells per wavelength, the constraint violation of
+  the entry phase is first order in the amplitude and comes from the stencils; the
+  second-order part alone is at 1e-12 of [H]. Whether the first-order part converges
+  away is the ladder on the card (T3d).
+
+**T6.** Relativistic set-ups (`regress_relativistic.py`, runs core-20261115-155731-383321a
+to -160856-a36abe3, fourteen runs): geo, boris, dep, east, os, jeans, binary identical
+between the executable of release core-v0.3 and the new one (2, 2, 1, 12, 16, 5, 1
+files). HOLDS.
+Scalar-field inputs of wave 1: run core-20261115-160549-a36abe3 FAILED again on the
+comparison (the lines of a parameter block are padded to its longest line, so the
+neighbours of `restart_file` differ in padding); the files of that run compared with
+the corrected script, run core-20261115-161240-61bb520: 120 files in ten cases (flrw in
+two gauges, plane, wave, refined mesh, power sources frozen and Markov, Mukhanov-Sasaki
+sources with and without kicks, restart): 110 byte-identical; 8 mesh restart files
+differ only inside the 36 unset header bytes; 2 (the restarted case) only in the
+recorded path of the restart file, their data identical. HOLDS. In particular the
+histories, dumps, mode records and `.rst.sf` files of the stochastic sources are
+byte-identical, also with the kicks off (the skipped synthesis changes no output).
