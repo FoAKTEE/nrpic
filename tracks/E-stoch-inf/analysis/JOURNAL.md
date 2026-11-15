@@ -4,7 +4,7 @@ Predictions are written before a run starts; outcomes are appended below them, f
 predictions included. Times are UTC on 2026-11-15. Run ids are those of
 `harness/bin/nrpic-run` (`tracks/E-stoch-inf/runs/<run_id>/manifest.json`).
 
-## 16:20 Predictions: noise unit test at the base size (N = 64, 300 steps), U9 on a card
+## 17:05 Predictions: noise unit test at the base size (N = 64, 300 steps), U9 on a card
 
 Set-up. Inputs `inputs/u64/U*.athinput`, made by `scripts/make_u_inputs.py` from the lead's
 base `lead/inputs/u_base.athinput` (NOISE_SPEC section 9 with dt = 0.25 x 2.5/64, dumps at
