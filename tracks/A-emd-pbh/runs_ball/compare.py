@@ -290,11 +290,15 @@ def main():
     con = {rec["cycle"]: rec for rec in C.read_tab_series(segs, "con", a.base)}
     tmu = {rec["cycle"]: rec for rec in C.read_tab_series(segs, "tmunu", a.base)}
     lines = []
+    nonfinite_t = []
     for rec in adm:
         x = C.line_points(rec, a.dx)
         pos = x[:, 0] > 0
         g = C.tensor6(rec, "adm_g")[pos]
         K = C.tensor6(rec, "adm_K")[pos]
+        if not (np.all(np.isfinite(g)) and np.all(np.isfinite(K))):
+            nonfinite_t.append(rec["time"])
+            continue
         ms = C.misner_sharp_line(x[pos], g, K)
         # time of the line from the history (cycle) for precision
         tl = rec["time"]
@@ -362,6 +366,12 @@ def main():
         drift_maxabs_t_le_42=float(np.nanmax([v[3] for v in msum if v[0] <= 42.0] + [np.nan])),
         max_compactness_t0=float(np.nanmax(lines[0]["compact"])) if lines else None)
     hl = [L for L in lines if "horizon" in L]
+    res["lines_nonfinite"] = dict(n=len(nonfinite_t), first_t=min(nonfinite_t) if nonfinite_t else None)
+    # where the Hamiltonian residual on the line peaks (gauge pathologies)
+    res["line_H_peak"] = [dict(t=L["t"], r=float(L["r"][int(np.nanargmax(np.abs(L["H"])))]),
+                               H=float(np.nanmax(np.abs(L["H"]))),
+                               E_there=float(L["E"][int(np.nanargmax(np.abs(L["H"])))]) if "E" in L else None)
+                          for L in lines[:: max(1, len(lines) // 50)] if "H" in L and np.any(np.isfinite(L["H"]))]
     res["line_horizon"] = dict(
         first_t=hl[0]["t"] if hl else None,
         entries=[dict(t=L["t"], **L["horizon"]) for L in hl])
@@ -679,7 +689,8 @@ def figures(a, res, ball, ex, t, tau, R, eps, Ri, grp, groups, sh, tta_num, Rmax
         CS = np.array([L["alpha"] / np.sqrt(L["grr"]) if len(L["alpha"]) == len(rr) else np.full(len(rr), np.nan)
                        for L in lines])
         ax = fig.add_subplot(2, 3, 5)
-        im = ax.pcolormesh(rr, tl, CS, shading="nearest", cmap="magma", norm=LogNorm(0.1, max(10.0, np.nanmax(CS))),
+        cmax = np.nanmax(np.where(np.isfinite(CS), CS, np.nan)) if np.any(np.isfinite(CS)) else 10.0
+        im = ax.pcolormesh(rr, tl, CS, shading="nearest", cmap="magma", norm=LogNorm(0.1, max(10.0, cmax)),
                            rasterized=True)
         fig.colorbar(im, ax=ax, label=r"$\alpha/\sqrt{\gamma_{rr}}$")
         ax.set_xlim(0, 30)
@@ -691,7 +702,8 @@ def figures(a, res, ball, ex, t, tau, R, eps, Ri, grp, groups, sh, tta_num, Rmax
         tl = np.array([L["t"] for L in lines])
         HH = np.array([np.abs(L["H"]) if len(L["H"]) == len(rr) else np.full(len(rr), np.nan) for L in lines])
         ax = fig.add_subplot(2, 3, 6)
-        vmax = np.nanmax(HH) if np.any(np.isfinite(HH)) else 1.0
+        HH = np.where(np.isfinite(HH), HH, np.nan)
+        vmax = np.nanmax(HH) if np.any(np.isfinite(HH)) and np.nanmax(HH) > 0 else 1.0
         im = ax.pcolormesh(rr, tl, np.maximum(HH, vmax * 1e-6), shading="nearest", cmap="magma",
                            norm=LogNorm(vmax * 1e-6, vmax), rasterized=True)
         fig.colorbar(im, ax=ax, label=r"$|H|$")

@@ -72,8 +72,15 @@ def main():
                 continue
             sl = np.asarray(F[key][kz][np.ix_(sel, sel)], dtype=float)
             ax = fig.add_subplot(nf, 4, 4 * k + j + 1)
+            fin = np.isfinite(sl)
+            stats[f"{key}_nonfinite_cells"] = int(np.sum(~np.isfinite(F[key])))
+            if not np.any(fin):
+                ax.text(0.5, 0.5, "non-finite", ha="center", va="center", transform=ax.transAxes)
+                ax.set_title(f"{lab}, t = {F['time']:.2f}", fontsize=8)
+                continue
+            sl = np.where(fin, sl, np.nan)
             if kind == "log":
-                vmax = max(np.nanmax(sl), 1e-30)
+                vmax = max(float(np.nanmax(sl)), 1e-30)
                 im = ax.imshow(np.maximum(sl, vmax * 1e-4), origin="lower", extent=ext, cmap=cmap,
                                norm=LogNorm(vmax * 1e-4, vmax), interpolation="none", rasterized=True)
             elif kind == "sym":
@@ -85,8 +92,14 @@ def main():
             fig.colorbar(im, ax=ax, fraction=0.046, pad=0.02)
             ax.set_title(f"{lab}, t = {F['time']:.2f}", fontsize=8)
             ax.tick_params(labelsize=7)
-            stats[f"{key}_min"] = float(np.nanmin(F[key]))
-            stats[f"{key}_max"] = float(np.nanmax(F[key]))
+            fa = np.asarray(F[key], dtype=float)
+            fa = fa[np.isfinite(fa)]
+            stats[f"{key}_min"] = float(fa.min()) if fa.size else None
+            stats[f"{key}_max"] = float(fa.max()) if fa.size else None
+            # where |key| peaks in the slice (x, y of the cell)
+            if key in ("H", "Theta"):
+                jj, ii = np.unravel_index(int(np.nanargmax(np.abs(sl))), sl.shape)
+                stats[f"{key}_peak_xy"] = [float(x[sel][ii]), float(x[sel][jj])]
         rows.append(stats)
     os.makedirs(a.out, exist_ok=True)
     outs = fs.save(fig, os.path.join(a.out, f"{a.label}_fields"))
