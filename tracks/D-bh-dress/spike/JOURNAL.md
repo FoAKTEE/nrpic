@@ -388,3 +388,61 @@ largest apocentre beyond the first decade. The deposit criterion at dx = 0.25 Gm
 3e7-3e8 particles inside 16 Gm, i.e. 1e8-2e9 in total for E_cut = 0.99, and 8x that at
 dx = 0.125 Gm. Refuted if the numbers fall outside these ranges (then the scaling from
 wave 1 does not carry over).
+
+## K2 outcome, main run (D-bh-dress-20261115-172611-1e40191: 12 processes, 1278 s,
+## 4.3 core-hours, no card-hours; analysis D-bh-dress-20261115-174954-786ddcc, 12 s)
+
+Figures `figs/kerr_main_profile.png`, `figs/kerr_main_time.png`,
+`figs/kerr_main_invariants.png` (looked at). Two earlier passes of the same analysis
+(-174815-473134d, -174912-b122e01) lacked the trend and time-average statistics.
+K2a confirmed: chi^2 = 51.4 for 47 bins at t = 0 (band 0.38-1.62 per dof); the polar band
+is depleted inside ~6 Gm as in the reference (the equator/pole contrast inside 16 Gm is
+1.127 in the reference, 1.209 +- 0.033 at t = 0: a 2.5 sigma draw). Mean Lz at t = 0
+equals the reference within 1.1 sigma in all five ranges (2.27, 1.80, 1.07, 0.645, 0.352
+Gm from the inside out: the net prograde rotation of the spike).
+K2b confirmed: chi^2/dof over 201 snapshots median 0.93, range 0.43-1.59 (inside the
+band), no trend; range counts within -2.6 ... +2.1 sigma at every snapshot (3.5 sigma
+allowed); late/early-half ratios 0.998, 1.003, 0.999, 1.000, 1.000 for the ranges 0-4,
+4-6, 6-10, 10-16, 16-40 Gm; least-squares trends per 1e4 M (-0.7 +- 0.9) %,
+(0.3 +- 0.5) %, (-0.04 +- 0.19) %, (-0.01 +- 0.13) %, (0.01 +- 0.04) %. The time-averaged
+counts are 0.959, 0.982, 0.990, 0.999, 1.002 of the reference, i.e. -1.1, -0.9, -1.0,
+-0.1, +0.6 sigma with the error of a time average over independent orbit draws
+(sqrt(N var p_i), 3.7, 1.9, 1.0, 0.67, 0.27 %); the three inner ones are one correlated
+fluctuation of the orbit sample (the same orbits visit them). Contrast over the run
+1.059-1.209, late-half mean 1.130 (reference 1.127).
+K2c confirmed: max over snapshots |dE/E| median 1.2e-8, 99th percentile 2.5e-6, max 7.9e-6
+(at r_p = 2.31 Gm; the error falls as a power of r_p, figs/kerr_main_invariants.png);
+|dLz| median 3.3e-12, max 1.7e-9; |dQ|/max(Q, 1) median 3.5e-9, max 9.5e-6.
+K2d half confirmed: no particle within r_+ (smallest r over the snapshots 2.288 Gm), but
+14 of 48000 particles went below their predicted pericentre by more than 1e-3 Gm (at most
+3.1e-3 Gm): the 1e-3 threshold of the prediction was too tight for energy errors of 1e-5
+at r_p ~ 2.3 Gm [JUDGEMENT: dr_p/dE is large for orbits near the capture boundary;
+not tested by a dt-halving run].
+K2e mostly confirmed: the mean Lz per range has no trend (late-half means 2.267, 1.810,
+1.054, 0.655, 0.370 against the reference 2.267, 1.800, 1.069, 0.645, 0.352), but single
+snapshots reach -3.7 ... +4.3 sigma (standard error std/sqrt(n)) in the 0-4 and 4-6 Gm
+ranges, beyond the 3 sigma predicted: one excursion of +0.17 Gm at t ~ 12800 M in 4-6 Gm
+(figs/kerr_main_time.png, middle). [JUDGEMENT: the Lz distribution in a range is broad
+and skewed, so std/sqrt(n) understates the tail; not a drift.]
+
+## K3 outcome (D-bh-dress-20261115-173114-af8bfcc, 288 s, 4 cores; figs/kerr_budget.png,
+## looked at)
+
+a = 0.8, r_+ = 1.6 Gm, ten horizon radii = 16 Gm. Equal-mass particles, DF truncated at
+E <= E_cut; criteria as stated in the prediction.
+- Counting (8 log bins in 4-16 Gm x 3 bands of |cos theta|): N_total = 1.35e5 (10 %) and
+  5.4e5 (5 %) for 1 - E_cut = 1e-2 (largest apocentre ~110 Gm); 1.25e6 / 5.0e6 (1e-3),
+  6.8e6 / 2.7e7 (1e-4), 3.3e7 / 1.3e8 (1e-5), 1.5e8 / 6.1e8 (1e-6); growth per decade of
+  apocentre 9.3, 5.4, 4.8, 4.7. The least populated bin is the polar band at 4-4.8 Gm.
+  Always 1.0e5 particles inside 16 Gm for 5 %.
+- Deposit noise 5 % in every cell between 4 and 16 Gm: 8.3e7-8.6e7 particles inside
+  16 Gm at dx = 0.25 Gm and 6.6e8-6.9e8 at dx = 0.125 Gm, i.e. N_total = 4.8e8 (dx = 0.25)
+  and 3.8e9 (dx = 0.125) for 1 - E_cut = 1e-2, 4.1e9 / 3.3e10 for 1e-3, up to
+  5.0e11 / 4.0e12 for 1e-6.
+- Fraction of the particles inside 16 Gm: 0.182, 0.020, 0.0037, 7.7e-4, 1.65e-4 (the
+  coarse grid of this run gives 0.182 at E_cut = 0.99 where the fine reference grid gives
+  0.1786 and the K2 sample 0.1771 +- 0.0017: a 2 % grid error, irrelevant here).
+- Kerr/Schwarzschild total number with E <= E_cut: 1.06 (0.99), 1.01 (0.999), 1.00 beyond.
+Prediction confirmed in all parts: counting 1.35e5 in [1e5, 3e5]; growth 5.4, 4.8, 4.7 per
+decade beyond the first in [4, 6]; deposit inside 16 Gm 8.6e7 in [3e7, 3e8]; total 4.8e8
+in [1e8, 2e9]; dx = 0.125 eight times dx = 0.25 (by construction of the criterion).
