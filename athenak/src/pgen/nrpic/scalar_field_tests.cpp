@@ -12,7 +12,9 @@
 //!         k_i = 2 pi n_i / L_i (integers n1, n2, n3), omega = sqrt(k^2 + m^2) unless
 //!         <problem> omega is given.  A wave travelling towards +k for alpha = 1.  The
 //!         data satisfy the constraints only for a test field (<scalar_field> couple =
-//!         false).
+//!         false).  <problem> beta1, beta2, beta3 set a uniform shift (still flat
+//!         spacetime, in coordinates that move with velocity -beta): the wave then has
+//!         the coordinate frequency omega - k.beta.
 //!  flrw   homogeneous flat universe: phi = phi0, Pi = pi0, conformally flat with
 //!         psi = 1, K = -sqrt(24 pi (Pi^2/2 + V(phi))) (expanding), alpha = 1.
 //!  plane  a plane perturbation that satisfies both constraints exactly:
@@ -87,6 +89,12 @@ void ProblemGenerator::ScalarFieldTests(ParameterInput *pin, const bool restart)
                      pin->GetOrAddInteger("problem", "n2", 0),
                      pin->GetOrAddInteger("problem", "n3", 0)};
   const bool control = pin->GetOrAddBoolean("problem", "control", false);
+  const Real bw1 = pin->GetOrAddReal("problem", "beta1", 0.0);
+  const Real bw2 = pin->GetOrAddReal("problem", "beta2", 0.0);
+  const Real bw3 = pin->GetOrAddReal("problem", "beta3", 0.0);
+  if (kind != 0 && (bw1 != 0.0 || bw2 != 0.0 || bw3 != 0.0)) {
+    SfTestFatal("<problem> beta1, beta2, beta3 are for id = wave only");
+  }
 
   const Real gx1 = pmy_mesh_->mesh_size.x1min;
   const Real gx2 = pmy_mesh_->mesh_size.x2min;
@@ -203,8 +211,9 @@ void ProblemGenerator::ScalarFieldTests(ParameterInput *pin, const bool restart)
     u0(m,ipi,k,j,i) = pi;
 
     adm.psi4(m,k,j,i) = 1.0;
+    const Real bw[3] = {bw1, bw2, bw3};
     for (int a=0; a<3; ++a) {
-      adm.beta_u(m,a,k,j,i) = 0.0;
+      adm.beta_u(m,a,k,j,i) = bw[a];
       for (int b=a; b<3; ++b) {
         const Real dab = (a == b) ? 1.0 : 0.0;
         adm.g_dd(m,a,b,k,j,i) = dab;

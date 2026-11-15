@@ -413,3 +413,19 @@ comparison is between two runs from the same data. Figure `fig_particles_field.p
 (looked at). So particle sources given as step densities and field sources are summed
 correctly in the right-hand side and in the constraints; a dynamical field together with
 particles has not been run.
+
+## 2026-11-15, entry 7: test 6 (shift terms), prediction before the run
+
+No test so far has a non-zero shift, so the advective terms beta^i d_i phi and
+beta^i d_i Pi (upwinded stencils) have never been exercised. Test: the plane wave of test
+1 on flat spacetime written in coordinates with a uniform shift beta = (0.3, 0.2, 0)
+(`<problem> beta1, beta2`; Z4c with the shift frozen), where the coordinate frequency is
+omega - k.beta = 10.196 - 2 pi (0.3 + 0.2) = 7.054. Meshes N x N x 8, N = 8, 16, 32,
+nghost 4, step 1/512, to t = 1.
+Prediction: the fitted frequency approaches omega - k.beta with an error that falls at an
+order of at least 4 (the upwinded seven-point first difference is of fifth order with a
+dissipative leading term; the second differences of sixth), below 1e-3 relative at N = 8
+and below 1e-5 at N = 16; the amplitude decays slightly through the upwinding, by less
+than 1e-2 at N = 8 over t = 1, falling with at least fifth order. With the opposite sign
+of the shift the frequency is omega + k.beta = 13.338. Refuted by a frequency near omega
+(advective terms missing) or by a frequency shift of the wrong sign.

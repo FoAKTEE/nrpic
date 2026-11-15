@@ -75,3 +75,6 @@ amp        = 1.0
 n1         = 1
 n2         = 1
 n3         = 0
+beta1      = 0.0         # uniform shift (flat spacetime in moving coordinates)
+beta2      = 0.0
+beta3      = 0.0
