@@ -112,3 +112,14 @@ real data: T0, on exact pure-gauge Minkowski data with random spatial coordinate
 (`gw_diag/gwdiag/analytic.py`, gauge_mode with slicing off), Lambda h - G falls as eps^3
 (slope 3.0 +- 0.1) while Lambda h falls as eps^2; with the slicing on, the residual stays
 at eps^2 (G does not remove the slicing part).
+
+## Initial data, run B-20261115-161656-03d75e1 (outcome of P0, partly)
+
+The run was killed after 15 min by the `timeout 900` I had wrapped around the blocking
+`nrpic-run submit` (my error, not the code's): eps = 0, 0.1, 0.3 had finished, eps = 1 was in
+its tenth outer iteration (change of psi 6.3e-10) and its directory is empty. Manifest closed
+as failed (exit -15). The three finished cases are complete (logs end with the residual
+summary) and are used. P0 for them: CONFIRMED. Hamiltonian residual 4.8e-12, 1.3e-11, 4.0e-11,
+momentum 3.1e-17, 1.1e-16, 1.5e-16 (eps = 0, 0.1, 0.3); max |psi_N| 6.07e-3, 6.68e-3, 7.89e-3;
+max |Ahat| 1.27e-4 to 1.60e-4; largest displacement 0.10 cells; 2,097,152 particles each
+(`eps*.log` of the run). eps = 1 is rebuilt in a separate run, without a timeout.

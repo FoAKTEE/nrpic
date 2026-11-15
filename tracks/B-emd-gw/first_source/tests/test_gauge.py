@@ -1,0 +1,91 @@
+"""Tests of fslib.gauge on exact data (T0 of JOURNAL.md, prediction P7).
+
+Pure-gauge Minkowski space in random spatial coordinates (gw_diag analytic.gauge_mode,
+slicing off): tilde gamma = det(J)^(-2/3) J^T J exactly, h_T = 0, so Lambda h - G must be
+third order in the amplitude while Lambda h is second order. With the slicing on, the
+residual Lambda[-d f d f] stays second order (G does not remove the slicing part).
+"""
+import os
+import sys
+
+import numpy as np
+
+sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "fslib"))
+import paths  # noqa: E402,F401
+from gwdiag import tt, analytic  # noqa: E402
+from gwdiag.grid import Grid  # noqa: E402
+from fslib import gauge  # noqa: E402
+
+
+def conformal_h(gamma):
+    ginv, d = tt.inv3(gamma)
+    return d ** (-1.0 / 3.0) * gamma - np.eye(3)[:, :, None, None, None]
+
+
+def rms(x):
+    return float(np.sqrt(np.mean(np.einsum("ab...,ab...->...", x, x))))
+
+
+def residuals(eps, slicing=False, n=32, seed=3, pad=True):
+    g = Grid((n, n, n), (4.0, 4.0, 4.0), (0.0, 0.0, 0.0))
+    gamma, K, alpha, beta = analytic.gauge_mode(g, eps, seed=seed, slicing=slicing)
+    h = conformal_h(gamma)
+    Lh = tt.tt_project(h, g)
+    G = gauge.gauge_piece(h, g, pad=pad)
+    return rms(Lh), rms(Lh - G), rms(G)
+
+
+def test_inverse_of_longitudinal_part():
+    rng = np.random.default_rng(1)
+    g = Grid((16, 16, 16), (4.0, 4.0, 4.0), (0.0, 0.0, 0.0))
+    h = rng.normal(size=(3, 3) + g.shape)
+    h = 0.5 * (h + np.einsum("ab...->ba...", h))
+    X = gauge.xi_hat_from_h(h, g)
+    D = gauge.longitudinal_from_xi_hat(X, g)
+    target = tt.tensor_rfft(gauge.nonTT_traceless(h, g))
+    m = ~g.nyquist_mask(real=True)
+    m[0, 0, 0] = False
+    err = np.abs(D[:, :, m] - target[:, :, m]).max() / np.abs(target[:, :, m]).max()
+    assert err < 1e-12, err
+
+
+def test_pure_spatial_gauge_is_removed_at_second_order():
+    eps = np.array([4e-3, 2e-3, 1e-3, 5e-4])
+    r = np.array([residuals(e) for e in eps])
+    s_raw = np.polyfit(np.log(eps), np.log(r[:, 0]), 1)[0]
+    s_res = np.polyfit(np.log(eps), np.log(r[:, 1]), 1)[0]
+    assert abs(s_raw - 2.0) < 0.05, s_raw
+    assert abs(s_res - 3.0) < 0.1, s_res
+    assert np.all(r[:, 1] < 0.05 * r[:, 0])
+
+
+def test_slicing_part_is_not_removed():
+    eps = np.array([2e-3, 1e-3, 5e-4])
+    r = np.array([residuals(e, slicing=True) for e in eps])
+    s_res = np.polyfit(np.log(eps), np.log(r[:, 1]), 1)[0]
+    assert abs(s_res - 2.0) < 0.1, s_res
+
+
+def test_tt_wave_survives_the_correction():
+    g = Grid((32, 32, 32), (4.0, 4.0, 4.0), (0.0, 0.0, 0.0))
+    waves = [analytic.Wave((1, 1, 0), 1e-6, 0.0), analytic.Wave((0, 1, 2), 0.0, 5e-7)]
+    gamma_w = analytic.wave_adm(waves, g)[0]
+    hw = conformal_h(gamma_w)
+    # wave in pure-gauge coordinates: gamma' = J^T gamma_w(x' + xi) J; to the order kept
+    # here (xi ~ 1e-3, wave ~ 1e-6) the shift of the argument is a 1e-9 correction
+    gp, _, _, _ = analytic.gauge_mode(g, 1e-3, seed=5, slicing=False)
+    J = np.eye(3)[:, :, None, None, None] + 0.0
+    # J^T gamma_w J with J from gp: gp = J^T J; build J explicitly from the same seed
+    L = 4.0
+    xis = [analytic.random_modefield(g, 1e-3 * L / (2 * np.pi), 3, 2, 5 + 10 * a + 1) for a in range(3)]
+    J = J + np.array([x.grad() for x in xis])
+    gamma = np.einsum("mi...,mn...,nj...->ij...", J, gamma_w, J)
+    assert np.allclose(np.einsum("mi...,mj...->ij...", J, J), gp)
+    h = conformal_h(gamma)
+    Lh = tt.tt_project(h, g)
+    G = gauge.gauge_piece(h, g)
+    hTT_w = tt.tt_project(hw, g)
+    err_raw = rms(Lh - hTT_w)
+    err_cor = rms(Lh - G - hTT_w)
+    assert err_cor < 0.01 * err_raw, (err_raw, err_cor)
+    assert err_cor < 5e-3 * rms(hTT_w), (err_cor, rms(hTT_w))

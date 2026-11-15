@@ -1,0 +1,5 @@
+# Card batch 1 of first_source: eps = 0, 0.3, 0.1 in the zero-shift gauge (initial data of run
+# B-20261115-161656-03d75e1, whose eps = 1 case was cut off; see JOURNAL.md).
+cw_eps0   tracks/B-emd-gw/first_source/inputs/crossed.athinput particles/particle_file=/data/haiyangw/nrpic/scratch/B-emd-gw/B-20261115-161656-03d75e1/eps0/particles.nrp problem/id_file=/data/haiyangw/nrpic/scratch/B-emd-gw/B-20261115-161656-03d75e1/eps0/fields.bin
+cw_eps0p3 tracks/B-emd-gw/first_source/inputs/crossed.athinput particles/particle_file=/data/haiyangw/nrpic/scratch/B-emd-gw/B-20261115-161656-03d75e1/eps0p3/particles.nrp problem/id_file=/data/haiyangw/nrpic/scratch/B-emd-gw/B-20261115-161656-03d75e1/eps0p3/fields.bin
+cw_eps0p1 tracks/B-emd-gw/first_source/inputs/crossed.athinput particles/particle_file=/data/haiyangw/nrpic/scratch/B-emd-gw/B-20261115-161656-03d75e1/eps0p1/particles.nrp problem/id_file=/data/haiyangw/nrpic/scratch/B-emd-gw/B-20261115-161656-03d75e1/eps0p1/fields.bin
