@@ -133,3 +133,38 @@ GWDIAG_NRFIELD).
   standing-wave case (modes at m and -m with equal amplitudes) is added: prediction
   rho_kin + rho_grad constant to < 1e-9 while rho_kin/rho_ref swings between 0 and 2 for a
   single standing mode.
+
+## Outcome of P1, P3 (TT part), P5 — runs B-emd-gw-20261115-115001-e9262bd, -115125-42096b9, -115206-2e6c497
+
+(Same computations three times; the reruns only changed the figure layout; numbers identical.)
+`results_tt.json`, figures `figs/tt_amplitude_spectrum.png`, `figs/tt_time.png`, `figs/tt_gauge_scalar.png`.
+- From (gamma, K) for 12 random waves on a 32x28x24 non-cubic box: relative error of h^TT,
+  d_tau h^TT and rho_GW proportional to A^2 (fitted slopes 2.00, 1.99, 2.00 for A >= 1e-4;
+  9.5e-8 at A = 1e-4), with a round-off floor of 1e-11 at A = 1e-6. As amended.
+- 48 waves, |m| = 1..6, 64^3, A = 1e-6 per mode, 70 % of the energy in helicity +2: total
+  rho_GW relative error 2.4e-12, worst shell 2.6e-12, helicity +2 fraction 0.7000000000000428,
+  empty shells 1e-21 of the total. PASSED (P5).
+- Time series over one box crossing (41 times, 32^3): total, 2 rho_kin and rho_(+2) constant to
+  2.7e-12; the standing wave (m = +-(0,0,2)): rho_kin/rho_ref between 6e-78 and 1.0 (i.e. 2 rho_kin
+  swings 0..2) while the total stays at 1 to 1.7e-11. PASSED as amended (the original P5 claim of
+  oscillation for distinct travelling waves was wrong; caught before the run).
+- d_tau h^TT from centred differences of h^TT at spacing dt against the 3+1 value: 1.44e-2 at
+  dt = 0.01 L, 3.6e-3 at 0.005 L (order 2.0 at the small end; slope 1.89 over the whole range
+  because omega dt ~ 3 at the largest dt). PASSED.
+- Pure gauge (exact Minkowski in random coordinates incl. slicing) and scalar data, 32^3,
+  eps = 1e-6..1e-2: max |h^TT| and max |d_tau h^TT| scale as eps^2 (slopes 2.002 / 2.002 gauge,
+  2.007 / 2.002 scalar), rho_GW as eps^4 (4.000, 4.002), while the input metric perturbation
+  scales as eps (1.001, 1.000); h^TT / input = 7e-7 at eps = 1e-6. PASSED (P3, P4 TT part).
+
+## Prediction for validate_weyl.py (written before it ran)
+
+Convergence on 12..64 cells per side: for waves (8 modes, |m| <= 2, A = 1e-8) the errors of E
+and B against the linear references, for the pure-gauge data (eps = 1e-3) max|E|, max|B|
+divided by max|R| (R itself is O(eps) and balanced by the K terms), for scalar data
+(eps = 1e-6) max|B| and max|Lambda E| divided by max|E_lin|: fitted orders 2, 4, 6 within 0.3
+for the finite-difference stencils above the floors (waves 1e-8, scalar 1e-6 relative, gauge
+round-off), spectral at the floor at every N. Psi_4 for the plane wave m = (1,1,0), spectral,
+32^3: relative error and |Psi_4(-k)|/|Psi_4(k)| proportional to A (slope 1 +- 0.1) down to
+round-off. Scalar mode zeta = eps sin(4 pi x + 0.3): Psi_4 along x zero to O(eps) relative to
+max|E_lin| (the TT-part statement), Psi_4 along y and along (1,1,0) nonzero and equal to
+-E_lin mbar mbar to relative O(eps) (D4).

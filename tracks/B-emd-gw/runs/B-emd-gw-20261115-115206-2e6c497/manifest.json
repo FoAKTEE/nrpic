@@ -1,0 +1,40 @@
+{
+ "run_id": "B-emd-gw-20261115-115206-2e6c497",
+ "owner": "B-emd-gw",
+ "package": "gw_diag",
+ "command": "python3 scripts/validate_tt.py",
+ "cwd": "/data/haiyangw/nrpic/wt/B-emd-gw/tracks/B-emd-gw/gw_diag",
+ "commit": "2e6c4978cf6038c460b74279ca780f38ba4bbcb4",
+ "worktree_dirty_gw_diag": false,
+ "inputs": [
+  {
+   "path": "/data/haiyangw/nrpic/wt/B-emd-gw/tracks/B-emd-gw/gw_diag/scripts/validate_tt.py",
+   "sha256": "d6fcc51704c7441152723bcd7d78a3f7785539754c8afe07c8055e0a7bb05399"
+  }
+ ],
+ "output_dir": "/data/haiyangw/nrpic/scratch/B-emd-gw/B-emd-gw-20261115-115206-2e6c497",
+ "purpose": "TT validation rerun, final figure layout (same computations as B-emd-gw-20261115-115001-e9262bd)",
+ "kind": "production",
+ "cores": 4,
+ "card_hours": 0.0,
+ "env": {
+  "OMP_NUM_THREADS": "4",
+  "OPENBLAS_NUM_THREADS": "4",
+  "MKL_NUM_THREADS": "4"
+ },
+ "started_utc": "2026-11-15T11:52:06+00:00",
+ "status": "completed",
+ "exit_code": 0,
+ "wall_time_s": 24.5,
+ "ended_utc": "2026-11-15T11:52:30+00:00",
+ "outputs_sha256": {
+  "results_tt.json": "f9e9ff7ab9fa4a88711877d1a1900ef6fe9954f88f76a7bb2f718837c3d48ff4",
+  "stdout.txt": "5ccff1124d066212962ca8ff717420df13bf7dc9a38d4db98aae7db69d16d2f2",
+  "tt_amplitude_spectrum.pdf": "2db176a41ea98d52828034d9226508ebbd36cdf4b0916e5cf5df8dedaaef9892",
+  "tt_amplitude_spectrum.png": "05d2060a2c841343642db8b470326aad796d990632d533f55e45070869721154",
+  "tt_gauge_scalar.pdf": "69dc226d143737c482c2178fb6a38156d6231fe07fd626cc6c00c5e03a1c04c8",
+  "tt_gauge_scalar.png": "8f8b7e669abdcffd6eae96631e6a9b283cec02aafc8b8b56d037b75acd48cc27",
+  "tt_time.pdf": "fb893c030f16bfc9954c93d6b1e12864604aea00b46bc269d5960a4bea29fa81",
+  "tt_time.png": "ac0a5a5ddb6f73ee23e42e49f86c93b7dc5e422d8fe6fbf738985d68b0860f65"
+ }
+}
