@@ -10,6 +10,8 @@ results of the tests below: `tracks/core/interfaces/newtonian_mode.md`.
 |---|---|
 | `isolated.athinput` | isolated domain, multipole boundary of the multigrid solver, no expansion |
 | `periodic.athinput` | periodic box, comoving coordinates, matter-dominated scale factor |
+| `isolated_smr.athinput` | `isolated.athinput` with one static refinement level: a trial, not verified (interface note, section 6) |
+| `analyze_conservation.py` | test T6: moving, rotating ball: conservation laws, six components of the second moment |
 | `make_ic.py` | particle files of the tests: point mass with tracers, homogeneous ball, plane wave |
 | `analyze_field.py` | tests T1 and T2: field of a point mass and of a ball against the exact fields |
 | `analyze_collapse.py` | test T3: cold collapse of a ball against the cycloid, energy, second moment |
