@@ -515,6 +515,45 @@ def v5(a):
     return 0
 
 
+def v7(a):
+    """Test V7: byte checks of the executable to be published (a.exe) against the
+    published one (no id_vector: gauss_code_n32, torus_code_p1_n32) and against the build
+    of 7f118b9 (stencil form of the vector part: gboost_stencil_n32)."""
+    res = idlib.load_json(OUT)
+    old = "/data/haiyangw/nrpic/scratch/core/tmp/idsolve/exe_7f118b9/athena_cpu"
+    ginp = os.path.join(idlib.WT, "problems/idsolve/gaussian.athinput")
+    tinp = os.path.join(idlib.WT, "problems/idsolve/torus.athinput")
+    binp = os.path.join(idlib.WT, "problems/idsolve/gaussian_boost.athinput")
+    gnrp = run_tests.ic_gauss(0.5)
+    wnrp = run_tests.ic_wave(32, 1)
+    bnrp = os.path.join(IC, "gauss_h0p5_u0p1.nrp")
+    cases = [("gauss_code_n32", ginp, gnrp, a.base, ["particles/id_residual=code"]),
+             ("torus_code_p1_n32", tinp, wnrp, a.base, ["particles/id_residual=code"]),
+             ("gboost_stencil_n32", binp, bnrp, old, ["particles/id_residual=stencil"])]
+    out = {}
+    for name, inp, nrp, ref, extra in cases:
+        args = run_tests.mesh_args(32, 16) + extra + [
+            "particles/particle_file=" + os.path.basename(nrp)]
+        ids = {}
+        for label, exe in (("reference", ref), ("final", a.exe)):
+            rid, st = registered("initial-data solver, test V7: %s, %s executable" % (name, label),
+                                 "idsolve-v7-%s-%s" % (name, label), [inp, nrp],
+                                 [exe, "-i", os.path.basename(inp)] + args)
+            ids[label] = rid
+            print("V7 %s %s %s %s" % (name, label, rid, st), flush=True)
+        da, db = idlib.run_dir(ids["reference"]), idlib.run_dir(ids["final"])
+        files = sorted(os.path.basename(q) for q in glob.glob(os.path.join(da, "*"))
+                       if not os.path.islink(q) and os.path.basename(q) != "run.log")
+        diff = [f for f in files if not filecmp.cmp(os.path.join(da, f), os.path.join(db, f),
+                                                    shallow=False)]
+        out[name] = dict(reference_exe=ref, reference=ids["reference"], final=ids["final"],
+                         files=files, differ=diff)
+        print("V7 %s: %d files compared, differ: %s" % (name, len(files), diff), flush=True)
+    res["V7"] = out
+    idlib.save_json(OUT, res)
+    return 0
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--exe", default=os.path.join(idlib.WT, ".work/build_cpu_vec/src/athena"))
@@ -525,7 +564,10 @@ def main():
                     "(gauss, torus), then analyse")
     ap.add_argument("--v3", action="store_true", help="test V3 only")
     ap.add_argument("--v5", action="store_true", help="tests V5 and V6 only")
+    ap.add_argument("--v7", action="store_true", help="test V7 only")
     a = ap.parse_args()
+    if a.v7:
+        return v7(a)
     if a.v3:
         return v3(a)
     if a.v5:

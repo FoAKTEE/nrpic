@@ -773,3 +773,20 @@ t = 2 a mean |H| over the mesh of 5.33e-5 (scalar solve only, E: 5.31e-5) and a 
 of 4.07e-5 (E: 4.26e-5). After one step the mean |M| is 1.0e-5 (E: 1.34e-5). The
 momentum residual of the data does not feed the growth seen over the whole mesh, which
 F places at the faces and, at 64 cells, at the edge.
+
+## 2026-11-15, entry 13: checks of the executables to be published (source a7a32cd)
+
+Card job 4486 (V4, card build of 7f118b9) was cancelled while still waiting in the queue
+(no card time used): the source has changed since (mode code of the vector part); V4
+moves to the card build of a7a32cd. Predictions before the runs:
+V7 (processor build of a7a32cd, copy `scratch/core/tmp/idsolve/exe_a7a32cd/athena_cpu`):
+ (a) without id_vector, byte-identical outputs to the published executable (87e189e) for
+     gauss_code_n32 and torus_code_p1_n32, and in the relativistic regression (seven
+     cases, `regress_relativistic.py`);
+ (b) the stencil form of the vector part byte-identical to the build of 7f118b9 for
+     gboost_stencil_n32 (the changes since are inside the mode-code branches).
+Refuted if any byte differs.
+V4 (card build of a7a32cd, one A100): gauss_code_n64 (scalar), gboost_code_n64 (vector,
+stencil form) and the moving Gaussian with the vector part in mode code, 64 cells: the
+same iteration counts as the processor runs (-155051-87e189e, -183239-ca15f8b,
+-185858-a7a32cd), psi and W equal to 1e-10 relative; at most 0.05 card-hours.
