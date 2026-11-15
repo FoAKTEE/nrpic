@@ -107,7 +107,7 @@ statistics from the dumps (t = 0, 0.25, 0.5).
 Refuted: any of the four comparisons outside its bound (then the reader or the [H]
 reconstruction is wrong), or an order outside 5-6.5.
 
-## 17:20 Outcome of the plane check (run E-20261115-171628-1737ebe): one prediction failed
+## 17:18 Outcome of the plane check (run E-20261115-171628-1737ebe): one prediction failed
 
 Passed: mean |H| and rms H from the dumps equal the history to 2.0e-14 and 5.7e-15; box
 mean of [H] per cell equals the code's [H] to 5.3e-7; orders of rms H/[H] and rms M/rms [M]
@@ -119,7 +119,7 @@ wrong: I treated gt - delta as second order, but in this test the metric perturb
 first order in A = 0.003, so gt^ab != delta^ab changes the norm of M at relative order
 1e-3. Cause not yet shown by a run.
 
-## 17:20 Prediction: the same check with the conformal metric from a `bin` output
+## 17:18 Prediction: the same check with the conformal metric from a `bin` output
 
 `plane_check.py` now adds `<output2> bin, variable = z4c, dt = 0.25` (single precision) and
 recomputes the physical norm chi gt^ab M_a M_b and At_ij At^ij from it. If the explanation
@@ -128,3 +128,14 @@ absolute error of 6e-8 on numbers near 1), and the box mean of [H] with At At in
 equals the code's [H] to <= 1e-9. Refuted if the difference stays at 1e-4 (then the
 reader's assembly of M or of the bin file is wrong). This also tests `read_bin_metric` on
 real output (its first use).
+
+## 17:21 Outcome (run E-20261115-171859-0b34449): explanation confirmed
+
+With gt^ab from the bin output the physical norm of M equals the history to 2.0e-9 (bound
+1e-6) and the box mean of [H] with At At equals the code's [H] to 1.0e-14 (bound 1e-9); the
+gt = delta form stays 5.5e-4 off, as recorded. So the dump reader, the [H]
+reconstruction and `read_bin_metric` agree with the code on real output, and a physical
+|M| needs the conformal metric, which the dump does not hold (request to core, README).
+The ratio [M] used for |M|/[M] is the flat norm of covariant components, as P1's [M]; it
+does not depend on gt. Figure `fig/fig_plane_constraint_ratios.png` (looked at: the
+dump-based ratios lie on the history's crosses).
