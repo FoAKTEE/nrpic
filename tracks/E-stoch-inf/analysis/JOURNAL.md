@@ -184,7 +184,7 @@ All predictions hold (`fig/analyse_sr_N16.json`; figures `fig/fig_sr_permode_N16
 `fig_sr_constraints_N16.png`, `fig_sr_spectrum_N16.png`, looked at).
 - PS1: largest <|H|>/<[H]> 2.07e-8 at ln a = 1.52 (R_rms = 8.4e-4 there, 1.55e-3 at the
   end), then decaying to 8.3e-13; control 1.26e-5 at the same time, 610 times larger.
-  rms M/rms [M]: at most 2.2e-3 (first order, as P1:745 says |M|/[M] should be), control
+  rms M/rms [M]: at most 2.2e-3 (first order in R, as 2512.14649 PRD_v2.tex:541 and 746 say |M|/[M] should be), control
   0.2-0.4. Not predicted: before the modes enter (ln a = 0.27-0.78, R_rms 1.7e-8 to
   1.9e-6) rms M/rms [M] is already 5e-6 to 5e-5, i.e. not second order in R there; the
   same window in the control is 0.30. Cause not tested; a candidate is the continuum k^2
@@ -201,7 +201,7 @@ All predictions hold (`fig/analyse_sr_N16.json`; figures `fig/fig_sr_permode_N16
   sub-horizon; it does not grow afterwards).
 - PS6: 2 min per run.
 
-## 17:32 Outcome P3' (run E-20261115-172423-5234cce): the reference, not the code
+## 17:30 Outcome P3' (run E-20261115-172423-5234cce): the reference, not the code
 
 U6 of the scaled case with the release executable: with the track's reference as it is,
 A1 fails at 9.77e-11 of the rms (worst stoch_c2 at cycle 120), every other test passes;
