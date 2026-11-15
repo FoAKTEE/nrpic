@@ -352,3 +352,35 @@ Prediction confirmed, except that my expectation of a 0.1-0.2 percent energy sca
 low: the per-seed scatter is 0.2 percent around a +0.18 percent mean. Figure
 `figs/t9_unequal_cpu.png` looked at (the right panel's label overlaps the middle panel;
 cosmetic).
+
+## 2026-11-15 T11: outcome (run C-20261115-174651-0ad8612)
+
+PASS, both seeds, all three parts (n_trunc 0, n_sub up to 4).
+- (a) Accepted collisions over 200 lab steps against the analytic expectation with the
+  sample's (theta, beta) = (1.00077, 0.599993) and (1.00156, 0.599704): 5024748 vs
+  5022176 (z = +1.15) and 5025501 vs 5025067 (z = +0.19); accepted vs sum_P z = +0.52,
+  -0.21. A code with |v_a - v_b| (1.48 times) is excluded. Prediction confirmed.
+  Reported, not a criterion: the mean sum_P per step exceeds the same expectation by
+  2.8e-4 and 1.8e-4, which is z = 5.8 and 4.1 against the step-to-step standard error;
+  in the non-drifting T2 runs at theta = 1 the same comparison gave -0.3 and +1.3. See
+  the diagnostic below.
+- (b) Lab moments at 16.0 (10 lab collision times) against t = 0: all |z| < 1.2
+  (<W> and <u_x> unchanged by conservation; <u_x^2/W>, <u_y^2/W> within noise).
+- (c) Drifting two-temperature start (3 and 1, beta = 0.6), 470 steps (37.6 = 15
+  tau_rel(rest) gamma_b): end-state moments against MJ(theta_f, beta_f) of the conserved
+  lab means (seed 1: 2.01675, 0.59944; seed 2: 2.01460, 0.60000) within |z| <= 1.0; KS
+  of lab u_x p = 0.21, 0.92 and of |u_perp| p = 0.84, 0.89. As said before the run, the
+  alternative reading (drift fixed, theta from the energy) is not distinguishable here.
+Figure `figs/t11_drift_cpu.png` looked at: the end-state lab u_x histogram lies on the
+drifting MJ reference, well away from the start.
+
+## 2026-11-15 Diagnostic D1 of the T11(a) sum_P excess: prediction (before the run)
+
+`scripts/t11diag.py` on the T11 run: sum_P = sum_W x (mean Moller speed of tested
+pairs). Expectation [JUDGEMENT]: the occupation part sum_W per step equals (1/2) N rho
+sigma dt within its noise (as in T2: within 1e-4), so the excess sits in the mean
+Moller speed of the tested pairs; a Monte Carlo over 4e6 random pairs of the initial
+snapshot then tells whether the sample itself carries it (the generator's boosted
+sampler) or the tested pairs differ from random pairs (the operator). If the Monte Carlo
+also shows +2e-4 the operator is cleared and the generator or the analytic reference is
+in question; if not, the operator's pair selection or v_Mol in a drifting gas is.
