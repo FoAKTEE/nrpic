@@ -50,7 +50,7 @@ written as predictions before each check runs and outcomes after.
   ball, K = KL + 2 KT = -(3/2) sqrt(2M/R^3) to 1e-14 relative (the gauge helper's
   derivation), and K jumps from -3H inside to -(3/2)H outside at a sharp edge.
 
-### Predictions L7-L8, written 13:14 UTC before the runs
+### Predictions L7-L8, written 13:06 UTC before the runs (clock read from the machine)
 
 - L7 (data set 2t for the first scouting runs). expball's generator with the data-set-2
   core and a C^4 edge taper of half width w = 1.5 M (`--edge-width 0.1875`, matter edge
