@@ -1,0 +1,125 @@
+{
+  "schema": "nrpic-run-manifest/1",
+  "run_id": "A-20261115-152758-1579711",
+  "track": "A-emd-pbh",
+  "gate": "G2",
+  "kind": "scouting",
+  "purpose": "Newtonian mode, cost per cycle on one processor core: top-hat at 64^3/128^3/256^3 and one deformed ball, 30 cycles each (prediction P8, newton/JOURNAL.md entry 5)",
+  "preregistered_in": null,
+  "launcher": "local",
+  "command": [
+    "python3",
+    "tracks/A-emd-pbh/newton/newton_campaign.py",
+    "--campaign",
+    "cost",
+    "--jobs",
+    "5"
+  ],
+  "cwd": ".",
+  "git": {
+    "sha": "15797111d6f87e863717ae7abaf4190f3ae4f74c",
+    "branch": "track/A-emd-pbh",
+    "dirty": false,
+    "merge_base_main": "4ebb05fcb5deec8e13f47f37e4806d170fba80d7",
+    "worktree": "wt/A-emd-pbh"
+  },
+  "code": {
+    "core_tag": "core-v0.3",
+    "athenak_upstream_sha": "c5a0d7f",
+    "kokkos_sha": "6739bc623081648af9e752b616d9671527922cbf",
+    "problem": null
+  },
+  "env": {
+    "host": "anta",
+    "env_hash": "0279f117f9b5066d0d8f22b387f643d57a7ce55d3c210ad3e0a880c49ae63266",
+    "machine_file_sha256": "fb54b7387bc058c778fdd2fec12e58d67459a657278df6a87d04f63daccb1968",
+    "uv_lock_sha256": "5417f6ba318b914aa3800e5d55f7b11fdd8df13c2688bdda7d419240aa1d5863",
+    "track_requirements_sha256": null,
+    "container_digest": null,
+    "compiler": "g++ 11.4.0",
+    "mpi": "none (Athena_ENABLE_MPI=OFF)",
+    "gpu": null,
+    "python": "3.10.12 /data/haiyangw/nrpic/wt/A-emd-pbh/.venv"
+  },
+  "input": null,
+  "inputs": [
+    {
+      "path": "tracks/A-emd-pbh/newton/make_deformed_ball.py",
+      "role": "input",
+      "sha256": "3eb85f6fa0e5a9af77dd86f972326e0959c28c6ecb73e3e61a5f95604710dc72",
+      "bytes": 6855,
+      "tracked": true
+    },
+    {
+      "path": "tracks/A-emd-pbh/newton/ellipsoid.py",
+      "role": "input",
+      "sha256": "01389674e104789dcd6d324c618ac154075fd566d8960b63d9f50b4d9144151d",
+      "bytes": 11429,
+      "tracked": true
+    },
+    {
+      "path": "tracks/A-emd-pbh/newton/tophat.py",
+      "role": "input",
+      "sha256": "18782ebc87ce74a5b3830e7916c844a89ca5ab6b5a43c8cc0ba91d095e8c211b",
+      "bytes": 4520,
+      "tracked": true
+    },
+    {
+      "path": "problems/newton/isolated.athinput",
+      "role": "input",
+      "sha256": "e668150c18e0424b03d52e82ea3ab4c916bb29f50165be23dad58374bbadbc7d",
+      "bytes": 3640,
+      "tracked": true
+    },
+    {
+      "path": "/data/haiyangw/nrpic/.work/build_cpu_v03/src/athena",
+      "role": "input",
+      "sha256": "d983155bb21befedbd123d54d84fcfc12a875ee0aaa0baa36f5a51261041c25c",
+      "bytes": 246469568,
+      "tracked": false,
+      "location": "main checkout data root"
+    },
+    {
+      "path": "tracks/A-emd-pbh/newton/newton_campaign.py",
+      "role": "argv",
+      "sha256": "36674b5aea54a87e26704d7bbbc4f22423a388352852c9fdb02adea1422c9b5a",
+      "bytes": 9241,
+      "tracked": true
+    }
+  ],
+  "batch_entries": null,
+  "resources": {
+    "nodes": 1,
+    "gpus": 0,
+    "cores": 5,
+    "walltime_s": null,
+    "wall_limit": null,
+    "segments_max": null,
+    "gpu_hours_requested": 0.0,
+    "gpu_hours": null,
+    "particles": null
+  },
+  "slurm": null,
+  "outputs": {
+    "dir": "scratch/A-emd-pbh/A-20261115-152758-1579711",
+    "sha256sums": "sha256sums.txt",
+    "sha256sums_sha256": null,
+    "bytes": null,
+    "files": null
+  },
+  "status": "running",
+  "exit_code": null,
+  "registered": "2026-11-15T15:27:58Z",
+  "started": null,
+  "ended": null,
+  "parents": [],
+  "notes": "",
+  "budget_at_submit": {
+    "gpu_hours_allotted": 60.0,
+    "cores_allotted": 16,
+    "gpu_hours_used": 0.0,
+    "gpu_hours_reserved": 0.0,
+    "cores_busy": 0,
+    "runs": 61
+  }
+}
