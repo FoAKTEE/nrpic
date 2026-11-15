@@ -1,12 +1,12 @@
 # Re-verification: A-emd-pbh G0
 
-`harness/bin/nrpic-stage verify A-emd-pbh G0` on 2026-11-15T18:49:04Z, clean export of commit `8737de9b04e1` in `scratch/A-emd-pbh/tmp/stage-verify/A-emd-pbh-G0-8737de9-20261115T183831Z`. Result: **FAIL**.
+`harness/bin/nrpic-stage verify A-emd-pbh G0` on 2026-11-15T18:55:32Z, clean export of commit `2b756f503362` in `scratch/A-emd-pbh/tmp/stage-verify/A-emd-pbh-G0-2b756f5-20261115T185412Z`. Result: **PASS**.
 
 | Check | Result | Message |
 |---|---|---|
 | clean | PASS | worktree clean (outside the stage directory being assembled) |
 | sync | PASS | main is merged into the branch |
-| export | PASS | clean export of 8737de9b04e1 (HEAD) in /data/haiyangw/nrpic/scratch/A-emd-pbh/tmp/stage-verify/A-emd-pbh-G0-8737de9-20261115T183831Z/tree |
+| export | PASS | clean export of 2b756f503362 (HEAD) in /data/haiyangw/nrpic/scratch/A-emd-pbh/tmp/stage-verify/A-emd-pbh-G0-2b756f5-20261115T185412Z/tree |
 | size | PASS | no committed file of the track above 5 MB |
 | note | PASS | tracks/<ID>/note/main.tex present |
 | package | PASS | EVIDENCE.md, OPEN.md, CHECKLIST.md present (decision 0012); scoping text: scope/SCOPE.md |
@@ -14,28 +14,12 @@
 | style | PASS | 2 style copies equal harness/style/SHA256SUMS (czstyle.py, paperfig.py) |
 | fig-script | PASS | 6 figures, each with its script |
 | min-figs | PASS | 2 schematics and 4 data figures (brief 13.4 asks at least 2 and 0 at G0) |
-| runs | FAIL | 1 of 130 runs have problems |
+| runs | PASS | 130 run manifests finished (102 hand-written, read as decision 0012 allows), output checksums verified where recorded |
 | run-notes | WARN | 78 runs read with defaults or not fully re-verifiable (nrpic-run lint) |
 | status | PASS | STATUS.md has 35 lines |
 | rerun | PASS | 6 of 6 scripts and commands ran cleanly in the export |
 | compare | PASS | 12 regenerated files compared with the committed ones; 0 differ beyond tolerance (rtol 1e-06, atol 1e-12, PNG rms 0.005) |
 | regenerate | PASS | all 12 committed figure files regenerated |
-
-## runs
-
-```
-{
- "A-20261115-182329-ad14d95": [
-  "output not in sha256sums.txt: misplaced_output/fig_scouting_histories.pdf",
-  "output not in sha256sums.txt: misplaced_output/fig_scouting_profiles_S2.png",
-  "output not in sha256sums.txt: misplaced_output/scouting_summary.json",
-  "output not in sha256sums.txt: misplaced_output/fig_scouting_histories.png",
-  "output not in sha256sums.txt: misplaced_output/fig_scouting_profiles_S2.pdf",
-  "output not in sha256sums.txt: misplaced_output/fig_scouting_profiles_S1.pdf",
-  "output not in sha256sums.txt: misplaced_output/fig_scouting_profiles_S1.png"
- ]
-}
-```
 
 ## run-notes
 

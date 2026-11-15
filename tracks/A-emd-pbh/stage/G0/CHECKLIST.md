@@ -15,7 +15,7 @@ in VERIFY_RESULTS.md (`nrpic-stage verify`), not here.
   - evidence: knowledge-base snapshots kb-20261115-3826a68 (read by the lead, read-only) and kb-20261115-44b7406 (db/current; kb's answer tracks/kb/outbox/20261115T183737Z__to-A-emd-pbh__ingest-s1-references.md on kb/main, independent locator check run kb-20261115-154906-f19880f: all 166 locator groups resolve; 48 of 53 numeric statements have every number in the cited lines): all twelve S1 key references ingested (parse ok: 2609.14218 v1, 2610.23218 v1, 1609.01588 v2, 1707.03595 v4, 2211.13950 v3, 2507.18312 v3, 2508.10070 v1, 2109.04896 v3, 2306.11810 v2, 2605.04487 v2, 1611.07906 v2, 1901.04498 v2); 170 claims tagged A-emd-pbh with resolved file:line locators, 152 verified by the kb claims check, among them mu_c in (0.32, 0.33] (claim 21, MDPBH.tex:L766-768) and the constraint caveat (claim 30). Qualification: the particle bracket (claim 25, MDPBH.tex:L1101-1103) and 17 others are still 'to_verify' in the kb (seeded without a [VERIFIED] label); the lead read claim 25 at the source in this session (stage/REVIEW-wave2.md, criteria2) and asked kb to update its status (outbox)
 - [x] **C3** Risk list
   - status: PASS
-  - evidence: RISKS.md (16 rows); SCOPE.md section 8
+  - evidence: RISKS.md (22 rows, rewritten after wave 2: rows 1, 2, 18-20 realized by the scouting runs); SCOPE.md section 8
 - [x] **C4** Compute estimate
   - status: PASS
   - evidence: SCOPE.md section 9 (T5, run A-emd-pbh-20261115-112625-e854f12, rerun A-20261115-130252-7877b7a identical) and 10.7 (unit cost from core run core-20261115-040406-1311b8e; scouting runs A-20261115-130948-5a2b58a)
