@@ -113,6 +113,38 @@ def parts(dirs, tmax):
     return rows
 
 
+def rnr_complex(rundir, n, n2, al, length):
+    """R^NR_n and the linear reference L^(-3/2) W R alpha_n per dump, complex (the
+    extraction of t8_rnr.analyse, keyed by cycle)."""
+    out = {}
+    for f in sorted(glob.glob(os.path.join(rundir, "sr.sf.?????.dump"))):
+        d = sf.read_dump(f)
+        fl = d["fields"]
+        head, tab = sf.read_modes(f.replace(".dump", ".modes"))
+        chib = fl["chi"].mean()
+        hub = -fl["K"].mean()/3.0
+        pib = fl["Pi"].mean()
+        psi, _ = sf.analyse(0.5*(fl["chi"]/chib - 1.0), n)
+        nn = n.astype(float)
+        for name, i, j in t8_rnr.SYM:
+            c, _ = sf.analyse(fl[name] - (1.0 if i == j else 0.0), n)
+            psi = psi + 0.25*(1.0 if i == j else 2.0)*nn[:, i]*nn[:, j]*c/n2
+        dphi, _ = sf.analyse(fl["phi"] - fl["phi"].mean(), n)
+        sh = tab[:, 0].astype(int)
+        r = (tab[:, 1] + 1j*tab[:, 2])[np.searchsorted(sh, n2)]
+        w, _ = t8_rnr.inf.window(n2, length, head["a"], head["H"], head["eps1"])
+        out[int(d["cycle"])] = dict(time=float(d["time"]), efolds=float(np.log(head["a"])),
+                                    q=np.sqrt(n2.astype(float)), w=w,
+                                    rnr=psi + (hub/pib)*dphi, ref=length**-1.5*w*r*al)
+    return out
+
+
+def rows_of(dev_by_cycle, base):
+    """Rows in the form t8_rnr.stats reads."""
+    return [dict(time=base[c]["time"], cycle=c, efolds=base[c]["efolds"], q=base[c]["q"],
+                 w=base[c]["w"], dev=dev) for c, dev in sorted(dev_by_cycle.items())]
+
+
 def window_stats(fac, lo, hi):
     sel = (fac["efolds"] >= lo) & (fac["efolds"] <= hi)
     if not sel.any():
@@ -159,7 +191,13 @@ def main():
         prt[n] = parts(dirs, a.tlim)
         summ[f"N{n}"] = dict(
             factors_at_t0=dict(F_H=float(fac[n]["F_H"][0]), F_M=float(fac[n]["F_M"][0])),
+            factors_efolds_0p15_0p3=window_stats(fac[n], 0.15, 0.3),
+            factors_efolds_0p3_1p2=window_stats(fac[n], 0.3, 1.2),
             factors_efolds_0p3_1p6=window_stats(fac[n], 0.3, 1.6),
+            max_F_H=[float(fac[n]["F_H"].max()),
+                     float(fac[n]["efolds"][int(np.argmax(fac[n]["F_H"]))])],
+            min_F_H=[float(fac[n]["F_H"].min()),
+                     float(fac[n]["efolds"][int(np.argmin(fac[n]["F_H"]))])],
             factors_efolds_2p4_3p2=window_stats(fac[n], 2.4, 3.2),
             max_H_ratio_s1=float(fac[n]["H1"].max()),
             max_M_ratio_s1=float(fac[n]["M1"].max()),
@@ -169,6 +207,13 @@ def main():
     al = sf.mode_alpha(t8_rnr.SEED, 0, 0, nn)
     rows8 = t8_rnr.analyse(sets[a.n]["p1"], nn, n2, al, 2.0*np.pi)
     summ["t8"] = t8_rnr.stats(rows8)
+    # T12b: the part of R^NR odd in s (first order) and the run s = 1/2 alone
+    cx = {k: rnr_complex(sets[a.n][k], nn, n2, al, 2.0*np.pi) for k in ("p1", "m1", "p05")}
+    odd = {c: np.abs(0.5*(cx["p1"][c]["rnr"] - cx["m1"][c]["rnr"])/cx["p1"][c]["ref"] - 1.0)
+           for c in cx["p1"] if c in cx["m1"]}
+    half = {c: np.abs(cx["p05"][c]["rnr"]/cx["p05"][c]["ref"] - 1.0) for c in cx["p05"]}
+    summ["t8_odd"] = t8_rnr.stats(rows_of(odd, cx["p1"]))
+    summ["t8_half"] = t8_rnr.stats(rows_of(half, cx["p05"]))
     t8ref = None
     if a.t8_ref32:
         t8ref = json.load(open(os.path.join(os.path.abspath(a.t8_ref32),
@@ -235,6 +280,12 @@ def main():
             r3 = [s for s in t8ref if s["time"] > 0 and s[lab]["max_dev"] is not None]
             p.plot([s["efolds"] for s in r3], [s[lab]["max_dev"] for s in r3], "--",
                    marker=mk, ms=3.5, mfc="none", color=col[32], label=f"{lbl}, $N=32$")
+    for key, mk, lbl in (("t8_odd", "D", r"$|n|\leq2$, odd in $s$"),
+                         ("t8_half", "x", r"$|n|\leq2$, $s=1/2$")):
+        r = [s for s in summ[key] if s["time"] > 0 and s["n_le_2"]["max_dev"] is not None]
+        p.plot([s["efolds"] for s in r], [s["n_le_2"]["max_dev"] for s in r], ":",
+               marker=mk, ms=3.5, mfc="none", color=fs.PAL["blue"],
+               label=f"{lbl}, $N={a.n}$")
     p.axhline(2e-2, **fs.MASK_LINE)
     p.set_yscale("log")
     p.set_xlabel("e-folds after $N_*$", labelpad=1)

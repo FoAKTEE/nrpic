@@ -626,3 +626,50 @@ looking at the summary column that tests it (`H_c2_mean_1`, added to the driver 
 with H0 = 3.2e-11; N = 64, H0 = 2e-12 and F_H near 5 need <C2>/4 close to -H0). Refuted
 by a positive mean or one of another size: then the factors come from the fluctuations,
 not from the means.
+
+## 2026-11-15, entry 13: outcome of T12 (run core-20261115-175842-7d54ff5); T12b predicted
+
+Five runs at 64^3 on processors, 2790 to 2911 s each, exit 0; analysis by the driver at
+commit 7d54ff5 (`summary.json` of the run; record factors in narrower windows and the
+mean of C2 from the analysis-only repeat below, which reads the same files).
+- P12a HOLDS: t = 0, F_H = 4.005 (N = 32), 4.021 (64); F_M = 2.0000 at both.
+- P12b HOLDS: H0 at N = 64 uniform (standard deviation at most 2e-27 against a mean of
+  1.75e-12 to 1.91e-12 for t >= 0.4); N = 32 3.03e-11 to 3.26e-11; ratio 17.1, fourth
+  order in the step.
+- P12c HOLDS for C2: rms ratio C2(1)/C2(1/2) 3.96 to 4.01 at every dump after t = 0
+  (N = 64; N = 32 3.99 to 4.005); C2(1) of N = 64 against N = 32 at t <= 1.6: 1.740e-11
+  against 1.681e-11 (t = 0.42 against 0.44, dumps not at equal times), 9.43e-12 against
+  9.68e-12, 1.197e-11 against 1.186e-11, 9.902e-12 against 9.904e-12: within 3.5 percent.
+  FAILED for the odd parts at N = 64 for t <= 1.2: rms 3.6e-13 to 5.0e-13 with ratios
+  1.33, 1.61, 1.88 (M: 1.5e-13 to 1.8e-13, ratios 1.08 to 1.49), not 2.00. At t = 0 the
+  odd part (1.07e-13) has ratio 0.999: it is rounding that does not scale with s, and
+  during the evolution this floor rises to a few 1e-13 at N = 64 (entry 11 saw it grow
+  with N); my "1e-13" was too low. From t = 1.6 on, where the odd part exceeds 1.4e-12,
+  the ratios are 1.997 to 2.000.
+- P12d: F_M HOLDS ([1.951, 1.996] for 0.3 to 1.6 e-folds; [1.001, 1.005] for 2.4 to 3.2).
+  F_H FAILED: [3.31, 4.58] for 0.3 to 1.6 (predicted [2.2, 3.8]), 5.04 at 0.17 e-folds,
+  and [1.52, 1.95] for 2.4 to 3.2 (predicted [1.8, 2.3]). G_H with H0 subtracted HOLDS:
+  3.961, 3.988, 3.985, 3.863 at t = 0.42 to 1.62; 2.555 at 2.0 and 2.003 to 2.015 after.
+- P12e: F_H FAILED below its range: [0.83, 0.87] for 0.3 to 1.2 e-folds and 0.756 at
+  0.15 (predicted [1.0, 1.6]); [1.90, 1.99] for 2.4 to 3.2 HOLDS. F_M [1.777, 1.852] for
+  0.3 to 1.2 HOLDS ([1.75, 2.0]), [1.000, 1.000] for 2.4 to 3.2 HOLDS.
+- P8 at N = 64: largest deviation over all 1054 modes at the last dump 5.89e-5 (N = 32:
+  2.8e-3, factor 47.5; predicted 4.4e-5 to 1.8e-4) HOLDS; |n| <= 4: 1.77e-6 (N = 32:
+  7.6e-5, factor 43). |n| <= 2: 1.20e-6 from N = 1.2 on, constant to 1 percent, against
+  3.7e-6 at N = 32 (factor 3.1): "below 5e-7" FAILED. Track E's A2 bound is 2e-2.
+So Track E's A4 read on the record ratios fails at N = 32 and 64 also where the second-
+order part alone passes: the uniform H0 changes F_H in both directions (0.76 at N = 32,
+5.04 at N = 64). With H0 subtracted (one run at s = 0) H is second order before the late
+entry at N = 64 (G_H 3.86 to 3.99), and M/[M] halves (F_M 1.95 to 2.00, second order);
+during the late entry (2.4 to 3.2 e-folds) both constraints are first order at N = 32 and
+64 (the truncation part of entry 11).
+
+T12b (added, predicted before it runs): the floor of the lowest modes in P8 (1.2e-6 at
+N = 64, constant after N = 1.2) [JUDGEMENT] may be the second-order part of R^NR (terms
+quadratic in the perturbations, relative size of order the rms of R, about 1e-5), which
+does not converge with N. Test on the dumps of the same run: the part of R^NR odd in s,
+O_n = [R^NR_n(s = 1) - R^NR_n(s = -1)]/2, against L^(-3/2) W R alpha_n: for |n| <= 2
+its deviation falls below 3e-7 after N = 1.2 (at least four times below 1.2e-6); the run
+s = 1/2 alone gives 6e-7 +- 20 percent (half of the s = 1 value). Refuted if the odd part
+keeps 1.2e-6: the floor would then be first order (an error of the evolution or of the
+linear reference of the record).
