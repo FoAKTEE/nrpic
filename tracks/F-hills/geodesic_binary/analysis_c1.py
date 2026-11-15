@@ -30,10 +30,11 @@ def main(c1, s1, c2, outdir):
                     y = b["separated"][i2, j2, kb[0]] > 0
                     va, vb = a["vinf"][i, j, ib], b["vinf"][i2, j2, kb[0]]
                     ok = x & y & (a["a_min"][i, j, ib] >= 1e-4) & (b["a_min"][i2, j2, kb[0]] >= 1e-4)
-                    res[f"beta{beta:g}_{'pro' if s > 0 else 'retro'}_{law}"] = dict(
-                        sf_rtol1e-10=float(x.mean()), sf_rtol1e-12=float(y.mean()),
-                        phases_different=int((x != y).sum()),
-                        vinf_median_rel_diff=float(np.median(np.abs(va[ok] / vb[ok] - 1))) if ok.any() else None)
+                    res[f"beta{beta:g}_{'pro' if s > 0 else 'retro'}_{law}"] = {
+                        "sf_rtol1e-10": float(x.mean()), "sf_rtol1e-12": float(y.mean()),
+                        "phases_different": int((x != y).sum()),
+                        "vinf_median_rel_diff": (float(np.median(np.abs(va[ok] / vb[ok] - 1)))
+                                                 if ok.any() else None)}
     with open(os.path.join(outdir, "c1_summary.json"), "w") as fh:
         json.dump(res, fh, indent=1)
     print(json.dumps(res, indent=1))
