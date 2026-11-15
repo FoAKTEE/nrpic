@@ -119,8 +119,10 @@ To core:
 5. Restart files carry the particles (380 MB per dump at 2.1M particles, 12 GB per run here):
    the double-precision Z4c dump without particles of the wave-1 request
    (`outbox/20261115T1340Z__to-core__gw-analysis-output.md`, item 1) is what the scan needs;
-   single-precision `bin` is adequate for the box modes (a = 1 to 140 agree with the
-   double-precision dumps where both exist) but not for the null test of tilde A.
+   single-precision `bin` is adequate for the box modes (c_+(K1) from the single- and
+   double-precision dumps of the same cycle agree to 4e-5 (eps = 1) and 3e-4 (eps = 0.1)
+   over 22 common dumps, analyses B-20261115-180834-c77a132 and -174722-ba1048d) but not for
+   the null test of tilde A (2.6e-10 against 4.2e-12 relative).
 6. The processor build is serial: 7.5 s per cycle at 32^3 with 262,144 particles; an OpenMP
    processor build would make processor companions practical.
 

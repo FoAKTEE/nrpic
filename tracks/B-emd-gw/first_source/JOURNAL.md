@@ -395,3 +395,8 @@ scan is quasi-static throughout: rho_kin/rho_grad = 0.04 at a = 4 and <= 0.01 fr
 2.3e-9 (a = 4) to 3.5e-6 (a = 90-121) for eps = 1 and from 2.3e-11 to 8.8e-9 for eps = 0.1.
 So what grows after shell crossing is the near-field strain of the box modes, not radiation;
 a radiated signal would show rho_kin ~ rho_grad. The null has rho_GW/rho_bar <= 7e-27.
+
+Check of the single-precision dumps (same analysis runs, bin and rst written at the same
+cycle, 22 common dumps per case): c_+(K1) agrees to 4.1e-5 (eps = 1) and 3.2e-4 (eps = 0.1)
+relative, G_tot(K1) to 5e-7 and 2e-6 of c_+. The time series from the bin dumps are
+therefore good to well below the effects discussed above.
