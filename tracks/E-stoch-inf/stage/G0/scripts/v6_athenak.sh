@@ -11,7 +11,8 @@
 # Usage: v6_athenak.sh <athena executable> <output directory>
 set -euo pipefail
 EXE=$1
-OUT=$2
+mkdir -p "$2"
+OUT=$(cd "$2" && pwd)          # absolute: the runs cd into subdirectories
 HERE=$(cd "$(dirname "$0")" && pwd)
 ROOT=$(cd "$HERE/../../../../.." && pwd)
 DECK=$ROOT/problems/scalar/noise_ms.athinput
