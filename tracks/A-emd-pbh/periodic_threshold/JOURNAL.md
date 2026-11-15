@@ -400,3 +400,37 @@ The T2 runs used the earlier version of `inputs/peak_smr.athinput` (outputs only
 Correction to the H-smooth entry above: for one Fourier mode lap psi_N = (3/2)(aH)^2
 delta_N gives -2 psi_N / delta_N = 3 (aH/k)^2, not (3/2)(aH/k)^2 as written there (the
 reading is unchanged; DESIGN.md uses the corrected factor).
+
+## 2026-11-15, S2 outcome (run A-emd-pbh-20261115-155754-8422a4a; analysis A-emd-pbh-20261115-170751-a2287be; figures looked at)
+
+Ran to tau = 28.9 (250.9 t_H), 5,919 steps, Slurm COMPLETED, 1,023 s = 0.284 card-hours
+(prediction: below 0.3, confirmed; 0.17 s per step against the 0.13 of the unit-cost
+model, a factor 1.3). All 262,144 particles kept (none excised, none escaped, rest mass
+unchanged to 1e-16), no unconverged push.
+- **No horizon** in 45 finder calls from tau = 15 (confirmed, as every criterion
+  predicts).
+- **Constraints: refuted.** I predicted H_r max below 1e-2 until the pancake (tau ~ 23).
+  It passed 1e-2 at tau = 3.2 (t ~ 1.5 t_H) and 0.1 at tau = 14.1, and rose to 0.40, 0.84,
+  1.66 at 130, 160, 200 t_H (maximum 1.73); the mean stayed at 5e-3 to 130 t_H and rose to
+  0.07-0.22 after 160 t_H. M_r max 0.79 at 130 t_H, 1.6 at the end. Theta max 1e-5 to
+  3e-4. By the bound of SCOPE.md section 3 (L2 of H outside any horizon below 0.1 of L2
+  of 16 pi E), which the run cannot evaluate on its refined mesh (request 5), the late
+  part is suspect; the maxima say the run is not converged in the sense of the threshold
+  definition after ~100 t_H.
+- Central density E_max/Ebar: 13 at 130 t_H (first Zel'dovich axis: 133 t_H), 26 at 160,
+  106 at 200, 744 at 250 t_H. The profiles (`figures/fig_scouting_profiles_S2.png`) show
+  the sheet normal to z (narrow in z, wide in x and y, as the eigenvalues say), density
+  spikes at y = +-0.4/k with a dip at the centre by 207-251 t_H (caustics of the
+  multi-stream sheet [JUDGEMENT]), and staircases on the refined levels from about
+  30 t_H: the adaptive cloud level keeps the clouds on the root level (one particle per
+  root cell, deposit_ppc = 2) and spreads them as constants over the fine cells, while
+  the metric is smooth. Jumps of E_max at ~160 and ~220 t_H are the cloud level moving
+  one level finer as the particles concentrate. Reading [JUDGEMENT]: the staircase of
+  E against the smooth metric on refined levels, already 8-18 per cent of the
+  perturbation at t = 0 (T2b, S0), drives most of the growth of H_r; the cure is more
+  particles in the refined region (nested lattice, request 2), not the gauge.
+- Lapse: alpha/a at least 0.94 everywhere to the end; at |x| = 4/k it stays within 3e-3
+  of a(tau) (tab lines), so the far field follows the homogeneous solution and the
+  background time of the collapse definition is usable (prediction "within ten per cent
+  to tau ~ 20": confirmed, by a wide margin).
+- Nothing broke: no crash, no non-positive metric determinant, no lapse collapse.
