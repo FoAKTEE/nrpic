@@ -31,7 +31,7 @@ import runlib  # noqa: E402
 
 fs.use_style()
 FIG = os.path.join(PKG, "figures")
-D_TRUST = 1e-4   # restricted results below this D are not converged at rtol 1e-10 (JOURNAL P5)
+D_TRUST = 1e-3   # rtol 1e-10 results below this D are not converged (JOURNAL P5)
 RES = os.path.join(PKG, "results")
 RED, BLUE, YEL, GRN, ORA = fs.PAL["red"], fs.PAL["blue"], fs.PAL["yellow"], fs.PAL["green"], fs.PAL["orange"]
 
@@ -72,18 +72,28 @@ def _windows(phase, mask):
 
 
 # ============================================================================ P1
-def coplanar(run_id):
+def coplanar(run_id, supplement_run=None):
     src = _src(run_id, "coplanar.npz")
-    run = runlib.start_run(f"analysis of {run_id} (P1 coplanar)", extra_inputs=[src],
-                           preregistered="tracks/F-hills/newton3/JOURNAL.md#P1")
+    extra = [src] + ([_src(supplement_run, "coplanar.npz")] if supplement_run else [])
+    run = runlib.start_run(f"analysis of {run_id} (P1 coplanar)"
+                           + (f" with deep supplement {supplement_run}" if supplement_run else ""),
+                           extra_inputs=extra, preregistered="tracks/F-hills/newton3/JOURNAL.md#P1")
     Z0 = np.load(src)
     keep = Z0["D"] >= D_TRUST * (1 - 1e-9)
-    Z = {k: (np.asarray(Z0[k])[keep] if k.rsplit("_", 1)[-1] in ("pro", "ret") else Z0[k])
-         for k in Z0.files}
-    D, ph = Z["D"][keep], Z["phase_skr"]
-    S = {"source_run": run_id, "phases_per_D": int(ph.size), "phase_range": "[0, pi)",
-         "discarded_D_below": D_TRUST, "discarded_reason": "rtol 1e-10 not converged (JOURNAL P5)",
-         "D_grid": [float(x) for x in D]}
+    perD = [k for k in Z0.files if k.rsplit("_", 1)[-1] in ("pro", "ret")]
+    Z = {k: np.asarray(Z0[k])[keep] for k in perD}
+    D, ph = Z0["D"][keep], Z0["phase_skr"]
+    if supplement_run:
+        Y = np.load(_src(supplement_run, "coplanar.npz"))
+        D = np.concatenate([Y["D"], D])
+        Z = {k: np.concatenate([Y[k], Z[k]]) for k in perD}
+        o = np.argsort(D)
+        D = D[o]
+        Z = {k: v[o] for k, v in Z.items()}
+    S = {"source_run": run_id, "supplement_run": supplement_run, "phases_per_D": int(ph.size),
+         "phase_range": "[0, pi)", "main_run_used_for_D_at_least": D_TRUST,
+         "reason": "rtol 1e-10 not converged below 1e-3 (JOURNAL P5); deep points from the "
+                   "rtol 1e-13 supplement", "D_grid": [float(x) for x in D]}
     stat = {}
     for tag in ("pro", "ret"):
         ok, dis, E = Z[f"ok_{tag}"], Z[f"disrupted_{tag}"], Z[f"E2_{tag}"]
@@ -110,6 +120,13 @@ def coplanar(run_id):
             "n_total": int(ok.size),
             "survivors_harder_deep": float((af[0][sv[0] & ok[0]] < 1).mean()),
         }
+        i4 = int(np.argmin(np.abs(np.log(D / 1e-4))))
+        S[tag]["at_D=1e-4"] = {"D": float(D[i4]), "P": float(P[i4]), "Emean": float(Em[i4]),
+                               "vmean": float(Vm[i4]), "survival": float(1 - P[i4]),
+                               "survivors_harder": float((af[i4][sv[i4] & ok[i4]] < 1).mean()),
+                               "survival_windows_pi": None}
+        w4 = _windows(ph / np.pi, sv[i4] & ok[i4])
+        S[tag]["at_D=1e-4"]["survival_windows_pi"] = w4 + [(lo - 1, hi - 1) for lo, hi in w4]
         sel = (D > 0.06) & (D < 0.3)
         S[tag]["P_range_0.06_0.3"] = [float(P[sel].min()), float(P[sel].max())]
         # survival windows at the deepest D, in SKR's phase, mapped to [-pi, pi)
@@ -230,8 +247,9 @@ def general(run_id, coplanar_run=None, supplement_run=None):
     run = runlib.start_run(f"analysis of {run_id} (P2 general orientation)", extra_inputs=extra,
                            preregistered="tracks/F-hills/newton3/JOURNAL.md#P2")
     Z = np.load(src)
-    D = Z["D_A"]
-    ok, dis, E, rmin = Z["ok_A"], Z["disrupted_A"], Z["E2_A"], Z["rmin_A"]
+    kA = Z["D_A"] >= D_TRUST * (1 - 1e-9)
+    D = Z["D_A"][kA]
+    ok, dis, E, rmin = Z["ok_A"][kA], Z["disrupted_A"][kA], Z["E2_A"][kA], Z["rmin_A"][kA]
     P = np.array([dis[i][ok[i]].mean() for i in range(D.size)])
     Em = np.array([np.abs(E[i][dis[i] & ok[i]]).mean() for i in range(D.size)])
     E99 = np.array([np.percentile(np.abs(E[i][dis[i] & ok[i]]), 99) for i in range(D.size)])
@@ -258,6 +276,8 @@ def general(run_id, coplanar_run=None, supplement_run=None):
     DB, okB, disB, EB = Z["D_B"][kB], Z["ok_B"][kB], Z["disrupted_B"][kB], Z["E2_B"][kB]
     if supplement_run:
         Y = np.load(_src(supplement_run, "general.npz"))
+        dup = np.isin(DB, Y["D_B"])
+        DB, okB, disB, EB = DB[~dup], okB[~dup], disB[~dup], EB[~dup]
         DB = np.concatenate([Y["D_B"], DB])
         okB = np.concatenate([Y["ok_B"], okB])
         disB = np.concatenate([Y["disrupted_B"], disB])
@@ -567,5 +587,7 @@ if __name__ == "__main__":
     elif which == "general":
         general(sys.argv[2], sys.argv[3] if len(sys.argv) > 3 else None,
                 sys.argv[4] if len(sys.argv) > 4 else None)
+    elif which == "coplanar":
+        coplanar(sys.argv[2], sys.argv[3] if len(sys.argv) > 3 else None)
     else:
-        {"coplanar": coplanar, "p3": p3, "p4": p4, "finiteq": finiteq}[which](sys.argv[2])
+        {"p3": p3, "p4": p4, "finiteq": finiteq}[which](sys.argv[2])
