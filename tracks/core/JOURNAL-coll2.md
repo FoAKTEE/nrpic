@@ -645,3 +645,26 @@ scatter as the gas relaxes; the momentum differences sit at 1e-15.
   clean build: geo, boris, dep, east, os, jeans, binary all files identical (2, 2, 1,
   12, 16, 5, 1) (runs core-20261115-182302-c03e628 ... -183317-9ee0bde, summary
   `scratch/core/tmp/coll2/regress_relativistic_f46f159.json`).
+- Wave-1 collision tests with the clean build, options absent, every compared output
+  file byte-identical (19:15 UTC; `rerun_wave1.py`, summaries
+  `scratch/core/tmp/coll2/rerun_{wave1,vs_release}_f46f159.json`): P11 cluster null on
+  the processor, 26 files (core-20261115-182250-c03e628); replay 31 (-184440-84995cc);
+  P7 repro 135 (-184822); static refinement 17 (-184919); unequal masses 23 (-184931);
+  P8b cells 57 (-185041); P8a time step 46 (-185134); P10 curved box 23 (-185333);
+  P2-P4 rate 43 files against a fresh run of the release executable (-190100 against
+  -190502) and P5-P6 relaxation 116 (-190911 against -191143). Every driver exited with
+  status 0 (its own criteria). P0 (kernels, compiled from the header) was rerun at
+  819d588 (core-20261115-160318-819d588); the header is unchanged since. Figures
+  `fig_curved_box.png` and `fig_rate_conservation.png` looked at: as in wave 1.
+  P9 (the card) and P11 with collisions on the card: queued (below).
+
+### Published for scouting runs (19:15 UTC)
+
+`scratch/core/exe/core_collisions-2/`: athena_cpu, athena_gpu (the clean builds of
+f46f159), COMMIT, SHA256SUMS, READY (options, one example input each, what is tested).
+The card executable is marked in READY as not yet run on a card. Card jobs 4484 (R) and
+4485 (N, C) wait in the queue (estimated start 01:48 and 02:28 UTC, behind 14 jobs of
+other owners); `gpu_job3.sh` appends its verdict lines to `CARD_TESTS.log` there. Card
+time used by this package: 0.07 card-hours (the crashed runs of the first session);
+the queued jobs ask for at most 1.5 hours of wall limit, expected below 0.5
+card-hours.
