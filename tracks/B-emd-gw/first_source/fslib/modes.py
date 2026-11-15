@@ -98,6 +98,13 @@ def analyse(path, with_gauge=True, with_weyl=False, weyl_order=6):
     r["max_TT_mode_A"] = float(nrmA.max())
     r["rms_traceless_A"] = np.sqrt(ms_fourier(FA, g))
     r["rms_TT_A"] = np.sqrt(ms_fourier(TA, g))
+    # energies of the TT part (G = 1): rho_kin = <(d_tau h)^2>/(64 pi), d_tau h = -2 Lambda A;
+    # rho_grad = chi_bar <|grad h|^2>/(64 pi); the background density 3 H^2/(8 pi), H = -<trK>/3
+    kk2 = (g.kvec(real=True) ** 2).sum(axis=0)
+    chib = float(np.mean(chi))
+    r["rho_kin"] = 4.0 * ms_fourier(TA, g) / (64 * np.pi)
+    r["rho_grad"] = chib * float((kk2 * tt.power_tensor(Th, g)).sum()) / (64 * np.pi)
+    r["rho_bar"] = 3.0 * (float(np.mean(trK)) / 3.0) ** 2 / (8 * np.pi)
     # homogeneous traceless part (Bianchi-I-like shear of the box)
     h0 = htf.mean(axis=(-3, -2, -1))
     r["k0_traceless_norm"] = float(np.sqrt((h0 ** 2).sum()))
@@ -124,6 +131,8 @@ def analyse(path, with_gauge=True, with_weyl=False, weyl_order=6):
         GAh = tt.tensor_rfft(GA)
         r["rms_GA"] = np.sqrt(ms_fourier(GAh, g))
         r["rms_TT_A_minus_GA"] = np.sqrt(ms_fourier(TA - GAh, g))
+        r["rho_kin_corrected"] = 4.0 * ms_fourier(TA - GAh, g) / (64 * np.pi)
+        r["rho_grad_corrected"] = chib * float((kk2 * tt.power_tensor(Th - Gh, g)).sum()) / (64 * np.pi)
         pa = pol_amps(-2.0 * GAh, g)
         for K, (hp, hx) in pa.items():
             r[f"GA_{K}_plus"] = [float(hp.real), float(hp.imag)]       # in units of hdot = -2 A
