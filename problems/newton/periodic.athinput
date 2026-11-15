@@ -1,0 +1,95 @@
+# Newtonian mode of the particle module in a periodic box with a prescribed
+# matter-dominated expansion (tracks/core/interfaces/newtonian_mode.md): comoving
+# coordinates, conformal time, a = (1 + H t/2)^2 with H = newton_hubble at t = 0, where
+# a = 1; lap Phi = 4 pi (rho - <rho>) for the comoving rest-mass density of the particles.
+# Units G = 1 and H = 1, box of side 4 as in problems/cosmo/east.athinput; the mean
+# density of the particles must be 3 H^2/(8 pi) for the scale factor to be consistent
+# with the matter. Used by the plane-wave test of problems/newton/README.md.
+
+<comment>
+problem   = NRPIC Newtonian mode, periodic box with expansion
+
+<job>
+basename  = newton
+
+<mesh>
+nghost    = 2
+nx1       = 32
+x1min     = 0.0
+x1max     = 4.0
+ix1_bc    = periodic
+ox1_bc    = periodic
+nx2       = 32
+x2min     = 0.0
+x2max     = 4.0
+ix2_bc    = periodic
+ox2_bc    = periodic
+nx3       = 32
+x3min     = 0.0
+x3max     = 4.0
+ix3_bc    = periodic
+ox3_bc    = periodic
+
+<meshblock>
+nx1       = 16
+nx2       = 16
+nx3       = 16
+
+<time>
+evolution  = dynamic
+integrator = rk2          # not used by the particles; the driver needs one
+cfl_number = 1.0
+nlim       = -1
+tlim       = 3.0
+ndiag      = 100
+
+<gravity>
+four_pi_G      = 12.566370614359172   # G = 1
+threshold      = 0.0      # 0: V cycles until the defect stops falling; > 0: defect norm
+niteration     = -1       # fixed number of V cycles when threshold < 0
+npresmooth     = 1
+npostsmooth    = 1
+full_multigrid = false    # false: start from the potential of the previous step
+fmg_ncycle     = 1
+show_defect    = 0
+mg_nghost      = 1
+root_on_host   = false
+
+<particles>
+particle_type  = nrpic
+pusher         = newton    # Newtonian mode: Poisson equation, kick-drift-kick
+interp         = hermite   # potential at the particles: hermite (Catmull-Rom) or bspline
+dt             = 0.005     # step in conformal time
+newton_cfl     = 0.0
+newton_mg_tol  = 0.0       # > 0: the Poisson solve may end at this fraction of the
+                           # norm of the source (0: until the defect stops falling)
+newton_expansion = power   # a = (1 + newton_hubble t/n)^n, n = newton_exponent
+newton_hubble  = 1.0
+newton_exponent = 2.0      # 2: matter era
+deposit        = true
+deposit_shape  = cic       # cloud shape: cic, tsc or pcs
+nfilter        = 0         # binomial passes on the deposited density
+filter_compensate = false
+filter_comp_c  = -1.0
+deposit_comp_c = 0.0
+deposit_comp_limit = 0.0
+deposit_comp_c2 = 0.0
+hist_dcycle    = 1
+traj_dcycle    = 0
+traj_ntrack    = 0
+snap_dt        = 0.25
+probe_x1       = 1.0       # crest of the wave (largest density)
+probe_x2       = 1.0
+probe_x3       = 1.0
+nprobe         = 1
+probe1_x1      = 3.0       # trough
+probe1_x2      = 3.0
+probe1_x3      = 3.0
+particle_file  = particles.nrp
+
+<problem>
+pgen_name = nrpic_newton   # particles only; nothing is set on the mesh
+
+<output1>
+file_type = rst
+dt        = 1.0e30

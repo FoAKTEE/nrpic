@@ -975,7 +975,8 @@ void ProblemGenerator::CallProblemGenerator(ParameterInput *pin, bool is_restart
     BinaryGravity(pin, is_restart);
   } else if (pgen_fun_name.compare("be_collapse") == 0) {
     BECollapse(pin, is_restart);
-  } else if (pgen_fun_name.compare("nrpic_geodesic") == 0) {
+  } else if (pgen_fun_name.compare("nrpic_geodesic") == 0 ||
+             pgen_fun_name.compare("nrpic_newton") == 0) {   // particles only
     NrpicGeodesic(pin, is_restart);
   } else if (pgen_fun_name.compare("nrpic_cf") == 0) {
     NrpicConformallyFlat(pin, is_restart);

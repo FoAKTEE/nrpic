@@ -467,6 +467,7 @@ void Driver::Initialize(Mesh *pmesh, ParameterInput *pin, Outputs *pout, bool re
 
   // NRPIC particles: metric arrays, MeshBlock ownership, deposited sources
   if (pmesh->pmb_pack->ppart != nullptr && pmesh->pmb_pack->ppart->is_nrpic) {
+    pmesh->pmb_pack->ppart->nw_driver = this;   // Newtonian mode: Poisson solve at start
     pmesh->pmb_pack->ppart->NrpicStartup(res_flag);
   }
   // scalar field: stochastic sources, constraints with its sources, first diagnostics
