@@ -57,3 +57,18 @@ f(x) = L^(-3/2) IRFFTN{f_k s_k} has a shell-averaged Delta = k^3 |f_k|^2 / (2 pi
 to the input within 3 / sqrt(M) per shell of M modes; the two prefactors printed in the
 papers, dk^(3/2) and (dk / sqrt(2 pi))^(3/2), give powers off by (2 pi)^3 and (2 pi)^(3/2).
 Refuted if the measured ratio for L^(-3/2) is not 1 within the stated scatter.
+
+## 2026-11-15 12:50 UTC: change of plan for T1b, and a further prediction (T2d)
+
+- The fallback reading of the initial velocity in T1b (dphi/dt = -Mpl^2 V'/V) is dropped
+  before running: -Mpl^2 V'/V has the dimension of a mass, dphi/dt of a mass squared, so
+  only dphi/dN = -Mpl^2 V'/V is consistent [JUDGEMENT]. Only that reading is run.
+- A development run (scratch/E-stoch-inf/tmp/dev1, not a result) showed full-MS drifts of
+  1e-3 to 2e-3 per e-fold for the higher sampled modes over [N_k + 3, N_f], i.e. above the
+  1e-3 of prediction T2a. The outcome is recorded from the registered run below. Proposed
+  cause: gradient corrections of order (k/aH)^2, which decay as exp(-2 dN) after crossing.
+  T2d, prediction: for the eight lowest sampled modes of the quadratic case the full-MS
+  drift fitted over [N_k + 5, N_k + 6] is smaller than the one over [N_k + 3, N_k + 4] by
+  a factor below 0.1 (expected near exp(-4) = 0.02). Refuted if any ratio exceeds 0.1;
+  then the drift has another origin (numerical, or the initial data) and the cause stays
+  open.
