@@ -226,3 +226,15 @@ B's deck: period 1, dt = 1/128). Measured on the dominant mode of
 `waveforms/rpsi4_real_*.txt` and `rpsi4_imag_*.txt` (extraction sphere of radius 0.3) by a
 fit of a sinusoid of the known frequency. Refuted if the phase difference is not
 0.0491 rad within 5 per cent.
+
+### P1c supplement (written before run T1s): what is left at A = 1e-7
+
+In T1 the constraint norms of the corrected k = (1,1,1) data fell by 3177 (H^2) and 5449
+(M^2) from A = 1e-6 to 1e-7, not by 1e4 (outcome below). Two readings: (i) rounding of
+1 + A e sin(P) and of its second differences, independent of A, which matters at 1e-7 and
+not above (Track B's item 4 of periodic_z4c); (ii) a first-order remnant of relative size
+1e-7, which would scale as A^2. Prediction for amplitudes 1e-7, 1e-6, 1e-5, 1e-4 (stage
+`amp` of t1_linear_wave.py): under (i) the ratios per decade from 1e-6 upwards are 1e4
+within 1 per cent; under (ii) the ratio from 1e-6 to 1e-5 would be 9.80e3 for H^2 and
+9.92e3 for M^2 (the remnant would be 2.0 and 0.8 per cent of the norms at 1e-6). I expect
+(i). Refuted if the ratios from 1e-6 to 1e-5 are below 9.9e3.
