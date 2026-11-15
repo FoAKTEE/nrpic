@@ -4,6 +4,7 @@
     make_ic.py point --out point.nrp [--center X Y Z] [--ntracer 2000] [--seed 1]
     make_ic.py ball  --out ball.nrp  [--center X Y Z] [--radius 1] [--mass 1]
                      [--spacing 0.015625] [--ntracer 2000] [--seed 1]
+                     [--velocity VX VY VZ] [--omega WX WY WZ]
     make_ic.py wave  --out wave.nrp  [--n 32] [--L 4] [--amp 0.25] [--hubble 1]
 
 point  a unit mass and massless tracers at rest around it, log-uniform in distance
@@ -11,6 +12,8 @@ point  a unit mass and massless tracers at rest around it, log-uniform in distan
 ball   a homogeneous ball at rest: equal-mass particles on a cubic lattice of the given
        spacing with nodes at center + (i + 1/2) spacing, kept where |x - center| <
        radius; massless tracers at rest, uniform in distance between --rmin and --rmax.
+       --velocity adds a uniform velocity and --omega a rigid rotation about the centre
+       to the massive particles.
 wave   a plane wave along x in a matter-dominated background, Zel'dovich solution at
        a = 1 (python/nrpic/newton.py, zeldovich_wave): n^3 equal-mass particles on the
        lattice q = (i + 1/2) L/n, x = q + (amp/k) cos(k q_x), p_x = hubble (amp/k)
@@ -54,6 +57,8 @@ def main():
     ap.add_argument("--L", type=float, default=4.0)
     ap.add_argument("--amp", type=float, default=0.25)
     ap.add_argument("--hubble", type=float, default=1.0)
+    ap.add_argument("--velocity", type=float, nargs=3, default=[0.0, 0.0, 0.0])
+    ap.add_argument("--omega", type=float, nargs=3, default=[0.0, 0.0, 0.0])
     a = ap.parse_args()
     rng = np.random.default_rng(a.seed)
     c = np.array(a.center)
@@ -76,8 +81,10 @@ def main():
         xt = c + r[:, None]*directions(rng, a.ntracer)
         x = np.vstack([xb, xt])
         m = np.concatenate([np.full(nb, a.mass/nb), np.zeros(a.ntracer)])
+        ub = np.array(a.velocity) + np.cross(np.array(a.omega), xb - c)
+        uall = np.vstack([ub, np.zeros((a.ntracer, 3))])
         meta.update(center=a.center, mass=a.mass, radius=a.radius, spacing=a.spacing,
-                    nmassive=nb, ntracer=a.ntracer)
+                    nmassive=nb, ntracer=a.ntracer, velocity=a.velocity, omega=a.omega)
     else:
         k = 2.0*np.pi/a.L
         h = a.L/a.n
@@ -95,7 +102,7 @@ def main():
         meta.update(n=a.n, L=a.L, amp=a.amp, hubble=a.hubble, nmassive=len(x), ntracer=0)
         x = None
     if x is not None:
-        nio.write_nrp(a.out, x, np.zeros_like(x), m)
+        nio.write_nrp(a.out, x, uall if a.kind == "ball" else np.zeros_like(x), m)
     with open(os.path.splitext(a.out)[0] + ".json", "w") as f:
         json.dump(meta, f, indent=1)
         f.write("\n")

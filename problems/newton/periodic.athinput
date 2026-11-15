@@ -61,6 +61,8 @@ pusher         = newton    # Newtonian mode: Poisson equation, kick-drift-kick
 interp         = hermite   # potential at the particles: hermite (Catmull-Rom) or bspline
 dt             = 0.005     # step in conformal time
 newton_cfl     = 0.0
+newton_mg_tol  = 0.0       # > 0: the Poisson solve may end at this fraction of the
+                           # norm of the source (0: until the defect stops falling)
 newton_expansion = power   # a = (1 + newton_hubble t/n)^n, n = newton_exponent
 newton_hubble  = 1.0
 newton_exponent = 2.0      # 2: matter era

@@ -352,3 +352,55 @@ inspected) [VERIFIED]:
    rate, which I had not counted. d3I equals the quotient of d2I to 9e-15 (construction).
 6. momentum 2e-16 and angular momentum 2e-18 in units of M sqrt(GM/R) (R): held.
 Solver: 14 V cycles per step on average to a defect of 6e-12 (`threshold = 0`).
+
+### T3b Step refinement of the collapse at N = 64 (prediction)
+
+The same run as core-20261115-115448-fee90ca with half the step (0.001, 1000 steps).
+Prediction: the mismatch between the centred difference of dI_xx and the column d2I_xx
+falls from 7.6e-4 by a factor of about four (3 to 5), and that between the difference
+of I_xx and dI_xx from 4.0e-5 by about four; the deviation of r/r_0 from the cycloid
+does not change beyond 1e-4 (it is set by the mesh, not by the step). Refuted if the
+first mismatch does not fall: the acceleration in the particle sums would then not be
+the one the kicks apply.
+
+### T6 Moving, rotating ball: conservation and the six components of the second moment (prediction)
+
+Setup: isolated box, N = 64, ball of mass 1 and radius 1 centred at (0.3, -0.2, 0.1)
+(lattice of spacing dx, not aligned with the cells), uniform velocity (-0.2, 0.15, -0.1)
+and rigid rotation (0.2, -0.3, 0.6) about the centre (surface speed 0.7 of the circular
+speed), step 0.002, to t = 0.8 (`make_ic.py ball --velocity --omega`). No exact solution;
+the test is of the conservation laws and of the diagnostics for a configuration without
+symmetry (all six components of the second moment change, the centre of the multipole
+expansion moves).
+Prediction:
+1. centre of mass: |X(t) - X_0 - V t| < 1e-3 at t = 0.8; total momentum constant to 1e-3
+   of M sqrt(GM/R). (The scheme does not conserve momentum exactly: deposit and gather
+   use different kernels. Estimate of the net force from the forces of the particles on
+   themselves, 0.5 m/dx^2 each with random sign over 17 000 particles: 6e-5 M GM/R^2.)
+2. angular momentum about the centre of mass constant to 1e-3 of its initial size.
+3. energy constant to 2e-3.
+4. columns, for each of the six components: centred difference of I against dI below
+   1e-4 of the largest dI; of dI against d2I below 2e-3 of the largest d2I (T3 gave
+   7.6e-4 at this step).
+Refuted by a drift of the centre of mass or of the angular momentum at the per cent
+level (a fault of the multipole boundary when the source is off centre, or of the ghost
+cells at the MeshBlock faces the ball crosses), or by a mismatch of an off-diagonal
+column.
+
+### T8 Tolerance of the Poisson solve and step limit (prediction)
+
+New option `newton_mg_tol` (the V cycles may end when the defect norm is this fraction of
+the norm of the source; default 0: until the defect stops falling) because the runs so
+far take 13 to 19 V cycles per step. Collapse of T3 at N = 32 (2176 particles, step
+0.004, to t = 0.8), three runs: tolerance 0, 1e-6, and 1e-6 with the step chosen by
+`newton_cfl = 0.2` (upper limit `dt = 0.05`).
+Prediction: with 1e-6 the number of V cycles per step falls to about half; the particle
+positions at t = 0.8 differ from the run at tolerance 0 by less than 1e-5 of the radius
+(the defect of 1e-6 of the source bounds the relative error of the potential at that
+order), the energy error does not change beyond 1e-4. With the step limit the run takes
+fewer steps early (the first step is set by the acceleration: sqrt(2 c dx/g_max) =
+sqrt(2 * 0.2 * 0.125/1) = 0.22, capped at 0.05) and the step shrinks as the speed grows
+(c dx/v = 0.2 * 0.125/1.4 = 0.018 near the end); positions at t = 0.8 agree with the
+fixed-step run to 1e-3 of the radius (second-order time error with larger early steps).
+Refuted by a run that needs more cycles, by differences at the 1e-3 level from the
+tolerance alone, or by a step that does not adapt.

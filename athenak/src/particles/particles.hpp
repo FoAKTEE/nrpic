@@ -107,6 +107,8 @@ struct NrpicOptions {
   Real newton_hubble = 0.0;    // Hubble rate at t = 0, where a = 1
   Real newton_exponent = 2.0;  // n (2: matter era, 1: radiation era)
   Real newton_cfl = 0.0;       // > 0: step at most this fraction of dx/max|dx/dt|
+  Real newton_mg_tol = 0.0;    // > 0: the Poisson solve may end when the defect norm
+                               // is this fraction of the norm of the source
 };
 
 //----------------------------------------------------------------------------------------

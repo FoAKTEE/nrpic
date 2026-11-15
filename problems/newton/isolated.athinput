@@ -64,6 +64,8 @@ interp         = hermite   # potential at the particles: hermite (Catmull-Rom) o
 dt             = 0.01      # upper limit of the step
 newton_cfl     = 0.0       # > 0: step also limited by the fastest particle and the
                            # largest acceleration to this fraction of a cell
+newton_mg_tol  = 0.0       # > 0: the Poisson solve may end at this fraction of the
+                           # norm of the source (0: until the defect stops falling)
 newton_expansion = none    # none | power (comoving coordinates, periodic mesh only)
 newton_hubble  = 0.0
 newton_exponent = 2.0

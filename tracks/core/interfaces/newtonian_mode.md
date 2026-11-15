@@ -47,6 +47,137 @@ The cost of the choice: second-order (seven-point) Laplacian instead of the spec
 operator of `cosmo/newton`; the two references therefore agree to truncation error, not
 to rounding (section 5 measures the difference and attributes it).
 
-## 3. Design of the mode (sections 4 and 5 are filled in as the work proceeds)
+## 3. Design of the mode
 
-See section 4.
+Source: `athenak/src/particles/nrpic_newton.cpp` (new), with hooks listed in section 4.
+
+**Equations.** The time coordinate `t` of the run is conformal time, the positions `x`
+are comoving, and the momentum slots of the particle file hold `p = a dx/dt` per unit
+rest mass:
+
+    dx/dt = p/a,      dp/dt = -grad Phi,      lap Phi = four_pi_G (rho - <rho>),
+
+with `rho` the rest-mass density per coordinate volume deposited by the particles and
+`a(t)` a prescribed scale factor. The Newtonian potential is `Phi/a`. The mean `<rho>`
+is removed on a mesh that is periodic in all directions, and only there. Without
+expansion (default) `a = 1`, `t` is the Newtonian time and `p` the velocity. With
+`newton_expansion = power`, `a = (1 + H t/n)^n` with the Hubble rate `H = newton_hubble`
+at `t = 0` (where `a = 1`) and `n = newton_exponent` (2: matter era, the form of
+`cosmo/newton/pm.py`; 1: radiation era). The equation of motion of `p` has no explicit
+time dependence for any `a(t)`, so the scale factor enters only through the drift, whose
+integral of `dt/a` over the step is taken in closed form. The same particle file serves
+the relativistic run: in the weak-field, slow-motion limit of a run in conformal time
+(`d_t alpha = -(1/3) alpha^2 K`, `gamma_ij = a^2 delta_ij`) the covariant `u_i` equals
+`a dx/dt`.
+
+**One cycle** (kick-drift-kick; task order of the relativistic mode):
+
+| Task | Newtonian mode |
+|---|---|
+| `NrpicPush` -> `NrpicNewtonPush` | `p += (dt/2) g^n(x^n)`, `x += p int dt/a`, with `g = -grad Phi` |
+| `NrpicExcise` (unchanged) | periodic wrap, removal of particles that left the mesh, MeshBlock ownership |
+| `NrpicDeposit` | existing `NrpicDepositSources` with the Lorentz factor replaced by one (rest mass in the E slot of the source array, momentum density in S_i), existing `NrpicFilterSources` (binomial passes, compensation), existing cloud compensation |
+| -> `NrpicNewtonFinishStep` | Poisson solve, ghost cells, `p += (dt/2) g^{n+1}(x^{n+1})`, particle sums, step limit |
+| `NrpicDiagnostics` (unchanged) | histories, snapshots, trajectories, probes |
+
+**Where the potential lives.** In the lapse slot of the metric array `met1`; the other
+nine slots hold the flat metric. The deposit (which reads the metric at the particle)
+and the interpolation `nrpic::MeshMetric` (Catmull-Rom, or the cubic spline through the
+nodes with `interp = bspline`) then run unchanged, and the gradient of the interpolated
+lapse is the gradient of the potential: the gather is the same code as in the
+relativistic mode, not a copy. Consequence: every existing diagnostic that reports the
+lapse reports `Phi` in this mode (history columns `alpha_probe`, `alpha_min`,
+`alpha_max`, the probes); the proper-time columns are the time integral of `Phi` and
+have no meaning.
+
+**Poisson solve.** `MGGravityDriver::SolveSource(driver, array, component)` of the
+gravity module (section 2). Ghost cells of the result: exchange between MeshBlocks and
+across periodic faces with a `MeshBoundaryValuesCC` object for one variable (restriction
+and prolongation across levels as for the sources), cubic extrapolation at faces that are
+not periodic, one direction after the other so that edges and corners are filled. On a
+periodic mesh the mean of the potential is set to zero.
+
+**Diagnostics** (`<basename>.newton.hst`, one record every `hist_dcycle` cycles; all
+sums over particles with their rest mass, tracers and null particles carry none). With
+`v = p/a` and `acc = g/a - (da/dt / a) v`:
+
+| Columns | Content |
+|---|---|
+| 1-4 | time, cycle, scale factor, total rest mass |
+| 5 | kinetic energy `K = sum m v^2/2` |
+| 6 | potential energy `W = sum m Phi(x)/(2a)`, potential interpolated to the particles as in the force |
+| 7 | `W_mesh = int (rho - <rho>) Phi dV/(2a)`, mesh sum with the filtered density |
+| 8, 9 | `C = a (K + W) + int K da` and the integral (trapezoidal rule over the steps). `C` is constant in time (Layzer-Irvine); without expansion it is the energy `K + W` |
+| 10-12, 13-15, 16-18 | `sum m p`, `sum m x cross p` (about the origin), centre of mass |
+| 19-24 | second moment `I_ij = sum m x_i x_j` (xx, xy, xz, yy, yz, zz) |
+| 25-30 | `dI_ij/dt = sum m (x_i v_j + v_i x_j)` |
+| 31-36 | `d2I_ij/dt2 = sum m (2 v_i v_j + x_i acc_j + acc_i x_j)`, with the acceleration that the kick applies |
+| 37-42, 43 | `d3I_ij/dt3` as the difference quotient of columns 31-36 over the last step, and the mid-step time it belongs to |
+| 44-47 | minimum and maximum of `Phi` on the mesh, largest `|p|`, largest `|g|` |
+| 48, 50 | defect norm and number of V cycles of the last Poisson solve |
+| 49 | the step just taken |
+
+The trace-free quadrupole and the quadrupole-formula luminosity follow from columns
+19 to 43: `python/nrpic/newton.py`, `quadrupole`, `quadrupole_luminosity`. On a periodic
+mesh the positions are wrapped and the second moment is of limited meaning.
+
+**Restart.** Next to `<name>.rst.prt` the mode writes `<name>.rst.prt.nwt`: the sums of
+the last synchronised state, the Layzer-Irvine integral, the third derivative, and the
+potential (it is the starting guess of the next solve). With it a continued run repeats
+the uninterrupted one byte for byte; without it (a dump of another mode) the potential is
+solved for again and the continuation agrees to rounding.
+
+## 4. Interface
+
+### Input
+
+```
+<particles>
+pusher           = newton   # switches the mode on (midpoint, boris: relativistic)
+newton_expansion = none     # none | power: a = (1 + newton_hubble t/newton_exponent)^newton_exponent
+newton_hubble    = 0.0      # Hubble rate at t = 0, where a = 1
+newton_exponent  = 2.0      # 2: matter era, 1: radiation era
+newton_cfl       = 0.0      # > 0: step <= c dx a/max|p| and <= sqrt(2 c dx a/max|g|)
+dt               = ...      # upper limit of the step (required unless newton_cfl > 0)
+<gravity>
+four_pi_G        = 12.566370614359172   # G = 1
+threshold        = 0.0      # 0: V cycles until two in succession lower the defect by
+                            # less than ten per cent; > 0: absolute L2 defect norm
+mg_bc            = multipole  # isolated domain (omit on a periodic mesh)
+mporder          = 4
+<problem>
+pgen_name        = nrpic_newton   # nothing is set on the mesh
+```
+
+Used unchanged from the relativistic mode: `particle_file` (or the inline list),
+`deposit_shape`, `nfilter`, `filter_compensate`, `filter_comp_c`, `deposit_comp_c`,
+`deposit_comp_c2`, `deposit_comp_limit`, the level options of the deposit, `interp`,
+`hist_dcycle`, `snap_dt`, `traj_*`, the probes. Not allowed together with the mode:
+`<z4c>`, `<adm>`, `<hydro>`, `<mhd>` (fatal error with a message). Requirements of the
+multigrid solver: three dimensions, cubic MeshBlocks with a power-of-two size.
+The mode does not check that the mean density of the particles matches the scale factor
+(for the matter era, `<rho> = 3 H^2/(8 pi G)` at `a = 1`); that is the caller's choice.
+Complete inputs: `problems/newton/isolated.athinput`, `problems/newton/periodic.athinput`.
+
+### Output
+
+`<basename>.newton.hst` (table above); `<basename>.nrpic.hst`, snapshots, trajectories
+and restart files as in the relativistic mode (`docs/FORMATS.md`), with the potential in
+the lapse columns.
+
+### Lines of shared files touched (relative to `main` at b7b431d)
+
+| File | Lines (new numbering) | Change |
+|---|---|---|
+| `athenak/src/CMakeLists.txt` | 137 | new source file |
+| `athenak/src/driver/driver.cpp` | 469 | stores the driver pointer before `NrpicStartup` (the multigrid solver runs task lists of the driver) |
+| `athenak/src/gravity/mg_gravity.hpp` | 64-67, 81-82 | `SolveSource`, `last_defect`, `last_ncycle`; private `SolveDensity`, `until_stall_` |
+| `athenak/src/gravity/mg_gravity.cpp` | 178-215, 235, 257-298 | `Solve` returns when there is no gas and otherwise calls `SolveDensity` with the gas density (the former body, source passed as an argument); `SolveSource`; cycle control for `threshold = 0` in the particle path only |
+| `athenak/src/particles/particles.hpp` | 25, 103-109, 259-291 | pusher `nrpic_newton`; five options; state and functions of the mode |
+| `athenak/src/particles/particles.cpp` | 70-71, 121 | pusher name `newton`; destructor |
+| `athenak/src/particles/nrpic.cpp` | 220-224, 273, 376, 705, 737-738, 1353-1357, 1380-1383 | mode flag, default of `deposit`, no `<adm>` needed; call of `NrpicNewtonInit`; branch in `NrpicPush`; `W = newton ? 1 : W_rel` in the deposit; branch in `NrpicDeposit` after the filter; branch in `NrpicInitializeSources` |
+| `athenak/src/particles/nrpic_io.cpp` | 1129, 1225, 1249, 1287 | restart state write and read; Newtonian history at start and per cycle |
+| `athenak/src/pgen/pgen.cpp` | 973-974 | `nrpic_newton` as a second name of the particles-only generator |
+
+The gas path of the gravity module is the former code with the source as an argument;
+it was not run here (no hydro regression), see section 6.

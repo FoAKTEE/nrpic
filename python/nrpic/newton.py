@@ -24,7 +24,8 @@ import numpy as np
 
 __all__ = ["point_field", "ball_field", "free_fall_time", "cycloid", "ball_moment",
            "scale_factor", "drift_integral", "zeldovich_wave", "read_newton_hst",
-           "read_nrpic_hst", "read_snapshot", "hermite_weights", "gather_gradient",
+           "read_nrpic_hst", "read_snapshot", "moment_tensor", "quadrupole",
+           "quadrupole_luminosity", "hermite_weights", "gather_gradient",
            "scheme_fields", "NEWTON_COLUMNS"]
 
 
@@ -158,6 +159,35 @@ def read_snapshot(path):
         rec = np.frombuffer(f.read(56*n), dtype="<f8").reshape(n, 7)
         tag = np.frombuffer(f.read(4*n), dtype="<i4")
     return t, cyc, rec[:, 0:3].copy(), rec[:, 3:6].copy(), rec[:, 6].copy(), tag.copy()
+
+
+def moment_tensor(h, order=0):
+    """The second moment I_ij = sum m x_i x_j (order 0) or its first, second or third
+    time derivative (order 1, 2, 3) from a history dict, as an array [n, 3, 3]. The third
+    derivative belongs to the times h["time_d3I"], the others to h["time"]."""
+    pre = ("I", "dI", "d2I", "d3I")[order]
+    out = np.empty((len(h["time"]), 3, 3))
+    for (i, j), c in zip(((0, 0), (0, 1), (0, 2), (1, 1), (1, 2), (2, 2)),
+                         ("xx", "xy", "xz", "yy", "yz", "zz")):
+        out[:, i, j] = out[:, j, i] = h["%s_%s" % (pre, c)]
+    return out
+
+
+def quadrupole(h, order=0):
+    """Trace-free quadrupole Q_ij = I_ij - delta_ij I_kk/3, or its time derivative of
+    the given order, as an array [n, 3, 3]."""
+    m = moment_tensor(h, order)
+    tr = np.trace(m, axis1=1, axis2=2)/3.0
+    return m - tr[:, None, None]*np.eye(3)
+
+
+def quadrupole_luminosity(h, G=1.0, c=1.0):
+    """Quadrupole formula L = (G/5 c^5) d3Q_ij d3Q_ij at the times h["time_d3I"]. The
+    third derivative in the history is a difference quotient over one step and carries
+    the fluctuation of the mesh force; average it over the time scale of interest before
+    squaring when the particle number per cell is low."""
+    q3 = quadrupole(h, 3)
+    return (G/(5.0*c**5))*np.einsum("nij,nij->n", q3, q3)
 
 
 # ---------------------------------------------------------------------------------------

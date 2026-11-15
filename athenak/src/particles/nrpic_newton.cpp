@@ -168,6 +168,7 @@ void Particles::NrpicNewtonInit(ParameterInput *pin) {
   nropt.newton_hubble   = pin->GetOrAddReal("particles", "newton_hubble", 0.0);
   nropt.newton_exponent = pin->GetOrAddReal("particles", "newton_exponent", 2.0);
   nropt.newton_cfl      = pin->GetOrAddReal("particles", "newton_cfl", 0.0);
+  nropt.newton_mg_tol   = pin->GetOrAddReal("particles", "newton_mg_tol", 0.0);
   if (nropt.newton_expansion == 1) {
     if (!(pm->strictly_periodic)) {
       NewtonFatal("<particles> newton_expansion = power requires a mesh that is periodic "
@@ -286,7 +287,31 @@ void Particles::NrpicNewtonPotential() {
     if (nw_driver == nullptr) {
       NewtonFatal("the Newtonian mode has no driver for the Poisson solver");
     }
-    pg->pmgd->SolveSource(nw_driver, tmu, Tmunu::I_Tmunu_E);
+    // defect norm at which the V cycles may end: the fraction newton_mg_tol of the
+    // L2 norm of the source four_pi_G (rho - <rho>) (<rho> removed on a periodic mesh)
+    Real tol = 0.0;
+    if (nropt.newton_mg_tol > 0.0) {
+      auto tm0 = tmu;
+      auto sz0 = pmy_pack->pmb->mb_size.d_view;
+      Real s1 = 0.0, s2 = 0.0, s0 = 0.0;
+      Kokkos::parallel_reduce("nrpic_newton_srcnorm",
+        Kokkos::MDRangePolicy<DevExeSpace, Kokkos::Rank<4>>(
+          {0, ks, js, is}, {nmb, ke+1, je+1, ie+1}),
+      KOKKOS_LAMBDA(const int m, const int k, const int j, const int i, Real &l1,
+                    Real &l2, Real &l0) {
+        const Real vol = sz0(m).dx1*sz0(m).dx2*sz0(m).dx3;
+        const Real r = tm0(m,Tmunu::I_Tmunu_E,k,j,i);
+        l1 += r*vol;
+        l2 += r*r*vol;
+        l0 += vol;
+      }, Kokkos::Sum<Real>(s1), Kokkos::Sum<Real>(s2), Kokkos::Sum<Real>(s0));
+      if (s0 > 0.0) {
+        const Real mean = (pm->strictly_periodic) ? s1/s0 : 0.0;
+        const Real var = s2/s0 - mean*(2.0*s1/s0 - mean);
+        tol = nropt.newton_mg_tol*(pg->four_pi_G)*std::sqrt((var > 0.0) ? var : 0.0);
+      }
+    }
+    pg->pmgd->SolveSource(nw_driver, tmu, Tmunu::I_Tmunu_E, tol);
     nw_defect = pg->pmgd->last_defect;
     nw_ncycle = pg->pmgd->last_ncycle;
   }
