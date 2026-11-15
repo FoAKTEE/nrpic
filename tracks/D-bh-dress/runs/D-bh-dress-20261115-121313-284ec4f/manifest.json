@@ -1,0 +1,65 @@
+{
+ "run_id": "D-bh-dress-20261115-121313-284ec4f",
+ "track": "D-bh-dress",
+ "gate": "G1",
+ "package": "puncture_drift (D-pre-4)",
+ "purpose": "D-pre-4 noise floor: vacuum unit-mass puncture of the horizon-finder check (paper Table setups row Vacuum black hole), dx = M/8 at the puncture, corrected finder (metric_drvts = interpolant), 500 M; drift of apparent-horizon mass and spin",
+ "kind": "production",
+ "command": [
+  "env",
+  "ATHENA_EXE=/data/haiyangw/nrpic/.work/build_gpu_c3/src/athena",
+  "MAX_SEGMENTS=1",
+  "JOB_NAME=D-drift-dx8",
+  "/data/haiyangw/nrpic/wt/D-bh-dress/scripts/submit_chain.sh",
+  "<outputs.dir>",
+  "/data/haiyangw/nrpic/wt/D-bh-dress/tracks/D-bh-dress/puncture_drift/inputs/drift_dx8.athinput"
+ ],
+ "cwd": "/data/haiyangw/nrpic/wt/D-bh-dress",
+ "env_overrides": {
+  "ATHENA_EXE": "/data/haiyangw/nrpic/.work/build_gpu_c3/src/athena",
+  "MAX_SEGMENTS": "1",
+  "JOB_NAME": "D-drift-dx8"
+ },
+ "git": {
+  "sha": "284ec4f9fe68f77eac033b3d4810eaaa754e9cf9",
+  "branch": "track/D-bh-dress",
+  "dirty_package_dir": true,
+  "merge_base_main": "a1c223753952674ee38819dc45043591dddc3022"
+ },
+ "code": {
+  "core_tag": null
+ },
+ "inputs": [
+  {
+   "path": "/data/haiyangw/nrpic/wt/D-bh-dress/tracks/D-bh-dress/puncture_drift/inputs/drift_dx8.athinput",
+   "sha256": "8fa5ebb5f2a80d375f4497e3a9065ca883dc91e3b4b7e71637b28ae52a3f23d0"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/.work/build_gpu_c3/src/athena",
+   "sha256": "bd4fc2723403a8ebbc9fa9e2c684c677510b92b670b129064270266a06632fb4"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/wt/D-bh-dress/scripts/submit_chain.sh",
+   "sha256": "e2bea4da17fcbd5787b298bdeab32bb9131f1428518e737f6b5fd1fa2b1bd2f2"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/wt/D-bh-dress/scripts/_athena_job.sh",
+   "sha256": "f4edee3a16b35dd8f11ab7a59648d470597c404cb99646583bf57f6ed3fac20d"
+  }
+ ],
+ "resources": {
+  "nodes": 1,
+  "cores": 1,
+  "gpus": 1,
+  "card_hours": null,
+  "walltime_s": null
+ },
+ "outputs": {
+  "dir": "/data/haiyangw/nrpic/scratch/D-bh-dress/D-bh-dress-20261115-121313-284ec4f"
+ },
+ "status": "submitted",
+ "started": "2026-11-15T12:13:13Z",
+ "ended": null,
+ "parents": [],
+ "notes": "Chain capped at 1 segment (<= 59 card-minutes). Expected 2400-2500 card-seconds from runs/puncture/hcal/dx8_*/athena.log rates."
+}

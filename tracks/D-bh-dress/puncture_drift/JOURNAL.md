@@ -97,3 +97,51 @@ finder settings tested) and sigma the scatter of M about a smooth fit (rms of re
 a running 20 M average) times sqrt(2) for the two ends; quoted at M/8, M/16 and, with the
 measured order, extrapolated to M/32 [JUDGEMENT] for T = 40, 120, 450 M (one doubling of
 a at eps = 0.03 and 0.01, and the full span).
+
+## 2026-11-15T13:05Z  outcome of run D-bh-dress-20261115-121427-284ec4f (existing dumps)
+
+Finder re-searched on the processor executable (`.work/build_cpu_c1`) on the dumps at
+t = 50 and 60 M of runs/puncture/hcal/{dx4, dx8_tight, dx16}, six settings each, and the
+Misner-Sharp mass of the six slices. Tables: `results/hcal_drift.txt`; figure
+`figs/hcal_finder.png` (looked at: left, the offsets of every setting from the production
+one are flat lines from 50 to 60 M at M/8 and M/16 and lie on top of each other; only
+M/4 moves; right, production finder, converged finder and slice at the three resolutions).
+
+P7, against the prediction:
+- Reproduction holds: production setting 1.001337 at M/8 (TESTLOG 1.001338) and
+  0.999738 at M/16 (TESTLOG 0.999738), t = 50 M, to 1e-6. The release executables read
+  these slices as the earlier build did.
+- M/4: corrected finder 0.96518, slice M_H 0.96556 (t = 50 M): within 5e-3, holds
+  (difference 3.8e-4).
+- 50 -> 60 M, production finder: M/8 +6.19e-5, M/16 -3.5e-6, M/4 -3.76e-3. Predicted
+  +1e-4 to +3e-4 at M/8: FAILED, the rise is 1.6 times smaller than the lower bound (I had
+  extrapolated the 11.5-50 M mean slope, 2.6e-5 per M; the rate at 50-60 M is 6.2e-6 per M,
+  so the transient is decaying). M/16 below 3e-5: holds. The slice gives the same changes:
+  M_H +6.2e-5 (M/8), +1.6e-6 (M/16), -3.65e-3 (M/4).
+
+P6 on these two times (the full test needs the long runs):
+- Offsets from the production setting at M/8 and M/16, t = 50 / 60 M, in 1e-5:
+  tolerance 1e-9: 6.09 / 6.01 and 6.11 / 6.50; start at 2 M: 12.5 / 12.0 and 12.4 / 13.2;
+  32 points: 17.6 / 17.7 and 18.4 / 18.4; 32 points and 1e-9: 24.5 / 24.5 and 24.6 / 25.0;
+  32 points from 2 M: 31.2 / 30.8 and 31.1 / 31.1. Predicted: tight 3e-5 to 1e-4 (holds),
+  32 points 1e-4 to 3e-4 (holds), start from 2 M below 1e-4 (FAILED: 1.2e-4 to 1.3e-4; the
+  tolerance stops the flow early on either side, so the two starts bracket the surface by
+  twice the stopping offset).
+- The offsets do not depend on the resolution (M/8 and M/16 agree to 8e-6) and change
+  by at most 8e-6 in 10 M: so far the drift does not depend on the finder setting by
+  more than 8e-6 (prediction: below 5e-5). At M/4 they change by up to 1e-4 in 10 M (the
+  production search ends with rms expansion 6e-7 there instead of 7e-9; the tolerance
+  1e-9 search did not converge in 4000 iterations at t = 50 M).
+- The converged finder (32 points, 1e-9) is below the slice M_H by 2.7e-5 at both M/8
+  and M/16 and both times; the production finder by 2.7e-4.
+- Spin: |S| (= |S|/M^2 here) 2.6e-8 and 8.8e-9 at M/8, 1.6e-11 and 1.9e-9 at M/16
+  (16 points); 1.6e-9 and 1.4e-10 to 3.8e-12 on 32 points; 4e-7 at M/4. It falls with the
+  angular grid, so it is the quadrature of the search, not the slice.
+- Slices: the asymptotic Misner-Sharp mass is 1 + 1.2e-5 to 1.5e-5 at every resolution
+  (outer region, initial data); the excess at the hole at M/8 (1.6e-3) is local:
+  m(R = 10 M) - 1 = 1.26e-3 at 50 M and 1.59e-3 at 60 M, so the excess is spreading
+  outward, as TESTLOG:467-470 described.
+
+Card runs: chains D-bh-dress-20261115-121313-284ec4f (M/8, job 4406) and
+D-bh-dress-20261115-121314-284ec4f (M/16, job 4407) queued at 12:13Z, still pending at
+12:44Z behind 7 jobs.

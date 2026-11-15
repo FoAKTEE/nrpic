@@ -1,0 +1,118 @@
+{
+ "run_id": "D-bh-dress-20261115-121427-284ec4f",
+ "track": "D-bh-dress",
+ "gate": "G1",
+ "package": "puncture_drift (D-pre-4)",
+ "purpose": "D-pre-4 (existing data): corrected finder re-run on the processor executable on the restart dumps of the calibration runs runs/puncture/hcal/{dx4,dx8_tight,dx16} at t = 50 and 60 M (slices made before this package, defective finder in the run, which does not act on the evolution); finder variants A16/A32 x three horizons (production, tight, start from 2 M)",
+ "kind": "scouting",
+ "command": [
+  "python3",
+  "tracks/D-bh-dress/puncture_drift/tools/probe_finder.py",
+  "--out",
+  "<outputs.dir>",
+  "--tag",
+  "hcal",
+  "--threads",
+  "8",
+  "--jobs",
+  "2",
+  "/data/haiyangw/nrpic/runs/puncture/hcal/dx8_tight/rst/punc.00001.rst",
+  "/data/haiyangw/nrpic/runs/puncture/hcal/dx8_tight/rst/punc.00002.rst",
+  "/data/haiyangw/nrpic/runs/puncture/hcal/dx16/rst/punc.00001.rst",
+  "/data/haiyangw/nrpic/runs/puncture/hcal/dx16/rst/punc.00002.rst",
+  "/data/haiyangw/nrpic/runs/puncture/hcal/dx4/rst/punc.00001.rst",
+  "/data/haiyangw/nrpic/runs/puncture/hcal/dx4/rst/punc.00002.rst"
+ ],
+ "cwd": "/data/haiyangw/nrpic/wt/D-bh-dress",
+ "env_overrides": {
+  "OMP_NUM_THREADS": "8",
+  "OMP_PROC_BIND": "false"
+ },
+ "git": {
+  "sha": "284ec4f9fe68f77eac033b3d4810eaaa754e9cf9",
+  "branch": "track/D-bh-dress",
+  "dirty_package_dir": true,
+  "merge_base_main": "a1c223753952674ee38819dc45043591dddc3022"
+ },
+ "code": {
+  "core_tag": null
+ },
+ "inputs": [
+  {
+   "path": "/data/haiyangw/nrpic/wt/D-bh-dress/tracks/D-bh-dress/puncture_drift/tools/probe_finder.py",
+   "sha256": "45efff48896fb334668dfe9eecfc943b28037de389d90904204c40285ffcdddf"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/.work/build_cpu_c1/src/athena",
+   "sha256": "91f2e2c23a6301047ed4fe06ffe153d100fe6c121d0b6632087637b525547403"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/wt/D-bh-dress/analysis/diag/slicemass.py",
+   "sha256": "f35331096b0314aba39ed545c77439030b5aefe7bdb35259e134e30f66e2dbf1"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/runs/puncture/hcal/dx8_tight/rst/punc.00001.rst.prt",
+   "sha256": "fa4af9cae11a1873808067cdad2e970f602e75817702ccd1239641d41040a5c7"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/runs/puncture/hcal/dx8_tight/rst/punc.00001.rst",
+   "sha256": "ef14c81e3f4030de4a91d08259aa7b9681dd933a4aef8dae4dbb0e7e8903fc3d"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/runs/puncture/hcal/dx8_tight/rst/punc.00002.rst",
+   "sha256": "4a36d81d10d1c41e3da9189ca730d4fd1f180086aa4f7eb77ce8f79899cb0365"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/runs/puncture/hcal/dx16/rst/punc.00001.rst",
+   "sha256": "81b13312f43e79a2dc35f67aaddf5c0302a901c6a048a046291e8d1b5120699e"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/runs/puncture/hcal/dx16/rst/punc.00002.rst",
+   "sha256": "cc63364f311f01a773ed6619a1d590c5202152957b6328453ea3fc8f44e66abc"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/runs/puncture/hcal/dx4/rst/punc.00001.rst",
+   "sha256": "2e227c55cd5518e6ee642c7bcb906969b03c765159fc7e815f89f1d258372328"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/runs/puncture/hcal/dx4/rst/punc.00002.rst",
+   "sha256": "68b2e888dbc25b1a876923068c46bca649f5863cfe568d1af8b91505d9a235a0"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/wt/D-bh-dress/tracks/D-bh-dress/puncture_drift/tools/slice_masses.py",
+   "sha256": "b45a9d87b4faf6719e2975793390f5acbbca8575a31f40b634d4fd9f18b77f72"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/wt/D-bh-dress/tracks/D-bh-dress/puncture_drift/tools/analyse_drift.py",
+   "sha256": "fd94d6454c3b95d137d442495884d83e455c6dc62668f0ea01c68fcf6e16f353"
+  }
+ ],
+ "resources": {
+  "nodes": 1,
+  "cores": 16,
+  "gpus": 0,
+  "card_hours": 0.0,
+  "walltime_s": 2700.0
+ },
+ "outputs": {
+  "dir": "/data/haiyangw/nrpic/scratch/D-bh-dress/D-bh-dress-20261115-121427-284ec4f",
+  "files": [
+   "probe_stdout.txt",
+   "hcal/probes.json",
+   "slices.json",
+   "slices_a_stdout.txt",
+   "slices_b_stdout.txt",
+   "analyse_stdout.txt",
+   "hcal_drift.txt",
+   "hcal_drift.json",
+   "hcal_finder.png",
+   "hcal_finder.pdf"
+  ]
+ },
+ "status": "completed",
+ "started": "2026-11-15T12:14:27Z",
+ "ended": "2026-11-15T12:45:46Z",
+ "parents": [],
+ "notes": "Restart dumps are 0.8-1 GB each; their checksums are added after the run. Wall time: 18 probe runs of 100-170 s each on 2 x 8 threads (about 45 min elapsed in total, including the first pass whose t = 60 M probes stopped at tlim and were redone with time/tlim raised), slice masses 4-6 s per dump. Command extended afterwards: slice_masses.py --out slices_{a,b}.json on the six dumps, merged to slices.json; analyse_drift.py --out <dir> --tag hcal --probes hcal/probes.json --slices slices.json --res dx4=4 dx8_tight=8 dx16=16. Probe tag directories are named <run>_<dump>_<variant>.",
+ "exit_code": 0
+}
