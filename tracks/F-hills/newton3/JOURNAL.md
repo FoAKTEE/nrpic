@@ -366,3 +366,46 @@ origin to 1e-12; the binary centre of mass at r0 to 1e-9. Refuted by any miss.
   at least 1000 times less than the old one, which varies by > 0.1; for t >= 1000 both the
   corrected energy's variation and |W| are below 1e-5 units; E_ej at the end within 1e-3
   of V5b's value.
+
+## 2026-11-15 outcomes of Q1-Q3, Q5 (first pass) and Q6 (runs F-20261115-174058-ad4fb17, -174139-3340bf3, -174142-2a79515)
+
+- tests (F-20261115-174058-ad4fb17, nrpic-run): 15 of 15 pass, the five new ones included.
+- Q1 (F-20261115-174139-3340bf3): corrected E_ej = 1.61272 (q = 10) and 1.31191 (q = 4)
+  units at t = 1500, V5b's 1.6127 and 1.3119 reproduced; peak to peak after t = 300:
+  corrected 3.2e-5 and 1.5e-4, old 0.371 and 0.734; after t = 1000: corrected 3.7e-7 and
+  1.2e-6. E_cap = -1.84500 and -1.62658, E_tot = -0.23228 and -0.31467 units (predicted
+  -1.85, -1.63, -0.232, -0.315). The time average of the old energy after t = 300 is 1.624
+  and 1.331: it is offset from the conserved value by 0.7 and 1.4 percent besides
+  oscillating. The 1e-4 bounds of the prediction were refuted as recorded above (the
+  coupling W at t = 300); everything else holds. Figure `figures/fig_energy_definition.png`
+  looked at: the old energy oscillates with the period of the captured orbit (127 M at
+  q = 10) and does not decay; the corrected one is flat after t ~ 200; |W| decays from
+  ~1e-4 at t = 300 to ~1e-7 at t = 1500; the identity residual is at round-off.
+- Q2 (same run): 128 phases each; single ejections 120, 110, 96, 102 for (M/m, D) = (10,
+  0.5), (10, 1.2), (4, 0.5), (4, 1.2); largest change of the corrected dE between end at
+  30 and 100 r_t: 2.4e-5, 4.5e-5, 2.5e-4, 6.5e-6 units (bound 1e-3: holds); of the old:
+  0.151, 0.138, 0.500, 0.302 (bound > 0.05: holds); medians 7e-6 vs 1.3e-2 etc. At
+  (4, 0.5) 6 of 128 phases change outcome between the two end times (old: 8), i.e. the
+  outcome at 30 r_t is not final for those: [JUDGEMENT] marginal captures that are still
+  settling, not a definition issue.
+- Q3 (same run): M/m = 1e6, 128 phases: relative difference of the two definitions
+  median 3.4e-6 (D = 0.1) and 3.8e-6 (D = 1), max 1.07e-5 and 2.2e-5: the bound 1e-5 is
+  missed by the largest values (refuted narrowly as worded). [JUDGEMENT, not tested] the
+  largest relative values sit where |dE| is small; the absolute difference is of order
+  m/M of the energy. Outcomes identical. P3's SKR example: 2.34e-4 (was 2.4e-4).
+- Q5 first pass (F-20261115-174142-2a79515): both passages unchanged in kind (m1 ejected,
+  m2 captured; q = 10: a = 7.547, e = 0.2474, r_p = 5.680; q = 4: a = 7.746, e = 0.2503,
+  r_p = 5.807); outcome classes change for 2 of 360 phases (q = 10 from 4 r_t: two single
+  ejections become both-bound) and none otherwise (bound 0.01: holds); the ejection
+  energy changes by at most 0.21 (q = 10) and 0.41 (q = 4) units in single phases, i.e.
+  up to ~2 m/M of itself (predicted "~m/M": right order, factor 2). Found a defect of my
+  scan summary: 2 of 360 phases at q = 10 stall in a near head-on approach of the members
+  (ok = False; relative energy error 0.24 and 0.08) and were counted as survivors. Fixed
+  (counted apart as stalled); the passage script is rerun. Figure `fig_passages.png`
+  looked at: the corrected ejection energy is a smooth function of phase, the old one
+  scatters about it; layout fixed (titles overlapped, legends covered data).
+- Q6 (tests + passage run): the rebuilt start states differ from the input files by
+  3.0e-6 (q = 10) and 5.0e-6 (q = 4) in position and 1.0e-8, 2.7e-8 in momentum (bounds
+  1e-4, 1e-6: hold); integrated from the file state the outcome and energies agree
+  (E_ej 1.61267 vs 1.61272). puncture_input.py --predict on the q = 10 start returns the
+  lead's V5 captured orbit (a 7.547, e 0.2474, r_p 5.68).

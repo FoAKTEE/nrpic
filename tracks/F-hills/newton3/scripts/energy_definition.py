@@ -94,7 +94,7 @@ def main():
         ax.set_ylim(lo - 0.25 * (hi - lo), hi + 0.35 * (hi - lo))
         ax.set_xlabel(r"$t\,[M]$")
         ax.set_ylabel(r"$E_{\rm ej}$ [units]")
-        ax.set_title(f"{name}: ejected member m{ie + 1}, full Newton from the input state", fontsize=9)
+        ax.set_title(f"{name}: energy of the ejected member m{ie + 1} (full Newton)", fontsize=9)
         ax.legend(frameon=False, fontsize=7, loc="upper right")
         ax = axs[1, 0]
         c = fs.PAL["red"] if name == "q10" else fs.PAL["blue"]
@@ -109,7 +109,7 @@ def main():
     ax.set_ylim(1e-16, 10)
     ax.set_xlabel(r"$t\,[M]$")
     ax.set_ylabel("[units]")
-    ax.legend(frameon=False, fontsize=6, loc="upper right", ncol=1)
+    ax.legend(frameon=False, fontsize=6, loc="lower left", ncol=1)
     ax.set_title("coupling and settling of the corrected energies", fontsize=9)
     # ---------------------------------------------------------------- Q2
     ph = np.linspace(0, 2 * np.pi, 128, endpoint=False)

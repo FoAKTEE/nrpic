@@ -43,9 +43,12 @@ Digitised third-party curves stay in the run directories (not committed).
   sense of rotation from the projection of +x onto the binary plane; periapsis direction
   `varpi` from the same reference. For coplanar retrograde orbits SKR's phase is minus ours
   (`restricted.coplanar_phase` converts).
-- Energies in units of (G m1 m2 / a)(M/m)^(1/3) (SKR prp.tex:793). Full problem:
-  dE = (m1/m) E2 - (m2/m) E1 with E_i the two-body energy of member i with M (KHSR
-  arXiv:1201.4794 ms.tex:1103); restricted: E2 = -E1.
+- Energies in units of (G m1 m2 / a)(M/m)^(1/3) (SKR prp.tex:793). Full problem (wave 2,
+  section "Member energies at finite mass ratio"): E1, E2 are the Jacobi energies of the
+  hierarchy left at the end (captured member against M, ejected member against the
+  barycentre of M and the captured member), dE = (m1/m) E2 - (m2/m) E1 (KHSR
+  arXiv:1201.4794 ms.tex:1103); NaN while m1-m2 are bound. Restricted: E2 = -E1. The
+  wave-1 definition (each member against M alone) is kept as E1_M, E2_M, dE_M, outcome_M.
 - Outcome: survived = m1-m2 bound with apocentre inside half its Hill radius at the end
   (default: the unperturbed conic at 30 r_t outbound; P5: 100 r_t changes nothing).
   Otherwise disrupted, split into m2 ejected / m1 ejected / both bound / both free; bound
@@ -64,6 +67,117 @@ js = initial_state_json(s, k0=10.0) # the same as plain lists, for a problem-gen
 out = scatter([s], k0=10.0)         # outcome, dE, E1, E2, captured-orbit a and e, r12min, ...
 t, X, V, sol = trajectory(s)        # SciPy solve_ivp path (independent integrator) for figures
 ```
+
+### Member energies at finite mass ratio (wave 2; corrects the defect of lead check V5b)
+
+The defect. Before wave 2 each member's energy was its two-body energy with M alone,
+E_i^M = mu_iM |v_i - v_M|^2/2 - G M m_i/|x_i - x_M|, mu_iM = M m_i/(M + m_i) (the
+restricted-limit definition of SKR prp.tex:331 carried over). The lead found
+(`stage/G0/checks/lead_checks.py` v5b, run F-hills-20261115-145559-a314517) that after a
+capture the ejected member's E^M oscillates without settling (q = 10: 1.474-1.845 units;
+q = 4: 0.989-1.723), so the value depended on the end time of the integration.
+
+Derivation. Label the bodies after the encounter M, c (the member with the lower specific
+two-body energy with M: the captured one) and e (the other). Jacobi coordinates of this
+hierarchy: r = x_c - x_M, R = x_e - X, X = (M x_M + m_c x_c)/(M + m_c). With zero total
+momentum the kinetic energy splits exactly,
+
+    K = mu_in |r'|^2/2 + mu_out |R'|^2/2,   mu_in = M m_c/(M + m_c),
+                                            mu_out = m_e (M + m_c)/(M + m_c + m_e),
+
+and since x_e - x_M = R + beta r, x_e - x_c = R - alpha r (beta = m_c/(M + m_c),
+alpha = 1 - beta),
+
+    E_tot = E_in + E_out + W,
+    E_in  = mu_in |r'|^2/2 - G M m_c/r                       (captured member, against M)
+    E_out = mu_out |R'|^2/2 - G (M + m_c) m_e/R               (ejected member, against X)
+    W     = -G M m_e/|R + beta r| - G m_c m_e/|R - alpha r| + G (M + m_c) m_e/R
+          = -G m_e mu_in (r^2/R^3) P2(rhat.Rhat) + O(r^3/R^4)
+
+(the dipole cancels because R is measured from the barycentre X; M beta^2 + m_c alpha^2 =
+mu_in). dE_out/dt = -R'.grad_R W and dE_in/dt = -r'.grad_r W are O(R^-3); on an escape
+orbit R grows linearly in t, so E_in and E_out converge, and E_in + E_out -> E_tot.
+These are the "conserved two-body energies relative to the appropriate centre": the
+captured member's against M, the ejected member's against the barycentre of M and the
+captured member. With x_e' - x_M' = R' + beta r' the old definition differs from E_out by
+
+    E_e^M - E_out = (mu_eM - mu_out)|R'|^2/2 + mu_eM beta R'.r' + mu_eM beta^2 |r'|^2/2
+                    - G m_c m_e/R + O(r/R^2),
+
+whose second term oscillates with the inner orbit at the fixed amplitude
+mu_eM beta v_inf v_in. In energy units it is of relative order m/M (it vanishes in the
+restricted limit, where E^M is SKR's E_1): 0.37/1.61 peak to peak at q = 10 and 0.73/1.31
+at q = 4 (run F-20261115-174139-3340bf3). For the captured member both definitions
+coincide (E_c^M = E_in).
+
+Implementation (`hills3/threebody.py`). `member_energies(x, v, masses)` returns E1, E2
+(corrected), the inner member, E_in, E_out, W, E_tot, the wave-1 energies E1_M, E2_M, and
+the pair (E12, E_orb) of the binary hierarchy. The same rule covers every outcome: single
+ejection (inner bound to M, outer escaping), both bound (inner = the tighter orbit; W does
+not decay, the split is secular only), both free (all three separate, both energies
+converge). While m1 and m2 are bound to each other (survived, unsettled) the members have
+no separate energies: E1 = E2 = dE = NaN; E12 and E_orb (E_tot = E12 + E_orb + W_bin) are
+returned, and dE_orb, the change of the binary's orbital energy about M. The outcome uses
+the corrected energies: inner E_in < 0 and outer E_out >= 0 is a single ejection of the
+outer member; E_in >= 0 with E_out < 0 (outer bound to an unbound pair) is "unsettled".
+dE keeps KHSR's combination; with E1 + E2 = E_tot - W it is
+dE = E2 - (m2/m)(E_tot - W) = -E1 + (m1/m)(E_tot - W): the energy moved from m1 to m2
+beyond the mass-weighted share of the total, which tends to the restricted E2 because
+E_tot/unit ~ -(1/2)(m/M)^(1/3) -> 0. The ejected member's speed at infinity relative to
+the barycentre of the bound pair is v_inf = sqrt(2 E_out/mu_out).
+
+Tests (`tests/test_hills3.py`, run F-20261115-174058-ad4fb17, 15 of 15 pass):
+`test_jacobi_identity_with_direct_coupling` (identity with W computed from its
+definition to 1e-12; quadrupole limit), `test_member_energy_conserved_after_capture` (the
+test in which the old definition fails and the new holds: passages q = 10 and 4 to
+t = 1500; old varies by > 0.1 units, corrected by < 1e-3 of that after t = 300 and
+< 1e-5 units after t = 1000, end values within 1e-3 of V5b), `test_restricted_limit_of_corrected_energies`
+(M/m = 1e6: both definitions agree to 1e-5), `test_end_time_independence_at_finite_q`
+(M/m = 10: corrected dE the same at 30 and 100 r_t to 1e-3, old not).
+
+### Initial data of the code: multi-puncture form (wave 2)
+
+```python
+s  = HillsSetup(M=1.0, m1=0.05, m2=0.05, a=3.0, rp=8.0, phase=np.radians(130))
+st = puncture_state(s, k0=4.0, k_from=10.0)  # or r0=<distance>; k_from=None: on the conic
+print(multi_puncture_block(st))              # <problem> block of nrpic_cf
+```
+
+or from the shell (`--predict` adds the full-Newton outcome from that state):
+
+```text
+python3 scripts/puncture_input.py --M 1 --m1 0.05 --m2 0.05 --a 3 --rp 8 \
+    --phase-deg 130 --k0 4 --k-from 10 --predict [--json state.json]
+```
+
+`puncture_state` returns barycentric positions and momenta P = m v (zero total momentum,
+barycentre at the origin, both to round-off after an exact re-centring) when the binary's
+centre of mass is at the requested distance r0 (or k0 r_t) from M on the way in. With
+`k_from` the encounter starts at k_from r_t and the full problem is integrated to the
+event |x_cm - x_M| = r0 (DOP853, rtol 1e-12), so the state carries the tidal distortion
+and phase shift of the approach (P4: a run must be compared with the reference started
+from the same state); without it the bodies are placed on the unperturbed conic.
+`multi_puncture_block` writes, in the order `order` (default m1, m2, M: the members get
+trackers co_0 and co_1, as in `three_punctures/inputs`), `ncomp`, `comp<c>_type = puncture`,
+`_mass`, `_x1.._x3`, `_p1.._p3`, `_s1.._s3` (zero unless given, listed so that the
+command line can change them, interface section 2), `_corr` (default approx), then the
+options of the existing Hills inputs (`corr_background = true`, `lapse = precollapsed`,
+`puncture_setup = true`, `puncture_radius = 1.8`); numbers with 13 significant digits,
+round-off below 1e-14 of the largest component written as 0.0. `parse_problem_block`
+reads a block or a whole input file back. With k0 = 4, k_from = 10 the function
+reproduces the start states of `three_punctures/inputs/hills_q10_m8.athinput` and
+`hills_q4_m8.athinput` (made by linear interpolation of a 20000-sample trajectory) to
+3e-6 in position and 1e-8 in momentum (test `test_puncture_state_reproduces_the_inputs`).
+
+What the block does not do [JUDGEMENT; TO VERIFY with core]: masses are written as the
+Newtonian masses, i.e. as the bare masses of the punctures. A corrected Bowen-York
+puncture has ADM mass m + (5/8) P^2/m to second order (interface section 3, from
+arXiv:0711.1165v2 second.tex:285-287), about 5 percent above m for the members at 4 r_t
+(P/m = 0.28), and the conformal factor of the other holes raises each member's horizon
+mass further (the 0.0515-0.0525 expected in stage/G1/STATUS.md for m = 0.05). The momenta
+are Newtonian (no Lorentz factor; interface section 9 item 4 lists post-Newtonian momenta
+as open). Choosing bare masses that give prescribed horizon masses, and PN momenta, is
+initial-data work for core (Requests).
 
 Example (run F-hills-20261115-132240-42345c2, `results/example.json`,
 `figures/fig_driver_example.png`): M/m = 10, a = 30 m, D = 0.7, start at 10 r_t = 646 m;

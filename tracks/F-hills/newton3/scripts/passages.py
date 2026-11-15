@@ -99,6 +99,14 @@ def passage(name):
         captured_orbit=dict(a=float(en["a_in"][-1]), e=float(en["e_in"][-1]), rp=float(en["rp_in"][-1])),
         captured_pericentre_times=tp[:6], captured_pericentre_radii=rp[:6],
         rmin_1M=float(r1.min()), rmin_2M=float(r2.min()), t_rmin_cap=float(tt[np.argmin(rc)]),
+        # what a run of the code that ends at these times can compare with
+        at_times={f"t{tq:g}": dict(E_ej_units=float(np.interp(tq, tt, en[f"E{ie}"]) / u),
+                                   E_ej_before_units=float(np.interp(tq, tt, en[f"E{ie}_M"]) / u),
+                                   E_cap_units=float(np.interp(tq, tt, en[f"E{ic}"]) / u),
+                                   W_units=float(np.interp(tq, tt, en["W"]) / u),
+                                   r_ej_from_M=float(np.interp(tq, tt, r1 if ie == 1 else r2)),
+                                   r_ej_from_origin=float(np.interp(tq, tt, np.linalg.norm(X[:, ie], axis=1))))
+                  for tq in (100.0, 150.0, 200.0, 250.0, 270.0)},
         binary_separation_t40=float(np.interp(40.0, tt, r12)),
         input_file_state=dict(E_ej_units=float(enf[f"E{ie}"][0] / u),
                               outcome=T.OUTCOME_NAMES[int(end["outcome"][0])],
@@ -120,6 +128,11 @@ def scan_task(a):
 
 
 def scan_summary(o):
+    """Fractions over the trajectories that finished (ok); the stalled ones (a near
+    head-on approach of the members, step below 1e-14 t, JOURNAL P0) are counted apart."""
+    ok = o["ok"]
+    n_fail = int((~ok).sum())
+    o = {k: v[ok] for k, v in o.items()}
     on, oo = o["outcome"], o["outcome_M"]
     single = np.isin(on, [T.EJECT1, T.EJECT2])
     Eej = np.where(on == T.EJECT1, o["E1"], np.where(on == T.EJECT2, o["E2"], np.nan))
@@ -127,6 +140,7 @@ def scan_summary(o):
     Eejo = np.where(oo == T.EJECT1, o["E1_M"], np.where(oo == T.EJECT2, o["E2_M"], np.nan))
     rmin = o["rMmin"].min(axis=1)
     return dict(
+        n_finished=int(ok.sum()), n_stalled=n_fail,
         fractions={T.OUTCOME_NAMES[k]: float(np.mean(on == k)) for k in range(6)},
         fractions_before={T.OUTCOME_NAMES[k]: float(np.mean(oo == k)) for k in range(6)},
         outcome_changed=float(np.mean(on != oo)),
@@ -171,7 +185,7 @@ def main():
     # ---------------------------------------------------------------- figure
     fs.use_style()
     fig, axs = plt.subplots(2, 2, figsize=(fs.FULL_WIDTH, 5.8))
-    fig.subplots_adjust(left=0.08, right=0.98, bottom=0.08, top=0.95, wspace=0.25, hspace=0.36)
+    fig.subplots_adjust(left=0.08, right=0.98, bottom=0.08, top=0.95, wspace=0.25, hspace=0.42)
     deg = np.degrees(PHASES)
     for j, name in enumerate(CONFIGS):
         ax = axs[0, j]
@@ -182,29 +196,32 @@ def main():
             Eejo = np.where(oo == T.EJECT1, o["E1_M"], np.where(oo == T.EJECT2, o["E2_M"], np.nan))
             ax.plot(deg, Eej, "-", color=col, lw=1.1, label=f"start {k0:g} $r_t$, corrected")
             ax.plot(deg, Eejo, ".", color=col, ms=1.6, label=f"start {k0:g} $r_t$, against $M$ alone")
+            Eej = np.where(o["ok"], Eej, np.nan)
             low = o["rMmin"].min(axis=1) < R_MB
+            ax.plot(deg[~o["ok"]], np.full((~o["ok"]).sum(), -0.1), "x", color=col, ms=4)
             ax.plot(deg[low], np.full(low.sum(), -0.3 if k0 == 10 else -0.5), "|", color=col, ms=5)
         ax.axvline(CONFIGS[name][1], **fs.MASK_LINE)
         ax.set_xlim(0, 360)
         ax.set_xlabel("effective phase at the start [deg]")
         ax.set_ylabel(r"$E_{\rm ej}$ [units]")
-        ax.set_title(f"{name}: single ejections; ticks: a member inside 4 M", fontsize=9)
-        ax.legend(frameon=False, fontsize=6, loc="upper right")
+        ax.set_title(f"{name}: single ejections; |: a member inside 4 M; x: stalled", fontsize=9)
+        ax.set_ylim(-0.7, 2.7)
+        ax.legend(frameon=False, fontsize=6, loc="upper center", ncol=2)
         ax = axs[1, j]
         tt, r1, r2, r12, en, u, ie = series[name]
         ax.semilogy(tt, r1, color=fs.PAL["blue"], lw=1.1, label=r"$|x_1 - x_M|$")
         ax.semilogy(tt, r2, color=fs.PAL["red"], lw=1.1, label=r"$|x_2 - x_M|$")
         ax.semilogy(tt, r12, color="k", lw=0.8, label=r"$|x_2 - x_1|$")
-        ax.axhline(R_MB, **fs.GUIDE)
+        ax.axhline(R_MB, **fs.GUIDE, label="4 M")
         ax.set_xlim(0, 600)
         ax.set_ylim(1, 400)
         ax.set_xlabel(r"$t\,[M]$ from the start state (4 $r_t$)")
         ax.set_ylabel(r"distance $[M]$")
         P = S["passage"][name]
-        ax.set_title(f"{name} passage: {P['outcome']}, $E_{{\\rm ej}}$ = {P['E_ej_units']:+.3f} units; "
-                     f"captured a = {P['captured_orbit']['a']:.2f}, e = {P['captured_orbit']['e']:.3f}",
+        ax.set_title(f"{name} passage: {P['outcome']}, $E_{{\\rm ej}}$ = {P['E_ej_units']:+.3f} units\n"
+                     f"captured: a = {P['captured_orbit']['a']:.2f} M, e = {P['captured_orbit']['e']:.3f}",
                      fontsize=8)
-        ax.legend(frameon=False, fontsize=7, loc="upper left")
+        ax.legend(frameon=False, fontsize=7, loc="upper left", ncol=2)
     files = fs.save(fig, os.path.join(run["dir"], "fig_passages"))
     for f in files:
         shutil.copy(f, os.path.join(PKG, "figures"))
