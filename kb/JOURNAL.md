@@ -640,3 +640,22 @@ P4' With a computed name matched against the literals of its expression (status 
   languages other than C/C++/Python/Fortran; links verified by a test (all 25 are
   `claimed`); the explicit links are listed, not loaded into impl_links; names built in an
   intermediate variable are not followed by the parameter comparison.
+
+### Outcome K2-P8 and of the index prediction (re-ingestion kb-20261115-135137-cf1baba; checks kb-20261115-135554-d405f64)
+
+- Wall time 237.4 s for 702 entries with migration 0005 (prediction "under 6 min" held; the
+  stopped run had reached 161 papers in 10 min without the indexes). This is the run in which
+  the cause named above (unindexed foreign-key child columns) could have failed; it did not.
+  The K6-K7 helper had measured the same effect on the code tables (migration 0004).
+- Paper counts by status identical to K2-P7 (676 ok, 23 review, 1 pdf, 1 failed, 1 download
+  problem; held). Equation rows 52755 (+410, +0.8 %, held < 1 %): every line of a multi-line
+  environment now takes its number, and labelled empty lines give rows; labelled rows 25595.
+- C4: 14 labels missing from the rows, all checker artefacts: 12 after \end{document} and 2
+  figure labels (2309.02946). My count above ("12 + 1 artefact + 3 real") was wrong: the real
+  ones were 2 (1611.03437 eq:Adot, 0710.5073 w2), now stored, and the figure labels were 2,
+  not 1. So K2-P8's "13 artefacts remain" failed as worded (14 remain), from my miscount,
+  with no real missing label left. C1 115/115, C2 as before (50 of 52 key sets; 8 of 17101
+  values; causes as above), C3 621/634, C5 910 of 103808, C6 precision 1.0 recall 0.873:
+  unchanged.
+- Final figures copied to kb/reports/ (fig_papers_k2.png, fig_citations_k3.png), inspected;
+  summary in kb/reports/papers_k2k3.md. Whole kb test suite: 107 passed (42 of them K2-K3).

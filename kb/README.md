@@ -151,7 +151,7 @@ helper" in `JOURNAL.md` (predictions D2, K2-P1 to K2-P8 and outcomes). Everythin
 | `migrations/0003_papers_k2.sql`, `0005_papers_fk_indexes.sql` | locators (character ranges into flat.tex and its sha256, figure/table kind, bibliography source, cite key and offset); indexes on the foreign-key child columns |
 | `scripts/papers_checks.py` | independent checks C1-C6 (main file without hints vs 00README; .bib vs bibtexparser; entry counts vs `\bibitem`; labels in display environments; keys without entries; blind fuzzy matching vs written ids) and the figures `fig_papers_k2.png`, `fig_citations_k3.png` |
 | `reports/papers_k2k3.md`, `reports/fig_papers_k2.png`, `reports/fig_citations_k3.png` | results of the final runs (counts and ids only, no paper text) |
-| `tests/test_tex_*.py`, `test_bib_parse.py`, `test_papers_ingest.py` | 50 tests: comments, paths, flattening, main file, numbering against pdflatex, macros, text, chunks, identifiers, .bbl/.bib, ingestion end to end on a synthetic store |
+| `tests/test_tex_*.py`, `test_bib_parse.py`, `test_papers_ingest.py` | 42 tests: comments, paths, flattening, main file, numbering against pdflatex, macros, text, chunks, identifiers, .bbl/.bib, ingestion end to end on a synthetic store |
 
 Rerun (each registered with `scripts/registered_run.py`):
 
@@ -166,7 +166,11 @@ python3 -I kb/bin/kb snapshot ; python3 -I kb/bin/kb status
 python3 -I kb/bin/kb show 2611.12831 --eq eq:vlasov ; python3 -I kb/bin/kb frontier -n 50
 ```
 
-State: see `reports/papers_k2k3.md` (filled from the runs named there).
+State on 2026-11-15 14:00 UTC (details and run ids in `reports/papers_k2k3.md`): manifest
+683 of 684 downloaded and verified (gr-qc/9412071 is PostScript only), 0 failed downloads, 18
+extras; 701 papers ingested (676 ok, 23 review, 1 PDF only, 1 failed: astro-ph/9407016 has no
+TeX); 64248 bibliography entries, 60.1 % with an arXiv id; 14.8 % of the citation edges inside
+the corpus. Snapshot `kb-data/db/kb-20261115-5ba1ab3.sqlite` is `db/current` (schema 5).
 
 ## Requests
 
