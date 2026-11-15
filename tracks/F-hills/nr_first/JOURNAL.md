@@ -366,3 +366,18 @@ Seen in the figure: the horizon mass has single-search dips of up to 1.8e-3 betw
 36 (finder noise, not a trend); drifts are therefore read from medians over windows, not
 from single rows. The junk estimate is meaningless for this run (spheres at 10 and 14 m, run
 ends at 40 m before the window closes; flagged `complete: false`).
+
+## 2026-11-15 E8. Why the finder of m2 finds nothing at t = 0 (prediction)
+
+What: `scripts/finderdiag.sh`: the P1 data (`inputs/p1_q4_finderdiag.athinput`, a copy with
+`<fastflow> verbose = true`) for one cycle on processors. Source read first [VERIFIED at the
+locators]: the first guess of a puncture's finder is a sphere of radius
+max(m/2, min(m, d/2)) with d the largest distance to any puncture
+(`athenak/src/z4c/fastflow.cpp` lines 470-476), i.e. radius m = 0.125 for both members; a
+search fails on a non-finite area or mean expansion, on |hmean| > hmean_tol (100 for both,
+`nrpic_puncture_setup.hpp` line 178), on a negative mean radius or a mass below 1e-10, or
+after 400 iterations without |dmass| < mass_tol = 1.25e-6 (lines 742-800 of fastflow.cpp).
+Prediction [JUDGEMENT]: m1 and the heavy hole converge as in C0 (0.12778, 0.99607); m2 fails
+by reaching 400 iterations (its larger momentum distorts the horizon, and the flow constant
+m^2 = 0.0156 moves the surface slowly on 4 cells per radius), not by a non-finite value.
+Refuted if the verbose file shows another reason; then the request to core names that one.
