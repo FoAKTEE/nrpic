@@ -1,0 +1,104 @@
+{
+  "schema": "nrpic-run-manifest/1",
+  "run_id": "A-20261115-182200-532a5f6",
+  "track": "A-emd-pbh",
+  "gate": "G2",
+  "kind": "scouting",
+  "purpose": "Lead review wave 2: rerun of runs_ball compare.py on SR-1/SR-2 at dx = M/2 and M from the registered outputs, figures into the run directory; must reproduce A-emd-pbh-20261115-163659-4dbacd0",
+  "preregistered_in": null,
+  "launcher": "local",
+  "command": [
+    "bash",
+    "-c",
+    "for g in sr1 sr2; do .venv/bin/python -B tracks/A-emd-pbh/runs_ball/compare.py --prep /data/haiyangw/nrpic/scratch/A-emd-pbh/A-emd-pbh-20261115-153719-91b03d1 --seg /data/haiyangw/nrpic/scratch/A-emd-pbh/A-emd-pbh-20261115-1538$([ $g = sr1 ] && echo 43 || echo 45)-7172b66/$g --gauge $g --dx 0.5 --label ${g}_n256 --out $NRPIC_RUN_DIR --figdir $NRPIC_RUN_DIR/figs > $NRPIC_RUN_DIR/${g}_n256.log && .venv/bin/python -B tracks/A-emd-pbh/runs_ball/compare.py --prep /data/haiyangw/nrpic/scratch/A-emd-pbh/A-emd-pbh-20261115-153719-91b03d1 --seg /data/haiyangw/nrpic/scratch/A-emd-pbh/A-emd-pbh-20261115-155056-ec1b816/${g}_n128 --gauge $g --dx 1.0 --label ${g}_n128 --out $NRPIC_RUN_DIR --figdir $NRPIC_RUN_DIR/figs > $NRPIC_RUN_DIR/${g}_n128.log || exit 1; done"
+  ],
+  "cwd": ".",
+  "git": {
+    "sha": "532a5f642892186b198f1b808bcd202c7649b6e5",
+    "branch": "track/A-emd-pbh",
+    "dirty": false,
+    "package": [
+      "tracks/A-emd-pbh/runs_ball"
+    ],
+    "outside_package": {
+      "count": 0,
+      "first": []
+    },
+    "merge_base_main": "b9fbf3e6534517c3393000da91c79ce552b254b9",
+    "worktree": "wt/A-emd-pbh"
+  },
+  "code": {
+    "core_tag": "core-v0.3",
+    "athenak_upstream_sha": "c5a0d7f",
+    "kokkos_sha": "6739bc623081648af9e752b616d9671527922cbf",
+    "problem": null
+  },
+  "env": {
+    "host": "anta",
+    "env_hash": "33c1dbb6673b68919eaa332b0add0b58aeac8be843f2071b9d06e2e0e397a96d",
+    "machine_file_sha256": "0321f40f4caeeb2a36624a9fa9809e60bad31071f366b3517ba23ad45698d2d7",
+    "uv_lock_sha256": "5417f6ba318b914aa3800e5d55f7b11fdd8df13c2688bdda7d419240aa1d5863",
+    "track_requirements_sha256": null,
+    "container_digest": null,
+    "compiler": "g++ 11.4.0",
+    "mpi": "none (Athena_ENABLE_MPI=OFF)",
+    "gpu": null,
+    "python": "3.10.12 /data/haiyangw/nrpic/wt/A-emd-pbh/.venv"
+  },
+  "input": null,
+  "inputs": [
+    {
+      "path": "tracks/A-emd-pbh/runs_ball/compare.py",
+      "role": "input",
+      "sha256": "b8b15651c6442f3f5cfe26bb010ee36876e3f08c48a35aa93257225b2f5dbac1",
+      "bytes": 39119,
+      "tracked": true
+    },
+    {
+      "path": "tracks/A-emd-pbh/runs_ball/common.py",
+      "role": "input",
+      "sha256": "1d2596d68440d3aa91d7b9f648d7963545b25f35b12fb8a48c371323f176e34a",
+      "bytes": 9454,
+      "tracked": true
+    }
+  ],
+  "batch_entries": null,
+  "resources": {
+    "nodes": 1,
+    "gpus": 0,
+    "cores": 4,
+    "walltime_s": null,
+    "wall_limit": null,
+    "segments_max": null,
+    "gpu_hours_requested": 0.0,
+    "gpu_hours": null,
+    "particles": null
+  },
+  "slurm": null,
+  "outputs": {
+    "dir": "scratch/A-emd-pbh/A-20261115-182200-532a5f6",
+    "sha256sums": "sha256sums.txt",
+    "sha256sums_sha256": null,
+    "bytes": null,
+    "files": null
+  },
+  "status": "running",
+  "exit_code": null,
+  "registered": "2026-11-15T18:22:00Z",
+  "started": null,
+  "ended": null,
+  "parents": [
+    "A-emd-pbh-20261115-163659-4dbacd0"
+  ],
+  "notes": "",
+  "budget_at_submit": {
+    "gpu_hours_allotted": 60.0,
+    "cores_allotted": 16,
+    "gpu_hours_used": 0.9457,
+    "gpu_hours_reserved": 0.0,
+    "gpu_hours_without_gate": 0.1686,
+    "cores_busy": 0,
+    "runs": 121,
+    "allotment_from": "coord/DECISIONS/0006-compute-budget.md + 0014-budgets-after-wave-1.md"
+  }
+}
