@@ -159,3 +159,30 @@ reports alpha up to about 0.1 at pericentre in its own examples (appendix.tex:8)
 a_b = 3 M this is 0.13 at r = 8 M and 0.064 at 13 M, i.e. the same as the paper's own peak
 values, not "0.23-0.43" (that was a_b / r_p). HRNA's main limitation for our runs is the
 fixed hole at q = 10 (and 4), not alpha.
+
+### Session summary (lead, wave 1)
+
+did: checked the four helper packages from their artefacts (V1-V3 re-runs, V4/V4b independent
+restricted problem, V5/V5b independent integration of the G1 inputs, V6/V7 geodesic baseline of
+the G1 configuration and an r_p scan); looked at the figures relied on (newton3: skr_curves,
+bkrs_and_h1, finite_q, general_pdis_energy, full_vs_restricted, start_distance;
+geodesic_binary: s1_sepfrac, strong_rp, c2_r0; three_punctures: newton_choice, mesh_count,
+mesh_count_b, junk; novelty: scale_plane, cost; lead: fig_v4_restricted, fig_v5v6_q10,
+fig_v5v6_q4, fig_v5b_energy, fig_v7_rp_scan); wrote the G0 package (stage/G0/SCOPING.md,
+EVIDENCE.md, OPEN.md), stage/G1/STATUS.md with the named passage P1, 14 outbox files, STATUS,
+HANDOFF, RISKS.
+found: the helpers' central claims hold where checked; newton3's finite-q member energies are
+not conserved (V5b); the geodesic and Newtonian references disagree in kind at q = 10,
+r_p = 7-12 M (member captured in 69-96 percent of phases against none; V6, V7).
+evidence: runs F-hills-20261115-144857-b5b0bce, -144919-, -144922-, -144927-, -144935-,
+-144954-b5b0bce, -145246-090f5dc, -145251-090f5dc, -145544-a314517, -145559-a314517,
+-145915-71abf93; helper journals novelty/JOURNAL.md, newton3/JOURNAL.md,
+geodesic_binary/JOURNAL.md, three_punctures/JOURNAL.md.
+changed my mind about: the first passage is no longer expected to be a clean "eject and capture"
+Hills event; it is a test between Newtonian capture and relativistic plunge. The novelty
+helper's cost (24 card-hours) is replaced by three_punctures' measured 39.
+open: OPEN.md of G0 (stage check, second agent, allotment, mass ratio, release of
+core/multi-puncture, newton3 energy fix, unverified locators).
+failed predictions this session: V4 (retrograde D = 0.38, my classification), V5 (E1 values,
+newton3's energy definition), V6 (ejected-member energy within 30 percent), V7 (no plunge-free
+window), V5b amplitude at q = 4.
