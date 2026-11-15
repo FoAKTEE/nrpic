@@ -234,3 +234,18 @@ K_ij = 0 with random particle momenta, so M is the deposition noise of S_i. A la
 speed (<v>_c = 0.50 against the monoenergetic model's lower speeds) gives a larger noise,
 which fits the sign [JUDGEMENT, not tested]. sum m W changes by -9e-7 over two cycles
 (King) against -7e-6 (reference).
+
+## Figures run C-sidm-20261115-130010-69e27db
+
+All figures redrawn from the registered outputs of Tests 1-4 with the committed scripts;
+the nine PNGs are byte-identical to those in figs/.
+
+## State at the end of the package
+
+Done: 13 near-threshold equilibria (King, k = 1/2 polytrope, gr-qc/0601112 Case 1 shell)
+with 10^4-particle files, tables and JSON (run C-sidm-20261115-120610-b4592be); all
+offline checks pass (C-sidm-20261115-121626-e99907d); CONVERSION.md
+(C-sidm-20261115-122915-cdc395c); AthenaK reads the files (C-sidm-20261115-125308-54870b9).
+Not done: perturbed models; gr-qc/0601112 Case 3; any evolution beyond two cycles; the
+0.3c of 2506.17641 is unchecked. Failed predictions on record: Test 2.7 (inequality
+misread, corrected), Test 3.5 (shell sigma~ range).

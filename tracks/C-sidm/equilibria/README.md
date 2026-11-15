@@ -20,7 +20,7 @@ directory also holds the conversion between Knudsen number and cross-section per
 | `smoke_athenak.py`, `fig_smoke.py` | Test 4: AthenaK's processor build reads a new table and particle file (two cycles against the paper's y_c = 0.819 model) |
 | `runreg.py` | Registers a processor run: `tracks/C-sidm/runs/<run_id>/manifest.json`, output in `scratch/C-sidm/<run_id>/` |
 | `results/` | `checks.json` (run C-sidm-20261115-121626-e99907d), `models_index.json` (run C-sidm-20261115-120610-b4592be), `knudsen.json` (run C-sidm-20261115-122915-cdc395c), `athenak_smoke.json` (run C-sidm-20261115-125308-54870b9) |
-| `figs/` | `binding_energy`, `king_mass_radius`, `profiles_threshold`, `constraint_residual`, `sampling_threshold`, `shell_angular_momentum`, `knudsen_conversion`, `knudsen_profiles`, `athenak_smoke` (PDF and PNG) |
+| `figs/` | `binding_energy`, `king_mass_radius`, `profiles_threshold`, `constraint_residual`, `sampling_threshold`, `shell_angular_momentum`, `knudsen_conversion`, `knudsen_profiles`, `athenak_smoke` (PDF and PNG); drawn by run C-sidm-20261115-130010-69e27db from the registered outputs (PNG byte-identical to these) |
 
 ## The models (ADM mass M = 1; 10^4 particles each, stratified, seed 1)
 
