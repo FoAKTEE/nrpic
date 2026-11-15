@@ -10,6 +10,9 @@
         Etilde = rhot psi_ex, for which psi_ex solves lap psi = -2 pi psi^-1 Etilde.
     make_ic.py strain --in ball.nrp --e 0.05 --out DIR
         Copy of a particle file with the positions scaled by (1 + e, 1, 1 - e).
+    make_ic.py boost --in gauss.nrp --u 0.1 --out DIR
+        Copy of a particle file with the covariant velocity u_x of every particle set to
+        the given value (the test of the vector equation, <particles> id_vector).
     make_ic.py wave --n 32 --box 2 --hubble 1 --amp 0.1 [--ppc 2] --out DIR
         Particles at rest on a lattice with ppc sites per cell and direction of an n^3
         mesh of side box (sites (k + 1/2) dx/ppc; ppc = 1: the cell centres), displaced
@@ -93,6 +96,22 @@ def cmd_strain(a):
     print("wrote %s.nrp: %d particles" % (stem, len(m)))
 
 
+def cmd_boost(a):
+    x, u, m, sp = nio.read_nrp(a.inp)
+    u = np.array(u)
+    u[:, 0] = a.u
+    stem = a.prefix or (os.path.splitext(os.path.basename(a.inp))[0]
+                        + ("_u%g" % a.u).replace(".", "p"))
+    os.makedirs(a.out, exist_ok=True)
+    nio.write_nrp(os.path.join(a.out, stem + ".nrp"), x, u, m, sp)
+    meta = dict(kind="boost", source=os.path.basename(a.inp), u_x=a.u, N=int(len(m)),
+                sum_m=float(np.sum(m)), P_x=float(a.u*np.sum(m)), particle_file=stem + ".nrp")
+    with open(os.path.join(a.out, stem + ".json"), "w") as f:
+        json.dump(meta, f, indent=1)
+        f.write("\n")
+    print("wrote %s.nrp: %d particles, sum m u_x = %.12g" % (stem, len(m), a.u*np.sum(m)))
+
+
 def cmd_wave(a):
     h = a.box/(a.n*a.ppc)
     c = (np.arange(a.n*a.ppc) + 0.5)*h
@@ -131,6 +150,12 @@ def main(argv=None):
     s.add_argument("--out", default=".")
     s.add_argument("--prefix", default=None)
     s.set_defaults(func=cmd_strain)
+    b = sub.add_parser("boost")
+    b.add_argument("--in", dest="inp", required=True)
+    b.add_argument("--u", type=float, default=0.1, help="covariant u_x of every particle")
+    b.add_argument("--out", default=".")
+    b.add_argument("--prefix", default=None)
+    b.set_defaults(func=cmd_boost)
     w = sub.add_parser("wave")
     w.add_argument("--n", type=int, required=True)
     w.add_argument("--box", type=float, default=2.0)

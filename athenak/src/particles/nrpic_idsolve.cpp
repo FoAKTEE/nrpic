@@ -133,6 +133,10 @@ void Particles::NrpicIdSolveInit(ParameterInput *pin) {
   if (!(ids.tol > 0.0) || !(ids.lin_tol > 0.0) || !(ids.mg_tol > 0.0)) {
     IdFatal("<particles> id_tol, id_lin_tol and id_mg_tol must be positive");
   }
+  // the vector equation for the correction of Abar_ij: read only if present
+  if (pin->DoesParameterExist("particles", "id_vector")) {
+    ids.vector = pin->GetBoolean("particles", "id_vector");
+  }
   // ghost cells of psi and of the corrections
   pbval_ids = new MeshBoundaryValuesCC(pmy_pack, pin, false);
   pbval_ids->InitializeBuffers(1);
@@ -212,6 +216,21 @@ void Particles::NrpicSolveInitialData() {
   DvceArray5D<Real> czo("ids_czo", nmb, 1, n3, n2, n1);
   DvceArray5D<Real> cp("ids_cp", nmb, 1, n3, n2, n1);
   DvceArray5D<Real> cq("ids_cq", nmb, 1, n3, n2, n1);
+  // vector equation (id_vector): W_i, its residual F_i, the right side s_i, L W
+  const bool vec = ids.vector;
+  DvceArray5D<Real> wv[3], fv[3], sv[3], lw, vt, vp;
+  DvceArray4D<Real> vsc;
+  if (vec) {
+    for (int c=0; c<3; ++c) {
+      wv[c] = DvceArray5D<Real>("ids_w", nmb, 1, n3, n2, n1);
+      fv[c] = DvceArray5D<Real>("ids_fw", nmb, 1, n3, n2, n1);
+      sv[c] = DvceArray5D<Real>("ids_sw", nmb, 1, n3, n2, n1);
+    }
+    lw = DvceArray5D<Real>("ids_lw", nmb, 6, n3, n2, n1);
+    vt = DvceArray5D<Real>("ids_vt", nmb, 1, n3, n2, n1);
+    vp = DvceArray5D<Real>("ids_vp", nmb, 1, n3, n2, n1);
+    vsc = DvceArray4D<Real>("ids_vsc", nmb, n3, n2, n1);
+  }
 
   // ---- trial state: psi, K, Abar_ij from the ADM variables of the problem generator
   pz4c->Z4cToADM(pmy_pack);
@@ -293,8 +312,44 @@ void Particles::NrpicSolveInitialData() {
     }
   };
 
-  // ---- ADM variables of the current psi on all cells
+  // ---- (L W)_ij = d_i W_j + d_j W_i - (2/3) delta_ij d_k W_k with central differences,
+  //      on every cell that has both neighbours (the outermost ghost layer copies the
+  //      layer inside it; the constraint monitor reaches ng - 1 ghost layers only)
+  auto compute_lw = [&]() {
+    auto w0 = wv[0], w1 = wv[1], w2 = wv[2];
+    auto l = lw;
+    par_for("ids_lw", DevExeSpace(), 0, nmb1, 0, n3-1, 0, n2-1, 0, n1-1,
+    KOKKOS_LAMBDA(const int m, const int k, const int j, const int i) {
+      const int ic = (i < 1) ? 1 : ((i > n1-2) ? n1-2 : i);
+      const int jc = (j < 1) ? 1 : ((j > n2-2) ? n2-2 : j);
+      const int kc = (k < 1) ? 1 : ((k > n3-2) ? n3-2 : k);
+      const Real h1 = 0.5/sz(m).dx1, h2 = 0.5/sz(m).dx2, h3 = 0.5/sz(m).dx3;
+      Real d[3][3];   // d[a][b] = d_a W_b
+      d[0][0] = (w0(m,0,kc,jc,ic+1) - w0(m,0,kc,jc,ic-1))*h1;
+      d[0][1] = (w1(m,0,kc,jc,ic+1) - w1(m,0,kc,jc,ic-1))*h1;
+      d[0][2] = (w2(m,0,kc,jc,ic+1) - w2(m,0,kc,jc,ic-1))*h1;
+      d[1][0] = (w0(m,0,kc,jc+1,ic) - w0(m,0,kc,jc-1,ic))*h2;
+      d[1][1] = (w1(m,0,kc,jc+1,ic) - w1(m,0,kc,jc-1,ic))*h2;
+      d[1][2] = (w2(m,0,kc,jc+1,ic) - w2(m,0,kc,jc-1,ic))*h2;
+      d[2][0] = (w0(m,0,kc+1,jc,ic) - w0(m,0,kc-1,jc,ic))*h3;
+      d[2][1] = (w1(m,0,kc+1,jc,ic) - w1(m,0,kc-1,jc,ic))*h3;
+      d[2][2] = (w2(m,0,kc+1,jc,ic) - w2(m,0,kc-1,jc,ic))*h3;
+      const Real dv3 = (d[0][0] + d[1][1] + d[2][2])*(2.0/3.0);
+      int v = 0;
+      for (int a=0; a<3; ++a) {
+        for (int b=a; b<3; ++b) {
+          l(m,v,k,j,i) = d[a][b] + d[b][a] - ((a == b) ? dv3 : 0.0);
+          ++v;
+        }
+      }
+    });
+  };
+
+  // ---- ADM variables of the current psi on all cells (with id_vector: Abar_ij of the
+  //      trial plus L W, and Abar_ij Abar_ij from the sum)
   auto set_metric = [&]() {
+    if (vec) { compute_lw(); }
+    auto l = lw;
     par_for("ids_metric", DevExeSpace(), 0, nmb1, 0, n3-1, 0, n2-1, 0, n1-1,
     KOKKOS_LAMBDA(const int m, const int k, const int j, const int i) {
       const Real p1 = psi(m,0,k,j,i);
@@ -302,14 +357,22 @@ void Particles::NrpicSolveInitialData() {
       const Real p4 = p2*p2;
       const Real tk3 = p4*trk(m,k,j,i)/3.0;
       adm.psi4(m,k,j,i) = p4;
+      Real s2 = 0.0;
       int v = 0;
       for (int a=0; a<3; ++a) {
         for (int b=a; b<3; ++b) {
           adm.g_dd(m,a,b,k,j,i) = (a == b) ? p4 : 0.0;
-          adm.vK_dd(m,a,b,k,j,i) = ab(m,v,k,j,i)/p2 + ((a == b) ? tk3 : 0.0);
+          if (vec) {
+            const Real aij = ab(m,v,k,j,i) + l(m,v,k,j,i);
+            adm.vK_dd(m,a,b,k,j,i) = aij/p2 + ((a == b) ? tk3 : 0.0);
+            s2 += ((a == b) ? 1.0 : 2.0)*aij*aij;
+          } else {
+            adm.vK_dd(m,a,b,k,j,i) = ab(m,v,k,j,i)/p2 + ((a == b) ? tk3 : 0.0);
+          }
           ++v;
         }
       }
+      if (vec) { a2(m,k,j,i) = s2; }
     });
   };
 
@@ -467,6 +530,162 @@ void Particles::NrpicSolveInitialData() {
     }
   };
 
+  // ---- vector equation (id_vector): residual of
+  //        lap W_i + (1/3) d_i d_j W_j = 8 pi Stilde_i + (2/3) psi^6 d_i K - d_j Abar_ij(t)
+  //      with the compact operator (seven-point Laplacian, three-point second and
+  //      four-point mixed differences), right side with central differences;
+  //      Stilde_i = psi^6 S_i of the deposit.  On a periodic mesh the mean of each
+  //      component is removed (and reported).
+  Real vmax = 0.0, vrms = 0.0, vscale = 0.0, vmean = 0.0, mmax = 0.0;
+  auto evaluate_vector = [&]() {
+    auto w0 = wv[0], w1 = wv[1], w2 = wv[2];
+    auto f0 = fv[0], f1 = fv[1], f2 = fv[2];
+    auto s0 = sv[0], s1 = sv[1], s2 = sv[2];
+    auto sc = vsc;
+    par_for("ids_vres", DevExeSpace(), 0, nmb1, ks, ke, js, je, is, ie,
+    KOKKOS_LAMBDA(const int m, const int k, const int j, const int i) {
+      const Real dx = sz(m).dx1, dy = sz(m).dx2, dz = sz(m).dx3;
+      const Real p2 = SQR(psi(m,0,k,j,i));
+      const Real p6 = p2*p2*p2;
+      const Real dk[3] = {(trk(m,k,j,i+1) - trk(m,k,j,i-1))/(2.0*dx),
+                          (trk(m,k,j+1,i) - trk(m,k,j-1,i))/(2.0*dy),
+                          (trk(m,k+1,j,i) - trk(m,k-1,j,i))/(2.0*dz)};
+      // d_j Abar_ij of the trial; storage index of (a, b): 0 xx 1 xy 2 xz 3 yy 4 yz 5 zz
+      const int ix[3][3] = {{0, 1, 2}, {1, 3, 4}, {2, 4, 5}};
+      Real da[3];
+      for (int a=0; a<3; ++a) {
+        da[a] = (ab(m,ix[a][0],k,j,i+1) - ab(m,ix[a][0],k,j,i-1))/(2.0*dx)
+              + (ab(m,ix[a][1],k,j+1,i) - ab(m,ix[a][1],k,j-1,i))/(2.0*dy)
+              + (ab(m,ix[a][2],k+1,j,i) - ab(m,ix[a][2],k-1,j,i))/(2.0*dz);
+      }
+      // compact operator
+      auto lap7 = [&](const DvceArray5D<Real> &w) -> Real {
+        const Real c = w(m,0,k,j,i);
+        return (w(m,0,k,j,i+1) + w(m,0,k,j,i-1) - 2.0*c)/(dx*dx)
+             + (w(m,0,k,j+1,i) + w(m,0,k,j-1,i) - 2.0*c)/(dy*dy)
+             + (w(m,0,k+1,j,i) + w(m,0,k-1,j,i) - 2.0*c)/(dz*dz);
+      };
+      const Real gd0 = (w0(m,0,k,j,i+1) + w0(m,0,k,j,i-1) - 2.0*w0(m,0,k,j,i))/(dx*dx)
+        + (w1(m,0,k,j+1,i+1) - w1(m,0,k,j-1,i+1) - w1(m,0,k,j+1,i-1)
+           + w1(m,0,k,j-1,i-1))/(4.0*dx*dy)
+        + (w2(m,0,k+1,j,i+1) - w2(m,0,k-1,j,i+1) - w2(m,0,k+1,j,i-1)
+           + w2(m,0,k-1,j,i-1))/(4.0*dx*dz);
+      const Real gd1 = (w1(m,0,k,j+1,i) + w1(m,0,k,j-1,i) - 2.0*w1(m,0,k,j,i))/(dy*dy)
+        + (w0(m,0,k,j+1,i+1) - w0(m,0,k,j+1,i-1) - w0(m,0,k,j-1,i+1)
+           + w0(m,0,k,j-1,i-1))/(4.0*dx*dy)
+        + (w2(m,0,k+1,j+1,i) - w2(m,0,k-1,j+1,i) - w2(m,0,k+1,j-1,i)
+           + w2(m,0,k-1,j-1,i))/(4.0*dy*dz);
+      const Real gd2 = (w2(m,0,k+1,j,i) + w2(m,0,k-1,j,i) - 2.0*w2(m,0,k,j,i))/(dz*dz)
+        + (w0(m,0,k+1,j,i+1) - w0(m,0,k+1,j,i-1) - w0(m,0,k-1,j,i+1)
+           + w0(m,0,k-1,j,i-1))/(4.0*dx*dz)
+        + (w1(m,0,k+1,j+1,i) - w1(m,0,k+1,j-1,i) - w1(m,0,k-1,j+1,i)
+           + w1(m,0,k-1,j-1,i))/(4.0*dy*dz);
+      const Real lw3[3] = {lap7(w0) + gd0/3.0, lap7(w1) + gd1/3.0, lap7(w2) + gd2/3.0};
+      Real smax = 0.0;
+      for (int a=0; a<3; ++a) {
+        const Real t_s = 8.0*M_PI*p6*tm(m,Tmunu::I_Tmunu_Sx + a,k,j,i);
+        const Real t_k = (2.0/3.0)*p6*dk[a];
+        const Real rhs = t_s + t_k - da[a];
+        const Real f = lw3[a] - rhs;
+        const Real sa = fabs(lw3[a] + da[a]) + fabs(t_k) + fabs(t_s);
+        smax = fmax(smax, sa);
+        if (a == 0) { f0(m,0,k,j,i) = f; s0(m,0,k,j,i) = rhs; }
+        if (a == 1) { f1(m,0,k,j,i) = f; s1(m,0,k,j,i) = rhs; }
+        if (a == 2) { f2(m,0,k,j,i) = f; s2(m,0,k,j,i) = rhs; }
+      }
+      sc(m,k,j,i) = smax;
+    });
+    vmean = 0.0;
+    if (periodic) {
+      Real mc[3];
+      for (int c=0; c<3; ++c) {
+        mc[c] = total(fv[c])/vol_mesh;
+        vmean += SQR(mc[c]);
+        auto ff = fv[c];
+        const Real mm = mc[c];
+        par_for("ids_vmean", DevExeSpace(), 0, nmb1, ks, ke, js, je, is, ie,
+        KOKKOS_LAMBDA(const int m, const int k, const int j, const int i) {
+          ff(m,0,k,j,i) -= mm;
+        });
+      }
+      vmean = std::sqrt(vmean);
+    }
+    Real lmx = 0.0, lsq = 0.0, lsc = 0.0, lmm = 0.0;
+    Kokkos::parallel_reduce("ids_vnorm",
+      Kokkos::MDRangePolicy<DevExeSpace, Kokkos::Rank<4>>(
+        {0, ks, js, is}, {nmb, ke+1, je+1, ie+1}),
+    KOKKOS_LAMBDA(const int m, const int k, const int j, const int i, Real &l1, Real &l2,
+                  Real &l3, Real &l4) {
+      const Real a0 = f0(m,0,k,j,i), a1 = f1(m,0,k,j,i), a2v = f2(m,0,k,j,i);
+      l1 = fmax(l1, fmax(fabs(a0), fmax(fabs(a1), fabs(a2v))));
+      l2 += (a0*a0 + a1*a1 + a2v*a2v)*sz(m).dx1*sz(m).dx2*sz(m).dx3;
+      l3 = fmax(l3, sc(m,k,j,i));
+      l4 = fmax(l4, sqrt(fabs(con.M(m,k,j,i))));
+    }, Kokkos::Max<Real>(lmx), Kokkos::Sum<Real>(lsq), Kokkos::Max<Real>(lsc),
+       Kokkos::Max<Real>(lmm));
+    vmax = lmx;
+    vrms = std::sqrt(lsq/vol_mesh);
+    vscale = lsc;
+    mmax = lmm;
+  };
+
+  // ---- one preconditioned Richardson step for W:
+  //      W <- W - omega P^-1 F,  P^-1 F = lap^-1 [F - (1/4) grad lap^-1 div F]
+  //      (the inverse of the continuum vector Laplacian; on a periodic mesh the
+  //      eigenvalues of P^-1 times the compact operator lie in [1, 4/3]: omega = 6/7)
+  int ncycle_vec = 0;
+  auto poisson = [&](const DvceArray5D<Real> &r, const Real fac, DvceArray5D<Real> &z) {
+    const Real s1 = total(r), s2 = dot(r, r);
+    const Real mean = periodic ? s1/vol_mesh : 0.0;
+    const Real var = s2/vol_mesh - mean*mean;
+    const Real rms = std::sqrt((var > 0.0) ? var : 0.0);
+    Kokkos::deep_copy(pg->phi, 0.0);
+    if (rms > 0.0) {
+      pmgd->SolvePoisson(nw_driver, r, 0, fac, ids.mg_tol*rms);
+      ncycle_vec += pmgd->last_ncycle;
+    }
+    auto phi = pg->phi;
+    auto zz = z;
+    par_for("ids_vpois", DevExeSpace(), 0, nmb1, ks, ke, js, je, is, ie,
+    KOKKOS_LAMBDA(const int m, const int k, const int j, const int i) {
+      zz(m,0,k,j,i) = phi(m,0,k,j,i);
+    });
+  };
+  auto vector_step = [&]() {
+    for (int c=0; c<3; ++c) { fill_ghost(fv[c], 0.0); }
+    auto f0 = fv[0], f1 = fv[1], f2 = fv[2];
+    auto t = vt;
+    par_for("ids_vdiv", DevExeSpace(), 0, nmb1, ks, ke, js, je, is, ie,
+    KOKKOS_LAMBDA(const int m, const int k, const int j, const int i) {
+      t(m,0,k,j,i) = (f0(m,0,k,j,i+1) - f0(m,0,k,j,i-1))/(2.0*sz(m).dx1)
+                   + (f1(m,0,k,j+1,i) - f1(m,0,k,j-1,i))/(2.0*sz(m).dx2)
+                   + (f2(m,0,k+1,j,i) - f2(m,0,k-1,j,i))/(2.0*sz(m).dx3);
+    });
+    poisson(vt, 1.0, vp);              // vp = lap^-1 div F
+    fill_ghost(vp, 0.0);
+    const Real omega = 6.0/7.0;
+    for (int c=0; c<3; ++c) {
+      auto fc = fv[c];
+      auto p = vp;
+      const int cc = c;
+      par_for("ids_vq", DevExeSpace(), 0, nmb1, ks, ke, js, je, is, ie,
+      KOKKOS_LAMBDA(const int m, const int k, const int j, const int i) {
+        Real g;
+        if (cc == 0) {
+          g = (p(m,0,k,j,i+1) - p(m,0,k,j,i-1))/(2.0*sz(m).dx1);
+        } else if (cc == 1) {
+          g = (p(m,0,k,j+1,i) - p(m,0,k,j-1,i))/(2.0*sz(m).dx2);
+        } else {
+          g = (p(m,0,k+1,j,i) - p(m,0,k-1,j,i))/(2.0*sz(m).dx3);
+        }
+        t(m,0,k,j,i) = fc(m,0,k,j,i) - 0.25*g;
+      });
+      poisson(vt, -1.0, cz);           // cz = -lap^-1 q = -P^-1 F (component c)
+      axpby(wv[c], 1.0, cz, omega);
+      fill_ghost(wv[c], 0.0);
+    }
+  };
+
   // ---- record of the iteration
   const std::string flog = nr_basename + ".idsolve.txt";
   std::FILE *fl = std::fopen(flog.c_str(), "w");
@@ -481,6 +700,12 @@ void Particles::NrpicSolveInitialData() {
   std::fprintf(fl, "# F: residual used (code: -(psi^5/8) H; stencil: F7), H: constraint "
                "monitor of the code, F7: seven-point residual; columns 11-13: the linear "
                "solve that followed\n");
+  if (vec) {
+    std::fprintf(fl, "# id_vector: [14]=relv=max|Fv|/scale_v [15]=max|Fv| [16]=rms_Fv "
+                 "[17]=max|M| of the monitor [18]=|mean of Fv| removed (periodic) "
+                 "[19]=v_cycles of the vector step that followed; Fv: residual of the "
+                 "vector equation in stencil form\n");
+  }
 
   std::vector<double> h_before;      // constraint monitor of the first evaluation
   auto to_host = [&](const int kind, std::vector<double> &out) {
@@ -525,6 +750,37 @@ void Particles::NrpicSolveInitialData() {
     }
   };
 
+  // active cells of component comp of a cell-centred array, as one array on the mesh
+  // (first index fastest), for the dump of the vector equation
+  std::vector<double> m_before[3];   // monitor M_i of the first evaluation
+  auto to_host5 = [&](const DvceArray5D<Real> &arr, const int comp,
+                      std::vector<double> &out) {
+    const std::int64_t g1 = pm->mesh_indcs.nx1, g2 = pm->mesh_indcs.nx2;
+    const std::int64_t g3 = pm->mesh_indcs.nx3;
+    out.assign(static_cast<size_t>(g1)*g2*g3, 0.0);
+    auto szh = pmy_pack->pmb->mb_size.h_view;
+    const Real d1 = (pm->mesh_size.x1max - pm->mesh_size.x1min)/static_cast<Real>(g1);
+    const Real d2 = (pm->mesh_size.x2max - pm->mesh_size.x2min)/static_cast<Real>(g2);
+    const Real d3 = (pm->mesh_size.x3max - pm->mesh_size.x3min)/static_cast<Real>(g3);
+    auto h = Kokkos::create_mirror_view_and_copy(Kokkos::HostSpace(), arr);
+    for (int m=0; m<nmb; ++m) {
+      const std::int64_t i0 = static_cast<std::int64_t>(
+          std::floor((szh(m).x1min - pm->mesh_size.x1min)/d1 + 0.5));
+      const std::int64_t j0 = static_cast<std::int64_t>(
+          std::floor((szh(m).x2min - pm->mesh_size.x2min)/d2 + 0.5));
+      const std::int64_t k0 = static_cast<std::int64_t>(
+          std::floor((szh(m).x3min - pm->mesh_size.x3min)/d3 + 0.5));
+      for (int k=0; k<nx3; ++k) {
+        for (int j=0; j<nx2; ++j) {
+          for (int i=0; i<nx1; ++i) {
+            const size_t idx = (static_cast<size_t>(k0 + k)*g2 + (j0 + j))*g1 + (i0 + i);
+            out[idx] = h(m,comp,ks+k,js+j,is+i);
+          }
+        }
+      }
+    }
+  };
+
   // ---- outer iteration
   // MeshBlock ownership of the particles, as NrpicInitializeSources does before its
   // deposit (it repeats these calls afterwards, then without effect)
@@ -535,16 +791,31 @@ void Particles::NrpicSolveInitialData() {
   bool converged = false;
   int iter = 0;
   int cg_total = 0, cyc_total = 0;
+  Real relv = 0.0, relv0 = 0.0, mmax0 = 0.0;
+  int cyc_total_vec = 0;
   for (iter = 0; ; ++iter) {
     evaluate(nm);
     vol_mesh = nm.vol;
     sigmean = nm.sigmean;
+    if (vec) {
+      evaluate_vector();
+      relv = (vscale > 0.0) ? vmax/vscale : vmax;
+    }
     if (iter == 0) {
       nm0 = nm;
       if (ids.dump) { to_host(4, h_before); }
+      if (vec) {
+        relv0 = relv;
+        mmax0 = mmax;
+        if (ids.dump) {
+          for (int c=0; c<3; ++c) {
+            to_host5(pz4c->u_con, z4c::Z4c::I_CON_MX + c, m_before[c]);
+          }
+        }
+      }
     }
     const Real rel = (nm.scale > 0.0) ? nm.fmax/nm.scale : nm.fmax;
-    if (!(rel == rel) || !(nm.psimin > 0.0)) {
+    if (!(rel == rel) || !(relv == relv) || !(nm.psimin > 0.0)) {
       std::fclose(fl);
       IdFatal("the initial-data solve produced a non-finite residual or psi <= 0 in "
               "iteration " + std::to_string(iter));
@@ -552,7 +823,8 @@ void Particles::NrpicSolveInitialData() {
     int cg_steps = 0;
     Real lin_res = 0.0;
     ncycle_lin = 0;
-    if (rel <= ids.tol) {
+    ncycle_vec = 0;
+    if (rel <= ids.tol && (!vec || relv <= ids.tol)) {
       converged = true;
     } else if (iter < ids.maxit) {
       if (periodic && !(sigmean > 0.0)) {
@@ -590,10 +862,19 @@ void Particles::NrpicSolveInitialData() {
       lin_res = (bnorm > 0.0) ? rnorm/bnorm : 0.0;
       cg_total += cg_steps;
       cyc_total += ncycle_lin;
+      if (vec) {
+        vector_step();
+        cyc_total_vec += ncycle_vec;
+      }
     }
-    std::fprintf(fl, "%4d %.6e %.6e %.6e %.6e %.6e %.6e %.6e %.15e %.15e %3d %4d %.3e\n",
+    std::fprintf(fl, "%4d %.6e %.6e %.6e %.6e %.6e %.6e %.6e %.15e %.15e %3d %4d %.3e",
                  iter, rel, nm.fmax, nm.frms, nm.hmax, nm.hrms, nm.smax, nm.srms,
                  nm.psimin, nm.psimax, cg_steps, ncycle_lin, lin_res);
+    if (vec) {
+      std::fprintf(fl, " %.6e %.6e %.6e %.6e %.6e %4d", relv, vmax, vrms, mmax, vmean,
+                   ncycle_vec);
+    }
+    std::fprintf(fl, "\n");
     std::fflush(fl);
     if (converged || iter >= ids.maxit) break;
 
@@ -641,11 +922,55 @@ void Particles::NrpicSolveInitialData() {
     std::fwrite(h_before.data(), sizeof(double), h_before.size(), fp);
     std::fclose(fp);
   }
+  if (ids.dump && vec) {
+    // <basename>.idvector.bin: 8 bytes "NRIDVEC1", then the header of .idsolve.bin and
+    // 15 fields: W_i (3), right side s_i of the vector equation (3), its residual F_i in
+    // stencil form (3, mean removed on a periodic mesh), M_i of the constraint monitor
+    // at the last evaluation (3) and at the first (3)
+    const std::string fname = nr_basename + ".idvector.bin";
+    std::FILE *fp = std::fopen(fname.c_str(), "wb");
+    if (fp == nullptr) IdFatal("cannot open " + fname);
+    const std::int64_t dims[3] = {pm->mesh_indcs.nx1, pm->mesh_indcs.nx2,
+                                  pm->mesh_indcs.nx3};
+    const double box[6] = {pm->mesh_size.x1min, pm->mesh_size.x1max, pm->mesh_size.x2min,
+                           pm->mesh_size.x2max, pm->mesh_size.x3min, pm->mesh_size.x3max};
+    const std::int64_t nfld = 15;
+    std::fwrite("NRIDVEC1", 1, 8, fp);
+    std::fwrite(dims, sizeof(std::int64_t), 3, fp);
+    std::fwrite(box, sizeof(double), 6, fp);
+    std::fwrite(&nfld, sizeof(std::int64_t), 1, fp);
+    std::vector<double> buf;
+    for (int c=0; c<3; ++c) {
+      to_host5(wv[c], 0, buf);
+      std::fwrite(buf.data(), sizeof(double), buf.size(), fp);
+    }
+    for (int c=0; c<3; ++c) {
+      to_host5(sv[c], 0, buf);
+      std::fwrite(buf.data(), sizeof(double), buf.size(), fp);
+    }
+    for (int c=0; c<3; ++c) {
+      to_host5(fv[c], 0, buf);
+      std::fwrite(buf.data(), sizeof(double), buf.size(), fp);
+    }
+    for (int c=0; c<3; ++c) {
+      to_host5(pz4c->u_con, z4c::Z4c::I_CON_MX + c, buf);
+      std::fwrite(buf.data(), sizeof(double), buf.size(), fp);
+    }
+    for (int c=0; c<3; ++c) {
+      std::fwrite(m_before[c].data(), sizeof(double), m_before[c].size(), fp);
+    }
+    std::fclose(fp);
+  }
 
   std::fprintf(fl, "# %s after %d iteration(s), %d conjugate-gradient steps, %d V cycles; "
                "max|H| %.6e -> %.6e, rms H %.6e -> %.6e, psi in [%.12f, %.12f]\n",
                converged ? "converged" : "NOT CONVERGED", iter, cg_total, cyc_total,
                nm0.hmax, nm.hmax, nm0.hrms, nm.hrms, nm.psimin, nm.psimax);
+  if (vec) {
+    std::fprintf(fl, "# vector equation: relative residual %.6e -> %.6e, %d V cycles; "
+                 "max|M| of the monitor %.6e -> %.6e\n", relv0, relv, cyc_total_vec,
+                 mmax0, mmax);
+  }
   std::fclose(fl);
   if (global_variable::my_rank == 0) {
     std::cout << "NRPIC: initial-data solve (" << (use_code ? "code" : "stencil")
@@ -654,6 +979,11 @@ void Particles::NrpicSolveInitialData() {
               << " conjugate-gradient steps, " << cyc_total << " V cycles; max|H| "
               << nm0.hmax << " -> " << nm.hmax << ", psi in [" << nm.psimin << ", "
               << nm.psimax << "]" << std::endl;
+    if (vec) {
+      std::cout << "NRPIC: vector equation: relative residual " << relv0 << " -> " << relv
+                << ", " << cyc_total_vec << " V cycles; max|M| of the monitor " << mmax0
+                << " -> " << mmax << std::endl;
+    }
   }
   if (!converged) {
     IdFatal("the initial-data solve did not reach id_tol in id_maxit iterations (record "

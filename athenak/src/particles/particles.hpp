@@ -163,6 +163,7 @@ struct NrpicIdSolveOptions {
   Real mg_tol = 1.0e-3;      // defect over source at which a preconditioner solve ends
   int psi_init = 0;          // start value: 0 trial conformal factor, 1 psi = 1
   bool dump = false;         // write <basename>.idsolve.bin
+  bool vector = false;       // also solve the momentum constraint for W (id_vector)
 };
 
 //----------------------------------------------------------------------------------------
