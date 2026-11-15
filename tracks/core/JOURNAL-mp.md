@@ -58,7 +58,7 @@ a source with a locator or measured in a registered run, [BACKGROUND], [JUDGEMEN
 
 ### Reference checks done before any code test (Python, no simulation)
 
-`scratch/core/tmp/check_by.py`, `check_by2.py` on `python/nrpic/bowen_york.py`:
+`tracks/core/analysis/mp/check_bowen_york.py` on `python/nrpic/bowen_york.py`:
 Abar is traceless and symmetric to 1e-16 and divergence free to 6e-10 (sixth-order
 differences, h = 0.01); the surface integrals give P_ADM = P and J_ADM = S to 1e-15;
 the closed form of 0711.1165 satisfies `lap u = -(1/8) psi_BL^-7 Abar^2` to 2e-8..4e-4
@@ -215,7 +215,7 @@ cannot parse).
 
 ### Changed my mind: the isolated corrections need the background factor
 
-Closed forms only (no simulation; `scratch/core/tmp/bg_check.py`), rms of H over the
+Closed forms only (no simulation; `tracks/core/analysis/mp/check_bowen_york.py`, part 6), rms of H over the
 cells with psi_BL <= 2: two punctures 3 apart 2.87e-3 (none), 3.88e-3 (isolated
 corrections); binary of test 2 (d = 10): 2.41e-4, 3.89e-5; a light moving puncture 20
 from a ten times heavier one at rest: 1.29e-3, 3.03e-3. Reason: near puncture c the
