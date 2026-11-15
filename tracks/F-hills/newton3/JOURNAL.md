@@ -114,3 +114,26 @@ start distance matters more because the tidal field at 10 r_t is not negligible
   stalls (step below 1e-14 t) in a near head-on approach of the two members
   (r_min ~ 1e-8 a); they are bound at the stall. They are excluded from the fractions and
   counted ("fail"); a point-mass collision is outside the model anyway.
+
+## 2026-11-15 scans P1/P2 finished; a deep-limit anomaly, prediction P5 before the check
+
+- did: runs F-hills-20261115-130237-cbfaf6b (coplanar, 3000 phases per D, 207 D values
+  x 2 directions) and F-hills-20261115-130239-cbfaf6b (orientation: 512 x 64 isotropic
+  per D for 27 D; 31 inclinations x 32 azimuths x 64 phases for 8 D). Not yet analysed.
+- found in the logs: below D ~ 5e-5 the disruption probability rises again (coplanar
+  0.82 at D = 5.6e-5, 0.84 at 3.2e-5, 0.91 at 1.8e-5, 0.977 at 1e-5) and at D = 1e-5 the
+  inclination scan gives <|E|> = 10.9 against about 1 at D = 1e-2. Suspected cause
+  (not yet tested): loss of precision. Near pericentre the zero-energy free solution
+  'time of periapsis' (SKR prp.tex:279-282) has an amplitude ~1/D and the energy is a
+  difference of terms of that size divided by D, so at rtol 1e-10 the energy error grows
+  like 1/D.
+- prediction P5 (convergence run, written before it runs): (a) D >= 1e-4: P_dis and
+  <|E|> change by less than 0.2 points and 0.2 percent between rtol 1e-10 and 1e-13;
+  (b) D = 1e-5 and 3.2e-5: the rtol 1e-10 values change by more than that, and at rtol
+  1e-12 and 1e-13 they agree with each other and with D = 1e-4 (coplanar P_dis 0.80-0.83,
+  SKR's radial limit 0.81); (c) end radius 30 -> 100 r_t: P_dis within 0.2 points,
+  <|E|> within 0.2 percent; start radius 10 -> 20 r_t at fixed effective phase: P_dis
+  within 0.5 points, <|E|> within 1 percent (D = 1e-3, 0.1, 1, 2). Refuted if (b) does not
+  converge (then the cause is not the tolerance) or (c) misses. If (b) holds, the deep
+  limit is quoted from D = 1e-4 (and the rtol 1e-13 points), and the D < 1e-4 values of
+  the two scans are discarded.
