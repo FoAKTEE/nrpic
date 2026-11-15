@@ -305,3 +305,117 @@ tracers' radius by more than one cell (2 M); (5) the tracers of the group at 6 M
 removed (lapse excision at 0.05) at a proper time between 13 and 16 M. Refuted by a
 horizon-mass drift above 3e-3, a wall error above 2 per cent, a dust lapse above 1.3, or a
 run that ends early.
+
+## 2026-11-15, entry 3: outcome of R (first version refuted, source restructured), first outcome of L1
+
+### Outcome of prediction R: REFUTED for the first version of the source, then met
+
+First version (commit e41c24a: the two terms inside the main loop of `Z4c::CalcRHS`,
+guarded by flags that are false by default). Processor runs, release executable
+`/data/haiyangw/nrpic/.work/build_cpu_v03/src/athena` against this branch's:
+
+| case | baseline run | new run | outcome |
+|---|---|---|---|
+| geo | core-20261115-154506-e41c24a | -154507-e41c24a | identical (2 files) |
+| boris | -154508-e41c24a | -154509-e41c24a | identical (2 files) |
+| dep | -154510-e41c24a | -154516-e41c24a | identical (1 file) |
+| east | -154521-e41c24a | -154530-e41c24a | 10 of 12 files differ |
+| os | -154538-e41c24a | core-20261115-155025-63ad8eb | `os.nrpic.hst` and 4 restart files differ |
+
+Size of the differences: east, relative 9.6e-11 in the constraint statistics after 20
+steps (from the fourth step on); os, relative 3.8e-16 in one column of one record. So
+the prediction failed: with both terms switched off the results were not bit-identical.
+Check that it is this source and not the build: a processor build of the unchanged
+source of main (`git archive 4ebb05f`, `.work/build_cpu_base`) reproduces the release
+executable byte for byte on case east (runs core-20261115-155802/-155811-dc7406f) and
+differs from the first version in the same ten files (-155744/-155753-dc7406f).
+Cause [JUDGEMENT, not isolated further]: statements added inside the kernel change how
+the compiler contracts or orders the floating-point operations of the neighbouring,
+unchanged statements; the cases without Z4c (geo, boris, dep) were unaffected.
+
+Second version (commit b4430da): the main loop of `Z4c::CalcRHS` is restored to the
+text of main; the two terms are added to the right-hand sides of the lapse and the shift
+in a loop of their own after it (`AddGaugeExt` in `z4c_gauge_ext.hpp`; for the shift
+the loop subtracts (eta(x) - eta_0) beta^i), which runs only if a term is switched on.
+Hooks now: `z4c_calcrhs.cpp` one include after `tmunu.hpp` and one call (four lines)
+before the dissipation loop; `z4c.hpp`, `z4c.cpp` as before. Outcome: geo, boris, dep,
+east identical byte for byte against the release executable (working tree of b4430da:
+runs core-20261115-160007 ... -160030-dc7406f; committed source, executable
+`scratch/core/gauge/exe/athena_cpu_b4430da`: table below when case os has finished).
+
+Consequence for the runs: the card jobs submitted with the first version (4445, 4446)
+were cancelled before they started and resubmitted with the executable of b4430da
+(4449, 4450). The eight 64-cell ball runs of the first batch used e41c24a; the terms
+are the same formulas there, so they stand as scouting results, and `leak05-n064` is
+repeated with b4430da as a check of the second version.
+
+### Processor versions of P, E1, E2 (set-up note written when they were started)
+
+Twelve jobs of other sessions are ahead of the two card jobs. So that the puncture
+tests do not depend on the queue they also run on processors on a small mesh
+(`analysis/gauge/punc_cpu_runs.sh`: half-width 32 instead of 64, MeshBlocks of 8^3,
+same root cells, levels and gauge; P to t = 10 M, E1 to t = 5 m, E2 to t = 2 M; tags
+`g-p-*`, `g-e1-*`, `g-e2-*`). The predictions of entry 1 apply unchanged, read at the
+end of these shorter runs (E1 at t = 5 m as written; E2 at t = 2 M, which is 8 masses
+of the light hole and 2 of the heavy one). L3 and ES have no processor version: 14 h
+and 11 h at 1.2e4 zone-cycles per second.
+
+### Outcome of L1 at cells of 1 M (processors, executable e41c24a)
+
+Runs: `mp-n064` core-20261115-154608-63ad8eb, `mp-edge2-n064` -154603-, `leak1-n064`
+-154607-, `leak1-edge2-n064` -154610-, `leak2-n064` -154605-, `leak2-edge2-n064`
+-154613-, `leak05-n064` -154612-, `leak4-n064` -154611- (14 minutes each). Analysis
+`analysis/gauge/ball_analysis.py`, numbers `ball_numbers_g.json`, figures
+`figs/ball_g_sharp_dx1.png`, `ball_g_sharp_lapse_profiles.png` (both looked at),
+`ball_g_edge2_dx1.png`, `ball_g_edge2_lapse_profiles.png`.
+
+(a) Old 1+log: central lapse 2.48 at t = 4 M, peak 3.08 near t = 5.3 M, 1.76 at t = 8 M,
+1.68 at t = 10 M (reference without front 3.46, 4.47, 5.46): the front of wave 1.
+Confirmed.
+
+(b) New lapse, central lapse / reference at t = 2, 4, 6, 8, 10 M, sharp surface:
+
+| T | t = 2 | 4 | 6 | 8 | 10 | largest deviation, t <= 10 M | largest lapse on the mesh |
+|---|---|---|---|---|---|---|---|
+| 0.5 M | 1.126/1.126 | 1.112/1.112 | 1.100/1.100 | 1.089/1.090 | 1.080/1.082 | 0.2 per cent | 1.127 |
+| 1 M | 1.235/1.235 | 1.236/1.236 | 1.211/1.211 | 1.167/1.187 | 1.136/1.169 | 2.8 per cent (t = 10 M) | 1.245 |
+| 2 M | 1.365/1.366 | 1.464/1.465 | 1.453/1.450 | 1.241/1.406 | 1.186/1.362 | 13 per cent (t = 8.75 M) | 1.469 |
+| 4 M | 1.476/1.477 | 1.759/1.762 | 1.829/1.863 | 1.293/1.853 | 1.253/1.793 | 30 per cent (t = 8.25 M) | 1.864 |
+
+Prediction (b) holds for T = 1 M up to t = 8 M and fails by 0.8 per cent at t = 10 M
+(2.8 against the predicted 2 per cent; below the 5 per cent that would refute "no
+front"); it FAILS for T = 2 M (13 per cent). The bounds on the largest lapse hold
+(1.245 < 1.30, 1.469 < 1.55). What happens instead of a front (figure
+`ball_g_sharp_lapse_profiles`): the lapse stays monotone in radius; the step at the
+surface spreads inwards smoothly and the central plateau shrinks (to r = 6.5 M at
+t = 2 M, 4 M at t = 4 M, gone at t = 6 M); the centre then relaxes towards the lower
+exterior value. The disturbance scales with T: its size at the centre is 0.03, 0.17,
+0.5 for T = 1, 2, 4 M. My estimate of the damping (rate 1/(2T) for waves) missed that
+slow changes spread diffusively with the coefficient 2 alpha T. Smooth edge: the same
+numbers within 0.002 (T = 1 M: 2.9 per cent at t = 10 M).
+
+(c) Largest |eps| over the whole run, cells of 1 M, sharp surface:
+
+| lapse | core | mid | outer | surface |
+|---|---|---|---|---|
+| old 1+log | 7.9e-2 | 8.5e-3 | 5.8e-3 | 9.7e-3 |
+| conformal time (wave 1, entry 5 of JOURNAL-id) | 3.3e-3 | 3.0e-3 | 4.5e-3 | 7.2e-3 |
+| new, T = 0.5 M | 1.7e-3 | 8.2e-4 | 2.8e-3 | 6.1e-3 |
+| new, T = 1 M | 3.1e-3 | 1.3e-3 | 3.3e-3 | 6.7e-3 |
+| new, T = 2 M | 7.1e-3 | 2.1e-3 | 3.9e-3 | 7.5e-3 |
+| new, T = 4 M | 1.4e-2 | 2.9e-3 | 4.3e-3 | 8.2e-3 |
+
+Prediction (c) at cells of 1 M holds for T = 1 M (all groups below twice the
+conformal-time numbers; in fact at or below them) and for T = 0.5 M; for T = 2 M the
+core (7.1e-3) is above the bound 6.6e-3. Smooth edge, T = 1 M: core 1.7e-3, mid 1.1e-3,
+outer 1.9e-3, edge 4.2e-4 (old 1+log: core 2.6e-2).
+
+(d) Largest coordinate speed of light at the ball particles: 1.07 (T = 0.5 M), 1.14
+(T = 1 M), 1.24 (T = 2 M), 1.42 (T = 4 M); old 2.27. Confirmed for T <= 2 M.
+
+Reading [JUDGEMENT]: the relaxation time has to be short compared with the light
+crossing time of the expanding region and with 1/(6H): here T = 0.5 to 1 M for a ball
+of 10 M with H = 0.045/M (6 T H = 0.13 to 0.27). T = 0.5 M is two time steps and half a
+cell at this resolution and shows no instability in 10 M. The runs at cells of M/2
+(card job 1, and `leak1-n128` on processors) and the bound ball decide the
+recommendation.
