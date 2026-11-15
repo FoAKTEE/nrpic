@@ -445,3 +445,8 @@ commands to close and analyse the pending runs are in README, "Pending".
 Card-hours used by this package: 0 (reserved for the two queued jobs: at most 1.4).
 Processor time: about 1.6 core-hours (C0 35 min, wrapper test 22 min, finder diagnostic 13 min,
 stopped probes 13 min, analyses).
+
+Runs of this package not named above: F-20261115-174432-291868f, a first pass of
+`c0_constraints.py` on C0's finished m/8 case while C0 was still running, failed at the end
+(output argument `'$NRPIC_RUN_DIR'` passed literally, see "Incidents"); its printed numbers
+for approx at m/8 equal those of F-20261115-181053-d52f22d.
