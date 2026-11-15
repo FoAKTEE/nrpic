@@ -28,7 +28,7 @@ and named), OPEN (not done).
 | 1. Geodesics on a fixed background | order and conserved quantities on fixed Kerr | PASS | G: `core-20261115-032625-45e1779`, 104 of 104 checks |
 | 2. Oppenheimer-Snyder collapse (CORE part) | horizon-mass error of the order of the paper's | PASS at 9328 lattice particles; random samples at 10^4 larger (0.3 to 0.5 percent) | O: `core-20261115-032614-45e1779`, 13 of 13 checks |
 | 3. Oblate and prolate collapse (CORE part) | prolate collapse | PARTIAL: horizon at the paper's time at two resolutions (32.00 M at M/16, 32.25 M at M/8); mass deficit 3.3 and 4.3 percent, falling with resolution; oblate blocked (needs an oblate component in `nrpic_cf`) | wave 2: `core-20261115-152845-5728b1d` (M/8), comparison `-162509-c691fb8` |
-| 4. Einstein-Vlasov steady states and stability threshold (CORE part) | stability of relativistic clusters | PARTIAL: fates of the five models as in the paper; wave-2 bisection at M/4: no collapse, the fixed rule gives no bracket; members below the turning point y_c* = 0.6796 migrate to their equal-binding partner, those above stay (threshold between 0.66 and 0.70 on that reading); growing oscillation unexplained; round 2 and control pending | wave 2: `core-20261115-152842-5728b1d`, `-152843-5728b1d`, analysis `-160501-ee15e0f` |
+| 4. Einstein-Vlasov steady states and stability threshold (CORE part) | stability of relativistic clusters | PARTIAL: fates of the five models as in the paper; wave-2 bisection at M/4 (seven members): no collapse; members below the turning point y_c* = 0.6796 migrate to their equal-binding partner, 0.70 and 0.72 stay: threshold between 0.66 and 0.70; 0.69 and 0.67 unresolved; collapse branch needs the finer mesh; growing oscillation unexplained | wave 2: `core-20261115-152842-5728b1d`, `-152843-5728b1d`, `-154726-37450f2`, `-155617-06f844b`, analysis `-170606-1c69507` |
 
 ## Row 1. Geodesics on a fixed background
 
@@ -210,25 +210,38 @@ maximum of E_b/M_0, `python/nrpic/st_cluster.binding_energy_maximum`, recomputed
 core-20261115-152805-47d8f25): y_c* = 0.6796, z_c = 0.4553, E_b/M_0 = 0.036058.
 Analysis run core-20261115-160501-ee15e0f, figure `figs/cluster_threshold.png`.
 
-| y_c | run | horizon | mean central lapse 200-300 M (alpha_c) | rule of 15:30Z | equal-binding target |
+| y_c | run | horizon | mean central lapse 200-300 M (own alpha_c / partner) | rule of 15:30Z | migration criterion of 16:07Z |
 |---|---|---|---|---|---|
-| 0.72 | core-20261115-152843-5728b1d | none | 0.7079 (0.7207) | STABLE | -- |
-| 0.70 | core-20261115-152842-5728b1d | none | 0.6920 (0.7039) | STABLE | -- |
-| 0.66 | core-20261115-152842-5728b1d | none | 0.7005 (0.6713) | STABLE (offset 0.029 of 0.03) | 0.7034 |
-| 0.64 | core-20261115-152843-5728b1d | none | 0.7221 (0.6554) | UNDECIDED | 0.7205 |
-| 0.69, 0.67 | job 4439, run core-20261115-154726-37450f2 | PENDING (queued) | | | |
-| 0.605 control | job 4447, run core-20261115-155617-06f844b | PENDING (queued) | | | |
+| 0.72 | core-20261115-152843-5728b1d | none | 0.7079 (0.7207 / 0.6552) | STABLE | no |
+| 0.70 | core-20261115-152842-5728b1d | none | 0.6920 (0.7039 / 0.6708) | STABLE | no |
+| 0.69 | core-20261115-154726-37450f2 | none | 0.6864 (0.6957 / 0.6787) | STABLE | yes (inward) |
+| 0.67 | core-20261115-154726-37450f2 | none | 0.6911 (0.6793 / 0.6951) | STABLE | yes |
+| 0.66 | core-20261115-152842-5728b1d | none | 0.7005 (0.6713 / 0.7034) | STABLE (offset 0.029 of 0.03) | yes |
+| 0.64 | core-20261115-152843-5728b1d | none | 0.7221 (0.6554 / 0.7205) | UNDECIDED | yes |
+| 0.605 control, to 250 M | core-20261115-155617-06f844b | none | 0.7667 over 200-250 M (0.6281 / 0.7519) | UNDECIDED | yes |
 
-Verdict of the bisection: by the rule fixed before the runs it does NOT locate the
-threshold (no model collapses at M/4; the prediction that 0.64 collapses is refuted).
-Read after the runs [JUDGEMENT]: the members below y_c* migrate outward to the member of
-equal binding fraction (within 0.003 and 0.002 in central lapse), those above stay, so
-the stability threshold at this mesh and particle number lies between 0.66 and 0.70 and
-brackets the turning point; the direction of departure (migration, not collapse, for a
-one-percent inward kick) differs from the earlier finer-mesh run of 0.605, which the
-pending control at M/4 tests. Unexplained: the central-lapse oscillation (period about
-50 M) grows to +-0.05 to +-0.08 after 200 M in every run, stable ones included.
-Row 4 stays PARTIAL.
+Analysis core-20261115-170606-1c69507. Card time 2.0 card-hours for the seven runs.
+
+Verdict of the bisection: PARTIAL.
+- No member between 0.605 and 0.72 collapses within 250-300 M at M/4 and 10^4 particles
+  [VERIFIED]; the prediction that 0.64 collapses is refuted. The control shows why: the
+  same 0.605 data that collapsed (horizon 191 M) on the finer AMR mesh migrate at M/4,
+  so the direction of departure (collapse or migration) depends on the mesh, and the M/4
+  runs do not test the collapse branch.
+- By the rule fixed before the runs (collapse / stay within 0.03 of alpha_c) there is no
+  bracket. By the migration criterion (fixed after round 1, before round 2 was read) the
+  members 0.66, 0.64, 0.605 migrate to within 0.003, 0.002, 0.015 of their equal-binding
+  partner and 0.70, 0.72 stay: threshold between 0.66 and 0.70, which contains the
+  turning point y_c* = 0.6796. Round 2 (0.69, 0.67) is not resolved by either criterion:
+  their partners lie 0.017 away in alpha_c, comparable with the common downward drift of
+  about 0.01 of the members above y_c*.
+- Read after the runs [JUDGEMENT]: the sign of the late offset from the own equilibrium
+  changes between 0.69 (-0.009) and 0.67 (+0.012).
+- Unexplained, in every run: the central-lapse oscillation (period about 50 M) grows to
+  +-0.05 to +-0.08 after 200 M.
+Open: the bisection on the finer mesh (collapse branch; about 0.6 card-hours per run to
+300 M at M/8), more particles, three-way convergence of the threshold (Track C's G2
+criterion).
 
 ## Supporting checks of the C2 steps (earlier, not re-run today)
 

@@ -28,8 +28,8 @@
    "status": "PARTIAL",
    "title": "relativistic cluster sequence and threshold",
    "verdict": "PARTIAL",
-   "evidence": "fates of $y_c$ = 0.900 ... 0.283 as in the paper; turning point $y_c^*=0.6796$. Bisection at $M/4$: no collapse;\n0.66, 0.64 migrate to their equal-binding members, 0.70, 0.72 stay. Round 2 (0.69, 0.67) pending."
+   "evidence": "fates of $y_c$ = 0.900 ... 0.283 as in the paper. Bisection at $M/4$ (7 members): no collapse; 0.66, 0.64, 0.605\nmigrate to their equal-binding partner, 0.70, 0.72 stay: threshold in [0.66, 0.70], turning point $y_c^*=0.6796$."
   }
  },
- "footer": "state 2026-11-15 16:30Z; numbers: tracks/core/verify/LADDER.md and JOURNAL.md (run ids there)"
+ "footer": "state 2026-11-15 17:10Z; numbers: tracks/core/verify/LADDER.md and JOURNAL.md (run ids there)"
 }
