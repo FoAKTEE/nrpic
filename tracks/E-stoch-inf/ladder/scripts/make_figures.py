@@ -62,9 +62,12 @@ def fig_a2(res, out):
         ax.plot(z["kshell"], mx, "o-", ms=2.5, lw=1.0, color=LCOL[n],
                 label=rf"$N={n}$, $k_{{\max}}=8$, $\mathcal{{N}}={z['efolds_ref'][-1]:.1f}$")
     ax.axhline(0.02, **fs.GUIDE)
-    ax.text(1.1, 0.024, "A2 threshold", fontsize=8)
+    ax.text(1.1, 0.012, "A2 threshold", fontsize=8)
     ax.set_xscale("log")
     ax.set_yscale("log")
+    ax.set_xticks([1, 2, 4, 8, 16, 32, 64])
+    ax.get_xaxis().set_major_formatter(matplotlib.ticker.ScalarFormatter())
+    ax.get_xaxis().set_minor_formatter(matplotlib.ticker.NullFormatter())
     ax.set_xlabel(r"$k/k_\sigma^*=|n|$")
     ax.set_ylabel(r"$|R^{\rm NR}_n/(W_kR_k\alpha_n)-1|$ at the last dump")
     ax.legend(fontsize=7, loc="lower right", ncol=1)
@@ -159,6 +162,7 @@ def fig_spectrum(res, out):
     ax.plot(s["k"], s["d_ens"], "-", color=fs.PAL["blue"], label="full MS (ensemble)")
     ax.plot(s["k"], s["d_sr"], **fs.GUIDE, label=r"$H_k^2/(8\pi^2\epsilon_{1k}M_{\rm Pl}^2)$")
     ax.set_xscale("log")
+    ax.set_yscale("log")
     ax.set_ylabel(r"$\Delta_\mathcal{R}(k)$ at $\mathcal{N}_f$")
     ax.legend(fontsize=8, loc="lower left")
     ax = axs[1]

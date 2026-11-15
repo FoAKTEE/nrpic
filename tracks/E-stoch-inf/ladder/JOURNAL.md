@@ -139,3 +139,66 @@ job C 27 min, together about 1.5 card-hours; requested walls 45 + 38 + 37 min = 
   t = 4.5), max D_n over all 1054 modes falls by about 2^5-2^6 from 32 to 64 and then
   reaches a floor below 1e-4 set by second-order effects (nonlinear couplings, R ~ 5e-5).
   Refuted if it does not fall between 32 and 64.
+
+## Entry 2, 2026-11-15 17:45Z: submissions, a failed processor run, the self-test, the N = 32 rung
+
+Submissions (all scouting, executables of core/scalar-2 a58e95b, sha256 in the manifests):
+card jobs A E-20261115-172618-f948386 (Slurm 4469), C E-20261115-172625-416fec0 (4470),
+B E-20261115-172629-312a82c (4471), all pending behind ten other jobs at 17:40Z.
+
+Failed run, on record: E-20261115-172521-e098160 (processors, stopped after 28 s). nrpic-run
+passes its command without a shell, so the literal argument '$NRPIC_RUN_DIR' was not
+expanded and the six 32^3 runs wrote into a directory of that name inside the worktree. I
+stopped them by process id, moved the directory into the run's output directory
+(`misplaced_literal_run_dir/`), and made `scripts/run_list_cpu.sh` take the directory from
+the environment and refuse a relative one. Rerun: E-20261115-172636-ce98836 (completed;
+L32p and L32m 8.5 time units in 505-520 s, the 4.5-unit runs in 268-274 s, serial).
+
+Self-test E-20261115-172935-ddfade0 on core's 32^3 dumps (run core-20261115-160134-3fde433):
+this package's reader equals core's `read_dump` bit for bit (largest difference 0); R^NR at
+t = 0 equals s L^-3/2 W R alpha_n within 7.5e-10 for the three modes with W > 1/2 (W = 1/2
+exactly at |n| = 1); amplitudes of another seed give a median deviation of 1.4-2.7 (the
+extraction sees the realisation). Core's figure for the slice was 1.1e-11; the 7.5e-10 here
+is at the level of second-order terms and of the window at W = 1/2, far below every threshold
+[JUDGEMENT; not traced further].
+
+Outcomes at N = 32 (k_max/dk = 8, which at N = 32 is also the paper's four cells per shortest
+wavelength), analysis run E-20261115-173540-b69c63f, figures `fig/proc32/`, numbers
+`results/proc32/`:
+- A1: box means of phi, Pi, K within 6.3e-13, 7.7e-12, 3.5e-12 of this package's Friedmann
+  reference (threshold 1e-4; P7 predicted below 1e-10: confirmed). The e-fold count
+  -ln<chi>/2 differs from ln a by 3.3e-6 (time integration at Courant 0.25; core: 5.5e-6).
+- A2 at N_f = 8.10: max D_n = 8.8e-5 over the 128 modes with |n| <= 4 (threshold 0.02;
+  pass), 4.1e-3 over all 1054 modes (the top shell |n|^2 = 64). The deviation is set during
+  the entry (N = 1.5 to 3.5) and constant afterwards (`fig_a2_modes.png`, right). At N = 3.0
+  it is 2.8e-3, as core reports for its own run to N = 3.14 (2.8e-3).
+- A3: 1051 modes with N_f - N_k >= 6; max |Q_n(N_f)/Q_n(N_k + 4) - 1| = 4.6e-6 (threshold
+  0.01; pass by a factor 2000); max |drift of ln|R^NR|^2| = 1.38e-4 per e-fold (threshold
+  2.5e-3), equal to the full-MS drift of the same modes within 1.4e-6 per e-fold. An FLRW
+  lattice would drift at -4 eps1 = -0.046 or so. P2 confirmed at N = 32.
+- Spectrum: shell sums of |R^NR|^2 over |R^lin|^2 within 1.7e-4 of 1 for |n| <= 4; no shell
+  outside 3/sqrt(M_shell) of the ensemble spectrum; Delta[R^lin](N_f) over the slow-roll
+  formula 1.0104-1.0109 for |n| <= 7 (SPEC 7.3: 1.010-1.012). P3 confirmed.
+- Constraints (pair L32p/L32m, halving pair L32ph/L32mh, `fig_a4_paper.png`,
+  `fig_a5_parts.png`): the odd part of H (first order in the amplitude) rises from 5e-13 of
+  <[H]> at N = 0.5 to 5.4e-11 at N = 2.5 and dominates the even part from N = 1.2 on; the
+  even part (box mean removed) is 2.8e-12 at t = 0 (second-order violation of the slice),
+  7e-13 at N = 0.5-2, then falls. The halving test separates them exactly: even part factor
+  4.00 (second order), odd part factor 2.00 (first order) at every dump. M behaves the same
+  way: odd part up to 3.2e-4 of <[M]> at N = 2.5 against an even part of 7e-6. A uniform
+  part of H (box mean of the even part, +2.9e-12 of <[H]>) does not depend on the
+  amplitude: it is the residual of the time integration of the background that core
+  identified, and it makes the record ratio <|H|/[H]> between s = 1 and s = 1/2 close to 1
+  before the entry (thick line in `fig_a4_paper.png`). So at N = 32 with four cells per
+  shortest wavelength, A4 in its strict form ("second order during the entry") FAILS for
+  both constraints from N = 1.2-1.5 on, as P4 predicted, while the magnitude <|H|/[H]>
+  stays below 4.7e-11 (within a factor 10 of P1's 1e-10). Whether the odd part is the
+  truncation error that converges away is A5, which needs N = 64 and up.
+- Negative control (NC32p/m): odd part of H 7e-8 to 1e-7 of <[H]> during the first two
+  e-folds (1e4-1e5 times the proper run), odd part of M 0.16-0.21 of <[M]>; P6 confirmed.
+
+Prediction before the 64^3 processor hedge (E-20261115-*, list `inputs/proc64.list`, L64p
+and L64m to t = 4.5): the odd part of H at N = 64 is 2^5.3 to 2^6 times smaller than at 32 at
+every dump of the entry (after interpolation to common times, since the dump times differ
+by up to one step between resolutions); the even part (box mean removed) agrees with
+N = 32 within 10 percent where it dominates the noise of the decomposition.
