@@ -109,5 +109,5 @@ Differences between the lead's documents and the files (the files win; `tables/c
   the figure table to "to be confirmed by the session" on every run, so a confirmation
   written by hand is lost when the lead reruns it; reading it from a marker in
   `note/JOURNAL.md` or keeping the old cell would help. `nrpic-run submit` worked for all
-  five runs of this package (it commits the manifest itself, a second writer of the index
+  four runs of this package (it commits the manifest itself, a second writer of the index
   next to the helpers; no index.lock collision happened).
