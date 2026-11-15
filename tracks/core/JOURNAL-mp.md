@@ -666,3 +666,18 @@ the end of that file). Trial merges with `main` (a1c2237), `core/id-extrinsic`
 `core/collisions` (3436846), `core/scalar-field` (b28ecca): no conflict markers.
 [VERIFIED] `CFSetExtrinsic` of `core/id-extrinsic` still assigns `vK_dd` with `=`
 after the main loop (line 369 of its `nrpic_cf.cpp`).
+
+### Outcome: shift damping and the tracker, on processors (`core-20261115-131207-372e977` shift_eta = 2, `-131208-` shift_eta = 20; m = 1, P = 0.3, S = 0.2, cells 1/8, to t = 1.6)
+
+ - shift_eta = 2: the tracker speed is erratic on this mesh during the first 1.6 M
+   (v_x between -0.026 and +0.062, net displacement +0.002 along x at the end); mean
+   speed over 1.0 < t < 1.6: 0.0252.
+ - shift_eta = 20: mean speed over the same window 0.0046, 5.5 times smaller; the
+   tracker drifts steadily by -0.010 along x, against the momentum.
+ The prediction (at least five times smaller) held for the mean speed, by a small
+ margin and on a mesh where the reference motion is noisy; the end-point speeds
+ (0.062 against 0.0036) are not a fair measure. A drift against the momentum with a
+ strongly damped shift is what the heavy hole of test 3 showed (+2.4e-4, +3.0e-4 with
+ momentum toward -x, -y). The explanation of the slow heavy tracker is supported, not
+ settled: the card run at cells of 1/16 (`b16_spin0.3_eta20`, queued) is the clean
+ test. [VERIFIED as stated; TO VERIFY at 1/16]
