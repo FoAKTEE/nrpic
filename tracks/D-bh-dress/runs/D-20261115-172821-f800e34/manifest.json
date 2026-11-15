@@ -82,7 +82,7 @@
     "nodes": 1,
     "gpus": 0,
     "cores": 2,
-    "walltime_s": null,
+    "walltime_s": 62.854,
     "wall_limit": null,
     "segments_max": null,
     "gpu_hours_requested": 0.0,
@@ -93,15 +93,15 @@
   "outputs": {
     "dir": "scratch/D-bh-dress/D-20261115-172821-f800e34",
     "sha256sums": "sha256sums.txt",
-    "sha256sums_sha256": null,
-    "bytes": null,
-    "files": null
+    "sha256sums_sha256": "a8d8c0cfb8354e4f53b79dc23a21bf96b06e0cdfa9e4a0bfb5ac9b4ef74e611d",
+    "bytes": 8532899,
+    "files": 12
   },
-  "status": "running",
-  "exit_code": null,
+  "status": "completed",
+  "exit_code": 0,
   "registered": "2026-11-15T17:28:22Z",
-  "started": null,
-  "ended": null,
+  "started": "2026-11-15T17:28:22Z",
+  "ended": "2026-11-15T17:29:24Z",
   "parents": [],
   "notes": "",
   "budget_at_submit": {
@@ -113,5 +113,6 @@
     "cores_busy": 4,
     "runs": 99,
     "allotment_from": "coord/DECISIONS/0006-compute-budget.md + 0014-budgets-after-wave-1.md"
-  }
+  },
+  "finished": "2026-11-15T17:55:24Z"
 }
