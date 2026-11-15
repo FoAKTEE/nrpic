@@ -1,0 +1,91 @@
+{
+  "$schema": "https://json.schemastore.org/claude-code-settings.json",
+  "autoMemoryEnabled": false,
+  "env": {
+    "NRPIC_HARNESS": "1"
+  },
+  "permissions": {
+    "allow": [
+      "Bash(harness/bin/nrpic-ctx *)",
+      "Bash(harness/bin/nrpic-env *)",
+      "Bash(harness/bin/nrpic-run *)",
+      "Bash(harness/bin/nrpic-stage *)",
+      "Bash(harness/bin/nrpic-doctor *)",
+      "Bash(python3 -I /data/haiyangw/nrpic/harness/bin/nrpic-fetch-arxiv *)",
+      "Bash(git status *)",
+      "Bash(git diff *)",
+      "Bash(git log *)",
+      "Bash(git show *)",
+      "Bash(git ls-tree *)",
+      "Bash(git rev-parse *)",
+      "Bash(git add *)",
+      "Bash(git commit *)",
+      "Bash(git merge --no-edit main)",
+      "Bash(git push *)",
+      "Bash(scripts/submit_chain.sh --status *)",
+      "Bash(squeue *)",
+      "Bash(sacct *)"
+    ],
+    "ask": [
+      "Bash(git rebase *)",
+      "Bash(git reset *)",
+      "Bash(git checkout *)",
+      "Bash(git tag *)",
+      "Bash(rm -r *)",
+      "Bash(harness/bin/nrpic-wt *)",
+      "Edit(.claude/**)"
+    ],
+    "deny": [
+      "Bash(git push --force *)",
+      "Bash(git push -f *)",
+      "Bash(git push --force-with-lease *)",
+      "Bash(git commit --no-verify *)",
+      "Bash(git commit -n *)",
+      "Bash(git worktree remove *)",
+      "Bash(git branch -D *)",
+      "Bash(sbatch *)",
+      "Bash(pkill *)",
+      "Bash(killall *)",
+      "Bash(curl *)",
+      "Bash(wget *)",
+      "Read(./.env)",
+      "Read(./**/*.pem)"
+    ]
+  },
+  "hooks": {
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "\"$CLAUDE_PROJECT_DIR\"/harness/hooks/session_start.sh",
+            "timeout": 30
+          }
+        ]
+      }
+    ],
+    "PreToolUse": [
+      {
+        "matcher": "Edit|Write|NotebookEdit|MultiEdit|Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "\"$CLAUDE_PROJECT_DIR\"/harness/hooks/pre_tool_guard.py",
+            "timeout": 15
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "\"$CLAUDE_PROJECT_DIR\"/harness/hooks/stop_gate.sh",
+            "timeout": 30
+          }
+        ]
+      }
+    ]
+  }
+}

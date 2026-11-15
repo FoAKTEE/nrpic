@@ -82,8 +82,8 @@ def context(d):
     c = Ctx()
     c.root = os.path.realpath(root)
     c.home = os.path.realpath(os.path.dirname(common))
-    if not (os.path.isfile(os.path.join(c.home, "coord", "CHARTER.md")) and os.path.isdir(os.path.join(c.home, "tracks"))):
-        return None                                     # not the nrpic repository
+    if not (os.path.isdir(os.path.join(c.home, "tracks")) and os.path.isdir(os.path.join(c.root, "harness"))):
+        return None                                     # not the nrpic repository (tracks/ and harness/)
     c.branch = git(c.root, "rev-parse", "--abbrev-ref", "HEAD") or "?"
     c.owner = owner_of(c.branch)
     c.is_main = c.root == c.home

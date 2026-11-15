@@ -4,7 +4,7 @@
 #
 # Blocks the end of a turn once (exit code 2, instructions on stderr) when the session's worktree
 # has uncommitted changes, or, on a track/core/kb branch, when tracks/<ID>/STATUS.md is older than
-# the last commit of the branch that is not in main (STATUS, JOURNAL and HANDOFF excluded). Never
+# a later commit of the branch that is not in main (STATUS, JOURNAL and HANDOFF excluded). Never
 # blocks twice in a row: the input field stop_hook_active (set while Claude continues because of a
 # Stop hook) lets the next attempt pass, and, should that field be absent, a marker under
 # <main checkout>/locks/stop-gate/ remembers the state already blocked for this session.
@@ -29,7 +29,7 @@ dir=${CLAUDE_PROJECT_DIR:-$cwd}
 root=$(git -C "$dir" rev-parse --show-toplevel 2>/dev/null) || exit 0
 common=$(git -C "$root" rev-parse --path-format=absolute --git-common-dir 2>/dev/null) || exit 0
 home=$(dirname "$common")
-[ -f "$home/coord/CHARTER.md" ] && [ -d "$home/tracks" ] || exit 0
+[ -d "$home/tracks" ] && [ -d "$root/harness" ] || exit 0      # the nrpic repository: tracks/ and harness/
 branch=$(git -C "$root" rev-parse --abbrev-ref HEAD 2>/dev/null) || exit 0
 case $branch in
   main) owner=orch ;;
@@ -46,11 +46,14 @@ if [ -n "$dirty" ]; then
   problems+=("$n uncommitted path(s) in $root, e.g. $(printf '%s\n' "$dirty" | head -3 | cut -c4- | tr '\n' ' ')")
 fi
 if [ -n "$owner" ] && [ "$owner" != orch ] && [ -f "$root/tracks/$owner/STATUS.md" ]; then
-  st=$(git -C "$root" log -1 --format=%ct -- "tracks/$owner/STATUS.md" 2>/dev/null)
-  code=$(git -C "$root" log -1 --no-merges --format=%ct main..HEAD -- . \
-           ":(exclude)tracks/$owner/STATUS.md" ":(exclude)tracks/$owner/JOURNAL.md" \
-           ":(exclude)tracks/$owner/HANDOFF.md" 2>/dev/null)
-  if [ -n "$code" ] && [ "${st:-0}" -lt "$code" ]; then
+  # commit order, not timestamps: is there a commit of this branch (not in main, not a merge)
+  # after the last commit that touched STATUS.md, changing anything but STATUS/JOURNAL/HANDOFF?
+  st=$(git -C "$root" log -1 --format=%H -- "tracks/$owner/STATUS.md" 2>/dev/null)
+  range=${st:+$st..HEAD}
+  later=$(git -C "$root" rev-list --no-merges -1 ${range:-HEAD} ^main -- . \
+            ":(exclude)tracks/$owner/STATUS.md" ":(exclude)tracks/$owner/JOURNAL.md" \
+            ":(exclude)tracks/$owner/HANDOFF.md" 2>/dev/null)
+  if [ -n "$later" ]; then
     problems+=("tracks/$owner/STATUS.md is older than the last commit on $branch")
   fi
 fi

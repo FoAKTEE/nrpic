@@ -22,7 +22,7 @@ dir=${CLAUDE_PROJECT_DIR:-$cwd}
 root=$(git -C "$dir" rev-parse --show-toplevel 2>/dev/null) || exit 0
 common=$(git -C "$root" rev-parse --path-format=absolute --git-common-dir 2>/dev/null) || exit 0
 home=$(dirname "$common")
-[ -f "$home/coord/CHARTER.md" ] && [ -d "$home/tracks" ] || exit 0
+[ -d "$home/tracks" ] && [ -d "$root/harness" ] || exit 0      # the nrpic repository: tracks/ and harness/
 
 {
   if [ -x "$root/harness/bin/nrpic-ctx" ]; then
