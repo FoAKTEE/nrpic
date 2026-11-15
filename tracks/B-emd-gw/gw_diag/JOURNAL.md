@@ -319,7 +319,7 @@ part are zero at a = 1. Guarded (ratio recorded as null) and rerun.
 ## Outcome of the cosmology scouting, runs B-emd-gw-20261115-120846-d1509b5 (diagnostics) and -121143-0eace55 (figure, ratios)
 
 Figure `figs/cosmo_tt.png`; numbers in `results_cosmo.json`, `cosmo_ratios.json` of the two runs.
-(1) PASSED: 14 dumps per run read (8 MeshBlocks... 128^3, L = 2.70 code units), a from 1.00 to 1000.99.
+(1) PASSED: 14 dumps per run read (128^3, L = 2.70 code units), a from 1.00 to 1000.99.
 (2) PASSED: rms h^TT / rms(non-TT) between 3e-3 (a = 12) and 5e-5; at a = 1 both are zero
     (conformally flat initial data, see the failed first run).
 (3) PASSED: rho_GW/rho_bar from 1.3e-17 (a = 12) to 2.8e-12 (quadratic) / 1.3e-11 (cubic) at a = 1001.
