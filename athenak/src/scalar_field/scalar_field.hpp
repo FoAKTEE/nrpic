@@ -63,8 +63,9 @@ struct SfPotential {
   Real tab_min = 0.0, tab_dphi = 1.0;
 };
 
-//! V and dV/dphi.  tab(0,n) = V, tab(1,n) = dV/dphi at phi = tab_min + n tab_dphi; between
-//! the points the cubic Hermite polynomial, beyond them the tangent at the end point.
+//! V and dV/dphi.  tab(0,n) = V, tab(1,n) = dV/dphi at phi = tab_min + n tab_dphi;
+//! between the points the cubic Hermite polynomial, beyond them the tangent at the end
+//! point.
 template <typename TableType>
 KOKKOS_INLINE_FUNCTION
 void SfPotentialEval(const SfPotential &p, const TableType &tab, const Real phi,

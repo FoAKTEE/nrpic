@@ -86,7 +86,8 @@ ScalarField::ScalarField(MeshBlockPack *ppack, ParameterInput *pin) :
 
   // ---- potential
   {
-    const std::string name = pin->GetOrAddString("scalar_field", "potential", "quadratic");
+    const std::string name = pin->GetOrAddString("scalar_field", "potential",
+                                                 "quadratic");
     const Real mass = pin->GetOrAddReal("scalar_field", "mass", 0.0);
     pot.m2 = mass*mass;
     pot.lambda = pin->GetOrAddReal("scalar_field", "lambda", 0.0);

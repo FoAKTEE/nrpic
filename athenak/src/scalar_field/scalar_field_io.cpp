@@ -210,7 +210,8 @@ void ScalarField::WriteHistory(Real time, int ncycle, bool header) {
   std::FILE *fp = std::fopen(fname.c_str(), header ? "w" : "a");
   if (fp == nullptr) { IoFatal("cannot open " + fname); }
   if (header) {
-    std::fprintf(fp, "# scalar field history: box means with coordinate-volume weights\n");
+    std::fprintf(fp, "# scalar field history: box means with coordinate-volume "
+                 "weights\n");
     std::fprintf(fp, "# [1]=time [2]=cycle [3]=<phi> [4]=<Pi> [5]=<K> [6]=<chi> "
                  "[7]=<alpha> [8]=rms(phi-<phi>) [9]=rms(Pi-<Pi>) [10]=<E> [11]=<|H|> "
                  "[12]=rms(H) [13]=max|H| [14]=rms|M| [15]=max|M| [16]=rms(Theta) "
@@ -348,7 +349,9 @@ void ScalarField::ReadRestart(const std::string &fname) {
     IoFatal("bad magic in " + fname);
   }
   std::int64_t dims[5];
-  if (std::fread(dims, sizeof(std::int64_t), 5, fp) != 5) { IoFatal(fname + " truncated"); }
+  if (std::fread(dims, sizeof(std::int64_t), 5, fp) != 5) {
+    IoFatal(fname + " truncated");
+  }
   for (int d=0; d<5; ++d) {
     if (dims[d] != static_cast<std::int64_t>(u0.extent(d))) {
       IoFatal("the scalar field in " + fname + " does not have the extents of the mesh");

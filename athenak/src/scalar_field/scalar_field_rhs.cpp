@@ -8,7 +8,7 @@
 //! written with the Z4c variables of the current stage:
 //!   gamma_ij = psi^4 gt_ij,  psi^-4 = chi^(-4/p),  d_i ln psi = d_i chi/(p chi),
 //!   p = chi_psi_power (default -4: psi^-4 = chi),  K = Khat + 2 Theta,
-//!   D^i D_i phi = psi^-4 [ gt^ij d_i d_j phi - Gt^k d_k phi + 2 gt^ij d_i ln psi d_j phi ]
+//!   D^i D_i phi = psi^-4 [gt^ij d_i d_j phi - Gt^k d_k phi + 2 gt^ij d_i ln psi d_j phi]
 //! with Gt^k = gt^ij Gammat^k_ij computed from the conformal metric (as the second
 //! covariant derivative of the lapse in z4c_calcrhs.cpp), not the evolved Gamma.
 

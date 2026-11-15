@@ -214,7 +214,8 @@ void ScalarField::NoiseInit(ParameterInput *pin) {
       for (int nz=-nmax; nz<=nmax; ++nz) {
         const int n2 = nx*nx + ny*ny + nz*nz;
         if (n2 < 1 || n2 > nopt.nmax2) continue;
-        const bool hemi = (nx > 0) || (nx == 0 && ny > 0) || (nx == 0 && ny == 0 && nz > 0);
+        const bool hemi = (nx > 0) || (nx == 0 && ny > 0)
+                          || (nx == 0 && ny == 0 && nz > 0);
         if (!hemi) continue;
         if (new_x) {
           h_xval_start.push_back(static_cast<int>(h_pair_ny.size()));
@@ -297,7 +298,8 @@ void ScalarField::NoiseInit(ParameterInput *pin) {
       } else if (nfld == 6) {
         Real qh[3];
         for (int d=0; d<3; ++d) {
-          const Real kh = 2.0*M_PI*static_cast<Real>(mode_n[3*q+d])/static_cast<Real>(ng1);
+          const Real kh = 2.0*M_PI*static_cast<Real>(mode_n[3*q+d])
+                          /static_cast<Real>(ng1);
           qh[d] = (nopt.projector == 0) ? StencilWaveNumber(kh, ng) : kh;
         }
         const Real q2 = qh[0]*qh[0] + qh[1]*qh[1] + qh[2]*qh[2];
@@ -438,8 +440,8 @@ void ScalarField::NoiseDrawAlpha(const std::uint64_t epoch) {
   const std::uint64_t off = static_cast<std::uint64_t>(1) << 20;
   const double rt = std::sqrt(0.5);
   for (int dof=0; dof<ndof; ++dof) {
-    const std::uint64_t stream = rng::Stream(rng::kStreamStochastic,
-                                             (1u << 16) | static_cast<std::uint32_t>(dof));
+    const std::uint64_t stream = rng::Stream(
+        rng::kStreamStochastic, (1u << 16) | static_cast<std::uint32_t>(dof));
     for (int q=0; q<nmode; ++q) {
       const std::uint64_t ent = rng::CellEntity(
           static_cast<std::uint64_t>(mode_n[3*q] + static_cast<std::int64_t>(off)),
