@@ -1,5 +1,5 @@
 {
- "run_id": "kb-20261115-154254-b4a4d3d",
+ "run_id": "kb-20261115-154906-f19880f",
  "statements": 330,
  "locators": 372,
  "locators_resolved": 372,
@@ -8,15 +8,15 @@
   "F-hills/s8-/unparsed-157"
  ],
  "disposition": {
-  "k8": 266,
-  "added": 62,
+  "k8": 258,
+  "added": 70,
   "no-locator": 2
  },
  "added_by_label": {
-  "fulltext/located": 19,
+  "fulltext/located": 24,
   "to_verify/partial": 3,
-  "to_verify/located": 39,
-  "judgement/located": 1
+  "to_verify/located": 41,
+  "judgement/located": 2
  },
  "numbers": {
   "exact": 117,

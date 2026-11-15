@@ -220,33 +220,33 @@ B-emd-gw/1505.04756/02	B-emd-gw	1505.04756	finalpaper.tex:204; finalpaper.tex:31
 B-emd-gw/2010.12584/01	B-emd-gw	2010.12584	nLPT-arxiv-v2.tex:142	kb:2010.12584v2 chunk 132696 flat 3084-3101	-			added	fulltext	located	-
 B-emd-gw/2010.12584/02	B-emd-gw	2010.12584	nLPT-arxiv-v2.tex:404-407	kb:2010.12584v2 sec 4 chunk 132709,132710 flat 30063-31334	-		226	k8	to_verify	partial	6599da6d6f98afbec8e7
 B-emd-gw/2010.12584/03	B-emd-gw	2010.12584	nLPT-arxiv-v2.tex:956	kb:2010.12584v2 sec E flat 71778-72050	-		227,228	k8	fulltext,judgement	located,located	e6b45358dc521fbc46d4,d62e47027d75620073e2
-C-sidm/2108.11967/r6-01	C-sidm	2108.11967	main.tex:280	kb:2108.11967v2 sec 3.3 chunk 109255,109256 flat 26940-27767	10/10/10		232,304	k8	fulltext,fulltext	located,located	3e4eb6d851460ddee53c,05f753399dc666fa0323
-C-sidm/2108.11967/r6-02	C-sidm	2108.11967	main.tex:274	kb:2108.11967v2 sec 3.3 chunk 109254,109255 flat 25377-26249	10/10/10		231,305	k8	fulltext,fulltext	located,located	040357b0d8a0195e943f,058b92c4b5a09096ffe8
-C-sidm/2108.11967/r6-03	C-sidm	2108.11967	main.tex:283	kb:2108.11967v2 sec 3.3 chunk 109256 flat 27769-28496	2/2/2		234,306	k8	fulltext,fulltext	located,located	6b1314017664436ee663,3253ed19a56d61accf2d
+C-sidm/2108.11967/r6-01	C-sidm	2108.11967	main.tex:280	kb:2108.11967v2 sec 3.3 chunk 109255,109256 flat 26940-27767	10/10/10		304	k8	fulltext	located	05f753399dc666fa0323
+C-sidm/2108.11967/r6-02	C-sidm	2108.11967	main.tex:274	kb:2108.11967v2 sec 3.3 chunk 109254,109255 flat 25377-26249	10/10/10		305	k8	fulltext	located	058b92c4b5a09096ffe8
+C-sidm/2108.11967/r6-03	C-sidm	2108.11967	main.tex:283	kb:2108.11967v2 sec 3.3 chunk 109256 flat 27769-28496	2/2/2		306	k8	fulltext	located	3253ed19a56d61accf2d
 C-sidm/2108.11967/r6-04	C-sidm	2108.11967	main.tex:202-219	kb:2108.11967v2 sec 3.1 chunk 109251 eq (11),(12),(10) flat 17687-19339	-		307	k8	fulltext	located	87da77b9420728a3f3a0
-C-sidm/2108.11967/r6-05	C-sidm	2108.11967	main.tex:492; main.tex:495; main.tex:498; main.tex:501	kb:2108.11967v2 sec D flat 60643-60968; kb:2108.11967v2 sec D flat 61574-61900; kb:2108.11967v2 sec D flat 62505-62830; kb:2108.11967v2 sec D flat 63432-63775	5/5/6	8e-5	239,308	k8	fulltext,to_verify	located,partial	e030a694d8155d5ee04c,ab1636783c4d8a45a6b1
-C-sidm/2108.11967/r6-06	C-sidm	2108.11967	main.tex:491; main.tex:493	kb:2108.11967v2 sec D flat 60341-60643; kb:2108.11967v2 sec D flat 60968-61271	2/2/2		239,309,610,611	k8	fulltext,fulltext,judgement,judgement	located,located,partial,partial	e030a694d8155d5ee04c,d5196d476a13e1a8930e,783bd66ca8ceb54377e6,3a4869f3aea32d38af31
-C-sidm/2601.17117/r6-07	C-sidm	2601.17117	SIDM_MS.tex:384	kb:2601.17117v2 sec 2.4 chunk 109290 flat 29811-30443	1/1/1		244,310	k8	fulltext,fulltext	located,located	b17ade670e57d9409d4f,94156ba1c726907c7af5
-C-sidm/2601.17117/r6-08	C-sidm	2601.17117	SIDM_MS.tex:341-344	kb:2601.17117v2 sec 2.2 chunk 109287,109288 eq (23) flat 25311-25744	-		240,241,242,311	k8	fulltext,fulltext,fulltext,fulltext	located,located,located,located	f248b20be2c7083fc7c1,677c2cced7680a98bc6e,2c8405494c71271c9194,25f5fa2713dbc3f347ba
-C-sidm/2601.17117/r6-09	C-sidm	2601.17117	SIDM_MS.tex:233	kb:2601.17117v2 sec 2.1 chunk 109285 flat 19125-20432	4/4/4		243,312,617	k8	fulltext,fulltext,judgement	located,located,located	315e6af6b852531fad62,ac79648898cd76e1171d,33b46234744f539bf12a
-C-sidm/2601.17117/r6-10	C-sidm	2601.17117	SIDM_MS.tex:476	kb:2601.17117v2 sec 3.3 chunk 109299 flat 49429-50715	3/3/3		249,313	k8	fulltext,fulltext	located,located	9e6dbb6c8e0e48a960f7,9f11e8f4dd6589f01ce4
-C-sidm/2601.17117/r6-11	C-sidm	2601.17117	SIDM_MS.tex:64-71	kb:2601.17117v2 chunk 109276 flat 2801-3377	1/1/3	580 200	240,301,314	k8	fulltext,fulltext,fulltext	located,located,located	f248b20be2c7083fc7c1,7450809a7e4e7e32ec6d,ec42eb83851005d4e74c
-C-sidm/2601.17117/r6-12	C-sidm	2601.17117	SIDM_MS.tex:672-676	kb:2601.17117v2 sec A chunk 109310 eq (A13) flat 70612-72286	-		252,315	k8	fulltext,fulltext	located,located	3adea84fa2d30b51e5c8,0f17992221b41376d698
-C-sidm/1101.3097/r6-13	C-sidm	1101.3097	sidm1.tex:667-673; sidm1.tex:680-692	kb:1101.3097v2 sec 3.1 chunk 166061 eq (15) flat 35849-36087; kb:1101.3097v2 sec 3.1 chunk 166061 eq (16) flat 36498-37162	1/1/1		295,316	k8	fulltext,fulltext	located,located	f5c956821881ccd99b97,b4216ad3e21a252c0e85
-C-sidm/1101.3097/r6-14	C-sidm	1101.3097	sidm1.tex:408-412	kb:1101.3097v2 sec 2.2 chunk 166054,166099 flat 22801-23116	6/6/6		317,616	k8	fulltext,judgement	located,located	d438db1fef4ce7351033,6362edec4155ddf17665
-C-sidm/1101.3097/r6-15	C-sidm	1101.3097	sidm1.tex:1482-1491	kb:1101.3097v2 sec 6 chunk 166084 flat 79391-80074	1/1/1		297,318	k8	fulltext,fulltext	located,located	fc8499d195fd51550b82,f9d38ea14cb474fa960d
-C-sidm/astro-ph/0110561/r6-16	C-sidm	astro-ph/0110561	SIDMGT_Xiv2.tex:309-323	kb:astro-ph/0110561v2 sec 2 chunk 122666 eq (3) flat 18195-18978	1/1/1		279,319	k8	fulltext,fulltext	checked,located	abbe5014299724a124dc,b416138ee96dc384399c
-C-sidm/astro-ph/0110561/r6-17	C-sidm	astro-ph/0110561	SIDMGT_Xiv2.tex:388-409	kb:astro-ph/0110561v2 sec 3 chunk 122668,122669 eq (10),(11) flat 22448-23664	3/3/3		320,618	k8	fulltext,judgement	located,located	e6745c615313916f7eb3,188081b87520754173b8
-C-sidm/2010.15132/r6-18	C-sidm	2010.15132	smbh.tex:116	kb:2010.15132v3 sec 2 chunk 122780,122781 flat 9740-10868	1/1/1		286,321	k8	fulltext,fulltext	located,located	d4019b19ced2b7f2933c,801b3c200e70a4660d2e
-C-sidm/2010.15132/r6-19	C-sidm	2010.15132	smbh.tex:151	kb:2010.15132v3 sec 3 chunk 122783 flat 16417-17210	2/2/2		287,322	k8	fulltext,fulltext	located,located	9b7d395fd1127936bfea,de88cabfb3f0b6d27eca
-C-sidm/2506.17641/r6-20	C-sidm	2506.17641	sidmacc.tex:74	kb:2506.17641v3 chunk 122811 flat 4798-5745	4/4/4		289,323	k8	fulltext,fulltext	located,located	ce0e9584fba3102dc9ba,cdf9243ca3742f4c5ccf
-C-sidm/2009.08163/r6-21	C-sidm	2009.08163	paper.tex:953-956	kb:2009.08163v1 sec 4 chunk 127556 table 1 flat 48883-49070	8/8/8		262,324	k8	fulltext,fulltext	located,located	ec6ea903ee5e11ae1994,2cfb796757b7ea2fe42d
-C-sidm/2009.08163/r6-22	C-sidm	2009.08163	paper.tex:1190-1193	kb:2009.08163v1 sec 4.3 chunk 127561 flat 85415-85631	-		265,325	k8	fulltext,fulltext	located,located	6486378418ebb0becaa9,9a432626b597298d3399
+C-sidm/2108.11967/r6-05	C-sidm	2108.11967	main.tex:492; main.tex:495; main.tex:498; main.tex:501	kb:2108.11967v2 sec D flat 60643-60968; kb:2108.11967v2 sec D flat 61574-61900; kb:2108.11967v2 sec D flat 62505-62830; kb:2108.11967v2 sec D flat 63432-63775	5/5/6	8e-5	308	k8	to_verify	partial	ab1636783c4d8a45a6b1
+C-sidm/2108.11967/r6-06	C-sidm	2108.11967	main.tex:491; main.tex:493	kb:2108.11967v2 sec D flat 60341-60643; kb:2108.11967v2 sec D flat 60968-61271	2/2/2		309	k8	fulltext	located	d5196d476a13e1a8930e
+C-sidm/2601.17117/r6-07	C-sidm	2601.17117	SIDM_MS.tex:384	kb:2601.17117v2 sec 2.4 chunk 109290 flat 29811-30443	1/1/1		310	k8	fulltext	located	94156ba1c726907c7af5
+C-sidm/2601.17117/r6-08	C-sidm	2601.17117	SIDM_MS.tex:341-344	kb:2601.17117v2 sec 2.2 chunk 109287,109288 eq (23) flat 25311-25744	-		311	k8	fulltext	located	25f5fa2713dbc3f347ba
+C-sidm/2601.17117/r6-09	C-sidm	2601.17117	SIDM_MS.tex:233	kb:2601.17117v2 sec 2.1 chunk 109285 flat 19125-20432	4/4/4		312	k8	fulltext	located	ac79648898cd76e1171d
+C-sidm/2601.17117/r6-10	C-sidm	2601.17117	SIDM_MS.tex:476	kb:2601.17117v2 sec 3.3 chunk 109299 flat 49429-50715	3/3/3		313	k8	fulltext	located	9f11e8f4dd6589f01ce4
+C-sidm/2601.17117/r6-11	C-sidm	2601.17117	SIDM_MS.tex:64-71	kb:2601.17117v2 chunk 109276 flat 2801-3377	1/1/3	580 200	314	k8	fulltext	located	ec42eb83851005d4e74c
+C-sidm/2601.17117/r6-12	C-sidm	2601.17117	SIDM_MS.tex:672-676	kb:2601.17117v2 sec A chunk 109310 eq (A13) flat 70612-72286	-		315	k8	fulltext	located	0f17992221b41376d698
+C-sidm/1101.3097/r6-13	C-sidm	1101.3097	sidm1.tex:667-673; sidm1.tex:680-692	kb:1101.3097v2 sec 3.1 chunk 166061 eq (15) flat 35849-36087; kb:1101.3097v2 sec 3.1 chunk 166061 eq (16) flat 36498-37162	1/1/1		316	k8	fulltext	located	b4216ad3e21a252c0e85
+C-sidm/1101.3097/r6-14	C-sidm	1101.3097	sidm1.tex:408-412	kb:1101.3097v2 sec 2.2 chunk 166054,166099 flat 22801-23116	6/6/6		317	k8	fulltext	located	d438db1fef4ce7351033
+C-sidm/1101.3097/r6-15	C-sidm	1101.3097	sidm1.tex:1482-1491	kb:1101.3097v2 sec 6 chunk 166084 flat 79391-80074	1/1/1		318	k8	fulltext	located	f9d38ea14cb474fa960d
+C-sidm/astro-ph/0110561/r6-16	C-sidm	astro-ph/0110561	SIDMGT_Xiv2.tex:309-323	kb:astro-ph/0110561v2 sec 2 chunk 122666 eq (3) flat 18195-18978	1/1/1		319	k8	fulltext	located	b416138ee96dc384399c
+C-sidm/astro-ph/0110561/r6-17	C-sidm	astro-ph/0110561	SIDMGT_Xiv2.tex:388-409	kb:astro-ph/0110561v2 sec 3 chunk 122668,122669 eq (10),(11) flat 22448-23664	3/3/3		320	k8	fulltext	located	e6745c615313916f7eb3
+C-sidm/2010.15132/r6-18	C-sidm	2010.15132	smbh.tex:116	kb:2010.15132v3 sec 2 chunk 122780,122781 flat 9740-10868	1/1/1		321	k8	fulltext	located	801b3c200e70a4660d2e
+C-sidm/2010.15132/r6-19	C-sidm	2010.15132	smbh.tex:151	kb:2010.15132v3 sec 3 chunk 122783 flat 16417-17210	2/2/2		322	k8	fulltext	located	de88cabfb3f0b6d27eca
+C-sidm/2506.17641/r6-20	C-sidm	2506.17641	sidmacc.tex:74	kb:2506.17641v3 chunk 122811 flat 4798-5745	4/4/4		323	k8	fulltext	located	cdf9243ca3742f4c5ccf
+C-sidm/2009.08163/r6-21	C-sidm	2009.08163	paper.tex:953-956	kb:2009.08163v1 sec 4 chunk 127556 table 1 flat 48883-49070	8/8/8		324	k8	fulltext	located	2cfb796757b7ea2fe42d
+C-sidm/2009.08163/r6-22	C-sidm	2009.08163	paper.tex:1190-1193	kb:2009.08163v1 sec 4.3 chunk 127561 flat 85415-85631	-		325	k8	fulltext	located	9a432626b597298d3399
 C-sidm/2105.05556/r6-23	C-sidm	2105.05556	paper.tex:88-89	kb:2105.05556v1 chunk 127711 flat 1980-2801	-		326	k8	fulltext	located	7c8aaffad8e5437a130c
-C-sidm/2105.05556/r6-24	C-sidm	2105.05556	paper.tex:612	kb:2105.05556v1 sec 5.2 chunk 127743 flat 83058-84217	4/4/4		270,327	k8	fulltext,fulltext	located,located	dbdec9ebe67e89b2df0e,34cb15a2be51d78f2cec
-C-sidm/gr-qc/0601112/r6-25	C-sidm	gr-qc/0601112	ssevnum7.tex:694	kb:gr-qc/0601112v1 sec 4 chunk 111519 flat 27229-27294	-		257,328,614	k8	to_verify,fulltext,judgement	located,located,located	bf49d1c4af86dc5d29f7,bc2f1e08ae58166b8572,4bde463e6314aab18177
-C-sidm/2602.17487/r6-26	C-sidm	2602.17487	results.tex:18	kb:2602.17487v1 sec 2.1 chunk 131293 flat 12617-12784	-		274,329	k8	fulltext,fulltext	located,located	fcc737039ef753ef2617,673c93fbb9c039b256b1
-C-sidm/2611.12831/r6-27	C-sidm	2611.12831	main.tex:1024-1028	kb:2611.12831v1 sec 3.4.1 chunk 105379 table 1 flat 99783-100127	2/2/2		275,330	k8	fulltext,fulltext	located,located	db54f409b4fc48a53871,aa746045bb85b7c68e3d
+C-sidm/2105.05556/r6-24	C-sidm	2105.05556	paper.tex:612	kb:2105.05556v1 sec 5.2 chunk 127743 flat 83058-84217	4/4/4		327	k8	fulltext	located	34cb15a2be51d78f2cec
+C-sidm/gr-qc/0601112/r6-25	C-sidm	gr-qc/0601112	ssevnum7.tex:694	kb:gr-qc/0601112v1 sec 4 chunk 111519 flat 27229-27294	-		328	k8	fulltext	located	bc2f1e08ae58166b8572
+C-sidm/2602.17487/r6-26	C-sidm	2602.17487	results.tex:18	kb:2602.17487v1 sec 2.1 chunk 131293 flat 12617-12784	-		329	k8	fulltext	located	673c93fbb9c039b256b1
+C-sidm/2611.12831/r6-27	C-sidm	2611.12831	main.tex:1024-1028	kb:2611.12831v1 sec 3.4.1 chunk 105379 table 1 flat 99783-100127	2/2/2		330	k8	fulltext	located	aa746045bb85b7c68e3d
 C-sidm/r6-/unparsed-186	C-sidm	astro-ph/0111176			0/0/2	1e-8 1e-6		no-locator	-	-	-
 F-hills/0911.1136/s8-01	F-hills	0911.1136	prp.tex:85-88	kb:0911.1136v1 sec 1 chunk 110405 flat 4226-4438	-			added	fulltext	located	-
 F-hills/0911.1136/s8-02	F-hills	0911.1136	prp.tex:229-259	kb:0911.1136v1 sec 2.1 chunk 110410 eq (8),(9),(10),(12) flat 12436-13451	-			added	fulltext	located	-
@@ -255,12 +255,12 @@ F-hills/0911.1136/s8-04	F-hills	0911.1136	prp.tex:597-599	kb:0911.1136v1 sec 4 c
 F-hills/0911.1136/s8-05	F-hills	0911.1136	prp.tex:748-749; prp.tex:784-785	kb:0911.1136v1 sec 5.1 chunk 110429 flat 37457-37551; kb:0911.1136v1 sec 5.2 chunk 110430 flat 39149-39304	1/1/1			added	fulltext	located	-
 F-hills/0911.1136/s8-06	F-hills	0911.1136	prp.tex:846-854	kb:0911.1136v1 sec 5.2 chunk 110431 flat 42231-42765	5/5/5			added	fulltext	located	-
 F-hills/1804.02911/s8-07	F-hills	1804.02911	mnras.tex:368-379	kb:1804.02911v1 sec 3.1 chunk 110495 eq (8) flat 21570-22285	1/1/1			added	fulltext	located	-
-F-hills/2404.16270/s8-08	F-hills	2404.16270	article.tex:194	kb:2404.16270v1 sec 2 chunk 110644 flat 12379-13062	1/1/1		442	k8	fulltext	located	3da808f82a4e46e289ee
+F-hills/2404.16270/s8-08	F-hills	2404.16270	article.tex:194	kb:2404.16270v1 sec 2 chunk 110644 flat 12379-13062	1/1/1			added	fulltext	located	-
 F-hills/2404.16270/s8-09	F-hills	2404.16270	article.tex:244-256	kb:2404.16270v1 sec 2.1 chunk 110646 eq (8) flat 17122-17710	-			added	fulltext	located	-
 F-hills/2404.16270/s8-10	F-hills	2404.16270	article.tex:272-274	kb:2404.16270v1 sec 2.2 chunk 110647 eq (11) flat 18450-18951	0/0/1	0.1		added	to_verify	partial	-
 F-hills/2404.16270/s8-11	F-hills	2404.16270	appendix.tex:6-8	kb:2404.16270v1 sec A chunk 110683 flat 75913-76687	1/1/1			added	fulltext	located	-
-F-hills/2402.02178/s8-12	F-hills	2402.02178	main.tex:224-225	kb:2402.02178v1 sec 1 chunk 110808 flat 10252-10386	-		445	k8	fulltext	located	2a42c57058a7d7282bed
-F-hills/2406.11985/s8-13	F-hills	2406.11985	TBH3.tex:703-711	kb:2406.11985v1 sec 6 chunk 175390,175391 flat 47683-48184	2/2/2		427,451	k8	fulltext,fulltext	located,located	9792c3d47cd165786de5,3d94926e08b45bac8e1c
+F-hills/2402.02178/s8-12	F-hills	2402.02178	main.tex:224-225	kb:2402.02178v1 sec 1 chunk 110808 flat 10252-10386	-			added	fulltext	located	-
+F-hills/2406.11985/s8-13	F-hills	2406.11985	TBH3.tex:703-711	kb:2406.11985v1 sec 6 chunk 175390,175391 flat 47683-48184	2/2/2			added	fulltext	located	-
 F-hills/0710.0879/s8-14	F-hills	0710.0879	first.tex:141-146; first.tex:291	kb:0710.0879v2 chunk 125969,125970 flat 5704-6122; kb:0710.0879v2 chunk 125972 table 2 flat 12794-12869	5/5/5			added	fulltext	located	-
 F-hills/1004.1353/s8-15	F-hills	1004.1353	Punc_N.tex:185-194; Punc_N.tex:1238-1261	kb:1004.1353v2 sec 1 chunk 126031 flat 7114-7901; kb:1004.1353v2 sec 3.2.1 chunk 126051,126052 flat 51796-53221	-			added	fulltext	located	-
 F-hills/s8-/unparsed-157	F-hills	?			-			no-locator	-	-	-
@@ -288,7 +288,7 @@ F-hills/1201.4794/ref-KHSR-start_radius	F-hills	1201.4794	ms.tex:617-618	kb:1201
 F-hills/1201.4794/ref-KHSR-spike_prograde_D0.1	F-hills	1201.4794	ms.tex:307-309	kb:1201.4794v1 sec 3 chunk 125192,125220 flat 14405-14627	1/1/1			added	to_verify	located	-
 F-hills/1804.02911/ref-BKRS-Pdis_fit	F-hills	1804.02911	mnras.tex:372-376; mnras.tex:377-379	kb:1804.02911v1 sec 3.1 chunk 110495 eq (8) flat 21820-22036; kb:1804.02911v1 sec 3.1 chunk 110495 flat 22036-22285	6/6/6			added	to_verify	located	-
 F-hills/1804.02911/ref-BKRS-Emean_fit	F-hills	1804.02911	mnras.tex:433-439; mnras.tex:440-441	kb:1804.02911v1 sec 3.1 chunk 110496 eq (9) flat 25545-25890; kb:1804.02911v1 sec 3.1 chunk 110496,110497 flat 25890-26055	6/6/6			added	to_verify	located	-
-F-hills/1804.02911/ref-BKRS-Dmax_all	F-hills	1804.02911	mnras.tex:361-362	kb:1804.02911v1 sec 3.1 chunk 110495 flat 21122-21263	1/1/1		424	k8	fulltext	located	c27e74eb376401bed4eb
+F-hills/1804.02911/ref-BKRS-Dmax_all	F-hills	1804.02911	mnras.tex:361-362	kb:1804.02911v1 sec 3.1 chunk 110495 flat 21122-21263	1/1/1			added	to_verify	located	-
 F-hills/1804.02911/ref-BKRS-P_deep_plateau	F-hills	1804.02911	mnras.tex:368-370	kb:1804.02911v1 sec 3.1 chunk 110495 flat 21570-21746	1/1/1			added	to_verify	located	-
 F-hills/1804.02911/ref-BKRS-P_at_1e-3_and_0.1	F-hills	1804.02911	mnras.tex:606	kb:1804.02911v1 sec 3.2 chunk 110504 flat 40323-40914	1/1/1			added	to_verify	located	-
 F-hills/1804.02911/ref-BKRS-coplanar_saturation	F-hills	1804.02911	mnras.tex:380-383	kb:1804.02911v1 sec 3.1 chunk 110495,110496 flat 22285-22535	1/1/1			added	to_verify	located	-
@@ -302,16 +302,16 @@ F-hills/1804.02911/ref-BKRS-collision_peak	F-hills	1804.02911	mnras.tex:763-764	
 F-hills/1804.02911/ref-BKRS-Dmax_eccentric_prograde	F-hills	1804.02911	mnras.tex:623-624	kb:1804.02911v1 sec 3.3 chunk 110505 flat 41960-42112	4/4/4			added	to_verify	located	-
 F-hills/1804.02911/ref-BKRS-sampling	F-hills	1804.02911	mnras.tex:352-357	kb:1804.02911v1 sec 3.1 chunk 110495 flat 20545-20966	-			added	to_verify	located	-
 F-hills/1804.02911/ref-BKRS-sampling_convergence	F-hills	1804.02911	mnras.tex:605-606	kb:1804.02911v1 sec 3.2 chunk 110504 flat 40242-40914	-			added	to_verify	located	-
-C-sidm/erratum/2108.11967-T1-w0.3	C-sidm	2108.11967	main.tex:491	kb:2108.11967v2 sec D flat 60341-60643	1/1/2	1.141e-2	239,309,610	k8	fulltext,fulltext,judgement	located,located,partial	e030a694d8155d5ee04c,d5196d476a13e1a8930e,783bd66ca8ceb54377e6
-C-sidm/erratum/2108.11967-T1-w1.1	C-sidm	2108.11967	main.tex:493	kb:2108.11967v2 sec D flat 60968-61271	1/1/1		239,309,611	k8	fulltext,fulltext,judgement	located,located,partial	e030a694d8155d5ee04c,d5196d476a13e1a8930e,3a4869f3aea32d38af31
-C-sidm/erratum/2108.11967-T1-C4e-4	C-sidm	2108.11967	main.tex:516	kb:2108.11967v2 sec D flat 64812-65115	1/1/2	4.0e-3	239,612	k8	fulltext,judgement	located,partial	e030a694d8155d5ee04c,49dda857692adbdb1b52
+C-sidm/erratum/2108.11967-T1-w0.3	C-sidm	2108.11967	main.tex:491	kb:2108.11967v2 sec D flat 60341-60643	1/1/2	1.141e-2	610	k8	judgement	partial	783bd66ca8ceb54377e6
+C-sidm/erratum/2108.11967-T1-w1.1	C-sidm	2108.11967	main.tex:493	kb:2108.11967v2 sec D flat 60968-61271	1/1/1		611	k8	judgement	partial	3a4869f3aea32d38af31
+C-sidm/erratum/2108.11967-T1-C4e-4	C-sidm	2108.11967	main.tex:516	kb:2108.11967v2 sec D flat 64812-65115	1/1/2	4.0e-3	612	k8	judgement	partial	49dda857692adbdb1b52
 C-sidm/erratum/2108.11967-e2Phi	C-sidm	2108.11967	main.tex:197	kb:2108.11967v2 sec 3.1 chunk 109251 eq (9) flat 17398-17551	-		613	k8	judgement	located	3fa3769e7b1703300b38
-C-sidm/erratum/gr-qc_0601112-Zc-def	C-sidm	gr-qc/0601112	ssevnum7.tex:694	kb:gr-qc/0601112v1 sec 4 chunk 111519 flat 27229-27294	-		257,328,614	k8	to_verify,fulltext,judgement	located,located,located	bf49d1c4af86dc5d29f7,bc2f1e08ae58166b8572,4bde463e6314aab18177
-C-sidm/erratum/gr-qc_0601112-T3-Zc	C-sidm	gr-qc/0601112	ssevnum7.tex:811-812	kb:gr-qc/0601112v1 sec 4 chunk 111521 table 3 flat 31788-31872	2/2/2		255,259,615	k8	fulltext,to_verify,judgement	located,partial,partial	79db68bd922df9ed1582,40bcb56ea0c3ef6dd4e4,dbca70e21fef8b3b00a9
-C-sidm/note/1101.3097-b	C-sidm	1101.3097	sidm1.tex:410	kb:1101.3097v2 sec 2.2 chunk 166054 flat 22931-22993	2/2/2		317,616	k8	fulltext,judgement	located,located	d438db1fef4ce7351033,6362edec4155ddf17665
-C-sidm/note/2601.17117-b	C-sidm	2601.17117	SIDM_MS.tex:233	kb:2601.17117v2 sec 2.1 chunk 109285 flat 19125-20432	2/2/2		243,312,617	k8	fulltext,fulltext,judgement	located,located,located	315e6af6b852531fad62,ac79648898cd76e1171d,33b46234744f539bf12a
-C-sidm/note/astro-ph_0110561-b	C-sidm	astro-ph/0110561	SIDMGT_Xiv2.tex:394	kb:astro-ph/0110561v2 sec 3 chunk 122668,122669 flat 22767-22832	2/2/2		320,618	k8	fulltext,judgement	located,located	e6745c615313916f7eb3,188081b87520754173b8
-C-sidm/note/1101.3097-footnote-b	C-sidm	1101.3097	sidm1.tex:411-412	kb:1101.3097v2 sec 2.2 chunk 166054,166099 flat 22993-23116	3/3/3		317,616	k8	fulltext,judgement	located,located	d438db1fef4ce7351033,6362edec4155ddf17665
+C-sidm/erratum/gr-qc_0601112-Zc-def	C-sidm	gr-qc/0601112	ssevnum7.tex:694	kb:gr-qc/0601112v1 sec 4 chunk 111519 flat 27229-27294	-		614	k8	judgement	located	4bde463e6314aab18177
+C-sidm/erratum/gr-qc_0601112-T3-Zc	C-sidm	gr-qc/0601112	ssevnum7.tex:811-812	kb:gr-qc/0601112v1 sec 4 chunk 111521 table 3 flat 31788-31872	2/2/2		615	k8	judgement	partial	dbca70e21fef8b3b00a9
+C-sidm/note/1101.3097-b	C-sidm	1101.3097	sidm1.tex:410	kb:1101.3097v2 sec 2.2 chunk 166054 flat 22931-22993	2/2/2		616	k8	judgement	located	6362edec4155ddf17665
+C-sidm/note/2601.17117-b	C-sidm	2601.17117	SIDM_MS.tex:233	kb:2601.17117v2 sec 2.1 chunk 109285 flat 19125-20432	2/2/2		617	k8	judgement	located	33b46234744f539bf12a
+C-sidm/note/astro-ph_0110561-b	C-sidm	astro-ph/0110561	SIDMGT_Xiv2.tex:394	kb:astro-ph/0110561v2 sec 3 chunk 122668,122669 flat 22767-22832	2/2/2		618	k8	judgement	located	188081b87520754173b8
+C-sidm/note/1101.3097-footnote-b	C-sidm	1101.3097	sidm1.tex:411-412	kb:1101.3097v2 sec 2.2 chunk 166054,166099 flat 22993-23116	3/3/3		616	k8	judgement	located	6362edec4155ddf17665
 E-stoch-inf/erratum/2502.06783-dPi-PsiG	E-stoch-inf	2502.06783	main_V2PRD.tex:320; main_V2PRD.tex:490	kb:2502.06783v3 sec 2.3 chunk 152987 eq (23) flat 29714-29950; kb:2502.06783v3 sec 3.3 chunk 153000,153001 flat 51907-52315	-		603	k8	judgement	partial	ef264a18a894616a3fbf
 E-stoch-inf/erratum/2502.06783-draw-prefactor	E-stoch-inf	2502.06783	main_V2PRD.tex:876-884	kb:2502.06783v3 sec C chunk 153024 eq (C6) flat 101201-101630	-		604	k8	judgement	located	0b4c69614cfd99c0b8a3
 E-stoch-inf/erratum/2610.32592-draw-prefactor	E-stoch-inf	2610.32592	appendix.tex:487-491	kb:2610.32592v1 sec G chunk 153921 eq (345a),(345b) flat 617010-617404	-		605	k8	judgement	located	aa23afd3d4a9fc5989ba
@@ -319,13 +319,13 @@ E-stoch-inf/erratum/2206.11234-IS-weight-sign	E-stoch-inf	2206.11234	method.tex:
 E-stoch-inf/erratum/2206.11234-leading-pole	E-stoch-inf	2206.11234	appendix.tex:168-173	kb:2206.11234v2 sec - chunk 177675,177676 eq (50) flat 88332-89066	-		607	k8	judgement	located	eca3c130892772de7ff9
 E-stoch-inf/erratum/2512.14649-Friedmann	E-stoch-inf	2512.14649	PRD_v2.tex:108	kb:2512.14649v2 sec 2.1 chunk 153569 eq (1) flat 9585-9648	-		608	k8	judgement	located	c90d01696d3e03f9c5a2
 E-stoch-inf/erratum/2512.14649-inflection	E-stoch-inf	2512.14649	PRD_v2.tex:534	kb:2512.14649v2 sec 3.3 chunk 153588 flat 50547-51301	-		609	k8	judgement	located	9c5970ed141d98f48bee
-D-bh-dress/erratum/1305.2619-radial-action	D-bh-dress	1305.2619	SFWpaper.tex:413-419; SFWpaper.tex:585-588	kb:1305.2619v1 sec 3.2 chunk 166875 eq (31) flat 34300-34513; kb:1305.2619v1 sec 4.1 chunk 166880 eq (47) flat 42661-42865	-		332	k8	fulltext	located	03738b7d20f8a5fe53ba
+D-bh-dress/erratum/1305.2619-radial-action	D-bh-dress	1305.2619	SFWpaper.tex:413-419; SFWpaper.tex:585-588	kb:1305.2619v1 sec 3.2 chunk 166875 eq (31) flat 34300-34513; kb:1305.2619v1 sec 4.1 chunk 166880 eq (47) flat 42661-42865	-			added	judgement	located	-
 D-bh-dress/note/1707.06302-footnote-SFW	D-bh-dress	1707.06302	kerrdm.tex:918-920	kb:1707.06302v2 sec 4 chunk 176017,176018,176056 flat 870055-870256	-			added	fulltext	located	-
 D-bh-dress/judgement/1305.2619-fig3-mass	D-bh-dress	1305.2619	SFWpaper.tex:696-702; SFWpaper.tex:808	kb:1305.2619v1 sec 4.2 chunk 166894 figure 3 flat 49965-50433; kb:1305.2619v1 sec 5 chunk 166886 flat 56142-56483	1/1/1			added	judgement	located	-
-D-bh-dress/erratum/1305.2619-15pc-factor3	D-bh-dress	1305.2619	SFWpaper.tex:443	kb:1305.2619v1 sec 3.3 chunk 166876 flat 36325-36847	1/1/1		339	k8	fulltext	located	88204591739559f85ca6
+D-bh-dress/erratum/1305.2619-15pc-factor3	D-bh-dress	1305.2619	SFWpaper.tex:443	kb:1305.2619v1 sec 3.3 chunk 166876 flat 36325-36847	1/1/1			added	to_verify	located	-
 D-bh-dress/erratum/1707.06302-spin-boost	D-bh-dress	1707.06302	kerrdm.tex:929-931	kb:1707.06302v2 sec 4 chunk 176018 flat 870709-870940	2/2/2			added	to_verify	located	-
-D-bh-dress/note/1805.09034-B85-slope	D-bh-dress	1805.09034	main.tex:195-200	kb:1805.09034v3 sec 2.2 chunk 122919 eq (13) flat 15688-15878	-		364,369	k8	fulltext,fulltext	located,located	5421a01fb911dee97f1d,390ecc9ddcdf59a866a8
-D-bh-dress/note/1901.08528-B85-slope	D-bh-dress	1901.08528	PBH-UCMH-ArXiv-v2.tex:235	kb:1901.08528v2 sec 2.3 chunk 123001 flat 20533-21737	-		351,356,370,415	k8	fulltext,fulltext,to_verify,background	located,located,partial,located	cce71050a8667fb775f4,e7747dca562041db3914,9eccd18c04da138b1e0f,6d06b8d3b49303325008
+D-bh-dress/note/1805.09034-B85-slope	D-bh-dress	1805.09034	main.tex:195-200	kb:1805.09034v3 sec 2.2 chunk 122919 eq (13) flat 15688-15878	-			added	fulltext	located	-
+D-bh-dress/note/1901.08528-B85-slope	D-bh-dress	1901.08528	PBH-UCMH-ArXiv-v2.tex:235	kb:1901.08528v2 sec 2.3 chunk 123001 flat 20533-21737	-			added	fulltext	located	-
 F-hills/2404.16270/readme-CoordtEqs	F-hills	2404.16270	article.tex:246-256	kb:2404.16270v1 sec 2.1 chunk 110646 eq (8) flat 17329-17710	-			added	to_verify	located	-
 F-hills/2402.02178/readme-kerr-claim	F-hills	2402.02178	main.tex:592-597	kb:2402.02178v1 sec 3.2 chunk 110820,110838 figure 5 flat 30791-30968	-			added	to_verify	located	-
 F-hills/2404.16270/readme-1PN	F-hills	2404.16270	appendix.tex:117-134	kb:2404.16270v1 sec C chunk 110688 eq (C2),(C1) flat 85081-87573	-			added	to_verify	located	-

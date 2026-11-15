@@ -163,3 +163,9 @@ the new criterion on S4's checked.jsonl was run before this entry (so this is no
 prediction made blind): 258 of 330 covered; not covered: F 57, D 7, B 7, C 1.
 Prediction for the registered rerun: the same 258 / 72 split (the check counts as in S4);
 refuted if it differs, which would mean the K8 claims changed between the two runs.
+
+Outcome S7 (run kb-20261115-154906-f19880f): prediction held: 258 covered by a K8 claim of
+the same note, 70 not covered with a locator (F 55, B 7, D 7, C 0 with a locator), 2 without
+a paper locator; check counts as in S4. Figure re-read: D now shows its 7 annotations as not
+in the K8 layer (3 fulltext-ready, 2 to_verify, 2 judgement), F 55 of 57. Published files in
+`claims/` and `fig_locator_check.png` replaced by this run's.
