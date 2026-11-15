@@ -8,7 +8,7 @@ figure (read by eye from the files, listed below). The digitised values are writ
 the run directory only (third-party data are not committed); the comparison figure and the
 deviation numbers are committed.
 
-Run: python3 -I scripts/digitize_skr.py <coplanar_run_id> [<deep_supplement_run_id>]
+Run (from the package directory; the EPS files are only read as text): python3 scripts/digitize_skr.py <coplanar_run_id> [<deep_supplement_run_id>]
 """
 import json
 import os
