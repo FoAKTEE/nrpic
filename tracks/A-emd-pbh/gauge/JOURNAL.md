@@ -121,3 +121,71 @@ Refuted if the toy's ratio there is more than a factor 2 away from the 3D one; a
 below the 3D value would mean the lapse-gradient term (absent from the toy) slows the
 lapse collapse, and the toy's freezing statements for the subtracted conditions cannot be
 used.
+
+## 03:40 to 04:00: outcomes of T1 to T4
+
+Runs (manifests in `tracks/A-emd-pbh/runs/<run_id>/manifest.json`, outputs under
+`scratch/A-emd-pbh/<run_id>/`, one processor core each, no cards):
+T2 `A-emd-pbh-20261115-113608-374a41a` (first figure had a clipped label) and
+`A-emd-pbh-20261115-113755-cac3c4b` (same numbers, figure fixed); T1
+`A-emd-pbh-20261115-113614-374a41a`; T3 `A-emd-pbh-20261115-113807-43300e5` (lapse panel
+blown up by the broken last records) and `A-emd-pbh-20261115-113921-ca3786e` (same
+numbers, axis fixed); T4 `A-emd-pbh-20261115-113810-e02c969`. Figures, inspected:
+`figs/lapse_toy.png`, `figs/vonneumann.png`, `figs/bh2_onset.png`, `figs/kd_compare.png`.
+
+### T1 (run -113614-374a41a, `stdout.txt`, `lapse_toy.json`)
+- P1.1 confirmed: plain 1+log top-hat maximum 19.01 (= 1 + 6 ln 20.13, b_max/b_i = 20.13);
+  background 25.15 at a = 56 (1 + 6 ln 56 = 25.15). 2610.23218 states "alpha ~ 20".
+- P1.2 confirmed: damped condition maximum 3.03 (paper: "from 20 to 2").
+- P1.3 confirmed: conformal-time lapse, background alpha = a (56.04 at the first record
+  past a = 56); top-hat reaches its crunch at t = 25.71 (a = 192; run on to a = 1e4 X):
+  no singularity avoidance. Same for `lapse_volume` (crunch at t = 25.70).
+- P1.4 confirmed: conformal + driver, top-hat lapse 0.067 against a background lapse of
+  168 at the end; the top-hat is frozen just past turnaround (tau_c/tau_crunch = 0.539).
+- P1.5 confirmed and sharper than written: background-subtracted 1+log (and the driver
+  `lapse_kdriver = 2`, identical in the toy) freezes the top-hat at its turnaround
+  (tau_c/tau_crunch = 0.5047, b = 0.9999 b_max). The 2610.23218 variant K + 2/tau_local
+  freezes it while still expanding (tau_c/tau_crunch = 0.139, linear contrast 0.45);
+  analytically alpha = 1 - 2 ln[(1+delta)/(1+delta_i)] in that toy, zero at
+  1 + delta = e^(1/2) (1 + delta_i). Softplus freezes it at 0.85 b_max after turnaround
+  (alpha = 1 + 6 ln(b/b_max) from turnaround), linear contrast 1.38.
+- P1.6 confirmed: coordinate time to a = 56 is 278.7104 (cosmic) and 12.9666
+  (conformal), toy within 1e-7; ratio 21.5. Steps at fixed dt = C dx scale the same way.
+
+### T2 (runs -113608-374a41a, -113755-cac3c4b)
+Largest stable C v: scalar wave 0.664 (no dissipation), 0.618 (diss 0.5), 0.503 (diss
+1.0); shift subsystem with b = 3/4 0.728, 0.660, 0.536. Prediction (0.6 to 0.8 for the
+shift mode with diss 0.5; 0.6 to 0.75 for the scalar) confirmed. Dissipation lowers the
+limit. For the alpha^2-scaled driver in the conformal-time slicing with cfl 0.25 the
+limit is passed at alpha = 2.64, t = 1.25.
+
+### T3 (run -113921-ca3786e)
+bh2/bh1 of the largest relative Hamiltonian constraint: 1.00 at t = 1.00, 1.43 at 1.25,
+1.91 at 1.50, 4.34 at 1.75; above 2 from t = 1.5625 on; Theta above 2 from t = 1.50;
+the largest momentum constraint exceeded 2 once at t = 0.8125 (transient) and stays above
+2 from 1.5625. The largest lapse of bh2 crosses the T2 limit (2.642) at t = 1.203 (it runs
+above a(t): 2.77 at t = 1.25). bh1 shows no such growth before t = 2.2.
+Prediction confirmed for H and Theta: separation after the limit, not before t = 1.0.
+The cosmology log's "unstable on the refined blocks" and this time-step explanation are
+not exclusive (the finest level sets dt, and Gamma^i is non-zero only there), but the
+time-step reading predicts something the other does not: halving cfl_number moves the
+onset to alpha = 5.3 (t = 2.6), and the unscaled driver (`shift_Gamma = 0.75`,
+`shift_alpha2Gamma = 0`, speed 1) is stable at cfl 0.25. Not run (needs a card, about
+0.15 card-hours from the 505 s of bh2's log); listed as a request.
+The linear amplification of the fastest grid mode from T2 (ln A = 15 by t = 1.4, 84 by
+1.6) is far larger than the observed growth of the constraint maxima; the instability
+needs Gamma^i != 0 to be seeded and saturates nonlinearly. The model gives the onset,
+not the growth.
+
+### T4 (run -113810-e02c969)
+Refuted. Toy collapse epoch X = 29.9 puts its top-hat lapse maximum at the 3D value
+(a = 15.75), but the toy maximum is lower (7.7 against 10.5) and the fall afterwards much
+slower: overdensity/largest lapse 0.50 vs 0.45 (toy) at a = 17.3, 0.31 vs 0.41 at 18.6,
+0.12 vs 0.37 at 20.0, and at the last sound record (t = 7.046875, a = 20.47, read from
+`east.nrpic.hst`: 1.4166 / 20.904) 0.068 vs about 0.36, a factor 5. (The script's own
+last row, a = 20.53, is the broken record and is meaningless.) The 3D peak, from
+constraint-solved data in the conformal-time slicing at 4 Hubble radii, collapses faster
+than the top-hat with the same lapse-maximum epoch. Consequence: the toy orders the
+conditions in the expansion phase (lapse growth, exact pointwise relations) and the step
+cost; its freezing epochs are qualitative only and do not rank the background-subtracted
+conditions. That ranking needs runs of the code (requests in `GAUGE.md`).
