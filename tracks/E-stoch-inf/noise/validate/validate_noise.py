@@ -118,7 +118,7 @@ def test_A0(a):
     bad = []
     for cyc in a.cycles:
         o = run["outputs"][cyc]
-        miss = [v for v in aio.NOISE_VARS if v not in o["fields"]]
+        miss = [v for v in run.get("expected_vars", aio.NOISE_VARS) if v not in o["fields"]]
         if miss:
             bad.append(f"cycle {cyc}: missing {miss}")
         for v, f in o["fields"].items():
@@ -128,7 +128,7 @@ def test_A0(a):
         if t is None or abs(t - nr.out_time(cyc, p)) > 1e-12 * max(1.0, abs(t)):
             bad.append(f"cycle {cyc}: time {t} != t0 + cycle dt = {nr.out_time(cyc, p)}")
     for k in ("seed", "scheme", "amplitudes", "nmax2", "window", "ksigma0", "hubble",
-              "amp", "phase1", "dt"):
+              "amp", "phase1", "dt", "N", "L", "x0"):
         if p.get(k) is None:
             bad.append(f"parameter {k} missing")
     return rec("A0", "format", not bad, len(bad), "no inconsistency", "; ".join(bad[:5]))
@@ -404,6 +404,9 @@ def test_A9(a, data):
     if a.p["scheme"] != "frozen":
         return rec("A9", "integrated field", None, None, "markov: covered by A1 and A2",
                    "not applicable")
+    if not any(k[0] == "stoch_acc0" for k in a.coef):
+        return rec("A9", "integrated field", None, None, "needs stoch_acc0",
+                   "not applicable: no integrated field in the output")
     tol = max(A9_TOL, a.eps_x)
     worst, stat = 0.0, {}
     for cyc in a.cycles:
@@ -540,14 +543,17 @@ def plot_validation(data, a, outdir, tag):
     fig, ax = plt.subplots(1, 3, figsize=(fs.FULL_WIDTH * 1.35, 3.2))
     # spectrum ratio per shell for c0 at each output
     cols = fs.series_colors(len(a.cycles))
-    for i, cyc in enumerate(a.cycles):
-        r = data["A2"].get(f"stoch_c0@{cyc}")
+    rs = [data["A2"].get(f"stoch_c0@{cyc}") for cyc in a.cycles]
+    widest = max((r for r in rs if r is not None), key=lambda r: len(r["shells"]), default=None)
+    if widest is not None:                       # +-1/sqrt(M) band of the widest output
+        sh, M = np.array(widest["shells"]), np.array(widest["M"])
+        ax[0].fill_between(sh, 1 - 1 / np.sqrt(M), 1 + 1 / np.sqrt(M), color="grey",
+                           alpha=0.15, lw=0)
+    for i, (cyc, r) in enumerate(zip(a.cycles, rs)):
         if r is None:
             continue
-        sh, ra, M = np.array(r["shells"]), np.array(r["ratio"]), np.array(r["M"])
+        sh, ra = np.array(r["shells"]), np.array(r["ratio"])
         ax[0].plot(sh + 0.08 * i, ra, "o", ms=3, color=cols[i], label=f"cycle {cyc}")
-        ax[0].fill_between(sh, 1 - 1 / np.sqrt(M), 1 + 1 / np.sqrt(M), color="grey",
-                           alpha=0.15, lw=0) if i == 0 else None
     ax[0].axhline(1.0, **fs.GUIDE)
     ax[0].set_xlabel(r"shell $|n|$")
     ax[0].set_ylabel(r"$\langle|\xi_n|^2/|G_n|^2\rangle_{\rm shell}$")
@@ -588,6 +594,10 @@ def plot_validation(data, a, outdir, tag):
         ax[2].set_ylabel("density")
         ax[2].legend(loc="upper right", fontsize=7)
         ax[2].set_title(f"A3 amplitudes (M = {first['M']})", fontsize=10)
+    for x in ax[1:]:
+        if not x.lines and not x.patches:
+            x.text(0.5, 0.5, "not applicable:\nfewer than 100 effective modes",
+                   ha="center", va="center", transform=x.transAxes, fontsize=9)
     fig.tight_layout()
     fs.save(fig, os.path.join(outdir, f"fig_val_{tag}"))
     plt.close(fig)
@@ -598,9 +608,14 @@ def main():
     ap.add_argument("--run", required=True)
     for k in ("blocks8", "blocks64", "restart", "res-lo", "res-hi", "seed2", "card"):
         ap.add_argument(f"--{k}")
+    ap.add_argument("--input", help="input file of NRSFDMP1 dump runs (core's power model);"
+                    " all runs given then use it, with the seed of --seed2-input for U8")
+    ap.add_argument("--seed2-input")
     ap.add_argument("--out", required=True)
     ap.add_argument("--tag", default="run")
     a_ = ap.parse_args()
+    _read = aio.read_run
+    aio.read_run = lambda path, inp=a_.input: _read(path, inp)
     base = aio.read_run(a_.run)
     res, data, an = validate_single(base)
     if a_.blocks8:
@@ -616,7 +631,7 @@ def main():
     if a_.res_lo and a_.res_hi:
         res.append(compare_resolution(aio.read_run(a_.res_lo), aio.read_run(a_.res_hi)))
     if a_.seed2:
-        res.append(compare_seeds(base, aio.read_run(a_.seed2)))
+        res.append(compare_seeds(base, aio.read_run(a_.seed2, a_.seed2_input or a_.input)))
     if a_.card:
         res.append(compare_fields(base, aio.read_run(a_.card), "A14", "card", "tol", 1e-12))
     os.makedirs(a_.out, exist_ok=True)

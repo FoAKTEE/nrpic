@@ -264,3 +264,53 @@ which it could have failed: the two failures of T-N3 are chance (two of the four
 family-wise rate per validation was about 2.5e-3 for A3 alone and larger in total,
 not 3e-3 for the whole validation as section 10 had estimated. The amended rule (level
 1e-3/D) addresses the second part.
+
+## 2026-11-15 14:05 UTC: outcomes T-N3b, T-N4b (run E-stoch-inf-20261115-132950-16a0168)
+
+Same seeds, family-wise level 1e-3/D, A5 counted.
+- T-N3b holds as predicted: one failing validation of 38, the base case with seed
+  20379900 (A3, KS p = 7.4e-6 against the level 1.08e-5, D = 93); seed 20387819 passes;
+  all other validations and the comparisons A11-A15 pass; A5 passes everywhere. Under the
+  reading rule of NOISE_SPEC section 10 this validation would be repeated on the second
+  seed. T-N2 numbers identical to the first run (the calibration does not use the rule).
+- T-N4b holds: all 15 mutants fail the tests written for them; the MeshBlock-keyed mutant
+  now also fails A5 (seams give a nonzero mean), which the first run did not count.
+- Figures looked at: fig_selftest_matrix, fig_selftest_calibration, fig_val_pos_frozen_*,
+  fig_val_pos_markov_tanh_*, fig_val_neg_norm_2pi (the mutant's shell ratios sit at
+  15.7 = (2 pi)^{3/2}), fig_calib_a3 (single decisions on the uniform line; the
+  family-wise curve below D p). The Markov/Heaviside validation figure shows only the
+  crossing shell of each step and two empty panels (A3, A4 not applicable below 100
+  effective modes); the plotting now labels such panels, and the figure is not used.
+  The A2 panels of this run draw the 1/sqrt(M) band only up to the shells of the first
+  output; fixed in the code for later runs.
+
+State at the end of the package: the generator does not exist on core/scalar-field (no
+commit beyond main), so nothing written by the code has been validated. Every test above
+is of the specification, the reference and the validation themselves.
+
+## 2026-11-15 14:15 UTC: core's generator found; adapter to its output; prediction T-N8
+
+`core/scalar-field` now has the generator (ba37619, 5384d02; "builds on processors;
+untested"): `athenak/src/scalar_field/scalar_field_noise.cpp` uses the keys of
+ref/philox_ref.py (stream 2^16 + dof, CellEntity(n + 2^20), half space n_x first, epoch 0
+frozen, ncycle + 1 Markov), L^-3/2 and separable synthesis per MeshBlock. Its model
+`<scalar_field> noise = power` writes per step the increment amp q^((tilt-3)/2) L^-3/2
+g(dW) alpha (g = dW frozen, sqrt(dW) Markov) as two fields xi_0 (dof 0) and xi_1 (dof
+noise_pi_dof), into the double-precision dump `<basename>.sf.NNNNN.dump` (NRSFDMP1, layout
+in `scalar_field_io.cpp` lines 12-17). Core's journal (tracks/core/JOURNAL-scalar.md, P4)
+lists its own noise tests as predictions; no noise run exists. So no code output is
+validated in this package; the run is named for the lead in README.md.
+Differences from NOISE_SPEC section 9 that the validation must absorb: the frozen field
+is the increment of the step, not the rate; dt comes from the CFL condition; the dump
+holds no input parameters; there is no integrated field (A9) and no complex-phase or
+direction-dependent component (A6 reduces to xi_1 = xi_0 for noise_pi_dof = 0; A1 still
+catches an exchange of axes because a random field is not symmetric under it).
+Adapter: athenak_io reads NRSFDMP1 dumps with the parameters from the run's input file;
+noise_ref gains the frozen increment form, noise_t0 and noise_tilt.
+
+Prediction T-N8 (validate/dump_selftest.py): reference fields of core's power model
+(frozen and Markov, tanh, N = 64, nmax2 = 256, noise_pi_dof = 1 and 0), written as NRSFDMP1
+dumps with 8 MeshBlocks in the documented layout, read back through the adapter, pass
+every applicable test (A9 not applicable); 1 against 8 MeshBlocks bit-identical (A11);
+a dump whose MeshBlocks are written with the wrong logical locations fails A1 and A11.
+Refuted otherwise (then the reader or the parameter mapping is wrong).

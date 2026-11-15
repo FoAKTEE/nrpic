@@ -106,8 +106,9 @@ def analyse(lat, field):
 
 # ------------------------------------------------------- unit-test transfer (sec. 8)
 def window(lat, t, p):
-    """W_k(t) of the unit test: k_sigma(t) = ksigma0 k_f exp(hubble t)."""
-    ks_over_kf = p["ksigma0"] * np.exp(p["hubble"] * t)
+    """W_k(t) of the unit test: k_sigma(t) = ksigma0 k_f exp(hubble (t - t0w));
+    t0w is `<scalar_field> noise_t0` of core's implementation (default 0)."""
+    ks_over_kf = p["ksigma0"] * np.exp(p["hubble"] * (t - p.get("t0w", 0.0)))
     if p["window"] == "tanh":
         return 0.5 * (1.0 + np.tanh(p["sharpness"] * np.log(ks_over_kf / lat.q)))
     if p["window"] == "heaviside":
@@ -119,13 +120,14 @@ def window_rate(lat, t, p):
     """dW_k/dt of the tanh window: (s/2) sech^2(s ln(k_sigma/k)) hubble."""
     if p["window"] != "tanh":
         raise ValueError("the rate form needs the tanh window")
-    x = p["sharpness"] * np.log(p["ksigma0"] * np.exp(p["hubble"] * t) / lat.q)
+    x = p["sharpness"] * np.log(p["ksigma0"] * np.exp(p["hubble"] * (t - p.get("t0w", 0.0)))
+                                / lat.q)
     return 0.5 * p["sharpness"] * p["hubble"] / np.cosh(x)**2
 
 
 def base_amplitude(lat, p):
-    """amp q^{-3/2} L^{-3/2}: scale-invariant colouring (Delta flat)."""
-    return p["amp"] * lat.q**-1.5 * lat.L**-1.5
+    """amp q^{(tilt-3)/2} L^{-3/2}; tilt = 0 (default) is scale invariant (Delta flat)."""
+    return p["amp"] * lat.q**(0.5 * (p.get("tilt", 0.0) - 3.0)) * lat.L**-1.5
 
 
 def component_factor(lat, comp, p):
@@ -149,7 +151,10 @@ def transfer(lat, comp, cycle, p):
     markov: the increment of the step ending at the output time,
             amp q^-3/2 L^-3/2 sqrt(W(t_cycle) - W(t_cycle - dt))."""
     t = out_time(cycle, p)
-    if p["scheme"] == "frozen":
+    if p["scheme"] == "frozen" and p.get("frozen_form", "rate") == "increment":
+        dW = window(lat, t, p) - window(lat, t - p["dt"], p)   # core's power model
+        g = base_amplitude(lat, p) * np.where(dW > 0.0, dW, 0.0)
+    elif p["scheme"] == "frozen":
         g = base_amplitude(lat, p) * window_rate(lat, t, p)
     else:
         dW = window(lat, t, p) - window(lat, t - p["dt"], p)

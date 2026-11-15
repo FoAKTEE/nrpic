@@ -120,7 +120,7 @@ differ (the Markov increment must scale as sqrt(dW) to have a limit dt -> 0).
 
 **Amplitude variant "pair" (option).** Two independent amplitudes beta_n, beta_{-n} per pair
 (n, -n), `xi_n = [G_n beta_n + conj(G_n) conj(beta_{-n})] / sqrt(2)`, as in
-`cosmo/ic/random_field.py` (lines 72-77). Each real field has the same law as in the
+`cosmo/ic/random_field.py` (docstring line 72, code line 108). Each real field has the same law as in the
 default ("hemisphere") variant. They differ only for two fields of one degree of freedom
 whose transfers have a complex ratio: the hemisphere variant gives
 `<xi^a_n conj(xi^b_n)> = G^a conj(G^b)` with the sign of the imaginary part flipped on -H
@@ -253,7 +253,7 @@ noise/JOURNAL.md 13:30.)
 | A5 | One-point | mean <= eps_x rms; skewness and excess kurtosis reported only (cells are correlated, no calibrated p-value) | zero mode |
 | A6 | Shared degree of freedom | c1, c3 against c0. Hemisphere: max_n \|xi^c_n - (G^c_n/G^0_n) xi^0_n\| <= eps_m rms. Pair: c3 as hemisphere; c1: rho = sum xi^1 conj(xi^0) / sqrt(sum\|xi^1\|^2 sum\|xi^0\|^2) against cos(phase1) and Im rho against 0, \|z\| <= z_D | separate keys per component; wrong amplitude variant |
 | A7 | Independent degrees of freedom | S = sum_n xi^2_n conj(xi^0_n): Re S and Im S against 0 with variance sum \|G^0\|^2 \|G^2\|^2 / 2, \|z\| <= z_D | one stream for all degrees of freedom |
-| A8 | Between outputs | frozen: for output pairs (100,101), (100,200), (200,300), max_n \|xi_n(b) - [G_n(b)/G_n(a)] xi_n(a)\| <= eps_m rms over modes active in both; Markov: S = sum xi_n(b) conj(xi_n(a)) / phase against 0, \|z\| <= z_D, reported "not applicable" below 30 common active modes | fresh draws in the frozen scheme; reused draws in the Markov scheme |
+| A8 | Between outputs | frozen: for output pairs (100,101), (100,200), (200,300), max_n \|xi_n(b) - [G_n(b)/G_n(a)] xi_n(a)\| <= eps_m rms over modes active in both; Markov: S = sum xi_n(b) conj(xi_n(a)) / phase against 0, \|z\| <= z_D, "not applicable" below 100 effective modes (rule above) | fresh draws in the frozen scheme; reused draws in the Markov scheme |
 | A9 | Integrated field | frozen: max \|a_code - a_ref\| <= max(1e-6, eps_x) rms(a_ref) in real space (Runge-Kutta truncation, estimated 2e-8 for dt = 0.01, s = 5 [JUDGEMENT: Simpson error bound]; a source taken at the step start instead of the stage time errs by O(s hubble dt) = 5e-2); Markov: A1 (exact) and A2 with \|G\|^2 = base^2 [W(t) - W(t0)] | stage-time bookkeeping, missed or doubled steps |
 | A10 | Band limit | max \|xi_n\| over modes outside M (n = 0 and the Nyquist planes included) and over modes of M with G_n = 0: <= eps_m rms | aliasing, cut, leakage across MeshBlock seams |
 | A11 | MeshBlocks | U1, U2, U3: bit-identical; a difference up to 1e-13 rms passes only with a stated reason (distributed FFT) | keys or positions taken from the MeshBlock |
