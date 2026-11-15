@@ -1,0 +1,77 @@
+# Box tests of the collision operator (tracks/C-sidm/collide/TESTS.md section 1).
+# Periodic Minkowski box [10, 11)^3: problem generator nrpic_geodesic with the analytic
+# Cartesian Kerr-Schild functor at bh_mass = 0 (exactly flat: lapse 1, zero shift,
+# gamma_ij = delta_ij); the box sits away from the origin because the functor divides by r.
+# Particle files: tracks/C-sidm/collide/analysis/make_box.py (positions in [10, 11)^3).
+# Option names: coord/INTERFACES/collisions.md (release core-v0.3).
+# The drivers in ../scripts/ set mesh size, dt, nlim, sigma, seed on the command line.
+# triad = cholesky: the frame of the track's specification (lead's choice for T0b); in this
+# flat box gamma = 1, so the symmetric and the Cholesky triads are both the identity.
+
+<comment>
+problem   = C-sidm box tests of the collision operator
+
+<job>
+basename  = box
+rng_seed  = 1
+
+<mesh>
+nghost    = 2
+nx1       = 32
+x1min     = 10.0
+x1max     = 11.0
+ix1_bc    = periodic
+ox1_bc    = periodic
+nx2       = 32
+x2min     = 10.0
+x2max     = 11.0
+ix2_bc    = periodic
+ox2_bc    = periodic
+nx3       = 32
+x3min     = 10.0
+x3max     = 11.0
+ix3_bc    = periodic
+ox3_bc    = periodic
+
+<meshblock>
+nx1       = 32
+nx2       = 32
+nx3       = 32
+
+<time>
+evolution  = dynamic
+integrator = rk2
+cfl_number = 1.0
+nlim       = -1
+tlim       = 1.0e9
+ndiag      = 100
+
+<particles>
+particle_type  = nrpic
+pusher         = midpoint
+triad          = cholesky
+metric         = kerr_schild
+bh_mass        = 0.0
+bh_spin        = 0.0
+tolerance      = 1.0e-13
+max_iterations = 100
+dt             = 0.01
+deposit        = false
+hist_dcycle    = 1
+snap_dt        = 1.0e9
+particle_file  = box.nrp
+collisions       = true
+coll_sigma       = 1.0
+coll_sigma_model = constant
+coll_sigma_w     = 1.0
+coll_pmax        = 0.1
+coll_subcycle    = measured
+coll_nsub_max    = 1000
+coll_cell_factor = 1
+coll_weights     = equal
+coll_hist_dcycle = 1
+coll_dump_cycle  = -1
+coll_budget      = false
+
+<problem>
+pgen_name = nrpic_geodesic
