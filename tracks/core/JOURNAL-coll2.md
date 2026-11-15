@@ -668,3 +668,41 @@ other owners); `gpu_job3.sh` appends its verdict lines to `CARD_TESTS.log` there
 time used by this package: 0.07 card-hours (the crashed runs of the first session);
 the queued jobs ask for at most 1.5 hours of wall limit, expected below 0.5
 card-hours.
+
+## 2026-11-15 19:20 UTC  end of the second session of coll2: state and what is open
+
+Correction to the entry of 19:15: card time used by this package so far is 0.087
+card-hours (sum of `card_hours` of the ten crashed card runs of 17:11-17:22 UTC), not 0.07.
+
+Established (evidence in `interfaces/collisions.md` section 11.6 and the entries above):
+1. Cause of the collision energy growth (core G2 OPEN item 6): the spatial metric differs
+   between the partners' positions in a cell while the cell-frame kinetic energy is
+   correlated with position; tested in 14 configurations where three consequences could
+   each have failed (lapse does not enter, sign follows the temperature law, second
+   order in the cell size).
+2. Correction `coll_energy = particle`: per pair, sum u_i and sum (alpha W - beta^i u_i)
+   at the particles' own metric conserved to rounding; equilibria of a static metric
+   preserved (G2, G4); identical to `cell` in a homogeneous metric (G3); T12 passed.
+3. Off by default: every compared file byte-identical on the processor (seven existing
+   set-ups, rng and nrpic_cf regressions, all wave-1 collision tests and the curved box).
+4. Track C's requests answered (outbox 20261115T191641Z__to-C-sidm__collisions-2-answers.md);
+   executables published with READY.
+
+Open:
+- Card: P9 (card regression and wave-1 card tests), the new tests on the card, P11 with
+  collisions at Kn = 3 over 150 M (both modes): Slurm jobs 4484 (part R) and 4485
+  (parts N, C) queued behind 14 jobs (estimated start 00:35 and 01:15 UTC). Their
+  verdicts land in `scratch/core/exe/core_collisions-2/CARD_TESTS.log`; their run
+  manifests (runreg.py, hand-written, untracked until committed) in `tracks/core/runs/`.
+  The next core session must commit those manifests, look at the figures, record the
+  outcomes against the predictions Rc, Nc, C of 16:22 UTC (the C prediction: `cell`
+  raises sum M W_p by 3.6e-5 to 6.8e-5, `particle` changes sum M H_p by less than 1e-12
+  of its value, collisions within 4 sigma, central lapse within 0.01, mass radii within
+  5 percent), and update READY. The stale-object cause of the first crash is supported
+  by file times only until the smoke test runs.
+- Not tested: `coll_energy` with an evolving metric over many collision times (the
+  cluster run above is the first), adaptive refinement, MPI, heat conduction (T6-T8 of
+  Track C).
+- The comment of `NrpicCollideOptions::ext` in `particles.hpp` says columns 32 to 35;
+  they are 32 to 36 (comment only; left so that the published build matches the source).
+- Shared-file lines touched: `interfaces/collisions.md` section 11.5.
