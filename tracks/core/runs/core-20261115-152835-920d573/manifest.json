@@ -1,0 +1,44 @@
+{
+ "run_id": "core-20261115-152835-920d573",
+ "owner": "core",
+ "registered_by": "tracks/core/analysis/dfix/runreg.py (by hand: nrpic-run submit fails)",
+ "purpose": "T1 reproduction of the tracer defect on processors: horizon_calib with m = 0 (R1) and m = 1e-300 (R2), release executable core-v0.3, tlim = 1",
+ "kind": "scouting",
+ "command": [
+  "python3",
+  "tracks/core/analysis/dfix/run_cases.py",
+  "tracks/core/analysis/dfix/cases/t1_repro_cpu.list",
+  "--jobs",
+  "2"
+ ],
+ "cwd": "/data/haiyangw/nrpic/wt/core-dfix",
+ "commit": "920d573f6df5e3128a71a54db6e0723d9471a7f2",
+ "branch": "core/requests-adf",
+ "uncommitted_changes": [],
+ "inputs": [
+  {
+   "path": "tracks/core/analysis/dfix/run_cases.py",
+   "sha256": "9b984be0bc3e9f6a504c92531993ef6a1af757923557da7eb570da0355841708"
+  },
+  {
+   "path": "tracks/core/analysis/dfix/cases/t1_repro_cpu.list",
+   "sha256": "a2f905cad875402b5410b992cf0fcc5144b87afb329696ad7391dcd396ed6959"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/.work/build_cpu_v03/src/athena",
+   "sha256": "d983155bb21befedbd123d54d84fcfc12a875ee0aaa0baa36f5a51261041c25c"
+  },
+  {
+   "path": "problems/puncture/horizon_calib.athinput",
+   "sha256": "f885004bef5d9f2e9f436529d8c1f5a267853fc891824d5424336a93fda2ff75"
+  }
+ ],
+ "output_directory": "/data/haiyangw/nrpic/scratch/core/core-20261115-152835-920d573",
+ "outputs": {
+  "dir": "scratch/core/core-20261115-152835-920d573"
+ },
+ "host": "anta",
+ "start_utc": "2026-11-15T15:28:35Z",
+ "cores": 2,
+ "status": "running"
+}
