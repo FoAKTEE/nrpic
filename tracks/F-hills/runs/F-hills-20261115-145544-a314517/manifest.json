@@ -1,0 +1,44 @@
+{
+ "run_id": "F-hills-20261115-145544-a314517",
+ "track": "F-hills",
+ "package": "geodesic_binary (F-pre-2)",
+ "purpose": "V4b lead: retrograde D = 0.3, 0.38 with wide bound samples rerun to 300 r_t",
+ "kind": "scouting",
+ "command": [
+  "/data/haiyangw/nrpic/scratch/F-hills/venv-gb/bin/python",
+  "tracks/F-hills/stage/G0/checks/lead_checks.py",
+  "v4b",
+  "/data/haiyangw/nrpic/scratch/F-hills/F-hills-20261115-145544-a314517"
+ ],
+ "cwd": "/data/haiyangw/nrpic/wt/F-hills",
+ "git": {
+  "sha": "a314517d3d3ba395c6c82bfca948d6b6a9f46cfb",
+  "branch": "track/F-hills",
+  "dirty_package": false
+ },
+ "inputs": [
+  {
+   "path": "tracks/F-hills/stage/G0/checks/lead_checks.py",
+   "sha256": "57c4d63e5ccca7efad33cef3d57f52b665fa6499d2f4c04137fb16c5e20f27b5"
+  }
+ ],
+ "parents": [],
+ "resources": {
+  "cores": 8,
+  "gpus": 0,
+  "card_hours": 0.0,
+  "core_hours": 0.0302
+ },
+ "outputs": {
+  "dir": "scratch/F-hills/F-hills-20261115-145544-a314517",
+  "sha256": {
+   "stdout.txt": "c7cfbe2ac95a8608bb1a55e8728948c5ec0c28f1d0be2244bdb6ced2d7d7afc0",
+   "v4b_summary.json": "0e0b36500fcab60f6f0b73026acbd9d42a11ae25b96d7b906ff4e862a579527d"
+  }
+ },
+ "status": "completed",
+ "started": "2026-11-15T14:55:44+00:00",
+ "exit_code": 0,
+ "ended": "2026-11-15T14:55:58+00:00",
+ "wall_time_s": 13.6
+}

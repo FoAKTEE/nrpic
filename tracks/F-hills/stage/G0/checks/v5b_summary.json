@@ -1,0 +1,22 @@
+{
+ "q10": {
+  "ejected": 1,
+  "E_twobody_M_late_min": 1.4744970300491862,
+  "E_twobody_M_late_max": 1.8453367842145478,
+  "E_twobody_M_end": 1.6633364596065494,
+  "E_bary_late_min": 1.6126701825939442,
+  "E_bary_late_max": 1.6127024583783351,
+  "E_bary_end": 1.6126701825939442,
+  "unit": 0.0017953622416932368
+ },
+ "q4": {
+  "ejected": 1,
+  "E_twobody_M_late_min": 0.9887208043620307,
+  "E_twobody_M_late_max": 1.7227343101625916,
+  "E_twobody_M_end": 1.6403978505044008,
+  "E_bary_late_min": 1.3118660984615205,
+  "E_bary_late_max": 1.3120203707058022,
+  "E_bary_end": 1.311866100701363,
+  "unit": 0.004960628287400623
+ }
+}

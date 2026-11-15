@@ -102,3 +102,35 @@ Helpers' journals: `novelty/JOURNAL.md`, `newton3/JOURNAL.md`, `geodesic_binary/
   energy against the barycentre of M and the captured member, mu' (|v - v_cm|^2/2 -
   (M + m_c + m_e)/r), is constant within 0.01 units after t = 300. Refuted if the two-body
   energy with M is constant to 0.02 units after t = 300.
+
+### Outcomes of V4b and V5b
+
+- V4b (run F-hills-20261115-145544-a314517): with the 22 and 49 wide-bound samples rerun to
+  300 r_t, retrograde P_dis 0.373 and 0.193 against newton3's 0.372 and 0.193; |E| of the
+  disrupted 0.2797 / 0.2807 and 0.1170 / 0.1174. CONFIRMED: newton3's restricted scan is
+  reproduced by independent code at all nine (sense, D) points; the V4 difference was my
+  classification. One SciPy step-size warning (a near-collision sample) is on record.
+- V5b (run F-hills-20261115-145559-a314517, figure fig_v5b_energy): the two-body energy of
+  the ejected member with M oscillates with the captured member's period (about 125 M)
+  between 1.47 and 1.85 units (q = 10) and between 0.99 and 1.72 units (q = 4); against the
+  barycentre of M and the captured member it is constant to 3e-5 (q = 10) and 2e-4 (q = 4)
+  units after t = 300, at +1.613 and +1.312 units. CONFIRMED for q = 10; for q = 4 the
+  amplitude (0.37 units) exceeds my predicted 0.2. Consequence (a defect of newton3, not of
+  the integration): `threebody._pair_energy` reports each member's energy against M alone;
+  at finite M/m with one member captured this is not conserved, so the helper's E1 = +1.75
+  (q = 10) and +1.53 (q = 4) depend on the read-out time; the conserved values are +1.613
+  and +1.312. newton3's finite-mass-ratio energies (fig_finite_q, P3 at M/m <= 100, the
+  three_punctures phase scans) need the barycentric definition; outcome classes (sign of the
+  energies) are affected only near E = 0.
+
+### Prediction of V7 (pericentre scan for the first passage), before the run
+
+V6 showed that at the helper's first configuration (q = 10, a_b = 3 M, r_p = 8 M) the
+geodesic baseline sends a member below 2.5 M in 94 percent of the phases, where the
+Newtonian baseline has none. V7 scans r_p = 7-13 M (q = 10, a_b = 3) and 9.82-16 M (q = 4,
+a_b = 5), prograde, 180 phases, start 4 r_t, with newton3's full three-body driver and with
+geodesic_binary's hole-fixed newton and hrna laws. Prediction: the HRNA plunge fraction falls
+with r_p and is below 0.3 at r_p = 12 M for q = 10; the full Newtonian separated fraction
+stays above 0.5 up to r_p = 12 M (D = 1.86); so a window with both exists at q = 10 between
+r_p = 10 and 12 M. Refuted if no scanned r_p has HRNA plunge fraction < 0.3 together with
+Newtonian separated fraction > 0.5.

@@ -1,0 +1,54 @@
+{
+ "run_id": "F-hills-20261115-145559-a314517",
+ "track": "F-hills",
+ "package": "geodesic_binary (F-pre-2)",
+ "purpose": "V5b lead: energy of the ejected member in the full Newtonian runs from the input files, two-body with M against the barycentre of M and the captured member",
+ "kind": "scouting",
+ "command": [
+  "/data/haiyangw/nrpic/scratch/F-hills/venv-gb/bin/python",
+  "tracks/F-hills/stage/G0/checks/lead_checks.py",
+  "v5b",
+  "/data/haiyangw/nrpic/scratch/F-hills/F-hills-20261115-145559-a314517"
+ ],
+ "cwd": "/data/haiyangw/nrpic/wt/F-hills",
+ "git": {
+  "sha": "a314517d3d3ba395c6c82bfca948d6b6a9f46cfb",
+  "branch": "track/F-hills",
+  "dirty_package": false
+ },
+ "inputs": [
+  {
+   "path": "tracks/F-hills/stage/G0/checks/lead_checks.py",
+   "sha256": "57c4d63e5ccca7efad33cef3d57f52b665fa6499d2f4c04137fb16c5e20f27b5"
+  },
+  {
+   "path": "tracks/F-hills/three_punctures/inputs/hills_q10_m8.athinput",
+   "sha256": "1423a3bf589994a46f51c0675143c765a2d600e9b4629cf4e325de6dda005046"
+  },
+  {
+   "path": "tracks/F-hills/three_punctures/inputs/hills_q4_m8.athinput",
+   "sha256": "af35dbe8a8d02655fdcd3185e608eda2870a474a731ca25d2ba6166e10ee7949"
+  }
+ ],
+ "parents": [],
+ "resources": {
+  "cores": 1,
+  "gpus": 0,
+  "card_hours": 0.0,
+  "core_hours": 0.0139
+ },
+ "outputs": {
+  "dir": "scratch/F-hills/F-hills-20261115-145559-a314517",
+  "sha256": {
+   "fig_v5b_energy.pdf": "068e64954083569cac479bfb116f68cdb5c5ae1d8c3a3fb4b2580be2b86a7961",
+   "fig_v5b_energy.png": "53e77e6c4f332e4d1cb586088d08a146478a3607b5c91321385c416470b21c4a",
+   "stdout.txt": "fdcefaf6c48e6c8387c8043e62e1dff9daaf6035ffbb5648a3ac68bb06a05122",
+   "v5b_summary.json": "1bfcb17592f3db62c25c15874a95d2883ddf7691867001be451b213f7ceaa881"
+  }
+ },
+ "status": "completed",
+ "started": "2026-11-15T14:55:59+00:00",
+ "exit_code": 0,
+ "ended": "2026-11-15T14:56:49+00:00",
+ "wall_time_s": 50.0
+}

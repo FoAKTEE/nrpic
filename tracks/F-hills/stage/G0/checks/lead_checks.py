@@ -480,7 +480,69 @@ def v5b(out):
     json.dump(res, open(os.path.join(out, "v5b_summary.json"), "w"), indent=1)
 
 
+def newton3_scan(M, m1, m2, a, rp, phases):
+    sys.path.insert(0, os.path.join(WT, "tracks/F-hills/newton3"))
+    from hills3.threebody import HillsSetup, scatter
+    r = scatter([HillsSetup(M=M, m1=m1, m2=m2, a=a, rp=rp, phase=ph) for ph in phases],
+                k0=4.0, k_end=30.0)
+    rmin = np.asarray(r["rMmin"]).reshape(len(phases), -1).min(axis=1)
+    return np.asarray(r["outcome"]), rmin
+
+
+def v7(out):
+    """Pericentre scan for the first passage: full Newton (newton3, start 4 r_t) and the
+    hole-fixed laws newton / hrna of geodesic_binary (release at 4 r_t), 180 phases each."""
+    cfgs = {"q10": dict(M=1.0, m=0.05, a=3.0, rps=[7.0, 8.0, 9.0, 10.0, 11.0, 12.0, 13.0]),
+            "q4": dict(M=1.0, m=0.125, a=5.0, rps=[9.82, 11.0, 12.0, 13.0, 14.0, 16.0])}
+    nph = 180
+    phases = np.linspace(0, 2 * math.pi, nph, endpoint=False)
+    res = {}
+    with Pool(int(os.environ.get("NPROC", "8"))) as pool:
+        for name, c in cfgs.items():
+            M, m, a = c["M"], c["m"], c["a"]
+            mb = 2 * m
+            rt = a * (M / mb) ** (1 / 3)
+            res[name] = []
+            for rp in c["rps"]:
+                oc, rmin = newton3_scan(M, m, m, a, rp, phases)
+                row = dict(rp=rp, D=rp / rt,
+                           newton_full=dict(separated=float(np.mean((oc != 0) & (oc != 5))),
+                                            single_ejection=float(np.mean((oc == 1) | (oc == 2))),
+                                            member_below_4M=float(np.mean(rmin < 4.0)),
+                                            unsettled=int((oc == 5).sum())))
+                for law in ("newton", "hrna"):
+                    o = pool.map(phase_scan_one, [(law, mb, a, rp, ph, 4.0) for ph in phases])
+                    ol = np.array([q["outcome"] for q in o])
+                    row[law] = dict(separated=float(np.mean([q["separated"] for q in o])),
+                                    plunge=float(np.mean(ol == 6)),
+                                    clean_single_ejection=float(np.mean((ol == 1) | (ol == 2))))
+                res[name].append(row)
+                print(name, json.dumps(row), flush=True)
+    json.dump(res, open(os.path.join(out, "v7_summary.json"), "w"), indent=1)
+    fs.use_style()
+    import matplotlib.pyplot as plt
+    fig, axs = plt.subplots(1, 2, figsize=(fs.FULL_WIDTH, 3.0), sharey=True)
+    for ax, (name, rows) in zip(axs, res.items()):
+        rp = [r["rp"] for r in rows]
+        ax.plot(rp, [r["newton_full"]["separated"] for r in rows], "o-", color=fs.PAL["blue"],
+                label="Newton, full three-body: separated")
+        ax.plot(rp, [r["newton"]["separated"] for r in rows], "s:", color=fs.PAL["blue"], ms=3,
+                label="Newton, hole fixed: separated")
+        ax.plot(rp, [r["hrna"]["separated"] for r in rows], "o-", color=fs.PAL["red"],
+                label="HRNA: separated")
+        ax.plot(rp, [r["hrna"]["plunge"] for r in rows], "o--", color=fs.PAL["yellow"],
+                label="HRNA: a member below 2.5 M")
+        ax.plot(rp, [r["hrna"]["clean_single_ejection"] for r in rows], "o-", color=fs.PAL["green"],
+                label="HRNA: one ejected, one bound")
+        ax.set_xlabel(r"$r_p\,[M]$")
+        ax.set_title(f"{name}: prograde, start 4 $r_t$, {nph} phases", fontsize=9)
+    axs[0].set_ylabel("fraction of phases")
+    axs[0].legend(frameon=False, fontsize=6.5, loc="center right")
+    fig.tight_layout()
+    fs.save(fig, os.path.join(out, "fig_v7_rp_scan"))
+
+
 if __name__ == "__main__":
     what, outdir = sys.argv[1], sys.argv[2]
     os.makedirs(outdir, exist_ok=True)
-    {"v4": v4, "v5v6": v5v6, "v4b": v4b, "v5b": v5b}[what](outdir)
+    {"v4": v4, "v5v6": v5v6, "v4b": v4b, "v5b": v5b, "v7": v7}[what](outdir)
