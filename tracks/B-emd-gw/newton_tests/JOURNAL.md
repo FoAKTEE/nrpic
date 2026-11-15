@@ -358,3 +358,13 @@ the single patch to rounding, as an exact symmetry of the discrete problem.
 
 Not done: N2 (embedded ellipsoid; needs the species history, entry of 16:30); the
 ellipsoid with the background term (models A, B) in any form; any run on a refined mesh.
+
+## 2026-11-15 17:55 UTC: close of the package
+
+B-20261115-174405-af11300 repeats the ellipsoid analysis with one legend moved; its JSON
+equals that of B-20261115-174251-3698196 in every number (checked by comparing the two
+files without the path fields). README.md cites it and B-20261115-173904-a7297e3.
+Failed predictions on record: P1a, P1b (n = 32; P1a also at n = 64 for a <= 5), P2a
+(dI and d2I at n = 32; I marginal), H1a as stated, H1c and H1d-3 in part, N1d (the bound
+at N = 128 for the averaged energy), N1e (up to t_x). Passed: P1c, P1d, P2b-P2d, H1b,
+H1d-1, H1d-2, N1a-c, N1f, N3a, N3b. Not run: N2.
