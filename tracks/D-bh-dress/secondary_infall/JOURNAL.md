@@ -227,3 +227,10 @@ Local growth exponent d ln M/d ln a of the dress: > 3/2 for a/a_i < 4.5, 1.3 at 
 by a/a_i ~ 30 (eps 0.1 run). The a^(3/2) law of 1805.09034 (main.tex:216-218) and the
 self-similar a^1 cannot be told apart in a run that ends at a/a_i <= 8; both differ from
 what these runs will see, which the shell reference predicts directly.
+
+## 2026-11-15T13:10Z  prediction for the set-ups of RUNS.md (vacuum core R_w = 3M, eps = 0.03)
+
+Removing the dust inside R_w = 3M (0.012 M) acts on the outer shells like a seed of
+0.988 M (energy E = -(M - 0.012)/r_i). Expect at a/a_i = 4: M_ta in [2.58, 2.62] M
+(no-core value 2.627), dress in [0.77, 0.81] M (0.818), M_bh in [1.79, 1.83] M (1.833);
+at a/a_i = 2 all three lower by 1-4 %. Refuted outside these ranges.
