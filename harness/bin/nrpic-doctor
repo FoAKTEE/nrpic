@@ -1,0 +1,530 @@
+#!/usr/bin/python3 -I
+"""nrpic-doctor: isolation self-test of a worktree, one line per row of brief section 11.4.
+
+    nrpic-doctor [-C DIR] [--rows wt,build,...] [--keep]      the worktree you are in (or DIR)
+    nrpic-doctor --all [--rows ...] [--keep]                  every owner's worktree, read-only
+
+Each row prints PASS, FAIL, MISSING (the component it tests does not exist yet, or is not
+installed) or SKIP (the row does not apply to this owner, e.g. the guard rows in the main
+checkout). The exit status is 0 only if every row is PASS or SKIP.
+
+Rows: wt build venv env scratch guard main kb gpu ctx git stop.
+Nothing is written into any worktree. The only writes are a probe file in scratch/<ID>/tmp/ of
+the worktree under test (skipped with --all) and throwaway repositories under
+scratch/<caller>/tmp/nrpic-doctor-*/, removed at the end unless --keep (they are created with
+mkdtemp and removed only after checking that the path lies there).
+"""
+import argparse
+import glob
+import importlib.machinery
+import importlib.util
+import json
+import os
+import pwd
+import shutil
+import socket
+import subprocess
+import sys
+import tempfile
+
+HERE = os.path.dirname(os.path.realpath(__file__))
+ROWS = ("wt", "build", "venv", "env", "scratch", "guard", "main", "kb", "gpu", "ctx", "git", "stop")
+
+
+def load(name, file):
+    loader = importlib.machinery.SourceFileLoader(name, os.path.join(HERE, file))
+    spec = importlib.util.spec_from_loader(name, loader)
+    mod = importlib.util.module_from_spec(spec)
+    loader.exec_module(mod)
+    return mod
+
+
+ctx = load("nrpic_ctx", "nrpic-ctx")
+wtmod = load("nrpic_wt", "nrpic-wt")
+Fail, Repo, git, run = ctx.Fail, ctx.Repo, ctx.git, ctx.run
+
+
+def boot_env(extra=None):
+    pw = pwd.getpwuid(os.getuid())
+    env = {"PATH": "/usr/local/bin:/usr/bin:/bin", "HOME": pw.pw_dir, "USER": pw.pw_name, "LOGNAME": pw.pw_name,
+           "LANG": "C.UTF-8", "LC_ALL": "C.UTF-8", "GIT_TERMINAL_PROMPT": "0"}
+    env.update(extra or {})
+    return env
+
+
+def sh(cmd, cwd, inp=None, env=None, timeout=120):
+    try:
+        return subprocess.run(cmd, cwd=cwd, input=inp, env=env or boot_env(), capture_output=True, text=True,
+                              timeout=timeout)
+    except subprocess.TimeoutExpired as e:
+        return subprocess.CompletedProcess(cmd, 124, e.stdout or "", f"timed out after {timeout} s")
+    except OSError as e:
+        return subprocess.CompletedProcess(cmd, 127, "", str(e))
+
+
+class Scratch:
+    """Throwaway directories under scratch/<caller>/tmp/, removed only after a path check."""
+
+    def __init__(self, main, owner, keep):
+        self.base = os.path.join(main, "scratch", owner or "orch", "tmp")
+        self.keep = keep
+        self.dirs = []
+
+    def new(self, tag):
+        os.makedirs(self.base, exist_ok=True)
+        d = tempfile.mkdtemp(prefix=f"nrpic-doctor-{tag}-", dir=self.base)
+        self.dirs.append(d)
+        return d
+
+    def cleanup(self):
+        if self.keep:
+            for d in self.dirs:
+                print(f"kept {d}")
+            return
+        for d in self.dirs:
+            real = os.path.realpath(d)
+            if (os.path.dirname(real) == os.path.realpath(self.base) and os.path.basename(real).startswith("nrpic-doctor-")
+                    and not os.path.islink(d) and os.path.isdir(real)):
+                shutil.rmtree(real)
+
+
+def throwaway_repo(scr, tag, owners, with_harness=False):
+    """A repository with a main checkout and one linked worktree per owner id in `owners`;
+    with_harness: a copy of this harness/ (without tests and caches) is part of the seed commit."""
+    root = os.path.join(scr.new(tag), "repo")
+    os.makedirs(root)
+    if with_harness:
+        shutil.copytree(os.path.dirname(HERE), os.path.join(root, "harness"), symlinks=False,
+                        ignore=shutil.ignore_patterns("__pycache__", "tests", "*.pyc"))
+    g = lambda *a, cwd=root: git(list(a), cwd)
+    g("init", "-q", "-b", "main")
+    for k, v in (("user.name", "nrpic-doctor"), ("user.email", "doctor@localhost"), ("commit.gpgsign", "false")):
+        g("config", k, v)
+    rows = ["| Owner id | Worktree | Branch | Subject |", "|---|---|---|---|", "| orch | `.` (main checkout) | `main` | test |"]
+    for o in owners:
+        rows.append(f"| {o} | `wt/{o}` | `{ctx.default_branch(o)}` | test |")
+    open(os.path.join(root, "CLAUDE.md"), "w").write("# throwaway\n\n" + "\n".join(rows) + "\n")
+    open(os.path.join(root, ".gitignore"), "w").write("wt/\nscratch/\n")
+    for o in owners:
+        d = os.path.join(root, "tracks", o)
+        os.makedirs(os.path.join(d, "outbox"))
+        open(os.path.join(d, "outbox", ".gitkeep"), "w").close()
+        open(os.path.join(d, "STATUS.md"), "w").write(f"# STATUS of {o}\n\ngate:        G0 in progress\nheadline:    doctor\n")
+        open(os.path.join(d, "HANDOFF.md"), "w").write(f"# HANDOFF of {o}\n\nRun next: `true`\n")
+        open(os.path.join(d, "OWNERSHIP"), "w").write("# none\n")
+    g("add", "-A")
+    g("commit", "-q", "-m", "seed")
+    for o in owners:
+        g("worktree", "add", "-q", "-b", ctx.default_branch(o), os.path.join(root, "wt", o), "main")
+    return root
+
+
+def snapshot(path):
+    """Files (path -> size, mtime_ns), HEAD and index of one worktree."""
+    files = {}
+    for r, ds, fs in os.walk(path):
+        if r == path:
+            ds[:] = [d for d in ds if d not in ("wt", ".git", "scratch")]
+        for f in fs:
+            if r == path and f == ".git":
+                continue
+            p = os.path.join(r, f)
+            st = os.lstat(p)
+            files[os.path.relpath(p, path)] = (st.st_size, st.st_mtime_ns)
+    head = git(["rev-parse", "HEAD"], path).strip()
+    idx = git(["rev-parse", "--git-path", "index"], path).strip()
+    idx = idx if os.path.isabs(idx) else os.path.join(path, idx)
+    ist = os.stat(idx)
+    return files, head, (ist.st_size, ist.st_mtime_ns)
+
+
+# ------------------------------------------------------------------------------------- the rows
+class Doctor:
+    def __init__(self, repo, wt, own, scr):
+        self.repo = repo
+        self.w = Repo(wt)
+        self.own = own
+        self.scr = scr
+        self.me = self.w.me
+        self.is_orch = self.me == "orch"
+        self.kind_track = self.me not in (None, "orch")
+
+    def tool(self, name):
+        p = os.path.join(HERE, name)
+        return p if os.path.isfile(p) and os.access(p, os.X_OK) else None
+
+    def hook(self, name):
+        """The worktree's own copy of a hook (what Claude Code would run), else the one beside this command."""
+        for p in (os.path.join(self.w.wt, "harness", "hooks", name), os.path.join(os.path.dirname(HERE), "hooks", name)):
+            if os.path.isfile(p):
+                return p
+        return None
+
+    # [wt] [build]
+    def row_wt(self):
+        rows = {r: (ok, d) for r, ok, d in wtmod.check_rows(self.repo, self.w.wt)}
+        ok, d = rows["wt"]
+        return ("PASS" if ok else "FAIL"), d
+
+    def row_build(self):
+        rows = {r: (ok, d) for r, ok, d in wtmod.check_rows(self.repo, self.w.wt)}
+        ok, d = rows["build"]
+        return ("PASS" if ok else "FAIL"), d
+
+    # [venv] [env]
+    def env_missing(self):
+        """Why nrpic-env cannot work in this worktree yet (a setup step not done), or None."""
+        if not self.tool("nrpic-env"):
+            return "harness/bin/nrpic-env does not exist"
+        host = socket.gethostname().split(".")[0]
+        if not os.path.isfile(os.path.join(self.w.wt, "harness", "env", "machines", f"{host}.sh")):
+            return f"this worktree has no harness/env/machines/{host}.sh yet (nrpic-ctx sync brings it from main)"
+        return None
+
+    def row_venv(self):
+        t = self.tool("nrpic-env")
+        why = self.env_missing()
+        if why:
+            return "MISSING", why
+        if not os.path.isdir(os.path.join(self.w.wt, ".venv")):
+            return "MISSING", "no .venv in this worktree yet (harness/bin/nrpic-env create)"
+        p = sh([t, "-C", self.w.wt, "exec", "--", "python", "-c", "import sys; print(sys.prefix)"], self.w.wt)
+        if p.returncode != 0:
+            return "FAIL", f"nrpic-env exec failed: {(p.stderr or p.stdout).strip()[-200:]}"
+        prefix = os.path.realpath(p.stdout.strip().splitlines()[-1]) if p.stdout.strip() else ""
+        want = os.path.realpath(os.path.join(self.w.wt, ".venv"))
+        h = sh([t, "-C", self.w.wt, "hash", "--json"], self.w.wt)
+        try:
+            lock = json.loads(h.stdout).get("uv_lock_sha256", "")
+        except ValueError:
+            lock = ""
+        if prefix != want:
+            return "FAIL", f"sys.prefix is {prefix or '(none)'}, not {want} (nrpic-env create)"
+        if not lock:
+            return "FAIL", "nrpic-env hash --json gives no uv_lock_sha256"
+        return "PASS", f"sys.prefix = {want}; uv.lock sha256 {lock[:12]}"
+
+    def row_env(self):
+        t = self.tool("nrpic-env")
+        why = self.env_missing()
+        if why:
+            return "MISSING", why
+        p = sh([t, "-C", self.w.wt, "vars"], self.w.wt)
+        if p.returncode != 0:
+            return "FAIL", f"nrpic-env vars failed: {(p.stderr or p.stdout).strip()[-200:]}"
+        vals = {}
+        for ln in p.stdout.splitlines():
+            k, sep, v = ln.partition("=")
+            if sep:
+                vals[k.strip()] = v.strip()
+        oid = self.me
+        want = {"NRPIC_TRACK": oid, "NRPIC_WT": self.w.wt, "NRPIC_SCRATCH": os.path.join(self.repo.main, "scratch", oid),
+                "NRPIC_KB": os.path.join(self.repo.main, "kb-data")}
+        bad = []
+        for k, v in want.items():
+            got = vals.get(k)
+            same = got is not None and (got == v or os.path.realpath(got) == os.path.realpath(v))
+            if not same:
+                bad.append(f"{k}={got} (expected {v})")
+        return ("PASS", "NRPIC_TRACK, NRPIC_WT, NRPIC_SCRATCH, NRPIC_KB point to this owner's paths") if not bad \
+            else ("FAIL", "; ".join(bad))
+
+    # guard helpers
+    def guard(self, tool_name, tool_input):
+        g = self.hook("pre_tool_guard.py")
+        if not g:
+            return None
+        payload = {"session_id": "nrpic-doctor", "transcript_path": "", "cwd": self.w.wt, "permission_mode": "default",
+                   "hook_event_name": "PreToolUse", "tool_name": tool_name, "tool_input": tool_input}
+        p = sh(["/usr/bin/python3", "-I", g], self.w.wt, inp=json.dumps(payload),
+               env=boot_env({"CLAUDE_PROJECT_DIR": self.w.wt}))
+        dec, reason = None, ""
+        try:
+            out = json.loads(p.stdout) if p.stdout.strip() else {}
+            hs = out.get("hookSpecificOutput", {})
+            dec, reason = hs.get("permissionDecision"), hs.get("permissionDecisionReason", "")
+        except ValueError:
+            pass
+        if p.returncode == 2:
+            dec, reason = "deny", (p.stderr or "").strip()
+        return dec, reason
+
+    def other_owner(self):
+        others = [o for o in self.repo.owners() if o not in (self.me, "orch", "core", "kb")]
+        return others[0] if others else "B-emd-gw"
+
+    def row_scratch(self):
+        if self.is_orch:
+            return "SKIP", "the orchestrator has no track scratch to isolate"
+        part = []
+        if self.own:
+            d = os.path.join(self.repo.main, "scratch", self.me, "tmp")
+            try:
+                os.makedirs(d, exist_ok=True)
+                with open(os.path.join(d, ".nrpic-doctor-probe"), "w") as fh:
+                    fh.write("probe\n")
+                part.append(f"write to scratch/{self.me}/tmp/ works")
+            except OSError as e:
+                return "FAIL", f"cannot write to scratch/{self.me}/tmp/: {e}"
+        else:
+            part.append("own-scratch write not tried (read-only: another worktree or --all)")
+        other = self.other_owner()
+        r = self.guard("Bash", {"command": f"touch {self.repo.main}/scratch/{other}/x", "description": "doctor"})
+        if r is None:
+            return "MISSING", "; ".join(part) + "; the refusal needs harness/hooks/pre_tool_guard.py"
+        if r[0] != "deny":
+            return "FAIL", "; ".join(part) + f"; a write to scratch/{other}/ was not denied by the guard"
+        return "PASS", "; ".join(part) + f"; scratch/{other}/ denied: {ctx.clip(r[1], 80)}"
+
+    def row_guard(self):
+        if not self.kind_track:
+            return "SKIP", "the guard rows apply to owner worktrees"
+        other = self.other_owner() if self.me != "B-emd-gw" else "A-emd-pbh"
+        cases = [("Edit", {"file_path": os.path.join(self.w.wt, "coord", "CHARTER.md"), "old_string": "a", "new_string": "b"}, "deny"),
+                 ("Edit", {"file_path": os.path.join(self.w.wt, "harness", "bin", "nrpic-run"), "old_string": "a", "new_string": "b"}, "deny"),
+                 ("Edit", {"file_path": os.path.join(self.w.wt, "tracks", other, "STATUS.md"), "old_string": "a", "new_string": "b"}, "deny"),
+                 ("Bash", {"command": f"git push --force origin {self.w.branch}", "description": "doctor"}, "deny"),
+                 ("Edit", {"file_path": os.path.join(self.w.wt, "tracks", self.me, "STATUS.md"), "old_string": "a", "new_string": "b"}, "allow")]
+        res = []
+        for tn, ti, want in cases:
+            r = self.guard(tn, ti)
+            if r is None:
+                return "MISSING", "harness/hooks/pre_tool_guard.py does not exist"
+            what = ti.get("file_path", ti.get("command"))
+            what = os.path.relpath(what, self.w.wt) if what.startswith("/") else what
+            if want == "deny" and (r[0] != "deny" or not r[1].strip()):
+                return "FAIL", f"{tn} {what} was not denied with a reason (decision {r[0]})"
+            if want == "allow" and r[0] == "deny":
+                return "FAIL", f"{tn} {what} (own file) was denied: {ctx.clip(r[1], 80)}"
+            res.append(what)
+        return "PASS", "denied with a reason: coord/CHARTER.md, harness/bin/nrpic-run, tracks/<other>/STATUS.md, force-push; own STATUS.md allowed"
+
+    def row_main(self):
+        if not self.kind_track:
+            return "SKIP", "applies to linked worktrees"
+        r = self.guard("Edit", {"file_path": os.path.join(self.repo.main, "CLAUDE.md"), "old_string": "a", "new_string": "b"})
+        note = " (Claude Code's own worktree isolation is the first barrier; it is exercised in a session, acceptance test 5)"
+        if r is None:
+            return "MISSING", "harness/hooks/pre_tool_guard.py does not exist" + note
+        if r[0] != "deny":
+            return "FAIL", "an Edit of the main checkout's CLAUDE.md was not denied by the guard" + note
+        return "PASS", f"Edit of {self.repo.main}/CLAUDE.md denied: {ctx.clip(r[1], 70)}" + note
+
+    def row_kb(self):
+        cli = os.path.join(self.w.wt, "kb", "bin", "kb")
+        dbs = sorted(glob.glob(os.path.join(self.repo.main, "kb-data", "db", "*.sqlite")) +
+                     glob.glob(os.path.join(self.repo.main, "kb-data", "*.sqlite")))
+        if not os.path.isfile(cli):
+            return "MISSING", "kb/bin/kb is not in this worktree (it arrives when kb/main is merged into main and the owner syncs)"
+        p = sh([cli, "status"], self.w.wt, timeout=60)
+        if p.returncode != 0:
+            return "FAIL", f"kb status failed: {(p.stderr or p.stdout).strip()[-200:]}"
+        if self.me == "kb":
+            return "PASS", "kb status works; this owner is the writer of kb-data/"
+        if not dbs:
+            return "MISSING", "kb status works; no kb-data/db/*.sqlite yet"
+        writable = [os.path.relpath(d, self.repo.main) for d in dbs if os.access(d, os.W_OK)]
+        if writable:
+            return "FAIL", f"kb status works, but {', '.join(writable)} can be opened for writing by this user"
+        return "PASS", "kb status works; the database is read-only for this user"
+
+    def row_gpu(self):
+        if not self.tool("nrpic-run"):
+            return "MISSING", "harness/bin/nrpic-run does not exist"
+        need = {"scripts/gpu_batch.sh": False, "scripts/submit_chain.sh": False}
+        for f in need:
+            p = os.path.join(self.w.wt, f)
+            if os.path.isfile(p):
+                need[f] = "--gres=gpu:1" in open(p, errors="replace").read()
+        if not all(need.values()):
+            return "FAIL", "a launcher does not request exactly one card: " + ", ".join(f for f, ok in need.items() if not ok)
+        p = sh(["sinfo", "-h", "-o", "%P %G"], self.w.wt, timeout=15)
+        if p.returncode != 0:
+            return "FAIL", f"sinfo failed: {(p.stderr or '').strip()[-120:]}"
+        parts = [ln for ln in p.stdout.splitlines() if "gpu" in ln]
+        return "PASS", (f"cards are Slurm's: every launcher asks for --gres=gpu:1 ({'; '.join(parts) or 'no gpu partition listed'}), "
+                        "so two runs never share one; no job is started by the doctor")
+
+    def row_ctx(self):
+        reg = self.repo.registry()
+        text = ctx.board_text(self.repo)
+        miss = [o for o, _, b in reg if f"| {o} |" not in text or b not in self.repo.branches()]
+        if miss:
+            return "FAIL", f"the board does not list (or the branch is missing for): {', '.join(miss)}"
+        root = throwaway_repo(self.scr, "ctx", ["A-x", "B-x"])
+        a, b = os.path.join(root, "wt", "A-x"), os.path.join(root, "wt", "B-x")
+        before = snapshot(b)
+        p = sh([os.path.join(HERE, "nrpic-ctx"), "post", "--to", "B-x", "--type", "info", "--slug", "doctor-probe",
+                "--body", "doctor probe"], a)
+        if p.returncode != 0:
+            return "FAIL", f"post failed in a throwaway repository: {(p.stderr or p.stdout).strip()[-200:]}"
+        q = sh([os.path.join(HERE, "nrpic-ctx"), "inbox"], b)
+        n = q.stdout.count("__to-B-x__doctor-probe.md")
+        after = snapshot(b)
+        if n != 1:
+            return "FAIL", f"the probe message appears {n} times in the other owner's inbox"
+        if before != after:
+            return "FAIL", "the other owner's worktree changed while it read its inbox"
+        return "PASS", (f"the board lists all {len(reg)} owners; a message committed on one branch appears exactly once in "
+                        "the other's inbox, nothing written there (throwaway repository)")
+
+    def row_git(self):
+        d = self.w.dirty()
+        hooks = git(["rev-parse", "--git-path", "hooks"], self.w.wt).strip()
+        hp = git(["config", "--get", "core.hooksPath"], self.w.wt, check=False).strip()
+        hooks_dir = (hp if os.path.isabs(hp) else os.path.join(self.w.wt, hp)) if hp else (hooks if os.path.isabs(hooks) else os.path.join(self.w.wt, hooks))
+        pre = os.path.join(hooks_dir, "pre-commit")
+        installed = os.path.isfile(pre) and os.access(pre, os.X_OK)
+        cands = [p for p in glob.glob(os.path.join(os.path.dirname(HERE), "**", "pre-commit"), recursive=True)
+                 if os.path.isfile(p)]
+        hook = pre if installed else (cands[0] if cands else None)
+        tree = "clean" if not d else f"{len(d)} uncommitted change(s)"
+        if not hook:
+            return ("MISSING", f"tree {tree}; no pre-commit hook is installed or present under harness/")
+        verdict = self.try_pre_commit(hook)
+        if not installed:
+            return ("MISSING", f"tree {tree}; pre-commit hook not installed (core.hooksPath unset; decision 0008); "
+                               f"the hook {os.path.relpath(hook, os.path.dirname(os.path.dirname(HERE)))} in a throwaway repository: {verdict[1]}")
+        if d:
+            return "FAIL", f"tree {tree}: " + ", ".join(x[3:] for x in d[:5])
+        return ("PASS" if verdict[0] else "FAIL"), f"tree clean; pre-commit installed; {verdict[1]}"
+
+    def try_pre_commit(self, hook):
+        root = throwaway_repo(self.scr, "git", ["A-x"], with_harness=True)
+        w = os.path.join(root, "wt", "A-x")
+        hd = os.path.join(root, "hooks")
+        os.makedirs(hd)
+        shutil.copy2(hook, os.path.join(hd, "pre-commit"))
+        git(["config", "core.hooksPath", hd], root)
+        with open(os.path.join(w, "tracks", "A-x", "small.txt"), "w") as fh:
+            fh.write("a small, clean file\n")
+        git(["add", "tracks/A-x/small.txt"], w)
+        r0 = run(["commit", "-q", "-m", "control"], w, check=False)
+        if r0.returncode != 0:
+            return False, f"a small clean control commit was rejected too: {(r0.stderr or r0.stdout).strip()[-150:]}"
+        big = os.path.join(w, "tracks", "A-x", "big.bin")
+        with open(big, "wb") as fh:
+            fh.write(os.urandom(6 * 1024 * 1024))
+        git(["add", "tracks/A-x/big.bin"], w)
+        r1 = run(["commit", "-q", "-m", "big"], w, check=False).returncode
+        git(["reset", "-q", "HEAD", "--", "tracks/A-x/big.bin"], w)
+        sec = os.path.join(w, "tracks", "A-x", "key.txt")
+        with open(sec, "w") as fh:
+            fh.write("-----BEGIN OPENSSH PRIVATE KEY-----\nb3BlbnNzaC1rZXktdjEAAAAABG5vbmUAAAAEbm9uZQ\n-----END OPENSSH PRIVATE KEY-----\n"
+                     "aws_secret_access_key = wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY\n")
+        git(["add", "tracks/A-x/key.txt"], w)
+        r2 = run(["commit", "-q", "-m", "secret"], w, check=False).returncode
+        ok = r1 != 0 and r2 != 0
+        return ok, f"6 MB file {'rejected' if r1 else 'ACCEPTED'}, fake secret {'rejected' if r2 else 'ACCEPTED'}"
+
+    def row_stop(self):
+        g = self.hook("stop_gate.sh")
+        if not g:
+            return "MISSING", "harness/hooks/stop_gate.sh does not exist"
+        root = throwaway_repo(self.scr, "stop", ["A-x"], with_harness=True)
+        w = os.path.join(root, "wt", "A-x")
+        open(os.path.join(w, "tracks", "A-x", "work.txt"), "w").write("uncommitted\n")
+        env = boot_env({"CLAUDE_PROJECT_DIR": w})
+        gate = os.path.join(w, "harness", "hooks", "stop_gate.sh")
+
+        def stop(active):
+            return sh(["/bin/bash", gate], w, inp=json.dumps({"session_id": "doctor", "cwd": w, "hook_event_name": "Stop",
+                                                               "stop_hook_active": active}), env=env)
+        p1 = stop(False)
+        p2 = stop(True)
+        git(["add", "-A"], w)
+        git(["commit", "-q", "-m", "work"], w)
+        st = os.path.join(w, "tracks", "A-x", "STATUS.md")
+        open(st, "a").write("last-result: committed\n")
+        git(["commit", "-q", "-am", "status"], w)
+        p3 = stop(False)
+        ok = p1.returncode == 2 and p1.stderr.strip() and p2.returncode == 0 and p3.returncode == 0
+        detail = (f"dirty tree: exit {p1.returncode}{' with instructions' if p1.stderr.strip() else ' without a message'}; "
+                  f"second attempt: exit {p2.returncode}; after the commit: exit {p3.returncode}")
+        return ("PASS" if ok else "FAIL"), detail
+
+
+def run_rows(repo, wt, rows, own, scr):
+    d = Doctor(repo, wt, own, scr)
+    out = []
+    for r in rows:
+        try:
+            st, detail = getattr(d, "row_" + r)()
+        except Exception as e:                      # a broken row is a failed row, not a crash
+            st, detail = "FAIL", f"{type(e).__name__}: {e}"
+        out.append((r, st, detail))
+    return d, out
+
+
+def main(argv=None):
+    ap = argparse.ArgumentParser(prog="nrpic-doctor", description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
+    ap.add_argument("-C", metavar="DIR")
+    ap.add_argument("--rows", default=",".join(ROWS))
+    ap.add_argument("--all", action="store_true")
+    ap.add_argument("--keep", action="store_true")
+    args = ap.parse_args(argv)
+    rows = [r.strip() for r in args.rows.split(",") if r.strip()]
+    bad = [r for r in rows if r not in ROWS]
+    if bad:
+        print(f"nrpic-doctor: unknown rows {', '.join(bad)}; rows: {', '.join(ROWS)}", file=sys.stderr)
+        return 2
+    try:
+        repo = Repo(args.C or os.getcwd())
+        here = Repo(os.getcwd()) if args.C else repo
+        caller = here.me
+        own = here.wt == repo.wt          # -C naming another worktree: read-only (no probe in its scratch)
+    except Fail as e:
+        print(f"nrpic-doctor: {e}", file=sys.stderr)
+        return 2
+    scr = Scratch(repo.main, caller, args.keep)
+    failed = 0
+    try:
+        if args.all:
+            wts = {w.get("branch"): w["path"] for w in repo.worktrees()}
+            targets = [(o, wts.get(b)) for o, _, b in repo.registry()]
+            table = []
+            ctx_done = None
+            for oid, path in targets:
+                if not path:
+                    table.append((oid, None))
+                    failed += 1
+                    continue
+                rs = [r for r in rows if r != "ctx" or ctx_done is None]
+                _, out = run_rows(repo, path, rs, False, scr)
+                if "ctx" in rows:
+                    if ctx_done is None:
+                        ctx_done = next(x for x in out if x[0] == "ctx")
+                    else:
+                        out.append(ctx_done)
+                table.append((oid, out))
+            print(f"nrpic-doctor --all ({ctx.now_utc().strftime('%Y-%m-%dT%H:%MZ')}), read-only; rows: {', '.join(rows)}")
+            print(f"{'owner':<12} " + " ".join(f"{r:<7}" for r in rows))
+            for oid, out in table:
+                if out is None:
+                    print(f"{oid:<12} no worktree")
+                    continue
+                st = {r: s for r, s, _ in out}
+                print(f"{oid:<12} " + " ".join(f"{st.get(r, '-'):<7}" for r in rows))
+                failed += sum(1 for _, s, _ in out if s not in ("PASS", "SKIP"))
+            print()
+            for oid, out in table:
+                for r, s, dtl in out or []:
+                    if s not in ("PASS", "SKIP"):
+                        print(f"{oid:<12} [{r}] {s}: {dtl}")
+        else:
+            d, out = run_rows(repo, repo.wt, rows, own, scr)
+            rel = "main checkout" if d.w.wt == repo.main else os.path.relpath(d.w.wt, repo.main)
+            print(f"nrpic-doctor: {rel} (branch {d.w.branch}, owner {d.me}) {ctx.now_utc().strftime('%Y-%m-%dT%H:%MZ')}")
+            for r, s, dtl in out:
+                print(f"  [{r}]{' ' * (8 - len(r))}{s:<8} {dtl}")
+            counts = {k: sum(1 for _, s, _ in out if s == k) for k in ("PASS", "FAIL", "MISSING", "SKIP")}
+            failed = counts["FAIL"] + counts["MISSING"]
+            print(f"summary: {counts['PASS']} PASS, {counts['FAIL']} FAIL, {counts['MISSING']} MISSING, {counts['SKIP']} SKIP"
+                  + (" -> every row passes" if not failed else " -> not every row passes"))
+    finally:
+        scr.cleanup()
+    return 0 if failed == 0 else 1
+
+
+if __name__ == "__main__":
+    sys.exit(main())

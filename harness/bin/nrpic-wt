@@ -1,0 +1,324 @@
+#!/usr/bin/python3 -I
+"""nrpic-wt: the linked worktrees of the owners under wt/ (brief 11.2, 11.6; decision 0001).
+
+    nrpic-wt list                                   every worktree: owner, branch, state, push state
+    nrpic-wt check [ID|NAME|PATH]                   one worktree (default: the one you are in)
+    nrpic-wt new ID [--name NAME] [--branch BRANCH] [--base REF] [--kokkos]
+                                                    create wt/NAME on BRANCH (orchestrator, main checkout)
+    nrpic-wt retire ID|NAME                         check whether a worktree may be retired and print
+                                                    the commands; it never removes anything itself
+
+new: the branch is the owner's (CLAUDE.md; default its canonical branch, e.g. track/<ID>); an
+existing branch is checked out, a missing one is created from --base (default main). NAME
+defaults to ID; a temporary worktree of an owner is named <ID>-<x> on branch core/<x> (core),
+kb/<x> (kb) or track/<ID>--<x> (tracks). Then the machine-specific files of
+harness/wt_copy.list are copied from the main checkout, and with --kokkos the Kokkos submodule is
+initialised by reference to the main checkout's clone. Finally `check` runs on the new worktree.
+
+retire: brief 11.2 makes retiring the orchestrator's housekeeping after asking the user, and the
+permission rules deny `git worktree remove`; this command therefore only verifies that the tree
+is clean and the branch is pushed or tagged, and prints the command for a person to run.
+"""
+import argparse
+import importlib.machinery
+import importlib.util
+import os
+import shutil
+import sys
+
+HERE = os.path.dirname(os.path.realpath(__file__))
+
+
+def load_ctx():
+    loader = importlib.machinery.SourceFileLoader("nrpic_ctx", os.path.join(HERE, "nrpic-ctx"))
+    spec = importlib.util.spec_from_loader("nrpic_ctx", loader)
+    mod = importlib.util.module_from_spec(spec)
+    loader.exec_module(mod)
+    return mod
+
+
+ctx = load_ctx()
+Fail, Repo, git, run, owner_of, MAIN = ctx.Fail, ctx.Repo, ctx.git, ctx.run, ctx.owner_of, ctx.MAIN
+
+
+def worktree_rows(repo):
+    rows = []
+    for w in repo.worktrees():
+        if w.get("bare"):
+            continue
+        path = w["path"]
+        br = w.get("branch")
+        oid = owner_of(br)
+        rel = "." if path == repo.main else os.path.relpath(path, repo.main)
+        exists = os.path.isdir(path)
+        dirty = len(repo.dirty(path)) if exists else None
+        behind, ahead = repo.ahead_behind(br) if br and br != MAIN else (0, 0)
+        up = run(["rev-parse", "--verify", "-q", f"refs/remotes/origin/{br}"], repo.wt, check=False) if br else None
+        if br and up and up.returncode == 0:
+            o_be, o_ah = repo.ahead_behind(br, base=f"refs/remotes/origin/{br}")
+            push = "pushed" if o_ah == 0 else f"{o_ah} to push"
+        else:
+            push = "not on origin"
+        rows.append({"path": path, "rel": rel, "branch": br, "owner": oid, "exists": exists, "dirty": dirty,
+                     "behind": behind, "ahead": ahead, "push": push, "head": (w.get("HEAD") or "")[:7],
+                     "locked": "locked" in w, "prunable": "prunable" in w})
+    return rows
+
+
+def cmd_list(repo, args):
+    rows = worktree_rows(repo)
+    print(f"{'worktree':<20} {'branch':<22} {'owner':<12} {'head':<8} {'tree':<9} {'main b/a':<9} remote")
+    for r in rows:
+        tree = "missing" if not r["exists"] else ("clean" if r["dirty"] == 0 else f"{r['dirty']} dirty")
+        ba = "—" if r["branch"] == MAIN else f"{r['behind']}/{r['ahead']}"
+        print(f"{r['rel']:<20} {str(r['branch']):<22} {str(r['owner'] or '—'):<12} {r['head']:<8} {tree:<9} {ba:<9} {r['push']}"
+              + ("  locked" if r["locked"] else "") + ("  prunable" if r["prunable"] else ""))
+    reg = {oid: br for oid, _, br in repo.registry()}
+    have = {r["branch"] for r in rows}
+    missing = [f"{oid} ({br})" for oid, br in reg.items() if br not in have]
+    if missing:
+        print("owners without a worktree: " + ", ".join(missing))
+    return 0
+
+
+def find_worktree(repo, key):
+    """ID, worktree name or path -> worktree path."""
+    rows = worktree_rows(repo)
+    if key is None:
+        return repo.wt
+    cand = os.path.realpath(key)
+    for r in rows:
+        if r["path"] == cand:
+            return r["path"]
+    for r in rows:
+        if r["rel"] in (key, f"wt/{key}"):
+            return r["path"]
+    try:
+        oid = repo.resolve_owner(key)
+    except Fail:
+        oid = None
+    if oid:
+        br = repo.canonical(oid)
+        for r in rows:
+            if r["branch"] == br:
+                return r["path"]
+    raise Fail(f"no worktree for '{key}'")
+
+
+def check_rows(repo, path):
+    """[(row, ok, detail)] for one worktree: the [wt] and [build] rows of brief 11.4 and the copy list."""
+    w = Repo(path)
+    res = []
+    br, oid = w.branch, w.me
+    if w.wt == repo.main:
+        ok = br == MAIN
+        res.append(("wt", ok, f"main checkout {w.wt} on {br}" + ("" if ok else " (the main checkout must stay on main)")))
+    else:
+        name = os.path.basename(w.wt)
+        under = os.path.dirname(w.wt) == os.path.join(repo.main, "wt")
+        if not under:
+            res.append(("wt", False, f"{w.wt} is not under {os.path.join(repo.main, 'wt')}/"))
+        elif not oid or ctx.is_proposal(br):
+            res.append(("wt", False, f"{w.wt} is on '{br}', which is not an owner's working branch"))
+        elif name == oid:
+            ok = br == repo.canonical(oid)
+            res.append(("wt", ok, f"toplevel {w.wt}, branch {br}" + ("" if ok else f" (expected {repo.canonical(oid)})")))
+        elif name.startswith(oid + "-") and br != repo.canonical(oid):
+            res.append(("wt", True, f"temporary worktree of {oid}: toplevel {w.wt}, branch {br}"))
+        else:
+            res.append(("wt", False, f"worktree name {name} does not match the owner {oid} of branch {br}"))
+    others = [r["path"] for r in worktree_rows(repo) if r["path"] != w.wt]
+    bad, builds = [], []
+    skip_top = {".git", "wt", "scratch", "kb-data", "cache", "locks", "runs", ".work"} if w.wt == repo.main else {".git"}
+    for root, dirs, files in os.walk(w.wt, followlinks=False):
+        if root == w.wt:
+            dirs[:] = [d for d in dirs if d not in skip_top]
+            builds += [d for d in os.listdir(root) if d.startswith("build")]
+        for n in dirs + files:
+            p = os.path.join(root, n)
+            if os.path.islink(p):
+                tgt = os.path.realpath(p)
+                inside = lambda d: tgt == d or tgt.startswith(d + os.sep)
+                linked = [o for o in others if o != repo.main]
+                if w.wt == repo.main:
+                    wrong = any(inside(o) for o in linked)          # main checkout -> a linked worktree
+                else:                                               # linked worktree -> main checkout or another one
+                    wrong = not inside(w.wt) and inside(repo.main)
+                if wrong:
+                    bad.append(f"{os.path.relpath(p, w.wt)} -> {tgt}")
+        dirs[:] = [d for d in dirs if not os.path.islink(os.path.join(root, d))]
+    for sub in ("athenak",):
+        d = os.path.join(w.wt, sub)
+        if os.path.isdir(d):
+            builds += [f"{sub}/{x}" for x in os.listdir(d) if x.startswith("build")]
+    linked_builds = [b for b in builds if os.path.islink(os.path.join(w.wt, b))]
+    ok = not bad and not linked_builds
+    detail = (f"build dirs: {', '.join(builds) or 'none yet'}; no symbolic link into another worktree or the main checkout"
+              if ok else "; ".join(bad + [f"{b} is a symbolic link" for b in linked_builds]))
+    res.append(("build", ok, detail))
+    lst = copy_list(repo)
+    miss = [p for p in lst if os.path.exists(os.path.join(repo.main, p)) and not os.path.exists(os.path.join(w.wt, p))]
+    if w.wt != repo.main:
+        res.append(("copy", not miss, "machine-specific files present" if not miss else "missing: " + ", ".join(miss)
+                    + " (nrpic-wt new copies them; copy by hand from the main checkout)") if lst else
+                   ("copy", True, "harness/wt_copy.list names no file"))
+        k = os.path.join(w.wt, "athenak", "kokkos")
+        kok = os.path.isdir(k) and bool(os.listdir(k))
+        res.append(("kokkos", True, "submodule initialised" if kok else
+                    "submodule not initialised (only needed to build: nrpic-wt new --kokkos, or CLAUDE.md 'Machine')"))
+    return res
+
+
+def copy_list(repo):
+    p = os.path.join(repo.main, "harness", "wt_copy.list")
+    if not os.path.isfile(p):
+        return []
+    out = []
+    for ln in open(p):
+        s = ln.strip()
+        if s and not s.startswith("#"):
+            if s.startswith("/") or ".." in s.split("/"):
+                raise Fail(f"harness/wt_copy.list: '{s}' must be a relative path inside the main checkout")
+            out.append(s)
+    return out
+
+
+def copy_machine_files(repo, dest):
+    done = []
+    for rel in copy_list(repo):
+        src = os.path.join(repo.main, rel.rstrip("/"))
+        if not os.path.exists(src):
+            continue
+        tracked = run(["ls-files", "--error-unmatch", "--", rel.rstrip("/")], repo.main, check=False).returncode == 0
+        if tracked:
+            continue
+        files = []
+        if os.path.isdir(src) and not os.path.islink(src):
+            for root, dirs, fs in os.walk(src, followlinks=False):
+                dirs[:] = [d for d in dirs if not os.path.islink(os.path.join(root, d))]
+                files += [os.path.join(root, f) for f in fs if not os.path.islink(os.path.join(root, f))]
+        elif os.path.isfile(src) and not os.path.islink(src):
+            files = [src]
+        for f in files:
+            to = os.path.join(dest, os.path.relpath(f, repo.main))
+            if os.path.exists(to):
+                continue
+            os.makedirs(os.path.dirname(to), exist_ok=True)
+            shutil.copy2(f, to, follow_symlinks=False)
+            done.append(os.path.relpath(f, repo.main))
+    return done
+
+
+def cmd_check(repo, args):
+    path = find_worktree(repo, args.target)
+    rows = check_rows(repo, path)
+    for row, ok, detail in rows:
+        print(f"  [{row}] {'PASS' if ok else 'FAIL'}  {detail}")
+    return 0 if all(ok for _, ok, _ in rows) else 1
+
+
+def cmd_new(repo, args):
+    if not (repo.in_main_checkout and repo.branch == MAIN):
+        raise Fail("worktrees are created by the orchestrator from the main checkout on main (brief 11.2)")
+    if ctx.Repo(os.getcwd()).wt != repo.wt:
+        raise Fail("run nrpic-wt new from the main checkout itself")
+    oid = args.owner
+    if oid == "orch":
+        raise Fail("the orchestrator works in the main checkout")
+    branch = args.branch or repo.canonical(oid)
+    if owner_of(branch) != oid or ctx.is_proposal(branch):
+        raise Fail(f"branch {branch} does not belong to owner {oid} (owners and branches: CLAUDE.md)")
+    name = args.name or oid
+    if name != oid and not name.startswith(oid + "-"):
+        raise Fail(f"a temporary worktree of {oid} is named {oid}-<x>")
+    if name == oid and branch != repo.canonical(oid):
+        raise Fail(f"wt/{oid} is on the canonical branch {repo.canonical(oid)}; name a temporary worktree {oid}-<x>")
+    if not ctx.re.match(r"^[A-Za-z0-9][A-Za-z0-9._-]*$", name):
+        raise Fail(f"bad worktree name {name}")
+    dest = os.path.join(repo.main, "wt", name)
+    if os.path.lexists(dest):
+        raise Fail(f"{dest} exists already")
+    used = {w.get("branch"): w["path"] for w in repo.worktrees()}
+    if branch in used:
+        raise Fail(f"branch {branch} is checked out in {used[branch]} already")
+    os.makedirs(os.path.join(repo.main, "wt"), exist_ok=True)
+    if branch in repo.branches():
+        git(["worktree", "add", dest, branch], repo.main)
+        print(f"created {os.path.relpath(dest, repo.main)} on the existing branch {branch}")
+    else:
+        base = args.base or MAIN
+        git(["worktree", "add", "-b", branch, dest, base], repo.main)
+        print(f"created {os.path.relpath(dest, repo.main)} on the new branch {branch} from {base}")
+    for f in copy_machine_files(repo, dest):
+        print(f"  copied {f}")
+    if args.kokkos:
+        ref = os.path.join(repo.main, "athenak", "kokkos")
+        p = run(["submodule", "update", "--init", "--reference", ref, "athenak/kokkos"], dest, check=False)
+        print("  kokkos: initialised by reference" if p.returncode == 0 else f"  kokkos: FAILED\n{p.stderr.strip()}")
+    repo2 = Repo(repo.main)
+    bad = 0
+    for row, ok, detail in check_rows(repo2, os.path.realpath(dest)):
+        print(f"  [{row}] {'PASS' if ok else 'FAIL'}  {detail}")
+        bad += not ok
+    print(f"next: cd {os.path.relpath(dest, repo.main)} && harness/bin/nrpic-ctx brief")
+    return 1 if bad else 0
+
+
+def cmd_retire(repo, args):
+    path = find_worktree(repo, args.target)
+    if path == repo.main:
+        raise Fail("the main checkout is never retired")
+    w = Repo(path)
+    problems = []
+    d = repo.dirty(path)
+    if d:
+        problems.append(f"{len(d)} uncommitted change(s): " + ", ".join(x[3:] for x in d[:5]))
+    br = w.branch
+    tip = git(["rev-parse", "HEAD"], path).strip()
+    pushed = run(["branch", "-r", "--contains", tip], repo.wt, check=False).stdout.split()
+    tags = run(["tag", "--contains", tip], repo.wt, check=False).stdout.split()
+    on_main = repo.is_ancestor(tip, MAIN)
+    if not (pushed or tags or on_main):
+        problems.append(f"the tip {tip[:9]} of {br} is neither on a remote branch, nor tagged, nor on main")
+    rel = os.path.relpath(path, repo.main)
+    if problems:
+        print(f"{rel} ({br}) may NOT be retired yet:")
+        for p in problems:
+            print(f"  - {p}")
+        return 1
+    remote = f"origin/{br}" if f"origin/{br}" in pushed else (pushed[0] if pushed else "")
+    where = ", ".join(x for x in [f"remote {remote}" if remote else "", f"tag {tags[0]}" if tags else "",
+                                   "main" if on_main else ""] if x)
+    print(f"{rel} ({br}) is clean and its tip {tip[:9]} is safe ({where}).")
+    print("Retiring is the orchestrator's housekeeping after asking the user (brief 11.2); nothing was removed.")
+    print("The command, for a person to run from the main checkout (the branch and its tags stay):")
+    print(f"  git worktree remove {rel}")
+    return 0
+
+
+def main(argv=None):
+    ap = argparse.ArgumentParser(prog="nrpic-wt", description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
+    ap.add_argument("-C", metavar="DIR", help="any worktree of the repository (default: the current directory)")
+    sp = ap.add_subparsers(dest="cmd", required=True)
+    sp.add_parser("list")
+    s = sp.add_parser("check")
+    s.add_argument("target", nargs="?")
+    s = sp.add_parser("new")
+    s.add_argument("owner")
+    s.add_argument("--name")
+    s.add_argument("--branch")
+    s.add_argument("--base")
+    s.add_argument("--kokkos", action="store_true")
+    s = sp.add_parser("retire")
+    s.add_argument("target")
+    args = ap.parse_args(argv)
+    try:
+        repo = Repo(args.C or os.getcwd())
+        return {"list": cmd_list, "check": cmd_check, "new": cmd_new, "retire": cmd_retire}[args.cmd](repo, args)
+    except Fail as e:
+        print(f"nrpic-wt {args.cmd}: {e}", file=sys.stderr)
+        return 2
+
+
+if __name__ == "__main__":
+    sys.exit(main())
