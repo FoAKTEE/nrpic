@@ -133,3 +133,17 @@ the 1000-word version; no subagent tool in this session); `nrpic-stage verify` (
 B-20261115-165556-a399d4e (nrpic-run, 1 core; one refusal for busy cores before it): the run
 the note uses; `note/figures/` and `note/tables/` are copies of its outputs. Numbers and the
 claims check are those of the previous run (only the margin of one figure changed).
+
+## nrpic-stage verify and report (17:00Z)
+
+First verify (tip 78bb928): FAIL on `clean` (another helper's uncommitted journal), `runs`
+(other helpers' runs in flight, wave-1 manifests) and `rerun` (fig_baseline printed a
+czstyle warning, y label cut by 0.05 in at the left edge). The last one was mine: margin
+widened (commit 91026b8), note rerun as B-20261115-165556-a399d4e. Second verify (tip
+0fee5b6): every check PASS except `runs` (17 of 108: 8 runs of other helpers in flight,
+8 wave-1 manifests of the scope and baseline packages without `code`, `env`, `input`, and
+one first-source run with moved outputs outside its `sha256sums.txt`; none of the note's).
+`nrpic-stage report` wrote `stage/G0/STAGE_REPORT.md` (verdict FAIL: C2, C18 open, verify
+`runs`, no VERIFIER_REPORT.md); I added two sections of my own (scoping text and note;
+disagreements between the stage documents and the files) and a draft "Decision requested"
+for the lead to rewrite. Commit c382abd.
