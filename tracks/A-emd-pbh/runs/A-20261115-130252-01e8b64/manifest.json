@@ -1,0 +1,86 @@
+{
+  "schema": "nrpic-run-manifest/1",
+  "run_id": "A-20261115-130252-01e8b64",
+  "track": "A-emd-pbh",
+  "gate": "G1",
+  "kind": "scouting",
+  "purpose": "lead rerun of the criteria package (L1), second attempt in the worktree venv",
+  "preregistered_in": null,
+  "launcher": "local",
+  "command": [
+    "bash",
+    "tracks/A-emd-pbh/analysis/lead_rerun.sh",
+    "criteria"
+  ],
+  "cwd": ".",
+  "git": {
+    "sha": "01e8b64c7a498963c3bc4a950b2b55b82bea7979",
+    "branch": "track/A-emd-pbh",
+    "dirty": false,
+    "merge_base_main": "a1c223753952674ee38819dc45043591dddc3022",
+    "worktree": "wt/A-emd-pbh"
+  },
+  "code": {
+    "core_tag": null,
+    "athenak_upstream_sha": "c5a0d7f",
+    "kokkos_sha": "6739bc623081648af9e752b616d9671527922cbf",
+    "problem": null
+  },
+  "env": {
+    "host": "anta",
+    "env_hash": "0279f117f9b5066d0d8f22b387f643d57a7ce55d3c210ad3e0a880c49ae63266",
+    "machine_file_sha256": "fb54b7387bc058c778fdd2fec12e58d67459a657278df6a87d04f63daccb1968",
+    "uv_lock_sha256": "5417f6ba318b914aa3800e5d55f7b11fdd8df13c2688bdda7d419240aa1d5863",
+    "track_requirements_sha256": null,
+    "container_digest": null,
+    "compiler": "g++ 11.4.0",
+    "mpi": "none (Athena_ENABLE_MPI=OFF)",
+    "gpu": null,
+    "python": "3.10.12 /data/haiyangw/nrpic/wt/A-emd-pbh/.venv"
+  },
+  "input": null,
+  "inputs": [
+    {
+      "path": "tracks/A-emd-pbh/analysis/lead_rerun.sh",
+      "role": "argv",
+      "sha256": "257376d232d1abf831d28acd957a7be6e38c7a08250533977fc58bcd27b53dd0",
+      "bytes": 3068,
+      "tracked": true
+    }
+  ],
+  "batch_entries": null,
+  "resources": {
+    "nodes": 1,
+    "gpus": 0,
+    "cores": 1,
+    "walltime_s": null,
+    "wall_limit": null,
+    "segments_max": null,
+    "gpu_hours_requested": 0.0,
+    "gpu_hours": null,
+    "particles": null
+  },
+  "slurm": null,
+  "outputs": {
+    "dir": "scratch/A-emd-pbh/A-20261115-130252-01e8b64",
+    "sha256sums": "sha256sums.txt",
+    "sha256sums_sha256": null,
+    "bytes": null,
+    "files": null
+  },
+  "status": "running",
+  "exit_code": null,
+  "registered": "2026-11-15T13:02:52Z",
+  "started": null,
+  "ended": null,
+  "parents": [],
+  "notes": "",
+  "budget_at_submit": {
+    "gpu_hours_allotted": 60.0,
+    "cores_allotted": 16,
+    "gpu_hours_used": 0.0,
+    "gpu_hours_reserved": 0.0,
+    "cores_busy": 5,
+    "runs": 47
+  }
+}
