@@ -329,3 +329,12 @@ limits the amplitude) or if c_CMC exceeds 0.05 with the filter.
 Written before T4b: started from psi = psi_GE instead of 1, mu = 0.5 converges if the
 divergence came from the start, and diverges again if it is the iteration (my reading
 predicts divergence); mu = 0.3 from psi = 1: converges (psi^4 = 1.8 at the peak).
+
+### T4b outcome (run A-emd-pbh-20261115-161134-f3949f8)
+
+Both predictions confirmed: mu = 0.5 diverges again when started from psi_GE itself
+(NaN after 200 iterations), so the divergence is the iteration, not the start; mu = 0.3
+at eps_i = 0.2 converges from psi = 1 in 78 iterations to residual 7e-12 with c_CMC =
+2.6e-8. On the constant-mean-curvature slice the existing solve reproduces the
+gradient-expansion data at the paper's start for mu <= 0.3; above, a solver with a
+variable-coefficient (Newton) step is needed.

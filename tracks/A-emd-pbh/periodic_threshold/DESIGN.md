@@ -15,8 +15,10 @@ Summary.
    Newtonian-gauge dictionary plus a nonlinear constraint solve) builds them for
    mu <= 0.3 at a start k/(a_i H_i) >= 1, with a first-order error of 8 per cent in the
    conformal factor at 64^3 that falls as h^2; it fails at the paper's start (k/aH = 1/5)
-   and at mu = 0.5. The line needs core's phase-1 generator on a constant-mean-curvature
-   slice (request 1).
+   and at mu = 0.5. On the constant-mean-curvature slice of the paper the same solver
+   reproduces the gradient-expansion data at the paper's start to 3e-5 (mu = 0.03) and
+   2.6e-8 (mu = 0.3, no filter), but diverges at mu = 0.5. The line needs core's phase-1
+   generator on that slice with a variable-coefficient solve (request 1).
 3. Static refinement works in the periodic cosmological box (homogeneity kept exactly);
    refined blocks start with an 8 per cent constraint violation relative to the
    perturbation (data interpolated from the root mesh). Adaptive refinement crashes
@@ -120,7 +122,31 @@ Findings [VERIFIED in the runs named; readings JUDGEMENT]:
    1.3e7 particles, a lattice nested to that spacing inside 2 r_m about 1e6 [VERIFIED as
    arithmetic; the requirement is SCOPE.md's JUDGEMENT].
 
-### 2.2 Needed (request 1 to core)
+### 2.2 The constant-mean-curvature route works with the existing solve, up to mu = 0.3
+
+T4 (runs A-emd-pbh-20261115-160718-e04c0cc, A-emd-pbh-20261115-161134-f3949f8;
+`scripts/t4_cmc_route.py`, feasibility only, no files for the code): the
+gradient-expansion fields at the paper's start eps_i = 0.2, e = 0.2, 64^3; E from the
+conformally flat Hamiltonian constraint of psi_GE with K = -3H; momenta from the momentum
+constraint; one particle per cell at the cell centre (the paper's lattice); then
+`cosmo_id.solve` unchanged with K = -3H [VERIFIED in those runs]:
+
+| mu | filter | iterations | residual | c_CMC = max|psi - psi_GE| / max|psi_GE - 1| |
+|---|---|---|---|---|
+| 0.03 | none | 9 | 6e-12 | 7.5e-10 |
+| 0.03 | 2 passes + compensation | 10 | 3e-12 | 3.4e-5 |
+| 0.3 | none | 78 | 7e-12 | 2.6e-8 |
+| 0.5 | none / with filter / started from psi_GE | 200 | NaN | diverges |
+
+So the slice removes the super-horizon problem of 2.1 (c falls from 0.38, unconverged, to
+3e-5 at the same start), and the remaining limit is the solver's iteration: it
+preconditions with the mean of sigma = (5/12) K^2 psi^4 + 2 pi psi^4 E, and at mu = 0.5
+(psi^4 = 2.7 at the peak) the local sigma exceeds the mean by more than the mean, so the
+long-wavelength error grows [JUDGEMENT; the divergence from psi_GE itself shows it is the
+iteration, not the start]. A variable-coefficient (Newton, multigrid or Krylov) step is
+needed for mu >= 0.5, i.e. for the hoop line (0.45 at e = 0.2) and above.
+
+### 2.3 Needed (request 1 to core)
 
 The phase-1 generator (already requested in wave 1,
 `outbox/20261115T1320Z__to-core__phase1-generator-and-gauge-options.md`), made precise by
@@ -130,7 +156,8 @@ T1 [JUDGEMENT]:
 - fields of the gradient expansion nonlinear in zeta (Psi = e^(zeta/2), q, p_ij of
   MDPBH.tex:536-543) at eps_i <= 0.2; particle masses m = E sqrt(gamma) dV / Gamma (the
   paper's rule, MDPBH.tex:1064-1074) and momenta from J = E V of the momentum constraint;
-  then `cosmo_id.solve` with that K for exact consistency with the run's deposit;
+  then the constraint solve with that K for exact consistency with the run's deposit
+  (`cosmo_id.solve` suffices to mu = 0.3, T4; above it a variable-coefficient step);
 - a field-file format carrying the conformal metric (or the decision, with this
   package's numbers, that the conformally flat part suffices at eps_i = 0.2: 1.2 per cent
   of the perturbation at mu = 0.03, 0.8 per cent at mu = 0.5);
