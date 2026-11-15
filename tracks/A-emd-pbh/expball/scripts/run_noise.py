@@ -134,7 +134,7 @@ def figures(out, maps, d, L):
         keys = [k for k in (("flat", "mc"), ("flat", "stratified"), ("flat", "lattice"),
                             ("smooth_tophat", "stratified")) if k in maps]
         fig, axes = plt.subplots(1, len(keys), figsize=(8.0, 2.5))
-        fig.subplots_adjust(left=0.06, right=0.92, bottom=0.17, top=0.88, wspace=0.08)
+        fig.subplots_adjust(left=0.06, right=0.86, bottom=0.17, top=0.88, wspace=0.08)
         for ax, k in zip(axes, keys):
             im = ax.imshow(maps[k].T, origin="lower", extent=[-L / RB, L / RB, -L / RB, L / RB],
                            cmap=fs.CMAP["diverging"], vmin=-1, vmax=1, interpolation="none",
@@ -142,7 +142,7 @@ def figures(out, maps, d, L):
             ax.set_title(f"{k[0].replace('_', ' ')}, {k[1]}", fontsize=8)
             ax.set_xlabel(r"$x/R_b$", labelpad=-2)
             ax.set_yticks([] if ax is not axes[0] else [-1, 0, 1])
-        cax = fig.add_axes([0.93, 0.17, 0.012, 0.71])
+        cax = fig.add_axes([0.875, 0.17, 0.012, 0.71])
         fig.colorbar(im, cax=cax, label=r"$\delta H/6H^2$")
         files += fs.save(fig, os.path.join(d, "fig_particle_noise_maps_N1e5"))
         plt.close(fig)

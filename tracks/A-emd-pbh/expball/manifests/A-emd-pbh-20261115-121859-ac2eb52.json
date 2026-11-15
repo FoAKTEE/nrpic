@@ -1,0 +1,119 @@
+{
+  "run_id": "A-emd-pbh-20261115-121859-ac2eb52",
+  "owner": "A-emd-pbh",
+  "purpose": "A-pre-1: end-to-end check of data set A-emd-pbh-20261115-121749-90764e1 from its files",
+  "kind": "production",
+  "command": "python3 scripts/check_dataset.py /data/haiyangw/nrpic/scratch/A-emd-pbh/A-emd-pbh-20261115-121749-90764e1",
+  "cwd": "/data/haiyangw/nrpic/wt/A-emd-pbh/tracks/A-emd-pbh/expball",
+  "commit": "ac2eb52ca0f0ecb7ab7d9c0e3d53ff9aba8e2de7",
+  "worktree_dirty_in_package": false,
+  "host": "anta",
+  "inputs": [
+    {
+      "path": "/data/haiyangw/nrpic/scratch/A-emd-pbh/A-emd-pbh-20261115-121749-90764e1/expball_flat_HRb0p5.json",
+      "sha256": "cc05c517508fd7fbb55321191547959e758eb44bd4c7434f2e44b3397cf35808"
+    },
+    {
+      "path": "/data/haiyangw/nrpic/scratch/A-emd-pbh/A-emd-pbh-20261115-121749-90764e1/expball_flat_HRb0p5.tab",
+      "sha256": "03c2ebd94f8c8ef83593b6e1b393142c04dd5c5c9416c8db37c69cf9e2c723b4"
+    },
+    {
+      "path": "/data/haiyangw/nrpic/scratch/A-emd-pbh/A-emd-pbh-20261115-121749-90764e1/expball_flat_HRb0p5_strat_N100000_s1.nrp",
+      "sha256": "d56345b5f26ee844a4aa54c23ffd0ae747e5ffd78a1da742c90629dd01de6ad8"
+    },
+    {
+      "path": "/data/haiyangw/nrpic/scratch/A-emd-pbh/A-emd-pbh-20261115-121749-90764e1/expball_flat_HRb0p5_lat58.nrp",
+      "sha256": "67db099c4dda48bc0c7bd86d7f5c09a2c45d1cdbc5b930b428f518810a32c2df"
+    },
+    {
+      "path": "/data/haiyangw/nrpic/scratch/A-emd-pbh/A-emd-pbh-20261115-121749-90764e1/expball_flat_HRb0p5_mesh64.npz",
+      "sha256": "9a229d3fbbd8ac390533d386c93c799536732a6f7be8af408b16fd2491c321bc"
+    }
+  ],
+  "output_dir": "/data/haiyangw/nrpic/scratch/A-emd-pbh/A-emd-pbh-20261115-121859-ac2eb52",
+  "wall_time_s": 5.61,
+  "cores": 4,
+  "card_hours": 0.0,
+  "status": "ok",
+  "outputs": [
+    {
+      "path": "/data/haiyangw/nrpic/scratch/A-emd-pbh/A-emd-pbh-20261115-121859-ac2eb52/check.json",
+      "sha256": "32c1c86dc8b9b0ff3263516061f2d04457d721548cdb197bf42a099a0b8274c2"
+    }
+  ],
+  "results": {
+    "dataset": "A-emd-pbh-20261115-121749-90764e1",
+    "a_table_residuals": {
+      "64": {
+        "table": {
+          "H_L1": 2.910661088174567e-12,
+          "H_L2": 2.910661305944043e-12,
+          "H_Linf": 2.9252156252823625e-12,
+          "M_L1": 1.039687443664571e-07,
+          "M_L2": 1.559205232533026e-07,
+          "M_Linf": 9.089462785954883e-07,
+          "ncell": 219880
+        },
+        "exact": {
+          "H_L1": 2.9106697533134614e-12,
+          "H_L2": 2.9106699193902373e-12,
+          "H_Linf": 2.919590495290928e-12,
+          "M_L1": 1.0396874452688727e-07,
+          "M_L2": 1.5592052366589924e-07,
+          "M_Linf": 9.089463395155982e-07,
+          "ncell": 219880
+        },
+        "H_ratio": 0.9999970407341152,
+        "M_ratio": 0.9999999973538016
+      },
+      "128": {
+        "table": {
+          "H_L1": 1.1641877793870157e-11,
+          "H_L2": 1.164187784932006e-11,
+          "H_Linf": 1.165704569909091e-11,
+          "M_L1": 6.500231937719367e-09,
+          "M_L2": 9.744322526752142e-09,
+          "M_Linf": 5.679749232718665e-08,
+          "ncell": 1758791
+        },
+        "exact": {
+          "H_L1": 1.1641888253889364e-11,
+          "H_L2": 1.1641888303221698e-11,
+          "H_Linf": 1.1651124509626243e-11,
+          "M_L1": 6.500232834725221e-09,
+          "M_L2": 9.744323059912013e-09,
+          "M_Linf": 5.6797424419099844e-08,
+          "ncell": 1758791
+        },
+        "H_ratio": 0.999999102044156,
+        "M_ratio": 0.9999999452850785
+      }
+    },
+    "b_mesh_file_residuals": {
+      "H_L2": 7.280617522600292e-13,
+      "M_L2": 2.747518689472372e-06,
+      "ncell": 173784,
+      "h": 0.3125
+    },
+    "c_particles": {
+      "particles_stratified": {
+        "N": 100000,
+        "max_abs_u": 0.0,
+        "sum_m_over_M0": 1.0,
+        "r_max_over_rbar_m": 0.9999984405484907,
+        "rms_dH": 0.4545749803586016,
+        "mean_dH": -8.197165233847669e-05,
+        "poisson": 0.4563177516839368
+      },
+      "particles_lattice": {
+        "N": 102208,
+        "max_abs_u": 0.0,
+        "sum_m_over_M0": 0.9999999999999998,
+        "r_max_over_rbar_m": 0.9998513563722744,
+        "rms_dH": 0.049652242681383046,
+        "mean_dH": -0.00020050506838258333,
+        "poisson": 0.45136192286888793
+      }
+    }
+  }
+}

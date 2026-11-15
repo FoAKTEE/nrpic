@@ -1,0 +1,119 @@
+{
+  "run_id": "A-emd-pbh-20261115-121905-ac2eb52",
+  "owner": "A-emd-pbh",
+  "purpose": "A-pre-1: end-to-end check of data set A-emd-pbh-20261115-121753-90764e1 from its files",
+  "kind": "production",
+  "command": "python3 scripts/check_dataset.py /data/haiyangw/nrpic/scratch/A-emd-pbh/A-emd-pbh-20261115-121753-90764e1",
+  "cwd": "/data/haiyangw/nrpic/wt/A-emd-pbh/tracks/A-emd-pbh/expball",
+  "commit": "ac2eb52ca0f0ecb7ab7d9c0e3d53ff9aba8e2de7",
+  "worktree_dirty_in_package": true,
+  "host": "anta",
+  "inputs": [
+    {
+      "path": "/data/haiyangw/nrpic/scratch/A-emd-pbh/A-emd-pbh-20261115-121753-90764e1/expball_smooth_tophat_HRb0p5_dc1_R10p3_R20p75.json",
+      "sha256": "d95d37c3600bec28afa0a049b66b41f4d171e614f5c9f53023e1a3e501df3881"
+    },
+    {
+      "path": "/data/haiyangw/nrpic/scratch/A-emd-pbh/A-emd-pbh-20261115-121753-90764e1/expball_smooth_tophat_HRb0p5_dc1_R10p3_R20p75.tab",
+      "sha256": "a1982b9b0ca2b0e118a10c7adf3e3c7cc0c2af6157fc8c40a89e8da67bc91e06"
+    },
+    {
+      "path": "/data/haiyangw/nrpic/scratch/A-emd-pbh/A-emd-pbh-20261115-121753-90764e1/expball_smooth_tophat_HRb0p5_dc1_R10p3_R20p75_strat_N100000_s1.nrp",
+      "sha256": "b00e38d8a71a45905725fcd66b2a8e4c721baff883186828381f54854228d600"
+    },
+    {
+      "path": "/data/haiyangw/nrpic/scratch/A-emd-pbh/A-emd-pbh-20261115-121753-90764e1/expball_smooth_tophat_HRb0p5_dc1_R10p3_R20p75_lat58.nrp",
+      "sha256": "ab92ac1f5a9ee5c508998b3c2243102d293fdd0a443a84585e2e1668219fa32f"
+    },
+    {
+      "path": "/data/haiyangw/nrpic/scratch/A-emd-pbh/A-emd-pbh-20261115-121753-90764e1/expball_smooth_tophat_HRb0p5_dc1_R10p3_R20p75_mesh64.npz",
+      "sha256": "5a51ae7f61c2474552ef27eb5d701c5d4c086b1a373dda2fc0cdabaa0d4d6d9b"
+    }
+  ],
+  "output_dir": "/data/haiyangw/nrpic/scratch/A-emd-pbh/A-emd-pbh-20261115-121905-ac2eb52",
+  "wall_time_s": 8.46,
+  "cores": 4,
+  "card_hours": 0.0,
+  "status": "ok",
+  "outputs": [
+    {
+      "path": "/data/haiyangw/nrpic/scratch/A-emd-pbh/A-emd-pbh-20261115-121905-ac2eb52/check.json",
+      "sha256": "eccedb40a4911354bb2af6584ef0d8f58e4d43c699035e8b28b47961975298f3"
+    }
+  ],
+  "results": {
+    "dataset": "A-emd-pbh-20261115-121753-90764e1",
+    "a_table_residuals": {
+      "64": {
+        "table": {
+          "H_L1": 2.550754420694133e-05,
+          "H_L2": 0.00012197890905586836,
+          "H_Linf": 0.0019760543337247563,
+          "M_L1": 0.0004055013313331556,
+          "M_L2": 0.0020370486878700505,
+          "M_Linf": 0.027812813901487404,
+          "ncell": 219880
+        },
+        "exact": {
+          "H_L1": 2.5507542909404246e-05,
+          "H_L2": 0.00012197890385293709,
+          "H_Linf": 0.001976054487670057,
+          "M_L1": 0.00040550133457545735,
+          "M_L2": 0.0020370487120541024,
+          "M_Linf": 0.02781281464207724,
+          "ncell": 219880
+        },
+        "H_ratio": 1.0000000426543534,
+        "M_ratio": 0.9999999881278971
+      },
+      "128": {
+        "table": {
+          "H_L1": 1.7808589365987802e-06,
+          "H_L2": 9.073754064961839e-06,
+          "H_Linf": 0.00014573701075315526,
+          "M_L1": 3.3634994014263834e-05,
+          "M_L2": 0.00018935211496106118,
+          "M_Linf": 0.0029014958122731203,
+          "ncell": 1758791
+        },
+        "exact": {
+          "H_L1": 1.7808575519271752e-06,
+          "H_L2": 9.073748420607543e-06,
+          "H_Linf": 0.00014573633506786976,
+          "M_L1": 3.363499471510916e-05,
+          "M_L2": 0.0001893521217502449,
+          "M_Linf": 0.002901495149231587,
+          "ncell": 1758791
+        },
+        "H_ratio": 1.000000622053206,
+        "M_ratio": 0.9999999641451933
+      }
+    },
+    "b_mesh_file_residuals": {
+      "H_L2": 0.0014358688020911358,
+      "M_L2": 0.016096931255121117,
+      "ncell": 173784,
+      "h": 0.3125
+    },
+    "c_particles": {
+      "particles_stratified": {
+        "N": 100000,
+        "max_abs_u": 0.0,
+        "sum_m_over_M0": 1.0000000000000004,
+        "r_max_over_rbar_m": 0.9999984307123218,
+        "rms_dH": 0.45088449683683574,
+        "mean_dH": -0.00011272503711810083,
+        "poisson": 0.4549522287399456
+      },
+      "particles_lattice": {
+        "N": 102208,
+        "max_abs_u": 0.0,
+        "sum_m_over_M0": 1.0,
+        "r_max_over_rbar_m": 0.9998513563722744,
+        "rms_dH": 0.05570697418515659,
+        "mean_dH": -0.00023905835658786682,
+        "poisson": 0.4500112301565248
+      }
+    }
+  }
+}

@@ -163,13 +163,13 @@ tau_c = 44.454, first trapped sphere at R_i = 2.74 with m = 0.0804 at tau_AH = 4
 no shell crossing before the core crunch (all from the figure runs). Stratified total rest
 mass exact to 1e-13; lattice total equal after the surface correction.
 
-Note (12:20 UTC). The data sets of runs A-emd-pbh-20261115-121707-6bfb707 and
+Note (12:18 UTC). The data sets of runs A-emd-pbh-20261115-121707-6bfb707 and
 -121710-6bfb707 are superseded by -121749-90764e1 (flat) and -121753-90764e1 (smoothed
 top-hat): the only change is the table header (rbar_last was printed as "np.float64(..)",
 and the flat ball listed a meaningless first-horizon entry); data rows identical in
 construction.
 
-## 2026-11-15 12:20 UTC, P8: end-to-end check of the two data sets (scripts/check_dataset.py)
+## 2026-11-15 12:18 UTC (before the runs at 12:18:59), P8: end-to-end check of the two data sets (scripts/check_dataset.py)
 
 Prediction. (a) Table fields (drbar = rbar_m/4000) give the same order-4 residuals as the
 exact fields in the smooth region within 1 percent at N = 64 and 128. (b) The residuals
@@ -179,3 +179,59 @@ octant N = 32 of the convergence run) agree with the N = 32, p = 4 values of tha
 files: u_i = 0 exactly; stratified sum m = M0 to 1e-13, lattice to 1e-12; no particle
 beyond rbar_m; rms dH/6H^2 of the stratified file ~0.455 and of the lattice file ~0.05
 (the noise run at N = 1e5).
+
+## Outcomes of P4 to P8 (written 12:27 UTC)
+
+P4, G1 convergence, run A-emd-pbh-20261115-121654-6bfb707 (the first attempt
+-115339-044312f was aborted, see 12:16). Orders between successive N (32, 64, 128, 256),
+L2 norms, "smooth" region:
+- flat: M order 1.99/2.00/2.00 (p = 2) and 4.00/4.00/4.00 (p = 4) as predicted. H: 1e-15 for
+  p = 2 as predicted, but for p = 4 it grows as h^-2 (7.3e-13 -> 4.7e-11): prediction
+  ("~1e-15") failed. Cause tested: the order-4 second-derivative weights sum to -6.94e-17 in
+  double precision; 3 x 6.94e-17/h^2 x 8/(6H^2) at h = 10/32 gives 7.3e-13, the measured value
+  to 3 digits. Round-off of the check, not a property of the data.
+- all cells, flat: M L1 order 0.02/0.01/0.00, L2 -0.49/-0.50/-0.50, Linf -0.9/-1.1/-1.05
+  (p = 2) as predicted (KL jump at R_b).
+- flat_taper: M over all cells 1.85/1.96/1.99 and 3.43/3.77/3.90 as predicted.
+- tophat: smooth region 1.99/2.00/2.00 and 3.96/4.01/4.00 (H), 4.01/4.01/4.00 (M); all cells
+  H L1 1.03/1.00/1.01, L2 0.48/0.47/0.50; M no convergence; all as predicted.
+- smooth_tophat: p = 2: 1.94/1.98/2.00 (H), 1.74/1.92/1.98 (M); p = 4: 3.39/3.75/3.92 (H),
+  2.81/3.43/3.79 (M). By the refutation criterion written in P4 ("below p - 0.5 at the two
+  finest pairs") the M order 3.43 of the pair 64 -> 128 refutes the prediction; the orders
+  rise monotonically toward 4 (pre-asymptotic, as P3 suspected). A further pair 256 -> 512
+  is the test (P9 below).
+- table interpolation (four-point Lagrange): orders 3.9 to 4.05 for u, KL, KT, betar
+  (smoothed top-hat, top-hat) until the error reaches round-off (flat: 7e-13 at
+  rbar_m/500, 4e-16 at /8000; top-hat betar 4.7e-15 at /8000), as predicted. Written table
+  spacing (rbar_m/4000): residual ratio table/exact at N = 128, p = 4: 1.0000006 (H),
+  0.99999996 (M), as predicted.
+P5 (figures, final run A-emd-pbh-20261115-121643-6bfb707 after the solver fix; earlier
+-115552/-115659 identical numbers): max 2m/R = 0.25 at R_b (grid value 0.249985),
+rho_min/rho_b = 0.93162 (top-hat; the prediction text said 0.9321, an arithmetic slip:
+1 - 1/14.625 = 0.93162) and 0.4367 (smoothed top-hat), core tau_ta = 16.894,
+tau_c = 44.454, first trapped sphere: smoothed top-hat R_i = 2.74, m = 0.08035,
+tau_AH = 44.349; top-hat R_i = R1 = 2.4, m = 0.054, tau_AH = 44.381; no shell crossing
+before the core crunch. All as predicted.
+P6 (noise, run A-emd-pbh-20261115-121659-6bfb707): mc rms within 2 percent of the CIC
+Poisson value at every N (flat: 1.448 vs 1.443 at 1e4, 0.1433 vs 0.1443 at 1e6), slope -0.50;
+stratified the same within 2 percent; both as predicted. Lattice: 1.04, 0.236, 0.050,
+0.082, 0.040 at N = 1e4 ... 1e6 (flat), not monotonic, as predicted, but the ratio to mc is
+0.11, 0.31, 0.28 at N = 1e5, 3e5, 1e6: the prediction "below 0.1 x mc at N >= 1e5" failed.
+Not investigated further (the beat between lattice spacing 2 rbar_m/n_lat and mesh
+spacing h is the obvious candidate; untested). Means consistent with zero (|mean| < 1e-2).
+P7 (data sets): final runs A-emd-pbh-20261115-121749-90764e1 (flat) and
+-121753-90764e1 (smoothed top-hat): flat rest mass 1.0000000000000 (= M), smoothed top-hat
+rest mass 1.006307 > M = 1, psi(0) = 1.013836; R_b(10) = 12.433 = 8 (1 + 30/32)^(2/3);
+all as predicted.
+P8 (end-to-end checks, runs A-emd-pbh-20261115-121859-ac2eb52 (flat) and
+-121905-ac2eb52 (smoothed top-hat)): (a) table/exact residual ratios 1.00000004 and
+1.0000006 (H), 0.99999999 and 0.99999996 (M) at N = 64, 128; (b) mesh file, smoothed
+top-hat: H 1.44e-3, M 1.61e-2 against the octant N = 32 values 1.28e-3, 1.43e-2 (within
+13 percent); (c) u_i = 0, sums equal M0 to 4e-16, no particle beyond rbar_m, rms dH 0.451
+(stratified, Poisson 0.455) and 0.0557 (lattice). As predicted.
+
+## 2026-11-15 12:27 UTC, P9: one more resolution for the smoothed top-hat
+
+Prediction. With N = 128, 256, 512 (same set-up as P4, order 2 and 4), the 256 -> 512
+order in the smooth region is >= 1.98 (p = 2) and >= 3.9 for both H and M (p = 4).
+Refuted if the p = 4 momentum order of the finest pair stays below 3.85.
