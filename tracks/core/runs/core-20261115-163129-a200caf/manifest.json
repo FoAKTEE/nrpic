@@ -1,0 +1,45 @@
+{
+ "run_id": "core-20261115-163129-a200caf",
+ "owner": "core",
+ "registered_by": "tracks/core/analysis/dfix/runreg.py (by hand: nrpic-run submit fails)",
+ "purpose": "T7 accretion diagnostics about a moving puncture tracker: identity of content and crossings, centre against the tracker file, content against snapshots",
+ "kind": "scouting",
+ "command": [
+  ".venv/bin/python",
+  "tracks/core/analysis/dfix/t7_tracker.py",
+  "--exe",
+  "/data/haiyangw/nrpic/wt/core-dfix/.work/build_cpu/src/athena",
+  "--fig",
+  "tracks/core/analysis/dfix/figs/t7"
+ ],
+ "cwd": "/data/haiyangw/nrpic/wt/core-dfix",
+ "commit": "a200cafb7d14ddc38ddc65a5daedac0cb9e0447c",
+ "branch": "core/requests-adf",
+ "uncommitted_changes": [],
+ "inputs": [
+  {
+   "path": "problems/tests/accretion_tracker.athinput",
+   "sha256": "927bab576cf6b319e5f3adccc6b15fba71bcd6d6bbd176d46c22f07278ad6c54"
+  },
+  {
+   "path": ".venv/bin/python",
+   "sha256": "d6bca2b84e73c7775a0dd5e6a76899cfe4ee62863d7c8f88513811d1fda23f49"
+  },
+  {
+   "path": "tracks/core/analysis/dfix/t7_tracker.py",
+   "sha256": "da49d1cdf40529b3011248c039d3c6a4c30161efaa64a94c1ac4796f34476948"
+  },
+  {
+   "path": ".work/build_cpu/src/athena",
+   "sha256": "17ee5e28d93016da354ce86e5d869233a21a1f20f67b4cb211527e6b1359022d"
+  }
+ ],
+ "output_directory": "/data/haiyangw/nrpic/scratch/core/core-20261115-163129-a200caf",
+ "outputs": {
+  "dir": "scratch/core/core-20261115-163129-a200caf"
+ },
+ "host": "anta",
+ "start_utc": "2026-11-15T16:31:29Z",
+ "cores": 1,
+ "status": "running"
+}
