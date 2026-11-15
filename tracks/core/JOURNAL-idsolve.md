@@ -684,3 +684,22 @@ more than 5 per cent over 5 outer iterations after the scalar part has converged
      wavenumber) with the monitor's max|M| below that of the stencil form (5.3e-5);
  (c) no divergence in any case.
 Refuted if (a) the mean |M| does not fall below the value before, or anything diverges.
+
+**V5 amendment before the registered runs.** A smoke run (moving Gaussian, 32 cells,
+`scratch/core/tmp/idsolve/smoke_vec/gbvc`, not registered) of the first version showed
+the monitor's residual falling fast to 1e-6 of its scale and then by about 3 per cent per
+outer iteration (the modes near the Nyquist wavenumber), never "stalled" by my rule, so
+the solve hit id_maxit (60) with max|M| 2.8e-9. The vector part now has its own
+tolerance, `id_vector_tol`, default 1e-6 in mode code (id_tol in the stencil form, which
+keeps V1 to V3 as they were); the stall rule stays as a safety net. Predictions (a) and
+(c) stand; (b) becomes: the moving Gaussian (64 cells) ends at id_vector_tol with the
+monitor's max|M| at least 100 times below that of the stencil form (5.3e-5).
+
+**V6, prediction.** The evolution of E (smooth strained ball, density-form sources,
+conformal-time lapse, 64 cells, 8 steps) with the scalar and the vector solve in mode
+code. If the momentum residual of the data were what feeds the growth of H seen in D
+and E, removing it would slow that growth. I expect it does not [JUDGEMENT; entry 8
+amendment: the trial's M is truncation-level and the evolution makes M of 4e-5 in 8
+steps with and without the scalar solve]: the mean |H| at t = 2 within 20 per cent of
+the scalar-only solved run of E (5.31e-5), and the mean |M| at t = 2 within 20 per cent
+of E (4.26e-5). Refuted if either is lower by more than a factor 2.

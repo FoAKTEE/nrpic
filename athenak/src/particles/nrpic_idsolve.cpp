@@ -137,6 +137,25 @@ void Particles::NrpicIdSolveInit(ParameterInput *pin) {
   if (pin->DoesParameterExist("particles", "id_vector")) {
     ids.vector = pin->GetBoolean("particles", "id_vector");
   }
+  if (ids.vector && pin->DoesParameterExist("particles", "id_vector_residual")) {
+    const std::string vr = pin->GetString("particles", "id_vector_residual");
+    if (vr.compare("code") == 0) {
+      ids.vec_residual = 0;
+    } else if (vr.compare("stencil") == 0) {
+      ids.vec_residual = 1;
+    } else {
+      IdFatal("<particles> id_vector_residual = '" + vr + "' not recognized (stencil or "
+              "code)");
+    }
+  }
+  // the vector part with the monitor as residual decays slowly near the Nyquist
+  // wavenumber: its own tolerance, 1e-6 by default (stencil form: id_tol)
+  if (ids.vector) {
+    ids.vec_tol = (ids.vec_residual == 0) ? 1.0e-6 : ids.tol;
+    if (pin->DoesParameterExist("particles", "id_vector_tol")) {
+      ids.vec_tol = pin->GetReal("particles", "id_vector_tol");
+    }
+  }
   // ghost cells of psi and of the corrections
   pbval_ids = new MeshBoundaryValuesCC(pmy_pack, pin, false);
   pbval_ids->InitializeBuffers(1);
@@ -537,6 +556,7 @@ void Particles::NrpicSolveInitialData() {
   //      Stilde_i = psi^6 S_i of the deposit.  On a periodic mesh the mean of each
   //      component is removed (and reported).
   Real vmax = 0.0, vrms = 0.0, vscale = 0.0, vmean = 0.0, mmax = 0.0;
+  const bool vec_code = (ids.vec_residual == 0);   // F_i = psi^6 M_i of the monitor
   auto evaluate_vector = [&]() {
     auto w0 = wv[0], w1 = wv[1], w2 = wv[2];
     auto f0 = fv[0], f1 = fv[1], f2 = fv[2];
@@ -586,7 +606,7 @@ void Particles::NrpicSolveInitialData() {
         const Real t_s = 8.0*M_PI*p6*tm(m,Tmunu::I_Tmunu_Sx + a,k,j,i);
         const Real t_k = (2.0/3.0)*p6*dk[a];
         const Real rhs = t_s + t_k - da[a];
-        const Real f = lw3[a] - rhs;
+        const Real f = vec_code ? p6*con.M_d(m,a,k,j,i) : lw3[a] - rhs;
         const Real sa = fabs(lw3[a] + da[a]) + fabs(t_k) + fabs(t_s);
         smax = fmax(smax, sa);
         if (a == 0) { f0(m,0,k,j,i) = f; s0(m,0,k,j,i) = rhs; }
@@ -704,7 +724,9 @@ void Particles::NrpicSolveInitialData() {
     std::fprintf(fl, "# id_vector: [14]=relv=max|Fv|/scale_v [15]=max|Fv| [16]=rms_Fv "
                  "[17]=max|M| of the monitor [18]=|mean of Fv| removed (periodic) "
                  "[19]=v_cycles of the vector step that followed; Fv: residual of the "
-                 "vector equation in stencil form\n");
+                 "vector equation, %s; id_vector_tol = %.3e\n", vec_code ? "psi^6 M_i of "
+                 "the constraint monitor (id_vector_residual = code)" : "stencil form",
+                 ids.vec_tol);
   }
 
   std::vector<double> h_before;      // constraint monitor of the first evaluation
@@ -793,6 +815,8 @@ void Particles::NrpicSolveInitialData() {
   int cg_total = 0, cyc_total = 0;
   Real relv = 0.0, relv0 = 0.0, mmax0 = 0.0;
   int cyc_total_vec = 0;
+  std::vector<Real> relv_hist;       // vector residual per outer iteration
+  bool vstalled = false;             // id_vector_residual = code: the residual stalled
   for (iter = 0; ; ++iter) {
     evaluate(nm);
     vol_mesh = nm.vol;
@@ -800,6 +824,7 @@ void Particles::NrpicSolveInitialData() {
     if (vec) {
       evaluate_vector();
       relv = (vscale > 0.0) ? vmax/vscale : vmax;
+      relv_hist.push_back(relv);
     }
     if (iter == 0) {
       nm0 = nm;
@@ -824,7 +849,14 @@ void Particles::NrpicSolveInitialData() {
     Real lin_res = 0.0;
     ncycle_lin = 0;
     ncycle_vec = 0;
-    if (rel <= ids.tol && (!vec || relv <= ids.tol)) {
+    // with the monitor as vector residual, modes at the Nyquist wavenumber cannot be
+    // removed (first differences of first differences): the vector part ends when its
+    // residual falls by less than 5 per cent over five outer iterations
+    if (vec && vec_code && rel <= ids.tol && relv > ids.vec_tol && iter >= 10 &&
+        relv_hist[iter-5] <= 1.05*relv) {
+      vstalled = true;
+    }
+    if (rel <= ids.tol && (!vec || relv <= ids.vec_tol || vstalled)) {
       converged = true;
     } else if (iter < ids.maxit) {
       if (periodic && !(sigmean > 0.0)) {
@@ -967,9 +999,9 @@ void Particles::NrpicSolveInitialData() {
                converged ? "converged" : "NOT CONVERGED", iter, cg_total, cyc_total,
                nm0.hmax, nm.hmax, nm0.hrms, nm.hrms, nm.psimin, nm.psimax);
   if (vec) {
-    std::fprintf(fl, "# vector equation: relative residual %.6e -> %.6e, %d V cycles; "
-                 "max|M| of the monitor %.6e -> %.6e\n", relv0, relv, cyc_total_vec,
-                 mmax0, mmax);
+    std::fprintf(fl, "# vector equation: relative residual %.6e -> %.6e%s, %d V cycles; "
+                 "max|M| of the monitor %.6e -> %.6e\n", relv0, relv,
+                 vstalled ? " (stalled)" : "", cyc_total_vec, mmax0, mmax);
   }
   std::fclose(fl);
   if (global_variable::my_rank == 0) {
@@ -981,7 +1013,8 @@ void Particles::NrpicSolveInitialData() {
               << nm.psimax << "]" << std::endl;
     if (vec) {
       std::cout << "NRPIC: vector equation: relative residual " << relv0 << " -> " << relv
-                << ", " << cyc_total_vec << " V cycles; max|M| of the monitor " << mmax0
+                << (vstalled ? " (stalled)" : "") << ", " << cyc_total_vec
+                << " V cycles; max|M| of the monitor " << mmax0
                 << " -> " << mmax << std::endl;
     }
   }

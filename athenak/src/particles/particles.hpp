@@ -164,6 +164,8 @@ struct NrpicIdSolveOptions {
   int psi_init = 0;          // start value: 0 trial conformal factor, 1 psi = 1
   bool dump = false;         // write <basename>.idsolve.bin
   bool vector = false;       // also solve the momentum constraint for W (id_vector)
+  int vec_residual = 1;      // vector residual: 1 stencil form, 0 constraint monitor
+  Real vec_tol = 1.0e-10;    // tolerance of the vector part (id_vector_tol)
 };
 
 //----------------------------------------------------------------------------------------
