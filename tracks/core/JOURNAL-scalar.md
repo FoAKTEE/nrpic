@@ -488,4 +488,7 @@ athena_gpu_61cb001`, its checksum is in the manifests).
   1.397e-10 at t = 0 and the same orders as on processors; kick identity 4.96e-16 and
   1.367e-2; flipped sign 1.904e-7 against 2.660e-11.
 The figures of the card runs are the same plots as those of the processor runs (same
-drivers); I looked at the summaries, not at each card figure again.
+drivers). Of the card figures I looked at `fig_noise_power.png` (run -143936) and
+`fig_plane_convergence.png` (run -143954), which show the same points as the processor
+figures; the other card figures I did not open, their numbers are quoted from the
+`summary.json` files. Card time of the package: 2 min 15 s of one A100 (job 4427).
