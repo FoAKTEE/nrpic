@@ -259,3 +259,28 @@ dt = 1/128 divides 1/16, so both refer to the same time). Predictions:
 Prediction for the rerun with the timing fit built in: integer offset -7 steps at every file
 tested (n = 2, 5, 9, 16, 23, 31), residual at the best fractional offset < 2e-4 and within 1e-3 of
 -7.00 steps.
+
+## Outcome of the rerun with the timing fit, run B-emd-gw-20261115-120128-7dfaa38
+
+At every tested file (n = 2, 5, 9, 16, 23, 31) the best offset is -7.00 steps exactly (fractional
+scan over +-0.5 step at 1/40 resolution), with residual 3.0e-7 .. 1.8e-6 relative to the maximum
+(growing with t like the evolution error of the dumps), against 0.25 .. 0.58 at offset 0. PASSED:
+AthenaK's weyl output and gwdiag's Psi_4 (independent formula: E, B instead of Riemann
+contractions) agree to ~1e-6 in the same triad once the output lag of waveform_dt - dt is taken
+into account; convention D2 holds on AthenaK output. Figures `figs/athenak_tt.png`,
+`figs/athenak_psi4.png`.
+
+## Prediction for the readers on real cosmology dumps (written before the run)
+
+`tests/test_readers.py` with GWDIAG_RST = runs/cosmo/restart_test/a/rst/east.00002.rst (nrpic_cosmo,
+8 MeshBlocks, particles in a separate file) and GWDIAG_NRFIELD =
+runs/cosmo/dav_c704_n32_tsc4t/east.field.00001.bin: both read without error, the restart's
+size check (header + nmb data_size == file size) passes, chi > 0 and finite; the NRFIELD dump has
+no trailing bytes. (An inline read of the restart already gave t = 0.5, 32^3, L = 4, chi in
+[0.4095, 0.4097].)
+
+## Outcome: readers on real dumps (pytest, 2026-11-15)
+
+`tests/test_readers.py` with the two real files: 4 passed. The restart (nrpic_cosmo, 8 MeshBlocks
+of 16^3, t = 0.5) passes the size check; the NRFIELD dump is NRFIELD1, t = 4.29, 32^3, no
+trailing bytes. PASSED.
