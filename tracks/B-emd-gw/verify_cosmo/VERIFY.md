@@ -48,12 +48,15 @@ sub-percent level and converge in particle number and mesh"):
   at a = 1001). [VERIFIED]
 - Mesh: fourth-order convergence at fixed step ratio (A0). [VERIFIED]
 - Particle number: NOT shown. Every homogeneous run uses one particle per cell on a
-  lattice, whose deposit is exactly uniform at any particle number; no run varies the
-  particles per cell, with or without position noise. [VERIFIED by reading the run list
-  and the log]
-- None of these runs is in the production configuration of `cosmo/README.md` (cubic
-  cloud, compensation, spline, step limit and damping together); `dtexp_test/lim` has
-  the step limit only. [VERIFIED by reading the logs and inputs]
+  lattice (512, 4,096 and 32,768 particles on 8^3, 16^3 and 32^3 meshes in the
+  `athena.log` files of `dav_a*`, `dtexp_test/*`, `flrw_*`), whose deposit is exactly
+  uniform at any particle number; no run varies the particles per cell, with or without
+  position noise. [VERIFIED]
+- None of the homogeneous runs cited above is in the full production configuration of
+  `cosmo/README.md` (cubic cloud, compensation, spline, step limit and damping
+  together); `dtexp_test/lim` has the step limit; `flrw_shape_{tsc,pcs}` are three-step
+  checks of the new clouds (24 MeshBlock-cycles on 8 blocks). [VERIFIED from the logs;
+  their full option sets were not read]
 
 ## 2. Row "Growth of linear perturbations": particle noise, convergence at small amplitude
 
@@ -169,10 +172,86 @@ cell is enough (CosmoGRaPH used N_y^2/8 particles in a one-dimensional box, line
 
 ## 6. Plane-symmetric pancake through shell crossing (part ii of this package)
 
-See `JOURNAL.md` for predictions and outcomes and `README.md` for how to rerun. Results
-are filled in below once all runs have finished.
+Predictions and outcomes in `JOURNAL.md` (P1 to P8), how to rerun in `README.md`.
 
-PANCAKE_RESULTS
+Brief row "plane-symmetric pancake through shell crossing" (`coord/CHARTER.md` line
+227), first scouting in AthenaK. Set-up: plane wave of `cosmo/ic/make_east.py --ratios
+1,0,0` (a cell-aligned single mode, nothing missing in the tool), amplitude d = 0.05 so
+that the exact Zel'dovich crossing is at a = 1 + 1/d = 21; production configuration of
+`cosmo/README.md` (`inputs/pancake.athinput`); release executable
+`.work/build_gpu_c3/src/athena`; box of one initial Hubble radius (L = 1,
+(H0/k)^2 = 0.0253, |psi_N| = 1.9e-3) at 32, 64, 96 cells with one particle per cell and at
+64 cells with two per cell and direction, and a horizon-scale box (L = 4,
+(H0/k)^2 = 0.405, |psi_N| = 0.030) at 64 cells; all to a = 42. Newtonian reference
+`cosmo/newton/pm.py` (unchanged) on the same particles at 32 and 64 cells, and 32 cells
+with two per cell. Reference: `scripts/zeldovich.py`, the exact Newtonian solution of
+these data before the first crossing (derivation in `JOURNAL.md`, checks in
+`scripts/test_zeldovich.py`, all pass).
+
+Runs: initial data B-emd-gw-20261115-114807-dbd105a; relativistic
+B-emd-gw-20261115-115217-69ab1db (job 4373, 0.284 card-hours) and
+B-emd-gw-20261115-115902-a3207d7 (job 4388, 0.197 card-hours); Newtonian
+B-emd-gw-20261115-115239-69ab1db and B-emd-gw-20261115-122451-01801f6; analysis
+B-emd-gw-20261115-123852-ea4475c (`results/pancake.json`, `results/pancake_profiles.json`).
+Total 0.48 card-hours. Predictions and outcomes: `JOURNAL.md`, P1 to P8.
+
+Largest error over the sheets of the fiducial line, positions over (a - 1) d/k,
+velocities over a^(1/2) d/k [VERIFIED, run B-emd-gw-20261115-123852-ea4475c]:
+
+| Run | x, a = 5 | x, a = 10 | x, a = 15 | v, a = 10 | v, a = 15 | first crossing a (coordinate) | exact sheets |
+|---|---|---|---|---|---|---|---|
+| Newtonian, 32 | 6.1e-4 | 2.1e-3 | 1.7e-3 | 3.4e-3 | 2.1e-3 | 21.55 | 21.12 |
+| Newtonian, 64 | 3.3e-4 | 1.0e-3 | 8.3e-4 | 1.8e-3 | 1.1e-3 | 21.22 | 21.03 |
+| Newtonian, 32, two per cell | 2.7e-4 | 4.1e-4 | 3.5e-4 | 3.6e-4 | 1.9e-3 | 21.41 | 21.01 |
+| GR L = 1, 32 | 2.5e-3 | 3.2e-3 | 3.7e-3 | 4.5e-3 | 5.9e-3 | 21.81 | 21.12 |
+| GR L = 1, 64 | 2.6e-3 | 3.2e-3 | 3.8e-3 | 4.2e-3 | 6.0e-3 | 21.38 | 21.03 |
+| GR L = 1, 96 | 2.6e-3 | 3.2e-3 | 3.8e-3 | 4.3e-3 | 6.0e-3 | 21.27 | 21.01 |
+| GR L = 1, 64, two per cell | 2.6e-3 | 3.2e-3 | 3.8e-3 | 4.3e-3 | 6.0e-3 | 21.34 | 21.00 |
+| GR L = 4, 64 | 4.0e-2 | 5.2e-2 | 6.1e-2 | 6.9e-2 | 9.5e-2 | 22.85 | 21.03 |
+
+What the pancake establishes:
+1. The Newtonian reference reproduces Zel'dovich to 1e-3 in position and 2e-3 in
+   velocity up to a = 15 at 64 cells; with one particle per cell its error converges only at first
+   order in the cell size, and two particles per cell remove that part (P8): the
+   lattice sampling of the deposit sets it. [VERIFIED]
+2. The relativistic runs in the sub-horizon box follow Zel'dovich to 4e-3 in position and
+   6e-3 in velocity up to a = 15. The departure is the same at 32, 64, 96 cells and with
+   two per cell to three digits, i.e. converged, and is 16.1 times larger at L = 4 where
+   (H0/k)^2 is 16 times larger: it is the relativistic departure of the coordinate
+   trajectories in this slicing, about 1.7 |psi_N| at a = 10, smooth over the sheets
+   (`figs/pancake_grdiff.png`). [VERIFIED for the numbers; the attribution to relativity
+   rather than to the slicing alone is JUDGEMENT]
+3. Density profiles before crossing (`figs/pancake_profiles.png`): the Newtonian mesh
+   density equals the deposit of the exact sheets to 6e-4 (a = 5) and 7e-3 (a = 15);
+   the relativistic energy density equals it plus the linear dictionary term -2 psi_N
+   to 1.1e-3 at a = 5. The deposit itself differs from the continuum Zel'dovich density
+   by 0.21 in the void at a = 15 with one particle per cell (lattice sampling). [VERIFIED]
+4. The first crossing comes later than the exact-sheet value by 1.7, 1.2 percent (GR,
+   64, 96 cells) and 0.9 percent (Newtonian, 64), approaching it with resolution; at
+   L = 4 it is 6.9 percent later than at L = 1 in coordinate time and 4.4 percent later
+   in the proper time of the crossing sheets (22.28 against 21.35). [VERIFIED; the
+   Newtonian proper time at the pancake is not computed, TO VERIFY]
+5. All runs pass the crossing to a = 42 with every particle kept, plane symmetry is kept
+   to 1e-12 (`results/pancake.json`, symmetry entries), and the multi-stream phase space
+   of the L = 1 runs lies on the Newtonian one (`figs/pancake_phase.png`; positions
+   differ by 5e-3 of the displacement after the crossing). [VERIFIED]
+6. Constraints (`figs/pancake_constraints.png`, `figs/pancake_ppc.png`): with one particle
+   per cell the mean H_r reaches 1.6e-4 at a = 10 and 1.3e-3 at a = 15 and the mean M_r
+   0.13 and 0.21, independent of the mesh, because the stretched lattice in the void
+   is under-sampled by the cubic cloud; two particles per cell and direction lower
+   them to 3.2e-5 and 4.2e-5 (H_r) and 1.0e-2 and 6.3e-3 (M_r), and the void
+   violation by 115 at a = 15. After the crossing the violation sits at the pancake in
+   both lattices: mean H_r 1.3e-3 to 2.0e-3 and mean M_r 0.095 to 0.22 from a = 21 to 42
+   with two per cell, 3.8e-3 to 7.1e-3 and 0.32 to 0.54 with one; with one per cell the
+   energy density turns negative in void cells after the crossing (E_min = -2.9e-7
+   against a mean of 7.6e-6 at a = 25), with two per cell it stays positive.
+   [VERIFIED]
+
+Not done here: the proper time of Newtonian observers at the pancake (dictionary), the
+gravitational waves of the pancake (B-pre-3 diagnostics on these runs), a relativistic
+exact reference (planar dust solutions of the Szekeres class are expected to contain
+this case [BACKGROUND, TO VERIFY]), more particles per cell at 96 and 128 cells, and the
+Newtonian reference at 96 cells.
 
 ## 7. What is missing against the criteria (summary)
 
@@ -188,4 +267,7 @@ PANCAKE_RESULTS
    least b = 0.005 and 0.05 H*^2 L^2 for H*L = 1/4 to 4, against the published linear
    prediction and code results; until AthenaK has a Newtonian mode, the PM reference
    of `cosmo/newton` for the Newtonian side.
-4. Pancake: see section 6.
+4. Pancake: two particles per cell and direction for any production pancake run (one
+   per cell leaves the void under-sampled); the Newtonian reference at matching
+   particle number; the Newtonian proper time at the crossing; the relativistic
+   exact solution as a reference [TO VERIFY].
