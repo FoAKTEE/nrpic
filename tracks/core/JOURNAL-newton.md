@@ -209,3 +209,146 @@ again a property of the particle set).
 
 T1 potential, corrected statement: rms over the eight probes 3.9e-3, 9.4e-4, 6.5e-4; one
 probe is not monotonic (see above).
+
+### T3 Cold collapse of a homogeneous ball from rest against the cycloid (prediction)
+
+Setup: `problems/newton/isolated.athinput`, box [-2, 2]^3, multipole boundary, ball of
+mass 1 and nominal radius 1 centred on the origin, equal-mass particles at rest on the
+lattice of the cell centres (one particle per cell: 17 256 at N = 64, 137 376 at N = 128;
+`make_ic.py ball --spacing dx --ntracer 0`), cloud-in-cell, no filter, Catmull-Rom
+gather, fixed step 0.002 (N = 64) and 0.001 (N = 128), to t = 1.0. Reference: the
+cycloid of the homogeneous ball that the lattice samples (radius 1.001914 and 1.000286,
+free-fall times 1.113911 and 1.111197), the same s(t) = r/r_0 for every shell;
+t = 1.0 is 0.90 of the free-fall time, where s = 0.35 and the ball has a radius of 5.6
+cells (N = 64) or 11 cells (N = 128).
+
+Prediction (written before the runs):
+1. Mean over the particles of r/r_0 against s(t): within 0.5 per cent at half the
+   free-fall time and within 3 per cent at t = 1.0 for N = 64; the deviation at N = 128
+   is smaller by a factor of two at least. Sign: the collapse lags (r/r_0 above the
+   cycloid), because the cloud softens the field in the outermost cell of the ball
+   (test T2: first-order error at the surface, the force too weak there).
+2. The collapse stays homologous in the interior: the rms spread of r/r_0 over the
+   particles with r_0 < 0.8 is below one per cent at t = 1.0; the outermost shell
+   (r_0 > 0.9) deviates most.
+3. Energy K + W: relative change below 1e-3 up to half the free-fall time and below
+   5 per cent at t = 1.0 for N = 64, smaller at N = 128.
+4. Second moment: I_xx/I_xx(0) follows s^2, and dI, d2I, d3I the analytic derivatives,
+   to within twice the relative error of point 1 (d3I within 10 per cent at t = 1.0).
+5. Consistency of the history columns, independent of the physics: the centred time
+   difference of I_xx reproduces the column dI_xx, and that of dI_xx the column d2I_xx,
+   to a relative error below 1e-4 (the truncation error of the difference at these
+   steps); d3I_xx equals the difference quotient of d2I_xx by construction.
+6. Linear and angular momentum stay at rounding level compared with M sqrt(GM/R) (the
+   configuration is symmetric under reflections).
+Refuted by: a deviation from the cycloid that does not fall with N; an energy error that
+grows with N; a mismatch between the columns I, dI, d2I beyond the truncation error
+(that would mean the acceleration in the sums is not the one applied to the particles).
+
+### T4 Plane wave in a periodic expanding box against the Zel'dovich solution and against cosmo/newton (prediction)
+
+Setup: `problems/newton/periodic.athinput`: box of side 4, periodic, comoving
+coordinates and conformal time with a = (1 + t/2)^2 (H = 1 at a = 1), mean density
+3/(8 pi); one particle per cell on the lattice of the cell centres, displaced along x by
+the Zel'dovich solution at a = 1 with amplitude A = 0.25 at the fundamental wavenumber
+k = pi/2 (`make_ic.py wave`); shell crossing at a = 1/A = 4, t = 2. Cloud-in-cell, no
+filter, Catmull-Rom gather, step 0.005, to t = 3 (a = 6.25, beyond shell crossing),
+snapshots every 0.25; N = 32 and 64. References: (i) the exact solution
+x = q + a (A/k) cos(k q), p = a^(3/2) (A/k) cos(k q) up to shell crossing; (ii)
+`cosmo/newton/pm.py` (spectral Poisson solve, spectral gradient, cubic interpolation)
+with the same particle file, mesh, cloud and step; (iii) the scheme of the code written
+in numpy (`python/nrpic/newton.py`: seven-point Laplacian by Fourier transform, gradient
+of the Catmull-Rom interpolant), driven by the stepping of `pm.py`.
+Measure: rms over the particles of the difference in x, divided by the rms displacement
+a A/(k sqrt 2) of the exact solution at that time.
+
+Prediction (written before the runs):
+1. Against Zel'dovich before shell crossing: the relative error is of second order in
+   dx. Reasoning: for the fundamental mode the window of the cloud, sinc^2(k dx/2), is
+   cancelled by the seven-point Laplacian (whose symbol is k^2 sinc^2(k dx/2)); what
+   remains is the gradient of the Catmull-Rom interpolant, low by (k dx)^2/6 at the
+   nodes and high by (k dx)^2/12 midway (comment in nrpic_kernels.hpp). With
+   (k dx)^2 = 0.0386 at N = 32 the force error is below 0.64 per cent, and the error of
+   the displacement at a = 2.25 below 5e-3 at N = 32 and smaller by a factor of about
+   four (3 to 5) at N = 64; at a = 3.5 below 2e-2 at N = 32.
+2. Against `pm.py`: the two differ by terms of the same order, the uncompensated cloud
+   window (k dx)^2/12 = 0.32 per cent in `pm.py` and the gradient above in the code:
+   relative difference between 1e-4 and 1e-2 at N = 32 at t = 1.75, about four times
+   smaller at N = 64.
+3. Against the numpy scheme: agreement to 1e-8 or better at every snapshot, also after
+   shell crossing. This is the test that can fail: a larger difference means that the
+   implementation is not the scheme I describe (deposit, solver, ghost cells, gather or
+   stepping), or that the multigrid solution is not converged.
+4. Layzer-Irvine: C = a (K + W) + int K da stays constant to 2e-3 of the largest
+   a |W| up to shell crossing at N = 64.
+5. Total momentum: rounding level relative to sum m |p|.
+
+### T7 The mode on a card (prediction, written before the job is submitted)
+
+Setup: the collapse of T3 at N = 128 (64 MeshBlocks of 32^3, 137 376 particles, 1000
+steps of 0.001), the same input and particle file as the processor run
+core-20261115-115450-fee90ca, executable built with Kokkos CUDA from the same source
+(`.work/athena_gpu_9d84282`), one A100.
+Prediction: the run completes; the history agrees with the processor run to rounding
+that grows with time (relative difference of K and W below 1e-9 at t = 0.5, particle
+positions at t = 1.0 within 1e-8); not bitwise, because the particle sums are reduced
+in a different order on the card and the compilers contract floating-point expressions
+differently. Refuted by a crash, by a difference of order one in any history column
+(a kernel that reads host data or a race in a reduction), or by a wall time longer
+than the processor run (64 minutes expected there).
+
+### T5 Restart (prediction)
+
+Setup: (a) collapse of T3 at N = 32 (2176 particles, MeshBlocks of 16^3, step 0.004, to
+t = 0.8, restart dump at t = 0.4); (b) plane wave of T4 at N = 32 (step 0.005, to t = 1,
+dump at t = 0.5). Each is run once without interruption and once continued from the dump
+in another directory, processor build. Prediction: the particle snapshots after the dump
+time are identical byte for byte, and so are the records of `newton.hst` and `nrpic.hst`
+for the cycles after the dump (including the Layzer-Irvine integral and the third
+derivative of the second moment, which combine two states). Refuted by any differing
+byte: the restart state (potential used as the starting guess, colour offset of the
+smoother, diagnostic sums) would then be incomplete.
+
+Outcome of T5 (commit 9d84282; `tracks/core/tools/compare_restart.py`) [VERIFIED]:
+- collapse: uninterrupted core-20261115-120109-fee90ca, continued core-20261115-120126-fee90ca: the 4 snapshots written after the dump are
+  identical byte for byte; the 100 records of `newton.hst` and of `nrpic.hst` for
+  cycles 101 to 200 are identical as text.
+- plane wave with expansion: uninterrupted core-20261115-120135-fee90ca, continued core-20261115-120211-fee90ca: 2 snapshots identical,
+  100 records of each history identical.
+The prediction held. Negative control (so that the test is known to be able to fail):
+continued from the same dump without the state file `*.rst.prt.nwt`, run core-20261115-120249-fee90ca: the code
+reports that it solves for the potential again; all 4 snapshots and all 100 records
+differ, at rounding level (largest position difference 7.8e-16 at t = 0.8). So the
+stored potential (starting guess of the next solve) is what makes the continuation
+exact, and without it the continuation is correct to rounding.
+
+Outcome of T3 at N = 64 (run core-20261115-115448-fee90ca, 500 steps, 203 s on one
+core; `tracks/core/analysis/newton/collapse_N64.json`, figure `collapse_N64.png`
+inspected) [VERIFIED]:
+1. mean of r/r_0 against the cycloid: -9.7e-5 at half the free-fall time, +1.1e-4 at
+   t = 1.0 (0.898 of the free-fall time). The bound of the prediction held with a wide
+   margin (0.5 and 3 per cent), but the predicted sign (lag) FAILED for the mean: the
+   particles with r_0 < 0.8 run ahead (-5.1e-4, -4.5e-3), those with r_0 > 0.9 lag
+   (+7.4e-4, +1.07e-2), and the two cancel in the mean.
+2. rms spread of r/r_0 over the particles with r_0 < 0.8 at t = 1.0: 0.90 per cent
+   (bound one per cent: held, barely).
+3. energy K + W: +8.9e-4 at half the free-fall time, +8.7e-4 at t = 1.0, maximum 1.45e-3
+   (held). With the mesh potential energy instead, K + W_mesh drifts to +1.6 per cent:
+   the particle sum is the consistent one (its gradient is the force applied).
+4. second moment: I within 3.7e-4 (half) and 7.0e-3 (end); dI within 9e-4 and 1.3e-3;
+   d2I within 1.9e-3 and 1.1e-3: held. d3I: the difference quotient deviates by 8.6 per
+   cent rms and by -10 per cent at half the free-fall time: FAILED as predicted (ten per
+   cent "at t = 1.0" held, -3.8 per cent, but the deviation is not small anywhere).
+   Averaged over 57 steps (a tenth of the free-fall time) it agrees to +0.8 per cent at
+   half the free-fall time and -0.1 per cent at the end. Reading: d2I carries an error
+   of about 1e-3 that oscillates as the edge of the ball moves across cells; its time
+   derivative is of the size of d3I itself early on. To be tested at N = 128: if the
+   oscillating part of d2I is of second order in dx its derivative is of first order.
+5. columns: centred difference of I against dI: 4.0e-5 (held). Centred difference of dI
+   against d2I: 7.6e-4, above the bound of 1e-4: FAILED. Expected cause, to be tested
+   with half the step (the difference must fall by four if it is truncation error of
+   the difference, and stay if the acceleration in the sums were not the one applied):
+   the fourth time derivative is dominated by the force fluctuation at the cell-crossing
+   rate, which I had not counted. d3I equals the quotient of d2I to 9e-15 (construction).
+6. momentum 2e-16 and angular momentum 2e-18 in units of M sqrt(GM/R) (R): held.
+Solver: 14 V cycles per step on average to a defect of 6e-12 (`threshold = 0`).
