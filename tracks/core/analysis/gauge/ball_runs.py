@@ -19,6 +19,11 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 WT = os.path.normpath(os.path.join(HERE, "..", "..", "..", ".."))
 IC = "/data/haiyangw/nrpic/scratch/core/id/ic_ball"
 INPUT = os.path.join(WT, "problems/ball/ball_leak.athinput")
+# card executable of this package, copied from .work/build_gpu when it was built, and the
+# commit its source equals
+GPU_EXE = os.environ.get("GAUGE_GPU_EXE",
+                         "/data/haiyangw/nrpic/scratch/core/gauge/exe/athena_gpu_e41c24a")
+SRC_COMMIT = os.environ.get("GAUGE_SRC_COMMIT", "e41c24a")
 
 # lapse: old 1+log (leak off), relaxation times T = 1/lapse_leak
 LAPSE = {
@@ -83,7 +88,7 @@ def run(name, gpu=False, dry=False):
            "--tag", f"{'gc' if gpu else 'g'}-{name}",
            "--inputs", stem + ".nrp", stem + ".tab", stem + ".json"]
     if gpu:
-        cmd += ["--gpu", "--exe", os.path.join(WT, ".work/build_gpu/src/athena"),
+        cmd += ["--gpu", "--exe", GPU_EXE, "--source-commit", SRC_COMMIT,
                 "--time", "00:20:00"]
     cmd += ["--athinput", INPUT,
             f"mesh/nx1={n}", f"mesh/nx2={n}", f"mesh/nx3={n}",

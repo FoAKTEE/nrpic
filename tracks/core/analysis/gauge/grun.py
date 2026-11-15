@@ -65,9 +65,13 @@ def main():
     ap.add_argument("--tag", default="")
     ap.add_argument("--cores", type=int, default=1)
     ap.add_argument("--athinput", nargs="+", default=None)
+    ap.add_argument("--source-commit", default="",
+                    help="commit the executable was built from, if not HEAD (it names "
+                         "the run and is recorded as commit; HEAD goes into head_at_run)")
     a = ap.parse_args(argv)
 
-    commit = git("rev-parse", "HEAD")
+    head = git("rev-parse", "HEAD")
+    commit = git("rev-parse", a.source_commit) if a.source_commit else head
     dirty = bool(git("status", "--porcelain", "--untracked-files=no"))
     stamp = datetime.datetime.now(datetime.timezone.utc).strftime("%Y%m%d-%H%M%S")
     while True:                          # two runs within one second
@@ -130,6 +134,7 @@ def main():
         "command": cmd,
         "cwd": out,
         "commit": commit,
+        "head_at_run": head,
         "worktree_dirty": dirty,
         "inputs": [{"path": p, "sha256": sha256(p)} for p in inputs if os.path.isfile(p)],
         "output_directory": out,
