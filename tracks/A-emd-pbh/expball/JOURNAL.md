@@ -76,3 +76,31 @@ Outcome (12:20 UTC). 24 of 25 tests passed on the first run; two predictions fai
   R2 - R1 = 3.6 has large high derivatives and is resolved by 12 to 23 cells. The registered
   convergence run to N = 256 is the test of that hypothesis. The smoke test now asks for a
   drop > 2^2.5.
+
+## 2026-11-15 12:35 UTC, P4: G1 convergence run (scripts/run_convergence.py)
+
+Set-up. Octant [0, 1.25 R_b]^3, cell-centred, N = 32, 64, 128, 256; FD orders 2 and 4;
+H R_b = 0.5, M = 1 (R_b = 8, H = 1/16). Models: flat (sharp edge), flat with a C^4 edge
+taper of half width 0.1 R_b, compensated top-hat (delta_c = 1, R1 = 0.3 R_b, R2 = 0.75 R_b),
+smoothed top-hat (same parameters). Residuals divided by 6H^2 = 16 pi rho_b. "smooth"
+region: cells farther than 0.1 R_b from every non-smooth radius (2 cells of the coarsest
+order-4 stencil reach 0.078 R_b).
+
+Prediction.
+- flat: H vanishes to rounding (~1e-15) at every N (psi = 1, K^2 - K_ij K^ij = 16 pi rho
+  pointwise); M in the smooth region converges at order 2.0 and 4.0 (within 0.3) once
+  asymptotic; over all cells M does not converge (L1 order ~ 0, L2 order ~ -1/2, Linf
+  order ~ -1): the jump of KL at R_b (-H to +H/2) gives an O(jump/h) residual in a band of
+  one cell, because d_j(K^j_i) and d_i K do not cancel discretely for a jump oblique to the
+  axes.
+- flat_taper: H ~ 0; M converges at order p over all cells.
+- tophat: smooth region H, M at order p; all cells: H L1 order ~1, L2 ~1/2 (psi'' jumps at
+  R1, R2), M no convergence (KL jumps at R1, R2, R_b).
+- smooth_tophat: smooth region H, M at order p, approached from below (the 32 -> 64 ratio of
+  the smoke test was order 2.8 for M at p = 4); H over all cells also at order p (psi = 1
+  beyond R2, so the edge does not enter H); M over all cells as for flat.
+- table interpolation (four-point Lagrange): max error of u, KL, KT, betar away from the
+  jumps at order 4 in drbar; at drbar = rbar_m/4000 the N = 128, p = 4 residual of the
+  table fields equals that of the exact fields to better than 1 percent.
+Refuted: a smooth-region order below p - 0.5 at the two finest pairs, or any of the
+above all-cells statements failing.
