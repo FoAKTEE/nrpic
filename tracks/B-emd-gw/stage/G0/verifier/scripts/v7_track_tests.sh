@@ -11,8 +11,11 @@ export OMP_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1 MKL_NUM_THREADS=1 PYTHONDONTWRIT
 mkdir -p "$OUT/scope" "$OUT/baseline"
 echo "== pytest gw_diag, first_source, verify_cosmo" > "$OUT/pytest.txt"
 python3 -m pytest -q -p no:cacheprovider "$T/gw_diag/tests" "$T/first_source/tests" \
-    "$T/verify_cosmo/scripts/test_zeldovich.py" >> "$OUT/pytest.txt" 2>&1
+    >> "$OUT/pytest.txt" 2>&1
 echo "pytest exit $?" >> "$OUT/pytest.txt"
+# test_zeldovich.py is a script (it exits at import), not a pytest module
+python3 "$T/verify_cosmo/scripts/test_zeldovich.py" >> "$OUT/pytest.txt" 2>&1
+echo "test_zeldovich exit $?" >> "$OUT/pytest.txt"
 for s in check_item3 crossed_waves_tt regime_estimates; do
   python3 "$T/scope/scripts/$s.py" "$OUT/scope" > "$OUT/scope/$s.log" 2>&1
   echo "$s exit $?" >> "$OUT/pytest.txt"
