@@ -103,7 +103,7 @@ lower by more than 10; the positions against Zel'dovich unchanged within 20 perc
 their error (the error is the relativistic offset, not the deposit). Refuted if the
 mean constraints fall by less than 2.
 
-## Pancake runs: outcomes against P1 to P7 (12:30)
+## Pancake runs: outcomes against P1 to P7 (12:24)
 
 Runs: relativistic B-emd-gw-20261115-115217-69ab1db (Slurm job 4373, 17.1 min, all four
 exit 0 to a = 42), B-emd-gw-20261115-115902-a3207d7 (two per cell, job 4388, 11.8 min,
@@ -173,7 +173,7 @@ direction remove most of it. After the crossing it sits at the pancake in both
 (|H|/16 pi <E> up to 3e-2 near x = L/4 at a = 21 to 42 with either lattice), and mean
 H_r is 1.3e-3 to 2.0e-3 with two per cell.
 
-## Prediction P8: what limits the Newtonian reference (12:30)
+## Prediction P8: what limits the Newtonian reference (12:24)
 
 The Newtonian error converges at first order (P1). Proposed cause: with one particle per
 cell the deposited density carries a ripple at the lattice scale whose size depends on
