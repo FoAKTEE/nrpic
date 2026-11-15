@@ -23,8 +23,12 @@ What the literature has, read at the source:
   for an isolated patch: 2403.15126 (N up to 1e4, started at turnaround with the Hubble
   flow dropped; `pII_GW_Vir_C2_Arx.tex:611, 667, 898-903`) and 2605.04487 (N = 3000,
   relativistic kinematics only; `main_v3.tex:206-213, 1568-1590, 2365`). [VERIFIED]
-- Scaling: Omega_GW proportional to sigma^(7/2) (= A_s^(7/4)) with omega_peak
-  proportional to sigma^(3/2) (2403.15126:1031, 1074); the post-shell-crossing stage
+- Scaling: the emitted spectrum falls as sigma^(7/2) with omega_peak proportional to
+  sigma^(3/2) (2403.15126:1007, 1031) [VERIFIED]. The paper also states Omega_GW today
+  proportional to sigma^(7/2) (= A_s^(7/4), line 1074), but its eq. (result_OmZ) takes the
+  emission redshift at each configuration's collapse (line 1061); with that, the
+  verifier of wave 2 finds sigma^(5/2) for the peak today (`stage/G0/VERIFIER.md` C8)
+  [TO VERIFY; amended in wave 2: use 7/2 only for the emitted energy]; the post-shell-crossing stage
   dominates, Zel'dovich estimates fall short by up to about three orders at the peak
   (2605.04487:2512, 2625). [VERIFIED]
 - The representative 2605.04487 case (sigma = 0.1) reaches mean peculiar speeds of
@@ -171,6 +175,9 @@ review.
 For the first source, numbers I propose for G1 to G3 [JUDGEMENT]:
 - Null (eps = 0, aligned lattice): TT strain at every nonzero wave vector below 1e-12 of
   the traceless strain at all times, through shell crossing; harmonic mode reported.
+  Amended in wave 2: the relative form fails at the first dumps only because the
+  traceless part is then tiny (first_source P1); the criterion is absolute, TT amplitude
+  of h and tilde A at the rounding of the metric (below 1e-15) at every dump.
 - Noise floor (eps = 0, particles jittered in y and z, 1 and 8 per cell): TT level at
   least ten times below the eps = 0.3 signal at all times up to a = 1.4/delta. If not,
   the post-shell-crossing part is descoped to what clears it.
@@ -178,7 +185,11 @@ For the first source, numbers I propose for G1 to G3 [JUDGEMENT]:
   eps up to 0.3; K^TT equal to the junk oscillation predicted from the second-order
   reference (risk 2), the strain equal to that reference carried to the code's gauge,
   both within a truncation error that falls at second order between 64, 128 and 256
-  cells.
+  cells. Amended in wave 2: the reference is the full second-order solution from the
+  code's own initial data, s g(tau) with the junk oscillation (verifier C3, weakest point
+  1); at delta = 0.01 it holds to 0.5 percent for 2 <= a <= 10 and departs by 1-2 percent
+  at a = 20 (first_source P2): the quantitative comparison window is a <= 10 at this
+  amplitude, wider at smaller delta.
 - After shell crossing (G3): rho_K and the TT spectrum at the box modes converge to 10
   percent in particle number, mesh spacing and lapse condition (the three legs of the
   gate); GR minus weak field resolved above that error for at least one amplitude.
@@ -216,8 +227,12 @@ For the first source, numbers I propose for G1 to G3 [JUDGEMENT]:
    - [JUDGEMENT] Taking the momentum-constraint level eps_M as the relative error of the
      traceless curvature, at most a fraction sqrt(2/5) of it is TT (two of five traceless
      components): 0.018 at a = 40 and 0.11 at a = 100. The physical TT fraction of the
-     source is 1.73 eps up to eps = 0.18 and 0.5 above (check 2B). A margin of three then
-     needs eps >= 0.03 at a = 40 and eps >= 0.3 at a = 100. Hence the scan in section 4.
+     source is min(sqrt(3) eps, 1/2), so 1.73 eps up to eps = 1/(2 sqrt 3) = 0.289 and 0.5
+     above (check 2B; corrected in wave 2 from "0.18", verifier C2: 0.18 was a grid point
+     of the scan). A margin of three then needs eps >= 0.032 at a = 40 and eps >= 0.19 at
+     a = 100 (first written as 0.03 and 0.3). The fraction counts only the scope's terms
+     of the source; with the full source it is 1.24 eps, saturating at 0.69 (verifier C2).
+     Hence the scan in section 4.
    - The decisive number is measured, not estimated: the jittered-lattice null run of
      section 6. 2605.04487 makes the same point for its particle load: random sampling
      gives an initial |Q| of about 1e-1, the cleaned glass 1e-14 (`main_v3.tex:2238`).
