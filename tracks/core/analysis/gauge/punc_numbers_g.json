@@ -105,5 +105,94 @@
    "wall": 8897.6,
    "card_hours": 0.0
   }
+ },
+ "E2": {
+  "e2-eta2": {
+   "run_id": "core-20261115-160342-b4430da",
+   "t_end": 1.9921875,
+   "H_end": 1.28152,
+   "H_max": 2.52587,
+   "M_end": 0.189265,
+   "wall": 12681.4,
+   "card_hours": 0.0,
+   "holes": [
+    {
+     "speed_end": 0.006193190736615063,
+     "speed_half": 0.007200367532716458,
+     "displacement": 0.011259905256338716,
+     "horizon_found": 16,
+     "mass_end": 1.018179763007951,
+     "mass_first": 1.008729223002523,
+     "searches_to_common_end": 16
+    },
+    {
+     "speed_end": 0.14261903089167974,
+     "speed_half": 0.13067096591084137,
+     "displacement": 0.20453630462145758,
+     "horizon_found": 16,
+     "mass_end": 0.2681660628733544,
+     "mass_first": 0.2657998585944548,
+     "searches_to_common_end": 16
+    }
+   ]
+  },
+  "e2-eta8": {
+   "run_id": "core-20261115-160347-b4430da",
+   "t_end": 1.9921875,
+   "H_end": 2.48593,
+   "H_max": 3.35857,
+   "M_end": 0.26092,
+   "wall": 12068.6,
+   "card_hours": 0.0,
+   "holes": [
+    {
+     "speed_end": 0.0026948995997315944,
+     "speed_half": 0.002371451656190447,
+     "displacement": 0.004010058619510203,
+     "horizon_found": 16,
+     "mass_end": 1.017657191420942,
+     "mass_first": 1.008729223002604,
+     "searches_to_common_end": 16
+    },
+    {
+     "speed_end": 0.0977885069295116,
+     "speed_half": 0.07946623362423924,
+     "displacement": 0.1282034857895434,
+     "horizon_found": 16,
+     "mass_end": 0.2681418590528917,
+     "mass_first": 0.265799858604634,
+     "searches_to_common_end": 16
+    }
+   ]
+  },
+  "e2-profile": {
+   "run_id": "core-20261115-160353-b4430da",
+   "t_end": 1.9921875,
+   "H_end": 1.4216,
+   "H_max": 9.49542,
+   "M_end": 0.208772,
+   "wall": 12234.9,
+   "card_hours": 0.0,
+   "holes": [
+    {
+     "speed_end": 0.006173057767415807,
+     "speed_half": 0.007156394146914276,
+     "displacement": 0.011199062023621894,
+     "horizon_found": 16,
+     "mass_end": 1.018197295403075,
+     "mass_first": 1.008729223002523,
+     "searches_to_common_end": 16
+    },
+    {
+     "speed_end": 0.11726278456500284,
+     "speed_half": 0.08380797323632838,
+     "displacement": 0.14710017169171355,
+     "horizon_found": 16,
+     "mass_end": 0.2681446940102369,
+     "mass_first": 0.2657998586042841,
+     "searches_to_common_end": 16
+    }
+   ]
+  }
  }
 }

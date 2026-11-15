@@ -699,3 +699,31 @@ central lapse of the shortest T falls below its homogeneous reference (0.878 aga
 0.919 at t = 12 M): from there on it is plain 1+log in a contracting region.
 Recommendation unchanged and sharpened: the shortest T that the step allows is the
 safest; T <= 0.1 R/sqrt(2 alpha) is enough for 2 per cent.
+
+### Outcome of E2 on processors (unequal pair, m = 1 and 0.25, small mesh, t = 1.99 M; analysis run core-20261115-193519-5437872; figure `figs/punc_g_e2.png`, looked at)
+
+Runs: constant eta = 2 core-20261115-160342-b4430da, constant eta = 8 -160347-, profile
+(eta_0 = 2, M_ref = 1: 2 at the heavy hole, 8 at the light one, width 0.5) -160353-.
+
+| run | heavy tracker speed | light tracker speed | heavy M_AH | light M_AH | H norm at the end / largest |
+|---|---|---|---|---|---|
+| eta = 2 | 0.00619 | 0.1426 | 1.01818 | 0.26817 | 1.28 / 2.53 |
+| eta = 8 | 0.00269 | 0.0978 | 1.01766 | 0.26814 | 2.49 / 3.36 |
+| profile | 0.00617 | 0.1173 | 1.01820 | 0.26814 | 1.42 / 9.50 |
+
+Prediction: heavy tracker of the profile run equal to eta = 2 within 5 per cent:
+confirmed (0.3 per cent; the two curves lie on each other); light tracker equal to
+eta = 8 within 15 per cent: FAILS (20 per cent faster; not refuted by the 40 per cent
+threshold; constant eta = 2 is 46 per cent faster); both horizons found in all 16
+searches of every run, masses within 2e-3: confirmed (5e-4 heavy, 3e-5 light); H norm
+within a factor 1.5 of the constant-eta runs: confirmed at the end (1.42 against 1.28
+and 2.49), FAILS at its largest value: every run has a one-record spike at t = 0.5 M
+(2.53, 3.36, 9.50; back to 0.7 to 0.96 at t = 0.75 M) and the profile's is 2.8 times
+the larger of the others. [JUDGEMENT, not isolated] The spike is in the light hole's
+neighbourhood early on, when its chi crosses the excision threshold of the norm
+(`excise_chi` 0.0625); it does not grow and the run ends with the lower norm. The
+same picture as E1: the profile of width 2 m_min recovers about half of the
+logarithmic distance between the constant-eta value and the value of the hole's own
+units (here ln(1.20)/ln(1.46) = 0.48 left), and leaves the heavy hole exactly as with
+eta = 2. Both horizon masses do not depend on the damping (the early plateaus of the
+horizon masses are the same in all three runs: a property of the small mesh).
