@@ -329,3 +329,18 @@ inside to 1e-12; the finite-difference Laplacian is 4 pi rho_N inside and 0 outs
 1e-5 (h = 1e-3, second-order truncation); Phi_N is continuous at the surface and tends
 to -M/(2r); the same quadrature reproduces the prolate I, J_a, J_b of spheroid.py.
 Refuted by any of these failing (a wrong sign or factor in the derivation).
+
+## 15:45Z Outcome: oblate reference
+
+Runs `core-20261115-154359-d74357f` (checks), `-154416-fcec991` and `-154426-8144c9f`
+(same checks with the figure; identical numbers). All checks PASS as predicted: closed
+form against quadrature 4.1e-12 relative; Poisson identity 1.3e-15; FD Laplacian
+1.5e-8 relative (better than the 1e-5 I allowed: the potential is quadratic inside, so
+the second difference is exact there up to rounding); surface jump 1.5e-10 at
+eps = 1e-9; r Phi_N -> -0.5 to 1e-8 at r = 1e5 M; sphere limit to the 1e-6 offset of
+a and b; the quadrature reproduces the prolate I, J_a, J_b of `spheroid.py` to 6e-15.
+Figure `figs/oblate_reference.png` (looked at: equatorial and polar profiles join
+-M/(2r) beyond 20 M; psibar peaks at 1.093 at the centre, flattened along z; the first
+version cut the colorbar label, fixed in the third run). This is the reference the
+lead needs for an oblate component of `nrpic_cf` and an oblate sampler; it is not an
+oblate collapse.
