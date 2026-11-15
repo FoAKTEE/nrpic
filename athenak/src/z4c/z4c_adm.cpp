@@ -20,6 +20,7 @@
 #include "coordinates/adm.hpp"
 #include "z4c/z4c.hpp"
 #include "z4c/tmunu.hpp"
+#include "scalar_field/scalar_field.hpp"
 #include "coordinates/cell_locations.hpp"
 
 namespace z4c {
@@ -267,6 +268,11 @@ void Z4c::ADMConstraints(MeshBlockPack *pmbp) {
   bool is_vacuum = (pmy_pack->ptmunu == nullptr) ? true : false;
   Tmunu::Tmunu_vars tmunu;
   if (!is_vacuum) tmunu = pmy_pack->ptmunu->tmunu;
+  // sources of all matter modules at the time of this state (scalar field present)
+  if (!is_vacuum && pmy_pack->ptmunu->use_total) {
+    pmy_pack->pscalar->AssembleSources(false);
+    tmunu = pmy_pack->ptmunu->tmunu_tot;
+  }
 
   Kokkos::deep_copy(u_con, 0.);
   auto &con = pmbp->pz4c->con;

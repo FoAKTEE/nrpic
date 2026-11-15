@@ -1,0 +1,36 @@
+{
+ "run_id": "core-20261115-141546-e8f40ee",
+ "owner": "core",
+ "purpose": "Scalar field tests 2 and 4B with the last executable (after wrapping source lines): same numbers as runs core-20261115-133955-836ac86 and core-20261115-135414-5a6953e expected",
+ "kind": "production",
+ "command": [
+  "bash",
+  "-c",
+  "mkdir t2 t4 && (cd t2 && python3 /data/haiyangw/nrpic/wt/core-scalar/tracks/core/analysis/scalar/test2_flrw.py --exe /data/haiyangw/nrpic/wt/core-scalar/.work/exe/athena_cpu_e8f40ee --workers 4) && (cd t4 && python3 /data/haiyangw/nrpic/wt/core-scalar/tracks/core/analysis/scalar/test4_noise.py --exe /data/haiyangw/nrpic/wt/core-scalar/.work/exe/athena_cpu_e8f40ee --parts B --workers 8)"
+ ],
+ "cwd": "/data/haiyangw/nrpic/scratch/core/core-20261115-141546-e8f40ee",
+ "commit": "e8f40eea56606452c1aa0b1f88e3d4d10d2dea88",
+ "branch": "core/scalar-field",
+ "uncommitted_changes": [],
+ "inputs": [
+  {
+   "path": ".work/exe/athena_cpu_e8f40ee",
+   "sha256": "67d176ac118f69fcafc333906ab459e854a07f91aaf01e86e71de081ed2479f2"
+  },
+  {
+   "path": "tracks/core/analysis/scalar/test2_flrw.py",
+   "sha256": "e90bbe7aa6e0fe540c3c54a3415cda7bc8ef722c305fb5b8f250ba3790a26311"
+  },
+  {
+   "path": "tracks/core/analysis/scalar/test4_noise.py",
+   "sha256": "12a1a1590dd0fda17bb7025523b1573d13d2843a07547d55cccb0550e4d481e6"
+  }
+ ],
+ "output_directory": "/data/haiyangw/nrpic/scratch/core/core-20261115-141546-e8f40ee",
+ "host": "anta",
+ "start_utc": "2026-11-15T14:15:46Z",
+ "cores": 8,
+ "wall_time_s": 86.0,
+ "exit_status": 0,
+ "core_hours": 0.1911
+}

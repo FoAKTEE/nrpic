@@ -1,0 +1,35 @@
+{
+ "run_id": "core-20261115-114202-c89b6e3",
+ "label": "s_p0.3_tablelin_n128",
+ "owner": "core",
+ "purpose": "Test 1a: P = 0.3, tabulated second-order correction (must agree with approx)",
+ "kind": "scouting",
+ "command": "/data/haiyangw/nrpic/wt/core-mp/.work/build_cpu/src/athena -i by_static.athinput -d /data/haiyangw/nrpic/scratch/core/core-20261115-114202-c89b6e3 mesh/nx1=128 mesh/nx2=128 mesh/nx3=128 problem/comp0_corr=table problem/comp0_corr_file=by_m1_p0.3_lin.tab",
+ "cwd": "/data/haiyangw/nrpic/scratch/core/core-20261115-114202-c89b6e3",
+ "commit": "c89b6e3",
+ "source_dirty": false,
+ "inputs": [
+  {
+   "path": "problems/puncture/by_static.athinput",
+   "sha256": "6d02cd9ae948066461e38d8aea3a3d43812ec42be5e500d8d662cfb0c4a42f3c"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/scratch/core/tmp/by_m1_p0.3_lin.tab",
+   "sha256": "e574f699048fc4e4c1bddb5e05359a0d30a9dfe11fe25dc40850f25b525be55b"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/wt/core-mp/.work/build_cpu/src/athena",
+   "sha256": "14fac5bec922887288e9615912f7d3983bb424e16a74f97fe26beebe157d0355",
+   "role": "executable"
+  }
+ ],
+ "output_directory": "/data/haiyangw/nrpic/scratch/core/core-20261115-114202-c89b6e3",
+ "resources": "1 core",
+ "started_utc": "2026-11-15T11:42:02Z",
+ "status": "done",
+ "exit_code": 0,
+ "wall_time_s": 21.0,
+ "queue_wait_s": 0.0,
+ "card_hours": 0.0,
+ "core_hours": 0.0058
+}

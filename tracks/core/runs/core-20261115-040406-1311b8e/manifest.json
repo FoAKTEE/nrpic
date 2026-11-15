@@ -1,0 +1,64 @@
+{
+ "run_id": "core-20261115-040406-1311b8e",
+ "owner": "core",
+ "package": "id",
+ "tag": "t2-ct-edge2-big-n192",
+ "purpose": "evolution of the expanding ball against the exact solution: ct-edge2-big-n192 (cells 192, half-width 48, gauge ct, start shift zero, q = 1, ball --Rb 10 --edge 2, extra none)",
+ "kind": "scouting",
+ "command": [
+  "/data/haiyangw/nrpic/wt/core-id/scripts/gpu_run.sh",
+  "/data/haiyangw/nrpic/scratch/core/core-20261115-040406-1311b8e",
+  "/data/haiyangw/nrpic/wt/core-id/problems/ball/ball.athinput",
+  "mesh/nx1=192",
+  "mesh/nx2=192",
+  "mesh/nx3=192",
+  "mesh/x1min=-48.0",
+  "mesh/x1max=48.0",
+  "mesh/x2min=-48.0",
+  "mesh/x2max=48.0",
+  "mesh/x3min=-48.0",
+  "mesh/x3max=48.0",
+  "meshblock/nx1=64",
+  "meshblock/nx2=64",
+  "meshblock/nx3=64",
+  "time/tlim=10.0",
+  "particles/traj_dcycle=2",
+  "particles/traj_ntrack=2078",
+  "particles/particle_file=/data/haiyangw/nrpic/scratch/core/id/ic_ball/t2_edge2_h0p5.nrp",
+  "problem/comp0_file=/data/haiyangw/nrpic/scratch/core/id/ic_ball/t2_edge2_h0p5.tab",
+  "problem/shift=zero",
+  "z4c/lapse_oplog=0.0",
+  "z4c/lapse_harmonic=0.3333333333333333"
+ ],
+ "cwd": "/data/haiyangw/nrpic/scratch/core/core-20261115-040406-1311b8e",
+ "commit": "1311b8e13b120fcb1dd8242b56a7647e2263b78c",
+ "worktree_dirty": true,
+ "inputs": [
+  {
+   "path": "/data/haiyangw/nrpic/wt/core-id/problems/ball/ball.athinput",
+   "sha256": "f27dd3631dbaf66df77cfe1c232335d5ee04549b61a96b186eadc4f2f6b64c1d"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/wt/core-id/.work/build_gpu/src/athena",
+   "sha256": "b59ee3a36f4ac80b87a368a5506dd8c4857dbd856879c82e2f8f5ab49ecaf8bc"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/scratch/core/id/ic_ball/t2_edge2_h0p5.nrp",
+   "sha256": "03afe455bc40949146ce13fd4a6c5e0f35c708a2b1abef3a5a357cb266922d7a"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/scratch/core/id/ic_ball/t2_edge2_h0p5.tab",
+   "sha256": "898611ca4e2ec699e964d561b2a73473b451fdee640bc97e1a31fdd3590fb1f0"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/scratch/core/id/ic_ball/t2_edge2_h0p5.json",
+   "sha256": "c48bc508da13986d093e0baf014b11bf7b8f3ac82e0a4e00c8b4ff84018b2913"
+  }
+ ],
+ "output_directory": "/data/haiyangw/nrpic/scratch/core/core-20261115-040406-1311b8e",
+ "wall_time_s": 898.0,
+ "cores": 1,
+ "card_hours": 0.01278,
+ "exit_status": 0,
+ "started": "20261115-040406"
+}

@@ -1,0 +1,46 @@
+{
+ "run_id": "core-20261115-134118-836ac86",
+ "owner": "core",
+ "purpose": "Scalar field test 3: plane perturbation from constraint-satisfying data (K as a function of phi), constraint norms for N = 16, 32, 64 and control runs with a uniform momentum",
+ "kind": "production",
+ "command": [
+  "python3",
+  "/data/haiyangw/nrpic/wt/core-scalar/tracks/core/analysis/scalar/test3_plane.py",
+  "--exe",
+  "/data/haiyangw/nrpic/wt/core-scalar/.work/exe/athena_cpu_836ac86",
+  "--workers",
+  "5"
+ ],
+ "cwd": "/data/haiyangw/nrpic/scratch/core/core-20261115-134118-836ac86",
+ "commit": "836ac869c9fa7d20ac77e616b4ae8b95500f7ecc",
+ "branch": "core/scalar-field",
+ "uncommitted_changes": [
+  "M tracks/core/analysis/scalar/test2_flrw.py",
+  "?? problems/scalar/kg_wave_smr.athinput"
+ ],
+ "inputs": [
+  {
+   "path": ".work/exe/athena_cpu_836ac86",
+   "sha256": "65ff216207233e873c3c945b58b54340af5a5a8419aad001882f318626a00144"
+  },
+  {
+   "path": "problems/scalar/plane.athinput",
+   "sha256": "2fd5000ae1356a829fc52dc63f5ec087c468fc516d05afb9452cf7f07b66dd03"
+  },
+  {
+   "path": "tracks/core/analysis/scalar/test3_plane.py",
+   "sha256": "5f9540e9368b2dd0db946d44693b1e5c72efbcd8687421263e0602b95e3210ee"
+  },
+  {
+   "path": "python/nrpic/scalar_field.py",
+   "sha256": "44003fc8f64412513ac34b4e908b4e7f43d79d23694c4378a02267afcc5ffb8e"
+  }
+ ],
+ "output_directory": "/data/haiyangw/nrpic/scratch/core/core-20261115-134118-836ac86",
+ "host": "anta",
+ "start_utc": "2026-11-15T13:41:18Z",
+ "cores": 5,
+ "wall_time_s": 328.05,
+ "exit_status": 0,
+ "core_hours": 0.4556
+}

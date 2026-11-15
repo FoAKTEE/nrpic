@@ -1,0 +1,31 @@
+{
+ "run_id": "core-20261115-140328-5a6953e",
+ "owner": "core",
+ "purpose": "Regression case c5 of run core-20261115-135417-5a6953e: the restart files of baseline and new executable differ only in the 36 bytes of the nine unset coarse-mesh indices of Mesh::mesh_indcs in the restart header (analysis only)",
+ "kind": "production",
+ "command": [
+  "python3",
+  "/data/haiyangw/nrpic/wt/core-scalar/tracks/core/analysis/scalar/check_rst_diff.py",
+  "/data/haiyangw/nrpic/scratch/core/core-20261115-135417-5a6953e",
+  "c5"
+ ],
+ "cwd": "/data/haiyangw/nrpic/scratch/core/core-20261115-140328-5a6953e",
+ "commit": "5a6953e1c7b7e1c64e9cb5aa9891218e0aaea719",
+ "branch": "core/scalar-field",
+ "uncommitted_changes": [
+  "?? tracks/core/analysis/scalar/check_rst_diff.py"
+ ],
+ "inputs": [
+  {
+   "path": "tracks/core/analysis/scalar/check_rst_diff.py",
+   "sha256": "83822b8541c2cec87db2e3d499359354bfab287b11285765c1c9e1aadae74d40"
+  }
+ ],
+ "output_directory": "/data/haiyangw/nrpic/scratch/core/core-20261115-140328-5a6953e",
+ "host": "anta",
+ "start_utc": "2026-11-15T14:03:28Z",
+ "cores": 1,
+ "wall_time_s": 1.19,
+ "exit_status": 0,
+ "core_hours": 0.0003
+}

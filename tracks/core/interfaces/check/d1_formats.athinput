@@ -1,0 +1,112 @@
+# Test D1 of tracks/core/interfaces/JOURNAL.md: every output of the NRPIC module on a
+# small homogeneous dust universe (problems/cosmo/flrw.athinput on 16^3 cells), to
+# check the file descriptions of diagnostics.md and particle_id.md against what the
+# code writes. Particle file: cosmo/ic/make_lattice.py --n 16 --ppc 1 --L 4
+# --noise-x 0.01 --noise-u 1e-4 --seed 1.
+
+<comment>
+problem   = homogeneous dust universe, output-format check
+
+<job>
+basename  = flrw
+
+<mesh>
+nghost    = 4
+nx1       = 16
+x1min     = 0.0
+x1max     = 4.0
+ix1_bc    = periodic
+ox1_bc    = periodic
+nx2       = 16
+x2min     = 0.0
+x2max     = 4.0
+ix2_bc    = periodic
+ox2_bc    = periodic
+nx3       = 16
+x3min     = 0.0
+x3max     = 4.0
+ix3_bc    = periodic
+ox3_bc    = periodic
+
+<meshblock>
+nx1       = 8
+nx2       = 8
+nx3       = 8
+
+<time>
+evolution  = dynamic
+integrator = rk4
+cfl_number = 0.25
+nlim       = -1
+tlim       = 0.5
+ndiag      = 1
+
+<z4c>
+lapse_oplog     = 0.0
+lapse_harmonicf = 1.0
+lapse_harmonic  = 0.3333333333333333
+lapse_volume    = 0.0
+lapse_kdriver   = 0.0
+lapse_advect    = 0.0
+shift_Gamma     = 0.0
+shift_eta       = 0.0
+shift_advect    = 0.0
+diss            = 0.5
+damp_kappa1     = 0.5
+damp_kappa1_over_alpha = true
+damp_kappa2     = 0.0
+damp_ch         = 0.0
+damp_ch_dx      = 0.0
+excise_chi      = 0.0
+
+<particles>
+particle_type  = nrpic
+pusher         = midpoint
+interp         = hermite
+dt_expansion   = 0.0
+metric         = mesh
+tolerance      = 1.0e-12
+max_iterations = 50
+deposit        = true
+nfilter        = 0
+filter_compensate = false
+deposit_shape  = cic
+hist_dcycle    = 1
+cstat_dcycle   = 1
+cons_dcycle    = 1
+line_dcycle    = 1
+field_time1    = 0.25
+field_constraints = true
+traj_dcycle    = 1
+traj_ntrack    = 10
+snap_dt        = 0.25
+curv_dt        = 0.25
+curv_slice     = true
+curv_plane_y   = 1.0
+probe_x1       = 2.0
+probe_x2       = 2.0
+probe_x3       = 2.0
+nprobe         = 2
+probe1_x1      = 1.0
+probe1_x2      = 1.0
+probe1_x3      = 1.0
+probe2_x1      = 0.125
+probe2_x2      = 0.125
+probe2_x3      = 0.125
+lambda         = 0.0
+source_density = true
+source_extrap  = true
+particle_file  = particles.nrp
+
+<problem>
+pgen_name  = nrpic_cosmo
+id         = flrw
+hubble     = 1.0
+
+<output1>
+file_type = hst
+dt        = 0.0625
+
+<output2>
+file_type = rst
+dt        = 0.25

@@ -28,6 +28,7 @@
 #include "radiation/radiation.hpp"
 #include "srcterms/turb_driver.hpp"
 #include "particles/particles.hpp"
+#include "scalar_field/scalar_field.hpp"
 #include "pgen.hpp"
 
 
@@ -636,6 +637,10 @@ ProblemGenerator::ProblemGenerator(ParameterInput *pin, Mesh *pm, IOWrapper resf
   if (pm->pmb_pack->ppart != nullptr && pm->pmb_pack->ppart->is_nrpic) {
     pm->pmb_pack->ppart->NrpicReadRestart(pin->GetString("job","restart_file") + ".prt");
   }
+  // so is the scalar field
+  if (pm->pmb_pack->pscalar != nullptr) {
+    pm->pmb_pack->pscalar->ReadRestart(pin->GetString("job","restart_file") + ".sf");
+  }
 
   // Read cyclic zoom restart data if enabled
   if (pm->pzoom != nullptr && pm->pzoom->read_rst) {
@@ -970,18 +975,23 @@ void ProblemGenerator::CallProblemGenerator(ParameterInput *pin, bool is_restart
     BinaryGravity(pin, is_restart);
   } else if (pgen_fun_name.compare("be_collapse") == 0) {
     BECollapse(pin, is_restart);
-  } else if (pgen_fun_name.compare("nrpic_geodesic") == 0) {
+  } else if (pgen_fun_name.compare("nrpic_geodesic") == 0 ||
+             pgen_fun_name.compare("nrpic_newton") == 0) {   // particles only
     NrpicGeodesic(pin, is_restart);
   } else if (pgen_fun_name.compare("nrpic_cf") == 0) {
     NrpicConformallyFlat(pin, is_restart);
   } else if (pgen_fun_name.compare("nrpic_cosmo") == 0) {
     NrpicCosmology(pin, is_restart);
+  } else if (pgen_fun_name.compare("scalar_field") == 0) {
+    ScalarFieldTests(pin, is_restart);
 
   // pre-defined unit tests
   } else if (pgen_fun_name.compare("eos_compose") == 0) {
     EOSCompose(pin, is_restart);
   } else if (pgen_fun_name.compare("gauss_legendre") == 0) {
     GaussLegendre(pin, is_restart);
+  } else if (pgen_fun_name.compare("rng_test") == 0) {
+    RngTest(pin, is_restart);
 
   } else {
     // name not set on command line or input file, print warning and quit

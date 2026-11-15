@@ -1,0 +1,43 @@
+{
+ "run_id": "core-20261115-133146-5384d02",
+ "owner": "core",
+ "purpose": "Scalar field test 1: Klein-Gordon plane wave of a test field on flat spacetime (dispersion relation, spatial orders for nghost 2, 3, 4, temporal order, dissipation, five potentials against the ordinary differential equation)",
+ "kind": "production",
+ "command": [
+  "python3",
+  "/data/haiyangw/nrpic/wt/core-scalar/tracks/core/analysis/scalar/test1_wave.py",
+  "--exe",
+  "/data/haiyangw/nrpic/wt/core-scalar/.work/exe/athena_cpu_5384d02",
+  "--workers",
+  "12"
+ ],
+ "cwd": "/data/haiyangw/nrpic/scratch/core/core-20261115-133146-5384d02",
+ "commit": "5384d02a6136a1d59ac95c93474e99908f8abde2",
+ "branch": "core/scalar-field",
+ "uncommitted_changes": [],
+ "inputs": [
+  {
+   "path": ".work/exe/athena_cpu_5384d02",
+   "sha256": "65ff216207233e873c3c945b58b54340af5a5a8419aad001882f318626a00144"
+  },
+  {
+   "path": "problems/scalar/kg_wave.athinput",
+   "sha256": "a390bd4be795e6dc53059652a1bcea4b56918d6df27e5c9909b59ba8301c3503"
+  },
+  {
+   "path": "tracks/core/analysis/scalar/test1_wave.py",
+   "sha256": "5a51093421c3ed30522dcffa8e2e8c4389ce7a3a38ad621ab0ecf45a54caa8e8"
+  },
+  {
+   "path": "python/nrpic/scalar_field.py",
+   "sha256": "44003fc8f64412513ac34b4e908b4e7f43d79d23694c4378a02267afcc5ffb8e"
+  }
+ ],
+ "output_directory": "/data/haiyangw/nrpic/scratch/core/core-20261115-133146-5384d02",
+ "host": "anta",
+ "start_utc": "2026-11-15T13:31:46Z",
+ "cores": 12,
+ "wall_time_s": 274.51,
+ "exit_status": 1,
+ "core_hours": 0.915
+}

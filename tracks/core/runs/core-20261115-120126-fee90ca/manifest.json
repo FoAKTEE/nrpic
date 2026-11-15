@@ -1,0 +1,40 @@
+{
+ "run_id": "core-20261115-120126-fee90ca",
+ "owner": "core",
+ "command": [
+  "/data/haiyangw/nrpic/wt/core-newton/.work/athena_cpu_9d84282",
+  "-r",
+  "newton.00001.rst"
+ ],
+ "cwd": "/data/haiyangw/nrpic/scratch/core/core-20261115-120126-fee90ca",
+ "commit": "fee90ca",
+ "source_modified_since_commit": true,
+ "inputs": [
+  {
+   "path": "/data/haiyangw/nrpic/scratch/core/core-20261115-120109-fee90ca/rst/newton.00001.rst",
+   "sha256": "ada3945a18551779dd730562e3e466215e8cbdcfb07c9e00c5f12940fa9ddffc"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/scratch/core/core-20261115-120109-fee90ca/rst/newton.00001.rst.prt",
+   "sha256": "1ce31687372499f939c7608930cb4dcbb15c127b47143bebd932f83c98b7da31"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/scratch/core/core-20261115-120109-fee90ca/rst/newton.00001.rst.prt.nwt",
+   "sha256": "5260822e65bdcf0377c352a985554dab59ee3ef93380b66c2d56baffd347d2c6"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/wt/core-newton/.work/athena_cpu_9d84282",
+   "sha256": "71ff0dac2f3166871a92a20363fac51510191d912647c72a1f6e3df9c47f12f7",
+   "role": "executable"
+  }
+ ],
+ "output_directory": "/data/haiyangw/nrpic/scratch/core/core-20261115-120126-fee90ca",
+ "purpose": "T5 restart, collapse N=32, continued from the dump at t=0.4 of core-20261115-120109-fee90ca",
+ "kind": "scouting",
+ "tag": "restart-collapse-cont",
+ "wall_time_s": 8.88,
+ "exit_status": 0,
+ "cores": 1,
+ "card_hours": 0.0,
+ "started_utc": "2026-11-15T12:01:26Z"
+}

@@ -1,0 +1,46 @@
+{
+ "run_id": "core-20261115-145939-3629622",
+ "owner": "core",
+ "purpose": "lead integration: nrpic_cf checks P2 and P5 on the card executables (job 4430)",
+ "kind": "production",
+ "command": [
+  "python3",
+  "/data/haiyangw/nrpic/wt/core/tracks/core/analysis/lead/cf_checks.py",
+  "--base",
+  "/data/haiyangw/nrpic/wt/core/.work/build_gpu_base/src/athena",
+  "--new",
+  "/data/haiyangw/nrpic/wt/core/.work/build_gpu_609a875/src/athena"
+ ],
+ "cwd": "/data/haiyangw/nrpic/scratch/core/core-20261115-145939-3629622",
+ "commit": "362962282e9c012f5bbf8b7a795a6d2e92204746",
+ "branch": "core/nrpic",
+ "uncommitted_changes": [
+  "M tracks/core/verify/options_at.py",
+  "?? tracks/core/CHANGELOG.md",
+  "?? tracks/core/analysis/lead/gpu_regress_job.sh",
+  "?? tracks/core/stage/G2/",
+  "?? tracks/core/verify/figs/regress_geodesic_core-20261115-065452-3629622.pdf",
+  "?? tracks/core/verify/figs/regress_geodesic_core-20261115-065452-3629622.png",
+  "?? tracks/core/verify/manifests/core-20261115-065452-3629622.json",
+  "?? tracks/core/verify/manifests/core-20261115-065901-3629622.json",
+  "?? tracks/core/verify/manifests/core-20261115-065903-3629622.json",
+  "?? tracks/core/verify/manifests/core-20261115-065904-3629622.json"
+ ],
+ "inputs": [
+  {
+   "path": ".work/build_gpu_base/src/athena",
+   "sha256": "ad33518881586038e0620aa2ad4f71b2839c5c8f78d8b94c4163928f67a8b9b4"
+  },
+  {
+   "path": ".work/build_gpu_609a875/src/athena",
+   "sha256": "601dbcc95be8e50fbf9619fd704d375735d0649a307a0fdfb20bafa4250cdf4f"
+  }
+ ],
+ "output_directory": "/data/haiyangw/nrpic/scratch/core/core-20261115-145939-3629622",
+ "host": "anta",
+ "start_utc": "2026-11-15T14:59:39Z",
+ "cores": 1,
+ "wall_time_s": 9.45,
+ "exit_status": 1,
+ "card_hours": 0.0026
+}

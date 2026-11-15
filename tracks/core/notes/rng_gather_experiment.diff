@@ -1,0 +1,23 @@
+91,92c91,99
+<       Real xi = (x[d] - xmin[d])*idx[d] - 0.5;      // cell-centre coordinate
+<       int i0 = ist[d] + static_cast<int>(floor(xi));
+---
+>       // EXPERIMENT (not in the repository source): the cell-centre coordinate is formed
+>       // from the position alone, t = x/dx - 1/2; its fraction gives the weights and the
+>       // integer cell offset of the MeshBlock edge gives the local index.  Valid when the
+>       // MeshBlock edges are integer multiples of dx from the coordinate origin.
+>       const Real t = x[d]*idx[d] - 0.5;
+>       const Real ft = floor(t);
+>       const int ioff = static_cast<int>(rint(xmin[d]*idx[d]));
+>       const int inat = ist[d] + (static_cast<int>(ft) - ioff);
+>       int i0 = inat;
+95a103
+>       const Real arg = (t - ft) + static_cast<Real>(inat - i0);
+97c105
+<         BSplineWeights(xi - static_cast<Real>(i0 - ist[d]), w[d], dw[d]);
+---
+>         BSplineWeights(arg, w[d], dw[d]);
+99c107
+<         HermiteWeights(xi - static_cast<Real>(i0 - ist[d]), w[d], dw[d]);
+---
+>         HermiteWeights(arg, w[d], dw[d]);
