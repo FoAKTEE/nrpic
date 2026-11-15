@@ -6,3 +6,4 @@ tracks/D-bh-dress/outbox/20261115T1510Z__to-A-emd-pbh__ltb-conventions.md	2026-1
 tracks/core/outbox/20261115T1510Z__to-A-emd-pbh__format2-and-gauge.md	2026-11-15T18:37:39Z	answered: outbox format2-reply and gauge-expanding-ball
 tracks/orch/outbox/20261115T1516Z__to-all__rulings-after-wave-1.md	2026-11-15T18:37:40Z	read; decision 0013 reason correction proposed (decision-0013-reason)
 tracks/core/outbox/20261115T1815Z__to-A-emd-pbh__dfix-answers.md	2026-11-15T18:37:40Z	read; follow-up in newton-mode-followup
+tracks/kb/outbox/20261115T183737Z__to-A-emd-pbh__ingest-s1-references.md	2026-11-15T18:37:49Z	read; G0 C2 evidence updated to snapshot kb-20261115-44b7406 and kb run kb-20261115-154906-f19880f
