@@ -118,3 +118,22 @@ false" only because the fourth restart file `box.00003.rst` is the one written a
 of the run (cycle 100 = nlim): the run resumed from it takes no step and writes no
 snapshot, which my driver counted as a failure. Driver corrected (such a restart is
 recorded as skipped); rerun to get a clean summary and the figure.
+
+## 2026-11-15 T0b: first outcome (run C-20261115-165932-c04cf46)
+
+With the key cycle = the dump's `cycle` field (20), the replay reproduces, for all six
+dumps (2 seeds x plain, sub, f2), the cell index, n_sub and the number of momentum
+updates of every one of the 1e4 particles, the collided momenta to 2.2e-16 to 4.4e-16 of
+max(1, |u|), and leaves every other particle bit-identical; the neighbouring key cycles 19
+and 21 do not (other updates, momenta off by O(1)). The summary flag was false because my
+driver compared the replay's totals with the coll.hst record labelled `ncycle` = 20; the
+replay's totals (e.g. plain s1: 5045 tested, 27 collisions) equal those of the record
+labelled 21. Cause, checked: coll.hst labels a record with the number of completed steps
+(collisions.md section 5, "number of completed steps"), the dump and the key use
+`pmesh->ncycle` of the step being taken (sections 3.10, 5); after the mismatch I read the
+lines that write them (`nrpic_collide.cpp` 331, 333, 519, 801, 812: `ncyc = pm->ncycle + 1`
+for the record, `pm->ncycle` for the dump and the key). The documentation is consistent;
+the off-by-one is easy to trip over (request to core: one sentence in section 5). Driver
+corrected to compare with record c + 1; rerun. Also seen: the f2 dumps (8^3 mesh, cell
+factor 2) give exactly the same tested pairs and collisions as the sub dumps (4^3 mesh),
+as collisions.md section 8 states for blocks of f^3 cells.

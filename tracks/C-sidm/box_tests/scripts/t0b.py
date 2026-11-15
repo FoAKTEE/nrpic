@@ -39,7 +39,10 @@ def check(rd, nx, f):
     assert len(dpath) == 1, dpath
     d = bl.read_dump(os.path.join(rd, dpath[0]))
     h = bl.coll_history(rd)
-    rec = int(np.flatnonzero(h["ncycle"] == d["cycle"])[0]) if (h["ncycle"] == d["cycle"]).any() else None
+    # the dump of coll_dump_cycle = c is the step taken with pmesh->ncycle = c; coll.hst
+    # labels a record with the number of completed steps, so that step is record c + 1
+    sel = h["ncycle"] == d["cycle"] + 1
+    rec = int(np.flatnonzero(sel)[0]) if sel.any() else None
     mesh = dict(xmin=[10.0] * 3, xmax=[11.0] * 3, n=[nx] * 3)
     out = dict(run=rd, dump=dpath[0], cycle=d["cycle"], n=d["n"], f=d["f"], triad=d["triad"],
                seed=d["seed"], tries={})
