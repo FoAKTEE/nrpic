@@ -1,0 +1,101 @@
+{
+  "run_id": "F-hills-20261115-130253-6fc800e",
+  "track": "F-hills",
+  "package": "newton3 (F-pre-1)",
+  "gate": "G1",
+  "purpose": "P0: unit tests of the newton3 package (integrator, restricted equations, driver initial data, conservation, SciPy cross-checks)",
+  "preregistered_in": "tracks/F-hills/newton3/JOURNAL.md#P0",
+  "kind": "scouting",
+  "command": [
+    "/usr/bin/python3",
+    "scripts/run_tests.py"
+  ],
+  "cwd": "/data/haiyangw/nrpic/wt/F-hills/tracks/F-hills/newton3",
+  "git": {
+    "sha": "6fc800e6150e018c33e5721e83820be0b0e0627f",
+    "branch": "track/F-hills",
+    "dirty_package": false,
+    "merge_base_main": "a1c223753952674ee38819dc45043591dddc3022"
+  },
+  "code": {
+    "core_tag": null,
+    "athenak": "not used (reference ODE solution, decision 0010)"
+  },
+  "env": {
+    "host": "anta",
+    "python": "3.10.12",
+    "numpy": "2.2.6",
+    "scipy": "1.15.3"
+  },
+  "inputs": [
+    {
+      "path": "tracks/F-hills/newton3/hills3/__init__.py",
+      "sha256": "0325364972e07f4ddc48d25f7faf0df9fa42aaee5ffd0a0cb89015b0695ebb76"
+    },
+    {
+      "path": "tracks/F-hills/newton3/hills3/integrate.py",
+      "sha256": "9163e563f7a90fec5d705fbe6b50365946158c65ffaedd8c80730ac3ecae7af9"
+    },
+    {
+      "path": "tracks/F-hills/newton3/hills3/orbits.py",
+      "sha256": "208fd9a68210007dfbc850f8c892e901abfe08b359708673a45d75517ac95b11"
+    },
+    {
+      "path": "tracks/F-hills/newton3/hills3/reference.py",
+      "sha256": "f28662c8d91828717b553eed9a34296a72d7a8d485f01fdee5b953bbf06e7bf5"
+    },
+    {
+      "path": "tracks/F-hills/newton3/hills3/restricted.py",
+      "sha256": "fcac01ffdaa79827642ef44e910c9b0baa80c3189e1de517ae592ab781c10e31"
+    },
+    {
+      "path": "tracks/F-hills/newton3/hills3/threebody.py",
+      "sha256": "a7b2297ace17bebb37875ffd98daa46f1968a1d712000f428c877b389cfba626"
+    },
+    {
+      "path": "tracks/F-hills/newton3/scripts/compare_full.py",
+      "sha256": "f366a8ea55a6480dcd81105ec13d816914988448954567cea33da768caeaf717"
+    },
+    {
+      "path": "tracks/F-hills/newton3/scripts/run_tests.py",
+      "sha256": "c04b89017bef1895020136a0397d94ed90a25a7b00b48bbedfc9b1c8a7902d9a"
+    },
+    {
+      "path": "tracks/F-hills/newton3/scripts/runlib.py",
+      "sha256": "5bef0b659331faea0aba3c906895700fcdcfdee7efccf3131204f5b05f106947"
+    },
+    {
+      "path": "tracks/F-hills/newton3/scripts/scan_coplanar.py",
+      "sha256": "584d0e3785daf711d50ea5bc6763618bcc81ba72fba4463fb4d570ba542a061b"
+    },
+    {
+      "path": "tracks/F-hills/newton3/scripts/scan_general.py",
+      "sha256": "3c3e384eb25863c85c47e2d3cbb7613990a314a8efa11efc0ae675c58ab91ea0"
+    },
+    {
+      "path": "/data/haiyangw/nrpic/wt/F-hills/tracks/F-hills/newton3/tests/test_hills3.py",
+      "sha256": "6ed886f6b35f7b83edc4db34bf4542ab740ff347bc5f772ed8f95c94141c70de"
+    }
+  ],
+  "resources": {
+    "nodes": 1,
+    "gpus": 0,
+    "cores": 1,
+    "card_hours": 0.0
+  },
+  "outputs": {
+    "dir": "scratch/F-hills/F-hills-20261115-130253-6fc800e",
+    "sha256sums": "sha256sums.txt",
+    "files": 1
+  },
+  "status": "completed",
+  "exit_code": 0,
+  "started": "2026-11-15T13:02:53+00:00",
+  "ended": "2026-11-15T13:03:17+00:00",
+  "walltime_s": 23.7,
+  "core_hours": 0.007,
+  "notes": "",
+  "results": {
+    "pytest_summary": "============================== 9 passed in 23.30s =============================="
+  }
+}

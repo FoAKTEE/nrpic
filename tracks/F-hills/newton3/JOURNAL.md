@@ -87,3 +87,30 @@ same outcome as the vectorised scan; the outcome is insensitive (energy change w
 10 r_t to 20 r_t when the effective phase is held fixed, for M/m = 1e6. At M/m = 10 the
 start distance matters more because the tidal field at 10 r_t is not negligible
 [JUDGEMENT]; this is measured, not predicted.
+
+## 2026-11-15 P0 outcome (run F-hills-20261115-130253-6fc800e, commit 6fc800e)
+
+- did: wrote `hills3/` (integrate.py, orbits.py, restricted.py, threebody.py,
+  reference.py) and `tests/test_hills3.py`; ran the tests.
+- found: the first run failed two of the predictions as I had worded them. (a) Kepler
+  e = 0.6, 20 periods, rtol 1e-11: return error 1.1e-7, not < 1e-8. SciPy's DOP853 on the
+  same problem gives 1.4e-7 with the same number of accepted steps (1173 vs 1174), and
+  both reach 1e-9 at rtol 1e-13: the integrator reproduces SciPy's DOP853 step for step,
+  and my tolerance-to-global-error guess was a factor 10 too optimistic. (b) Total-energy
+  error 3e-8 relative to E_total at rtol 1e-11 for M/m = 1e3, D = 0.1; E_total is only
+  the binary binding energy, a tiny difference of large terms; measured against the
+  energy unit (G m1 m2/a)(M/m)^(1/3) it is 1.8e-9, at rtol 1e-13 it is 4e-10 of E_total;
+  SciPy's DOP853 gives 3.8e-8 on the same case. The tests now state these measured
+  bounds (Kepler at rtol 1e-13 plus agreement with SciPy within a factor 2; energy
+  against the energy unit). Not a bug: a run in which it could have been one (SciPy
+  comparison) shows the same numbers.
+- found: free solutions of SKR solve the tidal-only equations to < 1e-8; the energy
+  bracket is 20 for the eccentricity solution and 0 for the others (confirms the energy
+  formula and its normalisation, SKR prp.tex:397-401); E2(phi + pi) = -E2(phi) to 1e-8;
+  restricted energies agree with an independent SciPy integration to 1e-7; driver final
+  state agrees with SciPy to 1e-6 relative; initial data: zero momentum, CoM at origin,
+  binary a and e_b, orientation, CoM conic pericentre and eccentricity to 1e-9 or better.
+- found (smoke test, not a registered result): about 1 in 3000 coplanar trajectories
+  stalls (step below 1e-14 t) in a near head-on approach of the two members
+  (r_min ~ 1e-8 a); they are bound at the stall. They are excluded from the fractions and
+  counted ("fail"); a point-mass collision is outside the model anyway.
