@@ -272,3 +272,24 @@ structure equations are integrated to rtol 1e-12, and the Hamiltonian-constraint
 of the same models is 3e-8): halving h twice reduces the residual by about 4 each time
 (ratios 3.5-4.5) for every b = 0.1 model, and all fall below 1e-6 at h/4. Refuted if a
 ratio is below 2 or a residual stays above 1e-6 at h/4.
+
+## 2026-11-15, entry 6: outcome T1; prediction A1
+
+T1 PASS (run C-20261115-171723-17d46f0): halving the step of the TOV check reduces the
+residual by 4.00 and then 3.99 for all 13 models; at h/4 the residuals are 1.4e-8 to
+8.9e-8. The three M3 failures are the h^2 truncation error of the check's central
+difference, which grows with the steepness of the core; the solved models satisfy TOV to
+better than 1e-7. [VERIFIED]
+
+### Prediction A1: AthenaK reads a b = 0.1 model at N = 10^5
+
+`../equilibria/smoke_athenak.py` (two cycles, processor build of core-v0.3,
+`.work/build_cpu_v03/src/athena`, 4 threads) on `tmb01_Z0p5404_stratified_N100000_s1` of
+run C-20261115-170742-84990ed, with the paper's y_c = 0.819 model as reference. Expected:
+both cases exit 0; np = 100000 in the first history record; sum m equal to the file's to
+1e-13 relative; deposited int E equal to sum m W to 1e-12 (the King file of run
+C-sidm-20261115-125308-54870b9 gave 1e-15); alpha_probe at t = 0 within 1 percent of the
+model's alpha_c = 0.64918 (the King run read 0.6647 against 0.66141, 0.5 percent); the
+initial Hamiltonian-constraint norm within a factor 3 of the reference's [JUDGEMENT; the
+model is wider than the refined region of the deck, |x| < 15.9 M against rbar_s = 19.4 M].
+Refuted by a failed run or any number outside these bounds.
