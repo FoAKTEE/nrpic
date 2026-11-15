@@ -1,0 +1,38 @@
+{
+ "run_id": "B-emd-gw-20261115-115540-2cb33df",
+ "owner": "B-emd-gw",
+ "package": "gw_diag",
+ "command": "python3 scripts/validate_weyl.py",
+ "cwd": "/data/haiyangw/nrpic/wt/B-emd-gw/tracks/B-emd-gw/gw_diag",
+ "commit": "2cb33df9155c09d3a50a2f6f8213c941da5f87d5",
+ "worktree_dirty_gw_diag": false,
+ "inputs": [
+  {
+   "path": "/data/haiyangw/nrpic/wt/B-emd-gw/tracks/B-emd-gw/gw_diag/scripts/validate_weyl.py",
+   "sha256": "2e6aaa9582656a2eee552f5659f3a363d0ad0a6f76cbf50d66b472abbe63cbb7"
+  }
+ ],
+ "output_dir": "/data/haiyangw/nrpic/scratch/B-emd-gw/B-emd-gw-20261115-115540-2cb33df",
+ "purpose": "Weyl validation rerun with the gauge data normalized by max|dd gamma| and floor-aware order fits (P2-P4)",
+ "kind": "production",
+ "cores": 8,
+ "card_hours": 0.0,
+ "env": {
+  "OMP_NUM_THREADS": "8",
+  "OPENBLAS_NUM_THREADS": "8",
+  "MKL_NUM_THREADS": "8"
+ },
+ "started_utc": "2026-11-15T11:55:40+00:00",
+ "status": "completed",
+ "exit_code": 0,
+ "wall_time_s": 22.24,
+ "ended_utc": "2026-11-15T11:56:02+00:00",
+ "outputs_sha256": {
+  "results_weyl.json": "f63e976a9f0a13bb04baa760dc61aabfaa9c7f24768fb34092e126d02190819f",
+  "stdout.txt": "5ee134c8ee0dc0654054d2484ad731571301c9ced3cd31089e9ce828b93850e4",
+  "weyl_convergence.pdf": "d0ab40a86b0d1983f15d9d0e3668e498331d9ff7f19df497b376dcb96ff6c648",
+  "weyl_convergence.png": "23f42b9e7fa37d7ac0b664e5830e6ad128472405bf03b1bca8ec4296e4731fbf",
+  "weyl_psi4.pdf": "fc99472792e552ac7061554d49f980ce1efa344bbf2f396a248ec73c864b7701",
+  "weyl_psi4.png": "3ec52b68b060a951aa64434f1a0fd5b5a7c7e03d276e602dce8c37f2b741365f"
+ }
+}

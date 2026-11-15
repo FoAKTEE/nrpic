@@ -20,6 +20,7 @@ from nrpic import figstyle as fs  # noqa: E402
 import matplotlib  # noqa: E402
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt  # noqa: E402
+import matplotlib.ticker  # noqa: E402
 
 OUT = os.environ.get("RUN_DIR", os.path.join(HERE, "..", "figs"))
 FIGS = os.path.join(HERE, "..", "figs")
@@ -173,8 +174,10 @@ for i, case in enumerate(("waves", "gauge", "scalar")):
     ax.set_title(titles[case], fontsize=9)
     ax.set_xticks([12, 24, 48])
     ax.set_xticklabels(["12", "24", "48"])
+    ax.xaxis.set_minor_formatter(matplotlib.ticker.NullFormatter())
     if i == 0:
         ax.set_ylabel("relative error / residual")
+    if i == 2:
         ax.legend(loc="lower left", fontsize=7)
 save(fig, "weyl_convergence")
 
@@ -192,7 +195,8 @@ ax1.plot(s_diag[o], np.abs(prof["reverse"][o]) / A, color=C["green"], lw=1.0,
          label=r"$|\Psi_4|$ along $-\hat k$")
 ax1.set_xlabel(r"$(x+y)/\sqrt{2}$ along the diagonal $z = z_0$")
 ax1.set_ylabel(r"$\Psi_4 / A$")
-ax1.legend(loc="lower left", fontsize=7, ncol=2)
+ax1.legend(loc="upper center", fontsize=7, ncol=2)
+ax1.set_ylim(-85, 140)
 ax2.loglog(amps, [psi[a]["err"] for a in amps], "o-", color=C["red"], label=r"$\Psi_4$ error")
 ax2.loglog(amps, [psi[a]["E_err"] for a in amps], "s--", color=C["yellow"], mfc="none", label=r"$E$ error")
 ax2.loglog(amps, [psi[a]["B_err"] for a in amps], "^:", color=C["green"], mfc="none", label=r"$B$ error")

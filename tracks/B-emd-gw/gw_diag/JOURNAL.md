@@ -191,3 +191,22 @@ max|E_lin| (the TT-part statement), Psi_4 along y and along (1,1,0) nonzero and 
   1.001), as predicted. Scalar mode: Psi_4 along k exactly 0; along y and (1,1,0) it equals
   -E_lin mbar mbar to 3.0e-6 relative (= O(eps), eps = 1e-6), max|Psi_4| = 7.9e-5 = 0.75 max|E_lin|.
   PASSED: a scalar perturbation produces Psi_4 off its wavevector (D4).
+
+## Outcome of the Weyl validation rerun, run B-emd-gw-20261115-115540-2cb33df
+
+Fitted orders (points with N >= 16 and above 20x the spectral value at the same N):
+waves E/B 1.99/1.98, 3.95/3.95, 5.84/5.89; pure gauge (|E|, |B| / max|dd gamma|) 1.94/1.98,
+3.93/3.95, 5.83/5.88; scalar E/B/Lambda E 1.93/1.97/1.91, 3.92/3.86/3.93, 5.82/-/5.81 (order-6 B
+reaches the second-order floor 1.5e-5 by N = 32). Spectral: pure gauge E and B at 1e-12..1e-15
+for N >= 24 (B at N = 12: 9e-7, the non-band-limited part of the nonlinear data); waves B at the
+O(A) floor 1.7e-8; waves E rising 7e-8 -> 1.2e-6 with N (representation floor of 1 + h, ~N^2;
+the mean removal lowered it from 4.0e-6 at N = 64). PASSED (P2, P3 Weyl part, P4).
+Psi_4 of the plane wave m = (1,1,0): error proportional to A (slope 1.001) and equal to
+hddot_+ - i hddot_x (sign convention D2 confirmed). FAILED in a benign way: |Psi_4(-k)|/|Psi_4(k)|
+was predicted O(A) but is 5e-7 at A = 1e-8 falling to 6e-13 at A = 1e-2, i.e. a constant round-off
+absolute value: for a single plane wave the reversed scalar vanishes at every order.
+[BACKGROUND] a metric depending on x only through t - n.x is a plane-fronted wave whose Weyl
+tensor is of Petrov type N with respect to n, so only the outgoing scalar is nonzero; the O(A^2)
+part of the data is null dust (R_uu ~ hdot^2), which enters E and B only through traces and n n
+terms that mbar mbar does not see. For a superposition with several directions the reverse
+scalar is O(A^2) from the cross terms (not measured here).
