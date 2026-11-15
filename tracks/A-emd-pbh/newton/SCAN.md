@@ -27,7 +27,8 @@ and times by 2).
   patch. The ball radius then measures tides and late infall, not the first collapse
   [JUDGEMENT, follows from the shell theorem; to be confirmed by the series itself].
 - Gravity placements (`ellipsoid.py`): "isolated" is plain Newtonian self-gravity and is
-  the Newtonian limit of the expanding ball of track A. "Added" needs one extra term in
+  the Newtonian limit of the expanding ball of track A (FLRW interior, vacuum exterior)
+  [JUDGEMENT]. "Added" needs one extra term in
   the code: the external acceleration -(4 pi/3) G rho_b(t) r with rho_b = 1/(6 pi G t^2)
   and t = t_0 + (run time); it is used only to reproduce 2605.04487 (whose printed times
   it matches, `PAPER_SETUP.md`). "Embedded" needs the gap filled at rho_b and is not in
