@@ -337,17 +337,29 @@ def main():
                                     m_exact_shell=float(m_ex[j] + w * (m_ex[j + 1] - m_ex[j])))
         lines.append(L)
     # Misner-Sharp error summary
+    # points with r >= 2 M (the Misner-Sharp mass is a small difference of O(1) terms,
+    # 2m/R ~ 0.1 inside the ball, so the finite-difference error of dR/dr is amplified
+    # by R/m: unreliable near the centre); drift: m(t)/m(0) - 1 on the same shell
+    # (SR-1: the same mesh point), which removes the error of representing the slice
     msum = []
+    m0 = lines[0]["m"] if lines else None
     for L in lines:
-        s = (L["r"] >= 1.0) & np.isfinite(L["m_exact"]) & (L["R_i"] <= ball.R_out * 0.98)
+        s = (L["r"] >= 2.0) & np.isfinite(L["m_exact"]) & (L["R_i"] <= ball.R_out * 0.98)
         if np.any(s):
             rel = L["m"][s] / L["m_exact"][s] - 1.0
-            msum.append((L["t"], float(np.nanmax(np.abs(rel))), float(np.nanmedian(np.abs(rel)))))
+            drift = np.nan
+            if a.gauge == "sr1" and m0 is not None and len(m0) == len(L["m"]):
+                drift = float(np.nanmax(np.abs(L["m"][s] / m0[s] - 1.0)))
+            msum.append((L["t"], float(np.nanmax(np.abs(rel))), float(np.nanmedian(np.abs(rel))), drift))
     res["misner_sharp"] = dict(
-        n_lines=len(lines),
-        max_rel_err=[dict(t=v[0], maxabs=v[1], median=v[2]) for v in msum[:: max(1, len(msum) // 40)]],
+        n_lines=len(lines), r_min=2.0,
+        max_rel_err=[dict(t=v[0], maxabs=v[1], median=v[2], drift_maxabs=v[3])
+                     for v in msum[:: max(1, len(msum) // 40)]],
+        maxabs_t0=msum[0][1] if msum else None,
         maxabs_t_le_42=float(max([v[1] for v in msum if v[0] <= 42.0], default=np.nan)),
         maxabs_t_le_30=float(max([v[1] for v in msum if v[0] <= 30.0], default=np.nan)),
+        drift_maxabs_t_le_30=float(np.nanmax([v[3] for v in msum if v[0] <= 30.0] + [np.nan])),
+        drift_maxabs_t_le_42=float(np.nanmax([v[3] for v in msum if v[0] <= 42.0] + [np.nan])),
         max_compactness_t0=float(np.nanmax(lines[0]["compact"])) if lines else None)
     hl = [L for L in lines if "horizon" in L]
     res["line_horizon"] = dict(

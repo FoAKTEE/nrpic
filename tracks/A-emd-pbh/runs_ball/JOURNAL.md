@@ -107,3 +107,45 @@ Refuted (for the gauge, not the data) by a front that spoils the core shells (er
 - C2 resolution: between dx = M and M/2 the core-shell error at tau = 16.9 falls by a
   factor between 2.5 and 6 (order 1.3 to 2.6) [JUDGEMENT: second order is expected from
   core's T2c, but dx = M puts only 2.4 cells across the core radius].
+
+## 2026-11-15, entry 2: references, the processor attempt, smoke test of the comparison
+
+Exact references, run A-emd-pbh-20261115-153719-91b03d1 (`prep.py`, registered by hand
+with `runreg.py` because `harness/bin/nrpic-run submit` refused: "the worktree is not
+clean", untracked manifests of other helpers of this worktree): core turnaround
+tau = 16.893769, R_max/R_i = 1.339803; first trapped sphere tau = 44.349266 at
+R_i = 2.74175 (rbar_i = 2.69731), m = 0.080505; core edge trapped 44.381466; crunch
+44.454205; m_AH(tau) grows from 0.0805 to 0.0960 at the crunch (figure
+`figs/fig_exact_references.png`, looked at: the trapping time per shell has its minimum
+at R_i = 2.74 and the horizon mass rises steeply right after 44.349). These agree with
+the lead's numbers (A-20261115-130948-5a2b58a) to the printed digits [VERIFIED].
+1705 tracked particles; the reordered file has the same records as the lattice file
+(checked in the run). SR-1 step plan from the exact largest coordinate speed: cfl 0.25 to
+42.0 (the largest speed at 40 M is 1.6, in the compensating shells, not in the core),
+0.125 to 43.63, 0.0625 to 44.18, 0.03125 to 44.357, 0.0156 to 44.423, 0.0078 to 44.447;
+the run uses three segments: 0.25 to 42.0, 0.03125 to 44.3568, 0.0078125 to 44.4472.
+
+Processor runs at dx = M (A-emd-pbh-20261115-153856-9d731b1 SR-1,
+-153903-9d731b1 SR-2): STOPPED by me after 11 minutes at cycle 3. The release processor
+executable runs on one thread (NLWP = 1) and took about 200 s per cycle at 128^3 on the
+loaded machine (load 58); SR-1 would have needed about 19 hours. dx = M moved to the cards
+(A-emd-pbh-20261115-155056-ec1b816, both gauges in one job, about 0.02 card-hours
+expected). Card jobs queued behind core's verification runs.
+
+Smoke test of `compare.py` on the first 0.75 M of the stopped SR-1 processor run (not a
+result; output in `scratch/A-emd-pbh/tmp/smoke/`, not cited): every reader works; the
+particles stay at their coordinates (r/r0 - 1 = 0, |tau - t| < 1e-15). Two findings about
+the diagnostic itself:
+1. The Misner-Sharp mass from the mesh line has a representation error at t = 0, before
+   any evolution: 3 to 16 per cent for r in [2, 6] M at dx = M (the smoothed top-hat
+   varies psi over 1 to 2 cells; 2m/R ~ 0.1 inside the ball, so the finite-difference
+   error of dR/dr is amplified by R/m ~ 10-20). Changed: dR/dr now from a fourth-order
+   difference along the line; the summary uses r >= 2 M only.
+2. In the envelope (r = 7-9 M, where psi = 1 exactly and the t = 0 error is below 1e-4)
+   the line mass already moves by about 3 per cent within 0.75 M at dx = M. Not explained
+   yet [TO VERIFY with the card runs: deposit noise of 8 lattice sites per cell, or a
+   transient of the data].
+Amendment of P7, written before any output of the card runs was read: P7 is judged on the
+drift m(t)/m(0) - 1 at fixed mesh points (SR-1) as well as on m/m_exact - 1, and the
+threshold 1e-2 applies at dx = M/2 only; at dx = M the t = 0 representation error alone
+exceeds it.

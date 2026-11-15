@@ -203,15 +203,15 @@ def misner_sharp_line(x, g, K):
     AK, BK, _, _ = radial_tangential(x, K)
     R = r * np.sqrt(Bg)
     KT = BK / Bg
-    o = np.argsort(r)
-    r_s, R_s = r[o], R[o]
-    dRdr = np.empty_like(R_s)
-    dRdr[1:-1] = (R_s[2:] - R_s[:-2]) / (r_s[2:] - r_s[:-2])
-    dRdr[0] = (R_s[1] - R_s[0]) / (r_s[1] - r_s[0])
-    dRdr[-1] = (R_s[-1] - R_s[-2]) / (r_s[-1] - r_s[-2])
-    inv = np.empty_like(o)
-    inv[o] = np.arange(len(o))
-    dRdr = dRdr[inv]
+    # dR/dr from the derivative along the line (uniform in x1, sorted), fourth order in
+    # the interior, dr/dx1 = x1/r
+    x1 = x[:, 0]
+    if np.any(np.diff(x1) <= 0):
+        raise ValueError("line points must be sorted by x1")
+    h = x1[1] - x1[0]
+    dRdx = np.gradient(R, x1, edge_order=2)
+    dRdx[2:-2] = (-R[4:] + 8.0 * R[3:-1] - 8.0 * R[1:-3] + R[:-4]) / (12.0 * h)
+    dRdr = dRdx * r / x1
     m = 0.5 * R * (1.0 + R ** 2 * KT ** 2 - dRdr ** 2 / Ag)
     c = 2.0 * m / R
     return dict(r=r, R=R, m=m, KT=KT, grr=Ag, dRdr=dRdr, compact=c,
