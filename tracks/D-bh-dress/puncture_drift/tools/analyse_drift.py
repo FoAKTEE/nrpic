@@ -331,7 +331,13 @@ def fig_history(runs, ptab, slices, res, labels, a, path):
                    label=dict((k[:2], k[2]) for k in [(v, h, d) for v, h, d in SETTINGS])[s])
     ax[0].plot([], [], ls="none", marker="x", color="grey", label="slice, Misner-Sharp")
     ax[0].set_ylabel(r"$M_{\rm AH}/M - 1$")
-    ax[0].legend(ncol=2, fontsize=8, loc="lower right")
+    # zoom on t >= 10 M (the first 10 M are the gauge transient)
+    ys = np.concatenate([R["series"]["mass"][R["series"]["time"] >= 10.0] - 1 for R in runs])
+    if ys.size:
+        lo, hi = ys.min(), ys.max()
+        pad = 0.15 * (hi - lo) + 1e-6
+        ax[0].set_ylim(lo - pad, hi + 2.5 * pad)
+    ax[0].legend(ncol=2, fontsize=8, loc="upper right")
     ax[1].axhline(0, **fs.MASK_LINE)
     ax[1].axvline(t0, **fs.MASK_LINE)
     ax[1].set_ylabel(r"$\bar M(t) - \bar M(t_0)$, $t_0=%g\,M$" % t0)
@@ -379,6 +385,8 @@ def fig_finder(ptab, slices, res, labels, path):
     fig.subplots_adjust(left=0.08, right=0.98, top=0.96, bottom=0.15, wspace=0.30)
     seen = set()
     for run, tr in sorted(ptab.items(), key=lambda kv: res.get(kv[0], 0)):
+        if run not in res:
+            continue
         c = RES_COL.get(res.get(run), "k")
         base = {round(r[0], 6): r[1] for r in tr.get(("A16", 0), [])}
         for (v, h, desc) in SETTINGS:

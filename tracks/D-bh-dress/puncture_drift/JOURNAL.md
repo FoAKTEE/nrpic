@@ -98,7 +98,7 @@ a running 20 M average) times sqrt(2) for the two ends; quoted at M/8, M/16 and,
 measured order, extrapolated to M/32 [JUDGEMENT] for T = 40, 120, 450 M (one doubling of
 a at eps = 0.03 and 0.01, and the full span).
 
-## 2026-11-15T13:05Z  outcome of run D-bh-dress-20261115-121427-284ec4f (existing dumps)
+## 2026-11-15T12:45Z  outcome of run D-bh-dress-20261115-121427-284ec4f (existing dumps)
 
 Finder re-searched on the processor executable (`.work/build_cpu_c1`) on the dumps at
 t = 50 and 60 M of runs/puncture/hcal/{dx4, dx8_tight, dx16}, six settings each, and the
