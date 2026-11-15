@@ -62,9 +62,15 @@ review `tracks/B-emd-gw/stage/G0/REVIEW.md`. Order of work: what closes Track B'
   and the amplitude error sits at the rounding floor. gw_diag's Psi_4 against the
   analytic value: 9.2e-5, 3.2e-6, 3.3e-7, 8.1e-7 at N = 16 to 128. After one period the
   metric has a non-TT part of 3.4e-6 A at every N, which sets the floor of the pointwise
-  error from 64 cells on (the Fourier coefficient keeps converging); the amplitude scan
-  of card test T8 tests whether it is of second order in A and whether the Psi_4 floor
-  is rounding (journal, P10b).
+  error from 64 cells on (the Fourier coefficient keeps converging).
+- Amplitude scan on processors at N = 32 (T9, run core-20261115-181830-ddc8128): the
+  non-TT part is of second order in A (3.38e-6 A at A = 1e-6, 3.38e-5 A at 1e-5; the
+  k = 0 drift and 2k content your verifier found for the axis wave, removed by the TT
+  projection), and max |alpha - 1| = 1.69 A^2. The Psi_4 floor is rounding: Psi_4 along
+  -k grows as 1/A below A = 1e-7 (2.65e-5 of the maximum at A = 1e-9), about
+  5e-14 N^2 / A relative. The TT amplitude and phase do not change from A = 1e-6 to 1e-5
+  (2e-5 and 4e-4 of their errors). For convergence beyond 64 cells use A = 1e-5. The same
+  scan at N = 64 and 128 on a card is part of card test T8.
 - Kept as upstream has it: the generator fills the Z4c variables only, so `adm` and `con`
   outputs and the history row at t = 0 hold zeros; use `variable = z4c` at t = 0.
 
@@ -219,6 +225,11 @@ All of it went in with commit 9c92f68; the source has not changed since.
 | `athenak/src/z4c/z4c.cpp` | 233-238 | reads the option |
 | `athenak/src/z4c/z4c_tasks.cpp` | 406-420; 429, 449, 465, 483, 501, 520, 539, 559, 577 | `WeylStepTime()`; one line in each of the nine Weyl and waveform tasks |
 | `athenak/src/z4c/z4c_wave_extr.cpp` | 201-203 | time label of the waveform rows |
+
+Merge check (2026-11-15T18:40Z, session bfix-2): of the open core branches only
+`core/gauge` changes files that this branch changes (`z4c.cpp`, `z4c.hpp`);
+`git merge-tree $(git merge-base core/requests-b core/gauge) core/requests-b core/gauge`
+shows no conflict (the two edits are in different places).
 
 New files: `problems/tests/lw_oblique.athinput`, `problems/cosmo/make_waves.py`,
 `python/nrpic/athena_bin.py`, `python/nrpic/torus_id.py`, `docs/UPSTREAM_DEFECTS.md`;
