@@ -72,6 +72,7 @@ coll_cell_factor = 1            # 1 | 2 | 4
 coll_weights     = equal        # equal | nanbu
 coll_hist_dcycle = 1
 coll_dump_cycle  = -1
+coll_budget      = false        # true: energy with the metric at the particles
 
 <problem>
 pgen_name = nrpic_geodesic

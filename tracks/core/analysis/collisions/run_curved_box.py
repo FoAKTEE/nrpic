@@ -72,6 +72,9 @@ def main():
     res = common.run_many([(args.exe, deck, os.path.join(out, k), base + ov)
                            for k, (deck, ov) in runs.items()], args.nproc)
     ok = all(r[0] == 0 for r in res)
+    if not ok:
+        print("a run failed:", [r[0] for r in res])
+        sys.exit(1)
     summary = {"n": n, "nx": nx, "steps": steps, "alpha0": ALPHA0, "sqrt_det_gamma": sg,
                "theta_eq": theta_eq, "exe": args.exe, "exe_sha256": common.sha256(args.exe),
                "exit": [r[0] for r in res], "wall_s": [round(r[1], 1) for r in res],
