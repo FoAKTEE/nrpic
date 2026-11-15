@@ -53,7 +53,7 @@ CASES["leak0125-n064"] = (64, 32.0, SHARP, "leak0125", 10.0, [])
 CASES["leak4-n064"] = (64, 32.0, SHARP, "leak4", 10.0, [])
 CASES["leak1-n256"] = (256, 32.0, SHARP, "leak1", 10.0, [])
 # bound ball to its turnaround
-for lap in ("mp", "ct", "leak025", "leak05", "leak1", "leak2"):
+for lap in ("mp", "ct", "leak0125", "leak025", "leak05", "leak1", "leak2"):
     CASES[f"bound-{lap}-n080"] = (80, 20.0, BOUND, lap, 12.0, [])
     CASES[f"bound-{lap}-n160"] = (160, 20.0, BOUND, lap, 12.0, [])
 

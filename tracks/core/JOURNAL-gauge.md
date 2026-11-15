@@ -486,3 +486,110 @@ and shell errors not above those of T = 0.5 M; T = 0.125 M runs to the end but i
 surface and outer shells are worse than with T = 0.5 M (above 1e-2), the signature of
 the fixed-lapse gauge. Refuted for T = 0.125 M if its errors equal those of T = 0.5 M
 (then there is no lower limit of T at this resolution other than the step).
+
+## 2026-11-15, entry 4 (new session, 17:56 UTC): card jobs, outcomes of L1 at M/2 and L2
+
+### Card jobs 2 and 3 never ran; resubmitted
+
+Job 4449 (job 1) ran 3 min 17 s and did L1 at cells of M/2 and L2 at M/4. Jobs 4450
+(job 2: E1, E2, P) and 4457 (job 3: ES, L3) ended within one second: `grun.py` stopped
+with "unrecognized arguments: -t 00:05:00" (argparse reads the athena wall-clock option
+`-t` inside the `--athinput` list as an option of its own). Fix: `grun.py --walltime
+HH:MM:SS`, passed to athena as `-t`; job scripts changed accordingly. Resubmitted at
+17:58 UTC as 4477 (job 3) and 4478 (job 2), behind 15 jobs of other sessions. Card time
+used so far by this package: 0.055 card-hours (manifests of job 1).
+
+The repeated `leak05-n064` with the executable of b4430da (run
+core-20261115-160343-b4430da) agrees with the first version's run
+(core-20261115-154612-63ad8eb) to 2e-12 relative in the constraint statistics; the only
+other differences are the momentum sums of `ball.nrpic.hst`, which are zero to 1e-17 in
+both. So the two source versions give the same physics, as entry 3 assumed.
+
+Analysis runs: core-20261115-175857-3f710a3 (processor runs, `ball_numbers_g.json`),
+core-20261115-175934-3f710a3 (card runs, `ball_numbers_gc.json`); figures
+`figs/ball_gc_sharp_dx0p5.png`, `figs/ball_gc_bound_dx0p25.png` (both looked at).
+
+### Outcome of L1 at cells of M/2 (card; runs core-20261115-170439/-170456/-170513/-170529/-170546-b4430da)
+
+(a) Old 1+log (`mp-n128`): central lapse 2.485 at t = 4 M, peak 3.24 near t = 5.6 M, 1.76
+at t = 8 M (reference without front 4.47); the front of wave 1. Confirmed.
+
+(b) Central lapse / reference at t = 2, 4, 6, 8, 10 M: T = 1 M 1.235/1.235,
+1.236/1.236, 1.210/1.211, 1.165/1.187, 1.136/1.169 (largest deviation 2.8 per cent at
+t = 10 M); T = 2 M 1.366/1.366, 1.464/1.465, 1.450/1.450, 1.223/1.406, 1.186/1.362
+(13 per cent at t = 8 M). The same numbers as at cells of 1 M within 0.002: the
+departure is a property of the gauge (the slow inward spreading of the lower exterior
+lapse, entry 3), not of the resolution. Prediction (b): fails by 0.8 per cent at
+t = 10 M for T = 1 M (2.8 against 2), FAILS for T = 2 M; no front in either (no fall of
+the central lapse below its value at the surface; largest lapse 1.245 and 1.468, below
+the bounds 1.30 and 1.55).
+
+(c) Largest |eps| over the run at cells of M/2 (bounds of the prediction in brackets:
+twice the conformal-time numbers of wave 1):
+
+| run | core | mid | outer | surface |
+|---|---|---|---|---|
+| old 1+log, sharp | 7.65e-2 | 2.74e-3 | 3.63e-3 | 5.62e-3 |
+| new T = 1 M, sharp | 1.16e-3 (2.2e-3) | 5.81e-4 (2.8e-3) | 2.02e-3 (3.4e-3) | 4.12e-3 (8.0e-3) |
+| new T = 2 M, sharp | 2.07e-3 | 8.62e-4 | 2.46e-3 | 4.48e-3 |
+| old 1+log, edge 2 M | 1.20e-2 | 1.26e-3 | 1.44e-3 | 3.55e-4 |
+| new T = 1 M, edge 2 M | 5.93e-4 | 2.97e-4 | 5.11e-4 | 1.69e-4 |
+
+Prediction (c) holds for T = 1 M in every group, and for the smooth edge (all below
+3e-3). The new lapse converges: core 3.08e-3 -> 1.16e-3 from cells of 1 M to M/2 (T = 1
+M), 1.73e-3 -> 5.9e-4 with the smooth edge; the old 1+log does not (core 7.9e-2 ->
+7.65e-2: the error is made by the front).
+
+(d) Largest coordinate speed of light at the ball particles: 1.134 (T = 1 M), 1.244
+(T = 2 M), 2.32 (old). Confirmed.
+
+### Outcome of L2 (bound ball to turnaround, cells of M/4, card; runs core-20261115-170602-b4430da (T = 0.5 M), -170659- (T = 1 M))
+
+Prediction (T = 1 M): central lapse within 3 per cent of the reference until t = 10 M;
+largest areal radius of every group within 1 per cent of 1.25 R_0; largest |eps| below
+2e-2 in every group. Outcome for T = 1 M: the central lapse dips from 1.21 to 0.93 at
+t = 4.2 M and returns to 1.13 at t = 5.8 M (largest deviation 20 per cent): REFUTED (the
+refutation threshold was 10 per cent). Turnaround: largest R/R_0 1.2463 (core), 1.2476,
+1.2478, 1.2489 (surface), within 0.3 per cent of 1.25: confirmed. Largest |eps|: core
+3.26e-2 (FAILS 2e-2), mid 4.38e-3, outer 5.84e-3, surface 6.70e-3.
+With T = 0.5 M: largest deviation of the central lapse 3.9 per cent (t = 4.4 M), a step
+of 5 per cent instead of a dip; turnaround 1.2478 to 1.2496; |eps| core 9.22e-3, mid
+2.50e-3, outer 4.33e-3, surface 6.41e-3. For comparison, the conformal-time lapse of
+wave 1 at the same resolution (`JOURNAL-id.md` entry 7): core 0.11, mid 2.6e-2, outer
+1.7e-2, surface 1.3e-2. So T = 0.5 M improves the invariant errors of the bound ball by
+a factor 2 to 12 over the best lapse of wave 1, and T = 1 M is too long for a ball of
+5 M: the start-up pulse of the relaxation (entry 3, second amendment) reaches the
+centre at t = 4 M, focused by the spherical geometry, and leaves the core 3.5 times
+worse than with T = 0.5 M.
+
+### Outcome of the short relaxation times (processors)
+
+- `bound-leak025-n080` (core-20261115-161021-b4430da, T = 0.25 M, cells M/2, t = 12 M):
+  stable (mean |H| 7.1e-4 at t = 2 M, 1.65e-3 at t = 12 M: growth 2.3, below the 10 of the
+  refutation); central lapse within 1.4 per cent of its reference until t = 9 M (predicted
+  1.5): confirmed; |eps| core 1.25e-2, mid 8.9e-3, outer 1.19e-2, surface 1.09e-2;
+  turnaround 1.2434 to 1.2469. "Not larger than with T = 0.5 M" cannot be judged: no
+  T = 0.5 M run at this resolution (added below).
+- `leak025-n064` (core-20261115-163712-b4430da) and `leak0125-n064`
+  (core-20261115-161716-b4430da), marginally bound ball, cells of 1 M: central lapse
+  within 0.04 and 0.7 per cent of its reference; |eps| core 9.1e-4 and 8.3e-4, mid 8.3e-4
+  and 1.0e-3, outer 2.82e-3 and 2.34e-3, surface 5.50e-3 and 6.00e-3 (T = 0.5 M: 1.67e-3,
+  8.2e-4, 2.78e-3, 6.05e-3). T = 0.25 M: confirmed (equal to T = 0.5 M within 2 per cent
+  in the outer group, better in the core). T = 0.125 M: my prediction (outer and surface
+  above 1e-2, the fixed-lapse signature) is REFUTED: the errors equal those of T = 0.25
+  to 0.5 M. At this resolution and with the Gamma-driver shift, there is no lower limit
+  of T other than the stiffness of the step (rate x step = 2 here). The fixed-lapse
+  failure of wave 1 (T2e) had a fixed shift as well; the relaxation keeps the 1+log
+  principal part, which a fixed lapse does not.
+
+### Predictions for two more bound-ball runs (written before they started)
+
+`bound-leak05-n080` and `bound-leak0125-n080` (processors, cells M/2, t = 12 M), so that
+the bound ball has T = 0.125, 0.25, 0.5 M at one resolution. [JUDGEMENT] T = 0.5 M:
+central lapse deviation up to t = 9 M 3 to 5 per cent (3.9 at cells M/4: the deviation
+does not depend on the resolution, as in L1); core |eps| above that of T = 0.25 M
+(1.25e-2), between 1.3e-2 and 2.5e-2. T = 0.125 M: stable (mean |H| grows by less than
+10 from t = 2 to 12 M), central lapse within 1 per cent of the reference up to t = 9 M,
+core |eps| within 20 per cent of T = 0.25 M. Refuted if the core error of T = 0.5 M is
+below that of T = 0.25 M (then the core error at cells M/2 is set by the resolution,
+not by the start-up pulse).

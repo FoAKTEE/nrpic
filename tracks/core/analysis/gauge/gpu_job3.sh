@@ -25,7 +25,7 @@ $PY $G/grun.py --gpu --exe $EXE --source-commit $SRC --time 00:20:00 --tag gc-es
   --purpose "Einstein-Straus data of Track D for 30 M, lapse relaxation T = 2 M (test ES)" \
   --inputs $ES/es.nrp $ES/es.tab $ES/es.json $ES/es_reference.csv \
   --athinput $WT/problems/es/es_gauge.athinput particles/particle_file=$ES/es.nrp \
-  problem/comp0_file=$ES/es.tab z4c/lapse_leak=0.5 -t 00:08:00
+  problem/comp0_file=$ES/es.tab z4c/lapse_leak=0.5 --walltime 00:08:00
 date
 NT=$(python3 -c "import json;print(json.load(open('$IC/t2_bound_h0p25.json'))['traj_ntrack'])")
 $PY $G/grun.py --gpu --exe $EXE --source-commit $SRC --time 00:20:00 --tag gc-collapse-leak05 \
@@ -33,6 +33,6 @@ $PY $G/grun.py --gpu --exe $EXE --source-commit $SRC --time 00:20:00 --tag gc-co
   --inputs $IC/t2_bound_h0p25.nrp $IC/t2_bound_h0p25.tab $IC/t2_bound_h0p25.json \
   --athinput $WT/problems/ball/ball_collapse.athinput particles/traj_ntrack=$NT \
   particles/particle_file=$IC/t2_bound_h0p25.nrp problem/comp0_file=$IC/t2_bound_h0p25.tab \
-  z4c/lapse_leak=2.0 -t 00:10:00
+  z4c/lapse_leak=2.0 --walltime 00:10:00
 date
 echo "gpu_job3 finished"

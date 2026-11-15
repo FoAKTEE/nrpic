@@ -5,7 +5,7 @@ KeyError 'outputs' in budget_state (it reads the hand-written manifests of wave 
 see tracks/core/JOURNAL-gauge.md, entry 1.
 
     grun.py --purpose TEXT [--kind scouting|production] [--inputs FILE ...]
-            [--gpu] [--exe PATH] [--time HH:MM:SS] [--tag NAME]
+            [--gpu] [--exe PATH] [--time HH:MM:SS] [--tag NAME] [--walltime HH:MM:SS]
             (--athinput FILE [athena args ...] | -- command ...)
 
 The run id is core-<YYYYMMDD-HHMMSS>-<commit7> (UTC, decision 0012); outputs go to
@@ -65,6 +65,10 @@ def main():
     ap.add_argument("--tag", default="")
     ap.add_argument("--cores", type=int, default=1)
     ap.add_argument("--athinput", nargs="+", default=None)
+    ap.add_argument("--walltime", default="",
+                    help="wall-clock limit HH:MM:SS passed to athena as -t (argparse "
+                         "cannot take -t inside the --athinput list: card jobs 4450 and "
+                         "4457 ended at once with 'unrecognized arguments: -t')")
     ap.add_argument("--source-commit", default="",
                     help="commit the executable was built from, if not HEAD (it names "
                          "the run and is recorded as commit; HEAD goes into head_at_run)")
@@ -100,13 +104,14 @@ def main():
         inp = os.path.abspath(a.athinput[0])
         exe = os.path.abspath(a.exe)
         inputs = [inp, exe] + inputs
+        athargs = a.athinput[1:] + (["-t", a.walltime] if a.walltime else [])
         if a.gpu:
             env["ATHENA_EXE"] = exe
             env["TIME"] = a.time
             env["JOB_NAME"] = "core-gauge"
-            cmd = [os.path.join(WT, "scripts/gpu_run.sh"), out, inp] + a.athinput[1:]
+            cmd = [os.path.join(WT, "scripts/gpu_run.sh"), out, inp] + athargs
         else:
-            cmd = [exe, "-i", inp, "-d", out] + a.athinput[1:]
+            cmd = [exe, "-i", inp, "-d", out] + athargs
     else:
         cmd = [c.replace("{out}", out) for c in rest]
     if not cmd:
