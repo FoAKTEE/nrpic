@@ -180,7 +180,7 @@ files: u_i = 0 exactly; stratified sum m = M0 to 1e-13, lattice to 1e-12; no par
 beyond rbar_m; rms dH/6H^2 of the stratified file ~0.455 and of the lattice file ~0.05
 (the noise run at N = 1e5).
 
-## Outcomes of P4 to P8 (written 12:27 UTC)
+## Outcomes of P4 to P8 (written 12:21 UTC)
 
 P4, G1 convergence, run A-emd-pbh-20261115-121654-6bfb707 (the first attempt
 -115339-044312f was aborted, see 12:16). Orders between successive N (32, 64, 128, 256),
@@ -230,7 +230,7 @@ top-hat: H 1.44e-3, M 1.61e-2 against the octant N = 32 values 1.28e-3, 1.43e-2 
 13 percent); (c) u_i = 0, sums equal M0 to 4e-16, no particle beyond rbar_m, rms dH 0.451
 (stratified, Poisson 0.455) and 0.0557 (lattice). As predicted.
 
-## 2026-11-15 12:27 UTC, P9: one more resolution for the smoothed top-hat
+## 2026-11-15 12:21 UTC, P9: one more resolution for the smoothed top-hat
 
 Prediction. With N = 128, 256, 512 (same set-up as P4, order 2 and 4), the 256 -> 512
 order in the smooth region is >= 1.98 (p = 2) and >= 3.9 for both H and M (p = 4).
