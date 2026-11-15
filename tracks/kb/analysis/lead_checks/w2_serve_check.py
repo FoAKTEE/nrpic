@@ -11,7 +11,8 @@ helper's. Writes rows.tsv, summary.json, and a reading sample (sample.txt: the c
 12 statements drawn with seed 20261116) into the output directory, which is in scratch/ and
 never committed (it holds paper text). Store files are read as text only.
 
-Usage: python3 -I w2_serve_check.py CHECKED_JSONL KB_DATA OUTDIR
+Usage: python3 -I w2_serve_check.py CHECKED_JSONL KB_DATA [OUTDIR]
+(OUTDIR defaults to $NRPIC_RUN_DIR, the run directory nrpic-run gives a local run.)
 """
 import collections
 import json
@@ -20,7 +21,8 @@ import random
 import re
 import sys
 
-checked, kbdata, out = sys.argv[1:4]
+checked, kbdata = sys.argv[1:3]
+out = sys.argv[3] if len(sys.argv) > 3 else os.environ["NRPIC_RUN_DIR"]
 os.makedirs(out, exist_ok=True)
 
 NUM = re.compile(r"(?<![\w.])(\d+\.\d+|\d+(?:\.\d+)?[eE][-+]?\d+|\d{2,})(?![\w])")

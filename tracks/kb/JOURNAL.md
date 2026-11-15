@@ -218,3 +218,9 @@ one line. On the helper's synthetic probe (run kb-20261115-155344-596b4ce, 16 la
 z5 = 16) it must give 16 numbered lines; on my synthetic probe
 `scratch/kb/tmp/w3probe/probe_multline.tex` pdflatex must give a0 = 1, m1 = 2, a1 = 3,
 a2 = 6 and the counter 6. Refuted by any other number.
+
+Procedural, W2: the first registered run kb-20261115-181519-d78b8d4 received the literal
+string `$NRPIC_RUN_DIR` as output directory (my quoting; nrpic-run does not expand it), so
+its files landed in a directory of that name in the worktree. They held paper text (reading
+sample), were never committed and were deleted; the manifest stays on record. The script now
+takes its output directory from the environment; rerun below.
