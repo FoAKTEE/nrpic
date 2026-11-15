@@ -137,3 +137,59 @@ the off-by-one is easy to trip over (request to core: one sentence in section 5)
 corrected to compare with record c + 1; rerun. Also seen: the f2 dumps (8^3 mesh, cell
 factor 2) give exactly the same tested pairs and collisions as the sub dumps (4^3 mesh),
 as collisions.md section 8 states for blocks of f^3 cells.
+
+T0b rerun (run C-20261115-170155-13ff01f): PASS in all six dumps. Replay = code for every
+particle (cell, n_sub, updates); n_tested and n_coll equal to the record of the dumped
+step (plain: 5045/27 and 5042/26; sub and f2: 15153/459 and 15423/512); sum_P to 4.4e-16
+to 2.2e-15 relative; max_P to the last digit; collided momenta within 2.2e-16 to 4.4e-16
+of max(1, |u|) (about 20 percent exactly equal); untouched particles bit-identical; 28 to
+104 odd cells per step (triples) replayed. Prediction confirmed. Figure
+`figs/t0b_replay_cpu.png` (looked at).
+
+T10 third run (C-20261115-165902-f9b1c8f): PASS. 1, 8, 64 MeshBlocks and the restarts
+from cycles 0, 37, 74 give bit-identical final snapshots (1e5 particles, 3.86e5 collisions,
+n_sub up to 4) and identical integer columns in every common coll.hst record; seed 8
+differs in 100 percent of the particles. MPI variant not run (no MPI in the release
+build). Prediction confirmed. Figure `figs/t10_repro_cpu.png` (looked at).
+
+## 2026-11-15 T1 and T2: outcome (run C-20261115-165500-c67e036)
+
+All 16 collisional runs pass T2(a), (b), (c) and T1 per step; no truncation.
+- T2(a): z from -2.10 to +1.58.
+- T2(b): mean sum_P per step / expectation (sample theta) from 0.99987 to 1.00008, z from
+  -2.20 to +2.92. With the nominal theta of the generator the ratio stays within 1e-3 but
+  z reaches 35.6 (theta = 1e-3, sub, s1) and 26.5: the 4 se clause would have failed
+  there, as the prediction feared; the sample temperature, declared before the run, is the
+  one T2(c) defines. Diagnostic: the mean Moller speed of the tested pairs (sum_P/sum_W)
+  equals <v_Mol>(theta_sample) within 1.6e-4 at every temperature, and sum_W per step
+  equals (1/2) N rho_0 sigma dt within 1e-4.
+- T2(c): theta unchanged to 7.5e-13 sigma (energy exactly conserved).
+- Sub-cycled variant: max_nsub 5-6, mean n_sub 2.36 (theta = 1e-3) to 3.23 (theta = 10),
+  max_P 0.098-0.115 (pmax 0.1; core reports up to 0.113), n_trunc = 0. My prediction said
+  n_sub 3-8: the mean is lower at theta = 1e-3 (2.4), the maximum within.
+- T1 per step: |dE|/sum_MW at most 2.8e-19, |dP_i|/sum_MW at most 9.4e-20, i.e. 1.1e-7 of
+  the bound 1e-14 sqrt(n + 1); the exactly rounded sum of M W of the final snapshot equals
+  that of the initial one to the last bit in all 16 runs (up to 1.39e7 collisions), the
+  momentum sums to <= 3e-19 of sum M W. Prediction confirmed.
+- KS of the final |u| against MJ(theta_sample) (diagnostic): p from 0.095 to 0.985.
+- Processor cost (one core, 1e6 particles, 32^3 cells, machine shared, load ~45): 0.60 s per
+  step plain (one sub-step), 0.76-0.86 s per step with 2.4-3.2 sub-steps on average, 0.28-
+  0.30 s per step without collisions; per tested pair 5.8e-7 to 6.4e-7 s (plain) and
+  3.3e-7 to 3.7e-7 s (sub-cycled: the per-cell set-up is shared by the sub-steps); per
+  particle and step 3.0e-7 s at one sub-step. Prediction (within twice core's 0.54/0.27 s)
+  confirmed: 1.1 times.
+Figures `t2_rate_cpu.png`, `t1_step_cpu.png` looked at (tick labels of the middle and
+right panels of the first overlap; a cleaner version is made by `figures.py` at the end).
+
+## 2026-11-15 Card: cost per pair and T10b, predictions (before the run)
+
+List `inputs/card_T2.list`, release card executable, one A100, the particle files and the
+overrides of the processor runs T2 theta = 0.1 and 1 (plain and sub, seed 1), a run
+without collisions, and 2000-step versions at theta = 0.1 (plain, sub, off) to separate
+the start-up from the per-step cost (timing from the `elapsed` lines every 100 cycles).
+Predictions: the card runs take the same collisions as the processor runs, digit for
+digit, in the 200-step runs (core reports this for its boxes, collisions.md section 8),
+so T10b (statistics within 4 sigma) passes trivially; if the counts differ, T2(a)-(c) must
+still pass on the card. Cost: below 1e-8 s per tested pair (core: 1e6 particles x 200
+steps in 2-4 s including start-up), i.e. at least 50 times the processor. Card time below
+0.1 card-hour.
