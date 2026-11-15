@@ -1,0 +1,31 @@
+{
+ "run_id": "core-20261115-120211-212dce7",
+ "label": "t0_triple_plain",
+ "owner": "core",
+ "purpose": "Test 3, t = 0 on processors: three black holes, plain sum of isolated closed-form corrections, no evolution",
+ "kind": "scouting",
+ "command": "/data/haiyangw/nrpic/wt/core-mp/.work/build_cpu/src/athena -i by_triple.athinput -d /data/haiyangw/nrpic/scratch/core/core-20261115-120211-212dce7 time/nlim=0 problem/corr_background=false",
+ "cwd": "/data/haiyangw/nrpic/scratch/core/core-20261115-120211-212dce7",
+ "commit": "212dce7",
+ "source_dirty": false,
+ "inputs": [
+  {
+   "path": "problems/puncture/by_triple.athinput",
+   "sha256": "5d52d62be7817e7df66f18bcd5d5b647af52faff605fb81d51ae3472fa0b133e"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/wt/core-mp/.work/build_cpu/src/athena",
+   "sha256": "706185bfbbe808d36cfd72cbf79ba0fc1ed8430689cb4b8cedafecc7100c96ea",
+   "role": "executable"
+  }
+ ],
+ "output_directory": "/data/haiyangw/nrpic/scratch/core/core-20261115-120211-212dce7",
+ "resources": "1 core",
+ "started_utc": "2026-11-15T12:02:11Z",
+ "status": "done",
+ "exit_code": 0,
+ "wall_time_s": 140.3,
+ "queue_wait_s": 0.0,
+ "card_hours": 0.0,
+ "core_hours": 0.039
+}

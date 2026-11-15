@@ -1,0 +1,32 @@
+{
+ "run_id": "core-20261115-113939-c89b6e3",
+ "label": "s_p0.3_none_n64",
+ "owner": "core",
+ "purpose": "Test 1a (i): Bowen-York puncture P = 0.3, no correction",
+ "kind": "scouting",
+ "command": "/data/haiyangw/nrpic/wt/core-mp/.work/build_cpu/src/athena -i by_static.athinput -d /data/haiyangw/nrpic/scratch/core/core-20261115-113939-c89b6e3 mesh/nx1=64 mesh/nx2=64 mesh/nx3=64",
+ "cwd": "/data/haiyangw/nrpic/scratch/core/core-20261115-113939-c89b6e3",
+ "commit": "c89b6e3",
+ "source_dirty": false,
+ "inputs": [
+  {
+   "path": "problems/puncture/by_static.athinput",
+   "sha256": "9313c90a813b9d68b1920b90b974438ef655b993e45a3b22cf4263545eea828c"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/wt/core-mp/.work/build_cpu/src/athena",
+   "sha256": "14fac5bec922887288e9615912f7d3983bb424e16a74f97fe26beebe157d0355",
+   "role": "executable"
+  }
+ ],
+ "output_directory": "/data/haiyangw/nrpic/scratch/core/core-20261115-113939-c89b6e3",
+ "resources": "1 core",
+ "started_utc": "2026-11-15T11:39:39Z",
+ "status": "superseded",
+ "exit_code": 0,
+ "wall_time_s": 3.2,
+ "queue_wait_s": 0.0,
+ "card_hours": 0.0,
+ "core_hours": 0.0009,
+ "note": "valid run, but its binary dumps cannot be read by athenak/vis/python/bin_convert.py: the comment line of the input contained a second '='; rerun under the same label"
+}

@@ -1,0 +1,129 @@
+# Three black holes, scouting (test 3 of tracks/core/JOURNAL-mp.md): a binary of bare
+# masses 0.5 + 0.5 (separation 10 along y, centre at x = -88) approaching a black hole
+# of bare mass 10 at x = 8 with spin 30 = 0.3 m^2 along z.  Momenta, Newtonian: the
+# binary on a parabolic orbit about the heavy hole with pericentre distance 30 (relative
+# speed sqrt(2 * 11 / 96) = 0.479, of which 0.268 is tangential), in the frame of zero
+# total momentum, plus the circular internal momenta +-0.0791 of the binary:
+#   A (y = +5):  P = ( 0.1013, 0.1216, 0)     B (y = -5):  P = ( 0.2595, 0.1216, 0)
+#   heavy:       P = (-0.3608, -0.2433, 0)
+# Closed-form corrections with the background factor.  puncture_setup gives the light
+# holes the finest cells (1/16 = m/8 within 0.9) and the heavy one cells 16 times
+# larger (level 3, cells of 1 = m/10 within 18), and a horizon finder each, the heavy
+# one with flow constant m^2 = 100.
+# Variants (command line): problem/comp0_corr=none problem/comp1_corr=none
+# problem/comp2_corr=none; problem/corr_background=false; time/nlim=0.
+
+<comment>
+problem   = binary and a black hole ten times heavier
+
+<job>
+basename  = by3
+
+<mesh>
+nghost    = 4
+nx1       = 64
+x1min     = -256.0
+x1max     = 256.0
+ix1_bc    = outflow
+ox1_bc    = outflow
+nx2       = 64
+x2min     = -256.0
+x2max     = 256.0
+ix2_bc    = outflow
+ox2_bc    = outflow
+nx3       = 64
+x3min     = -256.0
+x3max     = 256.0
+ix3_bc    = outflow
+ox3_bc    = outflow
+
+<meshblock>
+nx1       = 16
+nx2       = 16
+nx3       = 16
+
+<mesh_refinement>
+refinement          = adaptive
+num_levels          = 8
+max_nmb_per_rank    = 2400
+ncycle_check        = 4
+refinement_interval = 8
+
+<time>
+evolution  = dynamic
+integrator = rk4
+cfl_number = 0.25
+nlim       = -1
+tlim       = 16.0
+ndiag      = 100
+
+<z4c>
+lapse_oplog     = 2.0
+lapse_harmonicf = 1.0
+lapse_harmonic  = 0.0
+lapse_advect    = 1.0
+shift_Gamma     = 0.75
+shift_eta       = 2.0
+shift_advect    = 1.0
+diss            = 0.5
+chi_div_floor   = 1.0e-5
+damp_kappa1     = 0.02
+damp_kappa2     = 0.0
+tracker_mode    = ode
+
+<problem>
+pgen_name       = nrpic_cf
+ncomp           = 3
+comp0_type      = puncture
+comp0_mass      = 0.5
+comp0_x1        = -88.0
+comp0_x2        = 5.0
+comp0_p1        = 0.1013
+comp0_p2        = 0.1216
+comp0_corr      = approx
+comp1_type      = puncture
+comp1_mass      = 0.5
+comp1_x1        = -88.0
+comp1_x2        = -5.0
+comp1_p1        = 0.2595
+comp1_p2        = 0.1216
+comp1_corr      = approx
+comp2_type      = puncture
+comp2_mass      = 10.0
+comp2_x1        = 8.0
+comp2_p1        = -0.3608
+comp2_p2        = -0.2433
+comp2_s3        = 30.0
+comp2_corr      = approx
+corr_background = true
+lapse           = precollapsed
+puncture_setup  = true
+puncture_radius = 1.8
+
+<output1>
+file_type = hst
+dt        = 0.25
+
+<output2>
+file_type = bin
+variable  = z4c_alpha
+slice_x3  = 0.001
+dt        = 8.0
+
+<output3>
+file_type = bin
+variable  = con_H
+slice_x3  = 0.001
+dt        = 8.0
+
+# full fields once at the start, for the analysis of the initial data
+# (tracks/core/analysis/mp/triple_static.py)
+<output4>
+file_type = bin
+variable  = con
+dt        = 1.0e6
+
+<output5>
+file_type = bin
+variable  = adm_psi4
+dt        = 1.0e6
