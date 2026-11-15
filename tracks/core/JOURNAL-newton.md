@@ -74,3 +74,95 @@ identical byte for byte. Refuted by any differing file. The only change inside a
 of the relativistic mode is the selection `W = newton ? 1 : W_rel` in the deposit; if the
 compiler evaluated W_rel differently because of it, the deposit sums would differ in the
 last digits.
+
+Outcome of R1 (processor build, commit 728637a; report
+`scratch/core/regress/report_cpu_728637a.json`) [VERIFIED]: no file differs.
+| case | baseline run | new run | files compared, all identical |
+|---|---|---|---|
+| geo | core-20261115-113535-728637a | core-20261115-113536-728637a | 2 (history, trajectory; 2000 steps) |
+| boris | core-20261115-113537-728637a | core-20261115-113538-728637a | 2 |
+| dep | core-20261115-113539-728637a | core-20261115-113543-728637a | 1 (history of 20 steps, 10^4 particles, refined mesh) |
+| east | core-20261115-113547-728637a | core-20261115-113555-728637a | 12 (histories, 7 snapshots, trajectories; Z4c, 20 steps) |
+| os | core-20261115-113602-728637a | core-20261115-114026-728637a | 16 (histories, 4 snapshots, 5 restart pairs; Z4c, refined mesh, 3 steps) |
+The prediction held. (The run ids of the baseline carry the commit of the worktree at the
+time, 728637a; the baseline executable itself is the build of b7b431d, sha256 in each
+manifest.)
+
+### T1 Field of a point mass on an isolated domain (prediction)
+
+Setup: `problems/newton/isolated.athinput`, box [-2, 2]^3, multipole boundary of order 4
+about the centre of mass, one unit mass at (0.031, 0.017, -0.011) and 2000 massless
+tracers at rest, log-uniform in distance between 0.05 and 1.8 (`make_ic.py point`, seed
+1), cloud-in-cell deposit, no filter, Catmull-Rom gather, N = 32, 64, 128 cells per side
+(dx = 1/8, 1/16, 1/32). One step of 1e-6: the momentum of a tracer after the step
+divided by the step is the acceleration it feels. The potential is read at eight probes
+(distances 0.5 to 2.1 from the origin) from the lapse columns of the history.
+
+Prediction (written before the runs):
+1. The acceleration approaches -r_hat/r^2 with a relative error that falls as (dx/r)^2:
+   at fixed positions with r >= 0.5 the rms relative error falls by a factor 4 (3 to 5)
+   per doubling of N; its size at N = 64 is about one per cent at r = 8 dx and a few
+   times 1e-3 at r = 20 dx (the unregistered smoke run suggested these sizes).
+2. Inside r of about 2 dx the force is softened and anisotropic at order one (cloud and
+   mesh), with a scatter that depends on where the tracer sits in its cell.
+3. The potential at the probes agrees with -1/r to second order in dx.
+4. The mass feels its own field: the force on it is of order 0.5 m/dx^2 and its
+   components scale as 1/dx^2 between resolutions for the same position in the cell
+   (the position in the cell changes with N here, so only the order is predicted).
+Refuted by: a far-field error that does not fall with N or falls at first order (boundary
+or ghost-cell fault); an error of the monopole (the force times r^2 not tending to -1 at
+large r/dx); a potential error at the probes of first order.
+
+### T2 Field of a homogeneous ball on an isolated domain (prediction)
+
+Setup: the same box and solver; ball of radius 1 and mass 1 centred at (0.031, 0.017,
+-0.011), 1 099 136 equal-mass particles on a lattice of spacing 1/64, 2000 massless
+tracers uniform in distance between 0.05 and 1.8 (`make_ic.py ball`), N = 32, 64, 128.
+Reference: the exact field of the ideal ball (linear inside, inverse square outside).
+
+Prediction:
+1. Away from the surface (|r - 1| > 0.25, two cells of the coarsest mesh) the rms error
+   of the acceleration, in units of GM/R^2, falls by about a factor 4 per doubling
+   (second order), and is below 1e-3 at N = 128.
+2. In the shell |r - 1| < dx the error is of first order in dx (the cloud smears the
+   density jump over one cell), so the maximum error over all tracers falls only by
+   about a factor 2 per doubling.
+3. The potential at the probes: second order.
+Refuted by first-order or no convergence away from the surface, or by an error that does
+not depend on N (a fault of the multipole boundary would show as such a floor).
+
+First runs of T1 and T2 (commit 728637a): point core-20261115-114713-728637a (N = 32),
+core-20261115-114723-728637a (64), core-20261115-114733-728637a (128); ball
+core-20261115-114714-728637a, core-20261115-114724-728637a, core-20261115-114740-728637a.
+
+FAILED, T2, and the cause is in the solver control, found in the run log and not
+guessed: the potential of the ball at cycle 0 was not converged (defect norm 1.7e2,
+1.3e3, 1.1e4 in the history at N = 32, 64, 128; potential at the probes 13 per cent off
+at every N). `run.log` of core-20261115-114724-728637a, lines 11 to 14: "MG initial defect
+= 48.0063", "MG iteration 0: defect = 1318.32", and the solve ends. With `threshold = 0`
+the stock rule (`multigrid_driver.cpp`, SolveIterative: stop when a cycle lowers the
+defect by less than ten per cent) ends the solve at the first V cycle whenever that
+cycle raises the defect, which it does from a zero potential with the multipole boundary
+and a smooth source. The second solve of the same run, started from that potential,
+converged to 5.7e-12 in 24 cycles (lines 19 to 45). The point-mass runs were not affected
+(first cycle 334 -> 174, 3867 -> 1362, 30125 -> 10817, then to 6e-13 ... 7e-11).
+The three ball runs are void. Change: `MGGravityDriver::SolveSource` with `threshold = 0`
+now runs V cycles until two in succession fail to lower the defect by ten per cent (the
+stock path of the gas is not touched). The number of cycles is a new history column.
+
+Outcome of T1 from the valid point-mass runs (to be repeated with the changed solver
+control; the numbers below are of commit 728637a) [VERIFIED]:
+- far field (the same 846 tracers with r >= 0.5): rms relative error 1.61e-2, 4.94e-3,
+  1.33e-3 at N = 32, 64, 128; orders 1.70 and 1.89 (ratios 3.26 and 3.72). Prediction 1
+  held (ratio between 3 and 5); by r/dx at N = 64 the rms error is about 0.6 per cent
+  between 8 and 16 cells and 0.17 per cent beyond 16 cells, as predicted in size.
+- inside two cells the rms relative error is 0.23 to 0.3 (softened, anisotropic):
+  prediction 2 held.
+- potential at eight probes: maximum relative error 7.6e-3, 2.0e-3, 1.8e-3. Prediction 3
+  FAILED as a statement about the maximum over eight probes: the probe at distance 0.47
+  has errors -7.6e-3, -7.3e-4, -1.8e-3 (not monotonic; the error of a point mass depends
+  on the direction and on the position in the cell and changes sign), the other seven
+  fall monotonically (for example at distance 0.77: -6.6e-3, -2.0e-3, -1.5e-4). Eight
+  probes are too few to measure an order; the force on 846 tracers is the measurement.
+- force of the mass on itself times dx^2: components up to 0.36, 0.58, 0.47 at the
+  three resolutions: of order 0.5 m/dx^2 as predicted (prediction 4 held).

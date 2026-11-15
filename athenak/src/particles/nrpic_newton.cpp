@@ -92,7 +92,7 @@ enum NewtonSumIndex {
   NWS_N = 30
 };
 // length of the state block of the restart file
-constexpr int kNewtonState = 49;
+constexpr int kNewtonState = 50;
 
 //----------------------------------------------------------------------------------------
 //! \struct NewtonBackground
@@ -236,6 +236,7 @@ void Particles::NrpicNewtonInitialize() {
     nw_d3i_time = s[39]; nw_pmax = s[40]; nw_defect = s[41];
     for (int n=0; n<6; ++n) { nw_mesh[n] = s[42+n]; }
     nw_gmax = s[48];
+    nw_ncycle = static_cast<int>(s[49]);
   }
   nw_state_restart.clear();
   NrpicNewtonTimeStep(pm->time);
@@ -287,6 +288,7 @@ void Particles::NrpicNewtonPotential() {
     }
     pg->pmgd->SolveSource(nw_driver, tmu, Tmunu::I_Tmunu_E);
     nw_defect = pg->pmgd->last_defect;
+    nw_ncycle = pg->pmgd->last_ncycle;
   }
 
   // mesh sums over the active cells: int rho Phi dV, int Phi dV, int rho dV, volume, and
@@ -634,7 +636,7 @@ void Particles::NrpicNewtonWriteHistory(Real time, int ncycle, bool header) {
                  "[31]=d2I_xx [32]=d2I_xy [33]=d2I_xz [34]=d2I_yy [35]=d2I_yz [36]=d2I_zz "
                  "[37]=d3I_xx [38]=d3I_xy [39]=d3I_xz [40]=d3I_yy [41]=d3I_yz [42]=d3I_zz "
                  "[43]=time_d3I [44]=Phi_min [45]=Phi_max [46]=p_max [47]=g_max "
-                 "[48]=mg_defect [49]=dt\n");
+                 "[48]=mg_defect [49]=dt [50]=mg_cycles\n");
   }
   const Real a = nw_a;
   const Real mass = nw_sum[NWS_M];
@@ -650,18 +652,19 @@ void Particles::NrpicNewtonWriteHistory(Real time, int ncycle, bool header) {
   }
   for (int n=0; n<18; ++n) { std::fprintf(fp, " %.15e", nw_sum[NWS_I+n]); }
   for (int n=0; n<6; ++n) { std::fprintf(fp, " %.15e", nw_d3i[n]); }
-  std::fprintf(fp, " %.15e %.15e %.15e %.15e %.15e %.15e %.15e\n", nw_d3i_time,
+  std::fprintf(fp, " %.15e %.15e %.15e %.15e %.15e %.15e %.15e %d\n", nw_d3i_time,
                nw_mesh[4], nw_mesh[5], nw_pmax, nw_gmax, nw_defect,
-               (ncycle > 0) ? pmy_pack->pmesh->dt : 0.0);
+               (ncycle > 0) ? pmy_pack->pmesh->dt : 0.0, nw_ncycle);
   std::fclose(fp);
 }
 
 //----------------------------------------------------------------------------------------
 //! \fn  void Particles::NrpicNewtonWriteRestart
 //! \brief writes the state of the Newtonian mode next to the particle restart file:
-//!   8 bytes "NRPNWT01", 49 doubles (30 particle sums, time, a, Layzer-Irvine integral,
-//!   6 third derivatives and their time, p_max, defect, 6 mesh sums, g_max), 5 int64
-//!   (extents of the potential array), the potential including ghost cells
+//!   8 bytes "NRPNWT01", 50 doubles (30 particle sums, time, a, Layzer-Irvine integral,
+//!   6 third derivatives and their time, p_max, defect, 6 mesh sums, g_max, number of
+//!   V cycles), 5 int64 (extents of the potential array), the potential including ghost
+//!   cells
 
 void Particles::NrpicNewtonWriteRestart(const std::string &fname) {
   std::FILE *fp = std::fopen(fname.c_str(), "wb");
@@ -674,6 +677,7 @@ void Particles::NrpicNewtonWriteRestart(const std::string &fname) {
   s[39] = nw_d3i_time; s[40] = nw_pmax; s[41] = nw_defect;
   for (int n=0; n<6; ++n) { s[42+n] = nw_mesh[n]; }
   s[48] = nw_gmax;
+  s[49] = static_cast<double>(nw_ncycle);
   std::fwrite(magic, 1, 8, fp);
   std::fwrite(s, sizeof(double), kNewtonState, fp);
   auto ph = Kokkos::create_mirror_view_and_copy(Kokkos::HostSpace(),

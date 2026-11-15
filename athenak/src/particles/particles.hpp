@@ -272,6 +272,7 @@ class Particles {
   Real nw_pmax = 0.0;               // largest momentum per unit mass (step limit)
   Real nw_gmax = 0.0;               // largest acceleration (step limit)
   Real nw_defect = 0.0;             // defect norm of the last Poisson solve
+  int nw_ncycle = 0;                // and its number of V cycles
   bool nw_valid = false;            // nw_sum holds a state of this run
   std::vector<double> nw_phi_restart;      // potential read from a restart file
   std::int64_t nw_phi_restart_dims[5] = {0, 0, 0, 0, 0};

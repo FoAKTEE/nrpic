@@ -191,12 +191,15 @@ void MGGravityDriver::Solve(Driver *pdriver, int stage, Real dt) {
 //! red-black smoother, which the driver alternates from one V cycle to the next, is
 //! reset first: the result then depends on the density and on the starting potential
 //! only, not on the number of cycles of earlier solves, and a restarted run repeats
-//! the original one.
+//! the original one.  With threshold = 0 the V cycles continue until two successive
+//! cycles each lower the defect by less than ten per cent (see SolveDensity).
 
 void MGGravityDriver::SolveSource(Driver *pdriver, const DvceArray5D<Real> &rho,
                                   int ns) {
   coffset_ = 0;
+  until_stall_ = (eps_ == 0.0);
   SolveDensity(pdriver, rho, ns, 0.0);
+  until_stall_ = false;
   last_defect = 0.0;
   for (int v = 0; v < nvar_; ++v) {
     last_defect += CalculateDefectNorm(MGNormType::l2, v);
@@ -251,10 +254,48 @@ void MGGravityDriver::SolveDensity(Driver *pdriver, const DvceArray5D<Real> &rho
 
   auto t_start = std::chrono::high_resolution_clock::now();
 
-  if (full_multigrid_)
+  if (until_stall_) {
+    // SolveSource with threshold = 0.  The rule of SolveIterative for that case stops at
+    // the first cycle that lowers the defect by less than ten per cent; the first cycle
+    // from a zero potential on an isolated domain raises it, and the solve would end
+    // there.  Here the cycles end when two in succession fail to lower it.
+    const Real eps_save = eps_;
+    const int niter_save = niter_;
+    eps_ = -1.0;
+    niter_ = 0;                      // no cycles inside SolveMG
+    if (full_multigrid_)
+      SolveFMG(pdriver);
+    else
+      SolveMG(pdriver);
+    eps_ = eps_save;
+    niter_ = niter_save;
+    Real def = 0.0;
+    for (int v = 0; v < nvar_; ++v) {
+      def += CalculateDefectNorm(MGNormType::l2, v);
+    }
+    if (fshowdef_ >= 2 && global_variable::my_rank == 0) {
+      std::cout << "MG initial defect = " << def << std::endl;
+    }
+    int nstall = 0;
+    last_ncycle = 0;
+    while (def > 0.0 && nstall < 2 && last_ncycle < 100) {
+      SolveVCycle(pdriver, npresmooth_, npostsmooth_);
+      const Real olddef = def;
+      def = 0.0;
+      for (int v = 0; v < nvar_; ++v) {
+        def += CalculateDefectNorm(MGNormType::l2, v);
+      }
+      if (fshowdef_ >= 2 && global_variable::my_rank == 0) {
+        std::cout << "MG iteration " << last_ncycle << ": defect = " << def << std::endl;
+      }
+      nstall = (def > 0.9*olddef) ? nstall + 1 : 0;
+      ++last_ncycle;
+    }
+  } else if (full_multigrid_) {
     SolveFMG(pdriver);
-  else
+  } else {
     SolveMG(pdriver);
+  }
 
   Kokkos::fence();
 
