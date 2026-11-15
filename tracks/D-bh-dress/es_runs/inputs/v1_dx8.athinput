@@ -10,8 +10,12 @@
 # pushed as timelike geodesics: m > 0) and 696688 dust particles on the 1 M lattice.
 # The vacuum control V-1 is v1_dx8.athinput, which differs from this file only in the
 # header, <job> basename, particle_file and comp0_file.
-# Mesh: root dx = 4 M on +-192 M; dx = 2 M on +-96 M (the dust); dx = 1 M on +-48 M (the
-# wall); the puncture nest of D-pre-4 (level 5, dx = M/8, on +-1.5 M; drift_dx8.athinput).
+# Mesh: MeshBlocks of 24^3 cells, so that the refined regions end exactly where the
+# specification asks (with 16^3 blocks they snap outwards to +-128 and +-64 M: 1280
+# blocks): root dx = 4 M on +-192 M; dx = 2 M on +-96 M (the dust); dx = 1 M on +-48 M
+# (the wall and the whole dust at t = 0); dx = M/8 on +-6 M around the puncture, M/4 on
+# +-12 M, M/2 on +-24 M (D-pre-4 had M/8 on +-4 M); 344 MeshBlocks. Region bounds sit
+# 0.1 M inside the block faces so that no face-touching block is refined.
 # Gauge: 1+log slicing and Gamma-driver shift as in D-pre-4 (the gauge that exists; no
 # lapse for expanding dust yet, outbox lapse-for-expanding-dust). Finder: D-pre-4
 # production settings. Probes: 0 the dust plateau; 1-7 near the horizon, inside the
@@ -42,31 +46,30 @@ ix3_bc    = outflow
 ox3_bc    = outflow
 
 <meshblock>
-nx1       = 16
-nx2       = 16
-nx3       = 16
+nx1       = 24
+nx2       = 24
+nx3       = 24
 
 <mesh_refinement>
 refinement       = static
-max_nmb_per_rank = 4096
 
 <refined_region1>
 level = 1
-x1min = -96.0
-x1max = 96.0
-x2min = -96.0
-x2max = 96.0
-x3min = -96.0
-x3max = 96.0
+x1min = -95.9
+x1max = 95.9
+x2min = -95.9
+x2max = 95.9
+x3min = -95.9
+x3max = 95.9
 
 <refined_region2>
 level = 2
-x1min = -48.0
-x1max = 48.0
-x2min = -48.0
-x2max = 48.0
-x3min = -48.0
-x3max = 48.0
+x1min = -47.9
+x1max = 47.9
+x2min = -47.9
+x2max = 47.9
+x3min = -47.9
+x3max = 47.9
 
 <refined_region3>
 level = 5
