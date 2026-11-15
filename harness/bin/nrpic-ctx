@@ -1232,7 +1232,8 @@ def cmd_brief(repo, args):
         L.append("read first:  coord/BOARD.md (nrpic-ctx board --write), coord/CHARTER.md, harness/RULES.md")
     if problems:
         L.append(f"outbox problems: {len(problems)} (nrpic-ctx audit)")
-    L.append("end of session: rewrite STATUS.md and HANDOFF.md, append JOURNAL.md, commit, push your branch")
+    L.append("end of session: commit path-limited on main, push; nrpic-ctx board --write after reviews" if me == "orch" else
+             "end of session: rewrite STATUS.md and HANDOFF.md, append JOURNAL.md, commit, push your branch")
     print("\n".join(L[:40]))
     return 0
 
