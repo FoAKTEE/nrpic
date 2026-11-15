@@ -236,3 +236,12 @@ s(end) - s_eq = -0.0033 against a standard error of 0.0034, T5_pass. `repro` det
 one-ulp change; the mode sample has number-mode amplitude -eps within noise and no
 kinetic-energy-density mode (isobaric). Figure `figs/pipeline_relax_synthetic.png`
 (looked at; the panel layout was corrected after the first look, labels overlapped).
+
+## 2026-11-15 End of session
+
+`core/collisions` still at a9fec22 with no working-tree change and no
+`tracks/core/interfaces/collisions.md`: no implementation to check. Reference suite 62
+passed, pipeline suite 3 passed. Open: every collisional test (T0-T12) waits for the
+operator; `analysis/replay.py` (T0b) waits for core's dump format; the relativistic
+conductivity has no reference in the sources read (request to kb). README.md lists the
+pending runs and the requests.
