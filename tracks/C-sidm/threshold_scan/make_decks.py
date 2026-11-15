@@ -54,17 +54,17 @@ def set_key(text, block, key, value, comment=None):
     return "\n".join(out)
 
 
-def deck(model_key, kn, tlim, ic_dir):
+def deck(model_key, kn, tlim, ic_dir, template=TEMPLATE):
     md = C.load_model(C.MODELS[model_key]["tag"], ic_dir)
     meta = md["meta"]
     N = int(meta["particles"]["N"])
-    text = open(TEMPLATE).read()
+    text = open(template).read()
     name = C.run_name(model_key, kn)
     head = (f"# threshold_scan {name}: {C.MODELS[model_key]['label']}, King b = 1 of 2009.08163,\n"
             f"# N = {N} (IC run {os.path.basename(ic_dir)}), Kn = lambda_c/H_c = "
             f"{'infinity (operator absent)' if kn is None else f'{kn:g}'}.\n"
             f"# Written by tracks/C-sidm/threshold_scan/make_decks.py from "
-            f"problems/st/st_migration.athinput; do not edit by hand.\n\n")
+            f"{os.path.relpath(template, C.WT)}; do not edit by hand.\n\n")
     text = head + "<comment>" + text.split("<comment>", 1)[1]   # template's own header dropped
     text = set_key(text, "comment", "problem", f"King cluster {name}")
     text = set_key(text, "job", "basename", "cc")

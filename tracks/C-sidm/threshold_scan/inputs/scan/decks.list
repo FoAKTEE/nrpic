@@ -11,3 +11,7 @@ scanA_y0p35400_kin tracks/C-sidm/threshold_scan/inputs/scan/scanA_y0p35400_kin.a
 scanA_y0p35400_kout tracks/C-sidm/threshold_scan/inputs/scan/scanA_y0p35400_kout.athinput
 scanC_cc1_kn3 tracks/C-sidm/threshold_scan/inputs/scan/scanC_cc1_kn3.athinput
 scanC_cc1_kn0p3 tracks/C-sidm/threshold_scan/inputs/scan/scanC_cc1_kn0p3.athinput
+scanC_amr_cc1_kn10 tracks/C-sidm/threshold_scan/inputs/scan/scanC_amr_cc1_kn10.athinput
+scanC_amr_cc1_kn3 tracks/C-sidm/threshold_scan/inputs/scan/scanC_amr_cc1_kn3.athinput
+scanC_amr_cc1_kn1 tracks/C-sidm/threshold_scan/inputs/scan/scanC_amr_cc1_kn1.athinput
+scanC_amr_cc1_kn0p3 tracks/C-sidm/threshold_scan/inputs/scan/scanC_amr_cc1_kn0p3.athinput

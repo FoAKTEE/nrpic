@@ -111,6 +111,17 @@ def make_decks(ic_dir):
         name = f"scanC_cc1_kn{kn:g}".replace(".", "p")
         write_deck(name, text)
         names.append(name)
+    # block C on the first paper's adaptive mesh (down to M/16, apparent-horizon finder):
+    # the static M/4 mesh of wave 2 cannot hold the black hole after a collapse (JOURNAL
+    # entry 6), so the collapsed mass needs these decks
+    amr = os.path.join(C.WT, "problems", "st", "st_cluster_amr.athinput")
+    for kn in (10.0, 3.0, 1.0, 0.3):
+        _, text = D.deck("cc1", kn, 300.0, ic_dir, template=amr)
+        text = D.set_key(text, "output2", "dt", "50")
+        text = D.set_key(text, "particles", "snap_dt", "5.0")
+        name = f"scanC_amr_cc1_kn{kn:g}".replace(".", "p")
+        write_deck(name, text)
+        names.append(name)
     with open(os.path.join(SCAN_DIR, "decks.list"), "w") as f:
         f.write("# decks of the prepared threshold scan; each runs as one chain (SCAN.md)\n")
         for n in names:
