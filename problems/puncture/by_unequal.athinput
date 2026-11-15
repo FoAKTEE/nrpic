@@ -1,0 +1,100 @@
+# Two Bowen-York punctures of unequal mass with opposite momenta, evolved for a few M
+# with a shift damping that follows the trackers (test E2 of
+# tracks/core/JOURNAL-gauge.md).  Bare masses 1 at x = 1.5 and 0.25 at x = -6.5
+# (mass ratio 4, separation 8), momenta -+0.08 along y.  puncture_setup gives the light
+# hole cells of 1/32 = m/8 (level 6) and the heavy one cells of 1/8 (level 4).
+# Damping: eta(x) = shift_eta [1 + sum_A (M_ref/m_A - 1)/(1 + |x - x_A|^2/w^2)],
+# w = shift_eta_width times the smallest mass: here 2 at the heavy hole and far away,
+# 8 = 2/m at the light hole, in a region of radius about 0.5 around it.
+# Variants (command line): z4c/shift_eta_profile=false (constant eta = shift_eta),
+# z4c/shift_eta=8.0, z4c/shift_eta_width_local=true.
+
+<comment>
+problem   = two Bowen-York punctures of unequal mass
+
+<job>
+basename  = byu
+
+<mesh>
+nghost    = 4
+nx1       = 64
+x1min     = -64.0
+x1max     = 64.0
+ix1_bc    = outflow
+ox1_bc    = outflow
+nx2       = 64
+x2min     = -64.0
+x2max     = 64.0
+ix2_bc    = outflow
+ox2_bc    = outflow
+nx3       = 64
+x3min     = -64.0
+x3max     = 64.0
+ix3_bc    = outflow
+ox3_bc    = outflow
+
+<meshblock>
+nx1       = 16
+nx2       = 16
+nx3       = 16
+
+<mesh_refinement>
+refinement          = adaptive
+num_levels          = 7
+max_nmb_per_rank    = 2400
+ncycle_check        = 4
+refinement_interval = 8
+
+<time>
+evolution  = dynamic
+integrator = rk4
+cfl_number = 0.25
+nlim       = -1
+tlim       = 4.0
+ndiag      = 200
+
+<z4c>
+lapse_oplog     = 2.0
+lapse_harmonicf = 1.0
+lapse_harmonic  = 0.0
+lapse_advect    = 1.0
+shift_Gamma     = 0.75
+shift_eta       = 2.0
+shift_advect    = 1.0
+shift_eta_profile     = true    # shift_eta follows the trackers
+shift_eta_mref        = 1.0     # M_ref: eta = shift_eta M_ref/m_A at black hole A
+shift_eta_width       = 2.0     # width of the profile in units of the smallest mass
+shift_eta_width_local = false   # true: width from the mass of each black hole
+diss            = 0.5
+chi_div_floor   = 1.0e-5
+damp_kappa1     = 0.02
+damp_kappa2     = 0.0
+tracker_mode    = ode
+
+<problem>
+pgen_name       = nrpic_cf
+ncomp           = 2
+comp0_type      = puncture
+comp0_mass      = 1.0
+comp0_x1        = 1.5
+comp0_p2        = -0.08
+comp0_corr      = approx
+comp1_type      = puncture
+comp1_mass      = 0.25
+comp1_x1        = -6.5
+comp1_p2        = 0.08
+comp1_corr      = approx
+corr_background = true
+lapse           = precollapsed
+puncture_setup  = true
+puncture_radius = 1.8
+
+<output1>
+file_type = hst
+dt        = 0.25
+
+<output2>
+file_type = bin
+variable  = z4c_alpha
+slice_x3  = 0.001
+dt        = 10.0
