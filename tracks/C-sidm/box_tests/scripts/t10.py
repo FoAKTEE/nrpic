@@ -82,6 +82,11 @@ def main():
         if res["runs"][name]["rc"] != 0:
             cmp[name] = dict(failed=True)
             continue
+        with open(os.path.join(rd, "athena.log")) as fh:
+            if "MeshBlock-cycles = 0" in fh.read():
+                cmp[name] = dict(skipped=True, why="resumed from the restart file written "
+                                 "at the end of the run (cycle = nlim): no step taken")
+                continue
         try:
             s = last_snap(rd)
         except (IndexError, AssertionError) as e:
@@ -109,7 +114,8 @@ def main():
     hb = href
     res["collisions_total_mb1"] = float(hb["n_coll"].sum())
     res["max_nsub_mb1"] = float(hb["max_nsub"].max())
-    res["pass"] = bool(all(cmp[n].get("identical") for n in cmp if n != "seed8") and
+    res["pass"] = bool(all(cmp[n].get("identical") for n in cmp
+                           if n != "seed8" and not cmp[n].get("skipped")) and
                        len(rsts) >= 2 and
                        not cmp["seed8"].get("identical", True) and
                        cmp["seed8"].get("frac_particles_differ", 0) > 0.5)
@@ -119,7 +125,8 @@ def main():
     fig = plt.figure(figsize=(fs.FULL_WIDTH, 3.0))
     ax1 = fig.add_axes([0.08, 0.16, 0.40, 0.76])
     ax2 = fig.add_axes([0.58, 0.16, 0.40, 0.76])
-    for k, name in enumerate(n for n in cmp if not cmp[n].get("failed")):
+    for k, name in enumerate(n for n in cmp if not cmp[n].get("failed") and
+                             not cmp[n].get("skipped")):
         h = bl.coll_history(os.path.join(out, name))
         cyc = np.intersect1d(href["ncycle"], h["ncycle"])
         ia = np.searchsorted(href["ncycle"], cyc)
@@ -132,7 +139,7 @@ def main():
     ax2.hist(np.max(np.abs(ref["u"] - s8["u"]), 1), bins=60, color=fs.PAL["red"],
              histtype="step", label="seed 8 vs seed 7")
     for name in cmp:
-        if name != "seed8" and not cmp[name].get("failed"):
+        if name != "seed8" and not cmp[name].get("failed") and not cmp[name].get("skipped"):
             s = last_snap(os.path.join(out, name))
             ax2.axvline(np.max(np.abs(ref["u"] - s["u"])) + 1e-30, **fs.MASK_LINE)
     ax2.set_yscale("log")

@@ -109,3 +109,12 @@ driver resumed from every file, including the `.prt` particle files (the run fro
 `box.coll.hst` without a header, which my reader refused. Fixed: only `*.rst` files; a
 history without a header gets the column order of collisions.md section 5 (asserted equal
 to the header of the fresh runs). Rerun below with the predictions unchanged.
+
+T10 second attempt (run C-20261115-165821-5d4dc5c): 1, 8, 64 blocks and the restarts
+from cycles 0, 37 and 74 give bit-identical final snapshots and identical integer columns
+of every coll.hst record (sum_P differs by up to 1.2e-14 relative: the order of the sum
+over blocks); seed 8 changes 100 percent of the particles. The summary flag said "pass:
+false" only because the fourth restart file `box.00003.rst` is the one written at the end
+of the run (cycle 100 = nlim): the run resumed from it takes no step and writes no
+snapshot, which my driver counted as a failure. Driver corrected (such a restart is
+recorded as skipped); rerun to get a clean summary and the figure.
