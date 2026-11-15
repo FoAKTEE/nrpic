@@ -1,0 +1,131 @@
+{
+  "schema": "nrpic-run-manifest/1",
+  "run_id": "core-20261115-174439-7359389",
+  "track": "core",
+  "gate": "G2",
+  "kind": "scouting",
+  "purpose": "Test R of JOURNAL-clump (rerun of the jeans case cut off in core-20261115-154622-e1a4d0c): two-overdensity input of runs/jeans/n1e4_v19, two cycles, release processor executable against this branch's, every output byte compared",
+  "preregistered_in": null,
+  "launcher": "local",
+  "command": [
+    "python3",
+    "tracks/core/analysis/clump/regress.py",
+    "--base",
+    "/data/haiyangw/nrpic/.work/build_cpu_v03/src/athena",
+    "--new",
+    "/data/haiyangw/nrpic/wt/core-clump/.work/build_cpu/src/athena",
+    "--cases",
+    "jeans"
+  ],
+  "cwd": ".",
+  "git": {
+    "sha": "73593899a5c0f9553833865436be5d631ab79815",
+    "branch": "core/clump-curvature",
+    "dirty": false,
+    "merge_base_main": "b9fbf3e6534517c3393000da91c79ce552b254b9",
+    "worktree": "wt/core-clump"
+  },
+  "code": {
+    "core_tag": "core-v0.3",
+    "athenak_upstream_sha": "c5a0d7f",
+    "kokkos_sha": "6739bc623081648af9e752b616d9671527922cbf",
+    "problem": null
+  },
+  "env": {
+    "host": "anta",
+    "env_hash": "33c1dbb6673b68919eaa332b0add0b58aeac8be843f2071b9d06e2e0e397a96d",
+    "machine_file_sha256": "0321f40f4caeeb2a36624a9fa9809e60bad31071f366b3517ba23ad45698d2d7",
+    "uv_lock_sha256": "5417f6ba318b914aa3800e5d55f7b11fdd8df13c2688bdda7d419240aa1d5863",
+    "track_requirements_sha256": null,
+    "container_digest": null,
+    "compiler": "g++ 11.4.0",
+    "mpi": "none (Athena_ENABLE_MPI=OFF)",
+    "gpu": null,
+    "python": "3.10.12 /data/haiyangw/nrpic/wt/core-clump/.venv"
+  },
+  "input": null,
+  "inputs": [
+    {
+      "path": "/data/haiyangw/nrpic/runs/jeans/n1e4_v19/particles.nrp",
+      "role": "input",
+      "sha256": "7270917fad5381932eb7e3fdb31239d5c565791deadba7c9751f2c6b8973ed9f",
+      "bytes": 600016,
+      "tracked": false,
+      "location": "main checkout data root"
+    },
+    {
+      "path": "/data/haiyangw/nrpic/runs/jeans/n1e4_v19/envelope.tab",
+      "role": "input",
+      "sha256": "7ea9ca275a092d93775fd74e4b798eb24fbedaa507d2b168e2e28f4772392c59",
+      "bytes": 432927,
+      "tracked": false,
+      "location": "main checkout data root"
+    },
+    {
+      "path": "/data/haiyangw/nrpic/.work/build_cpu_v03/src/athena",
+      "role": "input",
+      "sha256": "d983155bb21befedbd123d54d84fcfc12a875ee0aaa0baa36f5a51261041c25c",
+      "bytes": 246469568,
+      "tracked": false,
+      "location": "main checkout data root"
+    },
+    {
+      "path": ".work/build_cpu/src/athena",
+      "role": "input",
+      "sha256": "53c0d32b6b1c5af2a18bdbe2a13edc62930a37a9582629d2baf78ecfa40e20e1",
+      "bytes": 246575248,
+      "tracked": false
+    },
+    {
+      "path": "tracks/core/analysis/clump/regress.py",
+      "role": "argv",
+      "sha256": "698dcef8db9cc2e68631f1f638bce5623d6438554229293f90fde7b48774cb5c",
+      "bytes": 5709,
+      "tracked": true
+    },
+    {
+      "path": ".work/build_cpu/src/athena",
+      "role": "argv",
+      "sha256": "53c0d32b6b1c5af2a18bdbe2a13edc62930a37a9582629d2baf78ecfa40e20e1",
+      "bytes": 246575248,
+      "tracked": false
+    }
+  ],
+  "batch_entries": null,
+  "resources": {
+    "nodes": 1,
+    "gpus": 0,
+    "cores": 1,
+    "walltime_s": null,
+    "wall_limit": null,
+    "segments_max": null,
+    "gpu_hours_requested": 0.0,
+    "gpu_hours": null,
+    "particles": null
+  },
+  "slurm": null,
+  "outputs": {
+    "dir": "scratch/core/core-20261115-174439-7359389",
+    "sha256sums": "sha256sums.txt",
+    "sha256sums_sha256": null,
+    "bytes": null,
+    "files": null
+  },
+  "status": "running",
+  "exit_code": null,
+  "registered": "2026-11-15T17:44:40Z",
+  "started": null,
+  "ended": null,
+  "parents": [],
+  "notes": "",
+  "budget_at_submit": {
+    "gpu_hours_allotted": 40.0,
+    "cores_allotted": 16,
+    "gpu_hours_used": 2.4337,
+    "gpu_hours_reserved": 0.0,
+    "gpu_hours_without_gate": 3.4324,
+    "cores_busy": 0,
+    "runs": 709,
+    "allotment_from": "coord/DECISIONS/0006-compute-budget.md + 0014-budgets-after-wave-1.md"
+  }
+}
