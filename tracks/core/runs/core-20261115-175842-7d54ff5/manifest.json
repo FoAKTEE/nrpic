@@ -1,0 +1,124 @@
+{
+  "schema": "nrpic-run-manifest/1",
+  "run_id": "core-20261115-175842-7d54ff5",
+  "track": "core",
+  "gate": "G2",
+  "kind": "scouting",
+  "purpose": "T12: Track E's A4 in its own form (record ratios <|H|/[H]>, <|M|/[M]> when the amplitude is halved) at N = 64 on processors (s = 1, -1, 1/2, -1/2, 0; nmax2 = 64; to t = 3.2) and at N = 32 from runs -155040-eb68eaa and -161040-760b515; T8 at N = 64 on the run s = 1 (repeat of the stopped -175447-764390e)",
+  "preregistered_in": null,
+  "launcher": "local",
+  "command": [
+    ".venv/bin/python",
+    "tracks/core/analysis/scalar2/t12_halving.py",
+    "--exe",
+    ".work/exe/athena_cpu_a58e95b",
+    "--n",
+    "64",
+    "--workers",
+    "5",
+    "--ref32",
+    "/data/haiyangw/nrpic/scratch/core/core-20261115-155040-eb68eaa",
+    "--ref32-s0",
+    "/data/haiyangw/nrpic/scratch/core/core-20261115-161040-760b515",
+    "--t8-ref32",
+    "/data/haiyangw/nrpic/scratch/core/core-20261115-160134-3fde433"
+  ],
+  "cwd": ".",
+  "git": {
+    "sha": "7d54ff52dca1092763c2dd7f8672069537f7a692",
+    "branch": "core/scalar-2",
+    "dirty": false,
+    "merge_base_main": "b9fbf3e6534517c3393000da91c79ce552b254b9",
+    "worktree": "wt/core-scalar2"
+  },
+  "code": {
+    "core_tag": "core-v0.3",
+    "athenak_upstream_sha": "c5a0d7f",
+    "kokkos_sha": "6739bc623081648af9e752b616d9671527922cbf",
+    "problem": null
+  },
+  "env": {
+    "host": "anta",
+    "env_hash": "33c1dbb6673b68919eaa332b0add0b58aeac8be843f2071b9d06e2e0e397a96d",
+    "machine_file_sha256": "0321f40f4caeeb2a36624a9fa9809e60bad31071f366b3517ba23ad45698d2d7",
+    "uv_lock_sha256": "5417f6ba318b914aa3800e5d55f7b11fdd8df13c2688bdda7d419240aa1d5863",
+    "track_requirements_sha256": null,
+    "container_digest": null,
+    "compiler": "g++ 11.4.0",
+    "mpi": "none (Athena_ENABLE_MPI=OFF)",
+    "gpu": null,
+    "python": "3.10.12 /data/haiyangw/nrpic/wt/core-scalar2/.venv"
+  },
+  "input": null,
+  "inputs": [
+    {
+      "path": ".work/exe/athena_cpu_a58e95b",
+      "role": "input",
+      "sha256": "c69266ec765c8296b005871c6865991f2a5ac59f7ebd2ac3f03d383b57f9439e",
+      "bytes": 249396176,
+      "tracked": false
+    },
+    {
+      "path": "problems/scalar/sr_stochastic.athinput",
+      "role": "input",
+      "sha256": "d1ad721d9b2b495b49782ca31a3c18efc24f1eb58c23eeff29d3fc12747efea6",
+      "bytes": 3321,
+      "tracked": true
+    },
+    {
+      "path": "problems/scalar/sr_stochastic_modes.txt",
+      "role": "input",
+      "sha256": "3e885408a9a1122f93997d46092b3a4141afac15415b73027556e75f82424031",
+      "bytes": 5566,
+      "tracked": true
+    },
+    {
+      "path": "tracks/core/analysis/scalar2/t12_halving.py",
+      "role": "argv",
+      "sha256": "f5fc4b357df10f09ec45e270501abbb419431ce9772c55ce0ee231db016c9210",
+      "bytes": 11105,
+      "tracked": true
+    }
+  ],
+  "batch_entries": null,
+  "resources": {
+    "nodes": 1,
+    "gpus": 0,
+    "cores": 5,
+    "walltime_s": null,
+    "wall_limit": null,
+    "segments_max": null,
+    "gpu_hours_requested": 0.0,
+    "gpu_hours": null,
+    "particles": null
+  },
+  "slurm": null,
+  "outputs": {
+    "dir": "scratch/core/core-20261115-175842-7d54ff5",
+    "sha256sums": "sha256sums.txt",
+    "sha256sums_sha256": null,
+    "bytes": null,
+    "files": null
+  },
+  "status": "running",
+  "exit_code": null,
+  "registered": "2026-11-15T17:58:44Z",
+  "started": null,
+  "ended": null,
+  "parents": [
+    "core-20261115-155040-eb68eaa",
+    "core-20261115-161040-760b515",
+    "core-20261115-160134-3fde433"
+  ],
+  "notes": "",
+  "budget_at_submit": {
+    "gpu_hours_allotted": 40.0,
+    "cores_allotted": 16,
+    "gpu_hours_used": 2.4337,
+    "gpu_hours_reserved": 0.0,
+    "gpu_hours_without_gate": 3.4324,
+    "cores_busy": 2,
+    "runs": 717,
+    "allotment_from": "coord/DECISIONS/0006-compute-budget.md + 0014-budgets-after-wave-1.md"
+  }
+}
