@@ -73,6 +73,12 @@ def main(s1, s3, s4, outdir):
                     row["sf_newton"] = N["sf"]
                     row["vmean_newton"] = N["v_mean"]
                 res["S4"][f"{sn}_beta{beta:g}"] = row
+    if s4 != "-":
+        res["S4_runs_step_underflow"] = int((d4["status"] == 4).sum())
+        res["S4_runs_both_captured"] = int((d4["status"] == 5).sum())
+        res["S4_runs_a_min_below_1e-4_a0"] = int((d4["a_min"] < 1e-4).sum())
+        res["S4_runs_total"] = int(d4["status"].size)
+    res["S3_runs_step_underflow"] = int((d3["status"] == 4).sum())
     with open(os.path.join(outdir, "kerr_summary.json"), "w") as fh:
         json.dump(res, fh, indent=1)
     print(json.dumps(res, indent=1))

@@ -132,6 +132,9 @@ def main(npz, ddir, outdir):
     chk["P6_retro_beta0.5to1.2_bound_frac_min_newton"] = float(np.nanmin(S["retro_newton"]["bound_frac"][selw]))
     chk["alpha_all_max_beta_le_10"] = float(max(S[k]["alpha_all_max"].max() for k in S if "hrna" in k))
     chk["runs_status_tmax_or_maxsteps"] = int(sum(S[k]["status_bad"].sum() for k in S))
+    chk["runs_step_underflow"] = int((d["status"] == 4).sum())
+    chk["runs_a_min_below_1e-4_a0"] = int((d["a_min"] < 1e-4).sum())
+    chk["runs_total"] = int(d["status"].size)
     chk["members_captured"] = int(sum(S[k]["plunged"].sum() for k in S))
     # comparison with the digitized curves
     if ddir != "-":

@@ -71,6 +71,10 @@ def main(s1, s2, outdir):
         chk[f"Q4_{sn}_alpha_all_max_beta15"] = float(S[f"{sn}_hrna"]["alpha_max"][np.argmin(np.abs(betas - 15))])
         chk[f"Q4_{sn}_alpha_all_median_beta15"] = float(S[f"{sn}_hrna"]["alpha_med"][np.argmin(np.abs(betas - 15))])
     chk["runs_status_tmax_or_maxsteps"] = int(sum(S[k]["bad"].sum() for k in S))
+    for nm, dd in (("S1", d1), ("S2", d2)):
+        chk[f"{nm}_runs_step_underflow"] = int((dd["status"] == 4).sum())
+        chk[f"{nm}_runs_a_min_below_1e-4_a0"] = int((dd["a_min"] < 1e-4).sum())
+        chk[f"{nm}_runs_total"] = int(dd["status"].size)
     table = []
     for b in (1, 2, 3, 5, 10, 15, 20, 25):
         k = int(np.argmin(np.abs(betas - b)))
