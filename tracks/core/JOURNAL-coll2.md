@@ -566,3 +566,34 @@ numbers of run core-20261115-160707-6537687 graded again against it (no new code
 Refuted by: a case beyond 4 se after the change, or a well case whose reference does not
 move: then the code and the pair model differ in something else and the cause above is
 wrong.
+
+### Outcome of the corrected reference (18:20 UTC): prediction held; G2(c) as written still fails
+
+Reference with the cell rate: runs core-20261115-181655-b4b8e33, -181657-426b4a8,
+-181700-726905c, -181702-c93920b (4e6 pairs per case, 2 to 4 min each). Code numbers of
+run core-20261115-160707-6537687 graded again: run core-20261115-182037-e24d0d0
+(`run_gradient.py --regrade`; `fig_gradient.png` looked at: every dot on its bar).
+(a) Every comparison of G1 and G2(d) within 1.8 combined standard errors (before: five
+    beyond 4): well_tolman_f2 dW(cell) z = -0.9 (was -4.5), rejected -0.0 (was -4.0);
+    well_tolman_hot rejected +0.2 (was -8.0); well_tolman_hot_f2 rejected +1.1 (was
+    -10.8); psi_inverted slope +0.7 (cell, was +4.6) and +1.4 (particle, was +6.7);
+    well_shift dW -1.8 (was -3.8). Cell-size ratios f2/iso 3.98 (ref 4.07, se 0.28),
+    f4/iso 15.8 (16.7, se 1.0), iso/half 4.06 (3.67, se 0.58).
+(b) Psi-only cases: psi_iso moved from 8.59e-5 to 8.05e-5 (2.2 combined se of the two
+    references), psi_iso_f4 from 1.299e-3 to 1.340e-3 (4 se). FAILED as written: my
+    "second order, below 2 se" ignored that the weight psi^-6 has a first-order
+    amplitude 0.6 at psi_amp = 0.1, whose square (with sin^2 phi of the gradient) shifts
+    the mean by a few percent. The code agrees with the new values (z +0.6, -1.1).
+(c) Well cases: reference dW(cell) fell by 7 to 10 percent (well_tolman 1.325e-4 ->
+    1.205e-4, f2 5.28e-4 -> 4.90e-4, shift 1.339e-4 -> 1.230e-4, hot 5.98e-4 -> 5.32e-4,
+    hot_f2 2.32e-3 -> 2.14e-3); psi_inverted particle slope rose 5.00e-2 -> 5.71e-2
+    (code 5.94e-2). Held.
+So the deficits came from the reference (cells drawn uniformly while the operator's
+pair probability carries alpha_c/psi_c^6), not from the code. The code reproduces the
+pair model of section 11 of `collisions.md` in all 14 cases.
+G2(c) "no pair without a root": still 5 pairs in well_tolman_hot_f2. The corrected
+reference has a share 3.1e-5 of the proposals without a root there (expected 11 of the
+3.7e5 proposals, observed 5, z = -1.9), 3.6e-8 in well_tolman_hot, zero elsewhere. The
+criterion contradicted the reference; it is restated as "n_noroot consistent with the
+reference share". Unscattered pairs bias nothing that is conserved; they lower the rate
+by their share.
