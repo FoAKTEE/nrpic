@@ -235,3 +235,103 @@ collision, 7.6e-4 of sum M W over 300 M at Kn = 1 and about 8e-3 at Kn = 0.1 (at
 initial rate). The x-axis labels of the first version of the figure overlapped; the script
 now labels the four sizes; the rerun C-20261115-175709-e5d0e07 gives a byte-identical
 cells.json and the figure in `figs/`.
+
+## 2026-11-15 Entry 6: outcome of Test 3, the six card runs
+
+Runs: card jobs C-20261115-171058-c26cfad (cc1_kninf, cc1_kn1), C-20261115-171059-4b70228
+(cc1_kn10, cc2_kninf), C-20261115-171059-35441e3 (cc2_kn10, cc2_kn1); analysis run
+C-20261115-191420-8538aa4 (`summary.json`; figures `fig_cc_lapse_radii`, `fig_cc_controls`,
+`fig_cc_collisions`, `fig_cc_budget`, `fig_cc_energy_tail`, all looked at, copies in
+`figs/`). All six exit with status 0 in 1026-1037 s, 3.42-3.46 s per M (predicted 3.3-4.3);
+1.73 card-hours in all (`nrpic-run budget`, G2).
+
+Headline [the runs; reading JUDGEMENT]: both collisionless controls stay bound, while
+all four collisional runs collapse within 300 M. Time at which the smallest lapse on the
+mesh falls below 0.3, and first excision (alpha < 0.1):
+
+| Run | alpha_min < 0.3 | first excision | collisions per particle before | rest mass excised 20 M / 50 M after first excision |
+|---|---|---|---|---|
+| cc1_kn1 | 72.5 M | 83.3 M | 13.4 | 0.82 / 0.90 |
+| cc1_kn10 | 184.3 M | 193.8 M | 2.5 | 0.91 / 0.95 |
+| cc2_kn1 | 77.8 M | 88.8 M | 15.3 | 0.82 / 0.89 |
+| cc2_kn10 | 206.8 M | 216.5 M | 2.9 | 0.90 / 0.95 |
+
+Before the collapse the inner shells contract (r10 down to about 0.2-0.3 of its initial
+value) while r90 first grows by up to 20 percent at Kn = 1 (core-halo separation), and the
+collision rate per step rises 9-14 times. A factor ten in the cross-section shortens the
+collapse time by 2.5-2.7, not by ten. On the static M/4 mesh the evolution after the
+collapse is not trustworthy: the constraint norm rises to 10-1900 and the state turns
+non-finite at 204 M (cc1_kn1), 162 M (cc2_kn1) and 290 M (cc1_kn10); the code removes every
+remaining particle and still exits with status 0 (core's G2 OPEN item 11). The excised
+fractions above are therefore proxies of the collapsed mass, not horizon masses.
+
+Predictions, one by one:
+
+- P3.1 Rest mass: PASS where it applies. sum_m is bit-identical in every record before the
+  first excision in all six runs; with excision, sum_m + m_excised + m_escaped equals the
+  initial rest mass to at most 7.3e-15 relative; n_escaped = 0. The part "n_excised = 0"
+  FAILED in the four collisional runs (they collapsed).
+- P3.2 Deposit identity: PASS, at most 3.0e-15 (records with particles).
+- P3.3 Cell-frame pair energy: PASS. Largest |dE| per collision in a record 4.4 times
+  2 M_p eps (below 8); summed dP below 1.8e-18; n_trunc = 0; no unusable cell; largest pair
+  probability 0.098 (Kn = 1, up to five sub-steps during the collapse).
+- P3.4 Energy at the particles' metric: FAILED over the run, PASS in the early window.
+  Before the collapse the defect per collision grows with the depth of the potential: summed
+  to alpha_min < 0.3 it is 1.6e-3 (cc1_kn1), 1.7e-3 (cc2_kn1), 1.8e-4 and 2.2e-4 (Kn = 10)
+  of sum M W, i.e. 1.4-2.3e-9 per collision, 8-18 times the initial-state value; with the
+  collapse phase it reaches 2.2e-2 (Kn = 1) and 3.0e-3 (Kn = 10). In the first 25 M (collision
+  counts 0.99-1.03 of the prediction, structure still near the initial one) the defect per
+  collision is 1.22(22)e-10 (cc1_kn1; predicted 1.74e-10, 2.4 standard errors low),
+  1.24(20)e-10 (cc2_kn1; predicted 1.26e-10), 0.88(60)e-10 (cc1_kn10), 0.22(51)e-10
+  (cc2_kn10); the scatter of one collision is 5-7e-9 of sum M W, so the Kn = 10 values are
+  noise-limited. Positive in sign and of the predicted size within a factor two at Kn = 1.
+- P3.5 Histories: PASS, sum_MW_particles of `cc.coll.hst` equals sum_mW of `cc.nrpic.hst` at
+  the same cycle to 3.9e-16.
+- P3.6 First collision step: PASS. sum_P = 24.41630 and 244.16742 (CC1), 23.69597 and
+  236.94446 (CC2) against 24.41204, 244.12038, 23.69207, 236.92071 (+0.010 to +0.019
+  percent, at most 0.08 sd of the pairing). The CC1 card values equal the processor smoke
+  values of Test 2 to 1e-15.
+- P3.7 Counts: PASS for Poisson (|z| <= 2.4 at the end, largest excursion about 3, in
+  cc2_kn10 near 210 M); collisions in the first 25 M are 0.99-1.03 of the constant-rate
+  prediction. The 10 and 25 percent bands over the run FAILED: the contraction raises the
+  rate (before the collapse 1.7-1.8 times the constant rate at Kn = 10 and 2.4-2.6 at Kn = 1).
+- P3.8 Controls: partly FAILED. Every particle kept, no collapse (PASS). cc2_kninf:
+  |alpha_c - alpha_c(0)| at most 0.0185 (PASS, <= 0.02), r10 and r90 ranges 0.081 and 0.059
+  (PASS), mean Lorentz factor changed by 7.2e-3 (FAIL, > 2e-3). cc1_kninf: alpha_c rises by
+  up to 0.0334 (FAIL, > 0.03), r10 range 0.136 (PASS), r90 range 0.106 (FAIL by 6 percent),
+  mean Lorentz factor 0.0134 (FAIL). The predicted 20-40 M oscillation is present only as a
+  ripple of about 1e-3; the dominant motion, not predicted, is a slow outward excursion of
+  both controls: alpha_c rises until about 200 M and falls again by 300 M (`fig_cc_controls`),
+  twice as large for the threshold model as for y0 = 0.314. The first paper's stable
+  cluster had instead a growing core oscillation and a slow fall of the mean lapse.
+- P3.9 Killing energies of the controls: fraction above E0 at 300 M 2.4e-3 (CC1) and
+  8.2e-4 (CC2), no unbound particle (PASS); |change of sum M E_K| 0.0070 and 0.0017 M at
+  300 M, up to 0.014 M at 200 M (FAIL, > 1e-3 M): E_K is not conserved while the metric
+  follows the excursion, so this sum is no budget in an evolving spacetime.
+- P3.10 Kn = 10: tail and evaporation PASS (fraction with E_K > E0: 0.055 at 175 M for CC1,
+  0.061 at 200 M for CC2, in [0.04, 0.12]; unbound 0.0072 and 0.0086, in [0.003, 0.010];
+  the unbound fraction follows the linear prediction of Entry 2 to about 175 M,
+  `fig_cc_energy_tail`); structure FAILED (collapse instead of alpha_c within 0.005 of the
+  control).
+- P3.11 Kn = 1: unbound fraction at the last record before the collapse 0.017 (CC1, 50 M)
+  and 0.024 (CC2, 75 M), at and above the lower edge of [0.02, 0.15]; fraction above E0
+  0.081 and 0.105 (the band was for 300 M; the runs collapsed before); alpha_c below the
+  control by far more than 0.01 (PASS); "no horizon within 300 M" FAILED (collapse at
+  72.5 M and 77.8 M).
+- P3.12 Constraint norm before the collapse: PASS (H-norm2 at 50 M: 1.40e-3 and 1.24e-3 at
+  Kn = 1 against 1.03e-3 and 1.04e-3 for the controls; at 150 M: 8.0e-4 at Kn = 10 against
+  8.4e-4).
+
+Reading [JUDGEMENT, not tested by a control run]: (1) The energy defect is positive
+(heating) and cannot by itself drive a contraction; whether it changes the collapse times
+needs the pair-energy correction (request to core). (2) Both King models lie far beyond the
+first mass maximum of their sequence (y0 = 0.0982, equilibria README), the turning point at
+which a thermally relaxed (collisional) cluster loses stability [BACKGROUND, Katz-type
+turning-point argument, not checked here]; collisions therefore find both of them unstable,
+and the collisionless threshold y0 = 0.334 is not the relevant one once Kn is finite. A
+collisional threshold would be bracketed by a collisional run of a less compact King model.
+(3) The controls' outward excursion is the open question for the collisionless threshold
+(G2): its size grows towards the threshold (0.018 at y0 = 0.314, 0.033 at 0.334); a cloud-
+width softening of the M/4 deposit (the paper's "compensation that also cancels the cloud
+width" changed alpha_c by 3.6e-3, `tab_outcomes.tex` line 108) is one candidate; the mesh
+leg of SCAN.md block B tests it.

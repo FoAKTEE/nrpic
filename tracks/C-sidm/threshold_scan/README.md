@@ -16,10 +16,31 @@ N = 10^5; 300 M), and leaves the longer threshold scan as prepared inputs with i
 | `make_ic.py` | particle files of CC1/CC2 at N = 10^5 through the equilibria package (run C-20261115-165832-fccee3a) |
 | `make_decks.py` | the six decks `inputs/cc{1,2}_kn{inf,10,1}.athinput` from the first paper's static M/4 deck `problems/st/st_migration.athinput`, and the card lists `inputs/batch_{1,2,3}.list` |
 | `predict.py` | predictions from the particle files alone: expected collisions per step (all pairs of every collision cell; the operator's random pairing), energy defect per collision at the particles' metric, Killing-energy change, production of particles above E0 and of unbound ones (run C-20261115-170404-af74c6d) |
-| `smoke.py` | processor smoke of the decks: start-up, rest mass, first-step sum_P against the prediction (run C-20261115-172003-6422b6a) |
-| `analyze.py` | analysis of the card runs: budgets, collision counts, lapse, mass radii, Killing-energy tail, figures `fig_cc_*.png` |
-| `make_scan.py`, `SCAN.md`, `inputs/scan/` | inputs and cost of the longer threshold scan (not run) |
+| `predict_cells.py` | the energy defect and the cell occupation against the collision-cell size (runs C-20261115-175636-b7b5252, -175709-e5d0e07) |
+| `smoke.py`, `fig_smoke.py` | processor smoke of the decks: start-up, rest mass, first-step sum_P against the prediction (runs C-20261115-172003-6422b6a, -175503-7c431e2) |
+| `analyze.py` | analysis of the card runs: budgets, collision counts, lapse, mass radii, excised mass, collapse and non-finite times, Killing-energy tail, figures `fig_cc_*.png` (run C-20261115-191420-8538aa4) |
+| `make_scan.py`, `SCAN.md`, `inputs/scan/` | inputs and cost of the longer threshold scan (not run): 10 kicked collisionless decks, 2 static and 4 adaptive collisional decks (particle files: run C-20261115-174556-3544e2c) |
 | `figs/` | copies of the figures looked at (PNG) |
+
+## Results (details and every prediction with its outcome: `JOURNAL.md` entries 1-6)
+
+- Card runs (C-20261115-171058-c26cfad, -171059-4b70228, -171059-35441e3; 1.73
+  card-hours; 3.42-3.46 s per M): the collisionless controls stay bound but make a slow
+  outward excursion (alpha_c up by 0.033 at the threshold, 0.018 at y0 = 0.314, back by
+  300 M). All four collisional runs collapse: alpha_min < 0.3 at 72.5 M (CC1, Kn = 1),
+  77.8 M (CC2, Kn = 1), 184 M (CC1, Kn = 10), 207 M (CC2, Kn = 10); 0.82-0.91 of the rest
+  mass excised within 20 M of the first excision. After the collapse the static M/4 mesh
+  fails (constraint norm 10-1900, non-finite state, exit status 0).
+- Budgets: rest mass bit-identical before excision and closed with the excised mass to
+  7e-15; deposit identity 3e-15; cell-frame pair energy within 4.4 x 2 M_p eps per
+  collision; the two histories agree to 4e-16. The energy at the particles' metric rises
+  by the predicted amount per collision early (1.2e-10 against 1.26-1.74e-10 at Kn = 1) and
+  by 1.6-1.7e-3 of sum M W before the collapse at Kn = 1.
+- Collision counts: first step within 0.02 percent of the pair-sum prediction (processor
+  and card); Poisson-consistent over the runs.
+- Predictions that failed are listed in `JOURNAL.md` (kick energy change in Test 4; the
+  controls' excursion and mean Lorentz factor; the structure at Kn = 10; no collapse at
+  Kn = 1; the Killing-energy sum as a budget).
 
 ## Rerun
 
