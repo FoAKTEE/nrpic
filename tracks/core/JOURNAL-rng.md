@@ -333,3 +333,32 @@ pair and the direction.
   run was started, one second of card time. Corrected (the repository is the directory
   the job is submitted from) and resubmitted as job 4414, which is again behind 16 jobs
   of other owners.
+
+## 2026-11-15 12:40 UTC  session core-rng  words of one call: outcome
+
+Prediction of 12:25 confirmed. Run core-20261115-121240-8f4222b: 1.008e12 generator
+calls, fourteen seeds (1001 to 1014): the covariances between the words of one call are
+-0.38 (words 0 and 1), -1.14 (0 and 2), -0.53, -1.06, -1.65 and +0.52 standard errors;
+correlations between -1.6e-6 and +0.5e-6 with standard error 1.0e-6. A correlation of
+-1e-5 between words 0 and 1 would have been -10 standard errors. The two deviations of
+run core-20261115-120536-5bdb22c were chance. Per seed (84 values) the largest deviation
+is 2.69 and the scatter 0.94. Means and variances of the four words: within 1.6.
+
+Final figures of the statistics: run core-20261115-122300-b6df7bc (identical numbers to
+run core-20261115-120536-5bdb22c: the draws are deterministic). I looked at all of
+them: `fig_rng_uniform.png` (residuals of 1024 bins within about three standard errors;
+one bin of the twin at +4.3, absent in the three samples of the code; covariances with
+the neighbouring key in each field within 2.5), `fig_rng_normal.png` (density on the
+normal curve over ten decades to |z| = 6.8, residuals within three), `fig_rng_direction.png`
+(n_z and azimuth flat; one bin of the 1e10 card sample at -4.3, absent in the 1e11
+sample), `fig_rng_pvalues.png` (253 p-values on the diagonal; the 1e10 card sample sits
+low between 0.05 and 0.5, which is the correlated set of even moments of the normal pair
+of that sample, the fluctuation followed up at 11:55), `fig_rng_log.png` (error of the
+logarithm against L: below 3e-14 everywhere, larger than L itself only for L below
+1e-14), `fig_kick_demo.png` (accumulated kicks of code and twin on the normal density;
+identical pairs in the zero band, mesh-metric pairs at 1e-15 to 1e-13, controls at 1e-3
+to 1e-1). Copies in `tracks/core/notes/rng_figs/`.
+
+State at this point: every deliverable exists and every processor test passes. On the
+card: table, sums and cost are done; the kick demonstration, the cell check and the
+regression wait in the queue (job 4414).
