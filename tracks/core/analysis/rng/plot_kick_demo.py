@@ -65,7 +65,7 @@ def main():
         builds.append((label, {"analytic": d_an, "mesh": d_me}))
 
     fig = plt.figure(figsize=(8.0, 4.2))
-    ax = [fig.add_axes([0.075, 0.13, 0.235, 0.83]), fig.add_axes([0.625, 0.13, 0.36, 0.83])]
+    ax = [fig.add_axes([0.075, 0.13, 0.215, 0.83]), fig.add_axes([0.66, 0.13, 0.325, 0.83])]
 
     # left: the accumulated kick in flat space, code and twin
     bins = np.linspace(-5, 5, 51)
