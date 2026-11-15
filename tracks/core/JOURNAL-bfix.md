@@ -593,3 +593,14 @@ executable (`t5_blocks_restart.py`).
   an error file whose RMS-L1 differs by less than 10 per cent. If the restart lost the
   new parameters or scaled the end time twice, the error would be of order A = 1e-6 or
   the run would end at another time: that would refute it.
+
+### Outcome of T5 (run core-20261115-162321-db3cb0f, 33 s)
+
+- P6a PASSED: eight MeshBlocks of 8^3 against one of 16^3, oblique wave, one period (37
+  cycles): 0 of 90112 values differ in the final double-precision dump; the two error
+  files are identical (RMS-L1 5.326589e-11).
+- P6b PASSED, more closely than predicted: the circular wave restarted from the restart
+  file of t = 0.15 ends at the same time and cycle with all 22 fields equal bit for bit
+  to the uninterrupted run (I had allowed 1e-11) and with an identical error file
+  (RMS-L1 7.561707e-11). The new parameters survive the restart and the end time is not
+  scaled twice. No figure: both comparisons are exact zeros.
