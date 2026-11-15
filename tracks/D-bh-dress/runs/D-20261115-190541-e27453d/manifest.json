@@ -1,0 +1,97 @@
+{
+  "schema": "nrpic-run-manifest/1",
+  "run_id": "D-20261115-190541-e27453d",
+  "track": "D-bh-dress",
+  "gate": "G1",
+  "kind": "scouting",
+  "purpose": "nm_analyze v2 (splashback radii): N128c, N64c, N128Lc against the matched shells and the self-similar solution",
+  "preregistered_in": null,
+  "launcher": "local (hand registration)",
+  "registered_by": "hand: tracks/D-bh-dress/secondary_infall/nm_register.py, because harness/bin/nrpic-run submit refused (an untracked file of another helper in the worktree root); see the package README, Requests",
+  "command": [
+    ".venv/bin/python",
+    "tracks/D-bh-dress/secondary_infall/nm_analyze.py",
+    "--run",
+    "N128c:/data/haiyangw/nrpic/scratch/D-bh-dress/D-20261115-171503-4262f03",
+    "--run",
+    "N64c:/data/haiyangw/nrpic/scratch/D-bh-dress/D-20261115-171505-62940f4",
+    "--run",
+    "N128Lc:/data/haiyangw/nrpic/scratch/D-bh-dress/D-20261115-171507-d1058a9",
+    "--ref",
+    "N128c:kernel:/data/haiyangw/nrpic/scratch/D-bh-dress/D-20261115-170824-788678f/nm_shells_N128_kernel",
+    "--ref",
+    "N128c:plummer:/data/haiyangw/nrpic/scratch/D-bh-dress/D-20261115-170826-20d5d4a/nm_shells_N128_plummer",
+    "--ref",
+    "N128c:point:/data/haiyangw/nrpic/scratch/D-bh-dress/D-20261115-170827-ba851f0/nm_shells_N128_point",
+    "--ref",
+    "N64c:kernel:/data/haiyangw/nrpic/scratch/D-bh-dress/D-20261115-170829-0d86d49/nm_shells_N64_kernel",
+    "--ref",
+    "N64c:plummer:/data/haiyangw/nrpic/scratch/D-bh-dress/D-20261115-170831-b379b65/nm_shells_N64_plummer",
+    "--ref",
+    "N64c:point:/data/haiyangw/nrpic/scratch/D-bh-dress/D-20261115-170827-ba851f0/nm_shells_N128_point",
+    "--ref",
+    "N128Lc:kernel:/data/haiyangw/nrpic/scratch/D-bh-dress/D-20261115-170834-ac15adf/nm_shells_N128L_kernel",
+    "--ref",
+    "N128Lc:plummer:/data/haiyangw/nrpic/scratch/D-bh-dress/D-20261115-170837-af64029/nm_shells_N128L_plummer",
+    "--ref",
+    "N128Lc:point:/data/haiyangw/nrpic/scratch/D-bh-dress/D-20261115-170839-187b91b/nm_shells_N128L_point",
+    "--selfsim",
+    "/data/haiyangw/nrpic/scratch/D-bh-dress/D-bh-dress-20261115-123813-97afeea/selfsimilar_profile.npz"
+  ],
+  "cwd": ".",
+  "git": {
+    "sha": "e27453d828135c69ca4652899fe544862b778d6f",
+    "branch": "track/D-bh-dress",
+    "dirty": false,
+    "package": [
+      "tracks/D-bh-dress/secondary_infall"
+    ]
+  },
+  "code": {
+    "core_tag": "core-v0.3",
+    "problem": "nrpic_newton"
+  },
+  "env": {
+    "host": "anta",
+    "python": "3.10.12",
+    "OMP_NUM_THREADS": "1"
+  },
+  "inputs": [
+    {
+      "path": ".venv/bin/python",
+      "sha256": "d6bca2b84e73c7775a0dd5e6a76899cfe4ee62863d7c8f88513811d1fda23f49",
+      "bytes": 5937704
+    },
+    {
+      "path": "tracks/D-bh-dress/secondary_infall/nm_analyze.py",
+      "sha256": "12c2c330ffe9a1d66d9889de3cfea37f0b7c5721d4988be997262c497dd16b65",
+      "bytes": 23353
+    },
+    {
+      "path": "/data/haiyangw/nrpic/scratch/D-bh-dress/D-bh-dress-20261115-123813-97afeea/selfsimilar_profile.npz",
+      "sha256": "d8b610648ec743f3d69ddc76a8fe5037f0863e2a35e6f7e2ce878b88a5f63bb0",
+      "bytes": 32444
+    }
+  ],
+  "resources": {
+    "cores": 1,
+    "gpus": 0,
+    "card_hours": 0.0,
+    "walltime_s": null
+  },
+  "outputs": {
+    "dir": "scratch/D-bh-dress/D-20261115-190541-e27453d",
+    "sha256sums": "sha256sums.txt",
+    "bytes": null
+  },
+  "status": "running",
+  "exit_code": null,
+  "started": "2026-11-15T19:05:41Z",
+  "ended": null,
+  "parents": [
+    "D-20261115-171503-4262f03",
+    "D-20261115-171505-62940f4",
+    "D-20261115-171507-d1058a9"
+  ],
+  "notes": ""
+}
