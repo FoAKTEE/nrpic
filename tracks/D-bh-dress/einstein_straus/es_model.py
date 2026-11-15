@@ -122,7 +122,7 @@ class EinsteinStrausBH:
         self.matched = bool(matched)
         # cumulative edge integrals int S R^2 dR (Simpson on a fine grid, quintic spline)
         self._build_edges()
-        J_in = self._edge_integral_in(self.Rw + self.w_in)      # int S R^2 dR over the inner edge
+        J_in = float(self._edge_integral_in(self.Rw + self.w_in))   # int S R^2 dR over the inner edge
         if self.matched:
             self.rho0 = self.M / (4.0 * math.pi * ((self.Rw + self.w_in) ** 3 / 3.0 - J_in))
         else:

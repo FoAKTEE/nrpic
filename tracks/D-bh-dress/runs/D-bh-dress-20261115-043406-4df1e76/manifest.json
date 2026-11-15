@@ -1,0 +1,49 @@
+{
+ "run_id": "D-bh-dress-20261115-043406-4df1e76",
+ "owner": "D-bh-dress",
+ "package": "einstein_straus",
+ "tag": "code-t0-analysis2",
+ "purpose": "D-pre-1 analysis of the start-time code check (repeat with the offline sub-boxes added): regional norms of the code's H, M, E - rho at t = 0 for dx = 1 and 1/2 M (runs D-bh-dress-20261115-043002-d51c7f2, D-bh-dress-20261115-043033-4df1e76)",
+ "kind": "scouting",
+ "command": [
+  "python3",
+  "/data/haiyangw/nrpic/wt/D-bh-dress/tracks/D-bh-dress/einstein_straus/code_t0_check.py",
+  "analyse",
+  "--runs",
+  "/data/haiyangw/nrpic/scratch/D-bh-dress/D-bh-dress-20261115-043002-d51c7f2",
+  "/data/haiyangw/nrpic/scratch/D-bh-dress/D-bh-dress-20261115-043033-4df1e76",
+  "--out",
+  "/data/haiyangw/nrpic/scratch/D-bh-dress/D-bh-dress-20261115-043406-4df1e76"
+ ],
+ "cwd": "/data/haiyangw/nrpic/scratch/D-bh-dress/D-bh-dress-20261115-043406-4df1e76",
+ "commit": "4df1e765e70609a215e86cb584c1391c5532cdea",
+ "worktree_dirty": true,
+ "inputs": [
+  {
+   "path": "/data/haiyangw/nrpic/wt/D-bh-dress/tracks/D-bh-dress/einstein_straus/code_t0_check.py",
+   "sha256": "d0a368919b68d9d3f21af677bc5fee942b426cc0b97c2c6297cfe6bd250d91d9"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/wt/D-bh-dress/tracks/D-bh-dress/einstein_straus/offline_check.py",
+   "sha256": "2fb29982e01dbe813cb26fa37b5f6f5a3c059e09b23d969d147d49d7758cf34b"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/scratch/D-bh-dress/D-bh-dress-20261115-043002-d51c7f2/es.field.00000.bin",
+   "sha256": "c83cb45bbcffaa850fb035a16f832d3aba2c27b1b54410cf2d9065ebc9d35617"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/scratch/D-bh-dress/D-bh-dress-20261115-043033-4df1e76/es.field.00000.bin",
+   "sha256": "ff8608c2eda70f6e12fcd9e7619e4b6b5d8a03bd564a271fa751874951f2e000"
+  }
+ ],
+ "output_directory": "/data/haiyangw/nrpic/scratch/D-bh-dress/D-bh-dress-20261115-043406-4df1e76",
+ "outputs": [
+  "code_t0.json",
+  "log.txt"
+ ],
+ "wall_time_s": 14.6,
+ "cores": 4,
+ "card_hours": 0.0,
+ "exit_status": 0,
+ "started": "20261115-043406"
+}

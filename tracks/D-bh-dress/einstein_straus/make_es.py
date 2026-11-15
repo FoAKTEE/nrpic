@@ -379,7 +379,7 @@ def main():
     hdr = ["black hole in a vacuum bubble inside an expanding dust ball (Einstein-Straus type), "
            "tracks/D-bh-dress/einstein_straus/make_es.py",
            "add a puncture component of bare mass m_p at the same centre"]
-    hdr += [f"{k} = {v!r}" for k, v in s.items()]
+    hdr += [f"{k} = {(float(v) if isinstance(v, (float, np.floating)) else v)!r}" for k, v in s.items()]
     em.write_tab2(ptab, tab, header=hdr)
     # particles
     xt, Rt, rbt, mt, Et, _ = tracers(model)

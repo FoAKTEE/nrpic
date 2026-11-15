@@ -1,0 +1,45 @@
+{
+ "run_id": "D-bh-dress-20261115-043033-4df1e76",
+ "owner": "D-bh-dress",
+ "package": "einstein_straus",
+ "tag": "code-t0-dx0.5",
+ "purpose": "D-pre-1 start-time check inside AthenaK (nrpic_cf format-2 reader of core/id-extrinsic at 408df57, processor build of wt/core-id): table of D-bh-dress-20261115-042653-f3da881 + puncture, uniform mesh half-width 48 M, dx = 1/2 M, nlim = 0, lattice dust at cell centres; prediction C1-C3 of JOURNAL entry 3",
+ "kind": "scouting",
+ "command": [
+  "bash",
+  "-c",
+  "python3 /data/haiyangw/nrpic/wt/D-bh-dress/tracks/D-bh-dress/einstein_straus/code_t0_check.py prep --tab /data/haiyangw/nrpic/scratch/D-bh-dress/D-bh-dress-20261115-042653-f3da881/es.tab --dx 0.5 --half 48 --out /data/haiyangw/nrpic/scratch/D-bh-dress/D-bh-dress-20261115-043033-4df1e76 && /data/haiyangw/nrpic/wt/core-id/.work/build_cpu/src/athena -i /data/haiyangw/nrpic/scratch/D-bh-dress/D-bh-dress-20261115-043033-4df1e76/es_t0.athinput -d /data/haiyangw/nrpic/scratch/D-bh-dress/D-bh-dress-20261115-043033-4df1e76"
+ ],
+ "cwd": "/data/haiyangw/nrpic/scratch/D-bh-dress/D-bh-dress-20261115-043033-4df1e76",
+ "commit": "4df1e765e70609a215e86cb584c1391c5532cdea",
+ "worktree_dirty": false,
+ "inputs": [
+  {
+   "path": "/data/haiyangw/nrpic/wt/D-bh-dress/tracks/D-bh-dress/einstein_straus/code_t0_check.py",
+   "sha256": "6e7607966efb8d45e359e4ff2442ecab4fedb19863065f3d0f481f30cbdedc9b"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/scratch/D-bh-dress/D-bh-dress-20261115-042653-f3da881/es.tab",
+   "sha256": "b97e18d94566b0e859440591b1890226b4944bc669cffbee1687ead2c02208c1"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/wt/core-id/.work/build_cpu/src/athena",
+   "sha256": "7d1292d0e73ac41a53dbd9225dbaeaa6c8861220d83762de8d37dea618f01515"
+  }
+ ],
+ "output_directory": "/data/haiyangw/nrpic/scratch/D-bh-dress/D-bh-dress-20261115-043033-4df1e76",
+ "outputs": [
+  "es.cstat.hst",
+  "es.field.00000.bin",
+  "es.nrpic.hst",
+  "es.z4c.user.hst",
+  "es_box.nrp",
+  "es_t0.athinput",
+  "log.txt"
+ ],
+ "wall_time_s": 147.8,
+ "cores": 1,
+ "card_hours": 0.0,
+ "exit_status": 0,
+ "started": "20261115-043033"
+}

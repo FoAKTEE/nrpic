@@ -194,6 +194,16 @@ def analyse(a):
                              E_minus_rho_max=float(np.max(np.abs(fld["E"][s] - rho[s]))),
                              rho_max=float(np.max(rho[s])) if np.any(rho[s] > 0) else 0.0,
                              Khat_max=float(np.max(np.abs(fld["Khat"][s]))))
+        # the sub-boxes of the offline 3D check (offline_check.boxes), same spatial region
+        import offline_check as oc
+        for bname, c, bhalf, _ in oc.boxes(model):
+            s = ((np.abs(X - c[0]) <= bhalf) & (np.abs(Y - c[1]) <= bhalf) & (np.abs(Z - c[2]) <= bhalf)
+                 & inner)
+            if np.count_nonzero(s) < 8:
+                continue
+            rec.setdefault("boxes", {})[bname] = dict(cells=int(s.sum()),
+                                                     H_max=float(np.max(np.abs(fld["H"][s]))),
+                                                     M_max=float(np.max(Mabs[s])))
         res[f"dx={dx:g}"] = rec
         # radial profiles along the diagonal-ish ray for the figure
         rec["_profile"] = (r[inner].ravel(), np.abs(fld["H"][inner]).ravel(), Mabs[inner].ravel())

@@ -1,0 +1,45 @@
+{
+ "run_id": "D-bh-dress-20261115-043327-4df1e76",
+ "owner": "D-bh-dress",
+ "package": "einstein_straus",
+ "tag": "code-t0-analysis",
+ "purpose": "D-pre-1 analysis of the start-time code check: regional norms of the code's H, M, E - rho at t = 0 for dx = 1 and 1/2 M (runs D-bh-dress-20261115-043002-d51c7f2, D-bh-dress-20261115-043033-4df1e76)",
+ "kind": "scouting",
+ "command": [
+  "python3",
+  "/data/haiyangw/nrpic/wt/D-bh-dress/tracks/D-bh-dress/einstein_straus/code_t0_check.py",
+  "analyse",
+  "--runs",
+  "/data/haiyangw/nrpic/scratch/D-bh-dress/D-bh-dress-20261115-043002-d51c7f2",
+  "/data/haiyangw/nrpic/scratch/D-bh-dress/D-bh-dress-20261115-043033-4df1e76",
+  "--out",
+  "/data/haiyangw/nrpic/scratch/D-bh-dress/D-bh-dress-20261115-043327-4df1e76"
+ ],
+ "cwd": "/data/haiyangw/nrpic/scratch/D-bh-dress/D-bh-dress-20261115-043327-4df1e76",
+ "commit": "4df1e765e70609a215e86cb584c1391c5532cdea",
+ "worktree_dirty": true,
+ "inputs": [
+  {
+   "path": "/data/haiyangw/nrpic/wt/D-bh-dress/tracks/D-bh-dress/einstein_straus/code_t0_check.py",
+   "sha256": "6e7607966efb8d45e359e4ff2442ecab4fedb19863065f3d0f481f30cbdedc9b"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/scratch/D-bh-dress/D-bh-dress-20261115-043002-d51c7f2/es.field.00000.bin",
+   "sha256": "c83cb45bbcffaa850fb035a16f832d3aba2c27b1b54410cf2d9065ebc9d35617"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/scratch/D-bh-dress/D-bh-dress-20261115-043033-4df1e76/es.field.00000.bin",
+   "sha256": "ff8608c2eda70f6e12fcd9e7619e4b6b5d8a03bd564a271fa751874951f2e000"
+  }
+ ],
+ "output_directory": "/data/haiyangw/nrpic/scratch/D-bh-dress/D-bh-dress-20261115-043327-4df1e76",
+ "outputs": [
+  "code_t0.json",
+  "log.txt"
+ ],
+ "wall_time_s": 14.4,
+ "cores": 4,
+ "card_hours": 0.0,
+ "exit_status": 0,
+ "started": "20261115-043327"
+}
