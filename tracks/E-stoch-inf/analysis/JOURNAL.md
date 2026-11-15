@@ -48,3 +48,35 @@ The local launcher passes its arguments without a shell, so the literal argument
 directory of that name in the worktree root. Stopped after a minute with `nrpic-run stop`,
 the stray directory removed, the run closed as stopped. Resubmitted with `bash -c`, which
 expands the variable (as in the lead's HANDOFF command).
+
+## 17:40 Predictions: estimators of `sfa.py` on synthetic fields (`tests/test_sfa.py`)
+
+The criteria are printed in the test file and are fixed now, before the first run.
+- T1 (reader, coefficients): a field from known coefficients, written as an 8-MeshBlock
+  NRSFDMP1 dump, comes back to round-off (<= 1e-13 of the rms); L, x0, h exact.
+- T2 (R^NR of P-c on a slice built nonlinearly from R, psi, E): error of second order in
+  the amplitude A (<= 1e-4 of the rms at A = 1e-5; slope 1 of the relative error against
+  A). Without the gt term the error is of first order (relative error independent of A,
+  of order |k^2 E/3|/R, here set to O(1) on purpose); with <Pi> of the wrong sign the
+  relative error is O(1). The SPEC 5.3 slice (delta X = 2 Phi_B, gt = delta) returns R at
+  first order exactly. Refuted if the slope is not 1 (an error in a factor of Phi or of
+  the field coefficient would make it 0).
+- T3 (per-mode ratio, .modes parser, drift): planted deviations recovered to 1e-10;
+  header and rows of a record written with the code's printf formats parsed exactly.
+- T4 (shell spectrum): Delta0 exactly for unit-modulus amplitudes; with the code's
+  Gaussian amplitudes the pooled ratio within 4 sigma of 1.
+- T5 (constraints): first differences equal the stencil symbol to 1e-13; [H] per cell
+  exact for a known Ricci scalar; [M] of a plane wave equal to its closed form.
+Development runs before registration go to scratch/E-stoch-inf/tmp/ and are for
+debugging only; the numbers quoted come from the registered run.
+
+17:50 Development run (scratch/E-stoch-inf/tmp/dev_tests, not a result): T2a failed its
+absolute threshold with the correct scaling. The relative error is 2.19e-1, 6.91e-2,
+2.34e-2, 7.05e-3, 2.35e-3, 7.06e-4, 2.35e-4 at A = 1e-2 ... 1e-5: exactly proportional to A
+(second order), with coefficient 23.5, not the <= 10 the threshold assumed. I had not
+estimated the factor from taking the maximum over 32^3 cells of a product of two
+Gaussian fields (about (4.5 sigma)^2 of the rms) with |d_i d_j E| of order |psi| in this
+synthetic slice. The criterion is amended to <= 1e-3 at A = 1e-5 together with the
+unchanged slope 1 +- 0.1, which is what separates second from first order (the control
+without gt stays at 0.657 for every A). Second bug of the development run: the test's
+own .modes writer used the C format %llu, which Python does not know (fixed: %d).
