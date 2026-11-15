@@ -348,3 +348,13 @@ C  Cluster (P11 set-up, Kn = 3, collision cells of 2 M, 150 M, 1e4 particles), r
    0.7914, 0.7885, 0.7891 for three cell sizes), mass radii within 5 percent. Refuted by
    a change of sum M H_p in `particle` above 1e-12, or by a structural difference
    beyond these bounds.
+
+### Processor fallbacks while the card queue is full (16:26 UTC; 17 jobs queued, mine are 4453 R, 4454 N, 4455 C)
+
+Cp Cluster on the processor, two steps (0.25 M) with a cross-section 100 times that of
+   Kn = 3 (Kn = 0.03, about 800 expected collisions in the two steps), runs
+   kn0.03_cell and kn0.03_particle: `particle`: |sum of dH_particles| below 1e-12 of
+   sum M H; `cell`: sum of dH_particles positive, of order 800 x 1.6e-8 = 1.3e-5 of
+   sum M H (between 3e-6 and 5e-5; few collisions, wide band). Same refutation as C.
+G4 and the replay cases of coll_energy run on the processor now with the predictions
+already written.
