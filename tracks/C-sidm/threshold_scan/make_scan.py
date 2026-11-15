@@ -98,8 +98,9 @@ def make_decks(ic_dir):
             text = D.set_key(text, "particles", "particle_file",
                              os.path.join(ic_dir, f"{C.stem(tag)}_{kname}.nrp"))
             text = D.set_key(text, "output2", "dt", f"{RST_DT:g}")
-            text = text.replace(f"King cluster {mk}_kninf", f"King cluster scanA {tag} {kname}")
             name = f"scanA_{tag.split('_')[1]}_{kname}"
+            text = text.replace(f"King cluster {mk}_kninf", f"King cluster scanA {tag} {kname}")
+            text = text.replace(f"# threshold_scan {mk}_kninf:", f"# threshold_scan {name}:")
             write_deck(name, text)
             names.append(name)
             del C.MODELS[mk]

@@ -180,3 +180,19 @@ magnitude to within 30 percent, mean speed about 0.45 from CONVERSION.md), sum W
 less than 1e-4 relative (second order in the kick), and the fraction of particles pushed
 above E0 lies in [0.002, 0.012] (about half of the 1.7 percent within 1e-2 of E0 move up
 by a first-order change of E of up to 1e-2 E0). Refuted if any of these fails.
+
+Outcome of Test 4 (run C-20261115-174556-3544e2c): partly FAILED, as follows.
+- PASS: king_y0p33403 and king_y0p31400 (.nrp, .tab, .json) are byte-identical to those of
+  run C-20261115-165832-fccee3a; sum W changes by 4.6e-6 to 1.0e-5 (below 1e-4); net
+  momentum below 4e-17.
+- Mean radial three-velocity: -0.00357 to -0.00374 (inward kick) and +0.00313 to +0.00328
+  (outward) over the five models. Nine of ten inside the predicted band [0.00315, 0.00585];
+  y0 = 0.314 outward (0.003127) is 0.7 percent below its lower edge. My band was centred
+  on the central mean speed of CONVERSION.md (0.45-0.50); the particle-averaged speed is
+  lower, about 0.34 (= the measured magnitude / 0.01). The difference between the two
+  signs, -2.2e-4 in the mean, is the sample's own mean radial velocity.
+- FAILED: fraction pushed above E0 is 1.1e-4 to 1.2e-4, not in [0.002, 0.012]. The kick
+  changes E by about 0.01 alpha q^2/W, i.e. 1e-3 of E0 (largest E/E0 after the kick
+  1.0014-1.0024), not 1e-2 as I assumed; half of the 2.6e-4 within 1e-3 of E0 (Entry 2)
+  is 1.3e-4, which matches.
+Decks of `inputs/scan/` (12) written from this run by `make_scan.py decks`.

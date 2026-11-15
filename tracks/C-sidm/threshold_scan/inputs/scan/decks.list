@@ -1,0 +1,13 @@
+# decks of the prepared threshold scan; each runs as one chain (SCAN.md)
+scanA_y0p31400_kin tracks/C-sidm/threshold_scan/inputs/scan/scanA_y0p31400_kin.athinput
+scanA_y0p31400_kout tracks/C-sidm/threshold_scan/inputs/scan/scanA_y0p31400_kout.athinput
+scanA_y0p32400_kin tracks/C-sidm/threshold_scan/inputs/scan/scanA_y0p32400_kin.athinput
+scanA_y0p32400_kout tracks/C-sidm/threshold_scan/inputs/scan/scanA_y0p32400_kout.athinput
+scanA_y0p33403_kin tracks/C-sidm/threshold_scan/inputs/scan/scanA_y0p33403_kin.athinput
+scanA_y0p33403_kout tracks/C-sidm/threshold_scan/inputs/scan/scanA_y0p33403_kout.athinput
+scanA_y0p34400_kin tracks/C-sidm/threshold_scan/inputs/scan/scanA_y0p34400_kin.athinput
+scanA_y0p34400_kout tracks/C-sidm/threshold_scan/inputs/scan/scanA_y0p34400_kout.athinput
+scanA_y0p35400_kin tracks/C-sidm/threshold_scan/inputs/scan/scanA_y0p35400_kin.athinput
+scanA_y0p35400_kout tracks/C-sidm/threshold_scan/inputs/scan/scanA_y0p35400_kout.athinput
+scanC_cc1_kn3 tracks/C-sidm/threshold_scan/inputs/scan/scanC_cc1_kn3.athinput
+scanC_cc1_kn0p3 tracks/C-sidm/threshold_scan/inputs/scan/scanC_cc1_kn0p3.athinput

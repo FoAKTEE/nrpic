@@ -77,6 +77,9 @@ def analyse_run(name, d, pred, model):
     out["alpha_c_max"] = float(ap.max())
     late = t >= t[-1] - 50.0
     out["alpha_c_mean_last50"] = float(np.mean(ap[late]))
+    # the probe interpolates the eight cell centres around the origin, so alpha_c(0) is
+    # above the model's central lapse; changes are measured from alpha_c(0)
+    out["alpha_c_max_dev_from_start"] = float(np.max(np.abs(ap - ap[0])))
     out["alpha_min_grid"] = float(h["alpha_min"].min())
     mW = h["sum_mW"] / h["sum_m"]
     out["mean_lorentz_max_change"] = float(np.max(np.abs(mW - mW[0])))
@@ -203,13 +206,12 @@ def figures(outdir, res, ser, pred):
             if not name.startswith(mk):
                 continue
             k = kn_of(name)
-            axs[row, 0].plot(s["t"], s["ap"] - res[name]["alpha_c_eq"], color=col[k], lw=1.0,
-                             label=lab[k])
+            axs[row, 0].plot(s["t"], s["ap"] - s["ap"][0], color=col[k], lw=1.0, label=lab[k])
             for j, ls in zip(range(3 if len(s["rr"]) else 0), (":", "-", "--")):
                 axs[row, 1].plot(s["ts"], s["rr"][:, j] / s["rr"][0, j], color=col[k], ls=ls, lw=1.2,
                                  label=lab[k] if j == 1 else None)
         axs[row, 0].axhline(0.0, **fs.MASK_LINE)
-        axs[row, 0].set_ylabel(r"$\alpha_c - \alpha_{c,\rm eq}$" + f"  ({mk.upper()})")
+        axs[row, 0].set_ylabel(r"$\alpha_c(t) - \alpha_c(0)$" + f"  ({mk.upper()})")
         axs[row, 1].set_ylabel(r"$r_{10}, r_{50}, r_{90}$ over initial" + f"  ({mk.upper()})")
         axs[row, 0].legend(fontsize=8, ncol=3, loc="lower left")
     for ax in axs[1]:
