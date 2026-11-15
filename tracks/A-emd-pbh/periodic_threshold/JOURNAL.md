@@ -369,3 +369,30 @@ max|gamma-tilde - delta| = 1.8e-4, 4.4e-3, 2.7e-2 at eps_i = 0.2, 1, sqrt 6 for
 mu = 0.03 (Psi - 1 = 0.0149): the expansion is valid at the paper's start only;
 transverse-traceless fraction of p_ij 0.26 per cent (mu = 0.03) and 3.9 per cent
 (mu = 0.5).
+
+## 2026-11-15, S0: processor dry run of the scouting configuration (written before the run)
+
+The cards are queued behind about ten jobs. A processor run of the S2 input (four static
+levels, mu = 0.03 data) for two cycles checks that the input, the data and the outputs
+work before the card run, and gives the t = 0 constraint on the four-level mesh.
+Prediction: it runs; 4 x 56 + 64 = 288 blocks of 16^3 (about 1.2e6 cells); at t = 0 the
+relative Hamiltonian constraint H_r max is of order 1e-3 to 1e-2 (T2b: 8 per cent of the
+perturbation at two levels; delta_N at the peak is 0.011 at mu = 0.03, eps_i = 1), all
+on refined blocks; about 170 s per cycle (7.8e3 zone-cycles per second).
+
+### S0 outcome (run A-emd-pbh-20261115-161829-dba94f6)
+
+Confirmed: 288 blocks (56 per level 0-3, 64 on level 4), two cycles in 7.6e3 zone-cycles
+per second, k dt = 0.0049. At t = 0: H_r max = 5.0e-3, H_r mean 6.4e-4, H max = 0.044
+(about 0.18 of 16 pi max|E - Ebar|, against 0.077 with two levels in T2b: the deeper
+levels add interpolation error). The finder ran (no horizon) but wrote its summary file
+into the working directory, here the worktree root: the finder's output paths are not
+taken relative to `-d` (moved by hand into the run directory; card runs run in their
+run directory, so they are not affected). Recorded for core as a minor defect.
+The dry run also showed two defects of my inputs, fixed before the queued card runs
+started (inputs edited in place; manifests of S1 and S2 note it): the y and z lines of
+E were written to the same file name as the x line (AthenaK names tab files by variable
+unless `id` is set), and `adm_alpha` is not output when Z4c evolves the lapse (the
+lapse is `z4c_alpha`). A smoke run of the corrected outputs (unregistered,
+`scratch/A-emd-pbh/tmp/smoke_out`) produced all nine files and the analysis figures.
+The T2 runs used the earlier version of `inputs/peak_smr.athinput` (outputs only differ).

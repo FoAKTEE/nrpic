@@ -1,0 +1,44 @@
+{
+ "run_id": "A-emd-pbh-20261115-162505-d32d331",
+ "owner": "A-emd-pbh",
+ "track": "A-emd-pbh",
+ "gate": "G2",
+ "package": "periodic_threshold",
+ "purpose": "Test of analyse_scouting.py on the dry run S0",
+ "kind": "scouting",
+ "command": [
+  ".venv/bin/python",
+  "-I",
+  "tracks/A-emd-pbh/periodic_threshold/scripts/analyse_scouting.py",
+  "--run",
+  "S0=/data/haiyangw/nrpic/scratch/A-emd-pbh/A-emd-pbh-20261115-161829-dba94f6",
+  "--out",
+  "/data/haiyangw/nrpic/scratch/A-emd-pbh/A-emd-pbh-20261115-162505-d32d331"
+ ],
+ "cwd": "/data/haiyangw/nrpic/wt/A-emd-pbh",
+ "commit": "d32d331c27ff12fd33a5a648736cd3f1820e0ba1",
+ "git": {
+  "sha": "d32d331c27ff12fd33a5a648736cd3f1820e0ba1",
+  "branch": "track/A-emd-pbh",
+  "package_dirty": true
+ },
+ "host": "anta",
+ "inputs": [],
+ "output_dir": "/data/haiyangw/nrpic/scratch/A-emd-pbh/A-emd-pbh-20261115-162505-d32d331",
+ "outputs": {
+  "dir": "scratch/A-emd-pbh/A-emd-pbh-20261115-162505-d32d331",
+  "sha256sums": "sha256sums.txt"
+ },
+ "cores": 1,
+ "card_hours": 0.0,
+ "parents": [
+  "A-emd-pbh-20261115-161829-dba94f6"
+ ],
+ "registered_by": "hand (scripts/register_run.py): nrpic-run refuses the worktree while other helpers' untracked files are present",
+ "status": "failed",
+ "started": "2026-11-15T16:25:05.046023+00:00",
+ "notes": "",
+ "wall_time_s": 2.37,
+ "exit_code": 1,
+ "ended": "2026-11-15T16:25:07.424116+00:00"
+}

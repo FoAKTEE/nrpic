@@ -22,7 +22,8 @@
  "inputs": [
   {
    "path": "/data/haiyangw/nrpic/wt/A-emd-pbh/tracks/A-emd-pbh/periodic_threshold/inputs/peak_smr4.athinput",
-   "sha256": "0b454d832de7756aaf88e6c436dbb3655d91d4da1d5927c9b58fcac176a06fc3"
+   "sha256": "e03c3ff6447ba2c97b1fb4e4689736ab8c56e34268facde1fff7d5f7207f8e67",
+   "sha256_at_submission": "0b454d832de7756aaf88e6c436dbb3655d91d4da1d5927c9b58fcac176a06fc3"
   },
   {
    "path": "/data/haiyangw/nrpic/.work/build_gpu_v03/src/athena",
@@ -48,5 +49,6 @@
  "card_hours": null,
  "registered_by": "hand (scripts/card_run.py): nrpic-run refuses the worktree while other helpers' untracked files are present",
  "status": "submitted",
- "started": "2026-11-15T15:57:54.134067+00:00"
+ "started": "2026-11-15T15:57:54.134067+00:00",
+ "notes": "Input deck edited after submission and before the job started (the batch list reads it at run time): the tab outputs of the first version wrote three outputs into one file name and asked for adm_alpha, which AthenaK does not output with Z4c (found by the processor dry run S0, A-emd-pbh-20261115-161829-dba94f6). The run uses the deck of the commit that records this note; sha256 above is the edited deck."
 }

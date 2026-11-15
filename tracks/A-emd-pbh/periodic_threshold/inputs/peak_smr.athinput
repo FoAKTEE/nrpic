@@ -168,7 +168,7 @@ dt        = 0.1
 
 <output2>
 file_type = tab
-variable  = adm
+variable  = z4c
 dt        = 0.5
 slice_x2  = 0.001
 slice_x3  = 0.001
@@ -189,7 +189,8 @@ slice_x3  = 0.001
 
 <output5>
 file_type = tab
-variable  = adm_alpha
+variable  = z4c_alpha
+id        = alpha_y
 dt        = 0.5
 slice_x1  = 0.001
 slice_x3  = 0.001
@@ -197,6 +198,7 @@ slice_x3  = 0.001
 <output6>
 file_type = tab
 variable  = tmunu_E
+id        = E_y
 dt        = 0.5
 slice_x1  = 0.001
 slice_x3  = 0.001
@@ -204,3 +206,19 @@ slice_x3  = 0.001
 <output7>
 file_type = rst
 dt        = 5.0
+
+<output8>
+file_type = tab
+variable  = z4c_alpha
+id        = alpha_z
+dt        = 0.5
+slice_x1  = 0.001
+slice_x2  = 0.001
+
+<output9>
+file_type = tab
+variable  = tmunu_E
+id        = E_z
+dt        = 0.5
+slice_x1  = 0.001
+slice_x2  = 0.001

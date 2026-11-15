@@ -169,13 +169,15 @@ def figures(runs, eps, out, sums):
         fig = plt.figure(figsize=(8, 5.4))
         fig.subplots_adjust(left=0.09, right=0.98, bottom=0.09, top=0.97, wspace=0.28,
                             hspace=0.3)
-        series = [("tmunu_E", "x", 4), ("tmunu_E", "y", 6), ("tmunu_E", "z", 9),
-                  ("adm_alpha", "x", None), ("adm_alpha", "y", 5), ("adm_alpha", "z", 8)]
-        for j, (var, axn, _) in enumerate(series):
+        # (file id, column, axis): x line from the z4c and tmunu_E outputs, y and z lines
+        # from the outputs with ids E_y, E_z, alpha_y, alpha_z
+        series = [("tmunu_E", "tmunu_E", "x"), ("E_y", "tmunu_E", "y"),
+                  ("E_z", "tmunu_E", "z"), ("z4c", "z4c_alpha", "x"),
+                  ("alpha_y", "z4c_alpha", "y"), ("alpha_z", "z4c_alpha", "z")]
+        for j, (fid, col, axn) in enumerate(series):
             ax = fig.add_subplot(2, 3, j + 1)
-            vv = var if var != "adm_alpha" or axn != "x" else "adm"
-            sers = tab_series(run, vv, axn)
-            if not sers:
+            sers = tab_series(run, fid, axn)
+            if not sers or col not in sers[0]:
                 continue
             pick = sers[::max(1, len(sers)//6)] + [sers[-1]]
             cc = fs.series_colors(len(pick))
@@ -183,16 +185,15 @@ def figures(runs, eps, out, sums):
             for d, cl in zip(pick, cc):
                 o = np.argsort(d[key])
                 a = (1.0 + 0.5*d["time"])**2
-                if var == "tmunu_E":
-                    y = d["tmunu_E"][o]/(3/(8*np.pi)/a**3)
+                if col == "tmunu_E":
+                    y = d[col][o]/(3/(8*np.pi)/a**3)
                     ax.semilogy(d[key][o], y, color=cl, lw=1.0,
                                 label=f"{t_over_tH(d['time'], eps):.3g}")
                 else:
-                    y = d["adm_alpha"][o]/a
-                    ax.plot(d[key][o], y, color=cl, lw=1.0)
+                    ax.plot(d[key][o], d[col][o]/a, color=cl, lw=1.0)
             ax.set_xlim(-4, 4)
             ax.set_xlabel(f"{axn} (through the peak)")
-            ax.set_ylabel(r"$E/\bar E$" if var == "tmunu_E" else r"$\alpha/a$")
+            ax.set_ylabel(r"$E/\bar E$" if col == "tmunu_E" else r"$\alpha/a$")
             if j == 0:
                 ax.legend(frameon=False, fontsize=7, title=r"$t/t_H$", title_fontsize=7)
         fs.save(fig, os.path.join(out, f"fig_scouting_profiles_{label}"))

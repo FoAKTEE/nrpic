@@ -1,0 +1,43 @@
+{
+ "run_id": "A-emd-pbh-20261115-162554-d32d331",
+ "owner": "A-emd-pbh",
+ "helper": "newton",
+ "launcher": "local",
+ "kind": "scouting",
+ "purpose": "Interim analysis of the scan campaign A-emd-pbh-20261115-153415-dc27b98 (completed cases only) and the card point e0p2_h0125 (P10)",
+ "commit": "d32d331c27ff12fd33a5a648736cd3f1820e0ba1",
+ "branch": "track/A-emd-pbh",
+ "cwd": "/data/haiyangw/nrpic/wt/A-emd-pbh",
+ "inputs": [
+  {
+   "path": "tracks/A-emd-pbh/newton/analyze_newton.py",
+   "sha256": "9a37a4761cf0215bd4aa99732928ea527df3260a15fa729324250bab37334c7b"
+  }
+ ],
+ "outputs": {
+  "dir": "scratch/A-emd-pbh/A-emd-pbh-20261115-162554-d32d331"
+ },
+ "output_dir": "/data/haiyangw/nrpic/scratch/A-emd-pbh/A-emd-pbh-20261115-162554-d32d331/",
+ "registered": "2026-11-15T16:25:54+00:00",
+ "machine": "anta",
+ "notes": "registered by hand: harness/bin/nrpic-run submit refused (worktree not clean: untracked files of other helpers of A-emd-pbh in the same worktree)",
+ "command": [
+  ".venv/bin/python",
+  "tracks/A-emd-pbh/newton/analyze_newton.py",
+  "--scan",
+  "/data/haiyangw/nrpic/scratch/A-emd-pbh/A-emd-pbh-20261115-153415-dc27b98",
+  "/data/haiyangw/nrpic/scratch/A-emd-pbh/A-emd-pbh-20261115-153437-dc27b98",
+  "--prep",
+  "/data/haiyangw/nrpic/scratch/A-emd-pbh/A-emd-pbh-20261115-153424-dc27b98"
+ ],
+ "cores": 1,
+ "card_hours": 0.0,
+ "status": "completed",
+ "exit_code": 0,
+ "wall_time_s": 45.0,
+ "core_hours": 0.0125,
+ "ended": "2026-11-15T16:26:39+00:00",
+ "sha256sums": "sha256sums.txt",
+ "sha256sums_sha256": "09443f06bd0db0841fede381f5f09765eab16ce68e0818034555e309b613bb35",
+ "n_output_files": 15
+}

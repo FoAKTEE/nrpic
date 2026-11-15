@@ -1,0 +1,54 @@
+{
+ "run_id": "A-emd-pbh-20261115-161829-dba94f6",
+ "owner": "A-emd-pbh",
+ "track": "A-emd-pbh",
+ "gate": "G2",
+ "package": "periodic_threshold",
+ "purpose": "S0: processor dry run (2 cycles) of the scouting input with four static levels, mu = 0.03",
+ "kind": "scouting",
+ "command": [
+  "/data/haiyangw/nrpic/.work/build_cpu_v03/src/athena",
+  "-i",
+  "tracks/A-emd-pbh/periodic_threshold/inputs/peak_smr4.athinput",
+  "-d",
+  "/data/haiyangw/nrpic/scratch/A-emd-pbh/A-emd-pbh-20261115-161829-dba94f6",
+  "problem/id_file=/data/haiyangw/nrpic/scratch/A-emd-pbh/A-emd-pbh-20261115-154735-69e8f8b/S_mu0.03/fields.bin",
+  "particles/particle_file=/data/haiyangw/nrpic/scratch/A-emd-pbh/A-emd-pbh-20261115-154735-69e8f8b/S_mu0.03/particles.nrp",
+  "time/nlim=2",
+  "fastflow/find_every=1",
+  "fastflow/start_time_0=0.0"
+ ],
+ "cwd": "/data/haiyangw/nrpic/wt/A-emd-pbh",
+ "commit": "dba94f6afbd412f58c7f13870fc179194b1bbcca",
+ "git": {
+  "sha": "dba94f6afbd412f58c7f13870fc179194b1bbcca",
+  "branch": "track/A-emd-pbh",
+  "package_dirty": true
+ },
+ "host": "anta",
+ "inputs": [
+  {
+   "path": "/data/haiyangw/nrpic/wt/A-emd-pbh/tracks/A-emd-pbh/periodic_threshold/inputs/peak_smr4.athinput",
+   "sha256": "0b454d832de7756aaf88e6c436dbb3655d91d4da1d5927c9b58fcac176a06fc3"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/.work/build_cpu_v03/src/athena",
+   "sha256": "d983155bb21befedbd123d54d84fcfc12a875ee0aaa0baa36f5a51261041c25c"
+  }
+ ],
+ "output_dir": "/data/haiyangw/nrpic/scratch/A-emd-pbh/A-emd-pbh-20261115-161829-dba94f6",
+ "outputs": {
+  "dir": "scratch/A-emd-pbh/A-emd-pbh-20261115-161829-dba94f6",
+  "sha256sums": "sha256sums.txt"
+ },
+ "cores": 1,
+ "card_hours": 0.0,
+ "parents": [],
+ "registered_by": "hand (scripts/register_run.py): nrpic-run refuses the worktree while other helpers' untracked files are present",
+ "status": "completed",
+ "started": "2026-11-15T16:18:29.257784+00:00",
+ "notes": "The horizon finder opens its summary file relative to the working directory, which was the worktree root for this processor run (the run used -d for the output directory only); the file peak.horizon_summary_0.txt was moved by hand into the output directory after the run, after sha256sums.txt was written.",
+ "wall_time_s": 358.08,
+ "exit_code": 0,
+ "ended": "2026-11-15T16:24:27.627953+00:00"
+}
