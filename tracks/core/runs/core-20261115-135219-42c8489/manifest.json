@@ -1,0 +1,34 @@
+{
+ "run_id": "core-20261115-135219-42c8489",
+ "owner": "core",
+ "purpose": "P8b cell size in a homogeneous gas: 4e5 particles, collision cells 2^3 to 64^3 through the mesh and coll_cell_factor, two seeds; pair counting, rate, decay rate; processor",
+ "kind": "production",
+ "command": [
+  "python3",
+  "/data/haiyangw/nrpic/wt/core-coll/tracks/core/analysis/collisions/run_cells.py",
+  "/data/haiyangw/nrpic/scratch/core/core-20261115-135219-42c8489",
+  "--nproc",
+  "8"
+ ],
+ "cwd": "/data/haiyangw/nrpic/scratch/core/core-20261115-135219-42c8489",
+ "commit": "42c84892e8973482566c46d5a004f930e8a37351",
+ "branch": "core/collisions",
+ "uncommitted_changes": [],
+ "inputs": [
+  {
+   "path": ".work/build_cpu/src/athena",
+   "sha256": "5c78d0a795d66086b030c3dbbbc5408982a238870b1a1d402afe04ea1e153ae2"
+  },
+  {
+   "path": "problems/tests/coll_box.athinput",
+   "sha256": "a06c76bba0baa646a929f0eb020d342bd2ce5210031b51dc44f48d320080cc4a"
+  }
+ ],
+ "output_directory": "/data/haiyangw/nrpic/scratch/core/core-20261115-135219-42c8489",
+ "host": "anta",
+ "start_utc": "2026-11-15T13:52:20Z",
+ "cores": 8,
+ "wall_time_s": 48.25,
+ "exit_status": 0,
+ "core_hours": 0.1072
+}
