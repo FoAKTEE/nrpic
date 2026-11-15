@@ -351,3 +351,52 @@ of momentum updates of every particle equal; n_tested, n_coll, n_updated equal t
 history record; sum_P within 1e-11; momenta after the step within 1e-13 max(1, |u|);
 particles without an update bit-identical before and after. Any mismatch refutes either
 the code or the interface text.
+
+## 2026-11-15 14:20 UTC  outcomes: replay, P8a; P8b restated
+
+### Replay: run core-20261115-134644-466dcfd
+
+Passed in all seven cases. The twin reproduces the cell indices, n_sub and the number of
+momentum updates of every one of the 20000 particles, n_tested, n_coll and n_updated of
+the history record (for example 75739 pairs tested, 2412 collisions, 3718 updates with
+`nanbu`), sum_P to 2e-14, and the momenta after the step to 8.9e-16 max(1, |u|) in the
+flat cases and 9.8e-15 (symmetric triad), 2.8e-15 (Cholesky triad, Boris pusher) in the
+homogeneous curved metric. Particles without an update are bit-identical before and
+after. Figure `fig_replay.png`.
+
+### P8a: run core-20261115-134511-0607ce8 (1e6 particles, three seeds per point)
+
+Figure `fig_conv_dt.png` looked at (right panel: four points on a straight line, the
+sub-cycled point on it at its own sub-step).
+- (i) passed. Fitted decay rates 1.2293(36), 1.2004(34), 1.1875(23), 1.1786(23) for
+  nu_0 dt = 0.1, 0.05, 0.025, 0.0125 (nu_0 = 1.25 in the units of the box). Straight line:
+  nu_inf = 1.1722(21), slope 0.716(59) against the forward-Euler value nu_inf^2/2 = 0.687
+  (chi^2 = 0.3 for 2 degrees of freedom). Successive differences 0.0289, 0.0129, 0.0089
+  (ratios 2.2 and 1.4; halving expected, standard errors about 0.004 each). First order
+  in the collision sub-step, with the predicted coefficient.
+- (ii) passed. Sub-cycled run (step 0.32, nu_0 dt = 0.4, mean n_sub 7.7): 1.1939(60)
+  against 1.2020 on the line at dt/<n_sub> = 0.0416 (z = -1.3); a plain step of that
+  size would give 1.40.
+- (iii) FAILED as written: nu_inf/nu_0 = 0.938, below my interval 0.95 to 1.02. The fit
+  over [0, 2/nu_0] is not the initial slope; I underestimated how much the decay slows
+  as the populations leave the Maxwellian form (left panel: the compensated curves bend
+  in the first half of the window). The initial slope (quadratic fit of ln D over the
+  first fifth of the window) is 1.2975(81), 1.273(11), 1.260(11), 1.2572(39) for the four
+  steps; removing the first-order term with the fitted slope gives 1.250(4) at dt -> 0
+  from the finest step, i.e. 1.000(4) of the non-relativistic closed form of the track
+  (P5(b): within 3 percent, passed; the track's relativistic value at theta_2 = 1e-3 is
+  0.995 of it, SPEC.md section 6).
+
+### P8b restated before the run
+
+`run_cells.py`: 4e5 particles, collision cells from 2^3 to 64^3 (50000 to 1.5 particles
+per cell), two seeds. Predictions: pair counting exact to rounding at every size
+(including cells of two and three particles, where the triple of odd cells carries most
+pairs); collisions = sum_P within 4 sigma; summed weight = nominal within 4 x the
+frozen-population scatter; (32,1) and (64,2), and (16,1) and (64,4), byte-identical.
+Decay rate of theta_1 - theta_2: I predicted "the same within noise" for all sizes. On
+reflection I expect that to FAIL for 1.5 particles per cell: a particle moves 0.07 cell
+per step there, so the same two particles are paired and collide repeatedly, which
+exchanges energy inside the pair instead of mixing the populations; the decay should be
+slower (by an amount I cannot predict), while the number of collisions stays right.
+For 6 particles per cell and more I expect no difference beyond 4 sigma.
