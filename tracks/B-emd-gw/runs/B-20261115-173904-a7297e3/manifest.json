@@ -1,0 +1,110 @@
+{
+  "schema": "nrpic-run-manifest/1",
+  "run_id": "B-20261115-173904-a7297e3",
+  "track": "B-emd-gw",
+  "gate": "G1",
+  "kind": "scouting",
+  "purpose": "newton_tests analysis of P1, P2, H1 at n = 16, 32, 64 (pancakes against Zel'dovich, pm.py, and the discrete-Laplacian growth law)",
+  "preregistered_in": null,
+  "launcher": "local",
+  "command": [
+    "bash",
+    "-c",
+    "python3 tracks/B-emd-gw/newton_tests/scripts/analyze_pancake.py --out $NRPIC_RUN_DIR --east 16:/data/haiyangw/nrpic/scratch/B-emd-gw/B-20261115-165349-81a17bc/east16 --east 32:/data/haiyangw/nrpic/scratch/B-emd-gw/B-20261115-163556-ad5637f/east32 --east 64:/data/haiyangw/nrpic/scratch/B-emd-gw/B-20261115-163653-f6324ea/east64:/data/haiyangw/nrpic/scratch/B-emd-gw/B-20261115-163629-a96748c/east64 --pm 32:/data/haiyangw/nrpic/scratch/B-emd-gw/B-emd-gw-20261115-115239-69ab1db/n32 --pm 64:/data/haiyangw/nrpic/scratch/B-emd-gw/B-emd-gw-20261115-115239-69ab1db/n64 --sin 16:/data/haiyangw/nrpic/scratch/B-emd-gw/B-20261115-165351-b38db6f/sin16 --sin 32:/data/haiyangw/nrpic/scratch/B-emd-gw/B-20261115-163558-20244f2/sin32 --sin 64:/data/haiyangw/nrpic/scratch/B-emd-gw/B-20261115-163653-f6324ea/sin64:/data/haiyangw/nrpic/scratch/B-emd-gw/B-20261115-163629-a96748c/sin64 > $NRPIC_RUN_DIR/stdout.txt"
+  ],
+  "cwd": ".",
+  "git": {
+    "sha": "a7297e36df92c57cd5b1224a8e98fd32a4c71f67",
+    "branch": "track/B-emd-gw",
+    "dirty": false,
+    "package": [
+      "tracks/B-emd-gw/newton_tests"
+    ],
+    "outside_package": {
+      "count": 0,
+      "first": []
+    },
+    "merge_base_main": "b9fbf3e6534517c3393000da91c79ce552b254b9",
+    "worktree": "wt/B-emd-gw"
+  },
+  "code": {
+    "core_tag": "core-v0.3",
+    "athenak_upstream_sha": "c5a0d7f",
+    "kokkos_sha": "6739bc623081648af9e752b616d9671527922cbf",
+    "problem": null
+  },
+  "env": {
+    "host": "anta",
+    "env_hash": "33c1dbb6673b68919eaa332b0add0b58aeac8be843f2071b9d06e2e0e397a96d",
+    "machine_file_sha256": "0321f40f4caeeb2a36624a9fa9809e60bad31071f366b3517ba23ad45698d2d7",
+    "uv_lock_sha256": "5417f6ba318b914aa3800e5d55f7b11fdd8df13c2688bdda7d419240aa1d5863",
+    "track_requirements_sha256": null,
+    "container_digest": null,
+    "compiler": "g++ 11.4.0",
+    "mpi": "none (Athena_ENABLE_MPI=OFF)",
+    "gpu": null,
+    "python": "3.10.12 /data/haiyangw/nrpic/wt/B-emd-gw/.venv"
+  },
+  "input": null,
+  "inputs": [
+    {
+      "path": "tracks/B-emd-gw/newton_tests/scripts/analyze_pancake.py",
+      "role": "input",
+      "sha256": "17ee7c6c2a0c348446ad4d401a3f8e51d5b49705a0dbd0936cd17d1c4793a42e",
+      "bytes": 16127,
+      "tracked": true
+    },
+    {
+      "path": "tracks/B-emd-gw/verify_cosmo/scripts/zeldovich.py",
+      "role": "input",
+      "sha256": "ee971d4db2bcbc4b327cec0b6c177a5a1cdece5b191db0bf7d31905015685fb9",
+      "bytes": 4510,
+      "tracked": true
+    }
+  ],
+  "batch_entries": null,
+  "resources": {
+    "nodes": 1,
+    "gpus": 0,
+    "cores": 1,
+    "walltime_s": null,
+    "wall_limit": null,
+    "segments_max": null,
+    "gpu_hours_requested": 0.0,
+    "gpu_hours": null,
+    "particles": null
+  },
+  "slurm": null,
+  "outputs": {
+    "dir": "scratch/B-emd-gw/B-20261115-173904-a7297e3",
+    "sha256sums": "sha256sums.txt",
+    "sha256sums_sha256": null,
+    "bytes": null,
+    "files": null
+  },
+  "status": "running",
+  "exit_code": null,
+  "registered": "2026-11-15T17:39:04Z",
+  "started": null,
+  "ended": null,
+  "parents": [
+    "B-20261115-163556-ad5637f",
+    "B-20261115-163558-20244f2",
+    "B-20261115-165349-81a17bc",
+    "B-20261115-165351-b38db6f",
+    "B-20261115-163653-f6324ea",
+    "B-20261115-163629-a96748c",
+    "B-emd-gw-20261115-115239-69ab1db"
+  ],
+  "notes": "supersedes B-20261115-170156-2d69627 (adds n = 64 from the card run; legend of the sin figure moved)",
+  "budget_at_submit": {
+    "gpu_hours_allotted": 40.0,
+    "cores_allotted": 16,
+    "gpu_hours_used": 0.0892,
+    "gpu_hours_reserved": 1.1667,
+    "gpu_hours_without_gate": 0.481,
+    "cores_busy": 6,
+    "runs": 117,
+    "allotment_from": "coord/DECISIONS/0006-compute-budget.md + 0014-budgets-after-wave-1.md"
+  }
+}
