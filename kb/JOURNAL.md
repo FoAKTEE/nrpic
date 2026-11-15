@@ -185,3 +185,79 @@ R1 `kb fetch-repos` clones the 63 manifest rows sequentially (AthenaK first, wit
    branch list has about 124 heads (brief line 130). Refuted if fewer than 58 clone, if any
    clone fails for a reason other than a name that does not resolve or a timeout, or if a
    HEAD differs from its ls-remote sha without a push in between.
+
+### Outcome R1 (run kb-20261115-130232-ac33aa1)
+
+- 63 of 63 manifest names resolved and cloned; none unresolved, none failed (stdout
+  "summary: ok 63", stderr empty; exit code of the detached process not observed). Wall
+  time 156.5 s. Checkouts 1.74 GB, object stores 0.63 GB (2.5 GB on disk with `du`). Every
+  clone's HEAD read as a file equals the sha `git ls-remote` gave just before. Prediction R1
+  held; my guess that some small repositories would not resolve was wrong (all exist).
+  [VERIFIED: `kb-data/meta/github/*.json`, `scratch/kb/kb-20261115-130232-ac33aa1/stdout.log`]
+- AthenaK upstream: main is c5a0d7f9155a (2026-09-11T15:50:16-04:00, "Cyclic zoom (#713)"),
+  the commit the brief inspected; 124 remote heads at 13:02:32 UTC, the count of brief
+  line 130 [VERIFIED: `kb-data/meta/github/IAS-Astrophysics__athenak.json`].
+- Licence: the file-name rule of `kbtool/gitmeta.py` (exact names LICENSE, COPYING, ...)
+  finds no licence file for 11 repositories and cannot classify 2 (ripgrep: dual
+  MIT/Unlicense; LaTeXML: public-domain notice). The code index re-reads licences with a
+  case-insensitive name rule (below) before any repository is treated as unlicensed.
+
+### K2-K3 tool choices [JUDGEMENT] (helper of the papers modules)
+
+- Plain-text converter: pylatexenc 2.11 (kb/.venv). LaTeXML is not on the machine and is not
+  installed (no system-wide installs); `kb ingest arxiv` re-executes itself under
+  kb/.venv/bin/python when the system python3 lacks pylatexenc. The converter is recorded per
+  paper (papers.parse_json). Everything else (main file, flattening, comments, macros,
+  structure, bibliography parsing) is standard library.
+- pdflatex is installed; it is used ONLY on synthetic documents that the tests write, to read
+  the true numbers from LaTeX's .aux (never on a download).
+- Migration 0003 adds locators (char ranges of equations, figures, citations; flat_sha256 of
+  the flattened text they refer to; figure/table kind; bibliography source).
+
+### Predictions for the K2-K3 unit tests (before they run)
+
+P1 test_tex_files: comment semantics (% eats the end of line, \% kept, \verb, comment
+   environment, nested \iffalse..\fi), safe paths (.., absolute, symlink refused), flattening of
+   \input{}, \input file, \include, \import with nested \input, source map file:line, cycle
+   detection, main file from 00README.json / input graph / \documentstyle. Refuted by any
+   failure that is the code's (not the test's) fault.
+P2 test_tex_numbering: for three synthetic documents (article, article with
+   \numberwithin{equation}{section}, revtex4-2), every label's number computed by
+   tex_structure equals the number pdflatex writes into the .aux (equations incl. align with
+   \nonumber, subequations 4a/4b, gather, multline, eqnarray, \tag; sections incl. starred and
+   appendix A, A.1, B; figures and tables). Expected risk: REVTeX appendix equation numbering
+   (A1, A2, B1) and the subequations parent label. Refuted by any mismatch.
+
+### Tool choice for the code index [JUDGEMENT]
+
+- Symbols: tree-sitter 0.25.2 with tree-sitter-cpp 0.23.4 in `kb/.venv` (no universal-ctags
+  on the machine, and a ctags build from the clone would mean building downloaded code).
+  Kokkos/CUDA/AMReX attribute macros are blanked to the same length before parsing
+  (KOKKOS_LAMBDA becomes "[=]"), so lines do not move. Python: standard-library `ast`
+  (parsing only). Fortran: line patterns. Other languages: files and chunks, no symbols.
+- Parameters: a standard-library parser (comments and string contents masked, arguments
+  split at top-level commas), so `kb` keeps working without the venv; tree-sitter is used
+  only as the independent second extractor of test P2.
+- Chunks and full text only for roles core, ref and this repository; dep and tool
+  repositories get files, symbols and parameters. Files over 5000 lines, files with a
+  "generated" marker in the first five lines and directories named ker, kernels,
+  generated, third_party, external, vendor get no chunks (generated kernels of gkeyll alone
+  are about 2 million lines).
+- This repository (`local/nrpic`) is indexed from git objects at a ref (default `main`):
+  athenak/src, python/nrpic, cosmo and problems (the brief's inputs/).
+
+### Predictions P2-P4 (before the cross-check and the ingest runs)
+
+P2 parameters. For upstream AthenaK, Athena++ and this tree, the index's parser and a
+   second extractor on the tree-sitter syntax tree (`kb/scripts/code_crosscheck.py`) find
+   the same set of (path, line, method, block, name) for every ParameterInput call.
+   Smoke run on AthenaK: 1165 calls (730 GetOrAdd, 293 Get, 66 Set, 27 DoesParameterExist,
+   49 DoesBlockExist), none unparsed. Refuted by any call found by one and not the other
+   that is not a macro or preprocessor artefact I can point to.
+P3 symbols. Every column-0 out-of-class definition `Type Class::Method(` in the .cpp files
+   of upstream AthenaK and of this tree is a method symbol of the index (start line equal or
+   up to two lines above). Expected at least 98 %. Refuted below 98 %.
+P4 inputs against code. Of the parameter lines of the input files (upstream: 8670 lines in
+   inputs/; this tree: problems/), at least 90 % name a parameter the code reads with the
+   same literal block and name, or reads by that name under a block computed at run time
+   (numbered output blocks). Refuted below 90 %.
