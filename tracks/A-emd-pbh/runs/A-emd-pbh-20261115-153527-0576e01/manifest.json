@@ -1,0 +1,36 @@
+{
+ "run_id": "A-emd-pbh-20261115-153527-0576e01",
+ "owner": "A-emd-pbh",
+ "track": "A-emd-pbh",
+ "gate": "G2",
+ "package": "periodic_threshold",
+ "purpose": "T1: peak data from cosmo/ic/make_field.py; solve change c against amplitude, start epoch, resolution, filter",
+ "kind": "scouting",
+ "command": [
+  "/data/haiyangw/nrpic/wt/A-emd-pbh/.venv/bin/python",
+  "-I",
+  "tracks/A-emd-pbh/periodic_threshold/scripts/t1_sweep.py",
+  "--out",
+  "/data/haiyangw/nrpic/scratch/A-emd-pbh/A-emd-pbh-20261115-153527-0576e01"
+ ],
+ "cwd": "/data/haiyangw/nrpic/wt/A-emd-pbh",
+ "commit": "0576e011479916bc0fa4c38d86a7b9284914155d",
+ "git": {
+  "sha": "0576e011479916bc0fa4c38d86a7b9284914155d",
+  "branch": "track/A-emd-pbh",
+  "package_dirty": false
+ },
+ "host": "anta",
+ "inputs": [],
+ "output_dir": "/data/haiyangw/nrpic/scratch/A-emd-pbh/A-emd-pbh-20261115-153527-0576e01",
+ "outputs": {
+  "dir": "scratch/A-emd-pbh/A-emd-pbh-20261115-153527-0576e01"
+ },
+ "cores": 4,
+ "card_hours": 0.0,
+ "parents": [],
+ "registered_by": "hand (scripts/register_run.py): nrpic-run refuses the worktree while other helpers' untracked files are present",
+ "status": "registered",
+ "started": "2026-11-15T15:35:27.563488+00:00",
+ "notes": ""
+}

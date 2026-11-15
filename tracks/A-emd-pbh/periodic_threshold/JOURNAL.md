@@ -212,3 +212,78 @@ Cost prediction: each below 0.3 card-hours (8.1e-8 card-seconds per cell and ste
   the first refinement check, with 64 blocks and no refinement before it. To be repeated
   with the corrected data to see whether the crash belongs to the data or to adaptive
   refinement with periodic particles and the cosmological generator.
+
+## 2026-11-15, T2b/T2c repeated with the corrected data (run A-emd-pbh-20261115-154740-69e8f8b)
+
+- **T2b confirmed.** At t = 0 the code's Hamiltonian constraint over 16 pi max|E - Ebar|
+  is 1.8e-4 (mu = 0.5) and 3.5e-5 (mu = 0.03) on the uniform 32^3 mesh: the solved data
+  are consistent with the code's deposit and finite differences. On the static mesh
+  (levels 1-2 interpolated from the root file, clouds on the root level) it is 0.085 and
+  0.077: an eight per cent violation relative to the perturbation, the same at both
+  amplitudes (linear, as predicted; the low end of the predicted 0.1-1). Outside the
+  refined region it stays at 1.3e-3 to 1.4e-3.
+- **T2c: the crash is not the data.** Adaptive refinement (Lohner) dies with a
+  segmentation fault after cycle 4, the first refinement check, both for the peak and
+  for the homogeneous universe (where no block can be flagged for refinement). Isolation
+  run A-emd-pbh-20261115-155737-8422a4a (gdb backtrace; trivial criterion), outcome below.
+  Consequence for the scouting runs: the four-level static mesh
+  `inputs/peak_smr4.athinput` replaces the adaptive one.
+
+## 2026-11-15, the data of S1: make_field does not solve mu = 0.5
+
+Run A-emd-pbh-20261115-154735-69e8f8b (S1/S2 data, corrected driver): mu = 0.03 as in T1
+(c = 0.078, residual 1.6e-12). For mu = 0.5 every inner solve stops at its 60-iteration
+limit with max|H| between 0.04 and 0.12 (the residual does not fall), and the outer
+iteration ends with a change of psi of 2.3e-4: **the tool's solve stagnates at this
+amplitude** (Newtonian-gauge potential psi_N = -0.3 at the peak, lapse 0.64 in the
+dictionary). The mu = 0.5 files exist but are not solved data.
+S2 (mu = 0.03) was submitted with the static mesh: A-emd-pbh-20261115-155754-8422a4a
+(Slurm job 4448), predictions as written above.
+
+### T1b, largest amplitude the tool solves (written right after launching
+run T1b and before reading any of its output)
+
+mu = 0.2 and 0.3 at e = 0.2, eps_i = 1, 64^3. Prediction [JUDGEMENT]: the stagnation
+sets in where the constant-coefficient Helmholtz preconditioner of `cosmo_id.solve`
+(sigma = mean of (5/12) K^2 psi^4 + 2 pi psi^4 E) misrepresents the local coefficient by
+order one, i.e. where psi^4 varies by tens of per cent: mu = 0.2 converges (residual
+< 1e-10), mu = 0.3 is marginal. If mu = 0.3 converges, S1 runs at mu = 0.3 (above the
+particle threshold of arXiv:2609.14218 by six, below the hoop line 0.452); otherwise at
+the largest converged amplitude, and the "clearly above both" run waits for core's
+generator.
+
+## 2026-11-15, T2c isolation outcome (run A-emd-pbh-20261115-155737-8422a4a)
+
+Cause established. The backtrace (homogeneous universe, Lohner criterion) ends in a call
+through a null pointer (rip = 0x0) from `MeshRefinement::CheckForRefinement`,
+`athenak/src/mesh/mesh_refinement.cpp:243`, the `RefCritMethod::user` branch, which calls
+`pmy_mesh->pgen->user_ref_func(pmbp)`. `nrpic_cf` sets that pointer to a function that
+calls the Z4c refinement criteria (`nrpic_cf.cpp:175-177, 392`); `nrpic_cosmo` never sets
+it (`pgen.hpp:54` initialises it to nullptr). The trivial criterion crashes the same way
+(exit 139), so the crash is independent of the criterion and of the data: adaptive
+refinement with `<amr_criterion0> method = user` cannot run with the cosmological
+generator today. The fix is one line in `nrpic_cosmo.cpp` (core); until then only static
+refinement is available in the periodic box. (Not tried: an AthenaK built-in criterion
+other than "user"; they monitor hydro variables, which this run does not have.)
+
+## 2026-11-15, T1b outcome (run A-emd-pbh-20261115-155802-9a6596f) and S1 revised before submission
+
+mu = 0.2: solved (residual 3.7e-12, c = 0.031); mu = 0.3: solved (residual 7.2e-12, 33
+inner iterations, c = 0.137, outer change of psi 7.2e-5 at the end). Prediction partly
+refuted: mu = 0.3 is not marginal, it converges; the stagnation lies between 0.3 and 0.5.
+(c is not monotone in mu: 0.078, 0.031, 0.137, 0.103 for mu = 0.03, 0.2, 0.3, 0.5 at
+64^3 and eps_i = 1, so second-order terms enter at these amplitudes; not pursued.)
+
+**S1 revised: mu = 0.3** (solved data of this run, `S_mu0.3`), everything else as written
+for S1 above. It is above the particle threshold of arXiv:2609.14218 at e = 0.2 by a
+factor of six and below the Zel'dovich-hoop line (0.452): the two references predict
+opposite outcomes, so "clearly above" holds only for the particle reference. Epochs (P0):
+Zel'dovich axes at 4.2, 8.5, 33.6 t_H (tau = 5.0, 7.3, 13.8); top-hat collapse of the
+compaction shell 16.1 t_H (tau = 10.4). tlim = 16 (49.6 t_H); finder from tau = 6, every
+64 cycles. Predictions [JUDGEMENT]: (a) the run passes the first pancake (tau ~ 5) with
+Hr_max below 1e-1 outside the refined-block boundary error of T2b; (b) the central lapse
+falls relative to a(tau) from tau ~ 7; (c) if arXiv:2609.14218 and hypothesis H1 hold,
+a horizon near 0.8-1.0 of the top-hat time, 13-16 t_H (tau = 9.4-10.4); if the hoop line
+holds, no horizon and a halted pancake; (d) more likely than either, the run ends before
+tau ~ 10 with a non-positive metric determinant in the finest cells (the E1 failure).
+Outcome (d) or a crash before tau = 5 = UNDECIDED in the sense of SCOPE.md section 3.

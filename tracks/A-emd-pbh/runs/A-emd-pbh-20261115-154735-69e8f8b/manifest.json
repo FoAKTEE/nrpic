@@ -1,0 +1,37 @@
+{
+ "run_id": "A-emd-pbh-20261115-154735-69e8f8b",
+ "owner": "A-emd-pbh",
+ "track": "A-emd-pbh",
+ "gate": "G2",
+ "package": "periodic_threshold",
+ "purpose": "S1/S2 initial data: peak mu = 0.5 and 0.03, e = 0.2, eps_i = 1, 64^3 (make_peak_ic.py with the shift fix)",
+ "kind": "scouting",
+ "command": [
+  "tracks/A-emd-pbh/periodic_threshold/scripts/build_scouting_ic.sh",
+  "/data/haiyangw/nrpic/scratch/A-emd-pbh/A-emd-pbh-20261115-154735-69e8f8b"
+ ],
+ "cwd": "/data/haiyangw/nrpic/wt/A-emd-pbh",
+ "commit": "69e8f8b272b95a37f2c8115f0d74790e180d249c",
+ "git": {
+  "sha": "69e8f8b272b95a37f2c8115f0d74790e180d249c",
+  "branch": "track/A-emd-pbh",
+  "package_dirty": false
+ },
+ "host": "anta",
+ "inputs": [],
+ "output_dir": "/data/haiyangw/nrpic/scratch/A-emd-pbh/A-emd-pbh-20261115-154735-69e8f8b",
+ "outputs": {
+  "dir": "scratch/A-emd-pbh/A-emd-pbh-20261115-154735-69e8f8b",
+  "sha256sums": "sha256sums.txt"
+ },
+ "cores": 2,
+ "card_hours": 0.0,
+ "parents": [],
+ "registered_by": "hand (scripts/register_run.py): nrpic-run refuses the worktree while other helpers' untracked files are present",
+ "status": "completed",
+ "started": "2026-11-15T15:47:35.883002+00:00",
+ "notes": "",
+ "wall_time_s": 568.14,
+ "exit_code": 0,
+ "ended": "2026-11-15T15:57:04.023039+00:00"
+}

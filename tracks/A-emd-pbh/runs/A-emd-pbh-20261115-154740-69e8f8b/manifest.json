@@ -1,0 +1,59 @@
+{
+ "run_id": "A-emd-pbh-20261115-154740-69e8f8b",
+ "owner": "A-emd-pbh",
+ "track": "A-emd-pbh",
+ "gate": "G2",
+ "package": "periodic_threshold",
+ "purpose": "T2b/T2c repeated with the corrected peak data (t = 0 constraints on uniform and static mesh; adaptive mesh first checks, peak and FLRW)",
+ "kind": "scouting",
+ "command": [
+  "/data/haiyangw/nrpic/wt/A-emd-pbh/.venv/bin/python",
+  "-I",
+  "tracks/A-emd-pbh/periodic_threshold/scripts/t2t3_cpu.py",
+  "--out",
+  "/data/haiyangw/nrpic/scratch/A-emd-pbh/A-emd-pbh-20261115-154740-69e8f8b",
+  "--jobs",
+  "3",
+  "--cases",
+  "T2b,T2c"
+ ],
+ "cwd": "/data/haiyangw/nrpic/wt/A-emd-pbh",
+ "commit": "69e8f8b272b95a37f2c8115f0d74790e180d249c",
+ "git": {
+  "sha": "69e8f8b272b95a37f2c8115f0d74790e180d249c",
+  "branch": "track/A-emd-pbh",
+  "package_dirty": false
+ },
+ "host": "anta",
+ "inputs": [
+  {
+   "path": "/data/haiyangw/nrpic/.work/build_cpu_v03/src/athena",
+   "sha256": "d983155bb21befedbd123d54d84fcfc12a875ee0aaa0baa36f5a51261041c25c"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/wt/A-emd-pbh/tracks/A-emd-pbh/periodic_threshold/inputs/peak_smr.athinput",
+   "sha256": "6b139c20c67d08f10cbcd273f6e4ed86c2600c49258ecd9392772c5ed6bb2d8e"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/wt/A-emd-pbh/tracks/A-emd-pbh/periodic_threshold/inputs/peak_amr.athinput",
+   "sha256": "f35b4073cac7c7aa6e4d1dfc1b5a2d2d43cf3eabfe867a33aed42e0649107c44"
+  }
+ ],
+ "output_dir": "/data/haiyangw/nrpic/scratch/A-emd-pbh/A-emd-pbh-20261115-154740-69e8f8b",
+ "outputs": {
+  "dir": "scratch/A-emd-pbh/A-emd-pbh-20261115-154740-69e8f8b",
+  "sha256sums": "sha256sums.txt"
+ },
+ "cores": 3,
+ "card_hours": 0.0,
+ "parents": [
+  "A-emd-pbh-20261115-154250-527a6d1"
+ ],
+ "registered_by": "hand (scripts/register_run.py): nrpic-run refuses the worktree while other helpers' untracked files are present",
+ "status": "completed",
+ "started": "2026-11-15T15:47:40.937667+00:00",
+ "notes": "",
+ "wall_time_s": 165.53,
+ "exit_code": 0,
+ "ended": "2026-11-15T15:50:26.755399+00:00"
+}
