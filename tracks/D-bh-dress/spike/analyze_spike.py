@@ -49,7 +49,7 @@ def losscone_figure(out, tt, s0, s1, fate, tpred, first_in, meta, q, snap_dt):
     figstyle.use_style()
     P = figstyle.PAL
     fig, axs = plt.subplots(1, 2, figsize=(8.0, 3.4))
-    fig.subplots_adjust(left=0.08, right=0.98, top=0.95, bottom=0.15, wspace=0.28)
+    fig.subplots_adjust(left=0.08, right=0.98, top=0.91, bottom=0.15, wspace=0.34)
     a = axs[0]
     pl = s1 & fate
     cr = np.isfinite(first_in)
