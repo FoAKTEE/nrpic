@@ -375,5 +375,52 @@
     4.071505780659269e-05
    ]
   }
+ },
+ "V7": {
+  "gauss_code_n32": {
+   "reference_exe": "/data/haiyangw/nrpic/scratch/core/exe/core_id-solver/athena_cpu",
+   "reference": "core-20261115-190636-9ff0184",
+   "final": "core-20261115-190648-9ff0184",
+   "files": [
+    "gauss.cstat.hst",
+    "gauss.field.00000.bin",
+    "gauss.idsolve.bin",
+    "gauss.idsolve.txt",
+    "gauss.nrpic.hst",
+    "gauss.z4c.user.hst"
+   ],
+   "differ": []
+  },
+  "torus_code_p1_n32": {
+   "reference_exe": "/data/haiyangw/nrpic/scratch/core/exe/core_id-solver/athena_cpu",
+   "reference": "core-20261115-190659-9ff0184",
+   "final": "core-20261115-190710-d3f79be",
+   "files": [
+    "torus.cstat.hst",
+    "torus.field.00000.bin",
+    "torus.idsolve.bin",
+    "torus.idsolve.txt",
+    "torus.nrpic.hst",
+    "torus.z4c.user.hst"
+   ],
+   "differ": []
+  },
+  "gboost_stencil_n32": {
+   "reference_exe": "/data/haiyangw/nrpic/scratch/core/tmp/idsolve/exe_7f118b9/athena_cpu",
+   "reference": "core-20261115-190721-d3f79be",
+   "final": "core-20261115-190731-d3f79be",
+   "files": [
+    "gboost.cstat.hst",
+    "gboost.field.00000.bin",
+    "gboost.idsolve.bin",
+    "gboost.idsolve.txt",
+    "gboost.idvector.bin",
+    "gboost.nrpic.hst",
+    "gboost.z4c.user.hst"
+   ],
+   "differ": [
+    "gboost.idsolve.txt"
+   ]
+  }
  }
 }

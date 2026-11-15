@@ -1,0 +1,35 @@
+{
+ "run_id": "core-20261115-190741-d3f79be",
+ "owner": "core",
+ "command": [
+  "/data/haiyangw/nrpic/scratch/core/exe/core_id-solver/athena_cpu",
+  "-i",
+  "geodesic.athinput",
+  "time/tlim=20.0",
+  "particles/hist_dcycle=100"
+ ],
+ "cwd": "/data/haiyangw/nrpic/scratch/core/core-20261115-190741-d3f79be",
+ "commit": "d3f79be",
+ "source_modified_since_commit": false,
+ "inputs": [
+  {
+   "path": "problems/kerr/geodesic.athinput",
+   "sha256": "31c6c43cb59447ec212b35fe1c019012d20d8483cda718e33e03cbd2b039ddc0"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/scratch/core/exe/core_id-solver/athena_cpu",
+   "sha256": "65e3a59ffc0eeb22cee5ae4f81bd8560dc6518fb32562f63abd6771f6e6a814a",
+   "role": "executable"
+  }
+ ],
+ "output_directory": "/data/haiyangw/nrpic/scratch/core/core-20261115-190741-d3f79be",
+ "purpose": "regression of the relativistic mode, case geo, executable baseline",
+ "kind": "scouting",
+ "tag": "regress-geo-baseline",
+ "state": "finished",
+ "wall_time_s": 0.02,
+ "exit_status": 0,
+ "cores": 4,
+ "card_hours": 0.0,
+ "started_utc": "2026-11-15T19:07:41Z"
+}

@@ -790,3 +790,12 @@ V4 (card build of a7a32cd, one A100): gauss_code_n64 (scalar), gboost_code_n64 (
 stencil form) and the moving Gaussian with the vector part in mode code, 64 cells: the
 same iteration counts as the processor runs (-155051-87e189e, -183239-ca15f8b,
 -185858-a7a32cd), psi and W equal to 1e-10 relative; at most 0.05 card-hours.
+
+**V7 outcome** (runs core-20261115-190636/-190648, -190659/-190710, -190721/-190731;
+numbers `vector_numbers.json` key V7): (a) gauss_code_n32 and torus_code_p1_n32 without
+id_vector: all six files byte-identical to the published executable (held). (b)
+gboost_stencil_n32: six of seven files byte-identical to the build of 7f118b9
+(idsolve.bin, idvector.bin, field dump, histories); `gboost.idsolve.txt` differs in its
+fourth header line only, which now names the residual form and id_vector_tol (a change
+of the text I made, not of a number): held for every number. The relativistic
+regression of this executable is running.

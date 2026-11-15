@@ -282,7 +282,8 @@ All numbers below are [VERIFIED] in the runs named.
 | T4 plane wave on the torus against `cosmo/ic` | the same discrete system as the spectral reference with the seven-point symbol; the mean fixed by integrability | stencil mode against the seven-point reference: 7.8e-14, 5.7e-14 (one particle per cell), 2.3e-12, 4.6e-14 (eight); against the spectral symbol the fundamental of the difference is the predicted (k dx)^2/12 term to one per cent; code mode max\|H\| 7e-10 to 1.2e-9 (`figs/torus_psi`) |
 | T5 card | the card build gives the solution of the processor build | Gaussian at 64 cells, one A100: same iteration counts (17 outer, 22 conjugate-gradient, 78 V cycles), psi equal to 1.1e-15; 5.7 s against 87 s on one core (run core-20261115-162952-46dcb31, `figs/card_vs_cpu`) |
 | A, C restart | a restart never solves again and continues the solved state | held; the continuation differs from the uninterrupted run by the same 2e-10 in K_min with and without the solve (a property of the Z4c restart) |
-| B, D, E evolution of the strained ball at 64 cells | does the evolution keep the advantage of the solved data? | not for the expanding ball at this resolution: after one step the mean \|H\| of the solved run is 2 times below the unsolved one, after eight steps within 10 per cent (sharp and smooth surface, with and without density-form sources) (`figs/evolution_tri`); test F (resolution, where the violation sits) in the journal, entry 9 |
+| B, D, E evolution of the strained ball at 64 cells | does the evolution keep the advantage of the solved data? | over the whole mesh not: after one step the mean \|H\| of the solved run is 2 times below the unsolved one, after eight steps within 10 per cent (`figs/evolution_tri`) |
+| F where the violation sits, 64 and 128 cells | regions of \|H\| at t = 0, 1, 2 | the outflow face layer holds 75 to 96 per cent of the integral of \|H\| at t = 2, the same 1.3e-4 in every run (a boundary effect, not of the data); in the matter region at dx = 0.5 the solved data stay 5 to 6 times below the trial through t = 2; the evolution's own violation at the edge falls by 4.2 per halving (`figs/evolution_res`) |
 
 Cost: one processor core, build with assertions: 10, 87, 655 s for the Gaussian in mode
 code at 32, 64, 128 cells (9.2e4 to 5.9e6 particles); 17 to 29 outer iterations in mode
@@ -298,10 +299,10 @@ tests.
    M_i = (2/3)(psi^-6 - 1) d_i K [derived]. For the strained ball (particles at rest,
    S_i = 0) the continuum trial satisfies the momentum constraint; what the monitor
    shows (T3: rms 2.7e-3 at the sharp surface) is the discretisation of the table
-   curvature. The vector equation of section 7 is the next step [JUDGEMENT]. The
-   evolution checks B, D, E show that for the expanding ball at 64 cells the evolution
-   makes a violation of the size of the trial's within a few steps, with and without
-   the solve.
+   curvature. The vector equation is section 10 (option `id_vector`). The evolution
+   checks B to F show that the mean of |H| over the whole mesh is dominated by the
+   outflow faces within a few steps, with and without the solve; in the matter region
+   the solved data keep their advantage at dx = 0.5 (F).
 2. **Uniform meshes, one rank, cubic cells.** Refined meshes and MPI: section 7.
 3. **Robin faces** are exact for a monopole about the chosen centre; a dipole or
    quadrupole of the data falls off faster and is continued as 1/r, an error of order
@@ -388,6 +389,12 @@ processor build) [VERIFIED in the runs named there]:
 | V0 without `id_vector` | byte-identical outputs to the published executable (87e189e) for gauss_code_n32 and torus_code_p1_n32 |
 | V1 moving Gaussian, the discrete system | right side = 8 pi times the numpy deposit of m u_x to 8e-16; the compact operator applied in numpy to the W of the code reproduces it to 6e-11 (stencil) and 3e-14 (code); vector residual factor 0.14 per outer iteration; 12 (stencil) and 17 (code) outer iterations; max\|H\| 1e-11 in mode code |
 | V2 against the continuum W | second order at the centre (relative error -1.18e-2, -3.59e-3 at dx = 1, 0.5); the monitor's max\|M\| falls from 2e-2 to 1.9e-4 and 5.3e-5; at the faces a closure error of 0.9 per cent that does not fall with resolution (failed prediction) |
+| V3 smooth ball, stencil form | converges, L W 2.5 per cent of Abar; the monitor's mean \|M\| doubles (7.1e-6 -> 1.5e-5): the second-order form spoils data that already satisfy the constraint (failed prediction) |
+| V5 mode code of the vector part | balls: W frozen by the stall rule after 44 iterations, mean \|M\| 7.1e-6 -> 1.9e-7, max\|H\| 1.7e-12; moving Gaussian: ends at id_vector_tol after 17, max\|M\| 2.3e-2 -> 4.0e-8 |
+| V6 evolution with both solves | mean \|H\| and \|M\| over the mesh at t = 2 within 5 per cent of the scalar-only run: the momentum residual of the data does not feed what the faces make |
+
+Recommendation [JUDGEMENT, from V3 and V5]: `id_vector_residual = code` for production
+data; the stencil form only where the monitor is not wanted as the measure.
 
 **Limits of the vector part.** (1) The Robin closure (r W equal in ghost and mirror)
 does not represent the direction dependence of the Bowen-York far field: about 1 per
@@ -395,9 +402,9 @@ cent at the faces for a moving Gaussian with the faces at 8 sigma, independent o
 cell size [VERIFIED, V2] and, for a scale-free far field, of the box size [JUDGEMENT].
 Remedy, not implemented: fill W - W_BY(P) with P = (1/8 pi) times the integral of the
 right side. (2) The code's monitor of the momentum constraint is left at truncation
-level (stencil form by design, see above). (3) Tested with K = 0 and Abar(trial) = 0 only
-(the right side's d_i K and d_j Abar(trial) terms are exercised by no test; with the
-ball tables they are the curvature of the trial). (4) On the torus the mean of the
+level (stencil form by design, see above). (3) The right side's d_i K and d_j Abar(trial) terms
+are exercised by the balls of V3 and V5 (tables of format 2), the matter term by the
+moving Gaussian; a trial with both moving matter and curvature is not tested. (4) On the torus the mean of the
 right side must vanish; not tested on the torus. (5) Uniform meshes, one rank, as the
 scalar part.
 
