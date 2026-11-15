@@ -1,0 +1,15 @@
+{
+ "C1": "0",
+ "C2": "0",
+ "C3_w1": "0",
+ "C3_w2": "0",
+ "C3_numeric_max_abs": 1.4210854715202004e-14,
+ "C4": "0",
+ "C5_H": "0",
+ "C5_stencil_symbol_minus_core": "0",
+ "C5_M_stencil_projector": "[0, 0, 0]",
+ "C5_trace_Tzz": "0",
+ "C5_SPi_vs_P1": "0",
+ "continuum_projector_residual_at_kmax_111": 2.4567103661157915e-16,
+ "continuum_projector_residual_at_kmax_120": 0.015092743402531469
+}

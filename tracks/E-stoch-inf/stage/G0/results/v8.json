@@ -1,0 +1,13 @@
+{
+ "lattice_over_continuum_flat": 1.0731190976014409,
+ "lattice_over_continuum_SR_Nf": 1.0804873078509394,
+ "SR_fit_coeffs_lnP_vs_lnq": [
+  -0.0004917438770647654,
+  -0.044683561691479155,
+  -22.98953854982458
+ ],
+ "excess_sigma1": 0.4444444444444444,
+ "max_abs_numeric_minus_closed": 3.552713678800501e-15,
+ "excess_sigma0.1": 0.003344444444443928,
+ "excess_sigma0.01": 3.333444444431066e-05
+}

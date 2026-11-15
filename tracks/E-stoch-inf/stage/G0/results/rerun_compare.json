@@ -1,0 +1,47 @@
+{
+ "/data/haiyangw/nrpic/scratch/E-stoch-inf/E-20261115-175051-b67c97e/T1T2/summary.json": {
+  "original": "/data/haiyangw/nrpic/scratch/E-stoch-inf/E-stoch-inf-20261115-122806-ef0d039/summary.json",
+  "numeric_leaves": 545,
+  "max_rel_diff": 0.0,
+  "worst_leaf": null,
+  "differing_other_leaves": [],
+  "missing_in_rerun": [],
+  "new_in_rerun": []
+ },
+ "/data/haiyangw/nrpic/scratch/E-stoch-inf/E-20261115-175051-b67c97e/T1T2/quadratic.json": {
+  "original": "/data/haiyangw/nrpic/scratch/E-stoch-inf/E-stoch-inf-20261115-122806-ef0d039/quadratic.json",
+  "numeric_leaves": 272,
+  "max_rel_diff": 0.0,
+  "worst_leaf": null,
+  "differing_other_leaves": [],
+  "missing_in_rerun": [],
+  "new_in_rerun": []
+ },
+ "/data/haiyangw/nrpic/scratch/E-stoch-inf/E-20261115-175051-b67c97e/T1T2/inflection.json": {
+  "original": "/data/haiyangw/nrpic/scratch/E-stoch-inf/E-stoch-inf-20261115-122806-ef0d039/inflection.json",
+  "numeric_leaves": 273,
+  "max_rel_diff": 0.0,
+  "worst_leaf": null,
+  "differing_other_leaves": [],
+  "missing_in_rerun": [],
+  "new_in_rerun": []
+ },
+ "/data/haiyangw/nrpic/scratch/E-stoch-inf/E-20261115-175051-b67c97e/T3/norm_test.json": {
+  "original": "/data/haiyangw/nrpic/scratch/E-stoch-inf/E-stoch-inf-20261115-122934-9ac98d8/norm_test.json",
+  "numeric_leaves": 92,
+  "max_rel_diff": 0.0,
+  "worst_leaf": null,
+  "differing_other_leaves": [],
+  "missing_in_rerun": [],
+  "new_in_rerun": []
+ },
+ "/data/haiyangw/nrpic/scratch/E-stoch-inf/E-20261115-175051-b67c97e/T4/ic_check.json": {
+  "original": "/data/haiyangw/nrpic/scratch/E-stoch-inf/E-stoch-inf-20261115-123146-82d2fd4/ic_check.json",
+  "numeric_leaves": 0,
+  "max_rel_diff": 0.0,
+  "worst_leaf": null,
+  "differing_other_leaves": [],
+  "missing_in_rerun": [],
+  "new_in_rerun": []
+ }
+}

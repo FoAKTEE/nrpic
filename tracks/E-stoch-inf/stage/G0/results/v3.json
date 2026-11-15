@@ -1,0 +1,12 @@
+{
+ "H_printed": "4*H**3*Rdot*a**2*eps1**2/k**2",
+ "H_corrected": "0",
+ "H_dictionary": "0",
+ "M": "0",
+ "dPi_dictionary_minus_corrected": "0",
+ "dPi_dictionary_minus_printed": "sqrt(2)*H**2*Rdot*a**2*eps1**(3/2)/k**2",
+ "dK_minus_3eps1H(R-PhiB)": "0",
+ "note": "printed-form residual is first order in the noise; relative to [H] it is computed below (rel_violation_printed_at_x*), falling as eps1 (aH/k)^2/2",
+ "rel_violation_printed_at_x1": 0.0010777785671486403,
+ "rel_violation_printed_at_x64": 1.2943035715406562e-06
+}
