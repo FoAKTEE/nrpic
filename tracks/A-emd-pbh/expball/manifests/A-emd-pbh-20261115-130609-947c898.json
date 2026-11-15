@@ -1,0 +1,99 @@
+{
+  "run_id": "A-emd-pbh-20261115-130609-947c898",
+  "owner": "A-emd-pbh",
+  "purpose": "A-pre-1 data set: expanding dust ball, model smooth_tophat, H R_b = 0.5, bound core delta_c = 1.0, R1 = 0.3 R_b, R2 = 0.75 R_b",
+  "kind": "scouting",
+  "command": "python scripts/make_dataset.py --model smooth_tophat --HRb 0.5 --delta-c 1.0 --R1 0.3 --R2 0.75 --edge-width 0.1875 --nlat 38 --kind scouting",
+  "cwd": "/data/haiyangw/nrpic/wt/A-emd-pbh/tracks/A-emd-pbh/expball",
+  "commit": "947c89882dc067b98d30172fef7452fec21ab2cd",
+  "worktree_dirty_in_package": true,
+  "host": "anta",
+  "inputs": [],
+  "output_dir": "/data/haiyangw/nrpic/scratch/A-emd-pbh/A-emd-pbh-20261115-130609-947c898",
+  "wall_time_s": 11.26,
+  "cores": 4,
+  "card_hours": 0.0,
+  "status": "ok",
+  "outputs": [
+    {
+      "path": "/data/haiyangw/nrpic/scratch/A-emd-pbh/A-emd-pbh-20261115-130609-947c898/expball_smooth_tophat_HRb0p5_dc1_R10p3_R20p75_w0p1875.json",
+      "sha256": "850941a01d1faf98b29b7820e35a3da0629863982da08094703bc8fe9df6250e"
+    },
+    {
+      "path": "/data/haiyangw/nrpic/scratch/A-emd-pbh/A-emd-pbh-20261115-130609-947c898/expball_smooth_tophat_HRb0p5_dc1_R10p3_R20p75_w0p1875.tab",
+      "sha256": "d741f2dcf6887f4ff9809ae57376c3742d52cfb281bf87880afb686531d4af83"
+    },
+    {
+      "path": "/data/haiyangw/nrpic/scratch/A-emd-pbh/A-emd-pbh-20261115-130609-947c898/expball_smooth_tophat_HRb0p5_dc1_R10p3_R20p75_w0p1875_lat38.nrp",
+      "sha256": "78e26f59632546b7230c213dd0292782cf7ba4196c0d1c6308246f75adc27f2f"
+    },
+    {
+      "path": "/data/haiyangw/nrpic/scratch/A-emd-pbh/A-emd-pbh-20261115-130609-947c898/expball_smooth_tophat_HRb0p5_dc1_R10p3_R20p75_w0p1875_mesh64.npz",
+      "sha256": "c29aff38bdf5e951229b23ea7943df0543223d833e3e30b6af45041b244d36e3"
+    },
+    {
+      "path": "/data/haiyangw/nrpic/scratch/A-emd-pbh/A-emd-pbh-20261115-130609-947c898/expball_smooth_tophat_HRb0p5_dc1_R10p3_R20p75_w0p1875_shells.txt",
+      "sha256": "b3fcb99c757b4ef8a2408ea703542e51b8622b0d96db6609002be42175061226"
+    },
+    {
+      "path": "/data/haiyangw/nrpic/scratch/A-emd-pbh/A-emd-pbh-20261115-130609-947c898/expball_smooth_tophat_HRb0p5_dc1_R10p3_R20p75_w0p1875_strat_N100000_s1.nrp",
+      "sha256": "05ee4d61cb60b6a537f728e743addd8b4ce09ff59a93b5f18705e6a648584a20"
+    }
+  ],
+  "results": {
+    "summary": {
+      "H": 0.0625,
+      "Rb": 8.0,
+      "HRb": 0.5,
+      "edge_width": 1.5,
+      "M_misner_sharp": 1.0095880681818152,
+      "rho_b": 0.0004662742473395371,
+      "t_i": 10.666666666666666,
+      "hubble_radius": 16.0,
+      "rbar_matter": 9.5,
+      "rest_mass": 1.0158955125062807,
+      "psi_centre": 1.0138359086868192,
+      "max_2m_over_R": 0.2361158202265473,
+      "R_at_max_2m_over_R": 8.2593039938,
+      "anti_trapped_surface_on_slice": false,
+      "interp_rbar_max": 15.200000000000001,
+      "profile": "smooth_tophat",
+      "delta_c": 1.0,
+      "R1": 2.4,
+      "R2": 6.0,
+      "local_delta_min": -0.5633331788300492
+    },
+    "predictions": {
+      "n_shells": 400,
+      "t_i": 10.666666666666666,
+      "first_horizon": {
+        "tau_ah": 44.349418617750004,
+        "R_i": 2.73125,
+        "m": 0.07958513326998719,
+        "index": 114
+      },
+      "tau_ta_innermost": 16.89376895004044,
+      "tau_c_innermost": 44.45420456674754,
+      "R_i_innermost": 0.02375,
+      "tau_ta_min": 16.893768950040425,
+      "tau_c_min": 44.45420456674752,
+      "core_tau_ta": 16.89376895004044,
+      "core_tau_c": 44.45420456674754,
+      "core_tau_ta_spread": 1.4210854715202004e-14,
+      "core_edge_shell": {
+        "R_i": 2.4,
+        "m": 0.05399999999999999,
+        "tau_ah": 44.381465741946926
+      },
+      "shell_crossing_before_core_crunch": Infinity
+    },
+    "files": {
+      "table": "expball_smooth_tophat_HRb0p5_dc1_R10p3_R20p75_w0p1875.tab",
+      "particles_stratified": "expball_smooth_tophat_HRb0p5_dc1_R10p3_R20p75_w0p1875_strat_N100000_s1.nrp",
+      "particles_lattice": "expball_smooth_tophat_HRb0p5_dc1_R10p3_R20p75_w0p1875_lat38.nrp",
+      "mesh": "expball_smooth_tophat_HRb0p5_dc1_R10p3_R20p75_w0p1875_mesh64.npz",
+      "shells": "expball_smooth_tophat_HRb0p5_dc1_R10p3_R20p75_w0p1875_shells.txt"
+    }
+  },
+  "dataset": true
+}
