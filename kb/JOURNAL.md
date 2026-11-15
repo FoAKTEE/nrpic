@@ -542,3 +542,16 @@ P6 All 25 curated links of `kb/curated/paper_code_links.tsv` pass `kb link check
    range, each symbol is in the index of local/nrpic at the stated path, and each of the
    parameters named is read by the code with that block and name. Refuted by any link
    with a problem that is not a typing error of mine in the table.
+
+### Re-ingestion run kb-20261115-134029-56dbd1c stopped (exit -15): slow deletes
+
+- 161 of 702 papers in 10 min, against 702 in 250 s for the first ingestion into empty tables.
+  Suspected cause [TO VERIFY by the next run]: re-ingesting deletes a paper's old rows, and
+  with foreign keys on, SQLite checks every deleted parent row (bib entry, chunk, section)
+  against the child tables (citations.bib_id, citations.chunk_id, chunks.section_id,
+  equations.section_id), which have no index, so each check is a full scan. I stopped the run
+  (kill of the numeric pids of the main process and its 8 workers); every paper is written in
+  its own transaction, so the database stays consistent (161 papers re-ingested with the fix,
+  the rest from run kb-20261115-132806-013c452). Migration 0005 adds the five indexes.
+  Prediction: with them, the full re-ingestion returns to under 6 min. If it does not, the
+  cause is elsewhere.
