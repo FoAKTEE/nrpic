@@ -45,7 +45,7 @@
     "nodes": 1,
     "gpus": 0,
     "cores": 1,
-    "walltime_s": null,
+    "walltime_s": 16.921,
     "wall_limit": null,
     "segments_max": null,
     "gpu_hours_requested": 0.0,
@@ -56,15 +56,15 @@
   "outputs": {
     "dir": "scratch/E-stoch-inf/E-20261115-135532-3f958a1",
     "sha256sums": "sha256sums.txt",
-    "sha256sums_sha256": null,
-    "bytes": null,
-    "files": null
+    "sha256sums_sha256": "e23f6b52ef338d7302aa2a5cd691b645fc8223e0271008a8b23cd6632385581c",
+    "bytes": 305551,
+    "files": 9
   },
-  "status": "running",
-  "exit_code": null,
+  "status": "completed",
+  "exit_code": 0,
   "registered": "2026-11-15T13:55:32Z",
-  "started": null,
-  "ended": null,
+  "started": "2026-11-15T13:55:32Z",
+  "ended": "2026-11-15T13:55:49Z",
   "parents": [],
   "notes": "",
   "budget_at_submit": {
@@ -74,5 +74,6 @@
     "gpu_hours_reserved": 0.0,
     "cores_busy": 9,
     "runs": 33
-  }
+  },
+  "finished": "2026-11-15T13:56:27Z"
 }
