@@ -20,7 +20,7 @@ run() {   # tag, purpose, input, arguments
   local tag=$1 purpose=$2 inp=$3; shift 3
   date
   $PY $G/grun.py --gpu --exe $EXE --source-commit $SRC --time 00:20:00 --tag "$tag" \
-    --purpose "$purpose" --athinput $WT/$inp "$@"
+    --purpose "$purpose" --athinput $WT/$inp "$@" -t 00:05:00
 }
 # E2: unequal pair, mass ratio 4, 4 M
 run gc-e2-profile "unequal Bowen-York pair, mass ratio 4, damping profile eta_0 = 2, M_ref = 1 (test E2)" \
