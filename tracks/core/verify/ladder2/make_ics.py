@@ -86,7 +86,7 @@ def main():
                               R_over_M=float(g["R_over_M"]), alpha_c=float(g["alpha_c"]),
                               zc=float(g["zc"]), M0_over_M=float(g["M0_over_M"]),
                               nrp=str(nrp), tab=str(tab))
-        lines[f"{y}"] = (f"st_{tag(y)} {INP_ST} {ST_ARGS} particles/particle_file={nrp} "
+        lines[tag(y)] = (f"st_{tag(y)} {INP_ST} {ST_ARGS} particles/particle_file={nrp} "
                          f"problem/comp0_file={tab}")
     if not a.no_prolate:
         d, nrp = gen_prolate(out)
@@ -95,7 +95,11 @@ def main():
         dict(turning_point={k: float(v) for k, v in tp.items()}, models=models), indent=1))
     for j in a.jobs:
         name, items = j.split(":")
-        sel = [lines[i] for i in items.split(",") if i in lines]
+        keys = [i if i == "prolate" else tag(float(i)) for i in items.split(",")]
+        missing = [k for k in keys if k not in lines]
+        if missing:
+            raise SystemExit(f"job {name}: no initial data for {missing}")
+        sel = [lines[k] for k in keys]
         if sel:
             (out / f"job_{name}.list").write_text("\n".join(sel) + "\n")
     with open(out / "sha256.txt", "w") as f:
