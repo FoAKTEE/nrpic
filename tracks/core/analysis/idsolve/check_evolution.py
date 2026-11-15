@@ -142,6 +142,42 @@ def followup(a):
     return 0
 
 
+def recommended(a):
+    path = os.path.join(idlib.HERE, "evolution_numbers.json")
+    out = idlib.load_json(path)
+    nrp, tab = run_tests.ic_tri(0.5, 0.05, 2.0)
+    base = run_tests.mesh_args(64, 32) + [
+        "time/nlim=%d" % a.steps, "time/tlim=100.0", "particles/nfilter=0",
+        "particles/source_density=true", "particles/source_extrap=true",
+        "z4c/lapse_oplog=0.0", "z4c/lapse_harmonic=0.3333333333333333",
+        "particles/particle_file=" + os.path.basename(nrp),
+        "problem/comp0_file=" + os.path.basename(tab)]
+    binp = os.path.join(idlib.WT, "problems/idsolve/ball.athinput")
+    res = {}
+    for label, extra in (("off", ["particles/id_solve=false"]),
+                         ("code", ["particles/id_residual=code"])):
+        rr, s = registered("initial-data solver: evolution of the smooth triaxial ball "
+                           "with density-form sources and the conformal-time lapse, "
+                           "solve %s" % label, "idsolve-evo-trirec-" + label,
+                           [binp, nrp, tab], [a.exe, "-i", "ball.athinput"] + base + extra)
+        c = cstat(rr, "ball")
+        res[label] = dict(run=rr, status=s, time=[float(v) for v in c[:, 0]],
+                          H_max=[float(v) for v in c[:, 8]],
+                          H_mean=[float(v) for v in c[:, 9]],
+                          M_max=[float(v) for v in c[:, 12]],
+                          M_mean=[float(v) for v in c[:, 13]],
+                          Theta_max=[float(v) for v in c[:, 7]],
+                          finite=bool(np.all(np.isfinite(c))))
+        print("recommended settings %-4s %s finite %s\n   H_max : %s\n   H_mean: %s\n   "
+              "M_mean: %s" % (label, rr, res[label]["finite"],
+                              " ".join("%.2e" % x for x in res[label]["H_max"]),
+                              " ".join("%.2e" % x for x in res[label]["H_mean"]),
+                              " ".join("%.2e" % x for x in res[label]["M_mean"])))
+    out["triaxial_smooth_recommended"] = res
+    idlib.save_json(path, out)
+    return 0
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--exe", default=os.path.join(idlib.WT, ".work/build_cpu/src/athena"))
@@ -149,11 +185,16 @@ def main():
     ap.add_argument("--followup", action="store_true",
                     help="tests C (restart control without the solve) and D (smooth "
                          "triaxial ball) only; results are added to the json file")
+    ap.add_argument("--recommended", action="store_true",
+                    help="test E only: the smooth triaxial ball with the settings that "
+                         "problems/ball recommends for an evolution")
     a = ap.parse_args()
     os.makedirs(TMP, exist_ok=True)
     out = {}
     if a.followup:
         return followup(a)
+    if a.recommended:
+        return recommended(a)
 
     # ---- A: restart
     inp = os.path.join(TMP, "gaussian_rst.athinput")

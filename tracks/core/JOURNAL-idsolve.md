@@ -422,3 +422,38 @@ D. The triaxial ball with the smooth edge (half-width 2, strain 0.05, 64 cells),
    cent) after 8 cycles: then solving the Hamiltonian constraint alone is of little use
    for an expanding ball whatever its surface, and the vector equation (or a trial
    with consistent momentum constraint) has to come first.
+
+## 2026-11-15, entry 7: outcome of C and D; test E predicted
+
+Runs: C core-20261115-163450-2b3dc3c (not solved, with dump), continued as the run
+named in `evolution_numbers.json` (`restart_control`); D without the solve
+-163620-2b3dc3c, with it -163901-2b3dc3c (source 87e189e).
+
+C held: the continuation of the run WITHOUT the solve differs from its uninterrupted
+run by the same amounts as the solved run of test A (K_min 2.05e-10 in both, chi_max
+7.2e-13 in both, mean |H| 1.4e-11 in both, mean |M| 5e-12 in both). The difference
+after a restart is that of the code, not of the solver.
+
+D failed: with the smooth edge the solved run starts at a mean |H| of 1.09e-7 against
+1.39e-5, is 2.4 times below after one step (7.6e-6 against 1.82e-5), 1.26 times after
+three, and within 5 per cent after eight (7.08e-5 against 7.44e-5). In both runs the
+mean |H| grows by about 7e-6 per step and the mean |M| from 7e-6 to 5.7e-5: the
+evolution with the settings of this input makes a violation in a few steps that is
+larger than that of the trial data. The solve is not the limiting factor for this
+set-up. (Figure `evolution_tri`.)
+
+Candidate for the growth, to be tested by E: the sources are held fixed during a step
+(`source_density = false`) while the ball expands; the density falls by 3 H dt = 3.4
+per cent per step (H = 0.0447, dt = 0.25), an error of order 16 pi rho * 1.7e-2 =
+2e-4 in H inside the ball, which fills 1.6 per cent of the mesh: 3e-6 per step in
+the mean, the size seen. `problems/ball/ball.athinput` states this first-order error
+and recommends `source_density = true`, `source_extrap = true` and the conformal-time
+lapse (`lapse_oplog = 0`, `lapse_harmonic = 1/3`).
+
+E. The smooth triaxial ball again, 8 cycles, with these recommended settings, without
+and with the solve. Prediction: the growth of the mean |H| per step falls by at least
+a factor 5 in the unsolved run against D, and the solved run keeps a mean |H| at
+least 3 times below the unsolved one through the 8 cycles. Refuted if the growth is
+unchanged (then the candidate is wrong), or if the two runs again agree within 20 per
+cent at the end (then something else that the solve does not touch dominates, the
+momentum constraint being the next candidate).
