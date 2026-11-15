@@ -1,0 +1,266 @@
+{
+ "q10": [
+  {
+   "rp": 7.0,
+   "D": 1.0830373945096485,
+   "newton_full": {
+    "separated": 0.9,
+    "single_ejection": 0.9,
+    "member_below_4M": 0.6222222222222222,
+    "unsettled": 2
+   },
+   "newton": {
+    "separated": 0.9111111111111111,
+    "plunge": 0.0,
+    "clean_single_ejection": 0.9111111111111111
+   },
+   "hrna": {
+    "separated": 0.9888888888888889,
+    "plunge": 0.9555555555555556,
+    "clean_single_ejection": 0.03333333333333333
+   }
+  },
+  {
+   "rp": 8.0,
+   "D": 1.2377570222967411,
+   "newton_full": {
+    "separated": 0.8777777777777778,
+    "single_ejection": 0.8777777777777778,
+    "member_below_4M": 0.05555555555555555,
+    "unsettled": 0
+   },
+   "newton": {
+    "separated": 0.8888888888888888,
+    "plunge": 0.0,
+    "clean_single_ejection": 0.8777777777777778
+   },
+   "hrna": {
+    "separated": 1.0,
+    "plunge": 0.9444444444444444,
+    "clean_single_ejection": 0.05555555555555555
+   }
+  },
+  {
+   "rp": 9.0,
+   "D": 1.3924766500838337,
+   "newton_full": {
+    "separated": 0.8333333333333334,
+    "single_ejection": 0.8333333333333334,
+    "member_below_4M": 0.03333333333333333,
+    "unsettled": 0
+   },
+   "newton": {
+    "separated": 0.8444444444444444,
+    "plunge": 0.0,
+    "clean_single_ejection": 0.8444444444444444
+   },
+   "hrna": {
+    "separated": 1.0,
+    "plunge": 0.8888888888888888,
+    "clean_single_ejection": 0.1
+   }
+  },
+  {
+   "rp": 10.0,
+   "D": 1.5471962778709263,
+   "newton_full": {
+    "separated": 0.7555555555555555,
+    "single_ejection": 0.7555555555555555,
+    "member_below_4M": 0.011111111111111112,
+    "unsettled": 0
+   },
+   "newton": {
+    "separated": 0.7888888888888889,
+    "plunge": 0.0,
+    "clean_single_ejection": 0.7888888888888889
+   },
+   "hrna": {
+    "separated": 0.9777777777777777,
+    "plunge": 0.8555555555555555,
+    "clean_single_ejection": 0.1111111111111111
+   }
+  },
+  {
+   "rp": 11.0,
+   "D": 1.7019159056580189,
+   "newton_full": {
+    "separated": 0.7,
+    "single_ejection": 0.7,
+    "member_below_4M": 0.011111111111111112,
+    "unsettled": 0
+   },
+   "newton": {
+    "separated": 0.6777777777777778,
+    "plunge": 0.0,
+    "clean_single_ejection": 0.6777777777777778
+   },
+   "hrna": {
+    "separated": 0.9666666666666667,
+    "plunge": 0.7777777777777778,
+    "clean_single_ejection": 0.15555555555555556
+   }
+  },
+  {
+   "rp": 12.0,
+   "D": 1.8566355334451117,
+   "newton_full": {
+    "separated": 0.5888888888888889,
+    "single_ejection": 0.5888888888888889,
+    "member_below_4M": 0.0,
+    "unsettled": 0
+   },
+   "newton": {
+    "separated": 0.4666666666666667,
+    "plunge": 0.0,
+    "clean_single_ejection": 0.4666666666666667
+   },
+   "hrna": {
+    "separated": 0.9777777777777777,
+    "plunge": 0.6888888888888889,
+    "clean_single_ejection": 0.26666666666666666
+   }
+  },
+  {
+   "rp": 13.0,
+   "D": 2.011355161232204,
+   "newton_full": {
+    "separated": 0.2222222222222222,
+    "single_ejection": 0.2222222222222222,
+    "member_below_4M": 0.0,
+    "unsettled": 4
+   },
+   "newton": {
+    "separated": 0.0,
+    "plunge": 0.0,
+    "clean_single_ejection": 0.0
+   },
+   "hrna": {
+    "separated": 0.9777777777777777,
+    "plunge": 0.3,
+    "clean_single_ejection": 0.6555555555555556
+   }
+  }
+ ],
+ "q4": [
+  {
+   "rp": 9.82,
+   "D": 1.2372424709967655,
+   "newton_full": {
+    "separated": 0.8444444444444444,
+    "single_ejection": 0.8444444444444444,
+    "member_below_4M": 0.3,
+    "unsettled": 0
+   },
+   "newton": {
+    "separated": 0.8777777777777778,
+    "plunge": 0.0,
+    "clean_single_ejection": 0.8777777777777778
+   },
+   "hrna": {
+    "separated": 0.9888888888888889,
+    "plunge": 0.9444444444444444,
+    "clean_single_ejection": 0.03333333333333333
+   }
+  },
+  {
+   "rp": 11.0,
+   "D": 1.3859131548843606,
+   "newton_full": {
+    "separated": 0.8111111111111111,
+    "single_ejection": 0.8111111111111111,
+    "member_below_4M": 0.011111111111111112,
+    "unsettled": 2
+   },
+   "newton": {
+    "separated": 0.8444444444444444,
+    "plunge": 0.0,
+    "clean_single_ejection": 0.8444444444444444
+   },
+   "hrna": {
+    "separated": 0.9888888888888889,
+    "plunge": 0.8944444444444445,
+    "clean_single_ejection": 0.05555555555555555
+   }
+  },
+  {
+   "rp": 12.0,
+   "D": 1.5119052598738478,
+   "newton_full": {
+    "separated": 0.7888888888888889,
+    "single_ejection": 0.7888888888888889,
+    "member_below_4M": 0.011111111111111112,
+    "unsettled": 2
+   },
+   "newton": {
+    "separated": 0.8,
+    "plunge": 0.0,
+    "clean_single_ejection": 0.8
+   },
+   "hrna": {
+    "separated": 0.9777777777777777,
+    "plunge": 0.8777777777777778,
+    "clean_single_ejection": 0.08888888888888889
+   }
+  },
+  {
+   "rp": 13.0,
+   "D": 1.6378973648633353,
+   "newton_full": {
+    "separated": 0.7555555555555555,
+    "single_ejection": 0.7444444444444445,
+    "member_below_4M": 0.0,
+    "unsettled": 2
+   },
+   "newton": {
+    "separated": 0.7222222222222222,
+    "plunge": 0.0,
+    "clean_single_ejection": 0.7222222222222222
+   },
+   "hrna": {
+    "separated": 0.9666666666666667,
+    "plunge": 0.8444444444444444,
+    "clean_single_ejection": 0.12222222222222222
+   }
+  },
+  {
+   "rp": 14.0,
+   "D": 1.7638894698528225,
+   "newton_full": {
+    "separated": 0.7,
+    "single_ejection": 0.7,
+    "member_below_4M": 0.0,
+    "unsettled": 0
+   },
+   "newton": {
+    "separated": 0.6111111111111112,
+    "plunge": 0.0,
+    "clean_single_ejection": 0.6111111111111112
+   },
+   "hrna": {
+    "separated": 0.9555555555555556,
+    "plunge": 0.8111111111111111,
+    "clean_single_ejection": 0.1
+   }
+  },
+  {
+   "rp": 16.0,
+   "D": 2.015873679831797,
+   "newton_full": {
+    "separated": 0.5444444444444444,
+    "single_ejection": 0.5444444444444444,
+    "member_below_4M": 0.011111111111111112,
+    "unsettled": 0
+   },
+   "newton": {
+    "separated": 0.0,
+    "plunge": 0.0,
+    "clean_single_ejection": 0.0
+   },
+   "hrna": {
+    "separated": 0.9444444444444444,
+    "plunge": 0.6666666666666666,
+    "clean_single_ejection": 0.23333333333333334
+   }
+  }
+ ]
+}

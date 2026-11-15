@@ -134,3 +134,21 @@ with r_p and is below 0.3 at r_p = 12 M for q = 10; the full Newtonian separated
 stays above 0.5 up to r_p = 12 M (D = 1.86); so a window with both exists at q = 10 between
 r_p = 10 and 12 M. Refuted if no scanned r_p has HRNA plunge fraction < 0.3 together with
 Newtonian separated fraction > 0.5.
+
+### Outcome of V7 (run F-hills-20261115-145915-71abf93, figure fig_v7_rp_scan)
+
+q = 10, a_b = 3 M, prograde, start 4 r_t, 180 phases (r_p = 7, 8, ..., 13 M):
+full-Newton separated fraction 0.90, 0.88, 0.83, 0.76, 0.70, 0.59, 0.22 (member inside 4 M:
+0.62 at r_p = 7, 0.06 at 8, <= 0.03 beyond); fixed-hole Newton 0.91 ... 0.47, 0.00; HRNA
+separated 0.97-1.00 at every r_p, a member below 2.5 M in 0.96, 0.94, 0.89, 0.86, 0.78,
+0.69, 0.30, one-ejected-one-bound in 0.03 ... 0.27, 0.66. q = 4 (a_b = 5, r_p = 9.82-16):
+full Newton 0.84 to 0.54, HRNA separated 0.94-0.99 with plunges 0.94 to 0.67. Prediction
+REFUTED: no scanned r_p has an HRNA plunge fraction below 0.3 with a Newtonian separated
+fraction above 0.5; at r_p = 13 M (q = 10) HRNA separates 0.98 of the phases where full
+Newton separates 0.22. [JUDGEMENT] HRNA is outside its own consistency condition here
+(a_b/r_p = 0.23-0.43 against about 0.1 in 2404's examples, appendix.tex:8 per the helper;
+the hole is held fixed although q = 10), so it is a frame, not a truth; but both reasons
+for its plunges (members with L < 4 M; stronger relativistic tides) are physical and the
+NR passage will tell. Decision for the G1 run: keep the helper's configuration r_p = 8 M,
+where both baselines are robust over phase and disagree in kind (Newton: no member inside
+4 M in 94 percent of phases; HRNA: a member below 2.5 M in 94 percent).
