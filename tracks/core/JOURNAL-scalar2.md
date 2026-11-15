@@ -611,3 +611,18 @@ Rerun of T12 registered as core-20261115-175842-7d54ff5 (five cores, started 17:
 Figure-only repeat of the card comparison (analysis of the files of
 core-20261115-163549-7be94e4 and the card run -155404-24c88e3, no AthenaK run): the
 summary must equal that of -163549-7be94e4 in every number; only `fig_card.png` changes.
+
+18:10Z, code check of the T12 analysis (not registered, numbers not used: the driver run
+with --analyse-only on the partial files of -175842-7d54ff5, t <= 0.8 at N = 64, into
+`scratch/core/tmp/scalar2/t12_dry/`). It showed, before the registered analysis, two
+outcomes against the predictions above: at N = 32 F_H lies at 0.75 to 0.87 for 0.2 to
+1.3 e-folds (P12e: [1.0, 1.6]), at N = 64 F_H rises to 5.0 at N = 0.2 (P12d: [2.2,
+3.8]). G_H (H0 subtracted), F_M and the rms factors of |M| lay where predicted. I had
+treated H0 and the second-order part C2 as independent in size; a box ratio below 1 and
+one above 4 need a mean of C2 of the sign opposite to H0. Prediction written now, before
+looking at the summary column that tests it (`H_c2_mean_1`, added to the driver at
+18:11Z): the box mean of C2(s = 1) is negative, H0 positive, and <C2(1)> = -8e-12 within
+30 percent at t = 0.4 to 0.8 at both N (from F_H: N = 32, |H0 + <C2>|/|H0 + <C2>/4| = 0.8
+with H0 = 3.2e-11; N = 64, H0 = 2e-12 and F_H near 5 need <C2>/4 close to -H0). Refuted
+by a positive mean or one of another size: then the factors come from the fluctuations,
+not from the means.
