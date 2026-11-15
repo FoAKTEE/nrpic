@@ -23,20 +23,22 @@ import time
 HERE = os.path.dirname(os.path.abspath(__file__))
 NOISE = os.path.normpath(os.path.join(HERE, "..", "..", "noise"))
 
-VARIANTS = {
-    "U1": {},
-    "U2": {("meshblock", "nx1"): "32", ("meshblock", "nx2"): "32", ("meshblock", "nx3"): "32"},
-    "U3": {("meshblock", "nx1"): "16", ("meshblock", "nx2"): "16", ("meshblock", "nx3"): "16"},
-    "U5a": {("mesh", "nx1"): "32", ("mesh", "nx2"): "32", ("mesh", "nx3"): "32",
-            ("meshblock", "nx1"): "32", ("meshblock", "nx2"): "32", ("meshblock", "nx3"): "32",
-            ("time", "cfl_number"): "0.125", ("scalar_field", "noise_nmax2"): "64"},
-    "U5b": {("scalar_field", "noise_nmax2"): "64"},
-    "U6": {("scalar_field", "noise_scheme"): "markov"},
-    "U7": {("scalar_field", "noise_scheme"): "markov",
-           ("scalar_field", "noise_window"): "heaviside"},
-    "U8": {("meshblock", "nx1"): "32", ("meshblock", "nx2"): "32", ("meshblock", "nx3"): "32",
-           ("job", "rng_seed"): "20261116"},
-}
+def variants(n, cfl, u5_nmax2):
+    """U1-U8 relative to a base mesh of n^3 cells in one MeshBlock (NOISE_SPEC section 9)."""
+    b2, b4, lo = str(n // 2), str(n // 4), str(n // 2)
+    blocks = lambda b: {("meshblock", "nx1"): b, ("meshblock", "nx2"): b, ("meshblock", "nx3"): b}
+    return {
+        "U1": {},
+        "U2": blocks(b2),
+        "U3": blocks(b4),
+        "U5a": {("mesh", "nx1"): lo, ("mesh", "nx2"): lo, ("mesh", "nx3"): lo, **blocks(lo),
+                ("time", "cfl_number"): repr(cfl / 2), ("scalar_field", "noise_nmax2"): str(u5_nmax2)},
+        "U5b": {("scalar_field", "noise_nmax2"): str(u5_nmax2)},
+        "U6": {("scalar_field", "noise_scheme"): "markov"},
+        "U7": {("scalar_field", "noise_scheme"): "markov",
+               ("scalar_field", "noise_window"): "heaviside"},
+        "U8": {**blocks(b2), ("job", "rng_seed"): "20261116"},
+    }
 
 
 def edit_input(text, changes):
@@ -75,11 +77,15 @@ def main():
     ap.add_argument("--threads", type=int, default=4)
     ap.add_argument("--jobs", type=int, default=4)
     ap.add_argument("--smoke", action="store_true")
+    ap.add_argument("--u5-nmax2", type=int, default=64)
     a = ap.parse_args()
     exe = os.path.abspath(a.exe)
     base = open(a.base).read()
     os.makedirs(a.out, exist_ok=True)
     summary = {"exe": exe, "base": os.path.abspath(a.base), "runs": {}, "validations": {}}
+    n = int(re.search(r"<mesh>[^<]*?\bnx1\s*=\s*(\d+)", base).group(1))
+    cfl = float(re.search(r"cfl_number\s*=\s*([0-9.eE+-]+)", base).group(1))
+    VARIANTS = variants(n, cfl, a.u5_nmax2)
     names = ["U1"] if a.smoke else list(VARIANTS)
     for name in names:
         ch = dict(VARIANTS[name])

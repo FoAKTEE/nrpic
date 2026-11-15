@@ -50,3 +50,13 @@ bit-identical), A13 (N = 32 against N = 64), A15 (seeds); the statistical tests 
 the family-wise level 1e-3/D. Refuted by any deterministic failure; a single statistical
 failure with all deterministic tests passing is read by the rule of NOISE_SPEC 10 (repeat
 on U8). A smoke run of 4 cycles first measures the time per run.
+
+13:58Z, smoke L-U0 (run E-20261115-135218-bdf4710; nrpic-run names runs with the short
+owner id "E"): 4 cycles of the 64^3 base case took 78 s of processor time, 1.35e4
+zone-cycles per second (the processor build of core's executable runs serially; Z4c
+dominates). The 64^3 x 300-cycle base case would cost about 95 min per run, nine runs.
+Change before the runs: a scaled base case `inputs/u_base32.athinput` (N = 32, nmax2 = 100,
+hubble 1.1, 120 cycles, dumps every 40, restart at 60; U3 = 64 MeshBlocks of 8^3; U5a/U5b
+N = 16 and 32 with nmax2 = 36). The predictions of L-U stand unchanged for this case;
+statistical tests at shells with fewer than 100 effective modes report "n/a" by the
+validator's rule. The 64^3 x 300 base case stays pending (card or a longer processor run).
