@@ -251,3 +251,63 @@ Hernquist (lines 840-920), planar orbits (appendix B, lines 1318-1703).
     peak ratios equal the digitized ones within 2 % (1.45 for 0.8 / 0.5, 1.67 for 0.8 / 0),
     so the text's "approximately 35 %" (line 929) is not what the figure shows, its
     "around 70 %" (line 199) is.
+
+## K1 outcome (runs D-bh-dress-20261115-171134-38634d6, 103 s, and the rerun with the
+## deviations taken at our own nodes, D-bh-dress-20261115-171615-8adbbdd, 105 s, 8 cores)
+
+Numbers from `scratch/D-bh-dress/D-bh-dress-20261115-171615-8adbbdd/kerr_reference.json`;
+figures `figs/kerr_ref_constf.png`, `figs/kerr_ref_hernquist.png`, `figs/kerr_ref_checks.png`
+(looked at). The first run compared on a dense grid interpolated linearly in our curve,
+which put a sawtooth of up to 1 % on the residuals beyond 20 Gm; the rerun compares at our
+nodes with FdRW's drawn polyline (the PGF curve is what they plotted).
+1. Confirmed: a = 0 equals the wave-1 references to 8.9e-4 (constant f, largest at
+   4.07 Gm next to the edge) and 3.8e-4 (Hernquist) on 4.07-40 Gm.
+2. Confirmed: constant f, equator: a = 0.5 within 0.88 %, a = 0.8 within 0.95 % (median
+   0.12-0.15 %); peaks 0.9271e8 at 7.31 Gm (FdRW 0.9256e8 at 7.25) and 1.0604e8 at 6.61 Gm
+   (FdRW 1.0585e8 at 6.53).
+3. Half confirmed: theta = 0 within 0.78 % (peak 0.9691e8 at 7.02 Gm, FdRW 0.9669e8 at
+   7.00). theta = pi/3 FAILED inside 8 Gm: FdRW's curve rises 1-1.5 Gm further out than ours
+   (ours/FdRW = 2.0 at 3.6 Gm, 1.06 at 6 Gm) and lies 1-2.7 % above ours at 8-17 Gm; the
+   peak values agree (1.0374e8 vs 1.0352e8). No single polar angle of ours reproduces their
+   curve (scratch probe: theta = pi/6, pi/4, 0.4 rad tried; their inner part is near
+   theta ~ pi/5, their outer part near the equator). Their Hernquist theta = pi/3 curve does
+   not show this shift. [JUDGEMENT] a problem of that one FdRW curve; unresolved.
+4. FAILED for the Hernquist DF at a != 0 off the axis: a = 0 within 1.4 %, theta = 0 within
+   1.5 %, but ours is lower than FdRW by 0.5 % at 20 Gm, 1 % at 12 Gm, 4 % at the a = 0.8
+   peak (3.922e18 at 5.06 Gm against 4.083e18 at 5.07 Gm) and 6-18 % at the inner edge
+   (2.4-3 Gm); a = 0.5: peak -0.9 %, up to -6 % at the edge; a = 0.8, theta = pi/3: peak
+   -2.3 %, up to -12 %. Checks made after the failure (development probes, scratch): the
+   Kerr radial and polar actions equal independent scipy quadratures (numpy roots) and the
+   turning points of nrpic.kerr.radial_roots (mpmath) to 1e-10 at five orbits; doubling
+   all quadrature orders changes rho by 1e-4 at 3, 5.07 and 8 Gm; replacing
+   L = |Lz| + I_theta/2pi by sqrt(C) changes rho by 0.1 %. Constant f (same capture domain,
+   same currents) agrees to 1 %, so the difference sits in f, i.e. in the action matching
+   of orbits with Lz != 0 and a != 0. Cause not identified [TO VERIFY]; FdRW's own text
+   ratio "approximately 35 %" (a = 0.8 over 0.5) lies between ours (1.406) and their figure
+   (1.451), their "around 70 %" (over a = 0) is their figure (1.674), ours is 1.609.
+5. Confirmed: inner edge at the equator 2.91431 (a = 0.5) and 2.09525 (a = 0.8) against
+   r_mb+ = 2.91421 and 2.09443 (FdRW eq. mborbit): 1e-4 and 8e-4 [the prediction said 1e-4;
+   the bisection on E_min < 1 is limited by the E grid near E = 1, so 8e-4 FAILS the stated
+   1e-4 but passes 1e-3]. Off the plane: r_min = 2.2410 (theta = pi/3), 3.6398 (axis) at
+   a = 0.8; 3.0282, 3.8697 at a = 0.5. The counter-rotating edges r_mb- = 4.949, 5.483 are
+   visible as kinks of the planar curves (figs/kerr_ref_checks.png).
+6. Confirmed: E_min(10 Gm, equator) within 5.9e-5 of figemin for 0.1 <= a <= 0.99.
+7. FAILED: C_crit(a = 0.75, E = 0.97, Lz = 2) printed by the script is 7.09 at r = 30 Gm,
+   not 10.3. This is a mistake of the check, not of the library: at r = 30 Gm and E = 0.97
+   the point lies beyond the outer maximum of C_V, so the minimum over (r_+, 30] is the
+   endpoint (C_V(30) = 7.09 < C_V(r_unst)); FdRW's 10.3 is the local minimum of C_V at the
+   unstable orbit. To be rechecked with r inside the bound region (open).
+8. Confirmed: on the axis (a = 0.8) the general routine equals FdRW eq. (825) to 3.6e-5
+   (4.5 Gm), 4.2e-5 (7 Gm), 3.5e-5 (15 Gm).
+9. Confirmed: one constant factor 0.2500-0.2505 for a = 0, 0.5, 0.8 maps our eq. (584)
+   onto figequator1; shapes then agree within 3.3 % (a = 0, 0.5, largest at the inner edge)
+   and 1.4 % (a = 0.8). So FdRW's figure was drawn with 1/4 of the prefactor printed in
+   their eq. (584) (8 f/sqrt(r)) [VERIFIED as a property of figure and equation].
+10. Constant f: 1.2192 (ours) against 1.2190 (figure) for a = 0.8 over 0: "20 %" confirmed;
+    a = 0.8 over 0.5: 1.1438 / 1.1436. Hernquist: see item 4 (ours 1.406 and 1.609; the
+    prediction "within 2 % of the digitized ratios" FAILED: 3.1 % and 3.9 % below).
+Also: viterate caption (line 1508), Lz^max = 4.829 at x = 10, E0 = 0.9997: eq. (lmax) as
+printed (a^2 - x(x-2) under the root) has no real value at x = 10 for any a < 1; with
+a^2 + x(x-2) = Delta(x) it gives 4.8753, 4.8328, 4.8287, 4.8226, 4.8125 for a = 0.5, 0.7,
+0.72, 0.75, 0.8, i.e. the caption fits a ~ 0.72 (the spin is not stated). [VERIFIED: a sign
+typo in eq. (lmax); eq. (lmaxe1) has the + sign.]
