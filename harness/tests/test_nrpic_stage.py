@@ -76,6 +76,12 @@ def main():
     F.sh([os.path.join(A, "harness", "bin", "nrpic-env"), "exec", "--", "python",
           os.path.join(an, "make_table.py")], cwd=A)
     os.makedirs(os.path.join(A, "tracks", OWNER, "stage", "G1"), exist_ok=True)
+    # a hand-written manifest of wave 1 (decision 0012): no outputs.dir, status "done", no checksums
+    hand = os.path.join(A, "tracks", OWNER, "runs", "A-emd-pbh-20261115-112946-b7b431d")
+    os.makedirs(hand, exist_ok=True)
+    json.dump({"run_id": "A-emd-pbh-20261115-112946-b7b431d", "status": "done", "gate": "G0",
+               "output_dir": "scratch/A-emd-pbh/A-emd-pbh-20261115-112946-b7b431d", "command": ["x"]},
+              open(os.path.join(hand, "manifest.json"), "w"))
     open(os.path.join(A, "tracks", OWNER, "stage", "G1", "VERIFY"), "w").write(
         "# commands re-run on the clean export (cwd: its root)\n"
         f"python tracks/{OWNER}/analysis/make_table.py\n")
@@ -98,6 +104,11 @@ def main():
     c.ok(r.returncode == 0 and doc["result"] == "PASS", "verify passes on the clean export", r.stdout + r.stderr)
     for chk in ("clean", "sync", "style", "fig-script", "runs", "rerun", "compare", "regenerate", "note-pdf"):
         c.ok(status_of(doc, chk) == "PASS", f"verify check {chk}: PASS", r.stdout)
+    c.ok(status_of(doc, "run-notes") == "WARN" and "hand-written" in next(
+         x["message"] for x in doc["checks"] if x["check"] == "runs"),
+         "a hand-written manifest of wave 1 (status 'done', no checksums) is read, not failed (decision 0012)", r.stdout)
+    c.ok(status_of(doc, "package") == "WARN" and "EVIDENCE.md" in r.stdout,
+         "verify notes the package documents of decision 0012 that are missing", r.stdout)
     c.ok(F.sh(["git", "-C", A, "status", "--porcelain", "--", f"tracks/{OWNER}/note"]).stdout == "",
          "verify wrote nothing into the note of the worktree")
 
@@ -145,6 +156,15 @@ def main():
     rep = open(os.path.join(A, "tracks", OWNER, "stage", "G1", "STAGE_REPORT.md")).read()
     c.ok("verdict FAIL" in r.stdout and "checklist items not PASS or NA" in rep and "VERIFIER_REPORT" in rep,
          "report: FAIL while items are OPEN and the verifier has not reported", r.stdout)
+    c.ok("no stage/G1/EVIDENCE.md (decision 0012)" in rep and "## Package documents" in rep
+         and "REPORT.md" not in os.listdir(os.path.join(A, "tracks", OWNER, "stage", "G1")),
+         "report: the package documents of decision 0012 listed, EVIDENCE.md and OPEN.md required, no REPORT.md", rep[:1500])
+    sdir = os.path.join(A, "tracks", OWNER, "stage", "G1")
+    open(os.path.join(sdir, "EVIDENCE.md"), "w").write("# Evidence\n\nrun ids and figures\n")
+    open(os.path.join(sdir, "OPEN.md"), "w").write("# Open\n\nnothing\n")
+    open(os.path.join(sdir, "SCOPE.md"), "w").write("# Scope\n")
+    with open(os.path.join(sdir, "STAGE_REPORT.md"), "a") as f:
+        f.write("\n## Notes of the lead\n\nWritten by hand; must survive a rerun.\n")
     ckp = os.path.join(A, "tracks", OWNER, "stage", "G1", "CHECKLIST.md")
     text = open(ckp).read().replace("status: OPEN", "status: PASS").replace("evidence: \n", f"evidence: run {rid}\n")
     open(ckp, "w").write(text)
@@ -154,6 +174,12 @@ def main():
     rep = open(os.path.join(A, "tracks", OWNER, "stage", "G1", "STAGE_REPORT.md")).read()
     c.ok("verdict PASS" in r.stdout and "**PASS**" in rep and "Accept G1 of A-emd-pbh" in rep
          and "schem_timeline" in rep and "{{" not in rep, "report: PASS from the template, placeholders filled", r.stdout)
+    c.ok("## Notes of the lead" in rep and "must survive a rerun" in rep and "`stage/G1/SCOPE.md`" in rep,
+         "report keeps a section written by hand and names the scoping text", rep[-1500:])
+    r = stage(A, ["report", OWNER, "G1"])
+    rep = open(os.path.join(A, "tracks", OWNER, "stage", "G1", "STAGE_REPORT.md")).read()
+    c.ok("Accept G1 of A-emd-pbh" in rep and rep.count("## Notes of the lead") == 1,
+         "report run again keeps the decision text and the hand-written section once", r.stdout)
     r2 = stage(A, ["collect", OWNER, "G1"])
     c.ok("status: PASS" in open(ckp).read() and "kept from the previous version" in r2.stdout,
          "collect again keeps the judged statuses", r2.stdout)
@@ -171,6 +197,22 @@ def main():
          "verify of A from the main checkout writes only under scratch/orch/", r.stdout + r.stderr)
     r = stage(B, ["report", OWNER, "G1"])
     c.ok(r.returncode == 1 and "own track" in r.stderr, "report for A refused in B's worktree", r.stderr)
+
+    # the knowledge base: its own gates (brief 12.10), collect read-only with --stdout
+    KB = fx["wt"]["kb"]
+    r = stage(KB, ["collect", "kb", "G1", "--stdout"])
+    c.ok(r.returncode == 0 and "Checklist: kb KB-G1" in r.stdout and "The inventory report" in r.stdout
+         and "All priority-3 papers ingested" in r.stdout and "Code index and parameter index of AthenaK" in r.stdout
+         and "The answers to the first questions" in r.stdout and "kb snapshot" in r.stdout
+         and "Pre-core baseline" not in r.stdout and not os.path.exists(os.path.join(KB, "tracks", "kb", "stage", "KB-G1")),
+         "collect kb G1 --stdout: the four KB-G1 criteria of brief 12.10 and the snapshot rule; nothing written",
+         r.stdout + r.stderr)
+    r = stage(KB, ["collect", "kb", "KB-G2"])
+    ck = open(os.path.join(KB, "tracks", "kb", "stage", "KB-G2", "CHECKLIST.md")).read()
+    c.ok(r.returncode == 0 and "All papers and repositories ingested" in ck and "QA report" in ck,
+         "collect kb KB-G2 writes tracks/kb/stage/KB-G2/CHECKLIST.md", r.stdout + r.stderr)
+    r = stage(KB, ["collect", "kb", "G4"])
+    c.ok(r.returncode == 1 and "KB-G0, KB-G1, KB-G2, KB-G3" in r.stderr, "a gate the knowledge base lacks is refused", r.stderr)
     print("package to look at: " + os.path.join(A, "tracks", OWNER, "stage", "G1", "STAGE_REPORT.md"))
     return c.done()
 
