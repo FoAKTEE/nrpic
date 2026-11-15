@@ -154,3 +154,40 @@ scouting (`gw_diag/figs/cosmo_tt.png`, middle panel) rises from ~1e-19 rho_bar a
 3e-14 .. 2e-13 at a = 1000. Prediction: if this rise is the spatial-gauge piece, rho_kin
 computed from Lambda tilde A - G_A is below 10 percent of the raw value at the last dump in
 both runs. Refuted if it is above 50 percent there.
+
+## Outcome of P7 and P7b, run B-20261115-164616-a6d9477 (`late_rise.json`, `late_rise.png`, looked at)
+
+Before the registered run I tried `late_rise.one` on the last dump of the quadratic-cloud
+run as a development check (a = 1001: rms Lambda h 2.488e-9, G 2.06e-10); the registered run
+reproduces these numbers. The predictions above were committed before that check
+(commit 55574b0).
+
+P7: REFUTED. The spatial-gauge piece is real and of the size the caveat estimated in form,
+rms G = 0.13 to 0.17 (rms non-TT)^2 at every dump from a = 12 to 1001 in both runs, but it
+is an order of magnitude below the rise: at a = 1001 rms G = 2.06e-10 (quadratic cloud) and
+2.23e-10 (cubic) against rms Lambda h = 2.488e-9 and 4.312e-9, and rms(Lambda h - G) =
+2.496e-9 and 4.315e-9, i.e. the corrected strain rises exactly as the raw one (from
+1.20e-9 at a = 415 in both). G sits at low wave numbers (spectral peak at |k|L/2pi = 5,
+2-3 percent of its mean square above 20), while 93 and 97 percent of the rise of the mean
+square between a ~ 340 and 1001 lies at |k|L/2pi >= 20, 56 and 73 percent above 40, with
+its peak at 67 and 69 (the per-axis Nyquist number is 64).
+P7b: REFUTED as well: G_A is negligible (rms 1.4e-14 against rms Lambda A 1.7e-11 at
+a = 1001); rho_kin with and without G_A agree to 1e-3 at every dump.
+Not predicted: rho_kin/rho_grad stays at 0.010 to 0.020 during the rise (both runs): the TT
+part that rises is not freely propagating radiation (for which the two would be equal on
+average) but a quasi-static field at the grid scale.
+
+Reading [JUDGEMENT]: the late rise is not the second-order spatial-gauge piece of the flat
+projection. The slicing part of the gauge freedom is not computed; with the code's
+first-order gauge equal to the Newtonian one (section "Gauge" (i) above) the second-order
+time shift T obeys T = -E' for zero shift (E the scalar part of h, growing as a), so the
+slicing products scale as (grad T)^2 ~ (2/(k tau))^2 (d d E)^2, i.e. below G by
+4/(k tau)^2 < 2e-4 for k >= 2 pi/L at tau ~ 60 [JUDGEMENT, scaling argument, not computed].
+What the rise is instead: a near-grid-scale TT field (peak beyond the per-axis Nyquist
+number), depending on the deposit by a factor 1.7 in rms (2.5e-9 vs 4.3e-9) and appearing
+when the structure becomes nonlinear at the grid scale (a > 600): resolution-limited
+small-scale structure or particle and deposit noise, not a resolved gravitational-wave
+signal. It is an upper bound on the TT content at those scales, rho_GW/rho_bar < 3e-12
+(quadratic) and < 1.3e-11 (cubic) at a = 1001, and the low-k part (|k|L/2pi < 10), the only
+part that is resolved, does not rise. Settling between "resolved small-scale physics" and
+"noise" needs the same run at 256^3 or with more particles per cell (not run).
