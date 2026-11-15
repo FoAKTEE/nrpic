@@ -17,13 +17,14 @@ def run(argv):
     return cli.main(argv)
 
 
-@pytest.mark.parametrize("cmd", ["search", "ingest", "embed", "eq", "claim", "qa"])
+@pytest.mark.parametrize("cmd", ["ingest", "claim", "qa"])
 def test_stubs_exit_3(cmd, capsys):
     assert run([cmd, "x"]) == 3
     assert "not built yet" in capsys.readouterr().err
 # `code`, `link`, `watch upstream`, `fetch-repos` and `ingest repo` are built (K6-K7):
 # tests in test_code_*.py. `ingest arxiv`, `resolve-bib`, `frontier`, `cites`, `export` and the
 # text views of `show` are built (K2-K3): tests in test_papers_*.py, test_tex_*.py, test_bib_*.py
+# `embed`, `search` and `eq` are built (K4-K5): tests in test_embed_*.py
 
 
 def test_init_verify_status_snapshot(store, capsys):

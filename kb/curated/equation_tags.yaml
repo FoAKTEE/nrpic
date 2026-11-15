@@ -1,0 +1,69 @@
+# Tag rules of the equation index (stage K5, brief 12.6), applied by `kb eq --apply-tags`
+# (kb/kbtool/eq_tags.py) to every row of `equations`; the result goes to equations.tags_json.
+#
+# A tag applies when ANY of its clauses matches. A clause matches when ALL of its fields match:
+#   label:   regular expression searched in the equation's \label (case-insensitive)
+#   context: regular expression searched in the two sentences before and after (case-insensitive)
+#   tex:     regular expression searched in tex_norm (normalized TeX: macros expanded, spaces
+#            removed except between a control word and a letter; case-sensitive);
+#            a list means every expression of the list must match
+#   not_context / not_tex: expressions that must NOT match
+# Python `re` syntax; YAML single quotes keep backslashes literal.
+# The rules are [JUDGEMENT]; their precision on a sample is in tracks/kb/embed/JOURNAL.md.
+version: 1
+tags:
+  vlasov:
+    description: Vlasov (collisionless Boltzmann, Liouville) equation for a distribution function
+    any:
+      - label: 'vlasov|boltzmann|liouville|collisionless'
+      - context: '\bvlasov\b|collisionless boltzmann|liouville equation|boltzmann equation'
+        tex: '\\partial ?f(?![A-Za-z])|\\partial_\{?[^{}]*\}? ?f(?![A-Za-z])|\{\\partial f|\\frac\{d ?f|\\frac\{\\mathrm\{d\} ?f|\\dot\{?f(?![A-Za-z])|\\mathcal\{L\}_?\{?[^=]*\}? ?\[?f|C\[f\]'
+  geodesic:
+    description: geodesic equation (equations of motion of test particles in a metric)
+    any:
+      - label: 'geodesic'
+      - context: 'geodesic equation|geodesic motion|equations? of motion (of|for) (a |the )?(test |massive |massless )?particles?|follow geodesics|move on geodesics|along geodesics'
+        tex: '\\Gamma\^|\\frac\{d ?(u|p|x|v)|\\frac\{\\mathrm\{d\} ?(u|p|x|v)|\\dot\{?(u|p|x)|d\^2 ?x|d\^\{2\} ?x|\\frac\{d\^2'
+  hamiltonian_constraint:
+    description: Hamiltonian (energy) constraint of the 3+1 Einstein equations
+    any:
+      - label: 'hamiltonian|ham[-_:]?con|(^|[:_-])hc($|[:_-])|constraint[-_:]?h($|am)'
+      - context: 'hamiltonian constraint'
+        tex: '\\mathcal\{H\}|R(?![a-z])|\\rho|K\^2|K\^\{2\}|A_\{ij\}A\^\{ij\}|\\nabla\^2|\\Delta|\\psi|\\phi\^5|16\\pi'
+  momentum_constraint:
+    description: momentum constraint of the 3+1 Einstein equations
+    any:
+      - label: 'momentum[-_:]?con|mom[-_:]?con|(^|[:_-])mc($|[:_-])'
+      - context: 'momentum constraints?'
+        tex: 'D_|\\nabla_|\\partial_|\\mathcal\{M\}|S_|j_|J_|8\\pi|\\tilde\{A\}|K\^\{?[a-z]'
+  z4c:
+    description: Z4c (conformal Z4) evolution equations or variables
+    any:
+      - label: 'z4'
+      - context: '\bz4c\b|\bz4\b|\bccz4\b|conformal z4'
+        tex: '\\Theta|\\hat\{\\Gamma\}|\\hat\{K\}|\\tilde\{\\Gamma\}|\\kappa_\{?1|\\kappa_1'
+  deposition:
+    description: particle-to-mesh deposition (shape functions, cloud in cell, assignment weights)
+    any:
+      - label: 'deposit|shape|(^|[:_-])(cic|tsc|pcs)($|[:_-])|assign'
+      - context: 'deposit|cloud[- ]in[- ]cell|triangular[- ]shaped[- ]cloud|shape functions?|assignment (function|scheme)|particle[- ]mesh|\bcic\b|\btsc\b|particle[- ]in[- ]cell'
+        tex: 'W|S\(|S_|\\delta|\\sum|w_|B_'
+        not_context: 'energy deposition|deposited energy|deposition of energy|heat deposition'
+  compaction_function:
+    description: compaction function (mass excess over areal radius) of primordial-black-hole formation
+    any:
+      - label: 'compaction'
+      - context: 'compaction function|compactness function'
+        tex: '\\mathcal\{C\}|C(\(|_|\^|=)|\\bar\{C\}|\\overline\{C\}'
+  langevin:
+    description: Langevin equation (stochastic differential equation with a noise term)
+    any:
+      - label: 'langevin'
+      - context: '\blangevin\b|stochastic (inflation|differential equation|equation|noise)|white noise|wiener process|noise term'
+        tex: ['\\xi|dW|\\eta\(|\\eta_|\\zeta\(', '=']
+  tidal_radius:
+    description: tidal (disruption) radius or Roche limit
+    any:
+      - label: 'tidal[-_:]?rad|(^|[:_-])r_?t($|[:_-])|roche|disrupt'
+      - context: 'tidal (disruption )?radi(us|i)|roche (limit|lobe|radius)|tidal disruption'
+        tex: 'r_\{?t\}?(?![a-z])|r_\\mathrm\{t\}|r_\{\\mathrm\{t\}\}|R_\{?t\}?(?![a-z])|r_\{?T\}?(?![a-z])|r_\{?\\mathrm\{T\}|r_\{?\\rm|\^\{1/3\}|\^\{-1/3\}|r_\{?\\mathrm\{td|r_\{?\\mathrm\{tid'
