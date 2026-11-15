@@ -1,0 +1,51 @@
+{
+ "run_id": "core-20261115-135414-5a6953e",
+ "owner": "core",
+ "purpose": "Scalar field test 4, repeat with the window increment formed without cancellation and the phase estimator of the correlation: stochastic sources (generic and Mukhanov-Sasaki models)",
+ "kind": "production",
+ "command": [
+  "python3",
+  "/data/haiyangw/nrpic/wt/core-scalar/tracks/core/analysis/scalar/test4_noise.py",
+  "--exe",
+  "/data/haiyangw/nrpic/wt/core-scalar/.work/exe/athena_cpu_5a6953e",
+  "--workers",
+  "8"
+ ],
+ "cwd": "/data/haiyangw/nrpic/scratch/core/core-20261115-135414-5a6953e",
+ "commit": "5a6953e1c7b7e1c64e9cb5aa9891218e0aaea719",
+ "branch": "core/scalar-field",
+ "uncommitted_changes": [],
+ "inputs": [
+  {
+   "path": ".work/exe/athena_cpu_5a6953e",
+   "sha256": "6e1cb057119bbb4f6341150565422529a2cc5c05ddae66b44672ef7b7964d9ed"
+  },
+  {
+   "path": "problems/scalar/noise_power.athinput",
+   "sha256": "daae1f6693ded233fb06a6a0fefe9dc11e84998847965cdf79df5a138d67ce36"
+  },
+  {
+   "path": "problems/scalar/noise_ms.athinput",
+   "sha256": "3ff8eb7bab3c10bb868bc592fdae95ff6175c91b6629dd10f7d9b382598dc9bd"
+  },
+  {
+   "path": "tracks/core/analysis/scalar/test4_noise.py",
+   "sha256": "12a1a1590dd0fda17bb7025523b1573d13d2843a07547d55cccb0550e4d481e6"
+  },
+  {
+   "path": "python/nrpic/scalar_field.py",
+   "sha256": "ca852887001ab9f0353f8c54c7c8b4418df6b076cd00b418b978f2c27dbd1ec9"
+  },
+  {
+   "path": "python/nrpic/rng.py",
+   "sha256": "da4ad2266506ffb733639df0e83f374fe87dd0173d341c11304c5bb36d85e92e"
+  }
+ ],
+ "output_directory": "/data/haiyangw/nrpic/scratch/core/core-20261115-135414-5a6953e",
+ "host": "anta",
+ "start_utc": "2026-11-15T13:54:14Z",
+ "cores": 8,
+ "wall_time_s": 288.11,
+ "exit_status": 0,
+ "core_hours": 0.6402
+}

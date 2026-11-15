@@ -1,0 +1,43 @@
+{
+ "run_id": "core-20261115-120641-6bef558",
+ "owner": "core",
+ "command": [
+  "/data/haiyangw/nrpic/wt/core-newton/.work/athena_cpu_9d84282",
+  "-i",
+  "isolated.athinput",
+  "mesh/nx1=64",
+  "mesh/nx2=64",
+  "mesh/nx3=64",
+  "time/tlim=0.8",
+  "particles/dt=0.002",
+  "particles/snap_dt=0.1",
+  "particles/particle_file=ball_spin64.nrp"
+ ],
+ "cwd": "/data/haiyangw/nrpic/scratch/core/core-20261115-120641-6bef558",
+ "commit": "6bef558",
+ "source_modified_since_commit": true,
+ "inputs": [
+  {
+   "path": "problems/newton/isolated.athinput",
+   "sha256": "4e6cc468d4e248d1c157e220da8ff7d0642e41d9a0438f874767984b4b2cc209"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/scratch/core/ic/newton/ball_spin64.nrp",
+   "sha256": "474875033966061d60b0817b6bd0ce691fed355da1e87a8c7d9e62db146fd922"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/wt/core-newton/.work/athena_cpu_9d84282",
+   "sha256": "71ff0dac2f3166871a92a20363fac51510191d912647c72a1f6e3df9c47f12f7",
+   "role": "executable"
+  }
+ ],
+ "output_directory": "/data/haiyangw/nrpic/scratch/core/core-20261115-120641-6bef558",
+ "purpose": "T6 moving rotating ball N=64, dt=0.002, to t=0.8: conservation laws and the six second-moment components",
+ "kind": "scouting",
+ "tag": "spin-N64",
+ "wall_time_s": 209.37,
+ "exit_status": 0,
+ "cores": 1,
+ "card_hours": 0.0,
+ "started_utc": "2026-11-15T12:06:41Z"
+}

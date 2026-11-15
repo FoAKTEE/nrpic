@@ -1,0 +1,58 @@
+{
+ "run_id": "core-20261115-115626-f0258ce",
+ "owner": "core",
+ "purpose": "Agreement of the random-number implementations on 202070 keys: processor build, card build, standalone compilations with five sets of compiler options, Python twin, numpy.random.Philox",
+ "kind": "production",
+ "command": [
+  "python3",
+  "/data/haiyangw/nrpic/wt/core-rng/tracks/core/analysis/rng/run_agreement.py",
+  "--keys",
+  "/data/haiyangw/nrpic/scratch/core/core-20261115-115134-f0258ce/keys.bin",
+  "/data/haiyangw/nrpic/scratch/core/core-20261115-115134-f0258ce/rng_table.bin",
+  "/data/haiyangw/nrpic/scratch/core/core-20261115-115230-f0258ce/rng_table.bin"
+ ],
+ "cwd": "/data/haiyangw/nrpic/scratch/core/core-20261115-115626-f0258ce",
+ "commit": "f0258ce872fa1b3ed94dc5d85f75bbbad50d06bb",
+ "branch": "core/rng",
+ "uncommitted_changes": [
+  "M tracks/core/JOURNAL-rng.md",
+  "?? tracks/core/analysis/rng/run_agreement.py"
+ ],
+ "inputs": [
+  {
+   "path": "/data/haiyangw/nrpic/scratch/core/core-20261115-115134-f0258ce/rng_table.bin",
+   "sha256": "6527e84fdfeceb59a2b2b8df33897d9722f9ca531f070f628786291e48264523"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/scratch/core/core-20261115-115230-f0258ce/rng_table.bin",
+   "sha256": "6527e84fdfeceb59a2b2b8df33897d9722f9ca531f070f628786291e48264523"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/scratch/core/core-20261115-115134-f0258ce/keys.bin",
+   "sha256": "6ed04d7cdf79302c2938f4cbf591cb182abdf0045125d801320a15305279d1ae"
+  },
+  {
+   "path": "python/nrpic/rng.py",
+   "sha256": "888abf5b241f8bbe3fe2e344af3eaf2d349011ce42ebf3d0f48d03edd72052a2"
+  },
+  {
+   "path": "athenak/src/utils/rng.hpp",
+   "sha256": "1de2f7f11e11970c4a00f4203c70bc84dba977577b8d753f4a6f1941a325796c"
+  },
+  {
+   "path": "tracks/core/analysis/rng/standalone_table.cpp",
+   "sha256": "70f09b049d226739c6e009465e1804f85535bd89a6362100772088757595f6f0"
+  },
+  {
+   "path": "tracks/core/analysis/rng/compare_table.py",
+   "sha256": "f21175425daeeaa4abd1db1be84d0dd44a5207a8633a9d4235207d9450b4a58c"
+  }
+ ],
+ "output_directory": "/data/haiyangw/nrpic/scratch/core/core-20261115-115626-f0258ce",
+ "host": "anta",
+ "start_utc": "2026-11-15T11:56:26Z",
+ "cores": 1,
+ "wall_time_s": 4.97,
+ "exit_status": 0,
+ "core_hours": 0.0014
+}

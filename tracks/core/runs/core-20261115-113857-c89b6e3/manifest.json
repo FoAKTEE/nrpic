@@ -1,0 +1,35 @@
+{
+ "run_id": "core-20261115-113857-c89b6e3",
+ "label": "s_p0.3_table_n32",
+ "owner": "core",
+ "purpose": "Test 1a (v): P = 0.3, tabulated full correction",
+ "kind": "scouting",
+ "command": "/data/haiyangw/nrpic/wt/core-mp/.work/build_cpu/src/athena -i by_static.athinput -d /data/haiyangw/nrpic/scratch/core/core-20261115-113857-c89b6e3 mesh/nx1=32 mesh/nx2=32 mesh/nx3=32 problem/comp0_corr=table problem/comp0_corr_file=by_m1_p0.3.tab",
+ "cwd": "/data/haiyangw/nrpic/scratch/core/core-20261115-113857-c89b6e3",
+ "commit": "c89b6e3",
+ "source_dirty": false,
+ "inputs": [
+  {
+   "path": "problems/puncture/by_static.athinput",
+   "sha256": "db55d132d8dec98ae5fe9bd867cbc9440c3d76e86d55ec4ac35827d0ed0a393a"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/scratch/core/tmp/by_m1_p0.3.tab",
+   "sha256": "fa5f5387ef76815c93594d6f5eaffda1174e7c5fde6ed96355ac2b33f6f0acd7"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/wt/core-mp/.work/build_cpu/src/athena",
+   "sha256": "14fac5bec922887288e9615912f7d3983bb424e16a74f97fe26beebe157d0355",
+   "role": "executable"
+  }
+ ],
+ "output_directory": "/data/haiyangw/nrpic/scratch/core/core-20261115-113857-c89b6e3",
+ "resources": "1 core",
+ "started_utc": "2026-11-15T11:38:57Z",
+ "status": "failed",
+ "exit_code": 1,
+ "wall_time_s": 0.0,
+ "queue_wait_s": 0.0,
+ "card_hours": 0.0,
+ "core_hours": 0.0
+}

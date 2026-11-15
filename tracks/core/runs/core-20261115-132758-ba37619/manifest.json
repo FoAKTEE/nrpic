@@ -1,0 +1,39 @@
+{
+ "run_id": "core-20261115-132758-ba37619",
+ "owner": "core",
+ "purpose": "Regression on processors: executable of the unmodified source (b28ecca) against the executable with the scalar field (ba37619), five existing set-ups, every output file compared byte by byte",
+ "kind": "production",
+ "command": [
+  "python3",
+  "/data/haiyangw/nrpic/wt/core-scalar/tracks/core/analysis/rng/run_regression.py",
+  "--base",
+  "/data/haiyangw/nrpic/wt/core-scalar/.work/exe/athena_cpu_base_b28ecca",
+  "--new",
+  "/data/haiyangw/nrpic/wt/core-scalar/.work/exe/athena_cpu_ba37619"
+ ],
+ "cwd": "/data/haiyangw/nrpic/scratch/core/core-20261115-132758-ba37619",
+ "commit": "ba3761938dc06839a4addee40929ec799d57015b",
+ "branch": "core/scalar-field",
+ "uncommitted_changes": [],
+ "inputs": [
+  {
+   "path": ".work/exe/athena_cpu_base_b28ecca",
+   "sha256": "5a252a5466c5ed5599ac0cc2099ad9992243f2b4918746240d6696f284fbb9fc"
+  },
+  {
+   "path": ".work/exe/athena_cpu_ba37619",
+   "sha256": "be180a837db54265e3c7a7256545b04b5c2666d1c262b5f09949b84b14365cac"
+  },
+  {
+   "path": "tracks/core/analysis/rng/run_regression.py",
+   "sha256": "6a60bfa8617fdb84a50863bd5c040d14b9f44bd9b88f9a0607dfbbb7928ebe5f"
+  }
+ ],
+ "output_directory": "/data/haiyangw/nrpic/scratch/core/core-20261115-132758-ba37619",
+ "host": "anta",
+ "start_utc": "2026-11-15T13:27:59Z",
+ "cores": 1,
+ "wall_time_s": 437.92,
+ "exit_status": 0,
+ "core_hours": 0.1216
+}

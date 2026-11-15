@@ -1,0 +1,34 @@
+{
+ "run_id": "core-20261115-132842-b33b7f3",
+ "owner": "core",
+ "purpose": "P2 P3 P4: collision rate of a Maxwell-Juttner gas (1e6 particles, 32^3 cells, theta 0.01 to 10, with and without sub-cycling), conservation, null runs; processor",
+ "kind": "production",
+ "command": [
+  "python3",
+  "/data/haiyangw/nrpic/wt/core-coll/tracks/core/analysis/collisions/run_rate.py",
+  "/data/haiyangw/nrpic/scratch/core/core-20261115-132842-b33b7f3",
+  "--nproc",
+  "8"
+ ],
+ "cwd": "/data/haiyangw/nrpic/scratch/core/core-20261115-132842-b33b7f3",
+ "commit": "b33b7f3aa08a852f6b36494be9612409287e0232",
+ "branch": "core/collisions",
+ "uncommitted_changes": [],
+ "inputs": [
+  {
+   "path": ".work/build_cpu/src/athena",
+   "sha256": "fb4e0051555771ee231466fb017a47086ce10697a95a3e3afdb44b295b46ede5"
+  },
+  {
+   "path": "problems/tests/coll_box.athinput",
+   "sha256": "a06c76bba0baa646a929f0eb020d342bd2ce5210031b51dc44f48d320080cc4a"
+  }
+ ],
+ "output_directory": "/data/haiyangw/nrpic/scratch/core/core-20261115-132842-b33b7f3",
+ "host": "anta",
+ "start_utc": "2026-11-15T13:28:43Z",
+ "cores": 8,
+ "wall_time_s": 249.85,
+ "exit_status": 1,
+ "core_hours": 0.5552
+}

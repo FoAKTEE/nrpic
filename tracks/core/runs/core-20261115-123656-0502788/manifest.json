@@ -1,0 +1,36 @@
+{
+ "run_id": "core-20261115-123656-0502788",
+ "owner": "core",
+ "purpose": "Figure of the agreement test (run core-20261115-115626-f0258ce) and size of the difference between the bit-identical normal draw and one with the library logarithm",
+ "kind": "production",
+ "command": [
+  "python3",
+  "/data/haiyangw/nrpic/wt/core-rng/tracks/core/analysis/rng/plot_agreement.py",
+  "--out",
+  "fig_rng_agreement.png",
+  "/data/haiyangw/nrpic/scratch/core/core-20261115-115626-f0258ce"
+ ],
+ "cwd": "/data/haiyangw/nrpic/scratch/core/core-20261115-123656-0502788",
+ "commit": "0502788142cc3ca19bdf6f3cf89a4703f29ef414",
+ "branch": "core/rng",
+ "uncommitted_changes": [
+  "?? tracks/core/analysis/rng/plot_agreement.py"
+ ],
+ "inputs": [
+  {
+   "path": "tracks/core/analysis/rng/plot_agreement.py",
+   "sha256": "91ec705d4d97aadf4a507e69f14a2e160fcb627aa34255c379fb958cc55deb80"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/scratch/core/core-20261115-115626-f0258ce/agreement.json",
+   "sha256": "75ef9a47147c92dd48556c2ef9d8630b54966eb345ad48d25ba11bf3e2047c20"
+  }
+ ],
+ "output_directory": "/data/haiyangw/nrpic/scratch/core/core-20261115-123656-0502788",
+ "host": "anta",
+ "start_utc": "2026-11-15T12:36:56Z",
+ "cores": 1,
+ "wall_time_s": 3.57,
+ "exit_status": 0,
+ "core_hours": 0.001
+}

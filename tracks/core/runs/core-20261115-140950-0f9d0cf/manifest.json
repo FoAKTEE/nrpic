@@ -1,0 +1,34 @@
+{
+ "run_id": "core-20261115-140950-0f9d0cf",
+ "owner": "core",
+ "purpose": "P7 reproducibility repeated with the executable built from the final source (0f9d0cf); its snapshots are also compared with those of run core-20261115-133912-f104754; processor",
+ "kind": "production",
+ "command": [
+  "python3",
+  "/data/haiyangw/nrpic/wt/core-coll/tracks/core/analysis/collisions/run_repro.py",
+  "/data/haiyangw/nrpic/scratch/core/core-20261115-140950-0f9d0cf",
+  "--nproc",
+  "6"
+ ],
+ "cwd": "/data/haiyangw/nrpic/scratch/core/core-20261115-140950-0f9d0cf",
+ "commit": "0f9d0cfcbc9c0f0f0771d5a02ae90b3f1cc5cef2",
+ "branch": "core/collisions",
+ "uncommitted_changes": [],
+ "inputs": [
+  {
+   "path": ".work/build_cpu/src/athena",
+   "sha256": "a6e5907d080847395461d985a6d197355a921098eff1e9f7c789d2b58571842a"
+  },
+  {
+   "path": "problems/tests/coll_box.athinput",
+   "sha256": "ff6ac17800558efb5845dd7cfca49377a2e9fb8767728e0c5bac31c464f0c165"
+  }
+ ],
+ "output_directory": "/data/haiyangw/nrpic/scratch/core/core-20261115-140950-0f9d0cf",
+ "host": "anta",
+ "start_utc": "2026-11-15T14:09:50Z",
+ "cores": 6,
+ "wall_time_s": 52.57,
+ "exit_status": 0,
+ "core_hours": 0.0876
+}

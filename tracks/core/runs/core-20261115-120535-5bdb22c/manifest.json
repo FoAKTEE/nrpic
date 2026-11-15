@@ -1,0 +1,37 @@
+{
+ "run_id": "core-20261115-120535-5bdb22c",
+ "owner": "core",
+ "purpose": "Draws keyed by cells on processors: checksums per refinement level for three divisions of a uniform mesh and two divisions of two refined meshes, against the Python twin",
+ "kind": "production",
+ "command": [
+  "python3",
+  "/data/haiyangw/nrpic/wt/core-rng/tracks/core/analysis/rng/run_cell_check.py",
+  "--exe",
+  "/data/haiyangw/nrpic/wt/core-rng/.work/exe/athena_cpu_34da199"
+ ],
+ "cwd": "/data/haiyangw/nrpic/scratch/core/core-20261115-120535-5bdb22c",
+ "commit": "5bdb22c3c5e2ec9e375b4b3eaf417c23c04578dc",
+ "branch": "core/rng",
+ "uncommitted_changes": [],
+ "inputs": [
+  {
+   "path": ".work/exe/athena_cpu_34da199",
+   "sha256": "41ba3c329568f727a0deb2f1710fdd6b5dcacca17260fc9511484080bb6d022e"
+  },
+  {
+   "path": "tracks/core/analysis/rng/run_cell_check.py",
+   "sha256": "322eb5fa1bafd26b4634da20149e123907079523f17b8fa2a316eda07bdf165f"
+  },
+  {
+   "path": "problems/tests/rng_test.athinput",
+   "sha256": "5687bba79b5039b2a15bc8445a033a20f93c5b93c1fa4b4e154ab706c28682b9"
+  }
+ ],
+ "output_directory": "/data/haiyangw/nrpic/scratch/core/core-20261115-120535-5bdb22c",
+ "host": "anta",
+ "start_utc": "2026-11-15T12:05:35Z",
+ "cores": 1,
+ "wall_time_s": 0.34,
+ "exit_status": 0,
+ "core_hours": 0.0001
+}

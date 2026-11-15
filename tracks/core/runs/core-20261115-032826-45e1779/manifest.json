@@ -1,0 +1,73 @@
+{
+ "run_id": "core-20261115-032826-45e1779",
+ "owner": "core",
+ "package": "verify",
+ "commit": "45e177917f2622e92ad798b91b842ade84a13b48",
+ "worktree_dirty": true,
+ "created": "2026-11-15T03:28:26",
+ "output_dir": "/data/haiyangw/nrpic/scratch/core/core-20261115-032826-45e1779",
+ "kind": "scouting",
+ "test": "ladder re-measurement",
+ "purpose": "Re-read the numbers of the self-gravitating ladder rows from the earlier run files for LADDER.md",
+ "command": [
+  "python3 /data/haiyangw/nrpic/wt/core/tracks/core/verify/ladder_measure.py --run-id core-20261115-032826-45e1779"
+ ],
+ "cwd": "/data/haiyangw/nrpic/wt/core/tracks/core/verify",
+ "inputs": [
+  {
+   "path": "/data/haiyangw/nrpic/wt/core/tracks/core/verify/ladder_measure.py",
+   "sha256": "3c3b035e873231dc26f2972949a58066131ba1595c20de58c7457253bc3ac3b0",
+   "bytes": 6610
+  },
+  {
+   "path": "/data/haiyangw/nrpic/runs/os/nocap_sc",
+   "note": "earlier run directory (read only)"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/runs/os/nocap_v4",
+   "note": "earlier run directory (read only)"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/runs/prolate/e09_v8",
+   "note": "earlier run directory (read only)"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/runs/st/yc0900_v4",
+   "note": "earlier run directory (read only)"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/runs/st/yc0819_v4",
+   "note": "earlier run directory (read only)"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/runs/st/yc0605_v5",
+   "note": "earlier run directory (read only)"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/runs/st/yc0500_v5",
+   "note": "earlier run directory (read only)"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/runs/st/yc0283_v5",
+   "note": "earlier run directory (read only)"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/runs/st/migration_yc0500_v4",
+   "note": "earlier run directory (read only)"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/runs/st/yc0756_unpert",
+   "note": "earlier run directory (read only)"
+  }
+ ],
+ "resources": {
+  "device": "processor",
+  "cores": 1,
+  "card_hours": 0.0
+ },
+ "status": "finished",
+ "wall_time_s": 1.26,
+ "outputs": [
+  "/data/haiyangw/nrpic/scratch/core/core-20261115-032826-45e1779/ladder_numbers.json"
+ ]
+}

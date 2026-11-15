@@ -1,0 +1,39 @@
+{
+ "run_id": "core-20261115-135757-18d4555",
+ "owner": "core",
+ "purpose": "P1 regression on one A100: five existing set-ups, executable with the collision operator (option absent) against the baseline built from 94dc093",
+ "kind": "production",
+ "command": [
+  "python3",
+  "/data/haiyangw/nrpic/wt/core-coll/tracks/core/analysis/rng/run_regression.py",
+  "--base",
+  "/data/haiyangw/nrpic/scratch/core/coll-tmp/exe/athena_gpu_base",
+  "--new",
+  "/data/haiyangw/nrpic/scratch/core/coll-tmp/exe/athena_gpu_v1"
+ ],
+ "cwd": "/data/haiyangw/nrpic/scratch/core/core-20261115-135757-18d4555",
+ "commit": "18d455574a2dea9e49c8badbcd93105c9404ef72",
+ "branch": "core/collisions",
+ "uncommitted_changes": [],
+ "inputs": [
+  {
+   "path": "/data/haiyangw/nrpic/scratch/core/coll-tmp/exe/athena_gpu_base",
+   "sha256": "e8d2993230370cc2c615e9fc15204c964984ec550c7d3c9ad0128bf41f9c8594"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/scratch/core/coll-tmp/exe/athena_gpu_v1",
+   "sha256": "1722943234f542bfaecca6b52f17c75d223164b98a189116ab1fd9819b9b9d42"
+  },
+  {
+   "path": "tracks/core/analysis/rng/run_regression.py",
+   "sha256": "6a60bfa8617fdb84a50863bd5c040d14b9f44bd9b88f9a0607dfbbb7928ebe5f"
+  }
+ ],
+ "output_directory": "/data/haiyangw/nrpic/scratch/core/core-20261115-135757-18d4555",
+ "host": "anta",
+ "start_utc": "2026-11-15T13:57:57Z",
+ "cores": 1,
+ "wall_time_s": 18.59,
+ "exit_status": 0,
+ "card_hours": 0.0052
+}

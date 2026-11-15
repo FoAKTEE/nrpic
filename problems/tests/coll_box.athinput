@@ -1,0 +1,78 @@
+# Monte Carlo collisions (tracks/core/interfaces/collisions.md): periodic Minkowski box.
+# Fixed-metric path of the particle module: problem generator nrpic_geodesic with the
+# analytic Cartesian Kerr-Schild metric and bh_mass = 0, which is exactly flat (lapse 1,
+# zero shift, gamma_ij = delta_ij); the box lies away from the origin because the functor
+# divides by the radius.  The particles do not read the mesh; the collision operator
+# takes its cells from it and wraps the positions into the periodic box itself.
+#
+# Particle files: tracks/core/analysis/collisions/make_box.py.  The drivers in that
+# directory set coll_sigma, dt, tlim and the MeshBlock size on the command line.
+#   mesh metric instead (flat metric carried by the mesh, <adm> block): add
+#   particles/metric=mesh and an empty <adm> block (see run_repro.py)
+
+<comment>
+problem   = NRPIC collisions in a periodic Minkowski box
+
+<job>
+basename  = box
+rng_seed  = 1
+
+<mesh>
+nghost    = 2
+nx1       = 32
+x1min     = 100.0
+x1max     = 101.0
+ix1_bc    = periodic
+ox1_bc    = periodic
+nx2       = 32
+x2min     = 100.0
+x2max     = 101.0
+ix2_bc    = periodic
+ox2_bc    = periodic
+nx3       = 32
+x3min     = 100.0
+x3max     = 101.0
+ix3_bc    = periodic
+ox3_bc    = periodic
+
+<meshblock>
+nx1       = 32
+nx2       = 32
+nx3       = 32
+
+<time>
+evolution  = dynamic
+integrator = rk2
+cfl_number = 1.0
+nlim       = -1
+tlim       = 1.0
+ndiag      = 100
+
+<particles>
+particle_type  = nrpic
+pusher         = midpoint
+metric         = kerr_schild
+bh_mass        = 0.0
+bh_spin        = 0.0
+tolerance      = 1.0e-13
+max_iterations = 100
+dt             = 0.01
+deposit        = false
+hist_dcycle    = 10
+snap_dt        = 1.0
+particle_file  = box.nrp
+collisions       = true
+coll_sigma       = 1.0          # cross-section per unit mass
+coll_sigma_model = constant     # constant | cutoff
+coll_sigma_w     = 1.0
+coll_pmax        = 0.1
+coll_subcycle    = measured     # measured | conservative
+coll_nsub_max    = 1000
+coll_cell_factor = 1            # 1 | 2 | 4
+coll_weights     = equal        # equal | nanbu
+coll_hist_dcycle = 1
+coll_dump_cycle  = -1
+coll_budget      = false        # true: energy with the metric at the particles
+
+<problem>
+pgen_name = nrpic_geodesic

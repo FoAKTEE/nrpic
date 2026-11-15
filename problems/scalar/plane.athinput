@@ -1,0 +1,74 @@
+# Plane perturbation of a scalar field with the evolved metric in a periodic box, started
+# from data that satisfy both constraints (athenak/src/pgen/nrpic/scalar_field_tests.cpp,
+# id = plane; tracks/core/JOURNAL-scalar.md, test 3).  Units G = c = 1.  Lapse condition
+# d_t alpha = -(1/3) alpha^2 K with zero shift.  The wave vector lies in the x-y plane;
+# the mesh is thin in z (8 cells, x3max = 8/nx1 for cubic cells).
+
+<comment>
+problem   = plane perturbation, constraint-satisfying data
+
+<job>
+basename  = pl
+
+<mesh>
+nghost    = 4
+nx1       = 16
+x1min     = 0.0
+x1max     = 1.0
+ix1_bc    = periodic
+ox1_bc    = periodic
+nx2       = 16
+x2min     = 0.0
+x2max     = 1.0
+ix2_bc    = periodic
+ox2_bc    = periodic
+nx3       = 8
+x3min     = 0.0
+x3max     = 0.5
+ix3_bc    = periodic
+ox3_bc    = periodic
+
+<meshblock>
+nx1       = 16
+nx2       = 16
+nx3       = 8
+
+<time>
+evolution  = dynamic
+integrator = rk4
+cfl_number = 0.25
+nlim       = -1
+tlim       = 0.5
+ndiag      = 100
+
+<z4c>
+lapse_oplog     = 0.0
+lapse_harmonicf = 1.0
+lapse_harmonic  = 0.3333333333333333   # d_t alpha = -(1/3) alpha^2 K
+lapse_advect    = 0.0
+shift_Gamma     = 0.0                  # zero shift
+shift_eta       = 0.0
+shift_advect    = 0.0
+diss            = 0.0
+damp_kappa1     = 0.0
+damp_kappa2     = 0.0
+excise_chi      = 0.0
+
+<scalar_field>
+couple      = true
+potential   = quadratic
+mass        = 0.1
+hist_dcycle = 1
+dump_dcycle = 0
+dump_dt     = 0.25
+
+<problem>
+pgen_name  = scalar_field
+id         = plane
+phi0       = 3.0
+pi0        = -0.05      # momentum where the gradient vanishes
+amp        = 0.003
+n1         = 1
+n2         = 1
+n3         = 0
+control    = false      # true: Pi = pi0 everywhere (violates the momentum constraint)

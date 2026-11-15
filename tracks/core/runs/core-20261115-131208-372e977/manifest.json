@@ -1,0 +1,31 @@
+{
+ "run_id": "core-20261115-131208-372e977",
+ "label": "eta20.0_cpu",
+ "owner": "core",
+ "purpose": "Shift damping and the tracker: puncture m = 1, P = 0.3, S = 0.2 on cells of 1/8, 52 cycles, shift_eta = 20.0",
+ "kind": "scouting",
+ "command": "/data/haiyangw/nrpic/wt/core-mp/.work/build_cpu/src/athena -i puncture_setup_restart.athinput -d /data/haiyangw/nrpic/scratch/core/core-20261115-131208-372e977 time/nlim=52 z4c/shift_eta=20.0 output2/dcycle=1000",
+ "cwd": "/data/haiyangw/nrpic/scratch/core/core-20261115-131208-372e977",
+ "commit": "372e977",
+ "source_dirty": false,
+ "inputs": [
+  {
+   "path": "problems/tests/puncture_setup_restart.athinput",
+   "sha256": "97b1261d2c0780f49cf42fb12ec72690d3b36ba0bb3978377b85edbb263c3e88"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/wt/core-mp/.work/build_cpu/src/athena",
+   "sha256": "c7b77a26576d6e2fbc4e54d1825d37d27c2e491df929f82c215ea48f533924cd",
+   "role": "executable"
+  }
+ ],
+ "output_directory": "/data/haiyangw/nrpic/scratch/core/core-20261115-131208-372e977",
+ "resources": "1 core",
+ "started_utc": "2026-11-15T13:12:08Z",
+ "status": "done",
+ "exit_code": 0,
+ "wall_time_s": 2231.9,
+ "queue_wait_s": 0.0,
+ "card_hours": 0.0,
+ "core_hours": 0.62
+}

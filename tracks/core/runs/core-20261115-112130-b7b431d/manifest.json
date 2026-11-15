@@ -1,0 +1,34 @@
+{
+ "run_id": "core-20261115-112130-b7b431d",
+ "owner": "core",
+ "command": [
+  "/data/haiyangw/nrpic/scratch/core/tmp/mgcheck.sh",
+  "/data/haiyangw/nrpic/wt/core-newton/.work/baseline/athena_cpu",
+  "binary_gravity_iso.athinput",
+  "64",
+  "16"
+ ],
+ "cwd": "/data/haiyangw/nrpic/scratch/core/core-20261115-112130-b7b431d",
+ "commit": "b7b431d",
+ "source_modified_since_commit": false,
+ "inputs": [
+  {
+   "path": "/data/haiyangw/nrpic/scratch/core/tmp/binary_gravity_iso.athinput",
+   "sha256": "3d1d9b7ac24e91638a422fa4554731bfd37050df72849497561fa2b76d9b83d1"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/scratch/core/tmp/mgcheck.sh",
+   "sha256": "9e7d06aee663f52a46e18ce5f2642f32a62b6d79e1e09bfc07f2771e4002fa7e",
+   "role": "executable"
+  }
+ ],
+ "output_directory": "/data/haiyangw/nrpic/scratch/core/core-20261115-112130-b7b431d",
+ "purpose": "unmodified multigrid, hydro binary_gravity test on an isolated uniform mesh (multipole boundary, order 4), N=64: does the solver of this tree work before any change",
+ "kind": "scouting",
+ "tag": "mgcheck-N64",
+ "wall_time_s": 1.74,
+ "exit_status": 0,
+ "cores": 1,
+ "card_hours": 0.0,
+ "started_utc": "2026-11-15T11:21:30Z"
+}

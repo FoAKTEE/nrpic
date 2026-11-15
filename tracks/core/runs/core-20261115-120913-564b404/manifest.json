@@ -1,0 +1,40 @@
+{
+ "run_id": "core-20261115-120913-564b404",
+ "owner": "core",
+ "purpose": "Figure of the kick demonstration on processors (runs core-20261115-115701-f0258ce and core-20261115-115833-f0258ce)",
+ "kind": "production",
+ "command": [
+  "python3",
+  "/data/haiyangw/nrpic/wt/core-rng/tracks/core/analysis/rng/plot_kick_demo.py",
+  "--out",
+  "fig_kick_demo.png",
+  "processor=/data/haiyangw/nrpic/scratch/core/core-20261115-115701-f0258ce,/data/haiyangw/nrpic/scratch/core/core-20261115-115833-f0258ce"
+ ],
+ "cwd": "/data/haiyangw/nrpic/scratch/core/core-20261115-120913-564b404",
+ "commit": "564b404ac22b47639c86eec01e38c6279559a11a",
+ "branch": "core/rng",
+ "uncommitted_changes": [
+  "M tracks/core/JOURNAL-rng.md"
+ ],
+ "inputs": [
+  {
+   "path": "tracks/core/analysis/rng/plot_kick_demo.py",
+   "sha256": "cbc9c9ff62f3774ca2346d432bc7ff9ada04afd7faf2035cec61033b5245796b"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/scratch/core/core-20261115-115701-f0258ce/summary.json",
+   "sha256": "63382067b0c52a19d55331b712d00e483ef24e5afeda06d8240ad00ba894f5bc"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/scratch/core/core-20261115-115833-f0258ce/summary.json",
+   "sha256": "f3fd21f1c6a4dec8d9636a2975865664f1c12663ded85eac3fe9025c19550330"
+  }
+ ],
+ "output_directory": "/data/haiyangw/nrpic/scratch/core/core-20261115-120913-564b404",
+ "host": "anta",
+ "start_utc": "2026-11-15T12:09:13Z",
+ "cores": 1,
+ "wall_time_s": 1.03,
+ "exit_status": 0,
+ "core_hours": 0.0003
+}

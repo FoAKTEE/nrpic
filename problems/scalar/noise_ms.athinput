@@ -1,0 +1,83 @@
+# Stochastic sources of arXiv:2512.14649 (Mukhanov-Sasaki model of the scalar-field
+# module; specification: tracks/E-stoch-inf/spec/SPEC.md on branch track/E-stoch-inf) on
+# a homogeneous slow-roll background in geodesic slicing: unit test of the lockstep
+# integration, the synthesis and the kicks (tracks/core/JOURNAL-scalar.md, test 4).
+# The mode file is written by tracks/core/analysis/scalar/test4_noise.py.
+
+<comment>
+problem   = stochastic sources, Mukhanov-Sasaki model
+
+<job>
+basename  = ms
+rng_seed  = 7
+
+<mesh>
+nghost    = 4
+nx1       = 16
+x1min     = 0.0
+x1max     = 10.0
+ix1_bc    = periodic
+ox1_bc    = periodic
+nx2       = 16
+x2min     = 0.0
+x2max     = 10.0
+ix2_bc    = periodic
+ox2_bc    = periodic
+nx3       = 16
+x3min     = 0.0
+x3max     = 10.0
+ix3_bc    = periodic
+ox3_bc    = periodic
+
+<meshblock>
+nx1       = 8
+nx2       = 8
+nx3       = 8
+
+<time>
+evolution  = dynamic
+integrator = rk4
+cfl_number = 0.25
+nlim       = -1
+tlim       = 4.0
+ndiag      = 100
+
+<z4c>
+lapse_oplog     = 0.0     # geodesic slicing
+lapse_harmonic  = 0.0
+lapse_advect    = 0.0
+shift_Gamma     = 0.0
+shift_eta       = 0.0
+shift_advect    = 0.0
+diss            = 0.0
+damp_kappa1     = 0.0
+damp_kappa2     = 0.0
+excise_chi      = 0.0
+
+<scalar_field>
+couple          = true
+potential       = quadratic
+mass            = 0.1
+hist_dcycle     = 1
+dump_dt         = 2.0
+noise           = mukhanov_sasaki
+noise_nmax2     = 36
+noise_sharpness = 5.0
+noise_sigma     = 1.0        # k_sigma = sigma a H
+noise_level     = 0          # background: 0 Friedmann equations, 1 box means
+noise_projector = stencil    # stencil or continuum
+noise_kick_pi   = true
+noise_kick_k    = true
+noise_kick_a    = true
+noise_pi_sign   = 1.0
+noise_mode_file = modes.txt
+
+<problem>
+pgen_name  = scalar_field
+id         = flrw
+phi0       = 3.0
+pi0        = -0.016286750396764
+
+<output1>
+file_type  = rst
+dcycle     = 13

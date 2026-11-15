@@ -8,6 +8,7 @@
 //! \file particles.hpp
 //  \brief definitions for Particles class
 
+#include <cstdint>
 #include <map>
 #include <memory>
 #include <string>
@@ -22,7 +23,7 @@
 
 // constants that enumerate ParticlesPusher options
 enum class ParticlesPusher {drift, leap_frog, lagrangian_tracer, lagrangian_mc,
-                            nrpic_midpoint, nrpic_boris};
+                            nrpic_midpoint, nrpic_boris, nrpic_newton};
 
 // constants that enumerate ParticleTypes
 enum class ParticleType {cosmic_ray, nrpic};
@@ -100,6 +101,52 @@ struct NrpicOptions {
   Real curv_dt;         // time between curvature diagnostics (<= 0 = off)
   bool curv_slice;      // also write the cut through the plane y = curv_plane_y
   Real curv_plane_y;
+  // ---- Newtonian mode (<particles> pusher = newton; particles/nrpic_newton.cpp) ----
+  bool newton = false;      // Newtonian gravity: Poisson equation and kick-drift-kick
+  int newton_expansion = 0; // 0: no expansion (a = 1); 1: comoving coordinates and
+                            // conformal time t with a = (1 + hubble t/n)^n
+  Real newton_hubble = 0.0;    // Hubble rate at t = 0, where a = 1
+  Real newton_exponent = 2.0;  // n (2: matter era, 1: radiation era)
+  Real newton_cfl = 0.0;       // > 0: step at most this fraction of dx/max|dx/dt|
+  Real newton_mg_tol = 0.0;    // > 0: the Poisson solve may end when the defect norm
+                               // is this fraction of the norm of the source
+};
+
+//----------------------------------------------------------------------------------------
+//! \struct NrpicKickOptions
+//  \brief options and state of the test kick with reproducible random numbers
+//  (nrpic_kick.cpp)
+
+struct NrpicKickOptions {
+  bool on = false;           // <particles> test_kick
+  int mode = 0;              // 0: three normal deviates, 1: random direction
+  int key = 0;               // 0: tag, 1: tag and MeshBlock, 2: tag and call count
+  Real sigma = 0.0;          // size of the kick
+  Real prob = 1.0;           // probability of a kick per step (mode 1)
+  std::uint64_t seed = 0;    // seed of the run (<job> rng_seed)
+  std::int64_t ncalls = 0;   // kicks applied since the executable started
+};
+
+//----------------------------------------------------------------------------------------
+//! \struct NrpicCollideOptions
+//  \brief options of the Monte Carlo collision operator (nrpic_collide.cpp)
+
+struct NrpicCollideOptions {
+  bool on = false;           // <particles> collisions
+  Real sigma = 0.0;          // cross-section per unit mass (code units)
+  int model = 0;             // velocity dependence (nrpic::CollSigmaModel)
+  Real sigma_w = 1.0;        // its velocity scale
+  Real pmax = 0.1;           // largest pair probability per sub-step aimed at
+  int subcycle = 0;          // 0: sub-steps from the speeds of the cell, 1: v_Mol < 2
+  int nsub_max = 1000;       // largest number of sub-steps of a cell
+  int cell_factor = 1;       // a collision cell is a block of cell_factor^3 mesh cells
+  int weights = 0;           // 0: equal rest masses required, 1: Nanbu-Yonemura
+  int hist_dcycle = 1;       // cycles between records of <basename>.coll.hst
+  int dump_cycle = -1;       // cycle whose collision step is dumped
+  bool budget = false;       // record the energy with the metric at the particles
+  std::uint64_t seed = 0;    // seed of the run (<job> rng_seed)
+  int face_maxlev = -1;      // finest level of the tabulated face positions
+  bool face_warned = false;  // the warning about MeshBlock edges has been printed
 };
 
 //----------------------------------------------------------------------------------------
@@ -109,6 +156,7 @@ struct NrpicOptions {
 struct ParticlesTaskIDs {
   TaskID savemet;
   TaskID excise;
+  TaskID collide;
   TaskID deposit;
   TaskID diag;
   TaskID push;
@@ -248,6 +296,52 @@ class Particles {
   TaskStatus NrpicExcise(Driver *pdriver, int stage);
   TaskStatus NrpicDeposit(Driver *pdriver, int stage);
   TaskStatus NrpicDiagnostics(Driver *pdriver, int stage);
+
+  // test kick with reproducible random numbers (nrpic_kick.cpp)
+  NrpicKickOptions kick;
+  void NrpicKickInit(ParameterInput *pin);
+  void NrpicTestKick();
+
+  // Monte Carlo collisions (nrpic_collide.cpp)
+  NrpicCollideOptions coll;
+  DvceArray1D<int> coll_cell, coll_list, coll_count, coll_begin;   // cell lists
+  DvceArray1D<std::uint64_t> coll_key;                             // pairing words
+  DvceArray1D<Real> coll_face;                                     // face positions
+  void NrpicCollideInit(ParameterInput *pin);
+  TaskStatus NrpicCollide(Driver *pdriver, int stage);
+
+  // ---- Newtonian mode of the nrpic module (particles/nrpic_newton.cpp) ----
+  // The potential of the Poisson equation is held in the lapse slot of met1 (the
+  // other slots hold the flat metric), so that the deposit and the interpolation of
+  // the relativistic mode serve unchanged.
+  Driver *nw_driver = nullptr;      // the Poisson solver runs task lists of the driver
+  MeshBoundaryValuesCC *pbval_phi = nullptr;   // ghost cells of the potential
+  DvceArray5D<Real> nw_coarse_phi;  // coarse potential (ghost exchange, refined meshes)
+  Real nw_sum[30];                  // particle sums of the last synchronised state
+  Real nw_mesh[6] = {0.0, 0.0, 0.0, 0.0, 0.0, 0.0};   // mesh sums of the last solve
+  Real nw_time = 0.0, nw_a = 1.0;   // time and scale factor of that state
+  Real nw_li = 0.0;                 // Layzer-Irvine integral of K da since the start
+  Real nw_d3i[6] = {0.0, 0.0, 0.0, 0.0, 0.0, 0.0};   // third derivative of the second
+  Real nw_d3i_time = 0.0;           // moment, and the (mid-step) time it belongs to
+  Real nw_pmax = 0.0;               // largest momentum per unit mass (step limit)
+  Real nw_gmax = 0.0;               // largest acceleration (step limit)
+  Real nw_defect = 0.0;             // defect norm of the last Poisson solve
+  int nw_ncycle = 0;                // and its number of V cycles
+  bool nw_valid = false;            // nw_sum holds a state of this run
+  std::vector<double> nw_phi_restart;      // potential read from a restart file
+  std::int64_t nw_phi_restart_dims[5] = {0, 0, 0, 0, 0};
+  std::vector<double> nw_state_restart;    // diagnostic state read from a restart file
+
+  void NrpicNewtonInit(ParameterInput *pin);
+  void NrpicNewtonInitialize();
+  void NrpicNewtonPotential();
+  void NrpicNewtonKick(const Real dt_kick, const Real time);
+  void NrpicNewtonFinishStep(Driver *pdriver);
+  void NrpicNewtonTimeStep(const Real time);
+  TaskStatus NrpicNewtonPush(Driver *pdriver, int stage);
+  void NrpicNewtonWriteHistory(Real time, int ncycle, bool header);
+  void NrpicNewtonWriteRestart(const std::string &fname);
+  void NrpicNewtonReadRestart(const std::string &fname);
 
  private:
   MeshBlockPack* pmy_pack;  // ptr to MeshBlockPack containing this Particles
