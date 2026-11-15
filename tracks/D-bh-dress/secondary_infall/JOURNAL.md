@@ -359,3 +359,33 @@ with e-folding 1.5-3.5 M (the 2.3 M of N64) until it reaches 0.2-0.5 dx, then os
 a stable point; (C) the displacement stays below 0.1 dx (oscillation about the cell centre).
 Refuted if (V) does not grow, or (C) grows too (then neither point is stable and the clump
 stand-in is unusable without the fixed point mass of core's request).
+
+## 2026-11-15T17:16Z  outcome S1 (runs D-20261115-171245-a89f225 vertex, -171247-cde0674 cell centre;
+## analysis D-20261115-171414-93fdf13, figure figs/nm_clumpstab.png)
+
+(V) holds in part: from 0.05 dx the displacement grows (0.095 dx at t = 3 M, 0.21 at 5 M:
+e-folding about 2.5 M, as the 2.3 M of N64) but it does not settle at 0.2-0.5 dx (refuted):
+it reaches 0.96 dx at t = 15 M, comes back to 0.045 dx at 30 M and grows again, i.e. the
+clump oscillates along x between two neighbouring vertices about the edge midpoint (0.5, 0, 0)
+dx, with a period of about 30 M and a peak speed of 0.32 c (total momentum 0.32 M c; the
+tracers carry none). (C) holds: at the cell centre the displacement stays below 0.065 dx
+and oscillates with a period of about 8 M; but even this 0.05 dx offset gives the clump a
+speed of 0.11 c (restoring acceleration ~ 0.07 GM/dx^2 per 0.05 dx). So the vertex is an
+unstable and the cell centre a stable equilibrium of the clump's self-force [VERIFIED,
+these two runs]. Consequence: the three infall runs started at 17:07 (N128, N64, N128L, clump
+at a vertex) will have the hole running off the dust's centre by up to ~1 dx at speeds of
+order (G M/dx)^(1/2)/2 once rounding has grown (N128 near t ~ 25 M, N64 near ~ 90 M, N128L:
+|P| = 3.6e-7 at t = 70 M). They are kept running as the record of that failure mode; the
+set-up is repeated with the configuration centred on a cell centre.
+
+## 2026-11-15T17:18Z  prediction for N128c, N64c, N128Lc (as N128, N64, N128L, whole
+## configuration displaced by (1/2, 1/2, 1/2) dx so that the clump sits at a cell centre)
+
+Items 1-4, 6, 7 of the 17:25Z prediction unchanged (same matched references; the shell runs
+are D-20261115-170824-788678f, -170826-20d5d4a, -170827-ba851f0 for N128; -170829-0d86d49,
+-170831-b379b65 for N64; -170834-ac15adf, -170837-af64029, -170839-187b91b for N128L).
+Item 5 replaced: the clump's centre of mass stays within 0.05 dx of the cell centre for the
+whole run, its speed below 0.05 c, total momentum below 1e-2 M c (the box faces are not
+symmetric about the cell centre, so the boundary seeds a small offset; the dust lattice is
+symmetric about the clump); K + W within 1 % of |W(0)|. In the vertex runs, by contrast,
+the clump displacement exceeds 0.3 dx before the end (N128 and N128L at least).
