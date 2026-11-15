@@ -9,8 +9,10 @@ Regions (r the coordinate radius of a cell centre, dx the cell size, R_in and R_
 inner and outer radius of the edge of the matter; R_in = R_out = R_b for a sharp
 surface):
     interior   r < R_in - 4 dx          surface   R_in - 4 dx <= r <= R_out + 4 dx
-    exterior   R_out + 4 dx < r < 30    fixed regions r < 4 and 16 < r < 30 for the
-                                        comparison between resolutions
+    exterior   R_out + 4 dx < r < 28    fixed regions r < 4 and 16 < r < 28 for the
+                                        comparison between resolutions (cells within
+                                        three cells of the mesh boundary are left out:
+                                        their stencils reach the boundary ghost cells)
 Norms: largest absolute value, mean absolute value, root mean square; for the surface
 also the integral of the absolute value over the mesh (sum |.| dx^3).
 |M| = sqrt(gamma^ij M_i M_j) with gamma^ij = chi delta^ij (conformally flat start).
@@ -27,6 +29,14 @@ import matplotlib.pyplot as plt
 
 HALF = 32.0
 RB = 10.0
+
+
+def dx_ticks(ax):
+    """Plain tick labels on a logarithmic axis of cell sizes."""
+    ax.set_xticks([0.25, 0.5, 1.0])
+    ax.set_xticklabels(["0.25", "0.5", "1"])
+    ax.xaxis.set_minor_formatter(plt.NullFormatter())
+    ax.set_xlim(0.21, 1.2)
 
 
 def norms(a, mask, dv):
@@ -48,9 +58,9 @@ def analyse(man):
     mabs = np.sqrt(fld["chi"] * (fld["Mx"] ** 2 + fld["My"] ** 2 + fld["Mz"] ** 2))
     reg = dict(interior=r < rin - 4.0 * dx,
                surface=(r >= rin - 4.0 * dx) & (r <= rout + 4.0 * dx),
-               exterior=(r > rout + 4.0 * dx) & (r < 30.0),
+               exterior=(r > rout + 4.0 * dx) & (r < 28.0),
                interior_fixed=r < 4.0,
-               exterior_fixed=(r > 16.0) & (r < 30.0))
+               exterior_fixed=(r > 16.0) & (r < 28.0))
     out = dict(tag=man["tag"], run_id=man["run_id"], cells=n, dx=dx, h=meta["lattice_h"],
                q=dx / meta["lattice_h"], edge=edge, N=meta["particles"]["N_ball"],
                rho0=meta["rho0"], H0=meta["H"],
@@ -58,7 +68,7 @@ def analyse(man):
     for name, mask in reg.items():
         out[name] = dict(H=norms(fld["H"], mask, dx ** 3), M=norms(mabs, mask, dx ** 3))
     # radial profile: shells of width dx
-    edges = np.arange(0.0, 30.0 + dx, dx)
+    edges = np.arange(0.0, 28.0 + 0.5 * dx, dx)
     idx = np.digitize(r.ravel(), edges) - 1
     ok = (idx >= 0) & (idx < len(edges) - 1)
     cnt = np.bincount(idx[ok], minlength=len(edges) - 1)
@@ -108,7 +118,7 @@ def main():
         ax[0].loglog(dx, mrms, "s-", color=fs.PAL["yellow"], label="root mean square")
         ax[0].loglog(dx, mmax[0] * (dx / dx[0]) ** 6, **fs.GUIDE, label=r"$\propto \Delta x^6$")
         ax[0].set_xlabel(r"cell size $\Delta x/M$", labelpad=-2)
-        ax[0].set_ylabel(r"momentum residual $|M_i|$, $16<r/M<30$")
+        ax[0].set_ylabel(r"momentum residual $|M_i|$, $16<r/M<28$")
         ax[0].legend()
         hmax = np.array([res[k]["exterior"]["H"]["max"] for k in seq])
         himax = np.array([res[k]["interior"]["H"]["max"] for k in seq])
@@ -121,7 +131,10 @@ def main():
                      label=r"interior $|M_i| R_b/H$")
         ax[1].set_xlabel(r"cell size $\Delta x/M$", labelpad=-2)
         ax[1].set_ylabel("largest residual away from the surface")
+        ax[1].set_ylim(1e-17, 1e-11)
         ax[1].legend()
+        dx_ticks(ax[0])
+        dx_ticks(ax[1])
         fs.save(fig, os.path.join(idlib.FIGS, "t1_exterior"))
         plt.close(fig)
         slopes = np.log(mmax[:-1] / mmax[1:]) / np.log(dx[:-1] / dx[1:])
@@ -163,21 +176,27 @@ def main():
         dx = np.array([res[k]["dx"] for k in keys])
         for i, (fld, scale) in enumerate((("H", href), ("M", h0 / RB))):
             ax[0, i].loglog(dx, [res[k]["surface"][fld]["max"] / scale for k in keys], "o-",
-                            color=c, label=lab)
+                            color=c, label=lab if i == 0 else None)
             ax[1, i].loglog(dx, [res[k]["surface"][fld]["integral"] / scale for k in keys], "o-",
-                            color=c, label=lab)
+                            color=c)
     dxg = np.array([0.25, 1.0])
-    ax[0, 1].loglog(dxg, 40.0 / dxg, **fs.GUIDE, label=r"$\propto 1/\Delta x$")
-    ax[1, 0].loglog(dxg, 2.0e3 * dxg, **fs.GUIDE, label=r"$\propto \Delta x$")
-    ax[1, 1].loglog(dxg, 30.0 * dxg ** 2, color="k", ls=":", label=r"$\propto \Delta x^2$")
+    ax[0, 0].loglog(dxg, 0.04 * dxg ** 2, **fs.GUIDE, label=r"$\propto \Delta x^2$")
+    ax[0, 1].loglog(dxg, 15.0 / dxg, **fs.GUIDE, label=r"$\propto 1/\Delta x$")
+    ax[0, 1].loglog(dxg, 0.08 * dxg ** 2, color="k", ls=":", label=r"$\propto \Delta x^2$")
+    ax[1, 0].loglog(dxg, 1.2e3 * dxg, **fs.GUIDE, label=r"$\propto \Delta x$")
+    ax[1, 1].loglog(dxg, 2.0e2 * dxg ** 3, color="k", ls=":", label=r"$\propto \Delta x^3$")
     ax[0, 0].set_ylabel("largest value in the surface layer")
     ax[1, 0].set_ylabel(r"$\int |\cdot|\,dV$ over the surface layer [$M^3$]")
     ax[1, 0].set_xlabel(r"cell size $\Delta x/M$", labelpad=-2)
     ax[1, 1].set_xlabel(r"cell size $\Delta x/M$", labelpad=-2)
     ax[0, 0].set_title(r"$|H|/16\pi\rho_0$")
     ax[0, 1].set_title(r"$|M_i|\,R_b/H$")
+    ax[0, 0].legend(loc="lower right", fontsize=8)
+    ax[0, 1].legend(loc="center left", fontsize=8)
+    ax[1, 0].legend(loc="lower right", fontsize=8)
+    ax[1, 1].legend(loc="center left", fontsize=8)
     for a in ax.ravel():
-        a.legend()
+        dx_ticks(a)
     fs.save(fig, os.path.join(idlib.FIGS, "t1_surface"))
     plt.close(fig)
 
@@ -193,6 +212,11 @@ def main():
         q = np.array([res[k]["q"] for k in ks])
         v = np.array([res[k]["interior"]["H"]["rms"] for k in ks]) / href
         ax[0].semilogy(q, np.maximum(v, 1e-18), "o", color=c, label=lab)
+    kd = [k for k in res if k.startswith("sharp-n128-q") and "-s0" in k and k.endswith("-nf0")]
+    if kd:
+        ax[0].semilogy([res[k]["q"] for k in kd],
+                       [res[k]["interior"]["H"]["rms"] / href for k in kd], "o", mfc="none",
+                       color=fs.PAL["yellow"], label="no pass, lattice displaced by $h/4$")
     qq = np.linspace(1.0, 4.2, 400)
     model = 2.0 * np.sin(math.pi * qq) ** 2 / (math.pi * qq) ** 2 * math.sqrt(1.5)
     ax[0].semilogy(qq, np.maximum(model, 1e-18), color="k", ls=":", lw=1.0,
@@ -203,7 +227,7 @@ def main():
     ax[0].set_ylim(1e-17, 1.0)
     ax[0].set_xlabel(r"lattice sites per cell and direction $q=\Delta x/h$", labelpad=-2)
     ax[0].set_ylabel(r"interior rms of $|H|/16\pi\rho_0$")
-    ax[0].legend(loc="center right", fontsize=8)
+    ax[0].legend(loc="center", fontsize=8, bbox_to_anchor=(0.56, 0.38))
     kq = sorted([k for k in res if k.endswith("-q1p25")], key=lambda k: -res[k]["dx"])
     if kq:
         dx = [res[k]["dx"] for k in kq]
@@ -212,6 +236,7 @@ def main():
         ax[1].loglog(dx, [res[k]["interior"]["H"]["max"] / href for k in kq], "s-",
                      color=fs.PAL["yellow"], label="largest, $q=1.25$")
         ax[1].set_ylim(1e-3, 1.0)
+        dx_ticks(ax[1])
     ax[1].set_xlabel(r"cell size $\Delta x/M$", labelpad=-2)
     ax[1].set_ylabel(r"interior $|H|/16\pi\rho_0$")
     ax[1].legend()

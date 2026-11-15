@@ -45,6 +45,7 @@ CASES = [
     ("sharp-n128-q1p25-nf0", 128, 1.25, 0.0, 0.0, ["particles/nfilter=0"]),
     ("sharp-n128-q1p5-nf0", 128, 1.5, 0.0, 0.0, ["particles/nfilter=0"]),
     ("sharp-n128-q1-nf0", 128, 1.0, 0.0, 0.0, ["particles/nfilter=0"]),
+    ("sharp-n128-q1p5-s0p25-nf0", 128, 1.5, 0.0, 0.25, ["particles/nfilter=0"]),
     # smooth edge of half-width 2 M and 1 M
     ("edge2-n064-q1", 64, 1.0, 2.0, 0.0, []),
     ("edge2-n128-q1", 128, 1.0, 2.0, 0.0, []),

@@ -195,3 +195,115 @@ kernel `nrpic_cf` is unchanged; `CFExcess` gained one branch; the component loop
 one branch before the format-1 branch; one hook after the kernel; new functions in the
 anonymous namespace), `python/nrpic/io.py` (appended), `docs/FORMATS.md` (one section
 inserted). No file of the particle module or of Z4c was changed.
+
+## 2026-11-15, entry 3: outcome of test 1 (constraints at the start)
+
+Runs: 26 registered runs with tag `t1-*` at commit 408df57 (ids in
+`tracks/core/analysis/id/test1_numbers.json`, key `run_id`; the sharp sequence is
+`core-20261115-033645-408df57` (64 cells), `-033653-` (96), `-033648-` (128), `-033745-`
+(192), `-033748-` (256)). Ball R_b = 10 M, mesh half-width 32 M, start only. Analysis
+`test1_constraints.py`; figures `figs/t1_exterior`, `t1_profiles`, `t1_surface`,
+`t1_interior` (looked at). Scales: 16 pi rho_0 = 1.2e-2, H = 4.472e-2, H/R_b = 4.47e-3.
+All numbers [VERIFIED] by these runs.
+
+(a) Vacuum exterior. Confirmed. Hamiltonian residual at rounding: largest value
+1.5e-18 to 5.6e-18 on all five meshes. Momentum residual, largest value in 16 < r < 28:
+3.34e-8, 3.27e-9, 6.14e-10, 5.67e-11, 1.03e-11 for dx = 1, 2/3, 1/2, 1/3, 1/4 M; orders
+between successive meshes 5.73, 5.82, 5.88, 5.92 (sixth-order differences). Correction
+of my first analysis: with the region 16 < r < 30 the coarsest mesh gave 1.0e-6 (order
+14 to the next mesh), because cells within three cells of the mesh boundary difference
+across ghost cells that the outflow boundary condition has overwritten; such cells are
+now left out. Note for users: the constraint monitor is not meaningful within three
+cells of an outflow boundary.
+
+(b) Interior, lattice dividing the cell (q = 1, 2, 4; 4.2e3 to 2.1e6 particles; dx = 1 to
+1/4 M). Confirmed: largest |H| between 6e-18 and 2.5e-16 (below 2.1e-14 of
+16 pi rho_0), largest |M_i| below 3.1e-16, for every particle number and mesh.
+
+(c) Lattices that do not divide the cell (amended prediction). Confirmed for q = 1.25,
+2.25, 3.25 with one binomial pass: interior rms of |H|/16 pi rho_0 = 3.5e-2, 1.1e-2,
+5.1e-3 (estimates 3.9e-2, 1.2e-2, 5.9e-3), the same at dx = 1, 1/2, 1/4 M for q = 1.25
+(3.41e-2, 3.48e-2, 3.47e-2); without the pass twice that for q = 1.25 (6.9e-2);
+q = 1.5 with the pass at rounding (1.1e-15). Momentum residual at rounding throughout.
+Two parts of the prediction failed:
+- q = 1.5 without the pass gave rounding (4.4e-15), not 9e-2. For sites symmetric
+  about the cell centres the two-cell pattern is sampled at its zeros. Test in which
+  this could have failed: the same lattice displaced by h/4, no pass
+  (`core-20261115-033953-408df57`): rms 0.19, largest 0.37 of 16 pi rho_0 (estimate
+  0.16 and 0.27 from three directions of amplitude 0.09).
+- the q = 1 lattice displaced by h/4 first gave a uniform residual 5.0e-5 of
+  16 pi rho_0 (`core-20261115-033712-408df57`). Cause: the generator normalised all
+  masses of a displaced lattice to the total, which changes the interior density by the
+  relative error of the site count (33512 sites instead of 33552). After the change of
+  `Ball.lattice` (displaced lattices use the same mass rules; default: only the surface
+  layer is rescaled) the interior is at rounding (7.7e-18,
+  `core-20261115-033954-408df57`). Lesson for the tracks: never normalise all lattice
+  masses; put the count error into the surface layer.
+
+(d) Surface layer. Confirmed. Sharp surface: largest |H| = 0.47, 0.49, 0.44, 0.45,
+0.44 of 16 pi rho_0 at dx = 1 ... 1/4 M (no pointwise convergence); integral of |H|
+over the layer 8.7, 6.0, 4.3, 2.8, 2.1 M (proportional to dx). Largest |M_i| = 4.7e-2,
+7.8e-2, 0.108, 0.152, 0.208 (proportional to 1/dx, 0.70 of the jump of KL per cell,
+3H/(2 dx)); its integral 55.9, 57.9, 58.1, 56.7, 56.1 (constant). The momentum
+residual of a sharp surface is a grid-scale sheet whose amplitude grows with
+resolution: it converges to zero only on average (weakly), not in any norm of the
+absolute value.
+Smooth edge, half-width 2 M: largest |H| = 1.03e-3, 2.96e-4, 7.64e-5 and largest
+|M_i| = 7.78e-4, 1.98e-4, 4.69e-5 at dx = 1, 1/2, 1/4 M (second order: ratios 3.5, 3.9
+and 3.9, 4.2); integrals fall as dx^2 and dx^3. Half-width 1 M: |H| 2.38e-3, 9.52e-4,
+2.75e-4; |M_i| 6.10e-3, 1.40e-3, 3.47e-4. The order of M is limited by the quintic step
+(third derivative of the density jumps at the two ends of the edge), that of H by the
+cloud and the binomial pass.
+Not predicted: without the binomial pass and with one site per cell the sharp surface
+has largest |H| = 1.05e-4 (0.9 per cent of 16 pi rho_0) instead of 5.3e-3, and
+integral 6.3e-2 instead of 4.3 (`core-20261115-033734-408df57`): a site at a cell
+centre deposits into its own cell only, each cell is then either interior or exterior
+in both K_ij and E, and the Hamiltonian constraint holds cell by cell; the pass smears
+E over the neighbours and K_ij does not follow. The momentum sheet is the same with and
+without the pass.
+
+### Prediction T2 (evolution of the marginally bound ball), written before the runs
+
+Ball R_b = 10 M, M = 1 (H_0 = 0.04472, initial Hubble time 22.4 M), uniform meshes of
+half-width 32 M with 64, 128, 256 cells (dx = 1, 1/2, 1/4 M), one lattice site per cell,
+cloud-in-cell with one binomial pass, RK4 with Courant number 0.25, evolution to
+t = 10 M. Exact: every shell has R(tau) = R_0 (1 + 3 H_0 tau/2)^(2/3) in its own proper
+time; tracers outside have R = (R_0^(3/2) + (3/2) sqrt(2M) tau)^(2/3). Error measure:
+eps = R_areal/R_exact - 1 with R_areal = r sqrt(g_T) from the metric at the particle
+(`.trajmet.bin`), compared at tau = 2, 4, 6, 8 M.
+
+Gauges: "mp" 1+log with advection and Gamma-driver (shift_Gamma = 0.75, eta = 2),
+start lapse 1 and shift 0; "mp-pg" the same with the Painleve-Gullstrand shift of the
+table at the start; "ct" lapse d_t alpha = beta^i d_i alpha - (1/3) alpha^2 K
+(lapse_harmonic = 1/3) with the same Gamma-driver; "ct0" that lapse without advection
+and with the shift held at zero (the gauge of `cosmo/`).
+
+(a) Interior shells (R_0 < 0.75 R_b), gauge mp: |eps| below 5e-3 at dx = 1 M and below
+1.5e-3 at dx = 1/2 M for tau <= 8 M, falling with resolution at an order between 1 and 2
+(surface representation and sources held fixed during a step are first order).
+Refuted by |eps| above 2e-2 at dx = 1/2 M or by no decrease from dx = 1 to 1/4 M.
+(b) Surface shell (R_0 > 0.95 R_b): |eps| below 3e-2 at dx = 1 M, first order. Refuted
+by an error that grows with resolution.
+(c) Exterior tracers: |eps| below 1e-3 at dx = 1/2 M (the exterior feels only the total
+mass, which the deposit conserves). Refuted by 1e-2.
+(d) Smooth edge (w = 2 M): interior and edge shells converge at second order or
+better, with errors below those of the sharp surface at equal dx.
+(e) Constraints: the mesh means of |H| and |M_i| do not grow by more than a factor of
+ten between the first step and t = 10 M (no exponential growth); the sharp-surface
+momentum sheet decays from its start value as dissipation and damping act. Refuted by
+growth beyond a factor of ten or by a run that ends before t = 10 M.
+(f) Gauge mp: the central lapse follows alpha = 1 + 6 ln a(tau_c) within 2 per cent
+while t < 4 M (until the lapse wave from the surface, where K jumps from -3H to -3H/2,
+reaches the centre); the lapse keeps growing, above 3 at the centre at t = 10 M, and
+the largest coordinate speed of light alpha/sqrt(g_rr) at the particles exceeds 2. The
+step is not adapted to it (`z4c_newdt.cpp`), so the effective Courant number rises to
+above 0.5; no instability is expected before t = 10 M. Gauge ct: central lapse equals
+a(tau_c) within 1 per cent while t < 5 M and the coordinate speed of light stays within
+20 per cent of 1. Refuted by a central lapse that does not grow, or by a ct light speed
+above 1.5.
+(g) Gauge mp-pg: the Gamma-driver damps the initial shift (eta = 2/M): |beta| at the
+surface particles falls below one fifth of its start value 0.447 by t = 2 M; the
+errors of the interior shells are within a factor of three of those of gauge mp.
+(h) Sources extrapolated to the middle of the step (`source_density`,
+`source_extrap`): interior |eps| at dx = 1/2 M not larger than without, and smaller if
+the time lag of the sources is the leading error.

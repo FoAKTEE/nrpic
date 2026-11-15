@@ -320,17 +320,20 @@ class Ball:
                               exterior=t.exterior, breaks=t.breaks, header=hdr)
 
     # ------------------------------------------------------------------------ particles
-    def lattice(self, h, mass_rule="surface"):
+    def lattice(self, h, mass_rule="surface", shift=0.0):
         """Dust at rest in the slice on the cubic lattice of spacing h in the isotropic
-        coordinates: (x[N,3], u_i[N,3] = 0, m[N]).
+        coordinates: (x[N,3], u_i[N,3] = 0, m[N]).  The sites are (k + 1/2 + shift) h
+        along each axis (shift = 0: symmetric about the origin).
 
         m_p = rho(R_p) psi_p^6 h^3 (the proper volume of a lattice cell times the
         density).  mass_rule: 'volume' keeps that rule; 'surface' (sharp surface only)
         rescales the sites within one lattice spacing of the surface so that the total is
-        the continuum rest mass; 'normalize' rescales all sites to that total.
+        the continuum rest mass; 'normalize' rescales all sites to that total (and so
+        changes the density of the interior by the relative error of the site count).
         """
-        x = lattice_sites(h, self.rbar_out)
+        x = lattice_sites(h, self.rbar_out + (2.0 * h if shift != 0.0 else 0.0)) + shift * h
         r = np.sqrt(np.sum(x * x, axis=1))
+        x, r = x[r <= self.rbar_out], r[r <= self.rbar_out]
         R = self.areal(r)
         psi = np.sqrt(np.where(r > 0.0, R / np.where(r > 0.0, r, 1.0), 1.0))
         m = self.density(R) * psi ** 6 * h ** 3

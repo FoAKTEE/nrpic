@@ -74,19 +74,7 @@ def main(argv=None):
 
     ball = eb.Ball(M=a.M, Rb=a.Rb, e0=a.e0, RE=a.RE, edge=a.edge)
     rule = a.mass_rule or ("volume" if a.edge > 0.0 else "surface")
-    x, u, m = ball.lattice(a.h, rule)
-    if a.shift != 0.0:
-        # displaced lattice: sites (k + 1/2 + shift) h inside the matter
-        xs = eb.lattice_sites(a.h, ball.rbar_out + 2.0 * a.h) + a.shift * a.h
-        r = np.sqrt(np.sum(xs * xs, axis=1))
-        R = ball.areal(r)
-        ms = ball.density(R) * np.where(r > 0.0, R / np.where(r > 0.0, r, 1.0), 1.0) ** 3 * a.h ** 3
-        keep = (ms > 0.0) & (r <= ball.rbar_out)
-        x, m = xs[keep], ms[keep]
-        u = np.zeros_like(x)
-        if rule != "volume":
-            m *= ball.rest_mass() / m.sum()
-            rule = "normalize"
+    x, u, m = ball.lattice(a.h, rule, a.shift)
     nball = len(m)
     rng = np.random.default_rng(a.seed)
     ns = min(a.sample, nball)
