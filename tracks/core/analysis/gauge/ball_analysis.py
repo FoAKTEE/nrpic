@@ -128,9 +128,11 @@ def main():
 
 def figures(pre, runs, numbers):
     col = {"mp": fs.PAL["red"], "ct": fs.PAL["yellow"], "leak05": fs.PAL["green"],
+           "leak025": fs.PAL["orange"],
            "leak1": fs.PAL["blue"], "leak2": fs.PAL["purple"] if "purple" in fs.PAL else "purple",
            "leak4": "grey"}
     lab = {"mp": "1+log (old)", "ct": "conformal time", "leak05": r"new, $T=0.5\,M$",
+           "leak025": r"new, $T=0.25\,M$",
            "leak1": r"new, $T=1\,M$", "leak2": r"new, $T=2\,M$", "leak4": r"new, $T=4\,M$"}
 
     def lapse_of(k):

@@ -28,6 +28,7 @@ SRC_COMMIT = os.environ.get("GAUGE_SRC_COMMIT", "b4430da")
 # lapse: old 1+log (leak off), relaxation times T = 1/lapse_leak
 LAPSE = {
     "mp": ["z4c/lapse_leak=0.0"],
+    "leak025": ["z4c/lapse_leak=4.0"],
     "leak05": ["z4c/lapse_leak=2.0"],
     "leak1": ["z4c/lapse_leak=1.0"],
     "leak2": ["z4c/lapse_leak=0.5"],
@@ -49,7 +50,7 @@ CASES["leak05-n064"] = (64, 32.0, SHARP, "leak05", 10.0, [])
 CASES["leak4-n064"] = (64, 32.0, SHARP, "leak4", 10.0, [])
 CASES["leak1-n256"] = (256, 32.0, SHARP, "leak1", 10.0, [])
 # bound ball to its turnaround
-for lap in ("mp", "ct", "leak05", "leak1", "leak2"):
+for lap in ("mp", "ct", "leak025", "leak05", "leak1", "leak2"):
     CASES[f"bound-{lap}-n080"] = (80, 20.0, BOUND, lap, 12.0, [])
     CASES[f"bound-{lap}-n160"] = (160, 20.0, BOUND, lap, 12.0, [])
 

@@ -433,3 +433,16 @@ t = 10, 20, 30 M. The criterion (within 3 per cent, largest lapse below 1.16) is
 unchanged. The analysis takes the start value from the tracers. (The first commit of
 this paragraph, 30 seconds earlier, carried numbers typed before the script had printed
 them; these are the printed ones.)
+
+### Added run, with its prediction (written before it started)
+
+`bound-leak025-n080`: the bound ball at cells of M/2 with T = 0.25 M (two time steps),
+to see where short relaxation times stop working. A first look at the running bound-ball
+jobs (not yet analysed) shows the central lapse below the homogeneous reference at
+t = 4 M by 2 per cent (T = 0.5 M), 15 per cent (T = 1 M) and 35 per cent (T = 2 M): the
+disturbance from the surface reaches the centre of this compact ball in about 3 M and
+grows steeply with T. Prediction for T = 0.25 M [JUDGEMENT]: stable to t = 12 M; central
+lapse within 1.5 per cent of its reference until t = 9 M; shell errors not larger than
+with T = 0.5 M. Refuted by an instability (growth of the Hamiltonian residual by more
+than ten between t = 2 M and t = 12 M, or not-a-number), which would mean that the
+relaxation must not be faster than a few time steps.
