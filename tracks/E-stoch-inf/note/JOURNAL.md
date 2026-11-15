@@ -44,3 +44,11 @@ the manifests, core's interface `coord/INTERFACES/scalar_field.md` and core's me
 - **N3 (figures).** Every figure script runs from the committed scripts alone, reads only
   checksum-verified outputs of registered runs, and gives the same PNG when run twice
   (pixel rms 0). Refuted by a checksum mismatch, a missing input or a differing PNG.
+
+## 17:24 Run E-20261115-172421-50ac4ce failed (my error, no result)
+
+The first registered run stopped at its first input: `common.py` took the scratch root from
+the environment variable `NRPIC_SCRATCH`, which the harness sets to the owner's own scratch
+directory (`scratch/E-stoch-inf`), so the paths doubled the owner directory. No figure was
+written. The variable is renamed (`NOTE_SCRATCH_ROOT`, default the machine's scratch root);
+the run is repeated from the next commit. Predictions N1-N3 are unchanged.

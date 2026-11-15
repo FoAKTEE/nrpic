@@ -17,7 +17,9 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 NOTE = os.path.dirname(HERE)
 TRACK = os.path.dirname(NOTE)
 TRACKS = os.path.dirname(TRACK)
-SCRATCH = os.environ.get("NRPIC_SCRATCH", "/data/haiyangw/nrpic/scratch")
+# root of all owners' scratch directories (the harness's NRPIC_SCRATCH is the owner's own
+# scratch directory, so it is not used here)
+SCRATCH = os.environ.get("NOTE_SCRATCH_ROOT", "/data/haiyangw/nrpic/scratch")
 FIGDIR = os.path.join(NOTE, "figures")
 TABDIR = os.path.join(NOTE, "tables")
 
