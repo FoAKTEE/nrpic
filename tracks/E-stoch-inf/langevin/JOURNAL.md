@@ -216,3 +216,41 @@ int S^2/D^2 dN = S^2 / (5 kappa^3 delta_s^5) ~ 29; classical duration 1/(kappa d
 - E4 moving the reflecting wall from -4.9e-4 to -1e-3 changes mean and variance by less
   than 1e-3 relative.
 Refuted item by item if outside these ranges.
+
+## 2026-11-15 ~13:15 UTC, entry 10: outcome of the reference runs
+(quadratic E-stoch-inf-20261115-130139-176cdd6, inflection E-stoch-inf-20261115-130137-176cdd6;
+figures by E-stoch-inf-20261115-131133-02047c4 and -131232-02047c4; results/ref_*.json)
+
+Predictions written in entry 8 and committed in 176cdd6 before the reference numbers were
+read. The n = 3200 smoke test of the inflection case was read only after that commit.
+Quadratic:
+- R1a PASSED: classical variant within 4.4e-13 e-folds of the background.
+- R1b PASSED: linear limit 1.0019 +- 0.0027.
+- R1c PASSED: var/var_lin = 0.9981 +- 0.0012; skewness 0.0031 +- 0.0025, excess
+  kurtosis 0.0002 +- 0.0054.
+- R1d PASSED: sigma = 0.1 gives 1.0050 +- 0.0014 (estimate 1.0034); sigma = 1 gives
+  1.4492 +- 0.0022 (range [1.3, 1.6]; massless estimate 13/9 = 1.4444, 2.2 SE away, the
+  rest being slow-roll corrections) [JUDGEMENT on the residual].
+- R1e PASSED: de Sitter noise 0.789 +- 0.002 (estimate 0.82).
+- R1f PASSED: var / var_lattice = 1.0056 +- 0.0015; var_lattice / var_lin = 1.0805.
+- R1g PASSED: N_f and N_e variances agree to 5e-6 (sigma = 1, 0.1).
+Inflection:
+- R2a PASSED: classical within 2.3e-9 e-folds.
+- R2b PASSED: linear limit 0.9990 +- 0.0027.
+- R2c PASSED: var/var_lin = 1.0001 +- 0.0016; skewness +0.0381 +- 0.0021 (positive,
+  < 0.5); <N> - N_cl = +0.0063 (positive, < 0.1).
+- R2d PASSED: sigma = 1 gives 1.4233 +- 0.0023 (> 10 percent off); sigma = 0.1 gives
+  1.0055 +- 0.0016 (within 10 percent).
+- R2e PASSED: de Sitter noise 5.65 +- 0.02.
+- R2f PARTLY FAILED: N_f vs N_e agree to 0.4 percent (sigma = 1) and 0.15 percent
+  (sigma = 0.1), but for sigma = 0.01 the variance at N_f = 13 is 3.8 percent low and the
+  skewness is 0.20 instead of 0.04. N_f is only 1.2 e-folds after the last noise
+  (N = 11.81); the attractor relaxes as e^(-3 dN), and e^(-3.6) = 0.03 has the size of
+  the discrepancy [JUDGEMENT on the cause; a run with a surface at N = 15 would test it,
+  not done].
+Further, not predicted:
+- The sigma = 1 inflection variance changes by 0.8 percent (2.4 SE) when dN is doubled to
+  0.004: a small step error.
+- For the inflection case the lattice variant is 0.9905 +- 0.0016 of the lattice sum
+  (within 1 percent but 6 SE). The 0.05 bins in ln n of the density of states are an
+  approximation at this level.
