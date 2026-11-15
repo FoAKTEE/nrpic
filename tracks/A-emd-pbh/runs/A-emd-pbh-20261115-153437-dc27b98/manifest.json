@@ -134,8 +134,21 @@
  "exe": "/data/haiyangw/nrpic/.work/build_gpu_v03/src/athena",
  "wall_limit": "00:25:00",
  "cores": 1,
- "status": "submitted",
+ "status": "completed",
  "slurm_job_ids": [
   "4435"
- ]
+ ],
+ "slurm_state": "COMPLETED",
+ "wall_time_s": 607,
+ "card_hours": 0.1686,
+ "started": "2026-11-15T08:04:32",
+ "ended": "2026-11-15T08:14:39",
+ "entry_status": [
+  "08:07:31 rc=0 /data/haiyangw/nrpic/scratch/A-emd-pbh/A-emd-pbh-20261115-153437-dc27b98/th_n064_h0125",
+  "08:12:02 rc=0 /data/haiyangw/nrpic/scratch/A-emd-pbh/A-emd-pbh-20261115-153437-dc27b98/th_n128_h0125",
+  "08:14:39 rc=0 /data/haiyangw/nrpic/scratch/A-emd-pbh/A-emd-pbh-20261115-153437-dc27b98/e0p2_h0125"
+ ],
+ "sha256sums": "sha256sums.txt",
+ "sha256sums_sha256": "d0c28ea3ed934a5c18ef06333b9c1d26b1f24e15d077de6dbf380ffb2f386812",
+ "n_output_files": 54
 }
