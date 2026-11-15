@@ -439,3 +439,26 @@ H1 is not refuted in any of the three ways it could have been: the positive mass
 restores the motion with the unchanged executable, processors and card agree, and the
 speeds are the null and the timelike ones. Cause: the null rule for m = 0 on the mesh
 metric. The card build has no defect of its own.
+
+### T7 Flux sphere on a moving puncture (written before the run)
+
+T3 has a fixed centre. With `acc_tracker` the centre moves during the step: the distance
+before the push is taken to the tracker position at t^n (saved in `NrpicSaveMetric`),
+after the push to the position at t^n+1. Set-up
+`problems/tests/accretion_tracker.athinput` (Bowen-York puncture with momentum 0.3,
+adaptive mesh on the tracker, 24 cycles, processors) and
+`tracks/core/analysis/dfix/t7_tracker.py`: 4000 particles of rest mass 1e-12 in the shell
+1.9 < r < 2.1 around the puncture, half moving in, half out; sphere of radius 2 on
+tracker 0.
+Predictions:
+- the centre in `atr.acc.hst` equals the tracker file `atr.co_0.txt` at every record
+  (to the digits of that file), and it moves (displacement above 1e-4 M in 0.75 M);
+- at every record: inside(t) - inside(0) = n_in - n_out - n_excised exactly, and the
+  rest masses to rounding (1e-24 for masses of 1e-12);
+- the number inside counted by the script from each snapshot with the tracker position
+  of that time equals the history column (unless a particle is within 1e-12 of the
+  sphere);
+- several hundred crossings in each direction (about half of the particles start
+  within reach of the sphere).
+Refuted if the identity fails by even one particle (a centre taken at the wrong time
+level miscounts particles near the sphere) or if the snapshot count differs.
