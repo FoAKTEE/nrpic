@@ -99,3 +99,78 @@ G5. Kicked collapsing runs: sigma(y_c = 0.605) < sigma(y_c = 0.500) (0.605 is cl
     precedes the first apparent horizon by 0 to 6 M in all three collapsing runs.
 G6. Fit settings (smoothing 5-20 M, amplitude window (0.003, 0.03) to (0.01, 0.1)) change
     the growth rates of G3 by less than 20 percent.
+
+## 2026-11-15, entry 2: outcomes F1 (run C-20261115-165315-7b473b8)
+
+Run: `python3 tracks/C-sidm/models/fluid_onset.py` (commit 7b473b8, 4 cores, registered by
+nrpic-run), output `scratch/C-sidm/C-20261115-165315-7b473b8/fluid_onset.json`.
+Tabulated Juttner functions against `collide/REFERENCES/mj.py` at 40 random theta in
+[1e-4, 10]: c_v to 2.0e-11, <W> - 1 to 1.0e-11, inverse to 7.1e-12; Gamma_1 = 5/3 and 4/3
+in the limits. [VERIFIED]
+
+| b = 0.1, variant | w0 (N = 1200) | Z(0) (N = 1200) | Z(0) N = 600 minus N = 1200 |
+|---|---|---|---|
+| F21 (gamma = 1 + p/u) | 3.587099 | 0.634816 | 1.3e-7 |
+| J_T (Gamma_1 at the Tolman theta) | 2.532868 | 0.412527 | 1.3e-8 |
+| J_E (Gamma_1 at the energy-matched theta) | 3.130772 | 0.533056 | 5.4e-8 |
+| J_p (Gamma_1 at theta = p/n) | 3.124408 | 0.531703 | 5.0e-8 |
+| J_pu (1 + p/u of an untruncated Juttner gas) | 3.165085 | 0.540379 | 2.8e-8 |
+| reference: E_b maximum (criteria.json) | 3.165241 | 0.540413 | |
+
+(a) PASS: F21 variant 0.6348166 against 0.6348166 of the gravothermal run (difference
+1e-9). (b) PASS: J_T onset at Z(0) = 0.4125, inside the predicted 0.30-0.5404 and below the
+collisionless E_b maximum. (c) PASS: order J_T < J_p < J_E < J_pu < F21 (the prediction
+left J_E and J_p unordered). (d) PASS: resolutions agree to 1.3e-7 in Z(0).
+Central values at the onsets (fluid_onset.json, "central"): at the J_E onset theta_T =
+0.1456, theta_E = 0.0959, theta_p = 0.0970; Gamma_1(theta_E) = 1.552 against F21's gamma
+1.608. [VERIFIED]
+
+Other b (N = 600 only): Z(0) of the J_E onset 0.5039 (b = 0.2), 0.4978 (0.3), 0.4937 (0.5),
+each below that b's E_b maximum (0.5225, 0.5176, 0.5142); F21-gamma onsets 0.5923, 0.5843,
+0.5790 (the gravothermal values 0.5790 for b = 0.5 agree). J_T: 0.2747 (0.2), 0.2036 (0.3);
+for b = 0.5 omega^2 < 0 already at the lowest model of the scan (w0 = 0.20), so the J_T
+onset lies below it (not located). [VERIFIED]
+
+Observation, no cause tested: the J_pu onset (0.540379) lies 3.4e-5 below the E_b maximum
+(0.540413), a coincidence or a near-identity that I did not investigate.
+
+Reading [JUDGEMENT]: with any Juttner adiabatic index the fluid onset of the b = 0.1 family
+moves from 0.6348 to at or below the collisionless E_b maximum; with the temperature that
+collisions conserve (J_E) it lies 0.0074 in Z(0) below it. The Kn -> 0 anchor of decision 3
+(stage/G0/REPORT.md section 2) therefore sits just on the stable side of the collisionless
+threshold, if that threshold is the E_b maximum; the window in which collisions could
+stabilise a collisionlessly unstable core (the reading behind 0.6348) does not exist with
+this index. J_T, which assigns the truncated distribution's temperature parameter to a
+Juttner gas, is the least physical variant (theta_T is 1.5 times the kinetic temperature
+theta_E at the centre) and gives the largest shift.
+
+## 2026-11-15, entry 3: outcomes G1-G6, first attempt (run C-20261115-170231-4e68455, FAILED)
+
+The run stopped with KeyError 'sigma' in the verdict bookkeeping after all fits had been
+printed (run.log of the run): the plain-filter run has no fit window (see G3 below), and
+the verdicts did not allow for that. No JSON was written. Numbers from run.log:
+
+- G1 PASS: all 18 published numbers recovered at their printed precision (191.0, 104.3;
+  1.0000, 1.0001; 6, 3; 0.051, 0.016; 0.749, 147.2, 0.9970, 0; 59; 88, 86, 91; 1.3e-05,
+  1.7e-05).
+- G2 FAIL: mean relative bias +3.3, +2.9, +1.8 percent for sigma = 0.02, 0.05, 0.1 (limit 3
+  percent: the first fails); 3-SE coverage 0.58, 0.90, 0.86 (limit 0.9: two fail). The
+  log-linear fit with the threshold-defined window overestimates sigma by 2-3 percent and
+  its error is underestimated. Not yet explained; candidates [TO VERIFY]: selection of the
+  window by noisy threshold crossings (the window starts where the noise is low and ends
+  where it is high), the oscillation residual left by a 10 M boxcar on a 25 M period.
+- G3 seeds PASS: 0.0655, 0.0606, 0.0602 per M (mean 0.0621, largest deviation 5.5 percent,
+  limit 15). G3 plain NOT EVALUABLE with the fixed settings: |d_s| exceeds lo = 0.01 at the
+  first smoothed point (the plain-filter run departs by 0.015 within the first 5 M).
+- G4 FAIL: sigma(r10) = 0.0748, 0.0405, 0.0437 against sigma(alpha_c) = 0.0655, 0.0606,
+  0.0602 (+14, -33, -27 percent; limit 20). The r10 fits carry standard errors 0.011-0.025,
+  so the differences are within 1-1.5 SE; no cause tested.
+- G5: sigma = 0.1716 +- 0.0207 (y_c = 0.500 kicked, window 79-93 M) and 0.1645 +- 0.0171
+  (0.605, 162-176 M): the predicted order holds in the central values but not beyond the
+  errors; the kicked y_c = 0.5 rate is 2.8 times the unperturbed one (FAIL of the 30
+  percent prediction): the kicked window (alpha_c departure 0.02-0.2, after the oscillation)
+  measures the nonlinear plunge, not the linear mode. Lead times not printed (rerun).
+- Compressed y_c = 0.756: 0.0265 +- 0.0009 (alpha_c, 45-124 M), 0.0405 +- 0.0046 (r10).
+
+Change for the rerun: the verdicts handle a missing fit (`evaluable: false`); the fits are
+unchanged, so G1-G5 numbers must repeat exactly.

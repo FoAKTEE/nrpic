@@ -92,7 +92,8 @@ def synthetic(nreal=50, seed=7):
         fig[f"syn_{sig:g}_fits"] = s
         fig[f"syn_{sig:g}_se"] = se
         print(f"G2 sigma = {sig}: mean bias {rel.mean():+.4f}, rms {np.sqrt(np.mean(rel**2)):.4f}, "
-              f"3SE coverage {out[f'{sig:g}']['coverage_3se']:.2f}", flush=True)
+              f"3SE coverage {out[f'{sig:g}']['coverage_3se']:.2f}; curve_fit estimator: mean bias "
+              f"{out[f'{sig:g}']['mean_rel_bias_nl']:+.4f}", flush=True)
     return out, fig
 
 
@@ -176,9 +177,12 @@ def verdicts(G, syn):
                          pass_=bool(max(abs(c / m - 1) for c in comp) < 0.15))
     pl = G["dir_yc0500_plain"]["alpha"]
     amp_c = float(np.mean([G[k]["alpha"]["amp0"] for k in UNPERT[:3]]))
-    v["G3_plain"] = dict(sigma_plain=pl["sigma"], rel_to_comp=pl["sigma"] / m - 1,
-                         amp0_plain=pl["amp0"], amp0_comp_mean=amp_c, amp_ratio=pl["amp0"] / amp_c,
-                         pass_=bool(abs(pl["sigma"] / m - 1) < 0.25 and pl["amp0"] / amp_c > 2))
+    if pl["ok"]:
+        v["G3_plain"] = dict(sigma_plain=pl["sigma"], rel_to_comp=pl["sigma"] / m - 1,
+                             amp0_plain=pl["amp0"], amp0_comp_mean=amp_c, amp_ratio=pl["amp0"] / amp_c,
+                             pass_=bool(abs(pl["sigma"] / m - 1) < 0.25 and pl["amp0"] / amp_c > 2))
+    else:
+        v["G3_plain"] = dict(evaluable=False, reason=pl["reason"], pass_=None)
     rr = {k: G[k]["r10"]["sigma"] / G[k]["alpha"]["sigma"] - 1 for k in UNPERT
           if G[k]["r10"]["ok"] and G[k]["alpha"]["ok"]}
     v["G4"] = dict(rel_r10_vs_alpha=rr, pass_=bool(len(rr) == 4 and max(abs(x) for x in rr.values()) < 0.2))
@@ -193,6 +197,8 @@ def verdicts(G, syn):
                    lead_pass=bool(len(lead) == 3 and all(0 <= x <= 6 for x in lead.values())))
     sens = {}
     for k in UNPERT[:3]:
+        if not G[k]["alpha"]["ok"]:
+            continue
         ss = [s["sigma"] for s in G[k]["sensitivity"] if s["ok"]]
         base = G[k]["alpha"]["sigma"]
         sens[k] = dict(min=min(ss), max=max(ss), max_rel_dev=float(max(abs(x / base - 1) for x in ss)),
