@@ -10,7 +10,10 @@
 //!
 //! Two additions to the moving-puncture gauge of Z4c::CalcRHS, both off unless their
 //! parameters are present in <z4c> (nothing is added to the parameter list otherwise,
-//! so that existing inputs run and write exactly as before):
+//! so that existing inputs run and write exactly as before).  They are added to the
+//! right-hand sides in a loop of their own after the main loop (AddGaugeExt), so that the
+//! main loop is compiled exactly as without them: a term inside it changed the last
+//! digits of unrelated runs (tracks/core/JOURNAL-gauge.md, entry 3).
 //!
 //! 1. Lapse: relaxation of the excess of the lapse over a reference value,
 //!      d_t alpha += - (alpha/T) max(ln(alpha/alpha_0), 0),   1/T = lapse_leak.
@@ -41,6 +44,7 @@
 #include "athena.hpp"
 #include "globals.hpp"
 #include "parameter_input.hpp"
+#include "coordinates/cell_locations.hpp"
 
 namespace z4c {
 
@@ -180,6 +184,48 @@ GaugeExt MakeGaugeExt(const GaugeExtOptions &go, const TrackerList &trackers) {
     gx.iw2[n] = 1.0/(w*w);
   }
   return gx;
+}
+
+//----------------------------------------------------------------------------------------
+//! \fn void AddGaugeExt
+//! \brief adds the two terms to the right-hand sides of the lapse and of the shift:
+//!   d_t alpha    += LapseLeak(alpha)
+//!   d_t beta^i   -= (eta(x) - eta_0) beta^i      (the main loop has subtracted eta_0 beta^i)
+//! PackT is MeshBlockPack and Z4cT is Z4c (template parameters so that this header needs
+//! neither definition).
+
+template <class PackT, class Z4cT>
+void AddGaugeExt(PackT *pmbp, Z4cT *pz4c, const GaugeExt gx) {
+  const bool leak = (gx.leak_rate > 0.0);
+  const bool eta = (gx.npunc > 0);
+  if (!leak && !eta) { return; }
+
+  auto &indcs = pmbp->pmesh->mb_indcs;
+  auto &size = pmbp->pmb->mb_size;
+  const int is = indcs.is, ie = indcs.ie;
+  const int js = indcs.js, je = indcs.je;
+  const int ks = indcs.ks, ke = indcs.ke;
+  const int nx1 = indcs.nx1, nx2 = indcs.nx2, nx3 = indcs.nx3;
+  const int nmb = pmbp->nmb_thispack;
+  const Real eta0 = pz4c->opt.shift_eta;
+  auto &z4c = pz4c->z4c;
+  auto &rhs = pz4c->rhs;
+
+  par_for("z4c gauge ext", DevExeSpace(), 0, nmb-1, ks, ke, js, je, is, ie,
+  KOKKOS_LAMBDA(const int m, const int k, const int j, const int i) {
+    if (leak) {
+      rhs.alpha(m,k,j,i) += gx.LapseLeak(z4c.alpha(m,k,j,i));
+    }
+    if (eta) {
+      const Real deta = eta0*(gx.EtaFactor(
+          CellCenterX(i - is, nx1, size.d_view(m).x1min, size.d_view(m).x1max),
+          CellCenterX(j - js, nx2, size.d_view(m).x2min, size.d_view(m).x2max),
+          CellCenterX(k - ks, nx3, size.d_view(m).x3min, size.d_view(m).x3max)) - 1.0);
+      for (int a = 0; a < 3; ++a) {
+        rhs.beta_u(m,a,k,j,i) -= deta*z4c.beta_u(m,a,k,j,i);
+      }
+    }
+  });
 }
 
 } // namespace z4c
