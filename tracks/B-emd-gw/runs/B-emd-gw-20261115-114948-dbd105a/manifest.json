@@ -25,5 +25,8 @@
   "OMP_NUM_THREADS": "1"
  },
  "started_utc": "2026-11-15T11:49:48+00:00",
- "status": "running"
+ "status": "done",
+ "wall_time_s": 426.5,
+ "finished_utc": "2026-11-15T11:56:55+00:00",
+ "core_hours": 0.1185
 }

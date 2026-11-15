@@ -124,7 +124,8 @@ def main():
     c = []
     refnum = ["mesh/nghost=3", "time/cfl_number=0.3", "z4c/diss=1.0", "z4c/damp_kappa1=0.0"]
     for nm, extra, A in (("prod_A1e-5", [], 1e-5), ("refconf_A1e-6", refnum, 1e-6),
-                         ("refconf_A1e-5", refnum, 1e-5)):
+                         ("refconf_A1e-5", refnum, 1e-5), ("prod_A1e-7", [], 1e-7),
+                         ("refconf_A1e-7", refnum, 1e-7)):
         o, s = thin(128)
         c.append(dict(name=f"lw_x_{nm}_N128", set="lw_x_roundoff", input="inputs/lw_x.athinput",
                       overrides=o + [f"output1/slice_x2={s!r}", f"output1/slice_x3={s!r}",
@@ -211,6 +212,24 @@ def main():
                               "nonlinear behaviour (steepening, gauge shocks, failure time)",
                       kind="scouting"))
     sets["gauge_nl"] = c
+    # follow-up: is the failure of the conformal-time lapse at t ~ 2.7 a gauge shock
+    # (continuum: gradient curves converge, failure time nearly independent of N)?
+    c = []
+    for N in (64, 256):
+        path = pure_gauge_id(N, 1.5)
+        o, s = thin(N)
+        c.append(dict(name=f"gauge_nl_conformal_N{N}", set="gauge_nl_res",
+                      input="inputs/gauge.athinput",
+                      overrides=o + gauge_overrides("conformal") + [
+                          f"problem/id_file={path}", "time/tlim=4.0",
+                          f"output1/slice_x2={s!r}", f"output1/slice_x3={s!r}",
+                          f"output2/slice_x2={s!r}", f"output2/slice_x3={s!r}",
+                          "output1/dt=0.03125", "output2/dt=0.03125"],
+                      extra_inputs=[path],
+                      purpose="pure-gauge data K_xx = 1.5 sin(2 pi x), conformal-time lapse: "
+                              "resolution dependence of the steepening and of the failure",
+                      kind="scouting"))
+    sets["gauge_nl_res"] = c
 
     for k, v in sets.items():
         with open(os.path.join(CASES, f"{k}.json"), "w") as f:

@@ -26,7 +26,7 @@ SETS = {"lw_x_prod": dict(ng=4, cfl=0.25, sigma=0.5, Ns=(16, 32, 64, 128)),
         "lw_x_nodiss": dict(ng=4, cfl=0.25, sigma=0.0, Ns=(32, 64))}
 
 
-def analyse_run(run, cfl, N):
+def analyse_run(run, cfl, N, A0=A0):
     """The time of a dump is cycle * cfl / N (constant step), capped at the end time:
     the header of a table prints the time with 7 digits only, which puts a sawtooth of
     up to 2 pi * 5e-7 rad on the phase after t = 1 when the outputs do not fall on steps."""
@@ -176,5 +176,65 @@ def main():
     print("\n".join(lines))
 
 
+def roundoff():
+    """Set lw_x_roundoff: does the departure from the Fourier prediction at N = 128 scale
+    as 1/A? Figure figs/lw_x_roundoff, table tables/lw_x_roundoff.md."""
+    cases = [("lw_x_prod_N128", 4, 0.25, 0.5, 1e-6, "prod, A = 1e-6", fs.PAL["red"], "-"),
+             ("lw_x_prod_A1e-5_N128", 4, 0.25, 0.5, 1e-5, "prod, A = 1e-5", fs.PAL["red"], "--"),
+             ("lw_x_ref_N128", 3, 0.3, 1.0, 1e-6, "ref (1+log), A = 1e-6", fs.PAL["blue"], ":"),
+             ("lw_x_refconf_A1e-6_N128", 3, 0.3, 1.0, 1e-6, "ref numerics, conformal, A = 1e-6",
+              fs.PAL["blue"], "-"),
+             ("lw_x_refconf_A1e-5_N128", 3, 0.3, 1.0, 1e-5, "ref numerics, conformal, A = 1e-5",
+              fs.PAL["blue"], "--"),
+             ("lw_x_prod_A1e-7_N128", 4, 0.25, 0.5, 1e-7, "prod, A = 1e-7", fs.PAL["yellow"], "-"),
+             ("lw_x_refconf_A1e-7_N128", 3, 0.3, 1.0, 1e-7, "ref numerics, conformal, A = 1e-7",
+              fs.PAL["green"], "-")]
+    fig, (ax, axr) = plt.subplots(1, 2, figsize=(fs.FULL_WIDTH, 3.4))
+    fig.subplots_adjust(left=0.09, right=0.98, bottom=0.15, top=0.95, wspace=0.28)
+    L = ["| case | run id | A | phase error at t = 10 | predicted | departure | "
+         "amplitude error | predicted |", "|---|---|---|---|---|---|---|---|"]
+    out = []
+    for nm, ng, cfl, sig, A, lab, colr, ls in cases:
+        run = cm.find_run(nm)
+        r = analyse_run(run, cfl, 128, A0=A)
+        pa, pp, _, _, _ = pl.predict(ng, cfl, sig, r["t"][-1], 128)
+        m = r["t"] > 0
+        ax.plot(r["t"][m], r["ph"][m], color=colr, ls=ls, lw=1.3, label=lab)
+        out.append(dict(name=nm, run_id=run["run_id"], A=A, phase=r["ph"][-1], pred_phase=pp,
+                        amp=r["amp"][-1], pred_amp=pa))
+        L.append(f"| {nm} | {run['run_id']} | {A:g} | {r['ph'][-1]:+.3e} | {pp:+.3e} | "
+                 f"{r['ph'][-1] - pp:+.2e} | {r['amp'][-1]:+.3e} | {pa:+.3e} |")
+    for ng, cfl, sig in ((4, 0.25, 0.5), (3, 0.3, 1.0)):
+        tt = np.linspace(0.0625, 10, 80)
+        ax.plot(tt, [pl.predict(ng, cfl, sig, x, 128)[1] for x in tt], **dict(fs.GUIDE, lw=0.9))
+    ax.plot([], [], **dict(fs.GUIDE, lw=0.9), label="Fourier symbol")
+    ax.set_xlabel("t")
+    ax.set_ylabel(r"$\delta\varphi$ (rad), N = 128")
+    ax.legend(fontsize=6, loc="upper left")
+    for key, colr, mk, lab in (("prod", fs.PAL["red"], "o", "production numerics"),
+                               ("ref", fs.PAL["blue"], "s", "ng 3, KO 1, Courant 0.3")):
+        rows = [o for o in out if o["name"].startswith("lw_x_" + key)
+                and "lw_x_ref_N128" != o["name"]]
+        A = np.array([o["A"] for o in rows])
+        dep = np.array([abs(o["phase"] - o["pred_phase"]) for o in rows])
+        k = np.argsort(A)
+        axr.loglog(A[k], dep[k], mk + "-", color=colr, lw=1.0, label=lab)
+    Ag = np.array([1e-7, 1e-6])
+    axr.loglog(Ag, 6e-7*(Ag/1e-7)**-1, **dict(fs.THIN, ls=":"))
+    axr.text(2.5e-7, 4e-7, r"$\propto A^{-1}$", fontsize=9)
+    axr.set_xlabel("wave amplitude A")
+    axr.set_ylabel(r"|measured $-$ predicted phase| at t = 10")
+    axr.legend(fontsize=7, loc="upper center")
+    fs.save(fig, os.path.join(cm.FIGS, "lw_x_roundoff"))
+    plt.close(fig)
+    cm.save_json(out, os.path.join(cm.TABLES, "lw_x_roundoff.json"))
+    with open(os.path.join(cm.TABLES, "lw_x_roundoff.md"), "w") as f:
+        f.write("TT wave along x at N = 128, t = 10: departure of the phase from the "
+                "Fourier-symbol prediction against the amplitude A and the lapse. Written by "
+                "analysis/ana_lw.py.\n\n" + "\n".join(L) + "\n")
+    print("\n".join(L))
+
+
 if __name__ == "__main__":
     main()
+    roundoff()

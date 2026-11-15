@@ -196,3 +196,40 @@ ref departure: phase -1.2e-6 +- 0.2e-6 (the gauge is not the cause); (b) at A = 
 departure falls tenfold: refconf phase within 5 percent of -2.05e-6, prod phase between
 -2e-8 and -0.6e-8 (prediction -1.27e-8). Refuted if the A = 1e-5 departures stay at the
 A = 1e-6 level.
+
+## Interim P4 (nonlinear), 2026-11-15 12:10 UTC, and prediction P4b
+
+Seen in the running set gauge_nl (N = 128, kappa = 1.5): the conformal-time lapse
+(B-emd-gw-20261115-114004-0ea0f74) and the volume lapse (-114122-) turn non-finite
+between t = 2.69 and 2.75, and between 2.88 and 2.94; before that the largest lapse
+gradient grows from 0.75 (t = 1) to 5.5 (t = 2) and Theta reaches 4 to 16 at the last
+finite dump. The harmonic slicing (-113859-) is back to alpha = chi = 1 to four digits at
+t = 10; 1+log (-113943-) and the K driver (-114143-) are alive with gradients near 2.
+P4b, written before the runs gauge_nl_conformal_N64 and _N256 (to t = 4, outputs every
+1/32): if this is a gauge shock of the conformal-time condition (Bona-Masso with constant
+f = 1/3, which does not satisfy 1 - f - alpha f'/2 = 0), the curves of the largest lapse
+gradient for N = 128 and 256 agree within 5 percent up to t = 2, and the failure time
+moves by less than 0.3 between them (N = 64 may fail earlier: fewer cells across the
+steepening front). Refuted if the N = 256 run does not fail before t = 4, or if the
+gradient curves differ by more than 5 percent before t = 2 (then the growth is a
+numerical instability, not a property of the continuum slicing).
+
+## Outcome P1b (lw_x_roundoff), 2026-11-15 12:05 UTC, and prediction P1c
+
+Runs B-emd-gw-20261115-114947/114948/114949-dbd105a; `tables/lw_x_roundoff.md`,
+`figs/lw_x_roundoff.png`. Departure = measured minus predicted phase at t = 10, N = 128.
+(a) Confirmed: ref numerics with the conformal-time lapse at A = 1e-6 depart by
++9.1e-7 rad, as with 1+log (+8.75e-7): the gauge is not the cause.
+(b) Refuted: at A = 1e-5 the departure does not fall tenfold; it becomes -1.32e-6
+(prod) and -1.29e-6 (ref numerics). At A = 1e-5 the second-order secular terms (the box
+mean of gt_xx and chi drift as A^2 t^2; 6.6e-10 at A = 1e-6, t = 10, so 6.6e-8 at
+A = 1e-5) change the coordinate light speed by a few 1e-8 and lag the phase by ~1e-6:
+the A = 1e-5 runs measure the second-order backreaction, not the floor, so (b) did not
+test the roundoff hypothesis. Fitting departure = c A^2 + d with d independent of A
+gives d = -6.0e-8 (prod) and +9.3e-7 (ref numerics); the same data are equally fitted
+with d proportional to 1/A.
+P1c, written before the runs lw_x_prod_A1e-7_N128 and lw_x_refconf_A1e-7_N128: if the
+floor is roundoff of 1 + h (d ~ 1/A), the departures at A = 1e-7 are -6e-7 (prod) and
++9e-6 (ref numerics), within a factor 2; if the floor is a property of the discrete
+scheme that the symbol analysis misses, they stay at -6e-8 and +9e-7 within a factor 2.
+Second-order terms at A = 1e-7 are 100 times below those at 1e-6.

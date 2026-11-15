@@ -69,7 +69,7 @@ def modes(run):
 def linear(fig_path):
     gs = list(GAUGES)
     fig, axs = plt.subplots(3, 3, figsize=(fs.FULL_WIDTH, 7.0), sharex=True)
-    fig.subplots_adjust(left=0.08, right=0.99, bottom=0.07, top=0.96, hspace=0.28,
+    fig.subplots_adjust(left=0.08, right=0.99, bottom=0.07, top=0.93, hspace=0.28,
                         wspace=0.28)
     names = [r"$a_s$", r"$K_s$", r"$h_s$", r"$b_c$"]
     out = {}
@@ -81,12 +81,14 @@ def linear(fig_path):
         scale = np.max(np.abs(ref), axis=0)/KAPPA
         ident = None
         if g in IDENT:
-            ident = max(np.max(np.abs(IDENT[g](a, c) - 1.0)) for _, _, a, c, _ in prof)/KAPPA
+            i0 = IDENT[g](prof[0][2], prof[0][3])
+            ident = max(np.max(np.abs(IDENT[g](a, c) - i0)) for _, _, a, c, _ in prof)/KAPPA
         thmax = max(np.max(np.abs(th)) for _, _, _, _, th in prof)/KAPPA
         out[g] = dict(run_id=run["run_id"], max_dev_over_kappa=dev.tolist(),
                       max_ref_over_kappa=scale.tolist(), identity_over_kappa=ident,
                       theta_max_over_kappa=thmax, F=rs.gauge_F(opts(g)),
-                      eig_over_k=[complex(z)/(2*np.pi) for z in rs.gauge_eigen(opts(g))])
+                      eig_over_k=[[float(z.real)/(2*np.pi), float(z.imag)/(2*np.pi)]
+                                  for z in rs.gauge_eigen(opts(g))])
         for i in range(4):
             ax.plot(t, y[:, i]/KAPPA, color=fs.SERIES[i], lw=1.3, label=names[i])
             ax.plot(t, ref[:, i]/KAPPA, **dict(fs.GUIDE, lw=0.9))
@@ -98,7 +100,8 @@ def linear(fig_path):
     for ax in axs[:, 0]:
         ax.set_ylabel(r"mode amplitude / $\kappa$")
     axs[0, 0].plot([], [], **dict(fs.GUIDE, lw=0.9), label="linearized system")
-    axs[0, 0].legend(loc="lower left", ncol=3, fontsize=7)
+    h, l = axs[0, 0].get_legend_handles_labels()
+    fig.legend(h, l, loc="upper center", ncol=5, fontsize=8, bbox_to_anchor=(0.53, 1.0))
     fs.save(fig, fig_path)
     plt.close(fig)
     # convergence of the Gamma-driver case
@@ -113,54 +116,88 @@ def linear(fig_path):
     return out
 
 
+def finite_profiles(run):
+    """Profiles (t, x, alpha, chi, Theta) up to the last dump with finite fields, and the
+    time of the first non-finite dump (None if all are finite)."""
+    t, _, prof = modes(run)
+    for i, p in enumerate(prof):
+        if not (np.all(np.isfinite(p[2])) and np.all(np.isfinite(p[3]))):
+            return t[:i], prof[:i], float(t[i])
+    return t, prof, None
+
+
+def grad_max(prof):
+    return np.array([np.max(np.abs(np.roll(a, -1) - np.roll(a, 1)))/(2*(x[1] - x[0]))
+                     for (_, x, a, _, _) in prof])
+
+
 def nonlinear(fig_prof, fig_grad):
     gs = ["harmonic", "onelog", "conformal", "volume", "kdriver", "onelog_gd"]
-    fig, axs = plt.subplots(2, 3, figsize=(fs.FULL_WIDTH, 5.2), sharex=True)
+    fig, axs = plt.subplots(2, 3, figsize=(fs.FULL_WIDTH, 5.2), sharex=True, sharey=True)
     fig.subplots_adjust(left=0.08, right=0.99, bottom=0.09, top=0.94, hspace=0.25,
-                        wspace=0.28)
-    fig2, ax2 = plt.subplots(1, 2, figsize=(fs.FULL_WIDTH, 3.2))
-    fig2.subplots_adjust(left=0.09, right=0.99, bottom=0.15, top=0.92, wspace=0.27)
+                        wspace=0.08)
+    fig2, ax2 = plt.subplots(1, 3, figsize=(fs.FULL_WIDTH, 3.0))
+    fig2.subplots_adjust(left=0.08, right=0.99, bottom=0.16, top=0.91, wspace=0.33)
     out = {}
-    for j, (ax, g) in enumerate(zip(axs.flat, gs)):
+    colg = {"harmonic": fs.PAL["blue"], "onelog": fs.PAL["red"],
+            "conformal": fs.PAL["yellow"], "volume": fs.PAL["green"],
+            "kdriver": fs.PAL["orange"], "onelog_gd": "k"}
+    for ax, g in zip(axs.flat, gs):
         m = cm.find_run(f"gauge_nl_{g}_N128", require_done=False)
-        t, y, prof = modes(m)
-        tsel = [0, 1, 2, 4, 6, 8, 10]
+        t, prof, tfail = finite_profiles(m)
+        tsel = [0, 0.25, 1, 2, 2.5, 4.25, 6.75, 10]
         cols = fs.series_colors(len(tsel))
         for c, ts in zip(cols, tsel):
             k = int(np.argmin(np.abs(t - ts)))
             if abs(t[k] - ts) < 0.04:
-                ax.plot(prof[k][1], prof[k][2], color=c, lw=1.2, label=f"t = {ts}")
-        ax.set_title(LABEL[g], fontsize=9)
-        grad = []
+                ax.plot(prof[k][1], prof[k][2], color=c, lw=1.2, label=f"t = {ts:g}")
+        ttl = LABEL[g] + ("" if tfail is None else f" (fails t = {tfail:.2f})")
+        ax.set_title(ttl, fontsize=8)
+        grad = grad_max(prof)
         ident = []
-        for (tt, x, a, c, th) in prof:
-            dx = x[1] - x[0]
-            grad.append(np.max(np.abs(np.roll(a, -1) - np.roll(a, 1)))/(2*dx))
-            if g in IDENT:
-                i0 = IDENT[g](prof[0][2], prof[0][3])
-                ident.append(np.max(np.abs(IDENT[g](a, c) - i0)))
-        ax2[0].semilogy(t, grad, color=fs.SERIES[j % 5] if j < 5 else "k", lw=1.3,
-                        label=LABEL[g])
+        if g in IDENT:
+            i0 = IDENT[g](prof[0][2], prof[0][3])
+            ident = [np.max(np.abs(IDENT[g](a, c) - i0)) for (_, _, a, c, _) in prof]
+        ax2[0].semilogy(t, grad, color=colg[g], lw=1.3, label=LABEL[g])
         if ident:
-            ax2[1].semilogy(t, np.maximum(ident, 1e-17), color=fs.SERIES[j % 5], lw=1.3,
-                            label=LABEL[g])
-        last = t[-1]
-        out[g] = dict(run_id=m["run_id"], status=m["status"], last_dump_time=float(last),
+            ax2[1].semilogy(t[1:], np.maximum(ident[1:], 1e-17), color=colg[g], lw=1.3)
+        out[g] = dict(run_id=m["run_id"], status=m["status"], t_end=float(t[-1]),
+                      first_nonfinite_dump=tfail,
                       alpha_min=float(min(np.min(p[2]) for p in prof)),
                       alpha_max=float(max(np.max(p[2]) for p in prof)),
                       max_grad_alpha=float(np.max(grad)),
                       t_max_grad=float(t[int(np.argmax(grad))]),
-                      identity_max=float(np.max(ident)) if ident else None)
+                      theta_max=float(max(np.max(np.abs(p[4])) for p in prof)),
+                      identity_max=float(np.max(ident)) if ident else None,
+                      alpha_end_minus_1=float(np.max(np.abs(prof[-1][2] - 1.0))))
+    # resolution dependence of the conformal-time lapse
+    res = {}
+    for N, ls in ((64, ":"), (128, "-"), (256, "--")):
+        try:
+            m = cm.find_run(f"gauge_nl_conformal_N{N}", require_done=False)
+        except FileNotFoundError:
+            continue
+        t, prof, tfail = finite_profiles(m)
+        gr = grad_max(prof)
+        ax2[2].semilogy(t, gr, color=colg["conformal"], ls=ls, lw=1.3, label=f"N = {N}")
+        res[N] = dict(run_id=m["run_id"], first_nonfinite_dump=tfail,
+                      t=t.tolist(), grad=gr.tolist())
+    out["conformal_resolution"] = res
     for ax in axs[-1]:
         ax.set_xlabel("x")
     for ax in axs[:, 0]:
         ax.set_ylabel(r"$\alpha$")
-    axs[0, 0].legend(loc="upper right", fontsize=7, ncol=2)
+    axs[0, 0].legend(loc="lower left", fontsize=6, ncol=2)
     ax2[0].set_xlabel("t")
-    ax2[0].set_ylabel(r"max $|\partial_x\alpha|$")
+    ax2[0].set_ylabel(r"max $|\partial_x\alpha|$ (N = 128)")
+    ax2[0].set_ylim(0.05, 40)
+    ax2[0].legend(fontsize=5.5, loc="lower right", ncol=2)
     ax2[1].set_xlabel("t")
-    ax2[1].set_ylabel("max departure from the slicing identity")
-    ax2[0].legend(fontsize=7, loc="upper left")
+    ax2[1].set_ylabel("slicing identity residual")
+    ax2[2].set_xlabel("t")
+    ax2[2].set_ylabel(r"max $|\partial_x\alpha|$, conformal")
+    ax2[2].set_xlim(0, 4)
+    ax2[2].legend(fontsize=7, loc="upper left")
     fs.save(fig, fig_prof)
     fs.save(fig2, fig_grad)
     plt.close(fig)
@@ -183,7 +220,8 @@ def main():
     for g, r in res["linear"].items():
         if g == "onelog_gd_convergence":
             continue
-        ev = sorted(r["eig_over_k"], key=lambda z: (abs(z.imag), z.real))
+        ev = sorted((complex(a, b) for a, b in r["eig_over_k"]),
+                    key=lambda z: (abs(z.imag), z.real))
         evs = ", ".join(f"{z.real:+.3f}{z.imag:+.3f}i" for z in ev if abs(z) > 1e-9) or "0"
         d = r["max_dev_over_kappa"]
         ide = "-" if r["identity_over_kappa"] is None else f"{r['identity_over_kappa']:.1e}"
@@ -196,13 +234,28 @@ def main():
         d = r["max_dev_over_kappa"]
         L.append(f"| {N} | {r['run_id']} | {d[0]:.1e} | {d[1]:.1e} | {d[2]:.1e} | {d[3]:.1e} |")
     L += ["", "Nonlinear set: K_xx = 1.5 sin(2 pi x), N = 128, t = 10.", "",
-          "| case | run id | status | last dump | alpha min | alpha max | max d_x alpha "
-          "(at t) | identity residual |", "|---|---|---|---|---|---|---|---|"]
+          "| case | run id | first non-finite dump | alpha min | alpha max | max d_x alpha "
+          "(at t) | max Theta | identity residual | max abs(alpha-1) at last finite dump |",
+          "|---|---|---|---|---|---|---|---|---|"]
     for g, r in res["nonlinear"].items():
+        if g == "conformal_resolution":
+            continue
         ide = "-" if r["identity_max"] is None else f"{r['identity_max']:.1e}"
-        L.append(f"| {g} | {r['run_id']} | {r['status']} | {r['last_dump_time']:.3f} | "
+        tf = "none (t = 10 reached)" if r["first_nonfinite_dump"] is None \
+            else f"{r['first_nonfinite_dump']:.4f}"
+        L.append(f"| {g} | {r['run_id']} | {tf} | "
                  f"{r['alpha_min']:.4f} | {r['alpha_max']:.4f} | {r['max_grad_alpha']:.3g} "
-                 f"({r['t_max_grad']:.2f}) | {ide} |")
+                 f"({r['t_max_grad']:.2f}) | {r['theta_max']:.1e} | {ide} | "
+                 f"{r['alpha_end_minus_1']:.1e} |")
+    L += ["", "Conformal-time lapse, kappa = 1.5, resolution dependence:", "",
+          "| N | run id | first non-finite dump | max d_x alpha at t = 1, 1.5, 2 |",
+          "|---|---|---|---|"]
+    for N, r in res["nonlinear"]["conformal_resolution"].items():
+        tt = np.asarray(r["t"])
+        gg = np.asarray(r["grad"])
+        vals = ", ".join(f"{gg[int(np.argmin(np.abs(tt - x)))]:.3f}" for x in (1.0, 1.5, 2.0))
+        tf = "none" if r["first_nonfinite_dump"] is None else f"{r['first_nonfinite_dump']:.4f}"
+        L.append(f"| {N} | {r['run_id']} | {tf} | {vals} |")
     with open(os.path.join(cm.TABLES, "gauge.md"), "w") as f:
         f.write("\n".join(L) + "\n")
     print("\n".join(L))

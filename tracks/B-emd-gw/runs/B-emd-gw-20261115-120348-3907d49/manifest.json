@@ -1,0 +1,32 @@
+{
+ "run_id": "B-emd-gw-20261115-120348-3907d49",
+ "name": "lw_x_prod_A1e-7_N128",
+ "set": "lw_x_roundoff",
+ "command": "/data/haiyangw/nrpic/.work/build_cpu_c1/src/athena -i /data/haiyangw/nrpic/wt/B-emd-gw/tracks/B-emd-gw/periodic_z4c/inputs/lw_x.athinput -d /data/haiyangw/nrpic/scratch/B-emd-gw/B-emd-gw-20261115-120348-3907d49 mesh/nx1=128 meshblock/nx1=128 mesh/x1max=1.0 mesh/x2max=0.03125 mesh/x3max=0.03125 output1/slice_x2=0.01171875 output1/slice_x3=0.01171875 problem/amp=1e-07",
+ "cwd": "/data/haiyangw/nrpic/scratch/B-emd-gw/B-emd-gw-20261115-120348-3907d49",
+ "commit": "3907d49c146a1023ecacce8a5a5f1e5fd9418eeb",
+ "worktree_dirty": true,
+ "inputs": [
+  {
+   "path": "tracks/B-emd-gw/periodic_z4c/inputs/lw_x.athinput",
+   "sha256": "6db23662470dd8897394a3015a12e235064114577e890820f0de24e021fb7be3"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/.work/build_cpu_c1/src/athena",
+   "sha256": "91f2e2c23a6301047ed4fe06ffe153d100fe6c121d0b6632087637b525547403"
+  }
+ ],
+ "output_dir": "/data/haiyangw/nrpic/scratch/B-emd-gw/B-emd-gw-20261115-120348-3907d49",
+ "purpose": "TT wave along x at 128 cells: test whether the departure from the Fourier prediction scales as 1/A (roundoff of 1+h); conformal-time lapse, under which the second-order homogeneous drift leaves the coordinate light speed fixed",
+ "kind": "scouting",
+ "cores": 1,
+ "card_hours": 0.0,
+ "env": {
+  "OMP_NUM_THREADS": "1"
+ },
+ "started_utc": "2026-11-15T12:03:49+00:00",
+ "status": "done",
+ "wall_time_s": 727.5,
+ "finished_utc": "2026-11-15T12:15:56+00:00",
+ "core_hours": 0.2021
+}

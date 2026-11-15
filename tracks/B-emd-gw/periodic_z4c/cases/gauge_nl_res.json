@@ -1,0 +1,72 @@
+[
+ {
+  "name": "gauge_nl_conformal_N64",
+  "set": "gauge_nl_res",
+  "input": "inputs/gauge.athinput",
+  "overrides": [
+   "mesh/nx1=64",
+   "meshblock/nx1=64",
+   "mesh/x1max=1.0",
+   "mesh/x2max=0.0625",
+   "mesh/x3max=0.0625",
+   "z4c/lapse_oplog=0.0",
+   "z4c/lapse_harmonic=0.3333333333333333",
+   "z4c/lapse_volume=0.0",
+   "z4c/lapse_kdriver=0.0",
+   "z4c/lapse_advect=0.0",
+   "z4c/shift_Gamma=0.0",
+   "z4c/shift_alpha2Gamma=0.0",
+   "z4c/shift_H=0.0",
+   "z4c/shift_eta=0.0",
+   "z4c/shift_advect=0.0",
+   "problem/id_file=/data/haiyangw/nrpic/scratch/B-emd-gw/ids/puregauge_N64_k1.5.bin",
+   "time/tlim=4.0",
+   "output1/slice_x2=0.0234375",
+   "output1/slice_x3=0.0234375",
+   "output2/slice_x2=0.0234375",
+   "output2/slice_x3=0.0234375",
+   "output1/dt=0.03125",
+   "output2/dt=0.03125"
+  ],
+  "extra_inputs": [
+   "/data/haiyangw/nrpic/scratch/B-emd-gw/ids/puregauge_N64_k1.5.bin"
+  ],
+  "purpose": "pure-gauge data K_xx = 1.5 sin(2 pi x), conformal-time lapse: resolution dependence of the steepening and of the failure",
+  "kind": "scouting"
+ },
+ {
+  "name": "gauge_nl_conformal_N256",
+  "set": "gauge_nl_res",
+  "input": "inputs/gauge.athinput",
+  "overrides": [
+   "mesh/nx1=256",
+   "meshblock/nx1=256",
+   "mesh/x1max=1.0",
+   "mesh/x2max=0.015625",
+   "mesh/x3max=0.015625",
+   "z4c/lapse_oplog=0.0",
+   "z4c/lapse_harmonic=0.3333333333333333",
+   "z4c/lapse_volume=0.0",
+   "z4c/lapse_kdriver=0.0",
+   "z4c/lapse_advect=0.0",
+   "z4c/shift_Gamma=0.0",
+   "z4c/shift_alpha2Gamma=0.0",
+   "z4c/shift_H=0.0",
+   "z4c/shift_eta=0.0",
+   "z4c/shift_advect=0.0",
+   "problem/id_file=/data/haiyangw/nrpic/scratch/B-emd-gw/ids/puregauge_N256_k1.5.bin",
+   "time/tlim=4.0",
+   "output1/slice_x2=0.005859375",
+   "output1/slice_x3=0.005859375",
+   "output2/slice_x2=0.005859375",
+   "output2/slice_x3=0.005859375",
+   "output1/dt=0.03125",
+   "output2/dt=0.03125"
+  ],
+  "extra_inputs": [
+   "/data/haiyangw/nrpic/scratch/B-emd-gw/ids/puregauge_N256_k1.5.bin"
+  ],
+  "purpose": "pure-gauge data K_xx = 1.5 sin(2 pi x), conformal-time lapse: resolution dependence of the steepening and of the failure",
+  "kind": "scouting"
+ }
+]

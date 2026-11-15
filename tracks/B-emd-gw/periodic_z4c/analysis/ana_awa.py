@@ -27,11 +27,17 @@ def analyse(name, A):
     d0 = ad.read_tab(files[0])
     X = d0["x1v"]
     x = rs.gw_x_of_X(X, A)
+    # time of a dump from its cycle (constant step cfl*dx, cfl = 0.25 in gauge.athinput):
+    # the table header prints the time with 7 digits, i.e. 5e-5 at t = 100, which would
+    # enter the comparison with the exact solution as a phase error of 3e-4
+    dt_step = 0.25*(X[1] - X[0])
+    t_end = ad.read_tab(files[-1])["time"]
     t, eg, ea, eg2, ea2, H, Mx, ek = [], [], [], [], [], [], [], []
     keep = {}
     for p, pc in zip(files, cfiles):
         d = ad.read_tab(p)
         c = ad.read_tab(pc)
+        d["time"] = min(d["cycle"]*dt_step, t_end)
         ex = rs.gw_exact_X(X, d["time"], A, x_of_X=x)
         g = d["gxx"]/d["chi"]
         dg = (g - ex["gamma_XX"])/A
