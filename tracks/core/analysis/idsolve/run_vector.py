@@ -430,6 +430,91 @@ def v3(a):
     return 0
 
 
+def mstats(d, base):
+    """Mean and max of the monitor's |M| before and after a solve with id_vector."""
+    v = read_idvector_bin(os.path.join(d, base + ".idvector.bin"))
+    m1 = np.sqrt(v["Mx"]**2 + v["My"]**2 + v["Mz"]**2)
+    m0 = np.sqrt(v["Mx0"]**2 + v["My0"]**2 + v["Mz0"]**2)
+    return dict(M_mean_before=float(m0.mean()), M_mean_after=float(m1.mean()),
+                M_max_before=float(m0.max()), M_max_after=float(m1.max()))
+
+
+def v5(a):
+    """Tests V5 (the vector part with the monitor as residual: smooth ball, its strained
+    copy, moving Gaussian) and V6 (evolution of the strained ball with both solves)."""
+    res = idlib.load_json(OUT)
+    tmp = os.path.join(idlib.SCRATCH, "tmp", "idsolve")
+    extra = "id_vector      = true\nid_vector_residual = code\n"
+    with open(os.path.join(idlib.WT, "problems/idsolve/ball.athinput")) as f:
+        txt = f.read()
+    key = "id_dump        = true"
+    binp = os.path.join(tmp, "ball_vector_code.athinput")
+    with open(binp, "w") as f:
+        f.write(txt.replace(key, extra + key))
+    with open(os.path.join(idlib.WT, "problems/idsolve/gaussian_boost.athinput")) as f:
+        txt = f.read()
+    key2 = "id_vector      = true     # also solve the momentum constraint for W (Abar = L W)"
+    if key not in txt or key2 not in txt:
+        raise RuntimeError("input files changed")
+    ginp = os.path.join(tmp, "gaussian_boost_code.athinput")
+    with open(ginp, "w") as f:
+        f.write(txt.replace(key2, key2 + "\nid_vector_residual = code"))
+    out = {}
+    for label, (nrp, tab) in (("sphere", run_tests.ic_ball(0.5, 2.0)),
+                              ("strained", run_tests.ic_tri(0.5, 0.05, 2.0))):
+        rid, st = registered("initial-data solver, test V5: smooth ball (%s), vector part "
+                             "with the monitor as residual, 64 cells" % label,
+                             "idsolve-v5-" + label, [binp, nrp, tab],
+                             [a.exe, "-i", os.path.basename(binp)] + run_tests.mesh_args(64, 32)
+                             + ["particles/id_residual=code", "particles/nfilter=0",
+                                "particles/particle_file=" + os.path.basename(nrp),
+                                "problem/comp0_file=" + os.path.basename(tab)])
+        d = idlib.run_dir(rid)
+        t, last = idlib.read_idsolve_txt(os.path.join(d, "ball.idsolve.txt"))
+        out[label] = dict(run=rid, status=st, summary=last, outer_iterations=int(t.shape[0] - 1),
+                          H_max_after=float(t[-1, 4]), relv_final=float(t[-1, 13]),
+                          **mstats(d, "ball"))
+        print("V5 %s %s %s" % (label, rid, st), flush=True)
+    nrp = os.path.join(IC, "gauss_h0p25_u0p1.nrp")
+    rid, st = registered("initial-data solver, test V5: moving Gaussian, vector part with the "
+                         "monitor as residual, 64 cells", "idsolve-v5-gboost-n64",
+                         [ginp, nrp], [a.exe, "-i", os.path.basename(ginp)]
+                         + run_tests.mesh_args(64, 32) + ["particles/id_residual=code",
+                                                          "particles/particle_file="
+                                                          + os.path.basename(nrp)])
+    d = idlib.run_dir(rid)
+    t, last = idlib.read_idsolve_txt(os.path.join(d, "gboost.idsolve.txt"))
+    out["gboost_n64"] = dict(run=rid, status=st, summary=last,
+                             outer_iterations=int(t.shape[0] - 1), H_max_after=float(t[-1, 4]),
+                             relv_final=float(t[-1, 13]), **mstats(d, "gboost"))
+    print("V5 gboost %s %s" % (rid, st), flush=True)
+    # V6: evolution of the strained ball with both solves (settings of test E)
+    nrp, tab = run_tests.ic_tri(0.5, 0.05, 2.0)
+    rid, st = registered("initial-data solver, test V6: evolution of the smooth strained "
+                         "ball with the scalar and the vector solve (mode code), settings "
+                         "of test E", "idsolve-v6-evo", [binp, nrp, tab],
+                         [a.exe, "-i", os.path.basename(binp)] + run_tests.mesh_args(64, 32)
+                         + ["time/nlim=8", "time/tlim=100.0", "particles/nfilter=0",
+                            "particles/source_density=true", "particles/source_extrap=true",
+                            "z4c/lapse_oplog=0.0", "z4c/lapse_harmonic=0.3333333333333333",
+                            "particles/id_residual=code",
+                            "particles/particle_file=" + os.path.basename(nrp),
+                            "problem/comp0_file=" + os.path.basename(tab)])
+    c = np.loadtxt(os.path.join(idlib.run_dir(rid), "ball.cstat.hst"), ndmin=2)
+    out["evolution"] = dict(run=rid, status=st, time=[float(x) for x in c[:, 0]],
+                            H_max=[float(x) for x in c[:, 8]], H_mean=[float(x) for x in c[:, 9]],
+                            M_max=[float(x) for x in c[:, 12]],
+                            M_mean=[float(x) for x in c[:, 13]])
+    print("V6 %s %s" % (rid, st), flush=True)
+    res["V5"] = out
+    idlib.save_json(OUT, res)
+    for k, v in out.items():
+        print(k)
+        for kk, vv in v.items():
+            print("   %-16s %s" % (kk, vv))
+    return 0
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--exe", default=os.path.join(idlib.WT, ".work/build_cpu_vec/src/athena"))
@@ -439,9 +524,12 @@ def main():
     ap.add_argument("--v0-only", default="", help="rerun V0 only for these cases "
                     "(gauss, torus), then analyse")
     ap.add_argument("--v3", action="store_true", help="test V3 only")
+    ap.add_argument("--v5", action="store_true", help="tests V5 and V6 only")
     a = ap.parse_args()
     if a.v3:
         return v3(a)
+    if a.v5:
+        return v5(a)
     if not a.analyze:
         run_all(a)
     return analyze()
