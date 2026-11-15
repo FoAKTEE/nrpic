@@ -256,3 +256,23 @@ the background factor about 1.03 plus the momentum), heavy 1.00-1.01 M; trackers
 input positions; no non-finite value. Cost then [arithmetic]: 71680 cycles for 280 M at
 dt = 0.25 x 0.015625; at the measured rate and a mean of 1.11 times the t = 0 count (core's
 growth in its three-hole run) about 15-19 card-hours.
+
+## 2026-11-15 E5, outcome (run F-20261115-173930-deef41a)
+
+3 of 4 checks passed; the failed one was my expectation of the row convention, not the
+wrapper. [VERIFIED, `run.log`, `run/single.co_0.txt`, `seg1_co_0.txt` of the run]
+- The truncation is real: after the restart at cycle 8 the live tracker file holds rows 8-11
+  only; segment 1 had written rows 0-7. The wrapper kept segment 1's file in
+  `trk_keep/20261115T175420.453753791/`.
+- FAILED expectation: "merged cycles 0-12". The tracker writes the row of cycle n at the start
+  of cycle n, before the step: a segment that stops at nlim = 8 holds rows 0-7 and the
+  restarted one writes row 8 first; after 12 cycles the rows are 0-11. The merge gave exactly
+  0-11, once each: complete. No cycle was written twice, so the identity of repeated rows was
+  not tested here (the synthetic test of E4 covers an overlap).
+- Horizon at t = 0 not found at this coarse test resolution (cells m/2): not a check of the
+  finder.
+- Processor speed of the release build: 10689 zone-cycles per cpu second (2.6
+  MeshBlock-cycles per second; `seg2.log`).
+Follow-up: `scripts/check_keep_trackers.py` repeats the checks on the same output with the
+convention above, plus continuity of the position across the junction (prediction: all
+pass; refuted if the merged rows are not 0-11 or the position jumps at row 8).
