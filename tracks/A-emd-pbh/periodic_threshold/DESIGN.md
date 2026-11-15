@@ -75,30 +75,34 @@ up to the mean of zeta, 1.8e-4 at mu = 0.03), and calls `make_field.build` uncha
 Zel'dovich lattice of one particle per cell, Newtonian-gauge dictionary rho, K, alpha,
 conformally flat constraint solve on the torus with the code's deposit (cloud-in-cell,
 two binomial passes, compensation). Output: `particles.nrp`, `fields.bin` (NRCOSMO1),
-`id.json`. What it gives (runs T1 A-emd-pbh-20261115-153527-0576e01 (sweep, in
-progress at the time of writing for n = 32, 128 and nfilter = 0), T1b
-A-emd-pbh-20261115-155802-9a6596f, S data A-emd-pbh-20261115-154735-69e8f8b):
+`id.json`. What it gives (runs T1 A-emd-pbh-20261115-153527-0576e01, T1b
+A-emd-pbh-20261115-155802-9a6596f, S data A-emd-pbh-20261115-154735-69e8f8b;
+`figures/fig_t1_solve_change.png`; c = max|psi - psi_dict| / max|psi_dict - 1|, the
+change the solve makes to the dictionary's conformal factor):
 
-| mu | eps_i | n | constraint residual of the solve | c = max|psi - psi_dict| / max|psi_dict - 1| | note |
+| mu | eps_i | n | residual of the solve | c | note |
 |---|---|---|---|---|---|
-| 0.03 | 0.2 | 64 | 1e-12 per inner solve | 0.38 | outer iteration not converged (change 1.3e-4 per step, ratio ~0.97) |
-| 0.03 | 1 | 64 | 1.6e-12 | 0.078 | |
-| 0.03 | sqrt 6 | 64 | | 0.025 | |
+| 0.03 | 0.2 | 64 | 9e-12 per inner solve | 0.38 | outer iteration not converged (1.3e-4 per step, ratio ~0.97) |
+| 0.03 | 1 | 32 / 64 / 128 | 4e-12 / 1.6e-12 / 7e-12 | 0.362 / 0.078 / 0.0040 | resolution |
+| 0.03 | 1 | 64, no filter | 2.4e-12 | 0.074 | filter is a small part |
+| 0.03 | sqrt 6 | 64 | 1.2e-12 | 0.025 | |
 | 0.2 | 1 | 64 | 3.7e-12 | 0.031 | |
 | 0.3 | 1 | 64 | 7.2e-12 | 0.137 | used for S1 |
-| 0.5 | 0.2 | 64 | NaN | NaN | diverges |
+| 0.5 | 0.2, sqrt 6 | 64 | NaN | NaN | diverges |
 | 0.5 | 1 | 64 | 0.06 (stagnates at the 60-iteration limit) | 0.10 | not solved data |
 
 Findings [VERIFIED in the runs named; readings JUDGEMENT]:
 1. **A first-order inconsistency at super-horizon scales.** c does not scale with mu
-   (0.362 and 0.363 at mu = 0.03 and 0.003 in a 32^3 smoke test; 0.078 at 64^3, a factor
-   4.6 smaller per halving of h). Reading: on the Newtonian-gauge slice the Hamiltonian
+   (0.362 and 0.363 at mu = 0.03 and 0.003 in a 32^3 smoke test) and falls fast with the
+   cell size (factors 4.6 and 19.6 per halving). Reading: on the Newtonian-gauge slice the Hamiltonian
    constraint at super-horizon scales rests on the cancellation K^2/12 - 2 pi E =
    -(3/4) delta_N between two terms -2 psi_N that are (3/2)(aH/k)^2 times larger than
-   delta_N; K is set exactly on the mesh, E is deposited and filtered, so the residual of
-   the cancellation is a first-order error amplified by (aH/k)^2. It falls with h and
-   with later starts (0.078 at eps_i = 1, 0.025 at sqrt 6). The paper's start eps_i = 0.2
-   is out of reach of this tool.
+   delta_N; K is set exactly on the mesh, E is deposited from the corner lattice (each
+   particle shared by eight cells) and filtered, so the residual of the cancellation is a
+   first-order error amplified by the super-horizon factor. It falls with h and with
+   later starts (0.078 at eps_i = 1, 0.025 at sqrt 6, more slowly than 1/eps_i^2). The
+   paper's start eps_i = 0.2 is out of reach of this tool (outer iteration does not
+   converge).
 2. **Linear in zeta.** The dictionary uses psi_N = -(3/5) zeta and alpha = sqrt(1 + 2
    psi_N), undefined for zeta > 0.83 and far from the exact long-wavelength data
    (Psi = e^(zeta/2)) for mu ~ 0.3-1. The solve stagnates between mu = 0.3 and 0.5.
@@ -279,8 +283,25 @@ p = +-0.1 at e = 0.2; bisection from seeds 0.03, 0.045, 0.05, 0.1, 0.45 at e = 0
 five runs per e to a ratio 1.1, plus the convergence triplets (4N, dx/2, box 30/k) at
 e = 0.1 and 0.2.
 
-Cost: section 7 gives the measured cost of the scouting runs; the cost model of
-SCOPE.md section 9 is revised there.
+Cost [JUDGEMENT; unit costs 8.1e-8 card-seconds per cell and step (core run
+core-20261115-040406-1311b8e, quoted in SCOPE.md 10.7) and 1.0e-7 card-seconds per
+particle and step (cosmo/TESTLOG.md 913-915, SCOPE.md section 9); the measured cost of
+the scouting runs replaces them in section 7 when they have run]. The number of steps is
+set by the finest cell, because AthenaK takes one step for all levels, and in units of
+1/k it does not depend on eps_i (tau k to 250 t_H is 28.9 at eps_i = 1 and 30.5 at 0.2):
+- scouting mesh (64^3 root, four static levels, 1.3e6 cells, k dt = 0.0049; 2.6e5
+  particles): 0.13 card-seconds per step; 5,900 steps to 250 t_H = 0.22 card-hours;
+  3,300 steps to 50 t_H = 0.12;
+- a first line mesh (128^3 root, five static levels of 128^3 cells each, 1.3e7 cells,
+  finest k dx = 0.0049, k dt = 0.0012; a nested lattice of 1e6 particles): 1.1
+  card-seconds per step, 24,000 steps to 250 t_H = 7 card-hours per run; the SCOPE.md
+  scan of about 65 runs would cost about 470 card-hours, the top of SCOPE.md's band
+  (50-470). Static nesting pays the finest step for the whole run. With adaptive
+  refinement (request 3) the finest levels appear only during the collapse, the last
+  tenth or less of the run in conformal time for the bracketing amplitudes (the
+  Zel'dovich and top-hat epochs of section 1 at tau k = 5-23 of 28.9), so a few
+  card-hours per run and about 100-200 card-hours for the scan become plausible; the
+  scouting runs and a post-fix adaptive run measure it.
 
 ## 7. Scouting runs
 

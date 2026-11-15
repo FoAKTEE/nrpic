@@ -24,13 +24,17 @@
  "inputs": [],
  "output_dir": "/data/haiyangw/nrpic/scratch/A-emd-pbh/A-emd-pbh-20261115-153527-0576e01",
  "outputs": {
-  "dir": "scratch/A-emd-pbh/A-emd-pbh-20261115-153527-0576e01"
+  "dir": "scratch/A-emd-pbh/A-emd-pbh-20261115-153527-0576e01",
+  "sha256sums": "sha256sums.txt"
  },
  "cores": 4,
  "card_hours": 0.0,
  "parents": [],
  "registered_by": "hand (scripts/register_run.py): nrpic-run refuses the worktree while other helpers' untracked files are present",
- "status": "registered",
+ "status": "completed",
  "started": "2026-11-15T15:35:27.563488+00:00",
- "notes": ""
+ "notes": "",
+ "wall_time_s": 2521.51,
+ "exit_code": 0,
+ "ended": "2026-11-15T16:17:29.077840+00:00"
 }

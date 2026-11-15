@@ -338,3 +338,34 @@ at eps_i = 0.2 converges from psi = 1 in 78 iterations to residual 7e-12 with c_
 2.6e-8. On the constant-mean-curvature slice the existing solve reproduces the
 gradient-expansion data at the paper's start for mu <= 0.3; above, a solver with a
 variable-coefficient (Newton) step is needed.
+
+## 2026-11-15, T1 outcome (run A-emd-pbh-20261115-153527-0576e01, `figures/fig_t1_solve_change.png` looked at)
+
+c at e = 0.2, one particle per cell (n = 64 unless stated):
+
+| mu | eps_i | n, filter | c | outer change at the end | residual |
+|---|---|---|---|---|---|
+| 0.03 | 0.2 | 64, 2 + comp | 0.377 | 1.3e-4 (not converged) | 9e-12 |
+| 0.03 | 1 | 64, 2 + comp | 0.078 | 1.3e-6 | 1.6e-12 |
+| 0.03 | sqrt 6 | 64, 2 + comp | 0.025 | 2.3e-8 | 1.2e-12 |
+| 0.03 | 1 | 32, 2 + comp | 0.362 | 4.3e-6 | 3.8e-12 |
+| 0.03 | 1 | 128, 2 + comp | 0.0040 | 1.1e-7 | 7.4e-12 |
+| 0.03 | 1 | 64, none | 0.074 | 1.3e-6 | 2.4e-12 |
+| 0.5 | 0.2 | 64 | NaN | diverged | |
+| 0.5 | 1 | 64 | 0.103 | 2.3e-4 | 0.057 (stagnated) |
+| 0.5 | sqrt 6 | 64 | NaN | diverged | |
+
+Against the revised predictions (H-smooth):
+- resolution: c falls by 4.6 from 32 to 64 and by 19.6 from 64 to 128: faster than the
+  predicted h^2 (refuted as to the order, confirmed as to the direction; the deposit of
+  the corner lattice by the linear cloud and the h^4 compensated filter mix);
+- filter: 0.074 without against 0.078 with: the filter is a small part (confirmed in
+  direction, marginal); the cloud of the corner lattice carries most of the smoothing;
+- start epoch: c grows towards small eps_i but more slowly than 1/eps_i^2 (0.025, 0.078,
+  >= 0.38 unconverged); the exact 1/eps_i^2 law is refuted;
+- mu-independence at fixed eps_i could not be tested at mu = 0.5 (not solved).
+Gradient-expansion diagnostics (same runs): non-conformally-flat part
+max|gamma-tilde - delta| = 1.8e-4, 4.4e-3, 2.7e-2 at eps_i = 0.2, 1, sqrt 6 for
+mu = 0.03 (Psi - 1 = 0.0149): the expansion is valid at the paper's start only;
+transverse-traceless fraction of p_ij 0.26 per cent (mu = 0.03) and 3.9 per cent
+(mu = 0.5).
