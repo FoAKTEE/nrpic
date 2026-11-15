@@ -425,8 +425,11 @@ recommendation.
 The one-cycle check of the input (run core-20261115-155407-e41c24a) shows that the lapse
 of the table is 1 in the flat dust region (1.0000000008 at the wall tracers; the regular
 part of psi cancels the puncture term there), not psi^-2 = 0.979 as I assumed in
-entry 2. The reference lapse of the plateau therefore starts at 1: 1.107, 1.126, 1.127,
-1.124, 1.119, 1.115 at t = 5, 10, 15, 20, 25, 30 M for T = 4 M (plain 1+log: 1.174,
-1.368, 1.584, 1.820, 2.074, 2.344); proper time of the plateau 10.9, 22.1, 33.3 M at
+entry 2. The reference lapse of the plateau therefore starts at 1
+(`es_collapse_analysis.ref_plateau`, H_0 = 5.5812e-3/M): 1.098, 1.123, 1.126, 1.123,
+1.119, 1.114 at t = 5, 10, 15, 20, 25, 30 M for T = 4 M (plain 1+log: 1.178, 1.377,
+1.598, 1.838, 2.096, 2.371); proper time of the plateau 10.86, 22.11, 33.29 M at
 t = 10, 20, 30 M. The criterion (within 3 per cent, largest lapse below 1.16) is
-unchanged. The analysis takes the start value from the tracers.
+unchanged. The analysis takes the start value from the tracers. (The first commit of
+this paragraph, 30 seconds earlier, carried numbers typed before the script had printed
+them; these are the printed ones.)
