@@ -312,7 +312,7 @@ Pending in this package: A12 (U4) on processors (run E-20261115-170727-d15df12 c
 with U4 until about 19:40) and on the card (run E-20261115-180526-6b68c33, Slurm 4479,
 queued).
 
-## 18:50 Close of the package (helper)
+## 18:48 Close of the package (helper)
 
 Done and tested: the estimators (`sfa.py`, 15 synthetic tests, real-output check against
 the code's history), the base case on the card (U1-U3, U5a/b, U6-U8) and U9/A14, the
