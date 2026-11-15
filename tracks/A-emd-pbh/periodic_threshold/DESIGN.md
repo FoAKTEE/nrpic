@@ -14,7 +14,8 @@ Summary.
 2. The repository's only tool for such data (`cosmo/ic/make_field.py`, linear
    Newtonian-gauge dictionary plus a nonlinear constraint solve) builds them for
    mu <= 0.3 at a start k/(a_i H_i) >= 1, with a first-order error of 8 per cent in the
-   conformal factor at 64^3 that falls as h^2; it fails at the paper's start (k/aH = 1/5)
+   conformal factor at 64^3 that falls fast with resolution (0.4 per cent at 128^3); it
+   fails at the paper's start (k/aH = 1/5)
    and at mu = 0.5. On the constant-mean-curvature slice of the paper the same solver
    reproduces the gradient-expansion data at the paper's start to 3e-5 (mu = 0.03) and
    2.6e-8 (mu = 0.3, no filter), but diverges at mu = 0.5. The line needs core's phase-1
