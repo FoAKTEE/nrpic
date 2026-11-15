@@ -1,0 +1,38 @@
+{
+ "schema": "nrpic-run-manifest/1 (by hand)",
+ "run_id": "C-sidm-20261115-131130-3077a99",
+ "owner": "C-sidm",
+ "package": "review (lead)",
+ "kind": "scouting",
+ "purpose": "lead review: independent cross-checks X1-X5 of the helper packages (rate closed form, three equilibrium solvers, Kn definition, FEM onset)",
+ "command": [
+  "python3",
+  "tracks/C-sidm/review/crosscheck.py"
+ ],
+ "cwd": "/data/haiyangw/nrpic/wt/C-sidm",
+ "commit": "3077a99e1a87c2a933d8638a426987edd5c036c5",
+ "inputs": {
+  "tracks/C-sidm/review/crosscheck.py": "78d7b46d258903f846cddcab72cc4d3e30fed3ff23f060db5b4df07f54e7cc82"
+ },
+ "output_dir": "/data/haiyangw/nrpic/scratch/C-sidm/C-sidm-20261115-131130-3077a99",
+ "outputs": {
+  "dir": "/data/haiyangw/nrpic/scratch/C-sidm/C-sidm-20261115-131130-3077a99"
+ },
+ "cores": 4,
+ "card_hours": 0.0,
+ "notes": "",
+ "started_utc": "2026-11-15T13:11:30.787710+00:00",
+ "status": "completed",
+ "wall_time_s": 21.6,
+ "exit_status": 0,
+ "finished_utc": "2026-11-15T13:11:52.344289+00:00",
+ "outputs_sha256": {
+  "crosscheck.json": "cba2c55a5fffa74778246d0418c53526bbef82835eb4ae3b734f59242bf1da25",
+  "fig_review_onset.pdf": "c92b33f7c36169b04feb28201a703bd6ca15cab495b27ea503ba7e8e6332734b",
+  "fig_review_onset.png": "8edf1eaf1f4ffb341cfdd6c063108bb64d638d81697422aa25e139c7cc35ef54",
+  "fig_review_rate.pdf": "e92c77dad7c6c0f64314766fa806d60b9382a1c24024d790aa40886ab044845c",
+  "fig_review_rate.png": "cf4615e0352d9eef17c873e1a070a9a5b1d277363fd78994381c3a3b312ea2a6",
+  "fig_review_tmb.pdf": "c85e6fdf06c295dfb4f9c00e23a0eaccec36d861c0303abc830a33ea63792316",
+  "fig_review_tmb.png": "689b5fd3cbc5fac0e959b1502217e498d7a0218af14292479acf3309e82cb49a"
+ }
+}
