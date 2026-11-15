@@ -333,3 +333,43 @@ to four digits, 2.253e-5, which checks reader and mask):
    card runs must stay near 2500. [VERIFIED: resident size seen with ps while they ran]
  Figure looked at: `figs/triple_static.png` (code on the closed form outside the
  punctures; the plain sum barely below the uncorrected curve at the light holes).
+
+### Revised set-up and predictions for tests 2 and 3 (written before these runs)
+
+Cost forces smaller runs than first planned (see the first attempt of 1b). Block limit
+2400 in both (card memory).
+
+**2. Two punctures** (`problems/puncture/by_binary.athinput`): m = 0.5 each at
+x = +-5, P = +-0.0791 along y, `approx` with the background factor (Lambda = 1.025),
+finest cells 1/16 = m/8 within 0.9 of each tracker, to t = 30.
+ - Mean of the two tracker positions within 1e-3 of the origin.
+ - Each puncture starts along its momentum (+y at x = +5); the line joining them turns
+   counter-clockwise by between 0.2 and 1.0 rad at t = 30 (Newtonian rate 0.0316 per M,
+   less the slow rise of the tracker speed seen in the reference run of 1b).
+ - Tracker speeds at t = 30 between 0.5 and 1.1 of P/m = 0.158.
+ - Coordinate separation within 10 +- 1.
+ - Two horizons from the first search, masses between 0.510 and 0.520 (Brill-Lindquist
+   horizon mass m (1 + m'/(2d)) = 0.5125 [BACKGROUND] plus P^2/(8m) = 0.0016), constant
+   to one percent.
+ - Block count below 2400.
+ Refuted by a drifting centre, clockwise turning, a separation outside [9, 11], or a
+ missing horizon.
+
+**3. Three black holes** (`problems/puncture/by_triple.athinput`), `approx` with the
+background factor, to t = 16 (3.2 light-crossing times of the binary's separation,
+1.6 M of the heavy hole).
+ - Runs to the end, no non-finite values (history volume constant to 1e-3), block
+   count below 2400.
+ - Three horizons from the first search. Masses: light holes between 0.535 and 0.57
+   (m Lambda = 0.5385 plus kinetic terms P^2/(8m), second order: 0.545 for A, 0.559
+   for B); heavy hole between 10.1 and 10.5 (m Lambda = 10.05; ADM mass with spin to
+   second order 10.36) with the finder's default flow constant m^2 = 100; heavy
+   horizon spin S_z = 30 +- 1.
+ - Light holes move toward +x and +y (their momenta), the heavy one toward -x, -y.
+ - Hamiltonian norm of the history stays within a factor 30 of its initial value
+   8.5e-6.
+ - Junk radiation cannot be measured in 16 M at this distance; it is estimated from
+   the single-hole runs (A) and (E) of 1b: the energy fractions found there, times the
+   masses.
+ Refuted by a crash, a missing horizon (in particular the heavy one), or a norm that
+ grows without bound.

@@ -45,7 +45,7 @@ nx3       = 16
 <mesh_refinement>
 refinement          = adaptive
 num_levels          = 8
-max_nmb_per_rank    = 4096
+max_nmb_per_rank    = 2400
 ncycle_check        = 4
 refinement_interval = 8
 
