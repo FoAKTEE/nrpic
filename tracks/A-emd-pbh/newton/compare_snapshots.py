@@ -180,8 +180,8 @@ def selftest(out):
     # sampled ball: second moment of a unit ball is 1/5 up to sampling noise
     _, c0 = moments(xi, m)
     res["sampling_rel_err_axes"] = (np.sqrt(5 * c0) - 1).tolist()
-    res["snapshot_spacing_near_t1"] = float(tgrid[1:][tgrid[1:] > 0.97 * t1][0]
-                                            - tgrid[tgrid > 0.97 * t1][0])
+    near = tgrid[(tgrid >= 0.97 * t1) & (tgrid <= 1.03 * t1)]
+    res["snapshot_spacing_near_t1"] = float(np.diff(near).max())
     print(json.dumps({k: v for k, v in res.items() if k != "h_run"}, indent=1))
     return res
 
