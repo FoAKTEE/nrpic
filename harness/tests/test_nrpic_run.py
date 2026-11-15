@@ -61,8 +61,12 @@ def main():
     polluted = dict(F.H.boot_env(), POLLUTED="yes", OMP_NUM_THREADS="99", PYTHONPATH="/nonexistent",
                     GIT_DIR="/nonexistent")
     t0 = time.time()
+    r = run_cmd(A, ["submit", "--kind", "scouting", "--gate", "G1", "--purpose", "no venv", "--dry-run",
+                    "--", "python3", "-c", "print(1)"])
+    c.ok(r.returncode == 1 and "nrpic-env create --no-kokkos" in r.stderr,
+         "a local python command without the worktree's .venv is refused with the fix", r.stderr)
     r = run_cmd(A, ["submit", "--kind", "scouting", "--gate", "G1", "--purpose", f"dummy {secs} s run",
-                    "--cores", "2", "--", "python3", "-c", prog], env=polluted, timeout=secs + 120)
+                    "--cores", "2", "--allow-no-venv", "--", "python3", "-c", prog], env=polluted, timeout=secs + 120)
     rid = run_id_from(r.stdout)
     c.ok(r.returncode == 0 and rid, "dummy local run registered and finished", r.stdout + r.stderr)
     m = manifest(A, "A-emd-pbh", rid)
@@ -99,6 +103,38 @@ def main():
     c.ok(r.returncode == 1 and "not clean" in r.stderr, "a dirty worktree is refused", r.stderr)
     os.remove(junk)
 
+    # 2b. helpers sharing one worktree: --package scopes the cleanliness check
+    F.commit_file(A, "tracks/A-emd-pbh/pkg/run.py", "print('pkg run')\n")
+    other = os.path.join(A, "tracks", "A-emd-pbh", "other_helper", "draft.txt")
+    os.makedirs(os.path.dirname(other), exist_ok=True)
+    open(other, "w").write("another helper's uncommitted work\n")
+    r = run_cmd(A, ["submit", "--kind", "scouting", "--gate", "G1", "--purpose", "x", "--allow-no-venv",
+                    "--dry-run", "--", "python3", "tracks/A-emd-pbh/pkg/run.py"])
+    c.ok(r.returncode == 1 and "--package DIR" in r.stderr, "another helper's untracked file: refused, with the --package hint",
+         r.stderr)
+    r = run_cmd(A, ["submit", "--kind", "scouting", "--gate", "G1", "--purpose", "x", "--allow-no-venv", "--dry-run",
+                    "--package", "tracks/A-emd-pbh/pkg", "--", "python3", "tracks/A-emd-pbh/pkg/run.py"])
+    dm = json.loads(r.stdout[:r.stdout.rindex("}") + 1]) if r.returncode == 0 else {}
+    c.ok(r.returncode == 0 and dm["git"]["package"] == ["tracks/A-emd-pbh/pkg"]
+         and dm["git"]["outside_package"]["count"] == 1, "with --package: accepted, the other helper's file recorded", r.stderr)
+    open(os.path.join(A, "tracks", "A-emd-pbh", "pkg", "new.py"), "w").write("x = 1\n")
+    r = run_cmd(A, ["submit", "--kind", "scouting", "--gate", "G1", "--purpose", "x", "--allow-no-venv", "--dry-run",
+                    "--package", "tracks/A-emd-pbh/pkg", "--", "python3", "tracks/A-emd-pbh/pkg/run.py"])
+    c.ok(r.returncode == 1 and "pkg/new.py" in r.stderr, "an untracked file inside the package: refused", r.stderr)
+    os.remove(os.path.join(A, "tracks", "A-emd-pbh", "pkg", "new.py"))
+    r = run_cmd(A, ["submit", "--kind", "scouting", "--gate", "G1", "--purpose", "x", "--allow-no-venv", "--dry-run",
+                    "--package", "tracks/A-emd-pbh/pkg", "--", "python3", "tracks/A-emd-pbh/other_helper/draft.txt"])
+    c.ok(r.returncode == 1 and "other_helper" in r.stderr, "an untracked input outside the package: refused", r.stderr)
+    sc = os.path.join(A, "scripts", "gpu_batch.sh")
+    orig_sc = open(sc).read()
+    open(sc, "a").write("# local edit\n")
+    r = run_cmd(A, ["submit", "--kind", "scouting", "--gate", "G1", "--purpose", "x", "--allow-no-venv", "--dry-run",
+                    "--package", "tracks/A-emd-pbh/pkg", "--", "python3", "tracks/A-emd-pbh/pkg/run.py"])
+    c.ok(r.returncode == 1 and "shared code" in r.stderr, "a modified shared script: refused even with --package", r.stderr)
+    open(sc, "w").write(orig_sc)
+    os.remove(other)
+    os.rmdir(os.path.dirname(other))
+
     # 3. budgets (decision 0006)
     deck = "tracks/kb/inputs/t.athinput"
     F.commit_file(KB, deck, "<problem>\npgen_name = fake\n")
@@ -132,7 +168,7 @@ def main():
 
     # 6. background local run
     r = run_cmd(A, ["submit", "--kind", "scouting", "--gate", "G1", "--purpose", "background",
-                    "--background", "--", "python3", "-c", "import time; time.sleep(2); print('bg')"])
+                    "--background", "--allow-no-venv", "--", "python3", "-c", "import time; time.sleep(2); print('bg')"])
     bg = run_id_from(r.stdout)
     st = run_cmd(A, ["status"]).stdout
     c.ok(r.returncode == 0 and bg and "running*" in st, "background run registered and live", r.stdout + st)
@@ -204,7 +240,94 @@ def main():
     c.ok(r.returncode == 0, "B's allotment untouched by A's runs (all 40 of 40, dry run)", r.stderr)
     st = run_cmd(A, ["budget"]).stdout
     c.ok("G1: used" in st, "budget summary lists the GPU-hours used", st)
+    c.ok(rid.startswith("A-2") and F.H.parse_run_id(rid) == ("A-emd-pbh", rid[2:17], rid[-7:]),
+         "run id <short owner>-<YYYYMMDD-HHMMSS>-<commit7> (decision 0012)", rid)
+
+    # 10. hand-written manifests of wave 1 (decision 0012): read, never fatal
+    hand_manifests(c, fx, A, used)
     return c.done()
+
+
+HAND = {
+    # B and C: no outputs.dir, status "done", card_hours at the top level
+    "A-emd-pbh-20261115-112946-b7b431d": {"run_id": "A-emd-pbh-20261115-112946-b7b431d", "command": ["x"],
+                                          "commit": "b7b431d", "output_dir": "scratch/A-emd-pbh/hand1",
+                                          "status": "done", "gate": "G1", "card_hours": 1.5, "kind": "scouting"},
+    # E: status "failed (exit 1)", outputs as a list of files
+    "A-emd-pbh-20261115-125316-dafadc4": {"run_id": "A-emd-pbh-20261115-125316-dafadc4", "status": "failed (exit 1)",
+                                          "outputs": ["a.txt", "b.txt"], "gate": "G1", "launcher": "local"},
+    # core: no status, output_directory, resources.card_hours, no gate
+    "A-20261115-031705-b7b431d": {"run_id": "A-20261115-031705-b7b431d", "output_directory": "/nonexistent/x",
+                                  "resources": {"card_hours": 0.25, "walltime_s": {"run1": 3.0, "run2": 1.5}}},
+    # D: status None, outputs a list, "running" claimed by hand (cannot be checked: never live)
+    "A-emd-pbh-20261115-042626-f3da881": {"run_id": "A-emd-pbh-20261115-042626-f3da881", "status": "running",
+                                          "outputs": [{"path": "x"}], "gate": "G1", "launcher": "batch"},
+    # F: superseded; kb: finished
+    "A-emd-pbh-20261115-045332-ae6bca8": {"run_id": "A-emd-pbh-20261115-045332-ae6bca8", "status": "superseded",
+                                          "outputs": {"files": 3}, "gate": "G1"},
+    "A-emd-pbh-20261115-112414-6bb2b7d": {"run_id": "A-emd-pbh-20261115-112414-6bb2b7d", "status": "finished",
+                                          "gate": "G1", "card_hours": 0.0},
+}
+
+
+def hand_manifests(c, fx, A, used_before):
+    rdir = os.path.join(A, "tracks", "A-emd-pbh", "runs")
+    for rid, m in HAND.items():
+        os.makedirs(os.path.join(rdir, rid), exist_ok=True)
+        json.dump(m, open(os.path.join(rdir, rid, "manifest.json"), "w"), indent=1)
+    os.makedirs(os.path.join(rdir, "A-20261115-000001-0000000"))
+    open(os.path.join(rdir, "A-20261115-000001-0000000", "manifest.json"), "w").write("{not json")
+    os.makedirs(os.path.join(rdir, "A-20261115-000002-0000000"))
+    open(os.path.join(rdir, "A-20261115-000002-0000000", "manifest.json"), "w").write("[1, 2]")
+    F.sh(["git", "-C", A, "add", "--", "tracks/A-emd-pbh/runs"])
+    F.sh(["git", "-C", A, "commit", "-q", "-m", "A(run): wave-1 manifests written by hand"])
+    for sub in (["status"], ["budget"]):
+        r = run_cmd(A, sub)
+        c.ok(r.returncode == 0 and "Traceback" not in r.stderr and "nrpic-run lint" in r.stderr,
+             f"`{sub[0]}` reads hand-written and unreadable manifests without crashing and says so", r.stdout + r.stderr)
+    st = run_cmd(A, ["status"]).stdout
+    c.ok("completedh" in st and "failedh" in st and "unknownh" in st and "supersededh" in st,
+         "status words done/finished -> completed, 'failed (exit 1)' -> failed, none -> unknown, superseded kept", st)
+    bud = run_cmd(A, ["budget"]).stdout
+    want = used_before + 1.5
+    c.ok(f"G1: used {want:.2f}" in bud and "no gate recorded: 0.25" in bud,
+         f"card_hours of hand-written manifests counted toward their gate ({want:.2f}); gate-less ones listed apart", bud)
+    r = run_cmd(A, ["submit", "--kind", "scouting", "--gate", "G1", "--purpose", "after hand manifests",
+                    "--dry-run", "--allow-no-venv", "--", "true"])
+    c.ok(r.returncode == 0 and "Traceback" not in r.stderr, "submit works beside hand-written manifests", r.stderr)
+    r = run_cmd(A, ["lint"])
+    c.ok(r.returncode == 1 and "UNREADABLE" in r.stdout and "not JSON" in r.stdout and "not a JSON object" in r.stdout
+         and "'failed (exit 1)' x1" in r.stdout and "'done' x1" in r.stdout,
+         "lint lists the unreadable manifests (exit 1) and the status words read with defaults", r.stdout)
+    r = run_cmd(A, ["finish", "A-emd-pbh-20261115-112946-b7b431d"])
+    c.ok(r.returncode == 1 and "not registered by nrpic-run" in r.stderr, "finish refuses a hand-written run", r.stderr)
+    r = run_cmd(A, ["stop", "A-emd-pbh-20261115-042626-f3da881"])
+    c.ok(r.returncode == 1 and "not registered by nrpic-run" in r.stderr, "stop refuses a hand-written run", r.stderr)
+    od = os.path.join(fx["repo"], "scratch", "A-emd-pbh", "hand1")
+    os.makedirs(od, exist_ok=True)
+    r = run_cmd(A, ["verify", "A-emd-pbh-20261115-112946-b7b431d"])
+    c.ok(r.returncode == 0 and "not re-verifiable" in r.stdout,
+         "verify of a hand-written run without sha256sums.txt: PASS with a note", r.stdout + r.stderr)
+    open(os.path.join(od, "o.txt"), "w").write("one\n")
+    F.sh(["sha256sum", "o.txt"], cwd=od)
+    open(os.path.join(od, "sha256sums.txt"), "w").write(F.sh(["sha256sum", "o.txt"], cwd=od).stdout)
+    open(os.path.join(od, "o.txt"), "a").write("changed\n")
+    r = run_cmd(A, ["verify", "A-emd-pbh-20261115-112946-b7b431d"])
+    c.ok(r.returncode == 1 and "changed output o.txt" in r.stdout,
+         "verify of a hand-written run with sha256sums.txt still catches a changed output", r.stdout)
+    # decision 0014 amends the allotments of 0006 ("To the next gate: ... A 70 ...")
+    d14 = os.path.join(fx["repo"], "coord", "DECISIONS", "0014-budgets-after-wave-1.md")
+    open(d14, "w").write("# 0014 Card-time allotments after wave 1 (amends 0006)\n\nStatus: PROVISIONAL\n\n"
+                         "Use in wave 1: core 3.4, B 0.5. To the next gate: core 40, A 70, B 40, kb 0. Order...\n")
+    F.sh(["git", "-C", fx["repo"], "add", "coord/DECISIONS"])
+    F.sh(["git", "-C", fx["repo"], "commit", "-q", "-m", "decision 0014"])
+    bud = run_cmd(A, ["budget"]).stdout
+    c.ok("owner A-emd-pbh: 70 GPU-hours" in bud and "0014-budgets-after-wave-1.md" in bud,
+         "an allotment amended by a later decision on main (0014) is the one applied", bud)
+    lst = "tracks/A-emd-pbh/inputs/batch.txt"
+    r = run_cmd(A, ["submit", "--kind", "scouting", "--gate", "G2", "--purpose", "big", "--launcher", "batch",
+                    "--list", lst, "--gpu-hours", "9", "--dry-run"])
+    c.ok(r.returncode == 0 and "above eight" in r.stderr, "a request above eight card-hours is noted (0014)", r.stderr)
 
 
 if __name__ == "__main__":
