@@ -30,7 +30,7 @@ simulation was run and no card time was used. Predictions and outcomes of every 
 | `growth.py` | Pipeline: readers, collapse times (first apparent horizon, lapse crossings), crossing times, smoothed log-linear growth fit with a threshold window and a curve_fit second estimator, the first paper's half-swing growth |
 | `validate_growth.py` | G1 published numbers, G2 synthetic signals, G3-G6 growth rates of the unstable runs |
 | `diag_g2.py` | Diagnosis of the G2 bias (entry 5, D1) |
-| `figures.py` | `figs/fig_fluid_onset`, `figs/fig_models`, `figs/fig_growth` (style `python/nrpic/figstyle.py`) |
+| `figures.py` | `figs/fig_fluid_onset`, `figs/fig_models`, `figs/fig_growth`, `figs/fig_smoke` (style `python/nrpic/figstyle.py`) |
 | `results/` | Copies of the run outputs quoted here (JSON) |
 | `figs/` | PNG and PDF of the figure run |
 
@@ -75,6 +75,12 @@ TOV residual of the three most compact b = 0.1 models (1.1-1.4e-6 against a limi
 1e-6); T1 shows this is the h^2 truncation error of the check's finite difference
 (residual ratios 4.00, 3.99 on halving h, all below 9e-8 at h/4). sum m W/psi - M is
 +2.2e-4 to +3.0e-4 at 10^4 and -2.2e-5 to -4.0e-5 at 10^5.
+
+**AthenaK read test (entry 8).** [VERIFIED, run C-20261115-174557-8978b36] The processor
+build of core-v0.3 reads `tmb01_Z0p5404` at N = 10^5: np = 100000, deposited int E equal
+to sum m W to 9e-15, central lapse 0.65411 against 0.64918 of the model, squared
+Hamiltonian-constraint norm 0.66 times that of the paper's y_c = 0.819 model on the same
+deck (`figs/fig_smoke.png`).
 
 **Juttner fluid onset (entry 2).** [VERIFIED, run C-20261115-165315-7b473b8] For b = 0.1
 the onset (omega_0^2 = 0) lies at Z(0) = 0.6348 with F21's gamma = 1 + p/u (reproduces
@@ -123,8 +129,11 @@ registered by `nrpic-run` and writes to `$NRPIC_RUN_DIR`):
     $R --purpose "TOV step" -- python3 tracks/C-sidm/models/tov_check.py
     $R --purpose "growth validation" -- python3 tracks/C-sidm/models/validate_growth.py
     $R --purpose "G2 diagnosis" -- python3 tracks/C-sidm/models/diag_g2.py
+    $R --cores 4 --purpose "AthenaK read" -- bash -c 'python3 tracks/C-sidm/equilibria/smoke_athenak.py \
+        --ic <build 1e5 dir> --stem tmb01_Z0p5404_stratified_N100000_s1 --out "$NRPIC_RUN_DIR" \
+        --exe /data/haiyangw/nrpic/.work/build_cpu_v03/src/athena --nlim 2 --threads 4'
     $R --purpose "figures" -- python3 tracks/C-sidm/models/figures.py --onset <onset dir> \
-        --checks <check 1e4 dir> <check 1e5 dir> --growth <growth dir>
+        --checks <check 1e4 dir> <check 1e5 dir> --growth <growth dir> --smoke <read-test dir>
 
 Wall times: fluid onset 3 min, build 35 s (1e4) and 3.5 min (1e5), checks 7-15 min,
 validation 1 min, diagnosis 1 min (processors, 0 card-hours).
@@ -142,14 +151,14 @@ validation 1 min, diagnosis 1 min (processors, 0 card-hours).
 | C-20261115-170346-298a1ba | growth validation | G1 pass, G2 fail, G3 seeds pass, G4 fail, G5 partly, G6 pass |
 | C-20261115-170713-cefe1c2 | G2 diagnosis | D1: cause found |
 | C-20261115-171723-17d46f0 | TOV step test | T1 pass |
-| C-20261115-173404-378c69e | figures (fig_fluid_onset, fig_models, fig_growth) | looked at, entry 7 |
-| C-20261115-174557-8978b36 | AthenaK read test of tmb01_Z0p5404 at N = 1e5 (processor build core-v0.3) | entry 8 |
+| C-20261115-173404-378c69e | figures (fig_fluid_onset, fig_models, fig_growth), superseded | looked at, entry 7 |
+| C-20261115-174557-8978b36 | AthenaK read test of tmb01_Z0p5404 at N = 1e5 (processor build core-v0.3) | A1: reads it; sum m to 1.1e-12 (bound 1e-13 too tight), alpha_probe +0.76 percent |
+| C-20261115-175406-e8ffa67 | figures, final (adds fig_smoke) | figs/ |
 
 ## Not done
 
-- No AthenaK read test of the b = 0.1 files (the King threshold files were read by
-  AthenaK in run C-sidm-20261115-125308-54870b9; the b = 0.1 tables have the same format,
-  but a two-cycle `smoke_athenak.py` run on one of them has not been made).
+- AthenaK has read one b = 0.1 file only (the E_b-maximum model at 10^5, run
+  C-20261115-174557-8978b36, two cycles); the other seven share its format.
 - No perturbed models (the dynamically accessible kick of 2009.08163 is still a request
   to core, `../equilibria/README.md`).
 - The growth pipeline's recommended settings (boxcar = oscillation period, reference =

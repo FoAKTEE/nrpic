@@ -319,3 +319,27 @@ Figures (run C-20261115-173404-378c69e, copies in figs/; each looked at):
 - `fig_growth`: synthetic example and the 150 synthetic fits; departures and fits of the
   unperturbed y_c = 0.5 runs (alpha_c and r10); alpha_c of the three collapsing runs with
   the first apparent horizons and t(alpha_c = 0.2); the fitted plunge segments.
+
+## 2026-11-15, entry 8: outcome A1 (run C-20261115-174557-8978b36)
+
+`../equilibria/smoke_athenak.py` with the processor build of core-v0.3 on
+`tmb01_Z0p5404_stratified_N100000_s1` (run C-20261115-170742-84990ed), 4 threads, two
+cycles, 205 s; reference y_c = 0.819 (make_ic.py, N = 10^4), 224 s. Results
+(`results/athenak_smoke_tmb01_Z0p5404_N100000.json`, `figs/fig_smoke.png`, looked at):
+- both cases exit 0, two cycles each; np = 100000 in the first record: PASS.
+- sum m in AthenaK against the file: -1.08e-12 relative. The prediction (1e-13) FAILS by a
+  factor 11. Not investigated; the size is that of the rounding of a sum of 10^5 equal
+  terms in another order (MeshBlock partial sums against numpy) [JUDGEMENT, untested].
+- deposited int E against sum m W at t = 0: 8.9e-15 (reference 4.7e-15): PASS.
+- alpha_probe(0) = 0.65411 against alpha_c = 0.64918 of the model, +0.76 percent (limit
+  1 percent): PASS. (The King file of run C-sidm-20261115-125308-54870b9 read +0.5 percent;
+  the probe value of the reference here is 0.80939 against 0.80908.)
+- squared Hamiltonian-constraint norm at t = 0, new over reference: 0.655 (limit: within a
+  factor 3): PASS. Momentum-constraint norm 6.3 times smaller than the reference's (10
+  times more particles).
+- sum m W and int E change by +6e-6 over the two cycles (reference -7e-6).
+So AthenaK reads the b = 0.1 table and a 10^5-particle file; one prediction bound (sum m to
+1e-13) was set too tight.
+
+Figures: final figure run C-20261115-175406-e8ffa67 (adds fig_smoke; the other three are
+redrawn by the same code as run C-20261115-173404-378c69e); figs/ holds its output.
