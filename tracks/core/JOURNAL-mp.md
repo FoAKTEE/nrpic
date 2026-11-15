@@ -373,3 +373,15 @@ background factor, to t = 16 (3.2 light-crossing times of the binary's separatio
    masses.
  Refuted by a crash, a missing horizon (in particular the heavy one), or a norm that
  grows without bound.
+
+### Prediction for the restart check (before it runs)
+
+`problems/tests/puncture_setup_restart.athinput` on processors (three levels, puncture
+with momentum and spin off the block corners, two tracers, finder every second cycle):
+eight cycles uninterrupted against cycles 5 to 8 from the restart dump of cycle 4. The
+restarted run builds tracker and finder from the parameters stored in the dump
+(`puncture_setup` is skipped on a restart) and reads the tracker position from it.
+Expected: tracker positions, horizon mass and the particle history of cycles 5 to 8
+agree to 1e-10 relative (a Z4c restart is not bitwise, scripts/README.md); the horizon
+is found in both. Refuted by a missing tracker or finder after the restart, or by
+differences above 1e-8.

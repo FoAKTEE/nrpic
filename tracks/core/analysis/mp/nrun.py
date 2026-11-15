@@ -51,6 +51,8 @@ def main():
     ap.add_argument("--input", required=True)
     ap.add_argument("--file", action="append", default=[])
     ap.add_argument("--time", default="00:30:00")
+    ap.add_argument("--restart", default=None,
+                    help="restart file: the run is started with -r instead of -i")
     ap.add_argument("args", nargs="*")
     a = ap.parse_args()
 
@@ -77,7 +79,12 @@ def main():
         inputs.append({"path": os.path.relpath(src, WT) if src.startswith(WT) else src,
                        "sha256": sha256(src)})
     inputs.append({"path": exe, "sha256": sha256(exe), "role": "executable"})
-    cmd = [exe, "-i", os.path.basename(inp), "-d", out] + a.args
+    if a.restart:
+        rst = os.path.abspath(a.restart)
+        inputs.append({"path": rst, "sha256": sha256(rst), "role": "restart file"})
+        cmd = [exe, "-r", rst, "-d", out] + a.args
+    else:
+        cmd = [exe, "-i", os.path.basename(inp), "-d", out] + a.args
     if on_card:
         # time stamps inside the allocation: the card time excludes the wait in the queue
         # and the memory of the card is sampled every 5 s into .gpumem (MiB)
