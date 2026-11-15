@@ -1,0 +1,50 @@
+{
+ "flrw_n32_cpu": {
+  "rundir": "/data/haiyangw/nrpic/runs/cosmo/flrw_n32_cpu",
+  "t_end": 2.0,
+  "a_end": 4.0,
+  "records": 65,
+  "max_rel_err_lapse": 0.07938615325111975,
+  "max_rel_err_density": 0.04178752622548365,
+  "max_rel_err_mean_K": 0.029800679400391772,
+  "max_rel_err_proper_volume": 0.04011137124708597,
+  "box_side": 3.9999999999999996
+ },
+ "flrw_n32_cpu_sd": {
+  "rundir": "/data/haiyangw/nrpic/runs/cosmo/flrw_n32_cpu_sd",
+  "t_end": 2.0,
+  "a_end": 4.0,
+  "records": 65,
+  "max_rel_err_lapse": 1.9142559093410227e-07,
+  "max_rel_err_density": 1.1185630206522745e-06,
+  "max_rel_err_mean_K": 3.7925630902435614e-07,
+  "max_rel_err_proper_volume": 1.1185612994735195e-06,
+  "box_side": 3.9999999999999996
+ },
+ "dtexp_test/ref": {
+  "rundir": "/data/haiyangw/nrpic/runs/cosmo/dtexp_test/ref",
+  "t_end": 10.0,
+  "a_end": 36.0,
+  "records": 161,
+  "max_rel_err_lapse": 4.349724452878956e-05,
+  "max_rel_err_density": 7.419073237180385e-05,
+  "max_rel_err_mean_K": 1.9115599899643954e-05,
+  "max_rel_err_proper_volume": 7.418522851421194e-05,
+  "box_side": 3.9999999999999996,
+  "Hr_max_end": 2.542554345643447e-05,
+  "Hr_mean_end": 2.542554167317536e-05
+ },
+ "dtexp_test/lim": {
+  "rundir": "/data/haiyangw/nrpic/runs/cosmo/dtexp_test/lim",
+  "t_end": 10.0,
+  "a_end": 36.0,
+  "records": 361,
+  "max_rel_err_lapse": 7.001900970138308e-08,
+  "max_rel_err_density": 1.5281577270265245e-07,
+  "max_rel_err_mean_K": 3.3654823372586407e-08,
+  "max_rel_err_proper_volume": 1.528156848840112e-07,
+  "box_side": 3.9999999999999996,
+  "Hr_max_end": 6.046351675429349e-08,
+  "Hr_mean_end": 6.046178284914818e-08
+ }
+}

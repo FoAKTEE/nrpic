@@ -1,0 +1,40 @@
+{
+ "run_id": "B-emd-gw-20261115-115414-7ffbde1",
+ "command": "OMP_NUM_THREADS=1 python3 tracks/B-emd-gw/verify_cosmo/scripts/recheck_flrw.py --out /data/haiyangw/nrpic/scratch/B-emd-gw/<run_id>",
+ "cwd": "/data/haiyangw/nrpic/wt/B-emd-gw",
+ "commit": "7ffbde109fb741daf487f13a07e586193b82b6ec",
+ "worktree_dirty": true,
+ "inputs": [
+  {
+   "path": "tracks/B-emd-gw/verify_cosmo/scripts/recheck_flrw.py",
+   "sha256": "1e9e96af30c3b75ec11f666ec8850ee299c0ba876396b7bc986a37a75373ca91"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/runs/cosmo/flrw_n32_cpu/flrw.nrpic.hst",
+   "sha256": "6369296e3d69b49b7d190e0a40495df95e44788d330b8674ea04382cda0374df"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/runs/cosmo/flrw_n32_cpu_sd/flrw.nrpic.hst",
+   "sha256": "b694dbcb98a75534acb93400456c8c94f70e23319ee41c8d6b604b2313cce95f"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/runs/cosmo/dtexp_test/ref/flrw.nrpic.hst",
+   "sha256": "e83857b4d3c8e07ac61bfa62c05be711978351e2f05e573f9347ba26a641059f"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/runs/cosmo/dtexp_test/lim/flrw.nrpic.hst",
+   "sha256": "f5cc1cc2ba42f301be92fe0f3565990f2cbe7e9afcaa8775a479865982cfcb5d"
+  }
+ ],
+ "output_dir": "/data/haiyangw/nrpic/scratch/B-emd-gw/B-emd-gw-20261115-115414-7ffbde1",
+ "purpose": "analysis: re-read the homogeneous-universe runs of cosmo/ (runs/cosmo/flrw_n32_cpu, flrw_n32_cpu_sd, dtexp_test/ref, dtexp_test/lim) against the exact matter-dominated solution, for VERIFY.md (row FLRW dust)",
+ "kind": "scouting",
+ "cores": 1,
+ "card_hours": 0.0,
+ "started_utc": "2026-11-15T11:54:14+00:00",
+ "status": "completed",
+ "package": "tracks/B-emd-gw/verify_cosmo",
+ "notes": "",
+ "finished_utc": "2026-11-15T11:54:15+00:00",
+ "wall_time_s": 3.0
+}
