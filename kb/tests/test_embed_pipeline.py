@@ -193,6 +193,21 @@ RULE_CASES = [
     ("langevin", None, "white noise", r"\langle\xi\rangle", False),
     ("tidal_radius", None, "The tidal radius of the binary", r"r_t=a\left(\frac{M}{m}\right)^{1/3}", True),
     ("tidal_radius", None, "The tidal radius is large", r"E=mc^2", False),
+    # failure modes of rules version 1 seen in the corpus sample (run kb-20261115-154013-e70f45d)
+    ("hamiltonian_constraint", None, "contributions to the Hamiltonian constraint normalised by [EQ] as",
+     r"\omega_K\equiv2K^2/3", False),
+    ("langevin", None, "when discussing stochastic inflation we fix the Lagrangian as [EQ]",
+     r"G_{\mu\nu}+\xi_{,\phi}R\Box\phi=T_{\mu\nu}", False),
+    ("tidal_radius", None, "the spread in energy at the tidal radius [EQ]", r"\Delta E=k\frac{GMm}{r_t^2}", False),
+    ("tidal_radius", "eq:RT", "the conformal Ricci tensor [EQ]", r"\tilde R_{ij}=-\frac{1}{2}\partial^2\tilde\gamma_{ij}", False),
+    ("vlasov", None, "We rewrite the Vlasov equation with the remainders [EQ] where",
+     r"\mathcal{R}_1=-\mathcal{P}\partial_{Q}f", False),
+    ("momentum_constraint", "eq:matt-energy-momentum-cons", "", r"\partial_tP_a=Q_a", False),
+    # label patterns anchored in version 3 (sample of run kb-20261115-154419-f4dfa36)
+    ("z4c", "eq:lorentz4", "", r"\Lambda=q(E+V\times B)", False),
+    ("z4c", "eq:CCZ4_K", "", "x", True),
+    ("tidal_radius", "eq:transportid4", "", r"\partial_v h=0", False),
+    ("tidal_radius", "E:rtid", "", "x", True),
 ]
 
 

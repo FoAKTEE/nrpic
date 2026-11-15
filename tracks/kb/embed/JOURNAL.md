@@ -80,3 +80,96 @@ and are truncated. Refuted by fewer than 5 chunks per second (the full set would
   represented by its vector; the 15 % chunk overlap covers part of it. Windowed pooling (mean
   of the vectors of 512-piece windows) would cover all of it at about 1.4 times the cost; not
   done unless the retrieval test shows misses traceable to truncation. [JUDGEMENT]
+
+## 2026-11-15 15:45 UTC  code and unit tests (commit e164901)
+
+- `kb/kbtool/embed_model.py` (model record, fetch with hash checks, offline loader, test
+  embedder), `embed_index.py` (recipes chunk-v1 and eq-v1, incremental embedding under the
+  writer lock, stale and orphan handling, check), `embed_search.py` (`kb search`: BM25 + cosine,
+  reciprocal-rank fusion, filters, locators through sourcemap.json), `eq_tags.py` and
+  `kb/curated/equation_tags.yaml` (nine tags of brief 12.6), `eq_search.py` (`kb eq`),
+  `embed_cli.py` (registered in `cli.py`), migration `0006_embeddings_k4.sql`.
+- `kb/tests/test_embed_pipeline.py`: 25 tests (synthetic store; incremental update, stale
+  text, re-ingest and orphans, a second model set kept, filters, FTS syntax in queries, stale
+  vectors dropped at query time, a snapshot without migration 0006 answering by text, tag rules
+  positive and negative, the real model offline). Whole suite: 151 passed (other helpers'
+  tests included). `test_cli.py` no longer lists search/embed/eq as stubs.
+
+### Prediction E3 (before the full embedding run)
+
+All non-comment chunks of kb.sqlite (43104 at the snapshot, more if the serving helper has
+ingested papers since) and all equations (54047 in kb.sqlite at 15:20 UTC) get one vector each;
+wall time 25 to 60 minutes on 12 threads; 0 rows skipped as changed unless a re-ingest runs at
+the same time; afterwards `kb embed --check --work` reports 0 missing, 0 stale, 0 orphaned.
+Truncated fraction of chunks 20-30 % (sample E2), of equations below 5 % (context of four
+sentences plus at most 400 characters of TeX). Refuted by any missing or stale row after the
+run, or a wall time above 90 minutes.
+
+### Prediction E4 (retrieval test, written before any retrieval result on the corpus)
+
+Set: `tracks/kb/embed/questions10.yaml`, ten questions in our own words with the answer
+locations of FIRST_QUESTIONS.md (FQ1-FQ4, FQ6-FQ8), six equation lookups by label. Whole
+corpus, no filter; a hit is a chunk of the right paper whose source lines overlap the locator.
+Expected: hybrid finds 8 or more of 10 in the top 10; text-only and vector-only each 6 or more;
+hybrid at least as many as the better single ranking and a higher MRR@10 than text-only.
+Equations: with `--paper`, 5 or more of 6 in the top 10 for hybrid; over the whole corpus
+fewer (several papers write the same 1+log or Gamma-driver equations). Refuted by: hybrid
+below 7 of 10, or hybrid finding fewer than either single ranking.
+
+### Prediction E5 (equation tags, before `kb eq --apply-tags` on the corpus)
+
+Each of vlasov, geodesic, hamiltonian_constraint, momentum_constraint, z4c and deposition tags
+at least 20 equations, compaction_function, langevin and tidal_radius at least 5; the labelled
+equations of 2611.12831 get: eq:vlasov -> vlasov, eq:first-order-shape -> deposition,
+eq:z4-einstein -> z4c, eq:plummer-hamiltonian -> hamiltonian_constraint. Precision on a random
+sample of 10 tagged equations per tag (judged by me reading context and TeX locally) at least
+7 of 10 for every tag. Refuted by a tag below its count, a missed 2611.12831 label, or a sampled
+precision below 7/10.
+
+### Outcome E5 (run kb-20261115-154013-e70f45d, rules version 1, kb.sqlite with 54047 equations)
+
+- Counts hold: vlasov 255, geodesic 169, hamiltonian_constraint 521, momentum_constraint 500,
+  z4c 89, deposition 110, compaction_function 92, langevin 263, tidal_radius 43 (papers: 65,
+  74, 157, 142, 16, 34, 24, 42, 25). The four labelled equations of 2611.12831 get the expected
+  tags. [VERIFIED, `counts.json` of the run]
+- Precision as predicted is REFUTED for five of nine tags. My reading of the sample of 10 per
+  tag (`sample_for_reading.txt` of the run, scratch only): geodesic 8/10, z4c 10/10,
+  deposition 8/10, compaction_function 10/10; vlasov 5/10, hamiltonian_constraint 4/10,
+  momentum_constraint 4/10, langevin 5/10, tidal_radius 1/10. [JUDGEMENT: correctness judged by
+  reading]
+- Failure modes: a context clause fires when the phrase occurs anywhere in four sentences, so
+  definitions and estimates next to the named equation are tagged (normalisations, energy
+  densities, Christoffel symbols, noise correlators, integral estimates); one vlasov pattern
+  (`\mathcal{L}...[^=]*...f`) matched across a whole formula; label patterns met unrelated
+  labels (`eq:RT` of a Ricci tensor for tidal_radius, `...-momentum-cons` of matter
+  conservation for momentum_constraint); xi as a Gauss-Bonnet coupling for langevin; uses of
+  r_t for tidal_radius.
+- Rules version 2 (`kb/curated/equation_tags.yaml`): new fields `before`/`after` (the 250
+  characters of context next to the equation) and `not_before`; the five tags now need the
+  phrase just before the equation plus structural TeX (an equation with "=", no definition sign,
+  no time derivative for the constraints; a derivative of f and "= 0" or a collision term for
+  vlasov; noise symbol, time derivative and no correlator for langevin; "r_t =" at the start
+  for tidal_radius). Six of the failure modes are now regression cases in
+  `test_embed_pipeline.py::test_tag_rules` (31 tests in the file pass).
+
+### Prediction E5b (rules version 2, a fresh sample with seed 2, before it is drawn)
+
+Every tag at 7/10 or better on a new random sample; counts of the five revised tags fall
+(vlasov 60-200, constraints 50-300 each, langevin 20-150, tidal_radius 5-30); the four
+2611.12831 checks still hold. Refuted by any tag below 7/10 on the new sample.
+
+### Outcome E5b (run kb-20261115-154419-f4dfa36, rules version 2, seed 2)
+
+- Holds. Counts: vlasov 151, geodesic 169, hamiltonian_constraint 209, momentum_constraint
+  176, z4c 89, deposition 110, compaction_function 92, langevin 133, tidal_radius 21 (all inside
+  the predicted ranges); the four 2611.12831 checks hold. My reading of the fresh sample:
+  vlasov 7/10, geodesic 7/10, hamiltonian_constraint 9/10, momentum_constraint 7/10, z4c 9/10,
+  deposition 9/10, compaction_function 10/10, langevin 8/10, tidal_radius 8/10. [JUDGEMENT:
+  judged by reading]
+- Remaining false positives seen: definitions of moments or source terms next to a Vlasov or
+  deposition passage, Christoffel symbols and integrated solutions under geodesic labels, a
+  gauge condition and a velocity solution near "momentum constraint", a noise identity and an
+  action for langevin; two label patterns matched inside unrelated labels (`eq:lorentz4` for
+  z4c, `eq:transportid4` for tidal_radius). Version 3 anchors those two label patterns (four
+  more regression cases; 35 tests in the file pass). Version 3 was not re-sampled: it can only
+  remove tags of labels that contain the two strings inside another word.

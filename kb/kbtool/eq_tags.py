@@ -18,7 +18,8 @@ from .lock import writer_lock
 from .paths import KB_DIR
 
 RULES = os.path.join(KB_DIR, "curated", "equation_tags.yaml")
-FIELDS = ("label", "context", "tex", "not_label", "not_context", "not_tex")
+FIELDS = ("label", "context", "before", "after", "tex", "not_label", "not_context", "not_before", "not_tex")
+NEAR = 250            # characters of context on each side of the [EQ] marker that `before`/`after` see
 
 
 def load_rules(path=None):
@@ -50,6 +51,12 @@ def load_rules(path=None):
 
 def _field(f, label, context, tex):
     base = f[4:] if f.startswith("not_") else f
+    if base in ("before", "after"):
+        ctx = context or ""
+        if "[EQ]" not in ctx:
+            return ctx
+        pre, post = ctx.split("[EQ]", 1)
+        return pre[-NEAR:] if base == "before" else post[:NEAR]
     return {"label": label, "context": context, "tex": tex}[base] or ""
 
 
