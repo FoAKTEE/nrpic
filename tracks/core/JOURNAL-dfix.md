@@ -578,3 +578,17 @@ processors, to rounding. Not run on a card: T5 (pair horizon; host code, but the
 interpolates on the card), the memory measurement at 2700 slots, the block-size
 benchmark, and the 250 M acceptance run of `horizon_calib.athinput` (Track D's own
 acceptance test, decision 0010; it needs about 25 minutes of a card).
+
+### Repeats of T1, T2, T3 with the published executables (written before the comparison)
+
+T1 (run core-20261115-154303-da69f6a), T2 (core-20261115-154901-d8ad7ec) and T3
+(core-20261115-160245-727e96a) ran with earlier builds of this branch (sha256 of the
+processor executable cd48eebf, 48f26e05, 45f399b2); dfix-1 repeated them with the
+published one (17ee5e28; runs core-20261115-163155-0f014b4, -163203-0f014b4,
+-163327-0f014b4) without recording the comparison. Between those builds only later
+items were added (accretion, external gravity, pair horizon), each inactive in the
+earlier inputs. Prediction: every output file of T1 and T3 present in both runs is
+identical byte for byte; for T2 the files of the deterministic cases (u, c) are
+identical and the wall-clock cases (w) differ, because their stop time is the wall
+clock's (stopped at 68.4 and 26.7 M in the first run, at 11.0 and 26.9 M in the repeat).
+Refuted if any file of T1, T3 or of the T2 cases u, c differs.
