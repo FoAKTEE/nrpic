@@ -10,7 +10,9 @@ Mb_min to Mb_max; seed of mass 1 at the centre. Shell k feels
     a_k = -(1 + m(<k) + dm/2) r_k / (r_k^2 + s^2)^(3/2)
 (Plummer softening s for everything), m(<k) from the radial order; radial orbits pass
 through the centre (reflection r -> -r, v -> -v). Kick-drift-kick with a global step
-eta * min_k sqrt((r_k^2 + s^2)^(3/2) / M_enc,k). Dust outside the last shell does not act
+eta * min_k min[sqrt((r_k^2 + s^2)^(3/2) / M_enc,k), sqrt(r_k^2 + s^2)/|v_k|] (the second
+term, --vstep 1, added after the first registered run: without it a shell crossed the
+softened core in about two steps). Dust outside the last shell does not act
 (Birkhoff). The density at a_f is the time average of the shells' mass over the last
 fraction `avg` of the run in log bins, compared with the turnaround radius r_ta(a_f)
 of the closed form (v3_turnaround_capture.py) and fitted for its slope.
@@ -56,6 +58,8 @@ def main():
     ap.add_argument("--eta", type=float, default=0.05)
     ap.add_argument("--Mbmin", type=float, default=0.3)
     ap.add_argument("--avg", type=float, default=0.1)
+    ap.add_argument("--vstep", type=int, default=1,
+                    help="1: also limit the step by eta * sqrt(r^2 + s^2) / |v| (crossing of the core)")
     a = ap.parse_args()
     os.makedirs(a.out, exist_ok=True)
     eps, N, s2 = a.eps, a.N, a.soft ** 2
@@ -91,6 +95,8 @@ def main():
     t0 = time.time()
     while t < tf:
         dt = a.eta * float(np.min(np.sqrt(rr2 ** 1.5 / menc)))
+        if a.vstep:
+            dt = min(dt, a.eta * float(np.min(np.sqrt(rr2) / (np.abs(v) + 1e-30))))
         dt = min(dt, tf - t)
         v += 0.5 * dt * acc
         r += dt * v

@@ -171,3 +171,33 @@ shell of 448 blocks instead of 56. The cost model of SCOPE.md 7 adds 56 blocks p
 (456 and 512 blocks). Registered rerun v9_mesh.sh; prediction: the same counts (the tree
 build is deterministic), and with |x| < 2 M at level 8 (horizon on the finest level for
 500 M) more than 4712 blocks. Refuted by other counts.
+
+## Entry 8: C4 outcome so far, and a new prediction
+
+C4 (run D-20261115-171733-633d422, variants N4000/N2000 at a_f/a_i = 100 finished):
+enclosed-mass slope -2.42, -2.43, -2.38 (N = 4000) and -2.40, -2.38, -2.32 (N = 2000) over
+0.03-0.3, 0.05-0.3, 0.1-0.4 r_ta; the density-bin fits scatter from -1.7 to -3.1
+(caustics). My prediction (-2.25 +- 0.1, refuted outside +-0.15) FAILED for these ranges.
+Not yet a contradiction of the track: the track's own self-similar solution (run
+D-bh-dress-20261115-123813-97afeea, selfsimilar.txt; rerun D-20261115-171818-a5aefe8
+reproduces it exactly) has d ln m/d ln lambda = 0.705 over 3e-3..3e-2 and 0.741 over
+1e-4..1e-3, and from its printed m(0.03) = 0.136, m(0.3) = 0.576 a mean slope 0.627, i.e.
+rho ~ r^-2.37 over 0.03-0.3: -9/4 is the asymptote for lambda << 1e-2, not the slope where
+my prediction looked. My prediction used the wrong range.
+New prediction (before the comparison script runs): my shell-code m(lambda) = M(<lambda
+r_ta)/M_ta at a_f/a_i = 100 and 300 agrees with the track's self-similar m(lambda) to within
+5 percent for 0.02 < lambda < 0.5; refuted by a deviation above 10 percent there.
+
+## Entry 9: C4 with a velocity step limit; prediction for the second registered run
+
+Debug runs (scratch/tmp/v4v, unregistered) with the step also limited by
+eta sqrt(r^2 + s^2)/|v|: median deviation of my m(lambda) from the track's self-similar
+m(lambda) over 0.02 < lambda < 0.5 is -32, -23, -14 percent for N = 2000, 4000, 8000
+(eta = 0.05) and -19 percent for N = 4000 at eta = 0.0125: it shrinks with N (discreteness
+heating of the shells: 7, 3, 1 percent of the turned-around dust sits outside r_ta at
+N = 2000, 4000, 8000) and only weakly with the step. The entry-8 prediction (5 percent)
+FAILED for N <= 8000. Enclosed-mass slopes over 0.03-0.4 r_ta: -2.32 ... -2.44 in all
+runs, against -2.37 of the self-similar solution there.
+Prediction for the registered run v4_driver2.sh (same code, five variants in parallel):
+the debug numbers are reproduced exactly (deterministic), and N = 16000 has a median
+deviation below 10 percent in magnitude; refuted if N = 16000 is not closer than N = 8000.
