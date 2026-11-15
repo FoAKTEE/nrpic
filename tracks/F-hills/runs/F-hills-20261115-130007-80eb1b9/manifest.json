@@ -1,0 +1,50 @@
+{
+ "run_id": "F-hills-20261115-130007-80eb1b9",
+ "track": "F-hills",
+ "package": "geodesic_binary (F-pre-2)",
+ "purpose": "T1/T1b metric checks and flat-space binary (HRNA two masses, Newton)",
+ "kind": "scouting",
+ "command": [
+  "/data/haiyangw/nrpic/scratch/F-hills/venv-gb/bin/python",
+  "-I",
+  "tracks/F-hills/geodesic_binary/tests/t1_metric_checks.py",
+  "/data/haiyangw/nrpic/scratch/F-hills/F-hills-20261115-130007-80eb1b9"
+ ],
+ "cwd": "/data/haiyangw/nrpic/wt/F-hills",
+ "git": {
+  "sha": "80eb1b9e5ead354fcf1b0f977726a5d4e967dffb",
+  "branch": "track/F-hills",
+  "dirty_package": false
+ },
+ "inputs": [
+  {
+   "path": "tracks/F-hills/geodesic_binary/hrna.py",
+   "sha256": "a9d98682bde83f1f412681f07ec30f760f2f1f14a49fe25e4ec7a39643ff3b91"
+  },
+  {
+   "path": "tracks/F-hills/geodesic_binary/tests/t1_metric_checks.py",
+   "sha256": "ff3fd6828ee19c95a7b9d336ce80601632b349391efdadb73b877183c47fa5c4"
+  }
+ ],
+ "parents": [],
+ "resources": {
+  "cores": 1,
+  "gpus": 0,
+  "card_hours": 0.0,
+  "core_hours": 0.0005
+ },
+ "outputs": {
+  "dir": "scratch/F-hills/F-hills-20261115-130007-80eb1b9",
+  "sha256": {
+   "stdout.txt": "3ee7b076d1d18caba13de6fccd77896f08ea6509f530344538a2cbc48dca2815",
+   "t1_flat_binary.pdf": "7dec5f0745383ed1a3557b12a7ed97305379c6aa5ba3f9ab56dba4f2b049e281",
+   "t1_flat_binary.png": "f4e43cf1596451f281ec901936e1e9232a0d986d470843a76e31b46618f9affd",
+   "t1_metric_checks.json": "99a876a35d974351ba16254589acdfe1abd6c8b4d275349288fc465b90a4bad0"
+  }
+ },
+ "status": "completed",
+ "started": "2026-11-15T13:00:07+00:00",
+ "exit_code": 0,
+ "ended": "2026-11-15T13:00:09+00:00",
+ "wall_time_s": 1.8
+}

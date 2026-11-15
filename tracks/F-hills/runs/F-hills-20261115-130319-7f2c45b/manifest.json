@@ -1,0 +1,55 @@
+{
+ "run_id": "F-hills-20261115-130319-7f2c45b",
+ "track": "F-hills",
+ "package": "geodesic_binary (F-pre-2)",
+ "purpose": "S0 timing scout: 2 betas x 40 phases, both laws and senses",
+ "kind": "scouting",
+ "command": [
+  "/data/haiyangw/nrpic/scratch/F-hills/venv-gb/bin/python",
+  "-I",
+  "tracks/F-hills/geodesic_binary/scan.py",
+  "--out",
+  "/data/haiyangw/nrpic/scratch/F-hills/F-hills-20261115-130319-7f2c45b/s0.npz",
+  "--betas",
+  "3,8",
+  "--nphi",
+  "40",
+  "--workers",
+  "8"
+ ],
+ "cwd": "/data/haiyangw/nrpic/wt/F-hills",
+ "git": {
+  "sha": "7f2c45b887d51385326ef8ef4ba5a927c7845095",
+  "branch": "track/F-hills",
+  "dirty_package": false
+ },
+ "inputs": [
+  {
+   "path": "tracks/F-hills/geodesic_binary/hrna.py",
+   "sha256": "6e01f027ef035082ae67c9e0b84914e3488dc9be615b7e8d828aa73c942dbfb8"
+  },
+  {
+   "path": "tracks/F-hills/geodesic_binary/scan.py",
+   "sha256": "9006aa0acba4a59336be5ec6f18890a3de139eaf2d1e04196b752f08ec947b47"
+  }
+ ],
+ "parents": [],
+ "resources": {
+  "cores": 8,
+  "gpus": 0,
+  "card_hours": 0.0,
+  "core_hours": 0.0246
+ },
+ "outputs": {
+  "dir": "scratch/F-hills/F-hills-20261115-130319-7f2c45b",
+  "sha256": {
+   "s0.npz": "74ac00c86374915fc664f06dd1e040122d025feb3547ca161159ec6cabd9c503",
+   "stdout.txt": "202ad5bc2e81a56fdc4214697fe588516d7d135efceef9a38e2744ac584c4a6b"
+  }
+ },
+ "status": "completed",
+ "started": "2026-11-15T13:03:19+00:00",
+ "exit_code": 0,
+ "ended": "2026-11-15T13:03:31+00:00",
+ "wall_time_s": 11.1
+}

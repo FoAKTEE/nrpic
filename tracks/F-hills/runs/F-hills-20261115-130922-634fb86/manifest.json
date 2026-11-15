@@ -1,0 +1,61 @@
+{
+ "run_id": "F-hills-20261115-130922-634fb86",
+ "track": "F-hills",
+ "package": "geodesic_binary (F-pre-2)",
+ "purpose": "S3 HRNA coordinate dependence: Kerr-Schild a=0 vs Schwarzschild (S1), beta 3,5,8,10, 400 phases",
+ "kind": "production",
+ "command": [
+  "/data/haiyangw/nrpic/scratch/F-hills/venv-gb/bin/python",
+  "-I",
+  "tracks/F-hills/geodesic_binary/scan.py",
+  "--out",
+  "/data/haiyangw/nrpic/scratch/F-hills/F-hills-20261115-130922-634fb86/s3.npz",
+  "--laws",
+  "hrna",
+  "--coords",
+  "cks",
+  "--spin",
+  "0",
+  "--betas",
+  "3,5,8,10",
+  "--nphi",
+  "400",
+  "--workers",
+  "6"
+ ],
+ "cwd": "/data/haiyangw/nrpic/wt/F-hills",
+ "git": {
+  "sha": "634fb86b5cc62950a82ee6b55db024d7ab978a2e",
+  "branch": "track/F-hills",
+  "dirty_package": false
+ },
+ "inputs": [
+  {
+   "path": "tracks/F-hills/geodesic_binary/hrna.py",
+   "sha256": "ea521fc08a0f70ff67aceb965336330e72b0c9e88daf5873403c6c49e04da966"
+  },
+  {
+   "path": "tracks/F-hills/geodesic_binary/scan.py",
+   "sha256": "6107fcdaa6c8705bce20f432510219ff4ca9becc274c2b21eed108812fab8e68"
+  }
+ ],
+ "parents": [],
+ "resources": {
+  "cores": 6,
+  "gpus": 0,
+  "card_hours": 0.0,
+  "core_hours": 1.0081
+ },
+ "outputs": {
+  "dir": "scratch/F-hills/F-hills-20261115-130922-634fb86",
+  "sha256": {
+   "s3.npz": "fa96f49196c1bd8d490f5867869c2bbbc05056abf2adc59f0a879674f9434af2",
+   "stdout.txt": "5af11b1d6d6f55d9cb757ea75487184955922c91fcb47bc147385ceca4d27465"
+  }
+ },
+ "status": "completed",
+ "started": "2026-11-15T13:09:22+00:00",
+ "exit_code": 0,
+ "ended": "2026-11-15T13:19:27+00:00",
+ "wall_time_s": 604.9
+}

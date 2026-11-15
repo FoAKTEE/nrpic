@@ -1,0 +1,51 @@
+{
+ "run_id": "F-hills-20261115-130058-00c6bf4",
+ "track": "F-hills",
+ "package": "geodesic_binary (F-pre-2)",
+ "purpose": "T3 time dilation of a free-falling Hooke oscillator under HRNA (2404 appendix B)",
+ "kind": "scouting",
+ "command": [
+  "/data/haiyangw/nrpic/scratch/F-hills/venv-gb/bin/python",
+  "-I",
+  "tracks/F-hills/geodesic_binary/tests/t3_time_dilation.py",
+  "/data/haiyangw/nrpic/scratch/F-hills/F-hills-20261115-130058-00c6bf4"
+ ],
+ "cwd": "/data/haiyangw/nrpic/wt/F-hills",
+ "git": {
+  "sha": "00c6bf41a1425856eea95a8dc8b73ff383f11527",
+  "branch": "track/F-hills",
+  "dirty_package": false
+ },
+ "inputs": [
+  {
+   "path": "tracks/F-hills/geodesic_binary/hrna.py",
+   "sha256": "a9d98682bde83f1f412681f07ec30f760f2f1f14a49fe25e4ec7a39643ff3b91"
+  },
+  {
+   "path": "tracks/F-hills/geodesic_binary/tests/t3_time_dilation.py",
+   "sha256": "6344ecf04ede32f869d2adffe08fb137fc4ebf7c784f88ebb36e51ae8f69134e"
+  }
+ ],
+ "parents": [],
+ "resources": {
+  "cores": 1,
+  "gpus": 0,
+  "card_hours": 0.0,
+  "core_hours": 0.0018
+ },
+ "outputs": {
+  "dir": "scratch/F-hills/F-hills-20261115-130058-00c6bf4",
+  "sha256": {
+   "stdout.txt": "7e2b0e398a064b43dde4a990005e3563f6a44497710a580f53c9d9376514c4aa",
+   "t3_time_dilation.json": "14e4fa2123236bc7dc3480e73ab4e189550222023acd4455c3a58858d147a0cc",
+   "t3_time_dilation.npz": "040479d87497f17555178916c3877675bf19c2c240756a750cfbb4eb4ac683f0",
+   "t3_time_dilation.pdf": "f023f4971988fc63aac50189a0273a757983e901a1c34d2be3337ae5bca646a2",
+   "t3_time_dilation.png": "2846ecf91fc21a46a7bf33d76bd3ef2e896e997f904f9756432916351568feda"
+  }
+ },
+ "status": "completed",
+ "started": "2026-11-15T13:00:58+00:00",
+ "exit_code": 0,
+ "ended": "2026-11-15T13:01:04+00:00",
+ "wall_time_s": 6.3
+}

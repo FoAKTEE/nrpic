@@ -1,0 +1,60 @@
+{
+ "run_id": "F-hills-20261115-130724-982aba0",
+ "track": "F-hills",
+ "package": "geodesic_binary (F-pre-2)",
+ "purpose": "P7 single HRNA encounters printed in 2404 (Figs 1, 3-5)",
+ "kind": "scouting",
+ "command": [
+  "/data/haiyangw/nrpic/scratch/F-hills/venv-gb/bin/python",
+  "-I",
+  "tracks/F-hills/geodesic_binary/examples.py",
+  "/data/haiyangw/nrpic/scratch/F-hills/F-hills-20261115-130724-982aba0"
+ ],
+ "cwd": "/data/haiyangw/nrpic/wt/F-hills",
+ "git": {
+  "sha": "982aba07a2ed22b8a9615e8b389b4c12532faeb6",
+  "branch": "track/F-hills",
+  "dirty_package": false
+ },
+ "inputs": [
+  {
+   "path": "tracks/F-hills/geodesic_binary/hrna.py",
+   "sha256": "ea521fc08a0f70ff67aceb965336330e72b0c9e88daf5873403c6c49e04da966"
+  },
+  {
+   "path": "tracks/F-hills/geodesic_binary/examples.py",
+   "sha256": "d32b5438c11fac7d694acb9b3c068611252a85e17739170fdf6a296d8d0fef31"
+  }
+ ],
+ "parents": [],
+ "resources": {
+  "cores": 1,
+  "gpus": 0,
+  "card_hours": 0.0,
+  "core_hours": 0.0068
+ },
+ "outputs": {
+  "dir": "scratch/F-hills/F-hills-20261115-130724-982aba0",
+  "sha256": {
+   "ex_b5_pro_1.41.pdf": "a1c30c8b09ad7d1d256afdd9b02c443dcdc8a3935f9947848e385bab1dff8a35",
+   "ex_b5_pro_1.41.png": "4349d09a9d3e2be54c2fd8b98c2aab79a9790c975aa719814ab49d198ceb2b41",
+   "ex_b5_retro_1.57.pdf": "7403f40564dc8998395c158c5a34f988648d3301457f5618aaf03694b9c41fa6",
+   "ex_b5_retro_1.57.png": "d9f619182b38ad061f6c8559cfa737e4f31af357798d31b6db6b12a35bbcc16d",
+   "ex_b5_retro_2.04.pdf": "a2e9a7afe143acee685a5c79b29cc8b200e01cbdd4fa75082acf38266047bae7",
+   "ex_b5_retro_2.04.png": "7b301eda7dd8102b59ede055012af9afc5d9939b81b615e01fba7d7b8f3246f9",
+   "ex_b8_retro_r10_0.2.pdf": "293e19cbe96b993a33431c39827c6ca5e07471f92e908f9629cc1e055f8042fc",
+   "ex_b8_retro_r10_0.2.png": "0d43416ead58e02bae834e9c9a189347cd6181944c4840055a089f8797fa9f10",
+   "ex_b8_retro_r10_0.3.pdf": "96fcf3d213868b31b877153fcf91d22a3e0364bcacd471e00312a05470f68739",
+   "ex_b8_retro_r10_0.3.png": "a654f354f406f97c058a76a74d1ec3c5f40bf57311095804806b9c72b6cd8303",
+   "ex_b8_retro_r10_0.5.pdf": "8e2e0322258d0f9bf89803c4474e0178df24d228037bafb1f408095a8421328c",
+   "ex_b8_retro_r10_0.5.png": "1c502e81c1977ad5c770698961f24bcfd2dc30745a3877b16940ac09d7b42a53",
+   "examples.json": "29c797b36b78106338e31af0570a9a7037b0ee8c92a17800894cd5c19a1da508",
+   "stdout.txt": "ad723944340850c94342e1714e8caf071acaa8b53f431b1b34ebfca4deb74c2f"
+  }
+ },
+ "status": "completed",
+ "started": "2026-11-15T13:07:24+00:00",
+ "exit_code": 0,
+ "ended": "2026-11-15T13:07:49+00:00",
+ "wall_time_s": 24.5
+}
