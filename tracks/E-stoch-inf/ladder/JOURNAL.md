@@ -235,3 +235,44 @@ about eps1 R, i.e. 5e-3 relative. Outcome, run E-20261115-174214-74becdd: max D_
 Confirmed: the evolution satisfies the corrected extraction of SPEC 9 E6 (to about 2
 percent of the factor), which can be relabelled [VERIFIED by run] (a request to the lead,
 who owns SPEC).
+
+## Entry 5, 2026-11-15 18:55Z: the N = 64 rung on processors (hedge), A5 from 32 to 64
+
+Runs: E-20261115-173719-e810503 (L64p, L64m to t = 4.5, 69 min serial each, 22.5 s per
+step, 1.16e4 zone-cycles/s); analysis E-20261115-184737-92c4fa1 (32 and 64 together;
+figures there under `fig/`, copied to `fig/proc32_64/`).
+
+Prediction of entry 2 (odd part of H at 64 smaller by 2^5.3-2^6 during the entry; even
+part equal within 10 percent where it dominates) against the outcome:
+- Odd part of H, order 32 -> 64 on common times (log-linear interpolation of the 64 run to
+  the dump times of the 32 run): 5.64, 5.60, 5.54, 5.54, 5.55 at t = 1.5, 2.0, 2.5, 3.0,
+  3.5 (the entry and its tail); M: 5.91, 5.64, 5.55, 5.56, 5.57. Confirmed, and inside the
+  A5 band 4-6. Core measured 5.5-5.8 on its own runs.
+- Before the entry of the upper shells the odd part is small (5e-13 of <[H]> at N = 32,
+  3.7e-14 at N = 64) and converges more slowly: H 3.77 and 4.20 at t = 0.5 and 1.0, M 3.10
+  and 3.61. Not predicted. [JUDGEMENT, not tested] the time integration at a fixed Courant
+  factor contributes an odd part of order 4 in 1/N (dt scales with h), and a part that
+  converges at third order (M) has not been identified; the N = 128 rung shows whether
+  these early orders rise or stay. Read strictly ("order between 4 and 6"), A5 holds during
+  the entry and fails for M in the first e-fold, where the odd part is 50-300 times below
+  its peak.
+- Even part of H (box mean removed): equal at 32 and 64 within 4 percent up to t = 2.0
+  (where it dominates the odd part at 64), within 12 percent later where it is 1e-14-5e-14
+  of <[H]>. Confirmed where it matters: the second-order violation does not depend on the
+  resolution, which is P1's plateau (P-g).
+- At N = 64 (eight cells per shortest wavelength) the odd part of H exceeds the even part
+  only from N = 2.0 (largest ratio 15 against 745 at N = 32); the record <|H|/[H]> peaks
+  at 2.6e-12 (32: 4.3e-11), <|M|/[M]> at 1.5e-5 (32: 3.4e-4).
+- A2 at t = 4.5 (N = 4.39): max D_n 2.0e-6 for |n| <= 4 and 9.4e-5 over all 1054 modes,
+  against 4.0e-3 at N = 32 at the same time: a factor 42 (order 5.4). P9 confirmed for the
+  first step.
+- A1: box means within 3.1e-12 (phi), 6.5e-12 (Pi), 3.4e-12 (K); e-folds from <chi> within
+  2.0e-7 (5.5e-6 at N = 32: ratio 28, close to 2^4 = 16 to 2^5, the step halved).
+
+A2 with the reference that uses the stencil's k^2 per wave vector (the wording of SCOPE 4,
+"the reference uses the lattice's discrete wave number"; added to `ladder_analysis.py`
+before this analysis): at N = 32 the deviation is 8.1e-4 for |n| <= 4 (continuum shells:
+8.8e-5), at N = 64 it is reported in `results/proc32_64/L64p_judge.json`. The NR
+modes follow the continuum mode functions more closely, as expected when the field is
+injected by the sources at horizon crossing from the code's own (continuum) mode
+functions [JUDGEMENT]; both pass 0.02 by a factor 25 or more.

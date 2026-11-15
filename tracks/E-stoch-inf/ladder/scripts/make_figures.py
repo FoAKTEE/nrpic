@@ -251,9 +251,15 @@ def fig_a5(res, out):
             r1, r2 = rows.get(n), rows.get(2 * n)
             if r1 is None or r2 is None:
                 continue
-            m = min(len(r1), len(r2))
-            x = [r1[i]["efolds"] for i in range(m)]
-            o = [np.log2(r1[i][f"{c}_odd"] / r2[i][f"{c}_odd"]) for i in range(m)]
+            # odd part of the finer run interpolated to the times of the coarser one
+            # (dump times differ by up to one step); t = 0 (rounding) left out
+            t1 = np.array([q["time"] for q in r1])
+            t2 = np.array([q["time"] for q in r2])
+            y2 = np.exp(np.interp(t1, t2, np.log([q[f"{c}_odd"] for q in r2]),
+                                  left=np.nan, right=np.nan))
+            keep = (t1 >= 0.4) & np.isfinite(y2)
+            x = [r1[i]["efolds"] for i in np.nonzero(keep)[0]]
+            o = [np.log2(r1[i][f"{c}_odd"] / y2[i]) for i in np.nonzero(keep)[0]]
             axs[1, col].plot(x, o, "o-", ms=3, color=LCOL[2 * n], label=rf"${n}\to{2*n}$")
         axs[1, col].axhspan(4, 6, color=fs.PAL["blue"], alpha=0.1)
         axs[1, col].axhline(6, **fs.GUIDE)
