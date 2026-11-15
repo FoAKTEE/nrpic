@@ -1,0 +1,87 @@
+{
+  "schema": "nrpic-run-manifest/1",
+  "run_id": "A-20261115-130257-a7374a4",
+  "track": "A-emd-pbh",
+  "gate": "G1",
+  "kind": "scouting",
+  "purpose": "lead cross-checks L2-L6 of the expanding-ball references against core/id-extrinsic (aef2f7b) python",
+  "preregistered_in": null,
+  "launcher": "local",
+  "command": [
+    "bash",
+    "-c",
+    "python3 tracks/A-emd-pbh/analysis/lead_crosscheck.py --core-python /data/haiyangw/nrpic/scratch/A-emd-pbh/tmp/core_id_python/python --out $NRPIC_RUN_DIR"
+  ],
+  "cwd": ".",
+  "git": {
+    "sha": "a7374a48cbe5f99df9d66d2d4ee98620054aa04b",
+    "branch": "track/A-emd-pbh",
+    "dirty": false,
+    "merge_base_main": "a1c223753952674ee38819dc45043591dddc3022",
+    "worktree": "wt/A-emd-pbh"
+  },
+  "code": {
+    "core_tag": null,
+    "athenak_upstream_sha": "c5a0d7f",
+    "kokkos_sha": "6739bc623081648af9e752b616d9671527922cbf",
+    "problem": null
+  },
+  "env": {
+    "host": "anta",
+    "env_hash": "0279f117f9b5066d0d8f22b387f643d57a7ce55d3c210ad3e0a880c49ae63266",
+    "machine_file_sha256": "fb54b7387bc058c778fdd2fec12e58d67459a657278df6a87d04f63daccb1968",
+    "uv_lock_sha256": "5417f6ba318b914aa3800e5d55f7b11fdd8df13c2688bdda7d419240aa1d5863",
+    "track_requirements_sha256": null,
+    "container_digest": null,
+    "compiler": "g++ 11.4.0",
+    "mpi": "none (Athena_ENABLE_MPI=OFF)",
+    "gpu": null,
+    "python": "3.10.12 /data/haiyangw/nrpic/wt/A-emd-pbh/.venv"
+  },
+  "input": null,
+  "inputs": [
+    {
+      "path": "/data/haiyangw/nrpic/scratch/A-emd-pbh/A-emd-pbh-20261115-121749-90764e1/expball_flat_HRb0p5.tab",
+      "role": "input",
+      "sha256": "03c2ebd94f8c8ef83593b6e1b393142c04dd5c5c9416c8db37c69cf9e2c723b4",
+      "bytes": 880606,
+      "tracked": false,
+      "location": "main checkout data root"
+    }
+  ],
+  "batch_entries": null,
+  "resources": {
+    "nodes": 1,
+    "gpus": 0,
+    "cores": 2,
+    "walltime_s": null,
+    "wall_limit": null,
+    "segments_max": null,
+    "gpu_hours_requested": 0.0,
+    "gpu_hours": null,
+    "particles": null
+  },
+  "slurm": null,
+  "outputs": {
+    "dir": "scratch/A-emd-pbh/A-20261115-130257-a7374a4",
+    "sha256sums": "sha256sums.txt",
+    "sha256sums_sha256": null,
+    "bytes": null,
+    "files": null
+  },
+  "status": "running",
+  "exit_code": null,
+  "registered": "2026-11-15T13:02:57Z",
+  "started": null,
+  "ended": null,
+  "parents": [],
+  "notes": "core python exported by git archive core/id-extrinsic (aef2f7be) into scratch/A-emd-pbh/tmp/core_id_python",
+  "budget_at_submit": {
+    "gpu_hours_allotted": 60.0,
+    "cores_allotted": 16,
+    "gpu_hours_used": 0.0,
+    "gpu_hours_reserved": 0.0,
+    "cores_busy": 8,
+    "runs": 50
+  }
+}
