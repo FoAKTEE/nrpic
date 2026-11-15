@@ -196,3 +196,20 @@ Outcome of Test 4 (run C-20261115-174556-3544e2c): partly FAILED, as follows.
   1.0014-1.0024), not 1e-2 as I assumed; half of the 2.6e-4 within 1e-3 of E0 (Entry 2)
   is 1.3e-4, which matches.
 Decks of `inputs/scan/` (12) written from this run by `make_scan.py decks`.
+
+Outcome of Test 2 (run C-20261115-172003-6422b6a; figure run C-20261115-175503-7c431e2,
+`figs/fig_smoke_sumP.png`, looked at): PASS. All three decks start, read 10^5 particles and
+keep sum_m bit-identical for four cycles; cc1_kninf writes no collision history (its only
+warning is the unused `<job> rng_seed`, as expected without the operator). First collision
+step: sum_P = 24.4163 (Kn = 10) and 244.1674 (Kn = 1) against 24.4120 and 244.1204
+predicted (+0.017 and +0.019 percent, 0.09 sd of the pairing spread). Collision cells with
+two or more particles 17994 (predicted 17960 at t = 0), particles per occupied cell 2.332
+(2.33); one sub-step everywhere, largest pair probability 0.047 (Kn = 1); n_trunc = 0,
+n_bad_cells = 0; cell-frame pair energy defect at most 4e-19 per record. Collisions in four
+cycles 117 and 1020 against sum_P totals 97.8 and 978.1 (z = 1.94, 1.34; the two runs use
+the same keys, so the counts are correlated). Cost on 4 processor threads: about 140 s per
+cycle, so processors cannot run these decks (4800 cycles); the cards are needed.
+The defect dE_particles over four cycles (8.0e-8 M in 1020 collisions at Kn = 1, i.e.
+7.9e-11 M per collision against the predicted 2.0e-10 M) cannot test P3.4 yet: one
+collision changes the sum by about 4e-9 M either way, so 1020 collisions give a standard
+error of about 1.2e-10 M per collision.
