@@ -627,3 +627,17 @@ gboost_stencil_n64 -183134, gboost_code_n64 -183239-ca15f8b):
 - The monitor of the code: max|M| falls from 2.03e-2 to 1.86e-4 (N = 32) and from
   2.29e-2 to 5.34e-5 (N = 64), a factor 3.5 per halving: the stencil form leaves the
   monitor at truncation level, falling with resolution.
+
+## 2026-11-15, entry 11: test V3 predicted (vector equation with the curvature terms)
+
+V1 and V2 have K = 0 and Abar(trial) = 0. V3 exercises the terms (2/3) psi^6 d_i K and
+d_j Abar_ij(trial): the smooth expanding ball (edge half-width 2, table of format 2,
+particles at rest) and its strained copy (e = 0.05), 64 cells, mode code, `id_vector`
+on. The continuum trial satisfies the momentum constraint at psi = 1 (entry 8,
+amendment), so W only absorbs the discretisation of the table and the term
+(2/3)(psi^6 - 1) d_i K. Predictions [JUDGEMENT]:
+ (a) both converge to id_tol in at most 40 outer iterations, max|H| about 1e-11;
+ (b) max|L W| below 5 per cent of max|Abar(trial)|;
+ (c) the monitor's max|M| after the solve is at least 2 times below its value before.
+Refuted if (a) fails or W is comparable to Abar(trial) (then the right side or its
+signs are wrong).

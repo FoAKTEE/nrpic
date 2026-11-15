@@ -377,3 +377,24 @@ removed from F before the test and reported in the record.
 max of the monitor's |M|) and with `id_dump` a file `<basename>.idvector.bin` (W_i,
 right side of (2), F of (2), the monitor's M_i after and before the solve). Without the
 option the solver runs exactly as before.
+
+**Outcome of the tests** (journal entries 9 and 10; `figs/vector_gauss`; source 7f118b9,
+processor build) [VERIFIED in the runs named there]:
+
+| Test | Outcome |
+|---|---|
+| V0 without `id_vector` | byte-identical outputs to the published executable (87e189e) for gauss_code_n32 and torus_code_p1_n32 |
+| V1 moving Gaussian, the discrete system | right side = 8 pi times the numpy deposit of m u_x to 8e-16; the compact operator applied in numpy to the W of the code reproduces it to 6e-11 (stencil) and 3e-14 (code); vector residual factor 0.14 per outer iteration; 12 (stencil) and 17 (code) outer iterations; max\|H\| 1e-11 in mode code |
+| V2 against the continuum W | second order at the centre (relative error -1.18e-2, -3.59e-3 at dx = 1, 0.5); the monitor's max\|M\| falls from 2e-2 to 1.9e-4 and 5.3e-5; at the faces a closure error of 0.9 per cent that does not fall with resolution (failed prediction) |
+
+**Limits of the vector part.** (1) The Robin closure (r W equal in ghost and mirror)
+does not represent the direction dependence of the Bowen-York far field: about 1 per
+cent at the faces for a moving Gaussian with the faces at 8 sigma, independent of the
+cell size [VERIFIED, V2] and, for a scale-free far field, of the box size [JUDGEMENT].
+Remedy, not implemented: fill W - W_BY(P) with P = (1/8 pi) times the integral of the
+right side. (2) The code's monitor of the momentum constraint is left at truncation
+level (stencil form by design, see above). (3) Tested with K = 0 and Abar(trial) = 0 only
+(the right side's d_i K and d_j Abar(trial) terms are exercised by no test; with the
+ball tables they are the curvature of the trial). (4) On the torus the mean of the
+right side must vanish; not tested on the torus. (5) Uniform meshes, one rank, as the
+scalar part.
