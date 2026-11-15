@@ -206,3 +206,88 @@ P6 holds over the full span: the offsets of the five other settings from product
 flat from 50 to 500 M at M/8 and from 50 to 273 M at M/16 (figure drift_finder); the
 largest change of a drift between settings, D_fs, is 7.8e-6 (M/8) and 8.0e-6 (M/16)
 from t0 = 50 M, 1.0e-5 and 9.5e-6 from t0 = 100 M (limit 5e-5).
+
+## 2026-11-15T14:50Z  final outcome (both card runs complete)
+
+Run D-bh-dress-20261115-121314-284ec4f (M/16): segment 2 (job 4420) 13:56:14Z-14:37:35Z,
+t = 272.92 -> 500 M, 2481 s; total 5483 s = 1.523 card-hours. Card total of the package:
+0.654 + 1.523 = 2.18 card-hours (cap 3). Final analysis pass of D-bh-dress-20261115-130954-49ed46f
+at 14:41Z: `results/drift_drift.txt`, figures `figs/drift_history.png`,
+`figs/drift_floor.png`, `figs/drift_finder.png` (looked at all three).
+
+M/16 (production finder, 20 M running mean): M - 1 = -2.637e-4 at 50 M, D(50 -> 490 M) =
++3.67e-5; linear slopes per 100 M window +6.7e-8, +5.8e-8, +1.35e-7, +4.1e-8, +8.6e-8 per M
+(50-100 ... 400-500); over 50-500 M +8.8e-8 per M. Raw finder value at 499.75 M: -2.338e-4.
+
+Against the predictions:
+- P1 (M/8) holds: +2.95e-4 over 50-500 M (limit 3e-3), +6.8e-7 per M over 250-500 M
+  (limit 2e-6).
+- P2 (M/16) holds: |D| = 3.7e-5 (limit 1e-4), mean rate 8.8e-8 per M (limit 2e-7).
+- P3: end-to-end ratio M/8 / M/16 = 2.95e-4 / 3.67e-5 = 8.0, order 3.0: holds at the
+  bound as written. But measured from t0 = 100 M (after the M/8 transient) the ratio of
+  the envelopes is 4.8, 3.6, 1.5, 2.3 at T = 40, 120, 200, 300 M, below the refutation
+  value 4 from T = 120 M on: after the transient the drift is NOT set by the resolution at
+  the hole alone. The late slopes (t >= 250 M) are +6.8e-7 (M/8) and +1.0e-7 per M (M/16),
+  ratio 6.6 (order 2.7): that part converges; the excursions below do not.
+- P4: two excursions of equal size and timing at both resolutions. 220-255 M: 5 M mean
+  about a line, peak-to-peak 9.3e-5 (M/8) and 9.2e-5 (M/16), minimum at 229 M and maximum
+  at 239 M in both; 300-340 M: raw finder values about a line, peak-to-peak 1.5e-4 at both
+  (340-400 M: 6.4e-5 and 6.6e-5). The first is at the bound of my "below 1e-4", the second
+  above it: P4 refuted in its amplitude, confirmed in its reading (the outer region, not
+  the hole, sets this part of the floor). Times fit gauge-speed out, light-speed back paths
+  to the faces (215 M) and to the edges of the cube (about 310 M) [JUDGEMENT, not tested].
+- P5 holds: |S|/M^2 <= 3.3e-7 (M/8) and <= 5.7e-9 (M/16) after 5 M; 5e-9 and 3e-10 at
+  500 M.
+- P6 holds: D_fs (largest change of the drift between the six finder settings) 7.8e-6
+  (M/8) and 1.0e-5 (M/16) over 50-500 M (limit 5e-5); offsets constant within +-1e-5 for
+  450 M. The sub-claim "start from 2 M moves the mass by less than 1e-4" failed (1.2e-4 to
+  1.35e-4, see the 12:45Z entry).
+- P7: see the 12:45Z entry (M/8 rise over 50-60 M smaller than predicted).
+
+Deliverable: smallest horizon-mass change Delta M_min/M a matter run of the same
+configuration and length could detect (definition fixed at 12:25Z, before the runs:
+max |D| + D_fs + 2 sqrt(2) sigma), from `results/drift_drift.txt`:
+
+| window | M/8 | M/16 |
+|---|---|---|
+| t0 = 50 M, T = 40.6 M (eps 0.03, a x 2), window ends before 210 M | 1.6e-4 | 2.0e-5 |
+| t0 = 50 M, T = 121.9 M (eps 0.01, a x 2), ends before 210 M | 1.8e-4 | 2.3e-5 |
+| t0 = 50 M, T = 155.6 M (eps 0.03, a x 4), ends before 210 M | 1.8e-4 | 2.5e-5 |
+| t0 = 100 M, T = 40.6 M, ends before 210 M | 2.8e-5 | 2.2e-5 |
+| t0 = 50 M, sigma over all 50-500 M (crossing the excursions), T = 40.6 / 121.9 / 155.6 M | 1.9e-4 / 2.1e-4 / 2.1e-4 | 5.4e-5 / 5.8e-5 / 6.0e-5 |
+| t0 = 50 M, T = 440 M (whole run) | 3.5e-4 | 8.9e-5 |
+| t0 = 20 M (gauge transient included), T = 40.6 M | 4.8e-4 | 8.0e-5 |
+| t0 = 20 M, T = 466.7 M (eps 0.01, a x 4) | 6.9e-4 | 8.3e-5 |
+
+k_floor = Delta M_min / ln(a_f/a_i) at M/16 for windows ending before 210 M: 2.8e-5
+(eps 0.03, a x 2), 3.3e-5 (eps 0.01, a x 2), 1.8e-5 (eps 0.03, a x 4); crossing the
+excursions 4.3e-5 to 8.3e-5. All per unit mass, so Delta ln M.
+
+What sets it, at M/16: the scatter of the finder about its 20 M mean (3.5e-6 before
+210 M, 1.5e-5 over the whole run because of the excursions), the finder-setting spread
+(1e-5), the excursions from the outer region (1e-4 to 1.5e-4 peak-to-peak on raw values,
+2-3e-5 on 20 M means), and a secular drift of 9e-8 per M. At M/8: the end of the gauge
+transient (+1.6e-4 between 50 and 100 M; measure from t0 >= 100 M or use M/16) and the
+late drift of 7e-7 per M.
+
+M/32 [JUDGEMENT, not run]: the resolution-dependent parts (transient, late slope) fall by
+6 or more per halving of dx (measured orders 2.7-5); the excursions and the finder spread
+do not. So at M/32 Delta M_min stays near 2e-5 for windows ending before 210 M and near
+5e-5 or more across the excursions unless the outer boundary moves. The planned 250 M run
+at M/32 (SCOPE.md section 7) would not lower the floor in this configuration; a run with
+the boundary at 256 M (one more coarse level, about +16 percent cost) would test both the
+attribution and the floor.
+
+Side finding, run D-bh-dress-20261115-143918-a5c125a (`figs/tracer_check.png`, looked at):
+with the release card executable the six massless tracers of this input do not follow
+geodesics. The radial infall tracer is excised at t = 0.31 M (old run: at 54.1 M); the
+three circular tracers (r = 6, 8, 10), the inclined one and the plunging one move outward
+together, nearly at light speed, and leave the mesh between 136 and 182 M (r = 6 -> 42 M
+at t = 50 M); tracers 1 and 3, same position and different velocities, have the same
+radius at all times. In runs/puncture/single_v3 (earlier executable, same input) the
+circular tracers stay at r = 6.0 -> 7.1, 8.0 -> 9.1, 10.0 -> 11.0 over 250 M and the
+plunge and the infall reach the hole at 126 and 54 M. The tracers carry no mass and are
+not deposited, so the spacetime and the horizon numbers above are not affected (the M/8
+slice at 50 M gives the same finder mass, 1.001335 on the card and 1.001337 on the earlier
+executable's dump). Cause not investigated (outside this package); the same executable
+pushes the particles of every matter run, so this goes to core and the lead as a request.

@@ -1,0 +1,64 @@
+{
+ "run_id": "D-bh-dress-20261115-143918-a5c125a",
+ "track": "D-bh-dress",
+ "gate": "G1",
+ "package": "puncture_drift (D-pre-4)",
+ "purpose": "Side check found during D-pre-4: coordinate radius of the six massless tracers of horizon_calib.athinput in the M/8 run with the release card executable against runs/puncture/single_v3 (earlier executable, same input)",
+ "kind": "scouting",
+ "command": [
+  "python3",
+  "tracks/D-bh-dress/puncture_drift/tools/tracer_check.py",
+  "--out",
+  "<outputs.dir>",
+  "/data/haiyangw/nrpic/scratch/D-bh-dress/D-bh-dress-20261115-121313-284ec4f/punc.traj.bin",
+  "/data/haiyangw/nrpic/runs/puncture/single_v3/punc.traj.bin"
+ ],
+ "cwd": "/data/haiyangw/nrpic/wt/D-bh-dress",
+ "env_overrides": {},
+ "git": {
+  "sha": "a5c125a2a6922e4b3688f66f09b79305cb7626cf",
+  "branch": "track/D-bh-dress",
+  "dirty_package_dir": true,
+  "merge_base_main": "a1c223753952674ee38819dc45043591dddc3022"
+ },
+ "code": {
+  "core_tag": null
+ },
+ "inputs": [
+  {
+   "path": "/data/haiyangw/nrpic/wt/D-bh-dress/tracks/D-bh-dress/puncture_drift/tools/tracer_check.py",
+   "sha256": "8aa3321ef6ab999cf451dfaf08a357f430db93039b02514c2b7713d98a256fec"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/scratch/D-bh-dress/D-bh-dress-20261115-121313-284ec4f/punc.traj.bin",
+   "sha256": "f8e1c0b446cd1c9a1aec5e3ebd1edd2f205789fbc844411f8b9c072faf665433"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/runs/puncture/single_v3/punc.traj.bin",
+   "sha256": "41f8f15c14120cad7773ab094db96d53feef08e7bad06babad94f708688b711b"
+  }
+ ],
+ "resources": {
+  "nodes": 1,
+  "cores": 1,
+  "gpus": 0,
+  "card_hours": 0.0,
+  "walltime_s": 2.0
+ },
+ "outputs": {
+  "dir": "/data/haiyangw/nrpic/scratch/D-bh-dress/D-bh-dress-20261115-143918-a5c125a",
+  "files": [
+   "stdout.txt",
+   "tracer_check.png",
+   "tracer_check.pdf"
+  ]
+ },
+ "status": "completed",
+ "started": "2026-11-15T14:39:18Z",
+ "ended": "2026-11-15T14:39:20Z",
+ "parents": [
+  "D-bh-dress-20261115-121313-284ec4f"
+ ],
+ "notes": "",
+ "exit_code": 0
+}

@@ -51,15 +51,28 @@
   "nodes": 1,
   "cores": 1,
   "gpus": 1,
-  "card_hours": 0.834,
-  "walltime_s": 3002.0
+  "card_hours": 1.523,
+  "walltime_s": 5483.0
  },
  "outputs": {
-  "dir": "/data/haiyangw/nrpic/scratch/D-bh-dress/D-bh-dress-20261115-121314-284ec4f"
+  "dir": "/data/haiyangw/nrpic/scratch/D-bh-dress/D-bh-dress-20261115-121314-284ec4f",
+  "files": [
+   "punc.horizon_summary_0.txt",
+   "punc.horizon_shape_0.txt",
+   "punc.z4c.user.hst",
+   "punc.nrpic.hst",
+   "punc.traj.bin",
+   "punc.trajmet.bin",
+   "rst/punc.000{00..10}.rst (no t = 300 M dump, see JOURNAL)",
+   "chain/seg001.job4407.a1.log",
+   "chain/seg002.job4420.a1.log",
+   "chain/events.log"
+  ]
  },
- "status": "running",
+ "status": "completed",
  "started": "2026-11-15T12:57:24Z",
- "ended": null,
+ "ended": "2026-11-15T14:37:35Z",
  "parents": [],
- "notes": "Chain capped at 2 segments (<= 118 card-minutes). Expected 5730 card-seconds from runs/puncture/hcal/dx16/athena.log. Segment 1: Slurm job 4407, 12:57:24Z-13:47:26Z (3002 s, 0.834 card-hours), wall-clock stop at t = 272.92 M (cycle 17467), 11.0 s per M; resubmitted as job 4420 (segment 2 of at most 2). card_hours and walltime_s count segment 1 only until the chain ends."
+ "notes": "Chain capped at 2 segments (<= 118 card-minutes). Expected 5730 card-seconds from runs/puncture/hcal/dx16/athena.log. Segment 1: Slurm job 4407, 12:57:24Z-13:47:26Z (3002 s, 0.834 card-hours), wall-clock stop at t = 272.92 M (cycle 17467), 11.0 s per M; resubmitted as job 4420 (segment 2 of at most 2). card_hours and walltime_s count segment 1 only until the chain ends. Segment 2: Slurm job 4420, 13:56:14Z-14:37:35Z (2481 s, 0.689 card-hours), restart from rst/punc.00006.rst (t = 272.92 M) to t = 500 M, DONE (tlim). Totals: 5483 card-seconds = 1.523 card-hours; 32000 cycles.",
+ "exit_code": 0
 }

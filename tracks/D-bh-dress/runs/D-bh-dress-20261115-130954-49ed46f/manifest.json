@@ -63,7 +63,7 @@
   "cores": 16,
   "gpus": 0,
   "card_hours": 0.0,
-  "walltime_s": 644.0
+  "walltime_s": 491.0
  },
  "outputs": {
   "dir": "/data/haiyangw/nrpic/scratch/D-bh-dress/D-bh-dress-20261115-130954-49ed46f",
@@ -82,12 +82,12 @@
  },
  "status": "completed",
  "started": "2026-11-15T13:09:54Z",
- "ended": "2026-11-15T14:03:22Z",
+ "ended": "2026-11-15T14:47:09Z",
  "parents": [
   "D-bh-dress-20261115-121313-284ec4f",
   "D-bh-dress-20261115-121314-284ec4f",
   "D-bh-dress-20261115-121427-284ec4f"
  ],
- "notes": "finish.sh pass ended 2026-11-15T13:19:51Z after 597 s on 4 dumps. finish.sh pass ended 2026-11-15T13:52:14Z after 1177 s on 12 dumps. finish.sh pass ended 2026-11-15T14:03:22Z after 644 s on 16 dumps.",
+ "notes": "finish.sh pass ended 2026-11-15T13:19:51Z after 597 s on 4 dumps. finish.sh pass ended 2026-11-15T13:52:14Z after 1177 s on 12 dumps. finish.sh pass ended 2026-11-15T14:03:22Z after 644 s on 16 dumps. finish.sh pass ended 2026-11-15T14:06:38Z after 3 s on 16 dumps. finish.sh pass ended 2026-11-15T14:47:09Z after 491 s on 19 dumps. Five passes of finish.sh (13:10Z, 13:35Z, 13:50Z, 14:07Z, 14:41Z) on the dumps present at each time; probes skip dumps already done. The package directory was dirty at registration (HEAD 49ed46f); the tool versions used are those committed in d07b8e8 (passes 1-2), f1d90b2 (pass 3-4) and the working tree committed with this manifest (pass 5: --t0 50 100 20 50:210 100:210 20:210, boundary-window measure, two-panel floor figure). Total processor time of the passes about 1 h on 2 x 8 threads.",
  "exit_code": 0
 }
