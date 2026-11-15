@@ -1,0 +1,53 @@
+{
+ "schema": "nrpic-run-manifest/1",
+ "run_id": "B-emd-gw-20261115-113102-bc5e082",
+ "track": "B-emd-gw",
+ "package": "scope",
+ "gate": "G0",
+ "kind": "scouting",
+ "purpose": "Symbolic checks 1A-1E of item 3 of coord/notes/derivations_to_check.md (plane symmetry and GWs) and of the flat-transverse plane-symmetric growing mode",
+ "preregistered_in": "tracks/B-emd-gw/scope/JOURNAL.md (2026-11-15T11:29Z entry)",
+ "launcher": "local",
+ "command": "OMP_NUM_THREADS=1 python3 tracks/B-emd-gw/scope/scripts/check_item3.py /data/haiyangw/nrpic/scratch/B-emd-gw/B-emd-gw-20261115-113102-bc5e082; then a one-line sympy check that diag(A,B,B) is invariant under a rotation by a symbolic angle, written to /data/haiyangw/nrpic/scratch/B-emd-gw/B-emd-gw-20261115-113102-bc5e082/supplement_1B.txt",
+ "cwd": "/data/haiyangw/nrpic/wt/B-emd-gw",
+ "git": {
+  "sha": "bc5e082577ec279e5bbd94558cbb139f4473852e",
+  "branch": "track/B-emd-gw",
+  "dirty": false,
+  "worktree": "wt/B-emd-gw"
+ },
+ "commit": "bc5e082577ec279e5bbd94558cbb139f4473852e",
+ "inputs": [
+  {
+   "path": "tracks/B-emd-gw/scope/scripts/check_item3.py",
+   "sha256": "a64745cfe49f28a3d45e1e2c851705d550196a35a1efcbcb5101ddd699bcb685",
+   "tracked": true,
+   "at_commit": "bc5e082"
+  }
+ ],
+ "resources": {
+  "nodes": 1,
+  "gpus": 0,
+  "cores": 1,
+  "walltime_s": 4.28,
+  "gpu_hours": 0.0,
+  "gpu_hours_requested": 0.0
+ },
+ "outputs": {
+  "dir": "scratch/B-emd-gw/B-emd-gw-20261115-113102-bc5e082",
+  "sha256sums": "sha256sums.txt",
+  "sha256sums_sha256": "7cfddf78fc567f963f8cb08717c546d6ebbd050c3d30a5cf839b3a8402b583ce",
+  "files": 5
+ },
+ "output_dir": "/data/haiyangw/nrpic/scratch/B-emd-gw/B-emd-gw-20261115-113102-bc5e082",
+ "wall_time_s": 4.28,
+ "cores": 1,
+ "card_hours": 0.0,
+ "status": "completed",
+ "exit_code": 0,
+ "registered": "2026-11-15T11:31:02Z",
+ "started": "2026-11-15T11:31:02Z",
+ "ended": "2026-11-15T11:31:02Z",
+ "parents": [],
+ "notes": "Registered by hand (helper of the scope package) before harness/bin/nrpic-run reached this branch; analysis run, no simulation. Run id first written with the local time 033102 (PST) and renamed to the UTC convention of nrpic-run; scratch directory renamed with it."
+}

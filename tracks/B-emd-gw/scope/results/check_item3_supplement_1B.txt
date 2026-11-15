@@ -1,0 +1,1 @@
+diag(A,B,B) invariant for symbolic theta: True

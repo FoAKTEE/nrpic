@@ -1,0 +1,71 @@
+{
+ "schema": "nrpic-run-manifest/1",
+ "run_id": "B-emd-gw-20261115-113151-4e5c33b",
+ "track": "B-emd-gw",
+ "package": "scope",
+ "gate": "G0",
+ "kind": "scouting",
+ "purpose": "Check 3: junk TT decay ODE, virial GW frequency against box modes, card-time table from measured throughput; first figure version (script comment named the wrong log for the 128-cell rate; the value was right)",
+ "preregistered_in": "tracks/B-emd-gw/scope/JOURNAL.md (2026-11-15T11:29Z entry)",
+ "launcher": "local",
+ "command": "OMP_NUM_THREADS=4 python3 tracks/B-emd-gw/scope/scripts/regime_estimates.py /data/haiyangw/nrpic/scratch/B-emd-gw/B-emd-gw-20261115-113151-4e5c33b",
+ "cwd": "/data/haiyangw/nrpic/wt/B-emd-gw",
+ "git": {
+  "sha": "4e5c33b23b7ed1050a45ea956a87bfa0dce9e274",
+  "branch": "track/B-emd-gw",
+  "dirty": false,
+  "worktree": "wt/B-emd-gw"
+ },
+ "commit": "4e5c33b23b7ed1050a45ea956a87bfa0dce9e274",
+ "inputs": [
+  {
+   "path": "tracks/B-emd-gw/scope/scripts/regime_estimates.py",
+   "sha256": "733c170f78970dce221ce0e13ce7f3827fb1aee55db38eaae7934723dcae6146",
+   "tracked": true,
+   "at_commit": "4e5c33b"
+  },
+  {
+   "path": "python/nrpic/figstyle.py",
+   "sha256": "5d3b78ad8c2c02e428b675e3d7e35a32cbc8f053d1aeedd4fde66f27da55676e",
+   "tracked": true,
+   "at_commit": "4e5c33b"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/runs/cosmo/east_d0.01_n64_pcs4b/athena.20261114-072656.log",
+   "sha256": "c580392a74e276ccf27d25b7e6bfcafda58daa468d15fee289d9536bd394fe3e",
+   "tracked": false,
+   "note": "measured throughput and card memory read from this log (untracked run of cosmo/)"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/runs/cosmo/east_d0.01_n128_tsc/athena.20261114-021442.log",
+   "sha256": "c2d315aa785b5ea25d9bcac67d2096f8ed4a966d12a41bd114b51f66234e78ed",
+   "tracked": false,
+   "note": "measured throughput and card memory read from this log (untracked run of cosmo/)"
+  }
+ ],
+ "resources": {
+  "nodes": 1,
+  "gpus": 0,
+  "cores": 4,
+  "walltime_s": 1.78,
+  "gpu_hours": 0.0,
+  "gpu_hours_requested": 0.0
+ },
+ "outputs": {
+  "dir": "scratch/B-emd-gw/B-emd-gw-20261115-113151-4e5c33b",
+  "sha256sums": "sha256sums.txt",
+  "sha256sums_sha256": "92c2b3091480c3013751aaddbf55ec4affc96c16cf85695141221d7e44da6edd",
+  "files": 5
+ },
+ "output_dir": "/data/haiyangw/nrpic/scratch/B-emd-gw/B-emd-gw-20261115-113151-4e5c33b",
+ "wall_time_s": 1.78,
+ "cores": 4,
+ "card_hours": 0.0,
+ "status": "completed",
+ "exit_code": 0,
+ "registered": "2026-11-15T11:31:51Z",
+ "started": "2026-11-15T11:31:51Z",
+ "ended": "2026-11-15T11:31:51Z",
+ "parents": [],
+ "notes": "Registered by hand (helper of the scope package) before harness/bin/nrpic-run reached this branch; analysis run, no simulation. Run id first written with the local time 033151 (PST) and renamed to the UTC convention of nrpic-run; scratch directory renamed with it."
+}

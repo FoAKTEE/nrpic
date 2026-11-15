@@ -1,0 +1,59 @@
+{
+ "schema": "nrpic-run-manifest/1",
+ "run_id": "B-emd-gw-20261115-113120-bc5e082",
+ "track": "B-emd-gw",
+ "package": "scope",
+ "gate": "G0",
+ "kind": "scouting",
+ "purpose": "Check 2: quasi-static second-order TT strain of crossed sine waves (plane-wave null, (1,eps,0) scan, equal and cosmo/ ratios); first figure version",
+ "preregistered_in": "tracks/B-emd-gw/scope/JOURNAL.md (2026-11-15T11:29Z entry)",
+ "launcher": "local",
+ "command": "OMP_NUM_THREADS=4 python3 tracks/B-emd-gw/scope/scripts/crossed_waves_tt.py /data/haiyangw/nrpic/scratch/B-emd-gw/B-emd-gw-20261115-113120-bc5e082",
+ "cwd": "/data/haiyangw/nrpic/wt/B-emd-gw",
+ "git": {
+  "sha": "bc5e082577ec279e5bbd94558cbb139f4473852e",
+  "branch": "track/B-emd-gw",
+  "dirty": false,
+  "worktree": "wt/B-emd-gw"
+ },
+ "commit": "bc5e082577ec279e5bbd94558cbb139f4473852e",
+ "inputs": [
+  {
+   "path": "tracks/B-emd-gw/scope/scripts/crossed_waves_tt.py",
+   "sha256": "629cefc3f6e919f1ea34db6fd49349ef6a30293f85b6a942742b8c49bc7a52a7",
+   "tracked": true,
+   "at_commit": "bc5e082"
+  },
+  {
+   "path": "python/nrpic/figstyle.py",
+   "sha256": "5d3b78ad8c2c02e428b675e3d7e35a32cbc8f053d1aeedd4fde66f27da55676e",
+   "tracked": true,
+   "at_commit": "bc5e082"
+  }
+ ],
+ "resources": {
+  "nodes": 1,
+  "gpus": 0,
+  "cores": 4,
+  "walltime_s": 2.41,
+  "gpu_hours": 0.0,
+  "gpu_hours_requested": 0.0
+ },
+ "outputs": {
+  "dir": "scratch/B-emd-gw/B-emd-gw-20261115-113120-bc5e082",
+  "sha256sums": "sha256sums.txt",
+  "sha256sums_sha256": "32a76fc965f42cc0a3e783e32ff2bb8c64fdd56aefd10329943bdcaf8c9d5fc5",
+  "files": 5
+ },
+ "output_dir": "/data/haiyangw/nrpic/scratch/B-emd-gw/B-emd-gw-20261115-113120-bc5e082",
+ "wall_time_s": 2.41,
+ "cores": 4,
+ "card_hours": 0.0,
+ "status": "completed",
+ "exit_code": 0,
+ "registered": "2026-11-15T11:31:20Z",
+ "started": "2026-11-15T11:31:20Z",
+ "ended": "2026-11-15T11:31:20Z",
+ "parents": [],
+ "notes": "Registered by hand (helper of the scope package) before harness/bin/nrpic-run reached this branch; analysis run, no simulation. Run id first written with the local time 033120 (PST) and renamed to the UTC convention of nrpic-run; scratch directory renamed with it."
+}
