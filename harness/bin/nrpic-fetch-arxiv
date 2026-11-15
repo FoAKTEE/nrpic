@@ -1,20 +1,50 @@
-#!/usr/bin/env python3
-"""Fetch arXiv e-prints into the shared raw store, one request at a time for the whole machine.
+#!/usr/bin/python3 -I
+"""The only way to download from arXiv and INSPIRE (CLAUDE.md rule 8; decision 0015).
 
-    harness/bin/nrpic-fetch-arxiv <arxiv id> [<arxiv id> ...]      (works from any worktree)
+    python3 -I harness/bin/nrpic-fetch-arxiv <id> [<id> ...]                e-print source (default)
+    python3 -I harness/bin/nrpic-fetch-arxiv --pdf <id> [...]               PDF, for entries without TeX
+    python3 -I harness/bin/nrpic-fetch-arxiv --meta [--service arxiv|inspire|both] <id> [...]
+    python3 -I harness/bin/nrpic-fetch-arxiv --inspire-query "<query>" [--size N]
+    python3 -I harness/bin/nrpic-fetch-arxiv --check <id> [...]             content check of the store, no network
+  common: --ids-from FILE (one id per line, # comments), --refresh (fetch again what is stored),
+          --batch N (ids per metadata request: arXiv API up to 50, default 20; INSPIRE up to 25, default 10)
 
-Rules of the brief (sections 0 and 17) that this command enforces:
-- every session downloads through this command only: a lock file serialises all requests
-  and keeps at least three seconds between them; failures back off exponentially;
-- layout: kb-data/raw/arxiv/<id, slash replaced by underscore>/<version>/source.bin, extracted
-  into src/ beside it; record in kb-data/meta/arxiv/<id>.json;
-- the download is untrusted data: nothing in it is executed; archive members that are links,
-  devices, absolute or leave the directory are skipped and listed in the record;
-- requests carry a generic client name and nothing about the user or the project.
-An identifier that is already complete in the store is not fetched again; its path is printed.
+Works from any worktree: the data root is the main checkout (git rev-parse --git-common-dir of this
+file), whose kb-data/ and locks/ every session shares. Nothing is read from the caller's
+environment (no proxy, no variables); requests carry a generic client name and nothing about the
+user or the project.
+
+Services and their locks (one per service for the whole machine, at least three seconds between
+two requests to it; failures back off exponentially, 429/503 honour Retry-After):
+  arxiv    locks/arxiv.lock     arxiv.org/e-print/<id>, arxiv.org/pdf/<id>, export.arxiv.org/api/query
+  inspire  locks/inspire.lock   inspirehep.net/api/literature
+
+Layout under kb-data/ (the store; read-only for everyone but kb, written only by this command):
+  raw/arxiv/<key>/<vN>/source.bin, src/     e-print as served and its safe extraction; record
+                                             meta/arxiv/<key>.json (unchanged format)
+  raw/arxiv/<key>/<vN>/source.pdf           --pdf; record meta/arxiv-pdf/<key>.json
+  meta/arxiv-api/<key>.xml, <key>.json      --meta, arXiv API: the Atom entry; parsed fields
+  meta/arxiv-api/batches/<UTC>-<sha12>.xml  the response of each API request as served
+  meta/inspire/<key>.json                   --meta, INSPIRE: the matching literature record
+  meta/inspire/batches/<UTC>-<sha12>.json   the response of each INSPIRE request as served
+  meta/inspire/query/<sha16>.json           --inspire-query
+where <key> is the id with "/" replaced by "_". Metadata lives in its own directories so that
+meta/arxiv/ keeps exactly one download record per id.
+
+Limits and content checks (decision 0015; brief 12.3). Downloads above 512 MiB (PDF: 200 MiB,
+metadata: 32 MiB) are refused; gzip is inflated to at most 2 GiB; an archive is extracted only for
+regular files and directories with safe relative names, at most 20000 members, 256 MiB per file
+and 1 GiB in all (larger members are skipped and listed as oversize_members). Nothing is recorded
+as ok that is an HTML or error page, empty, a PDF without %%EOF, an API answer without the
+requested ids, or an INSPIRE answer whose hits do not carry the requested eprint. A single-file
+e-print that is not TeX (gzipped PostScript) is still stored as src/main.tex, as before, with
+"content" saying what it is and a hint to fetch the PDF. The download is data: nothing in it is
+executed; XML with a DOCTYPE or an entity is refused before parsing.
+
+An id already complete in the store is not fetched again; its path is printed. Exit status: 0 if
+every id succeeded, 1 otherwise; failures are recorded and do not stop the list.
 """
 import fcntl
-import gzip
 import hashlib
 import io
 import json
@@ -25,130 +55,705 @@ import sys
 import tarfile
 import time
 import urllib.error
+import urllib.parse
 import urllib.request
+import xml.etree.ElementTree as ET
+import zlib
 
-AGENT = "arxiv-source-mirror/0.1 (literature reading tool)"
+AGENT = "literature-mirror/0.2 (research literature reading tool)"
 GAP = 3.0
+BOOT_ENV = {"PATH": "/usr/local/bin:/usr/bin:/bin", "LANG": "C.UTF-8", "HOME": "/nonexistent",
+            "GIT_CONFIG_NOSYSTEM": "1", "GIT_CONFIG_GLOBAL": "/dev/null"}
+MAX_DOWNLOAD = 512 * 1024 ** 2
+MAX_PDF = 200 * 1024 ** 2
+MAX_META = 32 * 1024 ** 2
+MAX_DECOMPRESSED = 2 * 1024 ** 3
+MAX_FILE = 256 * 1024 ** 2
+MAX_TOTAL = 1024 ** 3
+MAX_MEMBERS = 20000
+TEX_HINTS = (b"\\documentclass", b"\\documentstyle", b"\\begin{document}", b"\\input", b"\\section",
+             b"\\title", b"\\author", b"\\begin{abstract}", b"\\def")
+ATOM = "{http://www.w3.org/2005/Atom}"
+ARXIV_NS = "{http://arxiv.org/schemas/atom}"
+OPENSEARCH = "{http://a9.com/-/spec/opensearch/1.1/}"
+ID_RX = re.compile(r"^(?:\d{4}\.\d{4,5}|[a-z-]+(?:\.[A-Z]{2})?/\d{7})$")
+INSPIRE_FIELDS = ("control_number,titles.title,arxiv_eprints,dois.value,authors.full_name,"
+                  "publication_info,document_type,citation_count,abstracts.value,collaborations.value,"
+                  "texkeys,references.reference.arxiv_eprint,references.reference.dois,"
+                  "references.reference.publication_info,references.reference.title,references.record")
+
+ENDPOINTS = {"eprint": "https://arxiv.org/e-print/", "pdf": "https://arxiv.org/pdf/",
+             "api": "https://export.arxiv.org/api/query", "inspire": "https://inspirehep.net/api/literature"}
+SERVICE_OF = {"eprint": "arxiv", "pdf": "arxiv", "api": "arxiv", "inspire": "inspire"}
+
+
+class Refused(Exception):
+    """A download that is not recorded as ok (content check, size limit)."""
+
+
+def say(*a, err=False):
+    print(*a, file=sys.stderr if err else sys.stdout, flush=True)
+
+
+def utc():
+    return time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())
 
 
 def main_checkout():
-    here = os.path.dirname(os.path.abspath(__file__))
+    here = os.path.dirname(os.path.realpath(__file__))
     common = subprocess.run(["git", "-C", here, "rev-parse", "--path-format=absolute", "--git-common-dir"],
-                            check=True, capture_output=True, text=True).stdout.strip()
+                            check=True, capture_output=True, text=True, env=BOOT_ENV).stdout.strip()
     return os.path.dirname(common)
 
 
-def safe_members(tar):
-    kept, skipped = [], []
-    for m in tar.getmembers():
-        name = m.name
-        bad = (not (m.isfile() or m.isdir()) or name.startswith("/") or ".." in name.split("/")
-               or len(name) > 400)
-        (skipped if bad else kept).append(m)
-    for m in kept:
-        m.mode = 0o755 if m.isdir() else 0o644
-        m.uid = m.gid = 0
-        m.uname = m.gname = ""
-    return kept, [m.name for m in skipped]
+def key_of(aid):
+    return aid.replace("/", "_")
 
 
-def unpack(blob, dest):
-    """Extract into dest (new, empty). Returns (kind, skipped member names)."""
-    os.makedirs(dest)
-    if blob[:4] == b"%PDF":
-        open(os.path.join(dest, "paper.pdf"), "wb").write(blob)
-        return "pdf", []
-    data = blob
-    if blob[:2] == b"\x1f\x8b":
-        data = gzip.decompress(blob)
+def write_json(path, obj):
+    os.makedirs(os.path.dirname(path), exist_ok=True)
+    tmp = f"{path}.part{os.getpid()}"
+    with open(tmp, "w") as f:
+        json.dump(obj, f, indent=1)
+        f.write("\n")
+    os.replace(tmp, path)
+
+
+def write_bytes(path, blob):
+    os.makedirs(os.path.dirname(path), exist_ok=True)
+    tmp = f"{path}.part{os.getpid()}"
+    with open(tmp, "wb") as f:
+        f.write(blob)
+    os.replace(tmp, path)
+
+
+def read_json(path):
     try:
-        with tarfile.open(fileobj=io.BytesIO(data)) as tar:
-            kept, skipped = safe_members(tar)
-            tar.extractall(dest, members=kept)
-        return "tar", skipped
-    except tarfile.ReadError:
-        open(os.path.join(dest, "main.tex"), "wb").write(data)
-        return "single-file", []
+        with open(path) as f:
+            return json.load(f)
+    except (OSError, ValueError):
+        return None
 
 
-def fetch(url):
-    wait = 6.0
-    for attempt in range(5):
-        try:
-            req = urllib.request.Request(url, headers={"User-Agent": AGENT})
-            with urllib.request.urlopen(req, timeout=180) as r:
-                return r.read(), dict(r.headers), r.status
-        except (urllib.error.URLError, TimeoutError, ConnectionError) as e:
-            code = getattr(e, "code", None)
-            if code in (400, 403, 404):
-                raise
-            if attempt == 4:
-                raise
-            time.sleep(wait)
-            wait *= 2.0
-    raise RuntimeError("unreachable")
+# ------------------------------------------------------------------ network: one lock per service
+
+class Net:
+    def __init__(self, root, test_base=None, gap=GAP):
+        self.root = root
+        self.test_base = test_base
+        self.gap = gap
+        self.opener = urllib.request.build_opener(urllib.request.ProxyHandler({}))
+        self.requests = 0
+
+    def url(self, kind, tail=""):
+        base = ENDPOINTS[kind]
+        if self.test_base:
+            base = self.test_base.rstrip("/") + urllib.parse.urlsplit(base).path
+        return base + tail
+
+    def get(self, kind, url, limit):
+        """One request under the service's lock; the lock is held for GAP seconds after it, so two
+        requests to one service are always at least GAP apart, whichever session sends them."""
+        service = SERVICE_OF[kind]
+        os.makedirs(os.path.join(self.root, "locks"), exist_ok=True)
+        with open(os.path.join(self.root, "locks", f"{service}.lock"), "w") as lock:
+            fcntl.flock(lock, fcntl.LOCK_EX)
+            try:
+                return self._fetch(url, limit)
+            finally:
+                time.sleep(self.gap)
+                fcntl.flock(lock, fcntl.LOCK_UN)
+
+    def _fetch(self, url, limit):
+        wait = 2 * self.gap
+        for attempt in range(5):
+            if attempt:
+                time.sleep(self.gap)
+            self.requests += 1
+            try:
+                req = urllib.request.Request(url, headers={"User-Agent": AGENT})
+                with self.opener.open(req, timeout=180) as r:
+                    clen = r.headers.get("Content-Length")
+                    if clen and clen.isdigit() and int(clen) > limit:
+                        raise Refused(f"size limit: Content-Length {clen} above {limit} bytes")
+                    chunks, n = [], 0
+                    while True:
+                        b = r.read(1 << 20)
+                        if not b:
+                            break
+                        n += len(b)
+                        if n > limit:
+                            raise Refused(f"size limit: more than {limit} bytes")
+                        chunks.append(b)
+                    return b"".join(chunks), {k.lower(): v for k, v in r.headers.items()}, r.status
+            except urllib.error.HTTPError as e:
+                if e.code in (400, 403, 404, 410) or attempt == 4:
+                    raise
+                ra = e.headers.get("Retry-After", "") if e.headers else ""
+                time.sleep(min(120.0, float(ra)) if ra.isdigit() else wait)
+                wait *= 2.0
+            except (urllib.error.URLError, TimeoutError, ConnectionError):
+                if attempt == 4:
+                    raise
+                time.sleep(wait)
+                wait *= 2.0
+        raise RuntimeError("unreachable")
 
 
-def one(root, aid):
-    key = aid.replace("/", "_")
+# ------------------------------------------------------------------ content checks
+
+def gunzip_bounded(blob, limit=None):
+    limit = MAX_DECOMPRESSED if limit is None else limit
+    out, total, data = [], 0, blob
+    while data:
+        d = zlib.decompressobj(16 + zlib.MAX_WBITS)
+        while True:
+            chunk = d.decompress(data, 1 << 20)
+            total += len(chunk)
+            if total > limit:
+                raise Refused(f"size limit: gzip stream inflates beyond {limit} bytes")
+            out.append(chunk)
+            data = d.unconsumed_tail
+            if d.eof or not data:
+                break
+        if not d.eof:
+            raise Refused("truncated gzip stream")
+        data = d.unused_data
+        if data and data[:2] != b"\x1f\x8b":
+            break
+    return b"".join(out)
+
+
+def looks_html(data):
+    head = data[:4096].lstrip().lower()
+    return head.startswith((b"<!doctype html", b"<html")) or (head.startswith(b"<?xml") and b"<html" in head)
+
+
+def looks_tex(data):
+    head = data[:200000]
+    return any(h in head for h in TEX_HINTS)
+
+
+def is_tar(data):
+    if len(data) >= 262 and data[257:262] == b"ustar":
+        return True
+    try:
+        with tarfile.open(fileobj=io.BytesIO(data), mode="r:") as t:
+            return t.next() is not None
+    except Exception:                       # any failure to parse means "not a tar archive"
+        return False
+
+
+def content_of(data):
+    """What a single file is: tex, postscript, pdf, html, empty, text, binary."""
+    if not data:
+        return "empty"
+    if data[:4] == b"%PDF":
+        return "pdf"
+    if data[:2] == b"%!":
+        return "postscript"
+    if looks_html(data):
+        return "html"
+    if looks_tex(data):
+        return "tex"
+    try:
+        data[:65536].decode("utf-8")
+        return "text"
+    except UnicodeDecodeError:
+        return "binary"
+
+
+def check_eprint(blob):
+    """(kind, payload, content) of an e-print, or Refused. kind: tar | pdf | single-file."""
+    if not blob:
+        raise Refused("content check: empty response")
+    if blob[:4] == b"%PDF":
+        return "pdf", blob, "pdf"
+    data = gunzip_bounded(blob) if blob[:2] == b"\x1f\x8b" else blob
+    if data[:4] == b"%PDF":
+        return "pdf", data, "pdf"
+    if is_tar(data):
+        return "tar", data, "tar"
+    c = content_of(data)
+    if c in ("html", "empty"):
+        raise Refused(f"content check: the server answered with {'an HTML page' if c == 'html' else 'nothing'}, "
+                      f"not an e-print (first bytes {data[:60]!r})")
+    return "single-file", data, c
+
+
+def safe_extract(data, dest):
+    """Extract regular files and directories with safe names, within the limits. Returns
+    (skipped unsafe names, oversize names, has_tex)."""
+    skipped, oversize, total, n, has_tex = [], [], 0, 0, False
+    with tarfile.open(fileobj=io.BytesIO(data), mode="r:") as tar:
+        for m in tar:
+            n += 1
+            if n > MAX_MEMBERS:
+                skipped.append(f"<more than {MAX_MEMBERS} members>")
+                break
+            name = m.name
+            parts = name.split("/")
+            if (not (m.isfile() or m.isdir()) or name.startswith("/") or ".." in parts or len(name) > 400
+                    or "\x00" in name):
+                skipped.append(name)
+                continue
+            target = os.path.normpath(os.path.join(dest, name))
+            if not (target == dest or target.startswith(dest + os.sep)):
+                skipped.append(name)
+                continue
+            if m.isdir():
+                os.makedirs(target, exist_ok=True)
+                continue
+            if m.size > MAX_FILE or total + m.size > MAX_TOTAL:
+                oversize.append(name)
+                continue
+            f = tar.extractfile(m)
+            if f is None:
+                skipped.append(name)
+                continue
+            body = f.read(MAX_FILE + 1)
+            os.makedirs(os.path.dirname(target), exist_ok=True)
+            with open(target, "wb") as out:
+                out.write(body)
+            os.chmod(target, 0o644)
+            total += len(body)
+            if name.lower().endswith((".tex", ".ltx")) or (len(body) < 20_000_000 and looks_tex(body)):
+                has_tex = True
+    return skipped, oversize, has_tex
+
+
+def version_from_disposition(disp, aid):
+    m = re.search(r"arXiv-" + re.escape(aid.replace("/", "")) + r"v(\d+)", disp or "")
+    if m:
+        return "v" + m.group(1)
+    m = re.search(re.escape(aid.replace("/", "")) + r"v(\d+)", disp or "")
+    if not m and "/" in aid:                            # PDFs of old ids: filename="9407016v1.pdf"
+        m = re.search(r'"' + re.escape(aid.split("/")[1]) + r"v(\d+)", disp or "")
+    return "v" + m.group(1) if m else None
+
+
+# ------------------------------------------------------------------ e-print sources
+
+def fetch_source(net, aid, refresh):
+    root = net.root
+    key = key_of(aid)
     base = os.path.join(root, "kb-data", "raw", "arxiv", key)
     meta_path = os.path.join(root, "kb-data", "meta", "arxiv", key + ".json")
-    if os.path.exists(meta_path):
-        meta = json.load(open(meta_path))
-        if meta.get("status") == "ok" and os.path.isdir(meta["src"]):
-            print(meta["src"])
-            return 0
-    os.makedirs(os.path.dirname(meta_path), exist_ok=True)
-    os.makedirs(os.path.join(root, "locks"), exist_ok=True)
-    with open(os.path.join(root, "locks", "arxiv.lock"), "w") as lock:
-        fcntl.flock(lock, fcntl.LOCK_EX)
+    meta = read_json(meta_path)
+    if meta and meta.get("status") == "ok" and os.path.isdir(meta.get("src", "")) and not refresh:
+        say(meta["src"])
+        return 0
+    url = net.url("eprint", aid)
+    try:
+        blob, headers, status = net.get("eprint", url, MAX_DOWNLOAD)
+        kind, data, content = check_eprint(blob)
+    except (Refused, urllib.error.URLError, OSError, ValueError, RuntimeError) as e:
+        write_json(meta_path, {"id": aid, "status": "failed", "url": url, "error": str(e)[:300], "tried_utc": utc()})
+        say(f"FAILED {aid}: {e}", err=True)
+        return 1
+    disp = headers.get("content-disposition", "")
+    version = version_from_disposition(disp, aid) or version_from_api(net.root, aid) or "vX"
+    vdir = os.path.join(base, version)
+    n = 0
+    while os.path.exists(vdir):                         # never write into an existing directory
+        n += 1
+        vdir = os.path.join(base, f"{version}.retry{n}")
+    os.makedirs(vdir)
+    write_bytes(os.path.join(vdir, "source.bin"), blob)
+    src = os.path.join(vdir, "src")
+    os.makedirs(src)
+    skipped, oversize, has_tex = [], [], False
+    if kind == "pdf":
+        write_bytes(os.path.join(src, "paper.pdf"), data)
+    elif kind == "tar":
+        skipped, oversize, has_tex = safe_extract(data, src)
+    else:
+        write_bytes(os.path.join(src, "main.tex"), data)
+        has_tex = content == "tex"
+    rec = {"id": aid, "status": "ok", "url": url, "version": version, "kind": kind,
+           "bytes": len(blob), "sha256": hashlib.sha256(blob).hexdigest(),
+           "content_disposition": disp, "skipped_members": skipped,
+           "source": os.path.join(vdir, "source.bin"), "src": src, "fetched_utc": utc(),
+           "content": content, "tex_source": has_tex}
+    if oversize:
+        rec["oversize_members"] = oversize
+    if version == "vX":
+        rec["version_note"] = "no version in Content-Disposition and no arXiv API record"
+    write_json(meta_path, rec)
+    if not has_tex:
+        say(f"note {aid}: no TeX source in the e-print ({content}); for the text: --pdf {aid}", err=True)
+    say(src)
+    return 0
+
+
+def version_from_api(root, aid):
+    rec = read_json(os.path.join(root, "kb-data", "meta", "arxiv-api", key_of(aid) + ".json"))
+    return rec.get("version") if rec and rec.get("status") == "ok" else None
+
+
+# ------------------------------------------------------------------ PDF
+
+def fetch_pdf(net, aid, refresh):
+    root = net.root
+    key = key_of(aid)
+    rec_path = os.path.join(root, "kb-data", "meta", "arxiv-pdf", key + ".json")
+    rec = read_json(rec_path)
+    if rec and rec.get("status") == "ok" and os.path.isfile(rec.get("pdf", "")) and not refresh:
+        say(rec["pdf"])
+        return 0
+    src_rec = read_json(os.path.join(root, "kb-data", "meta", "arxiv", key + ".json")) or {}
+    version = src_rec.get("version") if src_rec.get("status") == "ok" and src_rec.get("version") != "vX" else None
+    version = version or version_from_api(root, aid)
+    url = net.url("pdf", aid + (version or ""))
+    try:
+        blob, headers, status = net.get("pdf", url, MAX_PDF)
+        if blob[:4] != b"%PDF":
+            raise Refused(f"content check: not a PDF ({content_of(blob)}; first bytes {blob[:40]!r})")
+        if b"%%EOF" not in blob[-4096:]:
+            raise Refused("content check: the PDF has no %%EOF at its end (truncated?)")
+    except (Refused, urllib.error.URLError, OSError, ValueError, RuntimeError) as e:
+        write_json(rec_path, {"id": aid, "status": "failed", "url": url, "error": str(e)[:300], "tried_utc": utc()})
+        say(f"FAILED {aid} (pdf): {e}", err=True)
+        return 1
+    disp = headers.get("content-disposition", "")
+    version = version or version_from_disposition(disp, aid) or "vX"
+    vdir = os.path.join(root, "kb-data", "raw", "arxiv", key, version)
+    os.makedirs(vdir, exist_ok=True)
+    target = os.path.join(vdir, "source.pdf")
+    n = 0
+    while os.path.exists(target):                       # never overwrite a stored file
+        n += 1
+        target = os.path.join(vdir, f"source.retry{n}.pdf")
+    write_bytes(target, blob)
+    write_json(rec_path, {"id": aid, "status": "ok", "url": url, "version": version, "bytes": len(blob),
+                          "sha256": hashlib.sha256(blob).hexdigest(), "content_disposition": disp,
+                          "pdf": target, "fetched_utc": utc(),
+                          "check": "starts with %PDF, ends with %%EOF"})
+    say(target)
+    return 0
+
+
+# ------------------------------------------------------------------ metadata: arXiv API
+
+def safe_xml(blob, what):
+    head = blob[:4096]
+    if b"<!DOCTYPE" in blob or b"<!ENTITY" in blob:
+        raise Refused(f"content check: {what} contains a DOCTYPE or an entity declaration")
+    if looks_html(blob) and b"<feed" not in head:
+        raise Refused(f"content check: {what} is an HTML page")
+    try:
+        return ET.fromstring(blob)
+    except ET.ParseError as e:
+        raise Refused(f"content check: {what} is not XML ({e})")
+
+
+def text_of(el, path):
+    x = el.find(path)
+    return " ".join(x.text.split()) if x is not None and x.text else None
+
+
+def api_entry_id(entry):
+    """('2201.03458', 'v2') from <id>http://arxiv.org/abs/2201.03458v2</id>."""
+    raw = text_of(entry, ATOM + "id") or ""
+    m = re.search(r"arxiv\.org/abs/(.+?)(v\d+)?$", raw)
+    return (m.group(1), m.group(2)) if m else (None, None)
+
+
+def entry_record(entry, aid, version, url, batch_rel, fetched):
+    links = {l.get("title") or l.get("rel"): l.get("href") for l in entry.findall(ATOM + "link")}
+    return {"id": aid, "status": "ok", "version": version, "url": url, "batch": batch_rel, "fetched_utc": fetched,
+            "title": text_of(entry, ATOM + "title"),
+            "authors": [text_of(a, ATOM + "name") for a in entry.findall(ATOM + "author")],
+            "abstract": text_of(entry, ATOM + "summary"),
+            "published": text_of(entry, ATOM + "published"), "updated": text_of(entry, ATOM + "updated"),
+            "primary_category": (entry.find(ARXIV_NS + "primary_category").get("term")
+                                 if entry.find(ARXIV_NS + "primary_category") is not None else None),
+            "categories": [c.get("term") for c in entry.findall(ATOM + "category")],
+            "doi": text_of(entry, ARXIV_NS + "doi"), "journal_ref": text_of(entry, ARXIV_NS + "journal_ref"),
+            "comment": text_of(entry, ARXIV_NS + "comment"),
+            "license": text_of(entry, ARXIV_NS + "license") or links.get("license"),
+            "pdf_link": links.get("pdf")}
+
+
+def meta_arxiv(net, ids, refresh, batch):
+    root = net.root
+    d = os.path.join(root, "kb-data", "meta", "arxiv-api")
+    todo = [a for a in ids if refresh or (read_json(os.path.join(d, key_of(a) + ".json")) or {}).get("status") != "ok"]
+    for a in ids:
+        if a not in todo:
+            say(os.path.join(d, key_of(a) + ".json"))
+    bad = 0
+    for k in range(0, len(todo), batch):
+        chunk = todo[k:k + batch]
+        url = net.url("api", "?" + urllib.parse.urlencode({"id_list": ",".join(chunk), "max_results": len(chunk)}))
+        fetched = utc()
         try:
-            if os.path.exists(meta_path):                      # another session got it meanwhile
-                meta = json.load(open(meta_path))
-                if meta.get("status") == "ok" and os.path.isdir(meta["src"]):
-                    print(meta["src"])
-                    return 0
-            url = "https://arxiv.org/e-print/" + aid
-            try:
-                blob, headers, status = fetch(url)
-            except Exception as e:                              # recorded, not fatal for the caller's list
-                json.dump({"id": aid, "status": "failed", "url": url, "error": repr(e)[:300],
-                           "tried_utc": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())},
-                          open(meta_path, "w"), indent=1)
-                print(f"FAILED {aid}: {e!r}", file=sys.stderr)
-                return 1
-            finally:
-                time.sleep(GAP)
-            disp = headers.get("Content-Disposition", "") or headers.get("content-disposition", "")
-            m = re.search(r"v(\d+)", disp)
-            version = "v" + m.group(1) if m else "vX"
-            vdir = os.path.join(base, version)
-            n = 0
-            while os.path.exists(vdir):                         # never write into an existing directory
-                n += 1
-                vdir = os.path.join(base, f"{version}.retry{n}")
-            os.makedirs(vdir)
-            open(os.path.join(vdir, "source.bin"), "wb").write(blob)
-            kind, skipped = unpack(blob, os.path.join(vdir, "src"))
-            json.dump({"id": aid, "status": "ok", "url": url, "version": version, "kind": kind,
-                       "bytes": len(blob), "sha256": hashlib.sha256(blob).hexdigest(),
-                       "content_disposition": disp, "skipped_members": skipped,
-                       "source": os.path.join(vdir, "source.bin"), "src": os.path.join(vdir, "src"),
-                       "fetched_utc": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())},
-                      open(meta_path, "w"), indent=1)
-            print(os.path.join(vdir, "src"))
-            return 0
-        finally:
-            fcntl.flock(lock, fcntl.LOCK_UN)
+            blob, headers, status = net.get("api", url, MAX_META)
+            feed = safe_xml(blob, "the arXiv API answer")
+            if feed.tag != ATOM + "feed":
+                raise Refused(f"content check: the arXiv API answer is <{feed.tag}>, not an Atom feed")
+        except (Refused, urllib.error.URLError, OSError, ValueError, RuntimeError) as e:
+            for a in chunk:
+                write_json(os.path.join(d, key_of(a) + ".json"),
+                           {"id": a, "status": "failed", "url": url, "error": str(e)[:300], "tried_utc": fetched})
+            say(f"FAILED arXiv API for {len(chunk)} id(s) ({', '.join(chunk[:3])}...): {e}", err=True)
+            bad += len(chunk)
+            continue
+        sha = hashlib.sha256(blob).hexdigest()
+        batch_rel = os.path.join("batches", f"{fetched.replace(':', '').replace('-', '')}-{sha[:12]}.xml")
+        write_bytes(os.path.join(d, batch_rel), blob)
+        found = {}
+        for entry in feed.findall(ATOM + "entry"):
+            eid, ver = api_entry_id(entry)
+            if eid in chunk:
+                found[eid] = (entry, ver)
+        for a in chunk:
+            path = os.path.join(d, key_of(a) + ".json")
+            if a not in found:
+                write_json(path, {"id": a, "status": "not-found", "url": url, "batch": batch_rel, "tried_utc": fetched,
+                                  "error": "the arXiv API answer has no entry with this id"})
+                say(f"FAILED {a}: not in the arXiv API answer", err=True)
+                bad += 1
+                continue
+            entry, ver = found[a]
+            one = ET.Element(ATOM + "feed")
+            one.append(entry)
+            ET.register_namespace("", ATOM[1:-1])
+            ET.register_namespace("arxiv", ARXIV_NS[1:-1])
+            ET.register_namespace("opensearch", OPENSEARCH[1:-1])
+            write_bytes(os.path.join(d, key_of(a) + ".xml"), ET.tostring(one, encoding="utf-8", xml_declaration=True))
+            write_json(path, entry_record(entry, a, ver, url, batch_rel, fetched))
+            say(path)
+    return bad
 
 
-def main():
-    if len(sys.argv) < 2 or sys.argv[1] in ("-h", "--help"):
-        print(__doc__)
-        return 2
+# ------------------------------------------------------------------ metadata: INSPIRE
+
+def inspire_eprints(hit):
+    md = hit.get("metadata", {}) if isinstance(hit, dict) else {}
+    return [e.get("value") for e in md.get("arxiv_eprints", []) or [] if isinstance(e, dict)]
+
+
+def inspire_get(net, query, size, fields):
+    url = net.url("inspire", "?" + urllib.parse.urlencode({"q": query, "size": size, "fields": fields,
+                                                            "sort": "mostrecent"}))
+    blob, headers, status = net.get("inspire", url, MAX_META)
+    if looks_html(blob):
+        raise Refused("content check: INSPIRE answered with an HTML page")
+    try:
+        doc = json.loads(blob.decode("utf-8"))
+    except (UnicodeDecodeError, ValueError) as e:
+        raise Refused(f"content check: INSPIRE answer is not JSON ({e})")
+    hits = doc.get("hits") if isinstance(doc, dict) else None
+    if not isinstance(hits, dict) or not isinstance(hits.get("hits"), list) or "total" not in hits:
+        raise Refused("content check: INSPIRE answer has no hits.total and hits.hits")
+    return url, blob, doc
+
+
+def meta_inspire(net, ids, refresh, batch, fields=INSPIRE_FIELDS):
+    root = net.root
+    d = os.path.join(root, "kb-data", "meta", "inspire")
+    todo = [a for a in ids if refresh or (read_json(os.path.join(d, key_of(a) + ".json")) or {}).get("status")
+            not in ("ok", "not-found")]
+    for a in ids:
+        if a not in todo:
+            say(os.path.join(d, key_of(a) + ".json"))
+    bad = 0
+    queue = [todo[k:k + batch] for k in range(0, len(todo), batch)]
+    while queue:
+        chunk = queue.pop(0)
+        query = " or ".join(f"arxiv:{a}" for a in chunk)
+        fetched = utc()
+        try:
+            url, blob, doc = inspire_get(net, query, 2 * len(chunk) + 2, fields)
+        except (Refused, urllib.error.URLError, OSError, ValueError, RuntimeError) as e:
+            for a in chunk:
+                write_json(os.path.join(d, key_of(a) + ".json"),
+                           {"id": a, "status": "failed", "query": query, "error": str(e)[:300], "tried_utc": fetched})
+            say(f"FAILED INSPIRE for {len(chunk)} id(s) ({', '.join(chunk[:3])}...): {e}", err=True)
+            bad += len(chunk)
+            continue
+        sha = hashlib.sha256(blob).hexdigest()
+        batch_rel = os.path.join("batches", f"{fetched.replace(':', '').replace('-', '')}-{sha[:12]}.json")
+        write_bytes(os.path.join(d, batch_rel), blob)
+        hits = doc["hits"]["hits"]
+        total = doc["hits"]["total"]
+        if isinstance(total, dict):
+            total = total.get("value")
+        if isinstance(total, int) and total > len(hits) and len(chunk) > 1:
+            # the answer was cut: ask again one id at a time (brief 12.9: check hits.total and the id set)
+            queue = [[a] for a in chunk] + queue
+            continue
+        for a in chunk:
+            match = [h for h in hits if a in inspire_eprints(h)]
+            path = os.path.join(d, key_of(a) + ".json")
+            base = {"id": a, "query": query, "url": url, "batch": batch_rel, "fetched_utc": fetched,
+                    "hits_total_of_query": total}
+            if not match:
+                write_json(path, dict(base, status="not-found", record=None, n_matches=0))
+                say(f"note {a}: no INSPIRE record carries this eprint", err=True)
+                continue
+            write_json(path, dict(base, status="ok" if len(match) == 1 else "ambiguous", n_matches=len(match),
+                                  record=match[0].get("metadata"), control_numbers=[
+                                      (h.get("metadata") or {}).get("control_number") for h in match]))
+            say(path)
+    return bad
+
+
+def inspire_query(net, query, size):
+    root = net.root
+    d = os.path.join(root, "kb-data", "meta", "inspire", "query")
+    path = os.path.join(d, hashlib.sha256(query.encode()).hexdigest()[:16] + ".json")
+    fetched = utc()
+    try:
+        url, blob, doc = inspire_get(net, query, size, INSPIRE_FIELDS)
+    except (Refused, urllib.error.URLError, OSError, ValueError, RuntimeError) as e:
+        write_json(path, {"query": query, "status": "failed", "error": str(e)[:300], "tried_utc": fetched})
+        say(f"FAILED INSPIRE query {query!r}: {e}", err=True)
+        return 1
+    total = doc["hits"]["total"]
+    write_json(path, {"query": query, "status": "ok", "url": url, "fetched_utc": fetched,
+                      "sha256": hashlib.sha256(blob).hexdigest(),
+                      "hits_total": total.get("value") if isinstance(total, dict) else total,
+                      "hits": [h.get("metadata") for h in doc["hits"]["hits"]]})
+    say(path)
+    return 0
+
+
+# ------------------------------------------------------------------ check (no network)
+
+def check_store(root, aid):
+    """Re-run the content checks on what the store holds for one id; prints one line."""
+    key = key_of(aid)
+    rec = read_json(os.path.join(root, "kb-data", "meta", "arxiv", key + ".json"))
+    if not rec:
+        say(f"{aid}: no download record")
+        return 1
+    if rec.get("status") != "ok":
+        say(f"{aid}: record status {rec.get('status')}: {rec.get('error', '')[:100]}")
+        return 1
+    try:
+        blob = open(rec["source"], "rb").read()
+        got = hashlib.sha256(blob).hexdigest()
+        kind, data, content = check_eprint(blob)
+    except (OSError, KeyError) as e:
+        say(f"{aid}: cannot read source.bin: {e}")
+        return 1
+    except Refused as e:
+        say(f"{aid}: FAILS the content check: {e}")
+        return 1
+    probs = []
+    if got != rec.get("sha256"):
+        probs.append("sha256 of source.bin differs from the record")
+    if rec.get("kind") != kind:
+        probs.append(f"record kind {rec.get('kind')}, content {kind}")
+    if kind == "tar":
+        with tarfile.open(fileobj=io.BytesIO(data), mode="r:") as t:
+            tex = any(m.isfile() and m.name.lower().endswith((".tex", ".ltx")) for m in t)
+    else:
+        tex = content == "tex"
+    pdf = read_json(os.path.join(root, "kb-data", "meta", "arxiv-pdf", key + ".json"))
+    extra = f"; PDF {pdf['pdf']}" if pdf and pdf.get("status") == "ok" else ""
+    say(f"{aid}: {rec.get('version')} {kind} ({content})" + (" no TeX" if tex is False else "")
+        + (f"; PROBLEMS: {'; '.join(probs)}" if probs else "; ok") + extra)
+    return 1 if probs else 0
+
+
+# ------------------------------------------------------------------ command line
+
+def parse(argv):
+    o = {"mode": "source", "service": "both", "refresh": False, "batch": None, "ids": [], "query": None,
+         "size": 5, "test_base": None, "gap": GAP}
+    i = 0
+    while i < len(argv):
+        a = argv[i]
+        if a in ("-h", "--help"):
+            say(__doc__)
+            sys.exit(2)
+        elif a in ("--pdf", "--meta", "--check"):
+            o["mode"] = a[2:]
+        elif a == "--refresh":
+            o["refresh"] = True
+        elif a in ("--service", "--batch", "--ids-from", "--inspire-query", "--size", "--test-server", "--test-gap",
+                   "--test-max"):
+            if i + 1 >= len(argv):
+                raise SystemExit(f"nrpic-fetch-arxiv: {a} needs a value")
+            v = argv[i + 1]
+            i += 1
+            if a == "--service":
+                if v not in ("arxiv", "inspire", "both"):
+                    raise SystemExit("nrpic-fetch-arxiv: --service arxiv|inspire|both")
+                o["service"] = v
+            elif a == "--batch":
+                o["batch"] = int(v)
+            elif a == "--size":
+                o["size"] = max(1, min(25, int(v)))
+            elif a == "--ids-from":
+                for line in open(v):
+                    s = line.split("#", 1)[0].strip()
+                    if s:
+                        o["ids"].append(s.split()[0])
+            elif a == "--inspire-query":
+                o["mode"], o["query"] = "inspire-query", v
+            elif a == "--test-server":
+                host = urllib.parse.urlsplit(v).hostname
+                if host not in ("127.0.0.1", "localhost", "::1"):
+                    raise SystemExit("nrpic-fetch-arxiv: --test-server takes a loopback URL only")
+                o["test_base"] = v
+            elif a == "--test-gap":
+                o["gap"] = float(v)
+            elif a == "--test-max":                      # e.g. file=1048576 (self-test only)
+                k, _, n = v.partition("=")
+                o.setdefault("test_max", {})[k] = int(n)
+        elif a.startswith("-"):
+            raise SystemExit(f"nrpic-fetch-arxiv: unknown option {a} (--help)")
+        else:
+            o["ids"].append(a)
+        i += 1
+    if (o["gap"] != GAP or o.get("test_max")) and not o["test_base"]:
+        raise SystemExit("nrpic-fetch-arxiv: --test-gap and --test-max only with --test-server")
+    names = {"download": "MAX_DOWNLOAD", "pdf": "MAX_PDF", "meta": "MAX_META", "decompressed": "MAX_DECOMPRESSED",
+             "file": "MAX_FILE", "total": "MAX_TOTAL", "members": "MAX_MEMBERS"}
+    for k, n in o.get("test_max", {}).items():
+        if k not in names:
+            raise SystemExit(f"nrpic-fetch-arxiv: --test-max {k}: one of {', '.join(names)}")
+        globals()[names[k]] = n
+    ids = []
+    for a in o["ids"]:
+        a = a.strip().replace("arXiv:", "").replace("arxiv:", "")
+        a = re.sub(r"v\d+$", "", a)
+        if not ID_RX.match(a):
+            raise SystemExit(f"nrpic-fetch-arxiv: {a!r} is not an arXiv identifier (2201.03458, gr-qc/9412071)")
+        if a not in ids:
+            ids.append(a)
+    o["ids"] = ids
+    return o
+
+
+def main(argv):
+    o = parse(argv)
     root = main_checkout()
-    return max(one(root, a.strip().replace("arXiv:", "")) for a in sys.argv[1:])
+    if o["mode"] == "inspire-query":
+        return inspire_query(Net(root, o["test_base"], o["gap"]), o["query"], o["size"])
+    if not o["ids"]:
+        say(__doc__)
+        return 2
+    if o["mode"] == "check":
+        return max(check_store(root, a) for a in o["ids"])
+    net = Net(root, o["test_base"], o["gap"])
+    if o["mode"] == "meta":
+        bad = 0
+        if o["service"] in ("arxiv", "both"):
+            bad += meta_arxiv(net, o["ids"], o["refresh"], max(1, min(50, o["batch"] or 20)))
+        if o["service"] in ("inspire", "both"):
+            bad += meta_inspire(net, o["ids"], o["refresh"], max(1, min(25, o["batch"] or 10)))
+        return 1 if bad else 0
+    fn = fetch_pdf if o["mode"] == "pdf" else fetch_source
+    rc = 0
+    for a in o["ids"]:
+        rc = max(rc, fn(net, a, o["refresh"]))
+    return rc
 
 
 if __name__ == "__main__":
-    sys.exit(main())
+    sys.exit(main(sys.argv[1:]))
