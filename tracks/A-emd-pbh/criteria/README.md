@@ -40,7 +40,7 @@ export OMP_NUM_THREADS=1
 PY=../../../.venv/bin/python        # worktree environment (harness/bin/nrpic-env create --no-kokkos)
 $PY predict.py --delta 0.1 --e 0.1 --p 0 --sigv 0 --aend 100 --sigmaH 0.01   # < 1 s
 $PY predict.py --mu 0.05 --e 0.2 --feed mean --aend 39.7   # amplitude of 2609.14218, mean measure
-$PY check_criteria.py            # 44 checks + 5 diagnostics, about 15 min (T5.3 dominates)
+$PY check_criteria.py            # 41 checks + 4 diagnostics (INFO), about 15 min (T5.3 dominates)
 $PY check_criteria.py --only 2   # 1707.03595 only, a few minutes
 $PY scan_disagreement.py         # about 5 s
 $PY check_criteria2.py           # A1-A5, L1-L5 and two figures, about 2 min
@@ -116,8 +116,11 @@ R9  2507 top hat         no   delta_th 0.229                spin 0.198
 
 ## Checks against the papers
 
-Final run A-emd-pbh-20261115-115120-2eb3117 (`results.json`, figures `check_T1..T5`);
-predictions and every outcome, failed ones included, in `JOURNAL.md`.
+Wave-1 final run A-emd-pbh-20261115-115120-2eb3117 (`results.json`, figures `check_T1..T5`);
+predictions and every outcome, failed ones included, in `JOURNAL.md`. Current state (wave 2):
+runs A-emd-pbh-20261115-161813-6c820fb (all) and -163358-9b2d048 (T2 after the T2.6 fix): 41
+checks pass, 4 wave-1 criteria kept as diagnostics; the rows T1.2, T2.2 and T2.4 of the table
+below are superseded by "The four failures of wave 1" in the wave-2 section.
 
 | Check | Paper value (locator) | This code | |
 |---|---|---|---|
@@ -197,7 +200,9 @@ Predictions and outcomes in `JOURNAL.md` (wave 2). Runs: A-emd-pbh-20261115-1615
 (A1-A5, L1-L5; repeated with figure layout changes only as A-emd-pbh-20261115-162306-80396e4,
 identical `results_criteria2.json`), A-emd-pbh-20261115-162524-d32d331 (pytest, 10 passed),
 A-emd-pbh-20261115-162303-80396e4 (scouting tables), A-emd-pbh-20261115-161813-6c820fb (full
-`check_criteria.py`), T2_REPEAT (`check_criteria.py --only 2` after the T2.6 fix). Failed run
+`check_criteria.py`; 40 checks, 3 failed: T2.6a-c on an underflowing sigma_H I had added),
+A-emd-pbh-20261115-163358-9b2d048 (`check_criteria.py --only 2` after the fix: 17 checks, 0
+failed). Failed run
 on record: A-emd-pbh-20261115-161542-36e461d (a decimal-conversion fault of mine).
 
 ### Amplitude measures (SCOPE.md 10.1), `predict.amplitude_measures`, `convert_amplitude`
@@ -251,7 +256,7 @@ shell is past turnaround on the slice above mu_max = 0.112 (r_m = R_b/2), 0.0435
 | T1.2b (0.05555 vs printed 0.05556) | explained: c = 0.0555549716 lies 2.8e-8 below the rounding boundary; the printed value is the two-step rounding (0.0555550 -> 0.05556). Check now "within one unit of the last printed digit"; the digit check kept as diagnostic T1.2b-d. The wave-1 note "E-bar = 1.18174" was a misprint: E-bar = 1.1816597 (mpmath agrees) | T1.2b, run -161813-6c820fb |
 | T2.2d (3.248e-14 vs 3.244e-14) | explained: the ratio of the two printed prefactors of 1707.03595 (independent of E-bar) is off by 1.2e-3, three times the rounding; 1.921e-7 needs E-bar in [1.18163, 1.18176] (exact 1.18166), 3.244e-14 needs [1.18195, 1.18202] (contains 1.182). The paper used two values of E-bar; the code is right | T2.2e, T2.2f |
 | T2.4a (2nd order, "within 20 %") | corrected: the paper's "agree" is visual on a figure of 30 decades; on the plotted window (sigma_H 2.5e-4 to 0.005) the ratio rises monotonically from 1.14 to 3.04, max |log10| 0.48 <= 0.5, and tends to 1 as sigma_H -> 0 (T2.5a) | T2.4a, `check_T2_ratios_1707.03595` |
-| T2.4c (1st order, "within 20 %") | corrected likewise: plotted window 0.019-0.04, ratio 1.45-2.32, max |log10| 0.37. Cause of the drift at smaller sigma_H demonstrated (T2.6): the dropped (2u^2 + 3/2)/s3^2 in A (1919); plus a constant factor ~1.55 of the closed form. The root t_{1,2}(u) printed at 1880-1886 misses a factor pi in the denominator (typo; derivation and the paper's own limit 1921) | T2.6a-d, T2_REPEAT |
+| T2.4c (1st order, "within 20 %") | corrected likewise: plotted window 0.019-0.04, ratio 1.45-2.32, max |log10| 0.37. Cause of the drift at smaller sigma_H demonstrated (T2.6): the dropped (2u^2 + 3/2)/s3^2 in A (1919) gives the drift (factor 0.26-0.83); the approximate root t2 ~ 12E/(pi delta_th) a constant 1.53 (T2.6d, exact to four digits). The root t_{1,2}(u) printed at 1880-1886 misses a factor pi in the denominator (typo; derivation and the paper's own limit 1921) | T2.6a-d, run -163358-9b2d048 |
 
 ### Prediction tables of the first scouting runs (`scouting_table.py`, run -162303-80396e4)
 

@@ -365,7 +365,7 @@ t = 33"); nothing from that run enters the table.
 - Figure viewed (fig_scouting_predictions): formation epochs per criterion against the end of
   each run; first version had the legend outside the canvas and overlapping labels, fixed.
 
-### Outcome F (run A-emd-pbh-20261115-162<see below>, full check_criteria.py at commit 6c820fb)
+### Outcome F (run A-emd-pbh-20261115-161813-6c820fb, full check_criteria.py at commit 6c820fb: 40 checks, 3 failed (T2.6a-c, nan), 4 diagnostics)
 
 The first attempt, run A-emd-pbh-20261115-161542-36e461d, failed at T1.2b on my own code
 (decimal conversion of a numpy float, `repr` of numpy 2 floats); fixed in 6c820fb; the failed
@@ -410,3 +410,22 @@ manifest is kept.
   I2(approx A)/semi-analytic = [int (1-4u^2) t2(u)^-5 du / int (1-4u^2) (12 E~(u)/(pi
   delta_th))^-5 du] x (2 + 2X + X^2)/X^2 at X = delta_th^2/(2 sigma_H^2), within 1 %, at all
   four sigma_H. Refuted beyond 1 % (then another approximation of the appendix contributes).
+
+### Outcome of the T2 repeat (run A-emd-pbh-20261115-163358-9b2d048, `check_criteria.py --only 2` at 9b2d048: 17 checks, 0 failed, 3 diagnostics)
+
+- T2.6a-c at sigma_H = 0.006, 0.0077, 0.01, 0.017: the numbers of the full run (above), now
+  without the nan; T2.6a passes on sigma_H <= 0.01 as written in its check (1.0028-1.0120), the
+  1.0416 at 0.017 stays a refuted part of my F5 prediction.
+- T2.6d confirmed, exactly: I2(approx A)/semi-analytic = 1.5378, 1.5417, 1.5485, 1.5806 equals
+  the t2 factor 1.5318 times (2 + 2X + X^2)/X^2 to the four printed digits at all four
+  sigma_H. So the semi-analytic 1st-order formula of 1707.03595 (1345) differs from the
+  integral it approximates by three identified pieces: the dropped (2u^2 + 3/2)/s3^2 in A
+  (the sigma-dependent drift, 0.26-0.83), the approximate root t2 (a constant 1.53 at
+  delta_th(1) = 0.192, q = sqrt 2) and the terms 2 + 2X of F (< 1 %); the remainder
+  (numerical/I2, 0.3-4 %) is the [t1, t2] and t < 0 parts the appendix neglects.
+- T2.4a, T2.4c, T2.5a, T2.5b and the rest of T2 identical to the full run.
+- Figure `check_T2_ratios_1707.03595` viewed: left, the ratios on the paper's plotted windows
+  (shaded) with the 0.5-dex band; right, the decomposition of T2.6.
+- State of the four wave-1 failures: T1.2b and T2.2d explained (rounding in the paper; two
+  values of E-bar); T2.4a and T2.4c corrected to the paper's actual statement and passing; the
+  cause of the 1st-order drift demonstrated (T2.6).

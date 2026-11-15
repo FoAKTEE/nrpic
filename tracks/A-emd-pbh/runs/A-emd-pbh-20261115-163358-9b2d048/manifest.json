@@ -1,0 +1,34 @@
+{
+  "run_id": "A-emd-pbh-20261115-163358-9b2d048",
+  "command": "python check_criteria.py --only 2",
+  "cwd": "/data/haiyangw/nrpic/wt/A-emd-pbh/tracks/A-emd-pbh/criteria",
+  "commit": "9b2d0486994a9abf50598fa29e9ff296f1153103",
+  "worktree_dirty_in_package": false,
+  "inputs": [
+    {
+      "path": "tracks/A-emd-pbh/criteria/emd_criteria.py",
+      "sha256": "295bd47ab5f45d2d9f53bf005a070c99e0ce4ff8e65462b0011b27831c34b05c"
+    },
+    {
+      "path": "tracks/A-emd-pbh/criteria/check_criteria.py",
+      "sha256": "9195c1677d502cb47a47300fbbd0e4e802036322420bdbc51a4f10a44d66291a"
+    }
+  ],
+  "output_dir": "/data/haiyangw/nrpic/scratch/A-emd-pbh/A-emd-pbh-20261115-163358-9b2d048",
+  "purpose": "A-pre-2: check the analytic criteria against numbers printed in 1609.01588, 1707.03595, 2211.13950, 2507.18312, 2508.10070",
+  "kind": "scouting",
+  "started_utc": "2026-11-15T16:33:58+00:00",
+  "wall_time_s": 5.4,
+  "cores": 1,
+  "card_hours": 0.0,
+  "host": "anta",
+  "exit": "ok",
+  "status": "completed",
+  "gate": "G1",
+  "outputs": {
+    "dir": "scratch/A-emd-pbh/A-emd-pbh-20261115-163358-9b2d048"
+  },
+  "launcher": "local",
+  "track": "A-emd-pbh",
+  "registration": "by hand (runlog.py): nrpic-run submit refuses the worktree while other helpers hold uncommitted files"
+}
