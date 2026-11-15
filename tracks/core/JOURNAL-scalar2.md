@@ -270,3 +270,29 @@ U5a/U5b N = 16 and 32 with nmax2 = 36.
   spectrum scattered about 1 inside the band but for one three-mode shell at 0.38, which
   the exact Gamma test accepts; correlation function on the expectation; |xi/G|^2
   exponential).
+
+## 2026-11-15, entry 5: T8 outcome; T6 first run failed on a test artefact
+
+**T8, run core-20261115-160134-3fde433** (32^3, nmax2 = 64, to t = 3.2, 9 dumps with the
+metric; figure `fig_rnr.png`, looked at: the deviation rises with |n| from 1e-6 to 1e-3
+and the control sits at 2 from the first dump on).
+- P8a HOLDS: at t = 0 the ratio R^NR_n/(W R alpha_n) is 1 within 1.1e-11 for the three
+  modes with W > 1/2 and within 2.0e-9 for the 13 modes with W > 1e-3.
+- P8b HOLDS with a wide margin: largest |ratio - 1| at the later dumps 2.7e-5 for |n| <=
+  2 (3.7e-6 from N = 2.0 to 3.1, no drift), 7.6e-5 for |n| <= 4, 2.8e-3 for all 1054
+  modes once every mode has W > 1/2 (N = 3.14), against the bounds 2e-3 and 2e-2. The
+  deviation of the high shells grows from 8e-4 at N = 2.4 to 2.8e-3 at N = 3.1.
+- P8c HOLDS: with `noise_pi_sign = -1` the deviation is 1.7 at the first dump and 2.0
+  afterwards (R^NR close to -W R alpha).
+So the slice and the kicks carry the coarse-grained linear solution through the entry
+of all shells at the coarsest resolution of the ladder.
+
+**T6, run core-20261115-155841-bc78aa8: exit status 1.** Nine cases identical (107
+files; eight restart files differ only in the 36 unset header bytes), but the case
+`msr` (restart from cycle 13) reported two restart files of different size. Looked at
+the files: the parameter list of a restarted run records the path of the restart file
+(`<job> restart_file`), and the two executables started from `.../ms/base/rst/...` and
+`.../ms/new/rst/...`; the data after `<par_end>` are byte-identical (0 differing bytes).
+An artefact of the comparison, not of the executable. `t6_regress.py` now compares the
+parameter list line by line (only `restart_file` may differ) and the data byte by
+byte; rerun below.

@@ -30,20 +30,30 @@ from common import inf, np
 
 
 def rst_equal(fa, fb):
-    a = np.fromfile(fa, dtype=np.uint8)
-    b = np.fromfile(fb, dtype=np.uint8)
+    """Mesh restart files: the parameter list (up to "<par_end>") line by line, where
+    only the line restart_file may differ (a restarted run records the path of the file
+    it started from, and the two executables start from files in different
+    directories); the data after it byte by byte, but for the 36 unset bytes."""
+    ra, rb = open(fa, "rb").read(), open(fb, "rb").read()
+    end = b"<par_end>\n"
+    pa, pb = ra.find(end) + len(end), rb.find(end) + len(end)
+    la, lb = ra[:pa].split(b"\n"), rb[:pb].split(b"\n")
+    bad = [x for x, y in zip(la, lb) if x != y and not x.strip().startswith(b"restart_file")]
+    if len(la) != len(lb) or bad:
+        return False, "parameter lists differ beyond the line restart_file"
+    note = "" if ra[:pa] == rb[:pb] else "line restart_file differs; "
+    a = np.frombuffer(ra[pa:], dtype=np.uint8)
+    b = np.frombuffer(rb[pb:], dtype=np.uint8)
     if a.size != b.size:
-        return False, "sizes differ"
+        return False, "sizes of the data differ"
     diff = np.nonzero(a != b)[0]
     if diff.size == 0:
-        return True, "identical"
-    head = bytes(a[:400000])
-    p = head.find(b"<par_end>\n") + len(b"<par_end>\n")
-    lo = p + 4 + 4 + 9*8 + 10*4
+        return True, note + "data identical"
+    lo = 4 + 4 + 9*8 + 10*4
     hi = lo + 9*4
     if diff.min() >= lo and diff.max() < hi:
-        return True, f"{diff.size} bytes differ, all inside the unset range {lo}-{hi - 1}"
-    return False, f"{diff.size} bytes differ, first {diff.min()}, last {diff.max()}"
+        return True, note + f"{diff.size} bytes differ, all inside the 36 unset bytes"
+    return False, note + f"{diff.size} bytes differ, first {diff.min()}, last {diff.max()}"
 
 
 def main():

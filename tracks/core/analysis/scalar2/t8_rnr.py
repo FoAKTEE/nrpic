@@ -128,9 +128,9 @@ def main():
                    color=cl)
     ax[1].axhline(2e-2, **fs.MASK_LINE)
     ax[1].set_yscale("log")
-    ax[1].set_xlabel("e-folds after $N_*$", labelpad=-2)
+    ax[1].set_xlabel("e-folds after $N_*$")
     ax[1].set_ylabel("largest deviation (dashed: control)")
-    ax[1].legend(loc="center right", fontsize=8)
+    ax[1].legend(loc="lower right", fontsize=8)
     fig.savefig(os.path.join(out, "fig_rnr.png"), dpi=200)
     print("T8 done:", os.path.join(out, "summary.json"))
 
