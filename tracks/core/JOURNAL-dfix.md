@@ -375,3 +375,30 @@ branch. Predictions:
   plunging tracer and the one released at rest are removed at the lapse threshold
   (in `single_v3` at 126 M and 54 M). Track D's bound of 1 per cent may fail for the
   innermost orbit, as it did in `single_v3`.
+
+Outcome of T4 (run core-20261115-160805-5d1663f, about 14 minutes on five cores under
+load; numbers in `t4_newton.json` of the run directory) [VERIFIED]:
+- kepler: distance to the exact orbit at most 6.8e-5 and 6.6e-5; counters (3, 4);
+  sphere 8 in, 7 out; sums of m E 3.3728e-10 and 3.0021e-10 against 3.375e-10 and
+  3.000e-10 (-6.6e-4, +7.0e-4); energy drift 7.1e-6. As predicted.
+- plummer: radius constant to 1.4e-6 and 2.8e-6; distance to the exact position at most
+  1.4e-5 and 5.2e-5. As predicted.
+- background: largest relative error of r 1.3e-7 (growing mode) and 2.5e-7 (decaying
+  mode). As predicted.
+- expand (comoving softening): distance to the ODE solution at most 1.9e-4 and 1.8e-4
+  (predicted below 1e-3: holds); C constant to 4.1e-5 of a|W| while a (K + W) changes by
+  0.30 of it. The bound 1e-5 on C FAILED by a factor four.
+- expand_phys (softening 0.1/a): distance to its ODE solution 2.6e-3 and 5.9e-3. The
+  bound 1e-3 FAILED.
+What I think happened, not yet tested [JUDGEMENT]: both bounds were guesses of the
+leapfrog error for orbits that turned out to pass within the softening length of the
+seed (r_min = 0.098 and 0.078 against s = 0.1; with the shrinking softening 0.058 and
+0.041 against s = 0.025 at the end), where the step 0.002 resolves the pericentre
+poorly (omega dt up to about 0.2). The alternative is an error of the force law or of
+the softening rule in the code. They differ in a run with half the step: an
+integration error of a second-order scheme falls by four in the distance and in the
+drift of C, a wrong rule does not converge to the ODE solution.
+Prediction for the follow-up (case list `t4_conv_cpu.list`, step 0.001, same particle
+files): ratios of the largest distance (step 0.002 over 0.001) between 3 and 5 for
+both orbits of both cases, and of the drift of C in the comoving case between 3 and 5.
+Refuted (and the softening rule suspect) if a ratio is near one.
