@@ -117,3 +117,22 @@ numbered display lines in the main file: 1711.06681 19, 1908.05683 7, 1607.00381
 at least 71 (it also \inputs files my count does not follow); 2509.05124 no prediction (its
 equations are in \input files). Refuted if any of the six differs by more than 1, or if the
 full test suite fails.
+
+### Outcome L10
+
+Held. Run kb-20261115-141159-bf9c30f (8 papers, 17.9 s): numbered equation rows 1711.06681
+19 (was 1), 1908.05683 7 (was 2), 1607.00381 25 (was 20), 2105.05208 150 (was 14),
+1410.3808 72, 1901.04498 0, 2312.12499 71 (was 57); 2509.05124 still 0.
+
+### D-L4 and prediction L11
+
+2509.05124 has 0 equations because its shorthand `\bea` stands for TWO environments,
+`\begin{equation}\begin{aligned}`; `env_aliases` accepts a body of exactly one \begin or
+\end. Scan (scratch/kb/lead/composite_scan.py): 20 papers use such composite shorthands in
+their body (1707.00537 120 uses, 1905.06300 116, 1912.05399 103, 2101.05741 120,
+2402.08642 115, 2509.05124 125, ...; stochastic-inflation groups mostly, which Track E reads).
+Counts before the fix: scratch/kb/lead/l11_before.txt.
+Prediction: after accepting bodies made only of \begin/\end commands and re-ingesting the 20,
+every paper with at least 10 uses gains a number of equation rows within 10 % of its use
+count of the shorthand (one equation environment per use), and each of the 20 gains at least
+one row; nothing else changes (suite passes). Refuted otherwise.

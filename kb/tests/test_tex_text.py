@@ -112,3 +112,17 @@ def test_definitions_through_an_alias_of_newcommand():
     doc = pre + r"\begin{document}\section{A}\beq a=b \label{e1}\eeq\begin{equation} c \end{equation}\end{document}"
     st = S.extract(doc)
     assert [(e["env"], e["number"]) for e in st["equations"]] == [("equation", "1"), ("equation", "2")]
+
+
+def test_composite_environment_shorthands():
+    # found by the kb lead on 2509.05124: \bea = \begin{equation}\begin{aligned}
+    pre = (r"\newcommand{\bea}{\begin{equation}\begin{aligned}}\newcommand{\eea}{\end{aligned}\end{equation}}"
+           r"\newcommand{\bad}{\begin{equation}x}")
+    mac = M.collect(pre)
+    al = M.env_aliases(mac)
+    assert al["bea"] == r"\begin{equation}\begin{aligned}" and al["eea"] == r"\end{aligned}\end{equation}"
+    assert "bad" not in al                                  # text after the \begin: not a pure shorthand
+    doc = pre + r"\begin{document}\bea a&=b \\ c&=d \label{e1}\eea and \bea x=y \eea\end{document}"
+    st = S.extract(doc)
+    assert [(e["env"], e["number"], e["labels"]) for e in st["equations"]] == [("equation", "1", ["e1"]),
+                                                                                ("equation", "2", [])]

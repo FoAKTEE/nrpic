@@ -152,17 +152,18 @@ def collect(text):
 
 
 ENV_ALIAS_RE = re.compile(r"^\s*\\(begin|end)\s*\{([A-Za-z*]+)\}\s*$")
+ENV_SEQ_RE = re.compile(r"^\s*(?:\\(?:begin|end)\s*\{[A-Za-z*]+\}\s*)+$")
+ENV_ONE_RE = re.compile(r"\\(begin|end)\s*\{([A-Za-z*]+)\}")
 
 
 def env_aliases(macros):
-    """Macros that stand for \\begin{env} or \\end{env} (\\be, \\ee, \\bea, ...):
-    {name: '\\begin{env}'}. Used before structure extraction so that equations written with
-    such shorthands are found."""
+    """Macros that stand for \\begin{env} or \\end{env} (\\be, \\ee, \\bea, ...), or for a
+    sequence of them only (\\bea = \\begin{equation}\\begin{aligned}): {name: replacement}.
+    Used before structure extraction so that equations written with such shorthands are found."""
     out = {}
     for name, sp in macros.items():
-        if sp["nargs"] == 0 and ENV_ALIAS_RE.match(sp["body"]):
-            mm = ENV_ALIAS_RE.match(sp["body"])
-            out[name] = "\\%s{%s}" % (mm.group(1), mm.group(2))
+        if sp["nargs"] == 0 and ENV_SEQ_RE.match(sp["body"]):
+            out[name] = "".join("\\%s{%s}" % (mm.group(1), mm.group(2)) for mm in ENV_ONE_RE.finditer(sp["body"]))
     return out
 
 

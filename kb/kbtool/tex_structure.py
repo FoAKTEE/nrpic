@@ -65,12 +65,13 @@ def scan_math(body, aliases=None):
             break
         tok_begin, tok_end, word, sym = m.group(1), m.group(2), m.group(3), m.group(4)
         if word and word in aliases:
-            a = aliases[word]
-            mm = re.match(r"\\(begin|end)\{(.*)\}", a)
-            if mm.group(1) == "begin":
-                tok_begin = mm.group(2)
-            else:
-                tok_end = mm.group(2)
+            # a shorthand may stand for several \begin/\end (\bea = \begin{equation}\begin{aligned}):
+            # the outermost environment counts, i.e. the first \begin or the last \end
+            parts = re.findall(r"\\(begin|end)\{([^{}]*)\}", aliases[word])
+            if parts and parts[0][0] == "begin":
+                tok_begin = parts[0][1]
+            elif parts:
+                tok_end = parts[-1][1]
             word = None
         if stack is None:
             if tok_begin is not None:
