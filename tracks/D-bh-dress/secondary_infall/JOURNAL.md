@@ -90,3 +90,39 @@ t_end matter.
     with L < 4M (1305.2619 `SFWpaper.tex:120`, via `../scope/REFERENCES.md`) when it
     reaches r < 4M: for eps = 0.01, sigma_i = 0.02 captures > 90 % of the collapsed mass
     by a/a_i = 4, sigma_i = 0.1 between 30 and 80 %.
+
+## 2026-11-15T12:22Z  outcome of Test 1, runs D-bh-dress-20261115-121837-987643b (failed),
+## D-bh-dress-20261115-121936-5c715b5, D-bh-dress-20261115-122051-bf0d6b1
+
+Run 121837 failed on a mathtext label (no numbers used). Run 121936 had a biased
+Monte-Carlo comparison (bin average against the value at the bin centre: -0.84 % for
+r^(-9/4) and these bins); run 122051 repeats with bin averages and a second integrator.
+Numbers below are from run 122051 (`rd_checks.txt`); figures `figs/rd_checks.png`,
+`figs/rd_boost_mc.png` looked at (trajectories leave the Hubble flow and the printed apices
+sit on mine; eta(S) rises from 0.996 at S = 10 to a plateau; MC bins scatter about the
+bin-averaged quadrature).
+1a. Partly refuted at the stated tolerance. y_ta^3/tau_ta^2 agrees with the printed column
+    to 1.3e-5 in all four rows (e.g. row B 1.085559 against 1.08557). The apices
+    themselves are 1.4e-4 to 4.0e-4 (relative) further out than printed: y_ta = 8.3064,
+    10.1434, 12.2733, 14.7259 against 8.305, 10.142, 12.27, 14.72; tau_ta = 22.981,
+    31.006, 41.262, 54.223 against 22.98, 31.00, 41.25, 54.21. DOP853 (rtol 1e-12) and
+    Radau (rtol 1e-11) agree to 1e-6, so the difference is in the printed integration,
+    whose accuracy the paper itself calls sub-percent (`sections/appendix.tex:119`).
+    Consequence: none for this package (eta is what is used).
+1b. Holds: eta_inf = 1.087885 (start S = y0^3/(2 tau0^2) -> 1e8); the printed 1.086 is the
+    value at the paper's start S ~ 500 (1.08556), 0.17 % below the limit. The approach is
+    slow (eta = 1.0767 at S = 100, 1.0868 at 1e3, 1.08777 at 1e4).
+1c. Holds, and one printed number is explained: no start reproduces both ratios of
+    1901.08528 `:497`. (4 G M t_ta^2)^(1/3)/r_ta = 1.2250 and (2 G M t_ta^2)^(1/3)/r_ta =
+    0.97231 in the limit. The printed 0.964 is reproduced by the radius at which the two
+    accelerations balance along the path, divided by the turnaround radius: 0.96440 at
+    S = 500, 0.96472 in the limit (their "analytic estimate" is defined by equating the two
+    terms, `:154`). The printed 0.999 requires eta = 1.003, which occurs only for a start at
+    S ~ 12 (eta = 0.996 at S = 10, 1.032 at S = 17.8), where the balance ratio is 0.95, not
+    0.964. So r_ta^3 = 2 G M t_ta^2 (`:167-169`, "better than 0.1 %") is low by 8.8 % in
+    r^3 (2.8 % in r) against r_ta^3 = 2.1758 G M t_ta^2 here; 2106.07480's 2.172 is right
+    to 0.2 % [VERIFIED by run 122051; the cause of 1901.08528's number is not known].
+1d. Holds: closed form (2/pi) B(1/2, 3/4) = 1.525520 = quadrature to 1e-15; Monte Carlo
+    (4e6 orbits) over the bin-averaged exact expectation 0.99785 (weighted mean over bins
+    with r < 15, largest single-bin statistical error 1.35 %, largest deviation 3.6 % in
+    the bin at r = 1.6). The printed "53 %" is 52.6 % rounded.
