@@ -203,3 +203,12 @@ factor 1.9 above 20. So the resolved part (below |k|L/2pi ~ 20, where the two de
 does grow in the nonlinear stage, by an amount the deposit does not change; that part is a
 candidate for a physical TT signal of nonlinear structure (quasi-static: rho_kin/rho_grad
 ~ 0.02), the grid-scale part is not resolved.
+
+## P8: processor companion at 32^3 (written before its initial data were made)
+
+The card job waits behind about eleven others (squeue at 16:55 UTC). The same five cases at
+32^3 (two particles per cell and direction, 262,144 particles; serial processor build of
+core-v0.3) run now on five cores. The k-mode wavelength is 32 cells there, so before shell
+crossing the box modes are resolved at both meshes. Predictions: P0-P6 hold at 32^3 with the
+same thresholds; c_+(K1) at 32^3 and 64^3 agree to 1 percent for a <= 20 once both exist
+(refuted otherwise); after shell crossing they may differ.
