@@ -122,3 +122,8 @@ The six run ids were first written with the local clock (PST, 03:31 to 03:36);
 033151 -> 113151, 033246 -> 113246, 033632 -> 113632. Manifests rewritten in the
 fields the helper reads (schema, status completed, outputs with sha256sums.txt), the
 old id kept in their notes. Numbers unchanged.
+
+## 2026-11-15T11:58Z  precision of the 3B crossing
+Interpolated from `results/regime_estimates.json`: the box-4 ratio reaches 2 at
+delta = 0.0156 (I wrote 0.015 above from a hand estimate); the box-2 ratio reaches 1 at
+0.0156, the box-8 ratio reaches 1 at 0.0010 and 2 at 0.0039. SCOPE.md uses 0.016.
