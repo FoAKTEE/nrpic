@@ -36,6 +36,14 @@ CONFIGS = {
                          mu_max=8.0, n=3000, a_end=8.0, sigma=0.0, nj=1),
     "absorb_e0.03": dict(eps=0.03, mode="absorb", soft=0.0, r_abs=2.0, mu_core=1e-3,
                          mu_max=8.0, n=3000, a_end=8.0, sigma=0.0, nj=1),
+    # the set-ups of RUNS.md: no dust inside areal radius R_w = 3M (vac_core: the core
+    # shell holding the dust inside mu_core = eps^2 R_w^3/2 is massless)
+    "pass_e0.03_s0.5_rw3": dict(eps=0.03, mode="pass", soft=0.5, r_abs=0.0,
+                                mu_core=0.03**2 * 27.0 / 2.0, mu_max=8.0, n=4000,
+                                a_end=8.0, sigma=0.0, nj=1, vac_core=True),
+    "absorb_e0.03_rw3": dict(eps=0.03, mode="absorb", soft=0.0, r_abs=2.0,
+                             mu_core=0.03**2 * 27.0 / 2.0, mu_max=8.0, n=3000, a_end=8.0,
+                             sigma=0.0, nj=1, vac_core=True),
     "pass_e0.01_s0.5": dict(eps=0.01, mode="pass", soft=0.5, r_abs=0.0, mu_core=1e-3,
                             mu_max=8.0, n=4000, a_end=8.0, sigma=0.0, nj=1),
     "pass_e0.03_s0.5": dict(eps=0.03, mode="pass", soft=0.5, r_abs=0.0, mu_core=1e-3,
@@ -64,7 +72,7 @@ R_HARD = 2.0        # any particle inside r = 2M is taken into the hole
 def setup(c):
     eps = c["eps"]
     edges = np.geomspace(c["mu_core"], c["mu_max"], c["n"] + 1)
-    m_rad = np.concatenate([[c["mu_core"]], np.diff(edges)])
+    m_rad = np.concatenate([[0.0 if c.get("vac_core") else c["mu_core"]], np.diff(edges)])
     mu_lagr = np.concatenate([[0.5 * c["mu_core"]], edges[:-1] + 0.5 * np.diff(edges)])
     r_i = (2.0 * mu_lagr / eps**2) ** (1.0 / 3.0)
     nj = c["nj"]
@@ -234,6 +242,13 @@ def main():
                    n_checked_ta=int(ok.sum()),
                    max_rel_err_t_ta=float(d_tta.max()) if d_tta.size else None,
                    median_rel_err_t_ta=float(np.median(d_tta)) if d_tta.size else None)
+    # growth at the snapshots: turnaround mass, dress (dust that passed the centre), hole
+    m0 = setup(c)["m"]
+    summary["growth"] = [dict(a=s_["a"], t=s_["t"],
+                              mta=1.0 + float(m0[res["t_ta"] <= s_["t"]].sum()),
+                              dress=float(s_["m"][s_["alive"] & (s_["ncross"] > 0)].sum()),
+                              mbh=s_["mbh"]) for s_ in res["snaps"]
+                         if min(abs(s_["a"] - x) for x in (1.5, 2, 3, 4, 6, 8)) < 1e-6]
     if c["mode"] == "absorb" and c["nj"] == 1:
         oka = ~np.isnan(res["t_abs"]) & ~np.isnan(cf["t_abs"])
         d_ab = np.abs(res["t_abs"][oka] / cf["t_abs"][oka] - 1.0)
