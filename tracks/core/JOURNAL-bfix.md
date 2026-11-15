@@ -278,3 +278,29 @@ by the eight modes that have no solution). Refuted if H of `jit4_fd` stays above
 then the reading above (spectral against finite differences) is wrong.
 P4d as written (factor three) is already refuted by the trial; the registered run records
 the numbers.
+
+### P5 The new options on a card: predictions (before the job is submitted)
+
+Job `tracks/core/analysis/bfix/gpu_job.sh` (one A100, limit 30 minutes, at most 0.5
+card-hours; the allotment of this package is one card-hour), test T4
+(`t4_card.py`), new card executable against the release card executable
+`/data/haiyangw/nrpic/.work/build_gpu_v03/src/athena`.
+
+- P5a (oblique wave on the card, k = (1,1,1), one period): N = 16 and 32 give the
+  amplitude and phase errors of the processor run T1 to three significant digits; N = 64
+  agrees with the Fourier-symbol prediction within 10 per cent; N = 128 within a factor
+  two, or sits on the rounding floor that Track B found at 128 cells for A = 1e-6
+  (periodic_z4c, item 4): then the phase error is of order 1e-8 instead of the predicted
+  value. gw_diag's Psi_4 error falls with N at about fifth order to 64 cells.
+- P5b (regression on the card): the test particle with the midpoint and the Boris pusher
+  and the Z4c puncture benchmark (20 steps) give byte-identical output files with the
+  release and the new card executable (no particle deposit: card runs are reproducible).
+  Refuted by one differing file.
+- P5c (thin boxes on the card): the comparisons of P3c hold on the card with the bound
+  1e-8 (card runs with deposit differ from run to run at 1e-13).
+- P5d (Track B's box, 256 x 256 x 16, one MeshBlock in z, one particle per cell and
+  direction, waves (1, 0.3, 0), delta = 0.01, to conformal time 1): the run ends on the
+  time limit with all 1 048 576 particles; the fields depend on z by less than 1e-9
+  relative; throughput above 3e6 zone-cycles per second (the cosmology logs give 4.5e6 to
+  5.8e6 at 128^3 and 64^3 with particles, Track B's review). Refuted by a failure of the
+  run or a z dependence above 1e-6.

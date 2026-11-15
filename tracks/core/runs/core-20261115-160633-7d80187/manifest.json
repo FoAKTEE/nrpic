@@ -1,0 +1,48 @@
+{
+ "run_id": "core-20261115-160633-7d80187",
+ "owner": "core",
+ "command": [
+  "/data/haiyangw/nrpic/wt/core-bfix/.venv/bin/python",
+  "/data/haiyangw/nrpic/wt/core-bfix/tracks/core/analysis/bfix/t3_thin_jitter.py",
+  "--exe",
+  "/data/haiyangw/nrpic/wt/core-bfix/.work/exe/athena_cpu_w1",
+  "--out",
+  ".",
+  "--nproc",
+  "8"
+ ],
+ "cwd": "/data/haiyangw/nrpic/scratch/core/core-20261115-160633-7d80187",
+ "commit": "7d80187",
+ "source_modified_since_commit": false,
+ "inputs": [
+  {
+   "path": ".work/exe/athena_cpu_w1",
+   "sha256": "c32a1389c06e58887cd3c38bb92512d413b91eaa8153baac170ac889f7ceeced"
+  },
+  {
+   "path": "problems/cosmo/east.athinput",
+   "sha256": "61890ec7060b7505b8679e8a58aef4c1668e55a9a6d3b2aaf90e88ec5efcdd81"
+  },
+  {
+   "path": "problems/cosmo/make_waves.py",
+   "sha256": "cdc9d7f902423e74cf29b07a12fe3b761ee0775df69dee7304ab14d54241be4f"
+  },
+  {
+   "path": "python/nrpic/torus_id.py",
+   "sha256": "0621244f31967b66530f700a414a3688de24e5a1095c7beb4d2cb519edf409f5"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/wt/core-bfix/.venv/bin/python",
+   "sha256": "d6bca2b84e73c7775a0dd5e6a76899cfe4ee62863d7c8f88513811d1fda23f49",
+   "role": "executable"
+  }
+ ],
+ "output_directory": "/data/haiyangw/nrpic/scratch/core/core-20261115-160633-7d80187",
+ "purpose": "T3: thin periodic boxes, lattice jitter, sources in double precision, constraint solve with the differences of the code (P3a-P3d, P4a-P4e, P2e): initial data by problems/cosmo/make_waves.py against cosmo/ic/make_east.py; eight processor runs to conformal time 5.5",
+ "kind": "scouting",
+ "tag": "T3",
+ "state": "running",
+ "cores": 8,
+ "card_hours": 0.0,
+ "started_utc": "2026-11-15T16:06:33Z"
+}
