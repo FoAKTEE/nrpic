@@ -596,3 +596,20 @@ on a card with `.work/build_gpu_v7`); I had predicted equality without excepting
 column, so as worded the prediction fails in a round-off digit of a zero, and holds for
 every quantity that is not zero. No figure: byte comparisons have nothing to plot
 [JUDGEMENT].
+
+### Publication, and prediction for check P (the published package used as a track would)
+
+Published by `tracks/core/analysis/clump/publish_exe.sh` into
+`scratch/core/exe/core_clump-curvature/` (READY written last): `athena_gpu` (sha256
+661b5534..., the card executable of check G), `athena_cpu` (53c0d32b..., the one of
+every processor test and of R), `COMMIT` (e1a4d0c8, branch tip e1c8d82 at publication),
+`examples/` (four inputs), `generator/` (`git archive e1a4d0c8 python/nrpic
+problems/ic`), `SHA256SUMS`, `READY` (= `tracks/core/analysis/clump/READY.txt`).
+
+Check P, prediction (before it runs): the published generator, run from the published
+directory, `generator/problems/ic/make_ic.py clumps --gaussian 0.2,1,0,0,0,0.06,0,0
+--N 100000 --seed 1`, writes the same particle bytes and the same momenta as the
+generator of the branch did in run `core-20261115-160625-1311116`; the published
+`athena_cpu` with `examples/clump_moving.athinput` and `time/nlim=1` prints the line of
+the smeared curvature and writes the same history file as that run, byte for byte.
+Refuted by any differing byte (then the package is not what was tested).
