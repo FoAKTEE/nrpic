@@ -385,3 +385,14 @@ Expected: tracker positions, horizon mass and the particle history of cycles 5 t
 agree to 1e-10 relative (a Z4c restart is not bitwise, scripts/README.md); the horizon
 is found in both. Refuted by a missing tracker or finder after the restart, or by
 differences above 1e-8.
+
+### 1b, second launch cancelled: the wave zone was too large
+
+Run `core-20261115-120038-70a5190` (A) started with 1156 MeshBlocks, 448 on level 1 and
+500 on level 2: the refined region of +-18 for the wave extraction is rounded outward
+to whole parent blocks and became +-32 at level 2 and the whole domain at level 1. At
+6.5e6 zone-cycles per second that is 31 minutes per run. Cancelled after 30 s, with
+the four runs queued behind it (`-120040-`, `-120041-`, `-120043-`, `-120044-`, never
+started). New wave zone: cells of 1/2 within 15.9 of the origin (the eight level-1
+blocks around it), spheres at 10 and 14; initial mesh 428 MeshBlocks (`athena -m 1`).
+Predictions unchanged, with "the sphere at 14" for the energy.

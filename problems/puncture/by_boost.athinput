@@ -47,18 +47,19 @@ refinement_interval = 8
 
 <z4c_amr>
 method            = tracker
-radius_0_rad      = 18.0
+radius_0_rad      = 15.9
 radius_0_reflevel = 2
 
-# cells of 1/2 within 18 of the origin, for the wave extraction at 12 and 16
+# cells of 1/2 within 16 of the origin (the eight level-1 MeshBlocks around it), for
+# the wave extraction at 10 and 14; a larger region costs 448 more MeshBlocks
 <refined_region_wave>
 level = 2
-x1min = -18.0
-x1max = 18.0
-x2min = -18.0
-x2max = 18.0
-x3min = -18.0
-x3max = 18.0
+x1min = -15.9
+x1max = 15.9
+x2min = -15.9
+x2max = 15.9
+x3min = -15.9
+x3max = 15.9
 
 <time>
 evolution  = dynamic
@@ -82,8 +83,8 @@ damp_kappa1     = 0.02
 damp_kappa2     = 0.0
 tracker_mode    = ode
 nrad_wave_extraction = 2
-extraction_radius_0  = 12.0
-extraction_radius_1  = 16.0
+extraction_radius_0  = 10.0
+extraction_radius_1  = 14.0
 extraction_nlev      = 10
 waveform_dt          = 0.25
 
