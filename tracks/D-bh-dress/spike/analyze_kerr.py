@@ -30,6 +30,15 @@ warnings.simplefilter("ignore", RuntimeWarning)
 RANGES = [(0.0, 4.0), (4.0, 6.0), (6.0, 10.0), (10.0, 16.0), (16.0, 40.0)]
 
 
+def _trend(t, y):
+    A_ = np.vstack([t / 1e4, np.ones_like(t)]).T
+    coef, res, *_ = np.linalg.lstsq(A_, y, rcond=None)
+    resid = y - A_ @ coef
+    s2 = resid @ resid / max(len(y) - 2, 1)
+    cov = s2 * np.linalg.inv(A_.T @ A_)
+    return coef[0], np.sqrt(cov[0, 0])
+
+
 def cumtrapz(y, x):
     return np.concatenate([[0.0], np.cumsum(0.5 * (y[1:] + y[:-1]) * np.diff(x))])
 
@@ -151,6 +160,11 @@ def main():
             "expected": float(e), "t0": int(c[0]), "z_min": float(z.min()), "z_max": float(z.max()),
             "late_half_mean_over_expected": float(c[nsnap // 2:].mean() / e),
             "late_half_z": float((c[nsnap // 2:].mean() - e) / np.sqrt(e)),
+            "early_half_mean_over_expected": float(c[:nsnap // 2].mean() / e),
+            "late_over_early": float(c[nsnap // 2:].mean() / c[:nsnap // 2].mean()),
+            # least-squares slope of counts/expected per 1e4 M with its standard error
+            # (snapshots treated as independent: a lower bound on the error)
+            "trend_per_1e4M": [float(v) for v in _trend(times, c / e)],
             "Lz_mean_ref": float(lref), "Lz_mean_t0": float(lzm[0, i]),
             "Lz_sem_t0": float(lzsem[0, i]),
             "Lz_z_t0": float((lzm[0, i] - lref) / lzsem[0, i]),
