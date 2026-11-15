@@ -250,3 +250,21 @@ so; at a = 1001 (eta ~ 63, the G spectrum peaking at |k|L/2pi = 5) that is ~1e-5
 order-one coefficients of the transformation not derived]. Prediction: both below 1e-2 of
 rms G at every dump after a = 100. Refuted if either reaches rms G: then the slicing could
 matter as much as the spatial piece and P7's reading would need the slicing computed.
+
+## Outcome of P10, run B-20261115-170728-757e581 (`slicing_products.json`, `.png`, looked at)
+
+CONFIRMED. rms Lambda[dT dT] / rms G = 9.4e-4 at a = 12, 8.7e-5 at a = 121, 9.2e-6 at
+a = 1001 (quadratic cloud; cubic: 9.2e-4, 9.3e-5, 8.9e-6); rms Lambda[T d_eta h^S] is exactly
+twice that (Lambda[E d d E] = -Lambda[dE dE]). At a = 1001 both are ~2e-15 to 4e-15 against
+the rise of ~2e-9: the slicing products of the generators measured from the dumps cannot make
+the rise. Caveat [JUDGEMENT]: the list of slicing products and their order-one coefficients is
+mine, not derived in full; the conclusion holds unless a coefficient is larger than 1e4.
+
+Answer to the wave-1 caveat (stage/G0/REVIEW.md lines 98-102), from P7-P10: the late rise of
+the flat TT part in the cosmology dumps is not a second-order gauge effect. The spatial-gauge
+piece G is computed exactly to second order (0.13-0.17 (rms non-TT)^2, peaking at
+|k|L/2pi = 5) and is a tenth of the rise; the slicing products are 1e-5 of G; the first-order
+gauge is Newtonian (P9). The rise sits at the grid scale, is deposit-dependent there, and is
+quasi-static (rho_kin/rho_grad ~ 0.02), so it is not resolved radiation either; the resolved
+band (|k|L/2pi < 20) grows by 8-10 percent (below 10) and twentyfold (10-20), deposit-
+independent, which is the candidate physical TT response of nonlinear structure.
