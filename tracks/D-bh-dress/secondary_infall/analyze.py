@@ -377,8 +377,9 @@ def main():
                 sl = (rcen > lo) & (rcen < hi) & (rho_p > 0)
                 fits[lab] = float(np.polyfit(np.log(rcen[sl]), np.log(rho_p[sl]), 1)[0]) \
                     if sl.sum() >= 3 else None
-            sl = (rc_l > 3.0) & (rc_l < 0.1 * rt)
-            fits["absorb_3_0.1rta"] = float(np.polyfit(np.log(rc_l[sl]), np.log(rho_l[sl]), 1)[0])
+            sl = (rc_l > 3.0) & (rc_l < 0.3 * rt)
+            fits["absorb_3_0.3rta"] = float(np.polyfit(np.log(rc_l[sl]), np.log(rho_l[sl]), 1)[0]) \
+                if sl.sum() >= 3 else None
             res.setdefault("profile_slopes", {})[f"eps{eps_s}_a{av:g}"] = fits
             prof[f"a{av:g}"] = dict(r=rcen.tolist(), rho_pass=rho_p.tolist(),
                                     rlagr=rc_l.tolist(), rho_absorb=(rho_l * 6 * PI * tj * tj).tolist(),
