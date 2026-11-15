@@ -407,7 +407,7 @@ def make_figures(runs, gr, nw, prof, res, out):
 
     # 3. relativistic minus Newtonian positions over the sheets
     fig, axs = plt.subplots(1, 3, figsize=(fs.FULL_WIDTH, 3.0))
-    fig.subplots_adjust(left=0.09, right=0.98, bottom=0.16, top=0.9, wspace=0.35)
+    fig.subplots_adjust(left=0.115, right=0.98, bottom=0.16, top=0.9, wspace=0.38)
     for j, (gname, nname) in enumerate((("L1_n32", "N_n32"), ("L1_n64", "N_n64"),
                                         ("L4_n64", "N4_n64"))):
         if gname not in gr or nname not in nw:
@@ -439,6 +439,8 @@ def make_figures(runs, gr, nw, prof, res, out):
                 continue
             r = runs[name]
             i = int(np.argmin(np.abs(r["a"] - aa)))
+            if abs(r["a"][i] - aa) > 0.5:
+                continue
             k = 2.0*np.pi/r["L"]
             xx = np.mod(r["x"][i]/r["L"] - 0.25 + 0.5, 1.0) - 0.5
             axs[j].plot(xx, r["v"][i]/(r["d"]/k)/np.sqrt(r["a"][i]),
