@@ -537,3 +537,31 @@ the single hole of 1b (E) (m = 1, P = 0.043, S = 0.3) run again with
 t = 1.6 is at least five times smaller than in run (E) with `shift_eta = 2`, and the
 displacement at t = 1.6 is below 1e-3. If the speeds are equal within a factor 2 the
 explanation is wrong.
+
+### Outcome of test 2 (card run `core-20261115-120835-d08c476`, executable of 7a60df2, to t = 30)
+
+Numbers from `multi_check.py` (`multi_check.json`), figure `figs/binary_evolution.png`
+(looked at: two symmetric arcs, counter-clockwise, bending inward).
+ - 1920 cycles in 700 s (0.194 card-hours), 8.4e6 zone-cycles per second, 568
+   MeshBlocks at the start, 932 at the end (392 created, 28 removed), peak card memory
+   58.5 GB (block limit 2400, two finders).
+ - Mean of the two trackers within 3.6e-14 of the origin, z below 4e-14. Held.
+ - Both punctures start along their momenta; the line turns counter-clockwise by
+   0.527 rad at t = 30 (Newtonian rate would give 0.95). Held.
+ - Tracker speed: 0.075 within 2.5 M, then a slow rise to 0.109 at t = 30, 0.69 of
+   P/m = 0.158. Held (range 0.5 to 1.1), but the speed is not settled.
+ - Coordinate separation: 10.00, 9.88 at t = 10, 9.08 at t = 30, shrinking faster with
+   time. Inside 10 +- 1 at t = 30 as predicted, though it would leave that band soon
+   after. With the trackers at 0.7 of the circular speed the punctures fall inward in
+   these coordinates; whether that is the lag of the gauge (the tracker follows minus
+   the shift, which starts at zero) or the orbit itself cannot be told from this run
+   [TO VERIFY at higher resolution and with a longer run].
+ - Horizons found in all 120 searches of each hole; masses 0.5096 at t = 0, between
+   0.5034 and 0.5166 during the first 2.5 M, 0.5156 at the end; the two agree to 3e-7.
+   Predicted 0.510 to 0.520 and constant to one percent: the first value is 0.0004
+   below the range and the early scatter is 1.3 percent: FAILED by these margins; from
+   t = 3 on the masses are within the range and drift by +0.3 percent.
+ - History norms: H 9.6e-5 at t = 0 (truncation at the punctures on cells of m/8;
+   the closed-form residual with the correction is 5.6e-6), peak 2.2e-3 at t = 1.25,
+   8.4e-4 at t = 30; momentum 1.8e-6, peak 5.6e-4, 4.6e-4 at the end. Bounded, but as
+   in test 3 set by the evolution of the punctures, not by the initial data.
