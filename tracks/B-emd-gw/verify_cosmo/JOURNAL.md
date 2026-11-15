@@ -75,3 +75,30 @@ P5 Plane symmetry: spread of x over a lattice plane and |u_y|, |u_z| below 1e-10
 P6 All four relativistic runs reach a = 42 with every particle kept (no horizon forms in
    plane symmetry at these amplitudes [JUDGEMENT]); refuted for L = 4 if the run stops at
    the crossing. Total card time below 20 minutes.
+
+## First look at the constraints, and a prediction for two particles per cell (12:12)
+
+Runs done so far in B-emd-gw-20261115-115217-69ab1db: L1_n32, L4_n64, L1_n64 (all to
+a = 42, exit 0). Prediction P4 (mean H_r below 1e-4 and mean M_r below 1e-2 before the
+crossing, falling with resolution) fails already: mean H_r = 1.6e-4 (64 cells) and
+2.4e-4 (32 cells) at a = 10, 1.3e-3 and 1.7e-3 at a = 15; mean M_r = 0.13 and 0.14 at
+a = 10 (C2 production run with three modes at d = 0.01: 3.7e-6 and 8.9e-4 at a = 10,
+cosmo/TESTLOG.md, entry 07:37). Nearly no change from 32 to 64 cells.
+Where it sits (field dumps of L1_n64, figure in progress): at a = 10 |H|/16 pi <E> is
+1e-4 to 1e-3 in the underdense half of the box (x/L = 0.55 to 0.95) and 1e-5 to 3e-4
+around the pancake; M_x likewise. Cause proposed: the lattice of one particle per cell
+is stretched in the void (spacing 1.45 h at a = 10, 1.7 h at a = 15) and its cubic
+cloud no longer deposits a smooth density there: depositing the exact Zel'dovich sheet
+positions with the code's cloud and compensation (scripts/analyze_pancake.py,
+deposit_1d) gives a density that differs from the continuum Zel'dovich density by 8.1e-2
+in the void at a = 10 and 2.1e-1 at a = 15 (1e-2 elsewhere), while the relativistic
+density matches that deposit to 7e-3. The field equations see the lattice ripple; the
+particles move as a smooth flow; the constraints record the mismatch.
+Test: the same 64-cell, L = 1 case with two particles per cell and direction
+(make_east.py --ppc 2; 2,097,152 particles). The same deposit of exact positions then
+differs from the continuum by 5.4e-3 (a = 10) and 2.2e-3 (a = 15) in the void.
+Prediction P7, written before the run: mean H_r and mean M_r at a = 10 and a = 15 lower
+than with one particle per cell by more than a factor of 5; |H| in the void at a = 15
+lower by more than 10; the positions against Zel'dovich unchanged within 20 percent of
+their error (the error is the relativistic offset, not the deposit). Refuted if the
+mean constraints fall by less than 2.
