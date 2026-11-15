@@ -175,6 +175,41 @@ MGGravity::~MGGravity() {
 //! \brief load the data and solve
 
 void MGGravityDriver::Solve(Driver *pdriver, int stage, Real dt) {
+  // Without a gas the density belongs to another module (the Newtonian mode of the
+  // particle module), which calls SolveSource when its density is ready.
+  if (pmy_pack_->pmhd == nullptr && pmy_pack_->phydro == nullptr) return;
+  auto &u0 = (pmy_pack_->pmhd != nullptr) ? pmy_pack_->pmhd->u0
+                                            : pmy_pack_->phydro->u0;
+  SolveDensity(pdriver, u0, IDN, dt);
+  return;
+}
+
+//----------------------------------------------------------------------------------------
+//! \fn void MGGravityDriver::SolveSource(Driver *pdriver, rho, ns)
+//! \brief solve lap phi = four_pi_G rho for the density held in component ns of a
+//! cell-centred array with the ghost cells of the mesh.  The colour offset of the
+//! red-black smoother, which the driver alternates from one V cycle to the next, is
+//! reset first: the result then depends on the density and on the starting potential
+//! only, not on the number of cycles of earlier solves, and a restarted run repeats
+//! the original one.
+
+void MGGravityDriver::SolveSource(Driver *pdriver, const DvceArray5D<Real> &rho,
+                                  int ns) {
+  coffset_ = 0;
+  SolveDensity(pdriver, rho, ns, 0.0);
+  last_defect = 0.0;
+  for (int v = 0; v < nvar_; ++v) {
+    last_defect += CalculateDefectNorm(MGNormType::l2, v);
+  }
+  return;
+}
+
+//----------------------------------------------------------------------------------------
+//! \fn void MGGravityDriver::SolveDensity(Driver *pdriver, rho, ns, dt)
+//! \brief load the density rho(ns) and solve
+
+void MGGravityDriver::SolveDensity(Driver *pdriver, const DvceArray5D<Real> &rho,
+                                   int ns, Real dt) {
   RegionIndcs &indcs_ = pmy_pack_->pmesh->mb_indcs;
 
   // Reallocate MG arrays and phi if AMR has changed the mesh
@@ -194,9 +229,7 @@ void MGGravityDriver::Solve(Driver *pdriver, int stage, Real dt) {
   // convention: Laplacian(u) = 6u - neighbors = -dx²∇²u).  To obtain the
   // standard Poisson equation ∇²φ = 4πGρ we must load the source with a
   // negative sign so that -∇²φ = -4πGρ, i.e. ∇²φ = +4πGρ.
-  auto &u0 = (pmy_pack_->pmhd != nullptr) ? pmy_pack_->pmhd->u0
-                                            : pmy_pack_->phydro->u0;
-  mglevels_->LoadSource(u0, IDN, indcs_.ng, -four_pi_G_);
+  mglevels_->LoadSource(rho, ns, indcs_.ng, -four_pi_G_);
 
   // Apply source mask (zero source outside mask_radius_)
   mglevels_->ApplyMask();

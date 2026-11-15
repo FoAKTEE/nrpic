@@ -61,6 +61,9 @@ class MGGravityDriver : public MultigridDriver {
   void CreateMeshblockMultigrids(MeshBlockPack *pmbp);
   void Solve(Driver *pdriver, int stage,
              Real dt = 0.0) final;
+  // solve with the density of another module (particles): lap phi = four_pi_G rho(ns)
+  void SolveSource(Driver *pdriver, const DvceArray5D<Real> &rho, int ns);
+  Real last_defect = 0.0;   // L2 defect norm after the last SolveSource
   void SetFourPiG(Real four_pi_G);
 
   void SmoothOctet(MGOctet &oct, int rlev,
@@ -74,6 +77,7 @@ class MGGravityDriver : public MultigridDriver {
   friend class MGGravity;
 
  private:
+  void SolveDensity(Driver *pdriver, const DvceArray5D<Real> &rho, int ns, Real dt);
   Real four_pi_G_, omega_;
 };
 

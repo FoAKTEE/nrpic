@@ -217,9 +217,11 @@ void Particles::NrpicInit(ParameterInput *pin) {
 
   const bool mesh_metric = (nropt.metric == NrpicMetric::mesh);
   metric_is_static = (pmy_pack->pz4c == nullptr);
+  // Newtonian mode (nrpic_newton.cpp): no spacetime, the mesh holds the potential
+  nropt.newton = (pusher == ParticlesPusher::nrpic_newton);
   nropt.deposit = pin->GetOrAddBoolean("particles", "deposit",
-                                       (mesh_metric && pmy_pack->pz4c != nullptr));
-  if (mesh_metric && pmy_pack->padm == nullptr) {
+                      (mesh_metric && (pmy_pack->pz4c != nullptr || nropt.newton)));
+  if (mesh_metric && pmy_pack->padm == nullptr && !nropt.newton) {
     std::cout << "### FATAL ERROR in " << __FILE__ << " at line " << __LINE__ << std::endl
               << "<particles> metric = mesh requires a <z4c> or <adm> block" << std::endl;
     std::exit(EXIT_FAILURE);
@@ -268,6 +270,7 @@ void Particles::NrpicInit(ParameterInput *pin) {
     pbval_tm = new MeshBoundaryValuesCC(pmy_pack, pin, false);
     pbval_tm->InitializeBuffers(Tmunu::N_Tmunu);
   }
+  if (nropt.newton) { NrpicNewtonInit(pin); }
 }
 
 //----------------------------------------------------------------------------------------
@@ -370,6 +373,7 @@ TaskStatus Particles::NrpicSaveMetric(Driver *pdriver, int stage) {
 //! \brief advances all particles from t^n to t^{n+1}
 
 TaskStatus Particles::NrpicPush(Driver *pdriver, int stage) {
+  if (nropt.newton) { return NrpicNewtonPush(pdriver, stage); }
   Mesh *pm = pmy_pack->pmesh;
   const bool mesh_metric = (nropt.metric == NrpicMetric::mesh);
   if (mesh_metric && !metric_is_static) {
@@ -698,6 +702,7 @@ void Particles::NrpicDepositSources() {
   const Real dlen[3] = {nropt.dom_len[0], nropt.dom_len[1], nropt.dom_len[2]};
   const bool per[3] = {nropt.periodic[0], nropt.periodic[1], nropt.periodic[2]};
   const int nb = nropt.deposit_shape + 1;              // cells per direction of a cloud
+  const bool newton = nropt.newton;      // Newtonian mode: rest mass instead of energy
 
   nrpic::MeshMetric proto;
   proto.bspline = nropt.interp_bspline;
@@ -729,7 +734,8 @@ void Particles::NrpicDepositSources() {
       met(1, xp, ap);
       Real gi[3][3], uup[3];
       nrpic::Inv3Sym(ap.g, gi);
-      const Real W = nrpic::LorentzFactor(gi, up, uup);
+      const Real wrel = nrpic::LorentzFactor(gi, up, uup);
+      const Real W = newton ? 1.0 : wrel;
       lsmw += mp*W;
 
       Real q[Tmunu::N_Tmunu];
@@ -1344,6 +1350,11 @@ TaskStatus Particles::NrpicDeposit(Driver *pdriver, int stage) {
   if (!nropt.deposit) return TaskStatus::complete;
   NrpicDepositSources();
   NrpicFilterSources();
+  if (nropt.newton) {
+    // potential of the deposited density, second half of the kick, diagnostics
+    NrpicNewtonFinishStep(pdriver);
+    return TaskStatus::complete;
+  }
   NrpicUpdateTimeStep();
   NrpicStepSources();
   NrpicAddLambda();
@@ -1366,6 +1377,10 @@ TaskStatus Particles::NrpicDeposit(Driver *pdriver, int stage) {
 
 void Particles::NrpicInitializeSources() {
   if (nropt.metric != NrpicMetric::mesh) return;
+  if (nropt.newton) {
+    NrpicNewtonInitialize();
+    return;
+  }
   z4c::Z4c *pz4c = pmy_pack->pz4c;
   if (pz4c != nullptr) {
     pz4c->Z4cToADM(pmy_pack);

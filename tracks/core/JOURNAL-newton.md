@@ -42,3 +42,35 @@ and 1.80e-4, ratio 3.74, and the maximum error falls by 3.93: second order, as e
 the seven-point Laplacian. Below one per cent at N = 64: yes (maximum 0.45 per cent).
 Not refuted: no error stop, no order-one error. The multigrid module is usable on an
 isolated uniform mesh; what it lacks for particles is a source other than the gas density.
+
+### Implementation, first version (commit below)
+
+New file `athenak/src/particles/nrpic_newton.cpp`; hooks in `particles.hpp`,
+`particles.cpp`, `nrpic.cpp`, `nrpic_io.cpp`, `gravity/mg_gravity.{hpp,cpp}`,
+`driver/driver.cpp`, `pgen/pgen.cpp`, `CMakeLists.txt` (listed with line numbers in
+`tracks/core/interfaces/newtonian_mode.md`, section 4).
+
+Smoke test (not registered, no number is taken from it for the record): one unit mass and
+24 tracers, isolated 64^3 box. It ran; the far field approaches -1/r^2. It showed a force
+of the mass on itself of order m/dx^2. Before believing or disbelieving it I wrote an
+independent numpy model of the scheme (cloud-in-cell deposit, seven-point Poisson solve
+with Fourier transforms on a periodic box, gradient of the Catmull-Rom interpolant;
+`scratch/core/tmp/selfforce.py`): it gives the same three components to seven digits. So
+the force is a property of the scheme "cloud-in-cell deposit, Catmull-Rom gather" (the
+deposit and the gather kernels differ, so the force of a particle on itself does not
+cancel), which the relativistic mode shares, and not a fault of the implementation. It
+vanishes for a particle at a cell centre and for a regular lattice of particles (uniform
+deposited density). It is measured properly in test T1 below.
+
+### R1 Regression of the relativistic mode (prediction)
+
+Five short existing problems (`tracks/core/tools/regress_relativistic.py`: Kerr geodesic
+with the midpoint and the Boris pusher, deposit on a statically refined flat mesh, the
+periodic cosmology problem with Z4c at 16^3, the Oppenheimer-Snyder ball with Z4c on a
+refined mesh), each run with the executable built from `main` (b7b431d,
+`.work/baseline/athena_cpu`) and with the new one, processor build.
+Prediction: every output file (histories, trajectories, snapshots, restart files) is
+identical byte for byte. Refuted by any differing file. The only change inside a kernel
+of the relativistic mode is the selection `W = newton ? 1 : W_rel` in the deposit; if the
+compiler evaluated W_rel differently because of it, the deposit sums would differ in the
+last digits.
