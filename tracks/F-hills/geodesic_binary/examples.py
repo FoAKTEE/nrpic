@@ -68,6 +68,7 @@ def main(outdir):
             eb_end=o["eb_end"], a_min_a0=o["a_min"], eps1=o["eps1"], eps2=o["eps2"],
             vinf_kms=o["vinf"] * 299792.458, Lbz_sign_start=float(np.sign(Lbz[0])),
             Lbz_sign_end=float(np.sign(Lbz[-1])), alpha_all=o["alpha_all"], r_peri=o["r_peri"],
+            Eb_end_over_Eb0=o["Eb_end"] / Eb0, eps_cm_end_over_Eb0=float(ec[-1] / Eb0),
             t_s_in_sqrt2T0=(o["t_s"] / math.sqrt(2) if np.isfinite(o["t_s"]) else None))
         fig = plt.figure(figsize=(fs.FULL_WIDTH, 5.4))
         ax1 = fs.inch_axes(fig, 0.7, 2.95, 3.0, 2.3)
@@ -96,12 +97,13 @@ def main(outdir):
         ax3.set_ylabel(r"$E_i/E_0$")
         ax3.legend(loc="upper left", fontsize=8)
         ax4.plot(tt[win3], Eb[win3] / Eb0, color=fs.PAL["red"], label=r"$E_b$")
-        ax4.plot(tt[win3], ec[win3] / E0, color=fs.PAL["blue"], label=r"$E_{\rm cm}$ [$E_0$]")
+        ax4.plot(tt[win3], ec[win3] / Eb0, color=fs.PAL["blue"], label=r"$E_{\rm cm}$")
+        ax4.set_ylim(-3, 3)
         if np.isfinite(o["t_s"]):
             for ax in (ax3, ax4):
                 ax.axvline(o["t_s"], **fs.MASK_LINE)
         ax4.set_xlabel(r"$(t-t_p)/T_0$")
-        ax4.set_ylabel(r"$E_b/E_{b0}$, $E_{\rm cm}/E_0$")
+        ax4.set_ylabel(r"$E/E_{b0}$")
         ax4.legend(loc="upper left", fontsize=8)
         fig.text(0.02, 0.975, f"HRNA, beta = {c['beta']}, phi = {c['phase']}, "
                  f"{'prograde' if c['sense'] > 0 else 'retrograde'}, r0 = {c['r0_rt']} r_t", fontsize=9)

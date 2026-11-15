@@ -141,3 +141,47 @@ P7 single encounters (HRNA, beta = 5): prograde phi = 1.41 separates with r_cm(t
    648 M = 0.101 T0 from pericentre to r = 107 r_g, so the printed pair (0.08 T0, 107 r_g)
    cannot hold with T0 = 6406 M; both printed t_s match ours if their time unit is
    sqrt(2) T0 = 9060 M [JUDGEMENT; to be stated as an inconsistency of 2404, not resolved].
+
+### P7 outcome (run F-hills-20261115-130724-982aba0, figures ex_*.png inspected)
+
+- beta = 5 prograde phi = 1.41: separates, r_cm(t_s) = 31.1 r_g (paper 31), t_s = -0.020 T0
+  (paper -0.01). beta = 5 retrograde phi = 1.57: separates, r_cm(t_s) = 107.6 r_g (paper 107),
+  t_s = +0.109 T0 (paper 0.08); the binary's rotation reverses (L_b,z from - to +) as the paper
+  says (article.tex:412). In units of sqrt(2) T0 our t_s are -0.014 and +0.077, i.e. the
+  printed values; see the Barker check above.
+- beta = 5 retrograde phi = 2.04: survives (paper: survives), final a = 0.594 a0, so
+  E_b = -1.68 E_b0; the paper's Fig. sur-R (Figures/SR-5-130.pdf, looked at, not copied) shows
+  E_b settling near -1.7 E_b0 and the same pattern of E_1, E_2 spikes after pericentre (member
+  labels swapped). NOT reproduced: the paper says the rotation has reversed by the end
+  (article.tex:424-425); ours keeps L_b,z < 0. [TO VERIFY: the paper's statement for this case;
+  the trajectory otherwise matches.]
+- Fig. 1 cases (beta = 8, retrograde, r0 = 10 r_t): phi = 0.2 survives with a = 0.0099 a0 and
+  e_b = 0.992 (paper: more compact, very eccentric); phi = 0.3 survives with a = 1.20 a0
+  (paper: wider); phi = 0.5 separates (paper: separates). 3 of 3.
+- Summary: 6 of 6 outcomes and both printed r_cm(t_s) reproduced; the printed t_s differ by
+  the factor sqrt(2) discussed above; one qualitative remark (rotation reversal at
+  phi = 2.04) not reproduced.
+
+## S2 pericentres of a few r_g (before running) [JUDGEMENT predictions]
+
+Same binary (mb = 1e-6, a0 = 1.013, r_t = 101.3 r_g), beta = 10 ... 25 (r_p = 10.1 ... 4.05 r_g;
+the parabolic CM plunges for r_p < 4 r_g, article.tex:209-215), 400 phases, both laws, both
+senses. 2404 stops at beta = 10 because a/R grows (article.tex:318).
+Q1 HRNA s.f. rises towards 1 for both senses (retrograde > 0.95 for beta >= 18); the
+   Newtonian retrograde s.f. stays below 0.8 up to beta = 25. Refuted if the HRNA retrograde
+   s.f. at beta = 20 is below 0.9.
+Q2 Mean v_inf of HRNA exceeds Newton by > 20 percent for beta >= 15 in both senses. Refuted if
+   the prograde excess at beta = 20 is below 10 percent.
+Q3 Capture of a member (r < 2.5 r_g moving inwards) appears only for beta >~ 20 and stays below
+   30 percent of the encounters at beta = 25 (HRNA).
+Q4 alpha_all exceeds 0.2 for beta >= 15 in the deepest encounters: HRNA is outside the
+   self-consistency regime of 2404 Eq. (9) there.
+
+## S3 coordinate dependence of HRNA (before running)
+
+HRNA in Cartesian Kerr-Schild coordinates with a = 0 against the Schwarzschild-coordinate runs
+of S1, beta = 3, 5, 8, 10, 400 phases, both senses. Same invariant CM orbit; the pair distance
+and the time slicing differ (HRNA is not covariant, article.tex:243). Tejeda et al. 2017
+compared KS and BL coordinates (article.tex:285) without a printed number here.
+Prediction [JUDGEMENT]: |s.f.(KS) - s.f.(Sch)| <= 0.02 for beta <= 5 and <= 0.05 at
+beta = 10; mean v_inf differs by < 3 percent. Refuted if any difference is larger.
