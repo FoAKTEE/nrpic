@@ -165,7 +165,7 @@ def figure():
     fs.use_style()
     a, b = 10.0, 10.0 * math.sqrt(1 - 0.81)
     fig, ax = plt.subplots(1, 2, figsize=(fs.FULL_WIDTH, 3.2))
-    fig.subplots_adjust(left=0.09, right=0.97, bottom=0.16, top=0.93, wspace=0.3)
+    fig.subplots_adjust(left=0.09, right=0.90, bottom=0.16, top=0.93, wspace=0.3)
     r = np.linspace(0.0, 40.0, 801)
     px = phi_N(r, 0 * r, 0 * r, a, b)[0]
     pz = phi_N(0 * r, 0 * r, r, a, b)[0]
