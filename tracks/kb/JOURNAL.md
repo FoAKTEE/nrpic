@@ -300,3 +300,30 @@ mode (boundary rounding of the line map). Vectors: one model, dimension 384, 433
 54259 equation vectors, 0 owners without a vector, 0 vectors without an owner, norms 1 within
 1e-3; model weights sha256 equal to kb/EMBEDDING.md. Tags: of 18 sampled tagged equations (2 per
 tag) at least 14 correct by my reading. Refuted by any larger difference.
+
+### W3 outcome (run kb-20261115-182232-85883d1)
+
+Held. pdflatex on my probe: a0 = 1, m1 = 2, a1 = 3, a2 = 6 (multline one number, trailing
+empty align row numbered); the corrected counter gives 6. On the helper's probe the labels are
+those of run kb-20261115-155344-596b4ce and the counter gives 16.
+
+### W5 outcome (run kb-20261115-182238-b86d2b5)
+
+Held. My rescoring equals the helper's hits@10 in every mode with no disagreement on any
+question (ten: text 4, vector 4, hybrid 5; K9: text 21, vector 17, hybrid 23). One model
+(bge-small-en-v1.5@5c38ec7), dimension 384, 43398 chunk and 54259 equation vectors, 0 missing,
+0 orphaned, norms 1 within 1.3e-7; weights sha256 equal to kb/EMBEDDING.md. Tag counts by tag
+sum to 1147 over the 1140 tagged equations. Reading 18 sampled tagged equations: 16 correct;
+wrong: 2110.11720 (3) total Hamiltonian functional tagged hamiltonian_constraint, and
+2009.08715 (31) a noise correlator tagged langevin (the v2 rule meant to exclude correlators
+misses this form); borderline-correct: 2110.00893 (25), the deconvolution of the deposit window.
+
+### W6 prediction: loading the serve helper's 70 uncovered statements into K8
+
+Inputs: checked.jsonl and k8map.tsv of run kb-20261115-154906-f19880f (the registered check;
+the claims tables have not changed since: 618 claims in kb.sqlite and db/current).
+`kb/serve_locate.py sync-k8` under the writer lock. Dry run first: added 70, covered by K8 258,
+no locator 2, removed 0, nothing written. Real run: the same counts, new claim ids 619-688
+consecutive, 688 claims after, labels of the added rows as in the helper's summary (fulltext 24,
+to_verify 44, judgement 2). Refuted by other counts, gaps in the ids, or any change to claims
+1-618.
