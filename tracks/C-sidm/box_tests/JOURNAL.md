@@ -273,3 +273,20 @@ MJ(theta_f, beta_f) within 4 se and both KS p > 1e-3; <u_y^2/W> moves from 1.6 t
 about 6 se, so the relaxation itself is resolved, while the two readings of theta_eq
 differ by only ~1 se in each moment: the test does not decide between them at 1e6
 particles (said now, before the run). Refuted by any criterion failing.
+T11 submission: refused twice by nrpic-run (4 cores, then 1 core: the owner's 16 cores at
+a time were taken by the live runs of this package and of the other helpers); resubmitted
+once T3-T5 frees its cores. No manifest was written for the refused submissions.
+
+## 2026-11-15 Finding F3: the snapshot header's cycle lags the history by one
+
+Read from the smoke run C-20261115-164809-cd53539 (no new run): the snapshot written
+after 5 steps (time 0.05, dt 0.01) carries cycle 4 in its NRPSNAP1 header, while
+`box.nrpic.hst` and `box.coll.hst` label the same time with cycle 5 (likewise 9/10,
+14/15, 19/20; in T10 the final snapshot at time 2.0 after 100 steps says 99). The
+initial snapshot says time 0, cycle 0. So the header holds the number of the step being
+taken (`pmesh->ncycle` before the increment) next to the time after the step.
+`docs/FORMATS.md` line 123 says only "int64 cycle". Not a defect of the collision
+operator; it matters to anyone who aligns snapshots with history records or collision
+dumps by cycle (the dump of `coll_dump_cycle = c` and the snapshot labelled c both
+belong to the step recorded as c + 1 in the histories). Request to core: document the
+convention (FORMATS.md, collisions.md section 5) or align the labels.
