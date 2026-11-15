@@ -45,7 +45,10 @@ def main():
     tA, mA, _ = summary(0)
     tB, mB, _ = summary(1)
     tC, mC, sC = summary(2)
+    # both individual horizons, up to the first common horizon (later the finders
+    # still return surfaces inside it)
     common = np.intersect1d(tA, tB)
+    common = common[common <= tC[0]]
     mAB = np.interp(common, tA, mA) + np.interp(common, tB, mB)
     print(f"common horizon first at t = {tC[0]:.4f} M, M_AH = {mC[0]:.4f}; "
           f"last t = {tC[-1]:.4f} M, M_AH = {mC[-1]:.5f}, S = {sC[-1]:.5f}")
@@ -61,7 +64,7 @@ def main():
     ax1.plot(common, mAB, color=blue, ls="--", label=r"$M_A + M_B$, n1e4_v19")
     ax1.plot(tC, mC, color=blue, label=r"$M_{\rm AH}$ common, n1e4_v19")
     ax1.axhline(1.0, **fs.MASK_LINE)
-    ax1.text(3.0, 1.0, r"$M = 1$ (initial data)", va="bottom", fontsize=9, color="grey")
+    ax1.text(30.0, 1.005, r"$M = 1$ (initial data)", va="bottom", fontsize=9, color="grey")
     tb = np.array([96.0, 101.0])
     fs.band(ax1, tb, 1.015, 1.035, red)
     ax1.plot(tb, [1.025, 1.025], color=red, lw=1.5,
@@ -70,7 +73,8 @@ def main():
              label="rerun refuted below")
     ax1.set_ylabel(r"horizon mass $/M$")
     ax1.set_ylim(0.0, 1.12)
-    ax1.legend(loc="upper left", ncol=1, fontsize=9)
+    ax1.set_yticks([0.2, 0.4, 0.6, 0.8, 1.0])
+    ax1.legend(loc="upper left", bbox_to_anchor=(0.0, 0.86), ncol=1, fontsize=9)
     plt.setp(ax1.get_xticklabels(), visible=False)
 
     ax2.plot(tC, sC, color=blue, label=r"$S$ common, n1e4_v19")
@@ -80,13 +84,14 @@ def main():
     ax2.plot(tb, [0.100, 0.100], color=red, lw=1.0, ls=":", label="rerun refuted below")
     ax2.plot([], [], color=red, lw=6, alpha=0.2, label="rerun, predicted")
     ax2.axhline(0.1314, **fs.MASK_LINE)
-    ax2.text(3.0, 0.1314, r"$J_{\rm ADM}$ of the rerun's slice (0.131)", va="bottom",
-             fontsize=9, color="grey")
+    ax2.text(40.0, 0.1314 + 0.002, r"$J_{\rm ADM}$ of the rerun's slice (0.131)",
+             va="bottom", fontsize=9, color="grey")
     ax2.set_xlabel(r"$t/M$", labelpad=-2)
     ax2.set_ylabel(r"spin $S/M^2$")
     ax2.set_xlim(0.0, 102.0)
-    ax2.set_ylim(0.0, 0.16)
-    ax2.legend(loc="upper left", ncol=2, fontsize=8)
+    ax2.set_ylim(0.0, 0.15)
+    ax2.set_yticks([0.0, 0.04, 0.08, 0.12])
+    ax2.legend(loc="lower left", ncol=1, fontsize=9)
     os.makedirs(a.out, exist_ok=True)
     fs.save(fig, os.path.join(a.out, "fig_clump_rerun_prediction"))
     print("wrote", os.path.join(a.out, "fig_clump_rerun_prediction.png"))
