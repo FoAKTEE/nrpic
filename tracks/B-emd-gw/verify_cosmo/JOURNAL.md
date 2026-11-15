@@ -102,3 +102,85 @@ than with one particle per cell by more than a factor of 5; |H| in the void at a
 lower by more than 10; the positions against Zel'dovich unchanged within 20 percent of
 their error (the error is the relativistic offset, not the deposit). Refuted if the
 mean constraints fall by less than 2.
+
+## Pancake runs: outcomes against P1 to P7 (12:30)
+
+Runs: relativistic B-emd-gw-20261115-115217-69ab1db (Slurm job 4373, 17.1 min, all four
+exit 0 to a = 42), B-emd-gw-20261115-115902-a3207d7 (two per cell, job 4388, 11.8 min,
+exit 0); Newtonian B-emd-gw-20261115-115239-69ab1db (32 and 64 cells, 94 s and 1709 s on
+one core each); analysis B-emd-gw-20261115-122240-b0e4c9d (`results/pancake.json`).
+Card time 0.48 card-hours of the 1 allowed. Errors are the largest over the sheets of
+the fiducial x line, positions relative to the displacement since a = 1, (a - 1) d/k,
+velocities relative to a^(1/2) d/k.
+
+P1 (Newtonian against Zel'dovich, 64 cells): positions 4.8e-5, 3.3e-4, 1.0e-3, 8.3e-4,
+6.6e-4 at a = 2, 5, 10, 15, 20; velocities 1.1e-4, 7.9e-4, 1.8e-3, 1.1e-3, 9.9e-3.
+Bounds: a <= 10 below 1e-3: FAILS (positions 1.02e-3 at a = 10, velocities 1.8e-3); a = 15
+below 3e-3: holds; a = 20 below 3e-2: holds. 32 cells larger by 2 to 16: positions
+2.3, 1.9, 2.0 at a = 2, 5, 10 (at the lower edge, fails at a = 5); velocities 2.0, 2.1,
+1.9. So the reference converges at first order, not at the order of the compensated
+cubic cloud. Not yet explained; a test follows (P8).
+P2 (relativistic L = 1 against Zel'dovich): positions 1.85e-3, 2.6e-3, 3.2e-3, 3.8e-3 at
+a = 2, 5, 10, 15 (64 cells); velocities 1.9e-3, 3.1e-3, 4.2e-3, 6.0e-3. Below 5e-3 for
+a <= 15: holds for positions, fails for velocities at a = 15 (6.0e-3). The offset is the
+same at 32, 64, 96 cells and with two particles per cell to three digits (3.15e-3,
+3.20e-3, 3.20e-3, 3.21e-3 at a = 10): it is converged, i.e. a property of the solution in
+these coordinates, not an error. Relativistic minus Newtonian at a = 10: 3.2e-3 of the
+displacement (predicted 2e-4 to 2e-2: holds); smooth over the sheets, a pattern of the
+first and second harmonics with no cell-scale part (figure `figs/pancake_grdiff.png`:
+holds). At L = 4 the same offset is 5.2e-2 at a = 10, 16.1 times the L = 1 value;
+(H0/k)^2 is 16 times larger. So the relativistic departure of the coordinate
+trajectories from Zel'dovich scales as (H0/k)^2 d, about 1.7 |psi_N| at a = 10 in both
+boxes. In the first two time units the velocity offset oscillates (figure
+`figs/pancake_errors.png`), period close to one light crossing of the box: a gauge or
+constraint transient of the initial data, not identified further [TO VERIFY].
+P3 (first crossing, scale factor of the background at the coordinate time of the first
+swap of neighbouring sheets): exact sheets 21.117, 21.029, 21.013, 21.002 (32, 64, 96
+sheets and the 128 sheets of the two-per-cell lattice). Newtonian 21.547 (32), 21.222
+(64): +2.0 and +0.9 percent; relativistic L = 1: 21.808, 21.379, 21.267 (32, 64, 96),
+21.335 (64, two per cell): +3.3, +1.7, +1.2, +1.6 percent. Within 3 percent and later:
+holds except the 32-cell relativistic run (3.3); approaching with resolution: holds.
+Relativistic over Newtonian at equal cells 1.012 (32), 1.007 (64): within 1 percent
+holds at 64 cells, fails at 32. L = 4: 22.846, later than the Newtonian run by 7.7
+percent (predicted 3 to 20: holds). These are coordinate-time labels; the crossing is
+an invariant event but its time label is not (the proper time of the crossing sheets is
+not yet extracted) [TO VERIFY].
+P4 (constraints): FAILS. Mean H_r at a = 2, 5, 10, 15: 1.2e-6, 2.4e-5, 1.6e-4, 1.3e-3
+(64 cells), 1.5e-6, 3.4e-5, 2.4e-4, 1.7e-3 (32), 1.1e-6, 2.2e-5, 1.4e-4, 1.2e-3 (96);
+mean M_r 1.3e-3, 2.7e-2, 0.13, 0.21 (64); nearly independent of the mesh. After the
+crossing (a = 22 to 42) mean H_r 7.1e-3 to 3.8e-3, mean M_r 0.34 to 0.54 (64 cells),
+less than ten times the a = 15 value (fails); the ratio 64 to 96 cells after the
+crossing is below two (holds). L = 4: mean H_r 6.1e-4 (a = 10), 6.4e-3 (a = 20), 1.0e-2
+(a = 25). Cause tested in P7.
+P5 (plane symmetry): holds. Snapshots at a = 5.6, 14.1, 26.3: spread of x over each
+lattice plane at most 4.5e-14 L, |u_y|, |u_z| at most 1.3e-12 (96 cells, a = 26.3), for
+velocities of order 1e-2; Newtonian at most 2e-16 L and 5e-18.
+P6: holds. All runs reach a = 42 with every particle kept (no excised, escaped or
+unconverged particle in `east.nrpic.hst`), including L = 4 through the crossing; card
+time of the first job 17.1 min. With one particle per cell the energy density turns
+negative in some void cells after the crossing (E_min = -2.9e-7 at a = 25 against a
+mean of 7.6e-6); with two per cell it stays positive.
+P7 (two particles per cell and direction, 64 cells): mean H_r 3.2e-5 and 4.2e-5 at
+a = 10 and 15 (lower by 4.9 and 30), mean M_r 1.0e-2 and 6.3e-3 (lower by 13 and 33);
+|H|/16 pi <E> in the void at a = 15: 6.0e-5 against 6.9e-3 (115 times lower); positions
+against Zel'dovich unchanged (3.21e-3 against 3.20e-3 at a = 10). Prediction (more than
+5 at a = 10 and 15, more than 10 in the void, positions within 20 percent): holds,
+except the Hamiltonian constraint at a = 10, lower by 4.9 instead of more than 5.
+What this establishes: before the crossing the constraint violation of the
+one-per-cell runs is the cubic cloud's sampling error of the lattice where it is
+stretched (the void), not an error of the spacetime solver; two particles per cell and
+direction remove most of it. After the crossing it sits at the pancake in both
+(|H|/16 pi <E> up to 3e-2 near x = L/4 at a = 21 to 42 with either lattice), and mean
+H_r is 1.3e-3 to 2.0e-3 with two per cell.
+
+## Prediction P8: what limits the Newtonian reference (12:30)
+
+The Newtonian error converges at first order (P1). Proposed cause: with one particle per
+cell the deposited density carries a ripple at the lattice scale whose size depends on
+the compression, not on the cell (TESTLOG, T1a), and one integration turns it into a
+force error proportional to the cell size. Test: the Newtonian reference at 32 cells
+with two particles per cell and direction (`newton_pancake.py --ppc 2`, 262,144
+particles, about 15 min on one core). Prediction: position error at a = 10 below 1.0e-3
+(the 64-cell, one-per-cell value) where 32 cells with one per cell gave 2.05e-3; velocity
+error below 1.8e-3. Refuted if the position error at a = 10 stays above 1.5e-3, in which
+case the force interpolation or the step, not the deposit, sets the error.

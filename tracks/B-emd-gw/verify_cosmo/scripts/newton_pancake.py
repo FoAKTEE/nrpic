@@ -32,6 +32,7 @@ ap = argparse.ArgumentParser()
 ap.add_argument("--delta", type=float, required=True)
 ap.add_argument("--n", type=int, default=64)
 ap.add_argument("--L", type=float, default=1.0)
+ap.add_argument("--ppc", type=int, default=1, help="particles per cell and direction")
 ap.add_argument("--tend", type=float, required=True)
 ap.add_argument("--cfl", type=float, default=0.25)
 ap.add_argument("--every", type=int, default=2)
@@ -42,8 +43,9 @@ a = ap.parse_args()
 
 P.cid.DEP_COMP_C = 1.0/6.0
 P.cid.DEP_COMP_C2 = 7.0/15.0
-x, v, m, q = P.east_particles(a.delta, a.n, 1, a.L, ratios=(1.0, 0.0, 0.0))
+x, v, m, q = P.east_particles(a.delta, a.n, a.ppc, a.L, ratios=(1.0, 0.0, 0.0))
 n, L = a.n, a.L
+npd = n*a.ppc
 h = L/n
 # the x line through the first lattice point in y and z, ordered by q_x
 line = np.flatnonzero((np.abs(q[:, 1] - q[0, 1]) < 1e-12*L)
@@ -51,7 +53,7 @@ line = np.flatnonzero((np.abs(q[:, 1] - q[0, 1]) < 1e-12*L)
 line = line[np.argsort(q[line, 0])]
 qx = q[line, 0]
 # lattice-plane index of every particle (for the plane-symmetry check)
-iplane = np.rint(q[:, 0]/(L/n) - 1.0).astype(int) % n
+iplane = np.rint(q[:, 0]/(L/npd) - (1.0 if a.ppc % 2 == 1 else 0.5)).astype(int) % npd
 
 sim = P.PM(x, v, m, n, L, nfilter=0, compensate=False, shape="pcs")
 dtau = a.cfl*L/n
@@ -110,9 +112,9 @@ os.makedirs(a.out, exist_ok=True)
 out = {k: np.array(val) for k, val in rec.items()}
 out.update({f"prof_{k}": np.array(val) for k, val in prof.items()})
 out.update({"q": qx, "m_line": m[line], "x0_line": x[line, 0], "v0_line": v[line, 0],
-            "n": n, "L": L, "delta": a.delta, "dtau": dtau})
+            "n": n, "ppc": a.ppc, "L": L, "delta": a.delta, "dtau": dtau})
 np.savez(os.path.join(a.out, "newton.npz"), **out)
 with open(os.path.join(a.out, "newton.json"), "w") as f:
-    json.dump({"n": n, "L": L, "delta": a.delta, "dtau": dtau, "nstep": nstep,
+    json.dump({"n": n, "ppc": a.ppc, "L": L, "delta": a.delta, "dtau": dtau, "nstep": nstep,
                "wall_s": time.time() - t0, "a_end": float(out["a"][-1])}, f, indent=1)
 print(f"done in {time.time() - t0:.0f} s, a_end = {out['a'][-1]:.3f}")

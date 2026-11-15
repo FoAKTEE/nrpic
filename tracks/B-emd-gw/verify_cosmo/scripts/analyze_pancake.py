@@ -85,7 +85,7 @@ def load_newton(rundir, scale=1.0):
            "x": z["x"]*scale, "v": z["v"]*scale, "q": z["q"]*scale,
            "x0": z["x"][0]*scale, "prof_tau": z["prof_tau"],
            "prof_delta": z["prof_delta"], "prof_spread": z["prof_spread_x"]*scale,
-           "prof_vperp": z["prof_max_vperp"]*scale}
+           "prof_vperp": z["prof_max_vperp"]*scale, "m_line": z["m_line"]}
     return out
 
 
@@ -376,8 +376,9 @@ def make_figures(runs, gr, nw, prof, res, out, prof2=None):
         k = 2.0*np.pi/L
         targets = [5.0, 15.0, 20.0]
         fig, axs = plt.subplots(3, 3, figsize=(fs.FULL_WIDTH, 6.6), sharex=True)
-        fig.subplots_adjust(left=0.09, right=0.98, bottom=0.08, top=0.97, wspace=0.3,
+        fig.subplots_adjust(left=0.105, right=0.98, bottom=0.08, top=0.97, wspace=0.3,
                             hspace=0.08)
+        hk2 = (1.0/k)**2      # (H0/k)^2, H0 = 1
         xc = (np.arange(g["n"]) + 0.5)*L/g["n"]
         xf = np.linspace(0, L, 4001)
         fields = list(prof.values())
@@ -395,7 +396,10 @@ def make_figures(runs, gr, nw, prof, res, out, prof2=None):
             # Zel'dovich: continuum, and the deposit of the Zel'dovich sheets
             rz = Z.eulerian_density(xf, af_, d, L) - 1.0
             xzs, _, _ = Z.continuum(g["x0"], af_, d, L)
-            dz_dep = deposit_1d(xzs, np.ones_like(xzs), g["n"], L) - 1.0
+            # the Newtonian masses of the sheets (Lagrangian mass coordinate of Zel'dovich)
+            dz_dep = deposit_1d(xzs, w["m_line"], g["n"], L) - 1.0
+            # linear dictionary offset of the relativistic density: -2 psi_N, constant
+            dict_off = 3.0*hk2*d*np.sin(k*xc)
             ax = axs[0, j]
             ax.plot(xf, rz, **fs.GUIDE, label="Zel'dovich")
             ax.plot(xc, dN, color=P["blue"], ls="none", marker="o", ms=3,
@@ -411,6 +415,8 @@ def make_figures(runs, gr, nw, prof, res, out, prof2=None):
                      label="GR $-$ deposit(Z)")
             ax2.plot(xc, dz_dep - (Z.eulerian_density(xc, af_, d, L) - 1.0),
                      color="grey", lw=1.0, label="deposit(Z) $-$ Z")
+            ax2.plot(xc, dict_off, color=P["red"], ls="--", lw=1.0,
+                     label=r"$-2\psi_N$ (linear)")
             # velocities of the sheets
             ig = int(np.argmin(np.abs(g["a"] - aa)))
             iw = int(np.argmin(np.abs(w["a"] - aa)))
@@ -427,7 +433,7 @@ def make_figures(runs, gr, nw, prof, res, out, prof2=None):
         axs[1, 0].set_ylabel(r"residual")
         axs[2, 0].set_ylabel(r"$v\,/\,(\delta/k)$")
         axs[0, 0].legend(loc="upper right", fontsize=7)
-        axs[1, 0].legend(loc="lower right", fontsize=7)
+        axs[1, 2].legend(loc="upper right", fontsize=7)
         fs.save(fig, os.path.join(out, "pancake_profiles"))
         plt.close(fig)
 
