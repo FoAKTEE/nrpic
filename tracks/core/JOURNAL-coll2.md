@@ -271,3 +271,30 @@ derivation of R would then be wrong). The code must then reproduce the reference
 slopes within 4 combined standard errors, and its number of rejected collisions over
 the number proposed must equal the reference share within 4 sigma (binomial).
 G2(a)-(c), (e), G1, G3, G4, R, S stand as written.
+
+### Addition to prediction S (16:12 UTC, before the run)
+
+`run_perturb.py`: besides the particle at rest (momentum gamma T_pert x/r to 1e-14
+relative for steps 0.05, 0.037, 0.025, 0.0125, 0.00625, interval [0.1, 0.47]) a particle
+that crosses the radial direction (u = (0.3, -0.8, 0.5) at distance 1.5 from the centre)
+is compared at t = 1 with an independent integration of dx/dt = u/W, du/dt = gamma x/r
+(scipy DOP853, rtol 1e-13): the error of the split kick falls as the square of the step
+(measured order between 1.8 and 2.2 from the steps 0.025, 0.0125, 0.00625). With
+`perturb_gamma = 0` the snapshot is byte-identical to that of a deck without the options.
+
+### Outcome S, first run: core-20261115-160530-819d588 (16:14 UTC); one part of the prediction failed
+
+- Particle at rest: |u - gamma T x/r|/|u| = 3.0e-16, 1.3e-15, 6.8e-16, 9.8e-16, 8.6e-16
+  for the five steps (0.05 and 0.037 do not divide the interval). Passed.
+- Null (`perturb_gamma = 0` against a deck without the options): byte-identical. Passed.
+- Moving particle: errors of u at t = 1: 1.7e-5, 8.4e-7, 1.2e-6, 1.0e-6, 7.6e-8; "order"
+  from the last three 0.23 and 3.8. FAILED as predicted. Reason [JUDGEMENT, tested by
+  the rerun]: the interval ends at 0.47, which is 18.8, 37.6 and 75.2 of these steps;
+  the last, partial kick is applied at the end point of its half step instead of the
+  middle of the part inside the interval, an error of second order whose coefficient
+  depends on where in the step the interval ends, so the error is not a smooth
+  function of the step. The impulse itself is exact (particle at rest).
+  Restated before the rerun: with steps 0.01, 0.005, 0.0025, for which 0.1 and 0.47
+  are step boundaries, the order is between 1.8 and 2.2; if it is not, the reason
+  above is wrong. Recommendation for users: choose perturb_tstart and perturb_time as
+  multiples of the step.
