@@ -1,0 +1,127 @@
+{
+  "schema": "nrpic-run-manifest/1",
+  "run_id": "B-20261115-163620-5b286c1",
+  "track": "B-emd-gw",
+  "gate": "G1",
+  "kind": "scouting",
+  "purpose": "newton_tests N3: self-similarity, ellipsoid at alpha 0.05, 0.1, 0.2 rescaled from the benchmark, N=32",
+  "preregistered_in": null,
+  "launcher": "local",
+  "command": [
+    "bash",
+    "tracks/B-emd-gw/newton_tests/scripts/run_selfsim.sh",
+    "32"
+  ],
+  "cwd": ".",
+  "git": {
+    "sha": "5b286c1c127949851701cb05afee510452214db7",
+    "branch": "track/B-emd-gw",
+    "dirty": false,
+    "package": [
+      "tracks/B-emd-gw/newton_tests"
+    ],
+    "outside_package": {
+      "count": 3,
+      "first": [
+        "?? tracks/B-emd-gw/first_source/fslib/",
+        "?? tracks/B-emd-gw/first_source/tests/",
+        "?? tracks/B-emd-gw/note/"
+      ]
+    },
+    "merge_base_main": "b9fbf3e6534517c3393000da91c79ce552b254b9",
+    "worktree": "wt/B-emd-gw"
+  },
+  "code": {
+    "core_tag": "core-v0.3",
+    "athenak_upstream_sha": "c5a0d7f",
+    "kokkos_sha": "6739bc623081648af9e752b616d9671527922cbf",
+    "problem": null
+  },
+  "env": {
+    "host": "anta",
+    "env_hash": "33c1dbb6673b68919eaa332b0add0b58aeac8be843f2071b9d06e2e0e397a96d",
+    "machine_file_sha256": "0321f40f4caeeb2a36624a9fa9809e60bad31071f366b3517ba23ad45698d2d7",
+    "uv_lock_sha256": "5417f6ba318b914aa3800e5d55f7b11fdd8df13c2688bdda7d419240aa1d5863",
+    "track_requirements_sha256": null,
+    "container_digest": null,
+    "compiler": "g++ 11.4.0",
+    "mpi": "none (Athena_ENABLE_MPI=OFF)",
+    "gpu": null,
+    "python": "3.10.12 /data/haiyangw/nrpic/wt/B-emd-gw/.venv"
+  },
+  "input": null,
+  "inputs": [
+    {
+      "path": "tracks/B-emd-gw/newton_tests/scripts/make_particles.py",
+      "role": "input",
+      "sha256": "ddb2f20b5a6a08298a22281243c24d5be62f43ad40df1a0ec32489ddf2d2fb71",
+      "bytes": 6407,
+      "tracked": true
+    },
+    {
+      "path": "tracks/B-emd-gw/newton_tests/scripts/run_case.sh",
+      "role": "input",
+      "sha256": "dad72cf78ca54d5245a03704689114e3b54c2476aa82982d9117fd4faee3c824",
+      "bytes": 1462,
+      "tracked": true
+    },
+    {
+      "path": "tracks/B-emd-gw/newton_tests/inputs/ellipsoid.athinput",
+      "role": "input",
+      "sha256": "42bd6f7c415ae17a0a4703c41d08d5d40640619c2bfe9e3d54345aca1c4a7272",
+      "bytes": 2409,
+      "tracked": true
+    },
+    {
+      "path": "tracks/B-emd-gw/baseline/scripts/ellipsoid.py",
+      "role": "input",
+      "sha256": "63e5a2f2ea7b1e8fb898833f51bd1ef6acaf70318c087b647850b3220ed5be8a",
+      "bytes": 10642,
+      "tracked": true
+    },
+    {
+      "path": "tracks/B-emd-gw/newton_tests/scripts/run_selfsim.sh",
+      "role": "input",
+      "sha256": "d9917297c39bae5f30b74df8d93d2c50d9448437430255c96a2d9efaf230cc0f",
+      "bytes": 1270,
+      "tracked": true
+    }
+  ],
+  "batch_entries": null,
+  "resources": {
+    "nodes": 1,
+    "gpus": 0,
+    "cores": 1,
+    "walltime_s": null,
+    "wall_limit": null,
+    "segments_max": null,
+    "gpu_hours_requested": 0.0,
+    "gpu_hours": null,
+    "particles": null
+  },
+  "slurm": null,
+  "outputs": {
+    "dir": "scratch/B-emd-gw/B-20261115-163620-5b286c1",
+    "sha256sums": "sha256sums.txt",
+    "sha256sums_sha256": null,
+    "bytes": null,
+    "files": null
+  },
+  "status": "running",
+  "exit_code": null,
+  "registered": "2026-11-15T16:36:20Z",
+  "started": null,
+  "ended": null,
+  "parents": [],
+  "notes": "",
+  "budget_at_submit": {
+    "gpu_hours_allotted": 40.0,
+    "cores_allotted": 16,
+    "gpu_hours_used": 0.0,
+    "gpu_hours_reserved": 0.0,
+    "gpu_hours_without_gate": 0.481,
+    "cores_busy": 6,
+    "runs": 85,
+    "allotment_from": "coord/DECISIONS/0006-compute-budget.md + 0014-budgets-after-wave-1.md"
+  }
+}
