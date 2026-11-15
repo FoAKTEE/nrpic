@@ -100,3 +100,21 @@ T5 (2508.10070, peak statistics)
   1e-6), so the exact integral tends to the semi-analytic coefficient of 1609.01588 App. B;
   ratio 2.02 at sigma = 0.1. Monochromatic peak integral at sigma* = 1e-3: beta/sigma-bar^5 =
   1.122, Mbar/M* = 14.697 (3 s of CPU).
+
+### Predictions for `scan_disagreement.py` (written before its first run)
+
+- S.1 Hoop threshold for a Lagrangian ball at p = 0: delta_th = 0.82 at e = 0.1 and 1.08 at
+  e = 0.2, i.e. 2.4 hat-h(e, 0) of 2609.14218; the particle threshold of 2609.14218 at
+  e = 0.2 maps to delta = 0.108, a factor 10 below. Refuted if the factor is outside 5-20.
+- S.2 Hoop for the peak ellipsoid of a monochromatic spectrum (2508.10070) is stricter than
+  for the ball: ratio of thresholds between 1.0 (e -> 0) and 1.5 (e = 0.25). Refuted if the
+  ratio falls below 1 anywhere.
+- S.3 At sigma_H = 0.01 the dispersion threshold of 2211.13950 (mu = 1, ln(kmin/k) = 1) is
+  0.071 and the top-hat threshold of 2507.18312 with zeta = 0.025 is 0.23: R8 and R9 disagree
+  on about a quarter of the log-delta range [0.01, 1] (0.25 +- 0.03). R1 disagrees with R3
+  over most of the map (> 0.5) because R1 needs delta >~ 8e while R3 needs only 0.025.
+- S.4 Formation time times delta: 3/(1+3e) (Zel'dovich pancake), 1 (1707 turnaround
+  estimate), 1.69 (exact top hat, R = 2M, delta -> 0): the duration criteria differ by up to
+  a factor 3 in a_end.
+- S.5 Spin at delta = 0.1, sigma_H = 0.01: 1707 a*(2) = 0.13, 2507 zeta^2/delta^(5/2) =
+  0.20, 2508 typical 0.043 (sigma_H/6)^(1/2) = 0.0018 and zero for an aligned ellipsoid.
