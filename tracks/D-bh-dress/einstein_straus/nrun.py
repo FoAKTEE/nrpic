@@ -57,7 +57,9 @@ def main():
     commit = git("rev-parse", "HEAD")
     dirty = bool(git("status", "--porcelain", "--untracked-files=no", "--", "tracks/D-bh-dress/einstein_straus"))
     while True:
-        stamp = datetime.datetime.now().strftime("%Y%m%d-%H%M%S")
+        # UTC, as harness/bin/nrpic-run (run ids before 2026-11-15T15Z of this package are
+        # local time, UTC-8; see tracks/D-bh-dress/JOURNAL.md, lead entry of 2026-11-15)
+        stamp = datetime.datetime.now(datetime.timezone.utc).strftime("%Y%m%d-%H%M%S")
         run_id = f"D-bh-dress-{stamp}-{commit[:7]}"
         out = os.path.join(SCRATCH, run_id)
         try:
