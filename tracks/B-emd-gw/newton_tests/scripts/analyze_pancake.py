@@ -67,11 +67,17 @@ def h1_D(n, t, k=0):
 
 
 def pairs(items):
+    """N:DIR or N:DIR:PARTDIR (PARTDIR holds particles.json and particles.nrp when the
+    case directory does not, as for the card runs started from a batch list)."""
     out = []
     for s in items or []:
-        n, d = s.split(":", 1)
-        out.append((int(n), d))
+        f = s.split(":")
+        out.append((int(f[0]), f[1] if len(f) < 3 else (f[1], f[2])))
     return out
+
+
+def dirs(case):
+    return (case, case) if isinstance(case, str) else case
 
 
 def read_traj(path, ntrack):
@@ -99,7 +105,8 @@ def at(arr, a_rec, a):
 
 
 def east_case(n, case):
-    meta = json.load(open(os.path.join(case, "particles.json")))
+    case, pdir = dirs(case)
+    meta = json.load(open(os.path.join(pdir, "particles.json")))
     L, d, nt = meta["L"], meta["delta"], meta["ntrack"]
     k = 2.0*np.pi/L
     tau, x, u = read_traj(os.path.join(case, "newton.traj.bin"), nt)
@@ -132,14 +139,14 @@ def east_case(n, case):
     a_cross_sheets = Z.first_crossing_a(xs, a)
     return dict(n=n, L=L, d=d, tau=tau, a=a, x=xu, v=v, x0=x0, xs=xs, xc=xc, disp=disp,
                 ex_cont=ex_cont, ex_sheet=ex_sheet, ev_cont=ev_cont, a_cross=a_cross,
-                ex_h1=ex_h1, ratio_h1=ratio, big=big,
+                ex_h1=ex_h1, ratio_h1=ratio, big=big, pdir=pdir,
                 a_cross_sheets=a_cross_sheets, case=case)
 
 
-def plane_symmetry(case, a_max):
+def plane_symmetry(case, pdir, a_max):
     """Largest spread of x over the particles of one lattice plane (grouped by their
     initial x), over the snapshots with a < a_max, in units of L."""
-    x0, _, _, _ = nio.read_nrp(os.path.join(case, "particles.nrp"))
+    x0, _, _, _ = nio.read_nrp(os.path.join(pdir, "particles.nrp"))
     key = np.round(x0[:, 0], 12)
     _, grp = np.unique(key, return_inverse=True)
     out = []
@@ -169,7 +176,8 @@ def east_analysis(east, pm, res):
     for n, case in east:
         r = east_case(n, case)
         rows[n] = r
-        e = {"case": case, "a_cross": r["a_cross"], "a_cross_sheets": r["a_cross_sheets"]}
+        e = {"case": r["case"], "a_cross": r["a_cross"],
+             "a_cross_sheets": r["a_cross_sheets"]}
         for ac in A_CHECK:
             e["ex_cont_a%g" % ac], e["a_rec_%g" % ac] = at(r["ex_cont"], r["a"], ac)
             e["ex_sheet_a%g" % ac], _ = at(r["ex_sheet"], r["a"], ac)
@@ -178,7 +186,7 @@ def east_analysis(east, pm, res):
             i = int(np.argmin(np.abs(r["a"] - ac)))
             rr = r["ratio_h1"][i][r["big"]]
             e["h1a_ratio_min_max_a%g" % ac] = [float(rr.min()), float(rr.max())]
-        e["plane_symmetry"] = plane_symmetry(case, 21.0)
+        e["plane_symmetry"] = plane_symmetry(r["case"], r["pdir"], 21.0)
         res["P1_athenak_n%d" % n] = e
     pms = {}
     for n, d in pm:
@@ -224,7 +232,7 @@ def east_figure(rows, out):
     fs.use_style()
     fig, axs = plt.subplots(2, 1, figsize=(fs.COLUMN_WIDTH*1.5, 6.0), sharex=True)
     fig.subplots_adjust(left=0.15, right=0.97, bottom=0.09, top=0.97, hspace=0.06)
-    cols = {32: fs.PAL["red"], 64: fs.PAL["yellow"], 128: fs.PAL["green"]}
+    cols = {16: fs.PAL["orange"], 32: fs.PAL["red"], 64: fs.PAL["yellow"]}
     for n, r in sorted(rows.items()):
         c = cols.get(n, "k")
         ax = axs[0]
@@ -234,8 +242,8 @@ def east_figure(rows, out):
         if "pm_ex" in r:
             ax.semilogy(r["pm_a"], r["pm_ex"], color=c, ls="--", lw=1.0,
                         label="pm.py, n = %d" % n)
-        axs[1].semilogy(r.get("pm_a", r["a"]), r.get("diff_pm", np.nan*r["a"]), color=c,
-                        label="n = %d" % n)
+        if "diff_pm" in r:
+            axs[1].semilogy(r["pm_a"], r["diff_pm"], color=c, label="n = %d" % n)
     for ax in axs:
         ax.axvline(21.0, **fs.GUIDE, alpha=0.5)
     axs[0].set_ylabel(r"max$|x - x_{\rm Zel}|\,/\,[(a-1)\,d/k]$")
@@ -250,7 +258,8 @@ def east_figure(rows, out):
 
 
 def sin_case(n, case):
-    meta = json.load(open(os.path.join(case, "particles.json")))
+    case, pdir = dirs(case)
+    meta = json.load(open(os.path.join(pdir, "particles.json")))
     h = nw.read_newton_hst(os.path.join(case, "newton.newton.hst"))
     c0, c1, c2 = meta["moment_coeffs"]["00"]
     a = h["a"]
@@ -283,7 +292,7 @@ def sin_case(n, case):
     W = h["W"]
     C = h["C"]
     sgn_meas[0] = np.nan
-    return dict(n=n, a=a, a3=a3, rel=rel, ex=ex, got=got, others=others, h=h,
+    return dict(n=n, a=a, a3=a3, rel=rel, ex=ex, got=got, others=others, h=h, case=case,
                 d3_rel_meas=sgn_meas, d3_rel_h1=sgn_h1,
                 C=C, W=W, a_cross=meta["a_cross"])
 
@@ -293,7 +302,7 @@ def sin_analysis(sins, res):
     for n, case in sins:
         r = sin_case(n, case)
         rows[n] = r
-        e = {"case": case, "others_max_over_max_d2Ixx": r["others"]}
+        e = {"case": r["case"], "others_max_over_max_d2Ixx": r["others"]}
         for k in ("I", "dI", "d2I"):
             win = (r["a"] >= 1.2) & (r["a"] <= 15.0)
             e["%s_maxerr_over_max_1.2_15" % k] = float(r["rel"][k][win].max())
@@ -318,7 +327,7 @@ def sin_figure(rows, out):
     fs.use_style()
     fig, axs = plt.subplots(3, 1, figsize=(fs.COLUMN_WIDTH*1.5, 7.5), sharex=True)
     fig.subplots_adjust(left=0.16, right=0.97, bottom=0.07, top=0.98, hspace=0.06)
-    cols = {32: fs.PAL["red"], 64: fs.PAL["yellow"]}
+    cols = {16: fs.PAL["orange"], 32: fs.PAL["red"], 64: fs.PAL["yellow"]}
     for n, r in sorted(rows.items()):
         c = cols.get(n, "k")
         axs[0].plot(r["a3"], r["got"]["d3I"], color=c, lw=0.8, label="AthenaK, n = %d" % n)

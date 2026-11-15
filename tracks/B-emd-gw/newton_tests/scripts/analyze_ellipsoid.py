@@ -356,11 +356,17 @@ def fig_selfsim(ss, out):
             tt = s["t3"]/s["t0"]
             sc = (2*a)**-2.5
             axs[1].plot(tt, s["q3s"][:, 0]*sc, color=c, lw=1.0)
+    a0 = als[0]
+    r0, s0 = rows[a0]
+    q3o = s0["ref"]["nominal_series"][2]
+    axs[1].plot(s0["t3"]/s0["t0"], q3o[:, 0]*(2*a0)**-2.5, color=fs.PAL["blue"], lw=1.8,
+                alpha=0.6, label="ODE (model C), averaged")
+    axs[1].legend(loc="lower left", fontsize=8)
     Fode = summ["rows"]["%.8g" % als[0]]["F_ode"]
     axs[0].axhline(Fode, **fs.GUIDE, label=r"ODE, $F_C$")
     axs[0].set_xlabel(r"$\alpha$")
     axs[0].set_ylabel(r"$E(t_{\rm turn}\to t_x)\,/\,[M c^2 (2\alpha)^{7/2}]$")
-    axs[0].legend(loc="lower right", fontsize=8)
+    axs[0].legend(loc="center right", fontsize=8)
     axs[1].set_xlabel(r"$t / t_{\rm turn}$")
     axs[1].set_ylabel(r"$\dddot Q_{xx}\,(2\alpha)^{-5/2}$, averaged")
     axs[1].text(0.04, 0.9, "all alpha of one N overlap", transform=axs[1].transAxes,
