@@ -244,3 +244,13 @@ momentum components; updates per collision 1.53-1.54 (20/13 = 1.538 if the Molle
 speeds of the three pair kinds were equal); the run with coll_weights = equal exits
 non-zero at start-up with a message that names the masses. Refuted by any seed failing,
 by a mean drift beyond 4 se, or by the equal-weights run proceeding.
+
+## 2026-11-15 T1 over 1e4 steps: outcome (run C-20261115-170741-248af65)
+
+PASS, both seeds: 1.559e7 collisions per run (156 per particle), max n_sub 2, max_P
+0.0998, n_trunc 0. The exactly rounded sum M W is bit-identical at all 11 snapshots
+(every 1000 steps) to the initial one; the momentum sums move by <= 2.4e-18 of sum M W;
+the coll.hst float sum_MW wanders within +-4.6e-14 (rounding of the plain sum, no
+trend); per step |dE|/sum_MW <= 3.5e-19 (8.8e-7 of the bound). Prediction confirmed.
+Wall 512-551 s for 1e4 steps of 1e5 particles (0.05 s per step, 2 processes on a loaded
+machine). Figure `figs/t1_long_cpu.png` looked at.
