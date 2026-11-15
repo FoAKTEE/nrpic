@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Run one analysis script of this package and register it (CLAUDE.md rule 4).
 
-    python3 tracks/A-emd-pbh/newton/run_and_register.py <script.py> "<purpose>"
+    python3 tracks/A-emd-pbh/newton/run_and_register.py <script.py> "<purpose>" [args...]
 
 from the worktree root. The run id is A-emd-pbh-<UTC YYYYMMDD-HHMMSS>-<commit7>; the
 script writes into scratch/A-emd-pbh/<run_id>/ and the manifest goes to
@@ -27,7 +27,7 @@ def sha(path):
 
 
 def main():
-    script, purpose = sys.argv[1], sys.argv[2]
+    script, purpose, extra = sys.argv[1], sys.argv[2], sys.argv[3:]
     dirty = subprocess.run(["git", "status", "--porcelain", "--", PKG], cwd=ROOT,
                            capture_output=True, text=True).stdout
     dirty = [ln for ln in dirty.splitlines() if ln.endswith(".py")]
@@ -39,7 +39,7 @@ def main():
     run_id = f"A-emd-pbh-{stamp}-{commit[:7]}"
     out = os.path.join(SCRATCH, run_id)
     os.makedirs(out, exist_ok=True)
-    cmd = ["python3", f"{PKG}/{script}", "--out", out]
+    cmd = ["python3", f"{PKG}/{script}", "--out", out] + extra
     env = dict(os.environ, OMP_NUM_THREADS="1", OPENBLAS_NUM_THREADS="1",
                MKL_NUM_THREADS="1")
     t0 = time.time()
