@@ -26,9 +26,10 @@ one() {  # <name> <num_levels> <nlim> [extra args]
   n=$(grep -c '^#MeshBlock' "$d/tree/mesh_structure.dat")
   local t0 t1
   t0=$(date +%s)
+  # trackers and horizon summaries are written into the working directory: run inside
   # shellcheck disable=SC2068
-  "$EXE" -i "$Q4" -d "$d" mesh_refinement/num_levels=$nl \
-      mesh_refinement/max_nmb_per_rank=$((n + 64)) time/nlim=$nlim $@ > "$d/athena.log" 2>&1
+  (cd "$d" && "$EXE" -i "$Q4" -d "$d" mesh_refinement/num_levels=$nl \
+      mesh_refinement/max_nmb_per_rank=$((n + 64)) time/nlim=$nlim $@ > "$d/athena.log" 2>&1)
   t1=$(date +%s)
   echo "$name num_levels=$nl nlim=$nlim blocks=$n wall_s=$((t1 - t0)) args=$*" >> "$OUT/cases.txt"
 }

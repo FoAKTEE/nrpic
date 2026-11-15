@@ -28,9 +28,11 @@ done
 for nl in 7 8; do
   d=$OUT/single_L$nl
   n0=$(count_tree "$d/tree" "$S" mesh_refinement/num_levels=$nl)
+  mkdir -p "$d/run"
   t0=$(date +%s)
-  "$EXE" -i "$S" -d "$d/run" mesh_refinement/num_levels=$nl time/nlim=16 time/ndiag=1 \
-      > "$d/run.log" 2>&1
+  # trackers and horizon summaries are written into the working directory: run inside
+  (cd "$d/run" && "$EXE" -i "$S" -d "$d/run" mesh_refinement/num_levels=$nl time/nlim=16 \
+      time/ndiag=1 > "$d/run.log" 2>&1)
   t1=$(date +%s)
   echo "single num_levels=$nl t0_tree=$n0 wall_16_cycles_s=$((t1 - t0))" >> "$OUT/counts.txt"
 done
