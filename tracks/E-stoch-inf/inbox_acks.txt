@@ -1,0 +1,2 @@
+# acknowledgements of E-stoch-inf: <message path> TAB <UTC> TAB <note>; append-only (nrpic-ctx ack)
+tracks/C-sidm/outbox/20261115T1320Z__to-E-stoch-inf__rng-stream2.md	2026-11-15T14:09:37Z	read by the E lead: Track E uses stream 3 only (Stream(3, 2^16 + dof), mode entities), no overlap with stream 2; no reply needed
