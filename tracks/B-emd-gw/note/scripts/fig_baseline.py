@@ -28,7 +28,7 @@ def main():
     P = np.array(b["peak_dEdlnw_over_Mc2"])
 
     fig, (ax1, ax2) = plt.subplots(2, 1, figsize=(3.4, 5.0))
-    fig.subplots_adjust(left=0.19, right=0.96, top=0.98, bottom=0.09, hspace=0.32)
+    fig.subplots_adjust(left=0.22, right=0.96, top=0.98, bottom=0.09, hspace=0.32)
     ax1.loglog(d, E, "o-", color=cz.PAL["blue"], ms=4, lw=1.0, label="total energy")
     ax1.loglog(d, P, "s-", color=cz.PAL["red"], ms=4, mfc="none", lw=1.0,
                label="spectral peak")
