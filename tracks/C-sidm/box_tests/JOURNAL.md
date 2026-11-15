@@ -290,3 +290,36 @@ operator; it matters to anyone who aligns snapshots with history records or coll
 dumps by cycle (the dump of `coll_dump_cycle = c` and the snapshot labelled c both
 belong to the step recorded as c + 1 in the histories). Request to core: document the
 convention (FORMATS.md, collisions.md section 5) or align the labels.
+
+## 2026-11-15 T3, T4, T5: outcome (run C-20261115-170539-28432c3)
+
+All four runs (theta_2 = 1e-3 and 1, seeds 1 and 2) pass T3, T4 and T5; B at 0.25
+tau_rel is bit-identical to A's last snapshot in all four (A and B are the same
+trajectory). 1.13e7 (theta_2 = 1e-3) and 1.47e7 (theta_2 = 1) collisions per run, n_sub = 1
+throughout, exactly rounded sum M W of the final snapshot equal to the initial one to
+the last bit, T1 per step passes. Wall 1930-2000 s for 3000 steps (0.65 s per step).
+- T4, slope/exact (exact from the sample's own initial temperatures): theta_2 = 1e-3:
+  0.9924 (se 0.50 percent), 0.9792 (se 0.64 percent); theta_2 = 1: 0.9959 (0.32
+  percent), 1.0088 (0.27 percent). Criterion (|d| <= 4 se + 1 percent and <= 5 percent):
+  pass in all four. My prediction |ratio - 1| < 0.01 FAILED for theta_2 = 1e-3, seed 2
+  (2.1 percent low, 3.3 se below the expected 1.0025), and the noise is about twice what I
+  assumed (se 0.3-0.6 percent, not ~0.3). Both theta_2 = 1e-3 seeds are low (-1.5 and
+  -3.3 se from 1.0025); two runs cannot tell a systematic of a few tenths of a percent
+  from noise. Not chased further here [JUDGEMENT]: the criterion was set with this noise
+  in mind, the theta_2 = 1 pair straddles 1, and core's time-step study (collisions.md
+  section 8) found the dt -> 0 slope at 1.000(4) and 0.995(4) of the non-relativistic
+  form at theta = 0.01. A tighter T4 needs more particles or more seeds (open item O3).
+  The non-relativistic rate (4.2 times the exact one at theta_2 = 1) and |v_a - v_b|
+  (1.27 times) are excluded by a wide margin.
+- T3 at 15 tau_rel: KS p = 0.084, 0.77, 0.99, 0.92; <u^2/W>/3 - theta_eq = -1.6e-3,
+  -1.1e-3, -0.07, -0.005 se units... precisely: |<u^2/W>/3 - theta_eq| < 0.01 se in all
+  four; both populations at theta_eq within 2.2 se (largest: theta_2 = 1e-3 s2,
+  theta_1 = 2.00604e-3 vs theta_eq 2.00424e-3).
+- T5: s(0) - s_mixture = -2.8e-4, -3.6e-4, -2.6e-4, -1.5e-4 (se 1.5e-3, 2.4e-3); the
+  entropy rises monotonically (no pair 0.25 tau_rel apart decreases beyond 4 sqrt 2 se);
+  s(end) - s_MJ(theta_eq) = -2.5e-5, +1.0e-5, +3.2e-5, +4.3e-5 (< 0.03 se). The gaps
+  0.0449/0.0449 and 0.1231/0.1215 are resolved at ~30 and ~50 se.
+Figures `relax_T345_*.png` (four, looked at): temperatures follow the two-MJ guide to
+equilibrium, the entropy climbs from the mixture value to s_MJ, the final |u| histogram
+lies on MJ(theta_eq). The T4 window is too compressed there to judge the slope by eye;
+a zoom is made by `t4zoom.py` at the end.
