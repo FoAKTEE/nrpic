@@ -1,0 +1,4 @@
+/data/haiyangw/nrpic/scratch/B-emd-gw/B-20261115-190323-2f8806a/v2/v2_crossed.json: 331 numeric leaves, largest relative difference 0.000e+00 at None; 0 other leaves differ
+/data/haiyangw/nrpic/scratch/B-emd-gw/B-20261115-190323-2f8806a/v3/v3_junk.json: 12 numeric leaves, largest relative difference 0.000e+00 at None; 0 other leaves differ
+/data/haiyangw/nrpic/scratch/B-emd-gw/B-20261115-190323-2f8806a/v6/v6_za_scaling.json: 64 numeric leaves, largest relative difference 0.000e+00 at None; 0 other leaves differ
+largest relative difference over all pairs: 0.000e+00

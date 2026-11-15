@@ -102,3 +102,52 @@ frozen" about the late TT rise; the first-source helper corrected that reading i
 journal (band sums, lines 195-205) and R6b rechecks it. The sentence now states the growth
 below the twentieth harmonic; main.pdf recompiled (latexmk, 10 pages, no undefined
 references).
+
+## Outcomes (runs B-20261115-190007-e09a0d2 first_source, -190019-b5f5eb6 late rise, -190015-4dd3416 newton, -190323-2f8806a verifier, -190433-2d1d185 figures; figures `figs/rv_review_*.png`, looked at)
+
+R1 CONFIRMED. max |c_+/(s g) - 1| for 2 <= a <= 10 at 64^3: 0.224, 0.222, 0.435 percent
+(eps = 0.1, 0.3, 1; helper 0.22, 0.22, 0.44), K2 the same with the opposite sign; 32^3:
+0.195, 0.190, 0.379. Lead and helper c_+(K1) agree to 8.6e-14 of |s| (64^3) and 6.4e-14
+(32^3) at every dump. Not predicted: the Gamma-driver run departs from s g by 0.76 percent
+in the same window (raw strain of another spatial gauge).
+R2 CONFIRMED. c_+/eps, eps = 0.3 against 0.1: 0.050 percent (64^3), 0.066 (32^3).
+R3 CONFIRMED. Largest TT amplitude of the null at every tenth dump: 1.9e-16 (64^3),
+3.7e-16 (32^3); z-dependence of h 2.0e-14 and 1.4e-14; |c_+(K1)| <= 2e-16.
+R4 CONFIRMED, one value off. Raw gauge difference 0.131, 0.360, 1.454, 4.82, 11.52 percent
+of |s| at a = 5, 10, 20, 40, 60 (helper 0.12, 0.36, 1.5, 4.9, 11.5; a = 5 is 9 percent
+higher, inside the 10 percent bound). Corrected 0.0053, 0.0076, 0.031, 0.29, 1.21 percent
+(helper 0.002, 0.008, 0.03, 0.3, 1.2: a = 5 differs by 2.6, where the corrected difference
+sits at the 1e-5 to 1e-4 noise of the figure and the dump chosen decides it). Median
+corrected/raw 0.0840 (64^3) and 0.0928 (32^3) (helper 0.084, 0.093).
+R5 PARTLY REFUTED. 5 <= a <= 40: largest |c_+(32^3)/c_+(64^3) - 1| 0.091, 0.065, 0.067,
+0.065 percent (eps = 0.1, 0.3, 1, Gamma driver): below my 0.1 percent, but above the
+helper's "<= 0.06 percent" for eps = 0.1. 40 < a <= 80: 0.42, 0.44 and 1.02 percent in the
+zero-shift runs: eps = 1 exceeds my 1 percent bound (1.02). At a = 80 exactly: 0.42, 0.49,
+0.47, 1.93 percent (helper 0.4-0.5 and 1.9); at a = 100: 0.24, 0.10, 3.2, 2.4 percent.
+R6 PARTLY REFUTED. The largest c_+/s for eps = 1 is 2.547 at a = 123, not near a = 95:
+c_+/s has two maxima, about 2.5 at a ~ 95 and 2.55 at a ~ 123 (the helper's "peaks at
+a ~ 95, c_+/s = 2.5" names the first). Departures from s g at a = 20 and 40: 2.27 and
+11.2 percent (helper 2.3, 11.5). Quasi-static: (dc/dtau)^2/(|K|^2 c^2) of K1 is 0.036 at
+a = 4 and at most 0.013 for a >= 12 (helper, all modes: 0.04 and <= 0.01).
+R6b CONFIRMED. Total rms of Lambda h at a = 1001: 2.4882e-9, 4.3116e-9 (helper 2.488e-9,
+4.312e-9: same convention). Share of the rise at m >= 20: 0.926 and 0.972 (helper 93, 97
+percent), at m >= 40: 0.551 and 0.726 (56, 73). rms at m < 10: +7.7 and +9.7 percent
+(8, 10); cubic/quadratic at a = 1001: 1.944 at m >= 20, 1.030 at m < 10 (1.9, 3 percent).
+Band 10-20 at a = 1001: 3.50e-10 and 4.21e-10 against the helper's 3.3e-10 and 3.9e-10
+(6-8 percent: band-edge convention, not pursued).
+R7 CONFIRMED. My H1 integration equals the helper's column to the printed digits at all
+twelve points; measured/predicted at a = 2 and 5: 0.984, 0.982 (n = 16), 0.989, 1.019
+(32), 1.000, 1.013 (64), all within 2 percent; at a = 10 and 15 it rises to 1.08-1.28
+(nonlinear stage; H1 is linear).
+R8 CONFIRMED. t_x = 24.065902, 23.895492, 23.860390; E/M (raw d3I, rectangle rule) =
+3.2222e-4, 4.0085e-4, 4.4370e-4; Richardson t_x = 23.85128 (order 2.28), E/M = 4.950e-4
+(order 0.88); step 0.01: t_x within 2.1e-7 relative, E within 2e-5. The energy is not in
+its asymptotic range (distances from the extrapolated value 35, 19, 10 percent; figure),
+so the +0.7 percent agreement of the extrapolation with the ODE is [JUDGEMENT] partly luck.
+R9 CONFIRMED. E/(M (2 alpha)^(7/2)) = 0.0620684 (N = 32), 0.0772146 (N = 64), spread over
+the four alpha 7.8e-15 and 3.4e-14; t_x/t_turn spread 2.7e-15 and 2.4e-15.
+R10 CONFIRMED. v2_crossed, v3_junk and v6_za_scaling reproduce their registered JSON
+exactly (407 numeric leaves, largest relative difference 0). Independent: (5/12)|phi_x phi_y|
+= 1.5399e-5 at eps = 1 from my s; my g(tau) gives max |g - 1| = 1.93 percent over the
+period centred on a = 60 (tau = 12.1 to 14.9, i.e. a = 50 to 70), consistent with the
+verifier's exact envelope 1.807 percent at a = 60 and a 1/a decay.
