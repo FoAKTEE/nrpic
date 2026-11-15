@@ -1,7 +1,8 @@
 # Journal of the work package expball (A-pre-1), helper of A-emd-pbh
 
 Predictions are written before the test runs; outcomes are appended afterwards and are
-not edited later. Units G = c = 1. Sign of the code: K_ij = -(1/(2 alpha))(d_t gamma_ij
+not edited later. (Correction at 11:56 UTC: the clock times of the entries after P1 had been
+estimated, not read; they are replaced by times read from the git log and the run ids.) Units G = c = 1. Sign of the code: K_ij = -(1/(2 alpha))(d_t gamma_ij
 - D_i beta_j - D_j beta_i), expansion has K < 0.
 
 ## 2026-11-15 11:24 UTC, P1: symbolic checks (sym/)
@@ -26,13 +27,13 @@ Prediction.
   anti-trapped iff 2m/R > 1 (v > 0), independently of E.
 Refuted if any of the sympy simplifications leaves a non-zero remainder.
 
-Outcome (11:40 UTC). sym/sym_ltb_4d.py 27/27, sym/sym_slice.py 36/36: all predictions
+Outcome (about 11:33 UTC). sym/sym_ltb_4d.py 27/27, sym/sym_slice.py 36/36: all predictions
 (a)-(f) hold. First run of sym_ltb_4d.py failed two checks, G^theta_theta of part (a):
 the substitution list lacked the rule for d_r d_t^2 R; with d_r(Rddot) = d_r(-m/R^2) added
 the remainder is zero. A missing rule of the script, not a property of the metric.
 The static shortcut differs from the correct KL by v E'/(1+2E) (printed by the script).
 
-## 2026-11-15 11:41 UTC, P2: growing-mode parametrisation (sym/sym_growing.py)
+## 2026-11-15 about 11:35 UTC, P2: growing-mode parametrisation (sym/sym_growing.py)
 
 Prediction. Age t(R; m, E) = (2/3) R^1.5 (2m)^-1/2 2F1(1/2,3/2;5/2;-ER/m), equal to the
 cycloid for E < 0 and to direct quadrature to 20 digits; F(1) = 3 pi/4; simultaneous bang
@@ -43,11 +44,11 @@ Procedural slip: this prediction was written down only after the script had run 
 statements are those of the script's docstring, written before the run); it carries no
 weight as a prediction.
 
-Outcome (11:42 UTC). 11/11 checks pass; hypergeometric and quadrature agree to all 30
+Outcome (about 11:36 UTC). 11/11 checks pass; hypergeometric and quadrature agree to all 30
 digits; Delta_i (t_c/t_i)^(2/3) = 1.7001, 1.6878, 1.6866 at Delta_i = 1e-2, 1e-3, 1e-4,
 converging to 1.68647. Second-order term y = (5/3) Delta - (40/21) Delta^2.
 
-## 2026-11-15 12:10 UTC, P3: unit tests (tests/test_expball.py)
+## 2026-11-15 about 11:44 UTC, P3: unit tests (tests/test_expball.py)
 
 Choice made before the tests: the bound core of data set 2 is a "smoothed top-hat"
 (Delta = delta_c inside R1, C-infinity step to 0 at R2), because the (1 - x^4)^8 profile
@@ -66,7 +67,7 @@ at tau_ta, R = 2m at tau_AH; the 4th-order residual drops by > 10 from N = 32 to
 smooth model; the general-metric FD residual is within a factor 5 of the specialised one.
 Refuted by any failure that is not a defect of the test itself.
 
-Outcome (12:20 UTC). 24 of 25 tests passed on the first run; two predictions failed:
+Outcome (about 11:50 UTC, before commit 649981e at 11:51). 24 of 25 tests passed on the first run; two predictions failed:
 - test_shell_evolution[smooth]: for the shell at R_i = 5.9, where Delta ~ 1e-15, the
   crunch time is ~1e20 and R(tau_AH) cannot be resolved in double precision (the horizon
   precedes the crunch by (4/3) m, 1e-20 of it). A limit of the test, not of the formulas:
@@ -77,7 +78,7 @@ Outcome (12:20 UTC). 24 of 25 tests passed on the first run; two predictions fai
   convergence run to N = 256 is the test of that hypothesis. The smoke test now asks for a
   drop > 2^2.5.
 
-## 2026-11-15 12:35 UTC, P4: G1 convergence run (scripts/run_convergence.py)
+## 2026-11-15 11:53 UTC (commit 044312f, before the run started at 11:53:39), P4: G1 convergence run (scripts/run_convergence.py)
 
 Set-up. Octant [0, 1.25 R_b]^3, cell-centred, N = 32, 64, 128, 256; FD orders 2 and 4;
 H R_b = 0.5, M = 1 (R_b = 8, H = 1/16). Models: flat (sharp edge), flat with a C^4 edge
@@ -104,3 +105,29 @@ Prediction.
   table fields equals that of the exact fields to better than 1 percent.
 Refuted: a smooth-region order below p - 0.5 at the two finest pairs, or any of the
 above all-cells statements failing.
+
+## 2026-11-15 11:59 UTC, P5: initial-slice and exact-shell figures (scripts/fig_slice_exact.py)
+
+Prediction (H R_b = 0.5, M = 1, R_b = 8, t_i = 32/3; core delta_c = 1, R1 = 2.4, R2 = 6).
+- max 2m/R on the slice = 0.25 (at R_b) for all three models; no anti-trapped sphere.
+- density positive everywhere inside the ball; local minimum of rho/rho_b in the
+  compensating shell: top-hat 1 + delta_u = 1 - 1/(2.5^3 - 1) = 0.9321, smoothed top-hat
+  about 0.44 (from the profile's own check, delta_min = -0.563).
+- the homogeneous core turns around at tau_ta = 16.894 and crunches at tau_c = 44.454 for
+  both core profiles (same delta_c); first trapped sphere just outside R1 for the smoothed
+  top-hat (R_i ~ 2.74, m ~ 0.080, tau_AH ~ 44.35) and at R1 for the top-hat (m ~ 0.054,
+  tau_AH ~ 44.38) (values of an unregistered scouting call earlier in the session);
+  no shell crossing before the first crunch.
+Refuted by any of these failing.
+
+## 2026-11-15 11:59 UTC, P6: particle noise (scripts/run_noise.py)
+
+Set-up: CIC deposit on 64^3 cells over [-10, 10]^3 (h = 0.3125), rms of
+dH/6H^2 = (rho - rho_dep)/rho_b over rbar < 0.8 rbar_m, N = 1e4 ... 1e6.
+Prediction. mc: rms = sqrt((2/3)^3/n_c) within 10 percent (about 144/sqrt(N) for the flat
+ball: n_c = 0.0305 N/2145), slope -1/2 within 0.05; stratified: the same within 15 percent
+(the stratification is marginal in r, cos theta, phi and does not stratify cells); lattice:
+rms below 0.1 x mc at N >= 1e5, not following N^-1/2 (aliasing of lattice and mesh; the
+error falls faster, roughly as (a/h)^2). Mean (bias) consistent with zero for the flat ball;
+for the smoothed top-hat a bias of order h^2 grad^2 rho/rho_b ~ 1e-3 may show at large N.
+Refuted by an mc slope outside [-0.55, -0.45] or an amplitude off by more than 10 percent.
