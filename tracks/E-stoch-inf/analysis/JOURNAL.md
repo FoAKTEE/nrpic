@@ -178,7 +178,7 @@ noise_scheme = markov) with the release processor executable (`scripts/u6_scaled
 with the reference as it is, A1 fails between 1e-11 and 1e-8 of the rms; with the
 cancellation-free reference (`scripts/val_cf.py`) every test passes, A1 below 1e-11.
 
-## 17:31 Outcome PS1-PS6 at N = 16 (run E-20261115-172349-0bdb97d, with the control)
+## 17:29 Outcome PS1-PS6 at N = 16 (run E-20261115-172349-0bdb97d, with the control)
 
 All predictions hold (`fig/analyse_sr_N16.json`; figures `fig/fig_sr_permode_N16.png`,
 `fig_sr_constraints_N16.png`, `fig_sr_spectrum_N16.png`, looked at).
@@ -200,3 +200,15 @@ All predictions hold (`fig/analyse_sr_N16.json`; figures `fig/fig_sr_permode_N16
 - PS5: lockstep R_q against SciPy 7.3e-4 at most (RK4 truncation while the modes are
   sub-horizon; it does not grow afterwards).
 - PS6: 2 min per run.
+
+## 17:32 Outcome P3' (run E-20261115-172423-5234cce): the reference, not the code
+
+U6 of the scaled case with the release executable: with the track's reference as it is,
+A1 fails at 9.77e-11 of the rms (worst stoch_c2 at cycle 120), every other test passes;
+with the cancellation-free increment of `scripts/val_cf.py` A1 is 3.3e-15 and all tests
+pass (A2-A8, A10 unchanged to the digits shown). So the release executable's Markov-tanh
+noise is exact, and the A1 failure the lead recorded (1.07e-10 with core's 836ac86) now
+sits in the reference `noise/ref/noise_ref.py` (W(t) - W(t - dt)), which the noise
+package should change to the sinh/cosh form (request in README). Figure
+`fig/fig_val_u6_scaled_cf.png` looked at: the shell means scatter inside the band except
+the 3-mode shell |n| = 1 at cycle 120 (0.38), which the exact Gamma test of A2 accepts.

@@ -1,0 +1,12 @@
+A0 PASS format: 0 (no inconsistency) 
+A1 PASS exact reconstruction from the keys: 3.3474238412695343e-15 (max|xi - xi_ref| / rms <= 1e-11) worst stoch_c2@80
+A2 PASS spectrum per shell (and mu bins of c3): {'min_p_bonferroni': 0.14045197257640976, 'max_abs_zpool': -2.0655591506695594} (min p * shells >= 2.4e-05, |z_pool| <= 4.23) fails: 
+A3 PASS Gaussian amplitudes: {'p_mod': 0.05666427602057478, 'p_arg': 0.08513079609649454, 'z4': -1.966089118767446} (KS p >= 2.4e-05 (|w|^2 ~ Exp(1), arg uniform), |z4| <= 4.23) fails: 
+A4 PASS correlation function: 0.01820458220413822 (min p * lags >= 2.4e-05) fails: 
+A5 PASS one-point: zero mean (skewness, kurtosis reported): 3.176534572980444e-17 (|mean| / rms <= 1e-11) 
+A6 PASS components of one degree of freedom share the amplitudes: 0.0 (deviation <= 1e-10 (pair, c1: |z| <= 4.23)) fails: 
+A7 PASS independent degrees of freedom are uncorrelated: 1.4243934436929466 (|z| <= 4.23) 
+A8 PASS between outputs: 2.131856343401502 (markov: |z| <= 4.23) 
+A9 n/a integrated field: None (markov: covered by A1 and A2) not applicable
+A10 PASS band limit: nothing outside the mode set or where G = 0: 2.7149473533884973e-15 (max |xi_n| / rms_G <= 1e-10) worst stoch_c0@40
+failed: 0
