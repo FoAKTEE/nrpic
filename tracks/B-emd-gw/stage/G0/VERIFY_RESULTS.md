@@ -1,12 +1,12 @@
 # Re-verification: B-emd-gw G0
 
-`harness/bin/nrpic-stage verify B-emd-gw G0` on 2026-11-15T16:55:12Z, clean export of commit `78bb9284616b` in `scratch/B-emd-gw/tmp/stage-verify/B-emd-gw-G0-78bb928-20261115T165403Z`. Result: **FAIL**.
+`harness/bin/nrpic-stage verify B-emd-gw G0` on 2026-11-15T16:57:42Z, clean export of commit `0fee5b605028` in `scratch/B-emd-gw/tmp/stage-verify/B-emd-gw-G0-0fee5b6-20261115T165645Z`. Result: **FAIL**.
 
 | Check | Result | Message |
 |---|---|---|
-| clean | FAIL | 1 uncommitted paths: commit them first (tracks/B-emd-gw/newton_tests/JOURNAL.md) |
+| clean | PASS | worktree clean (outside the stage directory being assembled) |
 | sync | PASS | main is merged into the branch |
-| export | PASS | clean export of 78bb9284616b (HEAD) in /data/haiyangw/nrpic/scratch/B-emd-gw/tmp/stage-verify/B-emd-gw-G0-78bb928-20261115T165403Z/tree |
+| export | PASS | clean export of 0fee5b605028 (HEAD) in /data/haiyangw/nrpic/scratch/B-emd-gw/tmp/stage-verify/B-emd-gw-G0-0fee5b6-20261115T165645Z/tree |
 | size | PASS | no committed file of the track above 5 MB |
 | note | PASS | tracks/<ID>/note/main.tex present |
 | package | PASS | EVIDENCE.md, OPEN.md, CHECKLIST.md present (decision 0012); scoping text: scope/SCOPE.md; REPORT.md of wave 1 accepted as it is; REVIEW.md present |
@@ -14,10 +14,10 @@
 | style | PASS | 2 style copies equal harness/style/SHA256SUMS (czstyle.py, paperfig.py) |
 | fig-script | PASS | 6 figures, each with its script |
 | min-figs | PASS | 2 schematics and 4 data figures (brief 13.4 asks at least 2 and 0 at G0) |
-| runs | FAIL | 18 of 104 runs have problems |
+| runs | FAIL | 17 of 108 runs have problems |
 | run-notes | WARN | 70 runs read with defaults or not fully re-verifiable (nrpic-run lint) |
 | status | PASS | STATUS.md has 35 lines |
-| rerun | FAIL | 5 of 6 scripts and commands ran cleanly in the export |
+| rerun | PASS | 6 of 6 scripts and commands ran cleanly in the export |
 | compare | PASS | 12 regenerated files compared with the committed ones; 0 differ beyond tolerance (rtol 1e-06, atol 1e-12, PNG rms 0.005) |
 | regenerate | PASS | all 12 committed figure files regenerated |
 
@@ -52,21 +52,17 @@
   "status is running: not finished (nrpic-run finish)",
   "missing /data/haiyangw/nrpic/scratch/B-emd-gw/B-20261115-165056-835fddf/sha256sums.txt"
  ],
- "B-20261115-165349-81a17bc": [
-  "status is running: not finished (nrpic-run finish)",
-  "missing /data/haiyangw/nrpic/scratch/B-emd-gw/B-20261115-165349-81a17bc/sha256sums.txt"
- ],
- "B-20261115-165351-b38db6f": [
-  "status is running: not finished (nrpic-run finish)",
-  "missing /data/haiyangw/nrpic/scratch/B-emd-gw/B-20261115-165351-b38db6f/sha256sums.txt"
- ],
  "B-20261115-165353-b592d43": [
   "status is submitted: not finished (nrpic-run finish)",
   "missing /data/haiyangw/nrpic/scratch/B-emd-gw/B-20261115-165353-b592d43/sha256sums.txt"
  ],
- "B-20261115-165357-37d0477": [
+ "B-20261115-165525-f7c2004": [
   "status is running: not finished (nrpic-run finish)",
-  "missing /data/haiyangw/nrpic/scratch/B-emd-gw/B-20261115-165357-37d0477/sha256sums.txt"
+  "missing /data/haiyangw/nrpic/scratch/B-emd-gw/B-20261115-165525-f7c2004/sha256sums.txt"
+ ],
+ "B-20261115-165608-171ff45": [
+  "status is running: not finished (nrpic-run finish)",
+  "missing /data/haiyangw/nrpic/scratch/B-emd-gw/B-20261115-165608-171ff45/sha256sums.txt"
  ],
  "B-emd-gw-20261115-113102-bc5e082": [
   "fields missing: code, env, input"
@@ -231,17 +227,6 @@
   "no gate",
   "status 'done' read as completed",
   "no scratch/B-emd-gw/B-emd-gw-20261115-113236-0ea0f74/sha256sums.txt (hand-written manifest; outputs not re-verifiable)
-```
-
-## rerun
-
-```
-{
- "note/scripts/fig_baseline.py": {
-  "exit": 0,
-  "tail": "czstyle: labels cut at the figure edge\nczstyle: labels of fig.axes[0] are cut at the figure edge, inches: {'left': 0.05}\n"
- }
-}
 ```
 
 ## compare
