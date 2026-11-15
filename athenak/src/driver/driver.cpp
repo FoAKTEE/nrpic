@@ -662,20 +662,18 @@ void Driver::Finalize(Mesh *pmesh, ParameterInput *pin, Outputs *pout) {
     // between two scheduled times (wall clock limit, cycle limit, tlim off the schedule)
     // writes an extra file here; advancing the schedule for it made the continued run
     // skip the next scheduled output of every kind.  The extra output therefore leaves
-    // the schedule where it was: last_time is set back by dt before the writer adds it,
-    // so that the value stored in the restart file (written inside the writer) is the
-    // unadvanced one as well.  Compared in single precision, as in Driver::Execute.
+    // the schedule where it was: the interval is zero while the writer runs, so that
+    // the time of the last output it stores (also in the parameter dump inside a
+    // restart file) is unchanged.  No writer uses the interval for anything else.
+    // Compared in single precision, as in Driver::Execute.
     auto &opar = out->out_params;
-    const Real last_saved = opar.last_time;
+    const Real dt_saved = opar.dt;
     const bool off_schedule = (opar.dt > 0.0) && (opar.last_time >= 0.0) &&
         (static_cast<float>(pmesh->time) < static_cast<float>(opar.last_time + opar.dt));
-    if (off_schedule) { opar.last_time -= opar.dt; }
+    if (off_schedule) { opar.dt = 0.0; }
     out->LoadOutputData(pmesh);
     out->WriteOutputFile(pmesh, pin);
-    if (off_schedule) {
-      opar.last_time = last_saved;
-      pin->SetReal(opar.block_name, "last_time", last_saved);
-    }
+    opar.dt = dt_saved;
   }
 
   // call any problem specific functions to do work after main loop

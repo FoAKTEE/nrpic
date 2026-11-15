@@ -151,3 +151,19 @@ t = 24.85 M with "Terminating on wall clock limit"), and the wall-clock case is 
 the release executable too. Added prediction: release, stopped at the wall clock near
 t = 25 M and continued: the restart dump of t = 50 M and the table of the next scheduled
 time are missing; corrected: nothing missing.
+
+Outcome of run core-20261115-154739-a7a0010 [VERIFIED, `t2_restart.json` in the run
+directory]: uninterrupted runs and the cycle-limit cases as predicted (release: restart
+dump of 150 M and table of 125 M missing; corrected: nothing missing, final state equal
+bit for bit). Release with the wall-clock stop (it stopped at t = 64.0 M): dump of 100 M
+and table of 75 M missing, as predicted. The corrected executable with the wall-clock
+stop (t = 25.0038 M) FAILED: restart dumps at 75.0038, 125.0038, ... 275.0038 M, the
+scheduled 50, 100, ..., 250 M all missing. Cause, read in the writer and confirmed by the
+rerun below: my first hook set `last_time` back by dt before the writer; with the last
+dump at t = 0 that gives -50, and a negative `last_time` is the writers' mark for "never
+written" (`restart.cpp` lines 196-198), so the writer stored the stop time as the new
+origin of the schedule. The cycle-limit case stopped after the dump of 100 M and did not
+reach that branch. Second version of the hook: the interval `out_params.dt` is zero while
+the writer runs (no writer uses it for anything but the advance; checked with grep over
+`outputs/*.cpp`), so `last_time` is unchanged bit for bit and never negative. Prediction
+for the rerun: all three corrected cases complete; the release cases as before.
