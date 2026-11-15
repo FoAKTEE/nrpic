@@ -103,6 +103,38 @@ def main():
     c.ok(r.returncode == 1 and "not clean" in r.stderr, "a dirty worktree is refused", r.stderr)
     os.remove(junk)
 
+    # 2b. helpers sharing one worktree: --package scopes the cleanliness check
+    F.commit_file(A, "tracks/A-emd-pbh/pkg/run.py", "print('pkg run')\n")
+    other = os.path.join(A, "tracks", "A-emd-pbh", "other_helper", "draft.txt")
+    os.makedirs(os.path.dirname(other), exist_ok=True)
+    open(other, "w").write("another helper's uncommitted work\n")
+    r = run_cmd(A, ["submit", "--kind", "scouting", "--gate", "G1", "--purpose", "x", "--allow-no-venv",
+                    "--dry-run", "--", "python3", "tracks/A-emd-pbh/pkg/run.py"])
+    c.ok(r.returncode == 1 and "--package DIR" in r.stderr, "another helper's untracked file: refused, with the --package hint",
+         r.stderr)
+    r = run_cmd(A, ["submit", "--kind", "scouting", "--gate", "G1", "--purpose", "x", "--allow-no-venv", "--dry-run",
+                    "--package", "tracks/A-emd-pbh/pkg", "--", "python3", "tracks/A-emd-pbh/pkg/run.py"])
+    dm = json.loads(r.stdout[:r.stdout.rindex("}") + 1]) if r.returncode == 0 else {}
+    c.ok(r.returncode == 0 and dm["git"]["package"] == ["tracks/A-emd-pbh/pkg"]
+         and dm["git"]["outside_package"]["count"] == 1, "with --package: accepted, the other helper's file recorded", r.stderr)
+    open(os.path.join(A, "tracks", "A-emd-pbh", "pkg", "new.py"), "w").write("x = 1\n")
+    r = run_cmd(A, ["submit", "--kind", "scouting", "--gate", "G1", "--purpose", "x", "--allow-no-venv", "--dry-run",
+                    "--package", "tracks/A-emd-pbh/pkg", "--", "python3", "tracks/A-emd-pbh/pkg/run.py"])
+    c.ok(r.returncode == 1 and "pkg/new.py" in r.stderr, "an untracked file inside the package: refused", r.stderr)
+    os.remove(os.path.join(A, "tracks", "A-emd-pbh", "pkg", "new.py"))
+    r = run_cmd(A, ["submit", "--kind", "scouting", "--gate", "G1", "--purpose", "x", "--allow-no-venv", "--dry-run",
+                    "--package", "tracks/A-emd-pbh/pkg", "--", "python3", "tracks/A-emd-pbh/other_helper/draft.txt"])
+    c.ok(r.returncode == 1 and "other_helper" in r.stderr, "an untracked input outside the package: refused", r.stderr)
+    sc = os.path.join(A, "scripts", "gpu_batch.sh")
+    orig_sc = open(sc).read()
+    open(sc, "a").write("# local edit\n")
+    r = run_cmd(A, ["submit", "--kind", "scouting", "--gate", "G1", "--purpose", "x", "--allow-no-venv", "--dry-run",
+                    "--package", "tracks/A-emd-pbh/pkg", "--", "python3", "tracks/A-emd-pbh/pkg/run.py"])
+    c.ok(r.returncode == 1 and "shared code" in r.stderr, "a modified shared script: refused even with --package", r.stderr)
+    open(sc, "w").write(orig_sc)
+    os.remove(other)
+    os.rmdir(os.path.dirname(other))
+
     # 3. budgets (decision 0006)
     deck = "tracks/kb/inputs/t.athinput"
     F.commit_file(KB, deck, "<problem>\npgen_name = fake\n")

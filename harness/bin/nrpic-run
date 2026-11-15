@@ -44,7 +44,10 @@ being A..F, core or kb as in the brief's example; the full form of some wave-1 m
 (A-emd-pbh-20261115-...) stays valid and is read.
 
 Relative paths (inputs, list, input deck, executable, plan) are relative to the worktree root.
-Common options: --input PATH (repeatable), --parent RUN_ID (repeatable), --preregistered
+Common options: --package DIR (repeatable: the run's own directory, for helpers sharing one
+worktree; then only the packages, the inputs and the shared code must be clean, and the other
+changes in tracks/<ID>/ are recorded in manifest.git.outside_package), --input PATH (repeatable),
+--parent RUN_ID (repeatable), --preregistered
 PATH[#anchor], --notes TEXT, --particles N, --dry-run. local: --cores N (default 1), --wall
 hh:mm:ss (kill after), --background. batch/chain: --exe PATH (default: NRPIC_GPU_EXE of the machine
 file), --gpu-hours H. chain: --check-cmd CMD, --athena-wall hh:mm:ss (default 00:50:00).
@@ -354,14 +357,14 @@ def env_block(wt, env, card):
 # ------------------------------------------------------------------ submit
 
 def parse_submit(args):
-    o = {"kind": None, "gate": None, "purpose": None, "launcher": "local", "inputs": [], "parents": [],
+    o = {"kind": None, "gate": None, "purpose": None, "launcher": "local", "inputs": [], "parents": [], "package": [],
          "preregistered": None, "notes": "", "particles": None, "cores": 1, "wall": None,
          "background": False, "exe": None, "gpu_hours": None, "list": None, "check_cmd": None,
          "athena_wall": "00:50:00", "dry_run": False, "command": []}
     if "--" in args:
         k = args.index("--")
         args, o["command"] = args[:k], args[k + 1:]
-    multi = {"--input": "inputs", "--parent": "parents"}
+    multi = {"--input": "inputs", "--parent": "parents", "--package": "package"}
     single = {"--kind": "kind", "--gate": "gate", "--purpose": "purpose", "--launcher": "launcher",
               "--preregistered": "preregistered", "--notes": "notes", "--particles": "particles",
               "--cores": "cores", "--wall": "wall", "--exe": "exe", "--gpu-hours": "gpu_hours",
@@ -443,6 +446,66 @@ def check_python_env(wt, o):
             "clean): harness/bin/nrpic-env create --no-kokkos   (or pass --allow-no-venv for a "
             "standard-library script)")
 
+SHARED_CODE = ("athenak/", "python/", "scripts/", "harness/", "problems/", "cosmo/", "kb/", "coord/", "CLAUDE.md")
+
+
+def check_clean(wt, o):
+    """Refuse unless the code of the run is the commit. Without --package: the whole worktree must
+    be clean (untracked files count). With --package DIR (repeatable; helpers sharing a worktree):
+    the packages and every --input / command-line file must be clean and fully tracked, and no
+    tracked file of the shared code (athenak/, python/, scripts/, harness/, problems/, ...) may be
+    modified; other changes, which can only lie elsewhere in tracks/<ID>/ (another helper's
+    package) or be untracked files there, are recorded in the manifest, not refused.
+    Returns the fields added to manifest["git"]."""
+    dirty = wt.dirty()
+    if not o["package"]:
+        if dirty:
+            raise H.HarnessError(
+                "the worktree is not clean; commit first so that the manifest's commit is the complete code "
+                "of the run:\n  " + "\n  ".join(dirty[:20]) + "\n(helpers sharing one worktree: name the run's "
+                "own directory with --package DIR; then only it, the inputs and the shared code must be clean)")
+        return {}
+    pk = []
+    for d in o["package"]:
+        full = os.path.realpath(d if os.path.isabs(d) else os.path.join(wt.root, d))
+        if not wt.inside(full) or not os.path.exists(full):
+            raise H.HarnessError(f"--package {d}: not a path inside {wt.root}")
+        rel = os.path.relpath(full, wt.root)
+        if not (rel == f"tracks/{wt.owner}" or rel.startswith(f"tracks/{wt.owner}/")) and not any(
+                H.glob_match(rel, g) or H.glob_match(rel + "/x", g) for g in H.ownership_globs(wt)):
+            raise H.HarnessError(f"--package {rel}: outside tracks/{wt.owner}/ and your OWNERSHIP")
+        pk.append(rel)
+    used, args = [], o["inputs"] + o["command"] + ([o["list"]] if o.get("list") else [])
+    if o.get("list"):
+        lst = o["list"] if os.path.isabs(o["list"]) else os.path.join(wt.root, o["list"])
+        if os.path.isfile(lst):
+            args += [ln.split()[1] for ln in open(lst) if len(ln.split()) > 1 and not ln.strip().startswith("#")]
+    for a in args:
+        cand = a if os.path.isabs(a) else os.path.join(wt.root, a)
+        if os.path.isfile(cand) and wt.inside(cand):
+            used.append(os.path.relpath(os.path.realpath(cand), wt.root))
+
+    def path_of(line):
+        p = line[3:]
+        return p.split(" -> ", 1)[-1].strip('"')
+
+    inside, shared, outside = [], [], []
+    for line in dirty:
+        p = path_of(line)
+        if any(p == q or p.startswith(q.rstrip("/") + "/") or q.startswith(p.rstrip("/") + "/") for q in pk) or any(
+                u == p or u.startswith(p.rstrip("/") + "/") for u in used):
+            inside.append(line)
+        elif p.startswith(SHARED_CODE) or not p.startswith("tracks/"):
+            shared.append(line)
+        else:
+            outside.append(line)
+    if inside or shared:
+        raise H.HarnessError(
+            "not clean where the run's code lives; commit first:\n  " + "\n  ".join((inside + shared)[:20])
+            + ("\n(changes to shared code or outside tracks/ are never allowed, --package or not)" if shared else ""))
+    return {"package": pk, "outside_package": {"count": len(outside), "first": [l for l in outside[:20]]}}
+
+
 
 def check_production(wt, o):
     if o["kind"] != "production":
@@ -475,10 +538,7 @@ def submit(wt, args):
     # one lock per owner: the budget check and the run id hold across the owner's worktrees
     lockf = open(os.path.join(lockdir, f"nrpic-run.{owner}.lock"), "w")
     fcntl.flock(lockf, fcntl.LOCK_EX)
-    dirty = wt.dirty()
-    if dirty:
-        raise H.HarnessError("the worktree is not clean; commit first so that the manifest's commit is "
-                             "the complete code of the run:\n  " + "\n  ".join(dirty[:20]))
+    clean = check_clean(wt, o)
     check_production(wt, o)
     check_python_env(wt, o)
     env = H.build_env(wt)
@@ -585,7 +645,7 @@ def submit(wt, args):
         "launcher": o["launcher"],
         "command": command,
         "cwd": "." if o["launcher"] == "local" else os.path.relpath(outdir, wt.home),
-        "git": {"sha": sha, "branch": wt.branch, "dirty": False,
+        "git": {"sha": sha, "branch": wt.branch, "dirty": False, **clean,
                 "merge_base_main": H.git(wt.root, "merge-base", "HEAD", "main", check=False) or None,
                 "worktree": os.path.relpath(wt.root, wt.home)},
         "code": code_block(wt, exe, problem),
