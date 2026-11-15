@@ -95,7 +95,7 @@ frozen-in slope -2.25033 at a/a_i = 1000; run lengths 121.9 / 466.7 M (eps = 0.0
 40.6 / 155.6 M (0.03), 12.2 / 46.7 M (0.1). Every printed number of SCOPE section 4
 reproduced to its digits ("187" is 187.3).
 
-### C4. Self-similar secondary infall gives rho ~ r^(-9/4) (D-pre-3, SCOPE 4 and 5) — CONFIRMED as an asymptote; the proposed G1 test of it is mis-specified; my independent normalisation NOT CONFIRMED
+### C4. Self-similar secondary infall gives rho ~ r^(-9/4) (D-pre-3, SCOPE 4 and 5) — CONFIRMED as the asymptote (lambda << 1e-2); the proposed G1 test of it is mis-specified
 
 - The track's self-similar solver rerun (`selfsimilar.py --taumax 300`, run
   `D-20261115-171818-a5aefe8`) reproduces run `D-bh-dress-20261115-123813-97afeea` exactly
@@ -105,12 +105,22 @@ reproduced to its digits ("187" is 187.3).
   solution: -2.26 (1e-4 ... 1e-3), -2.30 (3e-3 ... 3e-2), -2.32 (0.01 ... 0.1), -2.37
   (0.03 ... 0.3), -2.35 (0.002 ... 0.5), -2.42 (0.05 ... 0.5) (my evaluation of the
   track's profile, comparison run below).
-- My own radial-shell code (Newtonian, shell crossing, point seed, EdS; `verify/v4_shells.py`),
-  run `D-20261115-171733-633d422` (stopped after two of five variants, see JOURNAL entry 8)
-  and the rerun with a velocity step limit [C4 RESULTS TO BE FILLED]: enclosed-mass slopes
-  -2.32 ... -2.43 over 0.03-0.4 r_ta at a/a_i = 100, consistent with the self-similar
-  solution's -2.37 over that range and not with -9/4; my prediction (-2.25 +- 0.1 over
-  0.05-0.3 r_ta) failed because -9/4 is not the slope there.
+- My own radial-shell code (Newtonian, shell crossing, point seed in EdS, pure Hubble flow
+  at t_i as in the scoping set-up; `verify/v4_shells.py`), a/a_i = 100, run
+  `D-20261115-173149-7c6dd72`, figure `figs/v4b_compare.png`: the enclosed-mass profile
+  m(lambda) = M(<lambda r_ta)/M_ta approaches the track's self-similar m(lambda) as the
+  number of shells grows: median deviation over 0.02 < lambda < 0.5 of -32, -23, -14,
+  -7 percent for N = 2000, 4000, 8000, 16000 (largest 13 percent at N = 16000; a 1/N
+  extrapolation gives -1 to -4 percent [JUDGEMENT]); a four times smaller step changes it
+  by 4 percent. The deficit is discreteness heating of the shells (7, 3, 1 percent of the
+  turned-around dust outside r_ta at N = 2000, 4000, 8000). Enclosed-mass slopes over
+  0.03-0.4 r_ta: -2.32 ... -2.44 in every variant, consistent with the self-similar
+  solution's -2.37 over 0.03-0.3 and not with -9/4. My first prediction (-2.25 +- 0.1 over
+  0.05-0.3 r_ta) failed because -9/4 is not the slope there; the first registered run
+  (`D-20261115-171733-633d422`) was stopped after two variants when I changed the step rule
+  (JOURNAL entries 8-10). Not reached by my code: lambda < 1e-2, where the seed (2.3 percent
+  of M_ta) and the softening dominate, so the asymptote itself rests on the semi-analytic
+  solution and on the frozen-in argument (C3: -2.2503 at a/a_i = 1000).
 - Consequence for the plan: the G1 criterion proposed in SCOPE section 5, "the same in
   AthenaK's Newtonian mode ...: slope -9/4 +- 0.05 between 2 dx and r_ta/2", would fail for
   an exact code: the self-similar solution's own mean slope between 0.002 and 0.5 r_ta is
@@ -200,11 +210,14 @@ over one doubling; k = 1 against k = 0 is Delta ln M = 0.693.
    outside), and fix the domain size before calling a number a floor.
 2. **The convergence ladder M/16, M/32, M/64 is priced an order of magnitude too low.** The
    block count jumps from 400 to 3200 and 4712 (7848 with the horizon kept on the finest
-   level): G2's vacuum-bubble set at eps = 0.03 is 12-18 card-hours instead of 2.2, the
-   D-pre-4 M/32 run 12.6 instead of 2.0, and G1 + G2 well above the 30 card-hours of
-   decision 0014 unless the ladder changes (e.g. M/12, M/16, M/24 with refined regions
-   sized to the horizon, or two cards per run). The finest region must also grow with the
-   horizon's coordinate radius (1.67 M at 500 M).
+   level): SCOPE's G2 vacuum-bubble set at eps = 0.03 is 12-18 card-hours instead of 2.2,
+   the D-pre-4 M/32 run 12.6 instead of 2.0, and the current G2 budget of `REPORT.md`
+   section 7 (about 19 of 30) becomes about 28 of 30 because its M/32 matter run costs
+   about 12 instead of 2.86, before retries and the model's factor 1.5. G3's "three-way
+   convergence" needs a different ladder (e.g. M/12, M/16, M/24, refined regions sized to
+   the horizon) or several cards per run, and the 3200-7848 blocks exceed the 2280 per
+   card used so far. The finest region must also grow with the horizon's coordinate radius
+   (1.67 M at 500 M).
 3. **Several G1 numbers are not the numbers an exact calculation gives.** The D-pre-3
    criterion "slope -9/4 +- 0.05 between 2 dx and r_ta/2" fails for the self-similar
    solution itself (-2.35 over 0.002-0.5 r_ta); the D-pre-2 criterion "peak ratio 3, 15
@@ -220,4 +233,65 @@ McVittie leading-order drift is 25 percent short at eps = 0.1.
 
 ## 3. Comparison with the track's own review
 
-[TO BE WRITTEN after reading the track's summaries]
+Read after sections 1 and 2 were written: `stage/G0/STAGE_REPORT.md`, `EVIDENCE.md`,
+`OPEN.md`, `REPORT.md` (sections 1, 4, 7, 8 and the reference table), `stage/G1/STATUS.md`,
+`analysis/lead_checks/README.md`, the lead's `JOURNAL.md` and `puncture_drift/JOURNAL.md`
+(by search). There is no `REVIEW.md`; the lead's re-checks L1-L6 and the note helper's
+claims check (`note/tables/claims.md`, summarised in STAGE_REPORT) are the track's review.
+
+Agreements (the track found it too):
+- D-pre-1 met: same Misner-Sharp mass, a, m_p, fourth-order residuals, t = 0 code orders.
+- D-pre-4 drift: +2.95e-4 (M/8) and +3.67e-5 (M/16) from 50 to 490 M, identical to mine;
+  the excursions of equal size and timing at both resolutions, the boundary attribution
+  untested, the floor belonging to a different set-up than the Einstein-Straus run (risks
+  R3, R4; matched control V-1 planned); M/32 judged not to lower the floor
+  (`puncture_drift/JOURNAL.md:273-277`).
+- D-pre-2: the track's own run finds 2.59 and 9.2 percent and says so (`REPORT.md:115`).
+- D-pre-3: the track's G1 status already says "r^(-9/4) only below lambda ~ 1e-4".
+- Capture: `REPORT.md:44` already says "0.1-0.2 c" (SCOPE.md still says 0.12-0.25).
+
+Differences (what this verification adds or contradicts):
+1. **MeshBlock counts beyond M/16 (new, C8).** No track document checks the 56-blocks-per-
+   level rule. The release executable gives 3200 and 4712 (7848) blocks at M/32 and M/64;
+   the track's budget "about 19 of 30 card-hours to G2" (`REPORT.md` section 7) contains
+   "G2 (b) matter, eps = 0.03, a x 4, M/16 + M/32: 4.2". With 3200 blocks the M/32 part
+   alone is about 12 card-hours by the model's own rates [JUDGEMENT, arithmetic:
+   3200 x 4096 x 19915 cycles / 6.4e6 + 1e6 x 19915 x 1.2e-7 s], so G2 as planned is about
+   28 of 30 before retries and before the factor-1.5 model uncertainty, and the block count
+   is above the 2280 per card used so far. The first runs (ES-1, V-1 at M/8 and M/16) are
+   not affected.
+2. **G1 criteria still carry the rounded numbers (C4, C6).** The track knows both facts but
+   the criteria text was not updated: `scope/SCOPE.md:186-187` still asks for "peak ratio
+   to Gondolo-Silk 3 and ... 15 percent above"; `scope/SCOPE.md:192-193` and `REPORT.md:97`
+   still ask the AthenaK Newtonian mode for "slope -9/4 +- 0.05 on [2 dx, r_ta/2]", which
+   the track's own self-similar solution fails (-2.35 over 0.002-0.5 r_ta).
+3. **Independent normalisation of the self-similar solution (new, C4).** The track's
+   self-similar m(lambda) had no independent check (the shell runs of `shells.py` are by
+   the same helper). My shell code converges towards it (median deviation 7 percent at
+   N = 16000, falling about as 1/N).
+4. **Release executable (new, C1).** The track lists "format-2 reader only on
+   core/id-extrinsic" as risk R7 and the merge as a precondition of ES-1; the release
+   processor executable reproduces the wave-1 t = 0 dumps bit for bit, so R7 is closed for
+   the start-time data (not for the evolution, which I did not run).
+5. **D-pre-4 details (C2).** The track quotes the M/16 floor as 2.0-2.5e-5 for windows that
+   end before 210 M; I add that the finder offset changes sign between M/8 (+1.35e-3) and
+   M/16 (-2.6e-4), so the absolute horizon mass has no convergence order from these two
+   runs, and that the M/8 run is still in its transient at t0 = 50 M. The track's ES-1
+   prediction "M_AH(100 M) - M = +1.5e-3 +- 3e-4 at M/8" rests on the M/8 offset only.
+6. **McVittie drift (C7).** The track does not recheck the -12 (mH)^2 coefficient; it holds
+   to leading order and is 25 percent short at eps = 0.1. For the null test with matter
+   (G2 (b)) the definitional term over a x 4 at eps = 0.03 is about 3.5e-3 in ln M
+   (4 h^2 (1 - (a_i/a_f)^3)), below the 1-percent-of-accretion tolerance of the G2
+   criterion but far above the vacuum floor; SCOPE 3.6's sentence ("no change ... beyond
+   the matter that crosses the horizon") holds only after this term is subtracted or
+   bounded.
+7. The stage report's "D-pre-4 floor (2.0-2.5e-5 at M/16)" and my "about 7e-5
+   instantaneous" are the same data read two ways (window before 210 M against the whole
+   run); neither is a floor for the bubble set-up.
+
+Items that `OPEN.md` item 3 asked a verifier to look at: SCOPE section 3 wording (checked:
+restrained and consistent with 2302.07878 `:132` as quoted; see difference 6 for the matter
+case); DERIVATION sections 3-4, conditions on f and a < 1 (checked on the data set: no
+anti-trapped row, throat at R = 2.00003 M with W = 0 to grid accuracy, a = 0.9766 < 1; the
+general proofs not re-derived); the LTB mapping with the over-massive hole (JOURNAL L5):
+NOT CHECKED.

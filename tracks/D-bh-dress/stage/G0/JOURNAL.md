@@ -218,3 +218,17 @@ bins up to 3 times the initial outermost radius, i.e. only r < 0.06 r_ta at a_f 
 "density_slope_fits" in v4_shells.json are therefore fits to partial ranges and are not
 used anywhere; the enclosed-mass numbers use the final snapshot of all shells and are not
 affected.
+
+## Entry 11: verdicts written, then the comparison with the track's review
+
+VERIFIER.md sections 1 and 2 (verdicts C1-C8, three weakest points) were written before I
+opened STAGE_REPORT.md, EVIDENCE.md, OPEN.md, REPORT.md, stage/G1/STATUS.md, the lead's
+JOURNAL.md and puncture_drift/JOURNAL.md; section 3 lists agreements and differences.
+Main differences: MeshBlock counts beyond M/16 (3200, 4712, 7848 against the model's 456,
+512; G2 budget about 28 of 30 instead of 19), G1 criteria in SCOPE.md and REPORT.md still
+carrying "3 / 15 percent" and "-9/4 +- 0.05 on [2 dx, r_ta/2]" that the track's own
+computations contradict, an independent normalisation of the self-similar solution, and the
+release executable reproducing the t = 0 check bit for bit. Locator 2302.07878
+`paper_couple_rev.tex:132` read at the source (k = 0 for Kerr in the figure caption).
+Not done: the LTB mapping of JOURNAL L5, the Kerr spike, the AthenaK spike runs of P2, the
+D-pre-4 finder re-search, a run with the boundary moved, any card run.
