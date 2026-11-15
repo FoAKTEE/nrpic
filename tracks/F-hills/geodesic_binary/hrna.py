@@ -523,9 +523,12 @@ def cm_initial(law, coords, spin, rp, r0, M=1.0):
 
 
 def initial_state(law="hrna", coords="sch", spin=0.0, mb=1e-6, q12=1.0, a0=1.013, beta=None,
-                  rp=None, phase=0.0, sense=1, r0_rt=50.0, M=1.0):
+                  rp=None, phase=0.0, sense=1, r0_rt=50.0, M=1.0, ic_gamma=False):
     """Members on a circular Newtonian binary around the CM (appendix.tex:143-159), CM on the
-    parabolic(-like) orbit of the chosen law.  Member 1 sits at +(m2/mb) a0 e(phase)."""
+    parabolic(-like) orbit of the chosen law.  Member 1 sits at +(m2/mb) a0 e(phase).
+    ic_gamma=True (not the paper's convention): the internal angular velocity is divided by the
+    CM's Gamma = dt/dtau at release, so that the binary is circular in the CM proper time to
+    leading order under HRNA (test of the r0 dependence, JOURNAL C2)."""
     rt = (M / mb) ** (1 / 3) * a0
     if rp is None:
         rp = rt / beta
@@ -534,6 +537,11 @@ def initial_state(law="hrna", coords="sch", spin=0.0, mb=1e-6, q12=1.0, a0=1.013
     m1 = mb / (1 + q12)
     m2 = mb * q12 / (1 + q12)
     w = sense * math.sqrt(mb / a0 ** 3)
+    if ic_gamma and law != "newton":
+        g, gi, dg = np.zeros((4, 4)), np.zeros((4, 4)), np.zeros((3, 4, 4))
+        cc = COORDS_CKS if coords == "cks" else COORDS_SCH
+        _, _, gam = energy_lz(LAW_HRNA, cc, M, spin * M, xc, vc, g, gi, dg)
+        w = w / gam
     e = np.array([math.cos(phase), math.sin(phase), 0.0])
     et = np.array([-math.sin(phase), math.cos(phase), 0.0])
     x1 = xc + (m2 / mb) * a0 * e
@@ -552,7 +560,8 @@ _WK = None
 def run_encounter(law="hrna", coords="sch", spin=0.0, mb=1e-6, q12=1.0, a0=1.013, beta=None,
                   rp=None, phase=0.0, sense=1, r0_rt=50.0, rf_rt=150.0, rtol=1e-12, atol=1e-14,
                   record=0, r_plunge=None, max_steps=20_000_000, t_max=None, M=1.0,
-                  m1=None, m2=None, a=None, D=None, theta=None, varphi=None, e_b=0.0, e_orb=1.0):
+                  m1=None, m2=None, a=None, D=None, theta=None, varphi=None, e_b=0.0, e_orb=1.0,
+                  ic_gamma=False):
     """Run one encounter and return the outcome dictionary of README.md (plus the trajectory
     if record > 0: up to `record` accepted steps).
 
@@ -576,7 +585,8 @@ def run_encounter(law="hrna", coords="sch", spin=0.0, mb=1e-6, q12=1.0, a0=1.013
         if abs((theta if theta is not None else math.pi / 2) - math.pi / 2) > 1e-12:
             raise NotImplementedError("coplanar encounters only")
         sense = 1 if (varphi if varphi is not None else math.pi / 2) > 0 else -1
-    y0, info = initial_state(law, coords, spin, mb, q12, a0, beta, rp, phase, sense, r0_rt, M)
+    y0, info = initial_state(law, coords, spin, mb, q12, a0, beta, rp, phase, sense, r0_rt, M,
+                             ic_gamma)
     lawc = LAW_NEWTON if law == "newton" else LAW_HRNA
     cc = COORDS_CKS if coords == "cks" else COORDS_SCH
     a = spin * M

@@ -84,4 +84,28 @@ See the end of `JOURNAL.md` ("Summary") for the numbers with run ids.
 
 ## Requests
 
-(see the end of this file after the summary is written)
+1. To core, through the lead (optional; decision 0010, "build everything on top of AthenaK"):
+   an external pair force for the NRPIC test-particle pusher on an analytic background
+   (problem generator `nrpic_geodesic`): N point particles that feel the analytic Kerr metric
+   plus the Newtonian attraction between them, i.e. the HRNA of this package inside AthenaK.
+   Specification (verified here, T4): in the pusher variables (x^i, u_i),
+   du_i/dt = [geodesic terms] + (alpha/W)(A_i + u_i U^j A_j), U^j = gamma^jk u_k - W beta^j/alpha,
+   A_i = -sum_b m_b (x_a - x_b)_i/|x_a - x_b|^3 with the Euclidean distance of the Cartesian
+   Kerr-Schild coordinates at equal coordinate time. Reference solutions and acceptance:
+   (a) T2 single-body limit (positions within 1e-6 r_g of `hrna.py` over 2800 M);
+   (b) T4 encounter beta = 5, phi = 1.41, prograde, r0 = 5 r_t, a = 0 and 0.9: relative orbit
+   within 1e-6 a0 of `hrna.py` at matched times; (c) T3 oscillator period within 1e-4;
+   (d) 400 phases at beta = 5 retrograde: the separation outcome differs in at most 2 phases.
+   Purpose: run the Hills baseline with the same pusher that later runs the self-gravitating
+   members (object b), and test that pusher with external forces.
+2. To the Newtonian baseline (newton3, same owner): cross-check our `law="newton"` (2404
+   conventions, the CM moves, the hole is fixed) against the full three-body driver at
+   M/m = 1e6 for coplanar encounters: separation fractions at beta = 3, 5, 8 should agree within
+   the phase resolution (phase conventions differ, fractions do not). The aliases `m1`, `m2`,
+   `a`, `D`, `varphi` are accepted by `run_encounter`.
+3. To kb: index arXiv:2404.16270 and arXiv:2402.02178 (fetched on 2026-11-15 into
+   `kb-data/raw/arxiv/`); locators used here are file:line of `v1/src/article.tex`,
+   `appendix.tex` and `main.tex`.
+4. Open for this package (not requested from anyone yet): inclined binaries and inclined CM
+   orbits (Carter constant) are needed to test the Kerr claim of 2402.02178
+   (`main.tex:592-597`); the 1PN law of 2404 (appendix.tex:117-134) is not implemented.

@@ -59,6 +59,8 @@ def main():
     ap.add_argument("--rf_rt", type=float, default=150.0)
     ap.add_argument("--rtol", type=float, default=1e-12)
     ap.add_argument("--q12", type=float, default=1.0)
+    ap.add_argument("--ic_gamma", action="store_true",
+                    help="internal angular velocity divided by the CM Gamma at release (not 2404)")
     ap.add_argument("--rp_fixed", type=float, default=None,
                     help="keep r_p fixed (in r_g) and set a0 = beta r_p (mb/M)^(1/3) per beta")
     ap.add_argument("--r0_abs", type=float, default=None,
@@ -74,7 +76,7 @@ def main():
     betas = parse_betas(a.betas)
     phases = math.pi * np.arange(a.nphi) / a.nphi
     kw = dict(coords=a.coords, spin=a.spin, mb=a.mb, a0=a.a0, r0_rt=a.r0_rt, rf_rt=a.rf_rt,
-              rtol=a.rtol, q12=a.q12)
+              rtol=a.rtol, q12=a.q12, ic_gamma=a.ic_gamma)
     nchunk = 4
     chunks = np.array_split(phases, nchunk)
     tasks, index = [], []
