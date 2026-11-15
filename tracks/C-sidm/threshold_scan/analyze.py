@@ -86,6 +86,22 @@ def analyse_run(name, d, pred, model):
         out[f"excised_mass_fraction_t{tt:g}"] = float(h["m_excised"][k] / M0)
     t_c = out["t_alpha_min_below_0p3"] if out["t_alpha_min_below_0p3"] is not None else float(t[-1])
     out["t_collapse_or_end"] = t_c
+    # the state turns non-finite after a collapse on this static mesh (alpha_probe NaN, every
+    # remaining particle removed in one step, the run still exits with status 0)
+    bad = np.flatnonzero(~np.isfinite(h["alpha_probe"]) | (h["alpha_min"] > 1e300))
+    out["t_nonfinite"] = float(t[bad[0]]) if len(bad) else None
+    if len(exc):
+        t_e = float(t[exc[0]])
+        for dt_ in (10.0, 20.0, 50.0):
+            k = int(np.argmin(np.abs(t - (t_e + dt_))))
+            ok = out["t_nonfinite"] is None or t[k] < out["t_nonfinite"]
+            out[f"excised_fraction_first_excision_plus{dt_:g}M"] = float(h["m_excised"][k] / M0) if ok else None
+    zh_ = os.path.join(d, "cc.z4c.user.hst")
+    if os.path.exists(zh_):
+        z_ = C.read_hst(zh_)
+        for tt in (0.0, 50.0, 100.0, 150.0, 200.0, 250.0, 300.0):
+            k = int(np.argmin(np.abs(z_["time"] - tt)))
+            out[f"H_norm2_t{tt:g}"] = float(z_["H-norm2"][k])
     out["n_excised"] = int(h["n_excised"][-1])
     out["n_escaped"] = int(h["n_escaped"][-1])
     live = h["sum_mW"] > 0
@@ -275,11 +291,16 @@ def figures(outdir, res, ser, pred):
             for j, ls in zip(range(3 if len(s["rr"]) else 0), (":", "-", "--")):
                 axs[row, 1].plot(s["ts"], s["rr"][:, j] / s["rr"][0, j], color=col[k], ls=ls, lw=1.2,
                                  label=lab[k] if j == 1 else None)
-            axs[row, 2].plot(s["t"], s["mexc"], color=col[k], lw=1.2, label=lab[k])
+            good = s["t"] < (res[name]["t_nonfinite"] if res[name]["t_nonfinite"] else 1e30)
+            axs[row, 2].plot(s["t"][good], s["mexc"][good], color=col[k], lw=1.2, label=lab[k])
+            if res[name]["t_nonfinite"]:
+                axs[row, 2].axvline(res[name]["t_nonfinite"], color=col[k], lw=1.0, ls=":")
         axs[row, 0].axhline(0.1, **fs.MASK_LINE)
         axs[row, 0].set_ylabel(r"central lapse $\alpha_c$" + f"  ({mk.upper()})")
         axs[row, 1].set_ylabel(r"$r_{10}, r_{50}, r_{90}$ / initial" + f"  ({mk.upper()})")
         axs[row, 2].set_ylabel("rest mass excised / $M_0$" + f"  ({mk.upper()})")
+        axs[row, 2].text(0.03, 0.03, "dotted: state non-finite", transform=axs[row, 2].transAxes,
+                         fontsize=7)
         axs[row, 0].legend(fontsize=8, loc="center left")
         axs[row, 1].set_ylim(0.0, 2.0)
         axs[row, 2].set_ylim(-0.02, 1.0)
