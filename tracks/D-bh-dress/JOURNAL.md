@@ -106,3 +106,31 @@ stamp, see below) and my own quadrature of a, m_p (scratch/D-bh-dress/tmp/lead/e
 - Caveat on these checks: I read the helpers' reports before checking, so they are not
   an artefact-only verification in the sense of CLAUDE.md (models and roles); a fresh
   verifier is still needed for the gate (stage/G0/OPEN.md).
+
+## 2026-11-15T15:20Z  session lead-wave1 (Opus)  commits 5fdc744..(this commit)  runs D-bh-dress-20261115-065141-5fdc744, -145546-5259f48, -145610-5259f48, -145611-5259f48, -145636-5259f48, -145950-23fa1c7
+
+- did: merged main (up to date); re-checked the five helper packages from their artefacts
+  (predictions L1-L6 and outcomes above); fixed three wording defects (McVittie ray family
+  in scope/REFERENCES.md; 1+log lapse growth in einstein_straus/README.md; the floor
+  figure note in puncture_drift/README.md) and the local-time run ids of
+  einstein_straus/nrun.py; wrote stage/G0 (REPORT, EVIDENCE, OPEN, CHECKLIST) and
+  stage/G1 (STATUS, CHECKLIST) with the first full-relativity run ES-1 and its
+  prediction; 12 outbox files; STATUS, HANDOFF, RISKS.
+- found: everything the helpers claimed that I re-ran was reproduced (symbolic identities
+  48/48; drift +2.95e-4 / +3.67e-5; scoping table and spike reference identical; infall
+  masses within 1e-3 by my own closed form). New: the ES data set as generated costs 11.3
+  card-hours at M/16 for 200 M (dust to 106 M), 2.9 with the outer edge at 60 M; along
+  the dust the 1+log lapse grows as 1 + 6 ln a, not exponentially; the McVittie drift
+  formula is right but the ray family was mislabelled; the LTB mapping of D-pre-3 holds
+  only with an over-massive hole when a vacuum core is cut out.
+- evidence: runs above; figures looked at by the lead: einstein_straus es_expansions,
+  es_reference, check_3d, code_t0; spike ref_hernquist, stationarity_profile;
+  secondary_infall selfsimilar, growth; puncture_drift drift_floor, tracer_check; lead
+  lead_drift_recheck, lead_infall_recheck, first_run_plan.
+- changed my mind about: the D-pre-4 floor as the floor of the null test. It is the floor
+  of an asymptotically flat vacuum puncture; ES-1 needs a matched vacuum control V-1.
+- open: Kerr spike; AthenaK Newtonian-mode run; ES-1 and V-1 (blocked by core); working
+  note v0, schematics, fresh verifier; boundary control for the D-pre-4 excursions. No
+  card job submitted (no card-hours named for this session); no pending runs.
+- helpers' journals: scope/JOURNAL.md, einstein_straus/JOURNAL.md, spike/JOURNAL.md,
+  secondary_infall/JOURNAL.md, puncture_drift/JOURNAL.md.
