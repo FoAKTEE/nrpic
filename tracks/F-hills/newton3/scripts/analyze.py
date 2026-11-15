@@ -409,6 +409,23 @@ def p3(run_id):
         rows[D] = (med, p90, mis)
         S[f"D{D:g}"] = {"median_rel_diff": med, "p90_rel_diff": p90, "fate_mismatch_fraction": mis,
                         "scale_mean_absE_restricted": float(scale)}
+        if f"dE_M_q{qs[0]:g}_D{D:g}" in Z:      # wave 2: the definition before, same run
+            medo, p90o, miso, chg = [], [], [], []
+            for q in qs:
+                Eo = Z[f"dE_M_q{q:g}_D{D:g}"]
+                oo = Z[f"outcome_M_q{q:g}_D{D:g}"]
+                on = Z[f"outcome_q{q:g}_D{D:g}"]
+                dfo = (oo >= 1) & (oo <= 4) & Z[f"ok_q{q:g}_D{D:g}"]
+                both = dfo & dr
+                rel = np.abs(Eo[both] - Er[both]) / scale
+                medo.append(float(np.median(rel)))
+                p90o.append(float(np.percentile(rel, 90)))
+                miso.append(float(np.mean(dfo != dr)))
+                chg.append(float(np.mean(oo != on)))
+            rows[D] = rows[D] + (medo,)
+            S[f"D{D:g}"]["definition_before_wave2"] = {
+                "median_rel_diff": medo, "p90_rel_diff": p90o, "fate_mismatch_fraction": miso,
+                "outcome_changed_fraction": chg}
     S["SKR_example"] = {"restricted_E2": float(Z["example_restricted_E2"][0]),
                         "full_dE_q1e6": float(Z["example_full_dE"][0]),
                         "rel_diff": float(abs(Z["example_full_dE"][0] / Z["example_restricted_E2"][0] - 1)),
@@ -438,6 +455,9 @@ def p3(run_id):
     for D, mk in ((1.0, "o"), (0.1, "s")):
         ax.loglog(qa, rows[D][0], mk + "-", color=RED, ms=3, lw=1.0, label=f"median, D = {D:g}")
         ax.loglog(qa, rows[D][1], mk + ":", color=YEL, ms=3, lw=1.0, label=f"90th pct, D = {D:g}")
+        if len(rows[D]) > 3:
+            ax.loglog(qa, rows[D][3], mk, color=BLUE, ms=4, mfc="none", lw=0,
+                      label=f"median, against $M$ alone, D = {D:g}")
     ax.loglog(qa, 0.5 * qa ** (-1 / 3), **fs.GUIDE, label=r"$\propto (M/m)^{-1/3}$")
     ax.axhline(1e-3, **fs.MASK_LINE)
     ax.set_xlabel(r"$M/m$")
@@ -534,6 +554,44 @@ def finiteq(run_id):
     axs[1, 0].set_ylabel(r"$\langle|\Delta E|\rangle$")
     axs[0, 0].legend(fontsize=8)
     _save(fig, run, "fig_finite_q")
+    if f"dE_M_iso_q{qs[1]:g}_D{D[0]:g}" in Z:   # wave 2: the definition before, same run
+        fig, axs = plt.subplots(2, 3, figsize=(fs.FULL_WIDTH, 4.8), sharex=True, sharey="row")
+        fig.subplots_adjust(left=0.1, right=0.98, bottom=0.1, top=0.95, hspace=0.06, wspace=0.05)
+        for j, kind in enumerate(("iso", "pro", "ret")):
+            for q in qs:
+                if q == 0:
+                    continue
+                dP, rE, chg = [], [], []
+                for Dv in D:
+                    on = Z[f"outcome_{kind}_q{q:g}_D{Dv:g}"]
+                    oo = Z[f"outcome_M_{kind}_q{q:g}_D{Dv:g}"]
+                    okk = Z[f"ok_{kind}_q{q:g}_D{Dv:g}"]
+                    sn = okk & (on != T.UNSETTLED)
+                    so = okk & (oo != T.UNSETTLED)
+                    dn = on[sn] != T.SURVIVED
+                    do = oo[so] != T.SURVIVED
+                    En = Z[f"dE_{kind}_q{q:g}_D{Dv:g}"][sn]
+                    Eo = Z[f"dE_M_{kind}_q{q:g}_D{Dv:g}"][so]
+                    dP.append(float(dn.mean() - do.mean()))
+                    mn = np.abs(En[dn]).mean() if dn.any() else np.nan
+                    mo = np.abs(Eo[do]).mean() if do.any() else np.nan
+                    rE.append(float(mn / mo))
+                    chg.append(float(np.mean(on[okk] != oo[okk])))
+                lab = f"M/m = {q:g}"
+                S[kind][lab]["definition_before_wave2"] = {
+                    "P_dis_corrected_minus_before": dP, "Emean_corrected_over_before": rE,
+                    "outcome_changed_fraction": chg}
+                axs[0, j].plot(D, dP, color=cols[int(q)], lw=1.2, label=lab)
+                axs[1, j].plot(D, rE, color=cols[int(q)], lw=1.2)
+            axs[0, j].axhline(0, **fs.MASK_LINE)
+            axs[1, j].axhline(1, **fs.MASK_LINE)
+            axs[0, j].set_title({"iso": "isotropic", "pro": "coplanar prograde",
+                                 "ret": "coplanar retrograde"}[kind], fontsize=10)
+            axs[1, j].set_xlabel(r"$D = r_p/r_t$", labelpad=-2)
+        axs[0, 0].set_ylabel(r"$P_{\rm dis}$: corrected $-$ before")
+        axs[1, 0].set_ylabel(r"$\langle|\Delta E|\rangle$: corrected / before")
+        axs[0, 0].legend(fontsize=8)
+        _save(fig, run, "fig_finite_q_definition")
     _summary(run, "finiteq", S)
     runlib.finish_run(run)
     return S

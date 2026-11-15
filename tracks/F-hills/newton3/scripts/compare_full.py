@@ -36,7 +36,10 @@ def full(q, m1, m2, D, th, vp, ph, k0=10.0, k_end=30.0):
     ss = [T.HillsSetup(M=q * m, m1=m1, m2=m2, a=1.0, D=D, theta=a, varphi=b, phase=c)
           for a, b, c in zip(np.broadcast_to(th, np.shape(ph)), np.broadcast_to(vp, np.shape(ph)), ph)]
     o = T.scatter(ss, k0=k0, k_end=k_end)
-    keep = ("outcome", "dE", "E1", "E2", "r12min", "energy_error", "ok", "nacc", "a12", "e1", "e2")
+    # wave 2: corrected energies (E1, E2, dE, outcome) and the definition before (E1_M,
+    # E2_M, dE_M, outcome_M) from the same trajectories
+    keep = ("outcome", "dE", "E1", "E2", "r12min", "energy_error", "ok", "nacc", "a12", "e1", "e2",
+            "outcome_M", "dE_M", "E1_M", "E2_M", "E_tot", "W_end", "inner")
     return {k: o[k] for k in keep}
 
 

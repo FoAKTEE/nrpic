@@ -42,7 +42,25 @@ def package_inputs():
     return out
 
 
+def _under_harness():
+    """Run started by harness/bin/nrpic-run (wave 2): it registered the run, owns the
+    manifest and writes the checksums; the script only uses its id and directory."""
+    rid, rdir = os.environ.get("NRPIC_RUN_ID"), os.environ.get("NRPIC_RUN_DIR")
+    return (rid, rdir) if rid and rdir else None
+
+
 def start_run(purpose, kind="scouting", cores=1, extra_inputs=(), notes="", preregistered=None):
+    h = _under_harness()
+    if h is not None:
+        rid, rdir = h
+        os.makedirs(rdir, exist_ok=True)
+        info = {"run_id": rid, "purpose_of_script": purpose, "cores": cores,
+                "inputs": package_inputs() + [{"path": p, "sha256": sha256(p)} for p in extra_inputs],
+                "preregistered_in": preregistered, "notes": notes}
+        with open(os.path.join(rdir, "script_inputs.json"), "w") as fh:
+            json.dump(info, fh, indent=2)
+        print(f"run {rid} (registered by nrpic-run) -> {rdir}", flush=True)
+        return {"id": rid, "dir": rdir, "manifest": None, "t0": time.time(), "cores": cores}
     sha = _git("rev-parse", "HEAD")
     # other helpers of F-hills register runs in the same second: retry on a collision
     for _ in range(30):
@@ -98,6 +116,15 @@ def start_run(purpose, kind="scouting", cores=1, extra_inputs=(), notes="", prer
 
 
 def finish_run(run, status="completed", exit_code=0, results=None):
+    if run["manifest"] is None:          # nrpic-run closes the run (status, checksums)
+        with open(os.path.join(run["dir"], "script_result.json"), "w") as fh:
+            json.dump({"status": status, "exit_code": exit_code,
+                       "walltime_s": round(time.time() - run["t0"], 1), "results": results},
+                      fh, indent=2, default=float)
+        print(f"run {run['id']} {status} in {time.time() - run['t0']:.0f} s", flush=True)
+        if exit_code:
+            raise SystemExit(exit_code)
+        return
     with open(run["manifest"]) as fh:
         man = json.load(fh)
     wall = time.time() - run["t0"]

@@ -266,3 +266,103 @@ start distance matters more because the tidal field at 10 r_t is not negligible
 - status of the package: deliverables exist and are tested (driver, restricted reference,
   reproductions with locators, figures looked at). Open: eccentric binaries and
   non-parabolic orbits not compared with the literature; no second-agent check yet.
+
+## 2026-11-15 wave 2, package newton3_fix: predictions written before any code ran
+
+Defect (lead's V5b, `stage/G0/checks/lead_checks.py:436-480`, `v5b_summary.json`, run
+F-hills-20261115-145559-a314517): `threebody._pair_energy` gives each member's two-body
+energy with M alone. When one member is captured, M moves on a small orbit about the
+barycentre of (M, captured member), and the ejected member's energy measured against M
+oscillates with that inner orbit and never settles (q = 10: 1.474 to 1.845 units after
+t = 300; q = 4: 0.989 to 1.723), while the energy against the barycentre of M and the
+captured member is constant (1.6127, 1.3119).
+
+Corrected definition [JUDGEMENT on the choice, the algebra is exact]: Jacobi split of the
+hierarchy left at the end. Inner pair = M and the member with the lower specific two-body
+energy with M; outer body = the other member, measured against the barycentre of the
+inner pair. E_in = mu_in |r'|^2/2 - G M m_c/r, E_out = mu_out |R'|^2/2 - G (M+m_c) m_e/R,
+mu_in = M m_c/(M+m_c), mu_out = m_e (M+m_c)/M_tot. Then E_tot = E_in + E_out + W exactly
+(zero total momentum), with W the tidal coupling, O(G m_e mu_in r^2/R^3); the dipole term
+cancels because R is measured from the inner barycentre. Old minus new for the ejected
+member contains mu_eM beta R'.r' (beta = m_c/(M+m_c)), which oscillates with the inner
+orbit at a fixed amplitude: a relative error of order m/M that never decays. For the
+captured member the old and new definitions coincide. Survivors (m1-m2 bound) have no
+separate member energies; E1, E2, dE become NaN for them and the conserved pair (E12,
+E_orb) is reported instead. dE keeps KHSR's combination (m1/m) E2 - (m2/m) E1 (ms.tex:1103)
+of the corrected energies; with E1 + E2 = E_tot - W it equals E2 - (m2/m)(E_tot - W) and
+tends to the restricted E2 as M/m -> infinity.
+
+Predictions (refuted by the stated outcome):
+
+Q1 (definition test, unit test + figure). Full Newton from the start states of the two
+passages (q = 10: M = 1, m = 0.1, a = 3, r_p = 8, phase 130 deg; q = 4: m = 0.25, a = 5,
+phase 127 deg; integrated from 10 r_t and read at 4 r_t, as the input files) to t = 1500:
+for t >= 300 the corrected E_ej varies by less than 1e-4 units peak to peak and
+E_ej + E_cap - E_tot by less than 1e-4 units; the old E_ej varies by more than 0.1 units.
+E_ej(new) = 1.6127 (q = 10) and 1.3119 (q = 4) within 1e-3 (V5b's barycentric values);
+E_cap(new) = E_tot - E_ej, about -0.232 - 1.613 = -1.85 (q = 10) and -0.315 - 1.312 =
+-1.63 (q = 4), using E_tot ~ -m1 m2/(2a) = -(1/2)(m/M)^(1/3) units. Refuted if the new
+energy varies by more than 1e-4 or the sum identity misses by more than 1e-4.
+
+Q2 (end-time independence). scatter() at k_end = 30 and 100 r_t, coplanar prograde,
+M/m = 10 and 4, D = 0.5 and 1.2, 128 phases: for single ejections the corrected dE differs
+between the two end times by less than 1e-3 units in every sample; the old dE differs by
+more than 0.05 units in some samples (oscillation amplitude ~ (m/M) of |E|). Refuted if
+the new definition misses 1e-3 anywhere, or the old never exceeds 0.05.
+
+Q3 (restricted limit unchanged). At M/m = 1e6 corrected and old dE agree to 1e-5
+relative; P3's median differences at M/m >= 1e3 (6.0e-4 and 7.3e-4 at 1e6) change by less
+than 10 percent of themselves. Refuted otherwise.
+
+Q4 (finite-q rerun). Outcome classes change for less than 1 percent of the samples at
+M/m = 10 (only marginal ejections, whose old energy crossed zero in its oscillation);
+P_dis therefore changes by less than 0.01 at every D. The phase-averaged |dE| at M/m = 10
+changes by less than 5 percent of itself at every D (the oscillation is zero-mean apart
+from an offset of a few percent), so the statement "0.49-0.79 of the restricted value for
+0.1 <= D <= 1" survives within 0.05. The P3 differences at M/m = 10 (26 and 59 percent)
+change by less than 5 points. Refuted if any of these bounds is exceeded; then the old
+finite-q numbers were biased by more than an oscillation and every statement built on
+them is re-examined.
+
+Q5 (passages q = 4 and 10 from the input-file states). Outcome unchanged (m1 ejected, m2
+captured), E_ej as Q1; the captured orbit (a = 7.55, e = 0.247, pericentre 5.68 M at
+q = 10, lead V5) is unchanged because the captured member's energy has the same
+definition. Phase scans over 360 phases at the input configurations: fractions of each
+outcome change by less than 0.01; the ejection energies by up to ~(m/M) of themselves.
+
+Q6 (multi-puncture form). A new driver function returns, for a requested start distance
+r0 (and optionally the distance k_from r_t from which the Newtonian approach is
+integrated), the `<problem>` block of `nrpic_cf` (coord/INTERFACES/multi_puncture.md
+section 2): comp<c>_mass, _x1..3, _p1..3 (P = m v), _s1..3, _corr. With k_from = 10 and
+r0 = 4 r_t it reproduces the positions and momenta of
+`three_punctures/inputs/hills_q10_m8.athinput` and `hills_q4_m8.athinput` (made by linear
+interpolation of a 20000-sample trajectory) within 1e-4 in position and 1e-6 in momentum;
+the block parses back to the same numbers; total momentum zero and barycentre at the
+origin to 1e-12; the binary centre of mass at r0 to 1e-9. Refuted by any miss.
+
+## 2026-11-15 first (unregistered) pytest of the new tests: Q1 sum part refuted as worded
+
+- found: 14 of 15 tests pass. Q1's peak-to-peak parts hold (corrected E_ej constant to
+  < 1e-4 units for t >= 300 in both passages, old E_ej varies by > 0.1); the sum part does
+  not: max |E1 + E2 - E_tot| over t >= 300 is 1.23e-4 units at q = 10 (bound 1e-4), at
+  t = 300, falling to 3.4e-7 at t = 1500. The residual is the tidal coupling W of the
+  identity E_tot = E_in + E_out + W, which I under-estimated at t = 300.
+- change: the test now checks the identity with W (exact, 1e-10 units) and the decay of
+  W: |W| < 2e-4 units for t >= 300 and < 1e-5 for t >= 1000 (prediction from W ~ R^-3 with
+  R growing about 3 times from t = 300 to 1000: 1.2e-4 x 0.03 = 4e-6). The registered test
+  run follows.
+- found (second unregistered pytest): Q1's peak-to-peak part is refuted for q = 4 as well:
+  the corrected E_ej varies by 1.54e-4 units over t >= 300 (bound 1e-4); it drifts
+  monotonically from 1.31206 to 1.31191 (no oscillation), the same spread as V5b's own
+  barycentric values (1.311866-1.312020, v5b_summary.json), which I should have used. The
+  cause is the same coupling W: the remaining change of E_out after time t goes like
+  W(t) ~ t^-3.
+- change: peak-to-peak < 3e-4 units for t >= 300 and < 1e-5 for t >= 1000 (prediction:
+  1.5e-4 x (300/1000)^3 = 4e-6); the old definition still has to exceed 0.1.
+- found (third unregistered pytest): |E1 + E2 - E_tot| = |W| reaches 3.6e-4 units at
+  t = 300 for q = 4 (bound 2e-4 set from q = 10). Absolute bounds at t = 300 only measure
+  the size of the coupling there. Final form of the test (no further change after the
+  registered run): identity with W exact (1e-10); for t >= 300 the corrected energy varies
+  at least 1000 times less than the old one, which varies by > 0.1; for t >= 1000 both the
+  corrected energy's variation and |W| are below 1e-5 units; E_ej at the end within 1e-3
+  of V5b's value.

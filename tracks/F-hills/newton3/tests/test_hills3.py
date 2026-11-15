@@ -189,6 +189,147 @@ def test_initial_state_json_roundtrip():
     assert d["names"] == ["M", "m1", "m2"]
 
 
+# ---------------------------------------------------------------- wave 2: member energies
+INPUTS = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))),
+                      "three_punctures", "inputs")
+# the two passages of stage/G1/STATUS.md (three_punctures PLAN: phase 130 and 127 deg)
+PASSAGES = {"q10": (dict(M=1.0, m1=0.05, m2=0.05, a=3.0, rp=8.0, phase=np.radians(130.0)),
+                    "hills_q10_m8.athinput"),
+            "q4": (dict(M=1.0, m1=0.125, m2=0.125, a=5.0, rp=1.2378 * 5.0 * 4.0 ** (1 / 3),
+                        phase=np.radians(127.0)), "hills_q4_m8.athinput")}
+
+
+def test_jacobi_identity_with_direct_coupling():
+    """E_tot = E_in + E_out + W with W computed from its definition (not as the remainder);
+    W tends to the quadrupole -G m_e mu_in r^2 P2/R^3 when the outer body is far."""
+    rng = np.random.default_rng(3)
+    for _ in range(20):
+        ms = np.array([10 ** rng.uniform(0, 3), rng.uniform(0.1, 1), rng.uniform(0.1, 1)])
+        x = rng.normal(size=(3, 3)) * rng.uniform(1, 10)
+        v = rng.normal(size=(3, 3)) * 0.3
+        en = T.member_energies(x[None], v[None], ms)
+        c = int(en["inner"][0])
+        e = 3 - c
+        Mc = ms[0] + ms[c]
+        Xc = (ms[0] * x[0] + ms[c] * x[c]) / Mc
+        W = (-ms[0] * ms[e] / np.linalg.norm(x[e] - x[0]) - ms[c] * ms[e] / np.linalg.norm(x[e] - x[c])
+             + Mc * ms[e] / np.linalg.norm(x[e] - Xc))
+        scale = abs(en["E_in"][0]) + abs(en["E_out"][0]) + abs(W)
+        assert abs(en["E_in"][0] + en["E_out"][0] + W - en["E_tot"][0]) < 1e-12 * scale
+        assert abs(en["W"][0] - W) < 1e-12 * scale
+    # quadrupole limit
+    ms = np.array([1.0, 0.05, 0.05])
+    r = np.array([3.0, 1.0, 0.5])
+    for Rd in (50.0, 500.0):
+        Rv = Rd * np.array([0.6, -0.8, 0.0])
+        Mc = ms[0] + ms[1]
+        x = np.array([-ms[1] / Mc * r, ms[0] / Mc * r, Rv])
+        en = T.member_energies(x[None], np.zeros((1, 3, 3)), ms)
+        assert en["inner"][0] == 1
+        mu = ms[0] * ms[1] / Mc
+        cosp = r @ Rv / (np.linalg.norm(r) * Rd)
+        quad = -ms[2] * mu * (r @ r) / Rd ** 3 * 0.5 * (3 * cosp ** 2 - 1)
+        assert abs(en["W"][0] / quad - 1) < 5 * np.linalg.norm(r) / Rd, (Rd, en["W"][0], quad)
+
+
+def _passage_energies(name, t_end=1500.0, n_out=15001):
+    from scipy.integrate import solve_ivp
+    kw, _ = PASSAGES[name]
+    s = T.HillsSetup(**kw)
+    st = T.puncture_state(s, k0=4.0, k_from=10.0)
+    m = st["masses"]
+    rhs = T._rhs_factory(m[None, :], np.array([1.0]))
+    idx0 = np.zeros(1, dtype=int)
+    sol = solve_ivp(lambda t, y: rhs(np.array([t]), y[None, :], idx0)[0], (0.0, t_end),
+                    np.concatenate([st["positions"].ravel(), st["velocities"].ravel()]),
+                    method="DOP853", rtol=1e-12, atol=1e-14, dense_output=True)
+    tt = np.linspace(0.0, t_end, n_out)
+    Y = sol.sol(tt).T
+    en = T.member_energies(Y[:, :9].reshape(-1, 3, 3), Y[:, 9:].reshape(-1, 3, 3), m)
+    return s, tt, en
+
+
+def test_member_energy_conserved_after_capture():
+    """Q1 (JOURNAL wave 2): the case the lead found (V5b). After the encounter one member
+    is captured; its partner's energy against M alone oscillates with the inner orbit by
+    more than 0.1 units and never settles; the corrected energy varies at least 1000
+    times less after t = 300 and settles below 1e-5 units after t = 1000; the corrected
+    energies add up to E_tot - W exactly, and the coupling W decays."""
+    want = {"q10": 1.6127, "q4": 1.3119}            # V5b, stage/G0/checks/v5b_summary.json
+    for name in ("q10", "q4"):
+        s, tt, en = _passage_energies(name)
+        u = s.energy_unit
+        late, later = tt >= 300.0, tt >= 1000.0
+        assert np.all(en["inner"][late] == 2)        # m2 captured, m1 ejected (V5)
+        old = np.ptp(en["E1_M"][late] / u)
+        new = np.ptp(en["E1"][late] / u)
+        assert old > 0.1, (name, old)
+        assert new < 1e-3 * old, (name, new, old)
+        assert np.ptp(en["E1"][later] / u) < 1e-5, (name, np.ptp(en["E1"][later] / u))
+        assert np.ptp(en["E1_M"][later] / u) > 0.1
+        assert abs(en["E1"][-1] / u - want[name]) < 1e-3, (name, en["E1"][-1] / u)
+        ident = (en["E1"] + en["E2"] + en["W"] - en["E_tot"]) / u
+        assert np.max(np.abs(ident[late])) < 1e-10, (name, np.max(np.abs(ident[late])))
+        assert np.max(np.abs(en["W"][later] / u)) < 1e-5, (name, np.max(np.abs(en["W"][later] / u)))
+
+
+def test_restricted_limit_of_corrected_energies():
+    """Q3: at M/m = 1e6 the corrected and old dE agree to 1e-5 of |dE| for disrupted
+    binaries (the difference is of order m/M)."""
+    ss = [T.HillsSetup(M=1e6, m1=0.75, m2=0.25, a=1.0, D=0.3, phase=ph)
+          for ph in np.linspace(0, 2 * np.pi, 16, endpoint=False)]
+    o = T.scatter(ss)
+    d = np.isin(o["outcome"], [T.EJECT1, T.EJECT2])
+    assert d.sum() >= 8
+    rel = np.abs(o["dE"][d] - o["dE_M"][d]) / np.abs(o["dE"][d])
+    assert np.max(rel) < 1e-5, rel
+    assert np.array_equal(o["outcome"], o["outcome_M"])
+
+
+def test_end_time_independence_at_finite_q():
+    """Q2 in small: M/m = 10, D = 0.5, prograde, 16 phases: the corrected dE of single
+    ejections is the same at k_end = 30 and 100 r_t to 1e-3 units; the old one is not."""
+    ss = [T.HillsSetup(M=10.0, m1=0.5, m2=0.5, a=1.0, D=0.5, phase=ph)
+          for ph in np.linspace(0, 2 * np.pi, 16, endpoint=False)]
+    a = T.scatter(ss, k_end=30.0)
+    b = T.scatter(ss, k_end=100.0)
+    single = np.isin(a["outcome"], [T.EJECT1, T.EJECT2]) & (a["outcome"] == b["outcome"])
+    assert single.sum() >= 6
+    assert np.max(np.abs(a["dE"][single] - b["dE"][single])) < 1e-3
+    assert np.max(np.abs(a["dE_M"][single] - b["dE_M"][single])) > 0.05
+    # survivors carry no member energies
+    surv = a["outcome"] == T.SURVIVED
+    assert np.all(np.isnan(a["dE"][surv])) and np.all(np.isfinite(a["dE_M"][surv]))
+
+
+def test_puncture_state_reproduces_the_inputs():
+    """Q6: the start states of three_punctures/inputs (newton_start.py: 20000-sample
+    trajectory from 10 r_t, read at 4 r_t by linear interpolation) within 1e-4 in position
+    and 1e-6 in momentum; invariants; the block parses back."""
+    for name, (kw, fn) in PASSAGES.items():
+        s = T.HillsSetup(**kw)
+        st = T.puncture_state(s, k0=4.0, k_from=10.0)
+        m, x, p = st["masses"], st["positions"], st["momenta"]
+        assert abs(st["checks"]["cm_distance"] / (4.0 * s.r_t) - 1) < 1e-10
+        assert np.abs(p.sum(axis=0)).max() < 1e-15 and np.abs((m[:, None] * x).sum(0)).max() < 1e-13
+        order = [1, 2, 0]                                   # comp0 = m1, comp1 = m2, comp2 = M
+        path = os.path.join(INPUTS, fn)
+        if os.path.exists(path):
+            ref = T.parse_problem_block(open(path).read())
+            assert np.allclose(ref["masses"], m[order], rtol=0, atol=0)
+            assert np.abs(ref["positions"] - x[order]).max() < 1e-4, (name, np.abs(ref["positions"] - x[order]).max())
+            assert np.abs(ref["momenta"] - p[order]).max() < 1e-6, (name, np.abs(ref["momenta"] - p[order]).max())
+        back = T.parse_problem_block(T.multi_puncture_block(st))
+        assert np.abs(back["positions"] - x[order]).max() < 1e-11
+        assert np.abs(back["momenta"] - p[order]).max() < 1e-14
+        assert np.all(back["spins"] == 0)
+        # placed directly on the conic: identical to initial_state
+        d = T.puncture_state(s, r0=4.0 * s.r_t)
+        ic = T.initial_state(s, r0=4.0 * s.r_t)
+        assert np.allclose(d["momenta"], ic["momenta"], rtol=0, atol=1e-16)
+        assert np.allclose(d["positions"], ic["positions"], rtol=0, atol=1e-13)
+
+
 if __name__ == "__main__":
     for name, fn in list(globals().items()):
         if name.startswith("test_"):
