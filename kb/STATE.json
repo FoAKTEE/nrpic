@@ -1,0 +1,38 @@
+{
+ "at": "2026-11-15T11:28:47Z",
+ "data_root": "/data/haiyangw/nrpic/kb-data",
+ "database": "/data/haiyangw/nrpic/kb-data/db/kb.sqlite",
+ "downloads_by_status": {
+  "missing": 627,
+  "ok": 57
+ },
+ "downloads_checked_at": "2026-11-15T11:28:25Z",
+ "manifest_arxiv": 684,
+ "manifest_arxiv_by_priority": {
+  "1": 477,
+  "2": 160,
+  "3": 47
+ },
+ "manifest_github": 63,
+ "parse_failures": null,
+ "raw_arxiv_entries": 61,
+ "raw_github_entries": 0,
+ "rows": {
+  "bib_entries": 0,
+  "chunks": 0,
+  "citations": 0,
+  "claims": 0,
+  "code_files": 0,
+  "downloads": 688,
+  "embeddings": 0,
+  "equations": 0,
+  "papers": 0,
+  "params": 0,
+  "repo_downloads": 63,
+  "repos": 0
+ },
+ "schema_version_code": 2,
+ "schema_version_db": 2,
+ "snapshot": "kb-20261115-b715da3.sqlite",
+ "tool": "kbtool 0.1.0"
+}

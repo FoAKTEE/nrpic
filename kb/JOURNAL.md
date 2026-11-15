@@ -106,3 +106,30 @@ D1 `kb fetch-missing --priority 3` hands the 33 missing priority-3 ids to one pr
    next verify-downloads shows priority 3 at ok >= 44 of 47 and problem 0. Refuted if more
    than 3 fail, or an HTML or error page is stored as an e-print (verify would show
    "problem: not an e-print").
+
+### Outcome of the priority-3 download (D1)
+
+- Run `kb-20261115-112522-3ac74c2`: `kb fetch-missing --priority 3` replaced itself with
+  `python3 -I harness/bin/nrpic-fetch-arxiv <33 ids>` (process 966412, its own session; the
+  same pid before and after the exec, checked through /proc/966412/cmdline). It ran from
+  11:25:23 to 11:28:09 UTC (166.7 s, about 5 s per paper); 33 of 33 ids printed a store path,
+  stderr empty. The exit code was not observed (detached), recorded as null with that note.
+- Run `kb-20261115-112823-3ac74c2` (verify-downloads afterwards): priority 3 ok 47 of 47,
+  problem 0; manifest total ok 57, missing 627 (priority 2: 151, priority 1: 476); extras 4;
+  61 stored e-prints, all source kind tex (56 gzip-tar, 5 gzip-tex), all versions confirmed
+  by Content-Disposition; `sha256sum -c manifests/SHA256SUMS` exit 0; no refused archive
+  members. Prediction D1 held (33 of 33 instead of at least 30; wall time 2.8 min, under 15)
+  [VERIFIED: `scratch/kb/kb-20261115-112823-3ac74c2/{stdout.log,inventory.json,sha256sum_check.txt}`,
+  figure `kb/reports/fig_inventory.png`, inspected].
+- The largest e-print is 2605.04487 at 41252253 bytes, below the 256 MiB per-file limit.
+- First snapshot `kb-data/db/kb-20261115-b715da3.sqlite` (read-only; `db/current` points at it):
+  688 rows in `downloads` (684 manifest + 4 extras), 63 in `repo_downloads`; no papers yet.
+
+### Open after K0-K1 (for the next helper)
+
+- Priority 2 (151) and 1 (476) downloads: `kb/bin/kb fetch-missing --priority 2` as one
+  detached registered run (see README), then priority 1; then `kb verify-downloads`.
+- arXiv API and INSPIRE metadata, title/author cross-check with brief section 16: blocked on
+  a sanctioned download path (README, Request 2).
+- Repositories: none downloaded; which ones and how is Request 4 (decision 0010).
+- `kb watch upstream` and the AthenaK branch-tip record: stub.
