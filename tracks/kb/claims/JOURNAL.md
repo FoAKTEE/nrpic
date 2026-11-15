@@ -101,3 +101,25 @@ seed (`claims_db.OWN_SEED`: seed_key not `served:*`, not `manual-*`); test
 `test_rebuild_and_stale_leave_other_writers_rows`. Request to the lead: have the serve
 package re-run its `sync-k8` and not reply to the tracks with ids of run
 kb-20261115-153751-e164901.
+
+## P3-P5 (predictions, before the first `kb qa run`)
+
+P3, independent equation count (C8; 2611.12831 plus 40 papers drawn with
+random.Random(20261115 + 1) from the ingested TeX papers; `qa_eqcount.py`, a stack scanner
+written apart from kbtool's extractor and from the lead's checkers; the raw main file for
+single-file papers, else flat.tex): at least 75 % of the papers agree exactly on the number
+of numbered display lines, at least 90 % within 2 % or 2 lines. Refuted if fewer than 70 %
+agree exactly; then I read at least three mismatches at the source and say which side
+is wrong before naming a cause.
+
+P4, retrieval (C7, 32 golden questions, top 10 chunks): BM25 alone finds the expected
+paper for at least 26 of 32 (80 %) and the expected lines (+-5) for at least 16 (50 %).
+Refuted if fewer than 22 papers (70 %). Hybrid mode with vectors for only about a quarter
+of the chunks (10496 stored now): paper hits not more than one below BM25.
+
+P5, integrity (C1-C6, C10): manifest ids not ingested = {gr-qc/9412071} only (PostScript;
+astro-ph/9407016 is ingested as failed); papers not ok = 25 (23 review, 1 pdf, 1 failed)
+or a few more if the served ingest added extras; bibliography with an arXiv id 60 +- 1 %
+and in-corpus edges 15 +- 1 % (the K3 numbers of kb/README.md); every reference of CHARTER
+section 10 ingested. Refuted by any other id in the not-ingested list or a rate outside
+those bands.
