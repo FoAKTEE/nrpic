@@ -138,12 +138,20 @@ def kokkos(wt):
 
 
 def cmd_create(wt, args):
+    """The venv, then (linked worktrees only) Kokkos. In the main checkout Kokkos is never touched:
+    its athenak/kokkos is the reference every worktree borrows objects from, and the orchestrator
+    builds nothing there with this command, so `create` there is the venv alone."""
+    bad = [a for a in args if a not in ("--no-kokkos", "--no-venv")]
+    if bad:
+        raise H.HarnessError(f"unknown create option {bad[0]!r} (--no-kokkos, --no-venv)")
     no_kokkos = "--no-kokkos" in args
     no_venv = "--no-venv" in args
     H.machine_file(wt)                          # refuse early on an unknown host
     if not no_venv:
         create_venv(wt)
-    if not no_kokkos and not wt.is_main:
+    if wt.is_main:
+        print("main checkout: Kokkos not touched (athenak/kokkos is the reference of every worktree)")
+    elif not no_kokkos:
         kokkos(wt)
     print(f"environment of {wt.root} ready; hash {H.env_identity(wt)['env_hash']}")
 
@@ -248,8 +256,14 @@ def cmd_build(wt, args):
 
 # ------------------------------------------------------------------ check
 
+# untracked roots that are not source: the venv, builds, and in the main checkout the linked
+# worktrees and the data roots of decision 0001 (scratch/ holds test fixtures with links on purpose)
+SKIP_ROOTS = (".git", ".venv", "wt", "scratch", "kb-data", "cache", "locks", "runs", ".work")
+
+
 def scan_symlinks(wt):
-    """Symbolic links in the worktree that point outside it (.git, .venv and build trees skipped)."""
+    """Symbolic links in the worktree that point outside it (.git, .venv, build trees and, in the
+    main checkout, wt/ and the data roots skipped)."""
     bad = []
     for dirpath, dirnames, filenames in os.walk(wt.root):
         rel = os.path.relpath(dirpath, wt.root)
@@ -259,7 +273,7 @@ def scan_symlinks(wt):
             if os.path.islink(full):
                 bad.append(full) if not wt.inside(os.path.realpath(full)) else None
                 continue
-            if rel == "." and (d in (".git", ".venv", "wt") or d.startswith("build")):
+            if rel == "." and (d in SKIP_ROOTS or d.startswith("build")):
                 continue
             keep.append(d)
         dirnames[:] = keep
