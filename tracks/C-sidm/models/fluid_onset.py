@@ -175,7 +175,8 @@ def central_indices(b, w0):
 def main(argv=None):
     ap = argparse.ArgumentParser(description=__doc__,
                                  formatter_class=argparse.RawDescriptionHelpFormatter)
-    ap.add_argument("--out", required=True)
+    ap.add_argument("--out", default=os.environ.get("NRPIC_RUN_DIR"),
+                    help="output directory (default: $NRPIC_RUN_DIR of nrpic-run)")
     ap.add_argument("--b", type=float, nargs="*", default=[0.1, 0.2, 0.3, 0.5])
     ap.add_argument("--N", type=int, nargs="*", default=[600, 1200])
     ap.add_argument("--criteria", default=os.path.join(HERE, "..", "gravothermal", "results",
