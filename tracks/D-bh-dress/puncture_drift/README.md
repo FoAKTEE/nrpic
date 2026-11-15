@@ -68,7 +68,9 @@ figures `figs/drift_history.png`, `figs/drift_floor.png`, `figs/drift_finder.png
 - Finder settings (tolerance 1e-9, start from outside, 32 points) shift the mass by
   6e-5 to 3.1e-4, constant in time: they change the drift by at most 1.0e-5.
 - Smallest detectable mass change Delta M_min/M at M/16: 2.0e-5 to 2.5e-5 for windows from
-  t0 = 50 M of 41-156 M that end before 210 M; 5e-5 to 9e-5 for windows that cross the
+  t0 = 50 M of 41-156 M that end before 210 M (sigma taken over 50-210 M; these rows are
+  `results/drift_drift.txt` "t0 = 50:210", not drawn in `figs/drift_floor.png`, whose
+  curves use sigma over 50-500 M and so sit at about 5e-5; note added by the lead); 5e-5 to 9e-5 for windows that cross the
   excursions (up to 440 M); 8e-5 when the gauge transient is included (t0 = 20 M). At M/8:
   1.6e-4 to 3.5e-4 (2.8e-5 from t0 = 100 M before 210 M). k_floor = Delta M_min /
   ln(a_f/a_i) at M/16: 1.8e-5 to 3.3e-5 before 210 M, 4.3e-5 to 8.3e-5 across.

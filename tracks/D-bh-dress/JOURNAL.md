@@ -41,3 +41,68 @@ stamp, see below) and my own quadrature of a, m_p (scratch/D-bh-dress/tmp/lead/e
   of the removed core (an "over-massive" hole), otherwise E differs from -M/r.
 - L6 (analytic, second-agent check of `scope/REFERENCES.md` section 2): McVittie apparent
   horizon at 1 - 2m/R = H^2 R^2, so d ln M_AH / d ln a = -12 (mH)^2 in EdS.
+
+### Outcomes of L1-L6 (lead, 2026-11-15T15:05Z)
+
+- D-pre-1 symbolic rerun D-bh-dress-20261115-065141-5fdc744 (this id is LOCAL time, UTC-8,
+  as are the eight einstein_straus ids 0426xx-0434xx: `einstein_straus/nrun.py` used
+  datetime.now(); fixed to UTC in 5259f48, ids not renamed because they are referenced):
+  48 of 48 identities pass, same count as D-bh-dress-20261115-042626-f3da881. My own
+  quadrature (scratch/D-bh-dress/tmp/lead/es_check_a.py, written without es_model.py):
+  a = 0.9765922286441, m_p = 1.023968828206, u(0) = -0.0234077713559, rbar_throat =
+  0.52425608057, equal to es.json to 1e-13. H R_w^3 check: sharp-wall ES H = 5.590e-3/M
+  for R_w = 40 M against 5.581e-3 of the smooth-edge data (expected: rho_0 fixed at 44 M).
+  Figures looked at: es_expansions, es_reference, check_3d, code_t0. Confirmed.
+- L1 confirmed (run D-bh-dress-20261115-145546-5259f48, `lead_drift_recheck.png` looked
+  at): drift 50 -> 490 M of the 20 M mean +2.95e-4 (M/8), +3.67e-5 (M/16), as the helper;
+  M/16 max |D| on [50, 210] M 8.2e-6; 5 M mean peak-to-peak in 220-255 M 9.33e-5 (M/8),
+  9.28e-5 (M/16); raw 300-340 M 1.52e-4 / 1.48e-4; |S|/M^2 after 5 M 1.8e-7 / 5.6e-9.
+  Floor recomputed by hand from these: 8.2e-6 + D_fs 8.0e-6 + 2 sqrt(2) 3.5e-6 = 2.6e-5,
+  agreeing with the helper's 2.5e-5 at T = 156 M. Defect found: `figs/drift_floor.png`
+  draws the conservative floor (sigma over 50-500 M, about 5e-5), not the headline
+  2.0-2.5e-5; README annotated.
+- L2 confirmed (run D-bh-dress-20261115-145611-5259f48): `scoping_table.txt` identical.
+- L3 confirmed (run D-bh-dress-20261115-145636-5259f48): `reference_table.txt` identical
+  except the wall time; peaks 0.86990e8 GeV/cm^3 at 7.579 Gm, 2.4374e18 at 7.746 Gm.
+  Source locators checked: FdRW `kerrdm.tex:918-919` footnote (missing r^2/Delta in SFW
+  eq. 3.19) and SFW `SFWpaper.tex:443` ("a factor of three smaller at its peak", and the
+  8Gm -> 4Gm sentence). New: SFW's "factor of three" is 2.59 from their own curve (the
+  package's peak ratio); added to the kb request.
+- L4 confirmed (run D-bh-dress-20261115-145610-5259f48, `lead_infall_recheck.png` looked
+  at): M_ta/M = 1.52542, 2.62815, 4.87098 at a/a_i = 2, 4, 8 for all eps; mass that has
+  reached r = 0: 1.19019, 1.82763, 3.21526 (0.24, 0.02, 0.12 per cent below the helper's
+  absorption-at-2M values, as predicted); coefficient 0.55811 at a/a_i = 100, limit
+  0.56475. The helper's M_ta = 2.630 and 4.875 are 7e-4 and 8e-4 relative above the
+  closed form (shell-sampling or snapshot timing; immaterial). The secondary_infall
+  helper's remark on scope/JOURNAL.md is not a defect: "over a quadrupling 1.63 M" is
+  the dust that turned around (2.63 M with the hole), as the preceding sentence states.
+- L5 confirmed with a condition (by hand): with E = -M/r and M(r) = M + (4 pi/3) rho_i r^3
+  the dust's synchronous slice has KT = KL = -H_i, (dR/dl)^2 = 1 + 2E = 1 - 2M/r, and the
+  Misner-Sharp relation (dR/dl)^2 = 1 - 2m/R + R^2 KT^2 holds identically, so both
+  constraints are satisfied (momentum: KL = d(R KT)/dR with KT = -H). With a vacuum core
+  of areal radius r_c the same E(r) needs a hole of Misner-Sharp mass
+  M + (4 pi/3) rho_i r_c^3 = M (1 + 13.5 eps^2) for r_c = 3 M ("over-massive"), and inside
+  r_c a vacuum f-slice with f(r_c) = H r_c (r_c/2M_h)^(1/2) (KT continuous), f(2M_h) = 0.
+  Each shell then follows the radial Kepler law exactly in proper time and areal radius;
+  the apparent-horizon mass on any spherical slice is m of the shell at R = 2m. The
+  mapping in `secondary_infall/RUNS.md` section 1 is correct with this condition.
+- L6 confirmed (by hand): McVittie radial null rays dR/dt = f^(1/2)(HR +- f^(1/2)),
+  f = 1 - 2m/R; apparent horizon f = H^2 R^2, R_AH = 2m(1 + 4 m^2 H^2 + O(m^4 H^4)),
+  d ln M_AH/d ln a = 4 m^2 d(H^2)/d ln a = -12 (mH)^2 in EdS. The REFERENCES.md text
+  called the stalling family "outgoing"; corrected.
+- Further review findings (no rerun): (i) the einstein_straus README said the 1+log
+  lapse grows like exp(6Ht) in the dust; along the dust alpha = 1 + 6 ln a (d tau =
+  alpha dt), about 4.9 at tau = 200 M (run D-bh-dress-20261115-145950-23fa1c7); README
+  corrected. (ii) The D-pre-4 floor belongs to an asymptotically flat vacuum puncture with
+  the boundary at 128 M and the standard puncture gauge; the first Einstein-Straus run
+  has dust, a Painleve-Gullstrand exterior, the boundary at 180-256 M and possibly another
+  lapse, so its floor must come from a matched vacuum control (same table without dust),
+  not from D-pre-4 alone [JUDGEMENT]. (iii) The tracer side finding of puncture_drift
+  (release card executable, run D-bh-dress-20261115-143918-a5c125a, figure looked at) is
+  a blocker for trusting any particle push on cards until core explains it. (iv) The
+  scope cost model shows that the D-pre-1 data set as generated (dust to 106 M) costs
+  11.3 card-hours at M/16 for 200 M; with the outer dust edge at 60 M, 2.9 (M/16) and 1.4
+  (M/8) (run D-bh-dress-20261115-145950-23fa1c7).
+- Caveat on these checks: I read the helpers' reports before checking, so they are not
+  an artefact-only verification in the sense of CLAUDE.md (models and roles); a fresh
+  verifier is still needed for the gate (stage/G0/OPEN.md).

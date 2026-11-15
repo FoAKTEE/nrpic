@@ -1,0 +1,48 @@
+{
+ "run_id": "D-bh-dress-20261115-145636-5259f48",
+ "owner": "D-bh-dress",
+ "package": "lead_checks",
+ "tag": "spike-rerun",
+ "purpose": "lead re-check of D-pre-2: rerun spike/spike_reference.py and compare with run D-bh-dress-20261115-123029-4df1e76",
+ "kind": "scouting",
+ "command": [
+  "python3",
+  "/data/haiyangw/nrpic/wt/D-bh-dress/tracks/D-bh-dress/spike/spike_reference.py",
+  "--out",
+  "/data/haiyangw/nrpic/scratch/D-bh-dress/D-bh-dress-20261115-145636-5259f48"
+ ],
+ "cwd": "/data/haiyangw/nrpic/scratch/D-bh-dress/D-bh-dress-20261115-145636-5259f48",
+ "commit": "5259f4848232d4a7ca1e693d1dd259e0b8c0a92b",
+ "worktree_dirty": false,
+ "inputs": [
+  {
+   "path": "/data/haiyangw/nrpic/wt/D-bh-dress/tracks/D-bh-dress/spike/spike_reference.py",
+   "sha256": "f390cab14fd4a585b624d6c889cdeddc4b73d8203e57df3ca8247f3f658957db"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/wt/D-bh-dress/tracks/D-bh-dress/spike/spike_lib.py",
+   "sha256": "c6ddd1260ac7cf587775d1c115e2e301e49f5e1f3d7eec85b7546aaa773d96ff"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/wt/D-bh-dress/tracks/D-bh-dress/spike/paper_curves.py",
+   "sha256": "96f780d925511fae09e42f64f4554fe46aacac06bcda5c353233e443c60a8d16"
+  }
+ ],
+ "output_directory": "/data/haiyangw/nrpic/scratch/D-bh-dress/D-bh-dress-20261115-145636-5259f48",
+ "outputs": [
+  "log.txt",
+  "paper_curves.json",
+  "ref_constf.pdf",
+  "ref_constf.png",
+  "ref_hernquist.pdf",
+  "ref_hernquist.png",
+  "reference.json",
+  "reference_curves.npz",
+  "reference_table.txt"
+ ],
+ "wall_time_s": 140.6,
+ "cores": 4,
+ "card_hours": 0.0,
+ "exit_status": 0,
+ "started": "20261115-145636"
+}

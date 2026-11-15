@@ -1,0 +1,26 @@
+{
+ "run_id": "D-bh-dress-20261115-065141-5fdc744",
+ "owner": "D-bh-dress",
+ "package": "einstein_straus",
+ "tag": "lead-sym",
+ "purpose": "lead re-check: rerun the 48 symbolic identities of D-pre-1 (s1-s3)",
+ "kind": "scouting",
+ "command": [
+  "bash",
+  "-c",
+  "python3 /data/haiyangw/nrpic/wt/D-bh-dress/tracks/D-bh-dress/einstein_straus/sym/s1_constraints.py && python3 /data/haiyangw/nrpic/wt/D-bh-dress/tracks/D-bh-dress/einstein_straus/sym/s2_schwarzschild_slices.py && python3 /data/haiyangw/nrpic/wt/D-bh-dress/tracks/D-bh-dress/einstein_straus/sym/s3_ltb_wall.py"
+ ],
+ "cwd": "/data/haiyangw/nrpic/scratch/D-bh-dress/D-bh-dress-20261115-065141-5fdc744",
+ "commit": "5fdc7449f634a922b50bc766ccd2dd84c3e7d58e",
+ "worktree_dirty": false,
+ "inputs": [],
+ "output_directory": "/data/haiyangw/nrpic/scratch/D-bh-dress/D-bh-dress-20261115-065141-5fdc744",
+ "outputs": [
+  "log.txt"
+ ],
+ "wall_time_s": 10.7,
+ "cores": 1,
+ "card_hours": 0.0,
+ "exit_status": 0,
+ "started": "20261115-065141"
+}

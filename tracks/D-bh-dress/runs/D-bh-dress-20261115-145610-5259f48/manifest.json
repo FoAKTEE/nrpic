@@ -1,0 +1,34 @@
+{
+ "run_id": "D-bh-dress-20261115-145610-5259f48",
+ "owner": "D-bh-dress",
+ "package": "lead_checks",
+ "tag": "infall-recheck",
+ "purpose": "lead re-check of D-pre-3: closed-form turnaround and collapse masses of cold shells around a seed in EdS (own code)",
+ "kind": "scouting",
+ "command": [
+  "python3",
+  "/data/haiyangw/nrpic/wt/D-bh-dress/tracks/D-bh-dress/analysis/lead_checks/infall_recheck.py",
+  "--out",
+  "/data/haiyangw/nrpic/scratch/D-bh-dress/D-bh-dress-20261115-145610-5259f48"
+ ],
+ "cwd": "/data/haiyangw/nrpic/scratch/D-bh-dress/D-bh-dress-20261115-145610-5259f48",
+ "commit": "5259f4848232d4a7ca1e693d1dd259e0b8c0a92b",
+ "worktree_dirty": false,
+ "inputs": [
+  {
+   "path": "/data/haiyangw/nrpic/wt/D-bh-dress/tracks/D-bh-dress/analysis/lead_checks/infall_recheck.py",
+   "sha256": "0ed1a8561e880c3617d151125e22a257b77791ec4511584d079df9639f5a697d"
+  }
+ ],
+ "output_directory": "/data/haiyangw/nrpic/scratch/D-bh-dress/D-bh-dress-20261115-145610-5259f48",
+ "outputs": [
+  "lead_infall_recheck.json",
+  "lead_infall_recheck.png",
+  "log.txt"
+ ],
+ "wall_time_s": 1.1,
+ "cores": 1,
+ "card_hours": 0.0,
+ "exit_status": 0,
+ "started": "20261115-145610"
+}

@@ -1,0 +1,35 @@
+{
+ "run_id": "D-bh-dress-20261115-145611-5259f48",
+ "owner": "D-bh-dress",
+ "package": "lead_checks",
+ "tag": "scope-rerun",
+ "purpose": "lead re-check of the G0 scoping run: rerun scope/scoping_estimates.py and compare with scoping_table.txt of D-bh-dress-20261115-120304-795eee9",
+ "kind": "scouting",
+ "command": [
+  "bash",
+  "-c",
+  "cd /data/haiyangw/nrpic/wt/D-bh-dress && python3 tracks/D-bh-dress/scope/scoping_estimates.py --out /data/haiyangw/nrpic/scratch/D-bh-dress/D-bh-dress-20261115-145611-5259f48"
+ ],
+ "cwd": "/data/haiyangw/nrpic/scratch/D-bh-dress/D-bh-dress-20261115-145611-5259f48",
+ "commit": "5259f4848232d4a7ca1e693d1dd259e0b8c0a92b",
+ "worktree_dirty": false,
+ "inputs": [
+  {
+   "path": "/data/haiyangw/nrpic/wt/D-bh-dress/tracks/D-bh-dress/scope/scoping_estimates.py",
+   "sha256": "885ea0ffd505ca31f0a7563967d42c32292bddaceba5cf0311cea09fd89abea8"
+  }
+ ],
+ "output_directory": "/data/haiyangw/nrpic/scratch/D-bh-dress/D-bh-dress-20261115-145611-5259f48",
+ "outputs": [
+  "log.txt",
+  "scoping.json",
+  "scoping.pdf",
+  "scoping.png",
+  "scoping_table.txt"
+ ],
+ "wall_time_s": 2.6,
+ "cores": 1,
+ "card_hours": 0.0,
+ "exit_status": 0,
+ "started": "20261115-145611"
+}

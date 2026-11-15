@@ -140,14 +140,18 @@ arXiv:2402.13762, arXiv:2505.09715 [TO VERIFY when the dressed-binary stage star
   r_* = (m / rho_FLRW)^(1/3) (`:213-224`). Most investigations of non-vacuum interiors
   find no direct coupling (`:695`).
 - [JUDGEMENT, derived here from `:322-326`] In the McVittie form
-  ds^2 = -(1-2m/R) dt^2 + [dR/(1-2m/R)^(1/2) - H R dt]^2 + R^2 dOmega^2 the outgoing
-  radial null rays have dR/dt = (1-2m/R)^(1/2) [H R - (1-2m/R)^(1/2)], so the apparent
+  ds^2 = -(1-2m/R) dt^2 + [dR/(1-2m/R)^(1/2) - H R dt]^2 + R^2 dOmega^2 the radial null
+  rays have dR/dt = (1-2m/R)^(1/2) [H R +- (1-2m/R)^(1/2)]; the family with the minus sign
+  (ingoing; written "outgoing" in the first version, corrected by the lead) stalls where
+  1 - 2m/R = H^2 R^2, so the apparent
   horizon sits at 1 - 2m/R = H^2 R^2, R_AH = 2m (1 + 4 m^2 H^2 + ...), and the area mass
   R_AH/2 changes with H although m does not: d ln M_AH / d ln a = -12 (m H)^2 in
   Einstein-de Sitter. A definitional, not a physical, drift of the area mass in a
   non-vacuum neighbourhood; it is -1.2e-3 at m H = 0.01 (run
-  D-bh-dress-20261115-120304-795eee9, `scoping_table.txt`, Part B). To be re-derived by a
-  second agent before use.
+  D-bh-dress-20261115-120304-795eee9, `scoping_table.txt`, Part B). Re-derived by the
+  lead (second agent, by hand: R_AH = 2m/(1 - H^2 R_AH^2) = 2m(1 + 4 m^2 H^2 + ...),
+  d(H^2)/d ln a = -3 H^2 in EdS): -12 (mH)^2 confirmed; only the labelling of the ray
+  family was wrong (`../JOURNAL.md`, lead entry L6).
 
 ### arXiv:2304.09817 v2, Mistele, "Comment on 'Observational evidence for cosmological coupling of black holes ...'" (`bh-de.tex`)
 - [VERIFIED] The link to dark energy rests on a Friedmann-like equation with spatially

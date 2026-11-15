@@ -1,0 +1,38 @@
+{
+ "run_id": "D-bh-dress-20261115-145950-23fa1c7",
+ "owner": "D-bh-dress",
+ "package": "lead_checks",
+ "tag": "first-run-plan",
+ "purpose": "first full-relativity run of Track D: exact references from the D-pre-1 data set, 1+log lapse estimate, cost from the scoping model",
+ "kind": "scouting",
+ "command": [
+  "python3",
+  "/data/haiyangw/nrpic/wt/D-bh-dress/tracks/D-bh-dress/analysis/lead_checks/first_run_plan.py",
+  "--out",
+  "/data/haiyangw/nrpic/scratch/D-bh-dress/D-bh-dress-20261115-145950-23fa1c7"
+ ],
+ "cwd": "/data/haiyangw/nrpic/scratch/D-bh-dress/D-bh-dress-20261115-145950-23fa1c7",
+ "commit": "23fa1c763eabb19ae6fcd9b8cafd9813f1d2934c",
+ "worktree_dirty": false,
+ "inputs": [
+  {
+   "path": "/data/haiyangw/nrpic/scratch/D-bh-dress/D-bh-dress-20261115-043445-b782009/es_reference.csv",
+   "sha256": "b7b204b3661b8b4a7028726555ee39e08d889098d7f2d932eec9e39a9c1ee8de"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/wt/D-bh-dress/tracks/D-bh-dress/analysis/lead_checks/first_run_plan.py",
+   "sha256": "74d9cfe27d85125ad484ab5f54b8aabad0e4407eccff34ce09ffbee36a932e04"
+  }
+ ],
+ "output_directory": "/data/haiyangw/nrpic/scratch/D-bh-dress/D-bh-dress-20261115-145950-23fa1c7",
+ "outputs": [
+  "first_run_plan.json",
+  "first_run_plan.png",
+  "log.txt"
+ ],
+ "wall_time_s": 1.5,
+ "cores": 1,
+ "card_hours": 0.0,
+ "exit_status": 0,
+ "started": "20261115-145950"
+}

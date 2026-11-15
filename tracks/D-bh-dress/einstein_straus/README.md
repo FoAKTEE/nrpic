@@ -105,8 +105,10 @@ mass constant within the noise floor of D-pre-4 while R_wall/R_wall(0) grows".
 
 - core: merge or tag the format-2 reader of `core/id-extrinsic` (my start-time check
   passed with commit 408df57); the data set needs it. A lapse condition for a puncture in
-  expanding dust: the 1+log lapse obeys d_t alpha = -2 alpha K and grows like exp(6 H t)
-  where K = -3H (core saw it in its test 2), while the conformal-time lapse is not
+  expanding dust: the 1+log lapse obeys d_t alpha = -2 alpha K with K = -3H in the dust,
+  so alpha = 1 + 6 ln a along the dust (d tau = alpha dt; exp(6 H t) only while
+  alpha ~ 1; lead's correction, run D-bh-dress-20261115-145950-23fa1c7: alpha ~ 4.9 at
+  tau = 200 M in this data set) and core saw lapse fronts in its test 2, while the conformal-time lapse is not
   singularity-avoiding at the puncture; a blend (e.g. 1+log near the hole, conformal-time
   in the dust, switched by chi or radius) or a 1+log condition relative to the local
   expansion is needed before a long run. The outflow boundary of Z4c assumes 1/r fields;
