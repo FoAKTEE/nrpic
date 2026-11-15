@@ -1,0 +1,158 @@
+{
+ "results": [
+  {
+   "id": "T1a",
+   "name": "coefficients of a field read from an 8-MeshBlock dump",
+   "value": 1.2935257886417741e-15,
+   "criterion": "<= 1e-13",
+   "passed": true
+  },
+  {
+   "id": "T1b",
+   "name": "L, x0, h recovered from the MeshBlock extents",
+   "value": 0.0,
+   "criterion": "<= 1e-15",
+   "passed": true
+  },
+  {
+   "id": "T1c",
+   "name": "noise field named and assembled",
+   "value": 1.2935257886417741e-15,
+   "criterion": "<= 1e-13",
+   "passed": true
+  },
+  {
+   "id": "T2a",
+   "name": "R^NR with the gt term: relative error at amplitude 1e-5",
+   "value": 0.00023536909848432053,
+   "criterion": "<= 1e-3 and slope 1 +- 0.1",
+   "passed": true,
+   "slope": 0.9985717701340978
+  },
+  {
+   "id": "T2b",
+   "name": "control without the gt term: relative error (first order)",
+   "value": 0.6572334263008045,
+   "criterion": ">= 1e-2 and slope 0 +- 0.1",
+   "passed": true,
+   "slope": -0.0028744757315175987
+  },
+  {
+   "id": "T2c",
+   "name": "control with the sign of <Pi> flipped: relative error",
+   "value": 9.12998550380605,
+   "criterion": ">= 0.5",
+   "passed": true
+  },
+  {
+   "id": "T2d",
+   "name": "slice of SPEC 5.3 (delta X = 2 Phi_B, delta gt = 0): relative error",
+   "value": 3.606061084367997e-10,
+   "criterion": "<= 1e-4 (second order at A = 1e-5)",
+   "passed": true
+  },
+  {
+   "id": "T3a",
+   "name": ".modes record parsed (header and rows)",
+   "value": 0.0,
+   "criterion": "<= 1e-16 and header ok",
+   "passed": true
+  },
+  {
+   "id": "T3b",
+   "name": "planted per-mode deviations recovered (modes with W > 1e-12)",
+   "value": 6.4541637219205285e-15,
+   "criterion": "<= 1e-10",
+   "passed": true,
+   "n_modes": 1054
+  },
+  {
+   "id": "T3c",
+   "name": "drift of ln|c|^2 per e-fold",
+   "value": 6.271916444316669e-15,
+   "criterion": "<= 1e-12",
+   "passed": true
+  },
+  {
+   "id": "T4a",
+   "name": "spectrum of unit-modulus amplitudes, Delta0 in every shell",
+   "value": 2.220446049250313e-15,
+   "criterion": "<= 1e-12",
+   "passed": true
+  },
+  {
+   "id": "T4b",
+   "name": "Gaussian amplitudes of the code's keys: pooled Delta/Delta0 - 1 in sigma",
+   "value": 1.245395259448564,
+   "criterion": "|z| <= 4",
+   "passed": true,
+   "pooled": 0.9865218857626936,
+   "modes": 8538
+  },
+  {
+   "id": "T5a",
+   "name": "first difference against the stencil symbol (orders 2, 4, 6)",
+   "value": 3.92730951958957e-15,
+   "criterion": "<= 1e-13",
+   "passed": true
+  },
+  {
+   "id": "T5b",
+   "name": "[H] per cell from H, K, E with a known Ricci scalar",
+   "value": 0.0,
+   "criterion": "<= 1e-13",
+   "passed": true
+  },
+  {
+   "id": "T5c",
+   "name": "[M] of a plane wave against its closed form",
+   "value": 4.373441808971325e-13,
+   "criterion": "<= 1e-12",
+   "passed": true
+  }
+ ],
+ "t2_rows": [
+  [
+   0.21937054367667283,
+   0.6409874584858624,
+   9.151609102727667,
+   0.18503947970229015
+  ],
+  [
+   0.06910277580422618,
+   0.6522946051272808,
+   9.1363288913689,
+   0.18509955443104945
+  ],
+  [
+   0.023368082880729037,
+   0.6555908724675369,
+   9.132073863153147,
+   0.18512539069693806
+  ],
+  [
+   0.007046162050161114,
+   0.6567515243942277,
+   9.130596025141546,
+   0.18513534773344087
+  ],
+  [
+   0.002352146425025432,
+   0.6570838037626858,
+   9.130174867875185,
+   0.18513827980798034
+  ],
+  [
+   0.0007060043157205406,
+   0.6572001715085671,
+   9.130027576319932,
+   0.18513931519544877
+  ],
+  [
+   0.00023536909848432053,
+   0.6572334263008045,
+   9.12998550380605,
+   0.18513961189310332
+  ]
+ ]
+}

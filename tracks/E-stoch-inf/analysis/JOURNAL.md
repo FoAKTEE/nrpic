@@ -80,3 +80,29 @@ synthetic slice. The criterion is amended to <= 1e-3 at A = 1e-5 together with t
 unchanged slope 1 +- 0.1, which is what separates second from first order (the control
 without gt stays at 0.657 for every A). Second bug of the development run: the test's
 own .modes writer used the C format %llu, which Python does not know (fixed: %d).
+
+## 18:00 Outcome of the synthetic tests (run E-20261115-171445-36152c4)
+
+All 15 pass (`fig/test_sfa.json`; figures `fig/fig_t2_extraction.png`, `fig_t3_permode.png`,
+`fig_t4_spectrum.png`, `fig_t5_momentum_norm.png`, looked at). T2: relative error of R^NR
+2.35e-4 at A = 1e-5 with slope 1.00 (second order); without the gt term 0.657 at every A
+(first order); flipped <Pi> 9.13; SPEC 5.3 slice 3.6e-10. T4b pooled spectrum ratio
+z = 1.25 over 8538 modes. The figures show what the numbers say; in fig_t4 the two lowest
+shells (3 and 6 modes) lie at 2.5 and 2.4, inside the Gamma spread of so few modes.
+
+## 18:00 Predictions: constraint estimators on real output (core's plane perturbation)
+
+`scripts/plane_check.py` runs `problems/scalar/plane.athinput` at N = 16 and 32 (mesh
+N x N x N/2) with the release processor executable and recomputes the constraint
+statistics from the dumps (t = 0, 0.25, 0.5).
+- mean |H| and rms H from the dumps equal the history's to <= 1e-10 relative (same cells;
+  only the order of summation differs).
+- box mean of [H] per cell (sfa.ham_norm_cells, At At left out) equals the code's [H] to
+  <= 1e-6 relative (At At is second order; At = 0 at t = 0).
+- sqrt(<chi |M|^2>) equals the history's M_rms to <= 1e-6 (gt = delta up to the
+  perturbation).
+- the ratios rms H/[H] and rms M/rms [M] fall between N = 16 and 32 at t = 0 at order 5 to
+  6.5 (the interface reports orders 5.97 for H and 5.66 for M from rms values,
+  coord/INTERFACES/scalar_field.md section 10, test 3).
+Refuted: any of the four comparisons outside its bound (then the reader or the [H]
+reconstruction is wrong), or an order outside 5-6.5.
