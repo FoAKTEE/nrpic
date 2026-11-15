@@ -74,11 +74,14 @@ def main():
     coll_block = ("collisions       = true\ncoll_sigma       = 0.0\ncoll_pmax        = 0.1\n"
                   "coll_cell_factor = 4\ncoll_hist_dcycle = 1\ncoll_budget      = true\n")
     deck_coll = os.path.join(out, "st_cluster_coll.athinput")
+    job = "basename  = st\n"
+    assert job in text
     with open(deck_coll, "w") as fp:
-        fp.write(text.replace(anchor, anchor + coll_block))
+        fp.write(text.replace(anchor, anchor + coll_block)
+                 .replace(job, job + "rng_seed  = 4242\n"))
     base = [f"particles/particle_file={os.path.join(ic, 'st.nrp')}",
             f"problem/comp0_file={os.path.join(ic, 'st.tab')}", f"time/tlim={args.tlim}",
-            f"particles/snap_dt={args.snap_dt}", "job/rng_seed=4242"]
+            f"particles/snap_dt={args.snap_dt}"]
     runs = {"off": (DECK, base), "sigma0": (deck_coll, base)}
     sig = {}
     for kn in kns:
@@ -92,6 +95,12 @@ def main():
         code, wall = common.run_athena(args.exe, deck, os.path.join(out, name), ov)
         summary["runs"][name] = {"exit": code, "wall_s": round(wall, 1)}
         ok = ok and code == 0
+    if not ok:
+        with open(os.path.join(out, "summary.json"), "w") as fp:
+            summary["ok"] = False
+            json.dump(summary, fp, indent=1)
+        print(json.dumps(summary, indent=1))
+        sys.exit(1)
 
     hst = {k: read_nrpic_hst(os.path.join(out, k, "st.nrpic.hst")) for k in runs}
     snaps = {k: [collide.read_snapshot(p) for p in common.snapshots(os.path.join(out, k), "st")]
