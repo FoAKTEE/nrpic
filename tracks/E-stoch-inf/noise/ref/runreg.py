@@ -82,7 +82,8 @@ def main():
         "wall_time": f"{wall:.1f} s",
         "cores": a.cores,
         "card_hours": 0.0,
-        "status": "completed" if rc == 0 else f"failed (exit {rc})",
+        "status": "completed" if rc == 0 else "failed",
+        "exit_code": rc,
         "results": results,
     }
     mdir = os.path.join(WT, "tracks", OWNER, "runs", run_id)

@@ -26,6 +26,8 @@
  "wall_time": "0.1 s",
  "cores": 2,
  "card_hours": 0.0,
- "status": "failed (exit 1)",
- "results": ""
+ "status": "failed",
+ "results": "",
+ "exit_code": 1,
+ "note_lead": "status normalised by the lead on 2026-11-15 from 'failed (exit 1)' to the nrpic-run values (completed, failed, stopped); exit_code added"
 }
