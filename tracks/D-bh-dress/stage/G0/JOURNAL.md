@@ -153,3 +153,10 @@ registered run goes to a_f/a_i = 100 (and 300) with N = 2000-4000, softening 1-2
 step sizes. Prediction (entry 1, unchanged): slope -2.25 +- 0.1 between 0.05 and 0.3 r_ta
 for the enclosed-mass estimate at a_f/a_i = 100 and 300; refuted outside +-0.15. The
 density-bin fits are expected to scatter more (caustics of radial orbits).
+
+## Entry 6: rerun of the track's self-similar test (prediction)
+
+Rerun of `secondary_infall/selfsimilar.py --taumax 300` (the test behind the -9/4 claim of
+D-pre-3, run D-bh-dress-20261115-123813-97afeea) into my own run directory. Prediction: the
+numbers of selfsimilar.txt are reproduced exactly (deterministic code, same inputs);
+refuted by any difference beyond the last printed digit.
