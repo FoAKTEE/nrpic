@@ -19,6 +19,7 @@
 //!   <fastflow> use_puncture_<n> = n and the flow parameters of horizon n
 //! with
 //!   radius    comp<c>_radius, default puncture_radius (default 2) times the bare mass
+//!             (the tracker gets 0.999 of it, the refined region all of it)
 //!   reflevel  comp<c>_level, default puncture_level - round(log2(mass/lightest mass)),
 //!             puncture_level by default the finest level, <mesh_refinement> num_levels-1
 //!   flow_alpha_beta_const_<n> = mass^2 (the flow step relative to the radius scales as
@@ -121,7 +122,11 @@ inline void NrpicPunctureSetup(ParameterInput *pin) {
     SetupSetReal(pin, "z4c", co + "y", x[1]);
     SetupSetReal(pin, "z4c", co + "z", x[2]);
     SetupSetReal(pin, "z4c", co + "mass", mass[n]);
-    SetupSetReal(pin, "z4c", co + "radius", radius);
+    // 0.1 percent inside the stated radius: the tracker criterion refines a MeshBlock
+    // whose nearest point is closer than the radius, and with a puncture on a block
+    // corner and a radius of a whole number of blocks that test would be decided by the
+    // round-off of the tracker position
+    SetupSetReal(pin, "z4c", co + "radius", 0.999*radius);
     pin->SetInteger("z4c", co + "reflevel", level);
     if (multilevel && level > 0) {
       const std::string blk = "refined_region_punc" + std::to_string(n);
