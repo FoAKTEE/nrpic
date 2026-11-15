@@ -26,7 +26,7 @@ E_ITEMS = [
      "Erratum: the printed prefactor dk^(3/2) of the noise draws gives (2 pi)^3 too much power; "
      "the right normalisation is L^(-3/2).",
      "E-stoch-inf-20261115-122934-9ac98d8"),
-    (15, "2610.32592", [("", 487, 491)],
+    (15, "2610.32592", [("appendix.tex", 487, 491)],
      "Erratum, appendix: the printed draw prefactor (dk/sqrt(2 pi))^(3/2) gives (2 pi)^(3/2) too much "
      "power; the right normalisation is L^(-3/2).",
      "E-stoch-inf-20261115-122934-9ac98d8"),
