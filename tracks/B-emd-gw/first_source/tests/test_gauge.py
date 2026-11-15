@@ -116,6 +116,48 @@ def test_gauge_piece_of_A():
     assert np.all(r[:, 1] < 0.05 * r[:, 0])
 
 
+def test_total_piece_with_homogeneous_anisotropy():
+    """Target metric with a homogeneous traceless part h0 and a TT wave, both of the size of
+    the coordinate gradients: G alone leaves an error first order in xi times h_T; G_tot
+    (with the cross terms) leaves third order."""
+    g = Grid((32, 32, 32), (4.0, 4.0, 4.0), (0.0, 0.0, 0.0))
+    L = 4.0
+    out = []
+    for e in (2e-3, 1e-3, 5e-4):
+        xis = [analytic.random_modefield(g, e * L / (2 * np.pi), 3, 2, 21 + 10 * a) for a in range(3)]
+        xi = np.array([x.val() for x in xis])
+        J = np.eye(3)[:, :, None, None, None] + np.array([x.grad() for x in xis])
+        h0 = e * np.diag([1.0, 0.7, -1.7])[:, :, None, None, None]
+        waves = [analytic.Wave((1, 1, 0), 0.5 * e, 0.0), analytic.Wave((0, 1, 2), 0.0, 0.3 * e)]
+        X = np.array(g.mesh())
+        # wave evaluated at the displaced points x' + xi: shift the mesh analytically
+        hw_disp = np.zeros((3, 3) + g.shape)
+        for w in waves:
+            k = analytic.lattice_k(g, w.m)
+            ep, ex, _, _ = tt.pol_basis((k / np.linalg.norm(k)).reshape(3, 1, 1, 1))
+            ph = np.einsum("a,a...->...", k, X + xi)
+            hw_disp += (w.ap.real * ep + w.ax.real * ex) * np.cos(ph)
+        hw = np.zeros((3, 3) + g.shape)
+        for w in waves:
+            k = analytic.lattice_k(g, w.m)
+            ep, ex, _, _ = tt.pol_basis((k / np.linalg.norm(k)).reshape(3, 1, 1, 1))
+            hw += (w.ap.real * ep + w.ax.real * ex) * np.cos(np.einsum("a,a...->...", k, X))
+        gT = np.eye(3)[:, :, None, None, None] + h0 + hw_disp
+        gp = tt.det3(J) ** (-2.0 / 3.0) * np.einsum("ki...,kl...,lj...->ij...", J, gT, J)
+        h = conformal_h(gp)
+        Lh = tt.tt_project(h, g)
+        target = tt.tt_project(hw, g)
+        e_G = rms(Lh - gauge.gauge_piece(h, g) - target)
+        e_T = rms(Lh - gauge.gauge_piece_total(h, g) - target)
+        out.append((e, e_G, e_T))
+    out = np.array(out)
+    sG = np.polyfit(np.log(out[:, 0]), np.log(out[:, 1]), 1)[0]
+    sT = np.polyfit(np.log(out[:, 0]), np.log(out[:, 2]), 1)[0]
+    assert abs(sG - 2.0) < 0.1, sG           # G alone: xi * h_T, both ~ e
+    assert abs(sT - 3.0) < 0.15, sT          # G_tot: third order
+    assert np.all(out[:, 2] < 0.05 * out[:, 1])
+
+
 def test_tt_wave_survives_the_correction():
     g = Grid((32, 32, 32), (4.0, 4.0, 4.0), (0.0, 0.0, 0.0))
     waves = [analytic.Wave((1, 1, 0), 1e-6, 0.0), analytic.Wave((0, 1, 2), 0.0, 5e-7)]

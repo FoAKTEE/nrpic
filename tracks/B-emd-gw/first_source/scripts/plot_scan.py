@@ -66,7 +66,7 @@ def main():
                 continue
             e = EPS[name]
             t, c = series(cases[name], "bin", f"h_{K}_plus", 0)
-            _, cg = series(cases[name], "bin", f"G_{K}_plus", 0)
+            _, cg = series(cases[name], "bin", f"Gtot_{K}_plus", 0)
             a = ref.a_of_tau(t)
             ax[0, j].plot(a, c / (s1 * e), color=col[name], lw=1.5, label=r"$\epsilon=%g$" % e)
             ax[0, j].plot(a, (c - cg) / (s1 * e), color=col[name], lw=1.0, ls="--")
@@ -90,7 +90,7 @@ def main():
         ax[1, j].set_xlabel(r"$a$")
         ax[1, j].set_ylabel("relative to reference")
     ax[0, 0].legend(loc="lower right", fontsize=8)
-    ax[0, 1].text(0.03, 0.05, "solid: $\\Lambda h$;  dashed: $\\Lambda h - G$", transform=ax[0, 1].transAxes,
+    ax[0, 1].text(0.03, 0.05, "solid: $\\Lambda h$;  dashed: $\\Lambda h - G_{\\rm tot}$", transform=ax[0, 1].transAxes,
                   fontsize=8)
     fig.tight_layout()
     fs.save(fig, os.path.join(out, "scan_kk0"))
@@ -143,9 +143,10 @@ def main():
         t, nt = series(cases[name], "bin", "rms_nonTT")
         _, bf = series(cases[name], "bin", "box_mode_fraction")
         _, c = series(cases[name], "bin", "h_K1_plus", 0)
-        _, cg = series(cases[name], "bin", "G_K1_plus", 0)
+        _, cg = series(cases[name], "bin", "Gtot_K1_plus", 0)
+        _, cg0 = series(cases[name], "bin", "G_K1_plus", 0)
         _, rt = series(cases[name], "bin", "rms_TT")
-        _, rg = series(cases[name], "bin", "rms_G")
+        _, rg = series(cases[name], "bin", "rms_Gtot")
         a = ref.a_of_tau(t)
         lab = name.replace("cw_", "").replace("p", ".").replace("_gd", " (Gamma driver)")
         ax[0].loglog(a, nt, color=col[name], label=lab)
@@ -156,6 +157,7 @@ def main():
         summ.setdefault("P5", {})[name] = {
             "max_abs_G_over_c_K1_a_le_20": float(np.nanmax(np.abs(cg[sel] / c[sel]))),
             "G_over_c_K1_at_a": {str(av): float(np.interp(av, a, cg / c)) for av in (10, 20, 40, 60, 80, 100, 140)},
+            "Gquad_only_over_c_K1_at_a": {str(av): float(np.interp(av, a, cg0 / c)) for av in (10, 20, 40, 60, 80, 100, 140)},
             "rms_nonTT_at_a": {str(av): float(np.interp(av, a, nt)) for av in (5, 10, 20, 40, 60, 80, 100, 140)},
             "rmsG_over_rmsTT_at_a": {str(av): float(np.interp(av, a, rg / rt)) for av in (10, 20, 40, 60, 80, 100, 140)}}
         summ.setdefault("P4", {})[name] = {"min_box_fraction_a_le_20": float(np.nanmin(bf[(a >= 1.2) & (a <= 20)])),
@@ -169,7 +171,7 @@ def main():
     ax[0].set_ylabel("rms traceless non-TT part of $h$")
     ax[0].legend(fontsize=7)
     ax[1].set_ylabel(r"share of $(\pm k,\pm k,0)$ in $\langle(\Lambda h)^2\rangle$")
-    ax[2].set_ylabel(r"$|G/c_+|$ at $K_1$ (solid), rms $G$/rms $\Lambda h$ (dotted)")
+    ax[2].set_ylabel(r"$|G_{\rm tot}/c_+|$ at $K_1$; rms ratio (dotted)")
     for x in ax:
         x.set_xlabel(r"$a$")
     fig.tight_layout()
@@ -179,21 +181,25 @@ def main():
     if "cw_eps1" in cases and "cw_eps1_gd" in cases:
         fig, ax = plt.subplots(1, 3, figsize=(fs.FULL_WIDTH * 1.2, 3.2))
         tz, cz = series(cases["cw_eps1"], "bin", "h_K1_plus", 0)
-        _, gz = series(cases["cw_eps1"], "bin", "G_K1_plus", 0)
+        _, gz = series(cases["cw_eps1"], "bin", "Gtot_K1_plus", 0)
+        _, gz0 = series(cases["cw_eps1"], "bin", "G_K1_plus", 0)
         tg, cgd = series(cases["cw_eps1_gd"], "bin", "h_K1_plus", 0)
-        _, ggd = series(cases["cw_eps1_gd"], "bin", "G_K1_plus", 0)
+        _, ggd = series(cases["cw_eps1_gd"], "bin", "Gtot_K1_plus", 0)
+        _, ggd0 = series(cases["cw_eps1_gd"], "bin", "G_K1_plus", 0)
         n = min(len(tz), len(tg))
         a = ref.a_of_tau(tz[:n])
         raw = cz[:n] - cgd[:n]
         cor = (cz[:n] - gz[:n]) - (cgd[:n] - ggd[:n])
+        cor0 = (cz[:n] - gz0[:n]) - (cgd[:n] - ggd0[:n])
         ax[0].semilogx(a, cz[:n] / s1, color=fs.PAL["blue"], label="zero shift")
         ax[0].semilogx(a, cgd[:n] / s1, color=fs.PAL["green"], label="Gamma driver")
-        ax[0].semilogx(a, (cz[:n] - gz[:n]) / s1, color=fs.PAL["blue"], ls="--", label=r"$-G$")
+        ax[0].semilogx(a, (cz[:n] - gz[:n]) / s1, color=fs.PAL["blue"], ls="--", label=r"$-G_{\rm tot}$")
         ax[0].semilogx(a, (cgd[:n] - ggd[:n]) / s1, color=fs.PAL["green"], ls="--")
         ax[0].set_ylabel(r"$c_+(K_1)/s$, $\epsilon=1$")
         ax[0].legend(fontsize=7)
         ax[1].loglog(a, np.abs(raw / s1), color="k", label=r"$|\Delta c_+|$ raw")
-        ax[1].loglog(a, np.abs(cor / s1), color=fs.PAL["red"], ls="--", label=r"$|\Delta c_+|$ after $-G$")
+        ax[1].loglog(a, np.abs(cor / s1), color=fs.PAL["red"], ls="--", label=r"$|\Delta c_+|$ after $-G_{\rm tot}$")
+        ax[1].loglog(a, np.abs(cor0 / s1), color=fs.PAL["yellow"], ls=":", label=r"after $-G$ (no cross terms)")
         ax[1].set_ylabel(r"difference between the gauges $/|s|$")
         ax[1].legend(fontsize=7)
         tz2, bz = series(cases["cw_eps1"], "rst", "B_K1_plus", 0)
@@ -216,7 +222,9 @@ def main():
                       "max_ratio_cor_over_raw_where_big": float(np.nanmax(np.abs(cor[big] / raw[big]))) if big.any() else None,
                       "median_ratio_cor_over_raw_where_big": float(np.nanmedian(np.abs(cor[big] / raw[big]))) if big.any() else None,
                       "raw_over_s_at_a": {str(av): float(np.interp(av, a, raw / s1)) for av in (5, 10, 20, 40, 60, 80, 100, 140)},
-                      "cor_over_s_at_a": {str(av): float(np.interp(av, a, cor / s1)) for av in (5, 10, 20, 40, 60, 80, 100, 140)}}
+                      "cor_over_s_at_a": {str(av): float(np.interp(av, a, cor / s1)) for av in (5, 10, 20, 40, 60, 80, 100, 140)},
+                      "cor_quad_only_over_s_at_a": {str(av): float(np.interp(av, a, cor0 / s1)) for av in (5, 10, 20, 40, 60, 80, 100, 140)},
+                      "median_ratio_cor_quad_only_over_raw_where_big": float(np.nanmedian(np.abs(cor0[big] / raw[big]))) if big.any() else None}
     with open(os.path.join(out, "scan_summary.json"), "w") as f:
         json.dump(summ, f, indent=1)
     print(json.dumps(summ, indent=1)[:6000])

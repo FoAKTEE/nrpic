@@ -268,3 +268,44 @@ gauge is Newtonian (P9). The rise sits at the grid scale, is deposit-dependent t
 quasi-static (rho_kin/rho_grad ~ 0.02), so it is not resolved radiation either; the resolved
 band (|k|L/2pi < 20) grows by 8-10 percent (below 10) and twentyfold (10-20), deposit-
 independent, which is the candidate physical TT response of nonlinear structure.
+
+## Development check on the early 32^3 dumps: the cross terms with the homogeneous anisotropy (17:30 UTC)
+
+Before the scan analysis I ran `fslib.modes` by hand (not registered) on dumps 5, 10, 19
+(tau = 0.5, 1.0, 1.9; a = 1.6, 2.0, 3.8) of the running processor scan (run
+B-20261115-165525-f7c2004) to check the pipeline. Findings, all to be confirmed by the
+registered analysis:
+- eps = 1 raw c_+(K1) = -1.3257e-5 and -3.8422e-5 against the reference s g(tau) =
+  -1.3219e-5 and -3.8433e-5 (0.3 and 0.03 percent); K2 the opposite sign; eps = 0: largest TT
+  mode 2.2e-16 against a traceless part of 3e-4.
+- P6(c) with G as written FAILS on these dumps: at tau = 1.9 the raw difference of c_+(K1)
+  between the zero-shift and the Gamma-driver run is +1.04e-8, the G-corrected difference
+  -4.2e-8 (larger). Checks: the difference of the recovered displacements xi_ZS - xi_GD equals
+  minus the time integral of the Gamma-driver shift to 5e-4 (correlation -0.9999999), so the
+  two runs are the same slice in coordinates that differ by that displacement; transforming
+  the Gamma-driver metric by it (exact Jacobian, argument shifted to second order) reproduces
+  the zero-shift c_+(K1) difference (1.125e-8 against 1.038e-8) and halves the rms
+  difference of Lambda h (7.7e-8 to 3.4e-8). The second-order expansion in that displacement
+  splits into Q(d) = 4.16e-8 and cross terms -3.04e-8, of which -3.60e-8 come from the
+  homogeneous traceless part of h, h0 = diag(9.04e-5, 9.04e-5, -1.81e-4) (the Bianchi-I-like
+  anisotropy of the box, section 2 of scope/SCOPE.md), which no periodic xi removes and which
+  G omitted.
+- Fix: G_tot = G + Lambda[M^T A + A M - (2/3)(tr M) A + (xi . grad) A], A = Lambda h + h0
+  (`fslib/gauge.py`, gauge_piece_total; new test with a homogeneous anisotropy and TT waves:
+  G alone leaves second order, G_tot third order; 6 tests pass). With G_tot the K1
+  difference at tau = 1.0 and 1.9 falls from 6.1e-9 and 1.04e-8 to 7.3e-10 and -8.7e-10;
+  at tau = 0.5, where the gauge pieces are below the other differences, it goes from -4.8e-10
+  to -2.2e-9.
+So the prediction P6 as written for G is refuted on early 32^3 data, by a missing term in my
+formula, not by the gauge hypothesis; the T0 test had no homogeneous part and could not see
+it.
+
+## P6' (revised P6, written before the registered scan analysis)
+
+With G_tot in place of G: P6(c) holds on the full runs at 32^3 (and 64^3 when they exist):
+wherever |raw difference| > 1e-3 |s|, the corrected difference is below 30 percent of the
+raw one (median over those dumps), up to a = 20; later (nonlinear stage) it may fail.
+P5 is re-stated with G_tot: |G_tot(K1)| below 5 percent of c_+ for a <= 20.
+P7c (rerun of the cosmology dumps with G_tot): the cross terms are negligible there
+(h0 and Lambda h are far below the non-TT part): rms G_tot within 10 percent of rms G at all
+dumps; the conclusion of P7 unchanged.

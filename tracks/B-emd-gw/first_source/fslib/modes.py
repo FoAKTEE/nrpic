@@ -125,14 +125,26 @@ def analyse(path, with_gauge=True, with_weyl=False, weyl_order=6):
         for K, (hp, hx) in pa.items():
             r[f"G_{K}_plus"] = [float(hp.real), float(hp.imag)]
             r[f"G_{K}_cross"] = [float(hx.real), float(hx.imag)]
-        r["box_mode_fraction_corrected"] = (box_mode_power(Th - Gh, g) / ms_fourier(Th - Gh, g)
-                                            if ms_fourier(Th - Gh, g) > 0 else None)
+        # total piece with the cross terms of xi with the TT and homogeneous parts of h
+        A = htf - gauge.nonTT_traceless(h, g)
+        Gx = gauge.gauge_piece_A(h, A, g)
+        Gth = Gh + tt.tensor_rfft(Gx)
+        r["rms_Gtot"] = np.sqrt(ms_fourier(Gth, g))
+        r["rms_TT_minus_Gtot"] = np.sqrt(ms_fourier(Th - Gth, g))
+        pa = pol_amps(Gth, g)
+        for K, (hp, hx) in pa.items():
+            r[f"Gtot_{K}_plus"] = [float(hp.real), float(hp.imag)]
+            r[f"Gtot_{K}_cross"] = [float(hx.real), float(hx.imag)]
+        r["k0_traceless"] = [float(v) for v in np.diag(h0)]
+        Gh_used = Gth
+        r["box_mode_fraction_corrected"] = (box_mode_power(Th - Gh_used, g) / ms_fourier(Th - Gh_used, g)
+                                            if ms_fourier(Th - Gh_used, g) > 0 else None)
         GA = gauge.gauge_piece_A(h, gauge.traceless(At), g)
         GAh = tt.tensor_rfft(GA)
         r["rms_GA"] = np.sqrt(ms_fourier(GAh, g))
         r["rms_TT_A_minus_GA"] = np.sqrt(ms_fourier(TA - GAh, g))
         r["rho_kin_corrected"] = 4.0 * ms_fourier(TA - GAh, g) / (64 * np.pi)
-        r["rho_grad_corrected"] = chib * float((kk2 * tt.power_tensor(Th - Gh, g)).sum()) / (64 * np.pi)
+        r["rho_grad_corrected"] = chib * float((kk2 * tt.power_tensor(Th - Gth, g)).sum()) / (64 * np.pi)
         pa = pol_amps(-2.0 * GAh, g)
         for K, (hp, hx) in pa.items():
             r[f"GA_{K}_plus"] = [float(hp.real), float(hp.imag)]       # in units of hdot = -2 A

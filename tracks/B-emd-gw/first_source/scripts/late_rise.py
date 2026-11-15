@@ -60,10 +60,14 @@ def one(path):
     G, parts = gauge.gauge_piece(h, g, return_parts=True)
     Gh = parts["G_hat"]
     del G, parts
+    Ax = h - gauge.nonTT_traceless(h, g)               # TT + homogeneous traceless part
+    Gth = Gh + tt.tensor_rfft(gauge.gauge_piece_A(h, Ax, g))
+    del Ax
     GA = gauge.gauge_piece_A(h, At, g)
     GAh = tt.tensor_rfft(GA)
     del GA
     P = {"TT": ms(Th, g), "nonTT": ms(Fh - Th, g), "G": ms(Gh, g), "TT_minus_G": ms(Th - Gh, g),
+         "Gtot": ms(Gth, g), "TT_minus_Gtot": ms(Th - Gth, g),
          "A_TT": ms(TA, g), "GA": ms(GAh, g), "A_TT_minus_GA": ms(TA - GAh, g)}
     kc, _, cnt, dk = tt._shell_sum(P["TT"], g)
     spec = {key: tt._shell_sum(v, g)[1].tolist() for key, v in P.items()}
@@ -73,6 +77,8 @@ def one(path):
     row = {"file": os.path.basename(path), "a": a, "H": H, "rho_bar": rho_bar,
            "rms_TT": float(np.sqrt(P["TT"].sum())), "rms_nonTT": float(np.sqrt(P["nonTT"].sum())),
            "rms_G": float(np.sqrt(P["G"].sum())), "rms_TT_minus_G": float(np.sqrt(P["TT_minus_G"].sum())),
+           "rms_Gtot": float(np.sqrt(P["Gtot"].sum())), "rms_TT_minus_Gtot": float(np.sqrt(P["TT_minus_Gtot"].sum())),
+           "k0_traceless_norm": float(np.sqrt((h.mean(axis=(-3, -2, -1)) ** 2).sum())),
            "rms_A_TT": float(np.sqrt(P["A_TT"].sum())), "rms_GA": float(np.sqrt(P["GA"].sum())),
            "rms_A_TT_minus_GA": float(np.sqrt(P["A_TT_minus_GA"].sum())),
            "rho_kin": c_kin * float(P["A_TT"].sum()), "rho_kin_corrected": c_kin * float(P["A_TT_minus_GA"].sum()),
@@ -80,7 +86,8 @@ def one(path):
            "rho_grad_corrected": c_grad * float((kk2 * P["TT_minus_G"]).sum()),
            "spectra": spec, "k": kc.tolist(), "counts": cnt.tolist(), "L": g.L[0], "n": g.n[0]}
     print(f"{path}: a = {a:.1f}, rms TT {row['rms_TT']:.3e}, G {row['rms_G']:.3e}, "
-          f"TT-G {row['rms_TT_minus_G']:.3e}, nonTT {row['rms_nonTT']:.3e}", flush=True)
+          f"TT-G {row['rms_TT_minus_G']:.3e}, Gtot {row['rms_Gtot']:.3e}, TT-Gtot {row['rms_TT_minus_Gtot']:.3e}, "
+          f"nonTT {row['rms_nonTT']:.3e}, h0 {row['k0_traceless_norm']:.3e}", flush=True)
     return row
 
 
@@ -115,6 +122,9 @@ def plot(res, out):
                      label=r"$\Lambda h-G$")
         ax[0].loglog(a[m], [r["rms_G"] for r in rows if r["a"] > 1.5], ":", color=c, lw=1.5,
                      label=r"$G$")
+        if "rms_Gtot" in rows[-1]:
+            ax[0].loglog(a[m], [r["rms_Gtot"] for r in rows if r["a"] > 1.5], "-.", color=c, lw=1.0,
+                         label=r"$G_{\rm tot}$")
         nt = np.array([r["rms_nonTT"] for r in rows if r["a"] > 1.5])
         ax[0].loglog(a[m], nt ** 2, color="grey", lw=1, alpha=0.6,
                      label=r"(rms non-TT)$^2$" if c == cols[0] else None)

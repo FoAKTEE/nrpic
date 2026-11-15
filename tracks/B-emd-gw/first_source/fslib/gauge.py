@@ -176,6 +176,18 @@ def gauge_piece_A(h, At, grid, pad=True):
     return G
 
 
+def gauge_piece_total(h, grid, pad=True):
+    """G_tot = G + G_x: the quadratic piece G plus the cross terms of xi with the part of
+    the target metric that the coordinates do not remove, h_T ~ Lambda h + h0 (the TT part
+    and the homogeneous traceless part h0 of the box, which no periodic xi can remove):
+        G_x = Lambda[M^T A + A M - (2/3)(tr M) A + (xi . grad) A],  A = Lambda h + h0.
+    The cross terms matter when h_T is not small against M; with h0 they were found
+    missing by the second-gauge run (JOURNAL.md, P6 at 32^3)."""
+    ht = traceless(h)
+    A = ht - nonTT_traceless(h, grid)                  # TT part + homogeneous traceless part
+    return gauge_piece(h, grid, pad=pad) + gauge_piece_A(h, A, grid, pad=pad)
+
+
 def nonTT_traceless(h, grid):
     """Traceless non-TT part of h (k != 0), real space."""
     hT = traceless(h)
