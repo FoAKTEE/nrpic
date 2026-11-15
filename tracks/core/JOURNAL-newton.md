@@ -498,3 +498,148 @@ core-20261115-115450-fee90ca, which is at cycle 418 of 1000): the card run compl
 core of the loaded machine); K, W, C, I_xx, d2I_xx agree to 1.2e-13 relative over the
 common 418 cycles, the number of V cycles is the same at every step, particle positions
 agree to 8.9e-16 and momenta to 1.8e-15 at t = 0.4. Card time 0.18 card-hours.
+
+### T9 Trial on a statically refined mesh (prediction)
+
+The point mass of T1 on the 64^3 root mesh with one level of static refinement over the
+eight root MeshBlocks around the origin (`problems/newton/isolated_smr.athinput`: 16^3
+MeshBlocks, fine cells of 1/32 inside |x_i| < 1, where the mass sits). The multigrid
+module, the deposit and the ghost exchange are written for refined meshes, but none of
+this has been run with particles as the source.
+Prediction, with low confidence: the run completes; tracers in the fine region have the
+error of the uniform 128^3 mesh at their distance from the mass (rms 1.3e-3 beyond
+r = 0.5), tracers in the coarse region (r > 1.2) that of the uniform 64^3 mesh (about
+2e-3 at these distances), with larger errors within a few cells of the level boundary
+at |x_i| = 1. Refuted by a crash, by a force error of order one anywhere, or by a
+self-force of the mass very different from that of a uniform 128^3 mesh.
+
+Outcome of T9 (run core-20261115-121732-dc623d1, 120 MeshBlocks, one step; solve
+converged in 25 V cycles to 5e-11; `tracks/core/analysis/newton/field_point_smr.json`)
+[VERIFIED], rms relative force error on the tracers of T1:
+| region | uniform 64^3 | uniform 128^3 | 64^3 + one level |
+|---|---|---|---|
+| r in [0.05, 0.25) | 2.86e-1 | 1.03e-1 | 1.03e-1 |
+| r in [0.25, 0.5) | 2.52e-2 | 6.19e-3 | 6.19e-3 |
+| r in [0.5, 0.8) | 7.62e-3 | 2.06e-3 | 2.06e-3 |
+| within 0.125 of the level boundary, r > 0.5 (142 tracers) | 2.2e-3 | 5.5e-4 | 1.13e-2 |
+| coarse region beyond 0.125 of the boundary (152 tracers) | 1.34e-3 | 3.9e-4 | 8.1e-4 |
+| largest error, r > 0.5 | 2.2e-2 | 6.1e-3 | 8.6e-2 |
+The self-force of the mass equals that of the uniform 128^3 mesh to the printed digits.
+The prediction held: fine-mesh accuracy inside, between the two uniform meshes outside,
+and a band of larger error at the level boundary (one per cent rms, up to nine per cent
+on single tracers within two coarse cells of it). No figure was made for this trial (a
+table of five bins); it is a first look, not a verification: no particle has crossed a
+level boundary in any run, and adaptive refinement was not tried.
+
+Outcome of T4b (run core-20261115-121455-c061b12, 175 s) [VERIFIED]: with the triangular
+cloud, the cloud compensation, two binomial passes and the compensating pass, the code
+agrees with the numpy scheme with the same options to 1.7e-15 rms (largest position
+difference 5.1e-15) at all 12 snapshots. Held. With these options the error against
+Zel'dovich at a = 2.25 is 1.5e-3 (5.6e-3 with the plain cloud-in-cell) and the
+Layzer-Irvine constant holds to 5.5e-5 before shell crossing (6.2e-4 plain).
+
+Outcome of R2 (card, Slurm job 4405, 25 s; report
+`scratch/core/regress/report_gpu_c061b12.json`; 15 registered runs
+core-20261115-122024-dc623d1 ... -122046-dc623d1) [VERIFIED]:
+| case | baseline against itself | baseline against new |
+|---|---|---|
+| geo | 2 files identical | 2 identical |
+| boris | 2 identical | 2 identical |
+| dep | history differs (largest relative difference 2.2e-16) | identical |
+| east | 10 of 12 files differ (positions at the last snapshot by 1.8e-15) | the same 10 differ (2.2e-15) |
+| os | 6 of 16 differ (history and restart files) | the same 6 differ |
+A card run with deposit does not reproduce itself byte for byte (the baseline differs
+from its own repeat at rounding level), so on a card "bit-identical" can be tested only
+for the two cases without deposit, where it holds. For the other three the difference
+between baseline and new is of the size of the difference between two baseline runs
+(east, last snapshot: positions 2.2e-15 against 1.8e-15, momenta 6.1e-15 against
+5.8e-15). The prediction held as worded (no file differs between baseline and new that
+agrees between the two baseline runs). What I had assumed and was wrong: that the card
+build is reproducible from run to run for these problems.
+
+Outcome of T4 (runs core-20261115-115706-fee90ca, N = 32, 107 s;
+core-20261115-115708-fee90ca, N = 64, 859 s; `tracks/core/analysis/newton/wave.json`,
+figure `wave.png` inspected: the particles lie on the Zel'dovich curve in phase space
+before shell crossing; the difference from the numpy scheme stays at 1e-15 through
+shell crossing) [VERIFIED]. Relative rms difference in x:
+| a | 1.27 | 2.25 | 3.52 | 4.0 (crossing) | 6.25 |
+|---|---|---|---|---|---|
+| code against Zel'dovich, N = 32 | 1.27e-3 | 5.64e-3 | 8.96e-3 | 1.06e-2 | (6.7e-2) |
+| code against Zel'dovich, N = 64 | 5.6e-4 | 2.06e-3 | 3.18e-3 | 3.57e-3 | (6.7e-2) |
+| `pm.py` against Zel'dovich, N = 32 / 64 | 1.20e-3 / 5.3e-4 | 5.07e-3 / 1.88e-3 | 8.25e-3 / 2.83e-3 | 1.01e-2 / 3.4e-3 | |
+| code against `pm.py`, N = 32 | 3.8e-4 | 2.16e-3 | 3.98e-3 | 4.86e-3 | 6.09e-3 |
+| code against `pm.py`, N = 64 | 1.9e-4 | 6.8e-4 | 1.19e-3 | 1.53e-3 | 1.95e-3 |
+| code against the numpy scheme, N = 32 | 6e-16 | 1.1e-15 | 1.2e-15 | 1.3e-15 | 9.7e-16 |
+| code against the numpy scheme, N = 64 | 1.6e-15 | 3.6e-15 | 5.3e-15 | 5.7e-15 | 6.5e-15 |
+1. Against Zel'dovich: FAILED in two details. The error at a = 2.25, N = 32 is 5.64e-3,
+   above my bound of 5e-3; and it falls by 2.7 from N = 32 to 64, not by the predicted
+   3 to 5 (order 1.45). At a = 3.5 it is 9.0e-3 (bound 2e-2: held). `pm.py` shows the
+   same errors and the same ratio (2.7), so this is common to both particle-mesh codes
+   with this particle load and not a property of the implementation here.
+2. Against `pm.py`: 3.98e-3 (N = 32) and 1.19e-3 (N = 64) at t = 1.75, ratio 3.3: held.
+3. Against the numpy scheme: at most 1.3e-15 (N = 32) and 6.5e-15 (N = 64) at all
+   snapshots, largest position difference 1.3e-14: held, by seven orders of magnitude.
+   The implementation is the scheme: cloud-in-cell deposit, seven-point Poisson solve
+   converged to rounding, periodic ghost cells across MeshBlocks, gradient of the
+   Catmull-Rom interpolant, kick-drift-kick with the exact drift integral.
+4. Layzer-Irvine: C constant to 6.2e-4 (N = 32) and 2.7e-4 (N = 64) of the largest
+   a |W| before shell crossing (bound 2e-3: held); 4.9e-3 and 1.5e-3 after it.
+5. Momentum: 1.9e-13 and 7.5e-13 of M H A/k (rounding of 600 steps): held.
+
+### T4c Why the error against Zel'dovich falls only by 2.7 (prediction)
+
+Two candidates. (H1) the particle lattice has the spacing of the mesh, so the deposit of
+the distorted lattice has aliasing errors whose amplitude does not fall with N, only
+their wavelength (first order in the force); (H2) a smooth second-order error plus an
+error that does not depend on the mesh at all (my split of the two numbers above would
+give 4.8e-3 dx^2-like and 0.9e-3 fixed at N = 32). Test: the N = 32 mesh with the 64^3
+particle file (eight particles per cell). H1 predicts a clear drop of the error at
+a = 2.25 below the 5.6e-3 of one particle per cell (to less than 3e-3); H2 predicts no
+change beyond ten per cent. The code must still agree with the numpy scheme to rounding.
+
+Outcome of T3c (runs core-20261115-121242-c061b12, step 0.002, 327 s;
+core-20261115-121244-c061b12, step 0.001, 672 s; cubic spline, four ghost cells)
+[VERIFIED]: the mismatch between the difference of dI and d2I is 3.29e-4 and 9.74e-5,
+a factor 3.37. Smaller than with Catmull-Rom at the same step (7.61e-4, 2.69e-4), as
+predicted, but the factor is below the predicted 3.5 to 4.5: FAILED as predicted, by a
+little. The kinks of the Catmull-Rom gradient account for part of the reduced order
+(1.5 -> 1.75) and not for all of it. A remaining candidate, not tested: the
+cloud-in-cell weights are continuous with kinks, so the potential at a cell has kinks
+in time whenever a particle crosses a cell face, whatever the interpolation.
+The mode runs with the second interpolation: deviation from the cycloid at t = 1.0
+-4.5e-3 (inner), +6.2e-3 (outer; Catmull-Rom +1.07e-2), energy 1.45e-3: the same size,
+as predicted.
+
+Outcome of R1 repeated for the final source (c061b12; report
+`scratch/core/regress/report_cpu_c061b12.json`, runs core-20261115-121314-c061b12 to
+core-20261115-121803-dc623d1): all 33 files identical to the build of `main`.
+
+### R3 The gas path of the gravity module (prediction)
+
+`MGGravityDriver::Solve` was split: its body is now `SolveDensity` with the source as
+an argument. Two stock gas problems with self-gravity (`jeans_wave`, 20 steps, periodic;
+`binary_gravity`, one step, four levels of static refinement, which exercises the
+octets), executable of `main` against c061b12, processor build.
+Prediction: every output file identical, and the result lines of the logs (defect norm
+after every V cycle, errors against the analytic solution) identical as text. Refuted by
+any difference: the split would then have changed the gas path.
+
+Outcome of R3 (report `scratch/core/regress/report_cpu_gas_c061b12.json`) [VERIFIED]:
+jeans (core-20261115-122504-dc623d1 against core-20261115-122512-dc623d1): the four
+binary output files and the 100-odd result lines of the log identical; binary
+(core-20261115-122520-dc623d1 against core-20261115-122609-dc623d1): the result lines of
+the log (defect norms of the full-multigrid solve and of 20 V cycles on the mesh with
+four levels, the four error norms against the analytic potential) identical. Held: the
+gas path is unchanged.
+Correction to the line counts just given: 280 result lines (jeans), 48 (binary). The
+stock binary problem compares a periodic solve with the isolated analytic potential, so
+its error norms are of order one in both executables; only their identity is used here.
+
+Outcome of T4c (run core-20261115-122313-dc623d1, N = 32 mesh with 64^3 particles;
+analysed from its first five snapshots, a <= 2.25, while it was still running;
+`scratch/core/newton/tmp/wave_ppc8_partial.json`) [VERIFIED]: error against Zel'dovich
+at a = 2.25 is 1.12e-3, against 5.64e-3 with one particle per cell: a factor five. H1
+held (below 3e-3), H2 is refuted (it predicted no change). The slow convergence of T4
+came from the particle lattice having the spacing of the mesh, not from the gravity
+solver; `pm.py` shows the same (1.32e-3 with eight per cell, 5.07e-3 with one). The code
+agrees with the numpy scheme to 8.2e-16 also with eight particles per cell.

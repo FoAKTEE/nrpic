@@ -74,6 +74,22 @@ def main():
         inputs.append({"path": os.path.abspath(exe), "sha256": sha256(exe),
                        "role": "executable"})
 
+    mdir = os.path.join(WORKTREE, "tracks", "core", "runs", run_id)
+    os.makedirs(mdir, exist_ok=True)
+
+    def write(man):
+        with open(os.path.join(mdir, "manifest.json"), "w") as f:
+            json.dump(man, f, indent=1)
+            f.write("\n")
+
+    # the manifest exists from the start, so that a run that is still going (or was
+    # stopped) when the session ends is on record
+    write({"run_id": run_id, "owner": "core", "command": cmd, "cwd": out,
+           "commit": commit, "source_modified_since_commit": bool(dirty),
+           "inputs": inputs, "output_directory": out, "purpose": a.purpose,
+           "kind": a.kind, "tag": a.tag, "state": "running", "cores": a.cores,
+           "card_hours": a.card_hours,
+           "started_utc": now.strftime("%Y-%m-%dT%H:%M:%SZ")})
     t0 = time.time()
     with open(os.path.join(out, "run.log"), "w") as log:
         proc = subprocess.run(cmd, cwd=out, stdout=log, stderr=subprocess.STDOUT)
@@ -91,17 +107,14 @@ def main():
         "purpose": a.purpose,
         "kind": a.kind,
         "tag": a.tag,
+        "state": "finished",
         "wall_time_s": round(wall, 2),
         "exit_status": proc.returncode,
         "cores": a.cores,
         "card_hours": a.card_hours,
         "started_utc": now.strftime("%Y-%m-%dT%H:%M:%SZ"),
     }
-    mdir = os.path.join(WORKTREE, "tracks", "core", "runs", run_id)
-    os.makedirs(mdir)
-    with open(os.path.join(mdir, "manifest.json"), "w") as f:
-        json.dump(man, f, indent=1)
-        f.write("\n")
+    write(man)
     print("exit %d, wall %.1f s, output %s" % (proc.returncode, wall, out))
     print(run_id)
     return proc.returncode

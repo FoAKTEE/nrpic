@@ -181,3 +181,152 @@ the lapse columns.
 
 The gas path of the gravity module is the former code with the source as an argument;
 it was not run here (no hydro regression), see section 6.
+
+## 5. Tests
+
+Predictions were written before each run and outcomes after it, including the failed
+ones: `tracks/core/JOURNAL-newton.md`. Run manifests: `tracks/core/runs/<run id>/`;
+outputs: `scratch/core/<run id>/`; numbers and figures: `tracks/core/analysis/newton/`
+(`*.json`, `*.png`); scripts: `problems/newton/` (README there), `tracks/core/tools/`.
+Units G = 1. All numbers [VERIFIED] with the run ids given; processor build unless a
+card is named.
+
+### 5.1 Relativistic runs are unchanged (regression)
+
+Five existing problems (Kerr geodesic with the midpoint and with the Boris pusher,
+deposit on a statically refined flat mesh, periodic cosmology with Z4c at 16^3,
+Oppenheimer-Snyder ball with Z4c on a refined mesh), executable built from `main`
+(b7b431d) against the executable of this branch (c061b12):
+
+- processor build: all 33 output files (histories, trajectories, snapshots, restart
+  files) identical byte for byte. Runs core-20261115-121314-c061b12 to
+  core-20261115-121803-dc623d1 (report `scratch/core/regress/report_cpu_c061b12.json`);
+  the same result for the first version, 728637a.
+- card build (Slurm job 4405): the two cases without deposit are identical. The three
+  with deposit do not reproduce themselves from run to run on a card (the baseline
+  differs from its own repeat at rounding level: positions 1.8e-15 at the last snapshot
+  of the cosmology case), so identity cannot be tested there; the difference between
+  baseline and new is of the same size (2.2e-15). Runs core-20261115-122024-dc623d1 to
+  core-20261115-122046-dc623d1.
+
+### 5.2 Field of a point mass (isolated domain)
+
+Unit mass, 2000 massless tracers, box [-2, 2]^3, cloud-in-cell, no filter; runs
+core-20261115-115136-9d84282 (N = 32), -115145- (64), -115155- (128); figure
+`field_point.png`.
+
+| | N = 32 | N = 64 | N = 128 | order |
+|---|---|---|---|---|
+| rms relative force error, 846 tracers with r >= 0.5 | 1.61e-2 | 4.94e-3 | 1.33e-3 | 1.70, 1.89 |
+| the same by distance: 8 to 16 cells | 5.9e-3 | 6.5e-3 | 6.2e-3 | follows (dx/r)^2 |
+| beyond 16 cells | | 1.7e-3 | 1.3e-3 | |
+| inside 2 cells | 0.57 | 0.37 | 0.23 | softened, anisotropic |
+| potential at 8 probes, rms relative error | 3.9e-3 | 9.4e-4 | 6.5e-4 | one probe not monotonic |
+
+A particle feels its own field: the force of the unit mass on itself is of order
+0.5 m/dx^2 (components up to 0.36, 0.58, 0.47 m/dx^2 at the three resolutions),
+reproduced to seven digits by an independent numpy model of "cloud-in-cell deposit,
+seven-point solve, gradient of the Catmull-Rom interpolant". It is a property of the
+scheme that the relativistic mode shares (deposit and gather kernels differ); it
+vanishes at a cell centre and for a regular lattice.
+
+### 5.3 Field of a homogeneous ball (isolated domain)
+
+Mass 1, radius 1, 1 099 136 lattice particles, 2000 tracers; runs
+core-20261115-115137-9d84282 (N = 32), -115146- (64), -115203- (128); figure
+`field_ball.png`. Reference: the homogeneous ball that the lattice samples (radius
+1.000324: the lattice has 0.097 per cent more points inside the unit sphere than its
+volume; against the nominal radius the error has a floor of 3.4e-4).
+
+| error in units of GM/R^2 | N = 32 | N = 64 | N = 128 | order |
+|---|---|---|---|---|
+| force, rms, away from the surface (\|r - R\| > 0.25) | 7.25e-4 | 1.83e-4 | 5.09e-5 | 1.99, 1.85 |
+| force, rms, in the shell \|r - R\| < dx | 2.23e-2 | 1.22e-2 | 6.4e-3 | 0.87, 0.93 |
+| force, largest over all tracers | 6.8e-2 | 3.6e-2 | 1.5e-2 | 0.94, 1.22 |
+| potential at 9 probes, largest relative error | 6.43e-3 | 1.60e-3 | 3.94e-4 | 2.01, 2.02 |
+
+Second order where the density is smooth, first order in the cell that holds the density
+jump (the cloud smears it).
+
+### 5.4 Cold collapse of a homogeneous ball from rest against the cycloid
+
+One particle per cell on the lattice of the cell centres, to t = 1.0 (0.90 free-fall
+times, where the ball has shrunk to 0.35 of its radius); runs
+core-20261115-115448-fee90ca (N = 64, 500 steps) and core-20261115-120028-fee90ca
+(N = 128, 1000 steps, card); figure `collapse.png`.
+
+| | N = 64 | N = 128 | ratio |
+|---|---|---|---|
+| mean of r/r_0 against the cycloid, t = 1.0 | +1.1e-4 | +9.0e-5 | (inner and outer cancel) |
+| particles with r_0 < 0.8, t = 1.0 | -4.5e-3 | -1.05e-3 | 4.3 |
+| particles with r_0 > 0.9, t = 1.0 | +1.07e-2 | +2.5e-3 | 4.3 |
+| energy K + W, largest relative change | 1.45e-3 | 3.9e-4 | 3.7 |
+| I_xx against the exact second moment, t = 1.0 | 7.0e-3 | 1.9e-3 | 3.8 |
+| d2I_xx/dt2, half free-fall time | -1.9e-3 | -5.2e-4 | 3.6 |
+| d3I_xx/dt3 (difference quotient), rms over the run | 8.6e-2 | 4.0e-2 | 2.2 |
+| d3I_xx/dt3 averaged over 0.1 free-fall times, half free-fall time | +7.8e-3 | +3.8e-4 | |
+
+The third derivative carries the fluctuation of the mesh force as the edge of the ball
+moves across cells (first order in dx); average it over the time scale of interest
+before squaring it in the quadrupole formula. The columns are consistent: the centred
+time difference of I reproduces dI to 4.0e-5 at dt = 0.002 and 1.0e-5 at dt = 0.001
+(factor 3.9); that of dI reproduces d2I to 7.6e-4 and 2.7e-4 (factor 2.8; see 5.9); d3I
+equals the difference quotient of d2I to rounding. Momentum and angular momentum stay at
+rounding level. With the mesh sum W_mesh instead of the particle sum the energy drifts
+by 1.6 per cent (N = 64): use column 6.
+
+### 5.5 Moving, rotating ball: conservation laws (no exact solution)
+
+N = 64, ball off centre with a uniform velocity and a rigid rotation, to t = 0.8; run
+core-20261115-120641-6bef558; figure `spin_N64.png`. Centre of mass off uniform motion
+by 1.8e-5 R; momentum changes by 2.5e-5 M sqrt(GM/R); angular momentum about the centre
+of mass by 4.3e-5 of its size; energy by 1.4e-4. All six components of the second
+moment: difference of I against dI below 4.9e-6, of dI against d2I below 2.1e-5.
+The scheme does not conserve momentum exactly (deposit and gather kernels differ).
+
+### 5.6 Plane wave in a periodic expanding box
+
+Amplitude 0.25 at a = 1 at the fundamental wavenumber, one particle per cell, shell
+crossing at a = 4, run to a = 6.25; runs core-20261115-115706-fee90ca (N = 32) and
+core-20261115-115708-fee90ca (N = 64); figure `wave.png`. Relative rms difference of
+the positions (in units of the rms displacement):
+
+| | N = 32 | N = 64 |
+|---|---|---|
+| against Zel'dovich, a = 2.25 / 3.52 | 5.6e-3 / 9.0e-3 | 2.1e-3 / 3.2e-3 |
+| `cosmo/newton/pm.py` against Zel'dovich, a = 2.25 / 3.52 | 5.1e-3 / 8.3e-3 | 1.9e-3 / 2.8e-3 |
+| against `cosmo/newton/pm.py` (same particle file, mesh, cloud, step), a = 3.52 / 6.25 | 4.0e-3 / 6.1e-3 | 1.2e-3 / 2.0e-3 |
+| against the scheme of the code in numpy, all 12 snapshots | <= 1.3e-15 | <= 6.5e-15 |
+| Layzer-Irvine constant, before / after shell crossing, of max a\|W\| | 6.2e-4 / 4.9e-3 | 2.7e-4 / 1.5e-3 |
+
+The difference from `pm.py` is the difference between the two discretisations (the
+seven-point Laplacian and the gradient of the Catmull-Rom interpolant here, spectral
+operators there) and falls with resolution (factor 3.3). The agreement with the numpy
+re-implementation of the scheme to rounding, through shell crossing, is the statement
+that the code does what section 3 says. With the options of the relativistic production
+runs (triangular cloud, cloud compensation 1/8, two binomial passes and the
+compensating pass; run core-20261115-121455-c061b12) the agreement with the numpy scheme
+with the same options is 1.7e-15, the error against Zel'dovich at a = 2.25 is 1.5e-3 and
+the Layzer-Irvine constant holds to 5.5e-5 before shell crossing.
+
+### 5.7 Restart
+
+Collapse (runs core-20261115-120109-fee90ca, continued core-20261115-120126-fee90ca) and
+plane wave with expansion (core-20261115-120135-fee90ca, continued
+core-20261115-120211-fee90ca): snapshots and both histories after the dump identical
+byte for byte. Without the state file (core-20261115-120249-fee90ca) the continuation
+differs at rounding level (7.8e-16 in position).
+
+### 5.8 Card, cost, solver tolerance
+
+Collapse at N = 128 (64 MeshBlocks of 32^3, 137 376 particles) on one A100: 0.65 s per
+step with 13 V cycles (run core-20261115-120028-fee90ca, 0.18 card-hours); the
+processor run of the same input (core-20261115-115450-fee90ca, one core of a loaded
+machine) takes about 5 s per step. The two agree to 1.2e-13 in the energy columns and
+to 8.9e-16 in the particle positions over the cycles compared (section 6), with the
+same number of V cycles at every step.
+With `threshold = 0` the solver runs to rounding: 13 to 19 V cycles per step. With
+`newton_mg_tol = 1e-6` (collapse at N = 32, runs core-20261115-121044-c061b12 and
+-121101-): 5.6 instead of 16.6 cycles, positions within 3.4e-9, energy error unchanged.
+Step limit `newton_cfl = 0.2` (core-20261115-121108-c061b12): 19 steps instead of 200,
+positions within 1.5e-4 of the radius.

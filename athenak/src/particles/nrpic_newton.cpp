@@ -658,8 +658,9 @@ void Particles::NrpicNewtonWriteHistory(Real time, int ncycle, bool header) {
                  "[15]=L_z [16]=X_x [17]=X_y [18]=X_z "
                  "[19]=I_xx [20]=I_xy [21]=I_xz [22]=I_yy [23]=I_yz [24]=I_zz "
                  "[25]=dI_xx [26]=dI_xy [27]=dI_xz [28]=dI_yy [29]=dI_yz [30]=dI_zz "
-                 "[31]=d2I_xx [32]=d2I_xy [33]=d2I_xz [34]=d2I_yy [35]=d2I_yz [36]=d2I_zz "
-                 "[37]=d3I_xx [38]=d3I_xy [39]=d3I_xz [40]=d3I_yy [41]=d3I_yz [42]=d3I_zz "
+                 "[31]=d2I_xx [32]=d2I_xy [33]=d2I_xz [34]=d2I_yy [35]=d2I_yz "
+                 "[36]=d2I_zz [37]=d3I_xx [38]=d3I_xy [39]=d3I_xz [40]=d3I_yy "
+                 "[41]=d3I_yz [42]=d3I_zz "
                  "[43]=time_d3I [44]=Phi_min [45]=Phi_max [46]=p_max [47]=g_max "
                  "[48]=mg_defect [49]=dt [50]=mg_cycles\n");
   }

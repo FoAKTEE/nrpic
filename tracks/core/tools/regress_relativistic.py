@@ -12,6 +12,12 @@ the commands in tracks/core/JOURNAL-newton.md):
   dep    10^4 particles on a statically refined mesh, flat metric on the mesh, deposit
   east   periodic cosmology with Z4c, deposit, filter and compensation, 16^3 (20 steps)
   os     Oppenheimer-Snyder ball with Z4c on a statically refined mesh    (3 steps)
+Two cases of the gas with self-gravity (the multigrid gravity module, whose entry point
+the Newtonian mode of the particles shares), not in the default list:
+  jeans  Jeans wave, periodic, uniform mesh                              (20 steps)
+  binary two homogeneous spheres on a mesh with four levels of refinement (1 step)
+For these the lines of the log that hold results (defect norms, errors against the
+analytic solution) are compared as well.
 Every run is registered (run_registered.py). The report lists, per case, the two run ids
 and the files that differ; exit status 0 only if no file differs.
 """
@@ -48,8 +54,19 @@ CASES = {
                      "particles/particle_file=%s.nrp" % OS,
                      "problem/comp0_file=%s.tab" % OS, "particles/snap_dt=0.05",
                      "output2/dt=0.1"]),
+    "jeans": dict(inp="athenak/inputs/tests/jeans_wave.athinput", files=[],
+                  args=["time/nlim=20", "gravity/show_defect=2"]),
+    "binary": dict(inp="athenak/inputs/tests/binary_gravity.athinput", files=[],
+                   args=["time/nlim=1"]),
 }
 SKIP = ("run.log",)
+LOGKEYS = ("defect", "Potential", "Acceleration", "Error", "L1", "norm")
+
+
+def log_results(path):
+    """Lines of a run log that hold results rather than timings."""
+    with open(path) as f:
+        return [ln for ln in f if any(k in ln for k in LOGKEYS) and "time" not in ln]
 
 
 def run(exe, case, label, cores, card):
@@ -89,6 +106,9 @@ def compare(ra, rb):
             same.append(n)
         else:
             differ.append(n)
+    la, lb = log_results(os.path.join(da, "run.log")), log_results(os.path.join(db, "run.log"))
+    if la or lb:
+        (same if la == lb else differ).append("run.log (%d result lines)" % len(la))
     return same, differ
 
 

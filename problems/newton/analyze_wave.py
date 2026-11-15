@@ -85,6 +85,8 @@ def main():
     ap.add_argument("--dt", type=float, default=0.005)
     ap.add_argument("--name", default="wave")
     ap.add_argument("--no-python", action="store_true")
+    ap.add_argument("--nmesh", type=int, default=0,
+                    help="cells per side of the run if not the particles per side")
     ap.add_argument("--shape", default="cic", choices=("cic", "tsc", "pcs"),
                     help="cloud of the run (<particles> deposit_shape)")
     ap.add_argument("--nfilter", type=int, default=0, help="<particles> nfilter")
@@ -99,7 +101,7 @@ def main():
     cols = [fs.PAL["red"], fs.PAL["yellow"], fs.PAL["green"]]
 
     fig, axs = plt.subplots(2, 3, figsize=(fs.FULL_WIDTH, 5.2))
-    fig.subplots_adjust(left=0.08, right=0.985, bottom=0.09, top=0.97, wspace=0.36,
+    fig.subplots_adjust(left=0.08, right=0.985, bottom=0.09, top=0.97, wspace=0.40,
                         hspace=0.27)
     res = {}
     for irun, spec in enumerate(a.run):
@@ -111,7 +113,7 @@ def main():
         ac = 1.0/amp
         col = cols[irun]
         snaps = sorted(glob.glob(os.path.join(rundir, "*.part.*.bin")))
-        nmesh = n       # one particle per cell in these tests
+        nmesh = a.nmesh if a.nmesh > 0 else n     # default: one particle per cell
         times, xs, ps = [], [], []
         for f in snaps:
             t, _, x, u, _, tag = nw.read_snapshot(f)
@@ -177,8 +179,8 @@ def main():
         # ---- figure
         if irun == len(a.run) - 1:
             ax = axs[0, 0]
-            sel = [i for i in range(len(times)) if abs(times[i] % 1.0) < 1e-6
-                   or abs(times[i] - 1.75) < 1e-6]
+            sel = [i for i in range(len(times))
+                   if abs(times[i] - round(times[i])) < 1e-6]
             cs = fs.series_colors(len(sel), "viridis")
             line = slice(0, n**3, n*n)                     # one particle per q_x
             qq = np.linspace(0.0, L, 400)
@@ -200,7 +202,7 @@ def main():
                 label="momentum")
         ax.set_yscale("log")
         ax.set_xlabel(r"$a$", labelpad=-1)
-        ax.set_ylabel("rms difference from Zel'dovich")
+        ax.set_ylabel("error against Zel'dovich")
         ax.legend(loc="lower right", fontsize=7)
         if not a.no_python:
             ax = axs[0, 2]
@@ -208,21 +210,22 @@ def main():
             ax.axvline(ac, **fs.MASK_LINE)
             ax.set_yscale("log")
             ax.set_xlabel(r"$a$", labelpad=-1)
-            ax.set_ylabel("rms difference, code - pm.py")
+            ax.set_ylabel("code - pm.py")
             ax.legend(loc="lower right", fontsize=7)
             ax = axs[1, 0]
             ax.plot(aa[1:], np.maximum(esc[1:], 1e-17), "o-", ms=3, color=col, label=label)
             ax.axvline(ac, **fs.MASK_LINE)
             ax.set_yscale("log")
             ax.set_xlabel(r"$a$", labelpad=-1)
-            ax.set_ylabel("rms difference, code - numpy scheme")
+            ax.set_ylabel("code - numpy scheme")
+            ax.set_ylim(1e-16, 1e-13)
             ax.legend(loc="lower right", fontsize=7)
         ax = axs[1, 1]
-        ax.plot(ah, li, "-", color=col, label=label)
+        ax.plot(ah, 1e3*li, "-", color=col, label=label)
         ax.axvline(ac, **fs.MASK_LINE)
         ax.axhline(0.0, **fs.MASK_LINE)
         ax.set_xlabel(r"$a$", labelpad=-1)
-        ax.set_ylabel(r"$(C-C_0)/\max a|W|$")
+        ax.set_ylabel(r"$(C-C_0)/\max a|W|$  [$10^{-3}$]")
         ax.legend(loc="lower left", fontsize=7)
         ax = axs[1, 2]
         ax.plot(ah, hst["K"]*ah, "-", color=col, label=label + r", $aK$")
