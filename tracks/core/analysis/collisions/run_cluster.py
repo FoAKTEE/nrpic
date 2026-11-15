@@ -50,6 +50,44 @@ def mass_radii(snap, fracs=(0.1, 0.5, 0.9)):
     return [float(r[int(f*len(r))]) for f in fracs]
 
 
+def make_figure(out, runs, hst, snaps, model):
+    """Central lapse, mass radii, cumulative collisions and the cumulative change of the
+    particle energy by the collision steps, for all runs."""
+    fs = common.style()
+    import matplotlib.pyplot as plt
+    fig, axs = plt.subplots(2, 2, figsize=(8.0, 5.0))
+    fig.subplots_adjust(left=0.09, right=0.985, bottom=0.09, top=0.97, wspace=0.27,
+                        hspace=0.24)
+    palette = [fs.PAL["red"], fs.PAL["yellow"], fs.PAL["green"], fs.PAL["orange"]]
+    cols = {"off": "k", "off2": "grey", "sigma0": fs.PAL["blue"]}
+    for name in runs:
+        if name not in cols:
+            cols[name] = palette[(len(cols) - 3) % len(palette)]
+    for name in runs:
+        h = hst[name]
+        ls = ":" if name in ("sigma0", "off2") else "-"
+        axs[0, 0].plot(h["time"], h["alpha_probe"], color=cols[name], ls=ls, lw=1.2,
+                       label=name)
+        tt = np.array([s["time"] for s in snaps[name]])
+        rr = np.array([mass_radii(s) for s in snaps[name]])
+        for j in range(3):
+            axs[0, 1].plot(tt, rr[:, j], color=cols[name], ls=ls, lw=1.2)
+        if name not in ("off", "off2"):
+            c = collide.read_history(os.path.join(out, name, "st.coll.hst"))
+            axs[1, 0].plot(c["time"], np.cumsum(c["n_coll"]), color=cols[name], ls=ls, lw=1.2)
+            axs[1, 1].plot(c["time"], np.cumsum(c["dE_particles"])/c["sum_MW_particles"][0],
+                           color=cols[name], ls=ls, lw=1.2)
+    axs[0, 0].axhline(model["alpha_c"], **fs.GUIDE)
+    axs[0, 0].set_ylabel("central lapse")
+    axs[0, 1].set_ylabel("radii of 10, 50, 90 percent of the rest mass")
+    axs[1, 0].set_ylabel("collisions (cumulative)")
+    axs[1, 1].set_ylabel(r"cumulative $\Delta(\Sigma MW)$ of the collision steps / $\Sigma MW$")
+    for ax in axs.ravel():
+        ax.set_xlabel(r"$t/M$")
+    axs[0, 0].legend(fontsize=8, ncol=2)
+    fig.savefig(os.path.join(out, "fig_cluster.png"), dpi=200)
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("out")
@@ -58,6 +96,10 @@ def main():
     ap.add_argument("--kn", default="30,3")
     ap.add_argument("--n", type=int, default=10000)
     ap.add_argument("--snap-dt", type=float, default=10.0)
+    ap.add_argument("--factors", default="4",
+                    help="coll_cell_factor of the collisional runs, comma separated")
+    ap.add_argument("--skip-null", action="store_true",
+                    help="do not run the repeated baseline and the run with sigma = 0")
     args = ap.parse_args()
     out = os.path.abspath(args.out)
     os.makedirs(out, exist_ok=True)
@@ -79,17 +121,23 @@ def main():
     with open(deck_coll, "w") as fp:
         fp.write(text.replace(anchor, anchor + coll_block)
                  .replace(job, job + "rng_seed  = 4242\n"))
+    factors = [int(f) for f in args.factors.split(",") if f]
     base = [f"particles/particle_file={os.path.join(ic, 'st.nrp')}",
             f"problem/comp0_file={os.path.join(ic, 'st.tab')}", f"time/tlim={args.tlim}",
             f"particles/snap_dt={args.snap_dt}"]
     # "off2" repeats "off": on a card the deposit adds with atomic operations in an
     # order that changes from run to run, so two runs of the same input differ at
     # rounding level; the null run "sigma0" is judged against that difference
-    runs = {"off": (DECK, base), "off2": (DECK, base), "sigma0": (deck_coll, base)}
+    runs = {"off": (DECK, base)}
+    if not args.skip_null:
+        runs.update({"off2": (DECK, base), "sigma0": (deck_coll, base)})
     sig = {}
     for kn in kns:
         sig[kn] = 1.0/(rho0_c*radius*kn)
-        runs[f"kn{kn:g}"] = (deck_coll, base + [f"particles/coll_sigma={sig[kn]!r}"])
+        for f in factors:
+            name = f"kn{kn:g}" if f == 4 else f"kn{kn:g}_f{f}"
+            runs[name] = (deck_coll, base + [f"particles/coll_sigma={sig[kn]!r}",
+                                             f"particles/coll_cell_factor={f}"])
     summary = {"model": {k: model[k] for k in ("yc", "M0", "R_areal", "rho0_c", "alpha_c")},
                "tlim": args.tlim, "n": args.n, "sigma": {f"kn{k:g}": v for k, v in sig.items()},
                "exe": args.exe, "exe_sha256": common.sha256(args.exe), "runs": {}}
@@ -153,12 +201,29 @@ def main():
                      dE_particles_sum_rel=float(c["dE_particles"].sum()/c["sum_MW_particles"][0]),
                      dE_particles_abs_sum_rel=float(np.abs(c["dE_particles"]).sum()
                                                     / c["sum_MW_particles"][0]),
+                     dE_particles_per_collision=float(
+                         c["dE_particles"].sum()/c["sum_MW_particles"][0]
+                         / max(c["n_coll"].sum(), 1.0)),
                      energy_hist_vs_coll_hist=float(np.max(np.abs(
                          c["sum_MW_particles"] - h["sum_mW"][1:len(c["time"]) + 1])
                          / h["sum_mW"][0])) if len(h["time"]) > len(c["time"]) else None,
                      count_z=float((c["n_coll"].sum() - c["sum_P"].sum())
                                    / np.sqrt(max(c["sum_P"].sum(), 1e-300)))
                      if c["sum_P"].sum() > 0 else 0.0)
+    if args.skip_null:
+        good = True
+        for name, r in summary["runs"].items():
+            good = good and r["rest_mass_identical"] and r["n_excised"] == 0 \
+                and r["n_escaped"] == 0 and r["deposit_identity"] < 1e-12
+            if name.startswith("kn"):
+                good = good and r["pair_dE_eps"] < 8.0 and r["n_trunc"] == 0 \
+                    and r["n_bad_cells"] == 0 and abs(r["count_z"]) < 4.0
+        summary["ok"] = bool(ok and good)
+        with open(os.path.join(out, "summary.json"), "w") as fp:
+            json.dump(summary, fp, indent=1)
+        print(json.dumps(summary, indent=1))
+        make_figure(out, runs, hst, snaps, model)
+        sys.exit(0 if summary["ok"] else 1)
     # null: operator on with zero cross-section against operator absent
     s_off = common.snapshots(os.path.join(out, "off"), "st")
     s_sig = common.snapshots(os.path.join(out, "sigma0"), "st")
@@ -199,36 +264,7 @@ def main():
         json.dump(summary, fp, indent=1)
     print(json.dumps(summary, indent=1))
 
-    fs = common.style()
-    import matplotlib.pyplot as plt
-    fig, axs = plt.subplots(2, 2, figsize=(8.0, 5.0))
-    fig.subplots_adjust(left=0.09, right=0.985, bottom=0.09, top=0.97, wspace=0.27,
-                        hspace=0.24)
-    cols = dict(zip(runs, ["k", "grey", fs.PAL["blue"], fs.PAL["red"], fs.PAL["yellow"],
-                           fs.PAL["green"]]))
-    for name in runs:
-        h = hst[name]
-        ls = ":" if name in ("sigma0", "off2") else "-"
-        axs[0, 0].plot(h["time"], h["alpha_probe"], color=cols[name], ls=ls, lw=1.2,
-                       label=name)
-        tt = np.array([s["time"] for s in snaps[name]])
-        rr = np.array([mass_radii(s) for s in snaps[name]])
-        for j in range(3):
-            axs[0, 1].plot(tt, rr[:, j], color=cols[name], ls=ls, lw=1.2)
-        if name not in ("off", "off2"):
-            c = collide.read_history(os.path.join(out, name, "st.coll.hst"))
-            axs[1, 0].plot(c["time"], np.cumsum(c["n_coll"]), color=cols[name], ls=ls, lw=1.2)
-            axs[1, 1].plot(c["time"], np.cumsum(c["dE_particles"])/c["sum_MW_particles"][0],
-                           color=cols[name], ls=ls, lw=1.2)
-    axs[0, 0].axhline(model["alpha_c"], **fs.GUIDE)
-    axs[0, 0].set_ylabel("central lapse")
-    axs[0, 1].set_ylabel("radii of 10, 50, 90 percent of the rest mass")
-    axs[1, 0].set_ylabel("collisions (cumulative)")
-    axs[1, 1].set_ylabel(r"cumulative $\Delta(\Sigma MW)$ of the collision steps / $\Sigma MW$")
-    for ax in axs.ravel():
-        ax.set_xlabel(r"$t/M$")
-    axs[0, 0].legend(fontsize=8, ncol=2)
-    fig.savefig(os.path.join(out, "fig_cluster.png"), dpi=200)
+    make_figure(out, runs, hst, snaps, model)
     sys.exit(0 if summary["ok"] else 1)
 
 

@@ -569,3 +569,59 @@ collisions per particle. Figure `fig_curved_box.png` looked at (card run).
 The first processor run of this driver (core-20261115-135349-1134b04) stopped in the
 analysis because the flat reference run had failed: the box deck did not contain
 `coll_budget`, which the driver sets on the command line (fixed in the deck).
+
+## 2026-11-15 16:05 UTC  outcome P1 (final), P11; a systematic energy gain found
+
+### P1 with the final source
+
+Runs core-20261115-140120-7a0efc0 (source of the test runs) and
+core-20261115-140938-0f9d0cf (final source, which differs from it by three wrapped
+lines in `nrpic_collide.cpp`): all 36 files of the five set-ups byte-identical to the
+baseline. With the final executable the reproducibility test was repeated (run
+core-20261115-140950-0f9d0cf): passed, and every snapshot of its nine run variants is
+byte-identical to that of the earlier build (run core-20261115-133912-f104754), so the
+collisional results obtained with the earlier builds since the change of the sub-step
+rule hold for the final source.
+
+### P11: runs core-20261115-135728-18d4555 (processor, 2 steps), core-20261115-140316-8742cdf (card, 150 M)
+
+Figure `fig_cluster.png` looked at.
+- Null on the processor (two steps of the full problem: Z4c, six refinement levels,
+  deposit): operator on with sigma = 0 gives byte-identical snapshots and particle
+  history to operator absent. Passed.
+- Null on the card: the baseline repeated differs from itself (central lapse by 9.8e-15
+  over the run, positions at t = 150 M by 3.7e-13), as the card regression suggested; the
+  run with sigma = 0 differs from the baseline by 8.3e-15 and 3.0e-13. Passed in the
+  restated form.
+- Kn = 30 (sigma = 6.753, collision cells of 4^3 mesh cells = 2 M, 19 particles per
+  occupied cell, largest cell size over mean free path 0.012): 470 collisions in 1200
+  steps (sum_P = 461.3, z = +0.4), 0.094 momentum updates per particle. Central lapse
+  within 0.0024 of the collisionless run at all times (ranges 0.8080 to 0.8147 against
+  0.8094 to 0.8159); radii of 10, 50, 90 percent of the rest mass within 2.3 percent at
+  all snapshots; no particle lost, rest mass identical to the bit, deposit identity
+  1.0e-15. Passed by the criteria written before the run (0.017 and 10 percent). Looking
+  at the figure, the difference is not noise: from t = 25 M on the lapse of the
+  collisional run lies below the collisionless one, the sign of the Kn = 3 run.
+- Kn = 3 (sigma = 67.53): 5001 collisions (sum_P = 5037, z = -0.5), one update per
+  particle. Central lapse falls to 0.7914 at t = 150 M; the 10 percent radius shrinks
+  from 3.13 to 2.59, the 90 percent radius grows from 8.03 to 8.70. Observation only:
+  collisions change the structure within five dynamical times at this Knudsen number;
+  nothing here says whether the rate of that change is right.
+- Energy. Pair energies in the cell frame: conserved to rounding (mean defect 1.2 eps of
+  the pair energy, sum over the run 1.8e-19 of sum M W). Energy with the metric at each
+  particle (the history's sum_mW; its record in `coll.hst` agrees with `nrpic.hst` to
+  4e-16): the collision steps change it by +3.9e-6 of its value at Kn = 30 and +5.2e-5
+  at Kn = 3 over the run, below my bound of 1e-4, but it is a steady gain, proportional
+  to the number of collisions: 8.3e-9 and 1.05e-8 of sum M W per collision, about 5e-5
+  of a pair's energy. My design note said "random sign". That was wrong.
+  Explanation to be tested: the two particles of a pair sit at different depths of the
+  potential inside one collision cell. The collision conserves the energy measured
+  with the metric of the cell centre, and on average moves kinetic energy from the
+  deeper (faster) particle to the shallower one without the potential difference being
+  paid: Delta(sum M W) ~ +(grad psi . Delta x)^2 x (kinetic energy), second order in the
+  cell size and always positive.
+  Prediction, written before the run (card, part D): at Kn = 3 with collision cells of
+  2^3 and 1^3 mesh cells the gain per collision is 1/4 and 1/16 of that with 4^3
+  (2.6e-9 and 6.6e-10 of sum M W), within 40 percent; the number of collisions is
+  unchanged within 4 sigma. If the gain does not fall with the cell size, the
+  explanation is wrong.

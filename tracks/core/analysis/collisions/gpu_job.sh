@@ -6,6 +6,7 @@
 #   part A  regression (option absent), rate, relaxation
 #   part B  reproducibility (layouts, restart), convergence in the time step
 #   part C  homogeneous curved metric, relativistic cluster with and without collisions
+#   part D  the cluster at Knudsen number 3 with smaller collision cells
 # The node has four cores in all: a job that asks for all four keeps the second card
 # idle, so ask for two.
 # Each test is a registered run (runreg.py --card); its card time is its wall time
@@ -55,5 +56,11 @@ if [[ $PART == C ]]; then
     --purpose "P11 on one A100: stable relativistic cluster y_c = 0.819 with and without collisions at large Knudsen number" \
     --input "$EXE" --input $C/run_cluster.py -- \
     python3 "{repo}/$C/run_cluster.py" "{out}" --exe "$EXE"
+fi
+if [[ $PART == D ]]; then
+  python3 $R/runreg.py --card --kind production \
+    --purpose "P11 follow-up on one A100: the cluster at Knudsen number 3 with collision cells of 2^3 and 1^3 mesh cells (size of the spurious energy gain of the collision steps against the cell size)" \
+    --input "$EXE" --input $C/run_cluster.py -- \
+    python3 "{repo}/$C/run_cluster.py" "{out}" --exe "$EXE" --kn 3 --factors 2,1 --skip-null
 fi
 echo "gpu_job part $PART finished"
