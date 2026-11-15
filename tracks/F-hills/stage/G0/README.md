@@ -8,6 +8,7 @@ The G0 stage package of F-hills, and in it the second check of wave 2.
 |---|---|---|
 | `SCOPING.md`, `EVIDENCE.md`, `OPEN.md` | lead, wave 1 | G0 scoping, evidence, open items |
 | `checks/` | lead, wave 1 | lead's checks V4-V7 (`lead_checks.py`, summaries, figures) |
+| `CHECKLIST.md`, `STAGE_REPORT.md` | another helper, wave 2 (`nrpic-stage collect`, `report`) | stage-check documents; not written by this package |
 | `SECOND_CHECK.md` | helper, wave 2 | second check of the novelty verdict and of the q = 10 baseline disagreement (results, tests, requests) |
 | `JOURNAL.md` | helper, wave 2 | predictions before each run and outcomes after (entries 1-4) |
 | `README.md` | helper, wave 2 | this file |
