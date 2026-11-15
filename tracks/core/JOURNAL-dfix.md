@@ -283,3 +283,6 @@ Predictions (written before the run):
 - expand_phys (softening 0.1/a): distance to its own ODE solution below 1e-3.
 Refuted if an orbit leaves its exact curve beyond the bound (wrong force law, wrong G,
 wrong softening rule, wrong time level of the background term) or if a count differs.
+
+Run core-20261115-160746-19e3afe stopped at once: the two new inputs had no `<problem>`
+block (`pgen_name = nrpic_newton`); nothing was computed. Added, rerun.

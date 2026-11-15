@@ -85,3 +85,6 @@ acc_nsphere    = 1
 acc_radius1    = 1.0
 peri_count     = true
 acc_dcycle     = 10
+
+<problem>
+pgen_name = nrpic_newton   # particles only; nothing is set on the mesh
