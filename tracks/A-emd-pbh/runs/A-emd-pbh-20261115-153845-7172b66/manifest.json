@@ -1,0 +1,97 @@
+{
+  "schema": "nrpic-run/1 (by hand)",
+  "registered_by": "tracks/A-emd-pbh/runs_ball/runreg.py",
+  "harness_refusal": "nrpic-run submit: the worktree is not clean (untracked files of other helpers)",
+  "run_id": "A-emd-pbh-20261115-153845-7172b66",
+  "track": "A-emd-pbh",
+  "gate": "G2",
+  "kind": "scouting",
+  "purpose": "SR-2 (conformal-time lapse + Gamma-driver) of data set 2t, dx = M/2, t = 0 -> 53; release core-v0.3 card executable",
+  "launcher": "batch",
+  "command": [
+    "scripts/gpu_batch.sh",
+    "/data/haiyangw/nrpic/scratch/A-emd-pbh/A-emd-pbh-20261115-153845-7172b66/batch.list"
+  ],
+  "cwd": "/data/haiyangw/nrpic/scratch/A-emd-pbh/A-emd-pbh-20261115-153845-7172b66",
+  "git": {
+    "sha": "7172b6642e132ade0825a2d8564a3f3906f9ec7c",
+    "branch": "track/A-emd-pbh",
+    "package_dirty": false
+  },
+  "inputs": [
+    {
+      "path": "tracks/A-emd-pbh/runs_ball/sr2.athinput",
+      "role": "input",
+      "sha256": "921c94f3a21db04c5cc45402a3bb7800307d7734fdbd49fc38212e1e1b28365e",
+      "bytes": 3558
+    },
+    {
+      "path": "/data/haiyangw/nrpic/scratch/A-emd-pbh/A-emd-pbh-20261115-153719-91b03d1/expball_smooth_tophat_HRb0p5_dc1_R10p3_R20p75_w0p1875_lat38_track.nrp",
+      "role": "input",
+      "sha256": "ff9ef69a5033c6b853e222fa14858a18152defdf3715a29e4deaabbad951ec06",
+      "bytes": 1726096
+    },
+    {
+      "path": "/data/haiyangw/nrpic/scratch/A-emd-pbh/A-emd-pbh-20261115-130609-947c898/expball_smooth_tophat_HRb0p5_dc1_R10p3_R20p75_w0p1875.tab",
+      "role": "input",
+      "sha256": "d741f2dcf6887f4ff9809ae57376c3742d52cfb281bf87880afb686531d4af83",
+      "bytes": 880115
+    },
+    {
+      "path": "/data/haiyangw/nrpic/.work/build_gpu_v03/src/athena",
+      "role": "exe",
+      "sha256": "f9f2dc1273a19e7f78f89bebfd88d9eef6487de5c94aebba77b6fd35dc1be3a1",
+      "bytes": 102258912
+    },
+    {
+      "path": "/data/haiyangw/nrpic/scratch/A-emd-pbh/A-emd-pbh-20261115-153845-7172b66/batch.list",
+      "role": "list",
+      "sha256": "21b85f77e835b5bea56deb776c81368c7ae4dfc2764b5d45e30f5589fa80bc03",
+      "bytes": 345
+    },
+    {
+      "path": "/data/haiyangw/nrpic/wt/A-emd-pbh/tracks/A-emd-pbh/runs_ball/sr2.athinput",
+      "role": "athinput:sr2",
+      "sha256": "921c94f3a21db04c5cc45402a3bb7800307d7734fdbd49fc38212e1e1b28365e",
+      "bytes": 3558
+    }
+  ],
+  "parents": [
+    "A-emd-pbh-20261115-153719-91b03d1"
+  ],
+  "resources": {
+    "cores": 1,
+    "gpus": 1,
+    "wall_limit": "00:40:00",
+    "walltime_s": null,
+    "gpu_hours": null
+  },
+  "outputs": {
+    "dir": "scratch/A-emd-pbh/A-emd-pbh-20261115-153845-7172b66",
+    "sha256sums": "sha256sums.txt"
+  },
+  "status": "submitted",
+  "exit_code": null,
+  "registered": "2026-11-15T15:38:45Z",
+  "started": "2026-11-15T15:38:46Z",
+  "ended": null,
+  "notes": "",
+  "batch_entries": [
+    {
+      "name": "sr2",
+      "input": "/data/haiyangw/nrpic/wt/A-emd-pbh/tracks/A-emd-pbh/runs_ball/sr2.athinput",
+      "args": [
+        "particles/particle_file=/data/haiyangw/nrpic/scratch/A-emd-pbh/A-emd-pbh-20261115-153719-91b03d1/expball_smooth_tophat_HRb0p5_dc1_R10p3_R20p75_w0p1875_lat38_track.nrp",
+        "particles/traj_ntrack=1705"
+      ]
+    }
+  ],
+  "slurm": {
+    "partition": "preempt",
+    "job_ids": [
+      "4437"
+    ],
+    "submit_stdout": "submitted job 4437 for 1 runs",
+    "submit_rc": 0
+  }
+}
