@@ -381,7 +381,7 @@ def fig_selfsim(ss, out):
     axs[0].axhline(Fode, **fs.GUIDE, label=r"ODE, $F_C$")
     axs[0].set_xlabel(r"$\alpha$")
     axs[0].set_ylabel(r"$E(t_{\rm turn}\to t_x)\,/\,[M c^2 (2\alpha)^{7/2}]$")
-    axs[0].legend(loc="center right", fontsize=8)
+    axs[0].legend(loc="center right", bbox_to_anchor=(0.99, 0.70), fontsize=8)
     axs[1].set_xlabel(r"$t / t_{\rm turn}$")
     axs[1].set_ylabel(r"$\dddot Q_{xx}\,(2\alpha)^{-5/2}$, averaged")
     axs[1].text(0.04, 0.9, "all alpha of one N overlap", transform=axs[1].transAxes,

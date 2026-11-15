@@ -302,3 +302,59 @@ outputs (the registered analysis below repeats them):
 - H1c at n = 64: mean signed d3I error 0.31 %, 0.40 %, 0.71 % (bands 2-5, 5-10, 10-15)
   against 0.17 %, 0.28 %, 0.36 % from H1; both fall by four from n = 32. H1 carries half
   to three quarters of the jerk error at every resolution; the rest is also second order.
+
+## 2026-11-15 17:50 UTC: registered analyses B-20261115-173904-a7297e3 (pancakes) and B-20261115-174251-3698196 (ellipsoid)
+
+B-20261115-173904-a7297e3 supersedes B-20261115-170156-2d69627 (adds n = 64, moves a
+legend); every pancake number above is reproduced by it. The ellipsoid analysis drops one
+record per run: the driver ends on tlim with a remainder step of 2.4e-13, and the d3I
+difference quotient of that record is rounding over the step (d3I_xy = -1.2e-4 at
+N = 128 while d2I_xy is 1e-15); seen in the debug pass, fixed before the registered run.
+
+N1 outcomes (model C ODE: x crossing 23.8524 t_k, E(t_turn -> t_x) = 4.9135e-4 M c^2):
+
+| N | t_x / t_k | t_x error | E raw / M c^2 | raw vs ODE | averaged vs ODE | averaged vs averaged ODE |
+|---|---|---|---|---|---|---|
+| 32 | 24.0659 | +0.90 % | 3.222e-4 | -34.4 % | -34.7 % | -29.8 % |
+| 64 | 23.8955 | +0.18 % | 4.008e-4 | -18.4 % | -19.3 % | -13.2 % |
+| 128 | 23.8604 | +0.034 % | 4.437e-4 | -9.7 % | -11.7 % | -5.0 % |
+| Richardson | 23.8513 (order 2.3) | -0.005 % | 4.950e-4 (order 0.88) | +0.7 % | | |
+
+- N1a **passed**: t_x later than the ODE by 0.90, 0.18, 0.034 % (bounds 2, 1, 0.5 %),
+  monotone, observed order 2.3.
+- N1b **passed**: at N = 64, Q_ii within 8.3e-4 of max|Q| and Q''_ii within 6.9e-3 of
+  max|Q''| of the equivalent-ellipsoid ODE for t <= t_x - 1 (N = 128: 1.8e-4, 1.6e-3).
+- N1c **passed**: Q''' averaged over 0.05 t_turn within 3.1 % of max|Q'''| of the ODE
+  averaged the same way (N = 64; N = 128: 2.3 %); raw difference quotient rms 1.1 %
+  (N = 64) and 0.9 % (N = 128).
+- N1d **failed as stated** (the bound at N = 128): the averaged energy against the exact
+  ODE is 11.7 % low at N = 128 (bound 10 %); its fall per doubling is 1.80 and 1.65
+  (bound 1.5: passes). Measured afterwards: the averaging window alone lowers the ODE
+  energy by 7.0 % (4.569e-4 against 4.914e-4 M c^2), because Q''' changes fastest at the
+  crossing; the fair comparisons are raw against the exact ODE (-9.7 % at N = 128) and
+  averaged against the averaged ODE (-5.0 %). The raw energy is above the averaged one
+  at every N, as predicted. First-order convergence (observed 0.88 to 1.0): the energy
+  missing near the crossing comes from the time during which R_x is a few cells
+  [JUDGEMENT]; the Richardson value of the raw energy is 4.95e-4 M c^2, +0.7 % from the
+  ODE. Up to one t_k before the ODE crossing (where R_x > 0.48), the averaged energy is
+  within 10.2, 1.5, 0.27 % of the averaged ODE (second order and better).
+- N1e **failed as stated**: K + W changes by 5.3e-3, 3.3e-3, 1.9e-3 of |W| up to t_x
+  (bound 1e-3); up to t_x - 1 by 8.7e-4, 2.3e-4, 5.3e-5. Momentum and centre of mass
+  stay at 1e-15 (the configuration is reflection-symmetric); the off-diagonal Q, Q', Q''
+  stay below 2e-15 of the diagonal and Q''' below 5e-13.
+- N1f **passed**: step 0.01 against 0.02 at N = 64: t_x within 2.1e-7, raw E within
+  8.3e-5, averaged E within 6.8e-4.
+- The particle runs reproduce what BASELINE.md T4 found semi-analytically: the energy to
+  the first crossing is 6 to 9 times the Zel'dovich estimate on [t_turn, t_col]
+  (5.15e-5 M c^2), approaching the ODE's factor 9.5 with resolution.
+
+N3 outcomes: E/(M c^2 (2 alpha)^3.5) for alpha = 0.05, 0.1, 0.11122237, 0.2:
+N = 32: 0.0617869 (averaged), 0.0620591 (raw), spread 5.8e-15 and 7.3e-15;
+N = 64: 0.0763748, 0.0772053, spread 1.9e-14 and 3.1e-14; t_x/t_turn 2.524849 and
+2.506970, spread 2.7e-15. N3a **passed** (bound 1e-8). N3b **passed**: the values equal
+those of N1 at the same N; with N = 128 (raw 0.0855) and the Richardson value (0.0954)
+they approach F_C = 0.09465. The (2 alpha)^(7/2) law of 2403.15126 holds in the code for
+the single patch to rounding, as an exact symmetry of the discrete problem.
+
+Not done: N2 (embedded ellipsoid; needs the species history, entry of 16:30); the
+ellipsoid with the background term (models A, B) in any form; any run on a refined mesh.
