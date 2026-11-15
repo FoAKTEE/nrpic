@@ -135,14 +135,17 @@ def cmd_fetch_missing(a):
     the process id stays the same and there is exactly one download process."""
     lay = layout(a.data_root)
     inv = _inv.verify(lay, a.manifests or kb_manifest_dir())
-    ids = _inv.missing_ids(inv, priority=a.priority, include_failed=not a.skip_failed)
+    ids = []                                   # priorities in the order given (brief 17: 3, then 2, then 1)
+    for pri in a.priority:
+        ids += [i for i in _inv.missing_ids(inv, priority=pri, include_failed=not a.skip_failed) if i not in ids]
     if a.limit:
         ids = ids[:a.limit]
     if a.ids_file:
         os.makedirs(os.path.dirname(os.path.abspath(a.ids_file)), exist_ok=True)
         _atomic_write(a.ids_file, "".join(i + "\n" for i in ids))
     stamp = time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())
-    print(f"# kb fetch-missing {stamp} pid {os.getpid()}: {len(ids)} ids of priority {a.priority}: {' '.join(ids)}",
+    print(f"# kb fetch-missing {stamp} pid {os.getpid()}: {len(ids)} ids of priority "
+          f"{' then '.join(map(str, a.priority))}: {' '.join(ids)}",
           flush=True)
     if a.dry_run or not ids:
         return 0
@@ -279,7 +282,8 @@ def parser():
     s.set_defaults(fn=cmd_verify)
 
     s = sub.add_parser("fetch-missing", help="fetch missing manifest entries through harness/bin/nrpic-fetch-arxiv")
-    s.add_argument("--priority", type=int, choices=(1, 2, 3), required=True)
+    s.add_argument("--priority", type=int, choices=(1, 2, 3), required=True, nargs="+",
+                   help="one or more priorities, fetched in the order given (e.g. 3 2 1)")
     s.add_argument("--dry-run", action="store_true")
     s.add_argument("--skip-failed", action="store_true", help="do not retry entries whose last attempt failed")
     s.add_argument("--limit", type=int)

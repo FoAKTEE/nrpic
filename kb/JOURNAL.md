@@ -133,3 +133,25 @@ D1 `kb fetch-missing --priority 3` hands the 33 missing priority-3 ids to one pr
   a sanctioned download path (README, Request 2).
 - Repositories: none downloaded; which ones and how is Request 4 (decision 0010).
 - `kb watch upstream` and the AthenaK branch-tip record: stub.
+
+## 2026-11-15 12:45 UTC  K2-K3 helper (papers: download, TeX, bibliography)
+
+### Starting state (12:42 UTC)
+
+- No download process running (no process with nrpic-fetch-arxiv or fetch-missing in its
+  command line, `ps -eo pid,args`). Store: 103 records in `kb-data/meta/arxiv`, all status ok;
+  of the 684 manifest ids, priority 3: 47 of 47 present, priority 2: 21 of 160, priority 1:
+  17 of 477 (other sessions added entries since K1) [VERIFIED: script over the records, 12:43].
+- `kb fetch-missing --priority` now takes several priorities in the order given (one id list,
+  one exec of the fetch command, so still one process). Dry run: 599 ids, priority 2 first.
+
+### Prediction D2 (before the priority 2+1 download starts)
+
+D2 One detached process (`kb fetch-missing --priority 3 2 1`, exec into
+   `python3 -I harness/bin/nrpic-fetch-arxiv <599 ids>`) fetches the 139 missing priority-2
+   ids and then the 460 missing priority-1 ids, sequentially. Expected at about 5 s per paper
+   (K1: 166.7 s for 33) a wall time of 50 to 90 min unless other sessions hold the arXiv lock;
+   at least 97 % of ids end with status ok; failures are a few ids withdrawn or without
+   source (HTTP 403/404) or PDF-only. Refuted if more than 3 % fail, if two download
+   processes of mine run at once, or if any stored record has a kind other than tar,
+   single-file or pdf.
