@@ -255,7 +255,7 @@ class SurvivalPDE:
         out = []
         for j in np.atleast_1d(J):
             g = self.surv * np.exp(-j * self.N)
-            I = np.trapz(g, self.N)
+            I = np.trapezoid(g, self.N)
             if lam_tail is not None:
                 I += g[-1] / (lam_tail + j)
             out.append(1 - j * I)

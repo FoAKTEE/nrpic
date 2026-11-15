@@ -31,6 +31,23 @@ def sample(mu, m, dN, n, bridge, A, seed):
     return np.concatenate([a for a, _ in res]), np.concatenate([b for _, b in res])
 
 
+def exact_bins(edges, m, mu):
+    a, b = np.maximum(edges[:-1], 1e-12), edges[1:]
+    sa, sb = np.exp(exact.ig_logsf(a, m, mu)), np.exp(exact.ig_logsf(b, m, mu))
+    # bins far in the tail: difference of survival functions in log space
+    return np.maximum(sa - sb, 0.0) / (b - a)
+
+
+def bin_metrics(edges, pdf, err, cnt, m, mu, nmin=100):
+    ref = exact_bins(edges, m, mu)
+    ok = (cnt >= nmin) & (ref > 0)
+    z = (pdf[ok] - ref[ok]) / err[ok]
+    rel = pdf[ok] / ref[ok] - 1
+    return dict(n_bins=int(ok.sum()), mean_z2=float(np.mean(z ** 2)), max_abs_z=float(np.max(np.abs(z))),
+                max_abs_rel=float(np.max(np.abs(rel))), deepest_P=float(pdf[ok].min()),
+                deepest_N=float(0.5 * (edges[1:] + edges[:-1])[ok].max()))
+
+
 def stats(N):
     n = len(N)
     mean = N.mean()
@@ -81,7 +98,7 @@ def main():
             # step the exponent is +(B/S^2)(B dN/2 + S xi sqrt(dN)) = -(our exponent)
             w_pr = np.exp(-lw)
             Jtest = 0.5
-            lap_IS = np.mean(w * np.exp(-Jtest * N))
+            lap_IS = np.mean(w * np.exp(-Jtest * np.nan_to_num(N, nan=np.inf)))
             rec["IS"].append(dict(A=A, mean_w=w.mean(), se_w=w.std() / np.sqrt(len(w)),
                                   mean_w_printed_sign=w_pr.mean(),
                                   laplace_J=Jtest, laplace_IS=lap_IS,
@@ -90,20 +107,27 @@ def main():
             edges = np.linspace(0.0, Nmax_plot, 121)
             pdf, err, cnt = weighted_hist(N, w, edges)
             is_curves.append((A, edges, pdf, err, cnt))
+            rec["IS"][-1]["bins"] = bin_metrics(edges, pdf, err, cnt, m, mu)
             print(f"IS A={A}: <w>={w.mean():.4f}+-{w.std()/np.sqrt(len(w)):.4f}, printed-sign <w>={w_pr.mean():.3e}, "
                   f"Laplace(J=0.5) IS {lap_IS:.5f} exact {exact.ig_laplace(Jtest, m, mu):.5f}", flush=True)
         out["cases"].append(rec)
         np.savez_compressed(f"{__import__('common').RUN_DIR}/v1_case{ci}.npz", N=keepN)
 
         # ---- figure: PDF (direct and IS) against the inverse Gaussian; convergence
-        fig = plt.figure(figsize=(figstyle.FULL_WIDTH, 3.2))
-        ax1 = figstyle.inch_axes(fig, 0.75, 0.55, 3.0, 2.45)
-        ax2 = figstyle.inch_axes(fig, 4.6, 0.55, 3.0, 2.45)
+        fig = plt.figure(figsize=(figstyle.FULL_WIDTH, 3.0))
+        ax1 = figstyle.inch_axes(fig, 0.65, 0.5, 2.05, 2.3)
+        ax3 = figstyle.inch_axes(fig, 3.35, 0.5, 2.05, 2.3)
+        ax2 = figstyle.inch_axes(fig, 5.85, 0.5, 2.0, 2.3)
         x = np.linspace(1e-3, Nmax_plot, 800)
         ax1.semilogy(x, exact.ig_pdf(x, m, mu), **figstyle.GUIDE, label="inverse Gaussian")
         edges = np.linspace(0.0, Nmax_plot, 121)
         pdf, err, cnt = weighted_hist(keepN, np.ones_like(keepN), edges)
+        rec["direct_bins"] = bin_metrics(edges, pdf, err, cnt, m, mu)
+        ref = exact_bins(edges, m, mu)
         c = 0.5 * (edges[1:] + edges[:-1])
+        okr = cnt >= 100
+        ax3.errorbar(c[okr], pdf[okr] / ref[okr] - 1, yerr=err[okr] / ref[okr], fmt="o", ms=2.0,
+                     color=figstyle.PAL["red"], lw=0.8)
         ok = cnt >= 10
         ax1.errorbar(c[ok], pdf[ok], yerr=err[ok], fmt="o", ms=2.5, color=figstyle.PAL["red"],
                      label="direct, $\\Delta N=10^{-3}$")
@@ -112,10 +136,17 @@ def main():
             c2 = 0.5 * (e2[1:] + e2[:-1])
             ax1.errorbar(c2[ok], p2[ok], yerr=er2[ok], fmt="s", ms=2.0, color=col,
                          label=f"bias $B={A:g}$")
+            okr = cn2 >= 100
+            ax3.errorbar(c2[okr], p2[okr] / ref[okr] - 1, yerr=er2[okr] / ref[okr], fmt="s", ms=2.0,
+                         color=col, lw=0.8)
+        ax3.axhline(0, **figstyle.THIN)
+        ax3.set_ylim(-0.25, 0.25)
+        ax3.set_xlabel("$\\mathcal{N}$")
+        ax3.set_ylabel("Monte Carlo / exact $-1$ (bins $\\geq 100$)")
         ax1.set_xlabel("first-passage time $\\mathcal{N}$")
         ax1.set_ylabel("$P(\\mathcal{N})$")
         ax1.set_ylim(1e-16, 2)
-        ax1.legend(loc="upper right", fontsize=8)
+        ax1.legend(loc="upper right", fontsize=7)
         for bridge, col, lab in ((False, figstyle.PAL["red"], "no bridge test"),
                                  (True, figstyle.PAL["blue"], "Brownian-bridge test")):
             cc = [c for c in rec["conv"] if c["bridge"] == bridge]
@@ -131,7 +162,7 @@ def main():
         ax2.axhline(np.sqrt(ex["var"] / NREAL), **figstyle.MASK_LINE)
         ax2.set_xlabel("step $\\Delta N$")
         ax2.set_ylabel("$|\\langle\\mathcal{N}\\rangle - m/\\mu|$")
-        ax2.legend(loc="lower right", fontsize=8)
+        ax2.legend(loc="lower right", fontsize=7)
         savefig(fig, f"v1_drift_mu{mu:g}_m{m:g}")
         plt.close(fig)
     save_results("v1_drift_diffusion", out)
