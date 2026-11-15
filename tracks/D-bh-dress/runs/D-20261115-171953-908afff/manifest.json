@@ -1,0 +1,129 @@
+{
+  "schema": "nrpic-run-manifest/1",
+  "run_id": "D-20261115-171953-908afff",
+  "track": "D-bh-dress",
+  "gate": "G1",
+  "kind": "scouting",
+  "purpose": "G0/G1 verifier C8b: MeshBlock counts of the D-pre-4 mesh family from the release executable (-m), finest level 5-8, requested region 1.5 and 2 M, against the 56-blocks-per-level rule of the scoping cost model",
+  "preregistered_in": "tracks/D-bh-dress/stage/G0/JOURNAL.md",
+  "launcher": "local (hand registration)",
+  "registered_by": "hand: tracks/D-bh-dress/stage/G0/verify/hand_run.py, because harness/bin/nrpic-run submit refused (an untracked file of another helper, es.horizon_summary_0.txt, in the worktree root); see stage/G0/README.md, Requests",
+  "command": [
+    "bash",
+    "tracks/D-bh-dress/stage/G0/verify/v9_mesh.sh"
+  ],
+  "cwd": "/data/haiyangw/nrpic/wt/D-bh-dress",
+  "git": {
+    "sha": "908afffefbc2c16792a126ee342c97cb6fc3cb3b",
+    "branch": "track/D-bh-dress",
+    "package": [
+      "tracks/D-bh-dress/stage/G0/verify",
+      "tracks/D-bh-dress/stage/G0/figs",
+      "tracks/D-bh-dress/stage/G0/JOURNAL.md",
+      "tracks/D-bh-dress/stage/G0/README.md",
+      "tracks/D-bh-dress/stage/G0/VERIFIER.md"
+    ],
+    "package_clean": true
+  },
+  "code": {
+    "core_tag": "core-v0.3"
+  },
+  "env": {
+    "host": "anta",
+    "OMP_NUM_THREADS": "1"
+  },
+  "inputs": [
+    {
+      "path": "/data/haiyangw/nrpic/.work/build_cpu_v03/src/athena",
+      "sha256": "d983155bb21befedbd123d54d84fcfc12a875ee0aaa0baa36f5a51261041c25c",
+      "bytes": 246469568
+    },
+    {
+      "path": "tracks/D-bh-dress/puncture_drift/inputs/drift_dx16.athinput",
+      "sha256": "474f07fcf57dbc8ff79826574440a7817a4411a1275d2d5e4c6bc10d76e3d1e9",
+      "bytes": 4942
+    }
+  ],
+  "resources": {
+    "nodes": 1,
+    "cores": 1,
+    "gpus": 0,
+    "card_hours": 0.0,
+    "walltime_s": 0.49
+  },
+  "outputs": {
+    "dir": "scratch/D-bh-dress/D-20261115-171953-908afff",
+    "files": [
+      {
+        "path": "mesh_L5.dat",
+        "sha256": "56d11ee47b1d8f18765c39f3aba1bb894f51c6676c1f48f7d710daabb28b59e3",
+        "bytes": 77650
+      },
+      {
+        "path": "mesh_L5.log",
+        "sha256": "84882110776ecc95a8ea24c69fcb66ade0bfb0fa44a430750d277c01a4e4ddf4",
+        "bytes": 718
+      },
+      {
+        "path": "mesh_L6.dat",
+        "sha256": "fa46aef8096c037c05cd2057c1dae649ab4874a1e54f2c523b2d4de1f2f5c6f0",
+        "bytes": 89230
+      },
+      {
+        "path": "mesh_L6.log",
+        "sha256": "9a58fab0ec1d31b6434f0f344bb4214141fa85ca6b72c7ee165d72293abe5b9f",
+        "bytes": 785
+      },
+      {
+        "path": "mesh_L7.dat",
+        "sha256": "cdd2600868a4eda4864487d688c0d3001e49677d14fd24f661a0212014a27c3e",
+        "bytes": 756890
+      },
+      {
+        "path": "mesh_L7.log",
+        "sha256": "1c571810d0c697f154663dbd2d55b5c9a60c62b9dd9c7eac37d9f1bc57ddcaaf",
+        "bytes": 801
+      },
+      {
+        "path": "mesh_L7r2.dat",
+        "sha256": "cdd2600868a4eda4864487d688c0d3001e49677d14fd24f661a0212014a27c3e",
+        "bytes": 756890
+      },
+      {
+        "path": "mesh_L7r2.log",
+        "sha256": "1c571810d0c697f154663dbd2d55b5c9a60c62b9dd9c7eac37d9f1bc57ddcaaf",
+        "bytes": 801
+      },
+      {
+        "path": "mesh_L8.dat",
+        "sha256": "dcf7314db2affe0433438015cf2a2c844d2c2d1f3756312a0d8a6e1502ccf1aa",
+        "bytes": 1242566
+      },
+      {
+        "path": "mesh_L8.log",
+        "sha256": "0d4f499c68a054f0896c2e5fabc347025c9c9949d38c8cdc23b3ed29a93929d3",
+        "bytes": 874
+      },
+      {
+        "path": "mesh_L8r2.dat",
+        "sha256": "25b3a470dd3936d102a26dbadde0dd8b1a21484a56bc0ef87979622140f9127a",
+        "bytes": 2196334
+      },
+      {
+        "path": "mesh_L8r2.log",
+        "sha256": "74f4525756773d37368f93ed1a0837ecd1d0365e8c9d12a193c43708f0e1727e",
+        "bytes": 876
+      },
+      {
+        "path": "run.log",
+        "sha256": "069fea34e7b33b51942e4b34d60066cb5f1ecc7b47eb2666c10cde56cc580d49",
+        "bytes": 350
+      }
+    ]
+  },
+  "status": "completed",
+  "exit_code": 0,
+  "started": "2026-11-15T17:19:53Z",
+  "ended": "2026-11-15T17:19:54Z",
+  "parents": []
+}
