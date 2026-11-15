@@ -96,3 +96,24 @@ core changed the format-2 reader or the constraint stencils at the merge; in eit
 the regional maxima keep converging at order >= 3 in the transition and at the inner dust
 edge between dx = 1 and 1/2 M. Refuted by a cell difference above 1e-9 relative without a
 changelog entry, or by an order below 2.
+
+## Entry 3: C1b outcome (run D-20261115-170224-924d1d9)
+
+The release processor executable (core-v0.3) reproduces the wave-1 branch-build dumps of the
+t = 0 check bit for bit: max |difference| = 0 in E, chi, H, M_i, Khat, alpha at dx = 1 and
+1/2 M (v1b_compare.json; figure figs/v1b_code_t0.png, looked at: all points on the
+diagonal). Regional maxima from the track's own analysis on the release dumps: mid
+transition |H| 8.4e-9 -> 1.4e-10, |M| 2.4e-8 -> 4.4e-10; inner dust edge |M| 1.1e-5 ->
+1.1e-6 (order 3.2); orders over the whole transition 5.3 (H) and 4.7 (M); puncture region
+r < 3: |H| 0.76 -> 1.14 (does not converge, throat unresolved at these spacings, as the
+derivation says). Prediction confirmed. Only two resolutions: an order from two points.
+
+Side observation: a file `es.horizon_summary_0.txt` appeared in the worktree root at
+09:03-09:12 local time; my t = 0 runs have no horizon finder, so it comes from another
+helper's ES-1 smoke test (the finder writes into the working directory, not into -d). I
+leave it alone; it blocks `nrpic-run submit` (worktree not clean outside tracks/).
+
+C6 development note (before the registered run): my first quadrature returned a density at
+r = 3 M because the plunge condition was applied only for 3 < r < 6; inside the photon
+sphere every orbit plunges. Fixed (n = 0 for r <= 3); r = 3 was the only grid point
+affected.

@@ -61,6 +61,7 @@ def main():
     ap.add_argument("--run", action="append", required=True)
     ap.add_argument("--t0", type=float, default=50.0)
     ap.add_argument("--W", type=float, default=20.0)
+    ap.add_argument("--figdir", default=os.path.join(HERE, "..", "figs"))
     a = ap.parse_args()
     os.makedirs(a.out, exist_ok=True)
     res = {"t0": a.t0, "W": a.W, "runs": {}}
@@ -156,7 +157,7 @@ def main():
         x.axvline(a.t0, **fs.MASK_LINE)
     fig.tight_layout()
     files = fs.save(fig, os.path.join(a.out, "v2_drift"))
-    shutil.copy(files[1], os.path.join(HERE, "..", "figs"))
+    shutil.copy(files[1], a.figdir)
     print(json.dumps(res, indent=1))
 
 
