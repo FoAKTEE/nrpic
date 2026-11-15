@@ -533,7 +533,8 @@ def board_text(repo):
     L += ["", "Behind / ahead: commits of main not yet merged into the branch, commits of the branch not yet on main. "
           "Inbox: messages addressed to the owner or to all and not yet acknowledged.", ""]
     na = [(r["id"], k, r["status"].get(k)) for r in rows for k in ("needs", "offers", "last-result")
-          if r["status"].get(k) and r["status"].get(k).strip().lower() not in ("none", "none.", "—", "-")]
+          if r["status"].get(k) and not re.match(r"^(none|—|-|n/a)\b", r["status"].get(k).strip().lower())
+          and not r["status"].get(k).startswith("what was established last")]
     if na:
         L += ["## Last results, needs and offers", ""]
         for oid, k, v in na:

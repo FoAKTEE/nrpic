@@ -22,6 +22,7 @@ import json
 import os
 import pwd
 import shutil
+import socket
 import subprocess
 import sys
 import tempfile
@@ -171,10 +172,22 @@ class Doctor:
         return ("PASS" if ok else "FAIL"), d
 
     # [venv] [env]
+    def env_missing(self):
+        """Why nrpic-env cannot work in this worktree yet (a setup step not done), or None."""
+        if not self.tool("nrpic-env"):
+            return "harness/bin/nrpic-env does not exist"
+        host = socket.gethostname().split(".")[0]
+        if not os.path.isfile(os.path.join(self.w.wt, "harness", "env", "machines", f"{host}.sh")):
+            return f"this worktree has no harness/env/machines/{host}.sh yet (nrpic-ctx sync brings it from main)"
+        return None
+
     def row_venv(self):
         t = self.tool("nrpic-env")
-        if not t:
-            return "MISSING", "harness/bin/nrpic-env does not exist"
+        why = self.env_missing()
+        if why:
+            return "MISSING", why
+        if not os.path.isdir(os.path.join(self.w.wt, ".venv")):
+            return "MISSING", "no .venv in this worktree yet (harness/bin/nrpic-env create)"
         p = sh([t, "-C", self.w.wt, "exec", "--", "python", "-c", "import sys; print(sys.prefix)"], self.w.wt)
         if p.returncode != 0:
             return "FAIL", f"nrpic-env exec failed: {(p.stderr or p.stdout).strip()[-200:]}"
@@ -193,8 +206,9 @@ class Doctor:
 
     def row_env(self):
         t = self.tool("nrpic-env")
-        if not t:
-            return "MISSING", "harness/bin/nrpic-env does not exist"
+        why = self.env_missing()
+        if why:
+            return "MISSING", why
         p = sh([t, "-C", self.w.wt, "vars"], self.w.wt)
         if p.returncode != 0:
             return "FAIL", f"nrpic-env vars failed: {(p.stderr or p.stdout).strip()[-200:]}"

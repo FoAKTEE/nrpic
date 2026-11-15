@@ -60,6 +60,7 @@ class T:
         self.log = transcript
         self.passed = self.failed = 0
         self.section = ""
+        self.sections = {}
 
     def wt(self, oid):
         return self.repo if oid == "orch" else os.path.join(self.repo, "wt", "core-rng" if oid == "core-rng" else oid)
@@ -75,9 +76,7 @@ class T:
     def sh(self, cmd, cwd, inp=None, show=True, quiet_ok=False):
         p = subprocess.run(cmd, cwd=cwd, input=inp, capture_output=True, text=True, env=env())
         shown = " ".join(c if not c.startswith(self.root) else self.rel(c) for c in cmd)
-        shown = shown.replace(os.path.join(self.repo, "harness", "bin") + "/", "harness/bin/")
-        for w in sorted({os.path.join(self.repo, "wt", x) for x in ("core", "core-rng", "kb", "A-emd-pbh", "B-emd-gw")}, key=len, reverse=True):
-            shown = shown.replace(w + "/harness/bin/", "harness/bin/")
+        shown = re.sub(r"(?:^|(?<=\s))(?:wt/[^/\s]+/)?harness/(bin|tests)/", r"harness/\1/", shown)
         if show:
             out = (p.stdout + (("\n" if p.stdout and p.stderr else "") + p.stderr if p.stderr else "")).rstrip()
             lines = out.splitlines()
@@ -101,6 +100,7 @@ class T:
             self.passed += 1
         else:
             self.failed += 1
+        self.sections.setdefault(self.section, [0, 0])[0 if cond else 1] += 1
         self.log.append(f"- {'PASS' if cond else 'FAIL'}: {label}")
         print(f"  {'PASS' if cond else 'FAIL'}: {label}")
         return cond
@@ -144,6 +144,7 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--keep", action="store_true")
     ap.add_argument("--transcript")
+    ap.add_argument("--json", help="write {section: [passed, failed]} to this file")
     args = ap.parse_args()
     base = os.path.join(live_main(), "scratch", "harness")
     os.makedirs(base, exist_ok=True)
@@ -165,6 +166,10 @@ def main():
             fh.write(f"Self-test `harness/tests/test_ctx.py`, {dt.datetime.now(dt.timezone.utc).strftime('%Y-%m-%dT%H:%MZ')}, "
                      f"scratch repository `{os.path.relpath(root, live_main())}/repo`: **{summary}**.\n")
             fh.write("\n".join(log) + "\n")
+    if args.json:
+        with open(args.json, "w") as fh:
+            json.dump({"passed": t.passed, "failed": t.failed, "root": os.path.relpath(root, live_main()),
+                       "sections": t.sections}, fh, indent=1)
     if ok and not args.keep:
         real = os.path.realpath(root)
         if os.path.dirname(real) == os.path.realpath(base) and os.path.basename(real).startswith("ctx-") and not os.path.islink(root):
