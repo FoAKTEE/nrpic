@@ -289,11 +289,16 @@ tests.
 ## 9. Not done, limits
 
 1. **Hamiltonian constraint only.** K and Abar_ij are held fixed; the momentum
-   constraint is not solved. Data whose trial momentum constraint is violated (the
-   strained ball, T3: rms 2.7e-3) keep that violation; the vector equation of section 7
-   is the next step [JUDGEMENT]. The evolution checks B, D, E show that for the
-   expanding ball at 64 cells the evolution makes a violation of the size of the trial's
-   within a few steps, with and without the solve.
+   constraint, psi^-10 d_j Abar_ij - (2/3) psi^-4 d_i K = 8 pi S^i [BACKGROUND], is not
+   solved. Data whose trial violates it keep that violation, and the solve changes it
+   where psi moves: a trial with psi_t = 1 and S_i = 0 that satisfies it is left with
+   M_i = (2/3)(psi^-6 - 1) d_i K [derived]. For the strained ball (particles at rest,
+   S_i = 0) the continuum trial satisfies the momentum constraint; what the monitor
+   shows (T3: rms 2.7e-3 at the sharp surface) is the discretisation of the table
+   curvature. The vector equation of section 7 is the next step [JUDGEMENT]. The
+   evolution checks B, D, E show that for the expanding ball at 64 cells the evolution
+   makes a violation of the size of the trial's within a few steps, with and without
+   the solve.
 2. **Uniform meshes, one rank, cubic cells.** Refined meshes and MPI: section 7.
 3. **Robin faces** are exact for a monopole about the chosen centre; a dipole or
    quadrupole of the data falls off faster and is continued as 1/r, an error of order
@@ -310,8 +315,8 @@ tests.
 6. **Matter Jacobian**: the term 2 pi psi^4 E of sigma treats Etilde as independent of
    psi; with a filter or moving particles (Lorentz factor through the interpolated
    metric) it is an approximation of the Jacobian, which changes the convergence rate,
-   not the solution. Moving particles and filters were run (T2 with one filter pass);
-   moving particles with large Lorentz factors were not tested.
+   not the solution. A filter was run (T2 with one filter pass: converged); every test
+   has particles at rest in the slice: moving particles were not tested.
 7. **Lapse and shift** are those of the problem generator: a lapse option that depends
    on psi (`isotropic`, `precollapsed`) refers to the trial psi, not the solved one.
 8. **Not tested**: `nrpic_cosmo id = file`, the Bowen-York curvature of `nrpic_cf`, a
