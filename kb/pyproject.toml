@@ -23,6 +23,9 @@ k0 = [
   "numpy>=1.24",
   "matplotlib>=3.7",
 ]
+# K6: symbols of C/C++ sources (kbtool/code_symbols.py); tree-sitter instead of universal-ctags,
+# which is not on the machine (building it from the clone would mean building downloaded code)
+code = ["tree-sitter>=0.23,<0.26", "tree-sitter-cpp>=0.23", "tree-sitter-c>=0.23"]
 # K4: local embedding model; heavy (pulls torch), installed when K4 starts
 embed = ["sentence-transformers>=3", "sqlite-vec>=0.1"]
 
