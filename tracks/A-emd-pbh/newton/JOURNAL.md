@@ -175,3 +175,33 @@ spacing near the collapse 0.076, i.e. 5e-3 of t_1); semi-axes of the sampled bal
 0.9 percent of the reference (sampling error). Figure `figs/fig_axes_selftest.png`. The
 first registered self-test (A-emd-pbh-20261115-113807-e02c969) printed the spacing as 0
 through a bug in the report line; same analysis numbers.
+
+## 2026-11-15 (wave 2), entry 5: the Newtonian mode of core-v0.3 is on main; plan and first prediction
+
+State after the merge of main (c7f4cfc): AthenaK's Newtonian mode (`<particles> pusher =
+newton`, `coord/INTERFACES/newtonian_mode.md`, inputs `problems/newton/`) is in the release
+executables (processors: `.work/build_cpu_v03/src/athena`, serial Kokkos backend, one core
+per run). Neither generator can write the deformed ball: `problems/newton/make_ic.py`
+has `point`, `ball` (at rest, uniform velocity or rigid rotation only), `wave`;
+`problems/ic/make_ic.py` has `os`, `st`, `prolate`, `jeans`. Work-around inside this
+directory: `make_deformed_ball.py` writes the existing `.nrp` format (lattice ball,
+Zel'dovich map with Hubble-plus-peculiar velocity, optional lattice rotation, JSON with
+the references of the sampled ball). `newton_campaign.py` runs the cases with the
+release processor executable and `problems/newton/isolated.athinput` (overrides only).
+
+Normalisation found while writing the generator (smoke test of the generator only, no
+simulation; numbers to be reproduced in the registered runs): the lattice ball with
+hxi = 0.05 has N = 33552 points, volume radius R_vol = 1.000414 (second-moment radius
+1.000427). Because the binding energy of the top-hat is a small difference of two terms,
+this radius moves the cycloid collapse time by +0.31 percent (9.7175 -> 9.7481 for
+lambda = 0.1, a0 = 1), as much as the tolerances of SCAN.md section 5. Every reference
+of the runs therefore uses R_L = R_vol of its own sample, with M = 1/2 [JUDGEMENT: the
+deposit sees the density M/(N hxi^3) of the lattice cells].
+
+### P8 (cost, campaign `cost`, 30 cycles per case on one core, before the run)
+
+From core's measurement (3.2 s per step at 128^3 with 1.4e5 particles and 13 V cycles,
+interface section 5.8) and `newton_mg_tol = 1e-6` (5.6 instead of 16.6 cycles, same
+section): seconds per cycle 0.1-0.4 at 64^3, 1-3 at 128^3 (2.7e5 and 2.1e6 particles),
+8-25 at 256^3. Refuted if any case is off by more than a factor 3; then the campaign plan
+(256^3 cases on processors) is revised before it is submitted.
