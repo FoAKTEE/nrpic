@@ -389,3 +389,14 @@ between 4.4e-5 and 1.8e-4 (the stencils are sixth order, the integrator fourth, 
 both the cell and the step halve); for |n| <= 2 it falls from 3.7e-6 by about 16 (time
 integration), to below 5e-7. Refuted if the deviation of the high shells does not fall
 by at least 16: it would then not be a truncation error.
+
+T9 (added, predicted before it runs): the initial-value problem without sources (Track
+E's test L3 in small): `slice_window = false`, the three kicks off, nmax2 = 16 (|n| <= 4,
+eight cells per shortest wavelength at 32^3), to t = 3.2. All 128 modes are in the slice
+at full amplitude, the upper ones four times inside the horizon; they oscillate, cross
+and freeze under the evolution alone. Reference: L^(-3/2) R(t) alpha_n with the
+unsourced mode functions of the lockstep record. Prediction: |R^NR_n/(R alpha_n) - 1| at
+most 5e-3 for all modes and 5e-4 for |n| <= 2 at every dump (phase error of the sixth-
+order second difference at k dx = pi/4, 1e-4 per radian over about 4 radians, and of
+the integrator). Refuted by a deviation above 2e-2 (the path without window or
+without kicks would then be wrong, or the field equation off).

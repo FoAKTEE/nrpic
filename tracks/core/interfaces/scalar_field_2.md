@@ -29,8 +29,8 @@ Lines of files that existed before (against main at 4ebb05f), all small hooks:
 | `scalar_field/scalar_field.hpp` | 167-180, 291-307 | `SfDiagOptions`; declarations and members of the two new files |
 | `scalar_field/scalar_field.cpp` | 173, 377-379 | `DiagInit(pin)` in the constructor; constraint record in `Diagnostics` |
 | `scalar_field/scalar_field_io.cpp` | 72-74, 240-243 | first constraint record in `Startup`; `WriteDump` hands over to `WriteDumpExtended` |
-| `scalar_field/scalar_field_noise.cpp` | 180-184, 337-339, 430-432, 687-689 | `noise_mode_scale`; `NoiseSetup` returns if `InitialSlice` has done it; scale applied to the mode file; no synthesis in a stage when all kicks are off |
-| `pgen/nrpic/scalar_field_tests.cpp` | 32-37, 88-93, 193, 239-240 | `id = stochastic`: header text, kind 3, background as `flrw`, call of `InitialSlice` |
+| `scalar_field/scalar_field_noise.cpp` | 180-184, 337-339, 429-431, 685-687 | `noise_mode_scale`; `NoiseSetup` returns if `InitialSlice` has done it; scale applied to the mode file; no synthesis in a stage when all kicks are off |
+| `pgen/nrpic/scalar_field_tests.cpp` | 32-37, 88-89, 91-92, 196, 242-243 | `id = stochastic`: header text, kind 3, error text, background as `flrw`, call of `InitialSlice` |
 | `CMakeLists.txt` | 216-217 | the two new sources |
 
 No change outside `scalar_field/`, the problem generator and the source list: Z4c, the
@@ -148,11 +148,58 @@ units: mass = 0.1828776559, phi0 = -2.6667947899, pi0 = 0.02973004068, H*/Mpl =
 
 ## 6. What is verified
 
-See section 7 of this file's journal (`tracks/core/JOURNAL-scalar2.md`, entries 3 on) for
-the predictions and the failed ones. Figures: `tracks/core/notes/scalar2_figs/`.
+Predictions were written before the runs (`tracks/core/JOURNAL-scalar2.md`, entries 2, 3,
+6, 8); outcomes in entries 4 to 9. Figures: `tracks/core/notes/scalar2_figs/`.
 
-RESULTS_TABLE
+Executables: `.work/exe/athena_cpu_a58e95b` and `athena_gpu_a58e95b` of this worktree
+(source of commit a58e95b; published copies: section 8). Case of all runs unless said
+otherwise: the quadratic case of P1 in code units (section 5), box 2 pi, nmax2 = 64
+(k_max/dk = 8, the convergence set-up of P1:756), seed 20261115, Courant 0.25, geodesic
+slicing, `noise_level = 0`.
+
+| Statement | Evidence |
+|---|---|
+| The slice equals the twin: over the 1054 modes the largest deviation of the coefficients of delta phi, delta Pi, chi - 1, delta K is 3.6e-10, 5.6e-13, 4.2e-11, 3.3e-10 of their rms (rounding of background plus perturbation); nothing outside the mode set above 4.0e-10; gt_ij = delta_ij and At_ij = 0 exactly. Without the window: 5.3e-11, 7.6e-14, 8.0e-11, 4.5e-11 | run core-20261115-154907-eb68eaa, `fig_slice.png` |
+| The constraints of the slice are second order: with the mode functions scaled by s = 1, 1/2, 1/4, <\|H\|/[H]> = 2.625e-12, 6.553e-13, 1.630e-13 (factors 4.005, 4.021) and <\|M\|/[M]> = 1.462e-5, 7.310e-6, 3.655e-6 (2.0000, 1.9999; \|M\| second order, [M] first). The part of H odd in s has rms 2.7e-14 (rounding) against the largest linear term 1.59e-6; of M_i 1.06e-15 | the same run |
+| Negative control `slice_delta_pi = printed`: odd part of H with rms 1.759e-8, its coefficients equal -4 eps1 H^2 Psi_n alpha_n within 6.1e-7 of their rms; <\|H\|/[H]> = 1.2003e-9, 6.001e-10, 3.001e-10 (factors 2.0000): first order, as Track E's symbolic check found | the same run |
+| `slice_k2 = continuum`: odd part of H = -4 (k2_stencil - k2) Psi within 1.6e-5 for the \|n\| = 1 modes at N = 16 (relative size of the k2 error 6.39e-6) and within 0.26 percent at N = 32 (1.02e-7) | the same run |
+| Background (A1 of Track E, 1e-4): box means of phi, Pi, K against the Friedmann and Klein-Gordon equations over 8.04 e-folds (172 steps at 32^3) within 6.4e-13, 4.5e-12, 3.6e-12; lockstep background within 2.6e-13, 2.3e-12; e-folds from <chi> within 5.5e-6 (Courant 0.25) and 3.3e-7 (0.125), ratio 16.6 | run core-20261115-155040-eb68eaa, `fig_evolve.png` |
+| Constraint ratios in time (P1:538-541 quotes 1e-10 for H during the entry): <\|H\|/[H]> at most 4.7e-11 (N = 2.4), <\|M\|/[M]> at most 3.7e-4 (N = 2.7); both fall after the last crossing, to 3.1e-12 and 1.6e-7 at N = 8.04 | the same run |
+| The constraint violation has three parts, separated with runs at s = 0, +-1/2, +-1: a uniform residual of the time integration of the background, 3.0e-11 to 3.3e-11 in H (2.5e-12 to 2.9e-12 of [H]) at Courant 0.25 and 16 times less at 0.125 (late-time floors 3.1e-12 and 1.8e-13); a part odd in s (first order, truncation of the stencils), rms ratio 2.000 between s = 1 and 1/2, up to 6.6e-10 in H at N = 2.4; a second-order part, rms ratio 4.00 +- 0.006 at eight dumps, 1.7e-11 at N = 0.44 and falling | runs core-20261115-155040-eb68eaa, core-20261115-161040-760b515, `fig_parts.png` |
+| Negative control `noise_pi_sign = -1`: <\|H\|/[H]> up to 9.8e-8 (5.7e4 times the proper run in the first e-fold, odd in s), <\|M\|/[M]> = 0.16 at one e-fold and up to 0.21 | run core-20261115-155040-eb68eaa |
+| The slice and the sources carry one linear solution: R^NR_n = psi_n + (H/Pi_b) delta phi_n extracted from the dumps equals L^(-3/2) W R alpha_n of the lockstep record within 1.1e-11 at t = 0 (modes with W > 1/2) and, at the later dumps to N = 3.14, within 2.7e-5 for \|n\| <= 2 (3.7e-6 after N = 2, no drift), 7.6e-5 for \|n\| <= 4 and 2.8e-3 for all 1054 modes (Track E's A2 asks 2e-2 for k <= k_max/2). With `noise_pi_sign = -1` the deviation is 2 | run core-20261115-160134-3fde433, `fig_rnr.png` |
+| M_i assembled from the four BSSN terms of [M_i] equals the M_i of `Z4c::ADMConstraints` within 3.4e-4 of rms \|M\| up to t = 3.2 | run core-20261115-155040-eb68eaa |
+| Division of the mesh and restart: 1, 8 and 64 MeshBlocks give bit-identical fields in the dumps at cycles 0, 10, 20 (22 fields each); a restart at cycle 10 gives a byte-identical dump at cycle 20. The box statistics of the records differ by at most 2.7e-14 between divisions | run core-20261115-155719-383321a |
+| Track E's noise validation (NOISE_SPEC 9, 10; scaled base case N = 32, nmax2 = 100, 120 cycles) on the processor executable: frozen tanh and Markov Heaviside pass every test (A1 5.3e-14 and 2.4e-15; 1, 8, 64 MeshBlocks and the restart bit-identical; N = 16 against 32 3.0e-15). Markov tanh fails A1 at 9.77e-11 against Track E's reference as written and passes at 3.3e-15 when the reference forms the increment as the code does (dW = sinh(s hubble dt)/(2 cosh x1 cosh x0)); frozen then 3.7e-15. The code has formed it so since 5a6953e (release core-v0.3) | runs core-20261115-155122-eb68eaa, core-20261115-160103-3fde433 |
+| Existing behaviour: 120 output files of ten scalar-field cases of wave 1 (two gauges, plane, wave, refined mesh, power sources frozen and Markov, Mukhanov-Sasaki sources with and without kicks, restart) are unchanged against the executable of release core-v0.3: 110 byte-identical, 8 mesh restart files differ inside the 36 unset header bytes, 2 in the recorded path of the restart file only. Seven relativistic and gravity set-ups (geo, boris, dep, east, os, jeans, binary) byte-identical | runs core-20261115-161240-61bb520 (files of -160549-a36abe3); core-20261115-155731-383321a to -160856-a36abe3 |
+CARD_ROWS
+
+Failed predictions and failed runs (journal entries 4 to 7): the even part of H does
+not scale as s^2 (the uniform time-integration residual dominates it; found by the
+test, then predicted and confirmed with the s = 0 run and the Courant factor); the
+second-order part of M changes by 1.1 percent with the printed delta Pi ("unchanged"
+was too strong); three runs failed on defects of the test scripts (a relative path;
+twice the comparison of restart files, which record the path they were started from).
 
 ## 7. Limits and open points
 
-OPEN_POINTS
+- The slice satisfies the constraints at first order only (as the data of P1 and P2);
+  the second-order violation at t = 0 is <|H|/[H]> = 2.6e-12 for the windowed slice of the
+  quadratic case and 3.9e-10 with all modes in (`slice_window = false`).
+- At 32^3 with nmax2 = 64 (four cells per shortest wavelength) the constraint violation
+  during the entry of the upper shells is first order in the amplitude: a truncation
+  error of the stencils (the symbols of the first difference squared and of the second
+  difference differ by 11 percent at k dx = pi/2). CARD_LIMIT
+- The uniform Hamiltonian residual of the background scales with the fourth power of
+  the step; at H dt = 0.049 it is 3e-12 of [H].
+- a* = 1 only; the stencil k2 and the stencil projector use the cell size of the root
+  mesh; refined meshes are not tested with the slice.
+- `noise_level = 1` and the inflection (USR) case have not been run with the slice.
+- [M] of P1: sign of the Christoffel term as in section 3.
+- Not done from Track E's requests: `rng::ModeEntity` and the wording of stream 3 and of
+  rule 2 in `rng.md` (request (c) of `noise-unit-test-results`); the keys are those of
+  `scalar_field.md` section 7.1 and are unchanged. The reference `noise_ref.py:transfer`
+  of Track E should form the increment without cancellation (13 lines, quoted in the
+  journal, entry 4) to hold A1 at 1e-11 for the Markov scheme.
+- `harness/bin/nrpic-run submit` fails in this worktree (journal entry 3); runs are
+  registered by hand.

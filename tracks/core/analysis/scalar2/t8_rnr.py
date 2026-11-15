@@ -26,7 +26,7 @@ SYM = (("gxx", 0, 0), ("gxy", 0, 1), ("gxz", 0, 2), ("gyy", 1, 1), ("gyz", 1, 2)
        ("gzz", 2, 2))
 
 
-def analyse(rundir, n, n2, al, length):
+def analyse(rundir, n, n2, al, length, windowed=True):
     rows = []
     for f in sorted(glob.glob(os.path.join(rundir, "sr.sf.?????.dump"))):
         d = sf.read_dump(f)
@@ -48,6 +48,8 @@ def analyse(rundir, n, n2, al, length):
         r = (tab[:, 1] + 1j*tab[:, 2])[idx]
         a = np.exp(head["ln_a"])
         w, _ = inf.window(n2, length, a, head["H"], head["eps1"])
+        if not windowed:      # all modes in from the start, no sources
+            w = np.ones(n2.size)
         ref = length**-1.5*w*r*al
         ratio = rnr/ref
         q = np.sqrt(n2.astype(float))
@@ -83,12 +85,20 @@ def main():
     ap.add_argument("--tlim", type=float, default=3.2)
     ap.add_argument("--analyse-only", action="store_true")
     ap.add_argument("--no-control", action="store_true")
+    ap.add_argument("--nmax2", type=int, default=NMAX2)
+    ap.add_argument("--no-window", action="store_true",
+                    help="slice_window = false and the three kicks off: the initial-value "
+                         "problem without sources; reference R alpha of the record")
     a = ap.parse_args()
     out = os.path.abspath(a.out)
     os.makedirs(out, exist_ok=True)
     args = [f"scalar_field/noise_mode_file={MODES}", f"time/tlim={a.tlim}",
             "scalar_field/dump_dt=0.4", "scalar_field/dump_noise=false",
-            "scalar_field/dump_constraints=false"] + common.mesh_args(a.n)
+            "scalar_field/dump_constraints=false",
+            f"scalar_field/noise_nmax2={a.nmax2}"] + common.mesh_args(a.n)
+    if a.no_window:
+        args += ["problem/slice_window=false", "scalar_field/noise_kick_pi=false",
+                 "scalar_field/noise_kick_k=false", "scalar_field/noise_kick_a=false"]
     summ = dict(exe=os.path.abspath(a.exe), n=a.n)
     if not a.analyse_only:
         cases = [(os.path.join(out, "run"), INP, args)]
@@ -96,11 +106,12 @@ def main():
             cases.append((os.path.join(out, "ctl"), INP,
                           args + ["scalar_field/noise_pi_sign=-1.0"]))
         summ["wall_s"] = common.run_many(os.path.abspath(a.exe), cases, 2)
-    n, n2 = sf.mode_set(NMAX2)
+    n, n2 = sf.mode_set(a.nmax2)
     al = sf.mode_alpha(SEED, 0, 0, n)
     length = 2.0*np.pi
-    rows = analyse(os.path.join(out, "run"), n, n2, al, length)
-    ctl = [] if a.no_control else analyse(os.path.join(out, "ctl"), n, n2, al, length)
+    wd = not a.no_window
+    rows = analyse(os.path.join(out, "run"), n, n2, al, length, wd)
+    ctl = [] if a.no_control else analyse(os.path.join(out, "ctl"), n, n2, al, length, wd)
     summ["run"] = stats(rows)
     summ["control"] = stats(ctl)
     common.dump_json(summ, os.path.join(out, "summary.json"))
@@ -114,12 +125,12 @@ def main():
     for r, cl in zip(rows, cols):
         sel = r["w"] > 0.5
         ax[0].plot(r["q"][sel], r["dev"][sel], ".", ms=2.5, color=cl,
-                   label=f"$N={r['efolds']:.1f}$" if r["cycle"] % 2 == 0 else None)
+                   label=f"$N={r['efolds']:.1f}$")
     ax[0].axhline(2e-2, **fs.MASK_LINE)
     ax[0].set_yscale("log")
     ax[0].set_xlabel(r"$|n|$", labelpad=-2)
     ax[0].set_ylabel(r"$|R^{\rm NR}_n/(W R\,\alpha_n)-1|$, modes with $W>1/2$")
-    ax[0].legend(loc="lower right", fontsize=7, ncol=2)
+    ax[0].legend(loc="lower right", fontsize=6.5, ncol=3)
     en = [s["efolds"] for s in summ["run"]]
     for lab, cl, lbl in (("n_le_2", fs.PAL["blue"], r"$|n|\leq2$"),
                          ("n_le_4", fs.PAL["green"], r"$|n|\leq4$"),
