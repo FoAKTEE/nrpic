@@ -91,6 +91,11 @@ not yet in `db/current`.
   303: C's note gives a bare line number without a paper).
 - Hybrid retrieval was measured with half of the chunks embedded; to be re-run when K4
   has embedded all.
+- Recall of the parser not measured by me. The serve helper's independent extraction of
+  the same notes (its run kb-20261115-154906-f19880f, `tracks/kb/served/claims/`) maps 258
+  of its 330 statements to K8 claims and lists 70 it found no K8 claim for in
+  `tracks/kb/served/claims/uncovered_seed.jsonl` (its numbers, not rechecked here). They
+  are not in the claims table yet.
 
 ## Requests
 
@@ -130,7 +135,11 @@ not yet in `db/current`.
 9. **orch: metadata.** C4 needs INSPIRE records under `kb-data/meta/arxiv/<id_>.inspire.json`
    (`qa_report._meta_record` reads `.inspire.json` or `.api.json` with `titles`/`title` and
    `authors`); the sample of 30 is fixed (seed 20261115) and listed in the report.
-10. **tracks (through the lead):** cite literature statements by claim id
+10. **lead (kb): the 70 uncovered statements** of the serve helper
+    (`tracks/kb/served/claims/uncovered_seed.jsonl`): load them once, either with its
+    `kb/serve_locate.py sync-k8` (seed keys `served:<key>`, which the K8 seed never touches
+    now) or by extending `claims_parse` where they show a missed locator style; not both.
+11. **tracks (through the lead):** cite literature statements by claim id
     (`kb claim list --track <ID>`); a statement whose number is missing at the cited lines
     is `partial` (33, see `claims_seed.tsv` column `missing`), most of them the tracks' own
     values next to the paper's.
