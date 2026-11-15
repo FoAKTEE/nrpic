@@ -16,15 +16,25 @@
   {
    "path": "tracks/B-emd-gw/verify_cosmo/inputs/pancake.athinput",
    "sha256": "c95840b5f8b8585603a12dc58e67f5b669b0b374cad25a5978831917ee30214f"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/scratch/B-emd-gw/B-emd-gw-20261115-115902-a3207d7/L1_n64_p2/particles.nrp",
+   "sha256": "8481d4f1b6000d597dc8656f169a0437bb6a45f6fc8f83959b856e0e445c137d"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/scratch/B-emd-gw/B-emd-gw-20261115-115902-a3207d7/L1_n64_p2/fields.bin",
+   "sha256": "a1c558df90fc895959eea7d5f9f59a4d8fab6a838192485bddd5b0e210e1789f"
   }
  ],
  "output_dir": "/data/haiyangw/nrpic/scratch/B-emd-gw/B-emd-gw-20261115-115902-a3207d7",
  "purpose": "test of P7: plane-wave pancake d = 0.05, L = 1, 64 cells with two particles per cell and direction (initial data with make_east.py --ppc 2, then the card run in the production configuration to a = 42)",
  "kind": "scouting",
  "cores": 1,
- "card_hours": 0.0,
+ "card_hours": 0.197,
  "started_utc": "2026-11-15T11:59:02+00:00",
- "status": "running",
+ "status": "completed",
  "package": "tracks/B-emd-gw/verify_cosmo",
- "notes": ""
+ "notes": "Slurm job 4388 (11 min 50 s, one A100; queued 11 min behind other jobs); exit 0, a = 42, 2,097,152 particles; initial-data residuals 2.7e-10 (Hamiltonian), 1.1e-8 (momentum)",
+ "finished_utc": "2026-11-15T12:22:32+00:00",
+ "wall_time_s": 710.0
 }

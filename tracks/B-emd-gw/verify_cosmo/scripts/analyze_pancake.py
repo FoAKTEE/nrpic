@@ -36,7 +36,8 @@ def unwrap(x, q, L):
 
 def load_gr(rundir):
     idj = json.load(open(os.path.join(rundir, "id.json")))
-    n, L, d = idj["n"], idj["L"], idj["delta"]
+    L, d = idj["L"], idj["delta"]
+    n = idj["n"]*idj["ppc"]          # sheets (lattice points per direction)
     ntr = 3*n - 2
     fid = np.load(os.path.join(rundir, "fiducial.npz"))
     q = fid["q"][:n, 0]
@@ -67,7 +68,8 @@ def load_gr(rundir):
     W = np.sqrt(1.0 + (uu*u).sum(axis=-1))
     v = alpha*uu[..., 0]/W - beta[..., 0]       # dx/dt
     # spread of the x line from the y and z lines (plane symmetry, tracked particles)
-    out = {"kind": "gr", "dir": rundir, "n": n, "L": L, "d": d, "t": t,
+    out = {"kind": "gr", "dir": rundir, "n": n, "ncell": idj["n"], "ppc": idj["ppc"],
+           "stagger": idj["stagger"], "L": L, "d": d, "t": t,
            "a": (1.0 + 0.5*t)**2, "x": x, "v": v, "q": q, "x0": x[0], "u_perp":
            np.abs(u[..., 1:]).max(axis=(1, 2)), "alpha": alpha, "gxx": g[..., 0]}
     c = np.loadtxt(os.path.join(rundir, "east.cstat.hst"))
@@ -116,9 +118,9 @@ def read_snapshot(path):
     return t, d, tag
 
 
-def lattice_plane_of_tag(n, L):
+def lattice_plane_of_tag(n, L, stagger=True):
     """Lattice index along x of every tag, reproducing the order of make_east.py."""
-    q1 = (np.arange(n) + 1.0)*L/n
+    q1 = (np.arange(n) + (1.0 if stagger else 0.5))*L/n
     ic = int(np.argmin(np.abs(q1 - 0.25*L)))
     I = [b.ravel() for b in np.meshgrid(np.arange(n), np.arange(n), np.arange(n),
                                         indexing="ij")]
@@ -203,6 +205,8 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--gr", required=True)
     ap.add_argument("--newton", required=True)
+    ap.add_argument("--gr2", default="",
+                    help="run directory holding L1_n64_p2 (two particles per cell)")
     ap.add_argument("--out", required=True)
     a = ap.parse_args()
     os.makedirs(a.out, exist_ok=True)
@@ -210,6 +214,8 @@ def main():
 
     gr = {c: load_gr(os.path.join(a.gr, c)) for c in ("L1_n32", "L1_n64", "L1_n96", "L4_n64")
           if os.path.exists(os.path.join(a.gr, c, "east.traj.bin"))}
+    if a.gr2 and os.path.exists(os.path.join(a.gr2, "L1_n64_p2", "east.traj.bin")):
+        gr["L1_n64_p2"] = load_gr(os.path.join(a.gr2, "L1_n64_p2"))
     nw = {f"N_n{n}": load_newton(os.path.join(a.newton, f"n{n}")) for n in (32, 64)
           if os.path.exists(os.path.join(a.newton, f"n{n}", "newton.npz"))}
     if "N_n64" in nw:
@@ -273,7 +279,7 @@ def main():
     # plane symmetry: snapshots of the relativistic runs, Newtonian profile records
     for name, g in gr.items():
         n, L = g["n"], g["L"]
-        plane = lattice_plane_of_tag(n, L)
+        plane = lattice_plane_of_tag(n, L, g["stagger"])
         sym = []
         for p in sorted(glob.glob(os.path.join(g["dir"], "east.part.*.bin"))):
             t, dsn, tag = read_snapshot(p)
@@ -302,14 +308,32 @@ def main():
             f = read_field(p)
             prof[os.path.basename(p)] = f
     res["field_files_L1_n64"] = sorted(prof.keys())
+    prof2 = {}
+    if "L1_n64_p2" in gr:
+        for p in sorted(glob.glob(os.path.join(gr["L1_n64_p2"]["dir"], "east.field.*.bin"))):
+            prof2[os.path.basename(p)] = read_field(p)
+    # constraint violation in the void (x/L in 0.55 .. 0.95) and around the pancake
+    for nm, pr in (("L1_n64", prof), ("L1_n64_p2", prof2)):
+        rows = []
+        for f in pr.values():
+            n = f["E"].shape[0]
+            xc = (np.arange(n) + 0.5)/n
+            void = (xc > 0.55) & (xc < 0.95)
+            sc = 16.0*np.pi*f["E"].mean()
+            hx = np.abs(f["H"]).mean(axis=(1, 2))/sc
+            rows.append({"a": (1 + 0.5*f["t"])**2, "H_void_max": float(hx[void].max()),
+                         "H_rest_max": float(hx[~void].max())})
+        res[f"constraint_where_{nm}"] = rows
+        print("where", nm, [(round(r["a"], 1), f"{r['H_void_max']:.1e}",
+                             f"{r['H_rest_max']:.1e}") for r in rows])
 
     with open(os.path.join(a.out, "pancake.json"), "w") as fh:
         json.dump(res, fh, indent=1, default=float)
-    make_figures(runs, gr, nw, prof, res, a.out)
+    make_figures(runs, gr, nw, prof, res, a.out, prof2)
 
 
 # ---------------------------------------------------------------------------------------
-def make_figures(runs, gr, nw, prof, res, out):
+def make_figures(runs, gr, nw, prof, res, out, prof2=None):
     fs.use_style()
     import matplotlib.pyplot as plt
     P = fs.PAL
@@ -317,16 +341,18 @@ def make_figures(runs, gr, nw, prof, res, out):
              "L1_n64": dict(color=P["red"], ls="-"),
              "L1_n96": dict(color=P["yellow"], ls="-"),
              "L4_n64": dict(color=P["green"], ls="-"),
+             "L1_n64_p2": dict(color=P["orange"], ls="-."),
              "N_n32": dict(color=P["blue"], ls=":", lw=1.2),
              "N_n64": dict(color=P["blue"], ls="--")}
     label = {"L1_n32": "GR, $L=1$, 32", "L1_n64": "GR, $L=1$, 64",
              "L1_n96": "GR, $L=1$, 96", "L4_n64": "GR, $L=4$, 64",
+             "L1_n64_p2": "GR, $L=1$, 64, 2/cell",
              "N_n32": "Newton PM, 32", "N_n64": "Newton PM, 64"}
 
     # 1. errors against Zel'dovich
     fig, axs = plt.subplots(1, 2, figsize=(fs.FULL_WIDTH, 3.3))
     fig.subplots_adjust(left=0.09, right=0.98, bottom=0.14, top=0.95, wspace=0.27)
-    for name in ("N_n32", "N_n64", "L1_n32", "L1_n64", "L1_n96", "L4_n64"):
+    for name in ("N_n32", "N_n64", "L1_n32", "L1_n64", "L1_n96", "L4_n64", "L1_n64_p2"):
         if name not in runs:
             continue
         r = runs[name]
@@ -457,7 +483,7 @@ def make_figures(runs, gr, nw, prof, res, out):
     # 5. constraints
     fig, axs = plt.subplots(1, 2, figsize=(fs.FULL_WIDTH, 3.2))
     fig.subplots_adjust(left=0.09, right=0.98, bottom=0.15, top=0.95, wspace=0.27)
-    for name in ("L1_n32", "L1_n64", "L1_n96", "L4_n64"):
+    for name in ("L1_n32", "L1_n64", "L1_n96", "L4_n64", "L1_n64_p2"):
         if name not in gr:
             continue
         c = gr[name]["cstat"]
@@ -497,6 +523,29 @@ def make_figures(runs, gr, nw, prof, res, out):
         axs[1].set_xlabel(r"$x/L$")
         axs[0].legend(loc="upper right", fontsize=7, ncol=2)
         fs.save(fig, os.path.join(out, "pancake_constraint_profiles"))
+        plt.close(fig)
+
+    # 7. one against two particles per cell: H along x at a = 10 and 15
+    if prof and prof2:
+        fig, axs = plt.subplots(1, 2, figsize=(fs.FULL_WIDTH, 3.0), sharey=True)
+        fig.subplots_adjust(left=0.09, right=0.98, bottom=0.16, top=0.9, wspace=0.06)
+        for j, aa in enumerate((10.0, 15.0)):
+            for pr, col, lab in ((prof, P["red"], "1 particle per cell"),
+                                 (prof2, P["orange"], "2 per cell and direction")):
+                fl = list(pr.values())
+                af = np.array([(1 + 0.5*f["t"])**2 for f in fl])
+                f = fl[int(np.argmin(np.abs(af - aa)))]
+                n = f["E"].shape[0]
+                xc = (np.arange(n) + 0.5)/n
+                sc = 16.0*np.pi*f["E"].mean()
+                axs[j].semilogy(xc, np.abs(f["H"]).mean(axis=(1, 2))/sc + 1e-16, color=col,
+                                lw=1.2, label=lab)
+            axs[j].axvspan(0.55, 0.95, color="grey", alpha=0.1)
+            axs[j].set_title(f"$a = {aa:.0f}$", fontsize=10)
+            axs[j].set_xlabel(r"$x/L$")
+        axs[0].set_ylabel(r"$\langle|H|\rangle_{yz}\,/\,16\pi\langle E\rangle$")
+        axs[0].legend(loc="upper left", fontsize=8)
+        fs.save(fig, os.path.join(out, "pancake_ppc"))
         plt.close(fig)
 
 

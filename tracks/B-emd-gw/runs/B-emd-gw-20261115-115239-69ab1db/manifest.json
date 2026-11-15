@@ -24,7 +24,9 @@
  "cores": 2,
  "card_hours": 0.0,
  "started_utc": "2026-11-15T11:52:39+00:00",
- "status": "running",
+ "status": "completed",
  "package": "tracks/B-emd-gw/verify_cosmo",
- "notes": ""
+ "notes": "n32: 1403 steps, 94 s; n64: 2806 steps, 1709 s; both to a = 42 (one core each)",
+ "finished_utc": "2026-11-15T12:22:32+00:00",
+ "wall_time_s": 1710.0
 }
