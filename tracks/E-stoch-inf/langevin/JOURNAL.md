@@ -197,3 +197,22 @@ Inflection (USR):
 - R2e de Sitter noise at sigma = 0.01 differs from var_lin by more than 20 percent.
 - R2f the two surfaces (N_f = 13, N_e = 18) agree in variance within 1 percent (R frozen
   after USR).
+
+## 2026-11-15 ~13:10 UTC, entry 9: predictions for the end-of-inflation run (ref_endinf.py)
+
+Inflection potential, overdamped Langevin from the classical state at N_s = 12 (post-USR,
+delta_s = phi + sqrt2 v ~ 2.0e-4) to phi_a = -sqrt2 v + 1e-3, reflecting wall at
+delta_L = -4.9e-4 (variant -1e-3). Hand estimate: drift D ~ kappa delta^2 with
+kappa ~ 35 (from dphi/dN = 1.4e-6 at delta = 2e-4), S = H/2pi ~ 1.42e-6; linear variance
+int S^2/D^2 dN = S^2 / (5 kappa^3 delta_s^5) ~ 29; classical duration 1/(kappa delta_s)
+~ 143 e-folds (114 to phi_a); diffusion width of the inflection region
+(S^2/kappa)^(1/3) ~ 4e-5.
+- E1 the linear slow-roll integral int H^2/(8 pi^2 eps1) dN from N_s to the end lies in
+  [15, 60].
+- E2 recursion, BDF2 and Monte Carlo agree: mean and variance within 3 standard errors of
+  the Monte Carlo; recursion M = 250k vs 500k within 1e-3.
+- E3 the stochastic variance differs from the linear estimate by more than 20 percent,
+  the skewness exceeds 1 and the tail is exponential with the lowest eigenvalue as rate.
+- E4 moving the reflecting wall from -4.9e-4 to -1e-3 changes mean and variance by less
+  than 1e-3 relative.
+Refuted item by item if outside these ranges.
