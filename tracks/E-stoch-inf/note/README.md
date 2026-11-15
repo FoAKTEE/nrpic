@@ -24,8 +24,9 @@ notation (paper-writing skill, one level above the manuscript): `../WRITING_GUID
 Registered runs of this package: E-20261115-172421-50ac4ce (failed: scratch root taken from
 the harness variable `NRPIC_SCRATCH`; JOURNAL 17:24), E-20261115-172442-78cf53e (completed;
 superseded: legend of fig_deltan on the data, ledger column too narrow),
-E-20261115-173135-858482f (completed; superseded: exponent format in two ledger rows), and
-**E-20261115-173402-641b6e2** (completed), whose outputs are the committed figures and tables.
+E-20261115-173135-858482f (completed; superseded: exponent format in two ledger rows),
+E-20261115-173402-641b6e2 (completed; superseded: the release noise validation added), and
+**E-20261115-173904-3be0405** (completed), whose outputs are the committed figures and tables.
 
 ## How to rerun
 
@@ -79,7 +80,11 @@ statistics and the importance sampling of the delta-N package are cited only as 
    `tracks/core/outbox/20261115T1510Z__to-E-stoch-inf__scalar-field-merged.md`). The release
    forms the tanh window increment as sinh(x1 - x0)/(2 cosh x1 cosh x0)
    (`athenak/src/scalar_field/scalar_field_noise.cpp:570-577`, read), unlike the 836ac86
-   executable that the noise validation (E-20261115-140502-2957846) used.
+   executable that the noise validation (E-20261115-140502-2957846) used; the analysis
+   helper's run E-20261115-172423-5234cce shows the release passing A1 at 3.3e-15 against a
+   cancellation-free reference and failing it at 9.77e-11 against `noise/ref/noise_ref.py`,
+   so the Markov-tanh A1 failure recorded in EVIDENCE.md and SCOPE.md 6 now sits in the
+   reference (in the note: Fig. 5, Sec. IV C, ledger R8).
 6. Locator key `VS = 1308.4754` (`SCOPE.md:15`) suggests Vennin-Starobinsky; the source of
    1308.4754 v2 is Fujita, Kawasaki, Tada and Takesako, "A new algorithm for calculating the
    curvature perturbations in stochastic inflation" (its `\title` and `\author` lines in

@@ -570,6 +570,18 @@
    "checksum": "manifest"
   },
   {
+   "run": "E-20261115-172423-5234cce",
+   "file": "val_cf/validation.json",
+   "sha256": "99bbdb992d370e3fe6ddf9c4fe8149344da8f83e38ec77772ad668eef4a3feff",
+   "checksum": "manifest"
+  },
+  {
+   "run": "E-20261115-172423-5234cce",
+   "file": "val_std/validation.json",
+   "sha256": "09c344d70c2baa86ee653cad9dd329e92d15adc8f8323fc9cb06f8475e332358",
+   "checksum": "manifest"
+  },
+  {
    "run": "E-stoch-inf-20261115-122806-ef0d039",
    "file": "inflection.npz",
    "sha256": "a376e88d7b3da78784fac747371dc6629a9a803858a6f3bdf9fc2afa40e53f3c",

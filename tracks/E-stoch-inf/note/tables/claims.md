@@ -72,6 +72,8 @@ Inputs (sha256 checked against the run manifests where recorded):
 - `E-20261115-140502-2957846/val_frozen/validation.json` 26e80d92dd2fb4a7... (manifest)
 - `E-20261115-140502-2957846/val_markov_heaviside/validation.json` b0684e18882f942e... (manifest)
 - `E-20261115-140502-2957846/val_markov_tanh/validation.json` 3eb4e982acf26a0a... (manifest)
+- `E-20261115-172423-5234cce/val_cf/validation.json` 99bbdb992d370e3f... (manifest)
+- `E-20261115-172423-5234cce/val_std/validation.json` 09c344d70c2baa86... (manifest)
 - `E-stoch-inf-20261115-122806-ef0d039/inflection.npz` a376e88d7b3da787... (manifest)
 - `E-stoch-inf-20261115-122806-ef0d039/quadratic.npz` 6fb64b63ff9455c3... (manifest)
 - `E-stoch-inf-20261115-122806-ef0d039/summary.json` 2f9f21ae2235b928... (manifest)

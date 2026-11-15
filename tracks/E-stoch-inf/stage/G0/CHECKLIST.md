@@ -18,19 +18,19 @@ in VERIFY_RESULTS.md (`nrpic-stage verify`), not here.
   - evidence: RISKS.md (R1-R14); SCOPE.md section 7
 - [x] **C4** Compute estimate
   - status: PASS
-  - evidence: SCOPE.md section 8 (codebase/figs/cost.json, run E-stoch-inf-20261115-123936-b2ec5c7, rerun identical in E-20261115-140116-87c1cc5; GPU throughput docs/TESTLOG.md:46; processor throughput runs E-stoch-inf-20261115-122727-a1c2237 and E-20261115-135218-bdf4710). Card overhead now measured by core (run core-20261115-143907-cea4c86: 65 percent instead of the assumed 15); recomputed with it, one 256^3 realisation costs 0.57-0.71 (SR) and 0.71-0.88 (USR) card-hours, an extrapolation from 128^3 (note Sec. V, Fig. 6, note/scripts/costmodel.py, run E-20261115-173402-641b6e2); the conclusion of SCOPE.md 9 holds
+  - evidence: SCOPE.md section 8 (codebase/figs/cost.json, run E-stoch-inf-20261115-123936-b2ec5c7, rerun identical in E-20261115-140116-87c1cc5; GPU throughput docs/TESTLOG.md:46; processor throughput runs E-stoch-inf-20261115-122727-a1c2237 and E-20261115-135218-bdf4710). Card overhead now measured by core (run core-20261115-143907-cea4c86: 65 percent instead of the assumed 15); recomputed with it, one 256^3 realisation costs 0.57-0.71 (SR) and 0.71-0.88 (USR) card-hours, an extrapolation from 128^3 (note Sec. V, Fig. 6, note/scripts/costmodel.py, run E-20261115-173904-3be0405); the conclusion of SCOPE.md 9 holds
 
 ## Main products of G0 (charter 9.2)
 
 - [x] **C5** Working note v0
   - status: PASS
-  - evidence: note/main.tex, note/main.pdf (REVTeX, 9 pages: problem and acceptance criteria, set-up and corrected initial slice, freezing and delta-N references, noise validation, cost and decision, open items; appendices parameters, errata, ledger); figures and tables from run E-20261115-173402-641b6e2; predictions and outcomes note/JOURNAL.md N1-N3; claims check note/tables/claims.md (59 numbers of the lead's documents, 54 agree, 5 differ, listed in note/README.md)
+  - evidence: note/main.tex, note/main.pdf (REVTeX, 9 pages: problem and acceptance criteria, set-up and corrected initial slice, freezing and delta-N references, noise validation, cost and decision, open items; appendices parameters, errata, ledger); figures and tables from run E-20261115-173904-3be0405; predictions and outcomes note/JOURNAL.md N1-N3; claims check note/tables/claims.md (59 numbers of the lead's documents, 54 agree, 5 differ, listed in note/README.md)
 - [x] **C6** Architecture schematic
   - status: PASS
-  - evidence: note/figures/schem_architecture.png (Fig. 2 of the note; script note/scripts/schem_architecture.py, run E-20261115-173402-641b6e2; PNG looked at)
+  - evidence: note/figures/schem_architecture.png (Fig. 2 of the note; script note/scripts/schem_architecture.py, run E-20261115-173904-3be0405; PNG looked at)
 - [x] **C7** Stage timeline
   - status: PASS
-  - evidence: table in SCOPE.md section 10; schematic note/figures/schem_timeline.png (Fig. 7 of the note; run E-20261115-173402-641b6e2)
+  - evidence: table in SCOPE.md section 10; schematic note/figures/schem_timeline.png (Fig. 7 of the note; run E-20261115-173904-3be0405)
 
 ## Track-specific criteria of E-stoch-inf for G0 (9.8 Track E: stochastic inflation (S11, if possible))
 
@@ -66,7 +66,7 @@ in VERIFY_RESULTS.md (`nrpic-stage verify`), not here.
   - evidence: STAGE_REPORT.md (nrpic-stage report), EVIDENCE.md, OPEN.md, CHECKLIST.md in stage/G0; scoping text spec/scope/SCOPE.md (named in the report); no separate REVIEW.md: the lead's re-check of the helpers is EVIDENCE.md section 2 (for the lead to confirm)
 - [x] **C15** Data figures drawn with /zoom-figure-style from registered run outputs, one script per figure, every PNG looked at
   - status: PASS
-  - evidence: package figures (spec/fig, codebase/figs, langevin/fig, noise/fig) and the lead's (E-20261115-135532-3f958a1, E-20261115-140553-0b75e1e, E-20261115-140502-2957846) with python/nrpic/figstyle.py; the note's five data figures note/figures/fig_{background,freezing,deltan,noise,cost}.png with note/scripts/czstyle.py (unchanged copy), one script each, from checksum-verified outputs of registered runs (run E-20261115-173402-641b6e2), every PNG looked at
+  - evidence: package figures (spec/fig, codebase/figs, langevin/fig, noise/fig) and the lead's (E-20261115-135532-3f958a1, E-20261115-140553-0b75e1e, E-20261115-140502-2957846) with python/nrpic/figstyle.py; the note's five data figures note/figures/fig_{background,freezing,deltan,noise,cost}.png with note/scripts/czstyle.py (unchanged copy), one script each, from checksum-verified outputs of registered runs (run E-20261115-173904-3be0405), every PNG looked at
 - [x] **C16** Schematics drawn with /sleep-paper-figure-style: track architecture (exists / to be ported / new) and the gate timeline
   - status: PASS
   - evidence: note/scripts/schem_architecture.py and schem_timeline.py with note/scripts/paperfig.py (unchanged copy of harness/style/paperfig.py); both PNGs looked at
@@ -75,7 +75,7 @@ in VERIFY_RESULTS.md (`nrpic-stage verify`), not here.
   - evidence: paper-writing guide and notation ../WRITING_GUIDE.md, ../NOTATION.md; check_manuscript.py --compile on note/main.tex: 0 undefined references, 0 undefined citations, 0 overfull boxes; remaining candidates are the run ids of the ledger appendix and the document names in the scripts, accepted by exception 1 of the guide; captions within five lines on the rendered pages (looked at). Reviewer subagents of the skill's step 4 not run
 - [ ] **C18** Verifier subagent (fresh context) wrote VERIFIER_REPORT.md; every number of the Supplemental Material recomputed from the manifests
   - status: OPEN
-  - evidence: no VERIFIER_REPORT.md (OPEN.md item 4); the lead's independent checks are in EVIDENCE.md section 2; the note's ledger and the lead's numbers are recomputed from the run outputs by note/scripts/ledger.py (run E-20261115-173402-641b6e2), which is not a fresh-context verifier
+  - evidence: no VERIFIER_REPORT.md (OPEN.md item 4); the lead's independent checks are in EVIDENCE.md section 2; the note's ledger and the lead's numbers are recomputed from the run outputs by note/scripts/ledger.py (run E-20261115-173904-3be0405), which is not a fresh-context verifier
 - [x] **C19** Null results and failed runs are on record (manifests and JOURNAL)
   - status: PASS
   - evidence: EVIDENCE.md section 4; failed runs E-stoch-inf-20261115-125316-dafadc4, -131526-629fed8, E-20261115-135532-5ec2b09 (library-log leaf), E-20261115-140116-87c1cc5 (timing leaves), E-20261115-140502-2957846 (diagnostic syntax error) kept with manifests; refuted predictions in the package journals and the owner JOURNAL
