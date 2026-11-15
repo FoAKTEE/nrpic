@@ -224,7 +224,7 @@ def figures(res):
 
     # ---- T3: central lapse, error of the shells, interior H
     fig, ax = plt.subplots(1, 3, figsize=(fs.FULL_WIDTH, 3.0))
-    fig.subplots_adjust(left=0.08, right=0.98, bottom=0.16, top=0.90, wspace=0.36)
+    fig.subplots_adjust(left=0.08, right=0.98, bottom=0.16, top=0.90, wspace=0.42)
     keys = sorted(res["t3"], key=lambda k: (k.split("-")[1], -res["t3"][k]["dx"]))
     cols = fs.series_colors(len(keys), cmap="turbo")
     for k, c in zip(keys, cols):
@@ -236,7 +236,9 @@ def figures(res):
         if h["first_loss_time"] is not None:
             ax[0].axvline(h["first_loss_time"], color=c, lw=0.8, ls=":")
         cs = v["cstat"]
-        ax[2].semilogy(cs["t"], [np.nan if x is None else x for x in cs["H_max"]], color=c)
+        hm = np.array([np.nan if x is None else x for x in cs["H_max"]], dtype=float)
+        hm[hm > 1e3] = 1e3                      # the blown-up run: clipped at the frame
+        ax[2].semilogy(cs["t"], hm, color=c)
         g = v["groups"]
         tau = [2, 4, 6, 8, 10, 12]
         y = [max((g[n].get(f"tau{t}", {}).get("maxabs", np.nan) for n in ("core", "mid", "outer")),
@@ -249,7 +251,8 @@ def figures(res):
     ax[1].set_xlabel(r"proper time of the shells $\tau/M$", labelpad=-2)
     ax[1].set_ylabel(r"largest $|R/R_{\rm exact}-1|$, ball shells")
     ax[2].set_xlabel(r"coordinate time $t/M$", labelpad=-2)
-    ax[2].set_ylabel(r"largest $|H|$ on the mesh")
+    ax[2].set_ylabel(r"largest $|H|$ on the mesh (clipped)")
+    ax[2].set_ylim(1e-3, 2e3)
     fs.save(fig, os.path.join(FIGS, "id_t3_bound"))
     plt.close(fig)
 
