@@ -136,3 +136,16 @@ Prediction: after accepting bodies made only of \begin/\end commands and re-inge
 every paper with at least 10 uses gains a number of equation rows within 10 % of its use
 count of the shorthand (one equation environment per use), and each of the 20 gains at least
 one row; nothing else changes (suite passes). Refuted otherwise.
+
+### Outcome L11
+
+Refuted as worded, substance held. Run kb-20261115-141358-9043e03 (20 papers, 15.6 s). 15 of
+20 gained exactly or within 1 their use count (1707.00537 0 -> 120 rows, 2509.05124 0 -> 124,
+2402.08642 0 -> 115, 1905.06300 +115 of 116, 2101.05741 +119 of 120, ...). Five were outside:
+2311.03281 gained 27 for 19 counted uses, and 2404.15416, 2410.13683, 2605.11096, 2611.15050
+gained 0 for 1 counted use. The fault was my scan: it concatenated all files of a paper and
+split at the first \begin{document}, so uses in files listed before the main file were not
+counted and a definition in a file listed after it counted as a use. A second count after the
+fact (grep over all files, comments and definitions excluded): 2311.03281 has 27 uses
+(= gain 27); the four others have 0 (= gain 0). The fix itself is not in question; my
+prediction instrument was.
