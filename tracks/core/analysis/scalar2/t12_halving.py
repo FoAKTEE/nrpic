@@ -273,7 +273,7 @@ def main():
     p.set_yscale("log")
     p.set_xlabel("e-folds after $N_*$", labelpad=1)
     p.set_ylabel("rms of the parts of $H$ at $s=1$")
-    p.legend(loc="upper left", fontsize=7, ncol=2)
+    p.legend(loc="lower right", fontsize=7, ncol=2)
     p = ax[1, 1]
     for lab, mk, lbl in (("n_le_2", "o", r"$|n|\leq2$"), ("n_le_4", "s", r"$|n|\leq4$"),
                          ("all_in", "^", "all with $W>1/2$")):
