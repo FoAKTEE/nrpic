@@ -28,6 +28,10 @@ GAUGE = {
     "ct0": ["z4c/lapse_oplog=0.0", "z4c/lapse_harmonic=0.3333333333333333",
             "z4c/lapse_advect=0.0", "z4c/shift_Gamma=0.0", "z4c/shift_eta=0.0",
             "z4c/shift_advect=0.0"],
+    # lapse and shift held at their start values: with lapse 1 and shift 0 the slices of
+    # constant dust proper time and the comoving coordinates of the exact solution
+    "gs0": ["z4c/lapse_oplog=0.0", "z4c/lapse_harmonic=0.0", "z4c/lapse_advect=0.0",
+            "z4c/shift_Gamma=0.0", "z4c/shift_eta=0.0", "z4c/shift_advect=0.0"],
     # 1+log without advection, shift held at zero
     "mp0": ["z4c/lapse_advect=0.0", "z4c/shift_Gamma=0.0", "z4c/shift_eta=0.0",
             "z4c/shift_advect=0.0"],
@@ -37,6 +41,11 @@ GAUGE = {
 SHARP = ["--Rb", "10"]
 EDGE2 = ["--Rb", "10", "--edge", "2"]
 BOUND = ["--Rb", "5", "--e0", "0.16", "--RE", "10"]
+EXT = ["particles/source_density=true", "particles/source_extrap=true"]
+PROD = ["particles/source_density=true", "particles/source_extrap=true",
+        "particles/deposit_shape=pcs", "particles/deposit_comp_c=0.1666666666666667",
+        "particles/deposit_comp_c2=0.4666666666666667", "particles/interp=bspline",
+        "particles/nfilter=0"]
 CASES = {
     "mp-n064": ("t2", 64, 32.0, SHARP, 1, "mp", "zero", 10.0, []),
     "mp-n128": ("t2", 128, 32.0, SHARP, 1, "mp", "zero", 10.0, []),
@@ -66,11 +75,19 @@ CASES = {
                           ["particles/source_density=true", "particles/source_extrap=true"]),
     "ct-edge2-ext-n256": ("t2", 256, 32.0, EDGE2, 1, "ct", "zero", 10.0,
                           ["particles/source_density=true", "particles/source_extrap=true"]),
+    # ... and with the production configuration of cosmo/README.md for lattice starts
+    "ct-edge2-prod-n128": ("t2", 128, 32.0, EDGE2, 1, "ct", "zero", 10.0, PROD),
+    "ct-edge2-prod-n256": ("t2", 256, 32.0, EDGE2, 1, "ct", "zero", 10.0, PROD),
+    # ... and with lapse and shift held fixed (synchronous comoving coordinates)
+    "gs0-edge2-ext-n128": ("t2", 128, 32.0, EDGE2, 1, "gs0", "zero", 10.0, EXT),
+    "gs0-edge2-ext-n256": ("t2", 256, 32.0, EDGE2, 1, "gs0", "zero", 10.0, EXT),
+    "gs0-ext-n128": ("t2", 128, 32.0, SHARP, 1, "gs0", "zero", 10.0, EXT),
     # test 3: bound ball that turns around (R_b = 5 M, a_max = 1.25, tau = 9.54 M)
     "bound-ct-n080": ("t3", 80, 20.0, BOUND, 1, "ct", "zero", 12.0, []),
     "bound-ct-n160": ("t3", 160, 20.0, BOUND, 1, "ct", "zero", 12.0, []),
     "bound-ct-n320": ("t3", 320, 20.0, BOUND, 1, "ct", "zero", 12.0, []),
     "bound-mp-n160": ("t3", 160, 20.0, BOUND, 1, "mp", "zero", 12.0, []),
+    "bound-gs0-n160": ("t3", 160, 20.0, BOUND, 1, "gs0", "zero", 12.0, EXT),
 }
 
 

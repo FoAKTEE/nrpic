@@ -523,3 +523,96 @@ centre is below 1e-4 of 16 pi E at t = 2 and 4 M on all three meshes; the larges
 |eps| of the core shells at tau = 8 M is below that of `ct-edge2` at equal dx and falls
 at second order (ratio above 3 from dx = 1/2 to 1/4 M). Refuted by an offset above
 5e-4 or by a core error that is not smaller than without the extrapolation.
+
+### Prediction T2d (lattice noise late in the smooth-edge run), written before the runs
+
+Seen in `ct-edge2` (outcome in entry 7): the rms of H in the interior and in the edge
+falls with resolution until t = 4 M and then rises to 2e-4 - 3e-4 at t = 8 - 10 M, larger
+at dx = 1/4 M than at dx = 1/2 M, while the vacuum between the ball and r = 18 M stays
+clean (7e-6 at dx = 1/4 M). Hypothesis: lattice noise. The particles drift against the
+mesh (r/r_0 = 1.01 in the core, 1.13 at the edge), the lattice no longer divides the
+cells, and the cloud-in-cell deposit of one site per cell then carries a pattern of a
+few per cent of 16 pi rho (test 1: 3.5 per cent at 1.25 sites per cell), that is 1.6e-4
+at t = 8 M; a finer mesh loses the match sooner.
+Test: the production configuration of `cosmo/README.md` for lattice starts (cubic
+cloud with compensation, spline interpolation of the metric, no binomial pass,
+sources extrapolated): cases `ct-edge2-prod-n128`, `-n256`. Prediction: the rms of H
+in the interior at t = 8 and 10 M at dx = 1/4 M is below 5e-5 (at least four times
+below the 2.1e-4 and 3.2e-4 of `ct-edge2`), and not larger than at dx = 1/2 M. Refuted
+if it stays above 1e-4: then the late residual is not lattice noise.
+
+### Prediction T2e (lapse and shift held fixed), written before the runs
+
+Seen in the first two bound-ball runs (outcome in entry 7): the conformal-time lapse
+also sends a front from the surface to the centre, at about 0.58 of the speed of light
+(arrival at t = 8 M for the ball of isotropic radius 4.6 M; the central lapse rises to
+1.33, falls to 0.69 and the core shells lose accuracy). Every lapse condition of the
+form d_t alpha = -f(alpha) alpha K reacts to the jump of K at the surface.
+The exact solution suggests the gauge without that reaction: lapse 1 and shift 0 held
+fixed (`lapse_oplog = lapse_harmonic = 0`, no advection, no Gamma-driver): the slices
+stay the slices of constant dust proper time, the coordinates stay comoving, dust at
+rest stays at its coordinate position (u_i = 0 for ever), so the lattice keeps matching
+the mesh and t equals the proper time of every particle. The risk: geodesic slicing
+with a fixed shift is not known to be well posed in this formulation [BACKGROUND, not
+checked against the literature here], and it ends where shells cross or collapse.
+Cases `gs0-edge2-ext-n128`, `-n256` (smooth edge), `gs0-ext-n128` (sharp),
+`bound-gs0-n160` (bound ball), all with the sources extrapolated.
+Prediction: (i) the runs reach the end without growing grid-scale noise (mesh mean of
+|H| does not grow by more than a factor of three between t = 2 M and the end);
+(ii) the ball particles stay at their coordinates (|r/r_0 - 1| below 1e-4) and their
+proper time equals t to 1e-6; (iii) smooth edge: largest |eps| of all ball shells over
+the whole run below 2e-4 at dx = 1/2 M and second order; rms of H in the interior at
+t = 8 and 10 M below 2e-5 at dx = 1/4 M (no lattice noise); (iv) bound ball: no front,
+core shells follow the cycloid through the turnaround with largest |eps| below 5e-3 at
+tau = 12 M. Refuted by an instability, by drifting particles, or by errors above
+those of the conformal-time runs.
+
+## 2026-11-15, entry 7: outcomes of T2b and T3 (as far as the cards allowed)
+
+### Outcome of prediction T2b (smooth edge with the conformal-time lapse)
+
+Runs `core-20261115-035615-c9aa6d2` (dx = 1 M), `core-20261115-035616-c9aa6d2` (1/2 M),
+`core-20261115-040349-1311b8e` (1/4 M), `core-20261115-040406-1311b8e` (boundary at
+48 M, dx = 1/2 M). Figures `figs/t2_radius_ct_edge2` and the common ones.
+(ii) Confirmed in size, partly in order. Largest |eps| over the whole run (to
+tau = 12.4 M at the centre), dx = 1, 1/2, 1/4 M: core 2.2e-3, 5.9e-4, 2.0e-4; mid
+1.4e-3, 7.1e-4, 2.0e-4; outer 1.9e-3, 4.0e-4, 6.6e-5; edge shells 6.9e-4, 2.7e-4,
+7.5e-5; tracers at 1.25 R_out 1.5e-4, 3.6e-5, 1.5e-5. At tau = 8 M the outer shells
+are better than second order (1.36e-3, 2.7e-4, 4.5e-5), the core is first order
+(7.6e-4, 3.2e-4, 1.5e-4): the source lag. This is the most accurate configuration
+measured so far: all shells within 6e-4 at dx = 1/2 M and 2e-4 at dx = 1/4 M.
+(i) Failed in part. The rms of H falls with resolution in the vacuum between the ball
+and r = 18 M at all times (t = 6 M: 1.5e-4, 3.2e-5, 6.9e-6; t = 10 M: 4.0e-5, 9.4e-6,
+1.1e-5) and in the interior until t = 4 M (1.44e-4, 7.2e-5, 1.8e-5), but from t = 6 M
+on the interior and the edge do not converge (interior at t = 8 M: 3.9e-4, 7.5e-5,
+2.1e-4; at t = 10 M: 3.6e-4, 1.8e-4, 3.2e-4). Hypothesis and test: prediction T2d.
+(iii) Confirmed. Layer next to the boundary: 2.7e-4 - 3.0e-4 at t = 8 M and 3.7e-4 at
+t = 10 M on all three meshes; with the boundary at 48 M the interior numbers are
+identical to all printed digits and the layer has 8.0e-5. The tracers at 24 M show
+the boundary: largest |eps| 4.8e-4 with the boundary at 32 M, 5.7e-7 with it at 48 M.
+
+### Outcome of prediction T3 (bound ball), two of the three resolutions
+
+Runs `core-20261115-040525-1311b8e` (dx = 1/2 M), `core-20261115-040524-1311b8e`
+(dx = 1/4 M), conformal-time lapse, sharp surface, 0.017 card-hours. Figures
+`figs/t3_radius_bound_ct`, `t3_gauge` (looked at). The run at dx = 1/8 M and the
+1+log run were still queued when this was written (see the end of the journal).
+(i) Confirmed for the radius, not for the time. All shells turn around. Largest areal
+radius over initial radius (mean and spread over the tracked particles of a group;
+exact 1.2500): dx = 1/2 M core 1.2615 +- 0.0074, mid 1.2520, outer 1.2487, surface
+1.2474; dx = 1/4 M core 1.2528 +- 0.0036, mid 1.2561, outer 1.2526, surface 1.2515:
+within 0.5 per cent at dx = 1/4 M. Proper time of the maximum (exact 9.542 M):
+9.60 to 9.88 M at dx = 1/2 M; 9.63 (outer), 9.68 (surface), 9.87 (mid), 9.95 (core) at
+dx = 1/4 M: 1 to 4 per cent late, above the predicted 3 per cent for the core.
+(ii) Failed. Largest |eps| at tau = 8 M: 1.1e-2 (dx = 1/2 M) and 8.1e-3 (dx = 1/4 M);
+over the whole run core 0.20 and 0.11, mid 2.5e-2 and 2.6e-2, outer 2.0e-2 and
+1.7e-2, surface 2.1e-2 and 1.3e-2. The means are smaller (core at tau = 12 M: 2.4e-2
+and 8.6e-3) but the mid and outer shells do not converge after tau = 8 M.
+(iii) Failed, and this is the finding: the central lapse equals a(tau_c) within 7.8e-4
+until t = 6 M (dx = 1/4 M), then a front arrives from the surface: the central lapse
+rises to 1.33 at t = 8.4 M, falls to 0.69 at t = 9.6 M and is 1.17 at t = 12 M. The
+conformal-time lapse has the same pathology as 1+log, only slower: speed about 0.58
+(4.6 M in 8 M), so that it did not show within t = 10 M for the ball of radius 10 M
+(arrival there near t = 17 M). After the front the innermost shells lose accuracy.
+Rms of H: interior 8e-3 to 4e-2 (16 pi rho_0 = 9.6e-2), surface layer 3e-2 falling to
+1.4e-3, the same at both resolutions (sharp surface).
