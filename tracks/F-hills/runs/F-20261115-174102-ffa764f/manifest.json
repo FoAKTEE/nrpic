@@ -81,7 +81,7 @@
     "nodes": 1,
     "gpus": 0,
     "cores": 1,
-    "walltime_s": null,
+    "walltime_s": 40.798,
     "wall_limit": null,
     "segments_max": null,
     "gpu_hours_requested": 0.0,
@@ -92,15 +92,15 @@
   "outputs": {
     "dir": "scratch/F-hills/F-20261115-174102-ffa764f",
     "sha256sums": "sha256sums.txt",
-    "sha256sums_sha256": null,
-    "bytes": null,
-    "files": null
+    "sha256sums_sha256": "d225247b0ff69cfce58274c2b2d7d184af53257b469e34c1796ebc2a490cf8e0",
+    "bytes": 225137,
+    "files": 4
   },
-  "status": "running",
-  "exit_code": null,
+  "status": "completed",
+  "exit_code": 0,
   "registered": "2026-11-15T17:41:02Z",
-  "started": null,
-  "ended": null,
+  "started": "2026-11-15T17:41:02Z",
+  "ended": "2026-11-15T17:41:43Z",
   "parents": [],
   "notes": "python of scratch/F-hills/venv-gb (numba for hrna.py), not the worktree .venv",
   "budget_at_submit": {
@@ -112,5 +112,6 @@
     "cores_busy": 4,
     "runs": 88,
     "allotment_from": "coord/DECISIONS/0006-compute-budget.md + 0014-budgets-after-wave-1.md"
-  }
+  },
+  "finished": "2026-11-15T17:41:43Z"
 }
