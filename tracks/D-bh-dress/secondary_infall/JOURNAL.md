@@ -431,3 +431,8 @@ its 90 % radius grows to 1.1 dx and one clump particle reaches 15.9 M; at a/a_i 
 density inside 2 M is 2-7 times below the reference, the outermost caustic is smeared
 (deviation 104 % at the caustic, 35 % outside it), dust is flung out to 60 M at up to 0.8 c
 (`nm_phase.png`), and K + W ends 7.4 % low.
+Correction (17:58Z, after looking at `nm_selfsim.png` of the same analysis): the outermost
+caustic of N64c at a/a_i = 4 lies in the bin 16-20 M, lambda = 0.39-0.49, and the self-similar
+jump in the same 0.1-dex binning lies at lambda ~ 0.37-0.40: the caustic positions agree within
+the bin width; what differs is the density inside it (run 0.5-0.7 of the self-similar value
+for lambda = 0.1-0.3, flatter than lambda^(-9/4) inside lambda ~ 0.1).
