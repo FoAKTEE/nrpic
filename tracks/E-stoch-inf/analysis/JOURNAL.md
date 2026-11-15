@@ -170,3 +170,10 @@ W was still about 1e-4.
 - PS5 the code's lockstep R_q agree with SciPy's integration of the same data to <= 1e-3
   at every dump.
 - PS6 cost: N = 16 below 5 min per run; N = 32 between 30 and 60 min (one core).
+
+## 17:27 Prediction P3' (same as P3, scaled case on processors, while the card waits)
+
+U6 of the lead's scaled base case (N = 32, 120 steps, `lead/inputs/u_base32.athinput` with
+noise_scheme = markov) with the release processor executable (`scripts/u6_scaled.sh`):
+with the reference as it is, A1 fails between 1e-11 and 1e-8 of the rms; with the
+cancellation-free reference (`scripts/val_cf.py`) every test passes, A1 below 1e-11.
