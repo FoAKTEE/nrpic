@@ -254,3 +254,24 @@ Further, not predicted:
 - For the inflection case the lattice variant is 0.9905 +- 0.0016 of the lattice sum
   (within 1 percent but 6 SE). The 0.05 bins in ln n of the density of states are an
   approximation at this level.
+
+## 2026-11-15 ~13:35 UTC, entry 11: outcome of the end-of-inflation run
+(E-stoch-inf-20261115-130747-1b9bee4; figure and tail slopes E-stoch-inf-20261115-132724-cab7451;
+results/ref_inflection_endinf*.json)
+
+- E1 PASSED: linear slow-roll integral from N_s = 12 to the end is 29.74 (in [15, 60]);
+  P_zeta per e-fold at N_s is 1.024.
+- E2 PASSED at dN = 0.005: recursion (M = 500k) <N> = 114.894, var = 29.891; BDF2 114.869,
+  29.891; Monte Carlo 1e5 114.888 +- 0.016 (-0.4 SE), 29.98 +- 0.12 (+0.7 SE). At
+  dN = 0.02 the mean is +3.8 SE (step bias). Recursion M = 250k vs 500k: 2e-4 in the mean,
+  2e-7 in the variance (the 1e-3 criterion holds).
+- E3 REFUTED as stated: the variance is 0.5 percent above the linear 29.73 (I predicted a
+  difference of more than 20 percent) and the skewness is 0.32 (I predicted more than 1).
+  Its tail part holds in substance: the right tail is exponential with local slope -0.49 to
+  -0.51 per e-fold between 6 and 12 sd. But that rate is not the lowest eigenvalue of the
+  symmetrised operator (3.7e-4), which does not show at all; unresolved (README, "Not done").
+- E4 PASSED: reflecting wall at -4.9e-4 vs -1e-3 changes the mean by 6e-5 relative and
+  the variance by 1e-8.
+- Classical vs stochastic mean: <N> is 0.78 e-folds shorter than the classical 115.68
+  [VERIFIED by run]. A convex drift (D ~ kappa delta^2) speeds up the average passage
+  [JUDGEMENT on the cause].

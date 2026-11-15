@@ -20,7 +20,7 @@ equations, no spatial simulation. Journal with predictions and outcomes: `JOURNA
 | `scripts/v1_drift_diffusion.py` | V1: exact drift-diffusion first passage (1308.4754) |
 | `scripts/v2_quadratic.py` | V2: quadratic inflation, m = M_Pl (2206.11234, Fig. 2 set-up) |
 | `scripts/ref_spec.py`, `scripts/ref_plot.py` | reference delta-N statistics for the two specification cases, and their figures |
-| `scripts/ref_endinf.py` | end-of-inflation delta N of the inflection potential after USR |
+| `scripts/ref_endinf.py`, `scripts/endinf_plot.py` | end-of-inflation delta N of the inflection potential after USR, and its figure and tail slopes |
 | `results/*.json` | numbers of each registered run (the `run_id` field names the run) |
 | `fig/*.png`, `fig/*.pdf` | figures (style `python/nrpic/figstyle.py`) |
 
@@ -35,7 +35,8 @@ python3 $P/run.py --purpose "V2" --cores 8 -- python3 $P/v2_quadratic.py        
 python3 $P/run.py --purpose "ref" --kind production --cores 8 -- python3 $P/ref_spec.py inflection 1000000   # ~30 min
 python3 $P/run.py --purpose "ref" --kind production --cores 8 -- python3 $P/ref_spec.py quadratic 1000000    # ~30 min
 python3 $P/run.py --purpose "plots" --cores 4 -- python3 $P/ref_plot.py inflection /data/haiyangw/nrpic/scratch/E-stoch-inf/<run_id of ref_spec>
-python3 $P/run.py --purpose "endinf" --cores 8 -- python3 $P/ref_endinf.py
+python3 $P/run.py --purpose "endinf" --kind production --cores 8 -- python3 $P/ref_endinf.py   # ~19 min (BDF2 on 250k nodes)
+python3 $P/run.py --purpose "endinf plot" --cores 1 -- python3 $P/endinf_plot.py /data/haiyangw/nrpic/scratch/E-stoch-inf/<run_id of ref_endinf>
 ```
 
 Python 3.10 with numpy 2.2, scipy 1.15, mpmath 1.3, matplotlib 3.10 (system packages; no
@@ -161,13 +162,24 @@ End of inflation for the inflection potential [run E-stoch-inf-20261115-130747-1
   0.22. This is from the moment recursion; the wall position and grid change these by
   less than 2e-4.
 - The linear slow-roll integral over the same path is 29.73.
-- So the end-of-inflation curvature perturbation of this potential is dominated by the
-  post-USR creep, not by the USR peak. Its total variance is linear to 0.5 percent despite
-  P_zeta ~ 1 per e-fold, because it accumulates over about 100 e-folds. For Track A this
-  potential is not a source of large-but-rare perturbations at the end of inflation; only
-  the band-limited (NR-box) statistics above are meaningful as initial-condition
-  statistics [JUDGEMENT].
-ENDINF_MC_PLACEHOLDER
+- The BDF2 solver (M = 250k) gives 114.869 and 29.8907.
+- Monte Carlo (overdamped, bridge test) agrees:
+  - 1e5 runs at dN = 0.005: 114.888 +- 0.016 and 29.98 +- 0.12;
+  - 2e5 runs at dN = 0.02: 114.927 +- 0.009, a +3.8 SE step bias.
+- The variance is linear to 0.5 percent, but the right tail is not Gaussian. Between 6
+  and 12 standard deviations it is exponential, with a local slope of -0.49 to -0.51 per
+  e-fold (a Gaussian would have -1.1 to -2.2). At 10 sd, P = 1.7e-11, against 7.6e-24 for
+  a Gaussian (`results/ref_inflection_endinf_tail.json`, run
+  E-stoch-inf-20261115-132724-cab7451).
+- P_zeta = H^2/(8 pi^2 eps1) is 1.02 per e-fold at N_s and stays above 1e-2 for about 90
+  e-folds. As specified, this potential produces O(1) curvature perturbations on every
+  scale that exits after USR. It is a numerical test case for the NR pipeline, not a
+  viable PBH model: the post-USR plateau would dominate any end-of-inflation statistics
+  [JUDGEMENT].
+- The lowest eigenvalue of the symmetrised operator on this domain (3.7e-4) does not show
+  in the BDF2 survival, which is 5e-43 at N = 1200. Either that mode carries negligible
+  weight from the starting point or it is an artefact of the symmetrised form, where the
+  weight spans many decades. Not resolved.
 
 ## Stochastic-lattice comparison (2405.10692, STOLAS): what it would need, and when
 
@@ -238,11 +250,15 @@ Whether to do it before the feasibility gate [JUDGEMENT]: no.
   to the local FLRW) and a per-cell output of the e-folds to a uniform-field slice. That
   is enough for the stochastic-lattice comparison inside AthenaK with the seed of the NR
   run. Noise in both phi and Pi from the mode functions, as SPEC.md already specifies.
-- To A-emd-pbh: the band-limited statistics of the inflection case (table above,
-  `results/ref_inflection.json`, samples in `scratch/E-stoch-inf/E-stoch-inf-20261115-130137-176cdd6/`)
-  are close to Gaussian (skewness 0.04). At the end of inflation this potential gives
-  sigma_N = 5.5 e-folds from the post-USR creep. Neither is a PBH-relevant tail;
-  initial-condition statistics for Track A need a different potential.
+- To A-emd-pbh: two sets of statistics are available for the inflection case.
+  - Band-limited (NR box): close to Gaussian, skewness 0.04 (table above,
+    `results/ref_inflection.json`; samples in
+    `scratch/E-stoch-inf/E-stoch-inf-20261115-130137-176cdd6/`).
+  - End of inflation: sigma_N = 5.5 e-folds with an exponential right tail (slope about
+    -0.5 per e-fold), from a post-USR plateau where P_zeta ~ 1 over about 90 e-folds.
+
+  The potential is a numerical test case. Initial-condition statistics for Track A
+  should come from a potential tuned to observations; the solvers here take any V(phi).
 - To kb: the two errata of 2206.11234 (importance-weight sign, method.tex 78 and 151;
   leading pole v0/4, appendix.tex 168-173), with the runs above as evidence.
 
@@ -254,6 +270,8 @@ Whether to do it before the feasibility gate [JUDGEMENT]: no.
 - The lattice density-of-states variant uses 0.05-wide bins in ln n. It agrees with the
   lattice sum to 0.6 and 1.0 percent, but the 1.0 percent is 6 standard errors, so the
   binning is an approximation at that level.
+- The BDF2 density has a start-up error floor of about 1e-13 (V2 and end-of-inflation
+  figures). Values below that, at short N, are not results.
 - The full stochastic delta N from N* to the end of inflation in one solver is not done.
   The end-of-inflation number starts from the classical state at N = 12, so it is
   conditional and omits the noise before N = 12.
