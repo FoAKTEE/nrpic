@@ -1,0 +1,36 @@
+{
+ "run_id": "core-20261115-145545-3629622",
+ "owner": "core",
+ "purpose": "lead integration P4: collision replay with the Python twin (seven cases) on the merged processor executable 609a875",
+ "kind": "production",
+ "command": [
+  "python3",
+  "/data/haiyangw/nrpic/wt/core/tracks/core/analysis/collisions/run_replay.py",
+  "/data/haiyangw/nrpic/scratch/core/core-20261115-145545-3629622",
+  "--exe",
+  "/data/haiyangw/nrpic/wt/core/.work/build_cpu_609a875/src/athena",
+  "--nproc",
+  "4"
+ ],
+ "cwd": "/data/haiyangw/nrpic/scratch/core/core-20261115-145545-3629622",
+ "commit": "362962282e9c012f5bbf8b7a795a6d2e92204746",
+ "branch": "core/nrpic",
+ "uncommitted_changes": [
+  "?? tracks/core/verify/figs/regress_geodesic_core-20261115-065452-3629622.pdf",
+  "?? tracks/core/verify/figs/regress_geodesic_core-20261115-065452-3629622.png",
+  "?? tracks/core/verify/manifests/core-20261115-065452-3629622.json"
+ ],
+ "inputs": [
+  {
+   "path": ".work/build_cpu_609a875/src/athena",
+   "sha256": "a325f29a9361481b3f43b2c9cfeda53a78f98c0735998136fd8efc7d9d68f8b9"
+  }
+ ],
+ "output_directory": "/data/haiyangw/nrpic/scratch/core/core-20261115-145545-3629622",
+ "host": "anta",
+ "start_utc": "2026-11-15T14:55:45Z",
+ "cores": 4,
+ "wall_time_s": 226.36,
+ "exit_status": 0,
+ "core_hours": 0.2515
+}

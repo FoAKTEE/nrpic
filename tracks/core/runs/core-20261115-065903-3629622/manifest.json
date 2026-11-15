@@ -1,0 +1,56 @@
+{
+ "run_id": "core-20261115-065903-3629622",
+ "owner": "core",
+ "package": "verify",
+ "commit": "362962282e9c012f5bbf8b7a795a6d2e92204746",
+ "worktree_dirty": false,
+ "created": "2026-11-15T06:59:03",
+ "output_dir": "/data/haiyangw/nrpic/scratch/core/core-20261115-065903-3629622",
+ "kind": "scouting",
+ "test": "F homogeneous universe",
+ "purpose": "C3 regression of the cosmology extension: homogeneous dust universe to a = 4 against the exact solution and runs/cosmo/flrw_n32_cpu_sd",
+ "command": [
+  "python3 /data/haiyangw/nrpic/wt/core/cosmo/ic/make_lattice.py --n 32 --ppc 1 --L 4 --H0 1 --out /data/haiyangw/nrpic/scratch/core/core-20261115-065903-3629622",
+  "scripts/gpu_batch.sh line: /data/haiyangw/nrpic/scratch/core/core-20261115-065903-3629622 /data/haiyangw/nrpic/wt/core/problems/cosmo/flrw.athinput",
+  "athena -i /data/haiyangw/nrpic/wt/core/problems/cosmo/flrw.athinput -d /data/haiyangw/nrpic/scratch/core/core-20261115-065903-3629622 "
+ ],
+ "cwd": "/data/haiyangw/nrpic/scratch/core/core-20261115-065903-3629622",
+ "executable": {
+  "path": "/data/haiyangw/nrpic/wt/core/.work/build_gpu_609a875/src/athena",
+  "sha256": "601dbcc95be8e50fbf9619fd704d375735d0649a307a0fdfb20bafa4250cdf4f",
+  "mtime": "2026-11-15T06:58:54"
+ },
+ "inputs": [
+  {
+   "path": "/data/haiyangw/nrpic/wt/core/problems/cosmo/flrw.athinput",
+   "sha256": "a8669c756f610ae0de9d10038ebedecabf0c79ada2a1612214f5cc1de4bc70e2",
+   "bytes": 3590
+  },
+  {
+   "path": "/data/haiyangw/nrpic/scratch/core/core-20261115-065903-3629622/particles.nrp",
+   "sha256": "0d367ddaacca8f9db53fa2ce9fc2ba21143cbaa73506067dda6e8a3bb23d7036",
+   "bytes": 1966096
+  }
+ ],
+ "initial_data_vs_earlier": {
+  "new": "0d367ddaacca8f9db53fa2ce9fc2ba21143cbaa73506067dda6e8a3bb23d7036",
+  "earlier": "5400817505aef6c7da24ad3f83b614be387d3a05bd81a2d0893cd65b3e28ab20",
+  "identical": false
+ },
+ "resources": {
+  "device": "A100 card",
+  "cores": 1,
+  "card_hours": 0.0006
+ },
+ "status": "finished",
+ "batch_list": "/data/haiyangw/nrpic/scratch/core/tmp/verify_batch_20261115-065907.list",
+ "slurm_job": "4429",
+ "submitted": "2026-11-15T06:59:07",
+ "wall_time_s": 2.0,
+ "verdict": {
+  "passed": true,
+  "n_checks": 13,
+  "n_failed": 0,
+  "judge": "/data/haiyangw/nrpic/scratch/core/core-20261115-065903-3629622/judge.json"
+ }
+}

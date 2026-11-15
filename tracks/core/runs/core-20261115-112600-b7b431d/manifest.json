@@ -1,0 +1,38 @@
+{
+  "run_id": "core-20261115-112600-b7b431d",
+  "track": "core",
+  "work_package": "doc (C0, C1): interface documents, test D1",
+  "gate": "G1",
+  "purpose": "Test D1 of tracks/core/interfaces/JOURNAL.md: every output file of the NRPIC module written by the processor executable on a 16^3 periodic dust universe, read back with readers written from diagnostics.md and particle_id.md; restart from the dump at t = 0.25 compared with the uninterrupted run",
+  "kind": "scouting",
+  "preregistered_in": "tracks/core/interfaces/JOURNAL.md#2026-11-15-1125-test-d1-written-before-the-run-the-output-formats-of-the-module",
+  "git": {"sha": "b7b431d", "branch": "core/nrpic", "dirty": true,
+          "dirty_note": "only untracked files under tracks/core/ (this package and another helper's tracks/core/verify/); athenak/src identical to main at b7b431d"},
+  "code": {"executable": "/data/haiyangw/nrpic/.work/build_cpu_c1/src/athena",
+           "executable_sha256": "91f2e2c23a6301047ed4fe06ffe153d100fe6c121d0b6632087637b525547403",
+           "executable_built": "2026-11-14T06:03:37-08:00 (predates source commits 631cfe3, 010aace, 0c06525; see JOURNAL)",
+           "problem": "nrpic_cosmo"},
+  "cwd": "/data/haiyangw/nrpic/scratch/core/core-20261115-112600-b7b431d/run1 (run 1), .../run2 (run 2)",
+  "command": [
+    "cd /data/haiyangw/nrpic/wt/core/cosmo/ic && python3 make_lattice.py --n 16 --ppc 1 --L 4 --H0 1 --noise-x 0.01 --noise-u 1e-4 --seed 1 --out /data/haiyangw/nrpic/scratch/core/core-20261115-112600-b7b431d/ic",
+    "cd run1 && OMP_NUM_THREADS=4 /data/haiyangw/nrpic/.work/build_cpu_c1/src/athena -i d1_formats.athinput",
+    "cd run2 && OMP_NUM_THREADS=4 /data/haiyangw/nrpic/.work/build_cpu_c1/src/athena -r /data/haiyangw/nrpic/scratch/core/core-20261115-112600-b7b431d/run1/rst/flrw.00001.rst",
+    "python3 tracks/core/interfaces/check/read_outputs.py run1 run2 ic/particles.nrp figs"
+  ],
+  "inputs": [
+    {"file": "tracks/core/interfaces/check/d1_formats.athinput", "sha256": "73f3c735b8ec0915a3cc50dae77a305e37c76210965bf6356628ba48845f21dd"},
+    {"file": "cosmo/ic/make_lattice.py", "sha256": "fc5e2c9739547c0ea5eac29ee3e0cbb5d26ecb07546d8960ae23c043303bb668"},
+    {"file": "scratch/core/core-20261115-112600-b7b431d/ic/particles.nrp", "sha256": "0a7d062c63c1203098c81b29ced4cd4ffb44c160924e51c6766c74536fca09f8"},
+    {"file": "tracks/core/interfaces/check/read_outputs.py", "sha256": "0bc82c3422a114a68c5162a2509d28ab4c8af5bdf8efaf5fe8de3222833a249c"}
+  ],
+  "resources": {"nodes": 1, "gpus": 0, "cores": 1, "card_hours": 0.0,
+                "walltime_s": {"run1": 3.38, "run2": 1.48}, "particles": 4096},
+  "outputs": {"dir": "scratch/core/core-20261115-112600-b7b431d", "sha256sums": "sha256sums.txt", "bytes": 37420635,
+              "kept_in_git": ["tracks/core/interfaces/figs/d1_history.png", "tracks/core/interfaces/figs/d1_slices.png", "tracks/core/interfaces/figs/d1_summary.json"]},
+  "status": "completed",
+  "exit_code": 0,
+  "started": "2026-11-15T11:22:20Z",
+  "ended": "2026-11-15T11:23:40Z",
+  "parents": [],
+  "notes": "24 of 25 checks pass; the failed one is the tolerance of prediction 1 for the mass sum (6.7e-14 against the exact sum, equal to sequential summation to all printed digits), see JOURNAL outcome."
+}

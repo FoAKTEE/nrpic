@@ -1,0 +1,78 @@
+# Reproducible random numbers inside the code (docs/RNG.md), demonstration D1:
+# the test-particle cluster of problems/cluster_test/cluster_analytic.athinput in the
+# analytic Cartesian Kerr-Schild metric, with a random kick of the momenta at the end
+# of every push (athenak/src/particles/nrpic_kick.cpp), keyed by the particle tag and
+# the cycle number.  The particles do not read the mesh, so with the key "tag" their
+# states must be bit-identical for any division into MeshBlocks and across a restart.
+# The mesh covers the cluster because the control key "block" looks up the MeshBlock
+# that contains each particle.
+#
+#   layout 1 (one MeshBlock):   as written
+#   layout 2 (64 MeshBlocks):   meshblock/nx1=8 meshblock/nx2=8 meshblock/nx3=8
+#   restart:                    athena -r rst/kick.00001.rst -d <new directory>
+#   controls:                   particles/test_kick_key=block | sequence, job/rng_seed=...
+# The whole set of runs and the comparison: tracks/core/analysis/rng/run_kick_demo.py
+
+<comment>
+problem   = NRPIC test particles with a reproducible random kick, analytic metric
+
+<job>
+basename  = kick
+rng_seed  = 20261115
+
+<mesh>
+nghost    = 2
+nx1       = 32
+x1min     = -16.0
+x1max     = 16.0
+ix1_bc    = outflow
+ox1_bc    = outflow
+nx2       = 32
+x2min     = -16.0
+x2max     = 16.0
+ix2_bc    = outflow
+ox2_bc    = outflow
+nx3       = 32
+x3min     = -16.0
+x3max     = 16.0
+ix3_bc    = outflow
+ox3_bc    = outflow
+
+<meshblock>
+nx1       = 32
+nx2       = 32
+nx3       = 32
+
+<time>
+evolution  = dynamic
+integrator = rk2
+cfl_number = 1.0
+nlim       = -1
+tlim       = 20.0
+ndiag      = 100
+
+<particles>
+particle_type  = nrpic
+pusher         = midpoint
+metric         = kerr_schild
+bh_mass        = 1.0
+bh_spin        = 0.9
+tolerance      = 1.0e-12
+max_iterations = 100
+dt             = 0.05
+deposit        = false
+hist_dcycle    = 10
+snap_dt        = 10.0
+particle_file  = cluster.nrp
+test_kick        = true
+test_kick_sigma  = 1.0e-3
+test_kick_mode   = normal       # normal | direction
+test_kick_prob   = 0.25         # per step, mode direction
+test_kick_key    = tag          # tag | block (control) | sequence (control)
+
+<output1>
+file_type = rst
+dt        = 10.0
+
+<problem>
+pgen_name = nrpic_geodesic

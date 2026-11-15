@@ -1,0 +1,31 @@
+{
+ "run_id": "core-20261115-115120-4745494",
+ "label": "s_two_approx_n128",
+ "owner": "core",
+ "purpose": "Test 1a (viii): two punctures, closed-form corrections with the background factor",
+ "kind": "scouting",
+ "command": "/data/haiyangw/nrpic/wt/core-mp/.work/build_cpu/src/athena -i by_static.athinput -d /data/haiyangw/nrpic/scratch/core/core-20261115-115120-4745494 mesh/nx1=128 mesh/nx2=128 mesh/nx3=128 problem/ncomp=2 problem/comp0_x1=-1.5 problem/comp0_p1=0.0 problem/comp0_p2=0.3 problem/comp1_type=puncture problem/comp1_mass=0.5 problem/comp1_x1=1.5 problem/comp1_p2=-0.3 problem/comp1_s3=0.1 problem/comp0_corr=approx problem/comp1_corr=approx",
+ "cwd": "/data/haiyangw/nrpic/scratch/core/core-20261115-115120-4745494",
+ "commit": "4745494",
+ "source_dirty": false,
+ "inputs": [
+  {
+   "path": "problems/puncture/by_static.athinput",
+   "sha256": "72fbbf75a3b53f34a565c1a5b30353f326e7584928a31dd80cd4dca7295833fe"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/wt/core-mp/.work/build_cpu/src/athena",
+   "sha256": "706185bfbbe808d36cfd72cbf79ba0fc1ed8430689cb4b8cedafecc7100c96ea",
+   "role": "executable"
+  }
+ ],
+ "output_directory": "/data/haiyangw/nrpic/scratch/core/core-20261115-115120-4745494",
+ "resources": "1 core",
+ "started_utc": "2026-11-15T11:51:20Z",
+ "status": "done",
+ "exit_code": 0,
+ "wall_time_s": 22.7,
+ "queue_wait_s": 0.0,
+ "card_hours": 0.0,
+ "core_hours": 0.0063
+}

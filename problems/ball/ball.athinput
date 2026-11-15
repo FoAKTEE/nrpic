@@ -1,0 +1,125 @@
+# Expanding dust ball on a slice of constant dust proper time (initial data with
+# extrinsic curvature, table format 2; python/nrpic/expanding_ball.py).  Marginally
+# bound ball of areal radius R_b = 10 M inside its Hubble radius (H R_b = 0.447), uniform
+# mesh of half-width 32 M, dx = 0.5 M; lattice particles at rest in the slice.
+# Initial data:
+#   problems/ic/make_ball.py --Rb 10 --h 0.5 --out <dir>            (sharp surface)
+#   problems/ic/make_ball.py --Rb 10 --edge 2 --h 0.5 --out <dir>   (smooth edge)
+# and give the two files on the command line (particles/particle_file,
+# problem/comp0_file), with particles/traj_ntrack = traj_ntrack of the JSON file.
+# Start options: <problem> lapse = one | table | isotropic | precollapsed,
+#                <problem> shift = zero | table  (Painleve-Gullstrand shift of the table).
+#
+# The blocks below are the moving-puncture gauge (1+log, Gamma-driver) and the source
+# treatment of the collapse problems; they are the reference of the tests, not the
+# recommendation.  What the tests found (tracks/core/JOURNAL-id.md, entries 3 to 7):
+#   - lapse: use the conformal-time lapse, z4c/lapse_oplog=0.0
+#     z4c/lapse_harmonic=0.3333333333333333 (central lapse = scale factor, coordinate
+#     speed of light below 1.15).  With 1+log a lapse front from the surface reaches
+#     the centre (t = 5.5 M here), the central lapse falls from 3.4 to 1.5 and the
+#     innermost shells lose their accuracy;
+#   - sources: particles/source_density=true particles/source_extrap=true removes a
+#     first-order error of the expansion (sources held fixed during a step);
+#   - surface: a smooth edge (--edge) converges; a sharp surface leaves a constraint
+#     residual that does not fall with resolution (the comoving metric is
+#     discontinuous there), though the radii of the shells still converge;
+#   - lattice: a spacing that divides the cell size, sites symmetric about the cell
+#     centres; never rescale all masses, only those of the surface layer;
+#   - the outflow boundary is not transparent for this exterior (K_ij falls as
+#     r^(-3/2)): keep it further than the light travel time of the run.
+# Tests: tracks/core/analysis/id/ (constraints at the start, evolution against the exact
+# solution).
+
+<comment>
+problem   = expanding dust ball with extrinsic curvature
+
+<job>
+basename  = ball
+
+<mesh>
+nghost    = 4
+nx1       = 128
+x1min     = -32.0
+x1max     = 32.0
+ix1_bc    = outflow
+ox1_bc    = outflow
+nx2       = 128
+x2min     = -32.0
+x2max     = 32.0
+ix2_bc    = outflow
+ox2_bc    = outflow
+nx3       = 128
+x3min     = -32.0
+x3max     = 32.0
+ix3_bc    = outflow
+ox3_bc    = outflow
+
+<meshblock>
+nx1       = 32
+nx2       = 32
+nx3       = 32
+
+<time>
+evolution  = dynamic
+integrator = rk4
+cfl_number = 0.25
+nlim       = -1
+tlim       = 10.0
+ndiag      = 10
+
+<z4c>
+lapse_oplog     = 2.0
+lapse_harmonicf = 1.0
+lapse_harmonic  = 0.0
+lapse_volume    = 0.0
+lapse_advect    = 1.0
+shift_Gamma     = 0.75
+shift_eta       = 2.0
+shift_advect    = 1.0
+diss            = 0.5
+chi_div_floor   = 1.0e-5
+damp_kappa1     = 0.02
+damp_kappa2     = 0.0
+excise_chi      = 0.0      # constraint norms over the whole mesh (chi falls as the ball expands)
+
+<particles>
+particle_type  = nrpic
+pusher         = midpoint
+metric         = mesh
+interp         = hermite
+tolerance      = 1.0e-10
+max_iterations = 50
+deposit        = true
+deposit_shape  = cic
+deposit_comp_c = 0.0      # compensation of the cloud (cosmo/README.md)
+deposit_comp_c2 = 0.0
+nfilter        = 1
+filter_compensate = false
+source_density = false
+source_extrap  = false
+alpha_exc      = -1.0
+hist_dcycle    = 1
+cstat_dcycle   = 1
+traj_dcycle    = 4
+traj_ntrack    = 0
+snap_dt        = 2.0
+field_constraints = true
+field_time1    = 2.0
+field_time2    = 4.0
+field_time3    = 6.0
+field_time4    = 8.0
+field_time5    = 10.0
+particle_file  = ball.nrp
+
+<problem>
+pgen_name  = nrpic_cf
+ncomp      = 1
+comp0_type = table
+comp0_file = ball.tab
+lapse      = table
+lapse_comp = 0
+shift      = zero
+
+<output1>
+file_type = hst
+dt        = 0.25

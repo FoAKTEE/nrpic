@@ -1,0 +1,36 @@
+{
+ "run_id": "core-20261115-122027-dc623d1",
+ "owner": "core",
+ "command": [
+  "/data/haiyangw/nrpic/wt/core-newton/.work/baseline/athena_gpu",
+  "-i",
+  "geodesic.athinput",
+  "time/tlim=20.0",
+  "particles/hist_dcycle=100",
+  "particles/pusher=boris",
+  "particles/metric=lattice"
+ ],
+ "cwd": "/data/haiyangw/nrpic/scratch/core/core-20261115-122027-dc623d1",
+ "commit": "dc623d1",
+ "source_modified_since_commit": true,
+ "inputs": [
+  {
+   "path": "problems/kerr/geodesic.athinput",
+   "sha256": "31c6c43cb59447ec212b35fe1c019012d20d8483cda718e33e03cbd2b039ddc0"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/wt/core-newton/.work/baseline/athena_gpu",
+   "sha256": "43fa1990392990b805b5f31c612f500a74f1ef69025b91c2a7c86ec167e1e044",
+   "role": "executable"
+  }
+ ],
+ "output_directory": "/data/haiyangw/nrpic/scratch/core/core-20261115-122027-dc623d1",
+ "purpose": "regression of the relativistic mode, case boris, executable baseline",
+ "kind": "scouting",
+ "tag": "regress-boris-baseline",
+ "wall_time_s": 1.71,
+ "exit_status": 0,
+ "cores": 1,
+ "card_hours": 0.0,
+ "started_utc": "2026-11-15T12:20:27Z"
+}

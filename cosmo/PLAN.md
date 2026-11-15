@@ -192,6 +192,38 @@ What the first runs changed in the plan:
   (black-hole formation in an expanding box); T2 (not started); the split of the
   relativistic delay between initial data and evolution.
 
+## State and revisions (2026-11-15 15:40 UTC)
+
+Note by the orchestrator from Track B's verification of `cosmo/` (program wave 1); the
+entries above stay as written.
+- The rule of 06:30 "one particle per cell is enough with the cubic cloud before collapse"
+  fails where the lattice is stretched. Track B ran the plane-wave pancake
+  (`cosmo/ic/make_east.py --ratios 1,0,0`, d = 0.05, exact Zel'dovich crossing at a = 21)
+  in the production configuration, box of one initial Hubble radius, at 32, 64, 96 cells
+  with one particle per cell and at 64 cells with two per cell and direction, to a = 42.
+  With one particle per cell the mean relative Hamiltonian and momentum violations reach
+  1.6e-4 and 0.13 at a = 10, 1.3e-3 and 0.21 at a = 15, before the crossing; they sit in the
+  void and do not depend on the mesh, because the cubic cloud under-samples the stretched
+  lattice there (the deposit differs from the continuum density by 0.21 in the void at
+  a = 15). Two particles per cell and direction lower them to 3.2e-5 and 4.2e-5 (H) and
+  1.0e-2 and 6.3e-3 (M), the void violation 115-fold at a = 15. After the crossing, with one
+  per cell the energy density turns negative in void cells (E_min = -2.9e-7 against a mean
+  of 7.6e-6 at a = 25); with two per cell it stays positive. The Newtonian reference on the
+  same particles converges only at first order in the cell size with one per cell; two per
+  cell remove that part.
+- Evidence: runs B-emd-gw-20261115-115217-69ab1db and -115902-a3207d7 (cards, 0.48
+  card-hours together), Newtonian -115239-69ab1db and -122451-01801f6, analysis
+  -123852-ea4475c (`results/pancake.json`); `tracks/B-emd-gw/verify_cosmo/VERIFY.md`
+  section 6, items 1, 3 and 6, figures `figs/pancake_constraints.png`, `figs/pancake_ppc.png`
+  (branch `track/B-emd-gw`); proposal
+  `tracks/B-emd-gw/outbox/20261115T1340Z__to-orch__cosmo-plan-particles-per-cell.md`.
+- Rule from now on, in Track B's wording: one particle per cell is enough with the cubic
+  cloud before collapse while the lattice is not stretched by more than about 2; for
+  pancakes and voids use two per cell and direction. The factor 2 is the bound Track B
+  proposes; the runs above measured the d = 0.05 plane wave only.
+  The baseline of "Decisions" below (one lattice particle per cell) is affected for runs
+  that form voids or pancakes.
+
 ## T2, design notes (not started)
 
 Where it applies. A cold lattice has no smooth distribution function to subtract: its

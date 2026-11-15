@@ -1,0 +1,56 @@
+{
+ "run_id": "core-20261115-033755-408df57",
+ "owner": "core",
+ "package": "id",
+ "tag": "t1-sharp-n256-q1p25",
+ "purpose": "test 1, constraints at the start: sharp-n256-q1p25 (cells 256, q = 1.25, edge 0, lattice shift 0)",
+ "kind": "scouting",
+ "command": [
+  "/data/haiyangw/nrpic/wt/core-id/scripts/gpu_run.sh",
+  "/data/haiyangw/nrpic/scratch/core/core-20261115-033755-408df57",
+  "/data/haiyangw/nrpic/wt/core-id/problems/ball/ball.athinput",
+  "mesh/nx1=256",
+  "mesh/nx2=256",
+  "mesh/nx3=256",
+  "meshblock/nx1=64",
+  "meshblock/nx2=64",
+  "meshblock/nx3=64",
+  "time/nlim=0",
+  "particles/field_time1=1.0e9",
+  "particles/traj_dcycle=0",
+  "particles/snap_dt=-1.0",
+  "particles/particle_file=/data/haiyangw/nrpic/scratch/core/id/ic_ball/t1_sharp_n256_q1p25.nrp",
+  "problem/comp0_file=/data/haiyangw/nrpic/scratch/core/id/ic_ball/t1_sharp_n256_q1p25.tab"
+ ],
+ "cwd": "/data/haiyangw/nrpic/scratch/core/core-20261115-033755-408df57",
+ "commit": "408df57705451430aecfc01e119ddb644f6734b4",
+ "worktree_dirty": false,
+ "inputs": [
+  {
+   "path": "/data/haiyangw/nrpic/wt/core-id/problems/ball/ball.athinput",
+   "sha256": "68014de8ceeaf8c3d85991bd44397ab55cfd836626cb8f46a9b859e4d94e580a"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/wt/core-id/.work/build_gpu/src/athena",
+   "sha256": "b59ee3a36f4ac80b87a368a5506dd8c4857dbd856879c82e2f8f5ab49ecaf8bc"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/scratch/core/id/ic_ball/t1_sharp_n256_q1p25.nrp",
+   "sha256": "c5426b0f8462032d3c094ed269b9816b8351d1576a64d40a1254617ff933a887"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/scratch/core/id/ic_ball/t1_sharp_n256_q1p25.tab",
+   "sha256": "7a62afec5e80352f83b9736dd0c519c80d8fd3666337d3fbd776c81e2d224669"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/scratch/core/id/ic_ball/t1_sharp_n256_q1p25.json",
+   "sha256": "8eb2e73e19f65dcbafc8cd5796a188691b3fe572748f36fe64e55d5a3d3a065f"
+  }
+ ],
+ "output_directory": "/data/haiyangw/nrpic/scratch/core/core-20261115-033755-408df57",
+ "wall_time_s": 6.9,
+ "cores": 1,
+ "card_hours": 0.0019,
+ "exit_status": 0,
+ "started": "20261115-033755"
+}

@@ -1,0 +1,39 @@
+{
+ "run_id": "core-20261115-135312-a6e5c46",
+ "owner": "core",
+ "purpose": "Regression on one A100: executable built from the unmodified source against the final executable, five existing set-ups, every output file compared byte by byte",
+ "kind": "production",
+ "command": [
+  "python3",
+  "/data/haiyangw/nrpic/wt/core-rng/tracks/core/analysis/rng/run_regression.py",
+  "--base",
+  "/data/haiyangw/nrpic/wt/core-rng/.work/base/athena_gpu",
+  "--new",
+  "/data/haiyangw/nrpic/wt/core-rng/.work/exe/athena_gpu_34da199"
+ ],
+ "cwd": "/data/haiyangw/nrpic/scratch/core/core-20261115-135312-a6e5c46",
+ "commit": "a6e5c4606c5cb3b902838987709c66f1c86f412a",
+ "branch": "core/rng",
+ "uncommitted_changes": [],
+ "inputs": [
+  {
+   "path": ".work/base/athena_gpu",
+   "sha256": "8dccc7c47e178e76ab0d0e1b7bd3dfb7335a7428cea4dc4221c19fac16d64225"
+  },
+  {
+   "path": ".work/exe/athena_gpu_34da199",
+   "sha256": "6ea0777c4ef8a9c9cfbf1726b4502494fbcf55f7e92d1d7295c2aaf91428ec82"
+  },
+  {
+   "path": "tracks/core/analysis/rng/run_regression.py",
+   "sha256": "6a60bfa8617fdb84a50863bd5c040d14b9f44bd9b88f9a0607dfbbb7928ebe5f"
+  }
+ ],
+ "output_directory": "/data/haiyangw/nrpic/scratch/core/core-20261115-135312-a6e5c46",
+ "host": "anta",
+ "start_utc": "2026-11-15T13:53:13Z",
+ "cores": 1,
+ "wall_time_s": 16.45,
+ "exit_status": 0,
+ "card_hours": 0.0046
+}

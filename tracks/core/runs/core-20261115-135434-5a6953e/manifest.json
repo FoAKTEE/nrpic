@@ -1,0 +1,35 @@
+{
+ "run_id": "core-20261115-135434-5a6953e",
+ "owner": "core",
+ "purpose": "Scalar field on a statically refined mesh (smoke run): Klein-Gordon plane wave of a test field crossing one refinement level, 32^3 root mesh, 120 MeshBlocks, to t = 0.25",
+ "kind": "scouting",
+ "command": [
+  "/data/haiyangw/nrpic/wt/core-scalar/.work/exe/athena_cpu_5a6953e",
+  "-i",
+  "/data/haiyangw/nrpic/wt/core-scalar/problems/scalar/kg_wave_smr.athinput",
+  "scalar_field/dump_dt=0.25",
+  "-d",
+  "."
+ ],
+ "cwd": "/data/haiyangw/nrpic/scratch/core/core-20261115-135434-5a6953e",
+ "commit": "5a6953e1c7b7e1c64e9cb5aa9891218e0aaea719",
+ "branch": "core/scalar-field",
+ "uncommitted_changes": [],
+ "inputs": [
+  {
+   "path": ".work/exe/athena_cpu_5a6953e",
+   "sha256": "6e1cb057119bbb4f6341150565422529a2cc5c05ddae66b44672ef7b7964d9ed"
+  },
+  {
+   "path": "problems/scalar/kg_wave_smr.athinput",
+   "sha256": "e80263c8538992f7a71dd296381e99a7f51732d49e840472e079f60c9e6bf844"
+  }
+ ],
+ "output_directory": "/data/haiyangw/nrpic/scratch/core/core-20261115-135434-5a6953e",
+ "host": "anta",
+ "start_utc": "2026-11-15T13:54:35Z",
+ "cores": 1,
+ "wall_time_s": 387.2,
+ "exit_status": 0,
+ "core_hours": 0.1076
+}

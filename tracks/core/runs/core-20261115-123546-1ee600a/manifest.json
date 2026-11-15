@@ -1,0 +1,47 @@
+{
+ "run_id": "core-20261115-123546-1ee600a",
+ "owner": "core",
+ "purpose": "Agreement of the Python twin after the change of its input validation: tables of the processor and card builds (202070 keys) against the twin and numpy.random.Philox",
+ "kind": "production",
+ "command": [
+  "python3",
+  "/data/haiyangw/nrpic/wt/core-rng/tracks/core/analysis/rng/compare_table.py",
+  "--numpy",
+  "20000",
+  "--json",
+  "compare.json",
+  "/data/haiyangw/nrpic/scratch/core/core-20261115-115134-f0258ce/rng_table.bin",
+  "/data/haiyangw/nrpic/scratch/core/core-20261115-115230-f0258ce/rng_table.bin"
+ ],
+ "cwd": "/data/haiyangw/nrpic/scratch/core/core-20261115-123546-1ee600a",
+ "commit": "1ee600a039bcde1c049fc22dd86cd113831862b5",
+ "branch": "core/rng",
+ "uncommitted_changes": [
+  "M python/nrpic/rng.py"
+ ],
+ "inputs": [
+  {
+   "path": "/data/haiyangw/nrpic/scratch/core/core-20261115-115134-f0258ce/rng_table.bin",
+   "sha256": "6527e84fdfeceb59a2b2b8df33897d9722f9ca531f070f628786291e48264523"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/scratch/core/core-20261115-115230-f0258ce/rng_table.bin",
+   "sha256": "6527e84fdfeceb59a2b2b8df33897d9722f9ca531f070f628786291e48264523"
+  },
+  {
+   "path": "python/nrpic/rng.py",
+   "sha256": "f0de146325ed31f060ddce48a2704d245791c15ea2ca38769cd9d158f15b36e3"
+  },
+  {
+   "path": "tracks/core/analysis/rng/compare_table.py",
+   "sha256": "f21175425daeeaa4abd1db1be84d0dd44a5207a8633a9d4235207d9450b4a58c"
+  }
+ ],
+ "output_directory": "/data/haiyangw/nrpic/scratch/core/core-20261115-123546-1ee600a",
+ "host": "anta",
+ "start_utc": "2026-11-15T12:35:46Z",
+ "cores": 1,
+ "wall_time_s": 1.55,
+ "exit_status": 0,
+ "core_hours": 0.0004
+}

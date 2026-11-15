@@ -1126,6 +1126,7 @@ void Particles::NrpicWriteRestart(const std::string &fname) {
     std::fwrite(tsh.data(), sizeof(double), tsh.size(), fp);
   }
   std::fclose(fp);
+  if (nropt.newton) { NrpicNewtonWriteRestart(fname + ".nwt"); }
 }
 
 //----------------------------------------------------------------------------------------
@@ -1221,6 +1222,7 @@ void Particles::NrpicReadRestart(const std::string &fname) {
   if (global_variable::my_rank == 0) {
     std::cout << "NRPIC: restarted " << np << " particles from " << fname << std::endl;
   }
+  if (nropt.newton) { NrpicNewtonReadRestart(fname + ".nwt"); }
 }
 
 //----------------------------------------------------------------------------------------
@@ -1244,6 +1246,7 @@ void Particles::NrpicStartup(bool res_flag) {
   NrpicProbe(0.0);
   if (nropt.hist_dcycle > 0) {
     NrpicWriteHistory(pm->time, pm->ncycle, true);
+    if (nropt.newton) { NrpicNewtonWriteHistory(pm->time, pm->ncycle, true); }
   }
   if (nropt.traj_dcycle > 0 && nropt.traj_ntrack > 0) {
     NrpicWriteTrajectories(pm->time, true);
@@ -1281,6 +1284,7 @@ TaskStatus Particles::NrpicDiagnostics(Driver *pdriver, int stage) {
   NrpicProbe(pm->dt);
   if (nropt.hist_dcycle > 0 && (ncyc % nropt.hist_dcycle == 0)) {
     NrpicWriteHistory(tnew, ncyc, false);
+    if (nropt.newton) { NrpicNewtonWriteHistory(tnew, ncyc, false); }
   }
   if (nropt.traj_dcycle > 0 && nropt.traj_ntrack > 0 &&
       (ncyc % nropt.traj_dcycle == 0)) {

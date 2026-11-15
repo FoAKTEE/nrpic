@@ -1,0 +1,43 @@
+{
+ "run_id": "core-20261115-135423-5a6953e",
+ "owner": "core",
+ "purpose": "Scalar field on one processor core: cost of the field and of the stochastic sources next to Z4c, 64^3",
+ "kind": "production",
+ "command": [
+  "python3",
+  "/data/haiyangw/nrpic/wt/core-scalar/tracks/core/analysis/scalar/cost.py",
+  "--exe",
+  "/data/haiyangw/nrpic/wt/core-scalar/.work/exe/athena_cpu_5a6953e",
+  "--n",
+  "64",
+  "--block",
+  "32",
+  "--nlim",
+  "4"
+ ],
+ "cwd": "/data/haiyangw/nrpic/scratch/core/core-20261115-135423-5a6953e",
+ "commit": "5a6953e1c7b7e1c64e9cb5aa9891218e0aaea719",
+ "branch": "core/scalar-field",
+ "uncommitted_changes": [],
+ "inputs": [
+  {
+   "path": ".work/exe/athena_cpu_5a6953e",
+   "sha256": "6e1cb057119bbb4f6341150565422529a2cc5c05ddae66b44672ef7b7964d9ed"
+  },
+  {
+   "path": "tracks/core/analysis/scalar/cost.py",
+   "sha256": "5a948ef087a3d6b9aec27dcb7fb5bff8f3a47d9bf54936f7a0016c9533ce9122"
+  },
+  {
+   "path": "problems/scalar/noise_ms.athinput",
+   "sha256": "3ff8eb7bab3c10bb868bc592fdae95ff6175c91b6629dd10f7d9b382598dc9bd"
+  }
+ ],
+ "output_directory": "/data/haiyangw/nrpic/scratch/core/core-20261115-135423-5a6953e",
+ "host": "anta",
+ "start_utc": "2026-11-15T13:54:24Z",
+ "cores": 1,
+ "wall_time_s": 241.55,
+ "exit_status": 0,
+ "core_hours": 0.0671
+}

@@ -1,0 +1,47 @@
+{
+ "run_id": "core-20261115-140626-6699860",
+ "owner": "core",
+ "purpose": "Scalar field test 5: sources of particles and field together; dust universe with a vacuum energy from the particle module against the same from a scalar field at rest with a constant potential",
+ "kind": "production",
+ "command": [
+  "python3",
+  "/data/haiyangw/nrpic/wt/core-scalar/tracks/core/analysis/scalar/test5_particles.py",
+  "--exe",
+  "/data/haiyangw/nrpic/wt/core-scalar/.work/exe/athena_cpu_5a6953e",
+  "--particles",
+  "/data/haiyangw/nrpic/scratch/core/core-20261115-135417-5a6953e/ic/particles.nrp"
+ ],
+ "cwd": "/data/haiyangw/nrpic/scratch/core/core-20261115-140626-6699860",
+ "commit": "66998601c538dcb395d139a32e7a6a20ff9fdc83",
+ "branch": "core/scalar-field",
+ "uncommitted_changes": [],
+ "inputs": [
+  {
+   "path": ".work/exe/athena_cpu_5a6953e",
+   "sha256": "6e1cb057119bbb4f6341150565422529a2cc5c05ddae66b44672ef7b7964d9ed"
+  },
+  {
+   "path": "problems/scalar/flrw_dust_field.athinput",
+   "sha256": "1b3a69000b8a5965275dc88e6dfb025870754009d23edc1cf2b34e4a7beef89e"
+  },
+  {
+   "path": "problems/cosmo/flrw.athinput",
+   "sha256": "a8669c756f610ae0de9d10038ebedecabf0c79ada2a1612214f5cc1de4bc70e2"
+  },
+  {
+   "path": "tracks/core/analysis/scalar/test5_particles.py",
+   "sha256": "70ed08fdaffa388026cc875419ba7f4ec4f2572d7119ec20e5e1245633d9a783"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/scratch/core/core-20261115-135417-5a6953e/ic/particles.nrp",
+   "sha256": "4ea717296ec47c41306b42f96bdd726ed2d5097c9402a5f10aa8310e333eeeba"
+  }
+ ],
+ "output_directory": "/data/haiyangw/nrpic/scratch/core/core-20261115-140626-6699860",
+ "host": "anta",
+ "start_utc": "2026-11-15T14:06:26Z",
+ "cores": 4,
+ "wall_time_s": 48.32,
+ "exit_status": 0,
+ "core_hours": 0.0537
+}

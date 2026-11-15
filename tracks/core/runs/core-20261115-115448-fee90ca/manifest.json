@@ -1,0 +1,43 @@
+{
+ "run_id": "core-20261115-115448-fee90ca",
+ "owner": "core",
+ "command": [
+  "/data/haiyangw/nrpic/wt/core-newton/.work/athena_cpu_9d84282",
+  "-i",
+  "isolated.athinput",
+  "mesh/nx1=64",
+  "mesh/nx2=64",
+  "mesh/nx3=64",
+  "time/tlim=1.0",
+  "particles/dt=0.002",
+  "particles/snap_dt=0.05",
+  "particles/particle_file=ball64.nrp"
+ ],
+ "cwd": "/data/haiyangw/nrpic/scratch/core/core-20261115-115448-fee90ca",
+ "commit": "fee90ca",
+ "source_modified_since_commit": false,
+ "inputs": [
+  {
+   "path": "problems/newton/isolated.athinput",
+   "sha256": "4e6cc468d4e248d1c157e220da8ff7d0642e41d9a0438f874767984b4b2cc209"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/scratch/core/ic/newton/ball64.nrp",
+   "sha256": "c4d23b39b4a2463b258ab6b4a9a3ef490a2b7aff6c92270e4192e9cd4494ce15"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/wt/core-newton/.work/athena_cpu_9d84282",
+   "sha256": "71ff0dac2f3166871a92a20363fac51510191d912647c72a1f6e3df9c47f12f7",
+   "role": "executable"
+  }
+ ],
+ "output_directory": "/data/haiyangw/nrpic/scratch/core/core-20261115-115448-fee90ca",
+ "purpose": "T3 cold collapse of a homogeneous ball from rest, N=64, dt=0.002, to t=1.0, processor",
+ "kind": "scouting",
+ "tag": "collapse-N64",
+ "wall_time_s": 202.73,
+ "exit_status": 0,
+ "cores": 1,
+ "card_hours": 0.0,
+ "started_utc": "2026-11-15T11:54:48Z"
+}

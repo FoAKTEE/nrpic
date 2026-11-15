@@ -1,0 +1,48 @@
+{
+ "run_id": "core-20261115-032757-b7b431d",
+ "owner": "core",
+ "package": "id",
+ "tag": "regress-new",
+ "purpose": "format-1 regression after the change: nrpic_cf with OS table, 12 steps, executable built from the working tree with format 2",
+ "kind": "scouting",
+ "command": [
+  "/data/haiyangw/nrpic/wt/core-id/.work/build_cpu/src/athena",
+  "-i",
+  "/data/haiyangw/nrpic/wt/core-id/problems/tests/cf_table_regress.athinput",
+  "-d",
+  "/data/haiyangw/nrpic/scratch/core/core-20261115-032757-b7b431d",
+  "particles/particle_file=/data/haiyangw/nrpic/scratch/core/id/ic_os/os_R5_lattice_N10395_s1.nrp",
+  "problem/comp0_file=/data/haiyangw/nrpic/scratch/core/id/ic_os/os_R5_lattice_N10395_s1.tab"
+ ],
+ "cwd": "/data/haiyangw/nrpic/scratch/core/core-20261115-032757-b7b431d",
+ "commit": "b7b431ddf4bb8550ac3e4a855d05c5a1a847f50c",
+ "worktree_dirty": true,
+ "inputs": [
+  {
+   "path": "/data/haiyangw/nrpic/wt/core-id/problems/tests/cf_table_regress.athinput",
+   "sha256": "8cf0d9b3d4ef49fac9a3972993433ce1433c30e4377c6111810e6618e1a1d064"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/wt/core-id/.work/build_cpu/src/athena",
+   "sha256": "7d1292d0e73ac41a53dbd9225dbaeaa6c8861220d83762de8d37dea618f01515"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/scratch/core/id/ic_os/os_R5_lattice_N10395_s1.nrp",
+   "sha256": "3f608fecccc976ad6823b0278f62a6f6c7904b1cb476a7585e329cb2203c48b8"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/scratch/core/id/ic_os/os_R5_lattice_N10395_s1.tab",
+   "sha256": "f2b5e5bf91f31e1beeda277b330a592d2f1e851e346f2080d2865ac6ca80bf6e"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/wt/core-id/athenak/src/pgen/nrpic/nrpic_cf.cpp",
+   "sha256": "f267d39d2b61c0f3064d7221b9c310ebfbafdf70ea115eee20f515f60bf5ee68"
+  }
+ ],
+ "output_directory": "/data/haiyangw/nrpic/scratch/core/core-20261115-032757-b7b431d",
+ "wall_time_s": 467.8,
+ "cores": 1,
+ "card_hours": 0.0,
+ "exit_status": 0,
+ "started": "20261115-032757"
+}

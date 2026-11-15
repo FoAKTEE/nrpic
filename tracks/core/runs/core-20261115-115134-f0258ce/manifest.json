@@ -1,0 +1,36 @@
+{
+ "run_id": "core-20261115-115134-f0258ce",
+ "owner": "core",
+ "purpose": "Random-number unit test on processors: table of draws for 202070 keys, statistical sums of 2e8 keys, cost per call (serial build)",
+ "kind": "production",
+ "command": [
+  "bash",
+  "-c",
+  "python3 /data/haiyangw/nrpic/wt/core-rng/tracks/core/analysis/rng/make_keys.py keys.bin 200000 && /data/haiyangw/nrpic/wt/core-rng/.work/build_cpu/src/athena -i /data/haiyangw/nrpic/wt/core-rng/problems/tests/rng_test.athinput problem/key_file=keys.bin problem/nstat=2e8 problem/ntime=2e7 -d ."
+ ],
+ "cwd": "/data/haiyangw/nrpic/scratch/core/core-20261115-115134-f0258ce",
+ "commit": "f0258ce872fa1b3ed94dc5d85f75bbbad50d06bb",
+ "branch": "core/rng",
+ "uncommitted_changes": [],
+ "inputs": [
+  {
+   "path": "problems/tests/rng_test.athinput",
+   "sha256": "ea671b2f5a166ad134390b8a3ee81a6a7c06e56ec8071820a216ede0498d6fe5"
+  },
+  {
+   "path": "tracks/core/analysis/rng/make_keys.py",
+   "sha256": "04698e74e8471b6e21ef03ab8f0b261567bc34ae3b416acecad826b16c7813fa"
+  },
+  {
+   "path": ".work/build_cpu/src/athena",
+   "sha256": "1aed285ee103078bdddd6c3f1538a039469eeba6afa9f11d59e04dfb5bbf7a18"
+  }
+ ],
+ "output_directory": "/data/haiyangw/nrpic/scratch/core/core-20261115-115134-f0258ce",
+ "host": "anta",
+ "start_utc": "2026-11-15T11:51:35Z",
+ "cores": 1,
+ "wall_time_s": 105.86,
+ "exit_status": 0,
+ "core_hours": 0.0294
+}

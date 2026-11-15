@@ -1,0 +1,100 @@
+# Regression of the conformally flat problem generator with a format-1 radial table
+# (docs/FORMATS.md): Oppenheimer-Snyder ball, R_0 = 5 M, lattice particles, one static
+# refinement level, twelve steps.  The outputs (history files, particle snapshots,
+# restart files) must stay bit-identical when the generator changes
+# (tracks/core/analysis/id/regress_format1.py).  Initial data:
+#   problems/ic/make_ic.py os --N 10000 --sampler lattice --out <dir>
+# and give the two files on the command line (particles/particle_file, problem/comp0_file).
+
+<comment>
+problem   = regression of nrpic_cf with a format-1 table
+
+<job>
+basename  = cfreg
+
+<mesh>
+nghost    = 4
+nx1       = 64
+x1min     = -32.0
+x1max     = 32.0
+ix1_bc    = outflow
+ox1_bc    = outflow
+nx2       = 64
+x2min     = -32.0
+x2max     = 32.0
+ix2_bc    = outflow
+ox2_bc    = outflow
+nx3       = 64
+x3min     = -32.0
+x3max     = 32.0
+ix3_bc    = outflow
+ox3_bc    = outflow
+
+<meshblock>
+nx1       = 16
+nx2       = 16
+nx3       = 16
+
+<mesh_refinement>
+refinement       = static
+max_nmb_per_rank = 512
+
+<refined_region1>
+level = 1
+x1min = -8.0
+x1max = 8.0
+x2min = -8.0
+x2max = 8.0
+x3min = -8.0
+x3max = 8.0
+
+<time>
+evolution  = dynamic
+integrator = rk4
+cfl_number = 0.25
+nlim       = 12
+tlim       = 100.0
+ndiag      = 1
+
+<z4c>
+lapse_oplog     = 2.0
+lapse_harmonicf = 1.0
+lapse_harmonic  = 0.0
+lapse_advect    = 1.0
+shift_Gamma     = 0.75
+shift_eta       = 2.0
+shift_advect    = 1.0
+diss            = 0.5
+chi_div_floor   = 1.0e-5
+damp_kappa1     = 0.02
+damp_kappa2     = 0.0
+
+<particles>
+particle_type  = nrpic
+pusher         = midpoint
+metric         = mesh
+tolerance      = 1.0e-10
+max_iterations = 50
+deposit        = true
+nfilter        = 1
+alpha_exc      = 0.1
+hist_dcycle    = 1
+cstat_dcycle   = 1
+snap_dt        = 1.0
+particle_file  = os.nrp
+
+<problem>
+pgen_name  = nrpic_cf
+ncomp      = 1
+comp0_type = table
+comp0_file = os.tab
+lapse      = table
+lapse_comp = 0
+
+<output1>
+file_type = hst
+dt        = 0.125
+
+<output2>
+file_type = rst
+dt        = 1000.0

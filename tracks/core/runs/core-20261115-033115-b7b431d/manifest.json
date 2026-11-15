@@ -1,0 +1,42 @@
+{
+ "run_id": "core-20261115-033115-b7b431d",
+ "owner": "core",
+ "package": "id",
+ "tag": "regress-base-gpu",
+ "purpose": "format-1 regression baseline on a card: executable built from the source before the change",
+ "kind": "scouting",
+ "command": [
+  "/data/haiyangw/nrpic/wt/core-id/scripts/gpu_run.sh",
+  "/data/haiyangw/nrpic/scratch/core/core-20261115-033115-b7b431d",
+  "/data/haiyangw/nrpic/wt/core-id/problems/tests/cf_table_regress.athinput",
+  "particles/particle_file=/data/haiyangw/nrpic/scratch/core/id/ic_os/os_R5_lattice_N10395_s1.nrp",
+  "problem/comp0_file=/data/haiyangw/nrpic/scratch/core/id/ic_os/os_R5_lattice_N10395_s1.tab"
+ ],
+ "cwd": "/data/haiyangw/nrpic/scratch/core/core-20261115-033115-b7b431d",
+ "commit": "b7b431ddf4bb8550ac3e4a855d05c5a1a847f50c",
+ "worktree_dirty": true,
+ "inputs": [
+  {
+   "path": "/data/haiyangw/nrpic/wt/core-id/problems/tests/cf_table_regress.athinput",
+   "sha256": "7858d15425fef8c66c0141a2fd3f85c5d2cc4f6c6597d3230bcd0001a7c637a8"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/wt/core-id/.work/build_gpu_base/src/athena",
+   "sha256": "92f76b0c217fa4aab6d723ff21fda173f6493fd69120438d83fee1e02e911399"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/scratch/core/id/ic_os/os_R5_lattice_N10395_s1.nrp",
+   "sha256": "3f608fecccc976ad6823b0278f62a6f6c7904b1cb476a7585e329cb2203c48b8"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/scratch/core/id/ic_os/os_R5_lattice_N10395_s1.tab",
+   "sha256": "f2b5e5bf91f31e1beeda277b330a592d2f1e851e346f2080d2865ac6ca80bf6e"
+  }
+ ],
+ "output_directory": "/data/haiyangw/nrpic/scratch/core/core-20261115-033115-b7b431d",
+ "wall_time_s": 2.4,
+ "cores": 1,
+ "card_hours": 0.0007,
+ "exit_status": 0,
+ "started": "20261115-033115"
+}

@@ -26,6 +26,7 @@
 #include "coordinates/adm.hpp"
 #include "z4c/tmunu.hpp"
 #include "z4c/z4c.hpp"
+#include "scalar_field/scalar_field.hpp"
 #include "srcterms/srcterms.hpp"
 #include "srcterms/turb_driver.hpp"
 #include "gravity/gravity.hpp"
@@ -707,6 +708,24 @@ BaseTypeOutput::BaseTypeOutput(ParameterInput *pin, Mesh *pm, OutputParameters o
       outvars.emplace_back("r22_ff",moments_offset+7,&(derived_var));
       outvars.emplace_back("r23_ff",moments_offset+8,&(derived_var));
       outvars.emplace_back("r33_ff",moments_offset+9,&(derived_var));
+    }
+  }
+
+  // scalar field
+  if (out_params.variable.compare(0, 2, "sf") == 0) {
+    if (pm->pmb_pack->pscalar == nullptr) {
+      std::cout << "### FATAL ERROR in " << __FILE__ << " at line " << __LINE__
+         << std::endl << "Output of the scalar field requested in <output> block '"
+         << out_params.block_name << "' but there is no <scalar_field> block"
+         << std::endl;
+      exit(EXIT_FAILURE);
+    }
+    for (int v = 0; v < scalarfield::ScalarField::nsf; ++v) {
+      if (out_params.variable.compare("sf") == 0 ||
+          out_params.variable.compare(scalarfield::ScalarField::SF_names[v]) == 0) {
+        outvars.emplace_back(scalarfield::ScalarField::SF_names[v], v,
+                             &(pm->pmb_pack->pscalar->u0));
+      }
     }
   }
 

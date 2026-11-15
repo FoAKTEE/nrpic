@@ -1,0 +1,35 @@
+{
+ "run_id": "core-20261115-145448-3629622",
+ "owner": "core",
+ "purpose": "lead integration: nrpic_cf byte regression (P2) and combined format-2 + Bowen-York curvature (P5), baseline 74ed745 vs merged 609a875, processor",
+ "kind": "production",
+ "command": [
+  "python3",
+  "/data/haiyangw/nrpic/wt/core/tracks/core/analysis/lead/cf_checks.py",
+  "--base",
+  "/data/haiyangw/nrpic/wt/core/.work/build_cpu_base/src/athena",
+  "--new",
+  "/data/haiyangw/nrpic/wt/core/.work/build_cpu_609a875/src/athena"
+ ],
+ "cwd": "/data/haiyangw/nrpic/scratch/core/core-20261115-145448-3629622",
+ "commit": "362962282e9c012f5bbf8b7a795a6d2e92204746",
+ "branch": "core/nrpic",
+ "uncommitted_changes": [],
+ "inputs": [
+  {
+   "path": ".work/build_cpu_base/src/athena",
+   "sha256": "b4529af75ffca0f411ea112e4b58f52fb0f4a84f24989fa02bc9bf282f0fc63f"
+  },
+  {
+   "path": ".work/build_cpu_609a875/src/athena",
+   "sha256": "a325f29a9361481b3f43b2c9cfeda53a78f98c0735998136fd8efc7d9d68f8b9"
+  }
+ ],
+ "output_directory": "/data/haiyangw/nrpic/scratch/core/core-20261115-145448-3629622",
+ "host": "anta",
+ "start_utc": "2026-11-15T14:54:48Z",
+ "cores": 1,
+ "wall_time_s": 991.96,
+ "exit_status": 1,
+ "core_hours": 0.2755
+}

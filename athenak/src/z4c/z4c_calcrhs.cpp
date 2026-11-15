@@ -162,6 +162,13 @@ TaskStatus Z4c::CalcRHS(Driver *pdriver, int stage) {
     mdens = pmy_pack->ptmunu->step_density;
     tmunu = mdens ? pmy_pack->ptmunu->tmunu_step : pmy_pack->ptmunu->tmunu;
     lam8 = mdens ? pmy_pack->ptmunu->lambda8pi : 0.0;
+    // sources of all matter modules of this stage, assembled by the scalar field
+    // (ScalarField::SetTmunu): already converted, vacuum energy included
+    if (pmy_pack->ptmunu->use_total) {
+      mdens = false;
+      lam8 = 0.0;
+      tmunu = pmy_pack->ptmunu->tmunu_tot;
+    }
   }
 
   // ===================================================================================
