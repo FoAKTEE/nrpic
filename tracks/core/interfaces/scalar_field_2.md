@@ -222,12 +222,21 @@ the comparison of restart files, which record the path they were started from).
   `scalar_field.md` section 7.1 and are unchanged. The reference `noise_ref.py:transfer`
   of Track E should form the increment without cancellation (13 lines, quoted in the
   journal, entry 4) to hold A1 at 1e-11 for the Markov scheme.
-- `harness/bin/nrpic-run submit` fails in this worktree (journal entry 3); runs are
-  registered by hand.
+- Runs to entry 11 are registered by hand (`nrpic-run submit` failed on core's wave-1
+  manifests, journal entry 3); after the merge of main's harness wave 2 it works, and
+  the runs from entry 12 on are registered with it. It starts the command without a
+  shell: `$NRPIC_RUN_DIR` in an argument is not expanded (run
+  core-20261115-175447-764390e stopped on it); the drivers read the variable instead.
 
 ## 8. Published executables (decision 0013)
 
 `/data/haiyangw/nrpic/scratch/core/exe/core_scalar-2/athena_gpu` and `athena_cpu`, built
-from the source of commit a58e95b (the later commits of the branch change no file
-under `athenak/`); files `COMMIT` (commit and checksums) and `READY` (options, example
-input, what is tested). These are the executables all runs of section 6 used.
+from the source of commit a58e95b6ebd41a6f0fdc388f6fe3d2468ad1eebc (the later commits of
+the branch change no file under `athenak/`); files `COMMIT` (full hash and sha256 of
+both) and `READY` (options, example input, what is tested; its text is kept in
+`tracks/core/analysis/scalar2/READY.txt`). These are the executables all runs of
+section 6 used (sha256 dd716bc9...26b1 card, c69266ec...9439e processors). Published
+16:43Z; the first COMMIT named a58e95b4, no commit (typing error), corrected 17:49Z
+with the executables unchanged (journal, entry 12). Script:
+`tracks/core/analysis/scalar2/publish.sh` (resolves and checks the commit, replaces
+files by rename).
