@@ -532,3 +532,70 @@ So the sources cost 10 percent at 128^3 and 19 percent at 256^3, the constraint 
 The start (slice, tables) takes about 1 s at 256^3. On one processor core the 32^3
 case with sources and record runs at 1.06e4 zone-cycles per second (run
 core-20261115-155040-eb68eaa: 172 steps in 534 s).
+
+## 2026-11-15, entry 12: second session; published COMMIT corrected; predictions of T12
+
+A new session (no memory of entries 0 to 11) took the package over at 17:47Z. Read:
+`CLAUDE.md`, charter to "Owners", brief 493-553, 688-706, 834-860, this journal, the
+interface proposal, Track E's four requests (unchanged on `track/E-stoch-inf` since
+6330493 in `outbox/`, `spec/`, `noise/`), SCOPE section 4 (A1 to A8). Merged main
+(harness wave 2; nothing under `athenak/`): `git diff a58e95b6 HEAD -- athenak/` is empty.
+
+State found and what was done:
+- The executables were published at 16:43Z with READY, but the file COMMIT named
+  `a58e95b4`, which is no commit (a typing error in the call of `publish.sh`; the source
+  is a58e95b6ebd41a6f0fdc388f6fe3d2468ad1eebc). `publish.sh` now resolves the commit with
+  `git rev-parse --verify`, refuses a commit whose `athenak/` differs from HEAD, and
+  replaces files by rename (a run starting during a copy never sees a partial file);
+  rerun at 17:49Z: both executables unchanged (sha256 dd716bc9...26b1 card, c69266ec...
+  9439e processors), COMMIT now carries the full hash. The READY text is kept in the
+  repository (`tracks/core/analysis/scalar2/READY.txt`) with a dated correction line.
+- Run core-20261115-161513-e09c0b1 (T8 at N = 64, entry 8) was still "running" in its
+  manifest: it stopped at cycle 74 of about 131 (t = 1.82) when the first session ended;
+  no analysis ran. Manifest set to "stopped" by hand. Its prediction (entry 8) stands
+  and is tested again below (T12, run p1).
+- `harness/bin/nrpic-run` reads core's manifests again after the merge of main (budget:
+  G2 used 2.43 of 40 card-hours); new runs are registered with `nrpic-run submit`.
+- Left uncommitted by the first session and committed now (ec07103): the card rows of the
+  interface proposal, the figures in `tracks/core/notes/scalar2_figs/`, one manifest.
+- Looked at `fig_ladder.png`, `fig_card.png`, `fig_evolve.png`, `fig_slice.png`: they
+  show what entries 4 to 11 state. `fig_card.png` has its legend over the dots of At_ij
+  and the exact zeros drawn at 1e-30 without a word; redrawn below.
+
+T12 (added; why): Track E's A4 (SCOPE 4) asks that H/[H] and M/[M] "scale with the
+square of the noise amplitude when it is halved". Entries 6 and 7 tested the parts of the
+constraint fields at N = 32 only, never the record's ratios in that form, and the ladder
+(entry 11) has s = +-1 only. [M] (P1:735-745) is a sum of terms that vanish on the
+background, so it is first order in s; [H] is background-dominated (12.0000013 in run
+core-20261115-154907-eb68eaa). [JUDGEMENT] Hence a second-order M gives a factor 2 in
+<|M|/[M]> per halving, not 4 (entry 4 found 2.0000 at t = 0), and a first-order one 1.
+Runs: N = 64 on processors, s = 1, -1, 1/2, -1/2, 0, to t = 3.2, dumps every 0.4 with
+the metric and the constraint fields (five cores, about an hour each); N = 32 from the
+runs that exist (core-20261115-155040-eb68eaa: bg025, m1, p05, m05; -161040-760b515: p0).
+Driver `tracks/core/analysis/scalar2/t12_halving.py`. F_H, F_M: ratio of the record
+columns <|H|/[H]>, <|M|/[M]> between s = 1 and s = 1/2 at equal cycles.
+
+Predictions (numbers used: entries 6, 7, 11; none of the quantities below has been
+computed before):
+- P12a t = 0: F_H = 4.00 +- 0.02 and F_M = 2.000 +- 0.002 at both N.
+- P12b The s = 0 run at N = 64 has a uniform H0 (spatial standard deviation below 1e-3 of
+  its mean) of 1.5e-12 to 2.5e-12 for t >= 0.8, one sixteenth of the 3.24e-11 of N = 32
+  (fourth order in the step, which halves with the cell).
+- P12c Second-order part C2 at N = 64: rms ratio C2(1)/C2(1/2) = 4 +- 0.2 at every dump
+  with t > 0; C2(1) equal to that of N = 32 within 10 percent for t <= 1.6 (it does not
+  depend on N). Odd parts: ratio 2.00 +- 0.05 where they exceed 1e-13 (rounding).
+- P12d Record factors, N = 64: F_M in [1.9, 2.05] for 0.3 <= e-folds <= 1.6 and in [1.0,
+  1.3] for 2.4 to 3.2 (first-order part dominant there: odd |M| 1.6e-11 against an even
+  3e-12 on the card, entry 11). F_H in [2.2, 3.8] for 0.3 to 1.6 (H0 2e-12 against C2/4
+  of 2.5e-12 to 4e-12 at s = 1/2) and in [1.8, 2.3] for 2.4 to 3.2. With H0 subtracted,
+  G_H = rms(H(1) - H0)/rms(H(1/2) - H0) in [3.8, 4.05] for t = 0.4 to 1.6.
+- P12e Record factors, N = 32: F_H in [1.0, 1.6] for 0.3 to 1.6 (H0 of 3.2e-11 dominates),
+  [1.8, 2.05] for 2.4 to 3.2; F_M in [1.75, 2.0] for 0.3 to 1.2 and [1.0, 1.1] for 2.4
+  to 3.2.
+- So Track E's A4, read literally, fails at N = 32 and 64 during the late entry (first-
+  order truncation part) and for H also early (amplitude-independent H0); the second-
+  order part alone passes. Refuted if F_M is near 4 early (then [M] would not be first
+  order and my reading of the magnitudes is wrong), if H0 at N = 64 is not 1.5e-12 to
+  2.5e-12, or if C2 depends on N by more than 10 percent.
+- P8 at N = 64 as written in entry 8: largest deviation over all modes at the last dump
+  between 4.4e-5 and 1.8e-4 (2.8e-3 at N = 32 divided by 16 to 64); |n| <= 2 below 5e-7.

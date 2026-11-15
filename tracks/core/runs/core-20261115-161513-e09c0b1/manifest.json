@@ -46,5 +46,7 @@
  "start_utc": "2026-11-15T16:15:14Z",
  "cores": 1,
  "registered_by": "tracks/core/analysis/scalar2/runreg.py (by hand: nrpic-run submit fails with KeyError 'outputs')",
- "status": "running"
+ "status": "stopped",
+ "end_utc": "2026-11-15T16:42Z",
+ "notes": "Interrupted at cycle 74 of about 131 (t = 1.82; last dump t = 1.6) when the session that started it ended (16:42Z); no analysis ran, no result. Status set by hand on 2026-11-15T18Z by the next session of package scalar2; rerun as part of test T12 (journal entry 12)."
 }

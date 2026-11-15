@@ -112,21 +112,31 @@ def main():
         summ["card_history_means_max_rel_diff"] = float(np.nanmax(rel[:, 2:7]))
         fs = common.style()
         import matplotlib.pyplot as plt
-        fig, ax = plt.subplots(1, 1, figsize=(fs.FULL_WIDTH, 3.6))
-        fig.subplots_adjust(left=0.09, right=0.985, bottom=0.2, top=0.96)
+        # exact zeros (bit-identical fields) are drawn on a floor line of their own
+        zero = 1e-19
+        fig, ax = plt.subplots(1, 1, figsize=(fs.FULL_WIDTH, 3.9))
+        fig.subplots_adjust(left=0.09, right=0.985, bottom=0.19, top=0.87)
         names_f = list(card[sorted(card)[0]])
         x = np.arange(len(names_f))
-        for c, cl in zip(sorted(card), fs.SERIES):
-            y = [max(card[c][n]["max_abs_diff"], 1e-30) for n in names_f]
-            ax.plot(x, y, "o", ms=4, color=cl, label=f"cycle {c}: |card - processor|")
-            ys = [max(card[c][n]["max_abs"], 1e-30) for n in names_f]
-            ax.plot(x, ys, "_", ms=9, color=cl, alpha=0.5)
+        for k, (c, cl) in enumerate(zip(sorted(card), fs.SERIES)):
+            dx = 0.18*(k - 1)
+            y = [card[c][n]["max_abs_diff"] for n in names_f]
+            ax.plot(x + dx, [v if v > 0.0 else zero for v in y], "o", ms=4, color=cl,
+                    label=f"cycle {c}: largest |card $-$ processor|")
+            ys = [card[c][n]["max_abs"] for n in names_f]
+            ax.plot(x + dx, [v if v > 0.0 else zero for v in ys], "_", ms=7, mew=1.6,
+                    color=cl, label=f"cycle {c}: largest |value|")
+        ax.axhline(zero, **fs.MASK_LINE)
+        ax.text(len(names_f) - 0.6, 2.5*zero, "exactly 0", ha="right", va="bottom",
+                fontsize=8, color="grey")
         ax.set_yscale("log")
+        ax.set_ylim(0.3*zero, 30.0)
+        ax.set_xlim(-0.6, len(names_f) - 0.4)
         ax.set_xticks(x)
         ax.set_xticklabels(names_f, rotation=60, fontsize=8)
         ax.tick_params(axis="x", which="minor", bottom=False, top=False)
-        ax.set_ylabel("largest difference (dots), largest value (bars)")
-        ax.legend(loc="center right", fontsize=8)
+        ax.set_ylabel("difference, value")
+        ax.legend(loc="lower center", bbox_to_anchor=(0.5, 1.0), fontsize=8, ncol=3)
         fig.savefig(os.path.join(out, "fig_card.png"), dpi=200)
     common.dump_json(summ, os.path.join(out, "summary.json"))
     print("layout test done:", os.path.join(out, "summary.json"))
