@@ -354,3 +354,29 @@ batch that is not retried, or a DOI query with zero or several hits.
 and moves `current` to it; the new snapshot holds 707 papers, 688 claims, 97657 vectors and
 schema version 6, and the earlier snapshots are untouched. Refuted by other counts or a
 writable snapshot.
+
+### W7 outcome (run kb-20261115-182505-7e3a0b5, 18:25-18:28Z)
+
+Held. arXiv API: 708 of 708 records ok (`kb-data/meta/arxiv-api/`). INSPIRE: 704 ok, 4 not found
+(1609.03053, 1612.06734, 1709.00267, 2409.16053), 99.4 %. 2611.12831: first submitted
+2026-11-09T18:30:08Z (v1), primary gr-qc, cross-lists astro-ph.GA, astro-ph.HE,
+physics.plasm-ph, comment "37 pages, 23 figures", INSPIRE record 3226709
+(`meta/arxiv-api/2611.12831.json`, `meta/inspire/2611.12831.json`). DOI queries, one hit each:
+10.1038/s43588-022-00333-x is arXiv:2201.09277 (Ambrus, Bazzanini, Gabbana, ..., INSPIRE
+2016358); 10.3847/1538-4357/ab32da is arXiv:2107.06643 (Croker, Weiner, INSPIRE 1757478)
+(`meta/inspire/query/4c626d666d4cbfab.json`, `010cf07abf4df1ab.json`).
+
+### W8 outcome (run kb-20261115-182741-7dafdf9)
+
+Held. Snapshot `kb-data/db/kb-20261115-3826a68.sqlite` (read-only), `current` points to it:
+707 papers, 688 claims, 97657 vectors, schema 6; earlier snapshots untouched.
+
+### W9 prediction: fetch and ingest the two papers found by DOI (C item 5, D item 3)
+
+`nrpic-fetch-arxiv 2201.09277 2107.06643`, then `kb verify-downloads`, `kb ingest arxiv --new
+--extras`, `kb eq --apply-tags`, `kb embed`, `kb embed --check --work`, `kb snapshot`, one after
+the other. Expected: both stored ok with a TeX source; verify-downloads 683 ok + 1 problem in the
+manifest and 26 extras; the ingest takes exactly these two (gr-qc/9412071 skipped as before), each
+ok or review; tags change only their equations; embed adds only their chunks and equations (a
+few hundred vectors), the check exits 0 with 0 missing, stale or orphaned; the new snapshot has
+709 papers. Refuted by a failed fetch, any other paper (re)ingested, or a failed check.
