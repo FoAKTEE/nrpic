@@ -20,7 +20,10 @@ the note. Started 2026-11-15 with the note v0 (gate G0).
    appendix (the Supplemental Material of the note) therefore lists every number with the
    id of the registered run that produced it, and the source locator (file and line) of
    every number taken from a paper. Run ids, locators and file names appear in the ledger
-   appendix and nowhere else; the main text and the captions follow 4.1 and 5.5.
+   appendix and nowhere else; the main text and the captions follow 4.1 and 5.5. The
+   scripts that build the ledger (`scripts/ledger.py`, `scripts/run_all.py`, the run table
+   of `scripts/common.py`) name the track's documents and runs they check; the checker's
+   5.5 and 5.8 hits there and in the ledger appendix are accepted under this exception.
 2. Evidence labels of the program ([VERIFIED], [BACKGROUND], [JUDGEMENT], [TO VERIFY])
    stay out of the typeset text; the main text states what is established, what is our
    choice, and what is open, in words. The labels live in the journals and the ledger.

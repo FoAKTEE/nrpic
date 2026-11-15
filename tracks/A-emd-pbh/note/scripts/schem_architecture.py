@@ -4,7 +4,7 @@ Exists = in this repository now (AthenaK release core-v0.3, or the track's refer
 analysis code); to be ported = exists for another setting in this repository and has to
 be carried over; new = to be written (by core inside AthenaK, decision 0010, or by the
 track outside it). Sources of the classification: stage/G0/OPEN.md item 3,
-periodic_threshold/README.md (Requests, T2c, T3c), scope/SCOPE.md sections 4 and 6,
+the README of the periodic-box package (Requests, T2c, T3c), the scope text sections 4 and 6,
 CLAUDE.md (release core-v0.3). No data are read.
 """
 import os

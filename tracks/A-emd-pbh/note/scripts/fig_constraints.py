@@ -1,6 +1,6 @@
 """Constraint residuals of the expanding-ball initial data against mesh spacing (note v0).
 
-Reads only registered outputs of expball's G1 test (offline finite differences of the
+Reads only registered outputs of the G1 test of the ball data (offline finite differences of the
 Hamiltonian H and momentum M constraints on octant meshes of N^3 cells over [0, L]^3):
   run A-emd-pbh-20261115-130402-f5566fb (lead's rerun), convergence.json, N = 32-256;
   run A-emd-pbh-20261115-122117-aa1c84d, convergence.json, smoothed top hat to N = 512.
@@ -76,7 +76,7 @@ def main():
         ax.plot(g, 3.0 * y[0] * (g / h[0]) ** 2, color="k", lw=1.0, ls=":")
     axs[0].text(0.05, 0.92, r"(a) dashed $h^4$, dotted $h^2$", transform=axs[0].transAxes, fontsize=8.5)
     axs[1].text(0.05, 0.92, "(b)", transform=axs[1].transAxes, fontsize=8.5)
-    axs[1].legend(loc="upper left", bbox_to_anchor=(0.0, 0.89), fontsize=7, handlelength=1.2)
+    axs[1].legend(loc="upper left", bbox_to_anchor=(0.0, 0.89), fontsize=7, handlelength=1.2, frameon=False)
     save(fig, os.path.join(out, STEM))
     plt.close(fig)
     common.report_checks(STEM)

@@ -43,7 +43,10 @@ This note records the scoping stage. Section~\ref{sec:problem} states the proble
 
 For the comparison with Ref.~\cite{Yoo:2026mdpbh} the overdensity is the curvature peak of that work, a Gaussian in the logarithm of the conformal factor with amplitude $\mu$, wavenumber $k$, ellipticity $e$ and prolateness $p$,
 \begin{equation}\label{eq:profile}
-\ln\Psi = \frac{\mu}{2}\, e^{-k^2 r^2/6}\Big[1+\frac{k^2}{6}\big(p\,(2X^2-Y^2-Z^2)+3e\,(Y^2-Z^2)\big)\Big],
+\begin{split}
+\ln\Psi = \frac{\mu}{2}\, e^{-k^2 r^2/6}\Big[1&+\frac{k^2}{6}\,p\,(2X^2-Y^2-Z^2)\\
+&+\frac{k^2}{2}\,e\,(Y^2-Z^2)\Big],
+\end{split}
 \end{equation}
 with Cartesian coordinates $X,Y,Z$ and $r^2=X^2+Y^2+Z^2$. Two measures of the amplitude are in use: the linear central density contrast $\delta_c$ at horizon entry, the epoch at which the comoving compaction radius $r_m$ equals the Hubble radius, and the linear mean contrast $\bar\delta_{\rm ent}$ inside $r_m$ at the same epoch. For this profile
 \begin{equation}\label{eq:conversion}
@@ -71,7 +74,7 @@ where $\mathsf{E}$ is the complete elliptic integral of the second kind. The hoo
 
 \begin{figure}[t]
 \includegraphics[width=\columnwidth]{fig_landscape.pdf}
-\caption{The amplitude-ellipticity plane of the threshold problem. Line with circles: the Zel'dovich-hoop line (line: our evaluation; circles: read off Ref.~\cite{Yoo:2026mdpbh}). Red bar: the particle bracket of that work at $e=0.2$; blue bar: its spherical bracket from the exact dust solution. Dashed and dotted: amplitudes whose top-hat collapse time equals $t_{\rm end}$. Green: amplitudes the expanding ball holds at $R_bH_i=0.9$.}
+\caption{The threshold plane. Line: the Zel'dovich-hoop line; circles: read off Ref.~\cite{Yoo:2026mdpbh}. Red and blue bars: the particle bracket of that work at $e=0.2$ and its exact-dust bracket. Dashed, dotted: amplitudes whose top-hat collapse time is $t_{\rm end}$. Green: what the ball holds at $R_bH_i=0.9$.}
 \label{fig:landscape}
 \end{figure}
 
@@ -193,7 +196,7 @@ Table~\ref{tab:parameters} lists the parameters of the scouting data and the con
 
 \section{Numerical ledger}\label{app:ledger}
 
-Table~\ref{tab:ledger} gives every number behind this note with the registered run that produced it; the outputs of each run are checked against the checksums the run recorded. The amplitudes of Ref.~\cite{Yoo:2026mdpbh} come from its source, \texttt{MDPBH.tex} lines 1101--1103 (particle bracket at $e=0.2$), 765--768 (exact-dust bracket), 907--908 and 918 (deformation eigenvalues and hoop function); the horizon-mass error of the Oppenheimer--Snyder test of Ref.~\cite{Wu:2026nrpic} from its source, \texttt{main.tex} lines 945 and 1484. The statements of Sec.~\ref{sec:plan} about the runs under way come from runs A-emd-pbh-20261115-153856-9d731b1 and -153903-9d731b1 (processor attempt), A-emd-pbh-20261115-155056-ec1b816 (submitted) and A-emd-pbh-20261115-154250-527a6d1 (periodic box tests), as recorded in the journals of the track. The figures were made from these runs in run A-20261115-161054-50848b1. \input{tables/claims_summary}: a bound printed as an upper limit that the value exceeds in its third digit, and an edge deviation of the table interpolation described as an overshoot of a tenth of the Hubble rate where the recorded largest deviation, which contains the smeared jump, is larger than the Hubble rate.
+Table~\ref{tab:ledger} gives every number behind this note with the registered run that produced it; the outputs of each run are checked against the checksums the run recorded. The amplitudes of Ref.~\cite{Yoo:2026mdpbh} come from its source, \texttt{MDPBH.tex} lines 1101--1103 (particle bracket at $e=0.2$), 765--768 (exact-dust bracket), 907--908 and 918 (deformation eigenvalues and hoop function); the horizon-mass error of the Oppenheimer--Snyder test of Ref.~\cite{Wu:2026nrpic} from its source, \texttt{main.tex} lines 945 and 1484. The statements of Sec.~\ref{sec:plan} about the runs under way come from runs A-emd-pbh-20261115-153856-9d731b1 and -153903-9d731b1 (processor attempt), A-emd-pbh-20261115-155056-ec1b816 (submitted) and A-emd-pbh-20261115-154250-527a6d1 (periodic box tests), as recorded in the journals of the track. The figures and tables were made from these runs in run A-20261115-161720-6ae975e. \input{tables/claims_summary}: a bound printed as an upper limit that the value exceeds in its third digit, and an edge deviation of the table interpolation described as an overshoot of a tenth of the Hubble rate where the recorded largest deviation, which contains the smeared jump, is larger than the Hubble rate.
 
 \input{tables/ledger}
 

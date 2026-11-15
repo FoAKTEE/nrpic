@@ -174,13 +174,13 @@ def main():
            (r"constraint bound: $\|\Ham\|_2$ over $\|16\pi E\|_2$ outside the horizon", "0.1"),
            (r"bracket ratio $A_{\rm hi}/A_{\rm lo}$ at the end of the bisection", "1.1"),
            (r"primary end time; continuation of the run below threshold ($t_H$)", "250; 1000")]
-    ptex = [r"\begin{table}", r"\caption{Parameters of the scouting data and of the outcome rule.}",
-            r"\label{tab:parameters}", r"\begin{ruledtabular}", r"\begin{tabular}{p{0.62\columnwidth}l}"]
+    ptex = [r"\begin{table*}", r"\caption{Parameters of the scouting data and of the outcome rule.}",
+            r"\label{tab:parameters}", r"\begin{ruledtabular}", r"\begin{tabular}{p{0.62\textwidth}l}"]
     for q, v in par:
         ptex.append(rf"\multicolumn{{2}}{{l}}{{\emph{{{q}}}}} \\" if v is None else rf"{q} & {v} \\")
-    ptex += [r"\end{tabular}", r"\end{ruledtabular}", r"\end{table}"]
+    ptex += [r"\end{tabular}", r"\end{ruledtabular}", r"\end{table*}"]
     with open(os.path.join(out, "parameters.tex"), "w") as f:
-        f.write("% written by scripts/ledger.py from the data-set run and scope/SCOPE.md section 3; do not edit\n")
+        f.write("% generated from registered run outputs; do not edit\n")
         f.write("\n".join(ptex) + "\n")
     L += [("Parameters", r"scouting data of Table~\ref{tab:parameters}", "see table", "dataset2t")]
 
@@ -188,7 +188,7 @@ def main():
            r"\caption{Numerical ledger. Every number of this note with the registered run that produced it.}",
            r"\label{tab:ledger}",
            r"\begin{ruledtabular}",
-           r"\begin{tabular}{p{0.52\textwidth}p{0.20\textwidth}l}",
+           r"\begin{tabular}{p{0.44\textwidth}p{0.22\textwidth}l}",
            r"Quantity & Value & Run \\", r"\hline"]
     last = None
     for grp, q, v, key in L:
@@ -198,7 +198,7 @@ def main():
         tex.append(rf"{q} & {v} & \texttt{{\footnotesize {R[key]}}} \\")
     tex += [r"\end{tabular}", r"\end{ruledtabular}", r"\end{table*}"]
     with open(os.path.join(out, "ledger.tex"), "w") as f:
-        f.write("% written by scripts/ledger.py from registered run outputs; do not edit\n")
+        f.write("% generated from registered run outputs; do not edit\n")
         f.write("\n".join(tex) + "\n")
 
     # ------------------------------------------------------------------ claims
@@ -300,10 +300,11 @@ def main():
     with open(os.path.join(out, "claims.json"), "w") as f:
         json.dump(dict(n=len(C), disagree=n_bad, claims=C, inputs=common.CHECKED), f, indent=1)
     with open(os.path.join(out, "claims_summary.tex"), "w") as f:
-        f.write("% written by scripts/ledger.py; do not edit\n")
+        f.write("% generated; do not edit\n")
+        words = {0: "no", 1: "one", 2: "two", 3: "three", 4: "four", 5: "five"}
         f.write(f"A check of {len(C)} numbers stated in the track's status documents and journals against "
-                f"the run outputs found {len(C) - n_bad} in agreement and {n_bad} "
-                f"difference{'s' if n_bad != 1 else ''}")
+                f"the run outputs found {len(C) - n_bad} in agreement and {words.get(n_bad, str(n_bad))} "
+                f"difference{'s' if n_bad != 1 else ''}%")
     common.report_checks("ledger")
     print(f"ledger: {len(L)} ledger rows; {len(C)} claims, {n_bad} disagree")
     for c in C:

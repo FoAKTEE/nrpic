@@ -25,7 +25,7 @@ RUNS = {
     "crosscheck": "A-20261115-130257-a7374a4",
     "ball_exact": "A-emd-pbh-20261115-153719-91b03d1",
     "scouting": "A-20261115-130948-5a2b58a",
-    "dataset2t": "A-emd-pbh-20261115-130609-947c898",  # expball data set 2t (scouting data)
+    "dataset2t": "A-emd-pbh-20261115-130609-947c898",  # data set 2t (scouting data)
 }
 
 CHECKED = []   # (run_id, relative path, "sha256 ok" | "no sha256sums.txt")

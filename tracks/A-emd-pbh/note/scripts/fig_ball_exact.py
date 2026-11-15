@@ -1,7 +1,7 @@
 """Exact solution of the expanding ball of data set 2t (note v0, Fig. ball).
 
 Reads only the registered exact references of run A-emd-pbh-20261115-153719-91b03d1
-(exact.json, written by tracks/A-emd-pbh/runs_ball/prep.py from expball's exact LTB shells):
+(exact.json, the exact LTB shells of the scouting data):
   central: scale factor a(tau) and density of the bound core against proper time;
   m_ah: mass of the outermost trapped sphere on slices of constant proper time;
   sr1_speeds, sr1_stages: largest coordinate speed of light of the comoving coordinates
@@ -53,7 +53,7 @@ def main():
     ax.axvline(core["tau_ta"], color="grey", lw=1.0, alpha=0.5)
     ax.axvline(ft["tau"], color=PAL["red"], lw=1.0, alpha=0.6)
     ax.text(core["tau_ta"] + 0.8, 0.45, "turnaround", fontsize=8, color="grey")
-    ax.text(ft["tau"] - 0.8, 0.1, "first trapped\nsphere", fontsize=8, color=PAL["red"], ha="right")
+    ax.text(ft["tau"] - 0.8, 2.5, "first trapped\nsphere", fontsize=8, color=PAL["red"], ha="right", va="top")
     ax.text(3, 2.15, "envelope", fontsize=8)
     ax.text(22, 1.05, "core", fontsize=8, color=PAL["blue"])
     ax.set_xlim(0, 46)
