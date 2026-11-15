@@ -9,7 +9,8 @@ STATUS
               TESTED (L1, L2, P, E1, E2 and the byte regression R below).
   athena_gpu  card executable (scripts/build_gpu.sh, CUDA 12.6, one A100) of the same
               source: TESTED on a card for L1 and L2 (ball runs of entry 4 of the
-              journal). __CARD_STATUS__
+              journal). Card versions of P, E1, E2 (job 4478)
+              and the tests ES and L3 (job 4477) are queued: see PENDING.
 Everything not named below behaves as release core-v0.3: output files of existing
 set-ups are byte-identical when the new parameters are absent (regression R: geo,
 boris, dep, east, os, and a binary puncture with trackers and horizon finder).
@@ -46,7 +47,11 @@ NEW OPTIONS
    - P one puncture, cells m/8, 10 M: identical byte for byte to plain 1+log (the lapse
      never exceeds 1); Track D's 500 M puncture run never had a lapse above 0.9972, so
      it is what lapse_leak gives.
-   __L3_ES_STATUS__
+   - L3 (the bound ball through collapse to a black hole, T = 0.5 M) and ES (Track D's
+     Einstein-Straus data, T = 2 M, 30 M) are queued on a card (PENDING). Until they are
+     analysed, "still collapses at a forming black hole" rests on the construction (the
+     term is exactly zero where alpha <= 1) and on test P; the bound ball's lapse falls
+     below 1 after its turnaround as with plain 1+log (L2, t > 10 M).
 
 2. <z4c> shift_eta_profile = true (absent: false), shift_eta_mref = M_ref (default 1),
    shift_eta_width = w (default 2), shift_eta_width_local (default false)
@@ -64,7 +69,19 @@ NEW OPTIONS
    Example (one hole, damping set in units ten times smaller than its mass):
      athena_cpu -i problems/puncture/by_eta.athinput -d RUN \
         z4c/shift_eta=20.0 z4c/shift_eta_profile=true z4c/shift_eta_mref=0.1
-   Tested: __E_STATUS__
+   Tested: (processors, small mesh, journal entry 5)
+   - E1 one boosted hole: far-away eta m = 20 brought to 2 at the hole by the profile:
+     tracker at 0.55 of the speed with eta m = 2 (0.22 without the profile); far-away
+     eta m = 0.2 raised to 2: 1.27 (1.97 without). Horizon masses unchanged (1e-5).
+   - E2 pair m = 1 and 0.25 (shift_eta = 2, M_ref = 1): heavy tracker equal to the
+     eta = 2 run within 0.3 per cent; light tracker 20 per cent faster than with constant
+     eta = 8 (46 per cent with constant eta = 2); both horizons found in every search,
+     masses unchanged to 5e-4; constraint norm at the end between those of eta = 2 and
+     eta = 8 (one early spike at t = 0.5 M, larger than in the constant-eta runs).
+   So with the paper's width the profile takes a light hole about half of the way to
+   its own-units behaviour. Recommended for Track F: shift_eta = 2/M,
+   shift_eta_profile = true, shift_eta_mref = M (heavy mass); wider profiles are being
+   tested (PENDING).
    Not tested: shift_eta_width other than 2, shift_eta_width_local = true, more than two
    holes, a Hills passage (Track F's R4).
 
@@ -78,4 +95,9 @@ WHAT A PUNCTURE INSIDE EXPANDING DUST NEEDS (Track D)
    particles/particle_file and problem/comp0_file).
 
 PENDING (card jobs queued at publication)
-   __PENDING__
+   - card job 4477: ES (tag gc-es-leak2) and L3 (tag gc-collapse-leak05);
+   - card job 4478: E2, E1, P at the full mesh (tags gc-e2-*, gc-e1-*, gc-p-*);
+   - processors: E1 with shift_eta_width = 4 and 8 (tags g-e1-prof02-w4, g-e1-prof02-w8,
+     g-e1-prof20-w8), about 2.5 h each, started 18:34 UTC.
+   The executables do not change; this file is rewritten when these are analysed
+   (tracks/core/JOURNAL-gauge.md has every outcome first).

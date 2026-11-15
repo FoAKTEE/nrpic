@@ -194,6 +194,40 @@ balls of 5 to 10 M: T = 0.125 to 0.5 M. In the limit of small T the condition is
 with the lapse capped at alpha_0 where the matter expands. Untested: `lapse_leak_alpha`
 other than 1.
 
+### 7.2 Shift damping that follows the black holes (`shift_eta_profile`)
+
+    eta(x) = shift_eta [1 + sum_A (M_ref/m_A - 1)/(1 + abs(x - x_A)^2/w_A^2)],
+    w_A = shift_eta_width x (smallest m_A, or m_A with shift_eta_width_local)
+
+over the trackers with `co_<A>_mass` > 0 (written by `puncture_setup`), positions of the
+current stage; the main loop subtracts shift_eta beta^i, the extra loop
+(eta(x) - shift_eta) beta^i. The paper's profile (main.tex L388-397, width 2); its factor
+on kappa_1 is not implemented. Tests [VERIFIED, journal entry 5; processors,
+half-width 32, so absolute speeds are those of a small mesh]:
+
+| test | eta at the hole(s) | tracker speed relative to the hole's own-units reference (eta m = 2) | horizon mass |
+|---|---|---|---|
+| E1 one hole, m = 1, t = 4.9 m | constant eta m = 20 / profile eta_0 = 20, M_ref = 0.1 | 0.22 / 0.55 | equal to 1e-5 in all runs |
+| E1, same | constant eta m = 0.2 / profile eta_0 = 0.2, M_ref = 10 | 1.97 / 1.27 | |
+| E2 pair m = 1 and 0.25, t = 2 M | constant 2 / constant 8 / profile 2 and 8 | heavy: 1 / 0.43 / 0.997; light (reference eta = 8): 1.46 / 1 / 1.20 | both found in every search, equal to 5e-4 |
+
+Reading [JUDGEMENT]: with the width of the paper the profile leaves the heavy hole
+exactly as with its own eta and takes the light hole about half of the way (in the
+logarithm of the speed) from the constant-eta value to that of its own units, because
+the shift that carries a puncture builds up over a region of several m_A in which the
+profile has already relaxed towards shift_eta. Wider profiles (width 4 and 8): __WIDTH__.
+None of the runs shows a loss of a horizon, a growth of the constraint norms or a
+change of a horizon mass; the speeds compared are those of the first few m, before
+the shift has settled.
+
+Answer to Track F (request 20261115T1507Z): use `shift_eta = 2/M` with
+`shift_eta_profile = true`, `shift_eta_mref = M` (the heavy mass): the heavy hole keeps
+eta M = 2 and each member gets eta m = 2 at its puncture (input:
+`problems/puncture/by_unequal.athinput`). Constant eta = 2/M for q <= 10 [JUDGEMENT]:
+acceptable for the horizon masses and the constraints (E1: eta m = 0.2 changes neither),
+not for the members' coordinate tracks in the first tens of m (twice as fast as with
+eta m = 2 in E1); the effect on a Hills passage is not tested here (Track F's R4).
+
 ### 7.3 A puncture inside expanding dust (Track D)
 
 [JUDGEMENT, from 7.1 and test P] What it needs: (1) the lapse of 7.1, 1+log with
