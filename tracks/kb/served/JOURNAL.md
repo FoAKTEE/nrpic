@@ -109,3 +109,20 @@ panel (b) shows numbers found at the locator for 117 of 132 statements. Publishe
 `claims/served_claims.tsv` (one row per statement: track locator, kb locator with section,
 chunk, equation numbers, number check, K8 claim ids, labels, statuses, seed keys),
 `claims/uncovered_seed.jsonl`, `claims/summary.json`.
+
+## S5 16:50 Literature searches; fetch of five identifiers found (prediction)
+
+Searches (read-only, `scripts/kbq.py` on kb.sqlite; results go into the answers) found
+arXiv ids in the corpus bibliographies for sources the tracks asked for and the store
+lacks: 2505.15903 (Gurian and May, "Gurian:2025zpc", C item 1; bib entry of 2601.17117),
+0707.1350 (Faraoni and Jacques 2007, D item 3; bib entries of 2504.01669, 2206.08466),
+astro-ph/0608642 (Mack, Ostriker, Ricotti 2007, D item 3; bib entry of 2505.21885),
+gr-qc/0305023 (Alcubierre et al., "Toward standard testbeds", B item 3; bib entry of
+1904.07841), 1003.4681 (Muller and Brugmann, cited for the spatially dependent shift
+damping at high mass ratio in 2505.01495 `apssamp.tex:440-446`, F item 2).
+
+Prediction: `nrpic-fetch-arxiv` stores all five with status ok and a TeX source; after
+verify-downloads, `kb ingest arxiv --new --extras` ingests exactly these five, at least
+four with parse_status ok (the 2003 and 2006 sources may land on the review list).
+Refuted if a fetch fails, an id is not a TeX e-print, or two or more parse as
+review/failed.
