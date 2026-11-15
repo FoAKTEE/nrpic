@@ -1,0 +1,58 @@
+{
+ "run_id": "core-20261115-033729-408df57",
+ "owner": "core",
+ "package": "id",
+ "tag": "t1-sharp-n064-q1p25",
+ "purpose": "test 1, constraints at the start: sharp-n064-q1p25 (cells 64, q = 1.25, edge 0, lattice shift 0)",
+ "kind": "scouting",
+ "command": [
+  "/data/haiyangw/nrpic/wt/core-id/.work/build_cpu/src/athena",
+  "-i",
+  "/data/haiyangw/nrpic/wt/core-id/problems/ball/ball.athinput",
+  "-d",
+  "/data/haiyangw/nrpic/scratch/core/core-20261115-033729-408df57",
+  "mesh/nx1=64",
+  "mesh/nx2=64",
+  "mesh/nx3=64",
+  "meshblock/nx1=32",
+  "meshblock/nx2=32",
+  "meshblock/nx3=32",
+  "time/nlim=0",
+  "particles/field_time1=1.0e9",
+  "particles/traj_dcycle=0",
+  "particles/snap_dt=-1.0",
+  "particles/particle_file=/data/haiyangw/nrpic/scratch/core/id/ic_ball/t1_sharp_n064_q1p25.nrp",
+  "problem/comp0_file=/data/haiyangw/nrpic/scratch/core/id/ic_ball/t1_sharp_n064_q1p25.tab"
+ ],
+ "cwd": "/data/haiyangw/nrpic/scratch/core/core-20261115-033729-408df57",
+ "commit": "408df57705451430aecfc01e119ddb644f6734b4",
+ "worktree_dirty": false,
+ "inputs": [
+  {
+   "path": "/data/haiyangw/nrpic/wt/core-id/problems/ball/ball.athinput",
+   "sha256": "68014de8ceeaf8c3d85991bd44397ab55cfd836626cb8f46a9b859e4d94e580a"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/wt/core-id/.work/build_cpu/src/athena",
+   "sha256": "7d1292d0e73ac41a53dbd9225dbaeaa6c8861220d83762de8d37dea618f01515"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/scratch/core/id/ic_ball/t1_sharp_n064_q1p25.nrp",
+   "sha256": "c87cf2192e5f30d995c6724bac7b14ac34e0ec83bc85390349be862e6ddc45d6"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/scratch/core/id/ic_ball/t1_sharp_n064_q1p25.tab",
+   "sha256": "7a62afec5e80352f83b9736dd0c519c80d8fd3666337d3fbd776c81e2d224669"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/scratch/core/id/ic_ball/t1_sharp_n064_q1p25.json",
+   "sha256": "b48f03a66863aa5aa873bf82af8650b5e01e424a9d78cf6f015aeae27ef91b71"
+  }
+ ],
+ "output_directory": "/data/haiyangw/nrpic/scratch/core/core-20261115-033729-408df57",
+ "wall_time_s": 5.1,
+ "cores": 1,
+ "card_hours": 0.0,
+ "exit_status": 0,
+ "started": "20261115-033729"
+}

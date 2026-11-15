@@ -1,0 +1,36 @@
+{
+ "run_id": "core-20261115-140259-8742cdf",
+ "owner": "core",
+ "purpose": "P10 on one A100: collisions in a static homogeneous curved metric on the mesh",
+ "kind": "production",
+ "command": [
+  "python3",
+  "/data/haiyangw/nrpic/wt/core-coll/tracks/core/analysis/collisions/run_curved_box.py",
+  "/data/haiyangw/nrpic/scratch/core/core-20261115-140259-8742cdf",
+  "--exe",
+  "/data/haiyangw/nrpic/scratch/core/coll-tmp/exe/athena_gpu_C",
+  "--nproc",
+  "2"
+ ],
+ "cwd": "/data/haiyangw/nrpic/scratch/core/core-20261115-140259-8742cdf",
+ "commit": "8742cdf88e1e13527914993484a12a31ad56fa07",
+ "branch": "core/collisions",
+ "uncommitted_changes": [],
+ "inputs": [
+  {
+   "path": "/data/haiyangw/nrpic/scratch/core/coll-tmp/exe/athena_gpu_C",
+   "sha256": "1722943234f542bfaecca6b52f17c75d223164b98a189116ab1fd9819b9b9d42"
+  },
+  {
+   "path": "tracks/core/analysis/collisions/run_curved_box.py",
+   "sha256": "79fc5c5b33870d00525e833adab6cc8b0e095d4191636914952b4d12f75a789f"
+  }
+ ],
+ "output_directory": "/data/haiyangw/nrpic/scratch/core/core-20261115-140259-8742cdf",
+ "host": "anta",
+ "start_utc": "2026-11-15T14:02:59Z",
+ "cores": 1,
+ "wall_time_s": 17.48,
+ "exit_status": 0,
+ "card_hours": 0.0049
+}

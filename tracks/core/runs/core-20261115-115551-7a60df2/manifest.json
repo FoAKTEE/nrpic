@@ -1,0 +1,32 @@
+{
+ "run_id": "core-20261115-115551-7a60df2",
+ "label": "b_diag_amr",
+ "owner": "core",
+ "purpose": "Diagnostic: why the number of MeshBlocks grows from 400 to 1184 in run core-20261115-115339-7a60df2; same input, 160 cycles, block limit 8192, lapse slices every 8 cycles",
+ "kind": "scouting",
+ "command": "srun -p preempt --gres=gpu:1 -c 1 -t 00:10:00 -J b_diag_amr /bin/bash -c date +%s.%N > .t_start; \"$@\"; rc=$?; date +%s.%N > .t_end; exit $rc athena /data/haiyangw/nrpic/wt/core-mp/.work/build_gpu/src/athena -i by_boost.athinput -d /data/haiyangw/nrpic/scratch/core/core-20261115-115551-7a60df2 time/nlim=160 mesh_refinement/max_nmb_per_rank=8192 output3/dt=0.0625 output2/dt=100.0",
+ "cwd": "/data/haiyangw/nrpic/scratch/core/core-20261115-115551-7a60df2",
+ "commit": "7a60df2",
+ "source_dirty": false,
+ "inputs": [
+  {
+   "path": "problems/puncture/by_boost.athinput",
+   "sha256": "aa5b01c7e7440cd6e271ac831e7fc7c641a110a89b1d6e0f1fd944a7335b92a1"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/wt/core-mp/.work/build_gpu/src/athena",
+   "sha256": "ba08b4da17b627a4bf1103c6014fb10203a821c130dcd195017cecf7559f0040",
+   "role": "executable"
+  }
+ ],
+ "output_directory": "/data/haiyangw/nrpic/scratch/core/core-20261115-115551-7a60df2",
+ "resources": "1 card (A100), 1 core",
+ "started_utc": "2026-11-15T11:55:51Z",
+ "status": "cancelled",
+ "exit_code": 1,
+ "wall_time_s": 213.4,
+ "queue_wait_s": 0.0,
+ "card_hours": 0.0,
+ "core_hours": 0.0593,
+ "note": "cancelled in the queue before it started (scancel): the block count of run core-20261115-115339-7a60df2 was explained without it"
+}

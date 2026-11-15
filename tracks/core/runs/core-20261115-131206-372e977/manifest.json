@@ -1,0 +1,31 @@
+{
+ "run_id": "core-20261115-131206-372e977",
+ "label": "t3_triple_final_cpu",
+ "owner": "core",
+ "purpose": "Test 3 with the final source on processors: three black holes, one cycle, finder after the first step (three horizons with the mass-scaled tolerance)",
+ "kind": "scouting",
+ "command": "/data/haiyangw/nrpic/wt/core-mp/.work/build_cpu/src/athena -i by_triple.athinput -d /data/haiyangw/nrpic/scratch/core/core-20261115-131206-372e977 time/nlim=1",
+ "cwd": "/data/haiyangw/nrpic/scratch/core/core-20261115-131206-372e977",
+ "commit": "372e977",
+ "source_dirty": false,
+ "inputs": [
+  {
+   "path": "problems/puncture/by_triple.athinput",
+   "sha256": "76506fd8f806c96da1322c2c1ba5b26caa628905c3b4e4b01291e9cc6ef99622"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/wt/core-mp/.work/build_cpu/src/athena",
+   "sha256": "c7b77a26576d6e2fbc4e54d1825d37d27c2e491df929f82c215ea48f533924cd",
+   "role": "executable"
+  }
+ ],
+ "output_directory": "/data/haiyangw/nrpic/scratch/core/core-20261115-131206-372e977",
+ "resources": "1 core",
+ "started_utc": "2026-11-15T13:12:06Z",
+ "status": "done",
+ "exit_code": 0,
+ "wall_time_s": 454.5,
+ "queue_wait_s": 0.0,
+ "card_hours": 0.0,
+ "core_hours": 0.1263
+}

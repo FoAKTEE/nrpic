@@ -1,0 +1,37 @@
+{
+ "run_id": "core-20261115-140852-3f7ca07",
+ "owner": "core",
+ "purpose": "Scalar field test 6: advective terms; plane wave of a test field on flat spacetime with a uniform shift of either sign, N = 8, 16, 32",
+ "kind": "production",
+ "command": [
+  "python3",
+  "/data/haiyangw/nrpic/wt/core-scalar/tracks/core/analysis/scalar/test6_shift.py",
+  "--exe",
+  "/data/haiyangw/nrpic/wt/core-scalar/.work/exe/athena_cpu_3f7ca07"
+ ],
+ "cwd": "/data/haiyangw/nrpic/scratch/core/core-20261115-140852-3f7ca07",
+ "commit": "3f7ca074e9ba2188463e89106efd35cb995a54e6",
+ "branch": "core/scalar-field",
+ "uncommitted_changes": [],
+ "inputs": [
+  {
+   "path": ".work/exe/athena_cpu_3f7ca07",
+   "sha256": "034baa40e3ec7d2322b7be206ccc225c2ac19af320ca6386b216e3675bc92bc3"
+  },
+  {
+   "path": "problems/scalar/kg_wave.athinput",
+   "sha256": "b46ede8f59adea5b651c97b5e238884483b004e894d2d642c784276f07eee5b2"
+  },
+  {
+   "path": "tracks/core/analysis/scalar/test6_shift.py",
+   "sha256": "719863b612ca4bc61416f4d6aad5ec1bf48cfa9387dd83dcd27992eb76998259"
+  }
+ ],
+ "output_directory": "/data/haiyangw/nrpic/scratch/core/core-20261115-140852-3f7ca07",
+ "host": "anta",
+ "start_utc": "2026-11-15T14:08:52Z",
+ "cores": 6,
+ "wall_time_s": 303.7,
+ "exit_status": 0,
+ "core_hours": 0.5062
+}

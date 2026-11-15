@@ -1,0 +1,39 @@
+{
+ "run_id": "core-20261115-123112-38067a2",
+ "owner": "core",
+ "command": [
+  "/data/haiyangw/nrpic/wt/core-newton/.work/baseline/athena_cpu",
+  "-i",
+  "deposit_smr.athinput",
+  "time/tlim=2.0",
+  "particles/deposit_max_level=1"
+ ],
+ "cwd": "/data/haiyangw/nrpic/scratch/core/core-20261115-123112-38067a2",
+ "commit": "38067a2",
+ "source_modified_since_commit": false,
+ "inputs": [
+  {
+   "path": "problems/tests/deposit_smr.athinput",
+   "sha256": "58966d8e5af94dc09eb02bd51e837dae3579189fbbe33d4fcb6ff125e8eeb7b8"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/scratch/core/regress/ic/random.nrp",
+   "sha256": "aedb53c568f15477f9a54331ca752934d3f0051e302d4b28c2297bb6b7c36d43"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/wt/core-newton/.work/baseline/athena_cpu",
+   "sha256": "27cbaac78428e542111be5c83c51184ba24a55a54985afcfc13eadb327f507ee",
+   "role": "executable"
+  }
+ ],
+ "output_directory": "/data/haiyangw/nrpic/scratch/core/core-20261115-123112-38067a2",
+ "purpose": "regression of the relativistic mode, case dep, executable baseline",
+ "kind": "scouting",
+ "tag": "regress-dep-baseline",
+ "state": "finished",
+ "wall_time_s": 4.42,
+ "exit_status": 0,
+ "cores": 1,
+ "card_hours": 0.0,
+ "started_utc": "2026-11-15T12:31:12Z"
+}

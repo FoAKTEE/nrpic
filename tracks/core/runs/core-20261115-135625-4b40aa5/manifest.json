@@ -1,0 +1,40 @@
+{
+ "run_id": "core-20261115-135625-4b40aa5",
+ "owner": "core",
+ "purpose": "driver check of run_cluster.py on the processor: stable cluster y_c = 0.819, two steps (t = 0.25 M), runs off, sigma0, kn30",
+ "kind": "scouting",
+ "command": [
+  "python3",
+  "/data/haiyangw/nrpic/wt/core-coll/tracks/core/analysis/collisions/run_cluster.py",
+  "/data/haiyangw/nrpic/scratch/core/core-20261115-135625-4b40aa5",
+  "--exe",
+  "/data/haiyangw/nrpic/wt/core-coll/.work/build_cpu/src/athena",
+  "--tlim",
+  "0.25",
+  "--kn",
+  "30",
+  "--snap-dt",
+  "0.125"
+ ],
+ "cwd": "/data/haiyangw/nrpic/scratch/core/core-20261115-135625-4b40aa5",
+ "commit": "4b40aa593426e76435736800fb8e67fa443a2d85",
+ "branch": "core/collisions",
+ "uncommitted_changes": [],
+ "inputs": [
+  {
+   "path": ".work/build_cpu/src/athena",
+   "sha256": "5c78d0a795d66086b030c3dbbbc5408982a238870b1a1d402afe04ea1e153ae2"
+  },
+  {
+   "path": "problems/st/st_cluster.athinput",
+   "sha256": "68e2b50dfa175a57413efb818702544ed044e9924fe34f38454f4dee3bdd78d3"
+  }
+ ],
+ "output_directory": "/data/haiyangw/nrpic/scratch/core/core-20261115-135625-4b40aa5",
+ "host": "anta",
+ "start_utc": "2026-11-15T13:56:25Z",
+ "cores": 1,
+ "wall_time_s": 1.31,
+ "exit_status": 1,
+ "core_hours": 0.0004
+}

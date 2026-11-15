@@ -1,0 +1,41 @@
+{
+ "run_id": "core-20261115-121455-c061b12",
+ "owner": "core",
+ "command": [
+  "/data/haiyangw/nrpic/wt/core-newton/.work/athena_cpu_c061b12",
+  "-i",
+  "periodic.athinput",
+  "particles/particle_file=wave32.nrp",
+  "particles/deposit_shape=tsc",
+  "particles/deposit_comp_c=0.125",
+  "particles/nfilter=2",
+  "particles/filter_compensate=true"
+ ],
+ "cwd": "/data/haiyangw/nrpic/scratch/core/core-20261115-121455-c061b12",
+ "commit": "c061b12",
+ "source_modified_since_commit": true,
+ "inputs": [
+  {
+   "path": "problems/newton/periodic.athinput",
+   "sha256": "743ef078d7b0e0e89c0e55dd93152316dcd1993f3c271d793f35a6a456e7c0f8"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/scratch/core/ic/newton/wave32.nrp",
+   "sha256": "bee6f474cd6a57d8be1d01888d3a6d5dd26ef99669ed91af4e0886cdeb57b6fc"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/wt/core-newton/.work/athena_cpu_c061b12",
+   "sha256": "f0284826c30b900e412d71020cec4983a259c97771964bc50bb934f563dffb89",
+   "role": "executable"
+  }
+ ],
+ "output_directory": "/data/haiyangw/nrpic/scratch/core/core-20261115-121455-c061b12",
+ "purpose": "T4b plane wave N=32 with tsc cloud, cloud compensation 0.125, two binomial passes and the compensating pass",
+ "kind": "scouting",
+ "tag": "wave-N32-filter",
+ "wall_time_s": 175.26,
+ "exit_status": 0,
+ "cores": 1,
+ "card_hours": 0.0,
+ "started_utc": "2026-11-15T12:14:55Z"
+}

@@ -1,0 +1,31 @@
+{
+ "run_id": "core-20261115-114219-c89b6e3",
+ "label": "s_p0.4_approx_n128",
+ "owner": "core",
+ "purpose": "Test 1a (iv): scaling with momentum, closed-form correction",
+ "kind": "scouting",
+ "command": "/data/haiyangw/nrpic/wt/core-mp/.work/build_cpu/src/athena -i by_static.athinput -d /data/haiyangw/nrpic/scratch/core/core-20261115-114219-c89b6e3 mesh/nx1=128 mesh/nx2=128 mesh/nx3=128 problem/comp0_p1=0.4 problem/comp0_corr=approx",
+ "cwd": "/data/haiyangw/nrpic/scratch/core/core-20261115-114219-c89b6e3",
+ "commit": "c89b6e3",
+ "source_dirty": false,
+ "inputs": [
+  {
+   "path": "problems/puncture/by_static.athinput",
+   "sha256": "6d02cd9ae948066461e38d8aea3a3d43812ec42be5e500d8d662cfb0c4a42f3c"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/wt/core-mp/.work/build_cpu/src/athena",
+   "sha256": "14fac5bec922887288e9615912f7d3983bb424e16a74f97fe26beebe157d0355",
+   "role": "executable"
+  }
+ ],
+ "output_directory": "/data/haiyangw/nrpic/scratch/core/core-20261115-114219-c89b6e3",
+ "resources": "1 core",
+ "started_utc": "2026-11-15T11:42:19Z",
+ "status": "done",
+ "exit_code": 0,
+ "wall_time_s": 22.3,
+ "queue_wait_s": 0.0,
+ "card_hours": 0.0,
+ "core_hours": 0.0062
+}

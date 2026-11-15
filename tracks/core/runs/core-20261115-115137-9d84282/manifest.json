@@ -1,0 +1,47 @@
+{
+ "run_id": "core-20261115-115137-9d84282",
+ "owner": "core",
+ "command": [
+  "/data/haiyangw/nrpic/wt/core-newton/.work/athena_cpu_9d84282",
+  "-i",
+  "isolated.athinput",
+  "mesh/nx1=32",
+  "mesh/nx2=32",
+  "mesh/nx3=32",
+  "meshblock/nx1=16",
+  "meshblock/nx2=16",
+  "meshblock/nx3=16",
+  "time/nlim=1",
+  "particles/dt=1e-6",
+  "particles/snap_dt=1e-6",
+  "particles/particle_file=ball_field.nrp",
+  "gravity/show_defect=2"
+ ],
+ "cwd": "/data/haiyangw/nrpic/scratch/core/core-20261115-115137-9d84282",
+ "commit": "9d84282",
+ "source_modified_since_commit": false,
+ "inputs": [
+  {
+   "path": "problems/newton/isolated.athinput",
+   "sha256": "4e6cc468d4e248d1c157e220da8ff7d0642e41d9a0438f874767984b4b2cc209"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/scratch/core/ic/newton/ball_field.nrp",
+   "sha256": "804a735ba0b8ff9b5ff6a33505ce28cae27b193f5f6887289fe6d3ad1fc02e2b"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/wt/core-newton/.work/athena_cpu_9d84282",
+   "sha256": "71ff0dac2f3166871a92a20363fac51510191d912647c72a1f6e3df9c47f12f7",
+   "role": "executable"
+  }
+ ],
+ "output_directory": "/data/haiyangw/nrpic/scratch/core/core-20261115-115137-9d84282",
+ "purpose": "T1/T2 field of a ball_field on an isolated domain, N=32, one step of 1e-6",
+ "kind": "scouting",
+ "tag": "field-ball_field-N32",
+ "wall_time_s": 7.75,
+ "exit_status": 0,
+ "cores": 1,
+ "card_hours": 0.0,
+ "started_utc": "2026-11-15T11:51:37Z"
+}

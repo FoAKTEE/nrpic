@@ -1,0 +1,37 @@
+{
+ "run_id": "core-20261115-122313-dc623d1",
+ "owner": "core",
+ "command": [
+  "/data/haiyangw/nrpic/wt/core-newton/.work/athena_cpu_c061b12",
+  "-i",
+  "periodic.athinput",
+  "particles/particle_file=wave64.nrp"
+ ],
+ "cwd": "/data/haiyangw/nrpic/scratch/core/core-20261115-122313-dc623d1",
+ "commit": "dc623d1",
+ "source_modified_since_commit": true,
+ "inputs": [
+  {
+   "path": "problems/newton/periodic.athinput",
+   "sha256": "743ef078d7b0e0e89c0e55dd93152316dcd1993f3c271d793f35a6a456e7c0f8"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/scratch/core/ic/newton/wave64.nrp",
+   "sha256": "f8f6a41f7751a0b449dfc5d8ca93276a73f339da50a468971f004295f5136dc7"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/wt/core-newton/.work/athena_cpu_c061b12",
+   "sha256": "f0284826c30b900e412d71020cec4983a259c97771964bc50bb934f563dffb89",
+   "role": "executable"
+  }
+ ],
+ "output_directory": "/data/haiyangw/nrpic/scratch/core/core-20261115-122313-dc623d1",
+ "purpose": "T4c plane wave on the N=32 mesh with 64^3 particles (eight per cell)",
+ "kind": "scouting",
+ "tag": "wave-N32-ppc8",
+ "wall_time_s": 616.72,
+ "exit_status": 0,
+ "cores": 1,
+ "card_hours": 0.0,
+ "started_utc": "2026-11-15T12:23:13Z"
+}

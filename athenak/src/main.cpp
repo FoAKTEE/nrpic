@@ -40,6 +40,7 @@
 #include "outputs/outputs.hpp"
 #include "driver/driver.hpp"
 #include "utils/utils.hpp"
+#include "pgen/nrpic/nrpic_puncture_setup.hpp"
 
 // MPI/OpenMP headers
 #if MPI_PARALLEL_ENABLED
@@ -286,6 +287,8 @@ int main(int argc, char *argv[]) {
     pinput->CheckBlockNames();
   }
   pinput->ModifyFromCmdline(argc, argv);
+  // trackers, refined regions and horizon finders of the punctures of nrpic_cf
+  if (!res_flag) nrpic_by::NrpicPunctureSetup(pinput);
   // remember the restart file, so that modules that keep their own restart data next
   // to it (NRPIC particles) can find them
   if (res_flag) {

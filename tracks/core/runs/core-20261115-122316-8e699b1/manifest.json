@@ -1,0 +1,31 @@
+{
+ "run_id": "core-20261115-122316-8e699b1",
+ "label": "hc_alpha1.0",
+ "owner": "core",
+ "purpose": "Diagnostic: horizon finder on a puncture of mass 10 with spin 30 at cells of m/10, flow constant 1.0, one cycle, verbose",
+ "kind": "scouting",
+ "command": "/data/haiyangw/nrpic/wt/core-mp/.work/build_cpu/src/athena -i by_horizon_coarse.athinput -d /data/haiyangw/nrpic/scratch/core/core-20261115-122316-8e699b1 fastflow/flow_alpha_beta_const_0=1.0",
+ "cwd": "/data/haiyangw/nrpic/scratch/core/core-20261115-122316-8e699b1",
+ "commit": "8e699b1",
+ "source_dirty": false,
+ "inputs": [
+  {
+   "path": "problems/tests/by_horizon_coarse.athinput",
+   "sha256": "43c315bf6ca14ecc19d3f9d3d4a3f05b7a6586b2aabb1e42718d6940895a1639"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/wt/core-mp/.work/build_cpu/src/athena",
+   "sha256": "a675d5b53336beeeb45f9e6fad7ebc90e00faf3d18c295c0ca41e3742dd2591f",
+   "role": "executable"
+  }
+ ],
+ "output_directory": "/data/haiyangw/nrpic/scratch/core/core-20261115-122316-8e699b1",
+ "resources": "1 core",
+ "started_utc": "2026-11-15T12:23:17Z",
+ "status": "done",
+ "exit_code": 0,
+ "wall_time_s": 78.3,
+ "queue_wait_s": 0.0,
+ "card_hours": 0.0,
+ "core_hours": 0.0217
+}

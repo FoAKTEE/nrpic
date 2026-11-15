@@ -1,0 +1,33 @@
+{
+ "run_id": "core-20261115-121342-8f4222b",
+ "owner": "core",
+ "purpose": "Cost per call of the Python twin of the random numbers (NumPy, one core, 2^20 keys)",
+ "kind": "production",
+ "command": [
+  "python3",
+  "/data/haiyangw/nrpic/wt/core-rng/tracks/core/analysis/rng/cost_twin.py"
+ ],
+ "cwd": "/data/haiyangw/nrpic/scratch/core/core-20261115-121342-8f4222b",
+ "commit": "8f4222bd839ebfa006f6547be7d207e238e74e96",
+ "branch": "core/rng",
+ "uncommitted_changes": [
+  "?? tracks/core/analysis/rng/cost_twin.py"
+ ],
+ "inputs": [
+  {
+   "path": "python/nrpic/rng.py",
+   "sha256": "888abf5b241f8bbe3fe2e344af3eaf2d349011ce42ebf3d0f48d03edd72052a2"
+  },
+  {
+   "path": "tracks/core/analysis/rng/cost_twin.py",
+   "sha256": "546016122477d725612e20be288d1f60409d89f99aee80244c360ef53dd42e79"
+  }
+ ],
+ "output_directory": "/data/haiyangw/nrpic/scratch/core/core-20261115-121342-8f4222b",
+ "host": "anta",
+ "start_utc": "2026-11-15T12:13:42Z",
+ "cores": 1,
+ "wall_time_s": 12.19,
+ "exit_status": 0,
+ "core_hours": 0.0034
+}

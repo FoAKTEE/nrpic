@@ -1,0 +1,61 @@
+{
+ "run_id": "core-20261115-150209-3629622",
+ "owner": "core",
+ "purpose": "lead integration P4: Newtonian point-mass field (T1 of problems/newton) N=32, 64 on the merged processor executable 609a875 (second attempt; the first, core-20261115-150002-3629622, failed in the analysis because the input was not copied into the run directories)",
+ "kind": "production",
+ "command": [
+  "bash",
+  "/data/haiyangw/nrpic/wt/core/tracks/core/analysis/lead/newton_point.sh",
+  "/data/haiyangw/nrpic/wt/core/.work/build_cpu_609a875/src/athena"
+ ],
+ "cwd": "/data/haiyangw/nrpic/scratch/core/core-20261115-150209-3629622",
+ "commit": "362962282e9c012f5bbf8b7a795a6d2e92204746",
+ "branch": "core/nrpic",
+ "uncommitted_changes": [
+  "M scripts/README.md",
+  " M tracks/core/analysis/id/figs/t2_Hprofile.pdf",
+  " M tracks/core/analysis/id/figs/t2_Hprofile.png",
+  " M tracks/core/analysis/id/figs/t2_constraints.pdf",
+  " M tracks/core/analysis/id/figs/t2_constraints.png",
+  " M tracks/core/analysis/id/figs/t2_constraints_regions.pdf",
+  " M tracks/core/analysis/id/figs/t2_gauge.pdf",
+  " M tracks/core/analysis/id/figs/t2_profiles.pdf",
+  " M tracks/core/analysis/id/figs/t2_radius_ct.pdf",
+  " M tracks/core/analysis/id/figs/t2_radius_ct_edge2.pdf",
+  " M tracks/core/analysis/id/figs/t2_radius_ct_edge2_ext.pdf",
+  " M tracks/core/analysis/id/figs/t2_radius_ct_edge2_ext.png",
+  " M tracks/core/analysis/id/figs/t2_radius_mp.pdf",
+  " M tracks/core/analysis/id/figs/t2_radius_mp_edge2.pdf",
+  " M tracks/core/analysis/id/figs/t2_variants.pdf",
+  " M tracks/core/analysis/id/figs/t2_variants.png",
+  " M tracks/core/verify/options_at.py",
+  "?? tracks/core/CHANGELOG.md",
+  "?? tracks/core/analysis/id/figs/t2_radius_ct_edge2_prod.pdf",
+  "?? tracks/core/analysis/id/figs/t2_radius_ct_edge2_prod.png",
+  "?? tracks/core/analysis/id/figs/t2_radius_gs0_edge2_ext.pdf",
+  "?? tracks/core/analysis/id/figs/t2_radius_gs0_edge2_ext.png",
+  "?? tracks/core/analysis/id/test2_numbers.json",
+  "?? tracks/core/analysis/lead/gpu_regress_job.sh",
+  "?? tracks/core/analysis/lead/newton_point.sh",
+  "?? tracks/core/stage/G2/",
+  "?? tracks/core/verify/figs/regress_geodesic_core-20261115-065452-3629622.pdf",
+  "?? tracks/core/verify/figs/regress_geodesic_core-20261115-065452-3629622.png",
+  "?? tracks/core/verify/manifests/core-20261115-065452-3629622.json",
+  "?? tracks/core/verify/manifests/core-20261115-065901-3629622.json",
+  "?? tracks/core/verify/manifests/core-20261115-065903-3629622.json",
+  "?? tracks/core/verify/manifests/core-20261115-065904-3629622.json"
+ ],
+ "inputs": [
+  {
+   "path": ".work/build_cpu_609a875/src/athena",
+   "sha256": "a325f29a9361481b3f43b2c9cfeda53a78f98c0735998136fd8efc7d9d68f8b9"
+  }
+ ],
+ "output_directory": "/data/haiyangw/nrpic/scratch/core/core-20261115-150209-3629622",
+ "host": "anta",
+ "start_utc": "2026-11-15T15:02:10Z",
+ "cores": 1,
+ "wall_time_s": 2.73,
+ "exit_status": 0,
+ "core_hours": 0.0008
+}

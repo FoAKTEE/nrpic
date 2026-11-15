@@ -1,0 +1,51 @@
+{
+ "run_id": "core-20261115-134715-1b6bc30",
+ "owner": "core",
+ "purpose": "Scalar field test 4: stochastic sources (generic model on a test field: twin, spectrum, layout, restart, white in time, one step; Mukhanov-Sasaki model on a slow-roll background: lockstep integration, fields, layout, restart, kicks and constraints)",
+ "kind": "production",
+ "command": [
+  "python3",
+  "/data/haiyangw/nrpic/wt/core-scalar/tracks/core/analysis/scalar/test4_noise.py",
+  "--exe",
+  "/data/haiyangw/nrpic/wt/core-scalar/.work/exe/athena_cpu_836ac86",
+  "--workers",
+  "12"
+ ],
+ "cwd": "/data/haiyangw/nrpic/scratch/core/core-20261115-134715-1b6bc30",
+ "commit": "1b6bc30308d9369279d2fec001704f9c84b7560c",
+ "branch": "core/scalar-field",
+ "uncommitted_changes": [],
+ "inputs": [
+  {
+   "path": ".work/exe/athena_cpu_836ac86",
+   "sha256": "65ff216207233e873c3c945b58b54340af5a5a8419aad001882f318626a00144"
+  },
+  {
+   "path": "problems/scalar/noise_power.athinput",
+   "sha256": "daae1f6693ded233fb06a6a0fefe9dc11e84998847965cdf79df5a138d67ce36"
+  },
+  {
+   "path": "problems/scalar/noise_ms.athinput",
+   "sha256": "3ff8eb7bab3c10bb868bc592fdae95ff6175c91b6629dd10f7d9b382598dc9bd"
+  },
+  {
+   "path": "tracks/core/analysis/scalar/test4_noise.py",
+   "sha256": "9bf0a757e5801a05603fd6b02606d6f2770701feb085a5e2bd4b02f83d2ce06a"
+  },
+  {
+   "path": "python/nrpic/scalar_field.py",
+   "sha256": "44003fc8f64412513ac34b4e908b4e7f43d79d23694c4378a02267afcc5ffb8e"
+  },
+  {
+   "path": "python/nrpic/rng.py",
+   "sha256": "da4ad2266506ffb733639df0e83f374fe87dd0173d341c11304c5bb36d85e92e"
+  }
+ ],
+ "output_directory": "/data/haiyangw/nrpic/scratch/core/core-20261115-134715-1b6bc30",
+ "host": "anta",
+ "start_utc": "2026-11-15T13:47:15Z",
+ "cores": 12,
+ "wall_time_s": 283.48,
+ "exit_status": 0,
+ "core_hours": 0.9449
+}

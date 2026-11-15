@@ -1,0 +1,35 @@
+{
+ "run_id": "core-20261115-142227-e8f40ee",
+ "owner": "core",
+ "purpose": "Stochastic fields of the code (run core-20261115-135414-5a6953e, Mukhanov-Sasaki model) against Track E's reference synthesis codebase/ref/synth.py (branch track/E-stoch-inf): per-MeshBlock sums and FFT (analysis only)",
+ "kind": "production",
+ "command": [
+  "python3",
+  "/data/haiyangw/nrpic/wt/core-scalar/tracks/core/analysis/scalar/check_synth_E.py",
+  "/data/haiyangw/nrpic/scratch/core/core-20261115-135414-5a6953e",
+  "/data/haiyangw/nrpic/scratch/core/tmp/sf/E/synth.py"
+ ],
+ "cwd": "/data/haiyangw/nrpic/scratch/core/core-20261115-142227-e8f40ee",
+ "commit": "e8f40eea56606452c1aa0b1f88e3d4d10d2dea88",
+ "branch": "core/scalar-field",
+ "uncommitted_changes": [
+  "?? tracks/core/analysis/scalar/check_synth_E.py"
+ ],
+ "inputs": [
+  {
+   "path": "tracks/core/analysis/scalar/check_synth_E.py",
+   "sha256": "45f3909c21786abcb36097ac0c6a51b8a44cbeb33a4771f16e54dfeb4027fc85"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/scratch/core/tmp/sf/E/synth.py",
+   "sha256": "92365e76e337d3dc52a43d4330d3cec0565e865cc793b364470107956865bdf6"
+  }
+ ],
+ "output_directory": "/data/haiyangw/nrpic/scratch/core/core-20261115-142227-e8f40ee",
+ "host": "anta",
+ "start_utc": "2026-11-15T14:22:27Z",
+ "cores": 1,
+ "wall_time_s": 0.18,
+ "exit_status": 0,
+ "core_hours": 0.0
+}

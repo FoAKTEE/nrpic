@@ -1,0 +1,45 @@
+{
+ "run_id": "core-20261115-135218-a6e5c46",
+ "owner": "core",
+ "purpose": "Demonstration D1 on one A100: test kick keyed by particle tag, analytic metric, 10000 particles to t = 40; layouts, restart, controls; checksums against the processor run",
+ "kind": "production",
+ "command": [
+  "python3",
+  "/data/haiyangw/nrpic/wt/core-rng/tracks/core/analysis/rng/run_kick_demo.py",
+  "--exe",
+  "/data/haiyangw/nrpic/wt/core-rng/.work/exe/athena_gpu_34da199",
+  "--case",
+  "analytic",
+  "--np",
+  "10000",
+  "--tlim",
+  "40",
+  "--ref",
+  "/data/haiyangw/nrpic/scratch/core/core-20261115-121609-fb0491a"
+ ],
+ "cwd": "/data/haiyangw/nrpic/scratch/core/core-20261115-135218-a6e5c46",
+ "commit": "a6e5c4606c5cb3b902838987709c66f1c86f412a",
+ "branch": "core/rng",
+ "uncommitted_changes": [],
+ "inputs": [
+  {
+   "path": ".work/exe/athena_gpu_34da199",
+   "sha256": "6ea0777c4ef8a9c9cfbf1726b4502494fbcf55f7e92d1d7295c2aaf91428ec82"
+  },
+  {
+   "path": "tracks/core/analysis/rng/run_kick_demo.py",
+   "sha256": "7545febfdc76edbbebc1d86f4f007c3a9a6c8138cbce88d768022dc52b152ff9"
+  },
+  {
+   "path": "problems/tests/rng_kick_analytic.athinput",
+   "sha256": "6ffdb1c5d90adbd827d16cc76bcf001b0b5d8094c16b140a805af129bc77f2ff"
+  }
+ ],
+ "output_directory": "/data/haiyangw/nrpic/scratch/core/core-20261115-135218-a6e5c46",
+ "host": "anta",
+ "start_utc": "2026-11-15T13:52:18Z",
+ "cores": 1,
+ "wall_time_s": 22.59,
+ "exit_status": 0,
+ "card_hours": 0.0063
+}

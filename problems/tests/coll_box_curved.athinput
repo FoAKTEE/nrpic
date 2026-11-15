@@ -1,0 +1,88 @@
+# Monte Carlo collisions (tracks/core/interfaces/collisions.md) in a static homogeneous
+# curved metric carried by the mesh: constant lapse alpha0 and a constant spatial metric
+# that is not diagonal, zero shift (problem generator nrpic_geodesic with
+# <problem> metric_kind = homogeneous).  This is flat spacetime in oblique, rescaled
+# coordinates, so the exact solution is known, while the lapse, the volume element and
+# the triad of the collision cells are not trivial:
+#   collisions per coordinate step and coordinate volume = alpha0/sqrt(det gamma) x the
+#   value of the same particles in the flat box; sum of M u_i conserved; relaxation to
+#   Maxwell-Juttner in the triad components.
+# Particle files: tracks/core/analysis/collisions/common.py (make_box with gmat).
+# Driver: tracks/core/analysis/collisions/run_curved_box.py.
+
+<comment>
+problem   = NRPIC collisions in a periodic box with a homogeneous curved metric
+
+<job>
+basename  = box
+rng_seed  = 1
+
+<mesh>
+nghost    = 2
+nx1       = 16
+x1min     = 100.0
+x1max     = 101.0
+ix1_bc    = periodic
+ox1_bc    = periodic
+nx2       = 16
+x2min     = 100.0
+x2max     = 101.0
+ix2_bc    = periodic
+ox2_bc    = periodic
+nx3       = 16
+x3min     = 100.0
+x3max     = 101.0
+ix3_bc    = periodic
+ox3_bc    = periodic
+
+<meshblock>
+nx1       = 16
+nx2       = 16
+nx3       = 16
+
+<time>
+evolution  = dynamic
+integrator = rk2
+cfl_number = 1.0
+nlim       = -1
+tlim       = 1.0
+ndiag      = 100
+
+<adm>
+dynamic = false
+
+<particles>
+particle_type  = nrpic
+pusher         = midpoint       # midpoint | boris
+triad          = symmetric      # symmetric | cholesky (Boris pusher and collision cells)
+metric         = mesh
+tolerance      = 1.0e-13
+max_iterations = 100
+dt             = 0.01
+deposit        = false
+hist_dcycle    = 10
+snap_dt        = 1.0
+particle_file  = box.nrp
+collisions       = true
+coll_sigma       = 1.0
+coll_sigma_model = constant
+coll_sigma_w     = 1.0
+coll_pmax        = 0.1
+coll_subcycle    = measured
+coll_nsub_max    = 1000
+coll_cell_factor = 1
+coll_weights     = equal
+coll_hist_dcycle = 1
+coll_dump_cycle  = -1
+coll_budget      = true
+
+<problem>
+pgen_name   = nrpic_geodesic
+metric_kind = homogeneous
+alpha0      = 0.7
+gxx         = 1.44
+gxy         = 0.3
+gxz         = -0.2
+gyy         = 0.81
+gyz         = 0.15
+gzz         = 1.21

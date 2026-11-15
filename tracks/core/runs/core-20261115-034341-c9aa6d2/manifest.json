@@ -1,0 +1,62 @@
+{
+ "run_id": "core-20261115-034341-c9aa6d2",
+ "owner": "core",
+ "package": "id",
+ "tag": "t2-mp-n256",
+ "purpose": "evolution of the expanding ball against the exact solution: mp-n256 (cells 256, half-width 32, gauge mp, start shift zero, q = 1, ball --Rb 10, extra none)",
+ "kind": "scouting",
+ "command": [
+  "/data/haiyangw/nrpic/wt/core-id/scripts/gpu_run.sh",
+  "/data/haiyangw/nrpic/scratch/core/core-20261115-034341-c9aa6d2",
+  "/data/haiyangw/nrpic/wt/core-id/problems/ball/ball.athinput",
+  "mesh/nx1=256",
+  "mesh/nx2=256",
+  "mesh/nx3=256",
+  "mesh/x1min=-32.0",
+  "mesh/x1max=32.0",
+  "mesh/x2min=-32.0",
+  "mesh/x2max=32.0",
+  "mesh/x3min=-32.0",
+  "mesh/x3max=32.0",
+  "meshblock/nx1=64",
+  "meshblock/nx2=64",
+  "meshblock/nx3=64",
+  "time/tlim=10.0",
+  "particles/traj_dcycle=4",
+  "particles/traj_ntrack=2078",
+  "particles/particle_file=/data/haiyangw/nrpic/scratch/core/id/ic_ball/t2_sharp_h0p25.nrp",
+  "problem/comp0_file=/data/haiyangw/nrpic/scratch/core/id/ic_ball/t2_sharp_h0p25.tab",
+  "problem/shift=zero"
+ ],
+ "cwd": "/data/haiyangw/nrpic/scratch/core/core-20261115-034341-c9aa6d2",
+ "commit": "c9aa6d251303468e68e5a5ff624dcf0b7c5a96a1",
+ "worktree_dirty": true,
+ "inputs": [
+  {
+   "path": "/data/haiyangw/nrpic/wt/core-id/problems/ball/ball.athinput",
+   "sha256": "68014de8ceeaf8c3d85991bd44397ab55cfd836626cb8f46a9b859e4d94e580a"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/wt/core-id/.work/build_gpu/src/athena",
+   "sha256": "b59ee3a36f4ac80b87a368a5506dd8c4857dbd856879c82e2f8f5ab49ecaf8bc"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/scratch/core/id/ic_ball/t2_sharp_h0p25.nrp",
+   "sha256": "9a248fe93f046ee80436bbf4f9743abcf604636f49629b74efcc8d470c356f99"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/scratch/core/id/ic_ball/t2_sharp_h0p25.tab",
+   "sha256": "7a62afec5e80352f83b9736dd0c519c80d8fd3666337d3fbd776c81e2d224669"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/scratch/core/id/ic_ball/t2_sharp_h0p25.json",
+   "sha256": "0470dfa73f6e5e751a57e3492ac77a3926e9c9eb5aa1fb1670893ad00ede0350"
+  }
+ ],
+ "output_directory": "/data/haiyangw/nrpic/scratch/core/core-20261115-034341-c9aa6d2",
+ "wall_time_s": 184.6,
+ "cores": 1,
+ "card_hours": 0.05111,
+ "exit_status": 0,
+ "started": "20261115-034341"
+}

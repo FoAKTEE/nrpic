@@ -175,6 +175,46 @@ MGGravity::~MGGravity() {
 //! \brief load the data and solve
 
 void MGGravityDriver::Solve(Driver *pdriver, int stage, Real dt) {
+  // Without a gas the density belongs to another module (the Newtonian mode of the
+  // particle module), which calls SolveSource when its density is ready.
+  if (pmy_pack_->pmhd == nullptr && pmy_pack_->phydro == nullptr) return;
+  auto &u0 = (pmy_pack_->pmhd != nullptr) ? pmy_pack_->pmhd->u0
+                                            : pmy_pack_->phydro->u0;
+  SolveDensity(pdriver, u0, IDN, dt);
+  return;
+}
+
+//----------------------------------------------------------------------------------------
+//! \fn void MGGravityDriver::SolveSource(Driver *pdriver, rho, ns)
+//! \brief solve lap phi = four_pi_G rho for the density held in component ns of a
+//! cell-centred array with the ghost cells of the mesh.  The colour offset of the
+//! red-black smoother, which the driver alternates from one V cycle to the next, is
+//! reset first: the result then depends on the density and on the starting potential
+//! only, not on the number of cycles of earlier solves, and a restarted run repeats
+//! the original one.  With threshold = 0 the V cycles continue until the defect norm
+//! is at most tol, or until two successive cycles each lower it by less than ten per
+//! cent (see SolveDensity); tol = 0 leaves only the second condition.
+
+void MGGravityDriver::SolveSource(Driver *pdriver, const DvceArray5D<Real> &rho,
+                                  int ns, Real tol) {
+  coffset_ = 0;
+  until_stall_ = (eps_ == 0.0);
+  stall_tol_ = (tol > 0.0) ? tol : 0.0;
+  SolveDensity(pdriver, rho, ns, 0.0);
+  until_stall_ = false;
+  last_defect = 0.0;
+  for (int v = 0; v < nvar_; ++v) {
+    last_defect += CalculateDefectNorm(MGNormType::l2, v);
+  }
+  return;
+}
+
+//----------------------------------------------------------------------------------------
+//! \fn void MGGravityDriver::SolveDensity(Driver *pdriver, rho, ns, dt)
+//! \brief load the density rho(ns) and solve
+
+void MGGravityDriver::SolveDensity(Driver *pdriver, const DvceArray5D<Real> &rho,
+                                   int ns, Real dt) {
   RegionIndcs &indcs_ = pmy_pack_->pmesh->mb_indcs;
 
   // Reallocate MG arrays and phi if AMR has changed the mesh
@@ -194,9 +234,7 @@ void MGGravityDriver::Solve(Driver *pdriver, int stage, Real dt) {
   // convention: Laplacian(u) = 6u - neighbors = -dx²∇²u).  To obtain the
   // standard Poisson equation ∇²φ = 4πGρ we must load the source with a
   // negative sign so that -∇²φ = -4πGρ, i.e. ∇²φ = +4πGρ.
-  auto &u0 = (pmy_pack_->pmhd != nullptr) ? pmy_pack_->pmhd->u0
-                                            : pmy_pack_->phydro->u0;
-  mglevels_->LoadSource(u0, IDN, indcs_.ng, -four_pi_G_);
+  mglevels_->LoadSource(rho, ns, indcs_.ng, -four_pi_G_);
 
   // Apply source mask (zero source outside mask_radius_)
   mglevels_->ApplyMask();
@@ -218,10 +256,49 @@ void MGGravityDriver::Solve(Driver *pdriver, int stage, Real dt) {
 
   auto t_start = std::chrono::high_resolution_clock::now();
 
-  if (full_multigrid_)
+  if (until_stall_) {
+    // SolveSource with threshold = 0.  The rule of SolveIterative for that case stops at
+    // the first cycle that lowers the defect by less than ten per cent; the first cycle
+    // from a zero potential on an isolated domain raises it, and the solve would end
+    // there.  Here the cycles end when two in succession fail to lower it, or when
+    // the defect norm has reached stall_tol_.
+    const Real eps_save = eps_;
+    const int niter_save = niter_;
+    eps_ = -1.0;
+    niter_ = 0;                      // no cycles inside SolveMG
+    if (full_multigrid_)
+      SolveFMG(pdriver);
+    else
+      SolveMG(pdriver);
+    eps_ = eps_save;
+    niter_ = niter_save;
+    Real def = 0.0;
+    for (int v = 0; v < nvar_; ++v) {
+      def += CalculateDefectNorm(MGNormType::l2, v);
+    }
+    if (fshowdef_ >= 2 && global_variable::my_rank == 0) {
+      std::cout << "MG initial defect = " << def << std::endl;
+    }
+    int nstall = 0;
+    last_ncycle = 0;
+    while (def > stall_tol_ && nstall < 2 && last_ncycle < 100) {
+      SolveVCycle(pdriver, npresmooth_, npostsmooth_);
+      const Real olddef = def;
+      def = 0.0;
+      for (int v = 0; v < nvar_; ++v) {
+        def += CalculateDefectNorm(MGNormType::l2, v);
+      }
+      if (fshowdef_ >= 2 && global_variable::my_rank == 0) {
+        std::cout << "MG iteration " << last_ncycle << ": defect = " << def << std::endl;
+      }
+      nstall = (def > 0.9*olddef) ? nstall + 1 : 0;
+      ++last_ncycle;
+    }
+  } else if (full_multigrid_) {
     SolveFMG(pdriver);
-  else
+  } else {
     SolveMG(pdriver);
+  }
 
   Kokkos::fence();
 
