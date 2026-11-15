@@ -132,14 +132,14 @@ def part_a(exe, top, workers):
     for case in ("frozen_b16", "markov_b16"):
         c1, _ = sfr.analyse(dump(case, 1)["fields"]["noise0"], n)
         c2, _ = sfr.analyse(dump(case, 2)["fields"]["noise0"], n)
-        # modes whose shell factor is appreciable in both steps
+        # phases of the modes whose shell factor is appreciable in both steps: the same
+        # for frozen amplitudes (correlation 1), independent for new amplitudes (0)
         w = np.abs(c1)*np.abs(c2)
         sel = w > 1e-6*w.max()
-        a1 = c1[sel]/np.sqrt(np.mean(np.abs(c1[sel])**2))
-        a2 = c2[sel]/np.sqrt(np.mean(np.abs(c2[sel])**2))
+        u1, u2 = c1[sel]/np.abs(c1[sel]), c2[sel]/np.abs(c2[sel])
         corr[case] = dict(modes=int(sel.sum()),
-                          corr=float(np.real(np.mean(a1*np.conj(a2)))),
-                          band=float(4.0/np.sqrt(sel.sum())))
+                          corr=float(np.real(np.mean(u1*np.conj(u2)))),
+                          band=float(4.0/np.sqrt(2.0*sel.sum())))
     res["correlation"] = corr
 
     # one step with the sources: exact response of the Runge-Kutta polynomial per mode,
@@ -330,6 +330,7 @@ def figures(top, s):
     import matplotlib
     matplotlib.use("Agg")
     import matplotlib.pyplot as plt
+    import matplotlib.ticker
     from nrpic import figstyle as fs
     fs.use_style()
     if "A" in s:
@@ -349,10 +350,10 @@ def figures(top, s):
         ax[1].semilogy(e, "o", color=fs.PAL["red"], ms=4, label="coefficients: code - twin")
         ax[1].semilogy(o, "s", color=fs.PAL["blue"], ms=4, label="largest coefficient outside the ball")
         ax[1].axhline(1e-12, **fs.GUIDE)
-        ax[1].set_ylim(1e-18, 1e-10)
+        ax[1].set_ylim(1e-21, 1e-10)
         ax[1].set_xlabel("case (scheme, window, cycle, field)")
         ax[1].set_ylabel("difference / rms of the field")
-        ax[1].legend(loc="upper right", fontsize=8)
+        ax[1].legend(loc="lower left", fontsize=8)
         fs.save(fig, os.path.join(top, "fig_noise_power"))
         plt.close(fig)
     if "B" in s:
@@ -369,7 +370,10 @@ def figures(top, s):
         ax[0].loglog(cf, e0*(cf/0.25)**4, **fs.GUIDE, label=r"$\propto\Delta t^4$")
         ax[0].set_xlabel("Courant factor")
         ax[0].set_ylabel("relative difference to SciPy")
-        ax[0].legend(loc="upper left", fontsize=8)
+        ax[0].set_xticks([0.0625, 0.125, 0.25])
+        ax[0].set_xticklabels(["0.0625", "0.125", "0.25"])
+        ax[0].xaxis.set_minor_formatter(matplotlib.ticker.NullFormatter())
+        ax[0].legend(loc="center left", fontsize=8)
         con = s["B"]["constraints"]
         for case, col, ls, lab in (("cfl0.25", fs.PAL["red"], "-", "stencil projector"),
                                    ("continuum", fs.PAL["blue"], "-", "continuum projector"),
@@ -378,9 +382,10 @@ def figures(top, s):
             t = np.array(con[case]["t"])
             ax[1].semilogy(t, np.maximum(con[case]["M_rms"], 1e-20), color=col, ls=ls, label=lab)
             ax[1].semilogy(t, np.maximum(con[case]["H_rms"], 1e-20), color=col, ls="--")
+        ax[1].set_ylim(1e-24, 1e-5)
         ax[1].set_xlabel("time")
         ax[1].set_ylabel("rms $|M|$ (solid), rms $H$ (dashed)")
-        ax[1].legend(loc="lower right", fontsize=7)
+        ax[1].legend(loc="lower center", fontsize=7, ncol=2)
         fs.save(fig, os.path.join(top, "fig_noise_ms"))
         plt.close(fig)
 

@@ -224,11 +224,12 @@ def power_shell_factor(n2, t0, t1, length, amp=1.0, tilt=0.0, ksigma0=1.0, hubbl
     ks0 = ksigma0*np.exp(hubble*(t0 - tref))
     ks1 = ksigma0*np.exp(hubble*(t1 - tref))
     if window == "tanh":
-        w0 = 0.5*(1.0 + np.tanh(sharpness*np.log(ks0/q)))
-        w1 = 0.5*(1.0 + np.tanh(sharpness*np.log(ks1/q)))
+        # tanh x1 - tanh x0 = sinh(x1 - x0)/(cosh x1 cosh x0), without cancellation
+        x0, x1 = sharpness*np.log(ks0/q), sharpness*np.log(ks1/q)
+        dw = 0.5*np.sinh(sharpness*hubble*(t1 - t0))/(np.cosh(x1)*np.cosh(x0))
     else:
-        w0, w1 = (q <= ks0).astype(float), (q <= ks1).astype(float)
-    dw = np.where(w1 - w0 > 0.0, w1 - w0, 0.0)
+        dw = (q <= ks1).astype(float) - (q <= ks0).astype(float)
+    dw = np.where(dw > 0.0, dw, 0.0)
     base = amp*q**(0.5*(tilt - 3.0))*length**-1.5
     return base*(dw if scheme == "frozen" else np.sqrt(dw))
 

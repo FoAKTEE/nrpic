@@ -294,3 +294,52 @@ at).
   wave number is 1.3 percent below k). Flipped sign of the Pi kick: Hamiltonian violation
   after the first step more than 100 times that of the correct sign, and twice as large
   with twice the amplitude (first order).
+
+## 2026-11-15, entry 4: test 4, outcome (run core-20261115-134715-1b6bc30) [VERIFIED]
+
+Generic model (32^3, 2084 modes, 85 shells):
+- (a) holds for the frozen scheme and the step window: coefficients of the synthesized
+  fields minus the twin's prescription at most 2.9e-15 of the rms (frozen), 2.2e-16 (step
+  window); nothing outside the ball (below 9e-17). It FAILED for the white-in-time scheme
+  at cycle 64: 1.2e-11 (1.3e-14 at cycle 32). Suspected cause: the increment of the window
+  was formed as W(t1) - W(t0); for modes far inside the window both are 1 to 1e-16, the
+  difference is rounding, and its square root (the white-in-time amplitude) carries it at
+  1e-8 of the shell amplitude, differently in the code (libm) and in the twin (NumPy).
+  Change made: dW = sinh(s h dt)/(2 cosh x1 cosh x0), an identity without cancellation,
+  in the code and in the twin. Prediction before the repeat: all cases below 1e-13.
+- (b) holds: shell means of |xi_n|^2 over the prescription within 2.91 sigma (85 shells),
+  mean over the 2084 modes 1.031 (1.4 standard errors).
+- (c) holds: every field of the dumps (stochastic fields, phi, Pi, chi, K, lapse,
+  constraints) bit-identical for 1, 8 and 64 MeshBlocks (frozen) and 8 and 64 (white in
+  time), at cycles 32 and 64; a run restarted at cycle 32 gives a byte-identical dump at
+  cycle 64 for both schemes.
+- (d) white in time holds (0.007, band 0.088). For the frozen scheme my estimator gave
+  0.13, not 1: it weighted the modes with the shell factors of the two steps, which peak
+  at different wave numbers. The statement to test is that the amplitudes are the same:
+  estimator replaced by the mean of the phase factors u1 conj(u2) per mode. Prediction
+  before the repeat: 1 (to rounding) for frozen, within 4/sqrt(2M) of 0 for white in time.
+- One step with the sources: phi and Pi equal the response of the Runge-Kutta polynomial
+  per mode to 4.6e-16 and 2.9e-15, so the sources enter with the coefficients stated
+  (the naive phi = c_phi xi is off by 3.8e-3, the (kappa dt)^2/6 term).
+
+Mukhanov-Sasaki model (16^3, box 10, 435 modes in 31 shells, slow-roll background):
+- (e) holds: mode functions against SciPy 6.37e-3, 3.65e-4, 2.17e-5 for Courant 0.25,
+  0.125, 0.0625 (orders 4.12, 4.07; the test mesh has H dt = 0.096 and k dt up to 0.59
+  at Courant 0.25); the source factors S_R the same (4.83e-3, 2.78e-4, 1.66e-5). The
+  background of level 0 agrees to 1e-12 (it is smooth in slow roll). The mesh mean of
+  ln a differs from the lockstep background by 3.0e-5, 1.8e-6, 1.1e-7 (order 4): the
+  truncation of the mesh evolution, as in test 2.
+- (a) holds: the six fields (I_R and five T_ij) minus (shell factor of the record) x
+  (twin alpha) x (stencil projector) at most 7.1e-17 of the rms, at t = 2.03 and t = 4.
+- (c) holds: 1 and 8 MeshBlocks bit-identical in every field; restart byte-identical.
+- (f) holds on the kick fields: discrete momentum constraint of the kick 4.9e-16 of its
+  terms with the stencil projector, 1.37e-2 with the continuum projector. Flipped sign of
+  the Pi kick: rms H after the first step 1.90e-7 against 2.66e-11 (7e3 times), 3.81e-7
+  with twice the amplitude (first order).
+- Seen and not explained by a test: in the evolved run the momentum constraint after the
+  first step is 2.65e-12 with either projector and doubles with the amplitude (first
+  order, 5e-4 of the flipped case); later the continuum projector gives 1.2e-9 against
+  6.7e-11 with the stencil projector. Level 1 (box means) gives the same constraint
+  levels as level 0. Track E's test L5 on a resolved mesh has to settle whether the
+  residual first-order part is the discretisation of the evolution.
+Figures `fig_noise_power.png`, `fig_noise_ms.png` (looked at; legends moved afterwards).

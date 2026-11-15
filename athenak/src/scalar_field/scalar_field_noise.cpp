@@ -565,15 +565,17 @@ void ScalarField::NoiseShellFactors(const std::vector<Real> &y) {
   auto hi = Kokkos::create_mirror_view(shell_im);
   for (int n=0; n<nshell; ++n) {
     const Real q = std::sqrt(static_cast<Real>(shell_n2[n]));
-    Real w0, w1;
+    Real dw;
     if (nopt.window == kWindowTanh) {
-      w0 = 0.5*(1.0 + std::tanh(nopt.sharpness*std::log(ks0/q)));
-      w1 = 0.5*(1.0 + std::tanh(nopt.sharpness*std::log(ks1/q)));
+      // W1 - W0 = (tanh x1 - tanh x0)/2 = sinh(x1 - x0)/(2 cosh x1 cosh x0): no
+      // cancellation for modes far inside or outside the window
+      const Real x0 = nopt.sharpness*std::log(ks0/q);
+      const Real x1 = nopt.sharpness*std::log(ks1/q);
+      dw = 0.5*std::sinh(nopt.sharpness*nopt.hubble*(t1 - t0))
+           /(std::cosh(x1)*std::cosh(x0));
     } else {
-      w0 = (q <= ks0) ? 1.0 : 0.0;
-      w1 = (q <= ks1) ? 1.0 : 0.0;
+      dw = ((q <= ks1) ? 1.0 : 0.0) - ((q <= ks0) ? 1.0 : 0.0);
     }
-    Real dw = w1 - w0;
     if (!(dw > 0.0)) { dw = 0.0; }
     const Real base = nopt.amp*std::pow(q, 0.5*(nopt.tilt - 3.0))/(len*std::sqrt(len));
     hr(n) = base*((nopt.scheme == kNoiseFrozen) ? dw : std::sqrt(dw));
