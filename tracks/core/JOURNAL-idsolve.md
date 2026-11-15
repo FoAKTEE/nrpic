@@ -457,3 +457,63 @@ least 3 times below the unsolved one through the 8 cycles. Refuted if the growth
 unchanged (then the candidate is wrong), or if the two runs again agree within 20 per
 cent at the end (then something else that the solve does not touch dominates, the
 momentum constraint being the next candidate).
+
+## 2026-11-15, entry 8: outcome of E and of T5; test F predicted (new session)
+
+A new session continues the package from commit c27eecf (the previous one ended after
+the runs of E without recording them). Read again before this entry: `CLAUDE.md`,
+`coord/CHARTER.md` to "Owners", brief lines 493-553, 688-706, 834-860, the rulings after
+wave 1, decision 0010, this journal, `tracks/core/interfaces/id_solver.md`,
+`particles/nrpic_idsolve.cpp`.
+
+**E failed on both counts.** Runs (source 87e189e, ids carry the commit of the journal):
+without the solve core-20261115-164339-1013682, with it -164627-1013682; numbers in
+`evolution_numbers.json` (`triaxial_smooth_recommended`), figure `evolution_tri` (third
+panel; I looked at it).
+- Growth of the mean |H| per step in the unsolved run: 5.5e-6 with the recommended
+  settings against 7.6e-6 in D: a factor 1.36, not the factor 5 predicted. The fixed
+  sources during a step are not the main cause of the growth.
+- The solved run starts 127 times lower (1.09e-7 against 1.39e-5), is 2.1 times lower
+  after one step, 1.25 times after four and 1.10 times after eight (5.31e-5 against
+  5.83e-5): within 20 per cent at the end, as in D. Its maximum of |H| stays about 2
+  times below the unsolved run through the 8 cycles (6.8e-4 against 1.18e-3 at t = 2),
+  which D did not show (1.42e-3 against 1.50e-3).
+- The mean |M| grows in both runs alike, from 7.1e-6 (off) and 7.6e-6 (code) to 4.6e-5
+  and 4.3e-5.
+
+**T5 held** (card build of 87e189e, Slurm job 4441 on one A100, run
+core-20261115-162952-46dcb31, against the processor run -155051-87e189e; script
+`analyze_card.py`, numbers `card_numbers.json`, figure `card_vs_cpu`, looked at): the
+same 17 outer iterations, 22 conjugate-gradient steps and 78 V cycles; psi equal to
+1.1e-15 (relative 1.1e-15, predicted 1e-12); the deposited E equal to 5e-15 relative;
+max|H| after the solve 1.092e-11 against 1.094e-11. The residual history agrees to
+1.8e-3 relative (rounding in the last iterations, where F is 1e-10 of the scale).
+Wall time 5.7 s on the card against 87 s on one processor core. The manifest of the
+card run says `card_hours = 0.0`: a fault of my runner (it does not pass the card time);
+the job held the card for about 10 s, 0.003 card-hours.
+
+**F, prediction before the runs.** The smooth triaxial ball with the settings of E at
+64 cells (dx = 1, 8 steps) and 128 cells (dx = 0.5, 16 steps), both to t = 2, without
+and with the solve; field dumps of H and M at t = 0, 1, 2. Regions: interior r < 7,
+surface shell 7 <= r < 13.5, exterior, face layer (4 units = 4 or 8 cells from a face).
+Three candidates for the growth seen in D and E: (i) the truncation error of the
+evolution at a density edge resolved by 2 to 4 cells; (ii) the momentum constraint of
+the strained trial data, which the solve leaves as it is (a property of the data, not of
+the resolution); (iii) the outflow faces, where the monitor reads up to 1.9e-3 for any
+data (T1 (f)), and where the exterior curvature of the table (K_ij of the
+Painleve-Gullstrand exterior) is not zero.
+Predictions [JUDGEMENT]:
+ (a) the 64-cell runs repeat the constraint records of E exactly (processor runs are
+     reproducible; only field dumps are added);
+ (b) at t = 2 the face layer holds more than half of the volume integral of |H| in both
+     64-cell runs (candidate iii dominates the mean over the mesh);
+ (c) in the surface shell the mean |H| made between t = 0 and 2 in the unsolved run
+     falls by at least a factor 4 from dx = 1 to dx = 0.5 (candidate i), and the solved
+     run keeps the shell mean |H| at least 3 times below the unsolved one at t = 2 at
+     dx = 0.5;
+ (d) the mean |M| of the shell at t = 0 is the same at both resolutions within 30 per
+     cent (a property of the strained data).
+Refuted: (b) if the face layer holds less than a quarter; (c) if the shell growth falls
+by less than a factor 2: then candidate (ii) or another unresolved effect dominates, and
+the vector equation (a trial whose momentum constraint holds) comes before any gain from
+the Hamiltonian solve for such data.

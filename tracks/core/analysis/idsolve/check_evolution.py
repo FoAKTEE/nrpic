@@ -175,7 +175,151 @@ def recommended(a):
                               " ".join("%.2e" % x for x in res[label]["M_mean"])))
     out["triaxial_smooth_recommended"] = res
     idlib.save_json(path, out)
+    plot_tri(out)
     return 0
+
+
+REGIONS = ("interior", "shell", "exterior", "faces")
+
+
+def region_stats(path, nb_face):
+    """Means of |H| and |M| over four regions of a field dump of the ball: interior
+    (r < 7), surface shell (7 <= r < 13.5), exterior (the rest away from the faces) and
+    the face layer (within nb_face cells of a face). Also the volume fraction of each
+    region and its share of the volume integral of |H|."""
+    d = idlib.read_field(path)
+    n = d["n"]
+    x = idlib.centres(n[0], -32.0, 32.0)
+    X, Y, Z = np.meshgrid(x, x, x, indexing="ij")
+    r = np.sqrt(X*X + Y*Y + Z*Z)
+    face = np.zeros(n, dtype=bool)
+    face[:nb_face, :, :] = face[-nb_face:, :, :] = True
+    face[:, :nb_face, :] = face[:, -nb_face:, :] = True
+    face[:, :, :nb_face] = face[:, :, -nb_face:] = True
+    masks = dict(interior=(r < 7.0) & ~face, shell=(r >= 7.0) & (r < 13.5) & ~face,
+                 exterior=(r >= 13.5) & ~face, faces=face)
+    h = np.abs(d["H"])
+    m = np.sqrt(d["Mx"]**2 + d["My"]**2 + d["Mz"]**2)
+    tot = h.sum()
+    out = dict(time=float(d["time"]), H_mean_all=float(h.mean()), M_mean_all=float(m.mean()))
+    for k in REGIONS:
+        mk = masks[k]
+        out[k] = dict(frac=float(mk.mean()), H_mean=float(h[mk].mean()),
+                      H_max=float(h[mk].max()), M_mean=float(m[mk].mean()),
+                      H_share=float(h[mk].sum()/tot) if tot > 0 else 0.0)
+    return out, d
+
+
+def resolution(a):
+    """Test F: the smooth triaxial ball with the settings of test E at 64 and 128 cells,
+    without and with the solve, to t = 2, with field dumps at t = 0, 1, 2: where the
+    violation made by the evolution sits, and how it scales with the cell size."""
+    path = os.path.join(idlib.HERE, "evolution_numbers.json")
+    binp = os.path.join(idlib.WT, "problems/idsolve/ball.athinput")
+    res = {}
+    jobs = []
+    for n in (64, 128):
+        h = 32.0/n
+        nrp, tab = run_tests.ic_tri(h, 0.05, 2.0)
+        base = run_tests.mesh_args(n, 32) + [
+            "time/nlim=1000", "time/tlim=2.0", "particles/nfilter=0",
+            "particles/source_density=true", "particles/source_extrap=true",
+            "z4c/lapse_oplog=0.0", "z4c/lapse_harmonic=0.3333333333333333",
+            "particles/field_time1=1.0", "particles/field_time2=2.0",
+            "particles/particle_file=" + os.path.basename(nrp),
+            "problem/comp0_file=" + os.path.basename(tab)]
+        for label, extra in (("off", ["particles/id_solve=false"]),
+                             ("code", ["particles/id_residual=code"])):
+            jobs.append((n, label, nrp, tab, base + extra))
+    import concurrent.futures
+    with concurrent.futures.ThreadPoolExecutor(max_workers=4) as ex:
+        futs = {}
+        for (n, label, nrp, tab, args) in jobs:
+            futs[ex.submit(registered,
+                           "initial-data solver, test F: smooth triaxial ball with the "
+                           "settings of test E at %d cells to t = 2 with field dumps, "
+                           "solve %s" % (n, label), "idsolve-evo-res-%s-n%d" % (label, n),
+                           [binp, nrp, tab], [a.exe, "-i", "ball.athinput"] + args)] = (
+                n, label)
+            time.sleep(1.5)
+        for f in concurrent.futures.as_completed(futs):
+            n, label = futs[f]
+            rr, s = f.result()
+            c = cstat(rr, "ball")
+            v = dict(run=rr, status=s, n=n, time=[float(x) for x in c[:, 0]],
+                     H_max=[float(x) for x in c[:, 8]], H_mean=[float(x) for x in c[:, 9]],
+                     M_max=[float(x) for x in c[:, 12]], M_mean=[float(x) for x in c[:, 13]],
+                     finite=bool(np.all(np.isfinite(c))), regions=[])
+            for i in range(3):
+                fp = os.path.join(idlib.run_dir(rr), "ball.field.%05d.bin" % i)
+                if os.path.exists(fp):
+                    st, _ = region_stats(fp, 4 if n == 64 else 8)
+                    v["regions"].append(st)
+            res["%s_n%d" % (label, n)] = v
+            print("F %s n%d %s %s" % (label, n, rr, s), flush=True)
+    out = idlib.load_json(path)
+    out["triaxial_smooth_resolution"] = res
+    idlib.save_json(path, out)
+    plot_resolution(out)
+    return 0
+
+
+def plot_resolution(out):
+    res = out["triaxial_smooth_resolution"]
+    fs.use_style()
+    fig, axs = plt.subplots(1, 3, figsize=(fs.FULL_WIDTH, 3.2))
+    fig.subplots_adjust(left=0.08, right=0.99, bottom=0.15, top=0.9, wspace=0.32)
+    cols = {64: fs.PAL["blue"], 128: fs.PAL["red"]}
+    ax = axs[0]
+    for key, v in sorted(res.items()):
+        ls = "-" if key.startswith("code") else "--"
+        ax.semilogy(v["time"], np.array(v["H_mean"]) + 1e-30, color=cols[v["n"]], ls=ls,
+                    marker=".", label="%d cells, solve %s" % (v["n"], key.split("_")[0]))
+    ax.set_xlabel(r"$t$")
+    ax.set_ylabel(r"mean $|H|$ over the mesh")
+    ax.legend(fontsize=6.5)
+    for ax, reg in ((axs[1], "shell"), (axs[2], "faces")):
+        for key, v in sorted(res.items()):
+            ls = "-" if key.startswith("code") else "--"
+            t = [s["time"] for s in v["regions"]]
+            ax.semilogy(t, [s[reg]["H_mean"] + 1e-30 for s in v["regions"]], color=cols[v["n"]],
+                        ls=ls, marker="o", ms=3)
+            ax.semilogy(t, [s[reg]["M_mean"] + 1e-30 for s in v["regions"]], color=cols[v["n"]],
+                        ls=":", lw=1.0)
+        ax.set_xlabel(r"$t$")
+        ax.set_title({"shell": r"surface shell $7 \leq r < 13.5$",
+                      "faces": "face layer (4 units)"}[reg], fontsize=9)
+    axs[1].set_ylabel(r"mean $|H|$ (markers), mean $|M|$ (dotted)")
+    fs.save(fig, os.path.join(idlib.FIGS, "evolution_res"))
+    plt.close(fig)
+
+
+def plot_tri(out):
+    """figs/evolution_tri: the three triaxial cases (sharp, smooth, smooth with the
+    settings of problems/ball), mean and max |H| and mean |M| against time."""
+    fs.use_style()
+    cases = [("triaxial", "sharp surface"), ("triaxial_smooth", "smooth edge"),
+             ("triaxial_smooth_recommended", "smooth edge, density sources,\n"
+              "conformal-time lapse")]
+    cases = [c for c in cases if c[0] in out]
+    fig, axs = plt.subplots(1, len(cases), figsize=(fs.FULL_WIDTH, 3.2), sharey=True)
+    fig.subplots_adjust(left=0.08, right=0.99, bottom=0.14, top=0.88, wspace=0.06)
+    for ax, (key, title) in zip(np.atleast_1d(axs), cases):
+        for label, c in (("off", "k"), ("code", fs.PAL["red"])):
+            v = out[key][label]
+            t = np.array(v["time"])
+            ax.semilogy(t, np.array(v["H_mean"]) + 1e-30, color=c, marker=".",
+                        label="mean |H|, solve %s" % label)
+            ax.semilogy(t, np.array(v["H_max"]) + 1e-30, color=c, ls="--", marker=".",
+                        label="max |H|, solve %s" % label)
+            ax.semilogy(t, np.array(v["M_mean"]) + 1e-30, color=c, ls=":", lw=1.0,
+                        label="mean |M|, solve %s" % label)
+        ax.set_xlabel(r"$t$")
+        ax.set_title(title, fontsize=9)
+    np.atleast_1d(axs)[0].set_ylabel("constraints of the code, 64 cells")
+    np.atleast_1d(axs)[-1].legend(fontsize=6.5, ncol=1, loc="lower right")
+    fs.save(fig, os.path.join(idlib.FIGS, "evolution_tri"))
+    plt.close(fig)
 
 
 def main():
@@ -188,9 +332,19 @@ def main():
     ap.add_argument("--recommended", action="store_true",
                     help="test E only: the smooth triaxial ball with the settings that "
                          "problems/ball recommends for an evolution")
+    ap.add_argument("--plot", action="store_true",
+                    help="redraw figs/evolution_tri from evolution_numbers.json only")
+    ap.add_argument("--resolution", action="store_true",
+                    help="test F only: the smooth triaxial ball of test E at 64 and 128 "
+                         "cells with field dumps (regions of the violation)")
     a = ap.parse_args()
     os.makedirs(TMP, exist_ok=True)
     out = {}
+    if a.resolution:
+        return resolution(a)
+    if a.plot:
+        plot_tri(idlib.load_json(os.path.join(idlib.HERE, "evolution_numbers.json")))
+        return 0
     if a.followup:
         return followup(a)
     if a.recommended:
