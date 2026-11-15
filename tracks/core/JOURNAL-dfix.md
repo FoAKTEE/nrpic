@@ -462,3 +462,45 @@ Predictions:
   within reach of the sphere).
 Refuted if the identity fails by even one particle (a centre taken at the wrong time
 level miscounts particles near the sphere) or if the snapshot count differs.
+
+## 2026-11-15 session dfix-2 (continuation; same branch, after `git merge main` at b7034c9)
+
+Read again: `CLAUDE.md`, charter to "Owners", this journal, `REQUESTS_ADF.md`, the
+manifests of the runs left open by dfix-1. The merge of main changed nothing under
+`athenak/`, `problems/`, `python/` (`git diff --stat 0f014b4 HEAD` over those paths is
+empty); the executables `.work/build_{cpu,gpu}/src/athena` were linked at 08:09:59 and
+08:13:00 local time, after the last source edit (08:08:34, `z4c/fastflow.*`), and
+`make -n` in both build directories compiles nothing: they are the source of 3f75eb8,
+which equals the source at HEAD.
+
+### Outcome of T7 (run core-20261115-163129-a200caf, processors, 1066 s; numbers in
+`t7_tracker.json` of the run directory; figure `figs/t7_tracker.png`, looked at)
+[VERIFIED]
+- identity at every one of the 25 records: number inside now minus inside at t = 0
+  equals n_in - n_out - n_excised exactly (largest deviation 0), rest mass to 9.3e-24
+  (masses 1e-12: rounding);
+- content counted by the script from the four snapshots with the centre of the same
+  record equals the history column (1990, 1997, 2074, 2048); the closest particle was
+  5.7e-6 from the sphere, so no count was decided by rounding;
+- 1021 crossings inwards, 963 outwards, none removed; the centre moved by 2.4e-3 M in
+  0.75 M (right panel of the figure);
+- check (a) FAILED as written: the largest deviation of the centre from the nearest row
+  of `atr.co_0.txt` is 0.03125, which is exactly one step dt (the script took the larger
+  of the position and the time deviation). Read in the data: the history row of
+  t = 0.03125 holds x = 0.09999997756473271, the tracker file row "iter 0, time 0"
+  holds 0.09999997756473270882; the history row of t = 0 holds the input position
+  (0.1, -0.2, 0.05) exactly, which no row of the tracker file holds. Read in the source:
+  `Z4c::TrackCompactObjects` (`z4c/z4c_tasks.cpp` lines 320-326) calls `EvolveTracker`
+  and then `WriteTracker` at the last stage of a step, and `WriteTracker`
+  (`z4c/compact_object_tracker.cpp` lines 251-253) prints `pmesh->ncycle` and
+  `pmesh->time` before the driver advances them. So the tracker file labels the
+  position of t^{n+1} with n and t^n: an upstream labelling, one row early.
+  Hypothesis: the centre of the diagnostics is the right one (position at the time of
+  its record), and only the comparison was misaligned.
+  Prediction for the corrected check (written before the re-judgement): the centre of
+  history record k >= 1 equals tracker row k-1 in all three coordinates to the 16 to
+  19 printed digits (|difference| < 1e-15), record 0 equals the input position exactly,
+  and the time of record k equals the time of tracker row k-1 plus 0.03125. Refuted if
+  any coordinate differs by more than 1e-15 (the centre would then be taken at another
+  time level than its record, which the identity of the counts cannot see when the
+  centre moves 1e-4 M per step against particles 5.7e-6 M from the sphere).

@@ -155,7 +155,18 @@ present), added in both half kicks and in the potential-energy sum of the histor
 Touched: `particles/particles.hpp` (`NrpicExternalOptions`, two methods),
 `particles/nrpic_newton.cpp` (`NrpicNewtonInit`: options; new `NrpicNewtonScale`,
 `NrpicNewtonExternal`; `NrpicNewtonKick` and `NrpicNewtonPush`: the external term).
-Test T4: section 4 (result filled in below when the run ended).
+Test T4 (`problems/tests/newton_point_mass.athinput`, `..._periodic.athinput`,
+`t4_newton.py`, run core-20261115-160805-5d1663f; particles of rest mass 1e-10, step
+0.002): two Kepler orbits follow the exact motion to 7e-5 over 20 time units, with the
+pericentre counters (3, 4) and 8 / 7 crossings of the sphere r = 1 as the exact orbits
+and the sums of m E within 7e-4; circular orbits of the softened potential keep their
+radius to 3e-6 and their phase to 5e-5; the background term reproduces r = r0
+(1 + t)^(2/3) and (1 + t)^(1/3) to 3e-7; in the expanding periodic box (a from 1 to 4)
+orbits around the seed with comoving softening follow an independent ODE solution to
+2e-4 and the Layzer-Irvine combination C of the history is constant to 4e-5 of a|W|
+while a (K + W) changes by 0.30 of it. With the softening fixed in physical units the
+distance to the ODE solution reached 6e-3 at this step; the follow-up at half the step
+is reported in section 4.
 
 ### 2.5 Common horizon of a pair (F1)
 
@@ -168,7 +179,13 @@ surfaces are 0 .. npunct-1; a pair surface is an extra block of parameters with
 `num_horizons` raised by one (example: `problems/tests/pair_horizon.athinput`).
 Touched: `z4c/fastflow.hpp` (two members), `z4c/fastflow.cpp` (constructor: options;
 `PuncMaxDistance()`, `PuncSumMasses()`, `PuncWeightedMassCentralPoint()`: the pair).
-Test T5: section 4.
+Test T5 (`t5_pair.py`, run core-20261115-161025-3f75eb8, Brill-Lindquist data of
+three punctures of bare mass 0.5 at x = -0.2, 0.2, 12): the surface of the pair (0, 1)
+is found at the first call with mass 1.0199 (expected (0.5 + 0.5)(1 + 0.5/24) = 1.0208
+less the energy outside the common horizon), mean coordinate radius 0.49; the surface
+that waits for all punctures and the surface of the far pair (0, 2) are not searched;
+the release, which ignores the new parameters, searches none. Not tested: the surface
+appearing during an evolution.
 
 ### 2.6 Interface corrections of F4
 

@@ -61,6 +61,21 @@ def judge(d):
         k = np.argmin(np.abs(co[:, 1] - row[0]))
         dev = max(dev, float(np.abs(co[k, 2:5] - row[2:5]).max()), float(abs(co[k, 1] - row[0])))
     res["centre_minus_tracker_max"] = dev
+    # (a') the tracker file labels the position after the step of cycle n with n and
+    # t^n (WriteTracker runs before the driver advances ncycle and time): record k >= 1
+    # of the history is compared with tracker row k-1, record 0 with the input position
+    by_iter = {int(r[0]): r for r in co}
+    dpos, dtime = 0.0, 0.0
+    for row in hst:
+        k = int(round(row[1]))
+        if k == 0:
+            dpos = max(dpos, float(np.abs(row[2:5] - C0).max()))
+            continue
+        r = by_iter[k - 1]
+        dpos = max(dpos, float(np.abs(r[2:5] - row[2:5]).max()))
+        dtime = max(dtime, float(abs(row[0] - r[1] - (hst[1, 0] - hst[0, 0]))))
+    res["centre_minus_tracker_row_before_max"] = dpos
+    res["record_time_minus_row_time_minus_dt_max"] = dtime
     res["centre_displacement"] = float(np.linalg.norm(hst[-1, 2:5] - hst[0, 2:5]))
     # (b) identities
     res["number_identity_maxerr"] = float(np.abs((hst[:, 15] - hst[0, 15])
@@ -130,7 +145,9 @@ def main():
                                 stderr=subprocess.STDOUT).returncode
         print("exit", rc, flush=True)
     res, hst = judge(d)
-    with open(os.path.join(run, "t7_tracker.json"), "w") as fp:
+    # a re-judgement of an earlier run writes into its own run directory when it has one
+    outdir = os.environ.get("NRPIC_RUN_DIR") or run
+    with open(os.path.join(outdir, "t7_tracker.json"), "w") as fp:
         json.dump(res, fp, indent=1)
         fp.write("\n")
     print(json.dumps(res, indent=1))
