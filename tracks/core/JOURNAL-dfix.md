@@ -532,3 +532,49 @@ comparison with the processor runs that I did not write down before):
   (case kepler of core-20261115-160805-5d1663f) within 1e-9 at every common record.
 Refuted by any count that differs, by an identity off by more than rounding, or by a
 card-processor difference beyond the bound (a defect of the card build in the new code).
+
+Outcome of the T7 re-judgement (run core-20261115-180101-6d165b4) [VERIFIED]: centre of
+record k >= 1 minus tracker row k-1: at most 5.6e-17 in any coordinate (the printing
+of the history); record 0 equals the input position; record time minus row time minus
+dt: 0 at every record. As predicted: the diagnostics take the tracker position of the
+time of their record; the naive check of dfix-1 compared rows one step apart. A reader
+of `<basename>.co_<n>.txt` must know that its row "n, t^n" holds the position at
+t^{n+1} (upstream; written into `docs/FORMATS.md` with this package, see below).
+
+Outcome of the T4 follow-up (judgement run core-20261115-180144-83abe17 of the runs
+core-20261115-160805-5d1663f and core-20261115-162608-113493f; figure
+`figs/t4_conv.png`, looked at) [VERIFIED]:
+- comoving softening: largest distance to the ODE solution 1.92e-4, 1.84e-4 at
+  dt = 0.002 and 4.81e-5, 4.61e-5 at dt = 0.001, ratios 4.00 and 4.00; drift of C over
+  a|W| 4.14e-5 and 1.03e-5, ratio 4.00;
+- physical softening (s/a): 2.64e-3, 5.92e-3 and 6.59e-4, 1.48e-3, ratios 4.00 and 3.99.
+The prediction (ratios between 3 and 5) holds in all three: second-order convergence to
+the independent solution, so the force law and both softening rules are right and the
+two failed bounds of T4 were bounds of the integration error at that step, too tight
+for orbits that pass inside the softening length. Not predicted, seen: with physical
+softening C drifts by 5.6e-2 of a|W| at both steps (ratio 1.00). Reading [JUDGEMENT,
+not tested by a separate run]: the Layzer-Irvine combination C assumes a potential
+homogeneous of degree -1 in the comoving positions; with s/a the potential depends on
+time explicitly and dC/dt has the extra term -sum m dPhi_ext/dt|_x, which the history
+does not integrate. So C is a conservation check only for comoving softening (said so in
+the interface document).
+
+Outcome of the card checks (judgement run core-20261115-180353-7d7116d of the card run
+core-20261115-161528-ff00411; figure `figs/dfix_card.png`, looked at) [VERIFIED]:
+- t1_circ: r in [7.999998, 8.001151] M for 300 M, relative errors 2.6e-7 (E) and
+  5.05e-6 (L_z), as on processors; card minus processor position at most 1.2e-12 M over
+  3002 records (bytes differ, as expected of a card);
+- t3_acc: 192 / 84 / 16 crossings and 4 particles inside 10 M at the end, as on
+  processors; sums of m E equal to the processor run to 0 and 2.2e-16 relative; every
+  history column within 9.0e-16 relative of the processor run; identity to 1.4e-17; 192
+  removal records, the same tags at the same times, E within 1.7e-15 of the processor
+  values; counters (2, 2, 2, 2) and (3, 3, 3, 3);
+- t4_kepler to t = 18.02: 7 crossings inwards and 7 outwards, the exact numbers before
+  that time; counters (2, 2) in the snapshot at t = 10, exact (2, 2); the history counts
+  of passages lie between the exact counts at t - 2 records and at t at every record;
+  distance to the exact orbit at most 6.6e-5; card minus processor at most 4.0e-13.
+Not refuted in any item. The new code of this package gives on a card what it gives on
+processors, to rounding. Not run on a card: T5 (pair horizon; host code, but the finder
+interpolates on the card), the memory measurement at 2700 slots, the block-size
+benchmark, and the 250 M acceptance run of `horizon_calib.athinput` (Track D's own
+acceptance test, decision 0010; it needs about 25 minutes of a card).
