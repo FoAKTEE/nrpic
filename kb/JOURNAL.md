@@ -71,3 +71,38 @@ T6 snapshot. `kb snapshot` writes kb-YYYYMMDD-<sha7>.sqlite whose sha256 begins 
    mode 0444, `current` points at it, and a reader opening `current` sees the same rows.
 T7 writer lock. While one process holds locks/kb-writer.lock, a second writer times out with
    an error naming the holder; after release it gets the lock.
+
+### Outcomes (after the tests ran)
+
+- T1, T2, T3, T5, T6, T7 (synthetic, `kb/tests/`, `cd kb && .venv/bin/python -m pytest`):
+  first run 50 passed, 2 failed. Both failures were mine and not the code under test's
+  claims: (i) the INSERT into `downloads` had 21 placeholders for 20 columns (fixed; columns
+  now named in the statement); (ii) the fixture recorded version "v1.retry1" where the fetch
+  command records "v1" for a retry directory (fixture corrected to the fetch command's
+  behaviour, `harness/bin/nrpic-fetch-arxiv` lines 124-133). Second run: 52 passed. All
+  predictions T1-T3, T5-T7 hold [VERIFIED: commit 6bb2b7d and later, pytest output].
+- T5 on the real data root: `kb init` created `kb-data/db/kb.sqlite`, schema_version rows
+  (1, 2); a second `kb init` applied nothing [VERIFIED: 11:24 UTC, ingest_log rows init-db,
+  migrate].
+- T4, run `kb-20261115-112414-6bb2b7d` (manifest `tracks/kb/runs/.../manifest.json`):
+  684 manifest rows: ok 24 (priority 3: 14, 2: 9, 1: 1), missing 660, failed 0, problem 0,
+  incomplete 0; source kind tex for all 28 stored e-prints (27 gzip-tar, 1 gzip-tex); all 28
+  versions confirmed by Content-Disposition; `sha256sum -c manifests/SHA256SUMS` passes for
+  28 lines; GitHub 63 of 63 missing. Prediction held for every manifest entry. One part
+  failed as worded: I predicted 3 extras and found 4. The fourth, gr-qc/0608095, was added by
+  another session between my listing at 11:13 and the run (the run's own listings before and
+  after the check both have 28 entries = 24 + 4), which is the case the inventory is built
+  to tolerate [VERIFIED: `scratch/kb/kb-20261115-112414-6bb2b7d/raw_listing_*.txt`].
+- Found in passing: 8 manifest ids have older copies under `refs/arxiv_*` outside the store
+  (2611.12831, 1711.06681, 1908.05683, 1904.07841, 1905.08890, 2001.07968, 1101.3555,
+  1111.2997); they are NOT counted as present, and the store gets its own copy through the
+  fetch command [VERIFIED: report `kb/reports/verify-downloads.md`, "Problems and notes"].
+
+### Prediction for the priority-3 download (before it starts)
+
+D1 `kb fetch-missing --priority 3` hands the 33 missing priority-3 ids to one process of
+   `harness/bin/nrpic-fetch-arxiv` (sequential, its lock, 3 s gaps). Expected: at least 30 of
+   33 fetched with status ok, wall time under 15 min unless other sessions hold the lock; the
+   next verify-downloads shows priority 3 at ok >= 44 of 47 and problem 0. Refuted if more
+   than 3 fail, or an HTML or error page is stored as an e-print (verify would show
+   "problem: not an e-print").
