@@ -139,3 +139,37 @@ open: `stage/G0/OPEN.md`; G1 waits on core (generator fix, Newtonian mode on mai
 the first-source scouting at 64^3 can start without core (HANDOFF.md, next work 1).
 The Write tool refused the file name `REPORT.md` for a subagent; written through the
 shell because the stage package names it.
+
+## 2026-11-15T19:15Z  session B-emd-gw lead (wave 2 review)  commits 6b2c423e..(this push)  runs B-20261115-190007-e09a0d2, -190015-4dd3416, -190019-b5f5eb6, -190323-2f8806a, -190433-2d1d185
+
+did: took over the four wave-2 helper packages (first_source, newton_tests, note, verifier);
+wrote predictions R1-R10 before rechecking (stage/review_wave2/JOURNAL.md, commit e09a0d2),
+recomputed from the registered raw outputs with own code (reader of AthenaK bin output, +
+amplitude by direct summation, own g(tau), own TT projector, own linear-growth integration
+for H1, own reading of the Newtonian history files), reran three verifier scripts; wrote
+stage/REVIEW-wave2.md; corrected scope/SCOPE.md (crossover 0.289 and thresholds 0.032 and
+0.19, absolute null criterion, comparison window a <= 10, Omega-today scaling TO VERIFY) and
+one sentence of the note (resolved part of the late rise grows; PDF recompiled); read the
+abstracts of the seven S2 key references the scope had not read (stage/G0/EVIDENCE.md);
+G0 and G1 checklists judged, OPEN/EVIDENCE rewritten, G1/STATUS corrected; eleven outbox
+messages; inbox (11) acknowledged; STATUS, HANDOFF, RISKS rewritten.
+found: R1-R4, R6b, R7-R10 confirmed (lead and helper c_+ agree to 9e-14 of s; H1 to 2
+percent at a <= 5; verifier scripts bit for bit); R5 partly refuted (32^3 vs 64^3 differs by
+1.02 percent between a = 40 and 80 for eps = 1, my bound was 1 percent; the helper's "<= 0.06
+percent at a = 5-40" is 0.09 for eps = 0.1); R6 partly refuted (largest c_+/s is 2.55 at
+a = 123, not 2.5 at a ~ 95). The G_tot-corrected strain departs from the second-order value
+more than the raw one, so the departure after a ~ 10 is higher order, not spatial gauge
+(helper's own scan_summary_64.json). 2403.15126 takes the emission redshift at each
+configuration's collapse (line 1061), which supports the verifier's sigma^(5/2) for Omega
+today against the paper's stated 7/2 (line 1074).
+evidence: the five runs above; figures stage/review_wave2/figs/rv_review_first_source.png,
+rv_review_newton.png (looked at); helper figures scan_kk0, scan_secondgauge, late_rise,
+pancake_east, ell_convergence, verifier v6_za_scaling looked at; note pages 1-4 read.
+changed my mind about: OPEN item 7 (closed at second order: derivation plus the measured
+gauge piece) and item 9 (the late rise is not gauge; mostly grid scale); the role of the
+second gauge (it validates G_tot, it does not bring the code to the second-order value);
+G1 criterion 2 (met in AthenaK's Newtonian mode).
+open: G1 criterion 1 (oblique and expanding-box waves), G1 schematics, note Sec. IV-V,
+independent verifier of the wave-2 runs, jittered null, particle-number convergence;
+requests to orch on the verifier file name and the runs check of nrpic-stage verify.
+Card-hours this session: 0 (all review runs on processors); owner total 0.99 of 40.
