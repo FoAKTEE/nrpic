@@ -219,6 +219,23 @@ during and after crossing (W ranges from 0 to 1 at t = 1 and 2; from 0.77 to 1 a
 Each run takes seconds on one core. The track runs the validation; core runs U1-U9 or
 hands the inputs to the lead.
 
+**Mapping to core's implementation** (branch `core/scalar-field` at 5384d02, read on
+2026-11-15; `athenak/src/scalar_field/scalar_field_noise.cpp`, model
+`<scalar_field> noise = power`). The keys are those of section 4 and the Markov epoch is
+ncycle + 1 [VERIFIED by reading the source]. Differences, all absorbed by the validation
+(`validate/athenak_io.py: read_dump_run`, test T-N8, run
+E-stoch-inf-20261115-133731-2031735): the frozen field is the increment of the step,
+base dW over [t_{m-1}, t_m], not the rate (reference option `frozen_form = increment`);
+the noise fields are written in core's double-precision dump `<basename>.sf.NNNNN.dump`
+(NRSFDMP1), whose last two variables are xi_0 (dof 0, read as stoch_c0) and xi_1 (dof
+`noise_pi_dof`, read as stoch_c2 for 1 and as stoch_c1 with phase1 = 0 for 0); the
+parameters come from the run's input file (`--input`); dt is time/cycle of the dumps and
+must be constant; there is no integrated field (A9 not applicable) and no
+direction-dependent or complex-phase component (A6 reduces to xi_1 = xi_0 for
+noise_pi_dof = 0; an exchange of axes is still caught by A1). Convention to confirm with
+core: the dump at cycle m holds the increment of the step ending at cycle m (the
+increment is formed in the first stage of that step, NoiseStage).
+
 ## 10. Acceptance tests and pass criteria
 
 Written before any code exists (this section is the contract; `validate/validate_noise.py`

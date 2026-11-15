@@ -314,3 +314,24 @@ dumps with 8 MeshBlocks in the documented layout, read back through the adapter,
 every applicable test (A9 not applicable); 1 against 8 MeshBlocks bit-identical (A11);
 a dump whose MeshBlocks are written with the wrong logical locations fails A1 and A11.
 Refuted otherwise (then the reader or the parameter mapping is wrong).
+
+## 2026-11-15 14:40 UTC: outcome T-N8 (run E-stoch-inf-20261115-133731-2031735)
+
+Prediction holds. Reference fields of core's power model written as NRSFDMP1 dumps (the
+documented layout) with an input file, read back through athenak_io.read_run(dir, input):
+the parameters map back exactly (seed, scheme, nmax2, N = 64, L = 2.5, x0 = -1.25,
+dt = 0.01 from time/cycle, noise_t0 = 0.2 and noise_tilt = -0.04 in the Markov case,
+noise_pi_dof 1 and 0); frozen (8 and 1 MeshBlocks), Markov and shared-dof cases pass every
+applicable test (A9 not applicable: no integrated field); 1 against 8 MeshBlocks
+bit-identical; the mutant with exchanged MeshBlock locations fails A1 (6.1 rms) and A11,
+and also A2, A3, A8, A10. Figure fig_dump_selftest.png: read minus reference is exactly
+zero; the mutant differs in the two exchanged MeshBlocks only. This checks the adapter
+against the documented layout, not against a file written by the code.
+
+## 2026-11-15 14:45 UTC: end of the package
+
+Deliverables exist and are tested: NOISE_SPEC.md, RNG_REQUIREMENTS.md, the reference,
+the validation (bin and NRSFDMP1 readers) and its self-tests T-N0 to T-N8. Not done:
+validation of code output (no noise run exists on core/scalar-field; named in README.md
+for the lead). Refuted predictions on record: T-N0 (ii) median, T-N3, T-N6 single-decision
+calibration as worded.

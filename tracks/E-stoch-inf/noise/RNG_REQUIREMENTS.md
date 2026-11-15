@@ -28,6 +28,12 @@ Not needed by Track E: `Uniform`, `Index`, `Direction`, the cell helpers of
 `utils/rng_mesh.hpp` (unless a cell-keyed noise is chosen, which NOISE_SPEC section 8 advises
 against).
 
+Core's generator (`core/scalar-field` 5384d02, `athenak/src/scalar_field/scalar_field_noise.cpp`
+lines 17-21 and 433-457) already uses the layout of Q4-Q6: stream `Stream(kStreamStochastic,
+2^16 + dof)`, entity `CellEntity(n + 2^20)`, epoch 0 frozen and `ncycle + 1` Markov
+[VERIFIED by reading the source; not yet by a run]. The requests below make it part of the
+interface document.
+
 ## 2. Requests to core (for `coord/INTERFACES/rng.md`)
 
 - R-1 Add `rng::ModeEntity(int nx, int ny, int nz)` (signed, |n_i| < 2^20, equal to

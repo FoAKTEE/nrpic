@@ -1,0 +1,43 @@
+{
+ "run_id": "E-stoch-inf-20261115-133731-2031735",
+ "owner": "E-stoch-inf",
+ "package": "noise (E-pre-4)",
+ "kind": "scouting",
+ "purpose": "T-N8 of noise/JOURNAL.md: adapter to core's NRSFDMP1 dumps (scalar_field_io.cpp layout) of the power model: reference fields written as dumps with an input file, read back and validated; mutant with exchanged MeshBlock locations",
+ "cwd": "/data/haiyangw/nrpic/scratch/E-stoch-inf/E-stoch-inf-20261115-133731-2031735",
+ "command": "python3 /data/haiyangw/nrpic/wt/E-stoch-inf/tracks/E-stoch-inf/noise/validate/dump_selftest.py --out /data/haiyangw/nrpic/scratch/E-stoch-inf/E-stoch-inf-20261115-133731-2031735",
+ "commit": "2031735",
+ "worktree_dirty_paths": [],
+ "inputs": [
+  {
+   "path": "/data/haiyangw/nrpic/wt/E-stoch-inf/tracks/E-stoch-inf/noise/validate/dump_selftest.py",
+   "sha256": "12bfd27852b5f8872adde9c22e2c89ed5597173e07cd9fe82c44654bae82bdbb"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/wt/E-stoch-inf/tracks/E-stoch-inf/noise/validate/athenak_io.py",
+   "sha256": "9712250fe69eed7d6b743a4033f21bf31ca533f967a03035364583a74c1a235d"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/wt/E-stoch-inf/tracks/E-stoch-inf/noise/validate/validate_noise.py",
+   "sha256": "b14f6d27f0c5443a66483678d813a7235c60d605db4e5d7fde8886d1dcedcb71"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/wt/E-stoch-inf/tracks/E-stoch-inf/noise/validate/selftest.py",
+   "sha256": "e079acb42ffbff3093b6a39cad47a83dd94f46f86b76b94d4f3c27e7fb91598c"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/wt/E-stoch-inf/tracks/E-stoch-inf/noise/ref/noise_ref.py",
+   "sha256": "e58cd4c652687c7f47bf45f85efa8ed13846df62526708f8d19776295c20cd1e"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/wt/E-stoch-inf/tracks/E-stoch-inf/noise/ref/philox_ref.py",
+   "sha256": "911a77cc4eafb1baaa3865cf02f1b1ea809892e86399b75d2b701694573e3df8"
+  }
+ ],
+ "output_dir": "/data/haiyangw/nrpic/scratch/E-stoch-inf/E-stoch-inf-20261115-133731-2031735/",
+ "wall_time": "15.1 s",
+ "cores": 4,
+ "card_hours": 0.0,
+ "status": "completed",
+ "results": "frozen_pidof1_8mb: failed []; frozen_pidof1_1mb: failed []; markov_pidof1_t0_tilt: failed []; frozen_pidof0: failed []; mutant_swapped_blocks: failed ['A1', 'A10', 'A2', 'A3', 'A8']; A11 1 vs 8: True; A11 vs swapped: False; holds True\n"
+}
