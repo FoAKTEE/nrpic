@@ -347,3 +347,10 @@ Croker-Weiner 2019 for D). Expected: an arXiv-API record with status ok for at l
 2611.12831's record gives categories and a first-submission date in November 2026; each DOI
 query returns exactly one record carrying an arXiv eprint. Refuted by fewer records, a failed
 batch that is not retried, or a DOI query with zero or several hits.
+
+### W8 prediction: snapshot after the K8 load
+
+`kb snapshot` (writer lock) freezes kb.sqlite into a new read-only `kb-20261115-<sha7>.sqlite`
+and moves `current` to it; the new snapshot holds 707 papers, 688 claims, 97657 vectors and
+schema version 6, and the earlier snapshots are untouched. Refuted by other counts or a
+writable snapshot.
