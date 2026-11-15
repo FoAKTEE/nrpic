@@ -377,6 +377,23 @@ def main():
         drift_maxabs_t_le_42=float(np.nanmax([v[3] for v in msum if v[0] <= 42.0] + [np.nan])),
         max_compactness_t0=float(np.nanmax(lines[0]["compact"])) if lines else None)
     hl = [L for L in lines if "horizon" in L]
+    # largest compactness on the line (points beyond one cell from the axis) and the areal
+    # radius of the innermost line point: whether the line can resolve the first horizon
+    # (exact areal radius 2m = 0.161 M)
+    cser = []
+    for L in lines:
+        s_ = L["r"] > 1.01 * a.dx * math.sqrt(0.75)
+        if np.any(s_):
+            k_ = int(np.nanargmax(np.where(s_, L["compact"], -np.inf)))
+            cser.append((L["t"], float(L["compact"][k_]), float(L["r"][k_]), float(L["R"][k_]),
+                         float(L["KT"][k_]), float(L["r"][0]), float(L["R"][0])))
+    res["line_compactness"] = dict(
+        max=float(max([c[1] for c in cser], default=np.nan)),
+        t_of_max=float(cser[int(np.argmax([c[1] for c in cser]))][0]) if cser else None,
+        R_innermost_min=float(min([c[6] for c in cser], default=np.nan)),
+        r_innermost=float(cser[0][5]) if cser else None,
+        series=[dict(t=c[0], max_2m_over_R=c[1], r=c[2], R=c[3], KT=c[4], R_innermost=c[6])
+                for c in cser[:: max(1, len(cser) // 60)]])
     res["lines_nonfinite"] = dict(n=len(nonfinite_t), first_t=min(nonfinite_t) if nonfinite_t else None)
     # where the Hamiltonian residual on the line peaks (gauge pathologies)
     res["line_H_peak"] = [dict(t=L["t"], r=float(L["r"][int(np.nanargmax(np.abs(L["H"])))]),
@@ -453,6 +470,7 @@ def main():
     figures(a, res, ball, ex, t, tau, R, eps, Ri, grp, groups, sh, tta_num, Rmax_num, tah_num, tc_num,
             r, r0, hst, cst, lapse_dev, rho_dev, tau_c, lines, finder)
     print_summary(res)
+    print("  line compactness:", {k: v for k, v in res["line_compactness"].items() if k != "series"})
 
 
 def print_summary(res):
@@ -625,10 +643,23 @@ def figures(a, res, ball, ex, t, tau, R, eps, Ri, grp, groups, sh, tta_num, Rmax
         plt.close(fig)
 
     # ---- F4 horizon
-    fig = plt.figure(figsize=(8.0, 3.4))
-    fig.subplots_adjust(left=0.09, right=0.98, bottom=0.15, top=0.90, wspace=0.30)
-    ax1 = fig.add_subplot(1, 2, 1)
-    ax2 = fig.add_subplot(1, 2, 2)
+    fig = plt.figure(figsize=(8.0, 3.2))
+    fig.subplots_adjust(left=0.08, right=0.98, bottom=0.16, top=0.90, wspace=0.38)
+    ax1 = fig.add_subplot(1, 3, 1)
+    ax2 = fig.add_subplot(1, 3, 2)
+    ax3 = fig.add_subplot(1, 3, 3)
+    cs = res.get("line_compactness", {}).get("series", [])
+    if cs:
+        ax3.plot([c["t"] for c in cs], [c["max_2m_over_R"] for c in cs], color=fs.PAL["red"],
+                 label=r"largest $2m/R$, line")
+        ax3.plot([c["t"] for c in cs], [c["R_innermost"] for c in cs], color=fs.PAL["blue"], lw=1.0,
+                 label=r"$R$ of innermost line point")
+        ax3.axhline(1.0, **fs.GUIDE)
+        ax3.axhline(2 * ex["first_trapped"]["m"], color="k", lw=1.0, ls=":", label=r"$R_{\rm AH}$ exact")
+        ax3.set_yscale("log")
+        ax3.set_xlabel(r"$t\,/M$")
+        ax3.legend(fontsize=7, loc="lower left")
+        ax3.set_title("can the line see a horizon?", fontsize=9)
     if finder:
         ft = np.array([f["t"] for f in finder])
         ax1.plot(ft, [f["m_irr"] for f in finder], "o-", color=fs.PAL["red"], ms=3, lw=1.0, label=r"finder $\sqrt{A/16\pi}$")

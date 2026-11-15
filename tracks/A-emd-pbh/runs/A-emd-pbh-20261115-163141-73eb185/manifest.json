@@ -1,0 +1,65 @@
+{
+  "schema": "nrpic-run/1 (by hand)",
+  "registered_by": "tracks/A-emd-pbh/runs_ball/runreg.py",
+  "harness_refusal": "nrpic-run submit: the worktree is not clean (untracked files of other helpers)",
+  "run_id": "A-emd-pbh-20261115-163141-73eb185",
+  "track": "A-emd-pbh",
+  "gate": "G2",
+  "kind": "scouting",
+  "purpose": "analysis of SR-1 (A-emd-pbh-20261115-153843-7172b66) and SR-2 (A-emd-pbh-20261115-153845-7172b66) at dx = M/2: invariants against the exact solution, field slices",
+  "launcher": "local",
+  "command": [
+    "bash",
+    "-c",
+    ".venv/bin/python tracks/A-emd-pbh/runs_ball/compare.py --prep /data/haiyangw/nrpic/scratch/A-emd-pbh/A-emd-pbh-20261115-153719-91b03d1 --seg /data/haiyangw/nrpic/scratch/A-emd-pbh/A-emd-pbh-20261115-153843-7172b66/sr1 --gauge sr1 --dx 0.5 --label sr1_n256 --out $NRPIC_RUN_DIR --figdir tracks/A-emd-pbh/runs_ball/figs && .venv/bin/python tracks/A-emd-pbh/runs_ball/compare.py --prep /data/haiyangw/nrpic/scratch/A-emd-pbh/A-emd-pbh-20261115-153719-91b03d1 --seg /data/haiyangw/nrpic/scratch/A-emd-pbh/A-emd-pbh-20261115-153845-7172b66/sr2 --gauge sr2 --dx 0.5 --label sr2_n256 --out $NRPIC_RUN_DIR --figdir tracks/A-emd-pbh/runs_ball/figs && .venv/bin/python tracks/A-emd-pbh/runs_ball/fields.py --seg /data/haiyangw/nrpic/scratch/A-emd-pbh/A-emd-pbh-20261115-153845-7172b66/sr2 --label sr2_n256 --out $NRPIC_RUN_DIR --figdir tracks/A-emd-pbh/runs_ball/figs && cp tracks/A-emd-pbh/runs_ball/figs/sr1_n256_fields.png $NRPIC_RUN_DIR/"
+  ],
+  "cwd": "/data/haiyangw/nrpic/wt/A-emd-pbh",
+  "git": {
+    "sha": "73eb185ddde60bfa271775c2cdc3cbbbad1e8611",
+    "branch": "track/A-emd-pbh",
+    "package_dirty": false
+  },
+  "inputs": [
+    {
+      "path": "tracks/A-emd-pbh/runs_ball/compare.py",
+      "role": "input",
+      "sha256": "bc9894b5fd78c6ec1f8d7e06f96cff3b677e8d6ef83883930651024e6232645c",
+      "bytes": 37243
+    },
+    {
+      "path": "tracks/A-emd-pbh/runs_ball/fields.py",
+      "role": "input",
+      "sha256": "6ac8f2016bd582276b1b48a71cd5512729a2363d84444a95b11da53380998873",
+      "bytes": 5314
+    },
+    {
+      "path": "tracks/A-emd-pbh/runs_ball/common.py",
+      "role": "input",
+      "sha256": "1d2596d68440d3aa91d7b9f648d7963545b25f35b12fb8a48c371323f176e34a",
+      "bytes": 9454
+    }
+  ],
+  "parents": [
+    "A-emd-pbh-20261115-153843-7172b66",
+    "A-emd-pbh-20261115-153845-7172b66",
+    "A-emd-pbh-20261115-153719-91b03d1"
+  ],
+  "resources": {
+    "cores": 4,
+    "gpus": 0,
+    "wall_limit": null,
+    "walltime_s": 102.5,
+    "gpu_hours": null
+  },
+  "outputs": {
+    "dir": "scratch/A-emd-pbh/A-emd-pbh-20261115-163141-73eb185",
+    "sha256sums": "sha256sums.txt",
+    "files": 29
+  },
+  "status": "completed",
+  "exit_code": 0,
+  "registered": "2026-11-15T16:31:41Z",
+  "started": "2026-11-15T16:31:41Z",
+  "ended": "2026-11-15T16:33:24Z",
+  "notes": ""
+}
