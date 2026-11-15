@@ -4,3 +4,4 @@ B-emd-gw/outbox/20261115T1340Z__to-kb__track-b-sources.md	2026-11-15T14:25Z	queu
 C-sidm/outbox/20261115T1320Z__to-kb__index-locators-typos.md	2026-11-15T14:25Z	queued (reply by 2026-12-13); errata belong to the claims layer (K8)
 C-sidm/outbox/20261115T1320Z__to-kb__literature-fetch.md	2026-11-15T14:25Z	queued (reply by 2026-12-06); identifier search needs the metadata path (orch)
 E-stoch-inf/outbox/20261115T1410Z__to-kb__errata-s11-references.md	2026-11-15T14:25Z	queued (reply by 2026-12-06); errata belong to the claims layer (K8)
+tracks/A-emd-pbh/outbox/20261115T1320Z__to-kb__ingest-s1-references.md	2026-11-15T18:38:35Z	answered: tracks/kb/outbox/20261115T183737Z__to-A-emd-pbh__ingest-s1-references.md
