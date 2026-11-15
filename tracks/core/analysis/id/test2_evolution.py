@@ -84,6 +84,23 @@ def group_numbers(d):
             if len(e):
                 res[g][f"tau{tau:g}"] = dict(mean=float(e.mean()), rms=float(np.sqrt(np.mean(e * e))),
                                              maxabs=float(np.abs(e).max()), n=int(len(e)))
+        # turnaround: largest areal radius of each shell and the proper time at which it
+        # is reached (parabola through the three records around the maximum), for the
+        # shells whose maximum is not at the end of the run
+        amax, tmax = [], []
+        for p in idx:
+            Rp, tp = d["R"][:, p], d["tau"][:, p]
+            i = int(np.argmax(Rp))
+            if 0 < i < len(Rp) - 1:
+                c = np.polyfit(tp[i - 1:i + 2] - tp[i], Rp[i - 1:i + 2], 2)
+                if c[0] < 0.0:
+                    tt = -c[1] / (2.0 * c[0])
+                    amax.append(np.polyval(c, tt) / d["R0"][p])
+                    tmax.append(tp[i] + tt)
+        if amax:
+            res[g]["turnaround"] = dict(n=len(amax), a_max_mean=float(np.mean(amax)),
+                                        a_max_spread=float(np.std(amax)),
+                                        tau_mean=float(np.mean(tmax)), tau_spread=float(np.std(tmax)))
         res[g]["maxabs_all"] = float(np.nanmax(np.abs(d["eps"][:, idx])))
         res[g]["tau_end_mean"] = float(d["tau"][-1, idx].mean())
         res[g]["R_end_over_R0"] = float((d["R"][-1, idx] / d["R0"][idx]).mean())
@@ -197,6 +214,18 @@ def main():
             for g in gl:
                 e = v["groups"].get(g, {}).get(f"tau{tau:g}")
                 row += " %+9.2e %9.2e" % (e["mean"], e["maxabs"]) if e else " %19s" % "-"
+            print(row)
+    if any("turnaround" in g for v in numbers.values() for g in v["groups"].values()):
+        ex = next(iter(runs.values()))["meta"]
+        print(f"\nturnaround (exact: a_max = {ex.get('a_max', float('nan')):.4f} at tau = "
+              f"{ex.get('tau_turnaround', float('nan')):.4f} M for every ball shell)")
+        for k, v in numbers.items():
+            row = "%-16s %6.3f" % (k, v["dx"])
+            for g in ("core", "mid", "outer", "surface"):
+                t = v["groups"][g].get("turnaround")
+                row += ("  %s: a_max %.4f +- %.4f at tau %.3f +- %.3f (%d)" % (
+                    g, t["a_max_mean"], t["a_max_spread"], t["tau_mean"], t["tau_spread"], t["n"])
+                    if t else f"  {g}: -")
             print(row)
     print("\ngauge and constraints at the end")
     print("%-16s %6s %8s %8s %8s %8s %9s %9s %9s %9s %9s %9s" % (

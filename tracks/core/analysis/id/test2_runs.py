@@ -59,6 +59,13 @@ CASES = {
     "ct-edge2-n128": ("t2", 128, 32.0, EDGE2, 1, "ct", "zero", 10.0, []),
     "ct-edge2-n256": ("t2", 256, 32.0, EDGE2, 1, "ct", "zero", 10.0, []),
     "ct-edge2-big-n192": ("t2", 192, 48.0, EDGE2, 1, "ct", "zero", 10.0, []),
+    # ... and with the sources extrapolated to the middle of the step
+    "ct-edge2-ext-n064": ("t2", 64, 32.0, EDGE2, 1, "ct", "zero", 10.0,
+                          ["particles/source_density=true", "particles/source_extrap=true"]),
+    "ct-edge2-ext-n128": ("t2", 128, 32.0, EDGE2, 1, "ct", "zero", 10.0,
+                          ["particles/source_density=true", "particles/source_extrap=true"]),
+    "ct-edge2-ext-n256": ("t2", 256, 32.0, EDGE2, 1, "ct", "zero", 10.0,
+                          ["particles/source_density=true", "particles/source_extrap=true"]),
     # test 3: bound ball that turns around (R_b = 5 M, a_max = 1.25, tau = 9.54 M)
     "bound-ct-n080": ("t3", 80, 20.0, BOUND, 1, "ct", "zero", 12.0, []),
     "bound-ct-n160": ("t3", 160, 20.0, BOUND, 1, "ct", "zero", 12.0, []),
@@ -112,8 +119,6 @@ def run(name, dry=False):
            f"particles/traj_ntrack={meta['traj_ntrack']}",
            f"particles/particle_file={stem}.nrp", f"problem/comp0_file={stem}.tab",
            f"problem/shift={shift}"] + GAUGE[gauge] + list(extra)
-    if tlim > 10.0:
-        cmd += ["particles/field_time6=12.0"]
     if dry:
         print(" ".join(cmd))
         return name, 0, ""

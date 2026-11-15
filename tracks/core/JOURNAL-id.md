@@ -457,3 +457,69 @@ while its areal radius grows by 1.50; the surface moves to r/r_0 = 1.13. With 1+
 the particles move through the mesh, r/r_0 = 1.55 (core), 1.43 (surface), although the
 shift stays below 0.02: the lapse gradient behind the front accelerates the normal
 observers relative to the dust.
+
+## 2026-11-15, entry 6: check of the reader against the Python evaluator (curved slice)
+
+### Prediction T0, written before the runs
+
+The tests so far used the flat slice (psi = 1). The bound ball
+(`Ball(M=1, Rb=5, e0=0.16, RE=10)`) has psi different from 1, three pieces (two
+breaks) and non-trivial KL, KT, betar in the vacuum between the surface and the radius
+where E reaches zero, so its start exercises every branch of the format-2 reader.
+Start-only processor runs, mesh half-width 16 M, 64 and 128 cells (dx = 1/2, 1/4 M),
+lapse and shift from the table.
+Prediction: (i) at the cell centres the dumped lapse and trace K = KL + 2 KT equal the
+values of `nrpic.io.Table2` to 1e-12, and chi equals psi^-4 to the single precision of
+the dump (1e-7); the shift reconstructed at the tracked particles equals betar n^i of
+the table to the interpolation error of the particle metric (below 1e-4); (ii) in the
+vacuum part of the curved slice, 6.7 < r < 9 M, the Hamiltonian and the momentum
+residual fall at sixth order between the two meshes (ratio between 40 and 80), which
+tests psi^4, the tensor structure and the one-sided interpolation together; (iii) with
+the header changed to `exterior = zero` the trace K vanishes beyond the last row and is
+unchanged inside. Refuted by any mismatch above these bounds or by an order below 5.
+
+### Outcome of prediction T0 (reader against the Python evaluator)
+
+Runs `core-20261115-040311-1311b8e` (64 cells), `core-20261115-040326-1311b8e` (128),
+`core-20261115-040319-1311b8e` (exterior = zero); `test0_reader.py`,
+`figs/t0_reader` (looked at); independent evaluation `check_momentum_3d.py`.
+(i) Confirmed for the trace K (largest difference 1.1e-16), the lapse (0) and chi
+(3e-8, single precision of the dump). The shift at the tracked particles differs from
+the table by 2.7e-4 at dx = 1/2 M and 7.7e-5 at dx = 1/4 M (scale 0.447): above my
+bound of 1e-4 on the coarse mesh, falling with resolution; it is the error of the
+reconstruction of the metric at the particle.
+(ii) Hamiltonian residual in 6.7 < r < 9 M: 2.30e-6 and 1.32e-8 (order 7.4). Momentum
+residual: 3.45e-4 and 1.44e-5, order 4.6: below the predicted sixth order. Checked with
+an independent evaluation of the same table in numpy (other form of the constraint,
+same differences): 3.17e-4, 1.32e-5, 2.75e-7, 4.59e-9 at dx = 1/2, 1/4, 1/8, 1/16 M,
+orders 4.58, 5.59, 5.90. The code and the independent evaluation agree within 10 per
+cent, and the order 4.6 is the approach to sixth order on a profile that varies over
+2.5 M. So the Cartesian form of K_ij with psi different from 1 is verified; my
+prediction of the order on these two meshes was wrong.
+(iii) Confirmed: with `exterior = zero` the trace K is exactly zero beyond the last
+row and unchanged inside.
+
+Failed runs on record: `core-20261115-035639-c9aa6d2`, `core-20261115-035638-c9aa6d2`
+(and the two that followed in that driver) ended at once with "Parameter
+'field_time6' ... on command line not found": the driver passed a dump time that the
+input file does not declare. Driver corrected; the bound-ball cases were started again.
+
+### Finding between the runs: the sources held fixed during a step
+
+Field dumps of test 2, centre of the ball (r < 3 M), t = 2 M: the Hamiltonian residual
+is a uniform offset, +3.49e-5, +1.69e-5, +8.41e-6 for dx = 1, 1/2, 1/4 M with the
+conformal-time lapse (3.8e-3, 1.8e-3, 9.1e-4 of 16 pi E): first order in the step.
+With `source_density = true`, `source_extrap = true` (run `mp-ext-n128`,
+`core-20261115-034739-c9aa6d2`) the offset is +3.0e-8 (3.5e-6 of 16 pi E) against
++2.37e-5 in the same run without (`mp-n128`). Cause shown by that run, in which it
+could have failed: the deposited sources are held at t^n during the stages of the
+step unless these two options are set. [VERIFIED]
+
+### Prediction T2c (recommended configuration), written before the runs
+
+Cases `ct-edge2-ext-n064, -n128, -n256`: conformal-time lapse, smooth edge w = 2 M,
+sources extrapolated to the middle of the step. Prediction: the offset of H at the
+centre is below 1e-4 of 16 pi E at t = 2 and 4 M on all three meshes; the largest
+|eps| of the core shells at tau = 8 M is below that of `ct-edge2` at equal dx and falls
+at second order (ratio above 3 from dx = 1/2 to 1/4 M). Refuted by an offset above
+5e-4 or by a core error that is not smaller than without the extrapolation.
