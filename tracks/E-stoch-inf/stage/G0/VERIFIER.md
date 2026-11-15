@@ -146,10 +146,10 @@ decided); (c) the throughput of Z4c with the field at 256^3, the 15 percent fiel
 the 3e12 flop/s are unmeasured; the 20 GB memory figure was not checked. Arithmetic with the
 track's inputs, my cosmic-time spans and my operation counts (card-hours per realisation,
 MeshBlocks 128^3 / 64^3 / 32^3): theta = 0.25: SR 0.43 / 0.49 / 0.69, USR 0.53 / 0.61 / 0.86;
-theta = 0.025 (P2's value): SR 4.27 / 4.89 / 6.94, USR 5.31 / 6.08 / 8.63 (run E-20261115-180348-d799c68; steps 1368, 1701 and
-13675, 17010; 1.15 x 256^3/2e7 s for Z4c and field plus the synthesis at 3e12 flop/s). So at theta = 0.25 the
-margin to the 5 card-hour threshold of SCOPE 4.5 is real whatever the MeshBlock size, but at
-theta = 0.025 the USR realisation exceeds it even with 128^3 MeshBlocks (SCOPE 8 gives 8-9
+theta = 0.025 (P2's value): SR 4.27 / 4.89 / 6.94, USR 5.31 / 6.08 / 8.63 (run
+E-20261115-180348-d799c68; steps 1368, 1701 and 13675, 17010; 1.15 x 256^3/2e7 s for Z4c and
+field plus the synthesis at 3e12 flop/s). So at theta = 0.25 the margin to the 5 card-hour
+threshold of SCOPE 4.5 is real whatever the MeshBlock size, but at theta = 0.025 the USR realisation exceeds it even with 128^3 MeshBlocks (SCOPE 8 gives 8-9
 card-hours for both cases together, i.e. 4-4.5 each). [JUDGEMENT from VERIFIED inputs]
 
 ### V8 Delta-N reference numbers behind A8 (SPEC 7.2) — CONFIRMED
