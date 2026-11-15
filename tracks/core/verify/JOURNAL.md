@@ -469,3 +469,18 @@ Row 3, prolate part: horizon formation at the paper's time at two resolutions; t
 horizon-mass deficit falls with resolution but is 3 per cent at the finer one. Oblate:
 not run (source work, README request 2; reference potential ready).
 Card time so far: 1.19 + 0.34 = 1.53 card-hours.
+
+## 16:52Z Outcome: control y_c = 0.605 at finest cells M/4
+
+Card job 4447, run `core-20261115-155617-06f844b` (exit 0, 0.248 card-hours), initial
+data identical to `runs/st/yc0605_v5` (sha256 81fa1c2d..., b76213c9...). No horizon; the
+central lapse rises from 0.631 to 25 M means of 0.754, 0.747, 0.801, 0.784, 0.750 between
+125 and 250 M, around its equal-binding partner (y_c = 0.7561, alpha_c = 0.7519): the
+model MIGRATES at M/4, where on the finer AMR mesh (M/8 from early on, M/16 near the
+centre at collapse) the same data collapsed with a horizon at 191 M. Of the two outcomes
+written at 15:56Z this is the first: the direction of departure below y_c* (collapse or
+migration after a one-percent inward kick) depends on the mesh between M/4 and M/8-M/16
+in these runs; the departure itself does not. So the M/4 bisection says where the
+equilibria stop being stable, not whether an unstable member collapses; the latter
+needs the finer mesh (and, in the paper, 2e6 particles).
+Card time so far: 1.19 + 0.34 + 0.25 = 1.78; job 4439 (round 2) adds about 0.6.
