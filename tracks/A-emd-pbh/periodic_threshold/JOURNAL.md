@@ -83,3 +83,58 @@ smoothing factor S is the same: then c scales exactly as 1/eps_i^2); (c) smaller
 with the filter. Refuted if c does not fall with h (then the error is not the smoothing
 of the deposit) or does not grow towards small eps_i (then it is not the super-horizon
 cancellation).
+
+## 2026-11-15, T2 and T3 (processor tests of the mesh and of the horizon finder): before the runs
+
+Observed in an unregistered smoke run (FLRW, `inputs/peak_smr.athinput`, 8 cycles): the
+serial processor executable reaches 7.8e3 zone-cycles per second on 8^3 blocks with four
+ghost cells, so processor tests are kept to a few cycles. In the same smoke run the
+static mesh (176 blocks, levels 0-2) kept chi_min = chi_max to 13 digits.
+
+**T2a, homogeneous universe on the static mesh** (box [-10, 10]^3, root 32^3, level 1 in
+|x| < 5, level 2 in |x| < 2.5, lattice of one particle per root cell, 8 cycles to t = 0.3,
+finder on every 4 cycles centred at the origin). Cases: uniform mesh; static mesh with
+the adaptive cloud level (deposit_ppc = 2, so every cloud sits on the root level); static
+mesh with clouds at the finest local level (deposit_adaptive = false).
+Prediction: uniform and adaptive-cloud cases stay homogeneous, H_max = H_mean (no
+structure at level boundaries) and chi_max/chi_min - 1 below 1e-12; with clouds at the
+finest level the lattice (one particle per 4^3 level-2 cells) deposits a strongly
+non-uniform E there: relative Hamiltonian constraint of order 1e-1 to 1 on refined blocks
+from the first step. Refuted if the adaptive case shows level-boundary structure above
+1e-10 relative (then the prolongation of clouds or of the metric is not exact for a
+uniform state) or if the finest-level deposit stays uniform.
+**T3d, finder in the homogeneous universe** (same runs): no horizon is reported (outgoing
+expansion 2/(aR) + 2H > 0 on every sphere); the run does not stop. Refuted by a reported
+horizon or a crash of the finder.
+
+**T2b, the peak data on the static mesh at t = 0** (mu = 0.5 and 0.03, e = 0.2, eps_i = 1,
+32^3 root, data built by make_peak_ic.py at 32^3; one cycle). Prediction (from cosmo E1,
+`cosmo/TESTLOG.md` 744-752: relative H 4e-5 on refined blocks against 2e-11 uniform, at
+amplitude 1e-4): on the uniform mesh the Hamiltonian constraint of the code is the
+finite-difference truncation of the spectrally solved data, |H|max well below
+16 pi |E - Ebar|max (ratio < 0.1); on the refined blocks, where the root-level data are
+interpolated (cubic) and the clouds sit on the root level, the ratio is of order 0.1 to 1
+and independent of mu (linear error). Refuted if the refined-block error is below the
+uniform-mesh error, or if it does not scale linearly with mu (ratio changing by more
+than a factor 2 between mu = 0.03 and 0.5).
+
+**T2c, adaptive refinement (Lohner) at the start** (mu = 0.5, e = 0.2, eps_i = 1, 32^3 root,
+`inputs/peak_amr.athinput` with 8^3 blocks, 8 cycles = two refinement checks).
+Prediction [JUDGEMENT]: the Lohner indicator of alpha chi^(7/4)... is a ratio of second to
+first differences; at the start the peak spans about 5 root cells per Gaussian width, so
+the indicator stays near or below the threshold 0.2 and few or no blocks refine in the
+first 8 cycles. Refuted (not a failure of the code) if the central blocks refine at the
+first check: then the refined blocks start from prolonged evolved data rather than from
+the file, which is what the design needs to know.
+
+**T3a-c, finder in a periodic mesh with a known horizon** (vacuum Schwarzschild puncture of
+unit mass, `inputs/punc_box16.athinput`: box [-16, 16]^3, root dx = M, dx = M/8 inside
+|x| < 1.5, one cycle, finder at cycle 0/1; reference: docs/TESTLOG.md, the corrected
+finder on the exact initial slice at dx = M/8 gives 0.991521 on GPU and CPU).
+(a) outflow boundaries, finder at the origin; (b) periodic boundaries, finder at the
+origin; (c) periodic boundaries, finder centred one period away at (32, 0, 0).
+Predictions: (a) 0.9915 to four digits if the finest level covers the finder's stencils
+as in the calibration mesh; (b) identical to (a) to all printed digits (the boundary
+does not enter at t = 0); (c) unknown: if the finder maps surface points into the box
+it equals (b); if it does not, every surface point lies outside the mesh and it reports
+no horizon or fails. Outcome (c) decides whether a peak may sit near a box face.

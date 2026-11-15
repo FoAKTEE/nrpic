@@ -1,0 +1,206 @@
+# T2 (periodic_threshold): static refinement in the periodic cosmological box (processor tests).
+# Same settings as peak_amr.athinput except: 32^3 root, blocks of 8^3, two static levels
+# (level 1 inside abs(x) < 5, level 2 inside abs(x) < 2.5 for the box [-10, 10]^3).
+# Header of peak_amr.athinput follows.
+# Single curvature peak (profile of arXiv:2609.14218) in a periodic box, adaptive mesh
+# refinement toward the peak, horizon finder at the peak (periodic_threshold, DESIGN.md).
+# Initial data: scripts/make_peak_ic.py (cosmo/ic/make_field.py): box [-L/2, L/2)^3 with
+# L = 20/k, peak at the origin; code units H_i = 1 at a_i = 1, eps_i = k/(a_i H_i).
+# Gauge: the cosmo/ E1 configuration (cosmo/TESTLOG.md 563-578, 744-763): conformal-time
+# lapse d_t alpha = -(1/3) alpha^2 K plus the driver towards constant mean curvature,
+# zero shift. Deposit: the E1 cloud (cic, two binomial passes, compensation, adaptive
+# cloud level). Overrides per run: mesh/x?min, mesh/x?max (box), time/tlim,
+# fastflow/initial_radius_0, fastflow/start_time_0, problem/id_file, particles/particle_file.
+
+<comment>
+problem   = single curvature peak in a periodic matter-era box
+
+<job>
+basename  = peak
+
+<mesh>
+nghost    = 4
+nx1       = 32
+x1min     = -10.0
+x1max     = 10.0
+ix1_bc    = periodic
+ox1_bc    = periodic
+nx2       = 32
+x2min     = -10.0
+x2max     = 10.0
+ix2_bc    = periodic
+ox2_bc    = periodic
+nx3       = 32
+x3min     = -10.0
+x3max     = 10.0
+ix3_bc    = periodic
+ox3_bc    = periodic
+
+<meshblock>
+nx1       = 8
+nx2       = 8
+nx3       = 8
+
+<mesh_refinement>
+refinement          = static
+num_levels          = 3
+max_nmb_per_rank    = 4096
+ncycle_check        = 4
+refinement_interval = 8
+
+
+<refined_region1>
+level = 1
+x1min = -5.0
+x1max = 5.0
+x2min = -5.0
+x2max = 5.0
+x3min = -5.0
+x3max = 5.0
+
+<refined_region2>
+level = 2
+x1min = -2.5
+x1max = 2.5
+x2min = -2.5
+x2max = 2.5
+x3min = -2.5
+x3max = 2.5
+
+<time>
+evolution  = dynamic
+integrator = rk4
+cfl_number = 0.25
+nlim       = -1
+tlim       = 10.0
+ndiag      = 50
+
+<z4c>
+lapse_oplog     = 0.0
+lapse_harmonicf = 1.0
+lapse_harmonic  = 0.3333333333333333   # d_t alpha = -(1/3) alpha^2 K
+lapse_volume    = 0.0
+lapse_kdriver   = 1.0                  # driver towards constant mean curvature (strength mu)
+lapse_advect    = 0.0
+shift_Gamma     = 0.0                  # zero shift
+shift_alpha2Gamma = 0.0
+shift_eta       = 0.0
+shift_advect    = 0.0
+diss            = 0.5
+chi_div_floor   = 1.0e-8
+damp_kappa1     = 0.5
+damp_kappa1_over_alpha = true          # damping rate per unit of conformal time
+damp_kappa2     = 0.0
+damp_kappa_gam  = 0.0
+damp_ch         = 0.0
+damp_ch_dx      = 0.0
+damp_ch_chipow  = 0.0
+excise_chi      = 0.0
+
+<fastflow>
+find_every        = 32
+metric_drvts      = interpolant
+num_horizons      = 1
+npunct            = 0
+ntheta            = 16
+lmax              = 8
+use_puncture_0    = -1
+center_x_0        = 0.0
+center_y_0        = 0.0
+center_z_0        = 0.0
+initial_radius_0  = 2.0
+flow_iterations_0 = 400
+flow_alpha_beta_const_0 = 1.0
+hmean_tol_0       = 100.0
+mass_tol_0        = 1.0e-5
+start_time_0      = 0.0
+stop_time_0       = 1000.0
+verbose           = false
+
+<particles>
+particle_type  = nrpic
+pusher         = midpoint
+interp         = hermite
+dt_expansion   = 0.05
+metric         = mesh
+tolerance      = 1.0e-12
+max_iterations = 50
+deposit        = true
+nfilter        = 2
+filter_compensate = true
+filter_comp_c  = -1.0
+deposit_comp_c = 0.0
+deposit_comp_limit = 0.0
+deposit_comp_c2 = 0.0
+deposit_shape  = cic
+deposit_max_level = 31
+deposit_adaptive  = true
+deposit_min_level = 0
+deposit_ppc       = 2.0
+deposit_max_coarsen = 31
+alpha_exc      = 0.3
+ah_exc_factor  = -1.0
+hist_dcycle    = 1
+cstat_dcycle   = 8
+cons_dcycle    = 0
+line_dcycle    = 0
+traj_dcycle    = 0
+traj_ntrack    = 0
+snap_dt        = 1.0
+probe_x1       = 0.001
+probe_x2       = 0.001
+probe_x3       = 0.001
+nprobe         = 0
+lambda         = 0.0
+source_density = true
+source_extrap  = true
+particle_file  = particles.nrp
+
+<problem>
+pgen_name  = nrpic_cosmo
+id         = file
+id_file    = fields.bin
+hubble     = 1.0
+
+<output1>
+file_type = hst
+dt        = 0.1
+
+<output2>
+file_type = tab
+variable  = adm
+dt        = 0.5
+slice_x2  = 0.001
+slice_x3  = 0.001
+
+<output3>
+file_type = tab
+variable  = con
+dt        = 0.5
+slice_x2  = 0.001
+slice_x3  = 0.001
+
+<output4>
+file_type = tab
+variable  = tmunu_E
+dt        = 0.5
+slice_x2  = 0.001
+slice_x3  = 0.001
+
+<output5>
+file_type = tab
+variable  = adm_alpha
+dt        = 0.5
+slice_x1  = 0.001
+slice_x3  = 0.001
+
+<output6>
+file_type = tab
+variable  = tmunu_E
+dt        = 0.5
+slice_x1  = 0.001
+slice_x3  = 0.001
+
+<output7>
+file_type = rst
+dt        = 5.0
