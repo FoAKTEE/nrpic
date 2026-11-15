@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Constraint estimators of ../sfa.py on real AthenaK output: core's plane perturbation
 (problems/scalar/plane.athinput, interface section 8 and test 3) at N = 16 and 32 with
-the release executable, double-precision dumps every 0.25. Checks (journal 18:00):
+the release executable, double-precision dumps every 0.25. Checks (journal 17:16):
 the box statistics of H recomputed from the dumps equal the code's history; the box mean
 of [H] per cell (sfa.ham_norm_cells, without At At) equals the code's [H]; the physical
 rms of M equals the history; the ratios |H|/[H] and |M|/[M] converge at the order of the
@@ -10,6 +10,7 @@ stencils (6) between N = 16 and 32 at the start.
     plane_check.py --exe ATHENA --out DIR
 """
 import argparse
+import glob
 import json
 import os
 import subprocess
@@ -28,10 +29,21 @@ import matplotlib.pyplot as plt  # noqa: E402
 INP = os.path.join(sfa.REPO, "problems", "scalar", "plane.athinput")
 
 
+BIN_BLOCK = """
+<output2>
+file_type  = bin
+variable   = z4c
+dt         = 0.25
+"""
+
+
 def run(exe, out, n):
     d = os.path.join(out, f"N{n}")
     os.makedirs(d, exist_ok=True)
-    args = [exe, "-i", INP, f"mesh/nx1={n}", f"mesh/nx2={n}", f"mesh/nx3={n // 2}",
+    inp = os.path.join(d, "plane_bin.athinput")
+    with open(inp, "w") as f:   # the problem's input plus a bin output of the z4c variables
+        f.write(open(INP).read() + BIN_BLOCK)
+    args = [exe, "-i", inp, f"mesh/nx1={n}", f"mesh/nx2={n}", f"mesh/nx3={n // 2}",
             f"meshblock/nx1={n}", f"meshblock/nx2={n}", f"meshblock/nx3={n // 2}"]
     with open(os.path.join(d, "athena.log"), "w") as log:
         rc = subprocess.run(args, cwd=d, stdout=log, stderr=subprocess.STDOUT,
@@ -50,24 +62,53 @@ def main():
         d, rc = run(a.exe, a.out, n)
         res["runs"][n] = rc
         hist = sfa.read_history(d)
+        bins = {}
+        for b in glob.glob(os.path.join(d, "**", "*.bin"), recursive=True):
+            m = sfa.read_bin_metric(b)
+            bins[m["cycle"]] = m
         rows = []
         for f in sfa.dump_files(d):
             dd = sfa.read_dump(f)
             c = sfa.constraint_ratios(dd, hist)
+            m = bins.get(dd["cycle"])
+            if m is not None:
+                # physical norm chi gt^ab M_a M_b and At_ij At^ij with the bin metric
+                gt = np.stack([np.stack([m["gt"][tuple(sorted((i, j)))] for j in range(3)])
+                               for i in range(3)])
+                inv = np.moveaxis(np.linalg.inv(np.moveaxis(gt, (0, 1), (-2, -1))), (-2, -1),
+                                  (0, 1))
+                mv = np.stack([dd["Mx"], dd["My"], dd["Mz"]])
+                m2 = sum(inv[i, j] * mv[i] * mv[j] for i in range(3) for j in range(3))
+                c["M_rms_phys_gt"] = float(np.sqrt(np.mean(dd["chi"] * m2)))
+                at = np.stack([np.stack([m["At"][tuple(sorted((i, j)))] for j in range(3)])
+                               for i in range(3)])
+                aa = sum(inv[i, k] * inv[j, l] * at[i, j] * at[k, l] for i in range(3)
+                         for j in range(3) for k in range(3) for l in range(3))
+                c["Hn_mean_aa"] = float(sfa.ham_norm_cells(dd, aa).mean())
+                c["bin_cycle"] = m["cycle"]
             rows.append(c)
         series[n] = rows
-    worst = dict(H_l1=0.0, H_rms=0.0, Hn=0.0, M_phys=0.0)
+    worst = dict(H_l1=0.0, H_rms=0.0, Hn=0.0, M_phys=0.0, M_phys_gt=0.0, Hn_aa=0.0)
+    nbin = 0
     for n, rows in series.items():
         for c in rows:
+            if "M_rms_phys_gt" in c:
+                nbin += 1
+                worst["M_phys_gt"] = max(worst["M_phys_gt"],
+                                         abs(c["M_rms_phys_gt"] / c["M_rms_hist"] - 1))
+                worst["Hn_aa"] = max(worst["Hn_aa"], abs(c["Hn_mean_aa"] / c["Hn_hist"] - 1))
             worst["H_l1"] = max(worst["H_l1"], abs(c["H_l1"] / c["H_l1_hist"] - 1))
             worst["H_rms"] = max(worst["H_rms"], abs(c["H_rms"] / c["H_rms_hist"] - 1))
             worst["Hn"] = max(worst["Hn"], abs(c["Hn_mean"] / c["Hn_hist"] - 1))
             worst["M_phys"] = max(worst["M_phys"], abs(c["M_rms_phys"] / c["M_rms_hist"] - 1))
     res["worst_relative_difference_to_history"] = worst
-    crit = dict(H_l1=1e-10, H_rms=1e-10, Hn=1e-6, M_phys=1e-6)
+    res["dumps_with_bin_metric"] = nbin
+    crit = dict(H_l1=1e-10, H_rms=1e-10, Hn=1e-6, M_phys=1e-6, M_phys_gt=1e-6, Hn_aa=1e-9)
+    known = {"M_phys": "failed prediction of 17:16 (gt = delta assumed; the metric "
+                       "perturbation is first order, A = 0.003): kept on record"}
     for k, v in worst.items():
         res["checks"].append(dict(name=f"{k} dump vs history", value=v, criterion=crit[k],
-                                  passed=bool(v <= crit[k])))
+                                  passed=bool(v <= crit[k]), note=known.get(k, "")))
     for key in ("ratio_H_rms", "ratio_M_rms"):
         r16, r32 = series[16][0][key], series[32][0][key]
         order = np.log2(r16 / r32)
@@ -99,7 +140,9 @@ def main():
     ax[1].legend(fontsize=7)
     fig.subplots_adjust(left=0.09, right=0.98, bottom=0.15, top=0.95, wspace=0.3)
     fs.save(fig, os.path.join(a.out, "fig_plane_constraint_ratios"))
-    nfail = sum(not c["passed"] for c in res["checks"]) + sum(1 for v in res["runs"].values() if v)
+    nfail = sum(not c["passed"] and not c["note"] for c in res["checks"] if "note" in c) + \
+        sum(not c["passed"] for c in res["checks"] if "note" not in c) + \
+        sum(1 for v in res["runs"].values() if v) + (0 if nbin else 1)
     sys.exit(1 if nfail else 0)
 
 

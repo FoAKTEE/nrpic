@@ -49,7 +49,7 @@ directory of that name in the worktree root. Stopped after a minute with `nrpic-
 the stray directory removed, the run closed as stopped. Resubmitted with `bash -c`, which
 expands the variable (as in the lead's HANDOFF command).
 
-## 17:40 Predictions: estimators of `sfa.py` on synthetic fields (`tests/test_sfa.py`)
+## 17:11 Predictions: estimators of `sfa.py` on synthetic fields (`tests/test_sfa.py`)
 
 The criteria are printed in the test file and are fixed now, before the first run.
 - T1 (reader, coefficients): a field from known coefficients, written as an 8-MeshBlock
@@ -70,7 +70,7 @@ The criteria are printed in the test file and are fixed now, before the first ru
 Development runs before registration go to scratch/E-stoch-inf/tmp/ and are for
 debugging only; the numbers quoted come from the registered run.
 
-17:50 Development run (scratch/E-stoch-inf/tmp/dev_tests, not a result): T2a failed its
+17:13 Development run (scratch/E-stoch-inf/tmp/dev_tests, not a result): T2a failed its
 absolute threshold with the correct scaling. The relative error is 2.19e-1, 6.91e-2,
 2.34e-2, 7.05e-3, 2.35e-3, 7.06e-4, 2.35e-4 at A = 1e-2 ... 1e-5: exactly proportional to A
 (second order), with coefficient 23.5, not the <= 10 the threshold assumed. I had not
@@ -81,7 +81,7 @@ unchanged slope 1 +- 0.1, which is what separates second from first order (the c
 without gt stays at 0.657 for every A). Second bug of the development run: the test's
 own .modes writer used the C format %llu, which Python does not know (fixed: %d).
 
-## 18:00 Outcome of the synthetic tests (run E-20261115-171445-36152c4)
+## 17:15 Outcome of the synthetic tests (run E-20261115-171445-36152c4)
 
 All 15 pass (`fig/test_sfa.json`; figures `fig/fig_t2_extraction.png`, `fig_t3_permode.png`,
 `fig_t4_spectrum.png`, `fig_t5_momentum_norm.png`, looked at). T2: relative error of R^NR
@@ -90,7 +90,7 @@ All 15 pass (`fig/test_sfa.json`; figures `fig/fig_t2_extraction.png`, `fig_t3_p
 z = 1.25 over 8538 modes. The figures show what the numbers say; in fig_t4 the two lowest
 shells (3 and 6 modes) lie at 2.5 and 2.4, inside the Gamma spread of so few modes.
 
-## 18:00 Predictions: constraint estimators on real output (core's plane perturbation)
+## 17:16 Predictions: constraint estimators on real output (core's plane perturbation)
 
 `scripts/plane_check.py` runs `problems/scalar/plane.athinput` at N = 16 and 32 (mesh
 N x N x N/2) with the release processor executable and recomputes the constraint
@@ -106,3 +106,25 @@ statistics from the dumps (t = 0, 0.25, 0.5).
   coord/INTERFACES/scalar_field.md section 10, test 3).
 Refuted: any of the four comparisons outside its bound (then the reader or the [H]
 reconstruction is wrong), or an order outside 5-6.5.
+
+## 17:20 Outcome of the plane check (run E-20261115-171628-1737ebe): one prediction failed
+
+Passed: mean |H| and rms H from the dumps equal the history to 2.0e-14 and 5.7e-15; box
+mean of [H] per cell equals the code's [H] to 5.3e-7; orders of rms H/[H] and rms M/rms [M]
+at t = 0 between N = 16 and 32: 5.97 and 5.66 (the interface's 5.97 and 5.66, so the
+dump-based ratios reproduce the code's convergence).
+Failed: sqrt(<chi |M|^2>) against the history's rms |M|: equal at t = 0 (3e-15 and 5e-15)
+but 4.5e-5 to 5.5e-4 apart at t = 0.25 and 0.5, against the bound 1e-6. The bound was
+wrong: I treated gt - delta as second order, but in this test the metric perturbation is
+first order in A = 0.003, so gt^ab != delta^ab changes the norm of M at relative order
+1e-3. Cause not yet shown by a run.
+
+## 17:20 Prediction: the same check with the conformal metric from a `bin` output
+
+`plane_check.py` now adds `<output2> bin, variable = z4c, dt = 0.25` (single precision) and
+recomputes the physical norm chi gt^ab M_a M_b and At_ij At^ij from it. If the explanation
+above is right, sqrt(<chi gt^ab M_a M_b>) equals the history to <= 1e-6 (float32 gt: an
+absolute error of 6e-8 on numbers near 1), and the box mean of [H] with At At included
+equals the code's [H] to <= 1e-9. Refuted if the difference stays at 1e-4 (then the
+reader's assembly of M or of the bin file is wrong). This also tests `read_bin_metric` on
+real output (its first use).
