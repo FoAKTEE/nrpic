@@ -604,3 +604,15 @@ executable (`t5_blocks_restart.py`).
   to the uninterrupted run (I had allowed 1e-11) and with an identical error file
   (RMS-L1 7.561707e-11). The new parameters survive the restart and the end time is not
   scaled twice. No figure: both comparisons are exact zeros.
+
+### P7 Oblique wave at 64 cells on a processor: prediction (before T6)
+
+While the card job waits (one core, about an hour): k = (1,1,1), one period, N = 64,
+new processor executable, stage evol of `t1_linear_wave.py`. Fourier-symbol prediction
+(148 steps): amplitude error -7.88e-9, phase error -1.750e-7 rad. Prediction: the phase
+within 10 per cent of that; the amplitude within 30 per cent (at this size the rounding
+of 1 + h, about 1e-10 of A per value, is no longer negligible against 8e-9; Track B saw
+the floor at 128 cells); max |h_x| / A below 1e-8; gw_diag's Psi_4 against the analytic
+value below 3.2e-6 / 2^4 = 2e-7 times a factor three; constraints at the floor of P1c.
+Refuted if the phase error is off by more than 10 per cent or the errors do not fall
+from N = 32.
