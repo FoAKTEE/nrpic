@@ -26,7 +26,7 @@ python3 $V --input $I/U7.athinput --run $C/U7 --tag card_markov_heaviside --out 
   > $O/val_card_u7.log 2>&1 || st=1
 K=(val_card_frozen val_card_u6_std val_card_u6_cf val_card_u7)
 if [[ $P != - ]]; then
-  if [[ -d $P/U4 ]]; then RST=(--restart $P/U4); else RST=(); fi
+  if compgen -G "$P/U4/*.sf.*.dump" > /dev/null; then RST=(--restart $P/U4); else RST=(); fi
   python3 $V --input $I/U2.athinput --run $P/U2 "${RST[@]}" --card $C/U2 --tag proc_u2 \
     --out $O/val_a12_a14 > $O/val_a12_a14.log 2>&1 || st=1
   K+=(val_a12_a14)

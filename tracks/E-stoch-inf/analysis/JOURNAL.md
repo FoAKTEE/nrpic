@@ -288,3 +288,11 @@ files, so U4 can now run on a card too:
   test passes. Same verdict as P3' on processors.
 Figures `fig/fig_val_card_frozen.png`, `fig_val_card_markov_tanh_cf.png`,
 `fig_val_card_markov_heaviside.png` looked at.
+
+## 18:27 Note before A14
+
+The processor U2 writes its last dump at about 18:50; U4 follows in the same run until
+about 19:40. A14 (P4) is validated as soon as U2 is complete, alone
+(`validate_noise.py --input inputs/u64/U2.athinput --run PROC/U2 --card CARD/U2`, which
+also gives A0-A10 on the processor U2: P7). `val_base.sh` now looks for U4's dumps rather
+than its directory, which the processor script creates at the start.
