@@ -1,0 +1,25 @@
+{
+ "run_id": "kb-20261115-152541-e02d870",
+ "owner": "kb",
+ "command": [
+  "python3",
+  "-I",
+  "/data/haiyangw/nrpic/harness/bin/nrpic-fetch-arxiv",
+  "2605.30145"
+ ],
+ "cwd": "/data/haiyangw/nrpic/wt/kb",
+ "commit": "e02d870764be9d02de5e67a3545c6b057dcd6184",
+ "worktree_dirty_kb": false,
+ "inputs": [],
+ "output_dir": "/data/haiyangw/nrpic/scratch/kb/kb-20261115-152541-e02d870",
+ "purpose": "kb serve: fetch 2605.30145 requested by A-emd-pbh (nrpic-run refused: worktree has another helper's untracked files)",
+ "kind": "scouting",
+ "cores": 1,
+ "card_hours": 0,
+ "started_utc": "2026-11-15T15:25:41Z",
+ "started_unix": 1794756341.3877616,
+ "status": "finished",
+ "exit_code": 0,
+ "wall_time_s": 11.56,
+ "finished_utc": "2026-11-15T15:25:52Z"
+}

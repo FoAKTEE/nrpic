@@ -20,3 +20,16 @@ Prediction: arXiv serves a TeX source for 2605.30145 (A names it "spherical CDM-
 collapse"); `nrpic-fetch-arxiv` stores it with status ok and kind tar or gzip-tex.
 Refuted if the endpoint answers "not found" (identifier does not exist) or the record is
 not ok.
+
+Outcome S1 (run kb-20261115-152541-e02d870, registered by hand with
+`kb/scripts/registered_run.py`: `nrpic-run submit` refused because another helper's
+untracked `tracks/kb/embed/` makes the worktree dirty): prediction held. 2605.30145 v1,
+status ok, kind tar (13.7 MB; `main.tex`, `references.bib`), fetched 15:25:52Z.
+
+## S2 15:40 verify-downloads and ingest of the new entry (prediction)
+
+Prediction: `kb verify-downloads` lists 2605.30145 among the extras with status ok and 0
+missing; `kb ingest arxiv --new --extras` ingests exactly one paper, 2605.30145, with
+parse_status ok, at least 5 sections, 10 equations and 20 bibliography entries
+(gr-qc/9412071, PostScript only, is skipped as before). Refuted if any other paper is
+(re)ingested, or the new paper parses as review/failed or below those counts.
