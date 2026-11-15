@@ -511,10 +511,13 @@ def figures(a, data, res, plateau, esm, vm):
     # 5. profiles along x
     if all(data[n]["prof"] for n in data):
         fig, axs = plt.subplots(3, 2, figsize=(fs.FULL_WIDTH, 7.6), sharex=True, sharey="row")
-        fig.subplots_adjust(left=0.09, right=0.98, bottom=0.07, top=0.98, hspace=0.06, wspace=0.05)
+        fig.subplots_adjust(left=0.11, right=0.98, bottom=0.07, top=0.98, hspace=0.06, wspace=0.05)
         for j, name in enumerate(("ES-1", "V-1")):
             prof = data[name]["prof"]
-            sel = [p for p in prof if any(abs(p["time"] - T) < 1e-6 for T in (0, 20, 50, 100, 150, 200))]
+            # the output nearest to each target time (outputs fall on the first step after it)
+            tt = np.array([p["time"] for p in prof])
+            idx = sorted({int(np.argmin(np.abs(tt - T))) for T in (0, 20, 50, 100, 150, 200) if T <= tt[-1] + 5})
+            sel = [prof[i] for i in idx]
             cc = fs.series_colors(len(sel))
             for p, c in zip(sel, cc):
                 axs[0, j].plot(p["x"], p["z4c_alpha"], color=c, label=f"t={p['time']:g}M")
