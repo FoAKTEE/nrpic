@@ -1,0 +1,57 @@
+{
+ "run_id": "A-emd-pbh-20261115-153424-dc27b98",
+ "owner": "A-emd-pbh",
+ "helper": "newton",
+ "launcher": "local",
+ "kind": "scouting",
+ "purpose": "Particle files and batch list of the card campaign (top-hat 64^3 and 128^3, e = 0.2 at 128^3, each with 2.1e6 particles; prepare only, no simulation)",
+ "commit": "dc27b980912a5bf3f0d2b8579d38e84b7f5bd87c",
+ "branch": "track/A-emd-pbh",
+ "cwd": "/data/haiyangw/nrpic/wt/A-emd-pbh",
+ "inputs": [
+  {
+   "path": "tracks/A-emd-pbh/newton/make_deformed_ball.py",
+   "sha256": "3eb85f6fa0e5a9af77dd86f972326e0959c28c6ecb73e3e61a5f95604710dc72"
+  },
+  {
+   "path": "tracks/A-emd-pbh/newton/ellipsoid.py",
+   "sha256": "01389674e104789dcd6d324c618ac154075fd566d8960b63d9f50b4d9144151d"
+  },
+  {
+   "path": "tracks/A-emd-pbh/newton/tophat.py",
+   "sha256": "18782ebc87ce74a5b3830e7916c844a89ca5ab6b5a43c8cc0ba91d095e8c211b"
+  },
+  {
+   "path": "problems/newton/isolated.athinput",
+   "sha256": "e668150c18e0424b03d52e82ea3ab4c916bb29f50165be23dad58374bbadbc7d"
+  },
+  {
+   "path": "tracks/A-emd-pbh/newton/newton_campaign.py",
+   "sha256": "6211e48e74c745d9402661221096a7fba25e381f43978c6e1620f61f38b07970"
+  }
+ ],
+ "outputs": {
+  "dir": "scratch/A-emd-pbh/A-emd-pbh-20261115-153424-dc27b98"
+ },
+ "output_dir": "/data/haiyangw/nrpic/scratch/A-emd-pbh/A-emd-pbh-20261115-153424-dc27b98/",
+ "registered": "2026-11-15T15:34:24+00:00",
+ "machine": "anta",
+ "notes": "registered by hand: harness/bin/nrpic-run submit refused (worktree not clean: untracked files of other helpers of A-emd-pbh in the same worktree)",
+ "command": [
+  ".venv/bin/python",
+  "tracks/A-emd-pbh/newton/newton_campaign.py",
+  "--campaign",
+  "card",
+  "--prepare-only"
+ ],
+ "cores": 1,
+ "card_hours": 0.0,
+ "status": "completed",
+ "exit_code": 0,
+ "wall_time_s": 3.0,
+ "core_hours": 0.0008,
+ "ended": "2026-11-15T15:34:27+00:00",
+ "sha256sums": "sha256sums.txt",
+ "sha256sums_sha256": "0e3803498600860ba8f41fbb024e00196e1aafedf2a19c6ce5df7b2e208ce248",
+ "n_output_files": 9
+}

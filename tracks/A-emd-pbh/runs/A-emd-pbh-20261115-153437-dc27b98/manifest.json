@@ -1,0 +1,141 @@
+{
+ "run_id": "A-emd-pbh-20261115-153437-dc27b98",
+ "owner": "A-emd-pbh",
+ "helper": "newton",
+ "launcher": "batch",
+ "kind": "scouting",
+ "purpose": "Newtonian mode on one A100: top-hat with 2.1e6 particles at 64^3 and 128^3 (third point of the particle-number series), e = 0.2 with 2.1e6 particles (predictions P9d, P10f, P11, newton/JOURNAL.md entry 6)",
+ "commit": "dc27b980912a5bf3f0d2b8579d38e84b7f5bd87c",
+ "branch": "track/A-emd-pbh",
+ "cwd": "/data/haiyangw/nrpic/wt/A-emd-pbh",
+ "inputs": [
+  {
+   "path": "/data/haiyangw/nrpic/scratch/A-emd-pbh/A-emd-pbh-20261115-153424-dc27b98/th_n064_h0125/ball.nrp",
+   "sha256": "3f64d9c4106013e417d49faaa3e0ecb1501bb208d4196fb34e520e1fea153faf"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/scratch/A-emd-pbh/A-emd-pbh-20261115-153424-dc27b98/th_n128_h0125/ball.nrp",
+   "sha256": "3f64d9c4106013e417d49faaa3e0ecb1501bb208d4196fb34e520e1fea153faf"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/scratch/A-emd-pbh/A-emd-pbh-20261115-153424-dc27b98/e0p2_h0125/ball.nrp",
+   "sha256": "a8728e762cc997a71998c02ef0ce8d5076180902c41511c7ca40f7ba8cb9c0a8"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/scratch/A-emd-pbh/A-emd-pbh-20261115-153424-dc27b98/batch.list",
+   "sha256": "6bb574c2266b6329905048b1a2aa315c1c830f713760b0141b52887200ee7d9a"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/.work/build_gpu_v03/src/athena",
+   "sha256": "f9f2dc1273a19e7f78f89bebfd88d9eef6487de5c94aebba77b6fd35dc1be3a1"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/wt/A-emd-pbh/problems/newton/isolated.athinput",
+   "sha256": "e668150c18e0424b03d52e82ea3ab4c916bb29f50165be23dad58374bbadbc7d"
+  }
+ ],
+ "outputs": {
+  "dir": "scratch/A-emd-pbh/A-emd-pbh-20261115-153437-dc27b98"
+ },
+ "output_dir": "/data/haiyangw/nrpic/scratch/A-emd-pbh/A-emd-pbh-20261115-153437-dc27b98/",
+ "registered": "2026-11-15T15:34:37+00:00",
+ "machine": "anta",
+ "notes": "registered by hand: harness/bin/nrpic-run submit refused (worktree not clean: untracked files of other helpers of A-emd-pbh in the same worktree)",
+ "command": [
+  "/data/haiyangw/nrpic/wt/A-emd-pbh/scripts/gpu_batch.sh",
+  "/data/haiyangw/nrpic/scratch/A-emd-pbh/A-emd-pbh-20261115-153437-dc27b98/batch.list"
+ ],
+ "batch_entries": [
+  {
+   "name": "th_n064_h0125",
+   "input": "/data/haiyangw/nrpic/wt/A-emd-pbh/problems/newton/isolated.athinput",
+   "args": [
+    "job/basename=newton",
+    "mesh/nx1=64",
+    "mesh/nx2=64",
+    "mesh/nx3=64",
+    "mesh/x1min=-3.0",
+    "mesh/x1max=3.0",
+    "mesh/x2min=-3.0",
+    "mesh/x2max=3.0",
+    "mesh/x3min=-3.0",
+    "mesh/x3max=3.0",
+    "meshblock/nx1=32",
+    "meshblock/nx2=32",
+    "meshblock/nx3=32",
+    "time/tlim=9.631154243925856",
+    "time/ndiag=50",
+    "particles/dt=0.02407788560981464",
+    "particles/newton_cfl=0.2",
+    "particles/newton_mg_tol=1e-6",
+    "particles/snap_dt=3.210384747975285",
+    "particles/particle_file=/data/haiyangw/nrpic/scratch/A-emd-pbh/A-emd-pbh-20261115-153424-dc27b98/th_n064_h0125/ball.nrp",
+    "particles/hist_dcycle=1",
+    "output1/dt=1.0e30"
+   ]
+  },
+  {
+   "name": "th_n128_h0125",
+   "input": "/data/haiyangw/nrpic/wt/A-emd-pbh/problems/newton/isolated.athinput",
+   "args": [
+    "job/basename=newton",
+    "mesh/nx1=128",
+    "mesh/nx2=128",
+    "mesh/nx3=128",
+    "mesh/x1min=-3.0",
+    "mesh/x1max=3.0",
+    "mesh/x2min=-3.0",
+    "mesh/x2max=3.0",
+    "mesh/x3min=-3.0",
+    "mesh/x3max=3.0",
+    "meshblock/nx1=32",
+    "meshblock/nx2=32",
+    "meshblock/nx3=32",
+    "time/tlim=9.631154243925856",
+    "time/ndiag=50",
+    "particles/dt=0.02407788560981464",
+    "particles/newton_cfl=0.2",
+    "particles/newton_mg_tol=1e-6",
+    "particles/snap_dt=3.210384747975285",
+    "particles/particle_file=/data/haiyangw/nrpic/scratch/A-emd-pbh/A-emd-pbh-20261115-153424-dc27b98/th_n128_h0125/ball.nrp",
+    "particles/hist_dcycle=1",
+    "output1/dt=1.0e30"
+   ]
+  },
+  {
+   "name": "e0p2_h0125",
+   "input": "/data/haiyangw/nrpic/wt/A-emd-pbh/problems/newton/isolated.athinput",
+   "args": [
+    "job/basename=newton",
+    "mesh/nx1=128",
+    "mesh/nx2=128",
+    "mesh/nx3=128",
+    "mesh/x1min=-8.40477086714807",
+    "mesh/x1max=8.40477086714807",
+    "mesh/x2min=-8.40477086714807",
+    "mesh/x2max=8.40477086714807",
+    "mesh/x3min=-8.40477086714807",
+    "mesh/x3max=8.40477086714807",
+    "meshblock/nx1=32",
+    "meshblock/nx2=32",
+    "meshblock/nx3=32",
+    "time/tlim=15.687536083516049",
+    "time/ndiag=50",
+    "particles/dt=0.03921884020879012",
+    "particles/newton_cfl=0.2",
+    "particles/newton_mg_tol=1e-6",
+    "particles/snap_dt=1.9609420104395061",
+    "particles/particle_file=/data/haiyangw/nrpic/scratch/A-emd-pbh/A-emd-pbh-20261115-153424-dc27b98/e0p2_h0125/ball.nrp",
+    "particles/hist_dcycle=1",
+    "output1/dt=1.0e30"
+   ]
+  }
+ ],
+ "exe": "/data/haiyangw/nrpic/.work/build_gpu_v03/src/athena",
+ "wall_limit": "00:25:00",
+ "cores": 1,
+ "status": "submitted",
+ "slurm_job_ids": [
+  "4435"
+ ]
+}
