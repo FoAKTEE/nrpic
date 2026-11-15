@@ -28,9 +28,10 @@ def read_history(fname):
     return {n: d[:, i] for i, n in enumerate(names)}
 
 
-CON_HIST_VARS = ["time", "cycle", "efolds", "H_ratio", "H_ratio_max", "H_ratio_of_means",
-                 "M_ratio", "M_ratio_max", "M_ratio_of_means", "H_mag", "M_mag", "H_l1",
-                 "M_l1", "H_rms", "M_rms", "M_bssn_adm", "phi", "Pi", "K", "alpha"]
+CON_HIST_VARS = ["time", "cycle", "efolds", "H_ratio", "H_ratio_max",
+                 "H_ratio_of_means", "M_ratio", "M_ratio_max", "M_ratio_of_means",
+                 "H_mag", "M_mag", "H_l1", "M_l1", "H_rms", "M_rms", "M_bssn_adm", "phi",
+                 "Pi", "K", "alpha"]
 
 
 def read_con_history(fname):
@@ -41,10 +42,11 @@ def read_con_history(fname):
 
 
 def read_dump(fname):
-    """A dump <basename>.sf.NNNNN.dump (layouts NRSFDMP1 and NRSFDMP2).  Returns a dict with time, cycle, the list of
-    MeshBlocks (level, lx, extent, data[var][i, j, k]) and, when all MeshBlocks are on
-    the root level, the fields assembled on the whole mesh, fields[name][i, j, k] with
-    (i, j, k) = (x, y, z); the stochastic fields are named noise0, noise1, ..."""
+    """A dump <basename>.sf.NNNNN.dump (layouts NRSFDMP1 and NRSFDMP2).  Returns a dict
+    with time, cycle, the list of MeshBlocks (level, lx, extent, data[var][i, j, k])
+    and, when all MeshBlocks are on the root level, the fields assembled on the whole
+    mesh, fields[name][i, j, k] with (i, j, k) = (x, y, z); the stochastic fields are
+    named noise0, noise1, ..."""
     with open(fname, "rb") as fp:
         magic = fp.read(8)
         if magic not in (b"NRSFDMP1", b"NRSFDMP2"):

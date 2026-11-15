@@ -200,14 +200,15 @@ def code_case(model, nmax2, sigma=1.0, kstart=None):
 
 
 def write_mode_file(fname, n2, r, dr, header=""):
-    """The mode file of <scalar_field> noise_mode_file: rows |n|^2, Re R, Im R, Re dR/dtau,
-    Im dR/dtau for every shell."""
+    """The mode file of <scalar_field> noise_mode_file: rows |n|^2, Re R, Im R,
+    Re dR/dtau, Im dR/dtau for every shell."""
     with open(fname, "w") as fp:
         for line in header.splitlines():
             fp.write("# " + line + "\n")
         fp.write("# n2  Re_R  Im_R  Re_dR/dtau  Im_dR/dtau\n")
         for a, b, c in zip(n2, r, dr):
-            fp.write(f"{int(a)} {b.real:.17e} {b.imag:.17e} {c.real:.17e} {c.imag:.17e}\n")
+            fp.write(f"{int(a)} {b.real:.17e} {b.imag:.17e} {c.real:.17e} "
+                     f"{c.imag:.17e}\n")
 
 
 def read_mode_file(fname):
