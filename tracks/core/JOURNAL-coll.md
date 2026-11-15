@@ -532,3 +532,40 @@ weight = sigma M dt/2 x sum over the cells of both levels of N (N - 1)/V_cell to
 rounding; collisions = sum_P within 4 sigma; total weight within 2 percent of the
 nominal rate (it does not depend on the cell size); snapshots byte-identical for the two
 MeshBlock divisions; no warning about MeshBlock edges.
+
+## 2026-11-15 15:40 UTC  outcomes: refined mesh, P10 (curved box)
+
+### Refined mesh: run core-20261115-140539-54f8bee (processor)
+
+Passed. Level and collision cell of all 2e5 particles as assigned from the geometry
+(24681 particles in the refined octant), for MeshBlocks of 16^3 and 8^3 cells and for
+cell factor 2; summed weight against the cell populations of both levels 1.6e-13 to
+5.0e-13; collisions 200632 (factor 1, both divisions) and 200058 (factor 2), z = 1.3 and
+0.2 against sum_P; total weight within 2.3e-4 of nominal; snapshots of the two MeshBlock
+divisions byte-identical; no warning about MeshBlock edges. Figure `fig_smr.png`
+(occupation of the cells of both levels; the two divisions coincide).
+
+### P10: runs core-20261115-140259-8742cdf (card), core-20261115-140147-15c576d (processor)
+
+Passed on both; the numbers of collisions are the same on card and processor. Homogeneous
+metric with lapse 0.7 and sqrt(det gamma) = 1.1044, 2e5 particles, 400 steps, about 20
+collisions per particle. Figure `fig_curved_box.png` looked at (card run).
+- Pair counting with the factor alpha/sqrt(gamma): 0 to 1.1e-16 (card), 1.4e-13
+  (processor) against the snapshot populations.
+- Collisions: 1993695 (symmetric triad, midpoint pusher), 1992802 (Cholesky triad, Boris
+  pusher), 1993138 (flat box with the same triad momenta and the same rate per
+  coordinate time): z = +0.28 and -0.17 against flat; z = 0.34 and -0.36 against sum_P.
+- Mean Moller speed of the tested pairs in the last quarter against random pairs of the
+  triad momenta of the last snapshot: z = -0.48, +0.49.
+- Conservation from the snapshots (exact sums): sum of M W with gamma^ij changes by
+  1.0e-14 and -8.8e-16 relative; the components of sum M u_i by at most 5.1e-17 of
+  sum M |u_hat|. Mean pair defect 0.39 eps of the pair energy.
+- Energy with the metric reconstructed at each particle (`coll_budget`): summed change
+  over the 400 collision steps 1.2e-14, -2.0e-15 (card) and 3.7e-15, -3.2e-14
+  (processor) relative. These are differences of two plain sums of 2e5 terms; their
+  size is that of the rounding of the sums, so the statement is "no change above 3e-14".
+- Relaxation: KS p of the triad |u| against Maxwell-Juttner 0.78 and 0.92; both
+  populations within 0.73 sigma of theta_eq.
+The first processor run of this driver (core-20261115-135349-1134b04) stopped in the
+analysis because the flat reference run had failed: the box deck did not contain
+`coll_budget`, which the driver sets on the command line (fixed in the deck).

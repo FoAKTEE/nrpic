@@ -343,7 +343,77 @@ directory; run through `tracks/core/analysis/rng/runreg.py`):
 
 ## 9. Limits, open points, lines touched in shared files
 
-LIMITS
+Limits and open points.
+
+- The splitting of streaming and collisions is of first order in the step; the measured
+  error of a relaxation rate is nu^2 dt_c/2 (section 8). Nothing of higher order is
+  implemented.
+- Particles per collision cell: the number of collisions is right at any occupation,
+  but with few particles per cell that stay together the relaxation is too slow (2.6
+  percent at 12 per cell, 7.5 percent at 1.5 in the test of section 8, in a box where a
+  particle crosses a cell in about one collision time). About 100 per cell gave 1
+  percent. `coll_cell_factor` trades this against the size of the cell. That repeated
+  partners are the cause is [JUDGEMENT]; no control separated it from other effects of a
+  small cell.
+- Cell size with a gradient (heat conduction, the track's tests T6 to T8) was NOT
+  tested: no run of this package has a temperature or density gradient across cells
+  except the cluster. The dependence of transport coefficients on the cell size is open.
+- `nanbu` conserves energy and momentum only on average: the temperature of a gas of
+  2e5 macroparticles with masses 1:4 random-walks by 0.4 percent in 25 collision times.
+  Production runs should use equal masses.
+- Sub-steps are bounded by the two largest speeds of the cell, which over-estimates the
+  largest pair probability (mean n_sub 3.4 to 4.3 where the pairing-based rule had 3.0
+  to 3.2). A probability can still exceed `coll_pmax` in later sub-steps (largest seen:
+  0.113 for 0.1).
+- The cross-section model `cutoff` is exercised by the replay test only (one step
+  against the twin); its rate was not compared with a reference average.
+- Adaptive refinement during a run, excision of colliding particles (cells with an
+  unusable metric, `n_bad_cells`), removal of particles combined with collisions, the
+  analytic metrics other than Cartesian Kerr-Schild, and more than one rank (the module
+  runs on one) were not exercised. Static refinement was (one refined octant: cell
+  assignment, pair counting on both levels, two MeshBlock divisions; run
+  core-20261115-140539-54f8bee).
+- With the metric on the mesh, two MeshBlock divisions give particle states that differ
+  at rounding level unless the faces are binary fractions; this is the pusher's metric
+  reconstruction (`rng.md` section 9) and it is unchanged. The collision operator adds
+  no dependence on the division: given identical states it makes identical decisions.
+- On a card, runs with deposit are not reproducible run to run (atomic sums), so
+  "option absent" and "sigma = 0" cannot be shown byte-identical to the baseline there;
+  they are on the processor.
+- Tags are 32-bit; the pair keys use them as 64-bit words.
+- The history sums are plain floating-point sums (relative rounding up to n eps/2 for n
+  terms); they do not feed back into the particles.
+- Cost (processor, one core, 1e6 particles in 32^3 cells): 0.54 s per step with the
+  operator (0.27 s without) at one sub-step, 0.85 s at four sub-steps; card: 1e6
+  particles x 200 steps in 2 to 4 s wall including start-up [VERIFIED: wall times of
+  runs core-20261115-133533-0ca5e3b and core-20261115-135816-18d4555].
+
+Lines touched in files shared with other work packages (against 94dc093):
+
+| File | Lines of the new file | Change |
+|---|---|---|
+| `athenak/src/CMakeLists.txt` | 138 | `particles/nrpic_collide.cpp` |
+| `athenak/src/particles/nrpic.cpp` | 272 | `NrpicCollideInit(pin);` after `NrpicKickInit(pin);` at the end of `NrpicInit` |
+| `athenak/src/particles/particles.hpp` | 121-142 | struct `NrpicCollideOptions`, after `NrpicKickOptions` |
+| | 150 | `TaskID collide;` in `ParticlesTaskIDs` |
+| | 296-303 | members `coll`, `coll_cell`, `coll_list`, `coll_count`, `coll_begin`, `coll_key`, `coll_face` and the two method declarations, before `private:` |
+| `athenak/src/particles/particles_tasks.cpp` | 40-48 | the task `NrpicCollide` between excise and deposit if `coll.on`; the deposit depends on it |
+| `athenak/src/pgen/nrpic/nrpic_geodesic.cpp` | 62-96 | `NrpicSetHomogeneous` and its parameters |
+| | 119-141 | the branch `<problem> metric_kind = homogeneous` in `NrpicGeodesic` (read only if the parameter is present) |
+
+New files: `athenak/src/particles/nrpic_collide.{hpp,cpp}`, `python/nrpic/collide.py`,
+`problems/tests/coll_box.athinput`, `problems/tests/coll_box_curved.athinput`,
+`tracks/core/analysis/collisions/*`.
+
+Requests.
+
+- Track C: check the operator independently (TESTS.md T0b can use the dump of section 5
+  and `python/nrpic/collide.py` as a second twin); note the changed sub-step rule
+  (section 3.7), which SPEC.md 4.5 should adopt, and the cell-occupation effect above for
+  the choice of particle numbers; T6 to T8 (conduction) remain the track's.
+- Orchestrator: `coord/INTERFACES/rng.md` should carry the sub-streams of stream 2 as in
+  section 4 (pairing 0, acceptance 1, direction 2; draw = sub-step) and of stream 1 as
+  used by `make_box` (sub-stream 0, entity = tag).
 
 ## 10. Differences from the track's specification (SPEC.md at 4c76ca8)
 

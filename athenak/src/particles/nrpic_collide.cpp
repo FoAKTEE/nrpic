@@ -225,8 +225,8 @@ void CollWriteHistory(const std::string &fname, const bool header, const bool re
     const int min_n = (st.n_occ > 0) ? st.min_n : 0;
     std::fprintf(fp, "%.15e %d %" PRId64 " %" PRId64 " %" PRId64 " %.15e %" PRId64
                  " %" PRId64 " %" PRId64 " %.15e %d %.15e %d %.15e %.15e %.17e %.17e"
-                 " %.17e %.17e %.15e %.15e %.15e %.15e %.15e %.15e %" PRId64 " %.15e %.17e"
-                 " %.17e %.17e %.15e\n",
+                 " %.17e %.17e %.15e %.15e %.15e %.15e %.15e %.15e %" PRId64 " %.15e"
+                 " %.17e %.17e %.17e %.15e\n",
                  time, ncycle, st.n_part, st.n_cells, st.n_tested, st.sum_p, st.n_coll,
                  st.n_upd, st.n_trunc, st.max_p, st.max_nsub, mean_nsub, min_n, mean_n,
                  st.max_dxmfp, st.sum_mw, st.sum_mu[0], st.sum_mu[1], st.sum_mu[2],
@@ -431,7 +431,8 @@ TaskStatus Particles::NrpicCollide(Driver *pdriver, int stage) {
       const int lev = static_cast<int>(off(m,3));
       int ic[3];
       for (int d=0; d<3; ++d) {
-        const std::int64_t ig = nrpic::CollCellIndex(face, fb.b[d][lev], off(m,4+d), x[d]);
+        const std::int64_t ig = nrpic::CollCellIndex(face, fb.b[d][lev], off(m,4+d),
+                                                     x[d]);
         int il = static_cast<int>(ig - off(m,d));
         il = (il < 0) ? 0 : ((il > nx[d]-1) ? nx[d]-1 : il);
         ic[d] = il/f;
@@ -782,8 +783,8 @@ TaskStatus Particles::NrpicCollide(Driver *pdriver, int stage) {
     }, stats);
 
     if (budget) {
-      stats.e_part = CollEnergyAtParticles(np, prtcl_rdata, prtcl_idata, coll_cell, eproto,
-                                           (nropt.metric == NrpicMetric::mesh),
+      stats.e_part = CollEnergyAtParticles(np, prtcl_rdata, prtcl_idata, coll_cell,
+                                           eproto, (nropt.metric == NrpicMetric::mesh),
                                            pmy_pack->pmb->mb_size, gids, nropt.metric,
                                            nropt.mass, nropt.spin, nropt.lattice_dx);
       stats.de_part = stats.e_part - e_before;
