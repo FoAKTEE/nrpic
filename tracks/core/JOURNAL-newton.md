@@ -643,3 +643,51 @@ held (below 3e-3), H2 is refuted (it predicted no change). The slow convergence 
 came from the particle lattice having the spacing of the mesh, not from the gravity
 solver; `pm.py` shows the same (1.32e-3 with eight per cell, 5.07e-3 with one). The code
 agrees with the numpy scheme to 8.2e-16 also with eight particles per cell.
+
+Final source 38067a2 (c061b12 with two source lines over 90 characters wrapped: the
+column header string of the history, same text): collapse at N = 32
+(core-20261115-123107-38067a2) gives the same bytes as core-20261115-121044-c061b12
+(both histories and the last snapshot compared with `cmp`); regression R1 repeated,
+runs core-20261115-123108-38067a2 to core-20261115-123544-38067a2: 33 files identical.
+The card executable was not rebuilt for 38067a2; the card runs are of 9d84282 (collapse)
+and c061b12 (regression).
+
+T4c, complete run (core-20261115-122313-dc623d1, 617 s; all 12 snapshots,
+`tracks/core/analysis/newton/wave_ppc8.json`): error against Zel'dovich 1.12e-3 at
+a = 2.25 and 1.38e-3 at a = 3.52 (one particle per cell: 5.64e-3 and 8.96e-3);
+difference from the numpy scheme at most 8.6e-16. The partial analysis stands.
+
+Outcome of T7, complete (processor run core-20261115-115450-fee90ca finished: 1000
+steps in 3181 s, 3.2 s per step on one core of the loaded machine; card run
+core-20261115-120028-fee90ca: 650 s, 0.65 s per step, Slurm job 4382, 10 min 52 s, 0.18
+card-hours; `tracks/core/analysis/newton/card_vs_processor.json`) [VERIFIED]: K and W
+agree to 2.6e-15 and 4.0e-14 at t = 0.5 and to 1.2e-13 at worst over the run; particle
+positions to 2.7e-15 and momenta to 8.7e-15 at t = 1.0; the number of V cycles differs at
+5 of 1001 records. The prediction held (bounds 1e-9 and 1e-8), and the card run is five
+times faster than one processor core at this size, not slower.
+Card time of the work package: 0.18 (job 4382) + 0.007 (job 4405, regression) = 0.19
+card-hours of the three allowed.
+
+### State at the end of session newton-1 (for a reader with no memory)
+
+Done: the Newtonian mode of the particle module on uniform meshes, isolated and
+periodic, with optional power-law expansion, diagnostics and exact restart; verified by
+the tests T1 to T8 and the regressions R1 to R3 above; runs on a card. Interface note:
+`tracks/core/interfaces/newtonian_mode.md` (assessment of the multigrid module, design,
+options, columns, lines of shared files touched, results, what is not done). Inputs,
+particle files and analysis scripts: `problems/newton/` (README). Reference solutions
+and readers: `python/nrpic/newton.py`. Figures and numbers:
+`tracks/core/analysis/newton/` (README).
+Not done: refined meshes beyond one static trial (T9), adaptive refinement, MPI, a
+tabulated scale factor, a card run of the periodic case; see section 6 of the note.
+Traps met: (1) `threshold = 0` of the stock multigrid driver can end a solve after one V
+cycle; the particle path has its own rule. (2) A parameter that is not in the input file
+cannot be added on the command line. (3) `scratch/core/` is shared by all sessions of
+owner core; this package keeps its temporary files in `scratch/core/newton/`. (4) The
+shared `.gitignore` pattern `runs/` also matches `tracks/core/runs/`; the manifests are
+added with `git add -f`. (5) A lattice ball is not the ideal ball at the 1e-3 level;
+use the radius of the ball of the same mass and the lattice density. (6) Card runs with
+deposit are not reproducible byte for byte from run to run.
+To rerun everything: the commands of `problems/newton/README.md` with an executable
+built by `scripts/build_cpu.sh .work/build_cpu`; registered runs through
+`tracks/core/tools/run_registered.py`.

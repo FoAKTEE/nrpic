@@ -43,6 +43,7 @@
  "wall_time_s": 876.05,
  "exit_status": 0,
  "cores": 1,
- "card_hours": 0.5,
- "started_utc": "2026-11-15T12:00:28Z"
+ "card_hours": 0.181,
+ "started_utc": "2026-11-15T12:00:28Z",
+ "card_hours_source": "Slurm job 4382, elapsed 00:10:52 (sacct); the wall time of the manifest includes the wait in the queue"
 }
