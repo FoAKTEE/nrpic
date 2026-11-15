@@ -283,3 +283,58 @@ P1 (timing, nx = 128, 20 steps, 520k particles): 1-3 s per step on one core with
 newton_mg_tol = 1e-6 (interface 5.8: 3.2 s at 128^3 and 1.4e5 particles with threshold 0,
 13-19 V cycles; the tolerance cuts the cycles to a third). Refuted if above 6 s per step
 (then the 128^3 run to a/a_i = 4, ~1500 steps, does not fit a few hours on processors).
+
+## 2026-11-15T17:20Z  outcome F1, F2, P1 (runs D-20261115-170112-d70352c nx 64, -170122-7c4da35 nx 128,
+## -170124-1b2ea1a nx 128 with dust, -170127-877c84f timing; analysis registered next as nm_field)
+
+F1 holds. (a) rms relative error of g_r beyond 4 cells 9.4e-3 (nx 64) and 7.9e-3 (nx 128);
+beyond 16 cells 9.8e-4 (nx 128; nx 64 has no tracer there). (b) Plummer fit inside 4 cells:
+s_eff = 0.609 dx (nx 64, 1.293 M) and 0.611 dx (nx 128, 0.649 M): the softening scales with
+the cell. But the Plummer law is a poor description (fit rms 0.19-0.20 in g r^2/M): the mesh
+force is almost zero inside 0.5 dx (-97 % at 0.25-0.5 dx, -72 % at 0.5-1 dx) and
+OVERSHOOTS by up to 30 % at 1.3-2 dx (bin mean +7 to +8 % at 1-2 dx). The binned median
+kernel f(r/dx) = g_r r^2/M is written for the shell reference (kernel_nx64.txt,
+kernel_nx128.txt); the two resolutions overlay in r/dx. (c) transverse force rms 13.5-13.7 %
+of g at 1-2 dx, 4.5 % at 2-4 dx, 1.7 % at 4-8 dx.
+F2 holds. g_r against 1 + (4 pi/3) rho_i (r^3 - 27) on [3 M + 4 dx, R_edge - 2 dx]: rms
+3.3e-3. The dust's own force (run with dust minus clump alone, same tracers): inside the
+vacuum core at most 2.1e-4 of g (shell theorem holds on the mesh), in the dust rms 5.3e-4
+and at most 1.9e-3; peaks at the two density jumps (3 M, 18.35 M), as interface 5.3 says.
+P1 holds: 20 steps in 56.8 s of processor time with setup, about 2.7 s per step at
+128^3 with 520k particles; the step stayed at the upper limit 0.25 (no fast particles yet).
+
+## 2026-11-15T17:25Z  predictions: the Newtonian-mode infall runs N128 (nx 128, box +-68 M,
+## dx 1.0625 M, to a/a_i = 4), N64 (nx 64, same box, dx 2.125 M) and N128L (nx 128, box
+## +-176 M, dx 2.75 M, dust edge 24.5 M, to a/a_i = 8)
+
+Reference numbers known now: wave-1 shell runs with the vacuum core 3 M and Plummer s = 0.5 M
+(pass_e0.03_s0.5_rw3, D-bh-dress-20261115-130000-d087954): M_ta = 1.505, 2.045, 2.593 M and
+dress = 0.173, 0.472, 0.796 M at a/a_i = 2, 3, 4. Before any output of these runs is read,
+nm_shells.py will compute the same set-up with the mesh kernel measured above at the
+snapshot times of the runs (the matched reference); the criteria below apply to it.
+1. Turnaround mass (dust that has turned around, counted from the snapshots, plus the clump):
+   within 2 % of the matched reference at every snapshot after a/a_i = 1.5, in all three runs.
+   [the turnaround of a shell is set by the force at r >= its initial radius 3-25 M, where
+   the mesh force is within 1 % beyond 4 cells]
+2. Dress (dust that has passed its pericentre once): within 5 % of the matched reference
+   at a/a_i = 4 in N128, within 10 % in N64, within 10 % at a/a_i = 8 in N128L; at
+   a/a_i = 2 within 15 % (made of the innermost shells, r_i = 3-5 M, i.e. 1.4-5 cells).
+3. Density rho/rho_b(t) of the dust in logarithmic bins: within 30 % per bin of the matched
+   reference for 4 dx <= r <= r_ta at a/a_i = 2 and 4 (N128, N64), at a/a_i = 4 and 8
+   (N128L); flatter than the reference inside 2 dx (transverse force: orbits miss the
+   centre).
+4. Against the self-similar solution (test 2, D-bh-dress-20261115-123813-97afeea), with
+   r_ta from G M_ta t^2/r_ta^3 = pi^2/8 and the measured M_ta: at a/a_i = 4 the profile
+   agrees within 30 % per bin only for lambda = r/r_ta in [0.1, 0.35] and lies off it
+   inside lambda < 0.1 (the seed dominates there; wave-1 analysis 125613); dress/M_ta =
+   0.3 at a/a_i = 4 and 0.45 at a/a_i = 8 against the self-similar 0.625; M_ta/(M a/a_i)
+   = 0.65 at 4 and 0.60 at 8 against the asymptote 0.5648 (approached from above).
+5. The clump: its centre of mass stays within 0.01 dx of the origin (symmetry of the set-up,
+   broken only by rounding); its 90 % radius stays below 1 dx; the total momentum of all
+   particles below 1e-4 M c (rounding and the kernel mismatch, interface 5.5: 2.5e-5).
+   K + W changes by less than 1 % of |W(0)| over the run.
+6. No particle leaves the box (dust edge at a_end 59.8 M of 68 M; N128L 155.2 M of 176 M).
+7. Cost: N128 about 1700 steps at 2.7 s, 75-90 min; N64 10-20 min; N128L 1900-2500 steps,
+   1.5-2 h. One core each.
+Refuted where a number falls outside the stated band; then name the cause only after a
+run that could have shown otherwise.
