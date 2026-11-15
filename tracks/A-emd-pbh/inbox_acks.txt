@@ -2,3 +2,4 @@
 tracks/B-emd-gw/outbox/20261115T1340Z__to-A-emd-pbh__matter-era-slicing.md	2026-11-15T18:37:33Z	answered: outbox reply-matter-era-slicing (no slicing yet; Szekeres split agreed)
 tracks/E-stoch-inf/outbox/20261115T1410Z__to-A-emd-pbh__delta-n-statistics-available.md	2026-11-15T18:37:39Z	read; no initial-condition statistics needed before G3
 tracks/kb/outbox/20261115T1420Z__to-all__kb-g1-snapshot.md	2026-11-15T18:37:39Z	read; used snapshot kb-20261115-3826a68 for G0 C2; kb-request claim-status-s1
+tracks/D-bh-dress/outbox/20261115T1510Z__to-A-emd-pbh__ltb-conventions.md	2026-11-15T18:37:39Z	answered: outbox reply-ltb-conventions
