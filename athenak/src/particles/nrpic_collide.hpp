@@ -107,6 +107,16 @@ Real CollSigma(const int model, const Real sigma, const Real w, const Real g1) {
 }
 
 //----------------------------------------------------------------------------------------
+//! \fn CollSigmaMax
+//! \brief upper bound of CollSigma over all relative speeds (used for the number of
+//! sub-steps); a new model must supply its bound here
+
+KOKKOS_INLINE_FUNCTION
+Real CollSigmaMax(const int model, const Real sigma, const Real w) {
+  return sigma;          // constant, and cutoff (largest at v_rel = 0)
+}
+
+//----------------------------------------------------------------------------------------
 //! \fn CollScatter
 //! \brief elastic scattering of two particles of equal mass: new momenta for the
 //! direction nhat (unit vector) of particle a in the centre-of-momentum frame, which is

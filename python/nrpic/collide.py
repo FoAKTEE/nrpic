@@ -217,12 +217,19 @@ def replay(d, cycle=None):
         fac = (nc - 1)*d["alpha"][p0]*d["dt"]/d["vol"][p0]
         mcell = np.max(m[idx])
 
-        def prob_full(pa, pb):
-            ga, wa, wb = gamma_rel_m1(u[pa] @ si_mat.T, u[pb] @ si_mat.T)
-            return (fac*sigma_m(d["model"], d["sigma"], d["w"], ga)
-                    * np.maximum(m[pa], m[pb])*moller(ga, wa, wb))
-
+        # sub-steps from the two largest speeds of the cell (or the bound 2)
+        vbound = 2.0
+        if d["subcycle"] != 1:
+            uh = u[idx] @ si_mat.T
+            u2 = np.sum(uh*uh, axis=1)
+            vs = np.sort(np.sqrt(u2/(1.0 + u2)))
+            vbound = min(vs[-1] + vs[-2], 2.0)
+        rn = np.ceil(fac*d["sigma"]*mcell*vbound/d["pmax"])
         nsub = 1
+        if not rn < d["nsub_max"]:
+            nsub = int(d["nsub_max"])
+        elif rn > 1.0:
+            nsub = int(rn)
         s = 0
         while s < nsub:
             word = rng.bits(seed=seed, stream=st_pair, entity=tag[idx], step=step, draw=s)
@@ -235,18 +242,6 @@ def replay(d, cycle=None):
                 pa_list = [order[0], order[1], order[2]] + pa_list
                 pb_list = [order[1], order[2], order[0]] + pb_list
                 wgt = [0.5, 0.5, 0.5] + wgt
-            if s == 0:
-                if d["subcycle"] == 1:
-                    pbnd = fac*d["sigma"]*mcell*2.0
-                else:
-                    pbnd = 0.0
-                    for pa, pb, wg in zip(pa_list, pb_list, wgt):
-                        pbnd = max(pbnd, wg*float(prob_full(pa, pb)[0]))
-                rn = np.ceil(pbnd/d["pmax"])
-                if not rn < d["nsub_max"]:
-                    nsub = int(d["nsub_max"])
-                elif rn > 1.0:
-                    nsub = int(rn)
             for pa, pb, wg in zip(pa_list, pb_list, wgt):
                 if tag[pa] > tag[pb]:
                     pa, pb = pb, pa

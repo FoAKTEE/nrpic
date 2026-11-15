@@ -187,3 +187,72 @@ differs from them in the last place in some outputs. Figure `fig_kernel_test.png
 run directory (looked at: all points three orders below the tolerance). The first run of
 the driver (core-20261115-132525-e67ed74) reported a relative error 1 of the Moller
 speed for that one case; the driver's metric was wrong, not the kernel.
+
+### P6 statistic refined before the production run (13:40 UTC)
+
+Driver check at small size (scouting runs core-20261115-132811-b33b7f3 for the rate
+driver and core-20261115-133017-b33b7f3 for the relaxation driver, 20000 particles in
+8^3 cells; both drivers ran through, relaxation to Maxwell-Juttner visible). The
+multinomial standard error of the absolute entropy estimate (0.009 at 20000 particles)
+is ten times the scatter between late snapshots, because the run has a fixed total
+energy and the dominant term of that error is the energy fluctuation of a free sample.
+The reference is now: bias b and scatter sd_b of the estimator at fixed energy, measured
+on 16 exact Maxwell-Juttner samples of the same size, each compared with the exact
+entropy at its own temperature. Criteria (stricter than before): end value within
+4 sd_b of s_MJ(theta_eq) + b; no decrease beyond 4 sqrt(2) sd_b between snapshots at
+least a quarter relaxation time apart.
+
+## 2026-11-15 13:45 UTC  outcome of P1 (processor), P2, P3, P4; a bias found and removed
+
+### P1, processor: run core-20261115-132618-1a050f3
+
+Passed. Five existing set-ups, 36 output files, baseline (94dc093) twice and the new
+executable once: no differing byte (c1 5 files, c2 3, c3 14, c4 4, c5 10). The source
+has changed since (sub-step rule, below): the regression is repeated with the final
+executable.
+
+### P2, P3, P4: run core-20261115-132842-b33b7f3 (1e6 particles, 32^3 cells, 200 steps)
+
+Figures looked at: `fig_rate_history.png`, `fig_rate_summary.png`,
+`fig_rate_conservation.png` in the run directory.
+
+- P2 passed: the final snapshots of the run without the option and of the run with
+  `coll_sigma = 0` are byte-identical; the run without the option writes no `coll.hst`.
+- P3a FAILED as written. sum_W of the code differs from sigma M dt/(2 V) sum N (N - 1)
+  of the snapshot by 4.7e-14 to 4.6e-12 relative, above my 1e-12 in five of eight runs.
+  My threshold ignored the rounding of the sum itself: the code adds 5e5 to 1.7e6 terms
+  that take few distinct values to one accumulator, so the rounding errors do not
+  average out; the bound of a sequential sum is n eps/2 = 5.8e-11 to 1.9e-10. All values
+  are below it, and one miscounted pair would change the sum by 2e-6. The criterion is
+  now the rounding bound (n_tested eps). Pair counting, volume and time factors are
+  therefore right to rounding, also with sub-cycling and with the triples of odd cells.
+- P3b: passed without sub-cycling: mean Moller speed of the tested pairs against random
+  pairs of the actual particles z = +0.9, +1.6, +0.5, -0.6 (theta = 0.01, 0.1, 1, 10),
+  against Maxwell-Juttner at the sample temperature -7.7e-5, +3.9e-5, -2.1e-5, -6.0e-5.
+  FAILED with sub-cycling: z = -6.1, -7.1, -7.3, -4.7, i.e. low by 0.095, 0.112, 0.119,
+  0.117 percent, the same sign at every temperature (red curves of
+  `fig_rate_history.png` lie below one throughout).
+  Cause as I understand it, to be tested by the fix: the number of sub-steps was taken
+  from the largest probability of the first pairing, and that same pairing is then
+  tested with weight 1/n_sub. A first pairing that happens to contain fast pairs gets
+  more sub-steps and is diluted by more fresh pairings than one with slow pairs, so
+  E[(v_0 - <v>)/n_sub] < 0. My design argument ("the expectation is right for any
+  n_sub") holds only if n_sub does not depend on the pairing. This rule is the one of
+  the track's SPEC.md 4.5.
+  Fix: n_sub from the particles of the cell alone, P_bound = (N - 1) sigma_max M_cell
+  min(v_1 + v_2, 2) alpha dt/V with the two largest speeds of the cell (v_Mol <=
+  |v_a - v_b| <= v_a + v_b). Prediction for the rerun, written before it: the
+  sub-cycled runs agree with the pair average within 4 standard errors and with
+  Maxwell-Juttner within 3e-4, like the plain runs; n_sub is larger than before (the
+  bound is not attained by the pairs); if the deficit of 0.1 percent stays, the cause
+  named above is wrong.
+- P3c passed: collisions against sum_P, z between -1.1 and +1.5 (1.5e6 and 1.5e7
+  collisions per run).
+- P3d passed: sum_W over the run against (1/2) N rho_0 sigma dt x 200 within 5e-5 in all
+  runs (allowed 8e-3).
+- P3e passed: KS p of |u| at the end against Maxwell-Juttner 0.23 to 0.996.
+- P4 passed: the exactly rounded sums of M W over the 1e6 particles at t = 0 and at the
+  end are equal to the last bit in all eight runs (up to 1.5e7 collisions); the
+  momentum components change by at most 4.6e-19 of sum M |u|; largest mean pair defect
+  per step 0.46 eps of the pair energy and 0.28 eps of the pair momentum scale. The
+  history column sum_MW (a plain floating sum) scatters by 1.7e-13 relative.

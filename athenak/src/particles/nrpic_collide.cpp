@@ -30,7 +30,8 @@
 //!   coll_sigma       = s          cross-section per unit mass (code units, a length)
 //!   coll_sigma_model = constant   | cutoff: s/(1 + (v_rel/w)^2)^2, w = coll_sigma_w
 //!   coll_pmax        = 0.1        largest pair probability per sub-step aimed at
-//!   coll_subcycle    = measured   | conservative (bound v_Mol < 2)
+//!   coll_subcycle    = measured   sub-steps from the two largest speeds of the cell
+//!                                 | conservative (bound v_Mol < 2)
 //!   coll_nsub_max    = 1000       largest number of sub-steps of a cell
 //!   coll_cell_factor = 1          | 2 | 4: collision cell = f^3 mesh cells
 //!   coll_weights     = equal      | nanbu (unequal rest masses of macroparticles)
@@ -567,17 +568,38 @@ TaskStatus Particles::NrpicCollide(Driver *pdriver, int stage) {
         ls.n_cells += 1;
         // P = fac sigma_m M_max v_Mol for a full step
         const Real fac = static_cast<Real>(n - 1)*dtau/vol;
-        // full-step probability of the pair at positions (qa, qb) of the ordered cell
-        auto pair_prob = [&](const int qa, const int qb) {
-          const int pa = lst(b+qa), pb = lst(b+qb);
-          Real ua[3], ub[3], wa, wb;
-          to_triad(pa, ua);
-          to_triad(pb, ub);
-          const Real g1 = nrpic::CollGammaRelM1(ua, ub, wa, wb);
-          return fac*nrpic::CollSigma(model, sigma0, sigw, g1)
-                 *fmax(pr(IPM,pa), pr(IPM,pb))*nrpic::CollMoller(g1, wa, wb);
-        };
+        // Number of sub-steps from a bound of the probability that depends on the
+        // particles of the cell only, not on a pairing: v_Mol <= |v_a - v_b| <= v_1 +
+        // v_2 with the two largest speeds of the cell (or 2, the absolute bound).  A
+        // bound taken from the pairs that are then tested would bias the rate: a first
+        // pairing with fast pairs would be diluted by more sub-steps than one with slow
+        // pairs (measured: -0.1 percent, tracks/core/JOURNAL-coll.md).
+        Real vbound = 2.0;
+        if (!conservative) {
+          Real v1 = 0.0, v2 = 0.0;
+          for (int q=0; q<n; ++q) {
+            Real uh[3];
+            to_triad(lst(b+q), uh);
+            const Real u2 = uh[0]*uh[0] + uh[1]*uh[1] + uh[2]*uh[2];
+            const Real v = sqrt(u2/(1.0 + u2));
+            if (v > v1) {
+              v2 = v1;
+              v1 = v;
+            } else if (v > v2) {
+              v2 = v;
+            }
+          }
+          vbound = fmin(v1 + v2, 2.0);
+        }
+        const Real rn = ceil(fac*nrpic::CollSigmaMax(model, sigma0, sigw)*mcell*vbound
+                             /pmax);
         nsub = 1;
+        if (!(rn < static_cast<Real>(nsub_max))) {
+          nsub = nsub_max;
+        } else if (rn > 1.0) {
+          nsub = static_cast<int>(rn);
+        }
+        const Real wsub = 1.0/static_cast<Real>(nsub);
         for (int s=0; s<nsub; ++s) {
           const std::uint64_t draw = static_cast<std::uint64_t>(s);
           for (int q=0; q<n; ++q) {
@@ -587,28 +609,6 @@ TaskStatus Particles::NrpicCollide(Driver *pdriver, int stage) {
           }
           nrpic::CollHeapSort(n, less, swap);
           const int q0 = (n % 2 == 1) ? 3 : 0;      // odd: the first three form a triple
-          if (s == 0) {
-            // number of sub-steps from the largest probability of this first pairing,
-            // or from the bound v_Mol < 2
-            Real pb = 0.0;
-            if (conservative) {
-              pb = fac*sigma0*mcell*2.0;
-            } else {
-              if (q0 == 3) {
-                pb = fmax(pb, 0.5*pair_prob(0, 1));
-                pb = fmax(pb, 0.5*pair_prob(1, 2));
-                pb = fmax(pb, 0.5*pair_prob(2, 0));
-              }
-              for (int q=q0; q+1<n; q+=2) { pb = fmax(pb, pair_prob(q, q+1)); }
-            }
-            const Real rn = ceil(pb/pmax);
-            if (!(rn < static_cast<Real>(nsub_max))) {
-              nsub = nsub_max;
-            } else if (rn > 1.0) {
-              nsub = static_cast<int>(rn);
-            }
-          }
-          const Real wsub = 1.0/static_cast<Real>(nsub);
 
           // test of one pair and, if it collides, its scattering
           auto collide = [&](const int qa, const int qb, const Real wgt) {

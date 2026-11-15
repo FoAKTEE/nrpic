@@ -107,6 +107,8 @@ def main():
         sum_w_pred = m["sigma"]*mass*dt/(2.0*vcell)*float(np.sum(cnt*(cnt - 1.0)))
         irec = int(np.argmin(np.abs(h["time"] - s1["time"])))
         p3a = abs(h["sum_W"][irec]/sum_w_pred - 1.0)
+        # rounding bound of a sequential sum of n positive terms: n eps/2 relative
+        p3a_bound = h["n_tested"][irec]*EPS
         # P3b: kinematics
         vbar = float(h["sum_P"].sum()/h["sum_W"].sum())
         va, sea, sdv = pair_average(s0["u"], 4000000, 1)
@@ -132,7 +134,9 @@ def main():
                     n_trunc=int(h["n_trunc"].sum()), max_P=float(h["max_P"].max()),
                     max_nsub=int(h["max_nsub"].max()),
                     mean_nsub=float(h["mean_nsub"].mean()),
-                    p3a_rel_diff=float(p3a), vbar_code=vbar, vbar_pairs_mc=vmc,
+                    p3a_rel_diff=float(p3a), p3a_rounding_bound=float(p3a_bound),
+                    p3a_one_pair_miscounted=float(2.0/np.sum(cnt*(cnt - 1.0))),
+                    vbar_code=vbar, vbar_pairs_mc=vmc,
                     vbar_pairs_mc_se=float(semc), vbar_code_se=float(se_code),
                     v_mj_sample_temperature=vmj, v_mj_nominal=float(collide.mj_vmol(m["theta"])),
                     p3b_z=float(z3b), p3b_rel_to_mj=float(vbar/vmj - 1.0),
@@ -143,7 +147,7 @@ def main():
                     pair_dE_eps=float(np.max(h["abs_dE"]/ncoll)/(EPS*2.0*mass*wmean)),
                     pair_dP_eps=float(np.max(h["abs_dP"]/ncoll)/(EPS*2.0*mass*max(umean, 1.0))),
                     hist_sum_MW_rel_spread=float(np.ptp(h["sum_MW"])/h["sum_MW"][0]))
-        case["pass"] = bool(p3a < 1e-12 and abs(z3b) < 4.0 and abs(vbar/vmj - 1.0) < 3e-3
+        case["pass"] = bool(p3a < p3a_bound and abs(z3b) < 4.0 and abs(vbar/vmj - 1.0) < 3e-3
                             and abs(z3c) < 4.0 and abs(r3d) < 4.0*pop_sd
                             and ks.pvalue > 1e-3 and case["n_trunc"] == 0
                             and abs(case["energy_rel_change"]) < 1e-13
@@ -189,7 +193,7 @@ def main():
 
     # figure 2: summary against temperature
     fig, axs = plt.subplots(1, 3, figsize=(8.0, 2.8))
-    fig.subplots_adjust(left=0.09, right=0.985, bottom=0.17, top=0.93, wspace=0.42)
+    fig.subplots_adjust(left=0.1, right=0.985, bottom=0.17, top=0.93, wspace=0.6)
     for mode, col, mk in (("plain", fs.PAL["blue"], "o"), ("subcycled", fs.PAL["red"], "s")):
         cs = [c for c in summary["cases"] if c["mode"] == mode]
         tt = np.array([c["theta"] for c in cs])
@@ -205,9 +209,10 @@ def main():
     for ax in axs:
         ax.axhline(0.0, **fs.GUIDE)
         ax.set_xscale("log")
+        ax.set_xlim(0.4*min(thetas), 2.5*max(thetas))
         ax.set_xlabel(r"$\theta = T/m$")
     axs[0].set_ylabel(r"$\bar v_{\rm code}/\bar v_{\rm pairs} - 1$")
-    axs[1].set_ylabel(r"$\bar v_{\rm code}/\langle v_{\rm Mol}\rangle_{\rm MJ}(\theta_s) - 1$")
+    axs[1].set_ylabel(r"$\bar v_{\rm code}/\langle v_{\rm Mol}\rangle_{\rm MJ} - 1$")
     axs[2].set_ylabel(r"$\Sigma W$ / nominal $- 1$")
     axs[0].legend(fontsize=8)
     fig.savefig(os.path.join(out, "fig_rate_summary.png"), dpi=200)

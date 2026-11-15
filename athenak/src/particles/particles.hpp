@@ -128,7 +128,7 @@ struct NrpicCollideOptions {
   int model = 0;             // velocity dependence (nrpic::CollSigmaModel)
   Real sigma_w = 1.0;        // its velocity scale
   Real pmax = 0.1;           // largest pair probability per sub-step aimed at
-  int subcycle = 0;          // 0: sub-steps from the first pairing, 1: from v_Mol < 2
+  int subcycle = 0;          // 0: sub-steps from the speeds of the cell, 1: v_Mol < 2
   int nsub_max = 1000;       // largest number of sub-steps of a cell
   int cell_factor = 1;       // a collision cell is a block of cell_factor^3 mesh cells
   int weights = 0;           // 0: equal rest masses required, 1: Nanbu-Yonemura

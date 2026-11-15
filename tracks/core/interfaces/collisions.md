@@ -41,7 +41,7 @@ M/m particles of cross-section sigma_m m.
 | `coll_sigma_model` | `constant` | `constant`, or `cutoff`: sigma_m / (1 + (v_rel/w)^2)^2 with the relative speed v_rel of the pair (the hook for a velocity dependence, section 3.4) |
 | `coll_sigma_w` | 1 | w of the model `cutoff` |
 | `coll_pmax` | 0.1 | largest pair probability per sub-step aimed at |
-| `coll_subcycle` | `measured` | `measured`: sub-steps from the largest probability of the first pairing of the cell; `conservative`: from the bound v_Mol < 2 |
+| `coll_subcycle` | `measured` | `measured`: sub-steps from the two largest speeds of the cell; `conservative`: from the bound v_Mol < 2 |
 | `coll_nsub_max` | 1000 | largest number of sub-steps of a cell in one step |
 | `coll_cell_factor` | 1 | f = 1, 2 or 4: a collision cell is a block of f^3 mesh cells |
 | `coll_weights` | `equal` | `equal`: all colliding macroparticles must have the same rest mass (fatal error otherwise); `nanbu`: unequal masses, section 3.6 |
@@ -175,13 +175,22 @@ particles above 1e-12 relative is a fatal error.
 ### 3.7 Limit on the probability, sub-cycling
 
 The global step is not changed. Per cell: n_sub = ceil(P_bound/`coll_pmax`), at most
-`coll_nsub_max`. `measured`: P_bound is the largest P of the tested pairs of the first
-pairing (s = 0), evaluated with the momenta at the start of the step. `conservative`:
-P_bound = (N - 1) sigma_m M_cell 2 alpha dt/V with the largest mass of the cell and the
-bound v_Mol < 2 (and the bound sigma of the model). Every sub-step pairs anew (draw s)
-and uses P/n_sub. n_sub is a function of the particles of the cell alone. The expected
-number of collisions is the same for any n_sub as long as no probability exceeds one;
-`coll_pmax` controls the error from a particle colliding at most once per sub-step.
+`coll_nsub_max`, with P_bound = (N - 1) sigma_max M_cell v_bound alpha dt/V (largest
+mass of the cell, largest value of the cross-section model). `measured`: v_bound =
+min(v_1 + v_2, 2) with the two largest speeds of the particles of the cell in its frame,
+which bounds every pair because v_Mol <= |v_a - v_b| <= |v_a| + |v_b|. `conservative`:
+v_bound = 2. Every sub-step pairs anew (draw s) and uses P/n_sub.
+
+n_sub is a function of the particles of the cell alone and not of a pairing. This
+matters: the first version of the operator took P_bound from the largest probability of
+the first pairing, as the track specified, and its collision rate was low by 0.1 percent
+(mean Moller speed of the tested pairs, 1e6 particles, 30 per cell, n_sub about 3: run
+core-20261115-132842-b33b7f3), because a first pairing with fast pairs was diluted by
+more sub-steps than one with slow pairs. With a bound from the cell's particles the
+expected number of collisions given the particles is the same for any n_sub, as long as
+no probability exceeds one; `coll_pmax` controls the error from a particle colliding at
+most once per sub-step. Speeds change during the sub-steps, so a probability can exceed
+`coll_pmax` slightly in later sub-steps; `max_P` reports it.
 
 ### 3.8 What the user must resolve
 
@@ -302,3 +311,5 @@ section 9.
   section 5. `coll_hist_dcycle` instead of `hist_dcycle`.
 - `coll_weights = equal` checks all colliding particles of the mesh, not cell by cell.
 - Added: `coll_sigma_model`, `coll_sigma_w`.
+- Sub-cycling `measured`: the number of sub-steps comes from the two largest speeds of
+  the cell, not from the first pairing (section 3.7): the track's rule biases the rate.
