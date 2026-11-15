@@ -35,7 +35,9 @@ def analyse_run(run, cfl, N, A0=A0):
     t_end = ad.read_tab(files[-1])["time"]
     for p in files:
         d = ad.read_tab(p)
-        d["time"] = min(d["cycle"]*cfl/N, t_end)
+        tc = d["cycle"]*cfl/N
+        # only the final dump of a finished run follows a shortened step (tc > tlim)
+        d["time"] = t_end if (p == files[-1] and tc > t_end) else tc
         x = d["x1v"]
         hp = 0.5*(d["gzz"] - d["gyy"])
         ap = 0.5*(d["Azz"] - d["Ayy"])

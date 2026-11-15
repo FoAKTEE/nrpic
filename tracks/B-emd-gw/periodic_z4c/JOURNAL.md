@@ -13,7 +13,7 @@ below them, also when a prediction failed. Run ids: `tracks/B-emd-gw/runs/<run_i
   The gauge wave is therefore set up through `nrpic_cosmo` with `id = file`
   (conformally flat slices only) in the proper-length coordinate X of the initial
   slice, where the gauge-wave slice is flat (derivation in `analysis/refsol.py`, item 2).
-- [VERIFIED, athenak/src/pgen/tests/z4c_linear_wave.cpp lines 95-101, checked with
+- [VERIFIED, athenak/src/pgen/tests/z4c_linear_wave.cpp lines 107-112, checked with
   `refsol.tt_check`] The polarization tensor of `z4c_linear_wave` is traceless for every
   wave vector but transverse only when k lies along a coordinate axis: |e.k|/|k| = 1.0
   for k = (1,1,0) and 0.943 for k = (1,1,1) (the default of the upstream input
@@ -233,3 +233,92 @@ floor is roundoff of 1 + h (d ~ 1/A), the departures at A = 1e-7 are -6e-7 (prod
 +9e-6 (ref numerics), within a factor 2; if the floor is a property of the discrete
 scheme that the symbol analysis misses, they stay at -6e-8 and +9e-7 within a factor 2.
 Second-order terms at A = 1e-7 are 100 times below those at 1e-6.
+
+## Outcome P1c (roundoff floor), 2026-11-15 12:20 UTC
+
+Runs B-emd-gw-20261115-120348-3907d49 (prod, A = 1e-7), -120350-3907d49 (ref numerics,
+conformal lapse, A = 1e-7); `tables/lw_x_roundoff.md`, `figs/lw_x_roundoff.png`.
+Confirmed: the departures at A = 1e-7 are -6.14e-7 (prod; predicted -6e-7) and
++9.24e-6 (ref numerics; predicted +9e-6), ten times those at A = 1e-6 (-7.3e-8 with the
+second-order part removed, +9.1e-7). The floor at 128 cells is the rounding of 1 + h in
+the evolved conformal metric (it scales as 1/A); at A = 1e-5 the second-order
+backreaction on the homogeneous mode dominates instead. Between the two, A ~ 1e-6 gives
+the cleanest test at 128 cells; the convergence orders are taken from N = 16 to 64,
+where every error lies above both.
+The floor grows with the resolution as well (ref numerics, A = 1e-6: departure 1.9e-7
+at N = 64, 9.1e-7 at N = 128), as expected for rounding errors amplified by the 1/dx^2
+of the second derivatives.
+[JUDGEMENT] For the gravitational-wave work of Track B: a metric evolved as 1 + h in
+double precision has a phase floor that scales as N^2/A; with the production numerics
+it is 6e-8 rad per ten crossings at A = 1e-6 and 128 cells per wavelength, 6e-7 at
+A = 1e-7. Signals with h far below 1e-7 at this resolution would need the perturbation
+evolved separately from the background (noted under Requests, not needed now).
+
+## Outcome P4 (record of the lapse and shift options), 2026-11-15 12:20 UTC
+
+Runs: gauge_lin B-emd-gw-20261115-113304, 113321, 113418, 113517, 113548, 113600,
+113615/113700/113713 (onelog_gd N = 32/64/128), 113816, 113850 (all -0ea0f74);
+gauge_nl -113859, 113943, 114004, 114122, 114143, 114151 (-0ea0f74); gauge_nl_res
+-115139/115140-42096b9. `tables/gauge.md`, `figs/gauge_linear.png`,
+`figs/gauge_nl_profiles.png`, `figs/gauge_nl_gradient.png`.
+- Linear set confirmed: for all nine options the four mode amplitudes follow the
+  linearized system within 1.6e-6 kappa over t = 10 (prediction: within 1e-3 kappa),
+  so the reading of the gauge terms of z4c_calcrhs.cpp is right, including the gauge
+  speeds 1, sqrt 2, 1/sqrt 3 (conformal and volume), sqrt(4/3) (K driver mu = 1 on top
+  of conformal time), the Gamma-driver mode -eta/2 +- i sqrt(4 mu_S k^2/3 - eta^2/4),
+  the secular drift of geodesic slicing, and the absence of shift excitation for the
+  harmonic shift terms with harmonic slicing (d_t b = k (h/2 - a) = 0 when a = h/2).
+  The Gamma-driver case converges from 32 to 64 cells (departure 2.1e-5 to 1.1e-6
+  kappa, order 4.3), then flattens (6.2e-7 at 128), the level of the second-order terms.
+- Nonlinear set, kappa = 1.5 (lapse excursions 0.25 to 0.35):
+  harmonic slicing stays smooth, its slicing identity alpha chi^(3/2) = 1 holds to
+  1.7e-8, and alpha returns to 1 within 4e-8 at every integer and half-integer time
+  (the harmonic time function solves the flat wave equation, so the slicing is periodic
+  with the light-crossing time): confirmed.
+  1+log, 1+log with Gamma driver, and conformal time with the K driver (mu = 1) run to
+  t = 10 with lapse gradients up to 3.7 and Theta up to 3e-3 (1+log identity residual
+  3e-5): profiles flatten and develop kinks but do not fail within ten crossings.
+  Conformal time and the volume lapse steepen into jumps (`figs/gauge_nl_profiles.png`,
+  t = 2.5) and turn non-finite at t = 2.75 and 2.94 (N = 128): confirmed as predicted
+  for slicings that violate the shock-avoidance condition.
+- P4b, partly refuted: the gradient curves of the conformal-time lapse agree within 3.5
+  percent up to t = 1.5 (2.09 and 2.17 at N = 128, 256) but not at t = 2 (5.45 and 8.29);
+  at t = 2.25 they are 4.5, 8.0, 13.5 for N = 64, 128, 256, approaching the doubling per
+  refinement of an unresolved jump: the gradient diverges in the continuum between
+  t = 1.5 and 2 (a gradient catastrophe, [JUDGEMENT] a gauge shock). The failure time is
+  not a property of the continuum: N = 64 and 128 fail at 2.78 and 2.75, N = 256 does not
+  fail by t = 4 but carries Theta of order 1 to 3 and chi down to 0.3 from t = 2.25 on,
+  i.e. the solution is no longer the flat spacetime it started as. So the statement to
+  keep is "the conformal-time and volume lapses form a gauge shock at t ~ 2 for these
+  data and the Z4c solution is invalid afterwards at every resolution", not a failure
+  time.
+- [JUDGEMENT] Consequence for the cosmology runs: the production lapse (conformal time,
+  `lapse_harmonic = 1/3`) is not shock-avoiding. With these data the shock needs an
+  inhomogeneous K of about 1.5 on a wavelength of one box (K/k ~ 0.24); in the
+  cosmological runs the inhomogeneous part of K is set by the matter, and where it
+  approaches this level in units of the local wavenumber, gauge shocks are possible.
+  Not tested here: a criterion in terms of the matter perturbation.
+
+## Outcome P3 (gauge wave), 2026-11-15 12:35 UTC
+
+Runs (awa_gw): A = 0.01 N = 50/100/200 B-emd-gw-20261115-114426/114809/113212-0ea0f74,
+A = 0.1 N = 50/100/200 -114940/115059/113214-0ea0f74, long runs N = 50 to t = 200
+-113213- (A = 0.01) and -113215- (A = 0.1); `tables/awa.md`, `figs/awa_history.png`,
+`figs/awa_long.png`.
+- (a) Confirmed: at N = 200 the evaluated |H| starts at 6e-10 for both amplitudes
+  (rounding level of the evaluation), constraints of the data are satisfied.
+- (b) Confirmed for A = 0.1 (orders of the largest gamma_XX error 5.98 and 4.74, of |H|
+  5.89 and 5.90) and for A = 0.01 from 50 to 100 cells (5.66, |H| 5.92); refuted for
+  A = 0.01 from 100 to 200 cells: the error does not fall (1.14e-7 to 1.52e-7 of A),
+  and |H| stays at the 6e-10 floor of the initial data for the whole run. [JUDGEMENT]
+  rounding floor, as in P1c (absolute error 1.5e-9 at 200 cells); not separately tested.
+- Measurement artefact found and removed before these numbers: the table header prints
+  t with seven digits (5e-5 at t = 100), which entered the comparison with the exact
+  solution as a phase error of up to 3e-4 in the first version of the analysis; the
+  time is now cycle * cfl * dx.
+- (c) Partly refuted: A = 0.01 at 50 cells stays bounded to t = 200, but its error grows
+  faster than linearly (5.8e-6 at t = 20, 3.5e-5 at 50, 1.6e-4 at 100, 8.8e-4 at 200 of
+  A: about t^2.3 between 50 and 200), and A = 0.1 grows to 9.4e-2 of A at t = 200 (about
+  t^2.6), |H| 4.1e-3. Whether this is the known continuum gauge mode of the harmonic gauge
+  wave or numerical growth is not decided here (it would need the growth at two
+  resolutions over the same time, and the source in the knowledge base).

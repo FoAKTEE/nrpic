@@ -37,7 +37,9 @@ def analyse(name, A):
     for p, pc in zip(files, cfiles):
         d = ad.read_tab(p)
         c = ad.read_tab(pc)
-        d["time"] = min(d["cycle"]*dt_step, t_end)
+        tc = d["cycle"]*dt_step
+        # only the final dump of a finished run follows a shortened step (tc > tlim)
+        d["time"] = t_end if (p == files[-1] and tc > t_end) else tc
         ex = rs.gw_exact_X(X, d["time"], A, x_of_X=x)
         g = d["gxx"]/d["chi"]
         dg = (g - ex["gamma_XX"])/A
