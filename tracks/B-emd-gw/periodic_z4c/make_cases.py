@@ -94,7 +94,7 @@ def main():
                       overrides=o + [f"output1/slice_x2={s!r}", f"output1/slice_x3={s!r}"],
                       purpose="TT wave along x for 10 crossings, production numerics: "
                               "amplitude and phase error, convergence order",
-                      kind="production"))
+                      kind="scouting"))
     sets["lw_x_prod"] = c
     c = []
     for N in (16, 32, 64, 128):
@@ -108,7 +108,7 @@ def main():
                                      "z4c/shift_advect=1.0"],
                       purpose="TT wave along x, numerics and gauge of the upstream input "
                               "athenak/inputs/tests/linear_wave_z4c.athinput",
-                      kind="production"))
+                      kind="scouting"))
     sets["lw_x_ref"] = c
     c = []
     for N in (32, 64):
@@ -157,7 +157,7 @@ def main():
         name="lw3d_dump_N32", set="lw3d_dump", input="inputs/lw_3d.athinput", overrides=[],
         purpose="metric dumps of an analytic linear TT wave (k along x, A = 1e-6, 32^3, "
                 "two periods, every 1/16 period) for the gw_diag package",
-        kind="production")]
+        kind="scouting")]
 
     # ---- gauge wave (Apples with Apples)
     c = []
@@ -176,7 +176,7 @@ def main():
                           extra_inputs=[path],
                           purpose=f"Apples-with-Apples gauge wave A = {A}, harmonic slicing, "
                                   f"zero shift, in proper-length coordinates (box {L!r})",
-                          kind="production" if T <= 20 else "scouting"))
+                          kind="scouting"))
     sets["awa_gw"] = c
 
     # ---- pure-gauge record of the lapse and shift options
@@ -195,7 +195,7 @@ def main():
                           purpose=f"pure-gauge data K_xx = 1e-6 sin(2 pi x), gauge {g}: "
                                   "linear lapse and shift dynamics against the linearized "
                                   "system of refsol.gauge_matrix",
-                          kind="production"))
+                          kind="scouting"))
     sets["gauge_lin"] = c
     c = []
     for g in ("harmonic", "onelog", "conformal", "volume", "kdriver", "onelog_gd"):

@@ -1,0 +1,24 @@
+{
+ "run_id": "B-emd-gw-20261115-131027-03b1119",
+ "command": "OMP_NUM_THREADS=2 python3 tracks/B-emd-gw/analysis/lead_checks.py /data/haiyangw/nrpic/scratch/B-emd-gw/<run_id>",
+ "cwd": "/data/haiyangw/nrpic/wt/B-emd-gw",
+ "commit": "03b1119d232ad3fffbb198e205daa2bf6b30e767",
+ "worktree_dirty": false,
+ "inputs": [
+  {
+   "path": "tracks/B-emd-gw/analysis/lead_checks.py",
+   "sha256": "499b7d55a0227b431210e381a01c5c8d9e05c7f6292570abdc25976c051c873f"
+  }
+ ],
+ "output_dir": "/data/haiyangw/nrpic/scratch/B-emd-gw/B-emd-gw-20261115-131027-03b1119",
+ "purpose": "Lead re-check L2: independent derivations of the key claims (z4c_linear_wave polarization tensor; plane-symmetric dust with x-independent transverse metric; harmonic TT mode on the torus; crossed-wave second-order TT strain; ZA ellipsoid GW energy; Zel'dovich sheet modes and second-order lapse drift)",
+ "kind": "scouting",
+ "cores": 2,
+ "card_hours": 0.0,
+ "started_utc": "2026-11-15T13:10:27+00:00",
+ "status": "completed",
+ "package": "tracks/B-emd-gw/analysis",
+ "notes": "",
+ "finished_utc": "2026-11-15T13:10:33+00:00",
+ "wall_time_s": 6.0
+}

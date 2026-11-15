@@ -14,7 +14,7 @@
  ],
  "output_dir": "/data/haiyangw/nrpic/scratch/B-emd-gw/B-emd-gw-20261115-115358-637c30b",
  "purpose": "Weyl E/B/Psi4 on analytic fields: convergence with resolution (orders 2,4,6, spectral) for waves, pure gauge and scalar data; Psi4 sign, reverse direction and amplitude scaling; scalar-mode Psi4 (P2-P4)",
- "kind": "production",
+ "kind": "scouting",
  "cores": 8,
  "card_hours": 0.0,
  "env": {
@@ -34,5 +34,6 @@
   "weyl_convergence.png": "a860d2b4b0640a86abd5457efd179cdb242bf65a267aaae5fc5398b3071911d3",
   "weyl_psi4.pdf": "9d113df54023a9740104533627acd740587b5bd16807713ae4846110c285ae41",
   "weyl_psi4.png": "678793dde67f57a94d7a23781774e85f99d4be57dfc9e2d2a40db5b2322f6536"
- }
+ },
+ "kind_correction": "relabelled from 'production' by the B-emd-gw lead on 2026-11-15: no pre-registration and no G0 pass existed (harness rule of nrpic-run submit); the run itself is unchanged"
 }

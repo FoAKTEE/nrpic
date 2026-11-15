@@ -14,7 +14,7 @@
  ],
  "output_dir": "/data/haiyangw/nrpic/scratch/B-emd-gw/B-emd-gw-20261115-115637-175cbca",
  "purpose": "Weyl validation rerun with revised figure layout (same computations as B-emd-gw-20261115-115540-2cb33df)",
- "kind": "production",
+ "kind": "scouting",
  "cores": 8,
  "card_hours": 0.0,
  "env": {
@@ -34,5 +34,6 @@
   "weyl_convergence.png": "8cd963ca9fff1add4774f36b196768e07dd491879646e59fd5987d40f341745f",
   "weyl_psi4.pdf": "37d5a41efd27970b79efd1ba9edf271e784434fcd41cb7055bfe43c2b5972d15",
   "weyl_psi4.png": "ed144cafda2ef2fad61ff30b13946a491d5011060eb367eae8ec1072b481089e"
- }
+ },
+ "kind_correction": "relabelled from 'production' by the B-emd-gw lead on 2026-11-15: no pre-registration and no G0 pass existed (harness rule of nrpic-run submit); the run itself is unchanged"
 }

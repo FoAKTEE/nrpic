@@ -14,7 +14,7 @@
  ],
  "output_dir": "/data/haiyangw/nrpic/scratch/B-emd-gw/B-emd-gw-20261115-115001-e9262bd",
  "purpose": "TT projection and GW energy spectrum on analytic fields: amplitude scaling, 48-mode spectrum and helicity, time series incl. standing wave, time differences, pure-gauge and scalar modes (P1, P3-P5)",
- "kind": "production",
+ "kind": "scouting",
  "cores": 4,
  "card_hours": 0.0,
  "env": {
@@ -36,5 +36,6 @@
   "tt_gauge_scalar.png": "929a9533b51de88c9fbb04aab78666dba55d78395f96df0bae8395c90de9e0b4",
   "tt_time.pdf": "7dfcde2ba498af1a026110a9d9a6d0e1f89300bc7a160633228fc619fdbff151",
   "tt_time.png": "78d715605ce7f7d6f962a887af9a4a4b10779a9e1fcd3ee6030e9be982d2b304"
- }
+ },
+ "kind_correction": "relabelled from 'production' by the B-emd-gw lead on 2026-11-15: no pre-registration and no G0 pass existed (harness rule of nrpic-run submit); the run itself is unchanged"
 }

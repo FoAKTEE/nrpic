@@ -18,7 +18,7 @@
  ],
  "output_dir": "/data/haiyangw/nrpic/scratch/B-emd-gw/B-emd-gw-20261115-113220-0ea0f74",
  "purpose": "TT wave along x for 10 crossings, production numerics: amplitude and phase error, convergence order",
- "kind": "production",
+ "kind": "scouting",
  "cores": 1,
  "card_hours": 0.0,
  "env": {
@@ -28,5 +28,6 @@
  "status": "done",
  "wall_time_s": 43.5,
  "finished_utc": "2026-11-15T11:33:04+00:00",
- "core_hours": 0.0121
+ "core_hours": 0.0121,
+ "kind_correction": "relabelled from 'production' by the B-emd-gw lead on 2026-11-15: no pre-registration and no G0 pass existed (harness rule of nrpic-run submit); the run itself is unchanged"
 }

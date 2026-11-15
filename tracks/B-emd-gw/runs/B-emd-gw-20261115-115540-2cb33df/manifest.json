@@ -14,7 +14,7 @@
  ],
  "output_dir": "/data/haiyangw/nrpic/scratch/B-emd-gw/B-emd-gw-20261115-115540-2cb33df",
  "purpose": "Weyl validation rerun with the gauge data normalized by max|dd gamma| and floor-aware order fits (P2-P4)",
- "kind": "production",
+ "kind": "scouting",
  "cores": 8,
  "card_hours": 0.0,
  "env": {
@@ -34,5 +34,6 @@
   "weyl_convergence.png": "23f42b9e7fa37d7ac0b664e5830e6ad128472405bf03b1bca8ec4296e4731fbf",
   "weyl_psi4.pdf": "fc99472792e552ac7061554d49f980ce1efa344bbf2f396a248ec73c864b7701",
   "weyl_psi4.png": "3ec52b68b060a951aa64434f1a0fd5b5a7c7e03d276e602dce8c37f2b741365f"
- }
+ },
+ "kind_correction": "relabelled from 'production' by the B-emd-gw lead on 2026-11-15: no pre-registration and no G0 pass existed (harness rule of nrpic-run submit); the run itself is unchanged"
 }

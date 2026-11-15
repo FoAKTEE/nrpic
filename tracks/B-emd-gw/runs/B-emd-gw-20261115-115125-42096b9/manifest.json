@@ -14,7 +14,7 @@
  ],
  "output_dir": "/data/haiyangw/nrpic/scratch/B-emd-gw/B-emd-gw-20261115-115125-42096b9",
  "purpose": "TT validation rerun with revised figure layout (same computations as B-emd-gw-20261115-115001-e9262bd)",
- "kind": "production",
+ "kind": "scouting",
  "cores": 4,
  "card_hours": 0.0,
  "env": {
@@ -36,5 +36,6 @@
   "tt_gauge_scalar.png": "8f8b7e669abdcffd6eae96631e6a9b283cec02aafc8b8b56d037b75acd48cc27",
   "tt_time.pdf": "68565956a8752660559ff2dc0a86e3442e599241f416283435497c6c688f247c",
   "tt_time.png": "13ddf4e06608cdef73cb411db1cfe70ea1528e25c3f482c8e91f851ed699e409"
- }
+ },
+ "kind_correction": "relabelled from 'production' by the B-emd-gw lead on 2026-11-15: no pre-registration and no G0 pass existed (harness rule of nrpic-run submit); the run itself is unchanged"
 }

@@ -22,7 +22,7 @@
  ],
  "output_dir": "/data/haiyangw/nrpic/scratch/B-emd-gw/B-emd-gw-20261115-114426-0ea0f74",
  "purpose": "Apples-with-Apples gauge wave A = 0.01, harmonic slicing, zero shift, in proper-length coordinates (box 0.9999937498535093)",
- "kind": "production",
+ "kind": "scouting",
  "cores": 1,
  "card_hours": 0.0,
  "env": {
@@ -32,5 +32,6 @@
  "status": "done",
  "wall_time_s": 222.3,
  "finished_utc": "2026-11-15T11:48:09+00:00",
- "core_hours": 0.0618
+ "core_hours": 0.0618,
+ "kind_correction": "relabelled from 'production' by the B-emd-gw lead on 2026-11-15: no pre-registration and no G0 pass existed (harness rule of nrpic-run submit); the run itself is unchanged"
 }

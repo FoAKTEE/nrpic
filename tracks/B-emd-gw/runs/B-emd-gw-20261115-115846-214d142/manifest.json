@@ -282,7 +282,7 @@
  ],
  "output_dir": "/data/haiyangw/nrpic/scratch/B-emd-gw/B-emd-gw-20261115-115846-214d142",
  "purpose": "GW diagnostics on AthenaK output: z4c_linear_wave dumps of run B-emd-gw-20261115-113218-0ea0f74 (TT amplitude/phase/polarization, energy, d_tau h, Psi4 vs analytic and vs AthenaK weyl output, reader cross-check) (P6)",
- "kind": "production",
+ "kind": "scouting",
  "cores": 8,
  "card_hours": 0.0,
  "env": {
@@ -302,5 +302,6 @@
   "athenak_tt.png": "022814614b13b3d3f73a73cd1d0b59d99fb5ee19e994e3f47e3674635fc7bc30",
   "results_athenak.json": "fce4b6c8cc7132e3e988e2ccef6352dd5fa72c437493e33e012e90eccfe0708b",
   "stdout.txt": "ceea6fd588e9aa363f4828f4e9b96e18b3b6ad7044c3a592cf465e25b1299c26"
- }
+ },
+ "kind_correction": "relabelled from 'production' by the B-emd-gw lead on 2026-11-15: no pre-registration and no G0 pass existed (harness rule of nrpic-run submit); the run itself is unchanged"
 }

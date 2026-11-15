@@ -18,7 +18,7 @@
  ],
  "output_dir": "/data/haiyangw/nrpic/scratch/B-emd-gw/B-emd-gw-20261115-113218-0ea0f74",
  "purpose": "metric dumps of an analytic linear TT wave (k along x, A = 1e-6, 32^3, two periods, every 1/16 period) for the gw_diag package",
- "kind": "production",
+ "kind": "scouting",
  "cores": 1,
  "card_hours": 0.0,
  "env": {
@@ -28,5 +28,6 @@
  "status": "done",
  "wall_time_s": 565.3,
  "finished_utc": "2026-11-15T11:41:43+00:00",
- "core_hours": 0.157
+ "core_hours": 0.157,
+ "kind_correction": "relabelled from 'production' by the B-emd-gw lead on 2026-11-15: no pre-registration and no G0 pass existed (harness rule of nrpic-run submit); the run itself is unchanged"
 }

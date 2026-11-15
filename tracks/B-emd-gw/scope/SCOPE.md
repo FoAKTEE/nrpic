@@ -99,6 +99,15 @@ candidates; not read).
 | Triaxial isolated patch (2605.04487 set-up) | quadrupole of the patch | spherical patch | `make_field.py` with a smooth patch [TO VERIFY] | Zel'dovich ellipsoid | direct (2403.15126, 2605.04487) | 256^3 or more: 6 h a run | G3 |
 | Small population of halos | stochastic | none | random fields exist (`cosmo/ic/random_field.py`) | linear | 2212.00425, 2312.12499 | 256^3, several h | G3/G4 |
 
+Lead note (2026-11-15, run `B-emd-gw-20261115-131027-03b1119`, check d): the value
+(5/12)|phi_x phi_y| here and in risk 2 is the magnitude of the complex Fourier coefficient
+of h_+ at (k, k, 0) with numpy's `fftn/N^3` normalization; the real-space wave is
+h_+ = -(5/6) phi_x phi_y cos(K.x) at K = (k, k, 0) (basis e_+ = u u - z z,
+u = (1, -1, 0)/sqrt 2; the same magnitude with the opposite sign at (k, -k, 0) in its own
+basis u = (1, 1, 0)/sqrt 2 [lead's hand projection]), with phi_i the amplitude of
+Phi = sum_i phi_i sin(k x_i). The (k, k, 0) value is confirmed independently by a
+real-space projection.
+
 Decision [JUDGEMENT]: **the first source is the pair of crossed waves of unequal amplitude
 (1, eps, 0) in the box of four initial Hubble radii**, with eps = 0 as the in-family null
 (it is the plane-symmetric pancake, so the pancake row of section 10 is run in the same

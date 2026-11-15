@@ -1,0 +1,36 @@
+{
+ "run_id": "B-emd-gw-20261115-131016-03b1119",
+ "command": "bash tracks/B-emd-gw/analysis/lead_recheck.sh /data/haiyangw/nrpic/scratch/B-emd-gw/<run_id> 03b1119d232ad3fffbb198e205daa2bf6b30e767",
+ "cwd": "/data/haiyangw/nrpic/wt/B-emd-gw",
+ "commit": "03b1119d232ad3fffbb198e205daa2bf6b30e767",
+ "worktree_dirty": false,
+ "inputs": [
+  {
+   "path": "tracks/B-emd-gw/analysis/lead_recheck.sh",
+   "sha256": "2b983c4cf33d69aacaf40b6c96682a46b48354ee9197e0514de472eb633e26ef"
+  },
+  {
+   "path": "tracks/B-emd-gw/analysis/compare_results.py",
+   "sha256": "d296146f081977f744a4b619b4b55d9f1c43d9bdfe22f656effc40a7b873e277"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/.work/build_cpu_c1/src/athena",
+   "sha256": "91f2e2c23a6301047ed4fe06ffe153d100fe6c121d0b6632087637b525547403"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/scratch/B-emd-gw/ids/puregauge_N64_k1.5.bin",
+   "sha256": "eb054283d37bbf603c096d3a16801e9b9298f7458d9a89272b241e4acc840b6d"
+  }
+ ],
+ "output_dir": "/data/haiyangw/nrpic/scratch/B-emd-gw/B-emd-gw-20261115-131016-03b1119",
+ "purpose": "Lead re-check L1 of the five wave-1 packages: clean git-archive export of commit 03b1119d232ad3fffbb198e205daa2bf6b30e767; all analysis scripts and tests rerun, results compared leaf by leaf with the committed/original results (compare_results.py); four periodic_z4c AthenaK cases re-executed with the release processor executable and compared byte by byte with the original runs",
+ "kind": "scouting",
+ "cores": 8,
+ "card_hours": 0.0,
+ "started_utc": "2026-11-15T13:10:16+00:00",
+ "status": "completed",
+ "package": "tracks/B-emd-gw/analysis",
+ "notes": "processors only: 4 AthenaK serial runs in parallel plus python steps at 4 threads (8 cores at most) All 16 steps returned 0. JSON results bit-identical to the committed/original ones in every package (scope 3 files, gw_diag 3, verify_cosmo 3, periodic_z4c 6 tables + 4 .md); baseline identical except figure paths and wall times. AthenaK re-executions byte-identical in every .tab/.hst/.dat/.bin/waveform file; the two .rst files of lw3d_check_diag differ only in 36 bytes at offsets 8794-8829 (uninitialised padding after the parameter block holding leftover input-file text), field data identical. Summary in compare.json and logs/compare.out.",
+ "finished_utc": "2026-11-15T13:13:52+00:00",
+ "wall_time_s": 174.0
+}

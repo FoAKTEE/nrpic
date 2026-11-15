@@ -67,3 +67,54 @@ helpers), each with its prediction:
   resolved the main checkout, so id and commit carried main's a1c2237 and the manifest
   landed outside the worktree (moved into `runs/`, status stopped, not cited). Fixed with
   a depth assertion; L1 relaunched below.
+
+### Lead outcomes (13:20Z)
+
+L1 = run `B-emd-gw-20261115-131016-03b1119` (174 s, processors; summary
+`scratch/B-emd-gw/<run>/compare.json`, `logs/compare.out`):
+- P-L1a HOLDS: gw_diag 14 of 14 tests pass with the two real files supplied (lw3.00016.rst
+  of run -113218-0ea0f74, east.field.00004.bin of runs/cosmo/dav_c256_n128_t);
+  `test_zeldovich.py` 13 PASS, 0 FAIL.
+- P-L1b HOLDS, stronger than predicted: every numerical leaf of every compared result file
+  is bit-identical (scope 3 files, gw_diag 3, verify_cosmo 3, periodic_z4c 6 JSON and 4
+  Markdown tables, baseline 374 leaves); the only differences are the figure paths and
+  the wall times in `baseline_results.json`.
+- P-L1c HOLDS for every .tab, .hst, .dat, .bin and waveform file (163 + 163 + 259 + 28
+  files byte-identical). REFUTED as written for the two .rst files of lw3d_check_diag:
+  they differ in 36 bytes at offsets 8794-8829, a region after the parameter block that
+  holds leftover input-file text (uninitialised buffer in AthenaK's restart writer); the
+  field data are identical. Consequence: byte checksums of .rst files are not a
+  reproducibility test (info to core).
+L2 = run `B-emd-gw-20261115-131027-03b1119` (6 s): P-L2a-f all HOLD. a: e.k of the
+generator's tensor is O(1) for oblique k (0.77 for (1,1,1)), < 1e-15 after flipping a_xy,
+a_yz, trace 0, e:e = 2. b: exponents of A and B are 2/3 and -1/3, so D = const or 1/t
+(scope 1E confirmed). c: P = C/Y^3 and the overlap equals -c d/dt(X/Y) (scope 1C, 1D
+confirmed). d: real cosine amplitude (5/6)|phi_x phi_y| = 2.7716e-5 at delta = 0.01,
+L = 4, ratios (1, 0.9), i.e. Fourier coefficient 1.3858e-5 = scope's value; the
+normalization of "(5/12)" is now stated in SCOPE.md. e: quadrature equals the closed
+form to 2e-16. f: sheet modes a and a^(-3/2) exact; alpha - 1 = -(1/6) pi^2 A^2 t^2 and
+-pi^2 A^2 t^2, i.e. -1.64e-10 and -9.87e-10 at t = 10, A = 1e-6 (periodic_z4c measured
+-1.6e-10 and -1.0e-9). Figure `lead_checks.png` looked at.
+Figures looked at in this session (Read): scope crossed_waves_tt, regime_estimates;
+periodic_z4c lw_x_convergence, lw3d_check, awa_history, gauge_nl_gradient; gw_diag
+athenak_tt, athenak_psi4, cosmo_tt, weyl_convergence, tt_gauge_scalar; baseline
+t2_za_scaling, t4_t5_axes_quadrupole_power; verify_cosmo pancake_errors, pancake_ppc,
+pancake_grdiff (rerun copy). Cosmetic defects only: overlapping x tick labels in
+lw_x_convergence; a legend over the curve in lead_checks panel (d).
+
+Found while reviewing (changed my mind / new):
+- gw_diag's cosmology scouting (`figs/cosmo_tt.png`): the late rise of rms h^TT after
+  a ~ 600 coincides with (rms of the non-TT conformal-metric part)^2 reaching the TT level
+  (4e-5 squared = 1.6e-9 at a = 1000 against h^TT ~ 1.2e-9 frozen). In the code's
+  zero-shift gauge the flat Lambda projection has a second-order gauge piece of that
+  size, so the late rise is not yet a GW signal [JUDGEMENT; TO VERIFY with the covariant
+  projection or a gauge change]. The frozen part before a ~ 550 is far above that
+  (5e-7 squared = 2.5e-13 at a = 12).
+- 34 hand-written manifests were labelled "production" without pre-registration or a
+  G0 pass; relabelled "scouting" with a `kind_correction` note; `make_cases.py` now
+  writes scouting.
+- core/newton (branch tip ce329f5, not on main) already has the quadrupole history
+  (columns 19-43 of `<basename>.newton.hst`, `python/nrpic/newton.py`) and found the same
+  first-order lattice error of the plane wave with one particle per cell (its interface
+  note section 5.6) that verify_cosmo found with `pm.py` (P8): an independent
+  confirmation from a different code path.

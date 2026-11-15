@@ -282,7 +282,7 @@
  ],
  "output_dir": "/data/haiyangw/nrpic/scratch/B-emd-gw/B-emd-gw-20261115-120128-7dfaa38",
  "purpose": "GW diagnostics on AthenaK output, rerun with the timing fit of the AthenaK weyl output (P6)",
- "kind": "production",
+ "kind": "scouting",
  "cores": 8,
  "card_hours": 0.0,
  "env": {
@@ -302,5 +302,6 @@
   "athenak_tt.png": "022814614b13b3d3f73a73cd1d0b59d99fb5ee19e994e3f47e3674635fc7bc30",
   "results_athenak.json": "fcd6215fb68eb0e8d62b2c6320325a893e577c2d61d198c7e08526292322ffc2",
   "stdout.txt": "bb5a48ee67856b602fbd7927e5bf036ebf46efb5adc4a3fd3acc3937729a94c3"
- }
+ },
+ "kind_correction": "relabelled from 'production' by the B-emd-gw lead on 2026-11-15: no pre-registration and no G0 pass existed (harness rule of nrpic-run submit); the run itself is unchanged"
 }
