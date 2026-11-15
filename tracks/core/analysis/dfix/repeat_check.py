@@ -33,8 +33,15 @@ def main():
         fo, fn = files(old), files(new)
         both = sorted(set(fo) & set(fn))
         diff = [k for k in both if open(fo[k], "rb").read() != open(fn[k], "rb").read()]
+        # a differing file that is equal once the run directory names are masked (the
+        # parameter dump of a continued run holds the path of its restart file)
+        bo, bn = os.path.basename(old.rstrip("/")).encode(), os.path.basename(new.rstrip("/")).encode()
+        masked = [k for k in diff
+                  if open(fo[k], "rb").read().replace(bo, b"RUN") == open(fn[k], "rb").read().replace(bn, b"RUN")]
         res[os.path.basename(old) + " vs " + os.path.basename(new)] = {
             "compared": len(both), "differ": diff,
+            "equal_with_run_directory_masked": masked,
+            "differ_after_masking": [k for k in diff if k not in masked],
             "only_old": sorted(set(fo) - set(fn))[:20], "only_new": sorted(set(fn) - set(fo))[:20]}
     out = os.environ.get("NRPIC_RUN_DIR", ".")
     with open(os.path.join(out, "repeat_check.json"), "w") as fp:

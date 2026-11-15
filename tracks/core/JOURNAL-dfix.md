@@ -592,3 +592,14 @@ identical byte for byte; for T2 the files of the deterministic cases (u, c) are
 identical and the wall-clock cases (w) differ, because their stop time is the wall
 clock's (stopped at 68.4 and 26.7 M in the first run, at 11.0 and 26.9 M in the repeat).
 Refuted if any file of T1, T3 or of the T2 cases u, c differs.
+
+Outcome of the repeat comparison, first pass (run core-20261115-180556-eb25f13)
+[VERIFIED]: T1 12 of 12 files identical. T3: 58 of 59 identical; `mesh_rs/rst/acc.00003.rst`
+differs. T2: besides the wall-clock cases (w, expected), the restart files written after
+the continuation in the cycle-limit cases (old_c 00004-00006, new_c 00004-00007) differ.
+The prediction "every file of T1, T3 and the T2 cases u, c identical" FAILED as written.
+Read in three of the files: the only differing line is `restart_file = <path>` in the
+parameter dump, and the path contains the run directory; everything after `<par_end>` is
+identical. I had not thought of the path in the dump. Prediction for the second pass
+(script masks the two run-directory names): every differing file of T1, T3 and the T2
+cases u, c is equal after masking; the w cases still differ.
