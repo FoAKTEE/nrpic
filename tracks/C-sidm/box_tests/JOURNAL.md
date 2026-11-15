@@ -254,3 +254,22 @@ the coll.hst float sum_MW wanders within +-4.6e-14 (rounding of the plain sum, n
 trend); per step |dE|/sum_MW <= 3.5e-19 (8.8e-7 of the bound). Prediction confirmed.
 Wall 512-551 s for 1e4 steps of 1e5 particles (0.05 s per step, 2 processes on a loaded
 machine). Figure `figs/t1_long_cpu.png` looked at.
+
+## 2026-11-15 T11: design (run C-20261115-171719-7daad65) and predictions (before the run)
+
+Design: (a, b) theta = 1, beta = 0.6: 0.62774 collisions per particle per lab time,
+5.022e6 expected in 200 steps of 0.08 (1e6 particles); lab means of the drifting MJ gas
+<W> = 4.66305, <u_x> = 3.27783, <u_x^2/W> = 2.76670, <u_y^2/W> = theta/gamma = 0.8.
+(c) theta 3 and 1, both drifting at 0.6: the conserved lab means <W> = 8.72811,
+<u_x> = 6.19686 fix the end state at theta_f = 2.01532, beta_f = 0.59922 (the drift of a
+lab-homogeneous box changes by -7.8e-4 because the lab energy and momentum densities of
+the start hold the pressure terms of two temperatures); reading "drift unchanged, theta
+from the energy" gives theta = 2.01318. End-state <u_x^2/W> 5.32672 (alternative 5.33246),
+<u_y^2/W> 1.61343 (1.61054), start values 5.31812 and 1.6.
+Predictions: (a) z within +-2 in both seeds (Poisson sigma 2240 on 5.0e6); a code with
+|v_a - v_b| would be 1.48 times high (TESTS.md). (b) all four lab moments unchanged
+within 4 se (W and u_x exactly, by conservation). (c) end-state moments equal those of
+MJ(theta_f, beta_f) within 4 se and both KS p > 1e-3; <u_y^2/W> moves from 1.6 to 1.613,
+about 6 se, so the relaxation itself is resolved, while the two readings of theta_eq
+differ by only ~1 se in each moment: the test does not decide between them at 1e6
+particles (said now, before the run). Refuted by any criterion failing.
