@@ -56,11 +56,15 @@ def fig_sequence(seqs, crit, t1, out, b="0.1"):
     vp = np.array([float(r["v0_paper"]) for r in rows])
     c = crit[b]
     fig, ax = plt.subplots(2, 2, figsize=(fs.FULL_WIDTH, 5.6), sharex=True)
-    fig.subplots_adjust(left=0.1, right=0.98, bottom=0.09, top=0.97, wspace=0.28, hspace=0.06)
+    fig.subplots_adjust(left=0.11, right=0.98, bottom=0.09, top=0.97, wspace=0.32, hspace=0.06)
     panels = [("gavg", r"$\langle\gamma\rangle$, $\gamma_{\rm cr}$"), ("eps", r"$\varepsilon$"),
               ("B", r"$\hat B$"), ("E", r"$\hat E = \hat M$")]
+    vis = (v >= 0.05) & (v <= 0.62)
     for a, (k, lab) in zip(ax.ravel(), panels):
         a.plot(v, [e[k] for e in seq], color=fs.PAL["red"], label="this solver")
+        yv = np.array([e[k] for e in seq])[vis]
+        pad = 0.06 * (yv.max() - yv.min())
+        a.set_ylim(yv.min() - pad, yv.max() + pad)
         a.plot(vp, [float(r[f"{k}_paper"]) for r in rows], "o", ms=4, mfc="none",
                color=fs.PAL["blue"], label="F21 Table 1")
         if k == "gavg":
