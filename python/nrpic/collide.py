@@ -154,25 +154,31 @@ def read_snapshot(path):
 HIST_COLUMNS = ["time", "ncycle", "n_part", "n_cells", "n_tested", "sum_P", "n_coll",
                 "n_updated", "n_trunc", "max_P", "max_nsub", "mean_nsub", "min_N",
                 "mean_N", "max_dx_mfp", "sum_MW", "sum_Mu1", "sum_Mu2", "sum_Mu3", "dE",
-                "dP1", "dP2", "dP3", "abs_dE", "abs_dP", "n_bad_cells", "sum_W"]
+                "dP1", "dP2", "dP3", "abs_dE", "abs_dP", "n_bad_cells", "sum_W",
+                "sum_MW_species0", "sum_M_species0", "sum_MW_particles", "dE_particles"]
 
 
 def read_history(path):
     """`<basename>.coll.hst` as a dict of arrays; of repeated cycles (a run restarted
     from a dump older than its last record) the last occurrence is kept."""
     rows = {}
+    ncol = None                 # files of earlier versions hold fewer columns
     with open(path) as fp:
         for line in fp:
             if line.startswith("#") or not line.strip():
                 continue
             v = line.split()
-            if len(v) != len(HIST_COLUMNS):
+            if len(v) < 26 or len(v) > len(HIST_COLUMNS):
+                continue
+            ncol = len(v) if ncol is None else ncol
+            if len(v) != ncol:
                 continue
             rows[int(v[1])] = [float(s) for s in v]
+    ncol = len(HIST_COLUMNS) if ncol is None else ncol
     a = np.array([rows[k] for k in sorted(rows)], dtype=np.float64)
     if a.size == 0:
-        a = np.zeros((0, len(HIST_COLUMNS)))
-    return {name: a[:, i] for i, name in enumerate(HIST_COLUMNS)}
+        a = np.zeros((0, ncol))
+    return {name: a[:, i] for i, name in enumerate(HIST_COLUMNS[:ncol])}
 
 
 # ----------------------------------------------------------------------------------------

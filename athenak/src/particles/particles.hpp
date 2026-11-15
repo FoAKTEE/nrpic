@@ -134,6 +134,7 @@ struct NrpicCollideOptions {
   int weights = 0;           // 0: equal rest masses required, 1: Nanbu-Yonemura
   int hist_dcycle = 1;       // cycles between records of <basename>.coll.hst
   int dump_cycle = -1;       // cycle whose collision step is dumped
+  bool budget = false;       // record the energy with the metric at the particles
   std::uint64_t seed = 0;    // seed of the run (<job> rng_seed)
   int face_maxlev = -1;      // finest level of the tabulated face positions
   bool face_warned = false;  // the warning about MeshBlock edges has been printed

@@ -282,3 +282,59 @@ sub-cycling active). Figure `fig_repro.png` looked at.
   does not happen in 5e6 tests, so the difference stays at rounding level: most
   particles differ, by less than 1e-13 in u, and the integer history columns are
   identical.
+
+## 2026-11-15 14:00 UTC  outcomes P3 (rerun), P5, P6, P7 (second box); P8a restated
+
+### P3 after the change of the sub-step rule: run core-20261115-133533-0ca5e3b
+
+Passed, all eight runs. Sub-cycled runs (mean n_sub 3.4 to 4.3, largest 10, max P 0.113):
+mean Moller speed of the tested pairs against random pairs of the actual particles
+z = -1.7, +0.5, +1.4, +0.7; against Maxwell-Juttner +2.6e-6, +4.9e-6, -3.2e-5, -4.5e-5
+(theta = 0.01, 0.1, 1, 10). The deficit of 0.1 percent is gone, in a run that could have
+kept it: the cause named above stands. Plain runs unchanged (same numbers as before, as
+they must be: no sub-step is taken). P3a: 4.7e-14 to 5.4e-12, below the rounding bounds
+1.2e-10 to 5.1e-10. P3c: |z| < 1.6. P3d: within 6.2e-5. P3e: p from 0.34 to 0.996.
+P4: exact sums of M W equal to the last bit in all runs; momentum within 3.5e-19 of
+sum M |u|. P2: null runs byte-identical. Figures `fig_rate_history.png` (red curves now
+centred on one), `fig_rate_summary.png`, `fig_rate_conservation.png` looked at.
+
+### P5, P6: run core-20261115-134036-5684674 (4e5 particles, 16^3 cells, 25 collision times)
+
+Passed, all four starts (shell u0 = 0.3 and 2; two temperatures 0.03/0.01 and 3/1).
+- End state: KS p of |u| against Maxwell-Juttner at theta_eq (from the conserved
+  energy) 0.90, 0.74, 0.45, 0.26; <u^2/W>/3 = theta_eq within 0.06 sigma; both tag
+  populations of the two-temperature starts at theta_eq within 0.52 sigma.
+- Entropy estimate: rises from -3.612 to -0.9800 (shell 0.3; exact MJ value -0.9824,
+  estimator bias +0.0023), 2.150 to 4.917, -1.5715 to -1.5238, 8.2616 to 8.3842; end
+  values within 1.4 sd of s_MJ + bias (sd at fixed energy 1.0e-4 to 1.4e-4); largest
+  decrease between snapshots a quarter relaxation time apart 2.4 sd/sqrt2 units, i.e.
+  noise. The gap to equilibrium falls by four decades and then scatters around zero
+  (`fig_relax_entropy.png`); `fig_relax_distributions.png` and
+  `fig_relax_temperatures.png` looked at.
+- Energy: exact sums equal at start and end (one run differs by one unit in the last
+  place); 25 collisions per particle; no probability above one.
+- The initial slope of theta_1 - theta_2 (second half of P5(b)) is not measured here
+  (one snapshot per collision time); it is part of P8a.
+
+### P7, second box: run core-20261115-133912-f104754
+
+Passed as predicted. Box [100.3, 101.2]^3, 30^3 cells: analytic path byte-identical for
+1 and 27 MeshBlocks (3.6e5 collisions); mesh path differs in 99979 of 1e5 particles by
+at most 4.9e-15 with identical integer history columns (the pusher's metric
+reconstruction, `rng.md` section 9), while the first box stays byte-identical on both
+paths. No MeshBlock edge differs from the tabulated faces (no warning in any log).
+
+### P8a restated before the run
+
+The series nu_0 dt = 0.4, 0.2, 0.1, 0.05 without sub-cycling that I wrote first cannot
+be run: the mean pair probability is 1.5 nu_0 dt and pairs in the tail exceed one. The
+plain series is nu_0 dt = 0.1, 0.05, 0.025, 0.0125 (`coll_pmax = 1`, no probability above
+one expected: checked by n_trunc), the sub-cycled run nu_0 dt = 0.4 with
+`coll_pmax = 0.225` (about eight sub-steps). theta_1 = 3e-3, theta_2 = 1e-3 (the
+closed form is non-relativistic), 1e6 particles, three seeds each; the temperatures come
+from the new history columns 28, 29 (energy of species 0) at every step. Fit of
+ln(theta_1 - theta_2) over [0, 2/nu_0]. Predictions: (i) nu_fit = nu_inf + s dt_c with
+s = nu_inf^2/2 within 15 percent (first order with the forward-Euler coefficient);
+(ii) the sub-cycled run lies on the same line at its mean sub-step dt/<n_sub>, far from
+the value nu_inf + s 0.32 of a plain step; (iii) nu_inf/nu_0 between 0.95 and 1.02 (the
+fit window is not the initial slope: the populations leave the Maxwellian form).

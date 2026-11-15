@@ -47,6 +47,7 @@ M/m particles of cross-section sigma_m m.
 | `coll_weights` | `equal` | `equal`: all colliding macroparticles must have the same rest mass (fatal error otherwise); `nanbu`: unequal masses, section 3.6 |
 | `coll_hist_dcycle` | 1 | cycles between records of `<basename>.coll.hst` (0: none) |
 | `coll_dump_cycle` | -1 | cycle whose collision step is dumped (before and after) for the replay test |
+| `coll_budget` | false | also evaluate the sum of M W with the metric at each particle before and after the collision step (history columns 30, 31; one metric reconstruction per particle and evaluation) |
 | `<job> rng_seed` | 0 | seed of the run (`rng.md`) |
 
 ## 3. Algorithm
@@ -256,6 +257,8 @@ same records). A new run starts the file, a restart appends. Columns:
 | 25 | abs_dP | sum over the collided pairs of the largest absolute change of a triad component of the pair momentum |
 | 26 | n_bad_cells | occupied cells skipped because of an unusable metric |
 | 27 | sum_W | sum_P without the Moller speed and with the sigma_m of the input: sum over the tested pairs of (N - 1) sigma_m M_max alpha dt/(n_sub V) (half in a triple). sum_P/sum_W is the mean of (sigma/sigma_m) v_Mol over the tested pairs; sum_W = sum over the cells of N (N - 1) sigma_m M alpha dt/(2 V) for equal masses |
+| 28, 29 | sum_MW_species0, sum_M_species0 | sum of M W after the step and rest mass of the colliding particles of species 0 (energy exchange between two species) |
+| 30, 31 | sum_MW_particles, dE_particles | with `coll_budget = true`: sum of M W over the colliding particles with the metric reconstructed at each particle (the energy of the history column `sum_mW` and of the deposit) after the collision step, and its change over the collision step; zero otherwise |
 
 `<basename>.coll_dump.<cycle>.bin` (`coll_dump_cycle`): 8 bytes "NRPCOLD1", int64 N,
 int64 cycle, int64 f, doubles dt, sigma_m, w, pmax, int64 model, weights, subcycle,

@@ -36,6 +36,8 @@
 //!   coll_cell_factor = 1          | 2 | 4: collision cell = f^3 mesh cells
 //!   coll_weights     = equal      | nanbu (unequal rest masses of macroparticles)
 //!   coll_hist_dcycle = 1          cycles between records of <basename>.coll.hst
+//!   coll_budget      = false      also record the sum of M W with the metric at each
+//!                                 particle before and after the collision step
 //!   coll_dump_cycle  = -1         cycle whose collision step is dumped (replay test)
 //! The seed is <job> rng_seed.
 
@@ -97,10 +99,14 @@ struct CollStats {
   Real max_dxmfp = 0.0;        // largest cell size over mean free path
   Real sum_mw = 0.0;           // sum of M W after the step (cell frames)
   Real sum_mu[3] = {0.0, 0.0, 0.0};   // sum of M u_i after the step
+  Real sum_mw0 = 0.0;          // sum of M W after the step, particles of species 0
+  Real sum_m0 = 0.0;           // their rest mass
   Real de = 0.0;               // change of the pair energies, summed
   Real dp[3] = {0.0, 0.0, 0.0};       // change of the pair momenta (triad), summed
   Real abs_de = 0.0;           // sum of |change of a pair energy|
   Real abs_dp = 0.0;           // sum of the largest |change of a pair momentum component|
+  Real e_part = 0.0;           // sum of M W with the metric at each particle, after
+  Real de_part = 0.0;          // its change over the collision step (coll_budget)
 
   KOKKOS_INLINE_FUNCTION
   void operator+=(const CollStats &o) {
@@ -114,6 +120,8 @@ struct CollStats {
     max_p = (o.max_p > max_p) ? o.max_p : max_p;
     max_dxmfp = (o.max_dxmfp > max_dxmfp) ? o.max_dxmfp : max_dxmfp;
     sum_mw += o.sum_mw;
+    sum_mw0 += o.sum_mw0;
+    sum_m0 += o.sum_m0;
     de += o.de;
     abs_de += o.abs_de;
     abs_dp += o.abs_dp;
@@ -147,6 +155,43 @@ void CollAnalyticMetric(const NrpicMetric msrc, const Real mass, const Real spin
   }
 }
 
+//----------------------------------------------------------------------------------------
+//! \fn CollEnergyAtParticles
+//! \brief sum of M W over the colliding particles (pcell >= 0) with W from the metric at
+//! the position of each particle: the reconstruction of the pusher for the mesh metric
+//! (as in the deposit and in the history column sum_mW), the functor for an analytic one
+
+Real CollEnergyAtParticles(const int np, const DvceArray2D<Real> &pr,
+                           const DvceArray2D<int> &pi, const DvceArray1D<int> &pcell,
+                           const nrpic::MeshMetric &proto, const bool mesh_metric,
+                           const DualArray1D<RegionSize> &mbsize, const int gids,
+                           const NrpicMetric msrc, const Real mass, const Real spin,
+                           const Real lat_dx) {
+  auto sz = mbsize.d_view;
+  Real sum = 0.0;
+  Kokkos::parallel_reduce("nrpic_coll_energy", Kokkos::RangePolicy<DevExeSpace>(0, np),
+  KOKKOS_LAMBDA(const int p, Real &ls) {
+    if (pcell(p) < 0) return;
+    const Real xp[3] = {pr(IPX,p), pr(IPY,p), pr(IPZ,p)};
+    const Real up[3] = {pr(IPVX,p), pr(IPVY,p), pr(IPVZ,p)};
+    nrpic::AdmPoint ap;
+    if (mesh_metric) {
+      const int m = pi(PGID,p) - gids;
+      nrpic::MeshMetric met = proto;
+      met.m = m;
+      met.xmin[0] = sz(m).x1min; met.xmin[1] = sz(m).x2min; met.xmin[2] = sz(m).x3min;
+      met.idx[0] = 1.0/sz(m).dx1; met.idx[1] = 1.0/sz(m).dx2; met.idx[2] = 1.0/sz(m).dx3;
+      met(1, xp, ap);
+    } else {
+      CollAnalyticMetric(msrc, mass, spin, lat_dx, xp, ap);
+    }
+    Real gi[3][3], uup[3];
+    nrpic::Inv3Sym(ap.g, gi);
+    ls += pr(IPM,p)*nrpic::LorentzFactor(gi, up, uup);
+  }, Kokkos::Sum<Real>(sum));
+  return sum;
+}
+
 void CollFatal(const std::string &msg) {
   std::cout << "### FATAL ERROR in nrpic collisions" << std::endl << msg << std::endl;
   std::exit(EXIT_FAILURE);
@@ -169,7 +214,8 @@ void CollWriteHistory(const std::string &fname, const bool header, const bool re
                  "[11]=max_nsub [12]=mean_nsub [13]=min_N [14]=mean_N [15]=max_dx_mfp "
                  "[16]=sum_MW [17]=sum_Mu1 [18]=sum_Mu2 [19]=sum_Mu3 [20]=dE [21]=dP1 "
                  "[22]=dP2 [23]=dP3 [24]=abs_dE [25]=abs_dP [26]=n_bad_cells "
-                 "[27]=sum_W\n");
+                 "[27]=sum_W [28]=sum_MW_species0 [29]=sum_M_species0 "
+                 "[30]=sum_MW_particles [31]=dE_particles\n");
   }
   if (record) {
     const double mean_nsub = (st.n_cells > 0) ?
@@ -179,12 +225,13 @@ void CollWriteHistory(const std::string &fname, const bool header, const bool re
     const int min_n = (st.n_occ > 0) ? st.min_n : 0;
     std::fprintf(fp, "%.15e %d %" PRId64 " %" PRId64 " %" PRId64 " %.15e %" PRId64
                  " %" PRId64 " %" PRId64 " %.15e %d %.15e %d %.15e %.15e %.17e %.17e"
-                 " %.17e %.17e %.15e %.15e %.15e %.15e %.15e %.15e %" PRId64 " %.15e\n",
+                 " %.17e %.17e %.15e %.15e %.15e %.15e %.15e %.15e %" PRId64 " %.15e %.17e"
+                 " %.17e %.17e %.15e\n",
                  time, ncycle, st.n_part, st.n_cells, st.n_tested, st.sum_p, st.n_coll,
                  st.n_upd, st.n_trunc, st.max_p, st.max_nsub, mean_nsub, min_n, mean_n,
                  st.max_dxmfp, st.sum_mw, st.sum_mu[0], st.sum_mu[1], st.sum_mu[2],
                  st.de, st.dp[0], st.dp[1], st.dp[2], st.abs_de, st.abs_dp, st.n_bad,
-                 st.sum_w);
+                 st.sum_w, st.sum_mw0, st.sum_m0, st.e_part, st.de_part);
   }
   std::fclose(fp);
 }
@@ -211,6 +258,7 @@ void Particles::NrpicCollideInit(ParameterInput *pin) {
   coll.cell_factor = pin->GetOrAddInteger("particles", "coll_cell_factor", 1);
   coll.hist_dcycle = pin->GetOrAddInteger("particles", "coll_hist_dcycle", 1);
   coll.dump_cycle = pin->GetOrAddInteger("particles", "coll_dump_cycle", -1);
+  coll.budget = pin->GetOrAddBoolean("particles", "coll_budget", false);
   const std::string model = pin->GetOrAddString("particles", "coll_sigma_model",
                                                 "constant");
   const std::string sub = pin->GetOrAddString("particles", "coll_subcycle", "measured");
@@ -417,6 +465,27 @@ TaskStatus Particles::NrpicCollide(Driver *pdriver, int stage) {
         lst(slot) = p;
       }
     });
+
+    // energy budget with the metric at the particles (coll_budget): before the step
+    const bool budget = coll.budget;
+    nrpic::MeshMetric eproto;
+    Real e_before = 0.0;
+    if (budget) {
+      if (nropt.metric == NrpicMetric::mesh) {
+        eproto.bspline = nropt.interp_bspline;
+        eproto.m1 = nropt.interp_bspline ? met1s : met1;
+        eproto.m0 = eproto.m1;
+        eproto.is_static = true;
+        eproto.ist[0] = is; eproto.ist[1] = js; eproto.ist[2] = ks;
+        eproto.ncell[0] = indcs.nx1 + 2*indcs.ng;
+        eproto.ncell[1] = indcs.nx2 + 2*indcs.ng;
+        eproto.ncell[2] = indcs.nx3 + 2*indcs.ng;
+      }
+      e_before = CollEnergyAtParticles(np, prtcl_rdata, prtcl_idata, coll_cell, eproto,
+                                       (nropt.metric == NrpicMetric::mesh),
+                                       pmy_pack->pmb->mb_size, gids, nropt.metric,
+                                       nropt.mass, nropt.spin, nropt.lattice_dx);
+    }
 
     // state before the collisions and per-particle records of the replay dump
     HostArray2D<Real> rbefore;
@@ -700,12 +769,25 @@ TaskStatus Particles::NrpicCollide(Driver *pdriver, int stage) {
         Real uh[3];
         to_triad(p, uh);
         const Real mp = pr(IPM,p);
-        ls.sum_mw += mp*sqrt(1.0 + uh[0]*uh[0] + uh[1]*uh[1] + uh[2]*uh[2]);
+        const Real mw = mp*sqrt(1.0 + uh[0]*uh[0] + uh[1]*uh[1] + uh[2]*uh[2]);
+        ls.sum_mw += mw;
+        if (pi(PSP,p) == 0) {
+          ls.sum_mw0 += mw;
+          ls.sum_m0 += mp;
+        }
         ls.sum_mu[0] += mp*pr(IPVX,p);
         ls.sum_mu[1] += mp*pr(IPVY,p);
         ls.sum_mu[2] += mp*pr(IPVZ,p);
       }
     }, stats);
+
+    if (budget) {
+      stats.e_part = CollEnergyAtParticles(np, prtcl_rdata, prtcl_idata, coll_cell, eproto,
+                                           (nropt.metric == NrpicMetric::mesh),
+                                           pmy_pack->pmb->mb_size, gids, nropt.metric,
+                                           nropt.mass, nropt.spin, nropt.lattice_dx);
+      stats.de_part = stats.e_part - e_before;
+    }
 
     // ---- replay dump: the state before and after this collision step
     if (dump) {
