@@ -127,3 +127,12 @@ Note compiled (11 pages, latexmk), checker clean in the main text, every page re
 Only change: penetration factors below 1e-3 printed as powers of ten in `ledger.tex`
 (retrograde maximum energy at D = 10^-5). Prediction: PNGs and `claims.md` byte-identical to
 N3; `ledger.tex` differs in that one cell. Refuted otherwise.
+
+## 2026-11-15 N4, outcome (run F-20261115-180609-abc9f6e)
+
+Prediction met: PNGs and `claims.md` byte-identical to N3; `ledger.tex` differs in the one
+cell (D = 10^-5). These outputs are the ones in `figures/` and `tables/`; appendix B of the
+note names this run. Note recompiled (11 pages), checker with --compile: 0 undefined
+references or citations, 0 overfull boxes; candidates only in the ledger appendix (run ids)
+and in the scripts (data keys), accepted by exception 1 of `../WRITING_GUIDE.md`.
+Pages 1-11 read after N3, pages 2 and 10 again after N4.

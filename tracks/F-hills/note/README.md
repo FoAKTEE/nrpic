@@ -53,7 +53,7 @@ Each figure script also runs alone (`.venv/bin/python scripts/fig_rp_scan.py`, o
 | F-20261115-174648-25514db | N1: time series of the two references for the passages at q = 4 and 10 | completed; every number equal to E6, V5, V5b, V6 (prediction met) |
 | F-20261115-175639-ce844e5 | N2: figures, schematics, ledger, claims (first layout) | completed; numbers equal to the source analyses; claims: one difference I had not predicted (V4b, below) |
 | F-20261115-180428-fc8172f | N3: the same after the text pass (four ledger rows added, table widths) | completed; PNGs byte-identical to N2 (prediction met) |
-| N4 (id in `JOURNAL.md` and appendix B of the note) | the same after one ledger format change | see `JOURNAL.md` |
+| F-20261115-180609-abc9f6e | N4: the same after one ledger format change | completed; PNGs and claims identical to N3; these outputs are in `figures/` and `tables/` and named in appendix B |
 
 Draft figures went to `scratch/F-hills/tmp/note/` for layout only (not registered); each
 committed PNG is byte-identical to the draft that was opened and read.
