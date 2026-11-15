@@ -91,16 +91,22 @@ def main(npz, ddir, outdir):
         for s, sn in ((1, "pro"), (-1, "retro")):
             i, j = il[law], js[s]
             sp = sep[i, j]
+            # point-mass near-collisions (a_min < 1e-4 a0) leave the model (relativistic internal
+            # speeds under a Newtonian pair force): excluded from the speed statistics
+            ok = sp & (d["a_min"][i, j] >= 1e-4)
             vinf = d["vinf"][i, j] * C_KMS
-            v_mean = np.array([vinf[b][sp[b]].mean() if sp[b].any() else 0.0 for b in range(len(betas))])
-            v_min = np.array([vinf[b][sp[b]].min() if sp[b].any() else 0.0 for b in range(len(betas))])
-            v_max = np.array([vinf[b][sp[b]].max() if sp[b].any() else 0.0 for b in range(len(betas))])
+            v_mean = np.array([vinf[b][ok[b]].mean() if ok[b].any() else 0.0 for b in range(len(betas))])
+            v_min = np.array([vinf[b][ok[b]].min() if ok[b].any() else 0.0 for b in range(len(betas))])
+            v_max = np.array([vinf[b][ok[b]].max() if ok[b].any() else 0.0 for b in range(len(betas))])
             surv = ~sp
             bound = d["eps_cm"][i, j] < 0
             fb = np.array([(bound[b] & surv[b]).sum() / surv[b].sum() if surv[b].any() else np.nan
                            for b in range(len(betas))])
             S[f"{sn}_{law}"] = dict(sf=sp.mean(-1), v_mean=v_mean, v_min=v_min, v_max=v_max,
                                     bound_frac=fb, alpha_all_max=d["alpha_all"][i, j].max(-1),
+                                    alpha_bound_max=d["alpha_max"][i, j].max(-1),
+                                    alpha_bound_med=np.median(d["alpha_max"][i, j], -1),
+                                    n_nearcoll_sep=(sp & (d["a_min"][i, j] < 1e-4)).sum(-1),
                                     plunged=(d["plunged"][i, j] > 0).sum(-1),
                                     status_bad=((d["status"][i, j] >= 2) & (d["status"][i, j] != 5)).sum(-1))
     summ = {"betas": betas.tolist(), "n_phases": int(sep.shape[-1])}
@@ -113,13 +119,28 @@ def main(npz, ddir, outdir):
         chk[f"P1_retro_onset_{law}"] = float(betas[np.argmax(sf > 0.01)])
     dpro = np.abs(S["pro_hrna"]["sf"] - S["pro_newton"]["sf"])
     chk["P2_pro_max_abs_diff_beta_le_9"] = float(dpro[betas <= 9].max())
+    chk["P2_at_beta"] = float(betas[betas <= 9][np.argmax(dpro[betas <= 9])])
+    chk["P2_pro_max_abs_diff_beta_1_to_9"] = float(dpro[(betas >= 1) & (betas <= 9)].max())
     sel = (betas >= 3) & (betas <= 10)
     rel = S["retro_hrna"]["sf"][sel] / S["retro_newton"]["sf"][sel] - 1
     chk["P3_retro_max_rel_excess_beta3to10"] = float(rel.max())
+    chk["P3_at_beta"] = float(betas[sel][np.argmax(rel)])
     chk["P3_retro_max_abs_excess"] = float((S["retro_hrna"]["sf"] - S["retro_newton"]["sf"]).max())
+    chk["P3_retro_max_abs_excess_beta3to10"] = float((S["retro_hrna"]["sf"] - S["retro_newton"]["sf"])[sel].max())
+    for bb in (3, 5, 8, 10):
+        k = int(np.argmin(np.abs(betas - bb)))
+        chk[f"sf_beta{bb}"] = {kk: float(S[kk]["sf"][k]) for kk in S}
+        chk[f"vmean_kms_beta{bb}"] = {kk: float(S[kk]["v_mean"][k]) for kk in S}
+        chk[f"alpha_bound_max_beta{bb}"] = {kk: float(S[kk]["alpha_bound_max"][k]) for kk in S if "hrna" in kk}
+    k85 = int(np.argmin(np.abs(betas - 8.5)))
+    chk["alpha_bound_max_beta8.5_hrna_retro"] = float(S["retro_hrna"]["alpha_bound_max"][k85])
+    chk["alpha_bound_median_beta8.5_hrna_retro"] = float(S["retro_hrna"]["alpha_bound_med"][k85])
     vm_h, vm_n = S["retro_hrna"]["v_mean"], S["retro_newton"]["v_mean"]
     ok = vm_n > 0
     chk["P4_retro_vmean_max_rel_excess"] = float((vm_h[ok] / vm_n[ok] - 1).max())
+    ok35 = ok & (betas >= 3.5)
+    chk["P4_retro_vmean_max_rel_excess_beta_ge_3.5"] = float((vm_h[ok35] / vm_n[ok35] - 1).max())
+    chk["P4_retro_vmean_max_abs_excess_kms_beta_ge_3.5"] = float((vm_h[ok35] - vm_n[ok35]).max())
     chk["P4_retro_vmean_max_abs_excess_kms"] = float((vm_h[ok] - vm_n[ok]).max())
     selp = betas > 9
     chk["P5_pro_vmax_excess_kms_beta_gt_9"] = float((S["pro_hrna"]["v_max"][selp] - S["pro_newton"]["v_max"][selp]).max())
@@ -150,7 +171,11 @@ def main(npz, ddir, outdir):
             m = S[k]["v_mean"] > 0
             sel = m & (betas >= x.min()) & (betas <= x.max())
             yp = np.interp(betas[sel], x, y) * 1e3
-            chk[f"digitized_vmean_max_rel_dev_{k}"] = float(np.max(np.abs(S[k]["v_mean"][sel] / yp - 1)))
+            good = yp > 300.0                       # away from the onset, where the curves jump
+            chk[f"digitized_vmean_max_rel_dev_{k}"] = float(np.max(np.abs(S[k]["v_mean"][sel][good] / yp[good] - 1)))
+            bsel = betas[sel][good]
+            far = bsel >= (bsel.min() + 0.5)
+            chk[f"digitized_vmean_max_rel_dev_{k}_away_from_onset"] = float(np.max(np.abs(S[k]["v_mean"][sel][good][far] / yp[good][far] - 1)))
             xs, lo, up = V[k + "_band"]
             chk[f"digitized_vmax_at_beta10_{k}_paper_kms"] = float(np.interp(9.95, xs, up) * 1e3)
             chk[f"vmax_at_beta10_{k}_ours_kms"] = float(S[k]["v_max"][-1])

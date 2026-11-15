@@ -42,7 +42,7 @@ def stats(d, meta, law, sense):
     vmed = np.array([np.median(v[b][ej[b]]) if ej[b].any() else np.nan for b in range(nb)])
     return dict(sf=sep.mean(-1), cap=cap.mean(-1), coll=coll.mean(-1), tmax=tmax.mean(-1),
                 v_mean=vm, v_max=vx, v_med=vmed,
-                alpha_med=np.median(d["alpha_all"][i, j], -1), alpha_max=d["alpha_all"][i, j].max(-1),
+                alpha_med=np.median(d["alpha_max"][i, j], -1), alpha_max=d["alpha_max"][i, j].max(-1),
                 bad=((d["status"][i, j] >= 2) & (d["status"][i, j] != 5)).sum(-1))
 
 
@@ -77,8 +77,8 @@ def main(s1, s2, outdir):
         chk[f"Q3_{sn}_first_beta_with_capture"] = float(betas[np.argmax(c > 0)]) if (c > 0).any() else None
         chk[f"Q3_{sn}_capture_frac_beta22.5"] = float(c[np.argmin(np.abs(betas - 22.5))])
     for sn in ("pro", "retro"):
-        chk[f"Q4_{sn}_alpha_all_max_beta15"] = float(S[f"{sn}_hrna"]["alpha_max"][np.argmin(np.abs(betas - 15))])
-        chk[f"Q4_{sn}_alpha_all_median_beta15"] = float(S[f"{sn}_hrna"]["alpha_med"][np.argmin(np.abs(betas - 15))])
+        chk[f"Q4_{sn}_alpha_bound_max_beta15"] = float(S[f"{sn}_hrna"]["alpha_max"][np.argmin(np.abs(betas - 15))])
+        chk[f"Q4_{sn}_alpha_bound_median_beta15"] = float(S[f"{sn}_hrna"]["alpha_med"][np.argmin(np.abs(betas - 15))])
     chk["runs_status_tmax_or_maxsteps"] = int(sum(S[k]["bad"].sum() for k in S))
     for nm, dd in (("S1", d1), ("S2", d2)):
         chk[f"{nm}_runs_step_underflow"] = int((dd["status"] == 4).sum())
