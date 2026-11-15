@@ -120,3 +120,14 @@ binary on a bound orbit about a heavier hole (8:1:1, 18:1:1), outside its tidal 
 (D/r_t = 4.1, 5.8 by run A). Its authors state the intention to continue to 128:1:1, so
 the novelty window may be short. Web-engine summaries were used only to find candidates;
 each statement in NOVELTY.md was checked in the source or the INSPIRE abstract.
+
+## 2026-11-15 prediction for run C (cost of object b), written before it ran
+
+Same cost model, object (b): two collisionless clumps of mass 0.05 M and radius 1.0 M
+(compactness 0.05, inside the Roche lobe 0.38 a_b = 1.14 M), q = 10, a_b = 30 r_gb,
+r_p = 6 r_g, no puncture inside the clumps, finest cells max(R_c/16, M/16) = M/16 or
+R_c/32. Prediction: one passage costs 1 to 5 card-hours at R_c/16 with 2e5 particles,
+at least five times less than object (a) at m/8 (23.6), because the time step is set by
+cells ten times larger; particles add less than 20 percent at 2e5 and become comparable
+to the mesh near 2e6. Refuted if (b) at R_c/16 with 2e5 particles costs more than 10
+card-hours.

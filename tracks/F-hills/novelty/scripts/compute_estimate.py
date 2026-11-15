@@ -147,6 +147,26 @@ RES["programme"] = {
     "allotment_F_hills_GPU_hours": 40.0,
 }
 
+# object (b): binary of collisionless clumps, q = 10, a_b = 30 r_gb, r_p = 6 r_g.
+# Clump mass m = 0.05 M; radius R_c chosen inside the Roche lobe of the binary
+# (0.38 a_b for equal masses [BACKGROUND, Eggleton 1983, to verify]): R_c = 1.0 M, so
+# compactness m/R_c = 0.05. Mesh: R_c/h cells across the clump radius, the heavy hole at
+# M/16; no puncture inside the clumps. N_MB = 1000 [JUDGEMENT: v19 started with 1042
+# blocks for two clumps in an envelope on 8 levels]. Particle push rate from the cosmology
+# runs (RES["particle_push_rate"], RK stages included in that rate).
+clump = []
+for rc_cells in (16, 32):
+    h = min(1.0 / rc_cells, 1.0 / 16)
+    T = T_run(10., 30., 6.0)
+    ncyc = T / (CFL * h)
+    for npart in (2e5, 2e6):
+        mesh_s = 1000 * ncyc / R_med
+        part_s = npart * ncyc / RES["particle_push_rate"]
+        clump.append({"Rc_over_h": rc_cells, "h_min": h, "T_run": T, "N_particles": npart,
+                      "card_hours_mesh": mesh_s / 3600, "card_hours_particles": part_s / 3600,
+                      "card_hours_total": (mesh_s + part_s) / 3600})
+RES["clump_cases_q10"] = clump
+
 with open(os.path.join(OUT, "results.json"), "w") as f:
     json.dump(RES, f, indent=1)
 
@@ -195,3 +215,5 @@ print(json.dumps({k: RES[k] for k in ("v19", "R_vacuum", "core_t3", "model_check
                                        "programme", "particle_push_rate")}, indent=1))
 for c in cases:
     print(c)
+for c in RES["clump_cases_q10"]:
+    print("clumps", c)
