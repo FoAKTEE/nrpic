@@ -89,6 +89,9 @@ struct CollStats {
   int max_nsub = 0;
   int min_n = std::numeric_limits<int>::max();
   Real sum_p = 0.0;            // sum of the probabilities of the tested pairs
+  Real sum_w = 0.0;            // the same without the Moller speed and with sigma_m of
+                               // the input: sum_p/sum_w is the mean of
+                               // (sigma/sigma_m) v_Mol over the tested pairs
   Real max_p = 0.0;
   Real max_dxmfp = 0.0;        // largest cell size over mean free path
   Real sum_mw = 0.0;           // sum of M W after the step (cell frames)
@@ -106,6 +109,7 @@ struct CollStats {
     max_nsub = (o.max_nsub > max_nsub) ? o.max_nsub : max_nsub;
     min_n = (o.min_n < min_n) ? o.min_n : min_n;
     sum_p += o.sum_p;
+    sum_w += o.sum_w;
     max_p = (o.max_p > max_p) ? o.max_p : max_p;
     max_dxmfp = (o.max_dxmfp > max_dxmfp) ? o.max_dxmfp : max_dxmfp;
     sum_mw += o.sum_mw;
@@ -163,7 +167,8 @@ void CollWriteHistory(const std::string &fname, const bool header, const bool re
                  "[6]=sum_P [7]=n_coll [8]=n_updated [9]=n_trunc [10]=max_P "
                  "[11]=max_nsub [12]=mean_nsub [13]=min_N [14]=mean_N [15]=max_dx_mfp "
                  "[16]=sum_MW [17]=sum_Mu1 [18]=sum_Mu2 [19]=sum_Mu3 [20]=dE [21]=dP1 "
-                 "[22]=dP2 [23]=dP3 [24]=abs_dE [25]=abs_dP [26]=n_bad_cells\n");
+                 "[22]=dP2 [23]=dP3 [24]=abs_dE [25]=abs_dP [26]=n_bad_cells "
+                 "[27]=sum_W\n");
   }
   if (record) {
     const double mean_nsub = (st.n_cells > 0) ?
@@ -173,11 +178,12 @@ void CollWriteHistory(const std::string &fname, const bool header, const bool re
     const int min_n = (st.n_occ > 0) ? st.min_n : 0;
     std::fprintf(fp, "%.15e %d %" PRId64 " %" PRId64 " %" PRId64 " %.15e %" PRId64
                  " %" PRId64 " %" PRId64 " %.15e %d %.15e %d %.15e %.15e %.17e %.17e"
-                 " %.17e %.17e %.15e %.15e %.15e %.15e %.15e %.15e %" PRId64 "\n",
+                 " %.17e %.17e %.15e %.15e %.15e %.15e %.15e %.15e %" PRId64 " %.15e\n",
                  time, ncycle, st.n_part, st.n_cells, st.n_tested, st.sum_p, st.n_coll,
                  st.n_upd, st.n_trunc, st.max_p, st.max_nsub, mean_nsub, min_n, mean_n,
                  st.max_dxmfp, st.sum_mw, st.sum_mu[0], st.sum_mu[1], st.sum_mu[2],
-                 st.de, st.dp[0], st.dp[1], st.dp[2], st.abs_de, st.abs_dp, st.n_bad);
+                 st.de, st.dp[0], st.dp[1], st.dp[2], st.abs_de, st.abs_dp, st.n_bad,
+                 st.sum_w);
   }
   std::fclose(fp);
 }
@@ -624,6 +630,7 @@ TaskStatus Particles::NrpicCollide(Driver *pdriver, int stage) {
                               *nrpic::CollMoller(g1, wa, wb);
             ls.n_tested += 1;
             ls.sum_p += fmin(prob, 1.0);
+            ls.sum_w += wgt*fac*sigma0*mmx;
             ls.max_p = fmax(ls.max_p, prob);
             if (prob > 1.0) { ls.n_trunc += 1; }
             double uu[4];

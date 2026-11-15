@@ -246,6 +246,7 @@ same records). A new run starts the file, a restart appends. Columns:
 | 24 | abs_dE | sum over the collided pairs of the absolute change of the pair energy |
 | 25 | abs_dP | sum over the collided pairs of the largest absolute change of a triad component of the pair momentum |
 | 26 | n_bad_cells | occupied cells skipped because of an unusable metric |
+| 27 | sum_W | sum_P without the Moller speed and with the sigma_m of the input: sum over the tested pairs of (N - 1) sigma_m M_max alpha dt/(n_sub V) (half in a triple). sum_P/sum_W is the mean of (sigma/sigma_m) v_Mol over the tested pairs; sum_W = sum over the cells of N (N - 1) sigma_m M alpha dt/(2 V) for equal masses |
 
 `<basename>.coll_dump.<cycle>.bin` (`coll_dump_cycle`): 8 bytes "NRPCOLD1", int64 N,
 int64 cycle, int64 f, doubles dt, sigma_m, w, pmax, int64 model, weights, subcycle,
