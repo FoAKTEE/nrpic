@@ -174,7 +174,6 @@ def coplanar(run_id, supplement_run=None):
     a.set_ylim(0, 1.05)
     a.legend(loc="lower left", fontsize=8)
     axs[1].set_ylabel(r"$\langle |E| \rangle$")
-    axs[1].axhline(0.99 ** 2, color="grey", lw=0.8, alpha=0.4)
     axs[2].set_yscale("log")
     axs[2].plot([0.1], [27.3], "o", color=BLUE, ms=4)
     axs[2].axhline(1.8, color=BLUE, lw=1.0, ls="--")
@@ -501,7 +500,7 @@ def finiteq(run_id):
     S = {"source_run": run_id, "q": [float(q) for q in qs], "D": D.tolist()}
     fig, axs = plt.subplots(2, 3, figsize=(fs.FULL_WIDTH, 4.8), sharex=True, sharey="row")
     fig.subplots_adjust(left=0.08, right=0.98, bottom=0.1, top=0.95, hspace=0.06, wspace=0.05)
-    cols = {0: RED, 10: BLUE, 30: GRN, 100: YEL, 1000: ORA}
+    cols = {0: BLUE, 10: RED, 30: YEL, 100: GRN, 1000: ORA}
     for j, kind in enumerate(("iso", "pro", "ret")):
         S[kind] = {}
         for q in qs:
