@@ -419,21 +419,21 @@ def extract(flat, macros=None):
             lines = split_lines(inner)
         else:
             lines = [(0, len(inner))]
-        groups = []          # [(start, end, numbered, tag, labels)]
+        groups = []          # [start, end, numbered, tag, labels, empty]
         if base_env in MULTILINE_ENVS and not starred:
+            # LaTeX numbers every line of these environments unless \nonumber/\notag, empty lines
+            # included (a trailing \\ makes an empty numbered line; checked against pdflatex)
             cur = None
             for (a, b) in lines:
                 t = inner[a:b]
-                if _line_is_empty(t) and not TAG_RE.search(t):
-                    if cur is not None:
-                        cur[1] = b
-                    continue
                 tag = TAG_RE.search(t)
                 numbered = not NONUMBER_RE.search(t) or bool(tag)
+                empty = _line_is_empty(t) and not tag
                 if cur is None:
-                    cur = [a, b, False, None, []]
+                    cur = [a, b, False, None, [], empty]
                 else:
                     cur[1] = b
+                    cur[5] = cur[5] and empty
                 cur[4] += LABEL_RE.findall(t)
                 if numbered:
                     cur[2] = True
@@ -441,7 +441,7 @@ def extract(flat, macros=None):
                     groups.append(cur)
                     cur = None
             if cur is not None:
-                if groups:
+                if groups and cur[5]:
                     groups[-1][1] = cur[1]
                     groups[-1][4] += cur[4]
                 else:
@@ -450,8 +450,9 @@ def extract(flat, macros=None):
             tag = TAG_RE.search(inner)
             numbered = (not starred and base_env in ONE_NUMBER_ENVS | MULTILINE_ENVS
                         and not NONUMBER_RE.search(inner)) or bool(tag)
-            groups.append([0, len(inner), numbered, tag.group(1) if tag else None, LABEL_RE.findall(inner)])
-        for (a, b, numbered, tag, labels) in groups:
+            groups.append([0, len(inner), numbered, tag.group(1) if tag else None, LABEL_RE.findall(inner), False])
+        n_rows = sum(1 for g in groups if not (g[5] and not g[4]))
+        for (a, b, numbered, tag, labels, empty) in groups:
             number = None
             if numbered:
                 if tag is not None:
@@ -466,8 +467,10 @@ def extract(flat, macros=None):
                 else:
                     eqn += 1
                     number = f"{_prefix(numberwithin, revtex, in_app, top_secnum)}{eqn}"
-            rs = d["start"] if len(groups) == 1 else d["inner_start"] + a
-            re_ = d["end"] if len(groups) == 1 else d["inner_start"] + b
+            if empty and not labels:
+                continue                  # an empty numbered line: it takes a number, it is not a row
+            rs = d["start"] if n_rows == 1 else d["inner_start"] + a
+            re_ = d["end"] if n_rows == 1 else d["inner_start"] + b
             eq_rows.append({"env": env, "labels": [x.strip() for x in labels], "number": number,
                             "start": off + rs, "end": off + re_, "section": k,
                             "inner_start": off + d["inner_start"] + a, "inner_end": off + d["inner_start"] + b})

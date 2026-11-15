@@ -423,3 +423,82 @@ P5 The bare shallow clone of all 124 branch tips of IAS-Astrophysics/athenak and
    (reading the metric), which brief line 130 says it does not; (c) no nrpic or vlasov
    anywhere under `src/`; (d) no branch name containing pic, vlasov, nrpic or deposit;
    (e) main still c5a0d7f. Refuted if (a) or (c) fails: then the coupling would be public.
+
+### Outcome D2 (download of priority 2 then 1, run kb-20261115-124340-9048b83)
+
+- One process for the whole list: pid 1935449 was `kb fetch-missing --priority 3 2 1` and then,
+  after exec, `python3 -I harness/bin/nrpic-fetch-arxiv <599 ids>` (checked with ps at 12:44
+  UTC); no second download process of mine ran. 12:43:44 to 13:27:06 UTC (43.4 min, 4.3 s per
+  paper). 599 of 599 ids printed a store path; stderr empty. Exit code not observable (detached).
+- Verify run kb-20261115-132730-a51e26e: 684 manifest rows: ok 683, problem 1, failed 0,
+  missing 0; 18 extras added by other sessions. The problem is gr-qc/9412071: arXiv serves
+  only a gzipped PostScript file for it (Content-Disposition "...v2.ps.gz"); the fetch command
+  stored it as src/main.tex with status ok (README Request 3b of K1). Prediction D2 held
+  (0 % failed, kinds tar/single-file only); the one PostScript file is the kind of failure
+  D2 named ("PDF-only or without source").
+
+### Outcome K2-P7: full ingestion (run kb-20261115-132806-013c452) and checks (kb-20261115-133637-3f7f25a)
+
+- 702 store entries handled in 249.5 s with 8 parser processes (held: < 15 min). Rows in
+  papers: 701 (683 manifest + 18 extras). Manifest papers (684): ok 658 (96.2 %, held >= 85 %),
+  review 23, pdf 1 (2201.03458, PDF only: pdftotext text, no equations), failed 1
+  (astro-ph/9407016: only PostScript files, eqf.ps and figures, no TeX), not ingested 1
+  (gr-qc/9412071, PostScript stored as main.tex; download status "problem"). Failures 2 of
+  684 = 0.3 % (held: <= 3 %). Of the 23 'review' papers, 18 have neither \title nor an
+  abstract environment (custom title pages: SciPost, titlepage, book classes, plain TeX), so
+  their score stops near 0.70; their titles must come from the metadata.
+- Totals: sections 13186, chunks 71069 (body 29712, appendix 2219, caption 6584, footnote 3914,
+  abstract 674, comment 27966), equations 52345 (25555 labelled), figures and tables 6655.
+- Bibliography: 64248 entries (source: .bbl 400 papers, .bib 49, thebibliography 230); with an
+  arXiv id 60.1 % (held: 55-75 %), arXiv id or DOI 72.5 %, no identifier 17661 entries;
+  resolved through a corpus title 293. Citations 103808; distinct edges 38268, inside the corpus
+  5653 = 14.8 % (held: 10-30 %).
+- C1 held: 115 of 115. C3 held: 621 of 634 (97.9 %); all 13 differences are thebibliography
+  papers; the one examined (1005.4054, 17 stored vs 79 counted) is a checker over-count: 62
+  \bibitem lines stand after \end{document}, which LaTeX never reads. C4 held: 25654 labels in
+  display environments, labels missing from the rows in 8 papers (at most 2 each in the
+  listing, < 0.1 %). C5 held: 910 of 103808 keys (0.88 %) without an entry.
+- C2 FAILED as worded ("all equal"): key sets equal in 50 of 52 .bib files, eprint/doi values
+  differ in 8 of 17101 comparisons (3 files). Examined causes: duplicate keys in 2604.27429 and
+  2512.13673 (BibTeX and kb keep the first definition; the checker's dictionary kept the last,
+  bibtexparser the first), an entry with an empty key in 2310.00042 (bibtexparser keeps it, kb
+  skips it), an entry bibtexparser rejects in 2606.02712 (Zhang_2024, parsed by kb). No
+  field-extraction fault of kb found in these; not every one of the 8 was examined.
+- C6 (added after K2-P7 was written, so no prediction was recorded): blind fuzzy matching on
+  1697 entries whose written arXiv id points into the corpus: 1482 matched at ratio >= 0.93,
+  all 1482 to the written id (precision 1.0), recall 0.873.
+- Grouping check (brief 12.5, last item): of 5653 in-corpus edges between manifest papers,
+  53.2 % stay inside one group of brief section 16, against 6.4 % expected if the cited group
+  were drawn at random from the group sizes. Of 208 papers with at least 10 in-corpus
+  out-edges, 5 cite no paper of their own group: 2211.08133 (G06, mostly G07), 2505.01495
+  (G02, G06), 1807.11562 (G02, G07), 1905.07345 (G19, G08 93 %), 2304.13284 (G06, G13 100 %)
+  [JUDGEMENT: candidates for regrouping, for the orchestrator].
+- Frontier (kb frontier): every manifest paper is now in the corpus, so the top 50 are all
+  outside the manifest; the most cited is 1807.06209 (81 corpus papers).
+- Figures of the check run inspected: parse scores concentrated above 0.95 with a small
+  group near 0.80 (no abstract environment or few sections) and the review group near 0.70;
+  body chunks mostly 200-400 words, with fewer than 30 chunks above 420 (one long sentence unit
+  that cannot be split outside math); the group matrix is diagonal-dominated.
+
+### Correction to the K2-P7 entry above, and a numbering fault found by C4
+
+- Two sentences above are wrong as written: chunks above 420 words are 49 body and 8 appendix
+  chunks (query on kb.sqlite), not "fewer than 30"; and C4 lists 16 missing labels in 8
+  papers, up to 5 in one paper (2402.10190), not "at most 2 each" (the check output truncates
+  each list at 5). 16 of 25654 = 0.06 %, so C4 still holds.
+- The 16 examined one by one: 12 lie outside \begin{document}..\end{document} (dead text after
+  \end{document}: checker artifact); 1 is a figure label that the checker's regex swept into
+  a display span (2309.02946: artifact); 3 are real (1611.03437 eq:Adot, 0710.5073 w2, and one
+  more of the same kind): a \label on an empty last line after `\\` in eqnarray, which the
+  code dropped. pdflatex on a synthetic file (scratch/kb/tmp/eqna/t.aux) shows that LaTeX
+  numbers such empty lines, in eqnarray AND in amsmath align (a trailing `\\` costs one
+  number): K2-P2 had not covered this case. Fixed: every line of a multi-line environment
+  takes a number unless \nonumber/\notag; an empty unlabelled line takes its number but gives
+  no row. The synthetic numbering test now includes these cases and agrees with LaTeX's .aux
+  in all three classes (105 tests pass).
+
+### Prediction K2-P8: re-ingestion of the whole store with the numbering fix
+
+Counts as in K2-P7 within 1 % (papers by status identical; equation rows change by less than
+1 %); C4: of the 16 missing labels only the 13 checker artifacts remain; C1, C3, C5, C6 as
+before. Refuted by any change of the per-status paper counts or by a real missing label.

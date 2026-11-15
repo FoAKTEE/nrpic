@@ -51,6 +51,18 @@ u &=& 1 \label{eq:ea1} \\
 v &=& 2 \nonumber
 \end{eqnarray}
 \begin{equation} w = 0 \tag{T} \label{eq:tagged} \end{equation}
+\begin{eqnarray}
+a &=& 1, \label{eq:ena1} \\
+b &=& 2, \nonumber \\ \label{eq:enaw2}
+\end{eqnarray}
+\begin{eqnarray}
+d &=& 4 \label{eq:end4} \\
+\end{eqnarray}
+\begin{equation} e = 5 \label{eq:afterempty} \end{equation}
+\begin{align}
+f &= 6 \label{eq:alf6} \\
+\end{align}
+\begin{equation} g = 7 \label{eq:afterempty2} \end{equation}
 \begin{figure}\centering\caption{First.}\label{fig:one}\end{figure}
 \begin{table}\caption{A table.}\label{tab:one}\end{table}
 \section*{Unnumbered}
