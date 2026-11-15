@@ -130,10 +130,13 @@ def main():
                    "forbidden_points_above_first": holes})
     chk["Emin_interval_bruteforce"] = bf
     # FdRW fig. crit_orbit caption (kerrdm.tex line 497): C_crit = 10.3 for a = 0.75,
-    # E = 0.97, Lz = 2 (minimum of C_V over the unstable orbit region)
+    # E = 0.97, Lz = 2 (minimum of C_V over the unstable orbit region). Evaluated at
+    # r = 15 Gm, inside the bound region: at r = 30 Gm (the first version) the minimum over
+    # (r_+, r] is the endpoint C_V(30) = 7.09, not the local minimum (lead review wave 2).
     K75 = Kerr(0.75)
-    Cc, ru, end = K75.ccrit(np.array([0.97]), np.array([2.0]), 30.0)
+    Cc, ru, end = K75.ccrit(np.array([0.97]), np.array([2.0]), 15.0)
     chk["Ccrit_a0.75_E0.97_Lz2"] = {"ours": float(Cc[0]), "r_unst": float(ru[0]),
+                                    "at_end": bool(end[0]), "r_eval": 15.0,
                                     "FdRW_caption": 10.3}
     # FdRW fig. viterate caption (line 1508): x = 10, E0 = 0.9997, Lz^max = 4.829 by eq.
     # (lmax); the spin is not stated; eq. (lmax) as printed has a^2 - x(x-2) under the root

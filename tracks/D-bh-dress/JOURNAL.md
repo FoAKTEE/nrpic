@@ -134,3 +134,47 @@ stamp, see below) and my own quadrature of a, m_p (scratch/D-bh-dress/tmp/lead/e
   card job submitted (no card-hours named for this session); no pending runs.
 - helpers' journals: scope/JOURNAL.md, einstein_straus/JOURNAL.md, spike/JOURNAL.md,
   secondary_infall/JOURNAL.md, puncture_drift/JOURNAL.md.
+
+## 2026-11-15T19:30Z  session lead-wave2 (Opus)  predictions of the lead's wave-2 re-checks, written before they run
+
+Scripts in `stage/review_wave2/` (mine, written without the helpers' analysis code; they
+read only registered outputs). Each check names the helper's claim and what refutes it.
+
+- W1 (es_runs, closed forms) My own cycloid with the slice energy E = -M(1 - f^2)/R0
+  (f of `es_model.EinsteinStrausBH.f`, outgoing start dR/dtau = f sqrt(2M/R0)) gives the
+  crossings of R = 2M at tau = 14.83 (R0 = 6), 34.44 (10), 244.7 M (20) and the wall
+  (36^1.5 + 1.5 sqrt(2) tau)^(2/3) = 46.99, 56.80, 65.84, 74.29 M at tau = 50..200 M.
+  Refuted by a difference above 0.01 M from `es_runs/results/predictions.json`.
+- W2 (es_runs, 1+log model) My integration of d alpha/dt = 6 alpha H(a), da/dt = alpha H a
+  (EdS, H = H0 a^-1.5, H0 = 5.58116e-3) gives alpha = 1 + 6 ln a and at t = 200 M
+  alpha = 10.8, tau = 1.25e3 M; refuted by more than 1 per cent from the helper's table.
+  [JUDGEMENT] With zero initial shift the plateau dust is at rest in the coordinates, so
+  no dust reaches the outer boundary even though its areal radius grows about fivefold.
+- W3 (es_runs, data) es.nrp holds 696828 particles, of which exactly 140 have m = 1e-30
+  (the tracers) and the rest sum to 1.73967 M; v1.nrp holds the same 140 tracers only.
+  Refuted by any tracer with m = 0 or a dust mass off by more than 1e-6.
+- W4 (es_runs, mesh) my own leaf count of the input geometry is 344 MeshBlocks, equal to
+  the number in the smoke run's log; refuted by any other number.
+- W5 (spike, K2) my own counts by Boyer-Lindquist radius from the Kerr-Schild snapshots of
+  run D-bh-dress-20261115-172611-1e40191 (a = 0.8): late-half over early-half mean counts
+  within 1 per cent in 4-6, 6-10, 10-16 Gm, mean Lz in 0-4 Gm 2.27 +- 0.05; my own C_V
+  from the Carter radial potential has its local minimum 10.3 at a = 0.75, E = 0.97,
+  Lz = 2 (FdRW caption). Refuted by a ratio off by more than 2 per cent or C_crit off by
+  more than 0.05.
+- W6 (secondary_infall) my own implementation of the definitions in nm_analyze.py
+  (turned: v_r < 0 at some snapshot; passed: other side of the centre or outgoing after
+  turning) on the snapshots of N128c (D-20261115-171503-4262f03) gives M_ta = 2.597 M and
+  dress 0.797 M at a/a_i = 4 to 0.3 per cent; the mass inside the outermost zero of the
+  mean radial velocity is within 10 per cent of M_ta [JUDGEMENT]. Refuted beyond these.
+- W7 (verifier C7) McVittie: x = R_AH/(2m) solves x = 1 + 4 h^2 x^3, and
+  d ln M_AH/d ln a = -12 h^2 x^2/(1 - 12 h^2 x^2) (my derivation, EdS H ~ a^-1.5):
+  -1.20e-3, -1.10e-2, -0.151 at h = 0.01, 0.03, 0.1, as the verifier printed; refuted by
+  a difference in the third digit.
+- W8 (verifier C5) capture of a particle at radial rest at r_ta in Schwarzschild: the
+  threshold L solves (1 - 2/r_ta)(1 + L^2/r_ta^2) = V_max(L); L/r_ta = 0.221 at
+  16.1 M and 0.113 at 33.4 M as the verifier printed; refuted beyond 0.002.
+- W9 (verifier C8) the MeshBlock counts 3200 (M/32) and 4712 (M/64) are in the logs of
+  run D-20261115-171953-908afff as printed by AthenaK itself; refuted by other numbers.
+- W10 (note) the note compiles from a clean copy with latexmk to 10 pages; the ledger
+  script reproduces the ledger table byte for byte; three ledger numbers I pick (the drift
+  +2.95e-4, the wall at tau = 200 M, the spike peak 0.8699e8) equal the run outputs.
