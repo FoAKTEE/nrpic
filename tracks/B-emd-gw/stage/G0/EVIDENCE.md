@@ -74,3 +74,32 @@ run directories `runs/cosmo/*` of the main checkout (untracked), `cosmo/README.m
 
 Card-hours used: 0.481 (two jobs of verify_cosmo); allotment 40 to the next gate
 (decision 0006). Processor runs: all others, at most 16 cores at a time.
+
+## Wave 2 (added by the lead, 2026-11-15)
+
+Products owed at the end of wave 1, now delivered:
+
+| Item | Where | Run ids |
+|---|---|---|
+| Working note v0 (REVTeX, 10 pages, /paper-writing) | `note/main.pdf`, `note/main.tex`; guide and notation `WRITING_GUIDE.md`, `NOTATION.md` | figures and tables B-20261115-165556-a399d4e; one sentence corrected by the lead (commit 2f8806a) |
+| Schematics (architecture, stage timeline; paperfig.py) | `note/figures/schem_architecture.png`, `schem_timeline.png` | B-20261115-165556-a399d4e |
+| Independent verifier | `stage/G0/VERIFIER.md`, journal `stage/G0/JOURNAL.md`, scripts `stage/G0/verifier/scripts/` | B-20261115-165114-277a0eb, -165119-efd5ee7, -165123-9cb1745, -165056-835fddf, -170431-c49964c, -170546-4507b05, -170518-c1b61a3, -165608-171ff45 |
+| Lead's recheck of the wave-2 packages | `stage/REVIEW-wave2.md`, `stage/review_wave2/` | B-20261115-190007-e09a0d2, -190019-b5f5eb6, -190015-4dd3416, -190323-2f8806a, -190433-2d1d185 |
+| Scope corrections after the verifier | `scope/SCOPE.md` sections 1, 6, 8 (commit 87682d9) | |
+
+Key references of S2 (brief line 378) that the scope had not read, read by the lead at the
+source (abstracts; `kb-data/raw/arxiv/<id>/<v>/src`, snapshot kb-20261115-44b7406) [VERIFIED
+as reading; relevance JUDGEMENT]:
+
+| Reference | Locator | Statement | Use for Track B |
+|---|---|---|---|
+| 1002.3278 v1 | `JLM_gw_v2.tex:111-124` | GWs from pre-reheating structure: computed in the linear limit, estimated for halo collapse, tidal interactions, evaporation, turbulence | background of the problem |
+| 2212.00425 v2 | `main.tex:82` | N-body inflaton-halo simulations extended to GW emission; spectrum well matched by semi-analytic estimates from halo collapse and tidal evolution | comparison target of the box spectrum (deliverable 3 of S2) |
+| 2312.12499 v2 | `main.tex:107-115` | hybrid N-body and lattice; nonlinearity enhances GW production up to at least the inverse light-crossing time of the largest halos; "a fully relativistic gravitational treatment is required to resolve the spectrum at even higher frequencies" (115) | motivation and comparison target |
+| 1704.03500 v1 | `GW2nd_ApJ.tex:245` | induced second-order tensor modes are gauge dependent; the power spectrum depends on the hypersurface condition | gauge question (OPEN item 7) |
+| 2012.14016 v2 | `almostgaugeindependentarxiv_revised_2.tex:92-102` | Newton (shear-free) gauge suitable; spectrum invariant under reasonable gauge changes once the source is inactive; in dust domination a particular solution can be gauged away while the source is active (101-102) | the first source sits in Newtonian slicing (verifier C5, first_source P9) |
+| 2610.08045 v1 | `main.tex:40-49` | third-order induced GWs in matter domination: kernels grow secularly, Omega^(3) ~ x^6 against Omega^(2) ~ x^2 at x = k eta >> 1 | the higher-order departure of c_+ after a ~ 10 (REVIEW-wave2, first_source item 3); the brief's "title only verified" is now the abstract |
+| 2109.01398 v2 | `template_review.tex:109` | review of induced GWs, general formulation, non-standard expansion histories | background |
+
+Card-hours: 0.481 (wave 1, no gate) + 0.51 (wave 2, gate G1: first_source 0.43, newton_tests
+0.089) = 0.99 of 40 (`harness/bin/nrpic-run budget`).

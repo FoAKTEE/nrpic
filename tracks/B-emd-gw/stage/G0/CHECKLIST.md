@@ -1,6 +1,6 @@
 # Checklist: B-emd-gw G0
 
-Collected by `harness/bin/nrpic-stage collect B-emd-gw G0` on 2026-11-15T16:51:33Z from `coord/CHARTER.md` (last changed in b7b431d) and the brief (sections 13.3 and 13.4).
+Collected by `harness/bin/nrpic-stage collect B-emd-gw G0` on 2026-11-15T19:07:31Z from `coord/CHARTER.md` (last changed in b7b431dd) and the brief (sections 13.3 and 13.4).
 For each item set `status:` to PASS, FAIL or NA (OPEN until judged) and give the evidence: run ids,
 figure files, KB locators, commits. `nrpic-stage report` reads this file; the automated checks are
 in VERIFY_RESULTS.md (`nrpic-stage verify`), not here.
@@ -10,9 +10,9 @@ in VERIFY_RESULTS.md (`nrpic-stage verify`), not here.
 - [x] **C1** Problem statement, parameter ranges, exit criteria, test plan
   - status: PASS
   - evidence: REPORT.md sections 1-4 (problem, ranges, exit criteria, test plan mapped to brief lines 845-851); scope/SCOPE.md; item 3 checked twice (runs B-emd-gw-20261115-113102-bc5e082, -131027-03b1119)
-- [ ] **C2** The statements of the key references verified in the knowledge base
-  - status: OPEN
-  - evidence: statements verified at the source in kb-data/raw with file:line (REPORT.md section 5, scope/REFERENCES.md; lead re-read 5 locators); not yet in an indexed KB snapshot (outbox to kb); 2212.00425, 2312.12499 unread
+- [x] **C2** The statements of the key references verified in the knowledge base
+  - status: PASS
+  - evidence: statements of the key references read at the source with file:line (REPORT.md section 5, scope/REFERENCES.md); the knowledge base holds them as claims 171-228 and 619-625 of snapshot kb-20261115-44b7406, all 55 locator groups resolved by kb's own check (run kb-20261115-154906-f19880f; kb message 20261115T183741Z); the seven S2 key references the scope had not read (1002.3278, 2212.00425, 2312.12499, 1704.03500, 2012.14016, 2610.08045, 2109.01398) read by the lead at abstract level with locators in EVIDENCE.md (wave-2 section); not yet entered as claims (kb request in the outbox)
 - [x] **C3** Risk list
   - status: PASS
   - evidence: tracks/B-emd-gw/RISKS.md (R1-R11); REPORT.md section 6
@@ -73,12 +73,12 @@ in VERIFY_RESULTS.md (`nrpic-stage verify`), not here.
 - [x] **C17** Working note written with /paper-writing; its manuscript checker passed with --compile
   - status: PASS
   - evidence: written with /paper-writing (guide and notation one level above tracks/B-emd-gw/note); checker check_manuscript.py --compile: 0 undefined references or citations, 0 overfull boxes, every principle clean in the main text; remaining hits are run ids and file names in the ledger appendix and the scripts, accepted by exception 1 of WRITING_GUIDE.md; step 4 of the new-paper procedure (reviewer subagents) not run
-- [ ] **C18** Verifier subagent (fresh context) wrote VERIFIER_REPORT.md; every number of the Supplemental Material recomputed from the manifests
-  - status: OPEN
-  - evidence: the lead's re-check REVIEW.md (runs -131016-03b1119, -131027-03b1119) is the owner's; a fresh verifier's VERIFIER_REPORT.md is owed (OPEN.md item 3)
+- [x] **C18** Verifier subagent (fresh context) wrote VERIFIER_REPORT.md; every number of the Supplemental Material recomputed from the manifests
+  - status: PASS
+  - evidence: fresh-context verifier helper of wave 2: stage/G0/VERIFIER.md (eight claims C1-C8 recomputed from the artefacts before reading the track's review, commit ad7f707; 7 confirmed, C8 confirmed at emission and not for Omega today, two WRONG side items); its scripts rerun bit for bit by the lead (run B-20261115-190323-2f8806a); every number of the note's ledger regenerated from the manifests by nrpic-stage verify (rerun, compare, regenerate PASS) and checked against the files (note/tables/claims.md). Name: VERIFIER.md as the verifier's brief said, not VERIFIER_REPORT.md (request to orch to accept it)
 - [x] **C19** Null results and failed runs are on record (manifests and JOURNAL)
   - status: PASS
-  - evidence: failed predictions in the helper journals and JOURNAL.md; failed run B-emd-gw-20261115-120531-40a3597 and stopped run -130926-a1c2237 kept with manifests
+  - evidence: failed predictions in the helper journals (first_source P1 as worded, P4, P6 with G; newton_tests P1a, P1b, P2a, H1a, H1c, H1d-3, N1d, N1e) and in the lead's review journal (R5, R6 partly refuted); failed or stopped runs kept with manifests: B-emd-gw-20261115-120531-40a3597, -130926-a1c2237, B-20261115-161656-03d75e1, -164104-886798f, -170149-75036cf, -165526-23d8541, -170526-a53d364; superseded runs kept
 - [x] **C20** STATUS.md, JOURNAL.md and HANDOFF.md are current
   - status: PASS
-  - evidence: STATUS.md, JOURNAL.md, HANDOFF.md, RISKS.md rewritten 2026-11-15
+  - evidence: STATUS.md, JOURNAL.md (entry of the lead session 2026-11-15, wave 2), HANDOFF.md and RISKS.md rewritten by the lead at the end of wave 2
