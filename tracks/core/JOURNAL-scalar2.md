@@ -296,3 +296,52 @@ the files: the parameter list of a restarted run records the path of the restart
 An artefact of the comparison, not of the executable. `t6_regress.py` now compares the
 parameter list line by line (only `restart_file` may differ) and the data byte by
 byte; rerun below.
+
+## 2026-11-15, entry 6: outcomes of T2 and T3 (processors); one prediction failed
+
+**Run core-20261115-155040-eb68eaa** (seven runs at 32^3, nmax2 = 64; wall 534 s for 172
+steps at Courant 0.25, 1018 s for 344 steps at 0.125; figure `fig_evolve.png`).
+
+T2 background (the run ends at t = 8.44, which is 8.044 e-folds):
+- P2a HOLDS, by five orders more than predicted. Box means against the Friedmann
+  reference, largest relative difference over the run: phi 6.4e-13, Pi 4.5e-12, K 3.6e-12
+  at Courant 0.25 (6.3e-13, 3.8e-12, 9.1e-13 at 0.125); the criterion A1 of Track E is
+  1e-4. These are at the rounding of the box sums (entry 1), so they do not show an
+  order. e-folds -ln<chi>/2 against ln a: 5.49e-6 at the end for Courant 0.25, 3.30e-7
+  for 0.125, ratio 16.6 (predicted below 2e-5 and 16 +- 2).
+- P2b HOLDS: lockstep background against the reference 2.6e-13 (phi_b), 2.3e-12 (Pi_b),
+  2.1e-12 (ln a, absolute). The lockstep ln a is integrated as a slow variable and is
+  accurate to rounding, while chi of the mesh carries the fourth-order error of an
+  exponential: the two scale factors differ by 5.5e-6 after 8 e-folds at this step.
+
+T3 constraints in time:
+- P3a HOLDS: <|H|/[H]> at most 4.7e-11 (N = 2.4), <|M|/[M]> at most 3.7e-4 (N = 2.7);
+  after the entry both fall, to 3.1e-12 and 1.6e-7 at N = 8.04. P1:538-541 quotes 1e-10
+  for the Hamiltonian ratio during the entry.
+- P3b FAILED for the even part of H: rms E(1)/rms E(1/2) is 4.002 at t = 0 but 0.86 to
+  1.05 at the later dumps, not 4. The even part is dominated by a term that does not
+  depend on the amplitude: 2.4e-11 to 3.2e-11 at every dump, uniform in space. Run that
+  could have refuted the cause I name: the same case at Courant 0.125 has a late-time
+  floor of <|H|/[H]> of 1.8e-13 against 3.1e-12 at Courant 0.25 (factor 17, fourth order
+  in the step): it is the residual of the time integration of the background. I had
+  not thought of a zeroth-order part. Test T3b below separates it with a run at s = 0.
+  The rest of P3b HOLDS: the odd parts scale as s (rms O(1)/rms O(1/2) = 2.000 for H
+  and for M at the dumps t = 0.44 to 2.85), the even part of M as s^2 (4.000), and
+  the odd part overtakes the even part of H from N = 1.6 on (ratios 0.27, 0.21, 0.46,
+  2.7, 13.7, 20.3, 10.6).
+- An error of the analysis, found in its output: the dumps of cycle 66 were compared
+  although the short runs cut their last step at tlim = 3.2 and the long run does not
+  (t = 3.2398); the numbers of that dump (even ratio of M 66, odd ratios 1.92, 1.95)
+  mean nothing. T3b matches the dumps by time.
+- P3c HOLDS: with `noise_pi_sign = -1`, <|H|/[H]> reaches 9.8e-8, 5.7e4 times the proper
+  run within the first e-fold; rms O(H) is 5e4 times the even part (first order);
+  <|M|/[M]> = 0.16 at one e-fold, at most 0.21. (P1:541 quotes 1e-5 and 1 for its sign
+  flips; the size here agrees with the estimate 8 eps1 H int S_R/12 of entry 2.)
+- P3e HOLDS on processors: rms |M_bssn - M_adm| is at most 3.4e-4 of rms |M| up to t =
+  3.2.
+
+T3b, predicted before it runs: the s = 0 run (homogeneous universe, same mesh and step)
+has a Hamiltonian residual H0 that is uniform (spatial standard deviation below 1e-13)
+and lies between 2.0e-11 and 3.5e-11 at the dumps t = 0.44 to 2.85; the second-order
+part C2(s) = E(s) - H0 has rms C2(1)/rms C2(1/2) = 4 +- 0.2 at each of these dumps.
+Refuted if H0 is not uniform or if the ratio is not 4.
