@@ -51,5 +51,12 @@
  ],
  "cores": 6,
  "card_hours": 0.0,
- "status": "running"
+ "status": "completed",
+ "exit_code": 0,
+ "wall_time_s": 2301.3,
+ "core_hours": 3.8355,
+ "ended": "2026-11-15T16:12:35+00:00",
+ "sha256sums": "sha256sums.txt",
+ "sha256sums_sha256": "f0a16c83994bff037db1913ef8bb5d8956a48f706ac55218c94d4756bd59e1be",
+ "n_output_files": 162
 }
