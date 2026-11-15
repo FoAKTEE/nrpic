@@ -162,8 +162,8 @@ All 16 collisional runs pass T2(a), (b), (c) and T1 per step; no truncation.
   z reaches 35.6 (theta = 1e-3, sub, s1) and 26.5: the 4 se clause would have failed
   there, as the prediction feared; the sample temperature, declared before the run, is the
   one T2(c) defines. Diagnostic: the mean Moller speed of the tested pairs (sum_P/sum_W)
-  equals <v_Mol>(theta_sample) within 1.6e-4 at every temperature, and sum_W per step
-  equals (1/2) N rho_0 sigma dt within 1e-4.
+  equals <v_Mol>(theta_sample) within 1.0e-4 at every temperature (-9.8e-5 to +8.7e-5),
+  and sum_W per step equals (1/2) N rho_0 sigma dt within 6e-5.
 - T2(c): theta unchanged to 7.5e-13 sigma (energy exactly conserved).
 - Sub-cycled variant: max_nsub 5-6, mean n_sub 2.36 (theta = 1e-3) to 3.23 (theta = 10),
   max_P 0.098-0.115 (pmax 0.1; core reports up to 0.113), n_trunc = 0. My prediction said
