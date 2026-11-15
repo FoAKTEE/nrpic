@@ -170,3 +170,17 @@ a paper locator; check counts as in S4. Figure re-read: D now shows its 7 annota
 in the K8 layer (3 fulltext-ready, 2 to_verify, 2 judgement), F 56 of 57 (the 57th has no
 paper locator). Published files in
 `claims/` and `fig_locator_check.png` replaced by this run's.
+
+## S8 17:30 Answers
+
+Literature searches (read-only `scripts/kbq.py`, no prediction: lookups, not tests) and the
+nine answers written to `outbox/` as drafts for the lead. Found in corpus bibliographies or
+text: Gurian:2025zpc = 2505.15903; Faraoni-Jacques = 0707.1350; Mack-Ostriker-Ricotti =
+astro-ph/0608642; Muller-Brugmann shift damping = 1003.4681 (via 2505.01495
+`apssamp.tex:440-446`); Eggleton fit written in 2002.10547 `hills.tex:353-357`; gauge-wave
+long runs at A = 0.1 in 1106.2254 and 1503.03436, definition in gr-qc/0305023. Not found in
+the corpus: Sonine factor, Nanbu-Yonemura 1998, DSMC error papers, Icke 1973, White-Silk
+1979, Swiss-cheese stability, dust black-hole lattices, flyby quadrupole energy, Bowen-York
+junk energy against P/m, Philox SC11. One discrepancy found for E: line 320 of 2502.06783 is
+in equation (23) by the knowledge base and by a separate count of numbered environments,
+not (17) as the request says [TO VERIFY against the PDF]. `kb/serve_tests.py` passes (6).
