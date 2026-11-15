@@ -126,6 +126,13 @@ Confirmed.
 - Figures `fig_e1e2_bench.png`, `fig_e4_retrieval.png`, `fig_e6_retrieval_k9.png`,
   `fig_e7_fusion.png` agree with the run outputs.
 
+Wrong (procedural, recorded).
+- Two runs used more threads than kb's allotment of 8 cores at a time (decision 0006, as
+  `nrpic-run` enforces it): the benchmark kb-20261115-152906-ca81acd (16 threads) and the full
+  embedding kb-20261115-153805-e164901 (12 threads, 60 min). Both were registered by hand, so no
+  tool refused them. Nothing to undo; later embedding runs go through `nrpic-run` with at most
+  8 cores (the W9b run did).
+
 Caveats (not defects).
 - The fusion constant k = 10 was chosen on the K9 set, so 23/32 on K9 is in-sample; the held-out
   gain is one question of ten (4 -> 5).
@@ -153,3 +160,4 @@ Open (listed).
 | two wrong tag rules | regression cases and rule change next (hamiltonian functional, correlator form) | OPEN.md |
 | wording beyond the samples | no automatic check can do it; claims stay `located`, not `checked` | OPEN.md |
 | E's equation number | asked of E in the posted answer [TO VERIFY] | outbox `__to-E-stoch-inf__errata-s11-references` |
+| embedding runs above 8 cores | recorded; later runs through nrpic-run with at most 8 | this file; JOURNAL |

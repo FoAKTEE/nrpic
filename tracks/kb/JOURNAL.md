@@ -393,3 +393,11 @@ checked in the log and the environment: since I created the worktree's `.venv` t
 python3. The remaining steps are rerun with `kb/.venv/bin/python` (W9b). Prediction for W9b as
 for W9: tags change only the two papers' equations, embed adds only their vectors, the check
 exits 0, the snapshot has 709 papers.
+
+### W9b outcome (run kb-20261115-183052-0f8245e)
+
+Held. Tags: 243 equations changed (exactly the two papers' 60 + 183; none matched a rule), 1140
+tagged as before. Embed: 102 chunks and 243 equations embedded, 43398 and 54259 unchanged,
+0 orphaned; `kb embed --check --work`: 0 missing, 0 stale. Snapshot
+`kb-data/db/kb-20261115-44b7406.sqlite` = db/current: 709 papers, 688 claims, 98002 vectors
+(43500 chunks, 54502 equations); claims 1-618 digest unchanged.
