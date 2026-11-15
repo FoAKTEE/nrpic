@@ -74,8 +74,8 @@ def main():
         for (k, v), col in zip(th.items(), cols):
             axA.plot(e, v, color=col, ls="-" if k.startswith(("R1", "R2")) else "--")
             if k.startswith(("R1", "R2")):
-                i = np.argmin(abs(e - 0.17))
-                axA.text(0.17, v[i] * (0.62 if k.startswith("R1") else 1.18), k, color=col,
+                i = np.argmin(abs(e - 0.1))
+                axA.text(0.1, v[i] * (0.62 if k.startswith("R1") else 1.25), k, color=col,
                          fontsize=7, ha="center")
             else:
                 axA.text(0.248, v[-1] * 1.08, k, color=col, fontsize=7, ha="right",
@@ -84,8 +84,8 @@ def main():
         band = np.array([[C.hoop_threshold_delta(x, f * x) for f in pp] for x in e])
         axA.fill_between(e, band.min(1), band.max(1), color=fs.PAL["red"], alpha=0.2, lw=0)
         axA.plot([0.2], [0.045 * MU_TO_DELTA], "*", color="k", ms=9)
-        axA.text(0.195, 0.045 * MU_TO_DELTA, "2609.14218\nparticles", fontsize=7, ha="right",
-                 va="center")
+        axA.text(0.2, 0.045 * MU_TO_DELTA * 1.2, "2609.14218 particles", fontsize=7,
+                 ha="center", va="bottom")
         axA.annotate("", xy=(0.2, 2.6), xytext=(0.2, 0.95 * MU_TO_DELTA),
                      arrowprops=dict(arrowstyle="->", color="k", lw=1.0))
         axA.text(0.205, 2.45, "dust: horizon\nonly above", fontsize=7, va="top")
@@ -193,7 +193,7 @@ def main():
             ax.set_xscale("log")
             ax.set_xticks([0.01, 0.1, 1])
             ax.set_xticklabels(["0.01", "0.1", "1"])
-            ax.set_xlabel(r"$\delta$", labelpad=-2)
+            ax.set_xlabel(r"$\delta$")
             if k == 0:
                 ax.set_ylabel(r"$e$  ($p=0$)")
             else:
