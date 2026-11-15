@@ -33,3 +33,37 @@ missing; `kb ingest arxiv --new --extras` ingests exactly one paper, 2605.30145,
 parse_status ok, at least 5 sections, 10 equations and 20 bibliography entries
 (gr-qc/9412071, PostScript only, is skipped as before). Refuted if any other paper is
 (re)ingested, or the new paper parses as review/failed or below those counts.
+
+Outcome S2 (runs kb-20261115-152614-8a93349 verify-downloads, kb-20261115-152647-ca81acd
+ingest): prediction held. verify-downloads: 684 manifest rows ok 683, problem 1
+(gr-qc/9412071, as before), missing 0, extras 19 (2605.30145 ok, gzip-tar, tex; exit code
+1 is the known PostScript problem). Ingest `--new --extras`: 2 candidates, gr-qc/9412071
+download-problem (skipped), 2605.30145 ok, score 0.9995, 36 sections, 185 equations, 107
+chunks, 162 bibliography entries.
+
+## S3 16:05 Locator check and claims load (tool built here; prediction for the registered run)
+
+Built `kb/serve_locate.py` (track `file:line` -> flat.tex range, section, chunks,
+equations, figures by inverting `build/tex/<id_>/sourcemap.json`; number check at the
+source; claims load under the writer lock, origin `served:<key>`, idempotent),
+`kb/serve_tests.py` (6 tests, synthetic inputs, pass), the extractor
+`scripts/extract_track_locators.py` (A, B reference files; C report section 6; F scoping
+section 8 and `newton3/hills3/reference.py`), 27 hand-written entries
+`claims/manual.jsonl` (C, D, E errata and notes; F README locators), the driver
+`scripts/run_serve.py` and `scripts/fig_serve.py`.
+
+Debugging used unregistered dry runs in `scratch/kb/tmp/serve/` (nothing written to the
+database). Two parser defects found that way and fixed before the registered run: numbers
+written as percentages (`19\%` for F's fraction 0.19) and numbers glued to a TeX command
+(`\mu\geq0.05`) were not counted, so 15 correct locators looked wrong. One locator of D
+(1805.09034 `main.tex:195`) holds the citation but the slope r^{-3/2} is in the equation at
+lines 197-200; the entry now spans 195-200. The last dry run gave: 330 statements, 372
+locators, all 372 resolve to lines inside the stored source and into flat.tex (370 exact,
+2 partial); 2 rows carry no paper locator (C row astro-ph/0111176 without a file; F row on
+`athenak/src`); 132 statements quote numbers: 117 all found in the located lines, 2 all
+within three lines, 13 with numbers not found.
+
+Prediction for the registered run (same inputs, deterministic code): the same counts; 330
+claims loaded with consecutive new ids, because the claims table was empty at 15:23
+(`kb status`). Refuted if any count differs, or the ids are not consecutive (another writer
+of claims at the same time).
