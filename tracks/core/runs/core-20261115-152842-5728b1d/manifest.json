@@ -48,8 +48,29 @@
  ],
  "slurm_job": "4432",
  "slurm_wall_limit": "00:50:00",
- "state": "submitted",
+ "state": "finished",
  "submitted_utc": "2026-11-15T15:28:42Z",
- "card_hours": null,
- "registration": "by hand (tracks/core/verify/ladder2/cards.py)"
+ "card_hours": 0.5928,
+ "registration": "by hand (tracks/core/verify/ladder2/cards.py)",
+ "slurm_state": "COMPLETED",
+ "runs": {
+  "st_yc0p700": {
+   "log": "/data/haiyangw/nrpic/scratch/core/core-20261115-152842-5728b1d/st_yc0p700/athena.20261115-072844.log",
+   "start": "2026-11-15T07:28:44-08:00",
+   "cpu_time_s": 1056.132,
+   "finished": true,
+   "last_time": 300.0,
+   "rc": "rc=0"
+  },
+  "st_yc0p660": {
+   "log": "/data/haiyangw/nrpic/scratch/core/core-20261115-152842-5728b1d/st_yc0p660/athena.20261115-074622.log",
+   "start": "2026-11-15T07:46:22-08:00",
+   "cpu_time_s": 1067.475,
+   "finished": true,
+   "last_time": 300.0,
+   "rc": "rc=0"
+  }
+ },
+ "wall_time_s": 2134,
+ "finished_utc": "2026-11-15T16:04:53Z"
 }

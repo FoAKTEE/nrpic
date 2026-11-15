@@ -195,7 +195,8 @@ def figure(res):
         rr = r["radii"]
         ax[1].plot(rr["t"], rr["r50"], color=c, lw=1.2)
         ax[1].plot(rr["t"], rr["r90"], color=c, lw=1.2, ls="--")
-    ax[0].set_ylim(0.0, 1.25)
+    lo = min(0.85, min(np.nanmin(np.array(r["alpha_c"]) / r["alpha_c_eq"]) for r in runs) - 0.02)
+    ax[0].set_ylim(max(lo, 0.0), 1.15)
     ax[0].text(0.97, 0.06, "dotted: equal-binding (migration) target", transform=ax[0].transAxes,
                ha="right", fontsize=6.5)
     ax[0].set_xlabel(r"$t/M$", labelpad=-2)
