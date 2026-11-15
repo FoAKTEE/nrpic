@@ -149,7 +149,7 @@ units: mass = 0.1828776559, phi0 = -2.6667947899, pi0 = 0.02973004068, H*/Mpl =
 ## 6. What is verified
 
 Predictions were written before the runs (`tracks/core/JOURNAL-scalar2.md`, entries 2, 3,
-6, 8); outcomes in entries 4 to 9. Figures: `tracks/core/notes/scalar2_figs/`.
+6, 8, 12, 13); outcomes in entries 4 to 11, 13, 14. Figures: `tracks/core/notes/scalar2_figs/`.
 
 Executables: `.work/exe/athena_cpu_a58e95b` and `athena_gpu_a58e95b` of this worktree
 (source of commit a58e95b; published copies: section 8). Case of all runs unless said
@@ -177,6 +177,8 @@ slicing, `noise_level = 0`.
 | M_bssn against M_adm on the ladder: rms difference at most 8.5e-14 (N = 32), 4.4e-15 (64), 7.3e-15 (128, rounding), at most 6.9e-3 of rms \|M\| | the same runs |
 | Track E's U9 (U2 of the scaled base case on the card against the processor runs): A14 passes, 1.3e-15 (bound 1e-12). The full base case of NOISE_SPEC 9 (64^3, nmax2 = 256, 300 steps, U1 to U8) on the card: frozen tanh and Markov Heaviside pass every test (A1 9.8e-14 and 2.6e-15; 1, 8, 64 MeshBlocks and the restart at cycle 150 bit-identical on the card; N = 32 against 64 3.5e-15); Markov tanh A1 8.5e-10 against the reference as committed, 4.0e-15 against the cancellation-free one | card run core-20261115-155404-24c88e3; validations core-20261115-163855-7be94e4, core-20261115-163910-7be94e4 |
 | Other paths: without window and kicks (`slice_window = false`, nmax2 = 16, 32^3) the 128 modes cross and freeze on R alpha of the lockstep record within 8.3e-4 (5.9e-6 for \|n\| <= 2); with `noise_level = 1` R^NR equals W R alpha within 2.8e-3 for all modes, 5.6e-5 for \|n\| <= 2 (two to four times the level-0 value for these) | runs core-20261115-161659-38adbb8, core-20261115-162142-3407748, `fig_rnr_nowindow.png`, `fig_rnr_level1.png` |
+| Track E's A4 in its own form (record ratios when the amplitude is halved, F = ratio(s = 1)/ratio(s = 1/2)), N = 32 and 64: at t = 0 F_H = 4.005, 4.021 and F_M = 2.0000. [M] is first order in s, so a second-order M gives F_M = 2 (not 4): 1.78 to 1.85 (N = 32) and 1.95 to 2.00 (N = 64) before the late entry, 1.000 to 1.005 from 2.4 e-folds on (first-order truncation part). F_H is no order test while the uniform residual H0 of the time integration (3.0e-11 to 3.3e-11 at N = 32, 1.75e-12 to 1.91e-12 at N = 64, positive) is present: the second-order part of H has a negative box mean of 60 percent of its rms, so F_H = 0.76 to 0.87 at N = 32 and up to 5.04 at N = 64 early. With H0 of an s = 0 run subtracted, rms(H - H0) scales by 3.86 to 3.99 at N = 64 to 1.6 e-folds and by 2.0 in the late entry | run core-20261115-175842-7d54ff5 (five runs at 64^3; 32^3 from -155040-eb68eaa, -161040-760b515), analyses -184939-657c2e4, -185018-5fed4ea, `fig_halving.png` |
+| R^NR per mode at N = 64 (same case): within 5.89e-5 of W R alpha for all 1054 modes at N = 3.14 (2.8e-3 at N = 32, factor 47.5), 1.77e-6 for \|n\| <= 4; 1.2e-6 for \|n\| <= 2, which is the second-order part of R^NR: the part odd in s agrees to 2.2e-7, the run at s = 1/2 to 6.4e-7 | the same runs |
 | Cost on one A100, zone-cycles per second (one MeshBlock, nmax2 = (N/4)^2): 128^3: 1.634e7 with the kicks off, 1.484e7 with the sources, 1.459e7 with the constraint record every step; 256^3 (548958 modes): 1.654e7, 1.393e7, 1.364e7, i.e. 1.01, 1.20, 1.23 s per step; eight MeshBlocks of 128^3: 1.30 s. Sources 10 and 19 percent, record 2 percent. One processor core, 32^3 with sources and record: 1.06e4 | card run core-20261115-155404-24c88e3; run core-20261115-155040-eb68eaa |
 
 Failed predictions and failed runs (journal entries 4 to 11): the even part of H does
@@ -188,8 +190,16 @@ for the fields that are pure perturbations (At_ij 4.4e-8 of 2e-7; the difference
 rounding of order-one quantities and the criterion should have been absolute); with
 `noise_level = 1` the lowest shells deviate two to four times more than with level 0,
 not "within 20 percent"; the difference M_bssn - M_adm stops falling at N = 128
-(rounding). Three runs failed on defects of the test scripts (a relative path; twice
-the comparison of restart files, which record the path they were started from).
+(rounding). Entries 12 to 14: the record factor F_H fell outside both predicted
+ranges (the mean of the second-order part offsets H0; found, then predicted and
+checked); the odd parts at N = 64 before 1.2 e-folds sit on a rounding floor of a few
+1e-13, not 1e-13; the lowest modes of R^NR at N = 64 kept 1.2e-6 instead of falling
+below 5e-7 (second order, T12b). Runs that failed on defects of the test scripts: a
+relative path; twice the comparison of restart files, which record the path they
+were started from; an unexpanded `$NRPIC_RUN_DIR`; an analysis repeat without a way to
+name its data (core-20261115-154749-1b20b0f, -155841-bc78aa8, -160549-a36abe3,
+-175447-764390e, -184925-71663b2). Run -161513-e09c0b1 stopped when its session
+ended.
 
 ## 7. Limits and open points
 
@@ -206,6 +216,10 @@ the comparison of restart files, which record the path they were started from).
   for the momentum constraint and suggests a smaller k_max).
 - The uniform Hamiltonian residual of the background scales with the fourth power of
   the step; at H dt = 0.049 it is 3e-12 of [H].
+- Reading Track E's A4 on the record: <|M|/[M]> halves for a second-order M (factor 2;
+  [M] is first order), and <|H|/[H]> mixes H0 with the mean of the second-order part
+  (factors 0.76 to 5.04 above). An order test of H needs the s = 0 run (H - H0) or the
+  odd/even split of +-s; `noise_mode_scale = 0` gives the s = 0 run.
 - a* = 1 only; the stencil k2 and the stencil projector use the cell size of the root
   mesh; refined meshes are not tested with the slice.
 - The inflection (USR) case has not been run with the slice; `noise_level = 1` has one

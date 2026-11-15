@@ -81,6 +81,15 @@ geodesic slicing, noise_level = 0, unless said otherwise.
   (nmax2 = 16): within 8.3e-4, frozen after the crossing. noise_level = 1: 2.8e-3.
   [core-20261115-160134-3fde433, -161659-38adbb8, -162142-3407748]
 - 1, 8, 64 MeshBlocks and a restart: dumps bit-identical. [core-20261115-155719-383321a]
+- Track E's A4 read on the record when the amplitude is halved (N = 32 and 64): a
+  second-order M halves <|M|/[M]> (factor 2, since [M] is first order): 1.95 to 2.00
+  at N = 64 before the late entry, 1.00 in it (first-order truncation part). The
+  factor of <|H|/[H]> (0.76 to 5.04) is no order test while the uniform residual H0 of
+  the time integration is present; with H0 of a run at noise_mode_scale = 0
+  subtracted, rms(H - H0) scales by 3.86 to 3.99. R^NR at N = 64: 5.9e-5 for all modes
+  (2.8e-3 at N = 32); the lowest modes keep 1.2e-6, the second-order part of R^NR
+  (its first-order part agrees to 2.2e-7).
+  [core-20261115-175842-7d54ff5, -184939-657c2e4, -185018-5fed4ea]
 - Card against processors, same input: slice bit-identical; after 20 steps the fields
   differ by at most 3.3e-14, the constraint fields by 3.4e-13.
   [card core-20261115-155404-24c88e3 (Slurm job 4444); core-20261115-163549-7be94e4]

@@ -701,3 +701,21 @@ lower). Parts identical to the run's own analysis.
   first-order part agrees with the linear solution to 2.2e-7. For all modes the odd part
   equals the total (5.886e-5 against 5.889e-5 at the last dump): the deviation of the
   high shells is first order (truncation, entry 11).
+
+## 2026-11-15, entry 15: state of the package at 18:55Z (for a reader with no memory)
+
+Delivered on `core/scalar-2` (source of `athenak/` unchanged since a58e95b6):
+`id = stochastic` (initial slice at N*), constraint magnitudes and the record
+`.sf.con.hst`, dumps NRSFDMP2, `noise_mode_scale`; executables published in
+`scratch/core/exe/core_scalar-2/` (COMMIT with the full hash since 17:49Z, READY updated
+18:51Z with T12); interface proposal `tracks/core/interfaces/scalar_field_2.md`; reply to
+Track E `tracks/core/outbox/20261115T1855Z__to-E-stoch-inf__scalar2-ready.md`. Tests T1
+to T12b with predictions and outcomes in entries 2 to 14; failed predictions and failed
+runs are listed in section 6 of the interface proposal. Card time used by the package:
+210 s (job 4444, first session); none in the second.
+
+Open: `rng::ModeEntity` and the rng.md wording (Track E's request (c)); the inflection
+(USR) case with the slice; any run beyond 128^3 with dumps; refined meshes and a* other
+than 1; a second seed; the lead's merge into `core/nrpic` and the release. Core's shared
+`HANDOFF.md` and `STATUS.md` were not touched by this package (other core packages run
+beside it); this entry is the package's handoff.
