@@ -1,0 +1,83 @@
+# Test T4 of work package dfix (journal of core), periodic variant: a fixed point mass
+# M = 1 with softening 0.1 (fixed in the comoving coordinates) at the centre of a
+# periodic box in comoving coordinates and conformal time, a = (1 + H t/2)^2, H = 0.1.
+# Light particles on bound orbits around it; the Layzer-Irvine combination
+# C = a (K + W) + int K da of the history must stay constant.
+# Particle file and overrides: tracks/core/analysis/dfix/t4_newton.py.
+
+<comment>
+problem   = point mass in the Newtonian mode, periodic box with expansion
+
+<job>
+basename  = npmp
+
+<mesh>
+nghost    = 2
+nx1       = 32
+x1min     = -2.0
+x1max     = 2.0
+ix1_bc    = periodic
+ox1_bc    = periodic
+nx2       = 32
+x2min     = -2.0
+x2max     = 2.0
+ix2_bc    = periodic
+ox2_bc    = periodic
+nx3       = 32
+x3min     = -2.0
+x3max     = 2.0
+ix3_bc    = periodic
+ox3_bc    = periodic
+
+<meshblock>
+nx1       = 16
+nx2       = 16
+nx3       = 16
+
+<time>
+evolution  = dynamic
+integrator = rk2
+cfl_number = 1.0
+nlim       = -1
+tlim       = 20.0
+ndiag      = 100000
+
+<gravity>
+four_pi_G      = 12.566370614359172
+threshold      = 0.0
+niteration     = -1
+npresmooth     = 1
+npostsmooth    = 1
+full_multigrid = false
+fmg_ncycle     = 1
+show_defect    = 0
+mg_nghost      = 1
+root_on_host   = false
+
+<particles>
+particle_type  = nrpic
+pusher         = newton
+interp         = hermite
+dt             = 0.002
+newton_expansion = power
+newton_hubble  = 0.1
+newton_exponent = 2.0
+newton_pm_mass = 1.0        # mass of the fixed point mass (0: none)
+newton_pm_x1   = 0.0        # its position
+newton_pm_x2   = 0.0
+newton_pm_x3   = 0.0
+newton_pm_soft = 0.1        # softening length s
+newton_pm_soft_frame = comoving   # comoving: s fixed in the coordinates; physical: s/a
+newton_bg_t0   = 0.0        # > 0: background acceleration -(2/9) x/(t0 + t)^2
+deposit        = true
+deposit_shape  = cic
+nfilter        = 0
+hist_dcycle    = 10
+traj_dcycle    = 5
+traj_ntrack    = 16
+snap_dt        = 10.0
+particle_file  = npmp.nrp
+acc_nsphere    = 1
+acc_radius1    = 1.0
+peri_count     = true
+acc_dcycle     = 10

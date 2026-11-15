@@ -250,3 +250,36 @@ the cubic reconstruction of the Kerr-Schild fields at dx = 0.25 M is still good)
 The statement "E is exact at the sphere" holds here because the metric is stationary;
 in an evolved spacetime E is the instantaneous alpha W - beta^i u_i and Track D's
 definition (a) needs the sphere in the region where the gauge has settled [JUDGEMENT].
+
+### T4 Point mass and background term in the Newtonian mode (requests D
+`newtonian-mode-point-mass`, A `newton-mode-and-ball-ic` item 1, external acceleration)
+
+Implemented: `athenak/src/particles/nrpic_external.hpp` (the external acceleration and
+potential at a particle), read in `NrpicNewtonInit`, added in the two half kicks
+(`NrpicNewtonKick`, `NrpicNewtonPush`) and in the potential-energy sum of the history
+(counted in full, the mesh potential once per pair). Options `newton_pm_mass`,
+`newton_pm_x1..3`, `newton_pm_soft`, `newton_pm_soft_frame` (comoving or physical),
+`newton_bg_t0`. The point mass is not deposited and does not move. The accretion
+diagnostics of T3 bracket the Newtonian push as well (energy 1 + p^2/2a^2 + Phi/a).
+
+Set-up: `problems/tests/newton_point_mass.athinput` (isolated, 32^3 cells over
+[-2, 2]^3, step 0.002), `..._periodic.athinput` (periodic, a = (1 + 0.05 t)^2), script
+`tracks/core/analysis/dfix/t4_newton.py`; particles of rest mass 1e-10, G = M = 1.
+
+Predictions (written before the run):
+- kepler (s = 0; orbits (a, e) = (1, 0.5) and (0.8, 0.3) from the apocentre, 20 time
+  units): distance to the exact Kepler orbit below 1e-3 at all times (leapfrog phase
+  error); pericentre counters 3 and 4; sphere r = 1: 8 inwards, 7 outwards, sums of m E
+  3.375e-10 and 3.000e-10 within 2e-3 relative (the momentum is half a kick behind);
+  energy column C of the history constant to 1e-5 relative;
+- plummer (s = 0.3; circular orbits at r = 1 and 0.5 with v = r (r^2 + s^2)^(-3/4)):
+  radius constant to 1e-5, distance to the exact position below 1e-4 over 20 units;
+- background (t0 = 1): r/r0 = (1 + t)^(2/3) for particles started with v = 2 r0/3 and
+  (1 + t)^(1/3) for v = r0/3, to 1e-6 relative over three time units;
+- expand (periodic, comoving softening 0.1): distance to an independent ODE solution
+  (DOP853, 1e-12) below 1e-3 over 20 units of conformal time (a from 1 to 4); C of the
+  history constant to 1e-5 of a|W|, while a (K + W) itself changes by more than 1e-2 of
+  a|W| (so that the constancy of C tests the potential-energy sum and int K da);
+- expand_phys (softening 0.1/a): distance to its own ODE solution below 1e-3.
+Refuted if an orbit leaves its exact curve beyond the bound (wrong force law, wrong G,
+wrong softening rule, wrong time level of the background term) or if a count differs.
