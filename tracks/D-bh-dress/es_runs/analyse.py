@@ -191,6 +191,47 @@ def axis_profiles(run, base, var_list=("z4c_alpha", "z4c_chi", "z4c_Khat", "z4c_
     return out
 
 
+def read_snapshot(path):
+    """<base>.part.NNNNN.bin: NRPSNAP1, time, N, cycle, N x 7 float64 (x^i, u_i, m), N int32 tags,
+    N int32 species (docs/FORMATS.md)."""
+    with open(path, "rb") as f:
+        if f.read(8) != b"NRPSNAP1":
+            return None
+        t = np.frombuffer(f.read(8), np.float64)[0]
+        n = int(np.frombuffer(f.read(8), np.int64)[0])
+        f.read(8)
+        rec = np.frombuffer(f.read(56 * n), np.float64).reshape(n, 7)
+        tags = np.frombuffer(f.read(4 * n), np.int32)
+    return t, rec, tags
+
+
+def dust_inner_edge(run, base, per, wall_tags):
+    """Smallest coordinate radius of the dust (tags >= 140) in every snapshot against the
+    coordinate radius of the wall tracers at that time (spherical symmetry: the areal radius
+    grows with the coordinate radius on the outer sheet, so dust inside the wall shows up as
+    r_dust < r_wall)."""
+    out = []
+    for p in sorted(glob.glob(os.path.join(run, f"{base}.part.[0-9]*.bin"))):
+        s = read_snapshot(p)
+        if s is None:
+            continue
+        t, rec, tags = s
+        dust = tags >= NTR
+        if not dust.any():
+            continue
+        r = np.linalg.norm(rec[dust, :3], axis=1)
+        rw = []
+        for tag in wall_tags:
+            q = per.get(tag)
+            if q is not None and q["t"][0] <= t <= q["t"][-1]:
+                rw.append(float(np.interp(t, q["t"], np.linalg.norm(q["x"], axis=1))))
+        out.append(dict(t=float(t), n_dust=int(dust.sum()), r_dust_min=float(r.min()),
+                        r_dust_max=float(r.max()), r_wall_min=min(rw) if rw else None,
+                        r_wall_max=max(rw) if rw else None,
+                        n_dust_inside_wall=int(np.sum(r < min(rw))) if rw else None))
+    return out
+
+
 # ------------------------------------------------------------------ analysis
 def exact_groups(model, info_tracers):
     groups = []
@@ -300,6 +341,8 @@ def main():
         prof = [] if a.no_profiles else axis_profiles(d, base)
         data[name] = dict(S=S, H=H, per=per, prof=prof, groups=groups)
         r = dict(dir=d, horizon=horizon_drift(S, a.t0), tracers=tr)
+        wall = [g for g in groups if abs(g["R0"] - 36.0) < 1e-9][0]["tags"]
+        r["dust_inner_edge"] = dust_inner_edge(d, base, per, wall)
         if H is not None:
             r["hst"] = dict(t_last=float(H["time"][-1]), np_first=int(H["np"][0]), np_last=int(H["np"][-1]),
                             n_excised_last=int(H["n_excised"][-1]), n_escaped_last=int(H["n_escaped"][-1]),
