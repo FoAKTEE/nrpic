@@ -37,7 +37,7 @@ def search(lay, q, repo=None, kind="any", k=20, db=None):
     hits, seen = [], set()
 
     def add(row, how, extra=None):
-        key = (how, row["repo_id"], row["path"], row["line"], row["label"])
+        key = (row["repo_id"], row["path"], row["line"], row["label"])
         if key in seen or len(hits) >= k:
             return
         seen.add(key)
