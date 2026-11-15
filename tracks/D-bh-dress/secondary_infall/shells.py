@@ -40,6 +40,8 @@ CONFIGS = {
                             mu_max=8.0, n=4000, a_end=8.0, sigma=0.0, nj=1),
     "pass_e0.1_s5_a100": dict(eps=0.1, mode="pass", soft=5.0, r_abs=0.0, mu_core=1e-3,
                               mu_max=80.0, n=5000, a_end=100.0, sigma=0.0, nj=1),
+    "pass_e0.1_s0.5_a100": dict(eps=0.1, mode="pass", soft=0.5, r_abs=0.0, mu_core=1e-3,
+                                mu_max=80.0, n=5000, a_end=100.0, sigma=0.0, nj=1),
     "absorbL_e0.01_sig0.02": dict(eps=0.01, mode="absorb", soft=0.0, r_abs=4.0,
                                   mu_core=1e-3, mu_max=5.0, n=1000, a_end=4.0,
                                   sigma=0.02, nj=8),
@@ -159,12 +161,17 @@ def run(c, snaps_a, eta=0.02, log_every=2000):
             first = kk[np.isnan(t_c[kk])]
             t_c[first] = t
         if c["mode"] == "absorb":
-            cap = alive & (((np.abs(r) < c["r_abs"]) & (j < JCAP)) | (np.abs(r) < R_HARD))
+            # with angular momentum the capture rule scales with the current hole mass
+            # (L_c = 4 M_bh, inside 4 M_bh; any particle inside 2 M_bh); the radial runs keep
+            # the fixed r_abs of their closed-form check
+            sc = mbh if c["nj"] > 1 else 1.0
+            cap = alive & (((np.abs(r) < c["r_abs"] * sc) & (j < JCAP * sc))
+                           | (np.abs(r) < R_HARD * sc))
             kc = np.where(cap)[0]
             if kc.size:
                 # time of reaching r_abs by linear interpolation of the radius
                 ro, rn = np.abs(r_old[kc]), np.abs(r[kc])
-                w = np.clip((ro - c["r_abs"]) / np.maximum(ro - rn, 1e-300), 0.0, 1.0)
+                w = np.clip((ro - c["r_abs"] * sc) / np.maximum(ro - rn, 1e-300), 0.0, 1.0)
                 t_abs[kc] = t - dt + w * dt
                 mbh += m[kc].sum()
                 m[kc] = 0.0
