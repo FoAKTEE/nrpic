@@ -59,3 +59,20 @@ Helper packages under review (their own journals hold their predictions and outc
   commit 313d399 (git archive) reproduces step.nrp, the 31 snapshots and the history of run
   C-sidm-20261115-121302-313d399 byte for byte with the same processor executable. Refuted
   by any differing file.
+
+## 2026-11-15T13:30Z  session C-sidm lead (wave 1 review)  outcome L1b, prediction L7
+
+- outcome L1b (run C-sidm-20261115-132327-eab8e41): held. With one thread the polytrope
+  check is byte-identical to run C-sidm-20261115-121524-5cebcf5; with the collide code of
+  commit 313d399 all 33 T6-0 files (step.nrp, 31 snapshots, history) are byte-identical to
+  run C-sidm-20261115-121302-313d399. The two differences of L1 are therefore the LAPACK
+  thread count and the change of make_box.py in abd9c2e, not a defect of the codes.
+- found: core committed the operator at 13:19Z (3436846 on `core/collisions`: design,
+  kernels `nrpic_collide.hpp`, task `nrpic_collide.cpp`, predictions; "nothing is tested
+  yet"). The kernel header is standalone (NRPIC_STANDALONE).
+- prediction L7 (`review/t0_kernel.py 3436846`): core's committed kernels CollGammaRelM1,
+  CollMoller and CollScatter pass T0 of collide/TESTS.md on all 208 equal-mass test vectors
+  with -O0, -O2 and -O3 -march=native -ffp-contract=fast: every component of u' within
+  1e-13 max(1, |u|) of the 60-digit reference (expected ~1e-15, like the oracle), pair
+  four-momentum conserved to 4 eps of the pair energy, v_Mol within 1e-13 relative.
+  Refuted by any failing case. The unequal-mass vector is outside an equal-mass kernel.

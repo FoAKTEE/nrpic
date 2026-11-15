@@ -12,7 +12,7 @@ figure of the four packages opened (PNG read). Predictions L1-L6 were written in
 
 | Prediction | Outcome |
 |---|---|
-| L1 reruns identical | RERUN_OUTCOME |
+| L1 reruns identical (run -131135-3077a99, 4 threads) | partly refuted. Held: collide 62 + 3 tests and gravothermal unit tests pass; scope's three outputs (948, 2451, 2853 numbers) and equilibria's checks (318 numbers, 243/243 pass flags) are identical. Refuted: gravothermal's polytrope check differs at 5e-10 (omega^2) and 1.5e-10 (zero location), conclusion unchanged; the T6-0 rerun at HEAD has other initial momenta (0/31 snapshots identical; analysis still passes). Follow-up L1b (run C-sidm-20261115-132327-eab8e41) held: with one thread the polytrope output is byte-identical to run -121524-5cebcf5, and with the collide code of commit 313d399 (`git archive`) all 33 T6-0 files are byte-identical to run -121302-313d399. Causes therefore: the LAPACK thread count, and the change of `make_box.py` in abd9c2e (odd population: one particle at rest). |
 | L2 (X1) closed-form <v_Mol> against a 3D Gauss quadrature over both momenta (no Gondolo-Gelmini reduction), theta = 1e-3..100 | held: largest difference 5.2e-7 (theta = 1e-3, limited by the kink of the angle-averaged speed at |p1| = |p2|; 64 against 128 nodes 1.5e-6), 2.6e-14 at theta = 100; collide's `rate.vmol_mean` equals the closed form exactly. `fig_review_rate.png` |
 | L3 (X2) scope's and gravothermal's truncated Maxwell-Boltzmann solvers | held: eps agrees to 2.0e-8 (b = 0.1) and 3.2e-9 (b = 0.5), Z(0) to 2.0e-9; eps maxima at Z(0) = 0.5404128 and 0.5404128 (b = 0.1), 0.5141817 (b = 0.5); against F21 rows `main.tex:492, 495, 498, 501` both within 8.0e-5 in M, E_rest, eps, Z(0), v(0) (largest at w0 = 4.0515, F21's fixed-step RK4 per the gravothermal helper). `fig_review_tmb.png` |
 | L4 (X3) scope's solver at b = 1 against equilibria's `evstatic` King model | held: E_b to 3.5e-8, Z_c to 6.5e-10; both y_max = 0.334032 (printed 0.334, 2009.08163 `paper.tex:953`) |
@@ -85,7 +85,7 @@ figure of the four packages opened (PNG read). Predictions L1-L6 were written in
   opened: `fig_eos`, `fig_sequence_b0.2/0.3/0.5` (same construction as b = 0.1).
 
 ### equilibria (`tracks/C-sidm/equilibria/`, C-pre-4 initial data)
-- Confirmed: EQUILIBRIA_OUTCOME; the King y_max 0.334032 against two other solvers (X3);
+- Confirmed: the offline checks of the 13 models rerun with identical numbers and 243/243 pass flags (L1); the King y_max 0.334032 against two other solvers (X3);
   the 2009.08163 table (`paper.tex:953-956`) and the gr-qc/0601112 Z_c line (`:694`)
   re-read; the Kn conversion numbers (X4).
 - Not confirmed: the AthenaK smoke run (run C-sidm-20261115-125308-54870b9) was not
