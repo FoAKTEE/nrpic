@@ -38,19 +38,25 @@ COLS = dict(H2=3, M2=4, Mx2=6, My2=7, Mz2=8)
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--t5", required=True)
-    ap.add_argument("--regress", required=True)
+    ap.add_argument("--regress", default=None,
+                    help="regression run (first record of the unchanged input); optional")
     a = ap.parse_args()
     top = os.path.join(SCRATCH, a.t5)
     with open(os.path.join(top, "cases_t5.json")) as f:
         cs = json.load(f)
-    with open(os.path.join(SCRATCH, a.regress, "regress.json")) as f:
-        reg = json.load(f)["cases"]["jeans"]
+    with open("/data/haiyangw/nrpic/runs/jeans/n1e4_v19/jeans.z4c.user.hst") as f:
+        reg = dict(hst0_run_n1e4_v19=next(l for l in f if not l.startswith("#")).split(),
+                   hst0_new=None)
+    if a.regress:
+        with open(os.path.join(SCRATCH, a.regress, "regress.json")) as f:
+            reg = json.load(f)["cases"]["jeans"]
     with open(os.path.join(HERE, "predict.json")) as f:
         pred = json.load(f)["two_overdensities"]
     out = dict(runs=dict(t5=a.t5, regress=a.regress), predicted=pred)
     out["record_t0"] = dict(
         run_n1e4_v19=[float(v) for v in reg["hst0_run_n1e4_v19"]],
-        unchanged_input_this_executable=[float(v) for v in reg["hst0_new"]],
+        unchanged_input_this_executable=(None if reg["hst0_new"] is None else
+                                         [float(v) for v in reg["hst0_new"]]),
         columns="time dt C-norm2 H-norm2 M-norm2 Z-norm2 Mx-norm2 My-norm2 Mz-norm2 "
                 "Theta-norm2 Volume")
     rows = {k: {c: v["hst0"][i] for c, i in COLS.items()} for k, v in cs["cases"].items()}
@@ -111,20 +117,21 @@ def main():
         np.add.at(den, (iy, ix), vol)
         return num / den
 
-    panels = [("smooth field $T$ (closed form)", coarse(Tv)),
+    panels = [("closed form $T$", coarse(Tv)),
               (r"$K_{ij}=0$ (as run)", coarse(fields["none"])),
-              ("smeared Bowen-York curvature", coarse(fields["curv"])),
-              ("curvature, equal momentum per particle", coarse(fields["gauss_curv"]))]
+              ("with curvature", coarse(fields["curv"])),
+              ("equal shares", coarse(fields["gauss_curv"]))]
     vmax = np.abs(panels[0][1]).max() * 1.5
     fig, ax = plt.subplots(1, 4, figsize=(fs.FULL_WIDTH, 2.6), sharey=True)
     for axx, (title, img) in zip(ax, panels):
         im = axx.imshow(img, origin="lower", extent=(-half, half, -half, half),
                         cmap="RdBu_r", vmin=-vmax, vmax=vmax)
-        axx.set_title(title, fontsize=7.5)
+        axx.set_title(title, fontsize=9)
         axx.set_xlabel("$x/M$")
     ax[0].set_ylabel("$y/M$")
-    fig.colorbar(im, ax=ax, shrink=0.85, pad=0.015,
-                 label=r"$\langle\mathcal{M}_y\rangle$ over $(0.5\,M)^2\times 1\,M$")
+    cb = fig.colorbar(im, ax=ax, shrink=0.7, pad=0.015, aspect=18)
+    cb.set_label(r"$\langle\mathcal{M}_y\rangle$", labelpad=8)
+    cb.set_ticks([-0.04, 0.0, 0.04])
     fs.save(fig, os.path.join(HERE, "figs", "fig_clump_jeans_t0"))
     plt.close(fig)
 

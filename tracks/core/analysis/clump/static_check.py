@@ -199,7 +199,7 @@ def main():
     dxs = np.array([16.0 / n for n in NS])
 
     # ---- figure 1: residual against resolution, and against particle number
-    fig, ax = plt.subplots(1, 2, figsize=(fs.FULL_WIDTH, 3.4))
+    fig, ax = plt.subplots(1, 2, figsize=(fs.FULL_WIDTH, 4.3))
     r4, r0 = t1["filter4c"]["rows"], t1["filter0"]["rows"]
     ax[0].plot(dxs, [r4[n]["M_none"] for n in NS], "o-", color=blue,
                label=r"$K_{ij}=0$")
@@ -217,11 +217,12 @@ def main():
                label="spin, curvature")
     ax[0].plot(dxs, [out["T3"]["rows"][n]["M_none"] for n in NS], "v:", color=orange,
                label=r"spin, $K_{ij}=0$")
-    xx = np.array([0.125, 0.5])
-    ax[0].plot(xx, 2e-4 * (xx / 0.125) ** 2, **fs.THIN)
-    ax[0].plot(xx, 2e-5 * (xx / 0.125) ** 4, **fs.THIN)
-    ax[0].text(0.4, 1.3e-3, r"$\Delta x^2$", fontsize=10)
-    ax[0].text(0.4, 1.0e-3 * 1.2e-1, r"$\Delta x^4$", fontsize=10)
+    xx = np.array([0.27, 0.5])
+    ax[0].plot(xx, 4e-6 * (xx / 0.27) ** 2, **fs.THIN)
+    ax[0].plot(xx, 4e-7 * (xx / 0.27) ** 4, **fs.THIN)
+    ax[0].text(0.52, 1.1e-5, r"$\Delta x^2$", fontsize=9)
+    ax[0].text(0.52, 3.5e-6, r"$\Delta x^4$", fontsize=9)
+    ax[0].set_xlim(0.105, 0.68)
     ax[0].set_xscale("log")
     ax[0].set_yscale("log")
     ax[0].set_xticks(dxs)
@@ -229,7 +230,8 @@ def main():
     ax[0].xaxis.set_minor_formatter(matplotlib.ticker.NullFormatter())
     ax[0].set_xlabel(r"cell size $\Delta x/\sigma$")
     ax[0].set_ylabel(r"momentum-constraint norm $\|\mathcal{M}\|$")
-    ax[0].legend(fontsize=7, loc="lower right", frameon=False)
+    fig.legend(*ax[0].get_legend_handles_labels(), fontsize=8, loc="lower center",
+               ncol=4, frameon=False)
     Ns = np.array([1e4, 1e5, 1e6])
     ax[1].plot(Ns, [nz[k]["M_none"] for k in ("1e4", "1e5", "1e6")], "o-", color=blue,
                label=r"$K_{ij}=0$")
@@ -237,15 +239,15 @@ def main():
                label="curvature")
     ax[1].plot(Ns, [nz[k]["poisson"] for k in ("1e4", "1e5", "1e6")], **fs.GUIDE,
                label="Poisson noise (predicted)")
-    ax[1].axhline(r4[64]["M_curv"], **fs.MASK_LINE)
-    ax[1].text(1.2e4, r4[64]["M_curv"] * 1.12, "lattice particles (continuum part)",
-               fontsize=8)
+    ax[1].axhline(r4[64]["M_curv_interior"], **fs.MASK_LINE)
+    ax[1].text(1.2e4, r4[64]["M_curv_interior"] * 0.78,
+               "lattice particles (continuum part)", fontsize=8)
     ax[1].set_xscale("log")
     ax[1].set_yscale("log")
     ax[1].set_xlabel("equal-mass particles $N$")
     ax[1].set_ylabel(r"$\|\mathcal{M}\|$ at $\Delta x=0.25\,\sigma$")
     ax[1].legend(fontsize=8, frameon=False, loc="center right")
-    fig.tight_layout()
+    fig.tight_layout(rect=(0, 0.12, 1, 1))
     fs.save(fig, os.path.join(HERE, "figs", "fig_clump_convergence"))
     plt.close(fig)
 
@@ -282,9 +284,10 @@ def main():
     x, diff, cf, h0 = lines["0.06"]
     ax[0].plot(x, h0, color="grey", lw=1.0, ls=":", label=r"$\mathcal{H}$ with $K_{ij}=0$")
     ax[0].set_xlim(-6, 6)
+    ax[0].set_ylim(-9.0e-4, 1.3e-3)
     ax[0].set_xlabel(r"$x/\sigma$ (line $y=z=\Delta x/2$)")
     ax[0].set_ylabel(r"$\mathcal{H}(\mathrm{curvature})-\mathcal{H}(K_{ij}=0)$")
-    ax[0].legend(fontsize=7, frameon=False, loc="lower center")
+    ax[0].legend(fontsize=7, frameon=False, loc="upper left", ncol=2)
     Pv = np.array([0.02, 0.04, 0.06])
     ax[1].plot(Pv, [t2[k]["diff_norm"] for k in ("0.02", "0.04", "0.06")], "o", color=red,
                label="measured")
@@ -294,10 +297,14 @@ def main():
     ax[1].plot(pp, t2["0.06"]["predicted_norm"] * (pp / 0.06) ** 2, **fs.GUIDE,
                label=r"$\propto P^2$")
     ax[1].axhline(t2["0.06"]["H_none_norm"], **fs.MASK_LINE)
-    ax[1].text(0.016, t2["0.06"]["H_none_norm"] * 1.15,
+    ax[1].text(0.016, t2["0.06"]["H_none_norm"] * 0.68,
                r"$\|\mathcal{H}\|$ with $K_{ij}=0$ (cloud and filter)", fontsize=8)
     ax[1].set_xscale("log")
     ax[1].set_yscale("log")
+    ax[1].set_xticks([0.02, 0.04, 0.06])
+    ax[1].set_xticklabels(["0.02", "0.04", "0.06"])
+    ax[1].xaxis.set_minor_formatter(matplotlib.ticker.NullFormatter())
+    ax[1].set_ylim(3.0e-4, 3.0e-2)
     ax[1].set_xlabel("momentum $P$ ($m=0.2$, $\\sigma=1$)")
     ax[1].set_ylabel(r"$\|\mathcal{H}(\mathrm{curv.})-\mathcal{H}(K_{ij}=0)\|$")
     ax[1].legend(fontsize=8, frameon=False, loc="lower right")

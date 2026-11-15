@@ -305,3 +305,111 @@ records at t = 0 of `clump_static.athinput` on the card (64 cells without and wi
 curvature, 128 cells with it, spin at 64 cells) equal the processor records in the six
 printed digits (the deposit adds in another order on a card, 1e-16). Refuted by a
 differing data byte or a relative difference above 1e-6.
+
+### Outcomes (2026-11-15, processors; all runs registered by hand, status 0)
+
+Scripts: `tracks/core/analysis/clump/run_static.py`, `static_check.py` (numbers in
+`static_check.json`), `run_jeans_t0.py`, `jeans_t0_check.py` (`jeans_t0_check.json`);
+figures in `tracks/core/analysis/clump/figs/`, each looked at.
+
+**T1, momentum constraint of one moving clump** (run `core-20261115-154632-e1a4d0c`,
+`fig_clump_convergence.png`, `fig_clump_slices.png`). M-norm, P = 0.06, lattice
+particles; "interior" leaves out the cells beyond 7 sigma (see the boundary layer below).
+
+| cells | K_ij = 0 | with curvature | ratio (interior) | predicted |
+|---|---|---|---|---|
+| 32 (dx = 0.5), 4 passes + comp. | 0.15289 | 0.019359 | 0.1266 | 0.130 |
+| 64 | 0.16311 | 3.0666e-3 | 0.01879 | 0.0202 |
+| 128 | 0.16508 | 1.0244e-4 (interior 9.411e-5) | 5.70e-4 | 7.0e-4 |
+| 32, no filter | 0.16035 | 6.409e-3 | 0.0399 | 0.0403 |
+| 64, no filter | 0.16379 | 1.8223e-3 | 0.01110 | 0.01125 |
+| 128, no filter | 0.16513 | 4.047e-5 (interior 7.7e-8) | 4.7e-7 | truncation only |
+
+- (a) HELD at 64 and 128 cells (0.16311, 0.16508 against 0.1651; without filter 0.16513
+  at 128); FAILED at 32 cells with the filter: 0.1529, 7.4 percent below, more than the 2
+  percent I allowed (four passes act on a Gaussian of two cells; without filter 2.9
+  percent below).
+- (b) HELD: ratios within 20 percent of the emulation, orders 2.66 and 5.03 (predicted
+  2.7, 4.8); without filter 1.82 between 32 and 64 cells and the truncation level at 128.
+  Not anticipated: a layer of cells at the outflow boundary carries its own residual
+  (largest value 1.1e-5 in the outermost cell layer, M-norm 4.0e-5 at 128 cells, 1.2e-4
+  at 64, 3.6e-4 at 32; same field in the y and z components and independent of the
+  filter). So "below 1e-4" holds in the interior (4.7e-7 of the uncorrected norm) and
+  FAILED for the norm over the whole box (2.45e-4). I did not test where it comes from;
+  it is where the ghost cells of the outflow boundary enter the derivative of K_ij, and
+  it would be there for any K_ij that does not vanish at the boundary (also a Bowen-York
+  puncture). [TO VERIFY]
+- Sign and normalisation, independent of the deposit: the curvature term alone, the
+  difference of M_x between the runs with and without the curvature, has the Mx-norm
+  0.1871071 (64 cells), 0.1871082 (128 cells) for either sign of P; closed form
+  0.1871082.
+- (c) FAILED as stated: 2.0123, outside 2.00 +- 0.01. The three measured squares are
+  consistent to six digits with `|c + s|^2 = 2|c|^2 + 2|s|^2 - |c - s|^2` (c the
+  curvature term 0.18711, s the deposit 0.18473, c - s the corrected residual 3.4986e-3:
+  0.138258 against the record 0.138256), so the excess over 2 is the 1.2 percent that
+  the filter takes off the deposited norm at 64 cells, not the curvature. My tolerance
+  ignored that.
+- (d) HELD: 0.33333 and 0.66667 for both, to five digits.
+- (e) HELD. Equal-mass stratified samples at 64 cells, with curvature: 0.01391, 5.169e-3,
+  3.171e-3 for 10^4, 10^5, 10^6 particles (Poisson bound 0.01436, 4.54e-3, 1.44e-3;
+  lattice value 3.064e-3; in quadrature above the lattice value 0.0136, 0.0042, 0.0008).
+  Without curvature 0.16381, 0.16331, 0.16326. The continuum part is reached at 10^6.
+
+**T2, Hamiltonian residual at second order** (same run, `fig_clump_hamiltonian.png`).
+HELD. `H(with) - H(without)` at 128 cells equals `-psi^-12 Abar_ij Abar_ij` to 2.3e-10
+(3e-7 of its peak 7.652e-4, the single precision of the dump); norm 6.09577e-4,
+2.43831e-3, 5.48620e-3 for P = 0.02, 0.04, 0.06, equal to the prediction in all six
+digits (1 : 4.000 : 9.000). The H-norm without curvature is 0.017847 for every P (the
+cloud and filter acting on E); with curvature 0.017856, 0.018007, 0.018657: at P/m = 0.3
+the second-order term adds 4.5 percent to the residual that the deposit leaves anyway.
+
+**T3, spin** (run `core-20261115-154749-e1a4d0c`). HELD, at the edge at 128 cells.
+Without curvature 0.048811, 0.055635, 0.056923 (closed form 0.05696); with curvature
+0.011182, 1.7899e-3, 6.534e-5: ratios 0.229, 0.0322, 1.14e-3, that is 1.8, 1.7, 2.0
+times those of T1.
+
+**T4, the first paper's rule (one velocity)** (run `core-20261115-154842-e1a4d0c`).
+HELD at 128 cells: ratio 0.0336 (predicted 0.0342): the curvature of P = sum m u removes
+96.6 percent of the smooth residual; the rule gaussian 99.94 percent. At 64 cells the
+ratio is 0.0150, below the fine-mesh value: the smoothing of the filter and the psi^3
+excess partly cancel there (an accident of this resolution). At 32 cells 0.099 (I wrote
+0.13).
+
+**T6, evolution for 2 M** (run `core-20261115-154935-e1a4d0c`, 64 cells, 58k lattice
+particles, 12 minutes per run on one core, `fig_clump_evolution.png`).
+- Momentum constraint: HELD. M-norm with curvature 1.35e-3, 5.76e-3, 9.05e-3, 7.49e-3
+  at t = 0, 0.5, 1, 2; without 0.1644, 0.1493, 0.1147, 0.0899. Largest ratio in the first
+  M 0.079 (0.083 at 2 M); the uncorrected norm is still 0.115 at 1 M.
+- Not predicted, the clearest effect: the Hamiltonian-constraint norm. Without curvature
+  it rises from 0.0280 to 0.0862 at 0.5 M, 0.143 at 1 M and 0.171 at 1.5 M (6.1 times
+  the start); with the curvature it stays between 0.026 and 0.030. The first-order
+  violation of the momentum constraint turns into a Hamiltonian violation several times
+  the one of the sampled matter within a light-crossing time of the clump.
+- Particle momentum: FAILED. `sum m u_x` falls by 1.62 percent in 2 M with the
+  curvature and by 1.32 percent without: not "less with the curvature". No cause named
+  (the sum of covariant momenta is not gauge invariant, and I ran nothing that separates
+  gauge from dynamics).
+
+**T5, two overdensities of the first paper at t = 0** (run
+`core-20261115-155020-e1a4d0c`, 1042 MeshBlocks, 160 s per case on one core,
+`fig_clump_jeans_t0.png`).
+
+| | H-norm2 | M-norm2 | Mx-norm2 | My-norm2 | Mz-norm2 | projection A |
+|---|---|---|---|---|---|---|
+| record of run `n1e4_v19` | 33.9040 | 0.191587 | 0.0174028 | 0.263081 | 0.0165197 | |
+| K_ij = 0, particles of the run | 33.9040 | 0.191587 | 0.0174028 | 0.263081 | 0.0165197 | 1.0013 |
+| curvature, particles of the run | 33.9040 | 0.178041 | 0.0174026 | 0.241924 | 0.0165198 | 0.0211 |
+| K_ij = 0, rule gaussian | 33.9040 | 0.182992 | 0.0174028 | 0.249232 | 0.0165197 | 1.0013 |
+| curvature, rule gaussian | 33.9040 | 0.169942 | 0.0174026 | 0.228874 | 0.0165198 | 0.0013 |
+
+- (a) HELD: all six digits of the run's record.
+- (b) HELD: My-norm2 falls by 0.021157 (predicted 0.0211), M-norm2 by 0.013546 (0.0135);
+  Mx, Mz change by 1e-5 of themselves, H-norm2 not in six digits. The norm itself falls
+  from 0.4377 to 0.4219 (3.6 percent): 93 percent of the squared momentum-constraint
+  norm of these data is particle noise.
+- (c), (d) HELD: the projection on the smooth field goes from 1.001 to 0.021 with the
+  run's particles and to 0.0013 with equal shares of momentum.
+- Mean of M_y over cubes of 0.5 M (figure): the two lobes of the closed form without
+  curvature (peak 0.04), noise of a few 1e-3 with it.
+
+**R, regression** and **G, card check**: see the entries below when they have finished.
