@@ -49,9 +49,17 @@ def wall_of(d):
     return (float(m.group(1)) if m else None), (int(c[-1]) if c else None)
 
 
-def mass_radii(snap):
-    r = np.sort(np.linalg.norm(snap["x"], axis=1))
-    return [float(r[int(f * len(r))]) for f in FRACS]
+def mass_radii(snap, m_total, m_removed):
+    """Radii enclosing the fractions FRACS of the initial rest mass, the mass removed by
+    excision counted at r = 0 (nan if a fraction lies inside the removed mass)."""
+    r = np.linalg.norm(snap["x"], axis=1)
+    o = np.argsort(r)
+    cm = m_removed + np.cumsum(snap["m"][o])
+    out = []
+    for f in FRACS:
+        k = int(np.searchsorted(cm, f * m_total))
+        out.append(float(r[o][k]) if f * m_total > m_removed and k < len(r) else float("nan"))
+    return out
 
 
 def analyse_run(name, d, pred, model):
@@ -62,28 +70,44 @@ def analyse_run(name, d, pred, model):
     t = h["time"]
     out["t_end"] = float(t[-1])
     out["np_end"] = int(h["np"][-1])
+    M0 = float(h["sum_m"][0])
     out["rest_mass_identical"] = bool(np.all(h["sum_m"] == h["sum_m"][0]))
-    out["rest_mass_budget"] = float(np.max(np.abs(h["sum_m"] + h["m_excised"] + h["m_escaped"]
-                                                  - h["sum_m"][0])))
+    noexc = h["n_excised"] == 0
+    out["rest_mass_identical_before_excision"] = bool(np.all(h["sum_m"][noexc] == h["sum_m"][0]))
+    out["rest_mass_budget_rel"] = float(np.max(np.abs(h["sum_m"] + h["m_excised"] + h["m_escaped"]
+                                                      - h["sum_m"][0])) / M0)
+    exc = np.flatnonzero(h["n_excised"] > 0)
+    out["t_first_excision"] = float(t[exc[0]]) if len(exc) else None
+    low = np.flatnonzero(h["alpha_min"] < 0.3)
+    out["t_alpha_min_below_0p3"] = float(t[low[0]]) if len(low) else None
+    out["excised_mass_fraction_end"] = float(h["m_excised"][-1] / M0)
+    for tt in (100.0, 200.0, 300.0):
+        k = int(np.argmin(np.abs(t - tt)))
+        out[f"excised_mass_fraction_t{tt:g}"] = float(h["m_excised"][k] / M0)
+    t_c = out["t_alpha_min_below_0p3"] if out["t_alpha_min_below_0p3"] is not None else float(t[-1])
+    out["t_collapse_or_end"] = t_c
     out["n_excised"] = int(h["n_excised"][-1])
     out["n_escaped"] = int(h["n_escaped"][-1])
-    out["deposit_identity"] = float(np.max(np.abs(h["int_E"] - h["sum_mW"]) / h["sum_mW"]))
+    live = h["sum_mW"] > 0
+    out["deposit_identity"] = float(np.max(np.abs(h["int_E"][live] - h["sum_mW"][live]) / h["sum_mW"][live]))
+    out["np_zero_from"] = float(t[np.flatnonzero(h["np"] == 0)[0]]) if np.any(h["np"] == 0) else None
     out["push_unconverged"] = int(np.sum(h["push_unconverged"])) if "push_unconverged" in h else None
     a_eq = meta["alpha_c"]
     ap = h["alpha_probe"]
     out["alpha_c_eq"] = a_eq
     out["alpha_c_start"] = float(ap[0])
     out["alpha_c_end"] = float(ap[-1])
-    out["alpha_c_min"] = float(ap.min())
-    out["alpha_c_max"] = float(ap.max())
+    out["alpha_c_min"] = float(np.nanmin(ap))
+    out["alpha_c_max"] = float(np.nanmax(ap))
     late = t >= t[-1] - 50.0
-    out["alpha_c_mean_last50"] = float(np.mean(ap[late]))
+    out["alpha_c_mean_last50"] = float(np.nanmean(ap[late]))
     # the probe interpolates the eight cell centres around the origin, so alpha_c(0) is
     # above the model's central lapse; changes are measured from alpha_c(0)
-    out["alpha_c_max_dev_from_start"] = float(np.max(np.abs(ap - ap[0])))
+    out["alpha_c_max_dev_from_start"] = float(np.nanmax(np.abs(ap - ap[0])))
     out["alpha_min_grid"] = float(h["alpha_min"].min())
-    mW = h["sum_mW"] / h["sum_m"]
-    out["mean_lorentz_max_change"] = float(np.max(np.abs(mW - mW[0])))
+    mW = np.where(live, h["sum_mW"] / np.where(live, h["sum_m"], 1.0), np.nan)
+    pre = t <= t_c
+    out["mean_lorentz_max_change_before_collapse"] = float(np.max(np.abs(mW[pre] - mW[0])))
     wall, cyc = wall_of(d)
     out["wall_s"] = wall
     out["cycles"] = cyc
@@ -99,13 +123,16 @@ def analyse_run(name, d, pred, model):
     for p in snaps:
         s = C.read_snapshot(p)
         ts.append(s["time"])
-        rr.append(mass_radii(s))
-        far.append(float(np.sum(s["m"][np.linalg.norm(s["x"], axis=1) > 2.0 * rs]) / np.sum(s["m"])))
+        k = int(np.argmin(np.abs(t - s["time"])))
+        rr.append(mass_radii(s, M0, float(h["m_excised"][k])))
+        far.append(float(np.sum(s["m"][np.linalg.norm(s["x"], axis=1) > 2.0 * rs]) / M0))
     ts, rr, far = np.array(ts), np.array(rr).reshape(-1, 3), np.array(far)
     out["radii_t"] = ts.tolist()
     out["radii"] = rr.tolist()
     if len(rr):
-        out["radii_range_rel"] = [float((rr[:, j].max() - rr[:, j].min()) / rr[0, j]) for j in range(3)]
+        pre_s = ts <= t_c
+        out["radii_range_rel_before_collapse"] = [
+            float((np.nanmax(rr[pre_s, j]) - np.nanmin(rr[pre_s, j])) / rr[0, j]) for j in range(3)]
         out["radii_end_rel"] = [float(rr[-1, j] / rr[0, j] - 1.0) for j in range(3)]
     out["mass_frac_beyond_2rs"] = far.tolist()
     # trajectories with the metric: Killing energies
@@ -118,17 +145,24 @@ def analyse_run(name, d, pred, model):
             EK, W = C.killing_energy(rec)
             ek_t.append(rec["time"])
             ek_sum.append(float(Mp * np.sum(EK)))
-            f_e0.append(float(np.mean(EK > E0)))
-            f_unb.append(float(np.mean(EK > 1.0)))
-            if k == 0 or k == len(recs) - 1:
-                hist_e[f"{rec['time']:g}"] = EK / E0
+            f_e0.append(float(np.sum(EK > E0) / len(model["m"])))
+            f_unb.append(float(np.sum(EK > 1.0) / len(model["m"])))
+            if k == 0:
+                hist_e["0"] = EK / E0
+            if rec["time"] <= t_c:
+                hist_e["last"] = (rec["time"], EK / E0)
     out["EK_t"] = ek_t
     out["EK_sum"] = ek_sum
     out["EK_frac_above_E0"] = f_e0
     out["EK_frac_unbound"] = f_unb
     if ek_sum:
-        out["EK_sum_change"] = float(ek_sum[-1] - ek_sum[0])
-    series = dict(t=t, ap=ap, ts=ts, rr=rr, far=far, ek_t=np.array(ek_t), ek_sum=np.array(ek_sum),
+        kpre = [i for i, tt in enumerate(ek_t) if tt <= t_c]
+        out["EK_sum_change_before_collapse"] = float(ek_sum[kpre[-1]] - ek_sum[0])
+        out["EK_sum_max_dev_before_collapse"] = float(max(abs(ek_sum[i] - ek_sum[0]) for i in kpre))
+        out["EK_frac_above_E0_at_collapse_or_end"] = f_e0[kpre[-1]]
+        out["EK_frac_unbound_at_collapse_or_end"] = f_unb[kpre[-1]]
+        out["EK_t_at_collapse_or_end"] = ek_t[kpre[-1]]
+    series = dict(t=t, ap=ap, ts=ts, rr=rr, far=far, mexc=h["m_excised"] / M0, amin=h["alpha_min"], t_c=t_c, ek_t=np.array(ek_t), ek_sum=np.array(ek_sum),
                   f_e0=np.array(f_e0), f_unb=np.array(f_unb), hist_e=hist_e)
     # collisions
     ch = os.path.join(d, "cc.coll.hst")
@@ -139,6 +173,32 @@ def analyse_run(name, d, pred, model):
         ntot, ptot = float(nc.sum()), float(c["sum_P"].sum())
         Mp = float(model["m"][0])
         k1 = int(np.argmin(c["ncycle"]))
+        pc = c["time"] <= t_c
+        n_pre = float(nc[pc].sum())
+        out.update(collisions_before_collapse=n_pre,
+                   collisions_before_collapse_rel_to_pred=float(
+                       n_pre / (p["collisions_300M_constant_rate"] * t_c / 300.0)),
+                   count_z_before_collapse=float((n_pre - c["sum_P"][pc].sum())
+                                                 / np.sqrt(max(c["sum_P"][pc].sum(), 1e-300))),
+                   dE_particles_before_collapse_rel=float(c["dE_particles"][pc].sum()
+                                                          / c["sum_MW_particles"][0]),
+                   dE_particles_per_collision_before_collapse=float(
+                       c["dE_particles"][pc].sum() / c["sum_MW_particles"][0] / max(n_pre, 1.0)),
+                   n_bad_cells_total=int(c["n_bad_cells"].sum()))
+        # scatter of the defect of one collision, from the per-step sums of the first 25 M
+        # (var of a step's sum = n var(one) for independent collisions)
+        w25 = (c["time"] <= 25.0) & (nc > 0)
+        e1 = c["dE_particles"][w25] / c["sum_MW_particles"][0]
+        sd1 = float(np.sqrt(np.mean(e1 ** 2 / nc[w25]))) if np.any(w25) else float("nan")
+        out["dE_particles_sd_one_collision"] = sd1
+        for tw in (25.0, 50.0):
+            w = c["time"] <= tw
+            nw = float(nc[w].sum())
+            out[f"collisions_first{tw:g}M_rel_to_pred"] = float(
+                nw / (p["collisions_300M_constant_rate"] * tw / 300.0))
+            out[f"dE_particles_per_collision_first{tw:g}M"] = float(
+                c["dE_particles"][w].sum() / c["sum_MW_particles"][0] / max(nw, 1.0))
+            out[f"dE_particles_per_collision_first{tw:g}M_se"] = float(sd1 / np.sqrt(max(nw, 1.0)))
         out.update(
             coll_records=int(len(nc)), coll_cycles_first_last=[int(c["ncycle"][0]), int(c["ncycle"][-1])],
             collisions=ntot, sum_P=ptot, count_z=float((ntot - ptot) / np.sqrt(max(ptot, 1e-300))),
@@ -153,9 +213,9 @@ def analyse_run(name, d, pred, model):
             pair_dE_eps=float(np.max(c["abs_dE"] / np.maximum(nc, 1.0)) / (EPS * 2.0 * Mp)),
             pair_dE_sum_rel=float(np.abs(c["dE"].sum()) / c["sum_MW"][0]),
             dP_sum=float(np.max(np.abs([c["dP1"].sum(), c["dP2"].sum(), c["dP3"].sum()]))),
-            dE_particles_sum_rel=float(c["dE_particles"].sum() / c["sum_MW_particles"][0]),
+            dE_particles_sum_rel=float(np.nansum(c["dE_particles"]) / c["sum_MW_particles"][0]),
             dE_particles_pred_rel=p["dE_particles_per_collision_rel"] * ntot,
-            dE_particles_per_collision_rel=float(c["dE_particles"].sum() / c["sum_MW_particles"][0]
+            dE_particles_per_collision_rel=float(np.nansum(c["dE_particles"]) / c["sum_MW_particles"][0]
                                                  / max(ntot, 1.0)),
             dE_particles_per_collision_pred=p["dE_particles_per_collision_rel"],
             tail_E0_pred_linear=p["tail_E0_per_collision"] * ntot / len(model["m"]),
@@ -167,6 +227,8 @@ def analyse_run(name, d, pred, model):
         pairs = [(idx[int(n)], i) for i, n in enumerate(c["ncycle"]) if int(n) in idx]
         if pairs:
             ih, ic = np.array(pairs).T
+            ok = h["sum_mW"][ih] > 0
+            ih, ic = ih[ok], ic[ok]
             out["hist_consistency_rel"] = float(np.max(np.abs(c["sum_MW_particles"][ic] - h["sum_mW"][ih])
                                                        / h["sum_mW"][0]))
             out["hist_consistency_cycle_offset"] = 0
@@ -174,6 +236,8 @@ def analyse_run(name, d, pred, model):
             pairs1 = [(idx[int(n) + 1], i) for i, n in enumerate(c["ncycle"]) if int(n) + 1 in idx]
             if pairs1:
                 ih1, ic1 = np.array(pairs1).T
+                ok1 = h["sum_mW"][ih1] > 0
+                ih1, ic1 = ih1[ok1], ic1[ok1]
                 out["hist_consistency_rel_offset1"] = float(
                     np.max(np.abs(c["sum_MW_particles"][ic1] - h["sum_mW"][ih1]) / h["sum_mW"][0]))
         series.update(ct=c["time"], ncum=np.cumsum(nc), pcum=np.cumsum(c["sum_P"]), sumP=c["sum_P"],
@@ -199,25 +263,43 @@ def figures(outdir, res, ser, pred):
     def kn_of(name):
         return name.split("_kn")[1]
 
-    # F1: central lapse and mass radii
-    fig, axs = plt.subplots(2, 2, figsize=(fs.FULL_WIDTH, 5.4), sharex=True)
-    fig.subplots_adjust(left=0.09, right=0.985, bottom=0.09, top=0.96, wspace=0.25, hspace=0.08)
+    # F1: central lapse, mass radii, mass removed by excision
+    fig, axs = plt.subplots(2, 3, figsize=(fs.FULL_WIDTH, 5.4), sharex=True)
+    fig.subplots_adjust(left=0.08, right=0.985, bottom=0.09, top=0.96, wspace=0.32, hspace=0.08)
     for row, mk in enumerate(("cc1", "cc2")):
         for name, s in ser.items():
             if not name.startswith(mk):
                 continue
             k = kn_of(name)
-            axs[row, 0].plot(s["t"], s["ap"] - s["ap"][0], color=col[k], lw=1.0, label=lab[k])
+            axs[row, 0].plot(s["t"], s["ap"], color=col[k], lw=1.0, label=lab[k])
             for j, ls in zip(range(3 if len(s["rr"]) else 0), (":", "-", "--")):
                 axs[row, 1].plot(s["ts"], s["rr"][:, j] / s["rr"][0, j], color=col[k], ls=ls, lw=1.2,
                                  label=lab[k] if j == 1 else None)
-        axs[row, 0].axhline(0.0, **fs.MASK_LINE)
-        axs[row, 0].set_ylabel(r"$\alpha_c(t) - \alpha_c(0)$" + f"  ({mk.upper()})")
-        axs[row, 1].set_ylabel(r"$r_{10}, r_{50}, r_{90}$ over initial" + f"  ({mk.upper()})")
-        axs[row, 0].legend(fontsize=8, ncol=3, loc="lower left")
+            axs[row, 2].plot(s["t"], s["mexc"], color=col[k], lw=1.2, label=lab[k])
+        axs[row, 0].axhline(0.1, **fs.MASK_LINE)
+        axs[row, 0].set_ylabel(r"central lapse $\alpha_c$" + f"  ({mk.upper()})")
+        axs[row, 1].set_ylabel(r"$r_{10}, r_{50}, r_{90}$ / initial" + f"  ({mk.upper()})")
+        axs[row, 2].set_ylabel("rest mass excised / $M_0$" + f"  ({mk.upper()})")
+        axs[row, 0].legend(fontsize=8, loc="center left")
+        axs[row, 1].set_ylim(0.0, 2.0)
+        axs[row, 2].set_ylim(-0.02, 1.0)
     for ax in axs[1]:
         ax.set_xlabel(r"$t/M$")
     fig.savefig(os.path.join(outdir, "fig_cc_lapse_radii.png"), dpi=200)
+    plt.close(fig)
+
+    # F1b: the controls in detail (alpha_c offset from its start)
+    fig, ax = plt.subplots(figsize=(fs.COLUMN_WIDTH, 3.0))
+    fig.subplots_adjust(left=0.2, right=0.97, bottom=0.15, top=0.95)
+    for name, s in ser.items():
+        if name.endswith("kninf"):
+            ax.plot(s["t"], s["ap"] - s["ap"][0], color=fs.PAL["red"] if name.startswith("cc1")
+                    else fs.PAL["blue"], lw=1.0, label=name[:3].upper() + r", Kn = $\infty$")
+    ax.axhline(0.0, **fs.MASK_LINE)
+    ax.set_xlabel(r"$t/M$")
+    ax.set_ylabel(r"$\alpha_c(t) - \alpha_c(0)$")
+    ax.legend(fontsize=8, loc="upper left")
+    fig.savefig(os.path.join(outdir, "fig_cc_controls.png"), dpi=200)
     plt.close(fig)
 
     # F2: collisions
@@ -258,7 +340,8 @@ def figures(outdir, res, ser, pred):
         mk = name[:3]
         ls = "-" if mk == "cc1" else "--"
         if len(s["ek_t"]):
-            axs[2].plot(s["ek_t"], s["ek_sum"] - s["ek_sum"][0], color=col[k], ls=ls, marker=".",
+            kk = s["ek_t"] <= s["t_c"]
+            axs[2].plot(s["ek_t"][kk], s["ek_sum"][kk] - s["ek_sum"][0], color=col[k], ls=ls, marker=".",
                         label=f"{mk.upper()} {lab[k]}")
         if "dEp" not in s:
             continue
@@ -267,6 +350,8 @@ def figures(outdir, res, ser, pred):
         axs[0].plot(s["ct"], p["dE_particles_per_collision_rel"] * s["ncum"], color="k", lw=1.0, ls=":")
         axs[1].plot(s["ct"][s["nc"] > 0], s["pair_eps"][s["nc"] > 0], ".", ms=1.0, color=col[k],
                     alpha=0.3)
+    axs[0].set_yscale("log")
+    axs[0].set_ylim(1e-7, 1e-1)
     axs[0].set_xlabel(r"$t/M$")
     axs[0].set_ylabel(r"$\Sigma\,\Delta(\Sigma MW)_{\rm coll}/\Sigma MW$")
     axs[0].legend(fontsize=7, loc="upper left")
@@ -275,8 +360,8 @@ def figures(outdir, res, ser, pred):
     axs[1].set_ylabel(r"cell-frame $|\Delta E|$ per collision / ($2M_p\epsilon$)")
     axs[2].axhline(0.0, **fs.MASK_LINE)
     axs[2].set_xlabel(r"$t/M$")
-    axs[2].set_ylabel(r"$\Sigma M E_K - $ initial  $[M]$")
-    axs[2].legend(fontsize=7, loc="upper left")
+    axs[2].set_ylabel(r"$\Sigma M E_K - $ initial, before collapse  $[M]$")
+    axs[2].legend(fontsize=7, loc="lower left")
     fig.savefig(os.path.join(outdir, "fig_cc_budget.png"), dpi=200)
     plt.close(fig)
 
@@ -296,14 +381,14 @@ def figures(outdir, res, ser, pred):
             nn = s["ncum"]
             axs[0].plot(s["ct"], np.minimum(p["tail_E0_per_collision"] * nn / 1e5, 1), color="k", lw=1.0, ls=":")
             axs[1].plot(s["ct"], p["unbound_per_collision"] * nn / 1e5, color="k", lw=1.0, ls=":")
-        if mk == "cc1":
-            for tk, e in s["hist_e"].items():
-                if float(tk) > 0:
-                    axs[2].hist(e, bins=np.linspace(0.7, 1.25, 111), histtype="step", color=col[k],
-                                density=True, lw=1.0, label=lab[k])
-                elif k == "inf":
-                    axs[2].hist(e, bins=np.linspace(0.7, 1.25, 111), histtype="step",
-                                color="grey", density=True, lw=1.0, label=r"$t=0$")
+        if mk == "cc1" and "last" in s["hist_e"]:
+            tl, e = s["hist_e"]["last"]
+            axs[2].hist(e, bins=np.linspace(0.7, 1.25, 111), histtype="step", color=col[k],
+                        lw=1.0, label=lab[k] + f", t = {tl:g} M", weights=np.full(len(e), 1.0 / 1e5))
+            if k == "inf":
+                e0 = s["hist_e"]["0"]
+                axs[2].hist(e0, bins=np.linspace(0.7, 1.25, 111), histtype="step", color="grey", lw=1.0,
+                            label=r"$t=0$", weights=np.full(len(e0), 1.0 / 1e5))
     axs[0].set_yscale("log")
     axs[1].set_yscale("log")
     axs[0].set_xlabel(r"$t/M$")
@@ -313,9 +398,9 @@ def figures(outdir, res, ser, pred):
     axs[1].set_ylabel(r"fraction with $E_K > 1$")
     axs[2].axvline(1.0, **fs.GUIDE)
     axs[2].set_yscale("log")
-    axs[2].set_xlabel(r"$E_K/E_0$ (CC1, end of run)")
-    axs[2].set_ylabel("density")
-    axs[2].legend(fontsize=7, loc="upper right")
+    axs[2].set_xlabel(r"$E_K/E_0$ (CC1, last record before collapse)")
+    axs[2].set_ylabel("fraction of particles per bin")
+    axs[2].legend(fontsize=6, loc="lower left")
     fig.savefig(os.path.join(outdir, "fig_cc_energy_tail.png"), dpi=200)
     plt.close(fig)
 
