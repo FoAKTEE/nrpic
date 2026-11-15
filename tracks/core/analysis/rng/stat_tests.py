@@ -533,19 +533,19 @@ def figures(fig, n):
                                              pal["orange"]]):
         ps = np.sort(ps)
         q = (np.arange(ps.size) + 0.5) / ps.size
-        ax[0].plot(q, ps, ".", ms=4, color=c, label=f"{lab} ({ps.size} tests)")
-        ax[1].plot(q, ps, ".", ms=4, color=c)
+        ax[0].plot(q, ps, ".", ms=4, color=c)
+        ax[1].plot(q, ps, ".", ms=4, color=c, label=f"{lab} ({ps.size} tests)")
     for a in ax:
-        a.plot([1e-4, 1], [1e-4, 1], **figstyle.GUIDE)
+        a.plot([1e-6, 1], [1e-6, 1], **figstyle.GUIDE)
         a.set_xlabel("expected quantile")
         a.set_ylabel("p-value")
     ax[0].set_xlim(0, 1)
     ax[0].set_ylim(0, 1)
-    ax[0].legend(loc="lower right")
     ax[1].set_xscale("log")
     ax[1].set_yscale("log")
     ax[1].set_xlim(1e-3, 1)
-    ax[1].set_ylim(1e-4, 1)
+    ax[1].set_ylim(1e-6, 1)
+    ax[1].legend(loc="lower right")
     f.savefig("fig_rng_pvalues.png", dpi=200)
     plt.close(f)
 
