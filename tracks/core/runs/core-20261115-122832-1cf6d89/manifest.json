@@ -1,0 +1,31 @@
+{
+ "run_id": "core-20261115-122832-1cf6d89",
+ "label": "hc_r10_fix",
+ "owner": "core",
+ "purpose": "Check of the finder fix: heavy spinning puncture, first guess of radius 10, flow constant 100, hmean_tol 1000, one cycle, verbose",
+ "kind": "scouting",
+ "command": "/data/haiyangw/nrpic/wt/core-mp/.work/build_cpu/src/athena -i by_horizon_coarse.athinput -d /data/haiyangw/nrpic/scratch/core/core-20261115-122832-1cf6d89 fastflow/use_puncture_0=-1 fastflow/initial_radius_0=10.0",
+ "cwd": "/data/haiyangw/nrpic/scratch/core/core-20261115-122832-1cf6d89",
+ "commit": "1cf6d89",
+ "source_dirty": false,
+ "inputs": [
+  {
+   "path": "problems/tests/by_horizon_coarse.athinput",
+   "sha256": "8df6faa42efbf5b656019117f12aae0333177bde1b562250a590824f64148eed"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/wt/core-mp/.work/build_cpu/src/athena",
+   "sha256": "a675d5b53336beeeb45f9e6fad7ebc90e00faf3d18c295c0ca41e3742dd2591f",
+   "role": "executable"
+  }
+ ],
+ "output_directory": "/data/haiyangw/nrpic/scratch/core/core-20261115-122832-1cf6d89",
+ "resources": "1 core",
+ "started_utc": "2026-11-15T12:28:32Z",
+ "status": "done",
+ "exit_code": 0,
+ "wall_time_s": 77.2,
+ "queue_wait_s": 0.0,
+ "card_hours": 0.0,
+ "core_hours": 0.0214
+}

@@ -1,4 +1,20 @@
 # RISKS of core
 
+State 2026-11-15, after the wave-1 integration (core-v0.3 proposed at 609a875). Evidence
+for each line: `stage/G2/OPEN.md` (item numbers) and the package journals.
+
 | Risk | Likelihood | Effect | Watch | Response |
 |---|---|---|---|---|
+| Collision steps raise the energy at the particles' own metric (1e-9 to 1e-8 per collision in a potential; OPEN 6) | certain for Track C science runs at 2 M cells | spurious heating of a collisional core over 1e3 collisions per particle; biases the collapsed-fraction curve | `coll_budget` columns of `.coll.hst`, cumulative gain against the rest mass | smaller collision cells now; decide with Track C on a pair-energy correction at the particles' positions before G3 |
+| Lapse front from a sharp matter surface (expanding ball, vacuum bubble; OPEN 7) | high for Tracks A and D | non-convergent core shells after the front arrives (t ~ R/0.58 for the conformal-time lapse) | central lapse against a(tau), core-shell error against the exact solution | smooth edges; try lapse_kdriver, lapse_volume, a dust-slicing driver in wave 2; agree the choice with Track A |
+| Paper details filled in independently (deposit order, filter passes, refinement treatment; brief 9.3 main risk) | certain (the paper states first-order CIC and an unstated number of binomial passes, main.tex 641, 680-682) | results differ from the authors' at the 1e-3 level | ladder rows 3-4 | report our choices with each result; no tuning to the paper's numbers |
+| Ladder rows 3-4 stay PARTIAL (prolate mass 3-5 percent low at one resolution; cluster collapse times 1.4-1.75 times later than the paper) | medium | G2 of core and of Track C delayed | resolution series of the prolate run, bisection of the cluster threshold | first card runs of wave 2 (about 2 card-hours) |
+| Layout dependence of the mesh-metric reconstruction (1e-13; OPEN 8) | low effect, certain occurrence | a stochastic decision u < P can differ between MeshBlock divisions | rng kick demo D2, collision reproducibility on the mesh path | apply the tested gather patch with new baselines, or document the limit |
+| One shift damping for all punctures (OPEN 9) | high for Track F at mass ratio 10 | the heavy tracker lags, refinement and finder off-centre | tracker speed against P/M | mass-scaled eta in the Z4c gauge (wave 2) |
+| Vacuum drift of light horizon masses in multi-hole runs (1.3-1.5 percent in 16 M at m/8; OPEN 10) | medium | the Hills energy budget and Track D's null test need horizon masses to 1e-3 | horizon mass of an isolated light hole at two resolutions | resolution study before Track F's first passage |
+| Silent failures (status 0 with NaN or no particles; OPEN 11) | medium | wasted card time, wrong results taken as finished | exit status and particle count in every manifest | stop with non-zero status on non-finite state or empty particle set (wave 2, small) |
+| Step ignores the lapse (`z4c_newdt.cpp`; OPEN 12) | medium in expanding regions with 1+log | effective Courant number above the nominal one (0.59 at 0.25 seen) | coordinate light speed alpha/sqrt(g_rr) | step limit on alpha/sqrt(gamma) as a separate small change |
+| Card runs with deposit are not byte-reproducible | certain | a card byte regression cannot show identity | baseline twice against new | compare on processors, or against the baseline's scatter (scripts/README.md) |
+| Single-rank particle module (no MPI), no adaptive refinement for the new modules (OPEN 18) | certain | caps problem size at one card (about 3000 MeshBlocks per card for punctures) | memory per MeshBlock in the logs | plan wave-2 science within one card; MPI is a larger core project |
+| Upstream publishes an official NRPIC implementation (brief 9.3) | unknown | duplicate effort; merge decision | kb watch of the upstream repository | decide with the group when it appears |
+| Shared release executables lag the source (OPEN 14) | happened | runs silently ignore newer options | option strings in the binary; manifests record the executable | name the core-v0.3 builds in CLAUDE.md after the tag (outbox to orch) |

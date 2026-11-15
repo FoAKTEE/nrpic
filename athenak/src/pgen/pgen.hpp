@@ -79,10 +79,12 @@ class ProblemGenerator {
   void NrpicGeodesic(ParameterInput *pin, const bool restart);
   void NrpicConformallyFlat(ParameterInput *pin, const bool restart);
   void NrpicCosmology(ParameterInput *pin, const bool restart);
+  void ScalarFieldTests(ParameterInput *pin, const bool restart);
 
   // predefined problem generator functions for unit tests
   void EOSCompose(ParameterInput *pin, const bool restart);
   void GaussLegendre(ParameterInput *pin, const bool restart);
+  void RngTest(ParameterInput *pin, const bool restart);
 
   // Generic error output function (using difference u0-u1)
   void OutputErrors(ParameterInput *pin, Mesh *pm);

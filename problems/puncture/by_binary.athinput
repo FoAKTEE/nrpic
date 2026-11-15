@@ -1,0 +1,94 @@
+# Two Bowen-York punctures on a nearly circular orbit, evolved for a few M (test 2 of
+# tracks/core/JOURNAL-mp.md).  Bare masses 0.5 at x = +-5, momenta +-0.0791 along y:
+# the Newtonian circular value (M/4) sqrt(M/d) for M = 1, d = 10, counter-clockwise.
+# Closed-form corrections with the background factor; trackers, refined regions
+# (finest cells 1/16 = m/8 within 0.9 of each puncture) and two horizon finders from
+# puncture_setup.
+# Variants (command line): problem/comp0_corr=none problem/comp1_corr=none,
+# problem/corr_background=false.
+
+<comment>
+problem   = two Bowen-York punctures
+
+<job>
+basename  = by2
+
+<mesh>
+nghost    = 4
+nx1       = 64
+x1min     = -64.0
+x1max     = 64.0
+ix1_bc    = outflow
+ox1_bc    = outflow
+nx2       = 64
+x2min     = -64.0
+x2max     = 64.0
+ix2_bc    = outflow
+ox2_bc    = outflow
+nx3       = 64
+x3min     = -64.0
+x3max     = 64.0
+ix3_bc    = outflow
+ox3_bc    = outflow
+
+<meshblock>
+nx1       = 16
+nx2       = 16
+nx3       = 16
+
+<mesh_refinement>
+refinement          = adaptive
+num_levels          = 6
+max_nmb_per_rank    = 2400
+ncycle_check        = 4
+refinement_interval = 8
+
+<time>
+evolution  = dynamic
+integrator = rk4
+cfl_number = 0.25
+nlim       = -1
+tlim       = 30.0
+ndiag      = 200
+
+<z4c>
+lapse_oplog     = 2.0
+lapse_harmonicf = 1.0
+lapse_harmonic  = 0.0
+lapse_advect    = 1.0
+shift_Gamma     = 0.75
+shift_eta       = 2.0
+shift_advect    = 1.0
+diss            = 0.5
+chi_div_floor   = 1.0e-5
+damp_kappa1     = 0.02
+damp_kappa2     = 0.0
+tracker_mode    = ode
+
+<problem>
+pgen_name       = nrpic_cf
+ncomp           = 2
+comp0_type      = puncture
+comp0_mass      = 0.5
+comp0_x1        = 5.0
+comp0_p2        = 0.0791
+comp0_corr      = approx
+comp1_type      = puncture
+comp1_mass      = 0.5
+comp1_x1        = -5.0
+comp1_p2        = -0.0791
+comp1_corr      = approx
+corr_background = true
+lapse           = precollapsed
+puncture_setup  = true
+puncture_radius = 1.8
+
+<output1>
+file_type = hst
+dt        = 0.25
+
+<output2>
+file_type = bin
+variable  = z4c_alpha
+slice_x3  = 0.001
+dt        = 10.0

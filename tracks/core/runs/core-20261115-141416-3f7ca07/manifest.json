@@ -1,0 +1,41 @@
+{
+ "run_id": "core-20261115-141416-3f7ca07",
+ "owner": "core",
+ "purpose": "Regression on processors, last source of the scalar-field package (3f7ca07, after the uniform shift in the test problem generator): executable of the unmodified source (b28ecca) against it, five existing set-ups",
+ "kind": "production",
+ "command": [
+  "python3",
+  "/data/haiyangw/nrpic/wt/core-scalar/tracks/core/analysis/rng/run_regression.py",
+  "--base",
+  "/data/haiyangw/nrpic/wt/core-scalar/.work/exe/athena_cpu_base_b28ecca",
+  "--new",
+  "/data/haiyangw/nrpic/wt/core-scalar/.work/exe/athena_cpu_3f7ca07"
+ ],
+ "cwd": "/data/haiyangw/nrpic/scratch/core/core-20261115-141416-3f7ca07",
+ "commit": "3f7ca074e9ba2188463e89106efd35cb995a54e6",
+ "branch": "core/scalar-field",
+ "uncommitted_changes": [
+  "?? tracks/core/notes/scalar_figs/fig_wave_shift.png"
+ ],
+ "inputs": [
+  {
+   "path": ".work/exe/athena_cpu_base_b28ecca",
+   "sha256": "5a252a5466c5ed5599ac0cc2099ad9992243f2b4918746240d6696f284fbb9fc"
+  },
+  {
+   "path": ".work/exe/athena_cpu_3f7ca07",
+   "sha256": "034baa40e3ec7d2322b7be206ccc225c2ac19af320ca6386b216e3675bc92bc3"
+  },
+  {
+   "path": "tracks/core/analysis/rng/run_regression.py",
+   "sha256": "6a60bfa8617fdb84a50863bd5c040d14b9f44bd9b88f9a0607dfbbb7928ebe5f"
+  }
+ ],
+ "output_directory": "/data/haiyangw/nrpic/scratch/core/core-20261115-141416-3f7ca07",
+ "host": "anta",
+ "start_utc": "2026-11-15T14:14:17Z",
+ "cores": 1,
+ "wall_time_s": 437.48,
+ "exit_status": 1,
+ "core_hours": 0.1215
+}

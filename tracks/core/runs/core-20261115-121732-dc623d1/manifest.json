@@ -1,0 +1,41 @@
+{
+ "run_id": "core-20261115-121732-dc623d1",
+ "owner": "core",
+ "command": [
+  "/data/haiyangw/nrpic/wt/core-newton/.work/athena_cpu_c061b12",
+  "-i",
+  "isolated_smr.athinput",
+  "time/nlim=1",
+  "particles/dt=1e-6",
+  "particles/snap_dt=1e-6",
+  "particles/particle_file=point.nrp",
+  "gravity/show_defect=2"
+ ],
+ "cwd": "/data/haiyangw/nrpic/scratch/core/core-20261115-121732-dc623d1",
+ "commit": "dc623d1",
+ "source_modified_since_commit": true,
+ "inputs": [
+  {
+   "path": "problems/newton/isolated_smr.athinput",
+   "sha256": "0153d8a40bfd8959363eb4ac024857716f437f44e8c09136317de94f4a08ac18"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/scratch/core/ic/newton/point.nrp",
+   "sha256": "db9224943821c7c59942ceda3197cd58e9a24f25760d4942fe083a71cabf16ff"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/wt/core-newton/.work/athena_cpu_c061b12",
+   "sha256": "f0284826c30b900e412d71020cec4983a259c97771964bc50bb934f563dffb89",
+   "role": "executable"
+  }
+ ],
+ "output_directory": "/data/haiyangw/nrpic/scratch/core/core-20261115-121732-dc623d1",
+ "purpose": "T9 trial: point mass field on a statically refined mesh (64^3 root, one level around the origin), one step of 1e-6",
+ "kind": "scouting",
+ "tag": "field-point-smr",
+ "wall_time_s": 2.66,
+ "exit_status": 0,
+ "cores": 1,
+ "card_hours": 0.0,
+ "started_utc": "2026-11-15T12:17:32Z"
+}

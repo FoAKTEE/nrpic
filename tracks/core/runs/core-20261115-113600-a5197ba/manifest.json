@@ -1,0 +1,31 @@
+{
+ "run_id": "core-20261115-113600-a5197ba",
+ "label": "regress_headon_new",
+ "owner": "core",
+ "purpose": "Regression R on a card: same input, executable of this branch",
+ "kind": "scouting",
+ "command": "srun -p preempt --gres=gpu:1 -c 1 -t 00:10:00 -J regress_head /bin/bash -c date +%s.%N > .t_start; \"$@\"; rc=$?; date +%s.%N > .t_end; exit $rc athena /data/haiyangw/nrpic/wt/core-mp/.work/build_gpu/src/athena -i tracers_headon.athinput -d /data/haiyangw/nrpic/scratch/core/core-20261115-113600-a5197ba time/nlim=24 fastflow/start_time_0=0.0 fastflow/find_every=8 output2/dt=0.2",
+ "cwd": "/data/haiyangw/nrpic/scratch/core/core-20261115-113600-a5197ba",
+ "commit": "a5197ba",
+ "source_dirty": false,
+ "inputs": [
+  {
+   "path": "problems/puncture/tracers_headon.athinput",
+   "sha256": "c162e5ff3c8628dc272ce06ce1171cc3eef27b45a3eac40a09bc90def63daa62"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/wt/core-mp/.work/build_gpu/src/athena",
+   "sha256": "59aaff3b6e4a2b347691bd0c75960cc9866644d15c564fec2345ab3b9d92ee92",
+   "role": "executable"
+  }
+ ],
+ "output_directory": "/data/haiyangw/nrpic/scratch/core/core-20261115-113600-a5197ba",
+ "resources": "1 card (A100), 1 core",
+ "started_utc": "2026-11-15T11:36:00Z",
+ "status": "done",
+ "exit_code": 0,
+ "wall_time_s": 14.3,
+ "queue_wait_s": 0.1,
+ "card_hours": 0.004,
+ "core_hours": 0.004
+}

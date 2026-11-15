@@ -1,0 +1,72 @@
+{
+ "run_id": "core-20261115-032617-45e1779",
+ "owner": "core",
+ "package": "verify",
+ "commit": "45e177917f2622e92ad798b91b842ade84a13b48",
+ "worktree_dirty": false,
+ "created": "2026-11-15T03:26:18",
+ "output_dir": "/data/haiyangw/nrpic/scratch/core/core-20261115-032617-45e1779",
+ "kind": "scouting",
+ "test": "L linear growth",
+ "purpose": "C3 regression of the cosmology extension: observer density contrast at amplitude 1e-4 to a = 30 against linear theory and runs/cosmo/east_d1e-4_n32_cpu",
+ "command": [
+  "python3 /data/haiyangw/nrpic/wt/core/cosmo/ic/make_east.py --delta 1e-4 --n 32 --ppc 1 --nfilter 2 --compensate --out /data/haiyangw/nrpic/scratch/core/core-20261115-032617-45e1779",
+  "scripts/gpu_batch.sh line: /data/haiyangw/nrpic/scratch/core/core-20261115-032617-45e1779 /data/haiyangw/nrpic/wt/core/problems/cosmo/east.athinput time/tlim=9.0",
+  "athena -i /data/haiyangw/nrpic/wt/core/problems/cosmo/east.athinput -d /data/haiyangw/nrpic/scratch/core/core-20261115-032617-45e1779 time/tlim=9.0"
+ ],
+ "cwd": "/data/haiyangw/nrpic/scratch/core/core-20261115-032617-45e1779",
+ "executable": {
+  "path": "/data/haiyangw/nrpic/.work/build_gpu_c3/src/athena",
+  "sha256": "bd4fc2723403a8ebbc9fa9e2c684c677510b92b670b129064270266a06632fb4",
+  "mtime": "2026-11-14T08:31:30"
+ },
+ "inputs": [
+  {
+   "path": "/data/haiyangw/nrpic/wt/core/problems/cosmo/east.athinput",
+   "sha256": "61890ec7060b7505b8679e8a58aef4c1668e55a9a6d3b2aaf90e88ec5efcdd81",
+   "bytes": 4050
+  },
+  {
+   "path": "/data/haiyangw/nrpic/scratch/core/core-20261115-032617-45e1779/particles.nrp",
+   "sha256": "3720df9926792f51199a9c6a192d5961a84afab3dc70d33bf9bb39b8be12adfe",
+   "bytes": 1966096
+  },
+  {
+   "path": "/data/haiyangw/nrpic/scratch/core/core-20261115-032617-45e1779/fields.bin",
+   "sha256": "99378e5b19a2d329438e9b8abb9cd4f98229eb3ccd5ca39d2d17d980fbebb1d3",
+   "bytes": 2359328
+  }
+ ],
+ "initial_data_vs_earlier": {
+  "particles.nrp": {
+   "new": "3720df9926792f51199a9c6a192d5961a84afab3dc70d33bf9bb39b8be12adfe",
+   "earlier": "f90bcf01e8541b12f819305360d16e22123671f714bd1685ad541cf93e20ea8d",
+   "identical": false,
+   "max_abs_diff_as_doubles": 3.875207424507855
+  },
+  "fields.bin": {
+   "new": "99378e5b19a2d329438e9b8abb9cd4f98229eb3ccd5ca39d2d17d980fbebb1d3",
+   "earlier": "a17f1c7d2a2d9bcfcf34c673464f49425503937c082385edc6221b8a7d913bb0",
+   "identical": false,
+   "max_abs_diff_as_doubles": 9.39768597607582e-07
+  }
+ },
+ "resources": {
+  "device": "A100 card",
+  "cores": 1,
+  "card_hours": 0.0011
+ },
+ "status": "finished",
+ "batch_list": "/data/haiyangw/nrpic/scratch/core/tmp/verify_batch_20261115-032619.list",
+ "slurm_job": "4342",
+ "submitted": "2026-11-15T03:26:20",
+ "wall_time_s": 4.0,
+ "verdict": {
+  "passed": false,
+  "n_checks": 10,
+  "n_failed": 4,
+  "judge": "/data/haiyangw/nrpic/scratch/core/core-20261115-032617-45e1779/judge.json"
+ },
+ "variant": "newtonian",
+ "note": "first pass: the run script used the current default of make_east.py (Newtonian displacement), not the construction of the earlier run; failed 4 of 10 checks; kept on record (JOURNAL.md 03:55)"
+}

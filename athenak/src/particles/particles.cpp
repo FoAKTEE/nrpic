@@ -67,6 +67,8 @@ Particles::Particles(MeshBlockPack *ppack, ParameterInput *pin) :
       pusher = ParticlesPusher::nrpic_midpoint;
     } else if (is_nrpic && ppush.compare("boris") == 0) {
       pusher = ParticlesPusher::nrpic_boris;
+    } else if (is_nrpic && ppush.compare("newton") == 0) {
+      pusher = ParticlesPusher::nrpic_newton;
     } else {
       std::cout << "### FATAL ERROR in " << __FILE__ << " at line " << __LINE__
                 << std::endl << "Particle pusher must be specified in <particles> block"
@@ -116,6 +118,7 @@ Particles::Particles(MeshBlockPack *ppack, ParameterInput *pin) :
 
 Particles::~Particles() {
   if (pbval_tm != nullptr) {delete pbval_tm;}
+  if (pbval_phi != nullptr) {delete pbval_phi;}
 }
 
 //----------------------------------------------------------------------------------------

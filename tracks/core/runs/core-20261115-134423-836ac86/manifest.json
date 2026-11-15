@@ -1,0 +1,40 @@
+{
+ "run_id": "core-20261115-134423-836ac86",
+ "owner": "core",
+ "purpose": "Scalar field test 1, re-analysis of run core-20261115-133809-836ac86 (no new simulation): frequency from a fit of the travelling and standing parts, amplitude loss of the integrator",
+ "kind": "production",
+ "command": [
+  "python3",
+  "/data/haiyangw/nrpic/wt/core-scalar/tracks/core/analysis/scalar/test1_wave.py",
+  "--exe",
+  "none",
+  "--reuse",
+  "/data/haiyangw/nrpic/scratch/core/core-20261115-133809-836ac86"
+ ],
+ "cwd": "/data/haiyangw/nrpic/scratch/core/core-20261115-134423-836ac86",
+ "commit": "836ac869c9fa7d20ac77e616b4ae8b95500f7ecc",
+ "branch": "core/scalar-field",
+ "uncommitted_changes": [
+  "M tracks/core/JOURNAL-scalar.md",
+  " M tracks/core/analysis/scalar/test1_wave.py",
+  " M tracks/core/analysis/scalar/test2_flrw.py",
+  "?? problems/scalar/kg_wave_smr.athinput"
+ ],
+ "inputs": [
+  {
+   "path": "tracks/core/analysis/scalar/test1_wave.py",
+   "sha256": "8c56092a01e087eed8d4f4b1d90f192d89d05f6dfcc1f02d63623ee1b05c468a"
+  },
+  {
+   "path": "python/nrpic/scalar_field.py",
+   "sha256": "44003fc8f64412513ac34b4e908b4e7f43d79d23694c4378a02267afcc5ffb8e"
+  }
+ ],
+ "output_directory": "/data/haiyangw/nrpic/scratch/core/core-20261115-134423-836ac86",
+ "host": "anta",
+ "start_utc": "2026-11-15T13:44:23Z",
+ "cores": 1,
+ "wall_time_s": 2.36,
+ "exit_status": 0,
+ "core_hours": 0.0007
+}

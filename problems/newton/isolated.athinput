@@ -1,0 +1,119 @@
+# Newtonian mode of the particle module on an isolated domain (tracks/core/interfaces/
+# newtonian_mode.md): the particles of <particles> particle_file move in the potential
+# of their own rest mass, lap Phi = 4 pi rho, potential on the faces of the box from the
+# multipole expansion of the density.  Units G = 1.  Used by the tests of
+# problems/newton/README.md (point mass, homogeneous ball, cold collapse), which set the
+# mesh, the step and the particle file on the command line.
+
+<comment>
+problem   = NRPIC Newtonian mode, isolated domain
+
+<job>
+basename  = newton
+
+<mesh>
+nghost    = 2
+nx1       = 64
+x1min     = -2.0
+x1max     = 2.0
+ix1_bc    = outflow
+ox1_bc    = outflow
+nx2       = 64
+x2min     = -2.0
+x2max     = 2.0
+ix2_bc    = outflow
+ox2_bc    = outflow
+nx3       = 64
+x3min     = -2.0
+x3max     = 2.0
+ix3_bc    = outflow
+ox3_bc    = outflow
+
+<meshblock>
+nx1       = 32
+nx2       = 32
+nx3       = 32
+
+<time>
+evolution  = dynamic
+integrator = rk2          # not used by the particles; the driver needs one
+cfl_number = 1.0
+nlim       = -1
+tlim       = 1.0
+ndiag      = 100
+
+<gravity>
+four_pi_G      = 12.566370614359172   # G = 1
+threshold      = 0.0      # 0: V cycles until the defect stops falling; > 0: defect norm
+niteration     = -1       # fixed number of V cycles when threshold < 0
+npresmooth     = 1
+npostsmooth    = 1
+full_multigrid = false    # false: start from the potential of the previous step
+fmg_ncycle     = 1
+show_defect    = 0
+mg_nghost      = 1
+mg_bc          = multipole   # isolated domain: multipole expansion on the faces
+mporder        = 4           # 2 (quadrupole) or 4 (hexadecapole)
+auto_mporigin  = true        # expansion about the centre of mass
+root_on_host   = false
+
+<particles>
+particle_type  = nrpic
+pusher         = newton    # Newtonian mode: Poisson equation, kick-drift-kick
+interp         = hermite   # potential at the particles: hermite (Catmull-Rom) or bspline
+dt             = 0.01      # upper limit of the step
+newton_cfl     = 0.0       # > 0: step also limited by the fastest particle and the
+                           # largest acceleration to this fraction of a cell
+newton_mg_tol  = 0.0       # > 0: the Poisson solve may end at this fraction of the
+                           # norm of the source (0: until the defect stops falling)
+newton_expansion = none    # none | power (comoving coordinates, periodic mesh only)
+newton_hubble  = 0.0
+newton_exponent = 2.0
+deposit        = true
+deposit_shape  = cic       # cloud shape: cic, tsc or pcs
+nfilter        = 0         # binomial passes on the deposited density
+filter_compensate = false
+filter_comp_c  = -1.0
+deposit_comp_c = 0.0
+deposit_comp_limit = 0.0
+deposit_comp_c2 = 0.0
+hist_dcycle    = 1
+traj_dcycle    = 0
+traj_ntrack    = 0
+snap_dt        = -1.0
+probe_x1       = 0.0       # the potential (lapse column of the history) and the
+probe_x2       = 0.0       # density are reported at the probes
+probe_x3       = 0.0
+nprobe         = 8
+probe1_x1      = 0.5
+probe1_x2      = 0.0
+probe1_x3      = 0.0
+probe2_x1      = 0.0
+probe2_x2      = -0.75
+probe2_x3      = 0.0
+probe3_x1      = 0.0
+probe3_x2      = 0.0
+probe3_x3      = 1.0
+probe4_x1      = -0.75
+probe4_x2      = 0.75
+probe4_x3      = 0.0
+probe5_x1      = 0.75
+probe5_x2      = 0.0
+probe5_x3      = -1.0
+probe6_x1      = 1.0
+probe6_x2      = 1.0
+probe6_x3      = 1.0
+probe7_x1      = -1.5
+probe7_x2      = 0.5
+probe7_x3      = -0.25
+probe8_x1      = 0.25
+probe8_x2      = -1.5
+probe8_x3      = 1.5
+particle_file  = particles.nrp
+
+<problem>
+pgen_name = nrpic_newton   # particles only; nothing is set on the mesh
+
+<output1>
+file_type = rst
+dt        = 1.0e30

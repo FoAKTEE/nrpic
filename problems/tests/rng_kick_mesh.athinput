@@ -1,0 +1,81 @@
+# Reproducible random numbers inside the code (docs/RNG.md), demonstration D2:
+# test particles in the Kerr-Schild metric stored on a uniform mesh and reconstructed
+# at the particles (the set-up of problems/tests/mesh_static.athinput and
+# problems/cluster_test/cluster_mesh.athinput, without deposition), with the random kick
+# of nrpic_kick.cpp.  Particles are owned by MeshBlocks and are removed below the lapse
+# threshold.  The kicks are the same for every division into MeshBlocks (checksums in
+# kick.kick.txt); the particle states agree only to rounding, because the reconstruction
+# measures positions from the edge of the particle's own MeshBlock.
+#
+#   layout 1 (8 MeshBlocks of 64^3):   as written
+#   layout 2 (64 MeshBlocks of 32^3):  meshblock/nx1=32 meshblock/nx2=32 meshblock/nx3=32
+#   without kick:                      particles/test_kick=false
+#   restart:                           athena -r rst/kick.00001.rst -d <new directory>
+# The whole set of runs and the comparison: tracks/core/analysis/rng/run_kick_demo.py
+
+<comment>
+problem   = NRPIC test particles with a reproducible random kick, mesh metric
+
+<job>
+basename  = kick
+rng_seed  = 20261115
+
+<mesh>
+nghost    = 2
+nx1       = 128
+x1min     = -16.0
+x1max     = 16.0
+ix1_bc    = outflow
+ox1_bc    = outflow
+nx2       = 128
+x2min     = -16.0
+x2max     = 16.0
+ix2_bc    = outflow
+ox2_bc    = outflow
+nx3       = 128
+x3min     = -16.0
+x3max     = 16.0
+ix3_bc    = outflow
+ox3_bc    = outflow
+
+<meshblock>
+nx1       = 64
+nx2       = 64
+nx3       = 64
+
+<time>
+evolution  = dynamic
+integrator = rk2
+cfl_number = 1.0
+nlim       = -1
+tlim       = 20.0
+ndiag      = 100
+
+<adm>
+dynamic = false
+
+<particles>
+particle_type  = nrpic
+pusher         = midpoint
+metric         = mesh
+bh_mass        = 1.0
+bh_spin        = 0.0
+tolerance      = 1.0e-12
+max_iterations = 100
+dt             = 0.05
+deposit        = false
+alpha_exc      = 0.62
+hist_dcycle    = 10
+snap_dt        = 10.0
+particle_file  = cluster.nrp
+test_kick        = true
+test_kick_sigma  = 1.0e-3
+test_kick_mode   = normal
+test_kick_key    = tag
+
+<output1>
+file_type = rst
+dt        = 10.0
+
+<problem>
+pgen_name = nrpic_geodesic
