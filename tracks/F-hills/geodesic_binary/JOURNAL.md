@@ -185,3 +185,18 @@ and the time slicing differ (HRNA is not covariant, article.tex:243). Tejeda et 
 compared KS and BL coordinates (article.tex:285) without a printed number here.
 Prediction [JUDGEMENT]: |s.f.(KS) - s.f.(Sch)| <= 0.02 for beta <= 5 and <= 0.05 at
 beta = 10; mean v_inf differs by < 3 percent. Refuted if any difference is larger.
+
+## S4 equatorial Kerr, 2404 binary (before running) [JUDGEMENT predictions]
+
+HRNA in Cartesian Kerr-Schild coordinates, spin a = +0.9 (CM orbit prograde with respect to the
+hole) and a = -0.9 (retrograde), mb = 1e-6, a0 = 1.013, beta = 3, 5, 8, 10, 12, 15 (r_p = 33.8
+to 6.75 r_g; the parabolic CM plunges below r_mb = 1.73 and 5.66 r_g respectively), 400 phases,
+both binary senses; a = 0 from S3 (same coordinates).
+K1 Retrograde binaries: s.f.(a = -0.9) > s.f.(a = 0) > s.f.(a = +0.9) for beta >= 5, since the
+   relativistic increase of the retrograde s.f. found in 2404 should grow when the CM orbit
+   counter-rotates with the hole (larger r_mb, stronger precession at fixed r_p) and shrink
+   when it co-rotates. Refuted if the ordering fails at beta >= 8 by more than 0.02.
+K2 Prograde binaries: |s.f.(a = +-0.9) - s.f.(a = 0)| < 0.03 for beta <= 10.
+K3 2402.02178 is not reproduced here: its claim (2402/main.tex:592-597) concerns the survival
+   boundary of inclined binaries at beta > 0.9, which needs inclined initial data, and its model
+   (Fermi frame, tidal plus PN forces) differs from HRNA. Open item.
