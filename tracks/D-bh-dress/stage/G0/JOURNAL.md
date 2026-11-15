@@ -160,3 +160,14 @@ Rerun of `secondary_infall/selfsimilar.py --taumax 300` (the test behind the -9/
 D-pre-3, run D-bh-dress-20261115-123813-97afeea) into my own run directory. Prediction: the
 numbers of selfsimilar.txt are reproduced exactly (deterministic code, same inputs);
 refuted by any difference beyond the last printed digit.
+
+## Entry 7: C8b, block counts of the finer meshes (prediction)
+
+While checking which region the finest level covers, a debug call of the release
+executable with `-m` (scratch/tmp/mesh7, unregistered) printed 344 and 400 MeshBlocks for
+finest levels 5 and 6 (the anchors: confirmed) but 3200 and 4712 for levels 7 and 8 (M/32,
+M/64) with the same requested region |x| < 1.5 M: from level 7 on, every coarser level is a
+shell of 448 blocks instead of 56. The cost model of SCOPE.md 7 adds 56 blocks per halving
+(456 and 512 blocks). Registered rerun v9_mesh.sh; prediction: the same counts (the tree
+build is deterministic), and with |x| < 2 M at level 8 (horizon on the finest level for
+500 M) more than 4712 blocks. Refuted by other counts.
