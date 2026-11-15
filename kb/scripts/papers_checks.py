@@ -11,7 +11,10 @@ Checks (each against something the ingestion did not compute itself):
      \\entry) in the .bbl / flattened text;
   C4 equation labels: every label stored is written in flat.tex (\\label{...}), and every
      \\label inside a display environment of flat.tex is stored;
-  C5 citation keys: fraction of \\cite keys with a bibliography entry.
+  C5 citation keys: fraction of \\cite keys with a bibliography entry;
+  C6 fuzzy title matching: on entries whose arXiv id is written in them AND points into the
+     corpus, and that carry a title, the matcher (kbtool.bib_resolve) is run blind; its pick
+     is compared with the written id (precision and recall at the threshold).
 Writes <out_dir>/papers_checks.json and the figures fig_papers_k2.png, fig_citations_k3.png.
 """
 import argparse
@@ -132,6 +135,37 @@ def check_labels(lay, con):
     return out
 
 
+def check_fuzzy(con):
+    corpus = {r[0]: r[1] or "" for r in con.execute("SELECT paper_id, title FROM papers")}
+    titles = [(pid, R.norm_title(t)) for pid, t in corpus.items() if len(R.norm_title(t)) >= R.TITLE_MIN_LEN]
+    rows = con.execute("SELECT paper_id, target_arxiv, title FROM bib_entries WHERE resolved_by='arxiv-id' AND "
+                       "title IS NOT NULL AND target_arxiv IN (SELECT paper_id FROM papers)").fetchall()
+    n = matched = correct = 0
+    wrong = []
+    for citing, truth, title in rows:
+        nt = R.norm_title(title)
+        if len(nt) < R.TITLE_MIN_LEN:
+            continue
+        n += 1
+        best, score = None, 0.0
+        for pid, t in titles:
+            if pid == citing:
+                continue
+            sc = R.title_score(nt, t)
+            if sc > score:
+                best, score = pid, sc
+        if best and score >= R.TITLE_MIN:
+            matched += 1
+            if best == truth:
+                correct += 1
+            elif len(wrong) < 10:
+                wrong.append({"citing": citing, "written_id": truth, "matched": best, "score": round(score, 3),
+                              "entry_title": title[:120], "matched_title": corpus[best][:120]})
+    return {"entries": n, "matched": matched, "correct": correct,
+            "precision": round(correct / matched, 4) if matched else None,
+            "recall": round(matched / n, 4) if n else None, "threshold": R.TITLE_MIN, "wrong": wrong}
+
+
 def figures(con, out_dir, summary):
     from nrpic import figstyle as fs
     import matplotlib.pyplot as plt
@@ -219,7 +253,7 @@ def figures(con, out_dir, summary):
     ax.set_yticks(y)
     ax.set_yticklabels([r["arxiv"] for r in fr], fontsize=7)
     ax.set_xlabel("corpus papers citing it")
-    ax.set_title("blue: in the manifest, not ingested yet; red: not in the manifest", fontsize=8)
+    ax.set_title("red: not in the manifest; blue: in it, not ingested", fontsize=8)
     fig.savefig(os.path.join(out_dir, "fig_citations_k3.png"))
     plt.close(fig)
 
@@ -254,6 +288,7 @@ def main():
                "papers_with_missing": [r for r in res["C4_labels"] if r["missing"]],
                "papers_with_extra": [r for r in res["C4_labels"] if r["extra"]]},
         "C5": res["C5_cite_keys"],
+        "C6": check_fuzzy(con),
     }
     json.dump({"summary": summ, "detail": res}, open(os.path.join(a.out_dir, "papers_checks.json"), "w"), indent=1)
     figures(con, a.out_dir, summ)
