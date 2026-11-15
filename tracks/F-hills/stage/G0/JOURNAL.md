@@ -146,3 +146,58 @@ below 1 for the CM by about (1/2) v^2 (2M/r) ~ 0.003 (bound, not parabolic), L =
 4.2 M per unit mass; the GR turning point of that (E, L) is near r_S ~ 6 M (areal), deeper
 than the intended 8 M; one member's L is below 4 M. [Estimates by hand; refuted if the CM's E
 exceeds 1 or its GR turning point lies outside 7.5 M.]
+
+## Entry 4 - outcomes (registered runs, 2026-11-15 17:55-18:12 UTC)
+
+Runs: F-20261115-175542-b49d687 (self-test, FAILED: the script did not read NRPIC_RUN_DIR;
+kept on record), -175549-456bf4a (SC0 a-c), -175620-df20ffe (SC0d), -175614-5cc133d (scan,
+9 models x 9 r_p x 180 phases, 6 cores, 12 min), -180835-66e13b2 (SC2, hrna.py),
+-175636-5432651 (SC5), -175637-a592d7a (SC7), -181007-80649f5 (figures, superseded by
+relabelled) -181106-52c4613 (figures and compare.json). Fractions below are over all 180
+phases; a run stopped as "superluminal" (point-mass near-collision of the members; all 38
+such runs of H4 and all of the other models were bound binaries at the stop) counts as not
+separated.
+
+- SC0 (a) holds: E to 7e-12, L to 1.3e-10, r_p = 8 M to 7e-11. (b) holds (4.5e-12, 7.4e-11).
+  (c) energy of the full three-body problem to 3.2e-9: above my 1e-9, far from refutation.
+- SC0d: the self-acceleration exists and is the same in both codes: -1.0646e-4 (mine) and
+  -1.0647e-4 (hrna.py), hrna_sym and Newton exactly 0. My estimate -1.42e-4 is 25 percent too
+  large: the "within 10 percent" part FAILED; the refutation level (< 0.5 M after 300 M) is
+  far away (4.8 M).
+- SC1 holds. Separated fractions at r_p = 7..13 M: mine Newton-fixed = lead's to all three
+  digits (0.911 ... 0.000); full Newton within 0.011 of newton3; HRNA 0.99, 0.99, 0.98, 0.96,
+  0.96, 0.94, 0.94 against the lead's 0.99, 1.00, 1.00, 0.98, 0.97, 0.98, 0.98; captured 0.96,
+  0.93, 0.88, 0.84, 0.79, 0.71, 0.33 against 0.96, 0.94, 0.89, 0.86, 0.78, 0.69, 0.30.
+- SC2: law newton 360/360 phases with equal outcome codes; law hrna 178/178 at 8 M (2
+  near-collision stops of mine excluded) and 162/174 at 13 M (93.1 percent: the >= 95
+  percent prediction FAILED at 13 M, above the 90 percent refutation level). The 12
+  differences: 3 are late plunges of a bound member after hrna.py stopped on its bound-CM
+  rule (identical energies to 3 digits), the rest phases next to outcome boundaries. No
+  defect in either driver.
+- SC3 (a) holds for HRNA (NR state: separation 1.0 -> 1.8 a0 before pericentre, Newton 1.07
+  a0); the Gamma-corrected binary still reaches 1.2 a0 (my "within 1.1 a0" FAILED). (b)
+  holds: HG4 separated 0.76 (12 M) and 0.63 (13 M) against 0.94 for H4; with the CM factor as
+  well (S4) 0.54 and 0.48, and at 15/17 M 0.23/0.06 against 0.89/0.82 (H4).
+- SC4 (a) holds: 658 of 658 H4 plunges and 488 of 490 S4 plunges at r_p = 7-10 M have
+  test-particle (E, L) inside the Schwarzschild capture region. (b) holds: Newtonian members
+  (NF4) end inside the GR capture region in 0.91, 0.91, 0.91, 0.84, 0.76, 0.58, 0.19 of the
+  phases at r_p = 7..13 M; they are the members left bound with L = 2.2-3.2 M < sqrt(12) M.
+- SC5 holds for the reproduction (Newton-fixed E_u = +1.891 / -1.901, bound member pericentre
+  5.87 M; HRNA plunges m1 at t = 96.9 M, E2_u = +1.159; V6a: +1.887 / -1.901, 5.86 M, 97.1,
+  +1.159). With the Gamma-corrected velocities (HRNA and hrna_sym) the outcome changes in a way
+  I did not predict: the two point masses collide at t = 84.5 M (separation < 0.01 a0) before
+  pericentre.
+- SC6: Delta L_cm (release -> 2 r_t) of HRNA at 4 r_t is 0.12 at r_p = 7 M (predicted 0.127),
+  0.003-0.02 for Newton, 0.02-0.08 for hrna_sym; from 20 r_t HRNA's CM pericentre is 30.5-44 M
+  for nominal 7-17 M (predicted > +10 M): holds. The release-radius convergence of hrna_sym is
+  REFUTED: S4 and S20 differ by up to 0.35 in the separated and 0.38 in the captured fraction
+  (r_p = 8 M: 0.91/0.56 and 0.82/0.44); S20 has 25-60 percent near-collision stops, 90 percent
+  of them after the CM pericentre (surviving, eccentric binaries). My diagnostic variant is
+  therefore not a converged reference either.
+- SC7 holds: the CM of the NR start state, read as u_i = P_i/m in isotropic Schwarzschild
+  coordinates of the heavy hole (hole frame), has E = 0.99925, L = 4.19 M and a GR turning
+  point at r_S = 5.77 M (isotropic 4.72 M); with the hole at rest E = 0.9929, L = 3.81 M
+  (captured); with the total mass M + m_b, L/(M + m_b) = 3.81 (captured).
+- N1 holds (SECOND_CHECK.md part 1): no full-NR Hills-type calculation and no full-GR matter
+  binary passing a black hole found in 31 INSPIRE queries, 10 complete forward-citation lists
+  and 6 web searches between 17:57 and 18:06 UTC.

@@ -1,0 +1,94 @@
+{
+ "input": "/data/haiyangw/nrpic/wt/F-hills/tracks/F-hills/three_punctures/inputs/hills_q10_m8.athinput",
+ "reading": "[JUDGEMENT, stated in the output]: puncture momenta P_i are read as m u_i\n(covariant spatial 4-velocity) in isotropic coordinates of a Schwarzschild hole of mass M_h\nat the heavy puncture, E = alpha sqrt(1 + psi^-4 |u|^2), L = (x x u)_z, areal radius\nr_S = r (1 + M_h/2r)^2. Two brackets: M_h = M (test-mass picture, hole at rest or moving with\nits momentum) and M_h = M + m_b (total mass, effective-one-body-like).",
+ "test_mass_hole_at_rest": {
+  "m1": {
+   "E": 0.9955296033826957,
+   "L": 2.046936098910667,
+   "rS": 25.697560819720405,
+   "captured": true,
+   "turning_point_rS": null
+  },
+  "m2": {
+   "E": 0.9975072401412282,
+   "L": 5.854623961021889,
+   "rS": 28.06000663652132,
+   "captured": false,
+   "turning_point_rS": 15.53210680437704
+  },
+  "cm": {
+   "E": 0.9928966741167294,
+   "L": 3.813083833977389,
+   "rS": 26.862885615154635,
+   "captured": true,
+   "turning_point_rS": null,
+   "turning_point_riso": null
+  },
+  "M_h": 1.0
+ },
+ "test_mass_hole_frame": {
+  "m1": {
+   "E": 1.0019115530569318,
+   "L": 2.430762419558379,
+   "rS": 25.697560819720405,
+   "captured": true,
+   "turning_point_rS": null
+  },
+  "m2": {
+   "E": 1.0037877609203483,
+   "L": 6.233414409140562,
+   "rS": 28.06000663652132,
+   "captured": false,
+   "turning_point_rS": 16.02861579623088
+  },
+  "cm": {
+   "E": 0.9992527004238607,
+   "L": 4.194392218360582,
+   "rS": 26.862885615154635,
+   "captured": false,
+   "turning_point_rS": 5.774962293234336,
+   "turning_point_riso": 4.722018836493349
+  },
+  "M_h": 1.0
+ },
+ "total_mass_hole_frame": {
+  "m1": {
+   "E": 0.9975388231668028,
+   "L": 2.430762419558379,
+   "rS": 25.79968740766601,
+   "captured": true,
+   "turning_point_rS": null
+  },
+  "m2": {
+   "E": 0.9997995829986234,
+   "L": 6.233414409140562,
+   "rS": 28.161947431928695,
+   "captured": false,
+   "turning_point_rS": 15.136265176477787
+  },
+  "cm": {
+   "E": 0.9951187581055245,
+   "L": 4.194392218360582,
+   "rS": 26.964916310319783,
+   "captured": true,
+   "turning_point_rS": null,
+   "turning_point_riso": null
+  },
+  "M_h": 1.1
+ },
+ "baselines_rp8": {
+  "newton_hole_fixed": {
+   "E": 1.0,
+   "L": 4.0
+  },
+  "newton_full_relative": {
+   "E": 1.0,
+   "L": 4.1952353926806065
+  },
+  "hrna_2404": {
+   "E": 1.0,
+   "L": 4.618802153517006
+  },
+  "capture_L_at_E1": 4.0
+ }
+}
