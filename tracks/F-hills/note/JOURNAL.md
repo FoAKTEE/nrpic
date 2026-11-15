@@ -112,3 +112,18 @@ it), comments of the generated tables.
 Prediction: every PNG byte-identical to N2 (the legend change is a no-op under czstyle);
 ledger.tex differs from N2 only in the added rows and the column widths; claims.md
 identical. Refuted if a PNG changes.
+
+## 2026-11-15 N3, outcome (run F-20261115-180428-fc8172f)
+
+Prediction met: all seven PNGs byte-identical to N2; `claims.md` identical; `ledger.tex`
+differs only in the comment line, the column widths and the four added rows (H1: largest
+|dP| 0.0088 against SKR's retrograde curve and last disrupting D 0.445 when bound binaries
+wider than 3.5 a_b count as disrupted; isotropic fit deviations 0.015 and 0.017 for D <= 1
+against the stated one percent; the printed plateau and accuracy; recoil 13.3 M by t = 280 M).
+Note compiled (11 pages, latexmk), checker clean in the main text, every page read.
+
+## 2026-11-15 N4. Final rerun after the last ledger format change (prediction)
+
+Only change: penetration factors below 1e-3 printed as powers of ten in `ledger.tex`
+(retrograde maximum energy at D = 10^-5). Prediction: PNGs and `claims.md` byte-identical to
+N3; `ledger.tex` differs in that one cell. Refuted otherwise.

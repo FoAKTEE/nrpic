@@ -24,6 +24,15 @@ def g(x, n=4):
     return f"{x:.{n}g}"
 
 
+def gD(x):
+    """A penetration factor for the ledger: powers of ten below 1e-3 as 10^n."""
+    if 0 < x < 1e-3:
+        n = int(round(np.log10(x)))
+        if abs(x / 10.0 ** n - 1) < 1e-9:
+            return f"10^{{{n}}}"
+    return g(x)
+
+
 def tex(s):
     return s.replace("_", r"\_").replace("%", r"\%")
 
@@ -87,7 +96,7 @@ def main():
         add("Restricted Newton", f"deep-limit disruption probability, {lab}",
             g(c["P_at_Dmin"], 3), R["coplanar_an"])
         add("Restricted Newton", f"largest ejection energy, {lab}", g(c["Emax"], 4) +
-            f" at $D={g(c['D_at_Emax'])}$", R["coplanar_an"])
+            f" at $D={gD(c['D_at_Emax'])}$", R["coplanar_an"])
         add("Restricted Newton", f"failed integrations, {lab}",
             f"{c['n_fail']} of {c['n_total']}", R["coplanar_an"])
     add("Restricted Newton", "largest disruption probability (prograde)",
