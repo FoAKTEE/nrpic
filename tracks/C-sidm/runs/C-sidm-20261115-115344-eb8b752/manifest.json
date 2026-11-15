@@ -1,0 +1,54 @@
+{
+  "run_id": "C-sidm-20261115-115344-eb8b752",
+  "owner": "C-sidm",
+  "kind": "scouting",
+  "purpose": "G0 scoping P1: monoenergetic sequence, binding-energy maximum, check of the five Wu-Most models",
+  "command": [
+    "python3",
+    "tracks/C-sidm/scope/scripts/seq_monoenergetic.py"
+  ],
+  "cwd": "/data/haiyangw/nrpic/wt/C-sidm",
+  "commit": "eb8b752e1865beaa6bbb4dfe7d448c0b04e71e43",
+  "branch": "track/C-sidm",
+  "inputs": [
+    {
+      "path": "python/nrpic/figstyle.py",
+      "sha256": "5d3b78ad8c2c02e428b675e3d7e35a32cbc8f053d1aeedd4fde66f27da55676e"
+    },
+    {
+      "path": "python/nrpic/st_cluster.py",
+      "sha256": "81dc4c66731cef81c76473e532d6a443ef1a42b9b3a91e90fb68620412db1bd1"
+    },
+    {
+      "path": "tracks/C-sidm/scope/scripts/seq_monoenergetic.py",
+      "sha256": "ab5f6bddf346f464e81ef2b4d3f52c16a4e9955ad5cb0d7a2bebd8e780df1679"
+    }
+  ],
+  "output_directory": "/data/haiyangw/nrpic/scratch/C-sidm/C-sidm-20261115-115344-eb8b752",
+  "launcher": "local (processors)",
+  "cores": 1,
+  "card_hours": 0.0,
+  "started_utc": "20261115-115344",
+  "status": "completed",
+  "exit_status": 0,
+  "wall_time_s": 3.25,
+  "finished_utc": "20261115-115348",
+  "outputs": [
+    {
+      "path": "fig_seq_monoenergetic.pdf",
+      "sha256": "b316dcaafa5072d713baed621d3213214471afe4cfa0c0adddbfde592c865239"
+    },
+    {
+      "path": "fig_seq_monoenergetic.png",
+      "sha256": "e2af9d9172150797682b3191e6ed663d902a47199f5df0170fee1d87e1437392"
+    },
+    {
+      "path": "seq_monoenergetic.json",
+      "sha256": "bb43f4e8e6ce7be0bd27057c6f2464a7bbafa3f23a3b744f440179488981f997"
+    },
+    {
+      "path": "stdout.txt",
+      "sha256": "63fd4dd424992665c4080373f5a719f314bdceecc9b3a6fce52e07910d1defc3"
+    }
+  ]
+}

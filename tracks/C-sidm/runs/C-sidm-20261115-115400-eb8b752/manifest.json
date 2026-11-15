@@ -1,0 +1,115 @@
+{
+  "run_id": "C-sidm-20261115-115400-eb8b752",
+  "owner": "C-sidm",
+  "kind": "scouting",
+  "purpose": "G0 scoping P4: Knudsen numbers of near-threshold models, Monte Carlo collision requirements, measured costs of the relativistic-cluster runs",
+  "command": [
+    "python3",
+    "tracks/C-sidm/scope/scripts/knudsen_costs.py"
+  ],
+  "cwd": "/data/haiyangw/nrpic/wt/C-sidm",
+  "commit": "eb8b752e1865beaa6bbb4dfe7d448c0b04e71e43",
+  "branch": "track/C-sidm",
+  "inputs": [
+    {
+      "path": "docs/TESTLOG.md",
+      "sha256": "51d427c3262f44e38e8e8848e0a6fc6fcd41f635deaa039385b9e8f0176e9a53"
+    },
+    {
+      "path": "python/nrpic/figstyle.py",
+      "sha256": "5d3b78ad8c2c02e428b675e3d7e35a32cbc8f053d1aeedd4fde66f27da55676e"
+    },
+    {
+      "path": "python/nrpic/st_cluster.py",
+      "sha256": "81dc4c66731cef81c76473e532d6a443ef1a42b9b3a91e90fb68620412db1bd1"
+    },
+    {
+      "path": "tracks/C-sidm/scope/scripts/king_sequence.py",
+      "sha256": "fdeff901a23e67bfd83566d986befd6809a284ce70d4c9a2904f17206afce864"
+    },
+    {
+      "path": "tracks/C-sidm/scope/scripts/knudsen_costs.py",
+      "sha256": "4d996869039010f494815fc8d42198b3acb7da41f380eeca1520e79c474458cb"
+    },
+    {
+      "path": "/data/haiyangw/nrpic/runs/st/yc0819_v4/athena.20261113-062220.log",
+      "sha256": "9998d1aea1070a9a25519bbcb7d6160afb52585bd572e8ac97dfc6bc1d4f3dca",
+      "note": "AthenaK log of the main checkout (untracked runs/), read-only"
+    },
+    {
+      "path": "/data/haiyangw/nrpic/runs/st/migration_yc0500_v4/chain/seg001.job4189.a1.log",
+      "sha256": "7f3e34c0e9ce14e81988f7c017e3a6745108fc3516cadd173f4782a53f0e4964",
+      "note": "AthenaK log of the main checkout (untracked runs/), read-only"
+    },
+    {
+      "path": "/data/haiyangw/nrpic/runs/st/migration_yc0500_v4/chain/seg002.job4211.a1.log",
+      "sha256": "d01bd7bf11327e7d20c6c90819e7fb7356a45977a6d49f5fe274c4b5145d5dbd",
+      "note": "AthenaK log of the main checkout (untracked runs/), read-only"
+    },
+    {
+      "path": "/data/haiyangw/nrpic/runs/st/migration_yc0500_v4/chain/seg003.job4217.a1.log",
+      "sha256": "4a7065de3676d50be281e51a4151b76ef293b8b8cd39e5558fd319a2d555140f",
+      "note": "AthenaK log of the main checkout (untracked runs/), read-only"
+    },
+    {
+      "path": "/data/haiyangw/nrpic/runs/st/yc0756_unpert/chain/seg001.job4216.a1.log",
+      "sha256": "21427173dae4ef25ea72e4c593b83fa8c15b64f66526013be1da91f0c6ce179e",
+      "note": "AthenaK log of the main checkout (untracked runs/), read-only"
+    },
+    {
+      "path": "/data/haiyangw/nrpic/runs/st/yc0605_v5/athena.20261113-083550.log",
+      "sha256": "d6f37cc660ffd6fa18c0874f305ab9361b8ef7573bb96e97ab9b389fcabc27d2",
+      "note": "AthenaK log of the main checkout (untracked runs/), read-only"
+    },
+    {
+      "path": "/data/haiyangw/nrpic/runs/st/yc0605_v5/athena.20261113-100905.log",
+      "sha256": "8f918982ef69c89e04c5c82fc4ad9131174c65ae939f3c839588109aed6edaa0",
+      "note": "AthenaK log of the main checkout (untracked runs/), read-only"
+    },
+    {
+      "path": "/data/haiyangw/nrpic/runs/st/yc0500_v5/athena.20261113-083550.log",
+      "sha256": "9b5d2786912ee6b1bd238660ceef2de24bd7758b1a08254f2f2e78c759b8f70d",
+      "note": "AthenaK log of the main checkout (untracked runs/), read-only"
+    },
+    {
+      "path": "/data/haiyangw/nrpic/runs/cosmo/dav_c256_n64/athena.20261114-031241.log",
+      "sha256": "91ef7ab0a4e4ad1caf202b5c6abf48b7a1fa1a938956d89ab6eba4dd5c6c53ad",
+      "note": "AthenaK log of the main checkout (untracked runs/), read-only"
+    }
+  ],
+  "output_directory": "/data/haiyangw/nrpic/scratch/C-sidm/C-sidm-20261115-115400-eb8b752",
+  "launcher": "local (processors)",
+  "cores": 1,
+  "card_hours": 0.0,
+  "started_utc": "20261115-115400",
+  "status": "completed",
+  "exit_status": 0,
+  "wall_time_s": 3.4,
+  "finished_utc": "20261115-115403",
+  "outputs": [
+    {
+      "path": "fig_costs.pdf",
+      "sha256": "cdddfbbff8e1f5ad333128d82a225f61ca7372605c854386f67f882568f67caf"
+    },
+    {
+      "path": "fig_costs.png",
+      "sha256": "9b03824a44af00ac2798c105eeb5f3706d50a95858fef676d9c8c99ce6252b48"
+    },
+    {
+      "path": "fig_knudsen.pdf",
+      "sha256": "178e72d43cb3f032c75e8d3527c599dfacfc5090a015b213260d93df003c7b26"
+    },
+    {
+      "path": "fig_knudsen.png",
+      "sha256": "415f8f96511c500e80f88ff14cee28b5717722d57c13bcb3d1da2b047a135033"
+    },
+    {
+      "path": "knudsen_costs.json",
+      "sha256": "0349d59a7eb7f9085dd5c520d1ac65fc6f853629ea517e603a212698f8a70b64"
+    },
+    {
+      "path": "stdout.txt",
+      "sha256": "b8fbd8ef2fc8c85021a3c9941985be7dbddc7937bd223841a3850c50c12b77a5"
+    }
+  ]
+}

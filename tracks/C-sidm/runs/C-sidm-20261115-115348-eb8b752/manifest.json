@@ -1,0 +1,58 @@
+{
+  "run_id": "C-sidm-20261115-115348-eb8b752",
+  "owner": "C-sidm",
+  "kind": "scouting",
+  "purpose": "G0 scoping P2/P3: independent truncated Maxwell-Boltzmann (King) solver against arXiv:2108.11967 Table and arXiv:2009.08163 King maximum",
+  "command": [
+    "python3",
+    "tracks/C-sidm/scope/scripts/king_sequence.py"
+  ],
+  "cwd": "/data/haiyangw/nrpic/wt/C-sidm",
+  "commit": "eb8b752e1865beaa6bbb4dfe7d448c0b04e71e43",
+  "branch": "track/C-sidm",
+  "inputs": [
+    {
+      "path": "python/nrpic/figstyle.py",
+      "sha256": "5d3b78ad8c2c02e428b675e3d7e35a32cbc8f053d1aeedd4fde66f27da55676e"
+    },
+    {
+      "path": "tracks/C-sidm/scope/scripts/king_sequence.py",
+      "sha256": "fdeff901a23e67bfd83566d986befd6809a284ce70d4c9a2904f17206afce864"
+    }
+  ],
+  "output_directory": "/data/haiyangw/nrpic/scratch/C-sidm/C-sidm-20261115-115348-eb8b752",
+  "launcher": "local (processors)",
+  "cores": 1,
+  "card_hours": 0.0,
+  "started_utc": "20261115-115348",
+  "status": "completed",
+  "exit_status": 0,
+  "wall_time_s": 9.02,
+  "finished_utc": "20261115-115357",
+  "outputs": [
+    {
+      "path": "fig_king_check.pdf",
+      "sha256": "7059c08851d9e3f8db1a9ad342b13ad397c47d5be5624dd98fa39e6b87248d93"
+    },
+    {
+      "path": "fig_king_check.png",
+      "sha256": "5d5b2ed49a2f4393b6128db6d1c24c39fee83726b9edf8b30d319af8c647d4d1"
+    },
+    {
+      "path": "fig_king_sequence.pdf",
+      "sha256": "4de734774dbbd6802ba4944598b1bb3c91a030203299c71299d16fb627802e18"
+    },
+    {
+      "path": "fig_king_sequence.png",
+      "sha256": "cad0e6c392077e5a98e24f441666f61ec54f24025bf69faab5df12706cc3413d"
+    },
+    {
+      "path": "king_sequence.json",
+      "sha256": "2a98067a317504fe29c03543ac0b296a9af17e18bbebfa79068494d5c2c0833f"
+    },
+    {
+      "path": "stdout.txt",
+      "sha256": "fcb09bc8f0f8952adcca877e7316daf01dc7d9723d7ed236cb1598458291b7df"
+    }
+  ]
+}
