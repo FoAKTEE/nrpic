@@ -743,3 +743,22 @@ and a from the proper volume agree with that solution to 1e-5 relative over the 
 all three rates (wave 1 matched alpha = a to 1.9e-7 with the conformal-time lapse, CT
 "C0"); alpha_max - alpha_min below 1e-10 (homogeneity is kept). Refuted by a relative
 error above 1e-4 (a wrong factor or sign in the term would show at order 1e-1).
+
+### Outcome of test H (run core-20261115-193831-7598fd6, the first package run registered by `nrpic-run submit` with a simulation)
+
+| lapse_leak | alpha at t = 2/H_0 (exact) | a (exact) | largest relative error alpha / a | alpha_max - alpha_min |
+|---|---|---|---|---|
+| 0 | 14.384007 (14.384045) | 9.306095 (9.306138) | 1.04e-5 / 1.34e-5 | 1.2e-13 |
+| 20 | 1.0718012 (1.0718011) | 2.6886180 (2.6886185) | 2.06e-4 / 1.06e-5 | 9e-16 |
+| 5 | 1.2624374 (1.2624373) | 3.1443117 (3.1443130) | 6.3e-6 / 7.3e-7 | 0 |
+
+Plain 1+log reaches alpha = 1 + 6 ln a = 14.4 at a = 9.3; the relaxed lapse stays at
+1.07 and 1.26. Prediction (1e-5 for every rate): met for rate 5, met to 1.3e-5 for
+rate 0 (the largest error is at t = 0.25, where the lapse grows fastest; 2.7e-6 at the
+end), FAILS for rate 20 at the start: 1.8e-4 to 2.1e-4 at t = 0.03 to 0.09 (the first
+three steps), 5.7e-7 at t = 0.5 and 4.9e-8 at the end. The relaxation time of rate 20
+is 1.6 steps and the term has a kink at alpha = 1, where every run starts. Not refuted
+(threshold 1e-4 is exceeded only in the first three steps; a wrong factor would show at
+1e-1 for the whole run). Homogeneity is kept to round-off. Check of the reading, written
+before it runs: rate 20 with a step four times smaller (`time/cfl_number=0.0625`): the
+error of the first 0.1/H_0 falls by at least 8 (below 2.6e-5); refuted if not.

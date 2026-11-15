@@ -10,7 +10,7 @@ lapse_leak = 0 gives alpha = 1 + 6 ln a exactly.  The run's history (<base>.nrpi
 alpha_min, alpha_max, proper volume, mean K) is compared with that solution, integrated
 here with a fine fourth-order Runge-Kutta step.
 
-    flrw_leak.py --exe ATHENA [--out DIR] [--rates 0,20,5]
+    flrw_leak.py --exe ATHENA [--out DIR] [--rates 0,20,5] [--name N] [--extra ARGS...]
 
 Runs problems/cosmo/flrw_leak.athinput once per rate in DIR/rate<r>/ (particles from
 cosmo/ic/make_lattice.py), writes DIR/flrw_leak_numbers.json and the figure
@@ -68,6 +68,8 @@ def main():
     ap.add_argument("--exe", required=True)
     ap.add_argument("--out", default=os.environ.get("NRPIC_RUN_DIR", ""))
     ap.add_argument("--rates", default="0,20,5")
+    ap.add_argument("--name", default="flrw_leak", help="name of the figure and numbers")
+    ap.add_argument("--extra", nargs="*", default=[], help="more athena arguments")
     a = ap.parse_args()
     if not a.out:
         sys.exit("give --out or run under nrpic-run (NRPIC_RUN_DIR)")
@@ -85,7 +87,7 @@ def main():
                         "--n", "32", "--ppc", "1", "--L", repr(L), "--H0", repr(H0),
                         "--out", d], check=True, capture_output=True)
         with open(os.path.join(d, "athena.log"), "w") as log:
-            rc = subprocess.run([a.exe, "-i", INPUT, "-d", d, f"z4c/lapse_leak={rate!r}"],
+            rc = subprocess.run([a.exe, "-i", INPUT, "-d", d, f"z4c/lapse_leak={rate!r}"] + a.extra,
                                 cwd=d, stdout=log, stderr=subprocess.STDOUT).returncode
         if rc != 0:
             sys.exit(f"athena failed for rate {rate} (exit {rc}); see {d}/athena.log")
@@ -123,11 +125,11 @@ def main():
     ax[1].legend(fontsize=7)
     ax[1].set_xlabel(r"coordinate time $t\,H_0$", labelpad=-2)
     ax[1].set_ylabel("relative difference from the exact solution")
-    fs.save(fig, os.path.join(HERE, "figs", "flrw_leak"))
-    with open(os.path.join(a.out, "flrw_leak_numbers.json"), "w") as f:
+    fs.save(fig, os.path.join(HERE, "figs", a.name))
+    with open(os.path.join(a.out, a.name + "_numbers.json"), "w") as f:
         json.dump(numbers, f, indent=1)
         f.write("\n")
-    with open(os.path.join(HERE, "flrw_leak_numbers.json"), "w") as f:
+    with open(os.path.join(HERE, a.name + "_numbers.json"), "w") as f:
         json.dump(numbers, f, indent=1)
         f.write("\n")
 
