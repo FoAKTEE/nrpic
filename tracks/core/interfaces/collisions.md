@@ -619,3 +619,58 @@ by the collision step in the same way.
   collision step of a 1e5-particle Tolman box takes about the same time in both modes
   (wall time of the whole run 387 to 394 s for the four runs of
   core-20261115-164138-cdd7c88, dominated by the implicit push).
+
+## 12. Fluid reference for the short-mean-free-path end (answer to Track C, assessment only)
+
+Request: `track/C-sidm:tracks/C-sidm/outbox/20261115T1320Z__to-core__grhydro-reference.md`
+(is the general-relativistic hydrodynamics of the code usable for a static spherical
+star with tabulated initial data, and at what effort). Nothing was implemented.
+
+What the tree has [VERIFIED by reading `athenak/src` at f46f159 and by one run]:
+- `dyn_grmhd/` (general-relativistic magnetohydrodynamics on a dynamical spacetime,
+  conservative finite volume, coupled to Z4c through the same matter-source interface
+  as the particles; run without magnetic field by leaving it zero), with the primitive
+  solver of `eos/primitive-solver/`: equations of state `ideal` (one adiabatic index,
+  `<mhd> gamma`), `piecewise_poly`, `compose` (three-dimensional table), `hybrid`.
+- A star generator, `pgen/dyn_grmhd/dyngr_tov.cpp` with `utils/tov/` (`tov_polytrope`,
+  `tov_piecewise_poly`, `tov_tabulated`): integrates the Tolman-Oppenheimer-Volkoff
+  equations for a polytrope, a piecewise polytrope or a tabulated barotropic relation,
+  in Schwarzschild or isotropic coordinates, fills the fluid and the metric, and can add
+  a velocity or pressure perturbation (`v_pert`, `p_pert`). It is not a built-in
+  generator: build with `PROBLEM=dyn_grmhd/dyngr_tov scripts/build_cpu.sh <dir>`.
+- Smoke run in this tree: the stock polytropic star (gamma = 2) on an octant of 32^3
+  cells of 0.8 with the spacetime evolved by Z4c, deck `problems/tests/fluid_tov_z4c.athinput`,
+  63 steps to t = 20 on one processor core in 173 s: rest mass 0.188313082 -> 0.188313078
+  (-1.9e-8); maximum density +13.2 percent and minimum lapse 0.671 -> 0.652, a steady
+  contraction under the inward velocity perturbation of the deck (ten cells per stellar
+  radius, not a converged star); Hamiltonian-constraint norm 8.4e-4 -> 1.5e-4
+  [VERIFIED: run core-20261115-161726-0656925; figure and numbers run
+  core-20261115-182216-576283c, `fig_fluid_smoke.png`].
+
+What it can give for the short-mean-free-path end:
+1. As it is: stars of one adiabatic index. A collision-dominated gas of the track's
+   particles is a relativistic monatomic gas whose index runs from 5/3 to 4/3 with the
+   temperature; with one index the module can anchor the method (onset of the radial
+   instability of a polytrope against the exact pulsation equation), not the track's
+   equilibrium.
+2. For the same equilibrium as the particle runs two additions are needed, neither
+   small: (a) an equation-of-state policy for the relativistic monatomic gas (Synge:
+   h = K3(1/theta)/K2(1/theta); or the Taub-Mathews closed form) next to
+   `eos/primitive-solver/idealgas.hpp`, with a temperature inversion in the primitive
+   recovery and its instantiation in `dyn_grmhd`; (b) initial data from the track's
+   table: the tabulated option of the TOV generator reproduces the star if the track
+   supplies the barotropic relation p(rho_0), e(rho_0) along its equilibrium (an
+   isotropic distribution function gives a perfect-fluid stress tensor, so the same
+   structure equations hold), so no new generator is needed; the generator must become
+   selectable by name next to `nrpic_cf` and be tested with our Z4c settings and static
+   refinement. Effort [JUDGEMENT]: two to three working sessions of core including the
+   tests (a static star stays static to the truncation error of the atmosphere
+   treatment; the fundamental radial frequency against the track's
+   `gravothermal/tmb.py`; convergence in the mesh), about one card-hour.
+3. What it cannot give: anything at finite Knudsen number (no viscosity or heat
+   conduction in the module), and it needs an atmosphere floor outside the star, which
+   the particle runs do not have; comparisons near the surface are limited by it.
+
+Answer to the smallest acceptable form of the request: yes, usable; with the existing
+single-index gas at once (method anchor), with the track's equilibrium after the
+equation of state of item 2(a).
