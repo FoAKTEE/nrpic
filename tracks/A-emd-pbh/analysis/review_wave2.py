@@ -297,6 +297,7 @@ def newton_tophat(d):
     toff = t0 - B * (eta0 - math.sin(eta0))
     tta = B * math.pi + toff
     t, Cm, c = moments(d)
+    t = t + b["t0"]                            # history times are code times from t0
     R = np.sqrt(5.0 * np.trace(Cm, axis1=1, axis2=2) / 3.0)
     i = int(np.argmax(R))
     sel = slice(max(i - 3, 0), i + 4)          # quartic through seven records: own estimator
@@ -321,6 +322,7 @@ def newton_scan_case(d):
     b = json.load(open(os.path.join(d, "ball.json")))
     ref = b["reference"]["ellipsoid_isolated"]["collapses"][0]["t"]
     t, Cm, _ = moments(d)
+    t = t + b["t0"]                            # history times are code times from t0
     ev = np.linalg.eigvalsh(Cm)[:, 0]          # smallest eigenvalue
     i = int(np.argmin(ev[t < 1.3 * ref]))
     sel = slice(max(i - 3, 0), i + 4)
@@ -443,13 +445,15 @@ def main():
     scan = []
     for n in sorted(os.listdir(NEWTON_SCAN)):
         dd = os.path.join(NEWTON_SCAN, n)
-        if os.path.exists(os.path.join(dd, "newton.newton.hst")) and "n128" in n:
+        bj = os.path.join(dd, "ball.json")
+        if (os.path.exists(os.path.join(dd, "newton.newton.hst")) and os.path.exists(bj)
+                and json.load(open(bj))["case"]["nx"] == 128):
             try:
                 scan.append(newton_scan_case(dd))
             except (KeyError, IndexError, ValueError) as err:
                 scan.append(dict(name=n, error=str(err)))
-    scan = [s for s in scan if "error" not in s]
-    res["newton"] = dict(tophat=tophat, scan=scan)
+    res["newton"] = dict(tophat=tophat, scan=[s for s in scan if "error" not in s],
+                         scan_errors=[s for s in scan if "error" in s])
     res["closed_forms"] = closed_forms()
     with open(os.path.join(a.out, "review_wave2.json"), "w") as f:
         json.dump(res, f, indent=1)
