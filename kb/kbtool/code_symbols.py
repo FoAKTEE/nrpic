@@ -132,15 +132,31 @@ def cpp_symbols(text):
                     comment_lines.add(ln)
         stack.extend(nd.children)
 
+    neutral = src.decode("utf-8", errors="replace").splitlines()
+
+    def _doc_anchor(ls):
+        """Move above lines that held only an attribute macro or a template header."""
+        k = ls
+        while k > 1:
+            prev_n = neutral[k - 2].strip() if k - 2 < len(neutral) else ""
+            prev_o = lines[k - 2].strip() if k - 2 < len(lines) else ""
+            if (not prev_n and prev_o) or prev_o.startswith("template"):
+                k -= 1
+            else:
+                break
+        return k
+
     def add(kind, name, scope, node, sig_end=None, body=False):
         if not name:
             return
         q = "::".join(scope + [name]) if scope else name
-        ls, le = node.start_point[0] + 1, node.end_point[0] + 1
+        ls = node.start_point[0] + 1
+        le = node.end_point[0] + (0 if node.end_point[1] == 0 and node.end_point[0] > node.start_point[0] else 1)
         sig = src[node.start_byte:(sig_end if sig_end is not None else node.end_byte)].decode("utf-8", "replace")
         sig = re.sub(r"\s+", " ", sig).strip()[:400]
         syms.append({"name": name.split("::")[-1], "qualname": q, "kind": kind, "signature": sig,
-                     "line_start": ls, "line_end": le, "doc": _doc_above(lines, ls, comment_lines), "body": body})
+                     "line_start": ls, "line_end": le, "doc": _doc_above(lines, _doc_anchor(ls), comment_lines),
+                     "body": body})
 
     def walk(node, scope, in_class):
         for ch in node.named_children:

@@ -351,6 +351,7 @@ def summary(idx):
     for c in idx["params"]:
         acc[c["access"]] = acc.get(c["access"], 0) + 1
     reads = [c for c in idx["params"] if c["access"] in ("get", "get_or_add")]
+    pin = has_parameter_input(idx)
     m = idx.get("meta") or {}
     return {"repo_id": idx["repo_id"], "role": idx["role"], "commit_sha": m.get("commit_sha"),
             "commit_date": m.get("commit_date"), "ref": m.get("ref"), "license_spdx": idx["license_spdx"],
@@ -359,11 +360,19 @@ def summary(idx):
             "n_symbols": len(idx["symbols"]), "param_calls_by_access": acc, "param_reads": len(reads),
             "param_reads_literal": sum(1 for c in reads if c["block_literal"] and c["name_literal"]),
             "param_calls_unparsed": sum(1 for c in idx["params"] if not c["args_ok"]),
+            "defines_parameter_input": pin, "params_in_table": len(reads) if pin else 0,
             "input_params": len(idx["inputs"]), "n_chunks": len(idx["chunks"]),
             "cpp_files_with_error_nodes": sum(1 for f in idx["files"] if f.get("parse_error_nodes")),
             "python_parse_errors": sum(1 for f in idx["files"] if f.get("parse_error")),
             "tool_version": f"kbtool {__version__}", "tree_sitter": S.tree_sitter_versions(),
             "seconds": idx.get("seconds"), "indexed_utc": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())}
+
+
+def has_parameter_input(idx):
+    """True when the repository defines the ParameterInput class (AthenaK, Athena++,
+    Parthenon, this repository). Elsewhere a call named GetReal/GetString/... belongs to
+    another interface, so it stays in params.jsonl and does not enter the params table."""
+    return any(s["name"] == "ParameterInput" and s["kind"] in ("class", "struct") for s in idx["symbols"])
 
 
 def load_db(lay, idx):
@@ -400,7 +409,7 @@ def load_db(lay, idx):
             con.execute("INSERT INTO code_chunks(file_id, sym_id, text, line_start, line_end) VALUES (?,?,?,?,?)",
                         (fids[c["file_index"]], None if c["sym_global"] is None else sids[c["sym_global"]],
                          c["text"], c["line_start"], c["line_end"]))
-        for c in idx["params"]:
+        for c in (idx["params"] if has_parameter_input(idx) else []):
             if c["access"] not in ("get", "get_or_add"):
                 continue
             con.execute("INSERT INTO params(repo_id, block, name, type, default_value, file_id, line) "
