@@ -677,3 +677,27 @@ linear reference of the record).
 Run core-20261115-184925-71663b2 FAILED at once (exit 2, no output): the analysis-only
 repeat was started without a way to point at the files of -175842-7d54ff5 (an argument
 the driver does not have). The driver now takes `--data`.
+
+## 2026-11-15, entry 14: outcomes of the C2-mean prediction and of T12b
+
+Analysis runs core-20261115-184939-657c2e4 (numbers) and -185018-5fed4ea (the same
+numbers, legend moved; `fig_halving.png`, looked at: F_H of N = 64 above 4 to N = 0.6
+and of N = 32 below 1 to N = 1.3, the open circles with H0 removed near 4, F_M on 2 then
+on 1, the parts of H, and the lowest modes of R^NR with their odd part a factor five
+lower). Parts identical to the run's own analysis.
+- Mean of C2 (entry 12, 18:10Z): H0 positive at both N, <C2(1)> negative at every dump
+  to t = 2.4: N = 32: -1.028e-11 (t = 0.44), -6.14e-12 (0.83); N = 64: -1.067e-11
+  (0.42), -6.02e-12 (0.81). Sign HOLDS; size "-8e-12 within 30 percent" holds at three
+  of the four points, -1.067e-11 is 33 percent off. <C2> is about 60 percent of the rms
+  of C2 (1.68e-11, 9.7e-12): the second-order part of H is mostly a negative uniform
+  shift, which offsets the positive H0 at s = 1 (N = 32: |3.03e-11 - 1.03e-11| against
+  |3.03e-11 - 0.26e-11|, ratio 0.72; F_H 0.76 to 0.87) or at s = 1/2 (N = 64: H0 1.75e-12
+  against <C2>/4 = -2.7e-12; F_H up to 5.04).
+- T12b HOLDS at four of five dumps after N = 1.2: the part of R^NR odd in s deviates
+  from W R alpha by 3.13e-7 (N = 1.19), then 2.48e-7, 2.29e-7, 2.24e-7, 2.23e-7, 2.23e-7
+  for |n| <= 2 (bound 3e-7; 1.2e-6 with both orders); the run s = 1/2 alone gives 6.00e-7
+  to 6.48e-7 (predicted 4.8e-7 to 7.2e-7). So the floor of the lowest modes at N = 64 is
+  the second-order part of R^NR (it scales with s), not an error of the evolution; the
+  first-order part agrees with the linear solution to 2.2e-7. For all modes the odd part
+  equals the total (5.886e-5 against 5.889e-5 at the last dump): the deviation of the
+  high shells is first order (truncation, entry 11).
