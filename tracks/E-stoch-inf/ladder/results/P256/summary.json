@@ -1,0 +1,74 @@
+{
+ "thresholds": {
+  "A1": 0.0001,
+  "A2": 0.02,
+  "A3_ratio": 0.01,
+  "A3_drift": 0.0025,
+  "A4": "even part dominates during the entry; halving factor 4; magnitude within 10x of 1e-10; sign flip first order",
+  "A5": "order of the convergent part between 4 and 6"
+ },
+ "A1": {
+  "per_run": {
+   "P256": {
+    "phi": 1.9994006450474444e-12,
+    "Pi": 8.553158181712206e-12,
+    "K": 1.9899637493381306e-12,
+    "efolds": 1.2768950341524032e-09
+   }
+  },
+  "pass_": true
+ },
+ "A2": {
+  "P256": {
+   "N_f": 8.098854923044481,
+   "threshold": 0.02,
+   "max_D_half": 0.00012077580305021462,
+   "median_D_half": 2.7615637734248567e-05,
+   "n_half": 68532,
+   "max_D_all": 0.004492805047941189,
+   "worst_n2_half": 1024,
+   "pass_": true,
+   "stencil_reference": {
+    "max_D_half": 0.0061611592090341965,
+    "median_D_half": 0.00023303462605431225,
+    "n": 68532,
+    "pass_": true,
+    "max_rel_diff_references": 0.006254763720356772
+   }
+  }
+ },
+ "A3": {
+  "P256": {
+   "threshold": 0.01,
+   "drift_threshold": 0.0025,
+   "n_modes": 1051,
+   "max_abs_ratio_minus_1": 3.4356498500587307e-06,
+   "max_abs_drift_nr": 0.00013789380965820202,
+   "max_abs_drift_lin": 0.00013780135555414467,
+   "max_abs_drift_difference": 1.748255954593848e-06,
+   "n2_max": 62,
+   "pass_": true
+  }
+ },
+ "spectrum": {
+  "P256": {
+   "shell_ratio_alpha_corrected_max_dev": 0.0001618909903675636,
+   "frac_shells_beyond_3sigma": 0.0035149384885764497,
+   "lin_over_sr_k_le_7": [
+    1.0104084275065606,
+    1.0108971684299222
+   ]
+  }
+ },
+ "A5": {},
+ "A4": {},
+ "negative_control": {},
+ "cost": {
+  "P256": {
+   "cycles": 1386,
+   "seconds": 1801.524,
+   "s_per_step": 1.2998008658008657,
+   "zone_cycles_per_s": 12907530.0
+  }
+ }
+}

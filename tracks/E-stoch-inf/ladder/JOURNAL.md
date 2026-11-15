@@ -276,3 +276,44 @@ before this analysis): at N = 32 the deviation is 8.1e-4 for |n| <= 4 (continuum
 modes follow the continuum mode functions more closely, as expected when the field is
 injected by the sources at horizon crossing from the code's own (continuum) mode
 functions [JUDGEMENT]; both pass 0.02 by a factor 25 or more.
+
+## Entry 6, 2026-11-15 19:20Z: the 256^3 production in the paper's set-up (job A)
+
+Run E-20261115-172618-f948386 (Slurm 4469, P256: N = 256, nmax2 = 4096, 548958 modes in
+3414 shells, 1386 steps to t = 8.5 = N* + 8.10, 18 dumps of 2.95 GB): exit 0, 1811 s wall,
+0.503 card-hours, 1.30 s per step with the dumps and the constraint record every step
+(1.29e7 zone-cycles/s), peak GPU memory 19.6 GB. Analysis E-20261115-191327-63c7397
+(figures `fig/P256/`, numbers `results/P256/`).
+
+Predictions of entry 1 against the outcome:
+- P1 (A2): max D_n over the 68532 modes with |n| <= 32 is 1.21e-4 (predicted below 2e-3;
+  threshold 0.02): PASS. Over all 548958 modes 4.5e-3 (predicted below 1e-2). The
+  deviation grows as about |n|^4 above |n| = 10 (`fig_a2_modes.png`, left), is set during
+  the entry and constant afterwards (right). [JUDGEMENT] the |n|^4 growth and the size at
+  the top (omega dt = 0.39 at |n| = 64) point to the fourth-order time integration of the
+  sub-horizon phase; test A6 (Courant factor halved) would tell.
+- A2 against the stencil-k^2 reference (SCOPE wording): 6.2e-3, worse than the continuum
+  shells, and the two references differ by 6.3e-3 at |n| = 32. The stencil reference
+  accumulates the dispersion error of the sub-horizon phase from N* to crossing (about 32
+  radians for |n| = 32, times half of the 3.8e-4 error in k^2), while in this scheme a
+  mode enters the lattice only through the window, from the code's own mode functions.
+  So for this scheme the continuum reference is the right one, and the SCOPE wording
+  should say so (request to the lead). Both pass 0.02.
+- P2 (A3): 1051 modes with N_f - N_k >= 6 (|n|^2 <= 62); max |Q_n(N_f)/Q_n(N_k + 4) - 1| =
+  3.4e-6 (threshold 0.01): PASS by a factor 3000; max |drift| of ln|R^NR|^2 from N_k + 4 =
+  1.38e-4 per e-fold (threshold 2.5e-3: PASS), equal to the full-MS drift within 1.7e-6 per
+  e-fold. The FLRW-lattice behaviour (-4 eps1 = -0.049 per e-fold here) is excluded by a
+  factor 350 in the drift. Super-horizon modes freeze as in full linear theory.
+- P3 (spectrum): shell sums of |R^NR|^2 over |R^lin|^2 within 1.6e-4 of 1 for |n| <= 32
+  (predicted 1e-3); 0.35 percent of the shells beyond 3/sqrt(M_shell) of the ensemble
+  spectrum (predicted below 1 percent; 0.27 percent expected for Gaussian scatter);
+  Delta[R^lin](N_f) over H_k^2/(8 pi^2 eps1_k Mpl^2) = 1.0104-1.0109 for |n| <= 7 (SPEC 7.3:
+  1.010-1.012). PASS on every count (`fig_spectrum.png`).
+- P7 (A1): box means within 2.0e-12 (phi), 8.6e-12 (Pi), 2.0e-12 (K) of the Friedmann
+  reference; e-folds from <chi> within 1.3e-9: PASS.
+- P8 (cost): 1.30 s per step, 0.50 card-hours per 8-e-fold realisation (predicted 1.1-1.5 s
+  and 0.45-0.6): confirmed; a tenth of the downgrade threshold (5 card-hours, SCOPE 4
+  item 5).
+- Constraint record: <|H|/[H]> at most 5.1e-11, <|M|/[M]> at most 4.0e-4 (32^3 in the same
+  set-up: 4.3e-11, 3.4e-4), within a factor 10 of P1's 1e-10 for H. Their split into odd
+  and even parts needs the mirrored run P256m (job B, pending at 19:20Z).
