@@ -57,3 +57,25 @@ corrected by the transverse tide, f = f0 (1 - 2M/r) sqrt(1 + (M/r^3)/(2k/m)) [JU
 transverse tidal eigenvalue M/r^3 of a radial geodesic], with relative deviation below 1e-3
 between r = 200 and 10 r_g once the prediction is averaged over each measured period. Refuted if
 the deviation exceeds 1e-2, or if it follows (1 - 2M/r)^(1/2) or no dilation instead.
+
+### T1 outcome (run F-hills-20261115-125915-9518508)
+
+- Metric identities 4.4e-16, closed-form d_k g vs fourth-order differences 7e-11 to 1.0e-10
+  relative, CKS metric vs python/nrpic g4_cks 2.2e-16: prediction holds.
+- Flat-space binary (M = 0, HRNA, mb = 1e-6): the separation oscillates with relative amplitude
+  5.0e-7 for 100 periods, without secular growth. The prediction (1e-10) FAILED.
+  Candidate cause, not yet tested: HRNA divides the pair force by Gamma^2 = 1/(1 - v^2) of each
+  member (2404/article.tex:250), so a binary started with the Newtonian circular speed
+  (v^2 = 2.5e-7 per member) is not circular in HRNA; expected amplitude ~ 2 v^2 = 5e-7.
+- T1b prediction (before running): Newton with the same data stays circular to < 1e-10; HRNA
+  with mb = 1e-8 (v^2 = 2.5e-9) gives amplitude 5e-9. Refuted if Newton shows the same 5e-7 or
+  if the HRNA amplitude does not scale with mb.
+
+### T2 outcome (run F-hills-20261115-125918-9518508)
+
+- Position differences from python/nrpic/geodesic.py at the same coordinate times: Schwarzschild
+  3.5e-9 r_g (parabolic, r_p = 10) and 2.7e-8 r_g (bound 8-30 r_g); Kerr a = 0.9 (CKS) 2.8e-9 and
+  3.4e-8 r_g (inclined bound orbit). Prediction (< 1e-7 r_g) holds.
+- Invariant drifts: E 1.7e-13 to 1.4e-12, L_z 1.6e-12 to 1.02e-11. The bound Kerr orbit's L_z
+  drift (1.02e-11) is marginally above the predicted 1e-11 and below the refutation level 1e-10.
+- Figure t2_geodesic_limit.png inspected: the differences grow smoothly (no jumps at pericentre).

@@ -53,25 +53,31 @@ def main(outdir):
                 e_ref = max(e_ref, np.max(np.abs(gref - g)))
         res[name] = dict(identity_max=e_id, dg_fd_rel_max=e_dg,
                          g_vs_python_nrpic_max=(e_ref if coords == hrna.COORDS_CKS else None))
-    # flat-space limit: M = 0, circular binary, 100 periods
-    mb, a0 = 1e-6, 1.0
-    m1 = m2 = mb / 2
-    w = math.sqrt(mb / a0 ** 3)
-    y0 = np.array([100.5, 0, 0, 0, 0.5 * w, 0, 99.5, 0, 0, 0, -0.5 * w, 0])  # CM off the origin
-    T0 = 2 * math.pi / w
-    out = hrna.integrate(hrna.LAW_HRNA, hrna.COORDS_SCH, hrna.PAIR_GRAVITY, 0.0, 0.0, m1, m2, 0.0,
-                         0.0, y0, T0 / 200, 1e-12, 1e-16, 1e300, 1e300, 0.0, 100 * T0, 10 ** 7,
-                         a0, 200000, hrna._A, hrna._B, hrna._C, hrna._E3, hrna._E5, hrna._work())
-    rec_t, rec_y = out[4], out[5]
-    sep = np.linalg.norm(rec_y[:, 0:3] - rec_y[:, 6:9], axis=1)
-    res["flat_binary"] = dict(n_steps=int(out[7]), periods=float(rec_t[-1] / T0),
-                              max_rel_sep_dev=float(np.max(np.abs(sep - a0)) / a0),
-                              steps_per_period=float(out[7] / (rec_t[-1] / T0)))
+    # flat-space limit: M = 0, circular binary, 100 periods; HRNA at two binary masses and Newton
+    def flat_binary(law, mb, a0=1.0):
+        m1 = m2 = mb / 2
+        w = math.sqrt(mb / a0 ** 3)
+        y0 = np.array([100.5, 0, 0, 0, 0.5 * w, 0, 99.5, 0, 0, 0, -0.5 * w, 0])  # CM off the origin
+        T0 = 2 * math.pi / w
+        out = hrna.integrate(law, hrna.COORDS_SCH, hrna.PAIR_GRAVITY, 0.0, 0.0, m1, m2, 0.0,
+                             0.0, y0, T0 / 200, 1e-12, 1e-16, 1e300, 1e300, 0.0, 100 * T0, 10 ** 7,
+                             a0, 200000, hrna._A, hrna._B, hrna._C, hrna._E3, hrna._E5, hrna._work())
+        rec_t, rec_y = out[4], out[5]
+        sep = np.linalg.norm(rec_y[:, 0:3] - rec_y[:, 6:9], axis=1)
+        v2 = (0.5 * w * a0) ** 2
+        return dict(n_steps=int(out[7]), periods=float(rec_t[-1] / T0),
+                    max_rel_sep_dev=float(np.max(np.abs(sep - a0)) / a0),
+                    member_v2=v2, steps_per_period=float(out[7] / (rec_t[-1] / T0))), rec_t / T0, sep
+
+    cases = (("hrna_mb1e-6", hrna.LAW_HRNA, 1e-6), ("hrna_mb1e-8", hrna.LAW_HRNA, 1e-8),
+             ("newton_mb1e-6", hrna.LAW_NEWTON, 1e-6))
+    curves = {}
+    for name, law, mb in cases:
+        res["flat_binary_" + name], tt, sep = flat_binary(law, mb)
+        curves[name] = (tt, sep)
     os.makedirs(outdir, exist_ok=True)
     with open(os.path.join(outdir, "t1_metric_checks.json"), "w") as fh:
         json.dump(res, fh, indent=1)
-    # figure: separation deviation of the flat-space binary
-    sys.path.insert(0, os.path.join(PKG, "..", "..", "..", "python"))
     from nrpic import figstyle as fs
     import matplotlib
     matplotlib.use("Agg")
@@ -79,10 +85,15 @@ def main(outdir):
     fs.use_style()
     fig = plt.figure(figsize=(fs.COLUMN_WIDTH, 2.8))
     ax = fig.add_axes([0.2, 0.17, 0.75, 0.78])
-    ax.semilogy(rec_t / T0, np.abs(sep - a0) / a0 + 1e-17, color=fs.PAL["red"], label="HRNA, M = 0")
+    labels = {"hrna_mb1e-6": r"HRNA, $m_b=10^{-6}$", "hrna_mb1e-8": r"HRNA, $m_b=10^{-8}$",
+              "newton_mb1e-6": r"Newton, $m_b=10^{-6}$"}
+    for (name, _, _), c in zip(cases, (fs.PAL["red"], fs.PAL["yellow"], fs.PAL["blue"])):
+        tt, sep = curves[name]
+        ax.semilogy(tt, np.abs(sep - 1.0) + 1e-17, color=c, lw=0.8, label=labels[name])
+    ax.set_ylim(1e-17, 1e-4)
     ax.set_xlabel(r"$t/T_0$")
-    ax.set_ylabel(r"$|a - a_0|/a_0$")
-    ax.legend(loc="upper left")
+    ax.set_ylabel(r"$|a - a_0|/a_0$ (flat space)")
+    ax.legend(loc="upper left", ncol=1, fontsize=8)
     fs.save(fig, os.path.join(outdir, "t1_flat_binary"))
     print(json.dumps(res, indent=1))
 
