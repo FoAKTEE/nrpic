@@ -157,7 +157,9 @@ weighted lattice unless said. Norms as in the history file. All on processors.
 | T6, evolved 2 M, 64 cells | M-norm 1.4e-3 rising to 9e-3 with curvature against 0.164 falling to 0.090 without (ratio at most 0.08); H-norm flat at 0.026 to 0.030 with curvature, rising from 0.028 to 0.171 without | `core-20261115-154935-e1a4d0c` |
 | T5, first paper's two overdensities at t = 0 (mesh and particles of `jeans/n1e4_v19`) | record of the run reproduced in six digits; with curvature My-norm2 0.263081 to 0.241924 and M-norm2 0.191587 to 0.178041 (predicted smooth parts 0.0211, 0.0135); projection of M_y on the smooth field 1.001 to 0.021 (0.0013 with rule `gaussian`) | `core-20261115-155020-e1a4d0c` |
 | Examples | `clump_moving.athinput` one cycle, `clump_spin.athinput` data, generator commands of their headers | `core-20261115-160625-1311116` |
-| R, old inputs unchanged; G, card | see `tracks/core/JOURNAL-clump.md` (entries R and G) | there |
+| R, old inputs unchanged (processors) | RESULT_R | `core-20261115-174445-36616db`, `core-20261115-174439-7359389` |
+| G, card | release card executable and this branch's give identical data files for `regress_cf` (16 files) and `by_static` (5); records at t = 0 of `clump_static` on the card (64 cells without and with curvature, 128 with, spin at 64) equal the processor records in all printed digits | `core-20261115-163141-ee2a188` (Slurm job 4443, 0.006 card-hours) |
+| I, rerun input | `jeans_mc.athinput` equals what `n1e4_v19` used (input plus 35 overrides, 176 parameters) but for the six clump momenta and the comment text | `core-20261115-174714-25dc565` |
 
 ## 7. The first paper's two overdensities
 
@@ -170,6 +172,19 @@ the data at t = 0 are test T5. Prediction, written before any run
 violation can misplace are second order (2.1e-3 M kinetic, 6.0e-4 M curvature); the
 remnant's angular momentum rises (S(100 M) above 0.105, against 0.089); the common
 horizon comes later than 57 M. [JUDGEMENT]
+
+Prepared: `tracks/core/analysis/clump/rerun_jeans_mc.sh` submits it through
+`harness/bin/nrpic-run` as one registered chain on one card (`--gpu-hours 8`, segments
+of 50 min, at most 8; `n1e4_v19` needed 5.4 card-hours with an older executable), with
+the particle file and table of `n1e4_v19` staged read-only in
+`scratch/core/clump-rerun/inputs/` and the card executable published from this branch.
+`--control` submits the same input, particles and executable with the clump momenta
+zero: the executable is not the one of `n1e4_v19` and card runs with deposition are not
+reproducible, so the effect of the curvature is the difference rerun minus control
+(predicted below 0.010 in `M_AH(100 M)`, above 0.015 in S; journal, "Prediction for the
+control of the rerun"). Figure of the predictions on the record of `n1e4_v19`:
+`analysis/clump/figs/fig_clump_rerun_prediction.png` (run `core-20261115-175038-c703977`).
+`--dry-run` prints the manifest without starting anything.
 
 ## 8. Limits and open items
 
@@ -199,14 +214,15 @@ horizon comes later than 57 M. [JUDGEMENT]
 
 ## 9. Lines touched in shared files
 
-- `athenak/src/pgen/nrpic/nrpic_cf.cpp`: additions only, 19 lines: three comment lines
-  at the end of the file header; `#include "pgen/nrpic/nrpic_clump_curvature.hpp"` after
-  the include of `nrpic_bowen_york.hpp`; two lines after
-  `const DvceArray1D<Real> bytab = ...` (reader call); thirteen lines after the
+- `athenak/src/pgen/nrpic/nrpic_cf.cpp`: additions only, 19 lines (line numbers of the
+  branch): 39-41, three comment lines at the end of the file header; 64,
+  `#include "pgen/nrpic/nrpic_clump_curvature.hpp"` after the include of
+  `nrpic_bowen_york.hpp`; 499-500, the reader call after
+  `const DvceArray1D<Real> bytab = ...`; 595-607, thirteen lines after the
   `if (by.curv) { ... }` block of the main loop (curvature, added with `+=`).
-- `athenak/src/pgen/nrpic/nrpic_bowen_york.hpp`, `BYRead`: two lines added after
-  `if (!any) continue;` (a Gaussian component is skipped) and the text of the error
-  message that follows.
+- `athenak/src/pgen/nrpic/nrpic_bowen_york.hpp`, `BYRead`: lines 336-337 added after
+  `if (!any) continue;` (a Gaussian component is skipped) and line 340, the text of the
+  error message that follows.
 - New file `athenak/src/pgen/nrpic/nrpic_clump_curvature.hpp`; nothing added to
   `CMakeLists.txt`.
 - `python/nrpic/clumps.py`: docstring paragraph, `__all__`, new function
