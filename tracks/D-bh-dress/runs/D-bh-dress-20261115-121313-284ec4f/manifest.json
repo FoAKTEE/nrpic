@@ -51,15 +51,27 @@
   "nodes": 1,
   "cores": 1,
   "gpus": 1,
-  "card_hours": null,
-  "walltime_s": null
+  "card_hours": 0.654,
+  "walltime_s": 2355.0
  },
  "outputs": {
-  "dir": "/data/haiyangw/nrpic/scratch/D-bh-dress/D-bh-dress-20261115-121313-284ec4f"
+  "dir": "/data/haiyangw/nrpic/scratch/D-bh-dress/D-bh-dress-20261115-121313-284ec4f",
+  "files": [
+   "punc.horizon_summary_0.txt",
+   "punc.horizon_shape_0.txt",
+   "punc.z4c.user.hst",
+   "punc.nrpic.hst",
+   "punc.traj.bin",
+   "punc.trajmet.bin",
+   "rst/punc.000{00..10}.rst",
+   "chain/seg001.job4406.a1.log",
+   "chain/events.log"
+  ]
  },
- "status": "submitted",
- "started": "2026-11-15T12:13:13Z",
- "ended": null,
+ "status": "completed",
+ "started": "2026-11-15T12:53:07Z",
+ "ended": "2026-11-15T13:32:22Z",
  "parents": [],
- "notes": "Chain capped at 1 segment (<= 59 card-minutes). Expected 2400-2500 card-seconds from runs/puncture/hcal/dx8_*/athena.log rates."
+ "notes": "Chain capped at 1 segment (<= 59 card-minutes). Expected 2400-2500 card-seconds from runs/puncture/hcal/dx8_*/athena.log rates. One segment, Slurm job 4406 on one A100, 12:53:07Z-13:32:22Z (2355 s, 0.654 card-hours); athena: 16000 cycles to t = 500 M, 2353.5 s, 9.58e6 zone-cycles/s; DONE (tlim). Restart dumps every 50 M (0.84 GB each).",
+ "exit_code": 0
 }

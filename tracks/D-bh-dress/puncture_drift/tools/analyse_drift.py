@@ -94,32 +94,57 @@ def analyse_run(name, d, inv_dx, t0s, W):
     late = t >= 5.0
     R["chi_max_after5"] = float(np.max(np.abs(R["chi"][late]))) if late.any() else None
     R["hrms_max_after5"] = float(np.max(S["hrms"][late])) if late.any() else None
+    # outer-boundary window (P4 of JOURNAL.md): residual of a 5 M running mean about a
+    # straight line fitted over 150-300 M; peak-to-peak and the times of the extremes
+    # inside 170-270 M against the same outside it (150-170 and 270-300 M)
+    if t[-1] >= 300.0:
+        m5 = running_mean(t, M, 5.0)
+        w = (t >= 150.0) & (t <= 300.0) & np.isfinite(m5)
+        c = np.polyfit(t[w], m5[w], 1)
+        res_ = m5 - np.polyval(c, t)
+        win = w & (t >= 170.0) & (t <= 270.0)
+        out_ = w & ~win
+        R["boundary"] = dict(
+            p2p_in=float(res_[win].max() - res_[win].min()),
+            p2p_out=float(res_[out_].max() - res_[out_].min()),
+            t_max=float(t[win][np.argmax(res_[win])]),
+            t_min=float(t[win][np.argmin(res_[win])]),
+            slope_150_300=float(c[0]))
     R["per_t0"] = {}
-    for t0 in t0s:
+    for spec in t0s:
+        t0, tmax = parse_spec(spec)
         if t[-1] < t0 + W:
             continue
         i0 = int(np.argmin(np.abs(t - t0)))
-        ok = (t >= t0) & np.isfinite(Mbar)
+        ok = (t >= t0) & (t <= tmax) & np.isfinite(Mbar)
         sig = float(np.sqrt(np.mean((M[ok] - Mbar[ok]) ** 2)))
         Dt = Mbar - Mbar[i0]
-        s = (t >= t0)
+        s = (t >= t0) & (t <= tmax)
         c = np.polyfit(t[s], M[s], 1)
-        P = dict(t0=t0, Mbar_t0=float(Mbar[i0]), sigma=sig, slope=float(c[0]),
+        P = dict(t0=t0, tmax=None if tmax == np.inf else tmax, spec=spec,
+                 Mbar_t0=float(Mbar[i0]), sigma=sig, slope=float(c[0]),
                  D_end=float(Dt[ok][-1]), T_end=float(t[ok][-1] - t0))
-        if t[-1] >= 250 + W:
-            s2 = t >= 250
+        if t[-1] >= 250 + W and tmax > 250 + W:
+            s2 = (t >= 250) & (t <= tmax)
             P["slope_late"] = float(np.polyfit(t[s2], M[s2], 1)[0])
         P["slopes"] = []
-        for lo in (t0, 100.0, 200.0, 300.0, 400.0):
-            hi = {t0: 100.0}.get(lo, lo + 100.0)
+        wins = ([(t0, 100.0)] if t0 < 100.0 else []) + [
+            (lo, lo + 100.0) for lo in (100.0, 200.0, 300.0, 400.0) if lo >= t0]
+        for lo, hi in wins:
             w = (t >= lo) & (t <= hi)
-            if lo >= t0 and hi > lo and w.sum() > 4 and t[-1] >= hi - 1:
+            if w.sum() > 4 and t[-1] >= hi - 1 and hi <= tmax:
                 P["slopes"].append((lo, hi, float(np.polyfit(t[w], M[w], 1)[0])))
         P["T"] = (t[ok] - t0).tolist()
         P["D"] = Dt[ok].tolist()
         P["envD"] = np.maximum.accumulate(np.abs(Dt[ok])).tolist()
-        R["per_t0"][t0] = P
+        R["per_t0"][spec] = P
     return R
+
+
+def parse_spec(spec):
+    """'50' -> (50, inf); '50:210' -> (50, 210): start of the measurement and its end."""
+    a, _, b = str(spec).partition(":")
+    return float(a), (float(b) if b else np.inf)
 
 
 def probe_table(probes):
@@ -137,7 +162,7 @@ def probe_table(probes):
     return tab
 
 
-def finder_drift_spread(tab_run, t0):
+def finder_drift_spread(tab_run, t0, tmax=np.inf):
     """Largest |drift_s - drift_production| over dumps and settings, with t0 the dump
     nearest to t0; None if fewer than two dumps."""
     base = tab_run.get(("A16", 0))
@@ -153,6 +178,8 @@ def finder_drift_spread(tab_run, t0):
         j0 = int(np.argmin(np.abs(tr - tb[i0])))
         dd = []
         for (tk, mk, *_ ) in rows:
+            if tk > tmax + 1e-9:
+                continue
             jb = np.isclose(tb, tk)
             if not jb.any():
                 continue
@@ -173,7 +200,8 @@ def main():
     ap.add_argument("--slices", nargs="*", default=[])
     ap.add_argument("--res", nargs="*", default=[])
     ap.add_argument("--label", nargs="*", default=[], help="NAME=TEXT for legends")
-    ap.add_argument("--t0", nargs="*", type=float, default=[50.0, 20.0])
+    ap.add_argument("--t0", nargs="*", default=["50", "100", "20", "50:210"],
+                    help="start of the measurement, optionally :end (e.g. 50:210)")
     ap.add_argument("--window", type=float, default=20.0)
     a = ap.parse_args()
     os.makedirs(a.out, exist_ok=True)
@@ -225,12 +253,19 @@ def main():
         pr(f"Run {R['name']} (M/dx = {R['inv_dx']}): {R['n_searches']} searches to t = "
            f"{R['t_end']:.2f} M; max |S|/M^2 after 5 M = {R['chi_max_after5']:.2e}, max rms "
            f"expansion after 5 M = {R['hrms_max_after5']:.1e}")
+        if "boundary" in R:
+            B = R["boundary"]
+            pr(f"  boundary window 170-270 M (5 M mean, about a line over 150-300 M): "
+               f"peak-to-peak {B['p2p_in']:.1e} (outside the window {B['p2p_out']:.1e}), "
+               f"maximum at {B['t_max']:.1f} M, minimum at {B['t_min']:.1f} M")
         o = dict(t_end=R["t_end"], chi_max_after5=R["chi_max_after5"],
+                 boundary=R.get("boundary"),
                  hrms_max_after5=R["hrms_max_after5"], per_t0={})
-        for t0, P in R["per_t0"].items():
-            wfs, _ = finder_drift_spread(ptab.get(R["name"], {}), t0)
+        for spec, P in R["per_t0"].items():
+            wfs, _ = finder_drift_spread(ptab.get(R["name"], {}), P["t0"],
+                                         P["tmax"] if P["tmax"] else np.inf)
             P["D_fs"] = wfs
-            pr(f"  t0 = {t0:g} M: Mbar(t0) - 1 = {P['Mbar_t0'] - 1:+.3e}, sigma = "
+            pr(f"  t0 = {spec} M: Mbar(t0) - 1 = {P['Mbar_t0'] - 1:+.3e}, sigma = "
                f"{P['sigma']:.1e}, D at T = {P['T_end']:.0f} M = {P['D_end']:+.3e}, linear "
                f"slope {P['slope']:+.2e} per M" + (f", slope over t >= 250 M "
                f"{P['slope_late']:+.2e} per M" if "slope_late" in P else "")
@@ -239,7 +274,7 @@ def main():
             if P["slopes"]:
                 pr("    slopes per 100 M window: " + ", ".join(
                     f"{lo:g}-{hi:g}: {sl:+.2e}" for lo, hi, sl in P["slopes"]))
-            o["per_t0"][t0] = {k: v for k, v in P.items() if k not in ("T", "D", "envD")}
+            o["per_t0"][spec] = {k: v for k, v in P.items() if k not in ("T", "D", "envD")}
         out["runs"][R["name"]] = o
     pr()
 
@@ -259,13 +294,13 @@ def main():
                 Ts = scen_T(eps, af)
                 if Ts <= T[-1]:
                     dm = float(np.interp(Ts, T, env + add))
-                    pr(f"  t0 = {t0:g}, M/{R['inv_dx']}: eps = {eps:g}, a x {af:g} (T = "
+                    pr(f"  t0 = {t0}, M/{R['inv_dx']}: eps = {eps:g}, a x {af:g} (T = "
                        f"{Ts:.1f} M): dM_min = {dm:.2e}, k_floor = {dm / math.log(af):.2e}")
                     out["floors"].setdefault(str(t0), {}).setdefault(
                         f"M/{R['inv_dx']}", {})[f"eps{eps:g}_a{af:g}"] = dict(
                         T=Ts, dM_min=dm, k_floor=dm / math.log(af))
                 else:
-                    pr(f"  t0 = {t0:g}, M/{R['inv_dx']}: eps = {eps:g}, a x {af:g} (T = "
+                    pr(f"  t0 = {t0}, M/{R['inv_dx']}: eps = {eps:g}, a x {af:g} (T = "
                        f"{Ts:.1f} M): beyond the run (T_max = {T[-1]:.0f} M)")
         if 8 in fl and 16 in fl:
             T8, f8, P8 = fl[8]
@@ -278,7 +313,7 @@ def main():
             for Tq in (40.0, 120.0, 200.0, 300.0, 450.0):
                 if Tq <= Tc[-1]:
                     pq = float(np.interp(Tq, Tc, p))
-                    pr(f"  t0 = {t0:g}: envelope of |D| at T = {Tq:g} M: M/8 "
+                    pr(f"  t0 = {t0}: envelope of |D| at T = {Tq:g} M: M/8 "
                        f"{np.interp(Tq, Tc, e8):.2e}, M/16 {np.interp(Tq, Tc, e16):.2e}, "
                        f"ratio {2 ** pq:.1f} (order {pq:.2f})")
                     out["floors"].setdefault(str(t0), {}).setdefault("order", {})[
@@ -306,6 +341,7 @@ def fig_history(runs, ptab, slices, res, labels, a, path):
     fig, ax = plt.subplots(5, 1, figsize=(fs.FULL_WIDTH, 10.5), sharex=True)
     fig.subplots_adjust(left=0.11, right=0.97, top=0.98, bottom=0.05, hspace=0.0)
     t0 = a.t0[0]
+    t0v = parse_spec(t0)[0]
     for R in runs:
         c = RES_COL.get(R["inv_dx"], "k")
         S = R["series"]
@@ -315,7 +351,7 @@ def fig_history(runs, ptab, slices, res, labels, a, path):
         ax[0].plot(t, R["Mbar"] - 1, color=c, lw=1.5, ls="--", label=f"{L}, {a.window:g} M mean")
         if t0 in R["per_t0"]:
             P = R["per_t0"][t0]
-            ax[1].plot(np.array(P["T"]) + t0, P["D"], color=c, label=L)
+            ax[1].plot(np.array(P["T"]) + t0v, P["D"], color=c, label=L)
         ax[2].semilogy(t, np.abs(R["chi"]), color=c, label=L)
         ax[3].plot(t, S["meanradius"], color=c, label=f"{L}, mean")
         ax[3].plot(t, S["minradius"], color=c, ls=":", label=f"{L}, minimum")
@@ -346,10 +382,10 @@ def fig_history(runs, ptab, slices, res, labels, a, path):
         lo, hi = ys.min(), ys.max()
         pad = 0.15 * (hi - lo) + 1e-6
         ax[0].set_ylim(lo - pad, hi + 2.5 * pad)
-    ax[0].legend(ncol=2, fontsize=8, loc="upper right")
+    ax[0].legend(ncol=2, fontsize=8, loc="center right")
     ax[1].axhline(0, **fs.MASK_LINE)
-    ax[1].axvline(t0, **fs.MASK_LINE)
-    ax[1].set_ylabel(r"$\bar M(t) - \bar M(t_0)$, $t_0=%g\,M$" % t0)
+    ax[1].axvline(t0v, **fs.MASK_LINE)
+    ax[1].set_ylabel(r"$\bar M(t) - \bar M(t_0)$, $t_0=%g\,M$" % t0v)
     ax[1].legend(fontsize=8)
     ax[2].set_ylabel(r"$|S|/M_{\rm AH}^2$")
     ax[2].legend(fontsize=8)
@@ -383,7 +419,7 @@ def fig_floor(runs, a, path):
         ax.axvline(scen_T(eps, af), **fs.MASK_LINE)
         ax.text(scen_T(eps, af) * 1.03, 0.98, fr"$\epsilon={eps:g}$, $a\times{af:g}$",
                 rotation=90, va="top", ha="left", fontsize=7, transform=ax.get_xaxis_transform())
-    ax.set_xlabel(r"run length $T/M$ (from $t_0=%g\,M$)" % t0)
+    ax.set_xlabel(r"run length $T/M$ (from $t_0=%g\,M$)" % parse_spec(t0)[0])
     ax.set_ylabel(r"$\Delta M/M$")
     ax.legend(fontsize=7, loc="lower right")
     return fs.save(fig, path) if hasattr(fs, "save") else _save(fig, path)

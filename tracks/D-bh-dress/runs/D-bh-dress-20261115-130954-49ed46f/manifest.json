@@ -1,0 +1,93 @@
+{
+ "run_id": "D-bh-dress-20261115-130954-49ed46f",
+ "track": "D-bh-dress",
+ "gate": "G1",
+ "package": "puncture_drift (D-pre-4)",
+ "purpose": "D-pre-4 analysis: finder re-search (A16/A32 x production, tight, start 2 M) and Misner-Sharp mass of every dump of D-bh-dress-20261115-121313-284ec4f (M/8) and D-bh-dress-20261115-121314-284ec4f (M/16); drift, floor, figures",
+ "kind": "production",
+ "command": [
+  "/data/haiyangw/nrpic/wt/D-bh-dress/tracks/D-bh-dress/puncture_drift/tools/finish.sh",
+  "D-bh-dress-20261115-121313-284ec4f",
+  "D-bh-dress-20261115-121314-284ec4f"
+ ],
+ "cwd": "/data/haiyangw/nrpic/wt/D-bh-dress",
+ "env_overrides": {
+  "OPENBLAS_NUM_THREADS": "1",
+  "OMP_NUM_THREADS": "8"
+ },
+ "git": {
+  "sha": "49ed46f4f970d1c2fb454a19e084f116f656e692",
+  "branch": "track/D-bh-dress",
+  "dirty_package_dir": true,
+  "merge_base_main": "a1c223753952674ee38819dc45043591dddc3022"
+ },
+ "code": {
+  "core_tag": null
+ },
+ "inputs": [
+  {
+   "path": "/data/haiyangw/nrpic/wt/D-bh-dress/tracks/D-bh-dress/puncture_drift/tools/finish.sh",
+   "sha256": "f0714555f7dba6938ecf0d753b4a26ac188d7ff5bd783425470262f85ad2801d"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/wt/D-bh-dress/tracks/D-bh-dress/puncture_drift/tools/probe_finder.py",
+   "sha256": "a3d42f3765cc0f2ec164ca73177b7927e442a3df7d3142a76a2c86bae9071521"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/wt/D-bh-dress/tracks/D-bh-dress/puncture_drift/tools/slice_masses.py",
+   "sha256": "b45a9d87b4faf6719e2975793390f5acbbca8575a31f40b634d4fd9f18b77f72"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/wt/D-bh-dress/tracks/D-bh-dress/puncture_drift/tools/analyse_drift.py",
+   "sha256": "1f19f6f08b243f9490402618e153e6c314bad2b07593ec98359d8e204d20529a"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/wt/D-bh-dress/analysis/diag/slicemass.py",
+   "sha256": "f35331096b0314aba39ed545c77439030b5aefe7bdb35259e134e30f66e2dbf1"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/.work/build_cpu_c1/src/athena",
+   "sha256": "91f2e2c23a6301047ed4fe06ffe153d100fe6c121d0b6632087637b525547403"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/scratch/D-bh-dress/D-bh-dress-20261115-121313-284ec4f/punc.horizon_summary_0.txt",
+   "sha256": "4e6410289ed468f2e10e41058a80d147278953124de95506baa1337b192c89a3"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/scratch/D-bh-dress/D-bh-dress-20261115-121314-284ec4f/punc.horizon_summary_0.txt",
+   "sha256": "b60036a9cdb09b301af370484829bc1f3a0fab38aeb1d6377bae343690c92824"
+  }
+ ],
+ "resources": {
+  "nodes": 1,
+  "cores": 16,
+  "gpus": 0,
+  "card_hours": 0.0,
+  "walltime_s": 644.0
+ },
+ "outputs": {
+  "dir": "/data/haiyangw/nrpic/scratch/D-bh-dress/D-bh-dress-20261115-130954-49ed46f",
+  "files": [
+   "probe_stdout.txt",
+   "chain/probes.json",
+   "slices.json",
+   "slices_stdout.txt",
+   "analyse_stdout.txt",
+   "drift_drift.txt",
+   "drift_drift.json",
+   "drift_history.png",
+   "drift_floor.png",
+   "drift_finder.png"
+  ]
+ },
+ "status": "completed",
+ "started": "2026-11-15T13:09:54Z",
+ "ended": "2026-11-15T14:03:22Z",
+ "parents": [
+  "D-bh-dress-20261115-121313-284ec4f",
+  "D-bh-dress-20261115-121314-284ec4f",
+  "D-bh-dress-20261115-121427-284ec4f"
+ ],
+ "notes": "finish.sh pass ended 2026-11-15T13:19:51Z after 597 s on 4 dumps. finish.sh pass ended 2026-11-15T13:52:14Z after 1177 s on 12 dumps. finish.sh pass ended 2026-11-15T14:03:22Z after 644 s on 16 dumps.",
+ "exit_code": 0
+}
