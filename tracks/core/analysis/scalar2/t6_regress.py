@@ -37,8 +37,11 @@ def rst_equal(fa, fb):
     ra, rb = open(fa, "rb").read(), open(fb, "rb").read()
     end = b"<par_end>\n"
     pa, pb = ra.find(end) + len(end), rb.find(end) + len(end)
-    la, lb = ra[:pa].split(b"\n"), rb[:pb].split(b"\n")
-    bad = [x for x, y in zip(la, lb) if x != y and not x.strip().startswith(b"restart_file")]
+    # the lines of a block are padded to the width of its longest line, so the padding
+    # of the neighbours of restart_file changes with the length of the path
+    la = [b" ".join(x.split()) for x in ra[:pa].split(b"\n")]
+    lb = [b" ".join(x.split()) for x in rb[:pb].split(b"\n")]
+    bad = [x for x, y in zip(la, lb) if x != y and not x.startswith(b"restart_file")]
     if len(la) != len(lb) or bad:
         return False, "parameter lists differ beyond the line restart_file"
     note = "" if ra[:pa] == rb[:pb] else "line restart_file differs; "
@@ -62,9 +65,12 @@ def main():
     ap.add_argument("--new", required=True)
     ap.add_argument("--out", required=True)
     ap.add_argument("--workers", type=int, default=6)
+    ap.add_argument("--data", help="compare the files of an earlier execution in this "
+                    "directory instead of running the cases")
     a = ap.parse_args()
     out = os.path.abspath(a.out)
     os.makedirs(out, exist_ok=True)
+    data = os.path.abspath(a.data) if a.data else out
     exes = dict(base=os.path.abspath(a.base), new=os.path.abspath(a.new))
     # mode file of the Mukhanov-Sasaki unit test: any smooth mode functions will do
     n2 = inf.shells(36)
@@ -90,17 +96,17 @@ def main():
                                             "scalar_field/noise_kick_a=false"] + ms),
     }
     walls = {}
-    for lab, exe in exes.items():
+    for lab, exe in ([] if a.data else exes.items()):
         cases = [(os.path.join(out, k, lab), inp, args) for k, (inp, args) in spec.items()]
         w = common.run_many(exe, cases, a.workers)
         walls[lab] = dict(zip(spec, w))
         # restart of the Mukhanov-Sasaki case from cycle 13
         rst = sorted(glob.glob(os.path.join(out, "ms", lab, "rst", "*.00001.rst")))
         common.run_case(exe, os.path.join(out, "msr", lab), rst[0], [])
-    summ = dict(exes=exes, wall_s=walls, cases={})
+    summ = dict(exes=exes, wall_s=walls, data=data, cases={})
     ok = True
     for k in list(spec) + ["msr"]:
-        da, db = os.path.join(out, k, "base"), os.path.join(out, k, "new")
+        da, db = os.path.join(data, k, "base"), os.path.join(data, k, "new")
         names = set()
         for d in (da, db):
             for root, _, files in os.walk(d):

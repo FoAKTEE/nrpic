@@ -1,0 +1,45 @@
+{
+ "run_id": "core-20261115-161040-760b515",
+ "owner": "core",
+ "track": "core",
+ "gate": "G2",
+ "purpose": "T3b parts of the constraint violation: run with the mode functions scaled by 0 (homogeneous, same mesh and step) and decomposition of the dumps of run core-20261115-155040-eb68eaa into background residual, odd part and second-order part",
+ "kind": "scouting",
+ "command": [
+  ".venv/bin/python",
+  "tracks/core/analysis/scalar2/t3b_parts.py",
+  "--exe",
+  ".work/exe/athena_cpu_a58e95b",
+  "--prev",
+  "/data/haiyangw/nrpic/scratch/core/core-20261115-155040-eb68eaa",
+  "--out",
+  "/data/haiyangw/nrpic/scratch/core/core-20261115-161040-760b515"
+ ],
+ "cwd": "/data/haiyangw/nrpic/wt/core-scalar2",
+ "commit": "760b5155a3ece2bbe2cfbbebdebbbe0d82d1d3c8",
+ "branch": "core/scalar-2",
+ "uncommitted_changes": [],
+ "inputs": [
+  {
+   "path": ".work/exe/athena_cpu_a58e95b",
+   "sha256": "c69266ec765c8296b005871c6865991f2a5ac59f7ebd2ac3f03d383b57f9439e"
+  },
+  {
+   "path": "problems/scalar/sr_stochastic.athinput",
+   "sha256": "d1ad721d9b2b495b49782ca31a3c18efc24f1eb58c23eeff29d3fc12747efea6"
+  },
+  {
+   "path": "tracks/core/analysis/scalar2/t3b_parts.py",
+   "sha256": "2e389a53ce0abfb01a96b7126ab1c00b0104af7f4dc7ecd2560091a5b995b655"
+  }
+ ],
+ "output_directory": "/data/haiyangw/nrpic/scratch/core/core-20261115-161040-760b515",
+ "outputs": {
+  "dir": "scratch/core/core-20261115-161040-760b515"
+ },
+ "host": "anta",
+ "start_utc": "2026-11-15T16:10:41Z",
+ "cores": 1,
+ "registered_by": "tracks/core/analysis/scalar2/runreg.py (by hand: nrpic-run submit fails with KeyError 'outputs')",
+ "status": "running"
+}

@@ -46,8 +46,12 @@ def main():
     ap.add_argument("--tlong", type=float, default=8.44)
     ap.add_argument("--tshort", type=float, default=3.2)
     ap.add_argument("--analyse-only", action="store_true")
+    ap.add_argument("--data", help="with --analyse-only: directory of the runs of an "
+                    "earlier execution (summary and figure go to --out)")
     a = ap.parse_args()
     out = os.path.abspath(a.out)
+    os.makedirs(out, exist_ok=True)
+    data = os.path.abspath(a.data) if a.data else out
     case = common.sr_case(64)
     base = common.write_case(case, out) + common.mesh_args(a.n) + [
         "scalar_field/dump_dt=0.4", "scalar_field/dump_noise=false",
@@ -70,8 +74,9 @@ def main():
         walls = common.run_many(os.path.abspath(a.exe), cases, a.workers)
         summ["wall_s"] = dict(zip(spec, walls))
 
-    hist = {k: sf.read_history(os.path.join(out, k, "sr.sf.hst")) for k in spec}
-    con = {k: sf.read_con_history(os.path.join(out, k, "sr.sf.con.hst")) for k in spec}
+    summ["data"] = data
+    hist = {k: sf.read_history(os.path.join(data, k, "sr.sf.hst")) for k in spec}
+    con = {k: sf.read_con_history(os.path.join(data, k, "sr.sf.con.hst")) for k in spec}
 
     # ------------------------------------------------------------------ T2 background
     t2 = {}
@@ -126,10 +131,14 @@ def main():
     t3["control_M_ratio_max"] = float(cc["M_ratio"].max())
 
     # even and odd parts in s from the dumps
-    dd = {k: dumps(os.path.join(out, k)) for k in spec if k != "bg0125"}
+    dd = {k: dumps(os.path.join(data, k)) for k in spec if k != "bg0125"}
     cyc = sorted(set(dd["bg025"]) & set(dd["m1"]) & set(dd["p05"]) & set(dd["m05"]))
     parts = []
     for c in cyc:
+        # equal times only: the short runs cut their last step at tlim
+        tt = [dd[k][c]["time"] for k in dd]
+        if max(tt) - min(tt) > 1e-9:
+            continue
         row = dict(cycle=c, time=dd["bg025"][c]["time"])
         row["efolds"] = float(-0.5*np.log(dd["bg025"][c]["fields"]["chi"].mean()))
         for lab, kp, km in (("s1", "bg025", "m1"), ("s05", "p05", "m05"),
@@ -169,7 +178,7 @@ def main():
            label="box means")
     p.plot(en[::st], h["Pi"][::st]/pi0, "o", ms=3, mfc="none", color=fs.PAL["red"])
     p.plot(en[::st], h["K"][::st]/h["K"][0], "o", ms=3, mfc="none", color=fs.PAL["red"])
-    p.set_xlabel("e-folds after $N_*$", labelpad=-2)
+    p.set_xlabel("e-folds after $N_*$", labelpad=0)
     p.set_ylabel("background (lines: Friedmann reference)")
     p.legend(loc="lower left", fontsize=8)
     p = ax[0, 1]
@@ -185,9 +194,9 @@ def main():
         p.plot(ref["ln_a"], dn, ls, color=fs.PAL["red"], label="e-folds (absolute)")
     p.axhline(1e-4, **fs.MASK_LINE)
     p.set_yscale("log")
-    p.set_xlabel("e-folds after $N_*$", labelpad=-2)
+    p.set_xlabel("e-folds after $N_*$", labelpad=0)
     p.set_ylabel("difference to the Friedmann reference")
-    p.legend(loc="lower right", fontsize=7, ncol=2)
+    p.legend(loc="center", bbox_to_anchor=(0.5, 0.47), fontsize=7, ncol=2)
     p = ax[1, 0]
     for k, cl, lbl in (("bg025", fs.PAL["blue"], "$s=1$"), ("p05", fs.PAL["green"],
                                                              "$s=1/2$"),
@@ -199,9 +208,9 @@ def main():
                label=r"$\langle|M|/[M]\rangle$")
     p.axvline(np.log(8.0), **fs.MASK_LINE)
     p.set_yscale("log")
-    p.set_xlabel("e-folds after $N_*$", labelpad=-2)
+    p.set_xlabel("e-folds after $N_*$", labelpad=0)
     p.set_ylabel("constraint ratio")
-    p.legend(loc="center right", fontsize=7, ncol=1)
+    p.legend(loc="lower right", bbox_to_anchor=(0.995, 0.13), fontsize=6.5, ncol=2)
     p = ax[1, 1]
     en = np.array([r["efolds"] for r in parts])
     for lab, cl, lbl in (("s1", fs.PAL["blue"], "$s=1$"), ("s05", fs.PAL["green"],
@@ -212,9 +221,10 @@ def main():
         p.plot(en, [r[lab]["H_odd"] for r in parts], "s--", ms=3, mfc="none", color=cl,
                label="odd part")
     p.set_yscale("log")
-    p.set_xlabel("e-folds after $N_*$", labelpad=-2)
+    p.set_xlabel("e-folds after $N_*$", labelpad=0)
     p.set_ylabel("rms of the parts of $H$ in $s$")
-    p.legend(loc="upper right", fontsize=7, ncol=2)
+    p.set_ylim(top=1e-2)
+    p.legend(loc="upper center", fontsize=7, ncol=2)
     fig.savefig(os.path.join(out, "fig_evolve.png"), dpi=200)
     print("T2, T3 done:", os.path.join(out, "summary.json"))
 
