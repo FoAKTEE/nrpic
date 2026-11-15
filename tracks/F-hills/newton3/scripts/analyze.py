@@ -251,8 +251,10 @@ def general(run_id, coplanar_run=None, supplement_run=None):
     D = Z["D_A"][kA]
     ok, dis, E, rmin = Z["ok_A"][kA], Z["disrupted_A"][kA], Z["E2_A"][kA], Z["rmin_A"][kA]
     P = np.array([dis[i][ok[i]].mean() for i in range(D.size)])
-    Em = np.array([np.abs(E[i][dis[i] & ok[i]]).mean() for i in range(D.size)])
-    E99 = np.array([np.percentile(np.abs(E[i][dis[i] & ok[i]]), 99) for i in range(D.size)])
+    Em = np.array([np.abs(E[i][dis[i] & ok[i]]).mean() if (dis[i] & ok[i]).any() else np.nan
+                   for i in range(D.size)])
+    E99 = np.array([np.percentile(np.abs(E[i][dis[i] & ok[i]]), 99) if (dis[i] & ok[i]).any()
+                    else np.nan for i in range(D.size)])
     Pc = np.array([(rmin[i][ok[i]] < 0.2).mean() for i in range(D.size)])
     Pfit, Efit = ref.bkrs_pdis(D), ref.bkrs_emean(D)
     S = {"source_run": run_id, "N_ori": int(Z["theta_A"].size), "N_pha": int(Z["phase_A"].size),
@@ -265,10 +267,10 @@ def general(run_id, coplanar_run=None, supplement_run=None):
     m1 = D <= 1.0 + 1e-9
     m18 = D <= 1.8 + 1e-9
     m15 = D <= 1.5 + 1e-9
-    S["max_abs_P_minus_fit_D<=1"] = float(np.max(np.abs(P - Pfit)[m1]))
-    S["max_abs_P_minus_fit_D<=1.8"] = float(np.max(np.abs(P - Pfit)[m18]))
-    S["max_abs_Emean_rel_dev_D<=1"] = float(np.max(np.abs(Em / Efit - 1)[m1]))
-    S["max_abs_Emean_rel_dev_D<=1.5"] = float(np.max(np.abs(Em / Efit - 1)[m15]))
+    S["max_abs_P_minus_fit_D<=1"] = float(np.nanmax(np.abs(P - Pfit)[m1]))
+    S["max_abs_P_minus_fit_D<=1.8"] = float(np.nanmax(np.abs(P - Pfit)[m18]))
+    S["max_abs_Emean_rel_dev_D<=1"] = float(np.nanmax(np.abs(Em / Efit - 1)[m1]))
+    S["max_abs_Emean_rel_dev_D<=1.5"] = float(np.nanmax(np.abs(Em / Efit - 1)[m15]))
     S["Dmax_last_disrupting"] = float(D[np.where(P > 0)[0].max()])
     # part B: inclination (D below D_TRUST discarded; supplement run merged in)
     th = Z["theta_B"]
