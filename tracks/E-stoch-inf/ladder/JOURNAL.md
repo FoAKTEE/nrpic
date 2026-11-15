@@ -223,3 +223,15 @@ against the slow-roll formula test the evolution, not the input.
 Also checked (dry tests, not results): the reference with t_eval at the dump times gives the
 same N = 32 numbers as with dense output to the last digit printed; the 256^3 reference
 (548958 modes, 3414 shells) takes 0.7 s, the amplitudes 4.6 s.
+
+## Entry 4, 2026-11-15 17:43Z: the extraction factor of R^NR (SPEC 9 E6) tested by a run
+
+SPEC 9 E6 records the corrected extraction factors of the thesis (TH appendix:518-520) as a
+hand derivation [JUDGEMENT]. Prediction: on the last dump of L32p the factor 1/4 of the
+anisotropic term gives the smallest deviation from the linear solution; leaving the term
+out, doubling it or flipping its sign raises max D_n for |n| <= 4 to the size of that term,
+about eps1 R, i.e. 5e-3 relative. Outcome, run E-20261115-174214-74becdd: max D_n for
+|n| <= 4 is 8.8e-5 with 1/4, 5.1e-3 without the term, 5.2e-3 with 1/2, 1.0e-2 with -1/4.
+Confirmed: the evolution satisfies the corrected extraction of SPEC 9 E6 (to about 2
+percent of the factor), which can be relabelled [VERIFIED by run] (a request to the lead,
+who owns SPEC).
