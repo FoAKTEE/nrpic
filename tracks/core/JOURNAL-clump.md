@@ -485,3 +485,32 @@ byte-identically (sha256 a3b4766e... against 661b5534... of the tested one; I di
 test whether two card builds of one source ever agree), so the tested card executable
 was kept (`.work/keep/athena_gpu_e1a4d0c`, copied back to `.work/build_gpu/src/athena`)
 and is the one that is published.
+
+## 2026-11-15  session clump-2 (from 17:40Z)
+
+### State found, and test R finished
+
+- Merged main (b9fbf3e: harness and coord only; `git diff 58d55b9 HEAD -- athenak python
+  problems` is empty, so every test above holds for the merged tip).
+- Test R had not finished: run `core-20261115-154622-e1a4d0c` (unregistered: its manifest
+  directory is empty, the harness failed then) printed IDENTICAL for `regress_cf` (16
+  files), `cf_table_regress` (9) and `by_static` (5); its `jeans` case wrote the release
+  executable's outputs and stopped after cycle 0 of this branch's executable (the
+  session ended at about 16:40Z). Not used for a number below.
+- `harness/bin/nrpic-run submit` works again after the wave-2 fixes (the `KeyError:
+  'outputs'` of session 1 is gone). Test R is rerun as two registered runs with the
+  prediction of session 1 unchanged (byte-identical data files; the first history record
+  of the jeans case equal to that of run `n1e4_v19`):
+  `core-20261115-174439-7359389` (jeans) and `core-20261115-174445-36616db` (the three
+  short cases). New executable: `.work/build_cpu/src/athena`, sha256 53c0d32b..., the
+  one of every processor test above.
+
+### Prediction for check I (input of the rerun), written before it runs
+
+`tracks/core/analysis/clump/check_jeans_mc_input.py` compares
+`problems/jeans/jeans_mc.athinput` parameter by parameter with what run `n1e4_v19`
+used (its `chain/input.athinput` with the overrides of `chain/config.sh`). Expected:
+exactly six parameters added (`comp1_p1..3`, `comp2_p1..3`), none removed, none changed
+but the free text of `<comment>`, and every override of the run present in its input
+file. Refuted by any other difference: then the rerun would change more than the
+curvature, and the input must be corrected before it is scheduled.
