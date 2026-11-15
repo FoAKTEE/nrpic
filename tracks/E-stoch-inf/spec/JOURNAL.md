@@ -135,3 +135,17 @@ earlier figure run -123201-82d2fd4 differs only in a margin). Figures in `fig/`,
   delta-Pi: 0. Momentum residual 0; 3 (dot Phi_B + H Psi_B) = 3 eps1 H (R - Phi_B)
   identically. The printed eq. (17) is therefore incomplete; their code must use the
   complete form since they report second-order Hamiltonian violations [JUDGEMENT].
+
+## 2026-11-15 13:55 UTC: deliverables written; corrections to this journal
+
+- SPEC.md, scope/SCOPE.md and README.md written from the sources and the runs above.
+- Correction to the first entry: what was taken from 2401.08530 (source terms with "+ c.c.",
+  constraints without sources, gauge families, BSSN form; lines 585-704 and 972-1031) is cited
+  in SPEC sections 2.1, 2.2 and 9 under the key P0, not in a "section 3".
+- Correction to the T1a outcome: at cN = 7.6, where the published figure ends, the reference has
+  eps2 = -2.659e-2 and V = 2.234e-2 (Mpl = 100 units) against my readings -2.62e-2 and 2.22e-2;
+  the tick labels of that figure are rounded to two digits, so "about 2 percent of the axis" was
+  optimistic for these two points. SPEC section 6 states the differences.
+- Not run: the unit conversion of SPEC 2.5, the window derivatives of SPEC 3 and the
+  extraction factors of SPEC 9 E6 are hand derivations; the sixth-order dispersion numbers of
+  A2 are arithmetic on the stencil coefficients. All are labelled [JUDGEMENT] in SPEC.md.
