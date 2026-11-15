@@ -97,8 +97,8 @@ Findings [VERIFIED in the runs named; readings JUDGEMENT]:
    (0.362 and 0.363 at mu = 0.03 and 0.003 in a 32^3 smoke test) and falls fast with the
    cell size (factors 4.6 and 19.6 per halving). Reading: on the Newtonian-gauge slice the Hamiltonian
    constraint at super-horizon scales rests on the cancellation K^2/12 - 2 pi E =
-   -(3/4) delta_N between two terms -2 psi_N that are (3/2)(aH/k)^2 times larger than
-   delta_N; K is set exactly on the mesh, E is deposited from the corner lattice (each
+   -(3/4) delta_N between two terms -2 psi_N that are 3 (aH/k)^2 times larger than
+   delta_N (for one Fourier mode, from lap psi_N = (3/2) (aH)^2 delta_N); K is set exactly on the mesh, E is deposited from the corner lattice (each
    particle shared by eight cells) and filtered, so the residual of the cancellation is a
    first-order error amplified by the super-horizon factor. It falls with h and with
    later starts (0.078 at eps_i = 1, 0.025 at sqrt 6, more slowly than 1/eps_i^2). The
@@ -306,8 +306,28 @@ set by the finest cell, because AthenaK takes one step for all levels, and in un
 
 ## 7. Scouting runs
 
-(Filled in from runs A-emd-pbh-20261115-155754-8422a4a (S2) and
-A-emd-pbh-20261115-160349-9d232d2 (S1); see JOURNAL.md.)
+Both runs: `inputs/peak_smr4.athinput` (section 4), e = 0.2, p = 0, eps_i = 1, data of run
+A-emd-pbh-20261115-154735-69e8f8b (mu = 0.03) and A-emd-pbh-20261115-155802-9a6596f
+(mu = 0.3), E1 gauge, finder at the origin, release card executable, 40-minute Slurm
+limit each (at most 1.33 card-hours together); predictions in JOURNAL.md (S1, S2).
+The amplitude of S1 was lowered from 0.5 to 0.3 because make_field does not solve 0.5
+(section 2.1), so S1 is above the particle threshold of arXiv:2609.14218 (0.045-0.05 at
+e = 0.2, MDPBH.tex:1101-1103) by six but below the Zel'dovich-hoop line 0.452: the two
+references predict opposite outcomes for it.
+
+| Run | mu | t_end | run id | Slurm job | state |
+|---|---|---|---|---|---|
+| S2 | 0.03 | tau = 28.9 (250 t_H) | A-emd-pbh-20261115-155754-8422a4a | 4448 | STATE_S2 |
+| S1 | 0.3 | tau = 16 (49.6 t_H) | A-emd-pbh-20261115-160349-9d232d2 | 4451 | STATE_S1 |
+
+Before them: S0, a processor dry run of the S2 configuration for two cycles (run
+A-emd-pbh-20261115-161829-dba94f6): 288 blocks, relative Hamiltonian constraint 5.0e-3
+at most and 6.4e-4 on average at t = 0, about 0.18 of 16 pi max|E - Ebar| on the deepest
+levels; it found two defects of my output blocks (fixed before the card runs started,
+JOURNAL.md) and one of the finder (summary file written into the working directory, not
+the output directory).
+
+RESULTS_PLACEHOLDER
 
 ## 8. Requests
 

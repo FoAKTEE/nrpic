@@ -396,3 +396,7 @@ unless `id` is set), and `adm_alpha` is not output when Z4c evolves the lapse (t
 lapse is `z4c_alpha`). A smoke run of the corrected outputs (unregistered,
 `scratch/A-emd-pbh/tmp/smoke_out`) produced all nine files and the analysis figures.
 The T2 runs used the earlier version of `inputs/peak_smr.athinput` (outputs only differ).
+
+Correction to the H-smooth entry above: for one Fourier mode lap psi_N = (3/2)(aH)^2
+delta_N gives -2 psi_N / delta_N = 3 (aH/k)^2, not (3/2)(aH/k)^2 as written there (the
+reading is unchanged; DESIGN.md uses the corrected factor).
