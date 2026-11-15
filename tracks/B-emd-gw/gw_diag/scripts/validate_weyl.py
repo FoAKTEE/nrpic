@@ -57,14 +57,18 @@ for N in NS:
     gw, Kw, rw = analytic.wave_adm(waves, g, t=0.21)
     gg, Kg, _, _ = analytic.gauge_mode(g, 1e-3, seed=3)
     gs, Ks, rs = analytic.scalar_mode(g, 1e-6, seed=5)
+    # scale of the gauge data: max |d_k d_l gamma_ij| (O(eps); R itself is O(eps^2) here
+    # because the linear curvature of a pure gauge vanishes)
+    Dsp = weyl.Deriv(g, "spectral")
+    scale_g = max(mx(Dsp.d2(gg[a, b], c, e)) for a in range(3) for b in range(3)
+                  for c in range(3) for e in range(3))
     for o in ORDERS:
         E, B = weyl.electric_magnetic(gw, Kw, g, order=o)
         conv["waves"][str(o)]["E"].append(mx(E - rw["E_lin"]) / mx(rw["E_lin"]))
         conv["waves"][str(o)]["B"].append(mx(B - rw["B_lin"]) / mx(rw["B_lin"]))
-        d = weyl.electric_magnetic(gg, Kg, g, order=o, return_all=True)
-        scale = mx(d["R"])
-        conv["gauge"][str(o)]["E"].append(mx(d["E"]) / scale)
-        conv["gauge"][str(o)]["B"].append(mx(d["B"]) / scale)
+        E, B = weyl.electric_magnetic(gg, Kg, g, order=o)
+        conv["gauge"][str(o)]["E"].append(mx(E) / scale_g)
+        conv["gauge"][str(o)]["B"].append(mx(B) / scale_g)
         E, B = weyl.electric_magnetic(gs, Ks, g, order=o)
         conv["scalar"][str(o)]["E"].append(mx(E - rs["E_lin"]) / mx(rs["E_lin"]))
         conv["scalar"][str(o)]["B"].append(mx(B) / mx(rs["E_lin"]))
@@ -74,11 +78,12 @@ fits = {}
 Ns = np.array(NS, float)
 for case in ("waves", "gauge", "scalar"):
     for o in (2, 4, 6):
-        for q in ("E", "B"):
+        for q in (("E", "B") if case != "scalar" else ("E", "B", "LE")):
             y = np.array(conv[case][str(o)][q])
-            sel = (Ns >= 24) & (y > 1e-7 if case != "gauge" else y > 1e-13)
+            floor = np.array(conv[case]["spectral"][q])
+            sel = (Ns >= 16) & (y > 20 * floor)
             fits[f"{case}_{o}_{q}"] = -slope(Ns[sel], y[sel]) if sel.sum() >= 2 else None
-conv["fitted_orders(N>=24, above floor)"] = fits
+conv["fitted_orders(N>=16, above 20x the spectral floor)"] = fits
 RES["convergence"] = conv
 
 # ---------------------------------------------------------------- B: Psi_4 of a plane wave
@@ -150,7 +155,7 @@ with open(os.path.join(OUT, "results_weyl.json"), "w") as f:
 fig = plt.figure(figsize=(8.0, 3.3))
 cols = {"2": C["yellow"], "4": C["red"], "6": C["green"], "spectral": C["blue"]}
 titles = {"waves": r"waves: $|E-E_{\rm lin}|$, $|B-B_{\rm lin}|$",
-          "gauge": r"pure gauge: $|E|$, $|B|$ / $|R|$",
+          "gauge": r"pure gauge: $|E|$, $|B|$ / $|\partial\partial\gamma|$",
           "scalar": r"scalar: $|B|$, $|\Lambda E|$ / $|E_{\rm lin}|$"}
 for i, case in enumerate(("waves", "gauge", "scalar")):
     ax = fs.inch_axes(fig, 0.62 + 2.55 * i, 0.5, 2.0, 2.4)

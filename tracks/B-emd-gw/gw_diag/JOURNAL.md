@@ -168,3 +168,26 @@ round-off), spectral at the floor at every N. Psi_4 for the plane wave m = (1,1,
 round-off. Scalar mode zeta = eps sin(4 pi x + 0.3): Psi_4 along x zero to O(eps) relative to
 max|E_lin| (the TT-part statement), Psi_4 along y and along (1,1,0) nonzero and equal to
 -E_lin mbar mbar to relative O(eps) (D4).
+
+## Outcome of the first Weyl validation, run B-emd-gw-20261115-115358-637c30b
+
+- Waves: orders 2 and 4 converge as predicted (fitted 2.00/1.98 and 3.98/3.96 for E/B, N >= 24).
+  Order 6: B 5.89, but E levels off at 1e-6 for N >= 48. The spectral E error is NOT constant: it
+  grows from 1.2e-7 (N = 12) to 4.0e-6 (N = 64), ~N^2. Cause [checked by the scaling, not by a
+  separate run]: the metric is stored as 1 + h with h ~ 1e-8, so each cell carries an absolute
+  representation error ~1e-16 whose second derivative is ~1e-16 (pi N/L)^2 = 4e-12 at N = 64,
+  against E ~ 1e-6: relative 4e-6. A floor of the data, not of the stencils; for AthenaK data with
+  A = 1e-6, N = 32, k = 2 pi it is ~3e-8 relative. Spectral derivatives now subtract the mean before
+  the FFT (removes the FFT's own round-off spread from the 1; the representation error stays).
+- Pure gauge: order 2 showed no convergence (E/|R| = 0.48 at every N) and orders 4, 6 gave 2.9 and
+  5.8. Cause: a bad normalization in the script, not the stencils. R of a pure gauge is O(eps^2)
+  (spectral max|R| 8.4e-4 at eps = 1e-3, 8.4e-6 at 1e-4, earlier inline check), while the truncation
+  error of every FD term is O(eps dx^p); for order 2 the truncation error dominates the FD |R|
+  itself, so the ratio is constant. Changed to the O(eps) scale max|d_k d_l gamma_ij| (spectral).
+- Scalar: orders 2 and 4 converge (B 1.97, 3.44 with the last point on the floor); order 6 B and
+  Lambda E reach the floor 1.5e-5 = second order in eps (the unit test shows eps^2 scaling) by
+  N = 32. Fits now use only points above 20x the spectral value at the same N.
+- Psi_4 of the plane wave: relative error and reverse/forward ratio proportional to A (slope
+  1.001), as predicted. Scalar mode: Psi_4 along k exactly 0; along y and (1,1,0) it equals
+  -E_lin mbar mbar to 3.0e-6 relative (= O(eps), eps = 1e-6), max|Psi_4| = 7.9e-5 = 0.75 max|E_lin|.
+  PASSED: a scalar perturbation produces Psi_4 off its wavevector (D4).

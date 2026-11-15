@@ -1,0 +1,38 @@
+{
+ "run_id": "B-emd-gw-20261115-115358-637c30b",
+ "owner": "B-emd-gw",
+ "package": "gw_diag",
+ "command": "python3 scripts/validate_weyl.py",
+ "cwd": "/data/haiyangw/nrpic/wt/B-emd-gw/tracks/B-emd-gw/gw_diag",
+ "commit": "637c30bb15b56fe35da0ff428428293f5950f736",
+ "worktree_dirty_gw_diag": false,
+ "inputs": [
+  {
+   "path": "/data/haiyangw/nrpic/wt/B-emd-gw/tracks/B-emd-gw/gw_diag/scripts/validate_weyl.py",
+   "sha256": "21330ae3aabdc4e45412695e3aae9c03fa1ccaa26ea62b13bf79d089eaca87ca"
+  }
+ ],
+ "output_dir": "/data/haiyangw/nrpic/scratch/B-emd-gw/B-emd-gw-20261115-115358-637c30b",
+ "purpose": "Weyl E/B/Psi4 on analytic fields: convergence with resolution (orders 2,4,6, spectral) for waves, pure gauge and scalar data; Psi4 sign, reverse direction and amplitude scaling; scalar-mode Psi4 (P2-P4)",
+ "kind": "production",
+ "cores": 8,
+ "card_hours": 0.0,
+ "env": {
+  "OMP_NUM_THREADS": "8",
+  "OPENBLAS_NUM_THREADS": "8",
+  "MKL_NUM_THREADS": "8"
+ },
+ "started_utc": "2026-11-15T11:53:58+00:00",
+ "status": "completed",
+ "exit_code": 0,
+ "wall_time_s": 21.6,
+ "ended_utc": "2026-11-15T11:54:20+00:00",
+ "outputs_sha256": {
+  "results_weyl.json": "72a7ed869791f86348b0989931cd4dfb301ca9c3be36be914708b15902137388",
+  "stdout.txt": "7124e1a532dbb36fb5392030a4433a537074b7c7a44f6cbaa5f010c8d8247cf2",
+  "weyl_convergence.pdf": "6083608d55cdc8703a106ca75d0d7af8c0abaae99e614e552e5321c4f39a66a0",
+  "weyl_convergence.png": "a860d2b4b0640a86abd5457efd179cdb242bf65a267aaae5fc5398b3071911d3",
+  "weyl_psi4.pdf": "9d113df54023a9740104533627acd740587b5bd16807713ae4846110c285ae41",
+  "weyl_psi4.png": "678793dde67f57a94d7a23781774e85f99d4be57dfc9e2d2a40db5b2322f6536"
+ }
+}

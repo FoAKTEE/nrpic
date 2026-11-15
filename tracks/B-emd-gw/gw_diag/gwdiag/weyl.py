@@ -47,7 +47,9 @@ class Deriv:
 
     def d1(self, f, a):
         if self.order == "spectral":
-            F = np.fft.rfftn(f, axes=(-3, -2, -1))
+            # the mean is removed first: it does not contribute to a derivative, and an
+            # array 1 + h with h << 1 would otherwise put its FFT round-off into every mode
+            F = np.fft.rfftn(f - f.mean(), axes=(-3, -2, -1))
             F *= 1j * self.k[a]
             # the Nyquist mode of an odd derivative is not representable for a real field
             F[..., self.g.nyquist_mask(real=True)] = 0.0
@@ -60,7 +62,7 @@ class Deriv:
 
     def d2(self, f, a, b):
         if self.order == "spectral":
-            F = np.fft.rfftn(f, axes=(-3, -2, -1))
+            F = np.fft.rfftn(f - f.mean(), axes=(-3, -2, -1))
             F *= -self.k[a] * self.k[b]
             if a != b:
                 F[..., self.g.nyquist_mask(real=True)] = 0.0
