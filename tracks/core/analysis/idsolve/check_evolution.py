@@ -53,13 +53,107 @@ def cstat(run_id, base):
     return np.loadtxt(os.path.join(idlib.run_dir(run_id), base + ".cstat.hst"), ndmin=2)
 
 
+NAMES = ("time chi_min chi_max K_min K_max E_min E_max Theta_max H_max H_mean Hr_max "
+         "Hr_mean M_max M_mean Mr_max Mr_mean Z_max Z_mean Theta_mean").split()
+
+
+def followup(a):
+    path = os.path.join(idlib.HERE, "evolution_numbers.json")
+    out = idlib.load_json(path)
+    # ---- C: restart of the same run without the solve
+    inp = os.path.join(TMP, "gaussian_rst.athinput")
+    nrp = run_tests.ic_gauss(0.5)
+    args = run_tests.mesh_args(32, 16) + ["time/nlim=%d" % a.steps, "time/tlim=100.0",
+                                           "particles/id_solve=false",
+                                           "particles/particle_file=" + os.path.basename(nrp)]
+    ra, sa = registered("initial-data solver, control: evolution of the trial Gaussian "
+                        "data (no solve) with a restart dump", "idsolve-evo-gauss-off",
+                        [inp, nrp], [a.exe, "-i", os.path.basename(inp)] + args)
+    rst = os.path.join(idlib.run_dir(ra), "rst", "gauss.00001.rst")
+    rb, sb = registered("initial-data solver, control: continuation of %s from its "
+                        "restart dump" % ra, "idsolve-evo-gauss-off-restart",
+                        [rst, rst + ".prt", nrp],
+                        [a.exe, "-r", "gauss.00001.rst", "time/tlim=100.0"])
+    ca, cb = cstat(ra, "gauss"), cstat(rb, "gauss")
+    sel = np.array([np.argmin(np.abs(ca[:, 0] - t)) for t in cb[:, 0]])
+    diff = np.abs(ca[sel] - cb).max(axis=0)
+    out["restart_control"] = dict(run=ra, status=sa, continued=rb, status_continued=sb,
+                                  max_abs_difference={n: float(v) for n, v in
+                                                      zip(NAMES, diff)})
+    # the same table for the solved run of test A
+    r = out["restart"]
+    ca, cb = cstat(r["run"], "gauss"), cstat(r["continued"], "gauss")
+    sel = np.array([np.argmin(np.abs(ca[:, 0] - t)) for t in cb[:, 0]])
+    diff_s = np.abs(ca[sel] - cb).max(axis=0)
+    r["max_abs_difference"] = {n: float(v) for n, v in zip(NAMES, diff_s)}
+    print("restart, largest absolute differences (solved run | control without solve):")
+    for n, v, w in zip(NAMES, diff_s, diff):
+        print("   %-10s %.3e | %.3e" % (n, v, w))
+
+    # ---- D: smooth triaxial ball without and with the solve
+    nrp, tab = run_tests.ic_tri(0.5, 0.05, 2.0)
+    base = run_tests.mesh_args(64, 32) + [
+        "time/nlim=%d" % a.steps, "time/tlim=100.0", "particles/nfilter=0",
+        "particles/particle_file=" + os.path.basename(nrp),
+        "problem/comp0_file=" + os.path.basename(tab)]
+    binp = os.path.join(idlib.WT, "problems/idsolve/ball.athinput")
+    res = {}
+    for label, extra in (("off", ["particles/id_solve=false"]),
+                         ("code", ["particles/id_residual=code"])):
+        rr, s = registered("initial-data solver: evolution of the triaxial ball with a "
+                           "smooth edge, solve %s" % label, "idsolve-evo-trismooth-" + label,
+                           [binp, nrp, tab], [a.exe, "-i", "ball.athinput"] + base + extra)
+        c = cstat(rr, "ball")
+        res[label] = dict(run=rr, status=s, time=[float(v) for v in c[:, 0]],
+                          H_max=[float(v) for v in c[:, 8]],
+                          H_mean=[float(v) for v in c[:, 9]],
+                          M_max=[float(v) for v in c[:, 12]],
+                          M_mean=[float(v) for v in c[:, 13]],
+                          Theta_max=[float(v) for v in c[:, 7]],
+                          finite=bool(np.all(np.isfinite(c))))
+        print("smooth triaxial %-4s %s finite %s\n   H_max : %s\n   H_mean: %s\n   "
+              "M_mean: %s" % (label, rr, res[label]["finite"],
+                              " ".join("%.2e" % x for x in res[label]["H_max"]),
+                              " ".join("%.2e" % x for x in res[label]["H_mean"]),
+                              " ".join("%.2e" % x for x in res[label]["M_mean"])))
+    out["triaxial_smooth"] = res
+    idlib.save_json(path, out)
+
+    fs.use_style()
+    fig, axs = plt.subplots(1, 2, figsize=(fs.FULL_WIDTH, 3.1), sharey=True)
+    fig.subplots_adjust(left=0.09, right=0.98, bottom=0.15, top=0.92, wspace=0.06)
+    for ax, key, title in ((axs[0], "triaxial", "triaxial ball, sharp surface"),
+                           (axs[1], "triaxial_smooth", "triaxial ball, smooth edge")):
+        for label, c in (("off", "k"), ("code", fs.PAL["red"])):
+            v = out[key][label]
+            t = np.array(v["time"])
+            ax.semilogy(t, np.array(v["H_mean"]) + 1e-30, color=c, marker=".",
+                        label="mean |H|, solve %s" % label)
+            ax.semilogy(t, np.array(v["H_max"]) + 1e-30, color=c, ls="--", marker=".",
+                        label="max |H|, solve %s" % label)
+            ax.semilogy(t, np.array(v["M_mean"]) + 1e-30, color=c, ls=":", lw=1.0,
+                        label="mean |M|, solve %s" % label)
+        ax.set_xlabel(r"$t$")
+        ax.set_title(title + ", 64 cells", fontsize=10)
+    axs[0].set_ylabel("constraints of the code")
+    axs[1].legend(fontsize=7, ncol=2)
+    fs.save(fig, os.path.join(idlib.FIGS, "evolution_tri"))
+    plt.close(fig)
+    return 0
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--exe", default=os.path.join(idlib.WT, ".work/build_cpu/src/athena"))
     ap.add_argument("--steps", type=int, default=8)
+    ap.add_argument("--followup", action="store_true",
+                    help="tests C (restart control without the solve) and D (smooth "
+                         "triaxial ball) only; results are added to the json file")
     a = ap.parse_args()
     os.makedirs(TMP, exist_ok=True)
     out = {}
+    if a.followup:
+        return followup(a)
 
     # ---- A: restart
     inp = os.path.join(TMP, "gaussian_rst.athinput")

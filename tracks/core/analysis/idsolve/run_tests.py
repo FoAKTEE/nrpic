@@ -64,9 +64,9 @@ def ic_ball(h, edge):
     return os.path.join(IC, stem + ".nrp"), os.path.join(IC, stem + ".tab")
 
 
-def ic_tri(h, e):
-    nrp, tab = ic_ball(h, 0.0)
-    stem = "tri_h" + fmt(h) + "_e" + fmt(e)
+def ic_tri(h, e, edge=0.0):
+    nrp, tab = ic_ball(h, edge)
+    stem = "tri_h" + fmt(h) + ("_w" + fmt(edge) if edge > 0 else "") + "_e" + fmt(e)
     if not os.path.exists(os.path.join(IC, stem + ".nrp")):
         sh([PY, os.path.join(WT, "problems/idsolve/make_ic.py"), "strain", "--in", nrp,
             "--e", str(e), "--out", IC, "--prefix", stem])

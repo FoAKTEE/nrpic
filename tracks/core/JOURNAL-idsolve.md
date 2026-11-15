@@ -380,3 +380,45 @@ First launch of the check (runs core-20261115-162329-5e52ac1 and -162413-5e52ac1
 a fault of my set-up. The inputs end at `tlim = 1`, which the step of 0.25 reaches after
 4 cycles; the run from the dump started at the end time and stopped at once without a
 record. Relaunched with `time/tlim=100` on the command lines; the predictions stand.
+
+## 2026-11-15, entry 6: outcome of the evolution and restart check; two follow-up tests
+
+Runs (source 87e189e; the run ids carry the commit of the journal, 46dcb31):
+A core-20261115-162445-46dcb31, continued from its dump at cycle 4 as -162622-46dcb31;
+B without the solve -162650-46dcb31, with it -162942-46dcb31. Numbers:
+`evolution_numbers.json`.
+
+A. The run from the dump did not solve again and wrote no `idsolve.txt` (held). Its
+   four records agree with the uninterrupted run to 7e-13 in chi_max, 6.7e-11 in H_max,
+   3.6e-10 in M_max, but K_min (-9.65e-5) differs by 2.1e-10, relative 2.1e-6: above
+   my bound of 1e-8 relative. Whether this is the solver or the restart of the code is
+   not known from this run: control below. The mean of |H| over the mesh is 1.09e-4 at
+   t = 0 and 1.40e-4 after 8 cycles: my "below 1e-4" failed from the start. 58 per cent
+   of the cells of a 32^3 mesh lie within four cells of an outflow face, where the
+   monitor reads up to 1.9e-3 for any data (T1 (f)); I had counted the interior only.
+B. Both runs finish with finite values. At the first record the mean of |H| is 2.35e-5
+   without and 1.09e-7 with the solve (factor 216, not the 1e3 predicted: the same
+   boundary layer; the maximum falls from 1.01e-2 to 8.6e-6). After ONE step the two
+   runs have the same violation: mean |H| 2.35e-4 and 2.28e-4, maximum 6.6e-2 and
+   6.3e-2; after 8 cycles 3.74e-4 and 3.68e-4. **The prediction that the solved run
+   keeps the smaller H by a factor 3 failed.** For this ball the Hamiltonian residual
+   of the trial data (mean 2.35e-5) is ten times smaller than what the first step of
+   the evolution makes at the sharp surface, with or without the solve. Candidates,
+   not tested: the discontinuity of K_ij at the sharp surface under sixth-order
+   differences; the momentum constraint, which the solve leaves at a mean of 2.1e-4.
+
+Follow-up tests, predictions before the runs:
+C. Control for A: the same Gaussian run and its continuation with `id_solve = false`
+   (the trial psi of the problem generator). Prediction: the continuation differs
+   from the uninterrupted run by the same order (1e-10 absolute in K_min, 1e-12 in
+   chi_max): the difference is the restart of the code, not the solver. Refuted if
+   the control agrees to 1e-13 everywhere.
+D. The triaxial ball with the smooth edge (half-width 2, strain 0.05, 64 cells), 8
+   cycles, without and with the solve. Here the trial has no discontinuity and its
+   momentum residual is fifty times smaller (rms 5.5e-5 against 2.7e-3 at the start,
+   T2). Prediction: the first step does not raise H to the level of the sharp ball;
+   the run with the solve keeps a mean |H| at least 3 times below the run without it
+   through the 8 cycles. Refuted if the two runs have the same mean |H| (within 20 per
+   cent) after 8 cycles: then solving the Hamiltonian constraint alone is of little use
+   for an expanding ball whatever its surface, and the vector equation (or a trial
+   with consistent momentum constraint) has to come first.
