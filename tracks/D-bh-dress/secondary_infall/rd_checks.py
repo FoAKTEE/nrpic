@@ -203,7 +203,7 @@ def main():
     ax.legend(loc="lower right", fontsize=7)
     ax = axs[2]
     ax.plot(ns, res["boost"]["closed"], color=fs.PAL["blue"],
-            label=r"$(2/\pi)\,B(\frac12, n-\frac32)$")
+            label=r"$(2/\pi)\,B(1/2,\, n-3/2)$")
     ax.plot(ns[::4], np.array(res["boost"]["quad"])[::4], "o", color=fs.PAL["red"], ms=3.5,
             label="quadrature")
     ax.errorbar([2.25], [res["boost"]["mc_weighted_ratio_to_expect"] *
