@@ -212,3 +212,33 @@ the hole fixed ejects m1 (+1.83) and binds m2 (pericentre 6.11 M at t = 142). Ne
 (no prediction beyond [JUDGEMENT]): the binary is wider than 2 a_b between t = 100 and 140 in
 all three; at t = 280 the ejected member is beyond 60 M in all three. Refuted if any of the
 reproduced numbers differs in the third digit.
+
+## 2026-11-15 E6, outcome (run F-20261115-174102-ffa764f; `results/baselines_p1.json`, `figures/fig_baselines_p1.png`, read)
+
+Reproduced in every printed digit [VERIFIED]: Newton full ejects m1 (comp0), barycentric energy
++1.31187 units (range 1.54e-4 after t = 300), m2 captured with two-body energy -1.6265 units,
+closest approach 5.777 M (pericentres 5.777 at t = 122.1, 5.806 at 250.9; apocentres 9.685 at
+186.9, 314.7); HRNA ejects m2 with +0.97030 units and binds m1 (E1 = -0.49995), first pericentre
+7.262 M at t = 121.0, apocentre 41.97 M at t = 566, then falls through 5.2 M (model stopped at
+t = 987, `status` 1); Newton with the hole fixed ejects m1 (+1.835) and binds m2 (pericentre
+6.107 M at t = 142.1). The binary is wider than 2 a_b (a_b = 5.111) at t = 115.7 (Newton full),
+121.3 (hole fixed), 134.6 (HRNA): inside the predicted 100-140.
+Failed part of the [JUDGEMENT]: at t = 280 the ejected member is at 76.0 M (Newton full) and
+79.2 M (hole fixed), but at 51.7 M in HRNA (m2), not beyond 60 M.
+What P1 decides inside its 280 M [JUDGEMENT]: the two baselines disagree about WHICH member
+leaves. Newton: m1 (comp0) leaves (r_1M = 76 at t = 280), m2 (comp1) bound between 5.8 and
+9.7 M with its second pericentre at t = 251. HRNA: m2 leaves (51.7 M at t = 280), m1 bound on a
+wide orbit (27.9 M at t = 280, outbound). The two differ from t = 100 on (m1 at 12 M in Newton
+against 7.3 M in HRNA at t = 120). The heavy hole of the full Newtonian problem moves 13.3 M
+by t = 280 (recoil): the NR trackers must be read relative to the heavy hole's tracker.
+
+## 2026-11-15 E1, outcome (run F-20261115-173543-29e87e8, stopped after part (a))
+
+(a) Trees at t = 0 of the q = 4 three-black-hole data [VERIFIED, `counts.txt` of the run]:
+1128 MeshBlocks at m/4 (9 levels), 1716 at m/8 (10), 2514 at m/16 (11). The m/8 count is the
+wave-1 count (F-hills-20261115-131933-907e5fe): prediction met; m/4 inside 1300 +- 200 (at the
+lower edge); m/16 inside 2400-3700. 2514 blocks at m/16 fit one card at t = 0 (slots about
+3000, interface multi_puncture.md section 5); along the passage they will grow.
+(b) Not done: the single-puncture probe needs 186 s per cycle on one processor core (the
+processor build is serial; the machine's load was 40), so 16 cycles at m/8 and m/16 would
+take about two hours. Stopped by process id; the card runs S1-S3 print the same counts.

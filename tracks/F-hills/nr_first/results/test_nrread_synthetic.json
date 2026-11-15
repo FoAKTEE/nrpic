@@ -1,0 +1,61 @@
+{
+ "results": [
+  {
+   "test": "trackers found",
+   "ok": true,
+   "detail": "[0, 1, 2]"
+  },
+  {
+   "test": "merged rows: every time once, in order",
+   "ok": true,
+   "detail": "[24001, 24001, 24001] rows against 24001"
+  },
+  {
+   "test": "positions read back to the printed digits",
+   "ok": true,
+   "detail": "max error 0.00e+00"
+  },
+  {
+   "test": "horizon rows: duplicates after the restart removed",
+   "ok": true,
+   "detail": "[1501, 1501, 1501] against 1501"
+  },
+  {
+   "test": "ejected member is m1 (comp0), as V5b",
+   "ok": true,
+   "detail": "ejected comp0"
+  },
+  {
+   "test": "barycentric energy constant after the encounter (< 2e-4 units)",
+   "ok": true,
+   "detail": "range 1.54e-04 units (V5b: 1.54e-04)"
+  },
+  {
+   "test": "barycentric energy equals the lead's V5b value within 1e-3 units",
+   "ok": true,
+   "detail": "1.31187 against 1.31187 (run F-hills-20261115-145559-a314517)"
+  },
+  {
+   "test": "two-body energy with M alone oscillates by more than 0.1 units",
+   "ok": true,
+   "detail": "range 0.734 units"
+  },
+  {
+   "test": "velocity from positions (1 M window) equals the true velocity within 1e-4",
+   "ok": true,
+   "detail": "max error 3.04e-05"
+  },
+  {
+   "test": "integration: total energy conserved to 1e-8 relative",
+   "ok": true,
+   "detail": "1.2e-09"
+  }
+ ],
+ "unit": 0.004960628287400623,
+ "E_bc_end": 1.3118661006954695,
+ "ref": 1.311866100701363,
+ "figure": [
+  "/data/haiyangw/nrpic/scratch/F-hills/F-20261115-173821-b2c969a/fig_test_nrread_synthetic.pdf",
+  "/data/haiyangw/nrpic/scratch/F-hills/F-20261115-173821-b2c969a/fig_test_nrread_synthetic.png"
+ ]
+}
