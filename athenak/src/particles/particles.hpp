@@ -119,12 +119,35 @@ struct NrpicKickOptions {
 };
 
 //----------------------------------------------------------------------------------------
+//! \struct NrpicCollideOptions
+//  \brief options of the Monte Carlo collision operator (nrpic_collide.cpp)
+
+struct NrpicCollideOptions {
+  bool on = false;           // <particles> collisions
+  Real sigma = 0.0;          // cross-section per unit mass (code units)
+  int model = 0;             // velocity dependence (nrpic::CollSigmaModel)
+  Real sigma_w = 1.0;        // its velocity scale
+  Real pmax = 0.1;           // largest pair probability per sub-step aimed at
+  int subcycle = 0;          // 0: sub-steps from the speeds of the cell, 1: v_Mol < 2
+  int nsub_max = 1000;       // largest number of sub-steps of a cell
+  int cell_factor = 1;       // a collision cell is a block of cell_factor^3 mesh cells
+  int weights = 0;           // 0: equal rest masses required, 1: Nanbu-Yonemura
+  int hist_dcycle = 1;       // cycles between records of <basename>.coll.hst
+  int dump_cycle = -1;       // cycle whose collision step is dumped
+  bool budget = false;       // record the energy with the metric at the particles
+  std::uint64_t seed = 0;    // seed of the run (<job> rng_seed)
+  int face_maxlev = -1;      // finest level of the tabulated face positions
+  bool face_warned = false;  // the warning about MeshBlock edges has been printed
+};
+
+//----------------------------------------------------------------------------------------
 //! \struct ParticlesTaskIDs
 //  \brief container to hold TaskIDs of all particles tasks
 
 struct ParticlesTaskIDs {
   TaskID savemet;
   TaskID excise;
+  TaskID collide;
   TaskID deposit;
   TaskID diag;
   TaskID push;
@@ -269,6 +292,14 @@ class Particles {
   NrpicKickOptions kick;
   void NrpicKickInit(ParameterInput *pin);
   void NrpicTestKick();
+
+  // Monte Carlo collisions (nrpic_collide.cpp)
+  NrpicCollideOptions coll;
+  DvceArray1D<int> coll_cell, coll_list, coll_count, coll_begin;   // cell lists
+  DvceArray1D<std::uint64_t> coll_key;                             // pairing words
+  DvceArray1D<Real> coll_face;                                     // face positions
+  void NrpicCollideInit(ParameterInput *pin);
+  TaskStatus NrpicCollide(Driver *pdriver, int stage);
 
  private:
   MeshBlockPack* pmy_pack;  // ptr to MeshBlockPack containing this Particles
