@@ -56,3 +56,80 @@ Python 3.10 with numpy 2.2, scipy 1.15, matplotlib 3.10 (no extra packages).
 
 Wave 1: see `RUNS.md`, section "Requests to other owners". Wave 2: section "Wave 2",
 "Requests" below.
+
+## Wave 2: the first Newtonian-mode run (helper newton_infall)
+
+The first Newtonian-mode run of `RUNS.md` section 3, in AthenaK's Newtonian mode
+(`coord/INTERFACES/newtonian_mode.md`), release processor executable
+`/data/haiyangw/nrpic/.work/build_cpu_v03/src/athena` (core-v0.3), one core per run, 0 card-hours.
+Set-up: eps = 0.03 (t_i = 22.2 M), seed of mass M = 1, uniform cold dust in the Hubble flow
+v = eps x for 3 M <= r < 18.35 M (1.2 x the initial radius of the shell that turns around at
+a/a_i = 4; 24.5 M for the run to a/a_i = 8), isolated box with the multipole boundary, the code
+in physical coordinates (a = 1), time t = t_cosmic - t_i. Predictions and outcomes:
+`JOURNAL.md` from "Wave 2"; every number below has its run id there.
+
+### The hole is a clump of particles, and what that changes
+
+The release has no fixed point mass (request `outbox/20261115T1510Z__to-core__newtonian-mode-point-mass.md`;
+core has it in work on `core/requests-adf`, no executable published when this ran). The hole
+is a cold clump of 19952 equal-mass particles (total mass 1) inside r < 0.3 M. Measured
+consequences:
+1. Softening fixed by the mesh: the clump's force (runs F1) is almost zero inside 0.5 dx,
+   overshoots M/r^2 by up to 30 % at 1.3-2 dx and is within 1 % beyond 4 dx (rms 8e-3) and
+   1e-3 beyond 16 dx. A Plummer fit gives s_eff = 0.61 dx at both resolutions, but describes the
+   kernel poorly; the shell reference therefore uses the measured kernel (`kernel_nx*.txt`).
+2. Self-force: a compact mass at a mesh VERTEX is an unstable equilibrium (e-folding about
+   2.5 M at dx = 2.125 M, scaling like (dx^3/GM)^(1/2)); it runs off and oscillates between
+   neighbouring vertices at up to 0.3-0.5 c. At a CELL CENTRE it is stable, but an offset of
+   0.05 dx already gives it 0.11 c (runs S1). The production set-up therefore puts the clump
+   at a cell centre with the dust lattice symmetric about it; there the clump stays within
+   2e-5 dx of the centre. In the runs with the clump at a vertex the global masses are
+   unaffected, but the inner dress is heated: density inside 2 M low by 2-7, caustic
+   smeared, dust flung out at up to 0.8 c (`figs/nm_phase_vertex.png`).
+3. Energy: the clump's sub-cell self-interaction does not conserve energy (K + W of the clump
+   alone drifts by 5 % of its |W|), so K + W is no check of the dust here.
+4. A fixed point mass would remove 2 and 3 and let the softening be chosen; with a random
+   (not lattice-symmetric) dust the clump would be kicked off the cell centre and jiggle.
+
+### Files
+
+| File | What it is |
+|---|---|
+| `nm_ic.py` | particle files: clump + dust lattice (+ tracers), and `setup.json` with every derived parameter |
+| `nm_infall.athinput` | AthenaK input (isolated, multipole boundary, Newtonian mode); the mesh and times are set by `nm_run.py` |
+| `nm_run.py` | one AthenaK run: particle file, executable, overrides; `--onestep` for the field measurement, `--shift_cells` to centre on a cell |
+| `nm_field.py` | field calibration of the clump (tracers after one step): errors by distance, Plummer fit, measured kernel |
+| `nm_clumpstab.py` | clump displacement and momentum against time (vertex and cell-centre stability) |
+| `nm_shells.py` | the shell reference of `shells.py` matched to a run: measured mesh kernel, Plummer s_eff, or near point mass, at the run's snapshot times |
+| `nm_analyze.py` | turnaround mass, dress, profiles, clump, conservation from the snapshots, against the matched shells and the self-similar solution; figures |
+| `nm_register.py` | hand registration of runs (manifest, commit, detached run, `finish`), used because `harness/bin/nrpic-run submit` refused (Requests) |
+| `figs/nm_*.png` | copies of the figures of the registered analysis runs |
+
+### How to rerun
+
+From the worktree root, package committed. Each line is one registered run (one core):
+
+    S=tracks/D-bh-dress/secondary_infall; P=".venv/bin/python"; X=/data/haiyangw/nrpic/.work/build_cpu_v03/src/athena
+    reg() { $P $S/nm_register.py start --purpose "$1" --input $S/nm_infall.athinput --input $X -- "${@:2}"; }
+    # field calibration (F1, F2) and the timing probe
+    reg F1-64  $P $S/nm_run.py --kind field --nx 64 --L 68 --onestep
+    reg F1-128 $P $S/nm_run.py --kind field --nx 128 --L 68 --onestep
+    reg F2     $P $S/nm_run.py --kind fieldfull --nx 128 --L 68 --onestep
+    reg nm_field $P $S/nm_field.py --run "nx=64:<F1-64 dir>" --run "nx=128:<F1-128 dir>" --run "nx=128 with dust:<F2 dir>"
+    # clump stability (S1)
+    reg S1-V $P $S/nm_run.py --kind field --nx 64 --L 68 --tlim 40 --dtmax 0.1 --cfl 0 --nsnap 40 --shift_cells 0.05 0 0
+    reg S1-C $P $S/nm_run.py --kind field --nx 64 --L 68 --tlim 40 --dtmax 0.1 --cfl 0 --nsnap 40 --shift_cells 0.55 0.5 0.5
+    # infall, clump at a cell centre (drop --shift_cells for the vertex runs)
+    reg N128c  $P $S/nm_run.py --kind infall --nx 128 --L 68  --aend 4 --shift_cells 0.5 0.5 0.5
+    reg N64c   $P $S/nm_run.py --kind infall --nx 64  --L 68  --aend 4 --shift_cells 0.5 0.5 0.5
+    reg N128Lc $P $S/nm_run.py --kind infall --nx 128 --L 176 --aend 8 --dtmax 0.5 --shift_cells 0.5 0.5 0.5
+    # matched shell references (setup.json of the run, kernel file of nm_field)
+    reg shells $P $S/nm_shells.py --setup <run>/setup.json --label N128_kernel --law kernel --kernel <nm_field>/kernel_nx128.txt --dx 1.0625
+    #   (also --law plummer --soft 0.6489 | --law point --soft 0.05; N64: kernel_nx64, dx 2.125, s 1.2932; N128L: kernel_nx128, dx 2.75, s 1.68)
+    reg nm_analyze $P $S/nm_analyze.py --run "N128c:<dir>" ... --ref "N128c:kernel:<shells dir>/nm_shells_N128_kernel" ... \
+        --selfsim scratch/D-bh-dress/D-bh-dress-20261115-123813-97afeea/selfsimilar_profile.npz
+    $P $S/nm_register.py finish <run_id>      # after each run
+
+Wall times on one core of the loaded machine: one-step runs 1-7 s; S1 75 s; N64 26-30 min
+(2.2 s per step, the 520k particles dominate); N128 and N128L 1-2 h (about 3 s per step);
+shells 2 s to 12 min; analysis 35 s.
