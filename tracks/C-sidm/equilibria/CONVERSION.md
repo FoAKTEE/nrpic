@@ -156,3 +156,34 @@ peak density (nu_bar/nu_c = 0.73).
 
 Rows for another N scale as sigma_macro proportional to 1/N, d_c to N^{-1/3}, pair events
 to N; nu_c, nu_bar, sigma~ and l do not depend on N.
+
+## 5. Track definition of Kn and K for the wave-2 models (lead, wave 2)
+
+Runs are labelled with the track's Knudsen number (`../stage/G0/REPORT.md` decision 2,
+`../collide/SPEC.md` section 1): Kn_c = lambda_c/H_c with lambda = 1/(rho0 sigma_m) (not the
+transport mean free path l of section 2, l/lambda = 0.77) and H on the rest-mass density.
+Then sigma~ = K/Kn_c with K = 1/(rho0_c H_c) = (4 pi/p_c)^{1/2} for isotropic models
+(M_ADM = 1). The table of section 3 converts by K = (Kn sigma~)/(l/lambda): King threshold
+129.8/0.7687 = 168.9. Values for the 13 models of run C-20261115-170742-84990ed (N = 1e5;
+computed in run C-20261115-193751-d3872ff from each model's JSON; King threshold 168.90 as
+in run C-sidm-20261115-131130-3077a99, F21 eps maximum 142.60 as the verifier's run
+C-20261115-170630-1037f6a):
+
+| model | Z(0) | H_c/M | K = sigma~ at Kn_c = 1 | sigma~ at Kn_c = 10 |
+|---|---|---|---|---|
+| king_y0p31400 | 0.47880 | 1.4765 | 186.08 | 18.61 |
+| king_y0p32400 | 0.49529 | 1.4555 | 177.14 | 17.71 |
+| king_y0p33403 | 0.51191 | 1.4359 | 168.90 | 16.89 |
+| king_y0p34400 | 0.52851 | 1.4176 | 161.34 | 16.13 |
+| king_y0p35400 | 0.54524 | 1.4005 | 154.33 | 15.43 |
+| tmb01_Z0p5000 | 0.50000 | 1.1753 | 161.20 | 16.12 |
+| tmb01_Z0p5200 | 0.52000 | 1.1441 | 151.53 | 15.15 |
+| tmb01_Z0p5331 (Juttner fluid onset) | 0.53306 | 1.1248 | 145.72 | 14.57 |
+| tmb01_Z0p5404 (eps maximum) | 0.54041 | 1.1142 | 142.60 | 14.26 |
+| tmb01_Z0p5600 | 0.56000 | 1.0869 | 134.80 | 13.48 |
+| tmb01_Z0p5800 | 0.58000 | 1.0605 | 127.53 | 12.75 |
+| tmb01_Z0p6000 | 0.60000 | 1.0354 | 120.85 | 12.09 |
+| tmb01_Z0p6348 (F21 fluid onset) | 0.63482 | 0.9941 | 110.46 | 11.05 |
+
+The card runs CC1 and CC2 of `../threshold_scan/` used sigma~ = K/Kn_c with K = 168.895
+(CC1) and 186.081 (CC2), the values above.
