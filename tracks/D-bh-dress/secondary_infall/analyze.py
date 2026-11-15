@@ -330,57 +330,68 @@ def main():
     ax.legend(loc="upper right", fontsize=7)
     fs.save(fig, os.path.join(a.out, "growth"))
 
-    # --- profiles for the run parameters (eps = 0.01)
-    fig, axs = plt.subplots(1, 3, figsize=(fs.FULL_WIDTH, 3.0), sharey=True)
-    fig.subplots_adjust(left=0.08, right=0.985, bottom=0.16, top=0.93, wspace=0.0)
-    rPa, rAb = runs["pass_e0.01_s0.5"], runs["absorb_e0.01"]
-    redges = np.geomspace(0.5, 400.0, 34)
-    rcen = np.sqrt(redges[1:] * redges[:-1])
-    prof = {}
-    for ax, av in zip(axs, (2.0, 4.0, 8.0)):
-        i = int(np.argmin(np.abs(rPa["snap_a"] - av)))
-        t = rPa["snap_t"][i]
-        rho_b = 1.0 / (6.0 * PI * t * t)
-        al = rPa["snap_alive"][i]
-        rho_p = density_hist(rPa["snap_r"][i][al], rPa["snap_m"][i][al], redges) / rho_b
-        ax.plot(rcen, np.where(rho_p > 0, rho_p, np.nan), color=fs.PAL["yellow"],
-                drawstyle="steps-mid", label="passing (Newtonian mode)")
-        j = int(np.argmin(np.abs(rAb["snap_a"] - av)))
-        tj = rAb["snap_t"][j]
-        alj = rAb["snap_alive"][j]
-        rc_l, rho_l = density_lagr(rAb["snap_r"][j][alj], rAb["snap_m"][j][alj])
-        ax.plot(rc_l, rho_l * 6.0 * PI * tj * tj, color=fs.PAL["red"], lw=1.0,
-                label="absorbing at 2M (cold, full GR proxy)")
-        rt = ta_radius(rPa, t)
-        lam = rcen / rt
-        rho_ssp = np.exp(np.interp(np.log(lam), np.log(ss["rc"]), np.log(ss["rho"])))
-        ax.plot(rcen, np.where(lam < 1, rho_ssp, np.nan), color=fs.PAL["blue"], lw=1.0,
-                label=r"self-similar $F(r/r_{\rm ta})$")
-        # infall stream r^-3/2 from the measured accretion rate
-        gA_ = G["absorb_e0.01"]
-        mdot = np.gradient(gA_["mbh_cf"], gA_["t"])[j]
-        mbh = gA_["mbh"][j]
-        rr = np.geomspace(2.0, 0.3 * rt, 30)
-        ax.plot(rr, mdot / (4 * PI * rr**2 * np.sqrt(2 * mbh / rr)) * 6 * PI * tj * tj,
-                **fs.GUIDE, label=r"$\dot M/(4\pi r^2\sqrt{2M_{\rm bh}/r})$")
-        ax.axvline(rt, **fs.MASK_LINE)
-        ax.axvline(at(G["pass_e0.01_s0.5"], "rsp", av), color="grey", ls=":", lw=1.0)
-        ax.set_xscale("log")
-        ax.set_yscale("log")
-        ax.set_xlim(0.5, 400)
-        ax.set_ylim(0.3, 3e6)
-        ax.set_xlabel(r"$r/M$")
-        ax.set_title(rf"$a/a_i={av:g}$, $t={t:.0f}M$", fontsize=9)
-        prof[f"a{av:g}"] = dict(r=rcen.tolist(), rho_pass=rho_p.tolist(),
-                                rlagr=rc_l.tolist(), rho_absorb=(rho_l * 6 * PI * tj * tj).tolist(),
-                                rta=rt, t=float(t))
-    axs[0].set_ylabel(r"$\rho/\rho_b(t)$")
-    axs[0].legend(loc="lower left", fontsize=6.5)
-    axs[2].text(0.97, 0.95, "grey: $r_{\\rm ta}$\ndotted: outermost\ndust that passed $r=0$",
-                transform=axs[2].transAxes, ha="right", va="top", fontsize=7)
-    fs.save(fig, os.path.join(a.out, "profiles"))
-    with open(os.path.join(a.out, "profiles_eps0.01.json"), "w") as f:
-        json.dump(prof, f)
+    # --- profiles for the run parameters (eps = 0.01 and 0.03)
+    for eps_s in ("0.01", "0.03"):
+        fig, axs = plt.subplots(1, 3, figsize=(fs.FULL_WIDTH, 3.0), sharey=True)
+        fig.subplots_adjust(left=0.08, right=0.985, bottom=0.16, top=0.93, wspace=0.0)
+        rPa, rAb = runs[f"pass_e{eps_s}_s0.5"], runs[f"absorb_e{eps_s}"]
+        redges = np.geomspace(0.5, 400.0, 34)
+        rcen = np.sqrt(redges[1:] * redges[:-1])
+        prof = {}
+        for ax, av in zip(axs, (2.0, 4.0, 8.0)):
+            i = int(np.argmin(np.abs(rPa["snap_a"] - av)))
+            t = rPa["snap_t"][i]
+            rho_b = 1.0 / (6.0 * PI * t * t)
+            al = rPa["snap_alive"][i]
+            rho_p = density_hist(rPa["snap_r"][i][al], rPa["snap_m"][i][al], redges) / rho_b
+            ax.plot(rcen, np.where(rho_p > 0, rho_p, np.nan), color=fs.PAL["yellow"],
+                    drawstyle="steps-mid", label="passing (Newtonian mode)")
+            j = int(np.argmin(np.abs(rAb["snap_a"] - av)))
+            tj = rAb["snap_t"][j]
+            alj = rAb["snap_alive"][j]
+            rc_l, rho_l = density_lagr(rAb["snap_r"][j][alj], rAb["snap_m"][j][alj])
+            ax.plot(rc_l, rho_l * 6.0 * PI * tj * tj, color=fs.PAL["red"], lw=1.0,
+                    label="absorbing at 2M (cold, full GR proxy)")
+            rt = ta_radius(rPa, t)
+            lam = rcen / rt
+            rho_ssp = np.exp(np.interp(np.log(lam), np.log(ss["rc"]), np.log(ss["rho"])))
+            ax.plot(rcen, np.where(lam < 1, rho_ssp, np.nan), color=fs.PAL["blue"], lw=1.0,
+                    label=r"self-similar $F(r/r_{\rm ta})$")
+            # infall stream r^-3/2 from the measured accretion rate
+            gA_ = G[f"absorb_e{eps_s}"]
+            mdot = np.gradient(gA_["mbh_cf"], gA_["t"])[j]
+            mbh = gA_["mbh"][j]
+            rr = np.geomspace(2.0, 0.3 * rt, 30)
+            ax.plot(rr, mdot / (4 * PI * rr**2 * np.sqrt(2 * mbh / rr)) * 6 * PI * tj * tj,
+                    **fs.GUIDE, label=r"$\dot M/(4\pi r^2\sqrt{2M_{\rm bh}/r})$")
+            ax.axvline(rt, **fs.MASK_LINE)
+            ax.axvline(at(G[f"pass_e{eps_s}_s0.5"], "rsp", av), color="grey", ls=":", lw=1.0)
+            ax.set_xscale("log")
+            ax.set_yscale("log")
+            ax.set_xlim(0.5, 400)
+            ax.set_ylim(0.3, 3e6)
+            ax.set_xlabel(r"$r/M$")
+            ax.set_title(rf"$a/a_i={av:g}$, $t={t:.0f}M$", fontsize=9)
+            fits = {}
+            for lab, lo, hi in (("pass_3_10", 3.0, 10.0), ("pass_10_0.3rta", 10.0, 0.3 * rt)):
+                sl = (rcen > lo) & (rcen < hi) & (rho_p > 0)
+                fits[lab] = float(np.polyfit(np.log(rcen[sl]), np.log(rho_p[sl]), 1)[0]) \
+                    if sl.sum() >= 3 else None
+            sl = (rc_l > 3.0) & (rc_l < 0.1 * rt)
+            fits["absorb_3_0.1rta"] = float(np.polyfit(np.log(rc_l[sl]), np.log(rho_l[sl]), 1)[0])
+            res.setdefault("profile_slopes", {})[f"eps{eps_s}_a{av:g}"] = fits
+            prof[f"a{av:g}"] = dict(r=rcen.tolist(), rho_pass=rho_p.tolist(),
+                                    rlagr=rc_l.tolist(), rho_absorb=(rho_l * 6 * PI * tj * tj).tolist(),
+                                    rta=rt, t=float(t))
+        axs[0].set_ylabel(r"$\rho/\rho_b(t)$")
+        axs[0].legend(loc="lower left", fontsize=6.5)
+        axs[2].text(0.97, 0.95, "grey: $r_{\\rm ta}$\ndotted: outermost\ndust that passed $r=0$",
+                    transform=axs[2].transAxes, ha="right", va="top", fontsize=7)
+        fs.save(fig, os.path.join(a.out, f"profiles_eps{eps_s}"))
+        with open(os.path.join(a.out, f"profiles_eps{eps_s}.json"), "w") as f:
+            json.dump(prof, f)
+        with open(os.path.join(a.out, "analysis.json"), "w") as f:
+            json.dump(res, f, indent=1, default=float)
 
     # --- self-similarity check
     fig, axs = plt.subplots(2, 1, figsize=(fs.COLUMN_WIDTH, 4.6), sharex=True,
@@ -445,7 +456,8 @@ def main():
     ax.legend(loc="center left", fontsize=7)
     fs.save(fig, os.path.join(a.out, "angular_momentum"))
 
-    print(json.dumps({k: res[k] for k in ("checks", "selfsim", "angmom", "dress_reach")},
+    print(json.dumps({k: res[k] for k in ("checks", "selfsim", "angmom", "dress_reach",
+                                          "profile_slopes")},
                      indent=1, default=float))
     print(open(os.path.join(a.out, "run_plan.txt")).read())
 

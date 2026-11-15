@@ -34,6 +34,8 @@ CONFIGS = {
     # name: eps, mode, soft, r_abs, mu range, n radial shells, a_end, sigma_t, n_j
     "absorb_e0.01": dict(eps=0.01, mode="absorb", soft=0.0, r_abs=2.0, mu_core=1e-3,
                          mu_max=8.0, n=3000, a_end=8.0, sigma=0.0, nj=1),
+    "absorb_e0.03": dict(eps=0.03, mode="absorb", soft=0.0, r_abs=2.0, mu_core=1e-3,
+                         mu_max=8.0, n=3000, a_end=8.0, sigma=0.0, nj=1),
     "pass_e0.01_s0.5": dict(eps=0.01, mode="pass", soft=0.5, r_abs=0.0, mu_core=1e-3,
                             mu_max=8.0, n=4000, a_end=8.0, sigma=0.0, nj=1),
     "pass_e0.03_s0.5": dict(eps=0.03, mode="pass", soft=0.5, r_abs=0.0, mu_core=1e-3,
