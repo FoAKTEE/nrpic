@@ -114,7 +114,7 @@ def t1(out):
         ax.loglog(om*el.TK, closed/el.MASS, color=fs.PAL["blue"], label="closed form (this note)")
         ax.loglog(om*el.TK, p2605/el.MASS, **fs.GUIDE, label="2605.04487 eq.")
         ax.loglog(om[::3]*el.TK, direct[::3]/el.MASS, "o", ms=3, color=fs.PAL["red"],
-                  label="Fourier sum of $\\dddot Q_{ij}(t)$")
+                  label="Fourier sum of $Q'''_{ij}(t)$")
         ax.set_ylabel(r"$dE/d\ln\omega\ /\ Mc^2$")
         ax.set_title(r"$(\alpha,\beta,\gamma)=(%.4g, %.4g, %.4g)$" % tuple(lamv), fontsize=10)
         ax.axvline(1/tc, **fs.MASK_LINE)
@@ -376,8 +376,9 @@ def t4_t5(out):
     a = el.a_of_t(tg)
     ls = ["-", "--", ":"]
     ax = axs[0]
+    mz = tg <= el.t_col_za(B2605[0])          # Zel'dovich only up to its first collapse
     for i in range(3):
-        ax.plot(tg, np.abs(za[:, i])/a/el.RL, color=MODEL_COL["ZA"], ls=ls[i],
+        ax.plot(tg[mz], np.abs(za[mz, i])/a[mz]/el.RL, color=MODEL_COL["ZA"], ls=ls[i],
                 label="ZA" if i == 0 else None)
     for m in ("A", "B", "C"):
         s = el.sample(runs[m], tg)
@@ -388,13 +389,13 @@ def t4_t5(out):
         ax.axvline(x, **fs.MASK_LINE)
     ax.set_ylim(0, 1.05)
     ax.set_ylabel(r"comoving semi-axis $|R_i|/(aR_L)$")
-    ax.legend(loc="lower left", fontsize=8, ncol=2)
+    ax.legend(loc="upper right", fontsize=8, ncol=2)
     ax.text(PAPER_X, 1.0, " 22.536", fontsize=8, va="top")
     ax.text(PAPER_Y, 1.0, " 29.097", fontsize=8, va="top")
     ax = axs[1]
     for i in range(3):
         qza = (el.MASS/15)*(3*za[:, i]**2 - np.sum(za**2, axis=1))
-        ax.plot(tg, qza/(el.MASS*el.RL**2), color=MODEL_COL["ZA"], ls=ls[i])
+        ax.plot(tg[mz], qza[mz]/(el.MASS*el.RL**2), color=MODEL_COL["ZA"], ls=ls[i])
         for m in ("A", "B"):
             ax.plot(samp[m]["t"], samp[m]["Q"][0][:, i]/(el.MASS*el.RL**2), color=MODEL_COL[m],
                     ls=ls[i])
@@ -405,7 +406,7 @@ def t4_t5(out):
     for m in ("A", "B"):
         ax.semilogy(samp[m]["t"], samp[m]["P"], color=MODEL_COL[m], label=f"model {m}")
     ax.semilogy(tt, el.power(q3_fd), ".", ms=2, color="k", label="model A, 5-point stencil")
-    ax.set_ylabel(r"$P_{\rm GW}=\frac{G}{5c^5}\dddot Q_{ij}\dddot Q_{ij}$")
+    ax.set_ylabel(r"$P_{\rm GW}=(G/5c^5)\,Q'''_{ij}Q'''_{ij}$")
     ax.set_xlabel(r"$t/t_k$", labelpad=-2)
     ax.legend(loc="lower right", fontsize=8)
     res["figure_T4_T5"] = save(fig, out, "t4_t5_axes_quadrupole_power.png")
@@ -433,13 +434,16 @@ def t6(out):
                   "t_x_over_t_turn": tau.tolist(),
                   "rel_spread_F": float(np.ptp(F)/np.mean(F)),
                   "rel_spread_tau": float(np.ptp(tau)/np.mean(tau))}
-        axs[0].semilogx(alphas, F/np.mean(F) - 1, "o-", color=MODEL_COL[m], label=f"model {m}")
+        mk = {"A": "o", "B": "s", "C": "^"}[m]
+        axs[0].loglog(alphas, np.maximum(np.abs(F/np.mean(F) - 1), 1e-17), mk + "-",
+                      color=MODEL_COL[m], label=f"model {m}")
         axs[1].semilogx(alphas, tau, "o-", color=MODEL_COL[m], label=f"model {m}")
     za_F = [el.za_energy(el.TK, el.t_col_za(al), ratios*al)/el.MASS/(2*al)**3.5 for al in alphas]
     res["ZA_t_k_to_t_col"] = {"E_over_Mc2_over_(2alpha)^3.5": za_F}
     axs[0].set_xlabel(r"$\alpha$ (fixed $\beta/\alpha$, $\gamma/\alpha$)", labelpad=-2)
-    axs[0].set_ylabel(r"$F/\langle F\rangle-1$, $F=E/[Mc^2(2\alpha)^{7/2}]$")
-    axs[0].set_ylim(-1e-6, 1e-6)
+    axs[0].set_ylabel(r"$|F/\langle F\rangle-1|$, $F=E/[Mc^2(2\alpha)^{7/2}]$")
+    axs[0].set_ylim(1e-17, 1e-5)
+    axs[0].axhline(1e-7, **fs.GUIDE)
     axs[0].legend(loc="upper left", fontsize=8)
     axs[1].set_xlabel(r"$\alpha$", labelpad=-2)
     axs[1].set_ylabel(r"$t_x/t_{\rm turn}$")
@@ -558,7 +562,8 @@ def t8(out, runs=None):
                    "omega_peak_t_turn": wps,
                    "slope_lambda_com": float(np.polyfit(np.log(alphas), np.log(lam_c), 1)[0])}
     res["rows"] = rows
-    res["box_side_one_patch_per_Vk_over_RL"] = Lbox
+    res["box_side_one_patch_per_Vk_over_RL"] = Lbox/el.RL
+    res["box_side_one_patch_per_Vk_in_c_tk"] = Lbox
     al = B2605[0]
     res["benchmark"] = {m: {"lambda_com_over_RL": rows[m]["lambda_com_over_RL"][2],
                             "ratio_to_box": rows[m]["lambda_com_over_RL"][2]*el.RL/Lbox}
@@ -593,6 +598,9 @@ def t8(out, runs=None):
     ax.text(0.031, Lbox/el.RL*1.05, r"box side $V_k^{1/3}$", fontsize=8)
     ax.set_xlabel(r"$\alpha$ (fixed $\beta/\alpha$, $\gamma/\alpha$)", labelpad=-2)
     ax.set_ylabel(r"comoving $\lambda_{\rm GW}$ at the peak $/R_L$")
+    ax.set_yticks([1.5, 2, 3, 4, 6, 8])
+    ax.set_yticklabels(["1.5", "2", "3", "4", "6", "8"])
+    ax.set_ylim(1.4, 9)
     ax.legend(loc="upper right", fontsize=8)
     res["figure"] = save(fig, out, "t8_box_and_spectra.png")
     return res
