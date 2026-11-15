@@ -81,7 +81,7 @@ lapse_harmonicf = 1.0
 lapse_harmonic  = 0.0
 lapse_volume    = 0.0
 lapse_advect    = 1.0
-lapse_leak      = 1.0      # 1/T of the relaxation of the excess lapse (0: plain 1+log)
+lapse_leak      = 2.0      # 1/T of the relaxation of the excess lapse (0: plain 1+log); T = 0.5 M
 lapse_leak_alpha = 1.0     # reference lapse
 shift_Gamma     = 0.75
 shift_eta       = 2.0

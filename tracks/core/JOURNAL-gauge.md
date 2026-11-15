@@ -463,3 +463,12 @@ The queued job reads the input when it starts. Reference lapse of the plateau fo
 largest 1.064; proper time 10.53, 21.15, 31.72 M at t = 10, 20, 30 M. Prediction (3)
 becomes: lapse at the tracers at 48 M within 2 per cent of these values, largest lapse
 on the mesh below 1.09. The other items of prediction ES are unchanged.
+
+### Amendment of test L3, written before the run
+
+For the same reason the collapse run uses T = 0.5 M instead of 1 M (`lapse_leak = 2.0` in
+`problems/ball/ball_collapse.athinput`; tag `gc-collapse-leak05`). Its prediction is
+unchanged. Card job 4449 keeps the script text of its submission, which names T = 4 M
+for ES and T = 1 M for L3; those two steps are disabled through
+`analysis/gauge/skip_tags.txt` (read by `grun.py`), and ES and L3 run in a third job
+(`gpu_job3.sh`) with the relaxation time on the command line.

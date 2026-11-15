@@ -1,7 +1,6 @@
 #!/bin/bash
 # Card job 1 of the work package "gauge": the expanding ball at cells of M/2 with the old
-# and the new lapse (L1), the bound ball at M/4 (L2), the Einstein-Straus
-# data (ES), and the collapse of the bound ball (L3); the last two with a wall-clock limit.  Every run is registered by grun.py; inside the job
+# and the new lapse (L1), and the bound ball at M/4 (L2).  Every run is registered by grun.py; inside the job
 # scripts/gpu_run.sh runs the executable directly.
 #   sbatch tracks/core/analysis/gauge/gpu_job1.sh
 #SBATCH -p preempt
@@ -27,19 +26,8 @@ date
 # L2, cells M/4
 $PY $G/ball_runs.py --gpu --jobs 1 --exact --only bound-leak1-n160,bound-leak05-n160
 date
-# ES, new lapse T = 2 M
-$PY $G/grun.py --gpu --exe $EXE --source-commit $SRC --time 00:20:00 --tag gc-es-leak2 \
-  --purpose "Einstein-Straus data of Track D for 30 M, lapse relaxation T = 2 M (test ES)" \
-  --inputs $ES/es.nrp $ES/es.tab $ES/es.json $ES/es_reference.csv \
-  --athinput $WT/problems/es/es_gauge.athinput particles/particle_file=$ES/es.nrp \
-  problem/comp0_file=$ES/es.tab -t 00:08:00
-# L3, collapse of the bound ball with the new lapse
-NT=$(python3 -c "import json;print(json.load(open('$IC/t2_bound_h0p25.json'))['traj_ntrack'])")
-$PY $G/grun.py --gpu --exe $EXE --source-commit $SRC --time 00:20:00 --tag gc-collapse-leak1 \
-  --purpose "bound expanding ball through turnaround and collapse to a black hole, new lapse T = 1 M (test L3)" \
-  --inputs $IC/t2_bound_h0p25.nrp $IC/t2_bound_h0p25.tab $IC/t2_bound_h0p25.json \
-  --athinput $WT/problems/ball/ball_collapse.athinput particles/traj_ntrack=$NT \
-  particles/particle_file=$IC/t2_bound_h0p25.nrp problem/comp0_file=$IC/t2_bound_h0p25.tab -t 00:10:00
-date
+# The copy of this script that Slurm holds for job 4449 goes on with ES (tag gc-es-leak4)
+# and L3 (tag gc-collapse-leak1); both tags are listed in skip_tags.txt and are not run:
+# those two tests moved to gpu_job3.sh with shorter relaxation times.
 date
 echo "gpu_job1 finished"

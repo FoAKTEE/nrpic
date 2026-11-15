@@ -84,7 +84,17 @@ def args_of(man):
 
 
 def leak_T(man, default_rate):
-    rate = float(args_of(man).get("z4c/lapse_leak", default_rate))
+    """Relaxation time of a run: from the command line, else from the copy of the input
+    file in the output directory, else from default_rate."""
+    rate = args_of(man).get("z4c/lapse_leak")
+    if rate is None:
+        for f in glob.glob(os.path.join(man["output_directory"], "*.athinput")):
+            with open(f) as fh:
+                for line in fh:
+                    w = line.split("#")[0].split("=")
+                    if len(w) == 2 and w[0].strip() == "lapse_leak":
+                        rate = w[1].strip()
+    rate = float(default_rate if rate is None else rate)
     return 1.0 / rate if rate > 0.0 else 0.0
 
 

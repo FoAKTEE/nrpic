@@ -70,6 +70,15 @@ def main():
                          "the run and is recorded as commit; HEAD goes into head_at_run)")
     a = ap.parse_args(argv)
 
+    # tags that a job script submitted earlier must no longer run (a queued Slurm job
+    # keeps the script text of its submission): one tag per line in skip_tags.txt
+    skip = os.path.join(HERE, "skip_tags.txt")
+    if a.tag and os.path.exists(skip):
+        with open(skip) as f:
+            if a.tag in [ln.split("#")[0].strip() for ln in f]:
+                print(f"tag {a.tag} is listed in skip_tags.txt: not run")
+                return
+
     head = git("rev-parse", "HEAD")
     commit = git("rev-parse", a.source_commit) if a.source_commit else head
     dirty = bool(git("status", "--porcelain", "--untracked-files=no"))
