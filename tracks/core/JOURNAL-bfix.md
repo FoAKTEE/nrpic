@@ -635,3 +635,31 @@ run to t = 0.3 with `dt_expansion` = 0.01 (as T3) and 0.0025 (a quarter of the s
 Prediction: H rms at t = 0.1 and 0.2 changes by less than 20 per cent between the two
 steps, for both lattices. Refuted (and the alternative supported) if it falls by a factor
 of about four or sixteen with the smaller step.
+
+### Outcome of T7 (run core-20261115-162609-9dd5b98, 36 s)
+
+P8 PASSED. History every 0.02; rms of H with `dt_expansion` = 0.01 and 0.0025 (steps of
+0.01 and 0.0025):
+
+| lattice | t = 0.02 | 0.04 | 0.10 | 0.20 | 0.30 |
+|---|---|---|---|---|---|
+| jittered, step 0.01 | 1.784e-2 | 3.488e-2 | 6.916e-2 | 6.585e-2 | 4.547e-2 |
+| jittered, step 0.0025 | 1.787e-2 | 3.494e-2 | 6.843e-2 | 6.755e-2 | 4.546e-2 |
+| plain, step 0.01 | 7.32e-5 | 9.53e-5 | 1.651e-4 | 2.208e-4 | 2.293e-4 |
+| plain, step 0.0025 | 4.28e-5 | 8.03e-5 | 1.593e-4 | 2.180e-4 | 2.289e-4 |
+
+(the rows are at the first step after each time, so the two steps sample slightly
+different times: 0.1026 and 0.1001). For the jittered lattice the ratio small step over
+large step is 1.002, 1.002, 0.989, 1.026, 1.000: the residual grows at 0.87 per unit
+time from the first step on, whatever the step. For the plain lattice the ratio is
+0.59, 0.84, 0.96, 0.99, 1.00: a part that depends on the step exists in the first few
+steps and is gone by t = 0.1. So the level that the evolution restores is not an error
+of the time integration [VERIFIED by this run]; it belongs to the spatial discretization
+of the coupled system. That it is the difference between the Ricci scalar of
+`ADMConstraints` and the one of the Z4c right-hand side (rather than, for instance, the
+deposit not obeying a discrete continuity equation) remains [JUDGEMENT, TO VERIFY]: a
+test would evaluate the constraint with the right-hand side's own operators.
+Figure looked at: `figs/t7_constraint_drift.png` (the two steps lie on top of each other
+for the jittered lattice; for the plain one they join at t = 0.05).
+Consequence for the answer to Track B (REQUESTS_B.md, section 5): unchanged; a smaller
+step does not lower the constraint level of a noisy lattice.

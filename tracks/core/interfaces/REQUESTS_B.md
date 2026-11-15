@@ -148,7 +148,9 @@ What Track B should know before the null run (T3):
 - That gain does not survive ten steps: at t = 0.1 the residual is 6.9e-2 whichever
   solve was used, and the two runs agree to two digits from t = 0.5. The constraint level
   of a run with a noisy lattice is set by the evolution, about one per cent of the source
-  term at the start, falling with the expansion (cause not identified, journal). The
+  term at the start, falling with the expansion. It does not depend on the time step
+  (T7, run core-20261115-162609-9dd5b98): it belongs to the spatial discretization of the
+  coupled system, not to the time integration (which part of it: not identified). The
   null run will therefore measure the TT content of an evolution with constraint
   violations of that size; a smaller jitter lowers both in proportion [JUDGEMENT: not
   run].
