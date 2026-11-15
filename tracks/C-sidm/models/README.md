@@ -135,8 +135,9 @@ registered by `nrpic-run` and writes to `$NRPIC_RUN_DIR`):
     $R --purpose "figures" -- python3 tracks/C-sidm/models/figures.py --onset <onset dir> \
         --checks <check 1e4 dir> <check 1e5 dir> --growth <growth dir> --smoke <read-test dir>
 
-Wall times: fluid onset 3 min, build 35 s (1e4) and 3.5 min (1e5), checks 7-15 min,
-validation 1 min, diagnosis 1 min (processors, 0 card-hours).
+Wall times (manifests: started to finished): fluid onset 2.2 min, build 55 s (10^4) and
+3.9 min (10^5), checks 4.3 and 7.9 min, validation and diagnosis 1-2 s each, AthenaK read
+test 7 min on 4 threads; processors only, 0 card-hours.
 
 ## Runs of this package (all scouting, processors, 0 card-hours)
 
