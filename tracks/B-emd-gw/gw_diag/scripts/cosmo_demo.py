@@ -61,7 +61,8 @@ for rd in RUNS:
                      "rho_kin/rho_bar": sp["rho_kin_total"] / rho_bar,
                      "rho_grad/rho_bar": sp["rho_grad_total"] / rho_bar,
                      "rms_hTT": rms(hTT), "rms_h_nonTT": rms(h - hTT),
-                     "rms_hTT_over_nonTT": rms(hTT) / rms(h - hTT)})
+                     # the initial data are conformally flat (tilde gamma = delta): both zero
+                     "rms_hTT_over_nonTT": rms(hTT) / rms(h - hTT) if rms(h - hTT) > 0 else None})
         spectra.append({"a": a, "k": sp["k"].tolist(),
                         "drho_dlnk/rho_bar": (sp["drho_dlnk"] / rho_bar).tolist(),
                         "kin_shell/rho_bar": (sp["rho_kin"] / rho_bar).tolist()})
@@ -92,9 +93,11 @@ for i, rd in enumerate(RUNS):
     name = os.path.basename(rd.rstrip("/"))
     r = RES[name]["rows"]
     a = np.array([x["a"] for x in r])
-    ax1.loglog(a, [x["rho_kin/rho_bar"] + x["rho_grad/rho_bar"] for x in r], "o-", ms=3,
+    rg = np.array([x["rho_kin/rho_bar"] + x["rho_grad/rho_bar"] for x in r])
+    ax1.loglog(a[rg > 0], rg[rg > 0], "o-", ms=3,
                color=cols[i], label=name + r": $\rho_{\rm GW}/\bar\rho$")
-    ax1.loglog(a, [x["rms_hTT_over_nonTT"] for x in r], "s--", ms=3, mfc="none", color=cols[i],
+    rr = [(x["a"], x["rms_hTT_over_nonTT"]) for x in r if x["rms_hTT_over_nonTT"]]
+    ax1.loglog([q[0] for q in rr], [q[1] for q in rr], "s--", ms=3, mfc="none", color=cols[i],
                label=r"rms $h^{\rm TT}$ / rms non-TT")
     sps = RES[name]["spectra"]
     for j, s in enumerate((sps[1], sps[len(sps) // 2], sps[-1])):

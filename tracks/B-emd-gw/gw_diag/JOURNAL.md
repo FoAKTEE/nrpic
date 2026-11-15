@@ -311,3 +311,7 @@ from a = 1 to ~1000 (cosmo/TESTLOG.md, C5). All [JUDGEMENT]:
     the TT content is not deposit noise;
 (5) at the last dump B and Lambda E are small against E (rms ratio < 0.1): the Weyl field of a
     matter-dominated box is mostly the Coulomb-type tidal part.
+
+Run B-emd-gw-20261115-120531-40a3597 FAILED at the first dump (ZeroDivisionError): the initial
+data of the cosmology runs are conformally flat, tilde gamma = delta exactly, so h and its non-TT
+part are zero at a = 1. Guarded (ratio recorded as null) and rerun.
