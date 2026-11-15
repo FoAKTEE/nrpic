@@ -124,7 +124,9 @@ def main():
         cmds = {
             "frozen": [sys.executable, val, "--input", f"{o}/U1/u.athinput", "--run", f"{o}/U1",
                        "--blocks8", f"{o}/U2", "--blocks64", f"{o}/U3", "--restart", f"{o}/U4",
-                       "--res-lo", f"{o}/U5a", "--res-hi", f"{o}/U5b", "--seed2", f"{o}/U8",
+                       "--res-lo", f"{o}/U5a", "--res-hi", f"{o}/U5b",
+                       "--res-lo-input", f"{o}/U5a/u.athinput",
+                       "--res-hi-input", f"{o}/U5b/u.athinput", "--seed2", f"{o}/U8",
                        "--seed2-input", f"{o}/U8/u.athinput", "--out", f"{o}/val_frozen"],
             "markov_tanh": [sys.executable, val, "--input", f"{o}/U6/u.athinput", "--run",
                             f"{o}/U6", "--out", f"{o}/val_markov_tanh"],

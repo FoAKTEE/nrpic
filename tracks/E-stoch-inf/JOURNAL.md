@@ -60,3 +60,50 @@ hubble 1.1, 120 cycles, dumps every 40, restart at 60; U3 = 64 MeshBlocks of 8^3
 N = 16 and 32 with nmax2 = 36). The predictions of L-U stand unchanged for this case;
 statistical tests at shells with fewer than 100 effective modes report "n/a" by the
 validator's rule. The 64^3 x 300 base case stays pending (card or a longer processor run).
+
+### Outcomes so far (14:05Z)
+
+- L-R spec (run E-20261115-135531-0c4e629): holds. All 1182 numeric leaves of
+  summary/quadratic/inflection/norm_test identical bit for bit; ic_check identical.
+- L-R noise (run E-20261115-135532-5ec2b09, exit 1): holds for every deterministic result
+  (T-N0 bit-identity on 153684 + 2000 keys, self-test 49 leaves, T-N8 112 leaves identical;
+  T-N1 counts; T-N5 reader bitwise across 1/8/64 MeshBlocks, 5.4e-8, axes 7e-2). The exit 1
+  is one leaf: the maximum deviation of the library logarithm, 6.2e-13 against 1.16e-12
+  (median 1.1e-15 in both), an environment property of numpy.log, not of the code path.
+  Prediction refuted as worded for that one leaf; no consequence.
+- L-R codebase (run E-20261115-140116-87c1cc5, exit 1): holds; d1, d3, d4, cost identical;
+  in d2 only the six wall-clock "seconds" leaves differ (timings).
+- L-B (run E-20261115-135532-3f958a1): holds. phi0 -14.094995, m 1.734945e-6, eps1(N*)
+  1.110706e-2, V(N*) 2.69006e-2; inflection USR 2.5237 to 6.5498, eps1 min 9.72e-13 at 8.33.
+  SR mode leaving at N* + 1.5: full P_R(N_f) = 1.0108, slope -5.8e-4/e-fold; without metric
+  perturbations slope -0.0519 against -4 eps1 = -0.0513 (1.2 percent).
+- L-N (same run): holds. <N> = 9.385995 +- 3e-6, var N = 4.5215404 +- 3e-9 (helper: 9.38603,
+  4.521540).
+- L-I (derivation): holds; written into SPEC 5.3. The printed eq. (17) has a Psi_G term
+  (zero in the geodesic gauge, P2:490) where the Psi_B term belongs; it drops the chi-dot
+  term of its own dictionary.
+- L-U (run E-20261115-135523-a32c3a6): all nine AthenaK runs completed (U1-U3, U5a/b, U6-U8
+  in 290-315 s each, U5a 37 s, U4 restart 137 s). Validations: Markov Heaviside passes
+  everything; Markov tanh passes A0, A2-A8, A10 and FAILS A1 (exact reconstruction:
+  1.07e-10 of the rms against 1e-11, worst stoch_c2 at cycle 120); the frozen validation
+  did not run: the validator read U5a (N = 16) with U1's nmax2 = 100 and stopped ("cut
+  reaches the Nyquist plane"). The second is a defect of the validator (it would have hit
+  the specification's own base case, nmax2 = 256 at N = 32, the same way); fixed by the
+  lead: `--res-lo-input`, `--res-hi-input`.
+
+### Predictions before the follow-up runs (14:06Z)
+
+L-U2 (`analysis/lead/lu_diag.py` on U6 and U1). The A1 excess of U6 is the conditioning
+of sqrt(W(t) - W(t - dt)) for modes long past crossing (W near 1; both code and reference
+form the difference naively, with libm and numpy exponentials that may differ by an ulp).
+Expected: on modes with dW > 1e-6 the coefficient difference is below 1e-13 of the base
+amplitude; on every mode it stays below the conditioning line 3 x 2u/(2 sqrt(dW)), u =
+1.1e-16; in U1 (frozen, dW enters linearly) the A1 value is below 1e-11. Refuted by a large
+difference on a mode with dW > 1e-6 (that would point to keys, times or the stage
+bookkeeping) or by points above the line.
+
+L-U3 (`analysis/lead/lu_validate.sh` on the outputs of E-20261115-135523-a32c3a6, each run
+with its own input): frozen validation passes A0-A10 and A11 (1, 8, 64 MeshBlocks
+bit-identical), A12 (restart at cycle 60 bit-identical), A13 (N = 16 against 32 within
+eps_m), A15 (seeds); Markov Heaviside passes; Markov tanh fails A1 only, as before (the
+contract is not loosened after seeing data). Refuted by any other failure.

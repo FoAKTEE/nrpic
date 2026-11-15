@@ -611,6 +611,8 @@ def main():
     ap.add_argument("--input", help="input file of NRSFDMP1 dump runs (core's power model);"
                     " all runs given then use it, with the seed of --seed2-input for U8")
     ap.add_argument("--seed2-input")
+    ap.add_argument("--res-lo-input", help="input file of U5a (its nmax2 differs from U1's)")
+    ap.add_argument("--res-hi-input", help="input file of U5b")
     ap.add_argument("--out", required=True)
     ap.add_argument("--tag", default="run")
     a_ = ap.parse_args()
@@ -629,7 +631,8 @@ def main():
         res.append(compare_fields(ref, aio.read_run(a_.restart), "A12", "restart",
                                   "bitwise"))
     if a_.res_lo and a_.res_hi:
-        res.append(compare_resolution(aio.read_run(a_.res_lo), aio.read_run(a_.res_hi)))
+        res.append(compare_resolution(aio.read_run(a_.res_lo, a_.res_lo_input or a_.input),
+                                      aio.read_run(a_.res_hi, a_.res_hi_input or a_.input)))
     if a_.seed2:
         res.append(compare_seeds(base, aio.read_run(a_.seed2, a_.seed2_input or a_.input)))
     if a_.card:
