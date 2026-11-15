@@ -148,6 +148,12 @@ core-halo families, section 3.4).
 
 ### 3.1 Monoenergetic family (first paper, Wu and Most)
 
+[Note of wave 2, verifier finding V1: the monoenergetic f is not a decreasing function of
+E, so the stability results that need phi'(E) < 0 (2009.08163 paper.tex:177-179) do not
+cover this family; that its binding-energy maximum marks the onset rests on ST85 as quoted
+by Wu and Most (2611.12831 main.tex:1092) and on this repository's bracketing runs. The
+family stays a verification family only (`stage/G0/REPORT.md` decision 1).]
+
 | model | y_c | z_c | E_b/M_0 | M/R | relative to threshold |
 |---|---|---|---|---|---|
 | stable, first paper | 0.819 | 0.236 | 0.0292 | 0.100 | well below |
