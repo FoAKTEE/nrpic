@@ -1,0 +1,31 @@
+{
+ "run_id": "E-stoch-inf-20261115-131526-629fed8",
+ "owner": "E-stoch-inf",
+ "package": "noise (E-pre-4)",
+ "kind": "scouting",
+ "purpose": "T-N6 of noise/JOURNAL.md: calibration of the A3 decisions (KS of |w|^2 and arg w, fourth moment) on correct amplitudes, 2000 seeds of the base case; single-decision calibration and family-wise false-alarm rate per validation",
+ "cwd": "/data/haiyangw/nrpic/scratch/E-stoch-inf/E-stoch-inf-20261115-131526-629fed8",
+ "command": "python3 /data/haiyangw/nrpic/wt/E-stoch-inf/tracks/E-stoch-inf/noise/validate/calib_a3.py --out /data/haiyangw/nrpic/scratch/E-stoch-inf/E-stoch-inf-20261115-131526-629fed8",
+ "commit": "629fed8",
+ "worktree_dirty_paths": [],
+ "inputs": [
+  {
+   "path": "/data/haiyangw/nrpic/wt/E-stoch-inf/tracks/E-stoch-inf/noise/validate/calib_a3.py",
+   "sha256": "aaf1cccca3267e8ce7fdec8e7f7173d688f7e0474ab2690cd55e0bd181b7c5ab"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/wt/E-stoch-inf/tracks/E-stoch-inf/noise/ref/noise_ref.py",
+   "sha256": "be4a7abf86ec91727c0ce8c1fefdc59e9603869a85f98c925f6a8ba11b907793"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/wt/E-stoch-inf/tracks/E-stoch-inf/noise/ref/philox_ref.py",
+   "sha256": "911a77cc4eafb1baaa3865cf02f1b1ea809892e86399b75d2b701694573e3df8"
+  }
+ ],
+ "output_dir": "/data/haiyangw/nrpic/scratch/E-stoch-inf/E-stoch-inf-20261115-131526-629fed8/",
+ "wall_time": "0.1 s",
+ "cores": 2,
+ "card_hours": 0.0,
+ "status": "failed (exit 1)",
+ "results": ""
+}

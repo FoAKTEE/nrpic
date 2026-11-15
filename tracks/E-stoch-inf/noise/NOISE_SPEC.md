@@ -225,8 +225,16 @@ Written before any code exists (this section is the contract; `validate/validate
 implements it). Tolerances: real space `eps_x` and mode space `eps_m` relative to the rms of
 the reference field or of its coefficients: eps_x = 1e-11 and eps_m = 1e-10 for double
 precision output, eps_x = eps_m = 1e-5 for single precision. Statistical decisions are
-two-sided with a false-alarm probability of 1e-4 each (|z| <= 3.89), Bonferroni within a
-family; about 30 decisions per validation give a false-alarm rate near 3e-3. "Active"
+two-sided. The validator counts the D statistical decisions of a validation (93 for the
+base case U1, 110 for U6, 28 for U7) and decides each at the level p_D = 1e-3/D, with
+|z| bound z_D (4.4 for D = 93): Bonferroni over the validation, family-wise false alarm at
+most 1e-3; within one decision, Bonferroni over its shells or lags. (Amended after the
+self-test, noise/JOURNAL.md 13:35-13:50: a fixed level 1e-4 per decision gave a
+family-wise rate of 2.5e-3 for A3 alone, run E-stoch-inf-20261115-131551-629fed8.)
+Reading a failure [JUDGEMENT]: if only statistical tests fail and every deterministic one
+passes, the validation is repeated on the second seed (U8), and the code passes if the
+repeat passes; a correct code fails twice with probability below 1e-6, while every error
+the self-test planted fails deterministically or with p many orders below p_D. "Active"
 modes are those with |G_n| > 1e-6 max |G|. The tests that use a normal approximation of a
 sum over modes (A4, A6 for the pair variant, A7, A8 Markov, A15) apply only when the
 effective number of modes (sum w)^2 / sum w^2 of their weights w (|G|^2 or |G_a||G_b|) is
@@ -239,20 +247,20 @@ noise/JOURNAL.md 13:30.)
 |---|---|---|---|
 | A0 | Format | variables `stoch_c0..3`, `stoch_acc0` present; N, L, x0 from the file agree with the input; time of each output = t0 + cycle dt to 1e-12 | wrong output set-up |
 | A1 | Exact reconstruction from the keys | max_x \|xi_code - xi_ref\| <= eps_x rms(xi_ref), every variable and output (acc0 of the frozen scheme: A9) | keys, normalisation, cell-centre phase, axis order, half space, scheme |
-| A2 | Spectrum | per shell s (integer \|n\|): u = mean of \|xi_n\|^2/\|G_n\|^2 over the M_s active modes, M_s u ~ Gamma(M_s, 1); min_s p_s >= 1e-4 / S; pooled \|z\| <= 3.89. For stoch_c3 also five bins of (n_z/n)^2 | normalisation (resolved to about 4/sqrt(M), 4 percent at 8538 modes), colouring, axis exchange |
-| A3 | Gaussian amplitudes | w_n = xi_n/G_n on modes with \|G_n\| > 1e-3 max: Kolmogorov-Smirnov of \|w\|^2 against Exp(1) and of arg w against uniform, p >= 1e-4; z of mean \|w\|^4 against 2 (variance 20/M), \|z\| <= 3.89 | non-Gaussian amplitudes with the right spectrum |
-| A4 | Correlation function | C^(r) = N^-3 sum_x xi(x) xi(x + r) for r = 0..N/2 cells along x, y, z and (1,1,1); expected sum_H 2\|G\|^2 cos(k.r), variance sum_H 4\|G\|^4 cos^2(k.r); min p >= 1e-4 / (number of lags) | real-space assembly (seams between MeshBlocks), anisotropy |
+| A2 | Spectrum | per shell s (integer \|n\|): u = mean of \|xi_n\|^2/\|G_n\|^2 over the M_s active modes, M_s u ~ Gamma(M_s, 1); min_s p_s >= p_D / S; pooled \|z\| <= z_D. For stoch_c3 also five bins of (n_z/n)^2 | normalisation (resolved to about 4/sqrt(M), 4 percent at 8538 modes), colouring, axis exchange |
+| A3 | Gaussian amplitudes | w_n = xi_n/G_n on modes with \|G_n\| > 1e-3 max: Kolmogorov-Smirnov of \|w\|^2 against Exp(1) and of arg w against uniform, p >= p_D; z of mean \|w\|^4 against 2 (variance 20/M), \|z\| <= z_D | non-Gaussian amplitudes with the right spectrum |
+| A4 | Correlation function | C^(r) = N^-3 sum_x xi(x) xi(x + r) for r = 0..N/2 cells along x, y, z and (1,1,1); expected sum_H 2\|G\|^2 cos(k.r), variance sum_H 4\|G\|^4 cos^2(k.r); min p >= p_D / (number of lags) | real-space assembly (seams between MeshBlocks), anisotropy |
 | A5 | One-point | mean <= eps_x rms; skewness and excess kurtosis reported only (cells are correlated, no calibrated p-value) | zero mode |
-| A6 | Shared degree of freedom | c1, c3 against c0. Hemisphere: max_n \|xi^c_n - (G^c_n/G^0_n) xi^0_n\| <= eps_m rms. Pair: c3 as hemisphere; c1: rho = sum xi^1 conj(xi^0) / sqrt(sum\|xi^1\|^2 sum\|xi^0\|^2) against cos(phase1) and Im rho against 0, \|z\| <= 3.89 | separate keys per component; wrong amplitude variant |
-| A7 | Independent degrees of freedom | S = sum_n xi^2_n conj(xi^0_n): Re S and Im S against 0 with variance sum \|G^0\|^2 \|G^2\|^2 / 2, \|z\| <= 3.89 | one stream for all degrees of freedom |
-| A8 | Between outputs | frozen: for output pairs (100,101), (100,200), (200,300), max_n \|xi_n(b) - [G_n(b)/G_n(a)] xi_n(a)\| <= eps_m rms over modes active in both; Markov: S = sum xi_n(b) conj(xi_n(a)) / phase against 0, \|z\| <= 3.89, reported "not applicable" below 30 common active modes | fresh draws in the frozen scheme; reused draws in the Markov scheme |
+| A6 | Shared degree of freedom | c1, c3 against c0. Hemisphere: max_n \|xi^c_n - (G^c_n/G^0_n) xi^0_n\| <= eps_m rms. Pair: c3 as hemisphere; c1: rho = sum xi^1 conj(xi^0) / sqrt(sum\|xi^1\|^2 sum\|xi^0\|^2) against cos(phase1) and Im rho against 0, \|z\| <= z_D | separate keys per component; wrong amplitude variant |
+| A7 | Independent degrees of freedom | S = sum_n xi^2_n conj(xi^0_n): Re S and Im S against 0 with variance sum \|G^0\|^2 \|G^2\|^2 / 2, \|z\| <= z_D | one stream for all degrees of freedom |
+| A8 | Between outputs | frozen: for output pairs (100,101), (100,200), (200,300), max_n \|xi_n(b) - [G_n(b)/G_n(a)] xi_n(a)\| <= eps_m rms over modes active in both; Markov: S = sum xi_n(b) conj(xi_n(a)) / phase against 0, \|z\| <= z_D, reported "not applicable" below 30 common active modes | fresh draws in the frozen scheme; reused draws in the Markov scheme |
 | A9 | Integrated field | frozen: max \|a_code - a_ref\| <= max(1e-6, eps_x) rms(a_ref) in real space (Runge-Kutta truncation, estimated 2e-8 for dt = 0.01, s = 5 [JUDGEMENT: Simpson error bound]; a source taken at the step start instead of the stage time errs by O(s hubble dt) = 5e-2); Markov: A1 (exact) and A2 with \|G\|^2 = base^2 [W(t) - W(t0)] | stage-time bookkeeping, missed or doubled steps |
 | A10 | Band limit | max \|xi_n\| over modes outside M (n = 0 and the Nyquist planes included) and over modes of M with G_n = 0: <= eps_m rms | aliasing, cut, leakage across MeshBlock seams |
 | A11 | MeshBlocks | U1, U2, U3: bit-identical; a difference up to 1e-13 rms passes only with a stated reason (distributed FFT) | keys or positions taken from the MeshBlock |
 | A12 | Restart | U4 against U2 at cycles 200 and 300: bit-identical | counters in memory |
 | A13 | Resolution | U5a against U5b: coefficients on M agree to eps_m rms | keys or phases depending on N |
 | A14 | Card | U9 against U2: <= 1e-12 rms; A1 holds for both | precision loss on the card |
-| A15 | Seeds | U8 against U2: amplitudes uncorrelated (A7 statistic), \|z\| <= 3.89 | seed ignored |
+| A15 | Seeds | U8 against U2: amplitudes uncorrelated (A7 statistic), \|z\| <= z_D | seed ignored |
 
 With single-precision output A11 and A12 compare float bits, which hides differences below
 6e-8 relative; double precision is therefore requested.

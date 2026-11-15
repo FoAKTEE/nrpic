@@ -208,3 +208,59 @@ validations had a probability of the order of 1e-3 to 1e-2, i.e. bad luck but no
 impossible; the remedy is to control the family-wise rate per validation (Bonferroni
 over the counted decisions). Refuted if single decisions are miscalibrated (then the
 draws or the selection are at fault) or the family rate exceeds 2e-2.
+
+## 2026-11-15 13:45 UTC: outcome T-N6 (runs E-stoch-inf-20261115-131526-629fed8 failed, E-stoch-inf-20261115-131551-629fed8)
+
+The first run stopped on a syntax error in the script (keyword names with "1e-4"); the
+second ran. 2000 seeds (700000 + 7919 s), 40 A3 decisions per validation.
+- Family-wise rate of A3 at the per-decision level 1e-4: 0.0025 +- 0.0011 (5 of 2000).
+  Prediction [1e-3, 1e-2] holds. At the level 1e-3/40: 0.0005.
+- Single decisions: fractions below 1e-2, 1e-3, 1e-4 = 0.01065, 0.00141, 0.000113.
+  The prediction "within three binomial standard deviations" fails at 1e-3: 3.7 naive
+  standard deviations (113 against 80 +- 9 of 80000). The naive count ignores that c1
+  repeats c0 exactly and that cycles 100 and 101 select nearly the same 257 modes, which
+  inflates the variance of the count; the fractions at 1e-2 (1.9 sd) and 1e-4 (9 against
+  8) agree. Not settled by this run; T-N7 counts distinct decisions only.
+- With a rate of 0.0025 per validation, two A3 failures in the 20 base validations of
+  T-N3 have a probability of about 1e-3, and they came from consecutive seeds of the
+  self-test's sequence (i = 15, 16 of 20261115 + 7919 i). A structure in the generator
+  across seeds would matter for core, so T-N7 tests that sequence.
+
+Prediction T-N7 (calib_a3.py --seed0 20261115 --stride 7919, 2000 seeds: the self-test's
+sequence): seeds i = 15 and 16 reproduce p = 7.4e-6 and 6.9e-5; the family-wise rate is
+consistent with T-N6 (below 0.0025 + 3 x 0.0011 = 0.006); for the distinct decisions the
+fraction below 1e-3 lies within three binomial standard deviations of 1e-3. Refuted if
+the rate exceeds 0.006 (then the generator has structure across seeds of this sequence)
+or the distinct decisions are miscalibrated.
+
+Amendment of the decision rule (before the rerun of the self-test): each validation
+counts its D statistical decisions in a first pass and decides each at the level 1e-3/D
+(Bonferroni; family-wise false alarm at most 1e-3 per validation). Also fixed: rec()
+returned numpy booleans for A5, which the pass/fail bookkeeping read as "not applicable";
+the A5 verdicts of run E-stoch-inf-20261115-131031-ec74943 were therefore not counted
+(its values, |mean|/rms of order 1e-17, would have passed).
+
+## 2026-11-15 13:50 UTC: prediction for the rerun of the self-test with the amended rule
+
+D counted in a development pass (unregistered): 93 (frozen/tanh), 110 (Markov/tanh), 28
+(Markov/Heaviside), 97 (pair); level 1e-3/D = 1.08e-5 for the base case. Same seeds as
+before. Prediction T-N3b: exactly one failing validation, the base case with seed
+20379900 (A3, p = 7.4e-6 < 1.08e-5, already known); seed 20387819 now passes (6.9e-5);
+all other validations and comparisons pass; every result of T-N2 unchanged. Prediction
+T-N4b: all 15 mutants still fail the tests written for them (their statistical failures
+have p many orders below 1e-5). The A5 verdicts are now counted (all pass). Refuted if a
+second validation fails or a mutant escapes.
+
+## 2026-11-15 13:55 UTC: outcome T-N7 (run E-stoch-inf-20261115-131820-629fed8)
+
+Self-test sequence 20261115 + 7919 i, 2000 seeds. Seeds i = 15 and 16 reproduce
+p = 7.4e-6 and 6.9e-5 from the amplitudes alone. Family-wise rate at 1e-4: 0.002 +- 0.001
+(hits at i = 15, 16, 323, 1781), consistent with T-N6 (0.0025); at 1e-3/40: 0.0005.
+Distinct decisions (c1 left out, 60000): fractions below 1e-2, 1e-3, 1e-4 = 0.0096,
+0.00085 (1.2 sd below 1e-3), 0.00012. Prediction holds: no structure of the generator
+across this seed sequence, single decisions calibrated. Conclusion, now with a run in
+which it could have failed: the two failures of T-N3 are chance (two of the four
+2000-seed hits fell among the first 20 seeds) on top of a decision rule whose
+family-wise rate per validation was about 2.5e-3 for A3 alone and larger in total,
+not 3e-3 for the whole validation as section 10 had estimated. The amended rule (level
+1e-3/D) addresses the second part.

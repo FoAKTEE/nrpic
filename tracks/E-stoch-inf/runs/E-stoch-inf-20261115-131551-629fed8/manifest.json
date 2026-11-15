@@ -1,0 +1,34 @@
+{
+ "run_id": "E-stoch-inf-20261115-131551-629fed8",
+ "owner": "E-stoch-inf",
+ "package": "noise (E-pre-4)",
+ "kind": "scouting",
+ "purpose": "T-N6 of noise/JOURNAL.md (rerun after a syntax error in run E-stoch-inf-20261115-131526-629fed8): calibration of the A3 decisions on correct amplitudes, 2000 seeds of the base case",
+ "cwd": "/data/haiyangw/nrpic/scratch/E-stoch-inf/E-stoch-inf-20261115-131551-629fed8",
+ "command": "python3 /data/haiyangw/nrpic/wt/E-stoch-inf/tracks/E-stoch-inf/noise/validate/calib_a3.py --out /data/haiyangw/nrpic/scratch/E-stoch-inf/E-stoch-inf-20261115-131551-629fed8",
+ "commit": "629fed8",
+ "worktree_dirty_paths": [
+  "M tracks/E-stoch-inf/noise/validate/calib_a3.py",
+  " M tracks/E-stoch-inf/noise/validate/validate_noise.py"
+ ],
+ "inputs": [
+  {
+   "path": "/data/haiyangw/nrpic/wt/E-stoch-inf/tracks/E-stoch-inf/noise/validate/calib_a3.py",
+   "sha256": "43645f659497138ef957ea0e61e672004d48770f5fd8c45a8407fc334fc38745"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/wt/E-stoch-inf/tracks/E-stoch-inf/noise/ref/noise_ref.py",
+   "sha256": "be4a7abf86ec91727c0ce8c1fefdc59e9603869a85f98c925f6a8ba11b907793"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/wt/E-stoch-inf/tracks/E-stoch-inf/noise/ref/philox_ref.py",
+   "sha256": "911a77cc4eafb1baaa3865cf02f1b1ea809892e86399b75d2b701694573e3df8"
+  }
+ ],
+ "output_dir": "/data/haiyangw/nrpic/scratch/E-stoch-inf/E-stoch-inf-20261115-131551-629fed8/",
+ "wall_time": "102.8 s",
+ "cores": 2,
+ "card_hours": 0.0,
+ "status": "completed",
+ "results": "{\"seeds\": 2000, \"decisions_per_validation\": 40, \"single_frac_below\": {\"0.01\": 0.01065, \"0.001\": 0.0014125, \"0.0001\": 0.0001125}, \"family_rate_p_below_1e-4\": 0.0025, \"family_rate_p_below_1e-3_over_D\": 0.0005, \"family_rate_binomial_sd\": 0.001116635571706365}\n"
+}

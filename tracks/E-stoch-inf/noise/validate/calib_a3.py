@@ -32,6 +32,8 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--out", required=True)
     ap.add_argument("--seeds", type=int, default=2000)
+    ap.add_argument("--seed0", type=int, default=700000)
+    ap.add_argument("--stride", type=int, default=7919)
     a = ap.parse_args()
     p = nr.default_params()
     lat = nr.Lattice(p["N"], p["L"], p["nmax2"])
@@ -42,31 +44,44 @@ def main():
             sel = np.abs(G) > 1e-3 * np.abs(G).max()
             fields.append((c, cyc, sel, nr.TEST_DOF[c]))
     single = []
+    distinct = []                 # decisions of c0, c2, c3 only (c1 repeats c0 exactly)
     fam_min = []
+    hits = []
     ndec = None
     for s in range(a.seeds):
-        seed = 700000 + 7919 * s
+        seed = a.seed0 + a.stride * s
         al = {d: pr.mode_alpha(seed, d, 0, lat.n) for d in (0, 1)}
         ps = []
         for c, cyc, sel, d in fields:
             w = al[d][sel]                     # G^c / G^c = 1: w = alpha on the selection
             m2 = np.abs(w)**2
-            ps.append(stats.kstest(m2, "expon").pvalue)
-            ps.append(stats.kstest(np.angle(w) / (2 * np.pi) + 0.5, "uniform").pvalue)
+            q = [stats.kstest(m2, "expon").pvalue,
+                 stats.kstest(np.angle(w) / (2 * np.pi) + 0.5, "uniform").pvalue]
             if m2.size >= 1000:
                 z4 = (np.mean(m2**2) - 2.0) / np.sqrt(20.0 / m2.size)
-                ps.append(2 * stats.norm.sf(abs(z4)))
+                q.append(2 * stats.norm.sf(abs(z4)))
+            ps += q
+            if c != 1:
+                distinct += q
         ndec = len(ps)
         single += ps
         fam_min.append(min(ps))
+        if min(ps) < 1e-4:
+            hits.append([s, seed, float(min(ps))])
     single = np.array(single)
+    distinct = np.array(distinct)
     fam_min = np.array(fam_min)
-    res = dict(seeds=a.seeds, decisions_per_validation=ndec,
-               single_frac_below={str(t): float((single < t).mean()) for t in (1e-2, 1e-3, 1e-4)},
-               family_rate_p_below_1e-4=float((fam_min < 1e-4).mean()),
-               family_rate_p_below_1e-3_over_D=float((fam_min < 1e-3 / ndec).mean()),
-               family_rate_binomial_sd=float(np.sqrt((fam_min < 1e-4).mean() *
-                                                     (1 - (fam_min < 1e-4).mean()) / a.seeds)))
+    fr = float((fam_min < 1e-4).mean())
+    res = {"seeds": a.seeds, "decisions_per_validation": ndec,
+           "single_frac_below": {str(t): float((single < t).mean()) for t in (1e-2, 1e-3, 1e-4)},
+           "family_rate_p_below_1e-4": fr,
+           "family_rate_p_below_1e-3_over_D": float((fam_min < 1e-3 / ndec).mean()),
+           "family_rate_binomial_sd": float(np.sqrt(fr * (1 - fr) / a.seeds)),
+           "seed0": a.seed0, "stride": a.stride, "hits_index_seed_minp": hits,
+           "distinct_decisions": int(distinct.size),
+           "distinct_frac_below": {str(t): float((distinct < t).mean())
+                                   for t in (1e-2, 1e-3, 1e-4)},
+           "distinct_binomial_sd_at_1e-3": float(np.sqrt(1e-3 * (1 - 1e-3) / distinct.size))}
     with open(os.path.join(a.out, "calib_a3.json"), "w") as f:
         json.dump(res, f, indent=1)
     with open(os.path.join(a.out, "summary.txt"), "w") as f:

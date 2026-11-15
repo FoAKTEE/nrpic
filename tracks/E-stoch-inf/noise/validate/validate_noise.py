@@ -24,8 +24,30 @@ sys.path.insert(0, os.path.join(HERE, "..", "ref"))
 import noise_ref as nr                                    # noqa: E402
 import athenak_io as aio                                  # noqa: E402
 
-P_FA = 1e-4                      # false-alarm probability of one statistical decision
-Z_FA = stats.norm.isf(P_FA / 2)  # 3.89
+FW = 1e-3                        # family-wise false-alarm probability per validation
+P_FA = 1e-4                      # level used in the first (counting) pass only
+Z_FA = stats.norm.isf(P_FA / 2)
+# current per-decision level and number of decisions made (validate_single sets the level
+# to FW / D after counting the D statistical decisions of the validation)
+STATE = {"p": P_FA, "z": Z_FA, "count": 0}
+
+
+def dp(p):
+    """One statistical decision on a two-sided p-value."""
+    STATE["count"] += 1
+    return p >= STATE["p"]
+
+
+def dz(z):
+    """One statistical decision on a standard-normal statistic."""
+    STATE["count"] += 1
+    return abs(z) <= STATE["z"]
+
+
+def set_level(p):
+    STATE["p"] = p
+    STATE["z"] = float(stats.norm.isf(p / 2))
+    STATE["count"] = 0
 ACTIVE = 1e-6                    # active modes: |G| > ACTIVE max|G|
 WHITE = 1e-3                     # whitened-amplitude tests: |G| > WHITE max|G|
 A9_TOL = 1e-6
@@ -45,8 +67,9 @@ def tolerances(prec):
 
 
 def rec(tid, name, passed, value, criterion, detail=""):
-    return dict(id=tid, name=name, passed=passed, value=value, criterion=criterion,
-                detail=detail)
+    """One test record; passed is True, False or None (not applicable), as Python bool."""
+    return dict(id=tid, name=name, passed=None if passed is None else bool(passed),
+                value=value, criterion=criterion, detail=detail)
 
 
 def gamma_p(x, m):
@@ -170,11 +193,12 @@ def test_A2(a, data):
             worst_p = min(worst_p, t["pmin_bonf"])
             if abs(t["zpool"]) > abs(worst_z):
                 worst_z = t["zpool"]
-            if t["pmin_bonf"] < P_FA or abs(t["zpool"]) > Z_FA:
+            ok1, ok2 = dp(t["pmin_bonf"]), dz(t["zpool"])
+            if not (ok1 and ok2):
                 fails.append(t["label"])
     return rec("A2", "spectrum per shell (and mu bins of c3)", not fails,
                dict(min_p_bonferroni=worst_p, max_abs_zpool=worst_z),
-               f"min p * shells >= {P_FA:g}, |z_pool| <= {Z_FA:.2f}",
+               f"min p * shells >= {STATE['p']:.2g}, |z_pool| <= {STATE['z']:.2f}",
                "fails: " + ", ".join(fails[:6]))
 
 
@@ -200,10 +224,11 @@ def test_A3(a, data):
         worst["p_mod"] = min(worst["p_mod"], p_mod)
         worst["p_arg"] = min(worst["p_arg"], p_arg)
         worst["z4"] = z4 if abs(z4) > abs(worst["z4"]) else worst["z4"]
-        if p_mod < P_FA or p_arg < P_FA or abs(z4) > Z_FA:
+        ok = [dp(p_mod), dp(p_arg)] + ([dz(z4)] if m2.size >= Z4_MIN else [])
+        if not all(ok):
             fails.append(lab)
     return rec("A3", "Gaussian amplitudes", not fails, worst,
-               f"KS p >= {P_FA:g} (|w|^2 ~ Exp(1), arg uniform), |z4| <= {Z_FA:.2f}",
+               f"KS p >= {STATE['p']:.2g} (|w|^2 ~ Exp(1), arg uniform), |z4| <= {STATE['z']:.2f}",
                "fails: " + ", ".join(fails[:6]))
 
 
@@ -230,10 +255,10 @@ def test_A4(a, data):
         out[lab] = dict(lags=lags.tolist(), meas=meas.tolist(), exp=exp.tolist(),
                         sd=np.sqrt(var).tolist(), pmin_bonf=pmin)
         worst = min(worst, pmin)
-        if pmin < P_FA:
+        if not dp(pmin):
             fails.append(lab)
     return rec("A4", "correlation function", not fails, worst,
-               f"min p * lags >= {P_FA:g}", "fails: " + ", ".join(fails[:6]))
+               f"min p * lags >= {STATE['p']:.2g}", "fails: " + ", ".join(fails[:6]))
 
 
 def test_A5(a, data):
@@ -280,7 +305,8 @@ def test_A6(a, data):
                 zr = float((t.real.sum() - mean.sum()) / np.sqrt(((t.real - mean)**2).sum()))
                 zi = float(t.imag.sum() / np.sqrt((t.imag**2).sum()))
                 stat[f"c1@{cyc}"] = dict(z_re=zr, z_im=zi)
-                if max(abs(zr), abs(zi)) > Z_FA:
+                ok1, ok2 = dz(zr), dz(zi)
+                if not (ok1 and ok2):
                     fails.append(f"c1@{cyc} z=({zr:.1f},{zi:.1f})")
                 continue
             r = a.G[kc][act] / G0[act]
@@ -291,7 +317,7 @@ def test_A6(a, data):
                 fails.append(f"c{c}@{cyc} dev {e:.2e}")
     data["A6"] = stat
     return rec("A6", "components of one degree of freedom share the amplitudes",
-               not fails, worst, f"deviation <= {a.eps_m:g} (pair, c1: |z| <= {Z_FA:.2f})",
+               not fails, worst, f"deviation <= {a.eps_m:g} (pair, c1: |z| <= {STATE['z']:.2f})",
                "fails: " + ", ".join(fails[:6]))
 
 
@@ -319,11 +345,12 @@ def test_A7(a, data):
         zr, zi = indep_z(a.coef[k2][act], a.coef[k0][act], G2[act], G0[act])
         stat[str(cyc)] = (zr, zi)
         worst = max(worst, abs(zr), abs(zi))
-        if max(abs(zr), abs(zi)) > Z_FA:
+        ok1, ok2 = dz(zr), dz(zi)
+        if not (ok1 and ok2):
             fails.append(f"{cyc}: z=({zr:.1f},{zi:.1f})")
     data["A7"] = stat
     return rec("A7", "independent degrees of freedom are uncorrelated", not fails, worst,
-               f"|z| <= {Z_FA:.2f}", "; ".join(fails[:6]))
+               f"|z| <= {STATE['z']:.2f}", "; ".join(fails[:6]))
 
 
 def output_pairs(cycles):
@@ -362,11 +389,12 @@ def test_A8(a, data):
             stat[f"{ca}-{cb}"] = (zr, zi)
             napp += 1
             worst = max(worst, abs(zr), abs(zi))
-            if max(abs(zr), abs(zi)) > Z_FA:
+            ok1, ok2 = dz(zr), dz(zi)
+            if not (ok1 and ok2):
                 fails.append(f"{ca}-{cb} z=({zr:.1f},{zi:.1f})")
     data["A8"] = stat
     crit = (f"frozen: deviation <= {a.eps_m:g}" if a.p["scheme"] == "frozen"
-            else f"markov: |z| <= {Z_FA:.2f}")
+            else f"markov: |z| <= {STATE['z']:.2f}")
     passed = (not fails) if napp else None
     return rec("A8", "between outputs", passed, worst, crit,
                ("; ".join(fails[:6])) if napp else "not applicable: no common active modes")
@@ -412,12 +440,23 @@ def test_A10(a, data):
                f"worst {where}")
 
 
+def _tests(a, data):
+    return [test_A0(a), test_A1(a, data), test_A2(a, data), test_A3(a, data),
+            test_A4(a, data), test_A5(a, data), test_A6(a, data), test_A7(a, data),
+            test_A8(a, data), test_A9(a, data), test_A10(a, data)]
+
+
 def validate_single(run, log="agm"):
+    """Tests A0-A10. First pass counts the D statistical decisions; the second decides
+    each at the level FW / D (Bonferroni: family-wise false alarm <= FW per validation)."""
     a = Analysed(run, log)
-    data = {}
-    res = [test_A0(a), test_A1(a, data), test_A2(a, data), test_A3(a, data),
-           test_A4(a, data), test_A5(a, data), test_A6(a, data), test_A7(a, data),
-           test_A8(a, data), test_A9(a, data), test_A10(a, data)]
+    set_level(P_FA)
+    _tests(a, {})
+    D = max(STATE["count"], 1)
+    set_level(FW / D)
+    data = {"decisions": D, "level": FW / D}
+    res = _tests(a, data)
+    set_level(P_FA)
     return res, data, a
 
 
@@ -468,7 +507,9 @@ def compare_resolution(ra, rb, log="agm"):
 def compare_seeds(ra, rb, log="agm"):
     aa, ab = Analysed(ra, log), Analysed(rb, log)
     worst, fails = 0.0, []
-    for key in aa.keys("stoch_c0"):
+    keys = [k for k in aa.keys("stoch_c0") if k in ab.coef]
+    set_level(FW / max(2 * len(keys), 1))
+    for key in keys:
         if key not in ab.coef:
             continue
         G = aa.G[key]
@@ -477,11 +518,14 @@ def compare_seeds(ra, rb, log="agm"):
             continue
         zr, zi = indep_z(aa.coef[key][act], ab.coef[key][act], G[act], G[act])
         worst = max(worst, abs(zr), abs(zi))
-        if max(abs(zr), abs(zi)) > Z_FA:
+        ok1, ok2 = dz(zr), dz(zi)
+        if not (ok1 and ok2):
             fails.append(f"{key[1]}: ({zr:.1f},{zi:.1f})")
     same = ra["params"]["seed"] == rb["params"]["seed"]
+    crit = f"|z| <= {STATE['z']:.2f}, seeds differ"
+    set_level(P_FA)
     return rec("A15", "different seeds give independent amplitudes",
-               (not fails) and not same, worst, f"|z| <= {Z_FA:.2f}, seeds differ",
+               (not fails) and not same, worst, crit,
                "; ".join(fails) + (" same seed" if same else ""))
 
 
