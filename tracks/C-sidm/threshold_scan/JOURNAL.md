@@ -213,3 +213,12 @@ The defect dE_particles over four cycles (8.0e-8 M in 1020 collisions at Kn = 1,
 7.9e-11 M per collision against the predicted 2.0e-10 M) cannot test P3.4 yet: one
 collision changes the sum by about 4e-9 M either way, so 1020 collisions give a standard
 error of about 1.2e-10 M per collision.
+
+## 2026-11-15 Entry 5: cell-size dependence of the energy defect (Test 5, prediction)
+
+`predict_cells.py` repeats the defect estimate of predict.py for uniform collision cells of
+M/8, M/4, M/2 and M over the CC1 particles. Prediction: the defect per collision scales as
+h^2 (each ratio between successive sizes within 30 percent of 4), as the reading of Entry 2
+(partners at potential depths that differ by order h) and core's measured ratios 0.22 and
+0.10 for 2 to 1 M and 2 to 0.5 M in the y_c = 0.819 cluster suggest; the value at M/4 equals
+that of predict.py (1.74e-10) within its noise. Refuted if a ratio lies outside [2.8, 5.2].
