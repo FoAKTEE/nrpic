@@ -106,3 +106,94 @@ reflecting wall with the image likelihood ratio. Semi-analytic references: close
   eigenvalue by more than 10 percent).
 - P2d the paper's statements: a direct sample of 2e5 reaches P ~ 1e-3 with more than 400
   per bin (demonstration.tex 53); I predict the same order (1e-3 to 1e-4 for bins of 0.25).
+
+## 2026-11-15 ~13:00 UTC, entry 5: correction of entry 1's clock
+
+Entry 1 is stamped "~04:30 UTC"; that was the machine's local clock (uptime). The run ids
+(UTC) show the session time was about 12:30 UTC. Later entries use UTC from the run ids.
+
+## 2026-11-15 ~13:00 UTC, entry 6: outcome of V1 (runs E-stoch-inf-20261115-125014-097160b,
+E-stoch-inf-20261115-125312-dafadc4, E-stoch-inf-20261115-125656-e3eaef3; same seeds, the
+later runs add per-bin metrics and fix the plot; numbers from results/v1_drift_diffusion.json)
+
+- P1a PASSED: mean bias without the bridge test positive, fitted exponent 0.42 (mu = 1, m = 5)
+  and 0.55 (mu = 0.5, m = 2), coefficients 0.43 and 0.69 (times mu).
+- P1b PASSED: with the bridge test, at dN = 0.003 and 0.001 the mean is within 2.1 standard
+  errors and the variance within 2.0 standard errors of m/mu and m/mu^3 (20 batch means), and
+  the third moment within 1.8.
+- P1c PASSED in the z sense: per-bin mean z^2 = 0.83 to 1.27, max |z| <= 3.25 over up to 117
+  bins with >= 100 samples, no trend in the residual panels (fig/v1_drift_*.png). Individual
+  bins with ~100 samples deviate up to 25 percent, which is their statistical error; the
+  wording "no deviation larger than 10 percent" in the prediction was too strict for bins of
+  100. Reweighted densities reach P = 3.4e-14 at N = 60.6 (mu = 1, m = 5, B = -0.8).
+- P1d PARTLY FAILED: E_S[w] = 1.0045 +- 0.0027, 0.9965 +- 0.0056, 0.9988 +- 0.0010,
+  0.9996 +- 0.0016 (all within 1.7 SE); the printed sign of 2206.11234 gives E_S[w] = 2.0e6,
+  1.6e80, 4.7e4, 2.3e24 [VERIFIED by run: the printed sign is wrong]. Reweighted
+  <exp(-N/2)>: +0.63, -1.36, -0.47, -0.14 percent from exact; the strongest bias (B = -0.8,
+  mu = 1) is outside the predicted 1 percent. No standard error was computed for this
+  estimator, so I do not claim whether this is statistical; the strongly biased sample has
+  few short paths, which dominate exp(-N/2) [JUDGEMENT].
+
+## 2026-11-15 ~13:00 UTC, entry 7: outcome of V2 (run E-stoch-inf-20261115-125658-e3eaef3;
+the first run E-stoch-inf-20261115-125316-dafadc4 computed the same numbers and failed at the
+JSON dump; results/v2_quadratic.json, fig/v2_quadratic_m1*.png)
+
+- P2a PASSED: BDF2 (M = 8000) vs closed form, <exp(-J N)> at J = 0.01, 0.03, 0.1, 0.3, 1:
+  relative differences 4.7e-6, 1.4e-5, 4.7e-5, 1.4e-4, -5.0e-4. <N> = 9.38603 (recursion
+  M = 40000), 9.38553 (BDF2 M = 8000); var = 4.521540 and 4.521537. Skewness 1.0197, excess
+  kurtosis 1.8997 (recursion).
+- P2b PASSED, with a visible step bias in the mean: Monte Carlo (1e6, bridge test) mean
+  9.39014 +- 0.00144 at dN = 0.002 (+2.9 SE) and 9.39801 +- 0.00215 at dN = 0.01 (+5.6 SE),
+  i.e. a first-order step bias of about +1.2 dN; variance 4.5110 +- 0.0080 (-1.3 SE). The
+  Laplace transforms of the Monte Carlo are low by J x 0.004, the same bias.
+- P2c PARTLY FAILED: direct sampling agrees with the BDF2 density (chi^2 per bin 0.93, max
+  |z| 2.6, 62 bins) but only reaches P = 4.2e-4 with >= 100 per bin of 0.25: my "1e-5" was an
+  arithmetic error (1e6 x 0.25 x 1e-5 = 2.5 counts). Importance sampling A = 0.4 reaches
+  6.6e-6 (chi^2 per bin 1.09, max |z| 4.0), A = 0.8 reaches 6.7e-13 at N = 50 but with chi^2
+  per bin 1.66 and single bins off by up to 177 percent: the naive estimator underestimates
+  its errors when the weights are broad, as 2206.11234 method.tex 131-136 says. Tail slope
+  of the A = 0.8 data over N = 20-50: -0.6606, against -lambda_0 = -0.652823 (1.2 percent)
+  and far from -v0/4 = -5.3e-4. PASSED for the slope.
+- Pole structure [VERIFIED by run]: lowest eigenvalues 0.652823, 1.097839, 1.557003 (M = 4000
+  and 8000 agree to 1e-6); the closed form has sign-changing poles at J = -0.6528232 and
+  -1.0978390 and is smooth through J = -v0/4 (1.004961 at -0.999 v0/4, 1.004971 at
+  -1.001 v0/4). So appendix.tex lines 168-173 of 2206.11234 ("Lambda_0 = v0/4 ... the
+  leading pole ... valid in general") is wrong for finite phi_UV: at alpha = 0 the two
+  branches f and g coincide and the singularity is removable; the leading pole is the lowest
+  Sturm-Liouville eigenvalue. For phi_UV -> infinity the spectrum becomes continuous above
+  v0/4 (their lines 189-211), which is where v0/4 does play a role [JUDGEMENT].
+- P2d: a direct sample of 2e5 with > 400 per 0.25-wide bin reaches P = 9.2e-3; the paper's
+  "~1e-3" depends on its bin width, which the text does not give. Not a test.
+
+## 2026-11-15 ~13:05 UTC, entry 8: predictions for the reference runs (ref_spec.py) before
+any reference number was seen (the smoke test at n = 3200 was started but not read)
+
+Common: band k in [dk, 64 dk], noise entering at sigma a H = k; surfaces phi_bg(N_f) and
+phi_bg(N_e) (N_f = 13 both, N_e = 20 quadratic, 18 inflection); var_lin = continuum
+int P_R(k, N_e) dln k over the band.
+Quadratic (slow roll):
+- R1a classical variant: crossing times equal the solve_ivp background to 1e-9.
+- R1b linear limit (sigma = 0.01, amplitude 1e-3): var / 1e-6 = var_lin within 1 percent.
+- R1c sigma = 0.01: var = var_lin within 1 percent; skewness and excess kurtosis consistent
+  with 0 (|z| < 3); the delta N formula estimate is skewness ~ 1e-5 [JUDGEMENT].
+- R1d sigma = 0.1: var/var_lin = 1.003 +- 0.004; sigma = 1: var/var_lin in [1.3, 1.6]
+  (massless de Sitter mode kicked into the separate universe at k = aH and evolved without
+  gradients ends at |(1 - i) - 1/3|^2 = 13/9 of the frozen power [derivation in this entry]).
+- R1e de Sitter noise (H/2pi)^2 at sigma = 0.01: var/var_lin in [0.75, 0.9] (delta phi of a
+  slow-roll mode grows like sqrt(eps1) after crossing and H falls; estimate 0.82).
+- R1f lattice density of states: var / var_lin_lattice within 1 percent; var_lin_lattice /
+  var_lin differs from 1 by less than 10 percent.
+- R1g the two surfaces give the same variance within 0.5 percent where both lie after the
+  noise window (sigma = 1, 0.1).
+Inflection (USR):
+- R2a classical variant equal to the background to 1e-6 e-folds.
+- R2b linear limit at sigma = 0.01 reproduces var_lin within 2 percent (the separate-universe
+  Langevin system with momentum noise from mode functions is linear theory at sigma << 1).
+- R2c sigma = 0.01 full amplitude: positive skewness, |skewness| < 0.5; var/var_lin within
+  10 percent; mean shift <N> - N_cl positive and below 0.1 e-fold. Refuted if the skewness is
+  negative or larger than 0.5, or the variance ratio is outside [0.9, 1.1].
+- R2d sigma = 1 differs from linear by more than 10 percent in the variance; sigma = 0.1
+  within 10 percent.
+- R2e de Sitter noise at sigma = 0.01 differs from var_lin by more than 20 percent.
+- R2f the two surfaces (N_f = 13, N_e = 18) agree in variance within 1 percent (R frozen
+  after USR).
