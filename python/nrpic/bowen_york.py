@@ -243,9 +243,9 @@ def write_table(fname, sol, dr, rlast, axis=None, comment=""):
         f.write("# tail = " + " ".join(f"{t:.6f}" for t in tails) + "\n")
         if axis is not None:
             f.write("# axis = %.17g %.17g %.17g\n" % tuple(axis))
-        f.write(f"# mass = {sol['m']:.17g}  momentum = {sol['P']:.17g}"
-                f"  spin = {sol['S']:.17g}  nonlinear = {int(sol['nonlinear'])}\n")
-        f.write(f"# m_adm = {sol['m_adm']:.12g}  u(0) = {sol['u0_centre']:.12g}\n")
+        f.write(f"# mass = {sol['m']:.17g}\n# momentum = {sol['P']:.17g}\n"
+                f"# spin = {sol['S']:.17g}\n# nonlinear = {int(sol['nonlinear'])}\n")
+        f.write(f"# m_adm = {sol['m_adm']:.12g}\n# u_centre = {sol['u0_centre']:.12g}\n")
         if comment:
             f.write("# " + comment + "\n")
         f.write("# columns = r " + " ".join(f"u_{l}" for l in lvals) + "\n")
@@ -256,8 +256,10 @@ def write_table(fname, sol, dr, rlast, axis=None, comment=""):
 
 
 def read_table(fname):
-    """Read a puncture-correction table. Returns a dict r, cols, lvals, tail, axis."""
+    """Read a puncture-correction table. Returns a dict r, cols, lvals, tail, axis,
+    meta (the other header entries as strings)."""
     lvals, tail, axis = None, None, None
+    meta = {}
     rows = []
     with open(fname) as f:
         for line in f:
@@ -274,6 +276,8 @@ def read_table(fname):
                         tail = [float(t) for t in val.split()]
                     elif key == "axis":
                         axis = [float(t) for t in val.split()]
+                    else:
+                        meta[key] = val
                 continue
             rows.append([float(t) for t in s.split()])
     a = np.array(rows)
@@ -281,7 +285,8 @@ def read_table(fname):
         raise ValueError("no '# l = ...' header line in " + fname)
     if tail is None:
         tail = [l + 1.0 for l in lvals]
-    return {"r": a[:, 0], "cols": a[:, 1:].T, "lvals": lvals, "tail": tail, "axis": axis}
+    return {"r": a[:, 0], "cols": a[:, 1:].T, "lvals": lvals, "tail": tail, "axis": axis,
+            "meta": meta}
 
 
 def eval_table(tab, x, pos, axis):
