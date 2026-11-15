@@ -1,0 +1,3 @@
+# threshold_scan card job 3: <name> <athinput>, paths from the worktree root
+cc2_kn10 tracks/C-sidm/threshold_scan/inputs/cc2_kn10.athinput
+cc2_kn1 tracks/C-sidm/threshold_scan/inputs/cc2_kn1.athinput
