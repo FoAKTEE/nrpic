@@ -380,3 +380,16 @@ manifest and 26 extras; the ingest takes exactly these two (gr-qc/9412071 skippe
 ok or review; tags change only their equations; embed adds only their chunks and equations (a
 few hundred vectors), the check exits 0 with 0 missing, stale or orphaned; the new snapshot has
 709 papers. Refuted by a failed fetch, any other paper (re)ingested, or a failed check.
+
+### W9 outcome, first part (run kb-20261115-182907-3f69615, failed at step 4)
+
+Fetch, verify-downloads and ingest held: 2201.09277 v2 and 2107.06643 v1 stored with TeX;
+verify-downloads 683 ok + 1 problem (gr-qc/9412071), 26 extras; ingest took exactly these two
+(both ok: 18 and 24 sections, 60 and 183 equations, 109 and 36 bibliography entries) and skipped
+gr-qc/9412071. The run then failed at `kb eq --apply-tags`: ModuleNotFoundError yaml. Cause,
+checked in the log and the environment: since I created the worktree's `.venv` this session
+(`nrpic-env create --no-kokkos`, for nrpic-stage verify), nrpic-run puts it first on PATH, so
+`python3` in the command is that venv, which has no PyYAML; the helpers' runs used the system
+python3. The remaining steps are rerun with `kb/.venv/bin/python` (W9b). Prediction for W9b as
+for W9: tags change only the two papers' equations, embed adds only their vectors, the check
+exits 0, the snapshot has 709 papers.
