@@ -136,3 +136,14 @@ Refuted if any of 1-7 fails; for 8, failures are recorded with their size.
   is +1e-5 to +2.5e-4 for the 13 files (same seed for all, hence correlated). Over 12 seeds
   of the King threshold model at N = 10^4 (debugging, not registered): stratified mean
   -4.4e-5, standard deviation 1.7e-4; plain Monte Carlo standard deviation 4.1e-4. Statistical.
+
+### Test 2, final outcome: run C-sidm-20261115-121626-e99907d (0 failed checks)
+
+Same numbers as the first run, and the corrected turning-point check passes (first M maximum
+of the King sequence at y0 = 0.0982 < y_max = 0.3340, as 2009.08163 lines 1160-1167 state).
+results/checks.json is the copy of that run's checks.json. Figures (inspected):
+figs/binding_energy, figs/king_mass_radius, figs/profiles_threshold, figs/constraint_residual
+(residual 1e-9 to 1e-8 of the largest source away from the matter edges; the edge spikes of
+up to 7e-6 at the inner edge of the shells lie inside the excluded 5-percent bands),
+figs/sampling_threshold (energy and radius histograms of the 10^4 files on the continuum;
+moment z-scores below 2.2), figs/shell_angular_momentum (min L/L0 = 1.000028).

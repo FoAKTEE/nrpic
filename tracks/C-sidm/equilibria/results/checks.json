@@ -1,0 +1,1875 @@
+{
+ "paper_2009.08163": {
+  "king y_max": {
+   "value": 0.334032,
+   "paper": "0.334",
+   "deviation": 3.2161064675517714e-05,
+   "within_half_unit": true,
+   "locator": "kb-data/raw/arxiv/2009.08163/v1/src/paper.tex:953",
+   "pass": true
+  },
+  "king y_zero": {
+   "value": 0.784518,
+   "paper": "0.784",
+   "deviation": 0.0005180779506739341,
+   "within_half_unit": false,
+   "locator": "kb-data/raw/arxiv/2009.08163/v1/src/paper.tex:953",
+   "pass": true
+  },
+  "poly_k0.5 y_max": {
+   "value": 0.297664,
+   "paper": "0.298",
+   "deviation": -0.0003356904906847147,
+   "within_half_unit": true,
+   "locator": "kb-data/raw/arxiv/2009.08163/v1/src/paper.tex:954",
+   "pass": true
+  },
+  "poly_k0.5 y_zero": {
+   "value": 0.693032,
+   "paper": "0.693",
+   "deviation": 3.157483013205287e-05,
+   "within_half_unit": true,
+   "locator": "kb-data/raw/arxiv/2009.08163/v1/src/paper.tex:954",
+   "pass": true
+  },
+  "poly_k0.5_L0.001 y_max": {
+   "value": 0.266486,
+   "paper": "0.267",
+   "deviation": -0.0005142542517414528,
+   "within_half_unit": false,
+   "locator": "kb-data/raw/arxiv/2009.08163/v1/src/paper.tex:955",
+   "pass": true
+  },
+  "poly_k0.5_L0.001 y_zero": {
+   "value": 0.583181,
+   "paper": "0.583",
+   "deviation": 0.00018088301927210448,
+   "within_half_unit": true,
+   "locator": "kb-data/raw/arxiv/2009.08163/v1/src/paper.tex:955",
+   "pass": true
+  },
+  "poly_k0.5_l0.1_L0.001 y_max": {
+   "value": 0.264797,
+   "paper": "0.265",
+   "deviation": -0.00020300510320753196,
+   "within_half_unit": true,
+   "locator": "kb-data/raw/arxiv/2009.08163/v1/src/paper.tex:956",
+   "pass": true
+  },
+  "poly_k0.5_l0.1_L0.001 y_zero": {
+   "value": 0.588079,
+   "paper": "0.588",
+   "deviation": 7.90089634286062e-05,
+   "within_half_unit": true,
+   "locator": "kb-data/raw/arxiv/2009.08163/v1/src/paper.tex:956",
+   "pass": true
+  }
+ },
+ "paper_gr-qc/0601112": {
+  "case 1 rows within rounding": {
+   "value": "10/10",
+   "rows": [
+    {
+     "Zc": "0.24",
+     "Eb_paper": "0.036",
+     "Eb_ours_at_Zc": 0.03567105269799079,
+     "Eb_range_over_Zc_rounding": [
+      0.035293251267110165,
+      0.0360356948251757
+     ],
+     "outside_by": 0.0,
+     "ok": true,
+     "stable_A_lt_1": true,
+     "stable_A_gt_1": true
+    },
+    {
+     "Zc": "0.30",
+     "Eb_paper": "0.039",
+     "Eb_ours_at_Zc": 0.03920592459356669,
+     "Eb_range_over_Zc_rounding": [
+      0.03897976789066062,
+      0.03942000586601578
+     ],
+     "outside_by": 0.0,
+     "ok": true,
+     "stable_A_lt_1": true,
+     "stable_A_gt_1": true
+    },
+    {
+     "Zc": "0.39",
+     "Eb_paper": "0.041",
+     "Eb_ours_at_Zc": 0.04127961185611926,
+     "Eb_range_over_Zc_rounding": [
+      0.041260458806015275,
+      0.041287813896510775
+     ],
+     "outside_by": 0.0,
+     "ok": true,
+     "stable_A_lt_1": true,
+     "stable_A_gt_1": true
+    },
+    {
+     "Zc": "0.43",
+     "Eb_paper": "0.041",
+     "Eb_ours_at_Zc": 0.0410424205584914,
+     "Eb_range_over_Zc_rounding": [
+      0.04096461043677051,
+      0.041109621495735695
+     ],
+     "outside_by": 0.0,
+     "ok": true,
+     "stable_A_lt_1": true,
+     "stable_A_gt_1": false
+    },
+    {
+     "Zc": "0.47",
+     "Eb_paper": "0.040",
+     "Eb_ours_at_Zc": 0.04012579976640375,
+     "Eb_range_over_Zc_rounding": [
+      0.03996432839782882,
+      0.04027691955826149
+     ],
+     "outside_by": 0.0,
+     "ok": true,
+     "stable_A_lt_1": true,
+     "stable_A_gt_1": false
+    },
+    {
+     "Zc": "0.52",
+     "Eb_paper": "0.038",
+     "Eb_ours_at_Zc": 0.03804926159219949,
+     "Eb_range_over_Zc_rounding": [
+      0.03778554179573587,
+      0.03830284265757195
+     ],
+     "outside_by": 0.0,
+     "ok": true,
+     "stable_A_lt_1": true,
+     "stable_A_gt_1": false
+    },
+    {
+     "Zc": "0.65",
+     "Eb_paper": "0.027",
+     "Eb_ours_at_Zc": 0.027921655774754393,
+     "Eb_range_over_Zc_rounding": [
+      0.027396337185784377,
+      0.02843686641831596
+     ],
+     "outside_by": 0.0,
+     "ok": true,
+     "stable_A_lt_1": true,
+     "stable_A_gt_1": false
+    },
+    {
+     "Zc": "0.82",
+     "Eb_paper": "0.004",
+     "Eb_ours_at_Zc": 0.0042435598889062195,
+     "Eb_range_over_Zc_rounding": [
+      0.0033591603353669798,
+      0.005116748596832004
+     ],
+     "outside_by": 0.0,
+     "ok": true,
+     "stable_A_lt_1": true,
+     "stable_A_gt_1": false
+    },
+    {
+     "Zc": "0.95",
+     "Eb_paper": "-0.024",
+     "Eb_ours_at_Zc": -0.022579027247061505,
+     "Eb_range_over_Zc_rounding": [
+      -0.023778364258920243,
+      -0.021392815767582132
+     ],
+     "outside_by": 0.0,
+     "ok": true,
+     "stable_A_lt_1": false,
+     "stable_A_gt_1": false
+    },
+    {
+     "Zc": "1.1",
+     "Eb_paper": "-0.070",
+     "Eb_ours_at_Zc": -0.06477625562013967,
+     "Eb_range_over_Zc_rounding": [
+      -0.08206281099662865,
+      -0.04920187101305543
+     ],
+     "outside_by": 0.0,
+     "ok": true,
+     "stable_A_lt_1": false,
+     "stable_A_gt_1": false
+    }
+   ],
+   "locator": "kb-data/raw/arxiv/gr-qc_0601112/v1/src/ssevnum7.tex:762-779"
+  },
+  "case 1 Z_c at E_b maximum": {
+   "value": 0.39626,
+   "Eb_max": 0.04128815893518715,
+   "y_max": 0.13545156749056422,
+   "table_last_stable_Zc_A_gt_1": 0.39,
+   "table_first_unstable_Zc_A_gt_1": 0.43,
+   "consistent_with_table": true
+  },
+  "case 2 rows within rounding": {
+   "value": "9/10",
+   "rows": [
+    {
+     "Zc": "0.21",
+     "Eb_paper": "0.032",
+     "Eb_ours_at_Zc": 0.03235486104067279,
+     "Eb_range_over_Zc_rounding": [
+      0.031903250521516865,
+      0.032793277967143174
+     ],
+     "outside_by": 0.0,
+     "ok": true,
+     "stable_A_lt_1": true,
+     "stable_A_gt_1": true
+    },
+    {
+     "Zc": "0.34",
+     "Eb_paper": "0.040",
+     "Eb_ours_at_Zc": 0.03977493501755727,
+     "Eb_range_over_Zc_rounding": [
+      0.03963338001639367,
+      0.039905701242097746
+     ],
+     "outside_by": 0.0,
+     "ok": true,
+     "stable_A_lt_1": true,
+     "stable_A_gt_1": true
+    },
+    {
+     "Zc": "0.39",
+     "Eb_paper": "0.040",
+     "Eb_ours_at_Zc": 0.04060783009422756,
+     "Eb_range_over_Zc_rounding": [
+      0.04057128081594228,
+      0.04063420492179892
+     ],
+     "outside_by": 7.128081594227897e-05,
+     "ok": false,
+     "stable_A_lt_1": true,
+     "stable_A_gt_1": true
+    },
+    {
+     "Zc": "0.42",
+     "Eb_paper": "0.041",
+     "Eb_ours_at_Zc": 0.040615302199504655,
+     "Eb_range_over_Zc_rounding": [
+      0.04058171654448407,
+      0.04063901746071899
+     ],
+     "outside_by": 0.0,
+     "ok": true,
+     "stable_A_lt_1": true,
+     "stable_A_gt_1": false
+    },
+    {
+     "Zc": "0.46",
+     "Eb_paper": "0.040",
+     "Eb_ours_at_Zc": 0.040073991437664595,
+     "Eb_range_over_Zc_rounding": [
+      0.039963013200208584,
+      0.04017543759727162
+     ],
+     "outside_by": 0.0,
+     "ok": true,
+     "stable_A_lt_1": true,
+     "stable_A_gt_1": false
+    },
+    {
+     "Zc": "0.56",
+     "Eb_paper": "0.036",
+     "Eb_ours_at_Zc": 0.03608662565302051,
+     "Eb_range_over_Zc_rounding": [
+      0.03579145579500839,
+      0.036372815276437334
+     ],
+     "outside_by": 0.0,
+     "ok": true,
+     "stable_A_lt_1": true,
+     "stable_A_gt_1": false
+    },
+    {
+     "Zc": "0.65",
+     "Eb_paper": "0.029",
+     "Eb_ours_at_Zc": 0.029413187928514876,
+     "Eb_range_over_Zc_rounding": [
+      0.028958525398053395,
+      0.029859052704775017
+     ],
+     "outside_by": 0.0,
+     "ok": true,
+     "stable_A_lt_1": true,
+     "stable_A_gt_1": false
+    },
+    {
+     "Zc": "0.82",
+     "Eb_paper": "0.008",
+     "Eb_ours_at_Zc": 0.008989000253244913,
+     "Eb_range_over_Zc_rounding": [
+      0.008230981249670815,
+      0.009737821829372561
+     ],
+     "outside_by": 0.0,
+     "ok": true,
+     "stable_A_lt_1": true,
+     "stable_A_gt_1": false
+    },
+    {
+     "Zc": "0.95",
+     "Eb_paper": "-0.015",
+     "Eb_ours_at_Zc": -0.013803754797749928,
+     "Eb_range_over_Zc_rounding": [
+      -0.014813130362738533,
+      -0.0128045920958712
+     ],
+     "outside_by": 0.0,
+     "ok": true,
+     "stable_A_lt_1": false,
+     "stable_A_gt_1": false
+    },
+    {
+     "Zc": "1.20",
+     "Eb_paper": "-0.078",
+     "Eb_ours_at_Zc": -0.07823767414977659,
+     "Eb_range_over_Zc_rounding": [
+      -0.0798555972385543,
+      -0.07663451719283017
+     ],
+     "outside_by": 0.0,
+     "ok": true,
+     "stable_A_lt_1": false,
+     "stable_A_gt_1": false
+    }
+   ],
+   "locator": "kb-data/raw/arxiv/gr-qc_0601112/v1/src/ssevnum7.tex:781-798"
+  },
+  "case 2 Z_c at E_b maximum": {
+   "value": 0.40558,
+   "Eb_max": 0.04065671361068552,
+   "y_max": 0.15164835127557513,
+   "table_last_stable_Zc_A_gt_1": 0.39,
+   "table_first_unstable_Zc_A_gt_1": 0.42,
+   "consistent_with_table": true
+  },
+  "case 4 rows within rounding": {
+   "value": "8/9",
+   "rows": [
+    {
+     "Zc": "0.21",
+     "Eb_paper": "0.032",
+     "Eb_ours_at_Zc": 0.03205399368909699,
+     "Eb_range_over_Zc_rounding": [
+      0.03160330039807703,
+      0.032491662429676736
+     ],
+     "outside_by": 0.0,
+     "ok": true,
+     "stable_A_lt_1": true,
+     "stable_A_gt_1": true
+    },
+    {
+     "Zc": "0.34",
+     "Eb_paper": "0.039",
+     "Eb_ours_at_Zc": 0.039508302560097346,
+     "Eb_range_over_Zc_rounding": [
+      0.039363300635932,
+      0.03964270006553605
+     ],
+     "outside_by": 0.0,
+     "ok": true,
+     "stable_A_lt_1": true,
+     "stable_A_gt_1": true
+    },
+    {
+     "Zc": "0.41",
+     "Eb_paper": "0.040",
+     "Eb_ours_at_Zc": 0.040454995540923945,
+     "Eb_range_over_Zc_rounding": [
+      0.04044770134027316,
+      0.04045526498423827
+     ],
+     "outside_by": 0.0,
+     "ok": true,
+     "stable_A_lt_1": true,
+     "stable_A_gt_1": true
+    },
+    {
+     "Zc": "0.44",
+     "Eb_paper": "0.040",
+     "Eb_ours_at_Zc": 0.0402669186003443,
+     "Eb_range_over_Zc_rounding": [
+      0.0402022437305872,
+      0.04032215107969316
+     ],
+     "outside_by": 0.0,
+     "ok": true,
+     "stable_A_lt_1": true,
+     "stable_A_gt_1": true
+    },
+    {
+     "Zc": "0.52",
+     "Eb_paper": "0.038",
+     "Eb_ours_at_Zc": 0.038127878145198156,
+     "Eb_range_over_Zc_rounding": [
+      0.03791769691045815,
+      0.038329234552905225
+     ],
+     "outside_by": 0.0,
+     "ok": true,
+     "stable_A_lt_1": true,
+     "stable_A_gt_1": false
+    },
+    {
+     "Zc": "0.69",
+     "Eb_paper": "0.025",
+     "Eb_ours_at_Zc": 0.02619084597461998,
+     "Eb_range_over_Zc_rounding": [
+      0.025693807951777815,
+      0.026679675417279006
+     ],
+     "outside_by": 0.00019380795177781351,
+     "ok": false,
+     "stable_A_lt_1": true,
+     "stable_A_gt_1": false
+    },
+    {
+     "Zc": "0.80",
+     "Eb_paper": "0.014",
+     "Eb_ours_at_Zc": 0.013364498880632287,
+     "Eb_range_over_Zc_rounding": [
+      0.012687219964930208,
+      0.014033551090331733
+     ],
+     "outside_by": 0.0,
+     "ok": true,
+     "stable_A_lt_1": true,
+     "stable_A_gt_1": false
+    },
+    {
+     "Zc": "0.92",
+     "Eb_paper": "-0.004",
+     "Eb_ours_at_Zc": -0.005186971237042361,
+     "Eb_range_over_Zc_rounding": [
+      -0.006065514376975522,
+      -0.0043170182881304186
+     ],
+     "outside_by": 0.0,
+     "ok": true,
+     "stable_A_lt_1": false,
+     "stable_A_gt_1": false
+    },
+    {
+     "Zc": "1.1",
+     "Eb_paper": "-0.045",
+     "Eb_ours_at_Zc": -0.042450431434885944,
+     "Eb_range_over_Zc_rounding": [
+      -0.05498773957156372,
+      -0.030900140999384183
+     ],
+     "outside_by": 0.0,
+     "ok": true,
+     "stable_A_lt_1": false,
+     "stable_A_gt_1": false
+    }
+   ],
+   "locator": "kb-data/raw/arxiv/gr-qc_0601112/v1/src/ssevnum7.tex:821-837"
+  },
+  "case 4 Z_c at E_b maximum": {
+   "value": 0.40875,
+   "Eb_max": 0.04045529919566543,
+   "y_max": 0.1569760242143397,
+   "table_last_stable_Zc_A_gt_1": 0.44,
+   "table_first_unstable_Zc_A_gt_1": 0.52,
+   "consistent_with_table": false
+  }
+ },
+ "newtonian_limit": {
+  "k=0.5 rho_c/rho_mean (y0=1e-3)": {
+   "value": 11.40955,
+   "lane_emden_index": 2.0,
+   "lane_emden": 11.402542861957306,
+   "xi1": 4.352874595945571,
+   "rel_diff": 0.0006146011169698706,
+   "pass": true
+  },
+  "k=1.0 rho_c/rho_mean (y0=1e-3)": {
+   "value": 23.42491,
+   "lane_emden_index": 2.5,
+   "lane_emden": 23.406462266959505,
+   "xi1": 5.355275459010118,
+   "rel_diff": 0.0007881800861613275,
+   "pass": true
+  },
+  "k=1.5 rho_c/rho_mean (y0=1e-3)": {
+   "value": 54.24242,
+   "lane_emden_index": 3.0,
+   "lane_emden": 54.18248110619723,
+   "xi1": 6.896848619375314,
+   "rel_diff": 0.0011061693386065219,
+   "pass": true
+  }
+ },
+ "king_mass_radius": {
+  "y0 of first M maximum": {
+   "value": 0.0982,
+   "y_max_binding": 0.33403216106467554,
+   "claim": "2009.08163 lines 1160-1167: the y_max point lies 'to the left of the first turning point' of the mass-radius spiral; states stay stable past the turning point, i.e. the first M maximum comes before the E_b maximum along y0",
+   "pass": true
+  }
+ },
+ "model king_y0p31400": {
+  "psi, alpha matching at rbar_s": {
+   "value": "0.0e+00, 0.0e+00",
+   "pass": true
+  },
+  "psi slope continuity (rel)": {
+   "value": "1.00e-06",
+   "pass": true
+  },
+  "areal(rbar_s) - R": {
+   "value": "1.8e-15",
+   "pass": true
+  },
+  "rest mass, isotropic integral / N - 1": {
+   "value": "-3.19e-12",
+   "pass": true
+  },
+  "isotropic: max |p_T - p| / max p": {
+   "value": "3.0e-16",
+   "pass": true
+  },
+  "anisotropic TOV residual (rel)": {
+   "value": "2.2e-07",
+   "pass": true
+  },
+  "HC residual of the table (rel, 4th-order FD)": {
+   "value": "2.62e-08",
+   "rows": 5599,
+   "pass": true
+  },
+  "HC Gauss form (rel)": {
+   "value": "3.2e-12",
+   "pass": true
+  },
+  "file round trip = regenerated sample": {
+   "value": 1.0,
+   "mean_u_removed": [
+    -0.004676046542180308,
+    0.00022782607632042026,
+    0.0013494788720342526
+   ],
+   "pass": true
+  },
+  "table monopole M = 2 r_N u_N": {
+   "value": "1.000000000000",
+   "pass": true
+  },
+  "stratified radial ECDF deviation * N": {
+   "value": "1.000",
+   "pass": true
+  },
+  "stratified cos(theta) ECDF deviation * N": {
+   "value": "1.000",
+   "pass": true
+  },
+  "stratified equal-mass shell counts": {
+   "value": [
+    1250,
+    1250,
+    1250,
+    1250,
+    1250,
+    1250,
+    1250,
+    1250
+   ],
+   "pass": true
+  },
+  "max E/E0, min L/L0": {
+   "value": "0.999454557449, n/a",
+   "pass": true
+  },
+  "sum m W/psi - M (file)": {
+   "value": "+2.16e-04",
+   "pass": true
+  },
+  "stratified file: KS statistic of E/E0": {
+   "value": "0.0054",
+   "pvalue": 0.9302339618250461
+  },
+  "mc N=2e4: max z of shell moments": {
+   "value": "2.14",
+   "radial_momentum_ok": true,
+   "pass": true
+  },
+  "mc N=2e4: KS p-values radius, E/E0": {
+   "value": "0.277, 0.578",
+   "pass": true
+  },
+  "stratified N=2e4: max z of shell moments": {
+   "value": "1.18",
+   "radial_momentum_ok": true,
+   "pass": true
+  }
+ },
+ "model king_y0p32400": {
+  "psi, alpha matching at rbar_s": {
+   "value": "0.0e+00, 0.0e+00",
+   "pass": true
+  },
+  "psi slope continuity (rel)": {
+   "value": "9.94e-07",
+   "pass": true
+  },
+  "areal(rbar_s) - R": {
+   "value": "1.8e-15",
+   "pass": true
+  },
+  "rest mass, isotropic integral / N - 1": {
+   "value": "-5.53e-12",
+   "pass": true
+  },
+  "isotropic: max |p_T - p| / max p": {
+   "value": "2.7e-16",
+   "pass": true
+  },
+  "anisotropic TOV residual (rel)": {
+   "value": "2.3e-07",
+   "pass": true
+  },
+  "HC residual of the table (rel, 4th-order FD)": {
+   "value": "2.09e-08",
+   "rows": 5600,
+   "pass": true
+  },
+  "HC Gauss form (rel)": {
+   "value": "5.5e-12",
+   "pass": true
+  },
+  "file round trip = regenerated sample": {
+   "value": 1.0,
+   "mean_u_removed": [
+    -0.004781316819489194,
+    0.00023970613785901884,
+    0.0013738302025413105
+   ],
+   "pass": true
+  },
+  "table monopole M = 2 r_N u_N": {
+   "value": "1.000000000000",
+   "pass": true
+  },
+  "stratified radial ECDF deviation * N": {
+   "value": "1.000",
+   "pass": true
+  },
+  "stratified cos(theta) ECDF deviation * N": {
+   "value": "1.000",
+   "pass": true
+  },
+  "stratified equal-mass shell counts": {
+   "value": [
+    1250,
+    1250,
+    1250,
+    1250,
+    1250,
+    1250,
+    1250,
+    1250
+   ],
+   "pass": true
+  },
+  "max E/E0, min L/L0": {
+   "value": "0.999441304123, n/a",
+   "pass": true
+  },
+  "sum m W/psi - M (file)": {
+   "value": "+2.23e-04",
+   "pass": true
+  },
+  "stratified file: KS statistic of E/E0": {
+   "value": "0.0055",
+   "pvalue": 0.9164049120037485
+  },
+  "mc N=2e4: max z of shell moments": {
+   "value": "2.14",
+   "radial_momentum_ok": true,
+   "pass": true
+  },
+  "mc N=2e4: KS p-values radius, E/E0": {
+   "value": "0.277, 0.585",
+   "pass": true
+  },
+  "stratified N=2e4: max z of shell moments": {
+   "value": "1.18",
+   "radial_momentum_ok": true,
+   "pass": true
+  }
+ },
+ "model king_y0p33403": {
+  "psi, alpha matching at rbar_s": {
+   "value": "0.0e+00, 0.0e+00",
+   "pass": true
+  },
+  "psi slope continuity (rel)": {
+   "value": "9.99e-07",
+   "pass": true
+  },
+  "areal(rbar_s) - R": {
+   "value": "0.0e+00",
+   "pass": true
+  },
+  "rest mass, isotropic integral / N - 1": {
+   "value": "4.00e-12",
+   "pass": true
+  },
+  "isotropic: max |p_T - p| / max p": {
+   "value": "2.5e-16",
+   "pass": true
+  },
+  "anisotropic TOV residual (rel)": {
+   "value": "2.3e-07",
+   "pass": true
+  },
+  "HC residual of the table (rel, 4th-order FD)": {
+   "value": "2.07e-08",
+   "rows": 5600,
+   "pass": true
+  },
+  "HC Gauss form (rel)": {
+   "value": "4.0e-12",
+   "pass": true
+  },
+  "file round trip = regenerated sample": {
+   "value": 1.0,
+   "mean_u_removed": [
+    -0.004886375949132478,
+    0.00025191784467468165,
+    0.001397761648821025
+   ],
+   "pass": true
+  },
+  "table monopole M = 2 r_N u_N": {
+   "value": "1.000000000000",
+   "pass": true
+  },
+  "stratified radial ECDF deviation * N": {
+   "value": "1.000",
+   "pass": true
+  },
+  "stratified cos(theta) ECDF deviation * N": {
+   "value": "1.000",
+   "pass": true
+  },
+  "stratified equal-mass shell counts": {
+   "value": [
+    1250,
+    1250,
+    1250,
+    1250,
+    1250,
+    1250,
+    1250,
+    1250
+   ],
+   "pass": true
+  },
+  "max E/E0, min L/L0": {
+   "value": "0.999428314495, n/a",
+   "pass": true
+  },
+  "sum m W/psi - M (file)": {
+   "value": "+2.31e-04",
+   "pass": true
+  },
+  "stratified file: KS statistic of E/E0": {
+   "value": "0.0055",
+   "pvalue": 0.9169142408375891
+  },
+  "mc N=2e4: max z of shell moments": {
+   "value": "2.14",
+   "radial_momentum_ok": true,
+   "pass": true
+  },
+  "mc N=2e4: KS p-values radius, E/E0": {
+   "value": "0.277, 0.593",
+   "pass": true
+  },
+  "stratified N=2e4: max z of shell moments": {
+   "value": "1.18",
+   "radial_momentum_ok": true,
+   "pass": true
+  }
+ },
+ "model king_y0p34400": {
+  "psi, alpha matching at rbar_s": {
+   "value": "0.0e+00, 0.0e+00",
+   "pass": true
+  },
+  "psi slope continuity (rel)": {
+   "value": "1.00e-06",
+   "pass": true
+  },
+  "areal(rbar_s) - R": {
+   "value": "1.8e-15",
+   "pass": true
+  },
+  "rest mass, isotropic integral / N - 1": {
+   "value": "-2.90e-10",
+   "pass": true
+  },
+  "isotropic: max |p_T - p| / max p": {
+   "value": "2.3e-16",
+   "pass": true
+  },
+  "anisotropic TOV residual (rel)": {
+   "value": "2.4e-07",
+   "pass": true
+  },
+  "HC residual of the table (rel, 4th-order FD)": {
+   "value": "2.23e-08",
+   "rows": 5599,
+   "pass": true
+  },
+  "HC Gauss form (rel)": {
+   "value": "2.9e-10",
+   "pass": true
+  },
+  "file round trip = regenerated sample": {
+   "value": 1.0,
+   "mean_u_removed": [
+    -0.004990220155646406,
+    0.0002643425790736183,
+    0.0014210412226580897
+   ],
+   "pass": true
+  },
+  "table monopole M = 2 r_N u_N": {
+   "value": "1.000000000000",
+   "pass": true
+  },
+  "stratified radial ECDF deviation * N": {
+   "value": "1.000",
+   "pass": true
+  },
+  "stratified cos(theta) ECDF deviation * N": {
+   "value": "1.000",
+   "pass": true
+  },
+  "stratified equal-mass shell counts": {
+   "value": [
+    1250,
+    1250,
+    1250,
+    1250,
+    1250,
+    1250,
+    1250,
+    1250
+   ],
+   "pass": true
+  },
+  "max E/E0, min L/L0": {
+   "value": "0.999415716599, n/a",
+   "pass": true
+  },
+  "sum m W/psi - M (file)": {
+   "value": "+2.38e-04",
+   "pass": true
+  },
+  "stratified file: KS statistic of E/E0": {
+   "value": "0.0055",
+   "pvalue": 0.9226570801785271
+  },
+  "mc N=2e4: max z of shell moments": {
+   "value": "2.14",
+   "radial_momentum_ok": true,
+   "pass": true
+  },
+  "mc N=2e4: KS p-values radius, E/E0": {
+   "value": "0.277, 0.592",
+   "pass": true
+  },
+  "stratified N=2e4: max z of shell moments": {
+   "value": "1.18",
+   "radial_momentum_ok": true,
+   "pass": true
+  }
+ },
+ "model king_y0p35400": {
+  "psi, alpha matching at rbar_s": {
+   "value": "0.0e+00, 0.0e+00",
+   "pass": true
+  },
+  "psi slope continuity (rel)": {
+   "value": "1.00e-06",
+   "pass": true
+  },
+  "areal(rbar_s) - R": {
+   "value": "0.0e+00",
+   "pass": true
+  },
+  "rest mass, isotropic integral / N - 1": {
+   "value": "2.55e-11",
+   "pass": true
+  },
+  "isotropic: max |p_T - p| / max p": {
+   "value": "2.1e-16",
+   "pass": true
+  },
+  "anisotropic TOV residual (rel)": {
+   "value": "2.4e-07",
+   "pass": true
+  },
+  "HC residual of the table (rel, 4th-order FD)": {
+   "value": "1.80e-08",
+   "rows": 5598,
+   "pass": true
+  },
+  "HC Gauss form (rel)": {
+   "value": "2.5e-11",
+   "pass": true
+  },
+  "file round trip = regenerated sample": {
+   "value": 1.0,
+   "mean_u_removed": [
+    -0.0050938585351491044,
+    0.00027709937900472783,
+    0.001443891402110403
+   ],
+   "pass": true
+  },
+  "table monopole M = 2 r_N u_N": {
+   "value": "1.000000000000",
+   "pass": true
+  },
+  "stratified radial ECDF deviation * N": {
+   "value": "1.000",
+   "pass": true
+  },
+  "stratified cos(theta) ECDF deviation * N": {
+   "value": "1.000",
+   "pass": true
+  },
+  "stratified equal-mass shell counts": {
+   "value": [
+    1250,
+    1250,
+    1250,
+    1250,
+    1250,
+    1250,
+    1250,
+    1250
+   ],
+   "pass": true
+  },
+  "max E/E0, min L/L0": {
+   "value": "0.999403391538, n/a",
+   "pass": true
+  },
+  "sum m W/psi - M (file)": {
+   "value": "+2.45e-04",
+   "pass": true
+  },
+  "stratified file: KS statistic of E/E0": {
+   "value": "0.0054",
+   "pvalue": 0.9315912890990532
+  },
+  "mc N=2e4: max z of shell moments": {
+   "value": "2.14",
+   "radial_momentum_ok": true,
+   "pass": true
+  },
+  "mc N=2e4: KS p-values radius, E/E0": {
+   "value": "0.277, 0.589",
+   "pass": true
+  },
+  "stratified N=2e4: max z of shell moments": {
+   "value": "1.18",
+   "radial_momentum_ok": true,
+   "pass": true
+  }
+ },
+ "model poly05_y0p27766": {
+  "psi, alpha matching at rbar_s": {
+   "value": "0.0e+00, 0.0e+00",
+   "pass": true
+  },
+  "psi slope continuity (rel)": {
+   "value": "1.00e-06",
+   "pass": true
+  },
+  "areal(rbar_s) - R": {
+   "value": "1.8e-15",
+   "pass": true
+  },
+  "rest mass, isotropic integral / N - 1": {
+   "value": "-1.30e-12",
+   "pass": true
+  },
+  "isotropic: max |p_T - p| / max p": {
+   "value": "1.8e-16",
+   "pass": true
+  },
+  "anisotropic TOV residual (rel)": {
+   "value": "1.1e-07",
+   "pass": true
+  },
+  "HC residual of the table (rel, 4th-order FD)": {
+   "value": "2.16e-08",
+   "rows": 5599,
+   "pass": true
+  },
+  "HC Gauss form (rel)": {
+   "value": "1.3e-12",
+   "pass": true
+  },
+  "file round trip = regenerated sample": {
+   "value": 1.0,
+   "mean_u_removed": [
+    -0.004568023179161797,
+    3.554967265109091e-05,
+    0.0012550124792263242
+   ],
+   "pass": true
+  },
+  "table monopole M = 2 r_N u_N": {
+   "value": "1.000000000000",
+   "pass": true
+  },
+  "stratified radial ECDF deviation * N": {
+   "value": "1.000",
+   "pass": true
+  },
+  "stratified cos(theta) ECDF deviation * N": {
+   "value": "1.000",
+   "pass": true
+  },
+  "stratified equal-mass shell counts": {
+   "value": [
+    1250,
+    1250,
+    1250,
+    1250,
+    1250,
+    1250,
+    1250,
+    1250
+   ],
+   "pass": true
+  },
+  "max E/E0, min L/L0": {
+   "value": "0.999886142118, n/a",
+   "pass": true
+  },
+  "sum m W/psi - M (file)": {
+   "value": "+2.05e-04",
+   "pass": true
+  },
+  "stratified file: KS statistic of E/E0": {
+   "value": "0.0038",
+   "pvalue": 0.9984312029229511
+  },
+  "mc N=2e4: max z of shell moments": {
+   "value": "2.12",
+   "radial_momentum_ok": true,
+   "pass": true
+  },
+  "mc N=2e4: KS p-values radius, E/E0": {
+   "value": "0.277, 0.846",
+   "pass": true
+  },
+  "stratified N=2e4: max z of shell moments": {
+   "value": "1.11",
+   "radial_momentum_ok": true,
+   "pass": true
+  }
+ },
+ "model poly05_y0p28766": {
+  "psi, alpha matching at rbar_s": {
+   "value": "0.0e+00, 0.0e+00",
+   "pass": true
+  },
+  "psi slope continuity (rel)": {
+   "value": "1.00e-06",
+   "pass": true
+  },
+  "areal(rbar_s) - R": {
+   "value": "0.0e+00",
+   "pass": true
+  },
+  "rest mass, isotropic integral / N - 1": {
+   "value": "-1.16e-12",
+   "pass": true
+  },
+  "isotropic: max |p_T - p| / max p": {
+   "value": "1.6e-16",
+   "pass": true
+  },
+  "anisotropic TOV residual (rel)": {
+   "value": "1.1e-07",
+   "pass": true
+  },
+  "HC residual of the table (rel, 4th-order FD)": {
+   "value": "2.43e-08",
+   "rows": 5598,
+   "pass": true
+  },
+  "HC Gauss form (rel)": {
+   "value": "1.1e-12",
+   "pass": true
+  },
+  "file round trip = regenerated sample": {
+   "value": 1.0,
+   "mean_u_removed": [
+    -0.004684376794895291,
+    4.158608305340912e-05,
+    0.0012800086007962387
+   ],
+   "pass": true
+  },
+  "table monopole M = 2 r_N u_N": {
+   "value": "1.000000000000",
+   "pass": true
+  },
+  "stratified radial ECDF deviation * N": {
+   "value": "1.000",
+   "pass": true
+  },
+  "stratified cos(theta) ECDF deviation * N": {
+   "value": "1.000",
+   "pass": true
+  },
+  "stratified equal-mass shell counts": {
+   "value": [
+    1250,
+    1250,
+    1250,
+    1250,
+    1250,
+    1250,
+    1250,
+    1250
+   ],
+   "pass": true
+  },
+  "max E/E0, min L/L0": {
+   "value": "0.999882783170, n/a",
+   "pass": true
+  },
+  "sum m W/psi - M (file)": {
+   "value": "+2.13e-04",
+   "pass": true
+  },
+  "stratified file: KS statistic of E/E0": {
+   "value": "0.0038",
+   "pvalue": 0.9983901281609214
+  },
+  "mc N=2e4: max z of shell moments": {
+   "value": "2.12",
+   "radial_momentum_ok": true,
+   "pass": true
+  },
+  "mc N=2e4: KS p-values radius, E/E0": {
+   "value": "0.277, 0.873",
+   "pass": true
+  },
+  "stratified N=2e4: max z of shell moments": {
+   "value": "1.11",
+   "radial_momentum_ok": true,
+   "pass": true
+  }
+ },
+ "model poly05_y0p29766": {
+  "psi, alpha matching at rbar_s": {
+   "value": "0.0e+00, 0.0e+00",
+   "pass": true
+  },
+  "psi slope continuity (rel)": {
+   "value": "9.99e-07",
+   "pass": true
+  },
+  "areal(rbar_s) - R": {
+   "value": "1.8e-15",
+   "pass": true
+  },
+  "rest mass, isotropic integral / N - 1": {
+   "value": "-4.60e-13",
+   "pass": true
+  },
+  "isotropic: max |p_T - p| / max p": {
+   "value": "1.4e-16",
+   "pass": true
+  },
+  "anisotropic TOV residual (rel)": {
+   "value": "1.1e-07",
+   "pass": true
+  },
+  "HC residual of the table (rel, 4th-order FD)": {
+   "value": "2.26e-08",
+   "rows": 5599,
+   "pass": true
+  },
+  "HC Gauss form (rel)": {
+   "value": "4.5e-13",
+   "pass": true
+  },
+  "file round trip = regenerated sample": {
+   "value": 1.0,
+   "mean_u_removed": [
+    -0.004800107002991608,
+    4.787832686616501e-05,
+    0.001304422259741592
+   ],
+   "pass": true
+  },
+  "table monopole M = 2 r_N u_N": {
+   "value": "1.000000000000",
+   "pass": true
+  },
+  "stratified radial ECDF deviation * N": {
+   "value": "1.000",
+   "pass": true
+  },
+  "stratified cos(theta) ECDF deviation * N": {
+   "value": "1.000",
+   "pass": true
+  },
+  "stratified equal-mass shell counts": {
+   "value": [
+    1250,
+    1250,
+    1250,
+    1250,
+    1250,
+    1250,
+    1250,
+    1250
+   ],
+   "pass": true
+  },
+  "max E/E0, min L/L0": {
+   "value": "0.999879471459, n/a",
+   "pass": true
+  },
+  "sum m W/psi - M (file)": {
+   "value": "+2.21e-04",
+   "pass": true
+  },
+  "stratified file: KS statistic of E/E0": {
+   "value": "0.0040",
+   "pvalue": 0.9973738003901118
+  },
+  "mc N=2e4: max z of shell moments": {
+   "value": "2.12",
+   "radial_momentum_ok": true,
+   "pass": true
+  },
+  "mc N=2e4: KS p-values radius, E/E0": {
+   "value": "0.277, 0.874",
+   "pass": true
+  },
+  "stratified N=2e4: max z of shell moments": {
+   "value": "1.11",
+   "radial_momentum_ok": true,
+   "pass": true
+  }
+ },
+ "model poly05_y0p30766": {
+  "psi, alpha matching at rbar_s": {
+   "value": "0.0e+00, 0.0e+00",
+   "pass": true
+  },
+  "psi slope continuity (rel)": {
+   "value": "1.00e-06",
+   "pass": true
+  },
+  "areal(rbar_s) - R": {
+   "value": "0.0e+00",
+   "pass": true
+  },
+  "rest mass, isotropic integral / N - 1": {
+   "value": "2.75e-13",
+   "pass": true
+  },
+  "isotropic: max |p_T - p| / max p": {
+   "value": "1.3e-16",
+   "pass": true
+  },
+  "anisotropic TOV residual (rel)": {
+   "value": "1.1e-07",
+   "pass": true
+  },
+  "HC residual of the table (rel, 4th-order FD)": {
+   "value": "1.85e-08",
+   "rows": 5599,
+   "pass": true
+  },
+  "HC Gauss form (rel)": {
+   "value": "1.3e-12",
+   "pass": true
+  },
+  "file round trip = regenerated sample": {
+   "value": 1.0,
+   "mean_u_removed": [
+    -0.004915226739091822,
+    5.4425631064681585e-05,
+    0.0013282523661292637
+   ],
+   "pass": true
+  },
+  "table monopole M = 2 r_N u_N": {
+   "value": "1.000000000000",
+   "pass": true
+  },
+  "stratified radial ECDF deviation * N": {
+   "value": "1.000",
+   "pass": true
+  },
+  "stratified cos(theta) ECDF deviation * N": {
+   "value": "1.000",
+   "pass": true
+  },
+  "stratified equal-mass shell counts": {
+   "value": [
+    1250,
+    1250,
+    1250,
+    1250,
+    1250,
+    1250,
+    1250,
+    1250
+   ],
+   "pass": true
+  },
+  "max E/E0, min L/L0": {
+   "value": "0.999876206560, n/a",
+   "pass": true
+  },
+  "sum m W/psi - M (file)": {
+   "value": "+2.28e-04",
+   "pass": true
+  },
+  "stratified file: KS statistic of E/E0": {
+   "value": "0.0040",
+   "pvalue": 0.9972048537226936
+  },
+  "mc N=2e4: max z of shell moments": {
+   "value": "2.12",
+   "radial_momentum_ok": true,
+   "pass": true
+  },
+  "mc N=2e4: KS p-values radius, E/E0": {
+   "value": "0.277, 0.863",
+   "pass": true
+  },
+  "stratified N=2e4: max z of shell moments": {
+   "value": "1.11",
+   "radial_momentum_ok": true,
+   "pass": true
+  }
+ },
+ "model poly05_y0p31766": {
+  "psi, alpha matching at rbar_s": {
+   "value": "0.0e+00, 0.0e+00",
+   "pass": true
+  },
+  "psi slope continuity (rel)": {
+   "value": "9.96e-07",
+   "pass": true
+  },
+  "areal(rbar_s) - R": {
+   "value": "1.8e-15",
+   "pass": true
+  },
+  "rest mass, isotropic integral / N - 1": {
+   "value": "-1.84e-12",
+   "pass": true
+  },
+  "isotropic: max |p_T - p| / max p": {
+   "value": "1.2e-16",
+   "pass": true
+  },
+  "anisotropic TOV residual (rel)": {
+   "value": "1.2e-07",
+   "pass": true
+  },
+  "HC residual of the table (rel, 4th-order FD)": {
+   "value": "2.01e-08",
+   "rows": 5600,
+   "pass": true
+  },
+  "HC Gauss form (rel)": {
+   "value": "1.8e-12",
+   "pass": true
+  },
+  "file round trip = regenerated sample": {
+   "value": 1.0,
+   "mean_u_removed": [
+    -0.005029745258934737,
+    6.122727565765222e-05,
+    0.0013514965191610106
+   ],
+   "pass": true
+  },
+  "table monopole M = 2 r_N u_N": {
+   "value": "1.000000000000",
+   "pass": true
+  },
+  "stratified radial ECDF deviation * N": {
+   "value": "1.000",
+   "pass": true
+  },
+  "stratified cos(theta) ECDF deviation * N": {
+   "value": "1.000",
+   "pass": true
+  },
+  "stratified equal-mass shell counts": {
+   "value": [
+    1250,
+    1250,
+    1250,
+    1250,
+    1250,
+    1250,
+    1250,
+    1250
+   ],
+   "pass": true
+  },
+  "max E/E0, min L/L0": {
+   "value": "0.999872988056, n/a",
+   "pass": true
+  },
+  "sum m W/psi - M (file)": {
+   "value": "+2.36e-04",
+   "pass": true
+  },
+  "stratified file: KS statistic of E/E0": {
+   "value": "0.0039",
+   "pvalue": 0.9980709631630803
+  },
+  "mc N=2e4: max z of shell moments": {
+   "value": "2.12",
+   "radial_momentum_ok": true,
+   "pass": true
+  },
+  "mc N=2e4: KS p-values radius, E/E0": {
+   "value": "0.277, 0.883",
+   "pass": true
+  },
+  "stratified N=2e4: max z of shell moments": {
+   "value": "1.11",
+   "radial_momentum_ok": true,
+   "pass": true
+  }
+ },
+ "model arshell_y0p13320": {
+  "psi, alpha matching at rbar_s": {
+   "value": "0.0e+00, 0.0e+00",
+   "pass": true
+  },
+  "psi slope continuity (rel)": {
+   "value": "1.00e-06",
+   "pass": true
+  },
+  "areal(rbar_s) - R": {
+   "value": "8.9e-16",
+   "pass": true
+  },
+  "rest mass, isotropic integral / N - 1": {
+   "value": "1.10e-11",
+   "pass": true
+  },
+  "anisotropic TOV residual (rel)": {
+   "value": "8.2e-08",
+   "pass": true
+  },
+  "HC residual of the table (rel, 4th-order FD)": {
+   "value": "2.18e-08",
+   "rows": 5198,
+   "pass": true
+  },
+  "HC Gauss form (rel)": {
+   "value": "1.1e-11",
+   "pass": true
+  },
+  "file round trip = regenerated sample": {
+   "value": 1.0,
+   "mean_u_removed": [
+    -0.0045139916087304464,
+    -0.0012261984540494306,
+    0.00033103492118239037
+   ],
+   "pass": true
+  },
+  "table monopole M = 2 r_N u_N": {
+   "value": "1.000000000000",
+   "pass": true
+  },
+  "stratified radial ECDF deviation * N": {
+   "value": "1.000",
+   "pass": true
+  },
+  "stratified cos(theta) ECDF deviation * N": {
+   "value": "1.000",
+   "pass": true
+  },
+  "stratified equal-mass shell counts": {
+   "value": [
+    1250,
+    1250,
+    1250,
+    1250,
+    1250,
+    1250,
+    1250,
+    1250
+   ],
+   "pass": true
+  },
+  "max E/E0, min L/L0": {
+   "value": "0.999999150998, 1.000028461",
+   "pass": true
+  },
+  "sum m W/psi - M (file)": {
+   "value": "+1.06e-05",
+   "pass": true
+  },
+  "stratified file: KS statistic of E/E0": {
+   "value": "0.0045",
+   "pvalue": 0.9866235791349792
+  },
+  "mc N=2e4: max z of shell moments": {
+   "value": "1.77",
+   "radial_momentum_ok": true,
+   "pass": true
+  },
+  "mc N=2e4: KS p-values radius, E/E0": {
+   "value": "0.277, 0.687",
+   "pass": true
+  },
+  "stratified N=2e4: max z of shell moments": {
+   "value": "0.66",
+   "radial_momentum_ok": true,
+   "pass": true
+  }
+ },
+ "model arshell_y0p13545": {
+  "psi, alpha matching at rbar_s": {
+   "value": "0.0e+00, 0.0e+00",
+   "pass": true
+  },
+  "psi slope continuity (rel)": {
+   "value": "1.00e-06",
+   "pass": true
+  },
+  "areal(rbar_s) - R": {
+   "value": "0.0e+00",
+   "pass": true
+  },
+  "rest mass, isotropic integral / N - 1": {
+   "value": "8.80e-12",
+   "pass": true
+  },
+  "anisotropic TOV residual (rel)": {
+   "value": "8.2e-08",
+   "pass": true
+  },
+  "HC residual of the table (rel, 4th-order FD)": {
+   "value": "2.42e-08",
+   "rows": 5199,
+   "pass": true
+  },
+  "HC Gauss form (rel)": {
+   "value": "8.6e-12",
+   "pass": true
+  },
+  "file round trip = regenerated sample": {
+   "value": 1.0,
+   "mean_u_removed": [
+    -0.004573346058479301,
+    -0.0012421565763453435,
+    0.00033477311751167835
+   ],
+   "pass": true
+  },
+  "table monopole M = 2 r_N u_N": {
+   "value": "1.000000000000",
+   "pass": true
+  },
+  "stratified radial ECDF deviation * N": {
+   "value": "1.000",
+   "pass": true
+  },
+  "stratified cos(theta) ECDF deviation * N": {
+   "value": "1.000",
+   "pass": true
+  },
+  "stratified equal-mass shell counts": {
+   "value": [
+    1250,
+    1250,
+    1250,
+    1250,
+    1250,
+    1250,
+    1250,
+    1250
+   ],
+   "pass": true
+  },
+  "max E/E0, min L/L0": {
+   "value": "0.999999138382, 1.000028418",
+   "pass": true
+  },
+  "sum m W/psi - M (file)": {
+   "value": "+1.08e-05",
+   "pass": true
+  },
+  "stratified file: KS statistic of E/E0": {
+   "value": "0.0045",
+   "pvalue": 0.9862246262961415
+  },
+  "mc N=2e4: max z of shell moments": {
+   "value": "1.77",
+   "radial_momentum_ok": true,
+   "pass": true
+  },
+  "mc N=2e4: KS p-values radius, E/E0": {
+   "value": "0.277, 0.680",
+   "pass": true
+  },
+  "stratified N=2e4: max z of shell moments": {
+   "value": "0.66",
+   "radial_momentum_ok": true,
+   "pass": true
+  }
+ },
+ "model arshell_y0p14768": {
+  "psi, alpha matching at rbar_s": {
+   "value": "0.0e+00, 0.0e+00",
+   "pass": true
+  },
+  "psi slope continuity (rel)": {
+   "value": "9.99e-07",
+   "pass": true
+  },
+  "areal(rbar_s) - R": {
+   "value": "0.0e+00",
+   "pass": true
+  },
+  "rest mass, isotropic integral / N - 1": {
+   "value": "-3.09e-12",
+   "pass": true
+  },
+  "anisotropic TOV residual (rel)": {
+   "value": "8.1e-08",
+   "pass": true
+  },
+  "HC residual of the table (rel, 4th-order FD)": {
+   "value": "2.38e-08",
+   "rows": 5199,
+   "pass": true
+  },
+  "HC Gauss form (rel)": {
+   "value": "3.0e-12",
+   "pass": true
+  },
+  "file round trip = regenerated sample": {
+   "value": 1.0,
+   "mean_u_removed": [
+    -0.004895342669331612,
+    -0.001328602478657336,
+    0.00035472163511440856
+   ],
+   "pass": true
+  },
+  "table monopole M = 2 r_N u_N": {
+   "value": "1.000000000000",
+   "pass": true
+  },
+  "stratified radial ECDF deviation * N": {
+   "value": "1.000",
+   "pass": true
+  },
+  "stratified cos(theta) ECDF deviation * N": {
+   "value": "1.000",
+   "pass": true
+  },
+  "stratified equal-mass shell counts": {
+   "value": [
+    1250,
+    1250,
+    1250,
+    1250,
+    1250,
+    1250,
+    1250,
+    1250
+   ],
+   "pass": true
+  },
+  "max E/E0, min L/L0": {
+   "value": "0.999999071464, 1.000028163",
+   "pass": true
+  },
+  "sum m W/psi - M (file)": {
+   "value": "+1.16e-05",
+   "pass": true
+  },
+  "stratified file: KS statistic of E/E0": {
+   "value": "0.0043",
+   "pvalue": 0.9924103589110262
+  },
+  "mc N=2e4: max z of shell moments": {
+   "value": "1.77",
+   "radial_momentum_ok": true,
+   "pass": true
+  },
+  "mc N=2e4: KS p-values radius, E/E0": {
+   "value": "0.277, 0.711",
+   "pass": true
+  },
+  "stratified N=2e4: max z of shell moments": {
+   "value": "0.66",
+   "radial_momentum_ok": true,
+   "pass": true
+  }
+ },
+ "model_set": [
+  {
+   "family": "king",
+   "y0": 0.314,
+   "role": "stable (2009.08163 l.1146)",
+   "tag": "king_y0p31400"
+  },
+  {
+   "family": "king",
+   "y0": 0.324,
+   "role": "stable (2009.08163 l.1146)",
+   "tag": "king_y0p32400"
+  },
+  {
+   "family": "king",
+   "y0": 0.33403216106467554,
+   "role": "threshold (computed y_max)",
+   "tag": "king_y0p33403"
+  },
+  {
+   "family": "king",
+   "y0": 0.344,
+   "role": "unstable (2009.08163 l.1146)",
+   "tag": "king_y0p34400"
+  },
+  {
+   "family": "king",
+   "y0": 0.354,
+   "role": "unstable (2009.08163 l.1146)",
+   "tag": "king_y0p35400"
+  },
+  {
+   "family": "poly05",
+   "y0": 0.27766430950931525,
+   "role": "stable side (y_max -0.02)",
+   "tag": "poly05_y0p27766"
+  },
+  {
+   "family": "poly05",
+   "y0": 0.28766430950931526,
+   "role": "stable side (y_max -0.01)",
+   "tag": "poly05_y0p28766"
+  },
+  {
+   "family": "poly05",
+   "y0": 0.2976643095093153,
+   "role": "threshold (computed y_max)",
+   "tag": "poly05_y0p29766"
+  },
+  {
+   "family": "poly05",
+   "y0": 0.3076643095093153,
+   "role": "unstable side (y_max +0.01)",
+   "tag": "poly05_y0p30766"
+  },
+  {
+   "family": "poly05",
+   "y0": 0.3176643095093153,
+   "role": "unstable side (y_max +0.02)",
+   "tag": "poly05_y0p31766"
+  },
+  {
+   "family": "arshell",
+   "y0": 0.13319562856644598,
+   "role": "stable (gr-qc/0601112 Table 1, Z_c = 0.39)",
+   "tag": "arshell_y0p13320"
+  },
+  {
+   "family": "arshell",
+   "y0": 0.1354515805263658,
+   "role": "threshold (computed E_b maximum)",
+   "tag": "arshell_y0p13545"
+  },
+  {
+   "family": "arshell",
+   "y0": 0.14767544665741356,
+   "role": "unstable for A > 1 (gr-qc/0601112 Table 1, Z_c = 0.43)",
+   "tag": "arshell_y0p14768"
+  }
+ ],
+ "thresholds": {
+  "binding_table": [
+   {
+    "name": "king",
+    "y_max": 0.33403216106467554,
+    "Eb_max": 0.03558859522667853,
+    "y_zero": 0.784518077950674
+   },
+   {
+    "name": "poly_k0.5",
+    "y_max": 0.2976643095093153,
+    "Eb_max": 0.03571514206766865,
+    "y_zero": 0.693031574830132
+   },
+   {
+    "name": "poly_k0.5_L0.001",
+    "y_max": 0.26648574574825856,
+    "Eb_max": 0.03635847338833538,
+    "y_zero": 0.5831808830192721
+   },
+   {
+    "name": "poly_k0.5_l0.1_L0.001",
+    "y_max": 0.2647969948967925,
+    "Eb_max": 0.0366036479060481,
+    "y_zero": 0.5880790089634286
+   }
+  ],
+  "ar": {
+   "1": {
+    "Zc_max": 0.3962583234494399,
+    "Eb_max": 0.04128815893518715,
+    "rows_ok": 10,
+    "rows": 10
+   },
+   "2": {
+    "Zc_max": 0.40558383501598816,
+    "Eb_max": 0.04065671361068552,
+    "rows_ok": 9,
+    "rows": 10
+   },
+   "4": {
+    "Zc_max": 0.408752004370623,
+    "Eb_max": 0.04045529919566543,
+    "rows_ok": 8,
+    "rows": 9
+   }
+  }
+ },
+ "failures": []
+}
