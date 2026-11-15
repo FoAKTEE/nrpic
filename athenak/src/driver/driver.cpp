@@ -27,6 +27,7 @@
 #include "radiation/radiation.hpp"
 #include "driver.hpp"
 #include "particles/particles.hpp"
+#include "scalar_field/scalar_field.hpp"
 #include "gravity/gravity.hpp"
 #include "utils/utils.hpp"
 
@@ -468,6 +469,10 @@ void Driver::Initialize(Mesh *pmesh, ParameterInput *pin, Outputs *pout, bool re
   if (pmesh->pmb_pack->ppart != nullptr && pmesh->pmb_pack->ppart->is_nrpic) {
     pmesh->pmb_pack->ppart->NrpicStartup(res_flag);
   }
+  // scalar field: stochastic sources, constraints with its sources, first diagnostics
+  if (pmesh->pmb_pack->pscalar != nullptr) {
+    pmesh->pmb_pack->pscalar->Startup(res_flag);
+  }
 
   //---- Step 2.  Compute time step (if problem involves time evolution)
   hydro::Hydro *phydro = pmesh->pmb_pack->phydro;
@@ -765,6 +770,19 @@ void Driver::InitBoundaryValuesAndPrimitives(Mesh *pm) {
     (void) pz4c->Z4cBoundaryRHS(this, 0);
     (void) pz4c->Prolongate(this, 0); // coarse grid BCs and prolongation
     (void) pz4c->ApplyPhysicalBCs(this, 0); // fine grid BCs
+  }
+
+  // Initialize the scalar field: ghost zones
+  scalarfield::ScalarField *pscalar = pm->pmb_pack->pscalar;
+  if (pscalar != nullptr) {
+    (void) pscalar->RestrictU(this, 0);
+    (void) pscalar->InitRecv(this, -1);
+    (void) pscalar->SendU(this, 0);
+    (void) pscalar->ClearSend(this, -1);
+    (void) pscalar->ClearRecv(this, -1);
+    (void) pscalar->RecvU(this, 0);
+    (void) pscalar->Prolongate(this, 0);
+    (void) pscalar->ApplyPhysicalBCs(this, 0);
   }
 
   // Initialize HYDRO: ghost zones and primitive variables (everywhere)

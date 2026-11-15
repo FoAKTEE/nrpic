@@ -161,6 +161,7 @@ add_executable(
         pgen/nrpic/nrpic_geodesic.cpp
         pgen/nrpic/nrpic_cf.cpp
         pgen/nrpic/nrpic_cosmo.cpp
+        pgen/nrpic/scalar_field_tests.cpp
 
         pgen/unit_tests/eos_compose.cpp
         pgen/unit_tests/gauss_legendre.cpp
@@ -206,6 +207,10 @@ add_executable(
         z4c/fastflow.cpp
 	    z4c/horizon_dump.cpp
         z4c/tmunu.cpp
+        scalar_field/scalar_field.cpp
+        scalar_field/scalar_field_rhs.cpp
+        scalar_field/scalar_field_noise.cpp
+        scalar_field/scalar_field_io.cpp
         z4c/z4c.cpp
         z4c/z4c_adm.cpp
         z4c/z4c_calcrhs.cpp
