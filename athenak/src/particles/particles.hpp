@@ -8,6 +8,7 @@
 //! \file particles.hpp
 //  \brief definitions for Particles class
 
+#include <cstdint>
 #include <map>
 #include <memory>
 #include <string>
@@ -100,6 +101,21 @@ struct NrpicOptions {
   Real curv_dt;         // time between curvature diagnostics (<= 0 = off)
   bool curv_slice;      // also write the cut through the plane y = curv_plane_y
   Real curv_plane_y;
+};
+
+//----------------------------------------------------------------------------------------
+//! \struct NrpicKickOptions
+//  \brief options and state of the test kick with reproducible random numbers
+//  (nrpic_kick.cpp)
+
+struct NrpicKickOptions {
+  bool on = false;           // <particles> test_kick
+  int mode = 0;              // 0: three normal deviates, 1: random direction
+  int key = 0;               // 0: tag, 1: tag and MeshBlock, 2: tag and call count
+  Real sigma = 0.0;          // size of the kick
+  Real prob = 1.0;           // probability of a kick per step (mode 1)
+  std::uint64_t seed = 0;    // seed of the run (<job> rng_seed)
+  std::int64_t ncalls = 0;   // kicks applied since the executable started
 };
 
 //----------------------------------------------------------------------------------------
@@ -248,6 +264,11 @@ class Particles {
   TaskStatus NrpicExcise(Driver *pdriver, int stage);
   TaskStatus NrpicDeposit(Driver *pdriver, int stage);
   TaskStatus NrpicDiagnostics(Driver *pdriver, int stage);
+
+  // test kick with reproducible random numbers (nrpic_kick.cpp)
+  NrpicKickOptions kick;
+  void NrpicKickInit(ParameterInput *pin);
+  void NrpicTestKick();
 
  private:
   MeshBlockPack* pmy_pack;  // ptr to MeshBlockPack containing this Particles

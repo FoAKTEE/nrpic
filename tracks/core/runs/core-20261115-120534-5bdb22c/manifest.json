@@ -1,0 +1,32 @@
+{
+ "run_id": "core-20261115-120534-5bdb22c",
+ "owner": "core",
+ "purpose": "Accuracy of the arithmetic-geometric-mean logarithm of the normal draw against mpmath (200 bits) on 204000 values of s",
+ "kind": "production",
+ "command": [
+  "python3",
+  "/data/haiyangw/nrpic/wt/core-rng/tracks/core/analysis/rng/accuracy_log.py",
+  "200000"
+ ],
+ "cwd": "/data/haiyangw/nrpic/scratch/core/core-20261115-120534-5bdb22c",
+ "commit": "5bdb22c3c5e2ec9e375b4b3eaf417c23c04578dc",
+ "branch": "core/rng",
+ "uncommitted_changes": [],
+ "inputs": [
+  {
+   "path": "python/nrpic/rng.py",
+   "sha256": "888abf5b241f8bbe3fe2e344af3eaf2d349011ce42ebf3d0f48d03edd72052a2"
+  },
+  {
+   "path": "tracks/core/analysis/rng/accuracy_log.py",
+   "sha256": "10cda7ba198f355a34141fb29d6db7d010c2fbcc78abd480a99863f639aeea9e"
+  }
+ ],
+ "output_directory": "/data/haiyangw/nrpic/scratch/core/core-20261115-120534-5bdb22c",
+ "host": "anta",
+ "start_utc": "2026-11-15T12:05:34Z",
+ "cores": 1,
+ "wall_time_s": 4.24,
+ "exit_status": 1,
+ "core_hours": 0.0012
+}

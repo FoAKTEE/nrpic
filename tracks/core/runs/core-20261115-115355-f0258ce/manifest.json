@@ -1,0 +1,38 @@
+{
+ "run_id": "core-20261115-115355-f0258ce",
+ "owner": "core",
+ "purpose": "Random-number statistics on one A100 with 1e11 keys and seed 20261116: follow-up of the low second moment of the normal pair in run core-20261115-115230-f0258ce",
+ "kind": "production",
+ "command": [
+  "bash",
+  "-c",
+  "srun -p preempt --gres=gpu:1 -c 1 -t 00:20:00 -J core-rng /data/haiyangw/nrpic/wt/core-rng/.work/build_gpu/src/athena -i /data/haiyangw/nrpic/wt/core-rng/problems/tests/rng_test.athinput job/rng_seed=20261116 problem/nstat=1e11 -d ."
+ ],
+ "cwd": "/data/haiyangw/nrpic/scratch/core/core-20261115-115355-f0258ce",
+ "commit": "f0258ce872fa1b3ed94dc5d85f75bbbad50d06bb",
+ "branch": "core/rng",
+ "uncommitted_changes": [
+  "M tracks/core/JOURNAL-rng.md"
+ ],
+ "inputs": [
+  {
+   "path": "problems/tests/rng_test.athinput",
+   "sha256": "ea671b2f5a166ad134390b8a3ee81a6a7c06e56ec8071820a216ede0498d6fe5"
+  },
+  {
+   "path": ".work/build_gpu/src/athena",
+   "sha256": "f52e7bb319ab24339b0b53f3d6783f87a874e5b6be9f070357a65ddb9c62e7ea"
+  }
+ ],
+ "output_directory": "/data/haiyangw/nrpic/scratch/core/core-20261115-115355-f0258ce",
+ "host": "anta",
+ "start_utc": "2026-11-15T11:53:55Z",
+ "cores": 1,
+ "wall_time_s": 590.65,
+ "exit_status": 0,
+ "card_hours": 0.0322,
+ "slurm_job_id": 4376,
+ "card_seconds_slurm": 116,
+ "card_hours_wall_including_queue": 0.1641,
+ "note": "card_hours is the elapsed time of the Slurm job (sacct); the wall time of the command includes the wait in the queue"
+}
