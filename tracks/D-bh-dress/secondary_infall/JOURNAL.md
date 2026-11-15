@@ -126,3 +126,51 @@ bin-averaged quadrature).
     (4e6 orbits) over the bin-averaged exact expectation 0.99785 (weighted mean over bins
     with r < 15, largest single-bin statistical error 1.35 %, largest deviation 3.6 % in
     the bin at r = 1.6). The printed "53 %" is 52.6 % rounded.
+
+## 2026-11-15T12:50Z  outcome of Test 2, runs D-bh-dress-20261115-122303-4e8e8af (stopped),
+## D-bh-dress-20261115-123813-97afeea
+
+Run 122303 stalled: the convergence metric over lambda in [1e-6, 0.98] sat at 0.05, the
+sampling noise of m at lambda < 1e-4 with 4e5 samples; the piecewise-linear profile also
+made the integrator take ~1.5e7 evaluations per orbit. Stopped by its process id after
+7 iterations (manifest status failed, exit -15). Run 123813: Hermite interpolation,
+1.5e6 samples, Gaussian smoothing of 3 grid cells (3.5 % in lambda) of the profile that
+drives the next orbit, convergence on lambda in [1e-3, 0.98]: converged after 12
+iterations, max |d ln m| = 2.0e-3 (7.5e-3 on [1e-6, 0.98]); 9 s per iteration. Figure
+`figs/selfsimilar.png` looked at: the radial orbit returns to apocentres 0.895, 0.868,
+0.852 ... of its turnaround radius, the phase-space spiral has its outer edge at
+lambda_1, rho/rho_b is a power law over five decades with steps at the caustics.
+2a. Refuted on the stated interval: d ln m/d ln lambda = 0.705 on [3e-3, 3e-2] (rho slope
+    -2.295), 0.741 on [1e-4, 1e-3], 3/4 within 0.01 only below lambda ~ 1e-4. The
+    approach to 9/4 is slow because the apocentres of a shell keep shrinking for many
+    orbits (0.895, 0.868, 0.852, 0.843, 0.835 ...).
+2b. Holds: lambda_1 = 0.3553 (my recollection 0.364 for Bertschinger's value, not read at
+    the source, 2.4 % away; the smoothing blurs by 3.5 % in lambda).
+2c. Refuted where stated, holds asymptotically at the edge: rho/rho_frozen = 3.02 on
+    [1e-5, 1e-4], 2.95 on [1e-4, 1e-3], 2.77 on [1e-3, 1e-2], 2.49 on [1e-2, 3e-2],
+    2.19 on [0.03, 0.1] (`selfsimilar_profile.npz`). The "A" printed in selfsimilar.json
+    comes from a fit with slope 0.705 and is not the asymptotic coefficient; ignore it.
+2d. Holds: m(lambda_1) = 0.654.
+First passage through the centre at tau = t/t* = 2.03 (analysis run below).
+
+## 2026-11-15T12:55Z  test 3 first pass (runs D-bh-dress-20261115-1235{16..30}-cff68f1), and
+## predictions for the reruns
+
+Development analysis (scratch/D-bh-dress/tmp/analyze_dev, not a registered result) showed:
+(i) eps = 0.1 with s = 5M (run 123522) turned around only 10.9 M of dust by a/a_i = 100
+against 55.9 M in closed form: the Plummer softening also weakens the self-gravity of the
+dust within a few s of the centre, i.e. the deceleration of the Hubble flow there, so the
+inner shells are less bound and the effective seed is weaker. Kept on record as a
+softening result; not a test of self-similarity. (ii) The angular-momentum runs used a
+fixed capture L < 4M, r < 4M while the hole grew to 1.8 M; the rule must use the current
+hole mass. Both fixed in commit 8e548d6.
+Predictions for the reruns, written before they run:
+3d'. eps = 0.1, s = 0.5M, to a/a_i = 100: M_ta within 1 % of the closed form at
+     a/a_i = 100 (55.9 M + M); on lambda in [0.03, 0.3] the stacked profile within 20 % of
+     test 2 (bin averages); fitted slope on [0.02, 0.2] within 0.1 of test 2's on the same
+     bins; dress (dust that passed the centre) over M_ta within 10 % of test 2's
+     2.03^(-2/3) = 0.62.
+3f'. With the capture rule scaled to the hole mass, the captured fraction rises against
+     the first pass (run 123524 to 123530): sigma_i = 0.02 and 0.05 capture all of the
+     collapsed dust by a/a_i = 4 (as before), sigma_i = 0.1 captures more than 92 %,
+     sigma_i = 0.2 more than 69 %.
