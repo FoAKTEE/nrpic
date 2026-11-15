@@ -92,6 +92,10 @@ def gather():
         for t in tests:
             if t["id"] in ("A1", "A13"):
                 v[f"{sub}.{t['id']}"] = t["value"]
+    for sub in ("val_std", "val_cf"):
+        tests = C.load_json("E-20261115-172423-5234cce", f"{sub}/validation.json")
+        v[f"release.{sub}.A1"] = next(t["value"] for t in tests if t["id"] == "A1")
+        v[f"release.{sub}.failed"] = [t["id"] for t in tests if t["passed"] is False]
     rows, meta = costmodel.table()
     for r in rows:
         key = f"cost.{r['case']}.{r['N']}"
@@ -230,7 +234,8 @@ def write_ledger(v, res, out):
             ("dni", DN["inflection"], "stochastic delta N, ultra-slow roll"),
             ("val", VAL_RUN, "validation of the code's noise generator"),
             ("cost", costmodel.CODEBASE, "cost model and synthesis operation counts"),
-            ("core", costmodel.CORE, "measured card throughput of the code (core)")]
+            ("core", costmodel.CORE, "measured card throughput of the code (core)"),
+            ("rel", "E-20261115-172423-5234cce", "Markov-tanh noise of the released code (analysis helper)")]
     rid = {k: f"R{n}" for n, (k, _, _) in enumerate(runs, 1)}
     q, i = "quadratic", "inflection"
     rows = [
@@ -266,6 +271,8 @@ def write_ledger(v, res, out):
         ("Noise: reconstruction from the keys, frozen, Markov-step, Markov-tanh (tolerance $10^{-11}$)",
          f"{tex_num(v['val_frozen.A1'], 2)}, {tex_num(v['val_markov_heaviside.A1'], 2)}, {tex_num(v['val_markov_tanh.A1'], 3)}", rid["val"]),
         ("Noise: frozen scheme, $N$ against $2N$", tex_num(v["val_frozen.A13"], 2), rid["val"]),
+        ("Noise, release, Markov-tanh: reconstruction against the standard; the cancellation-free reference",
+         f"{tex_num(v['release.val_std.A1'], 3)}; {tex_num(v['release.val_cf.A1'], 2)}", rid["rel"]),
         ("Cost: Z4c; with field; with sources (zone-cycles per second, $128^3$)",
          f"{tex_num(v['core.z4c'], 3)}; {tex_num(v['core.field'], 3)}; {tex_num(v['core.noise'], 3)}", rid["core"]),
         ("Cost: overhead of field and sources over Z4c, assumed; measured",

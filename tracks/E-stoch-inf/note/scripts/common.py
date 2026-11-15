@@ -32,6 +32,7 @@ RUNS = {
     "E-20261115-140116-87c1cc5": ("E-stoch-inf", "lead's rerun of the cost model and synthesis counts (identical to E-stoch-inf-20261115-123936-b2ec5c7)", True),
     "E-20261115-135532-3f958a1": ("E-stoch-inf", "lead's independent background, freezing and delta-N checks", True),
     "core-20261115-143907-cea4c86": ("core", "core's card throughput of Z4c, field and sources at 128^3", False),
+    "E-20261115-172423-5234cce": ("E-stoch-inf", "Markov-tanh noise of the release executable against the standard and a cancellation-free reference", True),
 }
 
 _cache = {}

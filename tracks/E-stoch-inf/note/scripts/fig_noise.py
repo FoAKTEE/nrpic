@@ -11,6 +11,10 @@ p threshold over the p value; for A2 and A3 the largest of the sub-tests. Result
 exactly zero (bit-identical fields) are drawn at the left edge with a left-pointing marker.
 A0 (format) and A9 (not applicable to these outputs) are left out; A8 of the Markov-Heaviside
 scheme is not applicable (no common active modes between outputs).
+Open diamonds: the Markov-tanh scheme of the release executable (core-v0.3, same scaled
+case, tests A0-A10), validated against a reference that forms the window increment without
+cancellation (val_cf/validation.json of run E-20261115-172423-5234cce, the analysis helper's
+run; checksums verified against its sha256sums.txt).
 """
 import os
 import re
@@ -26,6 +30,7 @@ import common as C  # noqa: E402
 import czstyle as cz  # noqa: E402
 
 RUN = "E-20261115-140502-2957846"
+RELEASE_RUN = "E-20261115-172423-5234cce"
 SCHEMES = (("val_frozen", "frozen, tanh window", cz.PAL["blue"], "o"),
            ("val_markov_heaviside", "Markov, step window", cz.PAL["green"], "s"),
            ("val_markov_tanh", "Markov, tanh window", cz.PAL["red"], "D"))
@@ -85,7 +90,7 @@ def main():
             r = ratio(t)
             if r is None:
                 continue
-            y = nrow - 1 - i + (j - 1) * 0.22
+            y = nrow - 1 - i + (j - 1.5) * 0.18
             if r == 0.0:
                 xe.append(FLOOR * 1.6)
                 ye.append(y)
@@ -94,6 +99,25 @@ def main():
                 ys.append(y)
         ax.plot(xs, ys, mk, color=col, ms=3.6, ls="none", label=lab)
         ax.plot(xe, ye, "<", color=col, ms=3.6, ls="none")
+    # release executable, Markov tanh, cancellation-free reference
+    tests = C.load_json(RELEASE_RUN, "val_cf/validation.json")
+    xs, ys, xe, ye = [], [], [], []
+    for i, (tid, rep, _) in enumerate(ROWS):
+        t = next((t for t in tests if t["id"] == tid), None) if rep == 0 else None
+        if t is None:
+            continue
+        r = ratio(t)
+        if r is None:
+            continue
+        if r == 0.0:
+            xe.append(FLOOR * 1.6)
+            ye.append(nrow - 1 - i + 0.27)
+        else:
+            xs.append(r)
+            ys.append(nrow - 1 - i + 0.27)
+    ax.plot(xs, ys, "D", mfc="none", color=cz.PAL["red"], ms=3.6, ls="none",
+            label="Markov, tanh, release")
+    ax.plot(xe, ye, "<", mfc="none", color=cz.PAL["red"], ms=3.6, ls="none")
     ax.axvline(1.0, **cz.GUIDE)
     ax.set_xscale("log")
     ax.set_xlim(FLOOR, 1e2)
