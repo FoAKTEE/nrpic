@@ -440,3 +440,42 @@ evolution to t = 2: the same outer iterations as the processor runs, psi (and W)
 1e-12 relative, the region means of |H| at t = 2 equal to 1e-6 relative (card runs with
 deposition are not bit-reproducible). Refuted if an iteration count differs by more than
 one or a field by more than 1e-9.
+
+## 2026-11-19, entry 6: card job K queued; test G (Track A's CMC peak) predicted
+
+Card job K: run core-20261119-154414-2506b80, Slurm job 4656 (batch launcher, card build
+of 76add0c copied to `scratch/core/tmp/idsolve2/exe_76add0c/athena_gpu`, list
+`scratch/core/tmp/idsolve2/card_k/card.list`, 0.6 card-hours reserved), waiting behind
+about twenty jobs. Tests R0, P and W1 (128 cells) wait for room in the allotment of owner
+core (loops `submit_wait.sh`, logs `scratch/core/tmp/idsolve2/submit_*.log`).
+
+**G, the phase-1 generator of Track A on the CMC slice with the code's solver**
+(`test_g.py`; request `...183719Z__to-core__phase1-generator-cmc.md`). The data are those
+of Track A's T4 (`t4_cmc_route.py` on `track/A-emd-pbh`, functions `ge_fields`, `run_case`,
+copied with their source named): a curvature peak with mu, e = 0.2, eps_i = k/(aH) = 0.2
+on a torus of side 20/k = 100 (H = 1), gradient-expansion psi_GE, K = -3H, Ahat_GE, E from
+the Hamiltonian constraint of psi_GE and Shat from the momentum constraint (spectral
+derivatives), one particle per cell at the cell centre carrying Ehat and Shat. The code
+reads psi_GE, K and Ahat_GE (`nrpic_cosmo id = file`), starts from psi = 1 and solves with
+K and Ahat held fixed. psi_GE solves the continuum constraint with this E exactly, so the
+solved psi differs from it only by the discretisation of the code; measure: Track A's
+c = max|dpsi - <dpsi>| / max|psi_GE - <psi_GE>|. Track A's Python solve diverged at mu = 0.5
+(runs A-emd-pbh-20261115-160718-e04c0cc, -161134-f3949f8, quoted from their DESIGN.md 2.2).
+Said plainly: one smoke run (mu = 0.5, 32 cells, by hand, `scratch/core/tmp/idsolve2/
+smoke_g/`, not registered) was made to check the files: it converged after 8 outer
+iterations with c = 1.6e-5, max|H| 1.2e-9 after, and 49 to 50 conjugate-gradient steps in
+most Newton steps (the inner solve stops at id_lin_maxit = 50).
+Cases: mu = 0.03, 0.3, 0.5, 0.7 at 64 cells, mu = 0.5 at 32 cells, mu = 0.5 at 64 cells
+with the vector part (mode code). Predictions [JUDGEMENT]:
+ (a) every case converges within 80 outer iterations, mu = 0.5 and 0.7 included;
+ (b) c at 64 cells below 1e-4 for mu <= 0.5, and for mu = 0.5 at least 4 times below the
+     value at 32 cells;
+ (c) the monitor after the solve, max|H| below 1e-8 in every case; the mean offset of
+     psi from psi_GE below 1e-6;
+ (d) with the vector part: converges, c within 10 per cent of the scalar-only case, and
+     the monitor's max|M| at least 10 times lower after the solve (or W frozen by the
+     stall rule);
+ (e) the inner solve is poorly preconditioned on a box of 100 Hubble lengths (the
+     Poisson preconditioner against sigma/k_min^2 of order 1e3): for mu >= 0.3 at 64
+     cells at least half of the Newton steps use all id_lin_maxit = 50 steps.
+Refuted (machinery) if mu = 0.5 does not converge or c at 64 cells exceeds 1e-3.
