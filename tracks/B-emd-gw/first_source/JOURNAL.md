@@ -599,7 +599,7 @@ prediction; neither is the momentum-constraint violation of the initial data.
 ## First outcomes of batch A (job 4637, run B-20261119-142833-19edd82, still running) and P16
 
 P12c (run-to-run floor), analyses B-20261119-155418-80d45af (e1_rep) and comparisons
-B-20261119-160535-6714ac1, B-20261119-154528-9306cb1 (`conv_eps1.png` looked at): CONFIRMED
+B-20261119-160535-6714ac1 (single precision, `conv_eps1.png` looked at) and B-20261119-160607-ef83373 (double precision): CONFIRMED
 with a wide margin. The rerun of the eps = 1 baseline on the requests-b card executable
 reproduces the wave-2 release run: c_+(K1) from the double-precision dumps (dbin against the
 wave-2 restart files, same cycles) agrees to 9.5e-13 relative for a <= 40 and 4.7e-13 for
