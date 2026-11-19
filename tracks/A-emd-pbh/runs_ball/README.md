@@ -1,14 +1,30 @@
-# runs_ball: first full-relativity runs of Track A (SR-1, SR-2)
+# runs_ball: full-relativity runs of the expanding ball (Track A)
 
-Helper package of A-emd-pbh, wave 2 (2026-11-15). The expanding dust ball of data set 2t
-(expball smoothed top-hat core, Delta = 1 inside R1 = 2.4 M, compensated at 6 M, inside an
-Einstein-de Sitter ball with H R_b = 0.5 and a C^4 taper; run
-A-emd-pbh-20261115-130609-947c898) evolved with the release card executable of core-v0.3
-and compared with the exact solution (`expball/exact.py`) in invariants only.
-Specification: `stage/G1/STATUS.md` section 3. Predictions and outcomes, with every run id:
-`JOURNAL.md` (entries 1-4). Figures: `figs/` (each looked at).
+Helper package of A-emd-pbh. Wave 2 (2026-11-15): SR-1 (geodesic slicing) and SR-2
+(conformal-time lapse) on data set 2t. Wave 2b (2026-11-19, helper "runs3"): SR-1L, data
+set 2t with the relaxed 1+log lapse of core's gauge package, and BH-1, a new data set 3
+whose first horizon (areal radius 1.37 M) the meshes of this machine resolve, followed
+through horizon formation. Everything is compared with the exact solution
+(`expball/exact.py`) in invariants only. Predictions and outcomes with every run id:
+`JOURNAL.md` (entries 1-6 wave 2, entries 7 and later wave 2b). Figures: `figs/` (each
+looked at).
 
-## Results (details and numbers with run ids in JOURNAL.md entry 3)
+## Wave 2b (SR-1L, data set 3, BH-1)
+
+| what | run id | state |
+|---|---|---|
+| data set 3 (expball compensated top-hat, H R_b = 0.7, delta_c = 1.5, R1 = 0.65 R_b, R2 = 0.95 R_b, matter edge rbar = 4.25 M; lattices of 34, 51, 68 sites; exact references) | A-20261119-143524-334e553 (`prep_bh.py`; supersedes -142341-4b2c942, the same without table breaks) | done |
+| relaxed-lapse reference of the homogeneous core of 2t | A-20261119-143309-1cc423f (`lapse_ref.py`) | done |
+| smoke test of the decks (32^3, 3 cycles, not a result) | A-20261119-143417-ce697f0 | done |
+| card job: SR-1L at dx = M, M/2 (t = 44), M/4 (t = 24); BH-1 at dx = M/4, M/6, M/8 (t = 16) | A-20261119-144419-13d5601 (Slurm 4642) | see JOURNAL |
+| analysis | `after_runs3.sh` (registers its own run) | see JOURNAL |
+
+Exact events of data set 3 (run A-20261119-143524-334e553): core turnaround tau = 3.3716
+(R_max = 1.1623 R_i), first trapped sphere = the core edge R_i = 2.65306 at tau = 9.55109,
+m = 0.686563, R_AH = 1.37313 M, crunch 10.6305; m_AH(tau) = 0.69610, 0.70437 at 2, 4 M
+later. Outcomes: JOURNAL entry 8.
+
+## Wave 2 results (details and numbers with run ids in JOURNAL.md entry 3)
 
 | | SR-1, lapse 1, shift 0 (geodesic slicing) | SR-2, conformal-time lapse + Gamma-driver |
 |---|---|---|
@@ -39,16 +55,38 @@ A-20261115-182657-53da696. R1, R3, R4 hold; R2 holds for SR-1 (mean turnaround e
 |---|---|
 | `common.py` | model of data set 2t, readers of trajectories, histories, formatted-table lines, horizon summaries, snapshots; areal radius and Misner-Sharp mass in spherical symmetry (fourth-order dR/dr along the line) |
 | `prep.py` | reorders the lattice particles so that the tracked ones come first (tag = position; `--nlat 76` makes the h = M/4 lattice); exact references per tracked particle and global (turnaround, trapping, crunch, horizon mass on slices of constant proper time m_AH(tau), central a(tau) and rho_c(tau)); step plan of SR-1 from the exact coordinate speed of light |
-| `compare.py` | the comparison: areal radius against proper time per particle, turnaround, trapping (R = 2m) and crunch times, Misner-Sharp mass and compactness on the x axis, finder mass against the exact horizon mass of the same slice, central lapse and density, constraints, gauge maps; numbers JSON, series npz and five figures per run |
+| `compare.py` | the comparison (gauges sr1, sr2, leak; data set 2t or any `prep_bh.py` data set): areal radius against proper time per particle, turnaround, trapping (R = 2m) and crunch times, Misner-Sharp mass and compactness on the x axis, finder mass against the exact horizon mass of the same slice, central lapse and density, constraints, gauge maps; numbers JSON, series npz and five figures per run |
 | `fields.py` | z = 0 slices of the field dumps (E, lapse, H, Theta) |
 | `summary.py` | resolution comparison of several runs (`fig_resolution_summary`) |
 | `sr1.athinput`, `sr2.athinput` | input decks (dx = M/2 over [-64, 64]^3; other meshes by command-line overrides) |
 | `run_cpu.sh` | processor driver (SR-1 with restart segments); the release processor executable is single-threaded, so it was not used for production (JOURNAL entry 2) |
 | `runreg.py` | registration by hand (`local`, `card`, `finish`) when `harness/bin/nrpic-run` refuses the shared worktree |
 | `after_m4.sh` | analysis of the dx = M/4 runs once they have finished |
+| `sr1l.athinput` | SR-1L: relaxed 1+log lapse (`lapse_leak` = 8, T = 0.125 M) with the Gamma-driver; needs core's gauge executable (`scratch/core/exe/core_gauge/`) |
+| `bh.athinput` | BH-1: data set 3 on [-16, 16]^3 (dx = M/8 by default), same gauge, particle excision below alpha = 0.1, finder from t = 8 every 0.125 M |
+| `prep_bh.py` | builds data set 3 with expball (table with breaks at the top-hat jumps, lattices with tracked particles first, exact events, m_AH(tau), central a(tau), lapse reference); `--prep` directories `lat<n>/` for compare.py |
+| `lapse_ref.py` | central lapse of the relaxed condition in a homogeneous core (reference and lower bound) |
+| `summary3.py` | SR-1L against SR-1/SR-2 (core shells, central lapse, constraint growth, central clock); BH-1 over resolutions (first horizon, horizon mass against the exact mass of the same slice, orders) |
+| `after_runs3.sh` | closes the wave-2b card run and runs the registered analysis |
 | `figs/` | PNG copies of the figures |
 
-## How to rerun
+## How to rerun (wave 2b)
+
+    cd /data/haiyangw/nrpic/wt/A-emd-pbh
+    C=tracks/A-emd-pbh/runs_ball
+    harness/bin/nrpic-run submit --kind scouting --gate G2 --package $C --launcher local --cores 4 \
+        --purpose "..." -- bash -c ".venv/bin/python $C/prep_bh.py --out \$NRPIC_RUN_DIR"
+    # batch list: one line per run, e.g.
+    #   bh_n256 <wt>/$C/bh.athinput problem/comp0_file=<prep>/<stem>.tab \
+    #       particles/particle_file=<prep>/lat68/<stem>_lat68_track.nrp particles/traj_ntrack=1318
+    #   sr1l_n256 <wt>/$C/sr1l.athinput particles/particle_file=<2t prep>/..._lat38_track.nrp particles/traj_ntrack=1705
+    harness/bin/nrpic-run submit --kind scouting --gate G2 --package $C --launcher batch \
+        --exe /data/haiyangw/nrpic/scratch/core/exe/core_gauge/athena_gpu --list <list> --wall 00:58:00 --purpose "..."
+    bash $C/after_runs3.sh       # after the job: finish, compare, fields, summary3 (edit RUN= for a new job)
+
+The list of job A-20261119-144419-13d5601 is `batch.list` in its output directory.
+
+## How to rerun (wave 2)
 
     cd /data/haiyangw/nrpic/wt/A-emd-pbh
     R=tracks/A-emd-pbh/runs_ball
