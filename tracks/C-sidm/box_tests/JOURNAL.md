@@ -572,3 +572,13 @@ Predictions:
      run's dump if its own dump carries none).
 Refuted: (a) by a differing column 1-30; (c) by a dH above 1e-14; (b) by a cell-mode mean
 outside 3 se of the prediction at Kn = 0.01.
+
+## 2026-11-19 Prediction R3(v'): cost under equal load (timing.py), before the run
+
+R3's wall times cannot be compared with wave 2 (see the R3 outcome below: the
+collisionless baseline itself took 1.0-2.0 times its wave-2 time under today's load). So
+the three variants run together, one core each, twice: theta = 1, plain, seed 1, 1e6
+particles, 200 steps; coll_energy = particle, cell, and collisions off. Prediction: the
+collision part (wall minus the collisionless wall) with `particle` is 1.0 to 1.5 times
+that with `cell` (one functor evaluation per colliding particle and step, lam = 1 found
+without iteration in a flat box); refuted above 1.5 or below 0.9.
