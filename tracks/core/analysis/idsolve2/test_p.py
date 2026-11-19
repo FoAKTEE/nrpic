@@ -222,6 +222,8 @@ def errors(c, uref, rp):
                e_near_max=float(np.max(np.abs(e[near]))) if near.any() else 0.0,
                e_mid_max=float(np.max(np.abs(e[mid]))),
                e_mid_rms=float(np.sqrt(np.mean(e[mid]**2))),
+               e_3_12_max=float(np.max(np.abs(e[(r >= 3.0) & (r < 12.0)]))),
+               e_1_3_max=float(np.max(np.abs(e[(r >= 1.0) & (r < 3.0)]))),
                H_after_max=float(np.max(np.abs(c["H"][(r >= rp) & ~face]))),
                H_before_max=float(np.max(np.abs(c["H0"][(r >= rp) & ~face]))))
     if c["level"].max() > 0:
