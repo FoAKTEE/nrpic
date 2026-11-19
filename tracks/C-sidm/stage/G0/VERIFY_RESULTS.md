@@ -1,12 +1,12 @@
 # Re-verification: C-sidm G0
 
-`harness/bin/nrpic-stage verify C-sidm G0` on 2026-11-19T15:43:32Z, clean export of commit `53b13916e214` in `scratch/C-sidm/tmp/stage-verify/C-sidm-G0-53b1391-20261119T154228Z`. Result: **FAIL**.
+`harness/bin/nrpic-stage verify C-sidm G0` on 2026-11-19T15:45:28Z, clean export of commit `589237c86781` in `scratch/C-sidm/tmp/stage-verify/C-sidm-G0-589237c-20261119T154443Z`. Result: **FAIL**.
 
 | Check | Result | Message |
 |---|---|---|
 | clean | PASS | worktree clean (outside the stage directory being assembled) |
-| sync | FAIL | main has commits not merged: run nrpic-ctx sync |
-| export | PASS | clean export of 53b13916e214 (HEAD) in /data/haiyangw/nrpic/scratch/C-sidm/tmp/stage-verify/C-sidm-G0-53b1391-20261119T154228Z/tree |
+| sync | PASS | main is merged into the branch |
+| export | PASS | clean export of 589237c86781 (HEAD) in /data/haiyangw/nrpic/scratch/C-sidm/tmp/stage-verify/C-sidm-G0-589237c-20261119T154443Z/tree |
 | size | PASS | no committed file of the track above 5 MB |
 | note | PASS | tracks/<ID>/note/main.tex present |
 | package | PASS | EVIDENCE.md, OPEN.md, CHECKLIST.md present (decision 0012); scoping text: scope/SCOPE.md; REPORT.md of wave 1 accepted as it is; REVIEW.md present; verifier's report VERIFIER.md |

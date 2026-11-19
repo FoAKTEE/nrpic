@@ -1,9 +1,9 @@
 {
   "track": "C-sidm",
   "gate": "G0",
-  "commit": "53b13916e214976e25470adb1d1076d4737a90c2",
-  "verified_utc": "2026-11-19T15:43:32Z",
-  "export": "/data/haiyangw/nrpic/scratch/C-sidm/tmp/stage-verify/C-sidm-G0-53b1391-20261119T154228Z",
+  "commit": "589237c86781afb762359bce24ee3f14b5eee3c3",
+  "verified_utc": "2026-11-19T15:45:28Z",
+  "export": "/data/haiyangw/nrpic/scratch/C-sidm/tmp/stage-verify/C-sidm-G0-589237c-20261119T154443Z",
   "result": "FAIL",
   "checks": [
     {
@@ -14,14 +14,14 @@
     },
     {
       "check": "sync",
-      "status": "FAIL",
-      "message": "main has commits not merged: run nrpic-ctx sync",
+      "status": "PASS",
+      "message": "main is merged into the branch",
       "detail": null
     },
     {
       "check": "export",
       "status": "PASS",
-      "message": "clean export of 53b13916e214 (HEAD) in /data/haiyangw/nrpic/scratch/C-sidm/tmp/stage-verify/C-sidm-G0-53b1391-20261119T154228Z/tree",
+      "message": "clean export of 589237c86781 (HEAD) in /data/haiyangw/nrpic/scratch/C-sidm/tmp/stage-verify/C-sidm-G0-589237c-20261119T154443Z/tree",
       "detail": null
     },
     {
