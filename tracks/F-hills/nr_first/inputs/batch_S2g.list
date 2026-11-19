@@ -1,2 +1,3 @@
-# nr_first: S2 repeated with core's mass-scaled shift damping (eta m = 2 at the hole, 0.25 far); core_gauge executable
-S2g tracks/F-hills/nr_first/inputs/single_P025_profile.athinput -t 00:28:00
+# nr_first E10: S2 repeated with core's mass-scaled shift damping (eta m = 2 at the hole, 0.25 far); core_gauge executable
+# 2400 slots: S3 and S2 stopped at 1632 MeshBlocks > 1600 (E3 outcome); restart files every 30 m only (3.8 GB each)
+S2g tracks/F-hills/nr_first/inputs/single_P025_profile.athinput mesh_refinement/max_nmb_per_rank=2400 output4/dt=30.0 -t 00:54:00

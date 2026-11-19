@@ -450,3 +450,82 @@ Runs of this package not named above: F-20261115-174432-291868f, a first pass of
 `c0_constraints.py` on C0's finished m/8 case while C0 was still running, failed at the end
 (output argument `'$NRPIC_RUN_DIR'` passed literally, see "Incidents"); its printed numbers
 for approx at m/8 equal those of F-20261115-181053-d52f22d.
+
+## 2026-11-19 Wave 2b resumed (session of the helper nr_finish)
+
+Main merged (10a8d20d); decision 0016 read (Track F: 120 card-hours toward G2). Card jobs 4474
+(S3, S2) and 4476 (P1 smoke) ran on 2026-11-15 at 20:21-20:34 UTC after the hand-over. Closed
+with `nrpic-run finish`: F-20261115-173601-2fae2dc failed (exit 1, both members of the batch),
+F-20261115-174602-c6879fe completed. Card time used: S3 7.4 min, S2 4.8 min, P1 smoke 5.8 min
+(0.30 card-hours together; `batch.list.slurm-*.out` of the runs).
+
+## 2026-11-19 E3, outcome (run F-20261115-173601-2fae2dc; analysis F-20261119-143214-5f5dc3a)
+
+Both runs stopped early with the same fatal error [VERIFIED, `S3/athena.*.log`, `S2/athena.*.log`]:
+"Number of MeshBlocks in this rank on new tree = 1632 ... exceeds max_nmb_per_rank = 1600"
+(`mesh_refinement.cpp` line 495): S3 at cycle 703 (t = 21.97 m), S2 at cycle 455 (t = 14.22 m).
+So E1's prediction (b) is REFUTED (it said 500-900 MeshBlocks after the wave-zone refinement and
+"refuted if a single-puncture count exceeds 1600"); the restart file of S2 at t = 10 m (3.83 GB
+against 0.97 GB for the 400 MeshBlocks at t = 0) puts the tree near 1580 MeshBlocks from the first
+regrids on. The tree is examined in E11. Per cycle 0.58-0.66 s throughout (log every 100 cycles),
+GPU busy 93 percent on average, card memory 36.3 GB at 1600 slots (22.7 MB per slot).
+Against the predictions of E3 (criteria unchanged; only t <= 22 m (S3) and t <= 14 m (S2) exist)
+[VERIFIED, `single_analysis.json` and `fig_single_gauge.png` of the analysis run, read; window
+medians of `single.horizon_summary_0.txt` computed in this session]:
+1. Horizon mass at the first search 1.006-1.010: FAILED. The search at t = 0 gives 0.999087 in
+   both runs (hrms 4.6e-3, mean radius 0.477 m = 3.8 cells), 0.87 percent below the rest mass of
+   the full solution 1.00778. The searches of t = 0.5-3.0 (S3) and 0.5-1.5 (S2) repeat one row
+   to all digits (0.98594, hmean -0.19): not converged horizons [JUDGEMENT]. The first converged
+   search (hrms below 1e-6) gives 1.00789 (S3, t = 3.5) and 1.00658 (S2, t = 2.0), inside the
+   predicted range, once the coordinate horizon has grown (mean radius 0.75 m at t = 3.5).
+   Spin |S| at most 1.1e-4 m^2: met. Drift over 90 m: not measured. On the common window, median
+   of t = 4-6 to median of t = 12-14: S3 +5.1e-4, S2 +8.5e-4 (S2 1.7 times S3: within the
+   predicted factor two); S3 from t = 4-6 to 17-22: +1.0e-3.
+2. Tracker y, z below 2.5e-15: met. S3 f = 0.483 over t = 10-20 (predicted 0.4-0.6): met;
+   t = 30-40 not reached (f = 0.52 at t = 20-22). S2 faster than S3 at every t in 2-14: met.
+   S2 reaches f = 0.8 before t = 40: FAILED so far: maximum 0.774 at t = 5.4, then flat at 0.757
+   over t = 10-14 (a 2 percent overshoot, no oscillation).
+3. Junk energy: NOT MEASURED (the pulse had not reached the 30 m sphere when the runs stopped).
+4. Constraint norm: S1 not run; S3 <H^2>^(1/2) 5.7e-5 at t = 10, 4.6e-5 at t = 20 (flat): met
+   within the window. Peak 5.7e-4 at t = 2 (gauge transient).
+5. Cost: extrapolated from 0.62 s per cycle, a 90 m run (2880 cycles) takes 0.50 card-hours,
+   above the predicted 0.2-0.4: FAILED (the tree is about twice the predicted size).
+   No non-finite value before the stop: met.
+Reading [JUDGEMENT]: at m/8 the first horizon search underestimates the mass by about 0.9 percent
+(the three-hole data at m/8 gave 0.7-0.8 percent for m1 and M, E4 test 3), and the gauge needs
+about 3 m before the finder converges again; masses are read from t = 4 m on. With eta m = 0.25
+the tracker settles within 5 m at f = 0.76; with eta m = 2 it is still accelerating at 22 m.
+
+## 2026-11-19 E10. S2g: the light single puncture with core's mass-scaled shift damping (prediction)
+
+Run: `inputs/single_P025_profile.athinput` (S2's input with `shift_eta = 0.25`,
+`shift_eta_profile = true`, `shift_eta_mref = 8`: eta(x) = 0.25 [1 + 7/(1 + r^2/(2 m)^2)], so eta m
+= 2 at the hole and 0.25 far away, the half-excess radius 2 m; core/gauge READY, option 2), with
+`mesh_refinement/max_nmb_per_rank=2400` (E3 stopped at 1632 > 1600; slots change no physics) and
+restart files every 30 m; tlim 90 m; executable `scratch/core/exe/core_gauge/athena_gpu` (source
+b4430da; READY: identical to release core-v0.3 without the new parameters). Batch list
+`inputs/batch_S2g.list`, one card job, at most one card-hour (Slurm limit 59 min, athena -t 54 min).
+Analysis: `scripts/single_analysis.py` with S3, S2, S2g, and `scripts/s2g_compare.py` (common
+windows; written after this entry).
+References: core's E1 on processors (READY): far-away eta m = 0.2 raised to 2 at the hole by the
+profile gives a tracker speed 1.27 times that of eta m = 2 (1.97 without the profile); horizon
+masses unchanged to 1e-5. Here S2/S3 = 0.757/0.483 = 1.57 over t = 10-14 (E3).
+Predictions [JUDGEMENT]:
+1. Settling (tracker): S2g lies between S3 and S2 at every t in 5-14 m and above S3 for t in
+   5-22 m; f over t = 10-20 m between 0.50 and 0.65 (the speed ratio to S3 about 1.1-1.3, as in
+   core's E1); like S3 (same eta at the hole) it still rises after t = 20 m: f over 30-40 m above
+   f over 10-20 m, and over 60-90 m between 0.6 and 0.9. Refuted if S2g is slower than S3 or
+   faster than S2 over a window of 2 m inside the common times.
+2. Horizon mass: the first converged search after the transient between 1.006 and 1.010 (as S3,
+   S2); medians equal to S3's within 5e-4 at t = 4-6, 12-14 and 17-22; drift from t = 4-6 to
+   12-14 between S3's (+5.1e-4) and S2's (+8.5e-4) widened by 50 percent: +2.5e-4 to +1.3e-3;
+   drift from t = 4-6 to the end (t = 90) between 0.2 and 3 percent (E3's prediction for S3).
+   Spin below 1e-3. Refuted if a median differs from S3's by more than 1e-3.
+3. Junk energy through the spheres (E3 prediction 3, now measured on S2g; the radiated energy
+   does not depend on the gauge): E_junk/m between 1e-5 and 5e-4 and equal at 30, 40, 50 m within
+   25 percent.
+4. Constraint norm from t = 10 m on between 3e-5 and 1e-4, no growth by more than ten after
+   t = 20 m (core's E2 saw a larger early spike with the profile: allowed before t = 5 m).
+5. Run health: tree at most 2000 MeshBlocks (E11 will say why about 1600), reaches t = 90 m in
+   at most 40 min of card time (0.62 s per cycle, 2880 cycles), no non-finite value, horizon
+   found in every search after t = 4 m.
