@@ -145,3 +145,23 @@ P17. `fig_verdicts.py` on CHECK.md: 60 rows numbered 1..60, tally 23 / 35 / 2 / 
 P18. `fig_item20.py`: 15 cells, 21 locator spans valid, exit 0; in the decelerated (k = 0) column
      only the two Vlasov cells are "symmetric" (no theorem without symmetry), dust and linear Euler
      "unstable", polytropic Euler "proven". [Refuted if a locator fails.]
+
+## Entry 3 (2026-11-19, 07:32 PST from `date`): outcomes of the registered runs, ERRATA_ROWS, README
+
+- P17 held: run kb-20261119-153032-8849222 completed, exit 0: 60 rows, tally 23 / 35 / 2 / 0 equal to
+  the header, 97 locator spans valid, corrected rows 23 (line 230) and 50 (line 235). Figure
+  fig_verdicts.png looked at: bars by brief line and by label, legend clear of the bars; the two
+  CORRECTED (red) bars on lines 230 and 235.
+- P18 held: run kb-20261119-153036-8bc8bee completed, exit 0: 15 cells, 21 locator spans valid; in the
+  decelerated column the two Vlasov cells are yellow (theorem with symmetry or homogeneity only),
+  dust and linear Euler red, polytropic Euler blue; the cell of open question 20 is outlined.
+  Figure fig_item20.png looked at; labels and cell texts readable.
+
+ERRATA_ROWS.md written (1 wrong, 10 imprecise or label upgrades, 2 [TO VERIFY] answered) and
+README.md. A span checker (scripts/check_spans.py) was added for the locators of ERRATA_ROWS.md and
+the answer section of CHECK.md, which the tally does not read; an unregistered dry run flagged the
+two placeholder spans of the CHECK.md header (meta:arxiv-api/<id>), now skipped.
+
+P19. check_spans.py on ERRATA_ROWS.md and CHECK.md: ERRATA_ROWS 56 spans (37 TeX, 4 iq, 15 other),
+     CHECK.md 126 spans (73 TeX, 23 iq, 3 meta, 27 other), no problem, exit 0. [Refuted if any TeX
+     locator names a missing file or a line beyond its end.]
