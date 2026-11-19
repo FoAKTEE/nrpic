@@ -147,7 +147,7 @@ T_nu/T at 10 MeV decoupling within 2e-3 of 0.7138; the 2 MeV curve between 0.713
 all other numbers unchanged. Refuted if the 10 MeV case also misses 0.7138 (then the integrals
 are wrong).
 
-## Entry 3 (2026-11-19 08:05 PST): R1 rerun outcome; source checks done; prediction for R2
+## Entry 3 (2026-11-19 07:48 PST): R1 rerun outcome; source checks done; prediction for R2
 
 R1 rerun `kb-20261119-154408-2b35ecd` (completed, exit 0): T_nu/T after annihilation 0.71381
 for decoupling at 10 MeV against (4/11)^(1/3) = 0.71377; 0.71484 at 2 MeV and 0.71802 at 1 MeV,
@@ -160,3 +160,49 @@ Source checks of all statements are written into CHECK.md (69 rows; my count 32 
 tally and locator check of CHECK.md): rows numbered 1-69, tally equal to the header, every TeX
 file exists and covers its line numbers, every github file, INSPIRE query file and run manifest
 exists. Refuted by any problem printed.
+
+## Entry 4 (2026-11-19 07:50 PST): outcomes of R2 and of P1-P24
+
+R2 `kb-20261119-154850-7d01bd3` (completed): 69 rows, tally 32 / 32 / 5 / 0 equal to the header,
+120 TeX, 3 github, 9 INSPIRE-query and 3 run locators, no problem. Prediction held. Figure
+`fig_verdicts.png` looked at: bars per item (S5 ... M12) and per label, no overlap of labels.
+
+Outcomes of the predictions of entry 1 (CHECK row numbers in brackets):
+- P1 held (rows 1-4): decoupling "at around 1 MeV", M_H(1 MeV) = 1.50e5 M_sun, share 0.488 and
+  0.405.
+- P2 held (rows 5-7), with 1202.3848 "of the order of 1e5" and 2209.02735 a power-spectrum paper.
+- P3 held as far as searched (row 8): four queries, no counterexample.
+- P4, P5 held (rows 9, 10): "uniform time stepping across levels".
+- P6 held (row 11).
+- P7 held (row 13); 2408.03049 adds that backreaction on its hypersurfaces is negligible.
+- P8 held (row 15): 2403.03470 exists and proves the conjecture without symmetry in generalized
+  wave coordinates; I had not expected Touati's reverse construction without symmetry
+  (2402.17530), found on the way.
+- P9 held (rows 16-18).
+- P10 held in substance (row 19), but I give the verdict CORRECTED rather than "confirmed with a
+  precision": the statement "no numerical work" is wrong as written, since the brief's own
+  reference is numerical work on the averaged backreaction.
+- P11 held (rows 20, 22); the novelty part of line 441 (row 21) had no prediction; two queries
+  found no counterexample.
+- P12 held (rows 23, 24); 2511.20567 itself raises the extremal-Kerr route (not predicted).
+- P13 held (rows 25-27).
+- P14 partly failed (rows 28-30): I predicted 2508.20606 CONFIRMED for "non-periodic, curved"; it
+  keeps periodic boundaries (CORRECTED). 1305.5576 and 2207.03125 both state integrability
+  conditions explicitly (I expected only 1305.5576); astro-ph/0602159 does treat the three-torus
+  in its conclusions, not only T^1 x R^2 (my precision was wrong; the precision kept is that the
+  effect is weak-field and 1e-9 of dark energy).
+- P15 held (rows 31-36); the synchronous-gauge statement is confirmed as written.
+- P16 held (rows 37-42).
+- P17 partly failed (rows 43-47): "Giblin et al. used a sheet representation" is CORRECTED, not
+  confirmed (particles with CIC or tri-cubic spline; the sheet is only the continuum picture);
+  2605.15260 does treat filtering (current filter passes), against my guess.
+- P18 held (rows 48-51); the source-free total energy-momentum law of dGREM was not predicted;
+  2505.00286 (first numerical vacuum scheme) was found through 2211.13659.
+- P19 held (rows 52-54).
+- P20 held with the precision (row 56): no puncture-plus-particles run in the source paper.
+- P21 held (row 57).
+- P22 held (rows 58-62), including 2304.13284 spherical (CORRECTED).
+- P23 held (rows 63-65).
+- P24 held (rows 66-68).
+Failed or partly failed predictions: P14 (2508.20606; the T^3 precision), P17 (sheet in BSSN;
+filtering), the unregistered sanity check of the first R1 run (entry 2).
