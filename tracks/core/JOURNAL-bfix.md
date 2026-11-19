@@ -1038,3 +1038,91 @@ it. Fix: the directory names are mapped (`AMP_DIR` in `t8_analysis.py`); a figur
 circular-wave comparison (`t8_circ.png`, card minus processor per field against one
 rounding unit of each field) is added, since P10d had no figure. Predictions P10a to
 P10d stand as written at 18:14Z on 2026-11-15; nothing in them is changed.
+
+### Outcome of T8 (card runs core-20261115-181436-bd93f3e and core-20261115-181437-8d252cb; analysis core-20261119-140545-b16cd96, processors, 2 cores)
+
+Executables as run (sha256 of the copies the batch made, `batch.list.exe`): f9f2dc12...
+(release `.work/build_gpu_v03`) for the base job, 5a35c8f1... (published `athena_gpu` of
+this branch) for the new job. Results `results_t8.json`, figures looked at:
+`t8_amplitude.png` (left: non-TT part and max |gt - exact| over A on the line
+proportional to A from 1e-6 to 1e-5 at both N, lifted above it at 1e-7, more at N = 128
+than at 64; max |alpha - 1| / A turning up below 1e-6, a floor. Right: Psi_4 along -k and
+the Psi_4 error at N = 128 on the line proportional to 1/A over all three amplitudes; at
+N = 64 the Psi_4 error flattens at A = 1e-5 near 2e-7 while Psi_4 along -k keeps falling;
+the departure of the amplitude error from the symbol falls from 8e-9 to 2e-10 and does not
+reach the 1/A line at 1e-5), `t8_zgrow.png` (every z departure flat or falling from
+t = 0.25 to 4, Gamma^i near 3e-12, At and Theta falling from 3e-13 to 5e-14, gt near
+2e-14, chi falling; three orders of magnitude below the 1e-9 line) and `t8_circ.png`
+(card minus processor per field at cycle 37: 2e-15 to 4e-15 in the components of gt and
+chi, 6e-15 to 3.5e-14 in At, 2.5e-14 in Gamma^i, 4.3e-14 in Theta, 0 in alpha and the
+shift; every point above the bound of P10d for the order-one fields).
+
+- P10a PASSED. The Z4c puncture benchmark with outputs: the release and the new card
+  executable write the same 10 files (history, four `z4c` and four `con` dumps, the input
+  copy), 973 186 054 bytes, identical byte for byte; no file only in one run. So the card
+  regression of the benchmark, void in T4, is now in: the source change of this branch
+  leaves the Z4c evolution on the card bit-identical.
+- P10b, reading R2 PASSED (not refuted); its 10 per cent bound at A = 1e-7 FAILED. The
+  non-TT part over A grows from A = 1e-6 to 1e-5 by 9.993 (N = 64: 3.386e-6 to 3.384e-5)
+  and 9.982 (N = 128: 3.390e-6 to 3.384e-5); the pointwise error follows it (max
+  |gt - exact|/A 3.394e-5 and 3.385e-5 at A = 1e-5). At A = 1e-7 it is 4.47e-7 (N = 64)
+  and 6.92e-7 (N = 128), 32 per cent and a factor 2.0 above the predicted 3.4e-7: the
+  absolute floor that T9 found at N = 32 (4.6e-15 there), now 1.1e-14 at N = 64 and
+  3.5e-14 at N = 128, growing with N. The second-order fields are second order: from
+  A = 1e-6 to 1e-5 max |Khat| and max |Gamma^i| grow by 94 and 95 (N = 64), 82 and 84
+  (N = 128), and max |alpha - 1| = 1.69e-10 at A = 1e-5 at both N (1.69 A^2, T9's number),
+  with floors of about 3e-13 (N = 64) and 7e-13 (N = 128) below.
+- P10b, reading R1 PASSED. At N = 128 Psi_4 along -k rises from 7.81e-7 to 8.81e-6 of the
+  maximum from A = 1e-6 to 1e-7 (factor 11.3; bound 5 to 20), the Psi_4 error from 8.08e-7
+  to 8.11e-6 (bound 4e-6 to 1.6e-5), and the amplitude error departs from the symbol by
+  7.95e-9 at A = 1e-7 (bound 2e-9 to 1e-8).
+- P10b, the large-amplitude clauses FAILED. At N = 128 and A = 1e-5 the amplitude error
+  is -4.24e-10 against the symbol's -2.03e-10 (departure -2.2e-10, 109 per cent; bound 30)
+  and the phase -1.240e-8 against -1.071e-8 (16 per cent; bound 10). At N = 64 the values
+  of A = 1e-5 differ from those of A = 1e-6 by 5.0 per cent in the amplitude error
+  (-8.150e-9 against -7.760e-9; bound 3) and 0.57 per cent in the phase (-1.768e-7 against
+  -1.758e-7; within the bound). Reading of the phase [JUDGEMENT, its scaling with A not
+  tested]: at A = 1e-5 the phase moves by -1.0e-9 to -1.7e-9 rad against the smaller
+  amplitudes at N = 32 (T9: -1.2e-9), 64 (-1.0e-9) and 128 (-1.7e-9 against the symbol),
+  so an offset that does not depend on N, of the size of a frequency shift of second
+  order in A (A^2 = 1e-10); at N = 128 it is 16 per cent of the scheme's phase error. The
+  amplitude departure at A = 1e-5 (-2.7e-10 at N = 64, -2.2e-10 at 128, but -1e-11 between
+  A = 1e-5 and 1e-6 at N = 32) is not explained.
+- Not predicted: at N = 128 the Psi_4 error is 8.11e-6, 8.08e-7, 8.25e-8 for A = 1e-7,
+  1e-6, 1e-5, exactly proportional to 1/A: at 128 cells and one period it is rounding at
+  all three amplitudes (T9's 5e-14 N^2 / A gives 8.2e-8 at A = 1e-5). At A = 1e-5 the
+  Psi_4 error converges from N = 32 (T9: 3.192e-6) to 64 (1.904e-7) at order 4.07; P5a's
+  order 3.3 from 32 to 64 at A = 1e-6 was already lifted by rounding (Psi_4 along -k
+  1.8e-7 at N = 64). gw_diag's h_x over A is 1.2e-10 (N = 64) and 1.4e-10 (N = 128) at
+  A = 1e-5, 1.0e-8 and 1.5e-8 at A = 1e-7 (1/A).
+- P10c PASSED. The 256 x 256 x 16 box ran to the time limit t = 4 (a = 8.999, 1024 cycles,
+  240 s, 4.47e6 zone-cycles per second) and kept all 1 048 576 particles. The largest
+  absolute z departure, t = 1 to t = 4: At 1.96e-13 to 5.13e-14 (factor 0.26), Axz 1.40e-13
+  to 4.85e-14 (0.35), gt 1.58e-14 to 2.22e-14 (1.41), gxz 1.62e-14 to 2.68e-14 (1.65),
+  Gamma^x,y 2.24e-12 to 2.90e-12 (1.29), Gamma^z 2.76e-12 to 3.28e-12 (1.19), Khat 0.34,
+  Theta 0.27, chi 0.10, alpha 1.33e-14 to 8.17e-14 (6.1, while alpha itself grows with the
+  conformal-time lapse from about 2 to 9). Mean factor per 0.25 over the last eight dumps:
+  at most 1.14 (alpha), 0.91 (At), 1.02 (gt), 1.01 (Gamma); nothing above 1e-9 absolute
+  (the largest, Gamma^z, 3.5e-12). Relative to the x-y variation of the field at t = 4:
+  At 2.3e-9, gt 1.6e-11, Gamma 8.9e-10, Theta 1.8e-6. My expectation of growth by about
+  16 (steps times a) was too pessimistic: the noise of At, Khat and Theta decays as in
+  T10, that of gt and Gamma stays level. The energy density E of `tmunu`: z departure
+  5.7e-15 at t = 1 to 4.6e-16 at t = 4 absolute, 5.2e-13 to 2.5e-12 of its maximum.
+- P10d PASSED for the error file, FAILED for the fields. RMS-L1 of the error file on the
+  card 7.561685e-11 against the processor's 7.561707e-11 (2.9e-6 relative; bound 1e-4).
+  At t = 0 the two dumps agree to one rounding unit (8.5e-22 in At, 1.1e-22 in gt). At the
+  final dump (t = 0.57735, cycle 37) they differ by 3.7e-9 A in gt (gxx, 3.7e-15 absolute,
+  about 16 rounding units of the order-one metric) and 3.5e-8 A in At (Axx, 3.5e-14), the
+  bound being 1e-9 A. My bound took T4's card-against-processor difference of the Fourier
+  coefficient (4e-10, a mean over the box) for a pointwise one. The pointwise sizes are
+  those of rounding of order-one fields through the second differences estimated in T4b
+  [JUDGEMENT]; nothing in the figure singles out a field or a place.
+For Track B: (1) the card executable leaves the Z4c benchmark bit-identical; (2) in the
+256 x 256 x 16 box the mesh-scale z noise does not grow to a = 9 (At 5e-14, gt 2e-14,
+Gamma 3e-12 at t = 4): the floor measured at t = 1 is an upper bound for the run;
+(3) one period of the oblique wave cannot show the scheme's convergence beyond 64 cells
+at any amplitude from 1e-7 to 1e-5: at 128 cells the Psi_4 error is rounding (8.2e-8 at
+A = 1e-5, proportional to 1/A), and the amplitude and phase depart from the symbol by
+2.2e-10 and 1.7e-9 at A = 1e-5 (second order) and 4.7e-10 and 2.9e-9 at 1e-6 (rounding).
+A = 1e-5 is still the better choice up to 64 cells (Psi_4 converges at order 4.07 from 32
+to 64); the advice "A = 1e-5 beyond 64 cells" of REQUESTS_B.md is withdrawn.
