@@ -40,6 +40,9 @@ def main():
     ap.add_argument("--out", default=os.environ.get("NRPIC_RUN_DIR", ""))
     ap.add_argument("--tol", type=float, default=1.0e-8)
     ap.add_argument("--pairs", nargs="*", default=[])
+    ap.add_argument("--reuse", default="",
+                    help="output directory of an earlier call: a configuration that has a "
+                         "finished run of the case there is not run again")
     a = ap.parse_args()
     if not a.out:
         ap.error("--out or NRPIC_RUN_DIR")
@@ -53,6 +56,12 @@ def main():
         for cfg in configs:
             c = parse(cfg)
             rd = os.path.join(a.out, case, c["label"])
+            old = os.path.join(a.reuse, case, c["label"]) if a.reuse else ""
+            if old and "loop_s" in L.parse_log(os.path.join(old, "run.log")):
+                runs[cfg] = dict(case=case, exe=c["exe"], threads=c["threads"], rundir=old,
+                                 exit=0, wall_s=0.0, reused=True)
+                runs[cfg].update(L.parse_log(os.path.join(old, "run.log")))
+                continue
             runs[cfg] = L.run_case(c["exe"], case, rd, c["threads"], c["bind"], c["places"])
             if runs[cfg]["exit"] != 0:
                 bad += 1

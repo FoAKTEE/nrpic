@@ -85,8 +85,9 @@ CASES = {
                   append=RST % 8,
                   what="vacuum puncture, Z4c, uniform 64^3 in eight blocks"),
     "punc": dict(inp="problems/puncture/horizon_calib.athinput", files=[],
-                 args=["time/nlim=17", "refined_region1/level=3", "refined_region2/level=3",
-                       "output2/dt=1.0e30"],
+                 args=["time/nlim=5", "fastflow/find_every=4", "refined_region1/level=2",
+                       "refined_region2/level=2", "output2/dt=1.0e30"],
+                 append=RST % 5,
                  what="vacuum puncture on a refined mesh, six tracers, horizon finder"),
 }
 REGRESS = ["geo", "boris", "dep", "east", "os", "jeans", "binary", "newton", "coll", "kg",
