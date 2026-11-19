@@ -125,12 +125,13 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--run", required=True)
     ap.add_argument("--card", default="")
+    ap.add_argument("--n", type=int, default=32, help="particles per side of the cases")
     ap.add_argument("--out", default=os.environ.get("NRPIC_RUN_DIR", ""))
     a = ap.parse_args()
     os.makedirs(a.out, exist_ok=True)
     fs.use_style()
     res = {}
-    n = 32
+    n = a.n
     tags = ((n//4)*n*n, (3*n//4)*n*n - 1)
     sp = os.path.join(a.run, "sin32_sp")
     s7 = os.path.join(a.run, "sin32_7pt")
@@ -182,11 +183,12 @@ def main():
             J=float(np.abs(J - g["J"]).max()/np.abs(J).max()),
             dJ=float(np.abs(dJ - g["dJ"]).max()/np.abs(dJ).max()),
             d2J=float(np.abs(d2J - g["d2J"]).max()/np.abs(d2J).max()),
-            d3J_quotient=float(np.abs(q[consec] - g["d3J"][1:][consec]).max()
-                               / np.abs(g["d3J"]).max()),
+            d3J_quotient=(float(np.abs(q[consec] - g["d3J"][1:][consec]).max()
+                                / np.abs(g["d3J"]).max()) if consec.any() else None),
             T_cosmic=float(np.abs(g["T"] - (2.0/3.0)*((1.0 + 0.5*g["time"])**3 - 1.0)).max()),
-            T_d3J_mid=float(np.abs(g["T_d3J"][1:][consec]
-                                   - 0.5*(g["T"][1:] + g["T"][:-1])[consec]).max()))
+            T_d3J_mid=(float(np.abs(g["T_d3J"][1:][consec]
+                                    - 0.5*(g["T"][1:] + g["T"][:-1])[consec]).max())
+                       if consec.any() else None))
     res["T3b"] = tb
 
     # ---- T3c: the slab against the exact solution
