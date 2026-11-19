@@ -138,6 +138,53 @@ Not done / open:
   implemented.
 - P4 failed: other modes take up to 26 percent of the TT power by a = 20.
 
+## State of the second round (wave 2b, 2026-11-19)
+
+Established (numbers and run ids in `JOURNAL.md`, section "Second round"; figures `figs/r2_*`,
+summaries `results/r2_*`, all looked at):
+
+1. Run-to-run floor (P12c): the eps = 1 baseline rerun on core's requests-b card executable
+   (run B-20261119-142833-19edd82, case e1_rep) reproduces the wave-2 release run: c_+(K1)
+   agrees to 1e-12 relative in the double-precision dumps through a = 140 (comparison
+   B-20261119-160607-ef83373). Card nondeterminism does not limit any comparison of this round.
+2. Jittered-lattice null (P11, P16; cases jit0p3, jit0p1 of B-20261119-142833-19edd82: one
+   plane wave, lattice jittered by A = 0.3 and 0.1 cells along y and z, 64^3, 8 per cell). The
+   box-mode strain of the noise is predicted from the initial data before the run (second-order
+   formula with the noise potential, 3/5 for a mode without peculiar velocity, noise-noise
+   term; run B-20261119-142733-932e595) and measured to 5-30 percent in modulus and <= 0.36 rad
+   in phase for 3 <= a <= 20 at K1 and K2, both amplitudes (comparison
+   B-20261119-163037-6553674). At A = 0.3 it is at most 1.5, 2.5, 3.1 percent of the eps = 0.1
+   signal for a in 2-20, 20-80, 80-140. The rms TT of all modes is 12-20 times the second-order
+   estimate, but 95-100 percent of it lies at |k|L/2pi >= 16 for a <= 12, at a per-shell
+   fraction of the non-TT part that is the same for both amplitudes (B-20261119-161734-a3a1366):
+   a grid-scale artefact or linear response, not resolved radiation (rho_kin/rho_grad ~ 0.01).
+3. delta = 0.0025 (P14; cases d0025_e1, d0025_e0p3): the departure from the second-order value
+   scales as (delta a)^2 (ratio 17-19 to delta = 0.01 at a = 20-60; collapse in a delta to 6-47
+   percent); |dev| <= 0.5 percent to a = 34 (eps = 1) and 42 (eps = 0.3), against 10 and 13
+   at delta = 0.01; 3.5e-4 at a <= 9 in the double-precision dumps (comparison
+   B-20261119-164017-cd1ba52). The departure after a ~ 10 at delta = 0.01 is the next order of
+   perturbation theory. Single-precision dumps are at their floor for delta = 0.0025, eps <= 0.3.
+4. Initial data (P15): make_waves without jitter equals make_east bit for bit
+   (B-20261119-142727-02878d1); the jittered data carry a momentum-constraint residual of the
+   tool of 7.6e-4 (A = 0.3) and 2.8e-4 (0.1), zero without jitter (recorded, cause not checked).
+5. Tools: `fslib/binread.py` (double-precision bin; 2 tests, 8 tests of the package pass),
+   `inputs/conv.athinput` (smoke test B-20261119-142500-72b1213), `scripts/null_prediction.py`
+   (reproduces s of the scan data to 0.02 percent).
+
+Pending or not done:
+- Card batch BC (Slurm job 4655, run B-20261119-153655-2deca0a, queued since 07:37 local): eps = 1
+  at 64^3 with 1 and 27 particles per cell and at 128^3 with 1 per cell (P12a, P12b, P13). Its
+  initial data exist (B-20261119-142435-275bd43). After the job: `nrpic-run finish`, then
+  `analyze_scan.py` on the three case directories (KINDS=bin,dbin; the 128^3 case at NWORK <= 4)
+  and `conv_compare.py e1_p1=... e1_p8=<B-20261115-180834-c77a132/cw_eps1.json> e1_p27=...
+  e1_n128=... e1_n32=<B-20261115-184650-2d155b6/cw_eps1.json> e1_rep=...`.
+- 128^3 at 8 per cell (16.8M particles, ~1.3 card-hours, a chain) was not run (cost).
+- Processor companion at 32^3 (requests-b processor executable): jittered nulls (run
+  B-20261119-143238-b7961ef), delta = 0.0025 eps = 1 (B-20261119-144416-5f1ab7a) and eps = 0.3
+  (B-20261119-153624-224805d); their prediction is B-20261119-143224-f0e6727.
+- The discriminating run for P16 (jittered lattice without any wave) and the cause of the
+  momentum-constraint residual of the jittered initial data are open.
+
 ## Requests
 
 To the B-emd-gw lead:
@@ -172,3 +219,25 @@ To orch (harness):
 7. `nrpic-run submit --launcher local` passes argv without expanding variables: a literal
    `'$NRPIC_RUN_DIR'` argument made a directory of that name in the worktree root (moved, see
    journal). Worth a line in `harness/RULES.md` ("the run directory is in the environment").
+
+Second round (2026-11-19):
+
+To the B-emd-gw lead:
+8. Use double-precision mesh output (`double_precision = true`, requests-b executable, or
+   core-v0.4 when it carries it) for every GW run at small amplitude: at delta = 0.0025 and
+   eps <= 0.3 the single-precision box-mode strain jumps by ~1e-3 of itself from dump to dump
+   (P14(a)); `fslib/binread.py` reads both.
+9. Cut |k|L/2pi >= N/4 (k h >= pi/2) from any TT spectrum of a run with a noisy particle
+   lattice before calling it a signal (P16); the box modes and the band below N/8 are safe.
+10. Next runs of this package if wanted: the jittered lattice without any wave (decides P16
+   between projector leakage and linear response), and 128^3 at 8 per cell (a chain of ~1.3
+   card-hours) to complete the mesh leg at fixed particles per cell.
+
+To core:
+11. `problems/cosmo/make_waves.py --jitter` (core/requests-b): with a jittered lattice the
+   tool's momentum-constraint residual is 7.6e-4 (A = 0.3, plane wave delta = 0.01, 64^3) and
+   2.8e-4 (A = 0.1), against 3e-17 without jitter (run B-20261119-141216-9c98929, `jit0p3.log`);
+   probably the momentum density of the moving particles is modulated by the jitter in the
+   directions the solve does not absorb. Worth a line in REQUESTS_B.md section 5 or a fix.
+12. Thanks for the double-precision bin output: it was needed here (P14(a)); please keep it in
+   the release.
