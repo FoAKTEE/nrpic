@@ -64,3 +64,80 @@ Predictions (each refuted as stated):
 - P9 (num) For eps = 0.1 neither shell crossing (R'/R <= |b|) nor negative density
   (M'/(3M) <= |b|) occurs on any shell before the crunch of the core (tau = 44.45, data
   set 2) [to be computed; if it fails, eps is lowered and the failure stays on record].
+
+## Entry 2, 2026-11-19 15:20 UTC: outcomes of P1-P9
+
+- P1 HELD [VERIFIED, `sym/sym_szekeres.py --fast`, all ten components of
+  G_ab + Lambda g_ab - 8 pi rho u_a u_b vanish at three exact rational points each, with
+  Lambda kept; the registered repeat is run A-20261119-1528xx below]. The fully symbolic
+  mode (`--only C` without `--fast`) did not finish within 50 minutes for the constraints
+  and was not used; the random-point test is exact arithmetic (Schwartz-Zippel).
+- P2 HELD: Theta, sigma^a_b = Sigma e^a_b, E^a_b = W e^a_b with the paper's formulas and
+  signs, e = diag(-2, 1, 1); R_ijkt = 0 on shell (H_ab = 0); Schwarzschild limit W = M/R^3.
+  The paper writes (+,-,-,-) and e_ab = h_ab - 3 z_a z_b; the mixed components used here
+  are unambiguous.
+- P3 HELD: Hamiltonian and momentum constraints, K^r_r, K^p_p, K = -Theta. A negative
+  control (density doubled) is non-zero, as it must be.
+- P4 HELD, against the expectation of the task text: the Cotton tensor of the comoving
+  slice vanishes for arbitrary R(r), k(r), S, P, Q(r) (exact rational points), and also
+  exactly for explicit polynomial functions (S = 1 + r/3 + r^2/5, P = r^2/7 + r/2,
+  Q = r^3/11 - r/4, k = r^2/9, R = r + r^3/13, at (r, p, q) = (1/3, 2/5, -1/7): all nine
+  independent components are 0 in rational arithmetic; probe script in
+  scratch/A-emd-pbh/tmp/sym/, not registered). The k = 0 slice is flat (3-Ricci = 0); for
+  k != 0 the slice is not flat. A first run reported four non-zero Cotton components: a
+  random point had hit a zero of a denominator (exact evaluation gives zoo there); the
+  check now skips singular points and the failure is on record here. The explicit
+  conformal map (confmap.py) is a constructive proof: its identities hold symbolically
+  (check E) and its pull-back equals the Szekeres metric to 1e-8 at 25 random points
+  (finite differences, test_confmap_pullback_is_conformally_flat).
+- P5 HELD with one bound exceeded: run A-20261119-151501-9cff966. Initial slice: M exact,
+  k to 1.7e-16, rho 4.0e-16, KL 3.4e-15, KT 3.4e-15 (relative). R(tau) of 400 shells on
+  400 times: 2.2e-14 up to 0.9 of the core crunch, 2.17e-12 at tau = 44.41, 0.1 per cent
+  before the crunch of the core (R/r = 0.04) - the predicted 1e-12 is exceeded there, by
+  the conditioning near the crunch; turnaround, crunch and R = 2M times 6.6e-15, 5.1e-15,
+  5.1e-15. Figure `figures/fig_ltb_limit.png` (inspected).
+- P6 HELD: isotropic radius of the map against `expball` 5.1e-12 (largest near r -> 0),
+  psi 1.5e-12, rho 1.9e-12 rho_b, KL 1.2e-12 H at 20000 points (same run).
+- P8 HELD: run A-20261119-151501-3e344a4. Fits over eps <= 0.05 give slopes 0.9996
+  (psi), 1.004 (rho), 1.006 (K), 1.007 (KL - KT), 0.9995 (displacement of the centre of
+  the r = 1 sphere); coefficients max|dpsi| = 0.0044 eps, max|drho|/rho_b = 1.84 eps,
+  max|dK|/H = 1.43 eps, max|d(KL - KT)|/H = 1.11 eps, centre shift 1.93 eps (length units,
+  ball radius 6). For eps = 0.1 the spherical table misses 0.19 rho_b of density and
+  0.15 H of K, but only 4.4e-4 of psi. Figure `figures/fig_dipole_order.png` (inspected).
+- P9 HELD: run A-20261119-151501-986153a. min over r and over tau up to 0.995 of the core
+  crunch of (R'/R)/|b| = 10.0 (at tau = 0, where it is 1/eps by construction; it grows
+  later), (M'/(3M))/|b| = 3.94. Figures `fig_slice_maps.png`, `fig_evolution.png`
+  (inspected; the slice-map layout left an empty right margin and no z label: fixed in the
+  script and rerun below).
+- A defect found and fixed while testing (no registered run used the defective code):
+  the safeguarded Newton loops (inverse map, cycloid angle, inverse of l) could leave a
+  converged point at a bisection midpoint when the loop ended for all points at once; a
+  slab of the mesh run then put one cell at the wrong shell (r = 0.0015 instead of 3.98).
+  Converged points are now frozen, and a collapsed bracket counts as converged; serial
+  and parallel mesh residuals agree to the last digit and batch and single-point
+  evaluations agree exactly.
+
+## Entry 3, 2026-11-19 15:25 UTC: predictions for the first AthenaK execution
+
+Run: scripts/run_code_geodesic.py, processor executable of core-v0.3
+(.work/build_cpu_v03/src/athena), periodic box [-8, 8]^3 at N = 32 and 64 cells per side,
+nrpic_cosmo id = file with the field file of szekeres/codeid.py, one particle per cell at
+rest with m = rho psi^6 h^3, CIC deposit, geodesic slicing (every lapse and shift driver
+off), Z4c with nghost = 4, diss = 0.5, damp_kappa1 = 0.5, RK4 at CFL 0.25, to tau = 40
+(the core crunches at 44.45). Predictions:
+
+- P10 The field file is read and at tau = 0 the dumped energy density E equals the exact
+  rho at every cell to the float32 precision of the dump (1e-6 relative): the CIC weight of
+  a particle at a cell centre is 1 in that cell. chi = psi^-4 to 1e-6. Refuted by a
+  larger difference anywhere.
+- P11 alpha stays 1 to round-off (alpha_dev_max < 1e-12) and the run reaches tau = 40
+  without failure at both resolutions.
+- P12 The errors of K (= Khat + 2 Theta_Z4c), of E and of chi against the exact values at
+  the same cells converge: the maximum relative error over the shell region falls by at
+  least 4 from N = 32 to N = 64 at every dump time (second order or better; the stencils
+  are sixth order, the cloud and the Kreiss-Oliger term are lower) [JUDGEMENT]. Absolute
+  scale at N = 64: below 1e-2 relative for K at tau = 10 [JUDGEMENT, from the initial
+  Hamiltonian residual of order 1e-3 of 16 pi rho_b at h = 0.25 (run
+  A-20261119-151452-46f171e) and an amplification of order 10 to tau = 40].
+- P13 The constraint monitor at tau = 0: rms H/(16 pi rho_b) over the shell region below
+  1e-2 at N = 32 and smaller by at least 4 at N = 64.
