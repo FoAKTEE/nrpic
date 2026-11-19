@@ -170,6 +170,8 @@ def main():
             rps = [float(x) for x in CONFIGS[q]["rps"]]
             for m in ("newtonfar", "hrna2404", "eihfar"):
                 v = summ[q][str(s)]
+                if m not in next(iter(v.values())):
+                    continue
                 ax.plot(rps, [v[str(rp) if str(rp) in v else str(int(rp))][m]["separated"]
                               for rp in rps], "o-", color=col[m], label=lab[m], ms=4)
                 key = "captured" if m == "hrna2404" else "inside_5.35M"

@@ -419,3 +419,6 @@ Prediction for the release-radius test (written before it): if EIH's separation 
 prograde, r_p = 15 and 17 M, is a tidal effect of the passage, the separated fraction changes
 by less than 0.1 between release at 20, 40 and 80 r_t (Newton is converged there: newton3 P5/P6).
 Refuted if it changes by more than 0.1.
+(The first two release-radius runs, F-20261119-150157-424bab2 and F-20261119-150159-4a27aa2,
+were stopped at once: the figure code of scan_far.py assumed all three models and would have
+failed with `--models eihfar`; fixed, rerun below.)
