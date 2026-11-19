@@ -62,3 +62,46 @@ I answer the nine questions of brief 12.9 from the TeX sources and the code, wit
 the answers in `FIRST_QUESTIONS.md` first, then compare. Prediction: no answer of
 `FIRST_QUESTIONS.md` is WRONG; refuted by a number, locator or statement that the source
 contradicts.
+
+## 2026-11-19 14:10-14:25 UTC: outcomes
+
+Development runs went to `scratch/kb/tmp/verifier_dev/` while the parsers were debugged; the
+registered runs are `kb-20261119-142015-7620bd4` (P, C, K, Q), `kb-20261119-142303-f38a48c`
+(follow-up of P) and `kb-20261119-142448-3ea268d` (follow-up of C). All three manifests are
+hand-written: `nrpic-run submit --package tracks/kb/stage/KB-G1` was refused at 14:16 and
+14:19 UTC because other kb helpers had uncommitted code in `kb/kbtool/` in this worktree.
+
+**Test P** (prediction: >= 18 of 20 within tolerance, no lost content). Count part held: 18
+of 20 papers agree on every quantity. "No lost content" FAILED: 1201.4794 has no
+bibliography entry although its source has 46 AASTeX `\reference` items (parse status `ok`),
+and gr-qc/9906015 (plain TeX, flagged `review`) has no sections, numbers or references.
+Along the way my first parser was wrong twice, not the knowledge base: (a) I counted
+environments, the knowledge base counts numbered rows of align/eqnarray; once I counted
+numbered rows the numbers agree in 20 of 20; (b) my appendix detection missed
+`\begin{appendices}` and `\counterwithin`. Old-style `\documentstyle` main files and the
+plain-TeX file needed a fallback in my parser. Follow-up run 2: 20 of 707 TeX papers have no
+bibliography entry; 14 have a list my parser recognizes, 11 of those are `ok`
+(502 items missing) — a systematic gap in the bibliography reader (REVTeX-3 `references`
+environment, AASTeX `\reference`, `\bibitem` aliases, `\harvarditem`).
+Figures: `fig_papers.png` (four log-log panels, KB against mine; the two WRONG papers sit at
+the lower edge of the bibliography panel), `fig_zero_bib.png`; both looked at.
+
+**Test C** (prediction: >= 8 of 10, refuted by two WRONG). Held: 10 of 10 CONFIRMED. Notes:
+claim 25 lost its second locator (L1084) between `claims.locator` and `claim_locators`; run 3
+shows it is the only such case among 649 claims (a single count, no figure). Claim 254's
+locator ends 11 lines before the collapse statement.
+
+**Test K** (prediction: 10 of 10, recall 100 %). Held: 10 of 10, and 83 of 83 calls in
+`particles/` and `pgen/nrpic/` at the indexed commit. Not predicted: the index is stale against
+today's `main` (101 (block, name) pairs in 12 files missing: scalar field, collisions,
+punctures, Bowen-York, geodesic, rng, kick, Newtonian). My own regex first missed defaults with
+two levels of parentheses and treated commented-out calls as live; fixed before the registered
+run. Figure: `fig_summary.png`, top right.
+
+**Test Q** (prediction: no answer WRONG). Held. My answers, written before reading
+`FIRST_QUESTIONS.md`, agree with it on all nine questions; it is more detailed in places
+(AMR deposition, refinement thresholds, resampling, code defaults), and those details check
+out. Equation numbers: 185 of 185 labels in the four papers equal my numbering; the 9 cited
+numbers equal; 73 of 73 paper locators and 18 of 18 code locators contain the cited item
+(two of my own regular expressions needed fixing: a `$` inside "0.01 au", and a sentence
+that runs from L792 onto L793). Figure: `fig_summary.png`, bottom panels.
