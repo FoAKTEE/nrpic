@@ -514,3 +514,14 @@ every phase-space integral, `sum m u_x` among them, stays constant up to the noi
 run at rest. Predicted: over 0 to 10 M, |change of sum m u_x|/P in `v0.3s` is at most
 half of that in `v0.3`, and below 1 per cent. Refuted (and the candidate with it) if
 `v0.3s` drifts as much as `v0.3`.
+
+### Prediction G (card against processor at t = 0; written 15:57Z, before any of the runs)
+
+`run_t0_records.py` starts the five entries of `card_tc.list` and `card_te.list` on a
+processor with `time/nlim=0` (branch executable `.work/build_cpu`, same source as the card
+executable). Predicted: the first records of `cl.nrpic.hst` and `cl.z4c.user.hst` of the
+card runs (jobs 4649, 4657) equal these processor records in every printed digit except
+quantities that vanish (round-off of a zero) and the constraint norms, which agree to
+1e-5 relative (the card deposits with atomic additions in another order). Refuted by any
+other difference: then the card executable builds other initial data than the processor
+executable, and the processor tests TB, TD say nothing about the card runs.
