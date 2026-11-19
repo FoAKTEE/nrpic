@@ -186,3 +186,30 @@ the failed run kept on record).
 Run 3, `scripts/check_numbers.py` after the legend fix: numbers.json identical in every number
 to run 1 (the script is deterministic, only a label changed); the figure differs only in the
 legend text.
+
+## Entry 5 (2026-11-19 07:27 PST): outcomes of runs 2 and 3; an addition to row 35; prediction for run 4
+
+Run 2, `kb-20261119-152248-b27df46` (completed, exit 0): 52 rows, tally 33 / 18 / 1 / 0 equal to
+the header, 68 locator spans checked, no problem. Prediction CONFIRMED, except one sub-prediction
+that FAILED: I predicted 31 [VERIFIED], 4 [BACKGROUND], 17 unlabelled rows; the run counts 35, 4
+and 13. Recount by hand: [VERIFIED] rows 9-21, 29-34, 37-52 = 13 + 6 + 16 = 35; unlabelled rows
+1-8, 25, 27, 28, 35, 36 = 13. The run is right and my prediction was a miscount; CHECK.md is not
+changed by it. Figure `scratch/kb/kb-20261119-152248-b27df46/fig_verdicts.png` looked at: the
+one red segment is on line 208, the precisions cluster on lines 200, 201 and 214, line 215 is all
+blue; by label, [VERIFIED] 19 / 15 / 1, [BACKGROUND] 3 / 1, no label 11 / 2.
+
+Run 3, `kb-20261119-152254-b4836fb` (completed): numbers.json identical to run 1 (compared with
+json equality); the figure shows the new legend text "as stated in the paper", otherwise the
+same. Prediction CONFIRMED.
+
+Addition after the runs: arXiv:2409.00435 (Saito, Harada, Koga, Yoo), named by 2609.14218 as the
+intermediate spin paper, is in the store and was read for row 35: it does not find small spins
+but "substantial values of PBH spins" (main.tex:65). So the sequence is near-extremal (2017),
+substantial (2024), very small for small sigma (2025, same group), and very small independently
+(2507.18312). My outcome note for P11 in entry 3 ("revised towards small spins") was right for
+2025 but skipped the 2024 step; row 35 of CHECK.md and row s35.6 of ERRATA_ROWS.md now say it.
+The same paper writes sigma_H as "the square root of the variance" (main.tex:62), the right
+wording that 2508.10070 drops (row s35.1, section 5).
+
+Prediction for run 4 (tally after the change of row 35): 52 rows, tally unchanged (33 / 18 / 1 /
+0), 69 locator spans (one span added to row 35), no problem, exit 0.
