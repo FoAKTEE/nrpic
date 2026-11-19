@@ -695,3 +695,30 @@ second-order formula gives for its noise potential, ~ A/sqrt(N_p) per mode (|Psi
 at (0, k, 0) for A = 0.3), i.e. 1.4-3 percent of the eps = 0.1 signal at A = 0.3; the quiet
 lattice of the scan has no such noise before shell crossing. The grid-scale TT of a noisy
 lattice (P16) has to be cut from spectra; it is not radiation (rho_kin << rho_grad).
+
+## Outcome of P14 (card batch A, job 4637, run B-20261119-142833-19edd82, 0.48 card-hours for its five runs; analyses B-20261119-161519-6e0bc42, B-20261119-163027-f0d304f; comparison B-20261119-164017-cd1ba52, `conv_delta.png` looked at)
+
+dev = c_+(K1)/(s g) - 1, s = -1.9248e-6 eps at delta = 0.0025.
+- (b) CONFIRMED: R(a) = dev(0.01, a)/dev(0.0025, a) = 17.9, 16.8, 17.2, 19.1 at a = 20, 30, 40,
+  60 (eps = 1) and 16.8, 19.4, 18.3 at a = 30, 40, 60 (eps = 0.3; at a = 20 R = 50, where
+  dev(0.0025) = 1.5e-4 is at the noise of the single-precision dumps). The departure from the
+  second-order value is of relative order (delta a)^2 (R = 16), with a small excess.
+- (c) CONFIRMED: dev(0.0025, 4a)/dev(0.01, a) = 1.06 to 1.47 (eps = 1) and 1.07 to 1.31 (eps =
+  0.3) for a = 10 to 35: the departures collapse when plotted against a delta.
+- (d) CONFIRMED: |dev| <= 0.5 percent holds for 2 <= a <= 33.7 (eps = 1) and 41.7 (eps = 0.3) at
+  delta = 0.0025, against 10.3 and 12.6 at delta = 0.01; <= 1 percent to a = 46 and 63. At
+  a = 140 the departure is 9.4 and 5.0 percent (124 and 115 percent at delta = 0.01).
+- (a) CONFIRMED with the double-precision dumps, NOT with the single-precision ones: from the
+  dbin dumps (a = 2.3, 4.0, 6.3, 9.0) |dev| <= 3.2e-4 (eps = 1) and <= 3.5e-4 (eps = 0.3),
+  14 and 6 times below delta = 0.01 (0.44, 0.22 percent). From the single-precision dumps the
+  maxima are 0.096 and 0.27 percent: dev jumps from dump to dump by 3.5e-4 and 9.3e-4 rms
+  (absolute 6.7e-10 and 5.4e-10, the same for both eps: rounding of the float32 metric, which
+  the double dumps do not show). At delta = 0.0025 and eps <= 0.3 the single-precision dumps
+  are at their floor; the double-precision bin output of the requests-b executable is needed
+  for small amplitudes.
+Reading [JUDGEMENT]: the departure of the box-mode strain from the second-order formula after
+a ~ 10 at delta = 0.01 is the next order of perturbation theory (relative size ~ (delta a)^2,
+coefficient growing with eps), not a numerical or gauge error: it scales with the amplitude as
+that order must. The second-order window is a delta <= ~0.1 (|dev| <= 0.5 percent); at
+delta = 0.0025 the code matches the second-order formula with its junk oscillation to 0.035
+percent for 2 <= a <= 9 (double dumps).
