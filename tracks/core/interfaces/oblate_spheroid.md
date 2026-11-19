@@ -114,12 +114,37 @@ entries 2 and later.
 | T1d the oblate component off the origin, superposed with a Gaussian and a puncture (`problems/tests/oblate_super.athinput`) | core-20261119-152206-4d292b9 (processors; also reran T1a-c with the same numbers) | psi^4 is the correctly rounded sum of the three references at all 262144 cells (largest difference 0.49999 float32 units, flat histogram) |
 | T2 byte regression against the release executable, processors | core-20261119-144947-fb1ccae (first attempt core-20261119-144337-5c02abf stopped) | every output file byte-identical: `regress_cf` (16 files, 2 steps), `cf_table_regress` (8 files, 3 steps), prolate start at M/4 with 10^4 particles (16 files, 2 steps) |
 | T3 collapse on a card, finest cells M/4 and M/8, 10^4 particles | SEE SECTION 5 | SEE SECTION 5 |
+| T4 the same particles in the Newtonian mode of the release (`problems/oblate/oblate_newton.athinput`), against the homogeneous spheroid | core-20261119-153609-754c44d (processors), analysis core-20261119-161400-72ec4a0 | cells M/2: pancake at 20.0 M (homogeneous, mass sum m: 19.74 M), z_rms down to 0.059 of its initial value, R_rms 0.613 there (0.621), 0.966 of the particles across the plane 1 M later, energy conserved to 4e-4 before the caustic; the crossing is spread over 2 M (10 to 90 per cent), mostly by the scatter of particles that start near the plane; cells M/4: SEE SECTION 5 |
 
 Not tested: axis ratios beyond the four of T1 (e = 0, 0.3, 0.9 and 0.909 off the
 origin); a polar axis other than z (there is no option for it); double-precision output of
 the C++ function (the dump is single precision; the double-precision statement is the
 Python twin's); eccentricities so close to 1 that `b` is not resolved by the mesh.
 
-## 5. State of T2 and T3
+## 5. State of T3 and T4 (2026-11-19 16:20Z)
 
-FILLED IN AT THE END OF THE SESSION (see the journal for the latest entry).
+T2 holds (section 4). T3, the relativistic collapse at finest cells M/4 and M/8 with the
+card executable of this branch, is registered as run core-20261119-144923-1a7c274
+(Slurm job 4647, one job of at most 45 minutes: `cf_card`, `oblate_m4`, `oblate_m8`)
+and was still waiting in the queue at 16:20Z (fifteen jobs ahead on two cards). Its
+predictions are in the journal (entries 1 and 3; P3a to P3d, P3a', P3c'), the commands
+that finish it in `tracks/core/analysis/oblate/README.md`. A third resolution (M/16)
+does not fit in the card-hour of the package: the prolate M/16 run took 0.48 card-hours
+(`runs/prolate/e09_v8`, log footer), and job 4647 may use 0.75.
+
+T4 (the Newtonian reference with the same particles) holds at cells M/2; the run at
+M/4 was at t = 4 M of 24 at 16:14Z (journal entry 8).
+
+What the two papers of row 3 report, for the comparison in kind [VERIFIED by reading
+the sources fetched with `nrpic-fetch-arxiv`, `kb-data/raw/arxiv/`]: neither evolves an
+oblate spheroid (1611.07906 `asymflat.tex`: no occurrence of "oblate", prolate
+potential only, lines 496-503; 1901.04498 `main.tex`: "oblate" only for the ringing
+horizon, line 259, and "we focus on very prolate cases", line 194). For the prolate
+collapse they report a caustic in the matter before any horizon, with a curvature
+maximum that grows with resolution, a calculation that continues past the caustic, "a
+short time later an apparent horizon ... which envelops all the matter" (1901.04498,
+lines 363-366), and a final black hole whose mass is M minus the radiated energy to
+better than 0.2 per cent (lines 294-295; E_GW about 0.015 M at most for e = 0.9, line
+292). The oblate test of this package asks the same questions of the oblate data: a
+caustic (the pancake), its passage, a horizon after it, and the horizon mass against
+the ADM mass M = 1 of the data.
