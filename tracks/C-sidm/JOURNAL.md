@@ -211,3 +211,14 @@ the helpers' scripts are not imported, except `gravothermal/tmb.py` and
   maximum y0 = 0.334 (as for b = 0.1-0.5), with J_E in y0 in [0.20, 0.334); whether J_E lies
   below y0 = 0.314 (CC2 fluid-unstable) I give 50 percent. The N = 600 and 1200 roots agree
   to 1e-5 in y0.
+- prediction L16 (written after looking at `rv_cc.png` of run C-20261119-151502-cb831a8, before
+  the run below): the accumulated defect at Kn = 10 reaches the binding margin only in the
+  last 10-20 M before alpha_min < 0.3. Test of "trigger or consequence" from the histories
+  (`rv_cc_onset.py`): t_dep = first time the central lapse alpha_probe of the collisional run
+  falls 0.01 below that of its collisionless control (same model). Prediction: Kn = 10,
+  t_dep in [100, 170] M for both models, injected energy at t_dep below 0.3 of the margin
+  (< 3e-5 M0); Kn = 1, t_dep in [20, 50] M, injected energy at t_dep below the margin.
+  Refuted if the injected energy at t_dep exceeds the margin in either Kn = 10 run. If it
+  holds: the contraction starts before the defect reaches the size of the stability margin,
+  so the defect is not needed to start it [JUDGEMENT; a smaller contribution is not
+  excluded].
