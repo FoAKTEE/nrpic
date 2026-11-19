@@ -7,8 +7,9 @@
    1e-6 in the initial density or in the initial expansion (what a truncation or deposit
    error of the initial data does to one element if gradients are neglected).
 2. Gradient scales in the coordinates of the code (the conformally flat coordinates of the
-   initial slice, in which the dust stays at rest in geodesic slicing): K(t, x) and rho(t, x)
-   on the three axes, minimum of |f|/|df/dx| at tau = 0, 10, 20, 30, 40.
+   initial slice, in which the dust stays at rest in geodesic slicing) on the three axes at
+   tau = 0, 10, 20, 30, 40: max|K|/max|dK/dx| (K changes sign at turnaround, so a local
+   ratio is meaningless) and min rho/|d rho/dx|.
 3. Magnitudes the evolution must resolve: K/H and rho/rho_b in the core and on the shell.
 Writes error_budget.json and fig_error_budget.
 
@@ -66,9 +67,11 @@ def main():
             yp = list(y0)
             yp[idx] *= 1 + 1e-6
             sp = solve_ivp(silent_rhs, (tt[0], tt[-1]), yp, t_eval=tt, rtol=1e-12, atol=1e-30, method="DOP853")
-            aK = np.abs(sp.y[1] - sol.y[1]) / np.abs(sol.y[1]) / 1e-6
+            aK = np.abs(sp.y[1] - sol.y[1]) / szk.H / 1e-6        # |dK| in units of H_i
+            aKrel = np.abs(sp.y[1] - sol.y[1]) / np.abs(sol.y[1]) / 1e-6
             arho = np.abs(sp.y[0] - sol.y[0]) / sol.y[0] / 1e-6
-            row[f"{lab}_amplification_K"] = [float(np.interp(t_i + ta, tt, aK)) for ta in TAUS]
+            row[f"{lab}_dK_over_Hi_per_1e-6"] = [float(np.interp(t_i + ta, tt, aK)) for ta in TAUS]
+            row[f"{lab}_amplification_K_relative"] = [float(np.interp(t_i + ta, tt, aKrel)) for ta in TAUS]
             row[f"{lab}_amplification_rho"] = [float(np.interp(t_i + ta, tt, arho)) for ta in TAUS]
             resp[name, lab] = (aK, arho)
         out[name] = row
@@ -86,9 +89,11 @@ def main():
             for key in ("K", "rho"):
                 v = f[key]
                 g = np.gradient(v, s)
-                lsc = np.abs(v) / np.maximum(np.abs(g), 1e-300)
-                k = (ax, ta, key)
-                scales[k] = float(np.min(lsc))
+                if key == "K":      # K changes sign at turnaround: a global scale
+                    lsc = np.max(np.abs(v)) / np.max(np.abs(g))
+                else:               # rho > 0: the local scale
+                    lsc = np.min(np.abs(v) / np.maximum(np.abs(g), 1e-300))
+                scales[(ax, ta, key)] = float(lsc)
     out["gradient_scale_min"] = {f"axis{a}_tau{ta:g}_{key}": v for (a, ta, key), v in scales.items()}
     out["gradient_scale_min_all_axes"] = {f"tau{ta:g}_{key}": min(scales[a, ta, key] for a in range(3))
                                           for ta in TAUS for key in ("K", "rho")}
@@ -107,12 +112,13 @@ def main():
         aK2, _ = resp[name, "dTheta"]
         axs[0].semilogy(tt - t_i, np.maximum(aK2, 1e-3), color=cols[j], ls="--")
     axs[0].set_xlabel(r"proper time $\tau$")
-    axs[0].set_ylabel(r"$(\delta K/K)\,/\,10^{-6}$")
+    axs[0].set_ylabel(r"$(|\delta K|/H_i)\,/\,10^{-6}$")
     axs[0].set_title(r"solid: $\delta\rho_i/\rho_i = 10^{-6}$; dashed: $\delta\Theta_i/\Theta_i = 10^{-6}$", fontsize=8)
     axs[0].legend(fontsize=6.5, ncol=2, loc="upper left")
     for key, col in (("K", fs.PAL["red"]), ("rho", fs.PAL["blue"])):
         axs[1].semilogy(TAUS, [out["gradient_scale_min_all_axes"][f"tau{ta:g}_{key}"] for ta in TAUS], "o-",
-                        color=col, label={"K": r"$|K|/|\partial K|$", "rho": r"$\rho/|\partial\rho|$"}[key])
+                        color=col, label={"K": r"$\max|K|/\max|\partial K|$",
+                                          "rho": r"$\min\,\rho/|\partial\rho|$"}[key])
     axs[1].set_xlabel(r"proper time $\tau$")
     axs[1].set_ylabel("smallest gradient scale (code coordinates)")
     axs[1].legend(loc="lower left")
