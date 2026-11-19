@@ -1,0 +1,18 @@
+{"exe": ".work/exe/sbc2/athena_cpu",
+ "ball": {"M": 0.5, "Rb": 6, "edge": 1.5, "h": 0.5},
+ "cases": {
+  "ball__new": {"input": "inputs/ball.athinput", "args": ["time/nlim=8"]},
+  "ball__rel": {"input": "inputs/ball.athinput", "args": ["time/nlim=8"], "exe": "../../.work/build_cpu_v03/src/athena"},
+  "punc__new": {"input": "inputs/punc.athinput", "args": ["time/nlim=4"]},
+  "punc__rel": {"input": "inputs/punc.athinput", "args": ["time/nlim=4"], "exe": "../../.work/build_cpu_v03/src/athena"},
+  "boost__new": {"input": "inputs/punc.athinput", "args": ["time/nlim=4", "problem/comp0_p1=0.3", "problem/comp0_corr=approx"]},
+  "boost__rel": {"input": "inputs/punc.athinput", "args": ["time/nlim=4", "problem/comp0_p1=0.3", "problem/comp0_corr=approx"], "exe": "../../.work/build_cpu_v03/src/athena"},
+  "hcal__new": {"input": "../../../../problems/puncture/horizon_calib.athinput", "args": ["time/nlim=4"]},
+  "hcal__rel": {"input": "../../../../problems/puncture/horizon_calib.athinput", "args": ["time/nlim=4"], "exe": "../../.work/build_cpu_v03/src/athena"},
+  "bybin__new": {"input": "../../../../problems/puncture/by_binary.athinput", "args": ["time/nlim=2"]},
+  "bybin__rel": {"input": "../../../../problems/puncture/by_binary.athinput", "args": ["time/nlim=2"], "exe": "../../.work/build_cpu_v03/src/athena"},
+  "bench__new": {"input": "../../../../problems/tests/z4c_bench.athinput", "args": ["time/nlim=2"]},
+  "bench__rel": {"input": "../../../../problems/tests/z4c_bench.athinput", "args": ["time/nlim=2"], "exe": "../../.work/build_cpu_v03/src/athena"},
+  "kgsmr__new": {"input": "../../../../problems/scalar/kg_wave_smr.athinput", "args": ["time/nlim=8"]},
+  "kgsmr__rel": {"input": "../../../../problems/scalar/kg_wave_smr.athinput", "args": ["time/nlim=8"], "exe": "../../.work/build_cpu_v03/src/athena"}
+ }}

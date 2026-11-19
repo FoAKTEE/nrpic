@@ -1,0 +1,11 @@
+{"exe": ".work/exe/sbc2/athena_cpu",
+ "ball": {"M": 0.5, "Rb": 6, "edge": 1.5, "h": 0.5},
+ "cases": {
+  "ball_g2": {"input": "inputs/ball_ext.athinput", "args": ["z4c/extrap_order=2", "z4c/ghost_falloff=true"]},
+  "ball_g4": {"input": "inputs/ball_ext.athinput", "args": ["z4c/extrap_order=4", "z4c/ghost_falloff=true"]},
+  "ball_g2nw": {"input": "inputs/ball_ext.athinput", "args": ["z4c/extrap_order=2", "z4c/ghost_falloff=true", "z4c/sbc_variant=nonwave"]},
+  "ball_g4nw": {"input": "inputs/ball_ext.athinput", "args": ["z4c/extrap_order=4", "z4c/ghost_falloff=true", "z4c/sbc_variant=nonwave"]},
+  "ball_g4nw_q15": {"input": "inputs/ball_ext.athinput", "args": ["z4c/extrap_order=4", "z4c/ghost_falloff=true", "z4c/sbc_variant=nonwave", "z4c/ghost_power_curv=1.5"]},
+  "ball_g4nw_met": {"input": "inputs/ball_ext.athinput", "args": ["z4c/extrap_order=4", "z4c/ghost_falloff=true", "z4c/sbc_variant=nonwave", "z4c/sbc_speed=metric"]},
+  "ball_g4nw_cp": {"input": "inputs/ball_ext.athinput", "args": ["z4c/extrap_order=4", "z4c/ghost_falloff=true", "z4c/sbc_variant=nonwave", "z4c/sbc_theta=cpbc"]}
+ }}

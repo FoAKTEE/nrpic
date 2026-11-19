@@ -279,3 +279,71 @@ use them. Started now, predictions unchanged (entry 3 for b1, entry 4 for b2):
 `plans/b1b_ball.json` (the two missing cases of b1), `plans/b2_punc.json` (now with the
 frozen executable), `plans/a1r2_boostref.json` (the boosted puncture with the faces at
 32, to t = 8: the reference that core-20261119-143745-78506dd stopped by hand).
+
+## 2026-11-19, entry 6: three new options; predictions for the tests c0-c3, the card runs D, the regression r1
+
+Source at 6cd99721 (`.work/exe/sbc2/`): (1) `ghost_falloff = true`: the ghost cells at
+outflow faces extrapolate G = (f - f_inf) r^q (asymptotic value 1 for chi, gt_ii, alpha,
+0 otherwise; q = `ghost_power_metric`, `ghost_power_curv`, default 1) with the stock
+Lagrange weights, f_g = f_inf + G_g / r_g^q (`z4c/z4c_bcs_falloff.cpp`); (2) `sbc_speed =
+lapse | metric`: the speeds of the boundary operator alpha (sqrt(f alpha) for Khat) as in
+arXiv:1212.2901 (`.../1212.2901/v1/src/paper20121212.tex` lines 484-498), or the
+coordinate speeds alpha sqrt(chi/gt_ss), with the advection beta^k d_k f; (3) `sbc_theta =
+cpbc`: d_t Theta = -alpha s^k d_k Theta + beta^k d_k Theta (same source, line 405).
+Without the options the code paths of the release run (to be shown by r1).
+
+Derivation for c0 [JUDGEMENT]: for the Brill-Lindquist far field chi = (1 + m/2r)^-4 =
+1 - 2m/r + 2.5 m^2/r^2 - ..., G = r (chi - 1) = -2m + 2.5 m^2/r, so G'' = 5 m^2/r^3 against
+chi'' = -4 m/r^3: at r = 15.5 the ghost error, and with it the monitor's face layer of H,
+falls by 1.25 m/r = 0.081 (with the next order 0.086) at every extrapolation order (the
+fourth derivatives have the same ratio). gt_ij = delta exactly. For Bowen-York A_ij ~ r^-2
+with q = 1 the ratio is |2 - 1|/(2 + 1) = 1/3.
+
+Predictions [JUDGEMENT], written before any of these runs:
+- c0 (`plans/c0_step1.json`, one step, against a0b): (c0-a) punc, falloff, order 2: the
+  boundary-cell |H| at the centre of the +x face is 0.086 x 1.895e-3 = 1.6e-4 within a
+  factor 2; order 4: 0.086 x 9.09e-5 = 7.8e-6 within a factor 2. (c0-b) boost, falloff,
+  order 2: the boundary-cell |M_x| on the x axis is 1/3 of the stock value of the same
+  step within a factor 1.5 (the stock value is read from a0b's boost_e2 dump). Refuted if
+  the falloff values are not below 0.2 of the stock ones.
+- c1, ball (`plans/c1_ball.json`, to t = 16, against ball_ref of a1): (c1-a) falloff
+  alone, order 2: the face-layer mean |H| at t = 4 changes by less than a factor 2 from
+  ball_e2 (1.46e-3): the ball's layer is made by the wrong fall-off of the RHS (H2), not by
+  the ghosts (the slice is flat outside the ball). (c1-b) falloff + nonwave + order 4:
+  face-layer mean |H - H_ref| at t = 4 below 0.2 of ball_e2's, and the shell
+  (8 <= r < 12) mean below 0.33 of it. (c1-c) ghost_power_curv = 1.5 (the fall-off of K in
+  the Painleve-Gullstrand exterior) improves on q = 1 by less than a factor 1.5 (the RHS
+  power of nonwave already removes most of H2). (c1-d) sbc_speed = metric changes the
+  face-layer and shell measures by less than 20 per cent (alpha and chi stay within 2 per
+  cent of 1 at the faces of the ball; the exterior is flat). (c1-e) sbc_theta = cpbc is
+  within 30 per cent of sommerfeld for Theta in the face layer (no 1/r term: a Theta
+  falling as 1/r is driven at the rate Theta/r, which is small against the incoming
+  violation), not better by a factor 2. (c1-f) every case reaches t = 16 without growth
+  (face-layer max |H| at the end below 3 times that of ball_e2).
+- c2, punctures (`plans/c2_punc.json`, to t = 12): (c2-a) punc_g2 (falloff, order 2): the
+  face-layer mean |H| falls by more than a factor 5 from punc_e2 (1.78e-4) at t = 1 and
+  t = 6 (H1 and H3 are the ghosts), and the shell mean at t = 6 falls by more than a factor
+  3 from 1.70e-5. (c2-b) punc_g4nw: shell mean at t = 6 within a factor 1.5 of the
+  reference's truncation level (punc_ref, when it has reached t = 6). (c2-c) after the
+  gauge pulse reaches the faces (t >= 11), punc_g4nw_met has a lower shell mean |H| than
+  punc_g4nw (speed 0.88 instead of 1 at r = 16: less reflection), by at least 10 per cent.
+  (c2-d) boost_g4nw: face-layer mean |M_i| at t = 4 below 0.2 of boost_e2's.
+- c3, horizon proxy (`plans/c3_punch.json`, faces at 16 M, to t = 40, finder): compared
+  with b2's punc_sf_e2_h (stock): the horizon mass agrees to 1e-4 until t = 11, and the
+  largest excursion of the mass from its value at t = 12 over 12 <= t <= 40 is not larger
+  with the full set (ratio below 1.2).
+- D, card (`plans/card_full.list`, `plans/card_ghost.list`): Track D's drift_dx8 input to
+  345 M with (full) falloff + order 4 + nonwave + metric speed, (ghost) falloff + order 4
+  only. The stock reference is Track D's own run D-bh-dress-20261115-121313-284ec4f (card
+  executable of core-v0.2; the vacuum Z4c path did not change from core-v0.2 to core-v0.3:
+  `git diff core-v0.2 core-v0.3 -- athenak/src/z4c` touches only the scalar-field sources
+  and task dependencies). (D-a) both new runs agree with Track D's horizon mass within
+  2e-5 until t = 180 M (no signal from the faces can have come back). (D-b) the
+  peak-to-peak excursion of the mass in 210-260 M and in 295-345 M is not larger than in
+  Track D's run (1e-4 and 1.5e-4 by its README; recomputed here from its
+  horizon_summary file) by more than 20 per cent; I expect it smaller for the full set.
+  Refuted (for the recommendation to Track D) if either is larger by more than 20 per cent.
+- r1 (`plans/r1_regress.json`): every output file byte-identical between the new
+  processor executable and the release (`.work/build_cpu_v03`) for the package inputs
+  without the options and for problems/puncture/horizon_calib, by_binary, tests/z4c_bench
+  and scalar/kg_wave_smr, a few steps each.
