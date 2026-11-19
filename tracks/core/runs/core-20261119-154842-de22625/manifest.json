@@ -1,0 +1,116 @@
+{
+  "schema": "nrpic-run-manifest/1",
+  "run_id": "core-20261119-154842-de22625",
+  "track": "core",
+  "gate": "G2",
+  "kind": "scouting",
+  "purpose": "test R0 of idsolve2 (journal entry 5): byte regression of the processor build of 76add0c against the release core-v0.3 without id_solve, nine set-ups",
+  "preregistered_in": null,
+  "launcher": "local",
+  "command": [
+    "python3",
+    "tracks/core/analysis/idsolve2/regress_r0.py",
+    "--base",
+    "/data/haiyangw/nrpic/.work/build_cpu_v03/src/athena",
+    "--new",
+    "/data/haiyangw/nrpic/scratch/core/tmp/idsolve2/exe_76add0c/athena_cpu",
+    "--jobs",
+    "1"
+  ],
+  "cwd": ".",
+  "git": {
+    "sha": "de22625c3e0d37fe3be28d20b3c669339de5251d",
+    "branch": "core/id-solver-2",
+    "dirty": false,
+    "package": [
+      "tracks/core/analysis/idsolve2"
+    ],
+    "outside_package": {
+      "count": 0,
+      "first": []
+    },
+    "merge_base_main": "f51539c6f46a051b8c3c2d86501bcc6dfaa34f93",
+    "worktree": "wt/core-idsolve2"
+  },
+  "code": {
+    "core_tag": "core-v0.3",
+    "athenak_upstream_sha": "c5a0d7f",
+    "kokkos_sha": "6739bc623081648af9e752b616d9671527922cbf",
+    "problem": null
+  },
+  "env": {
+    "host": "anta",
+    "env_hash": "33c1dbb6673b68919eaa332b0add0b58aeac8be843f2071b9d06e2e0e397a96d",
+    "machine_file_sha256": "0321f40f4caeeb2a36624a9fa9809e60bad31071f366b3517ba23ad45698d2d7",
+    "uv_lock_sha256": "5417f6ba318b914aa3800e5d55f7b11fdd8df13c2688bdda7d419240aa1d5863",
+    "track_requirements_sha256": null,
+    "container_digest": null,
+    "compiler": "g++ 11.4.0",
+    "mpi": "none (Athena_ENABLE_MPI=OFF)",
+    "gpu": null,
+    "python": "3.10.12 /data/haiyangw/nrpic/wt/core-idsolve2/.venv"
+  },
+  "input": null,
+  "inputs": [
+    {
+      "path": "tracks/core/analysis/idsolve2/regress_r0.py",
+      "role": "argv",
+      "sha256": "c8cba6e42d3824e6dfeb08ee1e0cf0ed918e0c1c004c50a8b7a6519d83f86167",
+      "bytes": 6256,
+      "tracked": true
+    },
+    {
+      "path": "/data/haiyangw/nrpic/.work/build_cpu_v03/src/athena",
+      "role": "argv",
+      "sha256": "d983155bb21befedbd123d54d84fcfc12a875ee0aaa0baa36f5a51261041c25c",
+      "bytes": 246469568,
+      "tracked": false,
+      "location": "main checkout data root"
+    },
+    {
+      "path": "/data/haiyangw/nrpic/scratch/core/tmp/idsolve2/exe_76add0c/athena_cpu",
+      "role": "argv",
+      "sha256": "4b3a63696aacb3c61adc425422dce2c1e7cff01f0048b65e859b72385ef97eef",
+      "bytes": 251066632,
+      "tracked": false,
+      "location": "main checkout data root"
+    }
+  ],
+  "batch_entries": null,
+  "resources": {
+    "nodes": 1,
+    "gpus": 0,
+    "cores": 1,
+    "walltime_s": null,
+    "wall_limit": null,
+    "segments_max": null,
+    "gpu_hours_requested": 0.0,
+    "gpu_hours": null,
+    "particles": null
+  },
+  "slurm": null,
+  "outputs": {
+    "dir": "scratch/core/core-20261119-154842-de22625",
+    "sha256sums": "sha256sums.txt",
+    "sha256sums_sha256": null,
+    "bytes": null,
+    "files": null
+  },
+  "status": "running",
+  "exit_code": null,
+  "registered": "2026-11-19T15:48:44Z",
+  "started": null,
+  "ended": null,
+  "parents": [],
+  "notes": "",
+  "budget_at_submit": {
+    "gpu_hours_allotted": 40.0,
+    "cores_allotted": 16,
+    "gpu_hours_used": 2.8029,
+    "gpu_hours_reserved": 4.96,
+    "gpu_hours_without_gate": 5.8613,
+    "cores_busy": 15,
+    "runs": 1091,
+    "allotment_from": "coord/DECISIONS/0006-compute-budget.md + 0014-budgets-after-wave-1.md"
+  }
+}
