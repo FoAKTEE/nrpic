@@ -571,3 +571,9 @@ Predictions:
    boundary. Refuted if the model never exceeds 1600 along x in [0, 4] m (then the excess comes
    from what the model leaves out: lagging derefinement).
 Consequence planned: the slot limit for S2g (2400, E10) is checked against the model's maximum.
+
+Run F-20261119-143851-47595bd (first pass of E11): FAILED as an analysis: the header reader
+skipped 2 x 22 integers for the two RegionIndcs; the struct has 19 (`mesh/mesh.hpp` lines 36-42),
+so time, cycle and levels were garbage (the MeshBlock totals 400, 1576, 1548, read before that
+offset, are right). Fixed; one restart file read by hand afterwards gives t = 10, cycle 320,
+levels 1-6 = 448 / 448 / 504 / 56 / 56 / 64. Rerun below.

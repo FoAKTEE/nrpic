@@ -12,7 +12,8 @@ Two parts:
           from the root, as at the start of a run), never removed.
   rst     the tree stored in an AthenaK restart file (outputs/restart.cpp lines 216-245:
           parameter text up to "<par_end>\\n", then nmb_total, root_level, RegionSize,
-          2 RegionIndcs, time, dt, ncycle, LogicalLocation[nmb_total] = 4 int32 each).
+          2 RegionIndcs of 19 int, time, dt, ncycle, LogicalLocation[nmb_total] = 4 int32 each;
+          mesh/mesh.hpp lines 26-65).
 Usage:
   tree_check.py model <athinput> <x> [<y> <z>]        prints the model tree
   tree_check.py <out | -> <athinput> <rundir> [...]   reads <rundir>/rst/*.rst and the
@@ -170,7 +171,7 @@ def read_rst_tree(path):
         off = head.index(b"\n", p) + 1
         f.seek(off)
         nmb, root = struct.unpack("<2i", f.read(8))
-        f.read(9 * 8 + 2 * 22 * 4)                  # RegionSize, 2 RegionIndcs
+        f.read(9 * 8 + 2 * 19 * 4)                  # RegionSize (9 Real), 2 RegionIndcs (19 int)
         time, dt = struct.unpack("<2d", f.read(16))
         ncycle, = struct.unpack("<i", f.read(4))
         ll = np.frombuffer(f.read(16 * nmb), dtype="<i4").reshape(nmb, 4)
