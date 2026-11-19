@@ -100,10 +100,13 @@ To the lead (owner of `spec/` and `spec/scope/SCOPE.md`); proposals, not adopted
    pair (s = +-1), and halve s once. (a) The even part with its box mean removed scales by
    4.00 +- 0.05 when s is halved and agrees between the two finest resolutions within 5
    percent where it lies above the rounding floor (the second-order violation does not
-   depend on the resolution, P1's plateau; measured: 2.2 percent between 64 and 128). (b) The odd part (first order in s) is truncation: it
-   converges at the order of A5, and it may exceed the even part while shells with fewer
-   than eight cells per wavelength enter (from N = ln(N_cells/8) e-folds after N* in the
-   paper's set-up k_max = N_cells/4). (c) The record <|H|/[H]> stays within a factor 10 of
+   depend on the resolution, P1's plateau; measured: 2.2 percent between 64 and 128, and
+   independent of the Courant factor). (b) The odd part (first order in s) is
+   discretisation error: it scales by 2.00 +- 0.05 when s is halved, converges at the
+   order of A5 (spatial truncation, order up to 6, and the time error, order 4 at a fixed
+   Courant factor), and it may exceed the even part while shells with fewer than eight
+   cells per wavelength enter (from N = ln(N_cells/8) e-folds after N* in the paper's
+   set-up k_max = N_cells/4). (c) The record <|H|/[H]> stays within a factor 10 of
    P1's 1e-10 (P1:538-539) and <|M|/[M]> below 1e-3. (d) The negative control with the
    sign of the Pi kick flipped has an odd part at least 1e3 times that of the proper run.
    The record ratios themselves are no order test: they contain the uniform residual H0 of
