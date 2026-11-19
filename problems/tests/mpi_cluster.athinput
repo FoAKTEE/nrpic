@@ -82,6 +82,8 @@ field_time1    = 3.75
 field_time2    = 7.5
 field_constraints = true
 snap_dt        = 1.875
+source_density = false     # true in the case t3_cluster_ext (with source_extrap)
+source_extrap  = false
 particle_file  = cluster.nrp
 
 <problem>

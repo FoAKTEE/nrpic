@@ -132,11 +132,12 @@ KERR = "problems/tests/mpi_kerr_swarm.athinput"
 BOX = "problems/tests/mpi_box_periodic.athinput"
 CLUSTER = "problems/tests/mpi_cluster.athinput"
 CLUSTER_SMR = "problems/tests/mpi_cluster_smr.athinput"
-SMR = "problems/tests/deposit_smr.athinput"
+SMR = "problems/tests/mpi_deposit_smr.athinput"
 # the table of the cluster lies next to the particle file ({out} is the output directory)
 CLT = ["problem/comp0_file={out}/cluster.tab"]
-SMRT = ["time/tlim=4.0", "particles/traj_dcycle=4", "particles/traj_ntrack=1000000",
-        "particles/snap_dt=1.0"]
+# (AthenaK changes on the command line only parameters that the input file has: the
+# options of the refined-mesh cases are in mpi_deposit_smr.athinput)
+SMRT = []
 # with deposit every particle is tracked: the file with the metric at the tracked
 # particles then samples the deposited E and S_i at all particles in double precision
 # (the binary dumps of the sources are single precision)
