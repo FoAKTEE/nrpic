@@ -1009,3 +1009,134 @@ and for the tracers at 48 M, 50.640 and 53.221 M, differ from Track D's
 `es_reference.csv` in the fifth digit; the file gives 38.3200, 40.5718, 42.7628 M (wall)
 and 50.6429, 53.2185, 55.7333 M (48 M). The analysis reads the file, so no outcome
 changes; the criteria of prediction ES (5e-3 and 3e-3) are far from that digit.
+
+## 2026-11-19, entry 9 (16:20 UTC): outcome of L3, the bound ball through its collapse; handoff of the package
+
+### L3 retest (card job 4632, run core-20261119-140652-fd7e8d0, 0.243 card-hours; analysis core-20261119-161350-929b6b3; figures `figs/collapse_gc_collapse-leak05.png`, `-mp.png`, `-leak05-fine.png`, `collapse_gc_compare.png`, all looked at)
+
+The job started at 15:33 UTC; the three runs reached `tlim` = 45 M with exit status 0 on
+the static mesh of entry 7 (288 and 344 MeshBlocks; 209, 201 and 463 s). The first
+analysis (core-20261119-160130-77e0e21) read the horizon summary without skipping the
+searches that found nothing (they write nan) and measured the shells only as the largest
+error over the run; the script was extended (commits be22f059, 929b6b38) to the first
+found horizon and to each shell's error at the record where its exact areal radius
+falls below 2.5, 3 and 4 times the Schwarzschild radius of its mass, and run again. Every
+number below is from the second analysis (`collapse_numbers_gc.json`), except the
+coordinate radius of the horizon, read from column 11 (mean coordinate radius) of
+`collapse-*/ball.horizon_summary_0.txt` of the card run.
+
+Run 1, `collapse-leak05` (T = 0.5 M, cells M/8 within 4 M), against the prediction of
+entries 1 and 7:
+
+| item | prediction | outcome |
+|---|---|---|
+| central lapse | falls below 0.05 | smallest 0.074 (plateau 0.074 to 0.080 from t = 33 M to the end): FAILS |
+| horizon | an apparent horizon is found; refuted if none before t = 45 M | first found at t = 29.0 M (proper time at the centre 25.03 M), then in all 32 searches to 44.5 M: confirmed |
+| horizon mass | within 3 per cent of M = 1 once the surface shells are inside; refuted if off by more than 10 per cent | 0.9980 to 1.0003 over the 32 searches (all dust particles removed by t = 32 M, figure): confirmed |
+| constancy | within 1 per cent over the last 5 M | spread 1.4e-3: confirmed |
+| surface shells | follow the cycloid to R = 2.5 M with abs(eps) below 3 per cent; refuted if off by more than 10 per cent at R = 2.5 M | at R_exact = 2.5 M: median 3.6 per cent, every one with R > R_exact (median signed +3.6 per cent), largest 12.7 per cent, 43 of the 340 shells above 10 per cent: FAILS, and REFUTED for those 43 shells (by the package's measure, the largest of the group); at R_exact = 4 M median 1.25, largest 4.9 per cent |
+| other groups (no number predicted) | | outer at 2.5 m(shell): median 1.0, largest 3.7 per cent; mid at 3 m: 1.15 and 3.0 per cent; core: largest 5.3 per cent before removal |
+
+The central lapse followed its homogeneous reference to 3.8 per cent up to t = 10 M (3.9
+per cent in L2 at cells M/4), turned around below 1 at t = 10 M and fell as plain 1+log
+(0.97, 0.91, 0.81, 0.61, 0.17 at t = 12, 15, 20, 25, 30 M); the largest lapse on the
+mesh was 1.167.
+
+Run 2, `collapse-mp` (plain 1+log, same mesh). Prediction [JUDGEMENT]: it also forms a
+horizon, with larger shell errors. Outcome: the front of entry 3 (central lapse 1.71,
+0.66, 2.19 at t = 2, 4, 6 M; largest lapse 4.61); horizon first found at t = 18.0 M
+(central proper time 25.17 M), in all 54 searches after it, mass 0.9964 to 1.0002, spread
+1.5e-3 over the last 5 M; central lapse below 0.05 from t = 20.8 M, smallest 0.020.
+Shell errors: larger in the interior groups (core largest 0.69 against 0.053; mid at
+4 m(shell) median 4.9 against 0.73 per cent; outer at 2.5 m(shell) median 4.4 against
+1.0 per cent), NOT in the surface group (at R_exact = 2.5 M median 1.6 per cent with no
+common sign, largest 10.1 per cent, 1 of 340 above 10 per cent). Confirmed for the
+interior, failed for the surface.
+
+Run 3, `collapse-leak05-fine` (T = 0.5 M, cells M/16 within 2 M). Prediction: horizon
+first found within 0.5 M of run 1; mass at the end within 1 per cent of M; the two
+resolutions within 1.5 per cent at the end; refuted by a mass off by more than 2 per
+cent at M/16 or a difference above 3 per cent. Outcome: first found at t = 28.25 M,
+0.75 M before run 1 (run 1 searches every 0.5 M and found none at 28.5 M): FAILS;
+mass 0.988 at the first search, then 0.9994 to 1.0006, 0.99997 at t = 44.5 M: confirmed;
+difference to run 1 at 44.5 M 3.3e-4: confirmed; spread over the last 5 M 1.6e-4. Not
+refuted. Central lapse below 0.05 from t = 32.7 M, smallest 0.037 (half of run 1's).
+Surface shells at R_exact = 2.5 M: median 1.8 per cent (signed +0.7), largest 10.6 per
+cent, 4 of 340 above 10 per cent. Interior shells worse than in run 1 (outer at
+2.5 m(shell) median 5.7 per cent; mid at 4 m(shell) median 9.0, largest 16.7 per cent).
+
+Coordinates of the hole [VERIFIED, column 11 of the horizon summaries]: mean coordinate
+radius of the horizon when first found 0.778 M (run 1, t = 29 M), 0.755 M (run 3,
+t = 28.25 M) and 1.657 M (run 2, t = 18 M); at t = 44 M 0.728 M (runs 1 and 3) and
+2.339 M (run 2, from the analysis). So at t = 44 M and cells M/8 the hole of run 1 spans
+about 6 cells in radius, that of run 2 about 19.
+
+Reading [JUDGEMENT, no run here isolates a cause]:
+1. The question the tracks asked is answered yes: with `lapse_leak` the bound ball turns
+   around, collapses and forms an apparent horizon that is found in every later search,
+   with mass 0.998 to 1.0003 at cells M/8 and 0.9994 to 1.0006 at M/16 after its first
+   search (exact 1), as close as with plain 1+log (0.996 to 1.0002). The late start of plain 1+log after the
+   turnaround did not keep the slices from reaching the trapped region: the outcome
+   that entry 7 named a defect of the condition did not occur. No change of the source.
+2. The refuted part of L3 is the shells of the surface near the horizon. The refutation
+   holds in all three runs, with the term off as well (largest 10.1 to 12.7 per cent),
+   so it does not show a defect of the term. What differs between the runs is the
+   coordinate size of the hole: with the relaxed lapse the ball collapses into a region
+   three times smaller in coordinates than after the front of plain 1+log, so a mesh of
+   M/8 resolves the forming hole and the surface layer near it with three times fewer
+   cells. The central lapse (0.074 at M/8, 0.037 at M/16, a factor 2.0) and the bias of
+   the surface shells (median +3.6 per cent at M/8, +0.7 per cent at M/16) both follow
+   the cell size at the centre, consistent with that reading.
+3. At M/16 the interior shells get worse, as entry 7 feared: with the cloud at the
+   finest level each particle of the lattice of M/4 deposits into cells of M/16, a
+   granular source. A collapse that has to follow shells near the horizon needs the
+   centre at M/16 together with a lattice or a cloud level that matches it.
+4. Not covered: compressions far beyond this ball's (Track A's collapses from a factor
+   17 in radius, entry 1, "open by design"); runs past 45 M.
+
+### Handoff of the package (for a reader with no memory)
+
+State. Branch `core/gauge`, worktree `/data/haiyangw/nrpic/wt/core-gauge`. The source is
+unchanged since b4430da (`git diff b4430da HEAD -- athenak/src` is empty): the
+executables published on 2026-11-15 under `/data/haiyangw/nrpic/scratch/core/exe/core_gauge/`
+(COMMIT holds their sha256) are the tested ones; READY there is rewritten with every
+outcome and has no PENDING part. Interface: `tracks/core/interfaces/cosmo_gauge.md`
+section 7 (proposal for `coord/INTERFACES/cosmo_gauge.md`).
+
+Shared files touched (all in b4430da, against main): `athenak/src/z4c/z4c.hpp` lines 25
+(include) and 219 (member `gext`); `athenak/src/z4c/z4c.cpp` line 158 (one call after the
+`shift_eta` read); `athenak/src/z4c/z4c_calcrhs.cpp` lines 25-26 (include) and 769-773
+(the call `AddGaugeExt` between the main loop and the dissipation loop). Everything else
+is in the new file `athenak/src/z4c/z4c_gauge_ext.hpp`.
+
+Established (journal entries, run ids there): byte regression R (inputs without the new
+parameters are unchanged); `lapse_leak`: no lapse front on expanding balls (L1, L2),
+exact on the homogeneous universe (H), no effect on a puncture (P, identical files over
+20 M), Track D's Einstein-Straus data for 30 M (ES), collapse to a black hole with the
+right horizon mass (L3); `shift_eta_profile`: heavy hole unchanged, light hole moved
+part of the way with width 2 and nearly all the way on one hole with widths 4 and 8
+(E1, E2). Card time of the package: 0.665 card-hours (0.422 to entry 8, 0.243 in L3).
+
+Failed predictions, kept on record: R first version (entry 3); L1 (b) for T = 2 M; L2 for
+T = 1 M (refuted); E1 (d), (e); E2 light tracker; ES items 1 and 3 (not refuted); H rate
+20 at the start; L3 central lapse at M/8, surface shells (refuted for 43 of 340 shells),
+first horizon time of the fine run.
+
+Pending. Card job 4641, run core-20261119-143517-ec2f4fc (E2 with `shift_eta_width` 4
+and 8, prediction in entry 8), was queued (estimated start 18:11 UTC) when the package
+closed. When it has run: `harness/bin/nrpic-run finish core-20261119-143517-ec2f4fc`,
+then `harness/bin/nrpic-run submit --kind scouting --gate G2 --launcher local --purpose
+"..." -- .venv/bin/python tracks/core/analysis/gauge/punc_analysis.py --prefix gc --batch
+core-20261119-143517-ec2f4fc` (the script knows the tags `e2-profile-w4`, `-w8`), judge
+it by the prediction of entry 8 and update section 7.2 of the interface and READY.
+
+Open (not started; new lines of work): the paper's factor eta(x)/eta_0 on kappa_1;
+`lapse_leak_alpha` other than 1; `shift_eta_width_local`; more than two holes; a Hills
+passage with the profile (Track F's R4); Einstein-Straus runs past 30 M or with a finer
+dust mesh and a transparent outer boundary (Track D); collapses with far larger
+compression (Track A); a collapse at M/16 with a matching particle lattice.
+
+Correction to entry 8: the damping at the heavy hole of the pair with a wider profile
+is 2 [1 + 3/(1 + 64/(w m_2)^2)] with m_2 = 0.25 (separation 8 M), not 2 [1 + 3/(1 +
+64/w^2)]; the numbers written there (2.09 for width 4, 2.35 for width 8) are those of the
+correct formula.
