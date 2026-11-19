@@ -1,0 +1,105 @@
+{
+  "schema": "nrpic-run-manifest/1",
+  "run_id": "B-20261119-161734-a3a1366",
+  "track": "B-emd-gw",
+  "gate": "G1",
+  "kind": "scouting",
+  "purpose": "first_source round 2: P16 shell spectra of TT and non-TT parts in the jittered nulls (A = 0.3, 0.1), the plane null and the eps = 0.1 signal",
+  "preregistered_in": null,
+  "launcher": "local",
+  "command": [
+    "env",
+    "OMP_NUM_THREADS=1",
+    "python3",
+    "tracks/B-emd-gw/first_source/scripts/null_spectrum.py",
+    "j3_tau0.1=/data/haiyangw/nrpic/scratch/B-emd-gw/B-20261119-142833-19edd82/jit0p3/bin/cw.z4c.00001.bin",
+    "j3_a2=/data/haiyangw/nrpic/scratch/B-emd-gw/B-20261119-142833-19edd82/jit0p3/bin/cw.z4cd.00001.bin",
+    "j3_a12=/data/haiyangw/nrpic/scratch/B-emd-gw/B-20261119-142833-19edd82/jit0p3/bin/cw.z4cd.00005.bin",
+    "j3_a140=/data/haiyangw/nrpic/scratch/B-emd-gw/B-20261119-142833-19edd82/jit0p3/bin/cw.z4cd.00022.bin",
+    "j1_a2=/data/haiyangw/nrpic/scratch/B-emd-gw/B-20261119-142833-19edd82/jit0p1/bin/cw.z4cd.00001.bin",
+    "j1_a12=/data/haiyangw/nrpic/scratch/B-emd-gw/B-20261119-142833-19edd82/jit0p1/bin/cw.z4cd.00005.bin",
+    "e0_a12=/data/haiyangw/nrpic/scratch/B-emd-gw/B-20261115-164059-d802e82/cw_eps0/rst/cw.00005.rst",
+    "s01_a12=/data/haiyangw/nrpic/scratch/B-emd-gw/B-20261115-164059-d802e82/cw_eps0p1/rst/cw.00005.rst",
+    "s01_a121=/data/haiyangw/nrpic/scratch/B-emd-gw/B-20261115-164059-d802e82/cw_eps0p1/rst/cw.00020.rst"
+  ],
+  "cwd": ".",
+  "git": {
+    "sha": "a3a13664eff303368d9e1f9684e74131c977b9d6",
+    "branch": "track/B-emd-gw",
+    "dirty": false,
+    "package": [
+      "tracks/B-emd-gw/first_source"
+    ],
+    "outside_package": {
+      "count": 0,
+      "first": []
+    },
+    "merge_base_main": "27b2ced9be0f020a4206d89e3cc982ada5c4367c",
+    "worktree": "wt/B-emd-gw"
+  },
+  "code": {
+    "core_tag": "core-v0.3",
+    "athenak_upstream_sha": "c5a0d7f",
+    "kokkos_sha": "6739bc623081648af9e752b616d9671527922cbf",
+    "problem": null
+  },
+  "env": {
+    "host": "anta",
+    "env_hash": "33c1dbb6673b68919eaa332b0add0b58aeac8be843f2071b9d06e2e0e397a96d",
+    "machine_file_sha256": "0321f40f4caeeb2a36624a9fa9809e60bad31071f366b3517ba23ad45698d2d7",
+    "uv_lock_sha256": "5417f6ba318b914aa3800e5d55f7b11fdd8df13c2688bdda7d419240aa1d5863",
+    "track_requirements_sha256": null,
+    "container_digest": null,
+    "compiler": "g++ 11.4.0",
+    "mpi": "none (Athena_ENABLE_MPI=OFF)",
+    "gpu": null,
+    "python": "3.10.12 /data/haiyangw/nrpic/wt/B-emd-gw/.venv"
+  },
+  "input": null,
+  "inputs": [
+    {
+      "path": "tracks/B-emd-gw/first_source/scripts/null_spectrum.py",
+      "role": "argv",
+      "sha256": "57212df03d579c42dbd8efcf0ce2a001a9ce956aae82adb654838bd53df6b188",
+      "bytes": 3682,
+      "tracked": true
+    }
+  ],
+  "batch_entries": null,
+  "resources": {
+    "nodes": 1,
+    "gpus": 0,
+    "cores": 1,
+    "walltime_s": null,
+    "wall_limit": null,
+    "segments_max": null,
+    "gpu_hours_requested": 0.0,
+    "gpu_hours": null,
+    "particles": null
+  },
+  "slurm": null,
+  "outputs": {
+    "dir": "scratch/B-emd-gw/B-20261119-161734-a3a1366",
+    "sha256sums": "sha256sums.txt",
+    "sha256sums_sha256": null,
+    "bytes": null,
+    "files": null
+  },
+  "status": "running",
+  "exit_code": null,
+  "registered": "2026-11-19T16:17:34Z",
+  "started": null,
+  "ended": null,
+  "parents": [],
+  "notes": "",
+  "budget_at_submit": {
+    "gpu_hours_allotted": 40.0,
+    "cores_allotted": 16,
+    "gpu_hours_used": 0.534,
+    "gpu_hours_reserved": 1.9333,
+    "gpu_hours_without_gate": 0.481,
+    "cores_busy": 9,
+    "runs": 197,
+    "allotment_from": "coord/DECISIONS/0006-compute-budget.md + 0014-budgets-after-wave-1.md"
+  }
+}
