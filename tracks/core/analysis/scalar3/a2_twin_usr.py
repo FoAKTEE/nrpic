@@ -58,6 +58,12 @@ def main():
     tw = sl.Twin(nc, a.n, s3.LENGTH, v, dv, d2v, phi0, pi0, sh_n2, sh_r, sh_dr)
     sol = tw.integrate(times[1:], rtol=a.rtol)
     dg = tw.diagnostics(sol)
+    # the twin with the time integration of the code, at the steps of the run
+    hist = sf.read_history(os.path.join(a.data, a.prefix + kp, BASE + ".sf.hst"))
+    twc = sl.CodeTwin(nc, a.n, s3.LENGTH, v, dv, d2v, phi0, pi0, sh_n2, sh_r, sh_dr)
+    solc = twc.integrate_steps(hist["time"], cyc)
+    dgc = twc.diagnostics(solc)
+    itc = {int(c): i for i, c in enumerate(solc["cycle"])}
     summ = dict(data=os.path.abspath(a.data), pair=a.pair, n=a.n, nmax2=a.nmax2,
                 modes=int(n.shape[0]), canonical=int(nc.shape[0]),
                 wall_twin_s=round(time.time() - t0, 1), rows=[])
@@ -89,6 +95,15 @@ def main():
                     row["odd_vs_twin_" + lab] = float(dev_d[sel].max())
                     row["odd_vs_ref_" + lab] = float(dev_r[sel].max())
             keep.append((row["efolds"], q[ent], dev_r[ent], dev_tw[ent], dev_d[ent]))
+            if c in itc:
+                tc_r = sc*dgc["rnr"][itc[c]][inv]*al
+                dev_c = np.abs(odd/tc_r - 1.0)
+                for lab, sel in (("n_le_2", ent & (q <= 2.0 + 1e-9)),
+                                 ("n_le_4", ent & (q <= 4.0 + 1e-9)),
+                                 ("top_shell", ent & (q >= qtop - 1e-9)),
+                                 ("all_in", ent)):
+                    if sel.any():
+                        row["odd_vs_codetwin_" + lab] = float(dev_c[sel].max())
         if "H" in fp:
             oh = 0.5*(fp["H"] - fm["H"])
             om = [0.5*(fp[x] - fm[x]) for x in ("Mx", "My", "Mz")]
@@ -100,6 +115,21 @@ def main():
                        M_odd_twin=float(np.sqrt(2.0*(np.abs(mm)**2).sum())))
             row["H_odd_twin_over_meas"] = row["H_odd_twin"]/row["H_odd_meas"]
             row["M_odd_twin_over_meas"] = row["M_odd_twin"]/row["M_odd_meas"]
+            if c in itc:
+                i2 = itc[c]
+                hc = sc*dgc["dH"][i2][inv]*al
+                mc = sc*dgc["dM"][i2][inv]*al[:, None]
+                ch, _ = sf.analyse(oh, n)
+                row.update(
+                    H_odd_codetwin=float(np.sqrt(2.0*(np.abs(hc)**2).sum())),
+                    M_odd_codetwin=float(np.sqrt(2.0*(np.abs(mc)**2).sum())),
+                    H_coef_maxdiff_over_rms=float(
+                        np.abs(ch - hc).max()/np.sqrt((np.abs(ch)**2).mean())),
+                    H0_codetwin=float(solc["H0"][i2]),
+                    Pi0_codetwin=float(solc["Pi0"][i2]),
+                    Pi_box_mean_plus=float(fp["Pi"].mean()))
+                row["H_odd_codetwin_over_meas"] = row["H_odd_codetwin"]/row["H_odd_meas"]
+                row["M_odd_codetwin_over_meas"] = row["M_odd_codetwin"]/row["M_odd_meas"]
         summ["rows"].append(row)
     common.dump_json(summ, os.path.join(out, "summary.json"))
 
@@ -119,13 +149,15 @@ def main():
                    color=cl, label=lbl + ": twin")
         ax[1].plot(ne, [r.get("odd_vs_twin_" + lab, np.nan) for r in rows], "o-", ms=3,
                    color=cl, label=lbl)
+        ax[1].plot(ne, [r.get("odd_vs_codetwin_" + lab, np.nan) for r in rows], "s:",
+                   ms=3, mfc="none", color=cl)
     ax[0].set_yscale("log")
     ax[0].set_xlabel("e-folds after $N_*$")
     ax[0].set_ylabel(r"largest $|R^{\rm NR}_n/(W R\,\alpha_n)-1|$ (odd in $s$)")
     ax[0].legend(loc="lower right", fontsize=6, ncol=2)
     ax[1].set_yscale("log")
     ax[1].set_xlabel("e-folds after $N_*$")
-    ax[1].set_ylabel(r"largest $|R^{\rm NR}_n/R^{\rm twin}_n-1|$ (odd in $s$)")
+    ax[1].set_ylabel(r"largest $|R^{\rm NR}_n/R^{\rm twin}_n-1|$ (dotted: with time int.)")
     ax[1].legend(loc="upper left", fontsize=7)
     if rows and "H_odd_meas" in rows[0]:
         ax[2].plot(ne, [r["H_odd_meas"]/sc for r in rows], "o", ms=3, mfc="none",
@@ -136,6 +168,10 @@ def main():
                    color=R_, label=r"$|\mathcal{M}|$: runs")
         ax[2].plot(ne, [r["M_odd_twin"]/sc for r in rows], "-", color=R_,
                    label=r"$|\mathcal{M}|$: twin")
+        ax[2].plot(ne, [r.get("H_odd_codetwin", np.nan)/sc for r in rows], ":",
+                   color=B, label="with the time integration")
+        ax[2].plot(ne, [r.get("M_odd_codetwin", np.nan)/sc for r in rows], ":",
+                   color=R_)
         ax[2].set_yscale("log")
         ax[2].set_xlabel("e-folds after $N_*$")
         ax[2].set_ylabel("rms of the part odd in $s$, over $s$")

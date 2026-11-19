@@ -417,3 +417,81 @@ it sits at the root, 9.71 for H = 1, within 1 percent; 8 e-folds are reached in 
 within 1e-8 and the e-folds within 3e-5 of the Friedmann solution. Refuted by a lapse
 that keeps growing (no root reached), by more than 300 steps, or by an error of K above
 1e-6.
+
+## 2026-11-19, entry 6: outcomes of G3r and G4; a smoke test that already refutes two predictions of U; the twin with the time integration of the code
+
+**G3r, run core-20261119-150816-a8f9558** (analysis of the files of -144906-69c60cc at
+equal field value; figure as in entry 3). HOLDS for (d): with the relaxed 1+log lapse <K>
+equals the Friedmann K at equal <phi> within 3.3e-11, <Pi> within 1.1e-11, the e-folds
+within 5.2e-5 (predicted 1e-7, 1e-6, 3e-4): the relaxed lapse changes the slicing, not the
+solution, and the 1.5e-5 of entry 3 was the trapezoid sum of the proper time, as
+suspected there. (a) geodesic: 3.3e-12 (K), 5.5e-6 (e-folds). (b), (c): at equal field
+value the e-folds of the first half of the run are off by 2.1e-5 (conformal time) and
+1.1e-3 (1+log); the whole run by 0.93 and 2.2 e-folds, K by 7.4e-5 and 2.9e-2. My "K
+within 1e-4 in the first half" was not evaluated (the script records the e-folds of the
+first half only).
+
+**G4, run core-20261119-150838-0251a5e** (conformal-time lapse capped at 8 by the
+relaxation term, step of a 256^3 run; figure `fig_gauge_homog.png` of that run, looked at:
+the lapse rises as a straight line in the logarithm to 8 at 2.1 e-folds and stays at
+9.5; the step in e-folds rises from 0.006 to 0.056 and stays; the last point is the step
+cut at the time limit). HOLDS: lapse equal to a within 7.8e-8 up to 1.5 e-folds; from 4
+e-folds on within 6.1e-4 of the root of ln(alpha/8) = 0.02 H alpha (9.52 at the end,
+where H = 0.955); 7.64 e-folds in the 245 steps of the run, i.e. 8 e-folds in 252 at the
+final 0.0558 e-folds per step (predicted 245 +- 15; my time limit 1.5 was 0.04 short of 8
+e-folds), against 1341 steps of geodesic slicing at the same step: 5.3 times fewer. At
+equal field value K within 6.8e-12 and the e-folds within 8.0e-6 of the Friedmann
+solution (predicted 1e-8, 3e-5).
+
+**Smoke test of the drivers of U** (unregistered: `u1_usr.py`, `u2_usr_analysis.py`,
+`a2_twin_usr.py` at 16^3, nmax2 = 16, to t = 1, `scratch/core/scalar3/smoke_u*`; run to
+find script errors while the registered runs waited for cores). It showed numbers that
+bear on predictions of entry 2, before the registered runs: the s = 0 run has <|H|/[H]> =
+3.5e-7 at the step 0.098 and 1.9e-8 at the step 0.049 (ratio 18): the step of the 32^3
+runs. So PU3 ("between 3e-12 and 2e-10") is already known to FAIL by two orders, and
+with it the record maximum of PU4, which this uniform residual will dominate. Cause
+[JUDGEMENT; the twin below computes it]: I scaled the residual of the quadratic case by
+eps1 only; it grows with the fourth power of the rate at which the background changes,
+eps2/2 = 0.2 here against 0.01 there.
+
+**The twin with the time integration of the code** (`sf_lattice.CodeTwin`, written after
+the continuous twin had been checked: the stages of the driver's rk4 at the steps of the
+run; the lockstep data; the homogeneous part of the mesh fields with the code's own
+equations for phi, Pi, chi, Khat, Theta, so that its Hamiltonian residual H0 is part of
+the solution; the perturbations about that homogeneous part, with delta chi as the
+variable, as in the code). Code checks before any registered run (unregistered, numbers
+not used below): on the 32^3 rung of the ladder of the quadratic case the rms of the
+odd parts of H and |M| of twin and dumps agree to the four digits printed at all eight
+dumps, also at the early ones, where the continuous twin had 1.4 percent of the
+measured value; the twin's H0 is 3.03e-11 at t = 0.44 and 3.24e-11 to 3.26e-11 after
+(J2 entry 7 measured exactly that); with c = delta chi/chi_0 as the variable instead the
+early odd parts were 25 percent off, which is how the choice of variable was found. On
+the smoke runs of the inflection case the part of R^NR odd in s equals the twin to 5e-10
+and 3e-9. An evaluation at the 32^3 set-up of U (`dev_codetwin_usr.py`) gives what the
+registered runs should show if the twin describes the code:
+
+PU6 (from the twin; replaces the magnitudes of PU3, PU4, PU5c).
+- Run z0: <|H|/[H]> = |H0|/[H] = 1.9e-8, 1.6e-8, 1.1e-8, 7.9e-8, 1.0e-7, 3.3e-8, 5.1e-9,
+  5.3e-10 at the dumps near t = 0.5, 1.0, ..., 4.0 (within 2 percent), below 1e-12 from
+  5.5 e-folds on. The same in the runs with s = 1 and 0.1 (the first-order part, rms
+  7e-10 of 12 at most, is 3 orders below).
+- Box means against the reference (run z0): Pi within 3e-6 to 3 e-folds, 1.6e-5 at 4.8,
+  9.6e-5 at 6.3, 4.1e-4 from 8 e-folds on; phi within 3.5e-7; K within 9e-8.
+- Pair s = +-0.1: the odd parts of H and |M| equal the twin's (rms 7.1e-11 and 9.6e-11
+  at t = 2.5, i.e. 0.1 times 7.06e-10 and 9.60e-10) within 1e-3 while they exceed 1e-12;
+  the part of R^NR odd in s equals the twin within 1e-5 for every mode with W > 1/2 at
+  every dump; against the continuum reference W R alpha it deviates by 6.1e-3 for the
+  top shell, 2.7e-4 for |n| <= 4 and 3.2e-5 for |n| <= 2 from 5 e-folds on (the lattice
+  and the step; in place of the 0.5 to 2.5e-2, 2e-3, 3e-4 of PU5c).
+Refuted by a disagreement of twin and run beyond these bounds: then the code does
+something at first order that the equations of entry 1 do not contain.
+
+PA6 (added to test A; the 32^3 rung has been seen, entries above; 64 and 128 not). Twin
+with the time integration against the ladder: rms of the odd parts of H and |M| within
+1e-3 at N = 32 at all dumps; at N = 64 within 1e-2 for t <= 1.2, where the measured odd
+part sits at 3.6e-13 to 5e-13 and J2 took it for rounding (if it is the time error, the
+twin has it), and within 1e-3 after; at N = 128 within a factor 1.5 everywhere (rounding
+floor 4e-13). The twin's H0 at N = 64 equals the measured 1.75e-12 to 1.91e-12 of the s =
+0 run within 1 percent. R^NR of the 32^3 run of T8 against the twin: within 3e-6 for all
+modes (the second-order part of a single run at s = 1 is 1.2e-6, J2 entry 14); odd part
+at 64^3: within 1e-7.

@@ -20,6 +20,10 @@ Parts:
      the dump against the twin directly (N = 32 single run, N = 64 odd part)
   D  scan of the resolution at fixed modes (nmax2 = 64): first-order parts of the twin
      against the measured second-order parts (which do not depend on N)
+  E  the twin with the time integration of the code (sf_lattice.CodeTwin: the stages of
+     the driver's rk4 at the steps of each run, and the homogeneous part the mesh
+     carries): parts A and C again, and the uniform Hamiltonian residual H0 against the
+     s = 0 run
 Writes OUT/summary.json and OUT/fig_twin.png."""
 import argparse
 import os
@@ -72,6 +76,17 @@ def main():
         dg = tw.diagnostics(sol)
         dg["wall"] = round(time.time() - t0, 1)
         return dg
+
+    def code_twin(nroot, rundir, cycles):
+        """CodeTwin at the steps of the run in rundir, state at the given cycles."""
+        t0 = time.time()
+        hist = sf.read_history(os.path.join(rundir, "sr.sf.hst"))
+        tw = sl.CodeTwin(nc, nroot, s3.LENGTH, v, dv, d2v, phi0, pi0, sh_n2, sh_r,
+                         sh_dr)
+        sol = tw.integrate_steps(hist["time"], cycles)
+        dg = tw.diagnostics(sol)
+        dg["wall"] = round(time.time() - t0, 1)
+        return dg, sol, hist
 
     def rms_first(dg, it):
         hh = dg["dH"][it][inv]*al
@@ -207,6 +222,79 @@ def main():
     summ["second_order_measured_64"] = sec
     tsec = np.array([r["time"] for r in sec])
 
+    # ---- E: the twin with the time integration of the code
+    ct = {}
+    eseries = {}
+    for nroot in (32, 64, 128):
+        rd = os.path.join(a.ladder, f"lad{nroot}_p1")
+        dpl = s3.dumps(rd, "sr")
+        dml = s3.dumps(os.path.join(a.ladder, f"lad{nroot}_m1"), "sr")
+        cy = sorted(set(dpl) & set(dml))
+        dg, sol, hist = code_twin(nroot, rd, cy)
+        rows = []
+        for it, c in enumerate(sol["cycle"]):
+            if c == 0:
+                continue
+            th, tm, hh = rms_first(dg, it)
+            oh, om = odd_fields(dpl, dml, c)
+            mh = s3.rms(oh)
+            mm = float(np.sqrt(sum((x*x).mean() for x in om)))
+            ch, _ = sf.analyse(oh, n)
+            crms = float(np.sqrt((np.abs(ch)**2).mean()))
+            k = int(np.argmin(np.abs(hist["cycle"] - c)))
+            rows.append(dict(
+                cycle=int(c), time=float(sol["time"][it]), H_twin=th, H_meas=mh,
+                H_ratio=th/mh, M_twin=tm, M_meas=mm, M_ratio=tm/mm,
+                H_coef_maxdiff_over_rms=float(np.abs(ch - hh).max()/crms),
+                H0_twin=float(sol["H0"][it]),
+                Pi0_vs_box_mean=float(abs(sol["Pi0"][it]/hist["Pi"][k] - 1.0)),
+                K0_vs_box_mean=float(abs(sol["K0"][it]/hist["K"][k] - 1.0)),
+                chi0_vs_box_mean=float(abs(sol["chi0"][it]/hist["chi"][k] - 1.0)),
+                lock_Pi_vs_record=float(abs(sol["Pi"][it]/hist["Pi_b"][k] - 1.0))))
+        ct[str(nroot)] = dict(wall_twin_s=dg["wall"], steps=int(hist["time"].size - 1),
+                              rows=rows)
+        eseries[nroot] = rows
+    # R^NR of the dumps against the code twin; H0 against the s = 0 run (64^3)
+    rd = os.path.join(a.t8, "run")
+    dg, sol, hist = code_twin(32, rd, sorted(d8))
+    rows = []
+    for it, c in enumerate(sol["cycle"]):
+        if c == 0:
+            continue
+        rp, _ = s3.rnr_of_dump(d8[c], n, n2)
+        tw_r = dg["rnr"][it][inv]*al
+        ent = dg["w"][it][inv] > 0.5
+        if ent.any():
+            rows.append(dict(time=float(sol["time"][it]), modes_in=int(ent.sum()),
+                             meas_vs_twin_max=float(np.abs(rp/tw_r - 1.0)[ent].max()),
+                             meas_vs_twin_n_le_4=float(
+                                 np.abs(rp/tw_r - 1.0)[ent & (q <= 4.0 + 1e-9)].max())))
+            cdata["32c"] = (q[ent], np.abs(rp/tw_r - 1.0)[ent])
+    ct["rnr_32_single_run"] = rows
+    rd = os.path.join(a.t12, "p1")
+    dg, sol, hist = code_twin(64, rd, cyc)
+    rows = []
+    for it, c in enumerate(sol["cycle"]):
+        if c == 0:
+            continue
+        rp, _ = s3.rnr_of_dump(dp[c], n, n2)
+        rm, _ = s3.rnr_of_dump(dm[c], n, n2)
+        odd = 0.5*(rp - rm)
+        tw_r = dg["rnr"][it][inv]*al
+        ent = dg["w"][it][inv] > 0.5
+        h0 = float(d0[c]["fields"]["H"].mean())
+        row = dict(time=float(sol["time"][it]), H0_twin=float(sol["H0"][it]),
+                   H0_run_s0=h0, H0_ratio=float(sol["H0"][it]/h0))
+        if ent.any():
+            row.update(modes_in=int(ent.sum()),
+                       odd_vs_twin_max=float(np.abs(odd/tw_r - 1.0)[ent].max()),
+                       odd_vs_twin_n_le_4=float(
+                           np.abs(odd/tw_r - 1.0)[ent & (q <= 4.0 + 1e-9)].max()))
+            cdata["64c"] = (q[ent], np.abs(odd/tw_r - 1.0)[ent])
+        rows.append(row)
+    ct["rnr_64_odd_part"] = rows
+    summ["code_twin"] = ct
+
     # ---- D: scan of the resolution at fixed modes
     scan = []
     if not a.skip_scan:
@@ -223,6 +311,25 @@ def main():
                     H_first_over_second=th/sec[it]["H_second"],
                     M_first_over_second=tm/sec[it]["M_second"],
                     rnr_dev_all=float(dev[ent].max()) if ent.any() else None))
+            # the same with the time integration of the code at Courant 0.25 (steps
+            # of 0.25 cells; state at the cycle nearest to each time)
+            dt = 0.25*s3.LENGTH/nroot
+            cyn = sorted(set(int(round(t/dt)) for t in tsec))
+            twc = sl.CodeTwin(nc, nroot, s3.LENGTH, v, dv, d2v, phi0, pi0, sh_n2, sh_r,
+                              sh_dr)
+            solc = twc.integrate_steps(dt*np.arange(cyn[-1] + 1), cyn)
+            dgc = twc.diagnostics(solc)
+            for it2, c in enumerate(solc["cycle"]):
+                j = int(np.argmin(np.abs(tsec - c*dt)))
+                th, tm, _ = rms_first(dgc, it2)
+                row["rows"][j].update(
+                    time_code=float(c*dt), H_first_code=th, M_first_code=tm,
+                    H_first_code_over_second=th/sec[j]["H_second"],
+                    M_first_code_over_second=tm/sec[j]["M_second"])
+            row["H_first_code_over_second_max"] = max(
+                r["H_first_code_over_second"] for r in row["rows"])
+            row["M_first_code_over_second_max"] = max(
+                r["M_first_code_over_second"] for r in row["rows"])
             row["H_first_over_second_max"] = max(r["H_first_over_second"]
                                                  for r in row["rows"])
             row["M_first_over_second_max"] = max(r["M_first_over_second"]
@@ -255,6 +362,12 @@ def main():
                           label=f"$N={nroot}$, twin")
             ax[0, j].plot(t, [r[key + "_meas"] for r in rows], "o", ms=4, mfc="none",
                           color=cl, label=f"$N={nroot}$, runs")
+    for nroot, cl in ((32, B), (64, G), (128, R_)):
+        rows = eseries[nroot]
+        for j, key in ((0, "H"), (1, "M")):
+            ax[0, j].plot([r["time"] for r in rows], [r[key + "_twin"] for r in rows],
+                          ":", color=cl, lw=1.2,
+                          label="with the time integration" if nroot == 32 else None)
     ax[0, 0].plot(tsec, [r["H_second"] for r in sec], "--", color="k", lw=1,
                   label="second order (runs, $N=64$)")
     ax[0, 1].plot(tsec, [r["M_second"] for r in sec], "--", color="k", lw=1,
@@ -262,7 +375,7 @@ def main():
     for j, lab in ((0, r"rms of the part of $\mathcal{H}$ odd in $s$"),
                    (1, r"rms of the part of $|\mathcal{M}|$ odd in $s$")):
         ax[0, j].set_yscale("log")
-        ax[0, j].set_ylim(1e-16, 3e-9)
+        ax[0, j].set_ylim(1e-15, 3e-9)
         ax[0, j].set_xlabel("$t$ (e-folds within 6 percent)")
         ax[0, j].set_ylabel(lab)
         ax[0, j].legend(loc="lower right", fontsize=6, ncol=2)
@@ -277,16 +390,26 @@ def main():
                       label="twin against $W R\\,\\alpha$" if nroot == 32 else None)
         ax[1, 0].plot(qq, direct, "+", ms=3, color=cl, alpha=0.6,
                       label=f"$N={nroot}$: {lab} against twin")
+    for key, cl in (("32c", B), ("64c", G)):
+        if key in cdata:
+            qq, direct = cdata[key]
+            ax[1, 0].plot(qq, direct, "1", ms=4, color=cl, alpha=0.8,
+                          label=f"$N={key[:-1]}$: against the twin with the time "
+                                "integration")
     ax[1, 0].set_yscale("log")
     ax[1, 0].set_xlabel(r"$|n|$")
     ax[1, 0].set_ylabel(r"deviation of $R^{\rm NR}_n$ at the last dump")
-    ax[1, 0].legend(loc="lower right", fontsize=6)
+    ax[1, 0].legend(loc="upper left", fontsize=5)
     if scan:
         cells = [r["cells_per_shortest_wavelength"] for r in scan]
         ax[1, 1].plot(cells, [r["H_first_over_second_max"] for r in scan], "o-",
                       color=B, label=r"$\mathcal{H}$")
         ax[1, 1].plot(cells, [r["M_first_over_second_max"] for r in scan], "s-",
                       color=R_, label=r"$|\mathcal{M}|$")
+        ax[1, 1].plot(cells, [r["H_first_code_over_second_max"] for r in scan], "o:",
+                      color=B, mfc="none", label=r"$\mathcal{H}$, with the time error")
+        ax[1, 1].plot(cells, [r["M_first_code_over_second_max"] for r in scan], "s:",
+                      color=R_, mfc="none")
         ax[1, 1].plot(cells, [r["rnr_dev_end"] for r in scan], "^-", color=G,
                       label=r"$|R^{\rm NR}/(WR\alpha)-1|$, largest")
         ax[1, 1].axhline(1.0, **fs.MASK_LINE)
