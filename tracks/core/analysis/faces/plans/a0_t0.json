@@ -1,0 +1,15 @@
+{"exe": ".work/build_cpu/src/athena",
+ "ball": {"M": 0.5, "Rb": 6, "edge": 1.5, "h": 0.5},
+ "cases": {
+  "ball_e2": {"input": "inputs/ball.athinput", "args": ["time/nlim=0", "z4c/extrap_order=2"]},
+  "ball_e3": {"input": "inputs/ball.athinput", "args": ["time/nlim=0", "z4c/extrap_order=3"]},
+  "ball_e4": {"input": "inputs/ball.athinput", "args": ["time/nlim=0", "z4c/extrap_order=4"]},
+  "ball64_e2": {"input": "inputs/ball.athinput", "args": ["time/nlim=0", "z4c/extrap_order=2", "mesh/nx1=64", "mesh/nx2=64", "mesh/nx3=64"]},
+  "ball64_e4": {"input": "inputs/ball.athinput", "args": ["time/nlim=0", "z4c/extrap_order=4", "mesh/nx1=64", "mesh/nx2=64", "mesh/nx3=64"]},
+  "punc_e2": {"input": "inputs/punc.athinput", "args": ["time/nlim=0", "z4c/extrap_order=2"]},
+  "punc_e3": {"input": "inputs/punc.athinput", "args": ["time/nlim=0", "z4c/extrap_order=3"]},
+  "punc_e4": {"input": "inputs/punc.athinput", "args": ["time/nlim=0", "z4c/extrap_order=4"]},
+  "boost_e2": {"input": "inputs/punc.athinput", "args": ["time/nlim=0", "z4c/extrap_order=2", "problem/comp0_p1=0.3", "problem/comp0_corr=approx"]},
+  "boost_e3": {"input": "inputs/punc.athinput", "args": ["time/nlim=0", "z4c/extrap_order=3", "problem/comp0_p1=0.3", "problem/comp0_corr=approx"]},
+  "boost_e4": {"input": "inputs/punc.athinput", "args": ["time/nlim=0", "z4c/extrap_order=4", "problem/comp0_p1=0.3", "problem/comp0_corr=approx"]}
+ }}

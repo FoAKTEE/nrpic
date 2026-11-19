@@ -1,0 +1,127 @@
+# Journal of the package faces (outer boundaries of the spacetime solver)
+
+Owner core, worktree `wt/core-faces`, branch `core/z4c-faces`. Wave 3a, 2026-11-19.
+Labels: [VERIFIED] (run id or file and line), [BACKGROUND] (literature with locator),
+[JUDGEMENT], [TO VERIFY]. Package directory: `tracks/core/analysis/faces/`.
+
+## 2026-11-19, entry 1: what the code does at an outflow face; candidates; predictions
+
+Read: `CLAUDE.md`, `coord/CHARTER.md` to "Owners", decisions 0010, 0016, 0017, brief lines
+493-553, 688-706, 834-860, `harness/RULES.md`, `scripts/README.md`; of the source
+`bvals/physics/z4c_bcs.cpp`, `z4c/z4c_Sbc.cpp`, `z4c/z4c_tasks.cpp`, `z4c/z4c.cpp`,
+`z4c/z4c_calcrhs.cpp` (loops), `utils/finite_diff.hpp`; test F of
+`tracks/core/JOURNAL-idsolve.md` (branch core/id-solver, entries 8 and 12) and the
+boundary layer of `tracks/core/JOURNAL-clump.md` (branch core/clump-curvature, line 334);
+`tracks/D-bh-dress/puncture_drift/README.md` (branch track/D-bh-dress).
+
+### What the runs of this repository use [VERIFIED from the source at 27b2ced]
+
+1. Every input of `problems/` that is not periodic sets `outflow` on all six faces (33
+   inputs; `grep ix1_bc problems cosmo`), none sets `<z4c> extrap_order` or `user_Sbc`.
+2. Ghost cells of all 22 Z4c variables at an outflow (also diode, vacuum) face: Lagrange
+   extrapolation along the face normal from the outermost active cells,
+   `z4c_bcs.cpp:172-178`, of order `extrap_order` = max(2, min(nghost, 4, input)),
+   default 2, i.e. LINEAR extrapolation from two cells (`z4c.cpp:165`). Applied after
+   every Runge-Kutta stage, x1 faces first, then x2, then x3 over the full range
+   including ghost cells, so edges and corners are extrapolated twice or three times.
+3. Right-hand side in the outermost layer of active cells (`z4c_Sbc.cpp:93-120`,
+   `Z4cBoundaryRHS`, after `CalcRHS`): for Theta, Khat, Gamma^i and A_ij it is replaced
+   by `-v (f/r + s^k d_k f)` with s = x/r from the mesh origin, v = 1 (sqrt 2 for
+   Khat), asymptotic value 0, fall-off 1/r, derivatives centred of second order (they
+   use the first ghost cell). chi, g_ij, alpha, beta^i keep the full right-hand side
+   computed with the extrapolated ghost cells. Edge and corner cells are overwritten by
+   two or three of the loops with the same value.
+4. All other active cells use the full right-hand side: centred sixth-order stencils
+   reach three cells (nghost = 4), the advective stencils and the dissipation four.
+   So the three layers of cells next to the boundary layer read extrapolated ghosts.
+5. The constraint monitor (`ADMConstraints`) uses the same stencils and ghost cells.
+
+Literature [BACKGROUND]: this is the scheme of GR-Athena++, arXiv:2101.08289
+(`kb-data/raw/arxiv/2101.08289/v1/src/paper20210120.tex` lines 1247-1252: Sommerfeld on
+{Khat, Gamma, Theta, A_ij}, "not optimal, as it is not constraint-preserving"; lines
+1366-1378: ghost layer by Lagrange extrapolation, "typically N_g + 1 points", centred
+second-order derivatives in the condition "crucial for numerical stability"), which
+follows arXiv:1212.2901 (`.../1212.2901/v1/src/paper20121212.tex` lines 483-499: the
+Sommerfeld set with speeds sqrt(mu_L) alpha for Khat, alpha for Theta and A_ij, and
+advection by the shift; lines 395-412: the constraint-preserving alternative, for Theta
+`d_t Theta = -alpha d_s Theta + beta^i d_i Theta`). The radiative condition with a
+non-wave part, `f = f0 + u(r - v t)/r + h(t)/r^n`, where the right-hand side one point
+inside fixes h', is arXiv:gr-qc/0206072 (`.../gr-qc_0206072/v1/src/shiftpunctures.tex`
+lines 1492-1555; "taking n = 3 almost completely eliminates the bad transient").
+Differences of this code from the cited schemes: linear extrapolation instead of
+N_g + 1 points; speeds without the lapse; no advection term.
+
+### Candidate causes of the face layer
+
+- H1, monitor: with linear ghosts the sixth-order second derivative across a face has
+  the error -1.117 f'' in the boundary cell, +0.117 f'' in the next, -0.011 f'' in the
+  third (weights 3/2, -3/20, 1/90 times the ghost errors delta(delta+1)/2 f'' dx^2;
+  derived here); the first derivative has -0.40 f'' dx, +0.10 f'' dx, -0.017 f'' dx. The
+  monitor therefore reads a residual of the size of the second-derivative terms in
+  the boundary cell at t = 0 for exact data: no property of the data.
+- H2, Sommerfeld with the wrong fall-off: for a stationary field f ~ r^-m the condition
+  gives d_t f = v (m - 1) f / r instead of 0. Painleve-Gullstrand exterior: Khat and
+  A_ij ~ r^(-3/2), m = 3/2; Bowen-York: A_ij ~ r^-2, m = 2; Brill-Lindquist: K_ij = 0,
+  no such term.
+- H3, the full right-hand side next to the face reads the linear ghosts: an error of
+  0.117 (second cell) of the second-derivative terms in d_t A_ij and d_t Theta, for any
+  data, also K_ij = 0.
+- H4, dissipation: the eighth difference across the face gives 10 f'' dx^2 in the
+  boundary cell, a rate 0.5 * 2^-8 * 10 f'' dx = 0.02 f'' dx for every variable.
+
+### Configurations (processors; a 64^3 Z4c step costs about 20 s on one core here)
+
+Run `faces_bench` (unregistered timing, `scratch/core/tmp/faces_bench`): 1.3e4
+zone-cycles per second and core with the standard processor build, 1.5e4 with -O3; so
+the tests are small: cells of 1 at the faces, faces at 16, and a reference with the
+faces at 32 on the same cells. The difference between the two runs is the effect of the
+faces at 16 (until the faces at 32 are felt: t = 11.3 at r = 16 for speed sqrt 2).
+
+- ball: `inputs/ball.athinput`, marginally bound ball M = 0.5, R_b = 6, smooth edge of
+  half-width 1.5 (matter inside 7.5), 32^3 cells of 1, 1+log lapse from alpha = 1, zero
+  shift, to t = 16. Exterior K = -(3/2) sqrt(2M/r^3) = -0.0246 at r = 15.5.
+- punc: `inputs/punc.athinput`, Brill-Lindquist puncture m = 1, precollapsed lapse,
+  static refinement to cells of 1/4 (root cells of 1 beyond 8), to t = 12.
+- boost: the same with Bowen-York momentum 0.3 along x and the closed-form correction.
+
+### Predictions, written before any of these runs was looked at [JUDGEMENT]
+
+Plan a0 (t = 0, no step; `plans/a0_t0.json`), H1:
+ (a0-a) punc, order 2: the largest |H| of the monitor sits in the boundary layer of
+   cells at the face centres and is 8 * 1.117 * M / r^3 = 2.4e-3 at r = 15.5 (H is
+   -8 lap(psi) to leading order, psi'' = M/r^3 for psi = 1 + M/2r); within a factor 1.5.
+   The second layer has 0.105 of it, the third 0.010 (signs alternate).
+ (a0-b) orders 3 and 4 lower the boundary-cell value to 0.18 and 0.041 of order 2
+   (errors 1.011 f''' dx and 0.917 f'''' dx^2 against 1.117 f''; f'''/f'' = 3/r,
+   f''''/f'' = 12/r^2), each within a factor 2.
+ (a0-c) cells four or more from every face read the same H at all three orders
+   (difference below 1e-12).
+ (a0-d) M_i at t = 0: zero to rounding for punc at every order (K_ij = 0); for ball and
+   boost a boundary layer whose largest value falls with the order as in (a0-b) but
+   with the first-derivative weights (order 2: 0.40 dx |K''|), and which halves from
+   cells of 1 to cells of 1/2 at order 2 (ball64).
+ Refuted: if the layer does not follow the stencil numbers (then something else than
+ the ghost cells makes it), or if punc shows M_i at t = 0.
+
+Plan a1 (evolution, present code; `plans/a1_base.json`):
+ (a1-a) H2: in ball_e2 the boundary cell at a face centre departs from ball_ref from
+   the first step at the rate d_t(Khat - Khat_ref) = sqrt2 * 0.5 * K / r = -1.12e-3 per
+   unit time (K = -0.0246, r = 15.5), within 30 per cent over t <= 1. For punc the same
+   difference stays below 1e-4 at t = 1 (the precollapsed lapse makes d_t K of order
+   1.5 M^2/r^4 = 2.6e-5 only).
+ (a1-b) speed: along the x axis the difference of Khat between ball_e2 and ball_ref
+   advances from the face with speed sqrt 2 +- 25 per cent and that of H with speed
+   1 +- 25 per cent (front: where the difference first exceeds 10 per cent of its
+   value at the face).
+ (a1-c) size: in the vacuum shell 8 <= r < 12 at t = 8 the mean |H| of ball_e2 is more
+   than 3 times that of ball_ref (the face error, not truncation, sets the residual
+   there); refuted below 1.5.
+ (a1-d) H3 against H2: with order 4 instead of 2 the face-layer mean |H| (cells within
+   4 of a face) at t = 4 falls by more than a factor 5 for punc (no K_ij: only H1 and
+   H3 act) and by less than a factor 2 for ball (H2 dominates). Refuted if the ball
+   gains as much as the puncture, or the puncture does not gain.
+ (a1-e) H4: without dissipation (ball_e2_d0, to t = 4) the face-layer mean |H| at t = 2
+   differs from ball_e2 by less than 20 per cent; refuted if it falls by a factor 2.
+ (a1-f) order 4 stays stable to the end of the three runs (no growth of the maximum of
+   |H| in the face layer by more than a factor 10 between t = 4 and the end). Not sure:
+   the high-order extrapolation feeds the dissipation and the advective stencils.
