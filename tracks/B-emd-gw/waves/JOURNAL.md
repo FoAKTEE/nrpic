@@ -315,3 +315,36 @@ Readings:
   and alpha/a are wrong by 4e-8 to 7e-8 for every N <= 32, H1): the inversion uses the
   measured a and calH = -<alpha K>/3 and the TT side uses h' = <alpha> d_tau h, which
   agree with each other only up to that error, through the calH h' term of E.
+
+## 2026-11-19 16:00 Outcome at N = 64 (analysis B-20261119-155119-5459be6, runs on one card)
+
+Test F at N = 64 (card run B-20261119-142124-feb2daf/flatN64): TT amplitude -3.10e-8
+(predicted -3.17e-8, 2 per cent), phase 7.067e-7 (7.034e-7, 0.5 per cent): F2 confirmed at
+all three N; orders 6.36, 5.79 (amplitude) and 4.38, 4.11 (phase), equal to the predicted
+6.36, 5.76 and 4.38, 4.11. F3: polarization ratio errors 1.0e-9 / 1.1e-9 (bound 1e-8).
+F4 (reworded form): backward maximum 9.7e-10 against |1 - w_h/k| = 8.0e-10. F5: order-6
+Weyl vs TT 3.07e-5, 4.91e-7, 8.47e-9 (orders 5.97, 5.86; band at 64: 1e-10 to 2e-8);
+spectral 1.1e-11 to 1.2e-11. The Weyl (order 6) amplitude error is -1.716e-4, -2.208e-6,
+-3.867e-8 and its phase error equals the TT one to 4 digits at every N.
+
+Test X at N = 64 (card run, expN64): the cross polarization equals the 2S prediction to
+4 digits (amplitude 1.3989e-7 against 1.399e-7, phase 2.7624e-7 against 2.762e-7). The plus
+polarization does not: amplitude 1.538e-7 (+10 per cent), phase 3.84e-7 (+39 per cent), so
+the revised X prediction fails for the plus polarization at N = 64. The difference is the
+polarization-ratio error, which grows steadily in time (arg R = -1.1e-7 at t = 10, -2.4e-8
+at N = 32, -4.5e-9 at N = 16: about N^2.3) while the wave decays as 1/a (|W+| from 4.5e-7 to
+1.3e-8). The plus polarization of k = (1,1,0) lives in the diagonal components
+(e+ = zz - (xx + yy - xy - yx)/2), the cross one in xz and yz only. [JUDGEMENT] It is the
+rounding of the diagonal 1 + h through the second differences (relative size about
+1e-16 (N/L)^2/(|k|^2 |h|), growing as N^2 and as 1/|h|), the same mechanism as the 1/A
+scaling of the polarization errors in the amplitude scan at N = 16.
+
+X non-TT part against the envelope: 3.11e-5 at the end for N = 16, 32, 64 alike, and
+3.11e-4 / 3.11e-5 / 4.7e-6 for amplitudes x10 / x1 / x1/10: second order in A, with a
+rounding floor at x1/10 (the instantaneous-norm values of X6 were inflated at the nodes of
+the standing wave).
+
+**Prediction for a check of that judgement** (card run, X at N = 64 with eps x10): the plus
+polarization then follows the 2S prediction like the cross one: amplitude and phase errors
+within 5 per cent of 1.40e-7 and 2.76e-7, and |arg R| <= 1.5e-8 (a tenth of now). Refuted if
+the plus phase error stays near 3.8e-7.
