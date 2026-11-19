@@ -35,7 +35,9 @@
  "purpose": "mpi T5 (t5_smr_tsc_cap): 10^4 particles drifting across three levels of a statically refined mesh in flat spacetime, deposit across levels and ranks, 1, 2 and 4 ranks",
  "kind": "scouting",
  "tag": "mpi-t5_smr_tsc_cap",
- "state": "running",
+ "state": "finished",
+ "wall_time_s": 80.19,
+ "exit_status": 0,
  "cores": 7,
  "card_hours": 0.0,
  "started_utc": "2026-11-19T16:12:08Z"
