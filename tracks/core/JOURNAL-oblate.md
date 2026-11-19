@@ -354,7 +354,7 @@ written; this is what I now expect and why):
   the horizon for the mass to settle and the particles to be removed.
 - P3b and P3d unchanged.
 
-## 2026-11-19 15:13Z, entry 4: T2 holds; a fourth part of T1 predicted
+## 2026-11-19 15:17Z, entry 4: T2 holds; a fourth part of T1 predicted
 
 ### T2, second attempt core-20261119-144947-fb1ccae (processors, 18 min)
 
@@ -375,7 +375,7 @@ identical in all three, and so are the first steps.
 `python/tests/test_oblate_spheroid.py`: 5 of 5 pass; `python/tests/test_initial_data.py`
 (the existing 29 tests, prolate sampler among them): 29 of 29 pass with this branch.
 
-### T1, part d: prediction (15:13Z, before the run)
+### T1, part d: prediction (15:17Z, before the run)
 
 The interface text lists "an oblate component off the origin or together with other
 components" as not tested. Test: `problems/tests/oblate_super.athinput`, an oblate
@@ -393,3 +393,23 @@ M, mesh of half-width 16 M with 64^3 cells.
 The rerun of T1 (parts a to c with the integral without the outer-face cells) and part d
 are one registered run, as soon as `nrpic-run` has room (it has refused for five
 minutes: sixteen cores of owner core busy).
+
+## 2026-11-19 15:21Z, entry 5: executables published; the card part of T1 predicted
+
+Published at 15:18Z: `/data/haiyangw/nrpic/scratch/core/exe/core_oblate/` with
+`athena_cpu` (sha256 43d9d9bf...), `athena_gpu` (8b5f7275..., the same bytes as the copy
+the card job 4647 will run), COMMIT (source: tree `athenak/` of 1d19e13), SHA256SUMS,
+READY. READY says in STATUS that the processor executable is tested (T1, T2) and that
+the card executable is built and not yet run on a card.
+
+T1, part e (`analysis/oblate/card_cf.py`, run `cf_card` of the card job): prediction,
+written while the job is pending.
+
+- P1e. The psi^4 dump of the card run equals the reference at every cell within half a
+  float32 unit (+1e-12), as on the processor, and the monitor without matter has the
+  same largest value relative to 32 pi rho_N (1.18: the surface cells). Against the
+  processor dump of the same input (P1a, e09) at most three of the 884736 cells differ
+  (the card may round atan, sqrt or a fused multiply-add differently in the last bit of
+  the double; that changes the float32 value only within 1e-16 of a rounding boundary).
+  Refuted by: any cell beyond the rounding bound against the reference, or more than a
+  handful of cells differing from the processor dump.
