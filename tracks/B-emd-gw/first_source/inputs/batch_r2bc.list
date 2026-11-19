@@ -1,0 +1,7 @@
+# Card batch BC of the second round of first_source (P12 particle number, P13 mesh), one job
+# (the queue allows two card jobs per owner): eps = 1 at 64^3 with 1 and 27 particles per cell,
+# then 128^3 with 1 per cell (restartable from its restart files every 5.0 if the wall cuts it).
+# Executable scratch/core/exe/core_requests-b/athena_gpu; initial data of run B-20261119-142435-275bd43.
+e1_p1_n64 tracks/B-emd-gw/first_source/inputs/conv.athinput particles/traj_ntrack=190 particles/particle_file=/data/haiyangw/nrpic/scratch/B-emd-gw/B-20261119-142435-275bd43/e1_p1_n64/particles.nrp problem/id_file=/data/haiyangw/nrpic/scratch/B-emd-gw/B-20261119-142435-275bd43/e1_p1_n64/fields.bin
+e1_p3_n64 tracks/B-emd-gw/first_source/inputs/conv.athinput particles/traj_ntrack=574 particles/particle_file=/data/haiyangw/nrpic/scratch/B-emd-gw/B-20261119-142435-275bd43/e1_p3_n64/particles.nrp problem/id_file=/data/haiyangw/nrpic/scratch/B-emd-gw/B-20261119-142435-275bd43/e1_p3_n64/fields.bin
+e1_p1_n128 tracks/B-emd-gw/first_source/inputs/conv.athinput mesh/nx1=128 mesh/nx2=128 mesh/nx3=128 meshblock/nx1=64 meshblock/nx2=64 meshblock/nx3=64 particles/traj_ntrack=382 output2/dt=0.2 output3/dt=2.0 particles/particle_file=/data/haiyangw/nrpic/scratch/B-emd-gw/B-20261119-142435-275bd43/e1_p1_n128/particles.nrp problem/id_file=/data/haiyangw/nrpic/scratch/B-emd-gw/B-20261119-142435-275bd43/e1_p1_n128/fields.bin
