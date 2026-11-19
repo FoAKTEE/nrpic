@@ -383,3 +383,110 @@ wavelength (symbol 2.422 against (pi/2)^2 = 2.467).
   so).
 - Cost: 2.9 s per step on one core (entry 2): 4.4, 8.7 and 17.4 min for theta = 0.25,
   0.125, 0.0625.
+
+## Entry 9, 2026-11-19 14:28Z: outcomes of jobs B and C and of the final analysis (all rungs)
+
+Runs: job B E-20261115-172629-312a82c (P256m, L256p; 0.496 card-hours), job C
+E-20261115-172625-416fec0 (L256m, L64, L128, Q64, Q128 with halving, NC64, NC128; 0.418
+card-hours), analysed with the processor rungs and job A in E-20261115-194633-9e04ed8
+(written on 2026-11-15 19:54Z, read today; `results/final/`, figures `fig/final/`, all six
+looked at). Card time of the package: 0.503 + 0.496 + 0.418 = 1.42 card-hours of the two
+allowed. Then the floor analysis E-20261119-142713-32c883a (supersedes -142625-82a7990,
+which lacked the even-part check; `results/floor/`, `fig/floor/fig_floor.png`, looked at).
+
+Verdicts on the thresholds (SCOPE 4, restated in entry 1):
+- A1 PASS on every rung: box means of phi, Pi, K within 1.1e-12, 8.6e-12, 2.0e-12; the
+  e-fold count from <chi> within 5.5e-6 (N = 32), 3.3e-7 (64), 2.0e-8 (128) over 8.1
+  e-folds, falling by 16.6 and 16.3 per doubling (fourth order in the step, which halves
+  with h); 7.5e-10 at 256 over 4.4 e-folds.
+- A2 PASS on every rung (max D_n over |n| <= k_max/2 at the last dump): L32 8.8e-5, L64
+  2.7e-6, L128 2.5e-6, L256 1.7e-6 (at N = 4.39), Q64 9.7e-5, Q128 9.9e-5, P256 1.21e-4
+  (threshold 0.02). P9 CONFIRMED: over all 1054 modes at N_f = 8.1 the deviation falls from
+  4.08e-3 (32) to 9.65e-5 (64), a factor 42 (2^5.4), then 7.1e-6 (128); for |n| <= 4 it
+  stops at 2.5e-6 from 64 on (the second-order part of R^NR that core's T12b identified at
+  N = 64, `git show core/scalar-2:tracks/core/JOURNAL-scalar2.md`, entry 14).
+- A3 PASS on every rung with 8.1 e-folds (L32, L64, L128, Q64, Q128, P256; 1051 modes
+  each): max |Q_n(N_f)/Q_n(N_k + 4) - 1| between 2.7e-6 and 4.6e-6 (threshold 0.01), drift
+  of ln|R^NR|^2 1.38e-4 to 1.41e-4 per e-fold, equal to the full-MS drift within 1.8e-6
+  (threshold 2.5e-3; the FLRW lattice: -0.05). L256 ran 4.4 e-folds only (no mode with
+  N_f - N_k >= 6).
+- Spectrum (P3) CONFIRMED on every rung: shell ratios against the reference with the same
+  alpha_n within 1.9e-4 (Q64), 1.7e-4 (Q128), 1.6e-4 (P256), 3.6e-6 (L64), 3.9e-7 (L128);
+  shells beyond 3/sqrt(M_shell) of the ensemble: 0 to 0.59 percent (Q128), below the 1
+  percent of P3.
+- Negative control (P6) CONFIRMED at N = 32, 64, 128: <|H|/[H]> up to 4.0e4, 1.5e5, 1.3e5
+  times the proper run; odd/even at least 6.7e4 in the first two e-folds; <|M|/[M]> 0.20,
+  0.21, 0.22 (predicted 0.05-0.5).
+- Cost (P8) CONFIRMED: 1.13-1.30 card-seconds per step at 256^3; one 8-e-fold realisation
+  0.50 card-hours.
+
+A4 (constraints of second order during the entry) FAILS in the paper's set-up
+(k_max = N/4, four cells per shortest wavelength) at every N from 32 to 256, as P4
+predicted and as core's T12 found at 32 and 64:
+- The part of H odd in s (first order in the amplitude) exceeds the even part (second
+  order) during the late entry by up to 745 (N = 32), 655 (Q64), 869 (Q128), 385 (P256).
+  It first exceeds it at N = 1.51, 1.99, 2.96, 3.44 e-folds, where ln(N/8), the crossing of
+  the first shell with fewer than eight cells per wavelength, is 1.39, 2.08, 2.77, 3.47
+  (dumps every 0.5 e-folds): the first-order part comes in with the shells that the
+  sixth-order stencils resolve with fewer than eight cells per wavelength.
+- Halving s separates the parts exactly where they are above the floor: odd part 2.00
+  (first order), even part 3.99-4.00 (second order) at N = 32 at every dump after t = 0,
+  at Q64 from N = 1.5 and at Q128 from N = 2.5 (`fig/floor/fig_floor.png`, middle).
+- The magnitude passes: <|H|/[H]> at most 4.3e-11 (32), 4.8e-11 (Q64), 4.4e-11 (Q128),
+  5.1e-11 (P256), within a factor 10 of P1's 1e-10; <|M|/[M]> at most 3.8e-4. The peak
+  does not fall with N in this set-up, because the top shells always have four cells per
+  wavelength.
+- In the convergence set-up (k_max/dk = 8) A4 holds from N = 128 on: the largest odd/even
+  ratio is 15 at L64, 0.27 at L128 and 0.53 at L256 (where the odd part is the floor).
+- The record ratio <|H|/[H]> is no order test (core's T12): its halving factor lies at
+  0.8-0.9 at N = 32 and 3.3-4.5 at N = 64 before the late entry (thick lines of
+  `fig/final/fig_a4_paper.png`), because of the amplitude-independent uniform residual H0
+  of the time integration and the negative box mean of the second-order part. P4's "early
+  factor 4 within 5 percent" holds for the even part, not for the record.
+- Artefact found: the last dump of a run with tlim = 4.5 comes after a shortened step
+  (t = 4.500), while its partner with tlim = 8.5 dumps at the same cycle at t = 4.516
+  (Q64), 4.504 (Q128, P256). The pairs Q64p/Q64m, Q128p/Q128m, P256/P256m, L32p/L32ph
+  therefore compare different times at their last dump, which leaks the odd part into the
+  even part there (the even halving factors 16.0 and 9.0 at the last dump of N = 64, 128).
+  The last dumps of these pairs are left out of every verdict above; `floor_analysis.py`
+  drops them by checking the times.
+
+A5 (convergence before the floor), with P5 against the outcome:
+- P5 REFUTED as written: the order of the odd part of H between 32 and 64 is 3.79 and 4.20
+  at t = 0.5, 1.0 (predicted 5.3-6.0), and between 64 and 128 it is -1.57, -0.64, 1.66 at
+  t = 0.5-1.5; between 128 and 256 it is negative at every dump to t = 3.5 (-2.5 to -0.8),
+  not only "where the 256 part reaches a floor of about 1e-15": the floor is 6e-13 of
+  <[H]> at N = 0.5 and 7e-15 at N = 3.4 at N = 256, ten to six hundred times the predicted
+  value. The even part changes by 1-15 percent between 128 and 256 (predicted within 1).
+- The floor: the odd part at 256 grows with N, as N^2.48 for H and N^2.63 for M between 128
+  and 256 at t <= 1.5; it does not depend on the amplitude (halving factor 1.000-1.002 at
+  Q128 for N <= 2, 0.998 at t = 0 at every N); it falls in time roughly as the physical
+  gradients (a^-2). If it is noise uncorrelated between the s = +1 and s = -1 runs, it must
+  enter the even part as much as the odd part: adding it in quadrature predicts
+  even_128/even_256 = 0.858, 0.922, 0.982, 0.992, 0.936, 0.972, 0.981 at t = 0.5-3.5,
+  against the measured 0.857, 0.923, 0.979, 0.991, 0.910, 0.964, 0.979 (the model
+  overcorrects at t >= 2.5, where the 128 odd part is no longer pure floor). Between 64 and
+  128 the even part agrees within 2.2 percent. [JUDGEMENT, formed after seeing the summary
+  of 2026-11-15, not by a prediction] the floor is rounding of double precision in the
+  second derivatives (an error of order eps/h^2 per step, accumulated as a random walk over
+  a number of steps proportional to N, hence N^2.5), redshifted with the gradients. No run
+  in another precision tests it.
+- Entry 5's open point (low early orders 3.1-4.2 between 32 and 64) is explained by the
+  same floor: at those times the 64 part lies within a factor 1.1-1.9 of the floor model
+  for M and 1.9 for H at t = 0.5.
+- A5 with "before the floor" made operational (the finer part at least 3 times the floor
+  model F(N, t) = odd_256(t) (N/256)^q; factor and model fixed after the summary was seen,
+  before this script ran): orders 4.20-5.82 for H and 5.55-5.91 for M on 32 -> 64 -> 128;
+  PASS (band 4-6). The highest order of the band is approached, not exceeded; the scheme is
+  sixth order in space and fourth in time (A6 below decides how the two mix).
+- The uniform residual H0 after the entry converges at fourth order in the step: the
+  record <|H|/[H]> at N_f = 8.1 is 3.12e-12 (32), 1.83e-13 (64), 1.12e-14 (128), factors
+  17.0 and 16.4 (`sr.sf.con.hst` of L32p in E-20261115-172636-ce98836, of L64p and L128p in
+  E-20261115-172625-416fec0, last rows). <|M|/[M]> at N_f: 1.6e-7, 1.2e-8, 2.9e-8 (the
+  floor of M rises with N).
+
+So "the constraints converge" (G1) holds for the part that the scheme is supposed to make
+converge (odd part at order 5.5-5.9, H0 at order 4), the second-order violation is
+independent of the resolution (P1's plateau, even part within 2.2 percent between 64 and
+128), and above both sits a rounding floor that grows as N^2.5 and limits what 256^3 can
+show during the first two e-folds (6e-13 of <[H]>, still a hundred times below P1's 1e-10).
