@@ -585,3 +585,29 @@ row sample changes with the re-index (seeded draw over other rows), all sampled 
 recall in particles/ and pgen/nrpic/ complete, and 0 pairs on main absent from the index (main
 5deee18 = indexed commit); Q 9 of 9; zero bibliographies 20; locator rows: 0 claims whose string
 and rows disagree. Refuted by any other verdict count, a stale pair, or a disagreeing claim.
+
+### D1, D2, Q1, V1 outcomes
+
+D1 (run kb-20261119-161413-31e6b85): held. Claims 688 -> 700 (B 689-695 and C 696 verified by
+reading; D 697-700), checked 39, fulltext 541, judgement 41, to_verify 117; claim 25 two resolved
+rows; 249 and 313 two each. Not predicted: the four D claims keep status "unlocated" although
+their rows resolve (relocate does not touch statuses, by design); a status refresh is for the
+claims tooling next session.
+
+D2 (run kb-20261119-161451-e15d1b8): held. local/nrpic re-indexed at main 5deee18 (main moved
+from f51539c6 during the session): 790 files, 1242 parameter rows (+127), all 12 nrpic_collide
+pairs present; 25 of 25 curated links OK; snapshot kb-20261119-a782f1e = db/current.
+
+Q1 (run kb-20261119-161633-1d05960, 9 min on 6 threads): held. C1 710 of 710 ingested (684 + 26);
+C3 26 not ok (23 review, 3 pdf): parse success 684/710 = 96.3 % (96.8 % with PDF papers); C7
+text 27/21, hybrid 28/23, rerank 28/25; the only change against the helper's a848a06 run is q01
+hybrid location rank 7 -> 6. C4 30/30 with INSPIRE, 2103.01183 and gr-qc/9905058 below a bar, now
+comparing parse_json.tex_front. C2: no paper without any abstract; 25 without an abstract chunk.
+Both KB-G2 thresholds are met. Caveat I add: the 11 ok papers without bibliography (verifier)
+bring the strict rate to 94.8 % (673/710); figure fig_kbg2.png (run kb-20261119-162642-25012f7),
+inspected.
+
+V1 (run kb-20261119-161909-08df7ea): held. The verifier's scripts, unchanged, on a782f1e: papers.tsv
+identical to its run 142015, C the same ten claims (claim 25 now with both rows), K 10 of 10 rows
+ok with 0 stale pairs (indexed commit = main 5deee18), Q 73/73 and 18/18 locators, zero
+bibliographies identical, 0 of 661 claims with string and rows disagreeing.
