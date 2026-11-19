@@ -627,3 +627,64 @@ Lessons: time a case on the target device before putting it into a card job (the
 Kepler case cost 0.8 card-hours that a processor does in minutes); a byte regression
 must mask the run directory in the parameter dump of continued runs and the stored
 last_time of final off-schedule outputs.
+
+## 2026-11-19 session dfix-3 (wave 2b; after `git merge main` at 71acd0c)
+
+Read: `CLAUDE.md`, charter to "Owners", brief 688-706 and 834-860, decisions 0010 and 0016,
+this journal, `REQUESTS_ADF.md`, the section core:dfix of
+`scratch/orch/wave2_reports/core.md`, `READY.txt`, the case list of the card checks, the
+manifests of this package. State found [VERIFIED]: worktree clean at ae201e9; no run
+manifest of this package untracked (every run directory under `scratch/core/` whose
+commit is on this branch has its manifest under `tracks/core/runs/`); the merge of main
+changed nothing under `athenak/` (`git diff 3f75eb8 HEAD -- athenak/` is empty), so the
+published executables `scratch/core/exe/core_requests-adf/athena_{cpu,gpu}` (sha256
+17ee5e28..., f423de38..., checked today) are still the source of this branch. Card job
+4456 ended at its limit (`sacct`: TIMEOUT, 00:50:18). Card budget of this session: 0.75
+card-hours.
+
+### Card cases still missing: plan and predictions (written before any card job)
+
+Cases: T5 (pair horizon), T7 (sphere on a moving tracker), mem2700 (peak card memory at
+2700 MeshBlock slots with three finders). Executable: the published card executable
+(f423de38). The lesson of job 4456 is applied: first a timing job, then the cases sized by
+it.
+
+Timing job (list `cases/card_timing.list`, Slurm limit 14 minutes, every case capped by
+`athena -t`): T5 complete (it has only two cycles; cap 6 minutes), T7 to cycle 9 (two
+finder calls, cycles 0 and 8; cap 3 minutes), the three-hole mesh at 2700 slots to cycle 4
+(cap 3 minutes). Expected, from the processor runs and the card run of the three holes
+(not a test): T5 two to four minutes (190 s of processor time, mostly the finder's host
+loop, `scratch/core/core-20261115-161025-3f75eb8/new/athena.log`); T7 below one minute;
+the three-hole mesh 0.56 s per cycle (574 s for 1024 cycles, run
+core-20261115-120834-d08c476) plus its set-up. Sizing rule for the second job: case time
+bounded by (T_timing x full cycles / timing cycles), Slurm limit 1.5 times the sum plus
+two minutes, total of both jobs below 0.75 card-hours.
+
+Predictions for the judgement (references: processor runs with the published processor
+executable 17ee5e28):
+- T5 on a card: surface 0 (pair 0, 1) has a record at both calls, mass within 1e-4 of the
+  processor values 1.019897 and 1.019870 (the finder stops at `mass_tol = 1e-5`), mean
+  coordinate radius within 1e-3 of 0.490 and 0.482; surfaces 1 and 2 write no record.
+  Refuted if surface 0 is missing or off by more than 1e-4, or if surface 1 or 2 is
+  searched (then the pair rule acts differently on a card).
+- T7 on a card (full 24 cycles, same particle file, sha256 51603612...): at every one of
+  the 25 records the content identity holds exactly in number and to 1e-23 in rest mass;
+  the content counted from each snapshot with the centre of its record equals the
+  history; the centre of record k >= 1 equals tracker row k-1 to 1e-15; and against the
+  processor run core-20261115-163129-a200caf: the same crossing counts (1021 in, 963 out,
+  0 removed) and the same contents (1990, 1997, 2074, 2048 at the snapshots), the centre
+  within 1e-10 M and every particle within 1e-8 M at the snapshots (a vacuum Z4c
+  evolution on a card differs from processors by rounding, which 24 steps do not grow to
+  1e-8; a count differs only if a particle passes within that distance of the sphere at
+  a step boundary, about 1e-5 likely for 4000 particles and 24 steps). Refuted if an
+  identity fails, a count differs from the snapshot, or card and processors differ in a
+  count or beyond these bounds (a defect of the device path of the tracker-centred
+  spheres).
+- mem2700 (full: 32 cycles, `max_nmb_per_rank = 2700`): runs without the mesh error with
+  1100 MeshBlocks at the start; peak card memory 70.9e3 MiB within 2.0e3 MiB (26.27 MiB per
+  slot from 63059 MiB at 2400 slots with three finders, run core-20261115-120834-d08c476;
+  memory allocated for the slot limit, not for the blocks in use); the same peak already
+  in the timing run at cycle 4. The history of the first 0.5 M equals that of the
+  2400-slot run within 1e-10 relative (the slot limit should not change the evolution).
+  Refuted if the peak is outside [68.9e3, 72.9e3] MiB (the per-slot model of
+  `multi_puncture.md` section 5 is then wrong), or if the history differs beyond 1e-10.
