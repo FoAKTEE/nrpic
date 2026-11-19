@@ -32,7 +32,7 @@ v_bound/<v_Mol> ~ 2.5 and 0.1 t_coll per step gives P_bound ~ 0.25); cost
 Refuted by: a non-zero exit, truncated pairs, any root failure or balance rejection in a
 flat box, a particle/cell difference above 1e-12, or a cost outside 0.5-10e-6 s.
 
-## 2026-11-19 14:45 Outcome S0: confirmed, cost 6 times the wave-2 estimate (run C-20261119-143228-31ba665)
+## 2026-11-19 14:45 Outcome S0: function confirmed, cost prediction FAILED (7 times higher) (run C-20261119-143228-31ba665)
 
 Both exit 0; n_trunc = n_noroot = n_balance = 0; 3.4 sub-steps per step on average (max 6),
 1.73 tested pairs per particle and step; final momenta of `particle` and `cell` 1.7e-16
@@ -45,7 +45,7 @@ cell instead of 30; `particle` 25 percent dearer than `cell`). Consequence: a 1 
 measurement of kappa at eps = 0.05 needs ~2e7 particles per k lambda over ~500 t_coll,
 i.e. ~60 core-hours: not on processors in this package. Design below.
 
-## 2026-11-19 14:50 Design and predictions of T6-T8 (design run C-20261119-143117... see below)
+## 2026-11-19 14:50 Design and predictions of T6-T8 (design run C-20261119-144117-37b2328)
 
 Design run C-20261119-144117-37b2328 (`scripts/design.py`; copy
 `results/design_C-20261119-144117-37b2328.json`; figure `figs/design_references.png`,
