@@ -548,3 +548,26 @@ planted failures: 1 + 60 per horizon); test 2 6/8 (S3: 6 missed of 44, t = 0.5-3
 of 29, t = 0.5-1.5; "found in every search" fails for both); test 3 unchanged 3/4 (first masses
 0.12778, 0.12934, 0.99607); the smoke: m1 1 missed, m2 2 missed (NaN at t = 0, t = 0.1875), heavy
 hole 17 missed of 25. Refuted if a count differs.
+
+## 2026-11-19 E11. Why the single-puncture tree reaches 1632 MeshBlocks (prediction)
+
+What: `scripts/tree_check.py` (written for this): (i) the trees stored in the restart files of S3
+(t = 0, 10, 20) and S2 (t = 0, 10), read from the header (`outputs/restart.cpp` lines 216-245);
+(ii) a model of the tree from AthenaK's rules (z4c_amr.cpp RefineTracker lines 80-137 with the
+puncture_setup radius 0.999 x 1.8 m and level 6, RefineRadii lines 329-374 with radius 56 m and
+level 3, and the 2:1 rule between all 26 neighbours) at the tracker position of each restart.
+Reading of the rules before the run [JUDGEMENT]: the wave-zone criterion takes the cube
+[-64, 64]^3 m to level 3 (16 m blocks, 512 of them: every 32 m block of that cube has a corner
+within 56 m), and the 2:1 rule then forces every root block to level 1 and the shell around
+the cube to level 2, so the tree is 448 (level 1) + 448 (level 2) + 504 (level 3) + 56 + 56 + 64
+(levels 4-6 of the tracker nest) = 1576, not the 500-900 of E1, which ignored the 2:1 rule.
+Predictions:
+1. The model reproduces the start tree (400 MeshBlocks, 56 per level 0-5 and 64 at level 6,
+   without the wave-zone criterion, which acts only at regrids).
+2. The restart trees at t = 10 and 20 (S3) and t = 10 (S2) equal the model at their tracker
+   positions within 2 percent in total, with levels 0-3 equal to 0 / 448 / 448 / 504 exactly.
+3. The model exceeds 1600 for some tracker positions between x = 0 and the stop positions
+   (x = 2.20 m in both runs): 1632 = 1576 + 56 when the nest of one level straddles a block
+   boundary. Refuted if the model never exceeds 1600 along x in [0, 4] m (then the excess comes
+   from what the model leaves out: lagging derefinement).
+Consequence planned: the slot limit for S2g (2400, E10) is checked against the model's maximum.
