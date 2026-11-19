@@ -202,7 +202,8 @@ section 5.
 | T0 | regression, options absent: geodesics (two pushers), deposit on a static mesh, East et al. data, Oppenheimer-Snyder on a static mesh with restart, homogeneous universe, puncture with finder on a static periodic mesh | `-154346-64067cd` | every output file byte-identical to REL, restart files included |
 | T1 | deposition identity on a refined periodic mesh (4096 random particles, levels 0-2, faces between levels; cic/tsc/pcs; cloud level finest/root/adaptive; uniform and fine-shape spreading) | `-154351-64067cd` | |int_E/sum mW - 1| at most 1.7e-14, momentum 1.1e-16 relative, in all 22 cases; with the source filter: 4e-4 to 5e-4 on the refined mesh (filter not conservative across levels), 4.4e-16 at t = 0 on the uniform mesh |
 | T2 | homogeneous universe with refined patches: interior, faces and corner, adaptive (tracker), lohner plus `<particles_amr>`, eight particles per root cell with fine clouds, the same drifting through the patch | `-151654-e01b46e` | chi and E uniform to 1.6e-14 and 4.2e-14; |H_max - H_mean| at most 9.7e-13; alpha_max equal to the uniform run to 3.3e-15; lohner plus `<particles_amr>` creates no MeshBlock |
-| T3 | linear plane wave (test B of arXiv:1904.07841) with a refined patch | `-154357-64067cd` | section 4.1 |
+| T3 | linear plane wave (test B of arXiv:1904.07841) with a refined patch | `-161527-4480f58` (first run `-154357-64067cd` void: six-digit tables) | section 4.1 |
+| T3c | homogeneous universe, clouds of the three shapes on the finest level of a patch | `-164329-589b34c` | cic uniform to 2e-15; tsc 0.35, pcs 0.15 (released deposit, section 8) |
 | T4 | finder in a periodic box: lattice of unit punctures, hole at the centre, on a face, at a corner, finder centre in other images | `-152106-9332260` | M = 0.9915211031 in every case, equal to 3.3e-16; REL: no horizon for a centre one period away, a wrong one (M = 0.695) on a face; summary file in `-d` |
 | T5 | tracker moving across a face with refinement following it, `dt_lightspeed` | `-151654-e01b46e` | tracker within 1.0e-13 of x = 2.5 + 0.5 t mapped into the box; refined blocks on both sides of the face; homogeneity 1e-13; step 0.25 dx/1.5 to 1e-13 |
 | T6 | guard at a Courant number of 1.5 | `-151654-e01b46e` | NEW stops at cycle 18 with status 3 and `flrw.guard.txt`; `stop_chi_nonpositive` the same cycle; guard off and REL run to `nlim` (status 0) after losing every particle |
@@ -213,12 +214,30 @@ section 5.
 | T12 | the published executable gives the bytes of the tested one | `-162949-d87b113` | section 4.3 |
 | T13 | tracker in mode walk, `tracker_walk_tol`; the example input `flrw_tracker.athinput` | `-161316-f797997` | section 4.4 |
 | T0b | T0 with the published processor executable | `-161756-44db4b5` | every output file byte-identical to REL |
+| T15 | guard options `stop_dt_below`, `stop_no_particles`, `check_dcycle`; `region_horizon` on a found horizon | `-164133-228c956` | stops at cycles 1, 20, 20 with status 3 and the right reason; the horizon sphere has the finder's mean radius 0.4778 from the first search on, V_in + V_out = V |
 | T14 | card check of the published card executable | `-161748-75c2405` (Slurm job 4664) | pending |
 | T10 | scouting run of Track A's S1 with adaptive refinement, on a card | `-150507-8224d72` (Slurm job 4654) | pending, section 7 |
 
 ### 4.1 T3, plane wave with a refined patch
 
-(filled from run core-20261119-154357-64067cd)
+Test B of arXiv:1904.07841 as in `cosmo/TESTLOG.md` (delta = 1e-7, 32 cells per
+wavelength, eight particles per cell, quadratic cloud), slab 32 x 8 x 8, to t = 2 (a = 4),
+all cases at the step of level 1; static level 1 on L/4 < x < 3L/4 (or across the face).
+Run core-20261119-161527-4480f58:
+
+| Case | chi amplitude / U | rms residual of chi | rms residual of E | H/(16 pi dE) at t = 0 on the patch |
+|---|---|---|---|---|
+| U uniform | 1 | 2.8e-7 | 2.2e-7 | 0.0010 |
+| S clouds at the root, uniform spreading | 1.005 | 3.2e-4 | 0.026 (staircase) | 0.057 |
+| Sf the same with `deposit_fine_shape` | 1.002 | 1.6e-4 | 2.5e-4 | 0.0029 |
+| P Sf with the patch across the face | 1.002 | 1.6e-4 | 2.5e-4 | 0.0018 |
+| Sx quadratic clouds on the finest level | wrong: structure at the patch boundaries 28 times the wave in E | | | 37 |
+| Uq, Sq, Sfq with the source filter (data built with it) | 1, 0.9993, 1.001 | 3.5e-7, 9.4e-4, 1.9e-4 | 2.0e-7, 1.0e-3, 1.2e-3 | 0.0011, 0.0029, 0.0043 |
+
+Phases within 3e-6 rad of U everywhere except Sx. Without the filter the fine-shape
+deposit removes the staircase (constraint on the patch 20 times smaller); with the filter
+both spreadings are limited by the filter acting at each level's cell size, and the
+uniform spreading is slightly better (the same order as on the peak, T9).
 
 ### 4.2 T11, restarts
 
@@ -249,7 +268,11 @@ with the light-speed step (C_r8).
 
 ### 4.3 T12
 
-(filled when run core-20261119-162949-d87b113 has finished)
+The published processor executable reran the 43 cases of T1 (22), T2 (16) and T9 (5)
+from their saved decks: same exit status everywhere; every output file byte-identical,
+except the finder status file of T2's U, whose first column now holds the cycle instead
+of the Runge-Kutta stage (header label "1:cycle"); its other columns are identical. Every
+number of T1, T2 and T9 therefore holds for the published executable.
 
 ### 4.4 T13
 
@@ -277,7 +300,20 @@ its minimum leaves the centre; no field dump was written). The example input
   uniform once random particles have moved the metric.
 - T4: the release does not report "no horizon" for a hole on a face, but a wrong one.
 - T5: "with REL the run stops at the crossing" could not be tested: the release has no
-  `shift_x1` (its tracker stood still) and cannot refine adaptively with `nrpic_cosmo`.
+  `shift_x1` (its tracker stood still) and cannot refine adaptively with `nrpic_cosmo`;
+  T13 showed the release's stop at a face with the walk tracker instead.
+- T11: "every record after a restart identical as text": only on a uniform mesh and
+  right after a regrid; elsewhere on refined meshes the restarted run agrees to round-off
+  (section 4.2). The regrid schedule, the point of the fix, is identical.
+- T3: Sx (quadratic clouds on the finest level) is not "within 1 per cent of U"; T3c
+  traced it to the released deposit (section 8). The first T3 run was void (tables with
+  six digits for a wave of relative amplitude 1e-7).
+- T3c: the non-uniformity of tsc and pcs clouds at a level boundary is 15 to 35 times
+  larger than the 1e-2 I predicted.
+- T13: without the tolerance the walk tracker does not follow the same path as with it on
+  the peak: it hops among the eight equal central cells.
+- T15 and T11 figures: one panel each lacks a curve or clips a label (script errors noted
+  in the journal); the numbers come from the summary files.
 
 ## 6. Regression
 
@@ -302,6 +338,12 @@ in the journal (entry 14:45, T10).
   are inconsistent with the same passes on a finer level (journal 15:05, T3 with filter).
   The leading inconsistency on refined levels of the track's present data.
 - Negative leaf-cell E with `deposit_fine_shape` in sparse regions (section 2.2).
+- Released deposit, found here (T3c): with quadratic or cubic clouds placed on the level
+  of their particle's MeshBlock (`deposit_max_level` above the root, no
+  `deposit_adaptive`), a uniform lattice is NOT uniform across a level boundary (35 and
+  15 per cent in E, relative constraint 0.14 and 0.07); linear clouds are uniform to
+  1e-15. On refined meshes use `deposit_shape = cic`, or put every cloud on one level.
+  `deposit_adaptive` with quadratic or cubic clouds is not tested.
 - Constraint solve on the refined levels of the actual mesh and a nested particle lattice
   (A2-11): core's package idsolve-2.
 - Field dumps of the particle module on multilevel meshes: not done; AthenaK's `tab` and

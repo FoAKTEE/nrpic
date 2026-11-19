@@ -776,3 +776,56 @@ Prediction [JUDGEMENT]: with tsc and pcs, E_max/E_min - 1 at t = 0 of order 1e-2
 transition between fine and coarse clouds at the patch boundary does not tile for
 clouds wider than two cells), while cic stays at 1e-14. Refuted if tsc and pcs are
 uniform to 1e-12: then Sx's structure has another cause.
+
+## 2026-11-19 16:44  outcomes of T15, T3b and T3c
+
+**T15, run core-20261119-164133-228c956** (`t15_summary.json`, figure `fig_t15_options`,
+looked at) [VERIFIED]:
+- Gdt: stop at cycle 1 (t = 0.03125), status 3, "time step below <z4c_guard>
+  stop_dt_below", last check passed at cycle 0: PASS.
+- Gnp: runs through the non-finite fields and stops at cycle 20 (t = 7.5), status 3,
+  "no particles left" (13,824 particles until cycle 17, 12,698 at 18, about 200 at 19,
+  0 at 20): PASS.
+- Gdc: stop at cycle 20 with "non-finite values", last check that passed cycle 16:
+  PASS (every-cycle guard: cycle 18).
+- Rh: horizon of finder 0 found at t = 0 (M = 0.9915211031, as in T4); the region
+  record at t = 0 is written before the first search (sphere radius 0, V_in 0, and
+  Hmax_in printed as -inf for the empty sphere); from cycle 1 on radius_h0 = 0.477814
+  (the mean radius), V_in_h0 = 661.1 below V_in of r = 1 (749.3), V_in_h0 + V_out_h0 =
+  V (1937.81): PASS. The figure's right panel shows only V inside r = 1 (the script
+  looked for column names that the file does not use); the numbers above are from the
+  summary file.
+
+**T3b, run core-20261119-161527-4480f58** (`t3_summary.json`, figure `fig_t3_wave`,
+looked at; tables with 17 digits; published executable) [VERIFIED]. U: E and chi are
+sines to 2.2e-7 and 2.8e-7 of their amplitude at t = 2.
+- chi amplitude relative to U: S 1.005, Sf 1.002, P 1.002, Sq 0.9993 and Sfq 1.001
+  (relative to Uq); phase within 3e-6 rad; rms residual of chi 3.2e-4 (S), 1.6e-4 (Sf,
+  P), 9.4e-4 (Sq), 1.9e-4 (Sfq): PASS ("within 1 per cent, phase below 1e-2, residual
+  below 1 per cent"). FAILED for Sx (clouds on the finest level): residual of E 28 times
+  the amplitude at the patch boundaries, chi structure 0.2 of the amplitude; see T3c.
+- residual of E at the end: S 0.026 (the staircase; predicted "of order 5 per cent"),
+  Sf and P 2.5e-4 (predicted below 1.5 per cent): PASS. Sf and P agree to 1e-9 (the
+  patch across the face is the mirror image of the interior one for this wave): PASS.
+- H/(16 pi dE) at t = 0 on the patch: U 0.0010 (the data), S 0.057 (predicted 0.05 to
+  0.1; Track A measured 0.077 to 0.085), Sf 0.0029 (20 times smaller; predicted at least
+  3 times), P 0.0018: PASS. With the source filter (data built with it): Uq 0.0011,
+  Sq 0.0029, Sfq 0.0043. Prediction of 15:05 item 3: without the filter the
+  reconstruction is far better than the uniform spreading (0.0029 against 0.057): PASS;
+  with the filter the order reverses (0.0043 against 0.0029), as in T9 (0.0116 against
+  0.0072): the source filter, applied at the cell size of each level, is then the
+  leading inconsistency, and the uniform spreading partly hides it by its own smoothing
+  [JUDGEMENT, consistent with both tests].
+
+**T3c, run core-20261119-164329-589b34c** (`t3c_summary.json`, figure
+`fig_t3c_shapes`, looked at) [VERIFIED]: the homogeneous universe with a static patch,
+8 particles per root cell, clouds on the finest level: E_max/E_min - 1 = 1.8e-15 (cic),
+0.35 (tsc), 0.15 (pcs) at t = 0, Hr_max 1e-15, 0.14, 0.071; the identity holds (1.4e-12)
+in all three. Prediction "of order 1e-2 for tsc and pcs, cic uniform": the direction
+holds, the size is 15 to 35 times larger than predicted. This is the released deposit
+(clouds at the level of their particle's MeshBlock, conservative across levels), not a
+change of this package: quadratic and cubic clouds of different sizes on the two sides
+of a level boundary do not tile a uniform density. For refined meshes: use cic, or put
+all clouds on one level (`deposit_max_level`, with `deposit_fine_shape`: uniform to
+1e-14 in T2 S/Sf). Whether `deposit_adaptive` with tsc or pcs shows the same is not
+tested.
