@@ -19,7 +19,7 @@ same.
 | V2 | geodesic_binary T1, T2, T3, T4 re-run, same numbers | F-hills-20261115-144919-b5b0bce, -144922-, -144927-, -144935-b5b0bce | manifests |
 | V3 | novelty scale estimate re-run, 905 numbers identical | F-hills-20261115-144954-b5b0bce | manifest |
 | V4 | independent restricted parabolic problem vs newton3 at nine (sense, D) | F-hills-20261115-145246-090f5dc | `stage/G0/checks/v4_summary.json`, `checks/figures/fig_v4_restricted.png` |
-| V4b | the same with wide-bound samples run to 300 r_t: all nine agree | F-hills-20261115-145544-a314517 | `checks/v4b_summary.json` |
+| V4b | the same with wide-bound samples run to 300 r_t, at retrograde D = 0.3 and 0.38 only (correction of 2026-11-19: "all nine agree" was wrong; retrograde D = 0.1, 0.2 rest on V4 with dP 0.0023, 0.0063) | F-hills-20261115-145544-a314517 | `checks/v4b_summary.json` |
 | V5, V6 | full Newton and HRNA from the two input files; phase scans | F-hills-20261115-145251-090f5dc | `checks/v5v6_summary.json`, `checks/figures/fig_v5v6_q10.png`, `fig_v5v6_q4.png` |
 | V5b | ejected member's energy: two-body with M oscillates, barycentric constant | F-hills-20261115-145559-a314517 | `checks/v5b_summary.json`, `checks/figures/fig_v5b_energy.png` |
 | V7 | r_p scan q = 10 (7-13 M) and q = 4 (9.8-16 M): full Newton, fixed-hole Newton, HRNA | F-hills-20261115-145915-71abf93 | `checks/v7_summary.json`, `checks/figures/fig_v7_rp_scan.png` |
@@ -78,3 +78,17 @@ matplotlib).
 
 `tracks/core/interfaces/multi_puncture.md` (parameters, cost, tests, open items),
 `tracks/core/JOURNAL-mp.md`, `problems/puncture/by_triple.athinput`; core runs cited there.
+
+## Wave 2 (helpers, 2026-11-15) and wave 2b (2026-11-19)
+
+Review by the lead: `../REVIEW-wave2.md`; predictions and outcomes of the lead's checks V8-V11 in
+`tracks/F-hills/JOURNAL.md` (lead, wave 2b).
+
+| package | what | runs |
+|---|---|---|
+| second check (`SECOND_CHECK.md`, `JOURNAL.md`, `second_check/`) | novelty verdict, independent baselines, capture plane, start state in GR | F-20261115-175542-b49d687 (failed), F-20261115-175549-456bf4a, F-20261115-175620-df20ffe, F-20261115-175614-5cc133d, F-20261115-180835-66e13b2, F-20261115-175636-5432651, F-20261115-175637-a592d7a, F-20261115-181007-80649f5 (superseded), F-20261115-181106-52c4613 |
+| newton3_fix (`newton3/`) | Jacobi-split member energies, tests, passages, finite-q rerun, puncture input | F-20261115-174058-ad4fb17, F-20261115-174139-3340bf3, F-20261115-174142-0d549b5, F-20261115-174142-2a79515 (superseded), F-20261115-174959-3188846, F-20261115-174959-9e8a361 (stopped), F-20261115-175000-8e2ab28, F-20261115-175000-d2dc283, F-20261115-175232-d399e83, F-20261115-180351-440afa2, F-20261115-180351-b8eb386 |
+| note (`note/`) | working note v0, figures, ledger, claims check | F-20261115-174648-25514db, F-20261115-175639-ce844e5, F-20261115-180428-fc8172f, F-20261115-180609-abc9f6e |
+| nr_first (`nr_first/`, wave 2) | mesh probe, t = 0 constraints, readers, tracker wrapper, baselines, finder, card batches | F-20261115-173106-57c4b4c, F-20261115-173112-a9e18a3, F-20261115-173543-29e87e8, F-20261115-173547-a02af7d, F-20261115-173601-2fae2dc (card, failed: slot limit), F-20261115-173606-efcbf69 (withdrawn), F-20261115-173719-923135a (failed), F-20261115-173821-b2c969a, F-20261115-173930-deef41a, F-20261115-174102-ffa764f, F-20261115-174432-291868f, F-20261115-174602-c6879fe (card smoke), F-20261115-181049-ab04d03, F-20261115-181053-d52f22d, F-20261115-181434-b9c8916, F-20261115-181805-f9c3473, F-20261115-182100-613c9c6, F-20261115-182223-17ca48a, F-20261115-183737-49f0a7f |
+| nr_finish (`nr_first/`, wave 2b) | E3, E7, E10a, E11 outcomes; reader fix; S2g and P1 submitted | F-20261119-143214-5f5dc3a, F-20261119-143443-f11ebb9 (S2g, card, pending), F-20261119-143449-e7bf692, F-20261119-143507-d74f101, F-20261119-143508-5d90bbd, F-20261119-143627-1a84aa5, F-20261119-143632-0f6e57d, F-20261119-143633-dfd3607, F-20261119-143851-47595bd (failed), F-20261119-143931-4fbf2d0, F-20261119-144024-988d5c9, F-20261119-144351-b448f38, F-20261119-144425-10a94b7, F-20261119-144544-d9c8542 |
+| lead, wave 2b | V8 raw-file recheck, V9 GR reading, V10 newton3 tests, E3 rerun; P1 chain | F-20261119-145434-82c05f2, F-20261119-145449-245e984, F-20261119-145509-fb91531, F-20261119-145619-8246322, F-20261119-150017-b45ec5f (P1, card chain) |
