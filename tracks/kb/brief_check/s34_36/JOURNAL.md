@@ -167,7 +167,7 @@ P12 (run 2, `scripts/fig_verdicts.py`, tally): the header totals of CHECK.md equ
     the verdict column; every TeX locator names an existing file and a line inside it; every
     metadata locator names an existing file. [Refuted by any problem listed by the script.]
 
-## Entry 3 (2026-11-19 07:15 PST): outcome of run 1; CHECK.md written
+## Entry 3 (2026-11-19 07:11 PST): outcome of run 1; CHECK.md written
 
 Run kb-20261119-150703-95bba8b (`scripts/r_of_mu.py`, processors, one core, seconds; output
 `scratch/kb/kb-20261119-150703-95bba8b/`): completed, exit 0, no locator problem (every quoted mu
