@@ -1,0 +1,124 @@
+{
+  "schema": "nrpic-run-manifest/1",
+  "run_id": "F-20261119-150017-b45ec5f",
+  "track": "F-hills",
+  "gate": "G1",
+  "kind": "scouting",
+  "purpose": "P1: first Hills passage in full GR at q = 4 (M = 1, m1 = m2 = 0.125, a_b = 5, Newtonian r_p = 9.8 M, GR hole-frame turning point 9.25 M, coplanar prograde), members at m/8, 280 M; constant shift_eta = 2; release core-v0.3 card build behind the tracker wrapper",
+  "preregistered_in": "tracks/F-hills/JOURNAL.md#p1-decision-lead-and-prediction-written-before-submission",
+  "launcher": "chain",
+  "command": [
+    "scripts/submit_chain.sh",
+    "/data/haiyangw/nrpic/scratch/F-hills/F-20261119-150017-b45ec5f",
+    "/data/haiyangw/nrpic/wt/F-hills/tracks/F-hills/nr_first/inputs/p1_q4.athinput"
+  ],
+  "cwd": "scratch/F-hills/F-20261119-150017-b45ec5f",
+  "git": {
+    "sha": "b45ec5f16cf788f0d1457929c80e497c07a66bdd",
+    "branch": "track/F-hills",
+    "dirty": false,
+    "package": [
+      "tracks/F-hills/nr_first"
+    ],
+    "outside_package": {
+      "count": 0,
+      "first": []
+    },
+    "merge_base_main": "78bf88534f53530e2878756599e2e4431c19d5c2",
+    "worktree": "wt/F-hills"
+  },
+  "code": {
+    "core_tag": "core-v0.3",
+    "athenak_upstream_sha": "c5a0d7f",
+    "kokkos_sha": "6739bc623081648af9e752b616d9671527922cbf",
+    "problem": "nrpic_cf",
+    "exe": "/data/haiyangw/nrpic/wt/F-hills/tracks/F-hills/nr_first/scripts/athena_keep_trackers.sh",
+    "exe_sha256": "0b71067a7c9e2d7e75cd52f0d580a9ae99620bfd42725e684b86539691d4e552",
+    "cmake_flags": null,
+    "toolchain": null
+  },
+  "env": {
+    "host": "anta",
+    "env_hash": "33c1dbb6673b68919eaa332b0add0b58aeac8be843f2071b9d06e2e0e397a96d",
+    "machine_file_sha256": "0321f40f4caeeb2a36624a9fa9809e60bad31071f366b3517ba23ad45698d2d7",
+    "uv_lock_sha256": "5417f6ba318b914aa3800e5d55f7b11fdd8df13c2688bdda7d419240aa1d5863",
+    "track_requirements_sha256": null,
+    "container_digest": null,
+    "compiler": "g++ 11.4.0",
+    "mpi": "none (Athena_ENABLE_MPI=OFF)",
+    "gpu": "NVIDIA A100 80GB (Slurm partition preempt)",
+    "python": "3.10.12 /data/haiyangw/nrpic/wt/F-hills/.venv"
+  },
+  "input": {
+    "file": "tracks/F-hills/nr_first/inputs/p1_q4.athinput",
+    "sha256": "45c73f71136e000b828710b6ec4941bf3767e607e3a8ecc32f410b51a7cb1e98",
+    "overrides": {}
+  },
+  "inputs": [
+    {
+      "path": "/data/haiyangw/nrpic/.work/build_gpu_v03/src/athena",
+      "role": "input",
+      "sha256": "f9f2dc1273a19e7f78f89bebfd88d9eef6487de5c94aebba77b6fd35dc1be3a1",
+      "bytes": 102258912,
+      "tracked": false,
+      "location": "main checkout data root"
+    },
+    {
+      "path": "tracks/F-hills/nr_first/scripts/athena_keep_trackers.sh",
+      "role": "exe",
+      "sha256": "0b71067a7c9e2d7e75cd52f0d580a9ae99620bfd42725e684b86539691d4e552",
+      "bytes": 1488,
+      "tracked": true
+    },
+    {
+      "path": "tracks/F-hills/nr_first/inputs/p1_q4.athinput",
+      "role": "athinput",
+      "sha256": "45c73f71136e000b828710b6ec4941bf3767e607e3a8ecc32f410b51a7cb1e98",
+      "bytes": 3712,
+      "tracked": true
+    }
+  ],
+  "batch_entries": null,
+  "resources": {
+    "nodes": 1,
+    "gpus": 1,
+    "cores": 1,
+    "walltime_s": null,
+    "wall_limit": null,
+    "segments_max": 26,
+    "gpu_hours_requested": 25.5667,
+    "gpu_hours": null,
+    "particles": null
+  },
+  "slurm": {
+    "partition": "preempt",
+    "job_name": "F-20261119-150017-b45ec5f",
+    "job_ids": []
+  },
+  "outputs": {
+    "dir": "scratch/F-hills/F-20261119-150017-b45ec5f",
+    "sha256sums": "sha256sums.txt",
+    "sha256sums_sha256": null,
+    "bytes": null,
+    "files": null
+  },
+  "status": "submitted",
+  "exit_code": null,
+  "registered": "2026-11-19T15:00:17Z",
+  "started": null,
+  "ended": null,
+  "parents": [
+    "F-20261115-174602-c6879fe"
+  ],
+  "notes": "",
+  "budget_at_submit": {
+    "gpu_hours_allotted": 50.0,
+    "cores_allotted": 16,
+    "gpu_hours_used": 0.3,
+    "gpu_hours_reserved": 1.0,
+    "gpu_hours_without_gate": 0.0,
+    "cores_busy": 13,
+    "runs": 152,
+    "allotment_from": "coord/DECISIONS/0006-compute-budget.md + 0014-budgets-after-wave-1.md"
+  }
+}
