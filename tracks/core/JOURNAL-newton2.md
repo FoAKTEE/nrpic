@@ -344,3 +344,26 @@ Force in G m/dx^2, slopes in G m/dx^3, counted away from the vertex:
   at least three). Held.
 - The isolated "at centre" value of 2e-7 is the asymmetry of the multipole boundary about
   a cell centre that is not the middle of the domain.
+
+### Predictions for the card job, written before it ran (Slurm 4648, run core-20261119-145346-2f89b86; expected start 16:00Z)
+
+Cases of `card.list` (decks of run core-20261119-145326-d509829). On a card the deposit
+sums in an order that changes from run to run (`newtonian_mode.md` 5.8), so the card
+reproduces the processor runs only to rounding, amplified after shell crossing; the
+Fourier kernels themselves have no atomics.
+- chk_mg, chk_fft7, chk_fftsp against the processor cases mg, fft7, fftsp of T1 (run
+  core-20261119-144414-c629377; plane wave N = 32 to t = 3, shell crossing at t = 2):
+  positions within 1e-9 of the box at every snapshot, K and W of every record within
+  1e-8 relative. Refuted (a fault of the card path: an index map, a race in a line
+  transform, a missing fence) if any is above 1e-6. On the card chk_fft7 equals chk_mg to
+  the same 1e-9.
+- east64 (Track B's pancake, n = 64, spectral): T2's prediction for n = 64 stands, the
+  error against Zel'dovich at a = 2 and 5 is 4.8e-5 and 3.3e-4 within 30 per cent
+  (`pm.py`); refuted if the a = 2 value is above 1.5e-4 (the seven-point run had 3.51e-4).
+- chk_sin32 (group history, spectral, to t = 5) against the processor case sin32_sp of
+  T3 where both exist (t <= 3.5): columns 5-30 and 38-55 of both group files within 1e-9
+  relative to the largest value of each column, the difference quotients (31-36, 56-61)
+  within 1e-6. Refuted above 1e-6 and 1e-3.
+- Throughput (T9): a measurement. Seconds per step from the logs (mean of steps 2 to 20);
+  expectation of T9 stands (multigrid 256^3 1 to 5 s per step, Fourier solve below 0.5 s
+  at 256^3).
