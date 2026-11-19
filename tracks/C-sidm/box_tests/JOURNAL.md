@@ -722,3 +722,38 @@ balance ratio per pair even where the metric is flat; the measured extra is abou
 profiled]. Absolute costs are about twice the unloaded wave-2 values (5.7-6.7e-7 s per
 tested pair, run C-20261115-165500-c67e036): the machine is shared. No figure: four
 numbers per mode, in `timing.json` of the run.
+
+## 2026-11-19 R5 outcome: T12 in the static homogeneous curved metric (run C-20261119-143049-0cf699a; analysis and figure C-20261119-145925-dbcfb9c)
+
+PASS (theta 0.1 and 1, two seeds each); every clause of the prediction confirmed except
+the bookkeeping of positions noted below. The AthenaK runs of C-20261119-143049-0cf699a
+all exit 0 (curved 1425-1473 s, flat twins 273-327 s on one core each); the driver wrote
+t12_cpu.json and then stopped at the figure (mathtext has no `\square`), so the run is
+on record as failed; the figure and the periodic position check come from the
+re-analyses C-20261119-145801-111319f, -145850-49fd35b (layout not yet right) and
+-145925-dbcfb9c (final), which read the same run directories and reproduce every number.
+(a) [criterion] Twin: collisions per coordinate time and coordinate volume, curved over
+flat, 1.4172488 in all four = alpha0 psi0^6 to 1e-15 (z = 0): n_tested identical and n_coll
+identical in all 200 steps of all four pairs (179647, 180058, 247472, 247484
+collisions). Final momenta u_curved/s = u_flat within 9.6e-14 of max(1, |u|) (predicted
+1e-12). Positions agree modulo the period to 3.3e-13 (box units); without the modulo they
+differ by whole periods (3 or 4): the two runs do not record a particle's wrap at the same
+time in the snapshots [JUDGEMENT: the flat twin runs on the analytic functor and the curved
+box on the mesh metric; not investigated, no effect on the cells].
+(b) [criterion] Analytic rate: mean sum_P per step / (alpha0 psi0^6 (1/2) (rho_p/M) rho_p
+sigma <v_Mol>(theta_s) dt) = 1.000090 (z = +2.35), 0.999972 (-0.76), 1.000072 (+1.44),
+1.000052 (+0.95); within 4 se and within 0.5 percent; sum n_coll against sum sum_P:
+z = -1.06, +0.28, -0.71, -0.64.
+(c) [criterion] T1: per step |dP_i| <= 3.1e-8 and |dE| <= 3.6e-7 of the bound
+1e-14 sqrt(n_coll + 1); n_trunc = 0; exactly rounded sums of M u_i of the first and last
+snapshots equal to 6.2e-17 of sum M W, and sum M W (with the metric) bit-identical; the
+budget columns: |d sum M H_p| and |d sum M W_p| per step at most 2.2e-19 of their sums.
+(d) n_noroot = n_balance = 0; max_dlam 0 (theta 0.1) and 5.1e-14 (theta 1).
+(e) coll_energy = cell in the same curved box (theta 0.1, seed 1): the same tested pairs
+and collisions in every step as particle mode, momenta within 1.3e-14 at the end.
+Note on cost: the curved runs (mesh metric with Hermite reconstruction, coll_budget) took
+4.4-5.3 times as long as their flat twins.
+Figure `t12_cpu.png` (final version) looked at: left, sum_P per step of the curved runs
+around the analytic value (scatter 1e-3, no trend); middle, the twin ratios exactly on
+alpha0 psi0^6 with their Poisson bars and the analytic ratios within 1e-4; right, the
+momentum defect per step 1e-8 of the bound.
