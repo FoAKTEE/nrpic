@@ -18,10 +18,12 @@ included). The test design for AthenaK: `DESIGN.md`.
 | `szekeres/model.py` | the quasi-spherical Szekeres model: LTB functions M(r), k(r) from a profile of the mean contrast (simultaneous bang time, pure growing mode), the dipole b(r) = -(P', Q', S')/S, evolution R(t, r) with R', Rdot, Rdot' in closed form, density, Theta, Sigma, Weyl scalar W, K^r_r, K^p_p, gamma_rr, crunch, turnaround and R = 2M times, regularity margins |
 | `szekeres/confmap.py` | conformally flat Cartesian coordinates of a slice t = const (ODE in ln r on the hyperboloid of the Szekeres dipole functions, non-concentric-sphere embedding); psi, K^i_j, rho at any Cartesian point; inverse map |
 | `szekeres/mesh.py` | finite-difference Hamiltonian and momentum residuals of the slice on a cell-centred Cartesian mesh (stencils of order 2, 4, 6, as `expball/expball/mesh.py`) |
+| `szekeres/codeid.py` | initial data for AthenaK: the NRCOSMO1 field file of `nrpic_cosmo id = file` and the particle file (one particle per cell centre, at rest) |
+| `inputs/szekeres_geodesic.athinput` | the AthenaK deck: periodic [-8, 8]^3, geodesic slicing, CIC, field dumps with constraints |
 | `sym/sym_szekeres.py` | symbolic checks (sympy): Einstein equations, fluid scalars against the paper, electric and magnetic Weyl, 3+1 constraints, Cotton tensor (conformal flatness), the identities behind the conformal map |
 | `sym/gen_series.py` | the Taylor coefficients of l(lambda) (mpmath, 50 digits) |
-| `tests/test_szekeres.py` | 14 unit tests (LTB limit against `expball`, direct integration, silent-universe equations of the paper, map pull-back, regularity) |
-| `scripts/` | the registered runs: `run_ltb_limit.py`, `run_mesh_constraints.py`, `run_dipole_order.py`, `run_slice_evolution.py`; `common.py` (models, run directory, figure style `python/nrpic/figstyle.py`) |
+| `tests/test_szekeres.py` | 15 unit tests (LTB limit against `expball`, direct integration, silent-universe equations of the paper, map pull-back, regularity, round trip of the files for the code) |
+| `scripts/` | the registered runs: `run_ltb_limit.py`, `run_mesh_constraints.py`, `run_dipole_order.py`, `run_slice_evolution.py`, `run_error_budget.py`, `run_code_geodesic.py` (AthenaK); `common.py` (models, run directory, figure style `python/nrpic/figstyle.py`) |
 | `figures/` | figures of the registered runs (PNG and PDF) |
 | `DESIGN.md` | how the solution becomes a test of AthenaK: initial-data path, gauge, invariants, predicted errors |
 | `JOURNAL.md` | predictions and outcomes |
@@ -31,11 +33,13 @@ included). The test design for AthenaK: `DESIGN.md`.
     export OMP_NUM_THREADS=4 OPENBLAS_NUM_THREADS=4
     python3 sym/sym_szekeres.py --fast          # 32 checks, about 3 min (exact rational points)
     python3 sym/sym_szekeres.py --only E        # the map identities, fully symbolic, seconds
-    python3 -m pytest -q tests/                 # 14 tests, about 1 min
+    python3 -m pytest -q tests/                 # 15 tests, about 1.5 min
     python3 scripts/run_ltb_limit.py
     python3 scripts/run_dipole_order.py
     python3 scripts/run_slice_evolution.py
     python3 scripts/run_mesh_constraints.py --nmax 256 --workers 12
+    python3 scripts/run_error_budget.py
+    python3 scripts/run_code_geodesic.py --N 32 64 --tlim 2 --field-times 0.5 1 2   # AthenaK, processors
 
 Registered through `harness/bin/nrpic-run submit --package tracks/A-emd-pbh/szekeres`
 (manifests under `tracks/A-emd-pbh/runs/<run_id>/`, outputs under
@@ -66,9 +70,42 @@ Every number with its run; predictions and outcomes in JOURNAL.md (entries 1 to 
 | what a spherical (format-2) table misses | first order in eps (slopes 1.000 +- 0.007): max dpsi = 0.0044 eps, drho = 1.84 eps rho_b, dK = 1.43 eps H, shells' centres move 1.93 eps | A-20261119-151501-3e344a4, `fig_dipole_order.png` |
 | regularity of the reference model (eps = 0.1) | (R'/R)/abs(b) >= 10, (M'/3M)/abs(b) >= 3.9 up to the core crunch (tau = 44.45); densities 0.39 ... 2.0 of the background at t_i, up to 19.5 at tau = 30 | A-20261119-151501-986153a (layout repeat A-20261119-153841-e1484db), `fig_slice_maps.png`, `fig_evolution.png` |
 | response of an element to initial errors (error budget) | a relative error 1e-6 in the initial density gives dK of 1e-6 H_i (tau = 10), 7.5e-6 (tau = 30), 8e-5 (tau = 40) in the core, below 5e-7 H_i outside the collapsing region; density scale 0.55 at t_i, 0.17 at tau = 40 (code coordinates) | A-20261119-152232-3d29cc1, `fig_error_budget.png` |
-| first AthenaK run (processors, core-v0.3, geodesic slicing, N = 32; N = 64 only at tau = 0) | at tau = 0 the code holds the data exactly (K to 5e-16, E to 6e-8, chi to 3e-8: float32 dumps); constraint monitor 9.8e-3 (N = 32) and 8.6e-4 (N = 64) of 16 pi rho_b over the shell; alpha stays 1 to 2e-13; at N = 32 the evolution departs (K off by 15 per cent at tau = 10) and fails between tau = 24 and 28 | A-20261119-152010-94a9461, `fig_code_geodesic.png` |
-| short convergence run N = 32, 64 to tau = 2, with and without dissipation | see JOURNAL entry 6 | A-20261119-153832-7097718 |
+| first AthenaK run (processors, core-v0.3, geodesic slicing, N = 32; N = 64 only at tau = 0) | at tau = 0 the code holds the data exactly (K to 5e-16, E to 6e-8, chi to 3e-8: float32 dumps); constraint monitor 9.8e-3 (N = 32) and 8.6e-4 (N = 64) of 16 pi rho_b over the shell; alpha stays 1 to 2e-13; at N = 32 the evolution departs (K off by 15 per cent at tau = 10) and fails between tau = 24 and 28 | A-20261119-152010-94a9461, `fig_code_geodesic_run1_tau40.png` |
+| short convergence run N = 32, 64 to tau = 2, with and without dissipation | every error falls by about 3 per halving (K in the shell 3.9e-2 -> 1.3e-2 at tau = 2; rms H 0.30 -> 0.095 of 16 pi rho); dissipation reduces the error; the early constraint growth is a truncation effect of the under-resolved shell | A-20261119-153832-7097718, `fig_code_geodesic.png`, `fig_code_geodesic_profiles.png` |
+
+## Not done, limits
+
+- The convergence test of AthenaK in its asymptotic range (128^3, 256^3 to tau = 40) was not
+  run: the processor build is too slow (64^3 to tau = 2 took 21 minutes) and this package
+  had no card-hours. Only geodesic slicing was run; the production gauge of Track A
+  (secondary test, DESIGN section 4) and the convergence in the particle number were not.
+- `id_solve` / `id_vector` of core/id-solver(-2) were not run on this data (DESIGN
+  section 3 has the prediction).
+- The fully symbolic (not random-point) form of the Einstein-equation and constraint
+  checks did not finish within 50 minutes and was abandoned; the checks are exact rational
+  evaluations at three random points per component, plus exact evaluation of the Cotton
+  tensor for explicit functions.
+- The apparent horizon of a Szekeres collapse need not be the sphere R = 2M [TO VERIFY in
+  the literature through kb]; `horizon_time` gives the LTB value only.
+- Whether conformal flatness of the comoving Szekeres slice is stated in the literature
+  was not looked up.
+- `model.py` exposes gamma_rr, R and the dipole scalar; the full metric in (r, p, q) needs
+  S, P, Q, which `confmap.py` tabulates (normalised at r_out); there is no separate
+  function for it (the pull-back test builds it).
 
 ## Requests
 
-See the end of DESIGN.md (section 7) for what is needed from core and from the lead.
+- **lead of A-emd-pbh**: the card convergence series of DESIGN section 7 (64^3, 128^3,
+  256^3 with one MeshBlock per card or the card's usual blocks, to tau = 40, dumps at 10,
+  20, 30, 40; `scripts/run_code_geodesic.py` takes `--N`, `--tlim`, `--field-times` and
+  needs only the executable path changed to the card build); estimated under one
+  card-hour in total [JUDGEMENT]. Choose eps (0.1 here).
+- **core**: (1) the full K_ij and gamma_ij in the field dumps (eigenvalue test: KT is
+  uniform on a shell, KL is not); (2) whether the trajectory output carries proper time
+  (secondary test in other gauges); (3) a first test of `id_solve` with `nrpic_cosmo
+  id = file` can use this hole (files from `szekeres/codeid.py`); (4) note: on the
+  processor build the cost of the particle module grows with MeshBlocks times particles
+  (64^3 in 16^3 blocks: over 100 s a cycle; one block: about 40 s) [measured in runs
+  A-20261119-152010-94a9461 and A-20261119-153832-7097718 on a loaded machine].
+- **Track B** (co-owner of the row): the model, map and files serve a periodic set-up as
+  they are.

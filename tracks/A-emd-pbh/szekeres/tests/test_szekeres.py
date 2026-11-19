@@ -251,3 +251,32 @@ def test_bump_and_dipole_support():
     d = Dipole(0.1, 2.4, 6.0, "twist")
     r = np.array([1.0, 2.4, 6.0, 7.0])
     assert np.all(d.b(r)[[0, 1, 2, 3]] == 0)
+
+
+def test_codeid_files_roundtrip(szk, tmp_path):
+    """The NRCOSMO1 file gives back K_ij = psi^-2 Ahat_ij + (1/3) psi^4 delta_ij K =
+    psi^4 [KT delta + (KL - KT) N N] (the reading rule of nrpic_cosmo.cpp), and the
+    particle masses are rho psi^6 h^3."""
+    from szekeres import codeid
+    cm = ConformalMap(szk, nodes=4001)
+    f = codeid.slice_on_mesh(cm, 8, 8.0)
+    path = tmp_path / "fields.bin"
+    codeid.write_nrcosmo(str(path), f)
+    raw = path.read_bytes()
+    assert raw[:8] == b"NRCOSMO1"
+    n = np.frombuffer(raw[8:32], "<i8")
+    assert list(n) == [8, 8, 8]
+    arr = np.frombuffer(raw[32:], "<f8").reshape(9, 8, 8, 8)       # [v, k, j, i]
+    i, j, k = 3, 5, 6
+    psi, K = arr[0, k, j, i], arr[1, k, j, i]
+    A = arr[3:, k, j, i]
+    Ah = np.array([[A[0], A[1], A[2]], [A[1], A[3], A[4]], [A[2], A[4], A[5]]])
+    Kij = Ah / psi ** 2 + np.eye(3) * psi ** 4 * K / 3
+    N = f["N"][i, j, k]
+    ex = f["psi"][i, j, k] ** 4 * (f["KT"][i, j, k] * np.eye(3) + (f["KL"][i, j, k] - f["KT"][i, j, k]) * np.outer(N, N))
+    assert np.max(np.abs(Kij - ex)) < 1e-15
+    assert arr[2].min() == 1.0 and arr[2].max() == 1.0
+    x, u, m = codeid.particles_arrays(f)
+    h = f["h"]
+    assert np.allclose(m.reshape(8, 8, 8), f["rho"] * f["psi"] ** 6 * h ** 3, rtol=1e-15)
+    assert np.all(u == 0)

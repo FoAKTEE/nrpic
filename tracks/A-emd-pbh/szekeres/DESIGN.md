@@ -224,8 +224,29 @@ Predictions for the code [JUDGEMENT unless a number is quoted from a run]:
 
 ## 6. First execution (processors, release core-v0.3)
 
-Run A-20261119-152010-94a9461: N = 32 and 64, to tau = 40. Predictions P10-P13 in JOURNAL
-entry 3; outcomes in JOURNAL entry 4 and README "Results".
+Two registered runs with the recommended path (field file, one particle per cell, CIC,
+geodesic slicing, nghost = 4, RK4, CFL 0.25); JOURNAL entries 3 to 6 hold the predictions
+and outcomes.
+
+- Run A-20261119-152010-94a9461 (N = 32 to tau = 40; N = 64 stopped after start-up): at
+  tau = 0 the code holds the data exactly (K to 5e-16, E to 6e-8 and chi to 3e-8, the
+  float32 precision of the dumps) and its constraint monitor over the shell is 9.8e-3
+  (N = 32) and 8.6e-4 (N = 64) of 16 pi rho_b, the size of the finite-difference residual
+  of section 5. alpha stays 1 to 2e-13. At N = 32 the evolution departs (K off by 15 per
+  cent at tau = 10) and turns to NaN between tau = 24 and 28 (`fig_code_geodesic_run1_tau40`).
+- Run A-20261119-153832-7097718 (N = 32 and 64 to tau = 2, with and without dissipation):
+  every error falls with resolution, by about 3 per halving (order about 1.7 at h = 0.5,
+  0.25): K in the shell 3.9e-2 -> 1.3e-2, in the core 2.2e-2 -> 2.4e-3, E and chi
+  1.1e-2 -> 3.6e-3 and 7.6e-3 -> 2.4e-3, rms H over the shell 0.30 -> 0.095 of 16 pi rho.
+  Dissipation reduces the error. `fig_code_geodesic.png`, `fig_code_geodesic_profiles.png`.
+
+What this establishes: the initial-data path works as designed (no new code needed), the
+code converges towards the Szekeres solution at the resolutions that fit on processors,
+and the departures at 32^3 and 64^3 are those of an under-resolved transition shell
+(smallest density scale 0.55 = 1.1 h at N = 32). What it does not establish: the order of
+convergence in the asymptotic range, the behaviour to tau = 40, the convergence in the
+particle number (one particle per cell only), other gauges. These need the card series
+of section 7.
 
 ## 7. Requests and open points
 

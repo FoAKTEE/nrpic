@@ -196,3 +196,35 @@ Analysis of the run itself (`code_geodesic.json`, `figures/fig_code_geodesic.png
 - The constraint grows fast after the start: rms H/(16 pi rho) over the shell 1.18 at
   tau = 10 and 6.3 at tau = 20 at N = 32 (normalised by the background density at that
   time). Cause: open (entry 4, run 2 below tests resolution and dissipation).
+
+## Entry 6, 2026-11-19 16:05 UTC: outcomes of P7, P14, P15
+
+- P7 PARTLY HELD: run A-20261119-152252-2ae031e (repeat A-20261119-153846-81db254, same
+  numbers). Order-2 stencil at the finest pair (h = 0.117 -> 0.059): Hamiltonian 1.99,
+  momentum 1.95 (all cells, L2). Order-4 stencil: Hamiltonian 3.84 (held, >= 3.7),
+  momentum 3.61 (FAILED by 0.09: below p - 0.3); the maxima converge at 3.75 and 3.55.
+  The LTB limit gives the same orders and norms to 2 per cent (3.84, 3.61), so the
+  pre-asymptotic momentum order belongs to the smoothed top-hat profile and not to the
+  dipole or the conformal map. In the homogeneous core the residuals stop at 6e-10 (L2)
+  of 16 pi rho_b at h = 0.059: the round-off of psi from the map (about 1e-12) divided by
+  h^2. Figures `fig_mesh_constraints.png`, `fig_residual_maps.png` (inspected).
+- P14 FAILED as stated, with a clear reading: run A-20261119-153832-7097718. From N = 32 to
+  N = 64 (one MeshBlock each, to tau = 2) the rms of H/(16 pi rho) over the shell falls
+  from 0.304 to 0.095 at tau = 2 (factor 3.2; 3.3 at tau = 0.5, 4.0 at tau = 1), in the
+  core from 0.099 to 0.028 (3.6): convergence, but by about 3 per halving, not the 4
+  predicted. Without dissipation the growth is larger, not smaller (shell rms at tau = 2:
+  0.688 at N = 32, 0.232 at N = 64): the Kreiss-Oliger term is not its cause, it damps it.
+  The early growth of |H| is therefore a truncation effect of the under-resolved shell
+  that converges at about order 1.7 at these cell sizes (h = 0.5, 0.25). Not tested: a
+  third resolution (needs a card), the gauge (only geodesic slicing was run).
+- P15 FAILED as stated: the maximum relative error of K in the shell at tau = 2 is 3.9e-2
+  (N = 32) and 1.27e-2 (N = 64), factor 3.1 (order 1.6); in the core 2.2e-2 and 2.4e-3
+  (factor 9.2); outside (Einstein-de Sitter, reached by the errors from the shell)
+  1.4e-2 and 4.7e-3. E and chi errors fall by 3.2 and keep the ratio dE/E = 1.5 dchi/chi of
+  a pure volume error (E = mass/sqrt(gamma), sqrt(gamma) = chi^(-3/2)), which says the
+  particles stay at their cells: consistent with prediction 2 of DESIGN section 5, not a
+  direct check of the particle positions.
+- Reading [JUDGEMENT]: the code evolves the Szekeres hole towards the exact solution as the
+  mesh is refined; at 64^3 the departure is 1.3 per cent in K by tau = 2. The test at the
+  accuracy the brief asks for needs 128^3 and 256^3 to tau = 40 (DESIGN section 5) on a
+  card; the processor build is too slow for that (64^3 to tau = 2 took 21 minutes).

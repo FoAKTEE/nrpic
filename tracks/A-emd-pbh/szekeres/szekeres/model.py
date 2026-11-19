@@ -190,8 +190,8 @@ class Szekeres:
 
     def horizon_time(self, r):
         """t at which R = 2M on the collapsing branch (the LTB apparent horizon of shell r;
-        in Szekeres the apparent horizon is NOT this surface in general [BACKGROUND,
-        Krasinski and Bolejko (2012), not checked here])."""
+        whether the Szekeres apparent horizon is this surface was not checked here
+        [TO VERIFY])."""
         c = self.radial(r)
         k, M = c["k"], c["M"]
         out = np.full_like(np.asarray(r, dtype=float), np.inf)
