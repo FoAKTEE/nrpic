@@ -65,7 +65,7 @@ Predictions (each refuted as stated):
   (M'/(3M) <= |b|) occurs on any shell before the crunch of the core (tau = 44.45, data
   set 2) [to be computed; if it fails, eps is lowered and the failure stays on record].
 
-## Entry 2, 2026-11-19 15:20 UTC: outcomes of P1-P9
+## Entry 2, 2026-11-19 15:18 UTC: outcomes of P1-P9
 
 - P1 HELD [VERIFIED, `sym/sym_szekeres.py --fast`, all ten components of
   G_ab + Lambda g_ab - 8 pi rho u_a u_b vanish at three exact rational points each, with
@@ -117,7 +117,7 @@ Predictions (each refuted as stated):
   and parallel mesh residuals agree to the last digit and batch and single-point
   evaluations agree exactly.
 
-## Entry 3, 2026-11-19 15:25 UTC: predictions for the first AthenaK execution
+## Entry 3, 2026-11-19 15:19 UTC: predictions for the first AthenaK execution
 
 Run: scripts/run_code_geodesic.py, processor executable of core-v0.3
 (.work/build_cpu_v03/src/athena), periodic box [-8, 8]^3 at N = 32 and 64 cells per side,
@@ -142,7 +142,7 @@ off), Z4c with nghost = 4, diss = 0.5, damp_kappa1 = 0.5, RK4 at CFL 0.25, to ta
 - P13 The constraint monitor at tau = 0: rms H/(16 pi rho_b) over the shell region below
   1e-2 at N = 32 and smaller by at least 4 at N = 64.
 
-## Entry 4, 2026-11-19 15:40 UTC: what the first AthenaK run shows while it runs; predictions for a second, short run
+## Entry 4, 2026-11-19 15:36 UTC: what the first AthenaK run shows while it runs; predictions for a second, short run
 
 Run A-20261119-152010-94a9461, from its constraint statistics (`N32/szk.cstat.hst`) before
 its own analysis finishes:
@@ -171,3 +171,28 @@ tau = 0.5, 1, 2, with a variant diss = 0):
   hypotheses) if neither happens.
 - P15 The relative error of K against the exact -Theta in the shell at tau = 2 falls by at
   least 4 from N = 32 to N = 64.
+
+## Entry 5, 2026-11-19 15:39 UTC: outcomes of P10-P13 (run A-20261119-152010-94a9461)
+
+Analysis of the run itself (`code_geodesic.json`, `figures/fig_code_geodesic.png`,
+`fig_code_geodesic_profiles.png`, inspected):
+
+- P10 HELD at N = 32 and 64: at tau = 0 the code's K equals the exact -Theta to 5e-16
+  (the field file is read as written), E equals rho to 9e-9 (core) and 6e-8 (shell),
+  chi = psi^-4 to 3e-8: the float32 precision of the dump. One particle per cell centre
+  with the CIC deposit gives the exact density, as designed.
+- P11 PARTLY: alpha stays 1 to 1.1e-13 (tau = 10) and 2.3e-13 (tau = 20); but the run at
+  N = 32 does not reach tau = 40: K leaves the exact solution (relative error 0.15 in the
+  shell and 0.17 in the core at tau = 10, 0.85 in the core at tau = 20) and the fields are
+  NaN at tau = 30. N = 64 was stopped after start-up (entry 4). FAILED as stated.
+- P12 NOT TESTED (no N = 64 evolution). At N = 32 the errors at tau = 10 are 15 per cent
+  in K, 6.5 per cent in E and 4.4 per cent in chi (maximum over the shell): far above the
+  "1e-2 at N = 64" scale predicted, which belongs to N = 64 and remains open.
+- P13 HELD: the code's monitor at tau = 0, rms of H/(16 pi rho_b) over the shell, is
+  9.8e-3 at N = 32 and 8.6e-4 at N = 64 (factor 11.4); over the core 9.7e-4 and 6.6e-5.
+  The momentum monitor over the shell 1.5e-2 and 2.6e-3. These are the code's sixth-order
+  operator on gamma_ij; the order-4 residual of this package at h = 0.47 and 0.23 was
+  1.2e-2 and 1.4e-3 (shell, L2, run A-20261119-152252-2ae031e): the same size.
+- The constraint grows fast after the start: rms H/(16 pi rho) over the shell 1.18 at
+  tau = 10 and 6.3 at tau = 20 at N = 32 (normalised by the background density at that
+  time). Cause: open (entry 4, run 2 below tests resolution and dissipation).

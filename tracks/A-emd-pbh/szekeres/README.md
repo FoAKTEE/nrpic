@@ -54,7 +54,20 @@ of label radius 6 cut into Einstein-de Sitter, an exact solution that tiles a pe
 
 ## Results
 
-(filled in below after the runs; see JOURNAL.md entry 2 onwards)
+Every number with its run; predictions and outcomes in JOURNAL.md (entries 1 to 6).
+
+| what | outcome | run / check |
+|---|---|---|
+| Einstein equations, Theta, sigma = Sigma e, E = W e (paper's signs), H_ab = 0, 3+1 constraints, K = -Theta | 32 symbolic checks pass at exact rational points (negative controls fail as they must) | `sym/sym_szekeres.py --fast`, run A-20261119-152233-d31f783 |
+| conformal flatness of the comoving slice | Cotton tensor = 0 for arbitrary R, k, S, P, Q (the task text expected the opposite); k = 0: flat; explicit conformal map verified symbolically and by pull-back (1e-8) | same run; `tests/` |
+| LTB limit against `expball` (data set 2) | initial slice to 4e-15; R(tau) of 400 shells to 2.2e-14 up to 0.9 of the core crunch (2.2e-12 at 0.1 per cent before it); turnaround, crunch, R = 2M times to 7e-15; isotropic radius 5e-12, psi 1.5e-12 | A-20261119-151501-9cff966, `figures/fig_ltb_limit.png` |
+| silent-universe equations of the paper along elements | reproduce the exact evolution to 2e-11 (Theta), 3e-12 (rho) up to tau = 40 | A-20261119-152232-3d29cc1 (repeat A-20261119-153842-a1db5d6), unit test |
+| finite-difference constraints of the Szekeres slice on Cartesian meshes, h = 0.47 ... 0.059 | Hamiltonian L2 (all cells, /16 pi rho_b): order 2: 1.5e-2, 4.1e-3, 1.0e-3, 2.6e-4 (orders 1.89, 1.96, 1.99); order 4: 6.1e-3, 7.2e-4, 6.0e-5, 4.2e-6 (3.09, 3.57, 3.84). Momentum order 4: 4.9e-2, 9.7e-3, 1.1e-3, 9.2e-5 (2.33, 3.10, 3.61). LTB limit within 2 per cent of these: the map adds no error | A-20261119-152252-2ae031e (figure repeat A-20261119-153846-81db254), `fig_mesh_constraints.png`, `fig_residual_maps.png` |
+| what a spherical (format-2) table misses | first order in eps (slopes 1.000 +- 0.007): max dpsi = 0.0044 eps, drho = 1.84 eps rho_b, dK = 1.43 eps H, shells' centres move 1.93 eps | A-20261119-151501-3e344a4, `fig_dipole_order.png` |
+| regularity of the reference model (eps = 0.1) | (R'/R)/abs(b) >= 10, (M'/3M)/abs(b) >= 3.9 up to the core crunch (tau = 44.45); densities 0.39 ... 2.0 of the background at t_i, up to 19.5 at tau = 30 | A-20261119-151501-986153a (layout repeat A-20261119-153841-e1484db), `fig_slice_maps.png`, `fig_evolution.png` |
+| response of an element to initial errors (error budget) | a relative error 1e-6 in the initial density gives dK of 1e-6 H_i (tau = 10), 7.5e-6 (tau = 30), 8e-5 (tau = 40) in the core, below 5e-7 H_i outside the collapsing region; density scale 0.55 at t_i, 0.17 at tau = 40 (code coordinates) | A-20261119-152232-3d29cc1, `fig_error_budget.png` |
+| first AthenaK run (processors, core-v0.3, geodesic slicing, N = 32; N = 64 only at tau = 0) | at tau = 0 the code holds the data exactly (K to 5e-16, E to 6e-8, chi to 3e-8: float32 dumps); constraint monitor 9.8e-3 (N = 32) and 8.6e-4 (N = 64) of 16 pi rho_b over the shell; alpha stays 1 to 2e-13; at N = 32 the evolution departs (K off by 15 per cent at tau = 10) and fails between tau = 24 and 28 | A-20261119-152010-94a9461, `fig_code_geodesic.png` |
+| short convergence run N = 32, 64 to tau = 2, with and without dissipation | see JOURNAL entry 6 | A-20261119-153832-7097718 |
 
 ## Requests
 

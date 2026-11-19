@@ -25,7 +25,7 @@ scalar bn = b.n per element [VERIFIED, `sym/sym_szekeres.py` check E].
 - Field equations, fluid scalars and Weyl tensor: all ten components of the Einstein
   equations, Theta, sigma^a_b = Sigma e^a_b, E^a_b = W e^a_b (e = diag(-2, 1, 1) in
   (r, p, q)), magnetic Weyl zero, with the paper's formulas and signs [VERIFIED, run
-  A-20261119-1528 (symbolic, see README) and JOURNAL entry 2; the paper mixes sign
+  A-20261119-152233-d31f783 (32 symbolic checks) and JOURNAL entry 2; the paper mixes sign
   conventions, see JOURNAL entry 1].
 - Evolution of each element: R(t, r) = M^(1/3) t^(2/3) g(lambda), lambda = k t^(2/3)/M^(2/3)
   with one universal function g (`szekeres/universal.py`); R does not depend on the
@@ -44,8 +44,8 @@ e(u) turning from z towards x while turning about z, eps = 0.1. A dipole is a co
 effect where M/r^3 and k/r^2 are constant [the density formula is then homogeneous], so
 the dipole acts only in the transition shell 2.4 < r < 6 (it is supported there anyway);
 the core r < 2.4 is a closed FLRW region and r >= 6 is exactly Einstein-de Sitter: a
-Szekeres hole cut into Einstein-de Sitter, which tiles a periodic box. Margins before the core crunch
-(tau = 44.454): (R'/R)/|b| >= 10.0, (M'/(3M))/|b| >= 3.94 [VERIFIED, run
+Szekeres hole cut into Einstein-de Sitter, which tiles a periodic box. Margins before the
+core crunch (tau = 44.454): (R'/R)/|b| >= 10.0, (M'/(3M))/|b| >= 3.94 [VERIFIED, run
 A-20261119-151501-986153a]. The density at t_i ranges over 0.39 ... 2.0 of the background;
 at tau = 30 up to 19.5, and the density along +b and -b of one shell differs by up to a
 factor 0.60 (r = 4.6) [same run].
@@ -66,7 +66,8 @@ sym check C].
 **Conformal flatness holds.** The task text expected it to fail in general. It does not:
 the Cotton tensor of gamma vanishes for arbitrary R(r), k(r), S(r), P(r), Q(r) [VERIFIED,
 sym check D at exact rational points, and exactly for explicit polynomial functions,
-JOURNAL entry 2], and for k = 0 the slice is flat (3-Ricci zero). The reason, and the
+JOURNAL entry 2], and for k = 0 the slice is flat (3-Ricci zero). Whether this is stated
+in the Szekeres literature was not looked up [TO VERIFY through kb]. The reason, and the
 construction used here (`szekeres/confmap.py`): write Ecal as a vector X = (a, b, c, d)
 on the hyperboloid b^2 + c^2 - 4ad = -1. The "flat Szekeres" metric
 (rho' - rho Ecalt'/Ecalt)^2 dr^2 + rho^2/Ecalt^2 (dp^2 + dq^2) is flat for any functions
@@ -101,7 +102,7 @@ format 2 (one centre, psi(rbar), KL(rbar), KT(rbar)) holds it only at zeroth ord
 dipole: it misses O(eps) of the density and of K (19 per cent of rho_b and 0.15 H at
 eps = 0.1). Representation on the mesh is exact up to the discretisation: the
 finite-difference Hamiltonian and momentum residuals of the sampled fields converge at the
-order of the stencil (section 4, run A-20261119-151452-46f171e).
+order of the stencil (section 5, run A-20261119-152252-2ae031e).
 
 ## 3. Initial-data path for the code
 
@@ -183,18 +184,24 @@ it exists; else a request].
 
 Inputs (registered runs; numbers relative to 16 pi rho_b = 6 H^2 at t_i):
 
-- Initial-data truncation, L2 over [-7.5, 7.5]^3 (all cells), eps = 0.1: Hamiltonian
-  4.1e-3, 1.04e-3 (order 2 stencil) and 7.2e-4, 6.0e-5 (order 4) at h = 0.234, 0.117;
-  observed orders 1.96 and 3.6 [VERIFIED, run A-20261119-151452-46f171e; the finest
-  resolution and the LTB comparison are in README "Results"]. The code's monitor uses
-  sixth-order differences for nghost = 4 (id_solver.md line 98 on core/id-solver), so its
-  t = 0 residual at the same h is at most the order-4 number [JUDGEMENT].
-- Linear response along elements (silent equations, gradients neglected): see
-  `figures/fig_error_budget.png` and README "Results" (run of `run_error_budget.py`):
-  how much a relative error of 1e-6 in the initial density or expansion of an element is
-  amplified in K and rho by tau = 10 ... 40.
-- Gradient scales in code coordinates (the error of a stencil of order p grows like
-  (h/l)^p): same run.
+- Initial-data truncation, L2 over [-7.5, 7.5]^3 (all cells), eps = 0.1, h = 0.47, 0.23,
+  0.12, 0.059: Hamiltonian 6.1e-3, 7.2e-4, 6.0e-5, 4.2e-6 with the order-4 stencil
+  (orders 3.09, 3.57, 3.84), momentum 4.9e-2, 9.7e-3, 1.1e-3, 9.2e-5 (2.33, 3.10, 3.61);
+  maxima 7 to 13 times larger, all in the transition shell (`fig_residual_maps.png`)
+  [VERIFIED, run A-20261119-152252-2ae031e]. The LTB limit has the same numbers to 2 per
+  cent: the asymptotic regime starts only at h ~ 0.1 because of the profile, not of the
+  dipole. The code's own monitor at t = 0 agrees in size (section 6).
+- Linear response along elements (silent equations, gradients neglected): a relative
+  error 1e-6 of the initial density of an element gives |dK| = 1.1e-6, 2.5e-6, 7.5e-6,
+  8.2e-5 H_i at tau = 10, 20, 30, 40 in the core (3.7e-5 at tau = 40 for the inner shell,
+  r = 3) and below 5e-7 H_i in the expanding part of the shell and in Einstein-de Sitter;
+  an error 1e-6 of the initial expansion grows to 9.5e-5 H_i in the core by tau = 40
+  [VERIFIED, run A-20261119-152232-3d29cc1, `fig_error_budget.png`]. So errors are
+  amplified about a hundredfold in the collapsing core by tau = 40 and not at all outside.
+- Gradient scales in code coordinates: the smallest density scale rho/|grad rho| is 0.55
+  at t_i, 0.44, 0.38, 0.30, 0.17 at tau = 10 ... 40; K's global scale falls from 3.0 to
+  0.46 (same run). A stencil of order p therefore needs h well below 0.17 by tau = 40;
+  the error at fixed h grows like (0.55/0.17)^p, a factor 10 (p = 2) to 100 (p = 4).
 
 Predictions for the code [JUDGEMENT unless a number is quoted from a run]:
 
@@ -204,11 +211,16 @@ Predictions for the code [JUDGEMENT unless a number is quoted from a run]:
    code's pusher when alpha = 1 and beta = 0) [TO VERIFY in the run].
 3. Errors of K, E, chi in the shell converge at second order or better in h (sixth-order
    stencils, Kreiss-Oliger dissipation of the same order, RK4), grow with tau by the
-   amplification of the element dynamics and the shrinking gradient scales, and are
-   largest at the edge of the core near tau = 40.
-4. Cost: a 128^3 run to tau = 40 is about 1300 steps of RK4 on 2.1e6 cells and particles:
-   minutes on one card; 256^3 about 16 times that [JUDGEMENT; the cost of the processor
-   runs at 32^3 and 64^3 is in README "Results"]. Far below an hour of card time.
+   amplification of the element dynamics (up to 100 in the core by tau = 40) and the
+   shrinking gradient scales, and are largest at the edge of the core near tau = 40.
+   Resolution needed for per-cent errors at tau = 40 [JUDGEMENT from the two inputs
+   above]: h <= 0.06 (256^3 on [-8, 8]^3); 128^3 suffices to tau ~ 20.
+4. Cost: 128^3 to tau = 40 is about 1300 RK4 steps on 2.1e6 cells and particles; 256^3
+   about 16 times that. On the processors the particle module of core-v0.3 is slow: 32^3
+   in one run took 3.2 s a cycle on the loaded machine, and 64^3 in 16^3 MeshBlocks more
+   than 100 s a cycle (cost grows with MeshBlocks times particles) [VERIFIED, run
+   A-20261119-152010-94a9461]. The convergence series belongs on a card: a few card
+   minutes at 128^3 [JUDGEMENT, not measured here].
 
 ## 6. First execution (processors, release core-v0.3)
 
