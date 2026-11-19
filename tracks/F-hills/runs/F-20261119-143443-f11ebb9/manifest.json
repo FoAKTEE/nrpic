@@ -1,0 +1,146 @@
+{
+  "schema": "nrpic-run-manifest/1",
+  "run_id": "F-20261119-143443-f11ebb9",
+  "track": "F-hills",
+  "gate": "G1",
+  "kind": "scouting",
+  "purpose": "nr_first E10: S2g, single puncture P/m = 0.25 at m/8 with core's mass-scaled shift damping (eta m = 2 at the hole, 0.25 far), 90 m: settling and horizon-mass drift against S2/S3, junk energy",
+  "preregistered_in": null,
+  "launcher": "batch",
+  "command": [
+    "scripts/gpu_batch.sh",
+    "/data/haiyangw/nrpic/scratch/F-hills/F-20261119-143443-f11ebb9/batch.list"
+  ],
+  "cwd": "scratch/F-hills/F-20261119-143443-f11ebb9",
+  "git": {
+    "sha": "f11ebb96dba4faab7228611b6407540fa2a6b33f",
+    "branch": "track/F-hills",
+    "dirty": false,
+    "package": [
+      "tracks/F-hills/nr_first"
+    ],
+    "outside_package": {
+      "count": 1,
+      "first": [
+        "?? tracks/F-hills/eih/"
+      ]
+    },
+    "merge_base_main": "2df11a93a23f279b046047f3e2bed44a85946a3a",
+    "worktree": "wt/F-hills"
+  },
+  "code": {
+    "core_tag": "core-v0.3",
+    "athenak_upstream_sha": "c5a0d7f",
+    "kokkos_sha": "6739bc623081648af9e752b616d9671527922cbf",
+    "problem": "nrpic_cf",
+    "exe": "/data/haiyangw/nrpic/scratch/core/exe/core_gauge/athena_gpu",
+    "exe_sha256": "c3560e53988ad855cc93a9f444c48c728249950242e736d0828cc44dbcd85e72",
+    "cmake_flags": null,
+    "toolchain": null
+  },
+  "env": {
+    "host": "anta",
+    "env_hash": "33c1dbb6673b68919eaa332b0add0b58aeac8be843f2071b9d06e2e0e397a96d",
+    "machine_file_sha256": "0321f40f4caeeb2a36624a9fa9809e60bad31071f366b3517ba23ad45698d2d7",
+    "uv_lock_sha256": "5417f6ba318b914aa3800e5d55f7b11fdd8df13c2688bdda7d419240aa1d5863",
+    "track_requirements_sha256": null,
+    "container_digest": null,
+    "compiler": "g++ 11.4.0",
+    "mpi": "none (Athena_ENABLE_MPI=OFF)",
+    "gpu": "NVIDIA A100 80GB (Slurm partition preempt)",
+    "python": "3.10.12 /data/haiyangw/nrpic/wt/F-hills/.venv"
+  },
+  "input": {
+    "file": "tracks/F-hills/nr_first/inputs/single_P025_profile.athinput",
+    "sha256": "6b0abf035cce1e12dbfee213254bea2d7b2c6b7158ac9cdadfc023160db84c2b",
+    "overrides": {
+      "mesh_refinement/max_nmb_per_rank": "2400",
+      "output4/dt": "30.0"
+    }
+  },
+  "inputs": [
+    {
+      "path": "tracks/F-hills/nr_first/inputs/single_P025_profile.athinput",
+      "role": "input",
+      "sha256": "6b0abf035cce1e12dbfee213254bea2d7b2c6b7158ac9cdadfc023160db84c2b",
+      "bytes": 3170,
+      "tracked": true
+    },
+    {
+      "path": "/data/haiyangw/nrpic/scratch/core/exe/core_gauge/athena_gpu",
+      "role": "exe",
+      "sha256": "c3560e53988ad855cc93a9f444c48c728249950242e736d0828cc44dbcd85e72",
+      "bytes": 102311528,
+      "tracked": false,
+      "location": "main checkout data root"
+    },
+    {
+      "path": "tracks/F-hills/nr_first/inputs/batch_S2g.list",
+      "role": "list",
+      "sha256": "08cf6cceaf2891e7068819103bb4ba3dcc7ecaa75b53530aa19d40d738f5dc5f",
+      "bytes": 369,
+      "tracked": true
+    },
+    {
+      "path": "tracks/F-hills/nr_first/inputs/single_P025_profile.athinput",
+      "role": "athinput:S2g",
+      "sha256": "6b0abf035cce1e12dbfee213254bea2d7b2c6b7158ac9cdadfc023160db84c2b",
+      "bytes": 3170,
+      "tracked": true
+    }
+  ],
+  "batch_entries": [
+    {
+      "name": "S2g",
+      "input": "tracks/F-hills/nr_first/inputs/single_P025_profile.athinput",
+      "args": [
+        "mesh_refinement/max_nmb_per_rank=2400",
+        "output4/dt=30.0",
+        "-t",
+        "00:54:00"
+      ]
+    }
+  ],
+  "resources": {
+    "nodes": 1,
+    "gpus": 1,
+    "cores": 1,
+    "walltime_s": null,
+    "wall_limit": "00:59:00",
+    "segments_max": null,
+    "gpu_hours_requested": 1.0,
+    "gpu_hours": null,
+    "particles": null
+  },
+  "slurm": {
+    "partition": "preempt",
+    "job_name": "F-20261119-143443-f11ebb9",
+    "job_ids": []
+  },
+  "outputs": {
+    "dir": "scratch/F-hills/F-20261119-143443-f11ebb9",
+    "sha256sums": "sha256sums.txt",
+    "sha256sums_sha256": null,
+    "bytes": null,
+    "files": null
+  },
+  "status": "submitted",
+  "exit_code": null,
+  "registered": "2026-11-19T14:34:43Z",
+  "started": null,
+  "ended": null,
+  "parents": [
+    "F-20261115-173601-2fae2dc"
+  ],
+  "notes": "",
+  "budget_at_submit": {
+    "gpu_hours_allotted": 50.0,
+    "cores_allotted": 16,
+    "gpu_hours_used": 0.3,
+    "gpu_hours_reserved": 0.0,
+    "gpu_hours_without_gate": 0.0,
+    "cores_busy": 0,
+    "runs": 122,
+    "allotment_from": "coord/DECISIONS/0006-compute-budget.md + 0014-budgets-after-wave-1.md"
+  }
+}
