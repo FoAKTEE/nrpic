@@ -1,0 +1,38 @@
+# line 261: numerical implementations outside NR
+2206.11234 | \\abstract|1
+2206.11234 | Langevin|3
+2206.11234 | importance sampling|2
+2410.13683 | \\abstract|1
+2410.13683 | importance sampling|2
+2410.13683 | Langevin|2
+2210.17441 | \\abstract|1
+2210.17441 | frozen|3
+2411.12465 | \\abstract|1
+2411.12465 | Stratonovich|2
+2606.09690 | \\abstract|1
+2606.09690 | spectral method|3
+2405.10692 | \\abstract|1
+2405.10692 | STOLAS|2
+2405.10692 | lattice|3
+2102.06378 | \\abstract|1
+2102.06378 | lattice|3
+2403.12811 | begin\{abstract\}|1
+2403.12811 | lattice|4
+2403.12811 | simulation|3
+2410.23942 | begin\{abstract\}|1
+2410.23942 | lattice|3
+2506.11795 | begin\{abstract\}|1
+2506.11795 | lattice|3
+2604.03628 | begin\{abstract\}|1
+2604.03628 | lattice|3
+2604.03628 | inflation.easy|3
+2102.01031 | \\abstract|1
+2102.01031 | CosmoLattice|2
+hep-ph/0011159 | LATTICEEASY|3
+hep-ph/0011159 | abstract|2
+1609.00381 | \\abstract|1
+1609.00381 | PyTransport|3
+2302.00655 | begin\{abstract\}|1
+2302.00655 | CosmoFlow|4
+2302.00655 | code|4
+2302.00655 | numerical|3

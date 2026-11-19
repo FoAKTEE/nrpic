@@ -1,0 +1,37 @@
+# line 264: foundational questions still debated, peripheral developments
+2611.15050 | abstract|2
+2611.15050 | at best|2
+2611.15050 | linear order|3
+2406.02417 | abstract|1
+2406.02417 | without invoking stochastic|2
+2406.02417 | momentum perturbation|2
+2512.17070 | abstract|1
+2512.17070 | colou?red noise|3
+2512.17070 | non.Gaussian noise|2
+1905.06300 | abstract|1
+1905.06300 | beyond.{0,10}slow.roll|3
+2107.12735 | abstract|1
+2107.12735 | all order|3
+2410.17987 | abstract|1
+2410.17987 | slow.roll|4
+2410.17987 | non.Markovian|3
+2311.03281 | abstract|1
+2311.03281 | fails|3
+2509.05124 | abstract|1
+2509.05124 | gradient interactions|3
+2311.17644 | abstract|1
+2311.17644 | perturbation theory|3
+2305.03491 | abstract|1
+2305.03491 | loop|3
+2507.15522 | abstract|1
+2507.15522 | incompatible|3
+2507.15522 | lambda_1 \\leq 3|2
+2404.15416 | abstract|1
+2404.15416 | stochastic|3
+2605.11096 | abstract|1
+2504.17680 | abstract|1
+2605.31323 | abstract|1
+2511.21388 | abstract|1
+2604.15219 | abstract|1
+2506.21423 | abstract|1
+2506.03860 | abstract|1

@@ -1,0 +1,40 @@
+# line 260: non-Gaussian tails, PBH sensitivity, clustering, compaction, trees, USR background
+1707.00537 | begin\{abstract\}|1
+1707.00537 | exponential|4
+1707.00537 | tail|4
+1707.00537 | mass fraction|3
+1912.05399 | begin\{abstract\}|1
+1912.05399 | exponential.{0,20}rather than Gaussian|3
+1912.05399 | several orders of magnitude|3
+2012.06551 | begin\{abstract\}|1
+2012.06551 | tail|4
+2012.06551 | 10\^5|3
+2111.07437 | begin\{abstract\}|1
+2111.07437 | tail|3
+2111.07437 | enhance|3
+2101.05741 | begin\{abstract\}|1
+2101.05741 | exponential tail|3
+2402.12672 | begin\{abstract\}|1
+2402.12672 | tail|4
+2402.12672 | review|3
+2402.08642 | begin\{abstract\}|1
+2402.08642 | clustering|3
+2312.12911 | begin\{abstract\}|1
+2312.12911 | compaction|3
+2510.09303 | begin\{abstract\}|1
+2510.09303 | compaction|3
+2501.05371 | begin\{abstract\}|1
+2501.05371 | tree|3
+astro-ph/0101406 | begin\{abstract\}|1
+astro-ph/0101406 | slow.roll|4
+astro-ph/0101406 | enhance|3
+1911.00057 | ultra.slow|4
+1911.00057 | USR|4
+1911.00057 | slow.roll.*viol|3
+1911.00057 | eta_?\{?H|3
+1910.08487 | begin\{abstract\}|1
+1910.08487 | Ultra Slow.Roll|3
+2507.04114 | begin\{abstract\}|1
+2507.04114 | ultra.slow|3
+2504.05937 | begin\{abstract\}|1
+2504.05937 | ultra.slow|3

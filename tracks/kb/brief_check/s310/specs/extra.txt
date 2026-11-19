@@ -1,0 +1,17 @@
+# extra locator checks (absence of USR wording, abstract lines)
+astro-ph/0101406 | ultra|3
+1911.00057 | ultra|3
+0808.1786 | begin\{abstract\}|1
+0808.1786 | exactly the same results|2
+2107.12735 | loop effects|2
+2107.12735 | non-perturbative statistics|2
+2406.02417 | without invoking|2
+2406.02417 | stochastic inflation\.|2
+2411.12465 | Markovian limit|2
+2512.14649 | synchronous|3
+1911.01661 | de Broglie|3
+2302.00655 | Werth:2024aui|2
+2604.03628 | non.?Gaussianities are large|2
+2401.08530 | coarse.grain|3
+2412.16143 | even prior to horizon crossing|2
+2606.07467 | multifield|2
