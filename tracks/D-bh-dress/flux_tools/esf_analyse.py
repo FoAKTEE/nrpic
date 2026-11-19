@@ -9,8 +9,10 @@ integrated particle flux through the horizon), prepared before the run.
    E_K = (1 - 2M/R0)^(1/2) (energy_by_tag.npy), not the code's gauge-dependent E:
    F_rem(t) <= dM_AH(t) <= F_sph(t), and the closure after the inflow window.
 2. Per label (exact LTB, gauge invariant): every removed particle of label R0 has crossed
-   the horizon, so at its removal time M_AH >= m(R0) - 3 sigma; its proper time at removal
-   lies in [tau_H(R0), tau_0(R0)] (horizon crossing to the centre).
+   the horizon, and so have all particles of smaller label, so at its removal time
+   M_AH >= m_disc(R0) - 3 sigma with m_disc the lattice sum of m E_K up to R0 (the
+   continuum m(R0) differs from it by delta_lat, reported; entry 5); its proper time at
+   removal lies in [tau_H(R0), tau_0(R0)] (horizon crossing to the centre).
 3. The growth law: M_AH against the largest m(R0) removed so far, and against the proper
    time of the removed shells, with the exact curve m(tau_H).
 Writes esf_analysis.json and esf_growth.png. Partial runs are read as far as they go.
@@ -84,6 +86,21 @@ def main():
     hz = np.isin(rem["reason"], (2, 3))
     tag = rem["tag"][hz]
     dust = lab["rest"][tag] > 1e-20
+    # discrete label mass: M + sum of m E_K over all particles with R0_j <= R0 (the lattice
+    # sum differs from the continuum m(R0) by the lattice-counting error delta_lat)
+    R0all, EKall, mall = lab["R0"], lab["E_K"], lab["rest"]
+    order = np.argsort(R0all, kind="stable")
+    cum = np.cumsum((mall * EKall)[order])
+    m_disc_sorted = 1.0 + cum
+    pos = np.empty_like(order)
+    pos[order] = np.arange(order.size)
+    m_disc = np.empty_like(cum)
+    # equal labels share the value of the last of them
+    Rs = R0all[order]
+    last = np.searchsorted(Rs, Rs, side="right") - 1
+    m_disc[order] = m_disc_sorted[last]
+    isd = mall > 1e-20
+    out["delta_lat"] = float(np.max(np.abs(m_disc[isd] - lab["m_label"][isd])))
     if hz.any() and hor["time"].size:
         trem = rem["time"][hz]
         M_at = np.interp(trem, hor["time"], hor["mass"])
@@ -92,6 +109,7 @@ def main():
         out["per_label"] = dict(
             n=int(hz.sum()), n_dust=int(dust.sum()),
             M_minus_mlabel_min=float(np.min(M_at - m_lab)),
+            M_minus_mdisc_min=float(np.min(M_at - m_disc[tag])),
             tau_below_tauH=int(np.sum(tau < lab["tauH"][tag] * (1 - 1e-6))),
             tau_above_tau0=int(np.sum(tau > lab["tau0"][tag] * (1 + 1e-6))),
             R0_max_removed=float(lab["R0"][tag][dust].max()) if dust.any() else None)

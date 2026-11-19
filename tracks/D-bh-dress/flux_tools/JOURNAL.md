@@ -322,3 +322,29 @@ Predictions for the rerun with the content term: 1 now holds (max violation belo
 100 sigma); content check: the rest mass inside isotropic radius 5 M from the particle
 file equals the synthetic m_inside to 1e-12 relative. Refuted (cause wrong or another
 defect) if 1 still fails.
+
+### Outcome of entry 5b (D-20261119-150029-06e4f7f)
+
+Prediction 1 FAILED again, unchanged (91 sigma, 90 per cent inside 3 sigma): the cause
+named in entry 5 was wrong. I had not checked which bound was violated before naming
+it. A look at the synthetic run (development evaluation of compare() on its files): all
+39 violations are of the LOWER bound, F_rem > dM by up to 9.1e-4 M (t = 193: F_rem =
+0.24951, dM = 0.24860), none of the upper bound. The content term itself is right (the
+sphere held 534 particles, rest mass 3.3177e-3, equal to the synthetic m_inside to
+1e-16; m E_K 2.584e-3) and stays. New candidate cause: the synthetic finder history is
+the CONTINUUM m(R0), while F_rem sums the LATTICE particles; the cumulative lattice sum of
+m E_K up to a label differs from the continuum D(R0) by the lattice-counting error (of
+order 1e-3 M at R0 ~ 25 M). The same mismatch would make the per-label criterion against
+the continuum m(R0) fail in the real run, where the hole accretes the lattice.
+Change: the per-label bound uses the lattice sum m_disc(R0) (esf_analyse.py reports the
+continuum one too and delta_lat = max |m_disc - m|); the synthetic truth is the lattice
+accretion (case exact), with the continuum truth kept as a third case.
+
+## Entry 5c (before the rerun)
+
+1. Case exact (lattice truth): max violation below 4.5 sigma, at least 98 per cent of the
+   times inside 3 sigma; per label M_AH - m_disc >= -4.5e-5.
+2. Case continuum_truth: lower-bound violations of up to about 9e-4 M (about 90 sigma)
+   as in 5b; delta_lat of order 1e-3.
+3. Code energies and growth x 0.97: above 1000 and 100 sigma as before.
+Refuted if 1 fails: then the lattice is not the (only) cause.

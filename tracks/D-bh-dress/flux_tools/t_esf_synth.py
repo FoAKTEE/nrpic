@@ -5,7 +5,9 @@ solution (a test of the analysis logic before the card run exists).
     t_esf_synth.py --data <ES-F data run dir> [--out DIR]
 
 Synthetic run (written into DIR/synth): code time t = tau / 1.4 (a stand-in gauge map);
-finder M_AH(t) = exact m(R0) at tau_H(R0) = 1.4 t plus Gaussian noise of 1e-5; every dust
+finder M_AH(t) = M + sum of m E_K over the lattice particles with tau_H <= 1.4 t (the
+discrete accretion; case continuum_truth: the continuum m(R0) at tau_H = 1.4 t, entry 5)
+plus Gaussian noise of 1e-5; every dust
 particle with tau_H < 1.4 * 200 M is removed (reason 3) at the proper time
 tau_H + 0.3 (tau_0 - tau_H), with the code energy E = 1.35 E_K (the gauge factor of
 entry 3); a flux sphere at areal radius 5 M crossed by each shell on its collapsing
@@ -31,13 +33,21 @@ TEND = 200.0
 EFAC = 1.35
 
 
-def write_run(d, data, scale, seed=1):
+def write_run(d, data, scale, truth="discrete", seed=1):
     os.makedirs(d, exist_ok=True)
     lab = np.load(os.path.join(data, "esf_labels.npz"))
     g = np.loadtxt(os.path.join(data, "esf_growth.csv"), delimiter=",", skiprows=1)
     rng = np.random.default_rng(seed)
     t = np.arange(0.0, TEND + 1e-9, 0.5)
-    M = 1.0 + scale * (np.interp(GAUGE * t, g[:, 2], g[:, 1]) - 1.0) + rng.normal(0, 1e-5, t.size)
+    if truth == "continuum":
+        dMt = np.interp(GAUGE * t, g[:, 2], g[:, 1]) - 1.0
+    else:   # the discrete accreted energy of the lattice particles inside the horizon
+        dd = lab["rest"] > 1e-20
+        o = np.argsort(lab["tauH"][dd])
+        tt = lab["tauH"][dd][o]
+        cs = np.concatenate([[0.0], np.cumsum((lab["rest"] * lab["E_K"])[dd][o])])
+        dMt = cs[np.searchsorted(tt, GAUGE * t, side="right")]
+    M = 1.0 + scale * dMt + rng.normal(0, 1e-5, t.size)
     with open(os.path.join(d, "esf.horizon_summary_0.txt"), "w") as f:
         f.write("# 1:iter 2:time 3:mass 4:Sx 5:Sy 6:Sz 7:S 8:area 9:hrms 10:hmean 11:meanradius 12:minradius\n")
         for ti, mi in zip(t, M):
@@ -89,9 +99,10 @@ def main():
     ap.add_argument("--out", default=os.environ.get("NRPIC_RUN_DIR", "."))
     a = ap.parse_args()
     res = {}
-    for name, scale in (("exact", 1.0), ("growth_x0.97", 0.97)):
+    for name, scale, truth in (("exact", 1.0, "discrete"), ("growth_x0.97", 0.97, "discrete"),
+                               ("continuum_truth", 1.0, "continuum")):
         d = os.path.join(a.out, "synth_" + name)
-        info = write_run(d, a.data, scale)
+        info = write_run(d, a.data, scale, truth)
         p = subprocess.run([sys.executable, os.path.join(HERE, "esf_analyse.py"), "--run", d,
                             "--data", a.data, "--floor", "0", "--out", d],
                            capture_output=True, text=True, check=True)
