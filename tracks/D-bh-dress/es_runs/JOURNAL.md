@@ -513,3 +513,13 @@ few 1e-5 at most), and the lapse at x = 1 M (alpha < 1, where the term vanishes)
 1e-12. Refuted by a gauge log warning that the option was not used, or by identical
 plateau lapses (the option inactive), or a difference at x = 1 M (the term acting where it
 must not).
+
+Correction to entry 4 (run D-20261119-143659-7adcad7, `es_extra.py` version 2 on the same
+two runs; `results/es_extra.json` now holds its output, a superset of the first run's):
+the horizon masses of ES-1 and V-1 differ by less than 1e-8 for t <= 20 M and by more than
+1e-9 from t = 19.5 M on; the split becomes visible on the figure (above ~1e-5) near
+t = 23 M. Entry 4's "agree to 9e-16 until t = 23 M" holds only at the sampled t = 10 M.
+ES-1 minus V-1 by window: [-2.3e-4, +3.2e-4] on 25-50 M, [-2.9e-5, +1.25e-4] on 100-165 M,
+[-1.9e-4, +7.6e-5] on 165-199.5 M. At the +x plateau tracer (R0 = 48 M) Khat and K = Khat +
+2 Theta differ by less than 3e-5/M before t = 100 M and by up to 6e-4/M at t = 200 M
+(Theta grows late); entry 6 quoted K.
