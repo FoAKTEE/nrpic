@@ -1,0 +1,102 @@
+{
+  "schema": "nrpic-run-manifest/1",
+  "run_id": "F-20261119-145826-d4da8e1",
+  "track": "F-hills",
+  "gate": "G1",
+  "kind": "scouting",
+  "purpose": "eih far-release line with a 1PN-circular binary: EIH from 40 r_t (CM on the 1PN parabola, J of the GR parabola), Newton from 40 r_t, HRNA 2404 data at 4 r_t; q = 10 and 4, both senses, 360 phases",
+  "preregistered_in": null,
+  "launcher": "local",
+  "command": [
+    "/data/haiyangw/nrpic/scratch/F-hills/venv-gb/bin/python",
+    "tracks/F-hills/eih/scripts/scan_far.py",
+    "--workers",
+    "12",
+    "--binary",
+    "1pn"
+  ],
+  "cwd": ".",
+  "git": {
+    "sha": "d4da8e103a0a605b53da606767128dc4f588721b",
+    "branch": "track/F-hills",
+    "dirty": false,
+    "package": [
+      "tracks/F-hills/eih"
+    ],
+    "outside_package": {
+      "count": 3,
+      "first": [
+        " M tracks/F-hills/nr_first/README.md",
+        " M tracks/F-hills/nr_first/figures/fig_e3_single_gauge.png",
+        " M tracks/F-hills/nr_first/results/e3_single_analysis.json"
+      ]
+    },
+    "merge_base_main": "78bf88534f53530e2878756599e2e4431c19d5c2",
+    "worktree": "wt/F-hills"
+  },
+  "code": {
+    "core_tag": "core-v0.3",
+    "athenak_upstream_sha": "c5a0d7f",
+    "kokkos_sha": "6739bc623081648af9e752b616d9671527922cbf",
+    "problem": null
+  },
+  "env": {
+    "host": "anta",
+    "env_hash": "33c1dbb6673b68919eaa332b0add0b58aeac8be843f2071b9d06e2e0e397a96d",
+    "machine_file_sha256": "0321f40f4caeeb2a36624a9fa9809e60bad31071f366b3517ba23ad45698d2d7",
+    "uv_lock_sha256": "5417f6ba318b914aa3800e5d55f7b11fdd8df13c2688bdda7d419240aa1d5863",
+    "track_requirements_sha256": null,
+    "container_digest": null,
+    "compiler": "g++ 11.4.0",
+    "mpi": "none (Athena_ENABLE_MPI=OFF)",
+    "gpu": null,
+    "python": "3.10.12 /data/haiyangw/nrpic/wt/F-hills/.venv"
+  },
+  "input": null,
+  "inputs": [
+    {
+      "path": "tracks/F-hills/eih/scripts/scan_far.py",
+      "role": "argv",
+      "sha256": "6355da7ee8383f68e3482ba92f6b52b9aa901918d510135198a989fa91e5930a",
+      "bytes": 9012,
+      "tracked": true
+    }
+  ],
+  "batch_entries": null,
+  "resources": {
+    "nodes": 1,
+    "gpus": 0,
+    "cores": 12,
+    "walltime_s": null,
+    "wall_limit": null,
+    "segments_max": null,
+    "gpu_hours_requested": 0.0,
+    "gpu_hours": null,
+    "particles": null
+  },
+  "slurm": null,
+  "outputs": {
+    "dir": "scratch/F-hills/F-20261119-145826-d4da8e1",
+    "sha256sums": "sha256sums.txt",
+    "sha256sums_sha256": null,
+    "bytes": null,
+    "files": null
+  },
+  "status": "running",
+  "exit_code": null,
+  "registered": "2026-11-19T14:58:26Z",
+  "started": null,
+  "ended": null,
+  "parents": [],
+  "notes": "",
+  "budget_at_submit": {
+    "gpu_hours_allotted": 50.0,
+    "cores_allotted": 16,
+    "gpu_hours_used": 0.3,
+    "gpu_hours_reserved": 1.0,
+    "gpu_hours_without_gate": 0.0,
+    "cores_busy": 1,
+    "runs": 149,
+    "allotment_from": "coord/DECISIONS/0006-compute-budget.md + 0014-budgets-after-wave-1.md"
+  }
+}
