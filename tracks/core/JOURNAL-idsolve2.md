@@ -524,3 +524,69 @@ residual histories fall by about a decade per Newton step after the third):
  64^3 to c of a few 1e-7 where their solver diverged; what the code does not provide is
  the generator of the trial fields (Track A's `ge_fields`, here copied into the test) and
  a field format with a non-conformally-flat metric.
+
+## 2026-11-19, entry 8: outcome of C (refined meshes, torus, refined Zel'dovich ball); a fault of the analysis
+
+Run core-20261119-153510-d1eaa30 (processor build of 76add0c, 15 cases, 1 core, 25 min),
+analysed again by run core-20261119-161309-b04b4dd; `test_c_numbers.json`, figure
+`figs/test_c_refined` (looked at: second-order profiles of the psi error with the refined
+runs between the uniform ones, residual histories, the monitor per level).
+
+**A fault of the analysis, found before any number of it was used.** The first analysis
+inside the run read the six numbers per MeshBlock of the binary output as x1i, x2i, x3i,
+dx1, dx2, dx3 (as the docstring of `athenak/vis/python/bin_convert.py` says); AthenaK
+writes x1min, x1max, x2min, x2max, x3min, x3max (`outputs/binary.cpp` 139, 198-201
+[VERIFIED]). The masks "4 length units from the faces" and the radial regions were
+therefore wrong, and the monitor on level 0 of the Gaussian appeared as 1.9e-3 (the face
+cells). The reader is fixed (commit 0540281, `test_c.py` `read_con`)
+and the analysis repeated as its own registered run; all numbers below are from it.
+
+**G** (Gaussian at rest, Robin faces):
+ (a) held: mode code 20 (one level) and 22 (two levels) outer iterations, mode stencil 4.
+ (b) held: the run's own monitor at t = 0 more than 4 units from the faces, max|H| per
+     level: one level 2.4e-12 (root), 2.0e-11 (level 1); two levels 5.9e-13, 4.0e-12,
+     1.9e-11; uniform 1.4e-11 (32^3), 1.1e-11 (64^3). The cells at the level boundaries
+     are included: the solver's metric passes through the Z4c exchange of the run.
+ (c) centre held, r = 6 failed: relative error of psi - 1 at r < 1: -5.01e-3 (one level)
+     against -5.03e-3 (uniform dx = 0.5); two levels +3.0e-4 (smaller, as predicted). At
+     r = 6 (root level, dx = 1) the refined runs have 5.4e-4 and 9.6e-4 against 1.67e-3 for
+     the uniform dx = 1 run: not "within 30 per cent" but 2 to 3 times smaller. The error
+     there is the far field of the error of the deposited monopole, which the finer centre
+     makes smaller (as in the first pass, T1 (e)); my prediction took it as local.
+ (d) failed: mode stencil on the refined mesh has -2.03e-3 at the centre against -5.01e-3
+     in mode code (factor 2.5, predicted within 2), the same relation as on uniform meshes
+     in the first pass (T1: -2.43e-3 against -5.22e-3); the stencil run leaves the monitor at
+     1.4e-3 (level 1).
+ (e) held: M_psi 1.000647 (one level) against 1.000651 (uniform 64^3).
+**T** (torus, K = -3H):
+ (a) held: t_uni 24 outer iterations, max|H| 1.15e-9.
+ (b) held: t_smr (refined cube, nested lattice) 27 iterations, max|H| 2.6e-10 (root),
+     1.15e-9 (level 1); without the solve 0.73 and 1.86.
+ (c) failed on one count: t_smr_mov converges (27 iterations) and the mean removed from the
+     vector residual is 1.4e-17, but the monitor's max|M| falls only from 9.8e-2 to 2.0e-2
+     (predicted at least 100 times): W stalls (relative residual 1.3e-3) and max|M| sits at
+     the level boundary (level 1: 2.0e-2, root 4.0e-3; mean 1.1e-3 and 2.8e-4). The smoke
+     runs of entry 4 had shown it; this run confirms that the stencil form near the
+     boundary (76add0c) does not remove it. Reading [JUDGEMENT]: K_ij = psi^-2 (Abar + L W)
+     with L W from second-order central differences on each level; the monitor
+     differentiates K_ij across prolongated ghost cells and sees the jump of the
+     truncation error of L W between the levels over the fine cell size, a first-order
+     error in M that no W removes. A fourth-order L W in mode code would lower it by about
+     (k dx)^2; not done (section limits of the interface).
+ (d) held: uniform torus with moving matter, A = 0.1, 0.5, 0.9: 24, 26, 33 outer
+     iterations, psi >= 0.964; max|M| 0.095 -> 2.6e-4, 0.56 -> 5.0e-3, 1.32 -> 4.3e-2 (the
+     vector part stalls at relative residuals 1.4e-3, 3.8e-3, 1.2e-2: the Nyquist content of
+     the deposit, as in the first pass).
+**Z** (Zel'dovich ball of B, root dx = 2, level 1 with dx = 1 in |x_i| < 16):
+ (a) held: z_smr_sol converges in 43 iterations; at t = 0 interior and shell max|H|
+     1.8e-13 and 1.6e-12 (root level away from the faces 6.9e-8).
+ (b) held: means of |H| at t = 1 (interior 5.51e-5, shell 1.71e-4) and t = 2 (1.05e-4,
+     1.85e-4) equal those of the uniform 64^3 run of B (zsol_n64: 5.52e-5, 1.71e-4;
+     1.05e-4, 1.84e-4) to 1 per cent; at t = 1 the shell mean is below z_smr_off (4.01e-4).
+ The vector part on this mesh stalls at max|M| 2.6e-4 (uniform 64^3: 2.6e-6), again at the
+ level boundary (|x_i| = 16, in the curved exterior of the table); the interior mean of
+ |M| is 9.8e-7 (uniform 8.9e-7).
+Answer to Track A's request on refined levels [VERIFIED in these runs]: the solve runs on
+the level structure of the run, and the run's own Hamiltonian monitor at t = 0 is at
+1e-11 to 1e-9 on every level, level boundaries included (Track A measured 0.077 to 0.18
+with data interpolated onto refined blocks).
