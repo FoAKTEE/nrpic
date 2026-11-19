@@ -122,7 +122,8 @@ def main(tsvs):
     ax.invert_yaxis()
     ax.set_xlabel("statements checked")
     ax.set_ylabel("brief line")
-    ax.legend(loc="lower right", fontsize=7, frameon=False)
+    ax.set_xlim(0, 4.6)
+    ax.legend(loc="upper center", bbox_to_anchor=(0.45, -0.13), ncol=2, fontsize=7, frameon=False)
     ax.set_title("(a) verdicts, lines 239-255", fontsize=9)
 
     ax = axs[1]
@@ -140,13 +141,15 @@ def main(tsvs):
 
     ax = axs[2]
     bottom = [0] * len(months)
-    tcol = fs.series_colors(len(ORDER))
+    # categorical colours (seven tracks: the five of the palette, PAL2 sky, grey for core)
+    tcol = [fs.PAL["blue"], fs.PAL["red"], fs.PAL["yellow"], fs.PAL["green"], fs.PAL["orange"],
+            fs.PAL2["sky"], "grey"]
     for t, col in zip(ORDER, tcol):
         ax.bar(range(len(months)), hist[t], bottom=bottom, color=col, label=t, width=0.85)
         bottom = [a + b for a, b in zip(bottom, hist[t])]
     ax.set_xticks(range(0, len(months), 2))
     ax.set_xticklabels(months[::2], rotation=90, fontsize=6)
-    ax.axvline(months.index("2026-11") - 0.5, **fs.MASK_LINE)
+    ax.axvline(months.index("2026-11") - 0.5, **fs.MASK_LINE)  # month of the brief's survey
     ax.set_ylabel("papers not cited in the brief")
     ax.legend(loc="upper left", fontsize=7, frameon=False, ncol=2)
     ax.set_title("(c) new papers per arXiv month, by track", fontsize=9)
