@@ -649,3 +649,35 @@ of TC already written, restricted to what 10 M can show:
 - TC3 early part: alpha_min of `v0.3` and `v0.3s` between 0.74 and 0.85.
 - No particle lost; constraint norms of the moving runs within a factor 1.5 of `v0`
   after 5 M (TC5).
+
+### Outcomes: R of the first paper's two overdensities, lattice test (16:30Z)
+
+- R `jeans` HELD (end of run `core-20261119-151457-7a855d8`, which exits 1 because its
+  first part had failed on the path; the comparison itself ran with the fixed script):
+  20 data files byte-identical between release core-v0.3 and this branch; the t = 0
+  record equals that of run `n1e4_v19` in every column but the round-off of a zero
+  (2.3e-26 against 1.2e-26). With `core-20261119-153230-3e858c9` all four cases of R are
+  identical.
+- Lattice test (run `core-20261119-161034-a936833`, h = 0.125, 8 times the particles):
+  the lattice is NOT the cause. Surface norm of `D_H(corr)` 2.33e-3 (64 cells) and
+  2.88e-3 (128) against 2.34e-3 and 2.86e-3 with h = 0.25 (change below 1 per cent;
+  predicted for "not the cause": below 20 per cent); `D_H(curv)` unchanged (0.0303,
+  0.0304). The static H-norm changes (0.03126 -> 0.03098 at 64, 0.01413 -> 0.01552 at
+  128), so the lattice does enter the deposit error at rest, but not the leftover.
+  Candidate (a) refuted.
+
+### Surface layer of the correction: prediction (written 16:31Z, before the run)
+
+The shell profiles (dip at rbar_s that deepens and narrows from 64 to 128 cells, with
+amplitude times width roughly constant, about -3e-5 M) look like a delta-function layer
+in the residual. `corr_surface_check.py` measures the strength J of such a layer (per
+unit V^2, as a jump of the flux r^2 y0' not balanced by the source) three ways: in the
+Python solution, in the written table (cubic interpolation as in the code), and in the
+code's `D_H(corr)` (shell integral across the surface, converted with
+`H = -8 psi^-5 lap psi`). Predicted [JUDGEMENT]: the code's J is about 5e-5 and the same
+at 64 and 128 cells (within 30 per cent), the uncorrected `D_H(curv)` integrated over the
+same shell scales with the shell width (no layer). If the solution or the table carries
+the layer, its J is within a factor 2 of the code's with the same sign: then the
+correction is fixable in the generator. If both are below 10 per cent of the code's, the
+layer is made on the mesh (by the deposit of a profile that ends with a square root, or
+by the finite differences across it) and stays a documented limit.
