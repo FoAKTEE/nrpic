@@ -4,7 +4,7 @@
     python3 -I harness/tests/test_nrpic_run.py [--full]     (--full: the dummy run lasts 30 s, not 3 s)
 
 Covers: a dummy local run registered, run, checksummed, committed twice and re-verified; tampered
-output detected; dirty worktree refused; budget refusals (kb has 0 GPU-hours, A asks more than 60,
+output detected; a literal '$NRPIC_RUN_DIR' argument replaced by nrpic-run; dirty worktree refused; budget refusals (kb has 0 GPU-hours, A asks more than 60,
 cores above 16); production refused without a plan and before the previous gate's pass tag; the
 caller's environment ignored; a background run; batch and chain launchers through the repository's
 scripts/gpu_batch.sh and scripts/submit_chain.sh with a fake Slurm and a fake athena; GPU-hours
@@ -96,6 +96,20 @@ def main():
     r = run_cmd(A, ["verify", rid])
     c.ok(r.returncode == 1 and "changed output result.txt" in r.stdout, "verify detects a changed output", r.stdout)
 
+    # 1b. '$NRPIC_RUN_DIR' and '${NRPIC_RUN_ID}' written literally (single-quoted) in the arguments of a
+    # local command: the command runs without a shell, so nrpic-run replaces them (wave 2: five owners
+    # got a directory named $NRPIC_RUN_DIR in the worktree root)
+    r = run_cmd(A, ["submit", "--kind", "scouting", "--gate", "G1", "--purpose", "literal run dir", "--allow-no-venv",
+                    "--", "python3", "-c", "import sys; open(sys.argv[1] + '/lit.txt', 'w').write(sys.argv[2])",
+                    "$NRPIC_RUN_DIR", "${NRPIC_RUN_ID}"])
+    lrid = run_id_from(r.stdout)
+    lit = os.path.join(fx["repo"], "scratch", "A-emd-pbh", lrid or "none", "lit.txt")
+    c.ok(r.returncode == 0 and lrid and os.path.isfile(lit) and open(lit).read() == lrid
+         and not os.path.exists(os.path.join(A, "$NRPIC_RUN_DIR"))
+         and manifest(A, "A-emd-pbh", lrid)["command"][-2:] == ["$NRPIC_RUN_DIR", "${NRPIC_RUN_ID}"],
+         "a literal $NRPIC_RUN_DIR / ${NRPIC_RUN_ID} argument is replaced by nrpic-run (manifest keeps the command "
+         "as given); nothing lands in the worktree root", r.stdout + r.stderr)
+
     # 2. dirty worktree refused
     junk = os.path.join(A, "tracks", "A-emd-pbh", "junk.txt")
     open(junk, "w").write("uncommitted\n")
@@ -125,6 +139,14 @@ def main():
     r = run_cmd(A, ["submit", "--kind", "scouting", "--gate", "G1", "--purpose", "x", "--allow-no-venv", "--dry-run",
                     "--package", "tracks/A-emd-pbh/pkg", "--", "python3", "tracks/A-emd-pbh/other_helper/draft.txt"])
     c.ok(r.returncode == 1 and "other_helper" in r.stderr, "an untracked input outside the package: refused", r.stderr)
+    stray = os.path.join(A, "es.horizon_summary_0.txt")        # wave 2 (D): a finder's summary in the root
+    open(stray, "w").write("summary written into the cwd\n")
+    r = run_cmd(A, ["submit", "--kind", "scouting", "--gate", "G1", "--purpose", "x", "--allow-no-venv", "--dry-run",
+                    "--package", "tracks/A-emd-pbh/pkg", "--", "python3", "tracks/A-emd-pbh/pkg/run.py"])
+    dm = json.loads(r.stdout[:r.stdout.rindex("}") + 1]) if r.returncode == 0 else {}
+    c.ok(r.returncode == 0 and any("es.horizon_summary_0.txt" in x for x in dm["git"]["outside_package"]["first"]),
+         "with --package: an untracked file in the worktree root is recorded, not refused", r.stderr)
+    os.remove(stray)
     sc = os.path.join(A, "scripts", "gpu_batch.sh")
     orig_sc = open(sc).read()
     open(sc, "a").write("# local edit\n")
@@ -170,6 +192,8 @@ def main():
     r = run_cmd(A, ["submit", "--kind", "scouting", "--gate", "G1", "--purpose", "background",
                     "--background", "--allow-no-venv", "--", "python3", "-c", "import time; time.sleep(2); print('bg')"])
     bg = run_id_from(r.stdout)
+    lj = os.path.join(fx["repo"], "scratch", "A-emd-pbh", bg or "none", ".nrpic", "launch.json")
+    wait_until(lambda: os.path.isfile(lj) and "pid" in open(lj).read(), 30, 0.2)   # the wrapper has started
     st = run_cmd(A, ["status"]).stdout
     c.ok(r.returncode == 0 and bg and "running*" in st, "background run registered and live", r.stdout + st)
     od = os.path.join(fx["repo"], "scratch", "A-emd-pbh", bg)
