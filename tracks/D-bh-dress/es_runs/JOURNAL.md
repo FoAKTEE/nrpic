@@ -527,3 +527,19 @@ Second correction to entry 4 (same history files): "from t ~ 50 M the lapse is 1
 at every probe outside 10 M" is true from t ~ 150 M on (1.30-1.39 at t = 150 and 200 M);
 at t = 50 M the probes outside 10 M read 1.21-1.67 and at t = 100 M 1.33-1.51 (the
 outgoing gauge waves of entry 7 are still passing).
+
+Outcome of entry 8 (runs D-20261119-143623-8576a6e gauge executable, 1223 s of processor
+time, and D-20261119-143626-7d1fa75 release executable, 1288 s; comparison
+D-20261119-150329-d1d8f03, `results/preflight.json`, `figs/preflight.png`, looked at): HELD
+in every part.
+(a) The release log warns "input parameter <z4c>/lapse_leak = 0.5 was not used" and the
+same for lapse_leak_alpha; the gauge log has no warning: the option is read.
+(b) The t = 0 rows are identical (np 696828, sum_m 1.73967237273851, alpha_min
+0.0307129116755495, every probe lapse).
+(c) The gauge run's lapse is lower where alpha > 1: at the plateau probe (46 M) by 8.1e-6
+(cycle 1) and 3.2e-5 (cycle 2); at 36, 56, 80, 152 M by 4.8e-6 / 6.0e-6 / 2.4e-6 / 9.1e-7
+(cycle 1) and 1.9e-5 / 2.4e-5 / 9.5e-6 / 3.6e-6 (cycle 2); alpha_max lower by 3.6e-5
+(cycle 2). Where alpha < 1 nothing changes: x = 1 M and 4 M identical to the last digit,
+x = 20 M (alpha = 0.997) different by 6.7e-15 and 5.3e-13 only (the stencils reach it from
+the alpha > 1 region). So the card executable of the same source (ES-1G) runs the relaxed
+lapse; the run itself is still queued.

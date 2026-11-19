@@ -1,0 +1,211 @@
+{
+ "warnings_gauge": [],
+ "warnings_release": [
+  "### WARNING in /data/haiyangw/nrpic/athenak/src/parameter_input.cpp: input parameter <z4c>/lapse_leak = 0.5 was not used by the code (check for a typo)",
+  "### WARNING in /data/haiyangw/nrpic/athenak/src/parameter_input.cpp: input parameter <z4c>/lapse_leak_alpha = 1.0 was not used by the code (check for a typo)"
+ ],
+ "cycles_gauge": [
+  0,
+  1,
+  2
+ ],
+ "cycles_release": [
+  0,
+  1,
+  2
+ ],
+ "rows": [
+  {
+   "cycle": 0,
+   "time": 0.0,
+   "np": {
+    "gauge": 696828.0,
+    "release": 696828.0,
+    "diff": 0.0
+   },
+   "sum_m": {
+    "gauge": 1.739672372738506,
+    "release": 1.739672372738506,
+    "diff": 0.0
+   },
+   "alpha_min": {
+    "gauge": 0.03071291167554946,
+    "release": 0.03071291167554946,
+    "diff": 0.0
+   },
+   "alpha_max": {
+    "gauge": 1.0,
+    "release": 1.0,
+    "diff": 0.0
+   },
+   "alpha_probe1": {
+    "gauge": 0.4519247978230211,
+    "release": 0.4519247978230211,
+    "diff": 0.0
+   },
+   "alpha_probe2": {
+    "gauge": 0.8196027087147417,
+    "release": 0.8196027087147417,
+    "diff": 0.0
+   },
+   "alpha_probe3": {
+    "gauge": 0.9929832906122998,
+    "release": 0.9929832906122998,
+    "diff": 0.0
+   },
+   "alpha_probe4": {
+    "gauge": 0.9999999999999984,
+    "release": 0.9999999999999984,
+    "diff": 0.0
+   },
+   "alpha_probe": {
+    "gauge": 0.9999999999999998,
+    "release": 0.9999999999999998,
+    "diff": 0.0
+   },
+   "alpha_probe5": {
+    "gauge": 1.0,
+    "release": 1.0,
+    "diff": 0.0
+   },
+   "alpha_probe6": {
+    "gauge": 1.0,
+    "release": 1.0,
+    "diff": 0.0
+   },
+   "alpha_probe7": {
+    "gauge": 1.0,
+    "release": 1.0,
+    "diff": 0.0
+   }
+  },
+  {
+   "cycle": 1,
+   "time": 0.03125,
+   "np": {
+    "gauge": 696828.0,
+    "release": 696828.0,
+    "diff": 0.0
+   },
+   "sum_m": {
+    "gauge": 1.739672372738506,
+    "release": 1.739672372738506,
+    "diff": 0.0
+   },
+   "alpha_min": {
+    "gauge": 0.03089535488104272,
+    "release": 0.03089535488104272,
+    "diff": 0.0
+   },
+   "alpha_max": {
+    "gauge": 1.001187340413119,
+    "release": 1.001195356646353,
+    "diff": -8.016233233876235e-06
+   },
+   "alpha_probe1": {
+    "gauge": 0.4519343572363198,
+    "release": 0.4519343572363198,
+    "diff": 0.0
+   },
+   "alpha_probe2": {
+    "gauge": 0.8196034487242359,
+    "release": 0.8196034487242359,
+    "diff": 0.0
+   },
+   "alpha_probe3": {
+    "gauge": 0.994947599340926,
+    "release": 0.9949475993409194,
+    "diff": 6.661338147750939e-15
+   },
+   "alpha_probe4": {
+    "gauge": 1.000609167022303,
+    "release": 1.000613940244429,
+    "diff": -4.773222125997734e-06
+   },
+   "alpha_probe": {
+    "gauge": 1.001038738451255,
+    "release": 1.001046879343137,
+    "diff": -8.140891882169043e-06
+   },
+   "alpha_probe5": {
+    "gauge": 1.000770644164839,
+    "release": 1.000776683140488,
+    "diff": -6.038975649103051e-06
+   },
+   "alpha_probe6": {
+    "gauge": 1.000304347828696,
+    "release": 1.000306732165179,
+    "diff": -2.3843364831410696e-06
+   },
+   "alpha_probe7": {
+    "gauge": 1.000116204330439,
+    "release": 1.000117114603253,
+    "diff": -9.102728140142347e-07
+   }
+  },
+  {
+   "cycle": 2,
+   "time": 0.0625,
+   "np": {
+    "gauge": 696828.0,
+    "release": 696828.0,
+    "diff": 0.0
+   },
+   "sum_m": {
+    "gauge": 1.739672372738506,
+    "release": 1.739672372738506,
+    "diff": 0.0
+   },
+   "alpha_min": {
+    "gauge": 0.0310713062498851,
+    "release": 0.0310713062498851,
+    "diff": 0.0
+   },
+   "alpha_max": {
+    "gauge": 1.002676213849756,
+    "release": 1.002712029206248,
+    "diff": -3.581535649188616e-05
+   },
+   "alpha_probe1": {
+    "gauge": 0.4519629978502629,
+    "release": 0.4519629978502629,
+    "diff": 0.0
+   },
+   "alpha_probe2": {
+    "gauge": 0.8196056690489053,
+    "release": 0.8196056690489053,
+    "diff": 0.0
+   },
+   "alpha_probe3": {
+    "gauge": 0.9969147466754222,
+    "release": 0.9969147466748899,
+    "diff": 5.323519403077626e-13
+   },
+   "alpha_probe4": {
+    "gauge": 1.001209055004705,
+    "release": 1.001228058509617,
+    "diff": -1.90035049119075e-05
+   },
+   "alpha_probe": {
+    "gauge": 1.002062155460031,
+    "release": 1.002094581209588,
+    "diff": -3.242574955697464e-05
+   },
+   "alpha_probe5": {
+    "gauge": 1.001529747324118,
+    "release": 1.001553795135,
+    "diff": -2.4047810881944187e-05
+   },
+   "alpha_probe6": {
+    "gauge": 1.000604021053343,
+    "release": 1.000613511438034,
+    "diff": -9.490384691002163e-06
+   },
+   "alpha_probe7": {
+    "gauge": 1.000230613474787,
+    "release": 1.000234236073325,
+    "diff": -3.6225985380333725e-06
+   }
+  }
+ ]
+}
