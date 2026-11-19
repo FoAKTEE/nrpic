@@ -11,6 +11,8 @@ T2  Two-body periastron advance k and radial period against Schaefer & Jaranowsk
     1805.07240v5 LRRSJarXiv_v5.tex l. 3169-3184 (k = 3/j^2 + O(c^-4); P at 1PN).
 T5  The isolated EIH binary: numerical 1PN circular speed against the textbook 1PN value;
     eccentricity of a Newtonian-circular binary at 1PN (JOURNAL entry 10).
+T6  The driver interface: run_encounter(law='newton') against newton3's scatter, and
+    run_encounter(law='eih') against eih.scatter.
 T3  Conservation of the 1PN integrals in a Hills encounter, and its scaling with the size of
     the PN terms (lengths x lambda = 8 ... 128, perturbative; lambda = 1 reported).
 Usage: test_eih.py <outdir>   (default $NRPIC_RUN_DIR). Writes tests.json and figures.
@@ -385,6 +387,30 @@ def t5(out):
     check("T5_isolated_binary_1pn_circular", ok, rows=rows)
 
 
+# ------------------------------------------------------------------------------------------
+def t6():
+    """Driver interface: eih.run_encounter(law='newton') reproduces newton3's scatter for the
+    same HillsSetup (outcome and member energies), and law='eih' equals eih.scatter."""
+    from hills3.threebody import scatter as n3_scatter
+    rows = []
+    ok = True
+    for ph in (0.3, 2.27, 4.0):
+        s = HillsSetup(M=1.0, m1=0.05, m2=0.05, a=3.0, rp=8.0, phase=ph)
+        rn = n3_scatter([s], k0=4.0, k_end=30.0)
+        en = eih.run_encounter(law="newton", m1=0.05, m2=0.05, a=3.0, rp=8.0, phase=ph)
+        ee = eih.run_encounter(law="eih", m1=0.05, m2=0.05, a=3.0, rp=8.0, phase=ph)
+        es = eih.scatter([s], k0=4.0, k_end=30.0)
+        d_newton = abs(float(np.nan_to_num(rn["E_out"][0])) - float(np.nan_to_num(en["E_out"])))
+        d_eih = abs(float(np.nan_to_num(es["E_out"][0])) - float(np.nan_to_num(ee["E_out"])))
+        same = (int(rn["outcome"][0]) == int(en["outcome"]) and int(es["outcome"][0]) == int(ee["outcome"]))
+        ok &= same and d_newton < 1e-6 and d_eih < 1e-12
+        rows.append(dict(phase=ph, outcome_newton3=int(rn["outcome"][0]),
+                         outcome_eih_newton=int(en["outcome"]), outcome_eih=int(ee["outcome"]),
+                         dE_out_newton=d_newton, dE_out_eih=d_eih))
+    check("T6_driver_interface", ok, rows=rows,
+          note="law='newton' uses eih's integrator (c2inv = 0) against newton3's own")
+
+
 def main():
     out = sys.argv[1] if len(sys.argv) > 1 else os.environ["NRPIC_RUN_DIR"]
     os.makedirs(out, exist_ok=True)
@@ -393,6 +419,7 @@ def main():
     t2(out)
     t3(out)
     t5(out)
+    t6()
     with open(os.path.join(out, "tests.json"), "w") as fh:
         json.dump(RES, fh, indent=1, default=float)
     npass = sum(r["passed"] for r in RES.values())

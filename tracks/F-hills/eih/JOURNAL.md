@@ -422,3 +422,10 @@ Refuted if it changes by more than 0.1.
 (The first two release-radius runs, F-20261119-150157-424bab2 and F-20261119-150159-4a27aa2,
 were stopped at once: the figure code of scan_far.py assumed all three models and would have
 failed with `--models eihfar`; fixed, rerun below.)
+
+## Entry 13 (2026-11-19 16:10): prediction for T6 (driver interface), before the run
+
+T6: for three phases of the q = 10, r_p = 8 M encounter, `eih.run_encounter(law='newton')`
+gives newton3's outcome and the ejected member's energy to 1e-6 units (two different DOP853
+implementations at rtol 1e-11), and `run_encounter(law='eih')` equals `eih.scatter` exactly.
+Refuted otherwise.
