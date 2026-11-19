@@ -4,9 +4,10 @@ in the flat box, from the dumps of two T0b runs (same particle files, seeds, cas
 
     python3 compare_modes.py RUN_DIR_A RUN_DIR_B [--tag c2]
 
-For each case T0b_<var>_s<seed> present in both: the "before" records identical
-(positions, momenta, cells, n_sub), the same particles updated, and the "after" momenta
-of the collided particles: share bit-identical, largest difference over max(1, |u|).
+For each case T0b_<var>_s<seed> present in both: the "before" records (positions, cells,
+n_sub identical?; momenta: largest difference over max(1, |u|) after the earlier
+collision steps of the run), the same particles updated, and the "after" momenta of the
+collided particles: share bit-identical, largest difference over max(1, |u|).
 Writes compare_modes_<tag>.json and compare_modes_<tag>.png into $NRPIC_RUN_DIR.
 """
 import argparse
@@ -55,8 +56,17 @@ def main():
         coll = da["nupd"] > 0
         scale = np.maximum(1.0, np.sqrt(np.sum(da["u1"] ** 2, 1)))
         du = np.max(np.abs(da["u1"] - db["u1"]), 1) / scale
+        du0 = np.max(np.abs(da["u0"] - db["u0"]), 1) / np.maximum(
+            1.0, np.sqrt(np.sum(da["u0"] ** 2, 1)))
         res[name] = dict(a=ra, b=rb, version_a=da["version"], version_b=db["version"],
                          before_identical=before, updates_identical=upd,
+                         x_identical=bool(np.array_equal(da["x"], db["x"])),
+                         cells_identical=bool(np.array_equal(da["I"], db["I"]) and
+                                              np.array_equal(da["J"], db["J"]) and
+                                              np.array_equal(da["K"], db["K"]) and
+                                              np.array_equal(da["nsub"], db["nsub"])),
+                         max_du_before=float(du0.max()),
+                         frac_u_before_differ=float(np.mean(du0 > 0)),
                          collided=int(coll.sum()),
                          collided_bit_identical=int(np.sum(du[coll] == 0)),
                          max_du_collided=float(du[coll].max()) if coll.any() else 0.0,
@@ -72,6 +82,9 @@ def main():
     fs.save(fig, os.path.join(out, f"compare_modes_{a.tag}"))
     plt.close(fig)
     summ = dict(runs=res, all_before_identical=all(v["before_identical"] for v in res.values()),
+                all_x_cells_identical=all(v["x_identical"] and v["cells_identical"]
+                                          for v in res.values()),
+                max_du_before=max(v["max_du_before"] for v in res.values()),
                 all_updates_identical=all(v["updates_identical"] for v in res.values()),
                 max_du=max(v["max_du_collided"] for v in res.values()))
     bl.save_json(os.path.join(out, f"compare_modes_{a.tag}.json"), summ)
