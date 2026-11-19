@@ -1,0 +1,185 @@
+{
+ "pdf": {
+  "2201.03458": {
+   "oov_raw": 0.08733,
+   "oov_repaired": 0.08733,
+   "abstract_similarity_raw": 0.9483,
+   "abstract_similarity": 0.9483,
+   "repairs": {},
+   "pages": 12,
+   "sections": 5,
+   "bib_entries": 70,
+   "citations": 0
+  },
+  "astro-ph/9407016": {
+   "oov_raw": 0.04716,
+   "oov_repaired": 0.01704,
+   "abstract_similarity_raw": 0.9745,
+   "abstract_similarity": 1.0,
+   "repairs": {
+    "cmmi-greek": 522,
+    "ot1-ligature": 10,
+    "accent-dropped": 2,
+    "ligature-dropped": 90,
+    "ligature-split": 64,
+    "ot1-quote": 11,
+    "ot1-endash": 3
+   },
+   "pages": 28,
+   "sections": 12,
+   "bib_entries": 22,
+   "citations": 41
+  },
+  "gr-qc/9412071": {
+   "oov_raw": 0.06495,
+   "oov_repaired": 0.04326,
+   "abstract_similarity_raw": 0.9385,
+   "abstract_similarity": 0.9944,
+   "repairs": {
+    "accent-dropped": 12,
+    "cmmi-greek": 23,
+    "ot1-ligature": 1,
+    "ligature-dropped": 40,
+    "ot1-quote": 3,
+    "ot1-endash": 1,
+    "ligature-split": 12
+   },
+   "pages": 4,
+   "sections": 6,
+   "bib_entries": 19,
+   "citations": 32
+  }
+ },
+ "brief16": {
+  "title": {
+   "same": 548,
+   "format": 111,
+   "minor": 17,
+   "differs": 8
+  },
+  "authors": {
+   "match": 622,
+   "not-checked": 51,
+   "order": 5,
+   "mismatch": 1,
+   "collaboration": 5
+  },
+  "agree_by_group": {
+   "G01": 0.9523809523809523,
+   "G02": 0.9090909090909091,
+   "G03": 0.9583333333333334,
+   "G04": 1.0,
+   "G05": 1.0,
+   "G06": 0.9642857142857143,
+   "G07": 0.9534883720930233,
+   "G08": 0.9538461538461539,
+   "G09": 0.9746835443037974,
+   "G10": 0.8,
+   "G11": 0.9487179487179487,
+   "G12": 0.92,
+   "G13": 0.9591836734693877,
+   "G14": 1.0,
+   "G15": 0.972972972972973,
+   "G16": 1.0,
+   "G17": 0.9,
+   "G18": 0.96875,
+   "G19": 0.8888888888888888,
+   "G20": 0.9545454545454546,
+   "G21": 0.94
+  },
+  "group16_ne_17": 0
+ },
+ "metadata": {
+  "tex_papers": 707,
+  "tex_title_ratio_n": 673,
+  "tex_title_ge_0p9": 660,
+  "abstract_n": 682,
+  "abstract_ge_0p8": 664,
+  "groups": {
+   "G01": [
+    21,
+    0
+   ],
+   "G02": [
+    22,
+    0
+   ],
+   "G03": [
+    24,
+    0
+   ],
+   "G04": [
+    19,
+    1
+   ],
+   "G05": [
+    23,
+    0
+   ],
+   "G06": [
+    28,
+    6
+   ],
+   "G07": [
+    43,
+    0
+   ],
+   "G08": [
+    65,
+    0
+   ],
+   "G09": [
+    79,
+    0
+   ],
+   "G10": [
+    10,
+    0
+   ],
+   "G11": [
+    39,
+    0
+   ],
+   "G12": [
+    25,
+    0
+   ],
+   "G13": [
+    49,
+    0
+   ],
+   "G14": [
+    14,
+    1
+   ],
+   "G15": [
+    37,
+    0
+   ],
+   "G16": [
+    10,
+    0
+   ],
+   "G17": [
+    10,
+    0
+   ],
+   "G18": [
+    32,
+    11
+   ],
+   "G19": [
+    18,
+    0
+   ],
+   "G20": [
+    66,
+    0
+   ],
+   "G21": [
+    50,
+    7
+   ]
+  }
+ }
+}

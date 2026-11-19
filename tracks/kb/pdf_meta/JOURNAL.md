@@ -74,3 +74,14 @@ the papers table has grp NULL. Already seen while listing them (so not a predict
 gr-qc/0608095 is a laser-interferometry paper that no track asked for (fetched by another
 session at 11:17 UTC on 2026-11-15, `kb/JOURNAL.md:92`) and fits no group. Refuted by: a count
 other than 26, a second paper that fits no group.
+
+## 2026-11-19 14:33 UTC: prediction P6 (vectors and citation edges of the three PDF papers)
+
+P6 [prediction]. The PDF ingest (run kb-20261119-142651-7318d01) gave gr-qc/9412071 16 chunks,
+astro-ph/9407016 45, 2201.03458 13, none with a vector; 14 chunk vectors are orphaned (the old
+chunks of 2201.03458, deleted by the re-ingest). `kb embed --only chunks --threads 8` embeds the
+74 new chunks (minus any of a kind it does not embed) and deletes exactly 14 orphans; `kb embed
+--check --work` then reports no missing and no orphaned chunk vector. `kb resolve-bib` sets
+in_corpus for the new citation rows; the edges of gr-qc/9412071 into the corpus are few (its 19
+references are from 1977-1995 and carry no arXiv id). Refuted by: a count of new vectors other
+than 74 that the embed kinds do not explain, orphans left, a check that fails.
