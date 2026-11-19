@@ -89,7 +89,7 @@ P15. Line 215, 2610.23218 [VERIFIED]: CONFIRMED as stated (abstract already matc
 Overall: of about 40 rows, 0 to 2 CORRECTED (P10 the most likely), 6 to 12 CONFIRMED
 (precision), the rest CONFIRMED, none NOT FOUND (all sources are in the store).
 
-## Entry 2 (2026-11-19 07:40 PST): what the TeX sources show, in short; prediction for run 1
+## Entry 2 (2026-11-19 07:18 PST): what the TeX sources show, in short; prediction for run 1
 
 All 26 papers were read at the passages found with `scripts/locate.py` (specs `specs/l198.txt`
 to `specs/l215.txt`, outputs `scratch/kb/tmp/s35/loc_*.txt`) and around them. The outcomes per
