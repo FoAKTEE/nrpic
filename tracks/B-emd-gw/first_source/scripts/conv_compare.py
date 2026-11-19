@@ -85,6 +85,9 @@ def main():
         name, path = arg.split("=", 1)
         if name == "pred":
             pred = json.load(open(path))
+        elif path.endswith((":dbin", ":rst")):          # double-precision dumps of a case
+            path, kind = path.rsplit(":", 1)
+            C[name] = load(path, kind)
         else:
             C[name] = load(path)
     S = {}
@@ -196,11 +199,13 @@ def main():
 
     # ---------------- P12, P13: particle number and mesh (eps = 1) ----------------
     names = [n for n in ("e1_p1", "e1_p8", "e1_p27", "e1_rep", "e1_n128", "e1_n32") if n in C]
+    names_d = [n for n in ("e1_rep_d", "e1_p8_d") if n in C]
     if names:
         out = {}
         fig, ax = plt.subplots(1, 3, figsize=(10.0, 3.0))
         lab = {"e1_p1": "64^3, 1/cell", "e1_p8": "64^3, 8/cell (wave 2)", "e1_p27": "64^3, 27/cell",
-               "e1_rep": "64^3, 8/cell rerun", "e1_n128": "128^3, 1/cell", "e1_n32": "32^3, 8/cell"}
+               "e1_rep": "64^3, 8/cell rerun", "e1_n128": "128^3, 1/cell", "e1_n32": "32^3, 8/cell",
+               "e1_rep_d": "rerun (double dumps)", "e1_p8_d": "wave 2 (restart dumps)"}
         for n in names:
             r = C[n]
             ax[0].plot(ref.a_of_tau(tau(r)), series(r, "h_K1_plus", "re") / s1, label=lab[n], lw=0.9)
@@ -213,7 +218,7 @@ def main():
             return ref.a_of_tau(t2), (c1 - c2) / c2, (c1 - c2) / abs(s1)
         pairs = [("e1_p1", "e1_p27", 1), ("e1_p8", "e1_p27", 1), ("e1_rep", "e1_p8", 1),
                  ("e1_n128", "e1_p8", 2), ("e1_n128", "e1_p1", 2), ("e1_p8", "e1_n32", 2),
-                 ("e1_p1", "e1_p8", 1)]
+                 ("e1_p1", "e1_p8", 1), ("e1_rep_d", "e1_p8_d", 1)]
         for n1, n2, panel in pairs:
             if n1 in C and n2 in C:
                 a, rel, abs_s = diff(n1, n2)
