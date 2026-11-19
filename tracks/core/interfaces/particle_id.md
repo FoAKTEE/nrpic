@@ -51,9 +51,9 @@ all cells including ghost cells, then converted to Z4c variables.
 | `compN_type` | required | `table`, `puncture`, `gaussian`, `spheroid` |
 | `compN_x1, _x2, _x3` | 0 | centre |
 | `compN_file` | (table) | radial table, format 1 below |
-| `compN_mass` | (puncture, gaussian, spheroid) | puncture: bare mass m, `u = m/(2r)`; gaussian: conformal mass m, `u = (m/2) erf(r/(sqrt 2 sigma))/r`; spheroid: ADM mass M, `u = -Phi_N` of a homogeneous prolate spheroid of Newtonian mass M/2 |
+| `compN_mass` | (puncture, gaussian, spheroid) | puncture: bare mass m, `u = m/(2r)`; gaussian: conformal mass m, `u = (m/2) erf(r/(sqrt 2 sigma))/r`; spheroid: ADM mass M, `u = -Phi_N` of a homogeneous spheroid of Newtonian mass M/2 (prolate for a < b, oblate for a > b, sphere for a = b: `oblate_spheroid.md`) |
 | `compN_sigma` | (gaussian) | width |
-| `compN_a, compN_b` | (spheroid) | equatorial and polar semi-axes, `0 < a < b`, polar axis z |
+| `compN_a, compN_b` | (spheroid) | equatorial and polar semi-axes, both positive, polar axis z; `a >= b` since branch `core/oblate` (`oblate_spheroid.md`) |
 | `lapse` | `one` | `one`; `table` (column 3 of component `lapse_comp`, Schwarzschild isotropic lapse outside); `isotropic` `(2 - psi)/psi`; `precollapsed` `psi^-2` |
 | `lapse_comp` | 0 | component whose table gives the lapse |
 

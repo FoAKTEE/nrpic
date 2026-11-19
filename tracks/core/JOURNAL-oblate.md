@@ -208,7 +208,7 @@ log footer).
   excision by the end, none escaped. Refuted by: a horizon mass above 1.00 or below
   0.90 at M/8, or M/4 closer to 1 than M/8 by more than 0.005.
 
-## 2026-11-19 14:52Z, entry 2: T1 run, T2 started, the card job is in the queue
+## 2026-11-19 14:50Z, entry 2: T1 run, T2 started, the card job is in the queue
 
 Source change (commit 1d19e13): `nrpic_cf.cpp` +70 lines (function `CFOblateExcess`,
 type `kCFOblate`, the `else if` in `CFExcess`, the parser accepts `compN_a >= compN_b`);
@@ -314,3 +314,42 @@ would take about four minutes there). Not waiting: the rest of the package first
 Registration note: `nrpic-run submit` refused local runs for some minutes ("16 cores
 busy in live local runs of core": the allotment is per owner, and about ten core
 packages run at once); I retried instead of registering by hand.
+
+## 2026-11-19 14:56Z, entry 3: expectation for T3 revised before the card job has run
+
+State: Slurm job 4647 pending (squeue at 14:55Z: PD, estimated start 16:17 local time,
+nine hours away); no oblate evolution exists yet. While testing
+`analysis/oblate/collapse_analysis.py` on the two existing prolate runs
+(`runs/prolate/e09_v8`, finest cells M/16, and
+`scratch/core/core-20261115-152845-5728b1d/prolate_m8`, M/8; option `--basename prol`,
+figures into scratch, not kept) I looked at the particle moments of those runs for the
+first time, and they contradict the calibration I used for P3a:
+
+| R_rms / initial (prolate runs, both resolutions the same) | 0.75 | 0.5 | 0.25 | 0.1 |
+|---|---|---|---|---|
+| time in the code | 12.5 M | 17.5 M | 21.5 M | 24.0 M |
+| Newtonian a/a_0 of the prolate spheroid | 8.36 M | 11.40 M | 13.38 M | 14.24 M |
+| ratio | 1.50 | 1.54 | 1.61 | 1.69 |
+
+(read from the snapshots with a few lines of Python, not a registered run; the numbers
+serve only this expectation). The bulk of the prolate spheroid contracts 1.5 to 1.7
+times more slowly in coordinate time than the Newtonian spheroid, not 1.2 to 1.4: the
+"onset of strong axial focusing at 20.5 M" of the paper, which I took as the spindle
+time of the ends, is not the time at which the bulk reaches the axis. A formula that
+gives these factors [JUDGEMENT]: psi^3/alpha with the lapse the 1+log slicing relaxes
+to, (2 - psi)/psi: 1.61 with the mean psi of the prolate spheroid, 1.81 with the
+central one. For the oblate spheroid the same formula gives 1.44 (mean) and 1.58
+(centre), 0.89 of the prolate values.
+
+Revised expectation (the predictions of entry 1 stay on record and are judged as
+written; this is what I now expect and why):
+
+- P3a': z_rms/initial passes 0.75, 0.5, 0.25, 0.1 at about 15, 21, 26, 30 M (Newtonian
+  11.1, 15.3, 18.2, 19.7 M times 0.89 of the prolate ratios), and the pancake is at
+  t_p = 31.5 +- 1.5 M. The band of P3a (24.5 to 30.5 M, refuted outside 23 to 32 M) is
+  then likely to fail at its upper edge. Refuted (P3a') by t_p outside 29 to 34 M.
+- P3c': the first horizon at t_p + 10 to 13 M (Newtonian 5.9 M after the pancake,
+  stretched by 1.7 to 2.2 once the lapse has fallen), about 41 to 45 M. P3c as written
+  (t_p + 5 to 13 M) covers it. The runs end at 55 M, which leaves at least 9 M after
+  the horizon for the mass to settle and the particles to be removed.
+- P3b and P3d unchanged.

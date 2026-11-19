@@ -4,6 +4,7 @@ resolutions, read from the run directories of the card job.
 
     collapse_analysis.py --run m4=DIR --run m8=DIR [--run m16=DIR] [--out DIR]
                          [--prolate m8=DIR --prolate m16=DIR]
+                         [--basename obl] [--figdir DIR]
 
 Per run, from the files of the code:
   <base>.part.NNNNN.bin   rms height z_rms and rms cylindrical radius R_rms of the
@@ -40,8 +41,7 @@ sys.path.insert(0, os.path.join(WT, "analysis", "diag"))
 sys.path.insert(0, HERE)
 sys.dont_write_bytecode = True
 from nrpic import figstyle as fs  # noqa: E402
-from common import (read_athena_hst, read_curv_hst, read_nrpic_hst, read_snapshot,  # noqa: E402
-                    keep_last, H as HC)
+from common import read_athena_hst, read_curv_hst, read_snapshot, keep_last  # noqa: E402
 import newton_spheroid as newt  # noqa: E402
 import matplotlib  # noqa: E402
 matplotlib.use("Agg")
@@ -49,9 +49,31 @@ import matplotlib.pyplot as plt  # noqa: E402
 from matplotlib.colors import LogNorm  # noqa: E402
 
 BASE = "obl"
+FIGDIR = os.path.join(HERE, "figs")
 LABEL = {"m4": "$M/4$", "m8": "$M/8$", "m16": "$M/16$"}
 COLOR = {"m4": fs.PAL["yellow"], "m8": fs.PAL["red"], "m16": fs.PAL["green"]}
 M_ADM = 1.0
+
+
+class Hist:
+    """<base>.nrpic.hst by column name (the release writes 32 columns, earlier sources
+    23 or 27); restarts append, the last record of each time is kept."""
+
+    def __init__(self, path):
+        names, rows = None, []
+        for line in open(path):
+            if line.startswith("#"):
+                if "[1]=" in line:
+                    names = [w.split("=", 1)[1] for w in line[1:].split() if "]=" in w]
+                continue
+            x = line.split()
+            if names and len(x) == len(names):
+                rows.append(x)
+        self.names = names
+        self.a = keep_last(np.array(rows, dtype=float))
+
+    def __getitem__(self, name):
+        return self.a[:, self.names.index(name)]
 
 
 def read_ah(path):
@@ -131,9 +153,9 @@ def numbers(d):
     ah = read_ah(os.path.join(d, BASE + ".horizon_summary_0.txt"))
     found = ah[np.isfinite(ah[:, 1])] if len(ah) else ah
     cv = read_curv_hst(os.path.join(d, BASE + ".curv.hst"))
-    h = read_nrpic_hst(os.path.join(d, BASE + ".nrpic.hst"))
+    h = Hist(os.path.join(d, BASE + ".nrpic.hst"))
     z = read_athena_hst(os.path.join(d, BASE + ".z4c.user.hst"))
-    res = dict(dir=d, t_end=float(h[-1, 0]), snapshots=len(files),
+    res = dict(dir=d, t_end=float(h["time"][-1]), snapshots=len(files),
                z_rms0=float(ph[0, 2]), R_rms0=float(ph[0, 3]),
                t_pancake=tp, t_pancake_snapshot=float(ph[kp, 0]),
                z_rms_min_over_initial=float(zr[kp]), R_rms_over_initial_at_pancake=float(Rr[kp]),
@@ -152,21 +174,21 @@ def numbers(d):
                t_AH_last=float(found[-1, 0]) if len(found) else None,
                AH_searches=int(len(ah)), AH_found=int(len(found)),
                AH_meanradius_first=float(found[0, 3]) if len(found) else None,
-               alpha_min_end=float(h[-1, HC["alpha_min"]]),
-               np0=int(h[0, HC["np"]]), np_end=int(h[-1, HC["np"]]),
-               sum_m0=float(h[0, HC["sum_m"]]),
-               m_excised_end=float(h[-1, HC["m_excised"]]),
-               n_excised_end=int(h[-1, HC["n_excised"]]),
-               n_escaped_end=int(h[-1, HC["n_escaped"]]),
-               push_unconverged_total=int(np.nansum(h[:, HC["push_unconverged"]])),
-               push_maxit_max=int(np.nanmax(h[:, HC["push_maxit"]])),
-               nmb_max=int(np.nanmax(h[:, HC["nmb"]])), nmb_start=int(h[0, HC["nmb"]]),
-               sum_mW_max_rel_change=float(np.nanmax(np.abs(
-                   (h[:, HC["sum_mw"]] + 0.0) [h[:, HC["n_excised"]] == 0]
-                   / h[0, HC["sum_mw"]] - 1.0))),
-               finite=bool(np.all(np.isfinite(h[:, :HC["nmb"]]))))
-    rem = np.nonzero(h[:, HC["n_excised"]] > 0)[0]
-    res["t_first_removal"] = float(h[rem[0], 0]) if len(rem) else None
+               alpha_min_end=float(h["alpha_min"][-1]),
+               alpha_min_at_pancake=float(np.interp(tp, h["time"], h["alpha_min"])),
+               np0=int(h["np"][0]), np_end=int(h["np"][-1]),
+               sum_m0=float(h["sum_m"][0]),
+               m_excised_end=float(h["m_excised"][-1]),
+               n_excised_end=int(h["n_excised"][-1]),
+               n_escaped_end=int(h["n_escaped"][-1]),
+               push_unconverged_total=int(np.nansum(h["push_unconverged"])),
+               push_maxit_max=int(np.nanmax(h["push_maxit"])),
+               nmb_max=int(np.nanmax(h["nmb"])), nmb_start=int(h["nmb"][0]),
+               sum_mW_max_rel_change_before_removal=float(np.nanmax(np.abs(
+                   h["sum_mW"][h["n_excised"] == 0] / h["sum_mW"][0] - 1.0))),
+               finite=bool(np.all(np.isfinite(h.a[:, :23]))))
+    rem = np.nonzero(h["n_excised"] > 0)[0]
+    res["t_first_removal"] = float(h["time"][rem[0]]) if len(rem) else None
     if len(cv):
         i = int(np.argmax(cv[:, 1]))
         j = int(np.argmax(cv[:, 5]))
@@ -229,8 +251,8 @@ def snapshot_at(d, t):
 
 
 def fig_histories(runs, ser, res, newton, prolate):
-    fig, ax = plt.subplots(2, 3, figsize=(fs.FULL_WIDTH, 5.2), sharex=True)
-    fig.subplots_adjust(left=0.075, right=0.985, bottom=0.085, top=0.975, wspace=0.27,
+    fig, ax = plt.subplots(2, 3, figsize=(fs.FULL_WIDTH, 5.4), sharex=True)
+    fig.subplots_adjust(left=0.07, right=0.99, bottom=0.085, top=0.975, wspace=0.36,
                         hspace=0.05)
     tN, aN, bN = newton
     for name in runs:
@@ -246,7 +268,7 @@ def fig_histories(runs, ser, res, newton, prolate):
             ax[0, 2].plot(s["ah"][:, 0], s["ah"][:, 1], color=c, marker="o", ms=2.0, lw=1.0,
                           label=f"oblate, {lab}")
         h = s["h"]
-        ax[1, 0].plot(h[:, 0], h[:, HC["alpha_min"]], color=c, label=lab)
+        ax[1, 0].plot(h["time"], h["alpha_min"], color=c, label=lab)
         if len(s["cv"]):
             ax[1, 1].semilogy(s["cv"][:, 0], s["cv"][:, 5], color=c, label=f"max $E$, {lab}")
             ax[1, 1].semilogy(s["cv"][:, 0], np.sqrt(np.abs(s["cv"][:, 1])), color=c, ls="--",
@@ -265,30 +287,33 @@ def fig_histories(runs, ser, res, newton, prolate):
             ax[0, 2].plot(pd[:, 0], pd[:, 1], color=pc, lw=1.0, ls=":",
                           label=f"prolate, {LABEL[name]}")
     ax[0, 2].axhline(M_ADM, **fs.GUIDE)
-    ax[0, 0].set_ylabel("rms extent / initial")
-    ax[0, 0].set_ylim(0, 1.25)
-    ax[0, 1].set_ylabel("fraction of particles")
-    ax[0, 2].set_ylabel("horizon mass [$M$]")
+    ax[0, 0].set_ylabel("rms extent / initial", labelpad=2)
+    ax[0, 0].set_ylim(0, 1.45)
+    ax[0, 1].set_ylabel("fraction of particles", labelpad=2)
+    ax[0, 1].set_ylim(-0.03, 1.4)
+    ax[0, 2].set_ylabel("horizon mass [$M$]", labelpad=2)
     ax[0, 2].set_ylim(0.80, 1.02)
-    ax[1, 0].set_ylabel("smallest lapse")
-    ax[1, 1].set_ylabel("largest $E$, $|I|^{1/2}$ [$M^{-2}$]")
-    ax[1, 2].set_ylabel(r"$\|H\|_2$ (history norm)")
+    ax[1, 0].set_ylabel("smallest lapse", labelpad=2)
+    ax[1, 1].set_ylabel("largest $E$, $|I|^{1/2}$ [$M^{-2}$]", labelpad=1)
+    ax[1, 1].set_ylim(1e-4, 1e5)
+    ax[1, 2].set_ylabel(r"$\|H\|_2$ (history norm)", labelpad=1)
     for axx in ax[1]:
         axx.set_xlabel("$t/M$", labelpad=-1)
     ax[0, 0].legend(fontsize=6.5, ncol=2, loc="upper center")
-    ax[0, 1].legend(fontsize=6.5, loc="center left")
+    ax[0, 1].legend(fontsize=6.5, ncol=1, loc="upper left")
     ax[0, 2].legend(fontsize=6.5, loc="lower left")
     ax[1, 0].legend(fontsize=7, loc="lower left")
-    ax[1, 1].legend(fontsize=6.5, loc="upper left")
+    ax[1, 1].legend(fontsize=6, ncol=2, loc="upper center", columnspacing=0.8,
+                    handlelength=1.5)
     ax[1, 2].legend(fontsize=7, loc="upper left")
     ax[0, 0].set_xlim(0, max(res[n]["t_end"] for n in runs))
-    out = os.path.join(HERE, "figs", "oblate_collapse")
+    out = os.path.join(FIGDIR, "oblate_collapse")
     fs.save(fig, out)
     plt.close(fig)
     return out + ".png"
 
 
-def fig_mosaic(runs, dirs, times, half=12.0):
+def fig_mosaic(runs, dirs, times, halves=(12.0, 12.0, 6.0, 3.0)):
     names = list(runs)
     fig, axes, cax = fs.slice_mosaic(len(names), len(times), panel=1.585, left=1.37,
                                      bottom=0.36, fig_w=8.0)
@@ -297,13 +322,17 @@ def fig_mosaic(runs, dirs, times, half=12.0):
     for i, name in enumerate(names):
         for j, t in enumerate(times):
             ax = axes[i, j]
+            half = halves[j]
             tt, rec = slice_at(dirs[name], t)
             img = raster(rec, half)
             im = ax.imshow(np.clip(img, 1e-12, None), origin="lower",
                            extent=[-half, half, -half, half], cmap=fs.CMAP["dens"],
                            norm=norm, interpolation="nearest", rasterized=True)
             ax.set_facecolor("black")
-            fs.slice_ticks(ax, 2 * half, show_x=(i == len(names) - 1), show_y=(j == 0))
+            fs.slice_ticks(ax, half, show_x=(i == len(names) - 1), show_y=True)
+            ax.tick_params(axis="y", labelsize=7, pad=1)
+            if j > 0:
+                ax.tick_params(axis="y", direction="in", pad=-14, labelcolor="w")
             ax.text(0.04, 0.95, f"$t={tt:.2f}M$" + (f", {LABEL[name]}" if j == 0 else ""),
                     transform=ax.transAxes, color="w", fontsize=8, va="top")
             if i == len(names) - 1:
@@ -314,7 +343,7 @@ def fig_mosaic(runs, dirs, times, half=12.0):
     cax.yaxis.set_ticks_position("left")
     cax.yaxis.set_label_position("left")
     cb.set_label("energy density $E$ [$M^{-2}$], plane $y=0$")
-    out = os.path.join(HERE, "figs", "oblate_mosaic")
+    out = os.path.join(FIGDIR, "oblate_mosaic")
     fs.save(fig, out)
     plt.close(fig)
     return out + ".png"
@@ -322,8 +351,8 @@ def fig_mosaic(runs, dirs, times, half=12.0):
 
 def fig_particles(d, name, times, ah_first):
     fig, ax = plt.subplots(2, len(times), figsize=(fs.FULL_WIDTH, 4.3))
-    fig.subplots_adjust(left=0.07, right=0.99, bottom=0.10, top=0.94, wspace=0.22,
-                        hspace=0.22)
+    fig.subplots_adjust(left=0.07, right=0.99, bottom=0.10, top=0.94, wspace=0.34,
+                        hspace=0.24)
     for j, t in enumerate(times):
         tt, dd, tag, _ = snapshot_at(d, t)
         x, y, z = dd[:, 0], dd[:, 1], dd[:, 2]
@@ -335,24 +364,29 @@ def fig_particles(d, name, times, ah_first):
             a.set_xlim(-half, half)
             a.set_ylim(-half, half)
             a.set_aspect("equal")
-            a.set_ylabel(yl, labelpad=-3)
+            a.set_ylabel(yl, labelpad=-2)
+            a.locator_params(nbins=4)
         ax[0, j].set_title(f"$t={tt:.1f}M$, {len(x)} particles", fontsize=9)
         ax[1, j].set_xlabel("$x/M$", labelpad=-1)
-    out = os.path.join(HERE, "figs", "oblate_particles")
+    out = os.path.join(FIGDIR, "oblate_particles")
     fs.save(fig, out)
     plt.close(fig)
     return out + ".png"
 
 
 def main():
+    global BASE, FIGDIR
     ap = argparse.ArgumentParser()
     ap.add_argument("--run", action="append", required=True, help="name=DIR (m4, m8, m16)")
     ap.add_argument("--prolate", action="append", default=[],
                     help="name=DIR of a prolate run, for the horizon-mass panel")
     ap.add_argument("--out", default=os.environ.get("NRPIC_RUN_DIR", os.getcwd()))
+    ap.add_argument("--basename", default=BASE, help="<job> basename of the runs")
+    ap.add_argument("--figdir", default=FIGDIR)
     a = ap.parse_args()
+    BASE, FIGDIR = a.basename, os.path.abspath(a.figdir)
     os.makedirs(a.out, exist_ok=True)
-    os.makedirs(os.path.join(HERE, "figs"), exist_ok=True)
+    os.makedirs(FIGDIR, exist_ok=True)
     fs.use_style()
     dirs = dict(r.split("=", 1) for r in a.run)
     res, ser = {}, {}
