@@ -14,7 +14,7 @@
 //! last state, for a post-mortem; a restart file of it cannot be continued) and the
 //! executable exits with status kGuardStatus (3).
 //!
-//! The guard acts only in runs with the spacetime solver.  Input block <nrpic_guard>,
+//! The guard acts only in runs with the spacetime solver.  Input block <z4c_guard>,
 //! every option read only if present:
 //!   stop_nonfinite       false switches the guard off (default: on)
 //!   stop_chi_nonpositive true: also stop when the conformal factor chi is zero or
@@ -24,6 +24,8 @@
 //!   stop_no_particles    true: also stop when a run that started with NRPIC particles
 //!                        has none left
 //!   check_dcycle         cycles between checks (default 1)
+//! The options are read in the constructor of the spacetime solver (before the input
+//! parser reports unused parameters).
 //! A check is one sum over the evolved fields, small against one evaluation of the
 //! right-hand sides.
 
@@ -65,26 +67,26 @@ GuardState gst;
 
 //----------------------------------------------------------------------------------------
 //! \fn void GuardInit
-//! \brief reads <nrpic_guard>
+//! \brief reads <z4c_guard>; called by the constructor of the spacetime solver
 
 void GuardInit(ParameterInput *pin, Mesh *pm) {
   gst = GuardState();
   gst.init = true;
   gst.basename = pin->GetString("job", "basename");
-  if (pin->DoesParameterExist("nrpic_guard", "stop_nonfinite")) {
-    gst.on = pin->GetBoolean("nrpic_guard", "stop_nonfinite");
+  if (pin->DoesParameterExist("z4c_guard", "stop_nonfinite")) {
+    gst.on = pin->GetBoolean("z4c_guard", "stop_nonfinite");
   }
-  if (pin->DoesParameterExist("nrpic_guard", "stop_chi_nonpositive")) {
-    gst.chi_nonpositive = pin->GetBoolean("nrpic_guard", "stop_chi_nonpositive");
+  if (pin->DoesParameterExist("z4c_guard", "stop_chi_nonpositive")) {
+    gst.chi_nonpositive = pin->GetBoolean("z4c_guard", "stop_chi_nonpositive");
   }
-  if (pin->DoesParameterExist("nrpic_guard", "stop_dt_below")) {
-    gst.dt_below = pin->GetReal("nrpic_guard", "stop_dt_below");
+  if (pin->DoesParameterExist("z4c_guard", "stop_dt_below")) {
+    gst.dt_below = pin->GetReal("z4c_guard", "stop_dt_below");
   }
-  if (pin->DoesParameterExist("nrpic_guard", "stop_no_particles")) {
-    gst.no_particles = pin->GetBoolean("nrpic_guard", "stop_no_particles");
+  if (pin->DoesParameterExist("z4c_guard", "stop_no_particles")) {
+    gst.no_particles = pin->GetBoolean("z4c_guard", "stop_no_particles");
   }
-  if (pin->DoesParameterExist("nrpic_guard", "check_dcycle")) {
-    gst.dcycle = pin->GetInteger("nrpic_guard", "check_dcycle");
+  if (pin->DoesParameterExist("z4c_guard", "check_dcycle")) {
+    gst.dcycle = pin->GetInteger("z4c_guard", "check_dcycle");
     if (gst.dcycle < 1) { gst.dcycle = 1; }
   }
 }
@@ -128,7 +130,7 @@ bool GuardCheck(Mesh *pm) {
   int first = ncell, firstchi = ncell;
   const bool test_fin = gst.on, test_chi = gst.chi_nonpositive;
   if (test_fin || test_chi) {
-    Kokkos::parallel_reduce("nrpic_guard", Kokkos::RangePolicy<DevExeSpace>(0, ncell),
+    Kokkos::parallel_reduce("z4c_guard", Kokkos::RangePolicy<DevExeSpace>(0, ncell),
     KOKKOS_LAMBDA(const int idx, std::int64_t &lbad, std::int64_t &lchi, int &lfirst,
                   int &lfirstchi) {
       const int m = idx/(n3*n2*n1);
@@ -171,7 +173,7 @@ bool GuardCheck(Mesh *pm) {
   } else if (!(pm->dt == pm->dt) || !(pm->time == pm->time)) {
     reason = "time or time step is not a number";
   } else if (gst.dt_below > 0.0 && pm->ncycle > 0 && pm->dt < gst.dt_below) {
-    reason = "time step below <nrpic_guard> stop_dt_below";
+    reason = "time step below <z4c_guard> stop_dt_below";
   } else if (gst.no_particles && gst.had_particles && pm->nprtcl_total == 0) {
     reason = "no particles left";
   }
@@ -232,8 +234,12 @@ bool GuardCheck(Mesh *pm) {
     auto &sz = pmbp->pmb->mb_size.h_view(m);
     const int mbs = pm->gids_eachrank[global_variable::my_rank];
     const int level = pm->lloc_eachmb[m + mbs].level - pm->root_level;
-    auto uh = Kokkos::create_mirror_view_and_copy(Kokkos::HostSpace(),
-        Kokkos::subview(u0, m, Kokkos::ALL(), k+ks, j+js, i+is));
+    DvceArray1D<Real> cellv("nrpic_guard_cell", nvar);
+    const int kk = k + ks, jj = j + js, ii = i + is;
+    par_for("nrpic_guard_cell", DevExeSpace(), 0, nvar-1, KOKKOS_LAMBDA(const int n) {
+      cellv(n) = u0(m,n,kk,jj,ii);
+    });
+    auto uh = Kokkos::create_mirror_view_and_copy(Kokkos::HostSpace(), cellv);
     for (int pass=0; pass<2; ++pass) {
       std::FILE *out = (pass == 0) ? stdout : fp;
       if (out == nullptr) continue;

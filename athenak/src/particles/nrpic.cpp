@@ -826,7 +826,9 @@ void Particles::NrpicDepositSources() {
       // (2) weights of the cloud on the lattice of the deposition level: B-splines of
       //     degree one (cloud in cell, two cells per direction), two (triangular shaped
       //     cloud, three cells) or three (piecewise cubic, four cells)
-      Real xb[3], wt[3][4];
+      // gs: derivative of each weight with respect to the position of its lattice cell,
+      // in lattice cells (used by deposit_fine_shape only)
+      Real xb[3], wt[3][4], gs[3][4];
       for (int d=0; d<3; ++d) {
         Real xi = (xp[d] - gmin[d])/h[d] - 0.5;
         if (nb == 3) {
@@ -836,6 +838,10 @@ void Particles::NrpicDepositSources() {
           wt[d][1] = 0.75 - dd*dd;
           wt[d][2] = 0.5*SQR(0.5 + dd);
           wt[d][3] = 0.0;
+          gs[d][0] = 0.5 - dd;
+          gs[d][1] = 2.0*dd;
+          gs[d][2] = -(0.5 + dd);
+          gs[d][3] = 0.0;
           xb[d] = gmin[d] + (fl - 0.5)*h[d];
         } else if (nb == 4) {
           Real fl = floor(xi);
@@ -844,6 +850,10 @@ void Particles::NrpicDepositSources() {
           wt[d][1] = (3.0*sd*sd*sd - 6.0*sd*sd + 4.0)/6.0;
           wt[d][2] = (-3.0*sd*sd*sd + 3.0*sd*sd + 3.0*sd + 1.0)/6.0;
           wt[d][3] = sd*sd*sd/6.0;
+          gs[d][0] = 0.5*(1.0 - sd)*(1.0 - sd);
+          gs[d][1] = 2.0*sd - 1.5*sd*sd;
+          gs[d][2] = -2.0*(1.0 - sd) + 1.5*(1.0 - sd)*(1.0 - sd);
+          gs[d][3] = -0.5*sd*sd;
           xb[d] = gmin[d] + (fl - 0.5)*h[d];
         } else {
           Real fl = floor(xi);
@@ -852,6 +862,10 @@ void Particles::NrpicDepositSources() {
           wt[d][1] = sd;
           wt[d][2] = 0.0;
           wt[d][3] = 0.0;
+          gs[d][0] = 1.0;
+          gs[d][1] = -1.0;
+          gs[d][2] = 0.0;
+          gs[d][3] = 0.0;
           xb[d] = gmin[d] + (fl + 0.5)*h[d];
         }
       }
@@ -890,30 +904,26 @@ void Particles::NrpicDepositSources() {
           const int k0 = ks + static_cast<int>(
               floor((zf - 0.5*h[2] - sz(mb).x3min)/sz(mb).dx3 + 0.5));
           if (fine_shape && nsub <= 32) {
-            // <particles> deposit_fine_shape: each leaf cell receives the integral of
-            // the shape of the cloud over it (differences of the cumulative distribution
-            // of the shape at the cell edges) instead of the same density in every leaf
-            // cell of the lattice cell.  The weights of the leaf cells inside a lattice
-            // cell sum to the weight of that cell, so the sums are conserved as before,
-            // and the deposited density of a smooth distribution is smooth on the fine
-            // cells (no staircase at the cell size of the cloud).  The lattice cell may
-            // be a periodic image: the particle is taken in the same image.
+            // <particles> deposit_fine_shape: inside a lattice cell of the cloud the
+            // weight follows the assignment function to first order about the centre of
+            // the lattice cell, w + (dw/dx)(x - x_c), instead of being the same in
+            // every leaf cell.  The leaf cells lie symmetrically about that centre, so
+            // their weights sum to the weight of the lattice cell and the sums are
+            // conserved as before; the slopes of the clouds of a regular lattice cancel
+            // like their weights add to one, so a uniform distribution stays uniform;
+            // and the deposited density of a smooth distribution is correct to second
+            // order on the fine cells (no staircase at the cell size of the cloud).
+            // The weight of a single cloud can turn slightly negative at its edge.
             Real wf[3][32];
-            const Real hf[3] = {sz(mb).dx1, sz(mb).dx2, sz(mb).dx3};
-            const Real xcl[3] = {xf, yf, zf};
-            const Real xcu[3] = {xb[0] + c1*h[0], xb[1] + c2*h[1], xb[2] + c3*h[2]};
+            const int cc[3] = {c1, c2, c3};
+            const Real rsub = 1.0/static_cast<Real>(nsub);
             for (int d=0; d<3; ++d) {
-              const Real xpd = xp[d] + (xcl[d] - xcu[d]);
-              const Real xlo = xcl[d] - 0.5*h[d];
-              Real cprev = nrpic::ShapeCdf(nb - 1, (xlo - xpd)/h[d]);
               for (int s=0; s<nsub; ++s) {
-                const Real cnext = nrpic::ShapeCdf(nb - 1,
-                                                   (xlo + (s + 1)*hf[d] - xpd)/h[d]);
-                wf[d][s] = cnext - cprev;
-                cprev = cnext;
+                const Real xis = (static_cast<Real>(s) + 0.5)*rsub - 0.5;
+                wf[d][s] = (wt[d][cc[d]] + gs[d][cc[d]]*xis)*rsub;
               }
             }
-            const Real ivf = 1.0/(hf[0]*hf[1]*hf[2]);
+            const Real ivf = 1.0/(sz(mb).dx1*sz(mb).dx2*sz(mb).dx3);
             for (int kk=0; kk<nsub; ++kk) {
               const int k = k0 + kk;
               if (k < ks || k > ke) continue;
@@ -924,7 +934,6 @@ void Particles::NrpicDepositSources() {
                   const int i = i0 + ii;
                   if (i < is || i > ie) continue;
                   const Real wfv = wf[0][ii]*wf[1][jj]*wf[2][kk]*ivf;
-                  if (wfv == 0.0) continue;
                   for (int n=0; n<Tmunu::N_Tmunu; ++n) {
                     Kokkos::atomic_add(&tm(mb,n,k,j,i), wfv*q[n]);
                   }

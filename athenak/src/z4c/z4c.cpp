@@ -28,6 +28,7 @@
 #include "z4c/z4c_amr.hpp"
 #include "coordinates/adm.hpp"
 #include "utils/cart_grid.hpp"
+#include "particles/nrpic_cosmo_ext.hpp"   // nrpic::GuardInit
 
 namespace z4c {
 
@@ -126,6 +127,8 @@ Z4c::Z4c(MeshBlockPack *ppack, ParameterInput *pin) :
   if (pin->DoesParameterExist("z4c", "dt_lightspeed")) {
     dt_lightspeed = pin->GetReal("z4c", "dt_lightspeed");
   }
+  // guard that stops a run whose fields are not finite (<z4c_guard>, nrpic_guard.cpp)
+  nrpic::GuardInit(pin, pmy_pack->pmesh);
   opt.chi_psi_power = pin->GetOrAddReal("z4c", "chi_psi_power", -4.0);
   opt.chi_div_floor = pin->GetOrAddReal("z4c", "chi_div_floor", -1000.0);
   opt.chi_min_floor = pin->GetOrAddReal("z4c", "chi_min_floor", 1e-12);

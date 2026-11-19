@@ -554,7 +554,6 @@ void Driver::Execute(Mesh *pmesh, ParameterInput *pin, Outputs *pout, bool wdfla
       elapsed_time = UpdateWallClock();
     }
     // guard of the NRPIC module: stop when the spacetime fields are not finite
-    nrpic::GuardInit(pin, pmesh);
     const bool guard_stop = nrpic::GuardCheck(pmesh);   // initial data
     while (!guard_stop && (pmesh->time < tlim) && (pmesh->ncycle < nlim || nlim < 0) &&
            (elapsed_time < wall_time)) {

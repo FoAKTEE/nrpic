@@ -58,7 +58,7 @@ Facts from the code that shaped the design [VERIFIED by reading]:
 
 Design (details and options: `interfaces/cosmo_amr.md`; triage: `interfaces/REQUESTS_A2.md`):
 1. `nrpic_cosmo` enrols `nrpic::CosmoRefine` (new `particles/nrpic_refine.cpp`): the
-   criteria of `<z4c_amr>` as in `nrpic_cf`, then those of a new block `<nrpic_amr>`:
+   criteria of `<z4c_amr>` as in `nrpic_cf`, then those of a new block `<particles_amr>`:
    particles per cell (`ppc_refine`: the mesh is refined only where the particles support
    it), ladders `lapse_ratio_<l>` and `chi_ratio_<l>` relative to the mean over the box
    (the cosmological form of the `chi` criterion; neither refines the homogeneous
@@ -120,7 +120,7 @@ same step (`<particles> dt` = 0.25 of the level-1 cell), to t = 1:
 U uniform; S static level-1 patch in the interior, adaptive cloud level; Sf the same
 with `deposit_fine_shape`; P static patches across a face and a corner of the box;
 A adaptive, patch created by `<z4c_amr> radius_0_rad` at the first check and kept;
-L adaptive with `method = lohner` and the criteria of `<nrpic_amr>` (ppc, lapse and chi
+L adaptive with `method = lohner` and the criteria of `<particles_amr>` (ppc, lapse and chi
 ladders) that must not refine; D8 static patch, eight particles per root cell on the
 level-1 lattice, clouds on the finest level; D8s the same with a uniform shift 0.5 (the
 lattice drifts through the patch and the faces).
@@ -191,7 +191,7 @@ crossing. Refuted by a jump of the tracker, a fatal error, or structure above 1e
 (unstable with RK4). Predictions: NEW stops by itself within a few cycles of the first
 non-finite value, prints the diagnostic, writes `<basename>.guard.txt` (variables, first
 cell), writes the final outputs and exits with status 3; REL runs to `nlim` with status
-0; NEW with `<nrpic_guard> stop_nonfinite = false` behaves as REL (status 0);
+0; NEW with `<z4c_guard> stop_nonfinite = false` behaves as REL (status 0);
 `stop_chi_nonpositive = true` stops earlier or at the same cycle. Refuted if NEW exits
 with 0 or hangs.
 
@@ -234,3 +234,77 @@ centre, without a horizon; this time the run stops there with status 3 and a
 diagnostic; (4) every failed search of the finder has a reason in the status file. A
 horizon would refute (3) and would be the first of this set-up: its area mass must then
 be below the mass inside r_m.
+
+## 2026-11-19 14:55  first smoke run: the input parser knows a fixed list of block names
+
+Unregistered debugging run (homogeneous universe, adaptive, `scratch/core/tmp/`): the
+executable stopped in `ParameterInput::CheckBlockNames` ("Invalid <block_name>
+'nrpic_amr'"). The list (`parameter_input.cpp:105-113`) is matched by prefix. To leave
+that shared file alone the two new blocks are named with existing prefixes:
+`<particles_amr>` (refinement criteria) and `<z4c_guard>` (guard). The entries above
+were written with the first names `<nrpic_amr>` and `<nrpic_guard>`; read them as the
+new ones (the text above was edited by the same substitution as the source).
+
+## 2026-11-19 15:05  smoke runs (unregistered) and a wrong first design of `deposit_fine_shape`
+
+Unregistered debugging runs under `scratch/core/tmp/cosmo-amr-smoke/` (no number from
+them enters the interface text; they are recorded here because they changed the design
+and because I saw them before the registered tests):
+
+1. Homogeneous universe, adaptive, patch by `radius_0_rad`: runs; 56 MeshBlocks created
+   at the first check; chi and E uniform to 2e-15 and 4e-15 after the regrid; the lapse
+   history equals the uniform run in every printed digit. The identity read
+   |int_E/sum_mW - 1| = 6e-13 on the 64-block mesh, zero on the uniform mesh. So my T1
+   bound of 1e-13 was written without thinking of the diagnostic itself: `int_E` is a
+   plain running sum over the cells (32,768 nearly equal terms), whose rounding error
+   grows like the number of cells times 1.1e-16 (3.6e-12 here). The T1 prediction stays
+   as written and will be judged against both numbers; a cloud that loses weight at a
+   level boundary shows at 1e-7 or more (one cloud of 4096), so the two are not confused.
+2. Guard: at a Courant number of 4 the whole state is NaN after one step; the run stops
+   with status 3 and writes `flrw.guard.txt`. The options of `<z4c_guard>` were reported
+   as "not used" by the input parser because they were read when the driver started;
+   they are now read in the constructor of the spacetime solver.
+3. Peak data (Track A's `ic_peak0.5`, 32^3, run A-emd-pbh-20261115-154740-69e8f8b) with
+   the lapse ladder: the central eight MeshBlocks are refined at the second check; the
+   particle number and rest mass are unchanged; identity 2e-14. Two findings:
+   - **The first design of `deposit_fine_shape` was wrong.** I had given every leaf cell
+     the integral of the cloud's own shape over it (for cloud-in-cell: the overlap of
+     the particle's cube with the leaf cell). That is the particle density smoothed with
+     the cloud alone, one order rougher than the assigned density on the cloud's own
+     lattice (cloud convolved with the cell). After the regrid the Hamiltonian constraint
+     jumped to H_max = 0.61 (Hr_max 0.077), against 0.036 (0.0072) with the released
+     constant spreading: 17 times worse, with E at the peak 13 per cent above the
+     coarse value. Replaced by a first-order reconstruction: inside a lattice cell of
+     the cloud the weight is w + (dw/dx)(x - x_c), with the analytic slope of the
+     assignment function (cloud in cell: +1, -1 per cell; quadratic and cubic splines
+     accordingly). The leaf cells are symmetric about the centre, so each lattice cell
+     keeps its weight (identity untouched), the slopes of a regular lattice cancel
+     (homogeneity untouched), and a smooth density is second-order accurate on the leaf
+     cells. No limiter: a limiter breaks the cancellation of the slopes of a regular
+     lattice, so single clouds may have slightly negative weights at their edge.
+   - **With the corrected option the jump is 0.076 (Hr_max 0.0116), still twice the
+     constant spreading (0.036, 0.0072).** H follows -16 pi (E - E_consistent) along the
+     x axis: the reconstruction puts E at the peak 1 per cent above the constant
+     spreading, and the metric wants it lower still. Reading [JUDGEMENT, to be tested in
+     T3 without a filter]: the data and the root level carry sources filtered at the
+     root cell size (two binomial passes and the compensation, response 1 - 3 s^2,
+     s = sin^2(k h/2)); on the new level the same passes act at half the cell size. For
+     a Gaussian peak of width sigma the root filter lowers the peak by (27/16)(h/sigma)^4
+     = 2.7 per cent of its contrast here (sigma = 2.8 root cells), the fine filter by a
+     sixteenth of that; 2.7 per cent of the contrast is 16 pi dE = 0.066, the size of the
+     jump. The constant spreading hides part of it by its own smoothing. So on refined
+     levels the source filter, not the cloud, is the leading inconsistency of these
+     data. Prediction for T3 (added before it runs): without a filter the reconstruction
+     gives a smaller constraint on the patch than the constant spreading; with the
+     filter the two differ by less than the filter mismatch.
+   Relative to the perturbation the jump at the regrid is H_max/(16 pi max|E - Ebar|) =
+   0.03 (reconstruction) and 0.015 (constant), below the 0.077 to 0.085 that Track A
+   measured for static levels filled from the file (their T2b).
+4. The lapse ratio is a transient of these data: the Newtonian-gauge lapse of the file
+   (0.8 at the peak) returns to 0.99 of the mean within half a time unit under the
+   driver towards constant mean curvature, and the patch is derefined again. In Track
+   A's S1 (run A-emd-pbh-20261115-160349-9d232d2, `peak.nrpic.hst`) alpha_min/alpha_max
+   is 0.795 at t = 0, 0.72 to 0.86 until t = 7, then 0.64, 0.51, 0.39, 0.17, 0.033 at
+   t = 8, 9, 10, 11, 11.68; E_max/E_min passes 13, 35, 153, 1.7e4 at t = 6, 7, 8, 9.
+   For T10 the ladder 0.9, 0.7, 0.55, 0.4 together with eight particles per cell then
+   gives level 1 from the start and levels 2, 3, 4 near t = 7.2, 8.4, 8.8.

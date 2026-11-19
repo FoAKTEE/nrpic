@@ -111,10 +111,11 @@ struct NrpicOptions {
   Real newton_mg_tol = 0.0;    // > 0: the Poisson solve may end when the defect norm
                                // is this fraction of the norm of the source
   // ---- refined meshes in periodic runs (package cosmo-amr) ----
-  bool deposit_fine = false;   // <particles> deposit_fine_shape: a cloud whose cells are
-                               // coarser than the leaf cells is sampled on the leaf
-                               // cells with its own shape, not spread as a constant
-                               // over each of its cells
+  bool deposit_fine = false;   // <particles> deposit_fine_shape: where the cells of a
+                               // cloud are coarser than the leaf cells, the weight of
+                               // each cloud cell is distributed over its leaf cells to
+                               // first order (weight and slope of the assignment
+                               // function), not as a constant
 };
 
 //----------------------------------------------------------------------------------------

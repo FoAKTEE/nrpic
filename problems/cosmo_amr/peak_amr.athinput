@@ -1,0 +1,232 @@
+# Single curvature peak (profile of arXiv:2609.14218) in a periodic box with adaptive
+# refinement toward the collapsing peak: example input of the work package cosmo-amr of
+# core (tracks/core/interfaces/cosmo_amr.md).  It is Track A's
+# tracks/A-emd-pbh/periodic_threshold/inputs/peak_amr.athinput with the options of this
+# package: criteria of <particles_amr> (particles per cell, lapse ladder), coarse clouds
+# sampled on the leaf cells (deposit_fine_shape), step limit from the coordinate light
+# speed (dt_lightspeed), guard (<z4c_guard>), status file of the horizon finder
+# (diagnostics), constraint norms inside and outside spheres (region_*).
+# Initial data: the track's scripts/make_peak_ic.py (cosmo/ic/make_field.py): box
+# [-L/2, L/2)^3 with L = 20/k, peak at the origin; code units H_i = 1 at a_i = 1.
+# Gauge: conformal-time lapse plus the driver towards constant mean curvature, zero shift.
+# Overrides per run: time/tlim, problem/id_file, particles/particle_file, mesh/nx?,
+# fastflow/start_time_0.
+
+<comment>
+problem   = single curvature peak in a periodic matter-era box
+
+<job>
+basename  = peak
+
+<mesh>
+nghost    = 4
+nx1       = 64
+x1min     = -10.0
+x1max     = 10.0
+ix1_bc    = periodic
+ox1_bc    = periodic
+nx2       = 64
+x2min     = -10.0
+x2max     = 10.0
+ix2_bc    = periodic
+ox2_bc    = periodic
+nx3       = 64
+x3min     = -10.0
+x3max     = 10.0
+ix3_bc    = periodic
+ox3_bc    = periodic
+
+<meshblock>
+nx1       = 16
+nx2       = 16
+nx3       = 16
+
+<mesh_refinement>
+refinement          = adaptive
+num_levels          = 5
+max_nmb_per_rank    = 1200
+ncycle_check        = 8
+refinement_interval = 16
+
+<amr_criterion0>
+method = user
+
+<z4c_amr>
+method          = trivial   # no criterion of the spacetime solver (lohner, tracker, chi, dchi also work)
+
+<particles_amr>
+ppc_refine      = 8.0       # refine where a cell holds more than 8 particles
+ppc_derefine    = 0.5       # derefine where every cell holds fewer
+lapse_ratio_1   = 0.9       # level 1 where min(alpha) < 0.9 <alpha>, and so on
+lapse_ratio_2   = 0.7
+lapse_ratio_3   = 0.55
+lapse_ratio_4   = 0.4
+hysteresis      = 0.1
+verbose         = true
+
+<z4c_guard>
+stop_nonfinite       = true   # default: stop with status 3 when a field is not finite
+stop_chi_nonpositive = true   # also when the conformal factor is zero or negative
+
+<time>
+evolution  = dynamic
+integrator = rk4
+cfl_number = 0.25
+nlim       = -1
+tlim       = 10.0
+ndiag      = 50
+
+<z4c>
+lapse_oplog     = 0.0
+lapse_harmonicf = 1.0
+lapse_harmonic  = 0.3333333333333333   # d_t alpha = -(1/3) alpha^2 K
+lapse_volume    = 0.0
+lapse_kdriver   = 1.0                  # driver towards constant mean curvature (strength mu)
+lapse_advect    = 0.0
+shift_Gamma     = 0.0                  # zero shift
+shift_alpha2Gamma = 0.0
+shift_eta       = 0.0
+shift_advect    = 0.0
+diss            = 0.5
+chi_div_floor   = 1.0e-8
+damp_kappa1     = 0.5
+damp_kappa1_over_alpha = true          # damping rate per unit of conformal time
+damp_kappa2     = 0.0
+damp_kappa_gam  = 0.0
+damp_ch         = 0.0
+damp_ch_dx      = 0.0
+damp_ch_chipow  = 0.0
+excise_chi      = 0.0
+dt_lightspeed   = 1.0                  # step at most cfl dx / (coordinate light speed)
+
+<fastflow>
+find_every        = 32
+metric_drvts      = interpolant
+num_horizons      = 1
+npunct            = 0
+ntheta            = 16
+lmax              = 8
+use_puncture_0    = -1
+center_x_0        = 0.0
+center_y_0        = 0.0
+center_z_0        = 0.0
+initial_radius_0  = 2.0
+flow_iterations_0 = 400
+flow_alpha_beta_const_0 = 1.0
+hmean_tol_0       = 100.0
+mass_tol_0        = 1.0e-5
+start_time_0      = 0.0
+stop_time_0       = 1000.0
+verbose           = false
+diagnostics       = true     # <basename>.horizon_status_0.txt: reason of every search
+
+<particles>
+particle_type  = nrpic
+pusher         = midpoint
+interp         = hermite
+dt_expansion   = 0.05
+metric         = mesh
+tolerance      = 1.0e-12
+max_iterations = 50
+deposit        = true
+nfilter        = 2
+filter_compensate = true
+filter_comp_c  = -1.0
+deposit_comp_c = 0.0
+deposit_comp_limit = 0.0
+deposit_comp_c2 = 0.0
+deposit_shape  = cic
+deposit_max_level = 31
+deposit_adaptive  = true
+deposit_min_level = 0
+deposit_ppc       = 2.0
+deposit_max_coarsen = 31
+alpha_exc      = 0.3
+ah_exc_factor  = -1.0
+hist_dcycle    = 1
+cstat_dcycle   = 8
+cons_dcycle    = 0
+line_dcycle    = 0
+traj_dcycle    = 0
+traj_ntrack    = 0
+snap_dt        = 1.0
+probe_x1       = 0.001
+probe_x2       = 0.001
+probe_x3       = 0.001
+nprobe         = 0
+lambda         = 0.0
+source_density = true
+source_extrap  = true
+particle_file  = particles.nrp
+deposit_fine_shape = true    # coarse clouds sampled on the leaf cells with their shape
+region_dcycle  = 16          # <basename>.region.hst: norms of H and 16 pi E in and out
+region_radius1 = 2.449489742783178   # compaction radius sqrt(6)/k
+region_radius2 = 0.6
+region_horizon = 0           # and inside/outside the horizon of finder 0 once found
+
+<problem>
+pgen_name  = nrpic_cosmo
+id         = file
+id_file    = fields.bin
+hubble     = 1.0
+
+<output1>
+file_type = hst
+dt        = 0.1
+
+<output2>
+file_type = tab
+variable  = z4c
+dt        = 0.5
+slice_x2  = 0.001
+slice_x3  = 0.001
+
+<output3>
+file_type = tab
+variable  = con
+dt        = 0.5
+slice_x2  = 0.001
+slice_x3  = 0.001
+
+<output4>
+file_type = tab
+variable  = tmunu_E
+dt        = 0.5
+slice_x2  = 0.001
+slice_x3  = 0.001
+
+<output5>
+file_type = tab
+variable  = z4c_alpha
+id        = alpha_y
+dt        = 0.5
+slice_x1  = 0.001
+slice_x3  = 0.001
+
+<output6>
+file_type = tab
+variable  = tmunu_E
+id        = E_y
+dt        = 0.5
+slice_x1  = 0.001
+slice_x3  = 0.001
+
+<output7>
+file_type = rst
+dt        = 5.0
+
+<output8>
+file_type = tab
+variable  = z4c_alpha
+id        = alpha_z
+dt        = 0.5
+slice_x1  = 0.001
+slice_x2  = 0.001
+
+<output9>
+file_type = tab
+variable  = tmunu_E
+id        = E_z
+dt        = 0.5
+slice_x1  = 0.001
+slice_x2  = 0.001

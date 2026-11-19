@@ -78,7 +78,7 @@ Real CosmoNoise(const std::uint64_t cell, const std::uint64_t comp,
 
 void ProblemGenerator::NrpicCosmology(ParameterInput *pin, const bool restart) {
   // adaptive refinement (<amr_criterion0> method = user): criteria of <z4c_amr> and of
-  // <nrpic_amr>, see particles/nrpic_refine.cpp
+  // <particles_amr>, see particles/nrpic_refine.cpp
   user_ref_func = nrpic::CosmoRefine;
   nrpic::CosmoRefineInit(pin, pmy_mesh_);
   if (restart) return;

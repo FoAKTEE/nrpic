@@ -9,7 +9,7 @@
 //! The problem generator nrpic_cosmo enrols CosmoRefine as the refinement function of
 //! <amr_criterion0> method = user.  It first applies the criteria of the spacetime
 //! solver (<z4c_amr>: trivial, tracker, chi, dchi, lohner, and the radii), as nrpic_cf
-//! does, and then the criteria of the block <nrpic_amr>, each read only if present:
+//! does, and then the criteria of the block <particles_amr>, each read only if present:
 //!
 //!   ppc_refine      refine a MeshBlock in which a cell holds more than this many
 //!                   particles, n = sqrt(gamma) E dV / <m W> (deposited energy of the
@@ -64,7 +64,7 @@ namespace {
 constexpr int kMaxLadder = 16;
 
 struct RefineOptions {
-  bool active = false;         // a criterion of <nrpic_amr> is present
+  bool active = false;         // a criterion of <particles_amr> is present
   bool z4c_trivial = true;     // <z4c_amr> method = trivial
   Real ppc_refine = 0.0;       // > 0: criterion on the particle number per cell
   Real ppc_derefine = 0.0;
@@ -84,8 +84,8 @@ RefineOptions ropt;
 int ReadLadder(ParameterInput *pin, const std::string &name, Real *val) {
   int n = 0;
   while (n < kMaxLadder &&
-         pin->DoesParameterExist("nrpic_amr", name + "_" + std::to_string(n+1))) {
-    val[n] = pin->GetReal("nrpic_amr", name + "_" + std::to_string(n+1));
+         pin->DoesParameterExist("particles_amr", name + "_" + std::to_string(n+1))) {
+    val[n] = pin->GetReal("particles_amr", name + "_" + std::to_string(n+1));
     ++n;
   }
   return n;
@@ -95,43 +95,43 @@ int ReadLadder(ParameterInput *pin, const std::string &name, Real *val) {
 
 //----------------------------------------------------------------------------------------
 //! \fn void CosmoRefineInit
-//! \brief reads the criteria of <nrpic_amr>
+//! \brief reads the criteria of <particles_amr>
 
 void CosmoRefineInit(ParameterInput *pin, Mesh *pm) {
   ropt = RefineOptions();
   if (pin->DoesParameterExist("z4c_amr", "method")) {
     ropt.z4c_trivial = (pin->GetString("z4c_amr", "method").compare("trivial") == 0);
   }
-  if (pin->DoesParameterExist("nrpic_amr", "ppc_refine")) {
-    ropt.ppc_refine = pin->GetReal("nrpic_amr", "ppc_refine");
+  if (pin->DoesParameterExist("particles_amr", "ppc_refine")) {
+    ropt.ppc_refine = pin->GetReal("particles_amr", "ppc_refine");
     ropt.ppc_derefine = ropt.ppc_refine/16.0;
-    if (pin->DoesParameterExist("nrpic_amr", "ppc_derefine")) {
-      ropt.ppc_derefine = pin->GetReal("nrpic_amr", "ppc_derefine");
+    if (pin->DoesParameterExist("particles_amr", "ppc_derefine")) {
+      ropt.ppc_derefine = pin->GetReal("particles_amr", "ppc_derefine");
     }
     if (ropt.ppc_refine > 0.0 && 8.0*ropt.ppc_derefine > ropt.ppc_refine) {
       std::cout << "### FATAL ERROR in " << __FILE__ << " at line " << __LINE__
-                << std::endl << "<nrpic_amr> ppc_derefine must not exceed ppc_refine/8: "
+                << std::endl << "<particles_amr> ppc_derefine must not exceed ppc_refine/8: "
                 << "a derefined MeshBlock would be refined again" << std::endl;
       std::exit(EXIT_FAILURE);
     }
   }
   ropt.nlapse = ReadLadder(pin, "lapse_ratio", ropt.lapse_ratio);
   ropt.nchi = ReadLadder(pin, "chi_ratio", ropt.chi_ratio);
-  if (pin->DoesParameterExist("nrpic_amr", "hysteresis")) {
-    ropt.hysteresis = pin->GetReal("nrpic_amr", "hysteresis");
+  if (pin->DoesParameterExist("particles_amr", "hysteresis")) {
+    ropt.hysteresis = pin->GetReal("particles_amr", "hysteresis");
   }
-  if (pin->DoesParameterExist("nrpic_amr", "max_level")) {
-    ropt.max_level = pin->GetInteger("nrpic_amr", "max_level");
+  if (pin->DoesParameterExist("particles_amr", "max_level")) {
+    ropt.max_level = pin->GetInteger("particles_amr", "max_level");
   }
-  if (pin->DoesParameterExist("nrpic_amr", "verbose")) {
-    ropt.verbose = pin->GetBoolean("nrpic_amr", "verbose");
+  if (pin->DoesParameterExist("particles_amr", "verbose")) {
+    ropt.verbose = pin->GetBoolean("particles_amr", "verbose");
   }
   if (pin->DoesParameterExist("particles", "lambda")) {
     ropt.lambda8pi = pin->GetReal("particles", "lambda")/(8.0*M_PI);
   }
   ropt.active = (ropt.ppc_refine > 0.0 || ropt.nlapse > 0 || ropt.nchi > 0);
   if (ropt.active && global_variable::my_rank == 0) {
-    std::cout << "NRPIC: refinement criteria of <nrpic_amr>:";
+    std::cout << "NRPIC: refinement criteria of <particles_amr>:";
     if (ropt.ppc_refine > 0.0) {
       std::cout << " particles per cell above " << ropt.ppc_refine << " (derefine below "
                 << ropt.ppc_derefine << ");";
