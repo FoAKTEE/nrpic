@@ -580,3 +580,21 @@ Two cases that shorten the list of what is not tested (predictions, before the r
   one rank at the level of T3 (1e-12, 1e-14); the identity holds on every rank count at
   the level of one rank. Refuted by a failure to start, a difference above 1e-9 in the
   well-conditioned columns, or a defect of the identity larger on several ranks.
+
+### 09:45 Entry 20: P5e and P6e held
+
+- t5_smr_adaptive, run core-20261119-163639-ddb47b0: trajectories, metric at the
+  particles and snapshots identical byte for byte on 2 and 4 ranks, particle restart
+  files identical but for the header sums (2.9e-16); E and S_i at the particles 4.5e-16;
+  identity 3.0e-13 / 9.7e-14 / 8.2e-14 on 1 / 2 / 4 ranks; 3.6e4 and 7.2e4 deposit
+  packets. The adaptive level of the clouds is the same on every rank count. P5e held.
+- t6_cosmo_east, run core-20261119-163641-ddb47b0 (periodic cosmology with Z4c, 40
+  cycles): runs on 2 and 4 ranks; positions agree with one rank to 1.6e-14, E and S_i at
+  the particles to 1.3e-14, the identity holds at 9.9e-15 / 7.4e-15 / 3.1e-15. The
+  history columns of the net momentum (particle sums and mesh integrals, columns 6-8,
+  10-12, 25-27) "differ by up to 136 per cent" relative to their own largest value,
+  which is 3.5e-16: they are zero to rounding in this set-up, and the absolute
+  differences are 4.8e-16 against sum m W = 7.6, i.e. 6e-17 relative. Every other column
+  agrees to 1e-12; Hr_max and Mr_max (noise ratios) to 1.2e-10. P6e held; the comparison
+  of history columns relative to their own maxima misleads for quantities that vanish,
+  as noted for Hr in entry 9.

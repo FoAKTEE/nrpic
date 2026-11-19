@@ -209,8 +209,8 @@ the double-precision rounding of the sums involved.
 
 | Step | Test | Result | Runs (journal entry) |
 |---|---|---|---|
-| 0 | R0: serial build of this branch against release core-v0.3 (geo, boris, dep, east, os) | identical byte for byte | 8f245d7: `r0_serial.json` (7, 14); final source: PENDING-R0F |
-| 0 | R0: MPI build started on one rank against the release | identical but for 36 bytes of an unset header field of the mesh restart files (uninitialised memory in the release's files) | `r0_mpi1.json` (11); final: PENDING-R0F |
+| 0 | R0: serial build of this branch against release core-v0.3 (geo, boris, dep, east, os) | identical byte for byte | `tracks/core/analysis/mpi/figs/r0_final_serial.json` (7, 18) |
+| 0 | R0: MPI build started on one rank against the release | identical but for 36 bytes of an unset header field of the mesh restart files (uninitialised memory in the release's files) | `figs/r0_final_mpi_one_rank.json` (11, 18) |
 | 1 | T1: 2000 test particles in Kerr sampled on the mesh, midpoint and Boris; T1p: periodic box | trajectories, metric at the particles, snapshots, particle restart files identical byte for byte on 2 and 4 ranks; counters exact; sums to 3e-13; 2e3 to 1e4 hand-overs | core-20261119-145615/145630/145644-4c98c59 (3) |
 | 2 | T2: deposit and filter in a fixed metric, cic, tsc, pcs, compensated; periodic box and Kerr | mesh integral = particle sum to 1e-14 on 1, 2, 4 ranks; E, S_i at every particle equal to one rank to 8e-16; 6e4 to 4e5 deposit packets | core-20261119-152233/152306/152347/152416/152553/152736-8f245d7 (5, 6) |
 | 3 | T3: self-gravitating cluster (4000 particles, Z4c, 8 MeshBlocks meeting at its centre), plain and with extrapolated step sources | positions 4e-15, history 5e-13, field dumps 6e-12 (t = 7.5 M), identity 1e-15; no feature at the planes between ranks | core-20261119-154814-ca46836, core-20261119-155306-ee6c92c (9, 10) |
@@ -218,17 +218,18 @@ the double-precision rounding of the sums involved.
 | 4 | caveat, one rank | a restart of this set-up is not exact on one rank either (release too): the mesh restart path refills the ghost cells on the outer boundary, 1e-9 there, 1e-10 in the history after one step | core-20261119-160230-a2f1cf7, -160823-0e90ab7 (11, 12) |
 | 5 | T5: deposit on a statically refined mesh (176 MeshBlocks, 3 levels, 10^4 particles), cic, tsc with level cap, pcs | particles identical byte for byte; sources at particles 4e-16; identity 1e-14 on 1, 2, 4 ranks | core-20261119-161206/161208-421d7e3, -161349-896e22c (14) |
 | 5 | T5: cluster with Z4c on a statically refined mesh (26 + 8 MeshBlocks) | 2 ranks (all particles on one rank): identical to one rank byte for byte in the particle files; 4 ranks: positions 1e-15, history 3e-13, identity 3e-15 | core-20261119-161503-32b23c0 (16) |
+| 5 | T5: refined-mesh deposit with `deposit_adaptive` (cloud level from the last deposit) | particle files identical, sources at particles 5e-16, identity 1e-13 on every rank count | core-20261119-163639-ddb47b0 (20) |
 | 5 | T5b: adaptive mesh, refinement at cycle 8 with particles (centred cluster) | same mesh on all rank counts, history 2e-13, positions 1e-15, identity 1e-14; no MeshBlock changed rank | core-20261119-161351-896e22c (15) |
 | 5 | T5b: adaptive mesh with MeshBlocks moved by load balancing (cluster in one octant) | 14 (2 ranks) and 45 (4 ranks) MeshBlocks moved at the refinement, 2832 particles handed over with them; history 7e-14, positions 1e-15, identity 6e-15 | core-20261119-161801-9d336d6 (17) |
-| 6 | card build with MPI on two cards | PENDING-CARD | |
+| 6 | T6: periodic cosmology with Z4c (regression case east at 16^3, 4096 particles, filter, compensation, conformal-time lapse, density sources, field initial data) | positions 1.6e-14, sources at particles 1.3e-14, identity 1e-14 on 1, 2, 4 ranks | core-20261119-163641-ddb47b0 (20) |
+| 6 | card build with MPI on two cards | queued (Slurm job 4663, run core-20261119-160452-582824b); not run at the time of writing | (9) |
 
 Not ported (the module stops with a message on more than one rank): Newtonian mode
 (`pusher = newton`), collisions, the test kick, curvature records (`curv_dt`). Not tested
 on several ranks: horizon excision (`ah_exc_factor`; the horizon finder and the puncture
 tracker have their own MPI code upstream, but whether the finder's result is the same on
-every rank was not checked), `deposit_adaptive`, the Kerr-Schild analytic metrics with
-more than one rank (particles stay on rank 0; nothing is distributed), periodic boxes with
-Z4c (only with a fixed metric, T1p, T2p), load balancing by cost (AthenaK balances
+every rank was not checked), the Kerr-Schild analytic metrics with
+more than one rank (particles stay on rank 0; nothing is distributed),  load balancing by cost (AthenaK balances
 MeshBlocks by number; particles do not enter the cost). Not done: replacing the copy of the
 cloud in the deposit kernel by `nrpic_cloud.hpp` (section 5).
 
@@ -271,4 +272,17 @@ the mesh exchange of AthenaK passes device buffers to the CUDA-aware Open MPI.
 
 ## 8. Answer to Track F (request `two-card-or-larger-blocks`)
 
-Option (1), two cards with MPI, is available: PENDING-CARD.
+Option (1), two cards with MPI, is built and published (`scratch/core/exe/core_mpi/athena_gpu`,
+with `gpu_bind.sh`), but not yet measured: the card test (job 4663) is queued. It runs
+exactly Track F's case D205_m16_r1.8_t+0090.5 of run F-hills-20261115-131348-634fb86
+(4502 MeshBlocks of 16^3, twelve levels, here static, three vacuum punctures of masses
+0.05, 0.05, 0.5 at the centres of its refined regions:
+`problems/tests/mpi_two_card_triple.athinput`) on two cards for ten cycles, and the m/8
+mesh of the same case (2332 MeshBlocks) on one and on two cards, and writes the
+MeshBlock-cycles per second and the peak memory of each card
+(`tracks/core/analysis/mpi/card_analysis.py <output directory>`). The predictions are in
+the journal (entry 9, P6c, P6d). On processors the code path is the one tested above;
+vacuum Z4c on several ranks is upstream AthenaK code (the smoke test of journal entry 1
+ran it on two processor ranks). What Track F can do now: run its mesh-count inputs with
+`athena_cpu -m 2` to see the split over two ranks (no allocation), and plan with
+`max_nmb_per_rank` per card; the measured rate and memory follow when the job has run.
