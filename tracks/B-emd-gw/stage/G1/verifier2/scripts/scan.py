@@ -1,6 +1,7 @@
 """Per-dump diagnostics of the crossed-wave runs (verifier2, my own code).
 
     python3 scan.py OUTDIR LABEL:RUNDIR [LABEL:RUNDIR ...]     (env NWORK, default 8)
+    (OUTDIR "-": the run directory $NRPIC_RUN_DIR of nrpic-run)
 
 For every bin dump (single precision, RUNDIR/bin/*.z4c.*.bin) and every restart dump
 (double precision, RUNDIR/rst/*.rst) of each case: the flat transverse-traceless (TT)
@@ -129,6 +130,8 @@ def analyze(args):
 
 def main():
     outdir = sys.argv[1]
+    if outdir == "-":
+        outdir = os.environ["NRPIC_RUN_DIR"]
     os.makedirs(outdir, exist_ok=True)
     nwork = int(os.environ.get("NWORK", "8"))
     for spec in sys.argv[2:]:
