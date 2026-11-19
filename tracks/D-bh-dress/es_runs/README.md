@@ -25,9 +25,20 @@ predictions, appended there.
 | dust proper time at t = 200 M (R0 = 48 M) | 279.7 M (model 1251 M) | - | |
 | card-hours | 0.769 | 0.672 | below the predicted 1.0 and 0.9 |
 
-Open: the common late drift of the horizon mass after t ~ 165 M and the late, anisotropic
-growth of the tracer errors (diagonal tracers first, outer groups first) have no
-established cause (entry 6, E2). ES-1G (entry 5) is submitted; see the run table.
+Gauge pathologies of the 1+log runs (entries 4, 6, 7): (i) the slicing leaves the dust
+within 30 M (K at the plateau tracer 0.1-0.2 of -3H at t = 30-40 M, positive at t = 40-90 M),
+the lapse settles at 1.3-1.4 out to the boundary instead of 1 + 6 ln a; (ii) a lapse pulse
+from the dust reaches the hole at t ~ 20-23 M and moves the horizon mass by -2.3e-4 to
++3.2e-4 against V-1 during t = 25-50 M; (iii) the mesh minimum of the lapse swings between
+0.004 and 0.23 in the first 45 M (above alpha_exc = 0.05 for several M near t = 6 and
+15 M: lapse excision then acts on nothing); (iv) a step of the horizon mass at t ~ 30 M
+in both runs; (v) after t ~ 165 M a common downward drift of the horizon mass, and after
+tau ~ 130 M an axis/diagonal split of the tracer errors (cause open: no inward signal
+from the boundary in the probe lapse, entry 7); (vi) outgoing gauge waves at speed ~1.5
+during t = 30-100 M.
+
+Open: the cause of (v). ES-1G (entry 5: the same data with `lapse_leak`, T = 2 M) is
+submitted and was still queued at the end of this session; see the run table.
 
 ## Runs
 
@@ -45,6 +56,11 @@ Manifests in `tracks/D-bh-dress/runs/<id>/`, outputs in `/data/haiyangw/nrpic/sc
 | D-20261119-141839-8686bd7 | `analyse.py` on ES-1 and V-1 (entry 4) | done |
 | D-20261119-142334-4f2bffe | `tools/es1g_model.py`: homogeneous lapse models for ES-1G (entry 5) | done |
 | D-20261119-142929-bb375ff | `tools/es_extra.py` on ES-1 and V-1 (entry 6) | done |
+| D-20261119-143659-7adcad7 | `tools/es_extra.py` version 2 on ES-1 and V-1 (adds crossings, Khat, windows against V-1); `results/es_extra.json` | done |
+| D-20261119-143413-bce5e71 | `tools/probe_fronts.py`, t = 50-200 M (entry 7) | done: features move outward |
+| D-20261119-143444-8a9949c | `tools/probe_fronts.py`, t = 100-200 M (entry 7) | done: no coherent inward signal |
+| D-20261119-143623-8576a6e | pre-flight of the ES-1G input, 2 cycles, gauge processor executable (entry 8) | see JOURNAL |
+| D-20261119-143626-7d1fa75 | the same with the release processor executable (entry 8) | see JOURNAL |
 | D-20261119-142633-6f72922 | ES-1G on the card (chain, Slurm 4636, one segment, <= 1 card-hour) | see JOURNAL; close and analyse with `tools/finish_es1g.sh` |
 
 ## Contents
@@ -59,6 +75,8 @@ Manifests in `tracks/D-bh-dress/runs/<id>/`, outputs in `/data/haiyangw/nrpic/sc
 | `inputs/es1g_dx8.athinput` | ES-1 with core's `lapse_leak = 0.5`, `lapse_leak_alpha = 1` (T = 2 M; option 1 of `scratch/core/exe/core_gauge/READY`); run as D-20261119-142633-6f72922 with `scratch/core/exe/core_gauge/athena_gpu` |
 | `tools/es1g_model.py` | homogeneous plateau lapse and dust proper time under 1+log and under `lapse_leak` (numbers of entry 5) |
 | `tools/es_extra.py` | second look at any set of ES runs (entry 6): wall per class (axis, diagonal), onset of the tracer errors, crossings of R = 2M, turnaround, lapse and K at the plateau tracers against the models, dust against the wall by direction, space-time diagrams on the x axis, horizon mass against V-1 |
+| `tools/probe_fronts.py` | moving features in the lapse at the probes: detrended d alpha/dt, lag of the best cross-correlation between neighbouring probes (entry 7) |
+| `tools/preflight_compare.py` | compares the two-cycle processor runs of the ES-1G input with the gauge and the release executables (entry 8) |
 | `tools/finish_es1g.sh` | closes ES-1G and runs `es_extra.py` on ES-1, V-1, ES-1G; JSON to `results/es_extra_es1g.json`, figures to `figs/es1g/` |
 | `analyse.py` | the analysis of both runs: horizon mass and its drift against the control, every tracer's areal radius (metric at the particle) against its proper time and the exact curve, crossing times of R = 2M, lapse at the probes and along the x axis; `es_analysis.json` and figures |
 | `figs/` | figures copied from the registered runs (each looked at before use) |
