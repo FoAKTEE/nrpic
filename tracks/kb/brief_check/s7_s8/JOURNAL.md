@@ -95,3 +95,46 @@ Run 1 (`scripts/gem_sign.py`, processors, seconds): the [BACKGROUND] sign statem
   dependent; only the total is invariant (as a coordinate acceleration in the source's
   harmonic coordinates). The verdict on the brief's sentence rests on the standard
   linearized-harmonic split.
+
+## Entry 3, 2026-11-19T15:48Z: outcome of run 1; outcome of the predictions P1-P8; prediction of run 2
+
+Run 1, `kb-20261119-154153-47eb61f` (processors, one core, seconds): completed, every
+preregistered check passed. Symbolic: b^2 a_y / M = -[2 gamma^2 (1 - V w)^2 - (1 - w^2)]; by
+component, h_00 gives -gamma^2 (1 + V^2), h_0x gives +4 gamma^2 V w, h_xx gives
+-gamma^2 (1 + V^2) w^2, h_yy and h_zz nothing. Co-moving total -(1 - V^2); finite differences
+of the full-metric Christoffel symbols agree to 1.2e-6 (relative, 13 x 13 grid). The
+prediction of entry 2 holds as written. Figure `scratch/kb/kb-20261119-154153-47eb61f/
+fig_gem_sign.png` inspected: (a) at V = 0.6 the h_0x part changes sign with w, repulsive for
+w > 0, and the finite-difference points sit on the total; (b) for co-moving currents the
+gravity h_0x part is positive and the EM magnetic part negative, the total lies on -1/gamma^2.
+Two debugging runs before it (into `scratch/kb/tmp/s7_s8/gem_try`, not registered) failed on
+code faults only: a numpy bool in the JSON and a symbol b not declared positive, which left
+Abs(b) in the closed-form comparison; both fixed before the registered run.
+
+Predictions of entry 1, outcome:
+- P1 held with precisions: no citation points to an unrelated paper, but 2608.13206 is a
+  radiation-era (pressure) paper cited for its gauge, 2508.20606 embeds its "asymptotically
+  FLRW" cap in a periodic box, 2606.14853 is about rigid-background lattice codes, and the
+  Kehle-Unger result behind U3 is charged and spherical, not rotating (rows 2, 6, 28, 35).
+- P2 held (rows 11, 12).
+- P3 held (row 13).
+- P4 failed in part (entry 2): the Einstein-de Sitter case has 2026 answers for fluids; for
+  massive Vlasov nothing was found (row 22).
+- P5 held by derivation (run 1); the Newtonian instabilities are located in four store papers
+  (row 31), not only in a textbook.
+- P6 held (row 39).
+- P7 held (row 42).
+- P8 mostly held: no question is ANSWERED. Q19 is PARTLY ANSWERED as predicted; the
+  predicted OPEN set was too pessimistic for Q7 (N^-1/2 constraint scaling in the source
+  paper), Q8 (dust as a singular Vlasov limit, a trapped-surface proof near Oppenheimer-Snyder)
+  and Q20 (fluid analogue); and too optimistic in no case. Q16, Q18, Q25, Q26 and Q6 are OPEN
+  as predicted.
+
+Run 2 (`scripts/fig_verdicts.py`, processors, seconds): tally and locator check of CHECK.md.
+- Prediction: part A has 42 rows with 19 CONFIRMED, 22 CONFIRMED (precision), 1 CORRECTED,
+  0 NOT FOUND (the header sentence, recounted by hand at 15:47Z after a first header with
+  21/20 that did not match my own row list); labels 2 [BACKGROUND], 1 [TO VERIFY], 39 (unl.);
+  part B 0 ANSWERED, 16 PARTLY ANSWERED, 10 OPEN; part C 12 rows; every TeX locator names an
+  existing file and lines within it, every metadata file and stored INSPIRE answer exists and
+  is ok, the run id has its manifest. Refuted by any mismatch or missing file the script
+  reports; then the row is corrected and the run repeated, both on record.

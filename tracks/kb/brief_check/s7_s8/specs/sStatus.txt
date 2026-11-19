@@ -1,0 +1,35 @@
+# locators for the status of the open questions (papers found by the searches, in the store)
+# Q7, Q9: particle noise and constraints in the source paper (already located in sB_kinetic)
+# Q11: threshold in the early matter era with particles
+2609.14218 | threshold|5
+2609.14218 | caveat|3
+2609.14218 | spin|4
+# Q12: gravitational waves from early structure formation (Newtonian N-body)
+2312.12499 | nonlinear regime|4
+2312.12499 | linear regime|perturbative|4
+2312.12499 | relativistic|general relativity|4
+2212.00425 | N-body|3
+# Q14: seed mass from SIDM core collapse
+2601.17117 | seed|5
+2601.17117 | Misner|3
+# Q22: lattice, delta N and stochastic inflation; NR comparison in 2512.14649
+2604.00978 | stochastic|4
+2604.00978 | numerical relativity|3
+2506.11795 | stochastic|4
+2512.14649 | caravano|comparison|3
+# Q21: coloured noise from the window function
+2512.17070 | window|5
+# Q23: inflaton condensate replaced by N-body particles
+2011.13333 | N-body|4
+2011.13333 | relativistic|general relativity|Newtonian|4
+2110.15109 | N-body|3
+2110.15109 | Newtonian|relativistic|3
+# Q24: capture of the whole binary in 2402.02178; GR benchmark; Hills EMRIs
+2402.02178 | capture of the|3
+2604.27429 | spin|Kerr|4
+2610.13294 | general relativ|4
+# Q19: Burnett directions
+2402.17530 | symmetry|4
+1907.10743 | U\(1\)|\\mathbb U|symmetr|4
+# Q3: bias from periodic length in 2607.06441
+2607.06441 | periodic|5
