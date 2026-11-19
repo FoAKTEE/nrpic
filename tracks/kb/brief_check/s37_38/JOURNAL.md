@@ -165,3 +165,11 @@ two placeholder spans of the CHECK.md header (meta:arxiv-api/<id>), now skipped.
 P19. check_spans.py on ERRATA_ROWS.md and CHECK.md: ERRATA_ROWS 56 spans (37 TeX, 4 iq, 15 other),
      CHECK.md 126 spans (73 TeX, 23 iq, 3 meta, 27 other), no problem, exit 0. [Refuted if any TeX
      locator names a missing file or a line beyond its end.]
+
+## Entry 4 (2026-11-19, 07:33 PST from `date`): span check
+
+- P19 held: run kb-20261119-153252-225d6df completed, exit 0, counts exactly as predicted
+  (ERRATA_ROWS 56 spans: 37 TeX, 4 iq, 15 other; CHECK.md 126: 73 TeX, 23 iq, 3 meta, 27 other),
+  no problem. That run wrote no figure (the script had none), against rule 6; a figure of the span
+  kinds per file was added to check_spans.py (dry run looked at, readable) and the check is rerun
+  as the reference run with the same prediction (P19 again, plus fig_spans.png written).
