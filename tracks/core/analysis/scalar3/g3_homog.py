@@ -10,6 +10,9 @@ four lapse conditions, at the step of the 32^3 stochastic runs.
   log    lapse_oplog = 2 (1+log), to t = 0.75 or until the run fails
   leak   lapse_oplog = 2, lapse_leak = 10 on the executable of branch core/gauge, to
          t = 4.7 (8 e-folds at a lapse of 1.8)
+  capconf  (only with --only capconf; test G4) lapse_harmonic = 1/3 with lapse_leak =
+         50 and lapse_leak_alpha = 8 on the executable of core/gauge, at the step of a
+         256^3 run (Courant 0.015625 here): conformal time until the lapse reaches 8
 A run that ends with a non-zero exit status or with non-finite numbers is a result
 here, not an error.  Compares <phi>, <Pi>, <K> of <basename>.sf.hst as functions of the
 proper time of the mean lapse with the Friedmann solution (nrpic.scalar_field.
@@ -28,6 +31,11 @@ SPEC = {
     "conf": (False, ["z4c/lapse_harmonic=0.3333333333333333", "time/tlim=0.999"]),
     "log": (False, ["z4c/lapse_oplog=2.0", "time/tlim=0.75"]),
     "leak": (True, ["z4c/lapse_oplog=2.0", "z4c/lapse_leak=10.0", "time/tlim=4.7"]),
+    # conformal time until the lapse reaches 8, then held there by the relaxation term,
+    # at the step of a 256^3 run (Courant 0.25): test G4
+    "capconf": (True, ["z4c/lapse_harmonic=0.3333333333333333", "z4c/lapse_leak=50.0",
+                       "z4c/lapse_leak_alpha=8.0", "time/cfl_number=0.015625",
+                       "time/tlim=1.5"]),
 }
 
 
@@ -48,6 +56,7 @@ def main():
     ap.add_argument("--analyse-only", action="store_true")
     ap.add_argument("--data", help="with --analyse-only: directory of the runs of an "
                     "earlier execution")
+    ap.add_argument("--only", default="", help="cases to run and analyse")
     a = ap.parse_args()
     out = s3.run_dir(a.out)
     data = os.path.abspath(a.data) if a.data else out
@@ -56,7 +65,10 @@ def main():
     case = s3.case("sr", 1)
     v, dv, phi0, pi0 = s3.inf.code_background(case)
     res = {}
-    for k, (gauge_exe, args) in SPEC.items():
+    spec = {k: v for k, v in SPEC.items() if not a.only or k in a.only.split(",")}
+    if not a.only:
+        spec.pop("capconf")      # test G4 is run on its own
+    for k, (gauge_exe, args) in spec.items():
         rd = os.path.join(data, k)
         code = None
         if not a.analyse_only:
@@ -108,6 +120,20 @@ def main():
             late = tau > 1.0
             r["alpha_over_eq_max_dev_late"] = float(np.abs(al[late]/eq[late] - 1.0).max())
             r["alpha_eq_first"] = float(eq[0])
+        if k == "capconf":
+            # steps to 8 e-folds, and the settled lapse against the root of
+            # ln(alpha/alpha_0) = H T alpha (alpha_0 = 8, T = 0.02)
+            i8 = int(np.searchsorted(nef, 8.0))
+            r["steps_to_8_efolds"] = i8 if i8 < nef.size else None
+            r["steps_geodesic_same_dt"] = float(8.0/(ref["H"].mean()*(t[1] - t[0])))
+            hh = ref["H"]
+            eq = np.full(hh.size, 8.0)
+            for _ in range(200):
+                eq = 8.0*np.exp(hh*0.02*eq)
+            late = nef > 4.0
+            r["alpha_over_eq_max_dev_late"] = float(np.abs(al[late]/eq[late] - 1.0).max())
+            r["alpha_over_a_max_dev_to_1p5"] = float(
+                np.abs(al*np.sqrt(h["chi"][:nok]) - 1.0)[nef < 1.5].max())
         if k == "log":
             # 1 + 6 N
             r["alpha_over_1p6N_max_dev"] = float(
@@ -124,9 +150,9 @@ def main():
     fig, ax = plt.subplots(1, 3, figsize=(fs.FULL_WIDTH, 2.6))
     fig.subplots_adjust(left=0.07, right=0.99, bottom=0.17, top=0.95, wspace=0.33)
     cols = dict(geo=fs.PAL["blue"], conf=fs.PAL["orange"], log=fs.PAL["green"],
-                leak=fs.PAL["red"])
+                leak=fs.PAL["red"], capconf=fs.PAL["yellow"])
     labs = dict(geo="geodesic", conf="conformal time", log="1+log",
-                leak="1+log, relaxed")
+                leak="1+log, relaxed", capconf="conformal, capped at 8")
     for k, r in res.items():
         ax[0].plot(r["nef"], r["al"], color=cols[k], label=labs[k])
         hd = r["ref"]["H"]*r["al"]*np.gradient(r["h"]["time"][:r["nok"]])

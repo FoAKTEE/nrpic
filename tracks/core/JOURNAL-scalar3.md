@@ -389,3 +389,31 @@ of the sources in ultra slow roll); PC2 by a top-shell error at k dx = pi/2 belo
 above 0.1; PC3 if the pair s = +-0.01 misses 2e-2 for |n| <= 8 (the sources or the slice
 would be wrong when modes enter during ultra slow roll, which the 32^3 runs cannot
 test); PC4 by a Hamiltonian ratio above 1e-7.
+
+## 2026-11-19, entry 5: a lapse for long runs at high resolution (G4), predicted
+
+[JUDGEMENT] What a long inflationary run needs from the lapse: (i) a homogeneous
+background part, so that the sources and their window keep a meaning (they carry
+<alpha> and run in the proper time of the mean); (ii) a step in e-folds, H <alpha> dt,
+that stays at the accuracy limit of the time integration (0.05: the 32^3 runs) instead
+of growing or of being much smaller; (iii) a response to local contraction if large
+perturbations collapse. Geodesic slicing meets (i), fails (iii), and wastes steps at
+high resolution: the step is set by the cell, H dt = 2 pi C/N = 0.0061 at N = 256, eight
+times below the accuracy limit, although from ln 8 = 2.1 e-folds on the coordinate
+light speed alpha/a would allow a lapse of 8. Conformal time keeps the Courant number
+of light and fails (ii) after ln(0.05 N/(2 pi C)) e-folds (G3: three e-folds at this
+step). The two can be joined with the relaxation term of `core/gauge`: `lapse_harmonic =
+1/3` (alpha = a) with `lapse_leak = 1/T`, `lapse_leak_alpha = alpha_0`: the term is off
+below alpha_0, and above it holds the lapse at the root of ln(alpha/alpha_0) = H T
+alpha (which exists for H T alpha_0 < 1/e), close to alpha_0. With alpha_0 = 0.05 N/(2
+pi C) the run takes (1 - 1/alpha_0) N/(2 pi C) steps for the first ln alpha_0 e-folds
+and 20 steps per e-fold afterwards.
+
+G4 (homogeneous, on the published processor executable of `core/gauge`; `g3_homog.py
+--only capconf`: 16^3, step 0.006136 as a 256^3 run at Courant 0.25, alpha_0 = 8, T =
+0.02). Predictions: the lapse equals a within 1e-4 up to 1.5 e-folds; from 4 e-folds on
+it sits at the root, 9.71 for H = 1, within 1 percent; 8 e-folds are reached in 245 +-
+15 steps where geodesic slicing at the same step needs 1340; at equal field value K
+within 1e-8 and the e-folds within 3e-5 of the Friedmann solution. Refuted by a lapse
+that keeps growing (no root reached), by more than 300 steps, or by an error of K above
+1e-6.
