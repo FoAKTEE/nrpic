@@ -1,0 +1,105 @@
+[
+ {
+  "id": "A0",
+  "name": "format",
+  "passed": true,
+  "value": 0,
+  "criterion": "no inconsistency",
+  "detail": ""
+ },
+ {
+  "id": "A1",
+  "name": "exact reconstruction from the keys",
+  "passed": true,
+  "value": 9.814062867718307e-14,
+  "criterion": "max|xi - xi_ref| / rms <= 1e-11",
+  "detail": "worst stoch_c0@300"
+ },
+ {
+  "id": "A2",
+  "name": "spectrum per shell (and mu bins of c3)",
+  "passed": true,
+  "value": {
+   "min_p_bonferroni": 0.12986549743284392,
+   "max_abs_zpool": 1.8217865029372293
+  },
+  "criterion": "min p * shells >= 2.8e-05, |z_pool| <= 4.19",
+  "detail": "fails: "
+ },
+ {
+  "id": "A3",
+  "name": "Gaussian amplitudes",
+  "passed": true,
+  "value": {
+   "p_mod": 0.0576562267692432,
+   "p_arg": 0.09991616283625848,
+   "z4": -0.6787628445669968
+  },
+  "criterion": "KS p >= 2.8e-05 (|w|^2 ~ Exp(1), arg uniform), |z4| <= 4.19",
+  "detail": "fails: "
+ },
+ {
+  "id": "A4",
+  "name": "correlation function",
+  "passed": true,
+  "value": 0.03017708241442728,
+  "criterion": "min p * lags >= 2.8e-05",
+  "detail": "fails: "
+ },
+ {
+  "id": "A5",
+  "name": "one-point: zero mean (skewness, kurtosis reported)",
+  "passed": true,
+  "value": 7.224016810602621e-18,
+  "criterion": "|mean| / rms <= 1e-11",
+  "detail": ""
+ },
+ {
+  "id": "A6",
+  "name": "components of one degree of freedom share the amplitudes",
+  "passed": true,
+  "value": 0.0,
+  "criterion": "deviation <= 1e-10 (pair, c1: |z| <= 4.19)",
+  "detail": "fails: "
+ },
+ {
+  "id": "A7",
+  "name": "independent degrees of freedom are uncorrelated",
+  "passed": true,
+  "value": 1.5944197856486095,
+  "criterion": "|z| <= 4.19",
+  "detail": ""
+ },
+ {
+  "id": "A8",
+  "name": "between outputs",
+  "passed": true,
+  "value": 1.4319927049383337e-13,
+  "criterion": "frozen: deviation <= 1e-10",
+  "detail": ""
+ },
+ {
+  "id": "A9",
+  "name": "integrated field",
+  "passed": null,
+  "value": null,
+  "criterion": "needs stoch_acc0",
+  "detail": "not applicable: no integrated field in the output"
+ },
+ {
+  "id": "A10",
+  "name": "band limit: nothing outside the mode set or where G = 0",
+  "passed": true,
+  "value": 5.0823765902707585e-15,
+  "criterion": "max |xi_n| / rms_G <= 1e-10",
+  "detail": "worst stoch_c2@100"
+ },
+ {
+  "id": "A12",
+  "name": "restart",
+  "passed": true,
+  "value": 0.0,
+  "criterion": "bit-identical",
+  "detail": "4 fields; bitwise True; max rel diff 0.00e+00"
+ }
+]
