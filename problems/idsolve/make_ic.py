@@ -21,6 +21,12 @@
         particle starts at the kink of the cloud-in-cell weight, and the deposited
         density has a jump of one cell where the displacement changes sign.
 
+    make_ic.py shell --mass 0.5 --r0 6 --width 1 --h 0.25 --out DIR
+        Particles at rest on the lattice (k + 1/2) h with masses Etilde(r) h^3 inside
+        |r - r0| <= ncut width, Etilde = A exp(-(r - r0)^2/(2 width^2)) the density per
+        coordinate volume with integral mass (the matter of a puncture test: a shell
+        about a puncture at the centre, whose regular part u of psi then solves the
+        radial equation lap u = -2 pi Etilde/(psi_s + u); --u sets u_x of every particle).
 Each call writes the particle file and a JSON file with the parameters.
 File formats: docs/FORMATS.md. Units G = c = 1.
 """
@@ -194,6 +200,36 @@ def cmd_wave(a):
                                                              m.sum()/a.box**3))
 
 
+def shell_profile(r, mass, r0, width):
+    """Etilde(r) of the shell, normalised to the given mass (radial integral)."""
+    rr = np.linspace(max(r0 - 12.0*width, 0.0), r0 + 12.0*width, 200001)
+    norm = np.trapezoid(4.0*np.pi*rr**2*np.exp(-0.5*((rr - r0)/width)**2), rr)
+    return mass*np.exp(-0.5*((np.asarray(r) - r0)/width)**2)/norm
+
+
+def cmd_shell(a):
+    lo, hi = max(a.r0 - a.ncut*a.width, 0.0), a.r0 + a.ncut*a.width
+    n = int(np.ceil(hi/a.h))
+    c = (np.arange(-n, n) + 0.5)*a.h
+    x, y, z = np.meshgrid(c, c, c, indexing="ij")
+    r = np.sqrt(x*x + y*y + z*z).ravel()
+    keep = (r >= lo) & (r <= hi)
+    pos = np.stack([x.ravel()[keep], y.ravel()[keep], z.ravel()[keep]], axis=1)
+    m = shell_profile(r[keep], a.mass, a.r0, a.width)*a.h**3
+    vel = np.zeros_like(pos)
+    vel[:, 0] = a.u
+    stem = (a.prefix or "shell_h%g" % a.h).replace(".", "p")
+    os.makedirs(a.out, exist_ok=True)
+    nio.write_nrp(os.path.join(a.out, stem + ".nrp"), pos, vel, m)
+    meta = dict(kind="shell", mass=a.mass, r0=a.r0, width=a.width, ncut=a.ncut, h=a.h,
+                u_x=a.u, N=int(len(m)), sum_m=float(m.sum()),
+                sum_mu_x=float(a.u*m.sum()), particle_file=stem + ".nrp")
+    with open(os.path.join(a.out, stem + ".json"), "w") as f:
+        json.dump(meta, f, indent=1)
+        f.write("\n")
+    print("wrote %s.nrp: %d particles, sum m = %.12g" % (stem, len(m), m.sum()))
+
+
 def main(argv=None):
     p = argparse.ArgumentParser(description=__doc__,
                                 formatter_class=argparse.RawDescriptionHelpFormatter)
@@ -245,6 +281,16 @@ def main(argv=None):
     w.add_argument("--out", default=".")
     w.add_argument("--prefix", default=None)
     w.set_defaults(func=cmd_wave)
+    sl = sub.add_parser("shell", help="a spherical Gaussian shell of particles")
+    sl.add_argument("--mass", type=float, default=0.5, help="integral of Etilde")
+    sl.add_argument("--r0", type=float, default=6.0)
+    sl.add_argument("--width", type=float, default=1.0)
+    sl.add_argument("--ncut", type=float, default=5.0, help="half-thickness in widths")
+    sl.add_argument("--h", type=float, required=True, help="lattice spacing")
+    sl.add_argument("--u", type=float, default=0.0, help="covariant u_x of every particle")
+    sl.add_argument("--out", default=".")
+    sl.add_argument("--prefix", default=None)
+    sl.set_defaults(func=cmd_shell)
     a = p.parse_args(argv)
     a.func(a)
     return 0

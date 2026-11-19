@@ -346,3 +346,97 @@ boundary. (3) Uniform torus, moving matter, A = 0.1, 32 cells, max|M| of the mon
 before 0.095: after, mode code 2.6e-4, stencil form 9.2e-4; with one filter pass
 (`nfilter = 1`) mode code 2.0e-6, stencil form 3.9e-4. The filter removes the content at
 the Nyquist wavenumber that the monitor's operator cannot balance.
+
+## 2026-11-19, entry 5: a new session continues; tests B, C launched; predictions R0, P, W1 at 128 cells, K (card)
+
+A new session took the package over at 15:31 UTC from commit 76add0c and the uncommitted
+entry 4 (committed as 3d26b50). The submission loop of the previous session had stopped
+(no process left, its log ends at 15:27 UTC). Read again: `CLAUDE.md`, `coord/CHARTER.md`
+to "Owners", brief lines 493-553, 688-706, 834-860, decisions 0010, 0016, 0017, 0018,
+`harness/RULES.md`, `interfaces/id_solver.md`, `JOURNAL-idsolve.md` (all), this journal,
+`particles/nrpic_idsolve.cpp` (all), the two requests of Track A,
+`pgen/nrpic/nrpic_bowen_york.hpp` 1-96, `python/nrpic/bowen_york.py` 1-232.
+
+Launched (processor build of 76add0c, predictions of entries 2 and 3 unchanged): test B
+at 32, 64 and 128 cells as run core-20261119-153416-3d26b50 (4 cores: the allotment of
+owner core had 4 free), test C as run core-20261119-153510-d1eaa30 (1 core, what was
+left). The 128-cell cases of B run on processors, not on a card.
+
+**R0 regression against the release** (`regress_r0.py`): without `id_solve` the
+executable of this branch writes the same bytes as the release executable core-v0.3
+(`.work/build_cpu_v03/src/athena`) in the seven relativistic set-ups of
+`regress_relativistic.py` (geo, boris, dep, east, os, jeans, binary: the binary has four
+multigrid levels, so the octet boundary routine with its new Robin hook is passed with the
+multipole kind) and the two Newtonian set-ups (isolated with multipole faces, periodic).
+Refuted if any output file or result line of the log differs.
+
+**P, punctures** (`test_p.py`; the singular part psi_s = 1 + sum m/2r in closed form, u
+solved). References: for one Bowen-York puncture (m = 1, P = 0.5 along x) the multipole
+solution `bowen_york.solve_axisym` (lmax 12): m_ADM = 1.145565, u at the puncture 0.028368,
+and the mass that the moments within r = 16 give, m + 2 Q(16) with Q(R) = -R^2 u_0'(R):
+1.119594; for a puncture (m = 1, at rest) in a Gaussian shell of particles at rest
+(mass 0.5, radius 6, width 1) the radial solution of lap u = -2 pi Etilde/(psi_s + u)
+computed in `test_p.py`: m_ADM = 1.448858, u(0) = 0.036309. Said plainly: two smoke runs at
+32 cells were made before these predictions (`scratch/core/tmp/idsolve2/smoke_p/`, by
+hand, not registered: the vacuum puncture in mode stencil and the shell in mode code with
+radius 3), to check that a run without particles and the analysis work; what they showed
+is quoted where a prediction uses it.
+ P1 vacuum Bowen-York puncture, N = 32, 64, 128 (dx = 1, 0.5, 0.25):
+  (a) mode stencil converges in at most 8 outer iterations; the largest error of u for
+      1 < r < 12 is 3.0e-4 at N = 32 (smoke) and falls by at least 3 per halving; the
+      error in the eight cells next to the puncture falls by at least 2.5 per halving (the
+      source is of order r^3 at the puncture, u is only C^2 there);
+  (b) M_psi of the record equals m + 2 Q(16) = 1.119594 to 2e-4 at every N (smoke:
+      1.119678 at N = 32) and is NOT the ADM mass: the Bowen-York source falls as r^-4 and
+      what lies beyond the sphere of the moments, 0.026 for P = 0.5 and r = 16, is missing;
+  (c) mode code with id_puncture_radius 1: at N = 32 it does not converge or its error of
+      u is more than 10 times that of mode stencil (the sixth-order monitor differentiates
+      psi_s^4 at r = 1.7 dx); at N = 128 it converges and its error falls by at least 16
+      between N = 64 and 128 (the truncation of the monitor at a fixed radius goes as
+      dx^6), but stays above the stencil error;
+  (d) mode code with radius 3: converges at N = 64 and 128 with an error of u within a
+      factor 2 of mode stencil; the monitor outside the radius after the solve below 1e-9
+      (more than 4 length units from the faces);
+ P2 puncture in the shell, N = 32, 64, 128 (lattice h = dx/2):
+  (a) mode stencil and mode code (radius 3) converge; the error of u for 3 < r < 12 falls
+      by at least 3 per halving in both modes; at N = 128 the two modes agree with the
+      reference to 1e-4 of u(0) or better;
+  (b) M_psi of the record within 2e-4 of 1.448858 at N = 32 (smoke, mode code: 1.448946)
+      and converging (factor 3 or more per halving);
+  (c) mode code: the monitor outside radius 3 and away from the faces below 1e-10;
+ P3 refined mesh: root 32^3 (dx = 1), static levels in |x_i| < 8 (dx = 0.5) and |x_i| < 4
+     (dx = 0.25), lattice h = 0.125:
+  (a) the shell in mode code (radius 3) and in mode stencil converge (BiCGStab); the error
+      of u at the puncture (level 2) is at most 1.5 times that of p2_c3_n64 (the shell
+      lies mostly on level 1, dx = 0.5); the monitor after the solve below 1e-8 on every
+      level, away from the faces and outside radius 3;
+  (b) the vacuum puncture in mode stencil: the largest error of u for 1 < r < 12 at most 2
+      times that of p1_st_n64;
+ P4 three punctures (m = 1, 0.6, 0.4 at (-3,0,0), (3,1,0), (0,-4,1); momenta (0,0.2,0),
+     (0,-0.2,0.1), (0.1,0,-0.1); spin (0,0,0.2) on the first), mode stencil, N = 32, 64, 128:
+  (a) at most 8 outer iterations; P_ADM of the record is the sum of the momenta,
+      (0.1, 0, 0), and J_ADM the sum of spins and x_c times P_c, both to round-off;
+  (b) u at each puncture converges: |u_128 - u_64| at most a third of |u_64 - u_32|;
+  (c) the closed-form second-order corrections of `nrpic_cf` (comp_corr = approx with the
+      background factor) agree with u at the punctures to 30 per cent (they omit the
+      cross terms of the curvatures and orders above P^2);
+ P5 the puncture of P1 in the shell of P2 moving with u_x = 0.1 (sum m u_x = 0.05), both
+     parts in mode code (radius 3), N = 64: converges; P_ADM_x of the record = 0.55 to
+     1e-6 relative (the momentum of the deposit plus that of the puncture); the vector part
+     ends at id_vector_tol or by the stall rule with the monitor's max|M| at least 100
+     times lower.
+ Refuted (design) if P1 (a) or P2 (a) fails: then the split psi_s + u or the stencil near
+ the puncture is wrong.
+
+**W1 at 128 cells** (`test_a.py --tests w1`, processors): far field: relative error of W_x
+at the x-face centres 6e-5 (2.36e-4/4) within a factor 1.5, largest error over the
+outermost layer below 1e-4; plain fill: 9e-3 at the face centres and above 1e-2 over the
+layer, as at 32 and 64 cells.
+
+**K card check** (card build of 76add0c, one A100, at most 0.5 card-hours reserved): the
+vacuum puncture (mode stencil and mode code radius 3) at 128 cells, the moving Gaussian
+with the far field at 128 cells and the solved Zel'dovich ball `zsol` at 128 cells with its
+evolution to t = 2: the same outer iterations as the processor runs, psi (and W) equal to
+1e-12 relative, the region means of |H| at t = 2 equal to 1e-6 relative (card runs with
+deposition are not bit-reproducible). Refuted if an iteration count differs by more than
+one or a field by more than 1e-9.
