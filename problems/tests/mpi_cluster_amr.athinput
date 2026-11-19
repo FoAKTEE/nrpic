@@ -2,7 +2,8 @@
 # mpi_cluster.athinput on an adaptive mesh with load balancing.  Root mesh 32^3 on
 # [-12 M, 12 M]^3 in 64 MeshBlocks of 8^3; the Z4c criterion "chi" refines every
 # MeshBlock where chi < 0.55 (the eight MeshBlocks around the centre, chi_c = 0.45) at
-# the first check (cycle 4): 120 MeshBlocks of two levels, redistributed over the
+# the first check allowed by refinement_interval (cycle 8): 120 MeshBlocks of two
+# levels, redistributed over the
 # ranks, with the particles following their MeshBlocks.  16 cycles.
 #   mpirun -np N athena -i mpi_cluster_amr.athinput
 # Particles and table as for mpi_cluster.athinput.
