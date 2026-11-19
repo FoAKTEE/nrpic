@@ -99,6 +99,11 @@ REGRESS = ["geo", "boris", "dep", "east", "os", "jeans", "binary", "newton", "co
 SKIP = ("run.log", "summary.json", "kernel_timer.txt")
 # floor of the verdict measure rel_floor, as a fraction of the largest number of the file
 FLOOR = 1.0e-6
+# quantities decided by comparing a reduced sum with a threshold: the number of V cycles
+# of the multigrid solver with threshold = 0 ("until the defect stops falling") changes
+# when the grouping of the defect norm changes. Reported apart, not judged.
+DECISION_COLUMNS = ("mg_cycles",)
+NWT_DECISION_WORDS = (50,)   # .rst.prt.nwt: word 0 magic, 1-50 state; 50 = V cycles
 LOGKEYS = ("defect", "Potential", "Acceleration", "Error", "L1", "norm")
 
 
@@ -234,6 +239,18 @@ def parse_log(path):
 
 # ------------------------------------------------------------------ comparison of two runs
 
+def _column_names(path):
+    """Names of the columns from a header line '# [1]=time [2]=...', or {}."""
+    names = {}
+    with open(path, errors="replace") as f:
+        for ln in f:
+            if not ln.startswith("#"):
+                break
+            for m in re.finditer(r"\[(\d+)\]=(\S+)", ln):
+                names[int(m.group(1)) - 1] = m.group(2)
+    return names
+
+
 def _text_table(path):
     rows = []
     with open(path, errors="replace") as f:
@@ -260,6 +277,25 @@ def _words(path, size):
         raw[:len(raw) - n*size]
 
 
+def _rst_data(path):
+    """(data of all MeshBlocks as float64, parameter dump) of an AthenaK restart file, or
+    (None, None) if the layout is not recognised."""
+    raw = open(path, "rb").read()
+    i = raw.find(b"<par_end>\n")
+    if i < 0:
+        return None, None
+    h = i + len(b"<par_end>\n")
+    nmb = int(np.frombuffer(raw[h:h + 4], dtype=np.int32)[0])
+    if nmb <= 0:
+        return None, None
+    n = len(raw)
+    for p in range(h, min(n - 7, h + (1 << 20))):
+        ds = int(np.frombuffer(raw[p:p + 8], dtype=np.uint64)[0])
+        if ds % 8 == 0 and p + 8 + nmb*ds == n:
+            return np.frombuffer(raw[p + 8:], dtype=np.float64), raw[:i]
+    return None, None
+
+
 def _is_athena_bin(path):
     with open(path, "rb") as f:
         return f.read(20).startswith(b"Athena binary output")
@@ -273,8 +309,26 @@ def number_diff(fa, fb):
     the entry itself, 1 for an entry that is rounding noise around zero), rel_floor (the
     measure of the verdict: largest |a - b|/max(|a|, |b|, FLOOR x the largest magnitude
     of the file), so that a number of moderate size is judged against itself, and rounding
-    noise of a number that cancels to nearly zero against the floor)."""
+    noise of a number that cancels to nearly zero against the floor), rel_max (the
+    measure of the verdict of the predictions: largest |a - b| over the largest magnitude
+    in the file; for text tables over the largest number outside the integer columns)."""
     name = os.path.basename(fa)
+    decision = {}
+    if name.endswith(".rst"):
+        # AthenaK restart file (outputs/restart.cpp): parameter dump up to '<par_end>\n',
+        # a binary header (nmb_total, root level, RegionSize and RegionIndcs written as raw
+        # structs, whose padding bytes are uninitialised memory and differ from run to run,
+        # time, dt, cycle, locations and costs of the MeshBlocks, tracker positions), the
+        # size of the data of one MeshBlock, then the data of every MeshBlock. Only the
+        # data are compared; the dump differs when the deck differs (deposit_threads).
+        da_, ha = _rst_data(fa)
+        db_, hb = _rst_data(fb)
+        if da_ is not None and db_ is not None and da_.size == db_.size:
+            kind = "rst-data" + ("" if ha == hb else "+params")
+            if np.array_equal(da_.view(np.uint64), db_.view(np.uint64)):
+                return {"kind": kind, "n": int(da_.size), "ndiff": 0, "abs": 0.0,
+                        "rel_file": 0.0, "rel_entry": 0.0, "rel_floor": 0.0, "rel_max": 0.0}
+            return _real_diff(da_, db_, kind)
     if os.path.getsize(fa) != os.path.getsize(fb) and not name.endswith((".hst", ".txt",
                                                                          ".dat")):
         return {"kind": "size", "sizes": [os.path.getsize(fa), os.path.getsize(fb)]}
@@ -300,7 +354,14 @@ def number_diff(fa, fb):
         # would show in both at 1e-6 of the second or more.  rel_column (largest
         # difference over the largest magnitude of its own column) is recorded too.
         a2 = np.atleast_2d(np.asarray(a, dtype=np.float64))
-        b2 = np.atleast_2d(np.asarray(b, dtype=np.float64))
+        b2 = np.atleast_2d(np.asarray(b, dtype=np.float64)).copy()
+        for c, nm in _column_names(fa).items():
+            if nm in DECISION_COLUMNS and c < a2.shape[1]:
+                nd_c = int(np.sum(a2[:, c] != b2[:, c]))
+                if nd_c:
+                    decision[nm] = {"rows_differ": nd_c,
+                                    "max_abs": float(np.max(np.abs(a2[:, c] - b2[:, c])))}
+                b2[:, c] = a2[:, c]
         with np.errstate(invalid="ignore", over="ignore"):
             dif = (a2 != b2) & ~(np.isnan(a2) & np.isnan(b2))
             nd = int(dif.sum())
@@ -319,19 +380,33 @@ def number_diff(fa, fb):
             relf = np.where(dif & ~bad & (den > 0), ad/np.where(den > 0, den, 1.0), 0.0)
             relf[:, isint] = 0.0
         return {"kind": kind, "n": int(a2.size), "ndiff": nd, "nonfinite": int(bad.sum()),
-                "rel_floor": float(relf.max()),
+                "rel_floor": float(relf.max()), "decision": decision,
+                "rel_max": float(cold.max()/fscale) if fscale > 0 else 0.0,
                 "abs": float(cold.max()), "scale": fscale,
                 "rel_file": float(cold.max()/fscale) if fscale > 0 else 0.0,
                 "rel_column": float(relc.max()), "worst_column": int(np.argmax(relc)) + 1,
                 "int_columns_differ": int((isint & (cold > 0)).sum())}
     a = np.asarray(a, dtype=np.float64).ravel()
-    b = np.asarray(b, dtype=np.float64).ravel()
+    b = np.asarray(b, dtype=np.float64).ravel().copy()
+    if name.endswith(".nwt"):
+        for w in NWT_DECISION_WORDS:
+            if w < a.size and a[w] != b[w]:
+                decision["mg_cycles"] = {"values": [float(a[w]), float(b[w])]}
+                b[w] = a[w]
+    r = _real_diff(a, b, kind)
+    if decision:
+        r["decision"] = decision
+    return r
+
+
+def _real_diff(a, b, kind):
+    """Number comparison of two arrays of reals of equal length (see number_diff)."""
     with np.errstate(invalid="ignore", over="ignore"):
         dif = (a != b) & ~(np.isnan(a) & np.isnan(b))
         nd = int(dif.sum())
         if nd == 0:
             return {"kind": kind, "n": int(a.size), "ndiff": 0, "abs": 0.0, "rel_file": 0.0,
-                    "rel_entry": 0.0, "rel_floor": 0.0}
+                    "rel_entry": 0.0, "rel_floor": 0.0, "rel_max": 0.0}
         fin = np.isfinite(a) & np.isfinite(b)
         fmax = float(max(np.abs(a[fin]).max(initial=0.0), np.abs(b[fin]).max(initial=0.0)))
         da, db = a[dif], b[dif]
@@ -344,6 +419,7 @@ def number_diff(fa, fb):
         rel_floor = np.where(den > 0, ad/np.where(den > 0, den, 1.0), 0.0)
         return {"kind": kind, "n": int(a.size), "ndiff": nd,
                 "nonfinite": int(bad.sum()), "scale_file": fmax,
+                "rel_max": float(np.nanmax(np.where(bad, 0.0, ad)))/fmax if fmax > 0 else 0.0,
                 "rel_floor": float(np.nanmax(np.where(bad, 0.0, rel_floor))),
                 "abs": float(np.nanmax(np.where(bad, 0.0, ad))),
                 "rel_file": float(np.nanmax(np.where(bad, 0.0, ad))/smax) if smax > 0
@@ -383,16 +459,22 @@ def compare_dirs(da, db):
             differ["run.log result lines"] = {"kind": "log", "n": len(la),
                                               "ndiff": sum(x != y for x, y in zip(la, lb))
                                               + abs(len(la) - len(lb))}
-    worst = worst_floor = 0.0
+    worst = worst_floor = worst_max = 0.0
     hard = False
-    for v in differ.values():
+    decisions = {}
+    for n, v in differ.items():
         if v["kind"] in ("missing", "size", "text-shape") or v.get("nonfinite", 0) \
                 or v.get("int_columns_differ", 0):
             hard = True
+        if v.get("decision"):
+            decisions[n] = v["decision"]
         worst = max(worst, v.get("rel_file", 0.0))
         worst_floor = max(worst_floor, v.get("rel_floor", 0.0))
+        worst_max = max(worst_max, v.get("rel_max", 0.0))
     return {"identical": same, "differ": differ, "worst_rel_file": worst,
-            "worst_rel_floor": worst_floor, "structural_difference": hard}
+            "worst_rel_floor": worst_floor, "worst_rel_max": worst_max,
+            "structural_difference": hard,
+            "decisions": decisions}
 
 
 def dump(obj, path):

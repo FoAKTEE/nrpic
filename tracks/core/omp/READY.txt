@@ -1,0 +1,44 @@
+READY: executables of branch core/build-openmp (threaded processor build, for all tracks)
+=========================================================================================
+
+athena_cpu          processors, THREADED (Kokkos OpenMP; scripts/build_cpu_omp.sh)
+athena_cpu_serial   processors, one thread (Kokkos Serial; scripts/build_cpu.sh), as the
+                    release processor executable
+athena_gpu          one A100 (scripts/build_gpu.sh, CUDA 12.6)
+All three from the source in COMMIT. athenak/src differs from release core-v0.3 only in
+particles/nrpic_threads.hpp (new), particles/particles.hpp (one include, one member),
+particles/nrpic.cpp (five lines around the deposit kernel) and parameter_input.cpp (one
+macro name). Scouting runs only (decision 0013); the release follows when core merges the
+branch. Interface: tracks/core/interfaces/threaded_build.md on core/build-openmp, read with
+  git show core/build-openmp:tracks/core/interfaces/threaded_build.md
+Journal (predictions, outcomes, run ids): tracks/core/JOURNAL-omp.md on the same branch.
+
+1. Running athena_cpu with threads
+   Set the thread count explicitly (the OpenMP default is all 144 hardware threads) and
+   stay within 16 cores per session (CLAUDE.md). Recommended placement on this machine:
+     OMP_NUM_THREADS=16 OMP_PROC_BIND=true \
+     OMP_PLACES=$(python3 <repo>/scripts/omp_places.py 16) athena_cpu -i deck.athinput
+   or, with a log of the placement, the load and the processor share:
+     ATHENA_EXE=<this dir>/athena_cpu THREADS=16 scripts/cpu_run.sh RUNDIR deck.athinput
+   Do not use OMP_PLACES=cores with OMP_PROC_BIND=spread or close: every job of every
+   session is then bound to the same cores. Register the run with --cores 16.
+
+2. New option (read only if present; absent = byte-identical behaviour)
+   <particles> deposit_threads = atomic | private
+     atomic   (default; the only mode of athena_cpu_serial and athena_gpu) every cloud
+              corner is added with an atomic addition. Correct under threads, but the
+              order of the additions is free, so with deposition a threaded run does not
+              repeat itself bit for bit (it does to rounding; section 3).
+     private  athena_cpu only: every thread adds into its own copy of the source array,
+              the copies are summed cell by cell in thread order after the deposit. A run
+              repeats itself bit for bit at a fixed thread count. Memory: one source array
+              (10 components, all cells with ghosts) per thread, zeroed and summed at each
+              deposit. athena_cpu_serial and athena_gpu print a note and add atomically.
+   Example input: problems/cosmo/daverio_field.athinput with
+     particles/deposit_threads=private
+   is not possible on the command line (the deck has no such line); add the line
+     deposit_threads = private
+   to the <particles> block of a copy of the deck (tracks/core/omp/omplib.py, mode priv,
+   does exactly that).
+
+PLACEHOLDER_MEASURED

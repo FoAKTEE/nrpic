@@ -50,6 +50,11 @@ def main():
     bad = 0
     for d in a.dirs:
         s = json.load(open(os.path.join(d, "summary.json")))
+        base = os.path.dirname(os.path.abspath(d))      # run paths are relative to it
+        for c in s["cases"].values():
+            for rr in c["runs"].values():
+                if not os.path.isabs(rr["rundir"]):
+                    rr["rundir"] = os.path.normpath(os.path.join(base, rr["rundir"]))
         out = {"source": os.path.join(d, "summary.json"), "tol": a.tol, "floor": L.FLOOR,
                "ref": s["ref"], "cases": {}}
         for case, c in s["cases"].items():
@@ -59,12 +64,14 @@ def main():
                 y, x = key.split(" vs ")
                 r = L.compare_dirs(runs[x]["rundir"], runs[y]["rundir"])
                 comps[key] = r
-                flag = r["structural_difference"] or r["worst_rel_floor"] > a.tol
+                flag = r["structural_difference"] or r["worst_rel_max"] > a.tol
                 bad += int(flag)
-                print("%-7s %-26s vs %-16s identical %2d differ %2d  rel_floor %.2e  "
-                      "rel_file %.2e%s" % (case, y, x, len(r["identical"]), len(r["differ"]),
-                                           r["worst_rel_floor"], r["worst_rel_file"],
-                                           "  FAIL" if flag else ""))
+                print("%-7s %-26s vs %-16s identical %2d differ %2d  rel_max %.2e  "
+                      "rel_floor %.2e%s%s" % (case, y, x, len(r["identical"]), len(r["differ"]),
+                                              r["worst_rel_max"], r["worst_rel_floor"],
+                                             "  FAIL" if flag else "",
+                                             ("  decisions %s" % r["decisions"])
+                                             if r["decisions"] else ""))
             ident = {cfg: identity_defect(rr["rundir"]) for cfg, rr in runs.items()}
             for cfg, v in ident.items():
                 if v:

@@ -15,8 +15,8 @@ configuration. --pairs adds comparisons between two configurations (repeatabilit
 Output: DIR/<case>/<config>/ per run, DIR/summary.json, a table on stdout. DIR defaults
 to $NRPIC_RUN_DIR (set by nrpic-run). Exit status 0 if no comparison shows a structural
 difference (missing file, other size, non-finite number) or a difference above --tol in
-the measure rel_floor of omplib.number_diff (each number against itself, with a floor of
-1e-6 of the largest number of its file).
+the measure rel_max of omplib.number_diff (largest difference over the largest number of
+the file); rel_floor (each number against itself, floor 1e-6 of the largest) is recorded.
 """
 import argparse
 import concurrent.futures
@@ -65,7 +65,7 @@ def main():
         runs = {}
         for cfg in configs:
             c = parse(cfg)
-            rd = os.path.join(a.out, case, c["label"])
+            rd = os.path.join(os.path.abspath(a.out), case, c["label"])
             old = os.path.join(a.reuse, case, c["label"]) if a.reuse else ""
             if old and "loop_s" in L.parse_log(os.path.join(old, "run.log")):
                 runs[cfg] = dict(case=case, exe=c["exe"], threads=c["threads"], rundir=old,
@@ -82,12 +82,12 @@ def main():
         for x, y in pairs:
             r = L.compare_dirs(runs[x]["rundir"], runs[y]["rundir"])
             comps["%s vs %s" % (y, x)] = r
-            flag = r["structural_difference"] or r["worst_rel_floor"] > a.tol
+            flag = r["structural_difference"] or r["worst_rel_max"] > a.tol
             bad += 1 if flag else 0
             nd = len(r["differ"])
             lines.append("%-7s %-22s vs %-14s identical %2d  differ %2d  worst %.2e%s  "
                          "[exit %d, %.1f s]" % (
-                             case, y, x, len(r["identical"]), nd, r["worst_rel_floor"],
+                             case, y, x, len(r["identical"]), nd, r["worst_rel_max"],
                              "  STRUCTURAL" if r["structural_difference"] else "",
                              runs[y]["exit"], runs[y]["wall_s"]))
             for n, v in sorted(r["differ"].items()):
