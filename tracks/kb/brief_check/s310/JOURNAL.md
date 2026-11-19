@@ -134,3 +134,19 @@ enough, the PDF has at least 20 pages, metadata, github and repository paths exi
 arXiv identifiers of brief lines 257-266 occur in CHECK.md; exit status 0; the figure shows
 line 259 with 15 rows, 260 with 16, 261 with 15, 262 with 11, 263 with 3, 264 with 12, 265
 with 2. Refuted by any problem the script lists.
+
+## Entry 3 (2026-11-19 07:39 PST): outcome of the run, deliverables
+
+Run kb-20261119-153817-085d90b (`scripts/fig_verdicts.py`): completed, exit 0; 74 rows, tally
+49 / 25 / 0 / 0 equal to the header, 96 locator spans valid (TeX files and lines, the PDF of
+astro-ph/9407016 with page 20 within it, metadata, the AthenaK clone path, four repository
+files), 74 of 74 arXiv identifiers of brief lines 257-266 present in CHECK.md, no problem.
+Prediction held, including the rows per line (15, 16, 15, 11, 3, 12, 2). Looking at the
+figure: the x-axes ended exactly at the longest bars (16 and 41), so the bars touched the
+frame; fixed with a 10 per cent margin (commit before the rerun). Rerun
+kb-20261119-153831-19034bc: identical numbers; figure read again, bars clear of the frame,
+legend above both panels, no overlap. Reference run.
+
+Deliverables: CHECK.md (74 rows), ERRATA_ROWS.md (13 rows in section 2, 1 in section 4, 1 in
+section 5; nothing in sections 1 and 3), README.md with the requests. Not done: no second agent
+has checked the verdicts (the lead's review); nothing was fetched or written to the database.
