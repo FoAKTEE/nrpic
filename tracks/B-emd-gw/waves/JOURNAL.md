@@ -364,3 +364,24 @@ editing it does.
 
 F at N = 48: run B-20261119-142233-70d5043 completed (444 cycles as predicted, 88 min).
 X at N = 48: 524 cycles, 2 h 16 min at 7.1e3 zone-cycles per second.
+
+## 2026-11-19 16:48 Final analysis at N = 16, 32, 48, 64 (run B-20261119-164402-7438a99)
+
+`results/final_results.json`, `figs/final_{flat,exp}_errors.png`, `figs/final_convergence.png`
+(looked at). Run B-20261119-163932-5ce4298 is the same analysis with local orders computed
+as log2 of the ratio, wrong for 32-48-64; superseded, kept on record.
+
+- F at N = 48: amplitude -1.574e-7 (predicted -1.576e-7), phase 2.273e-6 (2.270e-6): F2
+  confirmed at all four N. Local orders (16-32, 32-48, 48-64): amplitude 6.36, 5.89,
+  5.65; phase 4.38, 4.14, 4.06; Weyl-6 vs TT 5.97, 5.94, 5.74 (3.07e-5, 4.91e-7,
+  4.42e-8, 8.47e-9); spectral Weyl vs TT 1.1e-11 to 1.2e-11; polarization ratio errors
+  <= 1.1e-9; backward maxima 3.2e-6, 5.1e-8, 4.5e-9, 9.7e-10.
+- X at N = 48: the cross polarization equals the 2S prediction (amplitude 4.250e-7 against
+  4.250e-7, phase 5.880e-7 against 5.879e-7); the plus polarization is off by +2.6 per cent
+  (amplitude 4.362e-7) and +10 per cent (phase 6.478e-7): the revised prediction (5 per
+  cent) holds for the cross polarization at every N and fails for the plus phase at
+  N = 48 and 64, as at 64 (arg R = 6.0e-8 at N = 48, between 2.4e-8 and 1.1e-7).
+  Weyl-6 vs TT 3.13e-5, 5.01e-7, 4.50e-8, 1.66e-8 (orders 5.97, 5.95, then the 2e-8
+  offset); spectral 1.9e-8 to 2.4e-8.
+- The x10 card check (B-20261119-155758-458cf17, Slurm 4662) is still waiting in the queue
+  (25 jobs, 16:47); its analysis command is in README.md, "Open".
