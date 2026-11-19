@@ -381,3 +381,19 @@ delta_lat = 3.9e-3 M, and (d) has a loose upper bound (F_sph - F_rem reaches 0.1
 would make it tight. Three of my predictions in this entry failed before the analysis
 was right (content term not the cause; lattice against continuum; sampling of the
 finder); the record above keeps them.
+
+### Outcome of entry 4, item 4: processor smoke runs (ES-F D-20261119-145325-934efd1, V-0 D-20261119-145332-744c881, reader check D-20261119-151910-cc05828)
+
+HELD. Both inputs run two cycles to t = 0.0625 M with core_requests-adf athena_cpu (setup
+about 3 min, 1182 s and 1089 s of processor time on a machine with load ~95; ES-F 24 GB
+resident). ES-F at t = 0: np = 850724, sum m = 2.8156001402939 (the lattice rest mass),
+int_E / sum m - 1 = -5.3e-14; finder mass 0.991521 (prediction 0.9924 +- 0.002; V-0 the
+same 0.991521, so the dust does not change the finder's start value); acc.hst with three
+spheres, sphere 1 (r = 5 M) holds 534 particles of rest mass 3.317710343e-3, equal to
+the count from the particle file in esf_analyse.py to 2e-18; no removal record; no
+unconverged push. Constraint norms (z4c.user.hst, squared, chi >= 0.0625) at t = 0:
+H 8.40e-3, M 4.04e-4 (ES-F); H 6.50e-3, M 0 (V-0); ES-1's smoke run had H 9.17e-3,
+M 4.68e-4; at t = 0.0625: H 7.88e-3 (ES-F), 6.31e-3 (V-0). Recorded without a criterion,
+as predicted; the 1 M lattice near the hole did not raise the start norms above ES-1's.
+No figure for this item: two cycles hold no time evolution worth plotting; the t = 0
+numbers above are read from the files listed.

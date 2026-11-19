@@ -57,7 +57,10 @@ Labels [VERIFIED], [JUDGEMENT], [TO VERIFY] as in the charter.
   after a removal. [VERIFIED on synthetic data only]
 - ES-F data (D-20261119-145022-2208a19, checks -145026-2f11618): table residuals of
   fourth order (5e-7 of 16 pi rho0 at drbar = 0.02); lattice rest mass to 4e-7; exact
-  growth law below. [VERIFIED]
+  growth law below. Processor smoke runs of the ES-F and V-0 inputs (D-20261119-145325-934efd1,
+  -145332-744c881; two cycles): table and 850724 particles read, int_E = sum m to 5e-14,
+  finder 0.991521 at t = 0 in both, sphere content at t = 0 equal to the particle file
+  (reader check D-20261119-151910-cc05828). [VERIFIED]
 
 ## ES-F: the first matter run after the vacuum-bubble benchmark
 
@@ -101,7 +104,8 @@ or the release that merges them), and its control `inputs/v0_dx8.athinput` (the 
 slice without dust is the time-symmetric Schwarzschild puncture; V-1 is the alternative
 control with ES-1's f-slice). Cost [JUDGEMENT from ES-1, 0.769 card-hours for 200 M with
 6.97e5 particles, and V-1, 0.672]: ES-F 0.8-1.0 card-hours (may need a second chain
-segment), V-0 about 0.7. Processor smoke runs of both inputs: entry 4 item 4.
+segment), V-0 about 0.7. Processor smoke runs of both inputs passed (entry 4 item 4);
+ES-F needs about 24 GB of host memory on the processor executable (not measured on a card).
 
     cd /data/haiyangw/nrpic/wt/D-bh-dress
     harness/bin/nrpic-run submit --kind scouting --gate G2 --launcher chain --gpu-hours 1.97 \
