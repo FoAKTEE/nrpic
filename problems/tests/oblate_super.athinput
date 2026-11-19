@@ -1,0 +1,68 @@
+# Oblate spheroid of nrpic_cf off the origin, superposed with a Gaussian and a puncture,
+# no particles, no step: the conformal factor of the superposition (test T1, part d, of
+# tracks/core/JOURNAL-oblate.md; tracks/core/analysis/oblate/cf_check.py).
+<job>
+basename  = osup
+<mesh>
+nghost    = 4
+nx1       = 64
+x1min     = -16.0
+x1max     = 16.0
+ix1_bc    = outflow
+ox1_bc    = outflow
+nx2       = 64
+x2min     = -16.0
+x2max     = 16.0
+ix2_bc    = outflow
+ox2_bc    = outflow
+nx3       = 64
+x3min     = -16.0
+x3max     = 16.0
+ix3_bc    = outflow
+ox3_bc    = outflow
+<meshblock>
+nx1       = 32
+nx2       = 32
+nx3       = 32
+<time>
+evolution  = dynamic
+integrator = rk4
+cfl_number = 0.25
+nlim       = 0
+tlim       = 1.0
+<z4c>
+lapse_oplog     = 2.0
+shift_Gamma     = 0.75
+shift_eta       = 2.0
+diss            = 0.5
+chi_div_floor   = 1.0e-5
+damp_kappa1     = 0.02
+<problem>
+pgen_name   = nrpic_cf
+ncomp       = 3
+comp0_type  = spheroid
+comp0_mass  = 0.8
+comp0_a     = 6.0
+comp0_b     = 2.5
+comp0_x1    = 3.0
+comp0_x2    = -2.0
+comp0_x3    = 1.5
+comp1_type  = gaussian
+comp1_mass  = 0.3
+comp1_sigma = 1.5
+comp1_x1    = -6.0
+comp1_x2    = 4.0
+comp1_x3    = 2.0
+comp2_type  = puncture
+comp2_mass  = 0.4
+comp2_x1    = -5.1
+comp2_x2    = -7.3
+comp2_x3    = -6.2
+lapse       = one
+<output1>
+file_type = hst
+dt        = 1.0
+<output2>
+file_type = bin
+variable  = adm
+dcycle    = 1

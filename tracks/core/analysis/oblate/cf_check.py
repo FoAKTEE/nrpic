@@ -15,7 +15,10 @@ P1b  without matter the Hamiltonian monitor is the Ricci scalar: 32 pi rho_N psi
 P1c  with the sampled particles: sum m/psi(x_p) = M (Python), the mesh integral of
      E psi^5 and of H psi^5/(16 pi), the mean and rms of H in the core s < 0.8; oblate
      data and prolate control.
-Writes cf_check.json and figs/cf_check_{psi,ham,id}.{png,pdf} of this directory.
+P1d  the oblate component off the origin, superposed with a Gaussian and a puncture
+     (problems/tests/oblate_super.athinput): psi^4 of the dump against the sum of the
+     three closed forms, as in P1a.
+Writes cf_check.json and figs/cf_check_{psi,ham,id,super}.{png,pdf} of this directory.
 """
 import argparse
 import importlib.util
@@ -377,11 +380,80 @@ def part_c(exe, out, res):
     plt.close(fig)
 
 
+def part_d(exe, out, ref, res):
+    from scipy.special import erf
+    inp = os.path.join(WT, "problems", "tests", "oblate_super.athinput")
+    rd = os.path.join(out, "P1d", "super")
+    run(exe, rd, inp, [])
+    # the parameters of the input file
+    ob = dict(M=0.8, a=6.0, b=2.5, x0=(3.0, -2.0, 1.5))
+    ga = dict(m=0.3, sigma=1.5, x0=(-6.0, 4.0, 2.0))
+    pu = dict(m=0.4, x0=(-5.1, -7.3, -6.2))
+    x, y, z, vol, fld = load(rd, "adm")
+    p4 = fld["adm_psi4"]
+    xo, yo, zo = x - ob["x0"][0], y - ob["x0"][1], z - ob["x0"][2]
+    u_ob = -ref.phi_N(xo, yo, zo, ob["a"], ob["b"], M=ob["M"])[0]
+    rg = np.sqrt((x - ga["x0"][0]) ** 2 + (y - ga["x0"][1]) ** 2 + (z - ga["x0"][2]) ** 2)
+    u_ga = 0.5 * ga["m"] * erf(rg / (math.sqrt(2.0) * ga["sigma"])) / rg
+    rp = np.sqrt((x - pu["x0"][0]) ** 2 + (y - pu["x0"][1]) ** 2 + (z - pu["x0"][2]) ** 2)
+    u_pu = 0.5 * pu["m"] / rp
+    psi_ref = 1.0 + u_ob + u_ga + u_pu
+    p4_ref = psi_ref ** 4
+    d = np.abs(p4.astype(np.float64) - p4_ref)
+    bound = 0.5 * ulp32(p4_ref) + 1e-12
+    e = math.sqrt(1.0 - (ob["b"] / ob["a"]) ** 2)
+    twin = OblateSpheroid(e, ob["a"], ob["M"])
+    s2 = twin.s2(xo, yo, zo)
+    res["P1d"]["super"] = dict(
+        oblate=ob, gaussian=ga, puncture=pu, cells=int(len(x)),
+        cells_inside_spheroid=int(np.sum(s2 <= 1.0)),
+        max_abs_diff_psi4=float(d.max()),
+        max_diff_over_ulp32=float((d / ulp32(p4_ref)).max()),
+        cells_above_bound=int(np.sum(d > bound)),
+        max_rel_diff_u_oblate_twin_vs_reference=float(
+            np.max(np.abs(twin.psibar(xo, yo, zo) - 1.0 - u_ob) / u_ob)),
+        u_oblate_max=float(u_ob.max()), u_gaussian_max=float(u_ga.max()),
+        u_puncture_max=float(u_pu.max()), psi_max=float(psi_ref.max()),
+        passed=bool(np.sum(d > bound) == 0))
+    print(f"P1d super: {res['P1d']['super']}", flush=True)
+    import matplotlib
+    matplotlib.use("Agg")
+    import matplotlib.pyplot as plt
+    fs.use_style()
+    fig, ax = plt.subplots(1, 2, figsize=(fs.FULL_WIDTH, 3.2))
+    fig.subplots_adjust(left=0.08, right=0.985, bottom=0.15, top=0.92, wspace=0.26)
+    psi_dump = p4.astype(np.float64) ** 0.25
+    # the plane of cells nearest the centre of the spheroid in z
+    zc = np.unique(z)[np.argmin(np.abs(np.unique(z) - ob["x0"][2]))]
+    sel = np.abs(z - zc) < 1e-9
+    n = int(round(math.sqrt(sel.sum())))
+    o = np.lexsort((x[sel], y[sel]))
+    img = psi_dump[sel][o].reshape(n, n)
+    im = ax[0].imshow(img, origin="lower", extent=[-16, 16, -16, 16], cmap=fs.CMAP["dens"],
+                      interpolation="nearest", rasterized=True)
+    t = np.linspace(0, 2 * math.pi, 200)
+    ax[0].plot(ob["x0"][0] + ob["a"] * np.cos(t), ob["x0"][1] + ob["a"] * np.sin(t), color="w",
+               lw=0.8)
+    ax[0].set_xlabel("$x/M$", labelpad=-1)
+    ax[0].set_ylabel("$y/M$", labelpad=-4)
+    ax[0].set_title(f"$\\psi$ of the dump, plane $z={zc:g}M$", fontsize=10)
+    fig.colorbar(im, ax=ax[0], fraction=0.046, pad=0.03)
+    ax[1].hist((p4.astype(np.float64) - p4_ref) / ulp32(p4_ref), bins=np.linspace(-0.6, 0.6, 49),
+               color=fs.PAL["red"])
+    ax[1].axvline(-0.5, **fs.GUIDE)
+    ax[1].axvline(0.5, **fs.GUIDE)
+    ax[1].set_xlabel(r"$(\psi^4_{\rm code}-\psi^4_{\rm ref})$ / float32 unit", labelpad=-1)
+    ax[1].set_ylabel("cells")
+    ax[1].set_title("all cells", fontsize=10)
+    fs.save(fig, os.path.join(HERE, "figs", "cf_check_super"))
+    plt.close(fig)
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--exe", required=True)
     ap.add_argument("--out", default=os.environ.get("NRPIC_RUN_DIR", os.getcwd()))
-    ap.add_argument("--parts", default="a,b,c")
+    ap.add_argument("--parts", default="a,b,c,d")
     a = ap.parse_args()
     out = os.path.abspath(a.out)
     a.exe = os.path.abspath(a.exe)      # the runs change directory
@@ -389,7 +461,7 @@ def main():
     os.makedirs(os.path.join(HERE, "figs"), exist_ok=True)
     ref, blob = reference_module(out)
     res = {"exe": a.exe, "reference": dict(branch=REF_BRANCH, path=REF_PATH, blob=blob),
-           "P1a": {}, "P1b": {}, "P1c": {}}
+           "P1a": {}, "P1b": {}, "P1c": {}, "P1d": {}}
     parts = a.parts.split(",")
     if "a" in parts:
         part_a(a.exe, out, ref, res)
@@ -397,6 +469,8 @@ def main():
         part_b(a.exe, out, res)
     if "c" in parts:
         part_c(a.exe, out, res)
+    if "d" in parts:
+        part_d(a.exe, out, ref, res)
     with open(os.path.join(out, "cf_check.json"), "w") as f:
         json.dump(res, f, indent=1)
     print("wrote", os.path.join(out, "cf_check.json"))

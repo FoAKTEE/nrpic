@@ -353,3 +353,43 @@ written; this is what I now expect and why):
   (t_p + 5 to 13 M) covers it. The runs end at 55 M, which leaves at least 9 M after
   the horizon for the mass to settle and the particles to be removed.
 - P3b and P3d unchanged.
+
+## 2026-11-19 15:13Z, entry 4: T2 holds; a fourth part of T1 predicted
+
+### T2, second attempt core-20261119-144947-fb1ccae (processors, 18 min)
+
+P2 HOLDS, with fewer steps than I had written for two of the cases: release executable
+`/data/haiyangw/nrpic/.work/build_cpu_v03/src/athena` against `.work/build_cpu` of this
+branch (sha256 43d9d9bf...), every output file compared byte by byte
+(`analysis/id/regress_format1.py`):
+
+| case | steps | files | result |
+|---|---|---|---|
+| `regress_cf` (table, Gaussian, prolate spheroid, puncture; all fields, restart) | 2 | 16 | IDENTICAL (also in the first attempt) |
+| `cf_table_regress` (table, 10^4 lattice particles, one refined level) | 3 (written: 12) | 8 | IDENTICAL |
+| prolate start (`prolate_amr.athinput`, options of the ladder runs, finest cells M/4, 10^4 particles) | 2 (written: 16) | 16 | IDENTICAL |
+
+The step counts were cut because of the machine (entry 2). The change touches the
+problem generator only, so the state at t = 0 is where a difference would arise; it is
+identical in all three, and so are the first steps.
+`python/tests/test_oblate_spheroid.py`: 5 of 5 pass; `python/tests/test_initial_data.py`
+(the existing 29 tests, prolate sampler among them): 29 of 29 pass with this branch.
+
+### T1, part d: prediction (15:13Z, before the run)
+
+The interface text lists "an oblate component off the origin or together with other
+components" as not tested. Test: `problems/tests/oblate_super.athinput`, an oblate
+spheroid (M = 0.8, a = 6 M, b = 2.5 M, e = 0.909) centred at (3, -2, 1.5) M, a Gaussian
+(m = 0.3, sigma = 1.5 M) at (-6, 4, 2) M and a puncture (m = 0.4) at (-5.1, -7.3, -6.2)
+M, mesh of half-width 16 M with 64^3 cells.
+
+- P1d. psi^4 of the dump equals (1 + u_oblate(x - x_0) + u_Gaussian + u_puncture)^4 at
+  every cell within half a float32 unit (+1e-12), u_oblate from `oblate_reference.py`
+  of core/nrpic at the shifted coordinates, the other two from their closed forms
+  (`nrpic_cf.cpp` header). Refuted by any cell beyond the bound: the Gaussian and the
+  puncture are existing code (`regress_cf` covers them), so a failure would be the
+  centre or the superposition of the oblate component.
+
+The rerun of T1 (parts a to c with the integral without the outer-face cells) and part d
+are one registered run, as soon as `nrpic-run` has room (it has refused for five
+minutes: sixteen cores of owner core busy).
