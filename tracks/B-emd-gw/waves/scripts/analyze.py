@@ -228,6 +228,8 @@ def figures(data, res, ns, out, tag=""):
         else:
             ax.plot(t, [r["tt"]["Wf_p"][1] / sc for r in recs], "o", ms=3, mfc="none", color=fs.PAL["red"])
         ax.set_xlabel("t", labelpad=-2)
+        lo, hi = ax.get_ylim()
+        ax.set_ylim(lo, hi + 0.45 * (hi - lo))
         ax.legend(loc="upper right", ncol=2, fontsize=7)
         # errors
         for n in ns:
@@ -255,31 +257,39 @@ def figures(data, res, ns, out, tag=""):
         axs[1, 1].set_ylabel("polarization ratio; Weyl vs TT")
         for ax in (axs[0, 1], axs[1, 0], axs[1, 1]):
             ax.set_xlabel("t", labelpad=-2)
-            ax.legend(loc="lower right", ncol=2, fontsize=6.5)
+            lo, hi = ax.get_ylim()
+            ax.set_ylim(lo, hi * (hi / lo) ** 0.45)
+            ax.legend(loc="upper center", ncol=2, fontsize=6.5)
         fig.savefig(os.path.join(out, f"{tag}{test}_errors.png"))
         fig.savefig(os.path.join(out, f"{tag}{test}_errors.pdf"))
         plt.close(fig)
     # convergence
-    fig, axs = plt.subplots(1, 2, figsize=(fs.FULL_WIDTH, 3.4))
+    fig, axs = plt.subplots(1, 2, figsize=(fs.FULL_WIDTH, 4.0))
     fig.subplots_adjust(left=0.09, right=0.98, bottom=0.14, top=0.9, wspace=0.28)
     nn = np.array(ns, float)
     for ax, test in zip(axs, ("flat", "exp")):
         r = res[test]
-        for q, mk, lab in (("amp_p_end", "o", "amplitude +"), ("phase_p_end", "s", "phase +"),
-                           ("amp_x_end", "^", "amplitude x"), ("pol_phase_end", "D", "arg R")):
+        for q, mk, lab in (("amp_p_end", "o", "amplitude"), ("phase_p_end", "s", "phase")):
             ax.loglog(nn, [abs(r[str(n)]["tt"][q]) for n in ns], marker=mk, color=fs.PAL["red"], label="TT " + lab)
             ax.loglog(nn, [abs(r[str(n)]["weyl6"][q]) for n in ns], marker=mk, mfc="none", ls="--",
-                      color=fs.PAL["orange"], label=None)
+                      color=fs.PAL["orange"], label="Weyl FD6 " + lab)
+        ax.loglog(nn, [max(r[str(n)]["tt"]["pol_amp_max"], r[str(n)]["tt"]["pol_phase_max"]) for n in ns],
+                  marker="D", color=fs.PAL["green"], label="TT polarization ratio (max)")
         ax.loglog(nn, [abs(r[str(n)]["pred_amp_end"]) for n in ns], "x", color="k", ms=7, label="prediction amp.")
         ax.loglog(nn, [abs(r[str(n)]["pred_phase_end"]) for n in ns], "+", color="k", ms=8, label="prediction phase")
         ax.loglog(nn, [r[str(n)]["weyl6"]["vs_tt_end"] for n in ns], marker="v", color=fs.PAL["blue"],
                   label="Weyl FD6 vs TT")
         y0 = abs(r[str(ns[0])]["tt"]["phase_p_end"])
-        ax.loglog(nn, y0 * (nn / nn[0]) ** -4, **dict(fs.GUIDE, lw=1.0))
-        ax.loglog(nn, y0 * (nn / nn[0]) ** -6, color="k", ls="-.", lw=1.0)
+        ax.loglog(nn, y0 * (nn / nn[0]) ** -4, **dict(fs.GUIDE, lw=1.0), label="N^-4")
+        ax.loglog(nn, y0 * (nn / nn[0]) ** -6, color="k", ls="-.", lw=1.0, label="N^-6")
         ax.set_xlabel("N (cells per side)")
+        ax.set_xticks(ns)
+        ax.set_xticklabels([str(n) for n in ns])
+        ax.minorticks_off()
         ax.set_title("flat, oblique" if test == "flat" else "expanding box")
-        ax.legend(loc="lower left", ncol=2, fontsize=6.5)
+        lo, hi = ax.get_ylim()
+        ax.set_ylim(lo, hi * (hi / lo) ** 0.6)
+        ax.legend(loc="upper right", ncol=2, fontsize=6)
     axs[0].set_ylabel("error at the last dump")
     fig.savefig(os.path.join(out, f"{tag}convergence.png"))
     fig.savefig(os.path.join(out, f"{tag}convergence.pdf"))
