@@ -138,3 +138,17 @@ Prediction for run T (`scripts/fig_verdicts.py`): 66 rows, 45 CONFIRMED, 18 CONF
 (precision), 3 CORRECTED, 0 NOT FOUND, as the header says; every locator of the locator column
 valid (files exist, line numbers within the files, run manifests present, branch files present).
 Refuted if the tally differs from the header or any locator fails; then I fix CHECK.md and rerun.
+
+## Entry 5, 2026-11-19 08:45: outcome of run T; ERRATA_ROWS and README; prediction for run T2
+
+Run T (`kb-20261119-154140-0c9116d`, completed, figure `fig_verdicts.png` read): 66 rows, 45 / 18
+/ 3 / 0 as in the header, 97 locator spans checked, no problem. Prediction held. The figure shows
+the corrections on lines 271, 272 (one each) and 275 (row 1.5, already in the errata) and no
+correction among the [TO VERIFY] and [BACKGROUND] statements.
+
+After run T the note of CHECK row 2 was made precise (Hills' unit of pericentre is
+a_b (M/m*)^(1/3) with m* one of two equal members, 2^(1/3) r_t, so his 80 and 50 per cent belong
+to 0.38 and 1.26 r_t); ERRATA_ROWS.md (9 rows plus one of section 5) and README.md written.
+
+Prediction for run T2 (same script on the final CHECK.md): unchanged tally (66; 45 / 18 / 3 / 0)
+and 97 valid locator spans. Refuted if anything changed.
