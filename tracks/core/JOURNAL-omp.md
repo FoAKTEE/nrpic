@@ -232,3 +232,54 @@ P9 (private copies), written before the build:
     cent shorter; for newton (2.3e6 cells x 10 components x 16 copies = 2.9 GiB zeroed
     and summed per deposit, against 4e7 additions) it is no faster, probably slower.
     Refuted for cosmo if the deposit is not faster: then the atomics were not the cost.
+
+## 2026-11-19 08:10 Entry 6: audit of the kernels for threads; predictions P10 to P12
+
+Session resumed (merge of main 6c5cf703: harness and coord only, no source). Builds of the
+final source a9c34e7a: S (.work/build_cpu, 07:24), O3 (.work/build_omp, 07:25), card
+(.work/build_gpu, rebuilt 07:55 in 127 s). O2 (06:32) is of the earlier source and is not
+used again: the sharp test is N threads against one thread of O3 (entry 5).
+
+Audit, read from the source of this branch (athenak/src/particles, scalar_field,
+pgen/nrpic, utils/rng.hpp; 10734 lines). Every kernel is a Kokkos `par_for`,
+`parallel_reduce` or `parallel_scan` on DevExeSpace; there is no `#pragma omp`, no use of
+the Serial space, no TeamPolicy, no static or global state that a kernel writes, no
+random-number pool (rng.hpp is a pure counter-based function). [VERIFIED: grep and reading]
+
+| kernels | writes | under threads |
+|---|---|---|
+| push (`nrpic_push`), Newtonian kick and push, test kick, assign, trajectory metric (`nrpic_trajmet`) | particle p only | race-free; iteration counts by reduction (integers: exact) |
+| count, compact (`nrpic_count`, `nrpic_compact`) | reduction; scan writes slot `upd` of particle p | race-free; integer scan exact, order kept |
+| deposit (`nrpic_deposit`) | scatter into cells shared by particles | `Kokkos::atomic_add` (correct, order of additions free) or private copies (`deposit_threads = private`); `sum_mW` by reduction |
+| filter, compensation, limited compensation, step source, lambda (`nrpic_filter*`, `nrpic_complim*`, `nrpic_stepsrc`, `nrpic_lambda`) | cell (m,n,k,j,i) of a second array (`tm_work`), then a copy | race-free (read tm, write wk, never in place) |
+| collision cells (`nrpic_coll_cell`, `_scan`, `_fill`, `nrpic_collide`) | populations by `atomic_add`, list slots by `atomic_fetch_add`; each cell its own segment of the list and its own particles | race-free; the order in which `_fill` puts particles into a cell is free, but each cell sorts its list by key and tag before pairing (nrpic_collide.cpp, the sort inside the cell kernel), so the collisions do not depend on it; statistics by reduction (CollStats `+=`: integer sums exact, real sums by grouping) |
+| Newtonian mesh (`_flat`, `_srcnorm`, `_mesh`, `_mean`, `_extrap`, `_store`) | cells; extrapolation per (m, a, b) line | race-free; the mean of Phi and the source norm are reductions that feed back (P5) |
+| diagnostics (`nrpic_sums`, `_amin`, `_meshstat`, `_cstat*`, `_zstat`, `_consred`, `_kmax`, `nrpic_probe`, `sf_means`, `sf_hist`) | reductions into history files | race-free; real sums depend on the grouping, i.e. on the thread count |
+| line output, conservation arrays (`nrpic_line`, `nrpic_cons*`) | element (m,v,i) or cell | race-free |
+| scalar field (`sf rhs`, K-O, tmunu, `sf_syn_{z,y,x}`, `sf_kick`, RK update) | cell, or (f,p,k), (f,x,k,j) of work arrays | race-free |
+| problem generators (`nrpic_kerr_schild`, `nrpic_homogeneous`, `nrpic_cosmo*`, `nrpic_cf*`, `sf_tests`) | cell | race-free; tables read on the host before the kernels |
+
+Host-only paths: the outputs copy to host and write serially; DualViews alias in this
+build (DevMemSpace = HostSpace), as in the serial build; Kokkos OpenMP kernels return only
+when finished, so no fence is missing where the serial build needed none. One host defect
+was found and fixed in a9c34e7a: ParameterInput's second constructor tested the macro
+`OPENMP_PARALLEL` (never defined) and left its lock uninitialised in an OpenMP build.
+Conclusion [VERIFIED by reading, to be tested below]: the only places where threads can
+change a result are the order of the atomic additions of the deposit and the grouping of
+real reductions; nothing else depends on the schedule.
+
+Predictions for the final regression (run on the same source; P0 to P5 and P9 of entries
+2 and 5 stand):
+P10 (collisions). coll (no deposit, analytic flat metric): particle snapshots
+    byte-identical at 4 and 16 threads to one thread of O3, because each cell sorts its
+    list; the collision history keeps its integer columns and differs at most by rounding
+    in the real sums. Refuted by any difference in a snapshot.
+P11 (Z4c without particles). kg, noise, bench, punc: every output that holds evolved
+    fields (restart file, mesh outputs, horizon and tracker files) byte-identical at 4 and
+    16 threads to one thread; only history columns that are sums may differ by rounding.
+    Refuted by a difference in an evolved field (that would be a schedule-dependent kernel
+    in Z4c or the scalar field).
+P12 (bounds). A Kokkos debug build of the OpenMP executable (DEBUG=1: View bounds
+    checking) runs dep, east, os, newton and coll at 4 threads with atomic and with
+    private copies without a bounds error, and gives files that agree with O3 to rounding.
+    Refuted by an abort or a difference above 1e-8.
