@@ -1,0 +1,4 @@
+# Card check C2 of the final executable (tracks/core/JOURNAL-scalar3.md, entry 11): the
+# gauge example with con_signed = true, 32^3, 20 steps, dumps at t = 0, 0.4, 0.8; the
+# processor counterpart and the comparison are c2_compare.py.
+srg20 problems/scalar/sr_stochastic_gauge.athinput scalar_field/noise_mode_file=/data/haiyangw/nrpic/wt/core-scalar3/problems/scalar/sr_stochastic_modes.txt time/nlim=20

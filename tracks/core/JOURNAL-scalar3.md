@@ -606,3 +606,17 @@ release core-v0.3 but for the masked restart bytes; the three stochastic example
 usr, srg, with con_signed off for srg) byte-identical to the published executable of
 `core/scalar-2`, also after the restart; the seven relativistic set-ups byte-identical.
 Refuted by any differing data byte.
+
+## 2026-11-19, entry 11: card check C2 of the final card executable, predicted
+
+The card job of test U (4651) runs `athena_gpu_cea3a49`, the source before `con_signed`.
+The card executable to be published is `athena_gpu_5cc2821` (built 15:58Z, sha256
+8dc2ae83...). C2 (`inputs/card_c2.list`, one Slurm job, 0.1 card-hours requested; then
+`c2_compare.py`, the same input on `athena_cpu_5cc2821`): the gauge example (quadratic
+case, 32^3, lapse_harmonic = 0.05, con_signed = true) for 20 steps. Predictions (from
+the card check of J2: slice bit-identical, fields within 3.3e-14 after 20 steps, constraint
+fields within 3.4e-13): the dump at t = 0 bit-identical; the dumps at 0.4 and 0.8 within
+1e-12 of the largest value of each variable (H, M_i within 1e-11); the record columns
+within 1e-10 relative, the H' columns of con_signed within 1e-8 relative (H' is 1e-3 to
+1e-2 of H in this case, where the uniform part dominates, so the field difference is
+amplified by that ratio). Refuted by a larger difference or by a missing column.
