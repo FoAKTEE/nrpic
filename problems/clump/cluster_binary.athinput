@@ -1,0 +1,144 @@
+# Two equilibrium clusters (monoenergetic model y_c = 0.819, the stable cluster of the
+# first paper) on a quasi-circular orbit: ADM mass 1 each, coordinate separation 30 M
+# (x = -15 and +15), momenta +-P along y with the first post-Newtonian quasi-circular
+# value P = mu (M/r)^(1/2) (1 + 2 M/r) = 0.146313 (mu = 1/2, M = 2, r = 30; Newtonian
+# 0.129099); orbital period 808 M at first post-Newtonian order, 730 M Newtonian.
+# Curvature of both boost tables, both second-order corrections of psi, zero shift and
+# the lapse (2 - psi)/psi at the start (test TE of tracks/core/JOURNAL-clump2.md;
+# tracks/core/interfaces/moving_clusters.md).  Mesh of st_cluster.athinput (cells M/2
+# over the matter, domain [-1024 M, 1024 M]^3, 16^3 MeshBlocks) with the refined region
+# widened to hold the orbit, [-32, 32]^2 x [-16, 16].
+#
+# Tables and particles (10^4 stratified equal-mass particles per cluster):
+#   problems/ic/make_ic.py boosted --cluster-p 0.819,1,-15,0,0,0,-0.14631270419005796,0 \
+#       --cluster-p 0.819,1,15,0,0,0,0.14631270419005796,0 --N 10000 --seed 1 \
+#       --prefix orbit --out <rundir>
+# and the momenta the particles carry (printed, and in orbit.json under athenak.problem)
+# on the command line:
+#   athena -i cluster_binary.athinput problem/comp0_p1=6.74969740e-05 \
+#       problem/comp0_p2=-1.46337976e-01 problem/comp0_p3=2.16861109e-05 \
+#       problem/comp1_p1=-1.54593192e-06 problem/comp1_p2=1.46395987e-01 \
+#       problem/comp1_p3=-1.67591490e-05
+# (the full digits are those of orbit.json).
+
+<comment>
+problem   = two equilibrium clusters on a quasi-circular orbit
+
+<job>
+basename  = cl
+
+<mesh>
+nghost    = 4
+nx1       = 64
+x1min     = -1024.0
+x1max     = 1024.0
+ix1_bc    = outflow
+ox1_bc    = outflow
+nx2       = 64
+x2min     = -1024.0
+x2max     = 1024.0
+ix2_bc    = outflow
+ox2_bc    = outflow
+nx3       = 64
+x3min     = -1024.0
+x3max     = 1024.0
+ix3_bc    = outflow
+ox3_bc    = outflow
+
+<meshblock>
+nx1       = 16
+nx2       = 16
+nx3       = 16
+
+<mesh_refinement>
+refinement       = static
+max_nmb_per_rank = 2048
+
+<refined_region1>
+level = 6
+x1min = -31.9
+x1max = 31.9
+x2min = -31.9
+x2max = 31.9
+x3min = -15.9
+x3max = 15.9
+
+<time>
+evolution  = dynamic
+integrator = rk4
+cfl_number = 0.25
+nlim       = -1
+tlim       = 560.0
+ndiag      = 50
+
+<z4c>
+lapse_oplog     = 2.0
+lapse_harmonicf = 1.0
+lapse_harmonic  = 0.0
+lapse_advect    = 1.0
+shift_Gamma     = 0.75
+shift_eta       = 2.0
+shift_advect    = 1.0
+diss            = 0.5
+chi_div_floor   = 1.0e-5
+damp_kappa1     = 0.02
+damp_kappa2     = 0.0
+damp_ch         = 0.0
+damp_ch_dx      = 0.0
+
+<particles>
+particle_type  = nrpic
+pusher         = midpoint
+metric         = mesh
+tolerance      = 1.0e-7
+max_iterations = 50
+deposit        = true
+nfilter        = 4
+filter_compensate = true
+filter_comp_c  = -1.0
+deposit_max_level = 31
+deposit_adaptive  = false
+deposit_min_level = 6
+deposit_ppc       = 2.0
+deposit_max_coarsen = 31
+alpha_exc      = 0.1
+hist_dcycle    = 1
+snap_dt        = 4.0
+particle_file  = orbit.nrp
+
+<problem>
+pgen_name   = nrpic_cf
+ncomp       = 2
+comp0_type  = table
+comp0_file  = orbit_c0.tab
+comp0_x1    = -15.0
+comp0_x2    = 0.0
+comp0_x3    = 0.0
+comp0_boost_file = orbit_c0.bst
+comp0_p1    = 0.0
+comp0_p2    = 0.0
+comp0_p3    = 0.0
+comp0_corr  = table
+comp0_corr_file = orbit_c0_corr.tab
+comp0_boost_shift = false
+comp1_type  = table
+comp1_file  = orbit_c1.tab
+comp1_x1    = 15.0
+comp1_x2    = 0.0
+comp1_x3    = 0.0
+comp1_boost_file = orbit_c1.bst
+comp1_p1    = 0.0
+comp1_p2    = 0.0
+comp1_p3    = 0.0
+comp1_corr  = table
+comp1_corr_file = orbit_c1_corr.tab
+comp1_boost_shift = false
+lapse       = isotropic
+
+<output1>
+file_type = hst
+dt        = 1.0
+
+<output2>
+file_type = rst
+dt        = 140.0
