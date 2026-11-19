@@ -1,0 +1,58 @@
+{
+ "results": [
+  {
+   "test": "S3: one tracker, time increasing",
+   "ok": true,
+   "detail": "704 rows"
+  },
+  {
+   "test": "S3: one row per cycle (constant step)",
+   "ok": true,
+   "detail": "steps [0.03125]"
+  },
+  {
+   "test": "S3: tracker stays on the x axis (symmetric data)",
+   "ok": true,
+   "detail": "max |y|, |z| = 1.9e-15"
+  },
+  {
+   "test": "S3: horizon found in every search",
+   "ok": false,
+   "detail": "39 found, 5 missed"
+  },
+  {
+   "test": "S2: one tracker, time increasing",
+   "ok": true,
+   "detail": "456 rows"
+  },
+  {
+   "test": "S2: one row per cycle (constant step)",
+   "ok": true,
+   "detail": "steps [0.03125]"
+  },
+  {
+   "test": "S2: tracker stays on the x axis (symmetric data)",
+   "ok": true,
+   "detail": "max |y|, |z| = 2.5e-15"
+  },
+  {
+   "test": "S2: horizon found in every search",
+   "ok": false,
+   "detail": "27 found, 2 missed"
+  }
+ ],
+ "runs": {
+  "S3": {
+   "rows": 704,
+   "horizons": 39,
+   "missed": 5,
+   "hst_rows": 89
+  },
+  "S2": {
+   "rows": 456,
+   "horizons": 27,
+   "missed": 2,
+   "hst_rows": 58
+  }
+ }
+}

@@ -1,0 +1,29 @@
+{
+ "results": [
+  {
+   "test": "three trackers",
+   "ok": true,
+   "detail": "[0, 1, 2]"
+  },
+  {
+   "test": "trackers start at the input positions (1e-6)",
+   "ok": true,
+   "detail": "max error 4.1e-09"
+  },
+  {
+   "test": "three horizons from the first search",
+   "ok": true,
+   "detail": "{0: 0.1277797985061135, 1: 0.1293434010464348, 2: 0.9960679413465925}"
+  },
+  {
+   "test": "horizon masses in the predicted ranges (0.128-0.132, 1.00-1.01)",
+   "ok": false,
+   "detail": "{0: 0.1277797985061135, 1: 0.1293434010464348, 2: 0.9960679413465925}"
+  }
+ ],
+ "horizon_masses": {
+  "0": 0.1277797985061135,
+  "1": 0.1293434010464348,
+  "2": 0.9960679413465925
+ }
+}
