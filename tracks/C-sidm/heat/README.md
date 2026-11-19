@@ -108,8 +108,66 @@ Findings for the track:
 
 ## Pending runs
 
-(filled at the end of the session)
+1. Card job A, run C-20261119-150335-73fd40f (Slurm 4652, queued 15:03 UTC, 0.92 card-hour
+   reserved): the seven T8 variants (theta 0.003, k lambda 0.2, eps 0.2, 4e6 particles, one
+   particle file; transverse 16 x 16 cells of lambda/4) and T7 at eps = 0.05 (theta 0.003,
+   k lambda 0.4 and 0.2, seeds 1 and 2, 4e6): the precise T8 (P-T8: changes below 2
+   percent between the two finest values) and the literal eps of TESTS.md T7.
+2. Card job B, run C-20261119-150347-e100007 (Slurm 4653, same reservation): T7 at eps 0.2,
+   theta 0.1 and 1 (k lambda 0.4, 0.2, 0.1; seeds 1 and 2; 2e6) and theta 0.003 (seed 5,
+   4e6).
+   Particle files and case.json of both: prep run C-20261119-145725-d91858e. Each card run
+   writes 17 snapshots of 128-256 MB (about 85 GB for both jobs) until reduced.
+   After a job has ended (`harness/bin/nrpic-run status <run>`), with S and R as above:
+
+       P=/data/haiyangw/nrpic/scratch/C-sidm/C-20261119-145725-d91858e
+       $S --cores 4 --parent C-20261119-150335-73fd40f --purpose "heat card A reduce" -- \
+           python3 $R/run_mode.py reduce /data/haiyangw/nrpic/scratch/C-sidm/C-20261119-150335-73fd40f --prep $P --nproc 4
+       harness/bin/nrpic-run finish C-20261119-150335-73fd40f
+       $S --cores 1 --purpose "heat T8 card analysis" -- python3 $R/an_mode.py T8 - C-20261119-150335-73fd40f
+       $S --cores 1 --purpose "heat T7 eps 0.05 card" -- python3 $R/an_mode.py T7 - C-20261119-150335-73fd40f
+       # job B the same (reduce, finish), then the combined T7 analyses:
+       $S --cores 1 --purpose "heat T7 theta 0.003 all" -- python3 $R/an_mode.py T7 - \
+           C-20261119-144545-c606492 C-20261119-155434-8563453 C-20261119-150347-e100007
+       $S --cores 1 --purpose "heat T7 theta 0.1, 1 all" -- python3 $R/an_mode.py T7 - \
+           C-20261119-152752-0ffa031 C-20261119-155433-a287f9c C-20261119-150347-e100007
+
+   `reduce` writes reduced.npz, case.json and summary.json into each case directory of the
+   batch run and deletes the intermediate snapshots (first and last kept), as the
+   processor runs did while running; run it before `finish`, so the checksums record the
+   reduced state. The T7 analysis groups cases by (theta, eps); card and processor seeds
+   of the same group are pooled (different particle numbers: the standard error from the
+   seed scatter is then only indicative).
 
 ## Requests
 
-(filled at the end of the session)
+To the lead of C-sidm (TESTS.md is the lead's; nothing here loosens a criterion):
+- T7: fit the entropy combination A_S, not the number mode A_N (sound waves bias A_N by
+  +5 to +43 percent, finding 2); allow eps = 0.2 with the nonlinear-reference correction
+  (finding 3); the pass interval [0.99, 1.06] is met (1.021 +- 0.004).
+- T6(b): state the nonlinear reference (the literal statistic of a perfect kappa_1 code is
+  0.967, i.e. the interval [0.95, 1.10] means kappa/kappa_1 in [0.982, 1.138]), the
+  one-dimensional box (transverse lambda x lambda), and that the test checks kappa to a
+  few percent only (sound ringing, early kinetic lag; a compressible reference would be
+  needed for more).
+- T6(a): replace "consistent with a deviation proportional to t/t_coll" by the observed
+  scaling with the square root of the collided fraction (stochastic scatter), or ask for
+  many seeds if a systematic part is wanted.
+- T6(c): at lambda/L = 0.1 the step rings acoustically; no diffusive curve applies there.
+- T8: the "deficit without sub-cycling" is zero while no pair exceeds P = 1 (finding 5).
+- Card time: this package reserved 2 x 0.92 card-hours (jobs A and B, pending).
+
+To core:
+- Optional, for long box runs: an in-situ particle reduction (sums of M w cos(j k x),
+  M w sin(j k x) for w in {1, W - 1, W, u_x}, j = 1..3, every n cycles) would replace 64 B
+  per particle per snapshot; the card runs of this package write ~85 GB of snapshots to
+  keep 30 numbers per snapshot.
+- For information: on the processors under load the operator cost 1.2e-6 s per tested
+  pair (`coll_energy = particle`; `cell` 20 percent cheaper), 3.5 times the wave-2 figure.
+
+To kb:
+- The hard-sphere conductivity beyond the first Chapman-Enskog approximation (Chapman &
+  Cowling; ~1.025 kappa_1 [BACKGROUND]) is now the reference T7 is compared with at
+  0.4 percent (measured 1.021 +- 0.004): a source with the number is wanted.
+- Relativistic Chapman-Enskog conductivity of hard spheres (Cercignani & Kremer) for the
+  theta = 0.1 and 1 values of T7 (still not in the corpus).
