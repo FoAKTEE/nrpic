@@ -119,3 +119,17 @@ Predictions: the chosen variant reaches >= 26 of 32 locator hits (from 23) with 
 q12 stays a miss (its paper is not in the pool). Refuted if the best variant has < 25 locator
 hits on the 32, or loses more than one hybrid hit on either set. Cost: under 15 s per
 question on 8 threads.
+
+R4 interim (06:47 PST, 17 of 42 questions done in run kb-20261119-142613-942f713; the machine
+load is about 130 on 144 cores, so a question takes about 2 minutes for all variants): no
+variant lifts the within-paper misses q06, q07, q16, q17; w2-noexpand lifts q11. Not yet an
+outcome; the run continues.
+
+## R4b. Why the windows do not lift the within-paper misses (prediction 06:50 PST)
+
+`scripts/diag_rerank.py` on q06, q07, q16, q17, q20 (config w2), 2 threads beside the R4 run.
+Prediction: for q06 and q07 the right paper (2611.12831) is not among the three expanded
+papers, so chunk 105400 is not in the pool (hybrid paper rank 6 and 5: the first chunks come
+from three other papers); for q16, q17, q20 the answer chunk is in the pool but its best
+window is outranked by windows that repeat the question's topical words. Refuted if 105400 is
+in the pool for q07 and still ranks below 10.
