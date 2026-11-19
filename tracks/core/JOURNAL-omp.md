@@ -284,7 +284,7 @@ P12 (bounds). A Kokkos debug build of the OpenMP executable (DEBUG=1: View bound
     private copies without a bounds error, and gives files that agree with O3 to rounding.
     Refuted by an abort or a difference above 1e-8.
 
-## 2026-11-19 08:06 Entry 7: the measure of a difference; outcome of P12; one thread
+## 2026-11-19 08:04 Entry 7: the measure of a difference; outcome of P12; one thread
 
 Measure. The first runs of this session showed that the measure of entry 5 ("rel_file":
 largest difference over the largest magnitude among the numbers that differ) is not the
