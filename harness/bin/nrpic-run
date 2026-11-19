@@ -19,8 +19,12 @@ apply only to runs nrpic-run registered.
 
 Launchers (one registered run each):
   local   a command on the processors, run through `nrpic-env exec` with --cores threads, in the
-          worktree root, output in $NRPIC_RUN_DIR; blocking unless --background.
-              nrpic-run submit --kind scouting --gate G1 --purpose "..." -- python3 tracks/X/analysis/a.py
+          worktree root, output in $NRPIC_RUN_DIR; blocking unless --background. The command is
+          started without a shell: nrpic-run itself replaces '$NRPIC_RUN_DIR' and '$NRPIC_RUN_ID'
+          written in single quotes in its arguments (unquoted, your shell turns them into nothing);
+          a script may also read them from its environment. `python`/`python3` is the worktree's
+          .venv (first on PATH), else /usr/bin/python3.
+              nrpic-run submit --kind scouting --gate G1 --purpose "..." -- python3 tracks/X/analysis/a.py '$NRPIC_RUN_DIR'
   batch   several short AthenaK runs in one Slurm job on one card: wraps scripts/gpu_batch.sh.
           --list FILE, lines `<name> <athinput | file.rst> [athena args...]`; each run lands in
           scratch/<ID>/<run_id>/<name>/. --wall hh:mm:ss is the Slurm limit (default 00:45:00).
@@ -39,9 +43,12 @@ the inputs (files named with --input, files on the command line, input decks, th
 writes tracks/<ID>/runs/<run_id>/manifest.json and commits it (path-limited) on the own branch;
 creates scratch/<ID>/<run_id>/ and starts the run. finish records exit status, wall time, GPU-hours
 and sha256sums.txt of the output directory and commits the manifest again; verify recomputes the
-checksums. Run id (decision 0012): <ID short>-<YYYYMMDD-HHMMSS UTC>-<commit7>, the short owner id
-being A..F, core or kb as in the brief's example; the full form of some wave-1 manifests
-(A-emd-pbh-20261115-...) stays valid and is read.
+checksums. Run id (decision 0016 item 2, amending 0012): <ID short>-<YYYYMMDD-HHMMSS UTC>-<commit7>,
+the short owner id being A..F, core, kb or orch; the long form of waves 1 and 2
+(A-emd-pbh-20261115-...) stays valid for the runs that carry it and is read. Where things are
+written: the manifest tracks/<ID>/runs/<run_id>/manifest.json (committed at submit and at finish);
+in scratch/<ID>/<run_id>/ the outputs, run.log (local runs), sha256sums.txt (at finish) and
+.nrpic/launch.json, .nrpic/result.json (how the run was started and ended; not checksummed).
 
 Relative paths (inputs, list, input deck, executable, plan) are relative to the worktree root.
 Common options: --package DIR (repeatable: the run's own directory, for helpers sharing one
@@ -452,10 +459,11 @@ SHARED_CODE = ("athenak/", "python/", "scripts/", "harness/", "problems/", "cosm
 def check_clean(wt, o):
     """Refuse unless the code of the run is the commit. Without --package: the whole worktree must
     be clean (untracked files count). With --package DIR (repeatable; helpers sharing a worktree):
-    the packages and every --input / command-line file must be clean and fully tracked, and no
-    tracked file of the shared code (athenak/, python/, scripts/, harness/, problems/, ...) may be
-    modified; other changes, which can only lie elsewhere in tracks/<ID>/ (another helper's
-    package) or be untracked files there, are recorded in the manifest, not refused.
+    the packages and every --input / command-line file must be clean and fully tracked, nothing in
+    the shared code (athenak/, python/, scripts/, harness/, problems/, ...) may be modified or
+    untracked, and no tracked file outside tracks/ may be modified; other changes (elsewhere in
+    tracks/<ID>/: another helper's package; untracked files outside tracks/ and the shared code, such
+    as a summary a finder wrote into the worktree root) are recorded in the manifest, not refused.
     Returns the fields added to manifest["git"]."""
     dirty = wt.dirty()
     if not o["package"]:
@@ -495,14 +503,18 @@ def check_clean(wt, o):
         if any(p == q or p.startswith(q.rstrip("/") + "/") or q.startswith(p.rstrip("/") + "/") for q in pk) or any(
                 u == p or u.startswith(p.rstrip("/") + "/") for u in used):
             inside.append(line)
-        elif p.startswith(SHARED_CODE) or not p.startswith("tracks/"):
+        elif p.startswith(SHARED_CODE):
             shared.append(line)
+        elif not p.startswith("tracks/") and not line.startswith("??"):
+            shared.append(line)           # a tracked file outside tracks/ changed
         else:
-            outside.append(line)
+            outside.append(line)          # elsewhere in tracks/<ID>/, or an untracked file outside the shared
+                                          # code (wave 2: a finder's summary written into the worktree root)
     if inside or shared:
         raise H.HarnessError(
             "not clean where the run's code lives; commit first:\n  " + "\n  ".join((inside + shared)[:20])
-            + ("\n(changes to shared code or outside tracks/ are never allowed, --package or not)" if shared else ""))
+            + ("\n(changes to the shared code, and tracked changes outside tracks/, are never allowed, --package "
+               "or not)" if shared else ""))
     return {"package": pk, "outside_package": {"count": len(outside), "first": [l for l in outside[:20]]}}
 
 
@@ -739,6 +751,19 @@ def submit(wt, args):
     return 0
 
 
+RUN_VAR_RX = re.compile(r"\$(?:\{(NRPIC_RUN_(?:DIR|ID))\}|(NRPIC_RUN_(?:DIR|ID))(?![A-Za-z0-9_]))")
+
+
+def expand_run_vars(argv, run_id, outdir):
+    """A local command is started without a shell, so nothing else expands $NRPIC_RUN_DIR or
+    $NRPIC_RUN_ID (or ${...}) written literally (single-quoted) in its arguments: nrpic-run does
+    it here, in every argument, also inside a `bash -c '...'` string. Unquoted or double-quoted, the
+    caller's shell expands them first, to nothing (wave 2: outputs in a directory named
+    `$NRPIC_RUN_DIR` in the worktree root)."""
+    vals = {"NRPIC_RUN_DIR": outdir, "NRPIC_RUN_ID": run_id}
+    return [RUN_VAR_RX.sub(lambda m: vals[m.group(1) or m.group(2)], a) for a in argv]
+
+
 def wrap(wt, run_id, echo=False):
     """Run a local run's command (in the foreground, or inside the detached wrapper)."""
     outdir = outdir_of(wt, run_id)
@@ -747,6 +772,9 @@ def wrap(wt, run_id, echo=False):
     env["NRPIC_RUN_ID"], env["NRPIC_RUN_DIR"] = run_id, outdir
     os.makedirs(env["MPLCONFIGDIR"], exist_ok=True)
     info["pid"] = os.getpid()
+    argv = expand_run_vars(info["command"], run_id, outdir)
+    if argv != info["command"]:
+        info["argv_expanded"] = argv
     H.write_json(os.path.join(outdir, ".nrpic", "launch.json"), info)
     started = H.utcnow()
     t0 = time.time()
@@ -754,10 +782,11 @@ def wrap(wt, run_id, echo=False):
     rc, err = None, None
     with open(os.path.join(outdir, "run.log"), "w") as log:
         log.write(f"# nrpic-run {run_id} start={started} host={H.host()} cwd={wt.root}\n"
-                  f"# cmd: {' '.join(info['command'])}\n")
+                  f"# cmd: {' '.join(info['command'])}\n"
+                  + (f"# argv after $NRPIC_RUN_DIR/$NRPIC_RUN_ID: {' '.join(argv)}\n" if argv != info["command"] else ""))
         log.flush()
         try:
-            p = subprocess.Popen(info["command"], cwd=wt.root, env=env, stdout=subprocess.PIPE,
+            p = subprocess.Popen(argv, cwd=wt.root, env=env, stdout=subprocess.PIPE,
                                  stderr=subprocess.STDOUT, text=True, start_new_session=True)
         except OSError as e:
             rc, err = 127, repr(e)
