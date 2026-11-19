@@ -53,13 +53,30 @@ def main():
     out = dict(run=a.run, t_end_hst=float(hst["time"][-1]), np_end=int(hst["np"][-1]),
                n_records=int(rem["n"]),
                reasons={str(k): int(np.sum(rem["reason"] == k)) for k in (1, 2, 3, 4)})
+    # energy inside the flux sphere at t0 = 0 from the particle file (initial coordinates)
+    content0 = 0.0
+    content0_code = 0.0
+    rk = float(acc[f"radius{a.sphere}"][0])
+    if a.t0 == 0.0:
+        nrp = fluxio.read_nrp(os.path.join(a.data, "esf.nrp"))
+        inside = np.linalg.norm(nrp["x"], axis=1) < rk
+        content0 = float(np.sum(nrp["m"][inside] * EK[inside]))
+        out["content0"] = dict(radius=rk, n=int(inside.sum()), m=float(nrp["m"][inside].sum()),
+                               mE_K=content0)
+        if f"m_inside{a.sphere}" in acc:
+            out["content0"]["m_inside_acc_t0"] = float(acc[f"m_inside{a.sphere}"][0])
+        # the code's E at t = 0 is alpha W = psi^-2 for dust at rest (u_i = 0)
+        psi = 1.0 + 0.5 / np.maximum(np.linalg.norm(nrp["x"][inside], axis=1), 1e-12)
+        content0_code = float(np.sum(nrp["m"][inside] * psi ** -2))
+    else:
+        out["content0"] = "not available for t0 > 0: upper bound without the content"
     res = None
     if hor["time"].size >= 2:
         res = cmp.compare(hor, a.t0, rem=rem, acc=acc, ctrl=ctrl, floor=a.floor,
-                          sphere=a.sphere, E_by_tag=EK)
+                          sphere=a.sphere, E_by_tag=EK, content0=content0)
         out["bracket_energy_by_tag"] = res["summary"]
         res_code = cmp.compare(hor, a.t0, rem=rem, acc=acc, ctrl=ctrl, floor=a.floor,
-                               sphere=a.sphere)
+                               sphere=a.sphere, content0=content0_code)
         out["bracket_code_energy"] = res_code["summary"]
         cmp.plot(res, os.path.join(a.out, "esf_bracket"),
                  "ES-F: finder mass against the horizon flux (initial-data energies)")

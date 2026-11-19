@@ -88,7 +88,7 @@ def control_envelope(ctrl, t0, t_eval):
 
 
 def compare(hor, t0, rem=None, acc=None, hst=None, ctrl=None, floor=0.0, finder_tol=1e-5,
-            sphere=1, k_sigma=3.0, E_by_tag=None):
+            sphere=1, k_sigma=3.0, E_by_tag=None, content0=0.0):
     t = hor["time"]
     keep = t >= t0
     t, M = t[keep], hor["mass"][keep]
@@ -107,6 +107,10 @@ def compare(hor, t0, rem=None, acc=None, hst=None, ctrl=None, floor=0.0, finder_
                            - np.interp(t0, th, hst["n_excised"]))
     if acc is not None:
         out["F_sph"], out["R_sph"], out["r_sph"] = sphere_flux(acc, sphere, t0, t)
+        # matter inside the sphere at t0 reaches the horizon without crossing the sphere:
+        # its energy belongs to the upper bound (entry 5: omitted at first, a failure)
+        out["F_sph"] = out["F_sph"] + content0
+        out["content0"] = content0
     floor_t = np.full_like(t, float(floor))
     if ctrl is not None:
         out["ctrl_env"] = control_envelope(ctrl, t0, t)

@@ -297,3 +297,28 @@ exact history and once with the growth scaled by 0.97. Predictions:
    M_AH - m(R0) below -1e-3.
 Refuted if 1 fails (then the analysis or the LTB labelling is wrong) or 2 or 3 pass
 (then the comparison cannot see a 3 per cent or a gauge-factor error).
+
+### Outcome of entry 5, first run (D-20261119-145851-944d6fd)
+
+61592 shells removed, 849952 particles cross the sphere. Prediction 1 FAILED: with the
+exact history and initial-data energies the bracket is violated by up to 91 sigma and
+only 90 per cent of the times lie inside 3 sigma, while the per-label bound holds
+(min M_AH(t_rem) - m(R0) = +6.3e-6) and no proper time is outside [tau_H, tau_0].
+Predictions 2 (code energies: 8938 sigma) and 3 (growth x 0.97: 837 sigma, per label
+-7.2e-3) HELD. Candidate cause [JUDGEMENT, to be tested by the rerun]: the upper bound
+F_sph counts only matter that crosses the sphere after t0; the dust that starts inside
+the sphere (here 3 <= R0 < 5 M, about 1e-3 M of Misner-Sharp mass, 100 sigma) reaches
+the horizon without crossing it. The same defect would have hit the real ES-F run (dust
+from R = 3 M, sphere at coordinate radius 5 M). Change: compare() adds the energy
+content of the sphere at t0 to F_sph (`content0`); esf_analyse.py computes it from the
+particle file for t0 = 0 (and checks its rest mass against m_inside of acc.hst); the
+synthetic sphere sits at isotropic radius 5 M (areal 6.05 M) so that "inside" means the
+same in both.
+
+## Entry 5b (before the rerun)
+
+Predictions for the rerun with the content term: 1 now holds (max violation below
+4.5 sigma, at least 98 per cent inside 3 sigma); 2 and 3 still hold (above 1000 and
+100 sigma); content check: the rest mass inside isotropic radius 5 M from the particle
+file equals the synthetic m_inside to 1e-12 relative. Refuted (cause wrong or another
+defect) if 1 still fails.

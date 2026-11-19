@@ -55,13 +55,15 @@ def write_run(d, data, scale, seed=1):
     rec[:, 10], rec[:, 11], rec[:, 17] = rest[sel], tau_rem, EFAC * EK[sel]
     with open(os.path.join(d, "esf.removed.bin"), "wb") as f:
         f.write(b"NRPREM01" + struct.pack("<q", 20) + rec.astype("<f8").tobytes())
-    # sphere at R = 5 on the collapsing branch (cycloid of each shell)
+    # sphere at isotropic radius 5 M at t = 0, i.e. areal R_s = 5 (1 + 1/10)^2 = 6.05 M,
+    # crossed by each shell outside it on its collapsing branch (cycloid of each shell)
+    Rs = 5.0 * 1.1 ** 2
     m = lab["m_label"]
     A = m * R0 / 2.0
     T = m / (2.0 / R0) ** 1.5
     eta0 = np.arccos(np.clip(1.0 - 2.0 / m, -1, 1))
-    ok = dust & (5.0 / A <= 2.0) & (R0 > 5.0)
-    eta5 = 2 * math.pi - np.arccos(np.clip(1.0 - 5.0 / A, -1, 1))
+    ok = dust & (Rs / A <= 2.0) & (R0 > Rs)
+    eta5 = 2 * math.pi - np.arccos(np.clip(1.0 - Rs / A, -1, 1))
     tau5 = T * ((eta5 - np.sin(eta5)) - (eta0 - np.sin(eta0)))
     t5 = np.where(ok, tau5 / GAUGE, np.inf)
     th = np.arange(0.0, TEND + 1e-9, 0.25)
@@ -70,9 +72,10 @@ def write_run(d, data, scale, seed=1):
     cs_m = np.concatenate([[0.0], np.cumsum(rest[o])])
     k = np.searchsorted(t5[o], th, side="right")
     with open(os.path.join(d, "esf.acc.hst"), "w") as f:
-        f.write("# [1]=time [2]=radius1 [3]=n_in1 [4]=m_in1 [5]=mE_in1 [6]=n_out1 [7]=m_out1 [8]=mE_out1\n")
+        f.write("# [1]=time [2]=radius1 [3]=n_in1 [4]=m_in1 [5]=mE_in1 [6]=n_out1 [7]=m_out1 [8]=mE_out1 [9]=m_inside1\n")
+        m_in0 = float(rest[dust & (R0 < Rs)].sum())
         for ti, ki in zip(th, k):
-            f.write(f"{ti:.15e} 5.0 {ki} {cs_m[ki]:.15e} {cs_mE[ki]:.15e} 0 0 0\n")
+            f.write(f"{ti:.15e} 5.0 {ki} {cs_m[ki]:.15e} {cs_mE[ki]:.15e} 0 0 0 {m_in0:.15e}\n")
     with open(os.path.join(d, "esf.nrpic.hst"), "w") as f:
         f.write("# [1]=time [2]=np\n")
         for ti in th:
