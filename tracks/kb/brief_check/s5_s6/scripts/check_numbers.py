@@ -127,6 +127,10 @@ def main():
     temps = np.logspace(math.log10(10.0), math.log10(0.003), 160)
     f1, r1 = share_curve(1.0, temps)
     f2, r2 = share_curve(2.0, temps)
+    # decoupling well above m_e: the limit T_nu/T -> (4/11)^(1/3) must be recovered (the 1 MeV
+    # case keeps T_nu/T 0.6 per cent higher, because e+e- are partly non-relativistic at 1 MeV:
+    # run kb-20261119-154310-89ca8fb)
+    f10, r10 = share_curve(10.0, np.concatenate(([30.0, 20.0], temps)))
     f_before = 21 / 4 / GSTAR_BEFORE
     f_after_g = (GSTAR_AFTER - 2) / GSTAR_AFTER
     k = 3 * 7 / 8 * (4 / 11) ** (4 / 3)
@@ -140,6 +144,9 @@ def main():
         "curve_Tdec1MeV_max": float(f1.max()), "curve_Tdec1MeV_min": float(f1.min()),
         "curve_Tdec2MeV_max": float(f2.max()), "curve_Tdec2MeV_min": float(f2.min()),
         "Tnu_over_T_final_Tdec1MeV": float(r1[-1]),
+        "Tnu_over_T_final_Tdec2MeV": float(r2[-1]),
+        "Tnu_over_T_final_Tdec10MeV": float(r10[-1]),
+        "curve_Tdec10MeV_min": float(f10.min()),
         "Tnu_over_T_expected": (4 / 11) ** (1 / 3),
     }
     for name, v in (("before", f_before), ("after_exact", f_after_exact),
@@ -148,8 +155,8 @@ def main():
             fails.append("share %s = %.4f outside %s" % (name, v, BAND_SHARE))
     if abs(f_after_exact - FNU_WEINBERG) > 5e-4:
         fails.append("exact share %.5f differs from Weinberg %.5f" % (f_after_exact, FNU_WEINBERG))
-    if abs(r1[-1] - (4 / 11) ** (1 / 3)) > 2e-3:
-        fails.append("T_nu/T final %.4f differs from (4/11)^(1/3)" % r1[-1])
+    if abs(r10[-1] - (4 / 11) ** (1 / 3)) > 2e-3:
+        fails.append("T_nu/T final %.4f (T_d = 10 MeV) differs from (4/11)^(1/3)" % r10[-1])
 
     # 2. horizon mass
     t_cksy = T_COEF_S
@@ -185,17 +192,18 @@ def main():
     fs.band(ax, temps, BAND_SHARE[0], BAND_SHARE[1], "grey", alpha=0.15)
     ax.plot(temps, f1, color=fs.PAL["blue"], label=r"$T_d = 1$ MeV")
     ax.plot(temps, f2, color=fs.PAL["red"], ls="--", label=r"$T_d = 2$ MeV")
+    ax.plot(temps, f10[2:], color=fs.PAL["green"], ls=":", lw=2, label=r"$T_d = 10$ MeV")
     ax.axhline(FNU_WEINBERG, **fs.MASK_LINE)
     ax.axhline(f_before, **fs.MASK_LINE)
-    ax.text(0.004, FNU_WEINBERG - 0.008, "0.40523 (astro-ph/0306304)", fontsize=7, va="top")
-    ax.text(0.004, f_before + 0.004, "21/4 / 10.75 = 0.488", fontsize=7, va="bottom")
+    ax.text(8.0, FNU_WEINBERG - 0.004, "0.40523 (astro-ph/0306304)", fontsize=7, va="top")
+    ax.text(8.0, f_before + 0.004, "21/4 / 10.75 = 0.488", fontsize=7, va="bottom")
     ax.set_xscale("log")
     ax.invert_xaxis()
     ax.set_ylim(0.37, 0.53)
     ax.set_xlabel(r"photon temperature $T$ [MeV]")
     ax.set_ylabel(r"$\rho_\nu / \rho_{\rm rad}$")
     ax.set_title("(a) neutrino share (line 410)", fontsize=9)
-    ax.legend(loc="lower left", fontsize=7, frameon=False)
+    ax.legend(loc="center right", fontsize=7, frameon=False)
 
     ax = axs[1]
     Tg = np.logspace(-1, 1, 100)

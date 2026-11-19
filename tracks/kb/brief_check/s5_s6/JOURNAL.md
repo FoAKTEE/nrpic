@@ -124,3 +124,25 @@ R1. `scripts/check_numbers.py`: neutrino share of the radiation energy density a
     M_H(1 MeV) inside [3e4, 3e5] M_sun. Refuted outside these.
 R2. `scripts/fig_verdicts.py`: tally of CHECK.md against its header, every TeX locator exists
     and its line range lies inside the file. Prediction: no problem. Refuted by any mismatch.
+
+## Entry 2 (2026-11-19 07:46 PST): outcome of R1, first try; prediction for the rerun
+
+Run `kb-20261119-154310-89ca8fb` (processors, one core, seconds) ended with exit 1. The
+preregistered numbers held: neutrino share 0.4884 before e+e- annihilation (21/4 over 10.75),
+0.40523 after it from (4/11)^(4/3) (equal to f_nu(0) = 0.40523 of astro-ph/0306304
+`main.tex:328-329` to 5 digits), the curve for decoupling at 1 MeV between 0.411 and 0.4915,
+all inside [0.40, 0.50]; horizon mass at T = 1 MeV 1.498e5 M_sun from 2002.12778
+(`CKSY2021.tex:276-291`), 1.499e5 from the Friedmann equation, inside [3e4, 3e5]. P1 holds.
+What failed is a sanity check I had put into the script without writing it here: the final
+T_nu/T of the 1 MeV curve is 0.7180, not (4/11)^(1/3) = 0.7138 within 2e-3. Figure
+`fig_numbers.png` looked at: panel (a) shows the step from 0.488 to 0.41, a small bump to 0.49
+near 1 MeV, and the two text labels outside the axes; (b) and (c) as expected; the formula of
+astro-ph/0608642 lies a factor 15 below the other two.
+
+Suspected cause (not yet tested): with instantaneous decoupling at 1 MeV the electrons and
+positrons are already partly non-relativistic (m_e/T = 0.51), so they hold less entropy at
+decoupling and heat the photons less afterwards; the check belongs to decoupling well above
+m_e. Prediction for the rerun (sanity check moved to decoupling at 10 MeV, labels moved inside):
+T_nu/T at 10 MeV decoupling within 2e-3 of 0.7138; the 2 MeV curve between 0.7138 and 0.7180;
+all other numbers unchanged. Refuted if the 10 MeV case also misses 0.7138 (then the integrals
+are wrong).
