@@ -75,7 +75,7 @@ From the worktree root, with the worktree's `.venv`; every run registered with
 | T6(a) lambda/L = 100 | reported | same | collisional deviation from the free streaming of the same sample 3.1-3.3 x that at 1000 = sqrt of the collided-fraction ratio (7.6/0.8 percent): stochastic scatter, not a drift proportional to t/t_coll (prediction's mechanism failed) | same |
 | T6(b) lambda/L = 0.01 | PASS (2 seeds), precision a few percent | C-20261119-144535-2c7b6a4; C-20261119-160003-287b389 | f = 1.029, 1.063 (kappa = f kappa_1(T) in the nonlinear isobaric reference); literal chi_fit/chi(kappa_1, 0.015) = 0.994, 1.027 (reference itself 0.967); residuals show an early kinetic lag and sound-wave ringing (period L/c_s) that the isobaric reference lacks | `figs/T6b_step_short.png` |
 | T6(c) lambda/L = 10, 1, 0.1 | reported | C-20261119-151104-b930d71; C-20261119-154057-471b5ec | collisionless curve down to lambda/L = 1; at 0.1 slower mixing and acoustic ringing (period ~1.1 L/<v>_2); not the diffusive curve predicted | `figs/T6c_transition.png` |
-| T7 theta = 0.003 | PASS | C-20261119-144545-c606492; C-20261119-155257-754a43b | eps 0.2, 4 seeds x 4e5: f = 1.0232 +- 0.0039 (k lambda 0.1), 1.0170 +- 0.0049 (0.2), 1.034 +- 0.017 (0.4); extrapolated kappa/kappa_1 = 1.021 +- 0.004 in [0.99, 1.06]; Balberg et al. (0.72) excluded; the number mode alone gives 1.05, 1.11, 1.43 (sound waves) | `figs/T7_th0.003_e0.2_cpu.png` |
+| T7 theta = 0.003 | PASS | C-20261119-144545-c606492, C-20261119-155434-8563453; C-20261119-161930-acd257b | eps 0.2, 4e5 per run: f = 1.0232 +- 0.0039 (k lambda 0.1, 4 seeds), 1.0174 +- 0.0047 (0.2, 8 seeds), 1.041 +- 0.011 (0.4, 8 seeds); extrapolated kappa/kappa_1 = 1.019 +- 0.004 in [0.99, 1.06]; Balberg et al. (0.72) excluded; the number mode alone gives 1.05, 1.11, 1.45 (sound waves) | `figs/T7_th0.003_e0.2_cpu.png` |
 | T7 collisionless (k lambda = 100) | PASS | C-20261119-150358-3805fd5; C-20261119-152845-017d186 | max z 3.0, 3.1, 2.9 against the ensemble (< 4); against the free streaming of the same sample rms 0.27, 0.14, 0.05 noise units at theta 0.003, 0.1, 1 | `figs/T7_collisionless.png` |
 | T8 part 2: T2(b) at max P 0.56 | PASS, no deficit | C-20261119-150358-66295f7; C-20261119-151044-a584069 | without sub-cycling 1.000025 +- 0.000041, with 0.999992 +- 0.000026 of the analytic rate; n_trunc 0 | `figs/T8_t2_nosub.png` |
 | T7 theta = 0.1, 1 | (processors running) | | | |
@@ -85,7 +85,7 @@ Card jobs (pending in the Slurm queue at the end of the session): see "Pending r
 
 Findings for the track:
 1. The conductivity of the operator is the Chapman-Enskog hard-sphere value: kappa =
-   1.021 +- 0.004 kappa_1 at theta = 0.003 (expected ~1.025 from higher Sonine terms
+   1.019 +- 0.004 kappa_1 at theta = 0.003 (expected ~1.025 from higher Sonine terms
    [BACKGROUND]). The conduction coefficient b = 25 sqrt(pi)/32 (Koda & Shapiro; arXiv:
    2601.17117) is right and Balberg et al.'s 25 pi/(32 sqrt 6) is not, for this operator
    (SPEC.md 7.3's open question) [VERIFIED by run]. arXiv:2505.15903 (Gurian & May,
@@ -144,7 +144,7 @@ Findings for the track:
 To the lead of C-sidm (TESTS.md is the lead's; nothing here loosens a criterion):
 - T7: fit the entropy combination A_S, not the number mode A_N (sound waves bias A_N by
   +5 to +43 percent, finding 2); allow eps = 0.2 with the nonlinear-reference correction
-  (finding 3); the pass interval [0.99, 1.06] is met (1.021 +- 0.004).
+  (finding 3); the pass interval [0.99, 1.06] is met (1.019 +- 0.004).
 - T6(b): state the nonlinear reference (the literal statistic of a perfect kappa_1 code is
   0.967, i.e. the interval [0.95, 1.10] means kappa/kappa_1 in [0.982, 1.138]), the
   one-dimensional box (transverse lambda x lambda), and that the test checks kappa to a
@@ -168,6 +168,6 @@ To core:
 To kb:
 - The hard-sphere conductivity beyond the first Chapman-Enskog approximation (Chapman &
   Cowling; ~1.025 kappa_1 [BACKGROUND]) is now the reference T7 is compared with at
-  0.4 percent (measured 1.021 +- 0.004): a source with the number is wanted.
+  0.4 percent (measured 1.019 +- 0.004): a source with the number is wanted.
 - Relativistic Chapman-Enskog conductivity of hard spheres (Cercignani & Kremer) for the
   theta = 0.1 and 1 values of T7 (still not in the corpus).
