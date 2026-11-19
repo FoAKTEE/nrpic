@@ -4,6 +4,15 @@ outputs with those of one rank (tracks/core/interfaces/mpi.md, section 4).
 
     python3 tracks/core/analysis/mpi/mpi_tests.py --case t1_kerr [--ranks 1 2 4]
         [--exe PATH] [--out DIR] [--compare-only]
+    python3 tracks/core/analysis/mpi/mpi_tests.py --restart-of DIR --pairs 1:1 2:2 1:4
+        [--rst rst/cl.00001.rst] [--exe PATH] [--out DIR] [--compare-only]
+
+The second form (test T4) restarts the runs of an earlier case (DIR is its output
+directory, with np<N> inside) from the restart file written on w ranks, on r ranks
+(pairs w:r), into <out>/w<w>r<r>, and compares what the restarted run wrote with the
+uninterrupted runs on w and on r ranks: binary record files by their tails, histories by
+their last records, snapshots and field dumps by name, the final particle restart file
+byte for byte and the mesh restart file after its parameter header.
 
 The output directory is $NRPIC_RUN_DIR/<case> (set by nrpic-run) unless --out is given.
 Each rank count runs in <out>/np<N>; the comparison is written to <out>/compare.json and
@@ -23,6 +32,7 @@ import glob
 import hashlib
 import json
 import os
+import shutil
 import subprocess
 import sys
 import time
@@ -93,11 +103,40 @@ def make_box(path, n=3000, seed=20261120, mass=1.0e-3):
     return n
 
 
+def make_cluster(path, n=4000, seed=7, yc=0.605):
+    """Shapiro-Teukolsky cluster (y_c = 0.605, isotropic radius 4.7 M) from
+    problems/ic/make_ic.py: <stem>.nrp, <stem>.tab and <stem>.json next to path."""
+    d = os.path.dirname(path)
+    stem = os.path.splitext(os.path.basename(path))[0]
+    cmd = [sys.executable, os.path.join(REPO, "problems", "ic", "make_ic.py"), "st",
+           "--yc", str(yc), "--N", str(n), "--seed", str(seed), "--out", d,
+           "--prefix", stem]
+    subprocess.run(cmd, check=True, stdout=subprocess.DEVNULL,
+                   env=dict(os.environ, OMP_NUM_THREADS="2"))
+    return n
+
+
+REGRESS_IC = "/data/haiyangw/nrpic/scratch/core/regress/ic"
+
+
+def copy_random(path):
+    """The 10^4 particles of the regression case dep (tracks/core/JOURNAL-newton.md)."""
+    shutil.copyfile(os.path.join(REGRESS_IC, "random.nrp"), path)
+    return int(np.fromfile(path, "<i8", count=2)[1])
+
+
 # ----------------------------------------------------------------------------------------
 # cases
 # ----------------------------------------------------------------------------------------
 KERR = "problems/tests/mpi_kerr_swarm.athinput"
 BOX = "problems/tests/mpi_box_periodic.athinput"
+CLUSTER = "problems/tests/mpi_cluster.athinput"
+CLUSTER_SMR = "problems/tests/mpi_cluster_smr.athinput"
+SMR = "problems/tests/deposit_smr.athinput"
+# the table of the cluster lies next to the particle file ({out} is the output directory)
+CLT = ["problem/comp0_file={out}/cluster.tab"]
+SMRT = ["time/tlim=4.0", "particles/traj_dcycle=4", "particles/traj_ntrack=1000000",
+        "particles/snap_dt=1.0"]
 # with deposit every particle is tracked: the file with the metric at the tracked
 # particles then samples the deposited E and S_i at all particles in double precision
 # (the binary dumps of the sources are single precision)
@@ -128,12 +167,29 @@ CASES = {
                         args=DEP + ["particles/deposit_shape=cic"]),
     "t2_kerr_pcs": dict(input=KERR, particles=("swarm.nrp", make_swarm_bound),
                         args=DEP + ["particles/deposit_shape=pcs", "particles/nfilter=2"]),
+    # step 3: self-gravitating cluster with Z4c on a uniform mesh (also the source of the
+    # restart files of test T4)
+    "t3_cluster": dict(input=CLUSTER, particles=("cluster.nrp", make_cluster), args=CLT),
+    "t3_cluster_ext": dict(input=CLUSTER, particles=("cluster.nrp", make_cluster),
+                           args=CLT + ["particles/source_density=true",
+                                       "particles/source_extrap=true"]),
+    # step 5: statically refined meshes.  dep: 10^4 particles drifting across three
+    # levels in flat spacetime (64 + 56 + 56 MeshBlocks); cluster: the cluster of T3 on
+    # a mesh whose central MeshBlock is refined once (26 + 8 MeshBlocks)
+    "t5_smr_cic": dict(input=SMR, particles=("random.nrp", copy_random),
+                       args=SMRT + ["particles/deposit_shape=cic"]),
+    "t5_smr_tsc_cap": dict(input=SMR, particles=("random.nrp", copy_random),
+                           args=SMRT + ["particles/deposit_shape=tsc", "particles/nfilter=2",
+                                        "particles/deposit_max_level=1"]),
+    "t5_smr_pcs": dict(input=SMR, particles=("random.nrp", copy_random),
+                       args=SMRT + ["particles/deposit_shape=pcs", "particles/nfilter=1"]),
+    "t5_smr_cluster": dict(input=CLUSTER_SMR, particles=("cluster.nrp", make_cluster),
+                           args=CLT),
 }
 
 BYTE_PATTERNS = ["*.traj.bin", "*.trajmet.bin", "*.part.*.bin", "rst/*.prt",
                  "*.line.bin", "*.field.*.bin"]
-HIST_PATTERNS = ["*.nrpic.hst", "*.cstat.hst", "*.cons.hst", "*.z4c.user.hst",
-                 "*.z4c.hst"]
+HIST_PATTERNS = ["*.hst"]          # all histories but *.mpi.hst (which differs by design)
 
 
 def sha256(path):
@@ -171,6 +227,25 @@ def read_snapshot(path):
         rec = np.frombuffer(f.read(56*n), "<f8").reshape(n, 7)
         tag = np.frombuffer(f.read(4*n), "<i4")
     return t, rec, tag
+
+
+def read_field(path):
+    """<basename>.field.NNNNN.bin of the module: time and a dict of arrays (E and chi in
+    single precision; with field_constraints the Hamiltonian constraint, the momentum
+    constraint, Khat, Theta and the lapse in double precision)."""
+    with open(path, "rb") as f:
+        magic = f.read(8)
+        t = float(np.frombuffer(f.read(8), "<f8")[0])
+        n1, n2, n3 = (int(v) for v in np.frombuffer(f.read(24), "<i8"))
+        n = n1*n2*n3
+        out = dict(E=np.frombuffer(f.read(4*n), "<f4").astype(np.float64),
+                   chi=np.frombuffer(f.read(4*n), "<f4").astype(np.float64))
+        if magic == b"NRFIELD2":
+            for name in ("H", "M_x", "M_y", "M_z", "Khat", "Theta", "alpha"):
+                out[name] = np.frombuffer(f.read(8*n), "<f8")
+    for k in out:
+        out[k] = out[k].reshape(n3, n2, n1)
+    return t, out
 
 
 def read_bin_blocks(path):
@@ -214,8 +289,9 @@ def run_case(case, ranks, exe, out, extra):
     for n in ranks:
         d = os.path.join(out, "np%d" % n)
         os.makedirs(d, exist_ok=True)
+        args = [x.replace("{out}", out) for x in spec["args"]]
         cmd = [MPIRUN, "--bind-to", "none", "-np", str(n), exe, "-i", inp, "-d", d,
-               "particles/particle_file=" + ppath] + spec["args"] + extra
+               "particles/particle_file=" + ppath] + args + extra
         log = open(os.path.join(d, "run.log"), "w")
         env = dict(os.environ, OMP_NUM_THREADS="1")
         procs.append((n, d, cmd, time.time(),
@@ -276,6 +352,8 @@ def compare_case(case, ranks, out):
     # ---- histories
     for pat in HIST_PATTERNS:
         for f in sorted(glob.glob(os.path.join(ref, pat))):
+            if f.endswith(".mpi.hst"):
+                continue
             rel = os.path.relpath(f, ref)
             a = read_table(f)
             row = dict(records=int(a.shape[0]), columns=int(a.shape[1]) if a.size else 0)
@@ -338,6 +416,37 @@ def compare_case(case, ranks, out):
             row["np%d" % n] = dict(max_rel=max(worst.values()),
                                    component=max(worst, key=worst.get))
         result["fields"][rel] = row
+    # ---- field dumps of the module and the line dump, numerically
+    result["field_dumps"] = {}
+    for f in sorted(glob.glob(os.path.join(ref, "*.field.*.bin"))):
+        rel = os.path.relpath(f, ref)
+        t, a = read_field(f)
+        row = dict(time=t)
+        for n in ranks[1:]:
+            g = os.path.join(out, "np%d" % n, rel)
+            if not os.path.exists(g):
+                row["np%d" % n] = "missing"
+                continue
+            t2, b = read_field(g)
+            row["np%d" % n] = {k: float(np.abs(a[k] - b[k]).max()/max(np.abs(a[k]).max(), 1e-300))
+                               for k in a}
+        result["field_dumps"][rel] = row
+    result["line"] = {}
+    for f in sorted(glob.glob(os.path.join(ref, "*.line.bin"))):
+        rel = os.path.relpath(f, ref)
+        ng = int(open(f[:-4] + ".txt").read().splitlines()[1])
+        a = np.fromfile(f, "<f8").reshape(-1, 1 + 5*ng)
+        row = dict(records=int(len(a)))
+        for n in ranks[1:]:
+            g = os.path.join(out, "np%d" % n, rel)
+            b = np.fromfile(g, "<f8").reshape(-1, 1 + 5*ng) if os.path.exists(g) else None
+            if b is None or b.shape != a.shape:
+                row["np%d" % n] = "missing or of another size"
+                continue
+            row["np%d" % n] = {name: float(np.abs(a[:, 1+v*ng:1+(v+1)*ng] - b[:, 1+v*ng:1+(v+1)*ng]).max()
+                                           / max(np.abs(a[:, 1+v*ng:1+(v+1)*ng]).max(), 1e-300))
+                               for v, name in enumerate(("chi", "alpha", "K", "E", "S_x"))}
+        result["line"][rel] = row
     # ---- conservation identity, each run by itself (history columns 5-12)
     for n in ranks:
         g = glob.glob(os.path.join(out, "np%d" % n, "*.nrpic.hst"))
@@ -365,6 +474,149 @@ def compare_case(case, ranks, out):
                 particles_per_rank_first=[int(v) for v in a[0, 4:]],
                 particles_per_rank_last=[int(v) for v in a[-1, 4:]])
     return result
+
+
+# ----------------------------------------------------------------------------------------
+# test T4: restart on the same and on another number of ranks
+# ----------------------------------------------------------------------------------------
+def run_restart(src, pairs, exe, out, rst):
+    procs = []
+    for w, r in pairs:
+        d = os.path.join(out, "w%dr%d" % (w, r))
+        os.makedirs(d, exist_ok=True)
+        cmd = [MPIRUN, "--bind-to", "none", "-np", str(r), exe, "-r",
+               os.path.join(src, "np%d" % w, rst), "-d", d]
+        log = open(os.path.join(d, "run.log"), "w")
+        env = dict(os.environ, OMP_NUM_THREADS="1")
+        procs.append(((w, r), d, cmd, time.time(),
+                      subprocess.Popen(cmd, cwd=d, stdout=log, stderr=subprocess.STDOUT,
+                                       env=env), log))
+    res = {}
+    for (w, r), d, cmd, t0, p, log in procs:
+        rc = p.wait()
+        log.close()
+        res["%d:%d" % (w, r)] = dict(dir=d, command=cmd, exit=rc,
+                                     wall_s=round(time.time() - t0, 1))
+        print("restart w=%d r=%d exit=%d wall=%.1f s" % (w, r, rc, time.time() - t0),
+              flush=True)
+    return res
+
+
+def _rst_data(path):
+    """bytes of a mesh restart file after its parameter header (which holds the name of
+    the file a run was restarted from, so it differs between the runs)"""
+    b = open(path, "rb").read()
+    k = b.find(b"<par_end>")
+    return b[k:] if k >= 0 else b
+
+
+def _tail_compare(full, part, nrec):
+    """the records of part (binary file of nrec doubles per record) against the last
+    records of full: identical bytes, or the largest difference relative to the largest
+    magnitude of each column"""
+    a = np.fromfile(full, "<f8").reshape(-1, nrec)
+    b = np.fromfile(part, "<f8").reshape(-1, nrec)
+    if len(b) > len(a) or len(b) == 0:
+        return dict(records=int(len(b)), note="more records than the full run or none")
+    a = a[len(a) - len(b):]
+    if not np.array_equal(a[:, 0], b[:, 0]):
+        return dict(records=int(len(b)), note="times differ")
+    same = bool(np.array_equal(a, b))
+    sc = np.maximum(np.abs(a).max(axis=0), 1.0e-300)
+    return dict(records=int(len(b)), identical=same,
+                max_rel=float((np.abs(a - b).max(axis=0)/sc).max()))
+
+
+def compare_restart(src, pairs, out):
+    result = {}
+    for w, r in pairs:
+        d = os.path.join(out, "w%dr%d" % (w, r))
+        row = {}
+        for label, n in (("same_ranks_as_writer", w), ("same_ranks_as_reader", r)):
+            if label == "same_ranks_as_reader" and r == w:
+                continue
+            full = os.path.join(src, "np%d" % n)
+            cmp = dict(full_run="np%d" % n, files={})
+            # binary records
+            for pat, nrec in (("*.traj.bin", 8), ("*.trajmet.bin", 17)):
+                for f in sorted(glob.glob(os.path.join(d, pat))):
+                    g = os.path.join(full, os.path.basename(f))
+                    if os.path.exists(g):
+                        cmp["files"][os.path.basename(f)] = _tail_compare(g, f, nrec)
+            for f in sorted(glob.glob(os.path.join(d, "*.line.bin"))):
+                g = os.path.join(full, os.path.basename(f))
+                txt = os.path.join(full, os.path.basename(f)[:-4] + ".txt")
+                if os.path.exists(g) and os.path.exists(txt):
+                    ng = int(open(txt).read().splitlines()[1])
+                    cmp["files"][os.path.basename(f)] = _tail_compare(g, f, 1 + 5*ng)
+            # histories: the records of the restarted run against the last ones of the
+            # full run
+            for f in sorted(glob.glob(os.path.join(d, "*.hst"))):
+                if f.endswith(".mpi.hst"):
+                    continue
+                g = os.path.join(full, os.path.basename(f))
+                if not os.path.exists(g):
+                    continue
+                b = read_table(f)
+                a = read_table(g)
+                if b.size == 0 or a.shape[1] != b.shape[1] or len(b) > len(a):
+                    cmp["files"][os.path.basename(f)] = dict(note="shapes %s %s" % (a.shape, b.shape))
+                    continue
+                a = a[len(a) - len(b):]
+                fin = np.where(np.isfinite(a), a, 0.0)
+                sc = np.maximum(np.abs(fin).max(axis=0), 1.0e-300)
+                with np.errstate(invalid="ignore"):
+                    diff = np.where(a == b, 0.0, np.abs(a - b))
+                cmp["files"][os.path.basename(f)] = dict(
+                    records=int(len(b)), identical=bool((diff == 0).all()),
+                    times_equal=bool(np.array_equal(a[:, 0], b[:, 0])),
+                    max_rel=float((diff.max(axis=0)/sc).max()))
+            # snapshots and field dumps written by both
+            for pat in ("*.part.*.bin", "*.field.*.bin"):
+                for f in sorted(glob.glob(os.path.join(d, pat))):
+                    g = os.path.join(full, os.path.basename(f))
+                    if not os.path.exists(g):
+                        continue
+                    row_f = dict(identical=(sha256(f) == sha256(g)))
+                    if ".part." in f and not row_f["identical"]:
+                        t1, r1, g1 = read_snapshot(g)
+                        t2, r2, g2 = read_snapshot(f)
+                        row_f["max_diff"] = (float(np.abs(r1 - r2).max())
+                                             if np.array_equal(g1, g2) else "particles differ")
+                    cmp["files"][os.path.basename(f)] = row_f
+            # final restart files
+            for f in sorted(glob.glob(os.path.join(d, "rst", "*.rst"))):
+                g = os.path.join(full, "rst", os.path.basename(f))
+                if not os.path.exists(g):
+                    continue
+                cmp["files"]["rst/" + os.path.basename(f)] = dict(
+                    identical_after_header=(_rst_data(f) == _rst_data(g)))
+                if os.path.exists(f + ".prt") and os.path.exists(g + ".prt"):
+                    cmp["files"]["rst/" + os.path.basename(f) + ".prt"] = dict(
+                        identical=(sha256(f + ".prt") == sha256(g + ".prt")))
+            row[label] = cmp
+        result["%d:%d" % (w, r)] = row
+    return result
+
+
+def restart_lines(result):
+    lines = []
+    for pair, row in result.items():
+        for label, cmp in row.items():
+            parts = []
+            for name, v in cmp["files"].items():
+                if "note" in v:
+                    parts.append("%s: %s" % (name, v["note"]))
+                elif v.get("identical") or v.get("identical_after_header"):
+                    parts.append("%s: identical" % name)
+                elif "max_rel" in v:
+                    parts.append("%s: max rel %.1e" % (name, v["max_rel"]))
+                elif "max_diff" in v:
+                    parts.append("%s: max diff %s" % (name, v["max_diff"]))
+                else:
+                    parts.append("%s: DIFFERENT" % name)
+            lines.append("restart %s against %s: %s" % (pair, cmp["full_run"], "; ".join(parts)))
+    return lines
 
 
 def summary_lines(result):
@@ -405,6 +657,18 @@ def summary_lines(result):
                          else "max rel %.2e (%s; single precision)" % (
                              row["np%d" % n]["max_rel"], row["np%d" % n]["component"]))
             for n in ranks[1:])))
+    for rel, row in result.get("field_dumps", {}).items():
+        lines.append("fdump   %-28s t=%.4g %s" % (rel, row["time"], "  ".join(
+            "np%d:%s" % (n, row["np%d" % n] if isinstance(row["np%d" % n], str) else
+                         "max rel %.1e (%s)" % (max(row["np%d" % n].values()),
+                                                max(row["np%d" % n], key=row["np%d" % n].get)))
+            for n in ranks[1:])))
+    for rel, row in result.get("line", {}).items():
+        lines.append("line    %-28s %d records %s" % (rel, row["records"], "  ".join(
+            "np%d:%s" % (n, row["np%d" % n] if isinstance(row["np%d" % n], str) else
+                         "max rel %.1e (%s)" % (max(row["np%d" % n].values()),
+                                                max(row["np%d" % n], key=row["np%d" % n].get)))
+            for n in ranks[1:])))
     for k, v in result["identity"].items():
         lines.append("identity %s: |int E - sum mW|/sum mW <= %.2e, |int S_i - sum m u_i|/sum mW"
                      " <= %.2e over %d records" % (k, v["max_dE_over_sum_mW"],
@@ -418,14 +682,40 @@ def summary_lines(result):
 
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument("--case", required=True, choices=sorted(CASES))
+    ap.add_argument("--case", choices=sorted(CASES))
     ap.add_argument("--ranks", type=int, nargs="+", default=[1, 2, 4])
     ap.add_argument("--exe", default=DEFAULT_EXE)
     ap.add_argument("--out", default=None)
     ap.add_argument("--figdir", default=None)
     ap.add_argument("--compare-only", action="store_true")
+    ap.add_argument("--restart-of", default=None,
+                    help="output directory of an earlier case (test T4)")
+    ap.add_argument("--pairs", nargs="+", default=["1:1", "2:2", "4:4", "1:4", "4:2"],
+                    help="w:r, restart the file written on w ranks on r ranks")
+    ap.add_argument("--rst", default="rst/cl.00001.rst")
     ap.add_argument("extra", nargs="*", help="further athena arguments (block/key=value)")
     a = ap.parse_args()
+    if a.restart_of:
+        src = os.path.abspath(a.restart_of)
+        base = os.path.abspath(a.out or os.path.join(os.environ.get("NRPIC_RUN_DIR",
+                                                                     os.getcwd()), "t4_restart"))
+        pairs = [tuple(int(v) for v in q.split(":")) for q in a.pairs]
+        runs = {} if a.compare_only else run_restart(src, pairs, a.exe, base, a.rst)
+        result = dict(source=src, rst=a.rst, runs=runs, exe=a.exe,
+                      compare=compare_restart(src, pairs, base))
+        with open(os.path.join(base, "compare.json"), "w") as f:
+            json.dump(result, f, indent=1)
+        for line in restart_lines(result["compare"]):
+            print(line)
+        try:
+            import mpi_figs
+            for path in mpi_figs.make_restart(src, pairs, base, a.figdir):
+                print("figure", path)
+        except Exception as exc:
+            print("figures failed:", repr(exc))
+        return 1 if any(v["exit"] != 0 for v in runs.values()) else 0
+    if not a.case:
+        ap.error("--case or --restart-of is required")
     base = os.path.abspath(a.out or os.path.join(os.environ.get("NRPIC_RUN_DIR",
                                                                  os.getcwd()), a.case))
     npart, runs = None, {}

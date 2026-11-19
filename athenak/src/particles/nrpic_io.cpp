@@ -9,6 +9,7 @@
 //! particle input files and particle restart files.  All files are written by a single
 //! rank in native byte order.
 
+#include <algorithm>
 #include <cmath>
 #include <cstdint>
 #include <cstdio>
@@ -613,6 +614,8 @@ void Particles::NrpicWriteEnergyField(Real time, int index) {
                         z4c::Z4c::I_Z4C_ALPHA};
     std::vector<double> buf(ncell);
     for (int n=0; n<7; ++n) {
+      // several ranks: the cells of the other ranks still hold the sum of the last array
+      if (nr_multirank) { std::fill(buf.begin(), buf.end(), 0.0); }
       for (int m=0; m<nmb; ++m) {
         const std::int64_t i0 = static_cast<std::int64_t>(
             std::floor((sz(m).x1min - pm->mesh_size.x1min)/d1 + 0.5));

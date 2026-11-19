@@ -216,3 +216,86 @@ in each output directory): core-20261119-152233-8f245d7 (t2p_box_cic), -152306- 
 
 Step 2 is done: deposit across rank boundaries conserves to rounding and gives the
 fields of one rank.
+
+### 07:50 Entry 7: predictions of R0 (regression against release core-v0.3), before the runs
+
+Executables: release `/data/haiyangw/nrpic/.work/build_cpu_v03/src/athena` (baseline);
+this branch at a1c8dd6 (source as at 8f245d7) built serial (`.work/build_cpu`) and with
+MPI (`.work/build_cpu_mpi`, started without mpirun, i.e. one rank). Tool:
+`tracks/core/tools/regress_relativistic.py`, cases geo (Kerr geodesic, analytic metric),
+boris (lattice metric), dep (10^4 particles, static refinement, deposit), east
+(periodic cosmology with Z4c, deposit, filter, compensation, snapshots, trajectories),
+os (Oppenheimer-Snyder with Z4c on a refined mesh).
+
+- P0a. Serial build: every output file of every case identical byte for byte to the
+  release. Every new statement is behind `nr_multirank`, which is false on one rank,
+  or is a reduction that returns at once on one rank; the trajectory kernel divides by
+  the weight sum as before (`isw` unchanged when `mrank` is false) and only gains a row
+  that is not written. Refuted by any differing byte.
+- P0b. MPI build on one rank: identical to the release as well. Less certain: the MPI
+  build compiles the mesh and output code with `MPI_PARALLEL_ENABLED` (MPI-IO for
+  restart and binary files, reductions in the time step), which could change the file
+  layout or the order of operations; if a file differs, the next check is the serial
+  release against an MPI build of the release source, to separate the effect of the
+  build option from that of this branch.
+
+### 08:05 Entry 8: a defect found before T3, and predictions of T3, T4 and T5
+
+Smoke test (2 cycles on 2 ranks of `problems/tests/mpi_cluster.athinput`, not a
+registered run, no number taken from it): runs; the particle file must be given with an
+absolute path (AthenaK works in the output directory). Reading the field dump of the
+smoke run I saw the maxima of M_z, Khat and Theta equal to the last digit, and found the
+cause in the code, not in a run: `NrpicWriteEnergyField` reuses one buffer for the seven
+double arrays of `field_constraints`; on several ranks the cells of other ranks still
+hold the global sum of the previous array when the next one is summed, so array n > 0
+comes out as its own value plus (ranks - 1) times the previous one. Fixed: the buffer is
+cleared before each array on several ranks (`nrpic_io.cpp`, one line behind
+`nr_multirank`). T3 tests the fix (field dumps against one rank).
+
+T3 (`mpi_tests.py --case t3_cluster`, input `problems/tests/mpi_cluster.athinput`): a
+Shapiro-Teukolsky cluster, y_c = 0.605, 4000 particles (make_ic.py st --seed 7), Z4c on
+32^3 cells over [-12 M, 12 M]^3 in eight MeshBlocks that meet at the centre; tsc clouds,
+two filter passes with compensation, 40 cycles of dt = 0.1875 M; every record of the
+module on (history each cycle, trajectories of all particles every 2 cycles, constraint
+statistics, conservation residuals, line dump, two field dumps with the constraint
+arrays, four snapshots, restart dumps at cycles 20 and 40). Variant `t3_cluster_ext`:
+the same with source_density and source_extrap (the densities of the coming step,
+which the restart file carries). On 1, 2, 4 ranks.
+
+- P3a. All runs finish; no particle is lost or added (history column 3 equal on all
+  rank counts at all times; no excision, the central lapse is 0.63).
+- P3b. The first record (t = 0) agrees to rounding (sums, 1e-14); afterwards the
+  deposit differs by rounding at rank boundaries (order of additions), Z4c sees sources
+  that differ by rounding, and the difference grows slowly. At t = 7.5 M every history
+  column, the constraint statistics, the line and the field dumps (double arrays) agree
+  with one rank to relative 1e-11 or better, the particle positions in the snapshots to
+  1e-11 absolute or better. Refuted by a difference above 1e-9 anywhere, or one that
+  grows by more than a factor 100 per 10 cycles: that would be a missing or doubled
+  contribution (deposit, filter ghost cells, probe, sums) or a wrong ghost exchange.
+- P3c. The particle counts per rank change (particles cross the planes x, y, z = 0
+  that separate the ranks), and the run sends deposit packets every cycle.
+
+T4 (`mpi_tests.py --restart-of <T3 output> --pairs 1:1 2:2 4:4 1:4 4:1 2:4`, restart
+from the dump of cycle 20, run to cycle 40):
+- P4a. Same number of ranks (1:1, 2:2, 4:4): everything the restarted run writes equals
+  the uninterrupted run of that rank count byte for byte (history records, trajectory
+  tails, snapshots, field dump of t = 7.5, the particle restart file of cycle 40, the
+  mesh restart file after its parameter header). Also with source_extrap.
+- P4b. Another number of ranks (1:4, 4:1, 2:4): runs; the restarted run agrees with the
+  uninterrupted runs on w and on r ranks to the level of P3b. Refuted by a failure to
+  read, a particle lost, or a difference above 1e-9.
+
+T5 (refined meshes, static): `t5_smr_cic`, `t5_smr_tsc_cap` (tsc, two filter passes,
+clouds capped at level 1 so that clouds of the finest particles cover several leaf
+cells), `t5_smr_pcs` (one filter pass): 10^4 particles of the regression case dep in
+flat spacetime on 176 MeshBlocks of three levels, t = 4; `t5_smr_cluster`: the cluster
+of T3 with Z4c on 26 + 8 MeshBlocks (centre refined once), 16 cycles.
+- P5a. Flat-spacetime cases: trajectories, metric at the particles, snapshots and
+  particle restart files identical byte for byte (no back-reaction), the deposited E,
+  S_i at all particles agree with one rank to 1e-15 relative, and the conservation
+  identity holds on 1, 2 and 4 ranks at the level of one rank (the open boundary is far:
+  particles drift from the centre, so the identity should be at rounding as long as no
+  cloud reaches the outer boundary; if one does, the defect is the same on all rank
+  counts). Refuted by an identity defect on several ranks larger than on one, which
+  would mean a level computed differently across ranks or a cloud cell lost.
+- P5b. Cluster on the refined mesh: as P3b.

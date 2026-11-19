@@ -241,6 +241,141 @@ def fig_fields(case, ranks, base):
     return fig
 
 
+def _hist_growth(ax, base, ranks, pattern, cols, floor, colors):
+    """largest relative difference from one rank of the named columns, against time"""
+    f1 = _one(base, ranks[0], pattern)
+    if f1 is None:
+        return
+    a1 = _table(f1)
+    for n in ranks[1:]:
+        fn = _one(base, n, pattern)
+        if fn is None:
+            continue
+        an = _table(fn)
+        if an.shape != a1.shape:
+            continue
+        for q, (name, c) in enumerate(cols.items()):
+            if c >= a1.shape[1]:
+                continue
+            scale = max(np.abs(a1[:, c]).max(), 1.0e-300)
+            if np.abs(a1[:, c]).max() == 0.0:
+                continue
+            d = np.abs(an[:, c] - a1[:, c])/scale
+            ax.semilogy(a1[:, 0], np.maximum(d, floor), color=colors[q % len(colors)],
+                        ls=NP_STYLE.get(n, "-"), lw=1.0,
+                        label=name if n == ranks[1] else None)
+
+
+def fig_selfgravity(case, ranks, base):
+    """Self-gravitating cases (T3, T5 cluster): Hamiltonian constraint in the mid plane on
+    one rank and its difference on the largest rank count (uniform mesh only), and the
+    growth of the differences from one rank of history columns and particle positions."""
+    import sys
+    sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+    from mpi_tests import read_field, read_snapshot
+    fs.use_style()
+    floor = 1.0e-18
+    fields = sorted(glob.glob(os.path.join(base, "np%d" % ranks[0], "*.field.*.bin")))
+    fig = plt.figure(figsize=(fs.FULL_WIDTH, 3.2))
+    if fields:
+        t, a = read_field(fields[-1])
+        g = os.path.join(base, "np%d" % ranks[-1], os.path.basename(fields[-1]))
+        nz = a["H"].shape[0]
+        sl = nz//2
+        ax = fig.add_axes([0.05, 0.16, 0.20, 0.70])
+        h1 = a["H"][sl]
+        vmax = np.abs(h1).max()
+        im = ax.imshow(h1, origin="lower", cmap=fs.CMAP["diverging"], vmin=-vmax,
+                       vmax=vmax, interpolation="none", rasterized=True)
+        ax.set_title("H on 1 rank, t = %.3g" % t, fontsize=10)
+        ax.set_xlabel("cell in x")
+        ax.set_ylabel("cell in y")
+        if os.path.exists(g):
+            t2, b = read_field(g)
+            ax = fig.add_axes([0.33, 0.16, 0.20, 0.70])
+            d = np.abs(b["H"][sl] - h1)/max(vmax, 1.0e-300)
+            im2 = ax.imshow(np.log10(np.maximum(d, floor)), origin="lower",
+                            cmap=fs.CMAP["dens"], vmin=-18, vmax=-10, interpolation="none",
+                            rasterized=True)
+            ax.set_title("log |H(%d) - H(1)| / max|H|" % ranks[-1], fontsize=10)
+            ax.set_xlabel("cell in x")
+            fs.side_colorbar(fig, ax, im2, "")
+        x0 = 0.64
+    else:
+        x0 = 0.08
+    ax = fig.add_axes([x0, 0.16, 0.96 - x0, 0.70])
+    cols = {"sum m W": 4, "int E": 8, "lapse at probe": 12, "min lapse": 15,
+            "proper volume": 27}
+    _hist_growth(ax, base, ranks, "*.nrpic.hst", cols, floor, fs.SERIES)
+    ccols = {"cstat col 2": 1, "cstat col 6": 5}
+    _hist_growth(ax, base, ranks, "*.cstat.hst", ccols, floor, fs.SERIES[3:] + fs.SERIES[:3])
+    # particle positions in the snapshots
+    snaps = sorted(glob.glob(os.path.join(base, "np%d" % ranks[0], "*.part.*.bin")))
+    for n in ranks[1:]:
+        ts, ds = [], []
+        for f in snaps:
+            g = os.path.join(base, "np%d" % n, os.path.basename(f))
+            if not os.path.exists(g):
+                continue
+            t1, r1, g1 = read_snapshot(f)
+            t2, r2, g2 = read_snapshot(g)
+            if np.array_equal(g1, g2) and len(g1):
+                ts.append(t1)
+                ds.append(np.abs(r1[:, :3] - r2[:, :3]).max())
+        if ts:
+            ax.semilogy(ts, np.maximum(ds, floor), "o", ms=4, color="k",
+                        mfc="none" if n == ranks[1] else "k",
+                        label="positions (abs.), %d ranks" % n)
+    ax.axhline(2.2e-16, **fs.MASK_LINE)
+    ax.set_ylim(floor, 1.0e-6)
+    ax.set_xlabel("t / M")
+    ax.set_ylabel("difference from 1 rank", fontsize=9)
+    ax.set_title("2 ranks dashed, 4 ranks dotted", fontsize=10)
+    ax.legend(loc="upper left", ncol=2, fontsize=7)
+    return fig
+
+
+def make_restart(src, pairs, base, figdir=None):
+    """Test T4: per pair w:r, the largest relative difference over the columns of the
+    history of the module, restarted run against the uninterrupted run on w and on r
+    ranks, against time (identical records at the bottom of the axis)."""
+    fs.use_style()
+    floor = 1.0e-18
+    fig, axs = plt.subplots(1, 2, figsize=(fs.FULL_WIDTH, 3.0), sharey=True)
+    for q, (w, r) in enumerate(pairs):
+        d = os.path.join(base, "w%dr%d" % (w, r))
+        fr = sorted(glob.glob(os.path.join(d, "*.nrpic.hst")))
+        if not fr:
+            continue
+        b = _table(fr[0])
+        for k, n in enumerate((w, r)):
+            ff = _one(src, n, "*.nrpic.hst")
+            if ff is None:
+                continue
+            a = _table(ff)
+            a = a[len(a) - len(b):]
+            sc = np.maximum(np.abs(a).max(axis=0), 1.0e-300)
+            dd = (np.abs(a - b)/sc).max(axis=1)
+            axs[k].semilogy(b[:, 0], np.maximum(dd, floor), color=fs.SERIES[q % len(fs.SERIES)],
+                            lw=1.2, ls="-" if w == r else "--",
+                            label="written on %d, read on %d" % (w, r))
+    axs[0].set_title("against the uninterrupted run on w ranks", fontsize=10)
+    axs[1].set_title("against the uninterrupted run on r ranks", fontsize=10)
+    for ax in axs:
+        ax.axhline(2.2e-16, **fs.MASK_LINE)
+        ax.set_ylim(floor, 1.0e-6)
+        ax.set_xlabel("t / M")
+    axs[0].set_ylabel("max. rel. difference (history)", fontsize=9)
+    axs[1].legend(loc="upper left", fontsize=7)
+    out = []
+    dirs = [os.path.join(base, "figs")] + ([figdir] if figdir else [])
+    for dd in dirs:
+        os.makedirs(dd, exist_ok=True)
+        out += fs.save(fig, os.path.join(dd, "t4_restart"))
+    plt.close(fig)
+    return out
+
+
 def make(case, ranks, base, figdir=None):
     out = []
     inps = sorted(glob.glob(os.path.join(base, "*.athinput")))
@@ -260,5 +395,10 @@ def make(case, ranks, base, figdir=None):
     if fig is not None:
         for d in dirs:
             out += fs.save(fig, os.path.join(d, case + "_fields"))
+        plt.close(fig)
+    if glob.glob(os.path.join(base, "np%d" % ranks[0], "*.cstat.hst")):
+        fig = fig_selfgravity(case, ranks, base)
+        for d in dirs:
+            out += fs.save(fig, os.path.join(d, case + "_selfgravity"))
         plt.close(fig)
     return out
