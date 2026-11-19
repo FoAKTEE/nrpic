@@ -76,3 +76,17 @@ within 10 percent only for r_p >~ 30 M (areal), within 30 percent at r_p ~ 10 M,
 underestimates it (GR's excess diverges at L -> 4 M); (iii) the error of d(Delta phi)/dL is
 larger than the error of Delta phi at the same r_p. Refuted if 1PN is within 10 percent at
 r_p = 10 M, or if 1PN overestimates the excess at r_p = 8-12 M.
+
+## Entry 2 (2026-11-19 14:40): first test run failed in T0d (run F-20261119-143503-3cd3592)
+
+T0a (Newtonian limit, 1.5e-16), T0b (2404's restricted equation at states with M at rest at
+the origin, PN part equal to 4e-15 for m/M = 1e-9 ... 0.1) and T0c (sum of canonical momenta =
+Will's P, 2e-16) passed. My T0b-bullet-3 prediction (an O(m/M) difference) was wrong in its
+premise: at a state with x_M = 0, v_M = 0 the EIH acceleration of a member IS 2404's
+restricted expression (I checked the terms by hand afterwards: all c = M pieces of 2404's
+equation are EIH's), so the agreement is to round-off at every m/M; the M-fixed versus M-free
+difference only appears along an evolution. [VERIFIED] The run then stopped (exit 1) in T0d:
+the fixed-point inversion of the canonical momenta diverged on the random strong-field states
+of T0 (masses up to 2 at distances ~ 1, 3U > 1). Fix: iteration divided by the diagonal
+m (1 + 3U + 3/2 v^2) of dp/dv, and T0d run on weak-field states (positions x 10, U <~ 0.1, the
+regime of the puncture data). Rerun below.

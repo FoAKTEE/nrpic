@@ -214,9 +214,13 @@ def velocities_from_momenta(x, p, m, c2inv=1.0, tol=1e-15, maxit=200):
     p = np.asarray(p, dtype=float)
     m = np.broadcast_to(np.asarray(m, dtype=float), x.shape[:-1])
     v = p / m[..., None]
+    _, r = _pairs(x)
+    U = np.sum(m[..., None, :] / r, axis=-1)
     for _ in range(maxit):
         dp = canonical_momenta(x, v, m, c2inv) - p
-        vn = v - dp / m[..., None]
+        # divide by the diagonal of d p_a / d v_a (direction along v): m_a (1 + 3U + 3/2 v^2)
+        diag = m * (1.0 + c2inv * (3.0 * U + 1.5 * np.sum(v * v, axis=-1)))
+        vn = v - dp / diag[..., None]
         if np.max(np.abs(vn - v)) < tol * max(1.0, np.max(np.abs(v))):
             return vn
         v = vn

@@ -87,7 +87,9 @@ def t0():
     PW = eih.momentum(x, v, m)
     err = np.max(np.abs(pc - PW)) / np.max(np.abs(PW))
     check("T0c_sum_canonical_equals_P", err < 1e-12, max_rel=err)
-    vb = eih.velocities_from_momenta(x, eih.canonical_momenta(x, v, m), m)
+    # inversion p -> v in the weak field of the puncture data (U <~ 0.1): positions x 10
+    xw = 10.0 * x
+    vb = eih.velocities_from_momenta(xw, eih.canonical_momenta(xw, v, m), m)
     check("T0d_momentum_inversion", np.max(np.abs(vb - v)) < 1e-12,
           max_abs=float(np.max(np.abs(vb - v))))
 
