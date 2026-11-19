@@ -20,6 +20,7 @@ import sys
 
 import numpy as np
 from scipy.integrate import solve_ivp
+from scipy.interpolate import CubicSpline
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import figstyle as fs  # noqa: E402
@@ -124,10 +125,13 @@ def main():
     t1, c1 = series(D[(64, "eps1")]["bin"])
     for e in ("eps0p1", "eps0p3"):
         t, c = series(D[(64, e)]["bin"])
-        m = min(len(t), len(t1))
-        assert np.allclose(t[:m], t1[:m], atol=1e-6), "dump times differ between eps"
-        a = a_of_t(t[:m])
-        rel = (c[:m]/EPS[e] - c1[:m])/np.abs(c1[:m])
+        # dump times differ slightly between runs (step nearest each 0.1): cubic spline
+        # of the eps = 1 series at the dump times of this run
+        m = t <= t1[-1]
+        t, c = t[m], c[m]
+        c1i = CubicSpline(t1, c1)(t)
+        a = a_of_t(t)
+        rel = (c/EPS[e] - c1i)/np.abs(c1i)
         win = (a >= 2) & (a <= 10)
         lin[e] = {"max_abs_rel_a2_10": float(np.abs(rel[win]).max()),
                   "rel_at": {str(at): float(rel[int(np.argmin(np.abs(a - at)))])
@@ -159,7 +163,9 @@ def main():
     for e in ("eps0p1", "eps0p3", "eps1", "eps1_gd"):
         t6, c6 = series(D[(64, e)]["bin"])
         t3, c3 = series(D[(32, e)]["bin"])
-        c3i = np.interp(t6, t3, c3)
+        m = t6 <= t3[-1]
+        t6, c6 = t6[m], c6[m]
+        c3i = CubicSpline(t3, c3)(t6)
         a = a_of_t(t6)
         rel = (c3i - c6)/np.abs(c6)
         rc[e] = {"rel_at": {str(at): float(rel[int(np.argmin(np.abs(a - at)))])
@@ -174,7 +180,9 @@ def main():
     for n in (64, 32):
         t0_, c0_ = series(D[(n, "eps1")]["bin"])
         tg, cg = series(D[(n, "eps1_gd")]["bin"])
-        cgi = np.interp(t0_, tg, cg)
+        m = t0_ <= tg[-1]
+        t0_, c0_ = t0_[m], c0_[m]
+        cgi = CubicSpline(tg, cg)(t0_)
         a = a_of_t(t0_)
         s = -5.0/6.0*PHI1*PHI1
         rel = (cgi - c0_)/abs(s)
