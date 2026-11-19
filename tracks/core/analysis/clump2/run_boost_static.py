@@ -54,20 +54,23 @@ def res(n):
     return [f"mesh/nx1={n}", f"mesh/nx2={n}", f"mesh/nx3={n}"]
 
 
-def cases(ns):
+def cases(ns, vs=("0.1", "0.3"), kinds=("none", "curv", "corr"), strat=True):
     """list of (label, particle set, tables of, athena arguments, extra dumps)"""
     out = []
     for n in ns:
         out.append((f"q0_n{n}", "q0", "q0.3", res(n), False))
-        for v in ("0.1", "0.3"):
+        for v in vs:
             ic = f"q{v}"
-            out.append((f"q{v}_n{n}_none", ic, ic, res(n), False))
-            out.append((f"q{v}_n{n}_curv", ic, ic, res(n) + ["@P"], False))
-            out.append((f"q{v}_n{n}_corr", ic, ic,
-                        res(n) + ["@P", "problem/comp0_corr=table",
-                                  "problem/comp0_boost_shift=true"],
-                        n == 64 and v == "0.3"))
-    if 64 in ns:
+            if "none" in kinds:
+                out.append((f"q{v}_n{n}_none", ic, ic, res(n), False))
+            if "curv" in kinds:
+                out.append((f"q{v}_n{n}_curv", ic, ic, res(n) + ["@P"], False))
+            if "corr" in kinds:
+                out.append((f"q{v}_n{n}_corr", ic, ic,
+                            res(n) + ["@P", "problem/comp0_corr=table",
+                                      "problem/comp0_boost_shift=true"],
+                            n == 64 and v == "0.3"))
+    if 64 in ns and strat:
         out.append(("s0_n64", "s0", "s0.3", res(64), False))
         out.append(("s0.3_n64_none", "s0.3", "s0.3", res(64), False))
         out.append(("s0.3_n64_curv", "s0.3", "s0.3", res(64) + ["@P"], False))
@@ -91,12 +94,21 @@ def main():
     ap.add_argument("--out", default=os.environ.get("NRPIC_RUN_DIR"))
     ap.add_argument("--jobs", type=int, default=8)
     ap.add_argument("--n", default="32,64,128")
+    ap.add_argument("--v", default="0.1,0.3", help="speeds of the quiet sets")
+    ap.add_argument("--kinds", default="none,curv,corr")
+    ap.add_argument("--lattice-h", default="0.25", help="spacing of the quiet lattice")
+    ap.add_argument("--no-stratified", action="store_true",
+                    help="leave out the cases of the stratified sample (TB6)")
     a = ap.parse_args()
+    for k in ICS:
+        if k.startswith("q"):
+            ICS[k] = [w if w != QUIET[3] else a.lattice_h for w in ICS[k]]
     if not a.out:
         ap.error("no output directory: run through nrpic-run or give --out")
     icd = os.path.join(a.out, "ic")
     os.makedirs(icd, exist_ok=True)
-    todo = cases([int(v) for v in a.n.split(",")])
+    todo = cases([int(v) for v in a.n.split(",")], tuple(a.v.split(",")),
+                 tuple(a.kinds.split(",")), not a.no_stratified)
     env = dict(os.environ, OMP_NUM_THREADS="1", OPENBLAS_NUM_THREADS="1",
                MKL_NUM_THREADS="1")
     with open(INPUT) as f:

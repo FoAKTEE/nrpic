@@ -54,7 +54,11 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--run", required=True)
     ap.add_argument("--out", default=os.environ.get("NRPIC_RUN_DIR"))
+    ap.add_argument("--n", default=",".join(str(n) for n in NS))
+    ap.add_argument("--v", default=",".join(VS))
     a = ap.parse_args()
+    ns = [int(x) for x in a.n.split(",")]
+    vs = a.v.split(",")
     top = os.path.join(SCRATCH, a.run)
     os.makedirs(a.out, exist_ok=True)
     md = stc.STModel(0.819)
@@ -62,13 +66,13 @@ def main():
     rs = float(B.rs)
     out = dict(run=a.run, rbar_s=rs, cases={})
     prof = {}
-    for n in NS:
+    for n in ns:
         st = Case(top, f"q0_n{n}")
         w = st.psi ** 6 * st.dV
         ins = st.inside
         surf = np.abs(st.r - rs) < 1.0
         mu = np.where(st.r > 0, st.x[:, 0] / np.maximum(st.r, 1e-30), 0.0)
-        for v in VS:
+        for v in vs:
             key = f"v={v},n={n}"
             o = {}
             for c in ("curv", "corr"):
@@ -94,6 +98,11 @@ def main():
                 a0, a2 = shells(st.r[ins], mu[ins], st.H[ins], w[ins], edges)
                 prof[("rest", n)] = (0.5 * (edges[1:] + edges[:-1]), a0, a2)
 
+    if ("0.3", 128, "corr") not in prof or ("0.3", 64, "corr") not in prof:
+        with open(os.path.join(a.out, "tb_residual_diag.json"), "w") as f:
+            json.dump(out, f, indent=1)
+        print(json.dumps(out, indent=1))
+        return 0
     fs.use_style()
     fig, ax = plt.subplots(1, 2, figsize=(fs.FULL_WIDTH, 3.3))
     fig.subplots_adjust(left=0.1, right=0.98, bottom=0.15, top=0.95, wspace=0.3)

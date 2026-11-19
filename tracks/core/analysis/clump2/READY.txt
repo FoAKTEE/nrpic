@@ -1,0 +1,94 @@
+READY: executables of branch core/clump-table for scouting runs (decision 0013)
+============================================================================
+
+Published by core, work package clump2 (moving equilibrium clusters). Scouting only:
+production waits for the merge into main and a release. Questions and defects: a message
+to core. Interface: tracks/core/interfaces/moving_clusters.md; journal with every
+prediction and outcome: tracks/core/JOURNAL-clump2.md (both on branch core/clump-table).
+
+Files in this directory
+  athena_gpu    card executable (A100, CUDA 12.6), sha256 in SHA256SUMS
+  athena_cpu    processor executable
+  COMMIT        the source commit of both builds, and the branch tip at publication
+  examples/     one input per new option (below); each header has its generator command
+  generator/    python/nrpic and problems/ic of the tip (make_ic.py with the model
+                `boosted`); run it from where it is, it finds its package
+  SHA256SUMS
+
+Behaviour without the new options: identical to release core-v0.3
+(.work/build_{gpu,cpu}_v03): byte-identical data files on processors for the inputs of
+nrpic_cf with tables, Gaussians, a spheroid and punctures, the Oppenheimer-Snyder table
+with particles, a Bowen-York puncture with momentum, spin and correction, and the first
+paper's two-overdensity run (two cycles, 10^4 particles, eight levels) (test R). The
+branch also carries the Gaussian clump curvature of core/clump-curvature (its READY
+applies to those options).
+
+New options (problem generator nrpic_cf, block <problem>, a component of type table,
+format 1: an equilibrium cluster model)
+  comp<c>_boost_file     boost table of the cluster (format bst1, docs/FORMATS.md);
+                         without it nothing below is read
+  comp<c>_p1, _p2, _p3   momentum P of the cluster: sum m u_i of its particles; default 0
+                         (zero: the cluster at rest, nothing of the table is used)
+  comp<c>_corr           none (default) or table: second-order correction of psi
+  comp<c>_corr_file      the correction table (format mp1) written by the generator
+  comp<c>_corr_axis1..3  axis of the correction; default from the file, else P
+  comp<c>_boost_shift    true: start with the shift of coordinates that move with the
+                         cluster; default false
+The generator adds K_ij = psi^-2 Abar_ij with the curvature of the static cluster on the
+maximal slice of its boosted spacetime (radial moments Q, I4 of its momentum density
+from the boost table), which solves the momentum constraint for particles boosted by the
+generator's rule; it adds linearly to everything else. With the correction the
+Hamiltonian constraint holds to second order in the speed for an isolated cluster.
+AthenaK takes on the command line only parameters the input file has: list them in the
+input (value 0 / none / false) if a variant switches them on. Several clusters: use
+lapse = isotropic.
+
+Generator
+  python3 generator/problems/ic/make_ic.py boosted \
+      --cluster yc,mass,x,y,z,vx,vy,vz [--cluster ...] \
+      [--cluster-p yc,mass,x,y,z,px,py,pz ...] [--puncture m,x,y,z[,px,py,pz] ...] \
+      --N <per cluster> --seed 1 --prefix <stem> --out <rundir> [--boost-shift]
+writes <stem>.nrp (species = cluster), <stem>_c<k>.tab, .bst, _corr.tab and <stem>.json;
+put athenak.problem of the JSON into the input (comp<c>_p1..3 there are the sums over
+the sample). mass = ADM mass of the isolated cluster, yc = model of st_cluster.STModel
+(0.819: the stable cluster of the first paper).
+
+Example inputs (examples/)
+  cluster_moving.athinput     one cluster y_c = 0.819 moving at v = 0.1 or 0.3, 50 M at
+                              dx = M/2 (card)
+  cluster_binary.athinput     two clusters on a quasi-circular orbit, separation 30 M,
+                              first post-Newtonian momenta, 250 M (card, about 0.4
+                              card-hours)
+  clump_table_static.athinput one moving cluster, initial data only (processors)
+  clump_table_binary.athinput two moving clusters, initial data only (processors)
+  clump_moving.athinput       Gaussian clump with momentum (first pass)
+
+What is tested (run ids in the journal and the interface)
+  - Python reference: momentum of the data = M V to 1e-14 (maximal slice; the plain
+    boost would give 0.947 M V); curvature equal to the geometry of the boosted static
+    solution to 4e-11; divergence = 8 pi Stilde to 6e-11; boosted particles carry the
+    momentum density (10^5 particles: 1.00004 +- 0.0022)
+  - one cluster at t = 0, v = 0.1 and 0.3, 32/64/128 cells: momentum-constraint norm with
+    the boost table 0.070, 0.034, 0.015 of the uncorrected one (first order in the cell
+    size: the edge of the cluster); the curvature term equals the continuum to 4e-6;
+    the second-order Hamiltonian residual equals the continuum value (0.98-0.998) and the
+    correction removes 90-92 per cent of it (the rest, second order and independent of
+    the cell size, is under investigation); code fields equal the reference to 5e-8
+  - 10^4 equal-mass particles: the smooth part of the momentum violation is removed
+    (projection 0.995 -> -0.004); the remaining norm is sampling noise
+  - two clusters at t = 0 (x = -20, +20, Newtonian circular speeds): Hamiltonian residual
+    near a cluster 1.03 times that of the isolated one; momentum-constraint ratio and
+    correction as for one cluster
+PENDING (card jobs queued): evolution of one moving cluster for 50 M (centre speed,
+profile, central lapse against the cluster at rest, summed momentum) and the binary for
+250 M (orbital phase against 1PN and Newtonian); card records at t = 0 against the
+processor's.
+
+Not tested, or not there
+  - Evolution on a card (PENDING above); Track F's acceptance test of 200 M with a
+    clump of compactness 0.05-0.1 beside a heavy puncture.
+  - Cross terms of several bodies are not solved (second order; for the pair above
+    the corrected mass changes by 0.013 M from the first-order value); a cluster next to
+    a puncture: generator supports it, no test.
+  - Refined meshes at t = 0 are only exercised in the card inputs; one rank only.
+  - Lorentz contraction and the non-conformally-flat part at O(v^2) are left out.

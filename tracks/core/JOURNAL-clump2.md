@@ -597,3 +597,35 @@ smooth factor (a term of the derivation that is missing or has the wrong weight)
 `D_H(corr)` is spread over the interior with a shell profile proportional to that of
 `D_H(curv)` or of the matter density, and less than half of it is near the surface.
 Neither is established if the split is near one half.
+
+### Outcome of the diagnostic (run `core-20261119-160318-b9d749c`, figure `fig_tb_residual_profiles.png` looked at) and of R (run `core-20261119-153230-3e858c9`)
+
+- R HELD: release core-v0.3 and this branch give byte-identical data files for
+  `regress_cf` (16 files), `cf_table_regress` (9), `by_static` (5). The fourth case
+  (`jeans`) runs at the end of `core-20261119-151457-7a855d8`.
+- Diagnostic: the leftover of the correction sits at the surface. The share of
+  `|D_H(corr)|^2` within 1 M of rbar_s = 8.936 is 0.76, 0.91, 0.95 at 32, 64, 128 cells
+  (v = 0.3; 0.89, 0.99, 0.99 at v = 0.1); off the surface it is 1.2e-3, 7.3e-4, 7.0e-4
+  (v = 0.3), against 0.029 of `D_H(curv)` there (a factor 40 removed). The shell average
+  near the surface is two-signed (a dip of -1.2e-4 at rbar_s and a smaller bump outside),
+  about 0.5 M wide, narrower at 128 cells than at 64; the P_2 part has a spike there.
+  Inside, a flat monopole of about +2e-5 remains (3 per cent of the uncorrected -7.3e-4 at
+  the centre; the O(V^4) terms were estimated at 1.6 per cent). Candidate (a), the
+  lattice, predicted "more than half within 1 M of the surface": held; "one sign": not
+  held. Candidate (b) predicted less than half at the surface: refuted. The leftover's
+  projection on the residual at rest is 0.036, 0.062, 0.138 (v = 0.3), so it is not a
+  multiple of the deposit error of the cluster at rest.
+
+### Lattice test: predictions (written 16:08Z, before the run)
+
+The quiet lattice has the spacing h = 0.25 at every cell count, so an error of its
+sampling at the edge does not fall with the cell size. Run TB again for v = 0.3 at 64
+and 128 cells with h = 0.125 (8 times the particles; cases at rest, `curv`, `corr`) and
+apply the same diagnostic. If the lattice is the cause: the surface norm of `D_H(corr)`
+falls by at least a factor 2 against h = 0.25 at the same cell count (2.34e-3 at 64,
+2.86e-3 at 128), while `D_H(curv)` changes by less than 2 per cent. Not the cause: the
+surface norm changes by less than 20 per cent; then the next candidate is the edge of the
+second-order source itself on the mesh (the cloud and the filter acting on a profile
+whose derivative is singular at rbar_s), which the code and the reference treat
+differently, and the leftover is a property of the data at this resolution, to be
+documented, not removed.
