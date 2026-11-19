@@ -580,3 +580,56 @@ def far_states(M, m1, m2, a0, J_per_mu, r0, phases, sense=1, c2inv=1.0):
     v[:, 1] = vp[1] + (m2 / mb) * a0 * w * et
     v[:, 2] = vp[1] - (m1 / mb) * a0 * w * et
     return x, v
+
+
+def state_at_r0_1pn(M, m1, m2, a0, J_per_mu, r0, r_from, phase, sense=1, c2inv=1.0,
+                    rtol=1e-12):
+    """1PN-consistent start state at distance r0: released at r_from (far_states, release
+    phase `phase`), integrated with the EIH equations to the event |x_cm - x_M| = r0 inbound.
+    Returns dict(x, v, p (canonical momenta), t (time from the release), cm_E_per_mu,
+    cm_J_per_mu (binary as one point), binary separation and Newtonian elements, the angle of
+    x2 - x1). Positions are EIH harmonic coordinates (equal to isotropic ones at 1PN)."""
+    from scipy.integrate import solve_ivp
+    ms = np.array([M, m1, m2])
+    mb = m1 + m2
+    x, v = far_states(M, m1, m2, a0, J_per_mu, r_from, [phase], sense, c2inv)
+    x, v = x[0], v[0]
+
+    def f(t, y):
+        xx = y[:9].reshape(3, 3)
+        vv = y[9:].reshape(3, 3)
+        return np.concatenate([vv.ravel(), accel(xx, vv, ms, c2inv).ravel()])
+
+    def ev(t, y):
+        xx = y[:9].reshape(3, 3)
+        xc = (m1 * xx[1] + m2 * xx[2]) / mb
+        return np.linalg.norm(xc - xx[0]) - r0
+    ev.terminal = True
+    ev.direction = -1
+    T = 4.0 * math.sqrt(2.0) / 3.0 * r_from ** 1.5
+    sol = solve_ivp(f, (0.0, T), np.concatenate([x.ravel(), v.ravel()]), method="DOP853",
+                    rtol=rtol, atol=1e-14, events=ev)
+    if not sol.t_events[0].size:
+        raise RuntimeError("the binary never reached r0")
+    y = sol.y_events[0][0]
+    xx = y[:9].reshape(3, 3)
+    vv = y[9:].reshape(3, 3)
+    G, Ms = centre_of_mass(xx, vv, ms, c2inv)
+    xx = xx - G / Ms                       # 1PN centre of mass at the origin
+    p = canonical_momenta(xx, vv, ms, c2inv)
+    xc = (m1 * xx[1] + m2 * xx[2]) / mb
+    vc = (m1 * vv[1] + m2 * vv[2]) / mb
+    X2 = np.array([xx[0], xc])
+    V2 = np.array([vv[0], vc])
+    m2b = np.array([M, mb])
+    mu = M * mb / (M + mb)
+    d = xx[2] - xx[1]
+    w = vv[2] - vv[1]
+    r12 = float(np.linalg.norm(d))
+    eps = 0.5 * float(w @ w) - mb / r12
+    return dict(x=xx, v=vv, p=p, t=float(sol.t_events[0][0]),
+                cm_E_per_mu=float(energy(X2, V2, m2b, c2inv)) / mu,
+                cm_J_per_mu=float(angular_momentum(X2, V2, m2b, c2inv)[2]) / mu,
+                r12=r12, binary_a_newton=(-mb / (2 * eps) if eps < 0 else math.inf),
+                angle12=float(math.atan2(d[1], d[0])),
+                P_total=momentum(xx, vv, ms, c2inv).tolist())

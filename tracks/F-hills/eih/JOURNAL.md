@@ -323,3 +323,19 @@ F2. At q = 10 prograde the far-release EIH separated fraction at r_p = 15 and 17
 F3. At q = 10 prograde r_p = 7-9 M a member of the far-release EIH comes inside 5.35 M in >= 0.5
     of the phases. Refuted below.
 F4. q = 4 prograde: far-release EIH separated fraction within 0.15 of Newton's at r_p >= 13 M.
+
+## Entry 9 (2026-11-19 15:30): predictions for 1PN-consistent start states of the two passages
+
+`scripts/p1_state.py` builds, for each NR input, a start state at the input's r0 by releasing
+the binary at 40 r_t (CM on the 1PN parabola with J/mu = L of the GR parabola with the input's
+nominal pericentre, areal 9.82 M (q = 4) and 8 M (q = 10): 4.966 and 4.619 M; the second
+check's R1) and integrating EIH inward; the release phase is tuned so the binary's orientation
+relative to the CM direction at r0 equals the input's. Output: positions and canonical
+momenta as a <problem> block, and predictions from that state.
+Q1. The constructed state has a CM 1PN energy within 1e-3 of zero (per unit reduced mass) and a
+    binary separation within 15 percent of the input's; its momenta differ from the input's by
+    5-20 percent. Refuted outside.
+Q2. q = 10: EIH from the consistent state gives a single ejection with the other member inside
+    5.35 M (GR-capture proxy). Refuted otherwise.
+Q3. q = 4: EIH from the consistent state gives a single ejection (not survived, not
+    unsettled). Refuted otherwise.
