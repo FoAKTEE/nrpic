@@ -161,3 +161,114 @@ Open (listed).
 | wording beyond the samples | no automatic check can do it; claims stay `located`, not `checked` | OPEN.md |
 | E's equation number | asked of E in the posted answer [TO VERIFY] | outbox `__to-E-stoch-inf__errata-s11-references` |
 | embedding runs above 8 cores | recorded; later runs through nrpic-run with at most 8 | this file; JOURNAL |
+
+---
+
+# Wave 2b: review of the helper packages pdf_meta, retrieval and the KB-G1 verifier (lead, 2026-11-19, 15:45-16:45Z)
+
+Three helpers worked in `wt/kb` in wave 2b: pdf_meta (`tracks/kb/pdf_meta/`), retrieval
+(`tracks/kb/retrieval/`) and a fresh verifier of KB-G1 (`tracks/kb/stage/KB-G1/VERIFIER.md`,
+`verifier/`). I rechecked each from its registered outputs and the databases with my own code
+(`tracks/kb/analysis/lead_checks/w2b_*.py`, which imports neither kbtool nor the helpers'
+scripts), read every figure of the three packages with the Read tool, and compared each result
+with the prediction the helper wrote before the run. My predictions and outcomes: `tracks/kb/JOURNAL.md`,
+entries B1-B3, D1, D2, Q1 of this session. Figure: `tracks/kb/note/figures/fig_w2b_review.png`
+(script `note/scripts/fig_w2b_review.py`, run kb-20261119-161744-2d5ecc8), inspected.
+
+| Check | Run | Prediction | Outcome |
+|---|---|---|---|
+| B1 pdf_meta: PDF papers, metadata columns, additions, vectors; reading of 20 word and 20 Greek repairs; the brief-16 errata | kb-20261119-155134-17d6704 | counts as reported; word repairs >= 18/20; Greek >= 15/20 | held; 20/20 and 17/20 |
+| B2 retrieval: rescoring of R4's ranked lists, final run against R4, C4 | kb-20261119-155310-e600e38 | identical hits in all modes; C4 below a bar exactly 2103.01183, gr-qc/9905058 | held, except my word-level C4 ratio also flags gr-qc/0312117 (a misspelling in both records) |
+| B3 verifier: zero bibliographies, plain TeX, claim 25, parameter index | kb-20261119-155315-b2c7420 | 20 papers, 11 ok; causes found in the 14; claim 25 one row | held; a seventh cause found (2602.00155) |
+| D1 claims updates (claim 25, C 249/313, B x7, C x1, D x4) | kb-20261119-161413-31e6b85 | 700 claims, checked 39 | held |
+| D2 re-index of this repository at main, curated links, snapshot | kb-20261119-161451-e15d1b8 | params +101 or more; links >= 20/25 OK | held: 1115 -> 1242 rows, 25/25 links OK; snapshot kb-20261119-a782f1e |
+| Q1 `kb qa run --hybrid` on kb-20261119-a782f1e | kb-20261119-161633-1d05960 | see JOURNAL Q1 | see JOURNAL Q1 and `stage/KB-G2/` |
+
+## pdf_meta (tracks/kb/pdf_meta)
+
+Confirmed (my own SQL on kb.sqlite, B1).
+- gr-qc/9412071 is in the base from its stored PDF: parse_status pdf, 6 sections, 16 chunks (1
+  abstract, 14 body, 1 caption), 19 bibliography entries, 32 outgoing citation rows, 36 incoming;
+  astro-ph/9407016 (before: failed) 12 sections, 45 chunks, 22 entries; 2201.03458 5 sections,
+  70 entries. Every one of the 74 chunks has a vector; 43560 chunks = 43560 vectors, 0 orphans.
+- Abstract of gr-qc/9412071 against the arXiv-API abstract: 0.994 by my word-sequence measure.
+- Metadata: 710 papers, arXiv-API title, authors, abstract, class and dates for 710, INSPIRE 706,
+  DOI 651, journal reference 648, licence 0, stored version = API latest for 710; papers.title
+  equals the API title for 25 of 25 random papers; title_matches_brief 680/4/26.
+- Additions: `kb/manifests/arxiv_additions.tsv` holds exactly the 26 ids outside arxiv.tsv, with
+  the groups the papers table carries; no paper without a group.
+- The four section-16 rows I read (2310.00776, 2107.06306, 2204.13098, 1203.6185) say what the
+  helper says, from the brief line its table names and both metadata records.
+- Word repairs of the PDF reader: 20 of 20 right in a fresh sample (seed 20261120) beside the
+  helper's 30 of 30.
+- Figures fig_pdf_reader, fig_brief16, fig_metadata agree with the numbers.
+
+Wrong or not as reported.
+- "gr-qc/9412071 ... 32 citation keys": 32 citation rows, 19 distinct keys. Wording only.
+- The Greek mapping ('cmmi-greek', 545 edits, not in the helper's audit) is right for letters in
+  formulas but maps characters of other TeX fonts as math italic: 3 of my 20 are wrong (an
+  equivalence sign and an approximation sign of cmsy, a parenthesis of cmex), and an
+  affiliation word ("Física", OT1 accent and dotless i) became Greek. Affects the text of the two
+  1994-95 PDFs only; equations of PDF papers are not indexed anyway. Listed, not fixed.
+- fig_pdf_reader draws the abstract bar at 0.6 where the prediction said 0.8; fig_brief16's
+  right panel starts at 0.6. Cosmetic; left as committed.
+
+Not confirmed.
+- The comparison of all 684 section-16 entries beyond the four rows I read (I did not read the
+  brief's section 16, which is outside the lines my task names).
+
+## retrieval (tracks/kb/retrieval)
+
+Confirmed (B2).
+- My rescoring of R4's top-10 chunk lists (run kb-20261119-142613-942f713) with my own source-map
+  bisection gives the helper's counts in all six modes on both sets, with no question that
+  disagrees: golden 32 (5-line slack) text 27/21, hybrid 28/23, w2 27/22, w3 28/22, w2+stage1
+  29/23, w2-noexpand 28/25 (paper / answer location); ten held out 9/4, 9/5, 7/6, 7/6, 8/6, 8/6.
+- The final QA run (kb-20261119-151500-2721f64) equals R4 on all 96 (mode, question) pairs.
+- The predictions were committed before the runs (6b0e3a4 at 06:17 PST before run 142613 at
+  06:26 PST); the failed ones are on record (R3 refuted, R4 25 instead of >= 26).
+- C4: 30 of 30 sampled papers have an INSPIRE record file; the two the helper lists are parse
+  defects of the TeX title (2103.01183, gr-qc/9905058).
+- Figures fig_r4_rerank and fig_r5_c4 agree with rerank_eval.json and qa.json.
+
+Wrong.
+- Nothing in the numbers. The commit message of fdb7c90 miscounts the tests (helper said so).
+
+Not confirmed / open.
+- Whether w2-noexpand generalizes: chosen on the 32 questions the helper inspected; the ten are
+  not independent (shared passages). A held-out set written by someone who has not seen R3/R4 is
+  needed (request recorded in OPEN.md of KB-G2).
+
+## KB-G1 verifier (tracks/kb/stage/KB-G1/VERIFIER.md)
+
+Confirmed (B3). Every WRONG item and defect the verifier lists holds on my own count:
+- 20 of 707 TeX papers have no bibliography entry, 11 with status ok; my patterns find the
+  verifier's cause in all 14 it named; 1201.4794 has 46 `\reference` lines; gr-qc/9906015 58 live
+  `\eqno`, no sections, 21 plain `\ref` items.
+- Claim 25 had one locator row for a two-part locator string.
+- The parameter index of this repository was built at a1c2237 and lacked every option of the
+  files I checked on main (12/12 nrpic_collide, 13/14 scalar_field, 5/5 nrpic_kick, 2/5 nrpic_cf).
+- Its figures fig_papers, fig_summary, fig_zero_bib agree with papers.tsv and zero_bib.tsv.
+- Additional finding: 2602.00155 keeps 28 `\bibitem` in paper.tex, which its main file does not
+  reach; the verifier counted it as "no list recognized".
+
+Not rechecked: tests C (ten claims) and Q (nine first questions), 10/10 and 9/9 CONFIRMED; I read
+the cited lines of claim 25 (L1084, the e = 0.2 case) only.
+
+## What the track does about each WRONG or NOT CONFIRMED item (verifier and helpers)
+
+| Item | Verdict | Action | Where |
+|---|---|---|---|
+| Verifier P: 1201.4794 bibliography lost (AASTeX `\reference`), status ok | WRONG | large: bibliography parser must read REVTeX-3 `references`, `\reference`, `\bi`/`\bib` macros, `\harvarditem`; re-ingest of 14 papers changes their chunk ids, which claims reference, so it needs the claim-chunk remap; next session | KB-G2/OPEN.md; RISKS.md |
+| Verifier P: gr-qc/9906015 plain TeX shell (no numbers, sections, bibliography) | WRONG (flagged review) | stays on the review list; plain-TeX `\eqno`, headings and `\ref` items need a plain-TeX reader; next session | KB-G2/OPEN.md |
+| Verifier defect 1: 11 papers ok with zero entries | defect | quality score must drop to review when `\cite` is present and entries are 0 (with the parser fix) | KB-G2/OPEN.md |
+| Verifier defect 2: parameter index stale | defect | fixed: `kb ingest repo --this --ref main` (5deee18), 1242 rows, 25/25 curated links OK, snapshot a782f1e | run kb-20261119-161451-e15d1b8 |
+| Verifier defect 4: claim 25 lost L1084 | defect | fixed: cause was my wave-2 `kb claim verify --locator`, which changed claims.locator but not the rows; verify now rewrites the rows, `kb claim relocate` added; claim 25 has 2 resolved rows | kb/kbtool/claims_db.py, test_lead_w2b.py; run kb-20261119-161413-31e6b85 |
+| Verifier defect 5: claim 254 and Q8 locator offsets | minor | left; content right | - |
+| Verifier request 4 / helpers: runs refused in the shared worktree | process | from wave 2b `--package DIR` exists (decision 0016 item 3); the verifier's three hand-written manifests are listed in KB-G1 EVIDENCE | KB-G1/EVIDENCE.md |
+| pdf_meta: Greek mapping wrong for cmsy/cmex characters | defect (mine, B1) | listed; low effect | KB-G2/OPEN.md |
+| pdf_meta: no snapshot; modules not wired; QA C2/C4 semantics | open | fixed: `kb ingest pdf`, `kb meta`, ingest reads metadata back, C1/C2/C4 changed; snapshot kb-20261119-a782f1e | commit 31e6b855 |
+| retrieval: `--rerank` not in `kb search`; kb/QA_REPORT.md stale | open | fixed: `kb search --rerank`; kb/QA_REPORT.md and kb/golden/questions.yaml from Q1 | commit 31e6b855; Q1 |
+| retrieval: no independent held-out set | NOT CONFIRMED (generalization) | request: 20 or more questions written by someone who has not seen R3/R4 (orch to assign) | outbox to orch |
+| retrieval: q16 location arguably too narrow | open | left as written (changing the golden set after seeing the results would bias it) | - |
+| pdf_meta: section-16 rows beyond the four I read | NOT CONFIRMED | proposal to orch stands as the helper's; orch decides | outbox 20261119T143821Z |

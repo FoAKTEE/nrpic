@@ -574,3 +574,14 @@ status ok 684, review 23, pdf 3: parse success 684/710 = 96.3 % if only ok count
 threshold (80 %, 26 of 32) met by hybrid and rerank. C4: the same 30 papers, 28 agree, 2103.01183
 and gr-qc/9905058 below a bar. Refuted by parse success below 95 % under both readings or a
 paper hit count below 26 in hybrid.
+
+### V1 prediction: the verifier's scripts rerun, registered, on the new snapshot kb-20261119-a782f1e
+
+The verifier's three runs have hand-written manifests dated 2026-11-19, which decision 0016
+item 3 does not waive. I rerun its committed scripts unchanged through nrpic-run (run_all.py,
+check_zero_bib.py, check_locator_rows.py); db/current is now a782f1e. Expected: P 18 of 20 with
+the same two WRONG (no paper was re-ingested); C 10 of 10 (claim 25 now with both rows); K: the
+row sample changes with the re-index (seeded draw over other rows), all sampled rows CONFIRMED,
+recall in particles/ and pgen/nrpic/ complete, and 0 pairs on main absent from the index (main
+5deee18 = indexed commit); Q 9 of 9; zero bibliographies 20; locator rows: 0 claims whose string
+and rows disagree. Refuted by any other verdict count, a stale pair, or a disagreeing claim.
