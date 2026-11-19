@@ -163,3 +163,27 @@ P7 [prediction]. Hybrid search on kb.sqlite with one query per PDF paper in my o
 slicings", "equilibrium state of a self-interacting scalar field in de Sitter, stochastic
 approach, Fokker-Planck", "GRChombo adaptable numerical relativity code with adaptive mesh
 refinement") ranks the paper within the top 10. Refuted by any of the three outside the top 10.
+
+## 2026-11-19 14:40 UTC: outcome P7; section 16 against INSPIRE as well
+
+P7 outcome (run kb-20261119-143441-b46b992, hybrid search on kb.sqlite, top 10): gr-qc/9412071
+rank 1 (four of its chunks in the top 10), astro-ph/9407016 rank 1 (seven chunks), 2201.03458
+rank 2 (after 2112.10567): HELD.
+
+Reading the 25 titles that differ from the arXiv listing (run kb-20261119-142905-e1d81d9) showed
+that the brief mostly copies the published title: 24 of the 25 equal one of the INSPIRE title
+variants once the MathML of INSPIRE titles is stripped (2102.01031). The comparison now counts an
+entry as agreeing when it agrees with arXiv or with INSPIRE (commits afc6b9cb, then the MathML
+fix; tests added); final run kb-20261119-143702-aa436e7: 680 of 684 agree. Of the 4 left, three
+are author errors of the brief (2310.00776 omits the first author Ames; 2107.06306 adds two
+authors who are not on the paper; 2204.13098 has the order wrong) and one is a typo in both
+records (gr-qc/0312117 "singuarities"; the brief has the paper's spelling, flat.tex:12). Three
+author orders follow INSPIRE rather than arXiv (1204.2411, hep-th/0703290, 1203.6185; the last
+one's "Bai (first author)" is INSPIRE's alphabetical first name). Table: BRIEF16_ERRATA.md;
+proposal to orch: outbox 20261119T143821Z__to-orch__brief16-titles-authors.md. The papers table
+was reloaded in the same run (title_matches_brief: 680 ones, 4 zeros, 26 NULL); the figures were
+redrawn from it (run kb-20261119-143710-bc6095c) and inspected again (fig_brief16.png: left and
+middle panels against arXiv, right panel against arXiv or INSPIRE).
+
+Not done in this package: a snapshot (lead); the wiring of the new modules into `kb` and into
+the ingest and QA code (files outside this package's paths; README "Requests").
