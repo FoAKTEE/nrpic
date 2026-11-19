@@ -16,9 +16,12 @@ one() {  # dir exe threads [args]
   echo "== $d: $(grep -c 'MG iteration' "$d/run.log") V cycles; defects:" \
        $(grep 'MG iteration' "$d/run.log" | awk '{print $NF}' | head -8)
 }
-for mb in default single; do
+for mb in ${MB_CASES:-default single}; do
   extra=()
   [[ $mb == single ]] && extra=(meshblock/nx1=64 meshblock/nx2=32 meshblock/nx3=32)
+  [[ $mb == mb32 ]] && extra=(meshblock/nx1=32 meshblock/nx2=32 meshblock/nx3=32)
+  [[ $mb == mb16 ]] && extra=(meshblock/nx1=16 meshblock/nx2=16 meshblock/nx3=16)
+  [[ $mb == mb4 ]] && extra=(meshblock/nx1=4 meshblock/nx2=4 meshblock/nx3=4)
   one "$mb/S1" "$S" 1 "${extra[@]}"
   one "$mb/O1" "$O" 1 "${extra[@]}"
   one "$mb/O2" "$O" 2 "${extra[@]}"

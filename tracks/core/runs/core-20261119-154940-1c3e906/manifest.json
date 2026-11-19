@@ -27,9 +27,11 @@
  "purpose": "omp P0: the serial build S of this branch (source with the deposit target of nrpic_threads.hpp, option absent) against the release core-v0.3 executable, all 13 regression cases, one thread each, four cases side by side; byte-for-byte comparison of every output file. Registered by hand: nrpic-run refused (16 cores of core busy in other sessions)",
  "kind": "scouting",
  "tag": "omp-regress-P0",
- "state": "running",
- "status": "running",
+ "state": "finished",
+ "status": "failed",
  "registered_by_hand": "nrpic-run refused (cores of owner core busy in other sessions)",
+ "wall_time_s": 1062.7,
+ "exit_status": 1,
  "cores": 4,
  "card_hours": 0.0,
  "started_utc": "2026-11-19T15:49:40Z"

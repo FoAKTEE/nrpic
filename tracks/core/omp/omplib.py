@@ -486,11 +486,11 @@ def compare_dirs(da, db):
             hard = True
         if v.get("decision"):
             decisions[n] = v["decision"]
-    if ca != cb:
-        decisions["run.log"] = {"mg_iterations": [ca, cb]}
         worst = max(worst, v.get("rel_file", 0.0))
         worst_floor = max(worst_floor, v.get("rel_floor", 0.0))
         worst_max = max(worst_max, v.get("rel_max", 0.0))
+    if ca != cb:
+        decisions["run.log"] = {"mg_iterations": [ca, cb]}
     return {"identical": same, "differ": differ, "worst_rel_file": worst,
             "worst_rel_floor": worst_floor, "worst_rel_max": worst_max,
             "structural_difference": hard,
