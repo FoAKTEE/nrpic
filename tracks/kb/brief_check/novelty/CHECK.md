@@ -17,7 +17,7 @@ response that `search/query_log.tsv` lists under that label (a record under
 `kb-data/meta/inspire/query/`). Run `kb-20261119-154605-3ee42d2` (R1, `scripts/check_numbers.py`)
 recomputes the numbers of rows 8, 9 and 32. The tally, every locator, every arXiv id and 22 quoted
 phrases of this file, `ERRATA_ROWS.md` and `NOVELTY.md` are checked by `scripts/check_package.py`
-(runs `kb-20261119-155610-7573cf0` and, after the last edit, the final run named in README.md).
+(runs `kb-20261119-155610-7573cf0` and, after the last edit, `kb-20261119-155812-87eced9`).
 
 Not repeated (already in `coord/BRIEF_ERRATA.md`): line 398 "Newtonian self-similar secondary
 infall gives an r^(-9/4) density profile [BACKGROUND]" (row 1.7) and line 426 "whether NRPIC keeps

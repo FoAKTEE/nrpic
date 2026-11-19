@@ -141,3 +141,15 @@ Source predictions (from entry 1):
 - After R2 the headers of CHECK.md and ERRATA_ROWS.md got run references and README.md was
   written. Prediction for the final run R2' of check_package.py: identical tally and no problem,
   with one more run-id locator in CHECK.md (81). Refuted by any problem.
+
+## Entry 6, 2026-11-19 07:59: outcome of R2'; state at the end of the package
+
+- R2' (kb-20261119-155812-87eced9) held: 33 rows 15/16/2/0; 81 + 40 + 53 locators resolve
+  (one more run id in CHECK.md than in R2); 75 arXiv ids known; 22 quotes at their lines; no
+  problem. Figures identical in content to R2's. Afterwards only the run id of R2' itself was
+  written into the headers of CHECK.md and ERRATA_ROWS.md and into the README (its manifest
+  exists); no row changed.
+- Not done: the knowledge-base vector search (model not installed in this worktree; BM25 only);
+  INSPIRE responses above 25 hits read only for the 25 most recent (five queries); conference
+  proceedings and theses seen only as titles; the S8 sentence of line 441 had one query only.
+  No card was used; no run is pending.

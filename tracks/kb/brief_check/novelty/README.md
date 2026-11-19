@@ -30,7 +30,7 @@ Tracks E and F.
 Figures and numbers are not committed; they are in `scratch/kb/<run_id>/`:
 `fig_numbers.png` and `numbers.json` (runs kb-20261119-154605-3ee42d2, -155605-d5dbd0d,
 -155658-4acf70b, identical numbers), `fig_verdicts.png`, `fig_landscape.png` and `check.json`
-(run kb-20261119-155610-7573cf0 and the final run kb-20261119-160005-PENDING, see the journal).
+(run kb-20261119-155610-7573cf0 and the final run kb-20261119-155812-87eced9).
 
 ## Results in one paragraph
 
