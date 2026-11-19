@@ -221,3 +221,105 @@ P1b. q = 4, eihp (canonical reading): the centre of mass is bound in 1PN, the en
     the same member, energies within 30 percent and the same capture-proxy verdict.
 P1c. q = 10: as P1a/P1b, with the member that Newton binds (m2, pericentre 5.64 M) inside
     5.35 M in both readings.
+
+## Entry 7 (2026-11-19 15:15): outcomes of T1-T3, the scans and P1
+
+Tests, run F-20261119-144536-fc9bf86 (7 of 7 pass; `figures/fig_t2_periastron.png`,
+`fig_t3_conservation.png`). [VERIFIED]
+- T1: median ratio of d/dt between c2inv = 1e-2 and 1e-3 over 30 random three-body states:
+  Will's E 99.98, P 99.995, J 99.997, G - P t 100.01 (second order); Newtonian E, P, J 10.000
+  (first order). Prediction CONFIRMED: the equations and the integrals are consistent to 1PN.
+- T2: two-body periastron advance k against 3/j^2 (1805.07240 l. 3169-3180): relative
+  deviation falls with slope -1.89 / -1.91 / -1.91 against j (nu = 0.25 / q = 10 / test mass,
+  p = 80-640 M) with coefficient |k j^2/3 - 1| j^2 = 4.4-5.5 at p >= 160 M; radial period
+  against the 1PN formula (l. 3182-3184): slope -1.99 / -1.99 / -1.98 against p. Will's E
+  conserved to 1e-12 (nu = 0.25) ... 3e-9 (q = 10, p = 640). CONFIRMED.
+- T3: q = 10 encounter scaled by lambda = 8 ... 128: slopes -2.10 (1PN E), -1.74 (1PN P),
+  -1.92 (1PN J), -1.81 (centre-of-mass drift), -1.05 / -1.06 (Newtonian E / P); the outcome
+  is the same (m1 ejected) at every lambda >= 8. CONFIRMED (P at the edge of the band).
+  At lambda = 1 (the plan's r_p = 8 M) the EIH member reaches 3.1 M and the 1PN energy
+  changes by 1.8 times the largest kinetic energy along the run, as much as the Newtonian
+  energy (2.2): the expansion has broken down there.
+
+Scans, run F-20261119-144537-4db7530 (all 120 tasks, 158 s on 13 cores), analysis
+F-20261119-144830-1aaea9d (`figures/fig_scan_lines.png`, `fig_scan_phase.png`,
+`results/scan_summary.json`). [VERIFIED as outputs]
+- The dominant effect is the start state, not the encounter. With the velocity reading the
+  binary comes apart by itself: at q = 10, r_p = 17 M retrograde, where Newton keeps the
+  binary in 360 of 360 phases, EIH ends with "both free" in 360 of 360 and the members' distance
+  never falls below its initial 3.0 M; same at q = 4 for r_p >= 12 M retrograde. With the
+  canonical reading the binary shrinks instead (smallest separation 2.07 M at q = 10, r_p =
+  17 M) and survives in 360 of 360. [JUDGEMENT, mechanism] The EIH pair force between the
+  members carries the factor 1 - (5M/r + V^2 + ...) of the heavy hole's potential and the
+  binary's motion (about 0.2-0.3 at 4 r_t), so a binary that is circular for Newtonian
+  velocities at 4 r_t is not bound the same way in 1PN - the EIH counterpart of the Gamma
+  effect found for HRNA in SC3. Tested in entry 8.
+- S1 (eih within 0.15 of Newton at r_p >= 10 M, q = 10 prograde): REFUTED. 0.86/0.84/0.81/
+  0.80/0.82/0.82 against 0.76/0.69/0.59/0.23/0/0 at r_p = 10/11/12/13/15/17 M.
+- S2 (eih member inside 5.35 M in 0.5-1 of phases at 7-8 M, < 0.4 at >= 12 M): CONFIRMED
+  (0.77, 0.64; 0.19, 0, 0, 0).
+- S3 (canonical reading deeper): CONFIRMED at r_p = 7-15 M (1.00/0.91/0.81/0.72/0.58/0.27/
+  0.017/0.006 against 0.77/0.64/0.53/0.43/0.32/0.19/0/0), equal (0 and 0) at 17 M; separated
+  fractions of the two readings differ by up to 0.48 (r_p = 8 M: 0.39 against 0.88).
+- S4 (eih agrees with Newton in > half of the phases at r_p >= 10 M; less with HRNA):
+  REFUTED. Phase-by-phase agreement eih-Newton 0.01-0.16 at q = 10 prograde; eih-HRNA 0.01-0.37;
+  Newton-HRNA 0.01-0.39. No two models agree phase by phase.
+- S5 (an eih member inside the trust radius 12 M in > 0.5 of the phases at r_p <= 13 M):
+  CONFIRMED (q = 10 prograde 1.00 ... 0.81; q = 4 prograde 1.00 ... 0.84).
+- Internal error of EIH along the encounters: the 1PN energy changes by a median 0.16-0.48
+  energy units (unit (m1 m2/a) q^(1/3) = 1.80e-3 M at q = 10, 4.96e-3 M at q = 4), 90th
+  percentile up to 1.4 units, against mean ejection energies of 0.4-0.8 units: the 2PN-level
+  error of the reference is comparable to the quantity it is meant to predict, on every r_p
+  of the plan's lines, including 17 M.
+- Mean ejection energies (single ejections, q = 10 prograde, r_p = 8 M): Newton 1.04, HRNA
+  (same state) 1.12, eih 0.67, eihp 0.52 units.
+
+P1 run F-20261119-144642-1ca3da1 (`figures/fig_p1_q4.png`, `fig_p1_q10.png`, `results/p1.json`).
+[VERIFIED as model outputs]
+- Start states in 1PN (binary as one point): q = 4: E/mu = +0.0071 (velocity reading) or
+  -0.0029 (canonical), J/mu = 5.67 or 5.03 M; q = 10: +0.0086 or -0.0037, J/mu = 4.88 or
+  4.25 M (Newtonian 4.19). Canonical velocities are 0.860-0.872 of P/m.
+- q = 4 (nr_first P1): Newton m1 ejected (+1.312 units), m2 bound (closest 5.78 M); HRNA m2
+  ejected (+0.965), m1 bound (first pericentre 7.26 M at t = 121, later 5.08 M); eih_v: m1 dives
+  to 3.66 M at t = 105 (inside the GR-capture proxy), m2 recedes slowly (+0.11 units at
+  t = 1500, "unsettled"); eih_p: no ejection, the binary is re-bound at t = 1500 (members at
+  6.75 and 9.17 M closest); eih_p with horizon masses: m2 ejected with +0.21 units, m1 bound
+  (a = 58 M). The 1PN energy changes over the run by 0.06, 0.14, 0.55 units.
+- q = 10: Newton m1 ejected (+1.61), m2 bound (5.64 M); HRNA m1 plunges at t = 97, m2 ejected
+  (+1.16); eih_v: m2 ejected (+0.71), m1 to 3.10 M (GR-capture proxy); eih_p: binary not
+  separated at t = 1500, m1 to 4.63 M; eih_p_m: m2 ejected (+1.51), m1 bound to 5.32 M. In all
+  three EIH variants m1 comes inside 5.35 M (GR would capture it), as HRNA has it, and none
+  has Newton's sense (m1 ejected).
+- P1a (q = 4 eih_v follows Newton's sense, m2 inside 5.35 M): REFUTED - the opposite: m1
+  dives to 3.66 M and m2 leaves, HRNA's sense.
+- P1b (q = 4 canonical reading: CM bound, outcome differs from eih_v): CONFIRMED for the bound
+  CM (E/mu = -0.0029) and the different outcome (re-bound binary against a slow m2 escape);
+  "deeper" was not measured as stated (the CM's closest approach is not recorded) and the
+  members' closest approaches are larger (6.75 against 3.66 M).
+- P1c (q = 10: m2 inside 5.35 M in both readings): REFUTED - m1, not m2, comes inside
+  (3.10 and 4.63 M); m2 stays at 13.3 and 7.6 M.
+- [JUDGEMENT] For P1 at q = 4 the EIH reference does not give a robust outcome: the reading
+  of the puncture momenta (a 13 percent change of the start velocities, a 1PN-sized ambiguity)
+  and 2 percent in the masses change the fate. For q = 10 the robust part is "m1 enters the
+  region where GR captures, m2 does not", shared by HRNA and all three EIH variants, against
+  Newton.
+
+## Entry 8 (2026-11-19 15:20): predictions for the far-release EIH line (before the run)
+
+To remove the start-state effect, a third EIH set-up: release at 40 r_t (5M/r0 = 0.02 for
+q = 10), the binary Newtonian-circular there (release phase uniform), its centre of mass on the
+1PN parabola: two-body 1PN energy of (M, m_b) zero (Will's E) and J/mu equal to the angular
+momentum of the GR parabola with areal pericentre r_p (2404 appendix.tex l. 175), so that the
+CM encounter is the same invariant encounter as HRNA's with 2404's data. Baselines: Newton
+(newton3) from 40 r_t on its own parabola with the same nominal r_p, and HRNA with 2404's data
+at 4 r_t (SC1's H4 set-up), both 360 phases; end at 30 r_t outbound.
+F1. The binary does not come apart by itself: q = 10, r_p = 17 M retrograde survives in >= 0.9
+    of the phases (Newton 1.0). Refuted below 0.9 (then the dispersal of entry 7 is EIH
+    dynamics, not the start state).
+F2. At q = 10 prograde the far-release EIH separated fraction at r_p = 15 and 17 M is within
+    0.15 of Newton's (from 40 r_t) and below 0.3, far below HRNA's 0.8-0.9 (H4 in SC1); i.e.
+    HRNA's separation at large r_p is an artefact of its set-up (SC3, SC6). Refuted if EIH
+    separates more than 0.3 there.
+F3. At q = 10 prograde r_p = 7-9 M a member of the far-release EIH comes inside 5.35 M in >= 0.5
+    of the phases. Refuted below.
+F4. q = 4 prograde: far-release EIH separated fraction within 0.15 of Newton's at r_p >= 13 M.
