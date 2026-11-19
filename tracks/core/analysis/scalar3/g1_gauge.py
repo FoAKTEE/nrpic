@@ -2,7 +2,7 @@
 """Tests G1 and G2 of tracks/core/JOURNAL-scalar3.md: the stochastic sources with a
 lapse that is not geodesic.
 
-    python3 g1_gauge.py --exe EXE [--out DIR] [--n 32] [--workers 3]
+    python3 g1_gauge.py --exe EXE [--out DIR] [--n 32] [--workers 3] [--only a,b]
 
 Runs problems/scalar/sr_stochastic_gauge.athinput (quadratic case, nmax2 = 64):
   geo    lapse_harmonic = 0 (geodesic slicing), to t = 3.3
@@ -26,6 +26,7 @@ def main():
     ap.add_argument("--n", type=int, default=32)
     ap.add_argument("--nmax2", type=int, default=64)
     ap.add_argument("--workers", type=int, default=3)
+    ap.add_argument("--only", default="")
     a = ap.parse_args()
     out = s3.run_dir(a.out)
     case = s3.case("sr", a.nmax2)
@@ -36,6 +37,8 @@ def main():
         "harm": ["z4c/lapse_harmonic=0.05", "time/tlim=2.6"],
         "kdrv": ["z4c/lapse_harmonic=0.0", "z4c/lapse_kdriver=2.0", "time/tlim=3.3"],
     }
+    if a.only:
+        spec = {k: v for k, v in spec.items() if k in a.only.split(",")}
     cases = [(os.path.join(out, k), INP, base + x) for k, x in spec.items()]
     walls = common.run_many(os.path.abspath(a.exe), cases, a.workers)
     common.dump_json(dict(exe=os.path.abspath(a.exe), n=a.n, nmax2=a.nmax2, base=base,

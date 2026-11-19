@@ -2,7 +2,7 @@
 """Analysis of tests G1 and G2 of tracks/core/JOURNAL-scalar3.md (runs of g1_gauge.py):
 the stochastic sources under a lapse that is not geodesic.
 
-    python3 g2_gauge_analysis.py --data DIR [--out DIR]
+    python3 g2_gauge_analysis.py --data DIR [DIR ...] [--out DIR]
 
 For the runs geo, harm (lapse_harmonic = 0.05) and kdrv (lapse_kdriver = 2): box means
 against the lockstep background of the sources (which runs in the proper time of the
@@ -21,11 +21,11 @@ NMAX2 = 64
 
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument("--data", required=True)
+    ap.add_argument("--data", nargs="+", required=True)
     ap.add_argument("--out")
     a = ap.parse_args()
     out = s3.run_dir(a.out)
-    data = os.path.abspath(a.data)
+    data = [os.path.abspath(d) for d in a.data]
     case = s3.case("sr", 1)
     mass = case["mass"]
     n, n2 = sf.mode_set(NMAX2)
@@ -34,7 +34,8 @@ def main():
     summ = dict(data=data, runs={})
     keep = {}
     for k in ("geo", "harm", "kdrv"):
-        rd = os.path.join(data, k)
+        rd = next(os.path.join(d, k) for d in data
+                  if os.path.exists(os.path.join(d, k, BASE + ".sf.hst")))
         h = sf.read_history(os.path.join(rd, BASE + ".sf.hst"))
         c = sf.read_con_history(os.path.join(rd, BASE + ".sf.con.hst"))
         hub = np.sqrt((8.0*np.pi/3.0)*(0.5*h["Pi_b"]**2 + 0.5*mass**2*h["phi_b"]**2))
