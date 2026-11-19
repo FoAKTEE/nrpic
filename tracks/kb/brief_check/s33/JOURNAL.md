@@ -182,3 +182,10 @@ predicted, but my sentence "line 176 the longest bar" was wrong (my own numbers 
 has 9 rows against 8 for lines 168 and 176). Defect of the figure: the legend covers the bars
 of lines 182 and 184. Fix: legend at centre right, x range to 16. Prediction for the figure-only
 rerun: identical stdout and verdicts.json; legend clear of every bar.
+
+## Entry 6 (2026-11-19 06:49 PST): outcome of run kb-20261119-144723-15a7b14
+
+Numbers identical to the previous run (prediction confirmed). Figure looked at: the legend
+at centre right still touches the end of the line-176 bar (the legend is wider than I
+estimated). Fix: one legend row above both panels, x range 0-10. Prediction for the rerun:
+identical numbers; no overlap of legend and bars.

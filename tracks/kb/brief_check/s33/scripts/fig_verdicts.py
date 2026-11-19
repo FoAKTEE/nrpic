@@ -182,8 +182,8 @@ def main():
 
     fs.use_style()
     fig = plt.figure(figsize=(fs.FULL_WIDTH, 4.2))
-    ax1 = fig.add_axes([0.09, 0.13, 0.44, 0.80])
-    ax2 = fig.add_axes([0.73, 0.13, 0.24, 0.80])
+    ax1 = fig.add_axes([0.09, 0.13, 0.44, 0.74])
+    ax2 = fig.add_axes([0.73, 0.13, 0.24, 0.74])
     short = {"[VERIFIED]": "VERIFIED", "[BACKGROUND]": "BACKGROUND", "unlabelled": "no label"}
     for ax, keys, table in ((ax1, lines, by_line), (ax2, labs, by_lab)):
         y = list(range(len(keys)))[::-1]
@@ -201,8 +201,10 @@ def main():
         ax.set_xlabel("statements checked")
         ax.xaxis.set_major_locator(matplotlib.ticker.MaxNLocator(nbins=5, integer=True))
     ax1.set_ylabel("brief line")
-    ax1.set_xlim(0, 16)
-    ax1.legend(loc="center right", ncol=1)  # beside the short bars of lines 170-174
+    ax1.set_xlim(0, 10)
+    handles, labels = ax1.get_legend_handles_labels()
+    fig.legend(handles, labels, loc="upper center", ncol=len(labels),
+               bbox_to_anchor=(0.5, 0.99))  # above both panels, clear of every bar
     fs.save(fig, os.path.join(out, "fig_verdicts"))
     plt.close(fig)
     if problems:
