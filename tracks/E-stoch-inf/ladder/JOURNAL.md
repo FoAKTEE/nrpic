@@ -335,3 +335,51 @@ written before either run): U4 = U2 restarted from the restart file at cycle 150
 dumps at cycles 200 and 300 bit-identical to U2, on processors (processor U4 against
 processor U2) and on the card (card U4 against card U2 of run E-20261115-170645-3b21217).
 Refuted by any differing bit in any common field.
+
+## Entry 8, 2026-11-19 14:40Z: predictions for the temporal convergence test A6 (before any run)
+
+Why now: A6 (SCOPE 4: "order 4 +- 0.5 in theta", fixed seed, Courant factor halved twice;
+L6 of `../codebase/DESIGN_REVIEW.md` 8.1) is recommended for G1 and has not run; entry 6
+attributed the |n|^4 growth of D_n at the top shells of P256 to the time integration
+[JUDGEMENT], which only a run at another Courant factor can test. Also read since: the
+spatial derivatives are of sixth order (NGHOST = 4: coefficients 1/90, -3/20, 3/2, -49/18
+in `athenak/src/utils/finite_diff.hpp:219-237`) [VERIFIED by reading]; the integrator is
+`rk4` (input).
+
+Set-up (`inputs/sr_a6.athinput`, list `inputs/a6proc.list`, processors): the L32 case
+(N = 32, nmax2 = 64, which at N = 32 is also the paper's set-up) at theta = 0.25, 0.125,
+0.0625, s = +-1, to cycle 90 x 0.25/theta (t = 90 pi/64 = 4.418, N = 4.31 e-folds, after the
+entry of every shell), dumps every 10 x 0.25/theta cycles, so the three runs dump at the
+same times (t = 10 k pi/64). Differences Delta(theta_a, theta_b) between runs at equal
+times; order p = log2[Delta(0.25, 0.125)/Delta(0.125, 0.0625)].
+
+Estimate behind the predictions [JUDGEMENT]: at fixed theta the L ladder converged at order
+5.4-5.6 in N (entry 5; A2 by 42 from 32 to 64), near the spatial order 6, not near 4. If the
+error at N = 32 is S h^6 + T dt^4 with dt = theta h, an order of 5.5 means T is about 15
+percent of the total at N = 32, theta = 0.25. RK4 for an oscillation with omega dt = 0.39
+(top shell |n| = 8, theta = 0.25) gives a phase error of about (omega dt)^4/120 = 2e-4 per
+radian, against a sixth-order stencil error of 1.8 percent in k^2 at four cells per
+wavelength (symbol 2.422 against (pi/2)^2 = 2.467).
+
+- PA6a (order): the per-mode differences of R^NR (largest over the modes with W > 1/2,
+  relative to |R^NR|) and the rms differences of the perturbations of phi, chi and K fall at
+  order 4 +- 0.5 at every dump with t >= 0.98 (where they exceed 1e-12 relative); the box
+  means (background) as well. Refuted (A6 fails) if any of these orders lies outside
+  3.5-4.5 where the difference is above 1e-12 relative, in particular an order near 1
+  (sources not evaluated at the stage times, D4 of the design review).
+- PA6b (which error dominates A2's top shells): halving theta changes the deviation from
+  the linear solution D_n of the top shells (|n|^2 = 49-64) at the last dump by 3 to 25
+  percent, and the next halving by less than 2 percent: the deviation at four cells per
+  wavelength is mostly spatial (sixth-order stencils), so entry 6's attribution to the
+  time integration is wrong. Refuted if D_n of the top shells falls by more than a factor 4
+  at the first halving (then it is temporal, as entry 6 guessed).
+- PA6c (constraints): the uniform part H0 (box mean of the even part of H) falls by 16 +- 3
+  per halving after the entry (fourth order in the step, core's T12: H0 17.1 times smaller
+  at N = 64); the odd part of H during the late entry (t = 1.5-3.5) changes by less than 25
+  percent between theta = 0.25 and 0.0625 (spatial truncation, first order in s); the even
+  part with its mean removed (the second-order violation) by less than 5 percent.
+  Refuted if the odd part falls by 16 per halving (then the "first-order truncation at
+  late entry" of A4 would be temporal, and the rewording proposed for A4 would have to say
+  so).
+- Cost: 2.9 s per step on one core (entry 2): 4.4, 8.7 and 17.4 min for theta = 0.25,
+  0.125, 0.0625.

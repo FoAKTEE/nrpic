@@ -1,0 +1,102 @@
+# Temporal convergence test A6 (SCOPE 4; L6 of codebase/DESIGN_REVIEW.md 8.1) of package
+# tracks/E-stoch-inf/ladder: sr_base.athinput with dumps every dump_dcycle cycles instead of
+# every 0.5 time units, so that the runs at Courant factors 0.25, 0.125, 0.0625 dump at the
+# same times (cycles 10 k, 20 k, 40 k; t = 10 k pi/64 at N = 32).  Every run overrides
+# time/cfl_number, time/nlim, scalar_field/dump_dcycle and scalar_field/noise_mode_scale
+# (list a6proc.list).  Everything else equals sr_base.athinput, whose comment follows.
+# Ladder of the slow-roll (quadratic) case of arXiv:2512.14649 (PRD_v2.tex:405-424, set-up
+# 503-519) for gate G1 of Track E: base input of package tracks/E-stoch-inf/ladder.
+# Derived from core's problems/scalar/sr_stochastic.athinput on core/scalar-2 (25daeed);
+# options documented in tracks/core/interfaces/scalar_field_2.md on that branch.
+# Every run of the package overrides on the command line: mesh/nx*, meshblock/nx*,
+# time/tlim, scalar_field/noise_nmax2, scalar_field/noise_mode_file,
+# scalar_field/noise_mode_scale and, for the negative control, scalar_field/noise_pi_sign
+# (list files ladder/inputs/*.list).  Units: G = c = 1, time unit 1/H*, a* = 1,
+# box L = 2 pi/sigma = 2 pi.  Background at N*: core's make_case.py (case.json of run
+# E-20261115-171633-f574079): phi0, pi0, mass below.  Geodesic slicing, zero shift,
+# no damping, no dissipation (SPEC 2.5, 4).  Courant 0.25 (SCOPE 4 item 1).
+
+<comment>
+problem   = stochastic inflation, slow-roll case, ladder of Track E
+
+<job>
+basename  = sr
+rng_seed  = 20261115
+
+<mesh>
+nghost    = 4
+nx1       = 32
+x1min     = 0.0
+x1max     = 6.283185307179586
+ix1_bc    = periodic
+ox1_bc    = periodic
+nx2       = 32
+x2min     = 0.0
+x2max     = 6.283185307179586
+ix2_bc    = periodic
+ox2_bc    = periodic
+nx3       = 32
+x3min     = 0.0
+x3max     = 6.283185307179586
+ix3_bc    = periodic
+ox3_bc    = periodic
+
+<meshblock>
+nx1       = 32
+nx2       = 32
+nx3       = 32
+
+<time>
+evolution  = dynamic
+integrator = rk4
+cfl_number = 0.25
+nlim       = -1
+tlim       = 8.5
+ndiag      = 20
+
+<z4c>
+lapse_oplog     = 0.0
+lapse_harmonic  = 0.0
+lapse_advect    = 0.0
+shift_Gamma     = 0.0
+shift_eta       = 0.0
+shift_advect    = 0.0
+diss            = 0.0
+damp_kappa1     = 0.0
+damp_kappa2     = 0.0
+excise_chi      = 0.0
+
+<scalar_field>
+couple           = true
+potential        = quadratic
+mass             = 1.82877655899024605e-01
+diss             = 0.0
+hist_dcycle      = 1
+con_dcycle       = 1
+dump_dt          = -1.0
+dump_dcycle      = 10
+dump_metric      = true
+dump_magnitudes  = false
+dump_constraints = true
+dump_noise       = false
+noise            = mukhanov_sasaki
+noise_nmax2      = 64
+noise_sharpness  = 5.0
+noise_sigma      = 1.0
+noise_level      = 0
+noise_projector  = stencil
+noise_kick_pi    = true
+noise_kick_k     = true
+noise_kick_a     = true
+noise_pi_sign    = 1.0
+noise_mode_file  = /data/haiyangw/nrpic/wt/E-stoch-inf/tracks/E-stoch-inf/ladder/inputs/modes_n64.txt
+noise_mode_scale = 1.0
+
+<problem>
+pgen_name      = scalar_field
+id             = stochastic
+phi0           = -2.66679478988261254e+00
+pi0            = 2.97300406808996935e-02
+slice_window   = true
+slice_k2       = stencil
+slice_delta_pi = corrected
