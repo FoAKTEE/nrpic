@@ -629,3 +629,23 @@ second-order source itself on the mesh (the cloud and the filter acting on a pro
 whose derivative is singular at rbar_s), which the code and the reference treat
 differently, and the leftover is a property of the data at this resolution, to be
 documented, not removed.
+
+### Outcome G, processor part (run `core-20261119-160021-b153852`), and TC-early on a processor: predictions (written 16:18Z)
+
+The five card inputs start on a processor (records at t = 0 in `records.json` of the
+run); the comparison with the card waits for jobs 4649 and 4657, which the scheduler
+expects to start at about 00:04Z and 06:22Z on 2026-11-20 (`squeue --start`, worst case
+from the wall limits of the jobs ahead).
+
+Because the card results are hours away, the first 10 M of TC run now on one processor
+with the same inputs (`run_t0_records.py --lists card_tc.list --names v0,v0.3,v0.3s
+--extra time/tlim=10`; deterministic on processors). Predictions for these 10 M are those
+of TC already written, restricted to what 10 M can show:
+- TC1 early part: speed of the rest-mass centre over 0 to 2 M between 0.5 v and 0.7 v
+  for `v0.3`; between 0.9 v and 1.1 v over 0 to 4 M for `v0.3s`; |x_c| of `v0` below
+  0.1 M.
+- TC4 supplement: |change of sum m u_x|/P over 0 to 10 M in `v0.3s` at most half of that
+  in `v0.3`, and below 1 per cent.
+- TC3 early part: alpha_min of `v0.3` and `v0.3s` between 0.74 and 0.85.
+- No particle lost; constraint norms of the moving runs within a factor 1.5 of `v0`
+  after 5 M (TC5).

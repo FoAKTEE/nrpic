@@ -6,6 +6,10 @@ executable of the same source. Writes <out>/<name>/ for every entry and records.
 with the first record of the two history files of each.
 
     run_t0_records.py [--exe .work/build_cpu/src/athena] [--out DIR] [--names a,b]
+                      [--lists card_tc.list] [--extra "time/tlim=10"]
+
+--extra replaces time/nlim=0 (the same entries evolved on a processor, for example the
+first 10 M of TC).
 """
 import argparse
 import json
@@ -19,8 +23,8 @@ WT = os.path.abspath(os.path.join(HERE, "..", "..", "..", ".."))
 LISTS = ("card_tc.list", "card_te.list")
 
 
-def entries():
-    for lst in LISTS:
+def entries(lists=LISTS):
+    for lst in lists:
         for ln in open(os.path.join(HERE, lst)):
             if ln.strip() and not ln.startswith("#"):
                 w = shlex.split(ln)
@@ -40,18 +44,20 @@ def main():
     ap.add_argument("--exe", default=os.path.join(WT, ".work", "build_cpu", "src", "athena"))
     ap.add_argument("--out", default=os.environ.get("NRPIC_RUN_DIR"))
     ap.add_argument("--names", default=None)
+    ap.add_argument("--lists", default=",".join(LISTS))
+    ap.add_argument("--extra", default="time/nlim=0")
     a = ap.parse_args()
     exe = os.path.abspath(a.exe)
     want = set(a.names.split(",")) if a.names else None
     res, ok = {}, True
-    for name, inp, args in entries():
+    for name, inp, args in entries(a.lists.split(",")):
         if want and name not in want:
             continue
         d = os.path.join(a.out, name)
         os.makedirs(d, exist_ok=True)
         with open(os.path.join(d, "athena.log"), "w") as log:
             p = subprocess.run([exe, "-i", os.path.join(WT, inp), "-d", d] + args
-                               + ["time/nlim=0"], cwd=d, stdout=log,
+                               + a.extra.split(), cwd=d, stdout=log,
                                stderr=subprocess.STDOUT,
                                env=dict(os.environ, OMP_NUM_THREADS="1"))
         r = dict(status=p.returncode)
