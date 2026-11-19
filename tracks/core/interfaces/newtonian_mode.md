@@ -558,3 +558,73 @@ of the continued run, and the continued files equal the uninterrupted ones (T3d)
 
 Example input: `problems/newton/embedded_ellipsoid.athinput` (a patch as species 0 in
 background particles), and group 1 of `problems/newton/periodic_fft.athinput`.
+
+### 7.3 Fourier solver: tests T1 and T2
+
+[VERIFIED; journal `JOURNAL-newton2.md`, sections T1 and T2]
+- T1 (cases core-20261119-144414-c629377, analysis core-20261119-145129-e89a132): the
+  `seven_point` Fourier run of the plane wave (N = 32, through shell crossing to a =
+  6.25) equals the multigrid run (`threshold = 0`, 13.1 V cycles per step) to 2.2e-15 of
+  the box in every position at 13 snapshots and to 2.2e-13 in K and W; the `spectral`
+  run equals the numpy scheme of the code with the symbol -k^2 to 3.9e-16 of the box; on
+  a mesh of 48 x 80 x 112 cells (radices 3, 5, 7) the accelerations of 2000 particles
+  equal the numpy scheme to 1.8e-12 (spectral) and 3.6e-12 (seven_point) of the largest.
+  One core, 32^3, 32768 particles: 0.24 s per step against 0.34 s with the multigrid.
+- T2, Track B's pancake (`pancake-east`, delta = 0.05, cubic cloud with compensation,
+  cubic-spline gather, step L/4n; cases core-20261119-150559-c1ff7ca, judged with the
+  track's `analyze_pancake.py`, core-20261119-153046-039c454). Largest displacement error
+  against Zel'dovich in units of (a - 1) d/k:
+
+  | n | solver | a = 2 | a = 5 | a = 10 | a = 15 |
+  |---|---|---|---|---|---|
+  | 16 | spectral | 3.28e-4 | 1.57e-3 | 4.21e-3 | 5.05e-3 |
+  | 16 | multigrid (track) | 5.64e-3 | 1.16e-2 | 1.84e-2 | 2.48e-2 |
+  | 32 | spectral | 9.55e-5 | 5.56e-4 | 1.97e-3 | 1.79e-3 |
+  | 32 | seven_point | 1.39e-3 | 2.99e-3 | 4.42e-3 | 5.76e-3 |
+  | 32 | `pm.py` (track) | 1.1e-4 | 6.1e-4 | 2.1e-3 | 1.7e-3 |
+
+  The spectral symbol lowers the error at a = 2 by 17 (n = 16) and 14.6 (n = 32) and
+  brings the mode to within 13 per cent of `cosmo/newton/pm.py`; the remaining difference
+  from `pm.py` (2.0e-5 at a = 2, 6.6e-5 at a = 5, n = 32) is the gather and grows with the
+  nonlinearity faster than I predicted. The seven-point Fourier run reproduces the
+  track's multigrid numbers to 0.11 per cent. n = 64: card job, pending (7.10).
+
+### 7.4 Which energy the history reports (Track A): test T7
+
+Column 6 is W = sum_p m_p Phi(x_p)/(2a) with the potential gathered at the particle by
+the interpolation of the force (Catmull-Rom, or the cubic spline with `interp =
+bspline`), plus the external potentials; column 7 is the mesh sum of the deposited
+density times the potential. Neither is an invariant of the scheme, because the deposit
+kernel (the cloud) and the gather kernel differ: the derivative of column 6 with respect
+to a particle position is not the force that the kick applies [JUDGEMENT, derivation in
+`REQUESTS_NEWTON2.md` section 3]. Test T7 (cases core-20261119-153710-13876fa, analysis
+core-20261119-160023-99dc253): for the plane wave (N = 32, crossing at a = 4) the
+largest drift of the Layzer-Irvine constant is 6.2e-4 of max a|W| before the crossing
+and 4.9e-3 over the run (multigrid; spectral 5.5e-4 and 5.3e-3), and halving the step
+changes these by 0.06 and 0.27 per cent (spectral: 0.02 and 0.03). The drift is a
+property of the space discretisation, not of the step; the mesh form (column 7) drifts
+2.2 to 10 times more than column 6. So K + W of column 6 is the energy to quote, with
+an error of the size of the truncation error while the matter is resolved and of order
+1e-3 to 1e-2 when a sheet thinner than a cell forms.
+
+### 7.5 Self-force of an object smaller than a cell (Track D): test T8
+
+One particle of mass m on an isolated 32^3 mesh (and on the periodic mesh with the
+Fourier solver), one step of 1e-6, the force on it against its position in the cell
+(cases core-20261119-152207-d4e656c, analysis core-20261119-152742-a6810bd, figure
+`t8_selfforce.png`). In units of G m/dx^2 (slopes G m/dx^3):
+
+| deposit and gather | slope away from a vertex | slope towards a cell centre | largest force | e-folding at a vertex [(dx^3/Gm)^1/2] |
+|---|---|---|---|---|
+| cloud-in-cell, Catmull-Rom (default), multigrid | 1.80 | 7.6 to 8.0 | 0.97 (diagonal) | 0.75 |
+| cubic cloud, cubic spline (`deposit_shape = pcs`, `interp = bspline`) | 0.50 | 0.81 | 0.165 | 1.42 |
+| cloud-in-cell, Catmull-Rom, Fourier solver (spectral, periodic) | 1.19 | 4.8 to 5.0 | 0.62 | 0.92 |
+
+The force vanishes at a vertex and at a cell centre by symmetry; a vertex is unstable,
+a cell centre stable (a particle oscillates about it with the period 2pi/sqrt(slope):
+2.2 (dx^3/Gm)^1/2 with the defaults). This is Track D's finding (e-folding 0.8 for a
+clump of radius 0.14 to 0.28 dx; runs D-20261115-171245-a89f225, -171247-cde0674). The
+cubic cloud with the spline gather lowers the self-force by 5.9. Momentum is not
+conserved by it. The fixed point mass `newton_pm_mass` is not deposited and has no
+self-force (7.9). The relativistic mode shares the deposit and gather kernels; whether
+a compact clump feels the same force there is [TO VERIFY] (not run in this package).
