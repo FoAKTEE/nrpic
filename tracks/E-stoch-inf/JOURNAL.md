@@ -199,3 +199,8 @@ artefacts, then the stage packages G0 and G1. Predictions written before each ch
   to run E-20261115-171445-36152c4 within 1e-12 relative.
 - LV1 (rerun of the verifier's V1, V4, V8 scripts): JSON equal within 1e-9 relative
   (V4 uses fixed seeds).
+- Development run of `stage/G1/scripts/lead_check.py` (into `scratch/E-stoch-inf/tmp/devcheck`,
+  not a result, disclosed): it ran through; it counted only 40 modes for A3 because the
+  crossing e-folds were computed for k = |n|^2 instead of |n| (my bug, fixed before the
+  registered run). Seen there before registering: A2, the record values, A1 and the parts of
+  H (the predictions above are unchanged).
