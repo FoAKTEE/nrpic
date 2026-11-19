@@ -219,8 +219,23 @@ def compare_authors(brief_raw, meta_authors):
     return res
 
 
-def compare_entry(entry, meta_title, meta_authors):
+TITLE_OK = ("same", "format")
+AUTHORS_OK = ("match", "not-checked", "collaboration")
+
+
+def compare_entry(entry, meta_title, meta_authors, inspire_titles=(), inspire_authors=None):
+    """Classes against the arXiv-API record; an entry also agrees when its title equals one of
+    the INSPIRE title variants (often the published title) or its author list agrees with
+    INSPIRE's (whose order sometimes differs from the arXiv listing). `source` says which."""
     t = compare_title(entry["title"], meta_title)
     a = compare_authors(entry["authors_raw"], meta_authors)
-    agree = t["class"] in ("same", "format") and a["class"] in ("match", "not-checked", "collaboration")
-    return {"title": t, "authors": a, "agree": agree}
+    t_ins = [compare_title(entry["title"], x)["class"] for x in inspire_titles or () if x]
+    a_ins = compare_authors(entry["authors_raw"], inspire_authors)["class"] if inspire_authors else None
+    t["inspire_classes"] = t_ins
+    a["inspire_class"] = a_ins
+    t_ok = t["class"] in TITLE_OK or any(c in TITLE_OK for c in t_ins)
+    a_ok = a["class"] in AUTHORS_OK or a_ins in AUTHORS_OK
+    t["source"] = "arxiv" if t["class"] in TITLE_OK else ("inspire" if t_ok else None)
+    a["source"] = "arxiv" if a["class"] in AUTHORS_OK else ("inspire" if a_ok else None)
+    return {"title": t, "authors": a, "agree": t_ok and a_ok, "agree_arxiv": t["class"] in TITLE_OK and
+            a["class"] in AUTHORS_OK}

@@ -177,3 +177,13 @@ def test_brief16_report_on_store(store, monkeypatch):
     assert by["2611.12831"]["title_class"] == "same" and by["2611.12831"]["authors_class"] == "match"
     assert by["2611.12831"]["agree"] is True
     assert by["0912.2920"]["title_class"] == "no-metadata"
+
+
+def test_entry_agrees_through_inspire_variant():
+    e = {"title": "Universal threshold for primordial black hole formation", "authors_raw": "Yoo, Abe, Nakao"}
+    c = M16.compare_entry(e, "A universal threshold for primordial black hole formation", ["C. Yoo", "H. Abe", "K. Nakao"],
+                          ["Universal threshold for primordial black hole formation"], None)
+    assert c["title"]["class"] == "minor" and c["title"]["source"] == "inspire" and c["agree"] and not c["agree_arxiv"]
+    c = M16.compare_entry({**e, "authors_raw": "Yoo, Nakao, Abe"}, e["title"], ["C. Yoo", "H. Abe", "K. Nakao"], [],
+                          ["Yoo, Chul-Moon", "Nakao, Ken-ichi", "Abe, Hiroyuki"])
+    assert c["authors"]["class"] == "order" and c["authors"]["source"] == "inspire" and c["agree"]

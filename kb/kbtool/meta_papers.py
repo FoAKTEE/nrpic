@@ -15,8 +15,11 @@ What `load` writes into each row of `papers` (inside the writer lock, one transa
   inspire_recid                     INSPIRE control number
   brief_title, brief_authors        the entry of brief section 16
   title_matches_brief               1 when the title agrees after normalisation (class same or
-                                    format) and the authors agree (match, or the brief lists
-                                    none); 0 otherwise; NULL for a paper not in section 16
+                                    format) with the arXiv title or with one of the INSPIRE title
+                                    variants (often the published title), and the authors agree
+                                    (match, collaboration, or none listed) with the arXiv or the
+                                    INSPIRE list; 0 otherwise; NULL for a paper not in section 16.
+                                    parse_json.meta.brief16 keeps the classes against each source
   grp, priority                     from the manifest (brief section 17 or arxiv_additions.tsv)
   parse_json.meta                   provenance, latest version, the comparison classes,
                                     similarity of the TeX title and abstract to the metadata
@@ -95,7 +98,7 @@ def inspire_fields(d):
     dois = [x.get("value") for x in rec.get("dois") or [] if isinstance(x, dict) and x.get("value")]
     titles = [t.get("title") for t in rec.get("titles") or [] if isinstance(t, dict) and t.get("title")]
     return {"recid": rec.get("control_number"), "doi": dois[0] if dois else None, "journal_ref": pubinfo(rec),
-            "title": titles[0] if titles else None,
+            "title": titles[0] if titles else None, "titles": titles,
             "authors": [a.get("full_name") for a in rec.get("authors") or [] if isinstance(a, dict)],
             "texkey": (rec.get("texkeys") or [None])[0], "fetched_utc": d.get("fetched_utc"),
             "document_type": rec.get("document_type")}
@@ -149,12 +152,15 @@ def plan_row(row, api, insp, entry, man):
         if api:
             meta["inspire_title_vs_arxiv"] = M16.compare_title(f["title"] or "", api["title"])
     if entry:
-        cmp_ = M16.compare_entry(entry, api["title"] if api else None, api.get("authors") if api else None)
+        fi = inspire_fields(insp) if insp else {}
+        cmp_ = M16.compare_entry(entry, api["title"] if api else None, api.get("authors") if api else None,
+                                 fi.get("titles") or (), fi.get("authors"))
         new.update({"brief_title": entry["title"], "brief_authors": entry["authors_raw"],
                     "title_matches_brief": 1 if cmp_["agree"] else 0})
         meta["brief16"] = {"line": entry["line"], "group": entry["group"], "priority": entry["priority"],
-                           "title": cmp_["title"], "authors": {k: cmp_["authors"].get(k) for k in
-                                                               ("class", "kind", "missing", "n_brief", "n_meta")}}
+                           "agree_arxiv": cmp_["agree_arxiv"], "title": cmp_["title"],
+                           "authors": {k: cmp_["authors"].get(k) for k in
+                                       ("class", "kind", "missing", "n_brief", "n_meta", "inspire_class", "source")}}
     else:
         new.update({"brief_title": None, "brief_authors": None, "title_matches_brief": None})
     if man:
@@ -257,11 +263,10 @@ def brief16_report(lay, brief_path=None, manifest_dir=None):
     for e in s16["entries"]:
         api = load_api(lay, e["id"])
         insp = load_inspire(lay, e["id"])
-        c = M16.compare_entry(e, api["title"] if api else None, api.get("authors") if api else None)
-        ins_c = None
-        if insp:
-            f = inspire_fields(insp)
-            ins_c = M16.compare_authors(e["authors_raw"], f["authors"])["class"] if f["authors"] else None
+        f = inspire_fields(insp) if insp else {}
+        c = M16.compare_entry(e, api["title"] if api else None, api.get("authors") if api else None,
+                              f.get("titles") or (), f.get("authors"))
+        ins_c = c["authors"]["inspire_class"]
         m17 = base.get(e["id"])
         rows.append({"id": e["id"], "line": e["line"], "group16": e["group"],
                      "group17": m17["group"] if m17 else None, "priority16": e["priority"],
@@ -270,7 +275,10 @@ def brief16_report(lay, brief_path=None, manifest_dir=None):
                      "authors_class": c["authors"]["class"], "authors_class_inspire": ins_c,
                      "missing": "; ".join(c["authors"].get("missing") or []),
                      "n_brief_authors": c["authors"].get("n_brief"), "n_meta_authors": c["authors"].get("n_meta"),
-                     "agree": c["agree"], "brief_title": e["title"], "brief_authors": e["authors_raw"],
+                     "agree": c["agree"], "agree_arxiv": c["agree_arxiv"],
+                     "title_matches_inspire": any(x in M16.TITLE_OK for x in c["title"]["inspire_classes"]),
+                     "inspire_titles": f.get("titles"), "inspire_authors": f.get("authors"),
+                     "brief_title": e["title"], "brief_authors": e["authors_raw"],
                      "meta_title": _clean(api["title"]) if api else None,
                      "meta_authors": api.get("authors") if api else None})
     ids16 = set(idx16)
@@ -311,8 +319,8 @@ def main(argv=None):
         return 0
     rep = brief16_report(lay)
     cols = ["id", "line", "group16", "group17", "priority16", "priority17", "title_class", "title_ratio",
-            "authors_kind", "authors_class", "authors_class_inspire", "missing", "n_brief_authors", "n_meta_authors",
-            "agree"]
+            "title_matches_inspire", "authors_kind", "authors_class", "authors_class_inspire", "missing",
+            "n_brief_authors", "n_meta_authors", "agree_arxiv", "agree"]
     write_tsv(os.path.join(out, "brief16_comparison.tsv"), rep["rows"], cols)
     with open(os.path.join(out, "brief16_full.json"), "w", encoding="utf-8") as f:
         json.dump(rep, f, indent=1, ensure_ascii=False)
@@ -322,7 +330,10 @@ def main(argv=None):
            "authors_class": dict(collections.Counter(r["authors_class"] for r in rep["rows"])),
            "group_differs": [r["id"] for r in rep["rows"] if r["group16"] != r["group17"]],
            "priority_differs": [r["id"] for r in rep["rows"] if r["priority16"] != r["priority17"]],
-           "agree": sum(1 for r in rep["rows"] if r["agree"])}
+           "agree": sum(1 for r in rep["rows"] if r["agree"]),
+           "agree_arxiv": sum(1 for r in rep["rows"] if r["agree_arxiv"]),
+           "title_differs_but_matches_inspire": [r["id"] for r in rep["rows"] if r["title_class"] not in M16.TITLE_OK
+                                                 and r["title_matches_inspire"]]}
     with open(os.path.join(out, "brief16_summary.json"), "w") as f:
         json.dump(cnt, f, indent=1)
     print(json.dumps(cnt, indent=1))
