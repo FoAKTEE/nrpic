@@ -91,3 +91,41 @@ T7 (core-20261115-163129-a200caf): the removal file holds 0 records (no particle
 0.75 M), 1021 in / 963 out through the tracker sphere, count identity exact, centre equal
 to the tracker row of the following time to 5.6e-17 over 24 rows (core's labelling rule
 confirmed independently).
+
+## Entry 2 (2026-11-19, before the run): P1, test particles into a fixed black hole (processors)
+
+Set-up (`inputs/p1_fixed_bh.athinput`, `p1.py`): Schwarzschild M = 1 in Kerr-Schild
+coordinates, static mesh metric (dx = 0.25 M, +-18 M) and, as a second case, the analytic
+metric; executable `scratch/core/exe/core_requests-adf/athena_cpu` (removal record and
+flux spheres; sha256 17ee5e28... in its COMMIT file); 3000 particles of m = 1e-4 (seed
+20261119): A 2000 at rest relative to the static observers, uniform in volume over
+3 <= r0 <= 14 M; B 600 from the apocentre r0 = 12 M with 0 <= L <= 3.98 M, kept 0.03 M
+away from L_crit = 3.5777 M (my bisection on the effective potential); C 400 radial
+E = 1 inflow from 14-16 M. Spheres r = 2 M (the horizon), 3 M, 8 M; alpha_exc = 0.65
+(r_exc = 1.4632 M); dt = 0.05 M; tlim = 400 M; acc.hst every cycle.
+
+Exact references (`exact_ks.py`, computed from the particle file before the run; numbers
+from a development evaluation of the same code): 2935 captured (A 2000, B 535, C 400),
+65 bound orbits with pericentres 5.82-11.52 M; all 2935 cross r = 2M by t = 174.8 M and
+reach r_exc by 176.3 M; removal lags the horizon by 0.78-1.49 M; sum of m E over the
+captured particles 0.26748510; sphere 3 M: 2935 in, 0 out; sphere 8 M: 2584 in, 28 out.
+
+Predictions:
+1. 2935 removal records per case, all reason 2, the tags equal to the captured set; no
+   particle leaves the mesh (n_escaped = 0); 65 particles alive at the end.
+2. |E_rec/E_exact - 1| <= 2e-5 on the mesh metric, <= 5e-6 on the analytic metric (T3
+   gave 1.15e-5 and 3.5e-6 for radial infall; B's whirling near-threshold orbits may be
+   worse: I allow 5e-5 for species 1 on the mesh and call it a failure above that).
+3. Every record time in [t_exc, t_exc + dt].
+4. Spheres: the counts equal the exact counts at every record except within one step of
+   an exact crossing; final in/out counts exactly 2935/0, 2935/0, 2584/28; sum m E through
+   r = 2M equals the exact 0.26748510 to 2e-5 relative.
+5. The horizon sphere (r = 2M) reproduces the exact horizon flux at every record to within
+   the crossings of one step (no record outside [F_exact(t - dt), F_exact(t)] beyond 1e-9).
+6. compare() with the exact horizon history: no bracket violation above 3 sigma (sigma =
+   1e-5), closure below 2e-5 in magnitude at 400 M; with the growth scaled by 0.97 the
+   violation exceeds 3 sigma (deficit 8e-3 M); with the exact history delayed by 2 M
+   (longer than the 0.78-1.49 M lag) it violates the lower bound F_rem: the comparison
+   detects a horizon that responds too late, not only one that grows too little.
+Refuted by any of these failing; a failure of 6 with 1-5 holding would mean the bracket
+argument itself is wrong.

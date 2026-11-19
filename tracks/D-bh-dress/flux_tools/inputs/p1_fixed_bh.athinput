@@ -1,0 +1,82 @@
+# flux_tools P1 (Track D): test particles falling into a fixed Schwarzschild black hole,
+# M = 1, Cartesian Kerr-Schild coordinates, static mesh metric (dx = 0.25 M; with
+# particles/metric=kerr_schild on the command line: the analytic metric). Particle file
+# p1.nrp written by tracks/D-bh-dress/flux_tools/p1.py (make): 2000 particles at rest
+# relative to the static observers for 3 <= r0 <= 14 M (species 0), 600 from their
+# apocentre r0 = 12 M with angular momentum 0 <= L <= 3.98 M (species 1; captured below
+# L_crit ~ 3.55 M, bound orbits above), 400 marginally bound (E = 1) radial inflow from
+# 14-16 M (species 2); m = 1e-4 each. Flux spheres at r = 2 M (the horizon of the fixed
+# hole), 3 M and 8 M; removal at alpha_exc = 0.65 (r = 1.463 M, inside the horizon).
+# Executable: scratch/core/exe/core_requests-adf/athena_cpu (accretion diagnostics).
+
+<comment>
+problem   = flux_tools P1: test particles into a fixed black hole
+
+<job>
+basename  = p1
+
+<mesh>
+nghost    = 2
+nx1       = 144
+x1min     = -18.0
+x1max     = 18.0
+ix1_bc    = outflow
+ox1_bc    = outflow
+nx2       = 144
+x2min     = -18.0
+x2max     = 18.0
+ix2_bc    = outflow
+ox2_bc    = outflow
+nx3       = 144
+x3min     = -18.0
+x3max     = 18.0
+ix3_bc    = outflow
+ox3_bc    = outflow
+
+<meshblock>
+nx1       = 48
+nx2       = 48
+nx3       = 48
+
+<time>
+evolution  = dynamic
+integrator = rk2
+cfl_number = 1.0
+nlim       = -1
+tlim       = 400.0
+ndiag      = 100000
+
+<adm>
+dynamic = false
+
+<particles>
+particle_type  = nrpic
+pusher         = midpoint
+metric         = mesh
+bh_mass        = 1.0
+bh_spin        = 0.0
+tolerance      = 1.0e-12
+max_iterations = 200
+dt             = 0.05
+deposit        = false
+alpha_exc      = 0.65
+hist_dcycle    = 20
+snap_dt        = 25.0
+particle_file  = p1.nrp
+removal_record = true
+acc_nsphere    = 3
+acc_radius1    = 2.0
+acc_radius2    = 3.0
+acc_radius3    = 8.0
+acc_x1         = 0.0
+acc_x2         = 0.0
+acc_x3         = 0.0
+peri_count     = true
+acc_dcycle     = 1
+
+<problem>
+pgen_name = nrpic_geodesic
+
+<output1>
+file_type = rst
+dt        = 1000.0

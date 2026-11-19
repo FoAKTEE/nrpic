@@ -68,42 +68,57 @@ def turning_points(E, L, M=1.0):
     return np.sort(rt)
 
 
-def _dt_in(r, E, L, M):
+def _s2_fact(r, E, L, M, roots):
+    """E^2 - V(r) = P(r)/r^3 with P(r) = (E^2-1) r^3 + 2M r^2 - L^2 r + 2M L^2, written as a
+    product over the known turning points so that no cancellation occurs near them."""
+    a = E * E - 1.0
+    if len(roots) == 2 and a < 0:
+        ra, rp = max(roots), min(roots)
+        r3 = 2.0 * M / (1.0 - E * E) - ra - rp
+        return (-a) * (ra - r) * (r - rp) * (r - r3) / r ** 3
+    if len(roots) == 1:
+        rt = roots[0]
+        q1 = 2.0 * M + a * rt
+        q0 = -L * L + rt * q1
+        return (r - rt) * (a * r * r + q1 * r + q0) / r ** 3
+    return _s2(r, E, L, M)
+
+
+def _dt_in(r, s, E, L, M):
     q = 2.0 * M / r
-    s = math.sqrt(max(_s2(r, E, L, M), 0.0))
     return (E * E * (1.0 + q) + q * q * (1.0 + L * L / (r * r))) / (s * (q * s + E))
 
 
-def _dt_out(r, E, L, M):
+def _dt_out(r, s, E, L, M):
     q = 2.0 * M / r
-    s = math.sqrt(max(_s2(r, E, L, M), 0.0))
     return (E / s + q) / (1.0 - q)
 
 
-def _dtau(r, E, L, M):
-    return 1.0 / math.sqrt(max(_s2(r, E, L, M), 0.0))
+def _dtau(r, s, E, L, M):
+    return 1.0 / s
 
 
-def _leg(f, r_hi, r_lo, E, L, M, top_turn, bottom_turn):
-    """Integral of f over [r_lo, r_hi]; turning points at an end are integrated through
-    r = r_t -+ w^2 (integrand times 2w, finite)."""
+def _leg(f, r_hi, r_lo, E, L, M, top_turn, bottom_turn, roots=()):
+    """Integral of f(r, s) over [r_lo, r_hi], s = (E^2 - V)^(1/2) from the factored form;
+    a turning point at an end is integrated through r = r_t -+ w^2 (integrand times 2w)."""
     if r_hi <= r_lo:
         return 0.0
+    sf = lambda r: math.sqrt(max(_s2_fact(r, E, L, M, roots), 0.0))
     if top_turn and bottom_turn:
         mid = 0.5 * (r_hi + r_lo)
-        return (_leg(f, r_hi, mid, E, L, M, True, False)
-                + _leg(f, mid, r_lo, E, L, M, False, True))
-    if top_turn:
+        return (_leg(f, r_hi, mid, E, L, M, True, False, roots)
+                + _leg(f, mid, r_lo, E, L, M, False, True, roots))
+    if top_turn or bottom_turn:
         W = math.sqrt(r_hi - r_lo)
-        g = lambda w: 2.0 * w * f(r_hi - w * w, E, L, M) if w > 0 else 2.0 / math.sqrt(
-            max(abs(_ds2dr(r_hi, E, L, M)), 1e-300))
-        return quad(g, 0.0, W, epsabs=0.0, epsrel=1e-11, limit=400)[0]
-    if bottom_turn:
-        W = math.sqrt(r_hi - r_lo)
-        g = lambda w: 2.0 * w * f(r_lo + w * w, E, L, M) if w > 0 else 2.0 / math.sqrt(
-            max(abs(_ds2dr(r_lo, E, L, M)), 1e-300))
-        return quad(g, 0.0, W, epsabs=0.0, epsrel=1e-11, limit=400)[0]
-    return quad(lambda r: f(r, E, L, M), r_lo, r_hi, epsabs=0.0, epsrel=1e-11, limit=400)[0]
+        sign, base = (-1.0, r_hi) if top_turn else (1.0, r_lo)
+
+        def g(w):
+            w = max(w, 1e-12 * W)
+            r = base + sign * w * w
+            return 2.0 * w * f(r, sf(r), E, L, M)
+        return quad(g, 0.0, W, epsabs=0.0, epsrel=1e-10, limit=400)[0]
+    return quad(lambda r: f(r, sf(r), E, L, M), r_lo, r_hi, epsabs=0.0, epsrel=1e-10,
+                limit=400)[0]
 
 
 def _ds2dr(r, E, L, M, h=1e-7):
@@ -142,19 +157,25 @@ class Orbit:
         if not self.captured:
             above = tp[tp > self.rp * (1 + 1e-9)]
             self.ra = float(above.min())          # apocentre (= r0 when starting there)
+            if self.at_turn and abs(self.ra - self.r0) < 1e-6 * self.r0:
+                self.ra = self.r0
+        if self.captured:
+            self.roots = (self.r0,) if self.at_turn else ()
+        else:
+            self.roots = (self.ra, self.rp)
 
     def t_in(self, r):
         """Kerr-Schild time of the first inward passage through r (r < r0)."""
         if not self.captured and r < self.rp:
             return math.nan
         bottom = (not self.captured) and abs(r - self.rp) < 1e-12
-        return _leg(_dt_in, self.r0, r, self.E, self.L, self.M, self.at_turn, bottom)
+        return _leg(_dt_in, self.r0, r, self.E, self.L, self.M, self.at_turn, bottom, self.roots)
 
     def tau_in(self, r):
         if not self.captured and r < self.rp:
             return math.nan
         bottom = (not self.captured) and abs(r - self.rp) < 1e-12
-        return _leg(_dtau, self.r0, r, self.E, self.L, self.M, self.at_turn, bottom)
+        return _leg(_dtau, self.r0, r, self.E, self.L, self.M, self.at_turn, bottom, self.roots)
 
     def crossings(self, rs, t_end):
         """Inward and outward passage times through the sphere rs up to t_end."""
@@ -164,10 +185,10 @@ class Orbit:
             return [], []
         if not self.at_turn or abs(self.r0 - self.ra) > 1e-9 * self.ra:
             raise NotImplementedError("bound orbits must start at their apocentre")
-        T_in = _leg(_dt_in, self.ra, self.rp, self.E, self.L, self.M, True, True)
-        T_out = _leg(_dt_out, self.ra, self.rp, self.E, self.L, self.M, True, True)
-        a_in = _leg(_dt_in, self.ra, rs, self.E, self.L, self.M, True, False)
-        a_out = _leg(_dt_out, rs, self.rp, self.E, self.L, self.M, False, True)
+        T_in = _leg(_dt_in, self.ra, self.rp, self.E, self.L, self.M, True, True, self.roots)
+        T_out = _leg(_dt_out, self.ra, self.rp, self.E, self.L, self.M, True, True, self.roots)
+        a_in = _leg(_dt_in, self.ra, rs, self.E, self.L, self.M, True, False, self.roots)
+        a_out = _leg(_dt_out, rs, self.rp, self.E, self.L, self.M, False, True, self.roots)
         P = T_in + T_out
         ins, outs = [], []
         k = 0
@@ -181,8 +202,8 @@ class Orbit:
     def period(self):
         if self.captured:
             return math.nan
-        return (_leg(_dt_in, self.ra, self.rp, self.E, self.L, self.M, True, True)
-                + _leg(_dt_out, self.ra, self.rp, self.E, self.L, self.M, True, True))
+        return (_leg(_dt_in, self.ra, self.rp, self.E, self.L, self.M, True, True, self.roots)
+                + _leg(_dt_out, self.ra, self.rp, self.E, self.L, self.M, True, True, self.roots))
 
 
 def static_u(x, M=1.0):
