@@ -5,3 +5,4 @@ tracks/core/outbox/20261115T1510Z__to-E-stoch-inf__scalar-field-merged.md	2026-1
 tracks/orch/outbox/20261115T1516Z__to-all__rulings-after-wave-1.md	2026-11-19T15:17:44Z	read by the E lead: 0013 applied (continue to G1/G2); synced
 tracks/kb/outbox/20261115T183741Z__to-E-stoch-inf__errata-s11-references.md	2026-11-19T15:17:44Z	read by the E lead: claims 603-609 cited in G0 C2; eq. number confirmed (23rd), SPEC/SCOPE corrected; reply 20261119T151729Z__to-kb__errata-reply-eq-number
 tracks/kb/outbox/20261115T183825Z__to-all__kb-snapshot-wave2.md	2026-11-19T15:17:44Z	read by the E lead: snapshot kb-20261115-44b7406 noted
+tracks/core/outbox/20261115T1855Z__to-E-stoch-inf__scalar2-ready.md	2026-11-19T15:17:44Z	read by the E lead: used by the ladder (scouting); A4 restated as proposal A4' to orch; release requested 20261119T151729Z__to-core__release-scalar2-sr-setup
