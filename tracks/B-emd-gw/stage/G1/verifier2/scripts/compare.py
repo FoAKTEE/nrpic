@@ -110,6 +110,11 @@ def main():
                 "Phi1_alpha": phi1m, "Phi2_alpha": phi2m, "Phi1_chi": phi1c, "Phi2_chi": phi2c,
                 "cA_plus_t0": cA0, "hprime0_over_s": hp0,
                 "max_abs_dev_pct_a2_10": float(100*np.abs(dev[win]).max()),
+                "max_abs_ratio_dev_pct_a2_10": float(100*np.abs((c/(s_dict*g0) - 1.0)[win]).max()),
+                "max_c_over_s_a_ge_60": float((c/s_dict)[a >= 60].max()),
+                "a_of_max_c_over_s": float(a[a >= 60][np.argmax((c/s_dict)[a >= 60])]),
+                "local_maxima_c_over_s_a_ge_60": [[float(a[i]), float((c/s_dict)[i])] for i in range(1, len(a) - 1)
+                                                  if a[i] >= 60 and (c/s_dict)[i] > (c/s_dict)[i-1] and (c/s_dict)[i] >= (c/s_dict)[i+1]],
                 "max_abs_dev_pct_a2_10_s_measured": float(100*np.abs(dev_m[win]).max()),
                 "max_abs_dev_pct_a2_10_with_hprime0": float(100*np.abs(((c - s_dict*g1)/abs(s_dict))[win]).max()),
                 "max_abs_sin_part_over_s": float(np.abs(d/s_dict).max()),
@@ -290,7 +295,8 @@ def main():
     print(json.dumps({k_: v for k_, v in res.items() if k_ != "amplitude"}, indent=1)[:4000])
     for k_, v in amp.items():
         print(k_, {kk: v[kk] for kk in ("s_dictionary", "s_measured_alpha", "hprime0_over_s",
-                                        "max_abs_dev_pct_a2_10", "max_abs_dev_pct_a2_10_s_measured",
+                                        "max_abs_dev_pct_a2_10", "max_abs_ratio_dev_pct_a2_10",
+                                        "max_c_over_s_a_ge_60", "a_of_max_c_over_s", "max_abs_dev_pct_a2_10_s_measured",
                                         "max_abs_dev_pct_a2_10_with_hprime0")})
         print("   ", {at: round(x["dev_pct"], 3) for at, x in v["at"].items()})
 
