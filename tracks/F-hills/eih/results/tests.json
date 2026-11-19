@@ -438,5 +438,35 @@
     "newton_ecc": 0.03000380302408938
    }
   ]
+ },
+ "T6_driver_interface": {
+  "passed": true,
+  "rows": [
+   {
+    "phase": 0.3,
+    "outcome_newton3": 1,
+    "outcome_eih_newton": 1,
+    "outcome_eih": 2,
+    "dE_out_newton": 1.4210854715202004e-14,
+    "dE_out_eih": 0.0
+   },
+   {
+    "phase": 2.27,
+    "outcome_newton3": 2,
+    "outcome_eih_newton": 2,
+    "outcome_eih": 1,
+    "dE_out_newton": 1.199040866595169e-14,
+    "dE_out_eih": 0.0
+   },
+   {
+    "phase": 4.0,
+    "outcome_newton3": 2,
+    "outcome_eih_newton": 2,
+    "outcome_eih": 5,
+    "dE_out_newton": 1.3322676295501878e-14,
+    "dE_out_eih": 0.0
+   }
+  ],
+  "note": "law='newton' uses eih's integrator (c2inv = 0) against newton3's own"
  }
 }

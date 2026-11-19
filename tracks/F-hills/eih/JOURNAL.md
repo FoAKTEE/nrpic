@@ -429,3 +429,59 @@ T6: for three phases of the q = 10, r_p = 8 M encounter, `eih.run_encounter(law=
 gives newton3's outcome and the ejected member's energy to 1e-6 units (two different DOP853
 implementations at rtol 1e-11), and `run_encounter(law='eih')` equals `eih.scatter` exactly.
 Refuted otherwise.
+
+## Entry 14 (2026-11-19 16:20): release-radius test, T6, and the 1PN-consistent start states
+
+T6, run F-20261119-150514-bb98309 (9 of 9 checks pass): run_encounter(law='newton') gives
+newton3's outcome and ejection energy to 1.4e-14 units at three phases; law='eih' equals
+eih.scatter exactly. CONFIRMED.
+
+Release-radius test, runs F-20261119-150214-3bf5bdc (20 r_t), F-20261119-145826-d4da8e1
+(40 r_t), F-20261119-150217-220950f (80 r_t); 1PN-circular binary; `figures/fig_scan_far_k20/
+k40/k80.png`, `results/scan_far_release_radius.json`. [VERIFIED as outputs]
+- q = 10 prograde, separated at 20/40/80 r_t: r_p = 7: 0.39/0.42/1.00; 9: 0.73/0.91/1.00;
+  11: 0.88/0.72/0.65; 13: 0.92/0.94/0.73; 15: 0.89/0.94/0.79; 17: 0.86/0.85/0.84.
+- q = 10 retrograde: 7: 0.63/0.56/0.02; 10: 0.71/0.55/0.00; 12: 0.36/0.08/0.00; >= 13 M: 0.
+- q = 4 prograde: 13: 0.80/0.19/0.97; 16: 0.87/0.91/0.95. Retrograde 9.82-14 M: 0.36-0.53 at
+  20 r_t, 0 at 80 r_t.
+- From 80 r_t, prograde, a member reaches inside 5.35 M even at r_p = 16-17 M (q = 4: 1.00;
+  q = 10: 0.31), which the CM orbit alone (EIH pericentre ~16 M for that L, T4) cannot do,
+  and the 1PN energy changes by a median 0.5-1.0 units along the run (0.002-0.1 retrograde).
+- Prediction (changes below 0.1 between 20, 40 and 80 r_t at q = 10 prograde, 15 and 17 M):
+  CONFIRMED at 17 M (0.86/0.85/0.84), REFUTED at 15 M (0.89/0.94/0.79). Everywhere else the
+  line is not converged in release radius, by up to 0.7 (q = 10 retrograde, 10 M).
+- [JUDGEMENT] A binary at a = 20-30 m_b is itself relativistic (1PN periastron advance
+  6 pi m_b/a ~ 0.6-0.9 rad per orbit, circular speed 5-8 percent below Newton, T5). Over the
+  20-55 binary orbits of an infall from 20-80 r_t the EIH three-body equations, which conserve
+  the 1PN integrals only to O(c^-4) per unit time (T1), accumulate changes of the order of
+  the binary's binding energy (prograde from 80 r_t: 0.5-1.0 units against 0.23 units), and
+  the result depends on the release radius. The far release does not give a converged 1PN
+  reference for these binaries; neither does the 4 r_t start (entry 7). The one statement
+  stable in release radius is q = 10 prograde, r_p = 17 M: EIH separates 0.84-0.86 of the
+  phases where Newton separates none (HRNA with 2404's data 0.86); it is outside the trust
+  range of T4 for the differential deflection (error 28 percent at 16 M), so it is a
+  [TO VERIFY] for the NR line, not a reference number.
+
+1PN-consistent start states, run F-20261119-145920-d7af935 (the first attempt
+F-20261119-145436-4fbc057 used a Newtonian-circular binary at 40 r_t and is superseded;
+`figures/fig_p1_state_q4.png`, `fig_p1_state_q10.png`, `results/p1_state.json`,
+`results/problem_block_q4_1pn.txt`, `problem_block_q10_1pn.txt`). [VERIFIED as outputs]
+- Q1: CM 1PN energy -1e-4 (q = 4) and -5e-4 (q = 10) per unit reduced mass; binary
+  separation 5.13 against the input's 4.95 (q = 4) and 3.27 against 2.98 (q = 10); momenta
+  differ from the input's by 7.6-10.3 percent (q = 4) and 4.6-6.4 percent (q = 10).
+  CONFIRMED for q = 4; for q = 10 two momenta change by 4.6 and 4.8 percent, just under the
+  predicted 5-20.
+- From these states: q = 4: Newton (v = P/m) leaves the binary bound (members' closest
+  approach 7.9 and 8.2 M); EIH: m1 dives to 4.11 M (inside 5.35 M), both members end bound to
+  M; HRNA: m1 plunges at t = 105, m2 escapes with +1.40 units. q = 10: Newton binary survives
+  (7.6-8.0 M); EIH: m1 dives to 3.88 M, the binary survives in EIH; HRNA: m1 plunges at
+  t = 87, m2 escapes with +1.45 units.
+- Q2 (q = 10 EIH: single ejection with the other member inside 5.35 M): REFUTED (the binary
+  survives in EIH; m1 is inside 5.35 M). Q3 (q = 4 EIH single ejection): REFUTED (both bound).
+- [JUDGEMENT] Across all start states tried (the input state read two ways and with horizon
+  masses; the 1PN-consistent state with an eccentric and a circular binary), the relativistic
+  models agree on one thing: m1 (comp0) comes inside the region where GR captures (HRNA
+  plunges it; EIH, which cannot capture, takes it to 3.1-4.6 M at q = 10 and 3.5-4.1 M at
+  q = 4 in 6 of 8 variants). What happens to m2 and to the binary depends on 5-15 percent
+  changes of the start momenta. Newton's outcome flips between "m1 ejected" and "binary
+  survives" between the input state and the 1PN-consistent one.
