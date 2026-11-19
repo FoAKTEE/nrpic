@@ -153,3 +153,15 @@ records = -0.5 percent). Corrected (`t2nosub.py analyse`: expectation with each 
 own step, records shorter than dt/2 excluded) and re-analysed in a separate registered run
 from the same output; the simulations are not rerun. The same sliver step ends every run
 of this package (harmless for the snapshots: it adds one record of ~1e-9 dt).
+
+## 2026-11-19 15:16 Outcome T8 part 2: confirmed, no deficit without sub-cycling (analysis run C-20261119-151044-a584069)
+
+Maxwell-Juttner box, theta_gas = 0.09985, 1e6 particles, sigma = 6.877 (max P = 0.557 with
+one sub-step), 200 steps. sum_P per step / (1/2) N rho0 sigma <v_Mol>(theta_gas) dt:
+without sub-cycling 1.000025 +- 0.000041 (z = +0.62), accepted collisions against sum_P
+z = +1.18, n_trunc = 0; with sub-cycling (3.43 sub-steps, max P 0.107) 0.999992 +- 0.000026
+(z = -0.32), z_a = +0.42. Both pass T2(a, b). The prediction (no deficit as long as no pair
+exceeds P = 1) held: TESTS.md T8's "the deficit is reported" has nothing to report; what
+sub-cycling buys is not the rate but the time resolution of successive collisions (T8
+part 1). Figure `figs/T8_t2_nosub.png` (looked at: both ratios scatter by 3-5e-4 per step
+around 1, no trend over 200 steps).
