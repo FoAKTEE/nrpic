@@ -142,7 +142,7 @@ Source predictions (from entry 1):
   written. Prediction for the final run R2' of check_package.py: identical tally and no problem,
   with one more run-id locator in CHECK.md (81). Refuted by any problem.
 
-## Entry 6, 2026-11-19 07:59: outcome of R2'; state at the end of the package
+## Entry 6, 2026-11-19 07:58: outcome of R2'; state at the end of the package
 
 - R2' (kb-20261119-155812-87eced9) held: 33 rows 15/16/2/0; 81 + 40 + 53 locators resolve
   (one more run id in CHECK.md than in R2); 75 arXiv ids known; 22 quotes at their lines; no
