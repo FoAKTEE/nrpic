@@ -350,3 +350,33 @@ MeshBlocks, more than one card holds) on two cards, 10 cycles.
 - P6d. F16 runs on two cards with less than 80 GB per card (Track F's estimate of about
   3000 MeshBlocks per card gives about 26 MB per MeshBlock, so 2251 MeshBlocks per card
   need about 60 GB), at a rate in MeshBlock-cycles per second close to that of F8b.
+
+### 08:12 Entry 10: T3 with extrapolated sources; first outcome of T4 (P4a failed)
+
+T3 variant with source_density and source_extrap, run core-20261119-155306-ee6c92c: as
+the plain case (history 5.4e-13, field dumps 5.6e-12, positions 3.6e-15, identity at
+1e-15 on all rank counts). Hr_max (column 11 of the constraint statistics) differs here
+by 1.7e-9, above the threshold of 1e-9 that I wrote as refuting P3b: by the letter of
+the prediction P3b is refuted in this run for that column; on the evidence of entry 9
+(a ratio of rounding noise, value 1.414 at all times, no growth) I do not take it as a
+defect of the ranks, but the record stays as it is.
+
+T4, same number of ranks, runs core-20261119-155721-89ebf16 (restart of the run with
+extrapolated sources at cycle 20, pairs 1:1, 2:2, 4:4) and core-20261119-155950-89ebf16
+(the plain run): P4a FAILED, and on one rank as well. The restarted run is not identical
+to the uninterrupted one on 1, 2 or 4 ranks: the first record after the restart (cycle
+21) differs only in the proper volume and the mean of K (history columns 28, 29, 1.2e-10
+relative); the particle sums, the deposit sums and the lapse at the probe of that record
+are identical; from cycle 22 on the differences spread to the particles (positions
+1e-15 at t = 7.5) and the deposit. The same happens with and without extrapolated
+sources, and already in the pair 1:1, which runs none of the code of this package
+(`nr_multirank` false). So the cause is not in the code of several ranks; candidates are
+the restart of the spacetime part or a difference of the MPI build on one rank.
+
+Prediction of R4 (before the run): `tracks/core/analysis/mpi/restart_one_rank.sh` runs
+the same 1:1 restart with the release executable `build_cpu_v03` (serial) and with the
+serial build of this branch. P4c: both show the same 1e-10 departure at cycle 21 as the
+MPI build on one rank, i.e. the inexact restart of this set-up is a property of the
+released module (the claim "restarts are exact" of CLAUDE.md was made for other
+set-ups). Refuted if the release restarts exactly: then the MPI build or this branch
+changes the restart, and that is the next thing to find.
