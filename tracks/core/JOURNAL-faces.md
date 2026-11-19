@@ -488,3 +488,11 @@ punc_g4nw_met and boost_g4nw_met of c2):
    falls by more than a factor 3 (in the vacuum puncture the layer is H5 alone, entry 8).
  (c4-e) every case runs to its end without growth (lambda dt = 0.25 for the ball's step,
    well inside the RK4 limit).
+
+Plan t1 (`plans/t1_smrface.json`): the vacuum puncture with a refined region (cells of
+1/2) that touches the +x face (4.1 <= x <= 16, |y|, |z| < 3.9), so that the coarse-array
+path of the ghost fill (`GhostFalloff(coarse_u0, true)` before prolongation) is used;
+eight steps, stock against the full set with damping. Prediction [JUDGEMENT]: both run
+without a non-finite value; with the full set the face-layer maximum of |H| on the fine
+part of the +x face is below 0.2 of the stock one, and the cells of the face next to the
+fine/coarse junction show no value above 3 times the stock face-layer maximum.
