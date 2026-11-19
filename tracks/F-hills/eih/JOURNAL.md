@@ -339,3 +339,33 @@ Q2. q = 10: EIH from the consistent state gives a single ejection with the other
     5.35 M (GR-capture proxy). Refuted otherwise.
 Q3. q = 4: EIH from the consistent state gives a single ejection (not survived, not
     unsettled). Refuted otherwise.
+
+## Entry 10 (2026-11-19 15:45): outcome of the far-release line; the binary's own 1PN is the cause
+
+Run F-20261119-145315-2d18c52 (90 tasks, 160 s on 13 cores; `figures/fig_scan_far.png`,
+`results/scan_far_summary.json`). [VERIFIED as outputs]
+- F1 (q = 10, r_p = 17 M retrograde survives in >= 0.9): CONFIRMED, 1.00 (also 1.00 at 15 M).
+- F2 (q = 10 prograde, EIH separated within 0.15 of Newton and below 0.3 at 15 and 17 M):
+  REFUTED. EIH 0.96 and 0.92, Newton (40 r_t) 0.00 and 0.00, HRNA (2404 data, 4 r_t) 0.92
+  and 0.86. At r_p = 7-9 M EIH separates only 0.41-0.51 (Newton 0.78-0.89).
+- F3 (a member inside 5.35 M in >= 0.5 at 7-9 M): REFUTED at 9 M (0.43); 1.00 at 7, 0.63 at 8.
+- F4 (q = 4 prograde, EIH within 0.15 of Newton at r_p >= 13 M): REFUTED (0.88/0.82/0.95
+  against 0.69/0.63/0.46).
+- Diagnosis (development check, unregistered: one far-release trajectory at r_p = 17 M): the
+  binary separation oscillates between 3.0 and 4.2 from the first orbit on, at 260 M from the
+  hole, i.e. the binary is eccentric (e ~ 0.2, Newtonian a ~ 3.3) before any tide acts. Cause
+  [VERIFIED by the code's own two-body test, run below; BACKGROUND for the formula]: the
+  binary's OWN 1PN dynamics. For the isolated EIH binary the circular relative speed is below
+  the Newtonian one: (u/u_N)^2 - 1 = -0.097 at m_b/a = 1/30 (q = 10 binary), -0.151 at 1/20
+  (q = 4 binary), -0.028 at 1/100 (computed by `eih.circular_speed_1pn`; the textbook 1PN value
+  -(3 - nu) m_b/a gives -0.092, -0.138, -0.0275, the differences being O((m_b/a)^2)). A binary
+  given Newtonian-circular velocities at a = 30 m_b or 20 m_b is therefore eccentric at 1PN,
+  with a ~10 percent larger semi-major axis - in the EIH reference, and, since 1PN is GR's
+  first correction, also in the NR runs whose momenta were set Newtonian [JUDGEMENT].
+  The F1-F4 numbers above are for that eccentric binary; they are kept, not used as the
+  reference.
+- Predictions for the rerun with a 1PN-circular binary (`far_states(binary='1pn')`, the
+  default from now on), written before it:
+  F2'. q = 10 prograde: EIH separated at r_p = 15 and 17 M below 0.3. Refuted above.
+  F4'. q = 4 prograde: EIH separated within 0.2 of Newton (from 40 r_t) at r_p >= 13 M.
+  F5'. q = 10 prograde, r_p = 7-9 M: a member inside 5.35 M in >= 0.5 of the phases.

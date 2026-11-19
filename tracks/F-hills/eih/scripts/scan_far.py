@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
 """Far-release EIH line (predictions: ../JOURNAL.md entry 8, F1-F4).
 
-  eihfar     EIH from 40 r_t: Newtonian-circular binary (release phase, 2404 convention), its
+  eihfar     EIH from 40 r_t: circular binary (release phase, 2404 convention; --binary 1pn:
+             the circular speed of the isolated EIH binary, default; newton: Newtonian), its
              centre of mass on the 1PN parabola with J/mu = L of the GR parabola with areal
              pericentre r_p (2404.16270 appendix.tex l. 175) (eih.far_states); end when the
              Newtonian parabola with the same L is at 30 r_t outbound
@@ -37,6 +38,7 @@ _spec.loader.exec_module(_scan)
 CONFIGS, setups = _scan.CONFIGS, _scan.setups
 
 K0 = 40.0
+BINARY = "1pn"      # the binary's internal circular speed: '1pn' (default) or 'newton'
 
 
 def L_gr(rp, M=1.0):
@@ -50,7 +52,7 @@ def run_eihfar(cfg, rp, sense, nphase):
     r0 = K0 * rt
     J = L_gr(rp, M)
     ph = 2 * np.pi * np.arange(nphase) / nphase
-    x, v = eih.far_states(M, m1, m2, a0, J, r0, ph, sense)
+    x, v = eih.far_states(M, m1, m2, a0, J, r0, ph, sense, binary=BINARY)
     Mt = M + mb
     rpN = J * J / (2 * Mt)
     t_in = conic_time_from_pericentre(np.array([rpN]), np.array([1.0]), np.array([Mt]),
@@ -103,15 +105,17 @@ def task(args):
 
 
 def main():
-    global K0
+    global K0, BINARY
     ap = argparse.ArgumentParser()
     ap.add_argument("outdir", nargs="?", default=os.environ.get("NRPIC_RUN_DIR"))
     ap.add_argument("--nphase", type=int, default=360)
     ap.add_argument("--workers", type=int, default=13)
     ap.add_argument("--k0", type=float, default=40.0)
     ap.add_argument("--models", default="eihfar,newtonfar,hrna2404")
+    ap.add_argument("--binary", default="1pn", choices=("1pn", "newton"))
     a = ap.parse_args()
     K0 = a.k0
+    BINARY = a.binary
     os.makedirs(a.outdir, exist_ok=True)
     tasks = [(m, q, rp, s, a.nphase) for q, cfg in CONFIGS.items() for rp in cfg["rps"]
              for s in (1, -1) for m in a.models.split(",")]
@@ -148,7 +152,7 @@ def main():
             d["E_ej_mean"] = float(np.nanmean(e)) if np.isfinite(e).any() else None
         summ.setdefault(q, {}).setdefault(str(s), {}).setdefault(str(rp), {})[m] = d
     with open(os.path.join(a.outdir, "scan_far_summary.json"), "w") as fh:
-        json.dump(dict(k0=K0, nphase=a.nphase, summary=summ,
+        json.dump(dict(k0=K0, binary=BINARY, nphase=a.nphase, summary=summ,
                        walls={"|".join(map(str, k)): r["wall"] for k, r in results.items()}),
                   fh, indent=1)
     # figure

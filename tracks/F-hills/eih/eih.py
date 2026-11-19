@@ -560,13 +560,37 @@ def parabola_pair_1pn(M, mb, J_per_mu, r0, c2inv=1.0):
     return x, v
 
 
-def far_states(M, m1, m2, a0, J_per_mu, r0, phases, sense=1, c2inv=1.0):
+def circular_speed_1pn(m1, m2, a0, c2inv=1.0):
+    """Relative speed u of the isolated two-body EIH problem on a circular orbit of coordinate
+    separation a0 (radial EIH acceleration of the relative coordinate = u^2/a0; found
+    numerically, the CM at rest). Newtonian: sqrt((m1 + m2)/a0)."""
+    from scipy.optimize import brentq
+    mb = m1 + m2
+    ms = np.array([m1, m2])
+    x = np.array([[m2 / mb * a0, 0, 0], [-m1 / mb * a0, 0, 0]])
+
+    def f(u):
+        v = np.array([[0, m2 / mb * u, 0], [0, -m1 / mb * u, 0]])
+        a = accel(x, v, ms, c2inv)
+        return -(a[0, 0] - a[1, 0]) - u * u / a0
+    uN = math.sqrt(mb / a0)
+    return brentq(f, 0.5 * uN, 1.5 * uN, xtol=1e-16, rtol=1e-15)
+
+
+def far_states(M, m1, m2, a0, J_per_mu, r0, phases, sense=1, c2inv=1.0, binary="1pn"):
     """Three-body states [M, m1, m2] for release phases (2404 convention: member 1 at
-    +(m2/mb) a0 e(phase) from the binary's centre of mass; Newtonian circular binary with sense
-    +1/-1) with the binary's centre of mass on the 1PN parabola of parabola_pair_1pn."""
+    +(m2/mb) a0 e(phase) from the binary's centre of mass; circular binary with sense +1/-1:
+    binary='1pn' the circular speed of the isolated EIH binary (circular_speed_1pn),
+    'newton' the Newtonian one) with the binary's centre of mass on the 1PN parabola of
+    parabola_pair_1pn."""
     mb = m1 + m2
     xp, vp = parabola_pair_1pn(M, mb, J_per_mu, r0, c2inv)
-    w = sense * math.sqrt(mb / a0 ** 3)
+    if binary == "1pn":
+        w = sense * circular_speed_1pn(m1, m2, a0, c2inv) / a0
+    elif binary == "newton":
+        w = sense * math.sqrt(mb / a0 ** 3)
+    else:
+        raise ValueError("binary: '1pn' or 'newton'")
     ph = np.asarray(phases, dtype=float)
     e = np.stack([np.cos(ph), np.sin(ph), np.zeros_like(ph)], axis=1)
     et = np.stack([-np.sin(ph), np.cos(ph), np.zeros_like(ph)], axis=1)
@@ -583,7 +607,7 @@ def far_states(M, m1, m2, a0, J_per_mu, r0, phases, sense=1, c2inv=1.0):
 
 
 def state_at_r0_1pn(M, m1, m2, a0, J_per_mu, r0, r_from, phase, sense=1, c2inv=1.0,
-                    rtol=1e-12):
+                    rtol=1e-12, binary="1pn"):
     """1PN-consistent start state at distance r0: released at r_from (far_states, release
     phase `phase`), integrated with the EIH equations to the event |x_cm - x_M| = r0 inbound.
     Returns dict(x, v, p (canonical momenta), t (time from the release), cm_E_per_mu,
@@ -592,7 +616,7 @@ def state_at_r0_1pn(M, m1, m2, a0, J_per_mu, r0, r_from, phase, sense=1, c2inv=1
     from scipy.integrate import solve_ivp
     ms = np.array([M, m1, m2])
     mb = m1 + m2
-    x, v = far_states(M, m1, m2, a0, J_per_mu, r_from, [phase], sense, c2inv)
+    x, v = far_states(M, m1, m2, a0, J_per_mu, r_from, [phase], sense, c2inv, binary)
     x, v = x[0], v[0]
 
     def f(t, y):
