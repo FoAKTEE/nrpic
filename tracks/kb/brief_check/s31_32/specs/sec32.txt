@@ -1,0 +1,26 @@
+gr-qc/9804040 | plasma physics|2
+gr-qc/9804040 | particle.in.cell|3
+gr-qc/9804040 | discontinu|3
+gr-qc/9804040 | most of the matter|2
+gr-qc/0107076 | particle.mesh|2
+gr-qc/0107076 | Type I|3
+gr-qc/0107076 | static|4
+gr-qc/0107076 | universal|4
+gr-qc/0601112 | universal|5
+gr-qc/0601112 | particle.in.cell|3
+gr-qc/0601112 | static|3
+gr-qc/0601112 | steady state|3
+1409.5176 | type I|3
+1409.5176 | universal|4
+1409.5176 | static|3
+math/0209336 | pointwise|4
+math/0209336 | Vlasov.Poisson|6
+math/0209336 | smooth|4
+math/0209336 | particle.in.cell|3
+gr-qc/9402041 | critical exponent|3
+gr-qc/9402041 | 0\.36|3
+gr-qc/9402041 | self.similar|2
+0711.4620 | type I\b|4
+0711.4620 | type II|4
+0711.4620 | Vlasov|5
+0711.4620 | collisionless|4
