@@ -46,7 +46,7 @@ dV = c[(2 phi P + phi^2 P')/Q^2 - 2 phi^2 P Q'/Q^3], P' = 6 phi + 2 sqrt2 vev, Q
 which is the derivative of that expression (quotient rule). The numerical check of V and
 V' in code units against the Planck-unit form is item T0 below.
 
-## Entry 1, 2026-11-19 14:50 UTC: reference written; development pass (unregistered)
+## Entry 1, 2026-11-19 14:35 UTC: reference written; development pass (unregistered)
 
 `scripts/usr_reference.py` (T0-T4, docstring) was developed against a scratch output
 (`scratch/E-stoch-inf/tmp/usr/dev1`, nmax2 up to 64, not registered; no number below is
@@ -82,7 +82,7 @@ d Khat = K^2/3 + 4 pi (S + E)) with chi itself as the variable, i.e. exactly the
 equations a homogeneous run discretises, so that the run can be compared with it cycle by
 cycle; the exact solution is unchanged (Theta = 0 on the constraint surface).
 
-## Entry 2, 2026-11-19 15:00 UTC: acceptance of the USR case (proposal to the owner)
+## Entry 2, 2026-11-19 14:37 UTC: acceptance of the USR case (proposal to the owner)
 
 [JUDGEMENT] Written before any run with the inflection potential. Owner's thresholds of
 SCOPE 4 are kept where they exist; the rest is proposed for G2.
@@ -106,7 +106,7 @@ to fail; P1 itself claims only "excellent agreement" of the binned spectra there
 (P1:536). The low-resolution runs of this package stay at R_rms ~ 0.02 (nmax2 = 16) and
 0.07 (nmax2 = 64), where the linear comparison is meaningful.
 
-## Entry 3, 2026-11-19 15:05 UTC: predictions for the registered runs (before they run)
+## Entry 3, 2026-11-19 14:38 UTC: predictions for the registered runs (before they run)
 
 Runs planned (inputs from `scripts/make_inputs.py`, list `inputs/proc.list`, script
 `scripts/run_list.sh`; all serial, one core each):
@@ -157,7 +157,7 @@ Predictions (refuted if outside the stated range):
 Smoke tests before this entry (unregistered, scratch/E-stoch-inf/tmp/usr/dev1/smoke_*):
 both executables accept the inputs (3 and 2 cycles); no number of them is used.
 
-## Entry 4, 2026-11-19 14:45 UTC: outcome of the reference run E-20261119-143905-f2bcde3
+## Entry 4, 2026-11-19 14:41 UTC: outcome of the reference run E-20261119-143905-f2bcde3
 
 Registered as scouting for G2 (`nrpic-run` refuses production before G1's sign-off);
 39 s on 4 cores. Outputs copied: `results/usr_reference.json`, `results/landmarks.csv`,

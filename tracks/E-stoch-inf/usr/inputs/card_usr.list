@@ -1,0 +1,14 @@
+# USR (inflection) case on one card, NOT run by this package (no card-hours were named for it).
+# Lines for harness/bin/nrpic-run submit --launcher batch --exe <athena_gpu> --list <this file>
+# (one Slurm job per group; the cards are shared: at most two jobs of the owner queued).
+# Estimated cost on one A100 from core's measurement (1.23 s per step at 256^3 with sources
+# and the constraint record every step; scalar_field_2.md section 6), Courant 0.25:
+#   64^3: 426 steps, ~10 s;  128^3: 852 steps, ~2.5 min;  256^3: 1702 steps, ~35 min
+#   (0.58 card-hours) plus 21 dumps of 2.3 GB (48 GB) at dump_dt = 0.5.
+# Group 1 (ladder at k_max/dk = 8, the convergence set-up of P1:756; odd/even pairs):
+U64p tracks/E-stoch-inf/usr/inputs/usr_base.athinput mesh/nx1=64 mesh/nx2=64 mesh/nx3=64 meshblock/nx1=64 meshblock/nx2=64 meshblock/nx3=64 scalar_field/noise_nmax2=64 scalar_field/noise_mode_file=/data/haiyangw/nrpic/wt/E-stoch-inf/tracks/E-stoch-inf/usr/inputs/modes_usr_n64.txt scalar_field/noise_mode_scale=1.0
+U64m tracks/E-stoch-inf/usr/inputs/usr_base.athinput mesh/nx1=64 mesh/nx2=64 mesh/nx3=64 meshblock/nx1=64 meshblock/nx2=64 meshblock/nx3=64 scalar_field/noise_nmax2=64 scalar_field/noise_mode_file=/data/haiyangw/nrpic/wt/E-stoch-inf/tracks/E-stoch-inf/usr/inputs/modes_usr_n64.txt scalar_field/noise_mode_scale=-1.0
+U128p tracks/E-stoch-inf/usr/inputs/usr_base.athinput mesh/nx1=128 mesh/nx2=128 mesh/nx3=128 meshblock/nx1=128 meshblock/nx2=128 meshblock/nx3=128 scalar_field/noise_nmax2=64 scalar_field/noise_mode_file=/data/haiyangw/nrpic/wt/E-stoch-inf/tracks/E-stoch-inf/usr/inputs/modes_usr_n64.txt scalar_field/noise_mode_scale=1.0 scalar_field/dump_dt=0.5
+U128m tracks/E-stoch-inf/usr/inputs/usr_base.athinput mesh/nx1=128 mesh/nx2=128 mesh/nx3=128 meshblock/nx1=128 meshblock/nx2=128 meshblock/nx3=128 scalar_field/noise_nmax2=64 scalar_field/noise_mode_file=/data/haiyangw/nrpic/wt/E-stoch-inf/tracks/E-stoch-inf/usr/inputs/modes_usr_n64.txt scalar_field/noise_mode_scale=-1.0 scalar_field/dump_dt=0.5
+# Group 2 (production set-up of P1, alone in one job, --wall 00:58:00):
+# U256 tracks/E-stoch-inf/usr/inputs/usr_256.athinput
