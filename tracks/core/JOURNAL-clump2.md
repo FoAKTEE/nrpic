@@ -430,3 +430,17 @@ boost tables, tables and corrections). Norms within 14 of the centre of cluster 
   factor 1.5 of TB3 at dx = 0.5 and v = 0.1; projection within 0.05 of zero.
 Refuted by an H ratio outside 0.85 to 1.15, an M ratio more than twice the TB2 value,
 or a D_H ratio above 0.2.
+
+## 2026-11-19  session clump2-2 (from 15:30Z; the first session ended without a handoff)
+
+State found at 15:30Z (from the record, not from memory): run `core-20261119-151457-7a855d8`
+(processor tests, one core) is still running. Its first part, test R, stopped at once:
+`regress.py` started the executables by a relative path after changing the working
+directory (`FileNotFoundError: .work/build_cpu/src/athena`); the fix (absolute paths,
+commit eedc4cb8) came after the run had started, so R is rerun as its own registered run
+with the three short cases (prediction R above, unchanged); the case `jeans` at the end of
+the running job starts after the fix and uses the fixed script. The 25 cases of TB ran
+("all cases ran"); TD is running. The card job of TC (`core-20261119-145433-8c4083d`,
+Slurm 4649) waits in the queue (15 jobs of the program ahead of it, one card job of
+another user running). The executables of `.work/build_*` are from the source of
+cbe1e3ef; `git diff cbe1e3ef HEAD -- athenak/` is empty.
