@@ -525,3 +525,75 @@ quantities that vanish (round-off of a zero) and the constraint norms, which agr
 1e-5 relative (the card deposits with atomic additions in another order). Refuted by any
 other difference: then the card executable builds other initial data than the processor
 executable, and the processor tests TB, TD say nothing about the card runs.
+
+### Outcome of TB and TD (analysis run `core-20261119-155912-1fda7e0` on the cases of `core-20261119-151457-7a855d8`; 16:00Z)
+
+The first analysis attempt, `core-20261119-153545-8898621`, failed at once: I gave the TB
+script the run directory instead of its `tb/` part (no number from it). Figures
+`tb/fig_boost_static_convergence.png` and `tb/fig_boost_static_slices.png` of the
+analysis run, looked at.
+
+- TB1 HELD. Interior M-norm with K_ij = 0 over the continuum value: 0.981, 0.995, 0.9995 at
+  32, 64, 128 cells, the same for v = 0.1 and 0.3; ratio v = 0.3 over 0.1: 3.129 (continuum
+  3.129).
+- TB2 HELD. With the boost table the M-norm falls to 0.0703, 0.0341, 0.0151 of the
+  uncorrected one at dx = 1, 0.5, 0.25 (bands 0.03-0.12, 0.008-0.05, 0.002-0.02), a factor
+  2.06 and 2.26 per halving, identical to four digits at v = 0.1 and 0.3. So it converges
+  at first order: the edge of the cluster, where the density ends as (rbar_s - r)^(1/2),
+  dominates (slope-1 guide in the figure) [JUDGEMENT: the order was predicted as "1.5 to 6
+  per halving, the edge adds a first-order term"; that the edge is the cause is not
+  separately tested]. The curvature term alone has the Mx-norm of the continuum to
+  1.5e-4, 2e-5, 4e-6 at 32, 64, 128 cells (it does not pass through the deposit).
+  Outside r < 14 (the layer at the outflow faces) the curvature leaves an M-norm of
+  6.2e-5 at 128 cells, v = 0.3.
+- TB3 HELD for the second-order residual without correction, FAILED in two of its bands
+  with the correction, not refuted. `|D_H(curv)|` over the continuum second-order norm:
+  0.983, 0.995, 0.998 (v = 0.1), 0.973, 0.985, 0.988 (v = 0.3); ratio v = 0.3 over 0.1
+  9.69 at 64 and 128 cells (predicted 9.79 within 3 per cent: 1 per cent low). The
+  correction leaves `|D_H(corr)|/|D_H(curv)|` = 0.082, 0.081, 0.097 at dx = 1, 0.5, 0.25
+  (v = 0.3) and 0.078, 0.078, 0.094 (v = 0.1). Predicted below 0.15, 0.08, 0.05: the band
+  at dx = 0.5 is missed narrowly and the one at dx = 0.25 by a factor 2; the ratio does
+  not fall with the cell size and does not depend on v, so the leftover is second order
+  in V (not the O(V^4) terms I named) and not the smoothing of the deposit (which would
+  fall). Projections -0.023 to +0.002 (predicted within 0.05 of zero; a wrong sign gives
+  2, none gives 1): the correction has the right sign and size, and what is left is
+  nearly orthogonal to the second-order residual. The correction removes 90 to 92 per
+  cent of the second-order residual. Cause of the remaining 8 to 10 per cent not known;
+  diagnostic below.
+- TB4 FAILED narrowly in both numbers. At 64 cells, v = 0.3, the whole-box H-norm of
+  `corr` is 0.054299 against 0.052066 for the cluster at rest (4.3 per cent apart,
+  predicted within 2); `curv` 0.058458 is above (held). M-norms of `curv` and `corr`
+  0.0038321 and 0.0037922: 1.04 per cent apart (predicted within 1). The whole-box
+  H-norm is dominated by the faces of the box already at rest (interior 0.0313 against
+  whole box 0.0521).
+- TB5 HELD. Code against the Python reference at every cell (64 cells, v = 0.3, all
+  on): psi^4 5.6e-8, K_ij 4.7e-8 of the largest component (9.93e-3), beta^i 4.5e-8 of
+  0.165, lapse 3.0e-8, trace K 3.5e-18 (single precision of the dumps).
+- TB6 HELD. 10^4 stratified particles, 64 cells, v = 0.3: M-norm2 falls from 0.013954 to
+  0.001327 (drop 0.012627 against the smooth part 0.012752: 1 per cent); projection of
+  M_x on the smooth field 0.9952 without, -0.0044 with the curvature (static sample
+  0.0002); H-norm 0.1945, 0.1950, 0.1919 for none, curv, corr against 0.1878 at rest
+  (within 2 per cent of each other: held).
+- TD1 HELD. Interior H-norm (within 14 of cluster 0) of the pair at rest over the single
+  cluster: 1.027 (band 0.9 to 1.1).
+- TD2 HELD. M-norm with the two boost tables over without: 0.0348 (TB2 at dx = 0.5:
+  0.0341).
+- TD3 HELD. `|D_H(corr)|/|D_H(curv)|` = 0.0729 (below 0.1; TB3 at dx = 0.5, v = 0.1:
+  0.0779), projection 0.0008. Generator numbers of the pair: lam = 1.012348, momenta
+  -0.118182 and +0.118182 (particle sums), M_ADM 1.98853 moving, 1.97561 at rest.
+
+### Diagnostic of the TB3 leftover: predictions (written 16:03Z, before the run)
+
+`tb_residual_diag.py` splits `D_H(corr)` of the TB runs into its projection on the
+residual of the cluster at rest and the rest, measures it within 1 M of the surface
+rbar_s = 8.936 and elsewhere, and plots shell averages (monopole and P_2 part). Two
+candidates, which predict different things [JUDGEMENT]:
+(a) the quiet lattice (spacing 0.25 at every cell count) samples the second-order matter
+source at the edge with an error that does not depend on the mesh: then more than half
+of `|D_H(corr)|` lies within 1 M of the surface at every cell count, and its monopole
+there has one sign over a width of about the lattice spacing;
+(b) the second-order source of the correction differs from what the code deposits by a
+smooth factor (a term of the derivation that is missing or has the wrong weight): then
+`D_H(corr)` is spread over the interior with a shell profile proportional to that of
+`D_H(curv)` or of the matter density, and less than half of it is near the surface.
+Neither is established if the split is near one half.
