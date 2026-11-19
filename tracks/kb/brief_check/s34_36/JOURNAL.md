@@ -206,3 +206,11 @@ s36.4-9), 1 in section 3 (s36.10), 1 source defect in section 5 (2512.13673, abs
 P13 (run 3, same script after the margin change): identical rows, tally, locator count and
 corrected rows as run 2; no bar touches the frame. [Refuted by any difference in verdicts.json
 other than none, or a bar on the frame.]
+
+## Entry 5 (2026-11-19 07:13 PST): outcome of run 3; package closed
+
+Run kb-20261119-151240-7a46af7: completed, exit 0. P13 CONFIRMED: `verdicts.json` is
+byte-identical to that of run kb-20261119-151103-4217175 (cmp), and in `fig_verdicts.png` (looked
+at) the axis runs to 12, so the line-221 bar (11) no longer touches the frame. This run is the
+reference tally. README.md written (contents, results, rerun, runs, requests, what is not done).
+No card used, no run pending.
