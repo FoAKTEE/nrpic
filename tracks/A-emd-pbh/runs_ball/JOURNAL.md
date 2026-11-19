@@ -315,3 +315,121 @@ tree was clean): run A-20261115-182657-53da696 (`sr*_n256L32_*` figures and the 
   -5e-4 near |x| = 20, a signal from the outflow boundary at 32 M travelling inward through
   vacuum; the envelope edge is at R ~ 18 M then, the core is not reached before t = 20.
 
+
+## 2026-11-19, entry 7 (wave 2b, helper runs3): set-up and predictions of SR-1L and BH-1, written before any card run
+
+Read: CLAUDE.md, coord/CHARTER.md to "Owners", decisions 0010 and 0016, brief lines 335-365
+and 708-725, the runs_ball report in `scratch/orch/wave2_reports/A-emd-pbh.md` and the
+lead's, entries 1-6 above, HANDOFF.md of the owner; core's gauge package:
+`scratch/core/exe/core_gauge/READY` and `tracks/core/JOURNAL-gauge.md` on branch core/gauge
+(entries 1, 4, 5, 6). Core's executables of branch core/gauge (source b4430da), card and
+processor. Core's test L3 (bound ball through collapse, AMR) never ran: run
+core-20261115-203207-b4430da stopped at cycle 0 with "Number of MeshBlocks ... = 1632 ...
+exceeds max_nmb_per_rank = 1024" (its athena.log) [VERIFIED]. So no collapse to a horizon
+has been run with `lapse_leak` before this package.
+
+The relaxed lapse (READY option 1): d_t alpha = [1+log] - lapse_leak alpha max(ln alpha, 0).
+T = 1/lapse_leak = 0.125 M in both runs [JUDGEMENT: core's rule T <= 0.1 R/sqrt(2 alpha)
+with R the smallest expanding region (2t: core radius 2.4 M; data set 3: 2.65 M) gives
+T <= 0.17 M; core's bound-ball runs were best at the shortest T, and the step needs
+rate x dt < 2.7: 8 x 0.25 = 2.0 at dx = M, 0.25 at dx = M/8]. Gamma-driver shift as core's
+`ball_leak.athinput`; production deposit of SR-1/SR-2. Decks `sr1l.athinput`, `bh.athinput`
+(commit 4b2c942 and following). Smoke test of both decks on 32^3 meshes with the processor
+executable: run A-20261119-143417-ce697f0 (both exit 0 after 3 cycles; not a result).
+compare.py gained the gauge `leak` (central lapse against the homogeneous reference) and
+data sets other than 2t; its numbers for SR-2 at dx = M are unchanged (checked against
+`A-emd-pbh-20261115-163659-4dbacd0/sr2_n128_numbers.json`: no differing value; check in
+scratch/A-emd-pbh/tmp/runs3/regress, not a result).
+
+Reference of the central lapse in a homogeneous core (run A-20261119-143309-1cc423f,
+`lapse_ref.py`, figure fig_lapse_ref.png looked at): with zero shift at the centre,
+d ln alpha/dt = 6 (da/dtau)/a - rate max(ln alpha, 0), d tau/dt = alpha. For 2t, rate 8:
+alpha_c = 1.026, 1.016, 1.009, 1.003 at t = 2, 6, 10, 14; the core turns around at
+t = 16.68; then plain 1+log: alpha_c = 0.948, 0.717, 0.436, 0.105 at t = 20, 25, 30, 40;
+alpha_c < 0.1 at t = 40.3; the central proper time saturates at tau = 30.28, where
+a/a_max = 0.846 = e^(-1/6) (1+log: alpha = 1 + 6 ln(a/a_ta) along a normal observer).
+The source paper says of its Oppenheimer-Snyder run that the central lapse follows the
+homogeneous expression only until the gauge characteristic from the surface reaches the
+centre and stays above that "analytic lower limit" afterwards
+(refs/arxiv_2611.12831/src/main.tex:943) [VERIFIED]: the reference is a lower bound once a
+signal from the core edge has arrived.
+
+### Prediction S (SR-1L: data set 2t, relaxed lapse; dx = M and M/2 over [-64, 64]^3 to t = 44, dx = M/4 over [-32, 32]^3 to t = 24)
+
+- S1 stability: all three runs reach their end with finite fields; at dx = M/2 the mean
+  |H| (cstat) at t = 40 is at most 10 times its value at t = 10. Probability about 0.6
+  [JUDGEMENT: core's bound ball with this lapse grew by 2.3 in 10 M; ours runs 4 times
+  longer and collapses].
+- S2 no lapse front before turnaround: |alpha_c/alpha_ref(tau_c) - 1| <= 0.02 for t <= 16
+  at dx = M/2 and M/4 (SR-2: 0.39; core's bound ball with T = 0.125 M: 0.17 per cent).
+- S3 after turnaround the central lapse stays at or above the reference
+  (alpha_c/alpha_ref - 1 >= -0.02 for 16 <= t <= 44, dx = M/2), and the central proper
+  time at t = 44 lies between 29.9 and 40 (reference 29.96; exact first trapping 44.35):
+  the centre does not reach the proper time of the first trapped sphere and no apparent
+  horizon is found at any resolution [JUDGEMENT; the first horizon of 2t is also unresolved
+  at these meshes, entry 3].
+- S4 shells: largest core |R/R_exact - 1| at tau = 16.894: between 1e-3 and 5e-3 at dx = M/2
+  (SR-1 6.2e-3, SR-2 7.5e-3), below 1.5e-3 at dx = M/4 (SR-1 7.6e-4, SR-2 3.7e-4), above
+  1e-2 at dx = M (SR-1 5.6e-2, SR-2 2.1e-2). Mean core turnaround proper-time error
+  |dtau_ta| <= 0.03 M at dx = M/2 and <= 0.02 M at dx = M/4; mean R_max error within 0.2
+  per cent at both.
+- S5 order: the core |eps| at tau = 16.894 falls by at least 3 from dx = M/2 to M/4.
+- S6 coordinate light speed alpha/sqrt(g_rr) on the x axis stays below 1.5 for t <= 20
+  (core's L1: 1.13 for T = 1 M; SR-2 reached 1.85 x lapse).
+Refuted (for this gauge on 2t) by: a non-finite run before its end, a central-lapse
+departure above 5 per cent before t = 16 (a front), or a core error at tau = 16.894 above
+SR-2's 7.5e-3 at dx = M/2.
+
+### Data set 3 and prediction B (BH-1: collapse through horizon formation)
+
+Data set 3, run A-20261119-143524-334e553 (`prep_bh.py`; supersedes -142341-4b2c942, the
+same data without the table breaks), figure fig_bh_exact.png looked at: expball compensated
+top-hat, H R_b = 0.7 (R_b = 4.082 M, H = 0.1715/M, t_i = 3.887 M), delta_c = 1.5 inside
+R1 = 0.65 R_b = 2.653 M, underdense shell (density 0.293 rho_b) to R2 = 0.95 R_b, Einstein-
+de Sitter to the C^4 taper at R_b (half width 0.168 M, so that the matter edge is at rbar
+= 4.25 M = 34 x M/8 ... a lattice site per cell at dx = M/4, M/6, M/8); M = 1.00046, rest
+mass 1.14594, psi(0) = 1.1043, largest 2m/R on the slice 0.518 (at the core edge); table
+breaks at rbar = 2.49367 and 3.87755 (the jumps of KL). Exact (expball/exact.py): core
+turnaround tau = 3.3716 at R_max = 1.1623 R_i; the first trapped sphere is the core edge,
+R_i = 2.65306, at tau_AH = 9.55109 with m = 0.686563, R_AH = 1.37313 M (from R_max: a
+compression of 2.25, against 23 for 2t); crunch 10.6305; the horizon then grows by the
+infall of the underdense shell, m_AH(tau) = 0.69610, 0.70437, 0.71804 at tau_AH + 2, 4, 8;
+the matter edge is at R = 9.45 M at tau_AH; no shell crossing before the crunch.
+Homogeneous lapse reference (rate 8): alpha_c < 0.5 at t = 6.46, < 0.1 at t = 9.49, the
+central proper time saturating at 6.90 < 9.55: with a homogeneous lapse the slices would
+freeze before the edge traps; the horizon forms only if the lapse at the core edge is held
+up by the region outside, as in the source paper's Oppenheimer-Snyder run [JUDGEMENT].
+Runs: dx = M/4, M/6, M/8 on 128^3, 192^3, 256^3 cells over [-16, 16]^3 with the lattices
+n_lat = 34, 51, 68 (one particle per cell; 20672, 69599, 164968 particles), to t = 16;
+particles excised where alpha < 0.1 (as problems/os/os_amr.athinput); finder from t = 8
+every 0.125 M, initial coordinate radius 3.0. The outflow boundary at 16 M is reached by
+the matter edge after t ~ 14 and its light signal reaches r ~ 3 M near t ~ 13.
+
+- B1 the three runs reach t = 16 (no non-finite value in the histories and line outputs
+  outside the excised region) [probability about 0.6].
+- B2 the finder reports an apparent horizon in all three runs, first between code time 9
+  and 14.
+- B3 time of the first horizon: at the finder's first detection, the proper time of the
+  tracked particles at its mean coordinate radius exceeds the exact tau_AH of their own
+  shell by 0 to 0.5 M at dx = M/8 (cadence 0.125 M of coordinate time, lapse at the horizon
+  0.3-0.7); the first slice that contains a trapped round sphere by the particles' own
+  proper times (compare.py `first_trapped_slice`) precedes the finder's first detection
+  by less than 0.5 M. Per tracked particle of the core-edge bands, the mean of
+  tau_AH(numerical, R falls through 2m) - tau_AH(exact) lies within +-0.1 M at dx = M/8.
+- B4 horizon mass: the finder's irreducible mass sqrt(A/16 pi) against the exact horizon
+  mass of the same slice (the Misner-Sharp mass of the outermost shell that has trapped on
+  that slice): |m_irr/m_exact - 1| at first detection and as median over the first 4 M
+  after it below 2e-2 (M/4), 1e-2 (M/6), 5e-3 (M/8), falling with dx at order >= 1. Against
+  the source paper's level (Delta M/M_ADM <~ 1e-3, main.tex:945; RMS 2.1e-3 to 7.3e-4 over
+  A1-A3, main.tex:1484) the error at dx = M/8 is predicted 2 to 5 times larger [JUDGEMENT:
+  R_AH = 11 cells of M/8, against the AMR of the source; the horizon forms on the jump of the
+  top-hat density].
+- B5 shells: largest core |eps| at tau = 3.37 (turnaround) below 2e-3 at dx = M/8, at
+  tau = 9.0 below 2e-2.
+- B6 lapse: alpha_c follows the homogeneous reference within 2 per cent to t = 2 and then
+  departs above it before t = 6 (the signal from the core edge needs about 2.65/1.4 = 2 M).
+Refuted by: no horizon at dx = M/8 by t = 16 (B2), a horizon-mass error above 5e-2 at
+dx = M/8 (B4), or a run that goes non-finite before the first horizon (B1).
+
+Card budget of this package: at most 2 card-hours. Plan: one Slurm job of six runs,
+estimated 0.55-0.65 card-hours (1.1-1.3 card-seconds per step at 256^3, C1 of entry 3).
