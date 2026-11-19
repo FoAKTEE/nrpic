@@ -9,6 +9,7 @@ import sys
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
+sys.path.insert(0, os.path.abspath(os.path.join(HERE, "..", "..", "..", "..", "python")))
 import mpi_figs  # noqa: E402
 
 S = "/data/haiyangw/nrpic/scratch/core"
