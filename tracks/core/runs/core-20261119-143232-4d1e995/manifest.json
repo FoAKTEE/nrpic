@@ -1,0 +1,191 @@
+{
+  "schema": "nrpic-run-manifest/1",
+  "run_id": "core-20261119-143232-4d1e995",
+  "track": "core",
+  "gate": "G2",
+  "kind": "scouting",
+  "purpose": "C of coll2-close: relativistic cluster y_c = 0.819 (Z4c, six levels, 1e4 particles) at Knudsen number 3 with collision cells of 2 M over 150 M on one A100: off, coll_energy = cell, coll_energy = particle; published card executable of core/collisions-2 (f46f159)",
+  "preregistered_in": null,
+  "launcher": "batch",
+  "command": [
+    "scripts/gpu_batch.sh",
+    "/data/haiyangw/nrpic/scratch/core/core-20261119-143232-4d1e995/batch.list"
+  ],
+  "cwd": "scratch/core/core-20261119-143232-4d1e995",
+  "git": {
+    "sha": "4d1e995b972b29f37b6701de0a3db103da7bf4ac",
+    "branch": "core/collisions-2",
+    "dirty": false,
+    "merge_base_main": "71acd0c330b65dad3a9cac337c6f78e8a1bacc44",
+    "worktree": "wt/core-coll2"
+  },
+  "code": {
+    "core_tag": "core-v0.3",
+    "athenak_upstream_sha": "c5a0d7f",
+    "kokkos_sha": "6739bc623081648af9e752b616d9671527922cbf",
+    "problem": "nrpic_cf",
+    "exe": "/data/haiyangw/nrpic/scratch/core/exe/core_collisions-2/athena_gpu",
+    "exe_sha256": "82a05adae8f653042d08817ecda6dddc0d51c0a8d2c46246b0d58b2fb87ad438",
+    "cmake_flags": null,
+    "toolchain": null
+  },
+  "env": {
+    "host": "anta",
+    "env_hash": "33c1dbb6673b68919eaa332b0add0b58aeac8be843f2071b9d06e2e0e397a96d",
+    "machine_file_sha256": "0321f40f4caeeb2a36624a9fa9809e60bad31071f366b3517ba23ad45698d2d7",
+    "uv_lock_sha256": "5417f6ba318b914aa3800e5d55f7b11fdd8df13c2688bdda7d419240aa1d5863",
+    "track_requirements_sha256": null,
+    "container_digest": null,
+    "compiler": "g++ 11.4.0",
+    "mpi": "none (Athena_ENABLE_MPI=OFF)",
+    "gpu": "NVIDIA A100 80GB (Slurm partition preempt)",
+    "python": "3.10.12 /data/haiyangw/nrpic/wt/core-coll2/.venv"
+  },
+  "input": {
+    "file": "problems/st/st_cluster.athinput",
+    "sha256": "68e2b50dfa175a57413efb818702544ed044e9924fe34f38454f4dee3bdd78d3",
+    "overrides": {
+      "particles/particle_file": "/data/haiyangw/nrpic/scratch/core/core-20261119-141027-b3b90d0/ic/st.nrp",
+      "problem/comp0_file": "/data/haiyangw/nrpic/scratch/core/core-20261119-141027-b3b90d0/ic/st.tab",
+      "time/tlim": "150.0",
+      "particles/snap_dt": "10.0"
+    }
+  },
+  "inputs": [
+    {
+      "path": "/data/haiyangw/nrpic/scratch/core/core-20261119-141027-b3b90d0/ic/st.nrp",
+      "role": "input",
+      "sha256": "4bb9b0c3f4ab3cbaaabef68030d8db08f785afacfea0f2c8930d727ffaa86d22",
+      "bytes": 600016,
+      "tracked": false,
+      "location": "main checkout data root"
+    },
+    {
+      "path": "/data/haiyangw/nrpic/scratch/core/core-20261119-141027-b3b90d0/ic/st.tab",
+      "role": "input",
+      "sha256": "b7e658ab27419cae9a9c3dd11450b8c8be1d51abc60c96eff53ef6cbab69093a",
+      "bytes": 432922,
+      "tracked": false,
+      "location": "main checkout data root"
+    },
+    {
+      "path": "/data/haiyangw/nrpic/scratch/core/exe/core_collisions-2/athena_gpu",
+      "role": "exe",
+      "sha256": "82a05adae8f653042d08817ecda6dddc0d51c0a8d2c46246b0d58b2fb87ad438",
+      "bytes": 102819408,
+      "tracked": false,
+      "location": "main checkout data root"
+    },
+    {
+      "path": "/data/haiyangw/nrpic/scratch/core/core-20261119-141027-b3b90d0/batch.list",
+      "role": "list",
+      "sha256": "15f13ef59659835a005bf455bfd0e81b299345c7632c2f852f02c6ead31bfa63",
+      "bytes": 1159,
+      "tracked": false,
+      "location": "main checkout data root"
+    },
+    {
+      "path": "problems/st/st_cluster.athinput",
+      "role": "athinput:off",
+      "sha256": "68e2b50dfa175a57413efb818702544ed044e9924fe34f38454f4dee3bdd78d3",
+      "bytes": 2421,
+      "tracked": true
+    },
+    {
+      "path": "/data/haiyangw/nrpic/scratch/core/core-20261119-141027-b3b90d0/st_cluster_coll_energy.athinput",
+      "role": "athinput:kn3_cell",
+      "sha256": "35ca9a1f9590c34fb631a1f81a707144b8f009ab36a4bf4e67f3b939448583b3",
+      "bytes": 2598,
+      "tracked": false,
+      "location": "main checkout data root"
+    },
+    {
+      "path": "/data/haiyangw/nrpic/scratch/core/core-20261119-141027-b3b90d0/st_cluster_coll_energy.athinput",
+      "role": "athinput:kn3_particle",
+      "sha256": "35ca9a1f9590c34fb631a1f81a707144b8f009ab36a4bf4e67f3b939448583b3",
+      "bytes": 2598,
+      "tracked": false,
+      "location": "main checkout data root"
+    }
+  ],
+  "batch_entries": [
+    {
+      "name": "off",
+      "input": "problems/st/st_cluster.athinput",
+      "args": [
+        "particles/particle_file=/data/haiyangw/nrpic/scratch/core/core-20261119-141027-b3b90d0/ic/st.nrp",
+        "problem/comp0_file=/data/haiyangw/nrpic/scratch/core/core-20261119-141027-b3b90d0/ic/st.tab",
+        "time/tlim=150.0",
+        "particles/snap_dt=10.0"
+      ]
+    },
+    {
+      "name": "kn3_cell",
+      "input": "/data/haiyangw/nrpic/scratch/core/core-20261119-141027-b3b90d0/st_cluster_coll_energy.athinput",
+      "args": [
+        "particles/particle_file=/data/haiyangw/nrpic/scratch/core/core-20261119-141027-b3b90d0/ic/st.nrp",
+        "problem/comp0_file=/data/haiyangw/nrpic/scratch/core/core-20261119-141027-b3b90d0/ic/st.tab",
+        "time/tlim=150.0",
+        "particles/snap_dt=10.0",
+        "particles/coll_sigma=67.5302084983441",
+        "particles/coll_cell_factor=4",
+        "particles/coll_energy=cell"
+      ]
+    },
+    {
+      "name": "kn3_particle",
+      "input": "/data/haiyangw/nrpic/scratch/core/core-20261119-141027-b3b90d0/st_cluster_coll_energy.athinput",
+      "args": [
+        "particles/particle_file=/data/haiyangw/nrpic/scratch/core/core-20261119-141027-b3b90d0/ic/st.nrp",
+        "problem/comp0_file=/data/haiyangw/nrpic/scratch/core/core-20261119-141027-b3b90d0/ic/st.tab",
+        "time/tlim=150.0",
+        "particles/snap_dt=10.0",
+        "particles/coll_sigma=67.5302084983441",
+        "particles/coll_cell_factor=4",
+        "particles/coll_energy=particle"
+      ]
+    }
+  ],
+  "resources": {
+    "nodes": 1,
+    "gpus": 1,
+    "cores": 1,
+    "walltime_s": null,
+    "wall_limit": "00:25:00",
+    "segments_max": null,
+    "gpu_hours_requested": 0.4167,
+    "gpu_hours": null,
+    "particles": 10000.0
+  },
+  "slurm": {
+    "partition": "preempt",
+    "job_name": "core-20261119-143232-4d1e995",
+    "job_ids": []
+  },
+  "outputs": {
+    "dir": "scratch/core/core-20261119-143232-4d1e995",
+    "sha256sums": "sha256sums.txt",
+    "sha256sums_sha256": null,
+    "bytes": null,
+    "files": null
+  },
+  "status": "submitted",
+  "exit_code": null,
+  "registered": "2026-11-19T14:32:33Z",
+  "started": null,
+  "ended": null,
+  "parents": [
+    "core-20261119-141027-b3b90d0"
+  ],
+  "notes": "",
+  "budget_at_submit": {
+    "gpu_hours_allotted": 40.0,
+    "cores_allotted": 16,
+    "gpu_hours_used": 2.5281,
+    "gpu_hours_reserved": 1.3166,
+    "gpu_hours_without_gate": 5.8613,
+    "cores_busy": 1,
+    "runs": 960,
+    "allotment_from": "coord/DECISIONS/0006-compute-budget.md + 0014-budgets-after-wave-1.md"
+  }
+}
