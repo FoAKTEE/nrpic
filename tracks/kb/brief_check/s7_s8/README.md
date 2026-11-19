@@ -64,7 +64,13 @@ database.
 
 - `kb-20261119-154153-47eb61f`: gravitomagnetic sign (line 604); completed, all six checks
   passed (h_0x part +4 gamma^2 V w, co-moving total -1/gamma^2, finite differences to 1.2e-6).
-- Run 2, tally and locator check: see JOURNAL entry 4 for its id and outcome.
+- `kb-20261119-155102-41b489d`: tally and locator check of CHECK.md; completed, no problem
+  (42 rows 19 / 22 / 1 / 0; Q1-Q26 0 / 16 / 10; U1-U12 4 partly, 6 open, 2 not searched; 141
+  locator spans valid). Reference run for the tally.
+
+Not done: U8 and U9 not searched; 20 papers found by search read at their arXiv metadata only;
+arXiv:2403.03470 cited through 2506.21779, not read; absence statements rest on searches
+(JOURNAL entry 4).
 
 All runs: processors, one core, seconds; outputs under `scratch/kb/<run_id>/`, manifests under
 `tracks/kb/runs/<run_id>/`. No card was used; no run is pending.

@@ -138,3 +138,25 @@ Run 2 (`scripts/fig_verdicts.py`, processors, seconds): tally and locator check 
   existing file and lines within it, every metadata file and stored INSPIRE answer exists and
   is ok, the run id has its manifest. Refuted by any mismatch or missing file the script
   reports; then the row is corrected and the run repeated, both on record.
+
+## Entry 4, 2026-11-19T15:51Z: outcome of run 2; state at the end of the package
+
+Run 2, `kb-20261119-155102-41b489d` (processors, one core, seconds): completed, no problem
+reported. Part A 42 rows, 19 CONFIRMED, 22 CONFIRMED (precision), 1 CORRECTED (row 22, line
+583), 0 NOT FOUND; labels 2 [BACKGROUND], 1 [TO VERIFY], 39 unlabelled; part B 0 ANSWERED,
+16 PARTLY ANSWERED, 10 OPEN; part C 4 PARTLY ANSWERED, 6 OPEN, 2 NOT SEARCHED; 141 locator
+spans checked (TeX files and line ranges, metadata files, stored INSPIRE answers with status
+ok, run manifests). The prediction of entry 3 holds. One debugging run of the same script
+before it (into `scratch/kb/tmp/s7_s8/tally_try`, not registered) gave the same result. Before
+that, my own bookkeeping had failed once: the first header sentence (21/20 and 17/9) did not
+match the rows I had written; recounted by hand before any run (entry 3). Figure
+`scratch/kb/kb-20261119-155102-41b489d/fig_verdicts.png` inspected: per-line bars sum to the
+row counts, the one red bar is line 583, and the status bars of panel (b) match the table
+(Q1-5: 3 partly, 2 open; Q6-10: 2, 3; Q11-20: 8, 2; Q21-26: 3, 3; U1-12: 4, 6, 2 not searched).
+
+Not done (stated plainly): candidates U8 and U9 were not searched; for 20 papers found by the
+searches only the arXiv metadata was read (cited with `meta:arxiv-api` locators, as found, not
+as checked at the source); Huneau-Luk arXiv:2403.03470 (Burnett in generalized wave
+coordinates) is cited through 2506.21779 only, not read; the "absence" statements (rows 12, 39;
+Q3-Q4, Q6, Q9-Q10, Q16, Q18, Q24-Q26) rest on INSPIRE queries and the store, which cannot prove
+absence.
