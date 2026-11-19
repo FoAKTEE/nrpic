@@ -164,3 +164,71 @@ already running 1.2 threads of other jobs, the placement changes the step time b
 7 per cent at 16 threads; the scatter between the rounds is 5 per cent. [VERIFIED:
 scaling_*.json of the run] The share of processor time (0.67 to 0.78, setup included)
 says the threads waited for a processor a quarter of the time.
+
+## 2026-11-19 07:17 Entry 5: first pass of P0 and P1 on the unchanged source; profiles; the deposit
+
+Run core-20261119-143706-92efe0f (source 92efe0f, the source of release core-v0.3;
+stopped after five cases because the source was about to change; its files stay).
+Reference R = release executable, one thread everywhere.
+
+| case | S against R | O2, one thread, against R | O3, one thread, against R |
+|---|---|---|---|
+| geo | 2 files identical | identical | identical |
+| boris | identical | identical | trajectory differs, 6.6e-15 of the largest number |
+| dep | identical | identical | history differs, 1.7e-15 |
+| east | 18 files identical | 14 of 18 files differ, at most 2.4e-12 (restart file 2.2e-14, particles 1.7e-15) | 15 files differ, same size |
+| os | 16 files identical | 10 of 16 files differ, at most 4.7e-15 | (not finished) |
+
+P0 holds so far (to be repeated on the final source). P1 FAILED for east and os: the
+OpenMP build with the flags of the serial build and one thread does not reproduce the
+serial build bit for bit when Z4c runs. The two executables are different programs (the
+kernels are compiled inside OpenMP regions with -fopenmp); which difference in the
+generated code is responsible was not tested, so no cause is named. Consequence for the
+tests: the sharp test for races is not "threads against the serial build" but "N threads
+against one thread of the same executable", where only the grouping of the reductions and
+the order of the atomic additions can differ. The comparison driver now takes the
+one-thread run of each threaded executable as the reference (P2 to P4 are read that way).
+
+Measure of a difference (tracks/core/omp/omplib.py, number_diff): largest difference
+over the largest number of the file; for text tables the integer columns are left out of
+the scale and must be identical. A history holds sums that cancel (net momentum of a
+symmetric state, 1e-13) next to sums that do not: relative to its own column such a sum
+differs by order one from rounding alone, which is recorded (rel_column) but not judged.
+A lost update of one cloud corner would change the energy integral of the east case by
+2e-4 absolute against a scale of 1e3, i.e. 2e-7: above the threshold 1e-8.
+
+Profiles at 16 threads (run core-20261119-150956-abda48c, by hand, O3, automatic
+placement, four cycles each, load average 102 to 106):
+- cluster, 18.4 s per step: Z4c right-hand side 47.5 s of 85.7 s in kernels,
+  constraints 10.2 s, prolongation 6.8 s, zero-filling of new arrays 4.8 s (685 calls,
+  on one thread), dissipation 4.0 s; all particle kernels together 2.5 s (push 0.47,
+  deposit 0.19, filter 1.8). 1e5 particles are 3 per cent of this case.
+- cosmo, 6.9 s per step: deposit 11.9 s of 31.5 s (5 calls of 2.4 s: 2.1e6 particles x 64
+  cells x 10 components = 1.3e9 atomic additions each), push 7.7 s, Z4c right-hand side
+  7.7 s, constraints 1.7 s.
+- newton, 0.75 s per step: deposit 0.96 s of 4.0 s, multigrid 1.4 s (defect 0.56, smoother
+  0.20, buffers 0.27, prolongation 0.12, restriction 0.09), kick 0.54 s, push 0.39 s,
+  zero-filling 0.36 s; a third of the run time (6.1 s) lies outside kernels (set-up).
+[VERIFIED: kernel_timer.txt of the run]
+
+Decision: the deposit gets a second way of adding, chosen by a new option that is read
+only if present, `<particles> deposit_threads = private` (OpenMP build only): one copy
+of the source array per thread, plain additions, copies summed cell by cell in thread
+order (athenak/src/particles/nrpic_threads.hpp; hooks: one include and one member in
+particles.hpp, five lines in nrpic.cpp). Default and every other build: the atomic
+additions as before. Reason: where the deposit dominates (cosmology box) the atomics are
+the cost, and with private copies a threaded run is repeatable. Also fixed: the second
+constructor of ParameterInput tested the macro OPENMP_PARALLEL, which does not exist, so
+its lock stayed uninitialised in an OpenMP build (the constructor is not used by main).
+
+P9 (private copies), written before the build:
+ a. Two runs with `deposit_threads = private` at the same thread count (4, 16) give
+    byte-identical files for dep, east, os and newton. Refuted by any differing file.
+ b. With one thread, private and atomic give byte-identical files (same executable).
+ c. Private at N threads differs from one thread by rounding only (below 1e-8 of the
+    largest number of each file), like atomic.
+ d. Cost at 16 threads: for cosmo the deposit kernel plus zeroing and summing the copies
+    takes less than half the 2.4 s of the atomic kernel and the step is at least 15 per
+    cent shorter; for newton (2.3e6 cells x 10 components x 16 copies = 2.9 GiB zeroed
+    and summed per deposit, against 4e7 additions) it is no faster, probably slower.
+    Refuted for cosmo if the deposit is not faster: then the atomics were not the cost.

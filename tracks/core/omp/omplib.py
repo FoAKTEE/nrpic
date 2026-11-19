@@ -126,13 +126,16 @@ TIMER_LIB = os.path.join(SCRATCH, "omp", "tools", "libkernel_timer.so")
 
 
 def run_case(exe, case, rundir, threads=1, bind="", places="", extra_args=(), wall=3600,
-             spec=None, profile=False):
+             spec=None, profile=False, mode=""):
     """Runs one case in rundir (created); returns a record with the wall time, the time of
     the step loop and the zone-cycles per second that the code prints at the end."""
     c = spec if spec is not None else CASES[case]
     os.makedirs(rundir, exist_ok=True)
     deck = os.path.join(WT, c["inp"])
     text = open(deck).read() + c.get("append", "")
+    if mode == "priv" and "<particles>\n" in text:
+        # the new option of this package: one private copy of the sources per thread
+        text = text.replace("<particles>\n", "<particles>\ndeposit_threads = private\n", 1)
     local = os.path.join(rundir, os.path.basename(deck))
     with open(local, "w") as f:
         f.write(text)
@@ -166,7 +169,7 @@ def run_case(exe, case, rundir, threads=1, bind="", places="", extra_args=(), wa
     ru1 = resource.getrusage(resource.RUSAGE_CHILDREN)
     cpu_s = (ru1.ru_utime + ru1.ru_stime) - (ru0.ru_utime + ru0.ru_stime)
     rec = {"case": case, "exe": exe, "threads": threads, "bind": bind, "places": places,
-           "places_asked": places_asked, "cpu_s": round(cpu_s, 3),
+           "places_asked": places_asked, "cpu_s": round(cpu_s, 3), "mode": mode,
            "cmd": cmd, "rundir": rundir, "exit": rc, "wall_s": round(time.time() - t0, 3),
            "load_before": load0, "load_after": loadavg()}
     rec.update(parse_log(os.path.join(rundir, "run.log")))
@@ -281,6 +284,33 @@ def number_diff(fa, fb):
         (a, ha), (b, hb) = _words(fa, size), _words(fb, size)
         if not np.array_equal(ha, hb):
             kind += "+head"
+    if kind == "text":
+        # Judged against the largest number of the table, columns of integers (cycle,
+        # particle and block counts) left out: a history holds sums that cancel (net
+        # momentum of a symmetric state, 1e-13) next to sums that do not (energy, 1 to
+        # 100); the rounding of the first is as large as they are, and a lost update
+        # would show in both at 1e-6 of the second or more.  rel_column (largest
+        # difference over the largest magnitude of its own column) is recorded too.
+        a2 = np.atleast_2d(np.asarray(a, dtype=np.float64))
+        b2 = np.atleast_2d(np.asarray(b, dtype=np.float64))
+        with np.errstate(invalid="ignore", over="ignore"):
+            dif = (a2 != b2) & ~(np.isnan(a2) & np.isnan(b2))
+            nd = int(dif.sum())
+            ad = np.where(dif, np.abs(a2 - b2), 0.0)
+            bad = ~np.isfinite(ad)
+            ad = np.where(bad, 0.0, ad)
+            fa = np.where(np.isfinite(a2), a2, 0.0)
+            fb = np.where(np.isfinite(b2), b2, 0.0)
+            cscale = np.maximum(np.abs(fa), np.abs(fb)).max(axis=0)
+            isint = np.all(fa == np.round(fa), axis=0) & np.all(fb == np.round(fb), axis=0)
+            fscale = float(cscale[~isint].max()) if (~isint).any() else float(cscale.max())
+            cold = ad.max(axis=0)
+            relc = np.where(cscale > 0, cold/np.where(cscale > 0, cscale, 1.0), 0.0)
+        return {"kind": kind, "n": int(a2.size), "ndiff": nd, "nonfinite": int(bad.sum()),
+                "abs": float(cold.max()), "scale": fscale,
+                "rel_file": float(cold.max()/fscale) if fscale > 0 else 0.0,
+                "rel_column": float(relc.max()), "worst_column": int(np.argmax(relc)) + 1,
+                "int_columns_differ": int((isint & (cold > 0)).sum())}
     a = np.asarray(a, dtype=np.float64).ravel()
     b = np.asarray(b, dtype=np.float64).ravel()
     with np.errstate(invalid="ignore", over="ignore"):
@@ -338,7 +368,8 @@ def compare_dirs(da, db):
     worst = 0.0
     hard = False
     for v in differ.values():
-        if v["kind"] in ("missing", "size", "text-shape") or v.get("nonfinite", 0):
+        if v["kind"] in ("missing", "size", "text-shape") or v.get("nonfinite", 0) \
+                or v.get("int_columns_differ", 0):
             hard = True
         worst = max(worst, v.get("rel_file", 0.0))
     return {"identical": same, "differ": differ, "worst_rel_file": worst,

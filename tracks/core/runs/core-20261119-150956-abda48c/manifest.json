@@ -32,7 +32,9 @@
  "purpose": "omp profile: time per kernel of the cluster, cosmology and Newtonian cases at 16 threads (O3, places from omp_places.py), 4 cycles each. Registered by hand: nrpic-run refuses the cores (owner core at its allotment through other sessions)",
  "kind": "scouting",
  "tag": "omp-profile-3",
- "state": "running",
+ "state": "finished",
+ "wall_time_s": 133.47,
+ "exit_status": 0,
  "cores": 16,
  "card_hours": 0.0,
  "started_utc": "2026-11-19T15:09:56Z"
