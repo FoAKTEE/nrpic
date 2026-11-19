@@ -712,3 +712,36 @@ which rises after two e-folds; the harmonic lapse rises linearly in ln alpha to 
   part of PG2 is REFUTED at the end of the run. [JUDGEMENT, untested] the lapse
   perturbation grows linearly (rms 3e-6 at the end) and its product with R is a
   second-order part of R^NR of that size; a pair s = +-1 under the driver would decide.
+
+## 2026-11-19, entry 13: outcomes of A3 (resolution) and of the twin on the inflection case
+
+**A3, run core-20261119-161111-9d05d14** (figure `fig_scan.png`, looked at: both ratios
+fall on a straight line of slope -6 through the scan and cross 1 between 12 and 16
+cells; in time every resolution peaks at t = 2.4). HOLDS: crossing of 1 at 12.67 (H) and
+12.42 (|M|) cells per shortest wavelength, of 0.1 at 18.67 and 18.30 (extrapolated,
+slopes -5.93, -5.94); the code twin gives the same largest ratios within 1.1 percent.
+Largest deviation of R^NR from W R alpha at the last dump: 2.8e-3, 8.5e-4, 3.1e-4,
+5.9e-5, 1.6e-5, 5.4e-6, 9.9e-7 at 4, 5, 6, 8, 10, 12, 16 cells.
+
+**A-usr, run core-20261119-160409-50a58d9** (twin of the inflection case against the
+pair p01 -151036-d3d1f78, m01 -151755-d455a15; figure `fig_twin_usr.png`, looked at: the
+odd parts of H and |M| of the runs lie on the code twin from 0.5 to 7 e-folds and on a
+floor of 2.5e-14 per unit s after; the per-mode deviation from the code twin stays below
+3e-7 while that from the continuous twin is 1e-5 to 5e-4).
+- PU6, pair part HOLDS: odd parts of H and |M| against the code twin, where the measured
+  value exceeds 1e-12: largest |ratio - 1| 1.9e-4 (H, eight dumps 0.54 to 3.90 e-folds)
+  and 9.8e-6 (|M|, eight dumps 1.5 to 4.8 e-folds) (bound 1e-3); at 2.45 e-folds 7.06e-11
+  and 9.60e-11 (predicted 7.1e-11, 9.6e-11). The part of R^NR odd in s against the code
+  twin: at most 7.1e-7 for every mode with W > 1/2 at every dump (bound 1e-5).
+- PU6, against the continuum reference from 5 e-folds on: top shell 5.9e-3 to 6.2e-3
+  (predicted 6.1e-3, HOLDS); |n| <= 4: 1.8e-4 to 3.9e-4 (predicted 2.7e-4, within a factor
+  1.5); |n| <= 2: 1.2e-5 to 3.9e-4, rising to 3.9e-4 from 6.75 e-folds on, FAILED
+  (predicted 3.2e-5, factor 12). The code twin has the same 3.9e-4 (the runs agree with it
+  to 7e-8 there) and the continuous twin 5.2e-6, so the late deviation of the lowest
+  modes is the time integration. [JUDGEMENT, to be checked against the background part of
+  the U analysis] it is the relative error of the background Pi, which reaches 4e-4 late
+  at Courant 0.25 (PU6, and Track E's 4.1e-4) and enters R^NR through H/Pi_b; the lowest
+  modes, whose R grows most through ultra slow roll, carry it fully.
+- The late floor of the odd parts, 2.5e-15 (H) and 3.3e-15 (|M|) for s = 0.1, is above
+  the twin from 7 e-folds on: [JUDGEMENT] rounding of a pair whose metric perturbations
+  have stopped growing, not tested.
