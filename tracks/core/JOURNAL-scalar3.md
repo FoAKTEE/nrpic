@@ -344,3 +344,48 @@ Added to test A before its registered run (none of these numbers has been comput
   cells per shortest wavelength for |M| and below 0.1 between 10 and 14 cells (from
   the measured 40, 0.85, 0.016 at 4, 8, 16 cells, J2 entry 11, and mu ~ (k dx)^6 k^2);
   for H the crossings lie within one cell of those of |M|.
+
+## 2026-11-19, entry 4: the card job of test U, predicted before it is submitted
+
+One Slurm job (`inputs/card_usr.list`, executable `.work/exe/athena_gpu_cea3a49`, about
+0.35 card-hours of the one allowed; the 256^3 production set-up is left to Track E, whose
+G2 plan has it, because the queue holds eight jobs of core and four of the tracks and
+the verification needs the ladder, not the size). Inflection case to t = 10.5, Courant
+0.25, geodesic slicing, dumps with the metric and the constraint fields:
+  L64, L128   nmax2 = 64 at N = 64, 128 (k_max dx = pi/4, pi/8): s = 1, +-0.1, 0
+  K64         nmax2 = 256 at N = 64 (pi/2): s = +-1, +-0.1
+  K128        nmax2 = 1024 at N = 128 (pi/2; 68532 modes entering until 3.47 e-folds,
+              i.e. into the ultra-slow-roll phase): s = +-1, +-0.01, 0
+Mode files: `problems/scalar/usr_stochastic_modes.txt` (64), `inputs/usr_modes_n256.txt`
+(from the Bunch-Davies time N0), `inputs/usr_modes_n1024.txt` (`make_case.py --kstart
+100`: another phase per shell than a start at N0, J2 entry 9).
+
+Predictions (the processor runs of U have not run; none of this has been seen):
+- PC1 background: the relative error of <Pi> against the reference scales with the
+  fourth power of the step: at N = 64 one sixteenth (+- 30 percent) of the 32^3 value of
+  the processor run z0 at equal e-folds, at N = 128 one 256th, so A1 (1e-4) holds
+  throughout at N >= 64.
+- PC2 lattice error of the grown modes (part odd in s of R^NR against W R alpha after 6
+  e-folds, shell |n| = 8): N = 32, 64, 128 as the error of the lattice k^2, i.e. as
+  1.8e-2, 3.8e-4, 6e-6 within a factor 2.5 (ratios 47 and 60 between the resolutions,
+  within a factor 2). K64 and K128 (k_max dx = pi/2 again): their top shell as N = 32,
+  0.5 to 2.5e-2; their shell |n| = 8 as L64 and L128.
+- PC3 non-linearity at k_max/dk = 32 (K128): Delta_R of the reference at the top shell
+  reaches order one at the end, so the run s = 1 is not a small perturbation late: its
+  single-run deviation from the linear reference exceeds 0.1 for |n| <= 4 after 7
+  e-folds, the even part of R^NR is comparable to the odd part there, and the rms of
+  R^NR over the box stays within a factor 3 of the linear one (P1:536: "excellent
+  agreement" of the spectra with Delta up to 0.1 to 1). The pair s = +-0.01 follows the
+  linear reference within 2e-3 for |n| <= 8.
+- PC4 constraints of K128 at s = 1: <|H|/[H]> at most 1e-9 over the run, reached before
+  3 e-folds; from 4 e-folds on below 1e-10. <|M|/[M]> between 1e-5 and 0.3 from 4
+  e-folds on (P1:541: about 1e-2 late at 256^3). The first-order parts at equal k_max dx
+  = pi/2 (K64, K128, and the 32^3 run) agree within a factor 3 in rms at their maxima
+  when divided by the rms of R^NR of the entering shells.
+- PC5 cost: 0.14 to 0.17 s per step at 128^3 with 68532 modes (J2 entry 11: 1.484e7
+  zone-cycles per second), 856 steps.
+Refuted: PC1 by an error that does not fall with the step (a defect of the background
+of the sources in ultra slow roll); PC2 by a top-shell error at k dx = pi/2 below 3e-3 or
+above 0.1; PC3 if the pair s = +-0.01 misses 2e-2 for |n| <= 8 (the sources or the slice
+would be wrong when modes enter during ultra slow roll, which the 32^3 runs cannot
+test); PC4 by a Hamiltonian ratio above 1e-7.

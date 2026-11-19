@@ -128,6 +128,34 @@ def potential(kind, **p):
     raise ValueError(kind)
 
 
+def potential_d2(kind, **p):
+    """V''(phi) of the kinds of potential() (the mass term of linear perturbations)."""
+    if kind == "quadratic":
+        m2 = p["mass"]**2
+        return lambda x: m2 + 0.0*x
+    if kind == "quartic":
+        m2, lam = p.get("mass", 0.0)**2, p["lam"]
+        return lambda x: m2 + 3.0*lam*x*x
+    if kind == "plateau":
+        v0, mu = p["v0"], p["mu"]
+        return lambda x: 2.0*v0*(2.0*np.exp(-2.0*x/mu) - np.exp(-x/mu))/mu**2
+    if kind == "inflection":
+        lam, vv = p["lam"], p["vev"]
+        c, s2 = lam*vv**4/3.0, np.sqrt(2.0)
+
+        def d2v(x):
+            # V = c u/Q^2, u = phi^2 P = 3 phi^4 + 2 sqrt2 v phi^3 + 6 v^2 phi^2,
+            # Q = 3 phi^2 + 2 v^2
+            u = 3.0*x**4 + 2.0*s2*vv*x**3 + 6.0*vv*vv*x*x
+            u1 = 12.0*x**3 + 6.0*s2*vv*x*x + 12.0*vv*vv*x
+            u2 = 36.0*x*x + 12.0*s2*vv*x + 12.0*vv*vv
+            qq = 3.0*x*x + 2.0*vv*vv
+            q1 = 6.0*x
+            return c*(u2/qq**2 - 4.0*u1*q1/qq**3 - 12.0*u/qq**3 + 6.0*u*q1*q1/qq**4)
+        return d2v
+    raise ValueError(kind)
+
+
 # ------------------------------------------------------------- homogeneous background
 def friedmann(v, dv, phi0, pi0, t_eval, gauge="geodesic", rtol=1e-13, atol=1e-15):
     """Homogeneous field and flat universe: d phi/dt = alpha Pi, d Pi/dt = alpha (-3 H Pi

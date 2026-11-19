@@ -24,7 +24,7 @@ sums) and call no library logarithm, sine or cosine. [VERIFIED, section 7]
 | Where | What |
 |---|---|
 | `athenak/src/utils/rng.hpp`, namespace `rng` | the generator and the draws, `KOKKOS_INLINE_FUNCTION`, usable in any kernel; no dependence on the rest of AthenaK (`-DNRPIC_STANDALONE`) |
-| `athenak/src/utils/rng_mesh.hpp` | entity of a cell: `CellOffsets`, `WrapIndex` |
+| `athenak/src/utils/rng_mesh.hpp` | entity of a cell: `CellOffsets`, `WrapIndex`; entity of a Fourier mode and the stream word of the stochastic sources keyed by modes: `ModeEntity`, `StochasticModeStream` (twins `rng.mode_entity`, `rng.stochastic_mode_stream`) |
 | `python/nrpic/rng.py` | the twin: the same functions on NumPy arrays, broadcasting over all fields of the key |
 | `athenak/src/pgen/unit_tests/rng_test.cpp` (`pgen_name = rng_test`), `problems/tests/rng_test.athinput` | unit test inside the code: table of draws, statistical sums, cost, cell check |
 | `athenak/src/particles/nrpic_kick.cpp`, `problems/tests/rng_kick_*.athinput` | test kick of the particle momenta: the pattern of a stochastic term in a kernel, and the demonstration of section 7 |
@@ -96,6 +96,17 @@ Entity helpers: `rng::CellEntity(i, j, k)` packs three global cell indices (each
 MeshBlock the global index of its first active cell on its own level, its level relative
 to the root mesh and the number of cells of the mesh on that level; `rng::WrapIndex`
 maps a ghost-cell index of a periodic direction onto its image.
+`rng::ModeEntity(nx, ny, nz)` (`utils/rng_mesh.hpp`; Python `rng.mode_entity`) is the entity of
+the Fourier mode of a periodic box with the signed integer wave numbers (nx, ny, nz), each
+in [-2^20, 2^20): `CellEntity(nx + 2^20, ny + 2^20, nz + 2^20)`, with `entity_hi` = 0. The
+wave numbers are those of the mode on the root mesh, so the entity, and with it the
+realisation, does not depend on the resolution or on the division of the mesh.
+`rng::StochasticModeStream(dof)` (Python `rng.stochastic_mode_stream`) is the stream word
+`Stream(kStreamStochastic, 2^16 + dof)` of section 6. [VERIFIED: the twin equals
+`cell_entity(n + 2^20)` for 548958 wave vectors and the corner values, and the amplitudes
+built with both helpers equal Track E's independent `noise/ref/philox_ref.py` bit for
+bit, run core-20261119-144905-cea3a49; the code draws the same numbers as before the
+helpers existed: regression of section 6 of `scalar_field_3.md`.]
 
 ## 4. Pattern in a kernel
 
@@ -134,12 +145,18 @@ Python, the same numbers:
 1. The entity is a property of the physical object, never of its storage. Particles: the
    tag (`PTAG`; unique, kept through restarts and removals). Cells: global index on the
    cell's own level and the level (`CellOffsets`). A pair of particles: smaller tag in
-   `entity`, larger in `entity_hi`. A Fourier mode: its integer wave numbers. Never the
+   `entity`, larger in `entity_hi`. A Fourier mode: its integer wave numbers on the root mesh (`ModeEntity`). Never the
    array index `p`, the MeshBlock index `m` or its gid, local `(k, j, i)`, a rank or
    thread number, an address, or a floating-point coordinate.
 2. The step is the cycle number of the step being taken, which the mesh restart file
    restores. Never a counter that lives only in memory. Stages of one step are told apart
    by the draw index or the sub-stream, not by a fractional step. Initial data: step 0.
+   A stream that serves both the initial data and the evolution keys the draws of the
+   evolution with `ncycle + 1`, the cycle number reached at the end of the step (the
+   first step would otherwise repeat the draws of the initial data, both with step 0),
+   unless one draw is meant to serve both: the frozen amplitudes of the stochastic
+   sources are drawn once with step 0 and used by the initial slice and by every kick
+   (stream 3 below).
 3. One draw index per variate of an entity in a step, written as a constant next to the
    kernel that uses it. Reusing an index for a second variate of the same kind makes the
    two identical.
@@ -180,9 +197,27 @@ between two divisions when `u` and `P` agree to about 1e-13.
 | 0 | none | not to be used: a forgotten stream shows up as 0 | | |
 | 1 | `kStreamInitialData` / `STREAM_INITIAL_DATA` | sampling of particles and fields at the start of a run (step 0) | core, every track | to be fixed by the first user; suggested: entity = tag or cell, sub-stream = species or field |
 | 2 | `kStreamCollisions` / `STREAM_COLLISIONS` | Monte Carlo collisions, decays | core (collisions), Track C | to be fixed by the collision package; suggested: entity = pair of tags, sub-stream = channel |
-| 3 | `kStreamStochastic` / `STREAM_STOCHASTIC` | stochastic sources of fields | core (scalar field), Track E | to be fixed by the scalar-field package; suggested: entity = cell with level, or mode; sub-stream = field component, with separate sub-streams for cells and modes |
+| 3 | `kStreamStochastic` / `STREAM_STOCHASTIC` | stochastic sources of fields | core (scalar field), Track E | sub-stream bit 16 set (`kStochasticModeBit`): draws keyed by Fourier modes, the 16 bits below it number the degree of freedom, stream word `StochasticModeStream(dof)`; entity = `ModeEntity(nx, ny, nz)`, `entity_hi` = 0; draw 0 = one normal pair per mode, alpha_n = (z1 + i z2)/sqrt 2 (draw 1 is reserved for a second pair of the same mode and step); step = epoch: 0 for amplitudes drawn once (initial slice and all kicks, rule 2), `ncycle + 1` for amplitudes that are new in every step. Sub-streams with bit 16 clear are reserved for draws keyed by cells (entity = cell with level); none exists. Details below the table |
 | 4 | `kStreamTests` / `STREAM_TESTS` | tests of this interface | core | sub-streams 1 to 6: unit test (`rng_test.cpp`); 16: test kick, entity = tag, draws 0 and 1 (mode normal), 0 and 1 (mode direction) |
 | 5 and above | | unassigned | | a new identifier is added to this table and to both source files in one change |
+
+Stream 3, degrees of freedom of the mode-keyed draws (`athenak/src/scalar_field/
+scalar_field_noise.cpp`; requests R-1 to R-3 of `tracks/E-stoch-inf/noise/
+RNG_REQUIREMENTS.md`):
+
+| Model (`<scalar_field> noise`) | dof | What it draws | Step word |
+|---|---|---|---|
+| `mukhanov_sasaki` | 0 | the amplitudes alpha_n of the curvature perturbation: one draw for the initial slice (`<problem> id = stochastic`) and for the sources of Pi, Khat and At_ij | 0 |
+| `mukhanov_sasaki` | 1, 2 | reserved for the two tensor polarisations (the graviton sources are not implemented) | |
+| `power` (test of the generator) | 0 | noise of phi | 0 with `noise_scheme = frozen`, `ncycle + 1` with `markov` |
+| `power` | 1 | noise of Pi (`noise_pi_dof = 1`; with 0 it reuses the amplitudes of dof 0) | as dof 0 |
+| any | 3 to 65535 | unassigned: further fields | |
+
+The two models never run together, so the meaning of dof 1 differs between them without a
+clash; a model that adds tensor sources to `mukhanov_sasaki` takes dof 1 and 2. The hemisphere
+that carries the independent amplitudes (n_x > 0, or n_x = 0 and n_y > 0, or n_x = n_y = 0
+and n_z > 0) and the reality condition for the other half are part of the model
+(`scalar_field.md` section 7.1), not of the key: the entity of -n is never drawn.
 
 ## 7. What is verified
 
