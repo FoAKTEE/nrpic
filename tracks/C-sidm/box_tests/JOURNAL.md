@@ -626,8 +626,8 @@ files, checked by checksum); sum_P per step within 7.8e-16 relative.
 1e-14 sqrt(n_coll + 1) (the same as wave 2); n_trunc = 0; n_noroot = n_balance = 0;
 max_dlam = 0 in all runs.
 (iv) Momenta confirmed: final momenta within 1.4e-14 of max(1, |u|) of the release run
-(theta = 10; 6e-17 at theta = 1e-3; 33-99 percent of the particles differ in the last
-bits). FAILED clause: positions are not identical or within 1e-15; they differ by up to
+(theta = 10; 6e-17 to 1.1e-16 at theta = 1e-3; 33-99 percent of the particles differ
+in the last bits). FAILED clause: positions are not identical or within 1e-15; they differ by up to
 3.5e-13 (box side 1). In every plain run the maximum is the same 3.55e-13 = 200 units in
 the last place of x near 10.5 (1.78e-15): the drift x + dt v rounds differently by one
 unit per step when v differs in its last bits, and 200 steps add up. My bound ignored
@@ -673,8 +673,8 @@ both columns are summed particle by particle inside the cells, so their rounding
 Not a defect.
 (b) Confirmed, marginally at Kn = 0.01: cell mode +8.0(3.4)e-11 of sum M W_p against the
 predicted +1.74e-10 (z = -2.8) and +1.11(0.47)e-10 M of the Killing energy against
-+2.40e-10 M (z = -2.8). Both within 3 se, both low by the same factor 0.46-0.64, as the
-card measurement of the first 25 M was (1.22(22)e-10). At Kn = 1 and 0.1 the standard
++2.40e-10 M (z = -2.8). Both within 3 se, both low by the same factor 0.46; the card
+measurement of the first 25 M was low too (1.22(22)e-10, factor 0.70). At Kn = 1 and 0.1 the standard
 error exceeds the mean, as expected. The positive defect of the core-v0.3 operator is
 seen, at about half the pair-model prediction [the reason for the factor is not
 established; sub-cycling at Kn = 0.01 (n_sub up to 64) and the pair model's
@@ -685,8 +685,8 @@ cell mode: the step defect falls by a factor 1e11. Per collision the canonical e
 changes by +1.7-2.2e-21 of its sum (+1.5-1.9e-21 M), with a standard error of 3-13
 percent: a systematic positive residual at rounding level (one pair carries M h of about
 1e-6, and 16 units in the last place of that is 3.5e-21: the Newton iteration stops at
-its tolerance, apparently from one side) [JUDGEMENT on the cause]. That is 1.1e-11 of the
-cell-mode defect per collision; over the 1.2e6 collisions of 300 M at Kn = 1 it would
+its tolerance, apparently from one side) [JUDGEMENT on the cause]. That is about 1e-11 of
+the cell-mode defect per collision; over the 1.2e6 collisions of 300 M at Kn = 1 it would
 add up to 2e-15 of sum M H_p. Per cell |d sum M H_p| per collision lies at 1e-22 to
 1e-20 of the sum (10 percent of the cells exactly zero), against 1e-11 to 1e-8 in cell mode
 (right panel of the figure).
@@ -696,7 +696,8 @@ cell mode's (e.g. 2440.34 against 2440.59 at Kn = 0.1, step 1); n_coll 24072 aga
 (Kn = 0.01, step 1; Kn = 1 identical).
 (e) Reported: with coll_energy = particle the deposited energy sum M W_p changes per
 collision by -1.7(2.4)e-11 (Kn = 0.01), +0.002(0.83)e-10 (0.1), +1.6(2.4)e-10 (1): zero
-within 1 se, at least 4.8 times smaller than the cell-mode mean at Kn = 0.01 (at 1 se).
+within 1 se; at Kn = 0.01 the central value is 4.8 times smaller in magnitude than the
+cell-mode mean and |mean| < 4.1e-11 at 1 se (cell mode: +8.0(3.4)e-11).
 This is not conserved by design; its scatter per cell is of the same size as in cell
 mode (first order in the metric difference across the cell).
 (f) Confirmed: the sums of M dW_p and M dH_p recomputed from the dumps with the dumped
