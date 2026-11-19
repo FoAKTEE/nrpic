@@ -385,3 +385,11 @@ as log2 of the ratio, wrong for 32-48-64; superseded, kept on record.
   offset); spectral 1.9e-8 to 2.4e-8.
 - The x10 card check (B-20261119-155758-458cf17, Slurm 4662) is still waiting in the queue
   (25 jobs, 16:47); its analysis command is in README.md, "Open".
+
+## 2026-11-19 16:52 End of the session
+
+Unit tests: 5 pass. Pending: the x10 card check, Slurm 4662 (run
+B-20261119-155758-458cf17), about eighteen jobs ahead of it in the queue (16:50); its
+analysis command is in README.md, "Open". Card-hours used by this package: 0.019
+(B-20261119-142124-feb2daf) of the half card-hour allowed; 0.2 requested for 4662 (10-minute
+limit, expected about 0.02). No processor run of this package is still going.
