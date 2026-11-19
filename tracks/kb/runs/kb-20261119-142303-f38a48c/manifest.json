@@ -1,0 +1,72 @@
+{
+ "run_id": "kb-20261119-142303-f38a48c",
+ "track": "kb",
+ "gate": "KB-G1",
+ "package": "tracks/kb/stage/KB-G1",
+ "purpose": "KB-G1 verifier, follow-up of test P (1201.4794): every TeX paper with no bibliography entry in the knowledge base, and the reference list its source has",
+ "kind": "scouting",
+ "command": [
+  ".venv/bin/python",
+  "-I",
+  "tracks/kb/stage/KB-G1/verifier/check_zero_bib.py",
+  "/data/haiyangw/nrpic/scratch/kb/kb-20261119-142303-f38a48c"
+ ],
+ "cwd": "/data/haiyangw/nrpic/wt/kb",
+ "env_vars": {
+  "OMP_NUM_THREADS": "1",
+  "NRPIC_RUN_DIR": "/data/haiyangw/nrpic/scratch/kb/kb-20261119-142303-f38a48c"
+ },
+ "git": {
+  "sha": "f38a48c4fead71f642baa98691e5db52198df265",
+  "branch": "kb/main",
+  "dirty": true,
+  "dirty_note": "package and inputs clean at the run; uncommitted files of other kb helpers in kb/kbtool/ and tracks/kb/ (not used)",
+  "merge_base_main": "71acd0c330b65dad3a9cac337c6f78e8a1bacc44"
+ },
+ "inputs": [
+  {
+   "path": "/data/haiyangw/nrpic/kb-data/db/kb-20261115-a848a06.sqlite",
+   "sha256": "a848a06b1d95654e15a4cb23df991d76b5f25fb795ae3b8e483ec9fe1c9d4b00",
+   "role": "knowledge-base snapshot, opened read-only (db/current); checksum from run kb-20261119-142015-7620bd4"
+  },
+  {
+   "path": "tracks/kb/stage/KB-G1/verifier/check_zero_bib.py",
+   "sha256": "de1f12fd2adc7aee499c21c859284587c050f979917a53587b47da57d7476392",
+   "role": "verifier code"
+  },
+  {
+   "path": "tracks/kb/stage/KB-G1/verifier/texcount.py",
+   "sha256": "d9e85b0b44bfa62e053f59c3cca0ed44169f5aa0474db090dc184cf50746661b",
+   "role": "verifier code"
+  },
+  {
+   "path": "tracks/kb/stage/KB-G1/verifier/figstyle.py",
+   "sha256": "5d3b78ad8c2c02e428b675e3d7e35a32cbc8f053d1aeedd4fde66f27da55676e",
+   "role": "verifier code"
+  },
+  {
+   "path": "kb-data/raw/arxiv/<id>/<version>/src of the 20 papers listed in zero_bib.tsv",
+   "sha256": null,
+   "role": "raw TeX sources, read as data; checksums in kb-data/manifests/SHA256SUMS"
+  }
+ ],
+ "resources": {
+  "nodes": 1,
+  "cores": 1,
+  "gpus": 0,
+  "card_hours": 0.0,
+  "walltime_s": 1.2
+ },
+ "outputs": {
+  "dir": "scratch/kb/kb-20261119-142303-f38a48c",
+  "sha256sums": "sha256sums.txt"
+ },
+ "status": "completed",
+ "exit_code": 0,
+ "started": "2026-11-19T14:23:03Z",
+ "ended": "2026-11-19T14:23:04Z",
+ "parents": [
+  "kb-20261119-142015-7620bd4"
+ ],
+ "notes": "Hand-written manifest (last resort): harness/bin/nrpic-run submit --package tracks/kb/stage/KB-G1 refused the earlier run of this package because other kb helpers had uncommitted shared code in kb/kbtool/ in this shared worktree; the state had not changed."
+}
