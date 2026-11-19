@@ -516,3 +516,67 @@ def run_encounter(law="eih", M=1.0, m1=0.05, m2=0.05, a=3.0, rp=8.0, phase=0.0, 
             out[k] = val
     out["outcome_name"] = OUTCOME_NAMES[int(out["outcome"])]
     return out
+
+
+# ------------------------------------------------------------------------------------------
+# far release with a 1PN-parabolic centre of mass (JOURNAL entry 8)
+# ------------------------------------------------------------------------------------------
+def parabola_pair_1pn(M, mb, J_per_mu, r0, c2inv=1.0):
+    """Two bodies (M, mb), separation r0 along +x (mb at +x relative to M), incoming, with
+    Will's 1PN energy 0 and canonical angular momentum J = mu J_per_mu along +z, total 1PN
+    momentum removed at Newtonian order. Returns x (2, 3), v (2, 3)."""
+    Mt = M + mb
+    mu = M * mb / Mt
+    ms = np.array([M, mb])
+
+    def build(p):
+        vr, vphi = p
+        R = np.array([r0, 0.0, 0.0])
+        V = np.array([vr, vphi, 0.0])
+        x = np.array([-mb / Mt * R, M / Mt * R])
+        v = np.array([-mb / Mt * V, M / Mt * V])
+        for _ in range(3):
+            v = v - momentum(x, v, ms, c2inv) / Mt
+        return x, v
+
+    from scipy.optimize import brentq
+
+    def J_of(vr, vphi):
+        x, v = build((vr, vphi))
+        return float(angular_momentum(x, v, ms, c2inv)[2]) / mu
+
+    def vphi_for(vr):           # J increases with v_phi
+        return brentq(lambda w: J_of(vr, w) - J_per_mu, 0.0, 3.0 * J_per_mu / r0 + 1e-3,
+                      xtol=1e-16, rtol=1e-15)
+
+    def E_of(vr):               # E increases with |v_r|
+        x, v = build((vr, vphi_for(vr)))
+        return float(energy(x, v, ms, c2inv)) / mu
+    vmax = math.sqrt(2 * Mt / r0)
+    vr = brentq(E_of, -1.5 * vmax, 0.0, xtol=1e-16, rtol=1e-15)
+    x, v = build((vr, vphi_for(vr)))
+    if abs(float(energy(x, v, ms, c2inv)) / mu) > 1e-10 or abs(J_of(vr, vphi_for(vr)) - J_per_mu) > 1e-9:
+        raise RuntimeError("parabola_pair_1pn did not converge")
+    return x, v
+
+
+def far_states(M, m1, m2, a0, J_per_mu, r0, phases, sense=1, c2inv=1.0):
+    """Three-body states [M, m1, m2] for release phases (2404 convention: member 1 at
+    +(m2/mb) a0 e(phase) from the binary's centre of mass; Newtonian circular binary with sense
+    +1/-1) with the binary's centre of mass on the 1PN parabola of parabola_pair_1pn."""
+    mb = m1 + m2
+    xp, vp = parabola_pair_1pn(M, mb, J_per_mu, r0, c2inv)
+    w = sense * math.sqrt(mb / a0 ** 3)
+    ph = np.asarray(phases, dtype=float)
+    e = np.stack([np.cos(ph), np.sin(ph), np.zeros_like(ph)], axis=1)
+    et = np.stack([-np.sin(ph), np.cos(ph), np.zeros_like(ph)], axis=1)
+    n = ph.size
+    x = np.empty((n, 3, 3))
+    v = np.empty((n, 3, 3))
+    x[:, 0] = xp[0]
+    v[:, 0] = vp[0]
+    x[:, 1] = xp[1] + (m2 / mb) * a0 * e
+    x[:, 2] = xp[1] - (m1 / mb) * a0 * e
+    v[:, 1] = vp[1] + (m2 / mb) * a0 * w * et
+    v[:, 2] = vp[1] - (m1 / mb) * a0 * w * et
+    return x, v
