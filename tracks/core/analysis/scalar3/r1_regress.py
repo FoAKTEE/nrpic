@@ -84,14 +84,22 @@ def main():
     cases = []
     for lab, exe in exes.items():
         for k, (inp, modes) in EXAMPLES.items():
-            # an input file with a restart output block, written next to the runs
+            # an input file with a restart output block, written next to the runs; the
+            # dump cadence goes into the file (a parameter that the file does not carry
+            # cannot be set on the command line: parameter_input.cpp, line 400)
             src = open(os.path.join(common.PROB, inp)).read()
+            lines = []
+            for ln in src.splitlines():
+                if ln.split("=")[0].strip() == "dump_dt":
+                    lines += ["dump_dt          = -1.0", "dump_dcycle      = 10"]
+                else:
+                    lines.append(ln)
+            assert "dump_dcycle      = 10" in lines, inp
             dst = os.path.join(out, f"{k}_rst.athinput")
             with open(dst, "w") as fp:
-                fp.write(src + "\n<output9>\nfile_type = rst\ndcycle    = 10\n")
+                fp.write("\n".join(lines) + "\n\n<output9>\nfile_type = rst\ndcycle    = 10\n")
             args = [f"scalar_field/noise_mode_file={os.path.join(common.PROB, modes)}",
-                    "time/nlim=20", "scalar_field/dump_dt=-1.0",
-                    "scalar_field/dump_dcycle=10"]
+                    "time/nlim=20"]
             cases.append((os.path.join(out, "b", k, lab), dst, args))
     walls = {}
     for lab, exe in exes.items():
