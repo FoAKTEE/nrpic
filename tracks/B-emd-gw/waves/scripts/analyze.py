@@ -37,6 +37,12 @@ DIAGS = ("tt", "weyl6", "weylS")
 LABEL = {"tt": "TT projection", "weyl6": "Weyl, FD order 6", "weylS": "Weyl, spectral"}
 
 
+def pred_exp(*args):
+    """prediction of test X: the code's RK4()4[2S] on the background coupled to the mode
+    (hypothesis H1, confirmed in run B-20261119-153548-c7338f1)."""
+    return pr.predict_flrw_coupled(*args, scheme="2s")
+
+
 def exact_amplitudes(test, t):
     if test == "flat":
         c = FLAT
@@ -144,7 +150,7 @@ def main():
     res = {"runs": runs, "ns": ns, "flat": {}, "exp": {}}
     for test in ("flat", "exp"):
         cfg = FLAT if test == "flat" else EXP
-        fun = pr.predict_flat if test == "flat" else pr.predict_flrw
+        fun = pr.predict_flat if test == "flat" else pred_exp
         for n in ns:
             recs_n = sorted(data[test][n], key=lambda r: r["time"])
             data[test][n] = recs_n
@@ -154,6 +160,10 @@ def main():
             s = {k: summarize(recs_n, k) for k in DIAGS}
             s["pred_amp_end"] = float(np.abs(p["ratio"][-1]) - 1)
             s["pred_phase_end"] = float(np.angle(p["ratio"][-1]))
+            if test == "exp":
+                q = pr.predict_flrw(cfg["kvec"], cfg["L"], (n, n, n), cfg["tlim"], cfg["dt_out"])
+                s["pred_classical_exact_bg_amp_end"] = float(np.abs(q["ratio"][-1]) - 1)
+                s["pred_classical_exact_bg_phase_end"] = float(np.angle(q["ratio"][-1]))
             s["t_end"] = recs_n[-1]["time"]
             s["n_dumps"] = len(recs_n)
             s["vsize"] = recs_n[0]["vsize"]
@@ -200,7 +210,7 @@ def figures(data, res, ns, out, tag=""):
     cols = {16: fs.PAL["yellow"], 32: fs.PAL["red"], 64: fs.PAL["green"]}
     for test in ("flat", "exp"):
         cfg = FLAT if test == "flat" else EXP
-        fun = pr.predict_flat if test == "flat" else pr.predict_flrw
+        fun = pr.predict_flat if test == "flat" else pred_exp
         kn = np.linalg.norm(cfg["kvec"])
         fig, axs = plt.subplots(2, 2, figsize=(fs.FULL_WIDTH, 6.0))
         fig.subplots_adjust(left=0.1, right=0.98, bottom=0.08, top=0.95, wspace=0.3, hspace=0.3)
@@ -243,7 +253,8 @@ def figures(data, res, ns, out, tag=""):
                             label="Weyl FD6" if n == ns[0] else None)
                 pv = np.abs(p["ratio"]) - 1 if q == "amp_p" else np.angle(p["ratio"])
                 ax.semilogy(p["t"][1:], np.abs(pv[1:]), color="k", ls=":", lw=1.0,
-                            label="symbol prediction" if n == ns[0] else None)
+                            label=("symbol prediction" if test == "flat" else "prediction (2S, coupled)")
+                            if n == ns[0] else None)
             ax = axs[1, 1]
             ax.semilogy(t[1:], [abs(r["tt"]["pol_amp"]) + 1e-18 for r in recs[1:]], color=c, label=f"|R| error, N = {n}")
             ax.semilogy(t[1:], [abs(r["tt"]["pol_phase"]) + 1e-18 for r in recs[1:]], color=c, ls="-.",
