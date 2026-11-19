@@ -6,7 +6,7 @@ here before the runs, outcomes after them (including failed predictions). Units 
 H = 1 and a = 1 at the start, lengths in initial Hubble radii, conformal time t with
 a = (1 + t/2)^2.
 
-## Entry 1 (07:05 PST): set-up and predictions, before any run
+## Entry 1 (06:33 PST): set-up and predictions, before any run
 
 Sources read for the design (locators in `README.md` and `DESIGN.md`): arXiv:2312.12499
 (main.tex: spectrum 581-594, Press-Schechter 595-613, A_s^(7/4) 621-639, k_NL and
@@ -77,7 +77,7 @@ card build): 128^3, one particle per cell: 4.5e6 zone-cycles per second within 3
 per cell: between 3e6 and 6e6 zone-cycles per second and below 60 GB of card memory.
 Refuted outside these ranges.
 
-## Entry 2 (07:12 PST): first fiducial run stopped, resubmitted cheaper
+## Entry 2 (06:38 PST): first fiducial run stopped, resubmitted cheaper
 
 Run B-20261119-143348-728c0e5 (fiducial, step 1/64, Poisson solve to rounding) was stopped
 by me after 32 cycles: 6 s per cycle on the loaded machine (load average 148 on 144
@@ -90,7 +90,7 @@ unchanged for the new runs. The owner's processor allotment (16 cores, 13 busy w
 other helpers) and the two queued card jobs of B-emd-gw (Slurm 4635, 4637) limit this
 package to processors and to a few cores at a time: no card job is submitted by me.
 
-## Entry 3 (07:55 PST): runs finished so far; the per-halo quadrupole reworked
+## Entry 3 (07:43 PST): runs finished so far; the per-halo quadrupole reworked
 
 Finished: fiducial B-20261119-143828-0ef9b5b (577 cycles, 3396 s on one core), seed 2
 B-20261119-143832-85cbe25 (3425 s), 32 cells B-20261119-145324-525e4fd (227 s). Running:
@@ -112,7 +112,7 @@ outputs (not registered, scratch/B-emd-gw/tmp/analyze) matched the seven halos o
 to maxima of the initial field within 0.02 to 0.16 (comoving) and gave energies 1.3 to
 240 times the baseline of the matched maximum; the registered numbers follow.
 
-## Entry 4 (08:05 PST): outcomes of P1-P9
+## Entry 4 (07:57 PST): outcomes of P1-P9
 
 Runs: Newtonian fid B-20261119-143828-0ef9b5b, seed 2 B-20261119-143832-85cbe25, 32 cells
 B-20261119-145324-525e4fd, amplitude doubled B-20261119-145328-4b3663f (stopped by me at
@@ -166,7 +166,7 @@ looked at (the a = 5 density panel shows a moire of the particle lattice against
   (20/3) source at a = 1), 4.95e-7 at a = 20 (twice the linear 1.18e-8 a), then 3.6 to
   3.8e-7 to a = 100 (a third of the linear extrapolation).
 
-## Entry 5 (08:12 PST): prediction P10 before the box-scaling analysis
+## Entry 5 (07:58 PST): prediction P10 before the box-scaling analysis
 
 The Newtonian problem is invariant under x -> lambda x, p -> lambda p, m -> lambda^3 m at
 fixed t, so the fiducial run also stands for the boxes L = 8 (lambda = 2) and L = 2
@@ -181,3 +181,7 @@ the GW wave equation (light speed, the box modes k = 2 pi n/L) breaks it.
   L = 4, a = 30). Refuted if the ratio is at or below 128 at a >= 30.
 - P10c: at lambda = 1/2 (fundamental 3.14, above 9.4/sqrt(a) from a = 9) the radiated
   measure falls by more than 2^7 for a >= 15. Refuted if it falls by 128 or less.
+
+Note (07:59 PST): the clock times in the headers of entries 1 to 5 were first written
+wrong (estimated, not read); corrected to the commit times of each entry (`git log`).
+The order of predictions and runs is unchanged and is the commit order.
