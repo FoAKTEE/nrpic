@@ -23,7 +23,7 @@ with a qualification worth recording), CORRECTED (the source says something else
 right is in the note), NOT FOUND (what was searched). Totals: 44 rows with a verdict, 37
 CONFIRMED (16 of them with a precision), 7 CORRECTED (5 about papers: rows 1, 4, 7, 29, 36;
 2 about the project relation: rows 37, 38), 0 NOT FOUND; 13 judgements without a verdict.
-Tally and figure: run kb-20261119-HHMMSS (README, "Runs").
+Tally and figure: run kb-20261119-153319-ad2a3a7 (`figures/fig_frontier.png`, panel a; README, "Runs").
 
 ## Heading (line 239)
 

@@ -86,3 +86,31 @@ Prediction: the tally of CHECK.md gives 44 rows, 21 CONFIRMED, 16 CONFIRMED (pre
 Among papers not cited in the brief and dated 2025-01 or later, Track C (SIDM: a large
 astrophysics community) has the most, then D, B and E; A and F the fewest. Refuted if the
 counts differ from these numbers, or if A or F is not among the two smallest.
+
+## Entry 4, 2026-11-19T15:36Z: outcome of entry 3, figure, and the abstract check of Track C
+
+Run kb-20261119-153240-15320f5 (first rendering) and its rerun kb-20261119-153319-ad2a3a7
+(same code and inputs, legend of panel a moved off the bars and categorical colours in panel
+c, after looking at the first figure: the legend covered rows 253-255 and C and D were two
+shades of teal). Both completed; the numbers are identical (`tally.json`).
+
+- Tally held exactly: 44 rows, 21 CONFIRMED, 16 CONFIRMED (precision), 7 CORRECTED,
+  0 NOT FOUND, 0 unclassified. The scan reproduced 284 / 226 / 11 of entry 2.
+- Track ordering FAILED in part: papers not cited in the brief, 2025-01 or later, per track
+  of the first query that found them: E 41, F 40, C 39, D 32, B 27, core 21, A 18. A is the
+  smallest as predicted, but F is the second largest, not among the two smallest: the F
+  queries (hypervelocity stars, binaries near SMBHs) reach a large astrophysics literature,
+  and most of it is context, not competition. C is third, not first.
+- Figure read (`figures/fig_frontier.png`): (a) the corrections sit on lines 239, 243, 244,
+  246, 252, 255; (b) forward citations (counted over citing records with an arXiv id) are
+  dominated by 2401.08530 (38 of 40 already in the brief; 41 records), 2506.11795 (28 of 35
+  not in the brief) and 2506.17641 (29 of 30 not in the brief; 31 records);
+  2611.12831, 2610.32592 and 2606.18437 have none; (c) the papers not in the brief rise
+  toward 2026-09 and 2026-10 and drop in the partial month 2026-11.
+- Abstract check for CHECK row 44 and FRONTIER Track C, prediction written before the grep:
+  "no abstract among the C hits describes a 3D general-relativistic kinetic collapse".
+  Outcome: of the 40 papers found by the C queries and the forward citations of 2601.17117
+  and 2506.17641, the abstracts that mention a relativistic treatment are 2601.17117,
+  2609.16122 (same spherical Misner-Sharp model), 2510.24565 (TOV equilibria), 2511.09311
+  (relativistic Bondi), plus two that only say "relativistic" in passing (2610.41293, a
+  neutron star; 2611.09546, lensing); none is a 3D kinetic GR calculation. Held.
