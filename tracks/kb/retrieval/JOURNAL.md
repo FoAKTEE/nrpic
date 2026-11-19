@@ -28,3 +28,16 @@ unlikely; the arXiv API record covers it if so); title ratio >= 0.9 for at least
 surnames found >= 0.8 for at least 27 of 30 (TeX titles carry macros and line breaks, TeX
 author lists collaboration names). Refuted if fewer than 25 have a record, or more than three
 fall below either bar without a cause I can name by reading the two records.
+
+Outcome R1 test (06:20 PST): the three tests of `kb/tests/test_qa_c4_reader.py` failed on the
+old reader (blocked; KeyError 'differ') and pass after the fix; the whole suite passes, 176
+tests (commit fdb7c90 says 179 by my miscount; history not rewritten).
+
+## R2. Rerun of `kb qa run --hybrid` on db/current (prediction 06:22 PST)
+
+Command: `kb/.venv/bin/python -I kb/kbtool/qa_cli.py qa run --hybrid --db kb-data/db/current`,
+report and JSON into the run directory (kb/QA_REPORT.md is the lead's to replace).
+Predictions: (a) C4 not blocked, numbers as predicted in R1; (b) C7 hybrid: paper 28 +- 1,
+locator 23 +- 1 of 32 (snapshot a848a06 adds two papers to 621430e, so a rank may move); text:
+paper 27 +- 1, locator 21 +- 1. Refuted if hybrid paper < 27 or locator < 22 (then the wave-2
+numbers do not reproduce and I find out why before changing anything).
