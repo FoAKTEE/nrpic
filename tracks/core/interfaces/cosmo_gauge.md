@@ -179,6 +179,10 @@ Tests [VERIFIED, runs in the journal, entries 3, 4, 6, 8 and 9]:
 | L2 turnaround | largest R/R_0 (exact 1.25) | | 1.2478 to 1.2496 (T = 0.5 M) |
 | P puncture alone, cells m/8, 10 M (processors) and 20 M (card, full mesh) | | | identical to plain 1+log byte for byte: tracker, horizon shape, horizon summary (40 searches), constraint history (the lapse never exceeds 1) |
 | H homogeneous dust universe (periodic, H_0 = 1, t = 2/H_0), rates 0, 5, 20 | lapse and scale factor against the exact ordinary differential equation | 1 + 6 ln a = 14.4 at a = 9.3, followed to 1.0e-5 | alpha = 1.26 (T = 0.2/H_0) followed to 6e-6; alpha = 1.07 (T = 0.05/H_0 = 1.6 steps) to 2.1e-4 in the first three steps and 5e-8 at the end; with a four times smaller step 5.0e-7 (414 times smaller) |
+| L3 bound ball of L2 through turnaround and collapse, static mesh, cells M/8 within 4 M (and M/16 within 2 M), t = 45 M (card) | apparent horizon (exact mass M = 1) | first found at t = 18 M, then in every search; mass 0.9964 to 1.0002 | T = 0.5 M: first found at t = 29 M (28.25 M at M/16), then in every search; mass 0.9980 to 1.0003 at M/8, 0.9994 to 1.0006 at M/16 (0.99997 at t = 44.5 M) |
+| L3, same | surface shells at the record where the exact areal radius reaches 2.5 M: median / largest abs(eps) | 1.6 / 10.1 per cent | 3.6 / 12.7 per cent at M/8 (shells slower than exact), 1.8 / 10.6 per cent at M/16 |
+| L3, same | interior shells: outer group at 2.5 m(shell), mid group at 4 m(shell), median abs(eps) | 4.4, 4.9 per cent | 1.0, 0.73 per cent at M/8 (5.7, 9.0 per cent at M/16: granular source, see below) |
+| L3, same | lapse at the centre after the collapse; horizon's mean coordinate radius at t = 44 M | 0.020; 2.34 M | 0.074 at M/8, 0.037 at M/16; 0.73 M |
 
 Choice of T (from L1 and L2): the departure of the central lapse from the homogeneous
 value is set by the ratio of T to the time a gauge wave needs to cross the expanding
@@ -194,6 +198,24 @@ that should be followed, as short as the step allows, and lapse_leak x dt below 
 balls of 5 to 10 M: T = 0.125 to 0.5 M. In the limit of small T the condition is 1+log
 with the lapse capped at alpha_0 where the matter expands. Untested: `lapse_leak_alpha`
 other than 1.
+
+Collapse to a black hole (L3; run core-20261119-140652-fd7e8d0, analysis
+core-20261119-161350-929b6b3, journal entry 9). After the turnaround the condition is
+plain 1+log started from a lapse near 1; the slices reach the trapped region and the
+horizon has the right mass, as with plain 1+log [VERIFIED, table]. What changes is the
+coordinate picture [VERIFIED, horizon summaries; reading JUDGEMENT]: without the front
+of plain 1+log the ball collapses into a region three times smaller in coordinates
+(horizon radius 0.73 M against 2.34 M), so at a fixed mesh the forming hole and the
+surface layer near it have three times fewer cells. At cells M/8 that leaves the lapse
+at the centre at 0.074 and the surface shells 3.6 per cent slow near R = 2.5 M; cells of
+M/16 at the centre halve both. With the cloud at the finest level (the rule of
+`problems/ball/ball_collapse.athinput`) cells of M/16 under a particle lattice of M/4
+give a granular source and worse interior shells. Advice [JUDGEMENT]: for a collapse
+with `lapse_leak` give the centre cells of M/16 or finer and a particle lattice (or a
+cloud level, `deposit_max_level`) that matches them. The prediction that the surface
+shells follow the exact solution to 3 per cent down to R = 2.5 M is refuted in every
+run, with plain 1+log too (largest error 10.1 to 12.7 per cent). Not tested:
+compressions far beyond this ball's (Track A's collapses), runs past 45 M.
 
 ### 7.2 Shift damping that follows the black holes (`shift_eta_profile`)
 
