@@ -59,9 +59,10 @@ Manifests in `tracks/D-bh-dress/runs/<id>/`, outputs in `/data/haiyangw/nrpic/sc
 | D-20261119-143659-7adcad7 | `tools/es_extra.py` version 2 on ES-1 and V-1 (adds crossings, Khat, windows against V-1); `results/es_extra.json` | done |
 | D-20261119-143413-bce5e71 | `tools/probe_fronts.py`, t = 50-200 M (entry 7) | done: features move outward |
 | D-20261119-143444-8a9949c | `tools/probe_fronts.py`, t = 100-200 M (entry 7) | done: no coherent inward signal |
-| D-20261119-143623-8576a6e | pre-flight of the ES-1G input, 2 cycles, gauge processor executable (entry 8) | see JOURNAL |
-| D-20261119-143626-7d1fa75 | the same with the release processor executable (entry 8) | see JOURNAL |
-| D-20261119-142633-6f72922 | ES-1G on the card (chain, Slurm 4636, one segment, <= 1 card-hour) | see JOURNAL; close and analyse with `tools/finish_es1g.sh` |
+| D-20261119-143623-8576a6e | pre-flight of the ES-1G input, 2 cycles, gauge processor executable (entry 8) | done: option read, acts only where alpha > 1 |
+| D-20261119-143626-7d1fa75 | the same with the release processor executable (entry 8) | done: warns lapse_leak not used |
+| D-20261119-150329-d1d8f03 | `tools/preflight_compare.py` on the two pre-flights | done |
+| D-20261119-142633-6f72922 | ES-1G on the card (chain, Slurm 4636, one segment, <= 0.98 card-hours) | QUEUED at 15:04 UTC on 2026-11-19 (about 15 jobs ahead); when `scripts/submit_chain.sh --status` says DONE: `tools/finish_es1g.sh`, then judge against entry 5 |
 
 ## Contents
 

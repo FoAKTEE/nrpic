@@ -543,3 +543,15 @@ same for lapse_leak_alpha; the gauge log has no warning: the option is read.
 x = 20 M (alpha = 0.997) different by 6.7e-15 and 5.3e-13 only (the stencils reach it from
 the alpha > 1 region). So the card executable of the same source (ES-1G) runs the relaxed
 lapse; the run itself is still queued.
+
+## State at the end of the wave-2b helper session (2026-11-19, 15:05 UTC)
+
+- Done: ES-1 and V-1 closed and judged (entries 4, 6, 7 and the corrections); ES-1G
+  predicted (entry 5), checked on the processors (entry 8) and submitted.
+- ES-1G (D-20261119-142633-6f72922, Slurm 4636) is QUEUED behind about fifteen jobs; no
+  card time used yet; it reserves 0.98 card-hours in one segment (athena wall 56 min;
+  ES-1 needed 46 min). Its outcome is NOT written. To finish: from the worktree root,
+  `tracks/D-bh-dress/es_runs/tools/finish_es1g.sh` once the chain says DONE; look at every
+  figure in `figs/es1g/`; judge G1-G7 of entry 5 as written (G1-G3 on the group
+  R0 = 48 M, see entry 6, E3) and record every gauge pathology.
+- Card-hours of this package: ES-1 0.769 + V-1 0.672 (wave 2), ES-1G at most 0.98.
