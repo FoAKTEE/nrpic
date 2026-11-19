@@ -263,3 +263,86 @@ with dx = 1 in |x_i| < 16; lattice h = 0.5), evolution to t = 2 with the setting
      factor 2 of the uniform run `zsol_n64` of test B (the same cell size in the matter),
      and at t = 1 the shell mean is below that of `z_smr_off`.
  Refuted if the refined solved run has 5 times the |H| of the uniform one in the matter.
+
+## 2026-11-19, entry 4: outcome of tests A at 32 and 64 cells; the queue
+
+Run core-20261119-145332-1ac049d (processor build of 1ac049d, 13 cases, 2 cores, 12
+minutes), numbers `analysis/idsolve2/test_a_numbers.json`, figure `figs/test_a_far.png`
+(looked at: the plain fill's error of W_x rises to 1e-2 towards the faces along x, the
+far-field curve stays below 6e-4 everywhere outside the matter; middle panel: second
+order for the far field, flat for the plain fill; tick labels of the middle panel
+overlap, to be redrawn with the 128-cell points).
+
+**R1 held.** With `id_far = robin` and matter at rest the six output files of
+gauss_code_n32 (record, dump, field dump, three histories) are byte-identical to those of
+the published first-pass executable. For the moving Gaussian every file differs in some
+byte, as predicted (the new term of sigma), with psi equal to 6.0e-15 and W to 5.1e-16
+of its maximum, 17 outer iterations in both (prediction: 1e-9).
+
+**W1 held at 32 and 64 cells** (128 cells pending, card job).
+
+| | plain 1/r fill, N = 32 / 64 | far field, N = 32 / 64 |
+|---|---|---|
+| W_x at the x-face centres, relative error | -8.55e-3 / -9.28e-3 | +9.3e-4 / +2.36e-4 |
+| W_x at the y-face centres | +2.11e-3 / +1.73e-3 | +6.4e-4 / +1.59e-4 |
+| largest error of W over the outermost layer | 2.20e-2 / 2.22e-2 | 1.19e-3 / 2.98e-4 |
+| mean over the outermost layer | 1.20e-2 / 1.24e-2 | 7.8e-4 / 1.97e-4 |
+| W_x at the centre | -1.175e-2 / -3.60e-3 | -1.108e-2 / -2.94e-3 |
+
+ (a), (b): the far field removes the closure error; what is left falls by 3.95 and 4.0
+ per halving. (c): the central error changes by 6 and 18 per cent: the closure error of
+ the plain fill, a solution of the homogeneous equation, reached the centre with 6.5e-4
+ at 64 cells. (d): P_ADM of the record equals sum m u_x to 3e-13; the surface integral
+ over cubes of half-width 9.5 to 13.75 differs from it by -5.6e-5 to -2.1e-5 (N = 32) and
+ -1.4e-5 to -5.1e-6 (N = 64), second order, and by the same amounts with the plain fill
+ (-5.2e-5 to -3.3e-5, -1.3e-5 to -8.3e-6), as predicted: the surface integral cannot
+ see the closure error. At half-width 7.5 the integral misses 9e-4 and 3.7e-4 of the
+ momentum: matter beyond the surface (3.75 sigma), not truncation. (e): residual ratio
+ 0.136 to 0.141 per outer iteration, 17 outer iterations.
+
+**W2 held, except for one bound.** Off-centre Gaussian (centre (3, 2, 0)), 64 cells:
+largest error of W over the outermost layer 5.6e-4 (lmax = 4), 0.116 (lmax = 0), 0.108
+(plain fill); at the face centres 2.2e-4, 1.1e-4, 9.5e-5 against 5.7e-3 to 9.9e-3
+(lmax = 0) and 4.9e-3 to 1.15e-2 (plain). J_ADM = (0, 7e-16, -0.2282094778), that is -2
+times P_ADM = 0.1141047394. Failed bound: P_ADM differs from sum m u_x = 0.11410473958 by
+1.4e-9 relative and J_z from -2 sum m u_x by 6e-10 and from -2 P_ADM... both above or at
+my 1e-9: the lattice reaches r = 14 from its centre, 17.6 from the Robin centre, beyond
+the sphere of the moments (16): 1.4e-9 of the momentum lies outside. The moments are
+those of the sphere, as designed; my bound ignored the shift.
+
+**C1 held.** u_x = 1 (P = 1.141, M_psi = 1.4286 and 1.4284 at 32 and 64 cells): 30 and
+36 outer iterations; max|H| of the monitor away from the faces 2.1e-11 and 2.4e-11
+(before 0.57 and 0.65); the vector part ends at `id_vector_tol` (9.9e-7) with max|M|
+0.20 -> 3.3e-7 and 0.23 -> 1.4e-7; psi - 1 at the centre 0.24302 and 0.25143 (3.3 per
+cent apart).
+
+**Processors and cards.** After this run the allotment of owner core (16 cores at a
+time, decision 0006) was full with the runs of other packages of core, and nine jobs
+waited for the two cards (six of owner core). Tests B and C wait in a loop that
+submits them when the allotment has room (`scratch/core/tmp/idsolve2/submit_wait.sh`);
+no card job was added to the queue.
+
+**Smoke runs between entries 3 and 4, and what they changed** (by hand in
+`scratch/core/tmp/idsolve2/`, not registered; they led to a source change, so they are
+reported). (1) The torus with a refined cube, matter at rest (`t_smr`): mode code
+converges in 27 outer iterations, and the run's own constraint output shows max|H|
+2.6e-10 (root level) and 1.15e-9 (refined level): the run sees what the solver solved.
+(2) The same with moving matter and the vector part in mode code: the vector residual
+stalled at 6e-2 of its scale and W was frozen after 12 iterations with max|M| 1.8e-2
+(before 9.8e-2). Where it sits (bins by distance from the level boundary): with the
+vector part in stencil form, converged to 5e-14, the monitor's |M| is 2.0e-2, 7.4e-3,
+1.7e-3 in the first, second and third fine cell next to the level boundary and below
+6.5e-4 further in (deep inside 2.0e-4, as on a uniform mesh of the fine cell size:
+9e-5 to 2e-4); on the coarse side 4.0e-3 in the first cell. Reading [JUDGEMENT; the run
+that could refute it is the registered t_smr_mov after the change]: the monitor of a
+cell next to a level boundary differentiates K_ij across prolongated ghost cells and
+sees the difference of the second-order truncation errors of L W on the two levels,
+divided by the cell size; no correction of W removes it, and with the monitor as
+residual those cells stall the iteration for the whole mesh. Change (76add0c): with
+`id_vector_residual = code` on a refined mesh the residual is the stencil form in the
+ng - 1 cells on either side of a level boundary. A smoke run of the changed code:
+vector residual 1.3e-3 (uniform torus: 1.4e-3), max|M| still 2.0e-2 at the level
+boundary. (3) Uniform torus, moving matter, A = 0.1, 32 cells, max|M| of the monitor
+before 0.095: after, mode code 2.6e-4, stencil form 9.2e-4; with one filter pass
+(`nfilter = 1`) mode code 2.0e-6, stencil form 3.9e-4. The filter removes the content at
+the Nyquist wavenumber that the monitor's operator cannot balance.
