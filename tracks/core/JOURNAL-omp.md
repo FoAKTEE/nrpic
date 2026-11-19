@@ -382,3 +382,45 @@ SaveToRoot) found no write that two iterations share, so the cause is not identi
 for the tracks: a gas self-gravity run, and the Newtonian mode with a finite
 `newton_mg_tol`, agree between thread counts only to the solver tolerance; the Newtonian
 mode with `threshold = 0` (to rounding) agrees to 1e-12 in the particles (P12, newton).
+
+## 2026-11-19 08:30 Entry 9: outcomes of P0, P2 to P5, P10, P11 (final source a9c34e7a)
+
+Runs: core-20261119-154940-1c3e906 (S against R, 13 cases, one thread),
+core-20261119-155520-0bc529f (puncture case, fixed deck: S against R; O3 at 4 and 16
+threads), core-20261119-155057-57325bc/atomic (O3 at 4 and 16 threads, two runs each,
+against one thread of O3; its puncture case used the broken deck and is replaced by the
+previous run). Numbers from recompare.py (summary_floor.json in each directory);
+rel_max is the largest difference over the largest number of the file.
+
+P0 HOLDS: the serial build of this branch gives the files of release core-v0.3 byte for
+byte in all 13 cases (geo, boris, dep, jeans, east, coll, kg, newton, binary, noise,
+bench, os, punc).
+
+| case | files identical at 4 and 16 threads (of all) | what differs, largest rel_max | two runs at 4 / at 16 threads |
+|---|---|---|---|
+| geo, boris | all | nothing | identical / identical |
+| bench (Z4c, 64^3) | all | nothing | identical / identical |
+| punc (Z4c, refined, tracers, horizon finder) | 8 of 9 (restart data, trajectories, horizon summary, Z4c history) | nrpic.hst column 28 (proper volume, a sum) 1.9e-13 | identical / identical |
+| kg, noise (scalar field) | 6 of 7 (dumps, restart data) | the scalar history (sums) 3.2e-14, 2.2e-15 | identical / identical |
+| coll (collisions) | 3 of 5 (every particle snapshot) | the two histories (sums) 1.2e-13 | identical / identical |
+| dep (deposit, refined) | 0 of 1 | history 3.4e-14 | 7.6e-19 / 5.2e-18 |
+| east (cosmology, Z4c, deposit) | 3 of 18 | every later output, 1.2e-12 | 5.7e-13 / 2.0e-12 |
+| os (collapse, Z4c, deposit, refined) | 8 of 16 | later snapshots and restarts 3.3e-13 | identical / 4.4e-16 |
+| newton (Newtonian mode) | 3 of 11 | 1.0e-12; mg_cycles differs (decision) | identical / 1.2e-14 |
+| jeans (gas, multigrid) | 2 of 5 | mesh outputs 5.1e-12; V-cycle defects differ | identical / identical |
+| binary (gas, multigrid, refined) | 0 (only the log) | the printed defects | identical / identical |
+
+- P2 HOLDS (geo, boris byte-identical at 4 and 16 threads).
+- P3 HOLDS: with deposit every difference is below 1.3e-12 of the largest number of its
+  file (threshold 1e-8); no NaN, no change in particle number; the deposit identity
+  |int_E - sum_mW|/sum_mW stays at the one-thread level (1e-14).
+- P4 HOLDS IN PART: the cases without deposit repeat byte for byte at 4 and 16 threads,
+  and dep and east do not; but os and newton repeated byte for byte at 4 threads (not at
+  16): with 4 threads and particles in a spatially ordered list, two threads rarely add
+  to one cell in the same moment. Not repeatable is the general rule with atomics.
+- P5 HOLDS, with a sharper cause than predicted: the gas multigrid (jeans, binary) and the
+  Newtonian mode differ between thread counts because the solver iterates differ (entry 8),
+  repeat byte for byte at a fixed thread count, and agree to the solver tolerance.
+- P10 HOLDS: every particle snapshot of coll is byte-identical at 4 and 16 threads.
+- P11 HOLDS: bench, punc, kg and noise keep every evolved field (restart data, dumps,
+  trajectories, horizon output) byte-identical; only history sums differ.
