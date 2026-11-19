@@ -1,0 +1,132 @@
+{
+  "schema": "nrpic-run-manifest/1",
+  "run_id": "core-20261119-155551-9096ee7",
+  "track": "core",
+  "gate": "G2",
+  "kind": "scouting",
+  "purpose": "C2 (second submission; the first, core-20261119-155522-8480419, named no --exe and would have run the release executable; stopped): card executable of the final source 5cc2821 on the gauge example with con_signed (32^3, 20 steps), compared with the processor executable by c2_compare.py; journal entry 11",
+  "preregistered_in": null,
+  "launcher": "batch",
+  "command": [
+    "scripts/gpu_batch.sh",
+    "/data/haiyangw/nrpic/scratch/core/core-20261119-155551-9096ee7/batch.list"
+  ],
+  "cwd": "scratch/core/core-20261119-155551-9096ee7",
+  "git": {
+    "sha": "9096ee725db5636277cdd5c09b42770c89c34ffc",
+    "branch": "core/scalar-3",
+    "dirty": false,
+    "package": [
+      "tracks/core/analysis/scalar3"
+    ],
+    "outside_package": {
+      "count": 0,
+      "first": []
+    },
+    "merge_base_main": "f51539c6f46a051b8c3c2d86501bcc6dfaa34f93",
+    "worktree": "wt/core-scalar3"
+  },
+  "code": {
+    "core_tag": "core-v0.3",
+    "athenak_upstream_sha": "c5a0d7f",
+    "kokkos_sha": "6739bc623081648af9e752b616d9671527922cbf",
+    "problem": "scalar_field",
+    "exe": "/data/haiyangw/nrpic/wt/core-scalar3/.work/exe/athena_gpu_5cc2821",
+    "exe_sha256": "8dc2ae83e9861c797377577403136d39b3237abe5855f8c633e25b646885d494",
+    "cmake_flags": null,
+    "toolchain": null
+  },
+  "env": {
+    "host": "anta",
+    "env_hash": "33c1dbb6673b68919eaa332b0add0b58aeac8be843f2071b9d06e2e0e397a96d",
+    "machine_file_sha256": "0321f40f4caeeb2a36624a9fa9809e60bad31071f366b3517ba23ad45698d2d7",
+    "uv_lock_sha256": "5417f6ba318b914aa3800e5d55f7b11fdd8df13c2688bdda7d419240aa1d5863",
+    "track_requirements_sha256": null,
+    "container_digest": null,
+    "compiler": "g++ 11.4.0",
+    "mpi": "none (Athena_ENABLE_MPI=OFF)",
+    "gpu": "NVIDIA A100 80GB (Slurm partition preempt)",
+    "python": "3.10.12 /data/haiyangw/nrpic/wt/core-scalar3/.venv"
+  },
+  "input": {
+    "file": "problems/scalar/sr_stochastic_gauge.athinput",
+    "sha256": "dcb7a6c2423564d3a576c1b74ffade64edc24b157ff8dca18934e127b8804648",
+    "overrides": {
+      "scalar_field/noise_mode_file": "/data/haiyangw/nrpic/wt/core-scalar3/problems/scalar/sr_stochastic_modes.txt",
+      "time/nlim": "20"
+    }
+  },
+  "inputs": [
+    {
+      "path": ".work/exe/athena_gpu_5cc2821",
+      "role": "exe",
+      "sha256": "8dc2ae83e9861c797377577403136d39b3237abe5855f8c633e25b646885d494",
+      "bytes": 103521816,
+      "tracked": false
+    },
+    {
+      "path": "tracks/core/analysis/scalar3/inputs/card_c2.list",
+      "role": "list",
+      "sha256": "d06083971d855f4c9e75d19988c041e3ccbd9ed2165aae04370fe5df690931ae",
+      "bytes": 406,
+      "tracked": true
+    },
+    {
+      "path": "problems/scalar/sr_stochastic_gauge.athinput",
+      "role": "athinput:srg20",
+      "sha256": "dcb7a6c2423564d3a576c1b74ffade64edc24b157ff8dca18934e127b8804648",
+      "bytes": 3650,
+      "tracked": true
+    }
+  ],
+  "batch_entries": [
+    {
+      "name": "srg20",
+      "input": "problems/scalar/sr_stochastic_gauge.athinput",
+      "args": [
+        "scalar_field/noise_mode_file=/data/haiyangw/nrpic/wt/core-scalar3/problems/scalar/sr_stochastic_modes.txt",
+        "time/nlim=20"
+      ]
+    }
+  ],
+  "resources": {
+    "nodes": 1,
+    "gpus": 1,
+    "cores": 1,
+    "walltime_s": null,
+    "wall_limit": "00:10:00",
+    "segments_max": null,
+    "gpu_hours_requested": 0.1,
+    "gpu_hours": null,
+    "particles": null
+  },
+  "slurm": {
+    "partition": "preempt",
+    "job_name": "core-20261119-155551-9096ee7",
+    "job_ids": []
+  },
+  "outputs": {
+    "dir": "scratch/core/core-20261119-155551-9096ee7",
+    "sha256sums": "sha256sums.txt",
+    "sha256sums_sha256": null,
+    "bytes": null,
+    "files": null
+  },
+  "status": "submitted",
+  "exit_code": null,
+  "registered": "2026-11-19T15:55:52Z",
+  "started": null,
+  "ended": null,
+  "parents": [],
+  "notes": "",
+  "budget_at_submit": {
+    "gpu_hours_allotted": 40.0,
+    "cores_allotted": 16,
+    "gpu_hours_used": 2.8029,
+    "gpu_hours_reserved": 6.64,
+    "gpu_hours_without_gate": 5.8613,
+    "cores_busy": 16,
+    "runs": 1098,
+    "allotment_from": "coord/DECISIONS/0006-compute-budget.md + 0014-budgets-after-wave-1.md"
+  }
+}
