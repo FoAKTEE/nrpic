@@ -76,3 +76,16 @@ card build): 128^3, one particle per cell: 4.5e6 zone-cycles per second within 3
 (SCOPE.md section 9: 4.47e6 to 5.7e6 measured for the cosmo/ problems); 256^3, one particle
 per cell: between 3e6 and 6e6 zone-cycles per second and below 60 GB of card memory.
 Refuted outside these ranges.
+
+## Entry 2 (07:12 PST): first fiducial run stopped, resubmitted cheaper
+
+Run B-20261119-143348-728c0e5 (fiducial, step 1/64, Poisson solve to rounding) was stopped
+by me after 32 cycles: 6 s per cycle on the loaded machine (load average 148 on 144
+cores), 1.9 h projected for the 1152 steps. Resubmitted with the solver tolerance
+`newton_mg_tol = 1e-6` (core measured positions within 3.4e-9 and an unchanged energy
+error at a third of the V cycles, coord/INTERFACES/newtonian_mode.md section 5.8), the
+step 1/32 (still below a tenth of the halo dynamical time 0.1 sqrt(a) [JUDGEMENT]) and
+`newton_cfl = 0.25` as an additional limit inside halos. The predictions of entry 1 stand
+unchanged for the new runs. The owner's processor allotment (16 cores, 13 busy with the
+other helpers) and the two queued card jobs of B-emd-gw (Slurm 4635, 4637) limit this
+package to processors and to a few cores at a time: no card job is submitted by me.
