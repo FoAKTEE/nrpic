@@ -1,0 +1,34 @@
+{
+ "run_id": "kb-20261115-130232-ac33aa1",
+ "owner": "kb",
+ "command": [
+  "python3",
+  "-I",
+  "kb/bin/kb",
+  "fetch-repos",
+  "--work",
+  "/data/haiyangw/nrpic/scratch/kb/kb-20261115-130232-ac33aa1/work"
+ ],
+ "cwd": "/data/haiyangw/nrpic/wt/kb",
+ "commit": "ac33aa192442ad2b10ebfd11e1bfb1fed52088a6",
+ "worktree_dirty_kb": true,
+ "inputs": [
+  {
+   "path": "/data/haiyangw/nrpic/wt/kb/kb/manifests/github.tsv",
+   "sha256": "23876b7ec1134475c1a9cde1488f970c61363990b699b1240b787272536d2928"
+  }
+ ],
+ "output_dir": "/data/haiyangw/nrpic/scratch/kb/kb-20261115-130232-ac33aa1",
+ "purpose": "K6: shallow clones (git clone --depth 1) of the 63 repositories of the manifest of brief section 17 into kb-data/raw/github, records in kb-data/meta/github; AthenaK first with its remote branch list (prediction R1 in kb/JOURNAL.md)",
+ "kind": "production",
+ "cores": 1,
+ "card_hours": 0,
+ "started_utc": "2026-11-15T13:02:32Z",
+ "started_unix": 1794747752.0608606,
+ "status": "finished",
+ "pid": 2134603,
+ "wall_time_s": 156.5,
+ "finished_utc": "2026-11-15T13:05:08Z",
+ "exit_code": null,
+ "note": "detached; exit code not observed. stdout ends 'summary: ok 63', stderr empty; kb fetch-repos returns 0 exactly when every record has status ok"
+}

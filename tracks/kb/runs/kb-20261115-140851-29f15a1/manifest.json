@@ -1,0 +1,31 @@
+{
+ "run_id": "kb-20261115-140851-29f15a1",
+ "owner": "kb",
+ "command": [
+  "kb/.venv/bin/python",
+  "-I",
+  "kb/scripts/fig_inventory.py",
+  "/data/haiyangw/nrpic/kb-data/manifests/inventory.json",
+  "kb/reports/fig_inventory"
+ ],
+ "cwd": "/data/haiyangw/nrpic/wt/kb",
+ "commit": "29f15a1ee97605788ee39e29f9e755cc98003d91",
+ "worktree_dirty_kb": true,
+ "inputs": [
+  {
+   "path": "/data/haiyangw/nrpic/kb-data/manifests/inventory.json",
+   "sha256": "7b15a58fec7b9e0dd1bb80ceaccbb2659a4f791f4e9736b820dd2c12a08224ad"
+  }
+ ],
+ "output_dir": "/data/haiyangw/nrpic/scratch/kb/kb-20261115-140851-29f15a1",
+ "purpose": "kb lead: regenerate the inventory figure (output stem; the previous run kb-20261115-140838-29f15a1 passed a .png name and the script appended .png/.pdf)",
+ "kind": "scouting",
+ "cores": 1,
+ "card_hours": 0,
+ "started_utc": "2026-11-15T14:08:51Z",
+ "started_unix": 1794751731.7069676,
+ "status": "finished",
+ "exit_code": 0,
+ "wall_time_s": 1.72,
+ "finished_utc": "2026-11-15T14:08:53Z"
+}
