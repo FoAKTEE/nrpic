@@ -666,7 +666,7 @@ of TC already written, restricted to what 10 M can show:
   128), so the lattice does enter the deposit error at rest, but not the leftover.
   Candidate (a) refuted.
 
-### Surface layer of the correction: prediction (written 16:31Z, before the run)
+### Surface layer of the correction: prediction (written 16:30Z, before the run)
 
 The shell profiles (dip at rbar_s that deepens and narrows from 64 to 128 cells, with
 amplitude times width roughly constant, about -3e-5 M) look like a delta-function layer
