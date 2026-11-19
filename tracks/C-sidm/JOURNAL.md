@@ -156,3 +156,58 @@ the track's references `collide/REFERENCES/` only where TESTS.md names them).
   King y0 = 0.334032 gives 168.9 +- 0.1 (run C-sidm-20261115-131130-3077a99) and
   tmb01_Z0p5404 142.6 +- 0.1 (verifier, run C-20261115-170630-1037f6a); K falls with Z(0)
   along each family. Refuted by either value off by more than 0.1.
+- outcome L12 (run C-20261115-193751-d3872ff, `rv_kn.png` looked at): held. K = 168.895 for
+  the King threshold model and 142.6 for tmb01_Z0p5404; K falls with Z(0) along each family
+  (written into `equilibria/CONVERSION.md` section 5 by the wave-2 lead). The wave-2 lead was
+  cut off by the account's usage limit after this outcome; its STATUS, HANDOFF, outbox posts
+  and the commit of the stage files were not done (done in wave 2b, entry below).
+
+## 2026-11-19T15:15Z  session C-sidm lead (wave 2b review)  predictions before the review runs
+
+Predictions of the lead's rechecks of wave 2b, written before any of them ran. Code:
+`stage/review_wave2/rv_box2b.py`, `rv_cc.py`, `rv_king_onset.py` (own readers of `rvlib.py`;
+the helpers' scripts are not imported, except `gravothermal/tmb.py` and
+`models/fluid_onset.py` for L15, which are the track's reference solvers).
+
+- L13 box_rerun (registered outputs of C-20261119-141502-95f0200, -141711-7db7a6a,
+  -141806-af19c1c, -143041-f94e350, -143049-0cf699a, -141431-a351ac7, -143146-226b0e0
+  against the release runs C-20261115-170155-13ff01f, -165500-c67e036, -165902-f9b1c8f,
+  -172003-6422b6a): (a) R1: every one of the 6 x 6 output files byte-identical to the release
+  run. (b) R2: n_tested, n_coll, n_updated, max_nsub, n_trunc of every coll.hst record equal
+  to R1 in all six cases; n_noroot = n_balance = 0 and max_dlam = 0. (c) R3: in all 16 T2
+  runs the integer columns equal the release run in every one of the 200 steps; my T2(b)
+  ratio (sum_P over (1/2) N rho0 sigma <v_Mol>(theta of <W - 1> of the first snapshot) dt)
+  in [0.9999, 1.0002] and within 1e-9 of my wave-2 recheck of the release run (same sum_P to
+  1e-14, same first snapshot); T1 bound held. (d) R4: final particle records of mb8, mb64,
+  rst0-rst2 byte-identical to mb1; seed 8 differs in > 99 percent; 385554 collisions.
+  (e) R5: n_tested and n_coll of the curved run and its flat twin identical in all 200 steps
+  of all four pairs; my own expectation 0.5 N^2 M sigma <v_Mol>(theta) alpha0 dt / psi0^6
+  (theta from <W - 1> of the orthonormal momenta u/psi0^2 of the first snapshot) gives a
+  ratio within 2e-4 of 1 and |z| < 4 in each, and within 1e-6 of the helper's ratios.
+  (f) R6 from coll.hst alone: with coll_energy = particle the canonical energy changes per
+  collision by +1e-21 to +3e-21 of sum M H_p at each Kn and step; in cell mode at Kn = 0.01
+  the sum M W_p changes per collision (both steps pooled) by +4e-11 to +1.2e-10 of its sum;
+  columns 1-29 of the cell-mode Kn = 1 record equal the release smoke run's; columns 30-31
+  differ by less than 1e-13 absolute. (g) Timing: collision part per tested pair, particle
+  over cell, 1.68 +- 0.02 from the wall times of `timing.json`. Refuted by any mismatch.
+- L14 the collisional cluster runs (histories of C-20261115-171058-c26cfad,
+  -171059-4b70228, -171059-35441e3; `rv_cc.py`): (a) the accumulated change of sum M W_p
+  (coll.hst dE_particles) up to alpha_min < 0.3, over its initial value, is 1.6e-3, 1.7e-3
+  (Kn = 1) and 1.8e-4, 2.2e-4 (Kn = 10) within 10 percent (helper's numbers); (b) so the
+  accumulated defect at the time of collapse differs by a factor 7-10 between Kn = 1 and 10,
+  and so do the collisions per particle (13.4, 15.3 against 2.5, 2.9); neither a fixed
+  injected energy nor a fixed number of collisions per particle marks the collapse
+  [refuted if either ratio is within a factor 2 of 1]; (c) at Kn = 10 the injected energy
+  before collapse, in units of the rest mass M0 (sum_M of the history), exceeds the
+  binding-energy difference between CC2 (y0 = 0.314, E_b = 0.035489) and the threshold
+  model (E_b = 0.035589), 1.0e-4 of M0 [refuted if below it]. Reading, not a test: such a
+  defect cannot be dismissed on size grounds as a cause of the Kn = 10 collapses.
+- L15 fluid onset of the King family (b = 1 of the F21 kernel, V3), `rv_king_onset.py`
+  with `tmb.py` and the omega^2 operator of `models/fluid_onset.py`: (a) tmb at b = 1 with
+  w0 = 1 - exp(-y0) reproduces the King rows of `equilibria/README.md` (Z_c and R/M at
+  y0 = 0.314 and 0.334032) to 1e-4 relative [refuted beyond 1e-3: then tmb is not the King
+  model and L15 stops]; (b) the onset with F21's gamma = 1 + p/u and with the Juttner
+  Gamma_1 at the energy-matched temperature (J_E) both lie below the collisionless E_b
+  maximum y0 = 0.334 (as for b = 0.1-0.5), with J_E in y0 in [0.20, 0.334); whether J_E lies
+  below y0 = 0.314 (CC2 fluid-unstable) I give 50 percent. The N = 600 and 1200 roots agree
+  to 1e-5 in y0.
