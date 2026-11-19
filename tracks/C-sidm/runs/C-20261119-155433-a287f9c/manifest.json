@@ -1,0 +1,103 @@
+{
+  "schema": "nrpic-run-manifest/1",
+  "run_id": "C-20261119-155433-a287f9c",
+  "track": "C-sidm",
+  "gate": "G2",
+  "kind": "scouting",
+  "purpose": "heat T7 processors: theta 0.1 and 1, eps 0.2, k lambda 0.4/0.2/0.1, seed 2, 4e5",
+  "preregistered_in": null,
+  "launcher": "local",
+  "command": [
+    "bash",
+    "-c",
+    "python3 tracks/C-sidm/heat/scripts/run_mode.py local --theta 0.1 --eps 0.2 --kl 0.1 0.4 --seeds 2 --n 400000 --nproc 2 --tag T7_ & python3 tracks/C-sidm/heat/scripts/run_mode.py local --theta 1.0 --eps 0.2 --kl 0.1 0.2 0.4 --seeds 2 --n 400000 --nproc 1 --tag T7_ ; wait; python3 tracks/C-sidm/heat/scripts/run_mode.py local --theta 0.1 --eps 0.2 --kl 0.2 --seeds 2 --n 400000 --nproc 1 --tag T7_"
+  ],
+  "cwd": ".",
+  "git": {
+    "sha": "a287f9c1d846cc97693b8337c338cbe110b4f9cf",
+    "branch": "track/C-sidm",
+    "dirty": false,
+    "package": [
+      "tracks/C-sidm/heat"
+    ],
+    "outside_package": {
+      "count": 0,
+      "first": []
+    },
+    "merge_base_main": "f51539c6f46a051b8c3c2d86501bcc6dfaa34f93",
+    "worktree": "wt/C-sidm"
+  },
+  "code": {
+    "core_tag": "core-v0.3",
+    "athenak_upstream_sha": "c5a0d7f",
+    "kokkos_sha": "6739bc623081648af9e752b616d9671527922cbf",
+    "problem": null
+  },
+  "env": {
+    "host": "anta",
+    "env_hash": "33c1dbb6673b68919eaa332b0add0b58aeac8be843f2071b9d06e2e0e397a96d",
+    "machine_file_sha256": "0321f40f4caeeb2a36624a9fa9809e60bad31071f366b3517ba23ad45698d2d7",
+    "uv_lock_sha256": "5417f6ba318b914aa3800e5d55f7b11fdd8df13c2688bdda7d419240aa1d5863",
+    "track_requirements_sha256": null,
+    "container_digest": null,
+    "compiler": "g++ 11.4.0",
+    "mpi": "none (Athena_ENABLE_MPI=OFF)",
+    "gpu": null,
+    "python": "3.10.12 /data/haiyangw/nrpic/wt/C-sidm/.venv"
+  },
+  "input": null,
+  "inputs": [
+    {
+      "path": "tracks/C-sidm/heat/inputs/heat.athinput",
+      "role": "input",
+      "sha256": "b639c2a5881735b79985f73d1255a54663eef46239c443ef1635647cfa928720",
+      "bytes": 2381,
+      "tracked": true
+    },
+    {
+      "path": "/data/haiyangw/nrpic/scratch/core/exe/core_collisions-2/athena_cpu",
+      "role": "input",
+      "sha256": "adbf1b165e524b0cbdc705695c3a350d184b1212c920dec3d5a04ade06186e8d",
+      "bytes": 247257128,
+      "tracked": false,
+      "location": "main checkout data root"
+    }
+  ],
+  "batch_entries": null,
+  "resources": {
+    "nodes": 1,
+    "gpus": 0,
+    "cores": 3,
+    "walltime_s": null,
+    "wall_limit": null,
+    "segments_max": null,
+    "gpu_hours_requested": 0.0,
+    "gpu_hours": null,
+    "particles": 400000.0
+  },
+  "slurm": null,
+  "outputs": {
+    "dir": "scratch/C-sidm/C-20261119-155433-a287f9c",
+    "sha256sums": "sha256sums.txt",
+    "sha256sums_sha256": null,
+    "bytes": null,
+    "files": null
+  },
+  "status": "running",
+  "exit_code": null,
+  "registered": "2026-11-19T15:54:34Z",
+  "started": null,
+  "ended": null,
+  "parents": [],
+  "notes": "",
+  "budget_at_submit": {
+    "gpu_hours_allotted": 45.0,
+    "cores_allotted": 16,
+    "gpu_hours_used": 1.7253,
+    "gpu_hours_reserved": 1.84,
+    "gpu_hours_without_gate": 0.0,
+    "cores_busy": 9,
+    "runs": 107,
+    "allotment_from": "coord/DECISIONS/0006-compute-budget.md + 0014-budgets-after-wave-1.md"
+  }
+}
