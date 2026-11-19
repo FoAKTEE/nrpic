@@ -665,3 +665,20 @@ S2g check ran (the checks are only built when S2g is given). In the figure the S
 single-search dips at t = 18.5-20 of up to 6e-4 (finder noise, as in E3a), which the window
 medians absorb. Only change after the run: the label of the reference line of the ratio panel
 (it overlapped the line); `tree_check.py` now uses the figure style of `python/nrpic/figstyle.py`.
+
+Run F-20261119-144544-d9c8542: the passage analysis of the smoke rerun with the fixed reader
+(found 24 / 23 / 8, missed 1 / 2 / 17; medians of the good searches 0.12952, 0.12949, 1.00271);
+its figure and JSON replace the copies in `figures/`, `results/`.
+
+## 2026-11-19 State at hand-over (14:50 UTC)
+
+Done and checked in wave 2b: E3 outcome (S3, S2 stopped at 1632 MeshBlocks; tracker and horizon
+on t <= 22 m and 14 m), E11 (why: the wave-zone radius with the 2:1 rule; model equals the
+restart trees), E7 outcome (P1 smoke: rate, memory, horizons; P1 costs 17-20 card-hours and
+needs `--gpu-hours 26`), the horizon reader's treatment of failed searches (fixed, E4 tests
+rerun), E10a (comparison script). P1's input is ready with the release executable and
+constant shift_eta = 2 (README, "P1"); the gauge choice waits on S2g.
+Not done: E10 (S2g) is queued (Slurm job 4640, run F-20261119-143443-f11ebb9); its prediction
+stands and its outcome is not recorded; the commands are in README, "Pending". The junk energy
+of a single member is still not measured.
+Card-hours used by this package: 0.30 (S3, S2, P1 smoke); reserved for S2g: at most 0.98.
