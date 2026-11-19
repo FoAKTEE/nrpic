@@ -440,7 +440,11 @@ def compare_case(case, ranks, out):
     result["line"] = {}
     for f in sorted(glob.glob(os.path.join(ref, "*.line.bin"))):
         rel = os.path.relpath(f, ref)
-        ng = int(open(f[:-4] + ".txt").read().splitlines()[1])
+        txts = [t for t in [f[:-4] + ".txt"] + [os.path.join(out, "np%d" % n, rel[:-4] + ".txt")
+                                                for n in ranks] if os.path.exists(t)]
+        if not txts:          # (a restarted run writes no header of the line dump)
+            continue
+        ng = int(open(txts[0]).read().splitlines()[1])
         a = np.fromfile(f, "<f8").reshape(-1, 1 + 5*ng)
         row = dict(records=int(len(a)))
         for n in ranks[1:]:

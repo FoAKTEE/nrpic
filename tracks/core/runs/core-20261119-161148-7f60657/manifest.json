@@ -1,0 +1,31 @@
+{
+ "run_id": "core-20261119-161148-7f60657",
+ "owner": "core",
+ "command": [
+  "/data/haiyangw/nrpic/wt/core-mpi/.venv/bin/python",
+  "/data/haiyangw/nrpic/wt/core-mpi/tracks/core/analysis/mpi/restart_cross_compare.py",
+  "/data/haiyangw/nrpic/scratch/core/core-20261119-155721-89ebf16/t4_ext_same",
+  "/data/haiyangw/nrpic/scratch/core/core-20261119-160825-0e90ab7/t4_ext_cross",
+  "t4_cross_compare"
+ ],
+ "cwd": "/data/haiyangw/nrpic/scratch/core/core-20261119-161148-7f60657",
+ "commit": "7f60657",
+ "source_modified_since_commit": false,
+ "inputs": [
+  {
+   "path": "/data/haiyangw/nrpic/wt/core-mpi/.venv/bin/python",
+   "sha256": "d6bca2b84e73c7775a0dd5e6a76899cfe4ee62863d7c8f88513811d1fda23f49",
+   "role": "executable"
+  }
+ ],
+ "output_directory": "/data/haiyangw/nrpic/scratch/core/core-20261119-161148-7f60657",
+ "purpose": "mpi T4 (P4e): restarted runs of the cluster compared with each other (same dump read on different rank counts; dumps of 1, 2, 4 ranks)",
+ "kind": "scouting",
+ "tag": "mpi-t4-cross-compare",
+ "state": "finished",
+ "wall_time_s": 0.67,
+ "exit_status": 1,
+ "cores": 1,
+ "card_hours": 0.0,
+ "started_utc": "2026-11-19T16:11:48Z"
+}
