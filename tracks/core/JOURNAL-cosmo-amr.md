@@ -764,3 +764,15 @@ actually found. **T15** (`t15_options.py`, processors, published executable):
   radius 0; once the horizon is found its radius is the mean radius 0.4778 and V_in of
   that sphere is positive and below that of the sphere r = 1; V_in + V_out = V.
 Refuted by another stop cycle, a missing stop, or a horizon sphere that stays empty.
+
+## 2026-11-19 16:43  prediction of T3c (quadratic and cubic clouds on the finest level at a level boundary)
+
+T3b's Sx (quadratic clouds on the finest level, 8 particles per root cell, static patch)
+shows a density structure 1.5e4 times the wave; T2's D8 (the same lattice and cloud
+level with linear clouds) was uniform to 1e-14. **T3c**: T2's D8 deck (homogeneous
+universe, static patch, clouds on the finest level, 8 particles per root cell, filter
+off) with `deposit_shape = tsc` and `pcs`, published executable, 4 cycles.
+Prediction [JUDGEMENT]: with tsc and pcs, E_max/E_min - 1 at t = 0 of order 1e-2 (the
+transition between fine and coarse clouds at the patch boundary does not tile for
+clouds wider than two cells), while cic stays at 1e-14. Refuted if tsc and pcs are
+uniform to 1e-12: then Sx's structure has another cause.
