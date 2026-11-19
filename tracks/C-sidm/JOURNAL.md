@@ -222,3 +222,48 @@ the helpers' scripts are not imported, except `gravothermal/tmb.py` and
   holds: the contraction starts before the defect reaches the size of the stability margin,
   so the defect is not needed to start it [JUDGEMENT; a smaller contribution is not
   excluded].
+- outcome L13-L15 (run C-20261119-151502-cb831a8, 4 min on 2 cores; figures `rv_box2b.png`,
+  `rv_cc.png`, `rv_king_onset.png` looked at). L13 held in every clause: (a) R1 36/36 files
+  byte-identical; (b) R2 integer columns equal in all 25 records of the six cases, n_noroot
+  = n_balance = 0, max_dlam = 0, dumps NRPCOLD2; (c) R3 integer columns identical to the
+  release in all 3200 steps, my T2(b) ratio 0.999906-1.000096 (z_b -2.20..+2.92, z_a
+  -2.10..+1.58), within 4.4e-16 of my recheck of the release run, sum_P within 7.8e-16, T1 at
+  1.05e-7 of the bound, theta unchanged to 3.3e-13; (d) R4 mb8, mb64, rst0-rst2 byte-identical,
+  seed 8 differs in every particle, 385554 collisions; (e) R5 identical n_tested and n_coll in
+  all 200 steps of all four pairs, twin rate ratio 1.4172488 = alpha0 psi0^6, my analytic
+  ratios 1.0000896, 0.9999717, 1.0000718, 1.0000525 (|z| <= 2.35), equal to the helper's to
+  1e-6; (f) R6 particle mode: canonical energy +1.73 to +1.99e-21 of the sum per collision
+  (both steps, all Kn); cell mode at Kn = 0.01, both steps pooled: +9.1e-11 of sum M W_p
+  (+1.44e-10 of sum M H_p); columns 1-29 of the cell-mode Kn = 1 record identical to the
+  release smoke run, columns 30, 31 differ by 1.7e-14, 1.3e-15; (g) collision part per tested
+  pair particle/cell 1.676 (1.57-1.81 over the repeat combinations). Cosmetic: the third panel
+  of rv_box2b.png has a clipped y-label and x-tick.
+  L14 (a) held: accumulated defect to alpha_min < 0.3 is 1.567e-3, 1.749e-3 (Kn = 1),
+  1.766e-4, 2.161e-4 (Kn = 10) of sum M W_p. (b) FAILED in one clause: the defect ratio
+  Kn = 1 / Kn = 10 is 8.9 and 8.1 (in 7-10) but the ratio of collisions per particle is 5.4
+  and 5.3 (13.44/2.48, 15.26/2.88), not 7-10; the refutation condition (a ratio within a
+  factor 2 of 1) is not met, so neither a fixed injected energy nor a fixed number of
+  collisions per particle marks the collapse. (c) held: at Kn = 10 the injected energy before
+  alpha_min < 0.3 is 1.93e-4 and 2.34e-4 M0, 1.9 and 2.3 times the binding margin 1.000e-4 M0.
+  L15 (a) held: tmb at b = 1 reproduces Z_c, R/M and E_b of the five King JSON models to
+  3e-10; its eps maximum is at y0 = 0.3340322 (V3: 0.334032). (b) partly FAILED: the onset
+  with the Juttner Gamma_1 at the energy-matched temperature lies at y0 = 0.321433 (Z_c =
+  0.49105, R/M = 13.839; N = 600 and 1200 agree to 1.8e-8), with theta = p/n at 0.320542,
+  inside the predicted [0.20, 0.334); but with F21's gamma = 1 + p/u the onset lies at
+  y0 = 0.372062, ABOVE the collisionless maximum, not below (my prediction misremembered
+  b = 0.1, where F21's 0.6348 also lies above the eps maximum 0.5404). The 50-percent call:
+  J_E lies above 0.314, so CC2 is on the stable side of the fluid onset (by 0.0074 in y0,
+  0.0055 in alpha_c), CC1 beyond it.
+- outcome L16 (run C-20261119-151944-08f3220, `rv_cc_onset.png` looked at): the reading
+  held, one clause FAILED. The central lapse of every collisional run falls steadily below
+  its control's from the start; the drop reaches 0.01 at t_dep = 44.25 M (cc1_kn10), 46.0 M
+  (cc2_kn10), 20.25 M (cc1_kn1), 21.25 M (cc2_kn1), after 0.35 and 1.6 collisions per
+  particle; I predicted t_dep in [100, 170] M at Kn = 10 (FAILED, it is three times earlier).
+  The injected energy at t_dep is 0.016 and 0.013 of the binding margin (Kn = 10) and 0.12,
+  0.11 (Kn = 1), below the predicted bounds; it reaches the margin only at 180.4 and 201.6 M
+  (Kn = 10), 54.0 and 58.7 M (Kn = 1), i.e. during the final run-up. So the release
+  operator's defect is not what starts the contraction relative to the control; whether it
+  speeds up the late phase is not decided by these runs. Reading [JUDGEMENT]: collisional
+  heat transport out of the King core (gravothermal contraction) moving a model that lies
+  within 0.006-0.015 in alpha_c of the onsets over the relativistic threshold is the leading
+  physical hypothesis; the decisive runs are in `stage/REVIEW-wave2.md` section 7.
