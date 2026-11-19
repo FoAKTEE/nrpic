@@ -1,6 +1,6 @@
 # 0016 Rulings after wave 2
 
-Status: PROVISIONAL · 2026-11-19 · orchestrator
+Status: ACCEPTED by the user on 2026-11-19 (decision 0017); before that provisional · 2026-11-19 · orchestrator
 
 Wave 2 was cut off on 2026-11-15 by a usage limit of the account: 42 of 56 agents
 returned. The leads of core, C, D, E and F, the gauge package of core and the slow-roll
