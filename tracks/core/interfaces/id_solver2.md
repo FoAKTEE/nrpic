@@ -136,12 +136,28 @@ New files: `athenak/src/particles/nrpic_idsolve.cpp`, `nrpic_idfar.hpp`,
 
 ## 5. Tests
 
-(Section filled after the runs: journal entries 4 to 8.)
+Predictions and outcomes, failed predictions included: `tracks/core/JOURNAL-idsolve2.md`
+entries 1 to 9. Scripts, numbers, figures: `tracks/core/analysis/idsolve2/` (`test_*.py`,
+`*_numbers.json`, `figs/`). Processor build of 76add0c (the published source) unless
+stated. All numbers [VERIFIED] in the runs named.
+
+| Test | What it shows | Outcome |
+|---|---|---|
+| R0 | without `id_solve` nothing changes | all 59 output files of nine set-ups (geodesics with both pushers, deposit on a refined mesh, East's cosmology, Oppenheimer-Snyder on a refined mesh, Jeans, a binary on four multigrid levels, the Newtonian mode isolated and periodic) byte-identical to release core-v0.3 (run core-20261119-154842-de22625, `regress_r0.json`) |
+| R1 | `id_far = robin` is the first pass | for matter at rest every output byte-identical to the first-pass executable; moving matter: psi to 6e-15, W to 5e-16 (the new term of sigma) (run core-20261119-145332-1ac049d) |
+| W1 | far field of a moving Gaussian (faces at 8 sigma) against the semi-analytic continuum W | relative error of W_x at the x-face centres: plain fill -8.6e-3, -9.3e-3; far field +9.3e-4, +2.4e-4 at 32, 64 cells (falls by 3.9 per halving); largest error over the outermost layer 2.2e-2 (plain) against 1.2e-3, 3.0e-4 (far); P_ADM of the record equals sum m u_x to 3e-13; the surface integral of (L W)_xj converges at second order to it with either fill (core-20261119-145332-1ac049d; 128 cells: @W128@) |
+| W2 | off-centre moving Gaussian | largest error over the outer layer 5.6e-4 (lmax 4), 0.116 (lmax 0), 0.108 (plain fill); J_ADM = -2 P_ADM to 6e-10 (the 1.4e-9 of the momentum outside the sphere of the moments) |
+| C1 | coupled solve with fast particles (u_x = 1, W = 1.4) | 30 and 36 outer iterations at 32 and 64 cells; max\|H\| of the monitor 0.57 -> 2.1e-11; max\|M\| 0.20 -> 3.3e-7 |
+| B | end-to-end: expanding ball (M = 1, Rb = 10, edge 2) with a triaxial Zel'dovich displacement and its momenta; solve and evolution to t = 2 | @B@ |
+| C | refined meshes (static), torus | Gaussian on one and two static levels: mode code 20 and 22 outer iterations; the run's own monitor at t = 0 at 2.4e-12 to 2.0e-11 on every level, level boundaries included; central error equal to the uniform run of the finest cell size (-5.01e-3 against -5.03e-3); torus with a refined cube and a nested lattice: max\|H\| 2.6e-10 and 1.15e-9 on the two levels (0.73 and 1.86 without the solve); torus with moving matter at density contrast up to 9: converges (24 to 33 iterations); the refined Zel'dovich ball evolves like the uniform run of the same cell size to 1 per cent in the matter. Failed: the vector part on a refined mesh stalls at the level boundary (max\|M\| 9.8e-2 -> 2.0e-2 on the refined torus) (runs core-20261119-153510-d1eaa30, analysis -161309-b04b4dd) |
+| G | Track A's CMC peak (gradient-expansion data on K = -3H, eps_i = 0.2, e = 0.2, torus of 100 Hubble lengths) solved by the code from psi = 1 | converges for mu = 0.03, 0.3, 0.5, 0.7 in 8 to 11 outer iterations (Track A's Python solve diverged at 0.5); solved psi equals psi_GE to c = 1.0e-7, 3.6e-7, 5.2e-7, 6.3e-7 of the perturbation at 64^3 (1.6e-5 at 32^3 for mu = 0.5); monitor after 3e-10 to 3e-9; with the vector part the same psi and max\|M\| 1.6e-7 -> 1.7e-9 (run core-20261119-160329-ab0aa92) |
+| P | punctures | @P@ |
+| K | card build on one A100 | @K@ |
 
 ## 6. Limits and what a track must know
 
-(Section filled after the runs.)
+@LIMITS@
 
 ## 7. Answers to the requests
 
-(Section filled after the runs.)
+@ANSWERS@
