@@ -186,3 +186,48 @@ core/multi-puncture, newton3 energy fix, unverified locators).
 failed predictions this session: V4 (retrograde D = 0.38, my classification), V5 (E1 values,
 newton3's energy definition), V6 (ejected-member energy within 30 percent), V7 (no plunge-free
 window), V5b amplitude at q = 4.
+
+## 2026-11-19T14:55Z  session F-hills lead (wave 2b)  commits f9422309..(this session)
+
+Main merged (634a7882); decisions 0016 and 0017 read. The wave-2 lead was cut off on 2026-11-15
+before writing anything (no REVIEW file, no uncommitted lead files; the only untracked file,
+`eih/scripts/scan_figs.py`, belongs to the wave-3a helper eih, which works in this worktree at
+the same time and commits its own files). Helper reports read: wave 2
+(`scratch/orch/wave2_reports/F-hills.md`: newton3_fix, note, nr_first, second_check) and wave 2b
+(nr_finish). Card queue at 14:49Z: our job 4640 (S2g) pending behind 12 jobs of other owners.
+
+### Predictions of the lead's checks (written before any of them ran)
+
+V8 (nr_finish, from the raw AthenaK files with a script of my own, `stage/review_wave2/
+review_check.py`, not using `nrread.py`):
+a. S3 and S2 logs: fatal "1632 ... exceeds max_nmb_per_rank = 1600"; last logged cycle and the
+   tracker's last row give t = 21.97 m (S3, cycle 703) and 14.22 m (S2, cycle 455).
+b. Horizon summaries: a row equal to its predecessor in columns 3-12 is a failed search; S3 has
+   5 such rows (t = 1.0-3.0), S2 2 (t = 1.0-1.5); the first row with hrms < 1e-3 is t = 3.5,
+   mass 1.00789 (S3) and t = 2.5, 1.00618 (S2); window medians (hrms < 1e-3) give the drift from
+   t = 4-6 to 12-14 as +5.1e-4 (S3) and +8.5e-4 (S2), each within 0.3e-4.
+c. Tracker speed ratio f = [x(14) - x(10)] / 4 / (P/M_ADM) with P/M_ADM = 0.25/1.039063: within
+   0.01 of 0.468 (S3) and 0.757 (S2); |y|, |z| below 1e-14 throughout.
+d. P1 smoke: 1716 MeshBlocks at the start and 1744 at cycle 400 in the log; zone-cycles per
+   second / 16^3 = 2057 +- 1 MeshBlock-cycles per second; peak card memory 70847 MiB; the three
+   trackers' first rows equal the input positions within 1e-8; horizon at t = 0: m1 0.12778,
+   heavy 0.99607, m2 NaN; failed searches (NaN or repeated rows) 1, 2, 17 of 25.
+   Refuted (for the helper's numbers) if any value differs beyond the stated tolerance.
+V9 (GR reading of the start states; my own implementation of the test-particle invariants of a
+Schwarzschild hole in isotropic coordinates, not `second_check/nr_invariants.py`):
+a. q = 10 (`three_punctures/inputs/hills_q10_m8.athinput`), hole frame, M_h = M: reproduces the
+   second check's centre-of-mass E = 0.99925, L = 4.19 M and turning point r_S = 5.77 M within
+   0.01 M (refuted otherwise).
+b. q = 4 (P1, `nr_first/inputs/p1_q4.athinput`): hole frame, M_h = M: E about 1.004 (unbound),
+   L about 4.95 M, not captured, turning point r_S between 8.5 and 9.8 M (the Newtonian 9.81 M
+   shrinks less than at q = 10 because L is further above the capture value 4 M); with the hole
+   at rest or with M_h = M + m_b the centre of mass is bound (E < 1) with L/M_h about 3.96, at the
+   capture boundary [JUDGEMENT; refuted if the hole-frame reading captures the centre of mass].
+   Consequence planned: if (b) holds, P1 stays as prepared (both baselines start from the same
+   state, so the comparison does not need a GR parabola); if the hole-frame reading captures the
+   centre of mass, P1 is not submitted and the momenta are rebuilt first.
+V10 (newton3_fix): the 15 unit tests pass at this commit; `results/passages.json` at q = 4 has
+m1 ejected with +1.3119 units and m2 captured with a = 7.746, e = 0.2503 (README table).
+V11 (note, second_check): the note helper's two differences hold: V4/V4b summaries show retrograde
+D = 0.1 and 0.2 only in V4, with |dP| 0.0023 and 0.0063; the q = 4 m/16 trees at puncture radius
+1.8 are 2514 / 2864 / 2568 in run F-hills-20261115-131933-907e5fe.
