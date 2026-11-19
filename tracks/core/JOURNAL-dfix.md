@@ -688,3 +688,10 @@ executable 17ee5e28):
   2400-slot run within 1e-10 relative (the slot limit should not change the evolution).
   Refuted if the peak is outside [68.9e3, 72.9e3] MiB (the per-slot model of
   `multi_puncture.md` section 5 is then wrong), or if the history differs beyond 1e-10.
+
+Amendment, before the timing job started (it is queued as Slurm job 4631, run
+core-20261119-140644-074f8e3): `by3.z4c.user.hst` prints six significant digits, so the
+bound 1e-10 on the history of mem2700 can only be checked as equality of the printed
+values at t = 0, 0.25, 0.5 (a relative difference above about 5e-7 would show). Judge
+script `tracks/core/analysis/dfix/card2_judge.py`; smoke test on the processor runs
+against themselves: zero differences, the figure readable.
