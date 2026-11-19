@@ -762,3 +762,79 @@ is 1.6 steps and the term has a kink at alpha = 1, where every run starts. Not r
 1e-1 for the whole run). Homogeneity is kept to round-off. Check of the reading, written
 before it runs: rate 20 with a step four times smaller (`time/cfl_number=0.0625`): the
 error of the first 0.1/H_0 falls by at least 8 (below 2.6e-5); refuted if not.
+
+## 2026-11-19, entry 7 (wave 2b, resumed 14:00 UTC): state after the cut-off; L3 did not run; its retest
+
+### What was found
+
+The session of 2026-11-15 was cut off after entry 6. Since then: card job 4477 (ES and
+L3) and card job 4478 (card versions of E2, E1, P) finished; the three processor runs of
+E1 with wider profiles finished (8020 to 8151 s each); the step check of test H ran
+(core-20261115-194634-6d1e401, registered and committed; its figure and numbers were
+untracked). The fifteen manifests written by `grun.py` after the cut-off and the figure
+and numbers of the step check are committed in 6ffb5fa9 (hand-written manifests of wave
+2 count as registered: decision 0016, item 3). `git diff b4430da HEAD -- athenak/src`
+is empty: the published executables are the current source. Main is merged (b6039c88);
+decision 0016 read. From here on runs are registered with `harness/bin/nrpic-run
+submit`.
+
+### L3 produced no result: the run stopped at its first regrid
+
+Run core-20261115-203207-b4430da (tag `gc-collapse-leak05`, job 4477) ended after 2.4 s
+and 8 cycles (t = 0.5 M) with [VERIFIED, its `athena.log`]
+
+    FATAL ERROR in .../mesh/mesh_refinement.cpp at line 495: Number of MeshBlocks in
+    this rank on new tree = 1632 on rank = 0 exceeds <mesh_refinement>/max_nmb_per_rank
+    = 1024
+
+The start mesh had 232 MeshBlocks (cells M/4 within 8 M); the input used the adaptive
+mesh of `problems/os/os_amr.athinput` (Loehner indicator of alpha psi^7, six levels).
+This is a defect of the test's input, not of the lapse condition: nothing of prediction
+L3 was tested. Which MeshBlocks the indicator flagged was not looked at (the run wrote
+no mesh output) [JUDGEMENT: the sharp surface, where the lapse and K have a step from
+the first step on; in Oppenheimer-Snyder collapse from rest the same rule starts
+quietly].
+
+### Retest of L3: set-up, written before the run
+
+Mesh as prediction L3 of entry 1 names it ("cells M/8 inside 3 M"), static:
+`problems/ball/ball_collapse.athinput` now has `refinement = static`, root cells 2 M,
+cells M/4 within the cube of half-width 8 M, cells M/8 within 4 M (288 MeshBlocks,
+checked with `athena -m`), and a third region that adds cells M/16 within 2 M when
+`refined_region3/level=5` is given (344 MeshBlocks). Everything else as written on
+2026-11-15: the bound ball R_b = 5 M, e0 = 0.16, sharp surface, lattice of M/4
+(`scratch/core/id/ic_ball/t2_bound_h0p25.*`, 26422 particles), cloud at the finest
+local level (the published rule of the collapse runs, `docs/TESTLOG.md` "Dust collapse:
+cloud coarsening limited to one level", decision at its end), lapse excision at 0.1,
+horizon finder from t = 14 M every 16 cycles, T = 0.5 M (`lapse_leak = 2.0`, amendment
+of entry 3), `tlim` 45 M as the prediction says (the file had 40). Executable: the
+published card executable of b4430da. With cells M/8 the particles inside 4 M sit one
+per eight cells until the ball has contracted: the source is granular there (in the
+Oppenheimer-Snyder runs of `docs/TESTLOG.md`, "cloud at the finest level against
+adaptive cloud level", the centre did not notice this).
+
+Three runs in one card job (estimated 0.22 card-hours from 9.4e6 zone-cycles per
+second, the ES run):
+
+1. `collapse-leak05` (T = 0.5 M, cells M/8): prediction L3 of entry 1, unchanged: the
+   central lapse falls below 0.05; an apparent horizon is found; its mass is within 3
+   per cent of M = 1 once the surface shells are inside and constant to 1 per cent over
+   the last 5 M; the surface shells follow the cycloid to R = 2.5 M with |eps| below 3
+   per cent. Refuted by: no horizon before t = 45 M, a horizon mass off by more than 10
+   per cent, or shells off by more than 10 per cent at R = 2.5 M.
+2. `collapse-mp` (old 1+log, `lapse_leak = 0`, cells M/8): the comparison of entry 1
+   [JUDGEMENT: it also forms a horizon, with larger shell errors (the front of L2
+   reaches the core at t = 3 M)].
+3. `collapse-leak05-fine` (T = 0.5 M, cells M/16 within 2 M), added now. Prediction
+   [JUDGEMENT]: a horizon is found, first within 0.5 M of coordinate time of run 1; its
+   mass at the end is within 1 per cent of M (the Oppenheimer-Snyder runs gave 0.3 to
+   0.5 per cent low at M/13, `docs/TESTLOG.md` "Monte Carlo dust ball", conclusion 4)
+   and the two resolutions differ by less than 1.5 per cent at the end. Refuted by a
+   horizon mass off by more than 2 per cent at M/16 or a difference between the two
+   runs above 3 per cent.
+
+What the lapse condition could show here and nowhere else in the package: after the
+turnaround the excess of the lapse is gone and the condition is plain 1+log started
+from a lapse near 1 at t = 10 M instead of at t = 0. If that late start left the slices
+unable to reach the trapped region before they freeze, run 1 would end without a
+horizon while run 2 finds one: that outcome would be a defect of the condition.
