@@ -308,3 +308,55 @@ in the plateau after USR (cN > 7) the record ratio F_M = <abs(M)/[M]>(s = 1) /
 s), against 2.0 +- 0.15 during the entry and USR (entry 5). Even part of R^NR: the s^2
 coefficient estimated from M16h, (c(1/2) - odd(1)/2)/(1/4), equals the even part of the
 +-1 pair within 30 percent at N_f if the even part is second order; refuted if not.
+
+## Entry 8, 2026-11-19 15:38 UTC: outcomes of the second batch (runs E-20261119-145835-67cde45, final analysis E-20261119-152843-c201aad)
+
+All three runs exited 0 (M16h 817 s; M16pc, M16lc 1688 and 1698 s for 426 steps). Numbers
+from `results/runs/summary_E-20261119-152843-c201aad.json` (it repeats every number of
+entry 6 unchanged); figures `fig/fig_run_*.png`, looked at.
+
+Against entry 5 and entry 7:
+- Halving, momentum record F_M = <abs(M)/[M]>(s = 1)/<abs(M)/[M]>(s = 1/2):
+  entry (cN < 1.4) 1.44 to 1.96, median 1.60: REFUTED (2.0 +- 0.15 predicted): a
+  second-order and a first-order part of comparable size. USR (2.5 < cN < 6.55)
+  0.57 to 1.02, median 1.00: REFUTED: the momentum violation during USR is first order in
+  the amplitude. Plateau after USR (cN > 7) 0.49 to 0.53: confirmed (entry 7, rounding
+  floor over a first-order [M]). F_H median 1.000000002: confirmed (H0).
+- Courant 0.125: Hamiltonian record lower by 17.25 (16 +- 3 predicted, confirmed; twin
+  17.3); Pi off the exact background by 2.52e-5 (confirmed); lockstep record against the
+  reference 2.51e-5, lower by 16.4: the 4.1e-4 of entry 6 (M6) is the time step, now
+  shown. U-A2 per mode: the maximum falls only by 1.79 (2.3e-4, worst mode in the shell
+  |n| = 4), the rms by 9.0 (3.65e-4 to 4.05e-5). Per shell: every shell with |n|^2 <= 14
+  falls from 3.5e-4 to 4.1e-4 down to 1.8e-5 to 3.8e-5 (time step, about fourth order),
+  the shell |n| = 4 (k dx = pi/4) goes from 1.5e-4 to 2.3e-4: there a spatial part of
+  about 2e-4 remains, which at Courant 0.25 partly cancelled the time part. So both of
+  entry 5's alternatives hold, each for its own shells.
+- The momentum plateau during USR is the same at Courant 0.125 (M16pc: at most 3.3e-4
+  and 4.5e-4 in cN 2.5-4 and 4-6.55, M16p 3.2e-4 and 3.4e-4): together with F_M = 1, a
+  first-order truncation part of the stencils at eight cells per shortest wavelength
+  [JUDGEMENT from two runs: spatial because it does not change with the step, first order
+  because it does not change with the amplitude; its convergence with N is not shown
+  here]. In the SR case core found this part only at four cells per wavelength; in USR
+  [M] loses its eps1-carrying terms, so the same truncation is a larger fraction of it.
+- Even part of R^NR: estimated from M16h as (c(1/2) - odd(1)/2)/(1/4), it equals the even
+  part of the +-1 pair within 0.12 percent at N_f (median 0.04 percent): the even part is
+  second order in the amplitude, confirmed (within 30 percent predicted).
+
+Summary of the package [VERIFIED by the runs named]:
+- Background through USR: release core-v0.3 and core_scalar-2 integrate it as the
+  RK4()4[2S] twin of the reference (rounding only; byte-identical between the two), with
+  a time error that is fourth order and largest in Pi after USR (4.1e-4 at Courant 0.25
+  on 32^3, 2.5e-5 at 0.125, 9.3e-8 predicted for 256^3); e-folds within 7e-6.
+- Initial slice at N* and stochastic sources with this potential (core_scalar-2, 32^3):
+  every mode follows the Mukhanov-Sasaki reference through the dip and the USR growth
+  (enhancement 1.2e5 at k = dk to 3.2e7 at 4 dk, 2.8e8 at 8 dk) to 4.1e-4 (M16; 2.3e-4 at
+  Courant 0.125) and 5.9e-3 at four cells per wavelength (M64): U-A2 passes by a factor
+  3.4 to 50. Freezing (U-A3): k <= 3 dk within 0.11 percent of the full MS, against the
+  FLRW lattice's factors 8.8, 2.1, 1.4. Second-order part of R^NR: 2e-5 of the first at
+  R_rms = 0.02 and 0.07, second order (halving).
+- Constraints: at 32^3 the Hamiltonian record is the background's time residual H0
+  (1.08e-7 at Courant 0.25, 6.2e-9 at 0.125) and says nothing about second order; the
+  momentum record is mixed first/second order in the entry, first order (stencil
+  truncation, 3e-4) during USR at eight cells per wavelength, and a rounding floor after
+  USR. The A4 reading "halving s halves <abs(M)/[M]>" holds in none of the three phases
+  at 32^3 for this case: the card ladder (inputs/card_usr.list) is what can show it.
