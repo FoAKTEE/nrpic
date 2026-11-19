@@ -83,8 +83,10 @@ def deck(ic, tlim, filt):
             b.drop(k)
     b.set("output1", file_type="hst", dt=0.5)
     for n, var in enumerate(("z4c", "tmunu_E", "con")):
+        # 17 significant digits: the wave has a relative amplitude of 1e-7, which the
+        # default format (%12.5e, six digits) does not resolve
         b.set(f"output{n+2}", file_type="tab", variable=var, dt=tlim, slice_x2=0.01,
-              slice_x3=0.01)
+              slice_x3=0.01, data_format="%24.16e")
     return b
 
 

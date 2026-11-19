@@ -1,0 +1,66 @@
+{
+ "run_id": "core-20261119-161309-f797997",
+ "owner": "core",
+ "command": [
+  "/data/haiyangw/nrpic/wt/core-cosmo-amr/.venv/bin/python",
+  "/data/haiyangw/nrpic/wt/core-cosmo-amr/tracks/core/analysis/cosmo_amr/t11_restart.py",
+  "--old",
+  "/data/haiyangw/nrpic/wt/core-cosmo-amr/.work/build_cpu/src/athena",
+  "--new",
+  "/data/haiyangw/nrpic/wt/core-cosmo-amr/.work/build_cpu_b/src/athena",
+  "--cores",
+  "8",
+  "--out",
+  "."
+ ],
+ "cwd": "/data/haiyangw/nrpic/scratch/core/core-20261119-161309-f797997",
+ "commit": "f797997",
+ "source_modified_since_commit": false,
+ "inputs": [
+  {
+   "path": "tracks/core/analysis/cosmo_amr/t11_restart.py",
+   "sha256": "57cd17dc20998b05cb035e40a51d6eb7ccb7325c4dd12c4715facbfdc87f501e"
+  },
+  {
+   "path": "tracks/core/analysis/cosmo_amr/t2_flrw.py",
+   "sha256": "745c4173e3b6281d1468022eb3c060a10547357804808e8b901304207041df28"
+  },
+  {
+   "path": "tracks/core/analysis/cosmo_amr/t9_peak.py",
+   "sha256": "f5451e1e6ce16b2d7e1222b2f481c2dae6caeb424e03a9481d5cc9ac53bfb711"
+  },
+  {
+   "path": "tracks/core/analysis/cosmo_amr/amrlib.py",
+   "sha256": "0b0c97e9ca666d8e5f55e3375f289d080df29d0d658702acc54f50eff75b08d1"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/scratch/A-emd-pbh/A-emd-pbh-20261115-154740-69e8f8b/ic_peak0.5/particles.nrp",
+   "sha256": "334f8385401379d063b3f9fd756e0370aa2bc46788e09226dbe3863a5fe2c453"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/scratch/A-emd-pbh/A-emd-pbh-20261115-154740-69e8f8b/ic_peak0.5/fields.bin",
+   "sha256": "cd3c87a91d98350ae0a7ba83888659fe2b0c0192b4190f96fcbe55654fb11739"
+  },
+  {
+   "path": ".work/build_cpu/src/athena",
+   "sha256": "c1177609fdd878e59a262aff88d1cdd3cd17c721ef15615cac7e843580ee8056"
+  },
+  {
+   "path": ".work/build_cpu_b/src/athena",
+   "sha256": "745860125ef65bea7fdde0eb9fb9fdaebcfc3c2a3d8d8ca93e6c98ff768a4546"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/wt/core-cosmo-amr/.venv/bin/python",
+   "sha256": "d6bca2b84e73c7775a0dd5e6a76899cfe4ee62863d7c8f88513811d1fda23f49",
+   "role": "executable"
+  }
+ ],
+ "output_directory": "/data/haiyangw/nrpic/scratch/core/core-20261119-161309-f797997",
+ "purpose": "T11b of cosmo-amr: restarts on adaptive periodic meshes, rerun with the corrected script (nlim on the command line, records paired in order, MeshBlock schedule, round-off departures) plus a static patch and a uniform mesh with the light-speed step; executables of T1-T9 (old) and with the restart counters (new); hand-written manifest because nrpic-run refused (16 cores busy in live local runs of core)",
+ "kind": "scouting",
+ "tag": "cosmo-amr-T11b",
+ "state": "running",
+ "cores": 8,
+ "card_hours": 0.0,
+ "started_utc": "2026-11-19T16:13:09Z"
+}
