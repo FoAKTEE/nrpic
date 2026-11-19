@@ -1,0 +1,138 @@
+{
+  "schema": "nrpic-run-manifest/1",
+  "run_id": "C-20261119-143041-f94e350",
+  "track": "C-sidm",
+  "gate": "G1",
+  "kind": "scouting",
+  "purpose": "box_rerun R4: T10 reproducibility (MeshBlocks 1, 8, 64; restarts; seed) with coll_energy = particle, processor executable of core/collisions-2",
+  "preregistered_in": null,
+  "launcher": "local",
+  "command": [
+    "python3",
+    "tracks/C-sidm/box_tests/scripts/t10.py",
+    "--exe",
+    "/data/haiyangw/nrpic/scratch/core/exe/core_collisions-2/athena_cpu",
+    "--tag",
+    "c2particle",
+    "--deck",
+    "tracks/C-sidm/box_tests/inputs/box_c2.athinput",
+    "--set",
+    "particles/coll_energy=particle"
+  ],
+  "cwd": ".",
+  "git": {
+    "sha": "f94e35003ed353b590594a0fdb06e52e117bdbfa",
+    "branch": "track/C-sidm",
+    "dirty": false,
+    "package": [
+      "tracks/C-sidm/box_tests"
+    ],
+    "outside_package": {
+      "count": 20,
+      "first": [
+        " M tracks/C-sidm/runs/C-sidm-20261115-120715-38ab057/manifest.json",
+        " M tracks/C-sidm/runs/C-sidm-20261115-120717-38ab057/manifest.json",
+        " M tracks/C-sidm/runs/C-sidm-20261115-120722-38ab057/manifest.json",
+        " M tracks/C-sidm/runs/C-sidm-20261115-121400-d463e1a/manifest.json",
+        " M tracks/C-sidm/runs/C-sidm-20261115-121412-d463e1a/manifest.json",
+        " M tracks/C-sidm/runs/C-sidm-20261115-121524-5cebcf5/manifest.json",
+        " M tracks/C-sidm/runs/C-sidm-20261115-121536-5cebcf5/manifest.json",
+        " M tracks/C-sidm/runs/C-sidm-20261115-121748-4e8d6b5/manifest.json",
+        " M tracks/C-sidm/runs/C-sidm-20261115-121811-38da24f/manifest.json",
+        " M tracks/C-sidm/runs/C-sidm-20261115-121859-690ff91/manifest.json",
+        " M tracks/C-sidm/stage/G0/CHECKLIST.md",
+        " M tracks/C-sidm/stage/G0/EVIDENCE.md",
+        " M tracks/C-sidm/stage/G0/OPEN.md",
+        " M tracks/C-sidm/stage/G0/VERIFY_RESULTS.json",
+        " M tracks/C-sidm/stage/G0/VERIFY_RESULTS.md",
+        " M tracks/C-sidm/stage/G1/CHECKLIST.md",
+        " M tracks/C-sidm/stage/G1/STATUS.md",
+        "?? tracks/C-sidm/stage/G1/EVIDENCE.md",
+        "?? tracks/C-sidm/stage/G1/OPEN.md",
+        "?? tracks/C-sidm/stage/G1/REVIEW.md"
+      ]
+    },
+    "merge_base_main": "27b2ced9be0f020a4206d89e3cc982ada5c4367c",
+    "worktree": "wt/C-sidm"
+  },
+  "code": {
+    "core_tag": "core-v0.3",
+    "athenak_upstream_sha": "c5a0d7f",
+    "kokkos_sha": "6739bc623081648af9e752b616d9671527922cbf",
+    "problem": null
+  },
+  "env": {
+    "host": "anta",
+    "env_hash": "33c1dbb6673b68919eaa332b0add0b58aeac8be843f2071b9d06e2e0e397a96d",
+    "machine_file_sha256": "0321f40f4caeeb2a36624a9fa9809e60bad31071f366b3517ba23ad45698d2d7",
+    "uv_lock_sha256": "5417f6ba318b914aa3800e5d55f7b11fdd8df13c2688bdda7d419240aa1d5863",
+    "track_requirements_sha256": null,
+    "container_digest": null,
+    "compiler": "g++ 11.4.0",
+    "mpi": "none (Athena_ENABLE_MPI=OFF)",
+    "gpu": null,
+    "python": "3.10.12 /data/haiyangw/nrpic/wt/C-sidm/.venv"
+  },
+  "input": null,
+  "inputs": [
+    {
+      "path": "tracks/C-sidm/box_tests/inputs/box_c2.athinput",
+      "role": "input",
+      "sha256": "5277238d71d587e6932feedf5ca45c74fea1a34d65bea5f16194e24597578678",
+      "bytes": 2562,
+      "tracked": true
+    },
+    {
+      "path": "/data/haiyangw/nrpic/scratch/core/exe/core_collisions-2/athena_cpu",
+      "role": "input",
+      "sha256": "adbf1b165e524b0cbdc705695c3a350d184b1212c920dec3d5a04ade06186e8d",
+      "bytes": 247257128,
+      "tracked": false,
+      "location": "main checkout data root"
+    },
+    {
+      "path": "tracks/C-sidm/box_tests/scripts/t10.py",
+      "role": "argv",
+      "sha256": "4e915e02d7546bf8128e239e19e8bf1331b1679ee2b598de1a6b4df05cbbc7e5",
+      "bytes": 8156,
+      "tracked": true
+    }
+  ],
+  "batch_entries": null,
+  "resources": {
+    "nodes": 1,
+    "gpus": 0,
+    "cores": 4,
+    "walltime_s": null,
+    "wall_limit": null,
+    "segments_max": null,
+    "gpu_hours_requested": 0.0,
+    "gpu_hours": null,
+    "particles": null
+  },
+  "slurm": null,
+  "outputs": {
+    "dir": "scratch/C-sidm/C-20261119-143041-f94e350",
+    "sha256sums": "sha256sums.txt",
+    "sha256sums_sha256": null,
+    "bytes": null,
+    "files": null
+  },
+  "status": "running",
+  "exit_code": null,
+  "registered": "2026-11-19T14:30:41Z",
+  "started": null,
+  "ended": null,
+  "parents": [],
+  "notes": "",
+  "budget_at_submit": {
+    "gpu_hours_allotted": 45.0,
+    "cores_allotted": 16,
+    "gpu_hours_used": 0.0142,
+    "gpu_hours_reserved": 0.0,
+    "gpu_hours_without_gate": 0.0,
+    "cores_busy": 0,
+    "runs": 80,
+    "allotment_from": "coord/DECISIONS/0006-compute-budget.md + 0014-budgets-after-wave-1.md"
+  }
+}
