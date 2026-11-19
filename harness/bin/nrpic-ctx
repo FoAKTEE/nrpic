@@ -13,7 +13,8 @@ Read commands (never write anything, never merge; other owners are read through 
                                             from the JSON of a Claude Code SessionStart hook on stdin
   digest [--week YYYY-Www] [--write]        weekly digest; --write puts it into coord/digests/ (orch)
   audit [--since REV] [--branch B]          commits touching foreign paths, files above 1 MB, tracked
-                                            files under ignored roots (+ notes); exit 1 on findings
+                                            files under ignored roots, run manifests with a non-standard
+                                            status word from wave 2b on (+ notes); exit 1 on findings
   owners                                    owner ids, branches and worktrees
   template NAME [--id ID] [--gate G]        print a harness template with the placeholders filled in
 
@@ -40,7 +41,17 @@ import subprocess
 import sys
 import time
 
+sys.path.insert(0, os.path.join(os.path.dirname(os.path.realpath(__file__)), "..", "lib"))
+try:
+    import nrpic_harness as H          # status words and run dates of manifests (shared with nrpic-run)
+except ImportError:                    # a copy of nrpic-ctx without harness/lib/ beside it
+    H = None
+
 MAIN = "main"
+# status words of run manifests that nrpic-run reads without a default (audit section 4)
+STANDARD_STATUS = getattr(H, "STANDARD_STATUS_WORDS", ("completed", "failed", "stopped", "superseded",
+                                                        "registered", "running", "submitted"))
+WAVE_2B_START = getattr(H, "WAVE_2B_START", "20261119")       # decision 0016 item 3
 TYPES = ("info", "request", "proposal", "interface-change", "blocker", "kb-request")
 NAME_RE = re.compile(r"^(\d{8}T\d{4}(?:\d{2})?Z)__to-([A-Za-z0-9-]+)__([A-Za-z0-9][A-Za-z0-9._-]*)\.md$")
 SLUG_RE = re.compile(r"^[a-z0-9][a-z0-9.-]{0,59}$")
@@ -395,16 +406,51 @@ def collect_messages(repo):
     return sorted(msgs.values(), key=lambda m: (m["stamp"], m["path"])), problems
 
 
+def ack_key(path):
+    """The message an acknowledgement line names, as the path `tracks/<ID>/outbox/<file>`. Accepted
+    forms: that path; the same without the leading `tracks/` (`<ID>/outbox/<file>`, as kb wrote in
+    wave 1); `<branch>:<path>`; a leading `./` or `/`; backquotes. A bare file name stays a file name
+    (matched against the message's name)."""
+    p = path.strip().strip("`").strip()
+    if ":" in p:
+        p = p.rsplit(":", 1)[1]
+    while p.startswith("./"):
+        p = p[2:]
+    p = p.lstrip("/")
+    if not p.startswith("tracks/") and re.match(r"^[A-Za-z0-9-]+/outbox/[^/]+$", p):
+        p = "tracks/" + p
+    return p
+
+
 def parse_acks(text, into, where):
     for ln in (text or "").splitlines():
         s = ln.strip()
         if not s or s.startswith("#"):
             continue
         f = s.split("\t") if "\t" in s else s.split(None, 2)
-        path = f[0].strip()
+        raw = f[0].strip()
+        path = ack_key(raw)
         when = f[1].strip() if len(f) > 1 else ""
         if path not in into:
-            into[path] = {"when": when, "where": where}
+            into[path] = {"when": when, "where": where, "raw": raw}
+
+
+def ack_of(acks, m):
+    """The acknowledgement record of message m in one owner's acks (by path, else by file name), or None."""
+    return acks.get(m["path"]) or acks.get(m["name"])
+
+
+def noncanonical_acks(text):
+    """Lines of an inbox_acks.txt whose message path is not written as `tracks/<ID>/outbox/<file>`."""
+    out = []
+    for ln in (text or "").splitlines():
+        s = ln.strip()
+        if not s or s.startswith("#"):
+            continue
+        raw = (s.split("\t") if "\t" in s else s.split(None, 2))[0].strip()
+        if raw != ack_key(raw) or not raw.startswith("tracks/"):
+            out.append(raw)
+    return out
 
 
 def acks_of(repo, oid, include_worktree=False):
@@ -432,9 +478,10 @@ def inbox_for(repo, oid, msgs, include_acked=False, mine_from_worktree=False):
     for m in msgs:
         if m["from"] == oid or m["to"] not in (oid, "all"):
             continue
-        if m["path"] in acks and not include_acked:
+        rec = ack_of(acks, m)
+        if rec and not include_acked:
             continue
-        out.append(dict(m, acked=acks.get(m["path"])))
+        out.append(dict(m, acked=rec))
     return out
 
 
@@ -566,7 +613,7 @@ def board_text(repo):
         L += ["| Sent | From | To | Type | Subject | Reply by | Acknowledged by | Waiting for |", "|---|---|---|---|---|---|---|---|"]
         for m in shown:
             rec = recipients(repo, m)
-            done = [o for o in rec if m["path"] in acks.get(o, {})]
+            done = [o for o in rec if ack_of(acks.get(o, {}), m)]
             wait = [o for o in rec if o not in done]
             rb = m["reply_by"]
             if rb and wait and rb < today and m["type"] != "info":
@@ -758,6 +805,27 @@ def audit_text(repo, since=None, only=None):
         L.append("")
     hits = under
     findings += len(hits)
+
+    # 4. status words of run manifests (E's proposal after wave 1; decision 0016 item 3)
+    L += ["## 4. Run manifests with a non-standard status word", "",
+          f"Every `tracks/<ID>/runs/<run_id>/manifest.json` on every branch of its owner. Standard: "
+          f"{', '.join(STANDARD_STATUS)} (what `nrpic-run` writes and reads without a default). Runs of waves 1 "
+          f"and 2 (dated before {WAVE_2B_START[:4]}-{WAVE_2B_START[4:6]}-{WAVE_2B_START[6:]}) were registered by "
+          "hand and count as registered (decision 0016): summed per owner, not counted. From wave 2b on runs go "
+          "through `nrpic-run submit` and `finish`: each such manifest is a finding.", ""]
+    old, new = status_word_rows(repo, only)
+    for oid, words in old:
+        L.append(f"- {oid}, waves 1 and 2 (not counted): " + ", ".join(f"{w} x{n}" for w, n in words))
+    if old:
+        L.append("")
+    for oid, b, rid, raw, read in new:
+        L.append(f"- `{b}` `tracks/{oid}/runs/{rid}/manifest.json`: status {raw}{read}; close the run with "
+                 "`nrpic-run finish` or write a standard word")
+    if not new:
+        L.append("From wave 2b on: none.")
+    L.append("")
+    n4 = len(new)
+    findings += n4
     must = {}
     for o in owners:
         for rel in ("STATUS.md", "inbox_acks.txt", "outbox/20260101T0000Z__to-all__x.md", "runs/X-20260101-000000-abcdef0/manifest.json",
@@ -813,10 +881,69 @@ def audit_text(repo, since=None, only=None):
     for b in brs:
         if owner_of(b) is None:
             notes.append(f"branch `{b}` belongs to no owner")
+    for oid in owners:
+        seen = set()
+        for b in repo.owner_branches(oid):
+            text = repo.show_text(b, f"tracks/{oid}/inbox_acks.txt")
+            odd = noncanonical_acks(text)
+            if odd and text not in seen:
+                seen.add(text)
+                notes.append(f"`tracks/{oid}/inbox_acks.txt` on `{b}`: {len(odd)} line(s) name the message other than as "
+                             f"`tracks/<ID>/outbox/<file>` (e.g. `{odd[0]}`); read as the same message "
+                             "(`nrpic-ctx ack` writes the full path)")
     L += ["## Notes (not counted)", ""] + ([f"- {n}" for n in notes] if notes else ["None."]) + [""]
     L += ["Not checked by this command: numbers in notes without a run id (read at the stage check).", "",
-          f"Findings: {findings} (section 1: {n1}, section 2: {n2}, section 3: {len(hits)}); notes: {len(notes)}.", ""]
+          f"Findings: {findings} (section 1: {n1}, section 2: {n2}, section 3: {len(hits)}, section 4: {n4}); "
+          f"notes: {len(notes)}.", ""]
     return "\n".join(L), findings
+
+
+def status_word_rows(repo, only=None):
+    """Run manifests whose status is not a standard word: ([(owner, [(word, count)])] for the runs of
+    waves 1 and 2, [(owner, branch, run id, word, how nrpic-run reads it)] for later runs). A run seen on
+    several branches is reported once, with the first non-standard word found (canonical branch first)."""
+    old, new = [], []
+    for oid in repo.owners():
+        brs = [b for b in repo.owner_branches(oid) if only is None or b == only]
+        ents = []
+        for b in brs:
+            for e in repo.ls_tree(b, f"tracks/{oid}/runs"):
+                parts = e["path"].split("/")
+                if e["type"] == "blob" and len(parts) == 5 and parts[4] == "manifest.json":
+                    ents.append((b, parts[3], e["sha"]))
+        texts = repo.blobs([s for _, _, s in ents])
+        runs = {}
+        for b, rid, sha in ents:
+            try:
+                m = json.loads(texts.get(sha) or "")
+            except ValueError:
+                m = None
+            if isinstance(m, dict):
+                raw = m.get("status")
+                ok = isinstance(raw, str) and raw in STANDARD_STATUS
+                word = repr(raw) if raw is not None else "none"
+            else:
+                m, ok, word = None, False, "(manifest not a JSON object)"
+            r = runs.setdefault(rid, {"bad": None, "m": m})
+            if not ok and r["bad"] is None:
+                r["bad"] = (b, word, m)
+        counts = {}
+        for rid, r in sorted(runs.items()):
+            if r["bad"] is None:
+                continue
+            b, word, m = r["bad"]
+            date = H.run_date(rid, m) if H else (re.search(r"(\d{8})-\d{6}-[0-9a-f]{7,40}$", rid) or [None, None])[1]
+            if date and date < WAVE_2B_START:
+                counts[word] = counts.get(word, 0) + 1
+                continue
+            read = ""
+            if H and isinstance(m, dict):
+                v = H.manifest_view(m, repo.main)
+                read = f" (read as {v['status']})"
+            new.append((oid, b, rid, word, read))
+        if counts:
+            old.append((oid, sorted(counts.items(), key=lambda x: (-x[1], x[0]))))
+    return old, new
 
 
 # ---------------------------------------------------------------------------------------- digest
@@ -866,7 +993,7 @@ def digest_text(repo, week=None):
         if m["type"] == "info":
             continue
         rec = recipients(repo, m)
-        done = [o for o in rec if m["path"] in acks.get(o, {})]
+        done = [o for o in rec if ack_of(acks.get(o, {}), m)]
         wait = [o for o in rec if o not in done]
         rb = m["reply_by"] + (" **overdue**" if m["reply_by"] and wait and m["reply_by"] < today else "")
         L.append(f"| {stamp_text(m['stamp'])} | {m['from']} | {m['to']} | {m['type']} | {cell(m['slug'], 50)} | {rb} | "
