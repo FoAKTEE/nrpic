@@ -14,7 +14,7 @@ mkdir -p "$OUT"
 export OMP_NUM_THREADS=4 OPENBLAS_NUM_THREADS=4 MKL_NUM_THREADS=4
 cd "$WT"
 [[ -f $OUT/wave32.nrp ]] || python3 problems/newton/make_ic.py wave --out "$OUT/wave32.nrp" --n 32
-[[ -f $OUT/box.nrp ]] || python3 tracks/core/analysis/collisions/make_box.py "$OUT/box.nrp" twotemp 20000
+[[ -f $OUT/box.nrp ]] || python3 tracks/core/analysis/collisions/make_box.py "$OUT/box.nrp" twotemp 20000 --theta 0.1 --theta2 0.3
 if [[ ! -d $OUT/st ]]; then
   python3 problems/ic/make_ic.py st --yc 0.819 --N 100000 --sampler stratified --seed 1 --out "$OUT/st"
 fi
