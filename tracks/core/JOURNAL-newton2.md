@@ -417,3 +417,12 @@ script on the same directory ran outside the registry before (`scratch/core/tmp/
 - None of the new options appears in these inputs, so the Fourier solver and the groups
   are not exercised here; the plane-wave input `newton_wave` runs the multigrid path through
   the new branch in `NrpicNewtonPotential` and the group calls with `newton_ngroup = 0`.
+
+### Amendment to the T5 measurement, written before T5 ran (16:15Z)
+
+The measured turnaround mass counts a particle once its radial velocity is negative at a
+snapshot, so between snapshots it lags the closed form by up to one snapshot interval
+(tlim/50: about 1 per cent of M_ta at a/a_i = 2). The prediction of T5 is therefore judged
+at the snapshots nearest to a/a_i = 2 and 4, where the closed form is evaluated at the same
+time (`dev_snap_near_*` of `t5_infall.json`); the interpolated values are reported beside.
+The tolerances (0.3 per cent against the closed form, 1e-3 between the placements) stand.

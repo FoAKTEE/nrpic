@@ -119,8 +119,17 @@ def main():
                    momentum_max=float(max(np.max(np.abs(hst["P_%s" % k])) for k in "xyz")),
                    u_max=float(rows[:, 6].max()))
         for aa in (2.0, 3.0, 4.0):
+            # interpolated between snapshots: the measured count lags the closed form by
+            # up to one snapshot interval (a particle is seen to have turned around only
+            # at the next snapshot)
             out["mta_run_a%g" % aa] = float(np.interp(aa, rows[:, 1], rows[:, 2]))
             out["mta_closed_a%g" % aa] = float(mta_closed(setup, m, tta, aa)[0])
+            # without the lag: both at the snapshot nearest to a
+            k = int(np.argmin(np.abs(rows[:, 1] - aa)))
+            out["snap_a_near_%g" % aa] = float(rows[k, 1])
+            out["mta_run_snap_near_%g" % aa] = float(rows[k, 2])
+            out["mta_closed_snap_near_%g" % aa] = float(rows[k, 3])
+            out["dev_snap_near_%g" % aa] = float(dev[k])
         res[name] = out
         ax = axs[0]
         ax.plot(rows[:, 1], rows[:, 2], color=cols[name], label=name.replace("pm_", "seed at a "))
@@ -135,6 +144,10 @@ def main():
                 (hst["C"] - hst["C"][0])/np.max(np.abs(hst["W"])), color=cols[name])
     res["placements_rel_diff_a2"] = res["pm_vertex"]["mta_run_a2"]/res["pm_centre"]["mta_run_a2"] - 1
     res["placements_rel_diff_a4"] = res["pm_vertex"]["mta_run_a4"]/res["pm_centre"]["mta_run_a4"] - 1
+    for aa in (2, 4):
+        res["placements_rel_diff_snap_near_%d" % aa] = \
+            res["pm_vertex"]["mta_run_snap_near_%d" % aa] \
+            / res["pm_centre"]["mta_run_snap_near_%d" % aa] - 1
     axs[0].set_xlabel(r"$a/a_i$", labelpad=-1)
     axs[0].set_ylabel(r"$M_{\rm ta}/M$")
     axs[0].legend(loc="upper left", fontsize=8)
