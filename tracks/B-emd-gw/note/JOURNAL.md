@@ -318,3 +318,16 @@ double-precision dumps gives a largest value 4.2e-6 (eps = 1) and 1.2e-8 (eps = 
 helper's README states 3.5e-6 and 8.8e-9; the review did not confirm these. The definition
 behind the helper's number is not in its summary; the note states only the ratio of kinetic
 to gradient energy, which is normalization-free.
+
+## Second registered run (14:30Z)
+
+B-20261119-142957-ae8b4e2 (commit ae8b4e2, exit 0) supersedes B-20261119-142525-2a55af7.
+Reading the rendered pages showed four symbol collisions (3.6): the prime of the code's
+coordinates against the conformal-time derivative, M (displacement gradient) against the mass,
+A (residual metric) against the linear-wave amplitude, h (mesh spacing) against the metric
+perturbation, alpha (deformation) against the lapse; renamed to x_T, D, h^R, Delta x,
+alpha_e in the text, the ledger and the parameter table; the Sec. V subsections retitled
+along one axis. All figure PNGs of the two runs are byte-identical; numbers unchanged.
+`figures/` and `tables/` are copies of this run. Final compile: 17 pages, 0 undefined, 0
+overfull hboxes, checker clean in the main text; pages 1-17 read (80 dpi), the changed ones
+again after the run.

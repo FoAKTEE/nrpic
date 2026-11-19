@@ -49,8 +49,10 @@ wave-2 runs listed in `scripts/common.py`); the run takes about two minutes on o
 ## State (2026-11-19, wave 2b, package note2)
 
 Done (each looked at or read):
-- Registered run B-20261119-142525-2a55af7 (commit 2a55af7, exit 0): all figures, schematics,
-  ledger and parameter tables; `figures/` and `tables/` are copies of its outputs.
+- Registered run B-20261119-142957-ae8b4e2 (commit ae8b4e2, exit 0): all figures, schematics,
+  ledger and parameter tables; `figures/` and `tables/` are copies of its outputs. It
+  supersedes B-20261119-142525-2a55af7 (same figures byte for byte; ledger and parameter
+  labels renamed after symbol collisions were found on the rendered pages).
 - Note v1, 17 pages: new Sec. III B paragraph and equation (the spatial-gauge piece), III C
   (Newtonian mode, data flow), IV F (Newtonian mode of the code), IV G (second readings),
   V A-C (the first source before shell crossing, the spatial gauge, through shell crossing),
@@ -98,38 +100,58 @@ Not done: the reviewer subagents of step 4 of the paper-writing procedure for a 
 
 ## Requests
 
-To the lead of B-emd-gw:
-1. `stage/G0/OPEN.md`: items 1 and 2 are delivered (note, schematics); item 9 is answered by
-   run B-20261115-164616-a6d9477 of the first-source helper (the late TT rise is not the
-   spatial-gauge piece; it sits near the grid scale); `RISKS.md` R4 carries the old reading.
-2. Correct the four statements that the files contradict (`tables/claims.md`):
-   `stage/G0/REPORT.md:88` (lapse error 1.9e-7 at a = 4, 7.0e-8 at a = 36, not "1e-7");
-   `stage/G1/STATUS.md:22` (Fourier-symbol agreement within 1 % except the production phase
-   at 64 cells, 9.5 %); `stage/G1/STATUS.md:56` (the constraint numbers are those of the
-   first record, t = 100 Mpc/h; at the end of the expansion 3.1e-8, 2.5e-9, 3.0e-9, not
-   falling from 16 to 32 cells); `stage/G1/STATUS.md:47` (the Newtonian mode and its
-   quadrupole history are on main since core-v0.3). Wording: `REPORT.md:50` gives box means
-   as "void" values.
-3. Write the "Decision requested" paragraph of `stage/G0/STAGE_REPORT.md` (a draft is there),
-   re-judge C20 (STATUS, JOURNAL, HANDOFF current for wave 2) and C18 when the verifier
-   writes `VERIFIER_REPORT.md`.
-4. When the first-source and Newtonian-mode runs finish, add their run ids to
-   `scripts/common.py`, rerun `scripts/run_all.py` through `nrpic-run`, and extend Sec. IV
-   and V of the note.
+To the lead of B-emd-gw (wave 2b):
+1. `../WRITING_GUIDE.md` (outside this package): allowed numbers for v1 -- eps = 0.1, 0.3, 1
+   and the meshes 64^3, 32^3 (figure parameters of `fig_scan`, `fig_gauge`); N = 16, 32, 64
+   (Newtonian pancake) and 32, 64, 128 (ellipsoid); the exact factors a = 1 + 1/delta,
+   (k Delta x)^2/12, 1 + eps^2; the slopes -2 and -1 of `fig_newton`; "seven-point"
+   (structural). Figures table: rows for `fig_scan` (the strain follows s g over the first
+   decade of expansion, the null stays at rounding, two meshes agree), `fig_gauge` (the
+   computed piece reconciles two gauges; the magnetic Weyl part agrees where the strain does
+   not), `fig_newton` (the error is the stencil's force excess; the crossing time converges
+   at second order), `schem_dataflow`. Outline: Sec. IV F (the Newtonian mode of the code)
+   and Sec. V (the first source in full relativity; subsections along "aspects of the
+   strain": against the second-order formula, its spatial gauge, through shell crossing).
+   Forbid list: add `newton_tests|fslib`.
+2. `../NOTATION.md`: add c_+ (cosine part of the + amplitude at (k,k,0)), s = -(5/6) phi_x
+   phi_y (now used in Sec. II B too; h_s is gone), x_T, xi, D_ki = d_i xi_k, J = 1 + D,
+   h^R (TT plus homogeneous traceless part), h^L, G_tot ("the spatial-gauge piece", Eq. 8),
+   F ("the force factor", Eq. 10), Delta x (mesh spacing; h stays the metric perturbation),
+   alpha_e (deformation of the ellipsoid; alpha stays the lapse), t_k, M (mass only).
+   Renames: h_s -> s; code coordinates x' -> x (prime is the conformal-time derivative);
+   displacement gradient M -> D (M is the mass); residual metric A -> h^R (A is the
+   linear-wave amplitude); mesh spacing h -> Delta x; deformation alpha -> alpha_e.
+3. `stage/G1/OPEN.md` items 3 and 4 are delivered (schematics; G1 sections), item 9 in the
+   note's text (the gauge piece is described and used; its adoption into `gw_diag` is the
+   lead's); the G1 checklist can cite run B-20261119-142957-ae8b4e2 and `note/main.pdf`.
+4. A test written in advance for the post-hoc (1 + eps^2) reading (JOURNAL, "Found while
+   writing"), to be put into `first_source/JOURNAL.md` before the delta = 0.0025 runs are
+   analysed (their initial data exist: run B-20261119-141249-2af0df8): at fixed a in 20-60
+   the departure c_+/(s g) - 1 at delta = 0.0025 is 1/16 of that at delta = 0.01 (refuted
+   outside 1/12-1/20), and divided by (1 + eps^2) it is the same for eps = 0.3 and 1 to 5
+   percent.
+5. `stage/REVIEW-wave2.md` quotes raw/corrected gauge differences at a = 5 and 20 (0.131,
+   1.454; 0.005, 0.031 percent) that differ from the files (0.121, 1.468; 0.002, 0.030
+   percent, helper summary and this package agree) and N3 constants from its own quadrature
+   (0.0620684, 0.0772146) next to the helper's averaged values (0.0618, 0.0764) that the note
+   prints; worth a line of erratum there.
+6. Ask the first-source helper for the definition behind rho_GW/rho_bar = 3.5e-6 and 8.8e-9:
+   (rho_kin + rho_grad)/rho_bar from the per-dump files gives 4.2e-6 and 1.2e-8 (JOURNAL).
+7. When the oblique and expanding-box waves (package `waves`, runs in flight) and the
+   round-2 scan (jitter, particle number, delta = 0.0025) finish, add their run ids to
+   `scripts/common.py`, a subsection of Sec. IV A and of Sec. V, and rerun `run_all.py`.
 
-To orch:
-5. `nrpic-stage verify` fails its `clean` and `runs` checks whenever another helper of the
-   same owner has an uncommitted file or a run in flight in the shared worktree, so a helper
-   cannot obtain a passing verify for its own package; suggest restricting both checks to
-   the packages and finished runs named, or reporting other helpers' state as a warning.
-6. The paper-writing procedure for a new paper (step 4, reviewer subagents) needs a
-   subagent tool that helper sessions do not have; either grant it or record the step as the
-   lead's.
+To orch (repeat of wave 2, if still open):
+8. `nrpic-stage verify` fails its `clean` and `runs` checks whenever another helper of the
+   same owner has uncommitted files or runs in flight in the shared worktree (the case
+   throughout this package); restricting both checks to the packages and finished runs named
+   would let a helper verify its own package.
 
-To kb:
-7. The key references are still raw-store locators only (G0 item C2). This package read
-   2212.00425 and 2312.12499 at the abstract only (method: N-body; hybrid N-body and lattice).
+To core:
+9. Release of `core/requests-b` (corrected oblique generator, double-precision mesh output,
+   time label of Psi_4, thin boxes and jitter) into main, so the note can describe them as
+   part of the code rather than of a tested branch.
 
-To core (repeat of wave 1):
-8. The polarization sign of `athenak/src/pgen/tests/z4c_linear_wave.cpp` lines 107-112 is
-   still unfixed on main; the oblique-wave test of G1 waits for it.
+To kb (repeat):
+10. The key references of Track B as an indexed snapshot (G0 item C2); the note cites
+    2212.00425 and 2312.12499 from their abstracts only.
