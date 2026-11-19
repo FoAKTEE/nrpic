@@ -97,7 +97,8 @@ TEX_FONT = re.compile(r"\\(?:mathrm|mathcal|mathbf|mathbb|mathtt|mathsf|mathit|m
 
 
 def norm_title(t):
-    t = TEX_FONT.sub("", t or "")
+    t = re.sub(r"<[^<>]{0,400}>", "", t or "")                       # MathML / HTML tags of INSPIRE titles
+    t = TEX_FONT.sub("", t)
     t = TEX_ACCENT.sub(r"\1", t)
     t = re.sub(r"\\[,;:!]", "", t).replace("{", "").replace("}", "")
     t = re.sub(r"\\([A-Za-z]+)", r" \1 ", t)                         # \Lambda -> lambda
