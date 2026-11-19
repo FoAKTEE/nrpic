@@ -284,3 +284,178 @@ class Twin:
             out["w"][it] = w
             out["ref"][it] = self.norm*w*sol["R"][it]
         return out
+
+
+# ----------------------------------------------------------------------------------------
+# The same system with the time integration of the code
+
+#: low-storage RK4()4[2S] of Ketcheson (2010), the coefficients of athenak/src/driver/
+#: driver.cpp (integrator = rk4)
+RK4_2S = dict(
+    gam0=(0.0, 0.121098479554482, -3.843833699660025, 0.546370891121863),
+    gam1=(1.0, 0.721781678111411, 2.121209265338722, 0.198653035682705),
+    beta=(1.193743905974738, 0.099279895495783, 1.131678018054042, 0.310665766509336),
+    delta=(1.0, 0.217683334308543, 1.065841341361089, 0.0))
+
+
+class CodeTwin(Twin):
+    """The linear twin with the time integration of the code: the stages of the driver's
+    rk4 at the steps of the run, and the background the mesh itself carries.
+
+    Three sets of variables advance together, as in the code:
+      lockstep data of the sources (scalar_field_noise.cpp, level 0): phi_b, Pi_b, ln a
+        from the Friedmann equations, the mode functions R, dR/dtau;
+      the homogeneous part of the mesh fields: phi_0, Pi_0, chi_0, Khat_0, Theta_0 with
+        the equations of the code (K_0 = Khat_0 + 2 Theta_0 is not tied to the energy
+        density: the Hamiltonian residual H0 = (2/3) K_0^2 - 16 pi E_0 of the time
+        integration is part of the solution);
+      the first-order perturbations of the wave vectors about that homogeneous part
+        (the equations of the module docstring with -3H -> K_0, a^-2 -> chi_0, Pi_b ->
+        Pi_0, and the perturbation of chi itself as the variable, as in the code),
+        kicked with the coefficients Pi_b/H, eps1 and the source S of the lockstep
+        data.  In the returned y the third entry is delta chi (Twin: c).
+    integrate_steps(times) takes the times of the steps of the run (the time column of
+    <basename>.sf.hst) and returns the state at chosen cycles."""
+
+    def _rhs_code(self, yy):
+        m = self.m
+        phib, pib, lnab, phi0, pi0, chi0, kh0, th0 = yy[:8]
+        z = yy[8:].view(complex).reshape(m, 2 + NV)
+        r, dr, y = z[:, 0], z[:, 1], z[:, 2:]
+        out = np.empty_like(yy)
+        # lockstep background
+        hb, e1, e2 = self.bg(phib, pib)
+        out[0], out[1], out[2] = pib, -3.0*hb*pib - self.dv(phib), hb
+        # homogeneous part of the mesh
+        k0 = kh0 + 2.0*th0
+        v0, vp, vpp = self.v(phi0), self.dv(phi0), self.d2v(phi0)
+        e0 = 0.5*pi0*pi0 + v0
+        out[3] = pi0
+        out[4] = k0*pi0 - vp
+        out[5] = (2.0/3.0)*chi0*k0
+        out[6] = k0*k0/3.0 + 4.0*np.pi*(2.0*pi0*pi0 - 2.0*v0) \
+            + self.k1*(1.0 - self.k2)*th0
+        out[7] = self.z*(k0*k0/3.0 - 8.0*np.pi*e0 - (2.0 + self.k2)*self.k1*th0)
+        # mode functions and sources (lockstep)
+        zo = out[8:].view(complex).reshape(m, 2 + NV)
+        fric = (3.0 - e2)*hb
+        zo[:, 0] = dr
+        zo[:, 1] = -fric*dr - self.kmode2*np.exp(-2.0*lnab)*r
+        w, w1, w2 = self.window(lnab, hb, e1, e2)
+        src = self.norm*(r*w2 + (2.0*dr + fric*r)*w1) if self.kicks else 0.0*r
+        # perturbations about the homogeneous part of the mesh
+        # the code evolves chi itself: the third variable is x = delta chi here (not c
+        # = x/chi_0), so that the stages of the integrator act on the same variables
+        # as in the code (the two differ at the order of the time error)
+        f, p, x, kap, th = y[:, 0], y[:, 1], y[:, 2], y[:, 3], y[:, 4]
+        c = x/chi0
+        hh, aa, gg = y[:, 5:11], y[:, 11:17], y[:, 17:20]
+        q, K2 = self.q, self.K2
+        kk = kap + 2.0*th
+        d = zo[:, 2:]
+        d[:, 0] = p
+        d[:, 1] = -chi0*K2*f + k0*p + pi0*kk - vpp*f + (pib/hb)*src
+        d[:, 2] = (2.0/3.0)*(chi0*kk + x*k0)
+        d[:, 3] = (2.0/3.0)*k0*kk + 4.0*np.pi*(4.0*pi0*p - 2.0*vp*f) \
+            + self.k1*(1.0 - self.k2)*th - e1*src
+        qg = 1j*(q*gg).sum(axis=1)
+        d[:, 4] = self.z*(0.5*(chi0*(qg - 2.0*K2*c) + (4.0/3.0)*k0*kk)
+                          - 8.0*np.pi*(pi0*p + vp*f) - (2.0 + self.k2)*self.k1*th)
+        d[:, 5:11] = -2.0*aa
+        rho = np.empty((m, 6), dtype=complex)
+        for (a, b), ix in ((k, v) for k, v in IDX.items() if k[0] <= k[1]):
+            rho[:, ix] = 0.5j*(q[:, a]*gg[:, b] + q[:, b]*gg[:, a]) + 0.5*K2*hh[:, ix] \
+                - 0.5*self.P[:, ix]*c
+        rho -= 0.5*K2[:, None]*c[:, None]*self.delta[None, :]
+        tr = rho[:, 0] + rho[:, 3] + rho[:, 5]
+        d[:, 11:17] = chi0*(rho - tr[:, None]*self.delta[None, :]/3.0) + k0*aa \
+            + e1*(self.delta[None, :]/3.0 - self.proj)*src[:, None]
+        qh = np.empty((m, 3), dtype=complex)
+        for a in range(3):
+            qh[:, a] = sum(q[:, b]*hh[:, IDX[(a, b)]] for b in range(3))
+        d[:, 17:20] = -(2.0/3.0)*1j*q*(2.0*kap + th)[:, None] \
+            + 16.0*np.pi*pi0*1j*q*f[:, None] - 2.0*self.k1*(gg - 1j*qh)
+        return out
+
+    def integrate_steps(self, times, record):
+        """times: t_0 = 0, t_1, ... the times of the steps of the run; record: cycle
+        numbers at which the state is kept.  Returns the dict of integrate() with the
+        homogeneous part of the mesh added (phi0, Pi0, chi0, Khat0, Theta0, K0, H0 =
+        its Hamiltonian residual) and cycle."""
+        m = self.m
+        z0 = np.concatenate([self.r0[:, None], self.dr0[:, None], self.initial()],
+                            axis=1)
+        e0 = 0.5*self.pi0**2 + self.v(self.phi0)
+        u0 = np.concatenate([[self.phi0, self.pi0, 0.0, self.phi0, self.pi0, 1.0,
+                              -np.sqrt(24.0*np.pi*e0), 0.0], z0.ravel().view(float)])
+        times = np.asarray(times, dtype=float)
+        record = sorted(int(c) for c in record)
+        keep = {}
+        if record and record[0] == 0:
+            keep[0] = u0.copy()
+        g0, g1, be, de = (RK4_2S[k] for k in ("gam0", "gam1", "beta", "delta"))
+        for n in range(1, min(times.size, record[-1] + 1)):
+            dt = times[n] - times[n-1]
+            u1 = u0.copy()
+            for s in range(4):
+                if s > 0:
+                    u1 += de[s]*u0
+                u0 = g0[s]*u0 + g1[s]*u1 + be[s]*dt*self._rhs_code(u0)
+            if n in record:
+                keep[n] = u0.copy()
+        cyc = [c for c in record if c in keep]
+        yy = np.array([keep[c] for c in cyc])
+        phib, pib, lnab = yy[:, 0], yy[:, 1], yy[:, 2]
+        h, e1, e2 = self.bg(phib, pib)
+        zz = np.ascontiguousarray(yy[:, 8:]).view(complex).reshape(len(cyc), m, 2 + NV)
+        k0 = yy[:, 6] + 2.0*yy[:, 7]
+        return dict(cycle=np.array(cyc), time=times[cyc], phi=phib, Pi=pib, ln_a=lnab,
+                    H=h, eps1=e1, eps2=e2, R=zz[:, :, 0], dR=zz[:, :, 1],
+                    y=zz[:, :, 2:], phi0=yy[:, 3], Pi0=yy[:, 4], chi0=yy[:, 5],
+                    Khat0=yy[:, 6], Theta0=yy[:, 7], K0=k0,
+                    H0=(2.0/3.0)*k0*k0 - 16.0*np.pi*(0.5*yy[:, 4]**2 + self.v(yy[:, 3])))
+
+    def diagnostics(self, sol):
+        """As Twin.diagnostics, with the homogeneous part of the mesh as the background
+        of the constraints and of the extraction (H = -K_0/3 and Pi_0 are what the box
+        means of a dump give)."""
+        if "K0" not in sol:
+            return super().diagnostics(sol)
+        y = sol["y"]
+        nt = y.shape[0]
+        q, K2, P = self.q, self.K2, self.P
+        out = dict(dH=np.empty((nt, self.m), dtype=complex),
+                   dM=np.empty((nt, self.m, 3), dtype=complex),
+                   Z=np.empty((nt, self.m, 3), dtype=complex),
+                   rnr=np.empty((nt, self.m), dtype=complex),
+                   ref=np.empty((nt, self.m), dtype=complex),
+                   w=np.empty((nt, self.m)))
+        nn = self.n.astype(float)
+        n2 = (nn*nn).sum(axis=1)
+        mult = np.array([1.0, 2.0, 2.0, 1.0, 2.0, 1.0])
+        pn = np.stack([nn[:, 0]*nn[:, 0], nn[:, 0]*nn[:, 1], nn[:, 0]*nn[:, 2],
+                       nn[:, 1]*nn[:, 1], nn[:, 1]*nn[:, 2], nn[:, 2]*nn[:, 2]],
+                      axis=1)/n2[:, None]
+        for it in range(nt):
+            k0, chi0, pi0, phi0 = (sol[x][it] for x in ("K0", "chi0", "Pi0", "phi0"))
+            vp = self.dv(phi0)
+            f, p, x, kap, th = (y[it, :, i] for i in range(5))
+            c = x/chi0
+            hh, aa, gg = y[it, :, 5:11], y[it, :, 11:17], y[it, :, 17:20]
+            kk = kap + 2.0*th
+            ph = (P*mult[None, :]*hh).sum(axis=1)
+            out["dH"][it] = chi0*(-2.0*K2*c - ph) + (4.0/3.0)*k0*kk \
+                - 16.0*np.pi*(pi0*p + vp*f)
+            for a in range(3):
+                qa = sum(q[:, b]*aa[:, IDX[(a, b)]] for b in range(3))
+                qh = sum(q[:, b]*hh[:, IDX[(a, b)]] for b in range(3))
+                out["dM"][it, :, a] = 1j*(qa - (2.0/3.0)*q[:, a]*kk
+                                          + 8.0*np.pi*pi0*q[:, a]*f)
+                out["Z"][it, :, a] = gg[:, a] - 1j*qh
+            psi = 0.5*c + 0.25*(pn*mult[None, :]*hh).sum(axis=1)
+            out["rnr"][it] = psi + (-k0/3.0/pi0)*f
+            w, _, _ = self.window(sol["ln_a"][it], sol["H"][it], sol["eps1"][it],
+                                  sol["eps2"][it])
+            out["w"][it] = w
+            out["ref"][it] = self.norm*w*sol["R"][it]
+        return out
