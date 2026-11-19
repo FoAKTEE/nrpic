@@ -366,19 +366,24 @@ def figures(res, od):
         ax.loglog(Ls, pl, ":", color=cols[j])
     ax.axhline(0.25, color="k", ls="--", lw=1.0)
     ax.text(2.1, 0.3, r"$2GM/rc^2 \approx 0.5$", fontsize=8)
+    ax.set_xticks(Ls)
+    ax.set_xticklabels([f"{x:g}" for x in Ls])
+    ax.xaxis.set_minor_formatter(plt.NullFormatter())
     ax.set_xlabel(r"box $L$ [initial Hubble radii]")
     ax.set_ylabel(r"$\Phi$ at collapse (dotted: linear)")
     ax.legend(fontsize=7, loc="lower right")
     # middle: halo counts
     ax = axs[1]
     ps = res["press_schechter"]
-    ax.semilogx(ps["a"], ps["N_halos"], color=fs.PAL["blue"],
+    am = np.array(ps["a"]) <= 100.0
+    ax.semilogx(np.array(ps["a"])[am], np.array(ps["N_halos"])[am], color=fs.PAL["blue"],
                 label=r"Press-Schechter, $M\geq M_c$")
     for nc, c in zip(("3.2", "4.0"), (fs.PAL["red"], fs.PAL["orange"])):
         b = res["bbks"][nc]
         ax.axhline(b[0.0], color=c, ls="--", lw=1.0, label=f"BBKS maxima, nc = {nc}")
     ax.set_xlabel(r"$a$")
     ax.set_ylabel("halos in the box (L = 4)")
+    ax.set_ylim(0, 45)
     ax.legend(fontsize=7, loc="upper left")
     # right: Omega estimates
     ax = axs[2]
