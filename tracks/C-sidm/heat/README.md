@@ -33,20 +33,37 @@ State: see "Results" (filled as runs finish) and "Pending runs".
 ## How to rerun
 
 From the worktree root, with the worktree's `.venv`; every run registered with
-`--package tracks/C-sidm/heat`:
+`--package tracks/C-sidm/heat` (local runs with `--background` must be closed with
+`harness/bin/nrpic-run finish <run_id>`; that is by design, not a failure):
 
     E=/data/haiyangw/nrpic/scratch/core/exe/core_collisions-2
     S="harness/bin/nrpic-run submit --kind scouting --gate G2 --package tracks/C-sidm/heat"
-    $S --cores 2 --purpose "S0"     -- python3 tracks/C-sidm/heat/scripts/smoke.py
-    $S --cores 2 --purpose "design" -- python3 tracks/C-sidm/heat/scripts/design.py
-    $S --cores 2 --purpose "T6b"    -- python3 tracks/C-sidm/heat/scripts/run_step.py --part b --seeds 1 2 --nproc 2
-    $S --cores 6 --purpose "T7"     -- python3 tracks/C-sidm/heat/scripts/run_mode.py local \
-        --theta 0.003 --eps 0.2 --kl 0.4 0.2 0.1 --seeds 1 2 3 4 --n 400000 --nproc 6 --tag T7_
-    $S --cores 4 --purpose "T6a"    -- python3 tracks/C-sidm/heat/scripts/run_step.py --part a --seeds 1 2 --nproc 4
-    $S --cores 3 --purpose "T6c"    -- python3 tracks/C-sidm/heat/scripts/run_step.py --part c --seeds 1 --nproc 3
-    $S --cores 2 --purpose "T8 T2b" -- python3 tracks/C-sidm/heat/scripts/t2nosub.py
-    # analysis (one core each); run ids are resolved under scratch/C-sidm/
-    $S --cores 1 --purpose "T7 analysis" -- python3 tracks/C-sidm/heat/scripts/an_mode.py T7 - <run_id> [<run_id> ...]   ("-": the run directory)
+    R=tracks/C-sidm/heat/scripts
+    $S --cores 2 --purpose "S0"     -- python3 $R/smoke.py
+    $S --cores 2 --purpose "design" -- python3 $R/design.py
+    $S --cores 2 --purpose "T6b"    -- python3 $R/run_step.py --part b --seeds 1 2 --nproc 2
+    $S --cores 4 --purpose "T6a"    -- python3 $R/run_step.py --part a --seeds 1 2 --nproc 4
+    $S --cores 2 --purpose "T6c"    -- python3 $R/run_step.py --part c --seeds 1 --nproc 2
+    $S --cores 6 --purpose "T7"     -- python3 $R/run_mode.py local --theta 0.003 --eps 0.2 \
+        --kl 0.4 0.2 0.1 --seeds 1 2 3 4 --n 400000 --nproc 6 --tag T7_
+    #   (same with --theta 0.1 / 1.0 --seeds 1 or 2; --kl 0.2 0.4 --seeds 11 12 13 14)
+    $S --cores 2 --purpose "CL"     -- python3 $R/run_mode.py local --theta 0.003 --kl 100 \
+        --eps 0.05 --seeds 1 --n 400000 --nproc 1 --tag CL_          # also theta 0.1, 1
+    $S --cores 4 --purpose "T8 coarse" -- python3 $R/run_mode.py local --theta 0.003 --kl 0.2 \
+        --eps 0.2 --seeds 1 --n 500000 --nproc 4 --tag T8p_ --nt-fixed 8 --ly-fixed 1.9634954084936207 \
+        --variants '[{}, {"dt_frac": 0.2}, {"dt_frac": 0.05}, {"pmax": 0.2}, {"pmax": 0.05}, {"dx_frac": 0.5}, {"dx_frac": 0.125}]'
+    $S --cores 2 --purpose "T8 T2b" -- python3 $R/t2nosub.py      # analysis: t2nosub.py --analyse-only DIR
+    # card: particle files and lists, then the batch jobs
+    $S --cores 2 --purpose "card prep" -- bash $R/prep_card.sh
+    $S --launcher batch --list tracks/C-sidm/heat/inputs/card_A.list --gpu-hours 0.92 --wall 00:55:00 \
+        --exe $E/athena_gpu --purpose "card A"                        # and card_B.list
+    # analyses (one core each; run ids are resolved under scratch/C-sidm/; "-": the run directory)
+    $S --cores 1 --purpose "T6a" -- python3 $R/an_step2.py a - <T6a run>
+    $S --cores 1 --purpose "T6b" -- python3 $R/an_step2.py b - <T6b run>
+    $S --cores 1 --purpose "T6c" -- python3 $R/an_step2.py c - <T6a run> <T6c run>
+    $S --cores 1 --purpose "T7"  -- python3 $R/an_mode.py T7 - <run> [<run> ...]
+    $S --cores 1 --purpose "CL"  -- python3 $R/an_mode.py CL - <CL run>
+    $S --cores 1 --purpose "T8"  -- python3 $R/an_mode.py T8 - <run with T8* cases>
 
 ## Results (processors, core_collisions-2 `athena_cpu`, `coll_energy = particle`)
 
