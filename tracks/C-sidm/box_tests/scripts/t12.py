@@ -272,25 +272,25 @@ def main():
 def figure(res, twins, out, tag):
     fs.use_style()
     cols = {"0.1": fs.PAL["red"], "1.0": fs.PAL["yellow"]}
-    fig = plt.figure(figsize=(fs.FULL_WIDTH, 3.3))
-    ax1 = fig.add_axes([0.07, 0.15, 0.27, 0.78])
-    ax2 = fig.add_axes([0.41, 0.15, 0.25, 0.78])
-    ax3 = fig.add_axes([0.74, 0.15, 0.25, 0.78])
+    fig = plt.figure(figsize=(fs.FULL_WIDTH, 3.4))
+    ax1 = fig.add_axes([0.08, 0.15, 0.24, 0.78])
+    ax2 = fig.add_axes([0.42, 0.15, 0.22, 0.78])
+    ax3 = fig.add_axes([0.75, 0.15, 0.23, 0.78])
     for name, r in sorted(res.items()):
         if r.get("failed") or r["kind"] == "cell":
             continue
         c = cols.get(r["theta"], "k")
         if r["kind"] == "curved" and r["seed"] == 1:
-            ax1.plot(np.arange(1, r["steps"] + 1), r["series"]["sumP"], color=c, lw=0.8,
-                     label=rf"curved $\theta={r['theta']}$")
+            ax1.plot(np.arange(1, r["steps"] + 1), r["series"]["sumP"], color=c, lw=0.7,
+                     label=rf"$\theta={r['theta']}$")
         if r["kind"] == "curved":
             b = np.array(r["series"]["bound"])
             ax3.semilogy(np.maximum(np.array(r["series"]["relP"]), 1e-30) / b,
                          color=c, lw=0.6, ls="-" if r["seed"] == 1 else "--")
     ax1.axhline(1, **fs.GUIDE)
     ax1.set_xlabel("step")
-    ax1.set_ylabel(r"$\Sigma P$ per step / $\alpha_0\psi_0^6\times$ flat value")
-    ax1.legend(loc="upper right", fontsize=7)
+    ax1.set_ylabel(r"curved: $\Sigma P$ per step / expected", fontsize=8)
+    ax1.legend(loc="lower right", fontsize=7)
     k = 0
     xs, labels = [], []
     for key, t in sorted(twins.items()):
@@ -298,19 +298,20 @@ def figure(res, twins, out, tag):
         seed = key.split("_")[1]
         c = cols.get(th, "k")
         ax2.errorbar(k, t["rate_ratio"] / t["expected"] - 1, yerr=t["sd"] / t["expected"],
-                     fmt="o", color=c, ms=4, mfc=c if seed == "s1" else "none")
+                     fmt="o", color=c, ms=4, mfc=c if seed == "s1" else "none",
+                     label="twin (Poisson sd)" if k == 0 else None)
         r = res[f"T12_th{th}_curved_{seed}"]
-        ax2.errorbar(k + 0.25, r["ratio"] - 1, yerr=r["sumP_per_step_se"] / r["expected_per_step"],
-                     fmt="s", color="grey", ms=3)
-        xs.append(k + 0.12); labels.append(f"{th}\n{seed}")
+        ax2.errorbar(k + 0.3, r["ratio"] - 1, yerr=r["sumP_per_step_se"] / r["expected_per_step"],
+                     fmt="s", color="grey", ms=3, label="analytic (se)" if k == 0 else None)
+        xs.append(k + 0.15); labels.append(f"{th}\n{seed}")
         k += 1
     ax2.axhline(0, **fs.GUIDE)
     ax2.set_xticks(xs); ax2.set_xticklabels(labels, fontsize=7)
-    ax2.set_ylabel(r"curved/($\alpha_0\psi_0^6$ flat) $-$ 1  (circles: twin, squares: analytic)",
-                   fontsize=8)
+    ax2.set_ylabel(r"rate / ($\alpha_0\psi_0^6\times$flat) $-$ 1", fontsize=8)
+    ax2.legend(loc="lower left", fontsize=6)
     ax3.axhline(1, **fs.GUIDE)
     ax3.set_xlabel("step")
-    ax3.set_ylabel(r"$\max_i|dP_i|/\Sigma MW$ / bound (curved)", fontsize=8)
+    ax3.set_ylabel(r"curved: $\max_i|dP_i|/\Sigma MW$ / bound", fontsize=8)
     ax3.set_ylim(1e-12, 10)
     fs.save(fig, os.path.join(out, f"t12_{tag}"))
     plt.close(fig)
