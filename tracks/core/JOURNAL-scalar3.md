@@ -745,3 +745,74 @@ floor of 2.5e-14 per unit s after; the per-mode deviation from the code twin sta
 - The late floor of the odd parts, 2.5e-15 (H) and 3.3e-15 (|M|) for s = 0.1, is above
   the twin from 7 e-folds on: [JUDGEMENT] rounding of a pair whose metric perturbations
   have stopped growing, not tested.
+
+## 2026-11-19, entry 14: outcomes of test U on the processors (inflection case, 32^3); a correction to entry 13
+
+**U analysis, run core-20261119-161122-a46833e** (runs p1 -152208-cc247d6, m1
+-152235-7a1ce3f, p01 -151036-d3d1f78, m01 -151755-d455a15, z0 -152234-32898c7, ctl
+-152743-c122f5a, z0c0125 -152745-0ee5e58, c0125 -152757-a0dc5ef; all 214 steps to t =
+10.5, 10.06 e-folds; figures `fig_usr_background.png`, `fig_usr_constraints.png`,
+`fig_usr_rnr.png`, looked at: eps1 of the box means lies on the reference through its fall
+by ten orders; the error of <Pi> rises in two steps at the start and the end of ultra slow
+roll and sits 16 times lower at Courant 0.125; |R_k| of the four shells falls, turns at
+3.5 to 4.5 e-folds and grows by 300 to 24000 to a plateau after 7 e-folds, code and
+reference on each other; <|H|/[H]> is the same line for s = 1, 0.1 and 0 (the uniform
+residual); the odd part of H scales with s, the even part with s^2 until both pairs reach
+a floor near 3 e-folds for s = 0.1; the control lies 4 orders above in |M|/[M]).
+- PU1 background (z0): phi within 3.5e-7, K within 9.3e-8 of the reference (bound 1e-6:
+  HOLDS); relative error of <Pi> 2.6e-6 at 3, 1.7e-5 at 5 (predicted 1e-5 to 1e-4: HOLDS),
+  4.0e-4 at 8 and 4.1e-4 at the end (predicted 5e-5 to 1e-3: HOLDS; Track E's A1 at 1e-4
+  is missed late at Courant 0.25, as predicted); Courant 0.25 against 0.125: 16.3 for phi
+  and Pi, 16.6 for the e-folds (HOLDS, 16 +- 4 and 16 +- 2); e-folds from <chi> 7.0e-6 at
+  the end (bound 3e-5: HOLDS). Box mean against the lockstep background: Pi 7.5e-6 late
+  (FAILED, predicted 5e-6; phi 6.8e-9). The background passes ultra slow roll from 2.54 to
+  6.51 e-folds (eps2 > 3), eps1 reaches 9.72e-13, eps2 at most 5.99996, H 0.9518 H* at the
+  end (as entry 0).
+- PU2 mode functions of the sources (lockstep record against SciPy), Courant 0.25: top
+  shell at most 5.6e-4 (bound 3e-3: HOLDS); |n| <= 2 within 1e-4 only to 6 e-folds, then
+  rising to 4.1e-4 (FAILED); ratio of Courant 0.25 to 0.125: 13.5 to 20.1 for |n| <= 2 and
+  15.6 to 17.0 for the top shell (HOLDS with one value 0.1 above 20, at 5.8 e-folds, near
+  the turn of |R|); not refuted (bound 3e-2, ratio above 8). |R| of the lowest shell grows
+  300 times from 3.4 e-folds to the end, as the reference.
+- PU3 as written in entry 2 FAILED (known since entry 6): <|H|/[H]> of z0 is 1.6e-8 to
+  1.08e-7 from 0.5 to 3 e-folds, the uniform residual; it falls with the step 17.1 times
+  (median, 0.5 to 3 e-folds; predicted 16 +- 4: HOLDS) and is below 1e-14 from 6 e-folds on
+  (bound 1e-12 at 8: HOLDS). PU6 for z0: largest 1.08e-7 at 2.31 e-folds, 1.86e-8 and
+  1.61e-8 at 0.5 and 1.0 e-folds (twin: 1.0e-7 near t = 2.5, 1.9e-8, 1.6e-8); the 2 percent
+  at equal times was not evaluated (the analysis samples the record at fixed e-folds).
+- PU4: record maxima of p1 <|H|/[H]> 1.08e-7 (FAILED as written, the uniform part; PU6
+  replaced it); <|M|/[M]> 4.5e-3 up to 3 e-folds (FAILED, predicted below 3e-3), 1.7e-2 at
+  most (3.43 e-folds); odd parts of the pairs scale by 10.000 (9.998 to 10.000 while the
+  smaller exceeds 1e-13: HOLDS, 10.0 +- 0.5); even parts minus z0 by 90 to 103 up to 3
+  e-folds (HOLDS, 100 +- 20), then 74 at 3.4 and down to 1 as the even part of s = 0.1
+  reaches its floor (FAILED from 3.4 e-folds; [JUDGEMENT] rounding floor of the smaller
+  pair, 3e-13 in H). In ultra slow roll H does not grow: 2.6e-10 at 4 e-folds (bound
+  1e-10 from 4 on: FAILED at 4.0 by 2.6, then 1.5e-14 at 6); <|M|/[M]> 3.0e-3 to 1.6e-2
+  from 4 e-folds on and 3.4e-3 at the end (HOLDS, 1e-5 to 0.3; P1:541 reports 1e-2 at
+  256^3). Courant 0.125 (c0125): H 6.2e-9 at most (17 times less), |M|/[M] unchanged
+  (1.7e-2): the momentum ratio is spatial.
+- PU5 R^NR per mode against L^(-3/2) W R alpha of the lockstep record: (a) t = 0, modes with
+  W > 1e-3: 2.1e-10 (HOLDS, 1e-8). (b) to 2.5 e-folds, run p1: 7.1e-5 (|n| <= 2), 1.7e-4
+  (|n| <= 4), 1.3e-3 (all with W > 1/2) (HOLDS: 2e-3, 2e-2, 2e-2). (c) odd part of s =
+  +-0.1 from 6 e-folds on: top shell 6.1e-3 (FAILED as written, 0.5 to 2.5e-2; inside the
+  bounds of refutation 3e-3 to 0.1); |n| <= 4 2.7e-4 (HOLDS, 2e-3); |n| <= 2 3.2e-5 (HOLDS,
+  3e-4). (d) REFUTED: the single run p1 agrees with the linear reference to 2.8e-4 to
+  3.1e-4 for |n| <= 2 after 7 e-folds (refutation: below 1e-3), its even part is 2.9e-4
+  to 3.1e-4, ten times that of s = 0.1 (second order, small); my estimate that delta phi at
+  s = 1 is 7 percent of the distance from the stationary point of V' was wrong by orders.
+  The rms of R^NR at s = 1 reaches 6.7e-2 (Track E's lattice value at 32^3, nmax2 64:
+  0.066). (e) control: deviation 0.46 to 2.0 (FAILED at the first dump, 0.46 < 0.5; 0.74 to
+  2.0 after).
+- PU6 against the reference of PU5 (the lockstep record): top shell 6.1e-3, |n| <= 4
+  2.7e-4, |n| <= 2 3.2e-5 from 5 e-folds on, exactly the predicted 6.1e-3, 2.7e-4, 3.2e-5:
+  HOLDS.
+
+Correction to entry 13: there I judged the |n| <= 2 part of PU6 FAILED (3.9e-4) from run
+-160409-50a58d9, whose reference is the SciPy integration (no time error), not the
+lockstep record of PU5 and PU6. Against the lockstep record it HOLDS (above). The 3.9e-4
+against SciPy is the time error that the lockstep mode functions themselves carry (PU2:
+4.1e-4 for |n| <= 2 late at Courant 0.25, 2.5e-5 at 0.125, ratio 16.4); the "relative
+error of the background Pi" of entry 13 is of the same size (4.1e-4) but not shown to be
+its cause. What a user should take: at Courant 0.25 on a 32^3 step the per-mode R of the
+lowest shells carries 4e-4 of time error after ultra slow roll (A2 of Track E: 2e-2); at
+256^3 the step is 8 times smaller and the error 4000 times smaller.
