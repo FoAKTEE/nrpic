@@ -280,3 +280,38 @@ dx), so the convergence of X in N is not a clean power law: amplitude 7.0e-5, 1.
 4.3e-7, 1.4e-7 predicted (orders 5.7, 2.7, 3.9), phase 8.3e-5, 3.1e-6, 5.9e-7, 2.8e-7.
 The spatial part alone (exact-background, classical predictor minus its RK4 part) is not
 separated here [JUDGEMENT: a run with dt_expansion = 0.001 would isolate it; not run].
+
+## 2026-11-19 15:50 Amplitude scan: outcomes (runs B-20261119-153637-02c822f, analyses -154708-89d00ea, -154738-30faa29)
+
+N = 16, amplitudes x10 and x1/10 of both tests (`results/ascan_s10_results.json`,
+`ascan_s0p1_results.json`; x1 from B-20261119-145125-51e9f8f). Card batch
+B-20261119-142124-feb2daf (N = 64 of both tests) ran meanwhile: Slurm 4635, 69 s,
+0.0192 card-hours (prediction <= 0.1: confirmed); X at N = 64 took 658 steps as predicted.
+
+| quantity at N = 16 | x10 | x1 | x1/10 | scaling |
+|---|---|---|---|---|
+| F TT amplitude error | -1.4094e-4 | -1.4092e-4 | -1.4092e-4 | none (A1 confirmed) |
+| F TT phase error | 2.5320e-4 | 2.5310e-4 | 2.5309e-4 | none |
+| X TT amplitude error | -7.0480e-5 | -7.0476e-5 | -7.0450e-5 | none (A1: within 4e-4 of itself) |
+| X TT phase error | 8.3042e-5 | 8.3043e-5 | 8.3097e-5 | none (6e-4) |
+| F non-TT fraction (max) | 1.44e-3 | 1.44e-4 | 1.44e-5 | proportional to A (A2 confirmed) |
+| X non-TT fraction (max, instantaneous norm) | 5.57e-3 | 5.57e-4 | 8.45e-5 | A at large A; x1/10 is 50 per cent above A2's 5.6e-5 (refuted for that point) |
+| X non-TT against the envelope (max) | 3.11e-4 | (final run) | 4.72e-6 | between A and A^1.1 |
+| F spectral Weyl vs TT | 4.2e-10 | 1.2e-11 | 5.6e-14 | about A^2 (cubic terms at the mode k) |
+| X spectral Weyl vs TT | 1.93e-8 | 1.91e-8 | 1.95e-8 | none (A3 refuted) |
+| F TT at t = 0 | 9.9e-13 | 6.0e-12 | 5.9e-11 | 1/A, rounding (A4 confirmed) |
+| X TT at t = 0 | 3.1e-12 | 2.4e-11 | 1.6e-10 | 1/A, rounding |
+| X polarization ratio error (max) | 6.2e-10 | 4.6e-9 | 3.9e-8 (modulus) | 1/A, rounding |
+
+Readings:
+- The measured amplitude and phase errors are those of the linear discrete system at every
+  amplitude: the comparison is in the linear regime and A = 1e-6 is not at a floor.
+- The non-TT part of F is second order in A (exactly proportional to A relative to the
+  wave), so F6's excess is the backreaction of periodic_z4c item 3, and the TT content at
+  +-k is untouched by it. Named cause [VERIFIED by this scan].
+- The polarization errors of both tests and the t = 0 errors are rounding of 1 + O(A).
+- The spectral-Weyl vs TT difference of X, 1.9e-8, depends neither on A (this scan) nor
+  on N (2.2e-8 at N = 32). [JUDGEMENT, not tested] it is the background error (a, calH
+  and alpha/a are wrong by 4e-8 to 7e-8 for every N <= 32, H1): the inversion uses the
+  measured a and calH = -<alpha K>/3 and the TT side uses h' = <alpha> d_tau h, which
+  agree with each other only up to that error, through the calH h' term of E.
