@@ -125,3 +125,19 @@ Predictions (refuted as stated):
   equal to the analytic rate within 0.5 percent) as long as n_trunc = 0, because the
   acceptance of a pair is exact in expectation for P <= 1; refuted by a deficit above
   0.5 percent with n_trunc = 0.
+
+## 2026-11-19 15:05 Runs started (processors) and card jobs queued
+
+Processors (core_collisions-2 `athena_cpu`, `coll_energy = particle`):
+- C-20261119-144535-2c7b6a4 T6(b), 2 seeds x 1.6e5, 16583 steps each (~85 min per seed).
+- C-20261119-144545-c606492 T7 theta = 0.003, eps = 0.2, k lambda 0.4/0.2/0.1 x 4 seeds x 4e5.
+- C-20261119-145733-558136e T6(a), lambda/L = 1000 and 100, 2 seeds x 2e6.
+- C-20261119-150358-66295f7 T8 part 2 (T2(b) without sub-cycling), C-20261119-150358-3805fd5
+  T7 collisionless check (k lambda = 100, theta 0.003, 0.1, 1).
+Card (core_collisions-2 `athena_gpu`), particle files from prep run
+C-20261119-145725-d91858e (`scripts/prep_card.sh`, lists `inputs/card_A.list`,
+`inputs/card_B.list`): job A = run C-20261119-150335-73fd40f (Slurm 4652: T8 variants, T7 at
+eps = 0.05), job B = run C-20261119-150347-e100007 (Slurm 4653: T7 at theta 0.1, 1 and a
+4e6 seed at 0.003). 0.92 card-hours reserved each; about 19 jobs of the machine's users
+were pending ahead of them at submission, so they may start hours later. Card cost assumed
+1/100 of the processor cost (wave-2 ratio 96-173), i.e. ~19 min and ~26 min of card time.
