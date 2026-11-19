@@ -121,7 +121,8 @@ def extrapolate(kl, f, se):
 def cmd_T7(outdir, rundirs):
     cases = [load_case(os.path.dirname(p)) for r in rundirs
              for p in glob.glob(os.path.join(r, "*", "reduced.npz"))]
-    cases = [c for c in cases if not c["P"].get("collisionless_check")]
+    cases = [c for c in cases if not c["P"].get("collisionless_check")
+             and not c["P"]["name"].startswith("T8")]     # T8 variants: cmd_T8
     res = dict(rundirs=rundirs, groups={})
     fs.use_style()
     for (th, eps), cs in sorted(group(cases, ("theta", "eps")).items()):
@@ -213,7 +214,7 @@ def cmd_T7(outdir, rundirs):
 
 def cmd_T8(outdir, rundirs):
     cases = [load_case(os.path.dirname(p)) for r in rundirs
-             for p in glob.glob(os.path.join(r, "*", "reduced.npz"))]
+             for p in glob.glob(os.path.join(r, "T8*", "reduced.npz"))]
     rows = []
     for c in cases:
         f = fit_case(c)
