@@ -1,0 +1,34 @@
+# Manifest additions: papers outside brief section 17 entered into the manifest by decision 0016
+# item 6 ("The 26 extra papers enter the manifest with a group assigned by kb"). Loaded by
+# kbtool/meta_manifest.py; arxiv.tsv stays the exact extraction of the brief.
+# Columns: id, group (a group of brief section 16), priority (2 = asked for by a track; 1 = no
+# requester found), requested_by (owner and where the request or the use is recorded), decision,
+# note. Groups are [JUDGEMENT] of kb (helper pdf_meta, 2026-11-19), from the arXiv-API title and
+# category (kb-data/meta/arxiv-api/<key>.json) and the request; tracks/kb/pdf_meta/README.md.
+id	group	priority	requested_by	decision	note
+0707.1350	G18	2	D-bh-dress (kb answer tracks/kb/outbox/20261115T183741Z__to-D-bh-dress__dress-and-coupling-sources.md)	0016-6	local physics in an expanding universe; cosmological-coupling background
+1003.4681	G06	2	F-hills (kb answer tracks/kb/outbox/20261115T183741Z__to-F-hills__locators-wanted.md)	0016-6	position-dependent shift damping (gauge)
+1707.06302	G18	2	D-bh-dress (D outbox to kb; brief erratum 1.14 names it as the Kerr spike reference)	0016-6	dark-matter spikes around Kerr black holes
+2107.06643	G18	2	D-bh-dress (DOI in D's request resolved by kb, tracks/kb/JOURNAL.md)	0016-6	cosmological coupling: formalism
+2108.01392	G21	2	F-hills (F outbox to kb; F asks G21)	0016-6	three black holes in GR
+2109.08146	G18	2	D-bh-dress (tracks/D-bh-dress/scope/REFERENCES.md)	0016-6	cosmologically coupled compact objects
+2201.09277	G04	2	C-sidm (DOI in C's request resolved by kb, tracks/kb/JOURNAL.md)	0016-6	relativistic kinetic (lattice Boltzmann) solver with collisions; G03 the alternative
+2302.12386	G18	2	D-bh-dress (tracks/D-bh-dress/scope/REFERENCES.md)	0016-6	constraint on cosmological coupling
+2303.06630	G18	2	D-bh-dress (tracks/D-bh-dress/scope/REFERENCES.md)	0016-6	gravastars as a dark-energy source (coupling debate)
+2304.09817	G18	2	D-bh-dress (tracks/D-bh-dress/scope/REFERENCES.md, SCOPE.md)	0016-6	comment on cosmological coupling
+2305.01307	G18	2	D-bh-dress (kb answer to D)	0016-6	constraint on cosmological coupling
+2308.07365	G21	2	F-hills (F outbox to kb; F asks G21)	0016-6	close encounter of three black holes
+2308.07374	G18	2	D-bh-dress (tracks/D-bh-dress/scope/REFERENCES.md, note/references.bib)	0016-6	black holes embedded in FLRW (McVittie forms)
+2406.11985	G21	2	F-hills (F outbox to kb; F asks G21)	0016-6	close encounter of three black holes III
+2505.03934	G21	2	F-hills (F outbox to kb; F asks G21)	0016-6	binary-single and binary-binary encounters in GR
+2505.15903	G18	2	C-sidm (found in the corpus bibliographies for C, run kb-20261115-154525-248806f)	0016-6	SIDM core collapse beyond the fluid approximation
+2604.27429	G21	2	F-hills (F outbox to kb; F asks G21)	0016-6	binary star and supermassive black hole in GR
+2605.20320	G21	2	F-hills (F outbox to kb; F asks G21)	0016-6	ringdown and lensing of triple systems
+2605.30145	G14	2	A-emd-pbh (A outbox to kb, ingest-s1-references; run kb-20261115-152541-e02d870)	0016-6	direct collapse of CDM curvature peaks to black-hole seeds; G07 the alternative
+2610.09336	G21	2	F-hills (F outbox to kb; F asks G21)	0016-6	collisions of multiple black holes in NR
+astro-ph/0608642	G18	2	D-bh-dress (kb answer to D, dress-and-coupling-sources)	0016-6	structure growth around primordial black holes (dark-matter dress); G13 the alternative
+gr-qc/0305023	G06	2	B-emd-gw (kb answer tracks/kb/outbox/20261115T183741Z__to-B-emd-gw__track-b-sources.md)	0016-6	standard testbeds for NR codes
+gr-qc/0404056	G06	2	core (fetched with gr-qc/9703066 by a core session on 2026-11-15 11:07 UTC, record mtimes)	0016-6	spectral puncture initial data
+gr-qc/0606037	G06	2	core (fetched with gr-qc/9703066 by a core session on 2026-11-15 11:07 UTC, record mtimes)	0016-6	approximate binary-black-hole initial data
+gr-qc/0608095	G06	1	none found (fetched by another session on 2026-11-15 11:17 UTC, kb/JOURNAL.md:92)	0016-6	OFF-TOPIC: laser interferometry, fits no group; G06 is a placeholder; proposed for removal (probably a mistyped id)
+gr-qc/9703066	G06	2	core (tracks/core/interfaces/multi_puncture.md cites v2 main.tex)	0016-6	Brandt-Bruegmann multiple-black-hole initial data
