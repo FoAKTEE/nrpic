@@ -557,3 +557,26 @@ core-20261119-161618-485c50e / core-20261119-162453-6095bbf for the MPI build):
   unset bytes of entry 11), and nowhere else. P0b held.
 So existing results are unchanged on one rank; the published processor executable (the
 MPI build) reproduces the release but for those header bytes.
+
+### 09:32 Entry 19: published; predictions of two more cases while the card job waits
+
+Published `scratch/core/exe/core_mpi/` (athena_cpu = MPI processor build, athena_gpu = MPI
+card build, COMMIT, SHA256SUMS, READY). The card test (job 4663) still waits in the
+queue behind about twenty one-card jobs; it needs both cards at once. READY says the card
+executable is not yet tested on cards.
+
+Two cases that shorten the list of what is not tested (predictions, before the runs):
+- t5_smr_adaptive: the refined-mesh deposit of T5 with `deposit_adaptive = true`
+  (tsc, deposit_ppc = 8): the level of each cloud comes from the energy density of the
+  last deposit in the particle's own cell, which the particle's rank holds. P5e: as P5a
+  (particle files identical, sources at the particles to 1e-15, identity at the level of
+  one rank). Refuted by a difference above rounding in the sources at the particles: a
+  level chosen differently on several ranks would move whole clouds between levels.
+- t6_cosmo_east: the periodic cosmology of the regression case east (Z4c in a periodic
+  box of 16^3 in eight MeshBlocks of 8^3, 4096 particles, cic with filter and
+  compensation, conformal-time lapse, density-form sources, field initial data from a
+  file) for 40 cycles on 1, 2 and 4 ranks. P6e: runs on several ranks (the generator
+  reads the field file for the MeshBlocks of each rank); history and positions agree with
+  one rank at the level of T3 (1e-12, 1e-14); the identity holds on every rank count at
+  the level of one rank. Refuted by a failure to start, a difference above 1e-9 in the
+  well-conditioned columns, or a defect of the identity larger on several ranks.

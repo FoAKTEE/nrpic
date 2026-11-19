@@ -129,6 +129,16 @@ def make_cluster_offset(path):
 REGRESS_IC = "/data/haiyangw/nrpic/scratch/core/regress/ic"
 
 
+def copy_east16(path):
+    """Particles (and, next to them, the fields) of the regression case east: periodic
+    cosmology at 16^3 (tracks/core/JOURNAL-newton.md)."""
+    d = os.path.join(REGRESS_IC, "east16")
+    shutil.copyfile(os.path.join(d, "particles.nrp"), path)
+    shutil.copyfile(os.path.join(d, "fields.bin"), os.path.join(os.path.dirname(path),
+                                                                 "fields.bin"))
+    return int(np.fromfile(path, "<i8", count=2)[1])
+
+
 def copy_random(path):
     """The 10^4 particles of the regression case dep (tracks/core/JOURNAL-newton.md)."""
     shutil.copyfile(os.path.join(REGRESS_IC, "random.nrp"), path)
@@ -144,6 +154,7 @@ CLUSTER = "problems/tests/mpi_cluster.athinput"
 CLUSTER_SMR = "problems/tests/mpi_cluster_smr.athinput"
 CLUSTER_AMR = "problems/tests/mpi_cluster_amr.athinput"
 SMR = "problems/tests/mpi_deposit_smr.athinput"
+EAST = "problems/cosmo/east.athinput"
 # the table of the cluster lies next to the particle file ({out} is the output directory)
 CLT = ["problem/comp0_file={out}/cluster.tab"]
 # (AthenaK changes on the command line only parameters that the input file has: the
@@ -197,6 +208,19 @@ CASES = {
                        args=SMRT + ["particles/deposit_shape=pcs", "particles/nfilter=1"]),
     "t5_smr_cluster": dict(input=CLUSTER_SMR, particles=("cluster.nrp", make_cluster),
                            args=CLT),
+    # level of the clouds from the density of the last deposit (deposit_adaptive)
+    "t5_smr_adaptive": dict(input=SMR, particles=("random.nrp", copy_random),
+                            args=SMRT + ["particles/deposit_shape=tsc",
+                                         "particles/deposit_adaptive=true",
+                                         "particles/deposit_ppc=8.0"]),
+    # step 6: periodic cosmology with Z4c (the regression case east at 16^3: deposit,
+    # filter and compensation, conformal-time lapse, density-form sources)
+    "t6_cosmo_east": dict(input=EAST, particles=("particles.nrp", copy_east16),
+                          args=["problem/id_file={out}/fields.bin", "mesh/nx1=16",
+                                "mesh/nx2=16", "mesh/nx3=16", "meshblock/nx1=8",
+                                "meshblock/nx2=8", "meshblock/nx3=8", "time/nlim=40",
+                                "particles/snap_dt=0.2", "particles/traj_ntrack=1000000",
+                                "particles/cstat_dcycle=1"]),
     # adaptive mesh with load balancing: the centre is refined at cycle 4 and the
     # MeshBlocks (and with them the particles) are redistributed over the ranks
     "t5_amr_cluster": dict(input=CLUSTER_AMR, particles=("cluster.nrp", make_cluster),
