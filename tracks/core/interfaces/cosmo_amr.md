@@ -209,10 +209,12 @@ section 5.
 | T7 | `dt_lightspeed` | `-151654-e01b46e` | conformal-time lapse: dt c_max/(0.25 dx) = 1 to 2e-15 (c_max - 1 = 2.9e-6 of the fields); lapse 2/3: 1 to 3.4e-15 while the step without the option exceeds the light-speed limit by a factor 3.2 at t = 1 |
 | T8 | region norms | `-151654-e01b46e` | V_in + V_out = V to 4.6e-13; V and mean K equal the history of the module to 2.4e-14; max(Hmax_in, Hmax_out) equals the constraint statistics exactly; V_in of a sphere of six root cells within 1.2 per cent of its volume |
 | T9 | adaptive refinement on Track A's peak (32^3, mu = 0.5): lohner (NEW and REL), lapse ladder with fine-shape and uniform spreading, chi ratio, particles per cell | `-154404-64067cd` | REL: segmentation fault at the first check; NEW: no crash; the central eight blocks refined at cycle 4 by each `<particles_amr>` criterion; particle number and rest mass unchanged; identity 3.2e-14; largest relative H after the regrid 0.0116 (fine shape), 0.0072 (uniform spreading), 0.020 (lohner, 400 blocks) |
-| T11 | restarts on adaptive meshes | `-155740-3c44b74` | section 4.2 |
-| T12 | the published executable gives the bytes of the tested one | | section 4.3 |
-| T13 | tracker in mode walk, `tracker_walk_tol` | | section 4.4 |
-| T10 | scouting run of Track A's S1 with adaptive refinement, on a card | `-150507-8224d72` | section 7 |
+| T11 | restarts on adaptive meshes | `-161309-f797997` (analysis `-162944-d87b113`; first attempt `-155740-3c44b74`, script errors) | section 4.2 |
+| T12 | the published executable gives the bytes of the tested one | `-162949-d87b113` | section 4.3 |
+| T13 | tracker in mode walk, `tracker_walk_tol`; the example input `flrw_tracker.athinput` | `-161316-f797997` | section 4.4 |
+| T0b | T0 with the published processor executable | `-161756-44db4b5` | every output file byte-identical to REL |
+| T14 | card check of the published card executable | `-161748-75c2405` (Slurm job 4664) | pending |
+| T10 | scouting run of Track A's S1 with adaptive refinement, on a card | `-150507-8224d72` (Slurm job 4654) | pending, section 7 |
 
 ### 4.1 T3, plane wave with a refined patch
 
@@ -220,11 +222,47 @@ section 5.
 
 ### 4.2 T11, restarts
 
-(filled from run core-20261119-155740-3c44b74)
+Ten cases, each run uninterrupted with restart files and restarted from one of them,
+with the executable of T1-T9 (OLD, counters not restored) and the published one (NEW):
+T5's moving tracker restarted inside the loop 2 cycles before a regrid (M_r14), at a
+check cycle (M_r28), from the end of a run stopped at the regrid cycle (M_f16), from a
+file written inside the loop at the regrid cycle (M_i16); T9's peak at cycle 6 (P_r6),
+from the end of a run at the regrid cycle 4 (P_f4), inside the loop at cycle 4 (P_i4);
+the uniform universe with the finder (U_r8), T2's static patch (S_r8), the uniform mesh
+with the light-speed step (C_r8).
+
+- Regrid schedule: with NEW the MeshBlock count equals the uninterrupted run at every
+  cycle in all ten cases. With OLD it does not in M_r14 and M_i16 (the regrid of cycle 16
+  comes at cycle 20) and P_i4 (the regrid of the restart cycle is skipped; field
+  departure 0.81).
+- Bitwise: identical on the uniform mesh (U_r8 with the finder files, C_r8) and for every
+  restart made right after a regrid (M_f16, P_f4, P_i4). Restarts inside a stretch
+  without regrid on a refined mesh, static or adaptive, agree to round-off only: largest
+  departure 1.6e-14 in E, K, proper volume (M), 3.3e-10 in alpha_min and 5.8e-10 in K_max
+  (P, a strongly evolving peak), 7.8e-11 (S), and up to 6.3e-9 in the norm H2 of the
+  region file, a residual measured relative to itself. [JUDGEMENT] the source is the
+  ghost zones at fine/coarse boundaries, which the running code carries from the last
+  stage and a restart (or a regrid) recomputes from the stored fields.
+- A restarted run writes one tracker and one finder record at the restart time; they are
+  identical to the uninterrupted run's. The tracker file is truncated on restart
+  (upstream behaviour): keep the files of every segment.
 
 ### 4.3 T12
 
+(filled when run core-20261119-162949-d87b113 has finished)
+
 ### 4.4 T13
+
+Homogeneous universe, tracker in mode walk: without the tolerance it moves one cell per
+step along (-1, -1, -1) (the first of equal neighbours), and this branch maps it back
+into the box at the face (16 cycles, exit 0), while the release stops with "couldn't
+find the compact object!" (exit 1) after 13 records. With `tracker_walk_tol = 1e-6` it
+stays in its cell. On Track A's peak (uniform 32^3, cell 0.625) it walks three cells down
+the lapse to one of the eight cells around the centre and stays there for six cycles;
+without the tolerance it hops among those eight equal cells. At cycle 9 both moved one
+cell outward diagonally ([TO VERIFY]: the lapse of these data nearly relaxes by then and
+its minimum leaves the centre; no field dump was written). The example input
+`flrw_tracker.athinput` runs as published (12 cycles, tracker at 2.5 + 0.5 t).
 
 ## 5. Predictions that failed (details in the journal)
 
@@ -243,9 +281,13 @@ section 5.
 
 ## 6. Regression
 
-T0 (run core-20261119-154346-64067cd): with the new options absent the executable of the
-tests is byte-identical to the release in every output file of seven set-ups, restart
-files included. T0b and T12 repeat this for the published executable (section 4.3).
+T0 (run core-20261119-154346-64067cd) and T0b (run core-20261119-161756-44db4b5): with
+the new options absent the executable of the tests (source 901d8b3) and the published
+processor executable (source 3c44b74) are byte-identical to release core-v0.3 in every
+output file of seven set-ups (geodesics with both pushers, deposit on a static mesh,
+East et al. data, Oppenheimer-Snyder on a static mesh, homogeneous universe, puncture
+with finder on a static periodic mesh), restart files included. T12 shows that the
+published executable reproduces the tested one on the cases of T1, T2 and T9.
 
 ## 7. Scouting run of S1 with adaptive refinement (T10)
 
@@ -266,4 +308,6 @@ in the journal (entry 14:45, T10).
   `bin` outputs work on refined meshes.
 - The tracker file is truncated on restart (upstream behaviour, unchanged); its position
   is in the restart file.
+- Restarts on refined meshes agree with the uninterrupted run to round-off, not bit for
+  bit (section 4.2); on a uniform mesh and right after a regrid they are bitwise.
 - MPI: built and tested without MPI only.

@@ -118,15 +118,58 @@ is found) the norms `H2 = sqrt(<H^2>)`, `E2 = sqrt(<(16 pi E)^2>)`, `E1 = <E>` a
 largest |H|, every leaf cell weighted by its proper volume. The bound of the track's
 threshold definition is `H2_out / E2_out` of the horizon sphere.
 
-## 3. Numbers
+## 3. Numbers (registered runs; every figure looked at; details in `cosmo_amr.md`, section 4)
 
-Filled from the registered runs; see the table of results in `cosmo_amr.md`, section
-"What is tested", and the outcomes in the journal.
+- Adaptive refinement with `nrpic_cosmo` (A2-1) [VERIFIED, run core-20261119-154404-64067cd]:
+  on the track's peak data (`ic_peak0.5`, 32^3) the release dies at the first check
+  (exit -11); this branch refines with `lohner` (64 -> 400 MeshBlocks), with
+  `lapse_ratio_1`, `chi_ratio_1` or `ppc_refine` (the central eight blocks at cycle 4);
+  particle number and rest mass unchanged, deposition identity 3.2e-14; largest relative
+  Hamiltonian constraint after the regrid 0.0116 (fine-shape spreading), 0.0072 (uniform
+  spreading), against 0.047 of the track's static start.
+- Homogeneous universe with refinement (A2-8) [VERIFIED, run core-20261119-151654-e01b46e]:
+  chi and E uniform to 1.6e-14 and 4.2e-14 with patches in the interior, on faces and
+  corners, adaptive patches, a lattice drifting through a patch; `lohner` plus
+  `<particles_amr>` creates no MeshBlock.
+- Deposition identity across levels and periodic faces [VERIFIED, run
+  core-20261119-154351-64067cd]: 1.7e-14 in 22 cases.
+- Finder in a periodic box (A2-2 to A2-4) [VERIFIED, run core-20261119-152106-9332260]: unit
+  puncture at the centre, on a face, at a corner, finder centre in other images: M =
+  0.9915211031 in every case, equal to 3.3e-16; the release reports no horizon for a
+  centre one period away and a WRONG horizon (M = 0.695) for a hole on a face.
+- Guard (A2-9) [VERIFIED, same run as the homogeneous universe]: stop at the first cycle with
+  non-finite fields, status 3, `<basename>.guard.txt`; with the guard off (and with the
+  release) the run integrates NaN to `nlim` and exits 0.
+- Light-speed step (A2-10) [VERIFIED, same run]: with the lapse d_t alpha = -(2/3) alpha^2 K
+  the released step exceeds 0.25 dx/c by a factor 3.2 at t = 1; with `dt_lightspeed = 1`
+  dt c/(0.25 dx) = 1 to 3e-15.
+- Tracker across faces [VERIFIED, runs -151654-e01b46e and -161316-f797997]: follows its
+  object across the face to 1e-13, refinement follows on both sides; walk mode with
+  `tracker_walk_tol` stays put in a uniform lapse.
+- Linear plane wave with a refined patch: T3, see `cosmo_amr.md` section 4.1.
 
-## 4. Scouting run of S1 with adaptive refinement
+## 4. Found here, not requested: restarts of adaptive runs (A2-14)
 
-See `cosmo_amr.md`, section "Scouting run", and the journal entry of T10.
+The track runs chains of one-hour segments. AthenaK's mesh restart file lacks the counter
+that keeps a MeshBlock from changing again within `refinement_interval` cycles, and a
+restart file written inside the loop precedes the regrid of its own cycle. With the
+release mechanism a restarted adaptive run delays a regrid by up to
+`refinement_interval` cycles or skips the regrid of its restart cycle (T11, OLD: 4 to 6
+cycles with the wrong mesh). This branch writes the counters next to every restart file
+(`<file>.rst.amr`) and performs a pending regrid on restart: the regrid schedule after a
+restart equals the uninterrupted run in all ten cases tested [VERIFIED, run
+core-20261119-161309-f797997]. Restarts on refined meshes agree with the uninterrupted run
+to round-off, not bit for bit (largest field departure 6e-10 on the peak).
 
-## 5. Regression
+## 5. Scouting run of S1 with adaptive refinement
 
-See `cosmo_amr.md`, section "Regression".
+Slurm job 4654 (run core-20261119-150507-8224d72; S1 data, mu = 0.3, 64^3, ladder plus
+particles per cell, fine shape, `dt_lightspeed`, guard, finder status, region norms; 0.75
+card-hours asked) was still pending when this package closed (the queue gave
+2026-11-19 18:35 PST). Its prediction is in the journal (T10). It is not a result yet.
+
+## 6. Regression
+
+Runs core-20261119-154346-64067cd (tested executable) and core-20261119-161756-44db4b5
+(published executable): every output file of seven existing set-ups byte-identical to
+release core-v0.3, restart files included.

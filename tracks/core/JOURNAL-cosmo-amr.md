@@ -730,3 +730,37 @@ analysis run, looked at) [VERIFIED]:
 published (`.work/build_cpu_b`, source 3c44b74, sha256 74586012...) against the release:
 all seven set-ups exit 0 and every output file byte-identical (3, 3, 2, 13, 17, 5, 11
 files), restart files included: PASS.
+
+## 2026-11-19 16:40  outcome of T12 (published executable against the tested one)
+
+**T12, run core-20261119-162949-d87b113** (`t12_summary.json`) [VERIFIED]: 43 cases (T1:
+22, T2: 16 without the release cases and without Goff, T9: 5) rerun from their saved
+decks with the published processor executable; same exit status in every case (G and
+Gchi: 3, the others 0); 42 cases byte-identical in every output file; in U the only
+differing file is `flrw.horizon_status_0.txt`, whose column 1 changed from the stage (4)
+to the cycle (0, 8, 16, 24) and whose header label changed from "1:iter" to "1:cycle",
+as intended; columns 2 to 15 identical (diff read). The script printed "FAIL (1)" because
+it compared the header line as text; by the prediction as written (every file
+identical except column 1 of the status file) the outcome is a PASS. So every number of
+T1, T2 (T5 to T8) and T9 measured with the executable of 901d8b3 holds for the published
+one.
+
+## 2026-11-19 16:41  prediction of T15 (options no test exercised)
+
+Options of this package that no test above touched: `<z4c_guard>` `stop_dt_below`,
+`stop_no_particles`, `check_dcycle`; `<particles>` `region_horizon` with a horizon
+actually found. **T15** (`t15_options.py`, processors, published executable):
+- Gdt: T2's U with `stop_dt_below = 0.05` (its step is 0.03125): stops at the first
+  check after cycle 0, i.e. cycle 1, status 3, reason "time step below".
+- Gnp: T2's G (Courant number 1.5) with `stop_nonfinite = false`,
+  `stop_no_particles = true`: runs on through the non-finite fields (as Goff) and stops,
+  status 3, at the first cycle at which no particle is left (Goff lost all of them
+  before t = 150; the cycle is not known in advance).
+- Gdc: T2's G with `check_dcycle = 4`: stops at cycle 20, the first multiple of 4 after
+  cycle 18 where the every-cycle guard stopped, status 3.
+- Rh: T4's unit puncture (case a, M = 0.99152) with 512 light particles (density 1e-6
+  of the critical one), two cycles, finder every cycle, `region_radius1 = 1`,
+  `region_horizon = 0`: at the first record (before any search) the horizon sphere has
+  radius 0; once the horizon is found its radius is the mean radius 0.4778 and V_in of
+  that sphere is positive and below that of the sphere r = 1; V_in + V_out = V.
+Refuted by another stop cycle, a missing stop, or a horizon sphere that stays empty.

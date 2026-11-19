@@ -36,7 +36,9 @@
  "purpose": "T12 of cosmo-amr: the processor executable to be published (source 3c44b74) reruns the decks of T1 (22 cases), T2 (16 cases) and T9 (5 cases) and every output file is compared byte by byte with the tested executable (source 901d8b3); hand-written manifest because nrpic-run refused (16 cores busy in live local runs of core)",
  "kind": "scouting",
  "tag": "cosmo-amr-T12",
- "state": "running",
+ "state": "finished",
+ "wall_time_s": 576.28,
+ "exit_status": 1,
  "cores": 8,
  "card_hours": 0.0,
  "started_utc": "2026-11-19T16:29:49Z"
