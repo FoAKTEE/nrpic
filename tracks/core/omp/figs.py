@@ -133,7 +133,11 @@ def fig_scaling(a):
     axs[1].set_ylabel("speed-up over one thread")
     axs[1].set_yticks([1, 2, 4, 8, 16, 32, 64])
     axs[1].set_yticklabels(["1", "2", "4", "8", "16", "32", "64"])
-    axs[0].legend(loc="upper right", fontsize=8)
+    axs[0].plot([], [], "s", mfc="none", color="0.3", label="serial build, one thread")
+    if card:
+        axs[0].plot([], [], ":", color="0.3", label="one A100 card")
+    h, lab = axs[0].get_legend_handles_labels()
+    axs[1].legend(h, lab, loc="upper left", fontsize=8)
     fs.save(fig, a.out)
     print("wrote", a.out + ".png")
     for case in best:
