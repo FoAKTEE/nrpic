@@ -1,0 +1,12 @@
+2606.16879 | (n\s*<\s*3|n\s*\\leq\s*3|0\s*<\s*n|n\s*=\s*3|n\s*>\s*3)|8
+2606.16879 | (Vlasov|Boltzmann|particle)|5
+1709.00267 | (FLRW|Friedman|dust|decelerat|matter.dominated)|8
+2107.00457 | (FLRW|negative|hyperbolic|linear|Milne|Lambda|cosmological constant)|10
+2012.14241 | (Milne|Vlasov|Maxwell|massive)|6
+2306.17774 | (theorem|stable|decelerat|torus|compact|T\^3|massive)|10
+1904.13290 | (Bianchi|isotropi|massless|massive|radiat|Einstein-de Sitter)|10
+2604.14911 | (q\s*\\in|1/2|frac12|frac\{1\}\{2\}|2/3|frac23|matter)|10
+2512.19454 | (2/3|frac\{2\}\{3\}|critical|matter-dominated|alpha)|10
+1402.7085 | (Ringstr|monograph|cosmological constant|surface symmetric)|8
+2402.08544 | (Vlasov|FLRW|Big Bang|collapsing|scalar)|8
+2609.14755 | (Einstein--Vlasov|Einstein-Vlasov|numerical|simulation|self.consistent|black hole|spherical|binary)|12

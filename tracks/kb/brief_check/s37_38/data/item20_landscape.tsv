@@ -1,0 +1,19 @@
+# Landscape of future nonlinear stability results for FLRW-type solutions with Lambda = 0 decelerated, Lambda = 0 linear (Milne) and Lambda > 0 expansion.
+# Columns (tab-separated): matter, expansion, status, papers, locators (semicolon-separated, CHECK.md syntax).
+# status: proven = theorem without symmetry; symmetric = theorem under symmetry or spatial homogeneity only; numerical = numerical evidence of stability;
+#         unstable = instability shown or well established (linear theory or numerics); open = nothing found; unchecked = not searched in this package; na = no such background for this matter.
+massive Vlasov	accelerated (Lambda>0)	proven	Ringstrom monograph (via 1402.7085); 1306.6223 (T3-Gowdy); 1402.7085 (surface symmetric)	1402.7085/v1/src/main.tex:50-52; 1306.6223/v2/src/main.tex:160, 167-169
+massive Vlasov	linear (Milne, k=-1)	proven	1709.00267; 2012.14241 (charged, with Maxwell)	1709.00267/v1/src/main.tex:363, 381, 390; 2012.14241/v2/src/Milne-EVM-Final.tex:329-330
+massive Vlasov	decelerated (k=0)	symmetric	1007.0184 (Bianchi I, homogeneous); open beyond homogeneity	1007.0184/v3/src/bianchiarticleV3.tex:40-48; 1904.13290/v2/src/main.tex:359
+massless Vlasov	accelerated (Lambda>0)	unchecked	-	-
+massless Vlasov	linear (Milne, k=-1)	unchecked	-	-
+massless Vlasov	decelerated (k=0)	symmetric	2306.17774 (spherical, R^3; radiation-type a~t^1/2); 1904.13290 (diagonal Bianchi I)	2306.17774/v1/src/masslessVlasovFLRW.tex:49, 64; 1904.13290/v2/src/main.tex:333
+dust	accelerated (Lambda>0)	proven	Hadzic-Speck 1309.3502; Friedrich	1709.00267/v1/src/main.tex:394, 1756; 2607.09326/v1/src/main.tex:158
+dust	linear (Milne, k=-1)	proven	2107.00457	2107.00457/v1/src/main.tex:121, 141
+dust	decelerated (k=0)	unstable	linear growth (Sachs-Wolfe); numerical: 2502.08095, 2606.16879	2606.16879/v1/src/main_v2.tex:56, 184; 2607.09326/v1/src/main.tex:138, 317
+Euler p=K rho (0<K<1/3)	accelerated (Lambda>0)	proven	Rodnianski-Speck; Speck; Oliynyk	1709.00267/v1/src/main.tex:394; 2607.09326/v1/src/main.tex:158
+Euler p=K rho (0<K<1/3)	linear (Milne, k=-1)	proven	2301.11191	iq:9863399afc6fcac4
+Euler p=K rho (0<K<1/3)	decelerated (k=0)	unstable	2502.08095 (numerical, Gowdy); 2405.03431 (fixed background)	2607.09326/v1/src/main.tex:172, 317; iq:9863399afc6fcac4
+Euler polytropic n>3	accelerated (Lambda>0)	proven	Liu-Wei 2021 (other index range)	2607.09326/v1/src/main.tex:300
+Euler polytropic n>3	linear (Milne, k=-1)	unchecked	-	-
+Euler polytropic n>3	decelerated (k=0)	proven	2607.09326 (proof, T3); 2606.16879 (numerical, Gowdy)	2607.09326/v1/src/main.tex:140-149, 307; 2606.16879/v1/src/main_v2.tex:43, 59, 215, 280

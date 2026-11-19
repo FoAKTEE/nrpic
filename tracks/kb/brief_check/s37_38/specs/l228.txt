@@ -1,0 +1,7 @@
+2609.13394 | (spherical symmetry|spherically symmetric)|5
+2609.13394 | (echo|time.?scale)|8
+2609.13394 | (bounded geodesic|trapped)|6
+2609.13394 | (phase mixing)|6
+2309.00431 | (quadrupole formula|rigorous)|6
+2309.00431 | (assum|no-incoming|no incoming)|8
+2510.12429 | (massless|trapped surface|semi-global)|8

@@ -1,0 +1,7 @@
+gr-qc/9604001 | introduction|4
+gr-qc/9604001 | lectures|3
+1106.1367 | (guide|review)|4
+2106.09235 | (pedagogical|introduction)|4
+1309.2036 | (review|tangent bundle)|4
+1910.12152 | variational|5
+1910.12152 | (no variational|appears to exist|action)|5

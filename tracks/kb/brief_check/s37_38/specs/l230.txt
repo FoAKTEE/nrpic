@@ -1,0 +1,8 @@
+1706.09501 | (Burnett|conjecture)|10
+1706.09501 | (polarized|weak limit|null dust)|8
+1706.09501 | (converse|reverse|direction)|6
+1907.10743 | (Burnett|conjecture)|10
+1907.10743 | (polarized|elliptic gauge|U\(1\))|8
+2506.21779 | (polarized|elliptic gauge|small|localized)|10
+2506.21779 | (Burnett|converse|reverse|massless Vlasov)|10
+2506.21779 | (high.frequency|gravitational wave)|6

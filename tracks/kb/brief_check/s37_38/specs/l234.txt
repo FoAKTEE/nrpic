@@ -1,0 +1,15 @@
+astro-ph/0110561 | (gravothermal catastrophe|self-similar|long mean free path)|6
+astro-ph/0111176 | (black hole|10\^\{-8\}|radial instability)|6
+1501.00017 | (seed black hole|gravothermal|ultra)|6
+1812.05088 | (seed|N-body|dissipative)|6
+2010.15132 | (seed|general relativistic instability|baryon)|6
+2108.11967 | (instability|fractional binding|redshift|0\.035)|8
+2506.17641 | (0\.3|0\.3c|0\.3\s*c)|12
+2506.17641 | (10\^\{-10\}|10\^\{-8\}|-10\}|-8\})|12
+2506.17641 | (1\s*\{\\rm\s*M|\\sim\s*1\s*\{|seed mass|initial seed)|12
+2506.17641 | (velocity dispersion|one-dimensional|1D)|10
+2506.17641 | (10\^\{9\}|10\^9)|12
+2504.00075 | (dissipative|dSIDM)|6
+2601.17117 | (Misner|hydrostatic|heat flux|envelope)|10
+2601.17117 | (spherical|fluid|kinetic|Boltzmann)|10
+2601.17117 | (3\\times\s*10\^\{-8\}|10\^\{-8\}|horizon)|8

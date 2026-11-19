@@ -1,0 +1,35 @@
+# INSPIRE queries of package s37_38 (through harness/bin/nrpic-fetch-arxiv --inspire-query, 2026-11-19,
+# serially; nothing about the project in any query). Format: <sha16 of kb-data/meta/inspire/query/> | <query> | hits_total
+# Item 20 / line 1750 (stability of matter-dominated FLRW)
+9863399afc6fcac4 | refersto:recid:1778926 (papers citing 2002.02119) | 39 (25 most recent stored)
+71735bd3b86a9f40 | refersto:recid:1778926 and date < 2022 | 15
+30f941fcf21612cc | t "Einstein-Vlasov" and (t cosmolog or t FLRW or t Friedmann or t expanding or t Milne) | 1
+5b4c67a2b9e4822b | t stability and (t FLRW or t Friedmann) and (t dust or t Vlasov or t "massive particles" or t collisionless) | 2
+f9092f2c3181d6d4 | t Vlasov and (t decelerat or t "matter dominated" or t "matter-dominated" or t "Einstein-de Sitter") | 0
+2ad127a6360ac3bf | a Fajman, David | 36 (25 most recent stored)
+124f621632e7a568 | t "Milne model with matter" | 0 (1709.00267 has no INSPIRE record)
+5d79da858c8bc1b1 | t Vlasov and (t FLRW or t Friedmann or t cosmological or t "expanding spacetime" or t "expanding spacetimes") | 24
+38225ca010ad309d | t "Einstein-de Sitter" and (t stability or t stable or t instability) | 2
+84d08ab99a80b042 | t "Isotropization of non-diagonal Bianchi I" | 1 (1007.0184)
+36121fac85e7fc78 | refersto:recid:3179634 (papers citing 2607.09326) | 2
+9d4e8863f05b8d19 | refersto:recid:3168839 (papers citing 2606.16879) | 2
+6bb7334c15eb361c | t "Einstein-Vlasov" and date > 2024 (made earlier by another package, read here) | 9
+# Line 235 (full NR with a particle-dark-matter environment)
+236f6e632a778a7c | refersto:recid:3226709 (papers citing 2611.12831) | 0
+37c8a029e659b899 | t "dark matter" and t "black hole" and (t "numerical relativity" or t "fully relativistic" or t "full general relativity" or t "general relativistic" or t "general-relativistic") and date > 2018 | 0
+2d6b06309d0b5f4c | abstracts.value:"numerical relativity" and abstracts.value:"particle dark matter" and date > 2018 | 0
+371a146e4d145e5a | abstracts.value:"Einstein-Vlasov" and abstracts.value:"black hole" and date > 2022 | 6
+dc16c19cdf118343 | t "dark matter" and t "numerical relativity" | 1
+4a5922f5096f3f25 | t collisionless and t "numerical relativity" | 1
+ab3f3c961b9edab7 | abstracts.value:"binary black hole" and abstracts.value:"collisionless" and abstracts.value:"numerical relativity" | 0
+fcf8b40e7ce8db0c | t "black hole" and t Vlasov and date > 2015 | 17
+5a6b59928d3b5674 | abstracts.value:"dark matter spike" and abstracts.value:"numerical relativity" | 1
+27f77360db38cbb9 | t collisionless and t "black hole" and t binary and date > 2023 (made earlier by another package, read here) | 0
+# Line 234 (3D full-GR kinetic SIDM calculation)
+3032b0f66c081770 | refersto:recid:3111427 (papers citing 2601.17117) | 14
+77f08945fdd1ef1d | t "self-interacting dark matter" and (t relativistic or t "general relativity" or t "general-relativistic") and date > 2024 | 1
+64636c015b786bf5 | abstracts.value:"self-interacting dark matter" and abstracts.value:"numerical relativity" | 0
+# Generic web searches (WebSearch tool, no project detail): "numerical relativity binary black hole merger collisionless
+# particle dark matter environment simulation"; "nonlinear stability Einstein-de Sitter Einstein-Vlasov massive particles".
+# Neither returned a paper beyond those above (results: 2210.09254, 2311.18156, 2409.01937, 2402.13762, gr-qc/9905058
+# (merging clusters of collisionless particles, Shibata 1999, not read); 1709.00267, 2210.00512, 2012.14241, 2607.09326).

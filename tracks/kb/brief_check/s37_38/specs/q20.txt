@@ -1,0 +1,12 @@
+2606.16879 | (Einstein-de Sitter|Einstein--de Sitter)|8
+2606.16879 | (Vlasov|kinetic|collisionless)|8
+2606.16879 | (dust|unstable|instability)|8
+2606.16879 | (polytropic|Gowdy|numerical)|6
+2606.16879 | (open|conjecture|future work|remains)|6
+2607.09326 | (Vlasov|kinetic|collisionless)|8
+2607.09326 | (dust|unstable|instability|pressureless)|8
+2607.09326 | (polytropic|T\^3|mathbb\{T\}\^3|near-flat|positive)|8
+2607.09326 | (theorem|main result)|6
+2607.09326 | (open|conjecture|remains|future)|6
+2306.17774 | (massless|decelerat|spherically symmetric|R\^3|mathbb\{R\}\^3)|8
+2306.17774 | (massive|matter|dust|open)|8

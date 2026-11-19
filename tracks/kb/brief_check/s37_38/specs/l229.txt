@@ -1,0 +1,8 @@
+gr-qc/0512031 | (perfect fluid|fluid)|10
+gr-qc/0512031 | (heteroclinic|past attractor|past asymptotic)|10
+gr-qc/9805063 | (vacuum|Gowdy|U\(1\)|magnetic|scalar|matter)|10
+gr-qc/0312117 | (vacuum|no symmetr|matter|scalar)|8
+0904.1546 | (vacuum|spike|matter)|8
+2010.01399 | (vacuum|scalar|matter|spike)|8
+gr-qc/0201056 | (Vlasov|collisionless|kinetic)|5
+gr-qc/0201056 | (review|Living)|4

@@ -1,0 +1,2 @@
+2302.07878 | (cosmological coupling|coupled|99\.98|k\s*=|dark energy)|8
+2306.11588 | (coupling|nonsingular|regular|k\s*=\s*1|data|observ)|10

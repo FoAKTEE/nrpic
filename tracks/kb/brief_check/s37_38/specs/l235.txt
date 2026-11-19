@@ -1,0 +1,10 @@
+astro-ph/9906391 | (spike|adiabatic)|5
+1305.2619 | (spike|relativistic|Schwarzschild)|5
+2411.12007 | (SWIFT|N-body|Newtonian|relativistic)|8
+2002.12811 | (dress|dynamical friction|waveform|dephasing)|6
+2211.01362 | (spike|environment|Bayesian)|6
+2402.13762 | (NbodyIMRI|N-body|Newtonian|relativistic|post-Newtonian)|8
+2505.09715 | (fully relativistic|relativistic formalism|Kerr|Schwarzschild|collisionless)|8
+2210.09254 | (numerical relativity|GRChombo|scalar field|heavier|particle)|10
+2311.18156 | (numerical relativity|GRChombo|scalar|particle)|8
+2409.01937 | (numerical relativity|GRChombo|self-interact|scalar)|8
