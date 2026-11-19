@@ -1,6 +1,6 @@
 # 0014 Card-time allotments after wave 1 (amends 0006)
 
-Status: PROVISIONAL · 2026-11-15
+Status: ACCEPTED by the user on 2026-11-19 (decision 0017); before that provisional · 2026-11-15
 
 Use in wave 1: core 3.4, B 0.5, D 2.2 card-hours, the others none. Two cards give at most
 48 card-hours a day, so the allotments are a queueing device and not a spending limit.
