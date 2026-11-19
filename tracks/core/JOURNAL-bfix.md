@@ -1015,3 +1015,26 @@ Not done in this package (unchanged from bfix-1 unless said): T8 (above); no sec
 has checked these results; the cause of the constraint level that the evolution restores
 with a noisy lattice is not identified (T7 rules out the time step); requests deferred or
 declined: REQUESTS_B.md sections 2 (in-situ Fourier modes), 6, 7 (items 2, 3), 8.
+
+## 2026-11-19 session bfix-3 (wave 2b): closing the package
+
+Start 14:02Z: `git merge --no-edit main` (merge cde0815; rulings 0016 read). `git diff
+9c92f68 HEAD -- athenak/` is empty, so the published executables still match the source.
+Read again: CLAUDE.md, the charter to "Owners", decisions 0010 and 0016, the brief at lines
+688-706 and 834-860, this journal, the section core:bfix of the wave-2 reports.
+
+T8 ran after session bfix-2 had ended (sacct, times of the cluster clock, UTC-8): job 4480
+(run core-20261115-181436-bd93f3e, release card executable, benchmark) 12:33:57 to
+12:34:06, 9 s, exit 0; job 4481 (run core-20261115-181437-8d252cb, published card
+executable) 12:34:06 to 12:39:37, 331 s, every one of its seven cases rc=0. Both closed
+with `nrpic-run finish` (commits 7db34a5, 8707fc4): 0.0025 and 0.0919 card-hours, 17 and
+98 files checksummed. The package has used 0.051 + 0.094 = 0.145 of its one card-hour.
+
+First analysis run core-20261119-140406-8707fc4 (registered, processors): FAILED (exit 1)
+in the stage `amp`. The driver looked for `lw64_a1e-07`, the batch list wrote
+`lw64_a1e-7`: an error of the driver, no result. Its stages `regress` and `circ` had
+finished (printed in its log); their numbers are taken from the rerun below, not from
+it. Fix: the directory names are mapped (`AMP_DIR` in `t8_analysis.py`); a figure of the
+circular-wave comparison (`t8_circ.png`, card minus processor per field against one
+rounding unit of each field) is added, since P10d had no figure. Predictions P10a to
+P10d stand as written at 18:14Z on 2026-11-15; nothing in them is changed.

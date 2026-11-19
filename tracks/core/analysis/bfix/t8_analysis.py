@@ -32,6 +32,8 @@ from t4b_zdep import zstats  # noqa: E402
 
 K = (1, 1, 1)
 AMPS_NEW = ("1e-07", "1e-05")
+# directory names of the batch list t8_new.list (lw64_a1e-7, ...)
+AMP_DIR = {"1e-07": "1e-7", "1e-05": "1e-5"}
 
 
 def is_log(name):
@@ -78,7 +80,7 @@ def stage_amp(res, B, new, t4):
                          "pred_gain_phase": r4[str(n)]["pred_gain_phase"],
                          "errs_dat_rms_L1": r4[str(n)]["errs_dat_rms_L1"], "source": "T4"}
         for a in AMPS_NEW:
-            rd = os.path.join(new, f"lw{n}_a{a}")
+            rd = os.path.join(new, f"lw{n}_a{AMP_DIR[a]}")
             files = sorted(glob.glob(os.path.join(rd, "bin", "*.z4c.*.bin")))
             last, _ = t1.analyse_dump(B, files[-1], K, float(a), 0.0, 0.0)
             last.update(second_order_fields(files[-1]))
@@ -178,6 +180,10 @@ def stage_circ(res, new, t1dir):
              "At_over_A": float(np.abs(bc.tensor(dc, "A") - bc.tensor(dp, "A")).max()/A)}
         o["all_fields_max_abs"] = float(max(np.abs(dc[v] - dp[v]).max() for v in dc
                                             if isinstance(dc[v], np.ndarray) and dc[v].ndim == 3))
+        # per field: largest |card - processor| and largest |value| (processor)
+        o["per_field"] = {v: {"max_abs_diff": float(np.abs(dc[v] - dp[v]).max()),
+                              "max_abs": float(np.abs(dp[v]).max())}
+                          for v in sorted(dc) if isinstance(dc[v], np.ndarray) and dc[v].ndim == 3}
         out[tag] = o
     errs = {}
     for tag, d in (("card", rc), ("processor", rp)):
@@ -240,6 +246,27 @@ def figures(res, out):
         ax.set_ylim(1e-20, 1e-6)
         ax.legend(fontsize=6, ncol=3, loc="lower right")
         paths += fs.save(fig, os.path.join(out, "t8_zgrow"))
+    if "circ" in res and "per_field" in res["circ"]["last"]:
+        pf = res["circ"]["last"]["per_field"]
+        names = list(pf)
+        x = np.arange(len(names))
+        dif = np.array([pf[v]["max_abs_diff"] for v in names])
+        mx = np.array([pf[v]["max_abs"] for v in names])
+        eps = np.finfo(float).eps
+        fig, ax = plt.subplots(1, 1, figsize=(fs.FULL_WIDTH, 3.0))
+        fig.subplots_adjust(left=0.09, right=0.98, bottom=0.2, top=0.93)
+        ax.semilogy(x, np.maximum(dif, 1e-22), "o", color=fs.PAL["red"],
+                    label="max |card - processor| at t = 0.577 (cycle 37)")
+        ax.semilogy(x, np.maximum(eps*mx, 1e-22), "_", ms=12, color="k",
+                    label="eps x max |field|")
+        ax.axhline(1e-9*1e-6, color=fs.PAL["blue"], lw=0.7, ls=":",
+                   label="bound of P10d (1e-9 A)")
+        ax.set_xticks(x)
+        ax.set_xticklabels(names, rotation=60, fontsize=6)
+        ax.set_ylabel("absolute")
+        ax.set_ylim(1e-22, 1e-12)
+        ax.legend(fontsize=6, loc="lower right")
+        paths += fs.save(fig, os.path.join(out, "t8_circ"))
     return paths
 
 
