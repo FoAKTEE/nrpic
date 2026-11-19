@@ -11,8 +11,10 @@ Title classes: same (identical after collapsing white space), format (identical 
 case, accents, TeX, dashes, quotes and punctuation), minor (normalised similarity >= 0.9),
 differs (below). Author classes: match, order (every name found, not in the brief's order or
 the brief's first author is not the first), incomplete (a plain list without "et al." that
-omits authors), mismatch (a name of the brief is not among the authors), not-checked (no
-author field).
+omits authors), mismatch (a name of the brief is not among the authors), collaboration (the
+brief names a collaboration; recorded whether the metadata lists it), not-checked (no author
+field). Metadata author entries without a letter (";" or "." that the arXiv API returns for
+some old papers) are dropped; two authors of the same surname take two places.
 """
 import difflib
 import hashlib
@@ -79,7 +81,7 @@ GREEK = {"α": "alpha", "β": "beta", "γ": "gamma", "δ": "delta", "ε": "epsil
          "θ": "theta", "κ": "kappa", "λ": "lambda", "μ": "mu", "ν": "nu", "ξ": "xi", "π": "pi", "ρ": "rho",
          "σ": "sigma", "τ": "tau", "φ": "phi", "χ": "chi", "ψ": "psi", "ω": "omega", "Γ": "gamma", "Δ": "delta",
          "Θ": "theta", "Λ": "lambda", "Ξ": "xi", "Π": "pi", "Σ": "sigma", "Φ": "phi", "Ψ": "psi", "Ω": "omega"}
-TEX_ACCENT = re.compile(r"\\[`'^\"~=.uvHtcdbr]\s*\{?([A-Za-z])\}?")
+TEX_ACCENT = re.compile(r"\\(?:[`'^\"~=.]|[uvHtcdbr](?![A-Za-z]))\s*\{?([A-Za-z])\}?")
 
 
 def fold(s):
@@ -89,9 +91,15 @@ def fold(s):
     return "".join(ch for ch in s if not unicodedata.combining(ch)).lower()
 
 
+TEX_FONT = re.compile(r"\\(?:mathrm|mathcal|mathbf|mathbb|mathtt|mathsf|mathit|mathfrak|boldsymbol|textrm|textit|"
+                      r"texttt|textsf|textbf|textsc|emph|rm|it|bf|tt|sf|sc|em|scriptstyle|displaystyle|textstyle)"
+                      r"(?![A-Za-z])\s*")
+
+
 def norm_title(t):
-    t = TEX_ACCENT.sub(r"\1", t or "")
-    t = re.sub(r"\\(?:mathrm|mathcal|mathbf|textrm|textit|emph|rm|it|bf)\s*", " ", t)
+    t = TEX_FONT.sub("", t or "")
+    t = TEX_ACCENT.sub(r"\1", t)
+    t = re.sub(r"\\[,;:!]", "", t).replace("{", "").replace("}", "")
     t = re.sub(r"\\([A-Za-z]+)", r" \1 ", t)                         # \Lambda -> lambda
     t = fold(t).replace("$", " ")
     t = re.sub(r"[^a-z0-9]+", " ", t)
@@ -115,11 +123,16 @@ INITIAL = re.compile(r"^(?:[A-Z][a-z]?\.(?:-?[A-Z][a-z]?\.)*|[A-Z])$")
 SUFFIX = re.compile(r",?\s+(?:Jr\.?|Sr\.?|II|III|IV)$")
 
 
+COLLAB = re.compile(r"\b(?:Collaboration|Network|Consortium|Team|Group)\b", re.I)
+
+
 def parse_brief_authors(s):
-    """{"kind": none|list|etal|first|include, "names": [surname strings as written]}."""
+    """{"kind": none|collaboration|list|etal|first|include, "names": [surname strings as written]}."""
     s = (s or "").strip()
     if not s:
         return {"kind": "none", "names": []}
+    if COLLAB.search(s) and "," not in s:
+        return {"kind": "collaboration", "names": [s]}
     m = re.match(r"^\(authors include (.*)\)$", s)
     if m:
         return {"kind": "include", "names": [x.strip() for x in re.split(r",\s*|\s+and\s+", m.group(1)) if x.strip()]}
@@ -165,17 +178,26 @@ def compare_authors(brief_raw, meta_authors):
     if pa["kind"] == "none":
         return {"class": "not-checked", "kind": "none", "missing": [], "n_brief": 0,
                 "n_meta": len(meta_authors or [])}
+    meta_authors = [a for a in meta_authors or [] if re.search(r"[A-Za-z\u00c0-\u024f]", a or "")]
     if not meta_authors:
         return {"class": "no-metadata", "kind": pa["kind"], "missing": [], "n_brief": len(pa["names"]), "n_meta": 0}
+    if pa["kind"] == "collaboration":
+        name = fold(pa["names"][0])
+        listed = any(fold(a) == name or name in fold(a) for a in meta_authors)
+        return {"class": "collaboration", "kind": "collaboration", "missing": [] if listed else pa["names"],
+                "collaboration_listed": listed, "n_brief": 1, "n_meta": len(meta_authors)}
     ft = [full_tokens(a) for a in meta_authors]
-    pos, missing = [], []
+    pos, missing, used = [], [], set()
     for nm in pa["names"]:
         st = surname_tokens(nm)
-        hit = next((k for k, f in enumerate(ft) if _match(st, f) == "suffix"), None)
+        free = [k for k in range(len(ft)) if k not in used]      # two authors of one surname: two places
+        hit = next((k for k in free if _match(st, ft[k]) == "suffix"), None)
         if hit is None:
-            hit = next((k for k, f in enumerate(ft) if _match(st, f)), None)
+            hit = next((k for k in free if _match(st, ft[k])), None)
         if hit is None:
             missing.append(nm)
+        else:
+            used.add(hit)
         pos.append(hit)
     res = {"kind": pa["kind"], "missing": missing, "positions": pos, "n_brief": len(pa["names"]),
            "n_meta": len(meta_authors)}
@@ -200,5 +222,5 @@ def compare_authors(brief_raw, meta_authors):
 def compare_entry(entry, meta_title, meta_authors):
     t = compare_title(entry["title"], meta_title)
     a = compare_authors(entry["authors_raw"], meta_authors)
-    agree = t["class"] in ("same", "format") and a["class"] in ("match", "not-checked")
+    agree = t["class"] in ("same", "format") and a["class"] in ("match", "not-checked", "collaboration")
     return {"title": t, "authors": a, "agree": agree}

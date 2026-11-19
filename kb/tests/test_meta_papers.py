@@ -32,6 +32,9 @@ def test_title_classes():
     r = M16.compare_title("Supermassive black hole seeds", "Ringdown and lensing of triple systems")
     assert r["class"] == "differs" and r["ratio"] < 0.9
     assert M16.compare_title("x", None)["class"] == "no-metadata"
+    assert M16.compare_title("under polarized U(1) symmetry", "under polarized $\\mathbb U(1)$ symmetry")["class"] == "format"
+    assert M16.compare_title("νCONCEPT: neutrinos", "$ν\\scriptstyle{\\rm CO}N{\\rm CEPT}$: neutrinos")["class"] == "format"
+    assert M16.compare_title("fRevolution – f(R) Gravity", "$\\texttt{fRevolution}$ $-$ $f(R)$ Gravity")["class"] == "format"
 
 
 @pytest.mark.parametrize("brief_raw,meta,cls", [
@@ -49,6 +52,11 @@ def test_title_classes():
     ("", ["A. Smith"], "not-checked"),
     ("Evans", ["Charles R. Evans Jr."], "match"),
     ("Bernuzzi, Hilditch", ["Bernuzzi, Sebastiano", "Hilditch, David"], "match"),
+    ("Pearce, Pearce, White", ["Matthew Pearce", "Lauren Pearce", "Graham White"], "match"),
+    ("Musco, Miller, Rezzolla", ["Ilia Musco", "John C. Miller", "Luciano Rezzolla", ";"], "match"),
+    ("DESI Collaboration", ["DESI Collaboration", "A. G. Adame"], "collaboration"),
+    ("DES Collaboration", ["R. Camilleri", "T. M. Davis"], "collaboration"),
+    ("Andréasson", ["E. Ames", "H. Andréasson"], "order"),
 ])
 def test_author_classes(brief_raw, meta, cls):
     assert M16.compare_authors(brief_raw, meta)["class"] == cls
