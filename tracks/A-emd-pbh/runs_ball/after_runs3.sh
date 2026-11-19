@@ -36,3 +36,17 @@ harness/bin/nrpic-run submit --kind scouting --gate G2 --package $C --launcher l
       --sr \$O:sr1l_n128:1.0:leak --sr \$O:sr1l_n256:0.5:leak --sr \$O:sr1l_n256L32:0.25:leak \
       --bh \$O:bh_n128:0.25 --bh \$O:bh_n192:0.16666666666666666 --bh \$O:bh_n256:0.125 \
       --out \$O --figdir $C/figs > \$O/summary3.log 2>&1"
+
+# BH-1R (one refined level, card run A-20261119-164634-f1fe887) once its job has finished
+RUN2=A-20261119-164634-f1fe887
+P6=$S/A-20261119-164113-74f0f32                  # data set 3, lattice h = M/16
+if [ -d $S/$RUN2/bh_smr ]; then
+  harness/bin/nrpic-run finish $RUN2 || true
+  harness/bin/nrpic-run submit --kind scouting --gate G2 --package $C --launcher local --cores 4 --wall 00:40:00 \
+    --parent $RUN2 --parent A-20261119-164113-74f0f32 \
+    --purpose "analysis of BH-1R (data set 3, cells M/16 inside [-4,4]^3) against the exact solution; prediction of runs_ball/JOURNAL.md entry 10" -- \
+    bash -c "export OMP_NUM_THREADS=4 OPENBLAS_NUM_THREADS=4; O=\$NRPIC_RUN_DIR; \
+      $PY $C/compare.py --prep $P6/lat136 --seg $S/$RUN2/bh_smr --gauge leak --leak 8 --dx 0.125 --dx-fine 0.0625 --fine-half 4.0 \
+          --label bh_smr --out \$O --figdir $C/figs > \$O/bh_smr.log 2>&1; \
+      $PY $C/fields.py --seg $S/$RUN2/bh_smr --label bh_smr --out \$O --figdir $C/figs --L 16 --half 8 > \$O/f.log 2>&1"
+fi

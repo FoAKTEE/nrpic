@@ -252,7 +252,11 @@ def misner_sharp_line(x, g, K):
         raise ValueError("line points must be sorted by x1")
     h = x1[1] - x1[0]
     dRdx = np.gradient(R, x1, edge_order=2)
-    dRdx[2:-2] = (-R[4:] + 8.0 * R[3:-1] - 8.0 * R[1:-3] + R[:-4]) / (12.0 * h)
+    dxs = np.diff(x1)
+    if dxs.max() - dxs.min() <= 1e-9 * dxs.max():
+        # uniform line: fourth order in the interior
+        dRdx[2:-2] = (-R[4:] + 8.0 * R[3:-1] - 8.0 * R[1:-3] + R[:-4]) / (12.0 * h)
+    # a line through refinement levels keeps np.gradient's second-order non-uniform rule
     dRdr = dRdx * r / x1
     m = 0.5 * R * (1.0 + R ** 2 * KT ** 2 - dRdr ** 2 / Ag)
     c = 2.0 * m / R
@@ -260,11 +264,15 @@ def misner_sharp_line(x, g, K):
                 trapped=(c > 1.0) & (KT > 0.0), antitrapped=(c > 1.0) & (KT < 0.0))
 
 
-def line_points(rec, dx):
+def line_points(rec, dx, dx_fine=None, fine_half=None):
     """Cell centres of a formatted-table line output at y = z = dx/2 (slice_x2 =
-    slice_x3 = 0.01 picks the cell [0, dx])."""
+    slice_x3 = 0.01 picks the cell [0, dx]). With static refinement (dx_fine, fine_half):
+    cells with |x| < fine_half have the fine width and sit at y = z = dx_fine/2."""
     x1 = rec["x1v"]
-    return np.stack([x1, np.full_like(x1, 0.5 * dx), np.full_like(x1, 0.5 * dx)], axis=-1)
+    d = np.full_like(x1, float(dx))
+    if dx_fine is not None and fine_half is not None:
+        d = np.where(np.abs(x1) < fine_half, float(dx_fine), d)
+    return np.stack([x1, 0.5 * d, 0.5 * d], axis=-1)
 
 
 def tensor6(rec, prefix):

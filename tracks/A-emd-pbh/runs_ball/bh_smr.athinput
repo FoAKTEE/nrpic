@@ -5,8 +5,8 @@
 # level (default rule of coord/INTERFACES/deposit.md). Give on the command line:
 #   problem/comp0_file=<prep>/<stem>.tab
 #   particles/particle_file=<prep>/lat136/<stem>_lat136_track.nrp   particles/traj_ntrack=<n_track>
-# The x-axis table outputs mix cells of both levels; compare.py's line diagnostics assume a
-# uniform line and are not used for this run. Finder as problems/os/os_amr.athinput and core's L3
+# The x-axis table outputs mix cells of both levels: compare.py --dx 0.125 --dx-fine 0.0625
+# --fine-half 4 places them (second-order dR/dr there). Finder as os_amr.athinput and core L3
 # (initial coordinate radius 1 M, 400 iterations, mass tolerance 1e-5). JOURNAL.md entry 10.
 
 <comment>

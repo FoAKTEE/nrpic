@@ -128,6 +128,8 @@ def main():
     ap.add_argument("--seg", action="append", required=True)
     ap.add_argument("--gauge", choices=("sr1", "sr2", "leak"), required=True)
     ap.add_argument("--leak", type=float, default=8.0, help="lapse_leak rate (gauge leak)")
+    ap.add_argument("--dx-fine", type=float, default=None, help="cell width of a static refined level on the line")
+    ap.add_argument("--fine-half", type=float, default=None, help="half-width of the refined cube")
     ap.add_argument("--dx", type=float, required=True)
     ap.add_argument("--label", required=True)
     ap.add_argument("--out", required=True)
@@ -326,7 +328,7 @@ def main():
     lines = []
     nonfinite_t = []
     for rec in adm:
-        x = C.line_points(rec, a.dx)
+        x = C.line_points(rec, a.dx, a.dx_fine, a.fine_half)
         pos = x[:, 0] > 0
         g = C.tensor6(rec, "adm_g")[pos]
         K = C.tensor6(rec, "adm_K")[pos]
