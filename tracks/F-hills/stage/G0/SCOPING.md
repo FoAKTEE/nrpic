@@ -176,7 +176,7 @@ section 5); no MPI in the build (`scripts/README.md` l. 4).
 | (a) q = 10, m/8, to t = 200 M (the G1 run) | as above | 32-36 [JUDGEMENT: 200/240 of the above] |
 | (a) q = 10, m/16 | 2654-4544 | 99-156; no margin on one card |
 | (a) q = 4, m/8, 270 M | 1716 / 2080 / 1744 | 15.2 (14.5-16.5) |
-| (a) q = 4, m/16 | 2416 / 2654 / 2348 | 41, memory marginal |
+| (a) q = 4, m/16 | 2514 / 2864 / 2568 (radius 1.8 of the inputs; corrected 2026-11-19, run F-hills-20261115-131933-907e5fe; the first print, 2416 / 2654 / 2348 and 41, was the radius-1.2 row) | 44.8; 2864 is above the 2700 slots of one card |
 | (b) q = 10 clump binary, one passage | about 1000 (model) | 1.8-3.7 (model); 2.8-9 with the tree correction and cluster-run cells [JUDGEMENT] |
 | R0 (t = 0, three variants) | 1800 | processors, minutes, about 70 GB of host memory each |
 | R2, R4 (one puncture, P/m = 0.28) | about 1200 | about 1 each [JUDGEMENT] |

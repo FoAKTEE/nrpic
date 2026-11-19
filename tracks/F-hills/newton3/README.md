@@ -278,7 +278,8 @@ F-hills-20261115-133207-05ee76a, `results/finiteq.json`, `figures/fig_finite_q.p
 m1 = m2; 2048 isotropic samples or 256 coplanar phases per D). Down to M/m = 10 the
 isotropic disruption probability stays within a few points of the restricted limit for
 D >= 0.3 (q = 10: 0.747 vs 0.754 at D = 0.4; 0.601 vs 0.641 at D = 0.7) and is higher at
-D = 0.1 (0.93 vs 0.86, with 8.6 % of encounters capturing both members). The
+D = 0.1 (0.93 vs 0.86, with 10.4 % of encounters capturing both members; 8.6 % before the
+energy fix of wave 2, run F-20261115-175232-d399e83). The
 phase-averaged energy change in units of (G m1 m2/a)(M/m)^(1/3) drops to 0.49-0.79 of the
 restricted value for 0.1 <= D <= 1 at M/m = 10 (0.85 at D = 1.2). Coplanar retrograde
 binaries are always disrupted for D <= 0.3 at M/m = 10 and still at 37 % for D = 0.5, where

@@ -231,3 +231,91 @@ m1 ejected with +1.3119 units and m2 captured with a = 7.746, e = 0.2503 (README
 V11 (note, second_check): the note helper's two differences hold: V4/V4b summaries show retrograde
 D = 0.1 and 0.2 only in V4, with |dP| 0.0023 and 0.0063; the q = 4 m/16 trees at puncture radius
 1.8 are 2514 / 2864 / 2568 in run F-hills-20261115-131933-907e5fe.
+
+### Outcomes of V8-V11
+
+V8, run F-20261119-145434-82c05f2 (`review_nr.json`, `fig_review_nr.png` of the run, read): all
+met [VERIFIED].
+a. Both logs end with "1632 ... exceeds max_nmb_per_rank = 1600"; trackers end at iteration 703,
+   t = 21.969, x = 2.2034 (S3) and 455, t = 14.219, x = 2.2168 (S2).
+b. Failed searches 5 (S3: t = 1.0-3.0) and 2 (S2: 1.0-1.5); first search with hrms < 1e-3:
+   t = 3.5, 1.007886 (S3) and t = 2.5, 1.006176 (S2); t = 0: 0.999087 (hrms 4.6e-3, mean radius
+   0.477 m) in both; drift of the window medians t = 4-6 to 12-14: +5.15e-4 (S3), +8.55e-4 (S2);
+   spin at most 1.1e-4 m^2. The t = 0.5 search (0.98594, hrms 1.9e-2) is "found" by AthenaK's
+   test and is a poor surface, as the helper says.
+c. f over t = 10-14: 0.468 (S3), 0.758 (S2); |y|, |z| at most 2.5e-15.
+d. P1 smoke: 1716 at the start, 1744 at cycle 400; 8.427e6 zone-cycles/s = 2057.4 MeshBlock-cycles/s;
+   peak 70847 MiB; first tracker rows within 4.1e-9 of the input positions; t = 0 masses m1
+   0.127780, heavy 0.996068, m2 NaN; failed searches 1, 2, 17 of 25; good searches (hrms < 1e-3)
+   16, 16, 0 in t <= 1.56 M. Cost at 2057.4: 16.9 / 18.4 / 20.1 card-hours for 1744 / 1905 / 2080
+   MeshBlocks, the helper's numbers.
+V9, run F-20261119-145449-245e984 (`review_gr.json`, `fig_review_gr.png`, read): (a) met: q = 10 hole
+frame E = 0.999253, L = 4.1944, turning point r_S = 5.775 M (second check: 0.99925, 4.19, 5.77).
+(b) met: P1 (q = 4) hole frame E = 1.00420, L = 4.952 M, not captured, turning point r_S = 9.25 M
+(Newtonian conic r_p = 9.809 M, e = 1.00023); hole at rest: E = 0.9917, L = 3.962, not captured,
+turning point 4.66 M just outside the barrier top at 4.04 M; M_h = M + m_b: captured. So at q = 4
+the GR reading moves the centre-of-mass turning point by 6 percent in the natural (hole-frame)
+reading, against 28 percent at q = 10; the two other readings put it at the capture boundary.
+Consequence as planned: P1 keeps its input (both baselines start from the same state, E6).
+V10, run F-20261119-145509-fb91531: 15 of 15 newton3 tests pass at 82c05f2e: met. passages.json:
+q = 4 m1 ejected +1.31191 units, m2 captured a = 7.7458, e = 0.25027, first pericentre t = 122.1;
+q = 10 +1.61272, a = 7.547, e = 0.2474: met. These equal the wave-1 lead's own barycentric values
+(V5b: 1.31187, 1.61267) from a different integrator, so the corrected definition is confirmed by
+two codes; its derivation in the README was read, not re-derived.
+V11: met. `stage/G0/checks/v4_summary.json`: retrograde D = 0.1 and 0.2 only in V4, |dP| 0.0023
+and 0.0063, |dE|/E 0.004 and 0.012 (with 8 and 14 ambiguous samples not followed on); V4b covers
+retrograde D = 0.3 and 0.38 only. So "all nine agree within 0.002 and 0.4 percent" (wave-1 lead,
+EVIDENCE.md V4b row, G1 T1, STATUS) is WRONG for two points; corrected in the G1 package.
+`mesh_count_b.json` of F-hills-20261115-131933-907e5fe: q = 4 m/16 at puncture radius 1.8 gives
+2514 / 2864 / 2568.5 MeshBlocks and 44.8 card-hours (SCOPING section 9 printed the radius-1.2 row,
+2416 / 2654 / 2348, 41): corrected in SCOPING.md section 9.
+Small fix: `nr_first/results/e3_single_analysis.json` and `figures/fig_e3_single_gauge.png` were
+made before the horizon reader was fixed; rerun F-20261119-145619-8246322 replaces them (found/
+missed 39/5 and 27/2; figure read: failed searches no longer drawn as masses).
+
+### P1: decision (lead) and prediction, written before submission
+
+Did the single-puncture runs and the smoke pass their criteria (`nr_first/JOURNAL.md` E3, E7)?
+- Smoke (E7): every run-health criterion met (tree 1716 -> 1744, rate 2057, memory 69.2 GiB of 80,
+  trackers at the input positions, no non-finite value, H at t = 0 equal to the processor value);
+  one prediction failed: the first-search horizon masses (m2 not found at t = 0, the heavy hole's
+  first searches fail 17 of 25 times in 1.56 M). That is a finder limitation in the first
+  0.5 M (members) to about 4 M (heavy hole), not a health failure: masses are read after it.
+- S3, S2 (E3): what the passage depends on was met: tracker symmetric to 2.5e-15, settling with
+  the members' damping of P1 (eta m = 0.25) measured (f = 0.76 by t = 4 m, flat), constraint norm
+  flat (5e-5), no non-finite value, horizon drift with eta m = 0.25 1.7 times that of eta m = 2
+  (inside the predicted factor two). Failed: the first-search mass (0.9991 instead of
+  1.006-1.010), S2 reaching f = 0.8 (0.774), the cost (tree twice the prediction); and the runs
+  stopped at t = 22 m and 14 m of 90 m, so the junk energy of a member is not measured. The stop
+  is the single-puncture input's slot limit (1632 > 1600), explained block by block by E11 and
+  confirmed by V8a; it does not carry over to P1, whose tree was measured on its own input (smoke,
+  50 regrids) and along the Newtonian track (wave 1: at most 2080; with core's 11 percent AMR
+  growth 2309) under its limit of 2700. The junk of the three-hole data is measured by P1 itself.
+Verdict [JUDGEMENT]: the criteria that bear on running P1 are met; the failed predictions and
+the missing junk measurement are recorded and do not block it. P1 is submitted.
+Gauge [JUDGEMENT from S2/S3]: constant shift_eta = 2 (eta M = 2, eta m = 0.25), release core-v0.3
+card executable behind the tracker wrapper: the members' trackers settle in 4 m with eta m =
+0.25 but are still accelerating at 22 m with eta m = 2, and coordinate trajectories are what the
+passage is read from; the price is a 1.7 times faster horizon-mass drift and a 25 percent smaller
+coordinate horizon (7 cells). Core's mass-scaled profile is untested with three holes and its
+single-hole test S2g (job 4640) is queued; it is not chosen.
+Start state (V9): Newtonian conic r_p = 9.81 M; GR test-mass reading in the hole frame: turning
+point r_S = 9.25 M; at the capture boundary in the other two readings.
+
+Prediction for P1 (refuted where stated):
+1. Health: three trackers to t = 280 M; tree between 1716 and 2400 MeshBlocks, never above the
+   2700 slots (refuted if a segment stops on the slot limit); 1900-2200 MeshBlock-cycles/s; 17-20
+   card-hours, 21-25 segments; no non-finite value; history Volume constant.
+2. Outcome: the binary is separated by t = 200 M (member separation above 2 a_b = 10 M and growing;
+   refuted if it is still bound at t = 200), one member leaves and one stays bound to the heavy
+   hole. Which one is open: Newton ejects m1 with +1.312 units (4.96e-3 M per unit) and binds m2
+   (a = 7.75, e = 0.25, pericentre 5.81 M at t = 122); HRNA ejects m2 with +0.970 and binds m1
+   (pericentre 7.26 M at t = 121). No common horizon of a member with the heavy hole by t = 280
+   (both baselines stay outside 5.7 M; refuted by a merger).
+3. Horizons: member masses from t = 0.5 M at 0.1295 (smoke); if the single-puncture rate of
+   0.6-1.1e-4 per m persists, they grow by 10-18 percent by t = 200 M [JUDGEMENT; refuted if the
+   growth at t = 100 M is below 2 or above 25 percent]. Heavy-hole masses from about t = 4 M.
+4. Radiation: the junk of the data passes the 40-90 M spheres by t = 150 M; its energy is between
+   1e-6 and 1e-4 M [JUDGEMENT from core's single-hole scaling]; the passage burst is not resolved
+   at the 2-4 M cells of the wave zone for member-scale modes.
+The next session analyses P1 with `nr_first/scripts/p1_analysis.py` (E9) and these predictions.
