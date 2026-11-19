@@ -81,7 +81,7 @@ flow_iterations_0 = 1000
 flow_alpha_beta_const_0 = 1.0
 hmean_tol_0       = 100.0
 mass_tol_0        = 1.0e-6
-start_time_0      = 6.0
+start_time_0      = 8.0
 stop_time_0       = 1000.0
 verbose           = false
 
