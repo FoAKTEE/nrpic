@@ -77,3 +77,42 @@ Prediction: of the 9 hybrid locator misses (q06 q07 q11 q12 q13 q16 q17 q20 q24)
 have an answer chunk longer than 512 word pieces with the answer starting beyond piece 512,
 and at least one answer chunk is longer than 5000 characters. Refuted if fewer than 2 misses
 involve a cut or oversized chunk: then ranking (H3) is the main cause and chunking is not.
+
+Outcome R2b (06:50 PST): the diacritics test failed before (fraction 0.5) and passes after
+`qa_report._name_forms` (TeX accents resolved, NFKD to ASCII, German ue form); 1004.1353 to be
+confirmed in the final QA run.
+
+Outcome R3 (run kb-20261119-141041-69232a4, 06:10-06:14 PST; misses.json and the answer chunks
+in its run directory, read by me): prediction REFUTED. Of the 9 hybrid locator misses only
+q12 involves the input limit (answer chunk 830 word pieces, the answer at its very end, a
+display equation); no answer chunk is longer than 2601 characters (H2 false). The misses are
+ranking misses (H3), of two kinds:
+- paper found in the top 10, answer chunk outranked by other chunks of the same paper (q06,
+  q07, q16, q17, q20). Example q06/q07: chunk 105400 of 2611.12831 holds the end of the
+  conclusion, the future work, and the acknowledgements with the computing centres; BM25
+  ranks it 1238 (q07) and >5000 (q06), vectors 3417 and 9808. The chunk is diluted: one
+  sentence answers, the rest is about other things.
+- paper itself not in the top 10 (q11 hybrid paper rank 47, q12 68, q13 17, q24 12); the
+  answer chunks rank 58, none, 105, 62 in the hybrid list.
+Answer chunk sizes over all 32 questions: median about 450 word pieces; the answer starts at
+piece 340, 170, 46, 454, 68 inside the chunks of the first kind.
+
+## R4. Window re-ranking (prediction 06:55 PST, before the first evaluation)
+
+Remedy at the search level, within kb/kbtool/search_rerank.py (chunking itself belongs to
+the parser, not to this package): pool = first 50 chunks of the hybrid list + all chunks of
+its first 3 papers; each pool chunk cut into sentence windows (heading prefixed, long windows
+sliced at 1200 characters, so no text beyond the model's 512 pieces); rank pool chunks by
+their best window under BM25 (in-memory FTS5, same tokenizer and query) and under the window
+vectors; fuse by reciprocal rank (k = 10). Four variants written down now, before any run:
+w2 (2 sentences, stride 1), w3 (3 sentences, stride 2), w2+stage1 (w2 plus the first-stage
+order as a third ranking), w2-noexpand (pool = first 100, no paper expansion).
+Choice rule: most locator hits on the 32 golden questions (the set R3 inspected, so in-sample),
+ties to fewer windows; checked on the ten questions of tracks/kb/embed/questions10.yaml (held
+out; no slack), which I have not inspected. Caveat: the ten share answer passages with
+golden q02-q05, q10 (both from FIRST_QUESTIONS), so they are not independent.
+Predictions: the chosen variant reaches >= 26 of 32 locator hits (from 23) with paper hits
+>= 28; on the ten, locator >= 6 (hybrid 5) and at most one question lost that hybrid hits.
+q12 stays a miss (its paper is not in the pool). Refuted if the best variant has < 25 locator
+hits on the 32, or loses more than one hybrid hit on either set. Cost: under 15 s per
+question on 8 threads.

@@ -145,14 +145,29 @@ def _norm_title(t):
     return re.sub(r"\s+", " ", t).strip()
 
 
+_TEX_ACCENT = re.compile(r"""\\[`'^"~=.uvHcdbrtk]\s*\{?\\?([A-Za-z])\}?""")
+_GERMAN = {"\u00e4": "ae", "\u00f6": "oe", "\u00fc": "ue", "\u00df": "ss"}
+
+
+def _name_forms(s):
+    """Lower-case ASCII forms of a name string: diacritics dropped (u for u-umlaut) and the
+    German transliteration (ue); TeX accent commands are resolved first."""
+    import unicodedata
+    s = _TEX_ACCENT.sub(lambda m: m.group(1), s or "").replace("{", "").replace("}", "").lower()
+    plain = unicodedata.normalize("NFKD", s).encode("ascii", "ignore").decode()
+    german = unicodedata.normalize("NFKD", "".join(_GERMAN.get(ch, ch) for ch in s)).encode("ascii", "ignore").decode()
+    return {plain, german}
+
+
 def compare_meta(tex_title, tex_authors, meta_title, meta_authors):
-    """(title ratio, fraction of metadata surnames found among the TeX authors)."""
+    """(title ratio, fraction of metadata surnames found among the TeX authors). Names are
+    compared in ASCII forms, so a umlaut in one record and 'ue' in the other agree."""
     r = difflib.SequenceMatcher(None, _norm_title(tex_title), _norm_title(meta_title)).ratio() if meta_title else None
     if not meta_authors:
         return r, None
-    have = " ".join(tex_authors or []).lower()
-    sur = [a.split(",")[0].split()[-1].lower() for a in meta_authors if a.strip()]
-    found = sum(1 for s in sur if s and s in have)
+    have = _name_forms(" ".join(tex_authors or []))
+    sur = [a.split(",")[0].split()[-1] for a in meta_authors if a.strip()]
+    found = sum(1 for s in sur if s and any(f and f in h for f in _name_forms(s) for h in have))
     return r, (found / len(sur) if sur else None)
 
 

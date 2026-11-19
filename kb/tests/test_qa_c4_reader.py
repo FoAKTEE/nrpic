@@ -69,3 +69,15 @@ def test_c4_flags_disagreements(tmp_path):
         ("2611.12831", "Something else entirely", json.dumps(["Nobody"]), "ok")])
     r = qa_report.c4_inspire_sample(con, str(meta), n=30)
     assert r["differ"] == ["2611.12831"]
+
+
+def test_compare_meta_folds_diacritics():
+    """1004.1353 in the real sample: TeX writes the umlaut, INSPIRE writes 'ue' (R2b)."""
+    _, ar = qa_report.compare_meta("T", ["Pablo Galaviz", "Bernd Brügmann"], "T",
+                                   ["Galaviz, Pablo", "Bruegmann, Bernd"])
+    assert ar == 1.0
+    _, ar = qa_report.compare_meta("T", ['Bernd Br\\"ugmann', "J. M\\'{a}rquez"], "T",
+                                   ["Brügmann, Bernd", "Marquez, J."])
+    assert ar == 1.0
+    _, ar = qa_report.compare_meta("T", ["Someone Else"], "T", ["Bruegmann, Bernd"])
+    assert ar == 0.0
