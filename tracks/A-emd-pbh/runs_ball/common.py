@@ -35,6 +35,48 @@ def ball2t():
     return XM.Ball.from_HRb(0.5, 1.0, XM.SmoothTopHat(1.0, 2.4, 6.0), edge_width=1.5)
 
 
+def ball_from_spec(spec):
+    """expball model from a specification dict (written by prep_bh.py into exact.json as
+    "spec"): profile tophat | smooth_tophat, HRb, M, delta_c, R1 and R2 (areal radii in M,
+    not in units of R_b), edge_width (absolute, in M). None gives data set 2t."""
+    if not spec:
+        return ball2t()
+    cls = {"tophat": XM.TopHat, "smooth_tophat": XM.SmoothTopHat}[spec["profile"]]
+    prof = cls(spec["delta_c"], spec["R1"], spec["R2"])
+    return XM.Ball.from_HRb(spec["HRb"], spec.get("M", 1.0), prof, edge_width=spec["edge_width"])
+
+
+def relaxed_lapse_reference(tau_tab, a_tab, rate, alpha0=1.0, t_end=80.0, dt=0.01):
+    """Central lapse of the relaxed 1+log condition of core's gauge package
+    (scratch/core/exe/core_gauge/READY option 1) in a homogeneous core whose scale factor
+    a(tau) is tabulated (exact.json "central"): zero shift at the centre (symmetry), so
+        d ln(alpha)/dt = -2 K - rate max(ln(alpha/alpha0), 0),  d tau/dt = alpha,
+    K = -3 (da/dtau)/a (code sign). Classical RK4 in coordinate time from alpha = 1, tau = 0
+    (the table lapse of the data); stops at t_end, when tau leaves the table or alpha < 1e-6.
+    Returns arrays (t, tau, alpha)."""
+    tau_tab = np.asarray(tau_tab, dtype=float)
+    a_tab = np.asarray(a_tab, dtype=float)
+    lna = np.log(a_tab)
+    hub = np.gradient(lna, tau_tab)          # (da/dtau)/a
+
+    def rhs(y):
+        la, tau = y
+        H = np.interp(tau, tau_tab, hub)
+        return np.array([6.0 * H - rate * max(la - math.log(alpha0), 0.0), math.exp(la)])
+    y = np.array([0.0, 0.0])
+    T, TA, AL = [0.0], [0.0], [1.0]
+    t = 0.0
+    while t < t_end and y[1] < tau_tab[-1] and math.exp(y[0]) > 1e-6:
+        k1 = rhs(y)
+        k2 = rhs(y + 0.5 * dt * k1)
+        k3 = rhs(y + 0.5 * dt * k2)
+        k4 = rhs(y + dt * k3)
+        y = y + dt * (k1 + 2 * k2 + 2 * k3 + k4) / 6.0
+        t += dt
+        T.append(t); TA.append(y[1]); AL.append(math.exp(y[0]))
+    return np.array(T), np.array(TA), np.array(AL)
+
+
 def sha256(path):
     import hashlib
     h = hashlib.sha256()

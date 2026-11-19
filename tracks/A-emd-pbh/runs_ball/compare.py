@@ -25,8 +25,13 @@ its trapping time tau_AH(R_i).
 Histories: central lapse, density and proper time (probe at the origin) against the exact
 homogeneous core, a(tau) and rho_c(tau); constraint statistics; cost per cell and step.
 
-    compare.py --prep <prep dir> --seg <run dir> [--seg <restart dir> ...] --gauge sr1|sr2
-               --dx 0.5 --label <name> --out <dir> [--figdir <dir>]
+    compare.py --prep <prep dir> --seg <run dir> [--seg <restart dir> ...] --gauge sr1|sr2|leak
+               --dx 0.5 --label <name> --out <dir> [--figdir <dir>] [--leak 8]
+
+Gauges: sr1 geodesic slicing (comoving coordinates), sr2 conformal-time lapse (central
+lapse against a(tau)), leak the relaxed 1+log lapse of core's gauge package (central lapse
+against the homogeneous-core reference of common.relaxed_lapse_reference, rate --leak).
+The data set is 2t unless exact.json of the prep directory carries a "spec" (prep_bh.py).
 """
 import argparse
 import glob
@@ -121,7 +126,8 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--prep", required=True)
     ap.add_argument("--seg", action="append", required=True)
-    ap.add_argument("--gauge", choices=("sr1", "sr2"), required=True)
+    ap.add_argument("--gauge", choices=("sr1", "sr2", "leak"), required=True)
+    ap.add_argument("--leak", type=float, default=8.0, help="lapse_leak rate (gauge leak)")
     ap.add_argument("--dx", type=float, required=True)
     ap.add_argument("--label", required=True)
     ap.add_argument("--out", required=True)
@@ -129,9 +135,12 @@ def main():
     ap.add_argument("--base", default="ball")
     a = ap.parse_args()
     os.makedirs(a.out, exist_ok=True)
-    ball = C.ball2t()
     tr = C.load_json(os.path.join(a.prep, "tracked.json"))
     ex = C.load_json(os.path.join(a.prep, "exact.json"))
+    ball = C.ball_from_spec(ex.get("spec"))
+    R1core = float(ex["core"].get("R1", 2.4))
+    tau_first = float(ex["first_trapped"]["tau"])
+    is2t = not ex.get("spec")
     segs = [os.path.abspath(s) for s in a.seg]
     res = dict(label=a.label, gauge=a.gauge, dx=a.dx, segments=segs, prep=os.path.abspath(a.prep))
 
@@ -162,12 +171,14 @@ def main():
                 max_abs_tau_minus_t=float(np.nanmax(np.abs(tau - t[:, None]))),
                 max_abs_u=float(np.nanmax(np.abs(T["u"]))))
 
-    # groups: core (R_i <= 2.4, homogeneous), the target bands, the envelope
-    core = Ri <= 2.4
+    # groups: core (R_i <= R1, homogeneous), the target bands, the envelope
+    core = Ri <= R1core
     groups = {"core": core}
     for gname in sorted(set(grp), key=lambda s: (s == "sample", float(s[1:]) if s[0] == "R" else 0)):
         groups[gname] = grp == gname
-    taus_report = (4.0, 8.0, 12.0, 16.894, 24.0, 30.0, 36.0, 40.0, 42.0, 43.5, 44.0, 44.3)
+    taus_report = (4.0, 8.0, 12.0, 16.894, 24.0, 30.0, 36.0, 40.0, 42.0, 43.5, 44.0, 44.3) if is2t \
+        else tuple(ex.get("report_taus", ()))
+    taus_window = (30.0, 42.0, 44.3) if is2t else (float(ex["core"]["tau_ta"]), tau_first - 0.5, tau_first)
 
     def eps_at(idx, tq):
         vals = []
@@ -187,7 +198,7 @@ def main():
             e = eps_at(idx, tq)
             if len(e):
                 d[f"eps_tau{tq:g}"] = dict(mean=float(e.mean()), maxabs=float(np.abs(e).max()), n=int(len(e)))
-        for tl in (30.0, 42.0, 44.3):
+        for tl in taus_window:
             sel = (tau <= tl)
             e = np.where(sel[:, idx], np.abs(eps[:, idx]), np.nan)
             d[f"maxabs_eps_tau_le_{tl:g}"] = C.finite_or_none(np.nanmax(e)) if np.any(np.isfinite(e)) else None
@@ -257,14 +268,29 @@ def main():
     th, alpha_c, E_c, tau_c = hst[:, 0], hst[:, 12], hst[:, 13], hst[:, 14]
     a_ex = np.interp(tau_c, ex["central"]["tau"], ex["central"]["a"], right=np.nan)
     rho_ex = np.interp(tau_c, ex["central"]["tau"], ex["central"]["rho"], right=np.nan)
+    alpha_ref = None
+    if a.gauge == "leak":
+        lr = ex.get("lapse_reference")
+        if not lr or abs(lr["rate"] - a.leak) > 1e-12:
+            lt_, ltau_, lal_ = C.relaxed_lapse_reference(np.array(ex["central"]["tau"])[:-1],
+                                                         np.array(ex["central"]["a"])[:-1], a.leak)
+            lr = dict(rate=a.leak, t=lt_.tolist(), tau=ltau_.tolist(), alpha=lal_.tolist())
+        res["lapse_reference"] = dict(rate=lr["rate"], t_end=lr["t"][-1], tau_end=lr["tau"][-1])
+        # reference as a function of the central proper time (monotonic)
+        alpha_ref = np.interp(tau_c, lr["tau"], lr["alpha"], right=np.nan)
     with np.errstate(invalid="ignore", divide="ignore"):
-        lapse_dev = alpha_c / a_ex - 1.0 if a.gauge == "sr2" else alpha_c - 1.0
+        if a.gauge == "sr2":
+            lapse_dev = alpha_c / a_ex - 1.0
+        elif a.gauge == "leak":
+            lapse_dev = alpha_c / alpha_ref - 1.0
+        else:
+            lapse_dev = alpha_c - 1.0
         rho_dev = E_c / rho_ex - 1.0
     res["history"] = dict(t_end=float(th[-1]), n_particles_end=float(hst[-1, 2]),
                           n_particles_start=float(hst[0, 2]), tau_probe_end=float(tau_c[-1]),
                           alpha_min_end=float(hst[-1, 15]),
                           finite_end=bool(np.all(np.isfinite(hst[-1]))))
-    for tl in (5.0, 10.0, 15.0, 20.0, 30.0, 40.0, 44.0):
+    for tl in (2.0, 4.0, 5.0, 6.0, 8.0, 10.0, 15.0, 20.0, 30.0, 40.0, 44.0):
         s = (th <= tl) & np.isfinite(lapse_dev)
         if np.any(s):
             res["history"][f"lapse_dev_maxabs_t_le_{tl:g}"] = float(np.nanmax(np.abs(lapse_dev[s])))
@@ -272,14 +298,21 @@ def main():
         if np.any(s):
             res["history"][f"rho_c_dev_maxabs_t_le_{tl:g}"] = float(np.nanmax(np.abs(rho_dev[s])))
     # lapse front: first t at which |alpha_c/a - 1| exceeds 1e-3 and 1e-2
-    for lev in (1e-3, 1e-2, 1e-1):
+    for lev in (1e-3, 1e-2, 2e-2, 5e-2, 1e-1):
         s = np.nonzero(np.abs(lapse_dev) > lev)[0]
         res["history"][f"t_lapse_dev_gt_{lev:g}"] = float(th[s[0]]) if len(s) else None
+    for lev in (0.5, 0.1, 0.01):
+        s = np.nonzero(alpha_c < lev)[0]
+        res["history"][f"t_alpha_c_lt_{lev:g}"] = float(th[s[0]]) if len(s) else None
+    res["history"]["series"] = [dict(t=float(th[j]), alpha_c=float(alpha_c[j]), tau_c=float(tau_c[j]),
+                                     alpha_ref=(float(alpha_ref[j]) if alpha_ref is not None else None),
+                                     E_c=float(E_c[j]), rho_exact=float(rho_ex[j]), alpha_min=float(hst[j, 15]))
+                                for j in range(0, len(th), max(1, len(th) // 80))]
     res["cstat"] = dict()
     # cstat columns (0-based): 7 Theta_max, 8 H_max, 9 H_mean, 11 Hr_mean, 12 M_max, 13 M_mean
     for k, nm in ((8, "H_max"), (9, "H_mean"), (11, "Hr_mean"), (13, "M_mean"), (7, "Theta_max")):
         if cst.shape[1] > k:
-            for tl in (2.0, 10.0, 20.0, 30.0, 40.0, 42.0, 44.0, 50.0):
+            for tl in (2.0, 4.0, 6.0, 8.0, 10.0, 12.0, 14.0, 16.0, 20.0, 24.0, 30.0, 40.0, 42.0, 44.0, 50.0):
                 j = np.searchsorted(cst[:, 0], tl)
                 if j < len(cst) and abs(cst[j, 0] - tl) < 0.3:
                     res["cstat"][f"{nm}_t{tl:g}"] = float(cst[j, k])
@@ -446,11 +479,13 @@ def main():
             rb_h = float(np.interp(rmean, rp[okr][o2], r0[okr][o2]))
         Ri_r = float(ball.R_of_rbar(np.array([rb_h]))[0])
         m_r = float(ball.at(np.array([Ri_r]))["m"][0])
+        tah_r = float(XE.Shells(ball, np.array([min(Ri_r, ball.R_out)])).tau_ah[0])
         tau_h = float(np.interp(rmean, np.sort(r[it][np.isfinite(r[it])]),
                                 tau[it][np.isfinite(r[it])][np.argsort(r[it][np.isfinite(r[it])])]))
         finder.append(dict(t=float(th_), mass=float(mass), m_irr=float(mirr), r_mean=float(rmean),
                            tau_at_horizon=tau_h, m_exact_slice=m_slice, R_i_exact_slice=float(Ri_h),
-                           m_exact_tau_slice=m_tau, m_exact_shell_at_r=m_r, R_i_at_r=Ri_r))
+                           m_exact_tau_slice=m_tau, m_exact_shell_at_r=m_r, R_i_at_r=Ri_r,
+                           tau_ah_exact_shell_at_r=tah_r))
     res["finder"] = dict(n=len(finder), first=finder[0] if finder else None,
                          rows=finder[:: max(1, len(finder) // 60)])
     if finder:
@@ -459,6 +494,18 @@ def main():
             if len(rel):
                 res["finder"][f"m_irr_rel_err_vs_{key}"] = dict(first=float(rel[0]), median=float(np.median(rel)),
                                                                 maxabs=float(np.max(np.abs(rel))), n=int(len(rel)))
+    # the first code time at which a tracked particle has reached the trapping time of its
+    # own shell: the first slice of the run that contains a trapped round sphere (exact
+    # event, located with the code's own proper times)
+    dtrap = tau - sh.tau_ah[None, :]
+    anyp = np.nanmax(np.where(np.isfinite(dtrap), dtrap, -np.inf), axis=1)
+    jj = np.nonzero(anyp >= 0)[0]
+    t_slice = np.nan
+    if len(jj):
+        j = jj[0]
+        t_slice = float(t[j]) if j == 0 else float(t[j - 1] + (t[j] - t[j - 1]) * (-anyp[j - 1]) / (anyp[j] - anyp[j - 1]))
+    res["first_trapped_slice"] = dict(t_code=C.finite_or_none(t_slice), tau_exact=tau_first,
+                                      finder_first_t=(finder[0]["t"] if finder else None))
     res["cost"] = cost_from_logs(segs)
 
     # ------------------------------------------------ write numbers
@@ -511,6 +558,7 @@ def figures(a, res, ball, ex, t, tau, R, eps, Ri, grp, groups, sh, tta_num, Rmax
     okh = np.all(np.isfinite(hst[:, :16]), axis=1)
     hst, lapse_dev, rho_dev, tau_c = hst[okh], lapse_dev[okh], rho_dev[okh], tau_c[okh]
     lab = a.label
+    tau_first = float(ex["first_trapped"]["tau"])
     gcol = {}
     names = [g for g in groups if g != "sample"]
     cols = fs.series_colors(len(names), "viridis") if hasattr(fs, "series_colors") else None
@@ -588,12 +636,13 @@ def figures(a, res, ball, ex, t, tau, R, eps, Ri, grp, groups, sh, tta_num, Rmax
         ok = np.isfinite(tau[:, p]) & np.isfinite(R[:, p])
         if ok.sum() > 3:
             ax.plot(tau[ok, p], (R[ok, p] / Ri[p]) ** 1.5, color=fs.PAL["red"], lw=0.6, alpha=0.6)
-    tt = np.linspace(43.0, ex["core"]["tau_c"], 300)
+    t0z = 43.0 if not ex.get("spec") else tau_first - 1.5
+    tt = np.linspace(t0z, ex["core"]["tau_c"], 300)
     sp = XE.Shells(ball, np.array([1.0]))
     ax.plot(tt, (sp.R(tt)[0] / 1.0) ** 1.5, **fs.GUIDE)
     ax.axvline(ex["core"]["tau_c"], **fs.MASK_LINE)
     ax.axvline(ex["first_trapped"]["tau"], color="k", lw=1.0, ls=":")
-    ax.set_xlim(43.0, 44.5)
+    ax.set_xlim(t0z, ex["core"]["tau_c"] + 0.1)
     ax.set_ylim(0, 0.3)
     ax.set_xlabel(r"$\tau\,/M$")
     ax.set_ylabel(r"$(R/R_i)^{3/2}$, core")
@@ -609,7 +658,8 @@ def figures(a, res, ball, ex, t, tau, R, eps, Ri, grp, groups, sh, tta_num, Rmax
         ax2 = fig.add_subplot(1, 3, 2)
         ax3 = fig.add_subplot(1, 3, 3)
         pick = [0]
-        for tq in (16.9, 30.0, 42.0, 44.3, 44.4, 49.0, 52.0):
+        for tq in ((16.9, 30.0, 42.0, 44.3, 44.4, 49.0, 52.0) if not ex.get("spec")
+                   else tuple(ex.get("report_taus", ())) + (tau_first + 2.0,)):
             j = int(np.argmin([abs(L["t"] - tq) for L in lines]))
             if abs(lines[j]["t"] - tq) < 1.0 and j not in pick:
                 pick.append(j)
@@ -699,6 +749,13 @@ def figures(a, res, ball, ex, t, tau, R, eps, Ri, grp, groups, sh, tta_num, Rmax
     if a.gauge == "sr2":
         ax.plot(hst[:, 0], np.interp(tau_c, ex["central"]["tau"], ex["central"]["a"]), **fs.GUIDE,
                 label=r"$a(\tau_c)$ exact")
+    if a.gauge == "leak":
+        lr = ex.get("lapse_reference") or {}
+        if lr and abs(lr.get("rate", -1) - a.leak) < 1e-12:
+            ax.plot(lr["t"], lr["alpha"], color="k", lw=1.0, ls=":", label="homogeneous ref. (own $t$)")
+        ax.plot(hst[:, 0], np.interp(tau_c, *(np.array(v) for v in (
+            (lr["tau"], lr["alpha"]) if lr else (ex["central"]["tau"], ex["central"]["a"])))), **fs.GUIDE,
+            label=r"reference at $\tau_c$")
     ax.plot(hst[:, 0], hst[:, 15], color=fs.PAL["blue"], lw=1.0, label=r"$\min\alpha$")
     ax.set_xlabel(r"$t\,/M$")
     ax.set_ylabel("lapse")
@@ -707,7 +764,8 @@ def figures(a, res, ball, ex, t, tau, R, eps, Ri, grp, groups, sh, tta_num, Rmax
     ax = fig.add_subplot(2, 3, 2)
     with np.errstate(invalid="ignore"):
         ax.semilogy(hst[:, 0], np.abs(lapse_dev), color=fs.PAL["red"], lw=1.0,
-                    label=r"$|\alpha_c/a-1|$" if a.gauge == "sr2" else r"$|\alpha_c-1|$")
+                    label={"sr2": r"$|\alpha_c/a-1|$", "leak": r"$|\alpha_c/\alpha_{\rm ref}-1|$"}.get(
+                        a.gauge, r"$|\alpha_c-1|$"))
         ax.semilogy(hst[:, 0], np.abs(rho_dev), color=fs.PAL["blue"], lw=1.0, label=r"$|E_c/\rho_c-1|$")
     ax.set_xlabel(r"$t\,/M$")
     ax.set_ylabel("deviation at the centre")
