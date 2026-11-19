@@ -496,3 +496,20 @@ mesh is M/8 out to 6 M, so the horizon is not losing resolution. Remaining candi
 [TO VERIFY]: the slow evolution of the slicing and shift near the hole (both runs), the
 finder. A cheap discriminating test (lead's decision): V-1 with the outflow boundary at
 384 M, or V-1 at M/16 near the hole.
+
+## Entry 8 (2026-11-19): pre-flight of the ES-1G input on the processors, prediction
+
+While ES-1G (D-20261119-142633-6f72922, Slurm 4636) waits in the queue: the input
+`inputs/es1g_dx8.athinput` for two cycles with history every cycle
+(`time/nlim=2 particles/hist_dcycle=1`), once with core's gauge processor executable
+(`scratch/core/exe/core_gauge/athena_cpu`, b4430da) and once with the release processor
+executable (`.work/build_cpu_v03/src/athena`), which does not know the option.
+Prediction: (a) the release log warns that `lapse_leak` and `lapse_leak_alpha` were not
+used, the gauge log does not; (b) the t = 0 rows are identical (np 696828, alpha_min
+0.03071291167554946, probe lapses as ES-1 at t = 0); (c) at cycles 1 and 2 the lapse at the
+plateau probe (x = 46 M, alpha slightly above 1) is lower in the gauge run by between 1e-7
+and 1e-4 (the term (alpha/T) ln alpha with alpha - 1 ~ 0.034 t over t <= 0.0625 M gives a
+few 1e-5 at most), and the lapse at x = 1 M (alpha < 1, where the term vanishes) agrees to
+1e-12. Refuted by a gauge log warning that the option was not used, or by identical
+plateau lapses (the option inactive), or a difference at x = 1 M (the term acting where it
+must not).
