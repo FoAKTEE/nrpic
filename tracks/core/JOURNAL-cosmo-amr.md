@@ -333,3 +333,31 @@ and because I saw them before the registered tests):
   pair Tnew/Trel (tracker and shift on a uniform mesh) to test the crossing alone.
   A lag of one record in my step analysis (the record of a cycle is written before its
   regrid) was corrected in the script.
+
+## 2026-11-19 15:50  set-ups of T1, T3, T4, T9 as scripted (before they run)
+
+Departures of the scripts from the first description of the tests, fixed before any of
+them ran:
+- T1: box [-3, 3)^3, root 24^3 (27 root blocks); level 1 on the central block, level 2
+  on its octant [-1, 0]^3; the neighbour rule refines the seven root blocks on the
+  negative sides, so the periodic faces separate root blocks from level-1 blocks without
+  a slab of their own. 22 cases (three clouds, three cloud levels, constant or
+  reconstructed spreading; uniform mesh; filter on both meshes).
+- T3: the tool builds cubes only; the data are built on 32^3 and cut to the slab
+  0 <= y, z < L/4 (the wave depends on x only), mesh 32 x 8 x 8, to t = 2 (a = 4)
+  instead of 4 (processor time). Three more cases with the source filter (data built
+  with it): Uq, Sq, Sfq; prediction for them in the entry of 15:05, item 3.
+- T4: as described; plus a case started in another directory than the `-d` directory,
+  with both executables (where does the summary file land).
+- T9: the existing 32^3 data of Track A, `ic_peak0.5` of run
+  A-emd-pbh-20261115-154740-69e8f8b (mu = 0.5, which the track's tool nearly solves at
+  32^3: residual 4e-10, their journal), instead of new data at mu = 0.3. Cases: lohner
+  (their request) with this branch and with the release (prediction: the release dies
+  with a segmentation fault at the first check, exit -11), the ladder of the example
+  input with reconstructed and with constant spreading, `chi_ratio_1 = 0.9`,
+  `ppc_refine = 1.05`. From the smoke run I know the ladder case already (entry 15:05);
+  new are lohner, chi and ppc: predictions: chi refines the central eight blocks at the
+  first check (ratio 0.72 at the centre); ppc refines blocks around the peak (largest
+  particle number per cell 2.9 in the smoke run) and no block at the box corners;
+  lohner: no crash; whether it refines I do not predict (Track A expected few or no
+  blocks in the first cycles).
