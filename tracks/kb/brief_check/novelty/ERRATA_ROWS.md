@@ -9,7 +9,9 @@ orchestrator numbers them when it merges. Not repeated: errata rows 1.7 (line 39
 `tracks/kb/brief_check/novelty/search/query_log.tsv` (branch `kb/brief-check`). The full check
 (33 rows: 15 confirmed, 16 confirmed with a precision, 2 corrected) is
 `tracks/kb/brief_check/novelty/CHECK.md`, whose row numbers are given as "CHECK #"; the four
-novelty searches are `NOVELTY.md` there. Numbers recomputed by run kb-20261119-154605-3ee42d2.
+novelty searches are `NOVELTY.md` there. Numbers recomputed by run kb-20261119-154605-3ee42d2 (reruns -155605-d5dbd0d and
+-155658-4acf70b, identical numbers.json); locators, arXiv ids and quoted phrases checked by
+`scripts/check_package.py` (run kb-20261119-155610-7573cf0 and the final run named in the README).
 Lines 406-444 are also checked by the sibling package `s5_s6`; where both propose a row for the
 same statement, the lead keeps one.
 

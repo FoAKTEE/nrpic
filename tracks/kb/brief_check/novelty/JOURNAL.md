@@ -119,3 +119,25 @@ Source predictions (from entry 1):
   fixed one wrong file name (2409.01939 is `LRCosmo.tex`, not `main.tex`) and four non-locator
   words; the registered run is predicted to report no problem. Refuted by any entry in
   "problems". Figures: verdicts per line and label; closest papers per item by arXiv year.
+
+## Entry 5, 2026-11-19 07:57: outcomes of R1', R2, R1''; cross-check with s5_s6; prediction for R2'
+
+- R1' (kb-20261119-155605-d5dbd0d) held: numbers.json byte-identical to R1 (sha256 5ae5617f...).
+  The figure now shows the lattice band, but its label crossed the k = 0 line; label moved,
+  rerun R1'' (kb-20261119-155658-4acf70b): numbers.json identical again, figure looked at and
+  clear (label below the band, inside the axes).
+- R2 (kb-20261119-155610-7573cf0) held: 33 rows, 15/16/2/0 equal to the header; 80 + 40 + 53
+  locators resolve; all 75 arXiv ids are in the store or among logged INSPIRE hits; 22 quotes at
+  their lines; no problem. Figures looked at: verdicts per line and per label (the corrections sit
+  on lines 434 and 1749; most rows are unlabelled paper claims) and the landscape of closest
+  papers (the only "GR with particles" points are 2609.14218 for S5, which is non-relativistic
+  matter, and 2611.12831 for the binary item).
+- Cross-check: after my rows were final I read `../s5_s6/CHECK.md` rows 1-27 (lines 406-444,
+  checked independently by another helper at the same time). Agreement on all facts and on the one
+  correction (line 434). Verdict classes differ on eight statements; seven are CONFIRMED against
+  CONFIRMED (precision), one is line 437 (CORRECTED there, CONFIRMED (precision) here, same
+  evidence 1505.02959). Numbers agree (1.50e5 M_sun; 0.405 there with N_eff = 3, 0.409 here with
+  N_eff = 3.045). Written into the README for the lead.
+- After R2 the headers of CHECK.md and ERRATA_ROWS.md got run references and README.md was
+  written. Prediction for the final run R2' of check_package.py: identical tally and no problem,
+  with one more run-id locator in CHECK.md (81). Refuted by any problem.
