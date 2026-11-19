@@ -219,7 +219,9 @@ with sigma = 1: L = 2 pi, dx = 2 pi / N.
 - R_k and dot R_k at N* for every lattice k come from the Mukhanov-Sasaki equation solved
   with `oscode` from Bunch-Davies data at N0 (P1:485, P2:454-459). The papers recommend
   N* - N0 >= 2 (P2:457); the form of the Bunch-Davies data is not written (U4).
-- The fields at t* are the linear geodesic-gauge data of P2 eq. (17) (P2:316-329) applied to
+- The fields at t* are the linear geodesic-gauge data of P2's initial-condition equation (P2:316-329, label
+  eq:eqInitialConditions; called "eq. (17)" in earlier versions of this text, see the note
+  under the erratum) applied to
   the **coarse-grained** amplitudes R^> = W(t*) R and dot R^> = d(W R)/dt at t* (P1:488,
   TH chap_SINR:66-67); without this the first low-k modes come out wrong (P1:488).
   W(k_min, t*) = 1/2 by the choice of L, so the lowest shell is half in at t*.
@@ -234,7 +236,7 @@ Phi_B = -eps1 H a^2 k^-2 dot R (P2:251-255), Psi_B = Phi_B:
     delta K   = 3 (dot Phi_B + H Psi_B) = 3 eps1 H (R - Phi_B)
     dot Phi_B = eps1 H R + eps1 (1 + eps1) H^2 a^2 k^-2 dot R      (R ddot from the MS equation)
 
-**Erratum.** The printed P2 eq. (17) (P2:319-322) carries the term -sqrt(2 eps1) H Mpl Psi_G
+**Erratum.** The printed initial-condition equation of P2 (P2:319-322) carries the term -sqrt(2 eps1) H Mpl Psi_G
 in delta Pi, which vanishes in the geodesic gauge (Psi_G = B_G = 0, P2:490); the term the data
 need is -sqrt(2 eps1) Mpl H Psi_B. The symbolic check of run E-stoch-inf-20261115-123146-82d2fd4 (`ref/ic_constraint_check.py`)
 gives a linear Hamiltonian residual 4 eps1^2 H^3 a^2 k^-2 dot R with the printed form and 0 with
@@ -247,6 +249,13 @@ H chi^NR part gives + sqrt(2 eps1) Mpl H (Psi_G - Psi_B), the Psi_G parts cancel
 -sqrt(2 eps1) Mpl H Psi_B remains, for any Psi_G. The printed equation drops the chi-dot term.
 [VERIFIED by derivation] Since P1 and P2 report second-order Hamiltonian violations, their
 code presumably uses the complete form [JUDGEMENT].
+
+Note on the number (lead, 2026-11-19): this text and the outbox messages of 2026-11-15
+called the equation "eq. (17)". In the source the equation at P2:317-327 is the 23rd
+numbered equation environment (label eq:eqInitialConditions); eq:Bardeen at P2:248-256
+is the 17th (count of the lead, 2026-11-19; the same count by kb, message
+20261115T183741Z__to-E-stoch-inf__errata-s11-references). The PDF number is not checked
+[TO VERIFY]; the locators by line are what this specification relies on.
 
 With coarse-graining, substitute R -> W R and dot R -> d(W R)/dt in these formulas and take
 dot Phi_B from the unsourced MS equation applied to (R^>, dot R^>); any pair (R, dot R) is valid
@@ -431,7 +440,7 @@ U12 numerical tolerances for "perfect"/"excellent" agreement. U13 output cadence
 15-50 checkpoints). U14 wall time, hardware and cost of the P1 runs (none reported). U15 whether
 eps1, eps2 in S_R and in the prefactors O_X are local under level 2 (TH chap_SIGR:482 says one
 "should probably not stop" at promoting phi, K, alpha, beta). U16 how delta K at t* treats the
-coarse-graining (the printed eq. 17 is incomplete, section 5.3). U17 treatment of the k = 0
+coarse-graining (the printed initial-condition equation is incomplete, section 5.3). U17 treatment of the k = 0
 mode of the noise (presumably excluded). U18 whether the noise sources are applied to all
 lattice modes up to k_max or only to those with W not negligible.
 
@@ -448,7 +457,7 @@ extraction factors -1/48, -1/16 and a missing 3 (P2:828-830) vs the corrected TH
 (re-derived here by hand from the dictionary P2:799-801, [JUDGEMENT: hand derivation, not run]:
 Phi_k = (a^2 X_k - 1)/2 + (1/4) sum k_i k_j (gt_ij - delta_ij)/k^2,
 E_k = -(3/4) sum k_i k_j (gt_ij - delta_ij)/k^4). E7 draw
-normalisation (section 5.4). E8 delta Pi of P2 eq. (17) (section 5.3). E9 "|H|/[H] << 1 and
+normalisation (section 5.4). E8 delta Pi of P2's initial-condition equation, P2:317-327 (section 5.3). E9 "|H|/[H] << 1 and
 |H|/[H] << 1" (P1:746, P2:550) for |M|/[M] (fixed at TH appendix:610). E10 P0's sources carry
 "+ c.c." (P0:669-671, 1024-1026) while TH appendix:463 states the real stochastic expansion
 adds no conjugate. E11 USR phase boundaries in P1's text vs its Fig. 1 (section 6). E12 P1:227

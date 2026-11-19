@@ -204,3 +204,21 @@ artefacts, then the stage packages G0 and G1. Predictions written before each ch
   crossing e-folds were computed for k = |n|^2 instead of |n| (my bug, fixed before the
   registered run). Seen there before registering: A2, the record values, A1 and the parts of
   H (the predictions above are unchanged).
+- LR3-LR5 outcome (run E-20261119-150238-b81e33f, `fig_lead_check.png` looked at): all
+  CONFIRMED. A2 on L32p at N_f = 8.10: max D_n 8.76e-5 for |n| <= 4 (ladder 8.8e-5), 4.08e-3
+  over all 1054 modes (ladder 4.08e-3, top shell |n|^2 = 64). A3: 1051 modes; largest
+  |Q_n(N_f)/Q_n(N_k + 4) - 1| 2.7e-6 (ladder 4.6e-6 with interpolation to N_k + 4; mine takes
+  the first dump after it), drift of ln|R^NR|^2 at most 1.38e-4 per e-fold, NR minus linear
+  1.4e-6. A1 from the records: phi 6.4e-13, 6.8e-13, 1.2e-12; Pi 4.5e-12, 3.4e-12, 4.4e-12;
+  K 3.5e-12, 4.9e-13, 1.2e-12 (L32p, L64p, L128p); record <|H|/[H]> at t = 8.5: 3.124e-12,
+  1.832e-13, 1.115e-14, factors 17.05 and 16.43. Parts of H at N = 32: odd halving factor
+  2.000 and even 3.997-4.000 at every dump from t = 0.54 to 3.53; odd/even 745 at t = 2.50;
+  order of the odd part 32 -> 64 5.64, 5.60, 5.54, 5.54, 5.55 at t = 1.5-3.5 and 3.79, 4.20
+  at t = 0.5, 1.0 (the early orders the ladder attributes to the time error and the floor).
+- LN1 (prediction before the run, small defect fixed by the lead): `noise/ref/noise_ref.py`
+  now forms the tanh window increment as sinh(s H dt)/(2 cosh x1 cosh x0) (request of the
+  analysis package). With it the unchanged validator `validate_noise.py` gives for U6
+  (Markov tanh) A1 = 4.0e-15 on the card output of run E-20261115-170645-3b21217 and
+  3.3e-15 on the scaled processor output of E-20261115-172423-5234cce, each within a factor
+  1.5, and every other test passes as before (the values `val_cf.py` gave with the same
+  formula in memory). Refuted if A1 stays above 1e-11 or any other test changes its verdict.

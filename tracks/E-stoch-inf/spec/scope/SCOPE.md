@@ -62,7 +62,7 @@ eternal inflation (4).
 | Hamiltonian violation of second order (~1e-10 for noise ~1e-5); a flipped noise sign gives first order | P1:538-541 | spec helper; lead (read) |
 | Step count and the bound theta < n sigma/(2 pi) | P1:714-730 | spec helper; lead (read) |
 | Without metric perturbations R_k^2 ~ H^4 in SR, stronger in USR; deformed MS equation; eps << 1 is not sufficient | BZ:150-156, 177-212, 264-268 | spec helper; lead (read) |
-| Geodesic-gauge initial data (eq. 17) and the dictionary delta Pi = d/dt delta phi - phidot Psi_G | P2:262-322 | spec helper (symbolic run); lead (derivation) |
+| Geodesic-gauge initial data (P2:317-327, label eq:eqInitialConditions; not eq. 17, SPEC 5.3 note) and the dictionary delta Pi = d/dt delta phi - phidot Psi_G | P2:262-322 | spec helper (symbolic run); lead (derivation) |
 | Courant 0.025; 256^3 "less than a few hours on 64 to 152 processors" | P2:492 | spec helper; lead (read) |
 | Draw prefactors dk^(3/2) and (dk/sqrt(2 pi))^(3/2), mutually inconsistent | P2:876-884 | spec helper (run); lead (read) |
 | Drift-diffusion moments and the first-passage formalism | VS:341-364 | langevin helper |

@@ -116,6 +116,22 @@ def window(lat, t, p):
     raise ValueError(f"unknown window {p['window']!r}")
 
 
+def window_increment(lat, t0, t1, p):
+    """W_k(t1) - W_k(t0) without cancellation (lead, 2026-11-19, request of the analysis
+    package): for the tanh window sinh(s hubble (t1 - t0)) / (2 cosh x1 cosh x0),
+    x = s ln(k_sigma(t)/k), the form of the release executable
+    (athenak/src/scalar_field/scalar_field_noise.cpp:570-577); the difference of two
+    numbers near 1 lost up to 1e-10 relative on modes long past crossing (Markov-tanh A1,
+    runs E-20261115-172423-5234cce, E-20261115-180533-24a7781). Heaviside: the difference."""
+    if p["window"] != "tanh":
+        return window(lat, t1, p) - window(lat, t0, p)
+    s = p["sharpness"]
+    lks0 = np.log(p["ksigma0"] / lat.q)
+    x0 = s * (lks0 + p["hubble"] * (t0 - p.get("t0w", 0.0)))
+    x1 = s * (lks0 + p["hubble"] * (t1 - p.get("t0w", 0.0)))
+    return 0.5 * np.sinh(s * p["hubble"] * (t1 - t0)) / (np.cosh(x1) * np.cosh(x0))
+
+
 def window_rate(lat, t, p):
     """dW_k/dt of the tanh window: (s/2) sech^2(s ln(k_sigma/k)) hubble."""
     if p["window"] != "tanh":
@@ -152,12 +168,12 @@ def transfer(lat, comp, cycle, p):
             amp q^-3/2 L^-3/2 sqrt(W(t_cycle) - W(t_cycle - dt))."""
     t = out_time(cycle, p)
     if p["scheme"] == "frozen" and p.get("frozen_form", "rate") == "increment":
-        dW = window(lat, t, p) - window(lat, t - p["dt"], p)   # core's power model
+        dW = window_increment(lat, t - p["dt"], t, p)   # core's power model
         g = base_amplitude(lat, p) * np.where(dW > 0.0, dW, 0.0)
     elif p["scheme"] == "frozen":
         g = base_amplitude(lat, p) * window_rate(lat, t, p)
     else:
-        dW = window(lat, t, p) - window(lat, t - p["dt"], p)
+        dW = window_increment(lat, t - p["dt"], t, p)
         g = base_amplitude(lat, p) * np.sqrt(np.where(dW > 0.0, dW, 0.0))
     return g * component_factor(lat, comp, p)
 
