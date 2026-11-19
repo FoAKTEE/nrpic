@@ -228,8 +228,9 @@ Not ported (the module stops with a message on more than one rank): Newtonian mo
 (`pusher = newton`), collisions, the test kick, curvature records (`curv_dt`). Not tested
 on several ranks: horizon excision (`ah_exc_factor`; the horizon finder and the puncture
 tracker have their own MPI code upstream, but whether the finder's result is the same on
-every rank was not checked), the Kerr-Schild analytic metrics with
-more than one rank (particles stay on rank 0; nothing is distributed),  load balancing by cost (AthenaK balances
+every rank was not checked), the probes 1 to nprobe (only probe 0; the same function
+serves all), the analytic metrics with more than one rank (particles stay on rank 0;
+nothing is distributed), load balancing by cost (AthenaK balances
 MeshBlocks by number; particles do not enter the cost). Not done: replacing the copy of the
 cloud in the deposit kernel by `nrpic_cloud.hpp` (section 5).
 

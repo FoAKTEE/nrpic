@@ -598,3 +598,34 @@ Two cases that shorten the list of what is not tested (predictions, before the r
   agrees to 1e-12; Hr_max and Mr_max (noise ratios) to 1.2e-10. P6e held; the comparison
   of history columns relative to their own maxima misleads for quantities that vanish,
   as noted for Hr in entry 9.
+
+### 09:50 Entry 21: state at the end of session mpi-1, and the next steps
+
+Done and tested on processors (1 against 2 and 4 ranks): ownership and hand-over,
+deposit across ranks, sums and files, probe, constraint statistics, line and field
+dumps, trajectories, restart on the same and another rank count, static and adaptive
+refinement with load balancing, adaptive deposit levels, periodic cosmology with Z4c.
+One-rank behaviour unchanged (R0, entry 18). Published `scratch/core/exe/core_mpi/`.
+
+Not done / open:
+1. Card test, Slurm job 4663 (run core-20261119-160452-582824b, card_job.sh): queued
+   behind about twenty one-card jobs; it needs both cards. When it has run: `python3
+   tracks/core/analysis/mpi/card_analysis.py /data/haiyangw/nrpic/scratch/core/
+   core-20261119-160452-582824b --figdir tracks/core/analysis/mpi/figs`, record the
+   outcome against P6a-P6d (entry 9), fill section 8 of `interfaces/mpi.md` and the CARD
+   TEST section of `scratch/core/exe/core_mpi/READY`, and finish the manifest (its state
+   stays "running" until `sbatch --wait` returns; if the waiting process died with the
+   session, write wall time, exit status and card-hours from `sacct -j 4663` by hand).
+2. Not ported: Newtonian mode, collisions, test kick, curvature records (stop with a
+   message). Not tested on several ranks: horizon excision, probes 1..nprobe, analytic
+   metrics (particles stay on rank 0).
+3. Merge with the wave-2 branches: section 5 of `interfaces/mpi.md` lists every shared
+   line; every new sum over particles or cells, file or mesh array of a merged branch
+   needs its reduction, `NrpicFileWriter`, or an entry in the stop list of
+   `NrpicMpiInit`. Then rerun `mpi_tests.py` T1 to T6 (each case takes 0.5 to 7 minutes
+   on 7 cores) and R0.
+4. Clean-up after the merge: the deposit kernel calls `nrpic_cloud.hpp` instead of its
+   own copy of the cloud (with a regression run).
+5. For the lead, outside this package: the one-rank restart of Z4c runs is not exact
+   (ghost cells on the outer boundary, entries 11, 12): CLAUDE.md says "restarts are
+   exact"; and `cons.hst` prints 1e290 for isolated matter (entry 9).
