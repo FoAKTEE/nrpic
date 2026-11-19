@@ -1,0 +1,51 @@
+{
+ "run_id": "core-20261115-203207-b4430da",
+ "owner": "core",
+ "package": "gauge",
+ "tag": "gc-collapse-leak05",
+ "purpose": "bound expanding ball through turnaround and collapse to a black hole, new lapse T = 0.5 M (test L3)",
+ "kind": "scouting",
+ "command": [
+  "/data/haiyangw/nrpic/wt/core-gauge/scripts/gpu_run.sh",
+  "/data/haiyangw/nrpic/scratch/core/core-20261115-203207-b4430da",
+  "/data/haiyangw/nrpic/wt/core-gauge/problems/ball/ball_collapse.athinput",
+  "particles/traj_ntrack=2078",
+  "particles/particle_file=/data/haiyangw/nrpic/scratch/core/id/ic_ball/t2_bound_h0p25.nrp",
+  "problem/comp0_file=/data/haiyangw/nrpic/scratch/core/id/ic_ball/t2_bound_h0p25.tab",
+  "z4c/lapse_leak=2.0",
+  "-t",
+  "00:10:00"
+ ],
+ "cwd": "/data/haiyangw/nrpic/scratch/core/core-20261115-203207-b4430da",
+ "commit": "b4430da64df8892bb68b2d633959da3faa0255d8",
+ "head_at_run": "bc2cad7c08cd8d28559b7f9147e60045928fcf14",
+ "worktree_dirty": false,
+ "inputs": [
+  {
+   "path": "/data/haiyangw/nrpic/wt/core-gauge/problems/ball/ball_collapse.athinput",
+   "sha256": "df6f2713b2d112420844f0d1b5a8cb13205c9f1b9950a1e7f955616156d780bb"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/scratch/core/gauge/exe/athena_gpu_b4430da",
+   "sha256": "c3560e53988ad855cc93a9f444c48c728249950242e736d0828cc44dbcd85e72"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/scratch/core/id/ic_ball/t2_bound_h0p25.nrp",
+   "sha256": "ffa15959956cfa888f3b9f654c6584fee34cfea1240b8f5a842d178566abd3c3"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/scratch/core/id/ic_ball/t2_bound_h0p25.tab",
+   "sha256": "31a0f780183d816338982c2a39457e1075f08f65f71e863ec43fa427590c0bbf"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/scratch/core/id/ic_ball/t2_bound_h0p25.json",
+   "sha256": "5462eb3526dd3fe4edb9e68f5db9d59a06e0c52b1f5591ad541889b7c60ae5c6"
+  }
+ ],
+ "output_directory": "/data/haiyangw/nrpic/scratch/core/core-20261115-203207-b4430da",
+ "wall_time_s": 2.4,
+ "cores": 1,
+ "card_hours": 0.00056,
+ "exit_status": 1,
+ "started": "20261115-203207"
+}
