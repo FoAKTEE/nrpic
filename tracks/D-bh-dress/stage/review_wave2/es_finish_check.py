@@ -275,7 +275,7 @@ def main():
     ax.set_xlabel(r"$t/M$")
     ax.set_ylabel(r"$10^4\,[M_{\rm AH}(t)/M_{\rm AH}(100M)-1]$")
     ax.legend(loc="lower left")
-    ax.set_title("(a) horizon mass from $t_0 = 100M$")
+    ax.set_title(r"(a) horizon mass, $t_0 = 100M$")
 
     ax = axs[0, 1]
     for k, ls in (("ES-1", "-"), ("V-1", "--")):
@@ -285,8 +285,8 @@ def main():
     ax.axhline(-3.0, color="0.5", lw=0.6, ls=":")
     ax.set_xlabel(r"$\tau/M$")
     ax.set_ylabel(r"$10^3\,(R/R_w^{\rm exact}-1)$")
-    ax.set_title("(b) wall tracers: axis (blue), diagonal (orange)")
-    ax.text(0.03, 0.05, "solid ES-1, dashed V-1", transform=ax.transAxes)
+    ax.set_title("(b) wall tracers")
+    ax.text(0.03, 0.05, "axis blue, diagonal red;\nsolid ES-1, dashed V-1", transform=ax.transAxes)
 
     ax = axs[0, 2]
     T = tj["ES-1"]
@@ -301,7 +301,8 @@ def main():
     ax.set_yscale("log")
     ax.set_xlabel(r"$\tau/M$")
     ax.set_ylabel(r"$R/M$ (ES-1)")
-    ax.set_title(r"(c) groups $R_0 = 6, 10, 20M$; exact crossings dotted")
+    ax.set_title(r"(c) $R_0 = 6, 10, 20M$ (ES-1)")
+    ax.text(0.03, 0.05, "exact crossings dotted", transform=ax.transAxes)
 
     ax = axs[1, 0]
     for c, (k, h) in zip(col, hst.items()):
@@ -320,7 +321,7 @@ def main():
         ax.plot(gs, ms, "o", color=col[i], label=key.replace("t=", "t = ") + " M")
     ax.axhline(0.0, color="0.3", lw=0.6)
     ax.set_xlabel("wall tracer tag")
-    ax.set_ylabel(r"$\min r_{\rm dust} - r_{\rm wall}$ within $10^\circ$ [M]")
+    ax.set_ylabel(r"$(\min r_{\rm dust} - r_{\rm wall})/M$, cone $10^\circ$")
     ax.legend()
     ax.set_title("(e) dust outside the wall (ES-1)")
 
@@ -328,10 +329,10 @@ def main():
     for c, (k, (t, _m, rad)) in zip(col, hs.items()):
         ax.plot(t, rad, color=c, label=k)
     ax.set_xlabel(r"$t/M$")
-    ax.set_ylabel("finder mean coordinate radius [M]")
+    ax.set_ylabel(r"mean radius$/M$ (M/8 region to $6M$)")
     ax.axhline(6.0, color="0.5", lw=0.6, ls=":")
     ax.legend()
-    ax.set_title("(f) horizon size in coordinates (M/8 region: 6 M)")
+    ax.set_title("(f) horizon coordinate radius")
     fig.tight_layout()
     fs.save(fig, os.path.join(args.out, "es_finish_check"))
     print(json.dumps({k: out[k] for k in ("Y1", "Y2", "Y3", "Y4", "Y6")}, indent=1))
