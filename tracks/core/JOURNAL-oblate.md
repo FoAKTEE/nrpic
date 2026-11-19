@@ -413,3 +413,85 @@ written while the job is pending.
   the double; that changes the float32 value only within 1e-16 of a rounding boundary).
   Refuted by: any cell beyond the rounding bound against the reference, or more than a
   handful of cells differing from the processor dump.
+
+## 2026-11-19 15:35Z, entry 6: T1 rerun and part d hold; the card job still waits
+
+### T1 a-d, run core-20261119-152206-4d292b9 (processors, 288 s, branch executable)
+
+Figures looked at (15:31Z): `analysis/oblate/figs/cf_check_super.png` (new),
+`cf_check_ham.png`, `cf_check_id.png` (redrawn from this run; same picture as in
+entry 2), `cf_check_psi.png` (bytes of the PNG unchanged).
+
+- P1a HOLDS again, same numbers as entry 2 (the code did not change): largest
+  differences 0.49997, 0.49997, 0.49975 float32 units for e = 0.9, 0.3 and the sphere,
+  no cell beyond the bound (`cf_check.json` of the run, key P1a).
+- P1b HOLDS again: inside 5.2e-8 relative (oblate and prolate), outside 7.3e-7 and
+  1.8e-6 of the central value; in the cells along the outer faces of the run without
+  matter |H| < 2.5e-9 of the central value (new column `max_abs_H_edge_over_H_centre`).
+- P1c, the integral of H psi^5/(16 pi) without the four outermost cell layers of the
+  domain: -9.0e-5 (oblate) and +1.4e-5 (prolate), which is M - sum m/psi(x_p) within
+  1.5e-7 and 2.1e-5; the integral of R psi^5/(16 pi) over the same cells is 0.9999987
+  and 0.9999966. So the 0.025 M of entry 2 sits entirely in the outer four cell layers
+  (0.02518 of 0.02509 there; largest |H| 2.6e-4), as located in entry 2. Restated part
+  of (ii), judged now: "the integral of H psi^5/(16 pi) over the mesh without the outer
+  face cells equals M - S within 2e-3": HOLDS (1.5e-7). This was formulated after the
+  location was known; it is a check of the bookkeeping, not an independent prediction.
+- P1d HOLDS. The oblate component at (3, -2, 1.5) M with M = 0.8, a = 6 M, b = 2.5 M,
+  superposed with a Gaussian (m = 0.3 at (-6, 4, 2) M) and a puncture (m = 0.4): psi^4
+  of the dump equals (1 + u_oblate + u_Gaussian + u_puncture)^4 at all 262144 cells
+  within 0.49999 float32 units (3016 cells inside the spheroid; psi up to 2.25 near the
+  puncture), u_oblate from `oblate_reference.py` of core/nrpic at the shifted
+  coordinates; twin against reference 1.3e-14. The histogram of the differences is flat
+  between -0.5 and +0.5 units (figure): correct rounding, no bias. So the offset and the
+  superposition of the new component work as for the other components.
+
+### Card job
+
+Slurm job 4647 (run core-20261119-144923-1a7c274) still pending at 15:32Z, reason
+Priority, estimated start 16:17 local time (00:17Z on 2026-11-20): fifteen jobs ahead of
+it on two cards. Measured cost of the processor alternative (T2 run, prolate start at
+M/4, 512 MeshBlocks): 6.5e3 zone-cycles per second on one core of the Serial build. The
+prolate M/8 card run took 1.24e6 MeshBlock-cycles to 45 M (`athena.log` of
+`scratch/core/core-20261115-152845-5728b1d/prolate_m8`); a quarter of that at M/4 would
+be about 50 hours on one processor. T3 stays on the card.
+
+## 2026-11-19 15:40Z, entry 7: T4, the Newtonian reference in AthenaK, predicted
+
+Purpose: separate in T3 what is gravity from what is the particle set and the deposit.
+The same 10^4 particles (run core-20261119-144859-fbf3438, sha256 6dae810c...) move in
+the Newtonian potential of their own rest mass, AthenaK's Newtonian mode of release
+core-v0.3 (`pusher = newton`, multigrid with multipole faces; interface text
+`coord/INTERFACES/newtonian_mode.md`), with the cloud and filter of the card runs (CIC,
+four binomial passes, compensation). Input `problems/oblate/oblate_newton.athinput`:
+box of half-width 16 M, 64^3 (cells M/2) and 128^3 (cells M/4), step 0.02 M, to
+t = 24 M, snapshots every 0.25 M. Processors, release executable
+`.work/build_cpu_v03/src/athena`. Analysis `analysis/oblate/newton_mode.py`.
+
+Reference [BACKGROUND, homogeneous spheroid, `newton_spheroid.py`]: with the total rest
+mass M_0 = 1.074651 as the Newtonian mass every time scales by M_0^(-1/2) = 0.96465:
+pancake at t_N = 19.738 M, a = 6.213 M there (R_rms/R_rms,0 = 0.621), polar speed
+0.583; a = 5 M at 21.88 M; a = 3 M at 24.49 M (after the end of the run).
+
+The sample is not homogeneous: number density proportional to psibar, 3.4 per cent
+higher at the centre than at the rim, 1.7 per cent higher than at the pole
+(`ic/*.json`, psibar coefficients). Columns of different R then reach the plane at
+different times; for a time spread of 1.5 per cent of t_N (half the density contrast)
+and the polar speed 0.58, the crossing is spread over 0.3 M in time and 0.17 M in
+height [JUDGEMENT].
+
+- P4a. The pancake: the minimum of z_rms over the snapshots is at t_p = 19.74 +- 0.3 M
+  at both resolutions, and z_rms there is below 0.12 of its initial value (finite N,
+  the density contrast above, the cloud of one to two cells). Refuted by: t_p outside
+  19.2 to 20.3 M, or a minimum above 0.2.
+- P4b. R_rms(t_p)/R_rms(0) = 0.62 +- 0.02.
+- P4c. At t_p + 1 M at least 0.95 of the particles are on the other side of the plane
+  from where they started; afterwards z_rms grows again (Newtonian |b| at t = 24 M:
+  1.6 M, 0.37 of b_0) while R_rms keeps falling.
+- P4d. Energy (columns 5 + 6 of `obl.newton.hst`, the particle sum of W) changes by
+  less than 5e-3 of |W(0)| up to t_p - 1 M at 64^3 and by less than that at 128^3;
+  across the caustic the force in the sheet is not resolved, the change there is
+  reported, not predicted. The two resolutions give t_p within 0.25 M (one snapshot).
+- Use for T3: the ratio t_p(GR, card)/t_p(T4) is the relativistic stretch of the
+  pancake time with the particle set and deposit held fixed (entry 3 expects about
+  31.5/19.7 = 1.6 against T4; the factor 1.44 to 1.58 of entry 3 was against the
+  Newtonian clock with M = 1, 20.46 M).
