@@ -1,61 +1,54 @@
 # HANDOFF of C-sidm
 
-Written for a reader with no memory of the last session (lead of wave 1, 2026-11-15).
+Written for a reader with no memory of the last session (lead of wave 2b, 2026-11-19).
 
-State: G0 package written (`stage/G0/`: REPORT, EVIDENCE, OPEN, REVIEW, CHECKLIST), awaiting
-the orchestrator. G1 is NOT met: the baseline (F21) and the specifications are done and
-independently checked; core committed the operator at the end of the session (3436846,
-then 1a050f3) and its kernels pass the track's T0 (run C-sidm-20261115-132624-13a77db), but
-no box test T0b-T12 has run. No card time used.
+State in three lines: G0 package complete for the orchestrator's review (decision 0016 item
+4); G1 NOT MET only because the heat-conduction tests T6-T8 (package `heat/`, a wave-3a
+helper working in this same worktree) have not finished. The collision operator passes every
+other box test, also with `coll_energy = particle` and in a static curved metric (T12); the
+first collisional King-cluster runs collapse, and which of physics, the old energy defect or
+the mesh drives CC2's collapse is undecided (decisive runs D1-D3 written, none submitted).
+
 Owner: C-sidm, branch `track/C-sidm`, worktree `/data/haiyangw/nrpic/wt/C-sidm`.
-Run next: `cd /data/haiyangw/nrpic/wt/C-sidm && git merge --no-edit main && git log --oneline -5 core/collisions`
-(read `tracks/core/JOURNAL-coll.md` and `tracks/core/interfaces/collisions.md` on that
-branch; once core's predictions P0-P11 are checked and a processor executable of
-`core/collisions` exists, run T1, T2, T10 of `collide/TESTS.md` with the option names of
-core's interface, each registered with
-`python3 tracks/C-sidm/review/register.py --purpose ... -- <command>`, predictions in
-`JOURNAL.md` first).
+Run next: `cd /data/haiyangw/nrpic/wt/C-sidm && git merge --no-edit main && harness/bin/nrpic-ctx inbox --show && cat /data/haiyangw/nrpic/scratch/core/exe/core_collisions-2/CARD_TESTS.log && squeue -u haiyangw`
+(then: if core says the collisions-2 card executable is usable and the owner has a free card
+slot, write the D1 predictions into `JOURNAL.md`, make decks from
+`threshold_scan/inputs/cc{1,2}_kn10.athinput` plus `particles/coll_energy = particle` (the key
+must be in the deck, not only on the command line) and submit D1 with
+`harness/bin/nrpic-run submit --launcher batch --gate G2 --list <list>`; if the heat helper
+has finished, review `heat/` from its run outputs first.)
 
-Files to read first: `tracks/C-sidm/STATUS.md`; `stage/G0/REPORT.md` (decisions: S3 family
-F21 b = 0.1; Kn = lambda_c/H_c with lambda = 1/(rho0 sigma_m), H = (v1^2/(4 pi rho0))^1/2;
-fluid anchor = exact pulsation onset); `stage/G1/STATUS.md` (criteria and the first
-collisional cluster runs CC1/CC2); `collide/TESTS.md`; `stage/G0/OPEN.md`.
+Files to read first: `STATUS.md`; `stage/REVIEW-wave2.md` sections 6-8 (wave 2b) and 1-5
+(wave 2); `stage/G1/OPEN.md`; `stage/G0/OPEN.md`; `JOURNAL.md` last two entries (predictions
+and outcomes L12-L16, failed clauses included); `collide/TESTS.md` (section 2a);
+`box_tests/README.md` (section "Wave 2b"); `threshold_scan/JOURNAL.md` entry 6.
 
-Packages (each has README and JOURNAL): `scope/` (G0 note SCOPE.md, references),
-`collide/` (SPEC, TESTS, RNG requirements, references, box analysis), `gravothermal/`
-(F21 solver `tmb.py`, FEM onset), `equilibria/` (evstatic solver, 13 particle models in
-`scratch/C-sidm/C-sidm-20261115-120610-b4592be/`, Kn conversion), `review/` (lead's
-cross-checks and reruns).
+Key numbers (with runs): King threshold y0 = 0.334032 (collisionless E_b maximum); Juttner
+fluid onset of the King family y0 = 0.32143 (run C-20261119-151502-cb831a8); F21 b = 0.1
+anchor Z(0) = 0.5331, eps maximum 0.5404; K = 1/(rho0_c H_c) = 168.895 (CC1), 186.081 (CC2),
+sigma~ = K/Kn. Collisional cluster runs C-20261115-171058-c26cfad, -171059-4b70228,
+-171059-35441e3 (analysis -191420-8538aa4; rechecks C-20261119-151502-cb831a8,
+-151944-08f3220).
 
-Decisions pending: brief corrections, card budget and the nrpic-run manifest schema (orch,
-outbox files `20261115T1320Z__to-orch__*`); collision operator, stream-2 table,
-perturbation recipe, static curved metric, GR-hydro view (core, `..__to-core__*`); kb
-fetches (`..__to-kb__*`). Lead decisions recorded in `stage/G0/REPORT.md` section 2 can be
-overturned by the orchestrator.
-
-Wave-2 work that needs no one else: F21 b = 0.1 particle models (generalise
-`equilibria/evstatic.py`: kernel exp((1 - E/E0)/b) - 1, b = 1 is the King model); the
-fluid onset with the Juttner Gamma_1 (`gravothermal/tmb.fem_lowest` with Gamma_1 from
-`collide/REFERENCES/mj.py`); the growth-rate pipeline validated on the first paper's
-monoenergetic outputs (`/data/haiyangw/nrpic/runs/st/`); the cosmetic figure fixes listed
-in `stage/G0/REVIEW.md` (collide `ref_relax` y-label, `T6_0_step_collisionless` margin).
-Card runs (wave 2, within the 20 GPU-h): monoenergetic collisionless scan (8 y_c x 2 signs
-x 400 M), King b = 1 scouting, CC1/CC2.
+Decisions pending: G0 review (orch); core's statement on the collisions-2 card executable
+(outbox 20261119T151725Z); core's answers on format findings, ADM-energy diagnostic, refined
+mesh and non-finite stop (outbox 20261119T1517*); orch on a core share for leads. Lead
+decisions of this session: `coll_energy = particle` for every collisional run in a field; the
+T12 twin as the sharp form of its criterion (TESTS.md 2a); no Synge fluid equation of state
+scheduled at core (answer in outbox); collapse "within 300 M" is no threshold criterion
+(RISKS 7).
 
 Traps:
-- `harness/bin/nrpic-run submit` stops with KeyError 'dir' on this branch (hand manifests);
-  register with `tracks/C-sidm/review/register.py` (refuses uncommitted changes under
-  `tracks/C-sidm`; commit first). `.gitignore` ignores `runs/`: add manifests with
-  `git add -f tracks/C-sidm/runs/<id>/manifest.json`.
-- Reproducing an old run needs the code of its commit: `collide/analysis/make_box.py`
-  changed after run C-sidm-20261115-121302-313d399 (abd9c2e), so a rerun at HEAD draws other
-  momenta; with `git archive` of 313d399 all 33 files are reproduced byte for byte (run
-  C-sidm-20261115-132327-eab8e41). LAPACK results change in the last digits with the thread count (gravothermal
-  ran with one thread).
-- The Write tool refuses files named REPORT.md for subagents; the stage report was written
-  with a shell here-document.
-- Three Kn conventions exist in the helper packages (scope: energy density in H, factor
-  1.18; equilibria: transport mean free path, factor 0.77); use the track definition.
-- Core's draft operator uses a symmetric triad by default; replay test T0b needs
-  `triad = cholesky` or a replay that follows the symmetric triad.
-- Never kill by pattern; at most 16 cores; card runs only within the allotment.
+- The heat helper (wave 3a) commits in this worktree too: commit with explicit paths
+  (`git commit -- <paths>`), retry while `index.lock` exists, never `git add -A`; its
+  untracked files are not yours to commit.
+- One owner allotment of 16 cores and two queued card jobs is shared with that helper:
+  `nrpic-run submit` refuses while it holds them; retry in a background loop.
+- `nrpic-run submit --package <dir>`: uncommitted edits elsewhere in `tracks/C-sidm/` are
+  recorded, inside the package refused; commit first.
+- A command-line override `particles/coll_energy=...` works only if the deck has the key.
+- Card runs with deposition are not byte-reproducible: compare collapse times with a seed
+  scatter, never one run against another.
+- The controls drift outward by more than the stability margin on the M/4 mesh: read
+  collisional effects relative to the control of the same mesh and seed.
+- Never kill by pattern; at most 16 cores; card runs within the 41.4 card-hours left.

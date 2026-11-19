@@ -267,3 +267,30 @@ the helpers' scripts are not imported, except `gravothermal/tmb.py` and
   heat transport out of the King core (gravothermal contraction) moving a model that lies
   within 0.006-0.015 in alpha_c of the onsets over the relativistic threshold is the leading
   physical hypothesis; the decisive runs are in `stage/REVIEW-wave2.md` section 7.
+
+## 2026-11-19T15:40Z  session C-sidm lead (wave 2b)  commits 89522594..(this entry's commit)  runs C-20261119-151502-cb831a8, C-20261119-151944-08f3220
+
+- did: merged main (decision 0016, harness of wave 2b); inspected and committed the wave-2
+  lead's uncommitted stage files and manifest fields (0559b367; its C19/C20 PASS claims were
+  premature and are corrected); checked the wave-2b box_rerun helper from its registered
+  outputs (L13) and the first collisional cluster runs (L14, L16) with own readers; computed
+  the Juttner fluid onset along the King family (L15); review sections 6-8 in
+  `stage/REVIEW-wave2.md`; G0 and G1 checklists re-collected and filled, OPEN and EVIDENCE
+  brought to wave 2b; TESTS.md 2a T12 twin note; nine outbox messages (kb, core x5, F-hills,
+  orch x2); all eight inbox messages acknowledged; STATUS, HANDOFF, RISKS rewritten.
+- found: every box_rerun number recomputed agrees (L13). The release operator's energy defect
+  does not start the core contraction of the collisional King runs: the relative lapse drop
+  reaches 0.01 at 44-46 M (Kn = 10) when 1.3-1.6 percent of the binding margin has been
+  injected (L16). The King-family fluid onset (Juttner Gamma_1) is y0 = 0.32143, so CC1 is
+  fluid-unstable and CC2 fluid-stable by 0.0055 in alpha_c, a margin smaller than the
+  controls' numerical drift (0.018-0.033).
+- changed my mind about: the defect as the likely cause of the Kn = 10 collapse (the helper's
+  suggestion to rerun with coll_energy = particle stays, as D1, but for the late phase and
+  the seed scatter); threshold_scan's reading "collisional threshold below y0 = 0.314" is not
+  supported while the mesh drift exceeds the margin.
+- failed predictions: L14(b) collisions-per-particle ratio (5.3-5.4, not 7-10); L15(b) F21
+  gamma onset above, not below, the collisionless maximum; L16 t_dep at Kn = 10 (44-46 M, not
+  100-170 M). Readings kept, as stated in the outcomes.
+- open: D1-D3 (no card job submitted: the collisions-2 card executable awaits core's
+  statement and the heat helper holds both card slots); review of the heat package when it
+  ends; G1 remainder (`stage/G1/OPEN.md`). Card-hours used this session: 0.
