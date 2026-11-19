@@ -250,15 +250,23 @@ def record(d):
     return out
 
 
-def analyze(root, status):
-    res = dict(run=lib2.run_id(), status=status or {}, cases={})
+def analyze(roots, status, tag="", out_dir=None):
+    """Cases of every directory in roots; numbers and figures with the suffix tag into
+    out_dir (default the first root)."""
+    if isinstance(roots, str):
+        roots = [roots]
+    root = out_dir or roots[0]
+    res = dict(run=lib2.run_id(), sources=[os.path.basename(r.rstrip("/")) for r in roots],
+               status=status or {}, cases={})
     byr = by_reference()
     shr = shell_reference()
     res["reference"] = dict(by_m_adm=byr["m_adm"], by_u0=byr["u0"],
                             by_m_inside_16=byr["m_inside"](HALF),
                             shell_m_adm=shr["m_adm"], shell_u0=shr["u0"])
     prof = {}
-    for d in sorted(glob.glob(os.path.join(root, "p*_*"))):
+    for d in sorted(sum([glob.glob(os.path.join(r, "p*_*")) for r in roots], [])):
+        if not os.path.isdir(d):
+            continue
         name = os.path.basename(d)
         e = dict(record(d))
         c = load_case(d)
@@ -305,14 +313,14 @@ def analyze(root, status):
             j = n//2
             prof[name] = (c["X"][:, j, j], c["u"][:, j, j], err[:, j, j], c["dx"][0, 0, 0])
         res["cases"][name] = e
-    out = os.path.join(root, "test_p_numbers.json")
+    out = os.path.join(root, "test_p_numbers%s.json" % tag)
     lib2.save_json(out, res)
-    figs = figure(res, prof, byr, shr, root)
+    figs = figure(res, prof, byr, shr, root, tag)
     lib2.publish([out] + figs)
     return res
 
 
-def figure(res, prof, byr, shr, root):
+def figure(res, prof, byr, shr, root, tag=""):
     fs.use_style()
     col = {32: fs.PAL["yellow"], 64: fs.PAL["red"], 128: fs.PAL["blue"]}
     fig, axs = plt.subplots(2, 3, figsize=(fs.FULL_WIDTH, 5.0))
@@ -342,7 +350,7 @@ def figure(res, prof, byr, shr, root):
         axe.set_ylabel("$|u-u_{\\rm ref}|/\\Delta x^2$")
         ax.legend(fontsize=5)
     fig.tight_layout()
-    p = os.path.join(root, "test_p_profiles")
+    p = os.path.join(root, "test_p_profiles" + tag)
     fs.save(fig, p)
     plt.close(fig)
     out = [p + ".png", p + ".pdf"]
@@ -372,7 +380,7 @@ def figure(res, prof, byr, shr, root):
     axs[0].legend(fontsize=5)
     axs[1].legend(fontsize=5)
     fig.tight_layout()
-    p2 = os.path.join(root, "test_p_convergence")
+    p2 = os.path.join(root, "test_p_convergence" + tag)
     fs.save(fig, p2)
     plt.close(fig)
     return out + [p2 + ".png", p2 + ".pdf"]
@@ -383,17 +391,18 @@ def main():
     ap.add_argument("--exe", default=lib2.EXE)
     ap.add_argument("--tests", default="p1,p2,p3,p4,p5")
     ap.add_argument("--jobs", type=int, default=4)
-    ap.add_argument("--analyze", default="")
+    ap.add_argument("--analyze", default="", help="comma-separated run directories")
     a = ap.parse_args()
+    tag = "" if a.tests == "p1,p2,p3,p4,p5" else "_" + a.tests.replace(",", "")
     if a.analyze:
-        analyze(a.analyze, None)
+        analyze(a.analyze.split(","), None, tag="", out_dir=lib2.run_root())
         return 0
     root = lib2.run_root()
     cases = build_cases(root, os.path.abspath(a.exe), a.tests.split(","))
     # the largest cases first, so that they do not end the run alone
     cases.sort(key=lambda c: ("n128" not in c["name"] and "p3" not in c["name"]))
     status = lib2.run_cases(cases, a.jobs)
-    analyze(root, status)
+    analyze([root], status, tag=tag)
     bad = [k for k, v in status.items() if v["status"] != "completed"]
     print("failed cases:", bad)
     return 0
