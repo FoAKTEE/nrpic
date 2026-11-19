@@ -1,0 +1,42 @@
+# Lead's reading of repair_reading.tsv of run kb-20261119-155134-17d6704 (B1); no paper text here
+k	pool	verdict	note
+1	word	right	
+2	word	right	
+3	word	right	
+4	word	right	
+5	word	right	
+6	word	right	
+7	word	right	
+8	word	right	
+9	word	right	
+10	word	right	
+11	word	right	
+12	word	right	
+13	word	right	
+14	word	right	
+15	word	right	
+16	word	right	
+17	word	right	
+18	word	right	
+19	word	right	
+20	word	right	
+21	greek	right	
+22	greek	right	
+23	greek	right	
+24	greek	right	
+25	greek	right	
+26	greek	right	
+27	greek	right	
+28	greek	right	
+29	greek	right	
+30	greek	wrong	cmsy approx sign read as pi
+31	greek	right	
+32	greek	right	
+33	greek	right	
+34	greek	right	
+35	greek	wrong	cmsy equivalence sign read as eta
+36	greek	right	
+37	greek	right	
+38	greek	wrong	cmex parenthesis read as theta
+39	greek	right	
+40	greek	right	
