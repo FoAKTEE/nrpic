@@ -105,3 +105,40 @@ P7 (against one A100). One A100 is faster than 64 threads for the puncture (by a
    1.5 to 4) and for the box; 16 threads reach a quarter to a tenth of one card. So a run
    is cheaper on processors than waiting for a card when its card time is below about
    a tenth to a quarter of the expected queue wait. To be replaced by measured numbers.
+
+## 2026-11-19 06:58 Entry 3: first numbers, the state of the machine, prediction for the placement
+
+Calibration (run core-20261119-143919-24f5e73, registered by hand because `nrpic-run`
+refused: 13 of the 16 cores of owner core were busy in other sessions; O3 build, 8
+threads, spread over cores, load average 90 to 135 during the run): seconds per step
+29.9 (punc, 344 MeshBlocks, 1.41e6 cells), 37.6 (cluster, 400 MeshBlocks, 1.64e6 cells,
+1e5 particles), 15.0 (cosmo, 2.6e5 cells, 2.1e6 particles), 1.57 (newton, 2.1e6 cells,
+5.12e5 particles). [VERIFIED: scaling_calib.json of that run]
+
+Profile of punc at 16 threads (run core-20261119-145516-7a255c8, tools/kernel_timer.cpp
+through the Kokkos tools interface): 15.2 s per step; of 129.6 s in kernels, 81.7 s are
+the Z4c right-hand side (32 calls, 2.55 s each for 1.41e6 cells), 13.2 s the constraint
+loop, 10.5 s the prolongation, 7.4 s the dissipation, 3.3 s zero-filling of new arrays;
+the horizon finder is 0.04 s. From 8 to 16 threads the rate rises by 1.96 (4.71e4 to
+9.25e4 zone-cycles per second). [VERIFIED: kernel_timer.txt of that run]
+
+The machine is not idle: `scripts/omp_places.py 16 --verbose` at 06:57 reports a mean
+load of 1.22 busy hardware threads per physical core (of 2) over all 72 cores, and 0.94
+for the 16 least busy cores of one NUMA node. So every thread of a test shares its core
+with another job. All timings below are taken under this load, with the load average
+and the share of processor time of each run recorded; absolute rates are lower bounds.
+
+Kokkos zero-fills every new array with one `memset` on the calling thread
+(athenak/kokkos/core/src/impl/Kokkos_HostSpace_ZeroMemset.hpp, line 31), so the pages of
+the mesh arrays start on the NUMA node of the first thread; the kernel's automatic NUMA
+balancing is on (`/proc/sys/kernel/numa_balancing` = 1) and moves pages later. `numactl`
+is not installed. [VERIFIED: source, /proc]
+
+P8 (placement at 16 threads, punc, four cycles, two rounds, interleaved): "auto"
+(`OMP_PLACES` from scripts/omp_places.py: the 16 least busy cores of one NUMA node,
+`OMP_PROC_BIND=true`) is the fastest or within the scatter of the fastest; "close" over
+`OMP_PLACES=cores` (cores 0 to 15 for every job of every session) and "spread" (cores 0,
+4, 9, ... for every job) are no faster than no binding and may be much slower when
+another job is bound to the same cores; no binding lies within 30 per cent of auto.
+Refuted if auto is slower than another placement by more than the scatter between the
+two rounds.
