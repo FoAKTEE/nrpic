@@ -490,3 +490,20 @@ converge (odd part at order 5.5-5.9, H0 at order 4), the second-order violation 
 independent of the resolution (P1's plateau, even part within 2.2 percent between 64 and
 128), and above both sits a rounding floor that grows as N^2.5 and limits what 256^3 can
 show during the first two e-folds (6e-13 of <[H]>, still a hundred times below P1's 1e-10).
+
+## Entry 10, 2026-11-19 14:34Z: outcome of A12 (prediction of entry 7)
+
+Run E-20261119-141654-c2a10d1 (`noise/validate/validate_noise.py`, `results/a12/`):
+- Processors: U4 (restarted at cycle 150) against U2 of run E-20261115-170727-d15df12:
+  A12 PASS, the noise fields stoch_c0 and stoch_c2 at cycles 200 and 300 bit-identical
+  (largest difference 0); the base run passes A0-A8, A10 (A9 not applicable), as the
+  analysis package found for it on 2026-11-15.
+- Card: U4 of run E-20261115-180526-6b68c33 against the card U2 of
+  E-20261115-170645-3b21217: A12 PASS, bit-identical; A0-A8, A10 pass.
+- Beyond the validator, which reads the noise fields only: the whole dump files
+  u.sf.00002.dump and u.sf.00003.dump (25 MB each, every field of the dump) and the mode
+  files of U4 equal those of U2 byte for byte on both platforms (`cmp`, by hand, not
+  registered).
+P5 and P5' of the analysis package HOLD. The validator's figures (noise statistics of the
+base run, `val_*_a12/fig_val_*.png` in the run directory) were looked at; a bit-identity
+has no figure of its own.
