@@ -158,3 +158,16 @@ one red segment among 8 rows, line 184 with the other among 9 rows; right panel:
 the largest group (about 28), VERIFIED about 24, BACKGROUND 1.
 Refuted if: the tally differs from the header (a miscount by hand), any locator names a
 missing file or a line beyond the end of its file, or the parser fails on a row.
+
+## Entry 4 (2026-11-19 06:47 PST): outcome of run kb-20261119-144642-5ac03b1, and rerun
+
+Outcome: the prediction failed on one point. Tally as predicted (53 rows; 38, 13, 2, 0, equal
+to the header; corrected rows 12 and 48). The locator check reported 4 problems, all in row 3:
+the short continuation form `:524, :644` (same file as the preceding locator) that the parser
+does not accept. No file was missing and no line was beyond its file among the 70 locator
+spans it did parse (fewer spans than the "about 100" I guessed, because many spans carry
+several line numbers). Exit 1, run status failed; it stays on record.
+Fix: row 3 now writes its body locator in full (`1807.01711/v2/src/INCAPRD2019.tex:458, 524,
+610, 630, 644, 878-880`); the content of the row is unchanged.
+Prediction for the rerun: the same tally, 70 locator spans checked (the four short spans become
+one full span: 70 + 1 = 71), no problem, exit 0.
