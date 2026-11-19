@@ -333,6 +333,99 @@ def count_equations(body, al):
     return counts, numbered, (steps_main, steps_all), per_env
 
 
+def label_numbers(main_path, srcdir):
+    """Equation number of every \\label in display equations, computed independently.
+
+    Styles: 'revtex' (plain counter, appendix sections A, B, ... number A1, A2, ...),
+    'numberwithin' (\\numberwithin{equation}{section}: 3.4; appendix A.1), 'plain'
+    (one counter through the whole paper). subequations give 12a, 12b; \\tag{T} gives T."""
+    flat, _ = flatten(main_path, srcdir)
+    body, pre = body_of(flat)
+    al = aliases(pre + body)
+    body = expand_aliases(body, al)
+    if re.search(r"\\(numberwithin|counterwithin)\s*\{equation\}\s*\{section\}", pre + body):
+        style = "numberwithin"
+    elif re.search(r"\\documentclass\s*(\[[^\]]*\])?\s*\{revtex", pre):
+        style = "revtex"
+    else:
+        style = "plain"
+    events = []
+    for m in re.finditer(r"\\section\*?\s*(?:\[[^\]]*\])?\s*\{", body):
+        events.append((m.start(), "sec", "*" in m.group(0)))
+    for m in re.finditer(r"\\appendix(?![A-Za-z])|\\begin\{appendices\}", body):
+        events.append((m.start(), "app", None))
+    for m in re.finditer(r"\\begin\{subequations\}", body):
+        events.append((m.start(), "subbeg", None))
+    for m in re.finditer(r"\\end\{subequations\}", body):
+        events.append((m.start(), "subend", None))
+    tok = re.compile(r"\\\\|\\\$|\\begin\s*\{([^}]*)\}|\\end\s*\{([^}]*)\}|\\\[|\\\]|\$\$")
+    closer, cur = None, None
+    for m in tok.finditer(body):
+        s = m.group(0)
+        if s in ("\\\\", "\\$"):
+            continue
+        if closer is None:
+            if m.group(1) is not None and m.group(1).strip() in DISPLAY_ENVS:
+                closer, cur = ("end", m.group(1).strip()), (m.group(1).strip(), m.end())
+            elif s == "\\[":
+                closer, cur = ("tok", "\\]"), ("\\[", m.end())
+            elif s == "$$":
+                closer, cur = ("tok", "$$"), ("$$", m.end())
+        elif (closer[0] == "end" and m.group(2) is not None and m.group(2).strip() == closer[1]) \
+                or (closer[0] == "tok" and s == closer[1]):
+            events.append((cur[1], "env", (cur[0], body[cur[1]:m.start()])))
+            closer = None
+    events.sort(key=lambda e: e[0])
+    sec, app, eq = 0, False, 0
+    sub, sub_letter = False, 0
+    labels = {}
+    for pos, kind, data in events:
+        if kind == "app":
+            app, sec = True, 0
+            if style == "revtex":
+                eq = 0
+        elif kind == "sec":
+            if not data:
+                sec += 1
+                if style == "numberwithin" or (style == "revtex" and app):
+                    eq = 0
+        elif kind == "subbeg":
+            sub, sub_letter = True, 0
+            eq += 1
+        elif kind == "subend":
+            sub = False
+        else:
+            env, content = data
+            base = env.rstrip("*")
+            starred = env.endswith("*") or env in ("\\[", "$$", "displaymath")
+            rows = split_rows(content) if base in MULTIROW else [content]
+            if base == "multline":
+                rows = [content]
+            for r in rows:
+                tag = re.search(r"\\tag\*?\s*\{([^}]*)\}", r)
+                nonum = re.search(r"\\(nonumber|notag)(?![A-Za-z])", r)
+                if tag:
+                    num = tag.group(1)
+                elif starred or nonum:
+                    num = None
+                else:
+                    if sub:
+                        sub_letter += 1
+                        n = eq
+                    else:
+                        eq += 1
+                        n = eq
+                    prefix = ""
+                    if style == "numberwithin":
+                        prefix = (chr(64 + sec) if app else str(sec)) + "."
+                    elif style == "revtex" and app:
+                        prefix = chr(64 + sec)
+                    num = f"{prefix}{n}" + (chr(96 + sub_letter) if sub else "")
+                for lm in re.finditer(r"\\label\s*\{([^}]*)\}", r):
+                    labels[lm.group(1).strip()] = num
+    return style, labels
+
+
 def braced(text, i):
     """Return the content of the brace group starting at text[i] == '{'."""
     if i >= len(text) or text[i] != "{":
