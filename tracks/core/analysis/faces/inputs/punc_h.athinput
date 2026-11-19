@@ -129,9 +129,9 @@ dt        = 0.25
 <output2>
 file_type = bin
 variable  = con
-dt        = 4.0
+dt        = 1.0
 
 <output3>
 file_type = bin
 variable  = z4c
-dt        = 4.0
+dt        = 1.0

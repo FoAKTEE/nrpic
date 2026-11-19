@@ -1,0 +1,8 @@
+{"exe": ".work/build_cpu/src/athena",
+ "cases": {
+  "punc_sf_e2_h": {"input": "inputs/punc_h.athinput", "args": ["z4c/sbc_variant=sommerfeld", "z4c/extrap_order=2"]},
+  "punc_nw_e4_h": {"input": "inputs/punc_h.athinput", "args": ["z4c/sbc_variant=nonwave", "z4c/extrap_order=4"]},
+  "punc_nw_e2": {"input": "inputs/punc_sbc.athinput", "args": ["z4c/extrap_order=2"]},
+  "boost_nw_e2": {"input": "inputs/punc_sbc.athinput", "args": ["z4c/extrap_order=2", "problem/comp0_p1=0.3", "problem/comp0_corr=approx"]},
+  "boost_nw_e4": {"input": "inputs/punc_sbc.athinput", "args": ["z4c/extrap_order=4", "problem/comp0_p1=0.3", "problem/comp0_corr=approx"]}
+ }}

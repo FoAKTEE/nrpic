@@ -225,3 +225,44 @@ Predictions [JUDGEMENT]:
  (b1-f) `sbc_theta = nonwave` is worse than the default for the face-layer measure
    (it carries the constraint violation of cell p to the boundary cell).
  Refuted: (b1-a) above 20 per cent; (b1-b) gains below 2; (b1-e) any blow-up.
+
+## 2026-11-19, entry 4: puncture half of a1 so far; plan b2 predicted
+
+a1, vacuum puncture (run core-20261119-143745-78506dd, cases punc_e2, punc_e4, at t = 6
+when I looked; the reference core-20261119-144214-5e4bb5a had reached t = 1):
+- order 2: the face-layer mean |H| is 1.78e-4 from the first dump on and constant in
+  time (1.78, 1.81, 1.74, 1.71e-4 at t = 1, 2, 4, 6): the monitor reading linear ghosts
+  of a static far field (H1). The mean over the whole box, 1.05e-4, is this layer; in
+  the same cells of the reference it is 1.6e-9, and 5 <= r < 8 has 1.4e-6.
+- (a1-d), puncture half, HELD: order 4 lowers the face-layer mean by a factor 36 at
+  t = 1 (4.9e-6) and 24 at t = 4 (7.3e-6).
+- H3 is real, not only a monitor effect: in the shell 8 <= r < 12, four cells and more
+  from the faces, order 2 gives 1.06e-6, 1.58e-6, 8.3e-6, 1.70e-5 at t = 1, 2, 4, 6;
+  order 4 gives 7.1e-7, 5.6e-7, 7.0e-7, 2.5e-6; the reference 7.1e-7 at t = 1. The
+  linear ghosts feed a violation that travels inward and is 24 times the truncation
+  level of the shell by t = 6.
+- boundary cell against the reference at t = 1: dKhat = 1.3e-5 (below 1e-4 as
+  predicted in (a1-a)), dA_xx = 9.6e-6.
+
+Plan b2 (`plans/b2_punc.json`): the two puncture data sets with the new condition, and
+the processor proxy of Track D's long run (`inputs/punc_h.athinput`: the vacuum puncture
+with the horizon finder of `problems/puncture/horizon_calib.athinput`, faces at 16 M,
+to t = 40; cells of 1/4 at the puncture only, so the finder may fail: then the proxy
+gives nothing). Predictions [JUDGEMENT]:
+ (b2-a) vacuum puncture, t <= 8: nonwave changes little. Shell and face-layer mean |H|
+   of punc_nw_e2 within 30 per cent of punc_e2 (K_ij = 0 at the faces until the gauge
+   pulse arrives at t = 11; the part that is not a wave is 3e-5 per unit time).
+ (b2-b) at t = 12, after the gauge pulse has reached the faces, the shell mean |H| of
+   punc_nw_e4_h is within a factor 2 of punc_e4 (a clean outgoing pulse is what the
+   Sommerfeld operator is made for; the correction then adds only truncation error).
+   Refuted if nonwave is more than 2 times worse: then the correction disturbs the
+   absorption of waves.
+ (b2-c) boosted puncture: at the centre of the +x face the boundary-cell A_xx of the
+   Sommerfeld run departs from the nonwave run at the rate A_xx/r (fall-off r^-2), i.e.
+   |dA_xx| = |A_xx| / 15.5 per unit time at t = 1 within 50 per cent; the face-layer mean
+   of |M_i| at t = 4 is more than 3 times lower with nonwave at the same order.
+ (b2-d) horizon proxy: if the finder works, the apparent-horizon mass of punc_nw_e4_h
+   and punc_sf_e2_h agree to 1e-4 until t = 11 (nothing from the faces has arrived),
+   and the largest excursion of the mass from its value at t = 12 over 12 <= t <= 40 is
+   not larger with nonwave and order 4 (ratio below 1.2). Refuted above 1.2: then the
+   new condition makes the drift worse and must not be recommended for Track D.
