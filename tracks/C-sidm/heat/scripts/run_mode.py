@@ -143,6 +143,7 @@ def main():
     ap.add_argument("--tag", default="")
     ap.add_argument("--list", default=None)
     ap.add_argument("--prep", default=None, help="reduce: the prep run directory")
+    ap.add_argument("--append", action="store_true", help="prep: append to --list")
     ap.add_argument("--nt-fixed", type=int, default=None, help="T8: transverse cells")
     ap.add_argument("--ly-fixed", type=float, default=None, help="T8: transverse box")
     ap.add_argument("--variants", default=None,
@@ -193,7 +194,7 @@ def main():
         with open(os.path.join(root, "card.list"), "w") as fh:
             fh.write("\n".join(lines) + "\n")
         if a.list:
-            with open(a.list, "w") as fh:
+            with open(a.list, "a" if a.append else "w") as fh:
                 fh.write("# card runs of the heat package; particle files and case.json in "
                          f"{root}\n" + "\n".join(lines) + "\n")
         return
