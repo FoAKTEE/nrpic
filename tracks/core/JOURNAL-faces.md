@@ -125,3 +125,40 @@ Plan a1 (evolution, present code; `plans/a1_base.json`):
  (a1-f) order 4 stays stable to the end of the three runs (no growth of the maximum of
    |H| in the face layer by more than a factor 10 between t = 4 and the end). Not sure:
    the high-order extrapolation feeds the dissipation and the advective stencils.
+
+## 2026-11-19, entry 2: outcome of a0; a0b predicted
+
+Run core-20261119-143732-41f7cce (plan `a0_t0.json`, executable of this worktree at
+27b2ced source); numbers `analysis/faces/results/a0.json`, script `analyze_a0.py`.
+
+- (a0-a), (a0-b) FAILED as written, for a reason outside the candidates: at t = 0 the
+  monitor of the two puncture runs does not read extrapolated ghost cells at all. The
+  largest |H| in the boundary layer is 8.5e-9 (punc) and 1.5e-7 (boost), falls smoothly
+  inward-out (the sixth-order truncation error of exact data) and is the same to the
+  last digit at orders 2, 3 and 4: the problem generator fills the ghost cells with the
+  exact data, and without depositing particles the boundary function is not called
+  before the first monitor. The stencil numbers can therefore be tested only after the
+  first step (a0b below).
+- The ball (deposit on: the boundary function runs before the monitor) shows H = 1e-18
+  outside the matter at every order: the Painleve-Gullstrand slice is flat (psi = 1),
+  no second derivative enters H there. I had not thought of this; H1 cannot act on H of
+  the ball at t = 0, so the face layer of test F of the id-solver package (mean |H|
+  1.3e-4 at t = 2) is made by the evolution.
+- (a0-c) held (differences between orders four cells from the faces: 0.0 exactly).
+- (a0-d) held for the ball: M_x on the axis in the three outer layers is -2.15e-4,
+  +5.3e-5, -8.7e-6 at order 2 (stencil: -0.40, +0.10, -0.017 times dx times
+  -2 K_T'' = 5.1e-4, i.e. -2.05e-4, +5.1e-5, -8.7e-6); order 3: 4.5e-5 (ratio 0.21,
+  stencil 0.18); order 4: 1.3e-5 (ratio 0.061, stencil 0.041); cells of 1/2 at order
+  2: -1.00e-4 (ratio 0.47, stencil 0.5), at order 4: 1.2e-6 (ratio 0.092 against cells
+  of 1, stencil 1/8). So the layer of M_i at t = 0 which the clump package saw is the
+  monitor reading linear ghosts (H1), first order in the cell size at order 2. For
+  punc M_i = 0 exactly. For boost the layer is absent at t = 0 for the reason above.
+
+Plan a0b (`plans/a0b_step1.json`): the two puncture data sets after ONE step
+(dt = 1/16), orders 2, 3, 4. Predictions [JUDGEMENT], those of (a0-a) and (a0-b) moved
+to the first step: after one step the boundary-cell |H| at the face centre is
+2.4e-3 at order 2 within a factor 1.5 for punc (the step changes the fields by dt times
+small rates; the monitor now reads extrapolated ghosts), second and third layer 0.105
+and 0.010 of it; orders 3 and 4 give 0.18 and 0.041 of order 2 within a factor 2.
+Refuted if the layer after one step is much smaller (then the ghost cells are not what
+the monitor reads in the evolution either) or does not follow the weights.

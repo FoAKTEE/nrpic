@@ -45,10 +45,12 @@ class Dump:
         self.blocks = []
         geo = fd["mb_geometry"]
         for b in range(fd["n_mbs"]):
-            x1i, x2i, x3i, dx1, dx2, dx3 = geo[b]
+            # the six numbers are the edges of the block: x1min, x1max, x2min, ...
+            x1i, x1o, x2i, x2o, x3i, x3o = geo[b]
             arr = {v: np.asarray(fd["mb_data"][v][b], dtype=np.float64)
                    for v in self.names}
             n3, n2, n1 = arr[self.names[0]].shape
+            dx1, dx2, dx3 = (x1o - x1i) / n1, (x2o - x2i) / n2, (x3o - x3i) / n3
             self.blocks.append({"x0": (x1i, x2i, x3i), "dx": (dx1, dx2, dx3),
                                 "n": (n1, n2, n3), "data": arr})
 
