@@ -12,7 +12,8 @@ four lapse conditions, at the step of the 32^3 stochastic runs.
 A run that ends with a non-zero exit status or with non-finite numbers is a result
 here, not an error.  Compares <phi>, <Pi>, <K> of <basename>.sf.hst as functions of the
 proper time of the mean lapse with the Friedmann solution (nrpic.scalar_field.
-ms_reference without modes).  Writes DIR/summary.json and DIR/fig_gauge_homog.png."""
+ms_reference without modes), and <K>, <Pi> and the e-folds as functions of the field
+value (independent of the time coordinate).  Writes DIR/summary.json and DIR/fig_gauge_homog.png."""
 import argparse
 import os
 import subprocess
@@ -76,6 +77,24 @@ def main():
             r["err_" + q] = float(err.max())
             r["err_" + q + "_first_half"] = float(err[:max(nok//2, 1)].max())
         r["err_efolds"] = float(np.abs(nef - ref["ln_a"]).max())
+        # independent of the time coordinate: K, Pi and the e-folds as functions of the
+        # field value (phi rises monotonically), against the Friedmann solution on a
+        # fine grid.  The comparison at equal proper time above is limited by the
+        # trapezoid rule for int <alpha> dt when the lapse changes within a few steps.
+        fine = sf.ms_reference(v, dv, phi0, pi0, [1], [0j], [0j], s3.LENGTH,
+                               np.linspace(0.0, 9.5, 19001))
+        ph = h["phi"][:nok]
+        inr = ph <= fine["phi"][-1]
+        r["err_K_at_phi"] = float(np.abs(
+            h["K"][:nok][inr]/(-3.0*np.interp(ph[inr], fine["phi"], fine["H"])) - 1.0
+        ).max())
+        r["err_Pi_at_phi"] = float(np.abs(
+            h["Pi"][:nok][inr]/np.interp(ph[inr], fine["phi"], fine["Pi"]) - 1.0).max())
+        r["err_efolds_at_phi"] = float(np.abs(
+            nef[inr] - np.interp(ph[inr], fine["phi"], fine["ln_a"])).max())
+        half = inr & (np.arange(nok) <= nok//2)
+        r["err_efolds_at_phi_first_half"] = float(np.abs(
+            nef[half] - np.interp(ph[half], fine["phi"], fine["ln_a"])).max())
         # step in e-folds of the last finite step
         r["H_alpha_dt_end"] = float(ref["H"][-1]*al[-1]*(t[-1] - t[-2])) if nok > 1 else 0
         if k == "leak":

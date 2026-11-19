@@ -262,3 +262,85 @@ package, card run core-20261115-155404-24c88e3, s = +-1).
   K2 instead of k^2 they change by less than 30 percent.
 Refuted: PA1 by a disagreement beyond a factor 2 at N = 32 (the derivation of entry 1
 would miss the main term); PA3 by a remaining first-order part with kap = q^2.
+
+## 2026-11-19, entry 3: processor cores; outcomes of T0 and G3; one more prediction
+
+**Cores.** `nrpic-run submit` refused the first run at 14:45Z: "8 cores asked, 16 busy in
+live local runs of core, allotment 16 at a time (decision 0006)". The allotment is per
+owner, and about ten core sessions run beside this one. The runs of this package are
+therefore submitted by a small queue (`scratch/core/scalar3/queue/q1.sh`: retry every
+20 s, one registered run per group of at most four cores), and everything that needs no
+run is done meanwhile. Request to orch in the report.
+
+**T0, run core-20261119-144905-cea3a49** (no figure: every difference is zero). P0a HOLDS:
+`rng.mode_entity(n)` equals `rng.cell_entity(n + 2^20)` for the 548958 wave vectors of
+nmax2 = 4096 and for the corners (-2^20, 2^20 - 1, 0), (2^20 - 1, -2^20, -1), (0, 0, 0);
+2^20, -2^20 - 1 and a floating-point value are refused; the stream word of degree of
+freedom 0 is 0x300010000. P0b HOLDS: `mode_alpha` with the new helpers equals Track E's
+`philox_ref.mode_alpha` bit for bit for the 2084 modes of nmax2 = 100 in all eight
+combinations of seed (1, 20261115), degree of freedom (0, 1) and epoch (0, 7).
+
+**G3, run core-20261119-144906-69c60cc** (16^3, step 0.0491; figure
+`fig_gauge_homog.png`, looked at: the lapse of the conformal-time and of the 1+log run
+leave the frame within three e-folds and their step in e-folds reaches one; the relaxed
+lapse sits at 1.8 and its step at 0.09; the error of <Pi> of the geodesic run is at
+1e-13, that of the relaxed run flat at 6e-8).
+- (a) geodesic HOLDS: phi, Pi, K within 4.2e-13, 8.0e-13, 3.0e-12 of the Friedmann
+  solution over 8.04 e-folds; e-folds from <chi> within 5.5e-6 (as J2 entry 6).
+- (b) conformal time: the run ends at its limit t = 0.999 after 21 steps without a
+  non-finite number, so "fails where 2 H a dt = 2.785" was not reached (2.47 in the
+  last step). The result is useless all the same: the lapse is 75.6 where <chi> says
+  3.43 e-folds (a = 30.8), the e-folds are off by 1.20 against the Friedmann solution at
+  the proper time of the mean lapse, phi and K by 3.4e-3. My prediction "error of <Pi>
+  above 1e-4 before 2.5 e-folds" FAILED: <Pi> is off by 8.6e-5 at the end only; the slow
+  variable Pi hardly feels the step, the scale factor does. In the first half of the
+  run (to 0.7 e-folds) phi and K agree to 6.3e-6.
+- (c) 1+log: alpha = 1 + 6N within 0.64 percent up to three e-folds (HOLDS); the run
+  turns non-finite after 12 steps, at 3.06 e-folds by <chi> with alpha = 32.4 and a
+  step of 1.5 e-folds. "Unstable at N = 4.6 +- 0.5" FAILED in the place: the estimate
+  took alpha = 1 + 6N up to the stability limit, but from three e-folds on the step is
+  an e-fold and the lapse overshoots. The limit 2 H alpha dt = 2.785 (alpha = 28) is
+  where it broke.
+- (d) relaxed 1+log (`lapse_leak = 10`, executable of `core/gauge`): the lapse reaches
+  1.810 and follows exp(6 H T) of the Friedmann H within 1.2e-3 from one unit of proper
+  time on (HOLDS; predicted 1 percent); 7.87 e-folds in 96 steps. Against the Friedmann
+  solution at the proper time of the mean lapse: Pi 6.7e-8, phi 1.5e-5, K 1.5e-5,
+  e-folds 1.2e-3: "within 1e-6" FAILED as measured, and my bound of refutation (1e-5)
+  is passed by phi and K. [JUDGEMENT, to be tested by the repeat below] The comparison
+  is at fault, not the run: the proper time is a trapezoid sum of the recorded mean
+  lapse, and the lapse relaxes within two steps at the start (T = 0.1, step 0.049), so
+  the sum is wrong by about 1e-3, which is the e-fold error found (H = 1) and gives
+  Pi x 1e-3/phi = 1e-5 in phi.
+
+G3r (repeat of the analysis on the same files, predicted before it runs; `g3_homog.py
+--analyse-only` with a comparison that needs no time: <K>, <Pi> and the e-folds as
+functions of <phi> against the Friedmann solution). For (d): K within 1e-7 and Pi
+within 1e-6 at equal phi; e-folds within 3e-4 (fourth-order error of chi at a step of
+0.09 e-folds: (0.18)^5/120 per step over 96 steps, halved for the e-folds: 8e-5). For
+(a): K 1e-11, e-folds 5.5e-6. For (b) and (c) the first half of the run within 1e-4 in
+K. Refuted for (d) by an error of K above 1e-6 at equal phi: then the relaxed lapse
+would have changed the solution and not only the slicing.
+
+**A, code check before the registered run** (unregistered, numbers not used below: the
+twin `sf_lattice.Twin` on the 32^3 rung of the ladder, `scratch/core/scalar3/dev/
+dev_twin.py`). It showed, after the predictions PA1 to PA3 were written: twin and dumps
+agree in the rms of the odd parts of H and |M| to a part in a thousand from t = 2.0 on;
+with every second derivative as the first difference applied twice the first-order
+constraints fall to 1e-15; with the lattice K2 in the mode equation they change by 0.3
+percent and the deviation of R^NR from W R alpha falls from 2.8e-3 to 1.2e-6. The
+registered run A repeats this at three resolutions and adds the scan.
+
+Added to test A before its registered run (none of these numbers has been computed):
+- PA4 R^NR of the dumps against the twin itself, mode by mode (the twin carries the
+  lattice dispersion that the reference W R alpha does not): N = 32, single run of T8:
+  within 3e-5 for all modes with W > 1/2 at every dump (what is left: the second-order
+  part, 1.2e-6 relative for the lowest modes at s = 1, J2 entry 14, and the time
+  integration of the code, fourth order at H dt = 0.049). N = 64, part odd in s of the
+  runs of T12: within 3e-6. Refuted by a difference above 3e-4 at N = 32: the twin
+  would then not describe the mesh at first order.
+- PA5 scan at fixed modes (nmax2 = 64; N = 32, 40, 48, 64, 80, 96, 128): the largest
+  ratio in time of the first-order part to the measured second-order part (even part
+  of the 64^3 runs of T12, minus the s = 0 field for H) falls below 1 between 8 and 10
+  cells per shortest wavelength for |M| and below 0.1 between 10 and 14 cells (from
+  the measured 40, 0.85, 0.016 at 4, 8, 16 cells, J2 entry 11, and mu ~ (k dx)^6 k^2);
+  for H the crossings lie within one cell of those of |M|.
