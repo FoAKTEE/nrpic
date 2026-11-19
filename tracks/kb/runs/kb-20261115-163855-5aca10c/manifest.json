@@ -1,0 +1,27 @@
+{
+ "run_id": "kb-20261115-163855-5aca10c",
+ "owner": "kb",
+ "command": [
+  "kb/.venv/bin/python",
+  "-I",
+  "kb/bin/kb",
+  "embed",
+  "--threads",
+  "12"
+ ],
+ "cwd": "/data/haiyangw/nrpic/wt/kb",
+ "commit": "5aca10c45d04c35e9ceb5d5fb8e9657db555ca1b",
+ "worktree_dirty_kb": false,
+ "inputs": [],
+ "output_dir": "/data/haiyangw/nrpic/scratch/kb/kb-20261115-163855-5aca10c",
+ "purpose": "embed helper: closing incremental K4 run (prediction E3b): vectors for rows added since run kb-20261115-153805-e164901",
+ "kind": "scouting",
+ "cores": 12,
+ "card_hours": 0,
+ "started_utc": "2026-11-15T16:38:55Z",
+ "started_unix": 1794760735.1510503,
+ "status": "finished",
+ "exit_code": 0,
+ "wall_time_s": 93.25,
+ "finished_utc": "2026-11-15T16:40:28Z"
+}

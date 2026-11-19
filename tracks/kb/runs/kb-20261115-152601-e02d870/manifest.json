@@ -1,0 +1,25 @@
+{
+ "run_id": "kb-20261115-152601-e02d870",
+ "owner": "kb",
+ "command": [
+  "kb/.venv/bin/python",
+  "-I",
+  "-c",
+  "import sys; sys.path.insert(0,'kb'); from kbtool import embed_model as E; import json; r=E.fetch(); print(json.dumps(r, indent=1))"
+ ],
+ "cwd": "/data/haiyangw/nrpic/wt/kb",
+ "commit": "e02d870764be9d02de5e67a3545c6b057dcd6184",
+ "worktree_dirty_kb": true,
+ "inputs": [],
+ "output_dir": "/data/haiyangw/nrpic/scratch/kb/kb-20261115-152601-e02d870",
+ "purpose": "embed helper: fetch BAAI/bge-small-en-v1.5 at revision 5c38ec7 (safetensors, tokenizer, configs) once into kb/.venv/models, every file checked against the repository tree hash (decision 0015)",
+ "kind": "scouting",
+ "cores": 1,
+ "card_hours": 0,
+ "started_utc": "2026-11-15T15:26:01Z",
+ "started_unix": 1794756361.4430394,
+ "status": "finished",
+ "exit_code": 0,
+ "wall_time_s": 3.43,
+ "finished_utc": "2026-11-15T15:26:04Z"
+}

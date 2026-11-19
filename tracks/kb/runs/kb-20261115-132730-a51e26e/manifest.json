@@ -1,0 +1,30 @@
+{
+ "run_id": "kb-20261115-132730-a51e26e",
+ "owner": "kb",
+ "command": [
+  "/data/haiyangw/nrpic/wt/kb/kb/bin/kb",
+  "verify-downloads",
+  "--report",
+  "/data/haiyangw/nrpic/wt/kb/kb/reports/verify-downloads.md"
+ ],
+ "cwd": "/data/haiyangw/nrpic/wt/kb",
+ "commit": "a51e26ec2b973a966abea39ed94da4a93ddf5efc",
+ "worktree_dirty_kb": true,
+ "inputs": [
+  {
+   "path": "/data/haiyangw/nrpic/wt/kb/kb/manifests/arxiv.tsv",
+   "sha256": "4012a46dfe997d8f936a15fd62dd0ebe73aac6d64cac2391eb61aee2eb27e4d0"
+  }
+ ],
+ "output_dir": "/data/haiyangw/nrpic/scratch/kb/kb-20261115-132730-a51e26e",
+ "purpose": "K1 after the priority 2+1 download: verify-downloads on the whole store (prediction D2 in kb/JOURNAL.md)",
+ "kind": "production",
+ "cores": 1,
+ "card_hours": 0,
+ "started_utc": "2026-11-15T13:27:30Z",
+ "started_unix": 1794749250.2048507,
+ "status": "finished",
+ "exit_code": 1,
+ "wall_time_s": 18.0,
+ "finished_utc": "2026-11-15T13:27:48Z"
+}
