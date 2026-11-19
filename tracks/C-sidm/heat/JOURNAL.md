@@ -262,3 +262,10 @@ relative to the window at larger k lambda; the entropy combination removes them 
 is isentropic). Figure `figs/T7_th0.003_e0.2_cpu.png` (looked at: the entropy mode decays
 smoothly at all three k lambda; k lambda = 0.4 starts with a delay of about one collision
 time before decaying; the extrapolation is flat within its errors).
+
+## 2026-11-19 15:56 More seeds on the free processors (no new prediction)
+
+Seven of the owner's 16 cores are free while card jobs A and B wait in the queue. Added:
+(i) T7 at theta = 0.1 and 1, seed 2 (4e5; 3 cores), so that these "reported" values get a
+seed scatter; (ii) T7 at theta = 0.003, seeds 11-14 at k lambda = 0.4 and 0.2 (4e5;
+4 cores), to tighten the slope of the extrapolation. Predictions as P-T7.
