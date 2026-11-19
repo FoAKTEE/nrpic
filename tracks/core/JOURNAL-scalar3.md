@@ -597,3 +597,12 @@ con_signed). Predictions:
 Refuted by any differing byte in PSa, by a mismatch beyond the bounds in PSb, or by
 <|H'|/[H]> of sig within a factor 10 of <|H|/[H]> (then H is not dominated by its uniform
 part, against PU6).
+
+## 2026-11-19, entry 10: regression R2 of the final source, predicted
+
+R2 repeats R (entry 2, PRa and PRb) with the executable of 5cc2821 (`athena_cpu_5cc2821`,
+the source with `con_signed`): the ten wave-1 scalar cases (120 files) byte-identical to
+release core-v0.3 but for the masked restart bytes; the three stochastic examples (sr,
+usr, srg, with con_signed off for srg) byte-identical to the published executable of
+`core/scalar-2`, also after the restart; the seven relativistic set-ups byte-identical.
+Refuted by any differing data byte.
