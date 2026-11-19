@@ -269,3 +269,32 @@ Seven of the owner's 16 cores are free while card jobs A and B wait in the queue
 (i) T7 at theta = 0.1 and 1, seed 2 (4e5; 3 cores), so that these "reported" values get a
 seed scatter; (ii) T7 at theta = 0.003, seeds 11-14 at k lambda = 0.4 and 0.2 (4e5;
 4 cores), to tighten the slope of the extrapolation. Predictions as P-T7.
+
+## 2026-11-19 16:05 Outcome T6(b): PASSED in both readings; the precision prediction FAILED (runs C-20261119-144535-2c7b6a4, analysis C-20261119-160003-287b389)
+
+lambda/L = 0.01, 1.6e5 particles, 400 x 4 x 4 cells (dx = lambda/4, 25 per cell on
+average, minimum 1 in some cell at some step), dt = 0.1 t_coll(cold slab), 16583 steps,
+2.58 sub-steps per step, n_trunc = n_noroot = n_balance = 0, max dx/lambda_cell 0.70.
+Window [20 t_coll, 2/(chi_1 k_1^2)] = [0.741, 50.88] (201 snapshots):
+- f (kappa = f kappa_1(T) in the nonlinear isobaric reference, least squares on the slab
+  rest mass): 1.0287 (seed 1), 1.0630 (seed 2); mean 1.046 +- 0.017. Pass ([0.95, 1.10]).
+- literal chi_fit/chi(kappa_1, 0.015): 0.9945, 1.0271. Pass ([0.95, 1.10]); the
+  reference itself scores 0.967 (design), so these correspond to f ~ 1.03 and 1.06, as
+  the direct fit says.
+Predicted f = 1.025 +- 0.03 with ~1 percent statistical error per seed: the central
+value holds (and agrees with T7's 1.021 +- 0.004 at 1.5 sd of the mean), but the two
+seeds differ by 3.4 percent, three times the predicted statistical error. The residual
+panel of `figs/T6b_step_short.png` (looked at) shows why the test is not a precision
+test: (i) the code lags the isobaric reference by ~0.005 in slab mass per area (1.5 percent
+of the step amplitude 0.167) up to ~70 t_coll (the reference has an infinite flux at the
+sharp interface at t = 0; kinetic theory limits it to the free-streaming flux); (ii) after
+~100 t_coll the residual rings with a period of ~180 t_coll = L/c_s (c_s = 0.149 at
+theta = 0.0133) and an amplitude of ~0.005: sound waves, which the isobaric (zero-Mach)
+reference does not have; here the diffusion time 1/(chi_1 k_1^2) = 25 is only ~4 sound
+crossings, so the separation the reference assumes is weak. Both effects are the same in
+the two seeds (deterministic) and bias f in the same direction; the least-squares f moves
+by ~3 percent per 0.002 of slab mass in mid-window, which is the size of the residuals,
+so f from this window is good to a few percent, not to one. A compressible
+(Navier-Stokes-Fourier) reference would remove (ii); a later window would reduce (i).
+Temperature profiles at t = 1, 5.5, 22.5, 56 follow the isobaric reference in shape
+(right panel). The kinetic energy of the slab rings like the mass (lower right).
