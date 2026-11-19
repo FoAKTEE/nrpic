@@ -1,0 +1,214 @@
+{
+  "schema": "nrpic-run-manifest/1",
+  "run_id": "B-20261119-142833-19edd82",
+  "track": "B-emd-gw",
+  "gate": "G1",
+  "kind": "scouting",
+  "purpose": "first_source round 2, card batch A: rerun of the eps = 1 baseline (run-to-run floor), jittered nulls A = 0.3 and 0.1, delta = 0.0025 eps = 1 and 0.3; 64^3, 8 per cell, to a = 140 (P11, P12c, P14)",
+  "preregistered_in": null,
+  "launcher": "batch",
+  "command": [
+    "scripts/gpu_batch.sh",
+    "/data/haiyangw/nrpic/scratch/B-emd-gw/B-20261119-142833-19edd82/batch.list"
+  ],
+  "cwd": "scratch/B-emd-gw/B-20261119-142833-19edd82",
+  "git": {
+    "sha": "19edd82b3e32e94378a787a3bc4ebf658c62b8ee",
+    "branch": "track/B-emd-gw",
+    "dirty": false,
+    "package": [
+      "tracks/B-emd-gw/first_source"
+    ],
+    "outside_package": {
+      "count": 23,
+      "first": [
+        " M tracks/B-emd-gw/note/JOURNAL.md",
+        " M tracks/B-emd-gw/note/figures/fig_baseline.pdf",
+        " M tracks/B-emd-gw/note/figures/fig_pancake.pdf",
+        " M tracks/B-emd-gw/note/figures/fig_source.pdf",
+        " M tracks/B-emd-gw/note/figures/fig_waves.pdf",
+        " M tracks/B-emd-gw/note/figures/schem_architecture.png",
+        " M tracks/B-emd-gw/note/figures/schem_architecture.svg",
+        " M tracks/B-emd-gw/note/figures/schem_timeline.png",
+        " M tracks/B-emd-gw/note/figures/schem_timeline.svg",
+        " M tracks/B-emd-gw/note/main.pdf",
+        " M tracks/B-emd-gw/note/main.tex",
+        " M tracks/B-emd-gw/note/tables/checked.md",
+        " M tracks/B-emd-gw/note/tables/claims_summary.tex",
+        " M tracks/B-emd-gw/note/tables/ledger.tex",
+        " M tracks/B-emd-gw/note/tables/parameters.tex",
+        "?? tracks/B-emd-gw/note/figures/fig_gauge.pdf",
+        "?? tracks/B-emd-gw/note/figures/fig_gauge.png",
+        "?? tracks/B-emd-gw/note/figures/fig_newton.pdf",
+        "?? tracks/B-emd-gw/note/figures/fig_newton.png",
+        "?? tracks/B-emd-gw/note/figures/fig_scan.pdf"
+      ]
+    },
+    "merge_base_main": "27b2ced9be0f020a4206d89e3cc982ada5c4367c",
+    "worktree": "wt/B-emd-gw"
+  },
+  "code": {
+    "core_tag": "core-v0.3",
+    "athenak_upstream_sha": "c5a0d7f",
+    "kokkos_sha": "6739bc623081648af9e752b616d9671527922cbf",
+    "problem": "nrpic_cosmo",
+    "exe": "/data/haiyangw/nrpic/scratch/core/exe/core_requests-b/athena_gpu",
+    "exe_sha256": "5a35c8f1317ea88386c2e442716177710f456378779003ff572a6b076211b9aa",
+    "cmake_flags": null,
+    "toolchain": null
+  },
+  "env": {
+    "host": "anta",
+    "env_hash": "33c1dbb6673b68919eaa332b0add0b58aeac8be843f2071b9d06e2e0e397a96d",
+    "machine_file_sha256": "0321f40f4caeeb2a36624a9fa9809e60bad31071f366b3517ba23ad45698d2d7",
+    "uv_lock_sha256": "5417f6ba318b914aa3800e5d55f7b11fdd8df13c2688bdda7d419240aa1d5863",
+    "track_requirements_sha256": null,
+    "container_digest": null,
+    "compiler": "g++ 11.4.0",
+    "mpi": "none (Athena_ENABLE_MPI=OFF)",
+    "gpu": "NVIDIA A100 80GB (Slurm partition preempt)",
+    "python": "3.10.12 /data/haiyangw/nrpic/wt/B-emd-gw/.venv"
+  },
+  "input": {
+    "file": "tracks/B-emd-gw/first_source/inputs/conv.athinput",
+    "sha256": "96c8f31728dcb18b136aa398d699b6000c8e33d171ff7f7ecef0ef09c425fe2c",
+    "overrides": {
+      "particles/particle_file": "/data/haiyangw/nrpic/scratch/B-emd-gw/B-20261115-164104-886798f/eps1/particles.nrp",
+      "problem/id_file": "/data/haiyangw/nrpic/scratch/B-emd-gw/B-20261115-164104-886798f/eps1/fields.bin"
+    }
+  },
+  "inputs": [
+    {
+      "path": "/data/haiyangw/nrpic/scratch/core/exe/core_requests-b/athena_gpu",
+      "role": "exe",
+      "sha256": "5a35c8f1317ea88386c2e442716177710f456378779003ff572a6b076211b9aa",
+      "bytes": 102267376,
+      "tracked": false,
+      "location": "main checkout data root"
+    },
+    {
+      "path": "tracks/B-emd-gw/first_source/inputs/batch_r2a.list",
+      "role": "list",
+      "sha256": "6b37a9521a01b1902614d0745b33dd87618cf8d4531dc5beb9355ecb8ce5f622",
+      "bytes": 1691,
+      "tracked": true
+    },
+    {
+      "path": "tracks/B-emd-gw/first_source/inputs/conv.athinput",
+      "role": "athinput:e1_rep",
+      "sha256": "96c8f31728dcb18b136aa398d699b6000c8e33d171ff7f7ecef0ef09c425fe2c",
+      "bytes": 3774,
+      "tracked": true
+    },
+    {
+      "path": "tracks/B-emd-gw/first_source/inputs/conv.athinput",
+      "role": "athinput:jit0p3",
+      "sha256": "96c8f31728dcb18b136aa398d699b6000c8e33d171ff7f7ecef0ef09c425fe2c",
+      "bytes": 3774,
+      "tracked": true
+    },
+    {
+      "path": "tracks/B-emd-gw/first_source/inputs/conv.athinput",
+      "role": "athinput:jit0p1",
+      "sha256": "96c8f31728dcb18b136aa398d699b6000c8e33d171ff7f7ecef0ef09c425fe2c",
+      "bytes": 3774,
+      "tracked": true
+    },
+    {
+      "path": "tracks/B-emd-gw/first_source/inputs/conv.athinput",
+      "role": "athinput:d0025_e1",
+      "sha256": "96c8f31728dcb18b136aa398d699b6000c8e33d171ff7f7ecef0ef09c425fe2c",
+      "bytes": 3774,
+      "tracked": true
+    },
+    {
+      "path": "tracks/B-emd-gw/first_source/inputs/conv.athinput",
+      "role": "athinput:d0025_e0p3",
+      "sha256": "96c8f31728dcb18b136aa398d699b6000c8e33d171ff7f7ecef0ef09c425fe2c",
+      "bytes": 3774,
+      "tracked": true
+    }
+  ],
+  "batch_entries": [
+    {
+      "name": "e1_rep",
+      "input": "tracks/B-emd-gw/first_source/inputs/conv.athinput",
+      "args": [
+        "particles/particle_file=/data/haiyangw/nrpic/scratch/B-emd-gw/B-20261115-164104-886798f/eps1/particles.nrp",
+        "problem/id_file=/data/haiyangw/nrpic/scratch/B-emd-gw/B-20261115-164104-886798f/eps1/fields.bin"
+      ]
+    },
+    {
+      "name": "jit0p3",
+      "input": "tracks/B-emd-gw/first_source/inputs/conv.athinput",
+      "args": [
+        "particles/particle_file=/data/haiyangw/nrpic/scratch/B-emd-gw/B-20261119-141216-9c98929/jit0p3/particles.nrp",
+        "problem/id_file=/data/haiyangw/nrpic/scratch/B-emd-gw/B-20261119-141216-9c98929/jit0p3/fields.bin"
+      ]
+    },
+    {
+      "name": "jit0p1",
+      "input": "tracks/B-emd-gw/first_source/inputs/conv.athinput",
+      "args": [
+        "particles/particle_file=/data/haiyangw/nrpic/scratch/B-emd-gw/B-20261119-141216-9c98929/jit0p1/particles.nrp",
+        "problem/id_file=/data/haiyangw/nrpic/scratch/B-emd-gw/B-20261119-141216-9c98929/jit0p1/fields.bin"
+      ]
+    },
+    {
+      "name": "d0025_e1",
+      "input": "tracks/B-emd-gw/first_source/inputs/conv.athinput",
+      "args": [
+        "particles/particle_file=/data/haiyangw/nrpic/scratch/B-emd-gw/B-20261119-141249-2af0df8/d0025_e1/particles.nrp",
+        "problem/id_file=/data/haiyangw/nrpic/scratch/B-emd-gw/B-20261119-141249-2af0df8/d0025_e1/fields.bin"
+      ]
+    },
+    {
+      "name": "d0025_e0p3",
+      "input": "tracks/B-emd-gw/first_source/inputs/conv.athinput",
+      "args": [
+        "particles/particle_file=/data/haiyangw/nrpic/scratch/B-emd-gw/B-20261119-141249-2af0df8/d0025_e0p3/particles.nrp",
+        "problem/id_file=/data/haiyangw/nrpic/scratch/B-emd-gw/B-20261119-141249-2af0df8/d0025_e0p3/fields.bin"
+      ]
+    }
+  ],
+  "resources": {
+    "nodes": 1,
+    "gpus": 1,
+    "cores": 1,
+    "walltime_s": null,
+    "wall_limit": "00:45:00",
+    "segments_max": null,
+    "gpu_hours_requested": 0.75,
+    "gpu_hours": null,
+    "particles": null
+  },
+  "slurm": {
+    "partition": "preempt",
+    "job_name": "B-20261119-142833-19edd82",
+    "job_ids": []
+  },
+  "outputs": {
+    "dir": "scratch/B-emd-gw/B-20261119-142833-19edd82",
+    "sha256sums": "sha256sums.txt",
+    "sha256sums_sha256": null,
+    "bytes": null,
+    "files": null
+  },
+  "status": "submitted",
+  "exit_code": null,
+  "registered": "2026-11-19T14:28:36Z",
+  "started": null,
+  "ended": null,
+  "parents": [],
+  "notes": "",
+  "budget_at_submit": {
+    "gpu_hours_allotted": 40.0,
+    "cores_allotted": 16,
+    "gpu_hours_used": 0.5148,
+    "gpu_hours_reserved": 0.33,
+    "gpu_hours_without_gate": 0.481,
+    "cores_busy": 13,
+    "runs": 155,
+    "allotment_from": "coord/DECISIONS/0006-compute-budget.md + 0014-budgets-after-wave-1.md"
+  }
+}
