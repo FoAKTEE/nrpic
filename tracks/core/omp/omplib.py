@@ -289,9 +289,17 @@ def _rst_data(path):
     if nmb <= 0:
         return None, None
     n = len(raw)
-    for p in range(h, min(n - 7, h + (1 << 20))):
-        ds = int(np.frombuffer(raw[p:p + 8], dtype=np.uint64)[0])
-        if ds % 8 == 0 and p + 8 + nmb*ds == n:
+    top = min(n, h + (1 << 20) + 8)
+    for a in range(8):                       # the 8 byte alignments of the size word
+        m = (top - h - a)//8
+        if m <= 0:
+            continue
+        words = np.frombuffer(raw[h + a:h + a + 8*m], dtype=np.uint64)
+        pos = h + a + 8*np.arange(m, dtype=np.int64)
+        ok = (words % 8 == 0) & (pos + 8 + nmb*words.astype(np.int64) == n)
+        hit = np.nonzero(ok)[0]
+        if hit.size:
+            p = int(pos[hit[0]])
             return np.frombuffer(raw[p + 8:], dtype=np.float64), raw[:i]
     return None, None
 
