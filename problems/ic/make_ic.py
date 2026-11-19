@@ -2,8 +2,8 @@
 """Write NRPIC initial data: particle file (.nrp), radial table (.tab) and a
 JSON parameter file, for the Oppenheimer-Snyder ball, a monoenergetic
 Shapiro-Teukolsky cluster, the cold prolate spheroid, the cluster with two
-Gaussian clumps of the Jeans-collapse problem, or isolated Gaussian clumps with
-momentum and spin.
+Gaussian clumps of the Jeans-collapse problem, isolated Gaussian clumps with
+momentum and spin, or equilibrium clusters with a bulk velocity.
 
 Examples
     make_ic.py os      --N 10000 --sampler lattice --out /tmp/ic
@@ -19,6 +19,9 @@ Examples
     make_ic.py clumps  --gaussian 0.05,0.3,-1.5,0,0,0,0.01,0 \
                        --gaussian 0.05,0.3,1.5,0,0,0,-0.01,0 \
                        --puncture 1,0,-25,0,0.02,0,0 --N 20000 --out /tmp/ic
+    make_ic.py boosted --cluster 0.819,1,0,0,0,0.3,0,0 --N 10000 --seed 1 --out /tmp/ic
+    make_ic.py boosted --cluster 0.819,1,-20,0,0,0,-0.08,0 \
+                       --cluster 0.819,1,20,0,0,0,0.08,0 --N 10000 --out /tmp/ic
 
 jeans: envelope (species 0, radial table) + clumps A, B (species 1, 2, Gaussian
 conformal sources), see python/nrpic/clumps.py. The table holds the envelope's
@@ -35,6 +38,17 @@ momentum P and spin S, and optional punctures "mass,x,y,z[,px,py,pz[,sx,sy,sz]]"
 (python/nrpic/clumps.GaussianClumps); --N particles per clump; species = index of
 the clump. --sampler lattice puts weighted particles on a lattice of spacing
 --lattice-h (noise-free deposit, for tests).
+
+boosted: equilibrium clusters (monoenergetic model y_c, ADM mass of the isolated
+cluster) that move, each "yc,mass,x,y,z,vx,vy,vz" with the speed v of the clump, and
+optional punctures (python/nrpic/boosted_cluster.py): the static cluster on the maximal
+slice of its boosted spacetime. Written per cluster k: <stem>_c<k>.tab (radial table),
+<stem>_c<k>.bst (boost table: moments of the momentum density for the curvature, and
+the comoving shift), <stem>_c<k>_corr.tab (second-order correction of psi; not with
+--no-psi-correction); the JSON holds the <problem> block of nrpic_cf. --N particles per
+cluster, species = index of the cluster; --sampler stratified|mc|quiet (quiet: weighted
+lattice of spacing --lattice-h with six momenta per site, for tests). --boost-shift
+asks for the comoving shift at the start.
 
 st with --dpert/--vpert: by default the table solves the Hamiltonian constraint
 for the perturbed particles (nrpic.st_cluster.PerturbedST; stem suffix '_hc'),
@@ -58,6 +72,7 @@ sys.path.insert(0, os.path.normpath(os.path.join(_HERE, "..", "..", "python")))
 
 import numpy as np  # noqa: E402
 
+from nrpic import boosted_cluster as bcl  # noqa: E402
 from nrpic import clumps as clm  # noqa: E402
 from nrpic import io as nio  # noqa: E402
 from nrpic import oppenheimer_snyder as osn  # noqa: E402
@@ -81,7 +96,8 @@ def _particle_stats(x, u, m):
 def main(argv=None):
     p = argparse.ArgumentParser(description=__doc__,
                                 formatter_class=argparse.RawDescriptionHelpFormatter)
-    p.add_argument("model", choices=["os", "st", "prolate", "jeans", "clumps"])
+    p.add_argument("model", choices=["os", "st", "prolate", "jeans", "clumps",
+                                     "boosted"])
     p.add_argument("--N", type=int, default=10000,
                    help="particle count (lattice: target count used to choose n_lat)")
     p.add_argument("--sampler", default=None,
@@ -163,6 +179,14 @@ def main(argv=None):
                    help="sampler lattice: spacing of the particle lattice")
     g.add_argument("--lattice-rcut", type=float, default=6.0,
                    help="sampler lattice: cut-off radius in units of sigma")
+    g = p.add_argument_group("boosted (also --puncture, --lattice-h)")
+    g.add_argument("--cluster", action="append", default=[],
+                   help="yc,mass,x,y,z,vx,vy,vz (repeatable): equilibrium cluster with "
+                        "the bulk velocity v")
+    g.add_argument("--no-psi-correction", action="store_true",
+                   help="leave out the second-order correction of psi")
+    g.add_argument("--boost-shift", action="store_true",
+                   help="comp<c>_boost_shift = true: start with the comoving shift")
     a = p.parse_args(argv)
 
     os.makedirs(a.out, exist_ok=True)
@@ -331,6 +355,59 @@ def main(argv=None):
                                "curvature for the rule 'gaussian'; Hamiltonian residual "
                                "-psi^-12 Abar_ij Abar_ij, second order in P and S")
 
+    elif a.model == "boosted":
+        if not a.cluster:
+            p.error("boosted needs at least one --cluster")
+        cs, bs = [], []
+        for spec in a.cluster:
+            v = [float(c) for c in spec.split(",")]
+            if len(v) != 8:
+                p.error("--cluster needs yc,mass,x,y,z,vx,vy,vz")
+            cs.append(dict(yc=v[0], mass=v[1], centre=v[2:5], v=v[5:8]))
+        for spec in a.puncture:
+            v = [float(c) for c in spec.split(",")]
+            if len(v) not in (4, 7, 10):
+                p.error("--puncture needs mass,x,y,z[,px,py,pz[,sx,sy,sz]]")
+            v += [0.0] * (10 - len(v))
+            bs.append(dict(mass=v[0], centre=v[1:4], P=v[4:7], S=v[7:10]))
+        sampler = a.sampler or "stratified"
+        BC = bcl.BoostedClusters(cs, bs, correction=not a.no_psi_correction)
+        x, u, m, sp = BC.sample(a.N, a.seed, sampler, a.lattice_h, a.keep_net_momentum)
+        stem = a.prefix or f"boosted_N{len(m)}_s{a.seed}"
+        summ = BC.particle_summary(x, u, m, sp)
+        momenta = [s_["sum_m_u"] for s_ in summ]
+        files = BC.write_tables(a.out, stem, a.table_points, a.table_rmax)
+        meta.pop("species")
+        cl = []
+        for s_, b_ in zip(BC.spec, BC.boost):
+            Vh = b_.lam ** 2 * s_["V"]
+            cl.append(dict(
+                yc=s_["yc"], mass=s_["mass"], centre=[float(c) for c in s_["centre"]],
+                v=[float(c) for c in s_["v"]], V_linear_rule=[float(c) for c in s_["V"]],
+                lam=b_.lam, pmass=b_.pmass, conformal_mass=b_.conformal_mass,
+                kappa=b_.kappa, rbar_s=b_.rs / b_.lam ** 2,
+                wa_centre=float(b_.wa_nodes[0]),
+                second_order_mass=(b_.second_order_mass(Vh) / b_.lam
+                                   if BC.with_correction else 0.0)))
+        meta.update(model="boosted_equilibrium_clusters", units="G=c=1", sampler=sampler,
+                    clusters=cl, psi_correction=BC.with_correction,
+                    M_ADM_first_order=BC.M_adm_first_order,
+                    M_ADM=BC.M_adm_first_order + sum(c_["second_order_mass"] for c_ in cl),
+                    punctures=[{k: (list(v) if hasattr(v, "__len__") else v)
+                                for k, v in b_.items()} for b_ in BC.punctures],
+                    table_files=files, particles_by_cluster=summ)
+        if sampler == "quiet":
+            meta.update(lattice_h=a.lattice_h)
+        meta["athenak"] = {"problem": BC.problem_block(stem, momenta,
+                                                       boost_shift=a.boost_shift),
+                           "particles": {"particle_file": stem + ".nrp"}}
+        meta["constraints"] = (
+            "momentum constraint solved in the continuum by the curvature of the boost "
+            "table (comp<c>_p1..3 = sum m u_i of the cluster's particles); Hamiltonian "
+            "constraint to second order in the velocity with the correction table, "
+            "without it a residual of second order; cross terms of several bodies and "
+            "the tidal variation of their psi across a cluster are not solved")
+
     else:
         sym = not a.no_symmetrize
         N = a.N - a.N % 4 if sym else a.N
@@ -389,6 +466,14 @@ def main(argv=None):
         for k in ("e", "a", "b", "c_focal", "rhoN", "M_rest", "psibar_c", "I0", "Ja0", "Jb0"):
             print(f"  {k:9s} = {meta[k]!r}")
         print(f"  inside: psibar = c0 - cR (x^2+y^2) - cz z^2, {meta['psibar_coeffs_inside']}")
+    elif a.model == "boosted":
+        for k, (c_, s_) in enumerate(zip(meta["clusters"], meta["particles_by_cluster"])):
+            print(f"  cluster {k}: yc = {c_['yc']:g}, lam = {c_['lam']:.8f}, N = {s_['N']}, "
+                  f"sum m = {s_['sum_m']:.8f}, sum mW = {s_['sum_mW']:.8f}, sum m u = "
+                  + ", ".join(f"{v:+.8e}" for v in s_["sum_m_u"])
+                  + " (continuum "
+                  + ", ".join(f"{v:+.8e}" for v in s_["continuum_momentum"]) + ")")
+        print(f"  M_ADM = {meta['M_ADM']:.8f} (first order {meta['M_ADM_first_order']:.8f})")
     elif a.model == "clumps":
         for k, s_ in enumerate(meta["particles_by_clump"]):
             print(f"  clump {k}: N = {s_['N']}, sum m = {s_['sum_m']:.8f}, "

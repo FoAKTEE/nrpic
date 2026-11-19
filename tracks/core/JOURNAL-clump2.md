@@ -191,3 +191,107 @@ Model y_c = 0.819, M = 1. Script `tracks/core/analysis/clump2/check_boost.py`.
   second-order form by less than 2 V^2 times the second-order term at V = 0.1 and 0.31.
   The residual of the radial equations (finite differences of the written table) is below
   1e-4 of the largest source away from the surface.
+
+### Outcome of PA (run `core-20261119-144026-3d7d4e7`, 14:40Z; `analysis/clump2/check_boost.json`, `figs/fig_boost_reference.png`)
+
+The first execution of the module was this registered run. Its outputs went to a
+directory literally named `$NRPIC_RUN_DIR` in the worktree (I quoted the variable on the
+command line; the launcher does not expand it); I moved them into the run directory
+after the run had been closed, so its `sha256sums.txt` lists `run.log` only. The scripts
+now read `NRPIC_RUN_DIR` from the environment.
+
+- PA1 HELD. Continuing the interior solution through the vacuum with the ODE agrees with
+  `F_1 + kappa F_2` to 3.2e-13 out to 4 rbar_s; kappa = -5.98881. `w_a(0) = 1.07692`,
+  `w_a(rbar_s) = 1.05019`. With zero shift the matter at the centre starts with the
+  coordinate velocity `alpha_c^2 psi_c^-4 w_a(0) V = 0.4742 V`.
+- PA2 HELD. `Q(inf)/M - 1 = -9.4e-15` with the maximal slice; the plain boost `F = r`
+  gives `Q(inf)/M = 0.94729` (5.3 per cent low). So the momentum of the data is M V to
+  round-off: the source `psi^6 (rho + P) alpha grad T`, the slice equation and the
+  exterior match are consistent with the ADM momentum of the boosted spacetime.
+- PA3 HELD. Curvature from the moments against `psi^6 (Lbar beta)/(2 alpha)`: 4.2e-11
+  inside, 1.1e-11 outside, of the largest component 9.88e-3 (V = 0.3); `alpha K` of the
+  slice 1.3e-13. For the plain boost `max |alpha K| = 2.6e-3`: not maximal, as derived.
+- PA4 HELD. Divergence against `8 pi Stilde_i`: 6.0e-11 of the largest source.
+- PA5 HELD for the rule, FAILED in one number. 10^5 stratified particles:
+  `sum m~ u~_x/(Q(inf) V) = 1.00004 +- 0.0022`; enclosed momentum in 20 shells within
+  1.9e-3 P of `Q(r) P`. Without the weights the total is 0.97206: 2.8 per cent low, just
+  outside the 3 to 8 per cent I wrote (the pressure share of `rho + P` in this model).
+- PA6 HELD. Added mass `2 x monopole = 0.98379 M V^2/2`; `y_0(0) = 0.03568`; the exact
+  direction average of `m~ W~` differs from the second-order form by 1.7e-3 (V = 0.1) and
+  1.6e-2 (V = 0.31) of the second-order term; residual of the radial equations on the
+  written table 3.9e-7 (l = 0), 5.5e-8 (l = 2) of the largest source; tails of the table
+  0.963 and 1.679 (l = 0 is not yet the pure monopole at 6 rbar_s: the r^-2 particular
+  part). The quadrupole `y_2` is below 2 per cent of `y_0` everywhere (figure).
+- For v = 0.3 (`V = W v = 0.31449`): `P = 0.31449`, `M_ADM = 1.04865` with the
+  correction, against `W_v M = 1.04828` for an exact boost: 3.7e-4 M apart.
+
+After PA the boost table was changed to hold `Q/r^3` and `I4/r^5` (finite at the centre,
+so that the cubic interpolation of the code needs no special case near r = 0); below
+0.02 rbar_s a quadratic through the central value continues the quadrature. Checked by
+hand at r = 0.1: 3.83916e-3 both ways, 2.303456e-3 against 2.303456e-3.
+
+### Source written (15:00Z to 15:20Z), smoke runs (not registered, no number used)
+
+`athenak/src/pgen/nrpic/nrpic_clump_table.hpp`, hooks in `nrpic_cf.cpp` and `BYRead`;
+`problems/ic/make_ic.py boosted`; `problems/tests/clump_table_static.athinput`. The
+processor and card executables build. One smoke run at 64 cells with 10^4 stratified
+particles (v = 0.3, correction and shift on): the log prints "curvature of 1 moving table
+component(s), 1 correction(s) of psi, comoving shift on"; psi^4 of the dump equals the
+Python reference to 5.6e-8 (single precision of the dump). No other number is taken
+from it.
+
+### Predictions TB for the data at t = 0 on the mesh (written 15:25Z, before the runs)
+
+Cluster y_c = 0.819, M = 1, at the origin of the box [-16, 16]^3 (`nghost = 4`, linear
+cloud, four filter passes with compensation: the setting of the first paper's cluster
+runs), 32, 64, 128 cells (dx = 1, 0.5, 0.25), processors. Particles: the quiet sample
+(lattice of spacing 0.25 with weights `rho_0 psi_0^6 h^3`, six momenta per site: no
+sampling noise and exact first and second moments at every site), 1.15e6 particles;
+v = 0.1 and 0.3 (`V = W v = 0.10050, 0.31449`), and the static sample on the same sites.
+Cases per v and resolution: `none` (K_ij = 0), `curv` (curvature of the boost table with
+`comp0_p = sum m u`), `corr` (curvature and correction of psi). Norms as the history file
+defines them, restricted to r < 14 ("interior"; the layer at the outflow faces of
+`JOURNAL-clump.md` T1 is left out), computed from the dumps by
+`analysis/clump2/boost_static_check.py`. Continuum numbers from
+`analysis/clump2/predict_boost.py` (quadrature of the reference; printed at 15:22Z):
+v = 0.1: M-norm 0.036089, Mx-norm 0.042326, second-order H-norm 3.1460e-3 (matter part
+2.777e-3, curvature part 5.24e-4); v = 0.3: M-norm 0.112924, Mx-norm 0.132441,
+second-order H-norm 0.030803 (0.027188, 5.132e-3); norm of the matter term 16 pi E:
+0.90873.
+
+- TB1 (momentum constraint, `none`). Interior M-norm equals the continuum value within 3
+  per cent at 64 and 128 cells (the filter lowers it at 32 cells, as in T1 of the first
+  pass: within 10 per cent there). Ratio v = 0.3 over v = 0.1: 3.129 within 1 per cent.
+- TB2 (momentum constraint, `curv`). The residual is what the cloud and the filter do to
+  the profile, plus the surface, where the density ends as (rbar_s - r)^(1/2): ratio to
+  `none` between 0.03 and 0.12 at dx = 1, 0.008 and 0.05 at dx = 0.5, 0.002 and 0.02 at
+  dx = 0.25, falling by a factor 1.5 to 6 per halving [JUDGEMENT: smoothing width about
+  0.75 dx against a density scale of about 3 M gives (w/L)^2 = 0.06, 0.016, 0.004; the
+  edge adds a first-order term]. The ratio is the same at v = 0.1 and 0.3 within 5 per
+  cent (linear). The curvature term alone, `M_x(curv) - M_x(none)`, has the Mx-norm of
+  the continuum within 1 per cent at 128 cells (it does not pass through the deposit).
+  Refuted if the ratio does not fall with resolution or is above 0.3 anywhere.
+- TB3 (Hamiltonian, second order). With `D_H(case) = H(case) - H(static)` cell by cell:
+  the interior norm of `D_H(curv)` equals the continuum second-order norm (3.146e-3,
+  0.030803) within 5 per cent at 64 and 128 cells; ratio v = 0.3 over 0.1: 9.79 within 3
+  per cent. With the correction, `|D_H(corr)|/|D_H(curv)|` is below 0.15, 0.08, 0.05 at
+  dx = 1, 0.5, 0.25 for v = 0.3 (fourth order 1.6e-2, and the smoothing of the
+  second-order matter source by the deposit, which the correction does not know of) and
+  not larger at v = 0.1; the projection `<D_H(corr), D_H(curv)>/<D_H(curv), D_H(curv)>`
+  is within 0.05 of zero (a correction of the wrong sign gives 2, none gives 1).
+  Refuted if the ratio is above 0.3 or the projection outside +-0.1.
+- TB4 (whole-box history norms, the numbers a user sees). At 64 cells, v = 0.3: H-norm
+  of `corr` within 2 per cent of the static cluster's H-norm (the deposit error of the
+  matter, the same in both), H-norm of `curv` above it; M-norm of `curv` and `corr`
+  equal within 1 per cent. I do not predict the static H-norm itself.
+- TB5 (fields). In the case `corr` at 64 cells with `comp0_boost_shift = true`: psi^4,
+  K_ij and beta^i of the dumps equal the Python reference at every cell centre to 2e-6
+  of the largest value (single precision of the dumps, cubic interpolation of the
+  tables); K = 0 to the same accuracy.
+- TB6 (the sample of the evolution: 10^4 stratified equal-mass particles, v = 0.3, 64
+  cells). The momentum-constraint norm is sampling noise: the curvature lowers M-norm2
+  by the smooth part only, `M-norm2(none) - M-norm2(curv) = 0.112924^2 = 0.01275` within
+  30 per cent, and the projection of `M_x` on the smooth field `-8 pi psi^-6 Stilde_x`
+  goes from 1.0 +- 0.1 to 0.0 +- 0.1. The H-norm does not change by more than 2 per
+  cent between `none`, `curv` and `corr` (noise dominates; the second-order norm 0.031 is
+  small against it).

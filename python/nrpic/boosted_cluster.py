@@ -185,6 +185,25 @@ class BoostedST:
         return (self._QV(ri) / self.pmass_iso,
                 self._I4V(ri) / self.pmass_iso / self.lam ** 4)
 
+    def moments_reg(self, r):
+        """(Q/r^3, I4/r^5) at the run radius r, the columns of the boost table; finite at
+        the centre, where a quadratic in r continues the quadrature below 0.02 rbar_s
+        (the cumulative integrals lose their relative precision there)."""
+        r = np.abs(np.asarray(r, dtype=float))
+        lam = self.lam
+        md = self.model
+        g0 = md.psi_c ** 6 * (md.rho_c + md.P_c) * md.alpha_c * self.wa_nodes[0]
+        q0 = (4.0 * math.pi / 3.0) * g0 / self.pmass_iso * lam ** 6
+        i0 = (4.0 * math.pi / 5.0) * g0 / self.pmass_iso * lam ** 6
+        rsw = 0.02 * self.rs / lam ** 2
+        qs, i4s = self.moments(rsw)
+        qs, i4s = float(qs) / rsw ** 3, float(i4s) / rsw ** 5
+        q, i4 = self.moments(np.maximum(r, rsw))
+        rb = np.maximum(r, rsw)
+        t2 = (r / rsw) ** 2
+        return (np.where(r < rsw, q0 + (qs - q0) * t2, q / rb ** 3),
+                np.where(r < rsw, i0 + (i4s - i0) * t2, i4 / rb ** 5))
+
     def shift_ab(self, r):
         """(b_a, b_b) of the comoving shift beta^i = -(V^i b_a + n^i (V.n) b_b)."""
         rh = self._rh(r)
@@ -384,11 +403,11 @@ class BoostedST:
         return r, self.lam * (self.model.psi(rh) - 1.0), self.model.alpha(rh)
 
     def boost_table(self, n_matter=4000, rmax_factor=1.5):
-        """(r, Q, I4, ba, bb) on the grid of :meth:`radial_table`."""
+        """(r, Q/r^3, I4/r^5, ba, bb) on the grid of :meth:`radial_table`."""
         r, _, _ = self.radial_table(n_matter, rmax_factor)
-        q, i4 = self.moments(r)
+        q3, i5 = self.moments_reg(r)
         ba, bb = self.shift_ab(r)
-        return r, q, i4, ba, bb
+        return r, q3, i5, ba, bb
 
     def write_radial_table(self, path, n_matter=4000, rmax_factor=1.5):
         from . import io as nio
@@ -404,7 +423,7 @@ class BoostedST:
         """Write the boost table (format bst1) read by nrpic_clump_table.hpp."""
         if self.slice != "maximal":
             raise ValueError("the boost table is written for the maximal slice only")
-        r, q, i4, ba, bb = self.boost_table(n_matter, rmax_factor)
+        r, q3, i5, ba, bb = self.boost_table(n_matter, rmax_factor)
         lam = self.lam
         with open(path, "w") as f:
             f.write("# nrpic boost table of a table component "
@@ -415,11 +434,11 @@ class BoostedST:
             f.write(f"# ext_kappa = {self.kappa / lam ** 6:.17g}\n")
             f.write(f"# lam = {lam:.17g}\n# yc = {self.model.yc:.17g}\n"
                     f"# mass = {self.model.M:.17g}\n"
-                    f"# i4_last = {float(i4[-1]):.17g}\n")
-            f.write("# columns = r Q I4 ba bb\n")
-            for row in zip(r, q, i4, ba, bb):
+                    f"# i4_last = {float(i5[-1] * r[-1] ** 5):.17g}\n")
+            f.write("# columns = r Q/r^3 I4/r^5 ba bb\n")
+            for row in zip(r, q3, i5, ba, bb):
                 f.write("%.17e %.17e %.17e %.17e %.17e\n" % row)
-        return r, q, i4, ba, bb
+        return r, q3, i5, ba, bb
 
     def write_correction_table(self, path, V, dr=None, rlast=None):
         """Write the second-order correction of psi for the coordinate velocity V of the

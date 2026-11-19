@@ -335,6 +335,8 @@ inline BYSet BYRead(ParameterInput *pin, const int ncomp, std::vector<Real> &tab
     if (!any) continue;
     // momentum and spin of a Gaussian component: nrpic_clump_curvature.hpp
     if (pin->GetString("problem", pre + "type").compare("gaussian") == 0) continue;
+    // momentum and correction of a table component: nrpic_clump_table.hpp
+    if (pin->DoesParameterExist("problem", pre + "boost_file")) continue;
     if (pin->GetString("problem", pre + "type").compare("puncture") != 0) {
       BYFatal("<problem> " + pre + "p1..3, s1..3 and corr need " + pre
               + "type = puncture (p1..3, s1..3 also gaussian)");
