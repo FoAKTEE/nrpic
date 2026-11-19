@@ -582,3 +582,127 @@ particles, 200 steps; coll_energy = particle, cell, and collisions off. Predicti
 collision part (wall minus the collisionless wall) with `particle` is 1.0 to 1.5 times
 that with `cell` (one functor evaluation per colliding particle and step, lam = 1 found
 without iteration in a flat box); refuted above 1.5 or below 0.9.
+
+## 2026-11-19 R1 outcome: T0b with the option absent (run C-20261119-141502-95f0200)
+
+PASS, prediction confirmed. In all six cases every output file (box.coll_dump.20.bin,
+box.coll.hst, box.nrpic.hst, box.part.00000.bin, box.nrp, box.json: 6 compared per case)
+is byte-identical to the release run C-20261115-170155-13ff01f; the replay passes 6/6
+with the same numbers (momenta of the collided particles within 4.4e-16 of max(1, |u|),
+sum_P to 2.2e-15). Figure `t0b_replay_c2off.png` looked at (the same picture as wave 2).
+
+## 2026-11-19 R2 outcome: T0b with coll_energy = particle (run C-20261119-141711-7db7a6a)
+
+First attempt C-20261119-141614-e42b5ec FAILED (all six AthenaK runs exit 1: the deck
+path was relative and the executable runs in the run directory; driver defect, fixed in
+7db7a6a; the registered run says "completed" because the driver itself exited 0).
+Second attempt: PASS 6/6, prediction confirmed. Dumps of version 2, energy mode 1, flag 1;
+the metric at every particle exactly flat in all six (alpha 1, beta 0, gamma^ij = delta,
+bit for bit), so my reading of the layout of version 2 (ten doubles appended to each
+record) is consistent with the file length and with the content. The unchanged
+cell-frame replay reproduces the code: same cells, n_sub and updates of every particle,
+n_tested and n_coll identical, sum_P within 2.2e-15, momenta of the collided particles
+within 4.4e-16 of max(1, |u|), untouched bit-identical. n_noroot = n_balance = 0,
+max_dlam = 0 exactly (lam = 1 is accepted without iteration).
+Mode comparison (run C-20261119-141854-b2b664d; the first version of the script,
+C-20261119-141836-2a00bed, lumped positions and momenta into one flag and is superseded):
+against the option-absent run of R1, the same particles are updated in the dumped step
+of all six cases and the cells and n_sub are identical; momenta after 20 earlier
+collision steps differ by at most 7.8e-16 of max(1, |u|) (in 5-76 percent of the
+particles), after the dumped step by at most 5.6e-16 for the collided particles (5-46
+percent of them bit-identical); positions differ by rounding. Figures
+`t0b_replay_c2particle.png`, `compare_modes_c2.png` looked at (in the latter two cases
+share a colour: sub and f2 are the same collision cells and coincide).
+
+## 2026-11-19 R3 outcome: T1 and T2 with coll_energy = particle (run C-20261119-141806-af19c1c)
+
+T1 PASS 16/16, T2 PASS 16/16; prediction confirmed except for two clauses.
+(i) Confirmed: n_tested, n_coll and max_nsub identical to the release run
+C-20261115-165500-c67e036 in every one of the 200 steps of all 16 runs (same particle
+files, checked by checksum); sum_P per step within 7.8e-16 relative.
+(ii) Confirmed: T2 z values equal to the wave-2 values to the third decimal: (a) z in
+[-2.10, 1.58]; (b) ratio 0.99991-1.00010, z in [-2.20, 2.92]; (c) |z| <= 1.1e-12.
+(iii) Confirmed: T1 per step |dE| <= 1.1e-7 and |dP_i| <= 3.3e-8 of the bound
+1e-14 sqrt(n_coll + 1) (the same as wave 2); n_trunc = 0; n_noroot = n_balance = 0;
+max_dlam = 0 in all runs.
+(iv) Momenta confirmed: final momenta within 1.4e-14 of max(1, |u|) of the release run
+(theta = 10; 6e-17 at theta = 1e-3; 33-99 percent of the particles differ in the last
+bits). FAILED clause: positions are not identical or within 1e-15; they differ by up to
+3.5e-13 (box side 1). In every plain run the maximum is the same 3.55e-13 = 200 units in
+the last place of x near 10.5 (1.78e-15): the drift x + dt v rounds differently by one
+unit per step when v differs in its last bits, and 200 steps add up. My bound ignored
+this accumulation; no consequence (cells and counts identical throughout).
+(v) Not decided: wall times are 1.5-2.4 times those of wave 2, but under today's load the
+collisionless baseline took 1.0 (theta 0.1: 58 s against 60 s) to 2.0 times (theta 10:
+109 s against 55 s) its wave-2 time, so the comparison says nothing about the option;
+the equal-load timing below replaces it.
+Figures `t2_rate_c2particle.png`, `t1_step_c2particle.png`, `paired_c2particle.png`
+looked at (the first two have the overlapping tick labels and legend of wave 2; the
+paired figure shows zero count differences and the momentum differences below 1e-13).
+
+## 2026-11-19 R4 outcome: T10 with coll_energy = particle (run C-20261119-143041-f94e350)
+
+PASS, prediction confirmed. MeshBlocks 8 and 64 and the resumptions from the restart
+files of cycles 0, 37, 74 give final snapshots bit-identical to one MeshBlock (the restart
+of cycle 100 = nlim takes no step and is skipped, as in wave 2); every integer column of
+every coll.hst record identical, sum_P within 1.2e-14. Seed 8 changes every particle
+(max |du| 4.6). The run has 385554 collisions, the same number as the release run
+C-20261115-165902-f9b1c8f; n_noroot = n_balance = 0, max_dlam = 0. MPI not run (serial
+build). Figure `t10_repro_c2particle.png` looked at.
+
+## 2026-11-19 R6 outcome: the King threshold model (run C-20261119-141431-a351ac7; figure re-drawn in C-20261119-142957-c5da7d0)
+
+Six AthenaK runs (Kn 1, 0.1, 0.01 x cell, particle; 2 cycles, dt = M/16; 346-369 s each
+on one core). sum M W_p = 1.13147, sum M H_p = 0.86772 (H = alpha W - beta.u, the Killing
+energy at the start). Per collision, over the sum, from the cells of the step-1 dump
+(mean over the collided pairs of a cell, standard error from the scatter of the cell
+sums; 241, 1847, 7596-7601 cells with collisions):
+
+| Kn | collisions step 1 | cell: d sum M W_p | cell: d sum M H_p | particle: d sum M W_p | particle: d sum M H_p |
+|---|---|---|---|---|---|
+| 1 | 249 | -1.9(3.4)e-10 | -3.2(5.4)e-10 | +1.6(2.4)e-10 | +2.15(0.28)e-21 |
+| 0.1 | 2401 / 2399 | +0.9(1.2)e-10 | +1.5(1.9)e-10 | +0.002(0.83)e-10 | +1.71(0.09)e-21 |
+| 0.01 | 24106 / 24072 | +8.0(3.4)e-11 | +1.28(0.54)e-10 | -1.7(2.4)e-11 | +1.78(0.05)e-21 |
+
+(a) FAILED in one clause. The cell mode reproduces the release smoke run
+C-20261115-172003-6422b6a in columns 1-29 of both records (counts, sum_P, sums of M W and
+M u_i, dE, dP, everything of the operator); column 30 (sum_MW_particles) differs by
+1.7e-14 absolute (1.5e-14 relative) and column 31 by 1.3e-15 absolute. I predicted column
+30 identical; the interface (collisions.md section 5) says that with the option present
+both columns are summed particle by particle inside the cells, so their rounding changes.
+Not a defect.
+(b) Confirmed, marginally at Kn = 0.01: cell mode +8.0(3.4)e-11 of sum M W_p against the
+predicted +1.74e-10 (z = -2.8) and +1.11(0.47)e-10 M of the Killing energy against
++2.40e-10 M (z = -2.8). Both within 3 se, both low by the same factor 0.46-0.64, as the
+card measurement of the first 25 M was (1.22(22)e-10). At Kn = 1 and 0.1 the standard
+error exceeds the mean, as expected. The positive defect of the core-v0.3 operator is
+seen, at about half the pair-model prediction [the reason for the factor is not
+established; sub-cycling at Kn = 0.01 (n_sub up to 64) and the pair model's
+uniform-in-cell sampling are candidates, not tested].
+(c) Confirmed: with coll_energy = particle |d sum M H_p| per step is at most 5.3e-19
+(Kn = 1), 4.1e-18 (0.1), 4.5e-17 (0.01) of the sum, against 9.3e-8, 3.6e-7, 3.9e-6 in
+cell mode: the step defect falls by a factor 1e11. Per collision the canonical energy
+changes by +1.7-2.2e-21 of its sum (+1.5-1.9e-21 M), with a standard error of 3-13
+percent: a systematic positive residual at rounding level (one pair carries M h of about
+1e-6, and 16 units in the last place of that is 3.5e-21: the Newton iteration stops at
+its tolerance, apparently from one side) [JUDGEMENT on the cause]. That is 1.1e-11 of the
+cell-mode defect per collision; over the 1.2e6 collisions of 300 M at Kn = 1 it would
+add up to 2e-15 of sum M H_p. Per cell |d sum M H_p| per collision lies at 1e-22 to
+1e-20 of the sum (10 percent of the cells exactly zero), against 1e-11 to 1e-8 in cell mode
+(right panel of the figure).
+(d) Confirmed: n_noroot = 0 in all runs; n_balance 0, 1, 13 of 518, 4777, 48338
+collisions (at most 2.7e-4); max_dlam 1.1e-3 to 5.3e-3; sum_P within 0.03 percent of the
+cell mode's (e.g. 2440.34 against 2440.59 at Kn = 0.1, step 1); n_coll 24072 against 24106
+(Kn = 0.01, step 1; Kn = 1 identical).
+(e) Reported: with coll_energy = particle the deposited energy sum M W_p changes per
+collision by -1.7(2.4)e-11 (Kn = 0.01), +0.002(0.83)e-10 (0.1), +1.6(2.4)e-10 (1): zero
+within 1 se, at least 4.8 times smaller than the cell-mode mean at Kn = 0.01 (at 1 se).
+This is not conserved by design; its scatter per cell is of the same size as in cell
+mode (first order in the metric difference across the cell).
+(f) Confirmed: the sums of M dW_p and M dH_p recomputed from the dumps with the dumped
+metric agree with columns 31 and 33 to 3e-19 and 5e-19 absolute (sums of order 1).
+Figure `king_defect_cpu.png` (re-drawn with the predicted values as grey lines) looked
+at. Answer to the package question: the new option leaves of the first-step energy
+defect of the King threshold model a canonical-energy residual of about 2e-21 of the sum
+per collision (1e-11 of the old defect), and no detectable mean change of the deposited
+energy (|mean| < 4e-11 per collision at 1 se against +8(3)e-11 in cell mode).
