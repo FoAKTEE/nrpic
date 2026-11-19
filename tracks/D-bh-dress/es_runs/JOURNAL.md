@@ -477,3 +477,22 @@ Added test, prediction written before it ran: the same analysis on t = 100-200 M
 gauge waves, which reach 192 M at t ~ 90-130 M), the outer pairs show positive lags with
 correlation above 0.5 on this window [JUDGEMENT, even odds]. Refuted by negative lags or
 correlations below 0.5 on the pairs 152 -> 80 and 80 -> 56 M.
+
+Outcome of the added test (run D-20261119-143444-8a9949c, `results/probe_fronts_t100.json`,
+figures `figs/probe_fronts_t100_ES-1.png`, `figs/probe_fronts_t100_V-1.png`, looked at):
+REFUTED. On t = 100-200 M the outer pairs carry no coherent signal: 152 -> 80 M lag
++47.75 M with correlation 0.34 (ES-1) and +68 M with 0.32 (V-1); 80 -> 56 M +0.5 M (0.49)
+and -4.75 M (0.55). The waterfalls show small oscillations of period ~6-8 M that appear
+at x = 1-56 M nearly in phase (lags 0.25-1 M between 4, 20, 36, 46 M in V-1 at
+t ~ 105-135 M), not a front from the boundary. The rise of every row after t ~ 190 M is an
+artefact of the 20 M running mean at the end of the series (zero padding), not a signal.
+So no inward signal from the outflow boundary is seen in the lapse at the probes; the
+cause of the late horizon drift and of the late tracer errors is still open.
+Further facts from the horizon summaries of the two runs (columns meanradius, hrms):
+the horizon's coordinate radius grows through the run, 2.02 M at t = 25 M in both, then
+2.45 / 2.15 M at 100 M, 2.49 / 2.20 M at 165 M, 2.56 / 2.25 M at 199.5 M (ES-1 / V-1);
+the surface stays round (hrms ~ 6e-9) and nothing changes at t ~ 165 M. The near-hole
+mesh is M/8 out to 6 M, so the horizon is not losing resolution. Remaining candidates
+[TO VERIFY]: the slow evolution of the slicing and shift near the hole (both runs), the
+finder. A cheap discriminating test (lead's decision): V-1 with the outflow boundary at
+384 M, or V-1 at M/16 near the hole.
