@@ -3,7 +3,12 @@
 collide/TESTS.md with the release executable, plus the processor cost per pair.
 
     python3 t1t2.py DESIGN_JSON [--n 1000000] [--steps 200] [--nproc 8] [--exe PATH]
-                    [--tag cpu]
+                    [--tag cpu] [--set block/par=value ...] [--ref RUN_DIR]
+
+--set adds input parameters to every run (wave 2b: particles/coll_energy=particle with
+the executable of core/collisions-2); --ref names an earlier run directory of this script
+(same particle files, same seeds) for a paired comparison step by step: tested pairs and
+collisions per step, sum_P, final momenta (writes paired_<tag>.png).
 
 Runs (each with the two seeds (make_box seed, rng_seed) = (1, 1) and (2, 2)):
   mj box, N = 1e6, 32^3 cells, theta in {1e-3, 0.1, 1, 10}, 200 steps;
@@ -83,6 +88,9 @@ def analyse(rd, meta, steps):
              vmol_tested=float(sP.sum() / h["sum_W"].sum()),
              vmol_ref=float(rate.vmol_mean(th0)),
              sumW_ratio=float(h["sum_W"].mean() / (0.5 * N * rho0 * sig * dt)))
+    if "n_noroot" in h:      # coll_energy given (core/collisions-2)
+        r.update(n_noroot=float(h["n_noroot"].sum()), n_balance=float(h["n_balance"].sum()),
+                 max_dlam=float(h["max_dlam"].max()))
     r["T2a_z"] = float((nc.sum() - sP.sum()) / np.sqrt(sP.sum()))
     r["T2a_pass"] = bool(abs(r["T2a_z"]) < 4)
     r["T2b_z"] = float((sP.mean() - exp_sample) / se_step)
@@ -130,6 +138,12 @@ def main():
     ap.add_argument("--exe", default=bl.EXE_CPU)
     ap.add_argument("--tag", default="cpu")
     ap.add_argument("--only", default=None, help="comma list of thetas")
+    ap.add_argument("--deck", default=bl.DECK,
+                    help="input deck (inputs/box_c2.athinput has coll_energy, which a command "
+                         "line may only override, not add)")
+    ap.add_argument("--set", action="append", default=[],
+                    help="extra input parameter block/par=value (repeatable)")
+    ap.add_argument("--ref", default=None, help="earlier run directory for a paired comparison")
     a = ap.parse_args()
     des = json.load(open(a.design))["T2"]
     out = bl.outdir()
@@ -152,7 +166,8 @@ def main():
                     f"job/rng_seed={seed}"]
                 if var == "off":
                     ov.append("particles/collisions=false")
-                jobs.append((rd, ov, dict(exe=a.exe)))
+                ov += list(a.set)
+                jobs.append((rd, ov, dict(exe=a.exe, deck=a.deck)))
                 runs.append((name, rd, meta, var, th, seed))
     res_run = bl.run_many(jobs, a.nproc)
     results = {}
@@ -165,6 +180,8 @@ def main():
             continue
         r = analyse(rd, meta, a.steps)
         r.update(rc=0, wall=rr["wall"], var=var, theta=th, seed=seed)
+        if a.ref:
+            r["paired"] = paired(rd, os.path.join(a.ref, name))
         results[name] = r
     # cost per pair (processor or card): (wall - wall_off)/(tested pairs)
     for name, r in results.items():
@@ -183,15 +200,82 @@ def main():
                                       v.get("T2c_pass") for v in ok))
     summ["T1_step_pass"] = bool(ok and all(v.get("T1_step_pass") for v in ok))
     summ["any_failed_run"] = any(v.get("failed") for v in results.values())
+    summ["set"] = list(a.set)
+    summ["deck"] = a.deck
+    if a.ref:
+        summ["ref"] = a.ref
+        summ["paired_counts_identical_all"] = bool(ok and all(
+            v["paired"]["counts_identical"] for v in ok))
+        summ["paired_max_du_rel"] = float(max(v["paired"]["max_du_rel"] for v in ok)) if ok else None
     bl.save_json(os.path.join(out, f"t1t2_{a.tag}.json"), summ)
     figures(results, out, a.tag)
+    if a.ref:
+        paired_figure(results, out, a.tag)
     print(json.dumps({k: {kk: vv for kk, vv in v.items()
                           if kk in ("ratio_b", "T2a_z", "T2b_z", "T2c_z", "T2a_pass",
                                     "T2b_pass", "T2c_pass", "T1_step_pass", "max_P",
                                     "max_nsub", "wall", "n_trunc", "vmol_tested",
-                                    "vmol_ref", "ks_end_p", "cost_per_tested_pair_s")}
+                                    "vmol_ref", "ks_end_p", "cost_per_tested_pair_s",
+                                    "n_noroot", "n_balance", "max_dlam")}
                       for k, v in summ["runs"].items()}, indent=1))
     print("T2_pass", summ["T2_pass"], "T1_step_pass", summ["T1_step_pass"])
+
+
+def paired(rd, rref):
+    """Step-by-step comparison with the run of the same name in an earlier directory."""
+    import hashlib
+    sha = lambda p: hashlib.sha256(open(p, "rb").read()).hexdigest()
+    h, g = bl.coll_history(rd), bl.coll_history(rref)
+    n = min(h["ncycle"].size, g["ncycle"].size)
+    s1 = bl.snap.read_snapshot(bl.snapshots(rd)[-1])
+    s2 = bl.snap.read_snapshot(bl.snapshots(rref)[-1])
+    scale = np.maximum(1.0, np.sqrt(np.sum(s2["u"] ** 2, 1)))
+    du = np.max(np.abs(s1["u"] - s2["u"]), 1) / scale
+    dx = np.max(np.abs(s1["x"] - s2["x"]))
+    return dict(ref=rref, same_particle_file=sha(os.path.join(rd, "box.nrp")) ==
+                sha(os.path.join(rref, "box.nrp")), records=int(n),
+                counts_identical=bool(np.array_equal(h["n_tested"][:n], g["n_tested"][:n]) and
+                                      np.array_equal(h["n_coll"][:n], g["n_coll"][:n]) and
+                                      np.array_equal(h["max_nsub"][:n], g["max_nsub"][:n])),
+                steps_ncoll_differ=int(np.sum(h["n_coll"][:n] != g["n_coll"][:n])),
+                ncoll_total=float(h["n_coll"].sum()), ncoll_total_ref=float(g["n_coll"].sum()),
+                sumP_max_rel=float(np.max(np.abs(h["sum_P"][:n] / g["sum_P"][:n] - 1))),
+                max_du_rel=float(du.max()), frac_u_differ=float((du > 0).mean()),
+                max_dx=float(dx), x_identical=bool(np.array_equal(s1["x"], s2["x"])),
+                du_quantiles=[float(q) for q in np.quantile(du, [0.5, 0.9, 0.99, 1.0])])
+
+
+def paired_figure(results, out, tag):
+    fs.use_style()
+    cols = {"0.001": fs.PAL["blue"], "0.1": fs.PAL["red"], "1.0": fs.PAL["yellow"],
+            "10.0": fs.PAL["green"]}
+    fig = plt.figure(figsize=(fs.FULL_WIDTH, 3.2))
+    ax1 = fig.add_axes([0.08, 0.15, 0.40, 0.78])
+    ax2 = fig.add_axes([0.58, 0.15, 0.40, 0.78])
+    xs, labels, k = [], [], 0
+    for name, r in sorted(results.items()):
+        if r.get("var") not in ("plain", "sub") or r.get("failed"):
+            continue
+        p = r["paired"]
+        c = cols[r["theta"]]
+        mk = "o" if r["var"] == "plain" else "s"
+        mfc = c if r["seed"] == 1 else "none"
+        ax1.plot(k, p["ncoll_total"] - p["ncoll_total_ref"], mk, color=c, mfc=mfc, ms=4)
+        ax1.plot(k, p["steps_ncoll_differ"], "x", color="k", ms=3)
+        ax2.semilogy(k, max(p["max_du_rel"], 1e-20), mk, color=c, mfc=mfc, ms=4)
+        ax2.semilogy(k, max(p["sumP_max_rel"], 1e-20), "^", color="grey", ms=3)
+        xs.append(k); labels.append(f"{r['theta']}\n{r['var'][0]}{r['seed']}")
+        k += 1
+    ax1.axhline(0, **fs.GUIDE)
+    ax1.set_xticks(xs); ax1.set_xticklabels(labels, fontsize=6)
+    ax1.set_ylabel(r"$\Delta n_{\rm coll}$ total (x: steps that differ)", fontsize=8)
+    ax2.axhline(1e-13, **fs.GUIDE)
+    ax2.set_xticks(xs); ax2.set_xticklabels(labels, fontsize=6)
+    ax2.set_ylim(1e-20, 1e-10)
+    ax2.set_ylabel(r"final $\max|\Delta u|/\max(1,|u|)$; $\triangle$: $\max|\Delta\Sigma P|/\Sigma P$",
+                   fontsize=8)
+    fs.save(fig, os.path.join(out, f"paired_{tag}"))
+    plt.close(fig)
 
 
 def figures(results, out, tag):

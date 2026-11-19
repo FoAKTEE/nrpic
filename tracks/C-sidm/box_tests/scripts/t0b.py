@@ -1,7 +1,14 @@
 #!/usr/bin/env python3
 """T0b of collide/TESTS.md: replay of one collision step from the code's dump.
 
-    python3 t0b.py [--exe PATH] [--tag cpu]
+    python3 t0b.py DESIGN_JSON [--exe PATH] [--tag cpu] [--set block/par=value ...]
+                   [--ref RUN_DIR]
+
+Wave 2b: --set adds input parameters to every run (particles/coll_energy=particle: the
+dump is of version 2 and holds the metric at every particle, checked here to be flat);
+--ref names the run directory of an earlier T0b run whose output files (every file but
+athena.log and wall.json) must be byte-identical (the option-absent rerun with the
+executable of core/collisions-2 against the release run of wave 2).
 
 The T2 box at theta = 0.1 (design run: sigma = 0.2025, dt = 0.03185), 1e4 particles,
 4^3 cells, dump of cycle 20, triad = cholesky (lead's choice; in the flat box the triad
@@ -45,7 +52,18 @@ def check(rd, nx, f):
     rec = int(np.flatnonzero(sel)[0]) if sel.any() else None
     mesh = dict(xmin=[10.0] * 3, xmax=[11.0] * 3, n=[nx] * 3)
     out = dict(run=rd, dump=dpath[0], cycle=d["cycle"], n=d["n"], f=d["f"], triad=d["triad"],
-               seed=d["seed"], tries={})
+               seed=d["seed"], version=d["version"], tries={})
+    if d["version"] == 2:
+        flat = np.zeros((d["n"], 6))
+        flat[:, [0, 3, 5]] = 1.0
+        out.update(energy_mode=d["energy"], pmetric_flag=d["pmetric_flag"],
+                   pmetric_flat_exact=bool(np.all(d["alpha_p"] == 1.0) and
+                                           np.all(d["beta_p"] == 0.0) and
+                                           np.array_equal(d["ginv_p"], flat)))
+        if "n_noroot" in h:
+            out.update(hst_n_noroot=float(h["n_noroot"].sum()),
+                       hst_n_balance=float(h["n_balance"].sum()),
+                       hst_max_dlam=float(h["max_dlam"].max()))
     best = None
     for kc in (d["cycle"], d["cycle"] - 1, d["cycle"] + 1):
         r = rp.replay(d, mesh, kc)
@@ -85,11 +103,31 @@ def check(rd, nx, f):
     return out, best
 
 
+def compare_bytes(rd, rref):
+    """Every output file of rd (but athena.log, wall.json) against the file of the same
+    name in rref; also files present in only one of them."""
+    import filecmp
+    skip = {"athena.log", "wall.json"}
+    a = sorted(p for p in os.listdir(rd) if p not in skip)
+    b = sorted(p for p in os.listdir(rref) if p not in skip)
+    differ = [p for p in a if p in b and not filecmp.cmp(os.path.join(rd, p),
+                                                         os.path.join(rref, p), shallow=False)]
+    only = sorted(set(a) ^ set(b))
+    return dict(ref=rref, compared=len(set(a) & set(b)), differ=differ, only_one=only,
+                identical=not differ and not only)
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("design")
     ap.add_argument("--exe", default=bl.EXE_CPU)
     ap.add_argument("--tag", default="cpu")
+    ap.add_argument("--deck", default=bl.DECK,
+                    help="input deck (inputs/box_c2.athinput has coll_energy, which a command "
+                         "line may only override, not add)")
+    ap.add_argument("--set", action="append", default=[],
+                    help="extra input parameter block/par=value (repeatable)")
+    ap.add_argument("--ref", default=None, help="earlier T0b run directory (byte comparison)")
     a = ap.parse_args()
     des = json.load(open(a.design))["T2"]["0.1"]
     out = bl.outdir()
@@ -103,8 +141,8 @@ def main():
             ov = bl.mesh_overrides(nx) + [
                 f"particles/dt={des['dt']!r}", "time/nlim=25", f"particles/coll_sigma={sig!r}",
                 "particles/coll_dump_cycle=20", f"particles/coll_cell_factor={f}",
-                f"job/rng_seed={seed}"]
-            jobs.append((rd, ov, dict(exe=a.exe)))
+                f"job/rng_seed={seed}"] + list(a.set)
+            jobs.append((rd, ov, dict(exe=a.exe, deck=a.deck)))
             runs.append((name, rd, nx, f))
     rr = bl.run_many(jobs, 6)
     res = {}
@@ -118,6 +156,9 @@ def main():
             res[name] = dict(rc=r0["rc"], failed=True)
             continue
         o, best = check(rd, nx, f)
+        if a.ref:
+            o["bytes"] = compare_bytes(rd, os.path.join(a.ref, name))
+            o["pass"] = bool(o["pass"] and o["bytes"]["identical"])
         res[name] = o
         t, du, coll, d, r = best
         var = name.split("_")[1]
@@ -138,7 +179,8 @@ def main():
     ax2.set_ylabel(r"$n_{\rm sub}$ of the replay")
     fs.save(fig, os.path.join(out, f"t0b_replay_{a.tag}"))
     plt.close(fig)
-    summ = dict(runs=res, pass_all=bool(res and all(v.get("pass") for v in res.values())))
+    summ = dict(runs=res, set=list(a.set), ref=a.ref, deck=a.deck,
+                pass_all=bool(res and all(v.get("pass") for v in res.values())))
     bl.save_json(os.path.join(out, f"t0b_{a.tag}.json"), summ)
     print(json.dumps(summ, indent=1))
 

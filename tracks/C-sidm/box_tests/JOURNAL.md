@@ -457,3 +457,118 @@ C-20261115-165428-20023eb: pipeline check of `t1t2.py` at N = 2e4, 20 steps, the
 (not a test; it showed overlapping labels in the first T2 figure, fixed before the T2 run).
 All 18 runs of this package are registered with nrpic-run and closed (17 completed, one
 failed: C-20261115-165742-2c645f8, the first T10 attempt, driver defect described above).
+
+# Wave 2b: box_rerun with core's corrected operator (2026-11-19)
+
+Package box_rerun (helper of C-sidm, wave 2b). Executable: core's processor build of branch
+core/collisions-2, `/data/haiyangw/nrpic/scratch/core/exe/core_collisions-2/athena_cpu`
+(commit f46f159, sha256 adbf1b16...; READY in that directory; interface:
+`git show core/collisions-2:tracks/core/interfaces/collisions.md`, sections 5 and 11).
+New option `<particles> coll_energy = cell | particle`; its presence adds coll.hst columns
+32-36 and makes the dump version 2. AthenaK accepts on the command line only parameters
+that the deck has, so the reruns use new decks that carry the option
+(`inputs/box_c2.athinput`, `inputs/box_static.athinput`, `inputs/king_cc1.athinput`);
+the release runs of wave 2 (core-v0.3) are the paired references. Criteria: those of
+`../collide/TESTS.md` (wave 1) with the clarifications of its section 2a (wave 2),
+unchanged. Code changes: `scripts/boxlib.py` (executable path, 36-column history,
+version-2 dump reader, energies with the metric at the particle), `--deck/--set/--ref` in
+`t1t2.py`, `t10.py`, `t0b.py`; new `scripts/t12.py`, `scripts/king_defect.py`.
+
+## 2026-11-19 Predictions (written before any run of this package)
+
+R1. T0b, option absent (`box.athinput`, new executable), the six cases of wave 2.
+Prediction: every output file of every case (coll.hst, nrpic.hst, dump, snapshots, the
+particle file; not athena.log, wall.json) byte-identical to the wave-2 release run
+C-20261115-170155-13ff01f, and the replay passes 6/6 with the same numbers (READY: option
+absent gives byte-identical output; make_box.py is unchanged since abd9c2e, so the
+particle files are the same). Refuted by any differing byte.
+
+R2. T0b with `coll_energy = particle` in the flat box (`box_c2.athinput`), same six
+cases. Prediction: dumps of version 2 with energy mode 1 and flag 1; the metric at every
+particle exactly flat (alpha 1, beta 0, gamma^ij = delta, the analytic functor); the
+replay written from the cell-frame text (unchanged `replay.py`) passes the T0b criterion
+in all six (same cells, n_sub, updates, n_tested, n_coll; momenta within 1e-13 of
+max(1, |u|); untouched bit-identical), because with equal metrics the transfer dl is 0,
+the acceptance ratio R is 1 and the energy root lam is 1 (collisions.md 11.3), so the
+outgoing momenta differ from the cell-frame ones by rounding only (u' = P/2 + 1 x wv);
+n_noroot = n_balance = 0, max_dlam < 1e-13. Refuted if any case fails the criterion or
+a pair is rejected.
+
+R3. T1 and T2 with `coll_energy = particle` (`t1t2.py --deck box_c2 --set
+particles/coll_energy=particle --ref <wave-2 T2 run>`), the 16 runs of wave 2 (theta 1e-3,
+0.1, 1, 10; plain and sub-cycled; two seeds) and the two collisionless baselines.
+Prediction: (i) n_tested, n_coll and max_nsub of every step identical to the release run
+C-20261115-165500-c67e036 in all 16 (same particle files and seeds; the probabilities use
+the same momenta, dl = 0, R = 1); sum_P equal to 1e-14 relative or better; (ii) T2(a),
+(b), (c) pass in all 16 with z values within 0.1 of the wave-2 values; (iii) T1 per step
+passes (|dE|, |dP_i| / sum_MW < 1e-14 sqrt(n_coll + 1); dE is now the change of the
+canonical h = alpha (W - 1) - beta.u, which is W - 1 here), n_trunc = 0; n_noroot =
+n_balance = 0; (iv) final momenta within 1e-13 of max(1, |u|) of the release run
+(rounding of P/2 + wv compounding over 200 steps), positions identical or within 1e-15.
+(v) Cost: wall time per run within 25 percent of wave 2 (one functor evaluation per
+colliding particle and step). Refuted by any count difference (would mean the option
+changes the statistics in a flat box), by a failed criterion, or by momenta further apart
+than 1e-13.
+
+R4. T10 with `coll_energy = particle` (twotemp box, 1e5 particles, 100 cycles,
+sub-cycling): MeshBlocks 1, 8, 64 and resumptions from the restart files bit-identical;
+seed 8 differs in more than half of the particles. Refuted by any difference (the
+operator adds per-particle metric reconstruction and a Newton iteration per pair; a
+dependence on the block layout or on the restart would show here).
+
+R5. T12 (`t12.py`): static homogeneous metric alpha0 = 0.8, psi0 = 1.1 (`static_conformal`,
+amplitudes 0, mesh metric, Hermite), N = 1e6 on 32^3 cells, theta 0.1 and 1, two seeds,
+200 steps, `coll_energy = particle`; the flat twin holds the same particles at proper
+positions (box of side s = psi0^2 on 32^3 cells, momenta in the orthonormal frame) and
+steps alpha0 dt. My reading of the criterion: rates per unit coordinate time and
+coordinate volume. Predictions: (a) [criterion] collisions per coordinate time and
+coordinate volume, curved over flat twin, equal alpha0 psi0^6 = 1.417 within 4 sigma
+(both seeds, both theta); more sharply, because the twin is the same physical state
+step by step (same cells, same tags, same keys; probabilities equal up to rounding:
+alpha0 dt/(psi0^6 V) against alpha0 dt/(s^3 V)), I expect identical n_tested in every
+step and identical n_coll in all but at most a few steps, and final momenta
+u_curved/s = u_flat within 1e-12; (b) [criterion] mean sum_P per step equal to alpha0
+psi0^6 (1/2) (rho_p/M) rho_p sigma <v_Mol>(theta_s) dt within 4 standard errors and
+within 0.5 percent; sum n_coll within 4 sqrt(sum_P) of sum sum_P; (c) [criterion] T1:
+|dP_i| and |dE| per step below 1e-14 sqrt(n_coll + 1) of sum_MW, n_trunc = 0; the exactly
+rounded sums of M u_i of the first and last snapshots equal to 1e-15 of sum M W;
+(d) n_noroot = n_balance = 0 and max_dlam < 1e-12 (all particles see the same metric up
+to the rounding of the reconstruction); (e) the curved run with `coll_energy = cell`
+(theta 0.1, seed 1) has the same tested pairs and collisions in every step as with
+`particle`, momenta within 1e-12 (core found 2.8e-14 after 200 steps, run
+core-20261115-182101-3a6e046). Refuted by a ratio outside 4 sigma, by a failed T1 step,
+or by any rejection.
+
+R6. King threshold model (CC1 of threshold_scan; `king_defect.py`): the deck
+`inputs/king_cc1.athinput` (= threshold_scan's cc1_kn1 plus the option), 2 cycles,
+Kn = 1, 0.1, 0.01 (sigma~ = 168.895/Kn), coll_budget = true, dump of the first step, in
+both modes. Quantities: change per collision of sum M W_p (column 31; the defect of
+threshold_scan) and of sum M H_p (column 33, the canonical energy; with zero initial
+shift H = alpha W, the Killing energy of threshold_scan's predict.py), each over its sum.
+Predictions:
+ (a) cell mode reproduces the release: columns 1-30 of the two records at Kn = 1
+     identical to the release smoke run C-20261115-172003-6422b6a (cc1_kn1); column 31 is
+     now summed particle by particle (collisions.md section 5) and may differ by the
+     rounding of the release's two sums, below 1e-13 absolute.
+ (b) cell mode: per collision, sum M W_p rises by +1.74e-10 of its sum and sum M H_p by
+     about +2.4e-10 M (predict.py, run C-20261115-170404-af74c6d; card measurement
+     1.22(22)e-10 over the first 25 M, run C-20261115-191420-8538aa4): the per-cell
+     estimate of step 1 agrees within 3 standard errors at each Kn (at Kn = 1, with about
+     250 collisions, the standard error will be larger than the mean; Kn = 0.01, about
+     2.4e4 collisions, should resolve it).
+ (c) particle mode: |dH_p| per step below 1e-14 of sum M H_p at every Kn (rounding: 16
+     ulp per pair), i.e. at least 1e4 times below the cell-mode mean defect times the
+     number of collisions at Kn = 0.01; per cell, |change of sum M H_p| at rounding level;
+     the recomputation from the dump with the dumped metric agrees with column 33 to
+     1e-15 absolute.
+ (d) particle mode: n_noroot below 1e-3 and n_balance below 3e-2 of the collisions;
+     max_dlam < 0.1; sum_P within 1 percent of the cell mode's at each Kn.
+ (e) particle mode, sum M W_p (not conserved by design; collisions.md 11.4: first order
+     per collision, no mean drift in equilibrium; the King model is not a collisional
+     equilibrium): [JUDGEMENT] its mean change per collision is not larger than the
+     cell-mode defect and of undetermined sign; reported, not a criterion.
+ (f) the dump recomputation agrees with columns 31 and 33 to 1e-14 relative of the
+     larger of the two terms in both modes (cell mode with the metric of the particle
+     run's dump if its own dump carries none).
+Refuted: (a) by a differing column 1-30; (c) by a dH above 1e-14; (b) by a cell-mode mean
+outside 3 se of the prediction at Kn = 0.01.

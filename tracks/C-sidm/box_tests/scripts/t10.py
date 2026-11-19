@@ -1,7 +1,10 @@
 #!/usr/bin/env python3
 """T10 of collide/TESTS.md: reproducibility of the collisional state.
 
-    python3 t10.py [--exe PATH] [--tag cpu]
+    python3 t10.py [--exe PATH] [--tag cpu] [--set block/par=value ...]
+
+--set adds input parameters to every fresh run (the restarts read them from the restart
+file); wave 2b: particles/coll_energy=particle with the executable of core/collisions-2.
 
 twotemp box (theta_1 = 0.3, theta_2 = 0.1), 1e5 particles, 16^3 cells, sigma = 5,
 dt = 0.02 (sub-cycling active), 100 cycles, rng_seed 7:
@@ -45,18 +48,23 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--exe", default=bl.EXE_CPU)
     ap.add_argument("--tag", default="cpu")
+    ap.add_argument("--deck", default=bl.DECK,
+                    help="input deck (inputs/box_c2.athinput has coll_energy, which a command "
+                         "line may only override, not add)")
+    ap.add_argument("--set", action="append", default=[],
+                    help="extra input parameter block/par=value (repeatable)")
     a = ap.parse_args()
     out = bl.outdir()
     ic = os.path.join(out, "ic")
     meta = bl.make_box(ic, "twotemp", n=100000, theta=0.3, sigma=SIG, seed=7)
     deck = os.path.join(out, "box_rst.athinput")
-    with open(bl.DECK) as fh:
+    with open(a.deck) as fh:
         txt = fh.read()
     with open(deck, "w") as fh:
         fh.write(txt + "\n<output1>\nfile_type = rst\ndcycle    = 37\n")
     base = [f"particles/dt={DT!r}", f"time/nlim={NCYC}", f"particles/coll_sigma={SIG!r}",
             f"particles/snap_dt={NCYC * DT * (1 - 1e-9)!r}",
-            f"particles/particle_file={os.path.join(ic, 'box.nrp')}"]
+            f"particles/particle_file={os.path.join(ic, 'box.nrp')}"] + list(a.set)
     jobs = []
     for name, mb, seed in (("mb1", 16, 7), ("mb8", 8, 7), ("mb64", 4, 7), ("seed8", 16, 8)):
         rd = os.path.join(out, name)
@@ -110,7 +118,14 @@ def main():
             c["max_du"] = float(du.max())
         cmp[name] = c
     res["compare_to_mb1"] = cmp
-    res["mpi"] = "not run: release processor build has Athena_ENABLE_MPI=OFF"
+    res["set"] = list(a.set)
+    res["deck"] = a.deck
+    h1 = bl.coll_history(os.path.join(out, "mb1"))
+    if "n_noroot" in h1:
+        res["mb1_n_noroot"] = float(h1["n_noroot"].sum())
+        res["mb1_n_balance"] = float(h1["n_balance"].sum())
+        res["mb1_max_dlam"] = float(h1["max_dlam"].max())
+    res["mpi"] = "not run: the processor build has Athena_ENABLE_MPI=OFF"
     hb = href
     res["collisions_total_mb1"] = float(hb["n_coll"].sum())
     res["max_nsub_mb1"] = float(hb["max_nsub"].max())

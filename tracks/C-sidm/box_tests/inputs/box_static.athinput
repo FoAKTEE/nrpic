@@ -1,0 +1,89 @@
+# T12 of collide/TESTS.md (wave 2b, box_rerun): the periodic box [10, 11)^3 in the static,
+# homogeneous, non-flat metric of branch core/collisions-2: problem generator nrpic_geodesic
+# with <problem> metric_kind = static_conformal and all amplitudes zero, i.e. constant lapse
+# alpha0 and conformal factor psi0 (gamma_ij = psi0^4 delta_ij), zero shift, carried by the
+# mesh (<adm> dynamic = false, <particles> metric = mesh; READY of
+# scratch/core/exe/core_collisions-2, item 2). alpha0 = 0.8, psi0 = 1.1 as in the request.
+# Particle files and the flat twin: ../scripts/t12.py (momenta u_i covariant: psi0^2 times
+# the orthonormal-frame momenta). The driver sets mesh, dt, nlim, sigma, seed, coll_energy
+# on the command line; every parameter it sets is present here.
+
+<comment>
+problem   = C-sidm T12: collisions in a static homogeneous curved metric
+
+<job>
+basename  = box
+rng_seed  = 1
+
+<mesh>
+nghost    = 2
+nx1       = 32
+x1min     = 10.0
+x1max     = 11.0
+ix1_bc    = periodic
+ox1_bc    = periodic
+nx2       = 32
+x2min     = 10.0
+x2max     = 11.0
+ix2_bc    = periodic
+ox2_bc    = periodic
+nx3       = 32
+x3min     = 10.0
+x3max     = 11.0
+ix3_bc    = periodic
+ox3_bc    = periodic
+
+<meshblock>
+nx1       = 32
+nx2       = 32
+nx3       = 32
+
+<time>
+evolution  = dynamic
+integrator = rk2
+cfl_number = 1.0
+nlim       = -1
+tlim       = 1.0e9
+ndiag      = 100
+
+<adm>
+dynamic = false
+
+<particles>
+particle_type  = nrpic
+pusher         = midpoint
+triad          = cholesky
+metric         = mesh
+interp         = hermite
+tolerance      = 1.0e-13
+max_iterations = 100
+dt             = 0.01
+deposit        = false
+hist_dcycle    = 1
+snap_dt        = 1.0e9
+particle_file  = box.nrp
+collisions       = true
+coll_sigma       = 1.0
+coll_sigma_model = constant
+coll_sigma_w     = 1.0
+coll_pmax        = 0.1
+coll_subcycle    = measured
+coll_nsub_max    = 1000
+coll_cell_factor = 1
+coll_weights     = equal
+coll_hist_dcycle = 1
+coll_dump_cycle  = -1
+coll_budget      = true
+coll_energy      = particle   # cell | particle
+
+<problem>
+pgen_name   = nrpic_geodesic
+metric_kind = static_conformal
+alpha0      = 0.8
+psi0        = 1.1
+alpha_amp   = 0.0
+psi_amp     = 0.0
+shift_amp   = 0.0
+mode_n1     = 1
+mode_n2     = 0
+mode_n3     = 0
