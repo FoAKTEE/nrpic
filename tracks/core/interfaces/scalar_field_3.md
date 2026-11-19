@@ -155,8 +155,8 @@ Measured (J3 entries 3, 6, 8, 12):
 G5_RESULT
 
 What a long run needs from `core/gauge` [JUDGEMENT]: only the relaxation term
-(`lapse_leak`, `lapse_leak_alpha`; `z4c/z4c_gauge_ext.hpp`, seven lines in `z4c.cpp`,
-`z4c.hpp`, `z4c_calcrhs.cpp`). It merges with this branch without conflict (this branch
+(`lapse_leak`, `lapse_leak_alpha`; `z4c/z4c_gauge_ext.hpp`, 232 lines, and ten lines in
+`z4c.cpp` (1), `z4c.hpp` (2), `z4c_calcrhs.cpp` (7), `git diff f51539c 96b215c`). It merges with this branch without conflict (this branch
 touches nothing under `z4c/`; test build `scratch/core/tmp/gmerge/`). Recommended for a
 256^3 inflationary run once both are merged: the capped conformal-time lapse with
 alpha_0 = 0.05 N/(2 pi C) (8 at 256^3, Courant 0.25) and T = 0.02: the run then takes
