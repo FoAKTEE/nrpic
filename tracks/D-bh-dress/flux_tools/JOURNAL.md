@@ -258,3 +258,21 @@ Predictions:
    record; history finite. The constraint norms at t = 0 are recorded against ES-1's smoke
    run D-20261115-172413-6412daf without a criterion (the 1 M lattice deposited on the
    M/8 to M/2 levels near the hole is noisier than ES-1's dust on 1-2 M cells).
+
+### Outcome of entry 4, items 1-3 (data D-20261119-145022-2208a19, checks D-20261119-145026-2f11618; `results/esf.json`, `results/esf_check.json`, `results/esf_growth.csv`, `figs/esf_data.png`, `figs/esf_check.png`, looked at)
+
+1. HELD: 850584 dust particles + 140 tracers; lattice rest mass 2.8156001 against the
+   continuum 2.8156013 (-4.3e-7); lattice Misner-Sharp sum against D_tot = 2.7386556
+   (-4.1e-7); tau_H monotonic; M_tot = 3.7386556 M; growth law identical to the
+   development numbers.
+2. HELD: max Hamiltonian residual / (16 pi rho0) = 7.1e-6, 4.9e-7, 3.2e-8 at drbar =
+   0.04, 0.02, 0.01 (orders 3.86, 3.96), largest at the inner edge (rbar 2-4 M); momentum
+   residual 3.3e-6, 4.1e-7, 4.5e-8 (orders 3.03, 3.17). The table (drbar = 0.02) is
+   exact to 5e-7 of 16 pi rho0 between rows.
+3. FAILED in size, held in sign: M_LTB - M_shells lies in [0, 2.9e-3] for tau <= 600 M
+   (predicted [-1e-4, 2e-3]); 1.2e-4, 2.2e-4, 4.7e-4, 7.6e-4, 7.9e-4, 1.3e-3, 1.6e-3,
+   2.0e-3, 2.5e-3 at tau = 25, 50, 100, 150, 200, 250, 300, 400, 600 M. The difference
+   grows with the hole mass, as the capture radius 2 m(R0) of the exact solution moves
+   out from the fixed 2M of the proxy; my estimate Delta tau ~ 2(m - M) was too small at
+   late times. The wave-2 reference with fixed capture radius is therefore good to 0.25
+   per cent of the mass in this run; the exact LTB law is the prediction of record.
