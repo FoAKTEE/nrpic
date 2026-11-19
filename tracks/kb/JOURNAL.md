@@ -448,3 +448,49 @@ Commits d78b8d46..(this commit) on kb/main. Runs (all with nrpic-run submit): kb
 - open: KB-G2 (one paper, thresholds, retrieval at the answer location), K1 metadata into the
   papers table, K9 rerun with C4, the brief's own statements as claims, K7 module descriptions;
   requests to orch listed in STATUS.md.
+
+## 2026-11-19T15:50Z  session kb lead, wave 2b (review of pdf_meta, retrieval, verifier; KB-G1, KB-G2)
+
+State found: kb/main 67deee04 merged with main (4767ea77); tree clean; three helper packages
+committed but not pushed (72 commits ahead of origin). db/current is still kb-20261115-a848a06;
+the pdf_meta helper wrote kb.sqlite (gr-qc/9412071, metadata, groups) without a snapshot.
+Inbox: 4 messages (B kb-request, D kb-request, C info, E info).
+
+### B1 prediction: pdf_meta recheck (script analysis/lead_checks/w2b_pdfmeta_check.py, kb.sqlite read-only)
+
+From the helper's report I expect, by my own SQL: gr-qc/9412071 parse_status pdf with 6
+sections, 16 chunks, 1 caption, 19 bibliography entries, 32 distinct cite keys out, 36 citation
+rows in; astro-ph/9407016 12 sections, 45 chunks, 22 entries; 2201.03458 5 sections, 70 entries.
+Abstract chunk of gr-qc/9412071 against the arXiv-API abstract: word-sequence ratio >= 0.95 (the
+helper's 0.994 is a different measure). Papers 710; primary_class, submitted, updated 710;
+inspire_recid 706; DOI 651; journal_ref 648; licence 0; grp 710; title_matches_brief 1/0/NULL =
+680/4/26; version equal to the API's latest for 710; title equal to the API title (normalised)
+for 25 of 25 random papers. Additions file: 26 rows = the 26 rows outside arxiv.tsv, with the
+same group. Vectors: 0 chunks without a vector, 0 orphans. Reading: of 20 fresh word repairs at
+least 18 right; of 20 'cmmi-greek' repairs (a kind the helper's audit excluded) I make a weaker
+prediction, at least 15 right, because the first edit of gr-qc/9412071 already reads
+"F\x13\x10sica" -> "Fιζsica" (a Spanish affiliation word turned Greek): seen while choosing the
+check, so that one edit is not evidence. The three author errata read as the helper says.
+Refuted by any count that differs, a word-repair precision below 18/20, or an erratum that does
+not hold on reading.
+
+### B2 prediction: retrieval rescoring (w2b_retrieval_check.py)
+
+My own rescoring of the top-10 chunk lists of R4 (run kb-20261119-142613-942f713) with my own
+sourcemap bisection gives the helper's hits in every mode on both sets (golden 32 with 5-line
+slack: text 27/21, hybrid 28/23, w2 27/22, w3 28/22, w2+stage1 29/23, w2-noexpand 28/25; ten:
+9/4, 9/5, 7/6, 7/6, 8/6, 8/6) with no question-level disagreement; the final run's rerank ranks
+equal R4's w2-noexpand on all 32 questions; C4: 30 of 30 INSPIRE records, my title ratio below
+0.9 for exactly 2103.01183 and gr-qc/9905058. Parse status on a848a06: ok 684 of 709 (96.5 %).
+Refuted by any differing count or question.
+
+### B3 prediction: verifier recheck (w2b_verifier_check.py, snapshot a848a06)
+
+20 of 707 TeX papers have no bibliography entry, 11 of them with parse_status ok. My pattern
+counts confirm the verifier's causes: 1201.4794 has about 46 `\reference` lines, the eight
+REVTeX-3 papers have `\begin{references}` and `\bibitem`, 2507.01095 `\harvarditem`;
+gr-qc/9906015 has 58 live `\eqno`. Claim 25: locator string names L1084 and L1101-1103, rows hold
+only L1101-1103, in both databases. Parameter index: local/nrpic at a1c2237; in
+nrpic_collide.cpp on main every literal (block, name) pair is absent (12), in scalar_field.cpp
+most. Refuted by a count of zero-bibliography papers other than 20, a cause not found by my
+patterns in more than 3 of the 14, or claim 25 rows that include L1084.
