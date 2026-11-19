@@ -34,6 +34,7 @@ LBOX = 16.0
 
 def stats_history(rundir, r0):
     rows = []
+    zdumps = {round(flib.Dump(q).time, 6): q for q in flib.dumps(rundir, "z4c")}
     for p in flib.dumps(rundir, "con"):
         d = flib.Dump(p)
         if rows and abs(d.time - rows[-1]["time"]) < 1e-9:
@@ -43,6 +44,11 @@ def stats_history(rundir, r0):
         _, _, _, _, my = d.flat("con_My")
         _, _, _, _, mz = d.flat("con_Mz")
         mm = np.sqrt(mx * mx + my * my + mz * mz)
+        # Gamma constraint: con_Z = (1/4) gt_ij (Gam - Gam(gt))^i (Gam - Gam(gt))^j
+        _, _, _, _, zz = d.flat("con_Z")
+        gz = 2.0 * np.sqrt(np.maximum(zz, 0.0))
+        tq = zdumps.get(round(d.time, 6))
+        th = np.abs(flib.Dump(tq).flat("z4c_Theta")[4]) if tq else np.full(v.shape, np.nan)
         r = np.sqrt(x * x + y * y + z * z)
         dface = LBOX - np.maximum(np.maximum(np.abs(x), np.abs(y)), np.abs(z))
         inbox = dface > 0
@@ -57,6 +63,8 @@ def stats_history(rundir, r0):
             row[f"H.{name}.max"] = float(np.abs(v[m]).max())
             row[f"M.{name}.mean"] = float(np.sum(w * mm[m]) / np.sum(w))
             row[f"M.{name}.max"] = float(mm[m].max())
+            row[f"G.{name}.mean"] = float(np.sum(w * gz[m]) / np.sum(w))
+            row[f"T.{name}.mean"] = float(np.sum(w * th[m]) / np.sum(w))
         rows.append(row)
     return {k: [q[k] for q in rows] for k in rows[0]} if rows else {}
 
@@ -132,11 +140,11 @@ def main():
                                   fs.PAL["orange"], "purple", "brown", "grey"])}
     cols["reference"] = fs.PAL["blue"]
     # figure 1: residual histories by region
-    fig, axs = plt.subplots(2, 4, figsize=(fs.FULL_WIDTH, 4.6), sharex=True)
-    fig.subplots_adjust(left=0.075, right=0.99, bottom=0.095, top=0.93, wspace=0.33,
+    fig, axs = plt.subplots(4, 4, figsize=(fs.FULL_WIDTH, 8.0), sharex=True)
+    fig.subplots_adjust(left=0.075, right=0.99, bottom=0.055, top=0.95, wspace=0.33,
                         hspace=0.08)
     for j, reg in enumerate(("inner", "shell", "faces", "all")):
-        for i, q in enumerate(("H", "M")):
+        for i, q in enumerate(("H", "M", "T", "G")):
             ax = axs[i, j]
             for n in names:
                 h = res["cases"][n]
@@ -149,10 +157,12 @@ def main():
                 ax.set_title({"inner": rf"${r0:g} \leq r < 8$", "shell": r"$8 \leq r < 12$",
                               "faces": "within 4 of a face",
                               "all": rf"whole box, $r \geq {r0:g}$"}[reg], fontsize=10)
-            else:
+            if i == 3:
                 ax.set_xlabel(r"$t$", labelpad=-2)
             if j == 0:
-                ax.set_ylabel({"H": r"mean $|H|$", "M": r"mean $|M_i|$"}[q])
+                ax.set_ylabel({"H": r"mean $|H|$", "M": r"mean $|M_i|$",
+                               "T": r"mean $|\Theta|$",
+                               "G": r"mean $|\tilde\Gamma-\tilde\Gamma(\tilde\gamma)|$"}[q])
     axs[0, 0].legend(fontsize=7, ncol=1)
     if a.title:
         fig.suptitle(a.title, fontsize=10, y=0.995)
@@ -197,9 +207,12 @@ def main():
         line = [n]
         for tq in (1.0, 2.0, 4.0, 8.0, t.max()):
             k = int(np.argmin(np.abs(t - tq)))
-            line.append("t=%g: in %.2e sh %.2e fa %.2e all %.2e | M fa %.2e all %.2e" % (
+            line.append("t=%g: in %.2e sh %.2e fa %.2e all %.2e | M fa %.2e all %.2e"
+                        " | Th sh %.2e fa %.2e | G sh %.2e fa %.2e" % (
                 t[k], h["H.inner.mean"][k], h["H.shell.mean"][k], h["H.faces.mean"][k],
-                h["H.all.mean"][k], h["M.faces.mean"][k], h["M.all.mean"][k]))
+                h["H.all.mean"][k], h["M.faces.mean"][k], h["M.all.mean"][k],
+                h["T.shell.mean"][k], h["T.faces.mean"][k], h["G.shell.mean"][k],
+                h["G.faces.mean"][k]))
         print("\n  ".join(line))
     for n, dh in res["diff"].items():
         if not dh["time"]:
