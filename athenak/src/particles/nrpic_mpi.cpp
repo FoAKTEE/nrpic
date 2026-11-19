@@ -725,6 +725,201 @@ void Particles::NrpicMpiProbe(const Real px, const Real py, const Real pz, Real 
 }
 
 //----------------------------------------------------------------------------------------
+//! \fn  void Particles::NrpicMpiTrajSources
+//! \brief the deposited E and S_i at the tracked particles (trajectory record) on
+//! several ranks.  The kernel of NrpicWriteTrajectories has summed the cells of the
+//! eight around each particle that this rank holds, without dividing by the sum of the
+//! weights (rows NRM_NVAR+1..4 of pmet, weights in row NRM_NVAR+5).  Here the cells that
+//! other ranks hold are asked for, added, and the sums divided.  A rank without
+//! particles calls this with an empty array and only answers.
+
+void Particles::NrpicMpiTrajSources(DvceArray2D<Real> &pmet) {
+#if MPI_PARALLEL_ENABLED
+  Mesh *pm = pmy_pack->pmesh;
+  auto &indcs = pm->mb_indcs;
+  const int np = (pmet.extent(0) == 0) ? 0 : nprtcl_thispack;
+  const int nranks = global_variable::nranks;
+  const int myrank = global_variable::my_rank;
+  auto pr = prtcl_rdata;
+  auto pi = prtcl_idata;
+  auto sz = pmy_pack->pmb->mb_size.d_view;
+  const int gids = pmy_pack->gids;
+  const int nmb = pmy_pack->nmb_thispack;
+  const int is = indcs.is, js = indcs.js, ks = indcs.ks;
+  const int ie = indcs.ie, je = indcs.je, ke = indcs.ke;
+  const int ntrack = nropt.traj_ntrack;
+  auto gbx = gb_ext;
+  auto gbl = gb_lr;
+  const int gnmb = gb_nmb;
+  auto tm = pmy_pack->ptmunu->u_tmunu;
+  const Real gmin[3] = {pm->mesh_size.x1min, pm->mesh_size.x2min, pm->mesh_size.x3min};
+  const Real dmin[3] = {nropt.dom_min[0], nropt.dom_min[1], nropt.dom_min[2]};
+  const Real dlen[3] = {nropt.dom_len[0], nropt.dom_len[1], nropt.dom_len[2]};
+  const bool per[3] = {nropt.periodic[0], nropt.periodic[1], nropt.periodic[2]};
+  MPI_Comm comm = pbval_part->mpi_comm_part;
+  auto pm_ = pmet;
+
+  // (1) cells of the eight around a tracked particle that another rank holds
+  int nreq = 0;
+  DvceArray1D<int> roff("nrpic_mpi_roff", np + 1);
+  if (np > 0) {
+    Kokkos::parallel_scan("nrpic_mpi_trajcount", Kokkos::RangePolicy<DevExeSpace>(0, np),
+    KOKKOS_LAMBDA(const int p, int &upd, const bool final) {
+      int n = 0;
+      if (pi(PTAG,p) < ntrack) {
+        const int m = pi(PGID,p) - gids;
+        const Real h[3] = {sz(m).dx1, sz(m).dx2, sz(m).dx3};
+        const Real x[3] = {pr(IPX,p), pr(IPY,p), pr(IPZ,p)};
+        Real xb[3];
+        for (int d=0; d<3; ++d) {
+          Real xi = (x[d] - gmin[d])/h[d] - 0.5;
+          xb[d] = gmin[d] + (floor(xi) + 0.5)*h[d];
+        }
+        for (int c=0; c<8; ++c) {
+          const Real xf = nrpic::WrapCoord(xb[0] + ((c & 1) ? h[0] : 0.0),
+                                           dmin[0], dlen[0], per[0]);
+          const Real yf = nrpic::WrapCoord(xb[1] + ((c & 2) ? h[1] : 0.0),
+                                           dmin[1], dlen[1], per[1]);
+          const Real zf = nrpic::WrapCoord(xb[2] + ((c & 4) ? h[2] : 0.0),
+                                           dmin[2], dlen[2], per[2]);
+          if (nrpic::FindBlock(sz, nmb, m, xf, yf, zf) >= 0) continue;
+          const int g = nrpic::FindBlockGlobal(gbx, gnmb, xf, yf, zf);
+          if (g >= 0 && gbl(g,1) != myrank) { n += 1; }
+        }
+      }
+      if (final) { roff(p) = upd; }
+      upd += n;
+    }, nreq);
+  }
+
+  // (2) requests (position of the cell, 8 x particle + corner), by rank
+  std::vector<int> scnt(nranks, 0), rcnt, rcnt2;
+  std::vector<Real> sbuf, rbuf, abuf, rep;
+  if (nreq > 0) {
+    DvceArray1D<int> qrank("nrpic_mpi_qrank", nreq);
+    DvceArray1D<Real> qdat("nrpic_mpi_qdat", static_cast<size_t>(4)*nreq);
+    par_for("nrpic_mpi_trajreq", DevExeSpace(), 0, np-1, KOKKOS_LAMBDA(const int p) {
+      if (pi(PTAG,p) >= ntrack) return;
+      const int m = pi(PGID,p) - gids;
+      const Real h[3] = {sz(m).dx1, sz(m).dx2, sz(m).dx3};
+      const Real x[3] = {pr(IPX,p), pr(IPY,p), pr(IPZ,p)};
+      Real xb[3];
+      for (int d=0; d<3; ++d) {
+        Real xi = (x[d] - gmin[d])/h[d] - 0.5;
+        xb[d] = gmin[d] + (floor(xi) + 0.5)*h[d];
+      }
+      int n = 0;
+      for (int c=0; c<8; ++c) {
+        const Real xf = nrpic::WrapCoord(xb[0] + ((c & 1) ? h[0] : 0.0),
+                                         dmin[0], dlen[0], per[0]);
+        const Real yf = nrpic::WrapCoord(xb[1] + ((c & 2) ? h[1] : 0.0),
+                                         dmin[1], dlen[1], per[1]);
+        const Real zf = nrpic::WrapCoord(xb[2] + ((c & 4) ? h[2] : 0.0),
+                                         dmin[2], dlen[2], per[2]);
+        if (nrpic::FindBlock(sz, nmb, m, xf, yf, zf) >= 0) continue;
+        const int g = nrpic::FindBlockGlobal(gbx, gnmb, xf, yf, zf);
+        if (g < 0 || gbl(g,1) == myrank) continue;
+        const size_t o = static_cast<size_t>(4)*(roff(p) + n);
+        qrank(roff(p) + n) = gbl(g,1);
+        qdat(o) = xf; qdat(o+1) = yf; qdat(o+2) = zf;
+        qdat(o+3) = static_cast<Real>(8)*static_cast<Real>(p) + static_cast<Real>(c);
+        n += 1;
+      }
+    });
+    auto qrh = Kokkos::create_mirror_view_and_copy(HostMemSpace(), qrank);
+    auto qdh = Kokkos::create_mirror_view_and_copy(HostMemSpace(), qdat);
+    std::vector<int> start(nranks + 1, 0);
+    for (int n=0; n<nreq; ++n) { scnt[qrh(n)] += 1; }
+    for (int r=0; r<nranks; ++r) { start[r+1] = start[r] + scnt[r]; }
+    sbuf.resize(static_cast<size_t>(4)*nreq);
+    std::vector<int> fill(start.begin(), start.end() - 1);
+    for (int n=0; n<nreq; ++n) {
+      const size_t dst = static_cast<size_t>(4)*(fill[qrh(n)]++);
+      for (int v=0; v<4; ++v) { sbuf[dst+v] = qdh(static_cast<size_t>(4)*n + v); }
+    }
+  }
+  ExchangeRecords<Real>(comm, MPI_ATHENA_REAL, 4, 8, scnt, sbuf, rcnt, rbuf);
+
+  // (3) answers: the label and E, S_i of the leaf cell that contains the position
+  const int nans = static_cast<int>(rbuf.size()/4);
+  abuf.resize(static_cast<size_t>(5)*nans);
+  if (nans > 0) {
+    DvceArray1D<Real> rq("nrpic_mpi_rq", rbuf.size());
+    DvceArray1D<Real> an("nrpic_mpi_an", abuf.size());
+    auto rqh = Kokkos::create_mirror_view(rq);
+    std::memcpy(rqh.data(), rbuf.data(), rbuf.size()*sizeof(Real));
+    Kokkos::deep_copy(rq, rqh);
+    par_for("nrpic_mpi_trajans", DevExeSpace(), 0, nans-1,
+    KOKKOS_LAMBDA(const int n) {
+      const size_t o = static_cast<size_t>(4)*n, a = static_cast<size_t>(5)*n;
+      const Real xf = rq(o), yf = rq(o+1), zf = rq(o+2);
+      const int mb = nrpic::FindBlock(sz, nmb, 0, xf, yf, zf);
+      if (mb < 0) {                 // not here after all: marked, and skipped by the asker
+        an(a) = -1.0;
+        an(a+1) = 0.0; an(a+2) = 0.0; an(a+3) = 0.0; an(a+4) = 0.0;
+        return;
+      }
+      int i = is + static_cast<int>(floor((xf - sz(mb).x1min)/sz(mb).dx1));
+      int j = js + static_cast<int>(floor((yf - sz(mb).x2min)/sz(mb).dx2));
+      int k = ks + static_cast<int>(floor((zf - sz(mb).x3min)/sz(mb).dx3));
+      i = (i < is) ? is : ((i > ie) ? ie : i);
+      j = (j < js) ? js : ((j > je) ? je : j);
+      k = (k < ks) ? ks : ((k > ke) ? ke : k);
+      an(a) = rq(o+3);
+      an(a+1) = tm(mb,Tmunu::I_Tmunu_E,k,j,i);
+      an(a+2) = tm(mb,Tmunu::I_Tmunu_Sx,k,j,i);
+      an(a+3) = tm(mb,Tmunu::I_Tmunu_Sy,k,j,i);
+      an(a+4) = tm(mb,Tmunu::I_Tmunu_Sz,k,j,i);
+    });
+    auto anh = Kokkos::create_mirror_view_and_copy(HostMemSpace(), an);
+    std::memcpy(abuf.data(), anh.data(), abuf.size()*sizeof(Real));
+  }
+  ExchangeRecords<Real>(comm, MPI_ATHENA_REAL, 5, 9, rcnt, abuf, rcnt2, rep);
+
+  // (4) add the cells of the other ranks, then divide by the sum of the weights
+  const int nrep = static_cast<int>(rep.size()/5);
+  if (nrep > 0) {
+    DvceArray1D<Real> rp("nrpic_mpi_rp", rep.size());
+    auto rph = Kokkos::create_mirror_view(rp);
+    std::memcpy(rph.data(), rep.data(), rep.size()*sizeof(Real));
+    Kokkos::deep_copy(rp, rph);
+    par_for("nrpic_mpi_trajadd", DevExeSpace(), 0, nrep-1, KOKKOS_LAMBDA(const int n) {
+      const size_t a = static_cast<size_t>(5)*n;
+      if (rp(a) < 0.0) return;
+      const std::int64_t id = static_cast<std::int64_t>(rp(a));
+      const int p = static_cast<int>(id/8), c = static_cast<int>(id % 8);
+      const int m = pi(PGID,p) - gids;
+      const Real h[3] = {sz(m).dx1, sz(m).dx2, sz(m).dx3};
+      const Real x[3] = {pr(IPX,p), pr(IPY,p), pr(IPZ,p)};
+      Real s[3];
+      for (int d=0; d<3; ++d) {
+        Real xi = (x[d] - gmin[d])/h[d] - 0.5;
+        s[d] = xi - floor(xi);
+      }
+      const Real w = ((c & 1) ? s[0] : 1.0 - s[0])*((c & 2) ? s[1] : 1.0 - s[1])
+                    *((c & 4) ? s[2] : 1.0 - s[2]);
+      Kokkos::atomic_add(&pm_(NRM_NVAR+1,p), w*rp(a+1));
+      Kokkos::atomic_add(&pm_(NRM_NVAR+2,p), w*rp(a+2));
+      Kokkos::atomic_add(&pm_(NRM_NVAR+3,p), w*rp(a+3));
+      Kokkos::atomic_add(&pm_(NRM_NVAR+4,p), w*rp(a+4));
+      Kokkos::atomic_add(&pm_(NRM_NVAR+5,p), w);
+    });
+  }
+  if (np > 0) {
+    par_for("nrpic_mpi_trajnorm", DevExeSpace(), 0, np-1, KOKKOS_LAMBDA(const int p) {
+      if (pi(PTAG,p) >= ntrack) return;
+      const Real sw = pm_(NRM_NVAR+5,p);
+      const Real isw = (sw > 0.0) ? 1.0/sw : 0.0;
+      pm_(NRM_NVAR+1,p) *= isw;
+      pm_(NRM_NVAR+2,p) *= isw;
+      pm_(NRM_NVAR+3,p) *= isw;
+      pm_(NRM_NVAR+4,p) *= isw;
+    });
+  }
+#endif
+}
+
+//----------------------------------------------------------------------------------------
 //! \fn  void Particles::NrpicMpiWriteHistory
 //! \brief appends one record to <basename>.mpi.hst (runs on several ranks only): the
 //! particles handed between ranks and the deposit packets sent since the last record,

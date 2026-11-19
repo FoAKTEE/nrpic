@@ -884,7 +884,9 @@ void Particles::NrpicWriteTrajectories(Real time, bool truncate) {
       proto.ncell[0] = indcs.nx1 + 2*indcs.ng;
       proto.ncell[1] = indcs.nx2 + 2*indcs.ng;
       proto.ncell[2] = indcs.nx3 + 2*indcs.ng;
-      DvceArray2D<Real> pmet("pmet", NRM_NVAR + 5, np);
+      // (one more row than is written: the sum of the weights, for several ranks)
+      DvceArray2D<Real> pmet("pmet", NRM_NVAR + 6, np);
+      const bool mrank = nr_multirank;
       const int nmb = pmy_pack->nmb_thispack;
       const int is = indcs.is, js = indcs.js, ks = indcs.ks;
       const int ie = indcs.ie, je = indcs.je, ke = indcs.ke;
@@ -950,12 +952,16 @@ void Particles::NrpicWriteTrajectories(Real time, bool truncate) {
             sw += w;
           }
         }
-        const Real isw = (sw > 0.0) ? 1.0/sw : 0.0;
+        // several ranks: the sums stay as they are until the cells that other ranks
+        // hold have been added (NrpicMpiTrajSources)
+        const Real isw = mrank ? 1.0 : ((sw > 0.0) ? 1.0/sw : 0.0);
         pmet(NRM_NVAR+1,p) = se*isw;
         pmet(NRM_NVAR+2,p) = sx*isw;
         pmet(NRM_NVAR+3,p) = sy*isw;
         pmet(NRM_NVAR+4,p) = sz3*isw;
+        pmet(NRM_NVAR+5,p) = sw;
       });
+      if (mrank && has_tm) { NrpicMpiTrajSources(pmet); }
       mh = Kokkos::create_mirror_view_and_copy(HostMemSpace(), pmet);
     }
     buf.reserve(8*static_cast<size_t>(std::min(np, nropt.traj_ntrack)));
@@ -972,6 +978,10 @@ void Particles::NrpicWriteTrajectories(Real time, bool truncate) {
         }
       }
     }
+  }
+  if (np == 0 && nr_multirank && mesh_metric && nropt.deposit) {
+    DvceArray2D<Real> none;       // this rank only answers the requests of the others
+    NrpicMpiTrajSources(none);
   }
   // several ranks: the records of all ranks on rank 0, in the order of the tags
   NrpicMpiGatherRecords(buf, 8);

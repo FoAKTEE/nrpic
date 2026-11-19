@@ -366,6 +366,7 @@ class Particles {
   bool NrpicMpiGatherBegin();
   void NrpicMpiGatherEnd();
   void NrpicMpiGatherRecords(std::vector<double> &buf, const int nrec);
+  void NrpicMpiTrajSources(DvceArray2D<Real> &pmet);
   void NrpicMpiWriteStepSources(std::FILE *fp);
   void NrpicMpiShareRestart();
   void NrpicMpiWriteHistory(Real time, int ncycle, bool header);

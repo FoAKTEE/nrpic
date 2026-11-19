@@ -155,15 +155,9 @@ def fig_fields(case, ranks, base):
     files = sorted(glob.glob(os.path.join(base, "np%d" % ranks[0], "bin", "*.bin")))
     if not files:
         return None
-    rel = os.path.relpath(files[-1], os.path.join(base, "np%d" % ranks[0]))
-    nlast = ranks[-1]
     t, b1 = read_bin_blocks(files[-1])
-    fl = os.path.join(base, "np%d" % nlast, rel)
-    if not os.path.exists(fl):
-        return None
-    _, b2 = read_bin_blocks(fl)
     name = "tmunu_E"
-    # the layer of cells just above z = 0 (or the mid plane of the box)
+    # the layer of MeshBlocks just above the mid plane, first layer of cells
     zs = sorted(set(k[2] for k in b1))
     zmid = 0.5*(min(zs) + max(zs))
     zsel = min((z for z in zs if z >= zmid - 1.0e-9), default=zs[0])
@@ -172,38 +166,60 @@ def fig_fields(case, ranks, base):
     ys = sorted(set(k[1] for k in keys))
     nz, ny, nx = b1[keys[0]][name].shape
     img1 = np.zeros((len(ys)*ny, len(xs)*nx))
-    img2 = np.zeros_like(img1)
     for k in keys:
         i, j = xs.index(k[0]), ys.index(k[1])
         img1[j*ny:(j+1)*ny, i*nx:(i+1)*nx] = b1[k][name][0]
-        img2[j*ny:(j+1)*ny, i*nx:(i+1)*nx] = b2[k][name][0]
-    scale = max(np.abs(img1).max(), 1.0e-300)
     fig = plt.figure(figsize=(fs.FULL_WIDTH, 3.0))
-    ax = fig.add_axes([0.05, 0.14, 0.26, 0.74])
+    ax = fig.add_axes([0.06, 0.15, 0.24, 0.72])
     pos = np.where(img1 > 0, img1, np.nan)
     vmax = np.nanmax(pos) if np.isfinite(pos).any() else 1.0
     im = ax.imshow(pos, origin="lower", cmap=fs.CMAP["dens"], aspect="equal",
                    norm=matplotlib.colors.LogNorm(vmin=vmax*1.0e-3, vmax=vmax),
                    interpolation="none", rasterized=True)
-    ax.set_title("E, 1 rank, t = %.3g" % t, fontsize=10)
+    for q in range(1, len(xs)):
+        ax.axvline(q*nx - 0.5, color="white", lw=0.4, alpha=0.5)
+    for q in range(1, len(ys)):
+        ax.axhline(q*ny - 0.5, color="white", lw=0.4, alpha=0.5)
+    ax.set_title("E on 1 rank, t = %.3g" % t, fontsize=10)
     ax.set_xlabel("cell in x")
     ax.set_ylabel("cell in y")
     fs.side_colorbar(fig, ax, im, "")
-    ax = fig.add_axes([0.37, 0.14, 0.26, 0.74])
-    diff = (img2 - img1)/scale
-    lim = max(np.abs(diff).max(), 1.0e-17)
-    im = ax.imshow(diff, origin="lower", cmap=fs.CMAP["diverging"], aspect="equal",
-                   vmin=-lim, vmax=lim, interpolation="none", rasterized=True)
-    for q in range(1, len(xs)):
-        ax.axvline(q*nx - 0.5, color="grey", lw=0.4, alpha=0.5)
-    for q in range(1, len(ys)):
-        ax.axhline(q*ny - 0.5, color="grey", lw=0.4, alpha=0.5)
-    ax.set_title("(E on %d ranks - E on 1)/max E" % nlast, fontsize=10)
-    ax.set_xlabel("cell in x")
-    ax.set_yticklabels([])
-    fs.side_colorbar(fig, ax, im, "")
-    ax = fig.add_axes([0.74, 0.14, 0.24, 0.74])
+
+    # deposited E and S_i at the particles (double precision), difference from 1 rank
     floor = 1.0e-18
+    ax = fig.add_axes([0.43, 0.15, 0.23, 0.72])
+    f1 = _one(base, ranks[0], "*.trajmet.bin")
+    if f1 is not None:
+        a = np.fromfile(f1, "<f8").reshape(-1, 17)
+        times = np.unique(a[:, 0])
+        for n in ranks[1:]:
+            fn = _one(base, n, "*.trajmet.bin")
+            if fn is None:
+                continue
+            b = np.fromfile(fn, "<f8").reshape(-1, 17)
+            if b.shape != a.shape:
+                continue
+            sE = max(np.abs(a[:, 13]).max(), 1.0e-300)
+            sS = max(np.abs(a[:, 14:]).max(), 1.0e-300)
+            dE = np.abs(a[:, 13] - b[:, 13])/sE
+            dS = np.abs(a[:, 14:] - b[:, 14:]).max(axis=1)/sS
+            idx = np.searchsorted(times, a[:, 0])
+            mE = np.zeros(len(times))
+            mS = np.zeros(len(times))
+            np.maximum.at(mE, idx, dE)
+            np.maximum.at(mS, idx, dS)
+            ax.semilogy(times, np.maximum(mE, floor), color=NP_COLOR.get(n, "k"), lw=1.0,
+                        label="%d ranks" % n)
+            ax.semilogy(times, np.maximum(mS, floor), color=NP_COLOR.get(n, "k"), lw=1.0,
+                        ls="--")
+    ax.axhline(2.2e-16, **fs.MASK_LINE)
+    ax.set_ylim(floor, 1.0)
+    ax.set_xlabel("t")
+    ax.set_ylabel("max. difference from 1 rank / max", fontsize=9, labelpad=1)
+    ax.set_title("E (solid), S_i (dashed) at the particles", fontsize=10)
+    ax.legend(loc="upper right", fontsize=8)
+
+    ax = fig.add_axes([0.76, 0.15, 0.22, 0.72])
     for n in ranks:
         f = _one(base, n, "*.nrpic.hst")
         if f is None:
@@ -217,10 +233,10 @@ def fig_fields(case, ranks, base):
         ax.semilogy(a[:, 0], np.maximum(dS, floor), color=NP_COLOR.get(n, "k"), lw=1.0,
                     ls="--")
     ax.axhline(2.2e-16, **fs.MASK_LINE)
-    ax.set_ylim(floor, 1.0e-9)
+    ax.set_ylim(floor, 1.0)
     ax.set_xlabel("t")
-    ax.set_title("identity: E solid, S_i dashed", fontsize=10)
-    ax.set_ylabel("|mesh integral - particle sum| / sum m W", labelpad=1)
+    ax.set_title("mesh integral - particle sum", fontsize=10)
+    ax.set_ylabel("|difference| / sum m W", fontsize=9, labelpad=1)
     ax.legend(loc="upper right", fontsize=8)
     return fig
 

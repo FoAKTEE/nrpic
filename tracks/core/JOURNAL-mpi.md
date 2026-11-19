@@ -151,3 +151,42 @@ not act back, so the particle motion is that of T1.
 - P2e. In the Kerr cases the identity is not exact on any rank count, because clouds of
   particles near the outer boundary lose the part outside the mesh; the defect is the
   same on 1, 2 and 4 ranks to rounding (history columns 9 to 12 agree to 1e-12).
+
+### 07:22 Entry 5: T2, first pass: identity holds, a gather that skipped other ranks found
+
+Runs at commit a5ea2ef (core-20261119-145811, -145907, -145952, -150024, -150131,
+-150318-a5ea2ef) and, with all particles tracked and a finer comparison, at 54f734e
+(core-20261119-150711 cic, -150734 tsc, -150814 pcs, -150851 comp, -151012 Kerr cic,
+-151151 Kerr pcs; `compare.json` in each):
+
+- P2a held. Periodic box, largest |int E - sum m W| / sum m W over 302 records: cic
+  1.2e-14 / 4.9e-15 / 3.5e-15 on 1 / 2 / 4 ranks; tsc 1.3e-14 / 6.9e-15 / 3.7e-15; pcs
+  1.7e-14 / 7.8e-15 / 4.6e-15; comp 1.5e-14 / 7.8e-15 / 3.5e-15; momenta 2.1e-16 or
+  less everywhere. The values on several ranks are not larger than on one (they are
+  smaller: partial sums per rank). Nothing is lost or added twice at rank boundaries.
+- P2c held: 57680 to 371291 deposit packets per run (cic fewest, pcs most).
+- P2e held: Kerr cic 6.381286956036e-03 on 1 and 2 ranks, ...034e-03 on 4; Kerr pcs
+  7.2505554071e-03 on all three (losses at the outer boundary, the same on all).
+- P2b: the binary dumps are single precision (`outputs/binary.cpp` casts to float), a
+  fact I had not checked before predicting: "largest difference 0" for the ten
+  components in all dumps of all cases means equal to 6e-8, not to rounding. All
+  particles are therefore tracked in the second set of runs, so that the trajectory
+  record samples E and S_i at every particle in double precision.
+- P2d FAILED, and usefully: trajectories and snapshots are identical, the metric and
+  proper time at the particles are identical, but the deposited E and S_i at the
+  tracked particles differ from the one-rank values by up to 0.19 to 0.29 of the
+  largest value, not by rounding. The fields themselves agree (dumps, identity). The
+  record is formed in `NrpicWriteTrajectories` by a cloud-in-cell gather over the eight
+  cells around the particle, found by a search of the pack; my reading is that cells
+  held by another rank are skipped and the rest renormalised. I had ported the probe
+  (same gather, one point) and overlooked this one. Not yet a named cause: the fix is
+  the test.
+
+Fix: `NrpicMpiTrajSources` (requests for the cells another rank holds, answers, sums
+divided afterwards); hook in `NrpicWriteTrajectories` (the kernel keeps the undivided
+sums on several ranks).
+
+Prediction for the rerun (P2f): E and S_i at the particles on 2 and 4 ranks agree with
+one rank to rounding, below 1e-12 of the largest value, in all six cases; everything
+else as before. Refuted if differences of the size seen above remain: then the cause is
+elsewhere (and the fields would have to be compared cell by cell in double precision).
