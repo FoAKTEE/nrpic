@@ -11,7 +11,7 @@ Labels: [VERIFIED] read in the source of this tree or measured in a registered r
 
 Sections 1 to 4 are the design, written before the code. Section 5 lists the lines of
 shared files that were touched, section 6 the state reached (what is tested, what is
-not), section 7 the options and how to run.
+not), section 7 how to run, section 8 the answer to Track F.
 
 ## 1. What exists
 
@@ -158,7 +158,7 @@ ownership pass, which sends every particle to the rank that now holds its MeshBl
 Newtonian mode, collisions, curvature records, the test kick, and whatever the wave-2
 branches add (accretion diagnostics, initial-data solver, perturbations): the module
 stops with a message when one of them is switched on with more than one rank
-(`NrpicMpiCheckOptions`), so that no option runs unported. Horizon excision
+(`NrpicMpiInit`), so that no option runs unported. Horizon excision
 (`ah_exc_factor`) reads the horizon finder, which has MPI code upstream: [TO VERIFY].
 
 ## 4. Order of work and tests
@@ -176,3 +176,26 @@ it are in the journal before the run. Figures with `python/nrpic/figstyle.py`.
 | 4 | restart write and read | T4: T3 stopped and restarted on the same and on another number of ranks | restarted run equals the uninterrupted one as on one rank |
 | 5 | none planned | T5: T2 and T3 on a statically refined mesh; adaptive mesh with load balancing if time remains | as T2, T3 |
 | 6 | | card build with MPI, one short run on two cards (one card-hour at most) | runs; agreement with one card within the scatter between two one-card runs |
+
+## 5. Lines of shared files touched (for the merge with the wave-2 branches)
+
+New files (no conflict possible): `athenak/src/particles/nrpic_mpi.cpp` (all code that
+runs on several ranks), `nrpic_mpi.hpp` (reductions, search in the table of all
+MeshBlocks), `nrpic_cloud.hpp` (the cloud of the deposit as functions). Shared files,
+line numbers of this branch (`git diff main...core/mpi`), every hook marked "several
+ranks" in a comment:
+
+| File | Lines (branch) | What |
+|---|---|---|
+| `CMakeLists.txt` | 136 | `particles/nrpic_mpi.cpp` |
+| `particles/particles.hpp` | 12; 347-373 | `<cstdio>`; members and declarations of the MPI part (one block after the Newtonian declarations) |
+| `particles/particles.cpp` | 113 | `NrpicMpiInit(pin)` after `NrpicInit(pin)` |
+| `particles/nrpic.cpp` | 20-22 (comment), 45 (include), 61 (removed: the stop on several ranks), 550, 579 (first lines of `NrpicAssignBlocks`, `NrpicRemoveFlagged`), 708-717, 820-823, 832-835 (deposit kernel: table, level of cloud cells of other ranks, Lorentz factor and level kept), 922 (`NrpicMpiDepositRemote`), 981, 1225-1226 (sums of the deposit and the filter), 1269 (step limit of the whole mesh), 1404 (`NrpicInitializeSources`: particle numbers) |
+| `particles/nrpic_io.cpp` | 12 (`<algorithm>`), 32 (include), 42-46 (`NrpicFileWriter`), 143 (probe), 197, 212, 249-264 (history: sums, extrema, numbers of the whole run, rank 0 writes), 288, 291, 326-328 (cells of the whole mesh), 455-459 (constraint statistics), 526-528 (line dump), 591-599, 617-618, 636 (field dump), 810-823 (conservation record), 853-869, 890-892, 958-967, 969, 983-998 (trajectories: rank 0 writes; cells of other ranks asked for), 1010-1011, 1045 (snapshot), 1101-1102 (particle file: rank 0 reads), 1136-1138, 1191-1193, 1202 (restart write), 1211-1212, 1301 (restart read) |
+
+Merge rule [JUDGEMENT]: a wave-2 branch that adds a sum over particles or cells, a file
+written per particle, or a mesh array of the module has to add the matching reduction
+(`nrpic::MpiSum/MpiMin/MpiMax`), use `NrpicFileWriter`, or be added to the list of
+options that stop on several ranks in `NrpicMpiInit` (`nrpic_mpi.cpp`). The kernel of
+`NrpicDepositSources` keeps its own copy of the cloud; replacing it by the functions of
+`nrpic_cloud.hpp` is a clean-up for after the merge, with a regression run.
