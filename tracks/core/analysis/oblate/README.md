@@ -12,10 +12,11 @@ Journal with predictions and outcomes: `tracks/core/JOURNAL-oblate.md`. Interfac
 | `card_cf.py` | T1, part e: the same conformal factor as the card executable sets it (run `cf_card` of the card job); figure `figs/cf_check_card` |
 | `regress.py` | T2: byte regression of existing set-ups against the release executable |
 | `make_runs.py` | T3: initial data and the card-job list |
+| `run_newton.sh`, `newton_mode.py` | T4: the Newtonian reference of the collapse in AthenaK (release code, `pusher = newton`) with the particles of T3 at cells M/2 and M/4, against the homogeneous spheroid; figures `figs/oblate_newton`, `figs/oblate_newton_particles` |
 | `collapse_analysis.py` | T3: particle moments, plane crossing, horizon, curvature, constraint norm of the collapse runs; figures `figs/oblate_collapse`, `figs/oblate_mosaic`, `figs/oblate_particles` |
 
 Inputs: `problems/tests/oblate_cf.athinput`, `oblate_id.athinput`,
-`oblate_super.athinput`, `problems/oblate/oblate_amr.athinput`. Unit tests of the Python
+`oblate_super.athinput`, `problems/oblate/oblate_amr.athinput`, `problems/oblate/oblate_newton.athinput`. Unit tests of the Python
 tools: `python/tests/test_oblate_spheroid.py`.
 
 ## Runs
@@ -23,10 +24,11 @@ tools: `python/tests/test_oblate_spheroid.py`.
 | Test | Run id | State |
 |---|---|---|
 | T1 a-c | core-20261119-143758-09c669d | holds (two worded sub-predictions failed: journal entry 2) |
-| T1 a-d rerun | see the journal, entry 5 | |
+| T1 a-d rerun | core-20261119-152206-4d292b9 | holds (journal entry 6) |
 | T2 | core-20261119-144947-fb1ccae (first attempt -144337-5c02abf, stopped) | holds |
 | T3 initial data | core-20261119-144859-fbf3438 | done |
 | T3 card job (cf_card, oblate_m4, oblate_m8) | core-20261119-144923-1a7c274, Slurm job 4647 | see the journal |
+| T4 Newtonian reference, cells M/2 and M/4 (processors) | core-20261119-153609-754c44d | see the journal, entry 8 |
 
 ## How to finish T3 when the card job has ended
 

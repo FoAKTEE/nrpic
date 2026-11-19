@@ -78,6 +78,8 @@ Example inputs (one per new use):
 |---|---|
 | `problems/tests/oblate_cf.athinput` | the oblate component alone, no particles, no step: metric and constraint monitor of the initial slice (test T1) |
 | `problems/tests/oblate_id.athinput` | the same with the 10^4 sampled particles on a static mesh, no step (test T1, part c) |
+| `problems/tests/oblate_super.athinput` | an oblate component off the origin, superposed with a Gaussian and a puncture, no step (test T1, part d) |
+| `problems/oblate/oblate_newton.athinput` | the same particles in AthenaK's Newtonian mode (release code, `pusher = newton`): the Newtonian reference of the collapse (test T4) |
 | `problems/oblate/oblate_amr.athinput` | the collapse: `problems/prolate/prolate_amr.athinput` with the axes exchanged (refined box 22 x 22 x 10 M at level 4), to t = 55 M; the runs add `mesh_refinement/num_levels=5` or `6`, `mesh_refinement/max_nmb_per_rank=2000`, `particles/nfilter=4`, `particles/filter_compensate=true` on the command line (`analysis/oblate/make_runs.py` writes the list) |
 
 ## 3. Existing behaviour
@@ -109,12 +111,12 @@ entries 2 and later.
 | T1a conformal factor against the reference potential (`verify/oblate/oblate_reference.py` of branch core/nrpic; quadrature of the defining integrals; closed form of the sphere), three shapes, every cell of the mesh | core-20261119-143758-09c669d (processors) | psi^4 of the single-precision dump is the correctly rounded reference at every one of 1.4e6 cells (largest difference 0.49997 float32 units); Python twin against the reference 9e-14, against quadrature 5e-14 (relative, in u) |
 | T1b Hamiltonian monitor without matter = 32 pi rho_N psi^-5 inside, 0 outside | same | inside to 5e-8, outside 7e-7 of the central value (prolate control 5e-8, 2e-6); mesh integral of R psi^5/(16 pi) = 0.9999995 M |
 | T1c sampled particles against psi | same | sum m/psi(x_p) = M (1 + 8.9e-5); mesh integral of E psi^5 equal to that sum to 2e-7; core mean of the monitor 0.4 per cent of the source (prolate control 0.4 per cent) |
-| T2 byte regression against the release executable, processors | SEE SECTION 5 | SEE SECTION 5 |
+| T1d the oblate component off the origin, superposed with a Gaussian and a puncture (`problems/tests/oblate_super.athinput`) | core-20261119-152206-4d292b9 (processors; also reran T1a-c with the same numbers) | psi^4 is the correctly rounded sum of the three references at all 262144 cells (largest difference 0.49999 float32 units, flat histogram) |
+| T2 byte regression against the release executable, processors | core-20261119-144947-fb1ccae (first attempt core-20261119-144337-5c02abf stopped) | every output file byte-identical: `regress_cf` (16 files, 2 steps), `cf_table_regress` (8 files, 3 steps), prolate start at M/4 with 10^4 particles (16 files, 2 steps) |
 | T3 collapse on a card, finest cells M/4 and M/8, 10^4 particles | SEE SECTION 5 | SEE SECTION 5 |
 
-Not tested: an oblate component off the origin or together with other components
-(the offset enters as for every component, `CFExcess` subtracts the centre before the
-call); axis ratios beyond the three of T1 (e = 0, 0.3, 0.9); double-precision output of
+Not tested: axis ratios beyond the four of T1 (e = 0, 0.3, 0.9 and 0.909 off the
+origin); a polar axis other than z (there is no option for it); double-precision output of
 the C++ function (the dump is single precision; the double-precision statement is the
 Python twin's); eccentricities so close to 1 that `b` is not resolved by the mesh.
 
