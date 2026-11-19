@@ -816,3 +816,80 @@ C  Cluster at Kn = 3 over 150 M on the card (restated from 2026-11-15 16:22 UTC 
    deposit identity below 1e-12, collisions against sum_P within 4 sigma. Refuted by a
    change of sum M H_p in `particle` above 1e-12, or a structural difference beyond
    these bounds: then `particle` does not work in an evolving metric on the card.
+
+## 2026-11-19 14:30 UTC  outcomes A, D, G4c; prediction for the crash test X
+
+### A: analysis mode of run_cluster.py, run core-20261119-140950-7aacfe6. Passed.
+
+`--analyse` on the processor run core-20261115-160913-0656925 reproduces its
+`summary.json` with 0 differences outside the wall times (`compare.txt`); the new block
+`compare_energy_modes` of that run: lapse 8.4e-9, radii 1.5e-11 apart between the modes,
+773 against 772 collisions. `fig_cluster.png` looked at (as the original).
+
+### D: card differences, run core-20261119-141059-f3ccf56. (a), (c) held; (b) FAILED as written.
+
+`card_diff.json`, `fig_card_diff.png` (looked at).
+(a) Every integer column of every differing `coll.hst` identical in every row, all five
+    tests (n_tested, n_coll, n_updated, ...): the two executables test and accept the same
+    pairs in every step; no acceptance flipped.
+(b) Same particles (tags) in every snapshot; |du|/max(1, |u|) at most 2.1e-14 (rate),
+    7.1e-15 (relax), 1.8e-15 (repro), 1.8e-14 (curved), conv_dt no snapshot differs; but
+    |dx| reaches 2.4e-12, 2.6e-12, 1.9e-12 (rate, relax, curved), above my bound of 1e-12.
+    The bound was absolute while the box lies at x = 100 to 101: 2.6e-12 is 2.6e-14 of the
+    coordinate, the momentum differences of 1e-14 carried over up to 25 output intervals.
+    Failed as written; the size is rounding of the coordinates.
+(c) The first differing snapshot is number 1 (the first after a collision step) in every
+    run; 2 in the restarted runs (restart from snapshot 1). The differing floating-point
+    history columns are the sums over the collision step (sum_MW to 2.4e-16 relative,
+    sum_Mu_i to 3e-14 of their small totals, sum_P 1e-15, max_P 2e-15) and the pair
+    defects (dE, dP, abs_dE: values at rounding level, 1e-20, that differ by order one).
+So the new card executable, with the options absent, is not byte-identical to the
+release one in collisional runs; it collides the same pairs with momenta that differ by
+rounding (2e-14 at most). Each executable is deterministic on its own (reproducibility
+test passed for both). Cause [JUDGEMENT, not tested]: code generation of the card
+compiler for the collision kernel, whose source gained the branches of `coll_energy`
+around unchanged arithmetic; the processor build of the same source is byte-identical
+to the release in all these tests (entries of 2026-11-15 18:25 and 19:15). Bound: the
+push is not involved (the null run of the rate test, operator on with sigma = 0, has
+identical snapshots), and the difference starts in the first collision step.
+
+### G4c: G4 on the card, analysis run core-20261119-141051-b309a9f. Passed.
+
+(`run_tolman.py --analyse` of run core-20261115-205317-6817f49; `fig_tolman.png` looked
+at; the run's `run.log` holds the analysis output interleaved with the wrapper's exit
+line, because both wrote to it; `summary.json` is complete.)
+- particle_s0 (600 steps, 84.8 collisions per particle, 4.24e7 collisions): change of
+  sum M H in the collision steps 9.6e-15 of its value (2.8e-16 per collision), total
+  including the push +4.7e-9; late cos(phi) amplitude of ln(theta alpha) -0.21 (0.06)
+  percent (criterion 0.5 percent; z = -3.5 with an error that treats the snapshots as
+  independent; the drawn initial state of seed 0 itself reads -0.47 (0.17) percent, and
+  the series scatters between -0.57 and +0.24); no pair without a root; rejected share
+  5.704e-3 against 5.669e-3 of the reference (z = +0.6); largest |lam - 1| 0.66.
+- cell_s0 (85.6 per particle): sum M H grows by 9.86e-3, 0.78 of the initial rate
+  (band 0.3 to 1.2); gain per collision in the first collision time 3.20e-4 against
+  3.62e-4 (z = -2.2); late amplitude -3.67 (0.06) percent (band -2 to -10; processor
+  -3.8 and -3.4).
+- Cut runs, without verdict: cell_s1 (528 steps) +8.70e-3, amplitude -3.65 percent;
+  particle_s1 (335 steps) 5.4e-15 in the collision steps, amplitude -0.11 (0.08).
+- Momentum along y and z (exact sums of the snapshots): below 1.4e-18 of sum M |u|.
+So `coll_energy = particle` keeps Tolman's equilibrium on the card over 85 collisions
+per particle with 1e6 particles, and `cell` drifts to -3.7 percent as on the processor.
+
+### Prediction X: the first card crash (before the build and the run, 14:35 UTC)
+
+The incremental card build `.work/build_gpu` still holds the crashed executable (sha256
+87f19ec5..., identical to `scratch/core/tmp/coll2/exe/819d588/athena_gpu`), and its nine
+objects finished between 07:40:10 and 07:40:35 local time, after the header change of
+07:40:08 (particles.cpp.o 07:40:11, particles_pushers 07:40:10, particles_tasks 07:40:12,
+nrpic_kick 07:40:19, nrpic_curvature 07:40:27, nrpic_newton 07:40:29, nrpic_io 07:40:34,
+and vtk_prtcl, pgen); `athenak/src` has not changed since (git diff f46f159 HEAD:
+empty). Test: keep copies of the nine objects, delete them in `.work/build_gpu`, rebuild
+incrementally (only they are recompiled and the executable relinked), and run the two
+smoke decks of `gpu_job3.sh` (static metric with collisions, 20000 particles, 5 steps;
+perturbing force) on the card. Predicted: (a) the build recompiles exactly these nine
+objects; (b) the relinked executable runs both decks with exit 0; (c) the snapshots of
+the static deck are byte-identical to those of the clean build f46f159 in job 4485
+(`scratch/core/tmp/coll2/smoke_card_4485/static`), or, if the two builds compile the
+same source differently (different source paths), differ only at rounding with the
+same collisions. Refuted by a crash in (b): then the nine stale objects are not the
+cause, and the crash remains unexplained (the clean build still runs).
