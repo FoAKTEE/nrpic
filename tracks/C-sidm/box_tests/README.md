@@ -102,6 +102,74 @@ the thermal energy over 8 seeds, 2.4 se; production runs use equal masses).
 
 Card time used: 0.014 card-hour (Slurm job 4464, 51 s).
 
+## Wave 2b (2026-11-19): rerun with core's corrected operator
+
+Executable: core's processor build of branch `core/collisions-2`
+(`/data/haiyangw/nrpic/scratch/core/exe/core_collisions-2/athena_cpu`, commit f46f159,
+READY in that directory), option `<particles> coll_energy = cell | particle`
+(`git show core/collisions-2:tracks/core/interfaces/collisions.md`, sections 5 and 11).
+Criteria: `../collide/TESTS.md` (wave 1) and its section 2a (wave 2), unchanged.
+Predictions R1-R6 and every outcome, failed ones included: `JOURNAL.md`, section "Wave
+2b". No card time used.
+
+Rerun (from the worktree root; `X=/data/haiyangw/nrpic/scratch/core/exe/core_collisions-2/athena_cpu`,
+`D` as above, `S=/data/haiyangw/nrpic/scratch/C-sidm`; each with
+`harness/bin/nrpic-run submit --kind scouting --gate G1|G2 --package tracks/C-sidm/box_tests --cores N --purpose ... --`):
+
+    python3 tracks/C-sidm/box_tests/scripts/t0b.py $D --exe $X --tag c2off --ref $S/C-20261115-170155-13ff01f
+    python3 tracks/C-sidm/box_tests/scripts/t0b.py $D --exe $X --tag c2particle \
+        --deck tracks/C-sidm/box_tests/inputs/box_c2.athinput --set particles/coll_energy=particle
+    python3 tracks/C-sidm/box_tests/scripts/compare_modes.py <R1 run dir> <R2 run dir>
+    python3 tracks/C-sidm/box_tests/scripts/t1t2.py $D --nproc 8 --exe $X --tag c2particle \
+        --deck tracks/C-sidm/box_tests/inputs/box_c2.athinput --set particles/coll_energy=particle \
+        --ref $S/C-20261115-165500-c67e036
+    python3 tracks/C-sidm/box_tests/scripts/t10.py --exe $X --tag c2particle \
+        --deck tracks/C-sidm/box_tests/inputs/box_c2.athinput --set particles/coll_energy=particle
+    python3 tracks/C-sidm/box_tests/scripts/t12.py $D --nproc 8          # 25 min per curved run
+    python3 tracks/C-sidm/box_tests/scripts/king_defect.py --nproc 6     # 6 min per run
+    python3 tracks/C-sidm/box_tests/scripts/timing.py $D
+    (t12.py and king_defect.py take --from <run dir> to re-analyse without running AthenaK)
+
+| Test | Verdict | Run id | Key numbers | Figure |
+|---|---|---|---|---|
+| R1 T0b, option absent | PASS 6/6 | C-20261119-141502-95f0200 | every output file byte-identical to the release run C-20261115-170155-13ff01f | `figs/t0b_replay_c2off.png` |
+| R2 T0b, `particle` (flat) | PASS 6/6 | C-20261119-141711-7db7a6a (first attempt -141614-e42b5ec failed: relative deck path) | dump version 2, metric at the particles exactly flat; cell-frame replay: same pairs and collisions, momenta to 4.4e-16; n_noroot = n_balance = 0, lam = 1 exactly | `figs/t0b_replay_c2particle.png` |
+| R2b modes compared | done | C-20261119-141854-b2b664d | against the option absent: same particles updated, momenta within 7.8e-16 of max(1, \|u\|) after 21 steps | `figs/compare_modes_c2.png` |
+| R3 T1, T2 (`particle`) | PASS 16/16 + 16/16 | C-20261119-141806-af19c1c | n_tested, n_coll, max_nsub identical to the release run in all 3200 steps; T2 z values equal to wave 2; T1 within 1.1e-7 of the bound; final momenta within 1.4e-14; positions within 200 ulp (failed clause of my prediction, rounding) | `figs/t2_rate_c2particle.png`, `figs/t1_step_c2particle.png`, `figs/paired_c2particle.png` |
+| R3(v') cost | measured (prediction failed) | C-20261119-143146-226b0e0 | collision part of `particle` 1.68 times that of `cell` in the flat box (1.89e-6 against 1.13e-6 s per tested pair on a loaded core); whole run 1.40 | none (numbers in `results/timing_*.json`) |
+| R4 T10 (`particle`) | PASS | C-20261119-143041-f94e350 | MeshBlocks 1, 8, 64 and restarts bit-identical; seed differs; 385554 collisions as in the release run | `figs/t10_repro_c2particle.png` |
+| R5 T12 (curved, `particle`) | PASS 4/4 | C-20261119-143049-0cf699a (AthenaK; driver stopped at the figure), C-20261119-145925-dbcfb9c (analysis) | alpha0 = 0.8, psi0 = 1.1: rate per coordinate time and volume / flat twin = alpha0 psi0^6 = 1.41725 exactly (identical counts in every step); analytic rate 0.99997-1.00009 (\|z\| <= 2.4); T1 within 3.6e-7 of the bound; `cell` = `particle` in the homogeneous metric | `figs/t12_c2.png` |
+| R6 King threshold model | measured | C-20261119-141431-a351ac7 (runs), C-20261119-142957-c5da7d0 (figure) | step 1 per collision: cell mode +8.0(3.4)e-11 of sum M W_p and +1.11(0.47)e-10 M of sum M H_p at Kn = 0.01 (predicted 1.74e-10 and 2.40e-10 M); `particle`: d sum M H_p = +1.5-1.9e-21 M per collision (rounding; 1e-11 of the old defect), per step <= 4.5e-17 of the sum against 3.9e-6; d sum M W_p -1.7(2.4)e-11 (zero); n_noroot 0, n_balance <= 2.7e-4 | `figs/king_defect_c2.png` |
+
+Findings of wave 2b:
+- With the option absent the new executable is the release (R1, bytes); with
+  `coll_energy = particle` in a flat box it takes exactly the collisions of the release
+  and differs in the last bits of the momenta only (R2, R3); T10 holds.
+- T12 passes: the collision rate in the static homogeneous metric is alpha0 psi0^6 times
+  the flat value per coordinate time and volume; this closes the T12 item left open in
+  wave 2 (G2 criterion "budgets of conserved quantities close in curved spacetime", for
+  this homogeneous case and, for the collision step alone, in the King model).
+- In the King threshold model the new option removes the first-step energy defect: the
+  canonical energy is conserved to a systematic +1.7e-21 of its sum per collision (about
+  half of the 16-ulp stopping tolerance of the energy root), against +1.3(0.5)e-10 with the
+  core-v0.3 operator. The deposited energy sum M W_p shows no mean change (it is not
+  conserved by design).
+- The cell-mode defect measured here (+8.0(3.4)e-11 per collision at Kn = 0.01) is
+  0.46 of the pair-model prediction of threshold_scan (2.8 se low); the card runs of wave 2
+  were low too (factor 0.70). Not explained.
+- Cost: `particle` makes the collision step 1.7 times as expensive on the processor in a
+  flat box; the curved mesh-metric runs of T12 took 4.4-5.3 times as long as the flat twins
+  (push with Hermite reconstruction and coll_budget).
+- Trap: AthenaK accepts on the command line only parameters the deck has; the reruns use
+  decks that carry `coll_energy` (`inputs/box_c2.athinput`, `inputs/king_cc1.athinput`).
+
+Not done in wave 2b: card runs (the card executable of core/collisions-2 was not used;
+its `CARD_TESTS.log` lists FAIL lines of parts R against the release card executable,
+which core's own analysis has to settle); T3-T5, T9, T11 with the option (their
+statistics follow from identical collisions in the flat box, R3, but were not rerun);
+T12 with a modulated metric (core's tests G1-G4 cover it; the track has not checked them
+independently); the King measurement beyond two steps.
+
 ## Requests
 
 To core (branch `core/nrpic`):
@@ -124,7 +192,37 @@ To the lead of C-sidm:
 - Next box work: T6-T8 (card), T12 with `metric_kind = homogeneous`, O3 and O4 if they
   matter for the science runs.
 
-To orch: none from this package. The harness worked (nrpic-run registered every run;
+Wave 2b (2026-11-19):
+
+To core (branch `core/collisions-2`):
+- Informational: with `coll_energy = particle` the canonical energy of a pair is not
+  conserved to zero mean but to +1.5-1.9e-21 M per collision in the King model (about
+  half of the 16-ulp tolerance, always positive; run C-20261119-141431-a351ac7). Harmless
+  (2e-15 of sum M H over 300 M at Kn = 1); one more Newton step after the tolerance is met,
+  or a symmetric stopping rule, would remove the bias if it ever matters.
+- READY: say that `coll_energy` must be in the input file to be set on the command line
+  (only parameters the deck has can be overridden), and that the cost of the collision
+  step with `particle` is about 1.7 times that of `cell` on the processor (run
+  C-20261119-143146-226b0e0); collisions.md 11.5 says "about the same time" in a run
+  dominated by the push.
+- The card executable: settle the FAIL lines of `CARD_TESTS.log` (parts R against the
+  release card executable) before tracks use it for card runs with collisions.
+
+To the lead of C-sidm:
+- Use `coll_energy = particle` for every cluster run with collisions: the core-v0.3
+  defect (+1.1(0.5)e-10 M of Killing energy per collision at the start, run
+  C-20261119-141431-a351ac7; threshold_scan: 1.6-1.7e-3 of
+  sum M W before the collapse at Kn = 1) is gone at the collision step.
+- The threshold_scan conclusion "both King models collapse with collisions" was obtained
+  with the defect; rerunning CC1/CC2 at Kn = 10 and 1 with `particle` (about 1.2 card-hours:
+  the four collisional runs of wave 2's 1.73) decides whether the defect mattered; that needs card time and the
+  card executable cleared by core.
+- T12 now passes; TESTS.md could name the twin comparison (identical counts) as the sharp
+  form of the T12 criterion.
+
+To orch: none from this package (wave 2b).
+
+To orch (wave 2): none from this package. The harness worked (nrpic-run registered every run;
 three submissions were refused by the owner's 16-core allotment and resubmitted with
 fewer cores; with output redirected, the "registered" line of a local run appears only
 when the run ends).
