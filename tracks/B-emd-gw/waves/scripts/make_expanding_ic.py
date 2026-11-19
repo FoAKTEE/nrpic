@@ -32,8 +32,11 @@ def main():
     ap.add_argument("--eps-p", type=float, default=2e-6)
     ap.add_argument("--eps-x", type=float, default=1e-6)
     ap.add_argument("--phi-x", type=float, default=1.0)
-    ap.add_argument("--out", required=True)
+    ap.add_argument("--out", default=None,
+                    help="default: $NRPIC_RUN_DIR/N<n>/ic (a registered run of its own)")
     a = ap.parse_args()
+    if a.out is None:
+        a.out = os.path.join(os.environ["NRPIC_RUN_DIR"], f"N{a.n}", "ic")
     n, L = a.n, a.L
     h = L / n
     m = np.array([float(v) for v in a.m.split(",")])
