@@ -110,6 +110,7 @@ Particles::Particles(MeshBlockPack *ppack, ParameterInput *pin) :
   // options and mesh arrays of the numerical-relativity particle-in-cell module
   if (is_nrpic) {
     NrpicInit(pin);
+    NrpicMpiInit(pin);      // more than one MPI rank (nrpic_mpi.cpp)
   }
 }
 
