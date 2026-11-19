@@ -1,0 +1,7 @@
+# INSPIRE queries, batch 3 (2026-11-19): follow-ups of the NRPIC authors and remaining gaps. label | query
+b_a1 | a "Wu, Jiaxi" and date>2025
+b_a2 | a "Most, Elias R." and (t particle or t "particle-in-cell" or t Vlasov or t collisionless or t "dark matter")
+b_k15 | (t "black hole" or t "black holes") and (t collisionless or t Vlasov) and (t "numerical relativity" or t "dynamical spacetime" or t "dynamical spacetimes")
+s5_k12 | (t "black hole formation" or t "primordial black hole" or t "primordial black holes" or t collapse) and (t "free-streaming" or t "free streaming")
+s7_k13 | (t "gravitational waves" or t "gravitational wave") and (t averaging or t backreaction) and (t "numerical relativity" or t "fully nonlinear")
+s4_k12 | (t "black hole" or t "black holes") and t "dark energy" and (t "numerical relativity" or t simulation or t simulations)

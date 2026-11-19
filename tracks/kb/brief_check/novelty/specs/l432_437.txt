@@ -1,0 +1,9 @@
+1011.4920 | traceless|6
+1011.4920 | weak energy|5
+1011.4920 | Burnett|5
+2509.19769 | turbulen|5
+2509.19769 | numerical|5
+1505.02959 | numerical|6
+1505.02959 | BSSN|Einstein equations|4
+1801.08362 | numerical relativity|6
+1801.08362 | high.frequency|4

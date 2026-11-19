@@ -1,0 +1,31 @@
+# INSPIRE queries, batch 1 (2026-11-19). label | query. Results: kb-data/meta/inspire/query/<sha16>.json
+# S4 null test: numerical-relativity test of the cosmological coupling of black holes
+s4_c1 | refersto:recid:2633033 and fulltext:"numerical relativity"
+s4_c2 | refersto:recid:2633033 and (t simulation or t simulations or t numerical)
+s4_k1 | t cosmologically coupled
+s4_k2 | (t "black hole" or t "black holes") and (t "expanding universe" or t "expanding background" or t "expanding cosmology" or t FLRW or t Friedmann or t "cosmological background") and (t "numerical relativity" or t numerical)
+s4_k3 | (t "black hole" or t "black holes") and (t "matter-dominated" or t "matter dominated" or t dust) and (t accretion or t growth) and (t "numerical relativity" or t "fully relativistic" or t "general relativistic" or t simulation or t simulations)
+s4_k6 | t McVittie and (t numerical or t simulation or t dynamical or t formation or t collapse)
+# S5: black-hole formation with a free-streaming component
+s5_k1 | (t "primordial black hole" or t "primordial black holes") and (t neutrino or t neutrinos)
+s5_k2 | (t "primordial black hole" or t "primordial black holes") and (t "free streaming" or t "free-streaming" or t collisionless or t kinetic or t Vlasov or t Boltzmann)
+s5_k3 | (t "primordial black hole" or t "primordial black holes") and (t anisotropic or t "imperfect fluid" or t "two-fluid" or t "two fluids" or t "multi-fluid" or t multifluid or t viscous or t viscosity)
+s5_k4 | fulltext:"Einstein-Vlasov" and (t "primordial black hole" or t "primordial black holes" or t "black hole formation")
+s5_k5 | (t "black hole formation" or t "gravitational collapse") and (t massless or t "null dust" or t radiation) and (t Vlasov or t collisionless or t kinetic)
+s5_k6 | fulltext:"free-streaming" and fulltext:"neutrino" and fulltext:"primordial black hole formation" and fulltext:"numerical relativity"
+# S7: 3+1 numerical test of the Burnett conjecture
+s7_k1 | t Burnett or (t "high-frequency" and t Einstein) or (t "high frequency" and t Einstein)
+s7_k2 | (t "high-frequency" or t "high frequency" or t "short-wavelength" or t "short wavelength") and (t "gravitational waves" or t "gravitational wave" or t "gravitational radiation") and (t backreaction or t "back-reaction" or t averaging or t "effective stress" or t "stress-energy" or t "energy-momentum")
+s7_k3 | (t "gravitational wave" or t "gravitational waves") and (t "null dust" or t "massless Vlasov" or t "kinetic theory" or t "geometric optics" or t "graviton gas") and (t numerical or t simulation or t simulations or t "numerical relativity")
+s7_k4 | refersto:recid:879937 and (t numerical or t simulation or t simulations or t "numerical relativity")
+s7_k5 | refersto:recid:1608009
+s7_k6 | t "gravitational wave turbulence" or t "gravitational turbulence" or t "turbulence of gravitational waves"
+s7_k7 | fulltext:"Burnett" and fulltext:"numerical relativity" and fulltext:"Vlasov"
+# Binary black holes in a particle dark-matter environment, full numerical relativity
+b_k1 | (t "binary black hole" or t "binary black holes" or t "black hole binary" or t "black hole binaries" or t "black-hole binary" or t "black hole merger" or t "black hole mergers") and t "dark matter" and fulltext:"numerical relativity"
+b_k2 | (t "binary black hole" or t "black hole binary" or t "black hole binaries" or t "binary black holes") and (t collisionless or t Vlasov or t particles or t "N-body") and (t "dark matter" or t environment or t spike or t halo)
+b_k3 | (t "black hole" or t "black holes") and (t "Einstein-Vlasov" or t Vlasov or t "collisionless matter" or t "collisionless particles") and (t binary or t merger or t mergers or t "two black holes")
+b_k4 | refersto:recid:2166059
+b_k5 | refersto:recid:3226709
+b_k6 | (t "numerical relativity" or t "full general relativity" or t "fully relativistic") and t "dark matter" and (t "black hole" or t "black holes")
+b_k7 | fulltext:"particle-in-cell" and fulltext:"numerical relativity" and fulltext:"binary black hole"

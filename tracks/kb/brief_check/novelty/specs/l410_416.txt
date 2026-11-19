@@ -1,0 +1,11 @@
+1609.02245 | M_\\odot|8
+1202.3848 | 10\^5|10\^\{5\}|6
+2209.02735 | relativistic|6
+2209.02735 | free.stream|4
+1906.08217 | threshold|8
+1906.08217 | equation of state|6
+1906.08217 | neutrino|4
+2303.07980 | neutrino|12
+2303.07980 | free.stream|8
+2409.10384 | dynamical spacetime|5
+2409.10384 | DynGRMHD|4

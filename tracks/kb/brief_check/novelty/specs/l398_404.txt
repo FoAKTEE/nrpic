@@ -1,0 +1,14 @@
+2608.13206 | Zel'?dovich.{0,5}Novikov|8
+2608.13206 | accretion law|5
+2109.04896 | scalar field|6
+2109.04896 | matter dominat|4
+2109.04896 | self-similar|5
+1805.09034 | N-body|6
+1805.09034 | Newtonian|5
+1805.09034 | merger rate|4
+2302.07878 | k\s*=\s*3|k \\approx|k\s*\\sim|\\approx 3|6
+2302.07878 | coupling strength|4
+2302.07878 | accretion|4
+1901.08528 | 9/4|4
+1607.00612 | spike|3
+2106.07480 | power.law|4

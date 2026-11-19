@@ -1,0 +1,20 @@
+gr-qc/0512031 | perfect fluid|8
+gr-qc/0512031 | numerical|4
+0904.1546 | Vlasov|vacuum|4
+0904.1546 | numerical|4
+2010.01399 | Vlasov|matter|5
+2010.01399 | numerical|4
+1611.07906 | spindle|4
+1901.04498 | spindle|prolate|4
+2402.10190 | extremal|5
+2511.20567 | numerical|5
+2511.20567 | Kerr|rotat|4
+1904.12879 | sudden|6
+1904.12879 | gradual|4
+2003.10455 | sudden|5
+2312.12499 | decay|6
+2312.12499 | Newtonian|N-body|6
+2306.14961 | decay|6
+2306.14961 | N-body|simulation|4
+1904.11773 | decay|5
+1904.11773 | relativistic|4

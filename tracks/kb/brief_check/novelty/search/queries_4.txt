@@ -1,0 +1,2 @@
+# INSPIRE queries, batch 4 (2026-11-19): limited check of the S8 sentence (line 441). label | query
+s8_k1 | (t Vlasov or t collisionless or t "kinetic matter") and (t spike or t spikes or t Mixmaster or t BKL or t singularity or t singularities) and (t numerical or t simulation or t simulations or t inhomogeneous)

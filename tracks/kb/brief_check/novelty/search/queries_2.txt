@@ -1,0 +1,30 @@
+# INSPIRE queries, batch 2 (2026-11-19), after reading batch 1. label | query
+# S4 null test
+s4_c3 | refersto:recid:2633033 and (t horizon or t "apparent horizon" or t "event horizon")
+s4_c4 | refersto:recid:2633033 and (t "general relativity" or t Einstein or t junction or t "exact solution" or t McVittie or t Kerr or t Schwarzschild)
+s4_c5 | refersto:recid:2633033 and fulltext:"apparent horizon"
+s4_k7 | (t "black hole" or t "black holes") and (t expanding or t cosmological or t cosmology) and (t "apparent horizon" or t "horizon mass" or t "mass growth" or t "mass increase")
+s4_k8 | (t "black hole" or t "black holes") and (t "Einstein-de Sitter" or t "dust-filled" or t "dust universe" or t "matter-dominated universe" or t "matter dominated universe")
+s4_k9 | t "black hole lattice" or t "black-hole lattice" or t "black hole lattices" or t "black-hole lattices"
+s4_k10 | (t "black hole" or t "black holes") and (t "Swiss cheese" or t "Swiss-cheese" or t "Einstein-Straus") and (t numerical or t dynamical or t stability)
+s4_k11 | (t "black hole" or t "black holes") and (t "expanding universe" or t cosmological) and (t "numerical relativity" or t "3+1")
+# S5
+s5_c1 | refersto:recid:2642121 and (fulltext:"free-streaming" or fulltext:"free streaming")
+s5_c2 | refersto:recid:1942269
+s5_k7 | (t "primordial black hole" or t "primordial black holes") and (t "electron-positron" or t annihilation or t "e+e-")
+s5_k9 | (t "primordial black hole" or t "primordial black holes") and t "neutrino decoupling"
+s5_k10 | fulltext:"massless Vlasov" and fulltext:"primordial black hole"
+s5_k11 | (t "primordial black hole" or t "primordial black holes") and (t "numerical relativity" or t "3+1") and date>2023
+# S7
+s7_k8 | refersto:recid:1369323
+s7_k9 | (t "gravitational waves" or t "gravitational wave") and (t "radiation fluid" or t Isaacson) and (t numerical or t simulation or t expanding)
+s7_k10 | (t "null dust" or t "massless Vlasov" or t "massless Einstein-Vlasov" or t "massless particles") and (t numerical or t simulation or t simulations)
+s7_k11 | refersto:recid:2765845
+s7_k12 | refersto:recid:1818072 and (t numerical or fulltext:"numerical relativity")
+# Binary black holes in a particle dark-matter environment
+b_k8 | (t "binary black hole" or t "black hole binary" or t "binary black holes" or t "black hole binaries") and t "dark matter" and (t "test particles" or t geodesic or t geodesics or t particle or t particles)
+b_k9 | (t "black hole" or t "black holes") and t "dark matter" and (t spike or t spikes or t minispike) and (t relativistic or t "general relativity" or t "numerical relativity")
+b_k10 | fulltext:"Einstein-Vlasov" and (t binary or t merger or t mergers) and (t "black hole" or t "black holes")
+b_k11 | (t "binary black hole" or t "black hole binary" or t "binary black holes" or t "black hole binaries") and (t matter or t environment or t environments) and t "numerical relativity"
+b_k12 | refersto:recid:1674551 and fulltext:"numerical relativity"
+b_k14 | (t binary and (t "black hole" or t "black holes")) and t "dynamical friction" and (t relativistic or t "numerical relativity" or t "general relativity")

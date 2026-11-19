@@ -1,0 +1,5 @@
+2209.02735 | kinetic equilibrium|thermal equilibrium|self-interact|collisionless|4
+2209.02735 | sound speed|4
+2306.14961 | radiation|6
+2306.14961 | mass loss|lose mass|decay.{0,40}particles|4
+2608.13206 | \\dot\{?M|accretion rate|5
