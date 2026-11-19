@@ -508,3 +508,32 @@ release card executable only in that the deposit adds through `DepositTarget::Ad
 histories differ from one thread of the processor build O3 by rounding only (rel_max below
 1e-10; card against processor runs of earlier packages differed by 1e-13 to 1e-12), and the
 deposit identity stays below 1e-13. Refuted by a failed run or a larger difference.
+
+## 2026-11-19 08:51 Entry 13: published; what is open
+
+Published (tracks/core/omp/publish.sh, 08:47): scratch/core/exe/core_build-openmp/
+athena_cpu (threaded, sha256 8f223f75..., the executable of every threaded run above),
+athena_cpu_serial (ae24bb76..., the S of P0), athena_gpu (5b1e90e7...); COMMIT (source
+a9c34e7a, HEAD fa242139), SHA256SUMS, READY (= tracks/core/omp/READY.txt). Interface text:
+tracks/core/interfaces/threaded_build.md. Answers posted to D-bh-dress and A-emd-pbh, and a
+note to all tracks (tracks/core/outbox/20261119T164803Z__*). scripts/README.md has a
+section on threaded runs.
+
+Open:
+1. P7 with measured card numbers: Slurm 4643 (run core-20261119-144437-6718c76, release
+   card executable, card_timing.list, 0.34 card-hours) is queued, estimated start 09:23.
+   When it has run: `bash tracks/core/omp/analyse_scaling.sh
+   /data/haiyangw/nrpic/scratch/core/core-20261119-144437-6718c76` (registered) fills the
+   card column of the table and the dotted lines of figs/scaling.png; then replace the
+   provisional ratios in section 5 of the interface text and in READY.
+2. P13 (card smoke test of this branch's card executable): Slurm 4666 (run
+   core-20261119-164717-b187f36), estimated start 2026-11-20 00:15. When it has run:
+   compare dep and east with one thread of O3 (regress.py --reuse, or recompare.py).
+3. The gas multigrid's iterates depend on the thread count (entry 8); cause not found.
+   Affects the Newtonian mode with newton_mg_tol > 0 (agreement between thread counts only
+   to the tolerance) and gas self-gravity runs.
+4. AthenaK restart files hold uninitialised padding bytes of RegionSize/RegionIndcs
+   (outputs/restart.cpp 225-229): byte comparisons of restart files are unreliable across
+   processes; compare their data. Upstream code; not changed here.
+5. Not tested: MPI with threads, adaptive refinement under threads, restarts under
+   threads, unbound placement at 32 and 64 threads.
