@@ -446,3 +446,56 @@ and 1e-12, the one-thread values included).
 So the threaded executable is correct on every case of the regression set within the
 claims of section 4 of the interface text; the open item is the cause of the
 thread-count dependence of the gas multigrid iterates (entry 8).
+
+## 2026-11-19 08:47 Entry 11: outcome of P6 (strong scaling); P7 pending, with provisional card numbers
+
+Runs (O3, threads on the least busy cores of omp_places.py, best of two repeats):
+one thread core-20261119-154725-1c3e906, serial build core-20261119-154729-1c3e906,
+4 threads core-20261119-163647-53000b7 (disjoint core sets), 16 threads
+core-20261119-161025-820e057, 32 core-20261119-162248-f2f3758, 64
+core-20261119-163017-11fe2fd; table and figure core-20261119-164536-582ae3d
+(`tracks/core/omp/scaling_table.md`, `figs/scaling.png`, looked at). Load average of the
+machine 97 to 157 (144 hardware threads) throughout; the 64-thread runs got 52 to 71 per
+cent of their processor time. Seconds per step (speed-up over one thread):
+
+| case | 1 | 4 | 16 | 32 | 64 | serial build |
+|---|---|---|---|---|---|---|
+| punc (Z4c, 1.41e6 cells, refined, tracers, horizon finder) | 203 | 44.6 (4.6) | 14.3 (14.2) | 8.14 (25.0) | 6.45 (31.5) | 243 |
+| cluster (1e5 particles, Z4c, 1.64e6 cells) | 243 | 55.3 (4.4) | 18.5 (13.2) | 10.0 (24.3) | 7.33 (33.2) | 294 |
+| cosmo (64^3, 2.1e6 particles, PCS, compensation) | 94.3 | 23.3 (4.1) | 6.86 (13.8) | 3.68 (25.6) | 2.69 (35.1) | 114 |
+| newton (128^3, 5.1e5 particles, multigrid) | 10.6 | 2.14 (5.0) | 0.819 (13.0) | 0.478 (22.2) | 0.680 (15.6) | 11.6 |
+
+P6: at 16 threads the speed-up is 13.0 to 14.2 in all four cases. The puncture is at the
+top of its predicted range (10 to 14); the particle cases were predicted 10 to 30 per cent
+lower and are not: that part FAILED (the push is local and the deposit's atomics cost a
+third of the deposit only, entry 8). At 32 threads 22 to 26 (predicted 16 to 24: holds
+or slightly above). At 64 threads on a machine already loaded beyond its hardware threads:
+31 to 35 for the Z4c and cosmology cases (predicted 22 to 40: holds), 15.6 for the
+Newtonian box, slower than at 32 threads. The refutation criteria (below 6 at 16 threads,
+or slower than one thread) did not occur. The four-thread runs exceed 4 (4.1 to 5.0):
+the one-thread runs shared their core's caches with other jobs. Not tested: unbound runs
+at 32 and 64 threads.
+
+P7 (one A100): the card job of this package (Slurm 4643, run core-20261119-144437-6718c76,
+the four cases and the Z4c benchmark with the release card executable, 0.34 card-hours)
+waits in the queue (estimated start 09:23 PST). Provisional comparison from earlier card
+logs [VERIFIED as logged; other decks of the same kind, so ratios are estimates]:
+- Z4c, uniform 128^3: 2.0e7 zone-cycles/s on one card (docs/TESTLOG.md, "Z4c
+  throughput"); this build: 1.1e4 at one thread, 1.0e5 at 16 threads (bench case, run
+  core-20261119-155057-57325bc): the card is about 200 times 16 threads.
+- Puncture on a refined mesh (decks of `runs/puncture/hcal/`, card, 2026-11-13): 8.9e6 to
+  9.6e6 zone-cycles/s; here 9.8e4 at 16 threads: about 90 times.
+- Cluster runs on a card (`runs/st/dir_yc0500_comp/athena.log`): 8.0e6; here 8.9e4 at 16
+  threads: about 90 times.
+- Cosmology box 64^3 with particles on a card (`runs/cosmo/dav_c704_n64_pcsct/`, TSC,
+  2194 steps in 284 s): 0.13 s per step; here 6.9 s at 16 threads: about 50 times.
+- Newtonian mode (tracks/core/interfaces/newtonian_mode.md section 5.8, runs
+  core-20261115-120028-fee90ca and core-20261115-115450-fee90ca): one card 0.65 s per step
+  against 3.2 s on one processor core for the N = 128 collapse with 1.4e5 particles; with
+  the speed-up of 13 at 16 threads measured here, 16 threads run that case at about
+  0.25 s per step, faster than the card [JUDGEMENT: speed-up transferred from the periodic
+  box to the collapse].
+P7 predicted the card 1.5 to 4 times faster than 64 threads and 4 to 10 times faster than
+16 threads: on these provisional numbers it FAILED for the Z4c cases (the card is 50 to
+200 times 16 threads) and for the Newtonian mode (the card is not faster). To be replaced
+by job 4643 when it has run.
