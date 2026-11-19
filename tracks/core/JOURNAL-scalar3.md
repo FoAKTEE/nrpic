@@ -620,3 +620,95 @@ fields within 3.4e-13): the dump at t = 0 bit-identical; the dumps at 0.4 and 0.
 within 1e-10 relative, the H' columns of con_signed within 1e-8 relative (H' is 1e-3 to
 1e-2 of H in this case, where the uniform part dominates, so the field difference is
 amplified by that ratio). Refuted by a larger difference or by a missing column.
+
+## 2026-11-19, entry 12: outcomes of A and A2 (the linear twin against the ladder), of G1 and G2
+
+**A, run core-20261119-151758-51d9a71, and A2, run core-20261119-152243-1754ebc** (A2 is A
+plus part E, the twin with the time integration of the code; both read the same dumps,
+and every number below is from the summary of A2; figure `fig_twin.png` of A2, looked
+at: the code twin passes through every measured point of N = 32 in both upper panels and
+through those of N = 64 from 1.6 on; the N = 128 points lie above the twin before t = 2;
+the scan falls as a straight line of slope -6 and crosses 1 near 12.5 cells).
+- PA1 HOLDS: continuous twin over measured rms of the odd part, t = 2.0 to 3.2: H 0.997
+  to 0.9998 (N = 32), 0.991 to 0.9998 (64), 0.64, 0.94, 0.95, 0.92 (128, within the
+  factor 2); |M| 1.01 to 0.9999, 1.03 to 0.9999, 0.39 to 0.96 (128 at t = 2.0: 0.39, outside
+  a factor 2; the other three dumps inside). Per-mode coefficients of H at N = 32: largest
+  difference 0.030, 0.0066, 0.0034, 0.0033 of the rms coefficient from t = 2.0 on (bound
+  0.3). Before t = 1.6 the continuous twin misses (0.014 to 0.80 of the measured rms): the
+  time-integration part, which entry 6 found and the code twin contains.
+- PA2 HOLDS: largest |R^NR/(W R alpha) - 1| at the last dump, twin against measured:
+  2.83e-3 against 3.06e-3 (N = 32, 8 percent), 5.88e-5 against 7.54e-5 (N = 64 odd part,
+  22 percent; bound 25).
+- PA3: with every second derivative the first difference applied twice (d1d1) the
+  first-order parts fall from 3.9e-10, 6.6e-10, 3.4e-10, 1.6e-10 (H, t = 2.0 to 3.2) to
+  4.4e-15 to 8.5e-16, by 1.1e-5 to 5.2e-6, and |M| by 6.9e-6 to 5.9e-7. "Below 1e-6"
+  FAILED for H as stated (the remainder, 1e-15 absolute, is at the relative tolerance
+  1e-10 of the integration times the terms of order 1e-5; [JUDGEMENT], not tested with a
+  smaller tolerance). The same variant makes the lattice dispersion of R^NR worse: largest
+  deviation from W R alpha 2.0e-2 at t = 3.2 against 2.8e-3 (the first difference applied
+  twice is 12.8 percent low at k dx = pi/2, the second difference 1.8 percent;
+  `symbols_sixth_order`). Mode functions with the lattice K2: H and |M| change by 0.0 to
+  0.3 percent (HOLDS: below 30 percent); the twin's R^NR then follows its reference to
+  1.2e-6. BSSN instead of Z4c: |M| 1.6 to 5.3 times larger, H 0.65 to 1.15.
+- PA4 FAILED as stated: dumps against the continuous twin up to 3.06e-4 (N = 32; bound of
+  refutation 3e-4) and 1.95e-5 (N = 64 odd part; predicted 3e-6). Against the code twin
+  (PA6) they agree to 3.6e-6 and 2.6e-8: the 3e-4 is the time integration of the run,
+  which the continuous twin lacks.
+- PA6: rms odd parts at N = 32, code twin over measured: H 0.99996 to 1.00000, |M| 0.9998
+  to 1.0000 at all eight dumps (HOLDS, bound 1e-3). N = 64: 0.78, 0.91, 0.98 (H) and 0.45,
+  0.64, 0.86 (|M|) for t <= 1.2, FAILED (bound 1e-2); from 1.6 on H 0.9995 to 1.0000 and
+  |M| 0.9946 to 1.0000 (FAILED at 1.6 for |M| by 5.4e-3, then 1.0000). N = 128: 0.0135 to
+  0.117 before t = 1.6 and 0.66, 0.35 (H, |M|) at 2.0, FAILED; 0.92 to 0.95 from 2.4 on.
+  The measured early odd parts at 64 and 128 (5e-13, 1.7e-12) are above the twin
+  (3.8e-13, 2.3e-14): something the twin does not contain, [JUDGEMENT] the rounding of the
+  card runs of the ladder, not tested. H0 of the twin against the s = 0 run at N = 64:
+  ratio 0.987 to 1.0075 (bound 1 percent; FAILED by 0.3 percent at t = 1.2). R^NR against
+  the code twin: N = 32 single run 6.2e-7 to 3.6e-6 (bound 3e-6: FAILED from t = 2.85 by
+  20 percent); N = 64 odd part 2.2e-10 to 2.6e-8 (HOLDS, bound 1e-7).
+- PA5 FAILED: largest ratio in time of the first-order part (twin) to the measured
+  second-order part (even part of the 64^3 runs of T12) at 4, 5, 6, 8, 10, 12, 16 cells per
+  shortest wavelength: H 692, 213, 77, 14.9, 4.04, 1.38, 0.25; |M| 621, 191, 69, 13.3, 3.6,
+  1.23, 0.22. The crossing of 1 lies between 12 and 16 cells, not between 8 and 10, and
+  0.1 is not reached in the scan. Cause of the miss: the prediction scaled the record
+  ratios of J2 entry 11, but the largest ratio here falls at t = 2.4, where the
+  second-order part has dropped by a factor 9 (8.2e-12 to 9.5e-13 for H between t = 2.0
+  and 2.4) while the first-order part peaks. The summary keys
+  `cells_for_*_first_*_second` of A and A2 are WRONG (4.0 and null): a driver error
+  (interpolation on a decreasing abscissa), corrected in `a1_twin.scan_crossings`; the
+  rows are right. Computed by hand from the rows before the registered recomputation
+  below: crossing of 1 at 12.7 (H) and 12.4 (|M|) cells, of 0.1 at 18.7 and 18.3 cells by
+  extrapolation with the slope of the last two points (-5.94, -5.95: sixth order).
+
+Item (3) of the package, settled [VERIFIED by A2 for the slow-roll case]: the first-order
+part is the defect mu of the discrete contracted Bianchi identity of the spacetime
+solver's stencils, acting on every mode with large k dx; it does not depend on how a
+shell enters (mode functions with the lattice K2: 0.3 percent). The only change that
+removes it (second derivatives as the first difference applied twice) is a change of the
+Z4c stencils, not small, and it makes the dispersion of R^NR seven times worse. So no
+source change; the criterion fixes the resolution: the first-order part stays below the
+second-order part (Track E's strict A4) only with at least 12.7 cells per shortest
+wavelength of the sources, i.e. nmax2 <= (N/12.7)^2 (k_max <= 20 dk at 256^3, against
+P1's 64 dk); below a tenth with 19 cells. In P1's set-up (4 cells) it exceeds the
+second-order part by 700 at its peak, as Track E measured on its ladder (385 to 870).
+A3 (registered recomputation of the crossings from the rows of A2, `a3_scan.py`,
+prediction: the numbers of the previous paragraph within 0.1 cell).
+
+**G1/G2 analysis, run core-20261119-160004-63c808c** (runs geo -152244-bc4976d, harm
+-152522-845c524, kdrv -152657-ea8a240; figure `fig_gauge.png`, looked at: geodesic and
+driver curves lie on each other in all panels but the solid |n| <= 2 line of the driver,
+which rises after two e-folds; the harmonic lapse rises linearly in ln alpha to 1.62).
+- PG1 (lapse_harmonic = 0.05): box means against the lockstep background phi 6.6e-13, Pi
+  1.6e-11, K 2.1e-11 (bound 1e-8: HOLDS); mean lapse against 1/(1 - 0.15 int H dt)
+  3.4e-7 (bound 1e-6: HOLDS; 1.622 at the end); R^NR within the bounds of T8: 1.06e-4
+  (|n| <= 2), 1.65e-4 (|n| <= 4), 2.4e-3 (all) (HOLDS); "within a factor 3 of geo in all
+  three classes" FAILED for |n| <= 2: 3.72 times geo (1.06e-4 against 2.8e-5) at the
+  first dump (0.35 e-folds, nine modes in against three in geo at its 0.34); from 0.67
+  e-folds on 0.55 to 1.6 times geo, at the end 1.11, 0.96, 0.80. Not explained.
+- PG2 (lapse_kdriver = 2): mean lapse 1 within 6.5e-12 (HOLDS), rms of its perturbation
+  up to 2.97e-6 (HOLDS, 1e-8 to 1e-5); largest R^NR deviations 1.004, 1.008, 1.000 times
+  geo (HOLDS, 20 percent); record ratios 0.97 (H) and 1.86 (|M|) times geo (HOLDS, factor
+  2). But the deviation of |n| <= 2 grows after two e-folds to 1.49e-5 at the end, 4.05
+  times geo (3.67e-6): by the bound "a change of the lowest modes beyond a factor 2" this
+  part of PG2 is REFUTED at the end of the run. [JUDGEMENT, untested] the lapse
+  perturbation grows linearly (rms 3e-6 at the end) and its product with R is a
+  second-order part of R^NR of that size; a pair s = +-1 under the driver would decide.

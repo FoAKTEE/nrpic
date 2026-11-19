@@ -36,6 +36,30 @@ from nrpic import sf_lattice as sl
 NMAX2 = 64
 
 
+def scan_crossings(scan):
+    """Cells per shortest wavelength at which the largest ratio in time of the first-order
+    part to the second-order part falls to 1 and to 0.1: log-log interpolation in the
+    scan, beyond its end extrapolation with the slope of its last two points (flagged).
+    (Corrected 2026-11-19: the first version interpolated on a decreasing abscissa.)"""
+    out = {}
+    cw = np.log([r["cells_per_shortest_wavelength"] for r in scan])
+    for key in ("H", "M"):
+        y = np.log([r[key + "_first_over_second_max"] for r in scan])
+        slope = (y[-1] - y[-2])/(cw[-1] - cw[-2])
+        out[f"scan_slope_{key}_last_two"] = float(slope)
+        for lev, lab in ((1.0, "equal"), (0.1, "tenth")):
+            ly = np.log(lev)
+            if y.min() <= ly <= y.max():
+                val, ext = float(np.exp(np.interp(-ly, -y, cw))), False
+            elif ly < y.min():
+                val, ext = float(np.exp(cw[-1] + (ly - y[-1])/slope)), True
+            else:
+                val, ext = None, False
+            out[f"cells_for_{key}_first_{lab}_second"] = val
+            out[f"cells_for_{key}_first_{lab}_second_extrapolated"] = ext
+    return out
+
+
 def odd_fields(dp, dm, c):
     fp, fm = dp[c]["fields"], dm[c]["fields"]
     oh = 0.5*(fp["H"] - fm["H"])
@@ -339,13 +363,7 @@ def main():
         summ["scan"] = scan
         # cells per shortest wavelength at which the first-order part falls to the
         # second-order one and to a tenth of it (log-log interpolation)
-        cw = np.log([r["cells_per_shortest_wavelength"] for r in scan])
-        for key in ("H", "M"):
-            y = np.log([r[key + "_first_over_second_max"] for r in scan])
-            for lev, lab in ((1.0, "equal"), (0.1, "tenth")):
-                summ[f"cells_for_{key}_first_{lab}_second"] = float(
-                    np.exp(np.interp(-np.log(lev), -y[::-1], cw[::-1]))) \
-                    if y.min() < np.log(lev) < y.max() else None
+        summ.update(scan_crossings(scan))
     common.dump_json(summ, os.path.join(out, "summary.json"))
 
     # ---- figure
