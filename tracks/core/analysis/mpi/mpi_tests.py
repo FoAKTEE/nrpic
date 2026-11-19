@@ -61,6 +61,27 @@ def make_swarm(path, n=2000, seed=20261119, mass=1.0e-4):
     return n
 
 
+def make_swarm_bound(path, n=4000, seed=20261121, mass=1.0e-4):
+    """As make_swarm, radii 4 to 11, with the radial covariant momentum of a particle at
+    rest in Kerr-Schild coordinates added, (2/r) u^t n_i with u^t about 1.15, so that
+    most particles stay on bound orbits; one in twenty leaves the box."""
+    from nrpic.io import write_nrp
+    rng = np.random.default_rng(seed)
+    r = rng.uniform(4.0, 11.0, n)
+    def directions(k):
+        v = rng.normal(size=(k, 3))
+        return v/np.linalg.norm(v, axis=1)[:, None]
+    nhat = directions(n)
+    x = r[:, None]*nhat
+    f = rng.uniform(0.5, 1.1, n)
+    fast = rng.uniform(size=n) < 1.0/20.0
+    f[fast] = rng.uniform(1.6, 2.2, fast.sum())
+    u = (f*np.sqrt(1.0/r))[:, None]*directions(n) + (2.3/r)[:, None]*nhat
+    m = mass*rng.uniform(0.5, 1.5, n)
+    write_nrp(path, x, u, m)
+    return n
+
+
 def make_box(path, n=3000, seed=20261120, mass=1.0e-3):
     """Particles spread over the unit box with momenta up to 0.6 per unit mass."""
     from nrpic.io import write_nrp
@@ -95,9 +116,14 @@ CASES = {
                         args=DEP + ["particles/deposit_shape=tsc", "particles/nfilter=2"]),
     "t2p_box_pcs": dict(input=BOX, particles=("box.nrp", make_box),
                         args=DEP + ["particles/deposit_shape=pcs", "particles/nfilter=0"]),
-    "t2_kerr_cic": dict(input=KERR, particles=("swarm.nrp", make_swarm),
+    "t2p_box_comp": dict(input=BOX, particles=("box.nrp", make_box),
+                         args=DEP + ["particles/deposit_shape=tsc", "particles/nfilter=2",
+                                     "particles/deposit_comp_c=0.125",
+                                     "particles/filter_compensate=true",
+                                     "particles/interp=bspline", "mesh/nghost=4"]),
+    "t2_kerr_cic": dict(input=KERR, particles=("swarm.nrp", make_swarm_bound),
                         args=DEP + ["particles/deposit_shape=cic"]),
-    "t2_kerr_pcs": dict(input=KERR, particles=("swarm.nrp", make_swarm),
+    "t2_kerr_pcs": dict(input=KERR, particles=("swarm.nrp", make_swarm_bound),
                         args=DEP + ["particles/deposit_shape=pcs", "particles/nfilter=2"]),
 }
 

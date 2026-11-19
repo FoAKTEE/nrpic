@@ -114,7 +114,7 @@ def fig_ranks(case, ranks, base, inp):
                      ls=["-", "--", ":", "-."][r % 4],
                      label=("%d ranks" % n) if r == 0 else None)
     ax2.set_ylabel("particles per rank", fontsize=9)
-    ax2.legend(loc="upper right", fontsize=8)
+    ax2.legend(loc="center right", fontsize=8)
     ax2.set_xticklabels([])
 
     # differences of the history from one rank
