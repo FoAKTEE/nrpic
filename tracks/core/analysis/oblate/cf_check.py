@@ -369,6 +369,7 @@ def main():
     ap.add_argument("--parts", default="a,b,c")
     a = ap.parse_args()
     out = os.path.abspath(a.out)
+    a.exe = os.path.abspath(a.exe)      # the runs change directory
     os.makedirs(out, exist_ok=True)
     os.makedirs(os.path.join(HERE, "figs"), exist_ok=True)
     ref, blob = reference_module(out)

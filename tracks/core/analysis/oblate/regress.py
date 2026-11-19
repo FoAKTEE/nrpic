@@ -45,6 +45,7 @@ def main():
     ap.add_argument("--out", default=os.environ.get("NRPIC_RUN_DIR", os.getcwd()))
     a = ap.parse_args()
     top = os.path.abspath(a.out)
+    a.base, a.new = os.path.abspath(a.base), os.path.abspath(a.new)   # runs change directory
     ic = os.path.join(top, "ic")
     os.makedirs(ic, exist_ok=True)
     py = sys.executable
