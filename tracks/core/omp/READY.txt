@@ -34,11 +34,36 @@ Journal (predictions, outcomes, run ids): tracks/core/JOURNAL-omp.md on the same
               repeats itself bit for bit at a fixed thread count. Memory: one source array
               (10 components, all cells with ghosts) per thread, zeroed and summed at each
               deposit. athena_cpu_serial and athena_gpu print a note and add atomically.
-   Example input: problems/cosmo/daverio_field.athinput with
-     particles/deposit_threads=private
-   is not possible on the command line (the deck has no such line); add the line
-     deposit_threads = private
-   to the <particles> block of a copy of the deck (tracks/core/omp/omplib.py, mode priv,
-   does exactly that).
+   The option cannot be added on the command line to a deck that lacks it (AthenaK
+   overrides only parameters the deck has): add the line to the <particles> block.
+   Example input: problems/tests/deposit_threads.athinput (the deposit test with the
+   option; particle file and command in its header). Check run of the example:
+   core-20261119-160548-c46c55f (two runs at 4 threads byte-identical; the serial
+   executable prints the note and gives the files of the deck without the option).
 
-PLACEHOLDER_MEASURED
+3. What is tested (tracks/core/interfaces/threaded_build.md section 4; journal entries
+   6 to 11; regression set of 13 cases: geodesics, deposit on a refined mesh, cosmology
+   box with Z4c, Oppenheimer-Snyder collapse, gas multigrid on a uniform and a refined
+   mesh, Newtonian mode, collisions, scalar field with and without noise, Z4c benchmark,
+   vacuum puncture with tracers and horizon finder)
+   - athena_cpu_serial gives the files of release core-v0.3 byte for byte, all 13 cases
+     (run core-20261119-154940-1c3e906, puncture core-20261119-155520-0bc529f).
+   - athena_cpu at 4 and 16 threads against one thread (run core-20261119-155057-57325bc):
+     without deposit every evolved field byte-identical (geodesics, Z4c benchmark,
+     puncture with tracers and horizon finder, scalar field, collision snapshots); with
+     deposit at most 1.3e-12 of the largest number of a file, deposit identity at 1e-14;
+     the gas multigrid and the Newtonian mode agree to the solver tolerance (their
+     iterates depend on the thread count; cause not found).
+   - Kokkos bounds checking under 4 threads, atomic and private: no error
+     (run core-20261119-155830-248f393).
+   - private: two runs at a fixed thread count byte-identical (dep, east, os, newton).
+   NOT tested: MPI with threads; adaptive refinement under threads; restarts under
+   threads; the card executable beyond its build (its device code is that of core-v0.3:
+   without the option nrpic_threads.hpp compiles to the same atomic additions).
+
+4. Speed (16 threads = 13 to 14 times one thread; journal entry 11, figs/scaling.png)
+   s/step at 1 / 16 threads: puncture (refined, 1.4e6 cells) 203 / 14.3; cluster (1e5
+   particles) 243 / 18.5; 64^3 cosmology box (2.1e6 particles) 94 / 6.9; Newtonian
+   128^3 box (5.1e5 particles) 10.6 / 0.82. One A100 is about 50 to 200 times faster than
+   16 threads for runs with Z4c (provisional; card job 4643 pending) and not faster for
+   the Newtonian mode. Which runs to move to processors: section 6 of the interface text.

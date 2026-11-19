@@ -447,7 +447,7 @@ So the threaded executable is correct on every case of the regression set within
 claims of section 4 of the interface text; the open item is the cause of the
 thread-count dependence of the gas multigrid iterates (entry 8).
 
-## 2026-11-19 08:47 Entry 11: outcome of P6 (strong scaling); P7 pending, with provisional card numbers
+## 2026-11-19 08:46 Entry 11: outcome of P6 (strong scaling); P7 pending, with provisional card numbers
 
 Runs (O3, threads on the least busy cores of omp_places.py, best of two repeats):
 one thread core-20261119-154725-1c3e906, serial build core-20261119-154729-1c3e906,
