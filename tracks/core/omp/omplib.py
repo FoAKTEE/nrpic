@@ -296,6 +296,14 @@ def _rst_data(path):
     return None, None
 
 
+def _athena_bin_start(path):
+    """Offset of the data of an AthenaK binary mesh output (after the text header and the
+    parameter dump: the line 'header offset=N' is followed by N bytes of dump)."""
+    raw = open(path, "rb").read(1 << 16)
+    m = re.search(rb"header offset=(\d+)\n", raw)
+    return m.end() + int(m.group(1)) if m else 0
+
+
 def _is_athena_bin(path):
     with open(path, "rb") as f:
         return f.read(20).startswith(b"Athena binary output")
@@ -344,6 +352,11 @@ def number_diff(fa, fb):
         size = 4 if _is_athena_bin(fa) else 8
         kind = "real%d" % size
         (a, ha), (b, hb) = _words(fa, size), _words(fb, size)
+        if size == 4:
+            # data only: the header text read as reals gives absurd magnitudes
+            sa, sb = _athena_bin_start(fa), _athena_bin_start(fb)
+            na, nb = (os.path.getsize(fa) - sa)//4, (os.path.getsize(fb) - sb)//4
+            a, b = a[len(a) - na:], b[len(b) - nb:]
         if not np.array_equal(ha, hb):
             kind += "+head"
     if kind == "text":
@@ -407,7 +420,9 @@ def _real_diff(a, b, kind):
         if nd == 0:
             return {"kind": kind, "n": int(a.size), "ndiff": 0, "abs": 0.0, "rel_file": 0.0,
                     "rel_entry": 0.0, "rel_floor": 0.0, "rel_max": 0.0}
-        fin = np.isfinite(a) & np.isfinite(b)
+        # largest magnitude of the file, over words that can be data: header words of the
+        # binary formats read as reals (text, packed integers) can be absurdly large
+        fin = np.isfinite(a) & np.isfinite(b) & (np.abs(a) < 1.0e30) & (np.abs(b) < 1.0e30)
         fmax = float(max(np.abs(a[fin]).max(initial=0.0), np.abs(b[fin]).max(initial=0.0)))
         da, db = a[dif], b[dif]
         ad = np.abs(da - db)
@@ -452,6 +467,9 @@ def compare_dirs(da, db):
             differ[n] = number_diff(fa, fb)
     la = log_results(os.path.join(da, "run.log"))
     lb = log_results(os.path.join(db, "run.log"))
+    # V cycles of the gas multigrid solver (stop on a threshold of a reduced defect norm)
+    ca = sum("MG iteration" in x for x in la)
+    cb = sum("MG iteration" in x for x in lb)
     if la or lb:
         if la == lb:
             same.append("run.log result lines (%d)" % len(la))
@@ -468,6 +486,8 @@ def compare_dirs(da, db):
             hard = True
         if v.get("decision"):
             decisions[n] = v["decision"]
+    if ca != cb:
+        decisions["run.log"] = {"mg_iterations": [ca, cb]}
         worst = max(worst, v.get("rel_file", 0.0))
         worst_floor = max(worst_floor, v.get("rel_floor", 0.0))
         worst_max = max(worst_max, v.get("rel_max", 0.0))
