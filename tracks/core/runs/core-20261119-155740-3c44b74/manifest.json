@@ -59,7 +59,9 @@
  "purpose": "T11 of cosmo-amr: restarts on adaptive periodic meshes (moving tracker across the face, peak with the lapse ladder, uniform universe with the finder), restarted inside the loop and at the end of a run, with the executable of T1-T9 (old) and with the restart counters (new); hand-written manifest because nrpic-run refused (16 cores busy in live local runs of core)",
  "kind": "scouting",
  "tag": "cosmo-amr-T11",
- "state": "running",
+ "state": "finished",
+ "wall_time_s": 753.78,
+ "exit_status": 1,
  "cores": 8,
  "card_hours": 0.0,
  "started_utc": "2026-11-19T15:57:40Z"

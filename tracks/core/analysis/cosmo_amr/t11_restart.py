@@ -22,6 +22,10 @@ adaptive driver not restored), NEW the one with <file>.rst.amr.
             loop at cycle 4
   U    T2's U with the horizon finder and its status file (uniform mesh), to cycle 24;
        r8   inside the loop at cycle 8
+  S    T2's S (static patch, fixed particle step), to cycle 24; r8 as for U
+  C    T2's C1 (uniform, step from dt_lightspeed), to cycle 24; r8 as for U
+Records are paired in order; reported: identical as text, the largest relative departure
+of physical columns, and the MeshBlock count at every cycle (the regrid schedule).
 Writes DIR/t11_summary.json and DIR/fig_t11_restart.{pdf,png}."""
 import argparse
 import glob
@@ -41,11 +45,24 @@ FILES = {  # file suffix -> index of the time column
     "nrpic.hst": 0, "cstat.hst": 0, "region.hst": 0, "co_0.txt": 1,
     "horizon_status_0.txt": 1, "horizon_summary_0.txt": 1,
 }
+# columns whose relative departure is reported (physical, not round-off quantities)
+PHYS = ("alpha_max", "alpha_min", "E_max", "E_min", "int_E", "chi_min", "chi_max",
+        "K_min", "K_max", "proper_volume", "mean_K", "V", "H2", "x")
+
+
+def header(path):
+    with open(path) as f:
+        for line in f:
+            if line.startswith("# [1]="):
+                return [w.split("=", 1)[1] for w in line[1:].split()]
+            if line.startswith("# 1:"):
+                return [w.split(":", 1)[1] for w in line[1:].split() if ":" in w]
+    return None
 
 
 def rows(path, tcol):
-    """records of a text output keyed by the text of their time field"""
-    out = {}
+    """records of a text output (text, numbers), in file order"""
+    out = []
     if not os.path.exists(path):
         return out
     with open(path) as f:
@@ -54,25 +71,54 @@ def rows(path, tcol):
                 continue
             w = line.split()
             if len(w) > tcol:
-                out[w[tcol]] = line.rstrip("\n")
+                out.append((line.rstrip("\n").split("#")[0].strip(), w))
     return out
 
 
 def compare(dfull, drst, base, t_rst):
+    """Records of the restarted run against those of the uninterrupted run after the
+    restart time, paired in order: identical as text or not, and the largest relative
+    departure of the physical columns."""
     res = {}
     for suf, tcol in FILES.items():
-        a = rows(os.path.join(dfull, f"{base}.{suf}"), tcol)
+        fa = os.path.join(dfull, f"{base}.{suf}")
+        a = [r for r in rows(fa, tcol) if float(r[1][tcol]) > t_rst*(1.0 + 1e-12)]
         b = rows(os.path.join(drst, f"{base}.{suf}"), tcol)
         if not a and not b:
             continue
-        keys = [k for k in a if float(k) > t_rst*(1.0 + 1e-14) + 1e-300]
-        same = sum(1 for k in keys if k in b and b[k] == a[k])
-        diff = sum(1 for k in keys if k in b and b[k] != a[k])
-        miss = sum(1 for k in keys if k not in b)
-        extra = sum(1 for k in b if k not in a)
-        first = next((float(k) for k in keys if k not in b or b[k] != a[k]), None)
-        res[suf] = dict(compared=len(keys), identical=same, differing=diff, missing=miss,
-                        extra=extra, first_bad_time=first)
+        names = header(fa) or []
+        n = min(len(a), len(b))
+        same = sum(1 for i in range(n) if a[i][0] == b[i][0])
+        first = next((i for i in range(n) if a[i][0] != b[i][0]), None)
+        dev = {}
+        for j, nm in enumerate(names):
+            if nm not in PHYS:
+                continue
+            d = 0.0
+            for i in range(n):
+                try:
+                    x, y = float(a[i][1][j]), float(b[i][1][j])
+                except (ValueError, IndexError):
+                    continue
+                if x == x and y == y:
+                    d = max(d, abs(x - y)/max(abs(x), 1e-300))
+            dev[nm] = d
+        res[suf] = dict(records_after_restart=len(a), records_restarted=len(b),
+                        identical=same, first_differing_record=first,
+                        max_rel_departure=dev)
+    # the MeshBlock count at every cycle (regrid schedule)
+    ha = os.path.join(dfull, f"{base}.nrpic.hst")
+    hb = os.path.join(drst, f"{base}.nrpic.hst")
+    if os.path.exists(ha) and os.path.exists(hb):
+        names = header(ha)
+        ic, im = names.index("ncycle"), names.index("nmb")
+        na = {int(float(r[1][ic])): int(float(r[1][im])) for r in rows(ha, 0)}
+        nb = {int(float(r[1][ic])): int(float(r[1][im])) for r in rows(hb, 0)}
+        cyc = sorted(c for c in nb if c in na)
+        res["nmb"] = dict(cycles=len(cyc), equal=sum(1 for c in cyc if na[c] == nb[c]),
+                          first_unequal=next((c for c in cyc if na[c] != nb[c]), None),
+                          restarted=[nb[c] for c in cyc][:40],
+                          uninterrupted=[na[c] for c in cyc][:40])
     return res
 
 
@@ -97,6 +143,10 @@ def straight_jobs(out, lab, exe, ic1, ic8, icp):
     p.set("time", nlim=12)
     u = T2.cases(ic1, ic8)["U"]
     u.set("time", tlim=100.0, nlim=24)
+    st = T2.cases(ic1, ic8)["S"]              # static patch, fixed particle step
+    st.set("time", tlim=100.0, nlim=24)
+    c1 = T2.cases(ic1, ic8)["C1"]             # uniform, step from dt_lightspeed
+    c1.set("time", tlim=100.0, nlim=24)
     jobs = []
 
     def add(name, deck, nlim, dcycle):
@@ -113,19 +163,23 @@ def straight_jobs(out, lab, exe, ic1, ic8, icp):
     add("P_pre4", p, 4, 1000)
     add("P_in4", p, 5, 4)
     add("U_full", u, 24, 8)
+    add("S_full", st, 24, 8)
+    add("C_full", c1, 24, 8)
     return jobs
 
 
-# restart: (name, straight run, restart file number, restart cycle, case base name, full)
+# restart: (name, straight run, file number, restart cycle, base name, full run, nlim)
 RESTARTS = [
-    ("M_r14", "M_full", 1, 14, "flrw", "M_full"),
-    ("M_r28", "M_full", 2, 28, "flrw", "M_full"),
-    ("M_f16", "M_pre16", 1, 16, "flrw", "M_full"),
-    ("M_i16", "M_in16", 1, 16, "flrw", "M_full"),
-    ("P_r6", "P_full", 1, 6, "peak", "P_full"),
-    ("P_f4", "P_pre4", 1, 4, "peak", "P_full"),
-    ("P_i4", "P_in4", 1, 4, "peak", "P_full"),
-    ("U_r8", "U_full", 1, 8, "flrw", "U_full"),
+    ("M_r14", "M_full", 1, 14, "flrw", "M_full", 90),
+    ("M_r28", "M_full", 2, 28, "flrw", "M_full", 90),
+    ("M_f16", "M_pre16", 1, 16, "flrw", "M_full", 90),
+    ("M_i16", "M_in16", 1, 16, "flrw", "M_full", 90),
+    ("P_r6", "P_full", 1, 6, "peak", "P_full", 12),
+    ("P_f4", "P_pre4", 1, 4, "peak", "P_full", 12),
+    ("P_i4", "P_in4", 1, 4, "peak", "P_full", 12),
+    ("U_r8", "U_full", 1, 8, "flrw", "U_full", 24),
+    ("S_r8", "S_full", 1, 8, "flrw", "S_full", 24),
+    ("C_r8", "C_full", 1, 8, "flrw", "C_full", 24),
 ]
 
 
@@ -163,33 +217,40 @@ def main():
 
     rjobs = []
     for lab, exe in exes:
-        for name, src, num, cyc, base, full in RESTARTS:
+        for name, src, num, cyc, base, full, nlim in RESTARTS:
             if only is not None and name.split("_")[0] not in only:
                 continue
             f = os.path.join(a.out, lab, src, "rst", f"{base}.{num:05d}.rst")
             rjobs.append((lab, name, exe, f, os.path.join(a.out, lab, name), cyc, base,
-                          os.path.join(a.out, lab, full)))
+                          os.path.join(a.out, lab, full), nlim))
     with cf.ThreadPoolExecutor(max_workers=a.cores) as ex:
-        rc2 = list(ex.map(lambda j: run(j[2], ["-r", j[3]], j[4]), rjobs))
+        rc2 = list(ex.map(lambda j: run(j[2], ["-r", j[3], f"time/nlim={j[8]}"], j[4]),
+                          rjobs))
 
     res = {}
     for j, rc in zip(rjobs, rc2):
-        lab, name, exe, f, rd, cyc, base, full = j
+        lab, name, exe, f, rd, cyc, base, full, nlim = j
         h = A.read_hst(os.path.join(full, f"{base}.nrpic.hst"))
         t_rst = float(h["time"][np.argmin(np.abs(h["ncycle"] - cyc))])
         cmpres = compare(full, rd, base, t_rst)
         with open(os.path.join(rd, "log.txt"), errors="replace") as fh:
             notes = [x for x in fh.read().splitlines() if "refinement counters" in x
                      or "NRPIC: no" in x or "FATAL" in x]
-        ok = rc == 0 and all(v["differing"] == 0 and v["missing"] == 0
-                             for v in cmpres.values())
+        files = {k: v for k, v in cmpres.items() if k != "nmb"}
+        exact = rc == 0 and all(v["identical"] == v["records_after_restart"] ==
+                                v["records_restarted"] for v in files.values())
+        sched = cmpres.get("nmb", {})
+        same_mesh = sched.get("cycles", 0) > 0 and sched["equal"] == sched["cycles"]
+        dmax = max([d for v in files.values() for d in v["max_rel_departure"].values()]
+                   or [0.0])
         res[f"{lab}/{name}"] = dict(exit=rc, restart_file=f, restart_cycle=cyc,
                                     restart_time=t_rst, amr_file=os.path.exists(f + ".amr"),
-                                    files=cmpres, exact=ok, log=notes[:3])
-        bad = {k: (v["differing"], v["missing"], v["first_bad_time"])
-               for k, v in cmpres.items() if v["differing"] or v["missing"]}
-        print(f"{lab}/{name:6s} exit {rc} exact {ok} "
-              f"compared {sum(v['compared'] for v in cmpres.values())} bad {bad}", flush=True)
+                                    files=cmpres, exact=exact, same_mesh=same_mesh,
+                                    max_rel_departure=dmax, log=notes[:3])
+        print(f"{lab}/{name:6s} exit {rc} bitwise {exact} same MeshBlocks {same_mesh} "
+              f"(first unequal cycle {sched.get('first_unequal')}) largest relative "
+              f"departure {dmax:.1e} first differing record "
+              f"{ {k: v['first_differing_record'] for k, v in files.items()} }", flush=True)
     with open(os.path.join(a.out, "t11_summary.json"), "w") as fh:
         json.dump(res, fh, indent=1)
         fh.write("\n")
@@ -202,36 +263,40 @@ def main():
     fig.subplots_adjust(left=0.08, right=0.99, bottom=0.17, top=0.93, wspace=0.40)
     cols = {"old": fs.PAL["red"], "new": fs.PAL["blue"]}
     for lab in ("old", "new"):
-        full = os.path.join(a.out, lab, "M_full", "flrw.nrpic.hst")
-        rst = os.path.join(a.out, lab, "M_r14", "flrw.nrpic.hst")
-        if os.path.exists(full) and os.path.exists(rst):
-            hf, hr = A.read_hst(full), A.read_hst(rst)
-            if lab == "new":
-                ax[0].plot(hf["ncycle"], hf["nmb"], color="k", lw=2.0, alpha=0.3,
-                           label="uninterrupted")
-            ax[0].plot(hr["ncycle"], hr["nmb"], "--" if lab == "old" else ":",
-                       color=cols[lab], label=f"restart at 14 ({lab})")
-            k = {c: i for i, c in enumerate(hf["ncycle"])}
-            cyc = [c for c in hr["ncycle"] if c in k]
-            d = [abs(hr["alpha_max"][list(hr["ncycle"]).index(c)]
-                     / hf["alpha_max"][k[c]] - 1.0) for c in cyc]
-            ax[1].semilogy(cyc, np.maximum(d, 1e-17), color=cols[lab], label=lab)
+        key = f"{lab}/M_r14"
+        if key not in res or "nmb" not in res[key]["files"]:
+            continue
+        sch = res[key]["files"]["nmb"]
+        c0 = res[key]["restart_cycle"]
+        cyc = np.arange(c0 + 1, c0 + 1 + len(sch["restarted"]))
+        if lab == "new":
+            ax[0].plot(cyc, sch["uninterrupted"], color="k", lw=2.5, alpha=0.3,
+                       label="uninterrupted")
+        ax[0].plot(cyc, sch["restarted"], "--" if lab == "old" else ":", color=cols[lab],
+                   label=f"restart at {c0} ({lab})")
+    names_r = [r[0] for r in RESTARTS]
+    for i, lab in enumerate(("old", "new")):
+        dv = [max(res[f"{lab}/{n}"]["max_rel_departure"], 1e-17)
+              if f"{lab}/{n}" in res else np.nan for n in names_r]
+        ax[1].semilogy(np.arange(len(names_r)) + (i - 0.5)*0.2, dv, "o" if lab == "new"
+                       else "s", color=cols[lab], label=lab)
+    ax[1].set_xticks(np.arange(len(names_r)))
+    ax[1].set_xticklabels(names_r, rotation=60, fontsize=7)
     ax[0].set_xlabel("cycle")
     ax[0].set_ylabel("MeshBlocks (case M)")
     ax[0].legend(frameon=False, fontsize=7)
-    ax[1].set_xlabel("cycle")
-    ax[1].set_ylabel(r"$|\alpha_{\max}^{\rm restart}/\alpha_{\max}-1|$ (M, r14)")
+    ax[1].set_ylabel("largest relative departure")
     ax[1].legend(frameon=False, fontsize=7)
     names = [r[0] for r in RESTARTS if f"new/{r[0]}" in res]
     for i, lab in enumerate(("old", "new")):
-        nb = [sum(v["differing"] + v["missing"] for v in res[f"{lab}/{n}"]["files"].values())
+        nb = [res[f"{lab}/{n}"]["files"].get("nmb", {}).get("cycles", 0)
+              - res[f"{lab}/{n}"]["files"].get("nmb", {}).get("equal", 0)
               if f"{lab}/{n}" in res else np.nan for n in names]
-        ax[2].bar(np.arange(len(names)) + (i - 0.5)*0.38, np.maximum(nb, 0.0) + 0.5,
-                  width=0.38, color=cols[lab], label=lab, bottom=0.5)
-    ax[2].set_yscale("log")
+        ax[2].bar(np.arange(len(names)) + (i - 0.5)*0.38, np.asarray(nb, float) + 0.1,
+                  width=0.38, color=cols[lab], label=lab)
     ax[2].set_xticks(np.arange(len(names)))
     ax[2].set_xticklabels(names, rotation=60, fontsize=7)
-    ax[2].set_ylabel("records that differ + 1")
+    ax[2].set_ylabel("cycles with another MeshBlock count")
     ax[2].legend(frameon=False, fontsize=7)
     fs.save(fig, os.path.join(a.out, "fig_t11_restart"))
     plt.close(fig)

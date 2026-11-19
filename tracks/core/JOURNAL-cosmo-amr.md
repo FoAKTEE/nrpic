@@ -590,3 +590,47 @@ the interface text.
   static start: PASS. As in the smoke run, the reconstruction gives the larger jump
   (entry 15:05 item 3; T3 with and without the filter tests the reading).
 - E stays positive with the fine shape on these data (smallest E 0.025).
+
+## 2026-11-19 16:13  T11 first run (core-20261119-155740-3c44b74): two script errors, and restarts on refined meshes agree only to round-off
+
+The run is kept on record; its comparison is partly void:
+- Script error 1: a restart takes `nlim` from the parameters stored in the restart file,
+  so the restarts from the runs stopped at cycles 16 and 4 (M_f16, M_i16, P_f4, P_i4)
+  ended at once (log: "Terminating on cycle limit", cycle 16). Their "missing records"
+  mean nothing. The restarts from the long runs (M_r14, M_r28, P_r6, U_r8) are valid.
+- Script error 2: the figure read the restarted history with its own header, which a
+  restarted run does not write; the script stopped before its figure (exit 1).
+- Script error 3 (of judgement): records were paired by the text of their time; on
+  steps set by the fields the times of a restarted run differ in the last digits, so
+  pairing by order is needed.
+What the valid cases show [VERIFIED, from the files of that run]:
+- U_r8 (uniform mesh, fixed particle step): every record after the restart identical as
+  text with both executables (50 records): restart bit for bit.
+- M_r14, M_r28, P_r6 (adaptive): NOT identical, with both executables, from the first or
+  second record after the restart; but the departures are at round-off: in M the sums of
+  m u_i (themselves round-off, 1e-15) differ by 3e-5 of their value and the largest
+  momentum constraint by 4.5e-3 of its round-off value; in P alpha_max by 1.7e-12,
+  alpha_min 6e-14, chi 1.7e-15, int_E 4.6e-15 relative after one cycle. My prediction (2)
+  "every row identical as text" FAILED. The counters are not the only state of a refined
+  run that a restart does not reproduce bit for bit; docs/TESTLOG.md (2026-11-13,
+  "Restart") reported the same kind of agreement (positions to 9e-16) for an earlier
+  test, so "restarts are exact" holds bit for bit only on the uniform mesh tested here.
+- The `.amr` files are as designed (read back with a script): pending = 1 for files
+  written inside the loop (cycles 14, 28, 42, 56; peak 6, 12), 0 at cycle 0 and for the
+  file written at the end of a run (M_pre16 cycle 16 with counters 0 for the blocks made
+  by the regrid of that cycle; P_pre4 cycle 4).
+
+**T11b, rerun with the script corrected** (`nlim` passed on the command line; records
+paired in order; reported per case: bitwise identity, the MeshBlock count at every cycle,
+the largest relative departure of physical columns). Added cases that locate the source
+of the round-off departure: S (T2's static patch with the fixed particle step) and C
+(T2's C1: uniform mesh, step from `dt_lightspeed`), both restarted at cycle 8.
+Predictions: (1) NEW: the MeshBlock count equals the uninterrupted run at every cycle in
+every case; OLD: it does not in M_r14 (regrid of cycle 16 delayed to 20), M_i16 and P_i4
+(the regrid of the restart cycle itself is skipped and comes refinement_interval later),
+and equals in M_r28, M_f16, P_r6, P_f4 (nothing due within 4 cycles of the restart, or
+done before the file was written) [JUDGEMENT]. (2) Bitwise: U_r8 and C_r8 identical; S_r8
+[TO VERIFY] - if it departs, the source is the refined mesh, not the adaptive driver.
+(3) Every departure in physical columns (lapse, E, chi, K extremes, int_E, proper volume,
+mean K, region norms) below 1e-9 relative over the continued run, in every case with NEW
+whose MeshBlock count agrees. Refuted for the fix by any unequal MeshBlock count with NEW.

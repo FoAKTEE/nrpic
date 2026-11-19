@@ -37,7 +37,9 @@
  "purpose": "T3 of cosmo-amr: linear plane wave (test B of arXiv:1904.07841) with a refined patch: uniform, interior patch with constant and reconstructed spreading, fine clouds, patch across the face, and three cases with the source filter; hand-written manifest because nrpic-run refused (16 cores busy in live local runs of core)",
  "kind": "scouting",
  "tag": "cosmo-amr-T3",
- "state": "running",
+ "state": "finished",
+ "wall_time_s": 1715.81,
+ "exit_status": 0,
  "cores": 4,
  "card_hours": 0.0,
  "started_utc": "2026-11-19T15:43:57Z"
