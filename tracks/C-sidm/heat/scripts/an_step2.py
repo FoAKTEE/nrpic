@@ -211,6 +211,10 @@ def cmd_b(outdir, rundirs):
     tcoll = 1.0 / (sig * float(rate.vmol_mean(thm)))
     chi1 = iso.chi_kappa1(thm, 1.0, sig)
     win = (20 * tcoll, 2.0 / (chi1 * (2 * np.pi / L) ** 2))
+    w_env = os.environ.get("HEAT_T6B_WINDOW_TCOLL")       # e.g. "300,1374": other window
+    if w_env:
+        a_, b_ = (float(v) for v in w_env.split(","))
+        win = (a_ * tcoll, b_ * tcoll)
     t = cases[0]["R"]["time"]
     cache = {}
 
@@ -295,14 +299,15 @@ def cmd_b(outdir, rundirs):
     axk.set_xscale("log")
     axk.set_xlabel(r"$t/t_{\rm coll}$")
     axk.set_ylabel("slab kinetic energy")
-    fs.save(fig, os.path.join(outdir, "T6b_step_short"))
+    tagw = "" if not w_env else "_w" + w_env.replace(",", "-")
+    fs.save(fig, os.path.join(outdir, "T6b_step_short" + tagw))
     plt.close(fig)
     fvals = [v["f"] for v in res.values()]
     res["combined"] = dict(f_mean=float(np.mean(fvals)),
                            f_se=float(np.std(fvals, ddof=1) / np.sqrt(len(fvals)))
                            if len(fvals) > 1 else None,
                            ref_literal_ratio_f1=None)
-    with open(os.path.join(outdir, "T6b.json"), "w") as fh:
+    with open(os.path.join(outdir, "T6b" + tagw + ".json"), "w") as fh:
         json.dump(res, fh, indent=1, default=float)
     print(json.dumps(res, indent=1, default=float))
 
