@@ -598,3 +598,51 @@ comparable with S2 and S3.
 Next: the model along x = 0-20 m (S2g's tracker travels about 12-17 m in 90 m), to check the
 2400 slots of S2g. Prediction: the maximum stays below 1800 (at most one more level-3 or
 level-4 straddle of a few dozen blocks each).
+
+E11 path (run F-20261119-144024-988d5c9, `tree_path.json`): along x = 0-20 m the model takes
+1548, 1576, 1604 and 1632 MeshBlocks, maximum 1632 (x = 2.25-5.75, 10.25-13.75, 18.25-20 m).
+Prediction (below 1800) met; the 2400 slots of S2g are ample [VERIFIED as model output].
+
+## 2026-11-19 E4 reruns with the fixed horizon reader, outcome (runs F-20261119-143627-1a84aa5, -143632-0f6e57d, -143633-dfd3607)
+
+Test 1 (synthetic): 10/10, 1440 found and 61 missed per horizon, as planted: met. Test 3 (P1
+smoke): 3/4 as before (the masses check fails, see E7): met. Test 2 (S3, S2): 6/8 as predicted,
+but the missed counts FAILED my prediction: 5 of 44 (S3) and 2 of 29 (S2), not 6 and 3. The
+search at t = 0.5 is not a repeat: it converged in mass (|dmass| < mass_tol) to a poor surface
+(mass 0.98594, hrms 0.019, hmean -0.19) and the failures are t = 1.0-3.0 (S3) and 1.0-1.5 (S2).
+So "found" by AthenaK's test does not mean a good surface; the analyses read masses from t = 4 m
+on (members of P1: from t = 0.625 M) where hrms is below 1e-4. The smoke's missed counts are
+1, 2, 17 of 25 (m1, m2, heavy), as predicted.
+
+## 2026-11-19 E7, outcome (run F-20261115-174602-c6879fe; analysis F-20261119-143449-e7bf692, test F-20261119-143633-dfd3607; figure `fig_p1_analysis.png` read)
+
+[VERIFIED, `P1smoke/athena.20261115-122314.log`, `.gpumem.csv`, `hills.*` of the run]
+- MeshBlocks: 1716 at the start, 1744 at cycle 400 (70 created, 42 deleted): predicted 1716 and
+  1716-2000: met.
+- Rate: 689088 MeshBlock-cycles in 334.9 s = 2057 MeshBlock-cycles per second (8.43e6
+  zone-cycles per second), 0.76-0.94 s per cycle in windows of 50 cycles (mean 0.837 s), with 25
+  searches of three finders, four extraction spheres and two restart files of 4.2 GB inside the
+  timing: predicted 1800-2400: met.
+- Card memory: peak 70847 MiB at 2700 slots (26.2 MiB per slot), 86 percent of the 81920 MiB
+  card: predicted 55-75 GB: met (74.3 GB, at the top of the range).
+- Horizons from the first search, members 0.128-0.132 M, heavy 1.00-1.01 M: FAILED in part. At
+  t = 0: m1 0.12778, heavy 0.99607 (both as on processors in E4 test 3), m2 not found (NaN, as
+  in E8); m2's first success at t = 0.0625 (0.12934, but hrms 2.3). After the gauge transient
+  the member searches succeed every time from t = 0.5 M (4 member masses) with hrms below 1e-3
+  (one search at t = 1.3125 with hrms 1.5e-2 and 3.9e-2): m1 0.12949-0.12966, m2 0.12945-0.12960
+  over t = 0.625-1.5 M, inside the predicted 0.128-0.132. The heavy hole fails 17 of 25 searches
+  (t = 0.1875-0.875, 1.0-1.1875, 1.4375) and its successes have hrms 1e-2 to 1.5e-1: like the
+  single puncture at the same cells per mass (S3: converged from 3.5 m on), I expect usable
+  heavy-hole masses from about t = 4 M [JUDGEMENT].
+- Trackers at the input positions within 4.1e-9: met. No non-finite value in the history and
+  the trackers; history Volume constant (1.36599e8): met. <H^2>^(1/2) at t = 0 4.713e-5, equal
+  to C0's processor value for the same data (E2): the card and processor builds agree.
+- Cost [arithmetic from these measured numbers]: 71680 cycles (dt = 3.90625e-3 in the log) for
+  280 M. Card-hours = 71680 N / 2057 / 3600: N = 1744 (smoke at cycle 400; also the mean of the
+  wave-1 trees along the Newtonian track) 16.9; N = 1905 (1.11 x 1716, core's growth) 18.4;
+  N = 2080 (largest wave-1 tree for q = 4) 20.1. Predicted 15-19: met for the first two. So P1
+  needs 17-20 card-hours, 21-25 chain segments of 50 min (each segment also reads a 4.2 GB
+  restart file). Restart files every 5 M: 56 files of 4.2 GB (235 GB) unless old ones are
+  removed.
+Consequence: the chain needs `--gpu-hours 26` (26 segments, 21.7 h of athena time), not the 20
+of the prepared command (20 segments, 16.7 h: too few).
