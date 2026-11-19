@@ -90,3 +90,11 @@ the fixed-point inversion of the canonical momenta diverged on the random strong
 of T0 (masses up to 2 at distances ~ 1, 3U > 1). Fix: iteration divided by the diagonal
 m (1 + 3U + 3/2 v^2) of dp/dv, and T0d run on weak-field states (positions x 10, U <~ 0.1, the
 regime of the puncture data). Rerun below.
+
+## Entry 3 (2026-11-19 14:45): first T4 run failed in the 1PN quadrature (run F-20261119-143638-83ce321)
+
+The script stopped (exit 1) at the first L where round-off next to the turning point made
+v_r^2 negative in the quadrature check "1PN-Q" (TypeError on None). The EIH integrations and
+GR quadratures of the 19 rows before (areal r_p = 4.2 ... 40 M) had finished; their numbers are
+in the run log, but I take the outcome from the rerun only. Fix: v_r^2 <= 0 next to the turning
+point uses the analytic limit of the substituted integrand. Rerun below.

@@ -97,8 +97,14 @@ def pn_quadrature(L, r0=R0):
             dfdr = (f(rp + h) - f(rp)) / h
             vphi = L / rp / (1 + 0.5 * (L / rp) ** 2 + 3.0 / rp)
             return 2.0 * (vphi / rp) / math.sqrt(dfdr)
-        vr, phid = rdot_phidot(r)
-        return 2.0 * s * phid / abs(vr)
+        bq = 0.5 + 1.5 / r
+        cq = 0.5 / r ** 2 - 1.0 / r
+        v2 = (-bq + math.sqrt(bq * bq - 1.5 * cq)) / 0.75
+        vphi = L / (r * (1 + 0.5 * v2 + 3.0 / r))
+        vr2 = v2 - vphi * vphi
+        if vr2 <= 0.0:          # round-off next to the turning point: use the limit
+            return integrand(0.0)
+        return 2.0 * s * (vphi / r) / math.sqrt(vr2)
     smax = math.sqrt(r0 - rp)
     val, _ = quad(integrand, 0.0, smax, limit=800, epsabs=1e-12, epsrel=1e-12,
                   points=[min(1.0, smax / 2)])
