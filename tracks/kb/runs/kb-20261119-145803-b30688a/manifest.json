@@ -1,0 +1,101 @@
+{
+  "schema": "nrpic-run-manifest/1",
+  "run_id": "kb-20261119-145803-b30688a",
+  "track": "kb",
+  "gate": "G2",
+  "kind": "scouting",
+  "purpose": "brief check s33 (legend above panels): tally of CHECK.md against its header, locator check, figure of verdicts per brief line and per label",
+  "preregistered_in": null,
+  "launcher": "local",
+  "command": [
+    "python",
+    "tracks/kb/brief_check/s33/scripts/fig_verdicts.py"
+  ],
+  "cwd": ".",
+  "git": {
+    "sha": "b30688a5313fb6fa1a265b38cbe1990067d8830a",
+    "branch": "kb/brief-check",
+    "dirty": false,
+    "package": [
+      "tracks/kb/brief_check/s33"
+    ],
+    "outside_package": {
+      "count": 0,
+      "first": []
+    },
+    "merge_base_main": "78bf88534f53530e2878756599e2e4431c19d5c2",
+    "worktree": "wt/kb-brief"
+  },
+  "code": {
+    "core_tag": "core-v0.3",
+    "athenak_upstream_sha": "c5a0d7f",
+    "kokkos_sha": "6739bc623081648af9e752b616d9671527922cbf",
+    "problem": null
+  },
+  "env": {
+    "host": "anta",
+    "env_hash": "33c1dbb6673b68919eaa332b0add0b58aeac8be843f2071b9d06e2e0e397a96d",
+    "machine_file_sha256": "0321f40f4caeeb2a36624a9fa9809e60bad31071f366b3517ba23ad45698d2d7",
+    "uv_lock_sha256": "5417f6ba318b914aa3800e5d55f7b11fdd8df13c2688bdda7d419240aa1d5863",
+    "track_requirements_sha256": null,
+    "container_digest": null,
+    "compiler": "g++ 11.4.0",
+    "mpi": "none (Athena_ENABLE_MPI=OFF)",
+    "gpu": null,
+    "python": "3.10.12 /data/haiyangw/nrpic/wt/kb-brief/.venv"
+  },
+  "input": null,
+  "inputs": [
+    {
+      "path": "tracks/kb/brief_check/s33/CHECK.md",
+      "role": "input",
+      "sha256": "c82c995ee1ade583eaabd38a7ef86e4ea63e8f65e79d321f77e80b5fc3cb9029",
+      "bytes": 24126,
+      "tracked": true
+    },
+    {
+      "path": "tracks/kb/brief_check/s33/scripts/fig_verdicts.py",
+      "role": "argv",
+      "sha256": "1accbf89fb2dc566f6e5dc064a41102c2430ed34278333f23a51e778ef682f6d",
+      "bytes": 8761,
+      "tracked": true
+    }
+  ],
+  "batch_entries": null,
+  "resources": {
+    "nodes": 1,
+    "gpus": 0,
+    "cores": 1,
+    "walltime_s": null,
+    "wall_limit": null,
+    "segments_max": null,
+    "gpu_hours_requested": 0.0,
+    "gpu_hours": null,
+    "particles": null
+  },
+  "slurm": null,
+  "outputs": {
+    "dir": "scratch/kb/kb-20261119-145803-b30688a",
+    "sha256sums": "sha256sums.txt",
+    "sha256sums_sha256": null,
+    "bytes": null,
+    "files": null
+  },
+  "status": "running",
+  "exit_code": null,
+  "registered": "2026-11-19T14:58:03Z",
+  "started": null,
+  "ended": null,
+  "parents": [],
+  "notes": "",
+  "budget_at_submit": {
+    "gpu_hours_allotted": 0.0,
+    "cores_allotted": 8,
+    "gpu_hours_used": 0.0,
+    "gpu_hours_reserved": 0.0,
+    "gpu_hours_without_gate": 0.0,
+    "cores_busy": 7,
+    "runs": 111,
+    "allotment_from": "coord/DECISIONS/0006-compute-budget.md + 0014-budgets-after-wave-1.md"
+  }
+}
