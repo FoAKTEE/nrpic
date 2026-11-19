@@ -1,4 +1,4 @@
-{"exe": ".work/exe/sbc2/athena_cpu",
+{"exe": ".work/exe/sbc3/athena_cpu",
  "ball": {"M": 0.5, "Rb": 6, "edge": 1.5, "h": 0.5},
  "cases": {
   "ball__new": {"input": "inputs/ball.athinput", "args": ["time/nlim=8"]},
