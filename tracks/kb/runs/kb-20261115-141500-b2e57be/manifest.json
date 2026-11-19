@@ -1,0 +1,25 @@
+{
+ "run_id": "kb-20261115-141500-b2e57be",
+ "owner": "kb",
+ "command": [
+  "python3",
+  "-I",
+  "kb/bin/kb",
+  "snapshot"
+ ],
+ "cwd": "/data/haiyangw/nrpic/wt/kb",
+ "commit": "b2e57be2f928b034c1712565fa80c6f4fddfb742",
+ "worktree_dirty_kb": false,
+ "inputs": [],
+ "output_dir": "/data/haiyangw/nrpic/scratch/kb/kb-20261115-141500-b2e57be",
+ "purpose": "kb lead: read-only snapshot after the lead's re-ingestions (28 papers) for the KB-G1 package",
+ "kind": "production",
+ "cores": 1,
+ "card_hours": 0,
+ "started_utc": "2026-11-15T14:15:00Z",
+ "started_unix": 1794752100.931314,
+ "status": "finished",
+ "exit_code": 0,
+ "wall_time_s": 9.69,
+ "finished_utc": "2026-11-15T14:15:10Z"
+}

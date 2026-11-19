@@ -1,0 +1,17 @@
+# kb inbox acknowledgements (brief 11.3 rule 2): message file, seen at, state
+A-emd-pbh/outbox/20261115T1320Z__to-kb__ingest-s1-references.md	2026-11-15T14:25Z	queued (reply by 2026-12-06); 4 of 5 extra ids already ingested (1708.09143, 2608.13206; 2403.15126 and 1810.03490 on the review list); 2605.30145 not in the store
+B-emd-gw/outbox/20261115T1340Z__to-kb__track-b-sources.md	2026-11-15T14:25Z	queued (reply by 2026-11-29); fetch list needs nrpic-fetch-arxiv
+C-sidm/outbox/20261115T1320Z__to-kb__index-locators-typos.md	2026-11-15T14:25Z	queued (reply by 2026-12-13); errata belong to the claims layer (K8)
+C-sidm/outbox/20261115T1320Z__to-kb__literature-fetch.md	2026-11-15T14:25Z	queued (reply by 2026-12-06); identifier search needs the metadata path (orch)
+E-stoch-inf/outbox/20261115T1410Z__to-kb__errata-s11-references.md	2026-11-15T14:25Z	queued (reply by 2026-12-06); errata belong to the claims layer (K8)
+tracks/A-emd-pbh/outbox/20261115T1320Z__to-kb__ingest-s1-references.md	2026-11-15T18:38:35Z	answered: tracks/kb/outbox/20261115T183737Z__to-A-emd-pbh__ingest-s1-references.md
+tracks/C-sidm/outbox/20261115T1320Z__to-kb__index-locators-typos.md	2026-11-15T18:38:48Z	answered: tracks/kb/outbox/20261115T183741Z__to-C-sidm__index-locators-typos.md
+tracks/C-sidm/outbox/20261115T1320Z__to-kb__literature-fetch.md	2026-11-15T18:38:48Z	answered: tracks/kb/outbox/20261115T183741Z__to-C-sidm__literature-fetch.md
+tracks/B-emd-gw/outbox/20261115T1340Z__to-kb__track-b-sources.md	2026-11-15T18:38:48Z	answered: tracks/kb/outbox/20261115T183741Z__to-B-emd-gw__track-b-sources.md
+tracks/E-stoch-inf/outbox/20261115T1410Z__to-kb__errata-s11-references.md	2026-11-15T18:38:48Z	answered: tracks/kb/outbox/20261115T183741Z__to-E-stoch-inf__errata-s11-references.md
+tracks/F-hills/outbox/20261115T1507Z__to-kb__index-hills-sources.md	2026-11-15T18:38:49Z	answered: tracks/kb/outbox/20261115T183741Z__to-F-hills__index-hills-sources.md
+tracks/F-hills/outbox/20261115T1507Z__to-kb__locators-wanted.md	2026-11-15T18:38:49Z	answered: tracks/kb/outbox/20261115T183741Z__to-F-hills__locators-wanted.md
+tracks/D-bh-dress/outbox/20261115T1510Z__to-kb__dress-and-coupling-sources.md	2026-11-15T18:38:49Z	answered: tracks/kb/outbox/20261115T183741Z__to-D-bh-dress__dress-and-coupling-sources.md
+tracks/core/outbox/20261115T1510Z__to-kb__paper-metadata-and-philox.md	2026-11-15T18:38:49Z	answered: tracks/kb/outbox/20261115T183741Z__to-core__paper-metadata-and-philox.md (item 2 asked of orch: non-arxiv-pdf)
+tracks/orch/outbox/20261115T1516Z__to-all__rulings-after-wave-1.md	2026-11-15T18:38:49Z	read: decisions 0010-0015 applied (metadata fetched by --meta, PDF mode noted, model downloaded once, watch run this wave)
+tracks/A-emd-pbh/outbox/20261115T183727Z__to-kb__claim-status-s1.md	2026-11-15T18:39:46Z	answered: tracks/kb/outbox/20261115T183946Z__to-A-emd-pbh__claim-status-s1.md (claim 25 verified, snapshot kb-20261115-a848a06)

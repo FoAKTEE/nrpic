@@ -1,0 +1,26 @@
+{
+ "run_id": "kb-20261115-141457-b2e57be",
+ "owner": "kb",
+ "command": [
+  "python3",
+  "-I",
+  "kb/scripts/p3_ingestion_table.py",
+  "/data/haiyangw/nrpic/kb-data/db/kb.sqlite",
+  "tracks/kb/stage/KB-G1/priority3_ingestion.tsv"
+ ],
+ "cwd": "/data/haiyangw/nrpic/wt/kb",
+ "commit": "b2e57be2f928b034c1712565fa80c6f4fddfb742",
+ "worktree_dirty_kb": false,
+ "inputs": [],
+ "output_dir": "/data/haiyangw/nrpic/scratch/kb/kb-20261115-141457-b2e57be",
+ "purpose": "kb lead, gate KB-G1: priority-3 ingestion table after the re-ingestions kb-20261115-141159-bf9c30f and kb-20261115-141358-9043e03",
+ "kind": "production",
+ "cores": 1,
+ "card_hours": 0,
+ "started_utc": "2026-11-15T14:14:57Z",
+ "started_unix": 1794752097.08861,
+ "status": "finished",
+ "exit_code": 0,
+ "wall_time_s": 0.04,
+ "finished_utc": "2026-11-15T14:14:57Z"
+}

@@ -1,6 +1,6 @@
 # 0007 Claude Code auto memory (D7)
 
-Status: PROVISIONAL · 2026-11-15
+Status: ACCEPTED by the user on 2026-11-19 (decision 0017); before that provisional · 2026-11-15
 
 The default of the brief is to switch auto memory off in the project settings. The
 project already has a memory directory with the user's standing instructions from earlier

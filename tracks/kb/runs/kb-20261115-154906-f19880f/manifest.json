@@ -1,0 +1,39 @@
+{
+ "run_id": "kb-20261115-154906-f19880f",
+ "owner": "kb",
+ "command": [
+  "python3",
+  "-I",
+  "tracks/kb/served/scripts/run_serve.py",
+  "/data/haiyangw/nrpic/scratch/kb/kb-20261115-154906-f19880f",
+  "--publish"
+ ],
+ "cwd": "/data/haiyangw/nrpic/wt/kb",
+ "commit": "f19880fe615f4f2b3e3078e974b88a9fb65baa38",
+ "worktree_dirty_kb": true,
+ "inputs": [
+  {
+   "path": "/data/haiyangw/nrpic/wt/kb/tracks/kb/served/claims/manual.jsonl",
+   "sha256": "8e44ffbbe17268d5fd837d7fd33335be22b4b8a822051516a25a89e048c07916"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/wt/kb/kb/serve_locate.py",
+   "sha256": "3585329e7959c96cedca82342b9b690edf543b7a882ccb95c327e1ae5d40f5f5"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/wt/kb/tracks/kb/served/scripts/map_to_k8.py",
+   "sha256": "650c5a09f81838bbfb29c1533e9324e6e06e81f09cb7aeb894e3bd61bc27e8e7"
+  }
+ ],
+ "output_dir": "/data/haiyangw/nrpic/scratch/kb/kb-20261115-154906-f19880f",
+ "purpose": "kb serve: rerun of the locator check and K8 mapping with the same-note criterion (read-only; prediction JOURNAL S7)",
+ "kind": "scouting",
+ "cores": 1,
+ "card_hours": 0,
+ "started_utc": "2026-11-15T15:49:06Z",
+ "started_unix": 1794757746.3887317,
+ "status": "finished",
+ "exit_code": 0,
+ "wall_time_s": 2.85,
+ "finished_utc": "2026-11-15T15:49:09Z"
+}

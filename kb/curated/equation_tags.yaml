@@ -1,0 +1,89 @@
+# Tag rules of the equation index (stage K5, brief 12.6), applied by `kb eq --apply-tags`
+# (kb/kbtool/eq_tags.py) to every row of `equations`; the result goes to equations.tags_json.
+#
+# A tag applies when ANY of its clauses matches. A clause matches when ALL of its fields match:
+#   label:   regular expression searched in the equation's \label (case-insensitive)
+#   context: regular expression searched in the two sentences before and after (case-insensitive)
+#   before / after: the same, but only in the 250 characters of context just before / after the
+#            equation (the sentence that introduces it: "the Hamiltonian constraint reads")
+#   tex:     regular expression searched in tex_norm (normalized TeX: macros expanded, spaces
+#            removed except between a control word and a letter; case-sensitive);
+#            a list means every expression of the list must match
+#   not_label / not_context / not_before / not_tex: expressions that must NOT match
+# Python `re` syntax; YAML single quotes keep backslashes literal.
+# The rules are [JUDGEMENT]; their precision on random samples is in tracks/kb/embed/JOURNAL.md
+# (version 1: five of nine tags below 7/10, run kb-20261115-154013-e70f45d; version 2 tightened
+# those five with `before` and structural TeX patterns; all nine at 7/10 or better on a fresh sample,
+# run kb-20261115-154419-f4dfa36; version 3 only anchors two label patterns that sample showed
+# matching inside unrelated labels: 'lorentz4' for z4c, 'transportid' for tidal_radius).
+version: 3
+tags:
+  vlasov:
+    description: Vlasov (collisionless Boltzmann, Liouville) equation for a distribution function
+    any:
+      - label: 'vlasov|liouville|collisionless'
+      - before: 'vlasov|collisionless boltzmann|liouville'
+        tex:
+          - '\\partial ?f(?![A-Za-z])|\\partial_\{?[^{}]*\}? ?f(?![A-Za-z])|\{\\partial f|\\frac\{d ?f|\\frac\{\\mathrm\{d\} ?f|\\dot\{?f(?![A-Za-z])|\\pounds_?\{?[A-Za-z]*\}? ?f(?![A-Za-z])|\\mathcal\{L\}_\{?[A-Za-z]*\}? ?\[?f(?![A-Za-z])|L\[f\]'
+          - '=0(?![.0-9])|=C|=\\mathcal\{C\}|=\\mathcal\{I\}|=Q|=\\mathbb\{C\}|=J'
+  geodesic:
+    description: geodesic equation (equations of motion of test particles in a metric)
+    any:
+      - label: 'geodesic'
+      - context: 'geodesic equation|geodesic motion|equations? of motion (of|for) (a |the )?(test |massive |massless )?particles?|follow geodesics|move on geodesics|along geodesics'
+        tex: '\\Gamma\^|\\frac\{d ?(u|p|x|v)|\\frac\{\\mathrm\{d\} ?(u|p|x|v)|\\dot\{?(u|p|x)|d\^2 ?x|d\^\{2\} ?x|\\frac\{d\^2'
+  hamiltonian_constraint:
+    description: Hamiltonian (energy) constraint of the 3+1 Einstein equations
+    any:
+      - label: 'hamiltonian|ham[-_:]?con|(^|[:_-])hc($|[:_-])|constraint[-_:]?h($|am)'
+      - before: 'hamiltonian constraint'
+        tex:
+          - '='
+          - '(?<![A-Za-z])R(?![A-Za-z_])|\\mathcal\{R\}|\\nabla\^2|\\Delta|D\^2|D_iD\^i|D\^iD_i|\\partial\^i\\partial_i|\\partial_i\\partial\^i|\\partial_r\^2|\\mathcal\{H\}|K\^2|K\^\{2\}|\\Theta\^2|H\^2'
+          - '\\rho|E(?![A-Za-z])|\\varepsilon|K\^2|K\^\{2\}|A_\{ij\}A\^\{ij\}|A\^\{ij\}A_\{ij\}|\\psi\^\{?-?[57]|\\psi\^5|=0(?![.0-9])'
+        not_tex: '\\equiv|:=|\\partial_t(?![a-z])|\\partial_\{t\}'
+  momentum_constraint:
+    description: momentum constraint of the 3+1 Einstein equations
+    any:
+      - label: 'momentum[-_:]?con(str|$)|mom[-_:]?con|(^|[:_-])mc($|[:_-])|(^|[:_])mom$|(^|[:_])momentum$'
+      - before: 'momentum constraint'
+        tex:
+          - '='
+          - '(D|\\nabla|\\partial|\\bar\{D\}|\\tilde\{D\}|\\hat\{D\})(_|\^)\{?[a-z]\}?|\\mathcal\{M\}'
+          - 'S_|S\^|j_|j\^|J_|J\^|8\\pi|v_|P_|p_|=0(?![.0-9])'
+        not_tex: '\\equiv|:=|\\partial_t(?![a-z])|\\partial_\{t\}|\\dot'
+  z4c:
+    description: Z4c (conformal Z4) evolution equations or variables
+    any:
+      - label: '(^|[^a-z])(cc)?z4'
+      - context: '\bz4c\b|\bz4\b|\bccz4\b|conformal z4'
+        tex: '\\Theta|\\hat\{\\Gamma\}|\\hat\{K\}|\\tilde\{\\Gamma\}|\\kappa_\{?1|\\kappa_1'
+  deposition:
+    description: particle-to-mesh deposition (shape functions, cloud in cell, assignment weights)
+    any:
+      - label: 'deposit|shape|(^|[:_-])(cic|tsc|pcs)($|[:_-])|assign'
+      - context: 'deposit|cloud[- ]in[- ]cell|triangular[- ]shaped[- ]cloud|shape functions?|assignment (function|scheme)|particle[- ]mesh|\bcic\b|\btsc\b|particle[- ]in[- ]cell'
+        tex: 'W|S\(|S_|\\delta|\\sum|w_|B_'
+        not_context: 'energy deposition|deposited energy|deposition of energy|heat deposition'
+  compaction_function:
+    description: compaction function (mass excess over areal radius) of primordial-black-hole formation
+    any:
+      - label: 'compaction'
+      - context: 'compaction function|compactness function'
+        tex: '\\mathcal\{C\}|C(\(|_|\^|=)|\\bar\{C\}|\\overline\{C\}'
+  langevin:
+    description: Langevin equation (stochastic differential equation with a noise term)
+    any:
+      - label: 'langevin'
+      - before: '\blangevin\b|stochastic|noise|wiener'
+        tex:
+          - '='
+          - '\\xi(?![a-zA-Z_])|\\xi_[a-zA-Z\\{]|\\xi\(|dW|\\Xi|\\eta\((N|t)|\\zeta\((N|t)'
+          - '\\frac\{(d|\\mathrm\{d\}|\\partial) ?[^{}]*\}\{(d|\\mathrm\{d\}|\\partial) ?(N|t|\\tau)\}|_\{,N\}|_\{,t\}|,N(?![a-zA-Z])|\\dot|\\partial_N|\\partial_t|\\Delta\\phi|dt|dN'
+        not_tex: '\\langle|\\rangle|\\xi_\{?,|\\xi H'
+  tidal_radius:
+    description: tidal (disruption) radius or Roche limit
+    any:
+      - label: 'tidal[-_:]?rad|roche|(^|[:_-])r_?tid'
+      - context: 'tidal|roche'
+        tex: '^(r|R)_\{?(t|T|\\mathrm\{t\}|\\mathrm\{T\}|\\rm ?t|\\rm ?T|\\mathrm\{tid\}|\\mathrm\{td\}|\\mathrm\{tidal\}|\\rm ?tid)\}?(\\simeq|\\approx|\\sim|\\equiv|=)|^(r|R)_\{?\\mathrm\{Roche\}|^(r|R)_\{?\\rm ?Roche'
