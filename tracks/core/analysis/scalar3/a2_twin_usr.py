@@ -2,7 +2,7 @@
 """Test A on the inflection case (tracks/core/JOURNAL-scalar3.md): the linear twin of
 the mesh (nrpic.sf_lattice) for the ultra-slow-roll runs of test U, against their dumps.
 
-    python3 a2_twin_usr.py --data DIR [--out DIR] [--n 32] [--nmax2 64]
+    python3 a2_twin_usr.py --data DIR [DIR ...] [--out DIR] [--n 32] [--nmax2 64]
                            [--pair p01:m01:0.1] [--prefix ""] [--modefile FILE]
                            [--tmax T]
 
@@ -24,7 +24,8 @@ BASE = "usr"
 
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument("--data", required=True)
+    ap.add_argument("--data", nargs="+", required=True,
+                    help="directories that hold the run directories (searched in order)")
     ap.add_argument("--out")
     ap.add_argument("--n", type=int, default=32)
     ap.add_argument("--nmax2", type=int, default=64)
@@ -50,8 +51,16 @@ def main():
     q = np.sqrt(n2.astype(float))
     qtop = float(q.max())
     nc, inv = sl.canonical(n)
-    dp = s3.dumps(os.path.join(a.data, a.prefix + kp), BASE)
-    dm = s3.dumps(os.path.join(a.data, a.prefix + km), BASE)
+    def find(name):
+        for d in a.data:
+            p = os.path.join(d, a.prefix + name)
+            if os.path.exists(os.path.join(p, BASE + ".sf.hst")):
+                return p
+        raise SystemExit(f"run {a.prefix + name} not found in {a.data}")
+
+    rp_dir, rm_dir = find(kp), find(km)
+    dp = s3.dumps(rp_dir, BASE)
+    dm = s3.dumps(rm_dir, BASE)
     cyc = [c for c in sorted(set(dp) & set(dm)) if dp[c]["time"] <= a.tmax]
     times = np.array([dp[c]["time"] for c in cyc])
     t0 = time.time()
@@ -59,12 +68,12 @@ def main():
     sol = tw.integrate(times[1:], rtol=a.rtol)
     dg = tw.diagnostics(sol)
     # the twin with the time integration of the code, at the steps of the run
-    hist = sf.read_history(os.path.join(a.data, a.prefix + kp, BASE + ".sf.hst"))
+    hist = sf.read_history(os.path.join(rp_dir, BASE + ".sf.hst"))
     twc = sl.CodeTwin(nc, a.n, s3.LENGTH, v, dv, d2v, phi0, pi0, sh_n2, sh_r, sh_dr)
     solc = twc.integrate_steps(hist["time"], cyc)
     dgc = twc.diagnostics(solc)
     itc = {int(c): i for i, c in enumerate(solc["cycle"])}
-    summ = dict(data=os.path.abspath(a.data), pair=a.pair, n=a.n, nmax2=a.nmax2,
+    summ = dict(data=[os.path.abspath(rp_dir), os.path.abspath(rm_dir)], pair=a.pair, n=a.n, nmax2=a.nmax2,
                 modes=int(n.shape[0]), canonical=int(nc.shape[0]),
                 wall_twin_s=round(time.time() - t0, 1), rows=[])
     keep = []
