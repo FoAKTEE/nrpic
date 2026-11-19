@@ -117,3 +117,34 @@ existed).
 Compute in wave 2: 0 card-hours. Cores: the lead's runs at most 8 at a time; two runs of the embed
 helper exceeded kb's allotment of 8 (kb-20261115-152906-ca81acd 16 threads, kb-20261115-153805-e164901
 12 threads for 60 min; `../REVIEW-wave2.md`).
+
+## Wave 2b update (kb lead, 2026-11-19T15:45-17:00Z)
+
+The four KB-G1 criteria stay met; wave 2b adds the verifier's report (`VERIFIER.md`) and closes
+two of its defects. Snapshot of this update: `kb-data/db/kb-20261119-a782f1e.sqlite` (db/current;
+710 papers, 700 claims, this repository indexed at main 5deee18).
+
+| Criterion | Wave-2b evidence |
+|---|---|
+| inventory report | pdf_meta: gr-qc/9412071 ingested from its PDF (kb-20261119-142651-7318d01), so 684 of 684 manifest ids are in the base; metadata of 710 papers in the papers table and the comparison with brief section 16 (kb-20261119-142559-387c3bc fetch, kb-20261119-143702-aa436e7 load and comparison, BRIEF16_ERRATA.md); lead recount kb-20261119-155134-17d6704 |
+| priority-3 papers | 47 of 47 ingested; gr-qc/9906015 is a shell (verifier WRONG, status review; open for KB-G2) |
+| code and parameter index | verifier K 10/10, recall 83/83; staleness fixed by the re-index at 5deee18 (kb-20261119-161451-e15d1b8: 1242 rows of local/nrpic, 25/25 links OK) |
+| first questions | verifier Q 9/9 CONFIRMED (own answers first), 185/185 equation numbers, 73/73 and 18/18 locators |
+
+Runs of wave 2b that this package cites:
+
+| Run | Who | What | Manifest |
+|---|---|---|---|
+| kb-20261119-142015-7620bd4 | verifier | tests P, C, K, Q on a848a06 | hand-written (nrpic-run refused the dirty shared worktree) |
+| kb-20261119-142303-f38a48c | verifier | TeX papers with no bibliography entry | hand-written (same reason) |
+| kb-20261119-142448-3ea268d | verifier | locator strings against locator rows | hand-written (same reason) |
+| kb-20261119-161909-08df7ea | lead | the verifier's committed scripts rerun unchanged on a782f1e, registered: P identical, C 10/10, K 10/10 and 0 stale pairs, Q 9/9, zero bibliographies identical, 0 claims with string and rows disagreeing | nrpic-run |
+| kb-20261119-155315-b2c7420 | lead | B3: own recount of the verifier's WRONG items | nrpic-run |
+| kb-20261119-161413-31e6b85 | lead | D1: claim 25 locator rows (verifier defect 4) and the tracks' claims | nrpic-run |
+| kb-20261119-161451-e15d1b8 | lead | D2: re-index of this repository at main, links, snapshot kb-20261119-a782f1e | nrpic-run |
+| kb-20261119-142559-387c3bc, -142651-7318d01, -143702-aa436e7 | pdf_meta | metadata fetch, PDF ingest, metadata load and section-16 comparison | nrpic-run |
+
+The verifier's three hand-written manifests are dated 2026-11-19, so the waiver of decision 0016
+item 3 (waves 1 and 2) does not cover them; the registered rerun kb-20261119-161909-08df7ea
+reproduces their outputs (papers.tsv and zero_bib.tsv byte-identical in the compared columns) and
+is the run this package relies on. Figure of the lead's review: `tracks/kb/note/figures/fig_w2b_review.png`.

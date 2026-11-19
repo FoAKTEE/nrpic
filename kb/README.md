@@ -72,6 +72,21 @@ A registered run: `python3 -I kb/scripts/registered_run.py --purpose "..." -- <c
   brief section 16 (`papers.title_matches_brief`); repositories (none downloaded); AthenaK
   branch tips for the upstream watch. See Requests.
 
+## Wave 2b additions (kb lead, 2026-11-19)
+
+| Command | What |
+|---|---|
+| `kb ingest pdf --id ID` (or `--all`) | papers without usable TeX read from their stored `source.pdf` (`kbtool/pdf_reader.py`, `pdf_ingest.py`; status `pdf`, no equation index); `--out DIR` or `$NRPIC_RUN_DIR` for its report |
+| `kb meta load [--id ID]` | arXiv-API and INSPIRE records (`kb-data/meta/arxiv-api/`, `meta/inspire/`) into the papers table; TeX title and authors kept in `parse_json.tex_front`; groups of the additions from `kb/manifests/arxiv_additions.tsv` |
+| `kb meta brief16 --out DIR` | brief section 16 against the records (`tracks/kb/pdf_meta/BRIEF16_ERRATA.md`) |
+| `kb ingest arxiv ...` | now takes groups from brief 17 plus the additions and runs `kb meta load` for the ingested ids at the end (`--no-meta` to skip) |
+| `kb search --rerank "..."` | second stage over the first 100 hybrid chunks by sentence windows (`kbtool/search_rerank.py`, w2-noexpand; tracks/kb/retrieval/JOURNAL.md) |
+| `kb claim relocate ID --locator S --by B` | rewrite a claim's locator rows from a locator string; `kb claim verify --locator` now does the same |
+| `kb qa run --hybrid` | C1 counts the additions as manifest, C2 judges the abstract extraction by the abstract chunk, C4 compares `parse_json.tex_front` with INSPIRE |
+
+After any ingest: `kb eq --apply-tags`, `kb embed`, `kb embed --check --work`, `kb snapshot`.
+After a core release reaches main: `kb ingest repo --this --ref main`, `kb link load`, `kb link check`, `kb snapshot`.
+
 ## Code: K6-K7 (repositories, code index, parameter index, paper-code links, upstream watch)
 
 Under decision 0010 the repositories are read and indexed only: nothing in a clone is

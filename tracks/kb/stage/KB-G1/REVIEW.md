@@ -7,3 +7,7 @@
   in `tracks/kb/JOURNAL.md`; per package what is confirmed, not confirmed and wrong, and the
   track's action on each wrong item: `../REVIEW-wave2.md`; figure
   `tracks/kb/note/figures/fig_w2_review.png`.
+- Wave 2b: the lead rechecked the pdf_meta and retrieval helpers and the KB-G1 verifier, checks
+  B1-B3, D1, D2, V1 in `tracks/kb/JOURNAL.md`; per package what is confirmed, not confirmed and
+  wrong, and the track's action on each WRONG item of `VERIFIER.md`: `../REVIEW-wave2.md`
+  (section "Wave 2b"); figure `tracks/kb/note/figures/fig_w2b_review.png`.
