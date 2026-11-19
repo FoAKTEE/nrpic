@@ -500,7 +500,7 @@ P7 predicted the card 1.5 to 4 times faster than 64 threads and 4 to 10 times fa
 200 times 16 threads) and for the Newtonian mode (the card is not faster). To be replaced
 by job 4643 when it has run.
 
-## 2026-11-19 08:50 Entry 12: prediction for the card smoke test of this branch
+## 2026-11-19 08:47 Entry 12: prediction for the card smoke test of this branch
 
 The card executable of this branch (.work/build_gpu, rebuilt 07:47) differs from the
 release card executable only in that the deposit adds through `DepositTarget::Add`
