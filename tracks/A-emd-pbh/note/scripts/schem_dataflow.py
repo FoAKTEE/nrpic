@@ -6,7 +6,8 @@ analytic criteria and scope), through the stages: initial data and inputs -> Ath
 analysis scripts -> products -> the working note (note/scripts/ledger.py checks every
 input against its run's sha256sums.txt and writes tables/ledger.tex). Below: registration
 of every run and the independent path of the G1 verifier (stage/G1/verifier/).
-Every file named here exists in the worktree (checked by the G1 verifier on 2026-11-19);
+Every file named here exists in the worktree, except the cost logs of runs/jeans/, which
+live in the main checkout (checked by the G1 verifier on 2026-11-19);
 no data are read. Style: harness/style/paperfig.py (copy in this directory).
 Usage: python schem_dataflow.py [--out DIR]   (default: ../figures)
 """
@@ -76,7 +77,7 @@ def main():
     cell(ax, 0, y, "expball/scripts/make_dataset.py:\nradial table .tab, lattice .nrp;\nruns_ball/prep.py: tracked particles", CODE)
     cell(ax, 1, y, "pgen nrpic_cf, tables\nruns_ball/sr1, sr2.athinput\n(Z4c + particles)", ATHK)
     cell(ax, 2, y, "ball.traj.bin, ball.trajmet.bin\nball.*.hst, horizon summary,\nfield dumps, log", None, dashed_box=True)
-    cell(ax, 3, y, "runs_ball/compare.py\nexact shells: expball/exact.py\n(cycloid per particle)", CODE)
+    cell(ax, 3, y, "runs_ball/compare.py; exact shells:\nexpball/expball/exact.py\n(cycloid per particle)", CODE)
     cell(ax, 4, y, "numbers.json,\nseries.npz, figures", PROD)
     # lane 2: periodic box
     y = LANES[1][1]
