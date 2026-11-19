@@ -1,0 +1,30 @@
+{
+ "run_id": "kb-20261115-132754-bb3da03",
+ "owner": "kb",
+ "command": [
+  "python3",
+  "-I",
+  "kb/bin/kb",
+  "watch",
+  "upstream",
+  "--work",
+  "/data/haiyangw/nrpic/scratch/kb/kb-20261115-132754-bb3da03/work",
+  "--report",
+  "/data/haiyangw/nrpic/scratch/kb/kb-20261115-132754-bb3da03/watch_upstream.md"
+ ],
+ "cwd": "/data/haiyangw/nrpic/wt/kb",
+ "commit": "bb3da03be97c6861acfa699652778b2acc5c136e",
+ "worktree_dirty_kb": true,
+ "inputs": [],
+ "output_dir": "/data/haiyangw/nrpic/scratch/kb/kb-20261115-132754-bb3da03",
+ "purpose": "K6 kb watch upstream (first run, prediction P5): ls-remote of IAS-Astrophysics/athenak against the clone record of run kb-20261115-130232-ac33aa1, bare shallow clone of all branch tips, inspection of src/particles and src/z4c on every branch",
+ "kind": "production",
+ "cores": 1,
+ "card_hours": 0,
+ "started_utc": "2026-11-15T13:27:54Z",
+ "started_unix": 1794749274.3848934,
+ "status": "finished",
+ "exit_code": 0,
+ "wall_time_s": 245.62,
+ "finished_utc": "2026-11-15T13:32:00Z"
+}

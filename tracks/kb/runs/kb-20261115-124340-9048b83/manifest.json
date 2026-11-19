@@ -1,0 +1,36 @@
+{
+ "run_id": "kb-20261115-124340-9048b83",
+ "owner": "kb",
+ "command": [
+  "/data/haiyangw/nrpic/wt/kb/kb/bin/kb",
+  "fetch-missing",
+  "--priority",
+  "3",
+  "2",
+  "1",
+  "--ids-file",
+  "/data/haiyangw/nrpic/scratch/kb/kb-20261115-124340-9048b83/ids.txt"
+ ],
+ "cwd": "/data/haiyangw/nrpic/wt/kb",
+ "commit": "9048b83522e930ff04d2600e30653f85a9bfcbc9",
+ "worktree_dirty_kb": false,
+ "inputs": [
+  {
+   "path": "/data/haiyangw/nrpic/wt/kb/kb/manifests/arxiv.tsv",
+   "sha256": "4012a46dfe997d8f936a15fd62dd0ebe73aac6d64cac2391eb61aee2eb27e4d0"
+  }
+ ],
+ "output_dir": "/data/haiyangw/nrpic/scratch/kb/kb-20261115-124340-9048b83",
+ "purpose": "K1/K2: download the manifest entries still missing from kb-data/raw in priority order 3, 2, 1 (599 ids at 12:43 UTC: 139 priority 2, 460 priority 1) through harness/bin/nrpic-fetch-arxiv, one process, sequential (prediction D2 in kb/JOURNAL.md)",
+ "kind": "scouting",
+ "cores": 1,
+ "card_hours": 0,
+ "started_utc": "2026-11-15T12:43:40Z",
+ "started_unix": 1794746620.514936,
+ "status": "finished",
+ "pid": 1935449,
+ "wall_time_s": 2605.9,
+ "finished_utc": "2026-11-15T13:27:06Z",
+ "exit_code": null,
+ "note": "exit code not observed (detached process, not a child of any waiting process); 599 of 599 ids printed a store path, stderr empty (0 FAILED lines); process 1935449 gone at 13:27:24 UTC; wall time from the last write of stdout.log"
+}

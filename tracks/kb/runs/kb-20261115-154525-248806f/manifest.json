@@ -1,0 +1,29 @@
+{
+ "run_id": "kb-20261115-154525-248806f",
+ "owner": "kb",
+ "command": [
+  "python3",
+  "-I",
+  "/data/haiyangw/nrpic/harness/bin/nrpic-fetch-arxiv",
+  "2505.15903",
+  "0707.1350",
+  "astro-ph/0608642",
+  "gr-qc/0305023",
+  "1003.4681"
+ ],
+ "cwd": "/data/haiyangw/nrpic/wt/kb",
+ "commit": "248806fec14d60384ecfdd58cd9f82361909f401",
+ "worktree_dirty_kb": true,
+ "inputs": [],
+ "output_dir": "/data/haiyangw/nrpic/scratch/kb/kb-20261115-154525-248806f",
+ "purpose": "kb serve: fetch 2505.15903 (C), 0707.1350 and astro-ph/0608642 (D), gr-qc/0305023 (B), 1003.4681 (F); ids from corpus bibliographies",
+ "kind": "scouting",
+ "cores": 1,
+ "card_hours": 0,
+ "started_utc": "2026-11-15T15:45:25Z",
+ "started_unix": 1794757525.9179707,
+ "status": "finished",
+ "exit_code": 0,
+ "wall_time_s": 17.11,
+ "finished_utc": "2026-11-15T15:45:43Z"
+}

@@ -1,0 +1,36 @@
+{
+ "run_id": "kb-20261115-153805-e164901",
+ "owner": "kb",
+ "command": [
+  "kb/.venv/bin/python",
+  "-I",
+  "kb/bin/kb",
+  "embed",
+  "--threads",
+  "12",
+  "--batch",
+  "256"
+ ],
+ "cwd": "/data/haiyangw/nrpic/wt/kb",
+ "commit": "e1649012a87ba55f0a0295399ecb83d727a20e6a",
+ "worktree_dirty_kb": false,
+ "inputs": [
+  {
+   "path": "/data/haiyangw/nrpic/wt/kb/kb/.venv/models/BAAI__bge-small-en-v1.5/5c38ec7c405ec4b44b94cc5a9bb96e735b38267a/model.safetensors",
+   "sha256": "3c9f31665447c8911517620762200d2245a2518d6e7208acc78cd9db317e21ad"
+  }
+ ],
+ "output_dir": "/data/haiyangw/nrpic/scratch/kb/kb-20261115-153805-e164901",
+ "purpose": "embed helper: K4 full run, vectors of all non-comment chunks and all equation contexts of kb.sqlite with bge-small-en-v1.5@5c38ec7 on 12 threads (prediction E3)",
+ "kind": "scouting",
+ "cores": 12,
+ "card_hours": 0,
+ "started_utc": "2026-11-15T15:38:05Z",
+ "started_unix": 1794757085.2308424,
+ "status": "finished",
+ "pid": 4194218,
+ "wall_time_s": 3603.0,
+ "finished_utc": "2026-11-15T16:38:08Z",
+ "exit_code": 0,
+ "note": "exit code read from the end of stdout.log (final stats printed); process 4194218 gone"
+}

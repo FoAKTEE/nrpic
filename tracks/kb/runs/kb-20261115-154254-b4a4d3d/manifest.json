@@ -1,0 +1,43 @@
+{
+ "run_id": "kb-20261115-154254-b4a4d3d",
+ "owner": "kb",
+ "command": [
+  "python3",
+  "-I",
+  "tracks/kb/served/scripts/run_serve.py",
+  "/data/haiyangw/nrpic/scratch/kb/kb-20261115-154254-b4a4d3d",
+  "--publish"
+ ],
+ "cwd": "/data/haiyangw/nrpic/wt/kb",
+ "commit": "b4a4d3dbd87951d32ae3d2e0269350259241f54e",
+ "worktree_dirty_kb": true,
+ "inputs": [
+  {
+   "path": "/data/haiyangw/nrpic/wt/kb/tracks/kb/served/claims/manual.jsonl",
+   "sha256": "8e44ffbbe17268d5fd837d7fd33335be22b4b8a822051516a25a89e048c07916"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/wt/kb/kb/serve_locate.py",
+   "sha256": "3585329e7959c96cedca82342b9b690edf543b7a882ccb95c327e1ae5d40f5f5"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/wt/kb/tracks/kb/served/scripts/extract_track_locators.py",
+   "sha256": "17b4cdbf1a1b7bbdd467396a43b1e131fa80ef0c92c36a27a7fd3198c974e3b2"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/wt/kb/tracks/kb/served/scripts/map_to_k8.py",
+   "sha256": "b0dd39d8df0a46af80541a63934bd75b402f948aee5c0e111ed94e6eab7062ee"
+  }
+ ],
+ "output_dir": "/data/haiyangw/nrpic/scratch/kb/kb-20261115-154254-b4a4d3d",
+ "purpose": "kb serve: check the tracks' locators against the store and map every served statement to the K8 claims (read-only; prediction tracks/kb/served/JOURNAL.md S4)",
+ "kind": "scouting",
+ "cores": 1,
+ "card_hours": 0,
+ "started_utc": "2026-11-15T15:42:54Z",
+ "started_unix": 1794757374.7337098,
+ "status": "finished",
+ "exit_code": 0,
+ "wall_time_s": 1.84,
+ "finished_utc": "2026-11-15T15:42:56Z"
+}
