@@ -43,6 +43,8 @@ def main():
     p.add_argument("rundir")
     p.add_argument("--out", default=os.path.join(flib._HERE, "results", "a0.json"))
     p.add_argument("--fig", default=os.path.join(flib._HERE, "figs", "a0_monitor"))
+    p.add_argument("--dump", type=int, default=0,
+                   help="index of the dump of each case (0: t = 0; -1: the last)")
     a = p.parse_args()
     cases = ["ball_e2", "ball_e3", "ball_e4", "ball64_e2", "ball64_e4",
              "punc_e2", "punc_e3", "punc_e4", "boost_e2", "boost_e3", "boost_e4"]
@@ -52,7 +54,7 @@ def main():
         f = flib.dumps(os.path.join(a.rundir, c), "con")
         if not f:
             continue
-        d = flib.Dump(f[0])
+        d = flib.Dump(f[a.dump])
         dumps[c] = d
         r = {}
         for var in ("con_H", "con_Mx"):
@@ -117,8 +119,7 @@ def main():
             else:
                 ax.set_xlabel("layer of cells from the face", labelpad=-2)
             if j == 0:
-                ax.set_ylabel({"con_H": r"max $|H|$ at $t=0$",
-                               "con_Mx": r"max $|M_x|$ at $t=0$"}[var])
+                ax.set_ylabel({"con_H": r"max $|H|$", "con_Mx": r"max $|M_x|$"}[var])
             if i == 0 and j == 1:
                 ax.legend(fontsize=8)
             if i == 0 and j == 0:
