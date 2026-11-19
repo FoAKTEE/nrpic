@@ -178,3 +178,35 @@ read only registered outputs). Each check names the helper's claim and what refu
 - W10 (note) the note compiles from a clean copy with latexmk to 10 pages; the ledger
   script reproduces the ledger table byte for byte; three ledger numbers I pick (the drift
   +2.95e-4, the wall at tau = 200 M, the spike peak 0.8699e8) equal the run outputs.
+
+## 2026-11-19T15:20Z  session lead-wave2b (Opus)  predictions of the lead's wave-2b re-checks, written before they run
+
+Outcomes of W1-W10 (lead-wave2, 2026-11-15): in `stage/REVIEW-wave2.md` sections 1-5 (that
+session was cut off before its journal entry; this entry and the next close it).
+Script `stage/review_wave2/es_finish_check.py` (mine; written without opening the helper's
+`analyse.py`, `es_extra.py` or `probe_fronts.py`); it reads only the registered outputs of
+ES-1 (D-20261115-172726-60ba4c2) and V-1 (D-20261115-172730-c6d151b). Exact references from
+`es_runs/results/predictions.json` (checked as W1).
+
+- Y1 horizon mass (column 3 of the finder summaries): M_AH(100 M) - 1 = +9.55e-4 (ES-1),
+  +9.37e-4 (V-1); max over 100 <= t <= 200 M of |M_AH(t)/M_AH(100 M) - 1| = 3.40e-4 and
+  1.37e-4; max |drift(ES-1) - drift(V-1)| = 2.04e-4, 1.49 times V-1's floor, below the 3
+  of the refutation criterion. Refuted by a relative difference above 2 per cent in any of
+  these or a ratio of 3 or more.
+- Y2 wall (tags 56-69): my own areal radius R = r sqrt(B), B = (tr gamma - n.gamma.n)/2
+  (tangential part of gamma_ij at the particle, positions from `traj.bin`, metric and
+  proper time from `trajmet.bin`), against (36^1.5 + 1.5 sqrt(2) tau)^(2/3): max relative
+  error for tau <= 200 M 2.2e-3 (ES-1), 1.6e-3 (V-1), each within 10 per cent of these
+  numbers, both below the 1 per cent of criterion 2. Refuted beyond either.
+- Y3 crossings of R = 2M, linear interpolation in tau: groups R0 = 6 and 10 M (tags 0-27)
+  14.826 and 34.437 M within 0.01 M of the helper's numbers (exact 14.8269, 34.4423 M);
+  group R0 = 20 M (tags 28-41) crosses in ES-1 near t = 177 M at tau = 244.1-244.5 M and not
+  in V-1 by t = 200 M. Refuted beyond 0.01 M or by another crossing pattern.
+- Y4 1+log lapse (history column 13, probe at x = 46 M): 1.292, 1.662, 1.636 at t = 10, 25,
+  50 M (A2's model 1.377, 2.096, 3.577); proper time of the +x tracer of R0 = 48 M at
+  t = 200 M 279.5-279.9 M. Refuted beyond 1e-3 in the lapse or 0.5 M in tau.
+- Y5 dust and wall, last snapshot of ES-1 (t = 200 M) and the snapshot at t = 100 M: for each
+  of the 14 wall tracers, every dust particle within 10 degrees of its direction lies
+  outside it in coordinate radius by more than 0.1 M. Refuted by any dust particle inside.
+- Y6 cost from the manifests: 0.769 + 0.672 = 1.44 card-hours. ES-1G (Slurm 4636) has used
+  no card time at the time of the check.
