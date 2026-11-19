@@ -510,7 +510,7 @@ P5 and P5' of the analysis package HOLD. The validator's figures (noise statisti
 base run, `val_*_a12/fig_val_*.png` in the run directory) were looked at; a bit-identity
 has no figure of its own.
 
-## Entry 11, 2026-11-19 14:55Z: outcome of A6 (predictions PA6a-c of entry 8)
+## Entry 11, 2026-11-19 14:53Z: outcome of A6 (predictions PA6a-c of entry 8)
 
 Runs E-20261119-142317-c851f27 (six processor runs, 470 s at theta = 0.25, 800-850 s at
 0.125, 1630 s at 0.0625, exit 0), analysis E-20261119-145230-ff0dff2 (supersedes
@@ -539,7 +539,7 @@ instead of "fail" where no difference lies above 1e-12; `results/a6/a6.json`,
   lower left).
 - PA6c CONFIRMED: during the late entry (N = 1.5-3.4) the odd part of H changes by at most
   4 percent between theta = 0.25 and 0.0625 (ratios 1.041, 1.003, 1.000 per halving at
-  N = 1.46, 1.94, 2.42; 1.000 after), that of M by at most 12 percent (1.000 after N = 2):
+  N = 1.46, 1.94, 2.42; 1.000 after), that of M by ratios 0.88-1.00 (1.000 after N = 2):
   the first-order part of A4's failure is spatial truncation. The even part with its mean
   removed is independent of theta (ratios 0.999-1.000). The box mean of the even part
   (H0 and the mean of the second-order part) after the entry is 2.9e-12, 1.7e-13, 1.0e-14

@@ -18,7 +18,7 @@ outcomes: `JOURNAL.md` (entries 1-11).
 | Spectrum against linear and slow-roll results | PASS | shell ratios within 1.9e-4; Delta_lin/slow-roll formula 1.0104-1.0109 for |n| <= 7 | same |
 | A4 constraints of second order during the entry | FAIL in the paper's set-up (k_max = N/4) at N = 32-256; PASS in the k_max/dk = 8 set-up from N = 128 | odd (first-order) part of H up to 385-870 times the even part from N = ln(N/8); magnitude <= 5.1e-11 (within 10 x P1's 1e-10); halving 2.00 (odd), 4.00 (even) | same; floor analysis E-20261119-142713-32c883a |
 | A5 convergence before the floor | PASS with the floor made operational (JOURNAL entry 9) | odd part order 4.2-5.8 (H), 5.6-5.9 (M) on 32 -> 64 -> 128; floor independent of the amplitude, growing as N^2.5 | same |
-| A6 temporal order | see `JOURNAL.md` entry 11 | | E-20261119-142317-c851f27 (runs), analysis in entry 10 |
+| A6 temporal order (N = 32, Courant 0.25, 0.125, 0.0625) | PASS | differences of R^NR and of the perturbations of phi, chi, K and of <chi> fall at order 3.93-4.08; time error of R^NR at Courant 0.25 below 3e-4; the top-shell deviation of A2 and the late-entry first-order constraint part are spatial | runs E-20261119-142317-c851f27, analysis E-20261119-145230-ff0dff2 |
 | A7 restart (NOISE_SPEC A12) | PASS | U4 bit-identical to U2 on processors and on a card (whole dump files equal) | E-20261119-141654-c2a10d1 |
 | Negative control | PASS | H 4e4-1.5e5 times the proper run, M/[M] 0.20-0.22 | final analysis |
 | Cost | | 1.13-1.30 card-s per step at 256^3; 0.50 card-hours per 8-e-fold realisation | E-20261115-172618-f948386 |
@@ -124,7 +124,9 @@ To the lead (owner of `spec/` and `spec/scope/SCOPE.md`); proposals, not adopted
 To core (information for package scalar3, item "first-order truncation at late mode
 entry"): the first-order part enters exactly with the shells of fewer than eight cells per
 wavelength (first dump with odd > even at N = 1.51, 1.99, 2.96, 3.44 against ln(N/8) =
-1.39, 2.08, 2.77, 3.47 for N = 32-256); entry 11 says whether it is spatial or temporal.
+1.39, 2.08, 2.77, 3.47 for N = 32-256), and it is spatial: at N = 32 it changes by at most
+4 percent when the Courant factor falls from 0.25 to 0.0625 (entry 11). The early odd
+part at N = 32 and the uniform H0 are the fourth-order time error.
 
 Not done: the USR case (G2), a second seed, a halving pair at 256^3, A6 at 64^3 on a card
 (L6 asks 64^3; run here at 32^3 on processors), sensitivity L9.
