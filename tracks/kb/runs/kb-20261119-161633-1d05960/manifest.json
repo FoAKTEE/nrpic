@@ -1,0 +1,102 @@
+{
+  "schema": "nrpic-run-manifest/1",
+  "run_id": "kb-20261119-161633-1d05960",
+  "track": "kb",
+  "gate": "G2",
+  "kind": "scouting",
+  "purpose": "kb lead Q1: kb qa run --hybrid (text, hybrid, rerank) on the new snapshot kb-20261119-a782f1e for KB-G2 (decision 0016 item 6)",
+  "preregistered_in": null,
+  "launcher": "local",
+  "command": [
+    "bash",
+    "-c",
+    "OMP_NUM_THREADS=6 KB_EMBED_THREADS=6 kb/.venv/bin/python -I kb/kbtool/qa_cli.py qa run --hybrid --db /data/haiyangw/nrpic/kb-data/db/kb-20261119-a782f1e.sqlite --out \"$NRPIC_RUN_DIR/QA_REPORT.md\" --json \"$NRPIC_RUN_DIR/qa.json\""
+  ],
+  "cwd": ".",
+  "git": {
+    "sha": "1d059603f7f3659a75fcb309e3627fe562805949",
+    "branch": "kb/main",
+    "dirty": false,
+    "merge_base_main": "f51539c6f46a051b8c3c2d86501bcc6dfaa34f93",
+    "worktree": "wt/kb"
+  },
+  "code": {
+    "core_tag": "core-v0.3",
+    "athenak_upstream_sha": "c5a0d7f",
+    "kokkos_sha": "6739bc623081648af9e752b616d9671527922cbf",
+    "problem": null
+  },
+  "env": {
+    "host": "anta",
+    "env_hash": "33c1dbb6673b68919eaa332b0add0b58aeac8be843f2071b9d06e2e0e397a96d",
+    "machine_file_sha256": "0321f40f4caeeb2a36624a9fa9809e60bad31071f366b3517ba23ad45698d2d7",
+    "uv_lock_sha256": "5417f6ba318b914aa3800e5d55f7b11fdd8df13c2688bdda7d419240aa1d5863",
+    "track_requirements_sha256": null,
+    "container_digest": null,
+    "compiler": "g++ 11.4.0",
+    "mpi": "none (Athena_ENABLE_MPI=OFF)",
+    "gpu": null,
+    "python": "3.10.12 /data/haiyangw/nrpic/wt/kb/.venv"
+  },
+  "input": null,
+  "inputs": [
+    {
+      "path": "kb/kbtool/qa_report.py",
+      "role": "input",
+      "sha256": "40fab142c9d9a92b3327485d692aef3b8f1ac8a310009eb6456d7f516d9b9f3b",
+      "bytes": 35108,
+      "tracked": true
+    },
+    {
+      "path": "kb/kbtool/search_rerank.py",
+      "role": "input",
+      "sha256": "d02ae8fd4b57afe196825eb85e20beb38a849e390a290dae0a1f90411126ddf4",
+      "bytes": 13066,
+      "tracked": true
+    },
+    {
+      "path": "kb/kbtool/qa_golden.py",
+      "role": "input",
+      "sha256": "43dc8764210c6c7d2dd99999e8ceaaa21db0cd3628f35992680e1d6fe1ab88b1",
+      "bytes": 9180,
+      "tracked": true
+    }
+  ],
+  "batch_entries": null,
+  "resources": {
+    "nodes": 1,
+    "gpus": 0,
+    "cores": 6,
+    "walltime_s": null,
+    "wall_limit": null,
+    "segments_max": null,
+    "gpu_hours_requested": 0.0,
+    "gpu_hours": null,
+    "particles": null
+  },
+  "slurm": null,
+  "outputs": {
+    "dir": "scratch/kb/kb-20261119-161633-1d05960",
+    "sha256sums": "sha256sums.txt",
+    "sha256sums_sha256": null,
+    "bytes": null,
+    "files": null
+  },
+  "status": "running",
+  "exit_code": null,
+  "registered": "2026-11-19T16:16:33Z",
+  "started": null,
+  "ended": null,
+  "parents": [],
+  "notes": "",
+  "budget_at_submit": {
+    "gpu_hours_allotted": 0.0,
+    "cores_allotted": 8,
+    "gpu_hours_used": 0.0,
+    "gpu_hours_reserved": 0.0,
+    "gpu_hours_without_gate": 0.0,
+    "cores_busy": 0,
+    "runs": 150,
+    "allotment_from": "coord/DECISIONS/0006-compute-budget.md + 0014-budgets-after-wave-1.md"
+  }
+}
