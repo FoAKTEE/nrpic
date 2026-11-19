@@ -506,3 +506,19 @@ the run directory, not bh_n64/: linked into bh_n64/ before the run was closed.
 Conclusion for the card runs [JUDGEMENT]: dx = M/2 is below the resolution at which this
 gauge forms a horizon for data set 3; dx = M/8 puts about 4 times more cells across the
 collapsed core. Nothing in the queued job is changed.
+
+## 2026-11-19, entry 10: BH-1R, one refined level (prediction, written before the run)
+
+Reason: at dx = M/2 the 1+log/Gamma-driver coordinates put the collapsing core of data set
+3 into the first one or two cells (entry 9); with the same behaviour the horizon would
+lie at a coordinate radius of 0.4-0.8 M, 3 to 6 cells of the finest uniform mesh of the
+queued job (M/8). BH-1R adds one static level, cells of M/16 inside [-4, 4]^3 (deck
+`bh_smr.athinput`), with a lattice of h = M/16 (n_lat = 136; one particle per fine cell),
+t = 0 -> 16, a second card job (estimated 0.45 card-hours; with the queued job about 1.05
+of the 2 allowed).
+Prediction [JUDGEMENT]: the run reaches t = 16; the finder finds the horizon, first
+between t = 9 and 14; at first detection the proper time of the particles at the horizon
+exceeds the exact tau_AH of their shell by 0 to 0.3 M; |m_irr/m_exact(slice) - 1| below
+3e-3 at first detection and as median over the first 4 M (between the M/8 bound of B4 and
+the source paper's ~1e-3); core-shell largest |eps| at the turnaround below 1.5e-3.
+Refuted by: no horizon by t = 16, or a mass error above 1e-2.
