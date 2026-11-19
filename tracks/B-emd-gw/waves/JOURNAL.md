@@ -162,3 +162,12 @@ unless the processor rate exceeds 1e5.
   B-20261119-142108-1e5add9). Prediction for the card: both runs complete in under
   5 minutes of card time (about 1.7e8 zone-cycles each at >= 1e6 per second);
   card-hours charged <= 0.1 (wall limit 20 minutes requested).
+
+## 2026-11-19 14:25 Insurance runs at N = 48 on processors
+
+The card job (Slurm 4635) waits behind two running jobs of another user and five pending
+ones (squeue 14:22). So that convergence does not hang on the queue, both tests also run
+at N = 48 on processors (one serial process each, expected 56 and 90 minutes).
+Predictions at N = 48 (same predictor, `wlib/predict.py`): F: 444 steps, amplitude
+-1.58e-7, phase +2.27e-6; X: 524 steps, amplitude +5.52e-7, phase +5.05e-7; criteria as
+F2 and X3 (10 and 20 per cent).
