@@ -160,7 +160,9 @@ def main():
         x, u, m, sp = XP.lattice(ball, n)
         h = 2.0 * rm / n
         rbar = np.sqrt(np.sum(x * x, axis=1))
-        Ri = np.minimum(ball.R_of_rbar(rbar), ball.R_out)
+        # areal radius of each site from the Chebyshev interpolant of the slice (error ~1e-14;
+        # ball.R_of_rbar, a Newton solve per point, is too slow for 1e6 sites)
+        Ri = np.minimum(ball.fields(rbar, ("R",))["R"], ball.R_out)
         group = {}
         for T in targets:
             idx = np.argsort(np.abs(Ri - T), kind="stable")[: a.per_shell]
