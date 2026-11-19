@@ -557,7 +557,11 @@ def figures(results, od, gwname):
             dz = r["design"]
             ax.loglog(dz["a"], dz["Omega_rad"], color="k", lw=1.0,
                       label="baseline model A (design)")
-        ax.set_ylim(1e-13, 1e-5)
+        late = rows[:, 1] > 1.5
+        top = max(rows[:, 5:].max(), r["gw"]["Omega_quad_sum"]["Omega"]
+                  if r.get("quadrupole_halos") else 0.0)
+        pos = rows[late, 8][rows[late, 8] > 0]
+        ax.set_ylim(max(1e-16, 0.3*pos.min()) if len(pos) else 1e-13, 3.0*top)
         ax.set_xlim(1.0, 1.1*rows[-1, 1])
         ax.set_xlabel(r"$a$")
         ax.set_ylabel(r"$\rho_{\rm GW}/\bar\rho$")
