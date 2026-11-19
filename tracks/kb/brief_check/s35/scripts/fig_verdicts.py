@@ -1,4 +1,4 @@
-"""Tally, locator check and figure of the verdicts in CHECK.md (work package s33).
+"""Tally, locator check and figure of the verdicts in CHECK.md (work package s35).
 
 Reads the markdown tables of CHECK.md and
   1. checks that the rows are numbered 1..N without gaps and that the totals stated in the
@@ -7,14 +7,15 @@ Reads the markdown tables of CHECK.md and
   2. checks every locator of the locator column: a TeX locator `<key>/<v>/src/<file>:<lines>`
      must name an existing file under kb-data/raw/arxiv whose length covers every line number
      given; a metadata locator `meta:arxiv-api/<id>` or `meta:inspire/<id>` (and the short
-     forms `/<id>` that follow it) must name an existing file under kb-data/meta;
+     forms `/<id>` that follow it) must name an existing file under kb-data/meta; a run id
+     `kb-<date>-<time>-<sha7>` must have tracks/kb/runs/<id>/manifest.json;
   3. counts the verdicts per brief line and per evidence label and draws them.
 Writes verdicts.json and fig_verdicts.{pdf,png} into $NRPIC_RUN_DIR (or the first argument)
 and prints the tally. Exit status 1 if a check fails. Files under kb-data are only opened
 for reading and counted in lines; nothing there is executed or imported.
 
 Run (registered): harness/bin/nrpic-run submit --kind scouting --gate G2 --package
-tracks/kb/brief_check/s33 --purpose "..." -- python tracks/kb/brief_check/s33/scripts/fig_verdicts.py
+tracks/kb/brief_check/s35 --purpose "..." -- python tracks/kb/brief_check/s35/scripts/fig_verdicts.py
 """
 import json
 import os
@@ -32,6 +33,8 @@ import matplotlib.pyplot as plt  # noqa: E402
 CHECK = os.path.join(os.path.dirname(HERE), "CHECK.md")
 KB = "/data/haiyangw/nrpic/kb-data"
 RAW = os.path.join(KB, "raw", "arxiv")
+# tracks/kb/runs of this worktree: a run id in the locator column must have its manifest there
+RUNS = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(HERE))), "runs")
 CLASSES = ["CONFIRMED", "CONFIRMED (precision)", "CORRECTED", "NOT FOUND"]
 COLORS = {"CONFIRMED": fs.PAL["blue"], "CONFIRMED (precision)": fs.PAL["yellow"],
           "CORRECTED": fs.PAL["red"], "NOT FOUND": "grey"}
@@ -124,6 +127,11 @@ def check_locators(rows):
                 if top > nlines(path):
                     problems.append("row %d: line %d beyond end (%d) of %s"
                                     % (r["n"], top, nlines(path), sp))
+                checked += 1
+                continue
+            if re.match(r"^kb-\d{8}-\d{6}-[0-9a-f]{7}$", sp):
+                if not os.path.isfile(os.path.join(RUNS, sp, "manifest.json")):
+                    problems.append("row %d: no manifest for run %s" % (r["n"], sp))
                 checked += 1
                 continue
             m = re.match(r"^meta:(arxiv-api|inspire)/(.+)$", sp)

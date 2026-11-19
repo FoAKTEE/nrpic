@@ -150,7 +150,7 @@ def main():
     ax2.set_xscale("log")
     ax2.set_xlim(1.0, 400.0)
     ax2.set_xlabel("ratio")
-    ax2.plot([], [], "o", mfc="white", mec="black", label="as stated (abstract)")
+    ax2.plot([], [], "o", mfc="white", mec="black", label="as stated in the paper")
     ax2.plot([], [], "x", color=fs.PAL["red"], label="recomputed from body")
     ax2.legend(loc="upper center", bbox_to_anchor=(0.45, 1.2), ncol=2, fontsize=6.5,
                frameon=False)

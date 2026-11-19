@@ -119,3 +119,70 @@ above 20: then the abstract's "factor of 2" or "order of magnitude" does not des
 case of the body and the brief rows 45 and 47 become CORRECTED or NOT FOUND for the body.
 Figure: left, hhat(e,0) with the dust bound and the particle bracket at e = 0.2; right, stated
 against recomputed ratios. I will look at the PNG before using any number.
+
+## Entry 3 (2026-11-19 07:33 PST): outcome of run 1 and of predictions P1-P15
+
+Run `kb-20261119-151804-271859c` (completed, exit 0; processors, one core, seconds): steps ratio
+93.81, step-size ratio 200.0, abundance ratio 19.44, hhat(0.2, 0) = 0.4517 (0.4221 with the
+other convention for E), dust ratio at least 2.10 (2.25), particle ratio 9.03 to 10.04 (8.44 to
+9.38). All inside the preregistered bands: prediction CONFIRMED. Figure
+`scratch/kb/kb-20261119-151804-271859c/fig_numbers.png` looked at: the analytic line rises from
+0.03 at e = 0.005 to 0.48 at e = 1/3, the dust marker sits at 0.95 above it (x2.1), the particle
+bracket at 0.045-0.05 below it (/9 to /10); stated and recomputed ratios coincide on the right.
+One defect of the figure: the legend said "as stated (abstract)", but the 200 and the 19 are
+stated in the bodies (PRD.tex:402, main.tex:659); label changed to "as stated in the paper" and
+the figure rerun (entry 4).
+
+Outcomes of the predictions of entry 1 (rows of CHECK.md in brackets):
+
+- P1 CONFIRMED [1-8]: all eight are spherical threshold, critical-scaling or profile studies or
+  reviews; 2211.05767 is a general review (precision).
+- P2 CONFIRMED [9-12]: three precisions as predicted (2403.11147 spin study with w = 1/3, 1/5;
+  2410.03452 also w = 1/10; 2410.03451 a mass-function letter on the companion's thresholds).
+- P3 CONFIRMED [13-16], with one precision I did not predict: the 3+1 runs of 2608.13206 are of a
+  spherical Gaussian profile only (PRD.tex:507). The Zel'dovich-Novikov law is a two-parameter
+  late-time fit (F, M_inf), F foliation-dependent, as predicted.
+- P4 CONFIRMED [17-18]: one author; "diagnostic" and "empirical indicator", 0.55-0.56, no exact
+  multiplicity criterion.
+- P5 CONFIRMED [19-20]: toy model (constant over-density inside a radius), as predicted.
+- P6 CONFIRMED [21].
+- P7 CONFIRMED [22-24]: the statement is in 1609.01588 (Jeans-criterion threshold tends to zero
+  as w goes to 0; delta proportional to a), 2211.13950 and 1810.03490; the [BACKGROUND] label
+  can become [VERIFIED].
+- P8 CONFIRMED [25-28]: near-extremal spins only for a long matter era; most frequent spin 1 for
+  sigma_H ≲ 0.04.
+- P9 CONFIRMED [30-31] with the precision predicted ("for a realistic cosmic abundance",
+  zeta_rms ~ 0.1).
+- P10 CONFIRMED (the predicted correction) [33]: sigma_j^2 = ∫ d ln k k^(2j) P(k)
+  (main.tex:767), so sigma_h^* is an r.m.s. amplitude and beta ∝ sigma^5 = variance^(5/2); the
+  paper itself calls sigma_0 "the variance" (main.tex:322, 775). The 19 is 1.08/0.05556 (run 1).
+- P11 CONFIRMED with a precision I did not predict [35]: the near-extremal estimate was revised by
+  overlapping authors (2508.10070 includes Harada, Kohri, Yoo), and 2609.14218 sums up "the
+  conclusion has evolved" towards negligible spin effects; the "disagreement" is a revision.
+- P12 CONFIRMED [37-40], with the precision that there are two fields (massive phi as the
+  matter, massless xi for the perturbation).
+- P13 CONFIRMED (precision) [41-42]: the source says "several e-folds" and argues it; the
+  simulations follow at most a few e-folds after formation (the 50 per cent case went to
+  "precision").
+- P14 CONFIRMED (precision) [43-47]: the earlier estimate is the Zel'dovich-plus-hoop criterion of
+  Harada et al. 2016; both factors are the abstract's and hold for the one body case e = 0.2
+  (run 1); and a precision I did not predict: the particle threshold comes with "a big caveat",
+  significantly violated constraints once particles cross (MDPBH.tex:1148-1149), and the authors
+  conclude "a large theoretical uncertainty" (MDPBH.tex:1209).
+- P15 CONFIRMED [48-52].
+- Overall prediction (0-2 CORRECTED, 6-12 precisions, none NOT FOUND): 1 CORRECTED (inside),
+  18 precisions (above the predicted 6-12: I underestimated how many statements are abstract
+  wording that the bodies qualify), 0 NOT FOUND (inside).
+
+## Entry 4 (2026-11-19 07:33 PST): predictions for run 2 (tally) and run 3 (figure rerun)
+
+Run 2, `scripts/fig_verdicts.py` (copy of the s33 script, now also checking run-id locators
+against `tracks/kb/runs/<id>/manifest.json`): predicts 52 rows numbered 1-52, tally 33 CONFIRMED,
+18 CONFIRMED (precision), 1 CORRECTED, 0 NOT FOUND equal to the header, every locator span valid
+(file exists, highest line within the file), exit 0. By label: [VERIFIED] 31 rows, [BACKGROUND] 4,
+unlabelled 17. Refuted by any problem line or exit 1 (then the row is fixed and the run repeated,
+the failed run kept on record).
+
+Run 3, `scripts/check_numbers.py` after the legend fix: numbers.json identical in every number
+to run 1 (the script is deterministic, only a label changed); the figure differs only in the
+legend text.
