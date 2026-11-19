@@ -241,3 +241,11 @@ artefacts, then the stage packages G0 and G1. Predictions written before each ch
   runs them. Prediction: the recomputed per-run and pair JSON equal the originals, and
   `summary.json`, `floor.json`, `a6.json` equal `ladder/results/{final,floor,a6}/` within 1e-9
   relative (paths and times excepted). Refuted by any larger difference.
+- LR1' outcome (run E-20261119-150842-ca70d37): CONFIRMED. The 17 recomputed JSON files of the
+  32^3 and 64^3 rungs (2295 numeric leaves) are bit-identical to those of run
+  E-20261115-194633-9e04ed8; `summary.json`, `floor.json`, `a6.json` bit-identical to
+  `ladder/results/`; the eight figures pixel-identical (rms 0) to `ladder/fig/`.
+- LA1, LV1 outcome (run E-20261119-150346-a513bc8): CONFIRMED, every leaf identical (T1-T5:
+  48; V1 91, V2 288, V3 2, V4 37, V5 3, V8 9).
+- A12 from the registered checksums: U4 dumps and mode files equal U2's on processors and on
+  the card (sha256sums.txt of E-20261115-170727-d15df12, -170645-3b21217, -180526-6b68c33).
