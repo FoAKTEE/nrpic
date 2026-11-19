@@ -1,0 +1,37 @@
+{
+ "run_id": "kb-20261115-131627-7350d70",
+ "owner": "kb",
+ "command": [
+  "kb/.venv/bin/python",
+  "-I",
+  "kb/bin/kb",
+  "ingest",
+  "repo",
+  "--all",
+  "--this",
+  "--ref",
+  "main"
+ ],
+ "cwd": "/data/haiyangw/nrpic/wt/kb",
+ "commit": "7350d701ab7c31606c1e64ef84c0ee859b42fbff",
+ "worktree_dirty_kb": true,
+ "inputs": [
+  {
+   "path": "/data/haiyangw/nrpic/wt/kb/kb/manifests/github.tsv",
+   "sha256": "23876b7ec1134475c1a9cde1488f970c61363990b699b1240b787272536d2928"
+  }
+ ],
+ "output_dir": "/data/haiyangw/nrpic/scratch/kb/kb-20261115-131627-7350d70",
+ "purpose": "K6: code index of the 63 cloned repositories and of this repository at main (athenak/src, python/nrpic, cosmo, problems): files, symbols, parameter calls, chunks into kb-data/build/code and kb.sqlite",
+ "kind": "production",
+ "cores": 1,
+ "card_hours": 0,
+ "started_utc": "2026-11-15T13:16:27Z",
+ "started_unix": 1794748587.0062642,
+ "status": "finished",
+ "pid": 2392647,
+ "wall_time_s": 565.4,
+ "finished_utc": "2026-11-15T13:25:52Z",
+ "exit_code": null,
+ "note": "detached; exit code not observed; stdout has 64 repository lines (63 manifest + local/nrpic), stderr empty. Scouting-quality: built before the symbol end-line fix and the ParameterInput filter; superseded by the production re-ingest"
+}

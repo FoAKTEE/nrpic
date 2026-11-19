@@ -1,0 +1,33 @@
+{
+ "run_id": "kb-20261115-134029-56dbd1c",
+ "owner": "kb",
+ "command": [
+  "/data/haiyangw/nrpic/wt/kb/kb/bin/kb",
+  "ingest",
+  "arxiv",
+  "--all",
+  "--extras",
+  "--jobs",
+  "8"
+ ],
+ "cwd": "/data/haiyangw/nrpic/wt/kb",
+ "commit": "56dbd1c0cfe71a67356ecaae3a70b97de00134ee",
+ "worktree_dirty_kb": true,
+ "inputs": [
+  {
+   "path": "/data/haiyangw/nrpic/wt/kb/kb/manifests/arxiv.tsv",
+   "sha256": "4012a46dfe997d8f936a15fd62dd0ebe73aac6d64cac2391eb61aee2eb27e4d0"
+  }
+ ],
+ "output_dir": "/data/haiyangw/nrpic/scratch/kb/kb-20261115-134029-56dbd1c",
+ "purpose": "K2-K3: re-ingest every verified paper with the empty-line numbering fix (prediction K2-P8 in kb/JOURNAL.md)",
+ "kind": "production",
+ "cores": 8,
+ "card_hours": 0,
+ "started_utc": "2026-11-15T13:40:29Z",
+ "started_unix": 1794750029.2447493,
+ "status": "finished",
+ "exit_code": -15,
+ "wall_time_s": 622.67,
+ "finished_utc": "2026-11-15T13:50:51Z"
+}

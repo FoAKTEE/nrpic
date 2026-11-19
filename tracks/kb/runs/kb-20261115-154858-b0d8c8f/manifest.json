@@ -1,0 +1,48 @@
+{
+ "run_id": "kb-20261115-154858-b0d8c8f",
+ "owner": "kb",
+ "command": [
+  "kb/.venv/bin/python",
+  "-I",
+  "kb/kbtool/qa_cli.py",
+  "qa",
+  "run",
+  "--hybrid",
+  "--out",
+  "/data/haiyangw/nrpic/scratch/kb/kb-20261115-154858-b0d8c8f/QA_REPORT.md",
+  "--json",
+  "/data/haiyangw/nrpic/scratch/kb/kb-20261115-154858-b0d8c8f/qa.json"
+ ],
+ "cwd": "/data/haiyangw/nrpic/wt/kb",
+ "commit": "b0d8c8f010e905dc793ecfa64aa15a183168e80f",
+ "worktree_dirty_kb": true,
+ "inputs": [
+  {
+   "path": "/data/haiyangw/nrpic/wt/kb/kb/kbtool/qa_report.py",
+   "sha256": "95f441d67582660b48f9a4c7371322844d090ead35ae31a03c54a8ce9b1e9a9a"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/wt/kb/kb/kbtool/qa_eqcount.py",
+   "sha256": "2bfe07e22bb3586fbd51fa83703a393d0f2144cb5c3b63cb0fc07d1befff9e67"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/wt/kb/kb/kbtool/qa_golden.py",
+   "sha256": "43dc8764210c6c7d2dd99999e8ceaaa21db0cd3628f35992680e1d6fe1ab88b1"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/wt/kb/kb/kbtool/qa_cli.py",
+   "sha256": "78b81e5527e34d8a065b517eb49fd6640e58b63203123e7722cba0f19677aff8"
+  }
+ ],
+ "output_dir": "/data/haiyangw/nrpic/scratch/kb/kb-20261115-154858-b0d8c8f",
+ "purpose": "K9: first quality report (C1-C10; golden retrieval in text and hybrid mode; independent equation count on 41 papers)",
+ "kind": "scouting",
+ "cores": 4,
+ "card_hours": 0,
+ "started_utc": "2026-11-15T15:48:58Z",
+ "started_unix": 1794757738.4699218,
+ "status": "finished",
+ "exit_code": 1,
+ "wall_time_s": 27.52,
+ "finished_utc": "2026-11-15T15:49:25Z"
+}

@@ -1,0 +1,34 @@
+{
+ "run_id": "kb-20261115-135545-d405f64",
+ "owner": "kb",
+ "command": [
+  "kb/.venv/bin/python",
+  "-I",
+  "kb/scripts/code_report.py",
+  "/data/haiyangw/nrpic/scratch/kb/kb-20261115-135545-d405f64"
+ ],
+ "cwd": "/data/haiyangw/nrpic/wt/kb",
+ "commit": "d405f64ba37ca1b71b8fc70120f966c6c52516fd",
+ "worktree_dirty_kb": false,
+ "inputs": [
+  {
+   "path": "/data/haiyangw/nrpic/wt/kb/kb/scripts/code_report.py",
+   "sha256": "d55d7259de86f8d71d6aa537177b74714c788bfcea9d625e9ac1017c1f7378c0"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/wt/kb/kb/kbtool/code_params.py",
+   "sha256": "5d11837d2fc09ca5f7b90cdce318ad051619af004ff9b40134b39ab803566f84"
+  }
+ ],
+ "output_dir": "/data/haiyangw/nrpic/scratch/kb/kb-20261115-135545-d405f64",
+ "purpose": "K6 reports and figures of the production code index (same data as test P4' run kb-20261115-135445-dfc83c9; figure layout only changed)",
+ "kind": "production",
+ "cores": 1,
+ "card_hours": 0,
+ "started_utc": "2026-11-15T13:55:45Z",
+ "started_unix": 1794750945.285855,
+ "status": "finished",
+ "exit_code": 0,
+ "wall_time_s": 2.97,
+ "finished_utc": "2026-11-15T13:55:48Z"
+}
