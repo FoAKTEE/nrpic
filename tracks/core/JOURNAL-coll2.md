@@ -926,3 +926,34 @@ size.
 - Relinked executable: `scratch/core/tmp/coll2close/stale_objs/athena_gpu_rebuilt9`
   (sha256 6adc74ce...); its card run (two smoke decks) is registered as run
   core-20261119-141940-2e6368f, Slurm job 4634, waiting behind other owners' jobs.
+
+## 2026-11-19 15:50 UTC  outcomes Ct and X (card jobs 4633 and 4634)
+
+### Ct: step time of the cluster deck on the card, run core-20261119-141042-70c2f5d (job 4633)
+
+40 steps to t = 5 M, one card, the three runs in sequence (60 s of allocation,
+0.0167 card-hours). "cpu time used" over 40 cycles (`athena.log`): off 0.261 s, kn3_cell
+0.259 s, kn3_particle 0.239 s per step; set-up before the first step 14 s (first run on
+the card), 3 s, 1.5 s. Wave 1, same deck over 1200 steps: 0.209 s per step. FAILED as
+written for off and kn3_cell (band 0.19 to 0.25 s): 4 percent above it; the 40-step
+average carries the work of the first step and of three snapshots, which 1200 steps
+spread thinner [JUDGEMENT; the log has no line between cycle 0 and 40 to separate
+them]. What matters for the sizing held: `particle` costs no more than `cell` (0.239
+against 0.259), and three runs of 1200 steps need 3 x 1200 x 0.26 s = 16 minutes at
+most, inside the 25-minute limit of job 4639; the job stays as submitted.
+
+### X: the first card crash settled, run core-20261119-141940-2e6368f (job 4634). Passed.
+
+The incremental card build `.work/build_gpu` with only the nine stale objects
+recompiled (executable sha256 6adc74ce..., `athena_gpu_rebuilt9`) ran both smoke decks
+with exit 0 (static metric with collisions 5 steps, perturbing force; 22 s of
+allocation, 0.0061 card-hours) where the same build with the stale objects crashed at
+start in all ten runs of 2026-11-15. (b) held. (c) held in its strict form: every
+output file is byte-identical to that of the clean build f46f159 in job 4485
+(`box.coll.hst`, `box.nrpic.hst`, `box.part.00000.bin`, `pert.part.0000{0,1}.bin`).
+So the crash was caused by the nine objects that the incremental build had compiled
+from the class layout before the header change of 07:40:08 and never recompiled
+[VERIFIED: a test that could have crashed]. The source is not involved; the published
+card executable is a clean build and is not affected. Rule for card builds of this
+tree: after a change of `particles.hpp` during a running build, rebuild from clean or
+delete the objects that finished after the change.
