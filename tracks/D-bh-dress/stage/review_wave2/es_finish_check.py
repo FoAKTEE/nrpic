@@ -66,7 +66,7 @@ def read_traj(d, base):
     B = 0.5 * (tr_g - ngn)
     R = r * np.sqrt(B)
     return {"t": tr[:, 0], "tag": tr[:, 1].astype(int), "x": x, "r": r, "R": R,
-            "alpha": tm[:, 2], "tau": tm[:, 14]}
+            "alpha": tm[:, 2], "tau": tm[:, 12]}
 
 
 def read_hst(d, base):
