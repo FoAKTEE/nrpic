@@ -166,6 +166,13 @@ struct NrpicIdSolveOptions {
   bool vector = false;       // also solve the momentum constraint for W (id_vector)
   int vec_residual = 1;      // vector residual: 1 stencil form, 0 constraint monitor
   Real vec_tol = 1.0e-10;    // tolerance of the vector part (id_vector_tol)
+  // second pass (tracks/core/interfaces/id_solver2.md)
+  int far = 1;               // faces: 1 multipole far field under the 1/r fill, 0 plain
+  int far_lmax = 4;          // highest multipole order of the far field (0 to 4)
+  Real far_radius = 1.0;     // moments from the sphere of this fraction of the box
+  int npunc = 0;             // punctures of the problem generator (singular part of psi)
+  Real punc_radius = 0.0;    // stencil residual within this distance of a puncture
+  int lin_solver = 0;        // linear solver: 0 conjugate gradients, 1 BiCGStab
 };
 
 //----------------------------------------------------------------------------------------
@@ -367,7 +374,8 @@ class Particles {
   // sources deposited by this module, before the first deposit of a new run.
   NrpicIdSolveOptions ids;
   MeshBoundaryValuesCC *pbval_ids = nullptr;   // ghost cells of psi and of corrections
-  DvceArray5D<Real> ids_coarse;                // unused coarse array of that exchange
+  DvceArray5D<Real> ids_coarse;                // coarse array of that exchange
+  std::vector<Real> ids_punc;                  // punctures: x(3), m, p(3), s(3) each
   void NrpicIdSolveInit(ParameterInput *pin);
   void NrpicSolveInitialData();
 

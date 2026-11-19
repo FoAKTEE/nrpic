@@ -37,8 +37,26 @@
 //! Called from NrpicStartup of a new run, between the creation of the particles and
 //! NrpicInitializeSources; on exit the Z4c state holds the solved data.  A record of
 //! the iteration goes to <basename>.idsolve.txt, with id_dump = true the fields go to
-//! <basename>.idsolve.bin (docs/FORMATS.md).  Uniform meshes, single rank.
+//! <basename>.idsolve.bin (docs/FORMATS.md).  Single rank.
 //! Design, tests and limits: tracks/core/interfaces/id_solver.md.
+//!
+//! Second pass (tracks/core/interfaces/id_solver2.md):
+//!  - far field (id_far = multipole, default): at faces that are not periodic the 1/r
+//!    fill acts on psi - psi_far and W_i - W_far,i, where the far fields are the exterior
+//!    multipole expansions (orders 0 to id_far_lmax) of the right sides of the two
+//!    equations (nrpic_idfar.hpp).  The far field of W depends on the direction already
+//!    at order 1/r, which the plain fill does not represent.
+//!  - refined meshes: ghost cells across levels by restriction and prolongation (the
+//!    scheme of Z4c); with id_residual = code the metric of every evaluation passes
+//!    through the Z4c variables and their ghost-cell exchange, so that the residual is
+//!    the constraint monitor of the run on the level structure of the run; the linear
+//!    solves use BiCGStab (the operator with prolongated ghost cells is not symmetric).
+//!  - punctures (components of type puncture of the problem generator nrpic_cf):
+//!    psi = psi_s + u with psi_s = 1 + sum m_c/(2 |x - x_c|) in closed form; the
+//!    seven-point operator acts on u only, and within id_puncture_radius bare masses of
+//!    a puncture the residual is the stencil form whatever id_residual; the Bowen-York
+//!    curvature of the punctures is divergence free and is left out of the numerical
+//!    divergence of the trial curvature in the vector equation.
 
 #include <algorithm>
 #include <cmath>
@@ -53,6 +71,7 @@
 #include "parameter_input.hpp"
 #include "mesh/mesh.hpp"
 #include "driver/driver.hpp"
+#include "mesh/mesh_refinement.hpp"
 #include "bvals/bvals.hpp"
 #include "coordinates/adm.hpp"
 #include "z4c/z4c.hpp"
@@ -61,6 +80,8 @@
 #include "gravity/mg_gravity.hpp"
 #include "multigrid/multigrid.hpp"
 #include "particles/particles.hpp"
+#include "particles/nrpic_idfar.hpp"
+#include "pgen/nrpic/nrpic_bowen_york.hpp"
 
 namespace particles {
 
@@ -100,9 +121,6 @@ void Particles::NrpicIdSolveInit(ParameterInput *pin) {
   }
   if (!nropt.deposit) {
     IdFatal("<particles> id_solve requires deposit = true");
-  }
-  if (pm->multilevel) {
-    IdFatal("<particles> id_solve is implemented on uniform meshes only");
   }
   if (!pin->DoesBlockExist("gravity")) {
     IdFatal("<particles> id_solve requires a <gravity> block for the Poisson solver "
@@ -156,9 +174,80 @@ void Particles::NrpicIdSolveInit(ParameterInput *pin) {
       ids.vec_tol = pin->GetReal("particles", "id_vector_tol");
     }
   }
-  // ghost cells of psi and of the corrections
-  pbval_ids = new MeshBoundaryValuesCC(pmy_pack, pin, false);
+  // second pass: far field at the faces, punctures, linear solver (read only if
+  // present; tracks/core/interfaces/id_solver2.md)
+  if (pin->DoesParameterExist("particles", "id_far")) {
+    const std::string fr = pin->GetString("particles", "id_far");
+    if (fr.compare("multipole") == 0) {
+      ids.far = 1;
+    } else if (fr.compare("robin") == 0) {
+      ids.far = 0;
+    } else {
+      IdFatal("<particles> id_far = '" + fr + "' not recognized (multipole or robin)");
+    }
+  }
+  if (pin->DoesParameterExist("particles", "id_far_lmax")) {
+    ids.far_lmax = pin->GetInteger("particles", "id_far_lmax");
+    if (ids.far_lmax < 0 || ids.far_lmax > kIdFarLmax) {
+      IdFatal("<particles> id_far_lmax must be between 0 and 4");
+    }
+  }
+  if (pin->DoesParameterExist("particles", "id_far_radius")) {
+    ids.far_radius = pin->GetReal("particles", "id_far_radius");
+    if (!(ids.far_radius > 0.0)) IdFatal("<particles> id_far_radius must be positive");
+  }
+  ids.lin_solver = pm->multilevel ? 1 : 0;
+  if (pin->DoesParameterExist("particles", "id_lin_solver")) {
+    const std::string ls = pin->GetString("particles", "id_lin_solver");
+    if (ls.compare("cg") == 0) {
+      ids.lin_solver = 0;
+    } else if (ls.compare("bicgstab") == 0) {
+      ids.lin_solver = 1;
+    } else {
+      IdFatal("<particles> id_lin_solver = '" + ls + "' not recognized (cg or bicgstab)");
+    }
+  }
+  // punctures of the problem generator nrpic_cf: position, bare mass, momentum, spin
+  ids.npunc = 0;
+  ids_punc.clear();
+  const bool use_punc = pin->DoesParameterExist("particles", "id_punctures") ?
+                        pin->GetBoolean("particles", "id_punctures") : true;
+  if (use_punc && pin->DoesParameterExist("problem", "pgen_name") &&
+      pin->GetString("problem", "pgen_name").compare("nrpic_cf") == 0 &&
+      pin->DoesParameterExist("problem", "ncomp")) {
+    const int ncomp = pin->GetInteger("problem", "ncomp");
+    const char *keys[9] = {"x1", "x2", "x3", "p1", "p2", "p3", "s1", "s2", "s3"};
+    for (int c=0; c<ncomp; ++c) {
+      const std::string pre = "comp" + std::to_string(c) + "_";
+      if (!pin->DoesParameterExist("problem", pre + "type")) continue;
+      if (pin->GetString("problem", pre + "type").compare("puncture") != 0) continue;
+      Real v[10];
+      for (int q=0; q<9; ++q) {
+        v[(q < 3) ? q : q + 1] = pin->DoesParameterExist("problem", pre + keys[q]) ?
+                                 pin->GetReal("problem", pre + keys[q]) : 0.0;
+      }
+      v[3] = pin->GetReal("problem", pre + "mass");
+      for (int q=0; q<10; ++q) { ids_punc.push_back(v[q]); }
+      ++ids.npunc;
+    }
+    if (ids.npunc > nrpic_by::kBYMaxPunc) IdFatal("too many punctures for id_solve");
+  }
+  if (ids.npunc > 0) {
+    ids.punc_radius = 1.0;
+    if (pin->DoesParameterExist("particles", "id_puncture_radius")) {
+      ids.punc_radius = pin->GetReal("particles", "id_puncture_radius");
+    }
+  }
+  // ghost cells of psi and of the corrections; on a refined mesh with the restriction
+  // and prolongation of Z4c
+  pbval_ids = new MeshBoundaryValuesCC(pmy_pack, pin, pm->multilevel);
   pbval_ids->InitializeBuffers(1);
+  if (pm->multilevel) {
+    auto &indcs = pm->mb_indcs;
+    const int nmbc = std::max((pmy_pack->nmb_thispack), (pm->nmb_maxperrank));
+    Kokkos::realloc(ids_coarse, nmbc, 1, indcs.cnx3 + 2*(indcs.ng),
+                    indcs.cnx2 + 2*(indcs.ng), indcs.cnx1 + 2*(indcs.ng));
+  }
 }
 
 //----------------------------------------------------------------------------------------
@@ -216,6 +305,52 @@ void Particles::NrpicSolveInitialData() {
   const Real zo = pmgd->RobinOrigin(2);
   const bool use_code = (ids.residual == 0);
   const Real lambda = nropt.lambda;
+  const bool multilevel = pm->multilevel;
+  // far field under the 1/r fill: only when every face of the mesh is a Robin face
+  bool all_open = robin;
+  for (int f=0; f<6; ++f) {
+    if (pm->mesh_bcs[f] == BoundaryFlag::periodic) { all_open = false; }
+  }
+  const bool use_far = (ids.far == 1) && all_open;
+  const int far_lmax = ids.far_lmax;
+  // the moments are taken from the sphere about the centre that fits into the mesh
+  Real rfar = 0.0;
+  {
+    const RegionSize &ms = pm->mesh_size;
+    rfar = std::min(std::min(std::min(xo - ms.x1min, ms.x1max - xo),
+                             std::min(yo - ms.x2min, ms.x2max - yo)),
+                    std::min(zo - ms.x3min, ms.x3max - zo));
+    rfar *= ids.far_radius;
+    if (use_far && !(rfar > 0.0)) {
+      IdFatal("<particles> id_far = multipole needs the centre of <gravity> robin_x1..3 "
+              "inside the mesh");
+    }
+  }
+  const Real rfar2 = rfar*rfar;
+  // punctures of the problem generator (singular part of psi in closed form)
+  const int npunc = ids.npunc;
+  nrpic_by::BYSet bys;
+  bys.n = npunc;
+  bys.curv = false;
+  Real prad2[nrpic_by::kBYMaxPunc];
+  for (int c=0; c<nrpic_by::kBYMaxPunc; ++c) {
+    prad2[c] = 0.0;
+    nrpic_by::BYPuncture &b = bys.punc[c];
+    for (int a=0; a<3; ++a) { b.x[a] = 0.0; b.p[a] = 0.0; b.s[a] = 0.0; b.axis[a] = 0.0; }
+    b.m = 0.0; b.corr = nrpic_by::kBYCorrNone; b.lam = 1.0;
+    b.ncol = 0; b.ntab = 0; b.off = 0; b.lmax = 0; b.dr = 1.0; b.rlast = 0.0;
+    for (int q=0; q<nrpic_by::kBYMaxCol; ++q) { b.l[q] = 0; b.tail[q] = 1.0; }
+    if (c < npunc) {
+      const Real *v = &(ids_punc[10*c]);
+      for (int a=0; a<3; ++a) { b.x[a] = v[a]; b.p[a] = v[4+a]; b.s[a] = v[7+a]; }
+      b.m = v[3];
+      prad2[c] = SQR(ids.punc_radius*b.m);
+      if (SQR(b.p[0]) + SQR(b.p[1]) + SQR(b.p[2]) + SQR(b.s[0]) + SQR(b.s[1])
+          + SQR(b.s[2]) > 0.0) { bys.curv = true; }
+    }
+  }
+  const Real pr2_0 = prad2[0], pr2_1 = prad2[1], pr2_2 = prad2[2], pr2_3 = prad2[3];
+  const Real pr2_4 = prad2[4], pr2_5 = prad2[5], pr2_6 = prad2[6], pr2_7 = prad2[7];
 
   auto &adm = pmy_pack->padm->adm;
   auto &con = pz4c->con;
@@ -227,7 +362,7 @@ void Particles::NrpicSolveInitialData() {
   DvceArray4D<Real> trk("ids_trk", nmb, n3, n2, n1);        // K
   DvceArray4D<Real> a2("ids_a2", nmb, n3, n2, n1);          // Abar_ij Abar_ij
   DvceArray4D<Real> sig("ids_sig", nmb, n3, n2, n1);        // sigma
-  DvceArray5D<Real> wk("ids_wk", nmb, 2, n3, n2, n1);       // stencil residual, scale
+  DvceArray5D<Real> wk("ids_wk", nmb, 3, n3, n2, n1);       // stencil res., scale, rhs
   DvceArray5D<Real> res("ids_res", nmb, 1, n3, n2, n1);     // residual F
   DvceArray5D<Real> del("ids_del", nmb, 1, n3, n2, n1);     // correction d
   DvceArray5D<Real> cr("ids_cr", nmb, 1, n3, n2, n1);       // conjugate gradients
@@ -249,6 +384,23 @@ void Particles::NrpicSolveInitialData() {
     vt = DvceArray5D<Real>("ids_vt", nmb, 1, n3, n2, n1);
     vp = DvceArray5D<Real>("ids_vp", nmb, 1, n3, n2, n1);
     vsc = DvceArray4D<Real>("ids_vsc", nmb, n3, n2, n1);
+  }
+  // second pass: singular part of psi, far fields, scratch of the far-field fill, trial
+  // curvature without the Bowen-York part, BiCGStab
+  DvceArray5D<Real> psis, farp, ftmp, farw[3], abr, bh, bt;
+  if (npunc > 0) { psis = DvceArray5D<Real>("ids_psis", nmb, 1, n3, n2, n1); }
+  if (use_far) {
+    farp = DvceArray5D<Real>("ids_farp", nmb, 1, n3, n2, n1);
+    ftmp = DvceArray5D<Real>("ids_ftmp", nmb, 1, n3, n2, n1);
+    if (vec) {
+      for (int c=0; c<3; ++c) {
+        farw[c] = DvceArray5D<Real>("ids_farw", nmb, 1, n3, n2, n1);
+      }
+    }
+  }
+  if (ids.lin_solver == 1) {
+    bh = DvceArray5D<Real>("ids_bh", nmb, 1, n3, n2, n1);
+    bt = DvceArray5D<Real>("ids_bt", nmb, 1, n3, n2, n1);
   }
 
   // ---- trial state: psi, K, Abar_ij from the ADM variables of the problem generator
@@ -300,18 +452,99 @@ void Particles::NrpicSolveInitialData() {
     IdFatal("<particles> id_solve requires a conformally flat trial metric (largest "
             "relative deviation " + std::to_string(nonflat) + ")");
   }
+  if (npunc > 0) {
+    // psi_s = 1 + sum m_c/(2 |x - x_c|) on all cells; a puncture on a cell centre is an
+    // error
+    Real dmin = 0.0;
+    auto ps = psis;
+    Kokkos::parallel_reduce("ids_psis",
+      Kokkos::MDRangePolicy<DevExeSpace, Kokkos::Rank<4>>({0, 0, 0, 0}, {nmb, n3, n2, n1}),
+    KOKKOS_LAMBDA(const int m, const int k, const int j, const int i, Real &lmin) {
+      const Real x = sz(m).x1min + (i - is + 0.5)*sz(m).dx1;
+      const Real y = sz(m).x2min + (j - js + 0.5)*sz(m).dx2;
+      const Real z = sz(m).x3min + (k - ks + 0.5)*sz(m).dx3;
+      Real v = 1.0;
+      for (int c=0; c<npunc; ++c) {
+        const Real r = sqrt(SQR(x - bys.punc[c].x[0]) + SQR(y - bys.punc[c].x[1])
+                            + SQR(z - bys.punc[c].x[2]));
+        lmin = fmin(lmin, r/sz(m).dx1);
+        v += 0.5*bys.punc[c].m/fmax(r, 1.0e-12*sz(m).dx1);
+      }
+      ps(m,0,k,j,i) = v;
+    }, Kokkos::Min<Real>(dmin));
+    if (dmin < 1.0e-6) {
+      IdFatal("<particles> id_solve: a puncture sits on a cell centre");
+    }
+    if (vec && bys.curv) {
+      // trial curvature without the (divergence-free) Bowen-York part
+      abr = DvceArray5D<Real>("ids_abr", nmb, 6, n3, n2, n1);
+      auto ar = abr;
+      par_for("ids_abr", DevExeSpace(), 0, nmb1, 0, n3-1, 0, n2-1, 0, n1-1,
+      KOKKOS_LAMBDA(const int m, const int k, const int j, const int i) {
+        const Real x = sz(m).x1min + (i - is + 0.5)*sz(m).dx1;
+        const Real y = sz(m).x2min + (j - js + 0.5)*sz(m).dx2;
+        const Real z = sz(m).x3min + (k - ks + 0.5)*sz(m).dx3;
+        Real by6[6] = {0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
+        for (int c=0; c<npunc; ++c) {
+          nrpic_by::BYAddCurvature(bys.punc[c], x, y, z, by6);
+        }
+        for (int v=0; v<6; ++v) { ar(m,v,k,j,i) = ab(m,v,k,j,i) - by6[v]; }
+      });
+    }
+  }
+  if (!(vec && bys.curv)) { abr = ab; }
   if (ids.psi_init == 1) {
-    Kokkos::deep_copy(psi, 1.0);
+    if (npunc > 0) {
+      Kokkos::deep_copy(psi, psis);
+    } else {
+      Kokkos::deep_copy(psi, 1.0);
+    }
+  }
+  if (use_far) {
+    // before the first evaluation: no moments, the fill acts on psi - psi_s and on W
+    if (npunc > 0) {
+      Kokkos::deep_copy(farp, psis);
+    } else {
+      Kokkos::deep_copy(farp, 1.0);
+    }
   }
 
   // ---- ghost cells of a field: exchange between MeshBlocks and across periodic faces,
   //      1/r fall-off of (field - off) at the other faces
-  auto fill_ghost = [&](DvceArray5D<Real> &fld, const Real off) {
+  //      On a refined mesh: restriction, exchange and prolongation with the scheme of
+  //      Z4c; the coarse array gets the plain 1/r fill at the faces of the mesh.
+  auto exchange = [&](DvceArray5D<Real> &fld, const Real off) {
+    if (multilevel) { pm->pmr->RestrictCC(fld, ids_coarse, true); }
     (void) pbval_ids->InitRecv(1);
     (void) pbval_ids->PackAndSendCC(fld, ids_coarse);
     (void) pbval_ids->ClearSend();
     (void) pbval_ids->ClearRecv();
     (void) pbval_ids->RecvAndUnpackCC(fld, ids_coarse);
+    if (multilevel) {
+      if (!periodic) {
+        auto cf = ids_coarse;
+        const int cn1 = indcs.cnx1, cn2 = indcs.cnx2, cn3 = indcs.cnx3;
+        Kokkos::parallel_for("ids_robin_c", Kokkos::RangePolicy<DevExeSpace>(0, nmb),
+        KOKKOS_LAMBDA(const int m) {
+          bool face[6];
+          bool any = false;
+          for (int f=0; f<6; ++f) {
+            face[f] = (mb_bcs(m,f) != BoundaryFlag::block) &&
+                      (mb_bcs(m,f) != BoundaryFlag::periodic);
+            any = any || face[f];
+          }
+          if (any) {
+            MGRobinFill(cf, m, 1, ng, cn1, cn2, cn3, sz(m).x1min - xo, sz(m).x2min - yo,
+                        sz(m).x3min - zo, 2.0*sz(m).dx1, 2.0*sz(m).dx2, 2.0*sz(m).dx3,
+                        face, off);
+          }
+        });
+      }
+      pbval_ids->ProlongateCC(fld, ids_coarse, true);
+    }
+  };
+  auto fill_ghost = [&](DvceArray5D<Real> &fld, const Real off) {
+    exchange(fld, off);
     if (!periodic) {
       auto ff = fld;
       Kokkos::parallel_for("ids_robin", Kokkos::RangePolicy<DevExeSpace>(0, nmb),
@@ -329,6 +562,158 @@ void Particles::NrpicSolveInitialData() {
         }
       });
     }
+  };
+
+  // ---- ghost cells with a far field: at the faces of the mesh the 1/r fall-off is
+  //      applied to fld - far, where far holds the far field in the cells within 2 ng
+  //      of a face (ghost cells and their mirror cells)
+  auto fill_far = [&](DvceArray5D<Real> &fld, const Real off, DvceArray5D<Real> &far) {
+    exchange(fld, off);
+    auto ff = fld, fa = far, tt = ftmp;
+    par_for("ids_far_sub", DevExeSpace(), 0, nmb1, 0, n3-1, 0, n2-1, 0, n1-1,
+    KOKKOS_LAMBDA(const int m, const int k, const int j, const int i) {
+      bool face[6];
+      for (int f=0; f<6; ++f) {
+        face[f] = (mb_bcs(m,f) != BoundaryFlag::block) &&
+                  (mb_bcs(m,f) != BoundaryFlag::periodic);
+      }
+      const bool zone = (face[0] && i < 2*ng) || (face[1] && i >= n1 - 2*ng) ||
+                        (face[2] && j < 2*ng) || (face[3] && j >= n2 - 2*ng) ||
+                        (face[4] && k < 2*ng) || (face[5] && k >= n3 - 2*ng);
+      if (zone) { tt(m,0,k,j,i) = ff(m,0,k,j,i) - fa(m,0,k,j,i); }
+    });
+    Kokkos::parallel_for("ids_far_robin", Kokkos::RangePolicy<DevExeSpace>(0, nmb),
+    KOKKOS_LAMBDA(const int m) {
+      bool face[6];
+      bool any = false;
+      for (int f=0; f<6; ++f) {
+        face[f] = (mb_bcs(m,f) != BoundaryFlag::block) &&
+                  (mb_bcs(m,f) != BoundaryFlag::periodic);
+        any = any || face[f];
+      }
+      if (any) {
+        MGRobinFill(tt, m, 1, ng, nx1, nx2, nx3, sz(m).x1min - xo, sz(m).x2min - yo,
+                    sz(m).x3min - zo, sz(m).dx1, sz(m).dx2, sz(m).dx3, face, 0.0);
+      }
+    });
+    par_for("ids_far_add", DevExeSpace(), 0, nmb1, 0, n3-1, 0, n2-1, 0, n1-1,
+    KOKKOS_LAMBDA(const int m, const int k, const int j, const int i) {
+      bool face[6];
+      for (int f=0; f<6; ++f) {
+        face[f] = (mb_bcs(m,f) != BoundaryFlag::block) &&
+                  (mb_bcs(m,f) != BoundaryFlag::periodic);
+      }
+      const bool ghost = (face[0] && i < ng) || (face[1] && i >= n1 - ng) ||
+                         (face[2] && j < ng) || (face[3] && j >= n2 - ng) ||
+                         (face[4] && k < ng) || (face[5] && k >= n3 - ng);
+      if (ghost) { ff(m,0,k,j,i) = tt(m,0,k,j,i) + fa(m,0,k,j,i); }
+    });
+  };
+  auto fill_psi = [&]() {
+    if (use_far) {
+      fill_far(psi, 1.0, farp);
+    } else {
+      fill_ghost(psi, 1.0);
+    }
+  };
+  auto fill_w = [&](const int c) {
+    if (use_far) {
+      fill_far(wv[c], 0.0, farw[c]);
+    } else {
+      fill_ghost(wv[c], 0.0);
+    }
+  };
+
+  // ---- moments of component comp of a cell-centred array (kind 0), or of -x_j s_j
+  //      for the right side s of the vector equation (kind 1), about the centre, from
+  //      the cells within rfar of it
+  auto moments = [&](const DvceArray5D<Real> &a, const int comp, const int kind)
+                 -> IdFarSum {
+    IdFarSum sum;
+    auto aa = a;
+    auto s0 = sv[0], s1 = sv[1], s2 = sv[2];
+    Kokkos::parallel_reduce("ids_moments",
+      Kokkos::MDRangePolicy<DevExeSpace, Kokkos::Rank<4>>(
+        {0, ks, js, is}, {nmb, ke+1, je+1, ie+1}),
+    KOKKOS_LAMBDA(const int m, const int k, const int j, const int i, IdFarSum &ls) {
+      const Real x = sz(m).x1min + (i - is + 0.5)*sz(m).dx1 - xo;
+      const Real y = sz(m).x2min + (j - js + 0.5)*sz(m).dx2 - yo;
+      const Real z = sz(m).x3min + (k - ks + 0.5)*sz(m).dx3 - zo;
+      if (x*x + y*y + z*z < rfar2) {
+        const Real vol = sz(m).dx1*sz(m).dx2*sz(m).dx3;
+        const Real q = (kind == 0) ? aa(m,comp,k,j,i)
+                       : -(x*s0(m,0,k,j,i) + y*s1(m,0,k,j,i) + z*s2(m,0,k,j,i));
+        IdFarAccumulate(ls.the_array, q*vol, x, y, z, kIdFarLmax);
+      }
+    }, Kokkos::Sum<IdFarSum>(sum));
+    return sum;
+  };
+  // far field of psi from the right side of the scalar equation (component 2 of wk)
+  IdFarSum mom_psi, mom_v[3], mom_u;
+  auto far_psi = [&]() {
+    mom_psi = moments(wk, 2, 0);
+    IdFarSum mp;
+    IdFarCoefficients(mom_psi.the_array, far_lmax, mp.the_array);
+    auto fa = farp;
+    auto ps = psis;
+    par_for("ids_farp", DevExeSpace(), 0, nmb1, 0, n3-1, 0, n2-1, 0, n1-1,
+    KOKKOS_LAMBDA(const int m, const int k, const int j, const int i) {
+      bool face[6];
+      for (int f=0; f<6; ++f) {
+        face[f] = (mb_bcs(m,f) != BoundaryFlag::block) &&
+                  (mb_bcs(m,f) != BoundaryFlag::periodic);
+      }
+      const bool zone = (face[0] && i < 2*ng) || (face[1] && i >= n1 - 2*ng) ||
+                        (face[2] && j < 2*ng) || (face[3] && j >= n2 - 2*ng) ||
+                        (face[4] && k < 2*ng) || (face[5] && k >= n3 - 2*ng);
+      if (zone) {
+        const Real x = sz(m).x1min + (i - is + 0.5)*sz(m).dx1 - xo;
+        const Real y = sz(m).x2min + (j - js + 0.5)*sz(m).dx2 - yo;
+        const Real z = sz(m).x3min + (k - ks + 0.5)*sz(m).dx3 - zo;
+        const Real base = (npunc > 0) ? ps(m,0,k,j,i) : 1.0;
+        Real phi, grad[3];
+        IdFarEval(mp.the_array, far_lmax, x, y, z, phi, grad);
+        fa(m,0,k,j,i) = base + phi;
+      }
+    });
+  };
+  // far field of W from the right side of the vector equation
+  auto far_w = [&]() {
+    for (int c=0; c<3; ++c) { mom_v[c] = moments(sv[c], 0, 0); }
+    mom_u = moments(sv[0], 0, 1);
+    IdFarSum m0, m1, m2, mu;
+    IdFarCoefficients(mom_v[0].the_array, far_lmax, m0.the_array);
+    IdFarCoefficients(mom_v[1].the_array, far_lmax, m1.the_array);
+    IdFarCoefficients(mom_v[2].the_array, far_lmax, m2.the_array);
+    IdFarCoefficients(mom_u.the_array, far_lmax, mu.the_array);
+    auto f0 = farw[0], f1 = farw[1], f2 = farw[2];
+    par_for("ids_farw", DevExeSpace(), 0, nmb1, 0, n3-1, 0, n2-1, 0, n1-1,
+    KOKKOS_LAMBDA(const int m, const int k, const int j, const int i) {
+      bool face[6];
+      for (int f=0; f<6; ++f) {
+        face[f] = (mb_bcs(m,f) != BoundaryFlag::block) &&
+                  (mb_bcs(m,f) != BoundaryFlag::periodic);
+      }
+      const bool zone = (face[0] && i < 2*ng) || (face[1] && i >= n1 - 2*ng) ||
+                        (face[2] && j < 2*ng) || (face[3] && j >= n2 - 2*ng) ||
+                        (face[4] && k < 2*ng) || (face[5] && k >= n3 - 2*ng);
+      if (zone) {
+        const Real x = sz(m).x1min + (i - is + 0.5)*sz(m).dx1 - xo;
+        const Real y = sz(m).x2min + (j - js + 0.5)*sz(m).dx2 - yo;
+        const Real z = sz(m).x3min + (k - ks + 0.5)*sz(m).dx3 - zo;
+        Real tv[3][kIdFarN];
+        for (int q=0; q<kIdFarN; ++q) {
+          tv[0][q] = m0.the_array[q];
+          tv[1][q] = m1.the_array[q];
+          tv[2][q] = m2.the_array[q];
+        }
+        Real w[3];
+        IdFarVector(tv, mu.the_array, far_lmax, x, y, z, w);
+        f0(m,0,k,j,i) = w[0];
+        f1(m,0,k,j,i) = w[1];
+        f2(m,0,k,j,i) = w[2];
+      }
+    });
   };
 
   // ---- (L W)_ij = d_i W_j + d_j W_i - (2/3) delta_ij d_k W_k with central differences,
@@ -366,11 +751,24 @@ void Particles::NrpicSolveInitialData() {
 
   // ---- ADM variables of the current psi on all cells (with id_vector: Abar_ij of the
   //      trial plus L W, and Abar_ij Abar_ij from the sum)
-  auto set_metric = [&]() {
-    if (vec) { compute_lw(); }
+  //      faces_only: only the ghost cells at the faces of the mesh (after the Z4c
+  //      exchange of a refined mesh, whose boundary condition does not apply here)
+  auto set_metric = [&](const bool faces_only) {
+    if (vec && !faces_only) { compute_lw(); }
     auto l = lw;
     par_for("ids_metric", DevExeSpace(), 0, nmb1, 0, n3-1, 0, n2-1, 0, n1-1,
     KOKKOS_LAMBDA(const int m, const int k, const int j, const int i) {
+      if (faces_only) {
+        bool face[6];
+        for (int f=0; f<6; ++f) {
+          face[f] = (mb_bcs(m,f) != BoundaryFlag::block) &&
+                    (mb_bcs(m,f) != BoundaryFlag::periodic);
+        }
+        const bool ghost = (face[0] && i < ng) || (face[1] && i >= n1 - ng) ||
+                           (face[2] && j < ng) || (face[3] && j >= n2 - ng) ||
+                           (face[4] && k < ng) || (face[5] && k >= n3 - ng);
+        if (!ghost) return;
+      }
       const Real p1 = psi(m,0,k,j,i);
       const Real p2 = p1*p1;
       const Real p4 = p2*p2;
@@ -397,7 +795,25 @@ void Particles::NrpicSolveInitialData() {
 
   // ---- residual of the current psi with the sources the module deposits for it
   auto evaluate = [&](IdNorms &nm) {
-    set_metric();
+    set_metric(false);
+    if (multilevel && use_code) {
+      // the ghost cells between levels as the run will have them: through the Z4c
+      // variables and their exchange (restriction, prolongation)
+      switch (ng) {
+        case 2: pz4c->ADMToZ4c<2>(pmy_pack, nullptr); break;
+        case 3: pz4c->ADMToZ4c<3>(pmy_pack, nullptr); break;
+        case 4: pz4c->ADMToZ4c<4>(pmy_pack, nullptr); break;
+      }
+      (void) pz4c->RestrictU(nw_driver, 0);
+      (void) pz4c->InitRecv(nw_driver, -1);
+      (void) pz4c->SendU(nw_driver, 0);
+      (void) pz4c->ClearSend(nw_driver, -1);
+      (void) pz4c->ClearRecv(nw_driver, -1);
+      (void) pz4c->RecvU(nw_driver, 0);
+      (void) pz4c->Prolongate(nw_driver, 0);
+      pz4c->Z4cToADM(pmy_pack);
+      if (!periodic) { set_metric(true); }
+    }
     NrpicFillMetric(met1);
     if (nropt.interp_bspline) { NrpicSharpenMetric(met1, met1s); }
     // the calls of NrpicInitializeSources, so that the sources are those of the run
@@ -415,6 +831,7 @@ void Particles::NrpicSolveInitialData() {
       case 4: pz4c->ADMConstraints<4>(pmy_pack); break;
     }
     Real sf = 0.0, sh = 0.0, ss = 0.0, ssig = 0.0, svol = 0.0;
+    auto ps = psis;
     Kokkos::parallel_reduce("ids_residual",
       Kokkos::MDRangePolicy<DevExeSpace, Kokkos::Rank<4>>(
         {0, ks, js, is}, {nmb, ke+1, je+1, ie+1}),
@@ -429,18 +846,45 @@ void Particles::NrpicSolveInitialData() {
       const Real t_m = 2.0*M_PI*p5*en;                      // matter term
       const Real t_k = p5*SQR(trk(m,k,j,i))/12.0;           // trace term
       const Real t_a = a2(m,k,j,i)/(8.0*p7);                // traceless term
-      const Real lap = (psi(m,0,k,j,i+1) + psi(m,0,k,j,i-1) - 2.0*p1)/SQR(sz(m).dx1)
-                     + (psi(m,0,k,j+1,i) + psi(m,0,k,j-1,i) - 2.0*p1)/SQR(sz(m).dx2)
-                     + (psi(m,0,k+1,j,i) + psi(m,0,k-1,j,i) - 2.0*p1)/SQR(sz(m).dx3);
+      // moving particles: psi^5 E = sum m W/(psi dV) with W^2 = 1 + psi^-4 u_i u_i, whose
+      // derivative adds twice the trace of the stress to the matter term of sigma
+      const Real t_tr = 2.0*M_PI*p1*(tm(m,Tmunu::I_Tmunu_Sxx,k,j,i)
+                        + tm(m,Tmunu::I_Tmunu_Syy,k,j,i) + tm(m,Tmunu::I_Tmunu_Szz,k,j,i));
+      Real lap;
+      bool near = false;      // within id_puncture_radius of a puncture
+      if (npunc > 0) {
+        // the seven-point operator acts on u = psi - psi_s
+        const Real u0 = p1 - ps(m,0,k,j,i);
+        lap = ((psi(m,0,k,j,i+1) - ps(m,0,k,j,i+1)) + (psi(m,0,k,j,i-1) - ps(m,0,k,j,i-1))
+               - 2.0*u0)/SQR(sz(m).dx1)
+            + ((psi(m,0,k,j+1,i) - ps(m,0,k,j+1,i)) + (psi(m,0,k,j-1,i) - ps(m,0,k,j-1,i))
+               - 2.0*u0)/SQR(sz(m).dx2)
+            + ((psi(m,0,k+1,j,i) - ps(m,0,k+1,j,i)) + (psi(m,0,k-1,j,i) - ps(m,0,k-1,j,i))
+               - 2.0*u0)/SQR(sz(m).dx3);
+        const Real x = sz(m).x1min + (i - is + 0.5)*sz(m).dx1;
+        const Real y = sz(m).x2min + (j - js + 0.5)*sz(m).dx2;
+        const Real z = sz(m).x3min + (k - ks + 0.5)*sz(m).dx3;
+        const Real pr2[8] = {pr2_0, pr2_1, pr2_2, pr2_3, pr2_4, pr2_5, pr2_6, pr2_7};
+        for (int c=0; c<npunc; ++c) {
+          const Real d2 = SQR(x - bys.punc[c].x[0]) + SQR(y - bys.punc[c].x[1])
+                          + SQR(z - bys.punc[c].x[2]);
+          near = near || (d2 < pr2[c]);
+        }
+      } else {
+        lap = (psi(m,0,k,j,i+1) + psi(m,0,k,j,i-1) - 2.0*p1)/SQR(sz(m).dx1)
+            + (psi(m,0,k,j+1,i) + psi(m,0,k,j-1,i) - 2.0*p1)/SQR(sz(m).dx2)
+            + (psi(m,0,k+1,j,i) + psi(m,0,k-1,j,i) - 2.0*p1)/SQR(sz(m).dx3);
+      }
       const Real fst = lap + t_a - t_k + t_m;
-      const Real hh = con.H(m,k,j,i);
+      const Real hh = near ? 0.0 : con.H(m,k,j,i);
       const Real fcode = -0.125*p5*hh;
-      const Real ff = use_code ? fcode : fst;
+      const Real ff = (use_code && !near) ? fcode : fst;
       res(m,0,k,j,i) = ff;
       wk(m,0,k,j,i) = fst;
       wk(m,1,k,j,i) = fabs(t_m) + fabs(t_k) + fabs(t_a);
+      wk(m,2,k,j,i) = t_k - t_a - t_m;                      // right side
       // d(right side)/d psi; the vacuum energy lambda/(8 pi) is part of E
-      const Real sg = (7.0*t_a + 5.0*t_k + t_m)/p1 - 1.5*lambda*p4;
+      const Real sg = (7.0*t_a + 5.0*t_k + t_m + 2.0*t_tr)/p1 - 1.5*lambda*p4;
       sig(m,k,j,i) = (sg > 0.0) ? sg : 0.0;
       const Real vol = sz(m).dx1*sz(m).dx2*sz(m).dx3;
       lf += ff*ff*vol;
@@ -457,7 +901,19 @@ void Particles::NrpicSolveInitialData() {
     KOKKOS_LAMBDA(const int m, const int k, const int j, const int i, Real &lf, Real &lh,
                   Real &ls, Real &lsc, Real &lmin, Real &lmax) {
       lf = fmax(lf, fabs(res(m,0,k,j,i)));
-      lh = fmax(lh, fabs(con.H(m,k,j,i)));
+      bool near = false;
+      if (npunc > 0) {
+        const Real x = sz(m).x1min + (i - is + 0.5)*sz(m).dx1;
+        const Real y = sz(m).x2min + (j - js + 0.5)*sz(m).dx2;
+        const Real z = sz(m).x3min + (k - ks + 0.5)*sz(m).dx3;
+        const Real pr2[8] = {pr2_0, pr2_1, pr2_2, pr2_3, pr2_4, pr2_5, pr2_6, pr2_7};
+        for (int c=0; c<npunc; ++c) {
+          const Real d2 = SQR(x - bys.punc[c].x[0]) + SQR(y - bys.punc[c].x[1])
+                          + SQR(z - bys.punc[c].x[2]);
+          near = near || (d2 < pr2[c]);
+        }
+      }
+      if (!near) { lh = fmax(lh, fabs(con.H(m,k,j,i))); }
       ls = fmax(ls, fabs(wk(m,0,k,j,i)));
       lsc = fmax(lsc, wk(m,1,k,j,i));
       lmin = fmin(lmin, psi(m,0,k,j,i));
@@ -562,6 +1018,7 @@ void Particles::NrpicSolveInitialData() {
     auto f0 = fv[0], f1 = fv[1], f2 = fv[2];
     auto s0 = sv[0], s1 = sv[1], s2 = sv[2];
     auto sc = vsc;
+    auto ar = abr;
     par_for("ids_vres", DevExeSpace(), 0, nmb1, ks, ke, js, je, is, ie,
     KOKKOS_LAMBDA(const int m, const int k, const int j, const int i) {
       const Real dx = sz(m).dx1, dy = sz(m).dx2, dz = sz(m).dx3;
@@ -574,9 +1031,21 @@ void Particles::NrpicSolveInitialData() {
       const int ix[3][3] = {{0, 1, 2}, {1, 3, 4}, {2, 4, 5}};
       Real da[3];
       for (int a=0; a<3; ++a) {
-        da[a] = (ab(m,ix[a][0],k,j,i+1) - ab(m,ix[a][0],k,j,i-1))/(2.0*dx)
-              + (ab(m,ix[a][1],k,j+1,i) - ab(m,ix[a][1],k,j-1,i))/(2.0*dy)
-              + (ab(m,ix[a][2],k+1,j,i) - ab(m,ix[a][2],k-1,j,i))/(2.0*dz);
+        da[a] = (ar(m,ix[a][0],k,j,i+1) - ar(m,ix[a][0],k,j,i-1))/(2.0*dx)
+              + (ar(m,ix[a][1],k,j+1,i) - ar(m,ix[a][1],k,j-1,i))/(2.0*dy)
+              + (ar(m,ix[a][2],k+1,j,i) - ar(m,ix[a][2],k-1,j,i))/(2.0*dz);
+      }
+      bool near = false;      // within id_puncture_radius of a puncture: stencil form
+      if (npunc > 0) {
+        const Real x = sz(m).x1min + (i - is + 0.5)*sz(m).dx1;
+        const Real y = sz(m).x2min + (j - js + 0.5)*sz(m).dx2;
+        const Real z = sz(m).x3min + (k - ks + 0.5)*sz(m).dx3;
+        const Real pr2[8] = {pr2_0, pr2_1, pr2_2, pr2_3, pr2_4, pr2_5, pr2_6, pr2_7};
+        for (int c=0; c<npunc; ++c) {
+          const Real d2 = SQR(x - bys.punc[c].x[0]) + SQR(y - bys.punc[c].x[1])
+                          + SQR(z - bys.punc[c].x[2]);
+          near = near || (d2 < pr2[c]);
+        }
       }
       // compact operator
       auto lap7 = [&](const DvceArray5D<Real> &w) -> Real {
@@ -606,14 +1075,14 @@ void Particles::NrpicSolveInitialData() {
         const Real t_s = 8.0*M_PI*p6*tm(m,Tmunu::I_Tmunu_Sx + a,k,j,i);
         const Real t_k = (2.0/3.0)*p6*dk[a];
         const Real rhs = t_s + t_k - da[a];
-        const Real f = vec_code ? p6*con.M_d(m,a,k,j,i) : lw3[a] - rhs;
+        const Real f = (vec_code && !near) ? p6*con.M_d(m,a,k,j,i) : lw3[a] - rhs;
         const Real sa = fabs(lw3[a] + da[a]) + fabs(t_k) + fabs(t_s);
         smax = fmax(smax, sa);
         if (a == 0) { f0(m,0,k,j,i) = f; s0(m,0,k,j,i) = rhs; }
         if (a == 1) { f1(m,0,k,j,i) = f; s1(m,0,k,j,i) = rhs; }
         if (a == 2) { f2(m,0,k,j,i) = f; s2(m,0,k,j,i) = rhs; }
       }
-      sc(m,k,j,i) = smax;
+      sc(m,k,j,i) = near ? -smax : smax;      // the sign marks the cells near a puncture
     });
     vmean = 0.0;
     if (periodic) {
@@ -639,8 +1108,8 @@ void Particles::NrpicSolveInitialData() {
       const Real a0 = f0(m,0,k,j,i), a1 = f1(m,0,k,j,i), a2v = f2(m,0,k,j,i);
       l1 = fmax(l1, fmax(fabs(a0), fmax(fabs(a1), fabs(a2v))));
       l2 += (a0*a0 + a1*a1 + a2v*a2v)*sz(m).dx1*sz(m).dx2*sz(m).dx3;
-      l3 = fmax(l3, sc(m,k,j,i));
-      l4 = fmax(l4, sqrt(fabs(con.M(m,k,j,i))));
+      l3 = fmax(l3, fabs(sc(m,k,j,i)));
+      if (sc(m,k,j,i) >= 0.0) { l4 = fmax(l4, sqrt(fabs(con.M(m,k,j,i)))); }
     }, Kokkos::Max<Real>(lmx), Kokkos::Sum<Real>(lsq), Kokkos::Max<Real>(lsc),
        Kokkos::Max<Real>(lmm));
     vmax = lmx;
@@ -702,7 +1171,7 @@ void Particles::NrpicSolveInitialData() {
       });
       poisson(vt, -1.0, cz);           // cz = -lap^-1 q = -P^-1 F (component c)
       axpby(wv[c], 1.0, cz, omega);
-      fill_ghost(wv[c], 0.0);
+      fill_w(c);
     }
   };
 
@@ -714,6 +1183,13 @@ void Particles::NrpicSolveInitialData() {
                "id_lin_tol = %.3e, id_mg_tol = %.3e, id_psi_init = %s, faces = %s\n",
                use_code ? "code" : "stencil", ids.tol, ids.lin_tol, ids.mg_tol,
                (ids.psi_init == 1) ? "one" : "trial", periodic ? "periodic" : "robin");
+  if (use_far || multilevel || npunc > 0 || ids.lin_solver == 1) {
+    std::fprintf(fl, "# second pass: id_far = %s (lmax = %d, moments within %.6g of the "
+                 "centre), refined mesh = %s, punctures = %d (stencil residual within "
+                 "%.3g bare masses), linear solver = %s\n",
+                 use_far ? "multipole" : "robin", far_lmax, rfar, multilevel ? "yes" : "no",
+                 npunc, ids.punc_radius, (ids.lin_solver == 1) ? "bicgstab" : "cg");
+  }
   std::fprintf(fl, "# [1]=iter [2]=rel=max|F|/scale [3]=max|F| [4]=rms_F [5]=max|H| "
                "[6]=rms_H [7]=max|F7| [8]=rms_F7 [9]=psi_min [10]=psi_max [11]=cg_steps "
                "[12]=v_cycles [13]=lin_res\n");
@@ -730,6 +1206,10 @@ void Particles::NrpicSolveInitialData() {
   }
 
   std::vector<double> h_before;      // constraint monitor of the first evaluation
+  DvceArray5D<Real> hm0;             // refined mesh: the monitor of the first evaluation
+  if (ids.dump && multilevel) {
+    hm0 = DvceArray5D<Real>("ids_hm0", nmb, pz4c->u_con.extent_int(1), n3, n2, n1);
+  }
   auto to_host = [&](const int kind, std::vector<double> &out) {
     // kind 0: psi, 1: K, 2: Abar^2, 3: E, 4: H, 5: seven-point residual
     const std::int64_t g1 = pm->mesh_indcs.nx1, g2 = pm->mesh_indcs.nx2;
@@ -808,7 +1288,7 @@ void Particles::NrpicSolveInitialData() {
   // deposit (it repeats these calls afterwards, then without effect)
   NrpicAssignBlocks();
   NrpicRemoveFlagged();
-  fill_ghost(psi, 1.0);
+  fill_psi();
   IdNorms nm, nm0;
   bool converged = false;
   int iter = 0;
@@ -822,18 +1302,21 @@ void Particles::NrpicSolveInitialData() {
     evaluate(nm);
     vol_mesh = nm.vol;
     sigmean = nm.sigmean;
+    if (use_far) { far_psi(); }
     if (vec) {
       evaluate_vector();
       relv = (vscale > 0.0) ? vmax/vscale : vmax;
       relv_hist.push_back(relv);
+      if (use_far) { far_w(); }
     }
     if (iter == 0) {
       nm0 = nm;
-      if (ids.dump) { to_host(4, h_before); }
+      if (ids.dump && !multilevel) { to_host(4, h_before); }
+      if (ids.dump && multilevel) { Kokkos::deep_copy(hm0, pz4c->u_con); }
       if (vec) {
         relv0 = relv;
         mmax0 = mmax;
-        if (ids.dump) {
+        if (ids.dump && !multilevel) {
           for (int c=0; c<3; ++c) {
             to_host5(pz4c->u_con, z4c::Z4c::I_CON_MX + c, m_before[c]);
           }
@@ -877,26 +1360,64 @@ void Particles::NrpicSolveInitialData() {
       Kokkos::deep_copy(del, 0.0);
       Kokkos::deep_copy(cr, res);
       const Real bnorm = std::sqrt(dot(cr, cr));
-      precond(cr, cz);
-      Kokkos::deep_copy(cp, cz);
-      Real rz = dot(cr, cz);
       Real rnorm = bnorm;
-      while (cg_steps < ids.lin_maxit) {
-        matvec(cp, cq);
-        const Real pq = dot(cp, cq);
-        if (!(pq > 0.0)) break;
-        const Real alpha = rz/pq;
-        axpby(del, 1.0, cp, alpha);
-        axpby(cr, 1.0, cq, -alpha);
-        ++cg_steps;
-        rnorm = std::sqrt(dot(cr, cr));
-        if (rnorm <= ids.lin_tol*bnorm) break;
-        Kokkos::deep_copy(czo, cz);
+      if (ids.lin_solver == 0) {
         precond(cr, cz);
-        const Real rz_new = dot(cr, cz);
-        const Real beta = (rz_new - dot(cr, czo))/rz;
-        rz = rz_new;
-        axpby(cp, (beta > 0.0) ? beta : 0.0, cz, 1.0);
+        Kokkos::deep_copy(cp, cz);
+        Real rz = dot(cr, cz);
+        while (cg_steps < ids.lin_maxit) {
+          matvec(cp, cq);
+          const Real pq = dot(cp, cq);
+          if (!(pq > 0.0)) break;
+          const Real alpha = rz/pq;
+          axpby(del, 1.0, cp, alpha);
+          axpby(cr, 1.0, cq, -alpha);
+          ++cg_steps;
+          rnorm = std::sqrt(dot(cr, cr));
+          if (rnorm <= ids.lin_tol*bnorm) break;
+          Kokkos::deep_copy(czo, cz);
+          precond(cr, cz);
+          const Real rz_new = dot(cr, cz);
+          const Real beta = (rz_new - dot(cr, czo))/rz;
+          rz = rz_new;
+          axpby(cp, (beta > 0.0) ? beta : 0.0, cz, 1.0);
+        }
+      } else {
+        // BiCGStab with the Poisson solve as right preconditioner (refined meshes: the
+        // seven-point operator with prolongated ghost cells is not symmetric); cg_steps
+        // counts the preconditioner solves
+        Kokkos::deep_copy(bh, cr);
+        Kokkos::deep_copy(cp, 0.0);
+        Kokkos::deep_copy(cq, 0.0);
+        Real rho = 1.0, alpha = 1.0, omg = 1.0;
+        while (cg_steps < ids.lin_maxit && bnorm > 0.0) {
+          const Real rho_new = dot(bh, cr);
+          if (rho_new == 0.0) break;
+          const Real beta = (rho_new/rho)*(alpha/omg);
+          axpby(cp, beta, cq, -beta*omg);          // p <- r + beta (p - omega v)
+          axpby(cp, 1.0, cr, 1.0);
+          precond(cp, cz);                         // y
+          matvec(cz, cq);                          // v = A y
+          const Real hv = dot(bh, cq);
+          if (hv == 0.0) break;
+          alpha = rho_new/hv;
+          axpby(del, 1.0, cz, alpha);
+          axpby(cr, 1.0, cq, -alpha);              // s
+          ++cg_steps;
+          rnorm = std::sqrt(dot(cr, cr));
+          if (rnorm <= ids.lin_tol*bnorm) break;
+          precond(cr, czo);                        // z
+          matvec(czo, bt);                         // t = A z
+          const Real tt = dot(bt, bt);
+          if (!(tt > 0.0)) break;
+          omg = dot(bt, cr)/tt;
+          axpby(del, 1.0, czo, omg);
+          axpby(cr, 1.0, bt, -omg);
+          ++cg_steps;
+          rho = rho_new;
+          rnorm = std::sqrt(dot(cr, cr));
+          if (rnorm <= ids.lin_tol*bnorm || omg == 0.0) break;
+        }
       }
       lin_res = (bnorm > 0.0) ? rnorm/bnorm : 0.0;
       cg_total += cg_steps;
@@ -932,10 +1453,72 @@ void Particles::NrpicSolveInitialData() {
       step *= 0.5;
     }
     axpby(psi, 1.0, del, step);
-    fill_ghost(psi, 1.0);
+    fill_psi();
   }
 
-  if (ids.dump) {
+  if (ids.dump && multilevel) {
+    // <basename>.idsolve.blk.bin: 8 bytes "NRIDBLK1", int64 number of MeshBlocks, 3 int64
+    // (cells of a MeshBlock), int64 number of fields; per MeshBlock int64 level and 6
+    // doubles (x1min, x1max, x2min, x2max, x3min, x3max); then every field as nmb blocks
+    // of n3*n2*n1 doubles, first index fastest: psi, K, Abar_ij Abar_ij, E, H of the
+    // monitor at the last evaluation, the seven-point residual, H at the first
+    // evaluation, and with id_vector W_i (3), M_i of the monitor at the last (3) and at
+    // the first evaluation (3)
+    const std::string fname = nr_basename + ".idsolve.blk.bin";
+    std::FILE *fp = std::fopen(fname.c_str(), "wb");
+    if (fp == nullptr) IdFatal("cannot open " + fname);
+    const std::int64_t head[5] = {nmb, nx1, nx2, nx3, vec ? 16 : 7};
+    std::fwrite("NRIDBLK1", 1, 8, fp);
+    std::fwrite(head, sizeof(std::int64_t), 5, fp);
+    auto szh = pmy_pack->pmb->mb_size.h_view;
+    auto &lev = pmy_pack->pmb->mb_lev;
+    for (int m=0; m<nmb; ++m) {
+      const std::int64_t l = lev.h_view(m);
+      const double box[6] = {szh(m).x1min, szh(m).x1max, szh(m).x2min, szh(m).x2max,
+                             szh(m).x3min, szh(m).x3max};
+      std::fwrite(&l, sizeof(std::int64_t), 1, fp);
+      std::fwrite(box, sizeof(double), 6, fp);
+    }
+    std::vector<double> buf(static_cast<size_t>(nmb)*nx1*nx2*nx3);
+    auto put5 = [&](const DvceArray5D<Real> &arr, const int comp) {
+      auto h = Kokkos::create_mirror_view_and_copy(Kokkos::HostSpace(), arr);
+      size_t q = 0;
+      for (int m=0; m<nmb; ++m) {
+        for (int k=ks; k<=ke; ++k) {
+          for (int j=js; j<=je; ++j) {
+            for (int i=is; i<=ie; ++i) { buf[q++] = h(m,comp,k,j,i); }
+          }
+        }
+      }
+      std::fwrite(buf.data(), sizeof(double), buf.size(), fp);
+    };
+    auto put4 = [&](const DvceArray4D<Real> &arr) {
+      auto h = Kokkos::create_mirror_view_and_copy(Kokkos::HostSpace(), arr);
+      size_t q = 0;
+      for (int m=0; m<nmb; ++m) {
+        for (int k=ks; k<=ke; ++k) {
+          for (int j=js; j<=je; ++j) {
+            for (int i=is; i<=ie; ++i) { buf[q++] = h(m,k,j,i); }
+          }
+        }
+      }
+      std::fwrite(buf.data(), sizeof(double), buf.size(), fp);
+    };
+    put5(psi, 0);
+    put4(trk);
+    put4(a2);
+    put5(tm, Tmunu::I_Tmunu_E);
+    put5(pz4c->u_con, z4c::Z4c::I_CON_H);
+    put5(wk, 0);
+    put5(hm0, z4c::Z4c::I_CON_H);
+    if (vec) {
+      for (int c=0; c<3; ++c) { put5(wv[c], 0); }
+      for (int c=0; c<3; ++c) { put5(pz4c->u_con, z4c::Z4c::I_CON_MX + c); }
+      for (int c=0; c<3; ++c) { put5(hm0, z4c::Z4c::I_CON_MX + c); }
+    }
+    std::fclose(fp);
+  }
+  if (ids.dump && !multilevel) {
     // <basename>.idsolve.bin: 8 bytes "NRIDSOL1", 3 int64 (n1, n2, n3), 6 doubles (x1min,
     // x1max, x2min, x2max, x3min, x3max), int64 number of fields (7), then the fields as
     // n3*n2*n1 doubles each, first index fastest: psi, K, Abar_ij Abar_ij, E, H of the
@@ -961,7 +1544,7 @@ void Particles::NrpicSolveInitialData() {
     std::fwrite(h_before.data(), sizeof(double), h_before.size(), fp);
     std::fclose(fp);
   }
-  if (ids.dump && vec) {
+  if (ids.dump && vec && !multilevel) {
     // <basename>.idvector.bin: 8 bytes "NRIDVEC1", then the header of .idsolve.bin and
     // 15 fields: W_i (3), right side s_i of the vector equation (3), its residual F_i in
     // stencil form (3, mean removed on a periodic mesh), M_i of the constraint monitor
@@ -1009,6 +1592,39 @@ void Particles::NrpicSolveInitialData() {
     std::fprintf(fl, "# vector equation: relative residual %.6e -> %.6e%s, %d V cycles; "
                  "max|M| of the monitor %.6e -> %.6e\n", relv0, relv,
                  vstalled ? " (stalled)" : "", cyc_total_vec, mmax0, mmax);
+  }
+  if (use_far) {
+    // ADM quantities of the solved data from the moments: psi -> 1 + M/(2 r), and the
+    // momentum and angular momentum (about the centre) of the right side of the vector
+    // equation; the punctures add their bare masses, momenta and spins
+    Real madm = -mom_psi.the_array[0]/(2.0*M_PI);
+    Real padm[3] = {0.0, 0.0, 0.0}, jadm[3] = {0.0, 0.0, 0.0};
+    if (vec) {
+      const int ix[3] = {IdFarIndex(1,0,0), IdFarIndex(0,1,0), IdFarIndex(0,0,1)};
+      for (int a=0; a<3; ++a) {
+        padm[a] = mom_v[a].the_array[0]/(8.0*M_PI);
+        const int b = (a + 1) % 3, c = (a + 2) % 3;
+        jadm[a] = (mom_v[c].the_array[ix[b]] - mom_v[b].the_array[ix[c]])/(8.0*M_PI);
+      }
+    }
+    for (int c=0; c<npunc; ++c) {
+      const nrpic_by::BYPuncture &b = bys.punc[c];
+      const Real d[3] = {b.x[0] - xo, b.x[1] - yo, b.x[2] - zo};
+      madm += b.m;
+      for (int a=0; a<3; ++a) {
+        const int e = (a + 1) % 3, g = (a + 2) % 3;
+        padm[a] += b.p[a];
+        jadm[a] += b.s[a] + d[e]*b.p[g] - d[g]*b.p[e];
+      }
+    }
+    std::fprintf(fl, "# far field: M_ADM = %.12e, P_ADM = (%.12e, %.12e, %.12e), J_ADM = "
+                 "(%.12e, %.12e, %.12e) about the centre (%g, %g, %g)\n", madm, padm[0],
+                 padm[1], padm[2], jadm[0], jadm[1], jadm[2], xo, yo, zo);
+    if (global_variable::my_rank == 0) {
+      std::cout << "NRPIC: far field of the solved data: M_ADM = " << madm << ", P_ADM = ("
+                << padm[0] << ", " << padm[1] << ", " << padm[2] << "), J_ADM = ("
+                << jadm[0] << ", " << jadm[1] << ", " << jadm[2] << ")" << std::endl;
+    }
   }
   std::fclose(fl);
   if (global_variable::my_rank == 0) {

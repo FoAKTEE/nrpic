@@ -112,6 +112,46 @@ def cmd_boost(a):
     print("wrote %s.nrp: %d particles, sum m u_x = %.12g" % (stem, len(m), a.u*np.sum(m)))
 
 
+def cmd_shift(a):
+    x, u, m, sp = nio.read_nrp(a.inp)
+    x = np.array(x) + np.array(a.d)[None, :]
+    stem = a.prefix or (os.path.splitext(os.path.basename(a.inp))[0] + "_shift")
+    os.makedirs(a.out, exist_ok=True)
+    nio.write_nrp(os.path.join(a.out, stem + ".nrp"), x, u, m, sp)
+    meta = dict(kind="shift", source=os.path.basename(a.inp), d=list(a.d), N=int(len(m)),
+                sum_m=float(np.sum(m)), sum_mu=[float(v) for v in (m[:, None]*u).sum(axis=0)],
+                particle_file=stem + ".nrp")
+    with open(os.path.join(a.out, stem + ".json"), "w") as f:
+        json.dump(meta, f, indent=1)
+        f.write("\n")
+    print("wrote %s.nrp: %d particles" % (stem, len(m)))
+
+
+def cmd_zeldovich(a):
+    """Homogeneous Zel'dovich displacement of a ball in its growing mode: the Lagrangian
+    position q goes to x_i = (1 + e_i) q_i and the particle gets the peculiar momentum
+    u_i = H e_i q_i relative to the normal observers of the slice (physical displacement
+    times the Hubble rate: growth factor proportional to the scale factor in a matter era)."""
+    x, u, m, sp = nio.read_nrp(a.inp)
+    q = np.array(x)
+    e = np.array(a.strain if a.strain is not None else [a.e, 0.0, -a.e])
+    x = q*(1.0 + e)[None, :]
+    u = np.array(u) + a.hubble*e[None, :]*q
+    stem = a.prefix or (os.path.splitext(os.path.basename(a.inp))[0]
+                        + ("_z%g" % a.e).replace(".", "p"))
+    os.makedirs(a.out, exist_ok=True)
+    nio.write_nrp(os.path.join(a.out, stem + ".nrp"), x, u, m, sp)
+    meta = dict(kind="zeldovich", source=os.path.basename(a.inp), strain=[float(v) for v in e],
+                hubble=a.hubble, N=int(len(m)), sum_m=float(np.sum(m)),
+                sum_mu=[float(v) for v in (np.array(m)[:, None]*u).sum(axis=0)],
+                particle_file=stem + ".nrp")
+    with open(os.path.join(a.out, stem + ".json"), "w") as f:
+        json.dump(meta, f, indent=1)
+        f.write("\n")
+    print("wrote %s.nrp: %d particles, strain %s, max|u| = %.4g" %
+          (stem, len(m), e, np.abs(u).max()))
+
+
 def cmd_wave(a):
     h = a.box/(a.n*a.ppc)
     c = (np.arange(a.n*a.ppc) + 0.5)*h
@@ -156,6 +196,20 @@ def main(argv=None):
     b.add_argument("--out", default=".")
     b.add_argument("--prefix", default=None)
     b.set_defaults(func=cmd_boost)
+    sh = sub.add_parser("shift", help="a copy with every position displaced")
+    sh.add_argument("--in", dest="inp", required=True)
+    sh.add_argument("--d", type=float, nargs=3, required=True)
+    sh.add_argument("--out", default=".")
+    sh.add_argument("--prefix", default=None)
+    sh.set_defaults(func=cmd_shift)
+    z = sub.add_parser("zeldovich", help="triaxial Zel'dovich displacement with its momenta")
+    z.add_argument("--in", dest="inp", required=True)
+    z.add_argument("--e", type=float, default=0.05, help="strain (e, 0, -e)")
+    z.add_argument("--strain", type=float, nargs=3, default=None, help="strain per axis")
+    z.add_argument("--hubble", type=float, required=True, help="Hubble rate of the ball")
+    z.add_argument("--out", default=".")
+    z.add_argument("--prefix", default=None)
+    z.set_defaults(func=cmd_zeldovich)
     w = sub.add_parser("wave")
     w.add_argument("--n", type=int, required=True)
     w.add_argument("--box", type=float, default=2.0)
