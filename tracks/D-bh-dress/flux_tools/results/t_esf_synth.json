@@ -1,0 +1,209 @@
+{
+ "exact": {
+  "n_removed": 61592,
+  "n_sphere": 849680,
+  "analysis": {
+   "run": "/data/haiyangw/nrpic/scratch/D-bh-dress/D-20261119-150306-d0e692e/synth_exact",
+   "t_end_hst": 200.0,
+   "np_end": 788608,
+   "n_records": 61592,
+   "reasons": {
+    "1": 0,
+    "2": 0,
+    "3": 61592,
+    "4": 0
+   },
+   "content0": {
+    "radius": 5.0,
+    "n": 534,
+    "m": 0.0033177103430587804,
+    "mE_K": 0.002584060636653588,
+    "m_inside_acc_t0": 0.00331771034305878
+   },
+   "bracket_energy_by_tag": {
+    "t0": 0.0,
+    "t_end": 200.0,
+    "M0": 1.000003455841921,
+    "dM_end": 0.25984232340603297,
+    "sigma_end": 1e-05,
+    "n_finder": 401,
+    "max_violation_sigma": 3.0567466710675752,
+    "frac_inside_k_sigma": 0.9975062344139651,
+    "k_sigma": 3.0,
+    "F_rem_end": 0.25763561903702076,
+    "R_rem_end": 0.27425157651487636,
+    "n_removed": 61592,
+    "resid_end": 0.0022067043690122135,
+    "closure_end": 0.008565214613027257,
+    "F_sph_end": 0.3564304086595437,
+    "r_sphere": 5.0
+   },
+   "bracket_code_energy": {
+    "t0": 0.0,
+    "t_end": 200.0,
+    "M0": 1.000003455841921,
+    "dM_end": 0.25984232340603297,
+    "sigma_end": 1e-05,
+    "n_finder": 401,
+    "max_violation_sigma": 9016.849804238624,
+    "frac_inside_k_sigma": 0.034912718204488775,
+    "k_sigma": 3.0,
+    "F_rem_end": 0.3478080856999852,
+    "R_rem_end": 0.27425157651487636,
+    "n_removed": 61592,
+    "resid_end": -0.08796576229395225,
+    "closure_end": -0.2529146558422175,
+    "F_sph_end": 0.3564719385713157,
+    "r_sphere": 5.0
+   },
+   "delta_lat": 0.003927177274333893,
+   "per_label": {
+    "n": 61592,
+    "n_dust": 61592,
+    "M_minus_mlabel_min": -0.0003165492315126972,
+    "M_minus_mdisc_min": -2.7111624789633026e-05,
+    "tau_below_tauH": 0,
+    "tau_above_tau0": 0,
+    "R0_max_removed": 25.520401791908323
+   }
+  }
+ },
+ "growth_x0.97": {
+  "n_removed": 61592,
+  "n_sphere": 849680,
+  "analysis": {
+   "run": "/data/haiyangw/nrpic/scratch/D-bh-dress/D-20261119-150306-d0e692e/synth_growth_x0.97",
+   "t_end_hst": 200.0,
+   "np_end": 788608,
+   "n_records": 61592,
+   "reasons": {
+    "1": 0,
+    "2": 0,
+    "3": 61592,
+    "4": 0
+   },
+   "content0": {
+    "radius": 5.0,
+    "n": 534,
+    "m": 0.0033177103430587804,
+    "mE_K": 0.002584060636653588,
+    "m_inside_acc_t0": 0.00331771034305878
+   },
+   "bracket_energy_by_tag": {
+    "t0": 0.0,
+    "t_end": 200.0,
+    "M0": 1.000003455841921,
+    "dM_end": 0.25204653813851285,
+    "sigma_end": 1e-05,
+    "n_finder": 401,
+    "max_violation_sigma": 772.5099950532887,
+    "frac_inside_k_sigma": 0.09725685785536159,
+    "k_sigma": 3.0,
+    "F_rem_end": 0.25763561903702076,
+    "R_rem_end": 0.27425157651487636,
+    "n_removed": 61592,
+    "resid_end": -0.005589080898507903,
+    "closure_end": -0.021693742966902355,
+    "F_sph_end": 0.3564304086595437,
+    "r_sphere": 5.0
+   },
+   "bracket_code_energy": {
+    "t0": 0.0,
+    "t_end": 200.0,
+    "M0": 1.000003455841921,
+    "dM_end": 0.25204653813851285,
+    "sigma_end": 1e-05,
+    "n_finder": 401,
+    "max_violation_sigma": 9789.756661349735,
+    "frac_inside_k_sigma": 0.034912718204488775,
+    "k_sigma": 3.0,
+    "F_rem_end": 0.3478080856999852,
+    "R_rem_end": 0.27425157651487636,
+    "n_removed": 61592,
+    "resid_end": -0.09576154756147237,
+    "closure_end": -0.27532869849401675,
+    "F_sph_end": 0.3564719385713157,
+    "r_sphere": 5.0
+   },
+   "delta_lat": 0.003927177274333893,
+   "per_label": {
+    "n": 61592,
+    "n_dust": 61592,
+    "M_minus_mlabel_min": -0.007939245124323868,
+    "M_minus_mdisc_min": -0.007721644108611869,
+    "tau_below_tauH": 0,
+    "tau_above_tau0": 0,
+    "R0_max_removed": 25.520401791908323
+   }
+  }
+ },
+ "continuum_truth": {
+  "n_removed": 61592,
+  "n_sphere": 849680,
+  "analysis": {
+   "run": "/data/haiyangw/nrpic/scratch/D-bh-dress/D-20261119-150306-d0e692e/synth_continuum_truth",
+   "t_end_hst": 200.0,
+   "np_end": 788608,
+   "n_records": 61592,
+   "reasons": {
+    "1": 0,
+    "2": 0,
+    "3": 61592,
+    "4": 0
+   },
+   "content0": {
+    "radius": 5.0,
+    "n": 534,
+    "m": 0.0033177103430587804,
+    "mE_K": 0.002584060636653588,
+    "m_inside_acc_t0": 0.00331771034305878
+   },
+   "bracket_energy_by_tag": {
+    "t0": 0.0,
+    "t_end": 200.0,
+    "M0": 1.000003455841921,
+    "dM_end": 0.259410840047015,
+    "sigma_end": 1e-05,
+    "n_finder": 401,
+    "max_violation_sigma": 91.02376200997574,
+    "frac_inside_k_sigma": 0.9027431421446384,
+    "k_sigma": 3.0,
+    "F_rem_end": 0.25763561903702076,
+    "R_rem_end": 0.27425157651487636,
+    "n_removed": 61592,
+    "resid_end": 0.0017752210099942212,
+    "closure_end": 0.006890433149847701,
+    "F_sph_end": 0.3564304086595437,
+    "r_sphere": 5.0
+   },
+   "bracket_code_energy": {
+    "t0": 0.0,
+    "t_end": 200.0,
+    "M0": 1.000003455841921,
+    "dM_end": 0.259410840047015,
+    "sigma_end": 1e-05,
+    "n_finder": 401,
+    "max_violation_sigma": 8938.447158273832,
+    "frac_inside_k_sigma": 0.03740648379052369,
+    "k_sigma": 3.0,
+    "F_rem_end": 0.3478080856999852,
+    "R_rem_end": 0.27425157651487636,
+    "n_removed": 61592,
+    "resid_end": -0.08839724565297025,
+    "closure_end": -0.25415523470383194,
+    "F_sph_end": 0.3564719385713157,
+    "r_sphere": 5.0
+   },
+   "delta_lat": 0.003927177274333893,
+   "per_label": {
+    "n": 61592,
+    "n_dust": 61592,
+    "M_minus_mlabel_min": 6.4961311465605576e-06,
+    "M_minus_mdisc_min": -0.0009067817781787113,
+    "tau_below_tauH": 0,
+    "tau_above_tau0": 0,
+    "R0_max_removed": 25.520401791908323
+   }
+  }
+ }
+}

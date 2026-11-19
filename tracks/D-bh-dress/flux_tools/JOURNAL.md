@@ -366,3 +366,18 @@ Refuted if 1 fails: then the lattice is not the (only) cause.
 
 Case exact: per label min M_AH(next sample) - m_disc >= -4.5e-5 (noise only); the rest
 as in 5c. Refuted if the per-label minimum stays below -4.5e-5.
+
+### Outcome of entry 5d (D-20261119-150306-d0e692e; `results/t_esf_synth.json`, `figs/synth_exact_bracket.png`, `figs/synth_exact_growth.png`, `figs/synth_continuum_bracket.png`, looked at)
+
+HELD: case exact, bracket max 3.06 sigma (99.75 per cent inside 3 sigma), per label min
+M_AH(next sample) - m_disc = -2.7e-5 (noise), no proper time outside [tau_H, tau_0];
+growth x 0.97: 773 sigma and -7.7e-3 per label; code energies 9017 sigma; continuum
+truth: 91 sigma at the lower bound, per label -9.1e-4 against m_disc. So the analysis of
+the ES-F run, as it stands now, (a) passes an exact lattice history with finder-like
+noise, (b) rejects a 3 per cent growth deficit and the gauge-contaminated code energies,
+(c) needs the lattice sums, not the continuum m(R0), for anything sharper than
+delta_lat = 3.9e-3 M, and (d) has a loose upper bound (F_sph - F_rem reaches 0.1 M at
+200 M) while the sphere sums use the code's E: the crossing record requested from core
+would make it tight. Three of my predictions in this entry failed before the analysis
+was right (content term not the cause; lattice against continuum; sampling of the
+finder); the record above keeps them.

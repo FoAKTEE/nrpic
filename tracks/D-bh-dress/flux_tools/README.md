@@ -22,7 +22,8 @@ Labels [VERIFIED], [JUDGEMENT], [TO VERIFY] as in the charter.
 | `es_apply.py` | entry 3: ES-1/V-1 through the tools; the code's particle energy against the Killing energy of the bubble tracers |
 | `esf_data.py`, `esf_check.py` | entry 4: ES-F data (table, particles, per-tag energies and labels, exact growth law) and its checks (offline constraints against drbar; growth law against the wave-2 shells) |
 | `inputs/esf_dx8.athinput`, `inputs/v0_dx8.athinput` | the ES-F run and its vacuum control V-0 (ES-1 mesh, gauge, finder; accretion diagnostics on) |
-| `esf_analyse.py` | the analysis of the ES-F run, written before it (bracket with initial-data energies, per-label bounds, growth law) |
+| `esf_analyse.py` | the analysis of the ES-F run, written before it (bracket with initial-data energies and the sphere content at t0, per-label bound against the lattice sum at the next finder sample, growth law) |
+| `t_esf_synth.py` | entry 5: esf_analyse.py on synthetic ES-F runs built from the exact LTB solution (lattice truth, continuum truth, growth x 0.97) |
 | `figs/`, `results/` | copies of the figures (each looked at) and JSON of the registered runs |
 
 ## Results (run ids; numbers in `JOURNAL.md`)
@@ -47,6 +48,13 @@ Labels [VERIFIED], [JUDGEMENT], [TO VERIFY] as in the charter.
   flux must use the initial-data energy per tag (or a stationary, normalised gauge).
   Null comparison of ES-1 against V-1 (t0 = 100 M): inside 3 sigma at all 200 finder
   times (max 2.6 sigma), not blind (entry 3). [VERIFIED]
+- Synthetic ES-F runs (entry 5; final D-20261119-150306-d0e692e after three failed
+  predictions, D-20261119-145851-944d6fd, -150029-06e4f7f, -150219-c40d908): the analysis
+  passes an exact lattice history with finder-like noise (3.06 sigma max, per label
+  -2.7e-5) and rejects a 3 per cent deficit (773 sigma) and the code energies (9017
+  sigma). It needs the sphere content at t0 in the upper bound, the lattice sums of m E_K
+  (they differ from the continuum m(R0) by up to 3.9e-3 M) and the first finder sample
+  after a removal. [VERIFIED on synthetic data only]
 - ES-F data (D-20261119-145022-2208a19, checks -145026-2f11618): table residuals of
   fourth order (5e-7 of 16 pi rho0 at drbar = 0.02); lattice rest mass to 4e-7; exact
   growth law below. [VERIFIED]
@@ -108,9 +116,11 @@ segment), V-0 about 0.7. Processor smoke runs of both inputs: entry 4 item 4.
 
 Pass criteria proposed for G2 (to be pre-registered by the lead): (i) the bracket
 F_rem(t) - 3 sigma <= dM_AH(t) <= F_sph(t) + 3 sigma at every finder time, F computed
-with the initial-data energies; (ii) at every removal, M_AH >= m(R0) - 3 sigma and
-tau_H(R0) <= tau_rem <= tau_0(R0); (iii) M_AH against the proper time of the shells at
-the horizon within 1 per cent of the exact LTB curve for tau <= 250 M. Refuted (the
+with the initial-data energies and the energy inside the sphere at t0 in F_sph; (ii) at
+every removal, M_AH at the next finder sample >= m_disc(R0) - 3 sigma (lattice sum of
+m E_K up to the label) and tau_H(R0) <= tau_rem <= tau_0(R0); (iii) M_AH against the
+proper time of the shells at the horizon within 1 per cent of the exact LTB curve for
+tau <= 250 M (the lattice differs from the continuum by at most 3.9e-3 M). Refuted (the
 growth does not follow the flux) if (i) fails by more than 3 sigma over windows longer
 than the removal lag.
 
