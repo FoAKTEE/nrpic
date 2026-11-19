@@ -341,7 +341,7 @@ Friedmann denominator (lead, read at the source).
 | P-b | Delta[R^NR] vs Delta[R^MS] after the window has passed all modes | SR: linear physics recovered; USR: "excellent agreement" at complete overlap; departure from linear weaker than in FLRW lattices (2410.23942) | P1:522, 536, Figs. 3 and 5 (bins with more than 10 lattice modes) |
 | P-c | R^NR extraction | subtract box background, Phi from X and gt, R^NR = Phi - <K>/(3 <alpha><Pi>) (phi - <phi>) | P1:522-526; TH appendix:513-522 (corrected factors) |
 | P-d | relative Hamiltonian violation abs(H)/[H] during entry | ~ 1e-10 (second order, noise ~ 1e-5), then damped by expansion | P1:538-539, abs magnitudes P1:735-745 |
-| P-e | relative momentum violation abs(M)/[M] | second order during entry; SR: briefly above at the last crossing; USR: ~ 1e-2 late, with R ~ 10 | P1:541 |
+| P-e | relative momentum violation abs(M)/[M] | abs(M) second order during entry, so abs(M)/[M] first order ([M] is first order, P1:540; corrected 2026-11-19); SR: briefly above at the last crossing; USR: ~ 1e-2 late, with R ~ 10 | P1:541 |
 | P-f | negative control: flipping a sign of a noise term | H/[H] ~ 1e-5, M/[M] ~ 1 (first-order violation) | P1:541 |
 | P-g | convergence N = 32, 64, 128, 256 with k_max/dk = 8 (about 2 e-folds of sourcing) | constraints: plateau then exponential decay, converging; spectra: abs(1 - Delta_NR/Delta_MS) decreasing with N | P1:747-773 |
 | P-h | USR one-point statistics | R^NR outliers ~ 10, Delta[R] up to 0.1-1, delta Pi/Pi_b large late | P1:534-536 |
@@ -381,7 +381,10 @@ No tolerance is given for P-a, P-b or P-g (U12).
   (`../langevin/README.md`).
 
 The thresholds A1-A8 and of 7.3 are fixed at G0 by the owner in
-`../stage/G0/REPORT.md` section 4.
+`scope/SCOPE.md` section 4 (accepted by decision 0013; proposed amendments after wave 2 in
+its section 4b). P-e above: P1:540-541 say the momentum constraint is null at zeroth order,
+[M] is first order and |M| second order, so |M|/[M] is first order in the amplitude; read
+A4 that way (analysis package's request, confirmed at the source by the lead 2026-11-19).
 
 ### 7.3 Criterion for the freezing of super-horizon modes
 
@@ -503,6 +506,11 @@ discrete mode enters per step if theta < n sigma / (2 pi) (= 0.64 for n = 4, sig
 (P1:714-730). [VERIFIED]
 
 ### 11.2 Estimate for AthenaK [JUDGEMENT]
+
+[Superseded by measurement, 2026-11-19: the field and sources cost 65 percent over Z4c at
+128^3 (run core-20261115-143907-cea4c86), and one SR realisation at 256^3 in P1's set-up
+took 1.30 s per step and 0.503 card-hours on one A100 (run E-20261115-172618-f948386);
+`scope/SCOPE.md` section 8. The table below is kept as written at G0.]
 
 Measured Z4c throughput on one A100: 2.0e7 zone-cycles/s at 128^3 with nghost = 4
 (`docs/TESTLOG.md:46`), without a scalar field. Assuming 30 percent more for the scalar, the
