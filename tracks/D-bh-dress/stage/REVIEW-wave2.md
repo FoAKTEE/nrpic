@@ -266,6 +266,6 @@ has checked it. Nothing of it enters the G0 or G1 package. Review: the next lead
   judged: V-1 with the outflow boundary at 384 M (one more root level, about 0.8 card-hours
   [JUDGEMENT]), then V-1 at M/16 near the hole (about 1.5 card-hours [JUDGEMENT]); both are
   also the boundary and resolution legs that G2 asks for.
-- The processor pre-flight runs D-20261119-143623-8576a6e and -143626-7d1fa75 (3.9 GB each)
-  were checked with `nrpic-run verify` in this session; the result is in section 10 when it
-  ends.
+- The processor pre-flight runs D-20261119-143623-8576a6e and -143626-7d1fa75 (3.9 GB each),
+  the comparison -150329-d1d8f03, the second-look run -143659-7adcad7 and the lead's three
+  re-check runs: `nrpic-run verify` PASS for every one (output checksums and inputs match).

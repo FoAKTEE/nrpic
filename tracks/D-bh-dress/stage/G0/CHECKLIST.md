@@ -75,4 +75,4 @@ in VERIFY_RESULTS.md (`nrpic-stage verify`), not here.
   - evidence: failed runs kept (EVIDENCE.md); refuted predictions in JOURNAL.md, es_runs/JOURNAL.md, spike/JOURNAL.md, secondary_infall/JOURNAL.md, note/JOURNAL.md, stage/G0/JOURNAL.md; superseded runs D-20261115-170326-dfb2a02, -171733-633d422, -193755-3a53b08
 - [x] **C19** STATUS.md, JOURNAL.md and HANDOFF.md are current
   - status: PASS
-  - evidence: rewritten in the lead session of wave 2 (2026-11-15T20:40Z)
+  - evidence: rewritten in the lead session of wave 2b (2026-11-19); the wave-2 lead was cut off before rewriting them

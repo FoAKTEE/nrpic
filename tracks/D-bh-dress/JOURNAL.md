@@ -232,3 +232,37 @@ record, superseded.
   no dust inside. (The helper's fitted-wall margin 0.136 M at 200 M is the same picture.)
 - Y6 HELD: 0.7694 + 0.6719 = 1.441 card-hours; `nrpic-run budget`: G1 used 3.62, reserved
   0.98 (ES-1G, Slurm 4636 still pending at 15:12 UTC), left 25.40 of 30.
+
+## 2026-11-19T15:35Z  session lead-wave2b (Opus)  commits 6bd89c14..(this entry)  runs D-20261119-151012-b4afa8a (superseded), D-20261119-151039-b2ce968, D-20261119-151119-58b2102
+
+Closes the cut-off lead session of wave 2 as well (its outcomes W1-W10 are in
+`stage/REVIEW-wave2.md` sections 1-5; it wrote no journal entry, STATUS or HANDOFF).
+- did: merged main (decision 0016, wave-2b harness); read the brief ranges (S4, track sheet,
+  gates, context protocol); rechecked the wave-2b helper `es_finish` from its artefacts with
+  my own script (Y1-Y6, predictions above); looked at eleven of its figures and at mine;
+  `nrpic-run verify` on ES-1, V-1 and all twelve analysis and pre-flight runs (PASS); wrote
+  `stage/REVIEW-wave2.md` sections 6-9; recollected the G0 and G1 checklists, set G0 C17 to
+  PASS (VERIFIER.md, 0016 items 1 and 4) and G1 C2 to PASS (ES pipeline on AthenaK output),
+  rewrote G1 STATUS/OPEN/REVIEW/EVIDENCE and G0 OPEN; ran nrpic-stage verify and report for
+  G0 and G1; posted two requests (orch: verifier and rulings for G1; core: the ES test outcome
+  in core_gauge/READY); rewrote STATUS, HANDOFF, RISKS. No inbox messages were waiting.
+- found: every number of the helper's outcome I recomputed agrees (drift windows to the
+  printed digits, wall 2.196e-3 / 1.594e-3, crossings 14.8263 / 34.4368 M, the 1+log lapse,
+  dust outside the wall by at least 0.126 M, 1.44 card-hours). New from my check: the
+  horizon's coordinate radius stays below 2.6 M, inside the M/8 region (closes the wave-2
+  [TO VERIFY]).
+- evidence: runs above; figures `es_finish_check.png` (mine) and the helper's
+  `horizon_mass`, `wall`, `lapse_probes`, `axis_profiles`, `extra_horizon`,
+  `extra_tracers_vs_t`, `probe_fronts_t100_V-1`, `es1g_model`, `preflight`.
+- changed my mind about: ES-1 as the null test. With 1+log it is a vacuum-bubble benchmark
+  (wall, crossings, horizon against the control), not a null test in expanding dust; that
+  needs a slicing that follows the dust (ES-1G). And the floor: on the ES mesh it is set by a
+  late common drift of open cause, not by the D-pre-4 number.
+- failed on my side: run D-20261119-151012-b4afa8a read S_x as the proper time (index slip);
+  superseded within a minute, kept on record.
+- decided: ES-1G prediction G1 judged as written on R0 = 40 and 48 M (R0 = 48 M reported
+  separately); late-drift controls after ES-1G in the order V-1 with the boundary at 384 M,
+  then V-1 at M/16; no card run submitted in this session (none allotted).
+- open: ES-1G (Slurm 4636, queued, 0.98 card-hours reserved); cause of the late drift; G1
+  items C7 (orch ruling), C9 (schematic), C17 (fresh verifier); the wave-3a package
+  `flux_tools/` (unreviewed).
