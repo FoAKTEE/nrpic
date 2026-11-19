@@ -299,3 +299,54 @@ of T3 with Z4c on 26 + 8 MeshBlocks (centre refined once), 16 cycles.
   counts). Refuted by an identity defect on several ranks larger than on one, which
   would mean a level computed differently across ranks or a cloud cell lost.
 - P5b. Cluster on the refined mesh: as P3b.
+
+### 08:00 Entry 9: outcome of T3 (uniform mesh), and predictions of the card test
+
+T3, run core-20261119-154814-ca46836 (t3_cluster; `compare.json` in its output
+directory). The variant with extrapolated sources, run core-20261119-154816-ca46836,
+stopped at once: AthenaK changes on the command line only parameters that the input file
+has, and `source_density` was not in it (no physics ran); the options are now in the
+file and the variant is rerun (core-20261119-155306-ee6c92c).
+
+- P3a held: all runs finished; 4000 particles at all times on 1, 2 and 4 ranks.
+- P3c held: 2786 (2 ranks) and 4561 (4 ranks) particles handed over, 5.4e4 and 1.2e5
+  deposit packets; particles per rank 2000/2000 -> 2010/1990 and 1007/993/993/1007 ->
+  1000/1010/977/1013.
+- P3b held for every well-conditioned quantity: the history of the module agrees to
+  4.6e-13 (proper volume; sums of the particles and of the mesh to 1e-14), the field dumps
+  (double arrays) to 1.9e-14 at t = 0, 2.4e-12 at t = 3.75 and 5.6e-12 at t = 7.5 (H,
+  relative to max |H|), the particle positions to 4.0e-15 absolute at t = 7.5. The map of
+  |H(4 ranks) - H(1 rank)| in the mid plane is uniform at 1e-12 with no feature at the
+  planes between the ranks (figure `t3_cluster_selfgravity.png`, inspected).
+- P3b FAILED in its stated level for two quantities, below the refutation threshold:
+  column 11 of the constraint statistics (Hr_max, the largest relative Hamiltonian
+  residual |H| over the sum of the magnitudes of its terms) differs by up to 8.5e-10
+  (column 12, its mean, 4.6e-10), and K on the line dump by 9.9e-11 relative to max |K|.
+  Measured, not inferred: Hr_max is 1.414 at all times, the value of a ratio of rounding
+  noise, attained in vacuum cells where H and its terms vanish to rounding; its
+  difference jumps between 1e-15 and 9e-10 from cycle to cycle without growing (listed
+  per cycle in this session's check); the line runs along the edge of the mesh (y = z =
+  -12) where max |K| is 3.2e-5 and the absolute difference is 3.2e-15, the size of the
+  rounding differences of chi and alpha there (3.0e-15, 2.4e-15). So these are rounding
+  differences of the fields seen through ill-conditioned ratios; the prediction should
+  have excluded ratios of near-vanishing quantities.
+- The z4c history of AthenaK (`cl.z4c.user.hst`) is printed with six digits and is
+  identical as text; `cl.cons.hst` too, and its last two columns are of order 1e290 on one
+  rank already (|C^E|/D with D = 0 outside the matter): a defect of that diagnostic on
+  this set-up, not of the ranks; noted, not pursued here.
+
+Card test (`tracks/core/analysis/mpi/card_job.sh`, one Slurm job with two cards, about 15
+minutes, MPI card build `.work/build_gpu_mpi`): C1a, C1b the cluster of T3 on one card
+twice; C2 on two cards; F8a, F8b Track F's vacuum three-puncture mesh at m/8 (2332
+MeshBlocks of 16^3, static, `problems/tests/mpi_two_card_triple.athinput` with the
+levels lowered) on one and on two cards, 10 cycles; F16 the mesh at m/16 (4502
+MeshBlocks, more than one card holds) on two cards, 10 cycles.
+- P6a. All six runs finish; in the two-card runs both cards carry memory (gpumem.csv).
+- P6b. Cluster: C2 differs from C1a by about as much as C1b does (unordered atomic
+  additions of the deposit on a card); refuted if |C2 - C1a| exceeds |C1b - C1a| by more
+  than a factor 100 in the history sums or the snapshot positions.
+- P6c. F8 on two cards runs 1.3 to 1.9 times faster than on one, with about half the
+  memory per card.
+- P6d. F16 runs on two cards with less than 80 GB per card (Track F's estimate of about
+  3000 MeshBlocks per card gives about 26 MB per MeshBlock, so 2251 MeshBlocks per card
+  need about 60 GB), at a rate in MeshBlock-cycles per second close to that of F8b.

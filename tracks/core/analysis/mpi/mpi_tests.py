@@ -132,6 +132,7 @@ KERR = "problems/tests/mpi_kerr_swarm.athinput"
 BOX = "problems/tests/mpi_box_periodic.athinput"
 CLUSTER = "problems/tests/mpi_cluster.athinput"
 CLUSTER_SMR = "problems/tests/mpi_cluster_smr.athinput"
+CLUSTER_AMR = "problems/tests/mpi_cluster_amr.athinput"
 SMR = "problems/tests/mpi_deposit_smr.athinput"
 # the table of the cluster lies next to the particle file ({out} is the output directory)
 CLT = ["problem/comp0_file={out}/cluster.tab"]
@@ -185,6 +186,10 @@ CASES = {
     "t5_smr_pcs": dict(input=SMR, particles=("random.nrp", copy_random),
                        args=SMRT + ["particles/deposit_shape=pcs", "particles/nfilter=1"]),
     "t5_smr_cluster": dict(input=CLUSTER_SMR, particles=("cluster.nrp", make_cluster),
+                           args=CLT),
+    # adaptive mesh with load balancing: the centre is refined at cycle 4 and the
+    # MeshBlocks (and with them the particles) are redistributed over the ranks
+    "t5_amr_cluster": dict(input=CLUSTER_AMR, particles=("cluster.nrp", make_cluster),
                            args=CLT),
 }
 

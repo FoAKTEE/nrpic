@@ -1,0 +1,110 @@
+# Several MPI ranks, test T5b (tracks/core/interfaces/mpi.md): the cluster of
+# mpi_cluster.athinput on an adaptive mesh with load balancing.  Root mesh 32^3 on
+# [-12 M, 12 M]^3 in 64 MeshBlocks of 8^3; the Z4c criterion "chi" refines every
+# MeshBlock where chi < 0.55 (the eight MeshBlocks around the centre, chi_c = 0.45) at
+# the first check (cycle 4): 120 MeshBlocks of two levels, redistributed over the
+# ranks, with the particles following their MeshBlocks.  16 cycles.
+#   mpirun -np N athena -i mpi_cluster_amr.athinput
+# Particles and table as for mpi_cluster.athinput.
+
+<comment>
+problem   = NRPIC on several ranks, self-gravitating cluster on an adaptive mesh
+
+<job>
+basename  = cla
+
+<mesh>
+nghost    = 4
+nx1       = 32
+x1min     = -12.0
+x1max     = 12.0
+ix1_bc    = outflow
+ox1_bc    = outflow
+nx2       = 32
+x2min     = -12.0
+x2max     = 12.0
+ix2_bc    = outflow
+ox2_bc    = outflow
+nx3       = 32
+x3min     = -12.0
+x3max     = 12.0
+ix3_bc    = outflow
+ox3_bc    = outflow
+
+<meshblock>
+nx1       = 8
+nx2       = 8
+nx3       = 8
+
+<mesh_refinement>
+refinement          = adaptive
+num_levels          = 2
+max_nmb_per_rank    = 200
+ncycle_check        = 4
+refinement_interval = 8
+
+<amr_criterion0>
+method = user
+
+<z4c_amr>
+method  = chi
+chi_min = 0.55
+
+<time>
+evolution  = dynamic
+integrator = rk4
+cfl_number = 0.25
+nlim       = 16
+tlim       = 100.0
+ndiag      = 10
+
+<z4c>
+lapse_oplog     = 2.0
+lapse_harmonicf = 1.0
+lapse_harmonic  = 0.0
+lapse_advect    = 1.0
+shift_Gamma     = 0.75
+shift_eta       = 2.0
+shift_advect    = 1.0
+diss            = 0.5
+chi_div_floor   = 1.0e-5
+damp_kappa1     = 0.02
+damp_kappa2     = 0.0
+
+<particles>
+particle_type  = nrpic
+pusher         = midpoint
+metric         = mesh
+tolerance      = 1.0e-10
+max_iterations = 50
+deposit        = true
+deposit_shape  = tsc
+nfilter        = 2
+filter_compensate = true
+filter_comp_c  = -1.0
+alpha_exc      = 0.1
+hist_dcycle    = 1
+traj_dcycle    = 2
+traj_ntrack    = 1000000
+cstat_dcycle   = 1
+cons_dcycle    = 1
+line_dcycle    = 5
+snap_dt        = 0.375
+source_density = false     # true in the case t3_cluster_ext (with source_extrap)
+source_extrap  = false
+particle_file  = cluster.nrp
+
+<problem>
+pgen_name  = nrpic_cf
+ncomp      = 1
+comp0_type = table
+comp0_file = cluster.tab
+lapse      = table
+
+<output1>
+file_type = hst
+dcycle    = 1
+
+<output2>
+file_type = rst
+dcycle    = 8
