@@ -681,3 +681,35 @@ the layer, its J is within a factor 2 of the code's with the same sign: then the
 correction is fixable in the generator. If both are below 10 per cent of the code's, the
 layer is made on the mesh (by the deposit of a profile that ends with a square root, or
 by the finite differences across it) and stays a documented limit.
+
+### Outcome of the surface check (run `core-20261119-163754-1a47df0`, 16:38Z) and a cause
+
+- The Python solution of the l = 0 equation carries a surface layer: the flux balance
+  across [rbar_s - e, rbar_s + e] leaves J/rs^2 = 2.45e-5 (per unit V^2) for every e from
+  0.05 to 0.5 (a solution gives zero); the written table gives the same (2.45e-5). The
+  code's layer from `D_H(corr)`: 8.1e-5 to 8.4e-5 (32 cells), 5.0e-5 to 6.4e-5 (64), 4.4e-5
+  to 5.0e-5 (128), same sign. Prediction "within a factor 2 of the code's with the same
+  sign": held at 128 cells (factor 1.8 to 2.0), not at 64 (2.0 to 2.6) or 32 (3.3). So
+  about half of the leftover at 128 cells comes from the generator's correction; the
+  rest is made on the mesh and falls with the cell size (8.3e-5, 5.7e-5, 4.7e-5).
+  Figure `fig_corr_surface.png` of the run.
+- Cause in the generator [JUDGEMENT, from the numbers, before any change]: in
+  `BoostedST.correction` the cumulative Simpson integrals of the Green's function run over
+  one grid that joins the model's nodes (which crowd towards rbar_s, the last spacings
+  about 1e-7) to a geometric outer grid (first spacing 0.017). The quadratic panel that
+  straddles the junction takes its slope from the two crowded nodes at the edge, where
+  the density ends as a square root, and carries it across 0.017: an error of the
+  integral of fixed size beyond rbar_s, which is a flux jump. One-sided derivatives at
+  rbar_s +- 1e-4 agree (the jump is spread over the first outer interval).
+
+### Fix of the generator: prediction (written 16:39Z, before the change runs)
+
+Integrate the two segments [0, rbar_s] and [rbar_s, r_end] separately (rbar_s a node of
+both), so that no panel straddles the edge. Predicted: J/rs^2 of the Python solution
+falls below 1e-6; the added mass changes by less than 1e-3 of itself (it is a global
+integral); `D_H(corr)` of TB at 128 cells: the code's layer falls from 4.4e-5-5.0e-5 to
+2e-5-2.6e-5 (the mesh part stays), the surface norm by 30 to 60 per cent, and
+`|D_H(corr)|/|D_H(curv)|` at 128 cells from 0.097 to between 0.04 and 0.07 (v = 0.1 and
+0.3). Refuted if J/rs^2 stays above 1e-6 or the ratio at 128 cells stays above 0.08.
+The executables are not changed (the generator only); card jobs 4649 and 4657 keep the
+tables they were submitted with (old correction).

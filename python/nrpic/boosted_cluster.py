@@ -344,6 +344,15 @@ class BoostedST:
         S = {0: c0 + cm / 3.0, 2: 2.0 * cm / 3.0}
         sigma = 2.0 * math.pi * psi ** 4 * (rho + 6.0 * prs)
         rr = np.concatenate([[0.0], r])
+        k = nin                  # rr[k] = rbar_s: last node of the matter, first outside
+
+        def cumint(f):
+            """cumulative Simpson integral over rr in two segments that share rbar_s, so
+            that no panel straddles the edge of the matter (where the density ends as a
+            square root and the inner nodes crowd)"""
+            a = cumulative_simpson(f[:k + 1], x=rr[:k + 1], initial=0.0)
+            b = cumulative_simpson(f[k:], x=rr[k:], initial=0.0) + a[-1]
+            return np.concatenate([a, b[1:]])
         y = {0: np.zeros_like(r), 2: np.zeros_like(r)}
         info = {}
         it = 0
@@ -354,8 +363,8 @@ class BoostedST:
                 f2 = np.concatenate([[0.0], r ** (1 - l) * g])
                 if l == 0:
                     f2[0] = 0.0     # s g -> 0 at the centre
-                i1 = cumulative_simpson(f1, x=rr, initial=0.0)[1:]
-                c2 = cumulative_simpson(f2, x=rr, initial=0.0)
+                i1 = cumint(f1)[1:]
+                c2 = cumint(f2)
                 i2 = c2[-1] - c2[1:]
                 new = (r ** (-(l + 1)) * i1 + r ** l * i2) / (2 * l + 1)
                 err = float(np.max(np.abs(new - y[l])))

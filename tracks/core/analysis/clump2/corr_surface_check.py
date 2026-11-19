@@ -119,6 +119,8 @@ def main():
     # the code: shell integral of D_H across the surface, as a delta strength in
     # lap(dpsi) per unit V^2: int D_H dV = -8 int psi^-5 lap(dpsi) dV
     for n in (32, 64, 128):
+        if not os.path.isdir(os.path.join(top, f"q0_n{n}")):
+            continue
         st = Case(top, f"q0_n{n}")
         for c in ("curv", "corr"):
             cs = Case(top, f"q0.3_n{n}_{c}")
