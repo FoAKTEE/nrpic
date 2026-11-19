@@ -85,3 +85,81 @@ chunks of 2201.03458, deleted by the re-ingest). `kb embed --only chunks --threa
 in_corpus for the new citation rows; the edges of gr-qc/9412071 into the corpus are few (its 19
 references are from 1977-1995 and carry no arXiv id). Refuted by: a count of new vectors other
 than 74 that the embed kinds do not explain, orphans left, a check that fails.
+
+## 2026-11-19 14:36 UTC: outcomes P1-P6 so far; prediction P7
+
+P2 outcome (run kb-20261119-142559-387c3bc): HELD. 2107.06643 and 2201.09277 have ok records from
+both services; the four INSPIRE not-found ids stay not-found when queried one at a time
+(hits_total 0 for each), so INSPIRE holds no record carrying those eprints.
+
+P1 outcome (run kb-20261119-142651-7318d01, figure fig_pdf_reader.png, inspected):
+- `--all` selected exactly the three papers (2201.03458: e-print is a PDF; astro-ph/9407016 and
+  gr-qc/9412071: no TeX). All three now have parse_status 'pdf'. gr-qc/9412071 is in the base:
+  4 pages, 6 sections (run-in headings), 16 chunks, 1 figure caption, 19 references, 32
+  citation keys.
+- Pages 4, 28, 12: HELD. Abstract located with similarity 0.994, 1.000, 0.948 after repair: HELD.
+  Before repair the located abstract already had 0.939 and 0.975 on the two old PDFs: the
+  prediction "below 0.8 before repair" FAILED (the ligature damage touches few abstract words).
+- Headings: gr-qc/9412071 the 5 named run-in headings plus Acknowledgements: HELD;
+  astro-ph/9407016 I-VI with A-D and the two unnumbered ones (12): HELD; 2201.03458 is a JOSS
+  paper without numbers, found by the standalone rule (Summary is taken by the abstract
+  locator; Key features, Statement of Need, Key research projects, Acknowledgements, References):
+  numbered headings FAILED as worded (it has none), the paper is structured.
+- References: 19 numbered entries in gr-qc/9412071 (>= 15): HELD.
+- Rare-token fraction: astro-ph/9407016 4.72 % -> 1.70 % (factor 2.8): HELD; gr-qc/9412071
+  6.50 % -> 4.33 % (factor 1.5): FAILED. What remains rare in gr-qc/9412071 is index notation
+  of the equations (Dkij, Bki, ...), names and acronyms, not ligature damage (list read in
+  scratch/kb/tmp/pdf_meta, development pass). 2201.03458: no repair, 8.73 % before and after:
+  HELD.
+- Repair precision (run kb-20261119-143005-10376d4, 30 of 217 word repairs drawn with seed
+  20261119, read by me in scratch/kb/kb-20261119-143005-10376d4/repair_sample.tsv): 30 of 30
+  right: HELD. Seen in passing: a proper name with an ffi ligature (a cited author) became a
+  Greek letter (the name is not in the vocabulary, so the control character fell to the cmmi
+  table); counted as a known limitation, not in the sample.
+
+P4 outcome (runs kb-20261119-142703-aaf0c4a, first pass, and kb-20261119-142905-e1d81d9 after
+fixing the comparator; figure fig_brief16.png, inspected):
+- Sections 16 and 17: the same 684 ids, the same group and the same priority (mark) for every
+  id: HELD.
+- First pass: TeX-only differences ($\mathbb U(1)$, \texttt{...}) counted as wording and
+  collaboration entries as mismatches; two authors of one surname counted as an order change;
+  junk author entries (";") of the arXiv API counted as extra authors. Fixed in e1d81d96, tests
+  added.
+- Second pass, titles: same 548, format 111 (659 = 96.3 % agree): HELD (>= 95 %); minor 17,
+  differs 8 (25 <= 30): HELD.
+- Authors: of 633 entries with an author field, 622 match and 5 name a collaboration (99.2 %):
+  HELD; 5 order, 1 mismatch. The concentration in G20/G21 FAILED: the six are in G03, G07, G10,
+  G15, G19, G21.
+
+P3 outcome (run kb-20261119-142912-0f00e87, figure fig_metadata.png, inspected):
+- 710/710 rows have the arXiv-API title, authors, abstract, primary class, submission and update
+  dates (title_source arxiv-api); 706/710 an INSPIRE record number; DOI 651, journal reference
+  648: HELD.
+- Stored version = latest arXiv version for 710/710: HELD.
+- Licence: 0/710. The stored arXiv-API answers carry no licence element (checked on
+  meta/arxiv-api/2611.12831.xml: no "license" in the entry), so papers.license stays empty.
+  Not predicted; a limit of the API, not of the loader.
+- TeX title vs API title >= 0.9: 660 of 707 TeX papers = 93.4 %: FAILED (predicted >= 95 %).
+  34 TeX papers have no extracted title at all; of the 673 with one, 660 agree (98.1 %). Of the
+  13 that differ, 9 are extraction defects of the TeX title (preprint numbers, \thanks text,
+  dropped macros such as the code name of 2409.16053), 4 are real differences between the
+  source and the arXiv listing (shorter or other title in the source).
+- TeX abstract vs API abstract >= 0.8: 664 of 682 TeX papers with an abstract chunk = 97.4 %:
+  HELD.
+
+P5 outcome (same run): 26 additions loaded, every row of papers has a group (grp NULL: 0 of
+710), groups G04 1, G06 6, G14 1, G18 11, G21 7: HELD, with the one exception named before the
+run (gr-qc/0608095, placeholder G06, proposed for removal).
+
+P6 outcome (run kb-20261119-143251-eb99c45; first call kb-20261119-143242-737909d failed at
+once on an option `kb embed` does not have, nothing written): 74 chunks embedded, 14 orphans
+deleted, `kb embed --check --work`: chunk 43560 owners = 43560 vectors, 0 missing, 0 stale, 0
+orphaned; equations unchanged (54502): HELD. 15 of the 74 chunks were truncated to the model's
+length. `kb resolve-bib`: gr-qc/9412071 has 0 of 32 outgoing citations in the corpus (no arXiv
+ids, as predicted) and is now the target of 36 citation rows of corpus papers.
+
+P7 [prediction]. Hybrid search on kb.sqlite with one query per PDF paper in my own words
+("first-order flux-conservative hyperbolic formulation of the Einstein equations for a family of
+slicings", "equilibrium state of a self-interacting scalar field in de Sitter, stochastic
+approach, Fokker-Planck", "GRChombo adaptable numerical relativity code with adaptive mesh
+refinement") ranks the paper within the top 10. Refuted by any of the three outside the top 10.
