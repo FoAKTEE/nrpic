@@ -17,7 +17,9 @@
  "purpose": "omp P8: placement experiment, puncture case at 16 threads, four placements (none, spread, close, auto), two rounds interleaved. Registered by hand: nrpic-run refuses the cores (owner core at its allotment through other sessions)",
  "kind": "scouting",
  "tag": "omp-placement16",
- "state": "running",
+ "state": "finished",
+ "wall_time_s": 564.07,
+ "exit_status": 0,
  "cores": 16,
  "card_hours": 0.0,
  "started_utc": "2026-11-19T15:00:22Z"

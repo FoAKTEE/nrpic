@@ -142,3 +142,25 @@ P8 (placement at 16 threads, punc, four cycles, two rounds, interleaved): "auto"
 another job is bound to the same cores; no binding lies within 30 per cent of auto.
 Refuted if auto is slower than another placement by more than the scatter between the
 two rounds.
+
+## 2026-11-19 07:10 Entry 4: outcome of P8 (placement at 16 threads)
+
+Run core-20261119-150022-d0d8641 (registered by hand), puncture case, O3 build, 16
+threads, four cycles, two rounds interleaved; load average 97 to 116 throughout.
+Seconds per step:
+
+| placement | round 1 | round 2 | share of processor time |
+|---|---|---|---|
+| no binding (`OMP_PROC_BIND` unset) | 15.35 | 14.55 | 0.69, 0.69 |
+| `OMP_PROC_BIND=spread OMP_PLACES=cores` | 15.52 | 14.42 | 0.75, 0.67 |
+| `OMP_PROC_BIND=close OMP_PLACES=cores` | 15.16 | 14.86 | 0.78, 0.72 |
+| `OMP_PROC_BIND=true OMP_PLACES=$(scripts/omp_places.py 16)` | 14.43 | 14.41 | 0.73, 0.68 |
+
+P8 holds in its first part: the automatic placement is the fastest in round 1 (by 5 per
+cent) and tied with spread in round 2; no binding is within 6 per cent of it. The
+second part (fixed core lists much slower) did not occur in these two rounds: nobody
+else was bound to cores 0 to 15 at the time. With every physical core of the machine
+already running 1.2 threads of other jobs, the placement changes the step time by at most
+7 per cent at 16 threads; the scatter between the rounds is 5 per cent. [VERIFIED:
+scaling_*.json of the run] The share of processor time (0.67 to 0.78, setup included)
+says the threads waited for a processor a quarter of the time.
