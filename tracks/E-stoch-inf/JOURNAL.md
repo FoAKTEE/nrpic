@@ -296,3 +296,7 @@ checksums; the final ladder analysis was checksum-verified separately (nrpic-run
 E-20261115-194633-9e04ed8, 101 files PASS). A first G1 verify ran by mistake from the main
 checkout (the `cd` applied to a background subshell only); it wrote an export under
 `scratch/orch/tmp/stage-verify/`, left in place.
+- LN2 outcome (run E-20261119-154548-7885cdb): CONFIRMED. `ledger.tex` and `parameters.tex`
+  byte-identical; `claims.md` identical once the file:line locators are removed (the "42 -> 43"
+  of the compare was the line number of SCOPE.md's derived-parameter row, shifted by one line by
+  the locator-key edit). The new `claims.*` are committed into `note/tables/`.
