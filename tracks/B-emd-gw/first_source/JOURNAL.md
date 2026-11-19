@@ -538,3 +538,60 @@ the code's own residual is about one percent of the source term, core's REQUESTS
 section 5 [BACKGROUND]). Parity (jit0 against make_east eps0 of run
 B-20261115-161656-03d75e1): positions equal to 1e-13, psi of fields.bin to 1e-12. Refuted if
 larger (then the null is not built like the scan).
+
+## Initial data of the second round (outcome of P15, partly)
+
+Runs B-20261119-141216-9c98929 (make_waves at 7db34a5: jit0p3, jit0p1, jit0) and
+B-20261119-141249-2af0df8 (make_east: d0025_e1, d0025_e0p3); logs `<case>.log` there.
+- delta = 0.0025: CONFIRMED. Hamiltonian residual 2.2e-11, 9.9e-12; momentum 6.0e-17,
+  2.3e-16; largest displacement 0.025 cells; max |Ahat| 2.3e-5, 9.7e-6.
+- Jitter: Hamiltonian residual of the tool 3.7e-11 (A = 0.3), 4.5e-12 (0.1): as predicted.
+  Momentum residual REFUTED my "as for the plain lattice": 7.6e-4 (A = 0.3) and 2.8e-4 (0.1)
+  against 3.1e-17 without jitter (same tool, jit0). It grows with A (ratio 2.7 for a ratio 3 in
+  A). The particle momenta u_x(x) carry the x wave and the jittered positions modulate the
+  deposited momentum density in y and z; the tool's solve does not remove that part
+  [JUDGEMENT on the cause: the momentum constraint is solved for the traceless curvature
+  with an ansatz that cannot absorb it; not checked in the tool's code]. So the jittered
+  null starts with a momentum-constraint violation of that size, in addition to the
+  evolution's one per cent (core's REQUESTS_B.md section 5). Recorded; the null run goes ahead.
+- Parity (run B-20261119-142727-02878d1, `parity.json`): CONFIRMED and more: make_waves without
+  jitter and make_east eps0 give bit-identical particle files and field files (all
+  differences 0.0). The jittered null is built exactly like the scan.
+- Smoke test of `inputs/conv.athinput` on the requests-b processor executable (run
+  B-20261119-142500-72b1213, 8 cycles at 32^3): the input is accepted, both bin outputs and
+  restart files are written, the double-precision dump has "size of variable=8", the same
+  cycle and time as the single-precision dump of the same output time, and differs from it
+  by 1.2e-7 absolute (5.9e-8 relative, the rounding of float32).
+
+## P11b' (computed from the initial data before the card run; run B-20261119-142733-932e595)
+
+`scripts/null_prediction.py`, `null_prediction.json` and `.png` there (looked at). Validation
+on the eps = 0.1 scan data: phi_x = -6.0785e-3, phi_y = -6.0798e-4 from psi, static cross term
+at K1 -3.0802e-6 against s = -3.0797e-6 (0.02 percent): the extraction and the formula are
+right for the crossed waves. Jittered null (complex amplitudes c - i s in the basis of
+fslib.modes; static = growing-mode normalization; the run is predicted to follow cross x
+g_cross + nn x g_nn, late value 0.6 cross + 0.36 nn):
+
+| case | K | static cross | static nn | predicted at a = 5 | at a = 10 | late, modulus |
+|---|---|---|---|---|---|---|
+| A = 0.3 | K1 | -6.21e-8 - 4.25e-8 i | 1.28e-8 + 3.71e-8 i | -3.11e-8 - 1.23e-8 i | -3.58e-8 - 1.30e-8 i | 3.48e-8 |
+| A = 0.3 | K2 | 6.69e-8 - 4.72e-8 i | 7.85e-9 - 1.18e-8 i | 4.03e-8 - 3.04e-8 i | 4.72e-8 - 3.58e-8 i | 5.39e-8 |
+| A = 0.1 | K1 | -2.07e-8 - 1.40e-8 i | 1.17e-9 + 4.67e-9 i | -1.14e-8 - 6.48e-9 i | -1.32e-8 - 7.37e-9 i | 1.38e-8 |
+| A = 0.1 | K2 | 2.23e-8 - 1.56e-8 i | 1.25e-9 - 1.54e-9 i | 1.30e-8 - 9.30e-9 i | 1.52e-8 - 1.09e-8 i | 1.70e-8 |
+
+The noise potential at (0, k, 0) has amplitude 1.48e-5 at A = 0.3 (my order-of-magnitude
+estimate of P11: 1.4e-5 without the relativistic factor; that factor does not appear). The
+noise-noise term at K1 is half the cross term at A = 0.3 (I had estimated a tenth), so P11(c)
+as written ("ratio 3.0 within 5 percent") is contradicted by this computation before the
+run: the predicted ratio |c(0.3)/c(0.1)| at K1 is 2.51 at a = 5 and 2.53 late, with a phase
+difference of 0.16 rad. Superseding prediction (c'): the measured K1 ratio lies within 10
+percent of 2.5 for 3 <= a <= 20, and the K2 ratio near 3.2 (5.39e-8/1.70e-8). (b) as
+stated: modulus within 40 percent, phase within 0.5 rad of the table for 3 <= a <= 20.
+(d) rms of all TT modes, static: cross 3.54e-7, nn 1.75e-7 (A = 0.3), 1.18e-7, 2.1e-8 (A =
+0.1); late 0.6 cross + 0.36 nn: 2.29e-7 and 7.22e-8, ratio 3.2. Prediction: measured rms TT
+within a factor 3 of these for 3 <= a <= 20 (grid-scale modes: the code's sixth-order
+differences and dissipation are not in the spectral formula), ratio between 3 and 4.
+Caveat [JUDGEMENT]: the code's slicing is Newtonian only for the growing mode (P9); for a
+mode without peculiar velocity the slicing condition keeps alpha + psi-part fixed at its
+initial value, not Phi = Psi, so slicing-gauge pieces of the cross term are not in this
+prediction; neither is the momentum-constraint violation of the initial data.
