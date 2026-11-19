@@ -504,3 +504,44 @@ only if the finder keeps no state between searches that the restart file lacks; 
 know whether it does ([TO VERIFY]; the comment "Retain last_a0 in restart" in
 `fastflow.cpp` suggests the initial guess is a state). Refuted for (2) by any differing
 row: then another state of the adaptive driver or the particle module is missing.
+
+## 2026-11-19 15:58  T11 started; executables to publish; prediction of T12
+
+T11 runs as core-20261119-155740-3c44b74 (8 cores; OLD = `.work/build_cpu/src/athena`
+sha256 c1177609..., source 901d8b3; NEW = `.work/build_cpu_b/src/athena` sha256
+74586012..., source 3c44b74, a fresh build directory so that the runs still using the
+old executable are not disturbed). The card executable of 3c44b74 is being built in
+`.work/build_gpu_b`; T10 (job 4654, pending) keeps the card build of 901d8b3 its
+manifest names.
+
+**T12, the published executable gives the tested bytes.** The tests T1, T2 (with T5 to
+T8) and T9 ran with OLD. Their cases are run again with NEW from the decks saved in each
+case directory (`t12_same.py`), and every output file is compared byte by byte.
+Prediction: every file identical, except the first column of
+`<basename>.horizon_status_0.txt` (stage -> cycle), whose other columns are identical;
+the same exit status in every case. Between the two sources only the status column, the
+restart counters (no restart file in these cases) and comments differ. Refuted by any
+other differing byte. T0 is repeated with NEW (T0b): every file byte-identical to the
+release.
+
+## 2026-11-19 15:59  prediction of T13 (tracker in mode walk; `tracker_walk_tol` had no test)
+
+`<z4c> tracker_walk_tol` was added without a test. **T13** (`t13_walk.py`, processors):
+Wd/Wdrel homogeneous universe (uniform 24^3, cell 0.25, box [-3, 3)^3), tracker at
+(0.1, 0.1, 0.1) in mode walk, 16 cycles, this branch and the release; Wt the same with
+`tracker_walk_tol = 1e-6`; Wp the peak data of T9 (uniform 32^3, cell 0.625), tracker at
+(2.5, 1.25, 0) in mode walk with the tolerance, 10 cycles; Wpn without the tolerance.
+Predictions [JUDGEMENT from reading `compact_object_tracker.cpp`]: (1) Wd: every step
+moves the tracker to the centre of the neighbour at (-1, -1, -1), i.e. -0.125 after the
+first step, then -0.25 per cycle in each coordinate; at the step that takes it below
+x = -3 (the 13th) this branch maps it to the other side (+2.875) and continues to cycle
+16; (2) Wdrel follows the same path to the 12th step and then stops with "couldn't find
+the compact object" (non-zero exit); (3) Wt stays at the centre of its cell
+(0.125, 0.125, 0.125) at every record after the first; (4) Wp walks one cell per cycle
+down the lapse to a cell next to the centre of the peak (distance below 0.6) within six
+cycles and stays there; (5) Wpn takes the same path as Wp (the lapse of the peak has no
+equal neighbours). Refuted by a drift of Wt, or by Wp ending more than one cell away
+from the centre.
+Added to T13 before it runs: Ex, the new example input `problems/cosmo_amr/flrw_tracker.athinput`
+as published (the deck of T5's M with comments), 12 cycles: exit 0, tracker at
+2.5 + 0.5 t.
