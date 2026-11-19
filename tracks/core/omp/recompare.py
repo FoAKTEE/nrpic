@@ -50,11 +50,15 @@ def main():
     bad = 0
     for d in a.dirs:
         s = json.load(open(os.path.join(d, "summary.json")))
-        base = os.path.dirname(os.path.abspath(d))      # run paths are relative to it
+        # relative run paths are relative to the working directory of regress.py: the
+        # directory of the summary (--out .) or its parent (--out ./sub)
+        here = os.path.abspath(d)
         for c in s["cases"].values():
             for rr in c["runs"].values():
                 if not os.path.isabs(rr["rundir"]):
-                    rr["rundir"] = os.path.normpath(os.path.join(base, rr["rundir"]))
+                    cand = [os.path.normpath(os.path.join(b, rr["rundir"]))
+                            for b in (here, os.path.dirname(here))]
+                    rr["rundir"] = next((x for x in cand if os.path.isdir(x)), cand[0])
         out = {"source": os.path.join(d, "summary.json"), "tol": a.tol, "floor": L.FLOOR,
                "ref": s["ref"], "cases": {}}
         for case, c in s["cases"].items():

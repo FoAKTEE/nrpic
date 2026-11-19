@@ -142,74 +142,92 @@ def fig_scaling(a):
 
 
 def fig_diff(a):
-    """Left: largest difference (measure rel_floor of omplib) of each configuration against
-    its reference, per case; open marks: every file byte-identical. Right: conservation
-    identity of the deposit, |int_E - sum_mW|/sum_mW, per configuration. Reads
-    summary_floor.json of recompare.py."""
-    rows, idn = [], []
+    """Left: largest difference over the largest number of the file (rel_max of omplib),
+    per case (rows) and configuration: filled circles N threads against one thread of the
+    same executable, open squares two runs of one configuration; marks at the left edge:
+    every file byte-identical. Right: conservation identity of the deposit,
+    max_t |int_E - sum_mW|/sum_mW, per configuration. Reads summary_floor.json of
+    recompare.py."""
+    order = ["geo", "boris", "dep", "east", "os", "jeans", "binary", "newton", "coll", "kg",
+             "noise", "bench", "punc"]
+    cfg_style = {"4": (fs.SERIES[0], "4 threads"), "16": (fs.SERIES[1], "16 threads"),
+                 "4p": (fs.SERIES[3], "4 threads, private"),
+                 "16p": (fs.SERIES[4], "16 threads, private"),
+                 "1p": (fs.SERIES[2], "1 thread, private")}
+    floor = 1.0e-19
+
+    def norm(cfg):
+        c = cfg.split("#")[0].replace("O3:", "").replace(":::priv", "p")
+        return c
+
+    pts, idn = [], []
     for d in a.runs:
         s = json.load(open(os.path.join(d, "summary_floor.json")))
         for case, c in s["cases"].items():
             for key, r in c["comparisons"].items():
-                rows.append((case, key.replace("O3:", "").replace(":::priv", "p"),
-                             r["worst_rel_floor"], len(r["differ"]), len(r["identical"]),
-                             r["structural_difference"]))
+                y, x = key.split(" vs ")
+                if norm(x) not in ("1",) and norm(x) != norm(y):
+                    continue              # cross comparisons (atomic vs private) left out
+                kind = "repeat" if norm(x) == norm(y) else "vs1"
+                ident = len(r["differ"]) == 0 or all(
+                    v.get("kind") == "log" for v in r["differ"].values())
+                val = r.get("worst_rel_max", r.get("worst_rel_file", 0.0))
+                pts.append((case, norm(y), kind, val, ident and val == 0.0))
             for cfg, v in c.get("identity", {}).items():
-                if v:
-                    idn.append((case, cfg.replace("O3:", "").replace(":::priv", "p"),
-                                v["E"]))
-    cases = [c for c in ["geo", "boris", "dep", "east", "os", "jeans", "binary", "newton",
-                         "coll", "kg", "noise", "bench", "punc"]
-             if any(r[0] == c for r in rows)]
-    keys = list(dict.fromkeys(r[1] for r in rows))
+                if v and case in ("dep", "east", "os", "newton"):
+                    idn.append((case, norm(cfg), v["E"]))
+    cases = [c for c in order if any(p[0] == c for p in pts)]
+    yi = {c: i for i, c in enumerate(cases)}
     fs.use_style()
-    fig, axs = plt.subplots(1, 2, figsize=(fs.FULL_WIDTH, 3.6),
-                            gridspec_kw={"width_ratios": [2.3, 1.0]})
-    fig.subplots_adjust(left=0.075, right=0.80, bottom=0.14, top=0.95, wspace=0.28)
+    fig, axs = plt.subplots(1, 2, figsize=(fs.FULL_WIDTH, 4.2), sharey=True,
+                            gridspec_kw={"width_ratios": [2.2, 1.0]})
+    fig.subplots_adjust(left=0.09, right=0.78, bottom=0.13, top=0.97, wspace=0.08)
     ax = axs[0]
-    cols = fs.series_colors(len(keys)) if len(keys) > 5 else fs.SERIES
-    floor = 1.0e-18
-    for n, key in enumerate(keys):
-        xs, ys, ident = [], [], []
-        for i, case in enumerate(cases):
-            for r in rows:
-                if r[0] == case and r[1] == key:
-                    xs.append(i + (n - 0.5*(len(keys) - 1))*0.8/len(keys))
-                    ys.append(max(r[2], floor))
-                    ident.append(r[3] == 0)
-        xs, ys, ident = np.array(xs), np.array(ys), np.array(ident, dtype=bool)
-        if xs.size == 0:
-            continue
-        ax.plot(xs[~ident], ys[~ident], "o", color=cols[n % len(cols)], ms=4, label=key)
-        ax.plot(xs[ident], ys[ident], "o", mfc="none", color=cols[n % len(cols)], ms=4,
-                label=None if (~ident).any() else key)
-    ax.axhline(a.tol, **fs.GUIDE)
-    ax.axhline(floor, **fs.MASK_LINE)
-    ax.set_yscale("log")
-    ax.set_ylim(floor/3, 1.0e-4)
-    ax.set_xticks(range(len(cases)))
-    ax.set_xticklabels(cases, fontsize=8)
-    ax.tick_params(axis="x", which="minor", bottom=False, top=False)
-    ax.set_ylabel(r"largest $|a-b|/\max(|a|,|b|,10^{-6}\,a_{\max})$")
+    cfgs = [k for k in cfg_style if any(p[1] == k for p in pts)]
+    for n, cfg in enumerate(cfgs):
+        col, lab = cfg_style[cfg]
+        dy = (n - 0.5*(len(cfgs) - 1))*0.16
+        for kind, mk, mfc in (("vs1", "o", None), ("repeat", "s", "none")):
+            sel = [p for p in pts if p[1] == cfg and p[2] == kind]
+            if not sel:
+                continue
+            xs = [max(p[3], floor) for p in sel]
+            ys = [yi[p[0]] + dy for p in sel]
+            ax.plot(xs, ys, mk, color=col, mfc=mfc if mfc else col, ms=5,
+                    label=lab if kind == "vs1" else None)
+    ax.plot([], [], "s", color="0.3", mfc="none", label="two runs, same threads")
+    ax.plot([], [], "o", color="0.3", label="against one thread")
+    ax.axvline(a.tol, **fs.GUIDE)
+    ax.axvline(floor, **fs.MASK_LINE)
+    ax.set_xscale("log")
+    ax.set_xlim(floor/5, 1.0e-6)
+    ax.set_xticks([1e-18, 1e-15, 1e-12, 1e-9])
+    ax.set_xlabel("largest difference / largest number of the file")
+    ax.text(floor*1.6, -0.9, "identical", fontsize=8, color="0.4")
+    ax.set_yticks(range(len(cases)))
+    ax.set_yticklabels(cases, fontsize=9)
+    ax.tick_params(axis="y", which="minor", left=False, right=False)
+    ax.set_ylim(len(cases) - 0.5, -1.2)
     ax = axs[1]
-    icases = [c for c in cases if any(r[0] == c for r in idn)]
-    for n, key in enumerate(keys + [k for k in dict.fromkeys(r[1] for r in idn)
-                                    if k not in keys]):
-        pts = [(icases.index(r[0]) + (n - 0.5*len(keys))*0.6/max(len(keys), 1),
-                max(r[2], floor)) for r in idn if r[1] == key and r[0] in icases]
-        if pts:
-            ax.plot(*zip(*pts), "o", color=cols[n % len(cols)], ms=4,
-                    label=key if key not in keys else None)
-    ax.set_yscale("log")
-    ax.set_ylim(1.0e-18, 1.0e-4)
-    ax.set_xticks(range(len(icases)))
-    ax.set_xticklabels(icases, fontsize=8)
-    ax.tick_params(axis="x", which="minor", bottom=False, top=False)
-    ax.set_ylabel(r"$\max_t |\int E - \sum mW| / \sum mW$")
+    icfg = ["1", "4", "16", "1p", "4p", "16p"]
+    colors = {"1": "0.2", "4": fs.SERIES[0], "16": fs.SERIES[1], "1p": fs.SERIES[2],
+              "4p": fs.SERIES[3], "16p": fs.SERIES[4]}
+    for n, cfg in enumerate(icfg):
+        sel = [p for p in idn if p[1] == cfg]
+        if not sel:
+            continue
+        dy = (n - 2.5)*0.12
+        ax.plot([max(p[2], floor) for p in sel], [yi[p[0]] + dy for p in sel], "D",
+                color=colors[cfg], ms=4, label="1 thread" if cfg == "1" else None)
+    ax.set_xscale("log")
+    ax.set_xlim(1.0e-17, 1.0e-6)
+    ax.set_xticks([1e-16, 1e-12, 1e-8])
+    ax.set_xlabel(r"$\max_t |\int E - \sum mW| / \sum mW$")
+    ax.tick_params(axis="y", which="minor", left=False, right=False)
     h, lab = axs[0].get_legend_handles_labels()
     h2, lab2 = axs[1].get_legend_handles_labels()
     axs[1].legend(h + h2, lab + lab2, loc="upper left", bbox_to_anchor=(1.03, 1.0),
-                  fontsize=7, title="against", title_fontsize=7)
+                  fontsize=7)
     fs.save(fig, a.out)
     print("wrote", a.out + ".png")
 
