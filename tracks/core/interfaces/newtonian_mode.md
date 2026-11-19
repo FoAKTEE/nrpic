@@ -628,3 +628,15 @@ cubic cloud with the spline gather lowers the self-force by 5.9. Momentum is not
 conserved by it. The fixed point mass `newton_pm_mass` is not deposited and has no
 self-force (7.9). The relativistic mode shares the deposit and gather kernels; whether
 a compact clump feels the same force there is [TO VERIFY] (not run in this package).
+
+### 7.7 Existing results unchanged: test T10
+
+Without the options of this section the processor executable of `core/newton-2` writes
+the same output files as the branch start (`core/requests-adf`) for eleven existing
+set-ups (geodesics on Kerr with both pushers, deposit on a refined mesh, the periodic
+cosmology of East et al., Oppenheimer-Snyder on a refined mesh, Jeans wave, binary with
+gravity, static mesh, and the ball, point and plane-wave tests of this mode): 91 files
+identical byte for byte, every result line of the logs equal (cases
+core-20261119-152944-b2f41d3, judgement core-20261119-160915-40df1d6). Against release
+core-v0.3 only the line `last_time` of the parameter dump differs, in four files: the
+correction of the branch start (`REQUESTS_ADF.md`, correction 2).
