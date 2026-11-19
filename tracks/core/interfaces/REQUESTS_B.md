@@ -69,8 +69,26 @@ review `tracks/B-emd-gw/stage/G0/REVIEW.md`. Order of work: what closes Track B'
   projection), and max |alpha - 1| = 1.69 A^2. The Psi_4 floor is rounding: Psi_4 along
   -k grows as 1/A below A = 1e-7 (2.65e-5 of the maximum at A = 1e-9), about
   5e-14 N^2 / A relative. The TT amplitude and phase do not change from A = 1e-6 to 1e-5
-  (2e-5 and 4e-4 of their errors). For convergence beyond 64 cells use A = 1e-5. The same
-  scan at N = 64 and 128 on a card is part of card test T8.
+  (2e-5 and 4e-4 of their errors).
+- Amplitude scan at N = 64 and 128 on a card (T8, runs core-20261115-181437-8d252cb and
+  analysis core-20261119-140545-b16cd96; A = 1e-7, 1e-6, 1e-5): the non-TT part grows by
+  9.99 (N = 64) and 9.98 (N = 128) from A = 1e-6 to 1e-5, so it is of second order at
+  every N; below A = 1e-6 an absolute floor that grows with N (1.1e-14 at 64, 3.5e-14 at
+  128 cells) lifts it. At 128 cells the Psi_4 error is 8.1e-6, 8.1e-7, 8.2e-8 for
+  A = 1e-7, 1e-6, 1e-5: proportional to 1/A, so rounding at all three amplitudes. At
+  A = 1e-5 the amplitude and phase depart from the Fourier symbol by -2.2e-10 and -1.7e-9
+  rad (109 and 16 per cent of the scheme's errors at 128 cells); the phase offset, about
+  -1e-9 rad at N = 32 and 64 too, is of the size of a second-order frequency shift
+  [JUDGEMENT]. At A = 1e-5 gw_diag's Psi_4 error converges at order 4.07 from 32 to 64
+  cells (3.19e-6 to 1.90e-7). Advice, replacing the one given before: one period of the
+  linear wave shows the scheme's convergence up to 64 cells, best at A = 1e-5; at 128
+  cells no amplitude from 1e-7 to 1e-5 gets below the floors (rounding at small A, second
+  order at large A). Journal: P10b and "Outcome of T8".
+- Byte regression on the card (T8, P10a): the Z4c puncture benchmark with `z4c` and `con`
+  dumps and the history gives the same 10 files (973 MB) byte for byte with the release
+  card executable and the one of this branch. The circular wave on the card equals the
+  processor run of T1 to 2.9e-6 in its error file and to rounding of the order-one fields
+  pointwise (3.7e-15 in gt, 3.5e-14 in At after 37 steps).
 - Kept as upstream has it: the generator fills the Z4c variables only, so `adm` and `con`
   outputs and the history row at t = 0 hold zeros; use `variable = z4c` at t = 0.
 
@@ -143,8 +161,18 @@ at the mesh scale, 1.2e-13 to 1.8e-13 absolute in the components of At, 1.5e-14 
 2.5e-12 in Gamma^i, of the same size in the components that vanish in the exact problem
 (Axz, Ayz, gxz, Gamma^z) (T4b, run core-20261115-180817-4a0566d). The size matches the
 rounding of order-one fields through the code's second differences [JUDGEMENT]. Use it
-as the floor of the TT content of a thin-box run. Whether it grows beyond t = 1 is the
-card test T8 (journal, P10c).
+as the floor of the TT content of a thin-box run.
+
+It does not grow (card test T8, run core-20261115-181437-8d252cb, analysis
+core-20261119-140545-b16cd96): the same box continued to t = 4 (a = 9.0, 1024 cycles,
+240 s on one A100, 4.5e6 zone-cycles per second, every particle kept) has at t = 4 a z
+departure of 5.1e-14 in At (1.96e-13 at t = 1), 2.2e-14 in gt (1.6e-14), 2.9e-12 to
+3.3e-12 in Gamma^i (2.2e-12 to 2.8e-12); At, Khat and Theta decay, gt and Gamma^i stay
+level (mean factor per 0.25 in time over the last eight dumps 0.91 for At, 1.02 for gt,
+1.01 for Gamma^i), and the lapse, which grows with a from 2.25 to 9.0, carries 8e-14.
+Relative to the x-y variation at t = 4: At 2.3e-9, gt 1.6e-11, Gamma 8.9e-10. So the
+level measured at t = 1 bounds the noise of the whole run to a = 9; in the thin boxes of
+T3 it decays through the first shell crossing (T10, run core-20261115-182405-22bafeb).
 
 Initial data: the generator reads an n1 x n2 x n3 field file; `cosmo/ic/` writes cubic
 ones only and is outside core's ownership, so `problems/cosmo/make_waves.py` (solver
@@ -230,6 +258,18 @@ Merge check (2026-11-15T18:40Z, session bfix-2): of the open core branches only
 `core/gauge` changes files that this branch changes (`z4c.cpp`, `z4c.hpp`);
 `git merge-tree $(git merge-base core/requests-b core/gauge) core/requests-b core/gauge`
 shows no conflict (the two edits are in different places).
+
+Merge check repeated 2026-11-19T14:10Z (session bfix-3, after merging main at 71acd0c;
+git 2.34, so `git merge-tree <base> core/requests-b <branch>` with the merge base) against
+core/gauge 898cd03, core/clump-curvature 56d7335, core/collisions-2 0093aab,
+core/scalar-2 207424d, core/requests-adf f5a5f98, core/id-solver 83172fb, core/nrpic
+d377d12. Source files changed by both: `z4c.cpp`, `z4c.hpp` (core/gauge), no conflict.
+`docs/FORMATS.md` is changed by core/requests-adf and core/id-solver too, no conflict.
+One conflict, outside the source: `tracks/core/interfaces/rng.md`, the table of streams,
+where this branch fills row 1 (sub-stream 16 of the initial-data stream: lattice jitter)
+and core/collisions-2 fills row 2 (stream 2 of the collisions). Resolution: keep row 1
+from this branch and row 2 from core/collisions-2 (decision 0016, item 9, moves the
+registry into `coord/INTERFACES/rng.md` with core-v0.4).
 
 New files: `problems/tests/lw_oblique.athinput`, `problems/cosmo/make_waves.py`,
 `python/nrpic/athena_bin.py`, `python/nrpic/torus_id.py`, `docs/UPSTREAM_DEFECTS.md`;
