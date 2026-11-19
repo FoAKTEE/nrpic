@@ -522,3 +522,16 @@ exceeds the exact tau_AH of their shell by 0 to 0.3 M; |m_irr/m_exact(slice) - 1
 3e-3 at first detection and as median over the first 4 M (between the M/8 bound of B4 and
 the source paper's ~1e-3); core-shell largest |eps| at the turnaround below 1.5e-3.
 Refuted by: no horizon by t = 16, or a mass error above 1e-2.
+
+Amendment of entry 10, written after a first look at the BH-1 run at dx = M/8 of the card
+job (bh_n256 finished at 08:45; the registered analysis follows in entry 11) and before
+BH-1R is submitted: in bh_n256 the finder (start radius 3.0 M, 1000 iterations,
+tolerance 1e-6) reported nothing in 65 searches, while the Misner-Sharp mass on the x axis
+(read directly from the table outputs, not yet a registered number) shows a trapped point
+(2m/R > 1 with K_T > 0) from t = 11.0 at coordinate radius 0.45 M, then at 0.21-0.33 M:
+the trapped region lies within 2 to 4 cells of M/8; the run went non-finite near
+t = 15.5. Core's L3 (JOURNAL-gauge.md entry 9 on branch core/gauge) found the horizon of
+its bound ball with initial coordinate radius 1.0 M, 400 iterations, tolerance 1e-5 (the
+settings of problems/os/os_amr.athinput). BH-1R therefore uses those finder settings,
+from t = 9 (`bh_smr.athinput`). The prediction of entry 10 is unchanged except that the
+first detection is now expected between t = 10.5 and 13.

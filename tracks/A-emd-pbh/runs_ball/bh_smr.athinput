@@ -6,7 +6,8 @@
 #   problem/comp0_file=<prep>/<stem>.tab
 #   particles/particle_file=<prep>/lat136/<stem>_lat136_track.nrp   particles/traj_ntrack=<n_track>
 # The x-axis table outputs mix cells of both levels; compare.py's line diagnostics assume a
-# uniform line and are not used for this run. JOURNAL.md entry 10 (prediction).
+# uniform line and are not used for this run. Finder as problems/os/os_amr.athinput and core's L3
+# (initial coordinate radius 1 M, 400 iterations, mass tolerance 1e-5). JOURNAL.md entry 10.
 
 <comment>
 problem   = expanding dust ball, data set 3, relaxed 1+log lapse, one refined level
@@ -86,12 +87,12 @@ use_puncture_0    = -1
 center_x_0        = 0.0
 center_y_0        = 0.0
 center_z_0        = 0.0
-initial_radius_0  = 3.0
-flow_iterations_0 = 1000
+initial_radius_0  = 1.0
+flow_iterations_0 = 400
 flow_alpha_beta_const_0 = 1.0
 hmean_tol_0       = 100.0
-mass_tol_0        = 1.0e-6
-start_time_0      = 8.0
+mass_tol_0        = 1.0e-5
+start_time_0      = 9.0
 stop_time_0       = 1000.0
 verbose           = false
 
