@@ -4,11 +4,14 @@
     python3 analyze_scan.py <case dir> [<case dir> ...]     (output: $NRPIC_RUN_DIR)
 
 Each <case dir> is an AthenaK run directory of the scan (cw_eps0, ..., cw_eps1_gd) with
-bin/*.z4c.*.bin (single precision, every 0.1) and rst/*.rst (double, every 1.0). For every
-dump fslib.modes.analyse: TT and non-TT parts of h and tilde A, the amplitudes h_+, h_x at
-K1 = (k, k, 0) and K2 = (k, -k, 0), the spatial-gauge pieces G and G_A, the largest TT mode;
-for the restart dumps also the Weyl E and B (order 6) and their TT parts.
-Writes <case>.json per case; NWORK worker processes (default 8).
+bin/*.z4c.*.bin (single precision, every 0.1) and rst/*.rst (double, every 1.0), or, in the
+second round (inputs/conv.athinput), bin/*.z4cd.*.bin (double-precision bin, kind "dbin") in
+place of the restart files. For every dump fslib.modes.analyse: TT and non-TT parts of h and
+tilde A, the amplitudes h_+, h_x at K1 = (k, k, 0) and K2 = (k, -k, 0), the spatial-gauge
+pieces G and G_A, the largest TT mode; for the double-precision dumps (rst, dbin) also the
+Weyl E and B (order 6) and their TT parts.
+Writes <case>.json per case; NWORK worker processes (default 8); KINDS (default
+"bin,rst,dbin") selects the kinds of dump.
 """
 import glob
 import json
@@ -24,7 +27,7 @@ from fslib import modes  # noqa: E402
 def job(args):
     path, kind = args
     try:
-        r = modes.analyse(path, with_gauge=True, with_weyl=(kind == "rst"))
+        r = modes.analyse(path, with_gauge=True, with_weyl=(kind in ("rst", "dbin")))
     except Exception as e:                         # a broken dump is recorded, not fatal
         return {"file": os.path.basename(path), "kind": kind, "error": repr(e)}
     r["file"] = os.path.basename(path)
@@ -35,10 +38,14 @@ def job(args):
 def main():
     out = os.environ.get("NRPIC_RUN_DIR", ".")
     nw = int(os.environ.get("NWORK", "8"))
+    kinds = os.environ.get("KINDS", "bin,rst,dbin").split(",")
     for cd in sys.argv[1:]:
         name = os.path.basename(cd.rstrip("/"))
-        tasks = [(p, "bin") for p in sorted(glob.glob(os.path.join(cd, "bin", "*.z4c.*.bin")))]
-        tasks += [(p, "rst") for p in sorted(glob.glob(os.path.join(cd, "rst", "*.rst")))]
+        pats = {"bin": ("bin", "*.z4c.*.bin"), "rst": ("rst", "*.rst"), "dbin": ("bin", "*.z4cd.*.bin")}
+        tasks = []
+        for kd in kinds:
+            sub, pat = pats[kd]
+            tasks += [(p, kd) for p in sorted(glob.glob(os.path.join(cd, sub, pat)))]
         with Pool(nw) as pool:
             rows = pool.map(job, tasks, chunksize=1)
         rows.sort(key=lambda r: (r.get("kind"), r.get("time", 0.0)))

@@ -1,0 +1,148 @@
+# Second round of first_source (convergence, jittered null, delta = 0.0025): the input of
+# the wave-2 scan (inputs/crossed.athinput, unchanged physics and numerics) with other
+# outputs, for the card executable of core/requests-b (scratch/core/exe/core_requests-b,
+# decision 0013), which adds double_precision to bin outputs. Z4c variables in single
+# precision every 0.1 (bin, as in the scan), in double precision every 1.0 (bin, id z4cd,
+# in place of the restart files with particles: 1.3 GB each at 27 particles per cell),
+# restart files every 5.0. Mesh, particle file, field file and the output intervals of the
+# 128^3 run are set on the command line (batch lists).
+
+<comment>
+problem   = crossed waves (1, eps, 0) through shell crossing, full GR, GW diagnostics
+
+<job>
+basename  = cw
+
+<mesh>
+nghost    = 4
+nx1       = 64
+x1min     = 0.0
+x1max     = 4.0
+ix1_bc    = periodic
+ox1_bc    = periodic
+nx2       = 64
+x2min     = 0.0
+x2max     = 4.0
+ix2_bc    = periodic
+ox2_bc    = periodic
+nx3       = 64
+x3min     = 0.0
+x3max     = 4.0
+ix3_bc    = periodic
+ox3_bc    = periodic
+
+<meshblock>
+nx1       = 32
+nx2       = 32
+nx3       = 32
+
+<time>
+evolution  = dynamic
+integrator = rk4
+cfl_number = 0.25
+nlim       = -1
+tlim       = 21.664319132398
+ndiag      = 50
+
+<z4c>
+lapse_oplog     = 0.0
+lapse_harmonicf = 1.0
+lapse_harmonic  = 0.3333333333333333   # d_t alpha = -(1/3) alpha^2 K
+lapse_volume    = 0.0
+lapse_kdriver   = 0.0
+lapse_advect    = 0.0
+shift_Gamma     = 0.0                  # zero shift (the second-gauge run sets 0.75, eta 1, advection 1)
+shift_eta       = 0.0
+shift_advect    = 0.0
+diss            = 0.5
+damp_kappa1     = 0.5
+damp_kappa1_over_alpha = true
+damp_kappa2     = 0.0
+damp_kappa_gam  = 0.0
+damp_ch         = 0.0
+damp_ch_dx      = 0.0
+damp_ch_chipow  = 0.0
+excise_chi      = 0.0
+
+<particles>
+particle_type  = nrpic
+pusher         = midpoint
+interp         = bspline
+dt_expansion   = 0.01
+metric         = mesh
+tolerance      = 1.0e-12
+max_iterations = 50
+deposit        = true
+nfilter        = 0
+filter_compensate = false
+filter_comp_c  = -1.0
+deposit_comp_c = 0.16666666666666666
+deposit_comp_limit = 0.0
+deposit_comp_c2 = 0.4666666666666667
+deposit_shape  = pcs
+deposit_max_level = 31
+deposit_adaptive  = false
+deposit_min_level = 0
+deposit_ppc       = 2.0
+deposit_max_coarsen = 31
+alpha_exc      = -1.0
+ah_exc_factor  = -1.0
+hist_dcycle    = 1
+cstat_dcycle   = 8
+cons_dcycle    = 8
+line_dcycle    = 8
+traj_dcycle    = 4
+traj_ntrack    = 382      # 3 n - 2 for 128 particles per direction
+snap_dt        = 5.5
+probe_x1       = 1.0      # overdensity of the x wave at L/4
+probe_x2       = 1.0
+probe_x3       = 1.0
+nprobe         = 1
+probe1_x1      = 3.0
+probe1_x2      = 3.0
+probe1_x3      = 3.0
+lambda         = 0.0
+source_density = true
+source_extrap  = true
+particle_file  = particles.nrp
+field_constraints = true
+field_time1    = 0.828427124746     # a = 2
+field_time2    = 2.472135955000     # a = 5
+field_time3    = 4.324555320337     # a = 10
+field_time4    = 6.944271909999     # a = 20
+field_time5    = 8.954451150103     # a = 30
+field_time6    = 10.649110640674    # a = 40
+field_time7    = 12.142135623731    # a = 50
+field_time8    = 13.491933384830    # a = 60
+field_time9    = 15.888543819998    # a = 80
+field_time10   = 18.000000000000    # a = 100
+field_time11   = 19.908902300207    # a = 120
+field_time12   = 21.664319132398    # a = 140
+
+<problem>
+pgen_name  = nrpic_cosmo
+id         = file
+id_file    = fields.bin
+hubble     = 1.0
+
+<output1>
+file_type = hst
+dt        = 0.1
+
+<output2>
+file_type   = bin
+variable    = z4c
+dt          = 0.1
+ghost_zones = false
+
+<output3>
+file_type = bin
+variable  = z4c
+id        = z4cd
+dt        = 1.0
+ghost_zones = false
+double_precision = true
+
+<output4>
+file_type = rst
+dt        = 5.0

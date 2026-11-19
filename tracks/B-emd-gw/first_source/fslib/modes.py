@@ -12,7 +12,7 @@ import numpy as np
 
 from gwdiag import tt, readers, weyl
 
-from . import gauge
+from . import binread, gauge
 
 S2 = 1.0 / np.sqrt(2.0)
 _Z = np.array([0.0, 0.0, 1.0])
@@ -57,11 +57,12 @@ def box_mode_power(F, grid):
 
 
 def load(path):
-    """(time, grid, chi, gt, At, trK, alpha, beta, d) from a rst or a z4c bin dump."""
+    """(time, grid, chi, gt, At, trK, alpha, beta, d) from a rst or a z4c bin dump (bin in
+    single or double precision: fslib.binread; identical to gw_diag's reader for single)."""
     if path.endswith(".rst"):
         d = readers.read_rst(path)
     else:
-        d = readers.read_bin(path)
+        d = binread.read_bin(path)
         for n in list(d["variables"]):
             if n.startswith("z4c_"):
                 d[n[4:]] = d[n]

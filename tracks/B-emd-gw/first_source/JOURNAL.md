@@ -426,3 +426,115 @@ at a = 90-130 for eps = 1 where c_+ oscillates fast. The rms non-TT part agrees 
 after shell crossing is independent of the mesh at these two resolutions (same particle
 loading, two per cell and direction) [JUDGEMENT: two meshes and one loading are not a
 convergence study; particle number and the 128^3 mesh are the missing legs].
+
+# Second round (wave 2b, resumed 2026-11-19)
+
+Task: next action 2 of `stage/REVIEW-wave2.md` and `HANDOFF.md`: the jittered-lattice null,
+convergence in particle number (1, 8, 27 particles per cell) and in mesh (128 cells), and
+delta = 0.0025 to widen the window of the second-order formula. At most 1.5 card-hours.
+State found at the start (06:02 local): worktree clean, merged with main (0016 read); no run
+of this round existed (sacct since 2026-11-15 lists no B job after 4463; no B-2026111[6-9]
+directory under scratch); the wave-2 package (P0-P10, README "State") is complete.
+
+## Set-up of the second round (written before any run of this round)
+
+Executables. Card runs use core's tested branch executable
+`scratch/core/exe/core_requests-b/athena_gpu` (decision 0013, scouting; READY: built from
+9c92f68, card test T4 passed, "everything not named behaves as release core-v0.3"), because
+it adds `double_precision = true` to bin outputs: `inputs/conv.athinput` writes the Z4c
+variables in single precision every 0.1 (as the scan), in double precision every 1.0 (bin,
+id z4cd; in place of restart files with particles, which would be 1.3 GB each at 27
+particles per cell) and restart files every 5.0. Physics and numerics are those of
+`inputs/crossed.athinput` (diff: the output blocks only). `fslib/binread.py` reads both
+precisions (tests/test_binread.py: 2 tests; on a real single-precision dump of run
+B-20261115-165353-b592d43 it returns the arrays of gw_diag's reader bit for bit, checked by
+hand, not registered); `scripts/analyze_scan.py` analyses the double-precision dumps as kind
+"dbin" (Weyl E, B included, as for the restart files).
+
+Initial data. Convergence and small amplitude with `cosmo/ic/make_east.py` (the tool of the
+scan; `scripts/build_ic2.sh`); the jittered null with core's `problems/cosmo/make_waves.py`
+at commit 7db34a5 of core/requests-b (not on main; `scripts/build_ic_jitter.sh` extracts it
+with git archive into the run directory and runs it from there), ratios (1, 0, 0),
+delta = 0.01, 64^3, 2 per cell and direction, jitter A cells along y and z, seed 7 for every
+A (the deviates are the same, so the noise displacement is exactly proportional to A).
+
+Cases (eps = 1 for convergence: the largest late growth, c_+/s up to 2.55, and the largest
+32/64 differences of P8):
+
+| name | delta | eps | mesh | per cell | role |
+|---|---|---|---|---|---|
+| e1_p1_n64 | 0.01 | 1 | 64^3 | 1 | particle number |
+| (cw_eps1 of B-20261115-165353-b592d43) | 0.01 | 1 | 64^3 | 8 | baseline (wave 2) |
+| e1_rep | 0.01 | 1 | 64^3 | 8 | rerun of the baseline with this executable: run-to-run floor of the card (atomic deposition) |
+| e1_p3_n64 | 0.01 | 1 | 64^3 | 27 | particle number |
+| e1_p1_n128 | 0.01 | 1 | 128^3 | 1 | mesh (same particles as the baseline: 2,097,152) |
+| d0025_e1, d0025_e0p3 | 0.0025 | 1, 0.3 | 64^3 | 8 | small amplitude, to a = 140 |
+| jit0p3, jit0p1 | 0.01 | 0 | 64^3 | 8 | jittered null, A = 0.3, 0.1 cells |
+| jit0 | 0.01 | 0 | 64^3 | 8 | initial data only: make_waves against make_east |
+
+Not run, by cost [JUDGEMENT from timings]: 128^3 at 8 per cell (16.8M particles). The
+wave-2 card runs took 295 s for 1404 cycles at 64^3 with 2.1M particles (log of
+B-20261115-164059-d802e82/cw_eps0p1), the wave-1 run `runs/cosmo/east_d0.01_n128_tsc` 1302 s
+for 2773 cycles at 128^3 with 2.1M particles; so ~0.18 s per cycle for 2.1M particles and
+~0.26 s per cycle for the 128^3 mesh, and 128^3 at 8 per cell would take ~2808 x 1.7 s =
+80 min (1.3 card-hours, longer than one job). Estimates of this round: 2 min (1 per cell),
+15-17 min (27 per cell), 25 min (128^3), 5 min each for the others; about 1.1 card-hours.
+
+Reference values. s = -(5/6) phi_x phi_y scales as delta^2: -3.0797e-5 eps at delta = 0.01
+(run B-20261115-164157-40b9f6d), so -1.9248e-6 eps at delta = 0.0025.
+
+## Predictions of the second round (written before the initial data were made)
+
+P11 (jittered null). (a) The largest TT amplitude is above 1e-12 at every dump after the
+first (the plane-symmetric null sits at 2.8e-16): the run measures the TT response to the
+noise. (b) At the box modes K1, K2 the noise enters mainly through the cross term of the x
+wave with the (0, +-k, 0) Fourier component of the noise potential, i.e. like a small y wave
+of random phase. Order of magnitude: the jitter's displacement has Fourier amplitude
+A h/sqrt(3 N_p) per mode, a density contrast 2 k A h/sqrt(3 N_p) = 2.3e-5 at A = 0.3
+(N_p = 2,097,152, h = 1/16), an equivalent eps_n ~ 2.3e-3, and with the potential of a mode
+without peculiar velocity (3/5 of its initial value once a^(-5/2) has decayed) |c(K1)| ~
+3.08e-5 x 2.3e-3 x 0.6 ~ 4e-8, within a factor 3 (the relativistic dictionary at the box
+scale, 1 + 3 (H/k)^2 = 2.2, may raise it). A sharp version is computed from the initial
+data before the card run (P11b', below, after the initial data exist): the second-order
+formula with Phi_x and the measured (0, +-k, 0) component of Psi = (1 - psi^4)/2, times a
+response g_n(tau) to the source f(tau) = 3/5 + (2/5) a^(-5/2); measured and predicted
+complex amplitudes at K1 and K2 agree within 40 percent in modulus and 0.5 rad in phase for
+3 <= a <= 20. (c) Linearity: c(K1) at A = 0.3 over c(K1) at A = 0.1 is 3.0 within 5 percent for
+a <= 20. (d) The rms TT of all modes sits at the grid scale; its ratio between A = 0.3 and
+0.1 lies between 3 (cross term with the x wave) and 9 (noise times noise), below 4 for
+a <= 10 by the estimate above (the cross term is ten times the noise-noise term at the grid
+scale). (e) Through shell crossing of the x wave (a = 80-140) |c(K1)| of the null at A = 0.3
+stays below 10 percent of |c(K1)| of the eps = 0.1 scan run at the same a. Refuted by any of
+(a)-(e) failing; (b) failing in modulus by more than a factor 3 would mean the noise couples
+to the box mode other than through the cross term.
+
+P12 (particle number, eps = 1, 64^3, 1, 8, 27 per cell). (a) For a <= 40, |c_+(K1)/c_+(27) - 1|
+<= 1e-3 for 1 and 8 per cell. (b) For 80 <= a <= 140 the differences fall with the number of
+particles: max |c(8)/c(27) - 1| < max |c(1)/c(27) - 1|, and |c(8)/c(27) - 1| <= 3 percent for
+a <= 100. (c) The rerun of the baseline (e1_rep) agrees with the wave-2 run to 1e-4 for
+a <= 40 and 1e-2 to a = 140: this is the floor below which differences between runs mean
+nothing. Refuted by (a), (b) or (c) failing; (b) failing means no convergence in particle
+number after shell crossing at these loadings.
+
+P13 (mesh, eps = 1). (a) For a <= 40 the 128^3 run (1 per cell) agrees with the 64^3 runs
+(1 and 8 per cell) to 1e-3. (b) For 80 <= a <= 140 the rms over dumps of c(128^3, 1)/c(64^3,
+8) - 1 (same particles, finer mesh) is below that of c(64^3, 8)/c(32^3, 8) - 1 (P8 runs).
+Refuted if it is larger: no convergence in the mesh after shell crossing.
+
+P14 (delta = 0.0025, eps = 1 and 0.3, 64^3, 8 per cell, to a = 140). The relative departure
+dev = c_+(K1)/(s g) - 1 is, by the journal's estimate of the order of the first correction
+at (k, k, 0) [JUDGEMENT, P2: no third-order term at that wave vector], of relative order
+(delta a)^2. (a) max |dev| for 2 <= a <= 10 falls by at least a factor 3 against delta = 0.01
+(to <= 0.15 percent for eps = 1, <= 0.08 percent for eps = 0.3). If it does not fall, the
+departure at a <= 10 is an error of the second-order model or of the numerics, independent of
+delta. (b) R(a) = dev(0.01, a)/dev(0.0025, a) lies between 8 and 24 at a = 20, 30, 40 (16 for a
+pure (delta a)^2 law, 4 for a third-order term). (c) dev(0.0025, 4 a) = dev(0.01, a) within
+50 percent for a = 10 to 35 (the collapse is not exact: k/Hc grows as sqrt(a)). (d) The window
+in which |dev| <= 0.5 percent reaches a >= 30 at delta = 0.0025 (a ~ 10 at delta = 0.01).
+
+P15 (initial data). make_east cases: Hamiltonian residual below 1e-9 and momentum residual
+below 1e-7 (P0). Jitter cases: the tool's residuals as for the plain lattice (spectral solve;
+the code's own residual is about one percent of the source term, core's REQUESTS_B.md
+section 5 [BACKGROUND]). Parity (jit0 against make_east eps0 of run
+B-20261115-161656-03d75e1): positions equal to 1e-13, psi of fields.bin to 1e-12. Refuted if
+larger (then the null is not built like the scan).
