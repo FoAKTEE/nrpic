@@ -1,11 +1,12 @@
-# ES-1G: ES-1 repeated with core's lapse for expanding dust (branch core/gauge). NOT RUN.
-# Needs the card executable /data/haiyangw/nrpic/scratch/core/exe/core_gauge/athena_gpu,
-# published with READY (absent during the es_runs package). Differs from es1_dx8.athinput
-# only in this block and in <z4c> lapse_leak = 0.5, lapse_leak_alpha = 1: 1+log with relaxation of the lapse
-# excess over 1 at the rate 1/T, T = 2 M, the value of core's own Einstein-Straus test
-# (git show core/gauge:problems/es/es_gauge.athinput; option name and value [TO VERIFY]
-# against the READY file). The old executables ignore the option (warning "not used").
-# Cost as ES-1 (about 1 card-hour). Predictions go into JOURNAL.md before it is run.
+# ES-1G: ES-1 repeated with core's lapse for expanding dust (branch core/gauge).
+# Card executable /data/haiyangw/nrpic/scratch/core/exe/core_gauge/athena_gpu (source
+# b4430da = core-v0.3 + 242 lines in athenak/src/z4c; READY there). Differs from
+# es1_dx8.athinput only in this block and in <z4c> lapse_leak = 0.5, lapse_leak_alpha = 1:
+#   d_t alpha = [1+log] - (alpha/T) max(ln(alpha/alpha_0), 0),  T = 1/lapse_leak = 2 M,
+# the option as READY (2026-11-15) defines it and the value of core's own test on these
+# data (core run core-20261115-202901-b4430da, problems/es/es_gauge.athinput of
+# core/gauge). The release executables ignore the option (warning "not used").
+# Cost as ES-1 (0.77 card-hours for 200 M). Predictions: es_runs/JOURNAL.md entry 5.
 #
 # ES-1 (Track D, package es_runs): black hole in a vacuum bubble inside an expanding dust
 # ball (Einstein-Straus type, D-pre-1), outer dust edge at 60 M; specification in
@@ -106,7 +107,7 @@ diss            = 0.5
 chi_div_floor   = 1.0e-5
 damp_kappa1     = 0.02
 damp_kappa2     = 0.0
-lapse_leak      = 0.5      # 1/T, T = 2 M (core/gauge; problems/es/es_gauge.athinput there)
+lapse_leak      = 0.5      # 1/T, T = 2 M (core/gauge READY option 1; core's ES test value)
 lapse_leak_alpha = 1.0     # reference lapse (as core/gauge)
 
 <fastflow>
