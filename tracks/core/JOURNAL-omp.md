@@ -537,3 +537,22 @@ Open:
    processes; compare their data. Upstream code; not changed here.
 5. Not tested: MPI with threads, adaptive refinement under threads, restarts under
    threads, unbound placement at 32 and 64 threads.
+
+## 2026-11-19 08:53 Entry 14: the gas multigrid, read once more (no new run)
+
+From the runs of entries 8 and 9 [VERIFIED as stated; the reading is JUDGEMENT]:
+- binary (four_pi_G = 1, perturbation of order one, fixed 20 V cycles; run
+  core-20261119-155057-57325bc/atomic): the defects at 1, 4 and 16 threads agree to all
+  seven printed digits for the first 16 V cycles (2.7e6 down to 0.5) and differ from the
+  17th on, where the defect approaches its floor of 3.85e-6 (1.4e-12 of the initial);
+- jeans (perturbation 1e-6 of a background density 1): the defects agree in the first
+  printed digits and differ in the sixth from the first V cycle on, and the solve
+  stagnates after 3 cycles at a floor between 1e-10 and 4e-9 that changes with the
+  thread count and, at one thread, with the MeshBlock size (entry 8).
+Both behave like summation-order rounding that becomes visible where the defect is small
+compared with the numbers it is computed from (a perturbation of 1e-6 of a background
+of 1), not like a lost update (which would not depend on the MeshBlock size at one
+thread and would not leave the first 16 cycles of binary identical). The size of the
+jeans floor (about 1e4 times a plain double rounding of the source) is not explained.
+Status: no race found in the multigrid kernels; the thread dependence is [TO VERIFY] as
+rounding; it does not affect the particle module's own kernels.
