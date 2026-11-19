@@ -6,7 +6,7 @@ State (2026-11-19, end of the wave-2b lead session): D-pre-1..4 baselines done (
 mode in wave 2). The first full-relativity runs ES-1 (Einstein-Straus hole in a vacuum bubble with expanding dust)
 and V-1 (same without dust) ran 200 M on the cards: wall and crossings exact to 2e-3, horizon-mass drift 3.4e-4 /
 1.4e-4 (predicted 3e-5: failed; late common drift after 165 M, cause open), 1+log does not slice the dust. ES-1G
-(core's lapse_leak) is queued. G0 package complete for orch's review; G1 not met (verifier, D-pre-3 ruling, schematic).
+(core's lapse_leak) started on a card at 15:36 UTC (Slurm 4636). G0 package complete for orch's review; G1 not met (verifier, D-pre-3 ruling, schematic).
 Owner: D-bh-dress, branch `track/D-bh-dress`, worktree `wt/D-bh-dress`.
 Run next: `cd /data/haiyangw/nrpic/wt/D-bh-dress && git merge --no-edit main && harness/bin/nrpic-ctx inbox && scripts/submit_chain.sh --status /data/haiyangw/nrpic/scratch/D-bh-dress/D-20261119-142633-6f72922`
   If ES-1G says DONE (tlim): `tracks/D-bh-dress/es_runs/tools/finish_es1g.sh` from the worktree root, look at every
