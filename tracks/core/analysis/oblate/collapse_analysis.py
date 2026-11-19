@@ -137,18 +137,25 @@ def particle_history(d):
     return a, files
 
 
-def numbers(d):
-    ph, files = particle_history(d)
-    n0 = ph[0, 1]
-    full = ph[:, 1] == n0                        # before the first removal
-    zr, Rr = ph[:, 2] / ph[0, 2], ph[:, 3] / ph[0, 3]
+def pancake(ph):
+    """Snapshot index of the smallest z_rms before the first removal of particles, and
+    the time t_p of the minimum refined with a parabola through the three snapshots
+    around it."""
+    full = ph[:, 1] == ph[0, 1]                  # before the first removal
+    zr = ph[:, 2] / ph[0, 2]
     kp = int(np.nanargmin(np.where(full, zr, np.nan)))
-    # refine t_p with a parabola through the three snapshots around the minimum
     tp = float(ph[kp, 0])
     if 0 < kp < len(ph) - 1 and full[kp + 1]:
         c = np.polyfit(ph[kp - 1:kp + 2, 0], zr[kp - 1:kp + 2], 2)
         if c[0] > 0:
             tp = float(-c[1] / (2 * c[0]))
+    return kp, tp, full
+
+
+def numbers(d):
+    ph, files = particle_history(d)
+    zr, Rr = ph[:, 2] / ph[0, 2], ph[:, 3] / ph[0, 3]
+    kp, tp, full = pancake(ph)
     after = full & (ph[:, 0] > ph[kp, 0])
     ah = read_ah(os.path.join(d, BASE + ".horizon_summary_0.txt"))
     found = ah[np.isfinite(ah[:, 1])] if len(ah) else ah
@@ -250,7 +257,7 @@ def snapshot_at(d, t):
     return read_snapshot(best)
 
 
-def fig_histories(runs, ser, res, newton, prolate):
+def fig_histories(runs, ser, res, newton, prolate, nmode=None):
     fig, ax = plt.subplots(2, 3, figsize=(fs.FULL_WIDTH, 5.4), sharex=True)
     fig.subplots_adjust(left=0.07, right=0.99, bottom=0.085, top=0.975, wspace=0.36,
                         hspace=0.05)
@@ -258,9 +265,9 @@ def fig_histories(runs, ser, res, newton, prolate):
     for name in runs:
         s, c, lab = ser[name], COLOR[name], LABEL[name]
         ph = s["ph"]
-        ax[0, 0].plot(ph[:, 0], ph[:, 2] / ph[0, 2], color=c, label=f"$z_{{\\rm rms}}$, {lab}")
+        ax[0, 0].plot(ph[:, 0], ph[:, 2] / ph[0, 2], color=c, label=f"$z$, {lab}")
         ax[0, 0].plot(ph[:, 0], ph[:, 3] / ph[0, 3], color=c, ls="--",
-                      label=f"$R_{{\\rm rms}}$, {lab}")
+                      label=f"$R$, {lab}")
         ax[0, 1].plot(ph[:, 0], ph[:, 4], color=c, label=f"crossed the plane, {lab}")
         ax[0, 1].plot(ph[:, 0], ph[:, 1] / ph[0, 1], color=c, ls=":",
                       label=f"particles left, {lab}")
@@ -279,16 +286,21 @@ def fig_histories(runs, ser, res, newton, prolate):
             axx.axvline(res[name]["t_pancake"], color=c, lw=0.8, alpha=0.5)
             if res[name]["t_first_AH"] is not None:
                 axx.axvline(res[name]["t_first_AH"], color=c, lw=0.8, alpha=0.5, ls="-.")
-    ax[0, 0].plot(tN, np.abs(bN) / abs(bN[0]), color="k", lw=1.0, label="Newtonian $|b|/b_0$")
+    if nmode is not None:
+        ax[0, 0].plot(nmode[:, 0], nmode[:, 2] / nmode[0, 2], color="grey", lw=1.5, alpha=0.7,
+                      label="$z$, T4 (Newton)")
+        ax[0, 0].plot(nmode[:, 0], nmode[:, 3] / nmode[0, 3], color="grey", lw=1.5, alpha=0.7,
+                      ls="--", label="$R$, T4 (Newton)")
+    ax[0, 0].plot(tN, np.abs(bN) / abs(bN[0]), color="k", lw=1.0, label="$|b|/b_0$, homog.")
     ax[0, 0].plot(tN, np.abs(aN) / abs(aN[0]), color="k", lw=1.0, ls="--",
-                  label="Newtonian $a/a_0$")
+                  label="$a/a_0$, homog.")
     for name, (pd, pc) in prolate.items():
         if len(pd):
             ax[0, 2].plot(pd[:, 0], pd[:, 1], color=pc, lw=1.0, ls=":",
                           label=f"prolate, {LABEL[name]}")
     ax[0, 2].axhline(M_ADM, **fs.GUIDE)
-    ax[0, 0].set_ylabel("rms extent / initial", labelpad=2)
-    ax[0, 0].set_ylim(0, 1.45)
+    ax[0, 0].set_ylabel("rms $z$, $R$ / initial", labelpad=2)
+    ax[0, 0].set_ylim(0, 1.8)
     ax[0, 1].set_ylabel("fraction of particles", labelpad=2)
     ax[0, 1].set_ylim(-0.03, 1.4)
     ax[0, 2].set_ylabel("horizon mass [$M$]", labelpad=2)
@@ -299,7 +311,8 @@ def fig_histories(runs, ser, res, newton, prolate):
     ax[1, 2].set_ylabel(r"$\|H\|_2$ (history norm)", labelpad=1)
     for axx in ax[1]:
         axx.set_xlabel("$t/M$", labelpad=-1)
-    ax[0, 0].legend(fontsize=6.5, ncol=2, loc="upper center")
+    ax[0, 0].legend(fontsize=6, ncol=2, loc="upper center", columnspacing=0.8,
+                    handlelength=1.6)
     ax[0, 1].legend(fontsize=6.5, ncol=1, loc="upper left")
     ax[0, 2].legend(fontsize=6.5, loc="lower left")
     ax[1, 0].legend(fontsize=7, loc="lower left")
@@ -382,6 +395,9 @@ def main():
                     help="name=DIR of a prolate run, for the horizon-mass panel")
     ap.add_argument("--out", default=os.environ.get("NRPIC_RUN_DIR", os.getcwd()))
     ap.add_argument("--basename", default=BASE, help="<job> basename of the runs")
+    ap.add_argument("--newton-mode", default=None,
+                    help="DIR of the Newtonian-mode run of the same particles (test T4, "
+                         "basename obl): drawn, and the ratio of the pancake times")
     ap.add_argument("--figdir", default=FIGDIR)
     a = ap.parse_args()
     BASE, FIGDIR = a.basename, os.path.abspath(a.figdir)
@@ -413,7 +429,16 @@ def main():
             dir=d, t_first_AH=float(pd[0, 0]) if len(pd) else None,
             M_AH_max=float(pd[:, 1].max()) if len(pd) else None)
     names = list(dirs)
-    figs = [fig_histories(names, ser, res, (so.t, so.y[0], so.y[1]), prolate)]
+    nmode = None
+    if a.newton_mode:
+        base, BASE = BASE, "obl"
+        nmode = particle_history(a.newton_mode)[0]
+        BASE = base
+        kp, tpn, _ = pancake(nmode)
+        res["newton_mode"] = dict(dir=a.newton_mode, t_pancake=tpn,
+                                  z_rms_min_over_initial=float(nmode[kp, 2] / nmode[0, 2]),
+                                  ratio_t_pancake={n: res[n]["t_pancake"] / tpn for n in dirs})
+    figs = [fig_histories(names, ser, res, (so.t, so.y[0], so.y[1]), prolate, nmode)]
     fine = names[-1]
     tp = res[fine]["t_pancake"]
     tah = res[fine]["t_first_AH"]

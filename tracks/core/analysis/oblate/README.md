@@ -46,7 +46,8 @@ harness/bin/nrpic-run submit --kind scouting --gate G2 --cores 1 \
   python3 tracks/core/analysis/oblate/collapse_analysis.py \
   --run m4=$R/oblate_m4 --run m8=$R/oblate_m8 \
   --prolate m8=/data/haiyangw/nrpic/scratch/core/core-20261115-152845-5728b1d/prolate_m8 \
-  --prolate m16=/data/haiyangw/nrpic/runs/prolate/e09_v8
+  --prolate m16=/data/haiyangw/nrpic/runs/prolate/e09_v8 \
+  --newton-mode /data/haiyangw/nrpic/scratch/core/core-20261119-153609-754c44d/n128
 ```
 
 Then read the three figures, judge P3a to P3d (entry 1) and P3a', P3c' (entry 3) in the
