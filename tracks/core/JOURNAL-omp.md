@@ -338,3 +338,47 @@ average 122 to 139, processor share 0.98 to 1.00), seconds per step:
 The Z4c benchmark (64^3 uniform, P0 run) gives 6.7e3 zone-cycles/s on one thread for both
 S and R, against 2.0e7 on one card (docs/TESTLOG.md, "Z4c throughput"): the card is about
 3000 times one processor thread for Z4c. [VERIFIED: run.log of the bench case]
+
+## 2026-11-19 08:12 Entry 8: outcomes of P9d, of the four-thread phase, and the gas multigrid
+
+P9d (run core-20261119-160710-c46c55f; O3, 16 threads on the least busy cores of one NUMA
+node, atomic and private interleaved, two rounds; load average 109 to 123; time per kernel
+from tools/kernel_timer.cpp):
+
+| case | deposit atomic (s) | deposit private + zero + merge (s) | step atomic (s) | step private (s) |
+|---|---|---|---|---|
+| cosmo (4 cycles, 2.1e6 particles, PCS) | 11.4, 12.3 | 7.6+0.10+0.08, 8.2+0.12+0.09 | 6.78, 7.43 | 6.12, 6.36 |
+| newton (16 cycles, 5.1e5 particles, 2.1e6 cells) | 3.19, 3.32 | 3.50+1.66+1.62, 3.51+1.63+1.62 | 0.686, 0.714 | 1.017, 0.968 |
+
+For cosmo the private copies make the deposit 0.66 to 0.69 of the atomic one and the step
+10 to 14 per cent shorter: P9d predicted less than half and at least 15 per cent, so it
+FAILED in size, not in sign; the atomics are a third of the deposit, not most of it. For
+newton the private copies double the deposit (zeroing and merging 16 copies of 2.1e6 cells
+x 10 components) and lengthen the step by 40 per cent: as predicted. Advice: `private`
+only where repeatability at a fixed thread count is wanted, or for particle-heavy meshes
+(many particles per cell); never for meshes much larger than the particle set.
+
+Four-thread phase, first attempt (run core-20261119-160404-beddeac): stopped by hand after
+3 minutes and not used. The four runs side by side each called scripts/omp_places.py at
+the same moment and three of them were bound to the same four cores
+({39,111},{44,116},{52,124},{66,138}); newton showed a processor share of 0.54. Fixed in
+6df3b12: a side-by-side phase chooses 4n cores once and gives each run its own n.
+
+The gas multigrid under threads (runs core-20261119-160934-820e057 and
+core-20261119-161033-f495054: Jeans deck, one cycle, defect after every V cycle, serial
+build and O3 at 1, 2, 4, 8 threads, MeshBlocks of 8^3, 32^3, 16^3, 4^3):
+- the serial build and O3 with one thread give the same defects in every case;
+- the defects depend on the thread count from the first V cycle on (8^3 blocks: after V
+  cycle 1, 1.147377e-07 at one thread, 1.147550e-07 at 2, 1.147375e-07 at 4 and 8) and on
+  the MeshBlock size at one thread (1.148072e-07 with 32^3, 1.147517e-07 with 16^3,
+  1.147380e-07 with 4^3); two runs at 4 threads agree to every printed digit;
+- after the 5 V cycles of a solve the defect lies between 9e-11 and 4e-9 depending on
+  threads and blocks, i.e. the solutions agree to the solver's stopping level, not to
+  rounding.
+Reading the kernels (multigrid.hpp Smooth: red-black over (m,k,j) with the colour from
+k + j, seven-point stencil; Restrict, ProlongateAndCorrect, ComputeCorrection,
+SaveToRoot) found no write that two iterations share, so the cause is not identified
+[TO VERIFY]. This is upstream AthenaK code outside the particle module; what it means
+for the tracks: a gas self-gravity run, and the Newtonian mode with a finite
+`newton_mg_tol`, agree between thread counts only to the solver tolerance; the Newtonian
+mode with `threshold = 0` (to rounding) agrees to 1e-12 in the particles (P12, newton).
