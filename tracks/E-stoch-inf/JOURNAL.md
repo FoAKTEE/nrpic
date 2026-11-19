@@ -163,3 +163,39 @@ against 1.4492, inside the predicted 0.01).
 Side effect found and repaired: the langevin scripts also write into `langevin/results/`
 and `langevin/fig/`, so the 1e5 rerun overwrote the committed 1e6 reference files in the
 worktree; restored from git before committing (HANDOFF trap).
+
+## 2026-11-19T14:58Z  session lead wave 2b (Opus)  commits 8f056963..  runs see below
+
+Review of the helpers of waves 2 and 2b (analysis, note, verifier, ladder) from their
+artefacts, then the stage packages G0 and G1. Predictions written before each check ran:
+
+- LR1 (rerun of the ladder's final analysis, `analyse_all.py`, `verdicts.py`,
+  `make_figures.py` at the current commit on the raw outputs of runs
+  E-20261115-172636-ce98836, -173719-e810503, -172618-f948386, -172629-312a82c,
+  -172625-416fec0): every numeric leaf of `summary.json` and of the per-run JSON equal to
+  the committed `ladder/results/final/` within 1e-9 relative (deterministic scripts, same
+  inputs). Refuted by any larger difference outside paths and wall times.
+- LR2 (rerun of `floor_analysis.py` on the rerun's `res/` and of `a6_analysis.py` on run
+  E-20261119-142317-c851f27): `floor.json` and `a6.json` equal to the committed ones within
+  1e-9 relative. Refuted likewise.
+- LR3 (independent A2/A3 on L32p, my own code: own dump reader, complex FFT, amplitudes from
+  core's twin `python/nrpic/scalar_field.mode_alpha` instead of the track's
+  `noise/ref/philox_ref.py`, own background and Mukhanov-Sasaki integration with LSODA in
+  place of DOP853): at the last dump max D_n over |n| <= 4 is 8.8e-5 within 10 percent and
+  over all 1054 modes 4.1e-3 within 10 percent; A3: every mode with N_f - N_k >= 6 has
+  |Q_n(N_f)/Q_n(first dump after N_k + 4) - 1| < 1e-4 and a drift of ln|R^NR_n|^2 equal to
+  that of the reference within 1e-5 per e-fold. Refuted if the D_n differ from the
+  ladder's by more than 20 percent or if any threshold (0.02, 0.01, 2.5e-3) fails.
+- LR4 (constraint records read directly from `sr.sf.con.hst`): <|H|/[H]> at the last row
+  3.12e-12, 1.83e-13, 1.12e-14 for L32p, L64p, L128p (factors near 16); box means of phi,
+  Pi, K within 1e-10 relative of my own Friedmann integration at every row (A1).
+  Refuted by other record values or an A1 deviation above 1e-10.
+- LR5 (odd and even parts of H from the dumps of L32p/L32m and L32ph/L32mh, own code):
+  odd-part halving factor 2.00 +- 0.01 and even part (box mean removed) 4.00 +- 0.05 at
+  every dump from t = 0.5 to 4.0; odd/even above 100 at t = 2.5; order of the odd part
+  between L32 and L64 (log-linear interpolation in time) between 5.3 and 5.9 at
+  t = 2.0-3.5. Refuted by factors outside these bands.
+- LA1 (rerun of the analysis package's synthetic tests T1-T5): 15 of 15 pass, numbers equal
+  to run E-20261115-171445-36152c4 within 1e-12 relative.
+- LV1 (rerun of the verifier's V1, V4, V8 scripts): JSON equal within 1e-9 relative
+  (V4 uses fixed seeds).
