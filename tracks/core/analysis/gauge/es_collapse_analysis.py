@@ -37,7 +37,7 @@ sys.path.insert(0, os.path.join(WT, "python"))
 sys.path.insert(0, HERE)
 
 import idlib                                   # noqa: E402
-from punc_analysis import manifests, table     # noqa: E402
+from punc_analysis import manifests, table, batch_manifests     # noqa: E402
 from lapse_ref import central_lapse            # noqa: E402
 from nrpic import expanding_ball as eb         # noqa: E402
 from nrpic import figstyle as fs               # noqa: E402
@@ -82,41 +82,6 @@ def ref_plateau(H0, T, a0, tmax, dt=0.01):
         la += dt * (k1[0] + 2 * k2[0] + 2 * k3[0] + k4[0]) / 6.0
         tau += dt * (k1[1] + 2 * k2[1] + 2 * k3[1] + k4[1]) / 6.0
     return np.array(out).T
-
-
-def batch_manifests(run_id):
-    """{name: manifest-like dict} of the runs of one card job registered by nrpic-run
-    (launcher batch): the keys the analysis needs, from the job's manifest, its list and
-    the log of each run."""
-    import datetime
-    with open(os.path.join(WT, "tracks/core/runs", run_id, "manifest.json")) as f:
-        m = json.load(f)
-    root = os.path.join("/data/haiyangw/nrpic", m["outputs"]["dir"])
-    out = {}
-    with open(os.path.join(root, "batch.list")) as f:
-        for line in f:
-            w = line.split()
-            if not w or w[0].startswith("#"):
-                continue
-            d = w[0]
-            card_s, rc = None, None
-            try:
-                with open(os.path.join(d, "athena.log")) as fh:
-                    txt = fh.read()
-                fmt = "%Y-%m-%dT%H:%M:%S"
-                t_a = datetime.datetime.strptime(txt.split("start=", 1)[1][:19], fmt)
-                t_b = datetime.datetime.strptime(txt.rsplit("end=", 1)[1][:19], fmt)
-                card_s = (t_b - t_a).total_seconds()
-                rc = int(txt.rsplit("# exit=", 1)[1].split()[0])
-            except (OSError, IndexError, ValueError):
-                pass
-            out[os.path.basename(d)] = dict(
-                run_id=run_id + "/" + os.path.basename(d), command=w[1:],
-                output_directory=d, exit_status=rc, wall_time_s=card_s,
-                card_hours=round(card_s / 3600.0, 5) if card_s is not None else None,
-                inputs=[dict(path=i["path"] if os.path.isabs(i["path"])
-                             else os.path.join(WT, i["path"])) for i in m["inputs"]])
-    return out
 
 
 def args_of(man):

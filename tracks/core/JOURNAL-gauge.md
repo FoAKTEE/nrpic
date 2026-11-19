@@ -838,3 +838,167 @@ turnaround the excess of the lapse is gone and the condition is plain 1+log star
 from a lapse near 1 at t = 10 M instead of at t = 0. If that late start left the slices
 unable to reach the trapped region before they freeze, run 1 would end without a
 horizon while run 2 finds one: that outcome would be a defect of the condition.
+
+## 2026-11-19, entry 8: outcomes of the runs that finished after the cut-off (H step check, ES, card P, E1, E2, E1 with wider profiles)
+
+Each is judged by the prediction written before it ran (entries 1, 2, 3, 5, 6); no new
+criterion. Analysis runs of this session (all `nrpic-run submit`, local): ES
+core-20261119-140835-00b3754 and -140932-2241a73 (the second adds the lapse of each
+tracer group); card P, E1, E2 core-20261119-140943-8b9c2aa (figures redrawn in
+-141047-b42eb4e); processors with the wider profiles core-20261119-141015-586d2cd
+(redrawn in -141043-49275d1). The subject line of commit 49275d1b names a run
+"core-20261119-141003": no such run exists, the analysis is -141015-586d2cd. Card time
+of the package up to here: 0.422 card-hours (sum of `card_hours` of its nineteen card
+manifests).
+
+### Test H, step check (run core-20261115-194634-6d1e401; figure `figs/flrw_leak_cfl0p0625.png`, looked at)
+
+Prediction (entry 6): with a step four times smaller the error of rate 20 in the first
+0.1/H_0 falls by at least 8, below 2.6e-5; refuted if not. Outcome: largest relative
+error of the lapse 4.97e-7 (2.06e-4 at the standard step: a factor 414; a fourth-order
+step gives 256), of a 2.75e-8 (1.06e-5); the lapse at t = 2/H_0 is 1.071801120644
+against 1.071801120560 exact. The error peaks at t = 0.06/H_0 and falls to 1e-10 by the
+end. Confirmed: the start-up error of entry 6 is the truncation error of the explicit
+step when the relaxation time is 1.6 steps, and it converges away. The two figures of
+test H had the label of the right axis cut off; `flrw_leak.py` now breaks the label and
+both runs were repeated for the figures (core-20261119-141114-851f288, three rates;
+core-20261119-141928-69cb509, step check; processor runs are reproducible: both
+numbers files came out unchanged; both figures looked at again).
+
+### Test ES (run core-20261115-202901-b4430da, card, 185 s, 0.051 card-hours; figure `figs/es_gc_es-leak2.png`, looked at; numbers `es_numbers_gc.json`)
+
+Track D's Einstein-Straus data (M = 1, wall at 36 M, plateau H = 5.58e-3/M), T = 2 M,
+cells 2 M in the dust and M/8 at the hole, 30 M of coordinate time, 960 cycles; the run
+ended at `tlim`. Against prediction ES (entry 2, items 1 to 5, with the amendments of
+entry 3):
+
+| item | prediction | outcome |
+|---|---|---|
+| 1 horizon mass at t = 10 M | within 5e-3 of M | 0.999971: confirmed |
+| 1 drift, 10 M <= t <= 30 M | abs(M_AH(t)/M_AH(10 M) - 1) below 1e-3; refuted above 3e-3 | 1.02e-3 (0.99989 to 1.00099): FAILS by 2 per cent of the bound; not refuted |
+| 2 wall tracers (R_0 = 36 M) | within 5e-3 of the exact radius at their proper time; refuted above 2e-2 | largest 6.2e-5 (42.7615 against 42.7628 M at tau = 30 M): confirmed |
+| 2 tracers at 48 M | within 3e-3 | 6.8e-5: confirmed |
+| 3 lapse at the tracers at 48 M | within 2 per cent of the homogeneous reference (1.062, 1.064, 1.062, 1.059, 1.057, 1.055 at t = 5 ... 30 M) | 1.061, 1.054, 1.049, 1.046, 1.043, 1.041: largest deviation 1.3 per cent (at the end): confirmed |
+| 3 largest lapse on the mesh | below 1.09; refuted by a dust lapse above 1.3 | 1.109 at t = 5.25 M, 1.093, 1.074, 1.063 at t = 10, 20, 30 M: FAILS; not refuted |
+| 4 dust and bubble | no dust particle inside the wall tracers by more than one cell (2 M) | smallest coordinate radius of the 87128 dust particles at t = 30 M 36.56 M, wall tracers at 36.34 M: confirmed |
+| 5 tracers at 6 M | removed at a proper time between 13 and 16 M | all 14 removed at tau = 15.52 M, R = 1.51 M: confirmed |
+
+All other tracer groups: largest abs(R/R_exact - 1) 1.1e-3 (6 M, while R_exact > 2.2 M),
+9.6e-4 (10 M), 7e-5 (20 M), 1.2e-4 (28 M), 4.6e-4 (40 M), 2.4e-4 (56 M), 4.5e-5 (66 M),
+1.3e-3 (78 M, in the vacuum outside the dust, growing towards the end).
+
+Where prediction 3 failed: the largest lapse on the mesh is not in the dust. It equals
+the lapse at the tracers of R_0 = 20 M, inside the vacuum bubble (1.1085 at t = 5 M at
+both; 1.093, 1.073, 1.062 at the tracers at t = 10, 20, 30 M) [VERIFIED,
+`es_numbers_gc.json`, `alpha_t` of group 20 against `alpha_max_t`]. The normal observers
+of the bubble between the hole and the wall expand faster than the plateau; my reference
+was the plateau only. In the dust the lapse is 1.045 to 1.060 at the wall, 1.041 to
+1.061 at 48 M, 1.034 to 1.044 at 56 M. With plain 1+log the plateau would be at 2.37 at
+t = 30 M (entry 3).
+
+Where prediction 1 failed: the horizon mass is 0.99981 at t = 5 M, 0.99997 at 10 M,
+1.00048 at 15 M, 1.00091 at 20 M, 1.00097 at 25 M and 1.00098 at 29.5 M; between t = 3 M
+and the end it stays between 0.99966 and 1.00099. The vacuum puncture alone on the same
+finest cells (test P on the card, below) does the same: 0.99986, 1.00019, 1.00076,
+1.00105 at t = 5, 10, 15, 19.5 M, a rise of 8.6e-4 from 10 M to 19.5 M against 9.1e-4
+in the ES run. So the drift is that of a puncture at cells M/8 in this code, not of the
+dust or of the lapse relaxation (Track D expected +1.5e-3 at this cell size, entry 2).
+
+Lapse at the puncture (probe at the origin, equal to the smallest lapse on the mesh):
+0.031 at the start (psi^-2 of the table), a rise to 0.233 at t = 5.75 M (0.202 at 5 M),
+0.053 at 10 M, 0.032 at 20 M, 0.038 at 30 M: the hole stays collapsed; the bump is the
+adjustment of the start lapse and zero start shift to the moving-puncture gauge.
+
+Answer for Track D: with `lapse_leak` the Einstein-Straus data evolve for 30 M with a
+horizon mass constant to 1.0e-3 (the resolution-limited drift of the puncture itself),
+the wall on the exact curve to 6e-5, a dust lapse of 1.04 to 1.06 and a largest lapse
+of 1.11 (in the bubble), no dust in the bubble. Nothing in this run shows a defect of
+the condition. Not covered: more than 30 M, a finer dust mesh, the boundary (at 96 M
+here, outside the light travel time).
+
+### Test P on the card (full mesh, cells m/8, 20 M; runs core-20261115-204400-b4430da plain, -204609- T = 1 m; figure `figs/punc_gc_p.png`, looked at)
+
+Prediction (entry 1): horizon masses equal within 1e-6 at every search (identical files
+if the lapse never exceeds 1); refuted by a difference above 1e-5. Outcome: the tracker
+file, the horizon shape, the horizon summary (40 searches to t = 19.5 M) and the
+constraint history are identical byte for byte; no file differs. Confirmed, now over
+20 M on the full mesh.
+
+### Test E1 on the card (full mesh, t = 6 m; figure `figs/punc_gc_e1.png`, looked at)
+
+Runs (a) eta = 2 core-20261115-203939-b4430da, (c) eta = 20 -204106-, (d) eta_0 = 20
+with the profile -204233-, (b) eta = 0.2 -204818-, (e) eta_0 = 0.2 with the profile
+-204945-. Tracker speed (ratio to (a)):
+
+| run | 1.6 m | 3.0 m | 4.9 m | 5.0 m | horizon mass at the end |
+|---|---|---|---|---|---|
+| (a) | 0.0514 | 0.0843 | 0.1069 | 0.1071 | 1.011091 |
+| (c) | 0.0060 (0.12) | 0.0153 (0.18) | 0.0231 (0.22) | 0.0243 (0.23) | 1.011093 |
+| (d) | 0.0325 (0.63) | 0.0486 (0.58) | 0.0587 (0.55) | 0.0576 (0.54) | 1.011091 |
+| (b) | 0.1011 (1.97) | 0.1748 (2.07) | 0.2109 (1.97) | 0.2100 (1.96) | 1.011097 |
+| (e) | 0.0551 (1.07) | 0.0986 (1.17) | 0.1357 (1.27) | 0.1328 (1.24) | 1.011089 |
+
+The speeds up to 4.9 m equal those of the small mesh on processors (entry 5) to four
+digits. Against the prediction at t = 5 m: (d) within 20 per cent of (a): FAILS (46 per
+cent slower; the refutation threshold is 50); (c) at least 5 times slower: fails
+narrowly (4.4 times); horizon mass of (d) within 1e-3 of (a): confirmed (1e-7); (b) not
+slower than (a): confirmed; (e) within 20 per cent of (a): FAILS narrowly (24 per
+cent). Horizon found in all 24 searches of every run. The same outcome as on
+processors.
+
+### Test E2 on the card (full mesh, t = 3.99 M; figure `figs/punc_gc_e2.png`, looked at)
+
+Runs: constant eta = 2 core-20261115-203440-b4430da, constant eta = 8 -203710-, profile
+(2 at the heavy hole, 8 at the light one, width 0.5 M) -203210-.
+
+| run | heavy tracker speed | light tracker speed | heavy M_AH | light M_AH | H norm at the end / largest |
+|---|---|---|---|---|---|
+| eta = 2 | 0.02569 | 0.1385 | 1.016896 | 0.268707 | 1.18 / 2.53 |
+| eta = 8 | 0.00852 | 0.1018 | 1.016718 | 0.268579 | 1.17 / 3.36 |
+| profile | 0.02548 | 0.1245 | 1.016894 | 0.268583 | 1.26 / 9.49 |
+
+Prediction (entry 1): heavy tracker of the profile run equal to eta = 2 within 5 per
+cent: confirmed (0.8 per cent); light tracker equal to eta = 8 within 15 per cent:
+FAILS (22 per cent faster; not refuted by the 40 per cent threshold; constant eta = 2
+is 36 per cent faster); both horizons found in all 32 searches of every run, masses
+within 2e-3 of the constant-eta runs: confirmed (1.8e-4 heavy, 1.3e-4 light); H norm
+within a factor 1.5: confirmed at the end (1.07), FAILS at its largest value (the
+one-record spike at t = 0.5 M of entry 5, the same three numbers as on the small mesh).
+At t = 4 M the profile of width 2 m_min has recovered 35 per cent of the logarithmic
+distance from the constant-eta value to the value of the light hole's own units (52
+per cent at t = 2 M on processors): the light tracker of the profile run keeps rising
+towards the eta = 2 curve (figure), so the narrow profile helps less the longer the run.
+
+### E1 with wider profiles (processors, small mesh, t = 4.9 m; figure `figs/punc_g_e1.png`, looked at)
+
+Runs: (e) width 4 core-20261115-183402-b4430da, (e) width 8 -183403-, (d) width 8
+-183400-. Tracker speed relative to (a) at 1.6, 3.0, 4.9 m:
+
+| run | width 2 (entry 5) | width 4 | width 8 |
+|---|---|---|---|
+| (e) eta m = 0.2 far away, 2 at the hole | 1.07, 1.17, 1.27 | 1.02, 1.05, 1.04 | 1.005, 1.014, 1.017 |
+| (d) eta m = 20 far away, 2 at the hole | 0.63, 0.58, 0.55 | not run | 0.95, 0.89, 0.86 |
+
+Prediction (entry 5): the ratio at 4.9 m moves towards 1 monotonically with the width:
+confirmed; (e) width 4 between 1.10 and 1.20: outside, on the better side (1.04); (e)
+width 8 between 1.02 and 1.10: 1.017, just below; (d) width 8 between 0.75 and 0.92:
+confirmed (0.86); horizon masses as in (a) within 1e-4: confirmed (1.011085 to 1.011093
+against 1.011093). Not refuted: the width is what limits the profile of the paper. With
+`shift_eta_width = 8` an under-damped hole follows its own-units reference to 2 per
+cent and an over-damped one to 14 per cent over the first 5 m; horizon mass and
+constraint norm do not change.
+
+### One more card test, with its prediction (written before the run): E2 with wider profiles
+
+The recommendation to Track F rests on E1 (one hole) for the width; the pair was run
+with width 2 only, where the light tracker is 22 per cent off its own-units reference
+at t = 4 M. Two card runs as `gc-e2-profile` with `shift_eta_width` = 4 and 8 (tags
+`e2-profile-w4`, `e2-profile-w8`; widths 1 M and 2 M around the light hole, separation
+8 M). The wider profile also reaches the heavy hole: its damping becomes
+2 [1 + 3/(1 + 64/w^2)] = 2.09 (width 4) and 2.35 (width 8) instead of 2. Prediction
+[JUDGEMENT] at t = 3.99 M: light tracker relative to the eta = 8 run 1.03 to 1.12
+(width 4) and 1.00 to 1.08 (width 8), against 1.22 with width 2; heavy tracker relative
+to the eta = 2 run 0.95 to 1.00 (width 4) and 0.85 to 0.96 (width 8); both horizons
+found in every search, masses within 2e-3 of the constant-eta runs; H norm at the end
+within a factor 1.5 of them. Refuted if the light tracker with width 8 is not closer
+to the eta = 8 run than with width 2, or if a horizon is lost.

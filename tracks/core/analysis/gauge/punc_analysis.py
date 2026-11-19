@@ -8,9 +8,13 @@ processors, small mesh; gc: card): tracker files <base>.co_<n>.txt, horizon summ
 <base>.horizon_summary_<n>.txt, constraint norms <base>.z4c.user.hst.  Writes
 punc_numbers_<prefix>.json and figs/punc_<prefix>_{p,e1,e2}.png|pdf.
 
-    punc_analysis.py [--prefix g]
+    punc_analysis.py [--prefix g] [--batch RUN_ID ...]
+
+With --batch the sub-directories p-*, e1-*, e2-* of card jobs registered by
+harness/bin/nrpic-run (launcher batch: scratch/core/<run_id>/<name>/) are added.
 """
 import argparse
+import datetime
 import filecmp
 import glob
 import json
@@ -38,6 +42,40 @@ def manifests(prefix):
         tag = m.get("tag", "")
         if tag.startswith(prefix) and "output_directory" in m:
             out[tag] = m
+    return out
+
+
+def batch_manifests(run_id):
+    """{name: manifest-like dict} of the runs of one card job registered by nrpic-run
+    (launcher batch): the keys the analysis needs, from the job's manifest, its list and
+    the log of each run."""
+    with open(os.path.join(WT, "tracks/core/runs", run_id, "manifest.json")) as f:
+        m = json.load(f)
+    root = os.path.join("/data/haiyangw/nrpic", m["outputs"]["dir"])
+    out = {}
+    with open(os.path.join(root, "batch.list")) as f:
+        for line in f:
+            w = line.split()
+            if not w or w[0].startswith("#"):
+                continue
+            d = w[0]
+            card_s, rc = None, None
+            try:
+                with open(os.path.join(d, "athena.log")) as fh:
+                    txt = fh.read()
+                fmt = "%Y-%m-%dT%H:%M:%S"
+                t_a = datetime.datetime.strptime(txt.split("start=", 1)[1][:19], fmt)
+                t_b = datetime.datetime.strptime(txt.rsplit("end=", 1)[1][:19], fmt)
+                card_s = (t_b - t_a).total_seconds()
+                rc = int(txt.rsplit("# exit=", 1)[1].split()[0])
+            except (OSError, IndexError, ValueError):
+                pass
+            out[os.path.basename(d)] = dict(
+                run_id=run_id + "/" + os.path.basename(d), command=w[1:],
+                output_directory=d, exit_status=rc, wall_time_s=card_s,
+                card_hours=round(card_s / 3600.0, 5) if card_s is not None else None,
+                inputs=[dict(path=i["path"] if os.path.isabs(i["path"])
+                             else os.path.join(WT, i["path"])) for i in m["inputs"]])
     return out
 
 
@@ -95,9 +133,13 @@ def speed(tr, t0, width=0.5):
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--prefix", default="g")
+    ap.add_argument("--batch", nargs="*", default=[],
+                    help="run ids of card jobs registered by nrpic-run (launcher batch)")
     a = ap.parse_args()
     pre = a.prefix
     mans = manifests(pre + "-")
+    for rid in a.batch:
+        mans.update({pre + "-" + k: v for k, v in batch_manifests(rid).items()})
     runs = {}
     for tag, m in mans.items():
         name = tag[len(pre) + 1:]
@@ -202,7 +244,8 @@ def main():
             print(row)
 
     # ---------------------------------------------------------------- E2
-    e2 = [("e2-eta2", r"$\eta=2$"), ("e2-eta8", r"$\eta=8$"), ("e2-profile", "profile, 2 and 8")]
+    e2 = [("e2-eta2", r"$\eta=2$"), ("e2-eta8", r"$\eta=8$"), ("e2-profile", "profile, 2 and 8"),
+          ("e2-profile-w4", "profile, width 4"), ("e2-profile-w8", "profile, width 8")]
     e2 = [(k, lab) for k, lab in e2 if k in runs]
     if e2:
         numbers["E2"] = {}
