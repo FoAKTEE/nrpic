@@ -485,3 +485,8 @@ F-20261119-145436-4fbc057 used a Newtonian-circular binary at 40 r_t and is supe
   q = 4 in 6 of 8 variants). What happens to m2 and to the binary depends on 5-15 percent
   changes of the start momenta. Newton's outcome flips between "m1 ejected" and "binary
   survives" between the input state and the 1PN-consistent one.
+Correction to the last bullet of entry 14 (counted again from results/p1.json and
+results/p1_state.json): m1 comes inside 5.35 M in 5 of 5 EIH variants at q = 10 (3.10, 4.63,
+5.32, 3.57, 3.88 M) and in 3 of 5 at q = 4 (3.66, 3.51, 4.11 M); the two canonical-reading
+variants of the q = 4 input state keep m1 at 6.75 and 7.79 M. HRNA plunges m1 in 3 of 3 runs
+at q = 10 and 2 of 3 at q = 4 (from the q = 4 input state m1 stays bound, closest 5.08 M).
