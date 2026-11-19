@@ -83,7 +83,10 @@ def compare(dfull, drst, base, t_rst):
     for suf, tcol in FILES.items():
         fa = os.path.join(dfull, f"{base}.{suf}")
         a = [r for r in rows(fa, tcol) if float(r[1][tcol]) > t_rst*(1.0 + 1e-12)]
-        b = rows(os.path.join(drst, f"{base}.{suf}"), tcol)
+        # a restarted run may write a record at the restart time (tracker, finder):
+        # identical to the uninterrupted one there, and left out of the pairing
+        b = [r for r in rows(os.path.join(drst, f"{base}.{suf}"), tcol)
+             if float(r[1][tcol]) > t_rst*(1.0 + 1e-12)]
         if not a and not b:
             continue
         names = header(fa) or []
@@ -191,27 +194,36 @@ def main():
     ap.add_argument("--out", default=os.environ.get("NRPIC_RUN_DIR", "."))
     ap.add_argument("--cores", type=int, default=8)
     ap.add_argument("--only", default="")
+    ap.add_argument("--analyse", default="",
+                    help="directory of an earlier run of this script: compare and draw only")
     a = ap.parse_args()
     a.out, a.old, a.new = (os.path.abspath(v) for v in (a.out, a.old, a.new))
     os.makedirs(a.out, exist_ok=True)
     ic1, ic8 = os.path.join(a.out, "ic1"), os.path.join(a.out, "ic8")
     mk = os.path.join(A.ROOT, "cosmo/ic/make_lattice.py")
     for ic, ppc in ((ic1, 1), (ic8, 2)):
-        if not os.path.exists(os.path.join(ic, "particles.nrp")):
+        if not a.analyse and not os.path.exists(os.path.join(ic, "particles.nrp")):
             subprocess.run([sys.executable, mk, "--n", str(T2.N), "--ppc", str(ppc), "--L",
                             str(T2.L), "--xmin", str(-T2.L/2), "--out", ic], check=True,
                            stdout=subprocess.DEVNULL)
     import concurrent.futures as cf
     exes = (("old", a.old), ("new", a.new))
+    if a.analyse:
+        a.out = os.path.abspath(a.analyse)
     only = a.only.split(",") if a.only else None
     jobs = []
     for lab, exe in exes:
+        if a.analyse:            # nothing is written into the earlier run
+            break
         jobs += [(n, exe, deck, rd) for n, _, deck, rd in
                  [(j[0], j[1], j[2], j[3]) for j in straight_jobs(a.out, lab, exe, ic1,
                                                                     ic8, a.ic)]
                  if only is None or n.split("_")[0] in only]
-    with cf.ThreadPoolExecutor(max_workers=a.cores) as ex:
-        rc1 = list(ex.map(lambda j: run(j[1], ["-i", j[2]], j[3]), jobs))
+    if a.analyse:
+        jobs, rc1 = [], []
+    else:
+        with cf.ThreadPoolExecutor(max_workers=a.cores) as ex:
+            rc1 = list(ex.map(lambda j: run(j[1], ["-i", j[2]], j[3]), jobs))
     for j, rc in zip(jobs, rc1):
         print(f"{os.path.basename(os.path.dirname(j[3]))}/{j[0]:8s} exit {rc}", flush=True)
 
@@ -223,9 +235,13 @@ def main():
             f = os.path.join(a.out, lab, src, "rst", f"{base}.{num:05d}.rst")
             rjobs.append((lab, name, exe, f, os.path.join(a.out, lab, name), cyc, base,
                           os.path.join(a.out, lab, full), nlim))
-    with cf.ThreadPoolExecutor(max_workers=a.cores) as ex:
-        rc2 = list(ex.map(lambda j: run(j[2], ["-r", j[3], f"time/nlim={j[8]}"], j[4]),
-                          rjobs))
+    if a.analyse:
+        rc2 = [int(open(os.path.join(j[4], "status.txt")).readline().split()[1])
+               for j in rjobs]
+    else:
+        with cf.ThreadPoolExecutor(max_workers=a.cores) as ex:
+            rc2 = list(ex.map(lambda j: run(j[2], ["-r", j[3], f"time/nlim={j[8]}"], j[4]),
+                              rjobs))
 
     res = {}
     for j, rc in zip(rjobs, rc2):
@@ -251,7 +267,8 @@ def main():
               f"(first unequal cycle {sched.get('first_unequal')}) largest relative "
               f"departure {dmax:.1e} first differing record "
               f"{ {k: v['first_differing_record'] for k, v in files.items()} }", flush=True)
-    with open(os.path.join(a.out, "t11_summary.json"), "w") as fh:
+    outdir = os.path.abspath(os.environ.get("NRPIC_RUN_DIR", ".")) if a.analyse else a.out
+    with open(os.path.join(outdir, "t11_summary.json"), "w") as fh:
         json.dump(res, fh, indent=1)
         fh.write("\n")
 
@@ -298,7 +315,7 @@ def main():
     ax[2].set_xticklabels(names, rotation=60, fontsize=7)
     ax[2].set_ylabel("cycles with another MeshBlock count")
     ax[2].legend(frameon=False, fontsize=7)
-    fs.save(fig, os.path.join(a.out, "fig_t11_restart"))
+    fs.save(fig, os.path.join(outdir, "fig_t11_restart"))
     plt.close(fig)
     return 0
 

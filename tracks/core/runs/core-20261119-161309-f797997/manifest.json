@@ -59,7 +59,9 @@
  "purpose": "T11b of cosmo-amr: restarts on adaptive periodic meshes, rerun with the corrected script (nlim on the command line, records paired in order, MeshBlock schedule, round-off departures) plus a static patch and a uniform mesh with the light-speed step; executables of T1-T9 (old) and with the restart counters (new); hand-written manifest because nrpic-run refused (16 cores busy in live local runs of core)",
  "kind": "scouting",
  "tag": "cosmo-amr-T11b",
- "state": "running",
+ "state": "finished",
+ "wall_time_s": 922.08,
+ "exit_status": 0,
  "cores": 8,
  "card_hours": 0.0,
  "started_utc": "2026-11-19T16:13:09Z"
