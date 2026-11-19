@@ -222,29 +222,33 @@ def peaks_and_energy(delta, L, sigma1):
 # ---------------------------------------------------------------------------------------
 def quasi_static_tt(delta, L):
     """h_ij = (20/3) [d_i Phi d_j Phi]^TT / k^2 with Phi = -(3/2) lap^-1 delta (a = 1,
-    linear, constant in time); returns sum_k |h_k|^2 k^2 and sum_k |h_k|^2 (numpy
-    normalization fftn/N), and the rms strain."""
+    linear, constant in time), on the rfft layout of cosmo_id.Torus; returns
+    sum_k k^2 |h_ij|^2, sum_k |h_ij|^2 (summed over i, j and over the full mesh of
+    modes, coefficients fftn/N) and the rms strain."""
     n = delta.shape[0]
+    N = n**3
     tor = cid.Torus(n, L)
     k2 = tor.k2.copy()
     k2[0, 0, 0] = 1.0
     Phi_k = 1.5*tor.fft(delta)/k2
     Phi_k[0, 0, 0] = 0.0
     g = [tor.ifft(1j*kd*Phi_k) for kd in tor.kd]           # d_i Phi
-    k = [np.broadcast_to(kd, (n, n, n)) for kd in tor.k]
-    kk = np.sqrt(k2)
-    e = [ki/kk for ki in k]
+    e = [kc/np.sqrt(k2) for kc in tor.k]
     S = {}
     for i in range(3):
         for j in range(i, 3):
-            S[i, j] = np.fft.fftn((20.0/3.0)*g[i]*g[j])/n**3
+            S[i, j] = np.fft.rfftn((20.0/3.0)*g[i]*g[j])/N
 
     def Sij(i, j):
         return S[min(i, j), max(i, j)]
     P = [[(1.0 if i == j else 0.0) - e[i]*e[j] for j in range(3)] for i in range(3)]
-    tot_g, tot = 0.0, 0.0
-    hTT = {}
+    w = np.full(n//2 + 1, 2.0)
+    w[0] = 1.0
+    if n % 2 == 0:
+        w[-1] = 1.0
+    w = np.broadcast_to(w[None, None, :], k2.shape)
     trP = sum(P[l][m]*Sij(l, m) for l in range(3) for m in range(3))
+    tot_g, tot = 0.0, 0.0
     for i in range(3):
         for j in range(3):
             acc = 0.0
@@ -253,9 +257,8 @@ def quasi_static_tt(delta, L):
                     acc = acc + P[i][l]*P[j][m]*Sij(l, m)
             hij = (acc - 0.5*P[i][j]*trP)/k2
             hij[0, 0, 0] = 0.0
-            hTT[i, j] = hij
-            tot_g += float((np.abs(hij)**2*k2).sum())
-            tot += float((np.abs(hij)**2).sum())
+            tot_g += float((w*np.abs(hij)**2*tor.k2).sum())
+            tot += float((w*np.abs(hij)**2).sum())
     return tot_g, tot, float(np.sqrt(tot))
 
 
