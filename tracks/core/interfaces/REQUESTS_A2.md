@@ -1,0 +1,132 @@
+# Requests of Track A for the periodic threshold line: triage and what was done
+
+Work package cosmo-amr of core, branch `core/cosmo-amr`, wave 3a, 2026-11-19. Journal with
+the predictions and outcomes of every test: `tracks/core/JOURNAL-cosmo-amr.md`. Options,
+formats, lines touched, what is tested: `tracks/core/interfaces/cosmo_amr.md`. Tests:
+`tracks/core/analysis/cosmo_amr/` (scripts, figures under `figs/`), run manifests under
+`tracks/core/runs/`. Labels: [VERIFIED] read at the locator or measured in the run
+named, [JUDGEMENT], [TO VERIFY].
+
+The requests are the outbox files of branch `track/A-emd-pbh`
+(`tracks/A-emd-pbh/outbox/20261115T1837..Z__to-core__*.md`); the track's evidence is its
+`periodic_threshold/DESIGN.md` and `JOURNAL.md` (scouting runs S1, S2; decisions 0013 and
+0016 item 5: the threshold line is built in the periodic box).
+
+## 1. Triage
+
+| # | Request (outbox file) | Ruling | What exists now |
+|---|---|---|---|
+| A2-1 | `nrpic-cosmo-user-ref-func`: adaptive refinement with `nrpic_cosmo` calls a null pointer | ACCEPTED, done | `nrpic_cosmo` enrols `nrpic::CosmoRefine` (the criteria of `<z4c_amr>`, as `nrpic_cf`), plus criteria made for cosmology in a new block `<particles_amr>`: section 2.1 |
+| A2-2 | `periodic-horizon-finder` (1): surface points are not mapped into the periodic box | ACCEPTED, done | every surface point is mapped into the mesh in periodic directions: section 2.2 |
+| A2-3 | `periodic-horizon-finder` (2): a failed search writes NaN without a reason | ACCEPTED, done | `<fastflow> diagnostics = true`: `<basename>.horizon_status_<n>.txt`, one line per search with the reason: section 2.2 |
+| A2-4 | `periodic-horizon-finder` (3): summary file lands in the start directory, not in `-d` | ACCEPTED, done | the files of the finder (and of the compact-object tracker) are opened at the first search, after the change to the run directory: section 2.2 |
+| A2-5 | `refined-mesh-diagnostics`: constraint norms inside and outside a sphere on refined meshes; proper-volume mean of K and of the lapse | ACCEPTED, done (the history columns, the "smallest acceptable answer") | `<particles> region_dcycle`: `<basename>.region.hst`: section 2.5. Field dumps of the particle module on multilevel meshes: NOT DONE (AthenaK's own `tab` and `bin` outputs work on refined meshes and hold E, the constraints and the Z4c fields) |
+| A2-6 | `amr-for-first-horizon` (1): do refinement levels sub-cycle in time | ANSWERED: no | one global step for all levels (`Mesh::NewTimeStep` takes the smallest cell; `particles/nrpic.cpp` pushes every particle with `pm->dt`). The remedy on offer is adaptive refinement: the fine levels exist only while the collapse needs them (sections 2.1, 3) |
+| A2-7 | `amr-for-first-horizon` (2): recommended refinement for a collapse to a horizon 1/60 of the ball, lattice matched to the finest level | ANSWERED with an example input | `problems/cosmo_amr/peak_amr.athinput`: particles per cell (`ppc_refine`) plus a lapse ladder, clouds on the level the local particle density supports (`deposit_adaptive`), coarse clouds reconstructed on the leaf cells (`deposit_fine_shape`). A nested particle lattice is initial-data work (A2-11) |
+| A2-8 | `amr-for-first-horizon` (3): does the conservative cross-level deposit keep a homogeneous core homogeneous across level boundaries (staircases of E in S2) | ANSWERED by test T2, and the staircase removed | section 2.3 |
+| A2-9 | `stop-on-nonfinite`: stop with a non-zero status and a final dump | ACCEPTED, done, default on | guard, `<z4c_guard>`: section 2.4. The restart file of the stop holds the failed state and is for a post-mortem only |
+| A2-10 | `step-limit-coordinate-light-speed` | ACCEPTED, done, off by default | `<z4c> dt_lightspeed`: section 2.4 |
+| A2-11 | `refined-level-constraint-solve`: constraint solve on the refined levels of the actual mesh; nested particle lattice in the periodic generator | ROUTED to core's package idsolve-2 (branch `core/id-solver-2`, its goal 3 "refined meshes in the id solver") | not this package. What this package changes for it: a run may now start uniform and refine adaptively, so that fine blocks are filled by the high-order prolongation of evolved data instead of the cubic interpolation of the file; the measured constraint jump at such a regrid is in section 3 |
+| A2-12 | `phase1-generator-cmc`, `gauge-expanding-ball`, `phase1-generator-and-gauge-options` (lapse for collapse in an expanding box) | NOT THIS PACKAGE | core's packages gauge (`core/gauge`) and idsolve-2. The scouting run of section 4 uses the gauge of S1 on purpose |
+| A2-13 | `processor-executable-threads` | NOT THIS PACKAGE | core's package `core/build-openmp` |
+
+## 2. What was implemented
+
+Everything is read from the input only if the option is present; without the new options
+the executable reproduces release core-v0.3 byte for byte (test T0, section 5). Files
+and lines touched: `cosmo_amr.md`, section "Lines touched".
+
+### 2.1 Adaptive refinement in `nrpic_cosmo` (A2-1, A2-6, A2-7)
+
+`<amr_criterion0> method = user` now calls `nrpic::CosmoRefine`
+(`athenak/src/particles/nrpic_refine.cpp`): first `pz4c->pamr->Refine` (what the request
+asked for: `<z4c_amr> method = trivial | tracker | chi | dchi | lohner` and the radii),
+then the criteria of `<particles_amr>`:
+
+| Option | Meaning |
+|---|---|
+| `ppc_refine`, `ppc_derefine` | refine a MeshBlock in which a cell holds more than `ppc_refine` particles (deposited energy of the cell over the mean energy of a particle); derefine where every cell holds fewer than `ppc_derefine` (default `ppc_refine/16`) |
+| `lapse_ratio_1`, `lapse_ratio_2`, ... | a MeshBlock of level l-1 is refined where min(alpha) is below this fraction of the volume mean of alpha |
+| `chi_ratio_1`, ... | the same with the conformal factor chi: the cosmological form of `method = chi` |
+| `hysteresis` | derefinement of level l only above (1 + hysteresis) times threshold l (default 0.1) |
+| `max_level`, `verbose` | finest level asked for; one line per check |
+
+None of them refines the homogeneous universe (both ratios are one, the particle number
+is that of the lattice). The `chi` and `dchi` criteria of `<z4c_amr>` are useless in an
+expanding box (chi falls everywhere as 1/a^2), as the track noted.
+
+### 2.2 Horizon finder and tracker in a periodic box (A2-2, A2-3, A2-4)
+
+- `fastflow.cpp`, `MetricInterp`: in a periodic direction the surface point is mapped
+  into the mesh before the interpolation stencil is built (a point inside the mesh keeps
+  its coordinate bit for bit). The finder centre may lie in any image; a surface may
+  cross a face or a corner of the box.
+- `<fastflow> diagnostics = true` writes `<basename>.horizon_status_<n>.txt`: cycle,
+  time, found, reason code, flow iterations, last area, area mass, mean and smallest
+  radius, last mean expansion, smallest |mean expansion| reached, number of surface
+  points outside the mesh, centre, and the reason in words (0 found; 1 area not finite;
+  2 expansion not finite; 3 mean expansion above `hmean_tol`; 4 mean radius negative;
+  5 surface shrank to a point; 6 iteration limit). The summary file is unchanged (after
+  a failed search it still repeats the values of the last success, or NaN).
+- The summary, verbose, grid and Ylm files are opened at the first search, i.e. in the
+  `-d` directory. The same for the tracker file `<basename>.co_<n>.txt`.
+- Tracker: the position is mapped back into the box after every update, so it follows
+  its object across a face (the release stops with "couldn't find the compact object");
+  `<z4c_amr> method = tracker` measures the distance to the nearest image, so the
+  refined region continues across the face. `<z4c> tracker_walk_tol = eps` (mode `walk`,
+  the tracker that follows the lapse minimum): move only to a neighbour whose lapse is
+  below (1 - eps) of the own cell; without it the first of equal neighbours wins and
+  the tracker drifts one cell per step in a uniform lapse.
+
+### 2.3 Clouds across level boundaries (A2-8)
+
+- The released deposit is conservative across levels and periodic faces (identity T1),
+  and a uniform lattice stays uniform across a level boundary when all its clouds have
+  one size, or when the lattice has the spacing of the fine cells (T2: S, P, D8, D8s).
+- The staircase of S2 comes from the constant spreading of a coarse cloud over the leaf
+  cells inside each of its cells. `<particles> deposit_fine_shape = true` replaces it by
+  weight plus slope: inside a cloud cell the weight varies linearly with the analytic
+  slope of the assignment function. Conservation and the uniform lattice are untouched;
+  a smooth density is second-order accurate on the fine cells.
+- Not removed: the source filter acts at the cell size of each level. Data solved with
+  the filter at the root level are inconsistent with the same number of passes on a
+  finer level (section 3). On refined levels this is the leading inconsistency of the
+  track's present data.
+
+### 2.4 Guard and step limit (A2-9, A2-10)
+
+- Guard (`particles/nrpic_guard.cpp`; hooks in `Driver::Execute`, `main`): after every
+  cycle the evolved fields of the spacetime solver are tested for non-finite values
+  (also the initial data). On a hit: diagnostic on standard output and in
+  `<basename>.guard.txt` (time, cycle, count per variable, first cell with level,
+  position and field values, particles left), the driver leaves its loop, every output
+  is written once, exit status 3. `<z4c_guard>`: `stop_nonfinite = false` switches it
+  off; `stop_chi_nonpositive = true` also stops on chi <= 0 (off by default: chi
+  undershoots next to a puncture and such runs survive); `stop_dt_below`,
+  `stop_no_particles`, `check_dcycle`.
+- `<z4c> dt_lightspeed = f`: the step is at most `cfl f min(dx_d / c_d)`,
+  `c_d = alpha sqrt(gamma^dd) + |beta^d|` from the evolved fields, evaluated every
+  cycle, and never above the released limit `cfl dx`.
+
+### 2.5 Region norms (A2-5)
+
+`<particles> region_dcycle = n` writes `<basename>.region.hst` every n cycles on any
+mesh: proper volume, proper-volume means of K and of the lapse, coordinate-volume mean
+of the lapse, and for the whole mesh and inside/outside each sphere (`region_x1..3`,
+`region_radius1..4`; `region_horizon = n` adds the sphere of horizon finder n once it
+is found) the norms `H2 = sqrt(<H^2>)`, `E2 = sqrt(<(16 pi E)^2>)`, `E1 = <E>` and the
+largest |H|, every leaf cell weighted by its proper volume. The bound of the track's
+threshold definition is `H2_out / E2_out` of the horizon sphere.
+
+## 3. Numbers
+
+Filled from the registered runs; see the table of results in `cosmo_amr.md`, section
+"What is tested", and the outcomes in the journal.
+
+## 4. Scouting run of S1 with adaptive refinement
+
+See `cosmo_amr.md`, section "Scouting run", and the journal entry of T10.
+
+## 5. Regression
+
+See `cosmo_amr.md`, section "Regression".
