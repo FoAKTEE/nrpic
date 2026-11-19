@@ -473,3 +473,23 @@ on 4 and 1: 1.1e-13, 1.3e-15, 2.9e-12; dump of 2 ranks read on 2 and 4: 1.3e-13,
 5.9e-12. The identity holds at 3.4e-15 or better in every restarted run. Hr_max differs
 by up to 6.7e-10 (the noise ratio of entry 9). So a restart on several ranks, on the
 same or another number of ranks, behaves as one on one rank, up to rounding.
+
+### 08:47 Entry 14: R0 on the final source; T5 refined-mesh deposit held
+
+R0 at 8f245d7 (runs listed in `scratch/core/tmp/mpi/r0_serial.json`): the serial build
+of this branch gives the release's files byte for byte in geo, boris, dep, east and os
+(P0a held; os includes the five mesh restart files). R0 is repeated now on the final
+source (the field-dump fix of entry 8 is the only change of `athenak/src` since, behind
+`nr_multirank`), with the serial build and with the MPI build on one rank; predictions
+P0a and P0b of entry 7 stand (for the MPI build: identical but for the 36 header bytes of
+the mesh restart files of entry 11).
+
+T5, refined mesh in flat spacetime (176 MeshBlocks of three levels, 10^4 particles,
+t = 4): runs core-20261119-161206-421d7e3 (cic), -161208- (tsc, two filter passes,
+clouds capped at level 1), core-20261119-161349-896e22c (pcs, one filter pass). P5a
+held: trajectories, metric at the particles, snapshots and particle restart files
+identical byte for byte on 2 and 4 ranks; E and S_i at all particles agree with one rank
+to 2.6e-16 / 3.2e-16 / 4.2e-16; the identity on 1, 2, 4 ranks: cic 2.6e-14 / 8.9e-15 /
+4.6e-15, tsc capped 7.9e-14 / 3.2e-14 / 1.9e-14, pcs 4.0e-14 / 1.8e-14 / 7.9e-15 (never
+larger on several ranks than on one); 5.7e3 / 8.9e3 particles handed over and 6.1e3 to
+3.7e4 deposit packets.
