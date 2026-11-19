@@ -1,0 +1,21 @@
+1609.01588 | Jeans|5
+1609.01588 | grow|6
+1609.01588 | horizon entry|4
+1609.01588 | angular momentum|4
+1609.01588 | nonspheric|4
+1609.01588 | velocity dispersion|3
+1609.01588 | inhomogene|3
+1707.03595 | Jeans|3
+1707.03595 | pressure|4
+1810.03490 | Jeans|3
+1810.03490 | pressure|4
+2211.13950 | Jeans|3
+2211.13950 | pressure|5
+2211.13950 | angular momentum|3
+2211.13950 | inhomogene|3
+2211.13950 | anisotrop|3
+2609.14218 | Jeans|3
+2507.18312 | Jeans|3
+2508.10070 | Jeans|3
+2306.11810 | Jeans|3
+2109.04896 | Jeans|3

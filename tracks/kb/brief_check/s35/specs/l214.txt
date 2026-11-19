@@ -1,0 +1,10 @@
+2609.14218 | triaxial|4
+2609.14218 | crash|6
+2609.14218 | diverge|4
+2609.14218 | well inside|3
+2609.14218 | factor (of )?2|5
+2609.14218 | order of magnitude|5
+2609.14218 | analytic estimat|8
+2609.14218 | particle|5
+2609.14218 | threshold|8
+2609.14218 | twice|3

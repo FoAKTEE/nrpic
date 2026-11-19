@@ -1,0 +1,20 @@
+gr-qc/9905064 | spherically symmetric|4
+gr-qc/9905064 | threshold|6
+gr-qc/9905064 | profile|4
+astro-ph/9709072 | critical|5
+astro-ph/9709072 | scaling|4
+1201.2379 | critical|4
+1201.2379 | self-similar|3
+1201.2379 | spherical|3
+1309.4201 | threshold|4
+1309.4201 | spherical|3
+1809.02127 | spherical symmetry|3
+1809.02127 | shape|4
+1907.13311 | spherically symmetric|3
+1907.13311 | universal|3
+1907.13311 | critical|3
+2111.12693 | review|4
+2111.12693 | spherical symmetry|3
+2211.05767 | review|4
+2211.05767 | spherical symmetry|4
+2211.05767 | critical (collapse|scaling|phenomen)|4

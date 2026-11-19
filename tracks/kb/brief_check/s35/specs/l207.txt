@@ -1,0 +1,15 @@
+1609.01588 | hoop|5
+1609.01588 | Zel.dovich approximation|3
+1609.01588 | Doroshkevich|3
+1609.01588 | 0\.05556|3
+1707.03595 | extreme|6
+1707.03595 | near.extremal|3
+1707.03595 | a_\{?\*\}?\s*=\s*1|4
+1707.03595 | rapidly rotating|4
+1707.03595 | finite duration|4
+1707.03595 | sufficiently long|3
+1810.03490 | inhomogene|5
+1810.03490 | 3\.70|3
+1810.03490 | order of magnitude|3
+2211.13950 | velocity dispersion|4
+2211.13950 | 2/5|5

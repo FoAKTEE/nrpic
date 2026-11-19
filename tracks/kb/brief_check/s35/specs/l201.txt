@@ -1,0 +1,9 @@
+2608.13206 | GRChombo|4
+2608.13206 | hydrodynamic|4
+2608.13206 | Gamma.driver|6
+2608.13206 | scale factor|5
+2608.13206 | 94|6
+2608.13206 | coarse|6
+2608.13206 | Zel.dovich|8
+2608.13206 | accretion|8
+2608.13206 | fit|8

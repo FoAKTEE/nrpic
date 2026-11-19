@@ -1,0 +1,14 @@
+2509.26470 | toy model|5
+2509.26470 | need not exist|3
+2509.26470 | unique|5
+2509.26470 | strong.field|4
+2509.26470 | weak.field|4
+2509.26470 | (initial|starting) guess|5
+2509.26470 | mean curvature|4
+2509.26470 | iterat|5
+2509.26470 | primordial black hole|4
+2607.21308 | parabolic.hyperbolic|4
+2607.21308 | periodic|6
+2607.21308 | boundary condition|5
+2607.21308 | unique|4
+2607.21308 | perfect fluid|3

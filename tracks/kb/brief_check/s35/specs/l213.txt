@@ -1,0 +1,13 @@
+2109.04896 | scalar field|6
+2109.04896 | potential|5
+2109.04896 | direct collapse|4
+2109.04896 | accretion|5
+2109.04896 | hoop|5
+2109.04896 | Hubble time|5
+2109.04896 | pressure|4
+2306.11810 | e.fold|6
+2306.11810 | negligible|4
+2306.11810 | non.rotating|4
+2306.11810 | dimensionless spin|5
+2306.11810 | short|4
+2306.11810 | scalar field|4
