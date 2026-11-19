@@ -888,3 +888,69 @@ processor runs -155051-87e189e, -183239-ca15f8b, -185858-a7a32cd; psi and W equa
 Consequence: the card executable `athena_gpu` of a7a32cd is tested for the scalar and
 the vector equation at 64 cells on one A100; READY and the interface (sections 8, 10)
 say so.
+
+## 2026-11-19, entry 16: handoff of the package (closed)
+
+For a reader with no memory. The package idsolve of core is closed: every deliverable
+exists, its tests ran on processors and on a card, failed predictions are on record.
+
+What exists (branch `core/id-solver`, pushed; `athenak/src` unchanged since a7a32cd):
+- Source: `athenak/src/particles/nrpic_idsolve.cpp` (scalar and vector equation, 1052
+  lines), `athenak/src/multigrid/multigrid_robin.cpp` (Robin faces, 100 lines). Options
+  `<particles> id_solve`, `id_vector`, `id_vector_residual` and the rest, `<gravity>
+  mg_bc = robin`: interface `tracks/core/interfaces/id_solver.md` section 6 (options,
+  requirements, outputs) and section 10 (vector part). Formats: `docs/FORMATS.md`
+  142-152. Inputs and particle-file maker: `problems/idsolve/` (README).
+- Lines of shared files touched (all additions, line numbers on this branch, checked
+  again today): `CMakeLists.txt` 103, 141; `bvals/bvals.hpp` 21;
+  `gravity/mg_gravity.cpp` 77-89, 98, 226-241; `gravity/mg_gravity.hpp` 68-71;
+  `multigrid/multigrid.hpp` 397-401, 505-507, 689-779; `multigrid/multigrid_driver.cpp`
+  2193-2194; `multigrid/multigrid_tasks.cpp` 360-361; `particles/nrpic.cpp` 276;
+  `particles/nrpic_io.cpp` 1237; `particles/particles.cpp` 122;
+  `particles/particles.hpp` 152-170, 365-372 (all under `athenak/src/`); `docs/FORMATS.md`
+  142-152.
+- Executables of a7a32cd, published 2026-11-15 19:18 UTC and not republished (the
+  source did not change): `scratch/core/exe/core_id-solver/athena_cpu` (sha256
+  383bbb5b...), `athena_gpu` (0d7bdff4...), `COMMIT`; `READY` rewritten today (both
+  executables tested, no pending part; a list "BEFORE USE").
+- Tests: T0 to T5, A to F (scalar part; entries 4 to 8, 12), V0 to V7 (vector part;
+  entries 10 to 13), V4 on a card (entry 15). Numbers in
+  `tracks/core/analysis/idsolve/*_numbers.json`, figures in `figs/` there (each looked
+  at), run ids in the entries and in `runs.json`, `runs_card.json`.
+- Card time of the package: about 0.02 card-hours in all (T5 job 4441, 11 s; V4 job
+  4487, 54 s); jobs 4440 and 4486 were cancelled while queued.
+
+Failed predictions on record: T1 (e) original form and T1 (f) (my arithmetic); T2 (d) at
+the two coarser meshes; T3 (b) rms factor; T4 (b) in the maximum norm; A (K_min after a
+restart above my bound; C showed it is the restart of the code) and A's "mean |H| below
+1e-4"; B (the solved run does not keep the smaller H); D; E on both counts; F (c) as
+written and F (d); V2 (face error does not fall with resolution; ADM momentum 3.6 per
+cent against 1); V3 (c); the first V5 launch (stop rule); V4 one count (vector V cycles
+322 against 323 in the stencil form).
+
+What a track must know before use: interface section 9, first list (and READY, "BEFORE
+USE"): judge solved data in the matter region (the outermost cells show |H| of the Z4c
+boundary ghost cells at t = 0, 7.9e-6 for the ball and up to 1.9e-3 for the Gaussian,
+and the outflow faces dominate whole-mesh |H| after a few steps); the vector part has a
+0.9 per cent closure error of W at the faces that does not fall with resolution; use
+`id_vector_residual = code`; a command-line override of an option that is absent from
+the input file stops AthenaK, so the option goes into the input.
+
+Open, not of this package's remaining scope (no new line of work was opened today):
+1. A Bowen-York-shaped Robin fill of W (fill W - W_BY(P)) for the face closure error;
+   the face error in mode code of the vector part is not measured [TO VERIFY].
+2. Refined meshes, MPI, punctures: design in interface section 7, nothing implemented.
+3. Not tested: moving matter together with curvature, `nrpic_cosmo id = file`,
+   Bowen-York curvature of `nrpic_cf`, a cosmological constant, the vector part on the
+   torus.
+4. The outflow face layer of Z4c (test F) decides what tracks see over the whole mesh;
+   it belongs to whoever owns the Z4c boundary.
+5. Why the vector part gains only 3.3 to 4.8 times on the card against 16 times for the
+   scalar solve was not examined.
+Requests: orchestrator, merge `core/id-solver` into main (V4 is in); tracks A, B, D, F may
+use `scratch/core/exe/core_id-solver/` for scouting (decision 0013). `tracks/core/STATUS.md`
+and `HANDOFF.md` were not rewritten by this package (they belong to the lead of core and
+the other core branches write next to them); this entry is the package's handoff.
+Run next: nothing in this package. To repeat the card comparison:
+`harness/bin/nrpic-run submit --kind scouting --gate G2 --purpose "..." --launcher local
+-- python3 tracks/core/analysis/idsolve/analyze_card_v4.py`.
