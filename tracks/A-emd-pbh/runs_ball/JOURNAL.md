@@ -462,3 +462,15 @@ H L2 orders 0.51, 0.51, 0.49 and M L2 orders -0.40, -0.47, -0.50 (the h^(-1/2) g
 one-cell band of an O(1/h) residual), as predicted. The data are the exact constraint-
 satisfying slice except at the jumps, where any mesh sees a discontinuity of K_ij and of
 the density; the code will start with that band.
+
+## 2026-11-19, entry 9: a coarse processor run of BH-1 while the card job waits (prediction first)
+
+The card job (Slurm 4642) is estimated to start between 10:00 and 13:00 PST. The
+processor executable of core/gauge is serial (scripts/build_cpu.sh: Kokkos Serial), so
+only a coarse mesh fits: BH-1 at dx = M/2 (64^3 over [-16, 16]^3, lattice n_lat = 17,
+h = M/2, one particle per cell), t = 0 -> 16, same deck. Purpose: learn early whether the
+relaxed lapse lets the edge of the core trap at all (B2), and a fourth resolution.
+Prediction [JUDGEMENT]: the run reaches t = 16; the finder reports a horizon between t = 9
+and 14 (R_AH = 1.37 M is only 2.7 cells, so it may also fail: probability of a detection
+about 0.6); if found, |m_irr/m_exact(slice) - 1| below 0.1 at first detection; core-shell
+largest |eps| at the turnaround (tau = 3.37) below 2e-2.
