@@ -26,7 +26,7 @@ Code outside this directory (written by this package, tests in `kb/tests/`):
 | `kb/kbtool/meta_papers.py` | `python -I -m kbtool.meta_papers load` (metadata into `papers`, idempotent) and `brief16` (comparison report) |
 | `kb/kbtool/meta_manifest.py` | the manifest additions file and `load_full_manifest()` (section 17 + additions) |
 | `kb/manifests/arxiv_additions.tsv` | the 26 extra papers with group, priority, requester and decision (0016 item 6) |
-| `kb/tests/test_pdf_reader.py`, `kb/tests/test_meta_papers.py` | 36 tests (hand-made PDFs, synthetic stores, the real brief); the whole suite passes (206 tests before the last two commits, the two new files 36/36 after) |
+| `kb/tests/test_pdf_reader.py`, `kb/tests/test_meta_papers.py` | 35 tests (9 + 26: hand-made PDFs, synthetic stores, the real brief); the whole kb suite, 212 tests, passes on the final code (pytest exit 0, 2026-11-19 14:5x UTC) |
 
 ## Results (run ids)
 
