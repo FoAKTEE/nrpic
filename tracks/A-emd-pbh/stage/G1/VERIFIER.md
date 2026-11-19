@@ -275,8 +275,8 @@ section 6 write 17 (with the proper time, E and S_i).
 ## C11: data-flow schematic
 
 `note/figures/schem_dataflow.png` and `.svg`, script `note/scripts/schem_dataflow.py`
-(style `paperfig.py`, the copy in `note/scripts/`), made in run A-20261119-142905-c813c01
-(`schem/`). Four lanes (expanding ball, periodic box, Newtonian mode, criteria and scope)
+(style `paperfig.py`, the copy in `note/scripts/`), made in run A-20261119-143347-37240f3
+(after a label fix; the first version is in A-20261119-142905-c813c01 `schem/`). Four lanes (expanding ball, periodic box, Newtonian mode, criteria and scope)
 through initial data -> AthenaK core-v0.3 -> raw outputs under `scratch/A-emd-pbh/<run id>/`
 -> the track's analysis -> products -> `note/scripts/common.py` (checksums) -> `ledger.py`
 -> `tables/ledger.tex` -> `main.pdf`; below, registration through `nrpic-run` and the
