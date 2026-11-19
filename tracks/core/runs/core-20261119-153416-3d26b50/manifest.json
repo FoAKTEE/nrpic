@@ -1,0 +1,108 @@
+{
+  "schema": "nrpic-run-manifest/1",
+  "run_id": "core-20261119-153416-3d26b50",
+  "track": "core",
+  "gate": "G2",
+  "kind": "scouting",
+  "purpose": "test B of idsolve2 (journal entry 2): Zel'dovich ball, constraints before and after the solve at 32, 64, 128 cells and evolution to t = 2, region norms; processor build of 76add0c",
+  "preregistered_in": null,
+  "launcher": "local",
+  "command": [
+    "python3",
+    "tracks/core/analysis/idsolve2/test_b.py",
+    "--exe",
+    "/data/haiyangw/nrpic/scratch/core/tmp/idsolve2/exe_76add0c/athena_cpu",
+    "--n",
+    "32,64,128",
+    "--jobs",
+    "4"
+  ],
+  "cwd": ".",
+  "git": {
+    "sha": "3d26b50c2f745aaf58b5344c558303cf63c211a2",
+    "branch": "core/id-solver-2",
+    "dirty": false,
+    "package": [
+      "tracks/core/analysis/idsolve2"
+    ],
+    "outside_package": {
+      "count": 0,
+      "first": []
+    },
+    "merge_base_main": "f51539c6f46a051b8c3c2d86501bcc6dfaa34f93",
+    "worktree": "wt/core-idsolve2"
+  },
+  "code": {
+    "core_tag": "core-v0.3",
+    "athenak_upstream_sha": "c5a0d7f",
+    "kokkos_sha": "6739bc623081648af9e752b616d9671527922cbf",
+    "problem": null
+  },
+  "env": {
+    "host": "anta",
+    "env_hash": "33c1dbb6673b68919eaa332b0add0b58aeac8be843f2071b9d06e2e0e397a96d",
+    "machine_file_sha256": "0321f40f4caeeb2a36624a9fa9809e60bad31071f366b3517ba23ad45698d2d7",
+    "uv_lock_sha256": "5417f6ba318b914aa3800e5d55f7b11fdd8df13c2688bdda7d419240aa1d5863",
+    "track_requirements_sha256": null,
+    "container_digest": null,
+    "compiler": "g++ 11.4.0",
+    "mpi": "none (Athena_ENABLE_MPI=OFF)",
+    "gpu": null,
+    "python": "3.10.12 /data/haiyangw/nrpic/wt/core-idsolve2/.venv"
+  },
+  "input": null,
+  "inputs": [
+    {
+      "path": "tracks/core/analysis/idsolve2/test_b.py",
+      "role": "argv",
+      "sha256": "8d6988cdbbc6a4c4049a439821ec701f9fad15e929556e84bce4b3ade859eb70",
+      "bytes": 11104,
+      "tracked": true
+    },
+    {
+      "path": "/data/haiyangw/nrpic/scratch/core/tmp/idsolve2/exe_76add0c/athena_cpu",
+      "role": "argv",
+      "sha256": "4b3a63696aacb3c61adc425422dce2c1e7cff01f0048b65e859b72385ef97eef",
+      "bytes": 251066632,
+      "tracked": false,
+      "location": "main checkout data root"
+    }
+  ],
+  "batch_entries": null,
+  "resources": {
+    "nodes": 1,
+    "gpus": 0,
+    "cores": 4,
+    "walltime_s": null,
+    "wall_limit": null,
+    "segments_max": null,
+    "gpu_hours_requested": 0.0,
+    "gpu_hours": null,
+    "particles": null
+  },
+  "slurm": null,
+  "outputs": {
+    "dir": "scratch/core/core-20261119-153416-3d26b50",
+    "sha256sums": "sha256sums.txt",
+    "sha256sums_sha256": null,
+    "bytes": null,
+    "files": null
+  },
+  "status": "running",
+  "exit_code": null,
+  "registered": "2026-11-19T15:34:17Z",
+  "started": null,
+  "ended": null,
+  "parents": [],
+  "notes": "",
+  "budget_at_submit": {
+    "gpu_hours_allotted": 40.0,
+    "cores_allotted": 16,
+    "gpu_hours_used": 2.5281,
+    "gpu_hours_reserved": 5.4433,
+    "gpu_hours_without_gate": 5.8613,
+    "cores_busy": 12,
+    "runs": 1046,
+    "allotment_from": "coord/DECISIONS/0006-compute-budget.md + 0014-budgets-after-wave-1.md"
+  }
+}
