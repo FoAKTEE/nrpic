@@ -185,3 +185,34 @@ the GW wave equation (light speed, the box modes k = 2 pi n/L) breaks it.
 Note (07:59 PST): the clock times in the headers of entries 1 to 5 were first written
 wrong (estimated, not read); corrected to the commit times of each entry (`git log`).
 The order of predictions and runs is unchanged and is the commit order.
+
+## Entry 6 (08:10 PST): outcomes of P10 and I1
+
+P10 (analyses A-fid-L8 B-20261119-155808-0942d44 and A-fid-L2 B-20261119-155838-4f1954f
+against A-fid):
+- P10a HOLDS: per-halo quadrupole sum 2.342e-7 (L = 4) -> 2.998e-5 (L = 8, ratio 128.0)
+  and 1.830e-9 (L = 2, ratio 1/128); near field 3.651e-7 -> 2.337e-5 at a = 100, ratio 64.00
+  at every a (printed digits).
+- P10b REFUTED in part: the radiated measure grows by 221, 200, 137 at a = 30, 40, 50
+  (more than 128, as predicted) but by 113 and 124 at a = 70 and 100 (less than 128); at
+  a = 15 and 20 by 243 and 270. The box-fundamental argument accounts for the excess
+  before a ~ 50 at most; the late emission scales like the quadrupole law. The per-halo
+  sum is 11 times the box measure at a = 30 for L = 8 (19 for L = 4), so the gap between
+  the isolated-source formula and the box is not mainly the box fundamental.
+- P10c HOLDS: from L = 4 to L = 2 the radiated measure falls by 292, 275, 171, 177, 185,
+  177, 166 at a = 15, 20, 30, 40, 50, 70, 100 (more than 128 everywhere).
+
+I1 (relativistic initial data, run I-gr B-20261119-154528-9306cb1, stopped by me during
+L = 16): L = 4 HOLDS (outer change 5.5e-10 < 1e-9, Hamiltonian residual 5.1e-11, momentum
+4.3e-6, max|psi_N| 0.0221, 209 s); L = 8 REFUTED (18 outer iterations, the limit of
+make_field.build, ended at a change of 1.8e-6 with contraction 0.81 per iteration;
+Hamiltonian residual 1.1e-11, momentum 5.1e-5; max|psi_N| 0.0883 = 4.0 times L = 4, the L^2
+scaling holds); L = 16 REFUTED (overflow in the conformal-factor powers of cosmo_id.py
+lines 192-233 in the first outer iteration, NaN; stopped after 2 outer iterations, each
+running its 60 inner iterations on NaN). The predicted |psi_N| ~ 0.35 at L = 16 is where
+the tool fails.
+
+DESIGN.md rewritten with these results: the recommendation moved from a scan in L to a
+scan in amplitude at L = 8 (section 3), because the Newtonian problem depends on sigma1 a
+only (P4) and the radiated box signal follows sigma^(7/2) (P9), while a smaller box loses
+part of the radiation (P10b, P10c) and a larger one fails at the initial data (I1).
