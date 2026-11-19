@@ -1,0 +1,34 @@
+{
+ "run_id": "kb-20261115-112522-3ac74c2",
+ "owner": "kb",
+ "command": [
+  "/data/haiyangw/nrpic/wt/kb/kb/bin/kb",
+  "fetch-missing",
+  "--priority",
+  "3",
+  "--ids-file",
+  "/data/haiyangw/nrpic/scratch/kb/kb-20261115-112522-3ac74c2/ids.txt"
+ ],
+ "cwd": "/data/haiyangw/nrpic/wt/kb",
+ "commit": "3ac74c28341f38e513d88548702d175d34b43807",
+ "worktree_dirty_kb": false,
+ "inputs": [
+  {
+   "path": "/data/haiyangw/nrpic/wt/kb/kb/manifests/arxiv.tsv",
+   "sha256": "4012a46dfe997d8f936a15fd62dd0ebe73aac6d64cac2391eb61aee2eb27e4d0"
+  }
+ ],
+ "output_dir": "/data/haiyangw/nrpic/scratch/kb/kb-20261115-112522-3ac74c2",
+ "purpose": "K1: download the priority-3 arXiv entries missing from kb-data/raw (33 at 11:25 UTC) through harness/bin/nrpic-fetch-arxiv, one process, sequential (prediction D1 in kb/JOURNAL.md)",
+ "kind": "scouting",
+ "cores": 1,
+ "card_hours": 0,
+ "started_utc": "2026-11-15T11:25:22Z",
+ "started_unix": 1794741922.5459785,
+ "status": "finished",
+ "pid": 966412,
+ "wall_time_s": 166.7,
+ "finished_utc": "2026-11-15T11:28:09Z",
+ "exit_code": null,
+ "note": "exit code not observed (detached process); 33 of 33 ids printed a store path, stderr empty; process gone at 11:28:13 UTC (wall time from the last write of stdout.log)"
+}

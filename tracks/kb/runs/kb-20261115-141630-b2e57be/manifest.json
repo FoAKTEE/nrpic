@@ -1,0 +1,36 @@
+{
+ "run_id": "kb-20261115-141630-b2e57be",
+ "owner": "kb",
+ "command": [
+  "kb/.venv/bin/python",
+  "-I",
+  "kb/scripts/fig_lead_equations.py",
+  "/data/haiyangw/nrpic/scratch/kb/lead/l10_table.tsv",
+  "/data/haiyangw/nrpic/scratch/kb/lead/l11_table.tsv",
+  "kb/reports/fig_lead_equations"
+ ],
+ "cwd": "/data/haiyangw/nrpic/wt/kb",
+ "commit": "b2e57be2f928b034c1712565fa80c6f4fddfb742",
+ "worktree_dirty_kb": true,
+ "inputs": [
+  {
+   "path": "/data/haiyangw/nrpic/scratch/kb/lead/l10_table.tsv",
+   "sha256": "c06595844f496cc7f6effb464860332c9f4c2d79e7e38dfc381c455b66aa761a"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/scratch/kb/lead/l11_table.tsv",
+   "sha256": "47304e22d8e8c6d022f4349d396a0fd3e598c95b9d86a816ae83b3529158cb16"
+  }
+ ],
+ "output_dir": "/data/haiyangw/nrpic/scratch/kb/kb-20261115-141630-b2e57be",
+ "purpose": "kb lead: figure of checks L10 and L11 (equation rows against independent counts, before/after the shorthand fixes)",
+ "kind": "scouting",
+ "cores": 1,
+ "card_hours": 0,
+ "started_utc": "2026-11-15T14:16:30Z",
+ "started_unix": 1794752190.7870085,
+ "status": "finished",
+ "exit_code": 0,
+ "wall_time_s": 1.02,
+ "finished_utc": "2026-11-15T14:16:31Z"
+}

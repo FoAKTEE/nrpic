@@ -1,0 +1,33 @@
+{
+ "run_id": "kb-20261115-112823-3ac74c2",
+ "owner": "kb",
+ "command": [
+  "bash",
+  "-c",
+  "ls -1 /data/haiyangw/nrpic/kb-data/raw/arxiv > /data/haiyangw/nrpic/scratch/kb/kb-20261115-112823-3ac74c2/raw_listing_before.txt; /data/haiyangw/nrpic/wt/kb/kb/bin/kb verify-downloads --report /data/haiyangw/nrpic/wt/kb/kb/reports/verify-downloads.md; rc=$?; cp /data/haiyangw/nrpic/kb-data/manifests/inventory.json /data/haiyangw/nrpic/kb-data/manifests/SHA256SUMS /data/haiyangw/nrpic/scratch/kb/kb-20261115-112823-3ac74c2/; ls -1 /data/haiyangw/nrpic/kb-data/raw/arxiv > /data/haiyangw/nrpic/scratch/kb/kb-20261115-112823-3ac74c2/raw_listing_after.txt; (cd /data/haiyangw/nrpic/kb-data && sha256sum -c --quiet manifests/SHA256SUMS > /data/haiyangw/nrpic/scratch/kb/kb-20261115-112823-3ac74c2/sha256sum_check.txt 2>&1; echo \"sha256sum -c exit $?\" >> /data/haiyangw/nrpic/scratch/kb/kb-20261115-112823-3ac74c2/sha256sum_check.txt); exit $rc"
+ ],
+ "cwd": "/data/haiyangw/nrpic/wt/kb",
+ "commit": "3ac74c28341f38e513d88548702d175d34b43807",
+ "worktree_dirty_kb": true,
+ "inputs": [
+  {
+   "path": "/data/haiyangw/nrpic/wt/kb/kb/manifests/arxiv.tsv",
+   "sha256": "4012a46dfe997d8f936a15fd62dd0ebe73aac6d64cac2391eb61aee2eb27e4d0"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/wt/kb/kb/manifests/github.tsv",
+   "sha256": "23876b7ec1134475c1a9cde1488f970c61363990b699b1240b787272536d2928"
+  }
+ ],
+ "output_dir": "/data/haiyangw/nrpic/scratch/kb/kb-20261115-112823-3ac74c2",
+ "purpose": "K1 inventory after the priority-3 download kb-20261115-112522-3ac74c2 (prediction D1 in kb/JOURNAL.md)",
+ "kind": "scouting",
+ "cores": 1,
+ "card_hours": 0,
+ "started_utc": "2026-11-15T11:28:23Z",
+ "started_unix": 1794742103.3269155,
+ "status": "finished",
+ "exit_code": 0,
+ "wall_time_s": 3.95,
+ "finished_utc": "2026-11-15T11:28:27Z"
+}
