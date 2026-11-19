@@ -4,7 +4,9 @@ the stochastic sources under a lapse that is not geodesic.
 
     python3 g2_gauge_analysis.py --data DIR [DIR ...] [--out DIR]
 
-For the runs geo, harm (lapse_harmonic = 0.05) and kdrv (lapse_kdriver = 2): box means
+For the runs geo, harm (lapse_harmonic = 0.05) and kdrv (lapse_kdriver = 2), and for
+those of test G5 found among the data (geoc: geodesic at Courant 1/32; cap: conformal-time
+lapse capped at 8 by the relaxation term of core/gauge, Courant 1/32): box means
 against the lockstep background of the sources (which runs in the proper time of the
 mean lapse); the mean lapse of harm against 1/(1 - 0.15 int H dt); rms of the lapse
 perturbation from the dumps; R^NR per mode against L^(-3/2) W R alpha of the lockstep
@@ -33,9 +35,13 @@ def main():
     q = np.sqrt(n2.astype(float))
     summ = dict(data=data, runs={})
     keep = {}
-    for k in ("geo", "harm", "kdrv"):
-        rd = next(os.path.join(d, k) for d in data
-                  if os.path.exists(os.path.join(d, k, BASE + ".sf.hst")))
+    found = {}
+    for k in ("geo", "harm", "kdrv", "geoc", "cap"):
+        rd = next((os.path.join(d, k) for d in data
+                   if os.path.exists(os.path.join(d, k, BASE + ".sf.hst"))), None)
+        if rd:
+            found[k] = rd
+    for k, rd in found.items():
         h = sf.read_history(os.path.join(rd, BASE + ".sf.hst"))
         c = sf.read_con_history(os.path.join(rd, BASE + ".sf.con.hst"))
         hub = np.sqrt((8.0*np.pi/3.0)*(0.5*h["Pi_b"]**2 + 0.5*mass**2*h["phi_b"]**2))
@@ -57,6 +63,24 @@ def main():
             pred = 1.0/(1.0 - 0.15*ih)
             r["alpha_vs_formula_max"] = float(np.abs(h["alpha"]/pred - 1.0).max())
             r["alpha_formula_end"] = float(pred[-1])
+        if k == "cap":
+            # alpha = a while below alpha_0 = 8; then the root of ln(alpha/8) = T H alpha
+            a_ = np.exp(h["ln_a"])
+            sel = h["ln_a"] <= 1.5
+            r["alpha_vs_a_max_to_1.5_efolds"] = float(np.abs(h["alpha"][sel]/a_[sel]
+                                                             - 1.0).max())
+            late = h["ln_a"] >= 2.6
+            root = []
+            for hh in hub[late]:
+                x = 8.0
+                for _ in range(60):
+                    x = 8.0*np.exp(0.02*hh*x)
+                root.append(x)
+            r["alpha_vs_root_max_from_2.6_efolds"] = float(
+                np.abs(h["alpha"][late]/np.array(root) - 1.0).max()) if late.any() else None
+            dN = np.diff(h["ln_a"])
+            r["efold_step_first"] = float(dN[0])
+            r["efold_step_last_full"] = float(dN[-2]) if dN.size > 1 else None
         dd = s3.dumps(rd, BASE)
         rows = []
         for cy in sorted(dd):
@@ -85,34 +109,40 @@ def main():
         r["alpha_rms_max"] = max(x["alpha_rms"] for x in rows)
         summ["runs"][k] = r
         keep[k] = (h, c, rows)
-    g = summ["runs"]["geo"]
-    for k in ("harm", "kdrv"):
-        r = summ["runs"][k]
+    for k, ref in (("harm", "geo"), ("kdrv", "geo"), ("cap", "geoc"), ("cap", "geo"),
+                   ("geoc", "geo")):
+        if k not in summ["runs"] or ref not in summ["runs"]:
+            continue
+        r, g = summ["runs"][k], summ["runs"][ref]
         for lab in ("n_le_2", "n_le_4", "all_in"):
-            r[f"max_dev_{lab}_over_geo"] = r["max_dev_" + lab]/g["max_dev_" + lab]
-            r[f"end_dev_{lab}_over_geo"] = r["end_dev_" + lab]/g["end_dev_" + lab]
-        r["H_ratio_max_over_geo"] = r["H_ratio_max"]/g["H_ratio_max"]
-        r["M_ratio_max_over_geo"] = r["M_ratio_max"]/g["M_ratio_max"]
+            r[f"max_dev_{lab}_over_{ref}"] = r["max_dev_" + lab]/g["max_dev_" + lab]
+            r[f"end_dev_{lab}_over_{ref}"] = r["end_dev_" + lab]/g["end_dev_" + lab]
+        r[f"H_ratio_max_over_{ref}"] = r["H_ratio_max"]/g["H_ratio_max"]
+        r[f"M_ratio_max_over_{ref}"] = r["M_ratio_max"]/g["M_ratio_max"]
     common.dump_json(summ, os.path.join(out, "summary.json"))
 
     fs = common.style()
     import matplotlib.pyplot as plt
-    cols = dict(geo=fs.PAL["blue"], harm=fs.PAL["red"], kdrv=fs.PAL["green"])
+    cols = dict(geo=fs.PAL["blue"], harm=fs.PAL["red"], kdrv=fs.PAL["green"],
+                geoc=fs.PAL["orange"], cap=fs.PAL["yellow"])
     labs = dict(geo="geodesic", harm=r"$\partial_t\alpha=-0.05\,\alpha^2\hat K$",
-                kdrv=r"driver, $\mu=2$")
+                kdrv=r"driver, $\mu=2$", geoc="geodesic, C = 1/32",
+                cap="conformal, capped at 8")
     fig, ax = plt.subplots(1, 3, figsize=(fs.FULL_WIDTH, 2.8))
     fig.subplots_adjust(left=0.075, right=0.99, bottom=0.16, top=0.95, wspace=0.32)
     for k, (h, c, rows) in keep.items():
         ne = [x["efolds"] for x in rows]
-        ax[0].plot(h["ln_a"], h["alpha"], color=cols[k], label=labs[k])
-        ax[0].plot(ne, [1.0 + x["alpha_rms"]*1e5 for x in rows], ":", color=cols[k])
+        ax[0].plot(h["ln_a"], np.log(h["alpha"]), color=cols[k], label=labs[k])
+        ax[0].plot(ne, [np.log(1.0 + x["alpha_rms"]*1e5) for x in rows], ":",
+                   color=cols[k])
         ax[1].plot(ne[1:], [x["n_le_2"] for x in rows[1:]], "-", color=cols[k],
                    label=labs[k])
         ax[1].plot(ne[1:], [x["all_in"] for x in rows[1:]], "--", color=cols[k])
         ax[2].plot(c["efolds"][1:], c["H_ratio"][1:], "-", color=cols[k])
         ax[2].plot(c["efolds"][1:], c["M_ratio"][1:], "--", color=cols[k])
     ax[0].set_xlabel("e-folds after $N_*$")
-    ax[0].set_ylabel(r"$\langle\alpha\rangle$ (dotted: $1+10^5\,{\rm rms}\,\delta\alpha$)")
+    ax[0].set_ylabel(r"$\ln\langle\alpha\rangle$ (dotted: "
+                     r"$\ln(1+10^5\,{\rm rms}\,\delta\alpha)$)")
     ax[0].legend(loc="upper left", fontsize=7)
     ax[1].set_yscale("log")
     ax[1].axhline(2e-2, **fs.MASK_LINE)
