@@ -36,10 +36,34 @@ harness/bin/nrpic-run submit --kind scouting --gate G2 --cores 8 --package track
 kb/.venv/bin/python -I kb/kbtool/search_rerank.py "On which supercomputers were the simulations run?" --db $SNAP
 ```
 
-## Results
+## Results (snapshot kb-20261115-a848a06; details and run ids in JOURNAL.md)
 
-See `JOURNAL.md` (R5) for the final numbers with run ids.
+- C4 reader fixed (R1, R2b): 30 of 30 sampled papers have an INSPIRE record; 28 agree in title
+  and authors; 2103.01183 and gr-qc/9905058 differ because of parse defects (Requests).
+- Golden questions (R5, run kb-20261119-151500-2721f64), top 10 of 32:
+
+| mode | paper | answer location |
+|---|---|---|
+| text | 27 (84.4 %) | 21 (65.6 %) |
+| hybrid (wave 2) | 28 (87.5 %) | 23 (71.9 %) |
+| rerank, w2-noexpand (this package) | 28 (87.5 %) | 25 (78.1 %) |
+
+  KB-G2 of decision 0016 (paper >= 80 %) is met; the answer location is reported (78.1 %).
+  On the ten held-out questions (R4, run kb-20261119-142613-942f713): answer location 6 vs 5,
+  paper 8 vs 9.
+- Diagnosis (R3, R4b): the misses are ranking misses, not oversized chunks; only one answer
+  lies beyond the model's 512 pieces. Expanding the pool by the first three papers hurt.
+- Cost: about 11 s per question on 6 threads under a machine load near 130 (4 s of it the
+  first stage), because the window vectors are computed on the fly.
 
 ## Requests
 
-See `JOURNAL.md`, last section, and the structured report of this package.
+1. kb lead: `kb search --rerank` (embed_cli.py, cli.py are not this package's files); replace
+   `kb/QA_REPORT.md` by the R5 report or a rerun; `kb qa golden --yaml kb/golden/questions.yaml`.
+2. kb lead (parser): title of 2103.01183 carries a dedication; gr-qc/9905058 has no title or
+   authors.
+3. kb lead: a second held-out question set (20 or more, written without seeing R3/R4) before
+   trying the post-hoc remedies of R4b.
+4. kb lead: whether the abstract counts as the answer location of golden q16.
+5. kb lead (ingest): smaller chunks or a stored window index would make the second stage
+   cheaper.

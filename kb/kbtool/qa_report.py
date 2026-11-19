@@ -568,8 +568,9 @@ def markdown(rep):
     if c.get("rerank_config"):
         rc = c["rerank_config"]
         a(f"- Mode rerank: `kbtool/search_rerank.py`, variant {rc['name']}: the first {rc['pool']} chunks of the "
-          f"hybrid list (plus all chunks of its first {rc['expand']} papers), cut into windows of {rc['win']} "
-          f"sentences (stride {rc['stride']}), ordered by reciprocal-rank fusion of window BM25 and window vectors.")
+          f"hybrid list" + (f" plus all chunks of its first {rc['expand']} papers" if rc['expand'] else "") +
+          f", cut into windows of {rc['win']} sentences (stride {rc['stride']}), ordered by reciprocal-rank fusion "
+          f"of window BM25 and window vectors" + (" and the hybrid order" if rc.get("with_stage1") else "") + ".")
     a("- KB-G2 (decision 0016, item 6): at least 80 % of the golden questions with the right paper in the top ten "
       "(gating); the hit at the answer location is reported, not gating.")
     if c.get("empty_sourcemap_hits"):

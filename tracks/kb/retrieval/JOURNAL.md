@@ -177,3 +177,46 @@ threshold met in every mode (28/32 = 87.5 % >= 80 %). C4: 1004.1353 now 100 % su
 differing list is 2103.01183 and gr-qc/9905058 only. Refuted if rerank differs from R4's
 w2-noexpand on any question (then search() and the evaluation do not agree), or C4 lists
 1004.1353.
+
+Outcome R5 (run kb-20261119-151500-2721f64, 07:15-07:42 PST, 6 threads; QA_REPORT.md and
+qa.json in its run directory; figures `fig_r4_rerank.png` and `fig_r5_c4.png`, which I looked
+at): prediction held exactly. C7 on the 32 golden questions, top 10:
+
+| mode | paper | answer location | MRR of the paper |
+|---|---|---|---|
+| text | 27 (84.4 %) | 21 (65.6 %) | 0.712 |
+| hybrid | 28 (87.5 %) | 23 (71.9 %) | 0.657 |
+| rerank (w2-noexpand) | 28 (87.5 %) | 25 (78.1 %) | 0.721 |
+
+The rerank rows equal R4's w2-noexpand on every question (checked by script). KB-G2 (decision
+0016, item 6): paper in the top ten for >= 80 % of the golden questions: met in every mode
+(hybrid and rerank 87.5 %). Answer location (reported, not gating): 78.1 % with rerank, from
+71.9 %. Parse success on the same snapshot (C3): 684 of 709 ingested papers have parse status
+ok (96.5 %; 23 review, 1 pdf, 1 failed), above the 95 % bar under the strictest reading; 683 of
+684 manifest ids ingested (gr-qc/9412071 is handled by the pdf_meta package of this wave, not
+in a848a06). C4: 30 of 30 with an INSPIRE record; 1004.1353 now 100 % (R2b held); below a bar
+only 2103.01183 (title carries a dedication) and gr-qc/9905058 (no title or authors parsed).
+Cosmetic fix after the run: the C7 sentence said "plus all chunks of its first 0 papers"; it
+now names the expansion only when there is one (qa_report.markdown; numbers unchanged).
+
+Still missed at the answer location by rerank: q06, q07 (the conclusion/acknowledgement chunk
+of 2611.12831 never enters the pool), q12 (paper not found; answer at the end of an 830-piece
+chunk), q13 (paper not found), q16 (abstract found, narrow location), q17, q20 (answer chunk in
+the pool, outranked through window BM25). Paper misses: q06, q12, q13, q17.
+
+## Requests (to the kb lead unless named)
+
+1. Wire the second stage into `kb search` (`--rerank`, calling `search_rerank.search`; files
+   embed_cli.py and cli.py are not this package's) and replace `kb/QA_REPORT.md` with the R5
+   report (`scratch/kb/kb-20261119-151500-2721f64/QA_REPORT.md`, or a rerun on the newest
+   snapshot); write `kb/golden/questions.yaml` with `kb qa golden --yaml`.
+2. Parser (tex_structure): the stored title of 2103.01183 includes a bracketed dedication; the
+   title and authors of gr-qc/9905058 are empty. Both show in C4.
+3. A second held-out question set written by someone who has not seen R3/R4 (20 or more
+   questions), before choosing the two post-hoc remedies of R4b (paper expansion by the number
+   of a paper's chunks in the first list; less weight on window BM25).
+4. Golden q16: decide whether the abstract of 1609.01588 counts as the answer location of a
+   "which paper" question (it ranks first in every mode).
+5. Chunking at ingest: 23.2 % of chunks exceed the model's 512 pieces (wave 2); smaller chunks
+   (or a window column in the database, schema change) would make the second stage cheaper and
+   reach q12-type answers at the end of long chunks without on-the-fly windows.
