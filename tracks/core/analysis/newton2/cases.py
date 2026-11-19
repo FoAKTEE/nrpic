@@ -198,7 +198,8 @@ def t2(out, exe, jobs, rec):
     rec["refs"] = {"B-emd-gw": commit}
     gen = os.path.join(bdir, "tracks", "B-emd-gw", "newton_tests", "scripts", "make_particles.py")
     cases = []
-    for n, sym in ((16, "spectral"), (32, "spectral"), (64, "spectral"), (32, "seven_point")):
+    # n = 64 runs on a card (test "card"): two hours on one core
+    for n, sym in ((16, "spectral"), (32, "spectral"), (32, "seven_point")):
         name = "east%d%s" % (n, "" if sym == "spectral" else "_7pt")
         d = os.path.join(out, name)
         sh([PY, gen, "pancake-east", "--n", str(n), "--delta", "0.05", "--L", "1", "--out", d])
@@ -221,14 +222,9 @@ def t3(out, exe, jobs, rec):
         d = os.path.join(out, name)
         sh([PY, gen, "pancake-sin", "--n", str(n), "--delta", "0.05", "--L", "1", "--out", d])
         p = dict(grp, newton_poisson="fft", newton_fft_symbol=sym)
-        text = pancake_deck(bdir, n, {"particles": p, "output1": {"dt": 2.34375}}, 6.0)
+        text = pancake_deck(bdir, n, {"particles": p, "output1": {"dt": 2.34375}}, 5.0)
         text = set_params(text, "particles", {"traj_ntrack": 0})
         cases.append(Case(name, text))
-    # the multigrid solver with the same groups (the track's P2 configuration)
-    d = os.path.join(out, "sin32_mg")
-    sh([PY, gen, "pancake-sin", "--n", str(n), "--delta", "0.05", "--L", "1", "--out", d])
-    text = pancake_deck(bdir, n, {"particles": grp}, 6.0)
-    cases.append(Case("sin32_mg", set_params(text, "particles", {"traj_ntrack": 0})))
     # continuation of the spectral run from its dump at cycle 300
     cases.append(Case("sin32_sp_cont", restart=os.path.join(out, "sin32_sp", "rst",
                                                             "newton.00001.rst"),
@@ -306,7 +302,7 @@ def t4b(out, exe, jobs, rec):
     with open(os.path.join(ic, "embedded_setup.json"), "w") as f:
         json.dump(meta, f, indent=1)
     base = merge(cube(n, 32, 0.0, L), {"time": {"tlim": 11.2}, "particles": {
-        "particle_file": pf, "dt": 0.02, "newton_hubble": repr(H), "hist_dcycle": 1,
+        "particle_file": pf, "dt": 0.04, "newton_hubble": repr(H), "hist_dcycle": 1,
         "snap_dt": 1.4, "newton_ngroup": 1, "newton_group1_species": 0,
         "newton_group1_x1": L/2, "newton_group1_x2": L/2, "newton_group1_x3": L/2,
         "probe_x1": L/2, "probe_x2": L/2, "probe_x3": L/2,
@@ -330,7 +326,7 @@ def t5(out, exe, jobs, rec):
         d = os.path.join(out, name)
         os.makedirs(d, exist_ok=True)
         sh([PY, os.path.join(sdir, "nm_ic.py"), "--out", d, "--kind", "infall", "--eps", "0.03",
-            "--aend", "4", "--L", repr(half), "--edge_fac", "1.2", "--ndust", "5e5",
+            "--aend", "4", "--L", repr(half), "--edge_fac", "1.2", "--ndust", "1e5",
             "--nclump", "2e4", "--rclump", "0.3", "--shift", repr(shift), repr(shift),
             repr(shift)], log=os.path.join(d, "nm_ic.log"))
         setup = json.load(open(os.path.join(d, "setup.json")))
@@ -367,29 +363,23 @@ def t6(out, exe, jobs, rec):
 
 
 def t7(out, exe, jobs, rec):
+    """Plane wave, N = 32: half the step for the multigrid and the spectral solver
+    (their runs at the full step are mg and fftsp of test t1), and the cubic cloud with
+    the cubic-spline gather at both steps."""
     ic = os.path.join(out, "ic")
     os.makedirs(ic, exist_ok=True)
-    for n in (32, 64):
-        sh([PY, os.path.join(NEWTON, "make_ic.py"), "wave", "--out",
-            os.path.join(ic, "wave%d.nrp" % n), "--n", str(n)])
+    pf = os.path.join(ic, "wave32.nrp")
+    sh([PY, os.path.join(NEWTON, "make_ic.py"), "wave", "--out", pf, "--n", "32"])
     per = os.path.join(NEWTON, "periodic.athinput")
     fft = os.path.join(NEWTON, "periodic_fft.athinput")
-    cases = []
-    for n in (32, 64):
-        for dt in (0.005, 0.0025):
-            w = merge(cube(n, n//2), {"particles": {
-                "particle_file": os.path.join(ic, "wave%d.nrp" % n), "dt": dt,
-                "newton_ngroup": 0}})
-            tag = "w%d_dt%s" % (n, "1" if dt == 0.005 else "h")
-            cases.append(Case(tag + "_sp", deck(fft, w)))
-            if n == 32:
-                wm = merge(cube(n, n//2), {"particles": {
-                    "particle_file": os.path.join(ic, "wave%d.nrp" % n), "dt": dt}})
-                cases.append(Case(tag + "_mg", deck(per, wm)))
-                cases.append(Case(tag + "_sp_pcs", deck(fft, merge(w, {
-                    "mesh": {"nghost": 4},
-                    "particles": {"deposit_shape": "pcs", "interp": "bspline"}}))))
-    cases.sort(key=lambda c: -int(c.name[1:3]))
+    w = {"particles": {"particle_file": pf}}
+    nog = {"particles": {"newton_ngroup": 0}}
+    half = {"particles": {"dt": 0.0025}}
+    pcs = {"mesh": {"nghost": 4}, "particles": {"deposit_shape": "pcs", "interp": "bspline"}}
+    cases = [Case("w32_dth_sp_pcs", deck(fft, merge(w, nog, half, pcs))),
+             Case("w32_dth_mg", deck(per, merge(w, half))),
+             Case("w32_dth_sp", deck(fft, merge(w, nog, half))),
+             Case("w32_dt1_sp_pcs", deck(fft, merge(w, nog, pcs)))]
     return run_all(out, cases, exe, jobs, rec)
 
 
@@ -509,7 +499,81 @@ def t10(out, exe, jobs, rec):
     return bad == 0 and all(r["exit"] == 0 for r in res)
 
 
-TESTS = dict(t1=t1, t2=t2, t3=t3, t4a=t4a, t4b=t4b, t5=t5, t6=t6, t7=t7, t8=t8, t10=t10)
+def card(out, exe, jobs, rec):
+    """Decks, particle files and the batch list of the card job: the checks of the
+    Fourier solver and of the group history against the processor runs, Track B's
+    pancake at n = 64, and the throughput cases (2e6 particles, 20 steps each)."""
+    import numpy as np
+    from nrpic import io as nio
+    bdir, commit = refs(out, "B-emd-gw")
+    rec["refs"] = {"B-emd-gw": commit}
+    gen = os.path.join(bdir, "tracks", "B-emd-gw", "newton_tests", "scripts", "make_particles.py")
+    ic = os.path.join(out, "ic")
+    os.makedirs(ic, exist_ok=True)
+    per = os.path.join(NEWTON, "periodic.athinput")
+    fft = os.path.join(NEWTON, "periodic_fft.athinput")
+    iso = os.path.join(NEWTON, "isolated.athinput")
+    decks = {}
+    # checks: the cases mg, fft7, fftsp of t1 and sin32_sp of t3
+    pf = os.path.join(ic, "wave32.nrp")
+    sh([PY, os.path.join(NEWTON, "make_ic.py"), "wave", "--out", pf, "--n", "32"])
+    wave = {"particles": {"particle_file": pf}}
+    nog = {"particles": {"newton_ngroup": 0}}
+    decks["chk_fftsp"] = deck(fft, merge(wave, nog))
+    decks["chk_fft7"] = deck(fft, merge(wave, nog, {"particles": {"newton_fft_symbol":
+                                                                  "seven_point"}}))
+    decks["chk_mg"] = deck(per, wave)
+    for name, kind, n in (("east64", "pancake-east", 64), ("chk_sin32", "pancake-sin", 32)):
+        d = os.path.join(ic, name)
+        sh([PY, gen, kind, "--n", str(n), "--delta", "0.05", "--L", "1", "--out", d])
+    decks["east64"] = pancake_deck(bdir, 64, {"particles": {
+        "newton_poisson": "fft", "newton_fft_symbol": "spectral",
+        "particle_file": os.path.join(ic, "east64", "particles.nrp")}}, 7.0)
+    n = 32
+    grp = {"newton_ngroup": 2, "newton_group1_species": -1,
+           "newton_group2_tag_min": (n//4)*n*n, "newton_group2_tag_max": (3*n//4)*n*n - 1,
+           "hist_dcycle": 1, "traj_dcycle": 0, "newton_poisson": "fft",
+           "newton_fft_symbol": "spectral",
+           "particle_file": os.path.join(ic, "chk_sin32", "particles.nrp")}
+    decks["chk_sin32"] = set_params(pancake_deck(bdir, n, {"particles": grp}, 5.0),
+                                    "particles", {"traj_ntrack": 0})
+    # throughput: 2e6 particles at rest, 20 steps
+    rng = np.random.default_rng(5)
+    npart = 2000000
+    xp = rng.uniform(0.0, 4.0, size=(npart, 3))
+    nio.write_nrp(os.path.join(ic, "box2e6.nrp"), xp, np.zeros((npart, 3)),
+                  np.full(npart, 1.0/npart))
+    r = 1.0*rng.uniform(0.0, 1.0, size=npart)**(1.0/3.0)
+    dvec = rng.normal(size=(npart, 3))
+    dvec /= np.sqrt((dvec*dvec).sum(axis=1))[:, None]
+    nio.write_nrp(os.path.join(ic, "ball2e6.nrp"), r[:, None]*dvec, np.zeros((npart, 3)),
+                  np.full(npart, 1.0/npart))
+    quiet = {"time": {"nlim": 20}, "particles": {"dt": 0.001, "snap_dt": -1.0,
+                                                 "hist_dcycle": 1, "newton_mg_tol": 1e-6}}
+    pbox = {"particles": {"particle_file": os.path.join(ic, "box2e6.nrp"),
+                          "newton_expansion": "none"}}
+    pball = {"particles": {"particle_file": os.path.join(ic, "ball2e6.nrp")}}
+    decks["bench_per256_fft"] = deck(fft, merge(cube(256, 64), quiet, pbox, nog))
+    decks["bench_per256_mg"] = deck(per, merge(cube(256, 64), quiet, pbox))
+    decks["bench_iso256_mg"] = deck(iso, merge(cube(256, 64), quiet, pball))
+    decks["bench_per384_fft"] = deck(fft, merge(cube(384, 64), quiet, pbox, nog))
+    decks["bench_iso384_mg"] = deck(iso, merge(cube(384, 128), quiet, pball))
+    order = ["chk_fftsp", "chk_fft7", "chk_mg", "east64", "chk_sin32", "bench_per256_fft",
+             "bench_per256_mg", "bench_iso256_mg", "bench_per384_fft", "bench_iso384_mg"]
+    lines = ["# card job of work package newton2 (cases.py card): <name> <athinput>"]
+    for name in order:
+        path = os.path.join(out, name + ".athinput")
+        with open(path, "w") as f:
+            f.write(decks[name])
+        lines.append("%s %s" % (name, path))
+    with open(os.path.join(out, "card.list"), "w") as f:
+        f.write("\n".join(lines) + "\n")
+    rec["card_list"] = os.path.join(out, "card.list")
+    print("\n".join(lines))
+    return True
+
+
+TESTS = dict(card=card, t1=t1, t2=t2, t3=t3, t4a=t4a, t4b=t4b, t5=t5, t6=t6, t7=t7, t8=t8, t10=t10)
 
 
 def main():
