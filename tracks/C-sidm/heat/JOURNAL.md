@@ -208,3 +208,13 @@ panel).
 Figure `figs/T6a_step_long.png` (looked at: code, sample free streaming and exact curve
 overlap in all three sums at both mean free paths; the kinetic energy of the left slab
 dips by 10 percent at t ~ 0.3 L/<|v|>_2 as fast hot particles leave first, then overshoots).
+
+## 2026-11-19 15:41 Prediction T8 coarse (processors, while card job A waits in the queue)
+
+The seven T8 variants of card job A at 5e5 particles instead of 4e6 (transverse 8 x 8
+cells of lambda/4, same eps = 0.2, theta = 0.003, k lambda = 0.2, one particle file):
+expected sd of f per variant ~1.9 percent (design Monte Carlo scaled to 5e5), of a
+difference ~2.7 percent. So this set can only refute a dependence larger than about 5
+percent between neighbouring values; P-T8 (changes below 2 percent between the two finest
+values) is judged on card job A. Predicted here: no change above 5 percent between any two
+neighbouring values of dt, pmax or dx; refuted otherwise.
