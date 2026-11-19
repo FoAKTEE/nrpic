@@ -316,3 +316,87 @@ executable `/data/haiyangw/nrpic/.work/build_cpu_v03/src/athena`: the four cases
 restart files up to the 36 never-set header bytes). The new code is reached only through
 `comp<c>_boost_file`; the loop of the generator gained a correction loop over zero
 entries and a block behind `if (tcl.n > 0)`. Refuted by any differing data byte.
+
+### Smoke checks before the card job (not registered, 14:53Z; no number below is used as a result)
+
+- Fields of the code against the Python reference, 64 cells, 10^4 stratified particles,
+  v = 0.3, correction and shift on (`scratch/core/tmp/clump2/smoke2`): psi^4 5.6e-8,
+  K_ij 4.7e-8 of the largest component, beta^i 7.5e-9, lapse 3.0e-8, trace K 5e-18. The
+  registered version of this check is TB5.
+- `problems/clump/cluster_moving.athinput` starts on a processor (`time/nlim=0`): 568
+  MeshBlocks (52 + 5 x 84 + 96 on the finest level, dx = 0.5 inside
+  [-16, 32] x [-16, 16]^2), 1 min 57 s for the start alone.
+- The registered processor runs TB and R wait: `nrpic-run submit` refuses while 16 cores
+  are busy in live local runs of owner core (other packages of this wave);
+  `scratch/core/tmp/clump2/submit_wait.sh` retries every 30 s.
+
+### Predictions TC for the evolution on a card (written 14:53Z, before the job is submitted)
+
+`problems/clump/cluster_moving.athinput`: the stable cluster of the first paper
+(y_c = 0.819, 10^4 stratified particles of seed 1, dx = M/2, four filter passes with
+compensation, 1+log lapse from the static lapse, Gamma-driver shift with eta = 2) on the
+mesh of `st_cluster.athinput` with the refined box extended to x = 32; 50 M. Initial
+data from `make_ic.py boosted` (files in `scratch/core/clump2-ic/`), curvature and
+correction on. Four runs in one job: `v0` (at rest, no boost table read), `v0.1`,
+`v0.3` (shift zero at the start), `v0.3s` (v = 0.3 with `comp0_boost_shift = true`).
+Measured by `analysis/clump2/boost_evolution_check.py`: centre x_c(t) = rest-mass centre
+of the particles from the snapshots (every 2 M); radii about x_c that enclose 10, 25, 50,
+75, 90 per cent of the rest mass; alpha_min, sum m u_x from `cl.nrpic.hst`; constraint
+norms from `cl.z4c.user.hst`. Cost estimate: 300 M of the first paper's mesh take 8
+minutes [VERIFIED, docs/TESTLOG.md line 100]; this mesh has 568 MeshBlocks: about 2
+minutes per run, 0.15 card-hours for the job [JUDGEMENT].
+
+1. Centre. With zero shift the matter starts with the coordinate velocity
+   `alpha_0^2 psi_0^-4 w V/W_v`: 0.474 v at the centre, about 0.6 v averaged over the
+   mass (0.70 v at the surface). The Gamma driver then builds the shift of the moving
+   coordinates and the coordinate speed rises towards v [JUDGEMENT; I have no estimate of
+   the time it takes beyond "a few light-crossing times of the cluster", 20 to 40 M].
+   Predicted for `v0.1` and `v0.3`: speed of x_c at t = 0 to 2 M between 0.5 v and
+   0.7 v; mean speed over 30 to 50 M between 0.85 v and 1.05 v; x_c(50 M) between 0.70
+   and 0.95 of v x 50 M (3.5 to 4.75 M, 10.5 to 14.25 M). For `v0.3s`: speed between
+   0.9 v and 1.1 v already over 0 to 4 M, mean over 0 to 50 M between 0.93 v and 1.05 v
+   (x_c(50 M) between 13.95 and 15.75 M). Run `v0`: |x_c| below 0.1 M throughout.
+   Refuted if the late speed of the runs without initial shift is below 0.8 v (the
+   coordinates do not catch up within 50 M: then `comp0_boost_shift` is needed for a
+   clump to follow its trajectory) or if `v0.3s` leaves the stated band.
+2. Profile. The five radii stay within 10 per cent of their values at t = 0 for 50 M in
+   every run, and at every snapshot the radii of the moving runs are within 6 per cent
+   of those of `v0` at the same time (the data are not Lorentz-contracted, 1 - 1/W_v =
+   4.6 per cent along x at v = 0.3, and the coordinates change with the shift). No
+   particle is lost. Refuted by a radius that departs by more than 15 per cent from the
+   run at rest, or by a monotonic growth or shrinking of all five radii.
+3. Central lapse (alpha_min; 0.8091 at t = 0 in all runs, the static table). `v0`:
+   between 0.800 and 0.825 for 50 M (the first paper's run rises from 0.809 to 0.837 at
+   115 M). `v0.1`: within 0.004 of `v0` at all times. `v0.3` and `v0.3s`: the lapse
+   of the boosted slicing of the exact solution would be `alpha_0/(W_v (1 - V_c^2)^(1/2))`,
+   `V_c = v alpha_0/psi_0^2`: 0.7875 at the centre [derived from g^tt of the boosted
+   static metric; JUDGEMENT that 1+log moves towards it]. Predicted: alpha_min falls by
+   0.010 to 0.035 below the run at rest within the first 25 M and its difference from
+   `v0` then changes by less than 0.012 until 50 M (no drift towards collapse or
+   dispersal). Refuted if alpha_min of a moving run is below 0.74 or above 0.85 at any
+   time, or still moving away from `v0` by more than 0.02 between 30 and 50 M.
+4. Summed momentum. `sum m u_x` is the covariant momentum on the slice and depends on
+   the slicing at first order in v and in the potential (on the plain boosted slice the
+   same matter has 0.947 M V, on the maximal slice M V: PA2). The 1+log slicing leaves
+   the maximal slice, so the sum changes without any force on the clump [JUDGEMENT; this
+   is my candidate for the drift of 1.3 to 1.6 per cent in 2 M that the first pass could
+   not explain]. Predicted: |change of sum m u_x|/P below 8 per cent over 50 M; the
+   relative histories of `v0.1` and `v0.3` agree within 2 per cent of P at every record
+   (linear in v); in `v0` |sum m u_x| stays below 2e-3 M. What would speak against the
+   candidate: relative histories that differ between v = 0.1 and 0.3 by more than the
+   drift itself, or a drift that accompanies a change of the centre's speed.
+5. Constraints. H-norm and M-norm of the moving runs within a factor 1.5 of the run at
+   rest at every record after t = 5 M (sampling noise dominates all four).
+
+### A slip of mine outside the worktree (14:54Z)
+
+A command of mine used a shell variable that was not set in that call (`cd $IC &&
+sha256sum * > SHA256SUMS`): `cd` went to the home directory and wrote a 75-byte file
+`/home/haiyangw/SHA256SUMS` (one line, the checksum of `anta.env`). The file did not
+exist before (it does not list itself, and the names are expanded before the file is
+created); I removed it at once. Nothing else was written there. The staged initial data
+of TC are in `/data/haiyangw/nrpic/scratch/core/clump2-ic/` with their `SHA256SUMS`
+(generator calls: `make_ic.py boosted --cluster 0.819,1,0,0,0,<v>,0,0 --N 10000 --seed 1
+--prefix v<v>` for v = 0, 0.1, 0.3 at commit e9e35f16; the three radial tables are
+identical, 0c604861..., as are the two boost tables, 73f8c205...). Batch list:
+`tracks/core/analysis/clump2/card_tc.list`.
