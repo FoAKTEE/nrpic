@@ -2,7 +2,10 @@
 """T12 of collide/TESTS.md: collisions in a static, homogeneous, non-flat metric.
 
     python3 t12.py DESIGN_JSON [--n 1000000] [--steps 200] [--nproc 8] [--exe PATH]
-                   [--thetas 0.1,1.0] [--tag cpu]
+                   [--thetas 0.1,1.0] [--tag cpu] [--from RUN_DIR]
+
+--from: analyse the run directories of an earlier run of this script instead of running
+AthenaK again (figure and JSON written anew).
 
 Metric: constant lapse alpha0 = 0.8 and conformal factor psi0 = 1.1, zero shift
 (inputs/box_static.athinput: nrpic_geodesic, metric_kind = static_conformal, amplitudes 0,
@@ -142,32 +145,37 @@ def main():
     ap.add_argument("--exe", default=bl.EXE_CPU_C2)
     ap.add_argument("--thetas", default="0.1,1.0")
     ap.add_argument("--tag", default="cpu")
+    ap.add_argument("--from", dest="src", default=None)
     a = ap.parse_args()
     des = json.load(open(a.design))["T2"]
     out = bl.outdir()
+    base = a.src if a.src else out
     jobs, runs = [], []
     for th in a.thetas.split(","):
         d = des[th]
         dt, sig = float(d["dt"]), float(d["sigma"])
         for seed in SEEDS:
-            gen = os.path.join(out, f"gen_th{th}_s{seed}")
-            meta = bl.make_box(gen, "mj", n=a.n, theta=float(th), sigma=sig, seed=seed)
+            gen = os.path.join(base, f"gen_th{th}_s{seed}")
+            if not a.src:
+                bl.make_box(gen, "mj", n=a.n, theta=float(th), sigma=sig, seed=seed)
             p = bl.snap.read_nrp(os.path.join(gen, "box.nrp"))
             common = [f"time/nlim={a.steps}", f"particles/coll_sigma={sig!r}",
                       f"job/rng_seed={seed}", "particles/coll_budget=true"]
             kinds = ["curved", "flat"] + (["cell"] if (th == "0.1" and seed == 1) else [])
             for kind in kinds:
-                rd = os.path.join(out, f"T12_th{th}_{kind}_s{seed}")
+                rd = os.path.join(base, f"T12_th{th}_{kind}_s{seed}")
                 os.makedirs(rd, exist_ok=True)
                 if kind == "flat":
                     x = bl.X0 + S * (p["x"] - bl.X0)
-                    bl.snap.write_nrp(os.path.join(rd, "box.nrp"), x, p["u"], p["m"])
+                    if not a.src:
+                        bl.snap.write_nrp(os.path.join(rd, "box.nrp"), x, p["u"], p["m"])
                     dtk = ALPHA0 * dt
                     ov = [f"mesh/x{k}max={bl.X0 + S!r}" for k in (1, 2, 3)] + [
                         "particles/coll_energy=particle"]
                     deck = DECK_FLAT
                 else:
-                    bl.snap.write_nrp(os.path.join(rd, "box.nrp"), p["x"], S * p["u"], p["m"])
+                    if not a.src:
+                        bl.snap.write_nrp(os.path.join(rd, "box.nrp"), p["x"], S * p["u"], p["m"])
                     dtk = dt
                     ov = [f"particles/coll_energy={'cell' if kind == 'cell' else 'particle'}"]
                     deck = DECK_STATIC
@@ -176,7 +184,14 @@ def main():
                     f"particles/snap_dt={a.steps * dtk * (1 - 1e-9)!r}"]
                 jobs.append((rd, ov, dict(exe=a.exe, deck=deck)))
                 runs.append((th, seed, kind, rd, dtk, sig))
-    rr = bl.run_many(jobs, a.nproc)
+    if a.src:
+        rr = []
+        for j in jobs:
+            with open(os.path.join(j[0], "wall.json")) as fh:
+                w = json.load(fh)
+            rr.append(dict(rc=w["rc"], wall=w["wall"]))
+    else:
+        rr = bl.run_many(jobs, a.nproc)
     res = {}
     for (th, seed, kind, rd, dtk, sig), r0 in zip(runs, rr):
         name = os.path.basename(rd)
@@ -211,10 +226,15 @@ def main():
             # curved snapshots against the twin mapped back to coordinates
             sc = first_last(c["run"])[1]
             sf = first_last(f["run"])[1]
-            dx = np.max(np.abs(bl.X0 + (sf["x"] - bl.X0) / S - sc["x"]))
+            # positions modulo the period (the snapshots of the two runs need not wrap a
+            # particle at the same time; a whole number of periods is the same point)
+            d = (sf["x"] - bl.X0) / S - (sc["x"] - bl.X0)
+            dx_raw = np.max(np.abs(d))
+            dx = np.max(np.abs(d - np.round(d)))
             du = np.max(np.abs(sf["u"] - sc["u"] / S), 1) / np.maximum(
                 1.0, np.sqrt(np.sum(sf["u"] ** 2, 1)))
-            t.update(final_max_dx_coord=float(dx), final_max_du_rel=float(du.max()),
+            t.update(final_max_dx_coord=float(dx), final_max_dx_coord_raw=float(dx_raw),
+                     final_max_du_rel=float(du.max()),
                      final_frac_du_gt_1e12=float((du > 1e-12).mean()))
             twins[f"th{th}_s{seed}"] = t
     cell = {}
@@ -228,7 +248,7 @@ def main():
             final_max_du=float(np.max(np.abs(s_c["u"] - s_p["u"]))),
             x_identical=bool(np.array_equal(s_c["x"], s_p["x"])))
     crit = [v for k, v in res.items() if "_curved_" in k and not v.get("failed")]
-    summ = dict(exe=a.exe, alpha0=ALPHA0, psi0=PSI0, psi4=PSI4, psi6=PSI6,
+    summ = dict(exe=a.exe, source=base, alpha0=ALPHA0, psi0=PSI0, psi4=PSI4, psi6=PSI6,
                 runs={k: {kk: vv for kk, vv in v.items() if kk != "series"}
                       for k, v in res.items()},
                 twins=twins, cell_vs_particle=cell,
@@ -286,7 +306,7 @@ def figure(res, twins, out, tag):
         k += 1
     ax2.axhline(0, **fs.GUIDE)
     ax2.set_xticks(xs); ax2.set_xticklabels(labels, fontsize=7)
-    ax2.set_ylabel(r"curved/($\alpha_0\psi_0^6$ flat) $-$ 1  (o twin, $\square$ analytic)",
+    ax2.set_ylabel(r"curved/($\alpha_0\psi_0^6$ flat) $-$ 1  (circles: twin, squares: analytic)",
                    fontsize=8)
     ax3.axhline(1, **fs.GUIDE)
     ax3.set_xlabel("step")
