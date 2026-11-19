@@ -299,3 +299,12 @@ Stochastic runs (core_scalar-2, 32^3):
   value; 0.06736 against 0.06738 (M64p).
 - M7: 930 to 974 s per 32^3 run (4.4 s per step, 7.5e3 zone-cycles per second on the
   loaded machine), not 11 min: REFUTED by 40 percent (the machine had a load of about 100).
+
+## Entry 7, 2026-11-19 15:10 UTC: addendum to the predictions of the second batch (still running)
+
+From entry 6 (late |M| is a rounding floor of 4.5e-15 independent of s, [M] first order):
+in the plateau after USR (cN > 7) the record ratio F_M = <abs(M)/[M]>(s = 1) /
+<abs(M)/[M]>(s = 1/2) is predicted at 0.5 +- 0.1 (floor over a magnitude proportional to
+s), against 2.0 +- 0.15 during the entry and USR (entry 5). Even part of R^NR: the s^2
+coefficient estimated from M16h, (c(1/2) - odd(1)/2)/(1/4), equals the even part of the
++-1 pair within 30 percent at N_f if the even part is second order; refuted if not.
