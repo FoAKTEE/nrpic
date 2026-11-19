@@ -283,3 +283,58 @@ P12 (bounds). A Kokkos debug build of the OpenMP executable (DEBUG=1: View bound
     checking) runs dep, east, os, newton and coll at 4 threads with atomic and with
     private copies without a bounds error, and gives files that agree with O3 to rounding.
     Refuted by an abort or a difference above 1e-8.
+
+## 2026-11-19 08:06 Entry 7: the measure of a difference; outcome of P12; one thread
+
+Measure. The first runs of this session showed that the measure of entry 5 ("rel_file":
+largest difference over the largest magnitude among the numbers that differ) is not the
+measure the predictions name: in east, O3:4 against a second O3:4 gave 1.1e-9 from a
+particle snapshot whose differing numbers are all below 6e-16 in size (abs 7e-25), i.e.
+rounding noise of numbers that are nearly zero. omplib.number_diff now reports
+- rel_max (verdict, as the predictions were written): largest |a - b| over the largest
+  magnitude in the file (text tables: over the largest number outside integer columns);
+- rel_floor (stricter, recorded): largest |a - b|/max(|a|, |b|, 1e-6 x file maximum);
+- the conservation identity of the deposit, max over the history of
+  |int_E - sum_mW|/sum_mW (recompare.py), which a lost update breaks at the weight of one
+  cloud corner (above 1e-6 for 1e4 particles) and rounding leaves near 1e-14.
+Two findings forced further changes, neither a defect of this package:
+1. AthenaK restart files (outputs/restart.cpp lines 221-229) write RegionSize and
+   RegionIndcs as raw structs; their padding bytes are uninitialised memory (bytes 130 to
+   160 after `<par_end>` held the text "cfl_number = 0.25 nlim = -1 tl" in one run and
+   zeros in another). Byte comparison of restart files is therefore unreliable in
+   general; it held between S and R only because the same serial program left the same
+   heap. Restart files are now compared on their data (the MeshBlock data after the
+   per-MeshBlock size; omplib._rst_data). [VERIFIED: bytes of the two files]
+2. The Newtonian mode with `threshold = 0` (V cycles until the defect stops falling)
+   decides the number of V cycles from a reduced defect norm; at 4 threads 24 of 41
+   records of `mg_cycles` (12 to 15 cycles) differ from one thread by one or two cycles.
+   The column and its copy in the `.nwt` restart file are reported apart as "decisions",
+   not judged; the particle state differs by 1e-12 (rel_max) either way.
+
+Outcome of P12 (run core-20261119-155830-248f393; debug build `.work/build_omp_dbg`,
+DEBUG=1: Kokkos debug mode and View bounds checking, 4 threads, against O3 at one thread;
+recompare.py): no abort and no bounds error in dep, east, newton, coll with atomic and
+with private deposit; rel_max 3.4e-14 (dep), 3.0e-13 and 5.3e-13 (east, atomic and
+private), 9.7e-13 and 1.0e-12 (newton), 9.3e-14 (coll); deposit identity 1.2e-14 (dep),
+2.3e-15 and 2.4e-15 (east), 2.8e-13 (newton), the same size as at one thread of O3
+(5.5e-14, 1.0e-14, 7.0e-13). P12 holds.
+
+P0 so far (run core-20261119-154940-1c3e906, still running os): S gives the files of R
+byte for byte in geo, boris, dep, jeans, east, coll, kg, newton, binary, noise, bench. The
+puncture case failed in both R and S (exit 1, "More than one history, event log, or
+restart output block": the case appended a restart block to a deck that has one); fixed
+in 501ba4f, rerun in core-20261119-155520-0bc529f.
+
+One thread (runs core-20261119-154725-1c3e906 and core-20261119-154729-1c3e906, load
+average 122 to 139, processor share 0.98 to 1.00), seconds per step:
+
+| case | O3, 1 thread | S (serial build) | O3 faster by |
+|---|---|---|---|
+| punc (1.41e6 cells, 6.9e3 zone-cycles/s) | 203.4 | 242.7 | 1.19 |
+| cluster (1.64e6 cells, 1e5 particles) | 243.4 | 294 | 1.21 |
+| cosmo (2.6e5 cells, 2.1e6 particles) | 94.3 | 113.9 | 1.21 |
+| newton (2.1e6 cells, 5.1e5 particles) | 10.6 | 11.6 | 1.09 |
+
+The Z4c benchmark (64^3 uniform, P0 run) gives 6.7e3 zone-cycles/s on one thread for both
+S and R, against 2.0e7 on one card (docs/TESTLOG.md, "Z4c throughput"): the card is about
+3000 times one processor thread for Z4c. [VERIFIED: run.log of the bench case]
