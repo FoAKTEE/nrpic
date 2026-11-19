@@ -634,3 +634,58 @@ done before the file was written) [JUDGEMENT]. (2) Bitwise: U_r8 and C_r8 identi
 (3) Every departure in physical columns (lapse, E, chi, K extremes, int_E, proper volume,
 mean K, region norms) below 1e-9 relative over the continued run, in every case with NEW
 whose MeshBlock count agrees. Refuted for the fix by any unequal MeshBlock count with NEW.
+
+## 2026-11-19 16:15  outcomes of T13; the first T3 run is void (table precision); T3b started
+
+**T13, run core-20261119-161316-f797997** (`t13_summary.json`, tracker files, figure
+`fig_t13_walk`, looked at) [VERIFIED]:
+- (1) Wd: first step to -0.125, then -0.25 per cycle in each coordinate; below x = -3 it
+  is mapped to +2.875 and continues to +2.125 at cycle 16, exit 0: PASS.
+- (2) Wdrel (release): the same path, 13 records, the last at -3.125 (outside the box),
+  then "### FATAL ERROR ... compact_object_tracker.cpp at line 212: couldn't find the
+  compact object!", exit 1: PASS (I had counted the step that leaves the box as the
+  12th; the record of that position is written before the search that fails).
+- (3) Wt (`tracker_walk_tol = 1e-6`): (0.125, 0.125, 0.125) at all 16 records: PASS.
+- (4) Wp: three steps of one cell down the lapse, to (0.3125, -0.3125, -0.3125), one of
+  the eight cells around the centre (distance 0.54), at cycle 3; there through cycle 8:
+  PASS. At cycle 9 it moved one cell outward diagonally (distance 1.36). Not predicted;
+  my reading [TO VERIFY, no field dump was written]: by then the lapse of these data has
+  nearly relaxed (min/mean 0.96 at cycle 8 in T9's logs), and its minimum leaves the
+  centre as the driver towards constant mean curvature overshoots.
+- (5) Wpn (no tolerance): the same first three steps, then it hops between the eight
+  central cells (cycles 4 to 8: four moves among cells at the same distance, which are
+  equal by symmetry), then the same outward move at cycle 9. The prediction "same path as
+  Wp" FAILED: the central cells are equal neighbours, which is exactly what the tolerance
+  is for. (The figure's right panel shows distances only, so the two curves coincide.)
+- Ex: the example input `flrw_tracker.athinput` as published runs 12 cycles, exit 0;
+  tracker x = 2.5 + 0.5 t (steps 0.0208 on the root mesh, 0.0104 after the patch
+  appears): PASS.
+
+**T3, run core-20261119-154357-64067cd: VOID for its measurements.** The script read the
+AthenaK tables, written with the default format %12.5e (six significant digits); the wave
+has a relative amplitude of 1e-7, so chi and E were printed constant and the fits returned
+nonsense (amplitude ratios 1.26, H/(16 pi dE) of 1e6 to 1e8). One thing is visible at six
+digits and is real: case Sx (quadratic clouds on the finest level, eight particles per
+root cell) has an E contrast of 6.2e-3 at the end and Hr_max 0.069 at t = 0: a cloud-size
+transition at the level boundary that does not tile with the quadratic cloud (T2's D8
+used linear clouds and stayed uniform to 1e-14). Measured properly in T3b. The run is kept
+on record. T3b (`data_format = %24.16e` for the tables, NEW executable, same cases and
+predictions as written in the entries 14:45, 15:05 item 3 and 15:50) runs as
+core-20261119-161527-4480f58.
+
+## 2026-11-19 16:17  prediction of T14 (card check of the published card executable)
+
+T10 (job 4654) runs the card build of 901d8b3. The card executable to be published
+(`.work/build_gpu_b`, source 3c44b74) gets its own short card job, T14
+(`t14_card.list`: the decks of T2's U, S, A, M, G and T9's ladder, as run on the
+processors). The guard (four reducers in one `parallel_reduce`), the light-speed limit
+(`Min` and `Max` reducers), the fine-shape deposit (atomic adds on the device), the region
+norms and the refinement function (a per-block loop on the device) run on a card here
+for the first time. Predictions: U, S, A homogeneous to 1e-12 (chi, E spreads; card sums
+in another order, so not the processor's bytes); alpha_max equal to the processor run to
+1e-12 at every record; M: the same MeshBlock count as the processor run at every record,
+tracker within 1e-12 of the processor path; G: stop at cycle 18 with status 3 and
+`flrw.guard.txt`; ladder: 64 -> 120 MeshBlocks at cycle 4, rest mass and particle number
+unchanged, identity below 1e-12, Hr_max within 1e-6 relative of the processor values at
+every record. Refuted by a different MeshBlock count, a different stop cycle, or a
+departure above these bounds.
