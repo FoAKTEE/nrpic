@@ -49,6 +49,15 @@ the shared implementation (core) and the knowledge base (kb), in parallel.
 Budgets: decision 0006. Open decisions for the group: 0002 (request to the authors), 0005,
 0006, 0007, 0008.
 
+## Gates of the knowledge base
+
+The gates KB-G0 to KB-G3 are those of brief section 12.10 (`nrpic-stage collect kb KB-G<k>`
+copies them into the checklist). Thresholds (decision 0016, item 6):
+
+- KB-G2 parse success rate: at least 95 per cent of the ingested papers are parsed successfully.
+- KB-G2 retrieval hit rate: at least 80 per cent of the golden questions are answered with the
+  right paper among the top ten results; the hit at the answer location is reported, not gating.
+
 ## Text of the brief, sections 9.2 to 9.11 and 10
 
 ### 9.2 Stage gates
