@@ -241,11 +241,9 @@ def main():
         json.dump(res, f, indent=1)
 
     from nrpic import figstyle as fs
-    fs.apply() if hasattr(fs, "apply") else None
-    import matplotlib
-    matplotlib.use("Agg")
+    fs.use_style()
     import matplotlib.pyplot as plt
-    fig, ax = plt.subplots(1, 2, figsize=(7.0, 2.8))
+    fig, ax = plt.subplots(1, 2, figsize=(fs.FULL_WIDTH, 2.9))
     cols = [fs.PAL["blue"], fs.PAL["red"], fs.PAL["yellow"], fs.PAL["green"]]
     for n, (name, rows) in enumerate(res["runs"].items()):
         for r in rows:
@@ -264,9 +262,8 @@ def main():
     ax[1].set_ylabel("MeshBlocks (model)")
     ax[1].set_title("dotted: max_nmb_per_rank of S3, S2", fontsize=8)
     fig.tight_layout()
-    for ext in ("png", "pdf"):
-        fig.savefig(os.path.join(out, f"fig_tree_check.{ext}"), dpi=200)
-        print("figure:", os.path.join(out, f"fig_tree_check.{ext}"))
+    for pth in fs.save(fig, os.path.join(out, "fig_tree_check")):
+        print("figure:", pth)
 
 
 if __name__ == "__main__":

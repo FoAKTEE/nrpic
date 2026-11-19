@@ -206,7 +206,7 @@ def main():
                 ax[0, 1].plot(tt, np.interp(tt, tn, fn) / np.interp(tt, t3, f3),
                               color=COL[name], lw=1.1, label=f"{name} / S3")
     ax[0, 1].axhline(1.27, **fs.REF_LINE)
-    ax[0, 1].text(0.98, 0.04, "grey: core's E1, profile / constant ($\\eta m$ = 0.2 far)",
+    ax[0, 1].text(0.98, 0.70, "line at 1.27: core's E1 on processors,\nprofile / constant $\\eta$ ($\\eta m$ = 0.2 far)",
                   transform=ax[0, 1].transAxes, ha="right", fontsize=7)
     ax[0, 0].set_ylabel(r"$f = v_{\rm tracker}/(P/M_{\rm ADM})$, 1 $m$ mean")
     ax[0, 0].legend(frameon=False, fontsize=7, loc="lower right")

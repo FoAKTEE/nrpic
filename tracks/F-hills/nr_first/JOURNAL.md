@@ -655,3 +655,13 @@ that E10 cites: drift from the median of t = 4-6 to that of 12-14 +5.1e-4 (S3) a
 (S2) (the hrms filter keeps the same searches: all good searches after t = 3.5 have hrms below
 5e-4), f over 10-14 about 0.48 (S3) and 0.757 (S2), and leave every S2g check "no data".
 Settling time: S2 about 5 m, S3 near its end (still accelerating). Refuted otherwise.
+
+## 2026-11-19 E10a, outcome (run F-20261119-144351-b448f38; `s2g_compare.json`, figure `fig_s2g_compare.png` read)
+
+Met [VERIFIED]: drift from t = 4-6 to 12-14 +5.11e-4 (S3) and +8.49e-4 (S2); f over 10-14 0.468
+(S3) and 0.757 (S2); settling time 3.9 m (S2) and 17.7 m (S3, f still rising at its end, 0.52);
+the first search with hrms below 1e-3 is at t = 3.5 (S3, 1.00789) and t = 2.5 (S2, 1.00618). No
+S2g check ran (the checks are only built when S2g is given). In the figure the S3 horizon has
+single-search dips at t = 18.5-20 of up to 6e-4 (finder noise, as in E3a), which the window
+medians absorb. Only change after the run: the label of the reference line of the ratio panel
+(it overlapped the line); `tree_check.py` now uses the figure style of `python/nrpic/figstyle.py`.
