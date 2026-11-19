@@ -1,0 +1,128 @@
+{
+  "schema": "nrpic-run-manifest/1",
+  "run_id": "kb-20261119-153240-15320f5",
+  "track": "kb",
+  "gate": "G2",
+  "kind": "scouting",
+  "purpose": "brief check s39: tally of CHECK.md and frontier scan of the INSPIRE results of runs kb-20261119-152359-851b963 and kb-20261119-152939-22939e5; figure",
+  "preregistered_in": null,
+  "launcher": "local",
+  "command": [
+    "python",
+    "tracks/kb/brief_check/s39_frontier/scripts/fig_frontier.py",
+    "/data/haiyangw/nrpic/scratch/kb/kb-20261119-152359-851b963/queries.tsv",
+    "/data/haiyangw/nrpic/scratch/kb/kb-20261119-152939-22939e5/queries.tsv"
+  ],
+  "cwd": ".",
+  "git": {
+    "sha": "15320f5521d0293d8312ff12e8e36e24b5e8026e",
+    "branch": "kb/brief-check",
+    "dirty": false,
+    "package": [
+      "tracks/kb/brief_check/s39_frontier"
+    ],
+    "outside_package": {
+      "count": 8,
+      "first": [
+        "?? tracks/kb/brief_check/novelty/",
+        "?? tracks/kb/brief_check/s310/",
+        "?? tracks/kb/brief_check/s311/",
+        "?? tracks/kb/brief_check/s37_38/ERRATA_ROWS.md",
+        "?? tracks/kb/brief_check/s37_38/README.md",
+        "?? tracks/kb/brief_check/s37_38/scripts/check_spans.py",
+        "?? tracks/kb/brief_check/s5_s6/",
+        "?? tracks/kb/brief_check/s7_s8/"
+      ]
+    },
+    "merge_base_main": "f51539c6f46a051b8c3c2d86501bcc6dfaa34f93",
+    "worktree": "wt/kb-brief"
+  },
+  "code": {
+    "core_tag": "core-v0.3",
+    "athenak_upstream_sha": "c5a0d7f",
+    "kokkos_sha": "6739bc623081648af9e752b616d9671527922cbf",
+    "problem": null
+  },
+  "env": {
+    "host": "anta",
+    "env_hash": "33c1dbb6673b68919eaa332b0add0b58aeac8be843f2071b9d06e2e0e397a96d",
+    "machine_file_sha256": "0321f40f4caeeb2a36624a9fa9809e60bad31071f366b3517ba23ad45698d2d7",
+    "uv_lock_sha256": "5417f6ba318b914aa3800e5d55f7b11fdd8df13c2688bdda7d419240aa1d5863",
+    "track_requirements_sha256": null,
+    "container_digest": null,
+    "compiler": "g++ 11.4.0",
+    "mpi": "none (Athena_ENABLE_MPI=OFF)",
+    "gpu": null,
+    "python": "3.10.12 /data/haiyangw/nrpic/wt/kb-brief/.venv"
+  },
+  "input": null,
+  "inputs": [
+    {
+      "path": "/data/haiyangw/nrpic/scratch/kb/kb-20261119-152359-851b963/queries.tsv",
+      "role": "input",
+      "sha256": "c15945d1a8b7e76812e3ffbb6395f0d3db317f68972f9d52ebc735091690a1b6",
+      "bytes": 7876,
+      "tracked": false,
+      "location": "main checkout data root"
+    },
+    {
+      "path": "/data/haiyangw/nrpic/scratch/kb/kb-20261119-152939-22939e5/queries.tsv",
+      "role": "input",
+      "sha256": "d3eda599ed6636844b4996a076a551c24ecbe5c1e3d3d70fc080ea1d1d72a9b1",
+      "bytes": 2927,
+      "tracked": false,
+      "location": "main checkout data root"
+    },
+    {
+      "path": "tracks/kb/brief_check/s39_frontier/CHECK.md",
+      "role": "input",
+      "sha256": "14c08bc7cac71c1070cdf737f52b40763f977ae92968e5241e93f5b75ad576ba",
+      "bytes": 21356,
+      "tracked": true
+    },
+    {
+      "path": "tracks/kb/brief_check/s39_frontier/scripts/fig_frontier.py",
+      "role": "argv",
+      "sha256": "62a84e506ad3f57db5d501ac28748f028312176facd62db1df8b6708bcd0fdc5",
+      "bytes": 6990,
+      "tracked": true
+    }
+  ],
+  "batch_entries": null,
+  "resources": {
+    "nodes": 1,
+    "gpus": 0,
+    "cores": 1,
+    "walltime_s": null,
+    "wall_limit": null,
+    "segments_max": null,
+    "gpu_hours_requested": 0.0,
+    "gpu_hours": null,
+    "particles": null
+  },
+  "slurm": null,
+  "outputs": {
+    "dir": "scratch/kb/kb-20261119-153240-15320f5",
+    "sha256sums": "sha256sums.txt",
+    "sha256sums_sha256": null,
+    "bytes": null,
+    "files": null
+  },
+  "status": "running",
+  "exit_code": null,
+  "registered": "2026-11-19T15:32:40Z",
+  "started": null,
+  "ended": null,
+  "parents": [],
+  "notes": "",
+  "budget_at_submit": {
+    "gpu_hours_allotted": 0.0,
+    "cores_allotted": 8,
+    "gpu_hours_used": 0.0,
+    "gpu_hours_reserved": 0.0,
+    "gpu_hours_without_gate": 0.0,
+    "cores_busy": 6,
+    "runs": 125,
+    "allotment_from": "coord/DECISIONS/0006-compute-budget.md + 0014-budgets-after-wave-1.md"
+  }
+}
