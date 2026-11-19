@@ -90,7 +90,8 @@ def run_model(cm, N, workers, norm):
 
 def orders_of(res, Ns, p, region, key):
     vals = [res[N][p][region][key] for N in Ns]
-    return [math.log(vals[i] / vals[i + 1]) / math.log(Ns[i + 1] / Ns[i]) for i in range(len(Ns) - 1)]
+    return [math.log(vals[i] / vals[i + 1]) / math.log(Ns[i + 1] / Ns[i]) if vals[i] > 0 and vals[i + 1] > 0
+            else None for i in range(len(Ns) - 1)]
 
 
 def figures(res, Ns, planes, cvec, rdir):
@@ -156,6 +157,9 @@ def main():
                 planes, cvec = pl[4], cv
             print(name, N, f"{timing[f'{name}_{N}']:.0f} s",
                   {p: (out[p]["all"]["H_L2"], out[p]["all"]["M_L2"]) for p in ORDERS}, flush=True)
+    # raw norms first, so that nothing computed is lost if the summary fails
+    common.dump(os.path.join(rdir, "mesh_constraints_raw.json"),
+                {name: {str(N): {str(p): res[name][N][p] for p in ORDERS} for N in Ns} for name in res})
     summary = {}
     for name in res:
         summary[name] = {}
