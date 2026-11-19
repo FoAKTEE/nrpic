@@ -31,3 +31,97 @@ v_bound/<v_Mol> ~ 2.5 and 0.1 t_coll per step gives P_bound ~ 0.25); cost
 1e-12 (equal to rounding in a flat metric) and differ in cost by less than a factor 2.
 Refuted by: a non-zero exit, truncated pairs, any root failure or balance rejection in a
 flat box, a particle/cell difference above 1e-12, or a cost outside 0.5-10e-6 s.
+
+## 2026-11-19 14:45 Outcome S0: confirmed, cost 6 times the wave-2 estimate (run C-20261119-143228-31ba665)
+
+Both exit 0; n_trunc = n_noroot = n_balance = 0; 3.4 sub-steps per step on average (max 6),
+1.73 tested pairs per particle and step; final momenta of `particle` and `cell` 1.7e-16
+apart, positions 3.1e-13. Cost: 2.1e-6 s per particle and step (`particle`), 1.7e-6
+(`cell`); 1.19e-6 s per tested pair, i.e. 2.1e-5 s per particle per collision time at
+dt = 0.1 t_coll. The prediction of 1.5-3e-6 s per particle per t_coll FAILED by a factor
+about 7: 17 tested pairs per particle per t_coll as predicted, but 1.2e-6 s per pair
+instead of 3.5e-7 (machine load 100 on 144 cores at the time; about 100 particles per
+cell instead of 30; `particle` 25 percent dearer than `cell`). Consequence: a 1 percent
+measurement of kappa at eps = 0.05 needs ~2e7 particles per k lambda over ~500 t_coll,
+i.e. ~60 core-hours: not on processors in this package. Design below.
+
+## 2026-11-19 14:50 Design and predictions of T6-T8 (design run C-20261119-143117... see below)
+
+Design run C-20261119-144117-37b2328 (`scripts/design.py`; copy
+`results/design_C-20261119-144117-37b2328.json`; figure `figs/design_references.png`,
+looked at: references of T6(a), T6(b) and the mode). Reference self-test (`isobaric.py`):
+linear mode rate = kappa_1 k^2/(n c_p) to 1.2e-5, energy conserved to 1e-11 (mode) and
+5e-8 (step), step grid change 3e-5 of the amplitude. One FAILED first try: BDF at rtol
+1e-8 gave the linear rate 5e-4 high; at 1e-10 it is within the grid error.
+
+Readings declared before the runs (TESTS.md is the lead's; no criterion is loosened, two
+set-ups are changed for cost and the reason is given):
+- D1 (T6b) transverse box lambda x lambda with 4 x 4 cells instead of L/8 x L/8: the step
+  is one-dimensional, so transverse size and transverse cell size do not enter the
+  conduction; L/8 at dx = lambda/4 would need 50 x 50 transverse cells and 2e7 particles.
+  1.6e5 particles, 25 per cell, two seeds.
+- D2 (T6b) the step has a temperature contrast of 2, so the gas is not in the linear
+  regime: chi varies as T^{3/2} along the profile and the final temperature is 0.01333,
+  not the mean 0.015. The nonlinear isobaric reference with kappa = kappa_1(T) scores
+  0.967 on the literal statistic chi_fit/chi(kappa_1, theta = 0.015) (window
+  [20 t_coll, 2/(chi k_1^2)] = [0.741, 50.88], t_coll = 0.0370), and 0.991 for
+  kappa = 1.025 kappa_1. The literal interval [0.95, 1.10] therefore corresponds to
+  kappa/kappa_1 in [0.982, 1.138]. I report both: the literal statistic, and f = the
+  factor on kappa_1(T) of the nonlinear reference fitted to the code's slab rest mass over
+  the same window, judged against [0.95, 1.10].
+- D3 (T7) eps = 0.2 instead of 0.05 for the precise runs. Reason: the statistical error of
+  the fitted rate is set by the equilibrium entropy-mode noise, var(A_S) = 5.0/N at
+  theta = 0.003 (5.65/N at 0.1, 7.5/N at 1), against a signal eps c_p; a Monte Carlo of the
+  least-squares fit with Ornstein-Uhlenbeck noise of rate Gamma (Onsager) at the snapshot
+  times gives 4.9 percent per run of 1e6 particles at eps = 0.05 (k lambda = 0.1),
+  8.6 percent at k lambda = 0.4. At eps = 0.2 the nonlinear reference shifts the fitted
+  rate by -1.01 percent (theta = 0.003; -0.78, -0.79 percent at theta = 0.1, 1; -0.06
+  percent at eps = 0.05), so kappa is divided by that factor (b = 0.9899 at 0.003). The
+  fit uses the entropy combination A_S = (A_K - A_N)(<W> - 1)/theta - A_N (A_N number
+  mode, A_K kinetic-energy-density mode; A_S(0) = eps c_p), which removes the sound modes
+  of the number-density noise. A set at eps = 0.05 is run as the literal check.
+- D4 (T8) eps = 0.2, theta = 0.003, k lambda = 0.2, one particle file for all seven
+  variants, transverse box and cells fixed (16 x 16 cells of lambda/4), so only dt, pmax
+  and the x cell size change; the eps bias is common to all variants and cancels in the
+  differences.
+
+Predictions (refuted as stated):
+- P-T6a (lambda/L = 1000 and 100; N = 2e6; two seeds): at 1000, slab rest mass, energy and
+  kinetic energy within the sampling noise of the exact collisionless curve: rms deviation
+  below 1.5 noise units (noise from resampling, as `collide/analysis/an_step.py`); the
+  fitted initial slopes of rest mass and energy within 5 percent of
+  -2 (Phi(1) - Phi(2)) = +0.03153 (rest mass) and +0.03066 (energy) per unit time and
+  area (kinetic: -0.00087, too small for a 5 percent test, reported). Slope estimator:
+  quadratic fit over t <= 0.5 L/<|v|>_2, the same fit applied to the exact curve gives its
+  bias, which is subtracted. At 100: deviation from the free streaming of the same sample
+  grows with t; ratio of the deviations (100 against 1000) about 10, as t/t_coll; fraction
+  of particles that have collided at t = 5 L/<|v|>_2 = 31.3: 0.9 percent (1000) and
+  9 percent (100). Refuted by rms above 1.5 at 1000 in either seed, a slope off by more
+  than 5 percent, or a 100/1000 deviation ratio outside 3-30.
+- P-T6b (lambda/L = 0.01): f = 1.025 +- 0.03 (higher Sonine terms [BACKGROUND]; the
+  relativistic correction at theta ~ 0.015 and the early Knudsen layer are not in the
+  reference [JUDGEMENT]); literal statistic 0.967 f = 0.99 +- 0.03; statistical error of
+  f about 1 percent per seed (4.7/sqrt(N)). Pass if f in [0.95, 1.10] for both seeds.
+  The Balberg et al. constant would give f = 0.72: refuted far outside.
+- P-T6c (10, 1, 0.1): the slab rest mass moves monotonically from the collisionless curve
+  (10) to a diffusive one (0.1); reported.
+- P-T7 (theta = 0.003, eps = 0.2, 4 seeds x 4e5, k lambda 0.4, 0.2, 0.1; window
+  [10 t_coll, 2/Gamma_1]): expected seed-combined error of kappa(k lambda) 1.7, 1.1,
+  1.0 percent; kappa(k lambda)/kappa_1 extrapolated linearly in (k lambda)^2 to zero:
+  1.025 +- 0.02; pass if in [0.99, 1.06]; the Burnett-order change between k lambda = 0.1
+  and 0.4 is reported (sign not predicted). Balberg et al. (0.72) refuted if > 0.80.
+  theta = 0.1 and 1 (reported, no reference): kappa/kappa_1(theta) about 1.0 +- 0.1 at
+  0.1 and 0.75 +- 0.25 at 1 [JUDGEMENT: mean-free-path estimate c_p <v> lambda with the
+  relativistic c_p and the mean speed, which saturates at c].
+  Collisionless check k lambda = 100: A_N(t)/A_N(0) follows `mode_collisionless(number)`
+  within noise (|z| < 4 at every snapshot).
+  eps = 0.05 literal set: consistent with the eps = 0.2 set within the combined error.
+- P-T8: kappa changes by less than 2 percent between the two finest values of dt
+  (0.1 -> 0.05 t_coll), pmax (0.1 -> 0.05) and dx (lambda/4 -> lambda/8) [BACKGROUND: DSMC
+  transport errors are quadratic in dx/lambda and dt/t_coll with small coefficients;
+  Alexander, Garcia & Alder 1998, Garcia & Wagner 2000 not in the corpus, not re-read];
+  pmax has no effect beyond noise (pairs are redrawn each sub-step; the rate is exact).
+  T2(b) at max P = 0.5 without sub-cycling (coll_nsub_max = 1): no deficit (sum_P per step
+  equal to the analytic rate within 0.5 percent) as long as n_trunc = 0, because the
+  acceptance of a pair is exact in expectation for P <= 1; refuted by a deficit above
+  0.5 percent with n_trunc = 0.

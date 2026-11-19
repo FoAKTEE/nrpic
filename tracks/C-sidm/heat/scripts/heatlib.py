@@ -76,8 +76,9 @@ def overrides(box, nx, dt, tlim, snap_dt, sigma, seed, pmax=0.1, mb=None, nsub_m
     o += [f"particles/dt={dt!r}", f"time/tlim={tlim!r}", f"particles/snap_dt={snap_dt!r}",
           f"particles/coll_sigma={sigma!r}", f"job/rng_seed={seed}",
           f"particles/coll_pmax={pmax!r}", f"particles/coll_nsub_max={nsub_max}",
-          f"particles/coll_subcycle={subcycle}", f"particles/coll_energy={energy}",
-          f"particles/particle_file={BASE}.nrp"]
+          f"particles/coll_subcycle={subcycle}", f"particles/coll_energy={energy}"]
+    if not any(str(e).startswith("particles/particle_file=") for e in extra):
+        o.append(f"particles/particle_file={BASE}.nrp")
     return o + list(extra)
 
 
