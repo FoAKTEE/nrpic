@@ -162,3 +162,66 @@ small rates; the monitor now reads extrapolated ghosts), second and third layer 
 and 0.010 of it; orders 3 and 4 give 0.18 and 0.041 of order 2 within a factor 2.
 Refuted if the layer after one step is much smaller (then the ghost cells are not what
 the monitor reads in the evolution either) or does not follow the weights.
+
+## 2026-11-19, entry 3: outcome of a0b; first numbers of a1 (ball); the new condition; b1 predicted
+
+**a0b** (run core-20261119-143938-eded041, `results/a0b.json`, figure `figs/a0b_monitor`):
+after ONE step the monitor of the vacuum puncture reads |H| = 1.895e-3 in the boundary
+cell at the face centre (predicted 2.4e-3 within a factor 1.5: held, ratio 0.79), then
+-1.85e-4 and +1.1e-5 in the next two layers (ratios 0.098 and 0.0058; stencil 0.105 and
+0.010); order 3 gives 3.49e-4 (0.184 of order 2; stencil 0.175), order 4 gives 9.09e-5
+(0.048; stencil 0.041). The boosted puncture: 1.96e-3, 3.59e-4, 9.26e-5. So (a0-a) and
+(a0-b), moved to the first step, HELD: H1 is real, and it is what the id-solver package
+read as "up to 1.9e-3 within four cells of an outflow face in every mode". With linear
+ghosts the monitor's boundary layer is an artefact of the size of M/r^3 that does not
+fall with the cell size; with order 4 it is 20 times smaller and falls as dx^2.
+
+**a1, ball, first numbers** (run core-20261119-143745-78506dd; ball_ref had reached
+t = 5 when I looked; full analysis in the next entry). Not predictions any more:
+- (a1-a) the boundary cell at the face centre departs from the reference by
+  dKhat = -1.107e-3 at t = 1 (predicted -1.12e-3 +- 30 per cent: held), dA_xx =
+  +1.08e-3. The agreement of Khat is partly luck: the reference is not stationary
+  either (1+log lapse from alpha = 1 on the Painleve-Gullstrand slice: Khat moves by
+  +5.2e-4 and A_xx by -1.3e-3 in the first unit of time at r = 15.5), so the error of
+  the Sommerfeld condition has two parts of similar size, the wrong fall-off and the
+  evolution that is not a wave.
+- the face layer of H is made by the faces: mean |H| within 4 of a face is 3.1e-4,
+  7.6e-4, 1.46e-3 at t = 1, 2, 4 with the faces at 16, and 3.1e-7, 4.1e-6, 7.0e-5 in the
+  same cells of the reference.
+- (a1-e) HELD: without dissipation the face-layer mean |H| at t = 2 is 7.75e-4 against
+  7.63e-4 (1.6 per cent): H4 is not a cause.
+- (a1-d), ball half: HELD in the letter, with a surprise: order 4 does not lower the
+  face-layer mean |H| of the ball, it raises it (1.86e-3 against 1.46e-3 at t = 4;
+  boundary cell -9.3e-3 against +1.0e-3): the cubic extrapolation amplifies the kink
+  that the Sommerfeld condition makes in the boundary cell. Further in it helps (shell
+  mean of the difference to the reference 1.3e-4 against 2.2e-4 at t = 4).
+
+**The new condition** (source: `athenak/src/z4c/z4c_sbc_ext.hpp`, options and formula;
+`z4c_Sbc.cpp`, `Z4cRadiativeOp` and `Z4c::Z4cBoundaryRHSNonwave`; hook: first line of
+`Z4c::Z4cBoundaryRHS`; `z4c.hpp` three lines, `z4c.cpp` one line). With
+`<z4c> sbc_variant = nonwave` the boundary cell b of Khat, Gamma^i, A_ij gets
+`rhs_b = R_b + (rhs_p - R_p)(r_p/r_b)^q`, R the Sommerfeld operator, p one cell inward
+along every direction in which b lies on a physical face, q per variable
+(`sbc_power_khat`, `_a`, `_gam`, default 3; exact for a stationary field r^-n is
+q = n + 1). Theta keeps the plain condition unless `sbc_theta = nonwave`: it is a
+constraint and has no part worth keeping. `sbc_v_khat` (default sqrt 2) is the speed
+of Khat. Without `sbc_variant` in the input nothing is read and the old loops run.
+Unregistered check (scratch/core/tmp/faces_r0, repeated as a registered run at the
+end): outputs of ball (8 steps), punc and boost (4 steps) byte-identical between the
+new executable without the option and the release executable.
+
+**Plan b1** (`plans/b1_ball.json`; ball to t = 16, reference ball_ref of a1).
+Predictions [JUDGEMENT]:
+ (b1-a) nonwave, order 2, q = 3: |dKhat| and |dA_xx| in the boundary cell at the face
+   centre at t = 1 fall below 10 per cent of the Sommerfeld values (below 1.1e-4).
+ (b1-b) the face-layer mean of |H - H_ref| at t = 4 falls by more than a factor 5
+   (below 2.9e-4), the shell mean (8 <= r < 12) at t = 4 by more than 3 (below 7e-5).
+ (b1-c) q = 2.5 (exact for r^(-3/2)) changes these measures by less than 20 per cent
+   against q = 3 (the power enters at order dx/r).
+ (b1-d) with nonwave, order 4 is better than order 2 in the face-layer measure by more
+   than a factor 2 (no kink is left to amplify, and the ghost data are better).
+ (b1-e) all four runs reach t = 16 without growth: the largest |H| within 4 of a face
+   stays below 3 times that of the Sommerfeld run at every dump.
+ (b1-f) `sbc_theta = nonwave` is worse than the default for the face-layer measure
+   (it carries the constraint violation of cell p to the boundary cell).
+ Refuted: (b1-a) above 20 per cent; (b1-b) gains below 2; (b1-e) any blow-up.

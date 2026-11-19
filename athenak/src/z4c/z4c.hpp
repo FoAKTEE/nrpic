@@ -22,6 +22,7 @@
 #include "athena_tensor.hpp"
 #include "geodesic-grid/geodesic_grid.hpp"
 #include "geodesic-grid/spherical_grid.hpp"
+#include "z4c/z4c_sbc_ext.hpp"
 
 // forward declarations
 class Coordinates;
@@ -215,6 +216,7 @@ class Z4c {
     int dc_gaussian_center;
   };
   Options opt;
+  SbcExt sbc;             // radiative condition with a non-wave part (z4c_sbc_ext.hpp)
   Real diss;              // Dissipation parameter
 
   // Boundary communication buffers and functions for u
@@ -264,6 +266,7 @@ class Z4c {
   TaskStatus UpdateExcisionMasks(Driver *d, int stage);
   TaskStatus ADMConstraints_(Driver *d, int stage);
   TaskStatus Z4cBoundaryRHS(Driver *d, int stage);
+  TaskStatus Z4cBoundaryRHSNonwave(Driver *d, int stage);  // z4c_sbc_ext.hpp
   TaskStatus RestrictU(Driver *d, int stage);
   TaskStatus RestrictWeyl(Driver *d, int stage);
   TaskStatus CCEDump(Driver *pdrive, int stage);
