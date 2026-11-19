@@ -265,7 +265,7 @@ def part_b(exe, out, res):
         ax[j].set_xlabel("coordinate along the axis [$M$]", labelpad=-1)
         ax[j].set_xlim(-16, 16)
     ax[0].set_ylabel(r"$H/(32\pi\rho_N\psi_c^{-5})$")
-    ax[0].legend(fontsize=8, loc="lower center")
+    ax[0].legend(fontsize=8, loc="center")
     fs.save(fig, os.path.join(HERE, "figs", "cf_check_ham"))
     plt.close(fig)
 
@@ -314,6 +314,16 @@ def part_c(exe, out, res):
         int_E5 = float(np.sum(E * psi ** 5 * vol))
         int_E6 = float(np.sum(E * psi ** 6 * vol))
         int_H5 = float(np.sum(H * psi ** 5 * vol) / (16.0 * math.pi))
+        # the same integral without the cells within four cells (of their own level) of
+        # the outer faces: there the monitor of a run with particles sees the ghost
+        # cells of the outflow boundary instead of the analytic psi
+        dxl = vol ** (1.0 / 3.0)
+        half = float(np.max(np.abs(x) + 0.5 * dxl))
+        dface = half - np.maximum.reduce([np.abs(x), np.abs(y), np.abs(z)])
+        outer = dface < 4.0 * dxl
+        int_H5_in = float(np.sum((H * psi ** 5 * vol)[~outer]) / (16.0 * math.pi))
+        int_H5_out = float(np.sum((H * psi ** 5 * vol)[outer]) / (16.0 * math.pi))
+        int_R5_in = int_H5_in + float(np.sum((E * psi ** 5 * vol)[~outer]))
         mean_H = float(np.sum(H[core] * vol[core]) / np.sum(vol[core]))
         mean_E = float(np.sum(E[core] * vol[core]) / np.sum(vol[core]))
         rms_H = float(np.sqrt(np.mean(H[core] ** 2)))
@@ -326,6 +336,11 @@ def part_c(exe, out, res):
             mesh_int_E_psi5=int_E5, mesh_int_E_psi5_minus_sum=int_E5 - S,
             mesh_int_E_psi6=int_E6, mesh_int_E_psi6_minus_sum_m=int_E6 - float(mp.sum()),
             mesh_int_H_psi5_over_16pi=int_H5,
+            mesh_int_H_psi5_over_16pi_outer_face_cells=int_H5_out,
+            mesh_int_H_psi5_over_16pi_without_outer_face_cells=int_H5_in,
+            mesh_int_R_psi5_over_16pi_without_outer_face_cells=int_R5_in,
+            max_abs_H_outer_face_cells=float(np.abs(H[outer]).max()),
+            M_minus_sum_m_over_psi=sph.M - S,
             dx_finest=dxf, core_cells=int(core.sum()), particles_in_core=n_core,
             core_mean_H_over_16piE=mean_H / (16.0 * math.pi * mean_E),
             core_mean_E=mean_E, core_E_continuum_centre=float(2.0 * sph.rhoN * sph.c0 ** -5),
