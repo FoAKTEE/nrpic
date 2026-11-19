@@ -222,3 +222,22 @@ artefacts, then the stage packages G0 and G1. Predictions written before each ch
   3.3e-15 on the scaled processor output of E-20261115-172423-5234cce, each within a factor
   1.5, and every other test passes as before (the values `val_cf.py` gave with the same
   formula in memory). Refuted if A1 stays above 1e-11 or any other test changes its verdict.
+- LN1 outcome (run E-20261119-150541-3210cd6, `val_card_u6/fig_val_card_markov_tanh.png`
+  looked at): CONFIRMED. The unchanged validator with the fixed reference gives A1 = 4.57e-15
+  (card U6) and 4.02e-15 (scaled processor U6), all tests pass on both; the frozen card
+  validation (U1-U3, U5, U8) passes as before, its A1 now 5.3e-15 instead of 9.8e-14 because
+  core's power model takes the same increment.
+- LR1 STOPPED (run E-20261119-145853-ef835c2, closed as failed, exit -15): the full rerun read
+  the cold 128^3 and 256^3 dumps through the ladder's memory map at 3.6 MB/s (the disk gives
+  124 MB/s sequentially; load average about 100); the original analysis ran right after the
+  card jobs with the dumps in the page cache. Two of about 45 steps in 8 minutes; about 150 GB
+  to read. Replaced by LR1', written before it runs:
+- LR1' (partial rerun at the current commit): the original intermediate outputs
+  (`res/` of run E-20261115-194633-9e04ed8, checksums verified today with `nrpic-run verify`:
+  101 files PASS) are copied except those of the 32^3 and 64^3 rungs (L32p, L32m, L32ph,
+  L32mh, NC32p, NC32m, L64p, L64m, NC64p, NC64m and their pairs), which are recomputed from
+  the raw dumps; then `verdicts.py`, `make_figures.py`, `floor_analysis.py` and
+  `a6_analysis.py` (on the six A6 runs of E-20261119-142317-c851f27) run as the package
+  runs them. Prediction: the recomputed per-run and pair JSON equal the originals, and
+  `summary.json`, `floor.json`, `a6.json` equal `ladder/results/{final,floor,a6}/` within 1e-9
+  relative (paths and times excepted). Refuted by any larger difference.
