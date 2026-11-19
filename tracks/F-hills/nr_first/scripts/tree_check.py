@@ -16,6 +16,7 @@ Two parts:
           mesh/mesh.hpp lines 26-65).
 Usage:
   tree_check.py model <athinput> <x> [<y> <z>]        prints the model tree
+  tree_check.py path <athinput> <x0> <x1> <dx>        the model along the x axis
   tree_check.py <out | -> <athinput> <rundir> [...]   reads <rundir>/rst/*.rst and the
           tracker file, builds the model at each restart's tracker position, writes
           tree_check.json and fig_tree_check.{png,pdf}
@@ -196,6 +197,21 @@ def main():
         trk = [float(v) for v in sys.argv[3:6]] + [0.0] * (3 - len(sys.argv[3:6]))
         c = model_tree(inp, trk)
         print(json.dumps(dict(tracker=trk, counts=c, total=sum(c.values()))))
+        return
+    if sys.argv[1] == "path":
+        # tree_check.py path <athinput> <x0> <x1> <dx>: the model along the x axis
+        inp = read_athinput(sys.argv[2])
+        x0, x1, dx = (float(v) for v in sys.argv[3:6])
+        rows = []
+        for x in np.arange(x0, x1 + 0.5 * dx, dx):
+            mc = model_tree(inp, [x, 0.0, 0.0])
+            rows.append(dict(x=float(x), total=sum(mc.values()), counts=mc))
+            print("%.4f %d %s" % (x, rows[-1]["total"], mc))
+        out = os.environ.get("NRPIC_RUN_DIR", ".")
+        with open(os.path.join(out, "tree_path.json"), "w") as f:
+            json.dump(dict(input=sys.argv[2], rows=rows,
+                           max=max(r["total"] for r in rows)), f, indent=1)
+        print("max", max(r["total"] for r in rows))
         return
     out = sys.argv[1] if sys.argv[1] != "-" else os.environ["NRPIC_RUN_DIR"]
     inp = read_athinput(sys.argv[2])

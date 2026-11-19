@@ -577,3 +577,24 @@ skipped 2 x 22 integers for the two RegionIndcs; the struct has 19 (`mesh/mesh.h
 so time, cycle and levels were garbage (the MeshBlock totals 400, 1576, 1548, read before that
 offset, are right). Fixed; one restart file read by hand afterwards gives t = 10, cycle 320,
 levels 1-6 = 448 / 448 / 504 / 56 / 56 / 64. Rerun below.
+
+## 2026-11-19 E11, outcome (run F-20261119-143931-4fbf2d0; `tree_check.json`, figure `fig_tree_check.png` of the run, read)
+
+All three predictions met [VERIFIED]:
+1. The model gives the start tree exactly: 400 = 56 x 6 + 64 (levels 0-6), both runs.
+2. The restart trees equal the model level by level, exactly: t = 10 (S3 at x = 0.79 m, S2 at
+   x = 1.45 m) 1576 = 448 / 448 / 504 / 56 / 56 / 64 (levels 1-6, no root-level leaf left);
+   t = 20 (S3, x = 1.96 m) 1548 (levels 5, 6: 60, 32).
+3. Along x the model has 1576 for x < 1.75 m, 1548 for 1.875-2.125 m and 1632 from x = 2.25 m
+   on (84 / 88 / 64 at levels 4-6): the tracker sphere (radius 0.999 x 1.8 = 1.798 m) reaches the
+   next level-5 block (x = 4-8 m) when x > 4 - 1.798 = 2.202 m. Both runs stopped with the tracker
+   at that point: x = 2.203 m (S3, t = 21.97) and 2.217 m (S2, t = 14.22).
+Reading [JUDGEMENT]: the wave-zone criterion of the single-puncture input, with the 2:1 rule,
+puts every root block at level 1 or finer; the cost of S3 and S2 is mostly the 1400 blocks of
+levels 1-3, not the puncture. The 1600 slots were too few by 32 blocks. A cheaper wave zone
+(spheres at 30-50 m inside a 64 m cube) would need radius_0_rad below 32 m (then only the 4^3
+level-2 cube is refined) or a smaller root domain; not changed here, so that S2g stays
+comparable with S2 and S3.
+Next: the model along x = 0-20 m (S2g's tracker travels about 12-17 m in 90 m), to check the
+2400 slots of S2g. Prediction: the maximum stays below 1800 (at most one more level-3 or
+level-4 straddle of a few dozen blocks each).
