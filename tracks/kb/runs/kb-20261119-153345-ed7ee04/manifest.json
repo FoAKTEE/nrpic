@@ -1,0 +1,169 @@
+{
+  "schema": "nrpic-run-manifest/1",
+  "run_id": "kb-20261119-153345-ed7ee04",
+  "track": "kb",
+  "gate": "G2",
+  "kind": "scouting",
+  "purpose": "brief check s311: INSPIRE novelty queries of 2026-11-19 against Track F's of 2026-11-15 (brief l. 273)",
+  "preregistered_in": null,
+  "launcher": "local",
+  "command": [
+    "python3",
+    "-I",
+    "tracks/kb/brief_check/s311/scripts/novelty_update.py",
+    "$NRPIC_RUN_DIR",
+    "c_2406.11985=/data/haiyangw/nrpic/kb-data/meta/inspire/query/9016c78742b1a3b7.json:/data/haiyangw/nrpic/scratch/F-hills/tmp/inspire/c_2406.11985/response.json",
+    "c_2505.03934=/data/haiyangw/nrpic/kb-data/meta/inspire/query/152b0ae13c79f8c7.json:/data/haiyangw/nrpic/scratch/F-hills/tmp/inspire/c_2505.03934/response.json",
+    "k02=/data/haiyangw/nrpic/kb-data/meta/inspire/query/83ada7349ec463b7.json:/data/haiyangw/nrpic/scratch/F-hills/tmp/inspire/k02/response.json",
+    "k01=/data/haiyangw/nrpic/kb-data/meta/inspire/query/d1c89deb2a285952.json:/data/haiyangw/nrpic/scratch/F-hills/tmp/inspire/k01/response.json"
+  ],
+  "cwd": ".",
+  "git": {
+    "sha": "ed7ee04fc2080186a4f062d4826ceb32d187debe",
+    "branch": "kb/brief-check",
+    "dirty": false,
+    "package": [
+      "tracks/kb/brief_check/s311"
+    ],
+    "outside_package": {
+      "count": 4,
+      "first": [
+        "?? tracks/kb/brief_check/novelty/",
+        "?? tracks/kb/brief_check/s310/",
+        "?? tracks/kb/brief_check/s5_s6/",
+        "?? tracks/kb/brief_check/s7_s8/"
+      ]
+    },
+    "merge_base_main": "f51539c6f46a051b8c3c2d86501bcc6dfaa34f93",
+    "worktree": "wt/kb-brief"
+  },
+  "code": {
+    "core_tag": "core-v0.3",
+    "athenak_upstream_sha": "c5a0d7f",
+    "kokkos_sha": "6739bc623081648af9e752b616d9671527922cbf",
+    "problem": null
+  },
+  "env": {
+    "host": "anta",
+    "env_hash": "33c1dbb6673b68919eaa332b0add0b58aeac8be843f2071b9d06e2e0e397a96d",
+    "machine_file_sha256": "0321f40f4caeeb2a36624a9fa9809e60bad31071f366b3517ba23ad45698d2d7",
+    "uv_lock_sha256": "5417f6ba318b914aa3800e5d55f7b11fdd8df13c2688bdda7d419240aa1d5863",
+    "track_requirements_sha256": null,
+    "container_digest": null,
+    "compiler": "g++ 11.4.0",
+    "mpi": "none (Athena_ENABLE_MPI=OFF)",
+    "gpu": null,
+    "python": "3.10.12 /data/haiyangw/nrpic/wt/kb-brief/.venv"
+  },
+  "input": null,
+  "inputs": [
+    {
+      "path": "/data/haiyangw/nrpic/kb-data/meta/inspire/query/9016c78742b1a3b7.json",
+      "role": "input",
+      "sha256": "5f885517c83e1fb62772684450f3c7fad09463ecb363cfa366ee0c7a1267fdcb",
+      "bytes": 531889,
+      "tracked": false,
+      "location": "main checkout data root"
+    },
+    {
+      "path": "/data/haiyangw/nrpic/kb-data/meta/inspire/query/152b0ae13c79f8c7.json",
+      "role": "input",
+      "sha256": "154efa125caa9290f1570f5f15b2742987d4adf064fde320fbf2130697ecda7e",
+      "bytes": 607835,
+      "tracked": false,
+      "location": "main checkout data root"
+    },
+    {
+      "path": "/data/haiyangw/nrpic/kb-data/meta/inspire/query/83ada7349ec463b7.json",
+      "role": "input",
+      "sha256": "f0940d272302721aabf8bea790bb8859f6a357e434a09d960edc2e7dd3d5e248",
+      "bytes": 585988,
+      "tracked": false,
+      "location": "main checkout data root"
+    },
+    {
+      "path": "/data/haiyangw/nrpic/kb-data/meta/inspire/query/d1c89deb2a285952.json",
+      "role": "input",
+      "sha256": "409fbaeaf50152a1ad67b7e74c2a055cfd2d4fd2c975587fe4e540f48d3fad04",
+      "bytes": 596002,
+      "tracked": false,
+      "location": "main checkout data root"
+    },
+    {
+      "path": "/data/haiyangw/nrpic/scratch/F-hills/tmp/inspire/c_2406.11985/response.json",
+      "role": "input",
+      "sha256": "6980738fa83dee9ac9b13a9331c11e301b01685bcc6c4e369566e2427a30c0ea",
+      "bytes": 10501,
+      "tracked": false,
+      "location": "main checkout data root"
+    },
+    {
+      "path": "/data/haiyangw/nrpic/scratch/F-hills/tmp/inspire/c_2505.03934/response.json",
+      "role": "input",
+      "sha256": "48995bfc1dd8e8c5d039e60b7087965aa0239788ad37239340bfe37a843aca40",
+      "bytes": 9283,
+      "tracked": false,
+      "location": "main checkout data root"
+    },
+    {
+      "path": "/data/haiyangw/nrpic/scratch/F-hills/tmp/inspire/k02/response.json",
+      "role": "input",
+      "sha256": "acb3c033305480894741696431297b719b2e8a991c645dec692471dee1cb64cf",
+      "bytes": 25449,
+      "tracked": false,
+      "location": "main checkout data root"
+    },
+    {
+      "path": "/data/haiyangw/nrpic/scratch/F-hills/tmp/inspire/k01/response.json",
+      "role": "input",
+      "sha256": "5451ffbd528fe1edf547694efcf1c13d875ce1c314c8aef06dd2cc012e6ec300",
+      "bytes": 21554,
+      "tracked": false,
+      "location": "main checkout data root"
+    },
+    {
+      "path": "tracks/kb/brief_check/s311/scripts/novelty_update.py",
+      "role": "argv",
+      "sha256": "dae0e349f24aa7b51122e61efb012ed549b4475d5c270a5ab576f2204c6bdb9c",
+      "bytes": 2838,
+      "tracked": true
+    }
+  ],
+  "batch_entries": null,
+  "resources": {
+    "nodes": 1,
+    "gpus": 0,
+    "cores": 1,
+    "walltime_s": null,
+    "wall_limit": null,
+    "segments_max": null,
+    "gpu_hours_requested": 0.0,
+    "gpu_hours": null,
+    "particles": null
+  },
+  "slurm": null,
+  "outputs": {
+    "dir": "scratch/kb/kb-20261119-153345-ed7ee04",
+    "sha256sums": "sha256sums.txt",
+    "sha256sums_sha256": null,
+    "bytes": null,
+    "files": null
+  },
+  "status": "running",
+  "exit_code": null,
+  "registered": "2026-11-19T15:33:45Z",
+  "started": null,
+  "ended": null,
+  "parents": [],
+  "notes": "",
+  "budget_at_submit": {
+    "gpu_hours_allotted": 0.0,
+    "cores_allotted": 8,
+    "gpu_hours_used": 0.0,
+    "gpu_hours_reserved": 0.0,
+    "gpu_hours_without_gate": 0.0,
+    "cores_busy": 6,
+    "runs": 129,
+    "allotment_from": "coord/DECISIONS/0006-compute-budget.md + 0014-budgets-after-wave-1.md"
+  }
+}
