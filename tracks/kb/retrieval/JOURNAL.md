@@ -1,5 +1,8 @@
 # JOURNAL of the retrieval package (kb, wave 2b, 2026-11-19)
 
+Clock times: corrected at 06:20 PST from the commit and run-registration times; I had first
+written estimates that ran ahead of the clock (the committed history keeps them).
+
 Package: fix the C4 reader of `kb qa run` (30 papers against INSPIRE), rerun the golden
 questions (`kb qa run --hybrid`), then improve retrieval at the answer location and report
 the rates against the KB-G2 thresholds of decision 0016 (paper in the top ten for at least
@@ -11,13 +14,13 @@ answer location for 23 (run kb-20261115-164558-5aca10c, snapshot kb-20261115-621
 Evaluation database of this package: the read-only snapshot `kb-data/db/current` =
 `kb-20261115-a848a06.sqlite` (other helpers may write `kb.sqlite` at the same time).
 
-## R1. C4 reader (2026-11-19 06:10 PST)
+## R1. C4 reader (2026-11-19, written about 06:03 PST)
 
 Cause seen by reading the code: `qa_report._meta_record` looks for
 `meta/arxiv/<key>.inspire.json` and `<key>.api.json`; the fetch command writes
 `meta/inspire/<key>.json` (record under `record`, titles `record.titles[].title`, authors
 `record.authors[].full_name`) and `meta/arxiv-api/<key>.json` (`title`, `authors`). 715 of 719
-INSPIRE files have status ok, 4 not-found (counted on disk, 06:08 PST).
+INSPIRE files have status ok, 4 not-found (counted on disk, 06:03 PST).
 
 Test first: `kb/tests/test_qa_c4_reader.py` builds a synthetic store in the fetch command's
 layout. Prediction: it FAILS on the current code (C4 reports blocked) and passes after the fix.
@@ -29,11 +32,11 @@ surnames found >= 0.8 for at least 27 of 30 (TeX titles carry macros and line br
 author lists collaboration names). Refuted if fewer than 25 have a record, or more than three
 fall below either bar without a cause I can name by reading the two records.
 
-Outcome R1 test (06:20 PST): the three tests of `kb/tests/test_qa_c4_reader.py` failed on the
+Outcome R1 test (commit fdb7c90, 06:05 PST): the three tests of `kb/tests/test_qa_c4_reader.py` failed on the
 old reader (blocked; KeyError 'differ') and pass after the fix; the whole suite passes, 176
 tests (commit fdb7c90 says 179 by my miscount; history not rewritten).
 
-## R2. Rerun of `kb qa run --hybrid` on db/current (prediction 06:22 PST)
+## R2. Rerun of `kb qa run --hybrid` on db/current (prediction committed in 1170ecd, 06:05 PST)
 
 Command: `kb/.venv/bin/python -I kb/kbtool/qa_cli.py qa run --hybrid --db kb-data/db/current`,
 report and JSON into the run directory (kb/QA_REPORT.md is the lead's to replace).
@@ -42,11 +45,11 @@ locator 23 +- 1 of 32 (snapshot a848a06 adds two papers to 621430e, so a rank ma
 paper 27 +- 1, locator 21 +- 1. Refuted if hybrid paper < 27 or locator < 22 (then the wave-2
 numbers do not reproduce and I find out why before changing anything).
 
-Outcome R2 (run kb-20261119-140547-1170ecd, 06:07-06:12 PST; report and qa.json in its run
+Outcome R2 (run kb-20261119-140547-1170ecd, 06:05:47-06:08:25 PST; report and qa.json in its run
 directory): prediction held. C7 hybrid paper 28/32, locator 23/32; text paper 27/32, locator
 21/32 (same as wave 2 on 621430e). C4: 30 of 30 have an INSPIRE record (all from
 meta/inspire); title ratio >= 0.9 for 28 of 30, surnames >= 0.8 for 28 of 30. The three
-below a bar, each read in both records (06:25 PST):
+below a bar, each read in both records (06:09 PST):
 - 1004.1353, surnames 2/3: the TeX author is written with an umlaut, INSPIRE transliterates
   it with "ue"; the comparator does not fold diacritics (comparator defect, fixed in R2b).
 - 2103.01183, title 0.713: the stored TeX title carries the text of a `\thanks`-like bracket
@@ -57,14 +60,14 @@ below a bar, each read in both records (06:25 PST):
 So no disagreement of the metadata itself; R1's prediction held (3 below a bar, each with a
 named cause).
 
-## R2b. Diacritics in the author comparison (prediction 06:27 PST)
+## R2b. Diacritics in the author comparison (prediction committed in 69232a4, 06:10 PST)
 
 Test `test_compare_meta_folds_diacritics` (in test_qa_c4_reader.py): TeX "Bernd Brügmann" (and
 the TeX accent form `Br\"ugmann`) against INSPIRE "Bruegmann, Bernd" must count as found.
 Prediction: fails before (fraction 0), passes after folding (NFKD to ASCII, and the German
 ae/oe/ue form); 1004.1353 then reaches 100 % in the next QA run.
 
-## R3. Diagnosis of the misses (prediction 06:28 PST)
+## R3. Diagnosis of the misses (prediction committed in 69232a4, 06:10 PST)
 
 Script `scripts/inspect_misses.py` (on db/current a848a06): for each question the chunks on
 the answer lines, their sizes in word pieces, where the answer starts inside them, and their
@@ -78,11 +81,11 @@ have an answer chunk longer than 512 word pieces with the answer starting beyond
 and at least one answer chunk is longer than 5000 characters. Refuted if fewer than 2 misses
 involve a cut or oversized chunk: then ranking (H3) is the main cause and chunking is not.
 
-Outcome R2b (06:50 PST): the diacritics test failed before (fraction 0.5) and passes after
+Outcome R2b (06:16 PST): the diacritics test failed before (fraction 0.5) and passes after
 `qa_report._name_forms` (TeX accents resolved, NFKD to ASCII, German ue form); 1004.1353 to be
 confirmed in the final QA run.
 
-Outcome R3 (run kb-20261119-141041-69232a4, 06:10-06:14 PST; misses.json and the answer chunks
+Outcome R3 (run kb-20261119-141041-69232a4, 06:10:41-06:10:58 PST; misses.json and the answer chunks
 in its run directory, read by me): prediction REFUTED. Of the 9 hybrid locator misses only
 q12 involves the input limit (answer chunk 830 word pieces, the answer at its very end, a
 display equation); no answer chunk is longer than 2601 characters (H2 false). The misses are
@@ -97,7 +100,7 @@ ranking misses (H3), of two kinds:
 Answer chunk sizes over all 32 questions: median about 450 word pieces; the answer starts at
 piece 340, 170, 46, 454, 68 inside the chunks of the first kind.
 
-## R4. Window re-ranking (prediction 06:55 PST, before the first evaluation)
+## R4. Window re-ranking (prediction committed in 6b0e3a4, 06:17 PST, before the first evaluation)
 
 Remedy at the search level, within kb/kbtool/search_rerank.py (chunking itself belongs to
 the parser, not to this package): pool = first 50 chunks of the hybrid list + all chunks of
