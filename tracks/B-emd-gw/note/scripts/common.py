@@ -36,7 +36,29 @@ RUNS = {
     "late_rise": "B-20261115-164616-a6d9477",             # spatial-gauge piece on those dumps (first-source helper)
     "flrw": "B-emd-gw-20261115-115414-7ffbde1",           # homogeneous runs against the exact solution
     "baseline": "B-emd-gw-20261115-115752-840e994",       # semi-analytic baseline T1-T8
+    # wave 2 (G1): the first source in full relativity (first_source helper)
+    "scan_ic64": "B-20261115-161656-03d75e1",             # initial data, 64^3, eps = 0, 0.1, 0.3
+    "scan_ic64_eps1": "B-20261115-164104-886798f",        # initial data, 64^3, eps = 1
+    "scan_cards_a": "B-20261115-164059-d802e82",          # card runs eps = 0, 0.1, 0.3, 64^3
+    "scan_cards_b": "B-20261115-165353-b592d43",          # card runs eps = 1, zero shift and Gamma driver
+    "scan_cpu32": "B-20261115-165525-f7c2004",            # processor runs, the five cases at 32^3
+    "scan64_a": "B-20261115-174722-ba1048d",              # per-dump diagnostics, 64^3, eps = 0, 0.1, 0.3
+    "scan64_b": "B-20261115-180834-c77a132",              # per-dump diagnostics, 64^3, eps = 1 (both gauges)
+    "scan32": "B-20261115-184650-2d155b6",                # per-dump diagnostics, 32^3, all five cases
+    "t0_gauge": "B-20261115-164221-6a6b779",              # gauge piece on exact pure-gauge data (T0)
+    "slicing": "B-20261115-170610-c82b10c",               # first-order slicing of the earlier three-wave runs (P9)
+    # wave 2 (G1): AthenaK's Newtonian mode (newton_tests helper)
+    "nw_pancake": "B-20261115-173904-a7297e3",            # plane-wave pancake against Zel'dovich, n = 16, 32, 64
+    "nw_ellipsoid": "B-20261115-174405-af11300",          # isolated ellipsoid against the ODE; self-similarity
+    "nw_card": "B-20261115-163653-f6324ea",               # the card run of the n = 64 pancakes
+    # the lead's rechecks of wave 2 (second readings, stage/REVIEW-wave2.md)
+    "review_fs": "B-20261115-190007-e09a0d2",
+    "review_nw": "B-20261115-190015-4dd3416",
 }
+
+# the claims check reads the lead's stage documents as they stood when the note v0 checked
+# them (git sha of run B-20261115-165556-a399d4e); the lead has rewritten them since
+CLAIMS_REV = "a399d4e"
 
 CHECKED = []   # (run_id, relative path, how it was checked)
 

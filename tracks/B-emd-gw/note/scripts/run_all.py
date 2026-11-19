@@ -14,7 +14,8 @@ import sys
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 SCRIPTS = ["fig_source", "fig_waves", "fig_pancake", "fig_baseline",
-           "schem_architecture", "schem_timeline"]
+           "fig_scan", "fig_gauge", "fig_newton",
+           "schem_architecture", "schem_dataflow", "schem_timeline"]
 
 
 def main():

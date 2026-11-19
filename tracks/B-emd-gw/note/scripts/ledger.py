@@ -16,13 +16,23 @@ import sys
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import common  # noqa: E402
+import g1data  # noqa: E402
 
 R = common.RUNS
+
+
+class Sig(float):
+    """A value printed with its own number of significant digits."""
+    def __new__(cls, x, sig):
+        o = float.__new__(cls, x)
+        o.sig = sig
+        return o
 
 
 def fmt(x, sig=3):
     if isinstance(x, str):
         return x
+    sig = getattr(x, "sig", sig)
     if x == 0:
         return "0"
     s = f"{x:.{sig}g}"
@@ -48,6 +58,14 @@ def load():
     d["lc"] = common.load_json("lead_checks", "lead_checks.json")
     d["cd"] = common.load_json("cosmo_dumps", "results_cosmo.json")
     d["lr"] = common.load_json("late_rise", "late_rise.json")
+    # wave 2 (G1)
+    d["scan"] = g1data.scan_numbers()
+    d["gauge"] = g1data.gauge_numbers()
+    d["nwp"] = common.load_json("nw_pancake", "pancake.json")
+    d["nwe"] = common.load_json("nw_ellipsoid", "ellipsoid.json")
+    d["rvn"] = common.load_json("review_nw", "rv_newton.json")
+    d["rvf"] = common.load_json("review_fs", "rv_first_source.json")
+    d["slc"] = common.load_json("slicing", "slicing_check.json")
     return d
 
 
@@ -149,7 +167,97 @@ def values(d):
     req = d["i3"]["1E_flat_transverse_zeldovich"]["dD_dt_required"][0].replace(" ", "")
     law = "$\\dot D=-\\tfrac32 D\\,\\dot a/a$" if req == "-3*D(t)*Derivative(a(t),t)/(2*a(t))" else req
     v["item3"] = (["yes" if d["i3"]["1A_tt_projector_along_x"]["vanishes_for_E2_symmetric"] else "no", law], "item3")
+    values_g1(d, v)
     return v
+
+
+def values_g1(d, v):
+    """The numbers of the G1 sections (wave 2): first source, spatial gauge, Newtonian mode."""
+    S, G, P, E = d["scan"], d["gauge"], d["nwp"], d["nwe"]
+    names = ("cw_eps0p1", "cw_eps0p3", "cw_eps1")
+    v["fs_ic"] = ([S["ic_ham_max"], S["ic_mom_max"], Sig(S["ic_particles"], 7)], "scan_ic64")
+    v["fs_s"] = ([S["s_eps1"], S["a_cross_zeldovich"]], "scan64_a")
+    v["fs_dev64"] = ([S[f"dev_64_{n}_K1_2_10"] for n in names], "scan64_a")
+    v["fs_dev64K2"] = ([S[f"dev_64_{n}_K2_2_10"] for n in names], "scan64_a")
+    v["fs_dev32"] = ([S[f"dev_32_{n}_K1_2_10"] for n in names], "scan32")
+    for a0 in (20, 40, 60):
+        v[f"fs_dev_a{a0}"] = ([S[f"dev_64_{n}_a{a0}"] for n in names], "scan64_a")
+    v["fs_slope"] = ([S[f"dev_slope_64_{n}"] for n in names], "scan64_a")
+    v["fs_scaled"] = ([S[f"dev_scaled_{n}_a{a0}"] for a0 in (20, 40, 60) for n in ("cw_eps0p3", "cw_eps1")],
+                      "scan64_a")
+    v["fs_lin"] = ([S["lin_cw_eps0p3_2_10"], S["lin_cw_eps1_2_10"]], "scan64_a")
+    v["fs_lin_late"] = ([S["lin_cw_eps0p3_a20"], S["lin_cw_eps1_a20"], S["lin_cw_eps0p3_a60"],
+                         S["lin_cw_eps1_a60"]], "scan64_a")
+    v["fs_max"] = ([S["max_c_over_s_eps1"], S["a_of_max_eps1"], S["max_c_over_s_cw_eps0p1"],
+                    S["max_c_over_s_cw_eps0p3"]], "scan64_b")
+    v["fs_null"] = ([S["null_h_bin"], S["null_h_rst"], S["null_A_rst"], S["null_zdep_rst"]], "scan64_a")
+    v["fs_res"] = ([S[f"res_{n}_5_40"] for n in names + ("cw_eps1_gd",)], "scan32")
+    v["fs_res_late"] = ([max(S[f"res_{n}_40_80"] for n in names + ("cw_eps1_gd",)),
+                         max(abs(S[f"res_{n}_a100"]) for n in names + ("cw_eps1_gd",))], "scan32")
+    v["fs_box"] = ([S["box_share_cw_eps0p1_a10"], S["box_share_cw_eps1_a10"],
+                    S["box_share_cw_eps0p1_a20"], S["box_share_cw_eps1_a20"]], "scan64_a")
+    v["fs_kin"] = ([S["kin_over_grad_cw_eps0p1_a12"], S["kin_over_grad_cw_eps1_a12"]], "scan64_b")
+    ma, mb = common.manifest("scan_cards_a"), common.manifest("scan_cards_b")
+    ga, gb = ma["resources"]["gpu_hours"], mb["resources"]["gpu_hours"]
+    v["fs_card"] = ([ga, gb, ga + gb], "scan_cards_a")
+    t0 = G["t0_slopes"]
+    nos = [k for k in t0 if k.startswith("slicing=False")]
+    yes = [k for k in t0 if k.startswith("slicing=True")]
+    v["g_t0"] = ([min(t0[k]["Lh"] for k in nos), min(t0[k]["Lh_minus_G"] for k in nos),
+                  max(t0[k]["Lh_minus_G"] for k in yes)], "t0_gauge")
+    v["g_size"] = ([G[f"Gtot_over_c_{n}_le20"] for n in names], "scan64_a")
+    v["g_size40"] = ([G[f"Gtot_over_c_{n}_a40"] for n in names], "scan64_a")
+    v["g_raw"] = ([G[f"raw_a{a0}"] for a0 in (5, 10, 20, 40, 60)], "scan64_b")
+    v["g_cor"] = ([G[f"cor_a{a0}"] for a0 in (5, 10, 20, 40, 60)], "scan64_b")
+    v["g_median"] = ([G["median_cor_over_raw_64"], G["median_cor_over_raw_32"], G["share_big_64"]], "scan64_b")
+    v["g_quad"] = ([G["median_quad_over_raw_64"], G["median_quad_over_raw_32"]], "scan64_b")
+    v["g_dev"] = ([G["dev_raw_a10"], G["dev_cor_a10"], G["dev_raw_a20"], G["dev_cor_a20"]], "scan64_b")
+    v["g_nonTT"] = ([G["nonTT_ratio_min"], G["nonTT_ratio_max"]], "scan64_b")
+    v["g_weyl"] = ([G["weyl_dB_median_le64"], G["weyl_dh_median_le64"]], "scan64_b")
+    rows = [r for run in d["slc"].values() for r in run if 1.0 < r["a"] <= 125.0]
+    v["g_slicing"] = ([max(r["corr"] for r in rows),
+                       min(r["rms_dln_alpha_gamma16"] / r["rms_dln_alpha"] for r in rows),
+                       max(r["rms_dln_alpha_gamma16"] / r["rms_dln_alpha"] for r in rows)], "slicing")
+    F = d["rvn"]["R7"]
+    v["n_force"] = ([F[str(n)]["F_minus_1"] for n in (16, 32, 64)], "review_nw")
+    rat = []
+    for n in (16, 32, 64):
+        r = P[f"P1_athenak_n{n}"]
+        rat += [Sig(r["ex_cont_a2"] / r["ex_h1_pred_a2"], 4), Sig(r["ex_cont_a5"] / r["ex_h1_pred_a5"], 4)]
+    v["n_h1"] = (rat, "nw_pancake")
+    p32, p64 = P["P1_athenak_n32"], P["P1_athenak_n64"]
+    v["n_err"] = ([p32["ex_cont_a2"], p64["ex_cont_a2"], p32["ex_cont_a5"], p64["ex_cont_a5"],
+                   p32["ex_cont_a2"] / p64["ex_cont_a2"], p32["ex_cont_a5"] / p64["ex_cont_a5"]], "nw_pancake")
+    q32, q64 = P["P1_athenak_minus_pm_n32"], P["P1_athenak_minus_pm_n64"]
+    v["n_pm"] = ([q32["pm_ex_cont_a2"], q32["pm_ex_cont_a5"], q64["pm_ex_cont_a2"], q64["pm_ex_cont_a5"]],
+                 "nw_pancake")
+    v["n_late"] = ([p32["ex_cont_a10"] / p32["ex_h1_pred_a10"], p32["ex_cont_a15"] / p32["ex_h1_pred_a15"]],
+                   "nw_pancake")
+    v["n_cross"] = ([Sig(P[f"P1_athenak_n{n}"]["a_cross"], 4) for n in (16, 32, 64)] +
+                    [Sig(q32["a_cross_pm"], 4), Sig(q64["a_cross_pm"], 4)], "nw_pancake")
+    v["n_sym"] = ([max(s_["spread_x"] for n in (16, 32, 64) for s_ in P[f"P1_athenak_n{n}"]["plane_symmetry"])],
+                  "nw_pancake")
+    v["n_d3I"] = ([P[f"P2_athenak_n{n}"]["d3I_rms_rel_1.2_15"] for n in (16, 32, 64)], "nw_pancake")
+    v["n_LI"] = ([P[f"P2_athenak_n{n}"]["layzer_irvine_dC_over_max_aW"] for n in (16, 32, 64)], "nw_pancake")
+    C = E["N1_convergence"]
+    v["e_tx"] = ([Sig(x, 6) for x in C["t_x"]["values"]] +
+                 [Sig(C["t_x_ode_nominal"], 6), Sig(C["t_x"]["richardson"], 6), C["t_x"]["order"]],
+                 "nw_ellipsoid")
+    v["e_E"] = ([x / C["E_ode_nominal"] - 1 for x in C["E_raw"]["values"]] +
+                [C["E_raw"]["richardson"] / C["E_ode_nominal"] - 1, C["E_raw"]["order"]], "nw_ellipsoid")
+    v["e_EM"] = ([E["N1_N128"]["ode"]["nominal"]["E_over_M"]], "nw_ellipsoid")
+    v["e_early"] = ([E[f"N1_N{n}"]["ode"]["nominal"]["dE_early_rel"] for n in (32, 64, 128)], "nw_ellipsoid")
+    v["e_step"] = ([E["N1f_N64_dt"]["vs_step_0.02"]["t_x_rel"]], "nw_ellipsoid")
+    n3 = [E["N3_N32"], E["N3_N64"]]
+    v["e_self"] = ([n3[0]["rows"]["0.1"]["F_avg"], n3[1]["rows"]["0.1"]["F_avg"],
+                    max(n3[0]["spread_F_avg"], n3[1]["spread_F_avg"]), E["F_C_baseline"]], "nw_ellipsoid")
+    v["n_card"] = ([common.manifest("nw_card")["resources"]["gpu_hours"]], "nw_card")
+    rf = d["rvf"]["summary"]["cases"]
+    v["rv_dev"] = ([rf[f"64/{n[3:]}"]["P2_K1_maxdev_a2_10"] for n in names], "review_fs")
+    rn = d["rvn"]["R8"]
+    v["rv_tx"] = ([Sig(rn[str(n)]["t_x"], 6) for n in (32, 64, 128)] +
+                  [Sig(rn["richardson_t_x"][1], 6)], "review_nw")
+    v["rv_self"] = ([max(d["rvn"]["R9"][k]["E_spread_rel"] for k in ("32", "64"))], "review_nw")
 
 
 LEDGER = [
@@ -212,11 +320,73 @@ LEDGER = [
     ]),
 ]
 
+LEDGER_G1 = [
+    ("Crossed waves in full relativity ($\\delta=0.01$, box of four initial Hubble radii, $64^3$ unless stated)", [
+        ("fs_ic", "initial data: largest Hamiltonian and momentum residuals of the four cases; particles per run"),
+        ("fs_s", "static amplitude $s$ at $\\epsilon=1$; Zel'dovich first crossing $1+1/\\delta$"),
+        ("fs_dev64", "largest $|c_+/(s\\epsilon g)-1|$, $2\\le a\\le10$: $\\epsilon=0.1,0.3,1$"),
+        ("fs_dev64K2", "the same at $(k,-k,0)$ with the opposite sign"),
+        ("fs_dev32", "the same at $(k,k,0)$, $32^3$"),
+        ("fs_dev_a20", "departure from second order at $a=20$: $\\epsilon=0.1,0.3,1$"),
+        ("fs_dev_a40", "the same at $a=40$"),
+        ("fs_dev_a60", "the same at $a=60$"),
+        ("fs_slope", "logarithmic slope of the departure between $a=10$ and $a=60$"),
+        ("fs_scaled", "departure over $1+\\epsilon^2$, relative to that of $\\epsilon=0.1$: $\\epsilon=0.3,1$ at $a=20$; at $40$; at $60$"),
+        ("fs_lin", "linearity, $2\\le a\\le10$: largest relative difference of $c_+/\\epsilon$, $0.3$ and $1$ against $0.1$"),
+        ("fs_lin_late", "the same at $a=20$ ($0.3$; $1$) and $a=60$ ($0.3$; $1$)"),
+        ("fs_max", "largest $c_+/s$ at $\\epsilon=1$ and its $a$; $c_+/(s\\epsilon)$ at the end, $\\epsilon=0.1,0.3$"),
+        ("fs_null", "null $\\epsilon=0$, all dumps to $a=140$: largest TT amplitude of $h$ (single, double precision), of $\\tilde A$ (double); largest $z$ dependence"),
+        ("fs_res", "$32^3$ against $64^3$: largest $|c_+$ ratio$-1|$, $5\\le a\\le40$: $\\epsilon=0.1,0.3,1$, driven shift"),
+        ("fs_res_late", "the same, largest over the four cases for $40<a\\le80$; at $a=100$"),
+        ("fs_box", "share of the four box modes in the mean square TT strain: $a=10$ ($\\epsilon=0.1,1$), $a=20$ ($0.1,1$)"),
+        ("fs_kin", "largest kinetic over gradient energy of the TT part for $a\\ge12$: $\\epsilon=0.1,1$"),
+        ("fs_card", "card-hours of the scan: three cases; two gauges; total"),
+    ]),
+    ("Spatial gauge of the projection ($\\epsilon=1$, two gauges, $64^3$ unless stated)", [
+        ("g_t0", "exact pure-gauge data: slope of $\\Lambda h$ and of $\\Lambda h-G$ in the gauge amplitude; with a slicing change, $\\Lambda h-G$"),
+        ("g_size", "largest $|G_{\\rm tot}/c_+|$ for $a\\le20$, zero shift: $\\epsilon=0.1,0.3,1$"),
+        ("g_size40", "the same at $a=40$"),
+        ("g_raw", "gauge difference of $c_+$ over $|s|$, as projected, $a=5,10,20,40,60$"),
+        ("g_cor", "the same after $G_{\\rm tot}$ in each gauge"),
+        ("g_median", "median of corrected over projected difference where the latter exceeds $10^{-3}|s|$: $64^3$, $32^3$; share of such dumps"),
+        ("g_quad", "the same median with the quadratic piece alone: $64^3$, $32^3$"),
+        ("g_dev", "departure from $sg$ at $a=10$: as projected, corrected; at $a=20$: as projected, corrected"),
+        ("g_nonTT", "rms non-TT part, zero shift over driven shift, $a\\ge10$: smallest, largest ratio"),
+        ("g_weyl", "median relative gauge difference for $a\\le64$: magnetic Weyl part; flat TT strain"),
+        ("g_slicing", "first-order slicing of the earlier three-wave runs, $1<a\\le121$: largest correlation of $\\delta\\ln\\alpha$ with $\\delta\\ln\\gamma^{1/6}$; rms of $\\delta\\ln(\\alpha\\gamma^{1/6})$ over that of $\\delta\\ln\\alpha$, smallest and largest"),
+    ]),
+    ("Newtonian mode of the code", [
+        ("n_force", "force excess $[(kh/2)/\\sin(kh/2)]^2-1$ on the box mode, $n=16,32,64$"),
+        ("n_h1", "measured over predicted sheet error at $a=2,5$: $n=16$; $32$; $64$"),
+        ("n_err", "sheet error over displacement at $a=2$ ($n=32,64$), $a=5$ ($32,64$); ratios $32/64$ at $a=2,5$"),
+        ("n_pm", "spectral particle mesh, the same: $a=2,5$ at $n=32$; at $n=64$"),
+        ("n_late", "measured over predicted at $a=10,15$, $n=32$"),
+        ("n_cross", "first sheet crossing (scale factor): $n=16,32,64$; particle mesh $n=32,64$"),
+        ("n_sym", "largest spread of $x$ over a lattice plane ($L$)"),
+        ("n_d3I", "rms relative error of the third derivative of $I_{xx}$, $1.2\\le a\\le15$: $n=16,32,64$"),
+        ("n_LI", "Layzer--Irvine constant over largest $a|W|$: $n=16,32,64$"),
+        ("e_tx", "ellipsoid: first crossing time ($t_k$), $N=32,64,128$; ODE; extrapolation and its order"),
+        ("e_E", "energy to the first crossing against the ODE, $N=32,64,128$; extrapolation; order"),
+        ("e_EM", "ODE energy to the first crossing over $Mc^2$"),
+        ("e_early", "energy until one time unit before the crossing against the ODE (both averaged), $N=32,64,128$"),
+        ("e_step", "relative change of the crossing time when the step is halved, $N=64$"),
+        ("e_self", "energy over $Mc^2(2\\alpha)^{7/2}$, $N=32,64$; largest spread over four $\\alpha$; ODE value"),
+        ("n_card", "card-hours of the $n=64$ pancakes"),
+    ]),
+    ("Second readings of the wave-2 runs (own reader and reference)", [
+        ("rv_dev", "largest departure from second order, $2\\le a\\le10$, $\\epsilon=0.1,0.3,1$"),
+        ("rv_tx", "ellipsoid first crossing time from the history files, $N=32,64,128$; extrapolation"),
+        ("rv_self", "largest relative spread of the self-similar energy over $\\alpha$"),
+    ]),
+]
+
 
 def ledger_tex(v):
     lines = ["% generated by scripts/ledger.py from registered run outputs; do not edit"]
     parts = [(LEDGER[:3], "Numerical ledger. Every number behind this note with the registered run that produced it.", "tab:ledger"),
-             (LEDGER[3:], "Numerical ledger (continued).", "tab:ledger2")]
+             (LEDGER[3:], "Numerical ledger (continued).", "tab:ledger2"),
+             (LEDGER_G1[:1], "Numerical ledger: the crossed waves in full relativity.", "tab:ledger3"),
+             (LEDGER_G1[1:], "Numerical ledger: the spatial gauge and the Newtonian mode.", "tab:ledger4")]
     for groups, caption, label in parts:
         lines += ["\\begin{table*}", "\\footnotesize", f"\\caption{{{caption}}}", f"\\label{{{label}}}",
                   "\\begin{ruledtabular}",
@@ -241,6 +411,7 @@ def ledger_tex(v):
 # first_source/JOURNAL.md set-up, scope/SCOPE.md section 3)
 def parameters_tex(d):
     pc = d["pc"]
+    e = d["nwe"]
     a_end = max(pc[k]["a_end"] for k in ("L1_n32", "L1_n64", "L1_n96", "L4_n64"))
     amp = d["ak"]["deck"]["amp"]
     rows = [
@@ -258,8 +429,15 @@ def parameters_tex(d):
         ("First source (crossed waves)", "amplitude $\\delta$; ratios", "0.01; $(1,\\epsilon,0)$"),
         ("", "$\\epsilon$", "0, 0.1, 0.3, 1"),
         ("", "box side (initial Hubble radii)", "4"),
-        ("", "cells per side; particles per cell", "64; 8"),
+        ("", "cells per side; particles per cell", "64 and 32; 8"),
         ("", "end; dump interval in conformal time", "$a=140$; 0.1"),
+        ("", "slicing; shift", "conformal time; zero (also driven, $\\epsilon=1$)"),
+        ("Newtonian pancake", "amplitude $\\delta$ at $a=1$; box side", "0.05; one length unit"),
+        ("", "cells per side; particles per cell", "16, 32, 64; 1"),
+        ("Newtonian ellipsoid", "model", "C of Ref.~\\cite{Escriva:2026gw}, from turnaround"),
+        ("", "turnaround time; deformation $\\alpha$", f"{e['N1_N64']['t_turn']:.2f}\\,$t_k$; {e['N1_N64']['alpha']:.3f}"),
+        ("", "cells per side; particles per cell", "32, 64, 128; 8"),
+        ("", "rescaled copies $\\alpha$", "0.05, 0.1, 0.2"),
     ]
     lines = ["% generated by scripts/ledger.py; do not edit",
              "\\begin{table*}",
@@ -336,9 +514,31 @@ COMMITTED = {
 }
 
 
+# committed copies of the wave-2 run outputs, by run (the same file name occurs in several runs)
+COMMITTED_BY_RUN = {
+    common.RUNS["nw_pancake"]: {"pancake.json": "newton_tests/results/pancake.json"},
+    common.RUNS["nw_ellipsoid"]: {"ellipsoid.json": "newton_tests/results/ellipsoid.json"},
+    common.RUNS["t0_gauge"]: {"t0_gauge.json": "first_source/results/t0_gauge.json"},
+    common.RUNS["slicing"]: {"slicing_check.json": "first_source/results/slicing_check.json"},
+    common.RUNS["review_nw"]: {"rv_newton.json": "stage/review_wave2/results/rv_newton.json"},
+}
+
+
+def committed_copy(run_id, rel):
+    base = os.path.basename(rel)
+    if run_id in COMMITTED_BY_RUN:
+        return COMMITTED_BY_RUN[run_id].get(base)
+    if run_id.startswith("B-emd-gw-"):          # wave-1 runs: names are unique among them
+        return COMMITTED.get(base)
+    return None
+
+
 def locate(doc, phrase):
-    path = os.path.join(common.TRACK, doc) if not doc.startswith("tracks/") else os.path.join(common.WT, doc)
-    text = open(path).read()
+    """Line of `phrase` in `doc` as the document stood at common.CLAIMS_REV (the revision
+    the note v0 checked; the lead's stage documents were rewritten after that check)."""
+    rel = doc if doc.startswith("tracks/") else "tracks/B-emd-gw/" + doc
+    text = subprocess.run(["git", "-C", common.WT, "show", f"{common.CLAIMS_REV}:{rel}"],
+                          capture_output=True, text=True, check=True).stdout
     flat = re.sub(r"\s+", " ", text)
     ph = re.sub(r"\s+", " ", phrase)
     i = flat.find(ph)
@@ -412,15 +612,15 @@ def main():
         f.write("\n".join(md) + "\n")
     n_bad = len(res) - n_ok
     with open(os.path.join(out, "claims_summary.tex"), "w") as f:
-        f.write(f"Of the {len(res)} numbers and statements of the track's stage documents that were "
-                f"checked against these files, {n_ok} agree at the precision stated and {n_bad} "
-                f"differ%\n")
+        f.write(f"Of the {len(res)} numbers and statements of the track's stage documents of the first "
+                f"stage check that were checked against these files, {n_ok} agree at the precision "
+                f"stated and {n_bad} differ%\n")
     chk = ["# Files read by the note scripts", "",
            "Committed copy: the file of the helper package that the run output should equal byte for byte.", "",
            "| Run | File | Checksum | Committed copy | Identical |", "|---|---|---|---|---|"]
     n_same = n_cmp = 0
     for run_id, rel, how in sorted(set(common.CHECKED)):
-        copy = COMMITTED.get(os.path.basename(rel))
+        copy = committed_copy(run_id, rel)
         same = "-"
         if copy:
             a = open(os.path.join(common.SCRATCH, run_id, rel), "rb").read()

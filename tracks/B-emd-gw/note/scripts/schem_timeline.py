@@ -1,11 +1,12 @@
-"""Schematic: stage timeline of Track B (note v0).
+"""Schematic: stage timeline of Track B (note v1, state of 2026-11-19).
 
 Gates and targets: coord/CHARTER.md section 9.2 and the Track B sheet (9.5), as made concrete
 in stage/G0/REPORT.md section 8 (targets weeks 3-4, months 3-4, 6-9, 10-12); state:
 stage/G0/OPEN.md, stage/G1/STATUS.md; rulings: decision 0013 (stand-in matter struck,
 multi-code row = shearing dust plus the code's Newtonian mode), decision 0014 (40 card-hours
-to the next gate). Gate positions are evenly spaced; the labels give the targets. No data
-are read.
+to the next gate). G0 passed: coord/GATES.md on main (tag stage/B-emd-gw/G0-pass-20261119).
+What G1 still needs: stage/G1/OPEN.md items 1-6. Gate positions are evenly spaced; the labels
+give the targets. No data are read.
 """
 import os
 import sys
@@ -16,7 +17,7 @@ import paperfig as pf  # noqa: E402
 STEM = "schem_timeline"
 W, H = 30.0, 12.0
 GATES = [
-    ("G0 scoping", "submitted", pf.GREEN_DARK,
+    ("G0 scoping", "passed", pf.GREEN_DARK,
      "first source fixed; ranges,\nexit criteria, risks, compute;\nnote and schematics"),
     ("G1 baseline", "weeks 3-4", pf.SLATE,
      "both diagnostics on an oblique\nand an expanding-box wave;\nNewtonian-mode baseline"),
@@ -46,13 +47,13 @@ def main():
         pf.callout(ax, x - cw / 2 + 0.1, 6.3, cw, 3.6, title, body, bar=col, size=7.0,
                    title_size=8.0, band=0.8)
         pf.line(ax, (x, y0 + 0.35), (x, 6.3), color=pf.GREY_LINE)
-    pf.text(ax, 0.9, 10.9, "now: wave 2 of the program; first-source scouting under way",
+    pf.text(ax, 0.9, 10.9, "now: first source and Newtonian mode run; G1 products in preparation",
             size=7.5, ha="left", italic=True)
-    ax.add_patch(pf.Polygon([(5.6, 5.75), (6.0, 5.75), (5.8, 5.45)], closed=True,
+    ax.add_patch(pf.Polygon([(7.4, 5.75), (7.8, 5.75), (7.6, 5.45)], closed=True,
                             fc=pf.RED, ec="none", zorder=8))
-    pf.text(ax, 5.8, 6.05, "now", size=7.0, color=pf.RED)
+    pf.text(ax, 7.6, 6.05, "now", size=7.0, color=pf.RED)
     pf.brace(ax, 3.6, 8.8, 3.6, "", below=True)
-    pf.text(ax, 6.2, 2.25, "polarization sign of the wave\ndata; first-source scan",
+    pf.text(ax, 6.2, 2.25, "oblique and expanding-box\nwaves; independent check",
             size=7.0, color=pf.ROSE)
     pf.brace(ax, 9.6, 14.8, 3.6, "", below=True)
     pf.text(ax, 12.2, 2.0, "jittered lattice, TT spectra\nin the run, data with a TT\npart; "
