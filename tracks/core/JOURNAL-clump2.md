@@ -445,7 +445,7 @@ Slurm 4649) waits in the queue (15 jobs of the program ahead of it, one card job
 another user running). The executables of `.work/build_*` are from the source of
 cbe1e3ef; `git diff cbe1e3ef HEAD -- athenak/` is empty.
 
-### Test TE: two clusters on a quasi-circular orbit, design and predictions (written 15:58Z, before the card job is submitted)
+### Test TE: two clusters on a quasi-circular orbit, design and predictions (written 15:52Z, before the card job is submitted)
 
 Budget [JUDGEMENT]: the package has one card-hour. TC asks for at most 0.4 (expected 0.15:
 568 MeshBlocks x 400 cycles x 4 runs). The cost per MeshBlock-cycle on a card is 5.1e-4 s
