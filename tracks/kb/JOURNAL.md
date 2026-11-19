@@ -494,3 +494,83 @@ only L1101-1103, in both databases. Parameter index: local/nrpic at a1c2237; in
 nrpic_collide.cpp on main every literal (block, name) pair is absent (12), in scalar_field.cpp
 most. Refuted by a count of zero-bibliography papers other than 20, a cause not found by my
 patterns in more than 3 of the 14, or claim 25 rows that include L1084.
+
+### B1 outcome (run kb-20261119-155134-17d6704; pdfmeta_check.json, repair_reading.tsv and errata_reading.txt read by me)
+
+Held, with two corrections of wording. Counts as predicted: the three PDF papers have status pdf,
+sections 6/12/5, chunks 16/45/13, bibliography entries 19/22/70, vectors on every chunk;
+gr-qc/9412071 has 32 outgoing citation rows (19 distinct keys, not "32 citation keys" as the
+helper wrote) and is the target of 36 rows. 2201.03458 has 70 entries but 0 outgoing citation
+rows (author-year references; the helper names the limit). Abstract ratio of gr-qc/9412071
+0.994 (my word-sequence measure), astro-ph/9407016 1.000, 2201.03458 0.940. Papers 710;
+primary_class, submitted, updated, grp 710; INSPIRE 706; DOI 651; journal_ref 648; licence 0;
+title_source arxiv-api 710; title_matches_brief 680/4/26; version = API latest for 710; title
+= API title for 25 of 25. Additions file: the same 26 ids as the rows outside arxiv.tsv, same
+groups. Vectors 43560 = chunks, 0 orphans; equations 54502 = vectors. Reading: 20 of 20 fresh
+word repairs right; 'cmmi-greek' 17 of 20 right (held, >= 15): three are characters of other
+fonts mapped as math italic (a cmsy equivalence sign read as eta, a cmsy approx sign as pi, a
+cmex parenthesis as theta), plus the affiliation word seen before. So the Greek mapping is right
+for letters in formulas and wrong for symbols of other fonts: a known limit of the PDF text, not
+of the word repairs the helper audited. Errata: all four read as the helper says (2310.00776
+omits Ames; 2107.06306 adds Korzynski and Matarrese, who are on neither record; 2204.13098
+order; 1203.6185 "Bai (first author)" is INSPIRE's alphabetical first, fourth of five on arXiv).
+
+### B2 outcome (run kb-20261119-155310-e600e38; retrieval_check.json)
+
+Held for every count: my rescoring of R4's top-10 lists equals the helper's hits in all six
+modes on both sets, with no question-level disagreement; the final run's ranks equal R4's on
+all 96 (mode, question) pairs; misses at the answer location with rerank q06 q07 q12 q13 q16 q17
+q20, paper misses q06 q12 q13 q17. C4: 30 of 30 with an INSPIRE record. One prediction failed
+on my own instrument: my word-level title ratio also puts gr-qc/0312117 below 0.9 (0.80),
+because INSPIRE (and arXiv) misspell one word of its title; the helper's character ratio gives
+0.99. Not a defect of the knowledge base. Parse status on a848a06: ok 684 of 709.
+
+### B3 outcome (run kb-20261119-155315-b2c7420; verifier_check.json)
+
+Held. 20 of 707 TeX papers have no bibliography entry, 11 of them status ok (0710.5073,
+1109.2484, 1201.4794, 1302.5308, 1304.7791, 2507.01095, gr-qc/0107076, gr-qc/0304002,
+gr-qc/9402041, gr-qc/9703066, hep-ph/0011159). My patterns find the verifier's cause in all 14
+it named: `\begin{references}` with `\bibitem` (8), 46 `\reference` lines in 1201.4794, 103
+`\harvarditem` in 2507.01095, 38 and 18 lines of a `\bi`/`\bib` macro, plain `\ref` paragraphs
+(16, 21). Beyond the verifier: 2602.00155 has 28 `\bibitem` in paper.tex, a file its main file
+(arXiv_paper.tex) does not include, so a seventh cause is "bibliography in a file the main file
+does not reach". gr-qc/9906015: 58 live `\eqno`. Claim 25: locator string L1084; L1101-1103,
+one row (L1101-1103) in both databases. local/nrpic indexed at a1c2237 (1115 rows); on main
+f51539c6 all 12 literal pairs of nrpic_collide.cpp, 13 of 14 of scalar_field.cpp, 5 of 5 of
+nrpic_kick.cpp and 2 of 5 of nrpic_cf.cpp are absent from the index.
+
+### Figures of the helpers, read by me
+
+pdf_meta: fig_pdf_reader (rare tokens, repairs by kind, abstract similarity; its dashed line
+sits at 0.6 while the prediction's bar was 0.8, cosmetic), fig_brief16 (its right panel starts
+at 0.6, which exaggerates the dips of G03, G07, G17, G19), fig_metadata. retrieval: fig_r4_rerank
+(ranks per question agree with rerank_eval.json), fig_r5_c4. verifier: fig_papers, fig_summary,
+fig_zero_bib (2602.00155 drawn as no list; see B3). All agree with the numbers above.
+
+### D1, D2, Q1 predictions (database changes, then the QA run on the new snapshot)
+
+Code changes first (tests: 220 collected, all pass except the strict xfail of the retrieval
+package): `kb claim relocate` and `kb claim verify --locator` rewrite the locator rows (the cause
+of verifier defect 4 was my own W10 verify, which changed claims.locator but not the rows);
+`kb ingest pdf`, `kb meta load|brief16`; `kb ingest arxiv` takes groups from the full manifest
+and reads the metadata back afterwards; `kb search --rerank`; QA C1 counts the 26 additions as
+manifest, C2 judges the extraction by the abstract chunk, C4 compares parse_json.tex_front.
+
+D1 (w2b_db_updates.py): claim 25 gets 2 resolved rows; 249 and 313 2 resolved rows each; 7 B
+claims and 1 C claim added and verified (fulltext, checked); 4 D claims added (2 judgement, 2
+to_verify) with resolved rows. Claims 688 -> 700, checked 31 -> 39, fulltext 533 -> 541,
+judgement 39 -> 41, to_verify 115 -> 117. Refuted by a failed command or other counts.
+
+D2: `kb ingest repo --this --ref main` re-indexes local/nrpic at f51539c6: its params rows grow
+by at least 101 (the pairs the verifier found missing), and the 12 nrpic_collide pairs are then
+present. `kb link load` reloads the 25 curated links; `kb link check`: at least 20 of 25 without
+a problem (some symbols may have moved since a1c2237; no firm expectation). Then `kb snapshot`.
+
+Q1 (`kb qa run --hybrid` on the new snapshot): C1 manifest 710 (684 + 26), all ingested; parse
+status ok 684, review 23, pdf 3: parse success 684/710 = 96.3 % if only ok counts, 687/710 =
+96.8 % if a PDF paper parsed as such counts; both meet the 95 % bar of decision 0016. C7 on the
+32 golden questions: paper hits text 27, hybrid 28, rerank 28 (+-1, the three PDF papers add
+74 chunks that may move a rank); answer location hybrid 23 +- 1, rerank 25 +- 1. KB-G2 retrieval
+threshold (80 %, 26 of 32) met by hybrid and rerank. C4: the same 30 papers, 28 agree, 2103.01183
+and gr-qc/9905058 below a bar. Refuted by parse success below 95 % under both readings or a
+paper hit count below 26 in hybrid.

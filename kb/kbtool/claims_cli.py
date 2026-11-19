@@ -315,13 +315,32 @@ def cmd_add(a):
 
 def cmd_verify(a):
     lay = layout(a.data_root)
+
+    def fn(con):
+        _cdb.verify(con, a.claim_id, a.by, a.evidence, a.locator)
+        if a.locator:                       # the locator rows follow the new string (wave-2b defect: claim 25)
+            return _cdb.relocate(con, a.claim_id, a.locator, _store(lay, con), a.by, "verify")
+        return None
     try:
-        _write(lay, "claim verify", lambda con: _cdb.verify(con, a.claim_id, a.by, a.evidence, a.locator))
+        n = _write(lay, "claim verify", fn)
     except (ValueError, KeyError) as e:
         print(f"claim {a.claim_id}: {e}", file=sys.stderr)
         return 1
-    print(f"claim {a.claim_id}: fulltext, checked by {a.by}")
+    print(f"claim {a.claim_id}: fulltext, checked by {a.by}" + (f"; locator rows {n[0]}, resolved {n[1]}" if n else ""))
     return 0
+
+
+def cmd_relocate(a):
+    """Rewrite the locator rows of a claim from a locator string (labels and statuses stay)."""
+    lay = layout(a.data_root)
+    try:
+        n, ok = _write(lay, "claim relocate",
+                       lambda con: _cdb.relocate(con, a.claim_id, a.locator, _store(lay, con), a.by, a.evidence or ""))
+    except (ValueError, KeyError) as e:
+        print(f"claim {a.claim_id}: {e}", file=sys.stderr)
+        return 1
+    print(f"claim {a.claim_id}: {n} locator rows, {ok} resolved")
+    return 0 if ok == n else 1
 
 
 def cmd_refute(a):
@@ -410,6 +429,12 @@ def register(sub):
     s.add_argument("--evidence", required=True)
     s.add_argument("--locator")
     s.set_defaults(fn=cmd_verify)
+    s = cs.add_parser("relocate", help="rewrite the locator rows of a claim from a locator string")
+    s.add_argument("claim_id", type=int)
+    s.add_argument("--locator", required=True, help="'<id><vN>:<file>:L<a>[-<b>]; ...'")
+    s.add_argument("--by", required=True)
+    s.add_argument("--evidence")
+    s.set_defaults(fn=cmd_relocate)
     s = cs.add_parser("refute")
     s.add_argument("claim_id", type=int)
     s.add_argument("--by", required=True)

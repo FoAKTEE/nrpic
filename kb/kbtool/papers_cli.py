@@ -35,7 +35,10 @@ def _ensure_converter():
 
 
 def _manifest_rows():
-    return {r["id"]: r for r in _brief.load_arxiv_manifest(os.path.join(kb_manifest_dir(), "arxiv.tsv"))}
+    """Brief section 17 plus the manifest additions (decision 0016 item 6), so that an added
+    paper is ingested with its group."""
+    from . import meta_manifest as MM
+    return {r["id"]: r for r in MM.load_full_manifest(kb_manifest_dir())}
 
 
 def _analyse(args):
@@ -84,6 +87,7 @@ def cmd_ingest_arxiv(argv, data_root=None):
     p.add_argument("--jobs", type=int, default=8, help="parallel parsers (writes stay serial); at most 16")
     p.add_argument("--limit", type=int)
     p.add_argument("--json", action="store_true")
+    p.add_argument("--no-meta", action="store_true", help="do not read the metadata records back into the rows")
     a = p.parse_args(argv)
     _ensure_converter()
     from . import papers_ingest as P
@@ -121,10 +125,18 @@ def cmd_ingest_arxiv(argv, data_root=None):
             con.commit()
         finally:
             con.close()
+    # the ingest rewrites title, authors and abstract from the TeX source: read the arXiv-API and
+    # INSPIRE records back into the rows (kbtool.meta_papers; the TeX values stay in
+    # parse_json.tex_front)
+    meta = {}
+    if summary and not getattr(a, "no_meta", False):
+        from . import meta_papers as MP
+        _, meta, _ = MP.load(lay, ids=sorted(summary), manifest_dir=kb_manifest_dir())
     counts = {}
     for s in summary.values():
         counts[s] = counts.get(s, 0) + 1
-    print(f"# done in {time.time() - t0:.1f} s: {json.dumps(counts, sort_keys=True)}; corpus resolution {json.dumps(r)}")
+    print(f"# done in {time.time() - t0:.1f} s: {json.dumps(counts, sort_keys=True)}; corpus resolution {json.dumps(r)}"
+          f"; metadata {json.dumps(meta, sort_keys=True)}")
     return 0 if not counts.get("failed") else 1
 
 

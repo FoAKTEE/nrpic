@@ -30,7 +30,7 @@ STUBS = {
     "search": ("K4-K5", "hybrid retrieval: full text, vectors, structured filters"),
     "code": ("K6", "symbols, code chunks and run parameters of the indexed repositories"),
     "frontier": ("K3", "works cited often by the corpus but absent from it"),
-    "ingest": ("K2-K6", "TeX flattening, structure extraction, chunking; code index"),
+    "ingest": ("K2-K6", "TeX flattening, structure extraction, chunking (arxiv; pdf for PDF-only entries); code index (repo)"),
     "resolve-bib": ("K3", "bibliography entries to arXiv id / DOI / INSPIRE record"),
     "embed": ("K4", "local embedding model over chunks, equations, code"),
     "eq": ("K5", "equation index search"),
@@ -170,6 +170,8 @@ def status_dict(lay):
     rows = _brief.load_arxiv_manifest(os.path.join(kb_manifest_dir(), "arxiv.tsv"))
     st["manifest_arxiv"] = len(rows)
     st["manifest_arxiv_by_priority"] = {str(p): sum(1 for r in rows if r["priority"] == p) for p in (3, 2, 1)}
+    from . import meta_manifest as _mm
+    st["manifest_arxiv_additions"] = len(_mm.load_additions(_mm.additions_path(kb_manifest_dir())))
     st["manifest_github"] = len(_brief.load_github_manifest(os.path.join(kb_manifest_dir(), "github.tsv")))
     try:
         st["raw_arxiv_entries"] = len([n for n in os.listdir(lay.raw_arxiv) if not n.startswith(".")])
@@ -229,7 +231,8 @@ def cmd_show(a):
     if a.abstract or a.section or a.eq or a.fig:
         return _papers_cli.show_views(a)                        # K2 (kbtool/papers_cli.py)
     lay = layout(a.data_root)
-    rows = {r["id"]: r for r in _brief.load_arxiv_manifest(os.path.join(kb_manifest_dir(), "arxiv.tsv"))}
+    from . import meta_manifest as _mm
+    rows = {r["id"]: r for r in _mm.load_full_manifest(kb_manifest_dir())}
     pid = a.paper_id.replace("arXiv:", "")
     res = _inv.check_paper(lay, pid, rows.get(pid))
     json.dump(res, sys.stdout, indent=1)
@@ -242,6 +245,12 @@ def cmd_stub(a):
         return _code_cli.cmd_ingest_repo(a.args[1:], data_root=a.data_root)
     if a.cmd == "ingest" and a.args[:1] == ["arxiv"]:           # K2-K3 (kbtool.papers_cli)
         return _papers_cli.cmd_ingest_arxiv(a.args[1:], data_root=a.data_root)
+    if a.cmd == "ingest" and a.args[:1] == ["pdf"]:             # K2 for PDF-only entries (kbtool.pdf_ingest)
+        from . import pdf_ingest as _pdf
+        return _pdf.main(a.args[1:])
+    if a.cmd == "meta":                                         # K1 metadata (kbtool.meta_papers)
+        from . import meta_papers as _mp
+        return _mp.main(a.args)
     stage, what = STUBS[a.cmd]
     print(f"kb {a.cmd}: {what}; filled by stage {stage} of brief section 12, not built yet", file=sys.stderr)
     return NOT_YET
@@ -312,6 +321,10 @@ def parser():
 
     built = set(_code_cli.CLAIMS) | set(_papers_cli.CLAIMS) | set(_embed_cli.CLAIMS) \
         | set(_claims_cli.CLAIMS) | set(_qa_cli.CLAIMS)
+    s = sub.add_parser("meta", help="K1: arXiv-API and INSPIRE records into the papers table (load [--id ID]); "
+                                    "brief section 16 against them (brief16 --out DIR)")
+    s.add_argument("args", nargs=argparse.REMAINDER)
+    s.set_defaults(fn=cmd_stub)
     for name, (stage, what) in STUBS.items():
         if name in built:
             continue

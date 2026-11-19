@@ -21,6 +21,7 @@ locator), checked (a person read the passage), refuted, stale (gone from its not
 Every write happens inside the caller's writer lock (kbtool.lock.writer_lock).
 """
 import json
+import re
 import sqlite3
 import time
 
@@ -177,6 +178,49 @@ def add_claim(con, text, kind, paper_id, locator, label, by, origin, track, evid
                  "checked" if label == "fulltext" else "unlocated", "{}", by, by, now, now))
     event(con, cid, by, "add", None, label, None, None, evidence)
     return cid
+
+
+RE_LOC = re.compile(r"^\s*(?P<pid>\d{4}\.\d{4,5}|[a-z][a-z\-]*(?:\.[A-Z]{2})?/\d{7})(?P<ver>v\d+)?"
+                    r":(?P<file>[^:;]+):L(?P<a>\d+)(?:-(?P<b>\d+))?\s*$")
+
+
+def parse_locator_string(text):
+    """Locators of a stored locator string ('<id><vN>:<file>:L<a>[-<b>]; ...', the form of
+    `locator_string`). Raises ValueError on a part that does not have that form."""
+    from .claims_parse import Locator
+    out = []
+    for part in (p for p in (text or "").split(";") if p.strip()):
+        m = RE_LOC.match(part)
+        if not m:
+            raise ValueError(f"locator {part.strip()!r} is not of the form <id><vN>:<file>:L<a>[-<b>]")
+        a = int(m.group("a"))
+        b = int(m.group("b") or a)
+        out.append(Locator(m.group("pid"), m.group("ver") or "", m.group("file").strip(), a, b, part.strip(), 0))
+    return out
+
+
+def relocate(con, cid, locator_text, store, by, evidence=""):
+    """Rewrite the locator rows of one claim from a locator string (each part resolved through
+    the store), and claims.locator with it. Labels and statuses are not touched. Returns the
+    number of rows and how many resolved."""
+    if not con.execute("SELECT 1 FROM claims WHERE claim_id=?", (cid,)).fetchone():
+        raise KeyError(cid)
+    locs = parse_locator_string(locator_text)
+    if not locs:
+        raise ValueError("relocate needs at least one locator")
+    res = [store.resolve(l) for l in locs]
+    con.execute("DELETE FROM claim_locators WHERE claim_id=?", (cid,))
+    for k, (l, r) in enumerate(zip(locs, res)):
+        con.execute("INSERT INTO claim_locators(claim_id, ord, paper_id, version, file, line_start, line_end, written, "
+                    "resolved, problem, flat_start, flat_end, chunk_ids_json) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)",
+                    (cid, k, r.paper_id or l.paper_id, r.version or l.version, r.file or l.file, l.line_start,
+                     l.line_end, l.raw, int(bool(r.resolved)), r.problem, r.flat_start, r.flat_end,
+                     json.dumps(r.chunk_ids)))
+    con.execute("UPDATE claims SET locator=? WHERE claim_id=?", ("; ".join(l.raw for l in locs), cid))
+    n_ok = sum(1 for r in res if r.resolved)
+    event(con, cid, by, "relocate", None, None, None, None,
+          f"{evidence} rows {len(locs)}, resolved {n_ok}".strip())
+    return len(locs), n_ok
 
 
 def verify(con, cid, by, evidence, locator=None):

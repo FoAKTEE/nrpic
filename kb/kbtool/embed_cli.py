@@ -127,10 +127,26 @@ def cmd_search(a):
     mode = _mode(a)
     from . import embed_search as S
     emb = None
-    if mode != "text":
+    if mode != "text" or getattr(a, "rerank", False):
         _ensure_venv()
         emb = _embedder(a.model, a.threads)
     db = a.db or (lay.db_work if a.work else None)
+    if getattr(a, "rerank", False):
+        # second stage over the first 100 hybrid chunks (kbtool/search_rerank.py, config w2-noexpand;
+        # chosen in tracks/kb/retrieval/JOURNAL.md R4)
+        if mode != "hybrid":
+            print("kb search: --rerank works on the hybrid first stage only", file=sys.stderr)
+            return 2
+        from . import search_rerank as RR
+        hits, info = RR.search(lay, a.query, k=a.k, kind=a.kind, paper=a.paper, group=a.group, depth=a.depth,
+                               db=db, embedder=emb, model=_model_key(a.model))
+        hits = [dict(h, rrf=h.get("rrf") or 0.0) for h in hits]
+        if a.json:
+            json.dump({"hits": hits, "info": info}, sys.stdout, indent=1)
+            sys.stdout.write("\n")
+        else:
+            sys.stdout.write(S.format_hits(hits, info))
+        return 0 if hits else 1
     hits, info = S.search(lay, a.query, k=a.k, mode=mode, kind=a.kind, paper=a.paper, group=a.group,
                           depth=a.depth, db=db, embedder=emb, model=_model_key(a.model) if emb else None)
     if a.json:
@@ -207,6 +223,8 @@ def register(sub):
     s = sub.add_parser("search", help="K4: hybrid retrieval (BM25 + vectors, reciprocal-rank fusion)")
     s.add_argument("query")
     s.add_argument("--kind", default="all", choices=("all", "text", "caption", "eq", "code"))
+    s.add_argument("--rerank", action="store_true",
+                   help="re-rank the first 100 hybrid chunks by sentence windows (slower; better answer location)")
     _common(s)
     s.set_defaults(fn=cmd_search, tag=None)
 

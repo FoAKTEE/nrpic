@@ -43,8 +43,11 @@ def _key(pid):
 
 # ---------------------------------------------------------------- C1, C2
 def c1_counts(con):
-    rows = _brief.load_arxiv_manifest(os.path.join(kb_manifest_dir(), "arxiv.tsv"))
+    # the manifest is brief section 17 plus the additions of decision 0016 item 6
+    from . import meta_manifest as _mm
+    rows = _mm.load_full_manifest(kb_manifest_dir())
     man = {r["id"]: r for r in rows}
+    n_add = sum(1 for r in rows if r.get("source") == "addition")
     dl = {r[0]: r[1:] for r in con.execute("SELECT paper_id, in_manifest, status, source_kind FROM downloads")}
     papers = {r[0]: r[1:] for r in con.execute("SELECT paper_id, parse_status, source_kind FROM papers")}
     by_status = collections.Counter(dl[i][1] if i in dl else "no record" for i in man)
@@ -56,7 +59,8 @@ def c1_counts(con):
         ids = [i for i, r in man.items() if r["priority"] == p]
         by_pri[str(p)] = {"manifest": len(ids), "ingested": sum(1 for i in ids if i in papers),
                           "ok": sum(1 for i in ids if i in papers and papers[i][0] == "ok")}
-    return {"manifest": len(man), "downloads_by_status": dict(by_status), "missing_downloads": missing_dl,
+    return {"manifest": len(man), "manifest_brief17": len(man) - n_add, "manifest_additions": n_add,
+            "downloads_by_status": dict(by_status), "missing_downloads": missing_dl,
             "ingested_manifest": len(man) - len(not_ingested), "not_ingested": not_ingested,
             "papers_total": len(papers), "extras_ingested": extras, "by_priority": by_pri,
             "agree": len(not_ingested) == 0 and not missing_dl}
@@ -66,11 +70,16 @@ RE_SECTIONING = re.compile(r"\\(?:sub)*section\*?\s*[\[{]|\\chapter\*?\s*[\[{]|\
 
 
 def c2_abstract_sections(con, build_tex=None):
-    no_abs, no_sec = [], []
+    # papers.abstract holds the arXiv-API abstract once the metadata are loaded (kbtool.meta_papers),
+    # so the extraction is judged by the abstract chunk; a paper with neither is `without_abstract`
+    no_abs, no_abs_chunk, no_sec = [], [], []
     for pid, abstract, kind in con.execute("SELECT paper_id, abstract, source_kind FROM papers ORDER BY paper_id"):
-        has_abs = bool(abstract and abstract.strip()) or bool(con.execute(
+        has_chunk = bool(con.execute(
             "SELECT 1 FROM chunks WHERE paper_id=? AND kind='abstract' LIMIT 1", (pid,)).fetchone())
+        has_abs = bool(abstract and abstract.strip()) or has_chunk
         n_sec = con.execute("SELECT count(*) FROM sections WHERE paper_id=?", (pid,)).fetchone()[0]
+        if not has_chunk:
+            no_abs_chunk.append(pid)
         if not has_abs:
             no_abs.append(pid)
         if n_sec == 0:
@@ -86,7 +95,7 @@ def c2_abstract_sections(con, build_tex=None):
         with open(p, "rb") as f:
             t = f.read(64 << 20).decode("utf-8", errors="replace")
         (missed if RE_SECTIONING.search(t) else no_cmd).append(pid)
-    return {"papers": n, "without_abstract": no_abs, "without_sections": no_sec,
+    return {"papers": n, "without_abstract": no_abs, "without_abstract_chunk": no_abs_chunk, "without_sections": no_sec,
             "with_both": n - len(set(no_abs) | set(no_sec)),
             "sectionless_no_command": no_cmd, "sectionless_extraction_missed": missed,
             "sectionless_no_flat": no_flat}
@@ -233,12 +242,27 @@ def c4_inspire_sample(con, meta_dir, n=30):
                                      "ORDER BY paper_id")]
     sample = sorted(random.Random(SEED).sample(ids, min(n, len(ids))))
     rows, have, differ = [], 0, []
+    has_pj = "parse_json" in {r[1] for r in con.execute("PRAGMA table_info(papers)")}
     for pid in sample:
-        title, aj = con.execute("SELECT title, authors_json FROM papers WHERE paper_id=?", (pid,)).fetchone()
+        if has_pj:
+            title, aj, pjs = con.execute("SELECT title, authors_json, parse_json FROM papers WHERE paper_id=?",
+                                         (pid,)).fetchone()
+        else:
+            (title, aj), pjs = con.execute("SELECT title, authors_json FROM papers WHERE paper_id=?",
+                                           (pid,)).fetchone(), None
         try:
             authors = json.loads(aj or "[]")
         except ValueError:
             authors = []
+        # once the metadata are loaded, title and authors are the arXiv-API values; the TeX
+        # extraction that C4 tests is kept in parse_json.tex_front (kbtool.meta_papers)
+        try:
+            front = (json.loads(pjs or "{}") or {}).get("tex_front")
+        except ValueError:
+            front = None
+        if front:
+            title = front.get("title") or ""
+            authors = front.get("authors") or []
         m = _meta_record(meta_dir, pid)
         if m is None:
             rows.append({"paper_id": pid, "metadata": False})
@@ -472,7 +496,8 @@ def markdown(rep):
     c = rep["C1"]
     a("## C1. Counts against the manifests")
     a("")
-    a(f"- Manifest (brief section 17): {c['manifest']} arXiv ids; downloads by status: " +
+    a(f"- Manifest: {c['manifest']} arXiv ids (brief section 17: {c.get('manifest_brief17', c['manifest'])}; "
+      f"additions of decision 0016 item 6: {c.get('manifest_additions', 0)}); downloads by status: " +
       ", ".join(f"{k} {v}" for k, v in sorted(c["downloads_by_status"].items())) + ".")
     a(f"- Ingested: {c['ingested_manifest']} of {c['manifest']} manifest ids; {len(c['extras_ingested'])} extras; "
       f"{c['papers_total']} papers in all. Not ingested: {', '.join(c['not_ingested']) or 'none'}.")
@@ -486,6 +511,9 @@ def markdown(rep):
     a("")
     a(f"- {c['with_both']} of {c['papers']} papers have both. Without an abstract ({len(c['without_abstract'])}): "
       f"{', '.join(c['without_abstract']) or 'none'}.")
+    if "without_abstract_chunk" in c:
+        a(f"- No abstract extracted from the source (no abstract chunk; the metadata abstract may still be there) "
+          f"({len(c['without_abstract_chunk'])}): {', '.join(c['without_abstract_chunk']) or 'none'}.")
     a(f"- Without any section ({len(c['without_sections'])}): {', '.join(c['without_sections']) or 'none'}.")
     if "sectionless_no_command" in c:
         a(f"  - of these, no sectioning command at all in flat.tex (letters, plain TeX): "
