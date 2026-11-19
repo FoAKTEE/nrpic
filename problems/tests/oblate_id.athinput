@@ -1,0 +1,96 @@
+# Oblate spheroid of nrpic_cf with its 10^4 sampled particles on a static mesh with
+# cells of M/4 over the spheroid, no step (nlim = 0): the deposited energy density, the
+# metric and the constraint monitor of the initial slice.  Test T1 (P1c) of
+# tracks/core/JOURNAL-oblate.md: the monitor H = R - 16 pi E against the sampling noise,
+# and the integral of E psi^5 against the mass of the data
+# (tracks/core/analysis/oblate/cf_check.py; the prolate control exchanges the semi-axes
+# and the refined box on the command line).  Particles:
+#   problems/ic/make_ic.py oblate --e 0.9 --a 10 --N 10000 --seed 1
+<job>
+basename  = oid
+<mesh>
+nghost    = 4
+nx1       = 64
+x1min     = -32.0
+x1max     = 32.0
+ix1_bc    = outflow
+ox1_bc    = outflow
+nx2       = 64
+x2min     = -32.0
+x2max     = 32.0
+ix2_bc    = outflow
+ox2_bc    = outflow
+nx3       = 64
+x3min     = -32.0
+x3max     = 32.0
+ix3_bc    = outflow
+ox3_bc    = outflow
+<meshblock>
+nx1       = 16
+nx2       = 16
+nx3       = 16
+<mesh_refinement>
+refinement       = static
+max_nmb_per_rank = 1024
+<refined_region1>
+level = 2
+x1min = -11.0
+x1max = 11.0
+x2min = -11.0
+x2max = 11.0
+x3min = -5.0
+x3max = 5.0
+<time>
+evolution  = dynamic
+integrator = rk4
+cfl_number = 0.25
+nlim       = 0
+tlim       = 1.0
+ndiag      = 1
+<z4c>
+lapse_oplog     = 2.0
+lapse_harmonicf = 1.0
+lapse_harmonic  = 0.0
+lapse_advect    = 1.0
+shift_Gamma     = 0.75
+shift_eta       = 2.0
+shift_advect    = 1.0
+diss            = 0.5
+chi_div_floor   = 1.0e-5
+damp_kappa1     = 0.02
+damp_kappa2     = 0.0
+<particles>
+particle_type  = nrpic
+pusher         = midpoint
+metric         = mesh
+tolerance      = 1.0e-7
+max_iterations = 50
+deposit        = true
+nfilter        = 4
+filter_compensate = true
+alpha_exc      = 0.05
+hist_dcycle    = 1
+particle_file  = oblate_e0p9_a10_N10000_s1.nrp
+<problem>
+pgen_name  = nrpic_cf
+ncomp      = 1
+comp0_type = spheroid
+comp0_mass = 1.0
+comp0_a    = 10.0
+comp0_b    = 4.358898943540673
+lapse      = one
+<output1>
+file_type = hst
+dt        = 1.0
+<output2>
+file_type = bin
+variable  = adm
+dcycle    = 1
+<output3>
+file_type = bin
+variable  = con
+dcycle    = 1
+<output4>
+file_type = bin
+variable  = tmunu
+dcycle    = 1

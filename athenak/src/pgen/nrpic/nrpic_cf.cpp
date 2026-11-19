@@ -21,7 +21,8 @@
 //!   puncture  u = m/(2r)                      (Brill-Lindquist black hole)
 //!   gaussian  u = (m/2) erf(r/(sqrt(2) sigma))/r
 //!   spheroid  u = -Phi_N of a homogeneous prolate spheroid of Newtonian mass M/2 with
-//!             equatorial and polar semi-axes a < b, the polar axis along z
+//!             equatorial and polar semi-axes a < b, the polar axis along z; with
+//!             a >= b the oblate spheroid (the sphere at a = b), CFOblateExcess below
 //! The initial lapse is selected by <problem> lapse:
 //!   one           alpha = 1
 //!   table         alpha(r) from the table of component lapse_comp, Schwarzschild
@@ -62,7 +63,7 @@
 namespace {
 
 enum CFType {kCFTable = 0, kCFPuncture = 1, kCFGaussian = 2, kCFSpheroid = 3,
-             kCFTable2 = 4};
+             kCFTable2 = 4, kCFOblate = 5};
 enum CFLapse {kLapseOne = 0, kLapseTable = 1, kLapseIsotropic = 2, kLapsePre = 3,
               kLapseTable2 = 4};
 enum CFExterior {kExtPG = 0, kExtZero = 1};
@@ -133,6 +134,64 @@ CFStencil CFPieceStencil(const CFComp &c, const Real r) {
   return st;
 }
 
+//! conformal-factor excess of a homogeneous oblate spheroid (equatorial semi-axis a >=
+//! polar semi-axis b, polar axis along z) at the offset (dx,dy,dz) from its centre:
+//! u = -Phi_N for the Newtonian mass M/2, as for the prolate spheroid,
+//!   u = (3M/8) [I - R^2 J_a - z^2 J_b],   R^2 = dx^2 + dy^2,
+//!   I = int_lam^inf du/D,  J_a = int du/((a^2+u) D),  J_b = int du/((b^2+u) D),
+//!   D = (a^2 + u) sqrt(b^2 + u),
+//! lam = 0 inside and the positive root of R^2/(a^2+lam) + z^2/(b^2+lam) = 1 outside.
+//! With w = sqrt(b^2 + lam), f = sqrt(a^2 - b^2) (radius of the focal ring), q = f/w:
+//!   I   = (2/f) atan q,
+//!   J_a = atan(q)/f^3 - w/(f^2 (w^2 + f^2)),
+//!   J_b = (2/f^2) (1/w - atan(q)/f)
+//! (the prolate expressions with atanh -> atan and f^2 -> -f^2).  For q < 0.3 (far from
+//! the spheroid, or a nearly spherical one) the differences cancel, and the three
+//! functions are summed as series in -q^2,
+//!   I w/2 = sum_k (-q^2)^k/(2k+1),  J_a w^3 = sum_{k>=1} (-q^2)^(k-1) 2k/(2k+1),
+//!   J_b w^3/2 = sum_{k>=1} (-q^2)^(k-1)/(2k+1),
+//! which also covers the sphere a = b (q = 0).  Reference and checks:
+//! python/nrpic/spheroid.py (OblateSpheroid), tracks/core/analysis/oblate/.
+KOKKOS_INLINE_FUNCTION
+Real CFOblateExcess(const CFComp &c, const Real dx, const Real dy, const Real dz) {
+  const Real a2 = c.a*c.a, b2 = c.b*c.b;
+  const Real f2 = a2 - b2;
+  const Real R2 = dx*dx + dy*dy, z2 = dz*dz;
+  Real lam = 0.0;
+  if (R2/a2 + z2/b2 > 1.0) {
+    // lam^2 + B lam + C = 0 with C < 0 outside; the root is written without the
+    // difference of two nearly equal numbers
+    const Real B = a2 + b2 - R2 - z2;
+    const Real C = a2*b2 - R2*b2 - z2*a2;
+    const Real disc = sqrt(B*B - 4.0*C);
+    lam = (B > 0.0) ? -2.0*C/(B + disc) : 0.5*(disc - B);
+    lam = fmax(lam, 0.0);
+  }
+  const Real w2 = b2 + lam;
+  const Real w = sqrt(w2);
+  const Real q2 = f2/w2;
+  Real i0, ja, jb;
+  if (q2 < 0.09) {
+    const int nterm = 20;   // 0.09^20 = 1e-21
+    Real sa = 0.0, sb = 0.0;
+    for (int k=nterm; k>=1; --k) {
+      const Real d = 2.0*k + 1.0;
+      sa = 2.0*k/d - q2*sa;
+      sb = 1.0/d - q2*sb;
+    }
+    i0 = 2.0*(1.0 - q2*sb)/w;   // the k = 0 term of I is 1
+    ja = sa/(w*w2);
+    jb = 2.0*sb/(w*w2);
+  } else {
+    const Real f = sqrt(f2);
+    const Real t = atan(f/w);
+    i0 = 2.0*t/f;
+    ja = t/(f*f2) - w/(f2*(w2 + f2));
+    jb = 2.0*(1.0/w - t/f)/f2;
+  }
+  return 0.375*c.mass*(i0 - R2*ja - z2*jb);
+}
+
 //! conformal-factor excess u_c of one component at (x,y,z)
 KOKKOS_INLINE_FUNCTION
 Real CFExcess(const CFComp &c, const DvceArray1D<Real> &utab, const Real x, const Real y,
@@ -153,6 +212,8 @@ Real CFExcess(const CFComp &c, const DvceArray1D<Real> &utab, const Real x, cons
     const CFStencil st = CFPieceStencil(c, r);
     return st.w[0]*utab(st.i-1) + st.w[1]*utab(st.i) + st.w[2]*utab(st.i+1)
            + st.w[3]*utab(st.i+2);
+  } else if (c.type == kCFOblate) {
+    return CFOblateExcess(c, dx, dy, dz);
   } else {
     const Real a2 = c.a*c.a, b2 = c.b*c.b;
     const Real f = sqrt(b2 - a2);
@@ -481,8 +542,11 @@ void ProblemGenerator::NrpicConformallyFlat(ParameterInput *pin, const bool rest
       comp[c].mass = pin->GetReal("problem", pre + "mass");
       comp[c].a = pin->GetReal("problem", pre + "a");
       comp[c].b = pin->GetReal("problem", pre + "b");
-      if (!(comp[c].b > comp[c].a) || !(comp[c].a > 0.0)) {
-        CFFatal("spheroid component needs 0 < a < b (prolate, polar axis along z)");
+      if (comp[c].a >= comp[c].b && comp[c].b > 0.0) {
+        comp[c].type = kCFOblate;   // oblate spheroid, or the sphere at a = b
+      } else if (!(comp[c].b > comp[c].a) || !(comp[c].a > 0.0)) {
+        CFFatal("spheroid component needs a > 0 and b > 0 (equatorial and polar "
+                "semi-axes, polar axis along z)");
       }
     } else {
       CFFatal("<problem> " + pre + "type = '" + type + "' not recognized");

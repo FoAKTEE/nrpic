@@ -25,13 +25,29 @@ the cumulative distribution in the spheroidal radius
 s^2 = (x^2 + y^2)/a^2 + z^2/b^2 are closed-form:
 
     M_rest(<s) = 2 rho_N V [c0 s^3 - (cR 2a^2/5 + cz b^2/5) s^5],  V = 4 pi a^2 b / 3.
+
+Oblate spheroid (OblateSpheroid): the same construction with a (equatorial) > b
+(polar, along z), b = a sqrt(1 - e^2), c = sqrt(a^2 - b^2) = e a the radius of the
+focal ring. With w = sqrt(b^2 + lam) and t = atan(c/w),
+
+    I   = (2/c) t,
+    J_a = t / c^3 - w / (c^2 (w^2 + c^2)),
+    J_b = (2/c^2) (1/w - t/c)
+
+(the prolate expressions with atanh -> atan, c^2 -> -c^2; the series for c/w < 0.3
+are those of the prolate case in -(c/w)^2). Everything after the potential carries
+over unchanged, because psibar is again quadratic inside. Total rest mass in closed
+form (both from the potential energy of the homogeneous spheroid of mass M/2):
+
+    prolate  M_rest = M + (3 M^2/(10 b e)) ln((1 + e)/(1 - e))    (Yoo et al. 2017)
+    oblate   M_rest = M + (3 M^2/(5 a e)) asin(e).
 """
 
 import math
 
 import numpy as np
 
-__all__ = ["ProlateSpheroid"]
+__all__ = ["ProlateSpheroid", "OblateSpheroid"]
 
 
 def _series_terms(e2, kind, nterms=40):
@@ -172,3 +188,70 @@ class ProlateSpheroid:
                     I0=self.I0, Ja0=self.Ja0, Jb0=self.Jb0,
                     note=("psibar = 1 - Phi_N; inside psibar = c0 - cR (x^2+y^2) - cz z^2; "
                           "rho_ADM = 2 rho_N psibar^-5; u_i = 0; lapse 1"))
+
+
+def _IJ_oblate(w, c):
+    """I, J_a, J_b at w = sqrt(b^2 + lam) for an oblate spheroid with focal-ring
+    radius c (vectorised); the sphere is c = 0."""
+    w = np.asarray(w, dtype=float)
+    eps = c / w
+    small = eps < 0.3
+    e2 = np.where(small, -eps * eps, 0.0)
+    I_s = (2.0 / w) * _series_terms(e2, "I")
+    Ja_s = _series_terms(e2, "Ja") / w ** 3
+    Jb_s = 2.0 * _series_terms(e2, "Jb") / w ** 3
+    if c == 0.0 or np.all(small):
+        return I_s, Ja_s, Jb_s
+    wb = np.where(small, c / 0.5, w)          # placeholder where the series is used
+    t = np.arctan(c / wb)
+    I_c = 2.0 * t / c
+    Ja_c = t / c ** 3 - wb / (c * c * (wb * wb + c * c))
+    Jb_c = 2.0 * (1.0 / wb - t / c) / (c * c)
+    return (np.where(small, I_s, I_c), np.where(small, Ja_s, Ja_c),
+            np.where(small, Jb_s, Jb_c))
+
+
+class OblateSpheroid(ProlateSpheroid):
+    """Uniform oblate spheroid initial data; lengths in units of M.
+
+    Equatorial semi-axis a (x and y), polar semi-axis b = a sqrt(1 - e^2) < a along
+    z; e = 0 is the sphere. The geometry, the density and the closed-form rest-mass
+    integrals are those of ProlateSpheroid (they hold for any a, b); only the
+    potential differs."""
+
+    def __init__(self, e=0.9, a=10.0, M=1.0):
+        if not 0.0 <= e < 1.0:
+            raise ValueError("eccentricity must lie in [0, 1)")
+        self.e = float(e)
+        self.a = float(a)
+        self.M = float(M)
+        self.b = a * math.sqrt(1.0 - e * e)
+        self.c = e * a
+        self.rhoN = 3.0 * M / (8.0 * math.pi * self.a ** 2 * self.b)
+        self.V = 4.0 * math.pi * self.a ** 2 * self.b / 3.0
+        I0, Ja0, Jb0 = (float(v[0]) for v in _IJ_oblate(np.array([self.b]), self.c))
+        self.I0, self.Ja0, self.Jb0 = I0, Ja0, Jb0
+        k = math.pi * self.rhoN * self.a ** 2 * self.b
+        self.c0 = 1.0 + k * I0           # psibar = c0 - cR R^2 - cz z^2 inside
+        self.cR = k * Ja0
+        self.cz = k * Jb0
+
+    def phiN(self, x, y, z):
+        """Newtonian potential of the uniform spheroid, nabla^2 Phi = 4 pi rho_N."""
+        x = np.asarray(x, float)
+        y = np.asarray(y, float)
+        z = np.asarray(z, float)
+        lam = self.lam(x, y, z)
+        I, Ja, Jb = _IJ_oblate(np.sqrt(self.b ** 2 + lam), self.c)
+        return -math.pi * self.rhoN * self.a ** 2 * self.b * (I - (x * x + y * y) * Ja - z * z * Jb)
+
+    def rest_mass_closed(self):
+        """M + (3 M^2/(5 a e)) asin(e): the rest mass from the potential energy."""
+        g = math.asin(self.e) / self.e if self.e > 1e-8 else 1.0
+        return self.M + 0.6 * self.M ** 2 * g / self.a
+
+    def summary(self):
+        d = super().summary()
+        d["model"] = "oblate_spheroid"
+        d["M_rest_closed"] = self.rest_mass_closed()
+        return d

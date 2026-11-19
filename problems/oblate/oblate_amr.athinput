@@ -1,0 +1,171 @@
+# Collapse of a cold oblate spheroid of collisionless matter (the oblate half of row 3
+# of the verification ladder; the prolate half is problems/prolate/prolate_amr.athinput,
+# of which this is a copy with the axes exchanged): eccentricity 0.9, equatorial
+# semi-axis a = 10 M (x, y), polar semi-axis b = 4.3589 M along z, particles at rest,
+# conformally flat and time-symmetric initial slice with psi = 1 - Phi_N of the
+# homogeneous spheroid (nrpic_cf, spheroid component with a > b).  Particles:
+#   problems/ic/make_ic.py oblate --e 0.9 --a 10 --N 10000 --seed 1
+# Adaptive refinement with the Loehner indicator, lapse excision at 0.05, apparent
+# horizon finder at the origin, Kretschmann scalar every 0.25 M.  The runs of
+# tracks/core/JOURNAL-oblate.md use four filter passes with compensation and
+# num_levels = 5 or 6 (finest cells M/4 or M/8), given on the command line.
+
+<comment>
+problem   = oblate collapse
+
+<job>
+basename  = obl
+
+<mesh>
+nghost    = 4
+nx1       = 64
+x1min     = -128.0
+x1max     = 128.0
+ix1_bc    = outflow
+ox1_bc    = outflow
+nx2       = 64
+x2min     = -128.0
+x2max     = 128.0
+ix2_bc    = outflow
+ox2_bc    = outflow
+nx3       = 64
+x3min     = -128.0
+x3max     = 128.0
+ix3_bc    = outflow
+ox3_bc    = outflow
+
+<meshblock>
+nx1       = 16
+nx2       = 16
+nx3       = 16
+
+<mesh_refinement>
+refinement          = adaptive
+num_levels          = 8
+max_nmb_per_rank    = 1536
+ncycle_check        = 4
+refinement_interval = 8
+
+<amr_criterion0>
+method = user
+
+<z4c_amr>
+method          = lohner
+lohner_refine   = 0.2
+lohner_derefine = 0.02
+lohner_eps      = 0.01
+radius_0_rad      = 11.0
+radius_0_reflevel = 4
+
+<refined_region1>
+level = 4
+x1min = -11.0
+x1max = 11.0
+x2min = -11.0
+x2max = 11.0
+x3min = -5.0
+x3max = 5.0
+
+<time>
+evolution  = dynamic
+integrator = rk4
+cfl_number = 0.25
+nlim       = -1
+tlim       = 60.0
+ndiag      = 20
+
+<z4c>
+lapse_oplog     = 2.0
+lapse_harmonicf = 1.0
+lapse_harmonic  = 0.0
+lapse_advect    = 1.0
+shift_Gamma     = 0.75
+shift_eta       = 2.0
+shift_advect    = 1.0
+diss            = 0.5
+chi_div_floor   = 1.0e-5
+damp_kappa1     = 0.02
+damp_kappa2     = 0.0
+damp_ch         = 0.0      # parabolic relaxation of the Hamiltonian constraint (length); 0: off
+damp_ch_dx      = 0.0      # part of it proportional to the local cell size
+
+<fastflow>
+find_every        = 16
+metric_drvts      = interpolant   # derivative of the metric interpolant; 'stored' is the original, wrong near block faces
+num_horizons      = 1
+npunct            = 0
+ntheta            = 16
+lmax              = 8
+use_puncture_0    = -1
+center_x_0        = 0.0
+center_y_0        = 0.0
+center_z_0        = 0.0
+initial_radius_0  = 1.0
+flow_iterations_0 = 400
+flow_alpha_beta_const_0 = 1.0
+hmean_tol_0       = 100.0
+mass_tol_0        = 1.0e-5
+start_time_0      = 20.0
+stop_time_0       = 1000.0
+verbose           = false
+
+<particles>
+particle_type  = nrpic
+pusher         = midpoint
+metric         = mesh
+tolerance      = 1.0e-7
+max_iterations = 50
+deposit        = true
+nfilter        = 2
+filter_compensate = false  # one extra pass cancelling the widening of the binomial passes
+filter_comp_c  = -1.0          # its coefficient; negative: nfilter/4
+deposit_max_level = 31
+deposit_adaptive  = false  # published rule: cloud at the finest local level (the adaptive cloud level disturbs forming black holes, docs/TESTLOG.md)
+deposit_min_level = 3      # ... and is never coarser than dx = M/2
+deposit_ppc       = 2.0
+deposit_max_coarsen = 31   # a cloud is at most this many levels coarser than its particle's block
+alpha_exc      = 0.05
+hist_dcycle    = 1
+snap_dt        = 0.5
+curv_dt        = 0.25
+curv_slice     = true
+curv_plane_y   = 1.0e-3
+particle_file  = oblate_e0p9_a10_N10000_s1.nrp
+
+<problem>
+pgen_name  = nrpic_cf
+ncomp      = 1
+comp0_type = spheroid
+comp0_mass = 1.0
+comp0_a    = 10.0
+comp0_b    = 4.358898943540673
+lapse      = one
+
+<output1>
+file_type = hst
+dt        = 0.1
+
+<output2>
+file_type = rst
+dt        = 5.0
+
+<output3>
+file_type = tab
+variable  = adm
+dt        = 2.5
+slice_x2  = 0.01
+slice_x3  = 0.01
+
+<output4>
+file_type = tab
+variable  = tmunu
+dt        = 2.5
+slice_x2  = 0.01
+slice_x3  = 0.01
+
+<output5>
+file_type = tab
+variable  = z4c
+dt        = 2.5
+slice_x2  = 0.01
+slice_x3  = 0.01

@@ -1,0 +1,65 @@
+# Conformal factor of the oblate spheroid component of nrpic_cf (a >= b), without
+# particles: no step is taken (nlim = 0), the metric and the constraint monitor of the
+# initial slice are written.  Test T1 of tracks/core/JOURNAL-oblate.md compares psi with
+# the reference potential and the Hamiltonian-constraint monitor, which without matter
+# is the Ricci scalar of the slice, with 16 pi rho_ADM = 32 pi rho_N psi^-5 inside the
+# spheroid and zero outside (tracks/core/analysis/oblate/cf_check.py changes the mesh
+# and the semi-axes on the command line).
+<job>
+basename  = obl
+<mesh>
+nghost    = 4
+nx1       = 96
+x1min     = -48.0
+x1max     = 48.0
+ix1_bc    = outflow
+ox1_bc    = outflow
+nx2       = 96
+x2min     = -48.0
+x2max     = 48.0
+ix2_bc    = outflow
+ox2_bc    = outflow
+nx3       = 96
+x3min     = -48.0
+x3max     = 48.0
+ix3_bc    = outflow
+ox3_bc    = outflow
+<meshblock>
+nx1       = 32
+nx2       = 32
+nx3       = 32
+<time>
+evolution  = dynamic
+integrator = rk4
+cfl_number = 0.25
+nlim       = 0
+tlim       = 1.0
+<z4c>
+lapse_oplog     = 2.0
+shift_Gamma     = 0.75
+shift_eta       = 2.0
+diss            = 0.5
+chi_div_floor   = 1.0e-5
+damp_kappa1     = 0.02
+<problem>
+pgen_name   = nrpic_cf
+ncomp       = 1
+comp0_type  = spheroid     # a >= b: oblate (a = b: the sphere); a < b: prolate
+comp0_mass  = 1.0          # ADM mass M
+comp0_a     = 10.0         # equatorial semi-axis (x, y)
+comp0_b     = 4.358898943540673   # polar semi-axis (z): a sqrt(1 - e^2), e = 0.9
+comp0_x1    = 0.0
+comp0_x2    = 0.0
+comp0_x3    = 0.0
+lapse       = one
+<output1>
+file_type = hst
+dt        = 1.0
+<output2>
+file_type = bin
+variable  = adm
+dcycle    = 1
+<output3>
+file_type = bin
+variable  = con
+dcycle    = 1

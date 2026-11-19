@@ -261,7 +261,8 @@ def sample_gaussian_positions(N, sigma, centre=(0.0, 0.0, 0.0), method="stratifi
 def sample_spheroid(N, e=0.9, b=10.0, M=1.0, seed=0, symmetrize=True,
                     species=0, spheroid=None):
     """Cold prolate spheroid at rest with coordinate density proportional to
-    psibar inside (x^2+y^2)/a^2 + z^2/b^2 <= 1; m_p = M_rest/N.
+    psibar inside (x^2+y^2)/a^2 + z^2/b^2 <= 1; m_p = M_rest/N. With
+    spheroid = OblateSpheroid(...) the same for the oblate spheroid.
 
     With symmetrize (default) N must be a multiple of 4: N/4 base points are
     drawn and completed by (x, y, -z), (-x, -y, z), (-x, -y, -z), so the set is

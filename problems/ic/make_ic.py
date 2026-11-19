@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 """Write NRPIC initial data: particle file (.nrp), radial table (.tab) and a
 JSON parameter file, for the Oppenheimer-Snyder ball, a monoenergetic
-Shapiro-Teukolsky cluster, the cold prolate spheroid, or the cluster with two
-Gaussian clumps of the Jeans-collapse problem.
+Shapiro-Teukolsky cluster, the cold prolate or oblate spheroid, or the cluster with
+two Gaussian clumps of the Jeans-collapse problem.
 
 Examples
     make_ic.py os      --N 10000 --sampler lattice --out /tmp/ic
@@ -12,6 +12,7 @@ Examples
     make_ic.py st      --yc 0.756 --N 10000 --dpert 0.10 --out /tmp/ic
     make_ic.py st      --yc 0.756 --N 10000 --dpert 0.10 --no-consistent-table --out /tmp/ic
     make_ic.py prolate --e 0.9 --b 10 --N 10000 --seed 1 --out /tmp/ic
+    make_ic.py oblate  --e 0.9 --a 10 --N 10000 --seed 1 --out /tmp/ic
     make_ic.py jeans   --N 10000 --seed 1 --out /tmp/ic
 
 jeans: envelope (species 0, radial table) + clumps A, B (species 1, 2, Gaussian
@@ -46,7 +47,7 @@ from nrpic import io as nio  # noqa: E402
 from nrpic import oppenheimer_snyder as osn  # noqa: E402
 from nrpic import sampling  # noqa: E402
 from nrpic import st_cluster as stc  # noqa: E402
-from nrpic.spheroid import ProlateSpheroid  # noqa: E402
+from nrpic.spheroid import OblateSpheroid, ProlateSpheroid  # noqa: E402
 
 
 def _fmt(v):
@@ -64,12 +65,13 @@ def _particle_stats(x, u, m):
 def main(argv=None):
     p = argparse.ArgumentParser(description=__doc__,
                                 formatter_class=argparse.RawDescriptionHelpFormatter)
-    p.add_argument("model", choices=["os", "st", "prolate", "jeans"])
+    p.add_argument("model", choices=["os", "st", "prolate", "oblate", "jeans"])
     p.add_argument("--N", type=int, default=10000,
                    help="particle count (lattice: target count used to choose n_lat)")
     p.add_argument("--sampler", default=None,
                    help="os: lattice|mc|stratified (default lattice); "
-                        "st, jeans: stratified|mc (default stratified); prolate: mc")
+                        "st, jeans: stratified|mc (default stratified); "
+                        "prolate, oblate: mc")
     p.add_argument("--seed", type=int, default=1)
     p.add_argument("--out", default=".", help="output directory")
     p.add_argument("--prefix", default=None, help="output file stem")
@@ -108,6 +110,9 @@ def main(argv=None):
     g.add_argument("--e", type=float, default=0.9, help="eccentricity")
     g.add_argument("--b", type=float, default=10.0, help="polar semi-axis / M")
     g.add_argument("--no-symmetrize", action="store_true")
+    g = p.add_argument_group("oblate (also --e, --no-symmetrize)")
+    g.add_argument("--a", type=float, default=10.0,
+                   help="equatorial semi-axis / M (the polar one is a sqrt(1 - e^2))")
     D = clm.DEFAULTS
     g = p.add_argument_group("jeans (species 0 envelope, 1 clump A, 2 clump B; "
                              "--species is ignored)")
@@ -253,12 +258,21 @@ def main(argv=None):
         N = a.N - a.N % 4 if sym else a.N
         if N != a.N:
             print(f"note: N rounded down to {N} (multiple of 4 for the symmetrization)")
-        sph = ProlateSpheroid(a.e, a.b)
+        if a.model == "oblate":
+            sph = OblateSpheroid(a.e, a.a)
+            stem = a.prefix or f"oblate_e{_fmt(a.e)}_a{_fmt(a.a)}_N{N}_s{a.seed}"
+        else:
+            sph = ProlateSpheroid(a.e, a.b)
+            stem = a.prefix or f"prolate_e{_fmt(a.e)}_b{_fmt(a.b)}_N{N}_s{a.seed}"
         x, u, m, sp = sampling.sample_spheroid(N, seed=a.seed, symmetrize=sym,
                                                species=a.species, spheroid=sph)
         meta.update(sph.summary())
         meta.update(sampler="mc", symmetrize=sym)
-        stem = a.prefix or f"prolate_e{_fmt(a.e)}_b{_fmt(a.b)}_N{N}_s{a.seed}"
+        if a.model == "oblate":   # the <problem> block of nrpic_cf for these data
+            meta["athenak"] = {"problem": dict(pgen_name="nrpic_cf", ncomp=1,
+                                               comp0_type="spheroid", comp0_mass=sph.M,
+                                               comp0_a=sph.a, comp0_b=sph.b, lapse="one"),
+                               "particles": {"particle_file": stem + ".nrp"}}
 
     if a.model in ("st", "jeans") and not a.keep_net_momentum:
         ubar = (m[:, None] * u).sum(0) / m.sum()
@@ -290,7 +304,7 @@ def main(argv=None):
     with open(js, "w") as f:
         json.dump(meta, f, indent=2)
     print(f"wrote {nrp}" + (f", {tab}" if table is not None else "") + f", {js}")
-    if a.model == "prolate":
+    if a.model in ("prolate", "oblate"):
         print("spheroid parameters (no table; the generator evaluates psibar = 1 - Phi_N):")
         for k in ("e", "a", "b", "c_focal", "rhoN", "M_rest", "psibar_c", "I0", "Ja0", "Jb0"):
             print(f"  {k:9s} = {meta[k]!r}")
