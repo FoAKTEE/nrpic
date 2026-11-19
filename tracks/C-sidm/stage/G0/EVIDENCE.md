@@ -25,7 +25,7 @@ Paths relative to the worktree root `wt/C-sidm` unless absolute. Manifests:
 | C-sidm-20261115-120703-9b3e868 | collide | reference figures R1-R7 | `collide/figs/ref_*` |
 | C-sidm-20261115-120715-38ab057 | gravothermal | unit tests | all pass |
 | C-sidm-20261115-120717-38ab057 | gravothermal | parse of F21 Tables 1-2 (stdlib, `python3 -I`) | 56 + 14 rows |
-| C-sidm-20261115-120722-38ab057 | gravothermal | F21 sequences, criteria, FEM onsets | Table 1 within 1.1e-4; onset Z(0) = 0.6348 (b = 0.1) |
+| C-sidm-20261115-120722-38ab057 | gravothermal | F21 sequences, criteria, FEM onsets | Table 1: most columns within 1.1e-4, B 2.4e-4, R and C 2.5e-3 (corrected in wave 2); onset Z(0) = 0.6348 (b = 0.1) |
 | C-sidm-20261115-120801-38ab057 | equilibria | offline checks, first attempt | FAILED (a misread inequality; kept on record) |
 | C-sidm-20261115-121302-313d399 | collide | T6-0 collisionless step with AthenaK (processors) | passed; positions exact to 1.8e-12 L |
 | C-sidm-20261115-121400-d463e1a | gravothermal | polytrope check, first attempt | node-list defect (kept on record) |
@@ -54,3 +54,17 @@ Third-party sources and figures are not committed.
 `core/collisions` at 94dc093 (no collision code) until 3436846 (operator, 13:19Z) and 1a050f3 (core's kernel test); `core/rng` (`tracks/core/interfaces/rng.md`);
 uncommitted draft of core in `wt/core-coll` (read only): `tracks/core/interfaces/collisions.md`,
 `athenak/src/particles/nrpic_collide.hpp`.
+
+## Wave 2 (2026-11-15): products and checks added to the G0 package
+
+| Item | Artefact | Run ids |
+|---|---|---|
+| Working note v0 (REVTeX, 10 pages) | `tracks/C-sidm/note/main.tex`, `main.pdf`, guide `WRITING_GUIDE.md`, notation `NOTATION.md` | C-20261115-170415-385069e, C-20261115-171741-0e0da67 |
+| Architecture and timeline schematics | `note/figures/schem_architecture.png`, `schem_timeline.png` (paperfig.py) | C-20261115-171741-0e0da67 |
+| Data figures of the note | `note/figures/fig_{sequences,knudsen,collisions,box_step}.png` (czstyle, one script each) | same |
+| Claims check of the lead's numbers | `note/tables/claims.md`: 20 of 23 agree; 3 corrected in `REPORT.md` and `../G1/STATUS.md` | same; lead recheck C-20261115-193332-48771b4 |
+| Fresh-context verifier | `VERIFIER.md` (V1-V8; V4b WRONG, V5 partly), own code `verifier/` | C-20261115-170630-1037f6a, C-20261115-170716-e81ba08; rerun byte-identical in C-20261115-193332-48771b4 |
+| Verifier findings fixed | `scope/SCOPE.md` sections 1, 3.1, 3.4, 4; `collide/SPEC.md` section 1 (Kn) and 4.5 (sub-step rule); `equilibria/CONVERSION.md` section 5 (K); `gravothermal/README.md` (lapse) | C-20261115-193751-d3872ff (K) |
+| Juttner fluid onset (OPEN item 6 of wave 1) | `models/results/fluid_onset.json`; anchor Z(0) = 0.5331 (b = 0.1), REPORT decision 3 revised | C-20261115-165315-7b473b8; recheck with the verifier's operator C-20261115-193332-48771b4 |
+| Lead's review of wave 2 | `../REVIEW-wave2.md`, scripts `../review_wave2/` | C-20261115-193332-48771b4, C-20261115-193751-d3872ff |
+| Wave-1 manifests completed | ten gravothermal manifests: null `preregistered_in`, `code`, `input` added (noted in each) | - |

@@ -1,12 +1,12 @@
 # Re-verification: C-sidm G0
 
-`harness/bin/nrpic-stage verify C-sidm G0` on 2026-11-15T17:21:41Z, clean export of commit `d567429c4283` in `scratch/C-sidm/tmp/stage-verify/C-sidm-G0-d567429-20261115T171935Z`. Result: **FAIL**.
+`harness/bin/nrpic-stage verify C-sidm G0` on 2026-11-15T19:49:22Z, clean export of commit `3ba998966392` in `scratch/C-sidm/tmp/stage-verify/C-sidm-G0-3ba9989-20261115T194014Z`. Result: **FAIL**.
 
 | Check | Result | Message |
 |---|---|---|
-| clean | FAIL | 2 uncommitted paths: commit them first (tracks/C-sidm/threshold_scan/analyze.py, tracks/C-sidm/threshold_scan/SCAN.md) |
+| clean | PASS | worktree clean (outside the stage directory being assembled) |
 | sync | PASS | main is merged into the branch |
-| export | PASS | clean export of d567429c4283 (HEAD) in /data/haiyangw/nrpic/scratch/C-sidm/tmp/stage-verify/C-sidm-G0-d567429-20261115T171935Z/tree |
+| export | PASS | clean export of 3ba998966392 (HEAD) in /data/haiyangw/nrpic/scratch/C-sidm/tmp/stage-verify/C-sidm-G0-3ba9989-20261115T194014Z/tree |
 | size | PASS | no committed file of the track above 5 MB |
 | note | PASS | tracks/<ID>/note/main.tex present |
 | package | PASS | EVIDENCE.md, OPEN.md, CHECKLIST.md present (decision 0012); scoping text: scope/SCOPE.md; REPORT.md of wave 1 accepted as it is; REVIEW.md present |
@@ -14,7 +14,7 @@
 | style | PASS | 2 style copies equal harness/style/SHA256SUMS (czstyle.py, paperfig.py) |
 | fig-script | PASS | 6 figures, each with its script |
 | min-figs | PASS | 2 schematics and 4 data figures (brief 13.4 asks at least 2 and 0 at G0) |
-| runs | FAIL | 17 of 57 runs have problems |
+| runs | FAIL | 10 of 72 runs have problems |
 | run-notes | WARN | 25 runs read with defaults or not fully re-verifiable (nrpic-run lint) |
 | status | PASS | STATUS.md has 40 lines |
 | rerun | PASS | 6 of 6 scripts and commands ran cleanly in the export |
@@ -25,34 +25,6 @@
 
 ```
 {
- "C-20261115-170447-cb3b230": [
-  "status is submitted: not finished (nrpic-run finish)",
-  "missing /data/haiyangw/nrpic/scratch/C-sidm/C-20261115-170447-cb3b230/sha256sums.txt"
- ],
- "C-20261115-170539-28432c3": [
-  "status is running: not finished (nrpic-run finish)",
-  "missing /data/haiyangw/nrpic/scratch/C-sidm/C-20261115-170539-28432c3/sha256sums.txt"
- ],
- "C-20261115-170716-e81ba08": [
-  "status is running: not finished (nrpic-run finish)",
-  "missing /data/haiyangw/nrpic/scratch/C-sidm/C-20261115-170716-e81ba08/sha256sums.txt"
- ],
- "C-20261115-170814-8a54b43": [
-  "status is running: not finished (nrpic-run finish)",
-  "missing /data/haiyangw/nrpic/scratch/C-sidm/C-20261115-170814-8a54b43/sha256sums.txt"
- ],
- "C-20261115-171058-c26cfad": [
-  "status is submitted: not finished (nrpic-run finish)",
-  "missing /data/haiyangw/nrpic/scratch/C-sidm/C-20261115-171058-c26cfad/sha256sums.txt"
- ],
- "C-20261115-171059-35441e3": [
-  "status is submitted: not finished (nrpic-run finish)",
-  "missing /data/haiyangw/nrpic/scratch/C-sidm/C-20261115-171059-35441e3/sha256sums.txt"
- ],
- "C-20261115-171059-4b70228": [
-  "status is submitted: not finished (nrpic-run finish)",
-  "missing /data/haiyangw/nrpic/scratch/C-sidm/C-20261115-171059-4b70228/sha256sums.txt"
- ],
  "C-sidm-20261115-120715-38ab057": [
   "fields missing: preregistered_in, code, input"
  ],

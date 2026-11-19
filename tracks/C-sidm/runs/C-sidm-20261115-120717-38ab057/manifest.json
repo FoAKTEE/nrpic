@@ -4,6 +4,7 @@
   "track": "C-sidm",
   "gate": "G1",
   "kind": "scouting",
+  "preregistered_in": null,
   "purpose": "C-pre-3 parse the printed tables of arXiv:2108.11967 (untrusted source, stdlib parser, python3 -I)",
   "launcher": "local (tracks/C-sidm/gravothermal/register.py)",
   "command": [
@@ -14,6 +15,13 @@
     "/data/haiyangw/nrpic/scratch/C-sidm/C-sidm-20261115-120717-38ab057/f21_tables.json"
   ],
   "cwd": "wt/C-sidm/tracks/C-sidm/gravothermal",
+  "code": {
+    "core_tag": null,
+    "athenak_upstream_sha": null,
+    "kokkos_sha": null,
+    "problem": null
+  },
+  "input": null,
   "git": {
     "sha": "38ab05751c0fa0dda12abe5d65ffb742c91cc906",
     "branch": "track/C-sidm",
@@ -55,5 +63,5 @@
   "started": "2026-11-15T12:07:17+00:00",
   "ended": "2026-11-15T12:07:18+00:00",
   "parents": [],
-  "notes": ""
+  "notes": "fields preregistered_in, code and input added by the C-sidm lead in wave 2 (2026-11-15) with null values, because this Python reference run of wave 1 used no AthenaK and no input deck; no other field changed"
 }

@@ -13,6 +13,12 @@ C-sidm-20261115-131135-3077a99 (reruns of every package); see `../G0/REVIEW.md`.
 checked; core committed the operator at the end of this session (3436846, untested by core),
 and its kernels pass the track's T0; the box tests T0b-T12 have not run.
 
+**Wave 2 (2026-11-15, lead): G1 still NOT MET.** The box tests T0b, T1-T5, T9, T10, T10b
+and T11 pass on release core-v0.3 and were recomputed by the lead; T6-T8 (heat conduction,
+part of C-pre-1) have not run. The criterion-by-criterion state is `CHECKLIST.md`; the
+evidence `EVIDENCE.md`; what is missing `OPEN.md`. The text below is the state of wave 1
+(item 2 corrected in wave 2).
+
 ## 1. Track-specific criteria
 
 | # | Criterion | Status | Evidence |

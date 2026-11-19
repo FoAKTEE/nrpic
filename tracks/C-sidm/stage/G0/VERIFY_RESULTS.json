@@ -1,15 +1,15 @@
 {
   "track": "C-sidm",
   "gate": "G0",
-  "commit": "d567429c428379ae2efdd54223ad6415cf733029",
-  "verified_utc": "2026-11-15T17:21:41Z",
-  "export": "/data/haiyangw/nrpic/scratch/C-sidm/tmp/stage-verify/C-sidm-G0-d567429-20261115T171935Z",
+  "commit": "3ba9989663927b4ed1958ec3109c9d7694fb1cbc",
+  "verified_utc": "2026-11-15T19:49:22Z",
+  "export": "/data/haiyangw/nrpic/scratch/C-sidm/tmp/stage-verify/C-sidm-G0-3ba9989-20261115T194014Z",
   "result": "FAIL",
   "checks": [
     {
       "check": "clean",
-      "status": "FAIL",
-      "message": "2 uncommitted paths: commit them first (tracks/C-sidm/threshold_scan/analyze.py, tracks/C-sidm/threshold_scan/SCAN.md)",
+      "status": "PASS",
+      "message": "worktree clean (outside the stage directory being assembled)",
       "detail": null
     },
     {
@@ -21,7 +21,7 @@
     {
       "check": "export",
       "status": "PASS",
-      "message": "clean export of d567429c4283 (HEAD) in /data/haiyangw/nrpic/scratch/C-sidm/tmp/stage-verify/C-sidm-G0-d567429-20261115T171935Z/tree",
+      "message": "clean export of 3ba998966392 (HEAD) in /data/haiyangw/nrpic/scratch/C-sidm/tmp/stage-verify/C-sidm-G0-3ba9989-20261115T194014Z/tree",
       "detail": null
     },
     {
@@ -69,36 +69,8 @@
     {
       "check": "runs",
       "status": "FAIL",
-      "message": "17 of 57 runs have problems",
+      "message": "10 of 72 runs have problems",
       "detail": {
-        "C-20261115-170447-cb3b230": [
-          "status is submitted: not finished (nrpic-run finish)",
-          "missing /data/haiyangw/nrpic/scratch/C-sidm/C-20261115-170447-cb3b230/sha256sums.txt"
-        ],
-        "C-20261115-170539-28432c3": [
-          "status is running: not finished (nrpic-run finish)",
-          "missing /data/haiyangw/nrpic/scratch/C-sidm/C-20261115-170539-28432c3/sha256sums.txt"
-        ],
-        "C-20261115-170716-e81ba08": [
-          "status is running: not finished (nrpic-run finish)",
-          "missing /data/haiyangw/nrpic/scratch/C-sidm/C-20261115-170716-e81ba08/sha256sums.txt"
-        ],
-        "C-20261115-170814-8a54b43": [
-          "status is running: not finished (nrpic-run finish)",
-          "missing /data/haiyangw/nrpic/scratch/C-sidm/C-20261115-170814-8a54b43/sha256sums.txt"
-        ],
-        "C-20261115-171058-c26cfad": [
-          "status is submitted: not finished (nrpic-run finish)",
-          "missing /data/haiyangw/nrpic/scratch/C-sidm/C-20261115-171058-c26cfad/sha256sums.txt"
-        ],
-        "C-20261115-171059-35441e3": [
-          "status is submitted: not finished (nrpic-run finish)",
-          "missing /data/haiyangw/nrpic/scratch/C-sidm/C-20261115-171059-35441e3/sha256sums.txt"
-        ],
-        "C-20261115-171059-4b70228": [
-          "status is submitted: not finished (nrpic-run finish)",
-          "missing /data/haiyangw/nrpic/scratch/C-sidm/C-20261115-171059-4b70228/sha256sums.txt"
-        ],
         "C-sidm-20261115-120715-38ab057": [
           "fields missing: preregistered_in, code, input"
         ],

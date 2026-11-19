@@ -4,6 +4,7 @@
   "track": "C-sidm",
   "gate": "G1",
   "kind": "scouting",
+  "preregistered_in": null,
   "purpose": "C-pre-3 candidate initial models across the onset bracket, code units, core and half-mass radii",
   "launcher": "local (tracks/C-sidm/gravothermal/register.py)",
   "command": [
@@ -14,6 +15,13 @@
     "/data/haiyangw/nrpic/scratch/C-sidm/C-sidm-20261115-121748-4e8d6b5"
   ],
   "cwd": "wt/C-sidm/tracks/C-sidm/gravothermal",
+  "code": {
+    "core_tag": null,
+    "athenak_upstream_sha": null,
+    "kokkos_sha": null,
+    "problem": null
+  },
+  "input": null,
   "git": {
     "sha": "4e8d6b5979e1e3b8b007c3296fe4998bd5f3aca3",
     "branch": "track/C-sidm",
@@ -55,5 +63,5 @@
   "started": "2026-11-15T12:17:48+00:00",
   "ended": "2026-11-15T12:18:11+00:00",
   "parents": [],
-  "notes": "parent C-sidm-20261115-120722-38ab057"
+  "notes": "parent C-sidm-20261115-120722-38ab057; fields preregistered_in, code and input added by the C-sidm lead in wave 2 (2026-11-15) with null values, because this Python reference run of wave 1 used no AthenaK and no input deck; no other field changed"
 }

@@ -4,6 +4,7 @@
   "track": "C-sidm",
   "gate": "G1",
   "kind": "scouting",
+  "preregistered_in": null,
   "purpose": "C-pre-3 figures (final): sequences vs F21 Table 1, residuals, criteria vs b, exact and trial onsets, EOS, profiles, polytrope check, time scales",
   "launcher": "local (tracks/C-sidm/gravothermal/register.py)",
   "command": [
@@ -17,6 +18,13 @@
     "/data/haiyangw/nrpic/scratch/C-sidm/C-sidm-20261115-121524-5cebcf5"
   ],
   "cwd": "wt/C-sidm/tracks/C-sidm/gravothermal",
+  "code": {
+    "core_tag": null,
+    "athenak_upstream_sha": null,
+    "kokkos_sha": null,
+    "problem": null
+  },
+  "input": null,
   "git": {
     "sha": "690ff918ae31d0f6a25dd87496e5667ff78fd344",
     "branch": "track/C-sidm",
@@ -58,5 +66,5 @@
   "started": "2026-11-15T12:18:59+00:00",
   "ended": "2026-11-15T12:19:05+00:00",
   "parents": [],
-  "notes": "parents C-sidm-20261115-120722-38ab057 C-sidm-20261115-120717-38ab057 C-sidm-20261115-121412-d463e1a C-sidm-20261115-121524-5cebcf5; supersedes C-sidm-20261115-121811-38da24f (y ranges)"
+  "notes": "parents C-sidm-20261115-120722-38ab057 C-sidm-20261115-120717-38ab057 C-sidm-20261115-121412-d463e1a C-sidm-20261115-121524-5cebcf5; supersedes C-sidm-20261115-121811-38da24f (y ranges); fields preregistered_in, code and input added by the C-sidm lead in wave 2 (2026-11-15) with null values, because this Python reference run of wave 1 used no AthenaK and no input deck; no other field changed"
 }
