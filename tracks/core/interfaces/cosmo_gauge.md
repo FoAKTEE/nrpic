@@ -167,7 +167,7 @@ was unstable, `JOURNAL-id.md` entry 8); a blend of conformal time and 1+log by r
 chi (a front source at the blend radius); `lapse_kdriver` (a box mean, dominated by the
 exterior of a ball); `lapse_volume` (the same unbounded step).
 
-Tests [VERIFIED, runs in the journal, entries 3 and 4]:
+Tests [VERIFIED, runs in the journal, entries 3, 4, 6, 8 and 9]:
 
 | test | set-up | old 1+log | new |
 |---|---|---|---|
@@ -177,7 +177,8 @@ Tests [VERIFIED, runs in the journal, entries 3 and 4]:
 | L1, largest coordinate speed of light at the particles | | 2.32 | 1.13 (T = 1 M) |
 | L2 bound ball R_b = 5 M, e0 = 0.16, cells M/4, t = 12 M | core, mid, outer, surface abs(eps) | conformal-time lapse of wave 1: 0.11, 2.6e-2, 1.7e-2, 1.3e-2 | T = 0.5 M: 9.2e-3, 2.5e-3, 4.3e-3, 6.4e-3; T = 1 M: 3.3e-2, 4.4e-3, 5.8e-3, 6.7e-3 |
 | L2 turnaround | largest R/R_0 (exact 1.25) | | 1.2478 to 1.2496 (T = 0.5 M) |
-| P puncture alone, cells m/8, 10 M | | | identical to plain 1+log byte for byte (the lapse never exceeds 1) |
+| P puncture alone, cells m/8, 10 M (processors) and 20 M (card, full mesh) | | | identical to plain 1+log byte for byte: tracker, horizon shape, horizon summary (40 searches), constraint history (the lapse never exceeds 1) |
+| H homogeneous dust universe (periodic, H_0 = 1, t = 2/H_0), rates 0, 5, 20 | lapse and scale factor against the exact ordinary differential equation | 1 + 6 ln a = 14.4 at a = 9.3, followed to 1.0e-5 | alpha = 1.26 (T = 0.2/H_0) followed to 6e-6; alpha = 1.07 (T = 0.05/H_0 = 1.6 steps) to 2.1e-4 in the first three steps and 5e-8 at the end; with a four times smaller step 5.0e-7 (414 times smaller) |
 
 Choice of T (from L1 and L2): the departure of the central lapse from the homogeneous
 value is set by the ratio of T to the time a gauge wave needs to cross the expanding
@@ -247,3 +248,26 @@ Track D's data is 24 M thick (wall at 36 M, outer edge at 60 M), so T <= 2 M
 (T/t_c <= 0.1 with t_c = 24 M/sqrt(2)); with 6 T H = 0.07 the lapse excess is small
 anyway. Input: `problems/es/es_gauge.athinput` (T = 2 M, cells 2 M in the dust, M/8 at
 the hole, boundary at 96 M, 30 M).
+
+Test ES [VERIFIED, run core-20261115-202901-b4430da, card, 185 s; journal entry 8;
+figure `tracks/core/analysis/gauge/figs/es_gc_es-leak2.png`]: Track D's data
+(`make_es.py --Rb 56 --w_out 4 --hp 2.0`, M = 1, wall at 36 M, 87128 dust particles on a
+lattice of 2 M) with that input, 30 M:
+
+| quantity | exact or expected | run |
+|---|---|---|
+| apparent-horizon mass | M on every slice | 0.99997 at t = 10 M; 0.99989 to 1.00099 for 10 M <= t <= 30 M (drift 1.0e-3), flat at 1.00098 from 25 M on; 0.99966 to 1.00099 from 3 M on |
+| the same drift without dust | | vacuum puncture on the same finest cells (test P, card): +8.6e-4 from 10 M to 19.5 M, against +9.1e-4 here: the drift is the puncture's at cells M/8 |
+| wall tracers (R_0 = 36 M), areal radius at their proper time | 38.320, 40.572, 42.763 M at tau = 10, 20, 30 M | 38.321, 40.572, 42.762 M; largest relative difference 6.2e-5 |
+| other tracer groups | exact curves | 7e-5 (20 M), 1.2e-4 (28 M), 4.6e-4 (40 M), 6.8e-5 (48 M), 2.4e-4 (56 M); 1.1e-3 for the group that falls into the hole (6 M, until R = 2.2 M) |
+| lapse in the dust (tracers at 48 M) | homogeneous value 1.062 to 1.055 | 1.061 to 1.041 (within 1.3 per cent); 1.045 to 1.060 at the wall; plain 1+log would reach 2.37 |
+| largest lapse on the mesh | | 1.109 at t = 5 M, 1.063 at 30 M, at areal radius 21 M inside the vacuum bubble (not in the dust) |
+| lapse at the puncture | collapsed | 0.031 at the start, a bump to 0.23 at t = 5.75 M (start lapse psi^-2 and zero start shift adjusting), 0.053, 0.032, 0.038 at t = 10, 20, 30 M |
+| dust and bubble | no dust inside the wall | innermost dust particle 0.2 M outside the wall tracers at t = 30 M |
+| tracers falling in from 6 M | horizon crossing near tau = 15 M | all 14 removed (lapse below 0.05) at tau = 15.5 M |
+
+Two items of the prediction written before the run failed without refuting it: the
+horizon-mass drift (1.02e-3 against the bound 1e-3) and the largest lapse on the mesh
+(1.109 against 1.09: I had bounded it by the dust plateau; the bubble's normal
+observers expand faster). Nothing in the run shows a defect of the condition. Not
+covered: runs longer than 30 M, a finer dust mesh, the outer boundary.

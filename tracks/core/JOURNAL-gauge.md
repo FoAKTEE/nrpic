@@ -1002,3 +1002,10 @@ to the eta = 2 run 0.95 to 1.00 (width 4) and 0.85 to 0.96 (width 8); both horiz
 found in every search, masses within 2e-3 of the constant-eta runs; H norm at the end
 within a factor 1.5 of them. Refuted if the light tracker with width 8 is not closer
 to the eta = 8 run than with width 2, or if a horizon is lost.
+
+Correction to entry 2 (found while writing the ES table of the interface document): the
+exact radii quoted there for the wall tracers, 38.318 and 40.574 M at tau = 10 and 20 M,
+and for the tracers at 48 M, 50.640 and 53.221 M, differ from Track D's
+`es_reference.csv` in the fifth digit; the file gives 38.3200, 40.5718, 42.7628 M (wall)
+and 50.6429, 53.2185, 55.7333 M (48 M). The analysis reads the file, so no outcome
+changes; the criteria of prediction ES (5e-3 and 3e-3) are far from that digit.
