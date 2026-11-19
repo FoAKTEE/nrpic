@@ -1,0 +1,16 @@
+# Second batch (2026-11-19): Track D (no row in brief section 3.9), Tracks A-C, E, F extra topics, and the last weeks
+rD | abstracts.value:"dark matter spike" and date > 2026-03
+rD | abstracts.value:"dark matter" and abstracts.value:"black hole" and abstracts.value:"numerical relativity" and date > 2025-12
+rD | abstracts.value:"primordial black hole" and (abstracts.value:"dark matter halo" or abstracts.value:"dress" or abstracts.value:"dressed") and date > 2026-06
+rD | abstracts.value:"Einstein-Vlasov" and abstracts.value:"black hole" and date > 2025-12
+rD | abstracts.value:"dynamical friction" and (abstracts.value:"relativistic" or abstracts.value:"general relativity") and date > 2026-03
+rA | abstracts.value:"primordial black hole" and (abstracts.value:"collisionless" or abstracts.value:"N-body") and date > 2026-03
+rA | abstracts.value:"primordial black hole" and abstracts.value:"threshold" and (abstracts.value:"nonspherical" or abstracts.value:"non-spherical" or abstracts.value:"ellipticity") and date > 2026-03
+rB | abstracts.value:"gravitational wave" and (abstracts.value:"early matter" or abstracts.value:"matter-dominated" or abstracts.value:"matter domination") and date > 2026-06
+rC | abstracts.value:"gravothermal" and date > 2026-09
+rE | abstracts.value:"stochastic" and abstracts.value:"inflation" and abstracts.value:"numerical" and date > 2026-09
+rF | (abstracts.value:"hypervelocity" or abstracts.value:"binary disruption" or abstracts.value:"tidal breakup") and abstracts.value:"black hole" and date > 2026-06
+rF | abstracts.value:"binary" and abstracts.value:"supermassive black hole" and (abstracts.value:"general relativity" or abstracts.value:"general-relativistic") and date > 2026-06
+rX | abstracts.value:"numerical relativity" and (abstracts.value:"cosmolog" or abstracts.value:"expanding") and date > 2026-10
+rX | abstracts.value:"Vlasov" and abstracts.value:"general relativity" and date > 2026-08
+rX | a Wu, Jiaxi and a Most, Elias R. and date > 2026-04
