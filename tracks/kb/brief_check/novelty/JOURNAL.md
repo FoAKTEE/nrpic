@@ -54,7 +54,7 @@ Searches: knowledge base (`kb/bin/kb search`, read-only snapshot `db/current`), 
 the store, INSPIRE through `harness/bin/nrpic-fetch-arxiv --inspire-query` (one request at a
 time), generic web searches. Nothing about the project or the user goes into a request.
 
-## Entry 2, 2026-11-19 07:58: prediction for run R1 (scripts/check_numbers.py), before it runs
+## Entry 2, 2026-11-19 07:45: prediction for run R1 (scripts/check_numbers.py), before it runs
 
 R1 recomputes the numbers of line 410 from first principles and from scalings printed in the
 knowledge base, and the bound on the coupling index k that a vacuum black-hole lattice in
