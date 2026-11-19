@@ -49,3 +49,22 @@ C-20261115-171058-c26cfad, C-20261115-171059-4b70228, C-20261115-171059-35441e3,
 C-20261115-191420-8538aa4; histories rechecked by the lead (L10). Both King models collapse
 with collisions (alpha_min < 0.3 at 72.5, 77.75 M for Kn = 1; 184.25, 206.75 M for Kn = 10)
 and not without; rest-mass budget closes to 7.3e-15.
+
+## Wave 2b (2026-11-19): collisions with the metric at each particle (core/collisions-2)
+
+Executable: `scratch/core/exe/core_collisions-2/athena_cpu` (commit f46f159, scouting under
+decision 0013); option `<particles> coll_energy = particle`. Package `tracks/C-sidm/box_tests/`
+(README section "Wave 2b", JOURNAL predictions R1-R6 written before the runs). Lead's
+recheck from the registered outputs: `../REVIEW-wave2.md` section 6 (L13).
+
+| Test | Verdict | Run ids |
+|---|---|---|
+| R1 T0b, option absent (new executable) | PASS 6/6; every output file byte-identical to the release run C-20261115-170155-13ff01f | C-20261119-141502-95f0200 |
+| R2 T0b, coll_energy = particle (version-2 dumps) | PASS 6/6; replay written from the cell-frame text; n_noroot = n_balance = 0 | C-20261119-141711-7db7a6a (failed first attempt C-20261119-141614-e42b5ec kept); mode comparison C-20261119-141854-b2b664d |
+| R3 T1, T2 with the option | PASS 16/16 each; counts identical to the release in all 3200 steps | C-20261119-141806-af19c1c |
+| R4 T10 with the option | PASS (MeshBlocks 1/8/64, restarts; 385554 collisions as the release) | C-20261119-143041-f94e350 |
+| R5 T12 (G2 item) static homogeneous metric alpha0 = 0.8, psi0 = 1.1 | PASS: rate = alpha0 psi0^6 x flat twin with identical counts in every step; analytic ratio 0.99997-1.00009 | C-20261119-143049-0cf699a (driver failed on its figure after the JSON), analysis C-20261119-145925-dbcfb9c |
+| R6 King threshold model, first step | cell mode: +8.0(3.4)e-11 of sum M W_p per collision (pair model 1.74e-10); particle mode: canonical energy +1.5-1.9e-21 M per collision | C-20261119-141431-a351ac7, figure C-20261119-142957-c5da7d0 |
+| Cost | particle mode 1.68 x cell mode per tested pair (processor, equal load) | C-20261119-143146-226b0e0 |
+
+Heat conduction T6-T8 (package `heat/`, wave-3a helper): in progress, see `OPEN.md` item 1.
