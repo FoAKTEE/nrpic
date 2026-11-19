@@ -1,0 +1,26 @@
+{
+ "run_id": "kb-20261115-154906-f19880f",
+ "statements": 330,
+ "locators": 372,
+ "locators_resolved": 372,
+ "statements_without_locator": [
+  "C-sidm/r6-/unparsed-186",
+  "F-hills/s8-/unparsed-157"
+ ],
+ "disposition": {
+  "k8": 258,
+  "added": 70,
+  "no-locator": 2
+ },
+ "added_by_label": {
+  "fulltext/located": 24,
+  "to_verify/partial": 3,
+  "to_verify/located": 41,
+  "judgement/located": 2
+ },
+ "numbers": {
+  "exact": 117,
+  "missing": 13,
+  "near": 2
+ }
+}

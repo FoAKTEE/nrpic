@@ -1,0 +1,40 @@
+{
+ "run_id": "kb-20261115-153751-e164901",
+ "owner": "kb",
+ "command": [
+  "python3",
+  "-I",
+  "tracks/kb/served/scripts/run_serve.py",
+  "/data/haiyangw/nrpic/scratch/kb/kb-20261115-153751-e164901",
+  "--run-id",
+  "RUNID_PLACEHOLDER"
+ ],
+ "cwd": "/data/haiyangw/nrpic/wt/kb",
+ "commit": "e1649012a87ba55f0a0295399ecb83d727a20e6a",
+ "worktree_dirty_kb": false,
+ "inputs": [
+  {
+   "path": "/data/haiyangw/nrpic/wt/kb/tracks/kb/served/claims/manual.jsonl",
+   "sha256": "8e44ffbbe17268d5fd837d7fd33335be22b4b8a822051516a25a89e048c07916"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/wt/kb/kb/serve_locate.py",
+   "sha256": "5f4adc125b0e27d4afa476a4f4c5c33c0f82d414cdb83465b84cdc3e42736b26"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/wt/kb/tracks/kb/served/scripts/extract_track_locators.py",
+   "sha256": "17b4cdbf1a1b7bbdd467396a43b1e131fa80ef0c92c36a27a7fd3198c974e3b2"
+  }
+ ],
+ "output_dir": "/data/haiyangw/nrpic/scratch/kb/kb-20261115-153751-e164901",
+ "purpose": "kb serve: resolve and check the tracks' locators, load 330 served claims (origin served:*) into kb.sqlite; prediction tracks/kb/served/JOURNAL.md S3",
+ "kind": "scouting",
+ "cores": 1,
+ "card_hours": 0,
+ "started_utc": "2026-11-15T15:37:51Z",
+ "started_unix": 1794757071.1411529,
+ "status": "finished",
+ "exit_code": 0,
+ "wall_time_s": 2.09,
+ "finished_utc": "2026-11-15T15:37:53Z"
+}

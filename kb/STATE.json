@@ -1,0 +1,119 @@
+{
+ "at": "2026-11-15T14:15:13Z",
+ "bib": {
+  "bib_entries": 64248,
+  "citations": 103807,
+  "citations_in_corpus": 12313,
+  "citations_with_arxiv": 62779,
+  "citations_without_bib_entry": 910,
+  "doi_only": 7951,
+  "edges": 38268,
+  "edges_in_corpus": 5653,
+  "no_identifier": 17661,
+  "papers_by_bib_source": {
+   "bbl": 400,
+   "bib": 49,
+   "thebibliography": 230
+  },
+  "resolved_by": {
+   "arxiv-id": 38343,
+   "doi": 7951,
+   "title-fuzzy-corpus": 293,
+   "unresolved": 17661
+  },
+  "with_arxiv": 38636
+ },
+ "bib_identifier_rate": 0.7251,
+ "bib_resolution_rate": 0.6014,
+ "chunks_by_kind": {
+  "abstract": 674,
+  "appendix": 2218,
+  "body": 29714,
+  "caption": 6584,
+  "comment": 27966,
+  "footnote": 3914
+ },
+ "data_root": "/data/haiyangw/nrpic/kb-data",
+ "database": "/data/haiyangw/nrpic/kb-data/db/kb.sqlite",
+ "downloads_by_status": {
+  "ok": 683,
+  "problem": 1
+ },
+ "downloads_checked_at": "2026-11-15T14:03:53Z",
+ "edges_in_corpus_fraction": 0.1477,
+ "equations_labelled": 26314,
+ "manifest_arxiv": 684,
+ "manifest_arxiv_by_priority": {
+  "1": 477,
+  "2": 160,
+  "3": 47
+ },
+ "manifest_github": 63,
+ "papers_by_parse_status": {
+  "failed": 1,
+  "ok": 676,
+  "pdf": 1,
+  "review": 23
+ },
+ "papers_by_priority": {
+  "1": 476,
+  "2": 160,
+  "3": 47,
+  "None": 18
+ },
+ "parse_failures": [
+  "astro-ph/9407016"
+ ],
+ "parse_review": [
+  "astro-ph/9510056",
+  "gr-qc/9906015",
+  "astro-ph/9306009",
+  "gr-qc/9604001",
+  "astro-ph/0306304",
+  "astro-ph/0003278",
+  "gr-qc/0012059",
+  "2602.00155",
+  "1911.04505",
+  "2610.32592",
+  "2509.01320",
+  "2510.13129",
+  "2406.02417",
+  "1810.03490",
+  "2506.21423",
+  "gr-qc/0703035",
+  "1911.09689",
+  "2403.15126",
+  "2012.09255",
+  "2004.10754",
+  "2009.08715",
+  "astro-ph/9607124",
+  "0710.0879"
+ ],
+ "parse_score_mean": 0.9637,
+ "raw_arxiv_entries": 702,
+ "raw_github_entries": 63,
+ "rows": {
+  "bib_entries": 64248,
+  "chunks": 71070,
+  "citations": 103807,
+  "claims": 0,
+  "code_files": 68037,
+  "downloads": 702,
+  "embeddings": 0,
+  "equations": 53862,
+  "papers": 701,
+  "params": 3454,
+  "repo_downloads": 63,
+  "repos": 64
+ },
+ "rows_k2": {
+  "chunks": 71070,
+  "equations": 53862,
+  "figures": 6655,
+  "sections": 13186
+ },
+ "schema_version_code": 5,
+ "schema_version_db": 5,
+ "snapshot": "kb-20261115-f2fcda5.sqlite",
+ "tool": "kbtool 0.1.0"
+}
