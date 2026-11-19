@@ -1,0 +1,82 @@
+# Heat-conduction tests T6-T8 of tracks/C-sidm/collide/TESTS.md (package tracks/C-sidm/heat).
+# Periodic Minkowski box at x0 = 10 (the analytic Cartesian Kerr-Schild functor at
+# bh_mass = 0 is exactly flat: lapse 1, zero shift, gamma_ij = delta_ij; it divides by r,
+# so the box sits away from the origin), problem generator nrpic_geodesic, no Z4c, no
+# deposition. Particle files: tracks/C-sidm/collide/analysis/make_box.py (step or mode).
+# Executable: core's branch core/collisions-2 (scratch/core/exe/core_collisions-2/),
+# option names of tracks/core/interfaces/collisions.md on that branch (section 2, 11).
+# AthenaK takes on the command line only parameters that the deck has, so every parameter
+# the drivers in ../scripts/ set (mesh, step, sigma, pmax, seed, snapshots) sits here.
+# coll_energy = particle: the corrected operator (pair conserves the canonical energy with
+# the metric at each particle); in this flat box it equals `cell` to rounding (READY of
+# core_collisions-2, T12 homogeneous: particle = cell to 2.8e-14); it is the setting of
+# the production runs in a gravitational field, so it is the one tested here.
+
+<comment>
+problem   = C-sidm heat conduction in a Minkowski box (T6-T8)
+
+<job>
+basename  = heat
+rng_seed  = 1
+
+<mesh>
+nghost    = 2
+nx1       = 64
+x1min     = 10.0
+x1max     = 11.0
+ix1_bc    = periodic
+ox1_bc    = periodic
+nx2       = 4
+x2min     = 10.0
+x2max     = 11.0
+ix2_bc    = periodic
+ox2_bc    = periodic
+nx3       = 4
+x3min     = 10.0
+x3max     = 11.0
+ix3_bc    = periodic
+ox3_bc    = periodic
+
+<meshblock>
+nx1       = 64
+nx2       = 4
+nx3       = 4
+
+<time>
+evolution  = dynamic
+integrator = rk2
+cfl_number = 1.0
+nlim       = -1
+tlim       = 1.0
+ndiag      = 1000
+
+<particles>
+particle_type  = nrpic
+pusher         = midpoint
+triad          = cholesky
+metric         = kerr_schild
+bh_mass        = 0.0
+bh_spin        = 0.0
+tolerance      = 1.0e-13
+max_iterations = 100
+dt             = 0.01
+deposit        = false
+hist_dcycle    = 100
+snap_dt        = 0.1
+particle_file  = heat.nrp
+collisions       = true
+coll_sigma       = 1.0
+coll_sigma_model = constant
+coll_sigma_w     = 1.0
+coll_pmax        = 0.1
+coll_subcycle    = measured
+coll_nsub_max    = 1000
+coll_cell_factor = 1
+coll_weights     = equal
+coll_hist_dcycle = 1
+coll_dump_cycle  = -1
+coll_budget      = false
+coll_energy      = particle
+
+<problem>
+pgen_name = nrpic_geodesic
