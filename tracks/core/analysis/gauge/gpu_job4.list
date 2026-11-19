@@ -1,0 +1,5 @@
+# Card job 4 of the work package "gauge" (wave 2b): retest of L3 on the static mesh
+# (journal entry 7).  harness/bin/nrpic-run submit --launcher batch --list <this file>
+collapse-leak05 problems/ball/ball_collapse.athinput particles/traj_ntrack=2078 particles/particle_file=/data/haiyangw/nrpic/scratch/core/id/ic_ball/t2_bound_h0p25.nrp problem/comp0_file=/data/haiyangw/nrpic/scratch/core/id/ic_ball/t2_bound_h0p25.tab z4c/lapse_leak=2.0 -t 00:12:00
+collapse-mp problems/ball/ball_collapse.athinput particles/traj_ntrack=2078 particles/particle_file=/data/haiyangw/nrpic/scratch/core/id/ic_ball/t2_bound_h0p25.nrp problem/comp0_file=/data/haiyangw/nrpic/scratch/core/id/ic_ball/t2_bound_h0p25.tab z4c/lapse_leak=0.0 -t 00:12:00
+collapse-leak05-fine problems/ball/ball_collapse.athinput particles/traj_ntrack=2078 particles/particle_file=/data/haiyangw/nrpic/scratch/core/id/ic_ball/t2_bound_h0p25.nrp problem/comp0_file=/data/haiyangw/nrpic/scratch/core/id/ic_ball/t2_bound_h0p25.tab z4c/lapse_leak=2.0 refined_region3/level=5 -t 00:20:00
