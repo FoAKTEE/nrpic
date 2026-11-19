@@ -173,3 +173,9 @@ P19. check_spans.py on ERRATA_ROWS.md and CHECK.md: ERRATA_ROWS 56 spans (37 TeX
   no problem. That run wrote no figure (the script had none), against rule 6; a figure of the span
   kinds per file was added to check_spans.py (dry run looked at, readable) and the check is rerun
   as the reference run with the same prediction (P19 again, plus fig_spans.png written).
+- P19 (reference run) held: run kb-20261119-153316-e14e392 completed, exit 0, same counts, no
+  problem; fig_spans.png looked at (span kinds per file, "0 problems" on both bars). This run
+  supersedes kb-20261119-153252-225d6df as the reference (same result, plus the figure).
+
+Package state at the end: all deliverables written and checked by registered runs; nothing
+pending; what is not done is listed in README.md.

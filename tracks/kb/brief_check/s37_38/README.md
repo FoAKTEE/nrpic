@@ -81,7 +81,10 @@ Fetched with `harness/bin/nrpic-fetch-arxiv` (serially, sources into `kb-data/ra
 - `kb-20261119-153036-8bc8bee`: landscape of FLRW stability results; completed, exit 0: 15 cells,
   21 locator spans valid; only the two Vlasov cells of the decelerated column are "symmetry only".
   Figure `fig_item20.png` (looked at).
-- The span check of ERRATA_ROWS.md and CHECK.md: see JOURNAL entry 3 for its run id and outcome.
+- `kb-20261119-153252-225d6df`: span check of ERRATA_ROWS.md (56 spans) and CHECK.md (126 spans);
+  completed, exit 0, no problem; no figure (the script had none then), superseded by:
+- `kb-20261119-153316-e14e392`: the same with the figure `fig_spans.png` (looked at); completed,
+  exit 0, no problem; the reference.
 
 All runs: processors, one core, seconds each, output under `scratch/kb/<run_id>/`, manifests under
 `tracks/kb/runs/<run_id>/`. No card was used; no run is pending.
