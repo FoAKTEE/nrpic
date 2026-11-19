@@ -499,3 +499,12 @@ P7 predicted the card 1.5 to 4 times faster than 64 threads and 4 to 10 times fa
 16 threads: on these provisional numbers it FAILED for the Z4c cases (the card is 50 to
 200 times 16 threads) and for the Newtonian mode (the card is not faster). To be replaced
 by job 4643 when it has run.
+
+## 2026-11-19 08:50 Entry 12: prediction for the card smoke test of this branch
+
+The card executable of this branch (.work/build_gpu, rebuilt 07:47) differs from the
+release card executable only in that the deposit adds through `DepositTarget::Add`
+(atomic). P13: on one A100, dep and east (card_smoke.list) run to the end; their
+histories differ from one thread of the processor build O3 by rounding only (rel_max below
+1e-10; card against processor runs of earlier packages differed by 1e-13 to 1e-12), and the
+deposit identity stays below 1e-13. Refuted by a failed run or a larger difference.
