@@ -125,7 +125,7 @@ R1. `scripts/check_numbers.py`: neutrino share of the radiation energy density a
 R2. `scripts/fig_verdicts.py`: tally of CHECK.md against its header, every TeX locator exists
     and its line range lies inside the file. Prediction: no problem. Refuted by any mismatch.
 
-## Entry 2 (2026-11-19 07:46 PST): outcome of R1, first try; prediction for the rerun
+## Entry 2 (2026-11-19 07:44 PST): outcome of R1, first try; prediction for the rerun
 
 Run `kb-20261119-154310-89ca8fb` (processors, one core, seconds) ended with exit 1. The
 preregistered numbers held: neutrino share 0.4884 before e+e- annihilation (21/4 over 10.75),
@@ -146,3 +146,17 @@ m_e. Prediction for the rerun (sanity check moved to decoupling at 10 MeV, label
 T_nu/T at 10 MeV decoupling within 2e-3 of 0.7138; the 2 MeV curve between 0.7138 and 0.7180;
 all other numbers unchanged. Refuted if the 10 MeV case also misses 0.7138 (then the integrals
 are wrong).
+
+## Entry 3 (2026-11-19 08:05 PST): R1 rerun outcome; source checks done; prediction for R2
+
+R1 rerun `kb-20261119-154408-2b35ecd` (completed, exit 0): T_nu/T after annihilation 0.71381
+for decoupling at 10 MeV against (4/11)^(1/3) = 0.71377; 0.71484 at 2 MeV and 0.71802 at 1 MeV,
+in order, so the suspected cause of entry 2 stands (e+e- partly non-relativistic at 1 MeV); the
+rerun prediction held. All other numbers identical to the first try. Figure looked at: three
+curves in (a) converge to 0.488 above 3 MeV and to 0.405-0.411 below 50 keV; labels inside.
+
+Source checks of all statements are written into CHECK.md (69 rows; my count 32 confirmed,
+32 confirmed with a precision, 5 corrected). Prediction for R2 (`scripts/fig_verdicts.py`, the
+tally and locator check of CHECK.md): rows numbered 1-69, tally equal to the header, every TeX
+file exists and covers its line numbers, every github file, INSPIRE query file and run manifest
+exists. Refuted by any problem printed.
