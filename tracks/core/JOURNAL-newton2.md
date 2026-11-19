@@ -426,3 +426,49 @@ snapshot, so between snapshots it lags the closed form by up to one snapshot int
 at the snapshots nearest to a/a_i = 2 and 4, where the closed form is evaluated at the same
 time (`dev_snap_near_*` of `t5_infall.json`); the interpolated values are reported beside.
 The tolerances (0.3 per cent against the closed form, 1e-3 between the placements) stand.
+
+### T6 outcome (multigrid on a refined mesh): prediction FAILED for the conservation laws [VERIFIED]
+
+Runs: cases core-20261119-160027-2c0c171 (moving rotating ball, 17256 particles, uniform
+64^3 and the same root mesh with one static level, refined MeshBlocks |x_i| < 1; 1251 s
+on one core), analysis core-20261119-162137-9fb3dbf (`t6_smr.json`, figure `t6_smr.png`,
+looked at).
+
+| quantity (largest over t <= 0.8) | uniform 64^3 | 64^3 + one level | ratio |
+|---|---|---|---|
+| momentum change \|dP\|/M | 2.52e-5 | 1.10e-3 | 44 |
+| centre of mass off uniform motion | 1.83e-5 | 8.43e-4 | 46 |
+| angular momentum change | 4.31e-5 | 1.57e-3 | 36 |
+| energy (K + W) change, relative | 1.38e-4 | 2.90e-4 | 2.1 |
+| V cycles per step (mean, max); largest defect | 19, 26; 5.8e-12 | 18, 25; 4.1e-11 | |
+
+- The run completes and the solver converges at every step: held.
+- Conservation within ten times the uniform values: FAILED for momentum (44), centre of
+  mass (46) and angular momentum (36); held for the energy (2.1). The momentum kick reaches
+  1.1e-3 of M (the stated failure threshold was 1e-3).
+- Shape (read from the history, the figure's first panel): in both runs the momentum
+  changes during the first 30 steps (t < 0.06) and then stays constant to a few per cent;
+  the refined run only has the larger jump. The centre of mass then drifts linearly. The
+  ball starts as a lattice of the spacing of the coarse cells (0.0625), 1772 of its
+  particles cross the level boundary during the run (680, 598, 441, 107 between the
+  snapshots) without a further visible kick.
+- So refined meshes stay NOT VERIFIED for the conservation of momentum; the cause is not
+  established. Candidates [JUDGEMENT]: the coarse-fine interface of the solve, whose
+  force between two particles on the two sides of the level boundary is not antisymmetric,
+  acting coherently while the lattice is still aligned with the mesh; or the deposit at
+  the level boundary. Follow-up T6b below.
+
+### T6b prediction (written before the run): mass away from the level boundary
+
+The same moving, rotating ball scaled to radius 0.7 and mass 0.343 (the density of T6,
+so the same free-fall time, 1.11), centred at (0.05, -0.05, 0.03), same velocity, rotation,
+lattice spacing 0.0625 and step, so that every particle stays inside the refined MeshBlocks
+(|x_i| < 1; largest extent 0.96 at t = 0.8) and no mass lies at the level boundary. Three
+runs: uniform 64^3, uniform 128^3 (the cell size of the fine level everywhere), and 64^3
+with the level of T6.
+- If the interface with mass on both sides causes the kick of T6, the refined run equals
+  the uniform 128^3 run in the four conservation errors within a factor 2, and its
+  momentum change stays below 1e-4 of M (ten times below T6).
+- Refuted (the solve on a refined mesh breaks momentum conservation even with all mass on
+  the fine level, through the coarse level outside) if the refined run's momentum change
+  is above 3e-4 or more than three times that of the uniform 128^3 run.
