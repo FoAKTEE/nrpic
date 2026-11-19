@@ -234,7 +234,7 @@ the interfaces launches sound waves]. That is not the diffusive curve I predicte
 there the diffusion time 1/(chi_1 k_1^2) = 0.42 L/<|v|>_2 is shorter than a crossing, so
 neither limit applies. Figure `figs/T6c_transition.png` (looked at).
 
-## 2026-11-19 15:58 Outcome T7 at theta = 0.003 (processors): PASSED, kappa/kappa_1 = 1.021 +- 0.004 (runs C-20261119-144545-c606492, analysis C-20261119-155257-754a43b)
+## 2026-11-19 15:54 Outcome T7 at theta = 0.003 (processors): PASSED, kappa/kappa_1 = 1.021 +- 0.004 (runs C-20261119-144545-c606492, analysis C-20261119-155257-754a43b)
 
 eps = 0.2 (D3), 4 seeds x 4e5 particles per k lambda, dt = 0.1 t_coll, pmax 0.1,
 dx = 0.245 lambda; n_trunc = n_noroot = n_balance = 0 in all 12 runs, 3.4-3.6 sub-steps,
@@ -244,7 +244,7 @@ isobaric reference with kappa_1(T) (seed mean +- standard error of the 4 seeds):
 - k lambda = 0.1: 1.0232 +- 0.0039 (seeds 1.0231, 1.0254, 1.0129, 1.0315)
 - k lambda = 0.2: 1.0170 +- 0.0049 (1.0202, 1.0184, 1.0032, 1.0261)
 - k lambda = 0.4: 1.0341 +- 0.0170 (1.0536, 1.0582, 1.0403, 0.9844)
-Linear in (k lambda)^2: f0 = 1.0208 +- 0.0041, slope 0.016 +- 0.13 (chi^2 = 1.6 for one
+Linear in (k lambda)^2: f0 = 1.0208 +- 0.0041, slope 0.016 +- 0.107 (chi^2 = 1.6 for one
 degree of freedom). Pass: f0 in [0.99, 1.06]. Prediction (1.025 +- 0.02) confirmed; the
 Balberg et al. value (0.72) is excluded by 74 standard errors, i.e. the conduction
 coefficient b = 25 sqrt(pi)/32 of Koda & Shapiro and arXiv:2601.17117 is the right one
