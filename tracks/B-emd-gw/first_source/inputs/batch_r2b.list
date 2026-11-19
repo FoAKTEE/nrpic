@@ -1,0 +1,5 @@
+# Card batch B of the second round of first_source (P13, mesh): eps = 1 at 128^3 with one
+# particle per cell (2,097,152 particles, as the 64^3 baseline), meshblocks of 64^3; Z4c in
+# single precision every 0.2, double precision every 2.0. Executable
+# scratch/core/exe/core_requests-b/athena_gpu; initial data of run B-20261119-142435-275bd43.
+e1_p1_n128 tracks/B-emd-gw/first_source/inputs/conv.athinput mesh/nx1=128 mesh/nx2=128 mesh/nx3=128 meshblock/nx1=64 meshblock/nx2=64 meshblock/nx3=64 particles/traj_ntrack=382 output2/dt=0.2 output3/dt=2.0 particles/particle_file=/data/haiyangw/nrpic/scratch/B-emd-gw/B-20261119-142435-275bd43/e1_p1_n128/particles.nrp problem/id_file=/data/haiyangw/nrpic/scratch/B-emd-gw/B-20261119-142435-275bd43/e1_p1_n128/fields.bin

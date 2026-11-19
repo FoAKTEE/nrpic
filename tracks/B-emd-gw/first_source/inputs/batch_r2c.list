@@ -1,0 +1,5 @@
+# Card batch C of the second round of first_source (P12, particle number): eps = 1 at 64^3
+# with 27 and with 1 particle per cell. Executable scratch/core/exe/core_requests-b/athena_gpu;
+# initial data of run B-20261119-142435-275bd43.
+e1_p1_n64 tracks/B-emd-gw/first_source/inputs/conv.athinput particles/traj_ntrack=190 particles/particle_file=/data/haiyangw/nrpic/scratch/B-emd-gw/B-20261119-142435-275bd43/e1_p1_n64/particles.nrp problem/id_file=/data/haiyangw/nrpic/scratch/B-emd-gw/B-20261119-142435-275bd43/e1_p1_n64/fields.bin
+e1_p3_n64 tracks/B-emd-gw/first_source/inputs/conv.athinput particles/traj_ntrack=574 particles/particle_file=/data/haiyangw/nrpic/scratch/B-emd-gw/B-20261119-142435-275bd43/e1_p3_n64/particles.nrp problem/id_file=/data/haiyangw/nrpic/scratch/B-emd-gw/B-20261119-142435-275bd43/e1_p3_n64/fields.bin
