@@ -71,9 +71,10 @@ What is tested (run ids in the journal and the interface)
   - one cluster at t = 0, v = 0.1 and 0.3, 32/64/128 cells: momentum-constraint norm with
     the boost table 0.070, 0.034, 0.015 of the uncorrected one (first order in the cell
     size: the edge of the cluster); the curvature term equals the continuum to 4e-6;
-    the second-order Hamiltonian residual equals the continuum value (0.98-0.998) and the
-    correction removes 90-92 per cent of it (the rest, second order and independent of
-    the cell size, is under investigation); code fields equal the reference to 5e-8
+    the second-order Hamiltonian residual equals the continuum value (0.97-0.998) and the
+    correction removes 90-92 per cent of it; the rest sits within 1 M of the cluster's
+    surface and does not fall with the cell size (cause under investigation); code
+    fields equal the reference to 6e-8
   - 10^4 equal-mass particles: the smooth part of the momentum violation is removed
     (projection 0.995 -> -0.004); the remaining norm is sampling noise
   - two clusters at t = 0 (x = -20, +20, Newtonian circular speeds): Hamiltonian residual
@@ -87,8 +88,8 @@ processor's.
 Not tested, or not there
   - Evolution on a card (PENDING above); Track F's acceptance test of 200 M with a
     clump of compactness 0.05-0.1 beside a heavy puncture.
-  - Cross terms of several bodies are not solved (second order; for the pair above
-    the corrected mass changes by 0.013 M from the first-order value); a cluster next to
-    a puncture: generator supports it, no test.
+  - Cross terms of several bodies are not solved (second order: the curvatures of two
+    bodies against each other, the tidal variation of one body's psi across another);
+    a cluster next to a puncture: the generator supports it, no test.
   - Refined meshes at t = 0 are only exercised in the card inputs; one rank only.
   - Lorentz contraction and the non-conformally-flat part at O(v^2) are left out.
