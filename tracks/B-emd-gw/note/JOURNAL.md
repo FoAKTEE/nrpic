@@ -227,3 +227,94 @@ manifest of this track.
 N11 (pages). After the new sections the note compiles with no undefined reference or
 citation and no overfull hbox; every caption stays within five lines; the checker finds no
 project name in the main text. The note grows from 10 to about 14 pages. Refuted otherwise.
+
+## Development runs (wave 2b, not cited)
+
+The scripts were run into `scratch/B-emd-gw/tmp/note2/` while the figures and the text were
+drafted. Findings there that changed the scripts before the registered run:
+- Dump times of different runs differ by up to one coarse step (32^3 against 64^3: up to
+  0.025 in tau late; the eps cases among themselves by ~1e-6), so matching dumps by time
+  with a tight tolerance silently dropped most of them (my first gauge numbers came out
+  five times too large from a sparse match). The two gauges share their step sequence to
+  2e-9 and are matched dump by dump; every other pair is compared by a cubic spline in tau
+  of one series at the dump times of the other (`g1data.py`).
+- `ledger.py` compared every file named `pancake.json` with the wave-1 copy; the
+  Newtonian-mode `pancake.json` has its own committed copy. The committed-copy check is now
+  per run (14 of 14 identical).
+- The departure from second order looked like a power law; its local slope is 2.3-2.4 between
+  a = 10 and 60, so the text says "slightly faster than the square of the scale factor" and
+  shows no guide line.
+
+## Registered run (wave 2b)
+
+B-20261119-142525-2a55af7 (nrpic-run, local, 1 core, exit 0; commit 2a55af7): all figure,
+schematic and table scripts; `note/figures/` and `note/tables/` are copies of its outputs.
+Its `log.txt`: every script exit 0; committed copies identical 14 of 14; claims 24 of 28 (the
+G0 record, now reproduced from the documents at a399d4e). Text edits after the run
+(wording, symbol renames in the gauge-piece paragraph, one qualification in Sec. IV G) touch
+no script and no number.
+
+## Outcomes of N6-N11 (2026-11-19, from run B-20261119-142525-2a55af7)
+
+N6 HOLDS. Departure for 2 <= a <= 10: 0.224, 0.222, 0.435 percent (eps = 0.1, 0.3, 1) at K1,
+the same at K2 with the opposite sign; 32^3: 0.195, 0.190, 0.379 percent. Linearity 0.3 vs
+0.1: 0.0497 percent (1 vs 0.1: 0.213). Largest c_+/s of eps = 1: 2.547 at a = 123.3 (the
+review's correction of the helper's "2.5 near 95" stands). Null: largest TT amplitude of h
+2.77e-16 (single precision, 218 dumps) and 2.05e-16 (double, 23 dumps); of tilde A 1.08e-16
+(double), 6.5e-15 (single); z dependence <= 2.0e-14.
+
+N7 HOLDS. max |c_+(32^3)/c_+(64^3) - 1| for 5 <= a <= 40: 0.086, 0.032, 0.023, 0.022 percent
+(eps = 0.1, 0.3, 1, driven shift); 40 < a <= 80: up to 1.6 percent; a = 100: up to 3.2
+percent. The lead's 0.091 percent (eps = 0.1) used another matching of the dumps; the
+helper's 0.06 percent was read at five values of a only.
+
+N8 PARTLY REFUTED (the predicted numbers, not the physics). I took the raw and corrected gauge
+differences from the review (0.13, 0.36, 1.45 percent; 0.005, 0.008, 0.03 percent at a = 5,
+10, 20). From the files: raw 0.121, 0.360, 1.468 percent; corrected 0.002, 0.0076, 0.030
+percent, equal to the helper's own summary (`first_source/results/scan_summary_64.json`, P6),
+so the review's values at a = 5 and 20 differ from the files in the second digit (the review
+interpolated in its own scale factor). The file wins. The rest holds: median corrected/raw
+0.0840 (64^3), 0.0928 (32^3) over the 89 percent of dumps where |raw| > 1e-3 |s|; quadratic
+piece alone 5.24, 5.32; the corrected strain departs more from s g than the raw one (a = 10:
+0.69 against 0.44 percent; a = 20: 3.45 against 2.31 percent); T0 slopes 2.000 (Lambda h),
+3.000 (after G), 2.000 with a slicing change.
+
+N9 HOLDS. Measured over predicted sheet error at a = 2, 5: 0.984, 0.982 (n = 16), 0.989, 1.019
+(32), 1.000, 1.012 (64); error ratio 32/64: 3.96, 4.03. Ellipsoid t_x 24.0659, 23.8955,
+23.8604; ODE 23.8524; Richardson 23.8513, order 2.28. Energy -34.4, -18.4, -9.71 percent,
+Richardson +0.74 percent, order 0.876. N3: E/(M (2 alpha)^(7/2)) = 0.0618 (N = 32), 0.0764
+(N = 64), averaged d3I, spread 1.9e-14. The review's 0.0620684 and 0.0772146 are raw-d3I
+values with its own quadrature (rv_newton.json, R9); the helper's raw values are 0.062059 and
+0.077205; the difference (1.5e-4 relative) is the quadrature rule. The note prints the
+helper's averaged values, from the file.
+
+N10 HOLDS. The G1 architecture has 24 boxes: 14 verified (each with run ids in the docstring
+of `schem_architecture.py`), 3 on the tested branch core/requests-b (jitter, thin boxes,
+oblique wave with double-precision dumps), 7 to be written; relative to v0, 13 boxes changed
+state or text. The data-flow diagram has five stages, the record band and the ledger.
+Both looked at (Read) in the run output.
+
+N11 HOLDS except the page count: 17 pages (predicted about 14; four ledger tables now). latexmk
+and the checker: 0 undefined references and citations, 0 overfull hboxes; every caption
+within five lines on the rendered page (the two longest shortened before the registered run);
+no project name in the main text (the 41 hits of 5.8 are in the scripts, the 5.5 hits in the
+ledger appendix, exception 1 of the guide). All 17 pages read at 80-90 dpi.
+
+## Found while writing (not predicted; post hoc, labelled so)
+
+[JUDGEMENT, post hoc] The departure of c_+ from s g divided by (1 + eps^2) is the same for the
+three ratios: relative to eps = 0.1, 1.01 and 1.02 (eps = 0.3, 1) at a = 20, 0.998 and 1.01
+at a = 40, 0.996 and 1.05 at a = 60 (ledger row fs_scaled). This is the pattern of the
+fourth-order terms phi_x^3 phi_y and phi_x phi_y^3 (relative size phi_x^2 + phi_y^2), and it
+agrees with the order counting of the verifier's C5 and with the review's point 3 (the
+G_tot-corrected strain departs more). I formed the (1 + eps^2) reading after seeing the
+departures at a = 20; it has not survived a test written in advance. Test proposed to the
+lead: at delta = 0.0025 (same box, same eps) the departure at fixed a is 1/16 of that at
+delta = 0.01 if it is of relative order phi^2 (refuted if the ratio is outside 1/12-1/20 at
+a = 20-60).
+
+Not used in the note: rho_GW/rho_bar. My reduction (rho_kin + rho_grad)/rho_bar over the
+double-precision dumps gives a largest value 4.2e-6 (eps = 1) and 1.2e-8 (eps = 0.1); the
+helper's README states 3.5e-6 and 8.8e-9; the review did not confirm these. The definition
+behind the helper's number is not in its summary; the note states only the ratio of kinetic
+to gradient energy, which is normalization-free.

@@ -72,3 +72,78 @@ second-order lapse of a closed box with a TT wave, $t=10$, $A=10^{-6}$: conforma
 \end{tabular}
 \end{ruledtabular}
 \end{table*}
+\begin{table*}
+\footnotesize
+\caption{Numerical ledger: the crossed waves in full relativity.}
+\label{tab:ledger3}
+\begin{ruledtabular}
+\begin{tabular}{p{0.47\textwidth}p{0.24\textwidth}l}
+Quantity & Value & Run \\
+\hline
+\multicolumn{3}{l}{\emph{Crossed waves in full relativity ($\delta=0.01$, box of four initial Hubble radii, $64^3$ unless stated)}} \\
+initial data: largest Hamiltonian and momentum residuals of the four cases; particles per run & $3.97\times10^{-11}$, $2.47\times10^{-16}$, 2097152 & \texttt{\scriptsize B-20261115-161656-03d75e1} \\
+static amplitude $s$ at $\epsilon=1$; Zel'dovich first crossing $1+1/\delta$ & $-3.08\times10^{-5}$, 101 & \texttt{\scriptsize B-20261115-174722-ba1048d} \\
+largest $|c_+/(s\epsilon g)-1|$, $2\le a\le10$: $\epsilon=0.1,0.3,1$ & 0.00224, 0.00222, 0.00435 & \texttt{\scriptsize B-20261115-174722-ba1048d} \\
+the same at $(k,-k,0)$ with the opposite sign & 0.00224, 0.00222, 0.00435 & \texttt{\scriptsize B-20261115-174722-ba1048d} \\
+the same at $(k,k,0)$, $32^3$ & 0.00195, 0.0019, 0.00379 & \texttt{\scriptsize B-20261115-184650-2d155b6} \\
+departure from second order at $a=20$: $\epsilon=0.1,0.3,1$ & 0.0115, 0.0125, 0.0231 & \texttt{\scriptsize B-20261115-174722-ba1048d} \\
+the same at $a=40$ & 0.0576, 0.062, 0.115 & \texttt{\scriptsize B-20261115-174722-ba1048d} \\
+the same at $a=60$ & 0.145, 0.156, 0.301 & \texttt{\scriptsize B-20261115-174722-ba1048d} \\
+logarithmic slope of the departure between $a=10$ and $a=60$ & 2.32, 2.36, 2.35 & \texttt{\scriptsize B-20261115-174722-ba1048d} \\
+departure over $1+\epsilon^2$, relative to that of $\epsilon=0.1$: $\epsilon=0.3,1$ at $a=20$; at $40$; at $60$ & 1.01, 1.02, 0.998, 1.01, 0.996, 1.05 & \texttt{\scriptsize B-20261115-174722-ba1048d} \\
+linearity, $2\le a\le10$: largest relative difference of $c_+/\epsilon$, $0.3$ and $1$ against $0.1$ & 0.000497, 0.00213 & \texttt{\scriptsize B-20261115-174722-ba1048d} \\
+the same at $a=20$ ($0.3$; $1$) and $a=60$ ($0.3$; $1$) & 0.000978, 0.0115, 0.0095, 0.136 & \texttt{\scriptsize B-20261115-174722-ba1048d} \\
+largest $c_+/s$ at $\epsilon=1$ and its $a$; $c_+/(s\epsilon)$ at the end, $\epsilon=0.1,0.3$ & 2.55, 123, 2.06, 2.2 & \texttt{\scriptsize B-20261115-180834-c77a132} \\
+null $\epsilon=0$, all dumps to $a=140$: largest TT amplitude of $h$ (single, double precision), of $\tilde A$ (double); largest $z$ dependence & $2.77\times10^{-16}$, $2.05\times10^{-16}$, $1.08\times10^{-16}$, $1.96\times10^{-14}$ & \texttt{\scriptsize B-20261115-174722-ba1048d} \\
+$32^3$ against $64^3$: largest $|c_+$ ratio$-1|$, $5\le a\le40$: $\epsilon=0.1,0.3,1$, driven shift & 0.000861, 0.000319, 0.000232, 0.00022 & \texttt{\scriptsize B-20261115-184650-2d155b6} \\
+the same, largest over the four cases for $40<a\le80$; at $a=100$ & 0.016, 0.0318 & \texttt{\scriptsize B-20261115-184650-2d155b6} \\
+share of the four box modes in the mean square TT strain: $a=10$ ($\epsilon=0.1,1$), $a=20$ ($0.1,1$) & 0.963, 0.929, 0.843, 0.737 & \texttt{\scriptsize B-20261115-174722-ba1048d} \\
+largest kinetic over gradient energy of the TT part for $a\ge12$: $\epsilon=0.1,1$ & 0.00857, 0.00821 & \texttt{\scriptsize B-20261115-180834-c77a132} \\
+card-hours of the scan: three cases; two gauges; total & 0.252, 0.174, 0.426 & \texttt{\scriptsize B-20261115-164059-d802e82} \\
+\end{tabular}
+\end{ruledtabular}
+\end{table*}
+\begin{table*}
+\footnotesize
+\caption{Numerical ledger: the spatial gauge and the Newtonian mode.}
+\label{tab:ledger4}
+\begin{ruledtabular}
+\begin{tabular}{p{0.47\textwidth}p{0.24\textwidth}l}
+Quantity & Value & Run \\
+\hline
+\multicolumn{3}{l}{\emph{Spatial gauge of the projection ($\epsilon=1$, two gauges, $64^3$ unless stated)}} \\
+exact pure-gauge data: slope of $\Lambda h$ and of $\Lambda h-G$ in the gauge amplitude; with a slicing change, $\Lambda h-G$ & 2, 3, 2 & \texttt{\scriptsize B-20261115-164221-6a6b779} \\
+largest $|G_{\rm tot}/c_+|$ for $a\le20$, zero shift: $\epsilon=0.1,0.3,1$ & 0.0055, 0.00596, 0.0112 & \texttt{\scriptsize B-20261115-174722-ba1048d} \\
+the same at $a=40$ & 0.0163, 0.0185, 0.0397 & \texttt{\scriptsize B-20261115-174722-ba1048d} \\
+gauge difference of $c_+$ over $|s|$, as projected, $a=5,10,20,40,60$ & 0.00121, 0.0036, 0.0147, 0.0487, 0.115 & \texttt{\scriptsize B-20261115-180834-c77a132} \\
+the same after $G_{\rm tot}$ in each gauge & $1.95\times10^{-5}$, $7.64\times10^{-5}$, 0.000305, 0.00296, 0.012 & \texttt{\scriptsize B-20261115-180834-c77a132} \\
+median of corrected over projected difference where the latter exceeds $10^{-3}|s|$: $64^3$, $32^3$; share of such dumps & 0.084, 0.0928, 0.89 & \texttt{\scriptsize B-20261115-180834-c77a132} \\
+the same median with the quadratic piece alone: $64^3$, $32^3$ & 5.24, 5.32 & \texttt{\scriptsize B-20261115-180834-c77a132} \\
+departure from $sg$ at $a=10$: as projected, corrected; at $a=20$: as projected, corrected & 0.00444, 0.00687, 0.0231, 0.0345 & \texttt{\scriptsize B-20261115-180834-c77a132} \\
+rms non-TT part, zero shift over driven shift, $a\ge10$: smallest, largest ratio & 16.2, 52.2 & \texttt{\scriptsize B-20261115-180834-c77a132} \\
+median relative gauge difference for $a\le64$: magnetic Weyl part; flat TT strain & 0.00121, 0.0139 & \texttt{\scriptsize B-20261115-180834-c77a132} \\
+first-order slicing of the earlier three-wave runs, $1<a\le121$: largest correlation of $\delta\ln\alpha$ with $\delta\ln\gamma^{1/6}$; rms of $\delta\ln(\alpha\gamma^{1/6})$ over that of $\delta\ln\alpha$, smallest and largest & -0.999, $5.48\times10^{-5}$, 0.0408 & \texttt{\scriptsize B-20261115-170610-c82b10c} \\
+\multicolumn{3}{l}{\emph{Newtonian mode of the code}} \\
+force excess $[(kh/2)/\sin(kh/2)]^2-1$ on the box mode, $n=16,32,64$ & 0.013, 0.00322, 0.000804 & \texttt{\scriptsize B-20261115-190015-4dd3416} \\
+measured over predicted sheet error at $a=2,5$: $n=16$; $32$; $64$ & 0.9839, 0.9822, 0.9891, 1.019, 0.9999, 1.012 & \texttt{\scriptsize B-20261115-173904-a7297e3} \\
+sheet error over displacement at $a=2$ ($n=32,64$), $a=5$ ($32,64$); ratios $32/64$ at $a=2,5$ & 0.00139, 0.000351, 0.00299, 0.000742, 3.96, 4.03 & \texttt{\scriptsize B-20261115-173904-a7297e3} \\
+spectral particle mesh, the same: $a=2,5$ at $n=32$; at $n=64$ & 0.000109, 0.000606, $4.82\times10^{-5}$, 0.000327 & \texttt{\scriptsize B-20261115-173904-a7297e3} \\
+measured over predicted at $a=10,15$, $n=32$ & 1.08, 1.2 & \texttt{\scriptsize B-20261115-173904-a7297e3} \\
+first sheet crossing (scale factor): $n=16,32,64$; particle mesh $n=32,64$ & 21.87, 21.34, 21.16, 21.55, 21.22 & \texttt{\scriptsize B-20261115-173904-a7297e3} \\
+largest spread of $x$ over a lattice plane ($L$) & $1.27\times10^{-15}$ & \texttt{\scriptsize B-20261115-173904-a7297e3} \\
+rms relative error of the third derivative of $I_{xx}$, $1.2\le a\le15$: $n=16,32,64$ & 0.0926, 0.0235, 0.00613 & \texttt{\scriptsize B-20261115-173904-a7297e3} \\
+Layzer--Irvine constant over largest $a|W|$: $n=16,32,64$ & $2.86\times10^{-6}$, $7.88\times10^{-7}$, $2.13\times10^{-7}$ & \texttt{\scriptsize B-20261115-173904-a7297e3} \\
+ellipsoid: first crossing time ($t_k$), $N=32,64,128$; ODE; extrapolation and its order & 24.0659, 23.8955, 23.8604, 23.8524, 23.8513, 2.28 & \texttt{\scriptsize B-20261115-174405-af11300} \\
+energy to the first crossing against the ODE, $N=32,64,128$; extrapolation; order & -0.344, -0.184, -0.0971, 0.0074, 0.876 & \texttt{\scriptsize B-20261115-174405-af11300} \\
+ODE energy to the first crossing over $Mc^2$ & 0.000491 & \texttt{\scriptsize B-20261115-174405-af11300} \\
+energy until one time unit before the crossing against the ODE (both averaged), $N=32,64,128$ & -0.102, -0.0151, -0.00265 & \texttt{\scriptsize B-20261115-174405-af11300} \\
+relative change of the crossing time when the step is halved, $N=64$ & $2.07\times10^{-7}$ & \texttt{\scriptsize B-20261115-174405-af11300} \\
+energy over $Mc^2(2\alpha)^{7/2}$, $N=32,64$; largest spread over four $\alpha$; ODE value & 0.0618, 0.0764, $1.91\times10^{-14}$, 0.0946 & \texttt{\scriptsize B-20261115-174405-af11300} \\
+card-hours of the $n=64$ pancakes & 0.0892 & \texttt{\scriptsize B-20261115-163653-f6324ea} \\
+\multicolumn{3}{l}{\emph{Second readings of the wave-2 runs (own reader and reference)}} \\
+largest departure from second order, $2\le a\le10$, $\epsilon=0.1,0.3,1$ & 0.00224, 0.00222, 0.00435 & \texttt{\scriptsize B-20261115-190007-e09a0d2} \\
+ellipsoid first crossing time from the history files, $N=32,64,128$; extrapolation & 24.0659, 23.8955, 23.8604, 23.8513 & \texttt{\scriptsize B-20261115-190015-4dd3416} \\
+largest relative spread of the self-similar energy over $\alpha$ & $3.35\times10^{-14}$ & \texttt{\scriptsize B-20261115-190015-4dd3416} \\
+\end{tabular}
+\end{ruledtabular}
+\end{table*}

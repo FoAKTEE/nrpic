@@ -4,7 +4,26 @@ Committed copy: the file of the helper package that the run output should equal 
 
 | Run | File | Checksum | Committed copy | Identical |
 |---|---|---|---|---|
+| B-20261115-161656-03d75e1 | eps0/id.json | sha256 ok | - | - |
+| B-20261115-161656-03d75e1 | eps0p1/id.json | sha256 ok | - | - |
+| B-20261115-161656-03d75e1 | eps0p3/id.json | sha256 ok | - | - |
+| B-20261115-164104-886798f | eps1/id.json | sha256 ok | - | - |
+| B-20261115-164221-6a6b779 | t0_gauge.json | sha256 ok | first_source/results/t0_gauge.json | yes |
 | B-20261115-164616-a6d9477 | late_rise.json | sha256 ok | - | - |
+| B-20261115-170610-c82b10c | slicing_check.json | sha256 ok | first_source/results/slicing_check.json | yes |
+| B-20261115-173904-a7297e3 | pancake.json | sha256 ok | newton_tests/results/pancake.json | yes |
+| B-20261115-174405-af11300 | ellipsoid.json | sha256 ok | newton_tests/results/ellipsoid.json | yes |
+| B-20261115-174722-ba1048d | cw_eps0.json | sha256 ok | - | - |
+| B-20261115-174722-ba1048d | cw_eps0p1.json | sha256 ok | - | - |
+| B-20261115-174722-ba1048d | cw_eps0p3.json | sha256 ok | - | - |
+| B-20261115-180834-c77a132 | cw_eps1.json | sha256 ok | - | - |
+| B-20261115-180834-c77a132 | cw_eps1_gd.json | sha256 ok | - | - |
+| B-20261115-184650-2d155b6 | cw_eps0p1.json | sha256 ok | - | - |
+| B-20261115-184650-2d155b6 | cw_eps0p3.json | sha256 ok | - | - |
+| B-20261115-184650-2d155b6 | cw_eps1.json | sha256 ok | - | - |
+| B-20261115-184650-2d155b6 | cw_eps1_gd.json | sha256 ok | - | - |
+| B-20261115-190007-e09a0d2 | rv_first_source.json | sha256 ok | - | - |
+| B-20261115-190015-4dd3416 | rv_newton.json | sha256 ok | stage/review_wave2/results/rv_newton.json | yes |
 | B-emd-gw-20261115-113102-bc5e082 | check_item3.json | sha256 ok | scope/results/check_item3.json | yes |
 | B-emd-gw-20261115-113148-4e5c33b | crossed_waves_tt.json | sha256 ok | scope/results/crossed_waves_tt.json | yes |
 | B-emd-gw-20261115-113632-2960145 | regime_estimates.json | sha256 ok | scope/results/regime_estimates.json | yes |
