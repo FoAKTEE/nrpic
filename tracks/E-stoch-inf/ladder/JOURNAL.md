@@ -317,3 +317,21 @@ Predictions of entry 1 against the outcome:
 - Constraint record: <|H|/[H]> at most 5.1e-11, <|M|/[M]> at most 4.0e-4 (32^3 in the same
   set-up: 4.3e-11, 3.4e-4), within a factor 10 of P1's 1e-10 for H. Their split into odd
   and even parts needs the mirrored run P256m (job B, pending at 19:20Z).
+
+## Entry 7, 2026-11-19 14:16Z (wave 2b): resumption, runs closed, prediction for A12
+
+Wave 2 stopped on 2026-11-15 after entry 6 (usage limit). State found on 2026-11-19: the
+worktree clean, card jobs B (E-20261115-172629-312a82c, Slurm 4471, 29.7 min) and C
+(E-20261115-172625-416fec0, Slurm 4470, 25.1 min) completed with exit 0, and the final
+analysis of all rungs E-20261115-194633-9e04ed8 (started 19:46Z) had finished at 19:54:34Z
+with exit 0 (`.nrpic/result.json`) but its manifest still said "running". Closed with
+`nrpic-run finish` today, with the two runs of the analysis package the task names:
+E-20261115-170727-d15df12 (processor U2 then U4, exit 0, U2 6012 s, U4 2845 s) and
+E-20261115-180526-6b68c33 (U4 on a card, Slurm 4479, exit 0, 300 cycles in 3.8 s).
+
+Prediction for the U4 validation (A12 of the noise contract), restated from the analysis
+package's journal (`../analysis/JOURNAL.md`, P5 at 17:05Z and P5' at 18:05Z on 2026-11-15,
+written before either run): U4 = U2 restarted from the restart file at cycle 150 gives
+dumps at cycles 200 and 300 bit-identical to U2, on processors (processor U4 against
+processor U2) and on the card (card U4 against card U2 of run E-20261115-170645-3b21217).
+Refuted by any differing bit in any common field.
