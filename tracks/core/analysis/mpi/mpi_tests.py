@@ -98,7 +98,10 @@ def make_box(path, n=3000, seed=20261120, mass=1.0e-3):
 # ----------------------------------------------------------------------------------------
 KERR = "problems/tests/mpi_kerr_swarm.athinput"
 BOX = "problems/tests/mpi_box_periodic.athinput"
-DEP = ["particles/deposit=true"]
+# with deposit every particle is tracked: the file with the metric at the tracked
+# particles then samples the deposited E and S_i at all particles in double precision
+# (the binary dumps of the sources are single precision)
+DEP = ["particles/deposit=true", "particles/traj_ntrack=1000000"]
 
 CASES = {
     # step 1: test particles in a fixed metric
@@ -241,12 +244,35 @@ def compare_case(case, ranks, out):
                 g = os.path.join(out, "np%d" % n, rel)
                 row["np%d" % n] = (os.path.exists(g) and sha256(g) == h0)
                 if rel.endswith(".prt") and os.path.exists(g):
-                    # bytes 40 to 55 hold the rest mass removed by excision and at the
-                    # boundary, two sums over particles whose order depends on the ranks
+                    # the header holds seven doubles (bytes 16 to 71): proper time, lapse
+                    # and deposited energy density at the probe, the rest mass removed
+                    # by excision and at the boundary, two output times.  The energy
+                    # density and the two masses are sums whose order depends on the
+                    # ranks; everything else in the file must be identical.
                     a, b = open(f, "rb").read(), open(g, "rb").read()
-                    row["np%d_without_summed_masses" % n] = (
-                        len(a) == len(b) and a[:40] == b[:40] and a[56:] == b[56:])
+                    da = np.frombuffer(a[16:72], "<f8")
+                    db = np.frombuffer(b[16:72], "<f8")
+                    sc = np.maximum(np.abs(da), 1.0e-300)
+                    row["np%d_rest_identical" % n] = (
+                        len(a) == len(b) and a[:16] == b[:16] and a[72:] == b[72:])
+                    row["np%d_header_max_rel" % n] = float((np.abs(da - db)/sc).max())
+                    row["np%d_header_exact" % n] = [bool(v) for v in (da == db)]
             result["bytes"][rel] = row
+    # ---- metric and deposited sources at the tracked particles (records of 17 doubles:
+    #      time, tag, 10 metric components, proper time, E, S_x, S_y, S_z)
+    for f in sorted(glob.glob(os.path.join(ref, "*.trajmet.bin"))):
+        a = np.fromfile(f, "<f8").reshape(-1, 17)
+        result["trajmet"] = dict(records=int(a.shape[0]))
+        for n in ranks[1:]:
+            g = os.path.join(out, "np%d" % n, os.path.relpath(f, ref))
+            b = np.fromfile(g, "<f8").reshape(-1, 17) if os.path.exists(g) else None
+            if b is None or b.shape != a.shape:
+                result["trajmet"]["np%d" % n] = "missing or of another size"
+                continue
+            sc = np.maximum(np.abs(a[:, 13:]).max(axis=0), 1.0e-300)
+            result["trajmet"]["np%d" % n] = dict(
+                metric_identical=bool(np.array_equal(a[:, :13], b[:, :13])),
+                sources_max_rel=float((np.abs(a[:, 13:] - b[:, 13:]).max(axis=0)/sc).max()))
     # ---- histories
     for pat in HIST_PATTERNS:
         for f in sorted(glob.glob(os.path.join(ref, pat))):
@@ -348,8 +374,15 @@ def summary_lines(result):
         def word(n):
             if row["np%d" % n]:
                 return "identical"
-            if row.get("np%d_without_summed_masses" % n):
-                return "identical but for the two summed masses"
+            if row.get("np%d_rest_identical" % n):
+                return "identical but for header sums (max rel %.1e)" % \
+                    row["np%d_header_max_rel" % n]
+            if rel.endswith(".trajmet.bin") and "trajmet" in result:
+                v = result["trajmet"].get("np%d" % n)
+                if isinstance(v, dict):
+                    return ("metric and proper time %s, E and S_i at the particles max rel"
+                            " %.1e" % ("identical" if v["metric_identical"] else
+                                       "DIFFERENT", v["sources_max_rel"]))
             return "DIFFERENT"
         lines.append("bytes   %-28s %s" % (rel, "  ".join(
             "np%d:%s" % (n, word(n)) for n in ranks[1:])))
@@ -369,8 +402,8 @@ def summary_lines(result):
     for rel, row in result["fields"].items():
         lines.append("field   %-28s %s" % (rel, "  ".join(
             "np%d:%s" % (n, row["np%d" % n] if isinstance(row["np%d" % n], str)
-                         else "max rel %.2e (%s)" % (row["np%d" % n]["max_rel"],
-                                                     row["np%d" % n]["component"]))
+                         else "max rel %.2e (%s; single precision)" % (
+                             row["np%d" % n]["max_rel"], row["np%d" % n]["component"]))
             for n in ranks[1:])))
     for k, v in result["identity"].items():
         lines.append("identity %s: |int E - sum mW|/sum mW <= %.2e, |int S_i - sum m u_i|/sum mW"
