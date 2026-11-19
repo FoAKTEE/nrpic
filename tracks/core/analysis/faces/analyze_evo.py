@@ -141,7 +141,7 @@ def main():
     cols["reference"] = fs.PAL["blue"]
     # figure 1: residual histories by region
     fig, axs = plt.subplots(4, 4, figsize=(fs.FULL_WIDTH, 8.0), sharex=True)
-    fig.subplots_adjust(left=0.075, right=0.99, bottom=0.055, top=0.95, wspace=0.33,
+    fig.subplots_adjust(left=0.1, right=0.99, bottom=0.055, top=0.95, wspace=0.36,
                         hspace=0.08)
     for j, reg in enumerate(("inner", "shell", "faces", "all")):
         for i, q in enumerate(("H", "M", "T", "G")):
@@ -162,7 +162,7 @@ def main():
             if j == 0:
                 ax.set_ylabel({"H": r"mean $|H|$", "M": r"mean $|M_i|$",
                                "T": r"mean $|\Theta|$",
-                               "G": r"mean $|\tilde\Gamma-\tilde\Gamma(\tilde\gamma)|$"}[q])
+                               "G": r"mean $|\Delta\tilde\Gamma|$"}[q], labelpad=1)
     axs[0, 0].legend(fontsize=7, ncol=1)
     if a.title:
         fig.suptitle(a.title, fontsize=10, y=0.995)
