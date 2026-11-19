@@ -235,3 +235,33 @@ placements of the seed. The softening changes the force at the turnaround radii
 (r > 8 M) by less than (s/r)^2 = 4e-3 and the turnaround mass by less than that.
 Prediction as written: both placements within 0.3 per cent of these numbers at
 a/a_i = 2 and 4, and within 1e-3 of each other.
+
+### Amendments to the test plan, written before the runs concerned (2026-11-19T15:22Z)
+
+Owner core runs eight packages at once and its allotment of 16 processor cores at a
+time (decision 0006) is used up: `nrpic-run submit` accepted T1 and T2 with two cores
+and refuses most other attempts ("16 busy in live local runs of core"). The tests are
+therefore submitted one after another by a retrying queue
+(`scratch/core/tmp/n2queue/queue.sh`), and trimmed:
+- T2: n = 64 goes to the card job (two hours on one core); processors run n = 16, 32
+  with the spectral symbol and n = 32 with the seven-point symbol.
+- T3: the pancake runs end at t = 3.5 (a = 7.56) instead of a = 16; the error window of
+  T3c is 1.2 <= a <= 7.56 for both symbols (the track's numbers for a <= 15 are then not
+  directly comparable; the seven-point run is the like-for-like reference). The
+  multigrid twin is dropped (T1a showed the seven-point Fourier run to be the multigrid
+  run to 2e-15).
+- T4b: step 0.04 instead of 0.02 (the track's step check at 0.01 against 0.02 changed its
+  crossing time by 2e-7); the multigrid twin is its own case, T4c, last in the queue.
+- T7: the two runs at half the step that answer Track A's configuration (cloud-in-cell,
+  Catmull-Rom; multigrid and spectral); the cubic-cloud pair only if cores remain.
+- T9 and the card twins of T1 and T3 wait in the card queue (job 4648, fifteen jobs
+  ahead at submission).
+Predictions are otherwise unchanged.
+
+A debugging pass of the T8 cases and of its analysis script ran outside the registry
+before the registered run (17 s on one core, `scratch/core/tmp/n2dbg/t8`): I have
+therefore seen numbers of T8 (slope at the vertex 1.80 G m/dx^3 with cloud-in-cell and
+Catmull-Rom) before the registered run; the prediction above was written before either.
+The same holds for T1 (a debugging pass of the five cases before run
+core-20261119-144414-c629377) and for a 16^3 smoke run of the group history with a
+continuation (`n2dbg/t3smoke`, 6 s).
