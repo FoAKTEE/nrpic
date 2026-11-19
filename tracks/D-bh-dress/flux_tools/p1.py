@@ -189,6 +189,12 @@ def cmd_analyse(a):
                                           if np.any(nrp["species"][tag] == s) else None for s in range(3)],
                  removal_lag_steps=[float(((rem["time"] - ref["t_exc"][tag]) / DT).min()),
                                     float(((rem["time"] - ref["t_exc"][tag]) / DT).max())],
+                 removal_lag_steps_by_species=[
+                     [float(((rem["time"] - ref["t_exc"][tag]) / DT)[nrp["species"][tag] == s].min()),
+                      float(((rem["time"] - ref["t_exc"][tag]) / DT)[nrp["species"][tag] == s].max()),
+                      int(np.sum(((rem["time"] - ref["t_exc"][tag]) / DT)[nrp["species"][tag] == s] < 0)),
+                      int(np.sum(((rem["time"] - ref["t_exc"][tag]) / DT)[nrp["species"][tag] == s] > 1))]
+                     for s in range(3)],
                  mE_records=float((rem["m"] * rem["E"]).sum()))
         sph = {}
         t = acc["time"]
@@ -217,6 +223,10 @@ def cmd_analyse(a):
         F2_ex_lo = cmp.step_cumsum(ref["t_hor"][ok], (m * ref["E"])[ok], t - DT)
         r["horizon_sphere_vs_exact_maxabs"] = float(np.abs(F2 - F2_ex).max())
         r["horizon_sphere_outside_one_step"] = int(np.sum((F2 < F2_ex_lo - 1e-9) | (F2 > F2_ex + 1e-9)))
+        # the same with a tolerance of half the smallest m E of one particle (separates a
+        # crossing registered in another step from the accumulated error of the energies)
+        half = 0.5 * float(np.min((m * ref["E"])[ok]))
+        r["horizon_sphere_records_off_by_a_particle"] = int(np.sum((F2 < F2_ex_lo - half) | (F2 > F2_ex + half)))
         c = cmp.compare(hor, 0.0, rem=rem, acc=acc, finder_tol=1e-5, sphere=2)
         cbad = cmp.compare(dict(time=t_grid, mass=1.0 + 0.97 * (M_ex - 1.0)), 0.0, rem=rem,
                            acc=acc, finder_tol=1e-5, sphere=2)
@@ -278,11 +288,14 @@ def figures(out, nrp, ref, cases, t_grid, M_ex):
     a.set_ylabel("cumulative crossings (dashed: exact)")
     a.legend(fontsize=6, ncol=2)
     a = ax[1, 1]
-    a.plot(c["t"], c["dM"], color=figstyle.PAL["blue"], label=r"exact horizon $\sum mE$")
-    a.step(c["t"], c["F_rem"], where="post", color=figstyle.PAL["red"], label=r"$F_{\rm rem}$ (code)")
-    a.plot(c["t"], c["F_sph"], color=figstyle.PAL["green"], label=r"$F_{\rm sph}$, $r=3M$ (code)")
+    a.plot(c["t"], c["dM"] - c["F_rem"], color=figstyle.PAL["red"],
+           label=r"$\Delta M_{\rm exact}-F_{\rm rem}$ (code)")
+    a.plot(c["t"], c["F_sph"] - c["dM"], color=figstyle.PAL["green"],
+           label=r"$F_{\rm sph}(r=3M)-\Delta M_{\rm exact}$")
+    a.axhline(0, **figstyle.THIN)
+    a.axhline(-3e-5, **dict(figstyle.GUIDE, lw=0.8))
     a.set_xlabel(r"$t\ [M]$")
-    a.set_ylabel(r"$[M]$")
+    a.set_ylabel(r"bracket margins $[M]$ (dashed: $-3\sigma$)")
     a.legend(fontsize=6)
     fig.tight_layout()
     figstyle.save(fig, os.path.join(out, "p1_fixed_bh"))
