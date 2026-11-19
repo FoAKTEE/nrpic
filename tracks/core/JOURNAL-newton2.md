@@ -367,3 +367,35 @@ Fourier kernels themselves have no atomics.
 - Throughput (T9): a measurement. Seconds per step from the logs (mean of steps 2 to 20);
   expectation of T9 stands (multigrid 256^3 1 to 5 s per step, Fourier solve below 0.5 s
   at 256^3).
+
+### T7 outcome (which energy; drift against the step) [VERIFIED]
+
+Runs: cases core-20261119-153710-13876fa (plane wave N = 32 at dt = 0.0025, multigrid
+and spectral; 677 s on one core), with the dt = 0.005 runs mg and fftsp of T1
+(core-20261119-144414-c629377); analysis core-20261119-160023-99dc253 (`t7_energy.json`,
+figure `t7_energy.png`, looked at: the dashed curves of half the step lie on the solid
+ones). Largest |C - C_0| of the Layzer-Irvine combination (column 8) in units of max a|W|:
+
+| solver | step | before the crossing (a < 4) | whole run (to a = 6.25) | same with W_mesh, whole run |
+|---|---|---|---|---|
+| multigrid | 0.005 | 6.248e-4 | 4.901e-3 | 1.256e-2 |
+| multigrid | 0.0025 | 6.244e-4 | 4.914e-3 | 1.256e-2 |
+| spectral | 0.005 | 5.515e-4 | 5.334e-3 | 1.161e-2 |
+| spectral | 0.0025 | 5.514e-4 | 5.332e-3 | 1.161e-2 |
+
+- Halving the step changes the drift after the crossing by 0.27 per cent (multigrid) and
+  0.03 per cent (spectral); prediction: less than 20 per cent. Held. Refutation (a drop by
+  two or more) did not occur: the drift is not an error of the time integration.
+- Before the crossing the drift does not change with the step either (ratios 1.0006 and
+  1.0002): it is a property of the space discretisation over the whole run, as written
+  ("follows the resolution"; the resolution itself was not varied in this test, the
+  first pass measured 4.9e-3 at N = 32 and 1.5e-3 at N = 64, `newtonian_mode.md` 5.6).
+- The mesh form of W (column 7) drifts more than the particle form (column 6), by a
+  factor 2.2 to 10; the spectral solver does not remove the drift (it changes it by less
+  than 10 per cent before the crossing).
+- Answer to Track A: column 6 (W gathered at the particles with the interpolation of the
+  force) is the better diagnostic of the two; neither is an invariant of the scheme
+  because the cloud (deposit) and the Catmull-Rom gather differ; the jump at the crossing
+  of a sheet thinner than a cell is a space-discretisation effect and does not go away
+  with a smaller step. The track's own numbers (1.1e-3 to 9.3e-3 of |W_0| at the first
+  crossing) are of the size measured here (4.9e-3 at N = 32).
