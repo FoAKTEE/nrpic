@@ -433,3 +433,22 @@ dx = M/8 (B4), or a run that goes non-finite before the first horizon (B1).
 
 Card budget of this package: at most 2 card-hours. Plan: one Slurm job of six runs,
 estimated 0.55-0.65 card-hours (1.1-1.3 card-seconds per step at 256^3, C1 of entry 3).
+
+## 2026-11-19, entry 8: checks of data set 3 while the card job waits (Slurm 4642 queued)
+
+(a) Exact events by a second method, run A-20261119-144737-b04a84e (`verify_ds3.py`,
+figure fig_verify_ds3.png looked at): direct integration of d^2R/dtau^2 = -m/R^2 from the
+initial slice against the closed-form cycloid of expball/exact.py for six shells (inside
+the core, at its edge, in the underdense shell): turnaround and trapping times and R(tau)
+agree to 1.5e-13 relative; the core mass in closed form, (1 + delta_c) H^2 R1^3/2 =
+0.6865625, equals the first-trapped mass of exact.json [VERIFIED]. First trapped sphere
+tau_AH = 9.551091948 at the core edge; the shell 0.02 M outside traps at 9.913.
+
+(b) Prediction, written before the run: offline constraint residuals of the exact slice
+(`constraints_ds3.py`, expball's finite differences, octant meshes N = 32 ... 256 over
+1.25 times the matter radius): away from the non-smooth radii (band 0.1 R_b) order 2.0 and
+4.0 (+-0.1 on the last pair) for the second- and fourth-order stencils, for H and M, as for
+data set 2 (expball/README.md); over all cells the top-hat jumps leave a Hamiltonian band
+that converges at order about 1/2 in L2 and a momentum band whose L2 norm grows as
+h^(-1/2) (expball/README.md, "Over all cells ..."). Refuted by an order below 1.8 away from
+the jumps.
