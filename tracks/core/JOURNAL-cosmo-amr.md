@@ -308,3 +308,28 @@ and because I saw them before the registered tests):
    t = 8, 9, 10, 11, 11.68; E_max/E_min passes 13, 35, 153, 1.7e4 at t = 6, 7, 8, 9.
    For T10 the ladder 0.9, 0.7, 0.55, 0.4 together with eight particles per cell then
    gives level 1 from the start and levels 2, 3, 4 near t = 7.2, 8.4, 8.8.
+
+## 2026-11-19 15:35  T10 submitted; registration of processor runs; a debugging run of the T2 script
+
+- T10 is queued: run core-20261119-150507-8224d72 (Slurm job 4654, `nrpic-run submit
+  --launcher batch`, 0.75 card-hours asked, commit 8224d72 = source 901d8b3 plus the
+  list). About twenty jobs of this account were pending ahead of it.
+- `nrpic-run submit --launcher local` refuses my processor runs ("4 cores asked, 16
+  busy in live local runs of core, allotment 16 at a time"): the other packages of core
+  hold the allotment. The processor runs of this package are therefore registered with
+  core's `tracks/core/tools/run_registered.py` (hand-written manifests, said so in each
+  purpose). At most 12 cores at a time.
+- Before the registered run I ran the T2 script once on six of its cases to debug it
+  (unregistered, `scratch/core/tmp/cosmo-amr-smoke/t2dbg`). What I saw, so that the
+  outcomes below are not mistaken for blind tests: S homogeneous to 1.4e-14; M: tracker
+  within 1e-13 of 2.5 + 0.5 t across the face, 41 MeshBlocks while it is near the face,
+  34 afterwards; C2: dt c/(0.25 dx) = 1 to 3e-15; G: guard stop at cycle 18 with status
+  3. Three of my predictions were mis-specified and are judged as written below:
+  "H_max = H_mean to 1e-10 relative" (H is the difference of terms of order 6, so
+  rounding leaves 1e-13 absolute, 1e-6 of H = 2e-7); "V = L^3 a^3 to 1e-12" (the scale
+  factor of the run carries the time-integration error, 2e-7); and "with REL the run
+  [M] stops at the crossing": the release cannot refine adaptively with `nrpic_cosmo` at
+  all (segmentation fault at the first check, Track A's finding), so the script got the
+  pair Tnew/Trel (tracker and shift on a uniform mesh) to test the crossing alone.
+  A lag of one record in my step analysis (the record of a cycle is written before its
+  regrid) was corrected in the script.
