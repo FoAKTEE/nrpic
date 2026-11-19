@@ -293,6 +293,10 @@ def cmd_CL(outdir, rundirs):
 
 def main():
     cmd, outdir, rundirs = sys.argv[1], sys.argv[2], sys.argv[3:]
+    if outdir == "-":                  # the registered run's own output directory
+        outdir = hl.outdir("analysis")
+    rundirs = [r if os.path.isabs(r) else os.path.join(hl.MAIN, "scratch", "C-sidm", r)
+               for r in rundirs]
     os.makedirs(outdir, exist_ok=True)
     dict(T7=cmd_T7, T8=cmd_T8, CL=cmd_CL)[cmd](outdir, rundirs)
 

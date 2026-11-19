@@ -343,6 +343,10 @@ def cmd_c(outdir, rundirs):
 
 def main():
     cmd, outdir, rundirs = sys.argv[1], sys.argv[2], sys.argv[3:]
+    if outdir == "-":                  # the registered run's own output directory
+        outdir = hl.outdir("analysis")
+    rundirs = [r if os.path.isabs(r) else os.path.join(hl.MAIN, "scratch", "C-sidm", r)
+               for r in rundirs]
     os.makedirs(outdir, exist_ok=True)
     dict(a=cmd_a, b=cmd_b, c=cmd_c)[cmd](outdir, rundirs)
 

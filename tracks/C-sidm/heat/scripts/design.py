@@ -185,7 +185,7 @@ def main():
     # ------------------------------------------------------------------ figure
     fs.use_style()
     fig = plt.figure(figsize=(fs.FULL_WIDTH, 3.3))
-    ax = fig.add_axes([0.07, 0.15, 0.26, 0.78])
+    ax = fig.add_axes([0.085, 0.15, 0.245, 0.78])
     ax.plot(np.array(tt) / tcross, NL, color=fs.PAL["blue"], label="collisionless, exact")
     ax.plot(tt / tcross, NL[0] + slopes[0] * tt, **fs.GUIDE, label="initial slope")
     ax.set_xlabel(r"$t\,\langle|v|\rangle_2/L$")
