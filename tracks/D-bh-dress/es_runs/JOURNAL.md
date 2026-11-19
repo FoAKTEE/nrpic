@@ -391,3 +391,53 @@ script was first run.
   LTB maximum, in both runs.
 - E5 wall at tau = 50, 100, 150, 200 M on axis and diagonal tracers against the exact
   46.99, 56.80, 65.84, 74.29 M of entry 2: within 3e-3 (as prediction 2, now per class).
+
+Outcome of entry 6 (run D-20261119-142929-bb375ff, `results/es_extra.json`; figures
+`figs/extra_tracers_vs_t.png`, `figs/extra_spacetime_ES-1.png`, `figs/extra_spacetime_V-1.png`,
+`figs/extra_plateau.png`, `figs/extra_dust_wall.png`, `figs/extra_horizon.png`, each looked at):
+- E1 HELD. Along each particle's direction the innermost dust stays outside the wall in
+  every snapshot of ES-1: smallest margin r_dust - r_w(n) = 0.232 M at t = 0, 0.162 M at
+  50 M, 0.136 M at 200 M; no particle inside (0 of 696688). The shrinking margin is the
+  geometry of marginally bound shells (dR/dR0 = (R0/R)^(1/2): 0.23 (36/83)^(1/2) = 0.15 M),
+  not an approach. The wall fit has two classes only (axis, diagonal), so the fit is
+  exact by construction; the anisotropy coefficient b grows from -0.005 M (t = 25 M) to
+  -0.86 M (t = 200 M): the wall on the axes lies 0.6 M further out in coordinates than on
+  the diagonals at the end.
+- E2 REFUTED as written, with a partial pattern. On the diagonal tracers the onset of
+  |R/R_exact - 1| > 2e-3 does come first for the outer groups in both runs (ES-1: 117.5,
+  121, 121, 130, 142, 140, 150.5 M for R0 = 78, 66, 56, 48, 40, 36, 28 M; V-1: 140, 147,
+  152, 156, 162, 164.5, 174 M), an apparent inward motion at about one coordinate unit
+  per M. On the axis tracers of ES-1 it does not (onsets 89-90 M for R0 = 20 and 28 M,
+  115-171 M for the others, no order: the inner axis groups drift slowly negative from
+  t ~ 50 M, `figs/extra_tracers_vs_t.png`). No inward front is visible in alpha, K or |H|
+  on the x axis, but the slices are 10 M (z4c) and 25 M (con) apart, too sparse to see a
+  front moving at speed ~1. The cause of the late growth and of the late horizon drift
+  stays open [TO VERIFY]; the decisive test is a rerun of V-1 (no dust, 0.67 card-hours)
+  with the outflow boundary moved from 192 M to 384 M (one more root level), not done in
+  this package (request to the lead).
+- E3 mostly HELD. K = Khat + 2 Theta at the +x tracer of R0 = 48 M (ES-1), in units of
+  -3H(tau): 1.00 (t = 0), 0.50 (10 M), 0.62 (20 M), 0.19 (30 M), 0.10 (40 M), -0.21 (50 M),
+  -0.31 (60 M), -0.18 (70 M), -0.40 (80 M), -0.11 to +0.21 from 90 to 200 M. So the slices
+  stop following the dust within 30 M; between t = 40 and 90 M K is positive at the
+  tracer (the normal observers converge where the dust expands); my bound |K| < 0.3 x 3H
+  from t = 50 M is exceeded at t = 60 M (0.31) and 80 M (0.40). The lapse at these tracers:
+  1.28, 1.63, 1.67, 1.39, 1.35, 1.36-1.37 at t = 10, 25, 50, 100, 150, 200 M; proper time
+  279.5-279.9 M at t = 200 M. Note for entry 5: R0 = 40 M lies in the inner dust edge
+  (GEOM: Rw = 40 M, w_in = 4 M, so 36-44 M is the edge; K there at t = 0 is -0.0127/M,
+  0.76 of -3H), so only R0 = 48 M is a plateau group; predictions G1-G3 are judged on
+  R0 = 48 M, and R0 = 40 M is reported without the plateau model.
+- E4 HELD. Group R0 = 20 M turns around at R = 26.643-26.663 M (ES-1) and 26.658-26.661 M
+  (V-1) against the exact 26.667 M (relative -9e-4 to -1.3e-4), at tau = 93.12 M (ES-1)
+  and 92.90 M (V-1) against 93.15 M.
+- E5 HELD. Wall at tau = 50, 100, 150, 200 M against the exact 46.985, 56.805, 65.837,
+  74.286 M: ES-1 axis 46.977, 56.785, 65.800, 74.123 M (relative -1.8e-4, -3.5e-4,
+  -5.6e-4, -2.20e-3); diagonal 46.985, 56.802, 65.831, 74.415 M (-1.2e-5, -5.0e-5, -8.2e-5,
+  +1.74e-3). V-1 axis -5.3e-5, -1.1e-4, -4.8e-4, -1.06e-3; diagonal +3e-6, -1.0e-5,
+  +1.4e-4, +1.59e-3.
+- Seen in the figures, not predicted: (a) both runs show a step of the horizon mass at
+  t ~ 30 M, from +1.05e-3 to +0.92e-3 in V-1 (`figs/extra_horizon.png`, top panel); the
+  "level" of prediction 1 is therefore set by an event at t ~ 30 M, not by a smooth
+  approach [cause not tested: finder or gauge]. (b) From t = 100 to 165 M the horizon mass
+  of ES-1 oscillates with a period of about 7-8 M and an amplitude of about 5e-5, that of
+  V-1 with about 2e-5. (c) The mesh maximum of the lapse reaches 2.13 (ES-1) and 1.95 (V-1)
+  after t = 10 M.
