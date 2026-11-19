@@ -326,13 +326,13 @@ def fig_selfgravity(case, ranks, base):
         if ts:
             ax.semilogy(ts, np.maximum(ds, floor), "o", ms=4, color="k",
                         mfc="none" if n == ranks[1] else "k",
-                        label="positions (abs.), %d ranks" % n)
+                        label="positions, %d ranks" % n)
     ax.axhline(2.2e-16, **fs.MASK_LINE)
     ax.set_ylim(floor, 1.0e-6)
     ax.set_xlabel("t / M")
     ax.set_ylabel("difference from 1 rank", fontsize=9)
     ax.set_title("2 ranks dashed, 4 ranks dotted", fontsize=10)
-    ax.legend(loc="upper left", ncol=2, fontsize=7)
+    ax.legend(loc="upper left", ncol=2, fontsize=6)
     return fig
 
 
@@ -368,6 +368,7 @@ def make_restart(src, pairs, base, figdir=None):
         ax.set_xlabel("t / M")
     axs[0].set_ylabel("max. rel. difference (history)", fontsize=9)
     axs[1].legend(loc="upper left", fontsize=7)
+    fig.subplots_adjust(bottom=0.2)
     out = []
     dirs = [os.path.join(base, "figs")] + ([figdir] if figdir else [])
     for dd in dirs:
