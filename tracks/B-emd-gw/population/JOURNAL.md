@@ -216,3 +216,14 @@ DESIGN.md rewritten with these results: the recommendation moved from a scan in 
 scan in amplitude at L = 8 (section 3), because the Newtonian problem depends on sigma1 a
 only (P4) and the radiated box signal follows sigma^(7/2) (P9), while a smaller box loses
 part of the radiation (P10b, P10c) and a larger one fails at the initial data (I1).
+
+## Entry 7 (08:12 PST): reruns for the figures; state at the end of the package
+
+The design rerun B-20261119-160611-3ef806d and the L = 8 analysis rerun
+B-20261119-160632-e1a1d05 rewrote `results/design.json` and `results/analysis_fidL8.json`
+byte for byte (git shows no change); only the figures changed (box ticks; data-driven
+limits, the first L = 8 figure had cut the curves above 1e-5). Figures looked at.
+
+Not done (also in README.md and DESIGN.md section 10): card timing at 128^3 and 256^3
+(owner at its two card jobs), a full-GR run of this box, relativistic data at L = 8 with
+more outer iterations or lower amplitudes, Newtonian runs at 128 and 256 cells.
