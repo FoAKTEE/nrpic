@@ -283,3 +283,62 @@ through initial data -> AthenaK core-v0.3 -> raw outputs under `scratch/A-emd-pb
 verifier's independent path. Every file it names exists in the worktree (the cost logs
 of `runs/jeans/` in the main checkout). PNG looked at.
 It is not yet included in `note/main.tex` (the lead decides where).
+
+## 4. Comparison with the track's own review (read after sections 1-3 were committed)
+
+Read for this section: `../REVIEW-wave2.md`, `REVIEW.md`, `OPEN.md`, `STATUS.md` (T1-T3,
+section 4 rows), `CHECKLIST.md`, `runs_ball/JOURNAL.md` entry 6. Sections 1-3 are unchanged
+except the C11 run id (commit 37240f3 holds them as written before this reading).
+
+**Where we agree.** Every number the lead re-derived independently (REVIEW-wave2.md section
+2: B1, B4-B6, N1-N4, C1) I also reproduce with my own code; both reviews find nothing
+numerically wrong in runs_ball, newton and criteria. The lead's verdicts on the G0
+verifier's findings (C1c, C4b) are consistent with my numbers (ball ceilings 0.0688 /
+0.0306; the particle bracket ends at 0.045 without a horizon).
+
+**Differences.**
+
+1. **SR-2 turnaround (runs_ball prediction R2).** The track records "R2 ... turnaround part
+   FAILS (+0.031 M > 0.02 M)" (runs_ball/JOURNAL.md entry 6, REVIEW-wave2.md B8, STATUS
+   section 4 "+0.18 per cent (M/4)"). The lead's independent check used the same estimator,
+   "own parabola through three records" (REVIEW-wave2.md B4), so it could not see the
+   estimator dependence. With windows of +-3 and +-5 records the SR-2 value at M/4 is
+   +0.0156 and +0.0088 M, inside R2's bound; with +-2 it is +0.0245. R2's turnaround part
+   for SR-2 is therefore undecided, not failed. The track's own caveat ("a parabola through
+   records 0.25 M apart on a flat maximum is not in a clean power law; no order is claimed")
+   points the same way but the FAILS verdict stands in its documents.
+2. **"14 scan points within 2.2e-4 to 6.3e-4"** (`STATUS.md` T3, `CHECKLIST.md` C8). Only the
+   four p = 0 points at 128^3 with 2.7e5 particles lie in that band (with the track's
+   estimator); the spindle is +1.5e-3, the 64^3 controls +8.8e-4 and +1.5e-3, the 3.4e4-
+   particle cases -2.8e-4 and -4.8e-4. `newton/README.md` and the lead's N4 state it
+   correctly; the STATUS/CHECKLIST sentence is WRONG as written.
+3. **The note's ledger.** The track has had no check of it ("the ledger has no verifier
+   recomputation", REVIEW-wave2.md, note section). New here: the median label (finding 1),
+   the bang-time sentence (finding 2), the units of M (finding 3), the eight-for-six label
+   (finding 4), and that the checksum sentence of App. B is vacuous for wave-1 runs
+   (finding 7). The rest of the ledger is confirmed.
+4. **Criteria state.** `STATUS.md` T2 and the note quote the wave-1 state (33 of 37, final
+   run -115120-2eb3117); the wave-2 state that I confirm is 41 of 41 with four diagnostics
+   (`criteria/README.md`). Stale in STATUS and the note, not wrong.
+5. **SR-1 breakdown time.** The track gives three versions: 33.0 / 30.3 (runs_ball/README),
+   33.125 / 30.75 (REVIEW-wave2.md B2, first non-finite cstat record) and 33.1 / 30.8
+   (STATUS section 4). They are different criteria, all consistent with the raw files: first
+   non-positive metric determinant 32.875 / 30.25 (athena.log), norm(H) > 1e10 at 33.0 /
+   30.5, first non-finite z4c history record 33.25 / 31.0. The documents should name the
+   criterion.
+6. **What the lead did not confirm and I did.** The 2.1e6-particle card points (top hat
+   1.2e-5 from 2.7e5; e = 0.2 t_1 +3.73e-4, 8.7e-6 from 2.7e5); the energy error at the
+   crossing (1.1e-3 to 9.3e-3, spindle 3.0e-2, with the |W_0| normalisation; the cause is
+   still not established); the second collapse t_2.
+7. **What the lead confirmed and I did not check.** The periodic box (S1, S2, T1-T4), the
+   L4 ball limits of criteria2 and its LTB checks, the cost per cell-step, the gauge-pathology
+   locations, the Misner-Sharp drift, the horizon statements. My C18 scope did not include
+   them.
+8. **Estimator detail, newton.** The helper's t_1 for e = 0.05 is +2.9e-4; the lead's own
+   estimator and mine both give +1.6e-4. The axes and hoop ratio are quoted at the reference
+   t_1 (helper); at the measured t_1 the errors are of the same size with opposite sign.
+   Neither changes a conclusion.
+
+**C11 and C18.** OPEN.md items 1 and 2 asked for exactly these: the schematic exists
+(`note/figures/schem_dataflow.png`), and this report covers the ledger, `newton/` and the
+criteria checks. The lead decides whether C18 passes with findings 1-7 open as corrections.

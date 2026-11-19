@@ -155,3 +155,17 @@ fig_v_newton, fig_v_newton_scan, fig_v_ball; note/figures/schem_dataflow.png. Pa
 hcont.pdf and alpha.pdf of 2609.14218 rendered into scratch (not committed) and looked at:
 the read-off values of the track (h-hat at p = 0; collapse times 24, 46, 74, 106, 144, 199
 t_H) are consistent with them at reading accuracy.
+
+## Entry 3, 2026-11-19T14:55Z: comparison with the track's review; package closed
+
+After committing VERIFIER.md sections 1-3 (commit 37240f3) I read `../REVIEW-wave2.md`,
+`REVIEW.md`, `OPEN.md`, `STATUS.md`, `CHECKLIST.md` and runs_ball/JOURNAL.md entry 6.
+Differences, in VERIFIER.md section 4: (1) the SR-2 turnaround "R2 FAILS" rests on a
+three-point vertex that the lead's independent check also used; with wider windows it is
+undecided; (2) STATUS T3 / CHECKLIST C8 "14 scan points within 2.2e-4 to 6.3e-4" is wrong as
+written; (3) the note's ledger had no check before: findings 1-4, 7 are new; (4) the
+criteria state in STATUS T2 and the note is the wave-1 one; (5) three versions of the SR-1
+breakdown time, each a different criterion; (6) items the lead left unconfirmed that I
+confirm (card points, crossing energy, t_2); (7) items the lead checked and I did not
+(periodic box, L4, LTB, cost, horizon statements). No prediction of entry 1 changed.
+C11 schematic: run A-20261119-143347-37240f3, looked at. Card-hours used: 0.
