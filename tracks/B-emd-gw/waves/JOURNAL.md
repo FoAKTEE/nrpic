@@ -3,6 +3,7 @@
 Linear gravitational waves with both diagnostics of gw_diag, against analytic solutions,
 with measured convergence. Helper session of 2026-11-19. Times UTC.
 
+Times are UTC, taken from the commit times (the first headings were written from memory and corrected at 14:58).
 ## 2026-11-19 14:10 Start; what exists
 
 - Worktree clean after `git merge --no-edit main` (main at 71acd0c3, merge d058b72a); no
@@ -16,7 +17,7 @@ with measured convergence. Helper session of 2026-11-19. Times UTC.
 - Diagnostics: `tracks/B-emd-gw/gw_diag` (TT projection `tt.tt_from_conformal`; Weyl
   `weyl.electric_magnetic` + `weyl.psi4` with a fixed direction).
 
-## 2026-11-19 14:30 Design of the two tests [JUDGEMENT]
+## 2026-11-19 14:15 Design of the two tests [JUDGEMENT]
 
 **Test F (flat, oblique).** `z4c_linear_wave`, box [-1/2,1/2]^3, k = 2 pi (1,1,1),
 amp = 1e-6, amp_cross = 5e-7, phase_cross = 1 rad (elliptic: both polarizations, their
@@ -61,7 +62,7 @@ one (modulus and argument).
   measured background (a = <chi>^(-1/2), calH = -<alpha K>/3), so the Weyl diagnostic
   gives amplitude, phase and polarization in the same terms as the TT one.
 
-## 2026-11-19 14:40 Derivation of the closed form (wlib/weylref.py)
+## 2026-11-19 14:15 Derivation of the closed form (wlib/weylref.py)
 
 Slice gamma = a^2 (delta + h), K_ij = -(1/2 alpha) d_t gamma_ij with alpha = a:
 K_ij = -(calH/a) gamma_ij - (a/2) h'_ij, K = -3 calH/a (h traceless). To first order in h:
@@ -77,7 +78,7 @@ gw_diag's full spectral evaluation of E, B, Psi_4 on exact (gamma, K) to < 1e-5 
 mode at t = 3.1; the inversion recovers (P, X, P', X') to 1e-10 and its matrix has
 condition number < 1e3.
 
-## 2026-11-19 14:25 Predictions of tests F and X (before any run of either test)
+## 2026-11-19 14:20 Predictions of tests F and X (before any run of either test)
 
 Numbers from run **B-20261119-141844-2c5d622** (`scripts/predict.py`,
 `results/predictions.json`, `figs/predictions.png`): the code's operators (sixth-order
@@ -149,7 +150,7 @@ expect 3e4 to 1e5. N = 16, 32 on processors (minutes); N = 64 (1.6e8 zone-cycles
 test) goes to one card in a batch job (about 0.05 card-hours with the queue overhead)
 unless the processor rate exceeds 1e5.
 
-## 2026-11-19 14:22 Runs started; cost measured
+## 2026-11-19 14:21 Runs started; cost measured
 
 - Processors, N = 16 and 32: test F run **B-20261119-142016-ee73a03**, test X run
   **B-20261119-142021-8f4c441** (two serial processes each, in the background).
@@ -163,7 +164,7 @@ unless the processor rate exceeds 1e5.
   5 minutes of card time (about 1.7e8 zone-cycles each at >= 1e6 per second);
   card-hours charged <= 0.1 (wall limit 20 minutes requested).
 
-## 2026-11-19 14:25 Insurance runs at N = 48 on processors
+## 2026-11-19 14:22 Insurance runs at N = 48 on processors
 
 The card job (Slurm 4635) waits behind two running jobs of another user and five pending
 ones (squeue 14:22). So that convergence does not hang on the queue, both tests also run
@@ -172,7 +173,7 @@ Predictions at N = 48 (same predictor, `wlib/predict.py`): F: 444 steps, amplitu
 -1.58e-7, phase +2.27e-6; X: 524 steps, amplitude +5.52e-7, phase +5.05e-7; criteria as
 F2 and X3 (10 and 20 per cent).
 
-## 2026-11-19 15:00 Provisional outcome at N = 16 and 32 (run B-20261119-145125-51e9f8f)
+## 2026-11-19 14:56 Provisional outcome at N = 16 and 32 (run B-20261119-145125-51e9f8f)
 
 Analysis of runs B-20261119-142016-ee73a03 (F) and B-20261119-142021-8f4c441 (X). The run
 is recorded as failed (exit 1): `results.json` and the per-dump tables were written, then
@@ -223,13 +224,13 @@ background (chi, Khat, Theta, alpha with the code's equations) together with the
 classical RK4 (`predict_flrw_coupled(..., scheme="classical")`): N = 32 amplitude 1.60e-6
 instead of 1.65e-6, a error 6.7e-9 (the code: 4.3e-8). That does not explain the gap.
 
-Trap met (recorded so nobody repeats it): at 14:56 I edited `scripts/run_expanding.sh`
+Trap met (recorded so nobody repeats it): at about 14:54 I edited `scripts/run_expanding.sh`
 while run B-20261119-142234-85da208 (N = 48) was executing it; bash reads a script as it
 goes, so the wrapper would have resumed at a shifted offset. I restored the committed bytes
 (`git checkout`, `cmp` equal) a minute later, before its `wait` returned. The scan uses a new
 script `scripts/run_ascan.sh` instead.
 
-## 2026-11-19 15:05 Hypothesis H1 and the amplitude scan: predictions
+## 2026-11-19 14:57 Hypothesis H1 and the amplitude scan: predictions
 
 **H1.** AthenaK's `rk4` is not classical RK4 but RK4()4[2S] of Ketcheson (2010)
 (`athenak/src/driver/driver.cpp` lines 145-176). On a linear problem with constant

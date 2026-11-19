@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Test of hypothesis H1 (JOURNAL.md, 15:05): the errors of test X follow from the code's
+"""Test of hypothesis H1 (JOURNAL.md, 14:57): the errors of test X follow from the code's
 time integrator RK4()4[2S] applied to the uniform background coupled to the mode.
 
     python3 predict_2s.py <results.json of an analysis run> ...
