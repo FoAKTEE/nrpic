@@ -1,0 +1,254 @@
+{
+  "schema": "nrpic-run-manifest/1",
+  "run_id": "core-20261119-145346-2f89b86",
+  "track": "core",
+  "gate": "G2",
+  "kind": "scouting",
+  "purpose": "newton2 card job: Fourier solver and group history on a card against the processor runs (T1, T3), Track B pancake n = 64 with the spectral symbol (T2), throughput at 256^3 and 384^3 with 2e6 particles (T9)",
+  "preregistered_in": null,
+  "launcher": "batch",
+  "command": [
+    "scripts/gpu_batch.sh",
+    "/data/haiyangw/nrpic/scratch/core/core-20261119-145346-2f89b86/batch.list"
+  ],
+  "cwd": "scratch/core/core-20261119-145346-2f89b86",
+  "git": {
+    "sha": "2f89b86c58d58876f07173f6ed08aad852316fbb",
+    "branch": "core/newton-2",
+    "dirty": false,
+    "merge_base_main": "27b2ced9be0f020a4206d89e3cc982ada5c4367c",
+    "worktree": "wt/core-newton2"
+  },
+  "code": {
+    "core_tag": "core-v0.3",
+    "athenak_upstream_sha": "c5a0d7f",
+    "kokkos_sha": "6739bc623081648af9e752b616d9671527922cbf",
+    "problem": "nrpic_newton",
+    "exe": "/data/haiyangw/nrpic/wt/core-newton2/.work/build_gpu/src/athena",
+    "exe_sha256": "832cb8828bddb90be8e33184676432a603b41b9ddbea8504e832291d795aa5b1",
+    "cmake_flags": [
+      "-DPROBLEM=built_in_pgens",
+      "-DAthena_ENABLE_MPI=OFF",
+      "-DAthena_ENABLE_OPENMP=OFF",
+      "-DKokkos_ARCH_ICX=ON",
+      "-DKokkos_ENABLE_DEBUG=OFF",
+      "-DKokkos_ENABLE_DEBUG_BOUNDS_CHECK=OFF",
+      "-DCMAKE_CXX_COMPILER=/data/haiyangw/nrpic/wt/core-newton2/.work/build_gpu/nvcc_wrapper_pinned",
+      "-DCUDAToolkit_ROOT=/usr/local/cuda-12.6",
+      "-DKokkos_ENABLE_SERIAL=ON",
+      "-DKokkos_ENABLE_CUDA=ON",
+      "-DKokkos_ARCH_AMPERE80=ON",
+      "-DCMAKE_BUILD_TYPE=Release",
+      "-DCMAKE_CXX_FLAGS_RELEASE=-O3 -DNDEBUG"
+    ],
+    "toolchain": "nvcc 12.6 (host g++ 11.4.0)"
+  },
+  "env": {
+    "host": "anta",
+    "env_hash": "33c1dbb6673b68919eaa332b0add0b58aeac8be843f2071b9d06e2e0e397a96d",
+    "machine_file_sha256": "0321f40f4caeeb2a36624a9fa9809e60bad31071f366b3517ba23ad45698d2d7",
+    "uv_lock_sha256": "5417f6ba318b914aa3800e5d55f7b11fdd8df13c2688bdda7d419240aa1d5863",
+    "track_requirements_sha256": null,
+    "container_digest": null,
+    "compiler": "g++ 11.4.0",
+    "mpi": "none (Athena_ENABLE_MPI=OFF)",
+    "gpu": "NVIDIA A100 80GB (Slurm partition preempt)",
+    "python": "3.10.12 /data/haiyangw/nrpic/wt/core-newton2/.venv"
+  },
+  "input": {
+    "file": "/data/haiyangw/nrpic/scratch/core/core-20261119-145326-d509829/chk_fftsp.athinput",
+    "sha256": "bb95364af26c47851ff8fbcf45c0742caa59a39baab00bac78738726d9ebb743",
+    "overrides": {}
+  },
+  "inputs": [
+    {
+      "path": ".work/build_gpu/src/athena",
+      "role": "exe",
+      "sha256": "832cb8828bddb90be8e33184676432a603b41b9ddbea8504e832291d795aa5b1",
+      "bytes": 103770728,
+      "tracked": false
+    },
+    {
+      "path": "/data/haiyangw/nrpic/scratch/core/core-20261119-145326-d509829/card.list",
+      "role": "list",
+      "sha256": "1645143dca6feb7ad328f2f351b88bf4a326e68994e543531e0426a63e1022ab",
+      "bytes": 1040,
+      "tracked": false,
+      "location": "main checkout data root"
+    },
+    {
+      "path": "/data/haiyangw/nrpic/scratch/core/core-20261119-145326-d509829/chk_fftsp.athinput",
+      "role": "athinput:chk_fftsp",
+      "sha256": "bb95364af26c47851ff8fbcf45c0742caa59a39baab00bac78738726d9ebb743",
+      "bytes": 3633,
+      "tracked": false,
+      "location": "main checkout data root"
+    },
+    {
+      "path": "/data/haiyangw/nrpic/scratch/core/core-20261119-145326-d509829/chk_fft7.athinput",
+      "role": "athinput:chk_fft7",
+      "sha256": "4e7655f00a861daade5c5b5b5130e42856d313c5445c6319c3d39cf74207be95",
+      "bytes": 3587,
+      "tracked": false,
+      "location": "main checkout data root"
+    },
+    {
+      "path": "/data/haiyangw/nrpic/scratch/core/core-20261119-145326-d509829/chk_mg.athinput",
+      "role": "athinput:chk_mg",
+      "sha256": "16573279e197298f6f6226402d79e2e28327ac74e393b93e0262cd4be91c2c2a",
+      "bytes": 2980,
+      "tracked": false,
+      "location": "main checkout data root"
+    },
+    {
+      "path": "/data/haiyangw/nrpic/scratch/core/core-20261119-145326-d509829/east64.athinput",
+      "role": "athinput:east64",
+      "sha256": "61b8a73592c12c7cd88c8d47a64cc4e04b2ec345794ad1e7bf4295fc04d1f000",
+      "bytes": 2557,
+      "tracked": false,
+      "location": "main checkout data root"
+    },
+    {
+      "path": "/data/haiyangw/nrpic/scratch/core/core-20261119-145326-d509829/chk_sin32.athinput",
+      "role": "athinput:chk_sin32",
+      "sha256": "8cdd53df1405943e1ca5f361897a3cb77ec2f3d62459dd83c7bec2837e96ac8f",
+      "bytes": 2656,
+      "tracked": false,
+      "location": "main checkout data root"
+    },
+    {
+      "path": "/data/haiyangw/nrpic/scratch/core/core-20261119-145326-d509829/bench_per256_fft.athinput",
+      "role": "athinput:bench_per256_fft",
+      "sha256": "69e886ae55cfed403391022f85ffdde04d0b2602241aaf9f04b5a4a9e332c801",
+      "bytes": 3425,
+      "tracked": false,
+      "location": "main checkout data root"
+    },
+    {
+      "path": "/data/haiyangw/nrpic/scratch/core/core-20261119-145326-d509829/bench_per256_mg.athinput",
+      "role": "athinput:bench_per256_mg",
+      "sha256": "6deba6ee1630a06d4c29957f6f598407844b5ba7f51835f5e17103dd14301f62",
+      "bytes": 2772,
+      "tracked": false,
+      "location": "main checkout data root"
+    },
+    {
+      "path": "/data/haiyangw/nrpic/scratch/core/core-20261119-145326-d509829/bench_iso256_mg.athinput",
+      "role": "athinput:bench_iso256_mg",
+      "sha256": "3d1faa31bdf3cf297ce48486f226962ac9b2c557c3205b6c42a16a47f010768e",
+      "bytes": 3550,
+      "tracked": false,
+      "location": "main checkout data root"
+    },
+    {
+      "path": "/data/haiyangw/nrpic/scratch/core/core-20261119-145326-d509829/bench_per384_fft.athinput",
+      "role": "athinput:bench_per384_fft",
+      "sha256": "0e79973c4351992e61817993d906dd2cfbd36ebd36c9bdf34b7968a015c2e71c",
+      "bytes": 3425,
+      "tracked": false,
+      "location": "main checkout data root"
+    },
+    {
+      "path": "/data/haiyangw/nrpic/scratch/core/core-20261119-145326-d509829/bench_iso384_mg.athinput",
+      "role": "athinput:bench_iso384_mg",
+      "sha256": "a60d9f2bb4e35294c7d8fcf3aa25181b23437fe6588715f02b282d57f6f06ef7",
+      "bytes": 3553,
+      "tracked": false,
+      "location": "main checkout data root"
+    }
+  ],
+  "batch_entries": [
+    {
+      "name": "chk_fftsp",
+      "input": "/data/haiyangw/nrpic/scratch/core/core-20261119-145326-d509829/chk_fftsp.athinput",
+      "args": []
+    },
+    {
+      "name": "chk_fft7",
+      "input": "/data/haiyangw/nrpic/scratch/core/core-20261119-145326-d509829/chk_fft7.athinput",
+      "args": []
+    },
+    {
+      "name": "chk_mg",
+      "input": "/data/haiyangw/nrpic/scratch/core/core-20261119-145326-d509829/chk_mg.athinput",
+      "args": []
+    },
+    {
+      "name": "east64",
+      "input": "/data/haiyangw/nrpic/scratch/core/core-20261119-145326-d509829/east64.athinput",
+      "args": []
+    },
+    {
+      "name": "chk_sin32",
+      "input": "/data/haiyangw/nrpic/scratch/core/core-20261119-145326-d509829/chk_sin32.athinput",
+      "args": []
+    },
+    {
+      "name": "bench_per256_fft",
+      "input": "/data/haiyangw/nrpic/scratch/core/core-20261119-145326-d509829/bench_per256_fft.athinput",
+      "args": []
+    },
+    {
+      "name": "bench_per256_mg",
+      "input": "/data/haiyangw/nrpic/scratch/core/core-20261119-145326-d509829/bench_per256_mg.athinput",
+      "args": []
+    },
+    {
+      "name": "bench_iso256_mg",
+      "input": "/data/haiyangw/nrpic/scratch/core/core-20261119-145326-d509829/bench_iso256_mg.athinput",
+      "args": []
+    },
+    {
+      "name": "bench_per384_fft",
+      "input": "/data/haiyangw/nrpic/scratch/core/core-20261119-145326-d509829/bench_per384_fft.athinput",
+      "args": []
+    },
+    {
+      "name": "bench_iso384_mg",
+      "input": "/data/haiyangw/nrpic/scratch/core/core-20261119-145326-d509829/bench_iso384_mg.athinput",
+      "args": []
+    }
+  ],
+  "resources": {
+    "nodes": 1,
+    "gpus": 1,
+    "cores": 1,
+    "walltime_s": null,
+    "wall_limit": "00:40:00",
+    "segments_max": null,
+    "gpu_hours_requested": 0.67,
+    "gpu_hours": null,
+    "particles": null
+  },
+  "slurm": {
+    "partition": "preempt",
+    "job_name": "core-20261119-145346-2f89b86",
+    "job_ids": []
+  },
+  "outputs": {
+    "dir": "scratch/core/core-20261119-145346-2f89b86",
+    "sha256sums": "sha256sums.txt",
+    "sha256sums_sha256": null,
+    "bytes": null,
+    "files": null
+  },
+  "status": "submitted",
+  "exit_code": null,
+  "registered": "2026-11-19T14:53:47Z",
+  "started": null,
+  "ended": null,
+  "parents": [
+    "core-20261119-145326-d509829"
+  ],
+  "notes": "",
+  "budget_at_submit": {
+    "gpu_hours_allotted": 40.0,
+    "cores_allotted": 16,
+    "gpu_hours_used": 2.5281,
+    "gpu_hours_reserved": 3.0233,
+    "gpu_hours_without_gate": 5.8613,
+    "cores_busy": 16,
+    "runs": 986,
+    "allotment_from": "coord/DECISIONS/0006-compute-budget.md + 0014-budgets-after-wave-1.md"
+  }
+}
