@@ -361,3 +361,146 @@ them ran:
   particle number per cell 2.9 in the smoke run) and no block at the box corners;
   lohner: no crash; whether it refines I do not predict (Track A expected few or no
   blocks in the first cycles).
+
+## 2026-11-19 15:47  session resumed; outcomes of T2, T5, T6, T7, T8 and T4
+
+The session that wrote the entries above ended while run core-20261119-151649-e01b46e
+(T0) was still going: its process is gone, the case `os` was unfinished, no report was
+written. Its manifest is marked `stopped`; T0 runs again as core-20261119-154346-64067cd
+(same script and executables). Started at the same time, four cores each, all through
+core's `tools/run_registered.py` (hand-written manifests: `nrpic-run submit --launcher
+local` still refuses, "16 busy in live local runs of core"): T1 core-20261119-154351,
+T3 core-20261119-154357, T9 core-20261119-154404 (all `-64067cd`). T10 (Slurm job 4654)
+is still pending; the queue gives 20:39 PST as its expected start.
+
+Executables of the outcomes below: `NEW` = `.work/build_cpu/src/athena` of this worktree,
+sha256 c1177609..., built from the source of 901d8b3 (`make -n` builds nothing);
+`REL` = release core-v0.3, sha256 d983155b....
+
+### T2, T5, T6, T7, T8: run core-20261119-151654-e01b46e (`t2_summary.json`, figures `fig_t2_flrw`, `fig_t5_tracker`, looked at)
+
+- T2 (i) homogeneity [VERIFIED]: chi_max/chi_min - 1 at most 1.6e-14 and E_max/E_min - 1
+  at most 2.4e-14 at every record of U, S, Sf, P, A, L (prediction 1e-12): PASS. The
+  third clause, "H_max = H_mean to 1e-10 relative", FAILED as written: the absolute
+  difference |H_max - H_mean| is at most 9.7e-13 in every case, but H itself is 1.6e-15
+  at t = 0 (relative difference 0.12 in Sf, 0.20 in P, 0.47 in D8 there) and 2.5e-7 at
+  t = 1 (relative 1.4e-6 in S). The criterion was mis-specified (entry 15:35: rounding
+  of a difference of large terms); the absolute spread of 1e-12 is the meaningful one
+  and holds.
+- T2 (ii) [VERIFIED]: alpha_max of S, Sf, P, A, L, D8 equals that of U to 3.3e-15 at
+  every record (prediction 1e-12): PASS.
+- T2 (iii) [VERIFIED]: L (lohner with `lohner_refine = 0.2` plus `ppc_refine = 4`,
+  `lapse_ratio_1 = 0.9`, `chi_ratio_1 = 0.9`) keeps 27 MeshBlocks to t = 1, chi and E
+  spread exactly 0, as U: PASS (Track A's test: the homogeneous universe is not refined).
+- T2 (iv) [VERIFIED]: A goes from 27 to 34 MeshBlocks at the first check (cycle 4,
+  t = 0.125) and keeps them; homogeneity 1.0e-14 (chi), 1.6e-14 (E) after the regrid:
+  PASS.
+- T2 (v) [VERIFIED]: D8 (eight particles per root cell, clouds on the finest level, patch
+  of level 1) has E_max/E_min - 1 = 1.8e-15 at t = 0 and at most 3.4e-14 to t = 1; D8s
+  (lattice drifting through the patch and the faces with the shift -0.5) at most
+  4.2e-14: PASS, and the departure I allowed at the edges of the patch did not appear.
+- Identity |int_E/sum_mW - 1| [VERIFIED]: 0 on the uniform mesh, 5.3e-14 (S, A),
+  1.1e-13 (P), 1.4e-12 (D8, 110,592 particles), all at the level of the rounding of the
+  plain sum of entry 15:05.
+- T5 [VERIFIED]: the tracker of M follows x = 2.5 + 0.5 t mapped into the box to 1.0e-13,
+  crosses the face at t = 1.0 and ends at x = -2.25 at t = 2.5, no fatal error: PASS.
+  MeshBlocks 27, then 34 from the first check, 41 from t = 0.42 to 1.67 (refined blocks
+  on both sides of the face while the tracker is within its radius of it), then 34:
+  PASS. Homogeneity through every regrid and the crossing: 2.8e-14 (chi), 9.9e-14 (E):
+  PASS. Step: dt c/(0.25 dx_min) = 1 to 1.0e-13 with c = alpha sqrt(chi) + 0.5, i.e.
+  dt = 0.667 (0.25 dx_1): PASS. Not tested: "alpha_max equals the run without shift at
+  the same steps" (no unshifted run with the same steps in the set) and "with REL the run
+  stops at the crossing": Mrel ends with a segmentation fault at the first check (exit
+  -11, t = 0.25; the release has no refinement function for `nrpic_cosmo`, Track A's
+  crash reproduced), and in Trel the release ignores `<problem> shift_x1` (an option of
+  this branch), so its tracker stood at x = 2.5 for the whole run (`Trel/flrw.co_0.txt`).
+  The release's stop at a face stays [JUDGEMENT] from reading the code.
+- T6 [VERIFIED] (Courant number 1.5 instead of 4, as scripted): G stops at cycle 18,
+  t = 6.75, exit status 3, `flrw.guard.txt` written (12,793 non-finite values, 1,166 cells
+  with chi <= 0, last passing check cycle 17); Gchi (`stop_chi_nonpositive`) stops at the
+  same cycle 18; Goff (`stop_nonfinite = false`) and Grel (release) run to `nlim` = 400
+  (t = 150) with exit status 0 after every particle has been removed: PASS on all four
+  clauses.
+- T7 (a) FAILED as written [VERIFIED]: with `dt_lightspeed = 1` (C1) the steps are up to
+  1.6e-7 shorter than without (C0) and the time of the last record differs by 1.65e-6.
+  Cause, measured in the same run: in C0 dt c_max/(0.25 dx) lies between 1.0000002 and
+  1.0000029, i.e. the evolved alpha sqrt(chi) exceeds one by up to 2.9e-6 (the
+  time-integration error of the homogeneous solution; alpha_max differs from the exact
+  scale factor by 3.1e-6); the option then takes 0.25 dx/c_max, as designed (C1:
+  dt c_max/(0.25 dx) = 1 to 2e-15). The prediction assumed c = 1 exactly in the
+  discrete fields. (b) PASS: with d_t alpha = -(2/3) alpha^2 K (C2) dt c_max/(0.25 dx) =
+  1 to 3.4e-15 at every step; without the option (C2n) the step stays 0.25 dx while the
+  product grows to 3.16 at t = 1. (c) PASS (T5 above). (d) not run (T4 has one cycle).
+- T8 [VERIFIED]: V_in + V_out = V to 4.6e-13 (P; prediction 1e-13 FAILED by a factor
+  4.6, rounding of the plain sum over 2e4 leaf cells, as for int_E); V and mean K equal
+  `.nrpic.hst` proper_volume and mean_K to 2.4e-14 (PASS); max(Hmax_in, Hmax_out) equals
+  `.cstat.hst` H_max exactly in every case (PASS); V(t = 0) = L^3 exactly, V = L^3 a^3
+  to 1.1e-6 (mis-specified, entry 15:35); V_in/(4 pi r^3/3) for r = 1.5 at t = 0: 1.008
+  (uniform), 1.012 (interior patch), 1.005 (P), within 3 per cent: PASS.
+- Finder in the homogeneous universe (U, `diagnostics = true`): four searches, three end
+  with reason 4 (mean radius negative), one with reason 3 (mean expansion above
+  `hmean_tol`); every failed search has its reason: PASS. The surface does not shrink to
+  a point (reason 5) as I expected: the flow overshoots through the centre first.
+- Found while reading the status file: its first column was the Runge-Kutta stage
+  (always 4: the caller passes the stage as `iter`, which the released summary file
+  also prints). The status file now writes the cycle of the mesh (source edit after
+  this run; the summary file is left as released).
+
+### T4: run core-20261119-152106-9332260 (`t4_summary.json`, figure `fig_t4_finder`, looked at)
+
+- a [VERIFIED]: M = 0.9915211031 (area 49.4167, mean radius 0.47781, 26 flow
+  iterations, found at the first search); calibration 0.991521 for dx = M/8: PASS; it
+  equals Track A's periodic value 0.9915211031 in every printed digit.
+- b, c, c2, d, e (finder centre one period away, hole on a face, finder in the image
+  across the face, hole at a corner, finder in two corner images) [VERIFIED]: M equals a
+  to 3.3e-16 relative (prediction 1e-10): PASS. No surface point outside the mesh.
+- brel [VERIFIED]: no horizon (NaN): PASS. crel FAILED, and worse than predicted: the
+  release reports a horizon on the face with M = 0.6949 (30 per cent low), area 24.27,
+  mean radius 0.674: the half of the surface outside the box drops out of the integrals
+  without a message. A track that ran the release's finder on a periodic face got a
+  wrong mass, not a missing one.
+- adir/adirrel [VERIFIED]: the summary file lies in the `-d` directory with NEW, in the
+  start directory with REL: PASS.
+- The figure of the script hides crel (its mass is off the axis of the left panel); it is
+  redrawn by `figs_cosmo_amr.py` (below).
+
+## 2026-11-19 15:52  a defect found by reading: adaptive restarts are not exact; prediction of T11
+
+Track A runs long jobs as chains of one-hour segments (`scripts/submit_chain.sh`), so a
+refined run is restarted many times. Reading `mesh/mesh_refinement.cpp` [VERIFIED]: every
+MeshBlock carries a counter `ncyc_since_ref` (lines 56, 215), and a block refined or
+derefined fewer than `refinement_interval` cycles ago may not change again (line 265).
+The counter is not in the mesh restart file (`outputs/restart.cpp`, `pgen/pgen.cpp`: no
+reference), so after a restart every block starts at 0 and no regrid can happen for
+`refinement_interval` cycles. A restarted adaptive run therefore departs from the
+uninterrupted one whenever the uninterrupted run regrids within that many cycles after
+the restart time. This is upstream behaviour, not introduced here.
+
+Fix (before T11 runs on it): the refinement function of `nrpic_cosmo` writes the counters
+next to the mesh restart file (`<file>.rst.amr`, written only when `nrpic_cosmo` runs on
+an adaptive mesh, one line in `outputs/restart.cpp` beside the particle restart file) and
+reads them back on restart (`CosmoRefineInit`, which the problem generator calls with
+its restart flag).
+
+**T11, restarts on adaptive periodic meshes** (`tracks/core/analysis/cosmo_amr/
+t11_restart.py`, processors). Each case runs once uninterrupted, writing restart files,
+and is restarted from one of them in another directory; every record of `.nrpic.hst`,
+`.cstat.hst`, `.region.hst`, the tracker file and the horizon status after the restart
+time is compared as text.
+- Mx: T5's moving tracker (M of T2: shift -0.5, refinement that follows the tracker
+  across the face, `dt_lightspeed`, fine-shape deposit); regrids of the uninterrupted
+  run at cycles 4, 16 and 76; restart at cycle 14, 2 cycles before a regrid; to cycle
+  90 (after the face crossing at cycle 48 and the regrid at 76).
+- Mo: the same restarted at cycle 7 (the next regrid is 9 cycles away).
+- Pk: T9's `ladder` on the peak data (regrid at cycle 4), restart at cycle 6, to cycle 12.
+- Uf: T2's U with the finder and its status file, restart at cycle 8, to cycle 24.
+Predictions: (1) with the release mechanism (counters not restored; run with the
+executable of the tests above, before the fix) Mx departs from the uninterrupted run from
+cycle 16 on: the regrid is delayed to cycle 20 (`nmb` 34 instead of 41 at cycles 17 to
+20) and every field-dependent column differs afterwards; Mo, Pk, Uf are identical
+(nothing is due within 4 cycles of their restart). (2) With the fix every row of every
+case is identical as text. (3) The finder rows after the restart of Uf are identical
+only if the finder keeps no state between searches that the restart file lacks; I do not
+know whether it does ([TO VERIFY]; the comment "Retain last_a0 in restart" in
+`fastflow.cpp` suggests the initial guess is a state). Refuted for (2) by any differing
+row: then another state of the adaptive driver or the particle module is missing.

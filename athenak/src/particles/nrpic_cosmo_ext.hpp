@@ -17,6 +17,7 @@
 //! parameter dump of an existing input does not change.
 
 #include <cmath>
+#include <string>
 
 #include "athena.hpp"
 
@@ -55,11 +56,19 @@ Real MinImage(const Real d, const Real len) {
 }
 
 // ---- refinement of periodic cosmological runs (nrpic_refine.cpp) ----
-//! reads <particles_amr>; called by the problem generator, also on restart
-void CosmoRefineInit(ParameterInput *pin, Mesh *pm);
+//! reads <particles_amr>; called by the problem generator, also on restart (then it
+//! reads the refinement counters written by CosmoRefineWriteRestart)
+void CosmoRefineInit(ParameterInput *pin, Mesh *pm, bool restart);
 //! the refinement function enrolled by nrpic_cosmo: the criteria of <z4c_amr>, then
 //! those of <particles_amr>
 void CosmoRefine(MeshBlockPack *pmbp);
+//! writes the counters of the adaptive driver next to a mesh restart file (nrpic_cosmo
+//! on an adaptive mesh only; otherwise nothing)
+void CosmoRefineWriteRestart(Mesh *pm, const std::string &fname);
+//! the driver notes each call of the adaptive driver (cycle), for the restart file
+void CosmoRefineNoteCall(Mesh *pm);
+//! true once after a restart whose file was written before the regrid of its cycle
+bool CosmoRefineTakePending();
 
 // ---- guard against non-finite fields (nrpic_guard.cpp) ----
 //! reads <z4c_guard>; called once by the driver

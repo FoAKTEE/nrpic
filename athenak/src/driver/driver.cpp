@@ -475,6 +475,11 @@ void Driver::Initialize(Mesh *pmesh, ParameterInput *pin, Outputs *pout, bool re
   if (pmesh->pmb_pack->pscalar != nullptr) {
     pmesh->pmb_pack->pscalar->Startup(res_flag);
   }
+  // nrpic_cosmo on an adaptive mesh, restarted from a file written before the regrid of
+  // its cycle: that regrid now (particles/nrpic_refine.cpp)
+  if (res_flag && pmesh->adaptive && nrpic::CosmoRefineTakePending()) {
+    pmesh->pmr->AdaptiveMeshRefinement(this, pin);
+  }
 
   //---- Step 2.  Compute time step (if problem involves time evolution)
   hydro::Hydro *phydro = pmesh->pmb_pack->phydro;
@@ -641,6 +646,7 @@ void Driver::Execute(Mesh *pmesh, ParameterInput *pin, Outputs *pout, bool wdfla
 
       // AMR
       if (pmesh->adaptive) {pmesh->pmr->AdaptiveMeshRefinement(this, pin);}
+      if (pmesh->adaptive) {nrpic::CosmoRefineNoteCall(pmesh);}   // for restart files
       // compute new timestep AFTER all Meshblocks refined/derefined
       pmesh->NewTimeStep(tlim);
       RefreshSTSCycleState(pmesh);

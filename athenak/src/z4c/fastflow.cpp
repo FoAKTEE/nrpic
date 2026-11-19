@@ -417,14 +417,17 @@ void FastFlow::Write(int iter, Real time) {
       FILE *pst = fopen(ofname_status.c_str(), "a");
       if (pst != NULL) {
         if (new_status) {
-          fprintf(pst, "# 1:iter 2:time 3:found 4:reason 5:flow_iterations 6:area "
+          fprintf(pst, "# 1:cycle 2:time 3:found 4:reason 5:flow_iterations 6:area "
                        "7:area_mass 8:meanradius 9:minradius 10:mean_expansion "
                        "11:min_abs_mean_expansion 12:points_outside_mesh 13:center_x "
                        "14:center_y 15:center_z  # reason in words\n");
         }
         const int rs = (fail_reason >= 0 && fail_reason < 7) ? fail_reason : 6;
+        // the caller passes the Runge-Kutta stage as iter (summary file); the status
+        // file records the cycle of the mesh
         fprintf(pst, "%d %.15e %d %d %d %.15e %.15e %.15e %.15e %.15e %.15e %d %.15e "
-                     "%.15e %.15e  # %s\n", iter, time, ah_found ? 1 : 0, fail_reason,
+                     "%.15e %.15e  # %s\n", pmbp->pmesh->ncycle, time, ah_found ? 1 : 0,
+                fail_reason,
                 iter_done, last_area, last_mass, last_meanradius, rr_min, last_hmean,
                 min_abs_hmean, n_outside, center[0], center[1], center[2],
                 reason_text[rs]);

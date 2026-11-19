@@ -38,9 +38,21 @@
 //!
 //! None of the criteria refines the homogeneous universe: the particle number per cell
 //! is that of the lattice, and both ratios are one.
+//!
+//! Restarts.  The adaptive driver lets a MeshBlock change again only refinement_interval
+//! cycles after its last change (counter ncyc_since_ref, mesh_refinement.cpp), and the
+//! mesh restart file does not hold that counter: a restarted run would wait
+//! refinement_interval cycles before its first regrid and depart from the uninterrupted
+//! run.  For nrpic_cosmo on an adaptive mesh the counters are therefore written next to
+//! the mesh restart file (<file>.rst.amr, CosmoRefineWriteRestart) and read back on
+//! restart (CosmoRefineInit); a restart file without it starts the counters at zero, as
+//! before.
 
 #include <algorithm>
 #include <cmath>
+#include <cstdint>
+#include <cstdio>
+#include <cstring>
 #include <iostream>
 #include <string>
 #include <vector>
@@ -76,9 +88,12 @@ struct RefineOptions {
   int max_level = 31;          // relative to the root level
   bool verbose = false;
   Real lambda8pi = 0.0;        // vacuum energy added to the sources (not particles)
+  bool enrolled = false;       // CosmoRefineInit was called (problem generator nrpic_cosmo)
+  bool pending = false;        // restart: the regrid of the restart cycle is still due
 };
 
 RefineOptions ropt;
+int last_call_cycle = -1;      // cycle of the last call of the adaptive driver
 
 //! reads a ladder of thresholds <name>_1, <name>_2, ... until one is missing
 int ReadLadder(ParameterInput *pin, const std::string &name, Real *val) {
@@ -91,14 +106,119 @@ int ReadLadder(ParameterInput *pin, const std::string &name, Real *val) {
   return n;
 }
 
+constexpr char kAmrMagic[9] = "NRPAMR01";
+
+//! reads the counters of the adaptive driver written by CosmoRefineWriteRestart; the
+//! MeshBlocks must be those of the mesh rebuilt from the restart file, in the same order
+void ReadRefineCounters(Mesh *pm, const std::string &fname) {
+  std::FILE *fp = std::fopen(fname.c_str(), "rb");
+  if (fp == nullptr) {
+    if (global_variable::my_rank == 0) {
+      std::cout << "NRPIC: no " << fname << " (restart file of an earlier executable): "
+                << "the refinement counters start at zero" << std::endl;
+    }
+    return;
+  }
+  char magic[9] = {0};
+  std::int64_t hdr[3] = {0, 0, 0};
+  bool ok = (std::fread(magic, 1, 8, fp) == 8 && std::strncmp(magic, kAmrMagic, 8) == 0 &&
+             std::fread(hdr, sizeof(std::int64_t), 3, fp) == 3 &&
+             hdr[0] == static_cast<std::int64_t>(pm->nmb_total) &&
+             hdr[1] == static_cast<std::int64_t>(pm->ncycle));
+  std::vector<std::int32_t> rec;
+  if (ok) {
+    rec.resize(5*static_cast<size_t>(hdr[0]));
+    ok = (std::fread(rec.data(), sizeof(std::int32_t), rec.size(), fp) == rec.size());
+  }
+  std::fclose(fp);
+  for (int m=0; ok && m<pm->nmb_total; ++m) {
+    const LogicalLocation &ll = pm->lloc_eachmb[m];
+    ok = (rec[5*m] == ll.level && rec[5*m+1] == ll.lx1 && rec[5*m+2] == ll.lx2 &&
+          rec[5*m+3] == ll.lx3);
+  }
+  if (!ok) {
+    std::cout << "### FATAL ERROR in " << __FILE__ << " at line " << __LINE__ << std::endl
+              << "the refinement counters in " << fname << " do not belong to the mesh "
+              << "of the restart file" << std::endl;
+    std::exit(EXIT_FAILURE);
+  }
+  for (int m=0; m<pm->nmb_total; ++m) { pm->pmr->ncyc_since_ref(m) = rec[5*m+4]; }
+  ropt.pending = (hdr[2] != 0);
+  if (global_variable::my_rank == 0) {
+    std::cout << "NRPIC: refinement counters of " << pm->nmb_total << " MeshBlocks read "
+              << "from " << fname << (ropt.pending ? "; the regrid of this cycle follows"
+                                                   : "") << std::endl;
+  }
+}
+
 } // namespace
 
 //----------------------------------------------------------------------------------------
-//! \fn void CosmoRefineInit
-//! \brief reads the criteria of <particles_amr>
+//! \fn void CosmoRefineWriteRestart
+//! \brief writes the counters of the adaptive driver next to a mesh restart file:
+//!   8 bytes "NRPAMR01", int64 nmb_total, int64 ncycle, int64 pending, then per
+//!   MeshBlock (global order) 5 int32: level, lx1, lx2, lx3, cycles since its last
+//!   refinement.  pending = 1: the file was written inside the loop of the driver, whose
+//!   outputs come before the regrid of the same cycle, so the restarted run performs that
+//!   regrid before its first step (CosmoRefineTakePending); 0: written at the end of a run
+//!   (after the regrid of the last cycle) or at cycle 0.
+//! Only for nrpic_cosmo on an adaptive mesh; written by rank 0.
 
-void CosmoRefineInit(ParameterInput *pin, Mesh *pm) {
+void CosmoRefineWriteRestart(Mesh *pm, const std::string &fname) {
+  if (!ropt.enrolled || !pm->adaptive || pm->pmr == nullptr) return;
+  if (global_variable::my_rank != 0) return;
+  std::FILE *fp = std::fopen(fname.c_str(), "wb");
+  if (fp == nullptr) {
+    std::cout << "### FATAL ERROR in " << __FILE__ << " at line " << __LINE__ << std::endl
+              << "cannot open " << fname << std::endl;
+    std::exit(EXIT_FAILURE);
+  }
+  const std::int64_t pending = (pm->ncycle > 0 && last_call_cycle != pm->ncycle) ? 1 : 0;
+  const std::int64_t hdr[3] = {static_cast<std::int64_t>(pm->nmb_total),
+                               static_cast<std::int64_t>(pm->ncycle), pending};
+  std::vector<std::int32_t> rec(5*static_cast<size_t>(pm->nmb_total));
+  for (int m=0; m<pm->nmb_total; ++m) {
+    const LogicalLocation &ll = pm->lloc_eachmb[m];
+    rec[5*m] = ll.level;
+    rec[5*m+1] = ll.lx1;
+    rec[5*m+2] = ll.lx2;
+    rec[5*m+3] = ll.lx3;
+    rec[5*m+4] = pm->pmr->ncyc_since_ref(m);
+  }
+  std::fwrite(kAmrMagic, 1, 8, fp);
+  std::fwrite(hdr, sizeof(std::int64_t), 3, fp);
+  std::fwrite(rec.data(), sizeof(std::int32_t), rec.size(), fp);
+  std::fclose(fp);
+}
+
+//----------------------------------------------------------------------------------------
+//! \fn void CosmoRefineNoteCall
+//! \brief the driver has called the adaptive driver for the current cycle
+
+void CosmoRefineNoteCall(Mesh *pm) {
+  last_call_cycle = pm->ncycle;
+}
+
+//----------------------------------------------------------------------------------------
+//! \fn bool CosmoRefineTakePending
+//! \brief true once after a restart from a file written before the regrid of its cycle
+
+bool CosmoRefineTakePending() {
+  const bool p = ropt.enrolled && ropt.pending;
+  ropt.pending = false;
+  return p;
+}
+
+//----------------------------------------------------------------------------------------
+//! \fn void CosmoRefineInit
+//! \brief reads the criteria of <particles_amr>; on restart, the refinement counters
+
+void CosmoRefineInit(ParameterInput *pin, Mesh *pm, bool restart) {
   ropt = RefineOptions();
+  ropt.enrolled = true;
+  if (restart && pm->adaptive && pm->pmr != nullptr) {
+    ReadRefineCounters(pm, pin->GetString("job", "restart_file") + ".amr");
+  }
   if (pin->DoesParameterExist("z4c_amr", "method")) {
     ropt.z4c_trivial = (pin->GetString("z4c_amr", "method").compare("trivial") == 0);
   }

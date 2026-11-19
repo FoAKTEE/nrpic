@@ -37,8 +37,10 @@
  "purpose": "T0 of cosmo-amr: regression of the branch executable against release core-v0.3 on processors, new options absent (cases geo, boris, dep, east, os, flrw, punc); hand-written manifest because nrpic-run refused (16 cores busy in live local runs of core)",
  "kind": "scouting",
  "tag": "cosmo-amr-T0",
- "state": "running",
+ "state": "stopped",
  "cores": 4,
  "card_hours": 0.0,
- "started_utc": "2026-11-19T15:16:49Z"
+ "started_utc": "2026-11-19T15:16:49Z",
+ "exit_status": null,
+ "notes": "The process ended without writing its report when the session that started it ended (last output 07:23 PST, case os still running; no t0_report.json). Void; rerun as a new registered run on 2026-11-19 at about 15:45 UTC."
 }

@@ -80,7 +80,7 @@ void ProblemGenerator::NrpicCosmology(ParameterInput *pin, const bool restart) {
   // adaptive refinement (<amr_criterion0> method = user): criteria of <z4c_amr> and of
   // <particles_amr>, see particles/nrpic_refine.cpp
   user_ref_func = nrpic::CosmoRefine;
-  nrpic::CosmoRefineInit(pin, pmy_mesh_);
+  nrpic::CosmoRefineInit(pin, pmy_mesh_, restart);
   if (restart) return;
 
   MeshBlockPack *pmbp = pmy_mesh_->pmb_pack;

@@ -67,8 +67,8 @@ TaskStatus Z4c::NewTimeStep(Driver *pdriver, int stage) {
 }
 
 //----------------------------------------------------------------------------------------
-//! n Real Z4c::LightSpeedTimeStep()
-//! rief smallest value over the cells and the three directions of dx_d / c_d with the
+//! \fn Real Z4c::LightSpeedTimeStep()
+//! \brief smallest value over the cells and the three directions of dx_d / c_d with the
 //! coordinate speed of light along the direction d,
 //!   c_d = alpha sqrt(gamma^dd) + |beta^d|,   gamma^dd = chi^(-4/N) gtilde^dd
 //! (chi = psi^N), from the evolved fields.  In the conformal-time gauge of the
