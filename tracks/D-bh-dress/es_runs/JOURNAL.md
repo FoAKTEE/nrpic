@@ -364,3 +364,30 @@ Predictions [JUDGEMENT unless a number is quoted from the runs above]:
 Gauge pathologies to look for: a start-up pulse of the relaxation (core's bound-ball runs:
 a dip that grows faster than linearly with T), a lapse below 1 inside the dust, a front
 from the dust edges reaching the hole, the mesh minimum of the lapse near the hole.
+
+## Entry 6 (2026-11-19): second look at ES-1 and V-1 (tools/es_extra.py), prediction
+
+Questions left open by entry 4, measured from the same run directories by
+`tools/es_extra.py` (registered; the run id is in the outcome below). Written before the
+script was first run.
+- E1 dust and wall, direction by direction: the wall tracers' coordinate radius is fitted
+  per snapshot as r_w(n) = a + b (n_x^4 + n_y^4 + n_z^4) and every dust particle compared
+  with it. Prediction: no dust particle more than 1 M (one cell at the wall at t = 0)
+  inside r_w(n) in any snapshot of ES-1; the smallest margin stays above -0.5 M. Refuted
+  by any particle more than 1 M inside: then dust enters the bubble and the horizon need
+  not keep its mass.
+- E2 cause of the late growth [JUDGEMENT, weak; I hold the boundary hypothesis at about
+  even odds]: if a disturbance from the outflow boundary at 192 M causes the growth of
+  the tracer errors and the horizon drift after t ~ 165 M, then (a) the coordinate time at
+  which a group's error first exceeds 2e-3 decreases with the group's coordinate radius
+  (outer groups first) in both runs, and (b) the space-time diagram of log10|H| on the x
+  axis shows a front moving inward from x = 192 M that reaches x < 10 M between t = 125 and
+  200 M. Refuted if the onset times do not decrease outward or no inward front is seen in
+  |H|, alpha or K.
+- E3 slicing in the dust (measurement, ES-1): K = Khat + 2 Theta at the +x tracer of
+  R0 = 48 M against -3H(tau): I expect |K| below 0.3 x 3H from t = 50 M on (from the
+  K-hat profiles of entry 4), i.e. the slices no longer follow the dust.
+- E4 turnaround of the group R0 = 20 M: maximum areal radius within 1e-3 of the exact
+  LTB maximum, in both runs.
+- E5 wall at tau = 50, 100, 150, 200 M on axis and diagonal tracers against the exact
+  46.99, 56.80, 65.84, 74.29 M of entry 2: within 3e-3 (as prediction 2, now per class).
