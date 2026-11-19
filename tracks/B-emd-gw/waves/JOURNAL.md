@@ -253,3 +253,30 @@ tests; analysis with `--scale-flat/--scale-exp`). Predictions:
 - A3: the spectral-Weyl vs TT difference of X (1.9e-8) is second order too: 1.9e-7 for x10
   and 1.9e-9 for x1/10 within a factor 2; refuted if it stays or grows as 1/A (rounding).
 - A4: F1/X1 at t = 0 scale as 1/A (rounding): about 6e-13 (x10) and 6e-11 (x1/10) for F.
+
+## 2026-11-19 15:37 H1 confirmed (run B-20261119-153548-c7338f1)
+
+`scripts/predict_2s.py` (`results/predict_2s.json`, `figs/predict_2s.png`): with the code's
+RK4()4[2S] stages on the uniform background coupled to the mode, the predicted X errors
+at t = 10 are, against the measured ones (TT):
+
+| N | amplitude 2S / measured | phase 2S / measured | max a error 2S / measured |
+|---|---|---|---|
+| 16 | -7.048e-5 / -7.048e-5 (ratio 1.0001) | 8.304e-5 / 8.304e-5 (1.0000) | 5.1e-8 / 5.09e-8 |
+| 32 | +1.317e-6 / +1.324e-6 (0.995) | 3.065e-6 / 3.089e-6 (0.992) | 4.3e-8 / 4.30e-8 |
+
+H1 holds (bound 5 per cent): the 20 per cent gap of X3 at N = 32 was a defect of my
+predictor (classical RK4, exact background), not of the code; the error of the background
+itself is the 2S integrator's too. The classical-RK4 predictors give 1.65e-6 (exact
+background) and 1.60e-6 (coupled). F is unaffected: on a linear problem with constant
+coefficients the two schemes share the stability polynomial.
+
+**Revised predictions for the runs still going** (X at N = 48, run
+B-20261119-142234-85da208, at cycle 300 of about 524 now; X at N = 64 in the card job),
+2S predictor: N = 48 amplitude +4.25e-7, phase +5.88e-7; N = 64 amplitude +1.40e-7, phase
++2.76e-7; within 5 per cent. Note: the X errors at N >= 32 are dominated by the time
+integration of the early, expansion-limited steps (dt = 0.01/calH does not shrink with
+dx), so the convergence of X in N is not a clean power law: amplitude 7.0e-5, 1.3e-6,
+4.3e-7, 1.4e-7 predicted (orders 5.7, 2.7, 3.9), phase 8.3e-5, 3.1e-6, 5.9e-7, 2.8e-7.
+The spatial part alone (exact-background, classical predictor minus its RK4 part) is not
+separated here [JUDGEMENT: a run with dt_expansion = 0.001 would isolate it; not run].
