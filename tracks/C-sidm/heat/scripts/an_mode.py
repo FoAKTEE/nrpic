@@ -175,6 +175,14 @@ def cmd_T7(outdir, rundirs):
         kl = np.array([r["k_lambda"] for r in rows])
         fS = np.array([r["f_S"][0] for r in rows])
         se = np.array([r["f_S"][1] for r in rows])
+        # a row with one seed has no scatter: give it the per-seed sd of the other rows
+        # of the group (median of se sqrt(n)); flagged in the row (indicative only)
+        per_seed = [r["f_S"][1] * np.sqrt(r["n_seeds"]) for r in rows
+                    if r["n_seeds"] >= 2 and np.isfinite(r["f_S"][1])]
+        for i, r in enumerate(rows):
+            if r["n_seeds"] < 2 and per_seed:
+                se[i] = float(np.median(per_seed))
+                r["se_from_other_rows"] = se[i]
         lit = np.array([r["literal"][0] for r in rows])
         grp = dict(theta=th, eps=eps, rows=rows)
         if len(rows) >= 2 and np.all(np.isfinite(se)) and np.all(se > 0):
@@ -186,7 +194,8 @@ def cmd_T7(outdir, rundirs):
             fs.band(ax2, [0.0, 0.004], [f0 - sf0] * 2, [f0 + sf0] * 2, fs.PAL["red"])
             if th == 0.003:
                 grp["pass_T7"] = bool(0.99 <= f0 <= 1.06)
-        ax2.errorbar(kl ** 2, fS, yerr=se, fmt="o", color=fs.PAL["red"], ms=4,
+        ax2.errorbar(kl ** 2, fS, yerr=np.where(np.isfinite(se), se, 0), fmt="o",
+                     color=fs.PAL["red"], ms=4,
                      label=r"$f$ (vs nonlinear ref.)")
         ax2.plot(kl ** 2, lit, "s", mfc="none", color=fs.PAL["blue"], ms=4,
                  label=r"literal $\Gamma n c_p/(k^2\kappa_1)$")
