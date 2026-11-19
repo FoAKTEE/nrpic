@@ -493,3 +493,25 @@ to 2.6e-16 / 3.2e-16 / 4.2e-16; the identity on 1, 2, 4 ranks: cic 2.6e-14 / 8.9
 4.6e-15, tsc capped 7.9e-14 / 3.2e-14 / 1.9e-14, pcs 4.0e-14 / 1.8e-14 / 7.9e-15 (never
 larger on several ranks than on one); 5.7e3 / 8.9e3 particles handed over and 6.1e3 to
 3.7e4 deposit packets.
+
+### 08:55 Entry 15: T5b adaptive mesh (centred cluster): P5c held, but no MeshBlock moved; offset case
+
+Run core-20261119-161351-896e22c (t5_amr_cluster): at cycle 8 the eight central
+MeshBlocks are refined on 1, 2 and 4 ranks alike (56 created, 120 MeshBlocks, logs);
+4000 particles throughout; history 2.3e-13 (2 ranks) and 1.5e-13 (4 ranks), positions
+1.3e-15 at t = 1.5, E and S_i at the particles 6.1e-15, identity 7.8e-15 / 3.4e-15 /
+2.5e-15; Hr_max 1.1e-9 (the noise ratio, entry 9). P5c held. But the logs say "0
+communicated for load balancing": the refined MeshBlocks are spread evenly over the
+ranks by the Morton order of the centred cluster, so no MeshBlock changed rank and the
+hand-over of particles with moved MeshBlocks was not exercised (the regridding itself,
+the new table of MeshBlocks and the new global IDs were).
+
+Case t5_amr_offset (prediction, before the run): the same with the cluster moved to
+(4, 4, 4) (particles and table), so that the region chi < 0.55 lies in the octant x, y,
+z > 0, whose eight root MeshBlocks are the last eight in Morton order and sit on the last
+rank. Refining them adds 56 MeshBlocks there, and load balancing must move MeshBlocks
+(with the particles inside them) to the other ranks. P5d: on 2 and 4 ranks the log
+reports MeshBlocks communicated for load balancing, the record of the ranks shows
+hand-overs at cycle 8 of the order of the particles in the moved MeshBlocks, and
+everything else agrees with one rank as in P5c. Refuted by a lost particle, a crash, a
+different mesh, or differences above 1e-9 (Hr_max excepted, as before).

@@ -100,6 +100,9 @@ pgen_name  = nrpic_cf
 ncomp      = 1
 comp0_type = table
 comp0_file = cluster.tab
+comp0_x1   = 0.0     # case t5_amr_offset: the cluster at (4, 4, 4) (refinement in one octant)
+comp0_x2   = 0.0
+comp0_x3   = 0.0
 lapse      = table
 
 <output1>

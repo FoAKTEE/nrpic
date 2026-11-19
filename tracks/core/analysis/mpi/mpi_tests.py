@@ -116,6 +116,16 @@ def make_cluster(path, n=4000, seed=7, yc=0.605):
     return n
 
 
+def make_cluster_offset(path):
+    """The cluster of make_cluster moved to (4, 4, 4) (the table is moved with
+    problem/comp0_x1..3)."""
+    from nrpic.io import read_nrp, write_nrp
+    n = make_cluster(path)
+    x, u, m, sp = read_nrp(path)
+    write_nrp(path, x + 4.0, u, m, sp)
+    return n
+
+
 REGRESS_IC = "/data/haiyangw/nrpic/scratch/core/regress/ic"
 
 
@@ -191,6 +201,11 @@ CASES = {
     # MeshBlocks (and with them the particles) are redistributed over the ranks
     "t5_amr_cluster": dict(input=CLUSTER_AMR, particles=("cluster.nrp", make_cluster),
                            args=CLT),
+    # the same with the cluster in one octant: the refined MeshBlocks all lie on the last
+    # rank, and load balancing moves MeshBlocks (and their particles) to the others
+    "t5_amr_offset": dict(input=CLUSTER_AMR, particles=("cluster.nrp", make_cluster_offset),
+                          args=CLT + ["problem/comp0_x1=4.0", "problem/comp0_x2=4.0",
+                                      "problem/comp0_x3=4.0"]),
 }
 
 BYTE_PATTERNS = ["*.traj.bin", "*.trajmet.bin", "*.part.*.bin", "rst/*.prt",

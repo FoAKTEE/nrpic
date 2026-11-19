@@ -31,7 +31,9 @@
  "purpose": "mpi T5b (t5_amr_cluster): self-gravitating cluster with Z4c on an adaptive mesh refined at cycle 8 with load balancing, 1, 2 and 4 ranks",
  "kind": "scouting",
  "tag": "mpi-t5_amr_cluster",
- "state": "running",
+ "state": "finished",
+ "wall_time_s": 183.62,
+ "exit_status": 0,
  "cores": 7,
  "card_hours": 0.0,
  "started_utc": "2026-11-19T16:13:51Z"
