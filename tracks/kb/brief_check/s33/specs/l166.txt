@@ -1,0 +1,23 @@
+1511.01105 | without symmetry|4
+1511.01105 | first.{0,40}(fully relativistic|numerical)|4
+1511.01105 | synchronous gauge|3
+1511.05124 | three-dimensional|4
+1511.05124 | first|4
+1511.05124 | pressureless|3
+1611.05447 | three-dimensional|4
+1611.05447 | Einstein Toolkit|3
+1611.05447 | first|5
+1807.01711 | 10\^\{?-8|6
+1807.01711 | backreaction energy|6
+1807.01711 | z\s*=\s*0|6
+1807.01711 | z\s*=\s*1000|4
+1807.01711 | z_\{?\\?r?m?\{?ini|4
+1807.01711 | preliminary|4
+1807.01711 | CMB|6
+1807.01711 | redshift|6
+2408.03049 | negligible|6
+2408.03049 | 10\s*\\?%|8
+2408.03049 | 5\s*\\?%|8
+2408.03049 | 200\s*(\\,)?\s*Mpc|8
+2408.03049 | Newtonian.gauge|6
+2408.03049 | longitudinal|4

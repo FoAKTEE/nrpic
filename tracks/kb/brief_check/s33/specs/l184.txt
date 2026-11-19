@@ -1,0 +1,21 @@
+1304.2884 | Hubble constant|4
+1304.2884 | H_0|4
+1304.2884 | under.?dens|4
+2009.11292 | MOND|4
+2009.11292 | Hubble tension|4
+2602.03928 | Hubble tension|4
+2602.03928 | void|4
+2606.02712 | z_0|12
+2606.02712 | 0\.84|8
+2606.02712 | rul(e|ed) out|6
+2606.02712 | DESI|8
+2606.02712 | cosmic chronometer|4
+2606.02712 | chi\^2|6
+2606.02712 | compatible|6
+2606.02712 | consistent with|8
+2207.05765 | cosmological principle|3
+2009.14826 | dipole|3
+2206.05624 | dipole|3
+2302.02028 | bulk flow|3
+2510.05340 | bulk flow|3
+2510.05340 | review|4

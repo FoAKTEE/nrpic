@@ -1,0 +1,15 @@
+2209.06775 | ray.trac|6
+2209.06775 | mescaline|4
+2209.06775 | first|4
+2603.24838 | 20 (synthetic )?observers|6
+2603.24838 | ell\s*<\s*100|6
+2603.24838 | 0\.05\s*<\s*z|6
+2603.24838 | 3.{0,6}30|8
+2603.24838 | cosmic variance|8
+2606.05479 | DESI|8
+2606.05479 | 2.?\$?\\?sigma|8
+2606.05479 | one (of|observer)|8
+2606.05479 | 20 observers|6
+2606.18437 | 0\.2|8
+2606.18437 | statistical error|6
+2606.18437 | sub.?dominant|6
