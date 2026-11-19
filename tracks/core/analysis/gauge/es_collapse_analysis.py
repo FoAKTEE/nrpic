@@ -391,8 +391,10 @@ def analyse_collapse(pre, name, man):
                 np.abs(mh[aft] / meta["M"] - 1.0).max())
         ax[1, 1].plot(th, mh, color=fs.PAL["red"])
         ax[1, 1].axhline(meta["M"], color="k", lw=0.6, ls="--")
-        # proper time at the centre when the horizon is first found
-        res["horizon"]["tau_centre_first"] = float(np.interp(th[0], t, hst[:, 14]))
+        # proper time at the centre when the horizon is first found (first search that found
+        # one; the first search itself if none did)
+        t0 = res["horizon"].get("t_found_first", float(th[0]))
+        res["horizon"]["tau_centre_first"] = float(np.interp(t0, t, hst[:, 14]))
     else:
         res["horizon"] = None
     ax[1, 1].set_xlabel(r"coordinate time $t/M$", labelpad=-2)
