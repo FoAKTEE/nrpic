@@ -457,3 +457,23 @@ ES-1 and V-1, and the waterfall figure shows a feature reaching x = 4 M between 
 175 M. Refuted if the lags on the outer pairs are negative or the correlations below 0.3
 (no coherent inward feature); then the boundary is not the visible carrier, and the slow
 approach of the slicing (or the finder) stays the candidate.
+
+Outcome of entry 7 (run D-20261119-143413-bce5e71, `results/probe_fronts.json`, figures
+`figs/probe_fronts_ES-1.png`, `figs/probe_fronts_V-1.png`, looked at): REFUTED. On
+t = 50-200 M the coherent features in the detrended lapse rate move OUTWARD on every outer
+pair, in both runs, at the gauge speed: lags 152 -> 80 M -47.0 / -47.5 M, 80 -> 56 M
+-15.5 / -16.0 M, 56 -> 46 M -6.5 / -6.75 M, 46 -> 36 M -6.5 / -6.5 M (ES-1 / V-1),
+correlations 0.96-0.99, apparent speed 1.48-1.55 (sqrt(2 alpha) = 1.6 at alpha = 1.3).
+Inward lags appear only near the hole: 20 -> 4 M +8.0 M (ES-1, corr 0.89) and +7.0 M
+(V-1, 0.80); 36 -> 20 M +10.25 M in V-1 (0.73) but -10.5 M in ES-1 (0.93). The waterfall
+figures show the features concentrated in t = 30-100 M (outgoing gauge waves after the
+start); after t ~ 100 M nothing visible arrives at x = 4 M between t = 130 and 175 M at the
+scale of the early features. The lag analysis is dominated by the early, large
+features, so a weaker late inward signal is not excluded by it; the next paragraph
+restricts the window.
+
+Added test, prediction written before it ran: the same analysis on t = 100-200 M only
+(`--tmin 100`). If a late inward signal exists (boundary reflection of the outgoing
+gauge waves, which reach 192 M at t ~ 90-130 M), the outer pairs show positive lags with
+correlation above 0.5 on this window [JUDGEMENT, even odds]. Refuted by negative lags or
+correlations below 0.5 on the pairs 152 -> 80 and 80 -> 56 M.
