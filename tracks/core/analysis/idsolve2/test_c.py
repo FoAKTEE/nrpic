@@ -126,15 +126,13 @@ def read_con(path):
     H, Mx, My, Mz as arrays [m, i, j, k], and the time."""
     f = bin_convert.read_binary(path)
     nmb = f["n_mbs"]
-    geo = np.array(f["mb_geometry"])            # x1i, x2i, x3i, dx1, dx2, dx3
+    # the binary output writes x1min, x1max, x2min, x2max, x3min, x3max per MeshBlock
+    # (athenak/src/outputs/binary.cpp 139, 198-201; the docstring of bin_convert.py,
+    # "x1i, x2i, x3i, dx1, dx2, dx3", does not describe what is written)
+    box = np.array(f["mb_geometry"], dtype=float)
     n1, n2, n3 = f["nx1_out_mb"], f["nx2_out_mb"], f["nx3_out_mb"]
     out = dict(time=float(f["time"]), nmb=nmb, n=(n1, n2, n3),
-               level=np.array(f["mb_logical"])[:, 3], dx=geo[:, 3])
-    box = np.zeros((nmb, 6))
-    box[:, 0], box[:, 2], box[:, 4] = geo[:, 0], geo[:, 1], geo[:, 2]
-    box[:, 1] = geo[:, 0] + n1*geo[:, 3]
-    box[:, 3] = geo[:, 1] + n2*geo[:, 4]
-    box[:, 5] = geo[:, 2] + n3*geo[:, 5]
+               level=np.array(f["mb_logical"])[:, 3], dx=(box[:, 1] - box[:, 0])/n1)
     out["box"] = box
     names = list(f["var_names"])
     for key in ("H", "Mx", "My", "Mz"):
@@ -202,7 +200,9 @@ def record(path):
     return e
 
 
-def analyze(root, status):
+def analyze(root, status, out_dir=None):
+    """Analysis of the cases in root; numbers and figure into out_dir (default root)."""
+    out_dir = out_dir or root
     res = dict(run=os.path.basename(root.rstrip("/")), status=status or {}, G={}, T={}, Z={})
     prof = {}
     for d in sorted(glob.glob(os.path.join(root, "*_*"))):
@@ -236,9 +236,9 @@ def analyze(root, status):
                                       masks=dict(interior=(0.0, 7.0), shell=(7.0, 13.5)))
                             for p in cons]
         res[kind][name] = e
-    out = os.path.join(root, "test_c_numbers.json")
+    out = os.path.join(out_dir, "test_c_numbers.json")
     lib2.save_json(out, res)
-    figs = figure(res, prof, root)
+    figs = figure(res, prof, out_dir)
     lib2.publish([out] + figs)
     return res
 
@@ -303,7 +303,7 @@ def main():
     ap.add_argument("--analyze", default="")
     a = ap.parse_args()
     if a.analyze:
-        analyze(a.analyze, None)
+        analyze(a.analyze, None, out_dir=lib2.run_root())
         return 0
     root = lib2.run_root()
     cases = build_cases(root, os.path.abspath(a.exe), a.tests.split(","))
