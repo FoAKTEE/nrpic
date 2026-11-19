@@ -48,6 +48,7 @@ def analyse_bg(rundir, name, ci, lm):
                twin_rel_Pi=float(rel(pi, tw[:, 1]).max()),
                twin_rel_K=float(rel(kk, ktw).max()),
                twin_rel_chi=float(rel(chi, tw[:, 4]).max()),
+               twin_abs_Pi=float(np.abs(pi - tw[:, 1]).max()),
                exact_rel_phi_end=float(rel(phi, ex[0])[-1]),
                exact_rel_Pi_end=float(rel(pi, ex[1])[-1]),
                exact_rel_Pi_max=float(rel(pi, ex[1]).max()),
@@ -226,6 +227,19 @@ def main():
                 S[name]["M5_Pi_rel_vs_M16l_max"] = float(np.max(np.abs(c[:n, 17] - cl[:n, 17]) / np.abs(cl[:n, 17])))
                 S[name]["M5_phi_rel_vs_M16l_max"] = float(np.max(np.abs(c[:n, 16] - cl[:n, 16]) / np.abs(cl[:n, 16])))
                 S[name]["M5_K_rel_vs_M16l_max"] = float(np.max(np.abs(c[:n, 18] - cl[:n, 18]) / np.abs(cl[:n, 18])))
+    # Hamiltonian record against the homogeneous run of the same step (uniform residual H0)
+    bgp = os.path.join(a.runs, "BGv03", "bg.sf.hst")
+    if os.path.exists(bgp):
+        hb = np.loadtxt(bgp)
+        hbr = hb[:, 10] / hb[:, 16]
+        for name, x in R.items():
+            c = x["con"]
+            n = min(c.shape[0], hb.shape[0])
+            if np.allclose(c[:n, 0], hb[:n, 0], rtol=0, atol=1e-12):
+                sel = slice(1, n)
+                S[name]["H_record_over_BG_H0"] = dict(
+                    min=float(np.min(c[sel, 3] / hbr[sel])), max=float(np.max(c[sel, 3] / hbr[sel])),
+                    median=float(np.median(c[sel, 3] / hbr[sel])))
     # A1 for the stochastic runs: box means against the exact background
     for name, x in R.items():
         c = x["con"]
@@ -316,7 +330,7 @@ def figures(out, S, bgc, R, pairs, cnc, ref, lm):
                 ax[0].semilogy(xl["cN"], kfac * np.abs(xl["cnr"][:, j] / xl["s"])**2, color=col,
                                marker="x", ms=3, ls="none")
         ax[0].set_ylabel(r"$k^3 L^3 |c_n|^2/(2\pi^2)$ (o odd, x linear, -- MS)")
-        ax[0].legend(loc="upper left", fontsize=8, ncol=2)
+        ax[0].legend(loc="lower left", bbox_to_anchor=(0.32, 0.0), fontsize=8, ncol=2)
         dev = P["mo"]["dev_t"]
         ax[1].semilogy(P["cN"], np.maximum(dev.max(axis=1), 1e-16), color=fs.PAL["red"],
                        label="odd part: max over modes")
