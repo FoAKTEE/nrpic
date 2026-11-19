@@ -148,3 +148,17 @@ Cost [JUDGEMENT]: the only serial Z4c rate on record is 1.5e4 zone-cycles per se
 expect 3e4 to 1e5. N = 16, 32 on processors (minutes); N = 64 (1.6e8 zone-cycles per
 test) goes to one card in a batch job (about 0.05 card-hours with the queue overhead)
 unless the processor rate exceeds 1e5.
+
+## 2026-11-19 14:22 Runs started; cost measured
+
+- Processors, N = 16 and 32: test F run **B-20261119-142016-ee73a03**, test X run
+  **B-20261119-142021-8f4c441** (two serial processes each, in the background).
+- Measured serial rate in the first minute: 1.46e4 zone-cycles per second (F, N = 16:
+  100 cycles in 28 s), 1.1e4 (X, N = 16 with particles). So N = 32 takes about 11 and
+  20 minutes, and N = 64 would take 3 and 4.5 hours: the cost prediction of 3e4 to 1e5
+  failed (the low rate is that of the Kokkos Serial build, not of the Weyl extraction).
+  N = 64 of both tests goes to one card (batch `inputs/card64.list`, executable
+  `scratch/core/exe/core_requests-b/athena_gpu`, initial data of X from run
+  B-20261119-142108-1e5add9). Prediction for the card: both runs complete in under
+  5 minutes of card time (about 1.7e8 zone-cycles each at >= 1e6 per second);
+  card-hours charged <= 0.1 (wall limit 20 minutes requested).

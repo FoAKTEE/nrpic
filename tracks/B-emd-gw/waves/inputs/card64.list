@@ -1,0 +1,5 @@
+# Card batch of the waves package: tests F and X at N = 64 (the serial processor rate of
+# 1.1e4 to 1.5e4 zone-cycles per second would need 3 to 4.5 hours each). Executable:
+# scratch/core/exe/core_requests-b/athena_gpu. Initial data of X: run B-20261119-142108-1e5add9.
+flatN64 tracks/B-emd-gw/waves/inputs/flat_oblique.athinput mesh/nx1=64 mesh/nx2=64 mesh/nx3=64 meshblock/nx1=64 meshblock/nx2=64 meshblock/nx3=64
+expN64 tracks/B-emd-gw/waves/inputs/expanding.athinput mesh/nx1=64 mesh/nx2=64 mesh/nx3=64 meshblock/nx1=64 meshblock/nx2=64 meshblock/nx3=64 particles/particle_file=/data/haiyangw/nrpic/scratch/B-emd-gw/B-20261119-142108-1e5add9/N64/ic/particles.nrp problem/id_file=/data/haiyangw/nrpic/scratch/B-emd-gw/B-20261119-142108-1e5add9/N64/ic/fields.bin
