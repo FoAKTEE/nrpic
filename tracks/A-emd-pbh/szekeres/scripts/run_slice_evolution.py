@@ -80,7 +80,7 @@ def main():
     import figstyle as fs
     fs.use_style()
     # ---- slice maps: rows tau, columns rho/rho_b, psi - 1, (rho - rho_LTB)/rho_b
-    fig, axes, cax = fs.slice_mosaic(2, 3, cbar="right", left=0.55)
+    fig, axes, cax = fs.slice_mosaic(2, 3, cbar="right", left=0.62, fig_w=6.55, bottom=0.42)
     levels = [2.4, 3.0, 3.6, 4.2, 4.8, 5.4, 6.0]
     for i, tau in enumerate(TAUS):
         u, f, cm = maps["szk", tau]
@@ -105,7 +105,7 @@ def main():
                                                        (f", max {d.max():.3f}" if j == 1 else "")),
                             transform=axes[i, j].transAxes, va="top", fontsize=7,
                             color="w" if j < 2 else "k")
-        axes[i, 0].set_ylabel("z")
+        axes[i, 0].set_ylabel("z", labelpad=-2)
     for j in range(3):
         axes[1, j].set_xlabel("x")
     fig.colorbar(im0, cax=cax, label=r"$\rho/\bar\rho$ (left column)")

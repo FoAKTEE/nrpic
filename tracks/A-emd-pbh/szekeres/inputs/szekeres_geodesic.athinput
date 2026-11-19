@@ -1,0 +1,113 @@
+# Szekeres hole in a periodic Einstein-de Sitter box, geodesic slicing (DESIGN.md sections
+# 3 and 4). Initial data: tracks/A-emd-pbh/szekeres/scripts/run_code_geodesic.py writes the
+# field file (NRCOSMO1) and the particle file (one particle per cell centre, at rest) and
+# overrides id_file, particle_file and the cell numbers on the command line.
+# Units G = c = 1; H = 1/16 on the initial slice (t_i = 2/(3H)); code time = proper time
+# of the dust since the initial slice (lapse 1). The core crunches at tau = 44.454.
+# Gauge: alpha = 1, beta = 0 for all time (every lapse and shift driver off; z4c.cpp
+# 139-157, z4c_calcrhs.cpp 688-735). Then the dust stays at its initial coordinates and the
+# code's coordinates are the comoving coordinates of the exact solution.
+
+<comment>
+problem   = quasi-spherical Szekeres dust, geodesic slicing
+
+<job>
+basename  = szk
+
+<mesh>
+nghost    = 4
+nx1       = 32
+x1min     = -8.0
+x1max     = 8.0
+ix1_bc    = periodic
+ox1_bc    = periodic
+nx2       = 32
+x2min     = -8.0
+x2max     = 8.0
+ix2_bc    = periodic
+ox2_bc    = periodic
+nx3       = 32
+x3min     = -8.0
+x3max     = 8.0
+ix3_bc    = periodic
+ox3_bc    = periodic
+
+<meshblock>
+nx1       = 16
+nx2       = 16
+nx3       = 16
+
+<time>
+evolution  = dynamic
+integrator = rk4
+cfl_number = 0.25
+nlim       = -1
+tlim       = 40.0
+ndiag      = 100
+
+<z4c>
+lapse_oplog     = 0.0
+lapse_harmonicf = 1.0
+lapse_harmonic  = 0.0
+lapse_volume    = 0.0
+lapse_advect    = 0.0
+shift_Gamma     = 0.0
+shift_eta       = 0.0
+shift_advect    = 0.0
+diss            = 0.5
+damp_kappa1     = 0.5
+damp_kappa2     = 0.0
+damp_kappa_gam  = 0.0
+damp_ch         = 0.0
+damp_ch_dx      = 0.0
+excise_chi      = 0.0
+
+<particles>
+particle_type  = nrpic
+pusher         = midpoint
+interp         = hermite
+dt_expansion   = 0.0
+metric         = mesh
+tolerance      = 1.0e-12
+max_iterations = 50
+deposit        = true
+nfilter        = 0
+filter_compensate = false
+filter_comp_c  = -1.0
+deposit_comp_c = 0.0
+deposit_comp_limit = 0.0
+deposit_comp_c2 = 0.0
+deposit_shape  = cic
+deposit_max_level = 31
+deposit_adaptive  = false
+deposit_min_level = 0
+deposit_ppc       = 2.0
+deposit_max_coarsen = 31
+alpha_exc      = -1.0
+ah_exc_factor  = -1.0
+hist_dcycle    = 8
+cstat_dcycle   = 8
+cons_dcycle    = 0
+line_dcycle    = 0
+field_time1    = 10.0
+field_time2    = 20.0
+field_time3    = 30.0
+field_time4    = 40.0
+field_constraints = true
+traj_dcycle    = 0
+traj_ntrack    = 0
+snap_dt        = 100.0
+lambda         = 0.0
+source_density = true
+source_extrap  = true
+particle_file  = particles.nrp
+
+<problem>
+pgen_name  = nrpic_cosmo
+id         = file
+id_file    = fields.bin
+hubble     = 0.0625
+
+<output1>
+file_type = hst
+dt        = 1.0
