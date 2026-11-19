@@ -188,8 +188,10 @@ def diss_rate(kh, h, diss, nghost=4):
 
 
 # ------------------------------------------------------------------- stochastic twin
-STREAM_MODE_FLAG = 1 << 16
-OFFSET = 1 << 20
+# keys of the amplitudes: rng.mode_entity and rng.stochastic_mode_stream (the twin of
+# ModeEntity and StochasticModeStream in athenak/src/utils/rng_mesh.hpp)
+STREAM_MODE_FLAG = rng.STOCHASTIC_MODE_BIT
+OFFSET = rng.MODE_ENTITY_OFFSET
 
 
 def mode_set(nmax2):
@@ -208,10 +210,9 @@ def mode_set(nmax2):
 
 def mode_alpha(seed, dof, epoch, n):
     """alpha_n = (z1 + i z2)/sqrt(2) with the keys of the code."""
-    ent = rng.cell_entity(n[:, 0] + OFFSET, n[:, 1] + OFFSET, n[:, 2] + OFFSET)
-    z1, z2 = rng.normal2(seed=seed, stream=rng.stream(rng.STREAM_STOCHASTIC,
-                                                      STREAM_MODE_FLAG | dof),
-                         entity=ent, step=epoch, draw=0)
+    ent = rng.mode_entity(n[:, 0], n[:, 1], n[:, 2])
+    z1, z2 = rng.normal2(seed=seed, stream=rng.stochastic_mode_stream(dof), entity=ent,
+                         step=epoch, draw=0)
     return (np.asarray(z1) + 1j*np.asarray(z2))/np.sqrt(2.0)
 
 
