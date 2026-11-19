@@ -348,3 +348,21 @@ accretion (case exact), with the continuum truth kept as a third case.
    as in 5b; delta_lat of order 1e-3.
 3. Code energies and growth x 0.97: above 1000 and 100 sigma as before.
 Refuted if 1 fails: then the lattice is not the (only) cause.
+
+### Outcome of entry 5c (D-20261119-150219-c40d908)
+
+1. Bracket HELD with the lattice truth: max violation 3.06 sigma, 99.75 per cent of the
+   401 times inside 3 sigma (noise of 1 sigma). Per-label part FAILED: min M_AH - m_disc
+   = -4.9e-4 (predicted >= -4.5e-5). Candidate cause: M_AH at the removal time is
+   interpolated linearly between finder samples 0.5 M apart, while the truth is a step
+   function that rises by about 7.7e-4 M per 0.5 M of code time here (1.1e-3 per M of
+   proper time times 0.7); the real finder samples every 16 cycles, also 0.5 M. Change:
+   take the first finder sample at or after the removal.
+2. HELD: continuum truth gives the lower-bound violation of 9.1e-4 M (91 sigma) as in
+   5b; delta_lat = max |m_disc - m(R0)| = 3.9e-3 M over all labels.
+3. HELD: code energies 9017 sigma; growth x 0.97: 773 sigma, per label -7.8e-3.
+
+## Entry 5d (before the rerun)
+
+Case exact: per label min M_AH(next sample) - m_disc >= -4.5e-5 (noise only); the rest
+as in 5c. Refuted if the per-label minimum stays below -4.5e-5.

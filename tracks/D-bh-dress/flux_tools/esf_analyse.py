@@ -103,7 +103,11 @@ def main():
     out["delta_lat"] = float(np.max(np.abs(m_disc[isd] - lab["m_label"][isd])))
     if hz.any() and hor["time"].size:
         trem = rem["time"][hz]
-        M_at = np.interp(trem, hor["time"], hor["mass"])
+        # the finder samples M_AH every find_every cycles: take the first sample at or
+        # after the removal (accretion only raises the mass), not an interpolation
+        # between samples (entry 5c: interpolation lost up to 4.9e-4 M)
+        kn = np.clip(np.searchsorted(hor["time"], trem, side="left"), 0, hor["time"].size - 1)
+        M_at = hor["mass"][kn]
         m_lab = lab["m_label"][tag]
         tau = rem["tau"][hz]
         out["per_label"] = dict(
