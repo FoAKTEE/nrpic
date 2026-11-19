@@ -31,6 +31,7 @@ import heatlib as hl          # noqa: E402
 import isobaric as iso        # noqa: E402
 import conduction as cd       # noqa: E402
 import mj                     # noqa: E402
+import snap                   # noqa: E402
 
 import matplotlib             # noqa: E402
 matplotlib.use("Agg")
@@ -271,14 +272,27 @@ def cmd_CL(outdir, rundirs):
         A0 = c["AN"][0]
         sn = np.sqrt(2.0 / c["n"])
         z = (c["AN"] - A0 * ref) / sn
+        # free streaming of the same sample (deterministic): separates the sample's own
+        # noise (free - ensemble) from the effect of the collisions (code - free)
+        ini = snap.read_nrp(P["particle_file"])
+        vx = ini["u"][:, 0] / hl.W_flat(ini["u"])
+        x0 = ini["x"][:, 0] - hl.X0
+        free = np.array([2 * np.mean(np.cos(P["k"] * (x0 + vx * tt))) for tt in c["t"]])
+        zf = (free - A0 * ref) / sn
+        zc = (c["AN"] - free) / sn
         out[P["name"]] = dict(theta=th, max_abs_z=float(np.max(np.abs(z[1:]))),
                               rms_z=float(np.sqrt(np.mean(z[1:] ** 2))),
                               pass_=bool(np.max(np.abs(z[1:])) < 4),
+                              rms_z_sample_vs_ensemble=float(np.sqrt(np.mean(zf[1:] ** 2))),
+                              rms_z_code_vs_sample=float(np.sqrt(np.mean(zc[1:] ** 2))),
+                              max_abs_z_code_vs_sample=float(np.max(np.abs(zc[1:]))),
+                              code_minus_sample_end=float(c["AN"][-1] - free[-1]),
                               frac_moved_end=float(c["frac_moved"][-1])
                               if c["frac_moved"] is not None else None)
         ax = fig.add_axes([0.07 + 0.32 * i, 0.17, 0.25, 0.73])
-        ax.plot(c["t"], A0 * ref, color=fs.PAL["blue"], label="free streaming")
+        ax.plot(c["t"], A0 * ref, color=fs.PAL["blue"], label="free streaming, ensemble")
         fs.band(ax, c["t"], A0 * ref - 2 * sn, A0 * ref + 2 * sn, fs.PAL["blue"])
+        ax.plot(c["t"], free, **fs.GUIDE, label="free streaming, this sample")
         ax.plot(c["t"], c["AN"], "o", ms=3, color=fs.PAL["red"], label="AthenaK")
         ax.set_xlabel(r"$t$")
         ax.set_title(rf"$\theta={th}$, $k\lambda={P['k_lambda']:g}$", fontsize=10)
