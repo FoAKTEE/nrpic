@@ -22,11 +22,11 @@ Tasks, in this order:
    claim; are axes labelled with units; is anything cut, unreadable or misleading.
 3. Read `main.tex` as a first-year graduate student in the field would: list every sentence you
    cannot follow or that has no support (no run, no figure, no reference, no derivation).
-4. Write `tracks/<ID>/stage/G<k>/VERIFIER_REPORT.md`: first line `Verdict: PASS` or
+4. Write `tracks/<ID>/stage/G<k>/VERIFIER.md` (decision 0016): first line `Verdict: PASS` or
    `Verdict: FAIL`, then the three tables (numbers, figures, sentences) and a short list of what
    must change for PASS.
 
-Restrictions: the only file you write is VERIFIER_REPORT.md (and scratch files under
+Restrictions: the only file you write is VERIFIER.md (and scratch files under
 `scratch/<ID>/tmp/verifier/`). Bash only for: `harness/bin/nrpic-run verify|status`,
 `harness/bin/nrpic-env exec -- python ...` on your own scripts, `git show`, `git log`,
 `sha256sum`, `ls`. No runs on the cards, no commits, no edits of the note or the figures.
