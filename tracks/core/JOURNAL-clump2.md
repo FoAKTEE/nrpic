@@ -515,7 +515,7 @@ run at rest. Predicted: over 0 to 10 M, |change of sum m u_x|/P in `v0.3s` is at
 half of that in `v0.3`, and below 1 per cent. Refuted (and the candidate with it) if
 `v0.3s` drifts as much as `v0.3`.
 
-### Prediction G (card against processor at t = 0; written 15:57Z, before any of the runs)
+### Prediction G (card against processor at t = 0; written 15:55Z, before any of the runs)
 
 `run_t0_records.py` starts the five entries of `card_tc.list` and `card_te.list` on a
 processor with `time/nlim=0` (branch executable `.work/build_cpu`, same source as the card
