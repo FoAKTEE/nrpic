@@ -167,6 +167,21 @@ def main():
                                   tau_onset=(float(np.median(taus)) if taus else None),
                                   r_coord_onset=(float(np.median(rs)) if rs else None)))
         r["onset_2e-3"] = onset
+        # crossings of R = 2M (proper and coordinate time) against the exact LTB time
+        cr = []
+        tex = np.linspace(0, 400, 40001)
+        for g in groups:
+            tg = [t for t in g["tags"] if t in per]
+            ct = [crossing(per[t]["tau"], per[t]["R"]) for t in tg]
+            cc = [crossing(per[t]["t"], per[t]["R"]) for t in tg]
+            ct = [c for c in ct if c is not None]
+            cc = [c for c in cc if c is not None]
+            ex = crossing(tex, em.ltb_radius(np.full_like(tex, g["R0"]), tex, g["m"], g["E"]))
+            cr.append(dict(R0=g["R0"], n=len(tg), n_cross=len(ct), tau_cross=([min(ct), max(ct)] if ct else None),
+                           t_cross=([min(cc), max(cc)] if cc else None), tau_cross_exact=ex,
+                           tau_end=[float(min(per[t]["tau"][-1] for t in tg)), float(max(per[t]["tau"][-1] for t in tg))]
+                           if tg else None))
+        r["crossings_2M"] = cr
         # 2. turnaround of the group R0 = 20 M
         g2 = [g for g in groups if abs(g["R0"] - 20.0) < 1e-9][0]
         te = np.linspace(0, 240, 240001)
@@ -212,9 +227,10 @@ def main():
                 xp = float(np.interp(T, p["t"], p["x"][:, 0]))
                 taup = float(np.interp(T, p["t"], p["tau"]))
                 K = float(np.interp(xp, pr["x"], pr["z4c_Khat"] + 2.0 * pr["z4c_Theta"]))
+                Kh = float(np.interp(xp, pr["x"], pr["z4c_Khat"]))
                 alx = float(np.interp(xp, pr["x"], pr["z4c_alpha"]))
                 Hp = H0 / (1.0 + 1.5 * H0 * taup)
-                rows_k.append(dict(t=T, x=xp, tau=taup, K=K, minus3H=-3.0 * Hp, K_over_minus3H=K / (-3.0 * Hp),
+                rows_k.append(dict(t=T, x=xp, tau=taup, K=K, Khat=Kh, minus3H=-3.0 * Hp, K_over_minus3H=K / (-3.0 * Hp),
                                    alpha_slice=alx))
             kt[f"R0={R0:g}"] = rows_k
         r["K_at_plateau_tracer"] = kt
@@ -274,6 +290,24 @@ def main():
                             finite=bool(np.all(np.isfinite(Hh["sum_mW"]))))
         res["runs"][name] = r
         data[name] = dict(per=per, groups=groups, prof=prof, con=con, S=S, H=Hh, kind=kind)
+    # horizon mass of every run against the vacuum control (a run named V-1), common times
+    if "V-1" in data and data["V-1"]["S"] is not None:
+        Sv = data["V-1"]["S"]
+        for n in data:
+            Sn = data[n]["S"]
+            if n == "V-1" or Sn is None:
+                continue
+            tc = np.intersect1d(np.round(Sn["time"], 9), np.round(Sv["time"], 9))
+            if not len(tc):
+                continue
+            dm = np.interp(tc, Sn["time"], Sn["mass"]) - np.interp(tc, Sv["time"], Sv["mass"])
+            win = {}
+            for lo, hi in ((0.0, 20.0), (25.0, 50.0), (a.t0, 165.0), (165.0, 1e9), (a.t0, 1e9)):
+                s_ = (tc >= lo) & (tc <= hi)
+                if s_.any():
+                    win[f"[{lo:g},{min(hi, tc[-1]):g}]"] = [float(dm[s_].min()), float(dm[s_].max())]
+            nz = np.where(np.abs(dm) > 1e-9)[0]
+            res["runs"][n]["horizon_minus_V1"] = {"windows": win, "t_first_split_1e-9": (float(tc[nz[0]]) if len(nz) else None)}
     with open(os.path.join(a.out, "es_extra.json"), "w") as f:
         json.dump(res, f, indent=1)
     print(json.dumps(res, indent=1)[:20000])

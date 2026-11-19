@@ -401,8 +401,8 @@ Outcome of entry 6 (run D-20261119-142929-bb375ff, `results/es_extra.json`; figu
   geometry of marginally bound shells (dR/dR0 = (R0/R)^(1/2): 0.23 (36/83)^(1/2) = 0.15 M),
   not an approach. The wall fit has two classes only (axis, diagonal), so the fit is
   exact by construction; the anisotropy coefficient b grows from -0.005 M (t = 25 M) to
-  -0.86 M (t = 200 M): the wall on the axes lies 0.6 M further out in coordinates than on
-  the diagonals at the end.
+  -0.86 M (t = 200 M): at the end the wall on the axes lies 0.57 M closer to the centre in
+  coordinates than on the diagonals (r = 82.48 against 83.05 M).
 - E2 REFUTED as written, with a partial pattern. On the diagonal tracers the onset of
   |R/R_exact - 1| > 2e-3 does come first for the outer groups in both runs (ES-1: 117.5,
   121, 121, 130, 142, 140, 150.5 M for R0 = 78, 66, 56, 48, 40, 36, 28 M; V-1: 140, 147,
