@@ -695,3 +695,15 @@ bound 1e-10 on the history of mem2700 can only be checked as equality of the pri
 values at t = 0, 0.25, 0.5 (a relative difference above about 5e-7 would show). Judge
 script `tracks/core/analysis/dfix/card2_judge.py`; smoke test on the processor runs
 against themselves: zero differences, the figure readable.
+
+Queue (06:30 local, 14:30 UTC): the timing job waits behind a job of another user that
+asks for both cards, and six card jobs of other core sessions (about 4.4 card-hours) were
+queued after it. So that the full cases do not wait behind all of them a second time, the
+second job (list `cases/card_cases.list`: T7 complete, mem2700 complete, each capped at
+six minutes by `athena -t`, Slurm limit 14 minutes) is queued now, before the timing
+result. It is held to the rule "timing first" this way: when the timing job ends (before
+the second job can start, which is behind the other sessions' jobs), I compare the
+measured times with the caps; if T7 to cycle 9 takes more than 9/24 of a cap or the
+three-hole case to cycle 4 more than 4/32 of a cap plus its set-up, the second job is
+cancelled before it starts and submitted again with caps from the measurement. Worst case
+of both jobs: 28 card-minutes (0.47 card-hours).
