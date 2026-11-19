@@ -156,29 +156,68 @@ def compare_meta(tex_title, tex_authors, meta_title, meta_authors):
     return r, (found / len(sur) if sur else None)
 
 
+def _meta_root(meta_dir):
+    """The `kb-data/meta` directory. Accepts it directly, or the inventory's `meta/arxiv`
+    (what `run()` passed in wave 2), from which the fetch command's directories are siblings."""
+    meta_dir = os.path.abspath(meta_dir)
+    if os.path.basename(meta_dir) in ("arxiv", "inspire", "arxiv-api") and not any(
+            os.path.isdir(os.path.join(meta_dir, d)) for d in ("inspire", "arxiv-api")):
+        return os.path.dirname(meta_dir)
+    return meta_dir
+
+
+def _title_authors(d):
+    """(title, [author names]) of one metadata record of any of the three layouts, or None."""
+    if not isinstance(d, dict):
+        return None
+    if d.get("status") not in (None, "ok"):                        # INSPIRE 'not-found' and the like
+        return None
+    md = d.get("record") or d.get("metadata") or d
+    if not isinstance(md, dict):
+        return None
+    title = md.get("title") or ((md.get("titles") or [{}])[0] or {}).get("title")
+    auth = md.get("authors") or []
+    if isinstance(auth, str):
+        auth = [auth]
+    auth = [a.get("full_name") or a.get("name") or "" if isinstance(a, dict) else str(a) for a in auth]
+    if not title and not auth:
+        return None
+    return title, auth
+
+
 def _meta_record(meta_dir, pid):
-    """INSPIRE/arXiv metadata on disk, if the metadata stage has written any: returns
-    (title, [authors]) or None. Looks for <id_>.inspire.json and <id_>.api.json."""
-    for name in (f"{_key(pid)}.inspire.json", f"{_key(pid)}.api.json"):
-        p = os.path.join(meta_dir, name)
-        if os.path.isfile(p):
-            try:
-                d = json.load(open(p))
-            except ValueError:
-                continue
-            md = d.get("metadata", d)
-            title = md.get("title") or (md.get("titles") or [{}])[0].get("title")
-            auth = md.get("authors") or []
-            auth = [a.get("full_name", a) if isinstance(a, dict) else a for a in auth]
-            return title, auth
+    """INSPIRE/arXiv metadata on disk: returns (title, [authors], source) or None.
+
+    Order: INSPIRE `meta/inspire/<key>.json` (written by `nrpic-fetch-arxiv --meta`, record
+    under "record"), then the arXiv API `meta/arxiv-api/<key>.json`, then the names of wave 1
+    `meta/arxiv/<key>.inspire.json` and `<key>.api.json` (never written, kept for old stores)."""
+    root = _meta_root(meta_dir)
+    k = _key(pid)
+    for source, p in (("inspire", os.path.join(root, "inspire", f"{k}.json")),
+                      ("arxiv-api", os.path.join(root, "arxiv-api", f"{k}.json")),
+                      ("inspire", os.path.join(root, "arxiv", f"{k}.inspire.json")),
+                      ("arxiv-api", os.path.join(root, "arxiv", f"{k}.api.json"))):
+        if not os.path.isfile(p):
+            continue
+        try:
+            with open(p) as f:
+                d = json.load(f)
+        except (OSError, ValueError):
+            continue
+        ta = _title_authors(d)
+        if ta is not None:
+            return ta[0], ta[1], source
     return None
+
+
+TITLE_MIN, AUTHORS_MIN = 0.9, 0.8          # below either: listed as differing, read by a person
 
 
 def c4_inspire_sample(con, meta_dir, n=30):
     ids = [r[0] for r in con.execute("SELECT paper_id FROM papers WHERE parse_status IN ('ok','review') "
                                      "ORDER BY paper_id")]
     sample = sorted(random.Random(SEED).sample(ids, min(n, len(ids))))
-    rows, have = [], 0
+    rows, have, differ = [], 0, []
     for pid in sample:
         title, aj = con.execute("SELECT title, authors_json FROM papers WHERE paper_id=?", (pid,)).fetchone()
         try:
@@ -191,9 +230,12 @@ def c4_inspire_sample(con, meta_dir, n=30):
             continue
         have += 1
         tr, ar = compare_meta(title, [a if isinstance(a, str) else str(a) for a in authors], m[0], m[1])
-        rows.append({"paper_id": pid, "metadata": True, "title_ratio": tr, "author_fraction": ar})
-    return {"sample": sample, "seed": SEED, "with_metadata": have, "rows": rows,
-            "blocked": have == 0}
+        rows.append({"paper_id": pid, "metadata": True, "source": m[2], "title_ratio": tr, "author_fraction": ar})
+        if (tr is not None and tr < TITLE_MIN) or (ar is not None and ar < AUTHORS_MIN):
+            differ.append(pid)
+    by_source = dict(collections.Counter(r["source"] for r in rows if r["metadata"]))
+    return {"sample": sample, "seed": SEED, "with_metadata": have, "rows": rows, "by_source": by_source,
+            "differ": differ, "title_min": TITLE_MIN, "authors_min": AUTHORS_MIN, "blocked": have == 0}
 
 
 # ---------------------------------------------------------------- C5
@@ -377,7 +419,7 @@ def run(lay, db_path=None, hybrid=False, eq_n=40):
         rep["C1"] = c1_counts(con)
         rep["C2"] = c2_abstract_sections(con, os.path.join(lay.build, "tex"))
         rep["C3"] = c3_failures(con)
-        rep["C4"] = c4_inspire_sample(con, lay.meta_arxiv)
+        rep["C4"] = c4_inspire_sample(con, os.path.join(lay.data, "meta"))
         rep["C5"] = c5_bibliography(con)
         rep["C6"] = c6_duplicates(con)
         rep["C8"] = c8_equations(con, lay, n=eq_n)
@@ -445,17 +487,26 @@ def markdown(rep):
     a("")
     a(f"- Sample (random.Random({c['seed']}), from the ingested papers): {', '.join(c['sample'])}.")
     if c["blocked"]:
-        a("- **Blocked**: no INSPIRE or arXiv-API record exists under kb-data/meta/arxiv for any of them (the "
-          "metadata stage of K1 waits for the fetch path of decision 0015). The comparison code "
+        a("- **Blocked**: no INSPIRE or arXiv-API record exists under kb-data/meta/inspire or meta/arxiv-api for any "
+          "of them (`nrpic-fetch-arxiv --meta` writes them). The comparison code "
           "(`qa_report.compare_meta`: title similarity, surnames found) is tested on synthetic records.")
     else:
-        a(f"- {c['with_metadata']} of {len(c['sample'])} have metadata on disk.")
+        a(f"- {c['with_metadata']} of {len(c['sample'])} have metadata on disk (kb-data/meta/inspire/<key>.json, else "
+          f"meta/arxiv-api/<key>.json; written by nrpic-fetch-arxiv --meta); by source: " +
+          ", ".join(f"{k} {v}" for k, v in sorted(c.get("by_source", {}).items())) + ".")
+        a(f"- Compared: the title and authors the TeX parser stored in `papers` against the metadata record "
+          f"(title similarity of normalised strings; fraction of metadata surnames found in the TeX author list). "
+          f"Below {c.get('title_min', 0.9)} or {_pc(c.get('authors_min', 0.8))}: "
+          f"{', '.join(c.get('differ') or []) or 'none'}.")
         a("")
-        a("| paper | title ratio | authors found |")
-        a("|---|---|---|")
+        a("| paper | source | title ratio | authors found |")
+        a("|---|---|---|---|")
         for r in c["rows"]:
             if r["metadata"]:
-                a(f"| {r['paper_id']} | {r['title_ratio']:.3f} | {_pc(r['author_fraction'])} |")
+                tr = "-" if r["title_ratio"] is None else f"{r['title_ratio']:.3f}"
+                a(f"| {r['paper_id']} | {r.get('source', '-')} | {tr} | {_pc(r['author_fraction'])} |")
+            else:
+                a(f"| {r['paper_id']} | none | - | - |")
     a("")
     c = rep["C5"]
     a("## C5. Bibliography resolution and the citation graph")
