@@ -19,6 +19,16 @@ part of C-pre-1) have not run. The criterion-by-criterion state is `CHECKLIST.md
 evidence `EVIDENCE.md`; what is missing `OPEN.md`. The text below is the state of wave 1
 (item 2 corrected in wave 2).
 
+**Wave 2b (2026-11-19, lead): G1 still NOT MET.** With core/collisions-2 and
+`coll_energy = particle`, T0b, T1, T2, T10 pass again (counts identical to the release in
+a flat box) and T12 (a G2 item) passes in the static homogeneous metric; all recomputed by
+the lead (L13, `../REVIEW-wave2.md` section 6). The one missing part of criterion 1 is
+T6-T8, which the wave-3a heat helper is running. Baseline (criterion 2): unchanged, plus
+the Juttner fluid onset along the King family, y0 = 0.32143 (run C-20261119-151502-cb831a8,
+L15). Common evidence: the analysis pipeline's growth-rate fit is still unvalidated on
+runs; G1 figures, the note's G1 sections and a verifier of the G1 material are missing
+(`OPEN.md`).
+
 ## 1. Track-specific criteria
 
 | # | Criterion | Status | Evidence |

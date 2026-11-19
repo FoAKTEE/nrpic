@@ -165,6 +165,14 @@ before the run it concerns.
   snapshot), not with the closed form.
 - T10b: in wave 2 only the T2 statistics were compared on the card (run
   C-20261115-180525-94ddd22); the T4 comparison is still open.
+- T12 (lead, wave 2b, no criterion loosened): "the flat value for the same proper density
+  and temperature" is best taken from a flat twin that holds the same particles at proper
+  positions (box side psi0^2, orthonormal momenta, step alpha0 dt, same seed). With
+  `coll_energy = particle` the twin is the same physical state step by step, so its sharp
+  form is: identical n_tested and n_coll in every step, hence the rate per coordinate time
+  and volume exactly alpha0 psi0^6 times the twin's; the 4-sigma comparison with the analytic
+  rate stays as written (runs C-20261119-143049-0cf699a, C-20261119-145925-dbcfb9c; lead's
+  recheck C-20261119-151502-cb831a8).
 
 ## 3. Order and cost
 

@@ -67,4 +67,8 @@ recheck from the registered outputs: `../REVIEW-wave2.md` section 6 (L13).
 | R6 King threshold model, first step | cell mode: +8.0(3.4)e-11 of sum M W_p per collision (pair model 1.74e-10); particle mode: canonical energy +1.5-1.9e-21 M per collision | C-20261119-141431-a351ac7, figure C-20261119-142957-c5da7d0 |
 | Cost | particle mode 1.68 x cell mode per tested pair (processor, equal load) | C-20261119-143146-226b0e0 |
 
+Lead's wave-2b review runs: C-20261119-151502-cb831a8 (L13 box_rerun recheck, L14 cluster-run
+defect, L15 King-family fluid onset y0 = 0.32143) and C-20261119-151944-08f3220 (L16 onset of
+the relative core contraction).
+
 Heat conduction T6-T8 (package `heat/`, wave-3a helper): in progress, see `OPEN.md` item 1.

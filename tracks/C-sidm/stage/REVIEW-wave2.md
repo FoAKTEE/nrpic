@@ -1,4 +1,12 @@
-# C-sidm lead review of wave 2
+# C-sidm lead review of wave 2 (and wave 2b)
+
+Sections 1-5: lead session of 2026-11-15 (cut off by the account's usage limit after writing
+them; its stage files were committed unchanged in wave 2b, commit 0559b367). Sections 6-8:
+lead session of wave 2b, 2026-11-19 (box_rerun helper; the cluster runs; the wave-3a heat
+package). Runs of the wave-2b review (processors, 0 card-hours): C-20261119-151502-cb831a8
+(L13-L15, `review_wave2/run_review2b.sh`, 4 min on 2 cores) and C-20261119-151944-08f3220
+(L16, `review_wave2/rv_cc_onset.py`, 10 s). Predictions L13-L16 in `../JOURNAL.md` before
+the runs; outcomes there, failed clauses included.
 
 Lead session of 2026-11-15 (19:20Z-), after the five helpers of wave 2 (box_tests, models,
 threshold_scan, note, verifier) finished. Each package was checked from its registered
@@ -197,3 +205,151 @@ What the track does about each WRONG or NOT CONFIRMED item:
 | Weak point 2: the fluid end is not pinned | Partly closed: Juttner onset computed twice (sections 2 and 5); the GR-hydro view (core: `dyn_grmhd` needs a Synge equation of state, two to three core sessions) is a decision for the orchestrator |
 | Weak point 3: the collisionless threshold of the core-halo family has no anchor; budget | Open: the G2 scan (SCAN.md, 26-28 card-hours) must cover Z(0) up to about 1 for b = 0.1 |
 | C18: VERIFIER.md instead of VERIFIER_REPORT.md; the note's ledger not recomputed by a fresh verifier | Lead's reading: VERIFIER.md is the verifier's report (decision 0012 names the documents a session can write; the verifier states this in its section 3). The ledger was not recomputed by a fresh verifier; asked of the orchestrator |
+
+## 6. box_rerun (wave 2b): core/collisions-2 with `coll_energy = particle`
+
+Checked from the registered outputs with the lead's own readers (`review_wave2/rv_box2b.py`;
+for T2 the lead's wave-2 function `rv_box.t2` pointed at the new runs), not from the helper's
+scripts or JSON (run C-20261119-151502-cb831a8, figure `rv_box2b.png` looked at). Prediction
+L13 held in every clause.
+
+Confirmed:
+- R1 (option absent, new executable, run C-20261119-141502-95f0200): 36 of 36 output files
+  of the six T0b cases byte-identical to the release run C-20261115-170155-13ff01f.
+- R2 (option present, run C-20261119-141711-7db7a6a): n_tested, n_coll, n_updated,
+  max_nsub, n_trunc equal to R1 in all 25 records of all six cases; sum_P within 2.2e-16;
+  n_noroot = n_balance = 0, max_dlam = 0; dumps of version 2 (NRPCOLD2). The helper's replay
+  (6/6) was not rerun; the record-level identity with R1 is my independent part.
+- R3 (run C-20261119-141806-af19c1c): integer columns identical to the release run
+  C-20261115-165500-c67e036 in all 3200 steps; my T2(b) ratio 0.999906-1.000096 (z_b
+  -2.20..+2.92), within 4.4e-16 of my recheck of the release; T1 at 1.05e-7 of the bound;
+  n_trunc = n_noroot = n_balance = 0.
+- R4 (run C-20261119-143041-f94e350): final particle records of 8 and 64 MeshBlocks and of
+  the three restarts byte-identical to one MeshBlock; seed 8 differs in every particle;
+  385554 collisions, as the release.
+- R5, T12 (runs C-20261119-143049-0cf699a, C-20261119-145925-dbcfb9c): n_tested and n_coll
+  of each curved run and its flat twin identical in all 200 steps of all four pairs, so the
+  rate per coordinate time and volume is alpha0 psi0^6 = 1.4172488 times the twin's exactly;
+  my analytic expectation (1/2) N^2 M sigma <v_Mol>(theta) alpha0 dt / psi0^6, theta from
+  <W - 1> of u/psi0^2 of the first snapshot, gives 1.0000896, 0.9999717, 1.0000718,
+  1.0000525 (|z| <= 2.35), equal to the helper's to 1e-6. [JUDGEMENT] The twin comparison is
+  the sharp form of the T12 criterion (helper's suggestion): adopted as a note in TESTS.md
+  section 2a below.
+- R6, King threshold model (run C-20261119-141431-a351ac7), from coll.hst alone: particle mode
+  changes the canonical energy by +1.73 to +1.99e-21 of sum M H_p per collision (all Kn, both
+  steps: the systematic rounding residual the helper reports); cell mode at Kn = 0.01, both
+  steps pooled, +9.1e-11 of sum M W_p per collision (helper, step 1 from cell sums:
+  +8.0(3.4)e-11); columns 1-29 of the cell-mode Kn = 1 record identical to the release smoke
+  run, columns 30-31 differ by 1.7e-14 and 1.3e-15 (summation order, as the helper found).
+- Cost (run C-20261119-143146-226b0e0): collision part per tested pair, particle over cell,
+  1.676 (1.57-1.81 over the repeat combinations).
+- Figures of the helper looked at: t12_c2, king_defect_c2, paired_c2particle,
+  compare_modes_c2, t10_repro_c2particle; consistent with the numbers. Cosmetic: in
+  t10_repro_c2particle mb8 and rst2 share a colour; CC labels overlap in my rv_king_onset.
+
+Not confirmed: the helper's cell-sum standard errors of R6 (I used the record sums; my
+pooled values agree with its central values within its errors); the helper's replay R2 and
+the flat-metric check of the version-2 dumps (not rerun); the T12 position bookkeeping
+(whole-period differences before the modulo, not investigated by either of us).
+
+Wrong: nothing. The helper's failed prediction clauses (R3(iv) positions 200 ulp, R3(v')
+cost 1.68 > 1.5, R6(a) column 30) are on record in its journal and are not defects. The
+failed first R2 attempt C-20261119-141614-e42b5ec has a manifest saying "completed" because
+its driver exited 0 although all six AthenaK runs exited 1: kept as it is (the journal says
+so); the T12 run C-20261119-143049-0cf699a is on record as failed (figure crash after the
+JSON), its numbers come from C-20261119-145925-dbcfb9c.
+
+Open (from the helper): the cell-mode defect of the King model is 0.46 of the pair-model
+prediction (z = -2.8; the card runs gave 0.70); not explained, and no longer relevant to
+production runs once `coll_energy = particle` is used. Card runs with collisions-2: none
+(see `G1/OPEN.md` item 7). T3-T5, T9, T11 not repeated with the option; T12 with a modulated
+metric not run; MPI variant of T10 not run.
+
+Fixed here: `collide/TESTS.md` section 2a gets the T12 twin clarification (below).
+
+## 7. The first collisional cluster runs: what can and cannot be concluded
+
+Runs (wave 2, release core-v0.3, cell-mode pair energy): card jobs C-20261115-171058-c26cfad,
+C-20261115-171059-4b70228, C-20261115-171059-35441e3 (CC1 = King y0 = 0.334032, the
+collisionless threshold; CC2 = King y0 = 0.314, collisionless-stable; Kn = inf, 10, 1;
+N = 1e5, one seed, static mesh with M/4 cells over the cluster, 300 M). Rechecks L10 (wave 2),
+L14, L16 and the reference L15 (this session); figures `rv_cc.png`, `rv_cc_onset.png`,
+`rv_king_onset.png` (runs C-20261119-151502-cb831a8, C-20261119-151944-08f3220), looked at.
+
+Established [VERIFIED, from these runs]:
+1. All four collisional runs reach alpha_min < 0.3 (72.5, 77.75, 184.25, 206.75 M for
+   cc1_kn1, cc2_kn1, cc1_kn10, cc2_kn10); the controls keep every particle for 300 M but
+   drift outward (alpha_c +0.033 for CC1, +0.018 for CC2 by about 200 M).
+2. Relative to its control, the central lapse of each collisional run falls steadily from
+   the start: by 0.01 at 44-46 M (Kn = 10, after 0.35 collisions per particle) and 20-21 M
+   (Kn = 1, 1.6 collisions per particle) (L16).
+3. The energy injected by the release operator's defect (sum of dE_particles) is 0.013-0.016
+   of the binding margin E_b(CC1) - E_b(CC2) = 1.0e-4 M0 at that time (Kn = 10; 0.11-0.12 at
+   Kn = 1) and reaches the margin only at 180 and 202 M (Kn = 10), 54 and 59 M (Kn = 1): it
+   grows 8-18 times per collision while the core deepens. Before alpha_min < 0.3 it totals
+   1.9 and 2.3 margins at Kn = 10, 17-19 at Kn = 1 (L14).
+4. Neither a fixed number of collisions per particle (13.4 and 15.3 against 2.5 and 2.9, ratio
+   5.3-5.4) nor a fixed injected energy (ratio 8-9) nor a fixed time (ratio 0.38-0.39) marks
+   the collapse.
+5. Reference (L15, `tmb` at b = 1, checked against the King JSON to 3e-10): the radial-
+   pulsation onset with the Juttner Gamma_1 (the track's Kn -> 0 anchor) lies at y0 = 0.32143
+   (alpha_c = 0.6707), between CC2 (0.314, alpha_c = 0.6762) and CC1 (0.334, alpha_c =
+   0.6614); with F21's gamma = 1 + p/u at y0 = 0.37206; the collisionless binding-energy
+   maximum at 0.33403. So CC1 is fluid-unstable and collisionless-marginal; CC2 is stable at
+   both ends of Kn by the linear criteria, 0.0055 in alpha_c from the fluid onset.
+
+What can be concluded:
+- The defect of the release operator does not start the contraction (item 3); it may
+  accelerate the late phase, where it becomes comparable to the margin [JUDGEMENT].
+- For CC1 a collapse with collisions is the physically expected outcome (beyond the fluid
+  onset) [JUDGEMENT on applying the linear criterion at finite Kn].
+- Leading hypothesis for both [JUDGEMENT, not tested]: collisions carry heat out of the King
+  core (its velocity dispersion falls outward), the core contracts (gravothermal), and a
+  model within 0.006-0.015 in alpha_c of the onsets crosses the relativistic threshold after a
+  small contraction. The per-collision efficiency being lower at Kn = 1 than at Kn = 10
+  (item 4) fits the suppression of conduction as the mean free path approaches the core
+  size, but is not a test.
+
+What cannot be concluded:
+- That CC2's collapse is physical, or the threshold_scan reading "the collisional threshold
+  lies below y0 = 0.314": the controls' numerical drift (0.018-0.033 in alpha_c) is larger
+  than CC2's distance from the fluid onset (0.0055) and than the CC1-CC2 separation (0.0148),
+  so this mesh does not hold the equilibrium to the precision of the stability margin.
+- Anything from a single seed: card runs are not byte-reproducible, and the scatter of the
+  collapse time between seeds is unmeasured.
+- Collapsed masses: the excised fractions are proxies; the static M/4 mesh cannot hold the
+  black hole (non-finite state after the collapse, exit status 0).
+- The earlier statement "the positive energy defect heats the cluster and is not the collapse
+  trigger" (threshold_scan) is now supported for the trigger (item 3) but was not then.
+
+Runs that decide (all scouting, N = 1e5, the same particle files, 300 M; about 0.3 card-hours
+each at 3.45 s per M, M/4 runs):
+- D1, the defect: cc1_kn10 and cc2_kn10 with `coll_energy = particle` (collisions-2 card
+  executable, once core states its card tests usable), seeds 1 and 2, plus cc2_kn10 in cell
+  mode with seed 2 for the seed scatter (5 runs, about 1.5 card-hours). Prediction to write
+  before: the relative lapse drop of the first 100 M unchanged within the seed scatter; a
+  collapse-time shift of CC2 beyond the scatter would make the defect a cause of the late
+  phase.
+- D2, the mesh: cc2_kninf and cc2_kn10 (particle mode) with one more refinement level
+  (M/8 finest cells) and `coll_cell_factor = 2`, so that the collision cells and their
+  statistics stay those of D1 while gravity is resolved twice as finely (2 runs; cost to
+  measure, estimated 4-8 times per M, so 2-5 card-hours [JUDGEMENT]). Decides whether the
+  controls' drift is numerical (it should fall by about four if second order) and whether
+  CC2 still collapses.
+- D3, the physics: a King model on the stable side of the fluid onset by more than the
+  controls' drift (y0 = 0.25-0.28; new particle files with the existing generator) at Kn = 10
+  and 1 in particle mode with its control (3 runs, about 0.9 card-hours). Under the
+  gravothermal hypothesis it contracts relative to its control at a rate comparable to CC2's
+  and collapses later in proportion to its distance from the onset; no relative contraction
+  would refute the hypothesis.
+- Order: D1 first (cheapest; also gives the seed scatter every later comparison needs), then
+  D2 and D3. About 4-8 card-hours of the 41.4 left toward G2. Pending conditions: core's
+  statement on the collisions-2 card executable (outbox 20261119T151725Z), and the owner's
+  limit of two queued card jobs (the heat helper holds both slots on 2026-11-19).
+
+## 8. heat (wave-3a helper, same worktree): not reviewed
+
+The heat-conduction package `heat/` (T6-T8) belongs to the second workflow of 2026-11-19
+(`coord/digests/wave-3a-plan.md`); it was running while this review was written (five
+processor runs, two queued card jobs) and commits its own files. Not reviewed here; its
+outcome decides G1 criterion C6 and goes to the next lead.
