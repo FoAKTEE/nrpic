@@ -265,3 +265,82 @@ Catmull-Rom) before the registered run; the prediction above was written before 
 The same holds for T1 (a debugging pass of the five cases before run
 core-20261119-144414-c629377) and for a 16^3 smoke run of the group history with a
 continuation (`n2dbg/t3smoke`, 6 s).
+
+## 2026-11-19 session newton2-2 (resumed at 15:34Z)
+
+The first session of this package stopped at 15:31Z with the queue of processor tests
+(`scratch/core/tmp/n2queue/queue.sh`) still running; it was left running. To use the free
+cores of the allotment, a second queue (`queue2.sh`, list `list2.txt`: T7, T6, T4c) runs
+beside it; it claims its tests by a placeholder so that the first queue skips them. The
+predictions above stand; nothing below changes them.
+
+### T2 outcome (Track B's pancake with the spectral symbol) [VERIFIED]
+
+Runs: cases core-20261119-150559-c1ff7ca (n = 16, 32 spectral, n = 32 seven-point; 686 s
+on two cores), analysis core-20261119-153046-039c454 (Track B's own `analyze_pancake.py`
+from the tip of `track/B-emd-gw`; `t2_pancake.json`, figure `t2_pancake.png`, looked at).
+Largest displacement error against Zel'dovich in units of (a - 1) d/k (the track's
+`ex_cont`):
+
+| n, solver | a = 2 | a = 5 | a = 10 | a = 15 |
+|---|---|---|---|---|
+| 16, spectral | 3.28e-4 | 1.57e-3 | 4.21e-3 | 5.05e-3 |
+| 32, spectral | 9.55e-5 | 5.56e-4 | 1.97e-3 | 1.79e-3 |
+| 32, seven_point | 1.390e-3 | 2.993e-3 | 4.417e-3 | 5.763e-3 |
+| 32, track's multigrid run | 1.39e-3 | 2.99e-3 | 4.42e-3 | 5.76e-3 |
+| 32, track's `pm.py` | 1.1e-4 | 6.1e-4 | 2.1e-3 | 1.7e-3 |
+| 32, spectral minus `pm.py` | 2.0e-5 | 6.6e-5 | 1.9e-4 | 3.5e-4 |
+
+- n = 32 against `pm.py` within 30 per cent: 9.55e-5 against 1.1e-4 (-13 per cent) and
+  5.56e-4 against 6.1e-4 (-9 per cent). Held. Below the seven-point value at a = 2 by a
+  factor 14.6 (prediction: at least seven). Held.
+- Mode minus `pm.py` below 5e-5 at a <= 5: 2.0e-5 at a = 2 held; 6.6e-5 at a = 5 FAILED
+  (by 30 per cent). The difference grows with the nonlinearity faster than the
+  fourth-order gather estimate (kh)^4/180 that I used; I have not separated the gather
+  from the time integration (both codes use the same step), so no cause is named.
+- seven_point reproduces the track's multigrid numbers: ratios 1.0000, 1.0011, 0.9993,
+  1.0006 (prediction: three digits; held to 0.11 per cent, the a = 5 entry by a hair).
+- Refutation (n = 32 at a = 2 above 5e-4): not refuted.
+- n = 64 runs in the card job (pending).
+- At n = 16 the spectral error is 17 times below the track's seven-point run at a = 2
+  and 5 times at a = 15.
+
+### T4a outcome (generator of the deformed ball) [VERIFIED]
+
+Runs: core-20261119-152228-0ad3c0e (no simulation; 9 s), figure by
+core-20261119-152928-6be4984 (`t4a_generator.png`, looked at: core's particles on Track A's,
+aligned and rotated). (delta_L, e, p) = (0.2, 0.2, 0), hxi = 0.05, 33552 particles, with
+and without rotation seed 3: positions, velocities and masses of `make_ic.py ball --axes
+--vgrad [--rotate 3]` equal those of Track A's `make_deformed_ball.py` exactly (largest
+difference 0, prediction 1e-13: held); r_vol = 1.0004144105705273 in both JSON files, the
+same r_mom to the last digit (rotated: 2e-16). The two files differ in 16776 bytes, all of
+them the sign bit of a zero velocity component (the track writes -0.0 where core writes
++0.0; byte 47 of the first record, and so on). Centre of mass 5e-17, net momentum 4e-18.
+The JSON key `semi_axes` of core holds S times `--radius`; the track's
+`semi_axes_start` holds S times r_vol (2.34375 against 2.34472).
+
+### T8 outcome (self-force of one particle) [VERIFIED]
+
+Runs: cases core-20261119-152207-d4e656c (75 one-step cases, 18 s), analysis
+core-20261119-152742-a6810bd (`t8_selfforce.json`, figure `t8_selfforce.png`, looked at).
+Force in G m/dx^2, slopes in G m/dx^3, counted away from the vertex:
+
+| case | at vertex | at centre | slope at vertex (diag., edge) | slope at centre (diag., x) | largest radial on diagonal | largest on edge | largest component | e-folding at vertex (dx^3/Gm)^1/2 |
+|---|---|---|---|---|---|---|---|---|
+| isolated, CIC + Catmull-Rom | 1e-16 | 2e-7 | 1.80, 1.79 | -7.6, -8.0 | 0.97 | 0.34 | 0.83 | 0.75 |
+| isolated, PCS + spline | 2e-16 | 2e-7 | 0.50, 0.50 | -0.81, -0.81 | 0.165 | 0.087 | 0.10 | 1.42 |
+| periodic Fourier (spectral), CIC | 2e-16 | 0 | 1.19, 1.18 | -4.8, -5.0 | 0.62 | 0.22 | 0.52 | 0.92 |
+
+- The force vanishes at the vertex and at the cell centre, points away from the vertex
+  (unstable) and towards the cell centre (stable) in all three: not refuted.
+- Slope at the vertex between 1.2 and 2.5 for the configuration the track used
+  (isolated, CIC, Catmull-Rom): 1.80, held; its e-folding 0.75 against the track's 0.8.
+  The periodic spectral case, which the prediction did not name, is at 1.19.
+- Largest value along x between 0.2 and 0.6: on the edge (s, 0, 0) 0.34, held; the largest
+  component anywhere, on the line from a face centre to the cell centre, is 0.83, above
+  the 0.36 to 0.58 of the note's section 5.2 (those were components of the track's clumps,
+  which are not single particles).
+- The cubic cloud with the spline gather is smaller by 5.9 on the diagonal (prediction:
+  at least three). Held.
+- The isolated "at centre" value of 2e-7 is the asymmetry of the multipole boundary about
+  a cell centre that is not the middle of the domain.
