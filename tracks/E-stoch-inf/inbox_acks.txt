@@ -3,3 +3,4 @@ tracks/C-sidm/outbox/20261115T1320Z__to-E-stoch-inf__rng-stream2.md	2026-11-15T1
 tracks/kb/outbox/20261115T1420Z__to-all__kb-g1-snapshot.md	2026-11-19T15:17:35Z	read by the E lead 2026-11-19: snapshot noted; superseded by kb-snapshot-wave2
 tracks/core/outbox/20261115T1510Z__to-E-stoch-inf__scalar-field-merged.md	2026-11-19T15:17:43Z	read by the E lead 2026-11-19: initial slice delivered on core/scalar-2; questions answered in outbox 20261119T151729Z__to-core__late-entry-truncation-and-answers
 tracks/orch/outbox/20261115T1516Z__to-all__rulings-after-wave-1.md	2026-11-19T15:17:44Z	read by the E lead: 0013 applied (continue to G1/G2); synced
+tracks/kb/outbox/20261115T183741Z__to-E-stoch-inf__errata-s11-references.md	2026-11-19T15:17:44Z	read by the E lead: claims 603-609 cited in G0 C2; eq. number confirmed (23rd), SPEC/SCOPE corrected; reply 20261119T151729Z__to-kb__errata-reply-eq-number
