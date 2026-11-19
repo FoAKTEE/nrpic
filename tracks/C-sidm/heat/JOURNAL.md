@@ -218,3 +218,18 @@ difference ~2.7 percent. So this set can only refute a dependence larger than ab
 percent between neighbouring values; P-T8 (changes below 2 percent between the two finest
 values) is judged on card job A. Predicted here: no change above 5 percent between any two
 neighbouring values of dt, pmax or dx; refuted otherwise.
+
+## 2026-11-19 15:44 Outcome T6(c): transition reported; the "diffusive at 0.1" part of P-T6c FAILED (runs C-20261119-151104-b930d71, C-20261119-145733-558136e; analysis C-20261119-154057-471b5ec)
+
+Left-slab rest mass per area (seed 1; 1e6 particles at lambda/L = 10, 1, 0.1 and 2e6 at
+1000, 100) at t = 0.5 L/<|v|>_2: 0.4642, 0.4641, 0.4634, 0.4605, 0.4330 for lambda/L =
+1000, 100, 10, 1, 0.1; at 1.3 L/<|v|>_2: 0.5005, 0.5005, 0.4999, 0.4996, 0.4852; at the end
+(5 L/<|v|>_2) all within 8e-4 of 0.5. Fraction of particles collided by the end: 0.008,
+0.076, 0.54, 0.999, 1.000. The ordering in lambda is monotone, as predicted, but down to
+lambda/L = 1 the curve stays on the collisionless one (the step mixes in about one
+crossing time, before most particles collide), and at lambda/L = 0.1 the mass rises more
+slowly and then oscillates with a period of about 1.1 L/<|v|>_2, close to the sound
+crossing L/c_s = 1.07 L/<|v|>_2 at theta = 0.0133 [JUDGEMENT: the kinetic transient at
+the interfaces launches sound waves]. That is not the diffusive curve I predicted for 0.1:
+there the diffusion time 1/(chi_1 k_1^2) = 0.42 L/<|v|>_2 is shorter than a crossing, so
+neither limit applies. Figure `figs/T6c_transition.png` (looked at).
