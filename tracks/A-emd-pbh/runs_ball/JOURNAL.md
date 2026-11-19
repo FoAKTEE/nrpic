@@ -474,3 +474,35 @@ Prediction [JUDGEMENT]: the run reaches t = 16; the finder reports a horizon bet
 and 14 (R_AH = 1.37 M is only 2.7 cells, so it may also fail: probability of a detection
 about 0.6); if found, |m_irr/m_exact(slice) - 1| below 0.1 at first detection; core-shell
 largest |eps| at the turnaround (tau = 3.37) below 2e-2.
+
+Outcome of entry 9, run A-20261119-145154-c40f0ce (processor, 4300 s), analysis
+A-20261119-155636-dbc2e1b (`compare.py`, `fields.py`; figures bh_n64_gauge.png,
+bh_n64_shells.png, bh_n64_horizon.png, bh_n64_fields.png in figs/, each looked at). The
+finder writes its summary into the working directory, which for this processor run was
+the run directory, not bh_n64/: linked into bh_n64/ before the run was closed.
+- Reaches t = 16 with finite fields: HOLDS.
+- Horizon: REFUTED. The finder found nothing at any of its 65 searches (t = 8 ... 16).
+  The largest 2m/R on the x axis reached 0.80 at t = 12.25; by then the areal radius of
+  the innermost line point (coordinate r = 0.43 M) had grown to 1.37 M, the exact R_AH:
+  the 1+log/Gamma-driver coordinates squeeze the collapsing core into the first one or two
+  cells of dx = M/2, where no horizon can be represented (the same failure as SR-2 on 2t,
+  one scale up).
+- Core |eps| at the turnaround (tau = 3.37): 1.4e-2 < 2e-2, HOLDS; core turnaround mean
+  -0.085 M (-2.5 per cent), R_max -0.39 per cent. Later the core shells fall ahead of the
+  exact solution: largest |eps| 0.054 at tau = 6.46, 0.15 at 8.55, 0.60 at 9.55; per
+  particle, R falls through 2m 0.40 M EARLY on average (261 core particles), the
+  numerical R of the core being too small.
+- Gauge, recorded as a pathology at this resolution (bh_n64_gauge.png): the central lapse
+  follows the homogeneous reference within 2 per cent to t = 3.6 (0.04 per cent to t = 2)
+  and then stays far above it (0.86 at t = 6 against 0.49; reference 0.06 at t = 7), as
+  the source paper's OS lapse does (main.tex:943); but it never collapses: minimum 0.48
+  at t = 12.5, then it RISES to 0.93 at t = 16 while the central proper time passes the
+  exact crunch (10.63) at t = 13.6 and the central density falls to the background: the
+  core's dust passes through the centre and re-expands, as in SR-2. Largest |H| grows from
+  0.034 (t = 8) to 3.3 (t = 14) in the central cells (bh_n64_fields.png: a 2-3 cell
+  checkerboard of H and Theta at the centre from t = 8). 515 particles with rest mass
+  0.768 were removed by the excision (alpha < 0.1 is never reached at the centre on the
+  history probe; which criterion removed them is not established) between t = 14 and 16.
+Conclusion for the card runs [JUDGEMENT]: dx = M/2 is below the resolution at which this
+gauge forms a horizon for data set 3; dx = M/8 puts about 4 times more cells across the
+collapsed core. Nothing in the queued job is changed.
