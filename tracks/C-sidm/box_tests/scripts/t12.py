@@ -273,7 +273,7 @@ def figure(res, twins, out, tag):
     fs.use_style()
     cols = {"0.1": fs.PAL["red"], "1.0": fs.PAL["yellow"]}
     fig = plt.figure(figsize=(fs.FULL_WIDTH, 3.4))
-    ax1 = fig.add_axes([0.08, 0.15, 0.24, 0.78])
+    ax1 = fig.add_axes([0.08, 0.15, 0.25, 0.78])
     ax2 = fig.add_axes([0.42, 0.15, 0.22, 0.78])
     ax3 = fig.add_axes([0.75, 0.15, 0.23, 0.78])
     for name, r in sorted(res.items()):
@@ -281,15 +281,16 @@ def figure(res, twins, out, tag):
             continue
         c = cols.get(r["theta"], "k")
         if r["kind"] == "curved" and r["seed"] == 1:
-            ax1.plot(np.arange(1, r["steps"] + 1), r["series"]["sumP"], color=c, lw=0.7,
+            ax1.plot(np.arange(1, r["steps"] + 1), 1e3 * (np.array(r["series"]["sumP"]) - 1),
+                     color=c, lw=0.7,
                      label=rf"$\theta={r['theta']}$")
         if r["kind"] == "curved":
             b = np.array(r["series"]["bound"])
             ax3.semilogy(np.maximum(np.array(r["series"]["relP"]), 1e-30) / b,
                          color=c, lw=0.6, ls="-" if r["seed"] == 1 else "--")
-    ax1.axhline(1, **fs.GUIDE)
+    ax1.axhline(0, **fs.GUIDE)
     ax1.set_xlabel("step")
-    ax1.set_ylabel(r"curved: $\Sigma P$ per step / expected", fontsize=8)
+    ax1.set_ylabel(r"curved: $10^3\,(\Sigma P$ per step / expected $-$ 1)", fontsize=8)
     ax1.legend(loc="lower right", fontsize=7)
     k = 0
     xs, labels = [], []
@@ -297,18 +298,21 @@ def figure(res, twins, out, tag):
         th = key.split("_")[0][2:]
         seed = key.split("_")[1]
         c = cols.get(th, "k")
-        ax2.errorbar(k, t["rate_ratio"] / t["expected"] - 1, yerr=t["sd"] / t["expected"],
+        ax2.errorbar(k, 1e3 * (t["rate_ratio"] / t["expected"] - 1),
+                     yerr=1e3 * t["sd"] / t["expected"],
                      fmt="o", color=c, ms=4, mfc=c if seed == "s1" else "none",
                      label="twin (Poisson sd)" if k == 0 else None)
         r = res[f"T12_th{th}_curved_{seed}"]
-        ax2.errorbar(k + 0.3, r["ratio"] - 1, yerr=r["sumP_per_step_se"] / r["expected_per_step"],
+        ax2.errorbar(k + 0.3, 1e3 * (r["ratio"] - 1),
+                     yerr=1e3 * r["sumP_per_step_se"] / r["expected_per_step"],
                      fmt="s", color="grey", ms=3, label="analytic (se)" if k == 0 else None)
         xs.append(k + 0.15); labels.append(f"{th}\n{seed}")
         k += 1
     ax2.axhline(0, **fs.GUIDE)
     ax2.set_xticks(xs); ax2.set_xticklabels(labels, fontsize=7)
-    ax2.set_ylabel(r"rate / ($\alpha_0\psi_0^6\times$flat) $-$ 1", fontsize=8)
-    ax2.legend(loc="lower left", fontsize=6)
+    ax2.set_ylabel(r"$10^3\,$[rate / ($\alpha_0\psi_0^6\times$flat) $-$ 1]", fontsize=8)
+    ax2.set_ylim(-4.5, 5.5)
+    ax2.legend(loc="upper center", fontsize=6, ncol=2)
     ax3.axhline(1, **fs.GUIDE)
     ax3.set_xlabel("step")
     ax3.set_ylabel(r"curved: $\max_i|dP_i|/\Sigma MW$ / bound", fontsize=8)
