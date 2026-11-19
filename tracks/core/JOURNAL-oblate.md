@@ -495,3 +495,61 @@ height [JUDGEMENT].
   pancake time with the particle set and deposit held fixed (entry 3 expects about
   31.5/19.7 = 1.6 against T4; the factor 1.44 to 1.58 of entry 3 was against the
   Newtonian clock with M = 1, 20.46 M).
+
+## 2026-11-19 16:16Z, entry 8: T4 at cells M/2 holds; the crossing is wider than I wrote
+
+Run core-20261119-153609-754c44d (processors, release executable, 64^3 and 128^3 side
+by side; the 64^3 run ended at 16:07Z after 1834 s, the 128^3 run is at t = 4 M and
+needs about three more hours). Analysis core-20261119-161400-72ec4a0 (the first
+analysis core-20261119-161116-cb95558 has the same numbers without the crossing
+diagnostics). Figures looked at: `analysis/oblate/figs/oblate_newton.png`,
+`oblate_newton_particles.png`.
+
+| quantity (64^3, cells M/2) | prediction | measured | verdict |
+|---|---|---|---|
+| t_p, smallest z_rms over the snapshots (every 0.25 M) | 19.74 +- 0.3 M | 20.00 M (from the second moment of the history, every 0.1 M: 19.90 M) | P4a holds, near the upper edge |
+| z_rms at t_p / initial | < 0.12 (refuted above 0.2) | 0.059 | P4a holds |
+| R_rms at t_p / initial | 0.62 +- 0.02 | 0.613 | P4b holds |
+| across the plane at t_p + 1 M | >= 0.95 | 0.966 | P4c holds |
+| z_rms, R_rms at 24 M / initial | z grows again to about 0.37, R keeps falling | 0.367, 0.364 (homogeneous: 0.37, 0.38 from the figure) | P4c holds |
+| energy change before t_p - 1 M | < 5e-3 of W(0) | 4.0e-4 | P4d holds |
+| energy change to t_p + 2 M | reported | 1.7e-3, at the caustic; afterwards oscillating within 8e-4 | |
+| t_p of the two resolutions within 0.25 M | | 128^3 not finished | open |
+
+The initial rms values of the sample are z_rms = 1.9399 M, R_rms = 6.3371 M against
+1.9494 and 6.3246 for the homogeneous spheroid (the weight psibar concentrates the
+sample slightly in z and not in R). W(0) of the particle sum is -0.086182; the
+homogeneous spheroid has -(3/5) M_0^2 asin(e)/(a e) = -0.08622 [computed by hand from
+the closed form; 0.05 per cent].
+
+Failed sub-statement of entry 7: I wrote that the crossing would be spread over about
+0.3 M. The 10, 50 and 90 per cent crossing times are 18.76, 20.00, 20.76 M: two M
+from 10 to 90 per cent. How the spread is distributed (crossing time of every particle,
+10/50/90 per cent, in bins of the starting values; `newton_mode.json`, keys
+`crossing_by_*`):
+
+| bin of the starting height / local half-thickness | < 0.10 | 0.10-0.25 | 0.25-0.50 | 0.50-0.73 | 0.73-0.90 | > 0.90 |
+|---|---|---|---|---|---|---|
+| 10, 50, 90 per cent of t_cross [M] | 18.26, 19.76, 20.76 | 18.26, 20.00, 20.76 | 18.76, 20.00, 20.76 | 19.00, 20.00, 20.50 | 19.50, 20.00, 20.76 | 20.00, 20.50, 21.00 |
+
+| bin of the starting radius R_0 [M] | < 2.59 | 2.59-4.21 | 4.21-6.12 | 6.12-7.80 | 7.80-8.78 | > 8.78 |
+|---|---|---|---|---|---|---|
+| 10, 50, 90 per cent of t_cross [M] | 20.00, 20.26, 20.76 | 19.50, 20.00, 20.50 | 18.76, 19.76, 20.50 | 18.50, 19.76, 20.50 | 18.50, 20.00, 20.76 | 19.00, 20.76, 21.76 |
+
+Reading [JUDGEMENT; no run has yet been made in which it could fail]: the medians move
+by at most 1 M across the bins, so most of the 2 M spread is scatter inside a bin,
+largest for the particles that start closest to the plane (2.5 M between 10 and 90 per
+cent) and smallest for those that start farthest (1.0 M). That is the signature of the
+force noise of 10^4 particles on cells of M/2 (0.7 particles per cell in the spheroid):
+the ordered displacement of a particle is proportional to its starting height, the
+noise is not. The medians themselves vary coherently with radius: the rim (R_0 > 8.8 M,
+where the sample is 3.4 per cent less dense) crosses 0.8 M later than the middle, and
+the innermost decile 0.5 M later than the middle (not predicted; the figure at 20 M
+shows a ring at R of about 3 to 4 M that has already crossed while the centre has
+not). The 128^3 run is the test: noise scatter and the cloud are both resolution
+dependent, the coherent part from the density contrast is not.
+
+Consequence for T3: the GR pancake time is to be compared with t_p = 20.0 M of the
+same particles (snapshot grid; 19.9 M from the history), not with 19.74 M; and the
+crossing fraction rises over about 2 M even without relativity, so P3b's "above 0.9"
+is to be read at t_p + 1 M or later.
