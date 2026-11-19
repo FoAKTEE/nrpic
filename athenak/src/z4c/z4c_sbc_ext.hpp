@@ -67,6 +67,18 @@
 //!   ghost_falloff   = false | true              (default false)
 //!   ghost_power_metric = power q of the ghost fill of chi, gt_ij, alpha, beta (default 1)
 //!   ghost_power_curv   = power q of the ghost fill of Khat, A_ij, Gamma, Theta (default 1)
+//!   sbc_damp_gam    = lambda: d_t Gt^i += -lambda (Gt^i - Gt^i_d) in the boundary cells,
+//!                     Gt^i_d = -d_j gt^ij (det gt = 1), centred second-order differences
+//!                     (default 0: off)
+//!   sbc_damp_theta  = lambda: d_t Theta += -lambda Theta in the boundary cells (default 0)
+//!
+//! 3. Constraint damping in the boundary cells (sbc_damp_gam, sbc_damp_theta).  The stock
+//! condition replaces d_t Gt^i by the Sommerfeld operator while gt_ij keeps its full
+//! right-hand side, so Gt^i and Gt^i(gt) drift apart in the boundary cell from the first
+//! step (the Gamma constraint layer of the package's tests, which no ghost fill removes).
+//! The damping drives Gt^i towards its value from the metric, and Theta towards zero, on
+//! the time 1/lambda; it is a change of the right-hand side, so the values that blocks
+//! exchange stay consistent.  RK4 is stable for lambda dt below about 2.7.
 
 #include <cmath>
 #include <cstdlib>
@@ -94,9 +106,14 @@ struct SbcExt {
   bool ghost_falloff = false;
   Real ghost_q_metric = 1.0;
   Real ghost_q_curv = 1.0;
+  Real damp_gam = 0.0;    // rate of d_t Gt^i += -damp_gam (Gt^i - Gt^i_d) in boundary cells
+  Real damp_theta = 0.0;  // rate of d_t Theta += -damp_theta Theta in boundary cells
 
   // true if the right-hand side of the boundary cells differs from the stock condition
-  bool Extended() const { return variant != 0 || theta_mode != 0 || speed != 0; }
+  bool Extended() const {
+    return variant != 0 || theta_mode != 0 || speed != 0 || damp_gam != 0.0
+        || damp_theta != 0.0;
+  }
 
   static void Fatal(const char *file, int line, const std::string &msg) {
     std::cout << "### FATAL ERROR in " << file << " at line " << line << std::endl
@@ -155,6 +172,12 @@ struct SbcExt {
         Fatal(__FILE__, __LINE__, "<z4c> sbc_speed = '" + sp +
               "' not recognized (unit, lapse, metric)");
       }
+    }
+    if (pin->DoesParameterExist("z4c", "sbc_damp_gam")) {
+      damp_gam = pin->GetReal("z4c", "sbc_damp_gam");
+    }
+    if (pin->DoesParameterExist("z4c", "sbc_damp_theta")) {
+      damp_theta = pin->GetReal("z4c", "sbc_damp_theta");
     }
     if (pin->DoesParameterExist("z4c", "ghost_falloff")) {
       ghost_falloff = pin->GetBoolean("z4c", "ghost_falloff");

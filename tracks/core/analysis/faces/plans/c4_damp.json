@@ -1,0 +1,10 @@
+{"exe": ".work/exe/sbc3/athena_cpu",
+ "ball": {"M": 0.5, "Rb": 6, "edge": 1.5, "h": 0.5},
+ "cases": {
+  "ball_full_dg1": {"input": "inputs/ball_ext.athinput", "args": ["z4c/extrap_order=4", "z4c/ghost_falloff=true", "z4c/sbc_variant=nonwave", "z4c/sbc_speed=metric", "z4c/sbc_damp_gam=1.0"]},
+  "ball_full_dg4": {"input": "inputs/ball_ext.athinput", "args": ["z4c/extrap_order=4", "z4c/ghost_falloff=true", "z4c/sbc_variant=nonwave", "z4c/sbc_speed=metric", "z4c/sbc_damp_gam=4.0"]},
+  "ball_full_dth4": {"input": "inputs/ball_ext.athinput", "args": ["z4c/extrap_order=4", "z4c/ghost_falloff=true", "z4c/sbc_variant=nonwave", "z4c/sbc_speed=metric", "z4c/sbc_damp_theta=4.0"]},
+  "ball_full_dgt4": {"input": "inputs/ball_ext.athinput", "args": ["z4c/extrap_order=4", "z4c/ghost_falloff=true", "z4c/sbc_variant=nonwave", "z4c/sbc_speed=metric", "z4c/sbc_damp_gam=4.0", "z4c/sbc_damp_theta=4.0"]},
+  "punc_full_dgt4": {"input": "inputs/punc_ext.athinput", "args": ["z4c/extrap_order=4", "z4c/ghost_falloff=true", "z4c/sbc_variant=nonwave", "z4c/sbc_speed=metric", "z4c/sbc_damp_gam=4.0", "z4c/sbc_damp_theta=4.0"]},
+  "boost_full_dgt4": {"input": "inputs/punc_ext.athinput", "args": ["z4c/extrap_order=4", "z4c/ghost_falloff=true", "z4c/sbc_variant=nonwave", "z4c/sbc_speed=metric", "z4c/sbc_damp_gam=4.0", "z4c/sbc_damp_theta=4.0", "problem/comp0_p1=0.3", "problem/comp0_corr=approx"]}
+ }}

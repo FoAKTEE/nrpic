@@ -15,6 +15,7 @@
 #include "mesh/mesh.hpp"
 #include "z4c/z4c.hpp"
 #include "coordinates/cell_locations.hpp"
+#include "coordinates/adm.hpp"
 
 namespace z4c {
 
@@ -379,6 +380,35 @@ static void Z4cRadiativeOp(const Z4c::Z4c_vars& z4c, const RegionIndcs &indcs,
   }
 }
 
+//----------------------------------------------------------------------------------------
+//! \fn void Z4cGammaFromMetric
+//! \brief Gt^i_d = -d_j gt^ij at one cell (det gt = 1, enforced by EnforceAlgConstr),
+//! centred second-order differences of the inverse conformal metric of the neighbours.
+KOKKOS_INLINE_FUNCTION
+static void Z4cGammaFromMetric(const Z4c::Z4c_vars& z4c, const DualArray1D<RegionSize> &size,
+    const int m, const int k, const int j, const int i, Real gd[3]) {
+  Real idx[] = {1./size.d_view(m).dx1, 1./size.d_view(m).dx2, 1./size.d_view(m).dx3};
+  for (int a = 0; a < 3; ++a) gd[a] = 0.0;
+  for (int c = 0; c < 3; ++c) {
+    for (int sgn = -1; sgn <= 1; sgn += 2) {
+      const int ii = i + (c == 0 ? sgn : 0);
+      const int jj = j + (c == 1 ? sgn : 0);
+      const int kk = k + (c == 2 ? sgn : 0);
+      const Real gxx = z4c.g_dd(m,0,0,kk,jj,ii), gxy = z4c.g_dd(m,0,1,kk,jj,ii);
+      const Real gxz = z4c.g_dd(m,0,2,kk,jj,ii), gyy = z4c.g_dd(m,1,1,kk,jj,ii);
+      const Real gyz = z4c.g_dd(m,1,2,kk,jj,ii), gzz = z4c.g_dd(m,2,2,kk,jj,ii);
+      const Real det = adm::SpatialDet(gxx, gxy, gxz, gyy, gyz, gzz);
+      Real uu[3][3];
+      adm::SpatialInv(1.0/det, gxx, gxy, gxz, gyy, gyz, gzz,
+                      &uu[0][0], &uu[0][1], &uu[0][2], &uu[1][1], &uu[1][2], &uu[2][2]);
+      uu[1][0] = uu[0][1];
+      uu[2][0] = uu[0][2];
+      uu[2][1] = uu[1][2];
+      for (int a = 0; a < 3; ++a) gd[a] -= sgn * 0.5 * idx[c] * uu[a][c];
+    }
+  }
+}
+
 //---------------------------------------------------------------------------------------
 //! \fn TaskStatus Z4c::Z4cBoundaryRHSNonwave
 //! \brief the extended radiative condition (z4c_sbc_ext.hpp) in the outermost active
@@ -479,6 +509,17 @@ TaskStatus Z4c::Z4cBoundaryRHSNonwave(Driver *pdriver, int stage) {
           ++n;
         }
       }
+    }
+    // constraint damping in the boundary cell (sbc_damp_gam, sbc_damp_theta)
+    if (sbc_.damp_gam != 0.0) {
+      Real gd[3];
+      Z4cGammaFromMetric(z4c_, size, m, k, j, i, gd);
+      for (int a = 0; a < 3; a++) {
+        rhs_.vGam_u(m,a,k,j,i) -= sbc_.damp_gam*(z4c_.vGam_u(m,a,k,j,i) - gd[a]);
+      }
+    }
+    if (sbc_.damp_theta != 0.0) {
+      rhs_.vTheta(m,k,j,i) -= sbc_.damp_theta*z4c_.vTheta(m,k,j,i);
     }
   });
 

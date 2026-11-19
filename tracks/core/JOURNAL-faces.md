@@ -464,3 +464,27 @@ boundary cell, d_t Gt^i += -lambda (Gt^i - Gt^i_d), Gt^i_d = -d_j gt^ij (det gt 
 centred second-order differences; and likewise d_t Theta += -lambda_Theta Theta, a
 constraint-absorbing treatment of Theta that keeps the outgoing condition. Implemented
 next as `sbc_damp_gam`, `sbc_damp_theta` (rates, absent: off).
+
+## 2026-11-19, entry 9: damping in the boundary cells; predictions c4
+
+Source (commit after this entry; executables `.work/exe/sbc3/`): `<z4c> sbc_damp_gam =
+lambda` adds -lambda (Gt^i - Gt^i_d) to d_t Gt^i in the boundary cells, Gt^i_d = -d_j gt^ij
+from centred second-order differences of the inverse conformal metric of the six
+neighbours (ghosts included); `sbc_damp_theta = lambda` adds -lambda Theta to d_t Theta
+there. Absent or 0: nothing changes. Smoke test (4 steps of the ball with both at 1,
+scratch/core/tmp/faces_smoke/ball_e, unregistered): runs.
+
+Plan c4 (`plans/c4_damp.json`; "full" = falloff ghosts, order 4, nonwave, metric speed).
+Predictions [JUDGEMENT], against the same set without damping (ball_g4nw_met of c1;
+punc_g4nw_met and boost_g4nw_met of c2):
+ (c4-a) ball, damp_gam = 4: the face-layer mean of |Gt - Gt(gt)| at t = 4 falls by more
+   than a factor 2; damp_gam = 1 by less than damp_gam = 4.
+ (c4-b) ball, damp_theta = 4: the face-layer mean |Theta| at t = 4 falls by more than a
+   factor 2; the shell mean |H| changes by less than 20 per cent (Theta is not what
+   carries the face error inward in the ball: its front lags that of H, entry 7).
+ (c4-c) with both, the shell mean |H| at t = 8 is not higher than without (within 10 per
+   cent) and lower by more than 20 per cent if H5 is a main carrier of the face error.
+ (c4-d) vacuum and boosted puncture, both at 4: the face-layer Gamma constraint at t = 4
+   falls by more than a factor 3 (in the vacuum puncture the layer is H5 alone, entry 8).
+ (c4-e) every case runs to its end without growth (lambda dt = 0.25 for the ball's step,
+   well inside the RK4 limit).

@@ -92,6 +92,8 @@ sbc_speed       = unit         # unit | lapse | metric
 ghost_falloff   = false        # ghost cells by fall-off extrapolation
 ghost_power_metric = 1.0
 ghost_power_curv   = 1.0
+sbc_damp_gam    = 0.0          # damping of the Gamma constraint in boundary cells
+sbc_damp_theta  = 0.0          # damping of Theta in boundary cells
 
 <fastflow>
 find_every        = 16
