@@ -166,3 +166,25 @@ P11 (run 1, `scripts/r_of_mu.py`, analysis of the printed numbers of 2512.13673)
 P12 (run 2, `scripts/fig_verdicts.py`, tally): the header totals of CHECK.md equal the tally of
     the verdict column; every TeX locator names an existing file and a line inside it; every
     metadata locator names an existing file. [Refuted by any problem listed by the script.]
+
+## Entry 3 (2026-11-19 07:15 PST): outcome of run 1; CHECK.md written
+
+Run kb-20261119-150703-95bba8b (`scripts/r_of_mu.py`, processors, one core, seconds; output
+`scratch/kb/kb-20261119-150703-95bba8b/`): completed, exit 0, no locator problem (every quoted mu
+and r string is on its stated line of `2512.13673/v1/src/main.tex`).
+- P11 CONFIRMED for every pair it named: :114, :238 (both), :273 (both ends), :301 (both ends),
+  :305 and :309 agree with Eq. (r) at N* = 60 within 1.5 per cent (largest: :301 upper end,
+  -1.5 per cent, two-digit rounding of 2.234e-5); :276 as printed misses by -35.8 and +55.8 per
+  cent and agrees to 0.3 per cent when swapped. log10(5.6e-6) = -5.252.
+- Not in P11's list, reported as well: the abstract pair (:80, mu = 0.02, r ≈ 1e-6) misses by
+  -82 per cent, the factor 5.6 already noted in entry 2.
+- Figure `fig_r_of_mu.png` looked at: left, Eq. (r) as a line with the printed pairs (circles
+  on the line; the two :276 crosses off it on either side; the abstract cross on the dashed
+  10^-6 line); right, the relative differences, only abs, L276a, L276b outside the grey 3 per
+  cent band. It shows what the numbers say.
+
+CHECK.md written: 66 rows (45 CONFIRMED, 17 CONFIRMED (precision), 4 CORRECTED, 0 NOT FOUND) and
+the line-188 judgement without verdict. Against entry 1: no NOT FOUND as predicted; 4 corrections
+against the predicted 1 to 3 (2512.13673 r value and 2505.21885 were predicted as precisions);
+17 precisions against the predicted 10 to 15. `scripts/fig_verdicts.py` adapted (label
+"[title only verified]", automatic axis limits); its prediction is P12 (entry 2).

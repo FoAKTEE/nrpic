@@ -1,4 +1,4 @@
-"""Tally, locator check and figure of the verdicts in CHECK.md (work package s33).
+"""Tally, locator check and figure of the verdicts in CHECK.md (work package s34_36; copy of s33's script).
 
 Reads the markdown tables of CHECK.md and
   1. checks that the rows are numbered 1..N without gaps and that the totals stated in the
@@ -14,7 +14,7 @@ and prints the tally. Exit status 1 if a check fails. Files under kb-data are on
 for reading and counted in lines; nothing there is executed or imported.
 
 Run (registered): harness/bin/nrpic-run submit --kind scouting --gate G2 --package
-tracks/kb/brief_check/s33 --purpose "..." -- python tracks/kb/brief_check/s33/scripts/fig_verdicts.py
+tracks/kb/brief_check/s34_36 --purpose "..." -- python tracks/kb/brief_check/s34_36/scripts/fig_verdicts.py
 """
 import json
 import os
@@ -53,6 +53,8 @@ def label_class(label):
         return "[BACKGROUND]"
     if lab.startswith("[TO VERIFY]"):
         return "[TO VERIFY]"
+    if lab.startswith("[title only verified]"):
+        return "[title only verified]"
     if lab.startswith("(unl.)"):
         return "unlabelled"
     raise ValueError("unknown label: %r" % label)
@@ -165,7 +167,8 @@ def main():
         if r["line"] not in lines:
             lines.append(r["line"])
     lines.sort(key=int)
-    labs = ["[VERIFIED]", "[BACKGROUND]", "unlabelled"]
+    order = ["[VERIFIED]", "[title only verified]", "[BACKGROUND]", "[TO VERIFY]", "unlabelled"]
+    labs = [l for l in order if any(r["lab"] == l for r in rows)]
     by_line = {l: {c: 0 for c in CLASSES} for l in lines}
     by_lab = {l: {c: 0 for c in CLASSES} for l in labs}
     for r in rows:
@@ -184,7 +187,8 @@ def main():
     fig = plt.figure(figsize=(fs.FULL_WIDTH, 4.2))
     ax1 = fig.add_axes([0.09, 0.13, 0.44, 0.74])
     ax2 = fig.add_axes([0.73, 0.13, 0.24, 0.74])
-    short = {"[VERIFIED]": "VERIFIED", "[BACKGROUND]": "BACKGROUND", "unlabelled": "no label"}
+    short = {"[VERIFIED]": "VERIFIED", "[BACKGROUND]": "BACKGROUND", "[TO VERIFY]": "TO VERIFY",
+             "[title only verified]": "title only", "unlabelled": "no label"}
     for ax, keys, table in ((ax1, lines, by_line), (ax2, labs, by_lab)):
         y = list(range(len(keys)))[::-1]
         left = [0] * len(keys)
@@ -201,7 +205,6 @@ def main():
         ax.set_xlabel("statements checked")
         ax.xaxis.set_major_locator(matplotlib.ticker.MaxNLocator(nbins=5, integer=True))
     ax1.set_ylabel("brief line")
-    ax1.set_xlim(0, 10)
     handles, labels = ax1.get_legend_handles_labels()
     fig.legend(handles, labels, loc="upper center", ncol=len(labels),
                bbox_to_anchor=(0.5, 0.99))  # above both panels, clear of every bar
