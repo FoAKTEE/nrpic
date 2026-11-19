@@ -1126,3 +1126,52 @@ A = 1e-5, proportional to 1/A), and the amplitude and phase depart from the symb
 2.2e-10 and 1.7e-9 at A = 1e-5 (second order) and 4.7e-10 and 2.9e-9 at 1e-6 (rounding).
 A = 1e-5 is still the better choice up to 64 cells (Psi_4 converges at order 4.07 from 32
 to 64); the advice "A = 1e-5 beyond 64 cells" of REQUESTS_B.md is withdrawn.
+
+### Handoff of package bfix (closed 2026-11-19, session bfix-3)
+
+For a reader with no memory of the three sessions. The package answered Track B's eight
+requests of 2026-11-15 (triage table at the top of `tracks/core/interfaces/REQUESTS_B.md`,
+the interface document of the package). It is closed: every accepted request is
+implemented and tested on processors and on a card; nothing is queued or running.
+
+- Source: one commit, 9c92f68 (linear-wave generator with the corrected tensor and the
+  cross polarization; double-precision mesh binary output; Weyl and waveform time label
+  `<z4c> waveform_at_new_time`; zeroed restart padding). `athenak/` is unchanged from
+  9c92f68 to the branch tip. Lines of shared files touched: table at the end of
+  REQUESTS_B.md. New tools outside the source: `problems/cosmo/make_waves.py`,
+  `python/nrpic/torus_id.py`, `python/nrpic/athena_bin.py`,
+  `problems/tests/lw_oblique.athinput`, `docs/UPSTREAM_DEFECTS.md`, sections of
+  `docs/FORMATS.md`.
+- Executables (read-only): `/data/haiyangw/nrpic/scratch/core/exe/core_requests-b/`
+  `athena_cpu` (sha256 c32a1389...) and `athena_gpu` (5a35c8f1...), COMMIT 9c92f68, READY
+  (copy: `tracks/core/notes/READY_core_requests-b.txt`; the two are identical; no
+  pending item).
+- Tests and their runs (predictions P1 to P12 and outcomes above): T1, T1s, T2, T3, T5,
+  T7 on processors (bfix-1, hand-written manifests, registered by decision 0016 item 3);
+  T6 stopped; T4 and T8 on cards (0.145 card-hours in all); analyses T3b, T3c, T4b, T9,
+  T10 and T8 (core-20261119-140545-b16cd96; its first attempt
+  core-20261119-140406-8707fc4 failed on a directory name and stays on record). Every
+  manifest of the package is committed under `tracks/core/runs/`. Drivers:
+  `tracks/core/analysis/bfix/`; Track B's snapshot used by them:
+  `scratch/core/tmp/bfix/B`.
+- Failed predictions on record: P5a (Psi_4 order), P5d (z bound, Theta), P9a-c (At,
+  Gamma, E), P11a (floors at small A), P12b (card not noisier), P10b at A = 1e-7 and its
+  large-amplitude clauses, P10d pointwise bound.
+- Open, not in this package: (1) no second agent has checked these results (CLAUDE.md,
+  models and roles); (2) the cause of the constraint level that the evolution restores
+  with a noisy lattice (T7 rules out the time step); (3) not explained: the processor's
+  gt differing between z-layers by 1e-16 at t = 0 where the card's does not (T10), the
+  amplitude departure at A = 1e-5 at N = 64 and 128 (T8), the N growth of the absolute
+  floor of the non-TT part (T9, T8); (4) the phase offset at A = 1e-5 read as a
+  second-order frequency shift is a [JUDGEMENT]: one amplitude only; (5) requests deferred
+  or declined: REQUESTS_B.md sections 2 (in-situ Fourier modes), 6 (initial data with a
+  TT part), 7 items 2-3 (Newtonian species selection; isolated patch), 8 (Apples-with-
+  Apples generators); (6) the merge of `core/requests-b` into main is the orchestrator's
+  step; the only conflict with an open core branch is `tracks/core/interfaces/rng.md`
+  with core/collisions-2 (keep row 1 from here, row 2 from there).
+- Messages: `tracks/core/outbox/20261119T1415Z__to-B-emd-gw__card-test-t8-in.md`,
+  `...__to-orch__requests-b-closed.md` (earlier: 20261115T1620Z, 20261115T1850Z).
+- Traps: the batch lists name directories by the amplitude as written in the list
+  (`lw64_a1e-7`); AthenaK takes on the command line only parameters the input file has;
+  sacct prints the cluster's local time (UTC-8); `nrpic-run submit` needs a clean tree,
+  so commit a driver before running it.
