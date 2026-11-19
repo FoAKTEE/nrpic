@@ -80,7 +80,11 @@ def main():
     bind = "" if a.bind == "none" else a.bind
     places = "" if a.places == "none" else a.places
     recs = []
-    out_json = os.path.join(a.out, "scaling%s.json" % (("_" + a.tag) if a.tag else ""))
+    # one file per call (calls of one phase run side by side and must not overwrite
+    # each other's records)
+    out_json = os.path.join(a.out, "scaling%s_%s%s.json" % (
+        ("_" + a.tag) if a.tag else "", a.cases.replace(",", "+"),
+        ("_t" + a.threads.replace(",", "+")) if a.threads else ""))
     for case in a.cases.split(","):
         c = SCASES[case]
         nlim = max(1, int(round(c["nlim"]*a.nlim_factor)))

@@ -32,12 +32,38 @@ ORDER = ["punc", "cluster", "cosmo", "newton"]
 
 
 def load_scaling(dirs):
+    """Records of scaling.py. Before commit of 2026-11-19 08:10 the calls of one phase that
+    ran side by side wrote one file and kept only the last call's records; the runs whose
+    record is missing are read back from their directories (case/<tag>_t<N>..._r<k>/run.log;
+    executable S for the tag 'serial', else O3)."""
+    sys.path.insert(0, HERE)
+    import omplib as L
     recs = []
     for d in dirs:
+        seen = set()
         for f in sorted(glob.glob(os.path.join(d, "scaling*.json"))):
             for r in json.load(open(f)):
                 r["run_id"] = os.path.basename(os.path.normpath(d))
+                seen.add(os.path.normpath(r["rundir"]))
                 recs.append(r)
+        for log in sorted(glob.glob(os.path.join(d, "*", "*", "run.log"))):
+            rd = os.path.normpath(os.path.dirname(log))
+            if rd in seen:
+                continue
+            name = os.path.basename(rd)
+            m = re.match(r"(?:(\w+?)_)?t(\d+)(p?)_", name)
+            if not m:
+                continue
+            r = L.parse_log(log)
+            if "loop_s" not in r or not r.get("ncycle"):
+                continue
+            r.update(case=os.path.basename(os.path.dirname(rd)), threads=int(m.group(2)),
+                     tag=m.group(1) or "", mode="priv" if m.group(3) else "", exit=0,
+                     exe_label="S" if (m.group(1) or "").startswith("serial") else "O3",
+                     rundir=rd, run_id=os.path.basename(os.path.normpath(d)),
+                     reconstructed=True)
+            r["s_per_step"] = r["loop_s"]/r["ncycle"]
+            recs.append(r)
     return recs
 
 
@@ -255,9 +281,45 @@ def fig_placement(a):
     print("wrote", a.out + ".png")
 
 
+def table(a):
+    """Markdown table: best seconds per step per case and thread count, speed-up over one
+    thread, parallel efficiency, the serial build, one card (from --card, or the values
+    given with --card-values case=seconds,...), and the card time below which a run is
+    cheaper on 16 threads than waiting --wait hours for a card."""
+    recs = load_scaling(a.runs)
+    best = best_by(recs, exe=a.exe)
+    serial = best_by(recs, exe="S")
+    card = card_times(a.card)
+    for kv in [x for x in a.card_values.split(",") if x]:
+        k, v = kv.split("=")
+        card.setdefault(k, float(v))
+    ths = sorted({t for c in best.values() for t in c})
+    lines = ["| case | " + " | ".join("%d thr" % t for t in ths)
+             + " | serial | card | 16 thr / card | speed-up 16 | efficiency 16 |",
+             "|---" * (len(ths) + 6) + "|"]
+    for case in [c for c in ORDER + ["bench"] if c in best]:
+        b = best[case]
+        row = ["%.3g" % b[t][0] if t in b else "-" for t in ths]
+        s1 = b.get(1, (None,))[0]
+        s16 = b.get(16, (None,))[0]
+        ser = serial.get(case, {}).get(1, (None,))[0]
+        cd = card.get(case)
+        lines.append("| %s | %s | %s | %s | %s | %s | %s |" % (
+            case, " | ".join(row), "%.3g" % ser if ser else "-",
+            "%.3g" % cd if cd else "pending",
+            "%.0f" % (s16/cd) if (s16 and cd) else "-",
+            "%.1f" % (s1/s16) if (s1 and s16) else "-",
+            "%.2f" % (s1/s16/16) if (s1 and s16) else "-"))
+    text = "\n".join(lines) + "\n"
+    if a.out:
+        open(a.out, "w").write(text)
+    print(text)
+
+
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument("what", choices=["scaling", "diff", "kernels", "placement"])
+    ap.add_argument("what", choices=["scaling", "diff", "kernels", "placement", "table"])
+    ap.add_argument("--card-values", default="", help="case=seconds per step on one card")
     ap.add_argument("--runs", nargs="+", required=True)
     ap.add_argument("--card", default="")
     ap.add_argument("--exe", default="O3")
@@ -265,7 +327,7 @@ def main():
     ap.add_argument("--out", required=True)
     a = ap.parse_args()
     {"scaling": fig_scaling, "diff": fig_diff, "kernels": fig_kernels,
-     "placement": fig_placement}[a.what](a)
+     "placement": fig_placement, "table": table}[a.what](a)
 
 
 if __name__ == "__main__":
