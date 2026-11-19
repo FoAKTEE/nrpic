@@ -190,3 +190,29 @@ Prediction for the rerun (P2f): E and S_i at the particles on 2 and 4 ranks agre
 one rank to rounding, below 1e-12 of the largest value, in all six cases; everything
 else as before. Refuted if differences of the size seen above remain: then the cause is
 elsewhere (and the fields would have to be compared cell by cell in double precision).
+
+### 07:40 Entry 6: outcome of the rerun of T2 (P2f)
+
+Runs at commit 8f245d7 (same cases, all particles tracked; `compare.json` and `run.log`
+in each output directory): core-20261119-152233-8f245d7 (t2p_box_cic), -152306- (tsc),
+-152347- (pcs), -152416- (comp), -152553- (t2_kerr_cic), -152736- (t2_kerr_pcs).
+
+- P2f held. Metric and proper time at the particles identical byte for byte; deposited
+  E and S_i at all tracked particles on 2 and 4 ranks against 1 rank, largest
+  difference relative to the largest value of the component: cic 3.6e-16 / 3.9e-16,
+  tsc 4.3e-16 / 4.3e-16, pcs 4.1e-16 / 4.1e-16, comp 7.0e-16 / 7.7e-16, Kerr cic
+  4.4e-16 / 5.2e-16, Kerr pcs 2.7e-16 / 4.0e-16 (2 / 4 ranks). So the defect of entry 5
+  was the gather of the trajectory record, as read, and the fields agree at all
+  particles to rounding in double precision.
+- Unchanged from entry 5: trajectories, snapshots and the particle restart files
+  identical (the header sums of the restart file differ in the last digit in some
+  cases, max rel 2.0e-16); identity on every rank count at 1e-14 (periodic) and the
+  same boundary loss on all rank counts (Kerr: 6.38e-3 cic, 7.25e-3 pcs); histories
+  agree to 3.0e-13 (column 28, proper volume); 5.8e4 to 3.7e5 deposit packets.
+- Figures inspected: `figs/t2p_box_comp_fields.png` (E at t = 3 on one rank; difference
+  of E, S_i at the particles at 1e-16 to 1e-15 for all times on 2 and 4 ranks; identity
+  at 1e-15 on all three). In the left panel the white cells are cells where the
+  compensated E is negative or zero (log scale), not missing data.
+
+Step 2 is done: deposit across rank boundaries conserves to rounding and gives the
+fields of one rank.
