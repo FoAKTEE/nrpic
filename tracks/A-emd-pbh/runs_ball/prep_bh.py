@@ -71,7 +71,26 @@ def main():
                H=repr(ball.H), Rb=repr(ball.Rb), M=repr(ball.M), t_i=repr(ball.t_i),
                units="G = c = 1, M_ADM = M", alpha="1 (proper-time slicing of the dust)",
                betar="-v/(psi^2 sqrt(1+2E)) (shift of the dust's proper-time slicing)")
+    # the top-hat has jumps of KL (and of the density) at R1 and R2: declare them as breaks
+    # (coord/INTERFACES/spherical_id_format2.md) so that the code's cubic takes its rows from
+    # one side only; the rows themselves hold the exact one-sided values (expball's Chebyshev
+    # panels are split at these radii). A break must lie farther than 1e-6 drbar from a row.
+    rb_breaks = ball.rbar_of_R(np.array([a.R1 * Rb, a.R2 * Rb]))
+    for _ in range(20):
+        frac = (rb_breaks / drbar) % 1.0
+        if np.all((frac > 1e-3) & (frac < 1 - 1e-3)):
+            break
+        drbar *= 1.0 + 1e-4
+    hdr["breaks_note"] = "jumps of KL at the core edge R1 and at R2 (compensated top-hat)"
     XT.write_format2(tab, ball, drbar, 1.5 * rm, header=hdr)
+    with open(tab) as fh_:
+        lines_ = fh_.readlines()
+    k_ = next(i for i, l_ in enumerate(lines_) if l_.startswith("# exterior"))
+    lines_.insert(k_ + 1, "# breaks = " + " ".join(f"{v:.17e}" for v in rb_breaks) + "\n")
+    with open(tab, "w") as fh_:
+        fh_.writelines(lines_)
+    print(f"table: drbar = {drbar:.9g}, breaks at rbar = {rb_breaks.tolist()} "
+          f"(fraction of a row: {((rb_breaks / drbar) % 1.0).tolist()})")
 
     # ------------------------------------------------------------ exact events
     R1, R2 = spec["R1"], spec["R2"]
