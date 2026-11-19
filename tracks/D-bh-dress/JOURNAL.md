@@ -266,3 +266,11 @@ Closes the cut-off lead session of wave 2 as well (its outcomes W1-W10 are in
 - open: ES-1G (Slurm 4636, queued, 0.98 card-hours reserved); cause of the late drift; G1
   items C7 (orch ruling), C9 (schematic), C17 (fresh verifier); the wave-3a package
   `flux_tools/` (unreviewed).
+- addendum (15:50Z): `nrpic-stage verify` (G0 and G1, `--no-checksums`, commit b7777f44,
+  after merging main again: decision 0018) fails only `runs`, for the queued ES-1G
+  (status submitted); the note's claims check was rerun first (D-20261119-154336-1480741)
+  because the rewrite of stage/G1/STATUS.md moved its line locators (values unchanged).
+  `nrpic-stage report`: G0 verdict FAIL for that one reason only (lead's note in the
+  report: complete for review); G1 FAIL (C7, C9, C17 open; no verifier). A first full G0
+  verify on e3d014f was stopped by PID (stale commit) and a full G1 verify on 792b185 was
+  stopped by PID after main moved.

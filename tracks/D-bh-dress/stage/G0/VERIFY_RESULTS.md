@@ -1,12 +1,12 @@
 # Re-verification: D-bh-dress G0
 
-`harness/bin/nrpic-stage verify D-bh-dress G0` on 2026-11-19T15:42:57Z, clean export of commit `792b185cf961` in `scratch/D-bh-dress/tmp/stage-verify/D-bh-dress-G0-792b185-20261119T154023Z`. Result: **FAIL**.
+`harness/bin/nrpic-stage verify D-bh-dress G0` on 2026-11-19T15:44:55Z, clean export of commit `b7777f441e37` in `scratch/D-bh-dress/tmp/stage-verify/D-bh-dress-G0-b7777f4-20261119T154350Z`. Result: **FAIL**.
 
 | Check | Result | Message |
 |---|---|---|
 | clean | PASS | worktree clean (outside the stage directory being assembled) |
-| sync | FAIL | main has commits not merged: run nrpic-ctx sync |
-| export | PASS | clean export of 792b185cf961 (HEAD) in /data/haiyangw/nrpic/scratch/D-bh-dress/tmp/stage-verify/D-bh-dress-G0-792b185-20261119T154023Z/tree |
+| sync | PASS | main is merged into the branch |
+| export | PASS | clean export of b7777f441e37 (HEAD) in /data/haiyangw/nrpic/scratch/D-bh-dress/tmp/stage-verify/D-bh-dress-G0-b7777f4-20261119T154350Z/tree |
 | size | PASS | no committed file of the track above 5 MB |
 | note | PASS | tracks/<ID>/note/main.tex present |
 | package | PASS | EVIDENCE.md, OPEN.md, CHECKLIST.md present (decision 0012); scoping text: scope/SCOPE.md; REPORT.md of wave 1 accepted as it is; REVIEW.md present; verifier's report VERIFIER.md |
@@ -14,11 +14,11 @@
 | style | PASS | 2 style copies equal harness/style/SHA256SUMS (czstyle.py, paperfig.py) |
 | fig-script | PASS | 7 figures, each with its script |
 | min-figs | PASS | 2 schematics and 5 data figures (brief 13.4 asks at least 2 and 0 at G0) |
-| runs | FAIL | 1 of 152 runs have problems |
+| runs | FAIL | 1 of 153 runs have problems |
 | run-notes | WARN | 97 runs read with defaults or not fully re-verifiable (nrpic-run lint) |
 | status | PASS | STATUS.md has 37 lines |
 | rerun | PASS | 8 of 8 scripts and commands ran cleanly in the export |
-| compare | FAIL | 23 regenerated files compared with the committed ones; 2 differ beyond tolerance (rtol 1e-06, atol 1e-12, PNG rms 0.005) |
+| compare | PASS | 23 regenerated files compared with the committed ones; 0 differ beyond tolerance (rtol 1e-06, atol 1e-12, PNG rms 0.005) |
 | regenerate | PASS | all 14 committed figure files regenerated |
 
 ## runs
@@ -159,8 +159,8 @@
  ],
  [
   "note/tables/claims.json",
-  "FAIL",
-  "text differs (not only numbers)"
+  "PASS",
+  "identical"
  ],
  [
   "note/tables/parameters.tex",
@@ -169,8 +169,8 @@
  ],
  [
   "note/tables/claims.md",
-  "FAIL",
-  "text differs (not only numbers)"
+  "PASS",
+  "identical"
  ],
  [
   "note/figures/fig_infall.pdf",
