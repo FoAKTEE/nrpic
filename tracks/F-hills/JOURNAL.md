@@ -319,3 +319,36 @@ Prediction for P1 (refuted where stated):
    1e-6 and 1e-4 M [JUDGEMENT from core's single-hole scaling]; the passage burst is not resolved
    at the 2-4 M cells of the wave zone for member-scale modes.
 The next session analyses P1 with `nr_first/scripts/p1_analysis.py` (E9) and these predictions.
+
+### P1 submitted
+
+Run F-20261119-150017-b45ec5f, Slurm job 4650 (first segment pending at 15:00Z; Slurm's estimate
+of the start 2026-11-20 02:12 UTC), chain capped at 26 segments, release core-v0.3 card
+executable behind `nr_first/scripts/athena_keep_trackers.sh`, input sha256 in the manifest.
+Announced in STATUS.md before submission (commit b45ec5f1) and to orch
+(`outbox/20261119T151430Z__to-orch__p1-submitted.md`).
+
+### Session summary (lead, wave 2b)
+
+did: inspected the worktree (the wave-2 lead left nothing); merged main; checked every helper of
+waves 2 and 2b from their artefacts (V8 own parser of the raw AthenaK files, V9 own GR invariants,
+V10 newton3 tests, V11 summaries; 22 figures read); replaced the stale E3 copies; corrected four
+wave-1 statements (V4b nine points, the q = 4 m/16 tree, HRNA percentages as predictions, the
+8.6 percent); judged the single-puncture runs and the smoke against their criteria and submitted
+P1 with constant shift_eta = 2; brought G0 and G1 to the harness (collect, verify, report);
+posted 7 outbox messages and acknowledged 7; rewrote STATUS, HANDOFF, RISKS.
+found: every number of the helpers' reports that I recomputed agrees (V8-V10); two claims of the
+wave-1 lead were wrong (V11); P1's start state turns at 9.25 M in the GR hole-frame reading,
+6 percent inside its Newtonian pericentre, while the q = 10 input's turns at 5.77 M (28 percent);
+G0 verify fails only on runs in flight and on three wave-2 run directories with moved-in,
+unchecksummed outputs.
+evidence: runs F-20261119-145434-82c05f2, F-20261119-145449-245e984, F-20261119-145509-fb91531,
+F-20261119-145619-8246322, F-20261119-150017-b45ec5f; stage/G0/VERIFY_RESULTS.md (7a24d7e),
+stage/G1/VERIFY_RESULTS.md (b95903f, --no-checksums); stage/REVIEW-wave2.md.
+changed my mind about: the start state of P1 does not need rebuilding from a GR parabola at
+q = 4 (it does at q = 10); the single-puncture runs' early stop is a configuration of their input
+and not a warning for P1.
+open: S2g's outcome (E10); P1's outcome and the junk energy; Kerr for F-pre-2; G1 schematics and
+note sections; a verifier for G0/G1; orch's ruling on the three run directories.
+failed predictions this session: none of V8-V11 failed; the P1 prediction is open.
+card-hours used this session: 0 (P1 and S2g pending; 0.30 used by the package in total).

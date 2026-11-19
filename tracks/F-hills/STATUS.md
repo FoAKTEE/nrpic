@@ -1,16 +1,17 @@
 # STATUS of F-hills
 
-gate:        G0 package complete except the verifier's report (stage/G0; SECOND_CHECK.md is a second
-             agent's check of the plan, not the harness verifier); G1 not met: F-pre-1 met, F-pre-2
-             and the three-puncture data (constraints yes, junk no) partly, the passage P1 submitted
-             2026-11-19 and running in the queue (stage/G1)
+gate:        G0 package complete except the verifier's report and a ruling on three wave-2 run
+             directories (stage/G0; verify FAILs only there and on runs in flight); G1 not met:
+             F-pre-1 met, F-pre-2 and the three-puncture data (constraints yes, junk no) partly,
+             the passage P1 submitted 2026-11-19 and waiting in the queue (stage/G1)
 headline:    The first full-GR Hills passage (P1, q = 4, members at m/8) is submitted as a chain of
              17-20 card-hours; the single-puncture runs and the card smoke test give its rate, memory,
              gauge and horizon behaviour, and the two baselines disagree on which member it ejects.
 announce:    P1 (decision 0014, above eight card-hours): run of `nr_first/inputs/p1_q4.athinput`,
              release core-v0.3 card build behind `nr_first/scripts/athena_keep_trackers.sh`, constant
              shift_eta = 2, `--gpu-hours 26` (21-25 segments of 50 min, 17-20 card-hours), one segment
-             in the queue at a time; continues after the wave, the next session analyses it
+             in the queue at a time; continues after the wave, the next session analyses it.
+             SUBMITTED 15:00Z: run F-20261119-150017-b45ec5f, Slurm 4650 (pending)
 last-result: - review of the wave-2/2b helpers from their raw outputs: S3/S2 stops, horizon rows, tracker
                speeds, smoke rate/memory/trackers all reproduced (F-20261119-145434-82c05f2); details
                stage/REVIEW-wave2.md
@@ -37,7 +38,8 @@ next:        1. Analyse S2g (run F-20261119-143443-f11ebb9, Slurm 4640) with the
                 slots: two cards or 32^3 blocks).
 blockers:    no harness verifier for G0/G1 (orch); P1 waits in a full card queue; q = 4 at m/16 does
              not fit one card (core: two cards or larger blocks)
-needs:       outbox 20261119T*: orch (verifier for G0 and G1, P1 announcement); core (tracker files
+needs:       outbox 20261119T*: orch (verifier for G0 and G1, P1 announcement, ruling on three wave-2
+             run directories with unchecksummed outputs); core (tracker files
              truncated on restart; finder at 4 cells per radius; found flag in horizon summaries;
              mass-scaled damping with three holes)
 offers:      readers of AthenaK trackers/horizons/waveforms with member energies against the

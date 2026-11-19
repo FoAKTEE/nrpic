@@ -76,13 +76,13 @@ Date: 2026-11-19 · branch `track/F-hills` at `e39a9cd23522` · checklist
 
 | File | Script | Kind (data / schematic) | Looked at (PNG read) |
 |---|---|---|---|
-| note/figures/fig_cost.* | note/scripts/fig_cost.py | data | to be confirmed by the session |
-| note/figures/fig_geodesic.* | note/scripts/fig_geodesic.py | data | to be confirmed by the session |
-| note/figures/fig_newton.* | note/scripts/fig_newton.py | data | to be confirmed by the session |
-| note/figures/fig_passage.* | note/scripts/fig_passage.py | data | to be confirmed by the session |
-| note/figures/fig_rp_scan.* | note/scripts/fig_rp_scan.py | data | to be confirmed by the session |
-| note/figures/schem_architecture.* | note/scripts/schem_architecture.py | schematic | to be confirmed by the session |
-| note/figures/schem_timeline.* | note/scripts/schem_timeline.py | schematic | to be confirmed by the session |
+| note/figures/fig_cost.* | note/scripts/fig_cost.py | data | yes (lead, 2026-11-19; also note/JOURNAL.md N1-N4) |
+| note/figures/fig_geodesic.* | note/scripts/fig_geodesic.py | data | yes (lead, 2026-11-19; also note/JOURNAL.md N1-N4) |
+| note/figures/fig_newton.* | note/scripts/fig_newton.py | data | yes (lead, 2026-11-19; also note/JOURNAL.md N1-N4) |
+| note/figures/fig_passage.* | note/scripts/fig_passage.py | data | yes (lead, 2026-11-19; also note/JOURNAL.md N1-N4) |
+| note/figures/fig_rp_scan.* | note/scripts/fig_rp_scan.py | data | yes (lead, 2026-11-19; also note/JOURNAL.md N1-N4) |
+| note/figures/schem_architecture.* | note/scripts/schem_architecture.py | schematic | yes (lead, 2026-11-19; also note/JOURNAL.md N1-N4) |
+| note/figures/schem_timeline.* | note/scripts/schem_timeline.py | schematic | yes (lead, 2026-11-19; also note/JOURNAL.md N1-N4) |
 
 ## Verifier report
 
