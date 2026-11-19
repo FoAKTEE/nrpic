@@ -1,5 +1,9 @@
 # Lead review of the wave-2 helper packages of D-bh-dress
 
+Sections 1-5: lead session of wave 2 (2026-11-15). Sections 6-9: lead session of wave 2b
+(2026-11-19), which rechecked the wave-2b helper `es_finish` (the outcome of ES-1 and V-1)
+and updated the verifier table; section 1's "pending" items are answered in section 6.
+
 Lead session of 2026-11-15 (19:10-20:40 UTC). Rechecked from the artefacts (registered
 outputs, figures, manifests), not from the helpers' reports. My predictions were written
 into `../JOURNAL.md` (entry "lead-wave2 ... predictions", W1-W10) before the checks ran.
@@ -172,3 +176,96 @@ r < 0.06 r_ta, unused) is recorded, not fixed.
 - `nrpic-run submit` does not substitute `{out}`; my run D-20261115-193755-3a53b08 wrote into
   `<worktree>/{out}/` (moved into its run directory, superseded). The verifier saw the same
   with `$NRPIC_RUN_DIR`. Scripts should read `NRPIC_RUN_DIR` themselves.
+
+## 6. Wave 2b: es_finish (outcome of ES-1 and V-1; ES-1G prepared and queued)
+
+Rechecked by the lead of wave 2b from the registered outputs, with my own script
+`review_wave2/es_finish_check.py` (written without opening the helper's `analyse.py`,
+`es_extra.py`, `probe_fronts.py`); predictions Y1-Y6 in `../JOURNAL.md` (lead-wave2b) before
+the run. Runs D-20261119-151039-b2ce968 (numbers) and D-20261119-151119-58b2102 (same numbers,
+legible figure `es_finish_check.png`, looked at). My first run D-20261119-151012-b4afa8a read
+S_x as the proper time (my index slip): superseded, kept on record.
+
+Confirmed [VERIFIED]:
+- Horizon mass (Y1): M_AH(100 M) - 1 = +9.55e-4 (ES-1), +9.37e-4 (V-1); largest
+  |M_AH(t)/M_AH(100 M) - 1| over 100-200 M 3.40e-4 and 1.37e-4 (over 100-165 M 9.3e-5 and
+  4.2e-5); largest |ES-1 - V-1| 2.04e-4 = 1.49 times V-1's floor; the two masses split by
+  more than 1e-9 from t = 19.5 M (the helper's corrected value, entry 8 of
+  `es_runs/JOURNAL.md`).
+- Wall (Y2), my areal radius from the tangential part of gamma_ij at the tracer: largest
+  |R/R_w - 1| for tau <= 200 M 2.20e-3 (ES-1, axis tracers) and 1.59e-3 (V-1, diagonal):
+  prediction 2 held (3e-3), far from the 1 per cent refutation.
+- Crossings of R = 2M (Y3): 14.8263 and 34.4368 M (ES-1) against the exact 14.8269 and
+  34.4423 M; group R0 = 20 M crosses in ES-1 at mean t = 177.3 M, tau = 244.33 M (exact
+  244.74 M), not in V-1 (tau 243.43 M at the end).
+- 1+log in the dust (Y4): plateau probe 1.292, 1.662, 1.636 at t = 10, 25, 50 M against my own
+  homogeneous model 1.377, 2.096, 3.577; tau of group R0 = 48 M at t = 200 M 279.5-279.9 M
+  against the model's 1251 M. Prediction 4 and A2 are refuted as the helper says.
+- Dust stays outside the wall (Y5): smallest margin in a 10-degree cone around each wall
+  tracer 0.154 M (t = 100 M), 0.126 M (t = 200 M); a second method beside the helper's
+  two-class fit (0.136 M), same answer.
+- Cost (Y6): 0.769 + 0.672 = 1.44 card-hours (manifests).
+- The horizon's coordinate radius stays inside the M/8 region (2.56 M in ES-1, 2.25 M in V-1
+  at t = 200 M; `es_finish_check.png` panel f): the wave-2 [TO VERIFY] of section 1 is closed.
+- `nrpic-run verify`: PASS for ES-1, V-1 and the helper's analysis runs -141839-8686bd7,
+  -142334-4f2bffe, -142929-bb375ff, -143413-bce5e71, -143444-8a9949c (the processor pre-flight
+  runs: section 9).
+- Figures looked at: the helper's `horizon_mass`, `wall`, `lapse_probes`, `axis_profiles`,
+  `extra_horizon`, `extra_tracers_vs_t`, `probe_fronts_t100_V-1`, `es1g_model`, `preflight`;
+  each shows what the journal says.
+
+Not confirmed (not recomputed by me):
+- The probe-lag analysis of entry 7 (no inward signal from the boundary on t = 100-200 M)
+  and the pre-flight comparison of entry 8 (lapse_leak read, acting only where alpha > 1):
+  figures looked at and consistent, numbers not recomputed.
+- The cause of the common late drift of the horizon mass after t ~ 165 M and of the late
+  axis/diagonal split of the tracer errors. The helper's boundary hypothesis failed both its
+  tests as written; candidates left [TO VERIFY]: the slow evolution of the slicing and shift
+  near the hole, the finder, a boundary effect not visible at the probes.
+- ES-1G (D-20261119-142633-6f72922, Slurm 4636): queued, no card time used at 15:20 UTC;
+  its predictions G1-G7 (entry 5) wait for it.
+
+Wrong or weak, and what the track does:
+- Prediction 1 failed (3e-5 drift; ES-1 within V-1's floor; level +1.5e-3); its refutation
+  criterion (3 times V-1's floor) was not reached. The D-pre-4 floor is not the floor of the
+  ES set-up (R3 confirmed): the vacuum floor on this mesh is 4.2e-5 over 100-165 M and
+  1.4e-4 over 100-200 M. The track states the null-test floor only after the late drift is
+  explained, from t0 after the horizon-mass step at t ~ 30 M, against V-1 on the same mesh.
+- 1+log does not slice the expanding dust (K-hat -> ~0 within 30 M; lapse 1.3-1.4 out to the
+  boundary): ES-1 and V-1 are a valid vacuum-bubble benchmark (wall and crossings to 2e-3)
+  but not a null test in expanding dust. ES-1G decides whether core's lapse_leak does.
+- ES-1G prediction G1 names the groups R0 = 40 and 48 M; R0 = 40 M lies in the inner dust
+  edge (entry 6, E3). Lead's ruling: G1 is judged as written on both groups, and R0 = 48 M is
+  reported separately; a departure of R0 = 40 M is a failed prediction with its stated
+  reason, not a waived one.
+- Housekeeping: the helper removed one empty directory of its own through a path built from
+  a shell variable (machine rule broken; nothing lost). Recorded in RISKS.md and HANDOFF.md.
+
+## 7. flux_tools (wave 3a, not reviewed here)
+
+`flux_tools/` is a package of the wave-3a workflow (horizon-flux readers, P1 test, ES-F
+input), whose helper was still committing in this worktree during this session (last
+commit 15b27105 at 15:19 UTC). It is not a wave-2 package; its README says no second agent
+has checked it. Nothing of it enters the G0 or G1 package. Review: the next lead of D.
+
+## 8. Verifier findings, state on 2026-11-19
+
+| Claim | Verifier | State now | What the track does |
+|---|---|---|---|
+| C4 r^-9/4 as a G1 criterion | NOT CONFIRMED | proposal `d-pre-3-criterion` open at orch (coord/REQUESTS.md) | G1 item C7 stays OPEN until orch rules; if the wording stays, the Newtonian-mode run to a/a_i = 30-100 (refined mesh, point mass of core/requests-adf; two to four card-hours [JUDGEMENT]) is planned |
+| C8 cost beyond M/16 | WRONG (3200, 4712, 7848 MeshBlocks) | measured at M/8: ES-1 0.769, V-1 0.672 card-hours for 200 M on 344 blocks, 23 per cent below the model of A6 | the G2 ladder is re-costed from `-m` block counts and these rates before any M/16+ submission; `nrpic-run budget`: 25.4 of 30 card-hours left |
+| C2 floor caveats (excursions, boundary) | CONFIRMED with caveats | ES-1/V-1 show a late common drift (165-200 M) of unknown cause | the boundary run (V-1 with the outflow boundary at 384 M) and the resolution run (V-1 at M/16 near the hole) are the G2 controls (section 9) |
+| C1 only eps = 5.58e-3 exists | CONFIRMED | unchanged | data at eps = 0.01, 0.03 before G2 |
+| C5, C6, C7 | CONFIRMED with corrected numbers | numbers in `G1/STATUS.md`; errata request `g1-numbers-errata` open at orch | none further |
+
+## 9. Lead's decisions of wave 2b
+
+- No new card run in this session (none was allotted to it); ES-1G stays queued as the
+  helper submitted it (0.98 card-hours reserved).
+- The late-drift cause is decided by two V-1 controls, in this order, after ES-1G has been
+  judged: V-1 with the outflow boundary at 384 M (one more root level, about 0.8 card-hours
+  [JUDGEMENT]), then V-1 at M/16 near the hole (about 1.5 card-hours [JUDGEMENT]); both are
+  also the boundary and resolution legs that G2 asks for.
+- The processor pre-flight runs D-20261119-143623-8576a6e and -143626-7d1fa75 (3.9 GB each)
+  were checked with `nrpic-run verify` in this session; the result is in section 10 when it
+  ends.
