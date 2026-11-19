@@ -829,3 +829,25 @@ of a level boundary do not tile a uniform density. For refined meshes: use cic, 
 all clouds on one level (`deposit_max_level`, with `deposit_fine_shape`: uniform to
 1e-14 in T2 S/Sf). Whether `deposit_adaptive` with tsc or pcs shows the same is not
 tested.
+
+## 2026-11-19 16:45  publication and state of the package
+
+Published `scratch/core/exe/core_cosmo-amr/`: `athena_cpu` (sha256 74586012...),
+`athena_gpu` (50018796...), `COMMIT` (source 3c44b74), `SHA256SUMS`, `READY`. The
+processor executable is tested (T0b, T3b, T3c, T11b, T12, T13, T15 with itself; T1, T2,
+T4-T9 through T12). The card executable has not run on a card yet.
+
+Pending runs (not waited for; the next session closes them with `harness/bin/nrpic-run
+finish <run_id>` and judges them against the predictions above):
+- T10, Slurm job 4654, run core-20261119-150507-8224d72: Track A's S1 with adaptive
+  refinement on a card (card build of 901d8b3; 0.75 card-hours asked); prediction in the
+  entry 14:45. Expected start given by the queue: 2026-11-19 18:06 PST.
+- T14, Slurm job 4664, run core-20261119-161748-75c2405: card check of the published card
+  executable (0.25 card-hours asked); prediction in the entry 16:17. Expected start:
+  23:10 PST.
+Card time asked in all: 1.0 card-hour (the package's limit); used so far: none.
+
+Not done: the scouting run's result (above); a test of `deposit_adaptive` with quadratic
+or cubic clouds at level boundaries; the cause of the round-off departure of restarts on
+refined meshes is a [JUDGEMENT] (ghost zones at fine/coarse boundaries), not isolated;
+the lapse field behind the walk tracker's move at cycle 9 of T13 was not dumped.
