@@ -473,7 +473,9 @@ A5 (convergence before the floor), with P5 against the outcome:
   in another precision tests it.
 - Entry 5's open point (low early orders 3.1-4.2 between 32 and 64) is explained by the
   same floor: at those times the 64 part lies within a factor 1.1-1.9 of the floor model
-  for M and 1.9 for H at t = 0.5.
+  for M and 1.9 for H at t = 0.5. [Amended by entry 11: at N = 32 the early odd part is
+  the fourth-order time error, so 32 -> 64 at a fixed Courant factor converges there at
+  order 4, lowered by the floor at 64.]
 - A5 with "before the floor" made operational (the finer part at least 3 times the floor
   model F(N, t) = odd_256(t) (N/256)^q; factor and model fixed after the summary was seen,
   before this script ran): orders 4.20-5.82 for H and 5.55-5.91 for M on 32 -> 64 -> 128;
@@ -507,3 +509,50 @@ Run E-20261119-141654-c2a10d1 (`noise/validate/validate_noise.py`, `results/a12/
 P5 and P5' of the analysis package HOLD. The validator's figures (noise statistics of the
 base run, `val_*_a12/fig_val_*.png` in the run directory) were looked at; a bit-identity
 has no figure of its own.
+
+## Entry 11, 2026-11-19 14:55Z: outcome of A6 (predictions PA6a-c of entry 8)
+
+Runs E-20261119-142317-c851f27 (six processor runs, 470 s at theta = 0.25, 800-850 s at
+0.125, 1630 s at 0.0625, exit 0), analysis E-20261119-145230-ff0dff2 (supersedes
+E-20261119-145115-7388a05: the same numbers, a cleaner figure, and "not applicable"
+instead of "fail" where no difference lies above 1e-12; `results/a6/a6.json`,
+`fig/a6/fig_a6.png`, looked at). The dump times of the three Courant factors agree to
+1e-9 by construction (checked by the script).
+
+- PA6a CONFIRMED, A6 PASS: between theta = 0.25/0.125 and 0.125/0.0625 the differences
+  fall at order 3.93-4.08 at every dump from t = 0.98 on for R^NR (all modes with
+  W > 1/2: 4.02-4.05 during the entry, 3.96-3.97 after it), the perturbations of phi, chi
+  and K (4.01-4.08) and the box mean of chi (4.06 at every dump). The largest per-mode
+  difference of R^NR between 0.25 and 0.125 is 2.9e-4 after the entry, so the time error
+  at the Courant factor of the ladder is below 3e-4 of R. Not testable: the box means of
+  phi and K, whose differences (1e-14 to 3e-12 relative) are at rounding and grow with the
+  number of steps (order -1.1 for phi); the predicted order 4 for "the box means as well"
+  holds only for chi. No sign of a degraded order from the sources (D4 of the design
+  review): the sources are evaluated at the stage times, as SPEC 2.4 asks.
+- PA6b CONFIRMED, and entry 6's [JUDGEMENT] REFUTED: the deviation from the linear
+  solution of the top shells (|n|^2 >= 49) at the last dump is 3.97e-3, 3.75e-3, 3.74e-3
+  at theta = 0.25, 0.125, 0.0625: the first halving changes it by 5.7 percent (predicted
+  3-25), the second by 0.4 percent (predicted below 2). The deviation at four cells per
+  wavelength is 94 percent spatial (sixth-order stencils), not the time integration.
+  For |n| <= 4: 8.7e-5, 8.0e-5, 7.96e-5 (92 percent spatial); only the lowest shells
+  (|n| <= 2, D_n of a few 1e-6 at 0.25) are dominated by the time error (`fig_a6.png`,
+  lower left).
+- PA6c CONFIRMED: during the late entry (N = 1.5-3.4) the odd part of H changes by at most
+  4 percent between theta = 0.25 and 0.0625 (ratios 1.041, 1.003, 1.000 per halving at
+  N = 1.46, 1.94, 2.42; 1.000 after), that of M by at most 12 percent (1.000 after N = 2):
+  the first-order part of A4's failure is spatial truncation. The even part with its mean
+  removed is independent of theta (ratios 0.999-1.000). The box mean of the even part
+  (H0 and the mean of the second-order part) after the entry is 2.9e-12, 1.7e-13, 1.0e-14
+  of <[H]>, factors 17.1 and 16.6 per halving (predicted 16 +- 3), and the differences of
+  that mean converge at order 4.10 at every dump: H0 is the fourth-order time error.
+- Not predicted: before the late entry (N = 0.49, 0.98) the odd part of H at theta = 0.25
+  (5.4e-13 of <[H]>) is 15.6 times that at 0.125 (M: 15.9), i.e. the early first-order part
+  at N = 32 is the fourth-order time error, not truncation and not the floor. So entry 5's
+  [JUDGEMENT] ("the time integration at a fixed Courant factor contributes an odd part of
+  order 4 in 1/N") is now supported by a run; at N = 64 the floor takes over (entry 9).
+
+What this means for A4 and A5 [JUDGEMENT]: at a fixed Courant factor the odd part has two
+sources, the time error (fourth order, dominant before the late entry at N = 32) and the
+spatial truncation of the shells with fewer than about eight cells per wavelength (sixth
+order, dominant during the late entry at every N of the paper's set-up); above both sits
+the rounding floor. The A5 band "4 to 6" brackets exactly these two orders.
