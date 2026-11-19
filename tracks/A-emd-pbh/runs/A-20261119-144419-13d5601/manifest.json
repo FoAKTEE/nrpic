@@ -1,0 +1,244 @@
+{
+  "schema": "nrpic-run-manifest/1",
+  "run_id": "A-20261119-144419-13d5601",
+  "track": "A-emd-pbh",
+  "gate": "G2",
+  "kind": "scouting",
+  "purpose": "runs3 (wave 2b): SR-1L = data set 2t with the relaxed 1+log lapse (lapse_leak 8, Gamma-driver) at dx = M, M/2 (to t = 44) and M/4 (to t = 24); BH-1 = data set 3 (first horizon R_AH = 1.37 M) through horizon formation at dx = M/4, M/6, M/8 to t = 16; core's gauge card executable (b4430da); predictions S and B in runs_ball/JOURNAL.md entry 7",
+  "preregistered_in": null,
+  "launcher": "batch",
+  "command": [
+    "scripts/gpu_batch.sh",
+    "/data/haiyangw/nrpic/scratch/A-emd-pbh/A-20261119-144419-13d5601/batch.list"
+  ],
+  "cwd": "scratch/A-emd-pbh/A-20261119-144419-13d5601",
+  "git": {
+    "sha": "13d5601e2f1c614db1aea33ec242db9d3894c8e5",
+    "branch": "track/A-emd-pbh",
+    "dirty": false,
+    "package": [
+      "tracks/A-emd-pbh/runs_ball"
+    ],
+    "outside_package": {
+      "count": 1,
+      "first": [
+        "?? tracks/A-emd-pbh/szekeres/"
+      ]
+    },
+    "merge_base_main": "27b2ced9be0f020a4206d89e3cc982ada5c4367c",
+    "worktree": "wt/A-emd-pbh"
+  },
+  "code": {
+    "core_tag": "core-v0.3",
+    "athenak_upstream_sha": "c5a0d7f",
+    "kokkos_sha": "6739bc623081648af9e752b616d9671527922cbf",
+    "problem": "nrpic_cf",
+    "exe": "/data/haiyangw/nrpic/scratch/core/exe/core_gauge/athena_gpu",
+    "exe_sha256": "c3560e53988ad855cc93a9f444c48c728249950242e736d0828cc44dbcd85e72",
+    "cmake_flags": null,
+    "toolchain": null
+  },
+  "env": {
+    "host": "anta",
+    "env_hash": "33c1dbb6673b68919eaa332b0add0b58aeac8be843f2071b9d06e2e0e397a96d",
+    "machine_file_sha256": "0321f40f4caeeb2a36624a9fa9809e60bad31071f366b3517ba23ad45698d2d7",
+    "uv_lock_sha256": "5417f6ba318b914aa3800e5d55f7b11fdd8df13c2688bdda7d419240aa1d5863",
+    "track_requirements_sha256": null,
+    "container_digest": null,
+    "compiler": "g++ 11.4.0",
+    "mpi": "none (Athena_ENABLE_MPI=OFF)",
+    "gpu": "NVIDIA A100 80GB (Slurm partition preempt)",
+    "python": "3.10.12 /data/haiyangw/nrpic/wt/A-emd-pbh/.venv"
+  },
+  "input": {
+    "file": "tracks/A-emd-pbh/runs_ball/bh.athinput",
+    "sha256": "77753d84370569cb8c92ed7d754b0dcf5ff91226066e70a7356ff6326593c186",
+    "overrides": {
+      "problem/comp0_file": "/data/haiyangw/nrpic/scratch/A-emd-pbh/A-20261119-143524-334e553/expball_tophat_HRb0p7_dc1p5_R10p65_R20p95_rm4p25.tab",
+      "particles/particle_file": "/data/haiyangw/nrpic/scratch/A-emd-pbh/A-20261119-143524-334e553/lat68/expball_tophat_HRb0p7_dc1p5_R10p65_R20p95_rm4p25_lat68_track.nrp",
+      "particles/traj_ntrack": "1318"
+    }
+  },
+  "inputs": [
+    {
+      "path": "/data/haiyangw/nrpic/scratch/core/exe/core_gauge/athena_gpu",
+      "role": "exe",
+      "sha256": "c3560e53988ad855cc93a9f444c48c728249950242e736d0828cc44dbcd85e72",
+      "bytes": 102311528,
+      "tracked": false,
+      "location": "main checkout data root"
+    },
+    {
+      "path": "/data/haiyangw/nrpic/scratch/A-emd-pbh/tmp/runs3/batch_runs3.list",
+      "role": "list",
+      "sha256": "4bca593000876f9a5e9946a0a472656f1430df5ce39aca6698bb7edda6159fc4",
+      "bytes": 2463,
+      "tracked": false,
+      "location": "main checkout data root"
+    },
+    {
+      "path": "tracks/A-emd-pbh/runs_ball/bh.athinput",
+      "role": "athinput:bh_n256",
+      "sha256": "77753d84370569cb8c92ed7d754b0dcf5ff91226066e70a7356ff6326593c186",
+      "bytes": 3719,
+      "tracked": true
+    },
+    {
+      "path": "tracks/A-emd-pbh/runs_ball/sr1l.athinput",
+      "role": "athinput:sr1l_n256",
+      "sha256": "c1cbb924646cdc035bac8c99eccc8bdac3a783b8cd5d9f4c1cdf10bfded813b5",
+      "bytes": 3882,
+      "tracked": true
+    },
+    {
+      "path": "tracks/A-emd-pbh/runs_ball/bh.athinput",
+      "role": "athinput:bh_n192",
+      "sha256": "77753d84370569cb8c92ed7d754b0dcf5ff91226066e70a7356ff6326593c186",
+      "bytes": 3719,
+      "tracked": true
+    },
+    {
+      "path": "tracks/A-emd-pbh/runs_ball/sr1l.athinput",
+      "role": "athinput:sr1l_n256L32",
+      "sha256": "c1cbb924646cdc035bac8c99eccc8bdac3a783b8cd5d9f4c1cdf10bfded813b5",
+      "bytes": 3882,
+      "tracked": true
+    },
+    {
+      "path": "tracks/A-emd-pbh/runs_ball/bh.athinput",
+      "role": "athinput:bh_n128",
+      "sha256": "77753d84370569cb8c92ed7d754b0dcf5ff91226066e70a7356ff6326593c186",
+      "bytes": 3719,
+      "tracked": true
+    },
+    {
+      "path": "tracks/A-emd-pbh/runs_ball/sr1l.athinput",
+      "role": "athinput:sr1l_n128",
+      "sha256": "c1cbb924646cdc035bac8c99eccc8bdac3a783b8cd5d9f4c1cdf10bfded813b5",
+      "bytes": 3882,
+      "tracked": true
+    }
+  ],
+  "batch_entries": [
+    {
+      "name": "bh_n256",
+      "input": "tracks/A-emd-pbh/runs_ball/bh.athinput",
+      "args": [
+        "problem/comp0_file=/data/haiyangw/nrpic/scratch/A-emd-pbh/A-20261119-143524-334e553/expball_tophat_HRb0p7_dc1p5_R10p65_R20p95_rm4p25.tab",
+        "particles/particle_file=/data/haiyangw/nrpic/scratch/A-emd-pbh/A-20261119-143524-334e553/lat68/expball_tophat_HRb0p7_dc1p5_R10p65_R20p95_rm4p25_lat68_track.nrp",
+        "particles/traj_ntrack=1318"
+      ]
+    },
+    {
+      "name": "sr1l_n256",
+      "input": "tracks/A-emd-pbh/runs_ball/sr1l.athinput",
+      "args": [
+        "particles/particle_file=/data/haiyangw/nrpic/scratch/A-emd-pbh/A-emd-pbh-20261115-153719-91b03d1/expball_smooth_tophat_HRb0p5_dc1_R10p3_R20p75_w0p1875_lat38_track.nrp",
+        "particles/traj_ntrack=1705"
+      ]
+    },
+    {
+      "name": "bh_n192",
+      "input": "tracks/A-emd-pbh/runs_ball/bh.athinput",
+      "args": [
+        "mesh/nx1=192",
+        "mesh/nx2=192",
+        "mesh/nx3=192",
+        "particles/traj_dcycle=3",
+        "fastflow/find_every=3",
+        "problem/comp0_file=/data/haiyangw/nrpic/scratch/A-emd-pbh/A-20261119-143524-334e553/expball_tophat_HRb0p7_dc1p5_R10p65_R20p95_rm4p25.tab",
+        "particles/particle_file=/data/haiyangw/nrpic/scratch/A-emd-pbh/A-20261119-143524-334e553/lat51/expball_tophat_HRb0p7_dc1p5_R10p65_R20p95_rm4p25_lat51_track.nrp",
+        "particles/traj_ntrack=1311"
+      ]
+    },
+    {
+      "name": "sr1l_n256L32",
+      "input": "tracks/A-emd-pbh/runs_ball/sr1l.athinput",
+      "args": [
+        "mesh/x1min=-32",
+        "mesh/x1max=32",
+        "mesh/x2min=-32",
+        "mesh/x2max=32",
+        "mesh/x3min=-32",
+        "mesh/x3max=32",
+        "time/tlim=24.0",
+        "particles/traj_dcycle=4",
+        "particles/snap_dt=4.0",
+        "particles/particle_file=/data/haiyangw/nrpic/scratch/A-emd-pbh/A-emd-pbh-20261115-164353-96e301d/expball_smooth_tophat_HRb0p5_dc1_R10p3_R20p75_w0p1875_lat76_track.nrp",
+        "particles/traj_ntrack=1898"
+      ]
+    },
+    {
+      "name": "bh_n128",
+      "input": "tracks/A-emd-pbh/runs_ball/bh.athinput",
+      "args": [
+        "mesh/nx1=128",
+        "mesh/nx2=128",
+        "mesh/nx3=128",
+        "particles/traj_dcycle=2",
+        "fastflow/find_every=2",
+        "problem/comp0_file=/data/haiyangw/nrpic/scratch/A-emd-pbh/A-20261119-143524-334e553/expball_tophat_HRb0p7_dc1p5_R10p65_R20p95_rm4p25.tab",
+        "particles/particle_file=/data/haiyangw/nrpic/scratch/A-emd-pbh/A-20261119-143524-334e553/lat34/expball_tophat_HRb0p7_dc1p5_R10p65_R20p95_rm4p25_lat34_track.nrp",
+        "particles/traj_ntrack=1300"
+      ]
+    },
+    {
+      "name": "sr1l_n128",
+      "input": "tracks/A-emd-pbh/runs_ball/sr1l.athinput",
+      "args": [
+        "mesh/nx1=128",
+        "mesh/nx2=128",
+        "mesh/nx3=128",
+        "meshblock/nx1=32",
+        "meshblock/nx2=32",
+        "meshblock/nx3=32",
+        "particles/particle_file=/data/haiyangw/nrpic/scratch/A-emd-pbh/A-emd-pbh-20261115-153719-91b03d1/expball_smooth_tophat_HRb0p5_dc1_R10p3_R20p75_w0p1875_lat38_track.nrp",
+        "particles/traj_ntrack=1705"
+      ]
+    }
+  ],
+  "resources": {
+    "nodes": 1,
+    "gpus": 1,
+    "cores": 1,
+    "walltime_s": null,
+    "wall_limit": "00:58:00",
+    "segments_max": null,
+    "gpu_hours_requested": 0.9667,
+    "gpu_hours": null,
+    "particles": null
+  },
+  "slurm": {
+    "partition": "preempt",
+    "job_name": "A-20261119-144419-13d5601",
+    "job_ids": []
+  },
+  "outputs": {
+    "dir": "scratch/A-emd-pbh/A-20261119-144419-13d5601",
+    "sha256sums": "sha256sums.txt",
+    "sha256sums_sha256": null,
+    "bytes": null,
+    "files": null
+  },
+  "status": "submitted",
+  "exit_code": null,
+  "registered": "2026-11-19T14:44:19Z",
+  "started": null,
+  "ended": null,
+  "parents": [
+    "A-20261119-143524-334e553",
+    "A-emd-pbh-20261115-153719-91b03d1",
+    "A-emd-pbh-20261115-164353-96e301d"
+  ],
+  "notes": "",
+  "budget_at_submit": {
+    "gpu_hours_allotted": 60.0,
+    "cores_allotted": 16,
+    "gpu_hours_used": 0.9457,
+    "gpu_hours_reserved": 0.0,
+    "gpu_hours_without_gate": 0.1686,
+    "cores_busy": 0,
+    "runs": 136,
+    "allotment_from": "coord/DECISIONS/0006-compute-budget.md + 0014-budgets-after-wave-1.md"
+  }
+}
