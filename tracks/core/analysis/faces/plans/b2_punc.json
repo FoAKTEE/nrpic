@@ -1,4 +1,4 @@
-{"exe": ".work/build_cpu/src/athena",
+{"exe": ".work/exe/sbc1/athena_cpu",
  "cases": {
   "punc_sf_e2_h": {"input": "inputs/punc_h.athinput", "args": ["z4c/sbc_variant=sommerfeld", "z4c/extrap_order=2"]},
   "punc_nw_e4_h": {"input": "inputs/punc_h.athinput", "args": ["z4c/sbc_variant=nonwave", "z4c/extrap_order=4"]},

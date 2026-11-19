@@ -266,3 +266,16 @@ gives nothing). Predictions [JUDGEMENT]:
    and the largest excursion of the mass from its value at t = 12 over 12 <= t <= 40 is
    not larger with nonwave and order 4 (ratio below 1.2). Refuted above 1.2: then the
    new condition makes the drift worse and must not be recommended for Track D.
+
+## 2026-11-19, entry 5: session resumed at 15:30 UTC; what was left running
+
+The previous session ended at 15:27 UTC. Run core-20261119-152217-73dccb9 (b1) was ended
+by signal 15 after three of its five cases had finished (ball_nw_e2, ball_nw_e4,
+ball_nw_e2_q25, exit 0); ball_nw_e4_q25 and ball_nw_e4_th did not finish. The vacuum
+puncture reference core-20261119-144214-5e4bb5a is still running (t = 4 of 8 at 15:30).
+The executables of the source at 224b9629 (no source change since) are frozen in
+`.work/exe/sbc1/` (`athena_cpu`, `athena_gpu`) so that the source can change while runs
+use them. Started now, predictions unchanged (entry 3 for b1, entry 4 for b2):
+`plans/b1b_ball.json` (the two missing cases of b1), `plans/b2_punc.json` (now with the
+frozen executable), `plans/a1r2_boostref.json` (the boosted puncture with the faces at
+32, to t = 8: the reference that core-20261119-143745-78506dd stopped by hand).
