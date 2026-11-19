@@ -141,3 +141,15 @@ eps = 0.05), job B = run C-20261119-150347-e100007 (Slurm 4653: T7 at theta 0.1,
 4e6 seed at 0.003). 0.92 card-hours reserved each; about 19 jobs of the machine's users
 were pending ahead of them at submission, so they may start hours later. Card cost assumed
 1/100 of the processor cost (wave-2 ratio 96-173), i.e. ~19 min and ~26 min of card time.
+
+## 2026-11-19 15:12 T8 part 2 (run C-20261119-150358-66295f7): first analysis wrong (my script)
+
+The in-run analysis gave sum_P/expected = 0.99502 +- 0.00500 (nosub) and 0.99499 +- 0.00500
+(sub), z_a = 1.12 and 0.38, n_trunc = 0 in both, max P 0.557 (nosub) and 0.107 (sub,
+3.42 sub-steps). The identical -0.5 percent in both runs and a step-to-step scatter of 7
+percent are not the operator: tlim = 200 dt (1 + 1e-9) makes the code take a 201st step of
+6e-9, whose sum_P (0.013) entered the mean with the full-step expectation (1/200 of the
+records = -0.5 percent). Corrected (`t2nosub.py analyse`: expectation with each record's
+own step, records shorter than dt/2 excluded) and re-analysed in a separate registered run
+from the same output; the simulations are not rerun. The same sliver step ends every run
+of this package (harmless for the snapshots: it adds one record of ~1e-9 dt).

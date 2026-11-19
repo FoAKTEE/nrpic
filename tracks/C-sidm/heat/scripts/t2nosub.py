@@ -37,6 +37,8 @@ def hist(d):
 
 
 def main():
+    if len(sys.argv) > 2 and sys.argv[1] == "--analyse-only":
+        return analyse(sys.argv[2], hl.outdir("t2nosub"))
     root = hl.outdir("t2nosub")
     th, N, dt, nst = 0.1, 1000000, 0.03, 200
     box, nx = [1.0, 1.0, 1.0], [32, 32, 32]
@@ -71,34 +73,64 @@ def main():
 
     with ThreadPoolExecutor(2) as ex:
         res = dict(ex.map(go, runs))
+    for name in runs:
+        assert res[name]["rc"] == 0, res[name]
+        out[name] = dict(wall=res[name]["wall"])
+    with open(os.path.join(root, "t2nosub_setup.json"), "w") as fh:
+        json.dump(out, fh, indent=1)
+    analyse(root, root)
+
+
+def analyse(src, dst):
+    """Per-step ratio sum_P/(1/2 N rho0 sigma <v_Mol>(theta_gas) dt_i) with dt_i the step of
+    that record (the last record of a run is a sliver step of ~1e-9 dt from tlim*(1+1e-9):
+    excluded, as every record with dt_i < 0.5 dt)."""
+    setup = json.load(open(os.path.join(src, "t2nosub_setup.json"))) if os.path.exists(
+        os.path.join(src, "t2nosub_setup.json")) else None
+    pf = os.path.join(src, "pfile", hl.BASE + ".nrp")
+    ini = snap.read_nrp(pf)
+    N = len(ini["m"])
+    th_gas = float(mj.theta_from_kinetic(float(np.mean(hl.kin_flat(ini["u"])))))
+    vm = float(rate.vmol_mean(th_gas))
+    maxP1 = float(np.max(hist(os.path.join(src, "probe"))["max_P"]))
+    sigma = 0.5 / maxP1
+    rho0 = float(ini["m"].sum())            # unit box
+    out = dict(src=src, theta_gas=th_gas, N=N, sigma=sigma, rho0=rho0,
+               probe_maxP_sigma1=maxP1)
     fs.use_style()
     fig = plt.figure(figsize=(fs.FULL_WIDTH / 2, 3.2))
     ax = fig.add_axes([0.18, 0.15, 0.78, 0.76])
     for name, col in (("nosub", fs.PAL["red"]), ("sub", fs.PAL["blue"])):
-        assert res[name]["rc"] == 0, res[name]
-        h = hist(os.path.join(root, name))
-        sP = h["sum_P"][1:]
-        nc = h["n_coll"][1:]
+        h = hist(os.path.join(src, name))
+        t = h["time"]
+        dti = np.diff(np.concatenate([[0.0], t]))
+        dt = float(np.median(dti))
+        keep = dti > 0.5 * dt
+        expect = 0.5 * N * rho0 * sigma * vm * dti[keep]     # (1/2) N n sigma <v_Mol> dt
+        sP = h["sum_P"][keep]
+        nc = h["n_coll"][keep]
         ratio = sP / expect
         m = float(ratio.mean())
         se = float(ratio.std(ddof=1) / np.sqrt(len(ratio)))
         za = float((nc.sum() - sP.sum()) / np.sqrt(sP.sum()))
-        out[name] = dict(sumP_over_expected=m, se=se, z_b=(m - 1) / se,
+        out[name] = dict(records=int(len(t)), used=int(keep.sum()),
+                         sumP_over_expected=m, se=se, z_b=(m - 1) / se,
                          pass_b=bool(abs(m - 1) < 0.005 and abs(m - 1) < 4 * se),
                          z_a=za, pass_a=bool(abs(za) < 4),
                          n_trunc=float(h["n_trunc"].sum()), max_P=float(h["max_P"].max()),
-                         mean_nsub=float(h["mean_nsub"].mean()),
-                         max_nsub=float(h["max_nsub"].max()), wall=res[name]["wall"],
-                         n_coll=float(nc.sum()), sum_P=float(sP.sum()))
-        ax.plot(h["ncycle"][1:], ratio, "-", color=col, lw=1.0,
+                         mean_nsub=float(h["mean_nsub"][keep].mean()),
+                         max_nsub=float(h["max_nsub"].max()),
+                         n_coll=float(nc.sum()), sum_P=float(sP.sum()),
+                         expected_per_step=float(np.median(expect)))
+        ax.plot(h["ncycle"][keep], ratio, "-", color=col, lw=1.0,
                 label=f"{name}: {m:.5f} $\\pm$ {se:.5f}")
     ax.axhline(1.0, **fs.GUIDE)
     ax.set_xlabel("cycle")
     ax.set_ylabel(r"sum$_P$ per step / analytic")
     ax.legend(loc="lower right", fontsize=8)
     ax.set_title(r"T2(b) at max $P=0.5$, $\theta=0.1$", fontsize=10)
-    fs.save(fig, os.path.join(root, "t2nosub"))
-    with open(os.path.join(root, "t2nosub.json"), "w") as fh:
+    fs.save(fig, os.path.join(dst, "t2nosub"))
+    with open(os.path.join(dst, "t2nosub.json"), "w") as fh:
         json.dump(out, fh, indent=1)
     print(json.dumps(out, indent=1))
 
