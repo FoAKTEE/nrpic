@@ -590,3 +590,42 @@ Answer to Track A's request on refined levels [VERIFIED in these runs]: the solv
 the level structure of the run, and the run's own Hamiltonian monitor at t = 0 is at
 1e-11 to 1e-9 on every level, level boundaries included (Track A measured 0.077 to 0.18
 with data interpolated onto refined blocks).
+
+## 2026-11-19, entry 9: outcome of W1 at 128 cells; P2
+
+**W1 at 32, 64, 128 cells held** (run core-20261119-155750-c923762, 1 core; the 32- and
+64-cell cases repeat run -145332-1ac049d to all digits printed; `test_a_numbers.json`,
+figure `figs/test_a_far`, looked at: the far-field curves fall by 4 per halving in the
+middle panel, the plain fill stays flat; the surface momentum converges at second order
+for both fills). Far field at 128 cells: W_x at the x-face centres +5.9e-5 (prediction
+6e-5 within 1.5), y-face centres 4.0e-5, largest error over the outermost layer 7.5e-5
+(prediction below 1e-4); the factors 64 -> 128 are 3.98 and 3.99. Plain fill: -9.5e-3 at
+the x-face centres and 2.25e-2 over the layer (does not fall). Central error -7.5e-4
+(far) against -1.40e-3 (plain): at 128 cells the closure error of the plain fill is
+half of the central error. P_ADM of the record 0.1141047395752 against sum m u_x =
+0.11410473958 (round-off); surface integral at half-width 13.75: 1.25e-6 relative (5e-6 at
+64, 2.0e-5 at 32 cells).
+
+**P2, a puncture in a matter shell** (run core-20261119-161842-b92b298, 1 core;
+`test_p_numbers_p2.json`, figure `figs/test_p_profiles_p2`, looked at: the solved u lies
+on the radial reference at all three resolutions and (u - u_ref)/dx^2 is one curve, with
+its maximum at the shell, r = 6 to 7):
+
+| case | outer it. | u - u_ref at the puncture | max\|u - u_ref\|, 3 < r < 12 | M_psi (ref 1.448858) | monitor outside r_p |
+|---|---|---|---|---|---|
+| stencil, 32 / 64 / 128 | 4 / 3 / 3 | -1.4e-5 / -3.5e-6 / -8.8e-7 | 1.12e-4 / 2.9e-5 / 7.3e-6 | 1.448967 / .448885 / .448864 | 0.083 / 0.24 / 7.6e-3 |
+| code, r_p = 3, 32 / 64 / 128 | 25 / 22 / 17 | +2.0e-4 / -6.1e-6 / -1.2e-6 | 2.9e-4 / 5.7e-5 / 1.4e-5 | 1.448946 / .448893 / .448866 | 4.4e-13 |
+
+ (a) held for convergence and order: both modes converge; the error over 3 < r < 12 falls
+     by 3.9 and 4.0 (stencil), 5.0 and 4.0 (code); at 128 cells the error at the puncture
+     is 2.4e-5 (stencil) and 3.3e-5 (code) of u(0) = 0.0363, inside 1e-4; but the largest
+     error over the shell region is 2.0e-4 and 3.9e-4 of u(0), not 1e-4: my bound "agree
+     with the reference to 1e-4 of u(0)" fails for the maximum (the deposit's
+     second-order error of the shell at r = 6).
+ (b) held at 32 cells (8.8e-5, 1.09e-4 from the reference), converging at 4.0 and 4.1 per
+     halving in mode stencil; in mode code the factors are 2.5 and 4.2, the first below my
+     3 (failed for that step).
+ (c) held: mode code leaves the monitor at 4.4e-13 outside radius 3 and away from the
+     faces. Mode stencil leaves it at 0.08 to 0.24 next to the puncture (r of 1 to 2: the
+     sixth-order monitor differentiating psi_s^4), which is the monitor's error on the
+     singular part, not an error of the data (u converges at second order there).
