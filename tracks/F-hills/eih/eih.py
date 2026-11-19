@@ -427,6 +427,7 @@ def evolve_states(masses, x, v, t0, t_end, c2inv=1.0, rtol=1e-11, atol=1e-14, h_
     res = dict(outcome=outcome, outcome_M=outcome_M, _en=en, flag=flag, t_reached=t_reached,
                r12min=r12min, rMmin=rMmin, eps_max=Mh / np.min(rMmin, axis=1),
                E1PN_err=(energy(xe, ve, masses, c2inv) - E0) / scaleE,
+               dE1PN=energy(xe, ve, masses, c2inv) - E0,
                EN_err=(energy(xe, ve, masses, 0.0) - EN0) / scaleE,
                P1PN_err=np.linalg.norm(momentum(xe, ve, masses, c2inv) - P0, axis=1) / scaleP,
                J1PN_err=np.linalg.norm(angular_momentum(xe, ve, masses, c2inv) - J0, axis=1) / scaleJ,
@@ -452,18 +453,26 @@ def vinf_out(res, masses):
 
 
 def scatter(setups, r0=None, k0=4.0, k_end=30.0, t_end=None, c2inv=1.0, rtol=1e-11,
-            atol=1e-14, **kw):
+            atol=1e-14, reading="velocity", **kw):
     """EIH counterpart of newton3.threebody.scatter: the same HillsSetup list and the same
     initial data (the binary on the Newtonian conic about M + m at r0 = k0 r_t, barycentric
     positions and velocities), integrated with the EIH equations to the time at which the
     Newtonian conic would be at k_end r_t outbound. Energies in newton3's unit
-    (G m1 m2 / a)(M/m)^(1/3), Newtonian Jacobi definitions (as newton3)."""
+    (G m1 m2 / a)(M/m)^(1/3), Newtonian Jacobi definitions (as newton3).
+    reading: 'velocity' (newton3's velocities are the EIH coordinate velocities, as the other
+    baselines read them) or 'canonical' (newton3's momenta m v are the canonical 1PN momenta,
+    the reading of Bowen-York momenta in the NR inputs; JOURNAL entry 6)."""
     P = _stack(setups)
     n = P["M"].size
     if r0 is None:
         r0 = k0 * P["r_t"]
     x, v, t0 = initial_state_arrays(P, r0)
     masses = np.stack([P["M"], P["m1"], P["m2"]], axis=1)
+    if reading == "canonical":
+        # the Newtonian momenta m v read as the canonical 1PN momenta (the Bowen-York reading)
+        v = velocities_from_momenta(x, masses[:, :, None] * v, masses, c2inv)
+    elif reading != "velocity":
+        raise ValueError("reading: 'velocity' or 'canonical'")
     mu = P["G"] * (P["M"] + P["m"])
     if t_end is None:
         t_end = conic_time_from_pericentre(P["rp"], P["e_orb"], mu, k_end * P["r_t"])
@@ -473,6 +482,7 @@ def scatter(setups, r0=None, k0=4.0, k_end=30.0, t_end=None, c2inv=1.0, rtol=1e-
                         h_scale=np.minimum(2 * np.pi / np.sqrt(P["G"] * P["m"] / P["a"] ** 3),
                                            np.abs(t0)), **kw)
     res.update(_energies_in_units(res, masses, P["G"], unit, x, v))
+    res["dE1PN_u"] = res["dE1PN"] / unit
     res["vinf"] = vinf_out(res, masses)
     res["a12"] = res["a12"] / P["a"]
     res.update(t0=t0, t_end=t_end, x0=x, v0=v, masses=masses)

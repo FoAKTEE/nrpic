@@ -98,3 +98,126 @@ v_r^2 negative in the quadrature check "1PN-Q" (TypeError on None). The EIH inte
 GR quadratures of the 19 rows before (areal r_p = 4.2 ... 40 M) had finished; their numbers are
 in the run log, but I take the outcome from the rerun only. Fix: v_r^2 <= 0 next to the turning
 point uses the analytic limit of the substituted integrand. Rerun below.
+
+## Entry 4 (2026-11-19 14:50): outcomes of T0 and T4; T2 and T3 failed as designed
+
+Test run F-20261119-143636-aae25fb (exit 0, 4 of 6 checks passed):
+- T0a-T0d PASS (Newtonian limit 1.5e-16; 2404 restricted form 4e-15; sum of canonical momenta
+  = Will's P 2e-16; momentum inversion 1.5e-16 on weak-field states). [VERIFIED]
+- T2 FAIL. The measured k came out near -1 because I unwrapped the polar angle only at the
+  periastron events (consecutive periastra differ by 2 pi + delta, np.unwrap removes the 2 pi):
+  a defect of the measurement in the test, not of the equations. The orbits were also not the
+  intended ones: with the Newtonian periastron speed at p = 20 M and nu = 0.25 the 1PN orbit is
+  barely bound (apocentre 656 M instead of 40 M), so only one periastron fell inside the
+  integration time. The same happens to the Hills start states (entry 7).
+- T3 FAIL. Slopes -2.8 (1PN energy), -1.5 (Newtonian energy) instead of -2 and -1. The
+  premise of the scaling (the Newtonian trajectory the same, PN a perturbation) does not hold
+  for lambda = 1 ... 4: the encounter is chaotic and its fate changes with lambda (outcome 1 at
+  lambda = 1, 0 at lambda = 4), and at lambda = 1 the EIH member reaches 3.1 M where M/r = 0.32.
+  The normalisation by the initial kinetic energy is also poor: the member's kinetic energy at
+  pericentre is about four times the initial one.
+  Not a run, a development check (unregistered, numbers not used): dE/dt along the EIH equations
+  at a random two-body state scaled as c2inv^2 (1.2e-7, 1.2e-9, 1.3e-11 at c2inv = 0.1, 0.01,
+  0.001), and over one orbit at p = 200 M the energy variation scaled as c2inv^2. A registered
+  test of this local property is T1 below.
+
+T4 run F-20261119-143753-d82e9e3 (exit 0; the first attempt F-20261119-143638-83ce321 failed,
+entry 3; `figures/fig_t4_trust.png`, `results/trust.json`). [VERIFIED as outputs of this run]
+- EIH relative to exact Schwarzschild, parabolic orbits of equal L, error of the relativistic
+  excess of the swept angle: -87.6 % at areal r_p = 4.2 M, -60.7 % at 6, -39.3 % at 8, -26.8 %
+  at 10, -19.6 % at 12, -12.3 % at 16, -8.8 % at 20, -5.0 % at 30, -1.2 % at 100 M. 1PN
+  underestimates the excess everywhere. The error stays below 10 / 20 / 30 / 50 % beyond areal
+  r_p = 20 / 12 / 10 / 7 M.
+- The L derivative of the excess (how differently two members of the binary are deflected)
+  is worse: -82.8 % at 8 M, -61.1 % at 10, -45.6 % at 12, -28.5 % at 16, -20.0 % at 20,
+  -11.1 % at 30 M; below 10 / 20 / 30 / 50 % beyond 40 / 25 / 16 / 12 M. Below about 7 M the EIH
+  excess even decreases with decreasing r_p (it peaks at 1.10 rad near 6 M) while GR's diverges
+  at L -> 4 M.
+- No capture in EIH: for L = 0.5, 1, 2, 3, 3.5, 3.9, 4.0 M the EIH test body turns around at
+  harmonic r = 2.70, 2.74, 2.95, 3.50, 4.15, 5.06, 5.35 M (GR: captured for every L < 4 M).
+- Pericentres: for the L of the GR parabola with areal r_p = 8 M the EIH pericentre is 7.68 M
+  (harmonic; GR 7.0), at 10 M 9.45 (GR 9.0).
+- A second 1PN dynamics (quadrature of the conserved 1PN E and L, which differs from EIH at 2PN)
+  differs from EIH by 7-16 % of the excess at 10-40 M: the 1PN truncation ambiguity is as large
+  as the error against GR. Will's E is conserved along the test-mass EIH runs to 4e-13 per
+  unit mass.
+- Predictions (entry 1, T4): (i) no capture in EIH: CONFIRMED; (ii) "within 10 percent only for
+  r_p >~ 30 M": REFUTED in the number (10 % is reached at 20 M), CONFIRMED in kind (27 % at
+  10 M, 1PN underestimates); (iii) the derivative worse than the angle: CONFIRMED.
+- [JUDGEMENT] Where 1PN stops being trustworthy for the Hills problem: the tidal splitting of
+  the binary is governed by the differential deflection, whose 1PN error is 20 % at 25 M and
+  50 % at 12 M (areal). So the EIH reference is a controlled correction to Newton (error of the
+  relativistic part below about 20 %) for pericentres beyond about 25 M; between 12 and 25 M it
+  gives the sign and rough size of the relativistic correction; inside about 12 M (all of the
+  plan's pericentres: 7-17 M at q = 10, 9.8-16 M at q = 4) it is not a controlled
+  approximation either, and below about 7 M (and for any member with L < 4 M, which GR
+  captures) it is qualitatively wrong.
+
+## Entry 5 (2026-11-19 14:55): predictions for the redesigned tests T1-T3 (before the run)
+
+T1 (new), local consistency of the equations with the integrals. At 30 random three-body
+states (weak field, r ~ 10-50, v ~ 0.05-0.2) the time derivatives of Will's E and P, of
+J = sum x_a x p_a and of G - P t along the EIH equations (centred differences of the integrals
+in x and v, contracted with v and a) scale as c2inv^2: ratio between c2inv = 1e-2 and 1e-3 equal
+to 100 within 10 percent (median over states), while the derivatives of the Newtonian E, P, J
+scale as c2inv (ratio 10 within 10 percent). Refuted otherwise.
+T2 (redesigned). Initial relative speed at periastron chosen so that the 1PN energy equals the
+Newtonian target -(1 - e^2)/(2 p) mu (e = 0.5); six periastra counted by events; the angle
+unwrapped on a dense grid. Prediction as entry 1: |k j^2/3 - 1| falls like 1/j^2 (slope -1.8 to
+-2.2 against j over p = 80 ... 640 M), coefficient |k j^2/3 - 1| j^2 between 1 and 20; period
+deviation slope -1.7 to -2.3 against p.
+T3 (redesigned). The q = 10 encounter at lambda = 8, 16, 32, 64, 128 (M/r_p from 1/64 to
+1/1024; perturbative), changes normalised by the largest kinetic energy (and largest sum m|v|,
+sum m|x x v|) along the run: slopes -2 +- 0.3 for the 1PN integrals and the centre-of-mass
+drift, -1 +- 0.15 for the Newtonian E and P; the outcome the same at every lambda. At lambda =
+1 (reported, not tested) the change of E is an indicator of the 2PN error of the encounter.
+
+## Entry 6 (2026-11-19 15:05): the start state in 1PN; predictions for the scans and for P1
+
+The start states of the plan (newton3's Newtonian parabola about M + m at 4 r_t) carry
+Newtonian velocities. Read in 1PN they are not parabolic, and how they are read decides
+whether the centre of mass is bound. Development check (unregistered; the numbers are
+recomputed and recorded by the P1 run): the binary as one point m_b, two-body 1PN invariants
+per unit reduced mass at phase 130 deg:
+- q = 10 (r_p = 8): velocities read as EIH coordinate velocities, E = +0.0086, J = 4.88 M
+  (hyperbolic, v_inf ~ 0.13); newton3's m v read as canonical 1PN momenta (the reading of
+  Bowen-York momenta), E = -0.0045, J = 4.195 M (bound; J = the Newtonian L, as it must be).
+- q = 4 (r_p = 9.82): +0.0071, J = 5.67 M against -0.0040, J = 4.95 M.
+The difference is 1PN in the velocities (v_canonical ~ (1 - v^2/2 - 3U) p/m) but decides the
+sign of E at r0 ~ 26-32 M. [JUDGEMENT] For predicting the NR passages the canonical reading is
+the consistent one (the puncture momenta are ADM momenta, which at 1PN are the canonical
+momenta of the EIH Lagrangian [BACKGROUND, TO VERIFY with core]); the velocity reading is the
+like-for-like comparison with the two older baselines, which take v = P/m. Both are run
+(models eih and eihp).
+
+Predictions for the scans (scripts/scan.py; q = 10: r_p = 7-17 M, q = 4: 9.82-16 M; prograde
+and retrograde; 360 effective phases; all models from the same coordinate state at 4 r_t):
+S1. eih (velocity reading): the separated fraction (outcome not 0 or 5) is within 0.15 of full
+    Newton at every r_p >= 10 M, prograde (the 1PN CM orbit is hyperbolic with a larger J, its
+    pericentre close to the Newtonian one). Refuted if off by more than 0.15 at two or more of
+    these r_p.
+S2. A member of eih comes inside 5.35 M of M (the EIH turning radius of the L = 4 M parabola,
+    the GR-capture proxy, T4) in 0.5-1.0 of the phases at r_p = 7-8 M (q = 10, prograde) and in
+    less than 0.4 at r_p >= 12 M. Refuted outside.
+S3. eihp (canonical reading) is deeper: its GR-capture-proxy fraction exceeds that of eih at
+    every r_p of q = 10 prograde, and its separated fraction differs from eih by more than 0.1
+    at some r_p. Refuted otherwise.
+S4. Phase by phase (outcome classes, captures counted as their own class): eih agrees with
+    full Newton in more than half of the phases at r_p >= 10 M (q = 10 prograde) and with HRNA in
+    fewer phases than with Newton at every r_p. Refuted otherwise.
+S5. Every eih encounter of the plan's lines has a member inside the trust radius 12 M of T4
+    in most phases (> 0.5 at every r_p <= 13 M): the EIH line is not a controlled reference
+    there. Refuted if below 0.5 at r_p <= 10 M.
+
+Predictions for P1 (scripts/p1.py; start states of nr_first/inputs/p1_q4.athinput (q = 4)
+and three_punctures/inputs/hills_q10_m8.athinput (q = 10), bare masses):
+P1a. q = 4, eih (velocity reading): m1 leaves and m2 stays bound, as in Newton (m1 ejected,
+    +1.312 units; nr_first E6), with m2's closest approach to M below Newton's 5.78 M and
+    inside 5.35 M (GR-capture proxy). Refuted if m2 leaves.
+P1b. q = 4, eihp (canonical reading): the centre of mass is bound in 1PN, the encounter is
+    deeper than eih's (closest approach of the binary's centre of mass smaller), and the
+    outcome differs from eih in at least one of: identity of the ejected member, ejection
+    energy by more than 30 percent, or a member inside 5.35 M. Refuted if the two readings give
+    the same member, energies within 30 percent and the same capture-proxy verdict.
+P1c. q = 10: as P1a/P1b, with the member that Newton binds (m2, pericentre 5.64 M) inside
+    5.35 M in both readings.

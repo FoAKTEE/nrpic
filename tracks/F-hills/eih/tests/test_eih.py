@@ -1,13 +1,16 @@
 #!/usr/bin/env python3
-"""Tests T0, T2, T3 of the EIH reference (predictions: ../JOURNAL.md entry 1).
+"""Tests T0-T3 of the EIH reference (predictions: ../JOURNAL.md entries 1 and 5).
 
 T0  Newtonian limit against newton3; the restricted equation of 2404.16270 (appendix.tex
     l. 127-131, written out here independently of eih.accel) at states with M at rest at the
     origin.
+T1  Local consistency of the equations with the integrals: d/dt of Will's E and P, of
+    J = sum x_a x p_a and of G - P t along the EIH flow scale as c2inv^2 (Newtonian ones as
+    c2inv), at random weak-field three-body states.
 T2  Two-body periastron advance k and radial period against Schaefer & Jaranowski
     1805.07240v5 LRRSJarXiv_v5.tex l. 3169-3184 (k = 3/j^2 + O(c^-4); P at 1PN).
 T3  Conservation of the 1PN integrals in a Hills encounter, and its scaling with the size of
-    the PN terms (lengths x lambda).
+    the PN terms (lengths x lambda = 8 ... 128, perturbative; lambda = 1 reported).
 Usage: test_eih.py <outdir>   (default $NRPIC_RUN_DIR). Writes tests.json and figures.
 """
 import json
@@ -95,16 +98,63 @@ def t0():
 
 
 # ------------------------------------------------------------------------------------------
+def t1():
+    """Local consistency: d/dt of the integrals along the EIH flow scale as c2inv^2."""
+    rng = np.random.default_rng(1119)
+    rows = []
+    for i in range(30):
+        while True:
+            x = rng.uniform(-40, 40, size=(3, 3))
+            d = np.linalg.norm(x[:, None] - x[None], axis=-1)[np.triu_indices(3, 1)]
+            if d.min() > 10:
+                break
+        v = rng.normal(size=(3, 3))
+        v *= rng.uniform(0.05, 0.2, size=(3, 1)) / np.linalg.norm(v, axis=1, keepdims=True)
+        ms = np.array([1.0, rng.uniform(0.02, 0.5), rng.uniform(0.02, 0.5)])
+        row = {}
+        for eps in (1e-2, 1e-3):
+            a = eih.accel(x, v, ms, eps)
+            h = 1e-2
+
+            def ddt(Q):
+                f = lambda s: Q(x + s * v, v + s * a)  # noqa: E731
+                return (-f(2 * h) + 8 * f(h) - 8 * f(-h) + f(-2 * h)) / (12 * h)
+            row[eps] = dict(
+                E=abs(ddt(lambda X, V: eih.energy(X, V, ms, eps))),
+                EN=abs(ddt(lambda X, V: eih.energy(X, V, ms, 0.0))),
+                P=np.linalg.norm(ddt(lambda X, V: eih.momentum(X, V, ms, eps))),
+                PN=np.linalg.norm(ddt(lambda X, V: eih.momentum(X, V, ms, 0.0))),
+                J=np.linalg.norm(ddt(lambda X, V: eih.angular_momentum(X, V, ms, eps))),
+                JN=np.linalg.norm(ddt(lambda X, V: eih.angular_momentum(X, V, ms, 0.0))),
+                G=np.linalg.norm(ddt(lambda X, V: eih.centre_of_mass(X, V, ms, eps)[0])
+                                 - eih.momentum(x, v, ms, eps)))
+        rows.append({k: row[1e-2][k] / row[1e-3][k] for k in row[1e-2]})
+    med = {k: float(np.median([r[k] for r in rows])) for k in rows[0]}
+    ok = (all(90 <= med[k] <= 110 for k in ("E", "P", "J", "G"))
+          and all(9 <= med[k] <= 11 for k in ("EN", "PN")))
+    check("T1_integrals_conserved_to_1PN_order", ok, median_ratio_eps_0p01_over_0p001=med,
+          note="JN: the Newtonian angular momentum; its derivative is also O(c2inv)")
+
+
+# ------------------------------------------------------------------------------------------
 def two_body(m1, m2, p, e=0.5, n_orb=6, rtol=1e-13):
+    from scipy.optimize import brentq
     Mt = m1 + m2
+    mu = m1 * m2 / Mt
+    nu = mu / Mt
     rp = p / (1 + e)
-    vrel = math.sqrt(Mt * (1 + e) / rp)
-    x = np.array([[m2 / Mt * rp, 0, 0], [-m1 / Mt * rp, 0, 0]], float)
-    v = np.array([[0, m2 / Mt * vrel, 0], [0, -m1 / Mt * vrel, 0]], float)
     ms = np.array([m1, m2])
-    # remove the 1PN momentum (boost by -P/M* at Newtonian order)
-    P = eih.momentum(x, v, ms)
-    v = v - P / Mt
+
+    def state(vrel):
+        x = np.array([[m2 / Mt * rp, 0, 0], [-m1 / Mt * rp, 0, 0]], float)
+        v = np.array([[0, m2 / Mt * vrel, 0], [0, -m1 / Mt * vrel, 0]], float)
+        v = v - eih.momentum(x, v, ms) / Mt        # zero 1PN momentum at Newtonian order
+        return x, v
+    vN = math.sqrt(Mt * (1 + e) / rp)
+    target = -(1 - e * e) / (2 * p)
+    vrel = brentq(lambda w: float(eih.energy(*state(w), ms)) / mu - target, 0.5 * vN, 1.5 * vN,
+                  xtol=1e-15)
+    x, v = state(vrel)
     T = 2 * math.pi * math.sqrt((p / (1 - e * e)) ** 3 / Mt)
 
     def f(t, y):
@@ -113,30 +163,22 @@ def two_body(m1, m2, p, e=0.5, n_orb=6, rtol=1e-13):
         return np.concatenate([vv.ravel(), eih.accel(xx, vv, ms).ravel()])
 
     def peri(t, y):
-        d = y[0:3] - y[3:6]
-        w = y[6:9] - y[9:12]
-        return d @ w
+        return (y[0:3] - y[3:6]) @ (y[6:9] - y[9:12])
     peri.direction = 1
-    sol = solve_ivp(f, (0, (n_orb + 0.5) * T), np.concatenate([x.ravel(), v.ravel()]),
+    peri.terminal = n_orb
+    sol = solve_ivp(f, (0, 50 * T), np.concatenate([x.ravel(), v.ravel()]),
                     method="DOP853", rtol=rtol, atol=1e-16, events=peri, dense_output=True)
     te = sol.t_events[0]
-    ye = sol.y_events[0]
-    d = ye[:, 0:3] - ye[:, 3:6]
-    phi = np.unwrap(np.arctan2(d[:, 1], d[:, 0]))
-    phi0 = 0.0
-    # periastra: the start (t = 0) plus the events
-    tt = np.concatenate([[0.0], te])
-    ph = np.concatenate([[phi0], phi])
-    ph = np.unwrap(ph)
-    norb = len(tt) - 1
-    k = (ph[-1] - ph[0]) / (2 * math.pi * norb) - 1.0
-    Pr = (tt[-1] - tt[0]) / norb
-    mu = m1 * m2 / Mt
-    nu = mu / Mt
+    te = te[te > 1e-6 * T]                      # the start is a periastron itself
+    norb = len(te)
+    grid = np.unique(np.concatenate([np.linspace(0, te[-1], 400 * norb + 1), te]))
+    Y = sol.sol(grid)
+    d = Y[0:3] - Y[3:6]
+    phi = np.unwrap(np.arctan2(d[1], d[0]))
+    k = (np.interp(te[-1], grid, phi) - phi[0]) / (2 * math.pi * norb) - 1.0
+    Pr = te[-1] / norb
     J = np.linalg.norm(eih.angular_momentum(x, v, ms))
     E = float(eih.energy(x, v, ms))
-    Pt = eih.momentum(x, v, ms)
-    # energy of the system at rest: E - P^2/(2 M) (Newtonian order; P ~ 0 here)
     j = J / (mu * Mt)
     Ered = E / mu
     k_pred = 3.0 / j ** 2
@@ -144,11 +186,11 @@ def two_body(m1, m2, p, e=0.5, n_orb=6, rtol=1e-13):
     Ef = float(eih.energy(sol.y[:6, -1].reshape(2, 3), sol.y[6:, -1].reshape(2, 3), ms))
     return dict(m1=m1, m2=m2, nu=nu, p=p, j=j, Ered=Ered, k=k, k_pred=k_pred,
                 dev_k=k / k_pred - 1, P=Pr, P_pred=P_pred, dev_P=Pr / P_pred - 1,
-                norb=norb, dE_rel=(Ef - E) / abs(E), Pres=float(np.linalg.norm(Pt)))
+                norb=norb, dE_rel=(Ef - E) / abs(E), vrel_over_newton=vrel / vN)
 
 
 def t2(out):
-    ps = [20, 40, 80, 160, 320, 640]
+    ps = [20, 40, 80, 160, 320, 640]      # fits use p >= 80
     cases = {"nu=0.25": (0.5, 0.5), "q=10": (10 / 11, 1 / 11), "test": (1 - 1e-5, 1e-5)}
     rows = {}
     for name, (m1, m2) in cases.items():
@@ -201,7 +243,7 @@ def t3(out):
     x0, v0, t0 = initial_state_arrays(P, 4.0 * rt)
     mu = P["M"][0] + P["m"][0]
     tend = conic_time_from_pericentre(P["rp"], P["e_orb"], np.array([mu]), np.array([30 * rt]))[0]
-    lams = [1, 2, 4, 8, 16]
+    lams = [1, 8, 16, 32, 64, 128]
     rows = []
     series = None
     for lam in lams:
@@ -227,9 +269,10 @@ def t3(out):
         Y = sol.sol(tt).T
         X = Y[:, :9].reshape(-1, 3, 3)
         V = Y[:, 9:].reshape(-1, 3, 3)
-        K0 = 0.5 * np.sum(ms * np.sum(v[0] ** 2, axis=-1))
-        Ps = np.sum(ms * np.linalg.norm(v[0], axis=-1))
-        Js = np.sum(ms * np.linalg.norm(np.cross(x[0], v[0]), axis=-1))
+        # scales: the largest kinetic energy, sum m|v| and sum m|x x v| along the run
+        K0 = float(np.max(0.5 * np.sum(ms * np.sum(V ** 2, axis=-1), axis=-1)))
+        Ps = float(np.max(np.sum(ms * np.linalg.norm(V, axis=-1), axis=-1)))
+        Js = float(np.max(np.sum(ms * np.linalg.norm(np.cross(X, V), axis=-1), axis=-1)))
         E1 = eih.energy(X, V, ms)
         EN = eih.energy(X, V, ms, 0.0)
         P1 = eih.momentum(X, V, ms)
@@ -262,10 +305,12 @@ def t3(out):
     for key in ("dE1", "dEN", "dP1", "dPN", "dJ1", "dJN", "dG"):
         y = np.array([r[key] for r in rows])
         slopes[key] = float(np.polyfit(np.log(lam[1:]), np.log(y[1:]), 1)[0])
+    same_outcome = len({r["outcome"] for r in rows[1:]}) == 1
     ok = (all(-2.3 <= slopes[k] <= -1.7 for k in ("dE1", "dP1", "dJ1", "dG"))
           and all(-1.15 <= slopes[k] <= -0.85 for k in ("dEN", "dPN"))
-          and rows[0]["dE1"] < 1e-2 and rows[0]["dP1"] < 1e-2 and rows[0]["dJ1"] < 1e-2)
-    check("T3_conservation_scaling", ok, slopes=slopes, rows=rows)
+          and same_outcome)
+    check("T3_conservation_scaling", ok, slopes=slopes, same_outcome_lambda_ge_8=same_outcome,
+          rows=rows, note="lambda = 1 reported, not in the fit")
     fs.use_style()
     import matplotlib.pyplot as plt
     fig, ax = plt.subplots(1, 2, figsize=(fs.FULL_WIDTH, 3.2))
@@ -276,8 +321,8 @@ def t3(out):
         ax[0].loglog(lam, [r[kN] for r in rows], "s--", color=c, mfc="none",
                      label=f"{lab}, Newtonian")
     ax[0].loglog(lam, [r["dG"] for r in rows], "^-", color=fs.SERIES[3], label="c.o.m. drift")
-    ax[0].loglog(lam, rows[0]["dEN"] / lam, **fs.GUIDE)
-    ax[0].loglog(lam, rows[0]["dE1"] / lam ** 2, **fs.GUIDE)
+    ax[0].loglog(lam[1:], rows[1]["dEN"] * lam[1] / lam[1:], **fs.GUIDE)
+    ax[0].loglog(lam[1:], rows[1]["dE1"] * lam[1] ** 2 / lam[1:] ** 2, **fs.GUIDE)
     ax[0].set_xlabel(r"length scale $\lambda$ (PN terms $\propto 1/\lambda$)")
     ax[0].set_ylabel("max change / scale")
     ax[0].legend(frameon=False, fontsize=6.5, ncol=1)
@@ -301,6 +346,7 @@ def main():
     out = sys.argv[1] if len(sys.argv) > 1 else os.environ["NRPIC_RUN_DIR"]
     os.makedirs(out, exist_ok=True)
     t0()
+    t1()
     t2(out)
     t3(out)
     with open(os.path.join(out, "tests.json"), "w") as fh:
