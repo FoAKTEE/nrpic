@@ -1,0 +1,106 @@
+{
+  "schema": "nrpic-run-manifest/1",
+  "run_id": "F-20261119-144536-fc9bf86",
+  "track": "F-hills",
+  "gate": "G1",
+  "kind": "scouting",
+  "purpose": "eih T0-T3 (redesigned T2, T3; new T1): source forms, local consistency of the 1PN integrals, two-body periastron advance and period against 1805.07240, conservation scaling in the perturbative regime",
+  "preregistered_in": null,
+  "launcher": "local",
+  "command": [
+    "python",
+    "tracks/F-hills/eih/tests/test_eih.py"
+  ],
+  "cwd": ".",
+  "git": {
+    "sha": "fc9bf8657303dee167adc739c2ac00356639e370",
+    "branch": "track/F-hills",
+    "dirty": false,
+    "package": [
+      "tracks/F-hills/eih"
+    ],
+    "outside_package": {
+      "count": 11,
+      "first": [
+        "?? tracks/F-hills/nr_first/figures/fig_e10a_s3_s2_compare.png",
+        "?? tracks/F-hills/nr_first/figures/fig_e11_tree_check.png",
+        "?? tracks/F-hills/nr_first/figures/fig_e3_single_gauge.png",
+        "?? tracks/F-hills/nr_first/figures/fig_e7_p1smoke.png",
+        "?? tracks/F-hills/nr_first/results/e10a_s3_s2_compare.json",
+        "?? tracks/F-hills/nr_first/results/e11_tree_check.json",
+        "?? tracks/F-hills/nr_first/results/e11_tree_path.json",
+        "?? tracks/F-hills/nr_first/results/e3_single_analysis.json",
+        "?? tracks/F-hills/nr_first/results/e4_test2_s3_s2.json",
+        "?? tracks/F-hills/nr_first/results/e4_test3_p1smoke.json",
+        "?? tracks/F-hills/nr_first/results/e7_p1smoke_analysis.json"
+      ]
+    },
+    "merge_base_main": "2df11a93a23f279b046047f3e2bed44a85946a3a",
+    "worktree": "wt/F-hills"
+  },
+  "code": {
+    "core_tag": "core-v0.3",
+    "athenak_upstream_sha": "c5a0d7f",
+    "kokkos_sha": "6739bc623081648af9e752b616d9671527922cbf",
+    "problem": null
+  },
+  "env": {
+    "host": "anta",
+    "env_hash": "33c1dbb6673b68919eaa332b0add0b58aeac8be843f2071b9d06e2e0e397a96d",
+    "machine_file_sha256": "0321f40f4caeeb2a36624a9fa9809e60bad31071f366b3517ba23ad45698d2d7",
+    "uv_lock_sha256": "5417f6ba318b914aa3800e5d55f7b11fdd8df13c2688bdda7d419240aa1d5863",
+    "track_requirements_sha256": null,
+    "container_digest": null,
+    "compiler": "g++ 11.4.0",
+    "mpi": "none (Athena_ENABLE_MPI=OFF)",
+    "gpu": null,
+    "python": "3.10.12 /data/haiyangw/nrpic/wt/F-hills/.venv"
+  },
+  "input": null,
+  "inputs": [
+    {
+      "path": "tracks/F-hills/eih/tests/test_eih.py",
+      "role": "argv",
+      "sha256": "11e0220557e244f0f1ee8cfd46d44ed7f99d22849ba735211e4bbc44d26a124b",
+      "bytes": 17363,
+      "tracked": true
+    }
+  ],
+  "batch_entries": null,
+  "resources": {
+    "nodes": 1,
+    "gpus": 0,
+    "cores": 1,
+    "walltime_s": null,
+    "wall_limit": null,
+    "segments_max": null,
+    "gpu_hours_requested": 0.0,
+    "gpu_hours": null,
+    "particles": null
+  },
+  "slurm": null,
+  "outputs": {
+    "dir": "scratch/F-hills/F-20261119-144536-fc9bf86",
+    "sha256sums": "sha256sums.txt",
+    "sha256sums_sha256": null,
+    "bytes": null,
+    "files": null
+  },
+  "status": "running",
+  "exit_code": null,
+  "registered": "2026-11-19T14:45:36Z",
+  "started": null,
+  "ended": null,
+  "parents": [],
+  "notes": "",
+  "budget_at_submit": {
+    "gpu_hours_allotted": 50.0,
+    "cores_allotted": 16,
+    "gpu_hours_used": 0.3,
+    "gpu_hours_reserved": 1.0,
+    "gpu_hours_without_gate": 0.0,
+    "cores_busy": 0,
+    "runs": 138,
+    "allotment_from": "coord/DECISIONS/0006-compute-budget.md + 0014-budgets-after-wave-1.md"
+  }
+}
