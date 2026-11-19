@@ -45,6 +45,7 @@ def tracefree(d):
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--run", required=True)
+    ap.add_argument("--mg", default="", help="run directory of cases.py t4c (multigrid)")
     ap.add_argument("--out", default=os.environ.get("NRPIC_RUN_DIR", ""))
     a = ap.parse_args()
     os.makedirs(a.out, exist_ok=True)
@@ -69,9 +70,12 @@ def main():
         ode[model] = run
         res["ode_%s_crossings" % model] = run["crossings"][:3]
     tx_ode = ode["A"]["crossings"][0][0]
-    for name in ("emb_fft", "emb_mg"):
-        g = read_group(os.path.join(a.run, name, "newton.newton.g1.hst"))
-        h = nw.read_newton_hst(os.path.join(a.run, name, "newton.newton.hst"))
+    dirs = {"emb_fft": os.path.join(a.run, "emb_fft")}
+    if a.mg:
+        dirs["emb_mg"] = os.path.join(a.mg, "emb_mg")
+    for name, cdir in dirs.items():
+        g = read_group(os.path.join(cdir, "newton.newton.g1.hst"))
+        h = nw.read_newton_hst(os.path.join(cdir, "newton.newton.hst"))
         t = t0 + g["T"]
         M = g["mass"][0]
         R = np.sqrt(5.0*g["J"][:, [0, 3, 5]]/M)
@@ -133,9 +137,10 @@ def main():
     axs[0].plot(tg, np.abs(sgc["R"][:, 0]), color="0.5", lw=1.0, alpha=0.6,
                 label="ODE, static (model C), short axis")
     axs[2].semilogy(tg, np.maximum(sg["P"], 1e-12), color=fs.PAL["blue"], ls="--", lw=1.0)
-    res["placements"] = dict(
-        t_min_rel_diff=res["emb_fft"]["t_min_short_axis"]/res["emb_mg"]["t_min_short_axis"]
-        - 1.0)
+    if "emb_mg" in res:
+        res["solvers"] = dict(
+            t_min_rel_diff=res["emb_fft"]["t_min_short_axis"]/res["emb_mg"]["t_min_short_axis"]
+            - 1.0)
     axs[0].set_xlabel(r"$t/t_k$", labelpad=-1)
     axs[0].set_ylabel(r"semi-axes $(5J_{ii}/M)^{1/2}$")
     axs[0].legend(loc="lower left", fontsize=7)

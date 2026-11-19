@@ -49,6 +49,8 @@ def main():
     fig.subplots_adjust(left=0.09, right=0.985, bottom=0.15, top=0.95, wspace=0.26)
     res = {}
     for name, runs in cases.items():
+        if not all(os.path.exists(os.path.join(d, "newton.newton.hst")) for _, d in runs):
+            continue
         res[name] = {}
         for lab, d in runs:
             h = nw.read_newton_hst(os.path.join(d, "newton.newton.hst"))

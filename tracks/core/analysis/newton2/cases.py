@@ -222,7 +222,7 @@ def t3(out, exe, jobs, rec):
         d = os.path.join(out, name)
         sh([PY, gen, "pancake-sin", "--n", str(n), "--delta", "0.05", "--L", "1", "--out", d])
         p = dict(grp, newton_poisson="fft", newton_fft_symbol=sym)
-        text = pancake_deck(bdir, n, {"particles": p, "output1": {"dt": 2.34375}}, 5.0)
+        text = pancake_deck(bdir, n, {"particles": p, "output1": {"dt": 2.34375}}, 3.5)
         text = set_params(text, "particles", {"traj_ntrack": 0})
         cases.append(Case(name, text))
     # continuation of the spectral run from its dump at cycle 300
@@ -276,7 +276,7 @@ def t4a(out, exe, jobs, rec):
                for r in res.values())
 
 
-def t4b(out, exe, jobs, rec):
+def t4b(out, exe, jobs, rec, which="fft"):
     import numpy as np
     bdir, commit = refs(out, "B-emd-gw")
     rec["refs"] = {"B-emd-gw": commit}
@@ -308,10 +308,17 @@ def t4b(out, exe, jobs, rec):
         "probe_x1": L/2, "probe_x2": L/2, "probe_x3": L/2,
         "probe1_x1": 1.0, "probe1_x2": 1.0, "probe1_x3": 1.0}})
     src = os.path.join(NEWTON, "embedded_ellipsoid.athinput")
-    cases = [Case("emb_fft", deck(src, base)),
-             Case("emb_mg", deck(src, merge(base, {"particles": {"newton_poisson":
-                                                                  "multigrid"}})))]
+    if which == "fft":
+        cases = [Case("emb_fft", deck(src, base))]
+    else:
+        cases = [Case("emb_mg", deck(src, merge(base, {"particles": {"newton_poisson":
+                                                                      "multigrid"}})))]
     return run_all(out, cases, exe, jobs, rec)
+
+
+def t4c(out, exe, jobs, rec):
+    """The embedded ellipsoid of t4b with the multigrid solver."""
+    return t4b(out, exe, jobs, rec, which="mg")
 
 
 def t5(out, exe, jobs, rec):
@@ -376,10 +383,11 @@ def t7(out, exe, jobs, rec):
     nog = {"particles": {"newton_ngroup": 0}}
     half = {"particles": {"dt": 0.0025}}
     pcs = {"mesh": {"nghost": 4}, "particles": {"deposit_shape": "pcs", "interp": "bspline"}}
-    cases = [Case("w32_dth_sp_pcs", deck(fft, merge(w, nog, half, pcs))),
-             Case("w32_dth_mg", deck(per, merge(w, half))),
-             Case("w32_dth_sp", deck(fft, merge(w, nog, half))),
-             Case("w32_dt1_sp_pcs", deck(fft, merge(w, nog, pcs)))]
+    cases = [Case("w32_dth_mg", deck(per, merge(w, half))),
+             Case("w32_dth_sp", deck(fft, merge(w, nog, half)))]
+    if os.environ.get("NEWTON2_T7_PCS"):
+        cases += [Case("w32_dth_sp_pcs", deck(fft, merge(w, nog, half, pcs))),
+                  Case("w32_dt1_sp_pcs", deck(fft, merge(w, nog, pcs)))]
     return run_all(out, cases, exe, jobs, rec)
 
 
@@ -535,7 +543,7 @@ def card(out, exe, jobs, rec):
            "hist_dcycle": 1, "traj_dcycle": 0, "newton_poisson": "fft",
            "newton_fft_symbol": "spectral",
            "particle_file": os.path.join(ic, "chk_sin32", "particles.nrp")}
-    decks["chk_sin32"] = set_params(pancake_deck(bdir, n, {"particles": grp}, 5.0),
+    decks["chk_sin32"] = set_params(pancake_deck(bdir, n, {"particles": grp}, 5.0),  # card list of run core-20261119-145326-d509829: to t = 5
                                     "particles", {"traj_ntrack": 0})
     # throughput: 2e6 particles at rest, 20 steps
     rng = np.random.default_rng(5)
@@ -573,7 +581,7 @@ def card(out, exe, jobs, rec):
     return True
 
 
-TESTS = dict(card=card, t1=t1, t2=t2, t3=t3, t4a=t4a, t4b=t4b, t5=t5, t6=t6, t7=t7, t8=t8, t10=t10)
+TESTS = dict(card=card, t1=t1, t2=t2, t3=t3, t4a=t4a, t4b=t4b, t4c=t4c, t5=t5, t6=t6, t7=t7, t8=t8, t10=t10)
 
 
 def main():
