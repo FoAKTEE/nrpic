@@ -163,20 +163,110 @@ Per cell and cluster two cubic interpolations (four with the shift) and the corr
 
 ## 6. Tests
 
-PENDING: filled from the outcomes in `JOURNAL-clump2.md`.
+Predictions and outcomes in full, including the failed ones: `tracks/core/JOURNAL-clump2.md`.
+Scripts: `tracks/core/analysis/clump2/` (`check_boost.py`, `predict_boost.py`,
+`run_boost_static.py` + `boost_static_check.py` + `tb_residual_diag.py`,
+`run_binary_static.py` + `binary_static_check.py`, `run_t0_records.py`,
+`boost_evolution_check.py`, `binary_evolution_check.py`, `run_cpu_tests.sh`); figures are
+in the run directories (`scratch/core/<run_id>/`) and copied to `figs/`. Cluster y_c =
+0.819 (the stable cluster of the first paper: R = 9.964 M, rbar_s = 8.936 M, alpha_c =
+0.809), ADM mass 1. Processor tests on a uniform box [-16, 16]^3 (one cluster) with
+`nghost = 4`, linear cloud, four filter passes with compensation, the quiet lattice
+(spacing 0.25, six momenta per site) unless said; norms as in the history file,
+restricted to r < 14 ("interior").
+
+| Test | Result | Runs |
+|---|---|---|
+| PA, Python reference | slice function matches the vacuum closed form to 3e-13; `Q(inf)/M - 1 = -9e-15` (plain boost 0.947); curvature equals `psi^6 (Lbar beta)/(2 alpha)` of the boosted static solution to 4e-11; divergence equals `8 pi Stilde` to 6e-11; 10^5 boosted particles carry `1.00004 +- 0.0022` of `M V` (2.8 per cent less without the weights); radial equations of the correction solved to 4e-7; added mass `0.984 M V^2/2` | `core-20261119-144026-3d7d4e7` |
+| TB1, momentum constraint without curvature | interior M-norm 0.981, 0.995, 0.9995 of the continuum value at 32, 64, 128 cells; ratio v = 0.3/0.1 3.129 (continuum 3.129) | cases `core-20261119-151457-7a855d8`, analysis `core-20261119-155912-1fda7e0` |
+| TB2, with the boost table | M-norm 0.070, 0.034, 0.015 of the uncorrected one (first order: the edge of the cluster); the same to four digits at v = 0.1 and 0.3; curvature term equal to the continuum to 4e-6 at 128 cells | same |
+| TB3, Hamiltonian at second order | residual added by the motion equal to the continuum second-order value (0.973-0.998); ratio v = 0.3/0.1 9.69 (predicted 9.79); with the correction 0.078-0.097 of it is left (predicted below 0.08 and 0.05 at 64 and 128 cells: **missed**), second order in v and not falling with the cell size; 76-95 per cent of it within 1 M of the surface, a factor 40 removed elsewhere; projection on the uncorrected residual -0.02 to 0.002 | same, diagnostic `core-20261119-160318-b9d749c` |
+| TB4, whole-box history norms | H-norm with correction 4.3 per cent above the cluster at rest (predicted within 2: **missed**; the faces of the box dominate the whole-box norm already at rest); M-norms of `curv` and `corr` 1.04 per cent apart (predicted 1) | same |
+| TB5, fields | psi^4, K_ij, beta^i, lapse of the code equal the Python reference at every cell to 6e-8 (single-precision dumps); trace K 3e-18 | same |
+| TB6, 10^4 equal-mass particles | M-norm2 0.01395 -> 0.00133, the drop equal to the smooth part 0.01275 within 1 per cent; projection of M_x on the smooth field 0.995 -> -0.004; H-norm unchanged within 2 per cent (noise) | same |
+| TD, two clusters at t = 0 | x = -20, +20, Newtonian circular momenta 0.1182, cell 0.5: H-norm near a cluster 1.027 times that of the isolated cluster; M-norm ratio 0.0348 (one cluster 0.0341); correction leaves 0.073 of the second-order residual (one cluster 0.078) | same |
+| R, old inputs unchanged (processors) | release core-v0.3 and this branch: byte-identical data files for `regress_cf` (16 files), `cf_table_regress` (9), `by_static` (5) | `core-20261119-153230-3e858c9` |
+| R, the first paper's two overdensities (two cycles) | PENDING (end of `core-20261119-151457-7a855d8`) | |
+| G, card against processor at t = 0 | PENDING (card jobs 4649, 4657; processor part `core-20261119-160021-b153852`) | |
+| TC, one cluster moving for 50 M on a card | PENDING (Slurm 4649, `core-20261119-145433-8c4083d`) | |
+| TE, binary on a quasi-circular orbit, 250 M on a card | PENDING (Slurm 4657, `core-20261119-155219-32602d2`) | |
 
 ## 7. Track F's request
 
-PENDING.
+Object (b) of Track F: two equilibrium clumps of mass 0.05 M_BH each, compactness 0.05
+to 0.1, with bulk momenta, beside a heavy puncture with momentum. What this provides:
+`make_ic.py boosted --cluster-p yc,mass,x,y,z,px,py,pz` (twice) `--puncture
+m,x,y,z,px,py,pz`, with the cluster model chosen by y_c (compactness `M/R` 0.100 for
+y_c = 0.819; a smaller y_c gives a less compact cluster: `st_cluster.STModel(yc)`), the
+mass scaled by `mass`. The momentum constraint is solved for clusters and puncture
+together (linear); the Hamiltonian constraint for each cluster to second order in its
+speed; the cross terms (cluster-cluster and cluster-puncture curvatures, the puncture's
+tidal field across a clump) are not solved. F's acceptance tests: the momentum
+constraint against the closed form for P/m up to 0.3 is TB (one clump; the residual is
+the deposit, first order in the cell size); "an isolated moving clump keeps its profile
+for 200 M" is TC for 50 M at v = 0.1 and 0.3 (PENDING). In F's units (clump mass 0.05
+M_BH) 200 M_BH are 4000 clump masses: not run.
 
 ## 8. Limits and open items
 
-PENDING.
+1. **Correction leftover at the surface** (TB3): 8 to 10 per cent of the second-order
+   Hamiltonian residual remains within about 1 M of the cluster's surface and does not
+   fall with the cell size; a lattice test is running (journal). Elsewhere the
+   correction removes a factor 40. [VERIFIED for the numbers; cause TO VERIFY]
+2. **Cross terms of several bodies** are not solved (section 3). This is where the
+   elliptic solver of `core/id-solver` belongs: it takes `Abar_ij` from `adm.vK_dd` (so
+   it already sees the boost-table curvature) and the energy density of the deposited
+   particles, and solves the Hamiltonian constraint for psi with the particles' u_i and
+   rest masses held. What clusters need from it: (a) static refined meshes (the clusters
+   need cells of M/2 inside a domain of +-1024 M; work package idsolve2, goal 3);
+   (b) punctures in the solve (Track F's heavy hole; idsolve2 goal 4); (c) the energy
+   density recomputed with the solved psi for moving particles (`W = (1 +
+   psi^-4 u_i u_i)^(1/2)`), which the derivation here relies on (its `-6 P dpsi` term);
+   (d) the vector equation (`id_vector`) on refined meshes, to remove the deposit's
+   share of the momentum-constraint residual. With these the correction tables become a
+   good first guess and the cross terms and the sampling noise are removed. For an
+   isolated cluster the radial solve is exact to the stated order and costs nothing.
+   [JUDGEMENT]
+3. **Lorentz contraction** and the non-conformally-flat part of the boosted metric at
+   O(v^2) are left out: the object is a slightly different (still constrained) cluster,
+   not the exact boosted one. At v = 0.3 the contraction is 4.6 per cent along the motion.
+4. **Particles are not changed by the correction** of psi (their rule uses psi_0 and
+   alpha_0); the derivation includes the resulting `-6 P dpsi` term.
+5. **Gauge.** With zero shift the cluster starts slower in coordinates (0.47 v at the
+   centre); `comp<c>_boost_shift` starts with the comoving shift. Which is better for a
+   long run is test TC (PENDING).
+6. **Summed particle momentum.** `sum m u_i` depends on the slice at first order in v and
+   in the potential (0.947 M V on the plain boosted slice, M V on the maximal one); its
+   drift in an evolution with 1+log slicing is predicted (TC4 and its supplement) and
+   PENDING.
+7. One rank only (the particle module); refined meshes only in the card inputs.
+8. A table component of format 2 cannot carry a boost table.
 
 ## 9. Lines touched in shared files
 
-PENDING.
+- `athenak/src/pgen/nrpic/nrpic_cf.cpp` (additions only, 34 lines; line numbers of this
+  branch): 42-44, three comment lines at the end of the file header; 68,
+  `#include "pgen/nrpic/nrpic_clump_table.hpp"` after the include of
+  `nrpic_clump_curvature.hpp`; 505-515, the reader call after the one of the Gaussian
+  clumps (`ClumpRead`) and the check against a table of format 2; 591-593, the correction
+  loop after the loop of the puncture corrections in the sum of psi; 626-641, the block
+  `if (tcl.n > 0) { ... }` after the curvature of the Gaussian clumps (curvature and
+  shift, added with `+=`).
+- `athenak/src/pgen/nrpic/nrpic_bowen_york.hpp`, `BYRead`: lines 338-339 added after the
+  line that skips a Gaussian component (a table component with a boost file is skipped).
+- New file `athenak/src/pgen/nrpic/nrpic_clump_table.hpp`; nothing added to
+  `CMakeLists.txt`.
+- `problems/ic/make_ic.py`: docstring, model `boosted`, options `--cluster`,
+  `--cluster-p`, `--no-psi-correction`, `--boost-shift` (one new argument group, one new
+  branch of the model switch, one print block). New: `python/nrpic/boosted_cluster.py`,
+  `problems/clump/cluster_moving.athinput`, `problems/clump/cluster_binary.athinput`,
+  `problems/tests/clump_table_static.athinput`, `problems/tests/clump_table_binary.athinput`.
+- `docs/FORMATS.md`: a section "Boost table of a table component" at the end.
+- `tracks/core/analysis/clump/regress.py` (of the first pass): executables by absolute
+  path.
 
 ## 10. Executables for scouting runs (decision 0013)
 
-PENDING.
+`/data/haiyangw/nrpic/scratch/core/exe/core_clump-table/`: `athena_gpu`, `athena_cpu`,
+`COMMIT`, `examples/`, `generator/`, `SHA256SUMS`, `READY` (options, one example each,
+what is tested and what is not). Published by `tracks/core/analysis/clump2/publish_exe.sh`.
