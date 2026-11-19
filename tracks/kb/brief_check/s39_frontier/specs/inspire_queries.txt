@@ -1,0 +1,61 @@
+# Forward citations of the 32 ids of brief lines 243-255 (INSPIRE record numbers from kb-data/meta/inspire/<id>.json)
+fwd 2609.14218 | refersto:recid:3203092
+fwd 2605.04487 | refersto:recid:3152436
+fwd 2610.23218 | refersto:recid:3215855
+fwd 2608.13206 | refersto:recid:3190952
+fwd 2609.03051 | refersto:recid:3199490
+fwd 2603.24838 | refersto:recid:3136378
+fwd 2606.05479 | refersto:recid:3165444
+fwd 2606.18437 | refersto:recid:3170133
+fwd 2607.17929 | refersto:recid:3182033
+fwd 2603.24179 | refersto:recid:3134176
+fwd 2508.20606 | refersto:recid:2964616
+fwd 2501.13046 | refersto:recid:2871568
+fwd 2509.26470 | refersto:recid:2983641
+fwd 2607.21308 | refersto:recid:3182832
+fwd 2512.13673 | refersto:recid:3093098
+fwd 2607.06441 | refersto:recid:3178082
+fwd 2401.08530 | refersto:recid:2747794 and date > 2025
+fwd 2401.08530 | refersto:recid:2747794 and date < 2026
+fwd 2512.14649 | refersto:recid:3093307
+fwd 2610.32592 | refersto:recid:3218526
+fwd 2606.14853 | refersto:recid:3168734
+fwd 2604.00978 | refersto:recid:3138557
+fwd 2506.11795 | refersto:recid:2934323 and date > 2025
+fwd 2506.11795 | refersto:recid:2934323 and date < 2026
+fwd 2404.16270 | refersto:recid:2780811
+fwd 2402.02178 | refersto:recid:2755521
+fwd 2610.13294 | refersto:recid:3213716
+fwd 2505.01495 | refersto:recid:2918187
+fwd 2511.20567 | refersto:recid:3086374
+fwd 2611.12831 | refersto:recid:3226709
+fwd 2504.15978 | refersto:recid:2914804
+fwd 2509.19769 | refersto:recid:2973110
+fwd 2601.17117 | refersto:recid:3111427
+fwd 2506.17641 | refersto:recid:2937904 and date > 2025
+fwd 2506.17641 | refersto:recid:2937904 and date < 2026
+# Topic and author queries, recent months (rows of brief lines 243-255)
+r243 | t "primordial black hole" and (t "matter-dominated" or t "matter dominated" or t "early matter") and date > 2026-06
+r243 | a Yoo, Chul-Moon and date > 2026-08
+r243 | a Escriva, Albert and date > 2026-08
+r244 | abstracts.value:"numerical relativity" and abstracts.value:"dust" and date > 2026-06
+r245 | abstracts.value:"primordial black hole" and abstracts.value:"numerical relativity" and date > 2026-08
+r246 | a Macpherson, Hayley J. and date > 2026-06
+r246 | abstracts.value:"numerical relativity" and (abstracts.value:"ray tracing" or abstracts.value:"ray-tracing") and date > 2026-06
+r247 | a Adamek, Julian and date > 2026-06
+r247 | abstracts.value:"relativistic N-body" and date > 2026-06
+r248 | abstracts.value:"initial data" and abstracts.value:"cosmological" and abstracts.value:"constraint" and date > 2026-06
+r249 | abstracts.value:"inflation" and abstracts.value:"numerical relativity" and date > 2026-06
+r249 | a Clough, Katy and date > 2026-08
+r250 | abstracts.value:"stochastic inflation" and date > 2026-09
+r250 | a Launay, Yoann L. and date > 2026-06
+r251 | abstracts.value:"lattice" and (abstracts.value:"ultra-slow-roll" or abstracts.value:"ultra slow-roll" or abstracts.value:"superhorizon" or abstracts.value:"super-horizon") and date > 2026-06
+r252 | (abstracts.value:"Hills mechanism" or abstracts.value:"tidal separation" or abstracts.value:"tidal disruption of binar") and date > 2026-06
+r252 | abstracts.value:"binary" and abstracts.value:"supermassive black hole" and abstracts.value:"three-body" and date > 2026-06
+r253 | abstracts.value:"black hole cluster" and date > 2026-03
+r253 | abstracts.value:"extremal" and abstracts.value:"Vlasov" and date > 2025-06
+r254 | a Most, Elias R. and date > 2026-08
+r254 | abstracts.value:"Einstein-Vlasov" and date > 2026-06
+r254 | abstracts.value:"particle-in-cell" and abstracts.value:"numerical relativity" and date > 2025
+r255 | abstracts.value:"self-interacting dark matter" and (abstracts.value:"gravothermal" or abstracts.value:"core collapse") and date > 2026-08
+r255 | abstracts.value:"self-interacting dark matter" and (abstracts.value:"general relativistic" or abstracts.value:"general-relativistic" or abstracts.value:"relativistic instability") and date > 2026-03
