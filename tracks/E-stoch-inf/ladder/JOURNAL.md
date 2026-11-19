@@ -336,7 +336,7 @@ dumps at cycles 200 and 300 bit-identical to U2, on processors (processor U4 aga
 processor U2) and on the card (card U4 against card U2 of run E-20261115-170645-3b21217).
 Refuted by any differing bit in any common field.
 
-## Entry 8, 2026-11-19 14:40Z: predictions for the temporal convergence test A6 (before any run)
+## Entry 8, 2026-11-19 14:23Z: predictions for the temporal convergence test A6 (before any run)
 
 Why now: A6 (SCOPE 4: "order 4 +- 0.5 in theta", fixed seed, Courant factor halved twice;
 L6 of `../codebase/DESIGN_REVIEW.md` 8.1) is recommended for G1 and has not run; entry 6
