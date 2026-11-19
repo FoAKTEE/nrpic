@@ -1,0 +1,107 @@
+{
+  "schema": "nrpic-run-manifest/1",
+  "run_id": "kb-20261115-181916-08ebad9",
+  "track": "kb",
+  "gate": "G2",
+  "kind": "scouting",
+  "purpose": "kb lead W4: independent recount of the claims helper's QA numbers (C3, C5, C6, C8, C9) and a reading audit of 10 fulltext claims; read-only on db/current",
+  "preregistered_in": null,
+  "launcher": "local",
+  "command": [
+    "python3",
+    "-I",
+    "tracks/kb/analysis/lead_checks/w2_claims_check.py",
+    "/data/haiyangw/nrpic/kb-data/db/kb-20261115-621430e.sqlite",
+    "/data/haiyangw/nrpic/kb-data",
+    "tracks/kb/claims/qa.json"
+  ],
+  "cwd": ".",
+  "git": {
+    "sha": "08ebad9d012dded544c17204443c2f1b41219a21",
+    "branch": "kb/main",
+    "dirty": false,
+    "merge_base_main": "b9fbf3e6534517c3393000da91c79ce552b254b9",
+    "worktree": "wt/kb"
+  },
+  "code": {
+    "core_tag": "core-v0.3",
+    "athenak_upstream_sha": "c5a0d7f",
+    "kokkos_sha": "6739bc623081648af9e752b616d9671527922cbf",
+    "problem": null
+  },
+  "env": {
+    "host": "anta",
+    "env_hash": "33c1dbb6673b68919eaa332b0add0b58aeac8be843f2071b9d06e2e0e397a96d",
+    "machine_file_sha256": "0321f40f4caeeb2a36624a9fa9809e60bad31071f366b3517ba23ad45698d2d7",
+    "uv_lock_sha256": "5417f6ba318b914aa3800e5d55f7b11fdd8df13c2688bdda7d419240aa1d5863",
+    "track_requirements_sha256": null,
+    "container_digest": null,
+    "compiler": "g++ 11.4.0",
+    "mpi": "none (Athena_ENABLE_MPI=OFF)",
+    "gpu": null,
+    "python": "3.10.12 /usr"
+  },
+  "input": null,
+  "inputs": [
+    {
+      "path": "/data/haiyangw/nrpic/kb-data/db/kb-20261115-621430e.sqlite",
+      "role": "input",
+      "sha256": "621430e5758fd887ec946bd7300e2523fa177d5298d7f383031b19326fbb4fe5",
+      "bytes": 1006657536,
+      "tracked": false,
+      "location": "main checkout data root"
+    },
+    {
+      "path": "tracks/kb/claims/qa.json",
+      "role": "input",
+      "sha256": "6b3bf218de406f101bc4885950b050cd9b0c4f271e31d4cea8800a410b19a32b",
+      "bytes": 38506,
+      "tracked": true
+    },
+    {
+      "path": "tracks/kb/analysis/lead_checks/w2_claims_check.py",
+      "role": "argv",
+      "sha256": "b99b099c13b21a27db4ba43352093cc7d4056c591cbdb4c66c3e2f1d84c3d223",
+      "bytes": 7050,
+      "tracked": true
+    }
+  ],
+  "batch_entries": null,
+  "resources": {
+    "nodes": 1,
+    "gpus": 0,
+    "cores": 1,
+    "walltime_s": 2.112,
+    "wall_limit": null,
+    "segments_max": null,
+    "gpu_hours_requested": 0.0,
+    "gpu_hours": null,
+    "particles": null
+  },
+  "slurm": null,
+  "outputs": {
+    "dir": "scratch/kb/kb-20261115-181916-08ebad9",
+    "sha256sums": "sha256sums.txt",
+    "sha256sums_sha256": "ae42279c65b18fc5d8da9f8282401f07c127f7488832e9e9b59b0ca30f5205b1",
+    "bytes": 12642,
+    "files": 4
+  },
+  "status": "completed",
+  "exit_code": 0,
+  "registered": "2026-11-15T18:19:27Z",
+  "started": "2026-11-15T18:19:27Z",
+  "ended": "2026-11-15T18:19:29Z",
+  "parents": [],
+  "notes": "",
+  "budget_at_submit": {
+    "gpu_hours_allotted": 0.0,
+    "cores_allotted": 8,
+    "gpu_hours_used": 0.0,
+    "gpu_hours_reserved": 0.0,
+    "gpu_hours_without_gate": 0.0,
+    "cores_busy": 0,
+    "runs": 76,
+    "allotment_from": "coord/DECISIONS/0006-compute-budget.md + 0014-budgets-after-wave-1.md"
+  },
+  "finished": "2026-11-15T18:19:29Z"
+}

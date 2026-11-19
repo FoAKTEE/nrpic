@@ -1,0 +1,33 @@
+{
+ "run_id": "kb-20261115-135137-cf1baba",
+ "owner": "kb",
+ "command": [
+  "/data/haiyangw/nrpic/wt/kb/kb/bin/kb",
+  "ingest",
+  "arxiv",
+  "--all",
+  "--extras",
+  "--jobs",
+  "8"
+ ],
+ "cwd": "/data/haiyangw/nrpic/wt/kb",
+ "commit": "cf1baba6c4b203edf32642720998e45b8ce8406a",
+ "worktree_dirty_kb": true,
+ "inputs": [
+  {
+   "path": "/data/haiyangw/nrpic/wt/kb/kb/manifests/arxiv.tsv",
+   "sha256": "4012a46dfe997d8f936a15fd62dd0ebe73aac6d64cac2391eb61aee2eb27e4d0"
+  }
+ ],
+ "output_dir": "/data/haiyangw/nrpic/scratch/kb/kb-20261115-135137-cf1baba",
+ "purpose": "K2-K3: re-ingest every verified paper with the empty-line numbering fix and the foreign-key indexes of migration 0005 (predictions K2-P8 and 'under 6 min' in kb/JOURNAL.md)",
+ "kind": "production",
+ "cores": 8,
+ "card_hours": 0,
+ "started_utc": "2026-11-15T13:51:37Z",
+ "started_unix": 1794750697.9419346,
+ "status": "finished",
+ "exit_code": 1,
+ "wall_time_s": 240.25,
+ "finished_utc": "2026-11-15T13:55:38Z"
+}

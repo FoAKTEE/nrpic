@@ -1,0 +1,33 @@
+{
+ "run_id": "kb-20261115-135323-534eb86",
+ "owner": "kb",
+ "command": [
+  "python3",
+  "-I",
+  "kb/bin/kb",
+  "link",
+  "check",
+  "--db",
+  "/data/haiyangw/nrpic/kb-data/db/kb.sqlite"
+ ],
+ "cwd": "/data/haiyangw/nrpic/wt/kb",
+ "commit": "534eb86bf94168b06dbcb388bc07ffdae1637bb8",
+ "worktree_dirty_kb": true,
+ "inputs": [
+  {
+   "path": "/data/haiyangw/nrpic/wt/kb/kb/curated/paper_code_links.tsv",
+   "sha256": "161ea32acaa3edc19a70c31c8dd3a192b74114ff860cb0bf2a78d75498b09ab9"
+  }
+ ],
+ "output_dir": "/data/haiyangw/nrpic/scratch/kb/kb-20261115-135323-534eb86",
+ "purpose": "K7 test P6: kb link check of the 25 curated paper-code links against the stored source of 2611.12831 v1 and the production code index (kb.sqlite)",
+ "kind": "scouting",
+ "cores": 1,
+ "card_hours": 0,
+ "started_utc": "2026-11-15T13:53:23Z",
+ "started_unix": 1794750803.779124,
+ "status": "finished",
+ "exit_code": 0,
+ "wall_time_s": 0.14,
+ "finished_utc": "2026-11-15T13:53:23Z"
+}

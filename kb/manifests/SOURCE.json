@@ -1,0 +1,30 @@
+{
+ "brief": "einstein_vlasov_pic_cosmology_agent_brief.en.md",
+ "brief_sha256": "9492261e307ba118225eac6b1b41b9b8e98d718e9c609c686899a75b2aa48449",
+ "arxiv": {
+  "first_line": 2543,
+  "last_line": 3226,
+  "rows": 684,
+  "columns": [
+   "id",
+   "group",
+   "priority"
+  ]
+ },
+ "github": {
+  "first_line": 3234,
+  "last_line": 3296,
+  "rows": 63,
+  "columns": [
+   "repo",
+   "role",
+   "owners",
+   "description"
+  ]
+ },
+ "locator_rule": "brief line of row i (0-based) = first_line + i",
+ "files": {
+  "arxiv.tsv": "4012a46dfe997d8f936a15fd62dd0ebe73aac6d64cac2391eb61aee2eb27e4d0",
+  "github.tsv": "23876b7ec1134475c1a9cde1488f970c61363990b699b1240b787272536d2928"
+ }
+}

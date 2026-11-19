@@ -1,0 +1,36 @@
+{
+ "run_id": "kb-20261115-164430-5aca10c",
+ "owner": "kb",
+ "command": [
+  "kb/.venv/bin/python",
+  "-I",
+  "tracks/kb/embed/scripts/fusion_study.py",
+  "/data/haiyangw/nrpic/scratch/kb/kb-20261115-164430-5aca10c",
+  "--threads",
+  "8"
+ ],
+ "cwd": "/data/haiyangw/nrpic/wt/kb",
+ "commit": "5aca10c45d04c35e9ceb5d5fb8e9657db555ca1b",
+ "worktree_dirty_kb": true,
+ "inputs": [
+  {
+   "path": "/data/haiyangw/nrpic/wt/kb/kb/kbtool/qa_golden.py",
+   "sha256": "43dc8764210c6c7d2dd99999e8ceaaa21db0cd3628f35992680e1d6fe1ab88b1"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/wt/kb/tracks/kb/embed/questions10.yaml",
+   "sha256": "9b6b5e06fb2a36210b7ae6afeac687603e43ca58384012cd1aca7da6d6be2097"
+  }
+ ],
+ "output_dir": "/data/haiyangw/nrpic/scratch/kb/kb-20261115-164430-5aca10c",
+ "purpose": "embed helper: test E7, weighted reciprocal-rank fusion variants chosen on the K9 golden set and scored on questions10 (held out), snapshot kb-20261115-621430e",
+ "kind": "scouting",
+ "cores": 8,
+ "card_hours": 0,
+ "started_utc": "2026-11-15T16:44:30Z",
+ "started_unix": 1794761070.323674,
+ "status": "finished",
+ "exit_code": 0,
+ "wall_time_s": 23.4,
+ "finished_utc": "2026-11-15T16:44:53Z"
+}

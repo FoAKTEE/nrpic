@@ -1,0 +1,61 @@
+# kb code examples against kb-data/db/kb.sqlite after the production ingest (runs kb-20261115-133232-3f7f25a, kb-20261115-134736-0e94ee2); both upstream AthenaK and this tree (local/nrpic) answer
+$ kb code CalcRHS --kind function
+IAS-Astrophysics/athenak           method     z4c::Z4c::CalcRHS
+    src/z4c/z4c_calcrhs.cpp:31-700
+    TaskStatus Z4c::CalcRHS(Driver *pdriver, int stage)
+local/nrpic                        method     z4c::Z4c::CalcRHS
+    athenak/src/z4c/z4c_calcrhs.cpp:31-776
+    TaskStatus Z4c::CalcRHS(Driver *pdriver, int stage)
+
+$ kb code ParticlesPusher --kind class
+IAS-Astrophysics/athenak           enum       ParticlesPusher
+    src/particles/particles.hpp:23-23
+    enum class ParticlesPusher
+local/nrpic                        enum       ParticlesPusher
+    athenak/src/particles/particles.hpp:24-25
+    enum class ParticlesPusher
+
+$ kb code z4c/kappa1 --kind param
+IAS-Astrophysics/athenak           param      <z4c> damp_kappa1
+    src/z4c/z4c.cpp:131
+    Real default 0.0
+local/nrpic                        param      <z4c> damp_kappa1
+    athenak/src/z4c/z4c.cpp:131
+    Real default 0.0
+local/nrpic                        param      <z4c> damp_kappa1_over_alpha
+    athenak/src/z4c/z4c.cpp:133
+    Boolean default false
+
+$ kb code particles/deposit_shape --kind param
+local/nrpic                        param      <particles> deposit_shape
+    athenak/src/particles/nrpic.cpp:158
+    String default "cic"
+
+$ kb code NrpicDepositSources -k 3
+local/nrpic                        method     particles::Particles::NrpicDepositSources
+    athenak/src/particles/nrpic.cpp:654-998
+    void Particles::NrpicDepositSources()
+local/nrpic                        prototype  particles::Particles::NrpicDepositSources
+    athenak/src/particles/particles.hpp:226-226
+    void NrpicDepositSources();
+local/nrpic                        text       particles::Particles::NrpicInitializeSources
+    athenak/src/particles/nrpic.cpp:1367-1398
+     ... e_prev_valid = false;
+    tm_prev_valid = false;
+    [NrpicDepositSources]();
+    if (nropt.deposit ... 
+
+$ kb code Tmunu -k 4 --kind class
+IAS-Astrophysics/athenak           class      Tmunu
+    src/z4c/tmunu.hpp:22-51
+    class Tmunu
+local/nrpic                        class      Tmunu
+    athenak/src/z4c/tmunu.hpp:22-63
+    class Tmunu
+IAS-Astrophysics/athenak           struct     Tmunu::Tmunu_vars
+    src/z4c/tmunu.hpp:39-43
+    struct Tmunu_vars
+local/nrpic                        struct     Tmunu::Tmunu_vars
+    athenak/src/z4c/tmunu.hpp:39-43
+    struct Tmunu_vars
+
