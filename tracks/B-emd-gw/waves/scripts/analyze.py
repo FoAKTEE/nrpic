@@ -107,9 +107,10 @@ def summarize(recs, key):
     return out
 
 
-def orders(vals):
-    return [float(np.log2(abs(vals[i] / vals[i + 1]))) if vals[i + 1] != 0 else None
-            for i in range(len(vals) - 1)]
+def orders(vals, ns):
+    """local orders log(e_i/e_(i+1))/log(N_(i+1)/N_i) between successive resolutions."""
+    return [float(np.log(abs(vals[i] / vals[i + 1])) / np.log(ns[i + 1] / ns[i]))
+            if vals[i + 1] != 0 else None for i in range(len(vals) - 1)]
 
 
 def main():
@@ -190,9 +191,9 @@ def main():
         for k in DIAGS:
             for q in ("amp_p_end", "phase_p_end", "amp_x_end", "phase_x_end", "pol_amp_end", "pol_phase_end"):
                 res[test].setdefault("orders", {}).setdefault(k, {})[q] = orders(
-                    [res[test][str(n)][k][q] for n in ns])
+                    [res[test][str(n)][k][q] for n in ns], ns)
         for k in ("weyl6", "weylS"):
-            res[test]["orders"][k]["vs_tt_max"] = orders([res[test][str(n)][k]["vs_tt_max"] for n in ns])
+            res[test]["orders"][k]["vs_tt_max"] = orders([res[test][str(n)][k]["vs_tt_max"] for n in ns], ns)
     res["scale"] = {"flat": a.scale_flat, "exp": a.scale_exp}
     with open(os.path.join(out, f"{tag}results.json"), "w") as f:
         json.dump(res, f, indent=1)
