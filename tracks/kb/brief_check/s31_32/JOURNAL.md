@@ -115,3 +115,7 @@ tally identical (61 rows: 45, 9, 5, 2, 0; corrected rows 9, 25, 30, 40, 51). Fig
 `figures/fig_verdicts.png` (copy of the run's output) looked at: left, verdicts per brief line,
 the corrections sit on lines 145, 148, 149, 156, 159; right, per label, the 5 corrections are
 3 on cells labelled [BACKGROUND] (via line 152) and 2 on unlabelled claims; none on [VERIFIED].
+
+Note (after the run): CHECK.md row 49 (note column only) was made more precise in commit
+06b55046 (bibliographic locator of the other 1999 Shibata paper); verdicts and tally unchanged,
+so the run of commit 79805cd stands for the tally.
