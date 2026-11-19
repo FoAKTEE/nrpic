@@ -893,3 +893,16 @@ the static deck are byte-identical to those of the clean build f46f159 in job 44
 same source differently (different source paths), differ only at rounding with the
 same collisions. Refuted by a crash in (b): then the nine stale objects are not the
 cause, and the crash remains unexplained (the clean build still runs).
+
+### Sizing of the cluster job (14:35 UTC, before its submission)
+
+The queue filled while the measurement job 4633 waits (seven jobs ahead, four of them
+submitted after it); a 150 M job submitted only after 4633 has run would start hours
+later. So the 150 M job is submitted now and sized from the step time measured on the
+card for this deck in wave 1 (0.21 s per step for `off` and `kn3` with the operator of
+core-v0.3: 252 s for 1200 steps, runs core-20261115-140316-8742cdf and
+-142625-67f8c1d): three runs of 1200 steps, about 13 minutes; wall limit 25 minutes
+(room for a step time up to 0.40 s on average). Job 4633 runs before it in the queue;
+if its step time (Ct) does not fit (average above 0.40 s per step over the three
+modes), the 150 M job is cancelled before it starts and resubmitted with the measured
+size.
