@@ -1,4 +1,8 @@
-# box_tests: box tests of the collision operator of release core-v0.3
+# box_tests: box tests of the collision operator (release core-v0.3; wave 2b: core/collisions-2)
+
+Wave 2b (2026-11-19) reran T0b, T1, T2, T10 and the new T12 with core's corrected operator
+(`coll_energy = particle`) and measured what it leaves of the King model's energy defect:
+section "Wave 2b" below; everything else in this file is the wave-2 state.
 
 Helper package of C-sidm, wave 2. The Minkowski-box tests of `../collide/TESTS.md` (pass
 criteria fixed in wave 1, not changed here) run with the release executables of
