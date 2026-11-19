@@ -90,7 +90,7 @@ def main():
             for r in range(a.repeat):
                 rd = os.path.join(a.out, case, "%st%d_%s_%s_r%d" % (
                     (a.tag + "_") if a.tag else "", nt, bind or "nobind",
-                    (places or "noplaces").replace(",", "+").replace(":", "-")
+                    (places or "noplaces")[:12].replace(",", "+").replace(":", "-")
                     .replace("{", "").replace("}", ""), r))
                 rec = L.run_case(exe, case, rd, nt, bind, places, spec=spec, profile=a.profile)
                 rec.update(exe_label=a.exe, repeat=r, nlim=nlim, tag=a.tag,
@@ -102,12 +102,12 @@ def main():
                 if rec.get("s_per_step") and (best is None or rec["s_per_step"] < best):
                     best = rec["s_per_step"]
                 print("%-8s %-3s threads %3d %-7s %-8s r%d  exit %d  loop %8.2f s  "
-                      "step %8.4f s  zcps %.3e  load %5.1f -> %5.1f" % (
-                          case, a.exe, nt, bind or "-", places or "-", r, rec["exit"],
+                      "step %8.4f s  zcps %.3e  load %5.1f -> %5.1f  cpu share %.2f" % (
+                          case, a.exe, nt, bind or "-", (places or "-")[:8], r, rec["exit"],
                           rec.get("loop_s", float("nan")),
                           rec.get("s_per_step", float("nan")),
                           rec.get("zcps", float("nan")), rec["load_before"],
-                          rec["load_after"]))
+                          rec["load_after"], rec["cpu_share"]))
                 sys.stdout.flush()
     return 0
 

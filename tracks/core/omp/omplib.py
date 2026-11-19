@@ -10,6 +10,7 @@ import hashlib
 import json
 import os
 import re
+import resource
 import subprocess
 import time
 
@@ -139,12 +140,21 @@ def run_case(exe, case, rundir, threads=1, bind="", places="", extra_args=(), wa
         if not os.path.lexists(link):
             os.symlink(path, link)
     cmd = [exe, "-i", os.path.basename(deck)] + list(c["args"]) + list(extra_args)
+    places_asked = places
+    if places.startswith("auto"):
+        # the least busy cores right now (scripts/omp_places.py); "auto1": one hardware
+        # thread per core
+        pc = ["python3", os.path.join(WT, "scripts", "omp_places.py"), str(threads)]
+        if places == "auto1":
+            pc.append("--one-thread-per-core")
+        places = subprocess.run(pc, capture_output=True, text=True, check=True).stdout.strip()
     env = thread_env(threads, bind, places)
     if profile:
         # time per kernel through the Kokkos tools interface (tools/kernel_timer.cpp)
         env["KOKKOS_TOOLS_LIBS"] = TIMER_LIB
         env["KERNEL_TIMER_OUT"] = "kernel_timer.txt"
     load0 = loadavg()
+    ru0 = resource.getrusage(resource.RUSAGE_CHILDREN)
     t0 = time.time()
     with open(os.path.join(rundir, "run.log"), "w") as log:
         try:
@@ -152,10 +162,16 @@ def run_case(exe, case, rundir, threads=1, bind="", places="", extra_args=(), wa
                                 env=env, timeout=wall).returncode
         except subprocess.TimeoutExpired:
             rc = -9
+    ru1 = resource.getrusage(resource.RUSAGE_CHILDREN)
+    cpu_s = (ru1.ru_utime + ru1.ru_stime) - (ru0.ru_utime + ru0.ru_stime)
     rec = {"case": case, "exe": exe, "threads": threads, "bind": bind, "places": places,
+           "places_asked": places_asked, "cpu_s": round(cpu_s, 3),
            "cmd": cmd, "rundir": rundir, "exit": rc, "wall_s": round(time.time() - t0, 3),
            "load_before": load0, "load_after": loadavg()}
     rec.update(parse_log(os.path.join(rundir, "run.log")))
+    # share of the asked processor time that the run obtained (1: every thread ran all
+    # the time; hardware threads shared with other jobs do not show here)
+    rec["cpu_share"] = round(cpu_s/(rec["wall_s"]*threads), 3) if rec["wall_s"] > 0 else 0.0
     if profile:
         rec["kernels"] = read_kernels(os.path.join(rundir, "kernel_timer.txt"))
     return rec

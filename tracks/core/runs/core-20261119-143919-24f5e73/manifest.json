@@ -25,7 +25,9 @@
  "purpose": "omp calibration: cost per step of the four scaling cases at 8 threads (O3 build, spread over cores), to choose the number of cycles of the scaling series. Registered by hand: nrpic-run refused (13 cores of owner core busy in other sessions)",
  "kind": "scouting",
  "tag": "omp-calib",
- "state": "running",
+ "state": "finished",
+ "wall_time_s": 511.02,
+ "exit_status": 0,
  "cores": 8,
  "card_hours": 0.0,
  "started_utc": "2026-11-19T14:39:19Z"
