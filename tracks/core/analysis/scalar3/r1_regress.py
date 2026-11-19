@@ -100,6 +100,10 @@ def main():
                 fp.write("\n".join(lines) + "\n\n<output9>\nfile_type = rst\ndcycle    = 10\n")
             args = [f"scalar_field/noise_mode_file={os.path.join(common.PROB, modes)}",
                     "time/nlim=20"]
+            if "con_signed" in src:
+                # the example sets the option of this branch: off, so that the record
+                # is that of the earlier executable
+                args.append("scalar_field/con_signed=false")
             cases.append((os.path.join(out, "b", k, lab), dst, args))
     walls = {}
     for lab, exe in exes.items():

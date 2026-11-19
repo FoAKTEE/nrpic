@@ -70,6 +70,8 @@ mass             = 1.82877655899024605e-01
 diss             = 0.0
 hist_dcycle      = 1
 con_dcycle       = 1          # record of |H|/[H], |M|/[M]: <basename>.sf.con.hst
+con_signed       = true       # record, columns 21-27: <H>, <M_i>, and of H' = H - <H>:
+                              # <|H'|/[H]>, max |H'|/[H], rms H' (branch core/scalar-3)
 dump_dt          = 0.4
 dump_metric      = true       # dumps with gt_ij and At_ij (layout NRSFDMP2)
 dump_magnitudes  = false      # dumps with [H], [M] and the M_i of the BSSN form

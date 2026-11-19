@@ -561,3 +561,39 @@ Predictions (none of these runs has been made):
   and <|M|/[M]> within a factor 3 of geoc at equal e-folds (the slicing changes the
   first-order metric perturbations on which the stencil defect acts, by order one at most).
   Refuted by a ratio above 10 or a growing trend of cap against geoc.
+
+## 2026-11-19, entry 9: option con_signed (Track E's request 3 of its USR package), test S predicted
+
+Track E's USR package (`tracks/E-stoch-inf/usr/README.md` on `track/E-stoch-inf` at
+51d8046, request 3 to core) found what PU6 of entry 6 says: at 32^3 the record of
+<|H|/[H]> is the uniform residual of the background (1.1e-7 of [H] at Courant 0.25) and
+hides everything else; it asks for signed box means of H and M_i in the record. Added
+(source of this entry's commit): `<scalar_field> con_signed = true` appends seven
+columns to `<basename>.sf.con.hst`: [21] <H>, [22-24] <M_i>, and with H' = H - <H> (the
+part that is not uniform) [25] <|H'|/[H]>, [26] max |H'|/[H], [27] rms H'. A new function
+`ScalarField::ConstraintSignedMeans` (two reductions, the second about the mean of the
+first); `WriteConstraintHistory` calls it only with the option and otherwise writes the
+same bytes (the line end of the header and of the record is now a separate fprintf).
+Reader: `python/nrpic/scalar_field.py` read_con_history (names H_mean, Mx_mean, My_mean,
+Mz_mean, Hp_ratio, Hp_ratio_max, Hp_rms). Example: `problems/scalar/sr_stochastic_gauge.
+athinput` (the regression R b turns it off on the command line for that example, so that
+the record is comparable with the executable of `core/scalar-2`).
+
+Test S (`s1_signed.py`, inflection case 32^3, nmax2 = 64, to t = 3.0, dumps every 0.5
+with H, M_i and [H]): runs sig (s = 1, con_signed), plain (s = 1, without), zsig (s = 0,
+con_signed). Predictions:
+- PSa every file of sig and plain byte-identical except the record; the record has the
+  same first 20 columns, byte for byte, on every line, and its header extends the old one.
+- PSb at the dump cycles: [21] equals the mean of H of the dump within 1e-13 relative
+  (another order of summation); |[22-24] - mean M_i| below 1e-13 of rms |M|; [27] and [25]
+  equal rms(H - mean H) and mean(|H - mean H|/[H]) of the dump within 1e-10 relative (H'
+  is a difference of nearly equal numbers, 1e-3 to 1e-2 of H, so the order of summation
+  of the mean enters at 1e-13 to 1e-12 of H').
+- PSc in zsig (homogeneous) <|H'|/[H]> is rounding: below 1e-15, while <|H|/[H]> =
+  |<H>|/[H] is the 1.9e-8 to 1e-7 of PU6. In sig <|H'|/[H]> carries the first-order part:
+  between 1e-10 and 3e-9 from 0.5 to 3 e-folds (the twin of entry 6: rms 7e-10 of [H] at
+  most for s = 1), two orders below <|H|/[H]>; <M_i> below 1e-3 of rms |M| (a mean of a
+  periodic first-order field is second order).
+Refuted by any differing byte in PSa, by a mismatch beyond the bounds in PSb, or by
+<|H'|/[H]> of sig within a factor 10 of <|H|/[H]> (then H is not dominated by its uniform
+part, against PU6).

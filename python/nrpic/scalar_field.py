@@ -32,13 +32,19 @@ CON_HIST_VARS = ["time", "cycle", "efolds", "H_ratio", "H_ratio_max",
                  "H_ratio_of_means", "M_ratio", "M_ratio_max", "M_ratio_of_means",
                  "H_mag", "M_mag", "H_l1", "M_l1", "H_rms", "M_rms", "M_bssn_adm", "phi",
                  "Pi", "K", "alpha"]
+# columns 21 to 27, written with <scalar_field> con_signed = true (branch core/scalar-3):
+# signed means <H>, <M_i>, and of H' = H - <H>: <|H'|/[H]>, max(|H'|/[H]), rms(H')
+CON_HIST_SIGNED = ["H_mean", "Mx_mean", "My_mean", "Mz_mean", "Hp_ratio",
+                   "Hp_ratio_max", "Hp_rms"]
 
 
 def read_con_history(fname):
     """Columns of <basename>.sf.con.hst (constraints relative to the magnitudes [H], [M]
-    of arXiv:2512.14649; scalar_field_diag.cpp) as a dict of arrays."""
+    of arXiv:2512.14649; scalar_field_diag.cpp) as a dict of arrays; the columns of
+    con_signed = true when the file has them."""
     d = np.atleast_2d(np.loadtxt(fname))
-    return {n: d[:, i] for i, n in enumerate(CON_HIST_VARS)}
+    names = CON_HIST_VARS + (CON_HIST_SIGNED if d.shape[1] > len(CON_HIST_VARS) else [])
+    return {n: d[:, i] for i, n in enumerate(names)}
 
 
 def read_dump(fname):
