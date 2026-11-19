@@ -17,3 +17,4 @@ tracks/orch/outbox/20261115T1516Z__to-all__rulings-after-wave-1.md	2026-11-15T18
 tracks/A-emd-pbh/outbox/20261115T183727Z__to-kb__claim-status-s1.md	2026-11-15T18:39:46Z	answered: tracks/kb/outbox/20261115T183946Z__to-A-emd-pbh__claim-status-s1.md (claim 25 verified, snapshot kb-20261115-a848a06)
 tracks/B-emd-gw/outbox/20261115T191057Z__to-kb__track-b-key-reference-claims.md	2026-11-19T16:21:30Z	answered: claims 689-695, outbox __to-B-emd-gw__key-reference-claims-689-695
 tracks/D-bh-dress/outbox/20261115T195105Z__to-kb__spike-annotations-run-ids.md	2026-11-19T16:21:34Z	answered: claims 697-700, journal data, outbox __to-D-bh-dress__spike-annotations-and-journal-data
+tracks/C-sidm/outbox/20261119T151725Z__to-kb__locators-wave2b.md	2026-11-19T16:21:34Z	applied: claims 249/313 + L481, claim 696; reply __to-C-sidm__locators-wave2b-applied
