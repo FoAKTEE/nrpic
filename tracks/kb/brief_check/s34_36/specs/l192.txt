@@ -1,0 +1,18 @@
+0808.0542 | ekpyrotic|4
+0808.0542 | numerical|4
+0808.0542 | dimension|4
+2006.01172 | slow contraction|3
+2006.01172 | numerical|3
+2006.04999 | slow contraction|3
+2006.04999 | numerical relativity|3
+2103.00584 | ultralocal|3
+2103.00584 | slow contraction|2
+2104.12293 | two spatial|3
+2104.12293 | slow contraction|2
+2404.00867 | slow contraction|3
+2404.00867 | inflation fails|3
+2404.00867 | tetrad|2
+1308.3044 | bounce|4
+1308.3044 | numerical|3
+2206.08466 | bounce|4
+2206.08466 | black hole|3

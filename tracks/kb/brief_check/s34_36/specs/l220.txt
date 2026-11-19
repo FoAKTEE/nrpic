@@ -1,0 +1,29 @@
+2306.14961 | first|6
+2306.14961 | gravitational heating|4
+2306.14961 | N-?body|6
+2306.14961 | Newton|6
+2306.14961 | relativ|6
+2212.00425 | N-?body|6
+2212.00425 | tidal|6
+2212.00425 | Newton|6
+2212.00425 | quadrupole|6
+2212.00425 | relativ|6
+2312.12499 | lattice|6
+2312.12499 | significantly|6
+2312.12499 | enhance|8
+2312.12499 | Newton|8
+2312.12499 | relativistic|8
+2312.12499 | light.crossing|4
+2403.15126 | N-?body|8
+2403.15126 | pancake|6
+2403.15126 | violent relaxation|6
+2403.15126 | Newton|6
+2403.15126 | quadrupole|6
+2605.04487 | semi.?relativistic|8
+2605.04487 | Zel.?dovich|8
+2605.04487 | Einstein.{0,4}de Sitter|6
+2605.04487 | quadrupole|6
+2605.04487 | \\nu\s*\\simeq\s*3|8
+2605.04487 | nu.{0,12}3|8
+2605.04487 | shell.crossing|8
+2605.04487 | fitting|8

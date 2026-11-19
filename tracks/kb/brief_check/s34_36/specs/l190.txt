@@ -1,0 +1,23 @@
+2512.13673 | 0\.02|8
+2512.13673 | 10\^\{?-6|8
+2512.13673 | 100 e-?folds|8
+2512.13673 | lower bound|6
+2512.13673 | order unity|6
+2512.13673 | T-?model|4
+2512.13673 | critical|6
+1511.05143 | inhomogeneous|4
+1511.05143 | 3\+1|3
+1608.04408 | 3\+1|3
+1608.04408 | small field|3
+1712.07352 | tensor|4
+1910.12547 | criterion|4
+1910.12547 | 3\+1|3
+2011.12190 | numerical relativity|3
+2011.12190 | inhomogeneous initial|3
+2212.04479 | momentum|4
+2212.04479 | numerical relativity|3
+2405.03490 | kinetic|4
+2405.03490 | robust|3
+2304.12150 | tetrad|3
+2304.12150 | inflation does not|3
+2304.12150 | initial condition|4
