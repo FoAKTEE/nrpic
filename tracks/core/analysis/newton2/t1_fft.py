@@ -86,8 +86,10 @@ def cic_general(x, m, nn, box):
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--run", required=True)
-    ap.add_argument("--out", required=True)
+    ap.add_argument("--out", default=os.environ.get("NRPIC_RUN_DIR", ""))
     a = ap.parse_args()
+    if not a.out:
+        sys.exit("no output directory: give --out or run under nrpic-run")
     os.makedirs(a.out, exist_ok=True)
     fs.use_style()
     R = a.run
