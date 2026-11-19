@@ -15,6 +15,9 @@ Installed for every worktree with `git config core.hooksPath <main checkout>/har
 (decision 0008: not installed until the user confirms). It reads the index git names in
 GIT_INDEX_FILE (path-limited commits use a temporary one) and nothing else from the environment.
 Exit 1 with the reasons on standard error; there is no bypass (--no-verify is denied by the guard).
+
+The checks are the function evaluate(view): `IndexView` is the commit being made; the dry run over
+the history (harness/tests/precommit_dryrun.py) passes a view of a past commit instead.
 """
 import fnmatch
 import json
@@ -69,13 +72,8 @@ def owner_of(branch):
     return None
 
 
-def ownership(owner):
-    for rev in ("main", "HEAD"):
-        r = subprocess.run(["git", "show", f"{rev}:tracks/{owner}/OWNERSHIP"], capture_output=True, env=env())
-        if r.returncode == 0:
-            return [l.split("#", 1)[0].strip() for l in r.stdout.decode(errors="replace").splitlines()
-                    if l.split("#", 1)[0].strip()]
-    return []
+def parse_ownership(text):
+    return [l.split("#", 1)[0].strip() for l in text.splitlines() if l.split("#", 1)[0].strip()]
 
 
 def glob_match(rel, pattern):
@@ -94,74 +92,111 @@ def glob_match(rel, pattern):
     return re.fullmatch(rx, rel) is not None or fnmatch.fnmatch(rel, pattern)
 
 
-def main():
-    problems, notes = [], []
-    staged = []
-    out = git("diff", "--cached", "--name-status", "--no-renames", "-z")
+def name_status(out):
     parts = [p for p in out.split("\0") if p != ""]
-    for k in range(0, len(parts) - 1, 2):
-        staged.append((parts[k][0], parts[k + 1]))
+    return [(parts[k][0], parts[k + 1]) for k in range(0, len(parts) - 1, 2)]
+
+
+class IndexView:
+    """The commit being made: the index (GIT_INDEX_FILE) against HEAD, in the current worktree."""
+
+    def __init__(self):
+        self.changes = name_status(git("diff", "--cached", "--name-status", "--no-renames", "-z"))
+
+    def context(self):
+        self.branch = git("rev-parse", "--abbrev-ref", "HEAD", check=False).strip()
+        top = git("rev-parse", "--show-toplevel").strip()
+        gitdir = git("rev-parse", "--git-dir").strip()
+        self.merging = os.path.exists(os.path.join(gitdir if os.path.isabs(gitdir) else os.path.join(top, gitdir),
+                                                   "MERGE_HEAD"))
+
+    def size(self, path):
+        s = git("cat-file", "-s", f":{path}", check=False).strip()
+        return int(s) if s.isdigit() else None
+
+    def blob(self, path):
+        return git("show", f":{path}", check=False, binary=True)
+
+    def diff(self):
+        return git("diff", "--cached", "-U0", "--no-color", "--no-ext-diff", "--text")
+
+    def ownership(self, owner):
+        for rev in ("main", "HEAD"):
+            r = subprocess.run(["git", "show", f"{rev}:tracks/{owner}/OWNERSHIP"], capture_output=True, env=env())
+            if r.returncode == 0:
+                return parse_ownership(r.stdout.decode(errors="replace"))
+        return []
+
+
+def evaluate(view):
+    """The checks. Returns (problems, notes); a problem is (check, path, text), check in
+    size, secret, manifest, foreign."""
+    problems, notes = [], []
+    staged = view.changes
     if not staged:
-        return 0
-    branch = git("rev-parse", "--abbrev-ref", "HEAD", check=False).strip()
-    top = git("rev-parse", "--show-toplevel").strip()
-    gitdir = git("rev-parse", "--git-dir").strip()
-    merging = os.path.exists(os.path.join(gitdir if os.path.isabs(gitdir) else os.path.join(top, gitdir), "MERGE_HEAD"))
+        return problems, notes
+    view.context()
 
     # 1. size
     for st, path in staged:
         if st in ("A", "M", "T"):
-            size = git("cat-file", "-s", f":{path}", check=False).strip()
-            if size.isdigit() and int(size) > LIMIT:
-                problems.append(f"{path}: {int(size) / 2**20:.1f} MB, above the 5 MB limit (data stays in scratch/; "
-                                "commit a small derived table or its checksum)")
+            size = view.size(path)
+            if size is not None and size > LIMIT:
+                problems.append(("size", path, f"{path}: {size / 2**20:.1f} MB, above the 5 MB limit (data stays in "
+                                 "scratch/; commit a small derived table or its checksum)"))
     # 2. secrets, in the added lines only
-    diff = git("diff", "--cached", "-U0", "--no-color", "--no-ext-diff", "--text")
     cur = None
-    for line in diff.splitlines():
+    for line in view.diff().splitlines():
         if line.startswith("+++ "):
             cur = line[6:] if line.startswith("+++ b/") else None
         elif line.startswith("+") and not line.startswith("+++") and cur:
             for rx, what in SECRETS:
                 if rx.search(line):
-                    problems.append(f"{cur}: an added line looks like {what}; remove it (and rotate it if real)")
+                    problems.append(("secret", cur, f"{cur}: an added line looks like {what}; remove it (and rotate "
+                                     "it if real)"))
                     break
     # 3. run manifests
     for st, path in staged:
         m = re.fullmatch(r"tracks/([^/]+)/runs/([^/]+)/manifest\.json", path)
         if not m or st == "D":
             continue
-        blob = git("show", f":{path}", check=False, binary=True)
+        blob = view.blob(path)
         try:
             doc = json.loads(blob.decode("utf-8"))
         except (UnicodeDecodeError, ValueError) as e:
-            problems.append(f"{path}: not JSON ({e})")
+            problems.append(("manifest", path, f"{path}: not JSON ({e})"))
             continue
         if not isinstance(doc, dict):
-            problems.append(f"{path}: not a JSON object")
+            problems.append(("manifest", path, f"{path}: not a JSON object"))
             continue
         rid = doc.get("run_id")
         if rid != m.group(2):
-            problems.append(f"{path}: run_id {rid!r} differs from its directory {m.group(2)!r}")
+            problems.append(("manifest", path, f"{path}: run_id {rid!r} differs from its directory {m.group(2)!r}"))
         elif not RUN_ID.match(rid):
-            problems.append(f"{path}: run_id {rid!r} is not <owner>-<YYYYMMDD-HHMMSS>-<commit7> (decision 0012)")
+            problems.append(("manifest", path, f"{path}: run_id {rid!r} is not <owner>-<YYYYMMDD-HHMMSS>-<commit7> "
+                             "(decision 0012)"))
         if doc.get("schema") != "nrpic-run-manifest/1":
             notes.append(f"{path}: hand-written manifest (accepted; `nrpic-run lint` shows how it is read)")
     # 4. foreign paths
-    owner = owner_of(branch)
-    if owner and not merging:
-        globs = ownership(owner)
+    owner = owner_of(view.branch)
+    if owner and not view.merging:
+        globs = view.ownership(owner)
         for st, path in staged:
             if path.startswith(f"tracks/{owner}/") or any(glob_match(path, g) for g in globs):
                 continue
-            problems.append(f"{path}: outside tracks/{owner}/ and tracks/{owner}/OWNERSHIP; shared paths change "
-                            f"through main or core (write a proposal into tracks/{owner}/outbox/)")
+            problems.append(("foreign", path, f"{path}: outside tracks/{owner}/ and tracks/{owner}/OWNERSHIP; shared "
+                             f"paths change through main or core (write a proposal into tracks/{owner}/outbox/)"))
+    return problems, notes
+
+
+def main():
+    problems, notes = evaluate(IndexView())
     for n in notes[:5]:
         sys.stderr.write(f"pre-commit: note: {n}\n")
     if problems:
         sys.stderr.write("pre-commit: commit rejected (harness/hooks/pre-commit, brief 13.1):\n")
         for p in problems[:40]:
-            sys.stderr.write(f"  - {p}\n")
+            sys.stderr.write(f"  - {p[2]}\n")
         return 1
     return 0
 
