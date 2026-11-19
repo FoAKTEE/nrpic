@@ -247,7 +247,7 @@ def figure(res, prof, root):
     if not res["G"]:
         return []
     fs.use_style()
-    fig, axs = plt.subplots(1, 3, figsize=(fs.FULL_WIDTH, 2.9))
+    fig, axs = plt.subplots(1, 3, figsize=(fs.FULL_WIDTH, 3.1))
     col = dict(g_uni32=fs.PAL["yellow"], g_uni64=fs.PAL["blue"], g_smr1=fs.PAL["red"],
                g_smr2=fs.PAL["green"], g_smr1_st=fs.PAL["orange"])
     lab = dict(g_uni32=r"uniform, $\Delta x=1$", g_uni64=r"uniform, $\Delta x=0.5$",
@@ -274,7 +274,8 @@ def figure(res, prof, root):
             ax.semilogy(e["rel"], color="0.5", lw=0.6)
     ax.axhline(1.0e-10, **fs.MASK_LINE)
     ax.set_xlabel("outer iteration")
-    ax.set_ylabel("residual over scale (grey: torus cases)")
+    ax.set_ylabel("residual / scale")
+    ax.set_title("grey: torus cases", fontsize=7)
     ax = axs[2]
     names = [n for n in list(res["G"]) + list(res["T"]) if "monitor" in
              dict(res["G"], **res["T"])[n]]
@@ -285,7 +286,7 @@ def figure(res, prof, root):
         ax.semilogy(xs, ys, mk, label="level %s" % lv)
     ax.set_xticks(xs)
     ax.set_xticklabels(names, rotation=90, fontsize=5)
-    ax.set_ylabel(r"max $|H|$ of the run's monitor at $t=0$")
+    ax.set_ylabel(r"run's monitor, max $|H|$ at $t=0$")
     ax.legend(fontsize=6)
     fig.tight_layout()
     path = os.path.join(root, "test_c_refined")
