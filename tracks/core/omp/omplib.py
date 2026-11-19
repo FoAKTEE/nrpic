@@ -27,6 +27,7 @@ EXES = {
     "S": os.path.join(WT, ".work/build_cpu/src/athena"),          # serial, this branch
     "O2": os.path.join(WT, ".work/build_omp_o2/src/athena"),      # OpenMP, flags of S
     "O3": os.path.join(WT, ".work/build_omp/src/athena"),         # OpenMP, -O3 -DNDEBUG
+    "D": os.path.join(WT, ".work/build_omp_dbg/src/athena"),      # O3 + Kokkos debug, bounds
 }
 
 OS = "os_R5_lattice_N2176_s1"
