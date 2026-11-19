@@ -1,0 +1,52 @@
+{
+ "run_id": "kb-20261115-154020-7b80ccc",
+ "owner": "kb",
+ "command": [
+  "python3",
+  "-I",
+  "kb/kbtool/claims_cli.py",
+  "claim",
+  "seed",
+  "--rebuild",
+  "--by",
+  "kb claims helper (seed)",
+  "--tsv",
+  "/data/haiyangw/nrpic/scratch/kb/kb-20261115-154020-7b80ccc/claims_seed.tsv"
+ ],
+ "cwd": "/data/haiyangw/nrpic/wt/kb",
+ "commit": "7b80ccc0fdbd5f4a94955d1fd38c8d7d29eaf707",
+ "worktree_dirty_kb": false,
+ "inputs": [
+  {
+   "path": "/data/haiyangw/nrpic/wt/kb/kb/kbtool/claims_parse.py",
+   "sha256": "ba0ab0e0f78410085c3a383cd50890574a135e9dcd733386e9bf309e885cceb4"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/wt/kb/kb/kbtool/claims_check.py",
+   "sha256": "0bd3257d0b62a492e466d188a64b22e8bd87ad9167cb063cdf0dbcb733a2909c"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/wt/kb/kb/kbtool/claims_db.py",
+   "sha256": "318065fcea2ccd9373bca289c19b989a01898575a05b8c65b2411c75e8d38238"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/wt/kb/kb/kbtool/claims_curated.py",
+   "sha256": "6fe757fa2cf3bec31081d44703ff508c3ae88e5a3df9f712685b622cce9468ad"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/wt/kb/kb/kbtool/claims_cli.py",
+   "sha256": "a51d5dbce1c12d02ec6c969f3e575e7e705e2e8189c9a44a0f5ffc85573e5dbc"
+  }
+ ],
+ "output_dir": "/data/haiyangw/nrpic/scratch/kb/kb-20261115-154020-7b80ccc",
+ "purpose": "K8: rebuild the claims table (curated erratum locator corrected); final seed of wave 2 before the audit labels",
+ "kind": "scouting",
+ "cores": 1,
+ "card_hours": 0,
+ "started_utc": "2026-11-15T15:40:20Z",
+ "started_unix": 1794757220.9239273,
+ "status": "finished",
+ "exit_code": 0,
+ "wall_time_s": 2.73,
+ "finished_utc": "2026-11-15T15:40:23Z"
+}

@@ -1,0 +1,23 @@
+{
+ "run_id": "kb-20261115-135747-5505dbe",
+ "owner": "kb",
+ "command": [
+  "/data/haiyangw/nrpic/wt/kb/kb/bin/kb",
+  "snapshot"
+ ],
+ "cwd": "/data/haiyangw/nrpic/wt/kb",
+ "commit": "5505dbea2027b1b22e3b7dc71bf6aaba1c8a5cd7",
+ "worktree_dirty_kb": true,
+ "inputs": [],
+ "output_dir": "/data/haiyangw/nrpic/scratch/kb/kb-20261115-135747-5505dbe",
+ "purpose": "K2-K3: freeze the working database after the papers ingestion (kb snapshot) and record kb status",
+ "kind": "production",
+ "cores": 1,
+ "card_hours": 0,
+ "started_utc": "2026-11-15T13:57:47Z",
+ "started_unix": 1794751067.0371013,
+ "status": "finished",
+ "exit_code": 0,
+ "wall_time_s": 7.95,
+ "finished_utc": "2026-11-15T13:57:54Z"
+}

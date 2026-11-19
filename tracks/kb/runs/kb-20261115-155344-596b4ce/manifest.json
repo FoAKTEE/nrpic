@@ -1,0 +1,29 @@
+{
+ "run_id": "kb-20261115-155344-596b4ce",
+ "owner": "kb",
+ "command": [
+  "bash",
+  "-c",
+  "cd /data/haiyangw/nrpic/scratch/kb/kb-20261115-155344-596b4ce && cp /data/haiyangw/nrpic/scratch/kb/tmp/amsprobe/probe_trailing_rows.tex . && timeout 60 pdflatex -interaction=batchmode -no-shell-escape probe_trailing_rows.tex >/dev/null 2>&1; grep newlabel probe_trailing_rows.aux"
+ ],
+ "cwd": "/data/haiyangw/nrpic/wt/kb",
+ "commit": "596b4ce7a738883f610f7110603643300abc4fed",
+ "worktree_dirty_kb": true,
+ "inputs": [
+  {
+   "path": "/data/haiyangw/nrpic/scratch/kb/tmp/amsprobe/probe_trailing_rows.tex",
+   "sha256": "d3774d3b9094c3dda107df3099dd0c8f9cf4cbf2178465765243be86528ac320"
+  }
+ ],
+ "output_dir": "/data/haiyangw/nrpic/scratch/kb/kb-20261115-155344-596b4ce",
+ "purpose": "K9 audit P3: does amsmath number the empty last row after a trailing \\\\ (align, gather, eqnarray)? pdflatex on a synthetic file written by kb (no download involved)",
+ "kind": "scouting",
+ "cores": 1,
+ "card_hours": 0,
+ "started_utc": "2026-11-15T15:53:44Z",
+ "started_unix": 1794758024.4430704,
+ "status": "finished",
+ "exit_code": 0,
+ "wall_time_s": 0.31,
+ "finished_utc": "2026-11-15T15:53:44Z"
+}

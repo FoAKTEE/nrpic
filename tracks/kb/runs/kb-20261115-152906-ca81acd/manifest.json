@@ -1,0 +1,32 @@
+{
+ "run_id": "kb-20261115-152906-ca81acd",
+ "owner": "kb",
+ "command": [
+  "kb/.venv/bin/python",
+  "-I",
+  "tracks/kb/embed/scripts/bench_model.py",
+  "/data/haiyangw/nrpic/scratch/kb/kb-20261115-152906-ca81acd",
+  "--threads",
+  "16"
+ ],
+ "cwd": "/data/haiyangw/nrpic/wt/kb",
+ "commit": "ca81acdb612a0bb5e57773f390b23911012af632",
+ "worktree_dirty_kb": true,
+ "inputs": [
+  {
+   "path": "/data/haiyangw/nrpic/wt/kb/kb/.venv/models/BAAI__bge-small-en-v1.5/5c38ec7c405ec4b44b94cc5a9bb96e735b38267a/model.safetensors",
+   "sha256": "3c9f31665447c8911517620762200d2245a2518d6e7208acc78cd9db317e21ad"
+  }
+ ],
+ "output_dir": "/data/haiyangw/nrpic/scratch/kb/kb-20261115-152906-ca81acd",
+ "purpose": "embed helper: tests E1 (offline load, unit vectors, ordering) and E2 (word-piece counts per chunk kind, encoding throughput on 16 threads) of bge-small-en-v1.5",
+ "kind": "scouting",
+ "cores": 16,
+ "card_hours": 0,
+ "started_utc": "2026-11-15T15:29:06Z",
+ "started_unix": 1794756546.1007872,
+ "status": "finished",
+ "exit_code": 0,
+ "wall_time_s": 16.16,
+ "finished_utc": "2026-11-15T15:29:22Z"
+}

@@ -1,0 +1,32 @@
+{
+ "run_id": "kb-20261115-154041-7b80ccc",
+ "owner": "kb",
+ "command": [
+  "bash",
+  "/data/haiyangw/nrpic/scratch/kb/tmp/claims_dev/audit_verify.sh"
+ ],
+ "cwd": "/data/haiyangw/nrpic/wt/kb",
+ "commit": "7b80ccc0fdbd5f4a94955d1fd38c8d7d29eaf707",
+ "worktree_dirty_kb": true,
+ "inputs": [
+  {
+   "path": "/data/haiyangw/nrpic/scratch/kb/tmp/claims_dev/audit_verify.tsv",
+   "sha256": "cdba2056a32566e593dc8f1426378f2cd96ef5cf66bd939fe872f629452a6e44"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/scratch/kb/tmp/claims_dev/audit_verify.sh",
+   "sha256": "80da7743f25a220c1d85be6429e330f753a2773bb53a5b9bd4ba4700d01aed81"
+  }
+ ],
+ "output_dir": "/data/haiyangw/nrpic/scratch/kb/kb-20261115-154041-7b80ccc",
+ "purpose": "K8 audit P2: mark the 28 sampled fulltext claims that a person read at the source as checked",
+ "kind": "scouting",
+ "cores": 1,
+ "card_hours": 0,
+ "started_utc": "2026-11-15T15:40:41Z",
+ "started_unix": 1794757241.0792112,
+ "status": "finished",
+ "exit_code": 0,
+ "wall_time_s": 11.45,
+ "finished_utc": "2026-11-15T15:40:52Z"
+}

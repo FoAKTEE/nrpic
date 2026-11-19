@@ -1,0 +1,25 @@
+{
+ "run_id": "kb-20261115-135554-d405f64",
+ "owner": "kb",
+ "command": [
+  "/data/haiyangw/nrpic/wt/kb/kb/.venv/bin/python",
+  "-I",
+  "/data/haiyangw/nrpic/wt/kb/kb/scripts/papers_checks.py",
+  "/data/haiyangw/nrpic/scratch/kb/kb-20261115-135554-d405f64"
+ ],
+ "cwd": "/data/haiyangw/nrpic/wt/kb",
+ "commit": "d405f64ba37ca1b71b8fc70120f966c6c52516fd",
+ "worktree_dirty_kb": true,
+ "inputs": [],
+ "output_dir": "/data/haiyangw/nrpic/scratch/kb/kb-20261115-135554-d405f64",
+ "purpose": "K2-K3: final checks C1-C6 and figures on the re-ingested store (run kb-20261115-135137-cf1baba; prediction K2-P8)",
+ "kind": "scouting",
+ "cores": 1,
+ "card_hours": 0,
+ "started_utc": "2026-11-15T13:55:54Z",
+ "started_unix": 1794750954.755054,
+ "status": "finished",
+ "exit_code": 0,
+ "wall_time_s": 14.71,
+ "finished_utc": "2026-11-15T13:56:09Z"
+}

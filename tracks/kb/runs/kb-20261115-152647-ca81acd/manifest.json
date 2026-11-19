@@ -1,0 +1,30 @@
+{
+ "run_id": "kb-20261115-152647-ca81acd",
+ "owner": "kb",
+ "command": [
+  "python3",
+  "-I",
+  "kb/bin/kb",
+  "ingest",
+  "arxiv",
+  "--new",
+  "--extras",
+  "--jobs",
+  "4"
+ ],
+ "cwd": "/data/haiyangw/nrpic/wt/kb",
+ "commit": "ca81acdb612a0bb5e57773f390b23911012af632",
+ "worktree_dirty_kb": true,
+ "inputs": [],
+ "output_dir": "/data/haiyangw/nrpic/scratch/kb/kb-20261115-152647-ca81acd",
+ "purpose": "kb serve: ingest the new store entries (2605.30145 for A-emd-pbh)",
+ "kind": "scouting",
+ "cores": 1,
+ "card_hours": 0,
+ "started_utc": "2026-11-15T15:26:47Z",
+ "started_unix": 1794756407.3010795,
+ "status": "finished",
+ "exit_code": 0,
+ "wall_time_s": 6.24,
+ "finished_utc": "2026-11-15T15:26:53Z"
+}

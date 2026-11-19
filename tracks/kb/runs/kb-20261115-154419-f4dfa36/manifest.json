@@ -1,0 +1,32 @@
+{
+ "run_id": "kb-20261115-154419-f4dfa36",
+ "owner": "kb",
+ "command": [
+  "kb/.venv/bin/python",
+  "-I",
+  "tracks/kb/embed/scripts/sample_tags.py",
+  "/data/haiyangw/nrpic/scratch/kb/kb-20261115-154419-f4dfa36",
+  "--seed",
+  "2"
+ ],
+ "cwd": "/data/haiyangw/nrpic/wt/kb",
+ "commit": "f4dfa36c6ef0d95ccf3360d0d0b3dd2d36790667",
+ "worktree_dirty_kb": true,
+ "inputs": [
+  {
+   "path": "/data/haiyangw/nrpic/wt/kb/kb/curated/equation_tags.yaml",
+   "sha256": "d61d8fd7d6c494ddc73065e3d24a0c7bbe26af3c4e2065969fde6150b29b4ed3"
+  }
+ ],
+ "output_dir": "/data/haiyangw/nrpic/scratch/kb/kb-20261115-154419-f4dfa36",
+ "purpose": "embed helper: test E5b, equation tag rules version 2, counts and a fresh sample (seed 2) of 10 tagged equations per tag for reading",
+ "kind": "scouting",
+ "cores": 1,
+ "card_hours": 0,
+ "started_utc": "2026-11-15T15:44:19Z",
+ "started_unix": 1794757459.7614815,
+ "status": "finished",
+ "exit_code": 0,
+ "wall_time_s": 12.35,
+ "finished_utc": "2026-11-15T15:44:32Z"
+}

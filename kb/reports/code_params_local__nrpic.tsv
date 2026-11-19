@@ -1,0 +1,1144 @@
+block	name	type	access	default	path	line	function
+adm	dynamic	Boolean	get_or_add	false	athenak/src/coordinates/adm.cpp	33	adm::ADM::ADM
+{bk}	dfloor	Real	get_or_add	(FLT_MIN)	athenak/src/eos/eos.cpp	22	EquationOfState::EquationOfState
+{bk}	pfloor	Real	get_or_add	(FLT_MIN)	athenak/src/eos/eos.cpp	23	EquationOfState::EquationOfState
+{bk}	sfloor	Real	get_or_add	(FLT_MIN)	athenak/src/eos/eos.cpp	25	EquationOfState::EquationOfState
+{bk}	tfloor	Real	get_or_add	(FLT_MIN)	athenak/src/eos/eos.cpp	24	EquationOfState::EquationOfState
+{block}	alpha_aniso	Real	get_or_add	0.0	athenak/src/diffusion/conduction.cpp	93	Conduction::Conduction
+{block}	alpha_iso	Real	get_or_add	0.0	athenak/src/diffusion/conduction.cpp	92	Conduction::Conduction
+{block}	alpha_spitzer	Boolean	get_or_add	false	athenak/src/diffusion/conduction.cpp	94	Conduction::Conduction
+{block}	c2p_iter	Integer	get_or_add	50	athenak/src/eos/primitive_solver_hyd.hpp	140	PrimitiveSolverHydro::PrimitiveSolverHydro
+{block}	c2p_tol	Real	get_or_add	1e-15	athenak/src/eos/primitive_solver_hyd.hpp	139	PrimitiveSolverHydro::PrimitiveSolverHydro
+{block}	c2perrs	Integer	get_or_add	1000	athenak/src/eos/primitive_solver_hyd.hpp	141	PrimitiveSolverHydro::PrimitiveSolverHydro
+{block}	conductivity_integrator	String	get_or_add	"explicit"	athenak/src/diffusion/conduction.cpp	34	(anonymous)::ParseConductivityIntegrator
+{block}	const_accel	Boolean	get_or_add	false	athenak/src/srcterms/srcterms.cpp	40	SourceTerms::SourceTerms
+{block}	const_accel_dir	Integer	get		athenak/src/srcterms/srcterms.cpp	49	SourceTerms::SourceTerms
+{block}	const_accel_val	Real	get		athenak/src/srcterms/srcterms.cpp	48	SourceTerms::SourceTerms
+{block}	cpower_rel	Real	get_or_add	1.	athenak/src/srcterms/srcterms.cpp	65	SourceTerms::SourceTerms
+{block}	crate_rel	Real	get		athenak/src/srcterms/srcterms.cpp	64	SourceTerms::SourceTerms
+{block}	dfloor	Real	get_or_add	(FLT_MIN)	athenak/src/eos/primitive_solver_hyd.hpp	136	PrimitiveSolverHydro::PrimitiveSolverHydro
+{block}	dii_dt	Real	get		athenak/src/srcterms/srcterms.cpp	70	SourceTerms::SourceTerms
+{block}	dir_1	Real	get		athenak/src/srcterms/srcterms.cpp	74	SourceTerms::SourceTerms
+{block}	dir_2	Real	get		athenak/src/srcterms/srcterms.cpp	75	SourceTerms::SourceTerms
+{block}	dir_3	Real	get		athenak/src/srcterms/srcterms.cpp	76	SourceTerms::SourceTerms
+{block}	dthreshold	Real	get_or_add	1.0	athenak/src/eos/primitive_solver_hyd.hpp	138	PrimitiveSolverHydro::PrimitiveSolverHydro
+{block}	gamma	Real	get_or_add	5.0/3.0	athenak/src/eos/primitive_solver_hyd.hpp	50	PrimitiveSolverHydro::SetPolicyParams
+{block}	gamma_max	Real	get_or_add	50.0	athenak/src/eos/primitive_solver_hyd.hpp	144	PrimitiveSolverHydro::PrimitiveSolverHydro
+{block}	gamma_thermal		exists		athenak/src/eos/primitive-solver/piecewise_polytrope.cpp	51	Primitive::PiecewisePolytrope::ReadParametersFromInput
+{block}	gamma_thermal	Real	get		athenak/src/eos/primitive-solver/piecewise_polytrope.cpp	52	Primitive::PiecewisePolytrope::ReadParametersFromInput
+{block}	gamma_thermal	Real	get_or_add	5.0/3.0	athenak/src/eos/primitive_solver_hyd.hpp	97	PrimitiveSolverHydro::SetPolicyParams
+{block}	hrate	Real	get		athenak/src/srcterms/srcterms.cpp	59	SourceTerms::SourceTerms
+{block}	ism_cooling	Boolean	get_or_add	false	athenak/src/srcterms/srcterms.cpp	41	SourceTerms::SourceTerms
+{block}	max_bsq	Real	get_or_add	1e6	athenak/src/eos/primitive_solver_hyd.hpp	149	PrimitiveSolverHydro::PrimitiveSolverHydro
+{block}	nscalars	Integer	get_or_add	0	athenak/src/eos/primitive_solver_hyd.hpp	51	PrimitiveSolverHydro::SetPolicyParams
+{block}	nscalars	Integer	get_or_add	1	athenak/src/eos/primitive_solver_hyd.hpp	68	PrimitiveSolverHydro::SetPolicyParams
+{block}	nscalars	Integer	get_or_add	0	athenak/src/eos/primitive_solver_hyd.hpp	99	PrimitiveSolverHydro::SetPolicyParams
+{block}	nu_aniso	Real	get_or_add	0.0	athenak/src/diffusion/viscosity.cpp	58	Viscosity::Viscosity
+{block}	nu_iso	Real	get_or_add	0.0	athenak/src/diffusion/viscosity.cpp	57	Viscosity::Viscosity
+{block}	pos_1	Real	get		athenak/src/srcterms/srcterms.cpp	71	SourceTerms::SourceTerms
+{block}	pos_2	Real	get		athenak/src/srcterms/srcterms.cpp	72	SourceTerms::SourceTerms
+{block}	pos_3	Real	get		athenak/src/srcterms/srcterms.cpp	73	SourceTerms::SourceTerms
+{block}	pwp_poly_rmd	Real	get		athenak/src/eos/primitive-solver/piecewise_polytrope.cpp	25	Primitive::PiecewisePolytrope::ReadParametersFromInput
+{block}	q_limit	Real	get_or_add	static_cast<Real>(std::numeric_limits<float>::max())	athenak/src/diffusion/conduction.cpp	96	Conduction::Conduction
+{block}	rad_beam	Boolean	get_or_add	false	athenak/src/srcterms/srcterms.cpp	43	SourceTerms::SourceTerms
+{block}	rel_cooling	Boolean	get_or_add	false	athenak/src/srcterms/srcterms.cpp	42	SourceTerms::SourceTerms
+{block}	self_gravity	Boolean	get_or_add	false	athenak/src/srcterms/srcterms.cpp	44	SourceTerms::SourceTerms
+{block}	{spec_name.str()}	Real	get_or_add	0.0	athenak/src/eos/primitive_solver_hyd.hpp	155	PrimitiveSolverHydro::PrimitiveSolverHydro
+{block}	spread	Real	get		athenak/src/srcterms/srcterms.cpp	78	SourceTerms::SourceTerms
+{block}	{std::string(cstr)}		exists		athenak/src/eos/primitive-solver/piecewise_polytrope.cpp	34	Primitive::PiecewisePolytrope::ReadParametersFromInput
+{block}	{std::string(cstr)}	Real	get		athenak/src/eos/primitive-solver/piecewise_polytrope.cpp	35	Primitive::PiecewisePolytrope::ReadParametersFromInput
+{block}	{std::string(cstr)}	Real	get		athenak/src/eos/primitive-solver/piecewise_polytrope.cpp	39	Primitive::PiecewisePolytrope::ReadParametersFromInput
+{block}	table	String	get		athenak/src/eos/primitive_solver_hyd.hpp	86	PrimitiveSolverHydro::SetPolicyParams
+{block}	table	String	get		athenak/src/eos/primitive_solver_hyd.hpp	117	PrimitiveSolverHydro::SetPolicyParams
+{block}	tfloor	Real	get_or_add	(FLT_MIN)	athenak/src/eos/primitive_solver_hyd.hpp	137	PrimitiveSolverHydro::PrimitiveSolverHydro
+{block}	units	String	get_or_add	"geometric_solar"	athenak/src/eos/primitive_solver_hyd.hpp	69	PrimitiveSolverHydro::SetPolicyParams
+{block}	units	String	get_or_add	"geometric_solar"	athenak/src/eos/primitive_solver_hyd.hpp	100	PrimitiveSolverHydro::SetPolicyParams
+{block}	viscosity_integrator	String	get_or_add	"explicit"	athenak/src/diffusion/viscosity.cpp	31	(anonymous)::ParseViscosityIntegrator
+{block}	width	Real	get		athenak/src/srcterms/srcterms.cpp	77	SourceTerms::SourceTerms
+{block_name}	add_emf	Boolean	get_or_add	true	athenak/src/cyclic_zoom/cyclic_zoom.cpp	122	CyclicZoom::CyclicZoom
+{block_name}	direction	Integer	get_or_add	1	athenak/src/cyclic_zoom/cyclic_zoom.cpp	71	CyclicZoom::CyclicZoom
+{block_name}	emf_fmax	Real	get_or_add	zemf.emf_fmax	athenak/src/cyclic_zoom/cyclic_zoom.cpp	124	CyclicZoom::CyclicZoom
+{block_name}	emf_zmax	Integer	get_or_add	zemf.emf_zmax	athenak/src/cyclic_zoom/cyclic_zoom.cpp	125	CyclicZoom::CyclicZoom
+{block_name}	f_cut	Real	get_or_add	0.0	athenak/src/cyclic_zoom/cyclic_zoom.cpp	93	CyclicZoom::CyclicZoom
+{block_name}	f_exc	Real	get_or_add	0.4	athenak/src/cyclic_zoom/cyclic_zoom.cpp	90	CyclicZoom::CyclicZoom
+{block_name}	f_flx	Real	get_or_add	0.0	athenak/src/cyclic_zoom/cyclic_zoom.cpp	96	CyclicZoom::CyclicZoom
+{block_name}	f_ref	Real	get_or_add	1.0	athenak/src/cyclic_zoom/cyclic_zoom.cpp	87	CyclicZoom::CyclicZoom
+{block_name}	nlevels	Integer	get_or_add	2	athenak/src/cyclic_zoom/cyclic_zoom.cpp	74	CyclicZoom::CyclicZoom
+{block_name}	{param_name.c_str()}	Real	get_or_add	zint.trun_fac	athenak/src/cyclic_zoom/cyclic_zoom.cpp	110	CyclicZoom::CyclicZoom
+{block_name}	r_0	Real	get_or_add	1.0	athenak/src/cyclic_zoom/cyclic_zoom.cpp	86	CyclicZoom::CyclicZoom
+{block_name}	r_cut_max	Real	get_or_add	0.0	athenak/src/cyclic_zoom/cyclic_zoom.cpp	94	CyclicZoom::CyclicZoom
+{block_name}	r_exc_max	Real	get_or_add	8.0	athenak/src/cyclic_zoom/cyclic_zoom.cpp	91	CyclicZoom::CyclicZoom
+{block_name}	r_flx_max	Real	get_or_add	0.0	athenak/src/cyclic_zoom/cyclic_zoom.cpp	97	CyclicZoom::CyclicZoom
+{block_name}	r_ref_max	Real	get_or_add	FLT_MAX	athenak/src/cyclic_zoom/cyclic_zoom.cpp	88	CyclicZoom::CyclicZoom
+{block_name}	trun_fac	Real	get_or_add	1.0	athenak/src/cyclic_zoom/cyclic_zoom.cpp	100	CyclicZoom::CyclicZoom
+{block_name}	trun_max	Real	get_or_add	FLT_MAX	athenak/src/cyclic_zoom/cyclic_zoom.cpp	102	CyclicZoom::CyclicZoom
+{block_name}	trun_pow	Real	get_or_add	0.0	athenak/src/cyclic_zoom/cyclic_zoom.cpp	101	CyclicZoom::CyclicZoom
+{block_name}	x1c	Real	get_or_add	0.0	athenak/src/cyclic_zoom/cyclic_zoom.cpp	83	CyclicZoom::CyclicZoom
+{block_name}	x2c	Real	get_or_add	0.0	athenak/src/cyclic_zoom/cyclic_zoom.cpp	84	CyclicZoom::CyclicZoom
+{block_name}	x3c	Real	get_or_add	0.0	athenak/src/cyclic_zoom/cyclic_zoom.cpp	85	CyclicZoom::CyclicZoom
+{block_name}	zone	Integer	get_or_add	0	athenak/src/cyclic_zoom/cyclic_zoom.cpp	69	CyclicZoom::CyclicZoom
+cce	{"rin_" + std::to_string(index)}	Real	get_or_add	20.	athenak/src/z4c/cce/cce.cpp	45	z4c::CCE::CCE
+cce	{"rout_" + std::to_string(index)}	Real	get_or_add	40.	athenak/src/z4c/cce/cce.cpp	46	z4c::CCE::CCE
+cce	cce_dt	Real	get_or_add	1	athenak/src/z4c/z4c.cpp	234	z4c::Z4c::Z4c
+cce	num_l_modes	Integer	get_or_add	16	athenak/src/z4c/cce/cce.cpp	47	z4c::CCE::CCE
+cce	num_radial_modes	Integer	get_or_add	7	athenak/src/z4c/cce/cce.cpp	48	z4c::CCE::CCE
+cce	num_radii	Integer	get_or_add	0	athenak/src/mesh/meshblock_pack.cpp	202	MeshBlockPack::AddPhysics
+cce	num_radii	Integer	get_or_add	0	athenak/src/z4c/z4c.cpp	235	z4c::Z4c::Z4c
+coord	a	Real	get		athenak/src/coordinates/coordinates.cpp	49	Coordinates::Coordinates
+coord	dexcise	Real	get		athenak/src/coordinates/coordinates.cpp	59	Coordinates::Coordinates
+coord	excise	Boolean	get_or_add	true	athenak/src/coordinates/coordinates.cpp	50	Coordinates::Coordinates
+coord	excise_lapse	Real	get_or_add	0.25	athenak/src/coordinates/coordinates.cpp	79	Coordinates::Coordinates
+coord	excision_scheme	String	get_or_add	"fixed"	athenak/src/coordinates/coordinates.cpp	74	Coordinates::Coordinates
+coord	flux_excise_r	Real	get_or_add	1.0	athenak/src/coordinates/coordinates.cpp	68	Coordinates::Coordinates
+coord	general_rel	Boolean	get_or_add	false	athenak/src/coordinates/coordinates.cpp	35	Coordinates::Coordinates
+coord	general_rel	Boolean	get_or_add	false	athenak/src/units/units.cpp	24	units::Units::Units
+coord	horizon_factor	Real	get_or_add	1.0	athenak/src/coordinates/coordinates.cpp	83	Coordinates::Coordinates
+coord	minkowski	Boolean	get_or_add	false	athenak/src/coordinates/coordinates.cpp	47	Coordinates::Coordinates
+coord	pexcise	Real	get		athenak/src/coordinates/coordinates.cpp	63	Coordinates::Coordinates
+coord	smooth_excision	Boolean	get_or_add	false	athenak/src/coordinates/coordinates.cpp	98	Coordinates::Coordinates
+coord	special_rel	Boolean	get_or_add	false	athenak/src/coordinates/coordinates.cpp	34	Coordinates::Coordinates
+coord	tdamp	Real	get_or_add	1.0	athenak/src/coordinates/coordinates.cpp	100	Coordinates::Coordinates
+coord	texcise	Real	get		athenak/src/coordinates/coordinates.cpp	61	Coordinates::Coordinates
+cyclic_zoom	max_nzmb_per_dvce	Integer	get_or_add	pzoom->pmesh->nmb_maxperrank	athenak/src/cyclic_zoom/zoom_mesh.cpp	27	ZoomMesh::ZoomMesh
+cyclic_zoom	max_nzmb_per_host	Integer	get_or_add	pzoom->pmesh->nmb_maxperrank	athenak/src/cyclic_zoom/zoom_mesh.cpp	29	ZoomMesh::ZoomMesh
+cyclic_zoom	read_rst	Boolean	get_or_add	true	athenak/src/cyclic_zoom/cyclic_zoom.cpp	64	CyclicZoom::CyclicZoom
+cyclic_zoom	verbose	Boolean	get_or_add	false	athenak/src/cyclic_zoom/cyclic_zoom.cpp	63	CyclicZoom::CyclicZoom
+cyclic_zoom	write_rst	Boolean	get_or_add	true	athenak/src/cyclic_zoom/cyclic_zoom.cpp	65	CyclicZoom::CyclicZoom
+eos	iso_sound_speed	Real	get_or_add	1.0	athenak/src/pgen/fluids/twofluid.cpp	39	ProblemGenerator::UserProblem
+fastflow	{"ah_found_a0_" + n_str}	Boolean	get_or_add	false	athenak/src/z4c/fastflow.cpp	110	FastFlow::FastFlow
+fastflow	{"center_x_" + n_str}	Real	get_or_add	0.0	athenak/src/z4c/fastflow.cpp	114	FastFlow::FastFlow
+fastflow	{"center_y_" + n_str}	Real	get_or_add	0.0	athenak/src/z4c/fastflow.cpp	115	FastFlow::FastFlow
+fastflow	{"center_z_" + n_str}	Real	get_or_add	0.0	athenak/src/z4c/fastflow.cpp	116	FastFlow::FastFlow
+fastflow	{"flow_alpha_beta_const_" + n_str}	Real	get_or_add	1.0	athenak/src/z4c/fastflow.cpp	65	FastFlow::FastFlow
+fastflow	{"flow_iterations_" + n_str}	Integer	get_or_add	100	athenak/src/z4c/fastflow.cpp	64	FastFlow::FastFlow
+fastflow	{"hmean_tol_" + n_str}	Real	get_or_add	100.	athenak/src/z4c/fastflow.cpp	83	FastFlow::FastFlow
+fastflow	{"horizon_file_shape_" + n_str}	String	get_or_add	"horizon_shape_" + n_str	athenak/src/z4c/fastflow.cpp	215	FastFlow::FastFlow
+fastflow	{"horizon_file_summary_" + n_str}	String	get_or_add	"horizon_summary_" + n_str	athenak/src/z4c/fastflow.cpp	210	FastFlow::FastFlow
+fastflow	{"horizon_grid_" + n_str}	String	get_or_add	"horizon_grid_" + n_str	athenak/src/z4c/fastflow.cpp	235	FastFlow::FastFlow
+fastflow	{"horizon_verbose_" + n_str}	String	get_or_add	"horizon_verbose_" + n_str	athenak/src/z4c/fastflow.cpp	221	FastFlow::FastFlow
+fastflow	{"horizon_ylm_" + n_str}	String	get_or_add	"horizon_ylm_" + n_str	athenak/src/z4c/fastflow.cpp	228	FastFlow::FastFlow
+fastflow	{"initial_radius_" + n_str}	Real	get_or_add	1.0	athenak/src/z4c/fastflow.cpp	103	FastFlow::FastFlow
+fastflow	{"last_a0_" + n_str}	Real	get_or_add	-1.0	athenak/src/z4c/fastflow.cpp	109	FastFlow::FastFlow
+fastflow	{"mass_tol_" + n_str}	Real	get_or_add	1e-2	athenak/src/z4c/fastflow.cpp	84	FastFlow::FastFlow
+fastflow	{"start_time_" + n_str}	Real	get_or_add	std::numeric_limits<double>::max()	athenak/src/z4c/fastflow.cpp	138	FastFlow::FastFlow
+fastflow	{"stop_time_" + n_str}	Real	get_or_add	-1.0	athenak/src/z4c/fastflow.cpp	140	FastFlow::FastFlow
+fastflow	{"time_first_found_" + n_str}	Real	get_or_add	-1.0	athenak/src/z4c/fastflow.cpp	111	FastFlow::FastFlow
+fastflow	{"use_puncture_" + n_str}	Integer	get_or_add	-1	athenak/src/z4c/fastflow.cpp	120	FastFlow::FastFlow
+fastflow	{"use_puncture_massweighted_center_" + n_str}	Boolean	get_or_add	0	athenak/src/z4c/fastflow.cpp	134	FastFlow::FastFlow
+fastflow	{"wait_until_punc_are_close_" + n_str}	Boolean	get_or_add	0	athenak/src/z4c/fastflow.cpp	132	FastFlow::FastFlow
+fastflow	expand_guess	Real	get_or_add	1.0	athenak/src/z4c/fastflow.cpp	106	FastFlow::FastFlow
+fastflow	find_every	Integer	get_or_add	1	athenak/src/z4c/fastflow.cpp	85	FastFlow::FastFlow
+fastflow	flow	String	get_or_add	"standard"	athenak/src/z4c/fastflow.cpp	67	FastFlow::FastFlow
+fastflow	lmax	Integer	get_or_add	4	athenak/src/z4c/fastflow.cpp	60	FastFlow::FastFlow
+fastflow	merger_distance	Real	get_or_add	0.1	athenak/src/z4c/fastflow.cpp	98	FastFlow::FastFlow
+fastflow	metric_drvts	String	get_or_add	"stored"	athenak/src/z4c/fastflow.cpp	89	FastFlow::FastFlow
+fastflow	mpi_root	Integer	get_or_add	0	athenak/src/z4c/fastflow.cpp	97	FastFlow::FastFlow
+fastflow	npunct	Integer	get_or_add	0	athenak/src/z4c/fastflow.cpp	119	FastFlow::FastFlow
+fastflow	ntheta	Integer	get_or_add	5	athenak/src/z4c/fastflow.cpp	58	FastFlow::FastFlow
+fastflow	num_horizons	Integer	get_or_add	1	athenak/src/z4c/fastflow.cpp	57	FastFlow::FastFlow
+fastflow	num_horizons	Integer	get_or_add	0	athenak/src/z4c/z4c.cpp	267	z4c::Z4c::Z4c
+fastflow	output_grid	Boolean	get_or_add	false	athenak/src/z4c/fastflow.cpp	95	FastFlow::FastFlow
+fastflow	output_ylm	Boolean	get_or_add	false	athenak/src/z4c/fastflow.cpp	94	FastFlow::FastFlow
+fastflow	verbose	Boolean	get_or_add	false	athenak/src/z4c/fastflow.cpp	93	FastFlow::FastFlow
+gravity	auto_mporigin	Boolean	get_or_add	true	athenak/src/gravity/mg_gravity.cpp	101	MGGravityDriver::MGGravityDriver
+gravity	fill_ghost	Boolean	get_or_add	true	athenak/src/gravity/gravity.cpp	43	gravity::Gravity::Gravity
+gravity	fmg_ncycle	Integer	get_or_add	1	athenak/src/gravity/mg_gravity.cpp	48	MGGravityDriver::MGGravityDriver
+gravity	four_pi_G	Real	get_or_add	-1.0	athenak/src/gravity/gravity.cpp	41	gravity::Gravity::Gravity
+gravity	four_pi_G	Real	get_or_add	-1.0	athenak/src/gravity/mg_gravity.cpp	41	MGGravityDriver::MGGravityDriver
+gravity	four_pi_G	Real	get_or_add	1.0	athenak/src/pgen/tests/be_collapse.cpp	148	ProblemGenerator::BECollapse
+gravity	four_pi_G	Real	get_or_add	1.0	athenak/src/pgen/tests/binary_gravity.cpp	244	BinaryGravityErrors
+gravity	four_pi_G	Real	get_or_add	1.0	athenak/src/pgen/tests/jeans_wave.cpp	84	ProblemGenerator::SelfGravity
+gravity	full_multigrid	Boolean	get_or_add	false	athenak/src/gravity/mg_gravity.cpp	47	MGGravityDriver::MGGravityDriver
+gravity	mask_origin_x1	Real	get_or_add	0.0	athenak/src/gravity/mg_gravity.cpp	124	MGGravityDriver::MGGravityDriver
+gravity	mask_origin_x2	Real	get_or_add	0.0	athenak/src/gravity/mg_gravity.cpp	125	MGGravityDriver::MGGravityDriver
+gravity	mask_origin_x3	Real	get_or_add	0.0	athenak/src/gravity/mg_gravity.cpp	126	MGGravityDriver::MGGravityDriver
+gravity	mask_radius	Real	get_or_add	-1.0	athenak/src/gravity/mg_gravity.cpp	123	MGGravityDriver::MGGravityDriver
+gravity	mg_bc	String	get_or_add	"none"	athenak/src/gravity/mg_gravity.cpp	68	MGGravityDriver::MGGravityDriver
+gravity	mg_nghost	Integer	get_or_add	1	athenak/src/gravity/mg_gravity.cpp	129	MGGravityDriver::MGGravityDriver
+gravity	mg_verbose	Integer	get_or_add	0	athenak/src/gravity/mg_gravity.cpp	50	MGGravityDriver::MGGravityDriver
+gravity	mporder	Integer	get_or_add	4	athenak/src/gravity/mg_gravity.cpp	100	MGGravityDriver::MGGravityDriver
+gravity	mporigin_x1	Real	get		athenak/src/gravity/mg_gravity.cpp	114	MGGravityDriver::MGGravityDriver
+gravity	mporigin_x2	Real	get		athenak/src/gravity/mg_gravity.cpp	115	MGGravityDriver::MGGravityDriver
+gravity	mporigin_x3	Real	get		athenak/src/gravity/mg_gravity.cpp	116	MGGravityDriver::MGGravityDriver
+gravity	niteration	Integer	get_or_add	-1	athenak/src/gravity/mg_gravity.cpp	44	MGGravityDriver::MGGravityDriver
+gravity	nodipole	Boolean	get_or_add	false	athenak/src/gravity/mg_gravity.cpp	102	MGGravityDriver::MGGravityDriver
+gravity	npostsmooth	Real	get_or_add	npostsmooth_	athenak/src/gravity/mg_gravity.cpp	46	MGGravityDriver::MGGravityDriver
+gravity	npresmooth	Real	get_or_add	npresmooth_	athenak/src/gravity/mg_gravity.cpp	45	MGGravityDriver::MGGravityDriver
+gravity	omega	Real	get_or_add	1.15	athenak/src/gravity/mg_gravity.cpp	42	MGGravityDriver::MGGravityDriver
+gravity	output_defect	Boolean	get_or_add	false	athenak/src/gravity/gravity.cpp	42	gravity::Gravity::Gravity
+gravity	root_on_host	Boolean	get_or_add	false	athenak/src/gravity/mg_gravity.cpp	130	MGGravityDriver::MGGravityDriver
+gravity	show_defect	Integer	get_or_add	0	athenak/src/gravity/mg_gravity.cpp	49	MGGravityDriver::MGGravityDriver
+gravity	subtract_average	Boolean	get_or_add	true	athenak/src/gravity/mg_gravity.cpp	51	MGGravityDriver::MGGravityDriver
+gravity	threshold	Real	get_or_add	-1.0	athenak/src/gravity/mg_gravity.cpp	43	MGGravityDriver::MGGravityDriver
+hydro	alpha_aniso		exists		athenak/src/hydro/hydro.cpp	101	hydro::Hydro::Hydro
+hydro	alpha_iso		exists		athenak/src/hydro/hydro.cpp	100	hydro::Hydro::Hydro
+hydro	alpha_spitzer		exists		athenak/src/hydro/hydro.cpp	102	hydro::Hydro::Hydro
+hydro	const_accel_val	Real	get		athenak/src/pgen/fluids/rt.cpp	85	ProblemGenerator::UserProblem
+hydro	dfloor	Real	get_or_add	(1024*(float_min))	athenak/src/pgen/fluids/disk-magnetosphere.cpp	265	Mesh::InitUserMeshData
+hydro	eos	String	get		athenak/src/hydro/hydro.cpp	49	hydro::Hydro::Hydro
+hydro	fofc	Boolean	get_or_add	false	athenak/src/hydro/hydro.cpp	180	hydro::Hydro::Hydro
+hydro	gamma	Real	get		athenak/src/eos/ideal_grhyd.cpp	28	IdealGRHydro::IdealGRHydro
+hydro	gamma	Real	get		athenak/src/eos/ideal_hyd.cpp	20	IdealHydro::IdealHydro
+hydro	gamma	Real	get		athenak/src/eos/ideal_srhyd.cpp	24	IdealSRHydro::IdealSRHydro
+hydro	gamma	Real	get		athenak/src/pgen/fluids/disk-magnetosphere.cpp	260	Mesh::InitUserMeshData
+hydro	gamma_max	Real	get_or_add	(FLT_MAX)	athenak/src/eos/ideal_grhyd.cpp	30	IdealGRHydro::IdealGRHydro
+hydro	gamma_max	Real	get_or_add	(FLT_MAX)	athenak/src/eos/ideal_srhyd.cpp	26	IdealSRHydro::IdealSRHydro
+hydro	iso_sound_speed	Real	get		athenak/src/eos/isothermal_hyd.cpp	21	IsothermalHydro::IsothermalHydro
+hydro	iso_sound_speed	Real	get		athenak/src/pgen/fluids/disk-magnetosphere.cpp	262	Mesh::InitUserMeshData
+hydro	iso_sound_speed	Real	get_or_add	1.0	athenak/src/pgen/fluids/turb.cpp	51	ProblemGenerator::UserProblem
+hydro	nscalars	Integer	get_or_add	0	athenak/src/hydro/hydro.cpp	79	hydro::Hydro::Hydro
+hydro	nu_aniso		exists		athenak/src/hydro/hydro.cpp	83	hydro::Hydro::Hydro
+hydro	nu_iso		exists		athenak/src/hydro/hydro.cpp	82	hydro::Hydro::Hydro
+hydro	reconstruct	String	get_or_add	"plm"	athenak/src/hydro/hydro.cpp	183	hydro::Hydro::Hydro
+hydro	rsolver	String	get		athenak/src/hydro/hydro.cpp	232	hydro::Hydro::Hydro
+ion-neutral	drag_coeff	Real	get		athenak/src/ion-neutral/ion-neutral.cpp	28	ion_neutral::IonNeutral::IonNeutral
+ion-neutral	ionization_coeff	Real	get_or_add	0.0	athenak/src/ion-neutral/ion-neutral.cpp	29	ion_neutral::IonNeutral::IonNeutral
+ion-neutral	recombination_coeff	Real	get_or_add	0.0	athenak/src/ion-neutral/ion-neutral.cpp	30	ion_neutral::IonNeutral::IonNeutral
+{it->block_name}	level	Integer	get		athenak/src/mesh/build_tree.cpp	99	Mesh::BuildTreeFromScratch
+{it->block_name}	location_rad	Real	get_or_add	0.0	athenak/src/mesh/refinement_criteria.cpp	64	RefinementCriteria::RefinementCriteria
+{it->block_name}	location_x1	Real	get_or_add	0.0	athenak/src/mesh/refinement_criteria.cpp	61	RefinementCriteria::RefinementCriteria
+{it->block_name}	location_x2	Real	get_or_add	0.0	athenak/src/mesh/refinement_criteria.cpp	62	RefinementCriteria::RefinementCriteria
+{it->block_name}	location_x3	Real	get_or_add	0.0	athenak/src/mesh/refinement_criteria.cpp	63	RefinementCriteria::RefinementCriteria
+{it->block_name}	method	String	get		athenak/src/cyclic_zoom/cyclic_zoom.cpp	29	CyclicZoom::CyclicZoom
+{it->block_name}	method	String	get		athenak/src/mesh/refinement_criteria.cpp	37	RefinementCriteria::RefinementCriteria
+{it->block_name}	value_max	Real	get_or_add	(FLT_MAX)	athenak/src/mesh/refinement_criteria.cpp	60	RefinementCriteria::RefinementCriteria
+{it->block_name}	value_min	Real	get_or_add	(-FLT_MAX)	athenak/src/mesh/refinement_criteria.cpp	59	RefinementCriteria::RefinementCriteria
+{it->block_name}	variable	String	get		athenak/src/mesh/refinement_criteria.cpp	57	RefinementCriteria::RefinementCriteria
+{it->block_name}	x1max	Real	get		athenak/src/mesh/build_tree.cpp	84	Mesh::BuildTreeFromScratch
+{it->block_name}	x1min	Real	get		athenak/src/mesh/build_tree.cpp	83	Mesh::BuildTreeFromScratch
+{it->block_name}	x2max	Real	get		athenak/src/mesh/build_tree.cpp	87	Mesh::BuildTreeFromScratch
+{it->block_name}	x2min	Real	get		athenak/src/mesh/build_tree.cpp	86	Mesh::BuildTreeFromScratch
+{it->block_name}	x3max	Real	get		athenak/src/mesh/build_tree.cpp	94	Mesh::BuildTreeFromScratch
+{it->block_name}	x3min	Real	get		athenak/src/mesh/build_tree.cpp	93	Mesh::BuildTreeFromScratch
+job	basename	String	get		athenak/src/outputs/outputs.cpp	87	Outputs::Outputs
+job	basename	String	get		athenak/src/particles/nrpic.cpp	201	particles::Particles::NrpicInit
+job	basename	String	get		athenak/src/pgen/pgen.cpp	866	ProblemGenerator::OutputErrors
+job	basename	String	get		athenak/src/pgen/tests/cpaw.cpp	560	AlfvenWaveErrors
+job	basename	String	get		athenak/src/pgen/tests/gr_monopole.cpp	748	MonopoleDiagnostic
+job	basename	String	get		athenak/src/pgen/tests/z4c_linear_wave.cpp	264	Z4cLinearWaveErrors
+job	basename	String	get		athenak/src/z4c/compact_object_tracker.cpp	38	CompactObjectTracker::CompactObjectTracker
+job	basename	String	get		athenak/src/z4c/driftcontrol/driftcontrol.cpp	208	DriftControl::DriftControl
+job	basename	String	get		athenak/src/z4c/fastflow.cpp	209	FastFlow::FastFlow
+job	basename	String	get		athenak/src/z4c/fastflow.cpp	214	FastFlow::FastFlow
+job	basename	String	get		athenak/src/z4c/fastflow.cpp	220	FastFlow::FastFlow
+job	basename	String	get		athenak/src/z4c/fastflow.cpp	227	FastFlow::FastFlow
+job	basename	String	get		athenak/src/z4c/fastflow.cpp	234	FastFlow::FastFlow
+job	restart_file	String	get		athenak/src/pgen/pgen.cpp	637	ProblemGenerator::ProblemGenerator
+mesh	ix1_bc	String	get		athenak/src/mesh/mesh.cpp	104	Mesh::Mesh
+mesh	ix2_bc	String	get		athenak/src/mesh/mesh.cpp	143	Mesh::Mesh
+mesh	ix3_bc	String	get		athenak/src/mesh/mesh.cpp	170	Mesh::Mesh
+mesh	nghost	Real	get_or_add	2	athenak/src/mesh/mesh.cpp	87	Mesh::Mesh
+mesh	nx1	Integer	get		athenak/src/main.cpp	320	main
+mesh	nx1	Integer	get		athenak/src/mesh/mesh.cpp	88	Mesh::Mesh
+mesh	nx2	Integer	get		athenak/src/main.cpp	323	main
+mesh	nx2	Integer	get		athenak/src/mesh/mesh.cpp	89	Mesh::Mesh
+mesh	nx3	Integer	get		athenak/src/main.cpp	326	main
+mesh	nx3	Integer	get		athenak/src/mesh/mesh.cpp	90	Mesh::Mesh
+mesh	ox1_bc	String	get		athenak/src/mesh/mesh.cpp	105	Mesh::Mesh
+mesh	ox2_bc	String	get		athenak/src/mesh/mesh.cpp	144	Mesh::Mesh
+mesh	ox3_bc	String	get		athenak/src/mesh/mesh.cpp	171	Mesh::Mesh
+mesh	x1max	Real	get		athenak/src/mesh/mesh.cpp	81	Mesh::Mesh
+mesh	x1max	Real	get		athenak/src/pgen/tests/jeans_wave.cpp	113	ProblemGenerator::SelfGravity
+mesh	x1min	Real	get		athenak/src/mesh/mesh.cpp	80	Mesh::Mesh
+mesh	x1min	Real	get		athenak/src/pgen/tests/jeans_wave.cpp	113	ProblemGenerator::SelfGravity
+mesh	x2max	Real	get		athenak/src/mesh/mesh.cpp	83	Mesh::Mesh
+mesh	x2max	Real	get		athenak/src/pgen/tests/jeans_wave.cpp	114	ProblemGenerator::SelfGravity
+mesh	x2min	Real	get		athenak/src/mesh/mesh.cpp	82	Mesh::Mesh
+mesh	x2min	Real	get		athenak/src/pgen/tests/jeans_wave.cpp	114	ProblemGenerator::SelfGravity
+mesh	x3max	Real	get		athenak/src/mesh/mesh.cpp	85	Mesh::Mesh
+mesh	x3max	Real	get		athenak/src/pgen/tests/jeans_wave.cpp	115	ProblemGenerator::SelfGravity
+mesh	x3min	Real	get		athenak/src/mesh/mesh.cpp	84	Mesh::Mesh
+mesh	x3min	Real	get		athenak/src/pgen/tests/jeans_wave.cpp	115	ProblemGenerator::SelfGravity
+mesh_refinement	max_nmb_per_rank		exists		athenak/src/mesh/build_tree.cpp	273	Mesh::BuildTreeFromScratch
+mesh_refinement	max_nmb_per_rank	Real	get		athenak/src/mesh/build_tree.cpp	274	Mesh::BuildTreeFromScratch
+mesh_refinement	max_nmb_per_rank		exists		athenak/src/mesh/build_tree.cpp	477	Mesh::BuildTreeFromRestart
+mesh_refinement	max_nmb_per_rank	Real	get		athenak/src/mesh/build_tree.cpp	478	Mesh::BuildTreeFromRestart
+mesh_refinement	ncycle_check	Real	get_or_add	1	athenak/src/mesh/mesh_refinement.cpp	66	MeshRefinement::MeshRefinement
+mesh_refinement	num_levels	Integer	get_or_add	1	athenak/src/mesh/build_tree.cpp	53	Mesh::BuildTreeFromScratch
+mesh_refinement	num_levels	Integer	get_or_add	1	athenak/src/mesh/build_tree.cpp	380	Mesh::BuildTreeFromRestart
+mesh_refinement	prolong_primitives		exists		athenak/src/mesh/mesh_refinement.cpp	69	MeshRefinement::MeshRefinement
+mesh_refinement	prolong_primitives	Boolean	get		athenak/src/mesh/mesh_refinement.cpp	70	MeshRefinement::MeshRefinement
+mesh_refinement	refinement	String	get_or_add	"none"	athenak/src/mesh/mesh.cpp	197	Mesh::Mesh
+mesh_refinement	refinement	String	get		athenak/src/mesh/mesh.cpp	199	Mesh::Mesh
+mesh_refinement	refinement_interval	Real	get_or_add	5	athenak/src/mesh/mesh_refinement.cpp	67	MeshRefinement::MeshRefinement
+meshblock	nx1	Integer	get_or_add	pinput->GetInteger("mesh","nx1")	athenak/src/main.cpp	319	main
+meshblock	nx1	Integer	get_or_add	mesh_indcs.nx1	athenak/src/mesh/mesh.cpp	269	Mesh::Mesh
+meshblock	nx2	Integer	get_or_add	pinput->GetInteger("mesh","nx2")	athenak/src/main.cpp	322	main
+meshblock	nx2	Integer	get_or_add	mesh_indcs.nx2	athenak/src/mesh/mesh.cpp	271	Mesh::Mesh
+meshblock	nx3	Integer	get_or_add	pinput->GetInteger("mesh","nx3")	athenak/src/main.cpp	325	main
+meshblock	nx3	Integer	get_or_add	mesh_indcs.nx3	athenak/src/mesh/mesh.cpp	276	Mesh::Mesh
+mhd	alpha_aniso		exists		athenak/src/mhd/mhd.cpp	151	mhd::MHD::MHD
+mhd	alpha_iso		exists		athenak/src/mhd/mhd.cpp	150	mhd::MHD::MHD
+mhd	alpha_spitzer		exists		athenak/src/mhd/mhd.cpp	152	mhd::MHD::MHD
+mhd	const_accel_val	Real	get		athenak/src/pgen/fluids/rt.cpp	91	ProblemGenerator::UserProblem
+mhd	dmp_M	Real	get_or_add	1.2	athenak/src/dyn_grmhd/dyn_grmhd.cpp	148	dyngr::DynGRMHD::DynGRMHD
+mhd	dyn_eos	String	get		athenak/src/dyn_grmhd/dyn_grmhd.cpp	79	dyngr::BuildDynGRMHD
+mhd	dyn_eos	String	get		athenak/src/pgen/unit_tests/eos_compose.cpp	43	ProblemGenerator::EOSCompose
+mhd	dyn_error	String	get		athenak/src/dyn_grmhd/dyn_grmhd.cpp	80	dyngr::BuildDynGRMHD
+mhd	dyn_scratch	Integer	get_or_add	0	athenak/src/dyn_grmhd/dyn_grmhd.cpp	146	dyngr::DynGRMHD::DynGRMHD
+mhd	enforce_maximum	Boolean	get_or_add	true	athenak/src/dyn_grmhd/dyn_grmhd.cpp	147	dyngr::DynGRMHD::DynGRMHD
+mhd	eos	String	get		athenak/src/mhd/mhd.cpp	74	mhd::MHD::MHD
+mhd	eta_ad	Real	get_or_add	0.0	athenak/src/diffusion/resistivity.cpp	53	Resistivity::Resistivity
+mhd	eta_ad		exists		athenak/src/mhd/mhd.cpp	133	mhd::MHD::MHD
+mhd	eta_ohm	Real	get_or_add	0.0	athenak/src/diffusion/resistivity.cpp	52	Resistivity::Resistivity
+mhd	eta_ohm		exists		athenak/src/mhd/mhd.cpp	132	mhd::MHD::MHD
+mhd	fixed	Boolean	get_or_add	false	athenak/src/dyn_grmhd/dyn_grmhd.cpp	151	dyngr::DynGRMHD::DynGRMHD
+mhd	fofc	Boolean	get_or_add	false	athenak/src/mhd/mhd.cpp	245	mhd::MHD::MHD
+mhd	fofc_method	String	get_or_add	"llf"	athenak/src/dyn_grmhd/dyn_grmhd.cpp	135	dyngr::DynGRMHD::DynGRMHD
+mhd	gamma	Real	get		athenak/src/eos/ideal_grmhd.cpp	26	IdealGRMHD::IdealGRMHD
+mhd	gamma	Real	get		athenak/src/eos/ideal_mhd.cpp	20	IdealMHD::IdealMHD
+mhd	gamma	Real	get		athenak/src/eos/ideal_srmhd.cpp	22	IdealSRMHD::IdealSRMHD
+mhd	gamma	Real	get		athenak/src/eos/noop_dyngrmhd.cpp	23	NoOpDynGRMHD::NoOpDynGRMHD
+mhd	gamma	Real	get		athenak/src/utils/tov/tov_polytrope.hpp	25	tov::PolytropeEOS::PolytropeEOS
+mhd	gamma_max	Real	get_or_add	(FLT_MAX)	athenak/src/eos/ideal_grmhd.cpp	28	IdealGRMHD::IdealGRMHD
+mhd	gamma_max	Real	get_or_add	(FLT_MAX)	athenak/src/eos/ideal_srmhd.cpp	24	IdealSRMHD::IdealSRMHD
+mhd	gamma_max	Real	get_or_add	(FLT_MAX)	athenak/src/eos/noop_dyngrmhd.cpp	25	NoOpDynGRMHD::NoOpDynGRMHD
+mhd	iso_sound_speed	Real	get		athenak/src/eos/isothermal_mhd.cpp	21	IsothermalMHD::IsothermalMHD
+mhd	iso_sound_speed	Real	get_or_add	1.0	athenak/src/pgen/fluids/turb.cpp	53	ProblemGenerator::UserProblem
+mhd	nscalars	Integer	get_or_add	0	athenak/src/mhd/mhd.cpp	109	mhd::MHD::MHD
+mhd	nscalars	Integer	get_or_add	0	athenak/src/pgen/dyn_grmhd/elliptica/elliptica.cpp	197	SetupSystem
+mhd	nscalars	Integer	get_or_add	0	athenak/src/pgen/dyn_grmhd/kadath/kadath_bns.cpp	115	SetupBNS
+mhd	nscalars	Integer	get_or_add	0	athenak/src/pgen/dyn_grmhd/lorene/lorene_bns.cpp	117	SetupBNS
+mhd	nu_aniso		exists		athenak/src/mhd/mhd.cpp	113	mhd::MHD::MHD
+mhd	nu_iso		exists		athenak/src/mhd/mhd.cpp	112	mhd::MHD::MHD
+mhd	reconstruct	String	get_or_add	"plm"	athenak/src/mhd/mhd.cpp	248	mhd::MHD::MHD
+mhd	resistivity_integrator	String	get_or_add	"explicit"	athenak/src/diffusion/resistivity.cpp	28	(anonymous)::ParseResistivityIntegrator
+mhd	rsolver	String	get		athenak/src/dyn_grmhd/dyn_grmhd.cpp	124	dyngr::DynGRMHD::DynGRMHD
+mhd	rsolver	String	get		athenak/src/mhd/mhd.cpp	297	mhd::MHD::MHD
+mhd	s0_atmosphere	Real	get_or_add	0.5	athenak/src/pgen/dyn_grmhd/dyngr_tov.cpp	112	SetupTOV
+mhd	s0_atmosphere	Real	get_or_add	0.5	athenak/src/utils/tov/tov_tabulated.hpp	135	tov::TabulatedEOS::TabulatedEOS
+mhd	scalar_pplimiter	Boolean	get_or_add	true	athenak/src/dyn_grmhd/dyn_grmhd.cpp	149	dyngr::DynGRMHD::DynGRMHD
+mhd	sigma_max	Real	get_or_add	(FLT_MAX)	athenak/src/eos/ideal_grmhd.cpp	29	IdealGRMHD::IdealGRMHD
+mhd	sigma_max	Real	get_or_add	(FLT_MAX)	athenak/src/eos/ideal_mhd.cpp	22	IdealMHD::IdealMHD
+mhd	sigma_max	Real	get_or_add	(FLT_MAX)	athenak/src/eos/ideal_srmhd.cpp	25	IdealSRMHD::IdealSRMHD
+mhd	sigma_max	Real	get_or_add	(FLT_MAX)	athenak/src/eos/isothermal_mhd.cpp	23	IsothermalMHD::IsothermalMHD
+mhd	use_NQT	Boolean	get_or_add	false	athenak/src/dyn_grmhd/dyn_grmhd.cpp	55	dyngr::SelectDynGRMHDEOS
+mhd	use_NQT	Boolean	get_or_add	false	athenak/src/dyn_grmhd/dyn_grmhd.cpp	65	dyngr::SelectDynGRMHDEOS
+mhd	use_NQT	Boolean	get_or_add	false	athenak/src/pgen/unit_tests/eos_compose.cpp	51	ProblemGenerator::EOSCompose
+{op.block_name}	center_x	Real	get_or_add	0.0	athenak/src/outputs/cartgrid.cpp	32	CartesianGridOutput::CartesianGridOutput
+{op.block_name}	center_y	Real	get_or_add	0.0	athenak/src/outputs/cartgrid.cpp	33	CartesianGridOutput::CartesianGridOutput
+{op.block_name}	center_z	Real	get_or_add	0.0	athenak/src/outputs/cartgrid.cpp	34	CartesianGridOutput::CartesianGridOutput
+{op.block_name}	chebyshev	Boolean	get_or_add	false	athenak/src/outputs/cartgrid.cpp	41	CartesianGridOutput::CartesianGridOutput
+{op.block_name}	extent_x	Real	get_or_add	2.0	athenak/src/outputs/cartgrid.cpp	35	CartesianGridOutput::CartesianGridOutput
+{op.block_name}	extent_y	Real	get_or_add	2.0	athenak/src/outputs/cartgrid.cpp	36	CartesianGridOutput::CartesianGridOutput
+{op.block_name}	extent_z	Real	get_or_add	2.0	athenak/src/outputs/cartgrid.cpp	37	CartesianGridOutput::CartesianGridOutput
+{op.block_name}	nparticles	Integer	get		athenak/src/outputs/track_prtcl.cpp	36	TrackedParticleOutput::TrackedParticleOutput
+{op.block_name}	nphi	Integer	get_or_add	2*ntheta	athenak/src/outputs/spherical_surface.cpp	142	(anonymous)::ParseAngleOptions
+{op.block_name}	nradii		exists		athenak/src/outputs/spherical_surface.cpp	50	(anonymous)::ParseRadii
+{op.block_name}	nradii	Integer	get		athenak/src/outputs/spherical_surface.cpp	78	(anonymous)::ParseRadii
+{op.block_name}	ntheta	Integer	get_or_add	32	athenak/src/outputs/spherical_surface.cpp	190	SphericalSurfaceOutput::SphericalSurfaceOutput
+{op.block_name}	numpoints_x	Integer	get_or_add	32	athenak/src/outputs/cartgrid.cpp	38	CartesianGridOutput::CartesianGridOutput
+{op.block_name}	numpoints_y	Integer	get_or_add	32	athenak/src/outputs/cartgrid.cpp	39	CartesianGridOutput::CartesianGridOutput
+{op.block_name}	numpoints_z	Integer	get_or_add	32	athenak/src/outputs/cartgrid.cpp	40	CartesianGridOutput::CartesianGridOutput
+{op.block_name}	r_max	Real	get		athenak/src/outputs/spherical_surface.cpp	80	(anonymous)::ParseRadii
+{op.block_name}	r_min	Real	get		athenak/src/outputs/spherical_surface.cpp	79	(anonymous)::ParseRadii
+{op.block_name}	r_spacing	String	get_or_add	"linear"	athenak/src/outputs/spherical_surface.cpp	81	(anonymous)::ParseRadii
+{op.block_name}	radii		exists		athenak/src/outputs/spherical_surface.cpp	49	(anonymous)::ParseRadii
+{op.block_name}	radii	String	get		athenak/src/outputs/spherical_surface.cpp	64	(anonymous)::ParseRadii
+{op.block_name}	radius		exists		athenak/src/outputs/spherical_surface.cpp	48	(anonymous)::ParseRadii
+{op.block_name}	radius	Real	get		athenak/src/outputs/spherical_surface.cpp	62	(anonymous)::ParseRadii
+{op.block_name}	theta_centering	String	get_or_add	"node"	athenak/src/outputs/spherical_surface.cpp	158	(anonymous)::ParseAngleOptions
+{op.block_name}	theta_spacing	String	get_or_add	"uniform_costheta"	athenak/src/outputs/spherical_surface.cpp	144	(anonymous)::ParseAngleOptions
+{op.block_name}	weights	Boolean	get_or_add	true	athenak/src/outputs/spherical_surface.cpp	197	SphericalSurfaceOutput::SphericalSurfaceOutput
+{op.block_name}	xc	Real	get_or_add	0.0	athenak/src/outputs/spherical_surface.cpp	192	SphericalSurfaceOutput::SphericalSurfaceOutput
+{op.block_name}	yc	Real	get_or_add	0.0	athenak/src/outputs/spherical_surface.cpp	193	SphericalSurfaceOutput::SphericalSurfaceOutput
+{op.block_name}	zc	Real	get_or_add	0.0	athenak/src/outputs/spherical_surface.cpp	194	SphericalSurfaceOutput::SphericalSurfaceOutput
+{opar.block_name}	bin2_max	Real	get_or_add	1	athenak/src/outputs/outputs.cpp	262	Outputs::Outputs
+{opar.block_name}	bin2_min	Real	get_or_add	0	athenak/src/outputs/outputs.cpp	261	Outputs::Outputs
+{opar.block_name}	bin_max	Real	get		athenak/src/outputs/outputs.cpp	254	Outputs::Outputs
+{opar.block_name}	bin_min	Real	get		athenak/src/outputs/outputs.cpp	253	Outputs::Outputs
+{opar.block_name}	coarsen_factor	Integer	get		athenak/src/outputs/outputs.cpp	247	Outputs::Outputs
+{opar.block_name}	compute_moments	Boolean	get_or_add	false	athenak/src/outputs/outputs.cpp	248	Outputs::Outputs
+{opar.block_name}	data_format	String	get_or_add	"%12.5e"	athenak/src/outputs/outputs.cpp	218	Outputs::Outputs
+{opar.block_name}	dcycle		exists		athenak/src/outputs/outputs.cpp	75	Outputs::Outputs
+{opar.block_name}	dcycle	Integer	get		athenak/src/outputs/outputs.cpp	76	Outputs::Outputs
+{opar.block_name}	dt	Real	get		athenak/src/outputs/outputs.cpp	79	Outputs::Outputs
+{opar.block_name}	file_number	Integer	get_or_add	0	athenak/src/outputs/outputs.cpp	86	Outputs::Outputs
+{opar.block_name}	file_type	String	get		athenak/src/outputs/outputs.cpp	88	Outputs::Outputs
+{opar.block_name}	ghost_zones	Boolean	get_or_add	false	athenak/src/outputs/outputs.cpp	101	Outputs::Outputs
+{opar.block_name}	ghost_zones	Boolean	get_or_add	false	athenak/src/outputs/outputs.cpp	165	Outputs::Outputs
+{opar.block_name}	gid	Integer	get_or_add	-1	athenak/src/outputs/outputs.cpp	104	Outputs::Outputs
+{opar.block_name}	gid	Integer	get_or_add	-1	athenak/src/outputs/outputs.cpp	168	Outputs::Outputs
+{opar.block_name}	id	String	get_or_add	opar.variable	athenak/src/outputs/outputs.cpp	97	Outputs::Outputs
+{opar.block_name}	id	String	get_or_add	opar.variable	athenak/src/outputs/outputs.cpp	187	Outputs::Outputs
+{opar.block_name}	last_time	Real	get_or_add	-1.0	athenak/src/outputs/outputs.cpp	74	Outputs::Outputs
+{opar.block_name}	logscale	Boolean	get_or_add	true	athenak/src/outputs/outputs.cpp	256	Outputs::Outputs
+{opar.block_name}	logscale2	Boolean	get_or_add	true	athenak/src/outputs/outputs.cpp	264	Outputs::Outputs
+{opar.block_name}	mass_weighted	Boolean	get_or_add	false	athenak/src/outputs/outputs.cpp	257	Outputs::Outputs
+{opar.block_name}	nbin	Integer	get		athenak/src/outputs/outputs.cpp	255	Outputs::Outputs
+{opar.block_name}	nbin2	Integer	get_or_add	0	athenak/src/outputs/outputs.cpp	263	Outputs::Outputs
+{opar.block_name}	single_file_per_rank	Boolean	get_or_add	false	athenak/src/outputs/outputs.cpp	245	Outputs::Outputs
+{opar.block_name}	single_file_per_rank	Boolean	get_or_add	false	athenak/src/outputs/outputs.cpp	275	Outputs::Outputs
+{opar.block_name}	single_file_per_rank	Boolean	get_or_add	false	athenak/src/outputs/outputs.cpp	288	Outputs::Outputs
+{opar.block_name}	slice_x1		exists		athenak/src/outputs/outputs.cpp	119	Outputs::Outputs
+{opar.block_name}	slice_x1	Real	get		athenak/src/outputs/outputs.cpp	120	Outputs::Outputs
+{opar.block_name}	slice_x2		exists		athenak/src/outputs/outputs.cpp	134	Outputs::Outputs
+{opar.block_name}	slice_x2	Real	get		athenak/src/outputs/outputs.cpp	135	Outputs::Outputs
+{opar.block_name}	slice_x3		exists		athenak/src/outputs/outputs.cpp	149	Outputs::Outputs
+{opar.block_name}	slice_x3	Real	get		athenak/src/outputs/outputs.cpp	150	Outputs::Outputs
+{opar.block_name}	user_hist_only	Boolean	get_or_add	false	athenak/src/outputs/outputs.cpp	208	Outputs::Outputs
+{opar.block_name}	variable	String	get		athenak/src/outputs/outputs.cpp	96	Outputs::Outputs
+{opar.block_name}	variable	String	get		athenak/src/outputs/outputs.cpp	186	Outputs::Outputs
+{opar.block_name}	variable_2		exists		athenak/src/outputs/outputs.cpp	259	Outputs::Outputs
+{opar.block_name}	variable_2	String	get		athenak/src/outputs/outputs.cpp	260	Outputs::Outputs
+{options_block}	id_filename_glob	String	get_or_add	"EMPTY"	athenak/src/pgen/z4c/spectre/z4c_spectre_bbh.cpp	60	ProblemGenerator::UserProblem
+{options_block}	id_observation_step	Integer	get_or_add	-1	athenak/src/pgen/z4c/spectre/z4c_spectre_bbh.cpp	62	ProblemGenerator::UserProblem
+{options_block}	id_subfile_name	String	get_or_add	"EMPTY"	athenak/src/pgen/z4c/spectre/z4c_spectre_bbh.cpp	61	ProblemGenerator::UserProblem
+orbital_advection	Omega0	Real	get_or_add	0.0	athenak/src/pgen/fluids/disk-magnetosphere.cpp	270	Mesh::InitUserMeshData
+particles	ah_exc_factor	Real	get_or_add	-1.0	athenak/src/particles/nrpic.cpp	118	particles::Particles::NrpicInit
+particles	alpha_exc	Real	get_or_add	-1.0	athenak/src/particles/nrpic.cpp	117	particles::Particles::NrpicInit
+particles	assign_tag	String	get_or_add	"index_order"	athenak/src/particles/particles.cpp	129	particles::Particles::CreateParticleTags
+particles	bh_mass	Real	get_or_add	1.0	athenak/src/particles/nrpic.cpp	94	particles::Particles::NrpicInit
+particles	bh_spin	Real	get_or_add	0.0	athenak/src/particles/nrpic.cpp	95	particles::Particles::NrpicInit
+particles	cons_dcycle	Integer	get_or_add	0	athenak/src/particles/nrpic.cpp	122	particles::Particles::NrpicInit
+particles	cstat_dcycle	Integer	get_or_add	0	athenak/src/particles/nrpic.cpp	121	particles::Particles::NrpicInit
+particles	curv_dt	Real	get_or_add	-1.0	athenak/src/particles/nrpic.cpp	134	particles::Particles::NrpicInit
+particles	curv_plane_y	Real	get_or_add	1.0e-6	athenak/src/particles/nrpic.cpp	136	particles::Particles::NrpicInit
+particles	curv_slice	Boolean	get_or_add	false	athenak/src/particles/nrpic.cpp	135	particles::Particles::NrpicInit
+particles	deposit	Boolean	get_or_add	(mesh_metric && pmy_pack->pz4c != nullptr)	athenak/src/particles/nrpic.cpp	220	particles::Particles::NrpicInit
+particles	deposit_adaptive	Boolean	get_or_add	false	athenak/src/particles/nrpic.cpp	108	particles::Particles::NrpicInit
+particles	deposit_comp_c	Real	get_or_add	0.0	athenak/src/particles/nrpic.cpp	100	particles::Particles::NrpicInit
+particles	deposit_comp_c2	Real	get_or_add	0.0	athenak/src/particles/nrpic.cpp	102	particles::Particles::NrpicInit
+particles	deposit_comp_limit	Real	get_or_add	0.0	athenak/src/particles/nrpic.cpp	101	particles::Particles::NrpicInit
+particles	deposit_max_coarsen	Integer	get_or_add	31	athenak/src/particles/nrpic.cpp	111	particles::Particles::NrpicInit
+particles	deposit_max_level	Integer	get_or_add	31	athenak/src/particles/nrpic.cpp	103	particles::Particles::NrpicInit
+particles	deposit_min_level	Integer	get_or_add	0	athenak/src/particles/nrpic.cpp	109	particles::Particles::NrpicInit
+particles	deposit_ppc	Real	get_or_add	2.0	athenak/src/particles/nrpic.cpp	110	particles::Particles::NrpicInit
+particles	deposit_shape	String	get_or_add	"cic"	athenak/src/particles/nrpic.cpp	158	particles::Particles::NrpicInit
+particles	dt	Real	get_or_add	static_cast<Real>(std::numeric_limits<float>::max())	athenak/src/particles/nrpic.cpp	182	particles::Particles::NrpicInit
+particles	dt_expansion	Real	get_or_add	0.0	athenak/src/particles/nrpic.cpp	185	particles::Particles::NrpicInit
+particles	field_constraints	Boolean	get_or_add	false	athenak/src/particles/nrpic.cpp	186	particles::Particles::NrpicInit
+particles	filter_comp_c	Real	get_or_add	-1.0	athenak/src/particles/nrpic.cpp	99	particles::Particles::NrpicInit
+particles	filter_compensate	Boolean	get_or_add	false	athenak/src/particles/nrpic.cpp	98	particles::Particles::NrpicInit
+particles	hist_dcycle	Integer	get_or_add	1	athenak/src/particles/nrpic.cpp	119	particles::Particles::NrpicInit
+particles	interp	String	get_or_add	"hermite"	athenak/src/particles/nrpic.cpp	188	particles::Particles::NrpicInit
+particles	{key}		exists		athenak/src/particles/nrpic.cpp	128	particles::Particles::NrpicInit
+particles	{key}	Real	get		athenak/src/particles/nrpic.cpp	129	particles::Particles::NrpicInit
+particles	lambda	Real	get_or_add	0.0	athenak/src/particles/nrpic.cpp	152	particles::Particles::NrpicInit
+particles	lattice_dx	Real	get_or_add	0.025	athenak/src/particles/nrpic.cpp	96	particles::Particles::NrpicInit
+particles	line_dcycle	Integer	get_or_add	0	athenak/src/particles/nrpic.cpp	123	particles::Particles::NrpicInit
+particles	max_iterations	Integer	get_or_add	50	athenak/src/particles/nrpic.cpp	93	particles::Particles::NrpicInit
+particles	metric	String	get_or_add	"mesh"	athenak/src/particles/nrpic.cpp	66	particles::Particles::NrpicInit
+particles	nfilter	Integer	get_or_add	1	athenak/src/particles/nrpic.cpp	97	particles::Particles::NrpicInit
+particles	nparticles	Integer	get_or_add	0	athenak/src/particles/nrpic.cpp	204	particles::Particles::NrpicInit
+particles	nprobe	Integer	get_or_add	0	athenak/src/particles/nrpic.cpp	140	particles::Particles::NrpicInit
+particles	particle_file	String	get_or_add	""	athenak/src/particles/nrpic.cpp	202	particles::Particles::NrpicInit
+particles	particle_type	String	get		athenak/src/particles/particles.cpp	45	particles::Particles::Particles
+particles	ppc	Real	get_or_add	1.0	athenak/src/particles/particles.cpp	34	particles::Particles::Particles
+particles	{pre + "m"}	Real	get_or_add	0.0	athenak/src/particles/nrpic.cpp	214	particles::Particles::NrpicInit
+particles	{pre + "u1"}	Real	get		athenak/src/particles/nrpic.cpp	211	particles::Particles::NrpicInit
+particles	{pre + "u2"}	Real	get		athenak/src/particles/nrpic.cpp	212	particles::Particles::NrpicInit
+particles	{pre + "u3"}	Real	get		athenak/src/particles/nrpic.cpp	213	particles::Particles::NrpicInit
+particles	{pre + "x1"}	Real	get		athenak/src/particles/nrpic.cpp	148	particles::Particles::NrpicInit
+particles	{pre + "x1"}	Real	get		athenak/src/particles/nrpic.cpp	208	particles::Particles::NrpicInit
+particles	{pre + "x2"}	Real	get		athenak/src/particles/nrpic.cpp	149	particles::Particles::NrpicInit
+particles	{pre + "x2"}	Real	get		athenak/src/particles/nrpic.cpp	209	particles::Particles::NrpicInit
+particles	{pre + "x3"}	Real	get		athenak/src/particles/nrpic.cpp	150	particles::Particles::NrpicInit
+particles	{pre + "x3"}	Real	get		athenak/src/particles/nrpic.cpp	210	particles::Particles::NrpicInit
+particles	probe_x1	Real	get_or_add	0.0	athenak/src/particles/nrpic.cpp	137	particles::Particles::NrpicInit
+particles	probe_x2	Real	get_or_add	0.0	athenak/src/particles/nrpic.cpp	138	particles::Particles::NrpicInit
+particles	probe_x3	Real	get_or_add	0.0	athenak/src/particles/nrpic.cpp	139	particles::Particles::NrpicInit
+particles	pusher	String	get		athenak/src/particles/particles.cpp	63	particles::Particles::Particles
+particles	snap_dt	Real	get_or_add	-1.0	athenak/src/particles/nrpic.cpp	133	particles::Particles::NrpicInit
+particles	source_density	Boolean	get_or_add	false	athenak/src/particles/nrpic.cpp	153	particles::Particles::NrpicInit
+particles	source_extrap	Boolean	get_or_add	false	athenak/src/particles/nrpic.cpp	154	particles::Particles::NrpicInit
+particles	tolerance	Real	get_or_add	1.0e-7	athenak/src/particles/nrpic.cpp	92	particles::Particles::NrpicInit
+particles	traj_dcycle	Integer	get_or_add	0	athenak/src/particles/nrpic.cpp	120	particles::Particles::NrpicInit
+particles	traj_ntrack	Integer	get_or_add	0	athenak/src/particles/nrpic.cpp	132	particles::Particles::NrpicInit
+particles	triad	String	get_or_add	"symmetric"	athenak/src/particles/nrpic.cpp	82	particles::Particles::NrpicInit
+planets	ind	Integer	get_or_add	1	athenak/src/pgen/fluids/disk-magnetosphere.cpp	315	Mesh::InitUserMeshData
+planets	np	Integer	get_or_add	0	athenak/src/pgen/fluids/disk-magnetosphere.cpp	313	Mesh::InitUserMeshData
+planets	{pname}	Real	get_or_add	1.0e-2	athenak/src/pgen/fluids/disk-magnetosphere.cpp	324	Mesh::InitUserMeshData
+planets	{pname}	Real	get_or_add	1.0	athenak/src/pgen/fluids/disk-magnetosphere.cpp	327	Mesh::InitUserMeshData
+planets	{pname}	Real	get_or_add	0.0	athenak/src/pgen/fluids/disk-magnetosphere.cpp	329	Mesh::InitUserMeshData
+planets	{pname}	Real	get_or_add	0.0	athenak/src/pgen/fluids/disk-magnetosphere.cpp	331	Mesh::InitUserMeshData
+planets	rsoft2	Real	get_or_add	0.0016	athenak/src/pgen/fluids/disk-magnetosphere.cpp	316	Mesh::InitUserMeshData
+problem	180rotation	Integer	get_or_add	0	athenak/src/pgen/dyn_grmhd/sgrid/sgrid_bns.cpp	163	ProblemGenerator::UserProblem
+problem	A_snake	Real	get_or_add	0.1	athenak/src/pgen/fluids/blast.cpp	179	ProblemGenerator::UserProblem
+problem	GM	Real	get_or_add	0.0	athenak/src/pgen/fluids/disk-magnetosphere.cpp	245	Mesh::InitUserMeshData
+problem	Interpolate_make_finer_grid2	Boolean	get_or_add	false	athenak/src/pgen/dyn_grmhd/sgrid/sgrid_bns.cpp	493	(anonymous)::DNS_init_sgrid
+problem	Interpolate_max_xyz_diff	Real	get_or_add	0.0	athenak/src/pgen/dyn_grmhd/sgrid/sgrid_bns.cpp	495	(anonymous)::DNS_init_sgrid
+problem	Interpolate_verbose	Boolean	get_or_add	false	athenak/src/pgen/dyn_grmhd/sgrid/sgrid_bns.cpp	491	(anonymous)::DNS_init_sgrid
+problem	M1	Real	get		athenak/src/pgen/dyn_grmhd/lorene/lorene_bns.cpp	295	SetupBNS
+problem	M2	Real	get		athenak/src/pgen/dyn_grmhd/lorene/lorene_bns.cpp	296	SetupBNS
+problem	Mach	Real	get		athenak/src/pgen/fluids/shock_cloud.cpp	38	ProblemGenerator::UserProblem
+problem	Omega	Real	get		athenak/src/pgen/dyn_grmhd/sgrid/sgrid_bns.cpp	155	ProblemGenerator::UserProblem
+problem	R_max0	Real	get_or_add	1.0	athenak/src/pgen/fluids/blast.cpp	138	ProblemGenerator::UserProblem
+problem	Ri	Real	get_or_add	0.5	athenak/src/pgen/fluids/disk-magnetosphere.cpp	287	Mesh::InitUserMeshData
+problem	Rmax	Real	get_or_add	5.0	athenak/src/pgen/fluids/disk-magnetosphere.cpp	289	Mesh::InitUserMeshData
+problem	Rmin	Real	get_or_add	0.0	athenak/src/pgen/fluids/disk-magnetosphere.cpp	286	Mesh::InitUserMeshData
+problem	Ro	Real	get_or_add	4.0	athenak/src/pgen/fluids/disk-magnetosphere.cpp	288	Mesh::InitUserMeshData
+problem	a0	Real	get_or_add	1.0	athenak/src/pgen/fluids/current_sheet.cpp	42	ProblemGenerator::UserProblem
+problem	a1	Real	get_or_add	0.0	athenak/src/pgen/dyn_grmhd/dynbbh.cpp	150	ProblemGenerator::UserProblem
+problem	a1_buffer	Real	get_or_add	0.0	athenak/src/pgen/dyn_grmhd/dynbbh.cpp	160	ProblemGenerator::UserProblem
+problem	a2	Real	get_or_add	0.0	athenak/src/pgen/dyn_grmhd/dynbbh.cpp	151	ProblemGenerator::UserProblem
+problem	a2_buffer	Real	get_or_add	0.0	athenak/src/pgen/dyn_grmhd/dynbbh.cpp	161	ProblemGenerator::UserProblem
+problem	a_char	Real	get_or_add	0.01	athenak/src/pgen/fluids/kh.cpp	44	ProblemGenerator::UserProblem
+problem	a_norm	Real	get_or_add	1.0	athenak/src/pgen/tests/gr_monopole.cpp	111	ProblemGenerator::Monopole
+problem	a_warp	Real	get_or_add	6.0	athenak/src/pgen/fluids/blast.cpp	178	ProblemGenerator::UserProblem
+problem	adjust_mass1	Real	get_or_add	1.0	athenak/src/pgen/dyn_grmhd/dynbbh.cpp	158	ProblemGenerator::UserProblem
+problem	adjust_mass2	Real	get_or_add	1.0	athenak/src/pgen/dyn_grmhd/dynbbh.cpp	159	ProblemGenerator::UserProblem
+problem	advect_dens	Boolean	get_or_add	false	athenak/src/pgen/tests/advection.cpp	40	ProblemGenerator::Advection
+problem	along_x1	Boolean	get_or_add	false	athenak/src/pgen/tests/cpaw.cpp	115	ProblemGenerator::AlfvenWave
+problem	along_x1	Boolean	get_or_add	false	athenak/src/pgen/tests/linear_wave.cpp	250	ProblemGenerator::LinearWave
+problem	along_x1	Boolean	get_or_add	false	athenak/src/pgen/tests/rad_linear_wave.cpp	77	ProblemGenerator::RadiationLinearWave
+problem	along_x2	Boolean	get_or_add	false	athenak/src/pgen/tests/cpaw.cpp	116	ProblemGenerator::AlfvenWave
+problem	along_x2	Boolean	get_or_add	false	athenak/src/pgen/tests/linear_wave.cpp	251	ProblemGenerator::LinearWave
+problem	along_x2	Boolean	get_or_add	false	athenak/src/pgen/tests/rad_linear_wave.cpp	78	ProblemGenerator::RadiationLinearWave
+problem	along_x3	Boolean	get_or_add	false	athenak/src/pgen/tests/cpaw.cpp	117	ProblemGenerator::AlfvenWave
+problem	along_x3	Boolean	get_or_add	false	athenak/src/pgen/tests/linear_wave.cpp	252	ProblemGenerator::LinearWave
+problem	along_x3	Boolean	get_or_add	false	athenak/src/pgen/tests/rad_linear_wave.cpp	79	ProblemGenerator::RadiationLinearWave
+problem	alpha_thr	Real	get_or_add	0.6	athenak/src/pgen/dyn_grmhd/dynbbh.cpp	163	ProblemGenerator::UserProblem
+problem	amp	Real	get_or_add	0.0	athenak/src/pgen/fluids/field_loop.cpp	58	ProblemGenerator::UserProblem
+problem	amp	Real	get		athenak/src/pgen/fluids/kh.cpp	38	ProblemGenerator::UserProblem
+problem	amp	Real	get		athenak/src/pgen/fluids/mri2d.cpp	64	ProblemGenerator::UserProblem
+problem	amp	Real	get		athenak/src/pgen/fluids/rt.cpp	67	ProblemGenerator::UserProblem
+problem	amp	Real	get_or_add	0.0	athenak/src/pgen/tests/be_collapse.cpp	157	ProblemGenerator::BECollapse
+problem	amp	Real	get_or_add	1.e-6	athenak/src/pgen/tests/diffusion.cpp	137	ProblemGenerator::Diffusion
+problem	amp	Real	get_or_add	1.0e-6	athenak/src/pgen/tests/jeans_wave.cpp	109	ProblemGenerator::SelfGravity
+problem	amp	Real	get		athenak/src/pgen/tests/linear_wave.cpp	326	ProblemGenerator::LinearWave
+problem	amp	Real	get		athenak/src/pgen/tests/mri3d.cpp	96	ProblemGenerator::MRI3d
+problem	amp	Real	get		athenak/src/pgen/tests/shwave.cpp	65	ProblemGenerator::Shwave
+problem	amp	Real	get_or_add	0.001	athenak/src/pgen/tests/z4c_linear_wave.cpp	77	ProblemGenerator::Z4cLinearWave
+problem	amp	Real	get_or_add	0.001	athenak/src/pgen/z4c/z4c_gauge_wave.cpp	71	ProblemGenerator::UserProblem
+problem	amplitude	Real	get_or_add	0.1	athenak/src/pgen/tests/advection.cpp	39	ProblemGenerator::Advection
+problem	amr_condition	String	get_or_add	"track"	athenak/src/pgen/dyn_grmhd/dynbbh.cpp	137	ProblemGenerator::UserProblem
+problem	b0	Real	get_or_add	1.0	athenak/src/pgen/fluids/current_sheet.cpp	41	ProblemGenerator::UserProblem
+problem	b0	Real	get		athenak/src/pgen/fluids/kh.cpp	196	ProblemGenerator::UserProblem
+problem	b0	Real	get		athenak/src/pgen/fluids/rt.cpp	147	ProblemGenerator::UserProblem
+problem	b0	Real	get_or_add	0.0	athenak/src/pgen/tests/binary_gravity.cpp	216	ProblemGenerator::BinaryGravity
+problem	b0	Real	get_or_add	0.0	athenak/src/pgen/tests/jeans_wave.cpp	228	ProblemGenerator::SelfGravity
+problem	b0_z	Real	get_or_add	0.0	athenak/src/pgen/tests/be_collapse.cpp	176	ProblemGenerator::BECollapse
+problem	b_amb	Real	get_or_add	0.1	athenak/src/pgen/fluids/blast.cpp	158	ProblemGenerator::UserProblem
+problem	b_max	Real	get_or_add	1e12	athenak/src/pgen/dyn_grmhd/dyngr_tov.cpp	269	SetupTOV
+problem	b_max	Real	get_or_add	1e12	athenak/src/pgen/dyn_grmhd/elliptica/elliptica.cpp	130	SetupSystem
+problem	b_max	Real	get_or_add	1e12	athenak/src/pgen/dyn_grmhd/lorene/lorene_bns.cpp	95	SetupBNS
+problem	b_norm	Real	get_or_add	0.0	athenak/src/pgen/dyn_grmhd/dyngr_tov.cpp	243	SetupTOV
+problem	b_par	Real	get		athenak/src/pgen/tests/cpaw.cpp	108	ProblemGenerator::AlfvenWave
+problem	b_perp	Real	get		athenak/src/pgen/tests/cpaw.cpp	109	ProblemGenerator::AlfvenWave
+problem	bc_ix3	Integer	get_or_add	0	athenak/src/pgen/fluids/disk-magnetosphere.cpp	296	Mesh::InitUserMeshData
+problem	bc_ox3	Integer	get_or_add	0	athenak/src/pgen/fluids/disk-magnetosphere.cpp	297	Mesh::InitUserMeshData
+problem	beta	Real	get		athenak/src/pgen/fluids/disk-magnetosphere.cpp	306	Mesh::InitUserMeshData
+problem	beta	Real	get		athenak/src/pgen/fluids/mri2d.cpp	65	ProblemGenerator::UserProblem
+problem	beta	Real	get_or_add	1.0	athenak/src/pgen/fluids/turb.cpp	56	ProblemGenerator::UserProblem
+problem	beta	Real	get_or_add	1.0	athenak/src/pgen/fluids/twofluid.cpp	40	ProblemGenerator::UserProblem
+problem	beta	Real	get		athenak/src/pgen/tests/mri3d.cpp	97	ProblemGenerator::MRI3d
+problem	beta	Real	get		athenak/src/pgen/tests/shwave.cpp	196	ProblemGenerator::Shwave
+problem	bfield_type	String	get_or_add	"pressure_poloidal"	athenak/src/pgen/dyn_grmhd/dyngr_tov.cpp	256	SetupTOV
+problem	bfield_type	String	get_or_add	"current_loop"	athenak/src/pgen/dyn_grmhd/elliptica/elliptica.cpp	131	SetupSystem
+problem	bg	Real	get_or_add	0.	athenak/src/pgen/fluids/current_sheet.cpp	43	ProblemGenerator::UserProblem
+problem	bx0	Real	get		athenak/src/pgen/tests/cshock.cpp	115	ProblemGenerator::CShock
+problem	bx0	Real	get_or_add	0.0	athenak/src/pgen/tests/linear_wave.cpp	332	ProblemGenerator::LinearWave
+problem	bxl	Real	get		athenak/src/pgen/tests/shock_tube.cpp	185	ProblemGenerator::ShockTube
+problem	bxr	Real	get		athenak/src/pgen/tests/shock_tube.cpp	205	ProblemGenerator::ShockTube
+problem	by0	Real	get		athenak/src/pgen/tests/cshock.cpp	116	ProblemGenerator::CShock
+problem	by0	Real	get_or_add	0.0	athenak/src/pgen/tests/linear_wave.cpp	333	ProblemGenerator::LinearWave
+problem	byl	Real	get		athenak/src/pgen/tests/shock_tube.cpp	186	ProblemGenerator::ShockTube
+problem	byr	Real	get		athenak/src/pgen/tests/shock_tube.cpp	206	ProblemGenerator::ShockTube
+problem	bz0	Real	get_or_add	0.0	athenak/src/pgen/tests/linear_wave.cpp	334	ProblemGenerator::LinearWave
+problem	bzl	Real	get		athenak/src/pgen/tests/shock_tube.cpp	187	ProblemGenerator::ShockTube
+problem	bzr	Real	get		athenak/src/pgen/tests/shock_tube.cpp	207	ProblemGenerator::ShockTube
+problem	center_x1	Real	get_or_add	0.50	athenak/src/pgen/fluids/slotted_cyl.cpp	76	ProblemGenerator::UserProblem
+problem	center_x2	Real	get_or_add	0.75	athenak/src/pgen/fluids/slotted_cyl.cpp	77	ProblemGenerator::UserProblem
+problem	chakrabarti_torus	Boolean	get_or_add	false	athenak/src/pgen/fluids/gr_torus.cpp	236	ProblemGenerator::UserProblem
+problem	cloud_radius	Real	get_or_add	rc_default	athenak/src/pgen/tests/be_collapse.cpp	112	ProblemGenerator::BECollapse
+problem	conduction_test	Boolean	get		athenak/src/pgen/tests/diffusion.cpp	141	ProblemGenerator::Diffusion
+problem	coordinates	String	get_or_add	"cartesian"	athenak/src/pgen/fluids/blast.cpp	159	ProblemGenerator::UserProblem
+problem	cutoff_floor	Real	get_or_add	1e-10	athenak/src/pgen/dyn_grmhd/dynbbh.cpp	162	ProblemGenerator::UserProblem
+problem	d0	Real	get_or_add	1.0	athenak/src/pgen/fluids/current_sheet.cpp	39	ProblemGenerator::UserProblem
+problem	d0	Real	get		athenak/src/pgen/tests/shwave.cpp	63	ProblemGenerator::Shwave
+problem	d_i	Real	get_or_add	1.0	athenak/src/pgen/fluids/turb.cpp	60	ProblemGenerator::UserProblem
+problem	d_i	Real	get_or_add	1.0	athenak/src/pgen/fluids/turb.cpp	84	ProblemGenerator::UserProblem
+problem	d_i	Real	get_or_add	1.0	athenak/src/pgen/fluids/turb.cpp	152	ProblemGenerator::UserProblem
+problem	d_i	Real	get_or_add	1.0	athenak/src/pgen/fluids/twofluid.cpp	95	ProblemGenerator::UserProblem
+problem	d_in	Real	get		athenak/src/pgen/tests/lw_implode.cpp	35	ProblemGenerator::LWImplode
+problem	d_n	Real	get_or_add	1.0	athenak/src/pgen/fluids/turb.cpp	61	ProblemGenerator::UserProblem
+problem	d_n	Real	get_or_add	1.0	athenak/src/pgen/fluids/turb.cpp	85	ProblemGenerator::UserProblem
+problem	d_n	Real	get_or_add	1.0	athenak/src/pgen/fluids/turb.cpp	153	ProblemGenerator::UserProblem
+problem	d_n	Real	get_or_add	1.0	athenak/src/pgen/fluids/twofluid.cpp	96	ProblemGenerator::UserProblem
+problem	d_out	Real	get		athenak/src/pgen/tests/lw_implode.cpp	38	ProblemGenerator::LWImplode
+problem	datadir	String	get		athenak/src/pgen/dyn_grmhd/sgrid/sgrid_bns.cpp	487	(anonymous)::DNS_init_sgrid
+problem	datadir	String	get		athenak/src/pgen/dyn_grmhd/sgrid/sgrid_bns.cpp	624	(anonymous)::DNS_parameters
+problem	delta	Real	get		athenak/src/pgen/tests/rad_linear_wave.cpp	160	ProblemGenerator::RadiationLinearWave
+problem	dens	Real	get		athenak/src/pgen/tests/linear_wave.cpp	327	ProblemGenerator::LinearWave
+problem	dens	Real	get_or_add	1.0	athenak/src/pgen/tests/mri3d.cpp	102	ProblemGenerator::MRI3d
+problem	denstar	Real	get_or_add	0.0	athenak/src/pgen/fluids/disk-magnetosphere.cpp	279	Mesh::InitUserMeshData
+problem	derad_imag	Real	get		athenak/src/pgen/tests/rad_linear_wave.cpp	172	ProblemGenerator::RadiationLinearWave
+problem	derad_real	Real	get		athenak/src/pgen/tests/rad_linear_wave.cpp	171	ProblemGenerator::RadiationLinearWave
+problem	dfloor	Real	get_or_add	(FLT_MIN)	athenak/src/pgen/dyn_grmhd/dynbbh.cpp	156	ProblemGenerator::UserProblem
+problem	dfxrad_imag	Real	get		athenak/src/pgen/tests/rad_linear_wave.cpp	174	ProblemGenerator::RadiationLinearWave
+problem	dfxrad_real	Real	get		athenak/src/pgen/tests/rad_linear_wave.cpp	173	ProblemGenerator::RadiationLinearWave
+problem	dfyrad_imag	Real	get_or_add	0.0	athenak/src/pgen/tests/rad_linear_wave.cpp	176	ProblemGenerator::RadiationLinearWave
+problem	dfyrad_real	Real	get_or_add	0.0	athenak/src/pgen/tests/rad_linear_wave.cpp	175	ProblemGenerator::RadiationLinearWave
+problem	dfzrad_imag	Real	get_or_add	0.0	athenak/src/pgen/tests/rad_linear_wave.cpp	178	ProblemGenerator::RadiationLinearWave
+problem	dfzrad_real	Real	get_or_add	0.0	athenak/src/pgen/tests/rad_linear_wave.cpp	177	ProblemGenerator::RadiationLinearWave
+problem	di0	Real	get		athenak/src/pgen/tests/cshock.cpp	109	ProblemGenerator::CShock
+problem	di_amb	Real	get_or_add	1.0	athenak/src/pgen/fluids/blast.cpp	154	ProblemGenerator::UserProblem
+problem	divb_bnorm	Real	get_or_add	default_bnorm	athenak/src/pgen/tests/divb_amr.cpp	198	ProblemGenerator::DivBAMR
+problem	dl	Real	get		athenak/src/pgen/tests/shock_tube.cpp	90	ProblemGenerator::ShockTube
+problem	dl	Real	get		athenak/src/pgen/tests/shock_tube.cpp	180	ProblemGenerator::ShockTube
+problem	dn0	Real	get		athenak/src/pgen/tests/cshock.cpp	110	ProblemGenerator::CShock
+problem	dn_amb	Real	get_or_add	1.0	athenak/src/pgen/fluids/blast.cpp	151	ProblemGenerator::UserProblem
+problem	dpgas_imag	Real	get		athenak/src/pgen/tests/rad_linear_wave.cpp	164	ProblemGenerator::RadiationLinearWave
+problem	dpgas_real	Real	get		athenak/src/pgen/tests/rad_linear_wave.cpp	163	ProblemGenerator::RadiationLinearWave
+problem	dr	Real	get		athenak/src/pgen/tests/shock_tube.cpp	107	ProblemGenerator::ShockTube
+problem	dr	Real	get		athenak/src/pgen/tests/shock_tube.cpp	200	ProblemGenerator::ShockTube
+problem	dr	Real	get		athenak/src/utils/tov/tov.cpp	19	tov::TOVStar::TOVStar
+problem	drat	Real	get_or_add	1.0	athenak/src/pgen/fluids/blast.cpp	157	ProblemGenerator::UserProblem
+problem	drat	Real	get_or_add	1.0	athenak/src/pgen/fluids/field_loop.cpp	59	ProblemGenerator::UserProblem
+problem	drat	Real	get_or_add	3.0	athenak/src/pgen/fluids/rt.cpp	69	ProblemGenerator::UserProblem
+problem	drat	Real	get		athenak/src/pgen/fluids/shock_cloud.cpp	39	ProblemGenerator::UserProblem
+problem	drho_imag	Real	get		athenak/src/pgen/tests/rad_linear_wave.cpp	162	ProblemGenerator::RadiationLinearWave
+problem	drho_real	Real	get		athenak/src/pgen/tests/rad_linear_wave.cpp	161	ProblemGenerator::RadiationLinearWave
+problem	drho_rho0	Real	get_or_add	0.0	athenak/src/pgen/fluids/kh.cpp	50	ProblemGenerator::UserProblem
+problem	dslope	Real	get_or_add	0.0	athenak/src/pgen/fluids/disk-magnetosphere.cpp	253	Mesh::InitUserMeshData
+problem	dux_imag	Real	get		athenak/src/pgen/tests/rad_linear_wave.cpp	166	ProblemGenerator::RadiationLinearWave
+problem	dux_real	Real	get		athenak/src/pgen/tests/rad_linear_wave.cpp	165	ProblemGenerator::RadiationLinearWave
+problem	duy_imag	Real	get_or_add	0.0	athenak/src/pgen/tests/rad_linear_wave.cpp	168	ProblemGenerator::RadiationLinearWave
+problem	duy_real	Real	get_or_add	0.0	athenak/src/pgen/tests/rad_linear_wave.cpp	167	ProblemGenerator::RadiationLinearWave
+problem	duz_imag	Real	get_or_add	0.0	athenak/src/pgen/tests/rad_linear_wave.cpp	170	ProblemGenerator::RadiationLinearWave
+problem	duz_real	Real	get_or_add	0.0	athenak/src/pgen/tests/rad_linear_wave.cpp	169	ProblemGenerator::RadiationLinearWave
+problem	ecc	Real	get		athenak/src/pgen/dyn_grmhd/sgrid/sgrid_bns.cpp	156	ProblemGenerator::UserProblem
+problem	epsb	Real	get_or_add	0.0	athenak/src/pgen/fluids/current_sheet.cpp	45	ProblemGenerator::UserProblem
+problem	epsv	Real	get_or_add	0.0	athenak/src/pgen/fluids/current_sheet.cpp	46	ProblemGenerator::UserProblem
+problem	erad	Real	get		athenak/src/pgen/radiation/rad_relax.cpp	46	ProblemGenerator::UserProblem
+problem	erad	Real	get		athenak/src/pgen/tests/rad_linear_wave.cpp	156	ProblemGenerator::RadiationLinearWave
+problem	f	Real	get_or_add	1.2	athenak/src/pgen/tests/be_collapse.cpp	117	ProblemGenerator::BECollapse
+problem	field_amp	Real	get_or_add	0.25	athenak/src/pgen/tests/divb_amr.cpp	184	ProblemGenerator::DivBAMR
+problem	field_k	Real	get_or_add	2.0	athenak/src/pgen/tests/divb_amr.cpp	185	ProblemGenerator::DivBAMR
+problem	flow_dir	Integer	get		athenak/src/pgen/tests/advection.cpp	36	ProblemGenerator::Advection
+problem	flrw	Boolean	get_or_add	false	athenak/src/pgen/fluids/blast.cpp	136	ProblemGenerator::UserProblem
+problem	fm_torus	Boolean	get_or_add	false	athenak/src/pgen/fluids/gr_torus.cpp	235	ProblemGenerator::UserProblem
+problem	four_pi_G	Real	get_or_add	1.0	athenak/src/pgen/tests/binary_gravity.cpp	53	ProblemGenerator::BinaryGravity
+problem	fxrad	Real	get_or_add	0.0	athenak/src/pgen/tests/rad_linear_wave.cpp	157	ProblemGenerator::RadiationLinearWave
+problem	fyrad	Real	get_or_add	0.0	athenak/src/pgen/tests/rad_linear_wave.cpp	158	ProblemGenerator::RadiationLinearWave
+problem	fzrad	Real	get_or_add	0.0	athenak/src/pgen/tests/rad_linear_wave.cpp	159	ProblemGenerator::RadiationLinearWave
+problem	guide_b1	Real	get_or_add	0.7	athenak/src/pgen/tests/divb_amr.cpp	181	ProblemGenerator::DivBAMR
+problem	guide_b2	Real	get_or_add	0.2	athenak/src/pgen/tests/divb_amr.cpp	182	ProblemGenerator::DivBAMR
+problem	guide_b3	Real	get_or_add	-0.15	athenak/src/pgen/tests/divb_amr.cpp	183	ProblemGenerator::DivBAMR
+problem	hubble	Real	get_or_add	1.0	athenak/src/pgen/nrpic/nrpic_cosmo.cpp	88	ProblemGenerator::NrpicCosmology
+problem	id	String	get_or_add	"flrw"	athenak/src/pgen/nrpic/nrpic_cosmo.cpp	87	ProblemGenerator::NrpicCosmology
+problem	id_file	String	get		athenak/src/pgen/nrpic/nrpic_cosmo.cpp	108	ProblemGenerator::NrpicCosmology
+problem	ifield	Integer	get_or_add	1	athenak/src/pgen/fluids/mri2d.cpp	67	ProblemGenerator::UserProblem
+problem	ifield	Integer	get_or_add	2	athenak/src/pgen/fluids/turb.cpp	86	ProblemGenerator::UserProblem
+problem	ifield	Integer	get_or_add	2	athenak/src/pgen/fluids/turb.cpp	154	ProblemGenerator::UserProblem
+problem	ifield	Integer	get_or_add	1	athenak/src/pgen/tests/mri3d.cpp	99	ProblemGenerator::MRI3d
+problem	initial_data_file	String	get		athenak/src/pgen/dyn_grmhd/elliptica/elliptica.cpp	69	SetupSystem
+problem	initial_data_file	String	get		athenak/src/pgen/dyn_grmhd/kadath/kadath_bns.cpp	101	SetupBNS
+problem	initial_data_file	String	get		athenak/src/pgen/dyn_grmhd/lorene/lorene_bns.cpp	93	SetupBNS
+problem	initial_data_table	String	get_or_add	"__na__"	athenak/src/pgen/dyn_grmhd/elliptica/elliptica.cpp	71	SetupSystem
+problem	inner_radius	Real	get		athenak/src/pgen/fluids/blast.cpp	148	ProblemGenerator::UserProblem
+problem	insert_time	Real	get_or_add	5.0	athenak/src/pgen/fluids/disk-magnetosphere.cpp	312	Mesh::InitUserMeshData
+problem	ipert	Integer	get		athenak/src/pgen/tests/shwave.cpp	66	ProblemGenerator::Shwave
+problem	iprob	Integer	get		athenak/src/pgen/fluids/field_loop.cpp	62	ProblemGenerator::UserProblem
+problem	iprob	Real	get		athenak/src/pgen/fluids/kh.cpp	37	ProblemGenerator::UserProblem
+problem	iprob	Integer	get		athenak/src/pgen/fluids/rt.cpp	68	ProblemGenerator::UserProblem
+problem	iproblem	Integer	get		athenak/src/pgen/tests/advection.cpp	37	ProblemGenerator::Advection
+problem	isotropic	Boolean	get_or_add	false	athenak/src/pgen/dyn_grmhd/dyngr_tov.cpp	83	SolveTOV
+problem	isotropic	Boolean	get_or_add	false	athenak/src/pgen/dyn_grmhd/dyngr_tov.cpp	101	SetupTOV
+problem	k_adi	Real	get		athenak/src/pgen/tests/gr_bondi.cpp	110	ProblemGenerator::BondiAccretion
+problem	k_snake	Real	get_or_add	2.0	athenak/src/pgen/fluids/blast.cpp	180	ProblemGenerator::UserProblem
+problem	kappa	Real	get		athenak/src/utils/tov/tov_polytrope.hpp	24	tov::PolytropeEOS::PolytropeEOS
+problem	keep_sgrid_output	Boolean	get_or_add	false	athenak/src/pgen/dyn_grmhd/sgrid/sgrid_bns.cpp	489	(anonymous)::DNS_init_sgrid
+problem	kval	Real	get_or_add	1.0	athenak/src/pgen/fluids/current_sheet.cpp	47	ProblemGenerator::UserProblem
+problem	kx1	Real	get_or_add	1. / x1size	athenak/src/pgen/tests/z4c_linear_wave.cpp	83	ProblemGenerator::Z4cLinearWave
+problem	kx2	Real	get_or_add	1. / x2size	athenak/src/pgen/tests/z4c_linear_wave.cpp	84	ProblemGenerator::Z4cLinearWave
+problem	kx3	Real	get_or_add	1. / x3size	athenak/src/pgen/tests/z4c_linear_wave.cpp	85	ProblemGenerator::Z4cLinearWave
+problem	lapse	String	get_or_add	"one"	athenak/src/pgen/nrpic/nrpic_cf.cpp	205	ProblemGenerator::NrpicConformallyFlat
+problem	lapse_comp	Integer	get_or_add	0	athenak/src/pgen/nrpic/nrpic_cf.cpp	206	ProblemGenerator::NrpicConformallyFlat
+problem	m1	Real	get_or_add	2.0	athenak/src/pgen/tests/binary_gravity.cpp	70	ProblemGenerator::BinaryGravity
+problem	m1	Real	get_or_add	2.0	athenak/src/pgen/tests/binary_gravity.cpp	254	BinaryGravityErrors
+problem	m2	Real	get_or_add	1.0	athenak/src/pgen/tests/binary_gravity.cpp	71	ProblemGenerator::BinaryGravity
+problem	m2	Real	get_or_add	1.0	athenak/src/pgen/tests/binary_gravity.cpp	255	BinaryGravityErrors
+problem	magindex	Real	get_or_add	2	athenak/src/pgen/dyn_grmhd/dyngr_tov.cpp	245	SetupTOV
+problem	mass	Real	get_or_add	0.0	athenak/src/pgen/tests/be_collapse.cpp	115	ProblemGenerator::BECollapse
+problem	minkowski	Boolean	get_or_add	false	athenak/src/pgen/dyn_grmhd/dyngr_tov.cpp	84	SolveTOV
+problem	minkowski	Boolean	get_or_add	false	athenak/src/pgen/dyn_grmhd/dyngr_tov.cpp	103	SetupTOV
+problem	mm	Real	get_or_add	0.0	athenak/src/pgen/fluids/disk-magnetosphere.cpp	307	Mesh::InitUserMeshData
+problem	mu	Real	get_or_add	0.0	athenak/src/pgen/tests/be_collapse.cpp	170	ProblemGenerator::BECollapse
+problem	nT	Integer	get_or_add	100	athenak/src/pgen/unit_tests/eos_compose.cpp	102	PerformTests
+problem	nY	Integer	get_or_add	100	athenak/src/pgen/unit_tests/eos_compose.cpp	101	PerformTests
+problem	n_jeans	Real	get_or_add	-1.0	athenak/src/pgen/tests/jeans_wave.cpp	86	ProblemGenerator::SelfGravity
+problem	n_param	Real	get_or_add	0.0	athenak/src/pgen/fluids/gr_torus.cpp	233	ProblemGenerator::UserProblem
+problem	ncomp	Integer	get		athenak/src/pgen/nrpic/nrpic_cf.cpp	140	ProblemGenerator::NrpicConformallyFlat
+problem	ng	Real	get_or_add	1.0	athenak/src/pgen/fluids/current_sheet.cpp	40	ProblemGenerator::UserProblem
+problem	ninterp	Integer	get_or_add	-1	athenak/src/pgen/tests/gr_monopole.cpp	650	MonopoleDiagnostic
+problem	njeans	Real	get_or_add	16.0	athenak/src/pgen/tests/be_collapse.cpp	82	ProblemGenerator::BECollapse
+problem	njeans_amr	Real	get_or_add	16.0	athenak/src/pgen/tests/jeans_wave.cpp	102	ProblemGenerator::SelfGravity
+problem	njeans_derefine	Real	get_or_add	2.5	athenak/src/pgen/tests/jeans_wave.cpp	103	ProblemGenerator::SelfGravity
+problem	nlevel	Integer	get_or_add	10	athenak/src/pgen/tests/gr_monopole.cpp	649	MonopoleDiagnostic
+problem	nn	Integer	get_or_add	100	athenak/src/pgen/unit_tests/eos_compose.cpp	100	PerformTests
+problem	noise_amp	Real	get_or_add	0.0	athenak/src/pgen/nrpic/nrpic_cosmo.cpp	218	ProblemGenerator::NrpicCosmology
+problem	noise_atilde	Real	get_or_add	namp	athenak/src/pgen/nrpic/nrpic_cosmo.cpp	220	ProblemGenerator::NrpicCosmology
+problem	noise_gamma	Real	get_or_add	namp	athenak/src/pgen/nrpic/nrpic_cosmo.cpp	222	ProblemGenerator::NrpicCosmology
+problem	noise_seed	Integer	get_or_add	1	athenak/src/pgen/nrpic/nrpic_cosmo.cpp	224	ProblemGenerator::NrpicCosmology
+problem	noise_theta	Real	get_or_add	namp	athenak/src/pgen/nrpic/nrpic_cosmo.cpp	221	ProblemGenerator::NrpicCosmology
+problem	npoints	Real	get		athenak/src/utils/tov/tov.cpp	18	tov::TOVStar::TOVStar
+problem	ns_exp	Real	get_or_add	2	athenak/src/pgen/dyn_grmhd/elliptica/elliptica.cpp	144	SetupSystem
+problem	ntheta	Integer	get_or_add	16	athenak/src/pgen/unit_tests/gauss_legendre.cpp	43	ProblemGenerator::GaussLegendre
+problem	nu	Real	get		athenak/src/pgen/radiation/rad_diffusion.cpp	61	ProblemGenerator::UserProblem
+problem	nwx	Integer	get_or_add	1	athenak/src/pgen/fluids/mri2d.cpp	66	ProblemGenerator::UserProblem
+problem	nwx	Integer	get_or_add	1	athenak/src/pgen/tests/mri3d.cpp	98	ProblemGenerator::MRI3d
+problem	nwx	Integer	get		athenak/src/pgen/tests/shwave.cpp	73	ProblemGenerator::Shwave
+problem	nwy	Integer	get		athenak/src/pgen/tests/shwave.cpp	74	ProblemGenerator::Shwave
+problem	nwz	Integer	get		athenak/src/pgen/tests/shwave.cpp	75	ProblemGenerator::Shwave
+problem	omega	Real	get_or_add	1.0	athenak/src/pgen/fluids/slotted_cyl.cpp	79	ProblemGenerator::UserProblem
+problem	omega_imag	Real	get		athenak/src/pgen/tests/rad_linear_wave.cpp	150	ProblemGenerator::RadiationLinearWave
+problem	omega_real	Real	get		athenak/src/pgen/tests/rad_linear_wave.cpp	149	ProblemGenerator::RadiationLinearWave
+problem	omega_x1	Real	get_or_add	0.50	athenak/src/pgen/fluids/slotted_cyl.cpp	80	ProblemGenerator::UserProblem
+problem	omega_x2	Real	get_or_add	0.50	athenak/src/pgen/fluids/slotted_cyl.cpp	81	ProblemGenerator::UserProblem
+problem	omegatff	Real	get_or_add	0.0	athenak/src/pgen/tests/be_collapse.cpp	165	ProblemGenerator::BECollapse
+problem	origid	Real	get_or_add	0.0	athenak/src/pgen/fluids/disk-magnetosphere.cpp	277	Mesh::InitUserMeshData
+problem	outdir	String	get_or_add	"SGRID"	athenak/src/pgen/dyn_grmhd/sgrid/sgrid_bns.cpp	496	(anonymous)::DNS_init_sgrid
+problem	outer_radius	Real	get		athenak/src/pgen/fluids/blast.cpp	147	ProblemGenerator::UserProblem
+problem	p0	Real	get_or_add	p0	athenak/src/pgen/fluids/rt.cpp	89	ProblemGenerator::UserProblem
+problem	p0	Real	get_or_add	p0	athenak/src/pgen/fluids/rt.cpp	95	ProblemGenerator::UserProblem
+problem	p0	Real	get_or_add	1.0	athenak/src/pgen/tests/jeans_wave.cpp	96	ProblemGenerator::SelfGravity
+problem	p0	Real	get_or_add	1.0	athenak/src/pgen/tests/shwave.cpp	64	ProblemGenerator::Shwave
+problem	p0_over_r0	Real	get_or_add	0.0025	athenak/src/pgen/fluids/disk-magnetosphere.cpp	257	Mesh::InitUserMeshData
+problem	p_in	Real	get		athenak/src/pgen/tests/lw_implode.cpp	36	ProblemGenerator::LWImplode
+problem	p_out	Real	get		athenak/src/pgen/tests/lw_implode.cpp	39	ProblemGenerator::LWImplode
+problem	p_pert	Real	get_or_add	0.0	athenak/src/pgen/dyn_grmhd/dyngr_tov.cpp	100	SetupTOV
+problem	pcut	Real	get_or_add	1e-6	athenak/src/pgen/dyn_grmhd/dyngr_tov.cpp	244	SetupTOV
+problem	pcut	Real	get_or_add	1e-3	athenak/src/pgen/dyn_grmhd/elliptica/elliptica.cpp	143	SetupSystem
+problem	pert	Real	get_or_add	1.0e-4	athenak/src/pgen/tests/cshock.cpp	117	ProblemGenerator::CShock
+problem	pert_amp	Real	get_or_add	0.0	athenak/src/pgen/fluids/gr_torus.cpp	239	ProblemGenerator::UserProblem
+problem	pfloor	Real	get_or_add	(FLT_MIN)	athenak/src/pgen/dyn_grmhd/dynbbh.cpp	157	ProblemGenerator::UserProblem
+problem	pgas	Real	get		athenak/src/pgen/tests/linear_wave.cpp	328	ProblemGenerator::LinearWave
+problem	pgas	Real	get		athenak/src/pgen/tests/rad_linear_wave.cpp	152	ProblemGenerator::RadiationLinearWave
+problem	pgas0	Real	get_or_add	10.0	athenak/src/pgen/tests/divb_amr.cpp	177	ProblemGenerator::DivBAMR
+problem	pgas_min	Real	get		athenak/src/pgen/fluids/gr_torus.cpp	225	ProblemGenerator::UserProblem
+problem	pgas_pow	Real	get		athenak/src/pgen/fluids/gr_torus.cpp	226	ProblemGenerator::UserProblem
+problem	pgen_name	String	get_or_add	"none"	athenak/src/pgen/pgen.cpp	929	ProblemGenerator::CallProblemGenerator
+problem	ph_a1	Real	get_or_add	0.0	athenak/src/pgen/dyn_grmhd/dynbbh.cpp	154	ProblemGenerator::UserProblem
+problem	ph_a2	Real	get_or_add	0.0	athenak/src/pgen/dyn_grmhd/dynbbh.cpp	155	ProblemGenerator::UserProblem
+problem	pi_amb	Real	get_or_add	1.0	athenak/src/pgen/fluids/blast.cpp	153	ProblemGenerator::UserProblem
+problem	pl	Real	get		athenak/src/pgen/tests/shock_tube.cpp	94	ProblemGenerator::ShockTube
+problem	pl	Real	get		athenak/src/pgen/tests/shock_tube.cpp	102	ProblemGenerator::ShockTube
+problem	pl	Real	get		athenak/src/pgen/tests/shock_tube.cpp	184	ProblemGenerator::ShockTube
+problem	pl	Real	get		athenak/src/pgen/tests/shock_tube.cpp	195	ProblemGenerator::ShockTube
+problem	pn_amb	Real	get_or_add	1.0	athenak/src/pgen/fluids/blast.cpp	150	ProblemGenerator::UserProblem
+problem	pos_1	Real	get		athenak/src/pgen/radiation/rad_snake.cpp	190	ProblemGenerator::UserProblem
+problem	pos_2	Real	get		athenak/src/pgen/radiation/rad_snake.cpp	191	ProblemGenerator::UserProblem
+problem	pos_3	Real	get		athenak/src/pgen/radiation/rad_snake.cpp	192	ProblemGenerator::UserProblem
+problem	potential_beta_min	Real	get_or_add	100.0	athenak/src/pgen/fluids/gr_torus.cpp	481	ProblemGenerator::UserProblem
+problem	potential_cutoff	Real	get_or_add	0.2	athenak/src/pgen/fluids/gr_torus.cpp	482	ProblemGenerator::UserProblem
+problem	potential_falloff	Real	get_or_add	0.0	athenak/src/pgen/fluids/gr_torus.cpp	494	ProblemGenerator::UserProblem
+problem	potential_r_pow	Real	get_or_add	0.0	athenak/src/pgen/fluids/gr_torus.cpp	495	ProblemGenerator::UserProblem
+problem	potential_rho_pow	Real	get_or_add	1.0	athenak/src/pgen/fluids/gr_torus.cpp	496	ProblemGenerator::UserProblem
+problem	pr	Real	get		athenak/src/pgen/tests/shock_tube.cpp	111	ProblemGenerator::ShockTube
+problem	pr	Real	get		athenak/src/pgen/tests/shock_tube.cpp	119	ProblemGenerator::ShockTube
+problem	pr	Real	get		athenak/src/pgen/tests/shock_tube.cpp	204	ProblemGenerator::ShockTube
+problem	pr	Real	get		athenak/src/pgen/tests/shock_tube.cpp	215	ProblemGenerator::ShockTube
+problem	prat	Real	get		athenak/src/pgen/fluids/blast.cpp	156	ProblemGenerator::UserProblem
+problem	{pre + "a"}	Real	get		athenak/src/pgen/nrpic/nrpic_cf.cpp	195	ProblemGenerator::NrpicConformallyFlat
+problem	{pre + "b"}	Real	get		athenak/src/pgen/nrpic/nrpic_cf.cpp	196	ProblemGenerator::NrpicConformallyFlat
+problem	{pre + "file"}	String	get		athenak/src/pgen/nrpic/nrpic_cf.cpp	157	ProblemGenerator::NrpicConformallyFlat
+problem	{pre + "mass"}	Real	get		athenak/src/pgen/nrpic/nrpic_cf.cpp	187	ProblemGenerator::NrpicConformallyFlat
+problem	{pre + "mass"}	Real	get		athenak/src/pgen/nrpic/nrpic_cf.cpp	190	ProblemGenerator::NrpicConformallyFlat
+problem	{pre + "mass"}	Real	get		athenak/src/pgen/nrpic/nrpic_cf.cpp	194	ProblemGenerator::NrpicConformallyFlat
+problem	{pre + "sigma"}	Real	get		athenak/src/pgen/nrpic/nrpic_cf.cpp	191	ProblemGenerator::NrpicConformallyFlat
+problem	{pre + "type"}	String	get		athenak/src/pgen/nrpic/nrpic_cf.cpp	148	ProblemGenerator::NrpicConformallyFlat
+problem	{pre + "x1"}	Real	get_or_add	0.0	athenak/src/pgen/nrpic/nrpic_cf.cpp	149	ProblemGenerator::NrpicConformallyFlat
+problem	{pre + "x2"}	Real	get_or_add	0.0	athenak/src/pgen/nrpic/nrpic_cf.cpp	150	ProblemGenerator::NrpicConformallyFlat
+problem	{pre + "x3"}	Real	get_or_add	0.0	athenak/src/pgen/nrpic/nrpic_cf.cpp	151	ProblemGenerator::NrpicConformallyFlat
+problem	pres	Real	get		athenak/src/pgen/tests/cpaw.cpp	111	ProblemGenerator::AlfvenWave
+problem	pres	Real	get		athenak/src/pgen/tests/mri3d.cpp	105	ProblemGenerator::MRI3d
+problem	press	Real	get_or_add	1.0	athenak/src/pgen/fluids/field_loop.cpp	61	ProblemGenerator::UserProblem
+problem	press	Real	get_or_add	1.0	athenak/src/pgen/fluids/kh.cpp	49	ProblemGenerator::UserProblem
+problem	prograde	Boolean	get_or_add	true	athenak/src/pgen/fluids/gr_torus.cpp	234	ProblemGenerator::UserProblem
+problem	pslope	Real	get_or_add	0.0	athenak/src/pgen/fluids/disk-magnetosphere.cpp	258	Mesh::InitUserMeshData
+problem	punc_ADM_mass	Real	get_or_add	1.	athenak/src/pgen/tests/z4c_boosted_puncture.cpp	89	ADMOnePunctureBoosted
+problem	punc_ADM_mass	Real	get_or_add	1.	athenak/src/pgen/z4c/kerr_schild.cpp	78	KerrSchild
+problem	punc_ADM_mass	Real	get_or_add	1.	athenak/src/pgen/z4c/z4c_one_puncture.cpp	87	ADMOnePuncture
+problem	punc_center_x1	Real	get_or_add	0.	athenak/src/pgen/tests/z4c_boosted_puncture.cpp	90	ADMOnePunctureBoosted
+problem	punc_center_x1	Real	get_or_add	0.	athenak/src/pgen/z4c/kerr_schild.cpp	79	KerrSchild
+problem	punc_center_x1	Real	get_or_add	0.	athenak/src/pgen/z4c/z4c_one_puncture.cpp	88	ADMOnePuncture
+problem	punc_center_x2	Real	get_or_add	0.	athenak/src/pgen/tests/z4c_boosted_puncture.cpp	91	ADMOnePunctureBoosted
+problem	punc_center_x2	Real	get_or_add	0.	athenak/src/pgen/z4c/kerr_schild.cpp	80	KerrSchild
+problem	punc_center_x2	Real	get_or_add	0.	athenak/src/pgen/z4c/z4c_one_puncture.cpp	89	ADMOnePuncture
+problem	punc_center_x3	Real	get_or_add	0.	athenak/src/pgen/tests/z4c_boosted_puncture.cpp	92	ADMOnePunctureBoosted
+problem	punc_center_x3	Real	get_or_add	0.	athenak/src/pgen/z4c/kerr_schild.cpp	81	KerrSchild
+problem	punc_center_x3	Real	get_or_add	0.	athenak/src/pgen/z4c/z4c_one_puncture.cpp	90	ADMOnePuncture
+problem	punc_spin	Real	get_or_add	0.	athenak/src/pgen/z4c/kerr_schild.cpp	82	KerrSchild
+problem	punc_velocity_x1	Real	get_or_add	0.	athenak/src/pgen/tests/z4c_boosted_puncture.cpp	93	ADMOnePunctureBoosted
+problem	punc_velocity_x2	Real	get_or_add	0.	athenak/src/pgen/tests/z4c_boosted_puncture.cpp	94	ADMOnePunctureBoosted
+problem	punc_velocity_x3	Real	get_or_add	0.	athenak/src/pgen/tests/z4c_boosted_puncture.cpp	95	ADMOnePunctureBoosted
+problem	q	Real	get_or_add	1.0	athenak/src/pgen/dyn_grmhd/dynbbh.cpp	149	ProblemGenerator::UserProblem
+problem	r0	Real	get_or_add	1.0	athenak/src/pgen/fluids/disk-magnetosphere.cpp	249	Mesh::InitUserMeshData
+problem	r_0_current	Real	get_or_add	isotropic ? tov_.R_edge_iso : tov_.R_edge	athenak/src/pgen/dyn_grmhd/dyngr_tov.cpp	271	SetupTOV
+problem	r_0_current	Real	get_or_add	5.0	athenak/src/pgen/dyn_grmhd/elliptica/elliptica.cpp	139	SetupSystem
+problem	r_0_current	Real	get_or_add	5.0	athenak/src/pgen/dyn_grmhd/lorene/lorene_bns.cpp	96	SetupBNS
+problem	r_crit	Real	get		athenak/src/pgen/tests/gr_bondi.cpp	111	ProblemGenerator::BondiAccretion
+problem	r_edge	Real	get		athenak/src/pgen/fluids/gr_torus.cpp	231	ProblemGenerator::UserProblem
+problem	r_peak	Real	get		athenak/src/pgen/fluids/gr_torus.cpp	232	ProblemGenerator::UserProblem
+problem	r_ramp	Real	get_or_add	1.0	athenak/src/pgen/tests/gr_monopole.cpp	112	ProblemGenerator::Monopole
+problem	rad	Real	get_or_add	0.0	athenak/src/pgen/fluids/field_loop.cpp	57	ProblemGenerator::UserProblem
+problem	radius	Real	get_or_add	0.15	athenak/src/pgen/fluids/slotted_cyl.cpp	75	ProblemGenerator::UserProblem
+problem	radius	Real	get_or_add	6.0 / 1024.0	athenak/src/pgen/tests/binary_gravity.cpp	69	ProblemGenerator::BinaryGravity
+problem	radius	Real	get_or_add	6.0 / 1024.0	athenak/src/pgen/tests/binary_gravity.cpp	253	BinaryGravityErrors
+problem	radius_thr	Real	get_or_add	6.0	athenak/src/pgen/dyn_grmhd/dynbbh.cpp	164	ProblemGenerator::UserProblem
+problem	ratmagfloor	Real	get_or_add	1.0e6	athenak/src/pgen/fluids/disk-magnetosphere.cpp	280	Mesh::InitUserMeshData
+problem	ratmagfslope	Real	get_or_add	5.5	athenak/src/pgen/fluids/disk-magnetosphere.cpp	281	Mesh::InitUserMeshData
+problem	rdot	Real	get		athenak/src/pgen/dyn_grmhd/sgrid/sgrid_bns.cpp	160	ProblemGenerator::UserProblem
+problem	refine_levels	Integer	get_or_add	2	athenak/src/pgen/tests/divb_amr.cpp	192	ProblemGenerator::DivBAMR
+problem	resistivity_test	Boolean	get		athenak/src/pgen/tests/diffusion.cpp	143	ProblemGenerator::Diffusion
+problem	rfix	Real	get_or_add	0.1	athenak/src/pgen/fluids/disk-magnetosphere.cpp	271	Mesh::InitUserMeshData
+problem	rho	Real	get		athenak/src/pgen/tests/rad_linear_wave.cpp	151	ProblemGenerator::RadiationLinearWave
+problem	rho	Real	get_or_add	1	athenak/src/pgen/z4c/z4c_stability.cpp	71	ProblemGenerator::UserProblem
+problem	rho0	Real	get		athenak/src/pgen/fluids/disk-magnetosphere.cpp	252	Mesh::InitUserMeshData
+problem	rho0	Real	get_or_add	1.0	athenak/src/pgen/fluids/kh.cpp	45	ProblemGenerator::UserProblem
+problem	rho0	Real	get_or_add	1.0	athenak/src/pgen/tests/divb_amr.cpp	176	ProblemGenerator::DivBAMR
+problem	rho0	Real	get_or_add	1.0	athenak/src/pgen/tests/jeans_wave.cpp	85	ProblemGenerator::SelfGravity
+problem	rho1	Real	get_or_add	1.0	athenak/src/pgen/fluids/kh.cpp	46	ProblemGenerator::UserProblem
+problem	rho_cut	Real	get_or_add	1e-5	athenak/src/pgen/dyn_grmhd/elliptica/elliptica.cpp	129	SetupSystem
+problem	rho_cut	Real	get_or_add	1e-5	athenak/src/pgen/dyn_grmhd/lorene/lorene_bns.cpp	94	SetupBNS
+problem	rho_cut	Real	get_or_add	rhoc*1e-10	athenak/src/utils/tov/tov.cpp	21	tov::TOVStar::TOVStar
+problem	rho_floor0	Real	get		athenak/src/pgen/fluids/disk-magnetosphere.cpp	266	Mesh::InitUserMeshData
+problem	rho_max	Real	get		athenak/src/pgen/fluids/gr_torus.cpp	230	ProblemGenerator::UserProblem
+problem	rho_min	Real	get		athenak/src/pgen/fluids/gr_torus.cpp	223	ProblemGenerator::UserProblem
+problem	rho_pow	Real	get		athenak/src/pgen/fluids/gr_torus.cpp	224	ProblemGenerator::UserProblem
+problem	rhoc	Real	get		athenak/src/utils/tov/tov.cpp	17	tov::TOVStar::TOVStar
+problem	rhocrit	Real	get_or_add	0.0	athenak/src/pgen/tests/be_collapse.cpp	133	ProblemGenerator::BECollapse
+problem	rhomin	Real	get_or_add	1.e-6	athenak/src/pgen/tests/gr_monopole.cpp	109	ProblemGenerator::Monopole
+problem	right_polar	Boolean	get_or_add	true	athenak/src/pgen/tests/cpaw.cpp	186	ProblemGenerator::AlfvenWave
+problem	rmagsph	Real	get_or_add	0.0	athenak/src/pgen/fluids/disk-magnetosphere.cpp	278	Mesh::InitUserMeshData
+problem	rrigid	Real	get_or_add	0.0	athenak/src/pgen/fluids/disk-magnetosphere.cpp	276	Mesh::InitUserMeshData
+problem	rsmooth	Real	get_or_add	0.0	athenak/src/pgen/fluids/disk-magnetosphere.cpp	269	Mesh::InitUserMeshData
+problem	s_height	Real	get_or_add	0.25	athenak/src/pgen/fluids/slotted_cyl.cpp	84	ProblemGenerator::UserProblem
+problem	s_width	Real	get_or_add	0.05	athenak/src/pgen/fluids/slotted_cyl.cpp	83	ProblemGenerator::UserProblem
+problem	schwarzschild	Boolean	get_or_add	false	athenak/src/pgen/tests/shock_tube.cpp	299	ProblemGenerator::ShockTube
+problem	sep	Real	get_or_add	20.0	athenak/src/pgen/dyn_grmhd/dynbbh.cpp	147	ProblemGenerator::UserProblem
+problem	shock_dir	Integer	get		athenak/src/pgen/tests/cshock.cpp	99	ProblemGenerator::CShock
+problem	shock_dir	Integer	get		athenak/src/pgen/tests/shock_tube.cpp	43	ProblemGenerator::ShockTube
+problem	sigma	Real	get		athenak/src/pgen/fluids/kh.cpp	41	ProblemGenerator::UserProblem
+problem	sigma_norm	Real	get_or_add	1.e2	athenak/src/pgen/tests/gr_monopole.cpp	107	ProblemGenerator::Monopole
+problem	sigma_pow	Real	get_or_add	-1.0	athenak/src/pgen/tests/gr_monopole.cpp	108	ProblemGenerator::Monopole
+problem	slope_rho_floor	Real	get_or_add	0.0	athenak/src/pgen/fluids/disk-magnetosphere.cpp	267	Mesh::InitUserMeshData
+problem	smooth_interface	Boolean	get_or_add	false	athenak/src/pgen/fluids/rt.cpp	70	ProblemGenerator::UserProblem
+problem	smoothin	Real	get_or_add	0.0	athenak/src/pgen/fluids/disk-magnetosphere.cpp	273	Mesh::InitUserMeshData
+problem	smoothtr	Real	get_or_add	0.0	athenak/src/pgen/fluids/disk-magnetosphere.cpp	274	Mesh::InitUserMeshData
+problem	snake_kym	Real	get		athenak/src/pgen/radiation/rad_snake.cpp	58	ProblemGenerator::UserProblem
+problem	snake_mag	Real	get		athenak/src/pgen/radiation/rad_snake.cpp	57	ProblemGenerator::UserProblem
+problem	snake_tet	Boolean	get_or_add	false	athenak/src/pgen/radiation/rad_snake.cpp	59	ProblemGenerator::UserProblem
+problem	spread	Real	get		athenak/src/pgen/radiation/rad_snake.cpp	194	ProblemGenerator::UserProblem
+problem	spread_x1	Boolean	get_or_add	true	athenak/src/pgen/tests/diffusion.cpp	144	ProblemGenerator::Diffusion
+problem	spread_x2	Boolean	get_or_add	false	athenak/src/pgen/tests/diffusion.cpp	145	ProblemGenerator::Diffusion
+problem	spread_x3	Boolean	get_or_add	false	athenak/src/pgen/tests/diffusion.cpp	146	ProblemGenerator::Diffusion
+problem	t0	Real	get_or_add	0.0	athenak/src/pgen/fluids/blast.cpp	140	ProblemGenerator::UserProblem
+problem	table	String	get		athenak/src/utils/tov/tov_tabulated.hpp	50	tov::TabulatedEOS::TabulatedEOS
+problem	tcool	Real	get_or_add	0.0	athenak/src/pgen/fluids/disk-magnetosphere.cpp	259	Mesh::InitUserMeshData
+problem	temp	Real	get		athenak/src/pgen/radiation/rad_relax.cpp	47	ProblemGenerator::UserProblem
+problem	temperature	Real	get_or_add	0.0	athenak/src/pgen/tests/be_collapse.cpp	116	ProblemGenerator::BECollapse
+problem	th_a1	Real	get_or_add	0.0	athenak/src/pgen/dyn_grmhd/dynbbh.cpp	152	ProblemGenerator::UserProblem
+problem	th_a2	Real	get_or_add	0.0	athenak/src/pgen/dyn_grmhd/dynbbh.cpp	153	ProblemGenerator::UserProblem
+problem	thi	Real	get_or_add	1.37	athenak/src/pgen/fluids/disk-magnetosphere.cpp	291	Mesh::InitUserMeshData
+problem	thmax	Real	get_or_add	1.87	athenak/src/pgen/fluids/disk-magnetosphere.cpp	293	Mesh::InitUserMeshData
+problem	thmin	Real	get_or_add	1.27	athenak/src/pgen/fluids/disk-magnetosphere.cpp	290	Mesh::InitUserMeshData
+problem	tho	Real	get_or_add	1.77	athenak/src/pgen/fluids/disk-magnetosphere.cpp	292	Mesh::InitUserMeshData
+problem	tilt_angle	Real	get_or_add	0.0	athenak/src/pgen/fluids/gr_torus.cpp	227	ProblemGenerator::UserProblem
+problem	ul	Real	get		athenak/src/pgen/tests/shock_tube.cpp	91	ProblemGenerator::ShockTube
+problem	ul	Real	get		athenak/src/pgen/tests/shock_tube.cpp	181	ProblemGenerator::ShockTube
+problem	umin	Real	get_or_add	1.e-8	athenak/src/pgen/tests/gr_monopole.cpp	110	ProblemGenerator::Monopole
+problem	ur	Real	get		athenak/src/pgen/tests/shock_tube.cpp	108	ProblemGenerator::ShockTube
+problem	ur	Real	get		athenak/src/pgen/tests/shock_tube.cpp	201	ProblemGenerator::ShockTube
+problem	use_pcut_rel	Boolean	get_or_add	false	athenak/src/pgen/dyn_grmhd/dyngr_tov.cpp	249	SetupTOV
+problem	user_hist	Boolean	get_or_add	false	athenak/src/pgen/pgen.cpp	50	ProblemGenerator::ProblemGenerator
+problem	user_hist	Boolean	get_or_add	false	athenak/src/pgen/pgen.cpp	118	ProblemGenerator::ProblemGenerator
+problem	user_srcs	Boolean	get_or_add	false	athenak/src/pgen/pgen.cpp	49	ProblemGenerator::ProblemGenerator
+problem	user_srcs	Boolean	get_or_add	false	athenak/src/pgen/pgen.cpp	117	ProblemGenerator::ProblemGenerator
+problem	ux	Real	get_or_add	0.0	athenak/src/pgen/tests/rad_linear_wave.cpp	153	ProblemGenerator::RadiationLinearWave
+problem	uy	Real	get_or_add	0.0	athenak/src/pgen/tests/rad_linear_wave.cpp	154	ProblemGenerator::RadiationLinearWave
+problem	uz	Real	get_or_add	0.0	athenak/src/pgen/tests/rad_linear_wave.cpp	155	ProblemGenerator::RadiationLinearWave
+problem	v0	Real	get_or_add	0.0	athenak/src/pgen/tests/jeans_wave.cpp	110	ProblemGenerator::SelfGravity
+problem	v1	Real	get		athenak/src/pgen/radiation/rad_diffusion.cpp	55	ProblemGenerator::UserProblem
+problem	v1	Real	get_or_add	0.0	athenak/src/pgen/radiation/rad_relax.cpp	48	ProblemGenerator::UserProblem
+problem	v_max0	Real	get_or_add	1.0	athenak/src/pgen/fluids/blast.cpp	139	ProblemGenerator::UserProblem
+problem	v_par	Real	get		athenak/src/pgen/tests/cpaw.cpp	110	ProblemGenerator::AlfvenWave
+problem	v_pert	Real	get_or_add	0.0	athenak/src/pgen/dyn_grmhd/dyngr_tov.cpp	99	SetupTOV
+problem	vel_comp	Integer	get_or_add	2	athenak/src/pgen/tests/diffusion.cpp	147	ProblemGenerator::Diffusion
+problem	velocity	Real	get_or_add	1.0	athenak/src/pgen/tests/advection.cpp	38	ProblemGenerator::Advection
+problem	verbose	Boolean	get_or_add	false	athenak/src/pgen/dyn_grmhd/sgrid/sgrid_bns.cpp	153	ProblemGenerator::UserProblem
+problem	verbose	Boolean	get_or_add	0	athenak/src/pgen/dyn_grmhd/sgrid/sgrid_bns.cpp	486	(anonymous)::DNS_init_sgrid
+problem	verbose	Boolean	get_or_add	0	athenak/src/pgen/dyn_grmhd/sgrid/sgrid_bns.cpp	611	(anonymous)::DNS_parameters
+problem	vertical_field	Boolean	get_or_add	false	athenak/src/pgen/fluids/gr_torus.cpp	484	ProblemGenerator::UserProblem
+problem	viscosity_test	Boolean	get		athenak/src/pgen/tests/diffusion.cpp	142	ProblemGenerator::Diffusion
+problem	vix0	Real	get		athenak/src/pgen/tests/cshock.cpp	111	ProblemGenerator::CShock
+problem	viy0	Real	get		athenak/src/pgen/tests/cshock.cpp	113	ProblemGenerator::CShock
+problem	vl	Real	get		athenak/src/pgen/tests/shock_tube.cpp	92	ProblemGenerator::ShockTube
+problem	vl	Real	get		athenak/src/pgen/tests/shock_tube.cpp	182	ProblemGenerator::ShockTube
+problem	vnx0	Real	get		athenak/src/pgen/tests/cshock.cpp	112	ProblemGenerator::CShock
+problem	vny0	Real	get		athenak/src/pgen/tests/cshock.cpp	114	ProblemGenerator::CShock
+problem	vr	Real	get		athenak/src/pgen/tests/shock_tube.cpp	109	ProblemGenerator::ShockTube
+problem	vr	Real	get		athenak/src/pgen/tests/shock_tube.cpp	202	ProblemGenerator::ShockTube
+problem	vshear	Real	get		athenak/src/pgen/fluids/kh.cpp	43	ProblemGenerator::UserProblem
+problem	vx	Real	get_or_add	1./1.2	athenak/src/pgen/fluids/field_loop.cpp	328	ProblemGenerator::UserProblem
+problem	vx0	Real	get_or_add	0.0	athenak/src/pgen/fluids/field_loop.cpp	60	ProblemGenerator::UserProblem
+problem	vx0	Real	get_or_add	0.08	athenak/src/pgen/tests/divb_amr.cpp	178	ProblemGenerator::DivBAMR
+problem	vx0	Real	get_or_add	0.0	athenak/src/pgen/tests/linear_wave.cpp	329	ProblemGenerator::LinearWave
+problem	vy	Real	get_or_add	1./2.4	athenak/src/pgen/fluids/field_loop.cpp	329	ProblemGenerator::UserProblem
+problem	vy0	Real	get_or_add	0.05	athenak/src/pgen/tests/divb_amr.cpp	179	ProblemGenerator::DivBAMR
+problem	vy0	Real	get_or_add	0.0	athenak/src/pgen/tests/linear_wave.cpp	330	ProblemGenerator::LinearWave
+problem	vz	Real	get_or_add	0.0	athenak/src/pgen/fluids/field_loop.cpp	330	ProblemGenerator::UserProblem
+problem	vz0	Real	get_or_add	0.03	athenak/src/pgen/tests/divb_amr.cpp	180	ProblemGenerator::DivBAMR
+problem	vz0	Real	get_or_add	0.0	athenak/src/pgen/tests/linear_wave.cpp	331	ProblemGenerator::LinearWave
+problem	wave_flag	Integer	get		athenak/src/pgen/tests/linear_wave.cpp	325	ProblemGenerator::LinearWave
+problem	width	Real	get		athenak/src/pgen/radiation/rad_snake.cpp	193	ProblemGenerator::UserProblem
+problem	wl	Real	get		athenak/src/pgen/tests/shock_tube.cpp	93	ProblemGenerator::ShockTube
+problem	wl	Real	get		athenak/src/pgen/tests/shock_tube.cpp	183	ProblemGenerator::ShockTube
+problem	wr	Real	get		athenak/src/pgen/tests/shock_tube.cpp	110	ProblemGenerator::ShockTube
+problem	wr	Real	get		athenak/src/pgen/tests/shock_tube.cpp	203	ProblemGenerator::ShockTube
+problem	x01	Real	get_or_add	3.0	athenak/src/pgen/fluids/current_sheet.cpp	44	ProblemGenerator::UserProblem
+problem	x1	Real	get_or_add	6.0 / 1024.0	athenak/src/pgen/tests/binary_gravity.cpp	63	ProblemGenerator::BinaryGravity
+problem	x1	Real	get_or_add	6.0 / 1024.0	athenak/src/pgen/tests/binary_gravity.cpp	247	BinaryGravityErrors
+problem	x10	Real	get_or_add	0.0	athenak/src/pgen/tests/diffusion.cpp	138	ProblemGenerator::Diffusion
+problem	x2	Real	get_or_add	-12.0 / 1024.0	athenak/src/pgen/tests/binary_gravity.cpp	66	ProblemGenerator::BinaryGravity
+problem	x2	Real	get_or_add	-12.0 / 1024.0	athenak/src/pgen/tests/binary_gravity.cpp	250	BinaryGravityErrors
+problem	x20	Real	get_or_add	0.0	athenak/src/pgen/tests/diffusion.cpp	139	ProblemGenerator::Diffusion
+problem	x30	Real	get_or_add	0.0	athenak/src/pgen/tests/diffusion.cpp	140	ProblemGenerator::Diffusion
+problem	x_CM	Real	get		athenak/src/pgen/dyn_grmhd/sgrid/sgrid_bns.cpp	154	ProblemGenerator::UserProblem
+problem	x_center	Real	get_or_add	0.0	athenak/src/pgen/tests/be_collapse.cpp	158	ProblemGenerator::BECollapse
+problem	xmax1	Real	get		athenak/src/pgen/dyn_grmhd/sgrid/sgrid_bns.cpp	157	ProblemGenerator::UserProblem
+problem	xmax2	Real	get		athenak/src/pgen/dyn_grmhd/sgrid/sgrid_bns.cpp	158	ProblemGenerator::UserProblem
+problem	xshock	Real	get		athenak/src/pgen/tests/shock_tube.cpp	57	ProblemGenerator::ShockTube
+problem	y0	Real	get_or_add	0.0	athenak/src/pgen/fluids/kh.cpp	47	ProblemGenerator::UserProblem
+problem	y1	Real	get_or_add	1.0	athenak/src/pgen/fluids/kh.cpp	48	ProblemGenerator::UserProblem
+problem	y1	Real	get_or_add	0.0	athenak/src/pgen/tests/binary_gravity.cpp	64	ProblemGenerator::BinaryGravity
+problem	y1	Real	get_or_add	0.0	athenak/src/pgen/tests/binary_gravity.cpp	248	BinaryGravityErrors
+problem	y2	Real	get_or_add	0.0	athenak/src/pgen/tests/binary_gravity.cpp	67	ProblemGenerator::BinaryGravity
+problem	y2	Real	get_or_add	0.0	athenak/src/pgen/tests/binary_gravity.cpp	251	BinaryGravityErrors
+problem	y_center	Real	get_or_add	0.0	athenak/src/pgen/tests/be_collapse.cpp	159	ProblemGenerator::BECollapse
+problem	yl	Real	get_or_add	1.0	athenak/src/pgen/tests/shock_tube.cpp	104	ProblemGenerator::ShockTube
+problem	yl	Real	get_or_add	1.0	athenak/src/pgen/tests/shock_tube.cpp	197	ProblemGenerator::ShockTube
+problem	yr	Real	get_or_add	0.0	athenak/src/pgen/tests/shock_tube.cpp	121	ProblemGenerator::ShockTube
+problem	yr	Real	get_or_add	0.0	athenak/src/pgen/tests/shock_tube.cpp	217	ProblemGenerator::ShockTube
+problem	z1	Real	get_or_add	0.0	athenak/src/pgen/tests/binary_gravity.cpp	65	ProblemGenerator::BinaryGravity
+problem	z1	Real	get_or_add	0.0	athenak/src/pgen/tests/binary_gravity.cpp	249	BinaryGravityErrors
+problem	z2	Real	get_or_add	0.0	athenak/src/pgen/tests/binary_gravity.cpp	68	ProblemGenerator::BinaryGravity
+problem	z2	Real	get_or_add	0.0	athenak/src/pgen/tests/binary_gravity.cpp	252	BinaryGravityErrors
+problem	z_center	Real	get_or_add	0.0	athenak/src/pgen/tests/be_collapse.cpp	160	ProblemGenerator::BECollapse
+problem	zlimit	Real	get_or_add	x3size	athenak/src/pgen/tests/mri3d.cpp	118	ProblemGenerator::MRI3d
+{pzoom->block_name}	d_zoom	Real	get_or_add	(FLT_MIN)	athenak/src/cyclic_zoom/zoom_data.cpp	58	ZoomData::ZoomData
+{pzoom->block_name}	p_zoom	Real	get_or_add	(FLT_MIN)	athenak/src/cyclic_zoom/zoom_data.cpp	59	ZoomData::ZoomData
+radiation	affect_fluid	Boolean	get_or_add	true	athenak/src/radiation/radiation.cpp	94	radiation::Radiation::Radiation
+radiation	angular_fluxes	Boolean	get_or_add	true	athenak/src/radiation/radiation.cpp	108	radiation::Radiation::Radiation
+radiation	arad	Real	get		athenak/src/radiation/radiation.cpp	92	radiation::Radiation::Radiation
+radiation	compton	Boolean	get_or_add	false	athenak/src/radiation/radiation.cpp	81	radiation::Radiation::Radiation
+radiation	fixed_fluid	Boolean	get_or_add	false	athenak/src/radiation/radiation.cpp	98	radiation::Radiation::Radiation
+radiation	kappa_a	Real	get		athenak/src/radiation/radiation.cpp	78	radiation::Radiation::Radiation
+radiation	kappa_p	Real	get		athenak/src/radiation/radiation.cpp	79	radiation::Radiation::Radiation
+radiation	kappa_s	Real	get		athenak/src/radiation/radiation.cpp	75	radiation::Radiation::Radiation
+radiation	n_0_floor	Real	get_or_add	0.1	athenak/src/radiation/radiation.cpp	109	radiation::Radiation::Radiation
+radiation	nlevel	Integer	get		athenak/src/pgen/radiation/rad_shadow.cpp	61	ProblemGenerator::UserProblem
+radiation	nlevel	Integer	get		athenak/src/radiation/radiation.cpp	106	radiation::Radiation::Radiation
+radiation	power_opacity	Boolean	get_or_add	false	athenak/src/radiation/radiation.cpp	76	radiation::Radiation::Radiation
+radiation	rad_source	Boolean	get_or_add	true	athenak/src/radiation/radiation.cpp	67	radiation::Radiation::Radiation
+radiation	reconstruct	String	get_or_add	"plm"	athenak/src/radiation/radiation.cpp	161	radiation::Radiation::Radiation
+radiation	rotate_geo	Boolean	get		athenak/src/pgen/radiation/rad_shadow.cpp	62	ProblemGenerator::UserProblem
+radiation	rotate_geo	Boolean	get_or_add	true	athenak/src/radiation/radiation.cpp	107	radiation::Radiation::Radiation
+{set_name}	Newton_maxit	Integer	get_or_add	5	athenak/src/pgen/z4c/two_punctures/z4c_two_puncture.cpp	139	ProblemGenerator::UserProblem
+{set_name}	Newton_tol	Real	get_or_add	1.e-10	athenak/src/pgen/z4c/two_punctures/z4c_two_puncture.cpp	135	ProblemGenerator::UserProblem
+{set_name}	TP_Extend_Radius	Real	get_or_add	0.	athenak/src/pgen/z4c/two_punctures/z4c_two_puncture.cpp	150	ProblemGenerator::UserProblem
+{set_name}	TP_Tiny	Real	get_or_add	0.	athenak/src/pgen/z4c/two_punctures/z4c_two_puncture.cpp	147	ProblemGenerator::UserProblem
+{set_name}	TP_epsilon	Real	get_or_add	0.	athenak/src/pgen/z4c/two_punctures/z4c_two_puncture.cpp	143	ProblemGenerator::UserProblem
+{set_name}	adm_tol	Real	get_or_add	1.e-10	athenak/src/pgen/z4c/two_punctures/z4c_two_puncture.cpp	154	ProblemGenerator::UserProblem
+{set_name}	center_offset1	Real	get_or_add	0.	athenak/src/pgen/z4c/two_punctures/z4c_two_puncture.cpp	107	ProblemGenerator::UserProblem
+{set_name}	center_offset2	Real	get_or_add	0.	athenak/src/pgen/z4c/two_punctures/z4c_two_puncture.cpp	111	ProblemGenerator::UserProblem
+{set_name}	center_offset3	Real	get_or_add	0.	athenak/src/pgen/z4c/two_punctures/z4c_two_puncture.cpp	114	ProblemGenerator::UserProblem
+{set_name}	do_residuum_debug_output	Boolean	get_or_add	0	athenak/src/pgen/z4c/two_punctures/z4c_two_puncture.cpp	158	ProblemGenerator::UserProblem
+{set_name}	give_bare_mass	Boolean	get_or_add	1	athenak/src/pgen/z4c/two_punctures/z4c_two_puncture.cpp	118	ProblemGenerator::UserProblem
+{set_name}	grid_setup_method	Integer	get_or_add	0	athenak/src/pgen/z4c/two_punctures/z4c_two_puncture.cpp	122	ProblemGenerator::UserProblem
+{set_name}	initial_lapse_psi_exponent	Real	get_or_add	-2.0	athenak/src/pgen/z4c/two_punctures/z4c_two_puncture.cpp	166	ProblemGenerator::UserProblem
+{set_name}	npoints_A	Integer	get_or_add	30	athenak/src/pgen/z4c/two_punctures/z4c_two_puncture.cpp	125	ProblemGenerator::UserProblem
+{set_name}	npoints_B	Integer	get_or_add	30	athenak/src/pgen/z4c/two_punctures/z4c_two_puncture.cpp	128	ProblemGenerator::UserProblem
+{set_name}	npoints_phi	Integer	get_or_add	16	athenak/src/pgen/z4c/two_punctures/z4c_two_puncture.cpp	131	ProblemGenerator::UserProblem
+{set_name}	par_P_minus1	Real	get_or_add	0.	athenak/src/pgen/z4c/two_punctures/z4c_two_puncture.cpp	78	ProblemGenerator::UserProblem
+{set_name}	par_P_minus2	Real	get_or_add	0.5	athenak/src/pgen/z4c/two_punctures/z4c_two_puncture.cpp	81	ProblemGenerator::UserProblem
+{set_name}	par_P_minus3	Real	get_or_add	0.	athenak/src/pgen/z4c/two_punctures/z4c_two_puncture.cpp	84	ProblemGenerator::UserProblem
+{set_name}	par_P_plus1	Real	get_or_add	0.	athenak/src/pgen/z4c/two_punctures/z4c_two_puncture.cpp	68	ProblemGenerator::UserProblem
+{set_name}	par_P_plus2	Real	get_or_add	0.5	athenak/src/pgen/z4c/two_punctures/z4c_two_puncture.cpp	71	ProblemGenerator::UserProblem
+{set_name}	par_P_plus3	Real	get_or_add	0.	athenak/src/pgen/z4c/two_punctures/z4c_two_puncture.cpp	74	ProblemGenerator::UserProblem
+{set_name}	par_S_minus1	Real	get_or_add	0.	athenak/src/pgen/z4c/two_punctures/z4c_two_puncture.cpp	98	ProblemGenerator::UserProblem
+{set_name}	par_S_minus2	Real	get_or_add	0.	athenak/src/pgen/z4c/two_punctures/z4c_two_puncture.cpp	101	ProblemGenerator::UserProblem
+{set_name}	par_S_minus3	Real	get_or_add	0.	athenak/src/pgen/z4c/two_punctures/z4c_two_puncture.cpp	104	ProblemGenerator::UserProblem
+{set_name}	par_S_plus1	Real	get_or_add	0.	athenak/src/pgen/z4c/two_punctures/z4c_two_puncture.cpp	88	ProblemGenerator::UserProblem
+{set_name}	par_S_plus2	Real	get_or_add	0.	athenak/src/pgen/z4c/two_punctures/z4c_two_puncture.cpp	91	ProblemGenerator::UserProblem
+{set_name}	par_S_plus3	Real	get_or_add	0.	athenak/src/pgen/z4c/two_punctures/z4c_two_puncture.cpp	94	ProblemGenerator::UserProblem
+{set_name}	par_b	Real	get_or_add	1.	athenak/src/pgen/z4c/two_punctures/z4c_two_puncture.cpp	50	ProblemGenerator::UserProblem
+{set_name}	par_m_minus	Real	get_or_add	1.	athenak/src/pgen/z4c/two_punctures/z4c_two_puncture.cpp	56	ProblemGenerator::UserProblem
+{set_name}	par_m_plus	Real	get_or_add	1.	athenak/src/pgen/z4c/two_punctures/z4c_two_puncture.cpp	53	ProblemGenerator::UserProblem
+{set_name}	solve_momentum_constraint	Boolean	get_or_add	0	athenak/src/pgen/z4c/two_punctures/z4c_two_puncture.cpp	162	ProblemGenerator::UserProblem
+{set_name}	swap_xz	Boolean	get_or_add	0	athenak/src/pgen/z4c/two_punctures/z4c_two_puncture.cpp	170	ProblemGenerator::UserProblem
+{set_name}	target_M_minus	Real	get_or_add	1.	athenak/src/pgen/z4c/two_punctures/z4c_two_puncture.cpp	64	ProblemGenerator::UserProblem
+{set_name}	target_M_plus	Real	get_or_add	1.	athenak/src/pgen/z4c/two_punctures/z4c_two_puncture.cpp	60	ProblemGenerator::UserProblem
+{set_name}	verbose	Boolean	get_or_add	0	athenak/src/pgen/z4c/two_punctures/z4c_two_puncture.cpp	47	ProblemGenerator::UserProblem
+shearing_box	omega0	Real	get		athenak/src/shearing_box/orbital_advection.cpp	36	OrbitalAdvection::OrbitalAdvection
+shearing_box	omega0	Real	get		athenak/src/shearing_box/shearing_box.cpp	31	ShearingBox::ShearingBox
+shearing_box	qshear	Real	get		athenak/src/shearing_box/orbital_advection.cpp	35	OrbitalAdvection::OrbitalAdvection
+shearing_box	qshear	Real	get		athenak/src/shearing_box/shearing_box.cpp	30	ShearingBox::ShearingBox
+shearing_box	stratified	Boolean	get_or_add	false	athenak/src/shearing_box/shearing_box.cpp	32	ShearingBox::ShearingBox
+{soe}	eos	String	get		athenak/src/pgen/tests/jeans_wave.cpp	87	ProblemGenerator::SelfGravity
+{soe}	gamma	Real	get_or_add	5.0/3.0	athenak/src/pgen/tests/jeans_wave.cpp	94	ProblemGenerator::SelfGravity
+{soe}	iso_sound_speed	Real	get		athenak/src/pgen/tests/jeans_wave.cpp	92	ProblemGenerator::SelfGravity
+time	cfl_number	Real	get		athenak/src/mesh/build_tree.cpp	302	Mesh::BuildTreeFromScratch
+time	cfl_number	Real	get		athenak/src/mesh/build_tree.cpp	496	Mesh::BuildTreeFromRestart
+time	evolution	String	get		athenak/src/driver/driver.cpp	85	Driver::Driver
+time	evolution	String	get		athenak/src/hydro/hydro.cpp	134	hydro::Hydro::Hydro
+time	evolution	String	get		athenak/src/mhd/mhd.cpp	187	mhd::MHD::MHD
+time	evolution	String	get		athenak/src/pgen/tests/diffusion.cpp	124	ProblemGenerator::Diffusion
+time	evolution	String	get		athenak/src/radiation/radiation.cpp	135	radiation::Radiation::Radiation
+time	evolution	String	get		athenak/src/z4c/z4c.cpp	75	z4c::Z4c::Z4c
+time	integrator	String	get_or_add	"rk2"	athenak/src/driver/driver.cpp	101	Driver::Driver
+time	ndiag	Integer	get_or_add	1	athenak/src/driver/driver.cpp	104	Driver::Driver
+time	nlim	Integer	get_or_add	-1	athenak/src/driver/driver.cpp	103	Driver::Driver
+time	start_time	Real	get_or_add	0.0	athenak/src/mesh/build_tree.cpp	300	Mesh::BuildTreeFromScratch
+time	sts_integrator	String	get_or_add	"none"	athenak/src/mesh/mesh.cpp	61	Mesh::Mesh
+time	sts_max_dt_ratio	Real	get_or_add	-1.0	athenak/src/mesh/mesh.cpp	70	Mesh::Mesh
+time	tlim	Real	get		athenak/src/driver/driver.cpp	102	Driver::Driver
+time	tlim	Real	get		athenak/src/pgen/tests/cpaw.cpp	211	ProblemGenerator::AlfvenWave
+time	tlim	Real	get		athenak/src/pgen/tests/linear_wave.cpp	388	ProblemGenerator::LinearWave
+time	tlim	Real	get		athenak/src/pgen/tests/linear_wave.cpp	525	ProblemGenerator::LinearWave
+time	tlim	Real	get		athenak/src/pgen/tests/rad_linear_wave.cpp	182	ProblemGenerator::RadiationLinearWave
+time	tlim	Real	get		athenak/src/pgen/tests/z4c_linear_wave.cpp	101	ProblemGenerator::Z4cLinearWave
+time	tlim	Real	get_or_add	0.0	athenak/src/z4c/driftcontrol/driftcontrol.cpp	150	DriftControl::DriftControl
+turb_driving	dedt	Real	get_or_add	0.0	athenak/src/srcterms/turb_driver.cpp	64	TurbulenceDriver::TurbulenceDriver
+turb_driving	driving_type	Integer	get_or_add	0	athenak/src/srcterms/turb_driver.cpp	58	TurbulenceDriver::TurbulenceDriver
+turb_driving	exp_prl	Real	get_or_add	0.0	athenak/src/srcterms/turb_driver.cpp	62	TurbulenceDriver::TurbulenceDriver
+turb_driving	exp_prp	Real	get_or_add	5.0/3.0	athenak/src/srcterms/turb_driver.cpp	61	TurbulenceDriver::TurbulenceDriver
+turb_driving	expo	Real	get_or_add	5.0/3.0	athenak/src/srcterms/turb_driver.cpp	60	TurbulenceDriver::TurbulenceDriver
+turb_driving	nhigh	Integer	get_or_add	2	athenak/src/srcterms/turb_driver.cpp	56	TurbulenceDriver::TurbulenceDriver
+turb_driving	nlow	Integer	get_or_add	1	athenak/src/srcterms/turb_driver.cpp	55	TurbulenceDriver::TurbulenceDriver
+turb_driving	tcorr	Real	get_or_add	0.0	athenak/src/srcterms/turb_driver.cpp	66	TurbulenceDriver::TurbulenceDriver
+units	bhmass_msun	Real	get		athenak/src/units/units.cpp	27	units::Units::Units
+units	density_cgs	Real	get		athenak/src/units/units.cpp	26	units::Units::Units
+units	length_cgs	Real	get_or_add	1.0	athenak/src/units/units.cpp	17	units::Units::Units
+units	mass_cgs	Real	get_or_add	1.0	athenak/src/units/units.cpp	18	units::Units::Units
+units	mu	Real	get_or_add	1.0	athenak/src/units/units.cpp	20	units::Units::Units
+units	time_cgs	Real	get_or_add	1.0	athenak/src/units/units.cpp	19	units::Units::Units
+z4c	{"co_" + nstr + "_dump_radius"}	Real	get_or_add	2.0	athenak/src/z4c/horizon_dump.cpp	44	HorizonDump::HorizonDump
+z4c	{"co_" + nstr + "_mass"}	Real	get_or_add	0.0	athenak/src/z4c/compact_object_tracker.cpp	70	CompactObjectTracker::CompactObjectTracker
+z4c	{"co_" + nstr + "_out_every"}	Integer	get_or_add	1	athenak/src/z4c/compact_object_tracker.cpp	75	CompactObjectTracker::CompactObjectTracker
+z4c	{"co_" + nstr + "_radius"}	Real	get_or_add	0.0	athenak/src/z4c/compact_object_tracker.cpp	73	CompactObjectTracker::CompactObjectTracker
+z4c	{"co_" + nstr + "_reflevel"}	Integer	get_or_add	-1	athenak/src/z4c/compact_object_tracker.cpp	72	CompactObjectTracker::CompactObjectTracker
+z4c	{"co_" + nstr + "_type"}	String	get		athenak/src/z4c/compact_object_tracker.cpp	42	CompactObjectTracker::CompactObjectTracker
+z4c	{"co_" + nstr + "_x"}	Real	get_or_add	0.0	athenak/src/z4c/compact_object_tracker.cpp	66	CompactObjectTracker::CompactObjectTracker
+z4c	{"co_" + nstr + "_x"}	Real	get_or_add	0.0	athenak/src/z4c/horizon_dump.cpp	40	HorizonDump::HorizonDump
+z4c	{"co_" + nstr + "_y"}	Real	get_or_add	0.0	athenak/src/z4c/compact_object_tracker.cpp	67	CompactObjectTracker::CompactObjectTracker
+z4c	{"co_" + nstr + "_y"}	Real	get_or_add	0.0	athenak/src/z4c/horizon_dump.cpp	41	HorizonDump::HorizonDump
+z4c	{"co_" + nstr + "_z"}	Real	get_or_add	0.0	athenak/src/z4c/compact_object_tracker.cpp	68	CompactObjectTracker::CompactObjectTracker
+z4c	{"co_" + nstr + "_z"}	Real	get_or_add	0.0	athenak/src/z4c/horizon_dump.cpp	42	HorizonDump::HorizonDump
+z4c	{"co_" + std::to_string(n) + "_type"}		exists		athenak/src/z4c/z4c.cpp	244	z4c::Z4c::Z4c
+z4c	{"dump_horizon_" + std::to_string(n)}	Boolean	get_or_add	false	athenak/src/z4c/z4c.cpp	274	z4c::Z4c::Z4c
+z4c	{"extraction_radius_"+std::to_string(i)}	Real	get_or_add	10	athenak/src/z4c/z4c.cpp	223	z4c::Z4c::Z4c
+z4c	{"horizon" + nstr + "r_guess"}	Real	get_or_add	0.5	athenak/src/z4c/horizon_dump.cpp	48	HorizonDump::HorizonDump
+z4c	{"horizon_" + nstr+"_Nx"}	Integer	get_or_add	10	athenak/src/z4c/horizon_dump.cpp	45	HorizonDump::HorizonDump
+z4c	{bdob_u_key[a]}	Real	get_or_add	0.0	athenak/src/z4c/driftcontrol/driftcontrol.cpp	167	DriftControl::DriftControl
+z4c	{budget_key[a]}	Real	get_or_add	0.0	athenak/src/z4c/driftcontrol/driftcontrol.cpp	168	DriftControl::DriftControl
+z4c	chi_div_floor	Real	get_or_add	-1000.0	athenak/src/z4c/z4c.cpp	126	z4c::Z4c::Z4c
+z4c	chi_min_floor	Real	get_or_add	1e-12	athenak/src/z4c/z4c.cpp	127	z4c::Z4c::Z4c
+z4c	chi_psi_power	Real	get_or_add	-4.0	athenak/src/z4c/z4c.cpp	125	z4c::Z4c::Z4c
+z4c	damp_ch	Real	get_or_add	0.0	athenak/src/z4c/z4c.cpp	134	z4c::Z4c::Z4c
+z4c	damp_ch_chipow	Real	get_or_add	-0.25	athenak/src/z4c/z4c.cpp	137	z4c::Z4c::Z4c
+z4c	damp_ch_dx	Real	get_or_add	0.0	athenak/src/z4c/z4c.cpp	135	z4c::Z4c::Z4c
+z4c	damp_kappa1	Real	get_or_add	0.0	athenak/src/z4c/z4c.cpp	131	z4c::Z4c::Z4c
+z4c	damp_kappa1_over_alpha	Boolean	get_or_add	false	athenak/src/z4c/z4c.cpp	133	z4c::Z4c::Z4c
+z4c	damp_kappa2	Real	get_or_add	0.0	athenak/src/z4c/z4c.cpp	132	z4c::Z4c::Z4c
+z4c	damp_kappa_gam	Real	get_or_add	0.0	athenak/src/z4c/z4c.cpp	136	z4c::Z4c::Z4c
+z4c	dc_Kd	Real	get_or_add	2.0	athenak/src/z4c/driftcontrol/driftcontrol.cpp	218	DriftControl::DriftControl
+z4c	dc_Kd	Real	get_or_add	2.0	athenak/src/z4c/z4c.cpp	183	z4c::Z4c::Z4c
+z4c	dc_Ki	Real	get_or_add	0.1	athenak/src/z4c/driftcontrol/driftcontrol.cpp	217	DriftControl::DriftControl
+z4c	dc_Ki	Real	get_or_add	0.1	athenak/src/z4c/z4c.cpp	182	z4c::Z4c::Z4c
+z4c	dc_Kp	Real	get_or_add	1.0	athenak/src/z4c/driftcontrol/driftcontrol.cpp	216	DriftControl::DriftControl
+z4c	dc_Kp	Real	get_or_add	1.0	athenak/src/z4c/z4c.cpp	181	z4c::Z4c::Z4c
+z4c	dc_budget_c	Real	get_or_add	0.025	athenak/src/z4c/driftcontrol/driftcontrol.cpp	148	DriftControl::DriftControl
+z4c	dc_budget_tend	Real	get_or_add	pin->GetOrAddReal("time", "tlim", 0.0)	athenak/src/z4c/driftcontrol/driftcontrol.cpp	149	DriftControl::DriftControl
+z4c	dc_budget_x	Real	get_or_add	-1.0	athenak/src/z4c/driftcontrol/driftcontrol.cpp	145	DriftControl::DriftControl
+z4c	dc_budget_y	Real	get_or_add	-1.0	athenak/src/z4c/driftcontrol/driftcontrol.cpp	146	DriftControl::DriftControl
+z4c	dc_budget_z	Real	get_or_add	-1.0	athenak/src/z4c/driftcontrol/driftcontrol.cpp	147	DriftControl::DriftControl
+z4c	dc_damping_coeff	Real	get_or_add	1.0	athenak/src/z4c/driftcontrol/driftcontrol.cpp	233	DriftControl::DriftControl
+z4c	dc_damping_coeff	Real	get_or_add	1.0	athenak/src/z4c/z4c.cpp	178	z4c::Z4c::Z4c
+z4c	dc_damping_scale	Real	get_or_add	10.0	athenak/src/z4c/driftcontrol/driftcontrol.cpp	235	DriftControl::DriftControl
+z4c	dc_damping_scale	Real	get_or_add	10.0	athenak/src/z4c/z4c.cpp	177	z4c::Z4c::Z4c
+z4c	dc_damping_time	Real	get_or_add	0.5	athenak/src/z4c/driftcontrol/driftcontrol.cpp	232	DriftControl::DriftControl
+z4c	dc_damping_time	Real	get_or_add	0.5	athenak/src/z4c/z4c.cpp	176	z4c::Z4c::Z4c
+z4c	dc_filename	String	get_or_add	"drift_control"	athenak/src/z4c/driftcontrol/driftcontrol.cpp	173	DriftControl::DriftControl
+z4c	dc_fixed_x	Real	get_or_add	0.0	athenak/src/z4c/driftcontrol/driftcontrol.cpp	124	DriftControl::DriftControl
+z4c	dc_fixed_x	Real	get_or_add	0.0	athenak/src/z4c/z4c.cpp	173	z4c::Z4c::Z4c
+z4c	dc_fixed_y	Real	get_or_add	0.0	athenak/src/z4c/driftcontrol/driftcontrol.cpp	125	DriftControl::DriftControl
+z4c	dc_fixed_y	Real	get_or_add	0.0	athenak/src/z4c/z4c.cpp	174	z4c::Z4c::Z4c
+z4c	dc_fixed_z	Real	get_or_add	0.0	athenak/src/z4c/driftcontrol/driftcontrol.cpp	126	DriftControl::DriftControl
+z4c	dc_fixed_z	Real	get_or_add	0.0	athenak/src/z4c/z4c.cpp	175	z4c::Z4c::Z4c
+z4c	dc_gain_x	Real	get_or_add	1.0	athenak/src/z4c/driftcontrol/driftcontrol.cpp	176	DriftControl::DriftControl
+z4c	dc_gain_x	Real	get_or_add	1.0	athenak/src/z4c/z4c.cpp	190	z4c::Z4c::Z4c
+z4c	dc_gain_y	Real	get_or_add	1.0	athenak/src/z4c/driftcontrol/driftcontrol.cpp	177	DriftControl::DriftControl
+z4c	dc_gain_y	Real	get_or_add	1.0	athenak/src/z4c/z4c.cpp	191	z4c::Z4c::Z4c
+z4c	dc_gain_z	Real	get_or_add	1.0	athenak/src/z4c/driftcontrol/driftcontrol.cpp	178	DriftControl::DriftControl
+z4c	dc_gain_z	Real	get_or_add	1.0	athenak/src/z4c/z4c.cpp	192	z4c::Z4c::Z4c
+z4c	dc_gamma_suppress	Real	get_or_add	0.0	athenak/src/z4c/z4c.cpp	189	z4c::Z4c::Z4c
+z4c	dc_gaussian_center	String	get_or_add	"fixed"	athenak/src/z4c/z4c.cpp	194	z4c::Z4c::Z4c
+z4c	dc_integral_cap	Real	get_or_add	5.0	athenak/src/z4c/driftcontrol/driftcontrol.cpp	114	DriftControl::DriftControl
+z4c	dc_kappa	Real	get_or_add	1.0	athenak/src/z4c/z4c.cpp	188	z4c::Z4c::Z4c
+z4c	dc_omega_c	Real	get_or_add	0.2	athenak/src/z4c/driftcontrol/driftcontrol.cpp	129	DriftControl::DriftControl
+z4c	dc_omega_c	Real	get_or_add	0.2	athenak/src/z4c/z4c.cpp	184	z4c::Z4c::Z4c
+z4c	dc_omega_o	Real	get_or_add	1.0	athenak/src/z4c/driftcontrol/driftcontrol.cpp	130	DriftControl::DriftControl
+z4c	dc_omega_o	Real	get_or_add	1.0	athenak/src/z4c/z4c.cpp	185	z4c::Z4c::Z4c
+z4c	dc_out_every	Integer	get_or_add	1	athenak/src/z4c/driftcontrol/driftcontrol.cpp	115	DriftControl::DriftControl
+z4c	dc_ramp_start	Real	get_or_add	-1.0	athenak/src/z4c/driftcontrol/driftcontrol.cpp	119	DriftControl::DriftControl
+z4c	dc_ramp_time	Real	get_or_add	0.0	athenak/src/z4c/driftcontrol/driftcontrol.cpp	120	DriftControl::DriftControl
+z4c	dc_relaxation_time	Real	get_or_add	1.0	athenak/src/z4c/z4c.cpp	187	z4c::Z4c::Z4c
+z4c	dc_sat_order	Integer	get_or_add	4	athenak/src/z4c/driftcontrol/driftcontrol.cpp	139	DriftControl::DriftControl
+z4c	dc_sched_C	Real	get_or_add	0.341	athenak/src/z4c/driftcontrol/driftcontrol.cpp	154	DriftControl::DriftControl
+z4c	dc_tracker_index	Integer	get_or_add	0	athenak/src/z4c/driftcontrol/driftcontrol.cpp	110	DriftControl::DriftControl
+z4c	dc_tracker_index	Integer	get_or_add	0	athenak/src/z4c/z4c.cpp	172	z4c::Z4c::Z4c
+z4c	dc_umax_x	Real	get_or_add	-1.0	athenak/src/z4c/driftcontrol/driftcontrol.cpp	135	DriftControl::DriftControl
+z4c	dc_umax_y	Real	get_or_add	-1.0	athenak/src/z4c/driftcontrol/driftcontrol.cpp	136	DriftControl::DriftControl
+z4c	dc_umax_z	Real	get_or_add	-1.0	athenak/src/z4c/driftcontrol/driftcontrol.cpp	137	DriftControl::DriftControl
+z4c	dc_urate	Real	get_or_add	-1.0	athenak/src/z4c/driftcontrol/driftcontrol.cpp	138	DriftControl::DriftControl
+z4c	dc_variety	String	get_or_add	"oscillator"	athenak/src/z4c/driftcontrol/driftcontrol.cpp	108	DriftControl::DriftControl
+z4c	dc_variety	String	get		athenak/src/z4c/driftcontrol/driftcontrol.cpp	212	DriftControl::DriftControl
+z4c	dc_variety	String	get_or_add	"oscillator"	athenak/src/z4c/z4c.cpp	180	z4c::Z4c::Z4c
+z4c	dc_vel_cap	Real	get_or_add	1.0	athenak/src/z4c/driftcontrol/driftcontrol.cpp	113	DriftControl::DriftControl
+z4c	dc_vmax	Real	get_or_add	-1.0	athenak/src/z4c/driftcontrol/driftcontrol.cpp	153	DriftControl::DriftControl
+z4c	dc_zeta	Real	get_or_add	1.0	athenak/src/z4c/driftcontrol/driftcontrol.cpp	131	DriftControl::DriftControl
+z4c	dc_zeta	Real	get_or_add	1.0	athenak/src/z4c/z4c.cpp	186	z4c::Z4c::Z4c
+z4c	diss	Real	get_or_add	0.0	athenak/src/z4c/z4c.cpp	129	z4c::Z4c::Z4c
+z4c	{dob_key[a]}	Real	get_or_add	0.0	athenak/src/z4c/driftcontrol/driftcontrol.cpp	165	DriftControl::DriftControl
+z4c	enable_driftcontrol	Boolean	get_or_add	false	athenak/src/z4c/z4c.cpp	171	z4c::Z4c::Z4c
+z4c	eps_floor	Real	get_or_add	1e-12	athenak/src/z4c/z4c.cpp	130	z4c::Z4c::Z4c
+z4c	excise_chi	Real	get_or_add	0.0625	athenak/src/z4c/z4c.cpp	163	z4c::Z4c::Z4c
+z4c	extraction_nlev	Real	get_or_add	10	athenak/src/z4c/z4c.cpp	221	z4c::Z4c::Z4c
+z4c	extrap_order	Integer	get_or_add	2	athenak/src/z4c/z4c.cpp	166	z4c::Z4c::Z4c
+z4c	filename	String	get_or_add	"co_"	athenak/src/z4c/compact_object_tracker.cpp	39	CompactObjectTracker::CompactObjectTracker
+z4c	floor_chi	Boolean	get_or_add	false	athenak/src/z4c/z4c.cpp	128	z4c::Z4c::Z4c
+z4c	horizon_dt	Real	get_or_add	1.0	athenak/src/z4c/horizon_dump.cpp	47	HorizonDump::HorizonDump
+z4c	{integral_key[a]}	Real	get_or_add	0.0	athenak/src/z4c/driftcontrol/driftcontrol.cpp	163	DriftControl::DriftControl
+z4c	lapse_advect	Real	get_or_add	1.0	athenak/src/z4c/z4c.cpp	146	z4c::Z4c::Z4c
+z4c	lapse_harmonic	Real	get_or_add	0.0	athenak/src/z4c/z4c.cpp	140	z4c::Z4c::Z4c
+z4c	lapse_harmonicf	Real	get_or_add	1.0	athenak/src/z4c/z4c.cpp	139	z4c::Z4c::Z4c
+z4c	lapse_kdriver	Real	get_or_add	0.0	athenak/src/z4c/z4c.cpp	142	z4c::Z4c::Z4c
+z4c	lapse_oplog	Real	get_or_add	2.0	athenak/src/z4c/z4c.cpp	145	z4c::Z4c::Z4c
+z4c	lapse_volume	Real	get_or_add	0.0	athenak/src/z4c/z4c.cpp	141	z4c::Z4c::Z4c
+z4c	nrad_wave_extraction	Real	get_or_add	0	athenak/src/z4c/z4c.cpp	220	z4c::Z4c::Z4c
+z4c	shift_Gamma	Real	get_or_add	1.0	athenak/src/z4c/z4c.cpp	152	z4c::Z4c::Z4c
+z4c	shift_H	Real	get_or_add	0.0	athenak/src/z4c/z4c.cpp	155	z4c::Z4c::Z4c
+z4c	shift_advect	Real	get_or_add	1.0	athenak/src/z4c/z4c.cpp	153	z4c::Z4c::Z4c
+z4c	shift_alpha2Gamma	Real	get_or_add	0.0	athenak/src/z4c/z4c.cpp	154	z4c::Z4c::Z4c
+z4c	shift_eta	Real	get_or_add	2.0	athenak/src/z4c/z4c.cpp	157	z4c::Z4c::Z4c
+z4c	shift_zero	Boolean	get_or_add	false	athenak/src/pgen/dyn_grmhd/elliptica/elliptica.cpp	311	SetupSystem
+z4c	slow_start_lapse	Boolean	get_or_add	false	athenak/src/z4c/z4c.cpp	147	z4c::Z4c::Z4c
+z4c	ssl_damping_amp	Real	get_or_add	0.6	athenak/src/z4c/z4c.cpp	148	z4c::Z4c::Z4c
+z4c	ssl_damping_index	Integer	get_or_add	1	athenak/src/z4c/z4c.cpp	150	z4c::Z4c::Z4c
+z4c	ssl_damping_time	Real	get_or_add	20.0	athenak/src/z4c/z4c.cpp	149	z4c::Z4c::Z4c
+z4c	tracker_mode	String	get_or_add	"ode"	athenak/src/z4c/compact_object_tracker.cpp	54	CompactObjectTracker::CompactObjectTracker
+z4c	use_z4c	Boolean	get_or_add	true	athenak/src/z4c/z4c.cpp	159	z4c::Z4c::Z4c
+z4c	user_Sbc	Boolean	get_or_add	false	athenak/src/z4c/z4c.cpp	161	z4c::Z4c::Z4c
+z4c	waveform_dt	Real	get_or_add	1	athenak/src/z4c/z4c.cpp	231	z4c::Z4c::Z4c
+z4c_amr	{"radius_" + std::to_string(nr) + "_reflevel"}	Integer	get_or_add	-1	athenak/src/z4c/z4c_amr.cpp	55	z4c::Z4c_AMR::Z4c_AMR
+z4c_amr	chi_min	Real	get_or_add	0.2	athenak/src/z4c/z4c_amr.cpp	35	z4c::Z4c_AMR::Z4c_AMR
+z4c_amr	dchi_max	Real	get_or_add	0.01	athenak/src/z4c/z4c_amr.cpp	38	z4c::Z4c_AMR::Z4c_AMR
+z4c_amr	lohner_derefine	Real	get_or_add	0.02	athenak/src/z4c/z4c_amr.cpp	42	z4c::Z4c_AMR::Z4c_AMR
+z4c_amr	lohner_eps	Real	get_or_add	0.01	athenak/src/z4c/z4c_amr.cpp	43	z4c::Z4c_AMR::Z4c_AMR
+z4c_amr	lohner_refine	Real	get_or_add	0.2	athenak/src/z4c/z4c_amr.cpp	41	z4c::Z4c_AMR::Z4c_AMR
+z4c_amr	method	String	get_or_add	"trivial"	athenak/src/z4c/z4c_amr.cpp	28	z4c::Z4c_AMR::Z4c_AMR
+z4c_amr	{name}		exists		athenak/src/z4c/z4c_amr.cpp	53	z4c::Z4c_AMR::Z4c_AMR
+z4c_amr	{name}	Real	get		athenak/src/z4c/z4c_amr.cpp	54	z4c::Z4c_AMR::Z4c_AMR
