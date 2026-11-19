@@ -670,3 +670,28 @@ proportional to A, the cross term vanishes. Not run in this package (next step).
 the grid-scale TT of a noisy lattice is not a resolved signal (|k| h >= pi/2) and must be cut
 from any spectrum: the resolved band |k|L/2pi < 8 carries 0.3-0.6 percent of the TT power of
 the null for a <= 12, and the box modes follow the second-order prediction (P11b').
+
+## Outcome of P11 with both amplitudes (analyses B-20261119-160530-7bdcb45, -161519-6e0bc42; comparison B-20261119-163037-6553674, `conv_null.png` looked at)
+
+- (b') CONFIRMED at both amplitudes: A = 0.1 gives |measured|/|predicted| 0.94-1.27 (median
+  1.03) at K1 and 0.73-1.01 (median 0.95) at K2, phase differences 0.04 to 0.18 and -0.06 to
+  -0.01 rad, for 3 <= a <= 20 (A = 0.3: above). After a ~ 40 the ratio swings between 0.4 and
+  3.8: the second-order prediction ends where the x wave turns nonlinear, as for the signal.
+- (c') CONFIRMED: |c(K1, A = 0.3)/c(K1, A = 0.1)| = 2.12-2.65, median 2.56, for 1.5 <= a <= 20
+  (predicted 2.5; the lowest values at the first dumps), phase difference at most 0.28 rad;
+  it rises to 3-6 after a ~ 60. The original (c) ("3.0 within 5 percent") is refuted, as the
+  computation from the initial data had said before the run: the noise-noise term is half of
+  the cross term at K1 for A = 0.3.
+- (d) REFUTED (as above): rms TT 12-20 times the second-order estimate; its ratio between the
+  amplitudes is 2.87 for a <= 40 (2.44 at a = 80-140), just below the 3-4 I had predicted; at
+  the mesh scale it is linear in the noise (P16).
+- (e) CONFIRMED: the null's box-mode strain at A = 0.3 is at most 1.5, 2.5, 3.1 percent of the
+  eps = 0.1 signal for 2-20, 20-80, 80-140 in a; at A = 0.1 it is a factor 2.5 smaller.
+Last dumps (a = 140): rms TT 5.2e-6 (A = 0.3), 2.2e-6 (A = 0.1); rho_kin/rho_grad 0.012 and
+0.009 (quasi-static), rho_grad/rho_bar 1.6e-7 and 3.1e-8; the plane-symmetric null 2e-26.
+What the null says about the noise floor of the scan [JUDGEMENT]: a lattice jittered by A
+cells (here 8 particles per cell, 2.1M particles) puts into the box modes the strain the
+second-order formula gives for its noise potential, ~ A/sqrt(N_p) per mode (|Psi| = 1.48e-5
+at (0, k, 0) for A = 0.3), i.e. 1.4-3 percent of the eps = 0.1 signal at A = 0.3; the quiet
+lattice of the scan has no such noise before shell crossing. The grid-scale TT of a noisy
+lattice (P16) has to be cut from spectra; it is not radiation (rho_kin << rho_grad).
