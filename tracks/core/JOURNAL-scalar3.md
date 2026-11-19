@@ -495,3 +495,28 @@ floor 4e-13). The twin's H0 at N = 64 equals the measured 1.75e-12 to 1.91e-12 o
 0 run within 1 percent. R^NR of the 32^3 run of T8 against the twin: within 3e-6 for all
 modes (the second-order part of a single run at s = 1 is 1.2e-6, J2 entry 14); odd part
 at 64^3: within 1e-7.
+
+## 2026-11-19, entry 7: resumed session (15:40Z); outcomes of R a and R c
+
+The session that wrote entries 0 to 6 stopped at about 15:38Z. Found at 15:40Z: eleven
+registered runs had ended (exit status in `.nrpic/result.json`) but their manifests still
+said "running" (no wrapper left to close them); closed with `nrpic-run finish` (commits
+2850abb and the ten before it). Still live then: A (-151758-51d9a71), A2 (-152243-1754ebc),
+U z0c0125 (-152745-0ee5e58), U c0125 (-152757-a0dc5ef); card job 4651 (U card,
+-150317-a1e8ee7) waiting in the queue behind 16 jobs. The ten hand-written manifests of
+the sub-runs of R c were untracked; committed (59f5794).
+
+**R a, run core-20261119-150818-615d921, part a** (t6_regress.py; no figure: every
+difference is zero). PRa HOLDS for the ten scalar-field cases of wave 1: 120 files, 110
+byte-identical, the other 10 restart files of ms, msnk, msr identical but for 32 of the 36
+unset header bytes and, in two files of msr, the recorded restart path (as J2 entry 7).
+**Part b FAILED as a run, not as a test**: the published executable of `core/scalar-2`
+stopped at once, "Parameter 'dump_dcycle' in block 'scalar_field' on command line not
+found" (`parameter_input.cpp` line 400: a command line may override only parameters that
+the input file has). The driver now writes the cadence into the input (32b7ef4); part b
+is rerun alone (queue q4).
+
+**R c, run core-20261119-152209-ca85372** (`regress_relativistic.py`, release core-v0.3
+against `athena_cpu_cea3a49`; sub-runs -152210 to -153611, manifests committed). PRa
+HOLDS for the seven relativistic set-ups: geo 2, boris 2, dep 1, east 12, os 16, jeans 5,
+binary 1 files, all byte-identical, none differing.
