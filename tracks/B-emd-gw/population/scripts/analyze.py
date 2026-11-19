@@ -198,7 +198,7 @@ class TTBox:
         rk = np.fft.rfftn(rho - rho.mean())/N
         phik = -4*np.pi*rk/self.k2s                        # Phi_c
         phik[0, 0, 0] = 0.0
-        g = [np.fft.irfftn(1j*kc*phik*N, s=(n, n, n)) for kc in self.k]   # d_i Phi_c
+        g = [np.fft.irfftn(1j*kc*phik*N, s=(n, n, n), axes=(0, 1, 2)) for kc in self.k]   # d_i Phi_c
         Sk = {}
         for c, (i, j) in enumerate(comp):
             sreal = 16*np.pi*dep[c + 1]/a + 4.0*g[i]*g[j]/a**2
@@ -206,45 +206,75 @@ class TTBox:
         return self.tt(Sk)
 
     def add(self, t, F):
-        """Filon step from the previous sample to (t, F)."""
+        """Filon step from the previous sample to (t, F): Z+- += int F e^{+-ikt} dt with
+        F linear in t between the samples (the oscillatory integral exact)."""
         kk = self.kk
         if self.C is None:
-            self.C = {key: np.zeros_like(val) for key, val in F.items()}
-            self.S = {key: np.zeros_like(val) for key, val in F.items()}
+            self.C = True
+            self.Zp = {key: np.zeros_like(val) for key, val in F.items()}
+            self.Zm = {key: np.zeros_like(val) for key, val in F.items()}
+            self.first = (t, F)
+            self.second = None
+            self.prevprev = None
             self.prev = (t, F)
             return
         t0, F0 = self.prev
+        if self.second is None:
+            self.second = (t, F)
+        self.prevprev = self.prev
         h = t - t0
-        # int_t0^t1 (F0 + (F1 - F0) s/h) e^{i k (t0 + s)} ds, s in [0, h]
         th = kk*h
         small = th < 1e-3
         ths = np.where(small, 1.0, th)
+        kks = np.where(kk > 0, kk, 1.0)
         e1 = np.exp(1j*th)
-        # I0 = int_0^h e^{iks} ds, I1 = int_0^h s e^{iks} ds / h
-        I0 = np.where(small, h*(1 + 0.5j*th), (e1 - 1)/(1j*kk + small))
-        I1 = np.where(small, h*(0.5 + 1j*th/3),
-                      h*(e1/(1j*ths) + (e1 - 1)/ths**2))
+        # I0 = int_0^h e^{iks} ds, I1 = (1/h) int_0^h s e^{iks} ds
+        I0 = np.where(small, h*(1 + 0.5j*th), (e1 - 1)/(1j*kks))
+        I1 = np.where(small, h*(0.5 + 1j*th/3), h*(e1/(1j*ths) + (e1 - 1)/ths**2))
         ph = np.exp(1j*kk*t0)
         for key in F:
             a0, a1 = F0[key], F[key]
-            # complex coefficient: int F e^{ikt} = C + i S
-            val = ph*(a0*I0 + (a1 - a0)*I1)
-            # C = int cos(kt) F, S = int sin(kt) F with F complex: use the two real
-            # exponentials: cos = (e+ + e-)/2, sin = (e+ - e-)/(2i)
-            valm = np.conj(ph)*(a0*np.conj(I0) + (a1 - a0)*np.conj(I1))
-            self.C[key] += 0.5*(val + valm)
-            self.S[key] += (val - valm)/(2j)
+            self.Zp[key] += ph*(a0*I0 + (a1 - a0)*I1)
+            self.Zm[key] += np.conj(ph)*(a0*np.conj(I0) + (a1 - a0)*np.conj(I1))
         self.prev = (t, F)
 
-    def energies(self, F):
-        """a^4 rho_GW (radiative) and a^4 rho_qs (static near field), and the spectrum
-        of the radiative part in |k| shells of width k_f."""
+    def energies(self, t, F):
+        """a^4 rho of: the waves the box would hold if the source stopped at t
+        (sw: 'switch-off', the measure of arXiv:2212.00425), the radiated part with both
+        boundary terms removed (rad: the source switched on and off adiabatically,
+        Z_ad = Z - [F e^{ikt}/(ik)] at t and at the first sample; the first-sample term is
+        the start without the quasi-static TT field, the junk of conformally flat data),
+        and the quasi-static near field (qs, gradient energy of F/k^2); spectra of rad
+        and qs in |k| shells of width k_f."""
+        kk = np.where(self.kk > 0, self.kk, 1.0)
+        t0, Fi = self.first
+        sw = np.zeros(self.k2.shape)
+        rad1 = np.zeros(self.k2.shape)
         rad = np.zeros(self.k2.shape)
         qs = np.zeros(self.k2.shape)
+        have_d = self.second is not None and self.prevprev is not None
         for key in F:
             mult = 1.0 if key[0] == key[1] else 2.0
-            rad += mult*(np.abs(self.C[key])**2 + np.abs(self.S[key])**2)
+            zp, zm = self.Zp[key], self.Zm[key]
+            sw += mult*0.5*(np.abs(zp)**2 + np.abs(zm)**2)
+            ep, e0p = np.exp(1j*kk*t), np.exp(1j*kk*t0)
+            bp = (F[key]*ep - Fi[key]*e0p)/(1j*kk)
+            bm = (F[key]*np.conj(ep) - Fi[key]*np.conj(e0p))/(-1j*kk)
+            zp1, zm1 = zp - bp, zm - bm
+            rad1 += mult*0.5*(np.abs(zp1)**2 + np.abs(zm1)**2)
+            if have_d:
+                # second boundary order [F' e^{+-ikt}]/k^2, one-sided differences
+                tq, Fq = self.prevprev
+                dF = (F[key] - Fq[key])/(t - tq)
+                ts, Fs = self.second
+                dFi = (Fs[key] - Fi[key])/(ts - t0)
+                cp = (dF*ep - dFi*e0p)/kk**2
+                cm = (dF*np.conj(ep) - dFi*np.conj(e0p))/kk**2
+                zp1, zm1 = zp1 - cp, zm1 - cm
+            rad += mult*0.5*(np.abs(zp1)**2 + np.abs(zm1)**2)
             qs += mult*np.abs(F[key])**2/self.k2s
+        sw *= self.w/(64*np.pi)
+        rad1 *= self.w/(64*np.pi)
         rad *= self.w/(64*np.pi)
         qs *= self.w/(32*np.pi)
         kf = 2*np.pi/self.L
@@ -252,7 +282,8 @@ class TTBox:
         nb = self.n//2
         spec = np.bincount(b[self.ok], weights=rad[self.ok], minlength=nb + 2)[:nb + 1]
         specq = np.bincount(b[self.ok], weights=qs[self.ok], minlength=nb + 2)[:nb + 1]
-        return float(rad[self.ok].sum()), float(qs[self.ok].sum()), spec, specq
+        return (float(sw[self.ok].sum()), float(rad1[self.ok].sum()),
+                float(rad[self.ok].sum()), float(qs[self.ok].sum()), spec, specq)
 
 
 # ---------------------------------------------------------------------------------------
@@ -354,15 +385,19 @@ def analyze_case(name, d, gw, ng, nhalo_q, out):
             box.add(t, F)
             if i == 0:
                 F0 = F
-            rad, qs, spec, specq = box.energies(F)
-            rows.append([t, a, rad, qs, rad/(a*RHO_C), qs/(a*RHO_C)])
+            sw, rad1, rad, qs, spec, specq = box.energies(t, F)
+            rows.append([t, a, sw, rad1, rad, qs, sw/(a*RHO_C), rad1/(a*RHO_C),
+                         rad/(a*RHO_C), qs/(a*RHO_C)])
             for at in (2, 5, 10, 20, 40, 70, 100):
                 if abs(a - at)/at < 0.03 and str(at) not in specs:
                     specs[str(at)] = {"a": a, "rad": spec.tolist(), "qs": specq.tolist()}
-        res["gw"] = {"columns": ["t", "a", "a4_rho_rad", "a4_rho_qs", "Omega_rad",
-                                 "Omega_qs"], "rows": rows, "spectra": specs, "ng": ng}
-        # check against (20/3) [dPhi dPhi]^TT at the first snapshot
-        res["gw"]["qs_first"] = rows[0][3]
+        res["gw"] = {"columns": ["t", "a", "a4_rho_switchoff", "a4_rho_rad1", "a4_rho_rad",
+                                 "a4_rho_qs", "Omega_switchoff", "Omega_rad1",
+                                 "Omega_rad", "Omega_qs"],
+                     "rows": rows, "spectra": specs, "ng": ng}
+        # check against (20/3) [dPhi dPhi]^TT at the first snapshot (design.json:
+        # quasi_static.Omega_qs_over_a at a = 1)
+        res["gw"]["Omega_qs_first"] = rows[0][9]
         # quadrupole formula for the most massive halos of the last snapshot
         qrows = []
         sel_h = last_halos[:nhalo_q]
@@ -397,7 +432,7 @@ def figures(results, od, gwname):
                     label=r["name"])
         axs[0].plot(a, [x["n_groups_32"] for x in r["catalogs"]], ":", color=c)
         axs[1].plot(a, [x["f_mass_in_halos"] for x in r["catalogs"]], "-o", ms=3, color=c)
-        last = r["catalogs"][-1]
+        last = r["catalogs"][-1] if r["catalogs"] else {"masses": [], "a": 0.0}
         mm = np.sort(np.array(last["masses"]))[::-1]
         if len(mm):
             axs[2].loglog(mm, np.arange(1, len(mm) + 1), drawstyle="steps-post",
@@ -435,7 +470,8 @@ def figures(results, od, gwname):
         ax.imshow(H.T, origin="lower", extent=[0, L, 0, L], cmap=fs.CMAP["dens"],
                   norm=fs.LogNorm(vmin=0.1, vmax=max(H.max(), 10.0)),
                   interpolation="none", rasterized=True)
-        cat = min(r["catalogs"], key=lambda c: abs(c["a"] - scale(t)))
+        cat = (min(r["catalogs"], key=lambda c: abs(c["a"] - scale(t)))
+               if r["catalogs"] else {"x": [], "N": []})
         for xc, nn in zip(cat["x"], cat["N"]):
             ax.add_patch(plt.Circle((xc[0], xc[1]), 0.08 + 0.02*np.log10(nn),
                                     fill=False, color="w", lw=0.6))
@@ -451,9 +487,13 @@ def figures(results, od, gwname):
         fig, axs = plt.subplots(1, 2, figsize=(fs.FULL_WIDTH, 3.0))
         fig.subplots_adjust(left=0.09, right=0.98, bottom=0.15, top=0.92, wspace=0.3)
         ax = axs[0]
-        ax.loglog(rows[:, 1], rows[:, 4], color=fs.PAL["red"],
-                  label="radiative (box, TT stress)")
-        ax.loglog(rows[:, 1], rows[:, 5], color=fs.PAL["blue"], ls="--",
+        ax.loglog(rows[:, 1], rows[:, 8], color=fs.PAL["red"],
+                  label="radiated (box, TT stress)")
+        ax.loglog(rows[:, 1], rows[:, 7], color=fs.PAL["red"], ls=":", lw=1.0,
+                  label="radiated, first order removed only")
+        ax.loglog(rows[:, 1], rows[:, 6], color=fs.PAL["orange"], ls="-.",
+                  label="switch-off measure (2212.00425)")
+        ax.loglog(rows[:, 1], rows[:, 9], color=fs.PAL["blue"], ls="--",
                   label="quasi-static near field")
         if r.get("quadrupole_halos"):
             ax.plot([rows[-1, 1]], [r["gw"]["Omega_quad_sum_end"]], "s",
@@ -518,11 +558,12 @@ def main():
     fn = f"analysis{a.tag}.json"
     with open(os.path.join(od, fn), "w") as f:
         json.dump(clean(results), f, indent=1)
-    shutil.copy(os.path.join(od, fn), os.path.join(PKG, "results", fn))
-    for g in ("pop_halos", "pop_density", "pop_gw"):
-        if os.path.exists(os.path.join(od, g + ".png")):
-            shutil.copy(os.path.join(od, g + ".png"),
-                        os.path.join(PKG, "figs", f"{g}{a.tag}.png"))
+    if os.environ.get("NRPIC_RUN_DIR"):          # registered runs only: copies
+        shutil.copy(os.path.join(od, fn), os.path.join(PKG, "results", fn))
+        for g in ("pop_halos", "pop_density", "pop_gw"):
+            if os.path.exists(os.path.join(od, g + ".png")):
+                shutil.copy(os.path.join(od, g + ".png"),
+                            os.path.join(PKG, "figs", f"{g}{a.tag}.png"))
     for r in results:
         print(r["name"], "first halo", r["first_halo"], "LI", r["layzer_irvine"])
         for c in r["catalogs"]:
