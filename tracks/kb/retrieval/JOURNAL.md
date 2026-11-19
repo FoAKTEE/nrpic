@@ -133,3 +133,47 @@ papers, so chunk 105400 is not in the pool (hybrid paper rank 6 and 5: the first
 from three other papers); for q16, q17, q20 the answer chunk is in the pool but its best
 window is outranked by windows that repeat the question's topical words. Refuted if 105400 is
 in the pool for q07 and still ranks below 10.
+
+Outcome R4 (run kb-20261119-142613-942f713, 06:26-07:04 PST, 6 threads, machine load about
+130; rerank_eval.json in its run directory; figure `fig_r4_rerank.png`, which I looked at):
+
+| mode | golden 32: paper | locator | ten: paper | locator | s/question |
+|---|---|---|---|---|---|
+| text | 27 | 21 | 9 | 4 | 4 |
+| hybrid | 28 | 23 | 9 | 5 | 4 |
+| w2 | 27 | 22 | 7 | 6 | 33 |
+| w3 | 28 | 22 | 7 | 6 | 26 |
+| w2+stage1 | 29 | 23 | 8 | 6 | 4 (windows cached from w2) |
+| w2-noexpand | 28 | 25 | 8 | 6 | 11 |
+
+Chosen by the rule: w2-noexpand (25 locator hits on the 32). Prediction partly FAILED: >= 26
+was predicted, 25 came; the refutation bar (< 25) was not crossed. On the 32 it keeps every
+locator hit of hybrid and adds q11 (rank 2) and q24 (rank 2); on the ten it keeps every
+hybrid locator hit and adds one (ten-q03), but loses the paper hit of ten-q06 (hybrid paper
+rank 4, now outside the top 10). Expansion of the first three papers HURT (w2, w3: paper hits
+down to 27/28 and 7 on the ten). q12 stays a miss, as predicted. Cost under load: 11 s per
+question for w2-noexpand on 6 threads (prediction "under 15 s" held), of which about 4 s is
+the first stage.
+
+Outcome R4b (run kb-20261119-144727-7f4de14, diag.json and windows.txt in its run directory,
+read by me): prediction held. For q06 and q07 the three expanded papers are other papers;
+2611.12831 has 2 and 4 chunks among the first 50 of the hybrid list but is not among the first
+three distinct papers, so 105399/105400 never enter the pool. For q16, q17, q20 the answer
+chunk is in the pool and its best window ranks 9, 6, 7 by vector, but 31, 45, 52 by window
+BM25, and the fusion leaves it at 17, 12, 17. Window BM25 favours windows that repeat the
+question's topical words (abstracts of related papers, a convergence appendix of another
+paper). Two remedies follow (paper expansion by the number or weight of a paper's chunks in
+the first list; less weight on window BM25), both post hoc; not tried in this package (no
+held-out set large enough to choose them honestly: the ten share passages with the 32).
+q16's answer location is arguably too narrow: the question asks which paper, and the
+paper's abstract ranks first (hybrid and rerank); I leave the golden set as written.
+
+## R5. Final QA run with the mode rerank (prediction 07:15 PST)
+
+`kb qa run --hybrid` on a848a06 with C7 modes text, hybrid, rerank (default w2-noexpand) and
+the C4 name folding. Predictions: C7 text 27/21, hybrid 28/23 (as R2), rerank 28/25 exactly
+(the same first stage and second stage as R4, through `search_rerank.search`); KB-G2 paper
+threshold met in every mode (28/32 = 87.5 % >= 80 %). C4: 1004.1353 now 100 % surnames; the
+differing list is 2103.01183 and gr-qc/9905058 only. Refuted if rerank differs from R4's
+w2-noexpand on any question (then search() and the evaluation do not agree), or C4 lists
+1004.1353.

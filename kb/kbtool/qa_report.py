@@ -328,13 +328,17 @@ def c7_retrieval(lay, db_path, hybrid=False, k=10):
                 return None
         _lines._qa_guard = True
         S.Locator.lines = _lines
-    modes = ["text"] + (["hybrid"] if hybrid else [])
-    emb, model = None, None
+    # rerank: the second stage over sentence windows (kbtool/search_rerank.py, its default
+    # variant; tracks/kb/retrieval/JOURNAL.md R4)
+    modes = ["text"] + (["hybrid", "rerank"] if hybrid else [])
+    emb, model, store = None, None, None
     if hybrid:
         try:
             from . import embed_cli as EC
+            from . import search_rerank as R
             emb = EC._embedder("bge-small")
             model = EC._model_key("bge-small")
+            out["rerank_config"] = {"name": R.DEFAULT, **R.CONFIGS[R.DEFAULT]}
         except BaseException as e:                      # no numpy, no model: report and go on
             out["hybrid_error"] = f"{type(e).__name__}: {e}"
             modes = ["text"]
@@ -343,10 +347,16 @@ def c7_retrieval(lay, db_path, hybrid=False, k=10):
         nvec = con.execute("SELECT count(*) FROM embeddings WHERE owner_kind='chunk'").fetchone()[0]
         nch = con.execute("SELECT count(*) FROM chunks WHERE kind != 'comment'").fetchone()[0]
         out["vectors"], out["chunks"] = nvec, nch
+        if emb is not None:
+            store = S.VectorStore(con, model, "chunk")         # loaded once for all questions
         for mode in modes:
             rows = []
             for q in _gold.questions():
-                hits, info = S.search(lay, q["question"], k=k, mode=mode, con=con, embedder=emb, model=model)
+                if mode == "rerank":
+                    hits, info = R.search(lay, q["question"], k=k, con=con, embedder=emb, model=model, store=store)
+                else:
+                    hits, info = S.search(lay, q["question"], k=k, mode=mode, con=con, embedder=emb, model=model,
+                                          store=store if mode != "text" else None)
                 rp, rl = _gold.hit_level(q, hits)
                 rows.append({"id": q["id"], "paper": q["paper"], "paper_rank": rp, "locator_rank": rl,
                              "top_papers": [h.get("paper_id") for h in hits[:3]]})
@@ -555,6 +565,13 @@ def markdown(rep):
       f"hit within the top {c['k']} chunks. Vectors stored for {c.get('vectors')} of {c.get('chunks')} chunks.")
     if c.get("hybrid_error"):
         a(f"- Hybrid mode not run: {c['hybrid_error']}.")
+    if c.get("rerank_config"):
+        rc = c["rerank_config"]
+        a(f"- Mode rerank: `kbtool/search_rerank.py`, variant {rc['name']}: the first {rc['pool']} chunks of the "
+          f"hybrid list (plus all chunks of its first {rc['expand']} papers), cut into windows of {rc['win']} "
+          f"sentences (stride {rc['stride']}), ordered by reciprocal-rank fusion of window BM25 and window vectors.")
+    a("- KB-G2 (decision 0016, item 6): at least 80 % of the golden questions with the right paper in the top ten "
+      "(gating); the hit at the answer location is reported, not gating.")
     if c.get("empty_sourcemap_hits"):
         a(f"- Hits of papers with an empty source map (no line range; `embed_search.Locator.lines` raises "
           f"IndexError there, guarded in this run): {', '.join(c['empty_sourcemap_hits'])}.")

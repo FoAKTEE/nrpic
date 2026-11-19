@@ -10,10 +10,13 @@ reads.
 
 What this does, on top of the unchanged first stage (BM25 and chunk vectors fused by
 reciprocal rank, depth 100, `embed_search`):
-1. Pool: the first POOL chunks of the fused ranking, plus every chunk (of the allowed kinds)
-   of the first EXPAND papers of that ranking, so that a buried answer of a found paper can
-   enter.
-2. Windows: each pool chunk is cut into windows of WIN sentences, stride STRIDE, a window
+1. Pool: the first POOL chunks of the fused ranking (default 100), optionally plus every chunk
+   (of the allowed kinds) of the first EXPAND papers of that ranking. The default has no
+   expansion: in run kb-20261119-142613-942f713 expanding the first three papers crowded the
+   pool with chunks of papers that came first by one chunk and cost paper hits (JOURNAL R4,
+   R4b).
+2. Windows: each pool chunk is cut into windows of WIN sentences (default 2), stride STRIDE
+   (default 1), a window
    longer than MAX_CHARS cut again into slices; each window is prefixed with the chunk's
    section heading (as recipe chunk-v1 does), so no part of a chunk is beyond the model's
    512 word pieces.
@@ -45,22 +48,24 @@ if __name__ == "__main__" and not __package__:                      # run as a s
 from . import embed_index as X  # noqa: E402
 from . import embed_search as S  # noqa: E402
 
-POOL = 50
-EXPAND = 3
-WIN = 3
-STRIDE = 2
+POOL = 100
+EXPAND = 0
+WIN = 2
+STRIDE = 1
 MAX_CHARS = 1200
 SLICE_OVERLAP = 200
 K_RRF = S.K_RRF
 CONFIGS = {
     # the four variants written down before the first evaluation (JOURNAL R4); DEFAULT is the
     # one chosen on the 32 golden questions and checked on the ten held-out questions
-    "w2": {"pool": POOL, "expand": EXPAND, "win": 2, "stride": 1, "with_stage1": False},
-    "w3": {"pool": POOL, "expand": EXPAND, "win": 3, "stride": 2, "with_stage1": False},
-    "w2+stage1": {"pool": POOL, "expand": EXPAND, "win": 2, "stride": 1, "with_stage1": True},
+    # (run kb-20261119-142613-942f713: locator hits on the 32 golden questions 22, 22, 23, 25;
+    # hybrid 23; on the ten held out 6, 6, 6, 6; hybrid 5)
+    "w2": {"pool": 50, "expand": 3, "win": 2, "stride": 1, "with_stage1": False},
+    "w3": {"pool": 50, "expand": 3, "win": 3, "stride": 2, "with_stage1": False},
+    "w2+stage1": {"pool": 50, "expand": 3, "win": 2, "stride": 1, "with_stage1": True},
     "w2-noexpand": {"pool": 100, "expand": 0, "win": 2, "stride": 1, "with_stage1": False},
 }
-DEFAULT = "w2"
+DEFAULT = "w2-noexpand"
 
 RE_SENT_END = re.compile(r"(?<=[.!?])\s+(?=[A-Z0-9\\$(\[])|\n\s*\n")
 
