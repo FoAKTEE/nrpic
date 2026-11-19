@@ -25,13 +25,26 @@ resolutions. Predictions and outcomes: `JOURNAL.md`. Status: deliverables exist 
 
 ```
 cd /data/haiyangw/nrpic/wt/B-emd-gw
-python3 -m pytest -q -p no:cacheprovider tracks/B-emd-gw/waves/tests
-P=tracks/B-emd-gw/waves
-harness/bin/nrpic-run submit --kind scouting --gate G1 --package $P --purpose "..." -- python3 $P/scripts/predict.py
-harness/bin/nrpic-run submit --kind scouting --gate G1 --package $P --cores 3 --purpose "..." -- bash $P/scripts/run_flat.sh
-harness/bin/nrpic-run submit --kind scouting --gate G1 --package $P --cores 3 --purpose "..." -- bash $P/scripts/run_expanding.sh
-harness/bin/nrpic-run submit --kind scouting --gate G1 --package $P --cores 8 --purpose "..." -- python3 $P/scripts/analyze.py <flat run id> <expanding run id>
+python3 -m pytest -q -p no:cacheprovider tracks/B-emd-gw/waves/tests        # 5 tests, 2 s
+P=tracks/B-emd-gw/waves; R="harness/bin/nrpic-run submit --kind scouting --gate G1 --package $P"
+$R --purpose "..." -- python3 $P/scripts/predict.py                          # predictions (symbol)
+$R --cores 2 --purpose "..." -- env NS="16 32" bash $P/scripts/run_flat.sh   # test F, processors
+$R --cores 2 --purpose "..." -- env NS="16 32" bash $P/scripts/run_expanding.sh   # test X
+$R --purpose "..." -- python3 $P/scripts/make_expanding_ic.py --n 64         # data of X for the card
+$R --launcher batch --list $P/inputs/card64.list --exe /data/haiyangw/nrpic/scratch/core/exe/core_requests-b/athena_gpu --gpu-hours 0.33 ...
+   (edit the data path in the list to the new run directory first)
+$R --cores 4 --purpose "..." -- bash $P/scripts/run_ascan.sh                 # amplitude scan, N = 16
+$R --cores 6 --purpose "..." -- env NWORK=6 python3 $P/scripts/analyze.py --tag n163264_ \
+     --flat 16=<F run>/N16,32=<F run>/N32,64=<card run>/flatN64 \
+     --exp 16=<X run>/N16,32=<X run>/N32,64=<card run>/expN64
+$R --purpose "..." -- python3 $P/scripts/predict_2s.py <results.json>        # H1: the code's RK4()4[2S]
 ```
+
+Serial processor rate of the core/requests-b executable on the loaded machine: 0.7e4 to
+1.5e4 zone-cycles per second (N = 32: 16 and 30 minutes; N = 48: 1.5 and about 2.5
+hours); the card does N = 64 in 20 to 40 s per test. Never edit a script while a run
+executes it (bash reads scripts incrementally); the analysis copies its JSON and PNG into
+`results/` and `figs/`, so commit them before the next submit (a dirty package is refused).
 
 ## Results
 
@@ -106,7 +119,8 @@ h = T(t)[...], T = c1 j1(|k|s)/(|k|s) + c2 y1(|k|s)/(|k|s), s = t + 2, T(0) = 0,
 4. **Amplitude scan** at N = 16 (runs B-20261119-153637-02c822f, analyses
    B-20261119-154708-89d00ea, B-20261119-154738-30faa29): amplitude and phase errors of
    both tests independent of A to <= 6e-4 of themselves for A x10 and x1/10: the tests are
-   in the linear regime and A = 1e-6 is not at a floor for N <= 64.
+   in the linear regime and A = 1e-6 is not at a floor at N = 16 (at N = 64 the plus
+   polarization of X is affected by rounding, item 2).
 
 **G1 criterion 1** ("the two diagnostics agree on analytic linear waves", with amplitude,
 phase and polarization against the analytic solution and measured convergence): met for
