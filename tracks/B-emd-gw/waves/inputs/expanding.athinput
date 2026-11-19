@@ -1,0 +1,126 @@
+# Test X of tracks/B-emd-gw/waves: a free tensor mode in the expanding periodic box.
+# Set-up (cosmo/README.md, "Units and gauge" and the production configuration): G = c = 1,
+# H = 1 at a = 1, box of side 4, matter only (Omega_m = 1, lambda = 0), carried by a
+# lattice of particles at rest, one per cell (cosmo/ic/make_lattice.py layout, masses
+# rho_0 h^3 with rho_0 = 3/(8 pi)); lapse d_t alpha = -(1/3) alpha^2 K and zero shift, so
+# t is conformal time and a = (1 + t/2)^2. Initial slice (nrpic_cosmo, id = file, written by
+# scripts/make_expanding_ic.py): psi = 1, K = -3, alpha = 1 and the traceless curvature
+#   Ahat_ij = -(1/2) h'_ij,  h'_ij = eps_+ e+_ij cos(k.x) + eps_x ex_ij cos(k.x + phi_x),
+# k = (2 pi/4)(1, 1, 0) (the (k, k, 0) direction of the first GW source): a conformally
+# flat slice with a pure tensor velocity, so h = T(t) [...] with T(0) = 0, T'(0) = 1 and
+# h'' + (4/(t+2)) h' + |k|^2 h = 0. Numerics: production configuration (cubic cloud with
+# compensation 1/6, 7/15, spline interpolation, step limit 0.01 of the expansion time,
+# damping 0.5 per unit conformal time), nghost 4, RK4, Courant 0.25, KO 0.5.
+# Outputs: Z4c variables in double precision every 0.25 to t = 10 (a = 36).
+# The mesh size is set on the command line (scripts/run_expanding.sh).
+
+<comment>
+problem   = free tensor mode in the matter-dominated expanding box
+
+<job>
+basename  = xw
+
+<mesh>
+nghost    = 4
+nx1       = 16
+x1min     = 0.0
+x1max     = 4.0
+ix1_bc    = periodic
+ox1_bc    = periodic
+nx2       = 16
+x2min     = 0.0
+x2max     = 4.0
+ix2_bc    = periodic
+ox2_bc    = periodic
+nx3       = 16
+x3min     = 0.0
+x3max     = 4.0
+ix3_bc    = periodic
+ox3_bc    = periodic
+
+<meshblock>
+nx1       = 16
+nx2       = 16
+nx3       = 16
+
+<time>
+evolution  = dynamic
+integrator = rk4
+cfl_number = 0.25
+nlim       = -1
+tlim       = 10.0
+ndiag      = 50
+
+<z4c>
+lapse_oplog     = 0.0
+lapse_harmonicf = 1.0
+lapse_harmonic  = 0.3333333333333333   # d_t alpha = -(1/3) alpha^2 K
+lapse_volume    = 0.0
+lapse_kdriver   = 0.0
+lapse_advect    = 0.0
+shift_Gamma     = 0.0                  # zero shift
+shift_eta       = 0.0
+shift_advect    = 0.0
+diss            = 0.5
+damp_kappa1     = 0.5
+damp_kappa1_over_alpha = true
+damp_kappa2     = 0.0
+damp_kappa_gam  = 0.0
+damp_ch         = 0.0
+damp_ch_dx      = 0.0
+damp_ch_chipow  = 0.0
+excise_chi      = 0.0
+
+<particles>
+particle_type  = nrpic
+pusher         = midpoint
+interp         = bspline
+dt_expansion   = 0.01
+metric         = mesh
+tolerance      = 1.0e-12
+max_iterations = 50
+deposit        = true
+nfilter        = 0
+filter_compensate = false
+filter_comp_c  = -1.0
+deposit_comp_c = 0.16666666666666666
+deposit_comp_limit = 0.0
+deposit_comp_c2 = 0.4666666666666667
+deposit_shape  = pcs
+deposit_max_level = 31
+deposit_adaptive  = false
+deposit_min_level = 0
+deposit_ppc       = 1.0
+deposit_max_coarsen = 31
+alpha_exc      = -1.0
+ah_exc_factor  = -1.0
+hist_dcycle    = 1
+cstat_dcycle   = 8
+cons_dcycle    = 0
+traj_dcycle    = 0
+traj_ntrack    = 0
+snap_dt        = 100.0
+probe_x1       = 2.0
+probe_x2       = 2.0
+probe_x3       = 2.0
+nprobe         = 0
+lambda         = 0.0
+source_density = true
+source_extrap  = true
+particle_file  = particles.nrp
+
+<problem>
+pgen_name  = nrpic_cosmo
+id         = file
+id_file    = fields.bin
+hubble     = 1.0
+
+<output1>
+file_type = hst
+dt        = 0.05
+
+<output2>
+file_type        = bin
+variable         = z4c
+double_precision = true
+dt               = 0.25
