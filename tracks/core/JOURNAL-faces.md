@@ -413,3 +413,54 @@ stock ghosts order 2 (boost_e2nw), falloff order 2 (boost_g2nw), falloff order 4
 Sommerfeld value of the same ghost fill and order (c0: stock order 2 1.77e-5; falloff
 order 2 8.95e-6; falloff order 4 2.12e-5), i.e. below 3.5e-6, 1.8e-6 and 4.2e-6.
 Refuted if any is above 0.4 of its Sommerfeld value: then the boosted layer is not H2.
+
+## 2026-11-19, entry 8: outcome of c0b; the puncture half of a1 with its reference; a fourth candidate: the Gamma condition
+
+Analysis run core-20261119-162148-593a647 (`an_batch.sh c0b_a1punc.txt`; `results/c0b.json`,
+`results/a1_punc.json`, `results/a1_boost.json`; figures `figs/c0b_boost.png`,
+`figs/a1_punc_regions.png`, `figs/a1_boost_regions.png`, looked at). c0b: run
+core-20261119-161322-59d2fbb; the vacuum-puncture reference core-20261119-144214-5e4bb5a
+(faces at 32, t = 8) is complete.
+
+**c0b**: boundary-cell |M_x| of the boosted puncture after one step, nonwave against
+Sommerfeld with the same ghosts: stock ghosts order 2: 3.34e-5 against 1.77e-5 (ratio
+1.9, WORSE); falloff order 2: 4.5e-6 against 9.0e-6 (0.51); falloff order 4: 2.6e-7
+against 2.1e-5 (0.012; face-layer maximum 7.1e-7 against 2.1e-5). The prediction (below
+0.2 in all three) FAILED for the two order-2 cases and HELD for order 4; by its own
+refutation clause the order-2 cases say that the boosted layer is not H2 alone. What the
+three together show: the layer has two parts. The Sommerfeld rate (H2) is one; the other
+is the ghost error entering the full right-hand side of the cell next to the boundary
+cell (H3), which nonwave copies into the boundary cell (with linear ghosts it doubles the
+layer). Only both remedies together, accurate ghosts and the non-wave part, remove it:
+70 times lower than stock in the boundary cell.
+
+**a1, vacuum puncture**, against its reference (to t = 8):
+- face layer: mean |H| 1.78e-4 (order 2) and 4.9e-6 to 8.5e-6 (order 4), constant in
+  time, against 1.6e-9 to 1.1e-7 in the reference: the monitor reading linear ghosts (H1).
+- shell 8 <= r < 12 (four or more cells from the faces): order 2 1.1e-6, 8.3e-6, 2.1e-5 at
+  t = 1, 4, 8; order 4 7.1e-7, 7.0e-7, 6.3e-6; reference 7.1e-7, 4.3e-7, 2.05e-6. At t = 8
+  the faces raise the shell residual 10 times (order 2) and 3 times (order 4) above the
+  truncation level of the same cells with the faces at 32.
+- inner 5 <= r < 8: the faces are not yet felt at t = 8 (2.13e-5, 1.62e-5, reference
+  1.63e-5): the hole's own truncation error dominates there.
+- fronts along +x: H at speed 1.00 (order 4; at order 2 the monitor layer hides it),
+  Khat 1.16 to 1.31 (sqrt(2 alpha) with alpha of 0.7 to 0.9 at the faces).
+- Gamma constraint |Gt - Gt(gt)|: face layer 2.5e-6, 1.9e-5, 4.3e-5 at t = 1, 4, 8, the
+  SAME at orders 2 and 4, against 1e-10 to 2e-8 in the reference; in the shell it climbs
+  to 4 times the reference by t = 8. Theta: face layer 7e-6 (order 2), 3e-7 (order 4),
+  reference 5.6e-10 to 7e-8.
+- Boosted puncture (no reference yet, a1r2 queued): face layer of M 2.1e-5 (order 2),
+  1.6e-5 (order 4) at t = 1, growing to 5e-5 by t = 8; Gamma constraint face layer
+  2.5e-5 at t = 1 to 4.9e-4 at t = 8 (ten times the vacuum puncture's).
+
+**A fourth candidate, H5** [JUDGEMENT]: the Gamma constraint layer does not depend on
+the ghost order, so it is made by the boundary condition of Gt^i itself: Sommerfeld for
+Gt^i while gt_ij keeps its full right-hand side, so Gt^i and Gt^i(gt) are driven apart in
+the boundary cell from the first step. The ball shows the same at a larger level (face
+layer 7e-4 to 5.8e-3 at t = 1 to 4) and nonwave lowers it there by 8 to 11 (b1). A
+remedy that keeps the communication between blocks consistent (the change must be in
+the right-hand side, not a projection after the update): a damping term in the
+boundary cell, d_t Gt^i += -lambda (Gt^i - Gt^i_d), Gt^i_d = -d_j gt^ij (det gt = 1),
+centred second-order differences; and likewise d_t Theta += -lambda_Theta Theta, a
+constraint-absorbing treatment of Theta that keeps the outgoing condition. Implemented
+next as `sbc_damp_gam`, `sbc_damp_theta` (rates, absent: off).
