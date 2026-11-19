@@ -460,3 +460,16 @@ the ranks at cycle 8 even on 1 to 2 ranks); the histories and positions agree wi
 rank at the level of T3 (1e-12 and 1e-14) and the identity holds at 1e-14. Refuted by a
 different mesh, a lost particle, a crash in the regridding with particles, or
 differences above 1e-9.
+
+### 08:40 Entry 13: P4e held
+
+Run core-20261119-161159-421d7e3 (`restart_cross_compare.py`; the first attempt,
+core-20261119-161148-7f60657, stopped on the missing header of the line dump of a
+restarted run, fixed in the driver): the restarted runs agree with each other as the
+uninterrupted runs of T3 do. Same dump read on 1 and 4 ranks: history 1.2e-13, positions
+1.8e-15, field dump 3.4e-12 (H), E and S_i at the particles 4.3e-15; dump of 4 ranks read
+on 4 and 1: 1.1e-13, 1.3e-15, 2.9e-12; dump of 2 ranks read on 2 and 4: 1.3e-13,
+1.8e-15, 2.7e-12; dumps of 1, 2, 4 ranks each read on its own count: 4.9e-13, 3.6e-15,
+5.9e-12. The identity holds at 3.4e-15 or better in every restarted run. Hr_max differs
+by up to 6.7e-10 (the noise ratio of entry 9). So a restart on several ranks, on the
+same or another number of ranks, behaves as one on one rank, up to rounding.
