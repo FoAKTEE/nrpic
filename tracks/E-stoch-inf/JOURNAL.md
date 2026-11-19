@@ -283,3 +283,16 @@ Open: the orchestrator's ruling on A4'/A5'; a G1 verifier; the G1 schematics and
 sections; core's release of the scalar-2 set-up; the USR package of wave 3a (`usr/`, not
 reviewed here, run E-20261119-145835-67cde45 in flight); A6 at 64^3 on a card, L5, L9, a
 second seed. Card-hours used this session: none (1.43 of 10 in all).
+
+Addendum (same session, 15:50Z). `nrpic-stage verify E-stoch-inf G0 --no-checksums` failed
+`compare` only on `note/tables/claims.{md,json}` (42 -> 43 agreeing numbers): the claims check
+reads SCOPE.md and SPEC.md, which this session edited. Prediction LN2 before the rerun: a
+registered rerun of `note/scripts/ledger.py` gives `ledger.tex` and `parameters.tex` identical
+to the committed ones, and `claims.*` that differ only in line locators and in the rows whose
+wording changed (cost and overhead in SCOPE 8/9, SPEC 11.2). Refuted by any other change.
+The full verify with checksums was stopped twice (by PID) because the disk was shared with
+two other leads' verifies (20 GB read in 11 minutes); G0 and G1 are verified without
+checksums; the final ladder analysis was checksum-verified separately (nrpic-run verify
+E-20261115-194633-9e04ed8, 101 files PASS). A first G1 verify ran by mistake from the main
+checkout (the `cd` applied to a background subshell only); it wrote an export under
+`scratch/orch/tmp/stage-verify/`, left in place.
