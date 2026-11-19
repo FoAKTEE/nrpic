@@ -76,3 +76,75 @@ gw_diag's full spectral evaluation of E, B, Psi_4 on exact (gamma, K) to < 1e-5 
 (the O(h) nonlinear terms, h ~ 1e-6) for the flat elliptic wave and for the FLRW standing
 mode at t = 3.1; the inversion recovers (P, X, P', X') to 1e-10 and its matrix has
 condition number < 1e3.
+
+## 2026-11-19 14:25 Predictions of tests F and X (before any run of either test)
+
+Numbers from run **B-20261119-141844-2c5d622** (`scripts/predict.py`,
+`results/predictions.json`, `figs/predictions.png`): the code's operators (sixth-order
+second derivative, KO sigma = 0.5 at nghost 4 summed over the axes, RK4 at dt = 0.25 dx,
+for X also dt <= 0.01/calH) applied to the single tensor mode; the predictor reproduces
+core's card numbers for one period of the (1,1,1) wave at N = 64 (-7.9e-9 amplitude and
+1.76e-7 rad per period, READY of core/requests-b, CARD TEST) times four. Sign convention
+here: phase error = arg(W_num/W_ex) with W ~ exp(-i|k|t), so a lagging numerical wave has
+a positive phase error.
+
+Test F (flat, k = 2 pi (1,1,1), A = 1e-6, A_x = 5e-7, phase 1 rad, t_end = 4/sqrt 3):
+
+| N | steps | amplitude error | phase error (rad) | 1 - w_h/k |
+|---|---|---|---|---|
+| 16 | 148 | -1.41e-4 | +2.53e-4 | 3.2e-6 |
+| 32 | 296 | -1.72e-6 | +1.22e-5 | 5.1e-8 |
+| 64 | 592 | -3.17e-8 | +7.03e-7 | 8.0e-10 |
+
+orders 6.4, 5.8 (amplitude), 4.4, 4.1 (phase).
+
+- **F1** (generator = gw_diag basis). At t = 0 the TT amplitudes equal amp/(2i),
+  amp_x e^{i phase}/(2i) to <= 1e-12 relative, so the generator's e+, ex are
+  pol_basis(khat) (core's statement, REQUESTS_B.md section 1). Refuted if > 1e-10.
+- **F2** (evolution). TT amplitude and phase errors of W+ and Wx at t_end equal the table
+  to 10 per cent at N = 32 and 64 and to 30 per cent at N = 16. Refuted otherwise.
+- **F3** (polarization). W_x/W_+ equals (A_x/A) e^{i} to <= 1e-8 in modulus and argument
+  at every N and time (both polarizations have the same discrete symbol). Refuted if > 1e-7.
+- **F4** (direction). Backward part |Wb|/|Wf| = |1 - w_h/k|/2 (the semi-discrete
+  eigenvector; RK4 does not change it): 1.6e-6, 2.5e-8, 4e-10; refuted if off by more
+  than a factor 2 above 1e-11.
+- **F5** (Weyl vs TT). With gw_diag's order-6 stencils the Weyl W differs from the TT W by
+  the symbol error of those stencils (relative 6.4e-6, 1.0e-7, 1.6e-9 for the second and
+  2.5e-5, 4.1e-7, 6.4e-9 for the first derivative at N = 16, 32, 64): between 1e-6 and
+  5e-5 at N = 16, 1e-8 and 1e-6 at N = 32, 1e-10 and 2e-8 at N = 64, order about 6.
+  With spectral derivatives: <= 1e-8 at every N (nonlinear terms reach the mode k only
+  at O(A^2)). The Weyl amplitude, phase and polarization errors then equal the TT ones
+  to within that difference. Refuted if outside these bands.
+- **F6** (non-TT content). ||h - h^TT||/||h^TT|| <= 1e-4 (core: a second-order non-TT
+  part 3.4e-6 A per period at k = 0 and 2k); TT content outside +-k <= 1e-5 of the wave.
+
+Test X (expanding box, k = (pi/2)(1,1,0), eps+ = 2e-6, eps_x = 1e-6, phase 1, t_end = 10):
+
+| N | steps | amplitude error | phase error (rad) |
+|---|---|---|---|
+| 16 | 360 | -6.97e-5 | +8.36e-5 |
+| 32 | 413 | +1.65e-6 | +3.21e-6 |
+| 64 | 658 | +1.94e-7 | +1.34e-7 |
+
+(N = 16 runs at the expansion step 0.01/calH throughout, so its RK4 error does not scale
+with dx; N = 64 is dominated by the RK4 error of the early steps.)
+
+- **X1** (data path). At t = 0 the TT measurement gives P = X = 0 and
+  P' = eps+/2, X' = eps_x e^{i}/2 to <= 1e-12 relative. Refuted if > 1e-10.
+- **X2** (background). a = <chi>^(-1/2) equals (1 + t/2)^2, <alpha> equals a, and
+  calH = -<alpha K>/3 equals 1/(1 + t/2), each to <= 1e-6 relative over t <= 10 (RK4 at
+  dt <= 0.01/calH; the particle lattice deposits a uniform density). Refuted if > 1e-5.
+- **X3** (evolution). TT amplitude and phase errors at t = 10 equal the table to 20 per
+  cent at N = 16 and 32; at N = 64 within a factor 2 (a background error of order 1e-7
+  would enter the amplitude directly). Refuted otherwise.
+- **X4** (polarization). W_x/W_+ = (eps_x/eps_+) e^{i} to <= 1e-8. Refuted if > 1e-7.
+- **X5** (Weyl vs TT). Order-6 Weyl vs TT: 1e-7 to 1e-4 (N = 16), 1e-9 to 2e-6 (32),
+  1e-11 to 3e-8 (64), order about 6; spectral Weyl vs TT <= 1e-7 at every N. The matter
+  term -4 pi S^TF is zero for dust at rest; refuted if outside these bands.
+- **X6** (non-TT, shift). ||h - h^TT||/||h^TT|| <= 1e-4; max |beta| = 0.
+
+Cost [JUDGEMENT]: the only serial Z4c rate on record is 1.5e4 zone-cycles per second
+(periodic_z4c run B-emd-gw-20261115-113218-0ea0f74, with Weyl extraction); without it I
+expect 3e4 to 1e5. N = 16, 32 on processors (minutes); N = 64 (1.6e8 zone-cycles per
+test) goes to one card in a batch job (about 0.05 card-hours with the queue overhead)
+unless the processor rate exceeds 1e5.
