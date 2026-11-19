@@ -10,9 +10,9 @@ in VERIFY_RESULTS.md (`nrpic-stage verify`), not here.
 - [x] **C1** Baseline results obtainable without the NRPIC coupling
   - status: PASS
   - evidence: G1/STATUS.md rows D-pre-1..4
-- [ ] **C2** The analysis pipeline validated on them
-  - status: OPEN
-  - evidence: validated: D-pre-2 (binning, invariants, crossing times; lead recheck D-20261115-193844-df4523c), D-pre-3 (masses; lead's own implementation D-20261115-193823-88f7f86), D-pre-4 (finder re-search); the Einstein-Straus pipeline es_runs/analyse.py ran on smoke output only: ES-1 and V-1 (D-20261115-172726-60ba4c2, -172730-c6d151b) are running
+- [x] **C2** The analysis pipeline validated on them
+  - status: PASS
+  - evidence: D-pre-2 (binning, invariants, crossing times; lead recheck D-20261115-193844-df4523c), D-pre-3 (masses; lead's own implementation D-20261115-193823-88f7f86), D-pre-4 (finder re-search); Einstein-Straus pipeline on AthenaK output of ES-1/V-1 (D-20261115-172726-60ba4c2, -172730-c6d151b): wall tracers on the exact curve to 2.2e-3 for tau <= 200 M, crossings of R = 2M to 6e-4 and 5.6e-3 M, horizon mass against the matched control (analysis D-20261119-141839-8686bd7, -142929-bb375ff); reproduced by the lead's independent code, Y1-Y6 held (D-20261119-151039-b2ce968; ../REVIEW-wave2.md section 6). The null-test floor in the ES set-up is not yet stated (late common drift after 165 M, cause open): that is G2 work
 - [x] **C3** Interface proposals submitted
   - status: PASS
   - evidence: outbox/20261115T1510Z__to-core__*.md (8); core answered 6 (core/requests-adf outbox dfix-answers; scratch/core/exe/core_requests-adf/READY items 1-5)
@@ -42,7 +42,7 @@ in VERIFY_RESULTS.md (`nrpic-stage verify`), not here.
 
 - [ ] **C9** Schematic: Updated architecture
   - status: OPEN
-  - evidence: note/figures/schem_architecture.png (wave 2) predates core's dfix executables (tracer rule, accretion diagnostics, analytic excision, Newtonian point mass now exist on core/requests-adf): to be redrawn
+  - evidence: note/figures/schem_architecture.png (wave 2) predates core's wave-2 executables (tracer rule, accretion diagnostics, analytic excision, Newtonian point mass on core/requests-adf; lapse_leak on core/gauge) and the ES-1/V-1/ES-1G chain: to be redrawn (not done in wave 2b)
 - [x] **C10** Schematic: Data-flow diagram
   - status: PASS
   - evidence: note/figures/schem_architecture.png is drawn as the data flow: initial data -> evolution in AthenaK -> analysis against references -> deliverables (run D-bh-dress-20261115-171627-18706fb)
@@ -57,7 +57,7 @@ in VERIFY_RESULTS.md (`nrpic-stage verify`), not here.
 
 - [x] **C13** Package documents of decision 0012: STAGE_REPORT.md (nrpic-stage report), EVIDENCE.md, OPEN.md and this CHECKLIST.md in the stage directory; REVIEW.md where the lead rechecked helpers; the scoping text in SCOPE.md or SCOPING.md beside them or in the scope directory, named in the report (no REPORT.md needed)
   - status: PASS
-  - evidence: STAGE_REPORT.md (nrpic-stage report), EVIDENCE.md, OPEN.md, CHECKLIST.md, REVIEW.md (-> ../REVIEW-wave2.md), STATUS.md; scoping text scope/SCOPE.md
+  - evidence: STAGE_REPORT.md (nrpic-stage report, 2026-11-19), EVIDENCE.md, OPEN.md, CHECKLIST.md, REVIEW.md (-> ../REVIEW-wave2.md sections 1-3, 6, 8), STATUS.md (the G1 criteria one by one); scoping text scope/SCOPE.md
 - [x] **C14** Data figures drawn with /zoom-figure-style from registered run outputs, one script per figure, every PNG looked at
   - status: PASS
   - evidence: all package figures from registered runs with figstyle/czstyle, one script each; looked at by their makers; lead looked at the key ones (REVIEW-wave2.md)
@@ -69,10 +69,10 @@ in VERIFY_RESULTS.md (`nrpic-stage verify`), not here.
   - evidence: note/main.pdf; check_manuscript.py --compile: 0 undefined, 0 overfull; 2 of 16 checks with candidates only in the ledger appendix and registration scripts
 - [ ] **C17** Verifier subagent (fresh context) wrote VERIFIER.md (decision 0016; VERIFIER_REPORT.md accepted too); every number of the Supplemental Material recomputed from the manifests
   - status: OPEN
-  - evidence: 
+  - evidence: no fresh-context verifier of the G1 material yet (decision 0016 item 4: a verifier of later material belongs to G1); ../G0/VERIFIER.md covers the plan and the wave-1 baselines; the wave-2 baselines (Kerr spike, Newtonian mode) and the ES-1/V-1 outcome were rechecked by the leads with the helpers' reports in hand (../REVIEW-wave2.md), which does not count as fresh context; requested from orch (outbox 2026-11-19)
 - [x] **C18** Null results and failed runs are on record (manifests and JOURNAL)
   - status: PASS
-  - evidence: failed runs kept: -121837-987643b, -122303-4e8e8af, -125449-60a62b8, -125724-464611f, -171733-633d422 (stopped); refuted predictions in the journals (es_runs entries 1-3, spike K1-K3, secondary_infall wave 2, note P4-P6)
+  - evidence: failed runs kept: -121837-987643b, -122303-4e8e8af, -125449-60a62b8, -125724-464611f, -171733-633d422 (stopped); superseded: D-20261115-170326-dfb2a02, -193755-3a53b08, D-20261119-151012-b4afa8a; refuted predictions in the journals (es_runs entries 1-3; entries 4-7 of wave 2b: the 3e-5 drift, ES-1 within V-1's floor, the +1.5e-3 horizon level, the 1+log plateau model A2 and prediction 4, A3's lapse minimum, the boundary hypothesis E2 and its probe tests; spike K1-K3, secondary_infall wave 2, note P4-P6)
 - [x] **C19** STATUS.md, JOURNAL.md and HANDOFF.md are current
   - status: PASS
-  - evidence: rewritten in the lead session of wave 2 (2026-11-15T20:40Z)
+  - evidence: rewritten in the lead session of wave 2b (2026-11-19); the wave-2 lead was cut off before rewriting them
