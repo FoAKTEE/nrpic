@@ -1,0 +1,203 @@
+# ES-F (Track D, package flux_tools): the first matter run after the vacuum-bubble benchmark
+# ES-1: the bubble of ES-1 filled with dust. Data: run D-20261119-145022-2208a19
+# (flux_tools/esf_data.py): format-2 table esf.tab (u = 0: the spatial metric is
+# Schwarzschild of M = 1; KL, KT of the slicing f^2 = 1 - M/m(R), every shell with the
+# Newtonian energy -M/R0, the unperturbed Hubble flow around the seed), dust of the ES-1
+# plateau density rho0 = 3.71818e-6 (H = 5.58116e-3/M) from a smooth inner edge over
+# 3-5 M to the ES-1 outer edge over 52-60 M, M_tot = 3.7387 M; puncture of bare mass 1;
+# 140 tracers (tags 0-139, m = 1e-30, ES-1 radii) then the dust on the 1 M lattice
+# (rest mass rho psi^6 h^3). Predicted growth: flux_tools/README.md, section "ES-F".
+# Mesh, gauge, finder, probes and slices are those of ES-1 (es_runs/inputs/es1_dx8.athinput,
+# identical apart from this header, basename, files and the accretion diagnostics), so
+# that V-1 (and V-0, v0_dx8.athinput) are matched vacuum controls and ES-1 the
+# no-accretion partner. Executable: one with the accretion diagnostics of core/requests-adf
+# (scratch/core/exe/core_requests-adf/athena_gpu, or the release that merges them).
+
+<comment>
+problem   = ES-F: black hole in an expanding dust ball that fills the bubble
+
+<job>
+basename  = esf
+
+<mesh>
+nghost    = 4
+nx1       = 96
+x1min     = -192.0
+x1max     = 192.0
+ix1_bc    = outflow
+ox1_bc    = outflow
+nx2       = 96
+x2min     = -192.0
+x2max     = 192.0
+ix2_bc    = outflow
+ox2_bc    = outflow
+nx3       = 96
+x3min     = -192.0
+x3max     = 192.0
+ix3_bc    = outflow
+ox3_bc    = outflow
+
+<meshblock>
+nx1       = 24
+nx2       = 24
+nx3       = 24
+
+<mesh_refinement>
+refinement       = static
+
+<refined_region1>
+level = 1
+x1min = -95.9
+x1max = 95.9
+x2min = -95.9
+x2max = 95.9
+x3min = -95.9
+x3max = 95.9
+
+<refined_region2>
+level = 2
+x1min = -47.9
+x1max = 47.9
+x2min = -47.9
+x2max = 47.9
+x3min = -47.9
+x3max = 47.9
+
+<refined_region3>
+level = 5
+x1min = -1.5
+x1max = 1.5
+x2min = -1.5
+x2max = 1.5
+x3min = -1.5
+x3max = 1.5
+
+<time>
+evolution  = dynamic
+integrator = rk4
+cfl_number = 0.25
+nlim       = -1
+tlim       = 200.0
+ndiag      = 200
+
+<z4c>
+lapse_oplog     = 2.0
+lapse_harmonicf = 1.0
+lapse_harmonic  = 0.0
+lapse_advect    = 1.0
+shift_Gamma     = 0.75
+shift_eta       = 2.0
+shift_advect    = 1.0
+diss            = 0.5
+chi_div_floor   = 1.0e-5
+damp_kappa1     = 0.02
+damp_kappa2     = 0.0
+
+<fastflow>
+find_every        = 16
+metric_drvts      = interpolant
+num_horizons      = 1
+npunct            = 0
+ntheta            = 16
+lmax              = 8
+use_puncture_0    = -1
+center_x_0        = 0.0
+center_y_0        = 0.0
+center_z_0        = 0.0
+initial_radius_0  = 0.8
+flow_iterations_0 = 400
+flow_alpha_beta_const_0 = 1.0
+hmean_tol_0       = 100.0
+mass_tol_0        = 1.0e-5
+start_time_0      = 0.0
+stop_time_0       = 1000.0
+verbose           = false
+
+<particles>
+particle_type  = nrpic
+pusher         = midpoint
+metric         = mesh
+interp         = hermite
+tolerance      = 1.0e-10
+max_iterations = 100
+deposit        = true
+deposit_shape  = cic
+nfilter        = 1
+filter_compensate = false
+alpha_exc      = 0.05
+ah_exc_factor  = 0.8
+hist_dcycle    = 10
+traj_dcycle    = 8
+traj_ntrack    = 140
+snap_dt        = 25.0
+probe_x1       = 46.0
+probe_x2       = 0.0
+probe_x3       = 0.0
+nprobe         = 7
+probe1_x1      = 1.0
+probe1_x2      = 0.0
+probe1_x3      = 0.0
+probe2_x1      = 4.0
+probe2_x2      = 0.0
+probe2_x3      = 0.0
+probe3_x1      = 20.0
+probe3_x2      = 0.0
+probe3_x3      = 0.0
+probe4_x1      = 36.0
+probe4_x2      = 0.0
+probe4_x3      = 0.0
+probe5_x1      = 56.0
+probe5_x2      = 0.0
+probe5_x3      = 0.0
+probe6_x1      = 80.0
+probe6_x2      = 0.0
+probe6_x3      = 0.0
+probe7_x1      = 152.0
+probe7_x2      = 0.0
+probe7_x3      = 0.0
+particle_file  = /data/haiyangw/nrpic/scratch/D-bh-dress/D-20261119-145022-2208a19/esf.nrp
+removal_record = true
+acc_nsphere    = 3
+acc_radius1    = 5.0
+acc_radius2    = 10.0
+acc_radius3    = 20.0
+acc_x1         = 0.0
+acc_x2         = 0.0
+acc_x3         = 0.0
+acc_dcycle     = 10
+
+<problem>
+pgen_name  = nrpic_cf
+ncomp      = 2
+comp0_type = table
+comp0_file = /data/haiyangw/nrpic/scratch/D-bh-dress/D-20261119-145022-2208a19/esf.tab
+comp1_type = puncture
+comp1_mass = 1.0
+lapse      = precollapsed
+shift      = zero
+
+<output1>
+file_type = hst
+dt        = 1.0
+
+<output2>
+file_type = rst
+dt        = 50.0
+
+<output3>
+file_type = bin
+variable  = z4c
+slice_x3  = 0.001
+dt        = 10.0
+
+<output4>
+file_type = bin
+variable  = con
+slice_x3  = 0.001
+dt        = 25.0
+
+<output5>
+file_type = bin
+variable  = tmunu_E
+slice_x3  = 0.001
+dt        = 25.0
