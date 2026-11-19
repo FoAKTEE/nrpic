@@ -1,0 +1,105 @@
+{
+  "schema": "nrpic-run-manifest/1",
+  "run_id": "D-20261119-145325-934efd1",
+  "track": "D-bh-dress",
+  "gate": "G2",
+  "kind": "scouting",
+  "purpose": "flux_tools ES-F processor smoke run: 2 cycles of the ES-F input (table, 850724 particles, accretion diagnostics) with core_requests-adf athena_cpu",
+  "preregistered_in": null,
+  "launcher": "local",
+  "command": [
+    "bash",
+    "-c",
+    "cd \"$NRPIC_RUN_DIR\" && /data/haiyangw/nrpic/scratch/core/exe/core_requests-adf/athena_cpu -i /data/haiyangw/nrpic/wt/D-bh-dress/tracks/D-bh-dress/flux_tools/inputs/esf_dx8.athinput -d \"$NRPIC_RUN_DIR\" time/nlim=2 output2/dt=1.0e9"
+  ],
+  "cwd": ".",
+  "git": {
+    "sha": "934efd12c1db67c747b0f1d133f4a23b7f135786",
+    "branch": "track/D-bh-dress",
+    "dirty": false,
+    "package": [
+      "tracks/D-bh-dress/flux_tools"
+    ],
+    "outside_package": {
+      "count": 0,
+      "first": []
+    },
+    "merge_base_main": "27b2ced9be0f020a4206d89e3cc982ada5c4367c",
+    "worktree": "wt/D-bh-dress"
+  },
+  "code": {
+    "core_tag": "core-v0.3",
+    "athenak_upstream_sha": "c5a0d7f",
+    "kokkos_sha": "6739bc623081648af9e752b616d9671527922cbf",
+    "problem": null
+  },
+  "env": {
+    "host": "anta",
+    "env_hash": "33c1dbb6673b68919eaa332b0add0b58aeac8be843f2071b9d06e2e0e397a96d",
+    "machine_file_sha256": "0321f40f4caeeb2a36624a9fa9809e60bad31071f366b3517ba23ad45698d2d7",
+    "uv_lock_sha256": "5417f6ba318b914aa3800e5d55f7b11fdd8df13c2688bdda7d419240aa1d5863",
+    "track_requirements_sha256": null,
+    "container_digest": null,
+    "compiler": "g++ 11.4.0",
+    "mpi": "none (Athena_ENABLE_MPI=OFF)",
+    "gpu": null,
+    "python": "3.10.12 /data/haiyangw/nrpic/wt/D-bh-dress/.venv"
+  },
+  "input": null,
+  "inputs": [
+    {
+      "path": "/data/haiyangw/nrpic/scratch/core/exe/core_requests-adf/athena_cpu",
+      "role": "input",
+      "sha256": "17ee5e28d93016da354ce86e5d869233a21a1f20f67b4cb211527e6b1359022d",
+      "bytes": 248355392,
+      "tracked": false,
+      "location": "main checkout data root"
+    },
+    {
+      "path": "tracks/D-bh-dress/flux_tools/inputs/esf_dx8.athinput",
+      "role": "input",
+      "sha256": "a7dd45a5b600c83d01607cfe410c1555d0564222147fef1e48d83016841e9d0c",
+      "bytes": 4612,
+      "tracked": true
+    }
+  ],
+  "batch_entries": null,
+  "resources": {
+    "nodes": 1,
+    "gpus": 0,
+    "cores": 1,
+    "walltime_s": null,
+    "wall_limit": null,
+    "segments_max": null,
+    "gpu_hours_requested": 0.0,
+    "gpu_hours": null,
+    "particles": null
+  },
+  "slurm": null,
+  "outputs": {
+    "dir": "scratch/D-bh-dress/D-20261119-145325-934efd1",
+    "sha256sums": "sha256sums.txt",
+    "sha256sums_sha256": null,
+    "bytes": null,
+    "files": null
+  },
+  "status": "running",
+  "exit_code": null,
+  "registered": "2026-11-19T14:53:27Z",
+  "started": null,
+  "ended": null,
+  "parents": [
+    "D-20261119-145022-2208a19"
+  ],
+  "notes": "",
+  "budget_at_submit": {
+    "gpu_hours_allotted": 30.0,
+    "cores_allotted": 16,
+    "gpu_hours_used": 0.0,
+    "gpu_hours_reserved": 0.0,
+    "gpu_hours_without_gate": 0.0,
+    "cores_busy": 2,
+    "runs": 141,
+    "allotment_from": "coord/DECISIONS/0006-compute-budget.md + 0014-budgets-after-wave-1.md"
+  }
+}
