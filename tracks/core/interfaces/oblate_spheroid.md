@@ -121,12 +121,12 @@ origin); a polar axis other than z (there is no option for it); double-precision
 the C++ function (the dump is single precision; the double-precision statement is the
 Python twin's); eccentricities so close to 1 that `b` is not resolved by the mesh.
 
-## 5. State of T3 and T4 (2026-11-19 16:20Z)
+## 5. State of T3 and T4 (2026-11-19 16:15Z)
 
 T2 holds (section 4). T3, the relativistic collapse at finest cells M/4 and M/8 with the
 card executable of this branch, is registered as run core-20261119-144923-1a7c274
 (Slurm job 4647, one job of at most 45 minutes: `cf_card`, `oblate_m4`, `oblate_m8`)
-and was still waiting in the queue at 16:20Z (fifteen jobs ahead on two cards). Its
+and was still waiting in the queue at 16:15Z (fifteen jobs ahead on two cards). Its
 predictions are in the journal (entries 1 and 3; P3a to P3d, P3a', P3c'), the commands
 that finish it in `tracks/core/analysis/oblate/README.md`. A third resolution (M/16)
 does not fit in the card-hour of the package: the prolate M/16 run took 0.48 card-hours

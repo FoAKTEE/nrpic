@@ -496,7 +496,7 @@ height [JUDGEMENT].
   31.5/19.7 = 1.6 against T4; the factor 1.44 to 1.58 of entry 3 was against the
   Newtonian clock with M = 1, 20.46 M).
 
-## 2026-11-19 16:16Z, entry 8: T4 at cells M/2 holds; the crossing is wider than I wrote
+## 2026-11-19 16:15Z, entry 8: T4 at cells M/2 holds; the crossing is wider than I wrote
 
 Run core-20261119-153609-754c44d (processors, release executable, 64^3 and 128^3 side
 by side; the 64^3 run ended at 16:07Z after 1834 s, the 128^3 run is at t = 4 M and
