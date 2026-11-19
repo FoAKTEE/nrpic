@@ -305,3 +305,14 @@ run made between 14:41Z and 14:46Z; the continuum numbers of `predict_boost.py` 
 printed at 14:46Z and the predictions TB written directly after, before commit cbe1e3ef
 (14:47Z). The order of prediction and run is as stated in each entry. From here on times
 are copied from `date -u`.
+
+### Prediction R (regression, written 14:48Z before the run)
+
+Inputs without the new parameters give byte-identical data files with this branch's
+processor executable (`.work/build_cpu`, source of commit cbe1e3ef) and the release
+executable `/data/haiyangw/nrpic/.work/build_cpu_v03/src/athena`: the four cases of
+`tracks/core/analysis/clump/regress.py` (`regress_cf`, `cf_table_regress`,
+`by_static`, and the first paper's two-overdensity configuration for two cycles;
+restart files up to the 36 never-set header bytes). The new code is reached only through
+`comp<c>_boost_file`; the loop of the generator gained a correction loop over zero
+entries and a block behind `if (tcl.n > 0)`. Refuted by any differing data byte.
