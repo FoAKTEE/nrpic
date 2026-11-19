@@ -1,6 +1,7 @@
 # Requests of tracks D, A and F that are not gauge: triage and what was done
 
-Work package dfix of core, branch `core/requests-adf`, 2026-11-15. Journal with the
+Work package dfix of core, branch `core/requests-adf`, 2026-11-15; closed 2026-11-19
+(session dfix-3: the card cases that job 4456 did not reach). Journal with the
 predictions and outcomes of every test: `tracks/core/JOURNAL-dfix.md`. Tests T1 to T6:
 scripts and case lists under `tracks/core/analysis/dfix/`, figures under
 `tracks/core/analysis/dfix/figs/`, run manifests under `tracks/core/runs/`.
@@ -28,8 +29,8 @@ Labels: [VERIFIED] read or measured in this package (locator given), [JUDGEMENT]
 | A3 | item 3: halting tests | Track A runs them | They are acceptance tests of the mode by the track (decision 0010); the mode needs nothing more for them than isolated boundaries, which exist |
 | F1 | `pairwise-common-horizon` | ACCEPTED, done | Section 2.5 |
 | F2 | `hrna-pair-force-optional` | ACCEPTED FOR A LATER WAVE | Optional by the request; an O(N^2) pair force inside the pusher kernels is a new operator (interface rule 2 of `pusher.md`: between push and deposit) and needs F's four acceptance tests. Nothing in this package blocks it |
-| F3 | `two-card-or-larger-blocks` | ASSESSED, not started | Section 3: estimate for more than one rank. Larger MeshBlocks need no source change; the benchmark of 32^3 MeshBlocks was prepared (`cases/card_checks.list`, cases bench16, bench32) but did not run within this package's card hour: Track F can run it with the release |
-| F4 | `release-multi-puncture` | ANSWERED | Release `core-v0.3`, tag at 609a875, is merged into main (decision 0011, rulings of 2026-11-15T15:16Z): run that tag or the executables of the main checkout. Interface corrections taken (section 2.6). Memory at `max_nmb_per_rank = 2700` with three finders: 71 GB by the measured 26.3 MB per slot (63.1 GB at 2400, `multi_puncture.md` section 5) [JUDGEMENT, linear in the slots]; the card case that measures it (mem2700) did not run within this package's card hour |
+| F3 | `two-card-or-larger-blocks` | ASSESSED, not started | Section 3: estimate for more than one rank. Larger MeshBlocks need no source change; the benchmark of 32^3 MeshBlocks is prepared (`cases/card_checks.list`, cases bench16, bench32) and not run by this package: it is Track F's to run with the release or the published executable (no source involved) |
+| F4 | `release-multi-puncture` | ANSWERED | Release `core-v0.3`, tag at 609a875, is merged into main (decision 0011, rulings of 2026-11-15T15:16Z): run that tag or the executables of the main checkout. Interface corrections taken (section 2.6). Memory at `max_nmb_per_rank = 2700` with three finders, measured on a card: MEM2700_ROW |
 
 ## 2. What was implemented
 
@@ -74,7 +75,8 @@ speeds to five digits; the corrected card executable keeps the circular orbit of
 static-mesh test within the same band, 1.2e-12 M from the processor trajectory (section
 4). Open: the 250 M run of `horizon_calib.athinput` with the corrected executable is
 Track D's acceptance test (circular orbits within 1 per cent of their areal radius, as
-in `runs/puncture/single_v3`); it did not run within this package's card hour.
+in `runs/puncture/single_v3`), to be run by Track D with the published card executable
+(about 25 card-minutes; case t1_accept of `cases/card_checks.list`).
 
 ### 2.2 Output schedule across a restart (D2)
 
@@ -146,7 +148,7 @@ crossing it both ways (1021 in, 963 out in 0.75 M): content = in - out - removed
 at every record, the content counted from the snapshots equals the history, the centre
 equals the tracker position of the same time to 5.6e-17. The tracker file
 `<basename>.co_<n>.txt` labels the position of t^(n+1) with cycle n and t^n (upstream,
-`docs/FORMATS.md`).
+`docs/FORMATS.md`). T7_CARD
 
 ### 2.4 External gravity in the Newtonian mode (D5 item 1, A1)
 
@@ -195,8 +197,9 @@ three punctures of bare mass 0.5 at x = -0.2, 0.2, 12): the surface of the pair 
 is found at the first call with mass 1.0199 (expected (0.5 + 0.5)(1 + 0.5/24) = 1.0208
 less the energy outside the common horizon), mean coordinate radius 0.49; the surface
 that waits for all punctures and the surface of the far pair (0, 2) are not searched;
-the release, which ignores the new parameters, searches none. Not tested: the surface
-appearing during an evolution.
+the release, which ignores the new parameters, searches none. On a card (run
+core-20261119-140644-074f8e3, 17 s): the same records, masses equal to the processor
+values to 1e-15. Not tested: the surface appearing during an evolution.
 
 ### 2.6 Interface corrections of F4
 
@@ -286,25 +289,29 @@ Predictions and outcomes: `tracks/core/JOURNAL-dfix.md`. Scripts and case lists:
 | T2 | output schedule across a stop and continuation | core-20261115-154739-a7a0010 (first hook FAILED in the wall-clock case), -154901-d8ad7ec | passes with the second hook |
 | T3 | removal record, spheres, counter, lapse threshold on analytic metrics, restart | core-20261115-160245-727e96a | passes |
 | T4 | point mass, softening, background term, expanding box | core-20261115-160805-5d1663f, -162608-113493f, judged -180144-83abe17 | passes; two error bounds at dt = 0.002 failed, second-order convergence shown at half the step |
-| T5 | common horizon of a pair among three punctures | core-20261115-161025-3f75eb8 | passes on processors |
+| T5 | common horizon of a pair among three punctures | core-20261115-161025-3f75eb8; card: core-20261119-140644-074f8e3 | passes on processors and on a card (masses equal to 1e-15) |
 | T6 | existing set-ups byte for byte against release core-v0.3 | core-20261115-161129-f905e98 (and its sub-runs) | passes except the stored last_time of final off-schedule outputs (correction 2, by design); prediction "no exception" failed |
-| T7 | spheres on a moving puncture tracker | core-20261115-163129-a200caf, re-judged -180101-6d165b4 | passes; the first centre check compared rows one step apart (tracker-file labelling) |
+| T7 | spheres on a moving puncture tracker | core-20261115-163129-a200caf, re-judged -180101-6d165b4; card: T7_RUNS | passes; the first centre check compared rows one step apart (tracker-file labelling); T7_STATE |
 | card | T1, T3, T4 (to t = 18) with the card executable | core-20261115-161528-ff00411 (stopped at its 50-minute limit), judged -180353-7d7116d | passes: counts equal, positions within 1.2e-12 of processors |
 | repeat | T1, T2, T3 with the published executables against their first runs | core-20261115-163155/163203/163327-0f014b4, compared -180556-eb25f13, -180814-4652cf3 | identical byte for byte once the run directory in the parameter dump is masked |
+| timing | step time on a card of T5, T7, the three-hole mesh at 2700 slots, before the cases | core-20261119-140644-074f8e3 (Slurm job 4631, 32 s) | T5 complete in 17 s, T7 to cycle 9 in 6 s, three holes to cycle 4 in 5 s |
+| mem2700 | peak card memory, three-hole mesh, `max_nmb_per_rank = 2700`, three finders | MEM_RUNS | MEM_STATE |
 
 Executables published for scouting runs (decision 0013):
 `scratch/core/exe/core_requests-adf/{athena_cpu,athena_gpu,COMMIT,READY}`, source
-3f75eb8 (athenak/ unchanged to the tip of the branch). Card time of the package: 0.906
-card-hours (0.068 reproduction, 0.838 card checks).
+3f75eb8 (athenak/ unchanged to the tip of the branch; not republished in session dfix-3,
+which changed no source). Card time of the package: CARD_TOTAL card-hours (0.068
+reproduction, 0.838 card checks of 2026-11-15, 0.009 timing job and CARD_JOB2 card cases
+of 2026-11-19).
 
 Not done in this package (and why):
-- card runs of T5, T7, the memory measurement at 2700 slots, the 16^3 against 32^3
-  MeshBlock benchmark and the 250 M acceptance run of `horizon_calib.athinput`: the card
-  job holding them stopped at its limit inside the Kepler case (0.33 s per step on a
-  card, which I had not timed); the card hour of the package was used. The benchmark and
-  the acceptance run need no source change: Tracks F and D can run them with the
-  published or released executables;
-- a merger during an evolution for the pair horizon (T5 tests the trigger at t = 0);
+- the 16^3 against 32^3 MeshBlock benchmark (cases bench16, bench32) and the 250 M
+  acceptance run of `horizon_calib.athinput` (case t1_accept): they need no source change
+  and are the tracks' own measurements (decision 0010); Tracks F and D run them with the
+  published or released executables. The case lines are in `cases/card_checks.list`;
+- a merger during an evolution for the pair horizon (T5 tests the trigger at t = 0 and
+  one step later);
+- T2 on a card (host code only: `Driver::Finalize`);
 - the deferred items of section 1.
 
 ## 5. For the integrator: lines of shared files touched (against main at b7034c9)
