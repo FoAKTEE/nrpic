@@ -200,6 +200,11 @@ def main():
         return
     # longest first, so the pool ends together
     cases.sort(key=lambda P: -P["n"] * P["nsteps"])
+    # particle files first, one after the other: cases that share a file must not write it
+    # concurrently (2026-11-19: two threads wrote the same file at once and a third read it
+    # half-written, "bad magic", runs C-20261119-154032-e450dfc and -162015-d97abac)
+    for P in cases:
+        prepare(os.path.join(root, P["name"]), P, root)
     with ThreadPoolExecutor(a.nproc) as ex:
         res = list(ex.map(lambda P: run_case(root, P, hl.EXE_CPU), cases))
     with open(os.path.join(root, "summary.json"), "w") as fh:

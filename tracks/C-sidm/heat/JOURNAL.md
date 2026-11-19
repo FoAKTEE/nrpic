@@ -309,3 +309,14 @@ the small-k values (1.2 sd of the slope): a Burnett-order rise of kappa(k) is su
 not resolved. Per-seed scatter at 4e5 particles: 1.3 percent (k lambda 0.2), 3.2 percent
 (0.4), against 2.1 and 3.4 percent from the design Monte Carlo. Number mode alone: 1.052,
 1.111, 1.448. Figure `figs/T7_th0.003_e0.2_cpu.png` replaced (looked at).
+
+## 2026-11-19 16:27 T8 coarse seed 1 (run C-20261119-154032-e450dfc): exit 1, one case lost to my driver
+
+Six of seven variants ran (rc 0); the base variant (dt 0.1, pmax 0.1, dx lambda/4) stopped at
+start with "bad magic in particle file": the four pool threads started together, two of them
+found the shared particle file missing and both wrote it, and the third read it while it
+was being rewritten. The content is deterministic (same seed), so the six cases that read a
+complete file are valid. The same happened to the pmax = 0.2 case of seed 2 (run
+C-20261119-162015-d97abac, still running). Fixed in `run_mode.py` (particle files made one
+after the other before the pool starts); the two missing cases are rerun in a separate run,
+and the regenerated particle files are compared byte for byte with the shared ones.

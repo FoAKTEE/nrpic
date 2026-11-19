@@ -134,6 +134,8 @@ class SnapReducer:
                 os.remove(f)
 
     def save(self, name="reduced.npz"):
+        if not self.records:            # the run wrote no snapshot (failed at start)
+            return None
         keys = [k for k in self.records[0] if k != "file"]
         out = {k: np.array([r[k] for r in self.records]) for k in keys}
         out["files"] = np.array([r["file"] for r in self.records])
