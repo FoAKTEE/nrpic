@@ -7,7 +7,8 @@
 # the lapse (2 - psi)/psi at the start (test TE of tracks/core/JOURNAL-clump2.md;
 # tracks/core/interfaces/moving_clusters.md).  Mesh of st_cluster.athinput (cells M/2
 # over the matter, domain [-1024 M, 1024 M]^3, 16^3 MeshBlocks) with the refined region
-# widened to hold the orbit, [-32, 32]^2 x [-16, 16].
+# widened to hold the orbit, [-32, 32]^2 x [-16, 16] (1408 MeshBlocks); 250 M, about a
+# third of an orbit (a whole orbit is about 0.9 card-hours).
 #
 # Tables and particles (10^4 stratified equal-mass particles per cluster):
 #   problems/ic/make_ic.py boosted --cluster-p 0.819,1,-15,0,0,0,-0.14631270419005796,0 \
@@ -68,7 +69,7 @@ evolution  = dynamic
 integrator = rk4
 cfl_number = 0.25
 nlim       = -1
-tlim       = 560.0
+tlim       = 250.0
 ndiag      = 50
 
 <z4c>
@@ -103,7 +104,7 @@ deposit_ppc       = 2.0
 deposit_max_coarsen = 31
 alpha_exc      = 0.1
 hist_dcycle    = 1
-snap_dt        = 4.0
+snap_dt        = 2.5
 particle_file  = orbit.nrp
 
 <problem>
@@ -137,8 +138,8 @@ lapse       = isotropic
 
 <output1>
 file_type = hst
-dt        = 1.0
+dt        = 0.5
 
 <output2>
 file_type = rst
-dt        = 140.0
+dt        = 125.0

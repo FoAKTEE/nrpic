@@ -444,3 +444,61 @@ the running job starts after the fix and uses the fixed script. The 25 cases of 
 Slurm 4649) waits in the queue (15 jobs of the program ahead of it, one card job of
 another user running). The executables of `.work/build_*` are from the source of
 cbe1e3ef; `git diff cbe1e3ef HEAD -- athenak/` is empty.
+
+### Test TE: two clusters on a quasi-circular orbit, design and predictions (written 15:58Z, before the card job is submitted)
+
+Budget [JUDGEMENT]: the package has one card-hour. TC asks for at most 0.4 (expected 0.15:
+568 MeshBlocks x 400 cycles x 4 runs). The cost per MeshBlock-cycle on a card is 5.1e-4 s
+[VERIFIED: `runs/st/ctl/s1_nf4/athena.log`, 960000 MeshBlock-cycles in 487.7 s, 10^4
+particles, the first paper's cluster mesh]. A binary needs the whole orbit at dx = M/2: the
+smoke start of `problems/clump/cluster_binary.athinput` (processor, `time/nlim=0`, not
+registered; only the block count is used) has 1408 MeshBlocks (256 on the finest level,
+224 on each of levels 1 to 5: the refined region straddles the block boundaries of every
+coarser level). A whole orbit (808 M) would cost 1408 x 6464 x 5.1e-4 s = 77 min; "a few
+orbital times" does not fit. TE runs 250 M (2000 cycles, 24 min, about 0.4 card-hours, a
+third of an orbit), which is enough to tell a quasi-circular orbit from a Newtonian one by
+its phase.
+
+Set-up. Two y_c = 0.819 clusters of ADM mass 1, 10^4 stratified particles each (seed 1),
+at x = -15 and +15 (separation r = 30 M, D/R = 3, what Track F asks for: clumps of
+compactness 0.1 three to six radii apart), momenta -P and +P along y with the first
+post-Newtonian quasi-circular value of the ADM Hamiltonian, `P = mu (M/r)^(1/2) (1 + 2 M/r)
+= 0.146313` (M = 2, mu = 1/2; Newtonian 0.129099). [BACKGROUND for the 1PN ADM
+Hamiltonian of two point masses; JUDGEMENT for the step: with
+`H_1PN/mu = (3 nu - 1) p^4/8 - [(3 + nu) p^2 + nu (n.p)^2]/(2 r) + 1/(2 r^2)` the circular
+condition at fixed `p_phi` gives `p_phi^2 = r + 4` in units of M, checked by hand.] Curvature
+of both boost tables and both corrections of psi, zero initial shift, lapse (2 - psi)/psi
+(0.7807 at the centres, against the static lapse 0.809 times (1 - M/r) = 0.782).
+Generator: `make_ic.py boosted --cluster-p 0.819,1,-15,0,0,0,-0.14631270419005796,0
+--cluster-p 0.819,1,15,0,0,0,0.14631270419005796,0 --N 10000 --seed 1 --prefix orbit`
+at commit cb978cec (files and `SHA256SUMS` in `scratch/core/clump2-binary-ic/`): lam =
+1.016398, the particles carry |sum m u| = 0.146338 and 0.146396 (sampling; net 6.6e-5,
+5.8e-5 in x, y), M_ADM = 1.98715. Reference values: angular velocity 1PN
+`omega = (M/r^3)^(1/2) (1 - (3 - nu) M/r)^(1/2) = 0.0077778` (period 808 M), Newtonian
+0.0086066 (730 M); radiation reaction `dr/dt = -(64/5) nu M^3/r^3 = -9.5e-4`.
+Measured by `analysis/clump2/binary_evolution_check.py` from the snapshots (species =
+cluster): rest-mass centres, separation D(t), phase of the separation vector, radii
+enclosing 10 to 90 per cent of each cluster's rest mass, |sum m u| per cluster; histories.
+
+1. Phase. The mean angular velocity of the separation vector over 40 to 250 M is within
+   5 per cent of the 1PN value, 0.00739 to 0.00817, below the Newtonian 0.00861. In the
+   first 40 M the coordinates lag (zero initial shift: the matter starts with 0.5 to 0.7
+   of its speed in coordinates, TC prediction 1), so the phase at 250 M is 0 to 0.25 rad
+   below `omega_1PN x 250 = 1.944`. Refuted if the fitted angular velocity is outside
+   0.0072 to 0.0084 (outside 0.0084 it is closer to Newtonian than to 1PN).
+2. Separation. D stays within 28.5 to 31.0 M throughout (eccentricity from the 2PN terms
+   left out of P, of order 1 per cent in P, plus the coordinate transient); the linear fit
+   of D over 40 to 250 M has a slope between -0.01 and +0.005 (the radiation reaction,
+   -9.5e-4, is not resolved). Refuted by D outside 27 to 32 or a slope below -0.02 (an
+   inspiral much faster than radiation reaction: the data would hold too little angular
+   momentum).
+3. Profiles. Every radius of each cluster stays within 15 per cent of its start value
+   (tides at D/R = 3 deform at order (R/D)^3 = 4 per cent; the cluster at rest moves its
+   radii by up to 10 per cent, `docs/TESTLOG.md` line 76); the two clusters behave alike
+   (symmetric set-up) within 3 per cent; no particle is lost.
+4. Lapse. alpha_min stays between 0.75 and 0.82 (no collapse, no dispersal).
+5. Momentum. |sum m u| of each cluster stays within 10 per cent of its start value (the
+   slicing dependence of TC prediction 4); the total over both stays below 3e-3 in each
+   component.
+6. Constraints. H-norm and M-norm (history) stay within a factor 2 of their values at
+   t = 5 M after that time (sampling noise dominates; no growth).
