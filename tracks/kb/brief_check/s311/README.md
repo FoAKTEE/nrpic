@@ -80,8 +80,9 @@ Nothing was written to the knowledge-base database.
   band (k = 1.095-1.348; r_t 1.0001; beta_max 1.0011; Peters 5/64 exact, 0.991; brief's 6e3 is
   6328).
 - `kb-20261119-154140-0c9116d`: tally and locator check; completed, 66 rows, 45 / 18 / 3 / 0, 97
-  locator spans, no problem. A rerun after the final edits of the notes is listed in JOURNAL
-  entry 5.
+  locator spans, no problem.
+- `kb-20261119-154346-78256f1`: the same check on the final CHECK.md (after a precision in the
+  note of row 2); identical tally, no problem. Reference run for the tally.
 
 All runs: processors, one core, seconds each, output under `scratch/kb/<run_id>/`, manifests
 under `tracks/kb/runs/<run_id>/`. No card was used; no run is pending.

@@ -152,3 +152,6 @@ to 0.38 and 1.26 r_t); ERRATA_ROWS.md (9 rows plus one of section 5) and README.
 
 Prediction for run T2 (same script on the final CHECK.md): unchanged tally (66; 45 / 18 / 3 / 0)
 and 97 valid locator spans. Refuted if anything changed.
+
+Outcome of run T2 (`kb-20261119-154346-78256f1`, completed, figure read): unchanged, 66 rows,
+45 / 18 / 3 / 0, 97 locator spans, no problem. Prediction held. Reference run for the tally.
