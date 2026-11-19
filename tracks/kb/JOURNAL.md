@@ -611,3 +611,30 @@ V1 (run kb-20261119-161909-08df7ea): held. The verifier's scripts, unchanged, on
 identical to its run 142015, C the same ten claims (claim 25 now with both rows), K 10 of 10 rows
 ok with 0 stale pairs (indexed commit = main 5deee18), Q 73/73 and 18/18 locators, zero
 bibliographies identical, 0 of 661 claims with string and rows disagreeing.
+
+### Session summary (kb lead, wave 2b, 2026-11-19T15:45-16:50Z)
+
+Commits 4767ea77 (merge of main)..(this commit) on kb/main. Runs (all through nrpic-run):
+kb-20261119-155134-17d6704 (B1), -155310-e600e38 (B2), -155315-b2c7420 (B3), -161413-31e6b85 (D1),
+-161451-e15d1b8 (D2, snapshot kb-20261119-a782f1e), -161633-1d05960 (Q1), -161716-2705191 and
+-161744-2d5ecc8 (review figure, first and second drawing), -161909-08df7ea (V1),
+-162642-25012f7 (KB-G2 figure). 0 card-hours.
+
+- did: rechecked the pdf_meta, retrieval and verifier packages from their outputs with my own
+  code and read their eight figures (stage/REVIEW-wave2.md, wave 2b; fig_w2b_review.png); wired
+  the helpers' modules into `kb` (ingest pdf, meta, search --rerank; ingest reads metadata back;
+  QA C1/C2/C4); found and fixed the cause of the claim-25 defect (my own wave-2 verify);
+  re-indexed this repository at main; loaded 12 claims for B, C and D; snapshot a782f1e; QA on it;
+  reran the verifier's scripts registered; KB-G1 package complete (all PASS), KB-G2 package
+  written (thresholds met, verifier missing); kb/QA_REPORT.md and kb/golden/questions.yaml written;
+  9 outbox messages (B, C, D, all, 5 to orch); 4 inbox messages acknowledged.
+- found: every number of the three helpers that I recomputed holds; the verifier's WRONG items
+  all hold; new: the Greek mapping of the PDF reader is wrong for cmsy/cmex symbols (3 of 20), a
+  seventh cause of lost bibliographies (2602.00155), 11 ok papers without bibliography put the
+  strict parse rate at 94.8 % (the recorded status gives 96.3 %).
+- changed my mind about: "parse status ok" as the parse-success measure of KB-G2: the verifier
+  shows it can hide a lost bibliography, so the package states both readings.
+- failed predictions: my C4 word-level ratio (gr-qc/0312117, misspelled in both records); none
+  else this session.
+- open: bibliography parser and claim chunk remap; KB-G2 verifier; held-out golden set; KB-G3
+  (the brief's statements as claims; 117 to_verify); upstream watch not run this wave.
