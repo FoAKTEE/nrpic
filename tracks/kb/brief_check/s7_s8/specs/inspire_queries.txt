@@ -1,0 +1,36 @@
+# INSPIRE queries of package s7_s8 (one per line: <tag> | <query> | <size>)
+# run sequentially by scripts/run_inspire.sh through harness/bin/nrpic-fetch-arxiv --inspire-query
+# (sorted most recent first by the fetch command). Tags name the open question (Q1..Q26) or
+# candidate (U1..U12) of brief section 7/8 that the query serves.
+Q1a | refersto:arxiv:2610.23218 | 25
+Q1b | refersto:arxiv:2608.13206 | 25
+Q2 | refersto:arxiv:2509.26470 | 40
+Q3a | refersto:arxiv:2607.21308 | 25
+Q3b | refersto:arxiv:2312.03285 | 25
+Q3c | refersto:arxiv:2508.20606 | 25
+Q4 | refersto:arxiv:2111.09163 | 40
+Q5a | refersto:arxiv:2310.19451 | 40
+Q5b | refersto:arxiv:2409.00024 | 25
+Q6 | refersto:arxiv:math/0209336 | 40
+Q9 | refersto:arxiv:2611.12831 | 25
+Q10 | refersto:arxiv:2609.13394 | 25
+Q13 | refersto:arxiv:2609.03051 | 25
+Q15 | refersto:arxiv:2505.09715 | 40
+Q17a | refersto:arxiv:2606.05479 | 25
+Q17b | refersto:arxiv:2601.20633 | 40
+Q18 | refersto:arxiv:gr-qc/0512031 | 40
+Q19a | refersto:arxiv:2506.21779 | 25
+Q19b | t Burnett and date > 2018 | 25
+Q20a | refersto:arxiv:1709.00267 | 60
+Q20b | t Einstein-Vlasov and t stability and (t expanding or t cosmolog or t FLRW or t Friedmann) | 40
+Q21a | refersto:arxiv:2512.14649 | 25
+Q21b | refersto:arxiv:2611.15050 | 25
+Q22a | refersto:arxiv:2405.10692 | 50
+Q22b | refersto:arxiv:2606.14853 | 25
+Q24a | refersto:arxiv:2404.16270 | 25
+Q24b | refersto:arxiv:2402.02178 | 25
+Q26 | refersto:arxiv:1805.09034 and (t Hills or t three-body or t tidal or t encounter or t disruption) | 25
+U10 | t Einstein-Vlasov and (t mean-field or t N-body or t many-body or t particle limit) | 25
+Q8 | t Vlasov and (t dust or t cold) and (t limit or t caustic) and date > 2015 | 25
+U1 | (t gravitational or t gravitomagnetic) and (t two-stream or t Weibel or t streaming instability) and t relativistic | 25
+Q11 | t primordial black hole and (t matter dominated or t matter-dominated or t early matter) and date > 2024 | 40

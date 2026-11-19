@@ -1,0 +1,42 @@
+# brief lines 558-562 (questions 1-5, formulation and gauge)
+# line 558, Q1
+2610.23218 | shell.?(cross|focus)|6
+2610.23218 | caustic|4
+2610.23218 | black hole formation|6
+2610.23218 | propose|5
+2610.23218 | Gamma.?driver|5
+2610.23218 | spatially varying|3
+2610.23218 | particle|4
+2608.13206 | Gamma.?driver|4
+2608.13206 | cosmologically scaled|3
+2608.13206 | dust|pressureless|matter.dominated|4
+# line 559, Q2
+2509.26470 | branch|8
+2509.26470 | uniqu|6
+2509.26470 | exist|6
+2509.26470 | toy model|4
+2509.26470 | strong.field|5
+2509.26470 | evolv|6
+# line 560, Q3
+2607.21308 | periodic|8
+2607.21308 | bias|4
+2607.21308 | boundary condition|5
+2312.03285 | periodic|6
+2312.03285 | curvature|4
+2508.20606 | boundary|6
+2508.20606 | periodic|5
+2508.20606 | asymptotic|4
+# line 561, Q4
+2111.09163 | asymptotic|6
+2111.09163 | energy density|6
+2111.09163 | gauge.invariant|5
+2111.09163 | numerical relativity|4
+2111.09163 | unambiguous|ambigu|4
+# line 562, Q5
+2310.19451 | gauge.?invariant|6
+2310.19451 | foliation|4
+2409.00024 | gauge.?invariant|6
+2409.00024 | foliation|4
+2202.10798 | foliation|4
+2202.10798 | gauge|5
+2202.10798 | null cone|light.?front|4

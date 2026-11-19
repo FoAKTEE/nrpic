@@ -1,0 +1,36 @@
+# INSPIRE queries of package s7_s8, second batch (2026-11-19T15:55Z). The first batch used
+# "refersto:arxiv:<id>", which INSPIRE does not resolve (every such query returned the
+# unfiltered most recent records, hits_total 25291; kept on record in inspire_queries.txt).
+# Here citing papers are found with "refersto:recid:<n>", the record ids taken from
+# kb-data/meta/inspire/<id>.json. Format: <tag> | <query> | <size>
+Q3b | refersto:recid:2729140 | 15
+Q4 | refersto:recid:1970306 | 30
+Q5a | refersto:recid:2715739 | 10
+Q5b | refersto:recid:2824213 | 10
+Q5c | refersto:recid:2037049 and date > 2023 | 30
+Q6 | refersto:recid:597061 | 10
+Q9 | refersto:recid:3226709 | 15
+Q10 | refersto:recid:3203745 | 10
+Q15 | refersto:recid:2921488 | 70
+Q17b | refersto:recid:3112583 | 25
+Q18 | refersto:recid:699587 | 35
+Q19 | refersto:recid:2939472 | 10
+Q22a | refersto:recid:2787877 | 40
+Q26 | refersto:recid:1674551 and (t dress or t dressed or t halo or t halos or t spike) | 40
+U2a | refersto:recid:2657733 | 15
+U2b | refersto:recid:1713794 and date > 2023 | 30
+U3 | refersto:recid:2758715 | 55
+U10a | refersto:recid:1645910 and date > 2018 | 40
+U10b | (t "mean field limit" or t "mean-field limit") and (t Vlasov or t relativistic or t Einstein) | 25
+Q16a | refersto:recid:879937 and date > 2023 | 60
+Q16b | abstracts.value:"timescape" and date > 2024 | 30
+Q8 | abstracts.value:"Vlasov" and abstracts.value:"dust" and date > 2015 | 40
+Q7 | abstracts.value:"numerical relativity" and (abstracts.value:"particle noise" or abstracts.value:"shot noise" or abstracts.value:"sampling noise") | 25
+U1a | abstracts.value:"gravitomagnetic" and abstracts.value:"instability" and (abstracts.value:"collisionless" or abstracts.value:"streams" or abstracts.value:"two-stream") | 25
+U1b | abstracts.value:"two-stream instability" and abstracts.value:"gravitational" | 25
+Q11 | abstracts.value:"primordial black hole" and (abstracts.value:"matter-dominated" or abstracts.value:"matter domination" or abstracts.value:"early matter") and (abstracts.value:"spin" or abstracts.value:"threshold" or abstracts.value:"mass function") and date > 2023 | 40
+Q12 | abstracts.value:"gravitational wave" and abstracts.value:"early matter" and (abstracts.value:"N-body" or abstracts.value:"structure formation" or abstracts.value:"nonlinear") | 30
+Q14 | abstracts.value:"self-interacting dark matter" and (abstracts.value:"general relativistic" or abstracts.value:"general relativity" or abstracts.value:"relativistic instability") and abstracts.value:"black hole" and date > 2023 | 30
+Q23 | abstracts.value:"inflaton" and (abstracts.value:"Vlasov" or abstracts.value:"N-body" or abstracts.value:"collisionless") | 25
+Q25 | abstracts.value:"tidal" and abstracts.value:"collisionless" and (abstracts.value:"relativistic" or abstracts.value:"general relativity") and date > 2018 | 30
+U4 | abstracts.value:"critical collapse" and (abstracts.value:"dust" or abstracts.value:"matter-dominated" or abstracts.value:"Vlasov" or abstracts.value:"collisionless") and date > 2015 | 30

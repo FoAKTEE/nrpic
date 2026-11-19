@@ -1,0 +1,37 @@
+# brief lines 604-615 (section 8, candidates U1-U12)
+# line 604, U1
+2611.12831 | electrodynamic|6
+2611.12831 | Lorentz force|4
+2611.12831 | gravitomagnet|gravito.?electr|4
+2611.12831 | plasma|5
+# line 605, U2
+1901.04498 | naked|5
+1901.04498 | Shapiro|4
+1901.04498 | hoop|4
+2305.04360 | naked|5
+2305.04360 | dust.like|dust|5
+2305.04360 | Shapiro|4
+# line 606, U3
+2402.10190 | Kerr|6
+2402.10190 | rotat|5
+2402.10190 | conjecture|5
+2402.10190 | charge|4
+2402.10190 | spherical|4
+# line 607, U4: type I criticality and a mass gap (Einstein-Vlasov critical collapse in the store)
+2402.10190 | type I|Type~I|Type I|4
+# line 608, U5
+2509.26470 | strong.field|5
+2509.26470 | evolution|5
+# line 610, U7
+gr-qc_0512031 | matter does not matter|4
+gr-qc_0512031 | heteroclinic|3
+# line 613, U10
+1801.01083 | continuum|5
+1801.01083 | number of black holes|N\s*\\to|N \\rightarrow|limit|6
+1801.01083 | Vlasov|kinetic|3
+1306.1389 | Einstein.?de.?Sitter|EdS|4
+1306.1389 | periodic|3
+2505.01495 | 25|4
+2505.01495 | N.body|4
+2505.01495 | Vlasov|kinetic|mean.field|continuum|4
+2506.21779 | Vlasov|3

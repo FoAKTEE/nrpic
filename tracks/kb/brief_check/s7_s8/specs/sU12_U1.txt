@@ -1,0 +1,19 @@
+# line 615, U12: phase sensitivity of the separation probability in the restricted three-body problem
+0911.1136 | phase|10
+1201.4794 | phase|8
+1210.1901 | phase|5
+astro-ph/0608159 | phase|5
+2404.16270 | phase|6
+# line 604, U1: Newtonian collisionless instabilities (Jeans, radial-orbit, two-stream) in the store
+1801.03507 | two-stream|3
+1907.08129 | radial.orbit|3
+2012.04409 | radial.orbit|instabilit|5
+2110.06265 | two.stream|radial.orbit|Jeans|8
+1206.6152 | Jeans|two.stream|5
+# line 568, Q8 and line 569, Q9: dust as a singular case of Vlasov matter
+2305.04360 | singular|6
+2305.04360 | bounded|4
+# Q16: Green and Wald framework and its assumptions
+1011.4920 | weak energy condition|5
+1011.4920 | shell.?cross|multi.?stream|caustic|5
+1011.4920 | traceless|5

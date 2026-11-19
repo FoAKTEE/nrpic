@@ -1,0 +1,38 @@
+# brief lines 587-592 (questions 21-26, new tracks)
+# line 587, Q21
+2401.08530 | window|6
+2401.08530 | coarse.?grain|4
+2401.08530 | gauge|slicing|4
+2512.14649 | window|5
+2512.14649 | tail|4
+2512.14649 | slicing|gauge|4
+2611.15050 | window|5
+2611.15050 | tail|non.?Gauss|4
+2611.15050 | non.?Markov|4
+2611.15050 | numerical relativity|3
+# line 588, Q22
+2405.10692 | lattice|4
+2405.10692 | stochastic.\$?\\?delta ?N|stochastic.delta|4
+2405.10692 | numerical relativity|3
+2311.03281 | sudden|5
+2311.03281 | ultra.slow|USR|4
+2311.03281 | stochastic|5
+2311.03281 | fail|4
+2606.14853 | ultra.slow|USR|5
+2606.14853 | stochastic|5
+2606.14853 | numerical relativity|4
+# line 590, Q24
+2404.16270 | 4 ?r_|4\s?M|4\s*GM|marginally bound|4r_g|6
+2404.16270 | plunge|5
+2404.16270 | capture|5
+2404.16270 | spin|Kerr|4
+2404.16270 | outcome|4
+2402.02178 | plunge|5
+2402.02178 | captur|5
+2402.02178 | 4 ?r_|4\s?M|4M|marginally|4
+2402.02178 | disrupt|separat|ionis|ioniz|6
+2402.02178 | spin|5
+# line 592, Q26
+1805.09034 | merger rate|5
+1805.09034 | dress|5
+1805.09034 | three.body|tidal|encounter|4

@@ -1,0 +1,25 @@
+# brief lines 566-570 (questions 6-10, kinetic numerics)
+# line 566, Q6
+math/0209336 | spherical|5
+math/0209336 | converge|8
+math/0209336 | error bound|estimate|4
+math/0209336 | three.dimension|without symmetry|non.?symmetric|general case|4
+math/0209336 | open|future|4
+# line 567, Q7 (no citation): the source paper on particle noise and constraints
+2611.12831 | noise|10
+2611.12831 | N\^\{?-1/2|N\^\{-1/2\}|8
+# line 568, Q8 (no citation)
+2611.12831 | dust|6
+2611.12831 | velocity dispersion|4
+2611.12831 | cold|4
+# line 569, Q9
+2611.12831 | prolate|12
+2611.12831 | Kretschmann|8
+2611.12831 | peak|8
+2611.12831 | not converg|resolution.dependen|depend.{0,30}resolution|8
+2611.12831 | naked|4
+# line 570, Q10
+2609.13394 | echo|8
+2609.13394 | phase mixing|5
+2609.13394 | numeric|4
+2609.13394 | time.?scale|5

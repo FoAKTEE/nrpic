@@ -1,0 +1,32 @@
+# INSPIRE answers already in kb-data/meta/inspire/query/ (fetched by other kb sessions before
+# 2026-11-19T15:30Z), read here without a new request. Format as specs/inspire_queries.txt.
+# The record ids (recid) of the cited papers are from kb-data/meta/inspire/<id>.json.
+R-Q1a | refersto:recid:3215855 | 0
+R-Q1b | refersto:recid:3190952 | 0
+R-Q2 | refersto:recid:2983641 | 0
+R-Q3a | refersto:recid:3182832 | 0
+R-Q3c | refersto:recid:2964616 | 0
+R-Q13 | refersto:recid:3199490 | 0
+R-Q17a | refersto:recid:3165444 | 0
+R-Q21a | refersto:recid:2747794 and date > 2025 | 0
+R-Q21b | refersto:recid:3093307 | 0
+R-Q22b | refersto:recid:3168734 | 0
+R-Q24a | refersto:recid:2780811 | 0
+R-Q24b | refersto:recid:2755521 | 0
+R-U10 | refersto:recid:2918187 | 0
+R-Q20a | a Fajman, David | 0
+R-Q20b | t stability and (t FLRW or t Friedmann) and (t dust or t Vlasov or t "massive particles" or t collisionless) | 0
+R-Q20c | t "Einstein-de Sitter" and (t stability or t stable or t instability) | 0
+R-Q20d | t "Einstein-Vlasov" and (t cosmolog or t FLRW or t Friedmann or t expanding or t Milne) | 0
+R-Q20e | t Vlasov and (t FLRW or t Friedmann or t cosmological or t "expanding spacetime" or t "expanding spacetimes") | 0
+R-EV1 | t "Einstein-Vlasov" and date > 2024 | 0
+R-EV2 | abstracts.value:"Einstein-Vlasov" and date > 2026-06 | 0
+R-EV3 | t "black hole" and t Vlasov and date > 2015 | 0
+R-Q11 | t "primordial black hole" and (t "matter-dominated" or t "matter dominated" or t "early matter") and date > 2026-06 | 0
+R-Q11b | abstracts.value:"primordial black hole" and abstracts.value:"numerical relativity" and date > 2026-08 | 0
+R-Q11c | abstracts.value:"numerical relativity" and abstracts.value:"dust" and date > 2026-06 | 0
+R-Q12 | abstracts.value:"gravitational wave" and (abstracts.value:"early matter" or abstracts.value:"matter-dominated" or abstracts.value:"matter domination") and | 0
+R-Q14 | abstracts.value:"self-interacting dark matter" and (abstracts.value:"gravothermal" or abstracts.value:"core collapse") and date > 2026-08 | 0
+R-Q22 | abstracts.value:"stochastic inflation" and date > 2026-09 | 0
+R-Q24 | (abstracts.value:"Hills mechanism" or abstracts.value:"tidal separation" or abstracts.value:"tidal disruption of binar") and date > 2026-06 | 0
+R-U3 | abstracts.value:"extremal" and abstracts.value:"Vlasov" and date > 2025-06 | 0

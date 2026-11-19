@@ -1,0 +1,19 @@
+# line 583, Q20: stability of Einstein-de Sitter type backgrounds (papers found by INSPIRE, in the store)
+2607.09326 | Vlasov|8
+2607.09326 | linearly unstable|unstable|6
+2607.09326 | dust|6
+2607.09326 | Milne|4
+2607.09326 | polytropic|4
+2607.09326 | open|remain|4
+2606.16879 | Vlasov|6
+2606.16879 | dust|6
+2606.16879 | instabil|5
+2606.16879 | Gowdy|3
+2604.14911 | title|2
+2604.14911 | Vlasov|6
+2604.14911 | Landau damping|5
+2604.14911 | Einstein|5
+2604.14911 | Einstein.?de.?Sitter|matter.dominated|decelerat|5
+2306.17774 | massless|3
+2306.17774 | massive|4
+2306.17774 | decelerat|4

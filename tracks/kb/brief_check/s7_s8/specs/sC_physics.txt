@@ -1,0 +1,35 @@
+# brief lines 574-583 (questions 11-20, physics)
+# line 576, Q13
+2609.03051 | binar|8
+2609.03051 | pair|5
+2609.03051 | collective|4
+2609.03051 | radiation|3
+# line 578, Q15
+2505.09715 | spike|6
+2505.09715 | backreact|feedback|4
+2505.09715 | merger|4
+2505.09715 | Newtonian|4
+2505.09715 | profile|density|5
+# line 580, Q17
+2606.05479 | DESI|5
+2606.05479 | dark energy|4
+2601.20633 | DESI|5
+2601.20633 | order of magnitude|3
+# line 581, Q18
+gr-qc_0512031 | singular|8
+gr-qc_0512031 | generic|4
+gr-qc_0512031 | matter does not matter|matter matters|4
+gr-qc_0512031 | heteroclinic|4
+gr-qc_0512031 | perfect fluid|4
+# line 582, Q19
+2506.21779 | Burnett|8
+2506.21779 | symmetr|6
+2506.21779 | conjecture|6
+2506.21779 | open|remain|4
+# line 583, Q20
+1709.00267 | Milne|4
+1709.00267 | cosmological constant|Lambda|4
+1709.00267 | symmetr|5
+1709.00267 | Einstein.?de.?Sitter|dust|flat|5
+1709.00267 | Ringstr|Rendall|Speck|Rodnianski|Hadzic|Had\\v|Oliynyk|5
+1709.00267 | stability|8
