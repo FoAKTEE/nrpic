@@ -527,3 +527,18 @@ the other two, proper volume and mean K, sums over cells of both ranks, 1.5e-13)
 ranks the particles are split 485 / 3515 over ranks 0 and 1, 3669 hand-overs and 1.1e4
 deposit packets: positions 1.3e-15, history 2.8e-13, E and S_i at the particles 5.3e-15,
 identity 3.4e-15 (one rank 5.9e-15), Hr_mean 6.6e-11. P5b held.
+
+### 09:12 Entry 17: T5b with load balancing (P5d held)
+
+Run core-20261119-161801-9d336d6 (t5_amr_offset, cluster at (4, 4, 4)): at cycle 8 four
+root MeshBlocks are refined on every rank count (28 created, 92 MeshBlocks; I had
+expected eight: the region chi < 0.55 touches four root MeshBlocks of the octant), and
+load balancing moves 14 MeshBlocks (2 ranks) and 45 MeshBlocks (4 ranks) between ranks
+(logs). The record of the ranks at cycle 9 (4 ranks): 2832 particles handed over,
+particles per rank 0 / 20 / 16 / 3964 before and 0 / 36 / 2802 / 1162 after. Agreement
+with one rank: history 5.2e-14 / 6.6e-14, positions 8.9e-16 / 1.3e-15 (t = 2.25 M), E
+and S_i at the particles 8.7e-15 / 8.3e-15, identity 5.9e-15 on 1, 2, 4 ranks, Hr_max
+6.1e-11. Figure `t5_amr_offset_ranks.png` (inspected): particles per rank jump at
+t = 1.5 M on 4 ranks; the history differences stay at 1e-16 to 4e-14 through the
+regridding. P5d held: particles follow their MeshBlocks through refinement and load
+balancing.
