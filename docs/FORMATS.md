@@ -138,3 +138,33 @@ Interface and column table: `tracks/core/interfaces/newtonian_mode.md`; reader:
 | `<base>.newton.hst` | text, one record every `hist_dcycle` cycles, 50 columns: time, cycle, scale factor, rest mass, kinetic energy, potential energy (particle sum and mesh sum), the Layzer-Irvine constant and its integral, momentum, angular momentum, centre of mass, the second moment `sum m x_i x_j` and its first three time derivatives (6 components each; the third is a difference quotient over the last step and has its own time column), extrema of the potential, largest momentum and acceleration, defect norm and number of V cycles of the Poisson solve, the step |
 | `<base>.nrpic.hst`, snapshots, trajectories | as in the relativistic mode, with these readings: the momentum slots hold `a dx/dt`; `sum_mW` and `int_E` are rest mass; the lapse columns (`alpha_probe`, `alpha_min`, `alpha_max`, probes) hold the potential `Phi` of `lap Phi = four_pi_G (rho - <rho>)`; the proper-time columns have no meaning |
 | `rst/<base>.NNNNN.rst.prt.nwt` | state of the mode next to the particle restart file: 8 bytes `NRPNWT01`, 50 float64 (30 particle sums of the last synchronised state, time, scale factor, Layzer-Irvine integral, 6 third derivatives and their time, largest momentum, defect norm, 6 mesh sums, largest acceleration, number of V cycles), 5 int64 (extents of the potential array), the potential including ghost cells as float64 |
+
+## Boost table of a table component (`*.bst`, format `bst1`)
+
+Momentum of a component of type `table` of `nrpic_cf` (`<problem> comp<c>_boost_file`,
+`comp<c>_p1..3`; `tracks/core/interfaces/moving_clumps.md`, part B): the radial moments
+of the momentum density of the moving cluster, from which the generator builds the
+extrinsic curvature, and the radial functions of the comoving shift. Plain text. Header
+lines begin with `#`; those of the form `# key = value` are read:
+
+| key | value | required |
+|---|---|---|
+| `format` | `bst1` | yes |
+| `pmass` | momentum per unit coordinate velocity of the clump far from it, `P = pmass V` | yes |
+| `ext_m`, `ext_kappa` | beyond the last row the slice function is `F = r + m + m^2/r + kappa/(r (r - m))` with `m = ext_m` (shift only) | yes |
+| `lam`, `yc`, `mass`, `i4_last`, `columns` | for the reader of the file; ignored by the code | no |
+
+Each data row is `r  Q/r^3  I4/r^5  ba  bb` on a uniform grid `r_k = k dr`, `k = 0 .. N-1`,
+starting at `r = 0`, with at least eight rows, extending beyond the matter:
+
+    Abar_ij = 3 Q/(2 r^2) [P_i n_j + P_j n_i - (delta_ij - n_i n_j) P.n]
+            + I4/(2 r^4)  [P_i n_j + P_j n_i + (delta_ij - 5 n_i n_j) P.n],
+    beta^i  = -(V^i ba + n^i (V.n) bb)        (only with comp<c>_boost_shift = true),
+
+`Q` the enclosed fraction of the momentum and `I4` its enclosed second moment per unit
+momentum (both constant beyond the last row; the columns divided by `r^3` and `r^5` are
+finite at the centre). Interpolation is four-point Lagrange (cubic), as for the radial
+table. Writer: `problems/ic/make_ic.py boosted` (`python/nrpic/boosted_cluster.py`,
+`BoostedST.write_boost_table`), which also writes the radial table of the cluster and the
+second-order correction of psi (a table of format `mp1`, multipoles 0 and 2 about the
+direction of motion, used with `comp<c>_corr = table`).
