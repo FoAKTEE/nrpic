@@ -179,7 +179,10 @@ def main():
                 H_end=float(r["hst"]["H"][-1]), wall=r["wall"], card_hours=r["card_hours"])
         ax[0].set_xlabel(r"time $t/m$", labelpad=-2)
         ax[0].set_ylabel(r"tracker speed $|\beta|$ at the puncture")
-        ax[0].legend(fontsize=7)
+        # the legend goes into the free corner of the middle panel (eight entries cover
+        # the curves of the left one)
+        hd, lb = ax[0].get_legend_handles_labels()
+        ax[1].legend(hd, lb, fontsize=6, loc="lower right")
         ax[1].set_xlabel(r"time $t/m$", labelpad=-2)
         ax[1].set_ylabel(r"horizon mass $M_{\rm AH}/m - 1$")
         ax[2].set_xlabel(r"time $t/m$", labelpad=-2)
