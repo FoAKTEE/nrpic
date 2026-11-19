@@ -646,3 +646,12 @@ on (members of P1: from t = 0.625 M) where hrms is below 1e-4. The smoke's misse
   removed.
 Consequence: the chain needs `--gpu-hours 26` (26 segments, 21.7 h of athena time), not the 20
 of the prepared command (20 segments, 16.7 h: too few).
+
+## 2026-11-19 E10a. The comparison script on S3 and S2 alone (prediction)
+
+`scripts/s2g_compare.py` encodes the criteria of E10 as checks (written after E10, criteria
+unchanged). Run on S3 and S2 only (S2g is queued: job 4640), it must reproduce the E3 numbers
+that E10 cites: drift from the median of t = 4-6 to that of 12-14 +5.1e-4 (S3) and +8.5e-4
+(S2) (the hrms filter keeps the same searches: all good searches after t = 3.5 have hrms below
+5e-4), f over 10-14 about 0.48 (S3) and 0.757 (S2), and leave every S2g check "no data".
+Settling time: S2 about 5 m, S3 near its end (still accelerating). Refuted otherwise.
