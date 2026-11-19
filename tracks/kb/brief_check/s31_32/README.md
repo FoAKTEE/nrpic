@@ -47,7 +47,7 @@ The two sources fetched in this package (2602.01830, 2505.00286) came through
 
 ## Runs
 
-- `kb-20261119-*` (see `tracks/kb/runs/`): the tally and figure of CHECK.md, processors, one core.
+- `kb-20261119-143638-79805cd`: the tally and figure of CHECK.md (processors, one core, completed; output `scratch/kb/kb-20261119-143638-79805cd/`).
 
 ## Requests
 

@@ -109,3 +109,9 @@ asserts consecutive row numbers and classifies every verdict. Prediction (from a
 development run into `scratch/kb/tmp/s31_32/dev/`): 61 rows; CONFIRMED 45, CONFIRMED with a
 precision 9, CORRECTED 5 (rows 9, 25, 30, 40, 51), ANSWERED 2, NOT FOUND 0. Refuted if the
 tally differs or the script raises on an unknown verdict.
+
+Outcome (run kb-20261119-143638-79805cd, processors, one core, exit 0): prediction CONFIRMED,
+tally identical (61 rows: 45, 9, 5, 2, 0; corrected rows 9, 25, 30, 40, 51). Figure
+`figures/fig_verdicts.png` (copy of the run's output) looked at: left, verdicts per brief line,
+the corrections sit on lines 145, 148, 149, 156, 159; right, per label, the 5 corrections are
+3 on cells labelled [BACKGROUND] (via line 152) and 2 on unlabelled claims; none on [VERIFIED].
