@@ -71,7 +71,7 @@ particle_file  = swarm.nrp
 
 <output1>
 file_type = rst
-dt        = 50.0
+dt        = 100.0
 
 <output2>
 file_type = bin
