@@ -841,3 +841,50 @@ Next steps, in order of use to the tracks [JUDGEMENT]:
 Harness: `harness/bin/nrpic-run` was not used (it stopped with KeyError 'outputs' on the
 hand-written manifests of wave 1, entry 4); every run of this package is registered by
 hand with `tracks/core/tools/run_registered.py`, same fields.
+
+## 2026-11-19, entry 15: outcome of the card test V4 (wave 2b)
+
+Wave 2 was cut off on 2026-11-15 before job 4487 ran. It ran on 2026-11-15 from 20:51:12
+to 20:52:06 UTC on one A100 80GB (`scratch/core/tmp/idsolve/slurm/card-vec-4487.out`),
+exit 0, three registered runs of the card build of a7a32cd (sha256 0d7bdff4..., the
+published `athena_gpu`): core-20261115-205113 (gauss_code_n64), -205121 (gboost_code_n64,
+vector part in stencil form), -205150-692336d (moving Gaussian, vector part in mode code).
+Their manifests (written inside the job by `run_registered.py`) were left untracked by
+the cut-off and are committed now (5bbcb7c). Inputs: the same files as the processor runs
+(sha256 of the athinputs and particle files equal). Analysis: registered run
+core-20261119-140543-8a3077f (`analyze_card_v4.py`, `card_v4_numbers.json`, figure
+`figs/card_v4`, looked at).
+
+Prediction (entry 13, written before the job): the same iteration counts as the
+processor runs -155051-87e189e, -183239-ca15f8b, -185858-a7a32cd; psi and W equal to
+1e-10 relative; at most 0.05 card-hours.
+
+| case | outer it. card / processor | scalar CG steps and V cycles per iteration | V cycles of the vector part | max\|dpsi\|/max psi | max\|dW\|/max\|W_x\| | wall, card / one core |
+|---|---|---|---|---|---|---|
+| Gaussian, scalar, mode code | 17 / 17 | equal (22 CG, 78 V) | - | 1.1e-15 | - | 5.5 s / 87.2 s |
+| moving Gaussian, vector stencil form | 17 / 17 | equal (33 CG, 131 V) | 322 / 323 | 7.4e-16 | 5.0e-16 | 26.4 s / 88.1 s |
+| moving Gaussian, vector mode code | 17 / 17 | equal (31 CG, 122 V) | 149 / 149 | 7.4e-16 | 1.7e-16 | 16.2 s / 77.7 s |
+
+- Held: outer iterations, conjugate-gradient steps and V cycles of the scalar step equal
+  in every iteration of the three cases; psi and W equal to 1e-15 (prediction 1e-10);
+  the monitor after the solve max|H| 1.092e-11 / 1.094e-11, 1.085e-11 / 1.086e-11,
+  1.08848e-11 / 1.08856e-11 (card / processor); the vector summary of mode code identical
+  to all digits printed (residual 9.638329e-07, max|M| 3.833323e-08). Card time: the job
+  took 54 s on one card, 0.015 card-hours (the manifests record 0.01 each, a fixed value
+  of the job script; prediction at most 0.05).
+- Failed on one count: in the stencil form the vector step that followed outer
+  iteration 16 took 18 V cycles on the card and 19 on the processor (322 against 323 in
+  all). The residual histories otherwise agree to 2.3e-3 relative at worst, in the last
+  iterations where the residuals are 1e-10 of their scale. Reading [JUDGEMENT; no run
+  isolates it]: at that iteration the vector residual entering the step is at round-off
+  (relative 1.8e-14 processor, 2.4e-14 card; max|Fv| 8.1e-16 and 1.1e-15, from the two
+  `gboost.idsolve.txt`), and each of the four multigrid solves of the step ends when its
+  defect is below id_mg_tol times the rms of its right side (`nrpic_idsolve.cpp` 657-666),
+  so with a right side of round-off the count depends on the order of the sums. It
+  changes nothing measurable: W agrees to 5e-16.
+- Cost on the card: the scalar solve is 16 times faster than one core, the vector part
+  3.3 (stencil) and 4.8 (mode code) times; not examined further (no new line of work).
+
+Consequence: the card executable `athena_gpu` of a7a32cd is tested for the scalar and
+the vector equation at 64 cells on one A100; READY and the interface (sections 8, 10)
+say so.
