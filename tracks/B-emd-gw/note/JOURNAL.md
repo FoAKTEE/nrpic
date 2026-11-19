@@ -147,3 +147,83 @@ one first-source run with moved outputs outside its `sha256sums.txt`; none of th
 `runs`, no VERIFIER_REPORT.md); I added two sections of my own (scoping text and note;
 disagreements between the stage documents and the files) and a draft "Decision requested"
 for the lead to rewrite. Commit c382abd.
+
+# Wave 2b (2026-11-19): note v1, the G1 products on paper (package note2)
+
+Task: the two G1 schematics (updated architecture, data flow) and the G1 sections of the note
+(the first source against the second-order strain; the spatial-gauge check; the Newtonian-mode
+baseline), from the registered runs of wave 2 that `stage/REVIEW-wave2.md` lists. Where the
+review and a file disagree, the file wins. No run of wave 2b enters the note (none had finished
+at the start of this package; sibling helpers' runs are in flight).
+
+State found at the start (06:02 PST): worktree clean after `git merge main` (d058b72); no
+partial work of this package (the last commit touching `note/` is 2f8806a, the lead's
+one-sentence fix of the late-rise wording). The note is v0 (10 pages), its figures from run
+B-20261115-165556-a399d4e.
+
+Sources the new sections read (run outputs, checksums in each run's `sha256sums.txt`):
+- per-dump diagnostics of the scan, 64^3: B-20261115-174722-ba1048d (eps = 0, 0.1, 0.3),
+  B-20261115-180834-c77a132 (eps = 1, zero shift and Gamma driver); 32^3:
+  B-20261115-184650-2d155b6 (all five cases); card runs B-20261115-164059-d802e82,
+  -165353-b592d43; processor runs -165525-f7c2004;
+- gauge piece on exact pure-gauge data (T0): B-20261115-164221-6a6b779 (`t0_gauge.json`);
+- Newtonian mode: B-20261115-173904-a7297e3 (`pancake.json`), B-20261115-174405-af11300
+  (`ellipsoid.json`);
+- the lead's rechecks: B-20261115-190007-e09a0d2, -190015-4dd3416 (cited only as the second
+  reading of a number, never as the source of a printed value).
+
+Found while reading, before any run: the claims check of `ledger.py` locates its phrases in the
+lead's stage documents at the working tree; the lead rewrote `stage/G1/STATUS.md` after the
+check (review, section note), so a rerun now finds 13 of 28 (15 phrases no longer found: a
+development run into `scratch/B-emd-gw/tmp/note2/tables`). The claims check is a record of
+those documents as they stood at G0: I pin it to the revision at which run
+B-20261115-165556-a399d4e checked them (its manifest `git.sha`) so that it reproduces.
+
+## Predictions (written before the first run of the new scripts)
+
+N6 (first source from the per-dump files, my own reduction in `fig_scan.py`). From the
+columns `h_K1_plus`, `h_K2_plus` (cosine part) of the 64^3 files and my own s g(tau):
+max |c_+/(s eps g) - 1| over 2 <= a <= 10 is 0.22 percent (eps = 0.1, 0.3) and 0.44 percent
+(eps = 1), the same at K2 with the opposite sign (helper P2, lead R2: 0.224, 0.222, 0.435
+percent); c_+/eps for 0.3 against 0.1 within 0.05 percent for 2 <= a <= 10; largest c_+/s
+of eps = 1 is 2.55 near a = 123 (lead R6; the helper wrote 2.5 near 95). Null (eps = 0): the
+largest TT amplitude of h over all dumps <= 3e-16 (lead: 1.9e-16 at every tenth dump; helper:
+2.8e-16 over all single-precision dumps). Refuted if any of these differs by more than 2 in
+the last printed digit, or if the null exceeds 1e-15.
+
+N7 (resolution, same script). max |c_+(32^3)/c_+(64^3) - 1| over the common dumps with
+5 <= a <= 40 is below 0.1 percent in every case (lead R5: 0.091 percent for eps = 0.1; the
+helper's 0.06 percent was read at five values of a only). Refuted above 0.1 percent.
+
+N8 (gauge, `fig_gauge.py`). eps = 1, raw zero-shift minus Gamma-driver c_+ over |s|: 0.13,
+0.36, 1.45 percent at a = 5, 10, 20; after G_tot in each run 0.005, 0.008, 0.03 percent;
+median |corrected/raw| over the dumps where |raw| > 1e-3 |s|: 0.084 (64^3), 0.093 (32^3).
+With G alone (no cross terms) the median ratio is about 5. The G_tot-corrected strain departs
+from s g more than the raw one at a = 10 and 20 for eps = 1 (0.69 against 0.44 percent, 3.5
+against 2.3 percent; lead's point 3). T0: slopes 2.000 (Lambda h) and 3.000 (after G) for the
+two seeds without slicing; 2.000 for both with slicing. Refuted by a difference beyond the
+printed digits, or if the corrected strain lies closer to s g than the raw one at a = 20.
+
+N9 (Newtonian mode, `fig_newton.py`, values read from the helper's analysis files). Measured
+over H1-predicted sheet error at a = 2 and 5 within 2 percent for n = 16, 32, 64; the error
+at n = 32 over n = 64 near 4 at a <= 5; crossing time of the ellipsoid 24.0659, 23.8955,
+23.8604 against the ODE's 23.8524, Richardson 23.8513 (order 2.3); energy to the crossing
+-34, -18, -9.7 percent (raw), order 0.88; N3 constants identical over the four alpha to
+< 1e-13. The review gives N3 constants 0.0620684, 0.0772146 (R9), which match neither the
+helper's averaged (0.061787, 0.076375) nor raw (0.062059, 0.077205) values: the note prints
+the helper's file values (the file wins) and the journal records the review's. Refuted if a
+value read differs from the README of `newton_tests` beyond its digits.
+
+N10 (schematics). The architecture of v0 classified by "exists / to be ported / new"; for G1 I
+classify by evidence: verified by the track in a registered run (green), on a tested branch
+of the code but not yet run by the track (slate), to be written (red). Prediction: about half
+of the twenty-one boxes change colour or text (Newtonian mode with history, Gamma driver,
+gauge piece, second-order strain, Zel'dovich ellipsoid become verified; oblique wave,
+double-precision dumps, jitter and thin boxes sit on core/requests-b). The data-flow diagram
+has five stages (initial data, evolution, outputs, analysis, comparison with references) and
+the ledger. Refuted if a box claims "verified" without a run id in `common.py` or a run
+manifest of this track.
+
+N11 (pages). After the new sections the note compiles with no undefined reference or
+citation and no overfull hbox; every caption stays within five lines; the checker finds no
+project name in the main text. The note grows from 10 to about 14 pages. Refuted otherwise.
