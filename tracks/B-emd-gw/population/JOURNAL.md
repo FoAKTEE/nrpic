@@ -165,3 +165,19 @@ looked at (the a = 5 density panel shows a moire of the particle lattice against
 - Near field: Omega_qs = 1.17e-8 at the first snapshot (design formula: 1.18e-8, the
   (20/3) source at a = 1), 4.95e-7 at a = 20 (twice the linear 1.18e-8 a), then 3.6 to
   3.8e-7 to a = 100 (a third of the linear extrapolation).
+
+## Entry 5 (08:12 PST): prediction P10 before the box-scaling analysis
+
+The Newtonian problem is invariant under x -> lambda x, p -> lambda p, m -> lambda^3 m at
+fixed t, so the fiducial run also stands for the boxes L = 8 (lambda = 2) and L = 2
+(lambda = 1/2); `scripts/analyze.py --lscale` applies the scaling to the snapshots. Only
+the GW wave equation (light speed, the box modes k = 2 pi n/L) breaks it.
+
+- P10a (exact): the per-halo quadrupole sum scales by lambda^7 (2.3e-7 -> 3.0e-5 at
+  lambda = 2) and the near field by lambda^6 (3.65e-7 -> 2.34e-5 at a = 100) to rounding.
+- P10b: at lambda = 2 the radiated box measure grows by MORE than 2^7 = 128 at a >= 30
+  (the halo wave number 9.4/sqrt(a) stays above the fundamental 0.785 to a = 143, so more
+  of the emission lands on box modes), at most by 128 x 19 (the per-halo/box ratio at
+  L = 4, a = 30). Refuted if the ratio is at or below 128 at a >= 30.
+- P10c: at lambda = 1/2 (fundamental 3.14, above 9.4/sqrt(a) from a = 9) the radiated
+  measure falls by more than 2^7 for a >= 15. Refuted if it falls by 128 or less.

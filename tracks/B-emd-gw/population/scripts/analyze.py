@@ -60,6 +60,19 @@ def scale(t):
     return (1.0 + 0.5*np.asarray(t))**2
 
 
+LSCALE = 1.0      # --lscale: the same Newtonian run in a box lambda times larger
+
+
+def read_scaled(fn):
+    """Snapshot with x -> lambda x, p -> lambda p, m -> lambda^3 m: the Newtonian
+    problem is invariant under this scaling at fixed t (rho_c and the expansion
+    unchanged, Phi -> lambda^2 Phi), so a run of box L stands for the box lambda L;
+    only light-speed effects (the GW wave equation) break the invariance."""
+    t, cyc, x, p, m, tag = read_snapshot(fn)
+    lam = LSCALE
+    return t, cyc, x*lam, p*lam, m*lam**3, tag
+
+
 def snapshots(d):
     return sorted(glob.glob(os.path.join(d, "newton.part.*.bin")))
 
@@ -303,7 +316,7 @@ def quadrupole_tracks(files, tag_sets, L, a_max):
     Qs = [[] for _ in tag_sets]
     cen0 = []
     for fn in files:
-        t, _, x, p, m, tag = read_snapshot(fn)
+        t, _, x, p, m, tag = read_scaled(fn)
         a = float(scale(t))
         if a > a_max*1.0001:
             break
@@ -349,7 +362,7 @@ def quad_energy(t, Qc, win=7):
 
 def analyze_case(name, d, gw, ng, nhalo_q, out, design=None):
     meta = json.load(open(os.path.join(d, "meta.json")))
-    L, n, ppc = meta["L"], meta["n"], meta["ppc"]
+    L, n, ppc = meta["L"]*LSCALE, meta["n"], meta["ppc"]
     spacing = L/(n*ppc)
     files = snapshots(d)
     res = {"name": name, "dir": d, "meta": meta, "snapshots": len(files)}
@@ -375,7 +388,7 @@ def analyze_case(name, d, gw, ng, nhalo_q, out, design=None):
         if at > avals[-1]*1.0001:
             continue
         i = int(np.argmin(np.abs(avals - at)))
-        t, _, x, p, m, tag = read_snapshot(files[i])
+        t, _, x, p, m, tag = read_scaled(files[i])
         a = float(scale(t))
         hal, n32 = halo_catalog(x, p, m, tag, a, L, spacing)
         cats.append({"a": a, "t": float(t), "n_halos": len(hal), "n_groups_32": n32,
@@ -386,12 +399,12 @@ def analyze_case(name, d, gw, ng, nhalo_q, out, design=None):
                      "x": [h["x"] for h in hal],
                      "f_mass_in_halos": float(sum(h["M"] for h in hal)/m.sum())})
     res["catalogs"] = cats
-    t, _, x, p, m, tag = read_snapshot(files[-1])
+    t, _, x, p, m, tag = read_scaled(files[-1])
     last_halos, _ = halo_catalog(x, p, m, tag, float(scale(t)), L, spacing)
     # first halo: scan snapshots from early to late at a coarse cadence
     first = None
     for i in range(0, len(files), max(1, len(files)//60)):
-        t, _, x, p, m, tag = read_snapshot(files[i])
+        t, _, x, p, m, tag = read_scaled(files[i])
         a = float(scale(t))
         hal, _ = halo_catalog(x, p, m, tag, a, L, spacing)
         if hal:
@@ -403,7 +416,7 @@ def analyze_case(name, d, gw, ng, nhalo_q, out, design=None):
         rows = []
         specs = {}
         for i, fn in enumerate(files):
-            t, _, x, p, m, tag = read_snapshot(fn)
+            t, _, x, p, m, tag = read_scaled(fn)
             a = float(scale(t))
             F = box.source(x, p, m, a)
             box.add(t, F)
@@ -428,7 +441,7 @@ def analyze_case(name, d, gw, ng, nhalo_q, out, design=None):
         # the maxima of the initial field (design.json) by their Lagrangian centre
         a_id = 20.0
         i_id = int(np.argmin(np.abs(avals - a_id)))
-        t, _, x, p, m, tag = read_snapshot(files[i_id])
+        t, _, x, p, m, tag = read_scaled(files[i_id])
         hal_id, _ = halo_catalog(x, p, m, tag, float(scale(t)), L, spacing)
         sel_h = hal_id[:nhalo_q]
         qrows = []
@@ -493,7 +506,7 @@ def figures(results, od, gwname):
     # 2. projected density of the GW case at four epochs
     r = next(x for x in results if x["name"] == gwname)
     files = snapshots(r["dir"])
-    L = r["meta"]["L"]
+    L = r["meta"]["L"]*LSCALE
     times = []
     for fn in files:
         with open(fn, "rb") as f:
@@ -504,7 +517,7 @@ def figures(results, od, gwname):
     fig.subplots_adjust(left=0.01, right=0.99, bottom=0.02, top=0.88, wspace=0.02)
     for ax, at in zip(axs, (5, 15, 30, av[-1])):
         i = int(np.argmin(np.abs(av - at)))
-        t, _, x, p, m, tag = read_snapshot(files[i])
+        t, _, x, p, m, tag = read_scaled(files[i])
         H, _, _ = np.histogram2d(np.mod(x[:, 0], L), np.mod(x[:, 1], L), bins=128,
                                  range=[[0, L], [0, L]], weights=m)
         H = H/H.mean()
@@ -574,7 +587,11 @@ def main():
     ap.add_argument("--nhalo-q", type=int, default=5)
     ap.add_argument("--design", default=None, help="design.json for the overlay")
     ap.add_argument("--tag", default="")
+    ap.add_argument("--lscale", type=float, default=1.0,
+                    help="analyse the run as the box lambda L (x, p scaled by lambda)")
     a = ap.parse_args()
+    global LSCALE
+    LSCALE = a.lscale
     od = os.environ.get("NRPIC_RUN_DIR") or os.path.join(ROOT, "..", "..", "scratch",
                                                          "B-emd-gw", "tmp", "analyze")
     os.makedirs(od, exist_ok=True)
