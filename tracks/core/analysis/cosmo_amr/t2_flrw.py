@@ -207,6 +207,8 @@ def main():
     ap.add_argument("--cores", type=int, default=8)
     ap.add_argument("--only", default="")
     a = ap.parse_args()
+    a.out = os.path.abspath(a.out)
+    a.new, a.rel = os.path.abspath(a.new), os.path.abspath(a.rel)
     os.makedirs(a.out, exist_ok=True)
     ic1, ic8 = os.path.join(a.out, "ic1"), os.path.join(a.out, "ic8")
     mk = os.path.join(A.ROOT, "cosmo/ic/make_lattice.py")

@@ -37,10 +37,11 @@
  "purpose": "T2, T5, T6, T7, T8 of cosmo-amr: homogeneous universe on refined periodic meshes (static, adaptive, patches on faces, drifting lattice, moving tracker, guard, light-speed step limit, region norms); hand-written manifest because nrpic-run refused (16 cores busy in live local runs of core)",
  "kind": "scouting",
  "tag": "cosmo-amr-T2",
- "state": "finished",
+ "state": "void",
  "wall_time_s": 4.56,
  "exit_status": 0,
  "cores": 8,
  "card_hours": 0.0,
- "started_utc": "2026-11-19T15:15:58Z"
+ "started_utc": "2026-11-19T15:15:58Z",
+ "notes": "void: the script passed a relative output directory, so every case stopped with 'cannot open' the particle file (io_wrapper.cpp:96); rerun after the fix"
 }

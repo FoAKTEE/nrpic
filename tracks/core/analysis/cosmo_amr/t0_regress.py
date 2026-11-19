@@ -102,6 +102,8 @@ def main():
     ap.add_argument("--cores", type=int, default=4)
     ap.add_argument("--cases", default="geo,boris,dep,east,os,flrw,punc")
     a = ap.parse_args()
+    a.out = os.path.abspath(a.out)
+    a.new, a.rel = os.path.abspath(a.new), os.path.abspath(a.rel)
     os.makedirs(a.out, exist_ok=True)
     cases = a.cases.split(",")
     if "flrw" in cases:
