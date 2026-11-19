@@ -295,3 +295,13 @@ second-order H-norm 0.030803 (0.027188, 5.132e-3); norm of the matter term 16 pi
   goes from 1.0 +- 0.1 to 0.0 +- 0.1. The H-norm does not change by more than 2 per
   cent between `none`, `curv` and `corr` (noise dominates; the second-order norm 0.031 is
   small against it).
+
+### Correction of clock times above (14:48Z, from `date -u` and the commits)
+
+The times I wrote into the entries above were guesses and too late. From the record:
+the predictions PA were written before commit 3d7d4e7 (14:40Z) and the run
+`core-20261119-144026-3d7d4e7` started at 14:40:26Z; the source was written and the smoke
+run made between 14:41Z and 14:46Z; the continuum numbers of `predict_boost.py` were
+printed at 14:46Z and the predictions TB written directly after, before commit cbe1e3ef
+(14:47Z). The order of prediction and run is as stated in each entry. From here on times
+are copied from `date -u`.
