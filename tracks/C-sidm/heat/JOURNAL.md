@@ -320,3 +320,17 @@ complete file are valid. The same happened to the pmax = 0.2 case of seed 2 (run
 C-20261119-162015-d97abac, still running). Fixed in `run_mode.py` (particle files made one
 after the other before the pool starts); the two missing cases are rerun in a separate run,
 and the regenerated particle files are compared byte for byte with the shared ones.
+
+## 2026-11-19 16:30 T6(b) window check (analysis C-20261119-162440-296dad0)
+
+Before naming the early kinetic lag as the cause of the seed difference, the fit was
+repeated over the late window [300, 1374] t_coll (the lag has decayed there): f = 1.0359
+and 1.0664 (literal 0.999 and 1.028), against 1.0287 and 1.0630 over the TESTS window. The
+two seeds still differ by 3 percent, so the lag is not the cause of the difference, and
+neither is the deterministic ringing (common to both seeds). What remains is statistical:
+the fundamental mode's own equilibrium fluctuation has a correlation time
+1/(chi_1 k_1^2) = 25, half the window, so it acts like an offset of the slab mass that the
+fit (initial and final values fixed) cannot absorb; with the sound modes the residual rms is
+0.0023-0.0030, two to three times the 0.00125 I assumed. Error of f per seed at 1.6e5
+particles: ~2.5 percent (not ~1); mean of the two seeds 1.046 +- 0.017 (TESTS window) or
+1.051 +- 0.015 (late window), consistent with T7's 1.019 +- 0.004 at 1.6 sd.
