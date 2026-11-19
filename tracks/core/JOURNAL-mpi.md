@@ -419,3 +419,44 @@ branch, field dumps of the uninterrupted and the restarted run at cycle 21 compa
 by cell. Expectation [JUDGEMENT]: the first record differed only in the proper volume and
 the mean of K, not at the particles or the probe, so the departure sits away from the
 matter, probably next to the outer boundary.
+
+### 08:30 Entry 12: outcomes of T4 (P4d held), R5 (the departure sits in the boundary ghost cells), and P5c
+
+R5, run core-20261119-160823-0e90ab7 (serial build, one process, field dumps at cycle
+21 of the uninterrupted and of the restarted run): E and chi identical in every cell;
+H, M_i, Theta differ by up to 2e-10 of their maxima in the cells next to the outer
+boundary (distance 0 to 2 cells), falling to 1e-13 at distance 7; the lapse by 1.4e-15.
+The expectation of entry 11 held: the departure sits at the outer boundary, not at the
+matter.
+
+T4 zero-step test (P4d), run core-20261119-161023-9421947 (dump of cycle 20 of the run
+with extrapolated sources, written on w ranks, read on r ranks, no step, dumped again):
+- The particle restart file written equals the one read byte for byte for all nine
+  pairs w:r with w, r in 1, 2, 4: particles in tag order, probe state, counters and the
+  source densities of the coming step of all eight MeshBlocks survive the hand-over and
+  the scatter exactly.
+- The mesh restart file written is identical for every reader rank count (written on w,
+  read on 1, 2, 4: identical bytes after the parameter header, checked for w = 1, 2, 4).
+  It differs from the dump read, also for 1:1, in 1.7e6 bytes: decoded as 176 arrays of
+  24^3 doubles (22 variables of z4c and adm in 8 MeshBlocks), 96 arrays differ, only in
+  ghost cells (5820 to 5824 of the 9728 ghost cells of a MeshBlock, those of the faces
+  on the outer boundary), interior cells identical, largest difference 4.3e-9. So the
+  restart path of the spacetime solver refills the ghost cells at the outer boundary from
+  the interior instead of keeping the values the run had; the first step after the
+  restart then sees other boundary values. This is the one-rank departure of R4 and R5,
+  a property of the mesh restart of the release, not of this package [JUDGEMENT on the
+  mechanism; the location is measured]. Not pursued here (it concerns every restarted
+  Z4c run with outflow boundaries; reported to the lead).
+- So P4d held for what it tests (a restart on any number of ranks reads and writes the
+  same state), with the caveat on the ghost cells that holds on one rank alike.
+
+Restarted runs (P4e) are compared with each other next (`restart_cross_compare.py`).
+
+T5b prediction (adaptive mesh, `mpi_cluster_amr.athinput`, case t5_amr_cluster): the
+refinement at cycle 8 (the first check that refinement_interval allows) gives the same
+mesh on 1, 2 and 4 ranks (120 MeshBlocks, history column 23); particle numbers stay
+4000; after the regridding the particles are redistributed (hand-overs in the record of
+the ranks at cycle 8 even on 1 to 2 ranks); the histories and positions agree with one
+rank at the level of T3 (1e-12 and 1e-14) and the identity holds at 1e-14. Refuted by a
+different mesh, a lost particle, a crash in the regridding with particles, or
+differences above 1e-9.
