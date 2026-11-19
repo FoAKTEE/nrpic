@@ -9,7 +9,7 @@ arXiv:2609.14218 for sheet A, consistent with s35.10). Paper locators
 check (52 rows: 33 confirmed, 18 confirmed with a precision, 1 corrected) is
 `tracks/kb/brief_check/s35/CHECK.md` (branch `kb/brief-check`), whose row numbers are given as
 "CHECK #". The tally and every locator of CHECK.md were checked by run
-kb-20261119-152248-b27df46 (file exists, line within the file, run manifests exist); the ratios
+kb-20261119-152449-e225d94 (file exists, line within the file, run manifests exist); the ratios
 of rows s35.1, s35.2 and s35.10 were recomputed from numbers printed in the paper bodies by run
 kb-20261119-151804-271859c (rerun kb-20261119-152254-b4836fb, identical numbers).
 
@@ -39,7 +39,7 @@ kb-20261119-151804-271859c (rerun kb-20261119-152254-b4836fb, identical numbers)
 | # | Brief line | What the brief leaves open | Answer | Evidence (locator) | Established by |
 |---|---|---|---|---|---|
 | s35.12 | 205 (§3.5) | "Without pressure the Jeans length vanishes, perturbations keep growing after horizon entry, and whether a black hole forms is decided by non-sphericity, angular momentum, inhomogeneity and velocity dispersion [BACKGROUND]" | Confirmed at the sources; the label can be [VERIFIED]. The Jeans-criterion threshold tends to zero as w goes to 0, delta grows as a, and the four effects are those the literature estimates (asphericity, angular momentum, inhomogeneity; velocity dispersion added by 2211.13950) | `1609.01588/v2/src/apj_nonsphericalpbh.tex:299-321, 443`; `2211.13950/v3/src/MD_threshold10.tex:149-166`; `1810.03490/v1/src/condition_of_PBH_formation20181008.tex:133`; CHECK #22-24 | kb (s35) |
-| s35.13 | 196-216 (§3.5) | the [VERIFIED] statements and the unlabelled attributions of section 3.5 | Checked one by one at the TeX sources (52 rows): 33 confirmed as written, 18 confirmed with the precisions of rows s35.2-s35.12, 1 corrected (s35.1). Every cited paper is in the knowledge base | CHECK.md; runs kb-20261119-152248-b27df46 (tally and locator check), kb-20261119-151804-271859c (ratios) | kb (s35) |
+| s35.13 | 196-216 (§3.5) | the [VERIFIED] statements and the unlabelled attributions of section 3.5 | Checked one by one at the TeX sources (52 rows): 33 confirmed as written, 18 confirmed with the precisions of rows s35.2-s35.12, 1 corrected (s35.1). Every cited paper is in the knowledge base | CHECK.md; runs kb-20261119-152449-e225d94 (tally and locator check), kb-20261119-151804-271859c (ratios) | kb (s35) |
 
 ## 5. Defects in sources the brief cites (for the knowledge base; not errors of the brief)
 

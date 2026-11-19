@@ -187,7 +187,7 @@ Run 3, `scripts/check_numbers.py` after the legend fix: numbers.json identical i
 to run 1 (the script is deterministic, only a label changed); the figure differs only in the
 legend text.
 
-## Entry 5 (2026-11-19 07:27 PST): outcomes of runs 2 and 3; an addition to row 35; prediction for run 4
+## Entry 5 (2026-11-19 07:24 PST): outcomes of runs 2 and 3; an addition to row 35; prediction for run 4
 
 Run 2, `kb-20261119-152248-b27df46` (completed, exit 0): 52 rows, tally 33 / 18 / 1 / 0 equal to
 the header, 68 locator spans checked, no problem. Prediction CONFIRMED, except one sub-prediction
@@ -213,3 +213,12 @@ wording that 2508.10070 drops (row s35.1, section 5).
 
 Prediction for run 4 (tally after the change of row 35): 52 rows, tally unchanged (33 / 18 / 1 /
 0), 69 locator spans (one span added to row 35), no problem, exit 0.
+
+## Entry 6 (2026-11-19 07:27 PST): outcome of run 4; package closed
+
+Run 4, `kb-20261119-152449-e225d94` (completed, exit 0): 52 rows, tally 33 / 18 / 1 / 0, 69
+locator spans, no problem. Prediction CONFIRMED. Figure
+`scratch/kb/kb-20261119-152449-e225d94/fig_verdicts.png` looked at: identical in content to that
+of run 2. ERRATA_ROWS.md now names run 4 as the reference tally run. README.md written
+(contents, results, rerun, runs, requests). Nothing is pending: no card job, no fetch, no
+database write.
