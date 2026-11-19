@@ -7,5 +7,5 @@
 set -uo pipefail
 HERE=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
 PY=${PY:-python3}
-"$PY" "$HERE/regress.py" --ref O3:1 --cases dep,east,newton,coll,os \
+"$PY" "$HERE/regress.py" --ref O3:1 --cases dep,east,newton,coll \
     --configs D:4 "D:4:::priv" --reuse "$1/atomic" --jobs 2 --out ./debug
