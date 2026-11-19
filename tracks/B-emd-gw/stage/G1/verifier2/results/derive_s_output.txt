@@ -1,0 +1,16 @@
+# nrpic-run B-20261119-140854-ec1f1c2 start=2026-11-19T14:09:00Z host=anta cwd=/data/haiyangw/nrpic/wt/B-emd-gw
+# cmd: python3 tracks/B-emd-gw/stage/G1/verifier2/scripts/derive_s.py
+background G_00 - 8piG rho a^2 (should be 0): 0
+G_0x at first order: 4*P1*k*cos(k*x)/eta
+v_x = -P1*eta*k*cos(k*x)/3   v_y = -P2*eta*k*cos(k*y)/3
+v_x against -(2/(3 calH)) d_x Phi/e: 0
+8piG delta rho a^2 (first order, from G_00 - 2 Phi background term): 2*(-12*P1*sin(k*x) - 12*P2*sin(k*y) - eta**2*k**2*(P1*sin(k*x) + P2*sin(k*y)))/eta**2
+G_xy at first order (should be 0): 0
+
++ equation at K1 (e+ contraction, cos(K1.x) part), = 0:
+5*P1*P2*k**2/6 + k**2*H(eta) + Derivative(H(eta), (eta, 2))/2 + 2*Derivative(H(eta), eta)/eta
+normalized: 5*P1*P2*k**2/3 + 2*k**2*H(eta) + Derivative(H(eta), (eta, 2)) + 4*Derivative(H(eta), eta)/eta
+coefficient of H' : 4/eta   (2 calH = 4/eta )
+coefficient of H  : 2*k**2   (K^2 = 2 k^2)
+static solution s =  -5*P1*P2/6  =  -5/6 * P1 P2
+# exit=0 end=2026-11-19T14:09:04Z
