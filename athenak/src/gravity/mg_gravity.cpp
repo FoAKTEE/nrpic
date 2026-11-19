@@ -78,12 +78,6 @@ MGGravityDriver::MGGravityDriver(MeshBlockPack *pmbp, ParameterInput *pin)
       // the solution falls off as 1/r about (robin_x1, robin_x2, robin_x3):
       // multigrid/multigrid_robin.cpp
       mg_bc = BoundaryFlag::mg_robin;
-      if (pmy_mesh_->multilevel) {
-        std::cout << "### FATAL ERROR in MGGravityDriver" << std::endl
-                  << "mg_bc = robin is not implemented on a mesh with refinement"
-                  << std::endl;
-        std::exit(EXIT_FAILURE);
-      }
       robin_o_[0] = pin->GetOrAddReal("gravity", "robin_x1", 0.0);
       robin_o_[1] = pin->GetOrAddReal("gravity", "robin_x2", 0.0);
       robin_o_[2] = pin->GetOrAddReal("gravity", "robin_x3", 0.0);

@@ -153,23 +153,45 @@ def cmd_zeldovich(a):
 
 
 def cmd_wave(a):
+    """Plane wave on the torus: lattice sites q displaced along x by -(A/k) sin(k q_x).
+    --ppc lattice sites per cell and direction; --nest lo hi: inside the Lagrangian cube
+    [lo, hi)^3 the lattice is twice finer and the masses eight times smaller (for a
+    refined region of the mesh); --velocity: the momentum of the growing mode,
+    u_x = H times the displacement."""
     h = a.box/(a.n*a.ppc)
     c = (np.arange(a.n*a.ppc) + 0.5)*h
     x, y, z = np.meshgrid(c, c, c, indexing="ij")
-    k = 2.0*np.pi/a.box
-    xd = x - (a.amp/k)*np.sin(k*x)
-    pos = np.stack([xd.ravel() % a.box, y.ravel(), z.ravel()], axis=1)
+    q = np.stack([x.ravel(), y.ravel(), z.ravel()], axis=1)
     rho = 3.0*a.hubble**2/(8.0*np.pi)
-    m = np.full(len(pos), rho*h**3)
+    m = np.full(len(q), rho*h**3)
+    if a.nest is not None:
+        lo, hi = a.nest
+        inside = np.all((q >= lo) & (q < hi), axis=1)
+        nf = int(round((hi - lo)/(0.5*h)))
+        cf = lo + (np.arange(nf) + 0.5)*0.5*h
+        xf, yf, zf = np.meshgrid(cf, cf, cf, indexing="ij")
+        qf = np.stack([xf.ravel(), yf.ravel(), zf.ravel()], axis=1)
+        q = np.concatenate([q[~inside], qf])
+        m = np.concatenate([m[~inside], np.full(len(qf), rho*h**3/8.0)])
+    k = 2.0*np.pi/a.box
+    disp = -(a.amp/k)*np.sin(k*q[:, 0])
+    pos = np.array(q)
+    pos[:, 0] = (q[:, 0] + disp) % a.box
+    u = np.zeros_like(pos)
+    if a.velocity:
+        u[:, 0] = a.hubble*disp
     stem = a.prefix or ("wave_n%d" % a.n + ("_p%d" % a.ppc if a.ppc > 1 else ""))
     os.makedirs(a.out, exist_ok=True)
-    nio.write_nrp(os.path.join(a.out, stem + ".nrp"), pos, np.zeros_like(pos), m)
+    nio.write_nrp(os.path.join(a.out, stem + ".nrp"), pos, u, m)
     meta = dict(kind="wave", n=a.n, ppc=a.ppc, box=a.box, hubble=a.hubble, amp=a.amp, k=k,
-                rho_mean=rho, N=int(len(m)), particle_file=stem + ".nrp")
+                rho_mean=rho, N=int(len(m)), particle_file=stem + ".nrp",
+                nest=list(a.nest) if a.nest is not None else None, velocity=bool(a.velocity),
+                sum_m=float(m.sum()), sum_mu_x=float((m*u[:, 0]).sum()))
     with open(os.path.join(a.out, stem + ".json"), "w") as f:
         json.dump(meta, f, indent=1)
         f.write("\n")
-    print("wrote %s.nrp: %d particles, mean density %.12g" % (stem, len(m), rho))
+    print("wrote %s.nrp: %d particles, mean density %.12g" % (stem, len(m),
+                                                             m.sum()/a.box**3))
 
 
 def main(argv=None):
@@ -216,6 +238,10 @@ def main(argv=None):
     w.add_argument("--hubble", type=float, default=1.0)
     w.add_argument("--amp", type=float, default=0.1)
     w.add_argument("--ppc", type=int, default=1, help="lattice sites per cell and direction")
+    w.add_argument("--nest", type=float, nargs=2, default=None,
+                   help="Lagrangian cube [lo, hi)^3 with a lattice twice finer")
+    w.add_argument("--velocity", action="store_true",
+                   help="momentum of the growing mode, u_x = H times the displacement")
     w.add_argument("--out", default=".")
     w.add_argument("--prefix", default=None)
     w.set_defaults(func=cmd_wave)

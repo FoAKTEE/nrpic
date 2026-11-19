@@ -155,3 +155,111 @@ iterations; max|H| of the monitor below 1e-9 away from the faces; the vector par
 `id_vector_tol` or by the stall rule with max|M| at least 1e3 times below its value
 before; psi(0) - 1 changes by less than 5 per cent between N = 32 and 64 (second order).
 Refuted if it does not converge or psi goes non-positive.
+
+## 2026-11-19, entry 2: registration; predictions B (end-to-end: the Zel'dovich ball)
+
+Registration: `nrpic-run submit` works in this worktree (venv made with `nrpic-env create
+--no-kokkos`). The allotment of 16 cores at a time is counted per owner, and five other
+packages of core were running (15 cores busy), so tests A went in with 2 cores and
+without the 128-cell cases (run core-20261119-145332-1ac049d); the 128-cell cases go to a
+card job. Each test script is one registered run that writes the particle files and
+input files of its cases into its run directory, runs them, analyses them and copies
+numbers and figures to `tracks/core/analysis/idsolve2/`. The executable of a run is a
+copy of the build of the commit (`scratch/core/tmp/idsolve2/exe_<commit7>/`), so that a
+later build cannot change it under a running test.
+
+Smoke runs before the registered ones (`scratch/core/tmp/idsolve2/byhand-*`, by hand,
+not registered, no number of them is used as a result) showed that the far-field fill
+runs to convergence and led to two changes before the commit of the source (1ac049d):
+the expansion is evaluated from precomputed coefficients of homogeneous polynomials with
+an analytic gradient (the first version, a triple loop per evaluation and numerical
+gradients, made the 32-cell solve 60 per cent slower), and the moments are always
+accumulated to degree 4 so that the J_ADM line does not depend on `id_far_lmax`.
+
+**B, the end-to-end test.** The expanding ball of Track A (`make_ball.py --Rb 10 --edge 2`,
+M = 1, Hubble rate H = sqrt(2 M/Rb^3) = 0.0447, density 3 H^2/(8 pi) = 2.39e-4), with a
+triaxial Zel'dovich displacement in its growing mode (`make_ic.py zeldovich`): Lagrangian
+position q -> x_i = (1 + e_i) q_i with e = (0.05, 0, -0.05), and momentum u_i = H e_i q_i
+relative to the normal observers (largest |u| 0.022). Now S_i is not zero: moving matter
+together with the curvature of the table, the combination the first pass did not test.
+Mesh half-width 32, N = 32, 64, 128 (dx = 2, 1, 0.5), no filter, density-form sources and
+conformal-time lapse (the settings of tests E and F), evolution to t = 2 with field dumps
+at t = 0, 1, 2. Four data sets per resolution: `sph` (sphere, solved), `zoff` (Zel'dovich,
+not solved), `zsol` (Zel'dovich, scalar and vector part solved, both in mode code),
+`zsca` (Zel'dovich, scalar part only). Norms over regions, never over the whole mesh
+(test F): interior r < 7, shell 7 <= r < 13.5, exterior, face layer (4 length units).
+Predictions [JUDGEMENT]:
+ (a) before the solve (`zoff`, t = 0): max|H| about 1e-2 and a shell mean of |H| of 3e-4
+     to 5e-4 at the two finer meshes (T3, F: a property of the data); interior mean of
+     |M| about 5e-5 (8 pi rho H e r = 9e-5 at r = 7), the same within 30 per cent at the
+     two finer meshes;
+ (b) after (`zsol`, t = 0): max|H| in interior and shell below 1e-10 at every resolution;
+     the interior mean of |M| at least 100 times below (a) (the vector part ends at its
+     tolerance or by the stall rule);
+ (c) `zsca`: H as in (b); the interior mean of |M| within 10 per cent of (a);
+ (d) record: |P_ADM| below 1e-10 (the momenta are odd in q), M_ADM of `zsol` within 1e-3
+     of that of `sph`;
+ (e) evolution: in interior and shell the mean of |H| of `zsol` stays within a factor 1.5
+     of `sph` at t = 1 and t = 2 at every resolution (the solved data keep the residual
+     at the level of the spherical case);
+ (f) at dx = 0.5 the shell mean of |H| of `zoff` at t = 2 is at least 3 times that of
+     `zsol`;
+ (g) the face layer has the same mean |H| at t = 2 in the four runs of one resolution to
+     10 per cent (1.3e-4 in test F): whole-mesh norms cannot tell the data apart;
+ (h) the interior mean of |M| at t = 1 of `zsol` is at least 2 times below that of `zsca`
+     at dx = 0.5 (the residual of the data is now above truncation level, unlike V6).
+Refuted: (b) if the solve does not converge at some resolution; (e) if `zsol` exceeds
+`sph` by more than a factor 2 in interior or shell at dx = 0.5.
+
+## 2026-11-19, entry 3: predictions C (refined meshes, torus with moving matter)
+
+Source for C: the Robin fill on the octets of the multigrid solver
+(`MultigridDriver::RobinBoundaryOctet`, `multigrid_robin.cpp`; one hook at the top of
+`ApplyPhysicalBoundariesOctet`), the refusal of `mg_bc = robin` on refined meshes removed
+(`mg_gravity.cpp`); in the solver the exchange across levels, the Z4c round trip of mode
+code and BiCGStab were already in 1ac049d. Said plainly: one smoke run was made before
+these predictions were written (`scratch/core/tmp/idsolve2/smoke/smr1`, the Gaussian of T1
+with one static level, not registered): it converged in mode stencil after 4 and in mode
+code after 20 outer iterations. The predictions below are for what that run did not show.
+Script `test_c.py`; the monitor of the run is read from the run's own output of the
+constraint variables (`<output> file_type = bin, variable = con`), per MeshBlock.
+
+**G, Gaussian at rest (exact psi) on refined meshes, Robin faces.** Lattice h = 0.25.
+Uniform dx = 1 (`g_uni32`) and 0.5 (`g_uni64`); root dx = 1 with one static level in
+|x_i| < 4 (`g_smr1`, also in mode stencil: `g_smr1_st`) and a second level in |x_i| < 2
+(`g_smr2`).
+ (a) mode code converges within 30 outer iterations on the refined meshes, mode stencil
+     within 6;
+ (b) the run's own monitor at t = 0, more than 4 length units from the faces of the mesh:
+     max|H| below 1e-9 on every level in mode code, the cells at the level boundaries
+     included (the solver's metric passes through the Z4c exchange of the run);
+ (c) relative error of psi - 1 at the centre (r < 1): `g_smr1` within 30 per cent of
+     `g_uni64` (the truncation error of the deposit follows the local cell size), `g_smr2`
+     not larger than `g_smr1`; at r = 6 (root level) the refined runs within 30 per cent
+     of `g_uni32`;
+ (d) `g_smr1_st` within a factor 2 of `g_smr1` at the centre;
+ (e) M_psi of `g_smr1` within 1e-3 of `g_uni64`.
+ Refuted if the monitor has a floor above 1e-7 at the level boundaries, or no convergence.
+
+**T, plane wave on the torus (K = -3H, a slice of constant mean curvature).** H = 1,
+L = 2, 32 root cells, eight lattice sites per root cell.
+ (a) `t_uni` (uniform, A = 0.1): as T4, at most 30 outer iterations, max|H| below 2e-9;
+ (b) `t_smr` (static level in the cube [0.5, 1.5]^3, lattice twice finer in that cube):
+     converges within 40 outer iterations; the run's monitor has max|H| below 1e-8 on both
+     levels; without the solve (`t_smr_off`) max|H| above 0.1;
+ (c) `t_smr_mov` (momenta of the growing mode, u_x = H times the displacement, vector
+     part in mode code): converges; max|M| at least 100 times below its value before; the
+     mean of the vector residual removed on the torus below 1e-10 of its scale (total
+     momentum zero);
+ (d) uniform torus with moving matter at A = 0.1, 0.5, 0.9 (density contrast up to
+     A/(1 - A) = 9): the Newton iteration converges within `id_maxit` = 60 at every
+     amplitude, psi > 0. Refuted if A = 0.5 does not converge.
+
+**Z, the Zel'dovich ball of test B with a refined centre** (root dx = 2, one static level
+with dx = 1 in |x_i| < 16; lattice h = 0.5), evolution to t = 2 with the settings of B.
+ (a) `z_smr_sol` converges; the run's monitor at t = 0 has max|H| below 1e-9 in interior
+     and shell;
+ (b) at t = 1 and t = 2 the interior and shell means of |H| of `z_smr_sol` are within a
+     factor 2 of the uniform run `zsol_n64` of test B (the same cell size in the matter),
+     and at t = 1 the shell mean is below that of `z_smr_off`.
+ Refuted if the refined solved run has 5 times the |H| of the uniform one in the matter.

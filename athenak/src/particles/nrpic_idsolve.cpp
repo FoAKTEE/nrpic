@@ -402,6 +402,68 @@ void Particles::NrpicSolveInitialData() {
     bh = DvceArray5D<Real>("ids_bh", nmb, 1, n3, n2, n1);
     bt = DvceArray5D<Real>("ids_bt", nmb, 1, n3, n2, n1);
   }
+  // refined mesh, vector part with the monitor as residual: in the cells whose monitor
+  // reads ghost cells across a level boundary (ng - 1 cells on either side) the monitor
+  // sees the difference of the truncation errors of the two levels over the cell size,
+  // which the correction cannot remove; there the residual is the stencil form.  The
+  // mask is set on the host from the boxes of the MeshBlocks (with periodic images).
+  DvceArray4D<Real> lbm;
+  if (multilevel && vec && ids.vec_residual == 0) {
+    lbm = DvceArray4D<Real>("ids_lbm", nmb, n3, n2, n1);
+    auto lh = Kokkos::create_mirror_view(lbm);
+    Kokkos::deep_copy(lh, 0.0);
+    auto szh = pmy_pack->pmb->mb_size.h_view;
+    auto &lev = pmy_pack->pmb->mb_lev;
+    const RegionSize &ms = pm->mesh_size;
+    const Real len[3] = {ms.x1max - ms.x1min, ms.x2max - ms.x2min, ms.x3max - ms.x3min};
+    const bool per[3] = {pm->mesh_bcs[0] == BoundaryFlag::periodic,
+                         pm->mesh_bcs[2] == BoundaryFlag::periodic,
+                         pm->mesh_bcs[4] == BoundaryFlag::periodic};
+    const int nn[3] = {nx1, nx2, nx3};
+    for (int m=0; m<nmb; ++m) {
+      const Real lo[3] = {szh(m).x1min, szh(m).x2min, szh(m).x3min};
+      const Real hi[3] = {szh(m).x1max, szh(m).x2max, szh(m).x3max};
+      const Real dd[3] = {szh(m).dx1, szh(m).dx2, szh(m).dx3};
+      for (int o=0; o<nmb; ++o) {
+        if (lev.h_view(o) == lev.h_view(m)) continue;
+        const Real lo2[3] = {szh(o).x1min, szh(o).x2min, szh(o).x3min};
+        const Real hi2[3] = {szh(o).x1max, szh(o).x2max, szh(o).x3max};
+        for (int s3=-1; s3<=1; ++s3) {
+          for (int s2=-1; s2<=1; ++s2) {
+            for (int s1=-1; s1<=1; ++s1) {
+              const int sh[3] = {s1, s2, s3};
+              int il[3], iu[3];
+              bool hit = true;
+              for (int d=0; d<3 && hit; ++d) {
+                if (sh[d] != 0 && !per[d]) { hit = false; break; }
+                const Real a = lo2[d] + sh[d]*len[d], b = hi2[d] + sh[d]*len[d];
+                // cells of block m whose distance to [a, b] in this direction is
+                // below ng - 1 cells
+                const Real reach = (ng - 1 + 0.01)*dd[d];
+                il[d] = 0;
+                iu[d] = nn[d] - 1;
+                while (il[d] <= iu[d] && lo[d] + (il[d] + 0.5)*dd[d] < a - reach) {
+                  ++il[d];
+                }
+                while (iu[d] >= il[d] && lo[d] + (iu[d] + 0.5)*dd[d] > b + reach) {
+                  --iu[d];
+                }
+                if (il[d] > iu[d]) { hit = false; }
+              }
+              if (!hit) continue;
+              for (int k=il[2]; k<=iu[2]; ++k) {
+                for (int j=il[1]; j<=iu[1]; ++j) {
+                  for (int i=il[0]; i<=iu[0]; ++i) { lh(m,ks+k,js+j,is+i) = 1.0; }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+    Kokkos::deep_copy(lbm, lh);
+  }
+  const bool use_lbm = (multilevel && vec && ids.vec_residual == 0);
 
   // ---- trial state: psi, K, Abar_ij from the ADM variables of the problem generator
   pz4c->Z4cToADM(pmy_pack);
@@ -1019,6 +1081,7 @@ void Particles::NrpicSolveInitialData() {
     auto s0 = sv[0], s1 = sv[1], s2 = sv[2];
     auto sc = vsc;
     auto ar = abr;
+    auto lb = lbm;
     par_for("ids_vres", DevExeSpace(), 0, nmb1, ks, ke, js, je, is, ie,
     KOKKOS_LAMBDA(const int m, const int k, const int j, const int i) {
       const Real dx = sz(m).dx1, dy = sz(m).dx2, dz = sz(m).dx3;
@@ -1047,6 +1110,8 @@ void Particles::NrpicSolveInitialData() {
           near = near || (d2 < pr2[c]);
         }
       }
+      // next to a level boundary: stencil form as well
+      const bool nearb = use_lbm ? (lb(m,k,j,i) > 0.5) : false;
       // compact operator
       auto lap7 = [&](const DvceArray5D<Real> &w) -> Real {
         const Real c = w(m,0,k,j,i);
@@ -1075,7 +1140,8 @@ void Particles::NrpicSolveInitialData() {
         const Real t_s = 8.0*M_PI*p6*tm(m,Tmunu::I_Tmunu_Sx + a,k,j,i);
         const Real t_k = (2.0/3.0)*p6*dk[a];
         const Real rhs = t_s + t_k - da[a];
-        const Real f = (vec_code && !near) ? p6*con.M_d(m,a,k,j,i) : lw3[a] - rhs;
+        const Real f = (vec_code && !near && !nearb) ? p6*con.M_d(m,a,k,j,i)
+                                                     : lw3[a] - rhs;
         const Real sa = fabs(lw3[a] + da[a]) + fabs(t_k) + fabs(t_s);
         smax = fmax(smax, sa);
         if (a == 0) { f0(m,0,k,j,i) = f; s0(m,0,k,j,i) = rhs; }
@@ -1617,11 +1683,14 @@ void Particles::NrpicSolveInitialData() {
         jadm[a] += b.s[a] + d[e]*b.p[g] - d[g]*b.p[e];
       }
     }
-    std::fprintf(fl, "# far field: M_ADM = %.12e, P_ADM = (%.12e, %.12e, %.12e), J_ADM = "
+    // (M_psi is the monopole of psi, psi -> 1 + M_psi/(2 r): the ADM mass when K_ij
+    // falls off faster than r^-3/2, which the Painleve-Gullstrand exterior of a table of
+    // format 2 does not)
+    std::fprintf(fl, "# far field: M_psi = %.12e, P_ADM = (%.12e, %.12e, %.12e), J_ADM = "
                  "(%.12e, %.12e, %.12e) about the centre (%g, %g, %g)\n", madm, padm[0],
                  padm[1], padm[2], jadm[0], jadm[1], jadm[2], xo, yo, zo);
     if (global_variable::my_rank == 0) {
-      std::cout << "NRPIC: far field of the solved data: M_ADM = " << madm << ", P_ADM = ("
+      std::cout << "NRPIC: far field of the solved data: M_psi = " << madm << ", P_ADM = ("
                 << padm[0] << ", " << padm[1] << ", " << padm[2] << "), J_ADM = ("
                 << jadm[0] << ", " << jadm[1] << ", " << jadm[2] << ")" << std::endl;
     }
