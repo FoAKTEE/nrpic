@@ -542,3 +542,18 @@ and S_i at the particles 8.7e-15 / 8.3e-15, identity 5.9e-15 on 1, 2, 4 ranks, H
 t = 1.5 M on 4 ranks; the history differences stay at 1e-16 to 4e-14 through the
 regridding. P5d held: particles follow their MeshBlocks through refinement and load
 balancing.
+
+### 09:25 Entry 18: R0 on the final source (P0a, P0b held)
+
+Source ca46836 (athenak/ unchanged since), release `build_cpu_v03` against this branch;
+reports `tracks/core/analysis/mpi/figs/r0_final_serial.json` and
+`r0_final_mpi_one_rank.json` (each case is two registered runs, e.g. os:
+core-20261119-161611-485c50e / core-20261119-162447-6095bbf for the serial build,
+core-20261119-161618-485c50e / core-20261119-162453-6095bbf for the MPI build):
+- serial build: geo, boris, dep, east, os identical byte for byte in every file (os: 16
+  files including five mesh and five particle restart files). P0a held.
+- MPI build started without mpirun: identical in every file but the five mesh restart
+  files of os, which differ in the 36 bytes 10858 to 10893 of their binary header (the
+  unset bytes of entry 11), and nowhere else. P0b held.
+So existing results are unchanged on one rank; the published processor executable (the
+MPI build) reproduces the release but for those header bytes.

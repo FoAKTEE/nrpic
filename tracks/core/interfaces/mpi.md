@@ -217,9 +217,9 @@ the double-precision rounding of the sums involved.
 | 4 | T4: restart at cycle 20 on 1:1, 2:2, 4:4, 1:4, 4:1, 2:4 ranks; restart without a step for all nine pairs | particle restart file written after reading equals the one read byte for byte for all nine pairs; the state after reading is the same for every reader count; restarted runs agree with each other as in T3 | core-20261119-155721/155950-89ebf16, -160825-0e90ab7, -161023-9421947, -161159-421d7e3 (10-13) |
 | 4 | caveat, one rank | a restart of this set-up is not exact on one rank either (release too): the mesh restart path refills the ghost cells on the outer boundary, 1e-9 there, 1e-10 in the history after one step | core-20261119-160230-a2f1cf7, -160823-0e90ab7 (11, 12) |
 | 5 | T5: deposit on a statically refined mesh (176 MeshBlocks, 3 levels, 10^4 particles), cic, tsc with level cap, pcs | particles identical byte for byte; sources at particles 4e-16; identity 1e-14 on 1, 2, 4 ranks | core-20261119-161206/161208-421d7e3, -161349-896e22c (14) |
-| 5 | T5: cluster with Z4c on a statically refined mesh | PENDING-SMR | |
+| 5 | T5: cluster with Z4c on a statically refined mesh (26 + 8 MeshBlocks) | 2 ranks (all particles on one rank): identical to one rank byte for byte in the particle files; 4 ranks: positions 1e-15, history 3e-13, identity 3e-15 | core-20261119-161503-32b23c0 (16) |
 | 5 | T5b: adaptive mesh, refinement at cycle 8 with particles (centred cluster) | same mesh on all rank counts, history 2e-13, positions 1e-15, identity 1e-14; no MeshBlock changed rank | core-20261119-161351-896e22c (15) |
-| 5 | T5b: adaptive mesh with MeshBlocks moved by load balancing (cluster in one octant) | PENDING-AMR | |
+| 5 | T5b: adaptive mesh with MeshBlocks moved by load balancing (cluster in one octant) | 14 (2 ranks) and 45 (4 ranks) MeshBlocks moved at the refinement, 2832 particles handed over with them; history 7e-14, positions 1e-15, identity 6e-15 | core-20261119-161801-9d336d6 (17) |
 | 6 | card build with MPI on two cards | PENDING-CARD | |
 
 Not ported (the module stops with a message on more than one rank): Newtonian mode
@@ -256,9 +256,13 @@ Processors (MPI build; Open MPI 5.0.1 of the machine, found through the run path
 - Results agree with one rank to rounding, not byte for byte, once the particles act on
   the spacetime (order of additions in cells shared by clouds of several ranks); with a
   fixed metric the particle files are identical byte for byte.
-- Cost on processors: the hand-over and the deposit packets are host-side MPI messages
-  (a few 1e4 packets per step for 1e4 particles); measured wall times are in the
-  manifests. 16 cores at most per session on this machine.
+- Cost on processors (wall time of the run on 1 / 2 / 4 ranks, from the logs, on a
+  machine loaded to about 90 of 144 cores): cluster T3 (Z4c, 32^3, 4000 particles)
+  205 / 127 / 63 s, speed-up 1.6 and 3.2; Kerr swarm T2 (fixed metric, 4000 particles,
+  pcs) 155 / 95 / 52 s; refined-mesh deposit T5 (10^4 particles, 176 MeshBlocks) 27 / 15
+  / 11 s; adaptive cluster in one octant 118 / 91 / 60 s (the particles crowd onto one or
+  two ranks: AthenaK balances MeshBlocks, not particles). The hand-over and the deposit
+  packets are host-side MPI messages. 16 cores at most per session on this machine.
 
 Cards: `mpirun -np 2 tracks/core/analysis/mpi/gpu_bind.sh athena_gpu ...` inside a Slurm job
 with `--gres=gpu:2` (the wrapper gives each rank its own card); example
