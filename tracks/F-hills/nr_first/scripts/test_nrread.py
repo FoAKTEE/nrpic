@@ -106,10 +106,18 @@ def synthetic(out):
                       it[:k1], ts[:k1], X[:k1, n], V[:k1, n])
         write_tracker(os.path.join(rd, f"hills.co_{n}.txt"), it[k2:], ts[k2:], X[k2:, n],
                       V[k2:, n])
-    # horizon summary appended across the restart (rows from 600 to 700 twice)
+    # horizon summary appended across the restart (rows from 600 to 700 twice); the values
+    # change from search to search as in a run, and AthenaK's failed searches are imitated:
+    # a NaN row before the first success and, at every 25th search, the previous row written
+    # again (z4c/fastflow.cpp lines 379-392, 808-822); the reader must count them as missed
+    nfail = {}
     for n in range(3):
-        rows = [(16, t, m[n] * 1.03, 0, 0, 0, 0, 1.0, 1e-6, 1e-3, 0.5 * m[n], 0.49 * m[n])
-                for t in ts[::16]]
+        rows = [[16, t, m[n] * 1.03 * (1.0 + 1e-6 * t), 0, 0, 0, 0, 1.0 + 1e-6 * t, 1e-6,
+                 1e-3, 0.5 * m[n], 0.49 * m[n]] for t in ts[::16]]
+        rows[0][2:] = [np.nan] * 10
+        for k in range(25, len(rows), 25):
+            rows[k][2:] = rows[k - 1][2:]
+        nfail[n] = 1 + len(range(25, len(rows), 25))
         rows = [r for r in rows if r[1] <= 700.0] + [r for r in rows if r[1] >= 600.0]
         with open(os.path.join(rd, f"hills.horizon_summary_{n}.txt"), "w") as f:
             f.write("# 1:iter 2:time 3:mass 4:Sx 5:Sy 6:Sz 7:S 8:area 9:hrms 10:hmean "
@@ -126,8 +134,11 @@ def synthetic(out):
     check("positions read back to the printed digits", err < 1e-12, f"max error {err:.2e}")
     hz = nr.read_horizons(rd)
     nh = [len(hz[n][0]["t"]) for n in hz]
-    check("horizon rows: duplicates after the restart removed", nh == [len(ts[::16])] * 3,
-          f"{nh} against {len(ts[::16])}")
+    nmiss = [hz[n][1] for n in hz]
+    want = [len(ts[::16]) - nfail[n] for n in range(3)]
+    check("horizon rows: duplicates after the restart removed, failed searches counted as missed",
+          nh == want and nmiss == [nfail[n] for n in range(3)],
+          f"{nh} found, {nmiss} missed, against {want} and {[nfail[n] for n in range(3)]}")
 
     t, Xr, Vr = nr.common_times(trk)
     E = nr.member_energies(Xr, Vr, m, iM=2)

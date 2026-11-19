@@ -130,12 +130,21 @@ HORIZON_COLS = ["iter", "t", "mass", "Sx", "Sy", "Sz", "S", "area", "hrms", "hme
 
 def read_horizon(path):
     """Horizon summary -> (dict of columns over the searches that found a horizon, number of
-    searches without one). Last row of each time kept."""
+    searches without one). Last row of each time kept.
+
+    A failed search writes the properties of the last successful one again (AthenaK
+    z4c/fastflow.cpp: FastFlowLoop sets ah_prop only when ah_found, lines 808-822, and
+    Write prints ah_prop for every search, lines 379-392), or NaN before the first success.
+    So a row whose columns 3-12 equal those of the row before is a failed search."""
     a = read_table(path)
     if a.size == 0:
         return {c: np.zeros(0) for c in HORIZON_COLS}, 0
     a = keep_last_per_time(a, col=1)
     ok = np.isfinite(a[:, 2]) & (a[:, 2] > 0)
+    if len(a) > 1:
+        rep = np.zeros(len(a), dtype=bool)
+        rep[1:] = np.all(a[1:, 2:] == a[:-1, 2:], axis=1)
+        ok &= ~rep
     return {c: a[ok, i] for i, c in enumerate(HORIZON_COLS[:a.shape[1]])}, int(np.sum(~ok))
 
 

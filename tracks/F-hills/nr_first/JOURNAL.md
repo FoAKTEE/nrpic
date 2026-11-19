@@ -529,3 +529,22 @@ Predictions [JUDGEMENT]:
 5. Run health: tree at most 2000 MeshBlocks (E11 will say why about 1600), reaches t = 90 m in
    at most 40 min of card time (0.62 s per cycle, 2880 cycles), no non-finite value, horizon
    found in every search after t = 4 m.
+
+## 2026-11-19 E7, first readings, and a defect of the horizon reader (runs F-20261119-143449-e7bf692, F-20261119-143507-d74f101, F-20261119-143508-5d90bbd)
+
+The passage analysis of the P1 smoke and E4 tests 2 (S3, S2: 8/8) and 3 (P1 smoke: 3/4) ran.
+Reading the horizon rows by eye showed that a search can write the row of the previous search
+again to all digits (heavy hole of the smoke: t = 0.1875-0.875 and 1.0-1.1875; S3: t = 0.5-3.0).
+Source [VERIFIED at the locators]: `athenak/src/z4c/fastflow.cpp` FastFlowLoop sets the horizon
+properties only when the flow converged (lines 808-822) and Write prints them after every
+search (lines 379-392); before the first success they are NaN. So a repeated row is a failed
+search, and `nrread.read_horizon` counted it as found: E4 test 2's "horizon found in every
+search" passed wrongly. Fixed: a row whose columns 3-12 equal those of the row before counts as
+missed. The synthetic test (E4 test 1) wrote constant horizon rows, which the fixed reader would
+call failures; it now writes rows that change with time, a NaN row first and a repeated row at
+every 25th search, and checks the missed count.
+Prediction for the reruns with the fixed reader: test 1 10/10 (the missed counts equal the
+planted failures: 1 + 60 per horizon); test 2 6/8 (S3: 6 missed of 44, t = 0.5-3.0; S2: 3 missed
+of 29, t = 0.5-1.5; "found in every search" fails for both); test 3 unchanged 3/4 (first masses
+0.12778, 0.12934, 0.99607); the smoke: m1 1 missed, m2 2 missed (NaN at t = 0, t = 0.1875), heavy
+hole 17 missed of 25. Refuted if a count differs.
