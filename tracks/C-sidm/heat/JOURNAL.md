@@ -180,3 +180,31 @@ noise realization), and the code follows it to rms 0.27, 0.14, 0.05 noise units 
 (12.5, 11.1, 5.7 percent), as collisions slow the phase mixing. Figure
 `figs/T7_collisionless.png` (looked at; the legend covers the first points of the left
 panel).
+
+## 2026-11-19 15:40 Outcome T6(a): passed; the 100/1000 deviation ratio prediction FAILED in its mechanism (runs C-20261119-145733-558136e, analysis C-20261119-152744-2bba6de)
+
+2e6 particles per run, box 1 x 1/8 x 1/8, 500 steps to 5 L/<|v|>_2 = 31.3.
+- lambda/L = 1000: rms deviation from the exact collisionless curve (noise units of 64
+  resamplings): seed 1 1.20, 1.20, 1.11 (rest mass, energy, kinetic), seed 2 0.86, 0.87,
+  1.04; max 2.7. Pass (< 1.5) in both seeds. Initial slopes (quadratic fit over
+  t <= 0.5 L/<|v|>_2, fit bias on the exact curve removed) over -2 (Phi(1) - Phi(2)):
+  rest mass 1.0010 and 0.9783, energy 1.0011 and 0.9770 (estimator sd 1.2 and 1.3 percent:
+  seed 2 is -1.8 sd); pass (within 5 percent). Kinetic slope 0.9994 and 1.0232 (sd 1.7
+  percent; reported).
+- lambda/L = 100: rms 1.18, 1.18, 1.07 and 0.91, 0.91, 1.07 against the collisionless curve.
+- Fraction of particles that collided by t = 31.3: 0.80 and 0.79 percent (1000), 7.61 and
+  7.62 percent (100) (predicted 0.9 and 9: my t/t_coll used <v_Mol> at the mean
+  temperature instead of the slab rates; the ratio 9.5 is as predicted).
+- Deviation from the free streaming of the same sample (the effect of the collisions):
+  rms 2.7e-5 and 3.3e-5 (1000), 8.9e-5 and 1.0e-4 (100) in slab rest mass per area, i.e.
+  0.08-0.09 and 0.25-0.28 noise units. Ratio 100/1000: 3.3 and 3.1, inside the stated
+  band 3-30 but not the predicted 10 (t/t_coll). The ratio is sqrt(9.5) = 3.1: the
+  deviation is the random scatter of the collided particles (each collision redirects a
+  particle; their net effect on a slab sum adds like a random walk), not a systematic
+  drift proportional to the number of collisions; a systematic part is below this scatter
+  at both mean free paths and two seeds cannot show it. So "consistent with a deviation
+  proportional to t/t_coll" (TESTS.md T6a) is not what the runs show; the reported finding
+  is "consistent with stochastic scatter of the collided fraction".
+Figure `figs/T6a_step_long.png` (looked at: code, sample free streaming and exact curve
+overlap in all three sums at both mean free paths; the kinetic energy of the left slab
+dips by 10 percent at t ~ 0.3 L/<|v|>_2 as fast hot particles leave first, then overshoots).
