@@ -103,6 +103,15 @@ def measure(d, kvec, weyl_orders=(6, "spectral")):
     # the TT field outside the mode +-k
     hk = tensor_from_mode(P, X, g, kv)
     out["tt_offmode_rel"] = float(np.sqrt(np.mean((hTT - hk) ** 2)) / nrm) if nrm > 0 else np.nan
+    # the same two fractions against the envelope of the mode, rms of the field with
+    # |P|^2 + |P'|^2/|k|^2 (equal to rms h^TT for a travelling wave; it does not vanish at
+    # the nodes of the standing wave of test X)
+    kn = float(np.linalg.norm(kv))
+    env = np.sqrt((4.0 * (abs(P) ** 2 + abs(X) ** 2) + 4.0 * (abs(Pd) ** 2 + abs(Xd) ** 2) / kn ** 2)
+                  / 2.0 / 9.0)
+    out["env_rms"] = float(env)
+    out["nonTT_env"] = float(np.sqrt(np.mean((h - hTT) ** 2)) / env) if env > 0 else np.nan
+    out["tt_offmode_env"] = float(np.sqrt(np.mean((hTT - hk) ** 2)) / env) if env > 0 else np.nan
     # Weyl
     gamma, K, _, _ = readers.z4c_to_adm(d)
     M = weylref.inversion_matrix(g, kv, a_bg, calH)

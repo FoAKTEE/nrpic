@@ -4,6 +4,7 @@ Linear gravitational waves with both diagnostics of gw_diag, against analytic so
 with measured convergence. Helper session of 2026-11-19. Times UTC.
 
 Times are UTC, taken from the commit times (the first headings were written from memory and corrected at 14:58).
+
 ## 2026-11-19 14:10 Start; what exists
 
 - Worktree clean after `git merge --no-edit main` (main at 71acd0c3, merge d058b72a); no

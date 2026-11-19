@@ -56,6 +56,7 @@ def one_dump(args):
     rec = {"time": t, "cycle": m["cycle"], "a": m["a"], "alpha": m["alpha"], "calH": m["calH"],
            "max_beta": m["max_beta"], "nonTT_rel": m["nonTT_rel"],
            "tt_offmode_rel": m["tt_offmode_rel"], "psi4_field_rel": m["psi4_field_rel"],
+           "nonTT_env": m["nonTT_env"], "tt_offmode_env": m["tt_offmode_env"], "env_rms": m["env_rms"],
            "psi4_rms": m["psi4_rms"], "vsize": d["vsize"]}
     amps = {"tt": m["tt"], "weyl6": m["weyl"]["6"], "weylS": m["weyl"]["spectral"]}
     for key, a4 in amps.items():
@@ -160,6 +161,9 @@ def main():
                        for k in DIAGS}
             s["nonTT_rel_max"] = float(max(r["nonTT_rel"] for r in recs_n[1:]))
             s["tt_offmode_rel_max"] = float(max(r["tt_offmode_rel"] for r in recs_n[1:]))
+            s["nonTT_env_max"] = float(max(r["nonTT_env"] for r in recs_n[1:]))
+            s["nonTT_env_end"] = float(recs_n[-1]["nonTT_env"])
+            s["tt_offmode_env_max"] = float(max(r["tt_offmode_env"] for r in recs_n[1:]))
             s["psi4_field_rel_max"] = float(max(r["psi4_field_rel"] for r in recs_n[1:]))
             s["max_beta"] = float(max(r["max_beta"] for r in recs_n))
             if test == "exp":
