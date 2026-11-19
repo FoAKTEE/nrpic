@@ -233,11 +233,11 @@ P9 (private copies), written before the build:
     and summed per deposit, against 4e7 additions) it is no faster, probably slower.
     Refuted for cosmo if the deposit is not faster: then the atomics were not the cost.
 
-## 2026-11-19 08:10 Entry 6: audit of the kernels for threads; predictions P10 to P12
+## 2026-11-19 07:50 Entry 6: audit of the kernels for threads; predictions P10 to P12
 
 Session resumed (merge of main 6c5cf703: harness and coord only, no source). Builds of the
 final source a9c34e7a: S (.work/build_cpu, 07:24), O3 (.work/build_omp, 07:25), card
-(.work/build_gpu, rebuilt 07:55 in 127 s). O2 (06:32) is of the earlier source and is not
+(.work/build_gpu, rebuilt 07:47 in 127 s). O2 (06:32) is of the earlier source and is not
 used again: the sharp test is N threads against one thread of O3 (entry 5).
 
 Audit, read from the source of this branch (athenak/src/particles, scalar_field,

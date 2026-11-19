@@ -13,7 +13,7 @@ X=${1:-O3}
     --pairs "$X:4#2=$X:4" "$X:16#2=$X:16" --out ./atomic
 rc1=$?
 "$PY" "$HERE/regress.py" --ref "$X:1" --cases dep,east,os,newton \
-    --configs "$X:1:::priv" "$X:4:::priv" "$X:4:::priv#2" "$X:16:::priv" "$X:16:::priv#2" \
+    --configs "$X:4" "$X:16" "$X:1:::priv" "$X:4:::priv" "$X:4:::priv#2" "$X:16:::priv" "$X:16:::priv#2" \
     --pairs "$X:4:::priv#2=$X:4:::priv" "$X:16:::priv#2=$X:16:::priv" \
             "$X:4:::priv=$X:4" "$X:16:::priv=$X:16" \
     --reuse ./atomic --out ./priv
