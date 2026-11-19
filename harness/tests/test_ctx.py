@@ -15,8 +15,10 @@ test is copied into the seed commit, and every session runs its worktree's own c
              copies of outboxes travel through main (gate merge, syncs, core merging core/rng)
   round trip acceptance test 2 of brief 11.7: A -> B, B's brief, B's ack, A's board
   proposal   acceptance test 3: A -> orch interface-change, orch writes DECISIONS, every track syncs
+  acks       an acknowledgement written without the leading tracks/ counts (inbox, board, digest)
   conflict   a track that edited a shared path: sync aborts and reports, audit names the commit
-  audit      foreign paths, a file above 1 MB, a tracked file under scratch/, proposal branch
+  audit      foreign paths, a file above 1 MB, a tracked file under scratch/, proposal branch,
+             non-standard status words of run manifests (wave 2: summed; wave 2b: findings)
   cold start acceptance test 7: brief (also as a SessionStart hook) shows the next command
   refusals   -C on write commands, posting to oneself, board --write outside main, dirty sync
   wt         nrpic-wt new/list/check; retire refuses before the push and only prints after it
@@ -322,6 +324,26 @@ def run_all(t):
     p = t.ctx("A-emd-pbh", "ack", "1", show=False)
     t.check(p.returncode == 0, "A acknowledges by number")
 
+    t.head("An acknowledgement written without the leading tracks/ names the same message")
+    dep = next(m for m in posted if m["slug"] == "deposit-api")
+    short = dep["path"][len("tracks/"):]                       # core/outbox/<file>, as kb wrote in wave 1
+    acks_kb = os.path.join(t.wt("kb"), "tracks", "kb", "inbox_acks.txt")
+    with open(acks_kb, "a") as fh:
+        fh.write(f"# kb inbox acknowledgements written by hand\n{short}\t2026-11-15T14:25Z\tqueued\n")
+    t.sh(["git", "add", "tracks/kb/inbox_acks.txt"], t.wt("kb"), show=False)
+    t.sh(["git", "commit", "-q", "-m", "kb(ctx): acknowledgement written by hand", "--", "tracks/kb/inbox_acks.txt"], t.wt("kb"))
+    p = t.ctx("kb", "inbox")
+    t.check(dep["path"] not in p.stdout, f"kb's inbox no longer lists {dep['slug']} (acknowledged as `{short}`)")
+    p = t.ctx("A-emd-pbh", "board", show=False)
+    row = next((ln for ln in p.stdout.splitlines() if "[deposit-api]" in ln), "")
+    cells = [c.strip() for c in row.strip().strip("|").split("|")]
+    t.check(len(cells) >= 2 and "kb" in cells[-2].split(", ") and "kb" not in cells[-1].split(", "),
+            f"the board counts kb's acknowledgement: {row.strip()[-90:]}")
+    p = t.ctx("orch", "digest", show=False)
+    row = next((ln for ln in p.stdout.splitlines() if "| deposit-api |" in ln), "")
+    picked = row.split("|")[-3] if row.count("|") > 3 else ""
+    t.check("kb" in picked, f"the digest counts it as picked up by kb: {row.strip()[-80:]}")
+
     # --------------------------------------------------------------------------- proposal
     t.head("Acceptance test 3: proposal round trip A -> orch -> DECISIONS -> every track")
     post("A-emd-pbh", "orch", "interface-change", "pusher-order", ["--reply-by", "2026-11-30"])
@@ -376,13 +398,22 @@ def run_all(t):
     t.sh(["git", "add", "tracks/A-emd-pbh/analysis/big.bin"], t.wt("A-emd-pbh"), show=False)
     t.sh(["git", "add", "-f", "scratch/A-emd-pbh/leak.txt"], t.wt("A-emd-pbh"), show=False)
     t.sh(["git", "commit", "-q", "-m", "A commits a 1.5 MB file and force-adds scratch output"], t.wt("A-emd-pbh"))
+    for rid in ("A-20261115-101010-abcdef0", "A-20261120-101010-abcdef1"):      # wave 2 and wave 2b, by hand
+        d = os.path.join(t.wt("A-emd-pbh"), "tracks", "A-emd-pbh", "runs", rid)
+        os.makedirs(d)
+        with open(os.path.join(d, "manifest.json"), "w") as fh:
+            json.dump({"run_id": rid, "status": "done", "gate": "G1"}, fh)
+    t.sh(["git", "add", "tracks/A-emd-pbh/runs"], t.wt("A-emd-pbh"), show=False)
+    t.sh(["git", "commit", "-q", "-m", "A writes two run manifests by hand (status 'done')"], t.wt("A-emd-pbh"))
     a = t.snap()
     p = t.ctx("orch", "audit")
     b = t.snap()
     out = p.stdout
     s1 = out.split("## 1.")[1].split("## 2.")[0]
     s2 = out.split("## 2.")[1].split("## 3.")[0]
-    s3 = out.split("## 3.")[1].split("## Notes")[0]
+    s3 = out.split("## 3.")[1].split("## 4.")[0]
+    s4 = out.split("## 4.")[1].split("## Notes")[0]
+    notes = out.split("## Notes")[1]
     t.check(p.returncode == 1, "audit exits 1 when it has findings")
     t.check("track/B-emd-gw" in s1 and "coord/CHARTER.md" in s1 and "B edits a shared file" in s1,
             "section 1 names B's commit touching coord/CHARTER.md")
@@ -393,8 +424,14 @@ def run_all(t):
     t.check("scratch/A-emd-pbh/leak.txt" in a_block and "tracks/A-emd-pbh/" not in a_block,
             "section 1 names A's commit of scratch/A-emd-pbh/leak.txt, and none of A's own paths")
     t.check("core/rng" not in s1 and "core/nrpic" not in s1 and "kb/main" not in s1, "no false positives: core (with its merge of core/rng) and kb pass")
-    m = re.search(r"Findings: (\d+) \(section 1: (\d+), section 2: (\d+), section 3: (\d+)\)", out)
-    t.check(m is not None and m.groups() == ("4", "2", "1", "1"), f"findings counted: {m.group(0) if m else 'no summary line'}")
+    t.check("A-emd-pbh, waves 1 and 2 (not counted): 'done' x1" in s4 and "A-20261115-101010-abcdef0" not in s4,
+            "section 4 sums the non-standard status word of A's wave-2 manifest, not counted (decision 0016)")
+    t.check("tracks/A-emd-pbh/runs/A-20261120-101010-abcdef1/manifest.json`: status 'done' (read as completed)" in s4,
+            "section 4 names A's wave-2b manifest with status 'done' as a finding")
+    t.check("`tracks/kb/inbox_acks.txt` on `kb/main`: 1 line(s)" in notes and short in notes,
+            "the notes name kb's acknowledgement written without tracks/")
+    m = re.search(r"Findings: (\d+) \(section 1: (\d+), section 2: (\d+), section 3: (\d+), section 4: (\d+)\)", out)
+    t.check(m is not None and m.groups() == ("5", "2", "1", "1", "1"), f"findings counted: {m.group(0) if m else 'no summary line'}")
     owners, refs = t.changed(a, b)
     t.check(owners == [] and refs == [] and a["merges"] == b["merges"], "audit changed nothing")
     p = t.ctx("orch", "audit", "--branch", "core/nrpic", show=False)
