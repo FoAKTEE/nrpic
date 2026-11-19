@@ -1,6 +1,6 @@
 # Stage report: E-stoch-inf G1
 
-Date: 2026-11-19 · branch `track/E-stoch-inf` at `d480131e6e9d` · checklist
+Date: 2026-11-19 · branch `track/E-stoch-inf` at `a21869be9358` · checklist
 `tracks/E-stoch-inf/stage/G1/CHECKLIST.md` (from `nrpic-stage collect`)
 
 ## Verdict
@@ -14,7 +14,7 @@ Date: 2026-11-19 · branch `track/E-stoch-inf` at `d480131e6e9d` · checklist
 
 | Document | State |
 |---|---|
-| `stage/G1/STAGE_REPORT.md` | written by this command |
+| `stage/G1/STAGE_REPORT.md` | present |
 | `stage/G1/EVIDENCE.md` | present |
 | `stage/G1/OPEN.md` | present |
 | `stage/G1/CHECKLIST.md` | present |
@@ -47,13 +47,13 @@ Date: 2026-11-19 · branch `track/E-stoch-inf` at `d480131e6e9d` · checklist
 
 ## Re-verification on a clean checkout (`nrpic-stage verify`)
 
-`nrpic-stage verify` on 2026-11-19T15:43:59Z, clean export of `d480131e6e9d`: **PASS**. Details: `VERIFY_RESULTS.md`.
+`nrpic-stage verify` on 2026-11-19T15:47:42Z, clean export of `a21869be9358`: **PASS**. Details: `VERIFY_RESULTS.md`.
 
 | Check | Result | Message |
 |---|---|---|
 | clean | PASS | worktree clean (outside the stage directory being assembled) |
 | sync | PASS | main is merged into the branch |
-| export | PASS | clean export of d480131e6e9d (HEAD) in /data/haiyangw/nrpic/scratch/E-stoch-inf/tmp/stage-verify/E-stoch-inf-G1-d480131-20261119T154332Z/tree |
+| export | PASS | clean export of a21869be9358 (HEAD) in /data/haiyangw/nrpic/scratch/E-stoch-inf/tmp/stage-verify/E-stoch-inf-G1-a21869b-20261119T154710Z/tree |
 | size | PASS | no committed file of the track above 5 MB |
 | note | PASS | tracks/<ID>/note/main.tex present |
 | package | PASS | EVIDENCE.md, OPEN.md, CHECKLIST.md present (decision 0012); scoping text: spec/scope/SCOPE.md; REVIEW.md present; no verifier's report yet (VERIFIER.md, decision 0016) |
@@ -61,7 +61,7 @@ Date: 2026-11-19 · branch `track/E-stoch-inf` at `d480131e6e9d` · checklist
 | style | PASS | 2 style copies equal harness/style/SHA256SUMS (czstyle.py, paperfig.py) |
 | fig-script | PASS | 7 figures, each with its script |
 | min-figs | PASS | 2 schematics and 5 data figures (brief 13.4 asks at least 2 and 1 at G1) |
-| runs | PASS | 94 run manifests finished (30 hand-written, read as decision 0012 allows) |
+| runs | PASS | 95 run manifests finished (30 hand-written, read as decision 0012 allows) |
 | run-notes | WARN | 30 runs read with defaults or not fully re-verifiable (nrpic-run lint) |
 | status | PASS | STATUS.md has 31 lines |
 | rerun | PASS | 7 of 7 scripts and commands ran cleanly in the export |
@@ -134,9 +134,9 @@ G1 of E-stoch-inf is not met, and the package is not complete for the orchestrat
 
 ## Notes of the lead on this report (2026-11-19)
 
-- `verify` ran with `--no-checksums` on d480131e: the output checksums of the same runs are
-  checked by the G0 verify of this session (`../G0/VERIFY_RESULTS.md`), which reads every
-  registered output once; reading them twice would cost another half hour of disk time.
+- `verify` ran with `--no-checksums` (PASS on d480131e and again on a21869be): the output checksums are
+  not re-read (the disk was shared with two other leads' verifies; see `../G0/STAGE_REPORT.md`,
+  notes); the reruns of `../REVIEW-wave2.md` reproduce the numbers from the registered outputs.
 - A first G1 verify was started by mistake from the main checkout (the `cd` of the command
   applied only to a background subshell): it verified the tip of `track/E-stoch-inf` read-only
   as the orchestrator would, PASS on the same commit, and left its export under

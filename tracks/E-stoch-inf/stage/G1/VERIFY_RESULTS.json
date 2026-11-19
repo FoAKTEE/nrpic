@@ -1,9 +1,9 @@
 {
   "track": "E-stoch-inf",
   "gate": "G1",
-  "commit": "d480131e6e9d8a17d422141775332603e93c3428",
-  "verified_utc": "2026-11-19T15:43:59Z",
-  "export": "/data/haiyangw/nrpic/scratch/E-stoch-inf/tmp/stage-verify/E-stoch-inf-G1-d480131-20261119T154332Z",
+  "commit": "a21869be9358623a0f570a2820a30ce228bb573a",
+  "verified_utc": "2026-11-19T15:47:42Z",
+  "export": "/data/haiyangw/nrpic/scratch/E-stoch-inf/tmp/stage-verify/E-stoch-inf-G1-a21869b-20261119T154710Z",
   "result": "PASS",
   "checks": [
     {
@@ -21,7 +21,7 @@
     {
       "check": "export",
       "status": "PASS",
-      "message": "clean export of d480131e6e9d (HEAD) in /data/haiyangw/nrpic/scratch/E-stoch-inf/tmp/stage-verify/E-stoch-inf-G1-d480131-20261119T154332Z/tree",
+      "message": "clean export of a21869be9358 (HEAD) in /data/haiyangw/nrpic/scratch/E-stoch-inf/tmp/stage-verify/E-stoch-inf-G1-a21869b-20261119T154710Z/tree",
       "detail": null
     },
     {
@@ -69,7 +69,7 @@
     {
       "check": "runs",
       "status": "PASS",
-      "message": "94 run manifests finished (30 hand-written, read as decision 0012 allows)",
+      "message": "95 run manifests finished (30 hand-written, read as decision 0012 allows)",
       "detail": null
     },
     {
