@@ -472,3 +472,12 @@ with the level of T6.
 - Refuted (the solve on a refined mesh breaks momentum conservation even with all mass on
   the fine level, through the coarse level outside) if the refined run's momentum change
   is above 3e-4 or more than three times that of the uniform 128^3 run.
+
+### T4c first attempt failed (a fault of my case script, not of the code)
+
+Run core-20261119-162128-1cd17b2 (T4c, the embedded ellipsoid with the multigrid solver)
+ended after 0.1 s: AthenaK stopped with "newton_expansion = power requires newton_hubble
+> 0" because `cases.py` wrote `newton_hubble = np.float64(0.0699...)` into the deck (repr
+of a numpy scalar under numpy 2), which the parameter reader takes as 0. The same line
+would have stopped T4b. Fixed (`repr(float(H))`) before T4b was submitted; T4c is
+resubmitted. The AthenaK check that refused the deck worked as intended.

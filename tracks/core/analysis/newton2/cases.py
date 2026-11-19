@@ -302,7 +302,7 @@ def t4b(out, exe, jobs, rec, which="fft"):
     with open(os.path.join(ic, "embedded_setup.json"), "w") as f:
         json.dump(meta, f, indent=1)
     base = merge(cube(n, 32, 0.0, L), {"time": {"tlim": 11.2}, "particles": {
-        "particle_file": pf, "dt": 0.04, "newton_hubble": repr(H), "hist_dcycle": 1,
+        "particle_file": pf, "dt": 0.04, "newton_hubble": repr(float(H)), "hist_dcycle": 1,
         "snap_dt": 1.4, "newton_ngroup": 1, "newton_group1_species": 0,
         "newton_group1_x1": L/2, "newton_group1_x2": L/2, "newton_group1_x3": L/2,
         "probe_x1": L/2, "probe_x2": L/2, "probe_x3": L/2,
