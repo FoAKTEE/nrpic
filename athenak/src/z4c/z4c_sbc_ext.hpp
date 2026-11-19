@@ -36,7 +36,7 @@
 //!   sbc_power_gam   = q of Gamma^i              (default 3)
 //!   sbc_theta       = sommerfeld | nonwave      (default sommerfeld: Theta has no
 //!                                                non-wave part to keep, it is a constraint)
-//!   sbc_power_theta = q of Theta                (default 3; read if sbc_theta = nonwave)
+//!   sbc_power_theta = q of Theta                (default 3; used if sbc_theta = nonwave)
 //!   sbc_v_khat      = speed of Khat             (default sqrt 2, the 1+log lapse far
 //!                                                from the sources; sqrt(f alpha) for
 //!                                                d_t alpha = -f alpha Khat)
@@ -83,9 +83,9 @@ struct SbcExt {
     q_gam = pin->GetOrAddReal("z4c", "sbc_power_gam", 3.0);
     v_khat = pin->GetOrAddReal("z4c", "sbc_v_khat", std::sqrt(2.0));
     const std::string th = pin->GetOrAddString("z4c", "sbc_theta", "sommerfeld");
+    q_theta = pin->GetOrAddReal("z4c", "sbc_power_theta", 3.0);
     if (th.compare("nonwave") == 0) {
       theta_nonwave = true;
-      q_theta = pin->GetOrAddReal("z4c", "sbc_power_theta", 3.0);
     } else if (th.compare("sommerfeld") != 0) {
       std::cout << "### FATAL ERROR in " << __FILE__ << " at line " << __LINE__
                 << std::endl << "<z4c> sbc_theta = '" << th
