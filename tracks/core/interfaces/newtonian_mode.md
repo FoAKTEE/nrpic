@@ -1,9 +1,14 @@
 # Interface: Newtonian mode of the particle module
 
-Owner: core (branch `core/newton`). For tracks A, B and D (decision 0010): a Newtonian
+Owner: core (branch `core/newton`; second pass on `core/newton-2`, section 7). For tracks
+A, B and D (decision 0010): a Newtonian
 reference gravity for the same particles and clouds inside AthenaK, so that a relativistic
 run and its Newtonian reference differ in the gravity only. `cosmo/newton/pm.py` (Python,
 periodic uniform mesh, spectral Poisson solve) stays as an independent check.
+Sections 1 to 6 describe the mode of release core-v0.3 with the multigrid solver; section
+7 adds the options of the second pass (2026-11-19): a Fourier Poisson solver on periodic
+uniform meshes, second moments of particle groups, and what was measured about the
+energy diagnostic, the self-force and refined meshes.
 
 Labels: [VERIFIED] read in the source of this tree or measured in a registered run
 (locator given), [JUDGEMENT] a design choice of this note, [TO VERIFY] not checked.
@@ -256,6 +261,17 @@ reproduced to seven digits by an independent numpy model of "cloud-in-cell depos
 seven-point solve, gradient of the Catmull-Rom interpolant". It is a property of the
 scheme that the relativistic mode shares (deposit and gather kernels differ); it
 vanishes at a cell centre and for a regular lattice.
+Consequence for a compact object smaller than a cell (Track D, 19952-particle clump of
+radius 0.3 M at dx = 1.06 to 2.125 M; runs D-20261115-171245-a89f225,
+D-20261115-171247-cde0674, D-20261115-170700-b2c6d6e): a mesh vertex is an unstable
+equilibrium of the object in its own mesh field (a displacement of 0.05 dx e-folds in
+about 0.8 (dx^3/GM)^(1/2), and the clump then oscillates between vertices at about 0.3 c),
+a cell centre is a stable one (a displaced clump oscillates about it); the total momentum
+of the object is not conserved and it loses about five per cent of its own |W|. The map
+of this force against the position in the cell, its slopes at the vertex and at the cell
+centre and its dependence on the kernels: section 7.5. Use the fixed point mass
+`newton_pm_mass` (not deposited, no self-force) for a compact seed, or keep a compact
+clump at a cell centre of a set-up that is symmetric about it.
 
 ### 5.3 Field of a homogeneous ball (isolated domain)
 
@@ -415,16 +431,28 @@ the mean density of the particles matches the scale factor.
 
 **Second moment.** About the origin of the coordinates; positions are wrapped on a
 periodic mesh; the third derivative is a one-step difference quotient (section 5.4).
+When the end time is not a multiple of the step, the driver ends the run with a
+remainder step of the order of rounding (about 2e-13); columns 37 to 43 of that last
+record are rounding over the step: drop the record, or choose `tlim` as a multiple of
+the step (Track B, all its ellipsoid runs). The moments of a species or a tag range
+about its own centroid, in physical coordinates, and without this defect: section 7.2.
 For gravitational waves from a periodic box the transverse-traceless stress in Fourier
 space is the right quantity and is not provided here.
 
 **Properties of the scheme that the tracks should know** (shared with the relativistic
-mode, not faults of this mode): a particle feels its own field (0.5 m/dx^2); momentum
-is not conserved exactly (2.5e-5 in the test of 5.5); the force is of first order in dx
+mode, not faults of this mode): a particle feels its own field (0.5 m/dx^2), so that an
+object smaller than a cell is unstable at a mesh vertex and oscillates about a cell
+centre (5.2, 7.5; measured in the Newtonian mode only: the relativistic mode shares the
+deposit and gather kernels, whether a compact clump shows the same there is [TO VERIFY]);
+momentum
+is not conserved exactly (2.5e-5 in the test of 5.5); the energy K + W of the history is
+not an invariant of the scheme and jumps where structure falls below a cell (7.4); the
+force is of first order in dx
 in a cell that holds a density jump; with one particle per cell the discreteness error
 of a cold lattice falls only at order 1.5.
 
-**Solver.** Seven-point Laplacian, second order. Convergence factor about four per V
+**Solver.** Seven-point Laplacian, second order (on a periodic uniform mesh the Fourier
+solver of section 7.1 removes this error). Convergence factor about four per V
 cycle (measured), 13 to 19 cycles per step to rounding; `newton_mg_tol = 1e-6` cuts it
 to a third. The stock `threshold = 0` rule of the gas path can end a solve after the
 first cycle (`multigrid_driver.cpp` 790-829; seen here with a zero starting potential
