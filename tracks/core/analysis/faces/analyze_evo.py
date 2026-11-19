@@ -214,6 +214,33 @@ def main():
                 h["T.shell.mean"][k], h["T.faces.mean"][k], h["G.shell.mean"][k],
                 h["G.faces.mean"][k]))
         print("\n  ".join(line))
+    # fronts: along the +x line, the smallest x at which |difference| exceeds 10 per cent
+    # of its largest value on the line at that time (cells within 8 of the face only
+    # move with the front once it has left them), and a straight-line speed fit over the
+    # times at which the front lies in 4 <= LBOX - x <= 12
+    for n, dh in res["diff"].items():
+        if not dh["time"]:
+            continue
+        x = np.array(dh["line_x"])
+        dh["front"] = {}
+        for var in ("z4c_Khat", "con_H", "z4c_Theta"):
+            fr = []
+            for row in dh["line"][var]:
+                v = np.abs(np.array(row))
+                if not np.isfinite(v).all() or v.max() <= 0:
+                    fr.append(float("nan"))
+                    continue
+                k = np.nonzero(v > 0.1 * v.max())[0]
+                fr.append(float(x[k[0]]))
+            t = np.array(dh["time"])
+            fr = np.array(fr)
+            depth = LBOX - fr
+            m = (depth >= 4.0) & (depth <= 12.0) & np.isfinite(depth)
+            speed = float(np.polyfit(t[m], depth[m], 1)[0]) if m.sum() >= 2 else float("nan")
+            dh["front"][var] = {"x": [float(q) for q in fr], "speed": speed}
+            print("front", n, var, "speed %.3f" % speed, ["%.1f" % q for q in fr])
+    with open(a.out, "w") as f:
+        json.dump(res, f)
     for n, dh in res["diff"].items():
         if not dh["time"]:
             continue
