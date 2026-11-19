@@ -1,0 +1,34 @@
+{
+ "run_id": "kb-20261115-164558-5aca10c",
+ "owner": "kb",
+ "command": [
+  "kb/.venv/bin/python",
+  "-I",
+  "tracks/kb/embed/scripts/eval_questions.py",
+  "/data/haiyangw/nrpic/scratch/kb/kb-20261115-164558-5aca10c",
+  "--threads",
+  "8",
+  "--set",
+  "k9"
+ ],
+ "cwd": "/data/haiyangw/nrpic/wt/kb",
+ "commit": "5aca10c45d04c35e9ceb5d5fb8e9657db555ca1b",
+ "worktree_dirty_kb": true,
+ "inputs": [
+  {
+   "path": "/data/haiyangw/nrpic/wt/kb/kb/kbtool/qa_golden.py",
+   "sha256": "43dc8764210c6c7d2dd99999e8ceaaa21db0cd3628f35992680e1d6fe1ab88b1"
+  }
+ ],
+ "output_dir": "/data/haiyangw/nrpic/scratch/kb/kb-20261115-164558-5aca10c",
+ "purpose": "embed helper: test E6b, K9 golden questions with kb search fusion k=10, snapshot kb-20261115-621430e",
+ "kind": "scouting",
+ "cores": 8,
+ "card_hours": 0,
+ "started_utc": "2026-11-15T16:45:58Z",
+ "started_unix": 1794761158.1737218,
+ "status": "finished",
+ "exit_code": 0,
+ "wall_time_s": 23.53,
+ "finished_utc": "2026-11-15T16:46:21Z"
+}

@@ -1,0 +1,63 @@
+IAS-Astrophysics/athenak	core	all	AthenaK: Kokkos AMR framework with Z4c; base of NRPIC (BSD-3-Clause at c5a0d7f)
+kokkos/kokkos	dep	all	performance-portability layer (AthenaK submodule)
+PrincetonUniversity/athena	ref	core	Athena++ (lineage of GR-Athena++ and AthenaK)
+parthenon-hpc-lab/parthenon	ref	core	Kokkos AMR framework
+entity-toolkit/entity	ref	core	GRPIC on Kokkos
+BLAST-WarpX/warpx	ref	core	PIC with mesh refinement
+ammarhakim/gkeyll	ref	core	continuum kinetic solver
+nrpy/nrpy	ref	core	code generation for numerical relativity
+sxs-collaboration/spectre	ref	core,F	NR code; AthenaK ships an input for importing its binary data
+paralab/Dendro-GR	ref	core	octree NR
+eschnett/CarpetX	ref	core	Einstein Toolkit AMR driver
+GRTLCollaboration/GRChombo	ref	E,B	NR with scalar fields and AMR
+GRTLCollaboration/GRTeclyn	ref	E	GPU successor of GRChombo on AMReX
+GRTLCollaboration/GRTresna	ref	A,B,E	cosmological initial-data solver
+GRTLCollaboration/GRDzhadzha	ref	D	matter on fixed black-hole backgrounds
+GRTLCollaboration/engrenage	ref	A,C	spherically symmetric BSSN code
+GRTLCollaboration/GRFolres	ref	-	modified gravity in NR
+AMReX-Codes/amrex	dep	E	AMR framework
+gevolution-code/gevolution-1.2	ref	B	weak-field relativistic N-body
+gevolution-code/gevolution-2.0	ref	B	GPU version of gevolution
+daverio/LATfield2	dep	B	lattice library used by gevolution
+FarbodHassani/k-evolution	ref	-	k-essence on top of gevolution
+jmd-dk/concept	ref	B	N-body with relativistic species
+ramses-organisation/ramses	ref	B	AMR N-body (base of GRAMSES)
+AMReX-Astro/Nyx	ref	B	cosmological N-body and hydrodynamics
+AMReX-Astro/Castro	ref	-	compressible astrophysics
+SWIFTSIM/SWIFT	ref	B	N-body and SPH
+SWIFTSIM/swiftsimio	ref	-	reader for SWIFT outputs
+danieljprice/phantom	ref	B	SPH code
+cwru-pat/cosmograph	ref	B	BSSN with N-body and fluids
+hayleyjm/FLRWSolver_public	ref	B	cosmological initial data for the Einstein Toolkit
+hayleyjm/mescaline-1.0	ref	B	post-processing and ray tracing for NR cosmology
+robynlm/ebweyl	ref	all	gravito-electromagnetic diagnostics
+robynlm/aurel	ref	all	relativity diagnostics
+lesgourg/class_public	ref	B,E	Boltzmann code
+cosmolattice/cosmolattice	ref	E	lattice field theory in an expanding universe
+caravangelo/inflation-easy	ref	E	lattice inflation
+STOchasticLAtticeSimulation/STOLAS_dist	ref	E	stochastic lattice simulation of inflation
+jronayne/PyTransport	ref	E	inflationary correlation functions
+DEShawResearch/random123	dep	C,E	counter-based random numbers
+bradkav/NbodyIMRI	ref	D,F	N-body for dark-matter spikes around binaries
+bradkav/HaloFeedback	ref	D	spike feedback on inspirals
+hannorein/rebound	dep	F	N-body integrator for the three-body baselines
+dtamayo/reboundx	dep	F	additional forces for REBOUND, including relativistic corrections
+BlackHolePerturbationToolkit/KerrGeodesics	ref	D,F	Kerr geodesics
+phfaist/pylatexenc	tool	kb	LaTeX parsing
+alvinwan/TexSoup	tool	kb	LaTeX tree
+brucemiller/LaTeXML	tool	kb	LaTeX to XML/HTML
+google-research/arxiv-latex-cleaner	tool	kb	source cleaning
+jgm/pandoc	tool	kb	format conversion
+lukasschwab/arxiv.py	tool	kb	arXiv API client
+inspirehep/inspirehep	tool	kb	INSPIRE (API reference)
+asg017/sqlite-vec	tool	kb	vector search inside SQLite
+facebookresearch/faiss	tool	kb	vector index
+lancedb/lancedb	tool	kb	vector database
+universal-ctags/ctags	tool	kb	symbol index
+tree-sitter/tree-sitter	tool	kb	incremental parsing
+BurntSushi/ripgrep	tool	all	search
+astral-sh/uv	tool	all	Python environments and lock files
+pre-commit/pre-commit	tool	all	commit hooks
+direnv/direnv	tool	all	per-directory environment
+apptainer/apptainer	tool	all	containers on HPC
+git-lfs/git-lfs	tool	all	large files in git

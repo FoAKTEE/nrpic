@@ -1,6 +1,6 @@
 # 0015 Knowledge base: metadata, PDF mode, embedding model
 
-Status: PROVISIONAL · 2026-11-15
+Status: ACCEPTED by the user on 2026-11-19 (decision 0017); before that provisional · 2026-11-15
 
 - Metadata of the manifest entries may be fetched from the arXiv API and from INSPIRE
   through `harness/bin/nrpic-fetch-arxiv` only (one lock per service, three seconds

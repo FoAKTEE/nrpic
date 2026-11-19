@@ -1,0 +1,41 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "kbtool"
+version = "0.1.0"
+description = "Knowledge base of the NRPIC-cosmology program (brief section 12): download checks, schema, query tools"
+requires-python = ">=3.10"
+# The core of kbtool (manifests, verify-downloads, schema, status, snapshot) uses the standard
+# library only, so `kb/bin/kb` also runs under the system python3 -I without this environment.
+dependencies = []
+
+[project.optional-dependencies]
+# K0 tool environment: installed now (see kb/JOURNAL.md, "K0 tool choice")
+k0 = [
+  "pytest>=8",
+  "pyyaml>=6",
+  "pylatexenc>=2.10",
+  "bibtexparser>=2.0",
+  "rapidfuzz>=3",
+  "tenacity>=8",
+  "numpy>=1.24",
+  "matplotlib>=3.7",
+]
+# K6: symbols of C/C++ sources (kbtool/code_symbols.py); tree-sitter instead of universal-ctags,
+# which is not on the machine (building it from the clone would mean building downloaded code)
+code = ["tree-sitter>=0.23,<0.26", "tree-sitter-cpp>=0.23", "tree-sitter-c>=0.23"]
+# K4: local embedding model; heavy (pulls torch), installed when K4 starts
+embed = ["sentence-transformers>=3", "sqlite-vec>=0.1"]
+
+[project.scripts]
+kb = "kbtool.cli:main"
+
+[tool.setuptools]
+packages = ["kbtool"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+# temporary files of the tests live under scratch/kb/tmp, never /tmp (CLAUDE.md, "Machine")
+addopts = "-q --basetemp=/data/haiyangw/nrpic/scratch/kb/tmp/pytest -p no:cacheprovider"

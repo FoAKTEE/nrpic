@@ -1,0 +1,30 @@
+{
+ "run_id": "kb-20261115-135337-45ab9d0",
+ "owner": "kb",
+ "command": [
+  "kb/.venv/bin/python",
+  "-I",
+  "kb/scripts/code_report.py",
+  "/data/haiyangw/nrpic/scratch/kb/kb-20261115-135337-45ab9d0"
+ ],
+ "cwd": "/data/haiyangw/nrpic/wt/kb",
+ "commit": "45ab9d052cdd11387aa5f9d7dd88923a8c91b6b0",
+ "worktree_dirty_kb": true,
+ "inputs": [
+  {
+   "path": "/data/haiyangw/nrpic/wt/kb/kb/scripts/code_report.py",
+   "sha256": "ad834cb49881335bccc31492bc57b2eeb5063ce31392d512c4a3f0c759996b5b"
+  }
+ ],
+ "output_dir": "/data/haiyangw/nrpic/scratch/kb/kb-20261115-135337-45ab9d0",
+ "purpose": "K6 test P4 and reports: inputs-against-code comparison of the parameter index (AthenaK upstream, this tree, Athena++), index report, figures",
+ "kind": "scouting",
+ "cores": 1,
+ "card_hours": 0,
+ "started_utc": "2026-11-15T13:53:37Z",
+ "started_unix": 1794750817.5907536,
+ "status": "finished",
+ "exit_code": 0,
+ "wall_time_s": 2.97,
+ "finished_utc": "2026-11-15T13:53:40Z"
+}

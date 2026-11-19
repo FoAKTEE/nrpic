@@ -1,0 +1,34 @@
+{
+ "run_id": "kb-20261115-131158-7350d70",
+ "owner": "kb",
+ "command": [
+  "kb/.venv/bin/python",
+  "-I",
+  "kb/scripts/code_crosscheck.py",
+  "/data/haiyangw/nrpic/scratch/kb/kb-20261115-131158-7350d70",
+  "--repo-dir",
+  "/data/haiyangw/nrpic/kb-data/raw/github/PrincetonUniversity__athena",
+  "--name",
+  "athena_pp"
+ ],
+ "cwd": "/data/haiyangw/nrpic/wt/kb",
+ "commit": "7350d701ab7c31606c1e64ef84c0ee859b42fbff",
+ "worktree_dirty_kb": true,
+ "inputs": [
+  {
+   "path": "/data/haiyangw/nrpic/wt/kb/kb/scripts/code_crosscheck.py",
+   "sha256": "1324c82417cebb41ea13a08c4909e1f46e78823780d6f639826ffe90e92b4d97"
+  }
+ ],
+ "output_dir": "/data/haiyangw/nrpic/scratch/kb/kb-20261115-131158-7350d70",
+ "purpose": "K6 test P2/P3 cross-check of the code index: --repo-dir /data/haiyangw/nrpic/kb-data/raw/github/PrincetonUniversity__athena --name athena_pp",
+ "kind": "scouting",
+ "cores": 1,
+ "card_hours": 0,
+ "started_utc": "2026-11-15T13:11:58Z",
+ "started_unix": 1794748318.6222143,
+ "status": "finished",
+ "exit_code": 0,
+ "wall_time_s": 9.0,
+ "finished_utc": "2026-11-15T13:12:07Z"
+}
