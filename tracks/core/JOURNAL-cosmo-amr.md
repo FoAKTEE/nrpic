@@ -689,3 +689,44 @@ tracker within 1e-12 of the processor path; G: stop at cycle 18 with status 3 an
 unchanged, identity below 1e-12, Hr_max within 1e-6 relative of the processor values at
 every record. Refuted by a different MeshBlock count, a different stop cycle, or a
 departure above these bounds.
+
+## 2026-11-19 16:30  outcomes of T11b (restarts) and T0b
+
+**T11b, run core-20261119-161309-f797997, analysed by core-20261119-162944-d87b113**
+(the first analysis inside the run paired the tracker and finder files off by one: a
+restarted run writes a record at the restart time, identical to the uninterrupted one;
+those records are now left out; `t11_summary.json` and figure `fig_t11_restart` of the
+analysis run, looked at) [VERIFIED]:
+- (1) Regrid schedule. NEW: the MeshBlock count equals the uninterrupted run at every
+  cycle in all ten cases (M_r14, M_r28, M_f16, M_i16, P_r6, P_f4, P_i4, U_r8, S_r8,
+  C_r8): PASS. OLD: unequal exactly where predicted: M_r14 and M_i16 from cycle 17 (the
+  regrid of cycle 16 delayed to cycle 20; 34 instead of 41 blocks for four cycles), P_i4
+  from cycle 5 (the regrid of the restart cycle skipped; six cycles with 64 instead of
+  120 blocks, departure 0.81 in the fields); equal in M_r28, M_f16, P_r6, P_f4: PASS.
+- (2) Bitwise identity [VERIFIED]: U_r8 and C_r8 (uniform mesh, with the fixed particle
+  step and with the light-speed step) every record identical, finder files included:
+  PASS. S_r8 (static patch): NOT identical (first constraint record after the restart
+  already differs; largest departure 7.8e-11 in the Hamiltonian norm H2, 6e-15 in E, K,
+  alpha). So the round-off departure comes from the refined mesh, not from the adaptive
+  driver. Also bitwise identical: every restart made right after a regrid (M_f16, P_f4
+  with both executables, P_i4 with NEW). Not identical: restarts inside a stretch
+  without regrid (M_r14, M_r28, M_i16, P_r6). My reading [JUDGEMENT, not tested
+  further]: a regrid rebuilds the ghost zones at the level boundaries and the sources
+  (`InitBoundaryValuesAndPrimitives`, `NrpicInitializeSources`) exactly as a restart
+  does, while inside a stretch the uninterrupted run carries ghost values at the
+  fine/coarse boundaries from the last stage of its step, which a restart recomputes from
+  the stored fields.
+- (3) Size of the departures with NEW (largest over the continued run): homogeneous cases
+  M: 1.6e-14 in E, K, mean K, proper volume, 6.3e-9 in the norm H2 of the region file
+  (H2 is itself a residual, 1e-7); peak P_r6: 3.3e-10 in alpha_min, 5.8e-10 in K_max,
+  5.4e-9 in H2. The prediction "below 1e-9 in every physical column" FAILED for the
+  column H2 (a residual measured relative to itself); every field quantity is below 6e-10.
+- Conclusion for chains: with this branch, restarted adaptive runs follow the same
+  regrid schedule as uninterrupted ones and agree with them to round-off (bitwise on a
+  uniform mesh and right after a regrid); with the release mechanism a restart could
+  delay a regrid by `refinement_interval` cycles or skip the regrid of its own cycle.
+
+**T0b, run core-20261119-161756-44db4b5** [VERIFIED]: the processor executable to be
+published (`.work/build_cpu_b`, source 3c44b74, sha256 74586012...) against the release:
+all seven set-ups exit 0 and every output file byte-identical (3, 3, 2, 13, 17, 5, 11
+files), restart files included: PASS.
