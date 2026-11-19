@@ -1,0 +1,93 @@
+{
+  "schema": "nrpic-run-manifest/1",
+  "run_id": "A-20261119-143524-334e553",
+  "track": "A-emd-pbh",
+  "gate": "G2",
+  "kind": "scouting",
+  "purpose": "Data set 3 of runs_ball, rebuilt with the table breaks at the top-hat jumps R1, R2 (supersedes A-20261119-142341-4b2c942): expball compensated top-hat, H R_b = 0.7, delta_c = 1.5, R1 = 0.65 R_b, R2 = 0.95 R_b, matter edge rbar = 4.25 M; lattices n_lat = 34, 51, 68 with tracked particles; exact references",
+  "preregistered_in": null,
+  "launcher": "local",
+  "command": [
+    "bash",
+    "-c",
+    "OMP_NUM_THREADS=4 OPENBLAS_NUM_THREADS=4 .venv/bin/python tracks/A-emd-pbh/runs_ball/prep_bh.py --out $NRPIC_RUN_DIR"
+  ],
+  "cwd": ".",
+  "git": {
+    "sha": "334e5533f05bd811e59aef6c2e2630c421aa2dc2",
+    "branch": "track/A-emd-pbh",
+    "dirty": false,
+    "package": [
+      "tracks/A-emd-pbh/runs_ball"
+    ],
+    "outside_package": {
+      "count": 3,
+      "first": [
+        " M tracks/A-emd-pbh/stage/G1/VERIFIER.md",
+        "?? tracks/A-emd-pbh/stage/G1/README.md",
+        "?? tracks/A-emd-pbh/szekeres/"
+      ]
+    },
+    "merge_base_main": "27b2ced9be0f020a4206d89e3cc982ada5c4367c",
+    "worktree": "wt/A-emd-pbh"
+  },
+  "code": {
+    "core_tag": "core-v0.3",
+    "athenak_upstream_sha": "c5a0d7f",
+    "kokkos_sha": "6739bc623081648af9e752b616d9671527922cbf",
+    "problem": null
+  },
+  "env": {
+    "host": "anta",
+    "env_hash": "33c1dbb6673b68919eaa332b0add0b58aeac8be843f2071b9d06e2e0e397a96d",
+    "machine_file_sha256": "0321f40f4caeeb2a36624a9fa9809e60bad31071f366b3517ba23ad45698d2d7",
+    "uv_lock_sha256": "5417f6ba318b914aa3800e5d55f7b11fdd8df13c2688bdda7d419240aa1d5863",
+    "track_requirements_sha256": null,
+    "container_digest": null,
+    "compiler": "g++ 11.4.0",
+    "mpi": "none (Athena_ENABLE_MPI=OFF)",
+    "gpu": null,
+    "python": "3.10.12 /data/haiyangw/nrpic/wt/A-emd-pbh/.venv"
+  },
+  "input": null,
+  "inputs": [],
+  "batch_entries": null,
+  "resources": {
+    "nodes": 1,
+    "gpus": 0,
+    "cores": 4,
+    "walltime_s": null,
+    "wall_limit": "00:30:00",
+    "segments_max": null,
+    "gpu_hours_requested": 0.0,
+    "gpu_hours": null,
+    "particles": null
+  },
+  "slurm": null,
+  "outputs": {
+    "dir": "scratch/A-emd-pbh/A-20261119-143524-334e553",
+    "sha256sums": "sha256sums.txt",
+    "sha256sums_sha256": null,
+    "bytes": null,
+    "files": null
+  },
+  "status": "running",
+  "exit_code": null,
+  "registered": "2026-11-19T14:35:24Z",
+  "started": null,
+  "ended": null,
+  "parents": [
+    "A-20261119-142341-4b2c942"
+  ],
+  "notes": "",
+  "budget_at_submit": {
+    "gpu_hours_allotted": 60.0,
+    "cores_allotted": 16,
+    "gpu_hours_used": 0.9457,
+    "gpu_hours_reserved": 0.0,
+    "gpu_hours_without_gate": 0.1686,
+    "cores_busy": 0,
+    "runs": 135,
+    "allotment_from": "coord/DECISIONS/0006-compute-budget.md + 0014-budgets-after-wave-1.md"
+  }
+}
