@@ -503,7 +503,7 @@ enclosing 10 to 90 per cent of each cluster's rest mass, |sum m u| per cluster; 
 6. Constraints. H-norm and M-norm (history) stay within a factor 2 of their values at
    t = 5 M after that time (sampling noise dominates; no growth).
 
-### Supplement to prediction TC4 (written 15:58Z; job 4649 has not started)
+### Supplement to prediction TC4 (written 15:54Z; job 4649 has not started)
 
 If the drift of `sum m u_x` comes from coordinates and slices that change in time
 (candidate of TC4), the run with the comoving shift is the control: there the data are
