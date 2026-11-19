@@ -1,0 +1,35 @@
+{
+ "run_id": "kb-20261115-155649-2e00432",
+ "owner": "kb",
+ "command": [
+  "kb/.venv/bin/python",
+  "-I",
+  "kb/kbtool/qa_figures.py",
+  "/data/haiyangw/nrpic/scratch/kb/kb-20261115-155508-2e00432/qa.json",
+  "/data/haiyangw/nrpic/scratch/kb/kb-20261115-155649-2e00432"
+ ],
+ "cwd": "/data/haiyangw/nrpic/wt/kb",
+ "commit": "2e0043200c284877bd13732c6b8424f353e1ce3d",
+ "worktree_dirty_kb": true,
+ "inputs": [
+  {
+   "path": "/data/haiyangw/nrpic/scratch/kb/kb-20261115-155508-2e00432/qa.json",
+   "sha256": "6b3bf218de406f101bc4885950b050cd9b0c4f271e31d4cea8800a410b19a32b"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/wt/kb/kb/kbtool/qa_figures.py",
+   "sha256": "db820a8375b9029690e2ee824e6e06367d40690c94ab7765afb2613b3fd79fae"
+  }
+ ],
+ "output_dir": "/data/haiyangw/nrpic/scratch/kb/kb-20261115-155649-2e00432",
+ "purpose": "K8/K9 figures, redrawn after fixing the empty difference panel and the legend overlap",
+ "kind": "scouting",
+ "cores": 1,
+ "card_hours": 0,
+ "started_utc": "2026-11-15T15:56:49Z",
+ "started_unix": 1794758209.436507,
+ "status": "finished",
+ "exit_code": 0,
+ "wall_time_s": 2.05,
+ "finished_utc": "2026-11-15T15:56:51Z"
+}

@@ -1,0 +1,33 @@
+{
+ "run_id": "kb-20261115-131809-f7f36ac",
+ "owner": "kb",
+ "command": [
+  "/data/haiyangw/nrpic/wt/kb/kb/bin/kb",
+  "ingest",
+  "arxiv",
+  "--priority",
+  "3",
+  "--jobs",
+  "8"
+ ],
+ "cwd": "/data/haiyangw/nrpic/wt/kb",
+ "commit": "f7f36acfa7d437d027ade2a43ab714281d25e6a8",
+ "worktree_dirty_kb": false,
+ "inputs": [
+  {
+   "path": "/data/haiyangw/nrpic/wt/kb/kb/manifests/arxiv.tsv",
+   "sha256": "4012a46dfe997d8f936a15fd62dd0ebe73aac6d64cac2391eb61aee2eb27e4d0"
+  }
+ ],
+ "output_dir": "/data/haiyangw/nrpic/scratch/kb/kb-20261115-131809-f7f36ac",
+ "purpose": "K2-K3: ingest the 47 priority-3 papers with the pylatexenc converter (redo of kb-20261115-131730-b603113, which ran with the stdlib converter); prediction K2-P5 in kb/JOURNAL.md",
+ "kind": "production",
+ "cores": 8,
+ "card_hours": 0,
+ "started_utc": "2026-11-15T13:18:09Z",
+ "started_unix": 1794748689.6948683,
+ "status": "finished",
+ "exit_code": 0,
+ "wall_time_s": 30.99,
+ "finished_utc": "2026-11-15T13:18:40Z"
+}
