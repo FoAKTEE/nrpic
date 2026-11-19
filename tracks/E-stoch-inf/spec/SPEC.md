@@ -457,7 +457,9 @@ latter is the correct one (it follows from the background Klein-Gordon equation 
 our T4 check). E4 S_Pi = Mpl sqrt(2 eps1) S_R (P1:299) vs (dot phi_b/H) S_R (TH chap_SIGR:387):
 sign-safe form is the latter. E5 Laplacian d_i d^i (P1:317) vs Delta_b (TH chap_SIGR:472). E6
 extraction factors -1/48, -1/16 and a missing 3 (P2:828-830) vs the corrected TH appendix:518-520
-(re-derived here by hand from the dictionary P2:799-801, [JUDGEMENT: hand derivation, not run]:
+(re-derived here by hand from the dictionary P2:799-801; [VERIFIED by run E-20261115-174214-74becdd,
+2026-11-15: on the last dump of L32p the factor 1/4 gives max D_n 8.8e-5 for |n| <= 4, while
+leaving the term out, 1/2 or -1/4 give 5.1e-3, 5.2e-3, 1.0e-2; ladder JOURNAL entry 4]:
 Phi_k = (a^2 X_k - 1)/2 + (1/4) sum k_i k_j (gt_ij - delta_ij)/k^2,
 E_k = -(3/4) sum k_i k_j (gt_ij - delta_ij)/k^4). E7 draw
 normalisation (section 5.4). E8 delta Pi of P2's initial-condition equation, P2:317-327 (section 5.3). E9 "|H|/[H] << 1 and
