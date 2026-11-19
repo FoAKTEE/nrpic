@@ -1,0 +1,71 @@
+# Ultra-slow-roll (Higgs inflection) case of arXiv:2512.14649 (PRD_v2.tex:405-424, set-up
+# 503-519) in the units of the code (G = c = 1, time unit 1/H*, a* = 1, box 2 pi/sigma):
+# written by tracks/E-stoch-inf/usr/scripts/make_inputs.py from the reference run E-20261119-143905-f2bcde3
+# (tracks/E-stoch-inf/usr/results/usr_reference.json).  Potential P1:409 with lambda = 8 pi Lambda/H*^2,
+# vev = v/sqrt(8 pi); background at N* = N0 + 3 (phi0, pi0); tlim = code time of
+# N* + 10 e-folds.  Geodesic slicing, zero shift, no damping, no dissipation (SPEC 2.5, 4);
+# Courant 0.25 (SCOPE 4 item 1).  Homogeneous background (id = flrw), 8^3, Courant 0.0625: the step of the 32^3 runs at 0.25.
+
+<comment>
+problem   = stochastic inflection, ultra-slow-roll (inflection) case, package usr of Track E
+
+<job>
+basename  = bg
+rng_seed  = 20261115
+
+<mesh>
+nghost    = 4
+nx1       = 8
+x1min     = 0.0
+x1max     = 6.283185307179586
+ix1_bc    = periodic
+ox1_bc    = periodic
+nx2       = 8
+x2min     = 0.0
+x2max     = 6.283185307179586
+ix2_bc    = periodic
+ox2_bc    = periodic
+nx3       = 8
+x3min     = 0.0
+x3max     = 6.283185307179586
+ix3_bc    = periodic
+ox3_bc    = periodic
+
+<meshblock>
+nx1       = 8
+nx2       = 8
+nx3       = 8
+
+<time>
+evolution  = dynamic
+integrator = rk4
+cfl_number = 0.0625
+nlim       = -1
+tlim       = 10.437508874065651
+ndiag      = 20
+
+<z4c>
+lapse_oplog     = 0.0
+lapse_harmonic  = 0.0
+lapse_advect    = 0.0
+shift_Gamma     = 0.0
+shift_eta       = 0.0
+shift_advect    = 0.0
+diss            = 0.0
+damp_kappa1     = 0.0
+damp_kappa2     = 0.0
+excise_chi      = 0.0
+
+<scalar_field>
+couple           = true
+potential        = inflection
+lambda           = 5.33317648526340374e+05
+vev              = 3.94952857597418439e-02
+diss             = 0.0
+hist_dcycle      = 1
+
+<problem>
+pgen_name      = scalar_field
+id             = flrw
+phi0           = -1.64328188347202975e-01
+pi0            = 3.23658652791244811e-02

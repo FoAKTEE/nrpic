@@ -1,0 +1,10 @@
+# name  executable (v03: release core-v0.3; s2: core_scalar-2)  input  [overrides]
+BGv03 v03 tracks/E-stoch-inf/usr/inputs/usr_bg.athinput
+BGv03h v03 tracks/E-stoch-inf/usr/inputs/usr_bg.athinput time/cfl_number=0.03125
+BGs2 s2 tracks/E-stoch-inf/usr/inputs/usr_bg.athinput
+M16p s2 tracks/E-stoch-inf/usr/inputs/usr_base.athinput
+M16m s2 tracks/E-stoch-inf/usr/inputs/usr_base.athinput scalar_field/noise_mode_scale=-1.0
+M16l s2 tracks/E-stoch-inf/usr/inputs/usr_base.athinput scalar_field/noise_mode_scale=1.0e-3
+M64p s2 tracks/E-stoch-inf/usr/inputs/usr_base.athinput scalar_field/noise_nmax2=64 scalar_field/noise_mode_file=/data/haiyangw/nrpic/wt/E-stoch-inf/tracks/E-stoch-inf/usr/inputs/modes_usr_n64.txt
+M64m s2 tracks/E-stoch-inf/usr/inputs/usr_base.athinput scalar_field/noise_nmax2=64 scalar_field/noise_mode_file=/data/haiyangw/nrpic/wt/E-stoch-inf/tracks/E-stoch-inf/usr/inputs/modes_usr_n64.txt scalar_field/noise_mode_scale=-1.0
+NC16 s2 tracks/E-stoch-inf/usr/inputs/usr_base.athinput scalar_field/noise_pi_sign=-1.0 time/tlim=3.0

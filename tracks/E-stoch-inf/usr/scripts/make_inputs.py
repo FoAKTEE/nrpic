@@ -143,10 +143,11 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--ref", required=True)
     ap.add_argument("--out", required=True)
+    ap.add_argument("--run-id", default="(see results/README)")
     a = ap.parse_args()
     r = json.load(open(a.ref))
     ci = r["code_inputs"]
-    run = r.get("run_id", "(see results/README)")
+    run = a.run_id
     tl = r["t_code_end"]
     v = dict(lam=ci["lambda"], vev=ci["vev"], phi0=ci["phi0"], pi0=ci["pi0"], tlim=tl)
     mdir = f"{ROOT}/{PKG}/inputs"

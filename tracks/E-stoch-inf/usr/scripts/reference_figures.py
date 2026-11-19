@@ -92,7 +92,7 @@ def main():
     ax[0].set_xlabel(r"$k/dk=|n|$")
     ax[0].set_ylabel(r"$W^2\Delta_{\cal R}(k)$")
     ax[0].set_ylim(1e-14, 10)
-    ax[0].legend(loc="lower right", ncol=2, fontsize=8)
+    ax[0].legend(loc="upper left", ncol=2, fontsize=7)
     ax[1].loglog(k, dm[:, -1] / d["delta_sr"], color=fs.PAL["blue"],
                  label=r"enhancement $\Delta(N_f)/\Delta_{\rm SR}(k=aH)$")
     ax2 = ax[1].twinx()

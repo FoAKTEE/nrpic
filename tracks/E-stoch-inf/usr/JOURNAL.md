@@ -156,3 +156,50 @@ Predictions (refuted if outside the stated range):
 
 Smoke tests before this entry (unregistered, scratch/E-stoch-inf/tmp/usr/dev1/smoke_*):
 both executables accept the inputs (3 and 2 cycles); no number of them is used.
+
+## Entry 4, 2026-11-19 14:45 UTC: outcome of the reference run E-20261119-143905-f2bcde3
+
+Registered as scouting for G2 (`nrpic-run` refuses production before G1's sign-off);
+39 s on 4 cores. Outputs copied: `results/usr_reference.json`, `results/landmarks.csv`,
+`results/usr_spectrum_Nf.csv`, `inputs/modes_usr_n{16,64,256,1024,4096}.txt` (sha256 in the
+JSON equal those of the copies), `fig/fig_usr_*.png`.
+
+Against R0 (entry 3):
+- Landmarks identical to the development pass to all printed digits: confirmed.
+- Mode files byte-identical: REFUTED. They differ by 5.3e-13 (n16) and 2.9e-10 (n64)
+  relative. Cause: the mode functions of all shells are integrated as one vector, so the
+  adaptive step follows the highest shell present; the registered run included 3414
+  shells (nmax2 = 4096), the development pass 54. The difference is the integration
+  tolerance, as it should be. Every run of this package uses the registered files.
+- Z4c-form twin at dt = 0.0491: Pi wrong by 4.124e-4 at the end against 4.128e-4 of the ADM
+  form: within 5 percent, confirmed. Theta of the twin reaches 1.07e-7 (Courant 0.25),
+  6.2e-9 (0.125), 2.3e-11 (256^3).
+- New, and it changes prediction BG2 before any AthenaK run: with chi as the variable
+  (as the code evolves it) the e-folds -ln(chi)/2 carry the step error of chi, which
+  falls as exp(-20): abs error of ln chi 1.40e-5 at the end for 32^3 at Courant 0.25,
+  8.4e-7 at 0.125, 3.2e-9 at 256^3 (in ln chi; half of it in N). So U-A0 (1e-5 in N) is
+  at the edge for 32^3 at Courant 0.25 (7e-6 in N) and met with margin at 256^3.
+  Revised BG2: the e-folds of BGv03 at the end equal the twin's (10 - 7e-6 in N, sign
+  from the twin), not "within 1e-7 of 10".
+
+Reference numbers for the record [VERIFIED by run E-20261119-143905-f2bcde3]:
+- code inputs: lambda = 5.333176485263404e5, vev = 3.9495285759741844e-2,
+  phi0 = -0.16432818834720297, pi0 = 3.236586527912448e-2, K0 = -3, tlim = 10.437508874065651.
+- landmarks (cN; code time; phi; Pi; K): eps1 maximum 1.6240, 1.64652, -0.101593, 4.2454e-2,
+  -2.909243; USR onset 2.5234, 2.58291, -0.0675096, 2.4339e-2, -2.861418; inflection point
+  and eps2 maximum (5.99999965) 4.5320, 4.69265, -0.0558548, 1.1264e-4, -2.855443; USR end
+  6.5503, 6.81319, -0.0558151, 5.1426e-7, -2.8554426; eps1 minimum (9.716e-13) 8.3310,
+  8.68406, -0.0558145, 2.6466e-7, -2.8554426; N_f 10, 10.43751, -0.0558140, 2.6961e-7,
+  -2.8554426, eps2 = -2.7615e-2 (SPEC 6: -2.76e-2; P1:534: -2.8e-2).
+- spectrum at N_f (Delta_R full MS; FLRW/MS started at N*; enhancement over
+  H^2/(8 pi^2 eps1) at k = aH): k = dk 1.023e-5, 8.80, 1.21e5; 2 dk 1.251e-4, 2.09, 2.1e6;
+  3 dk 5.29e-4, 1.37, 1.1e7; 4 dk 1.449e-3, 1.18, 3.2e7; 8 dk 1.505e-2, 1.02, 2.8e8;
+  16 dk 0.1195, 0.998, 3.2e8; 32 dk 0.531, 0.999, 3.9e7; 64 dk 1.0168, 1.000, 1.2e6.
+  Largest enhancement 4.2e8 near 12 dk (modes that cross about one e-fold before the USR
+  onset); Delta_R rises monotonically to 1.017 at 64 dk (SPEC 7.3: 1.017).
+- one-point rms of W R on the lattice at N_f: 0.0198 (32^3, nmax2 16), 0.0664 (32^3, 64),
+  0.201 (64^3, 256), 0.494 (128^3, 1024), 0.894 (256^3, 4096). The last squared is 0.7987,
+  the lattice band variance of the langevin package (0.79863, run
+  E-stoch-inf-20261115-130137-176cdd6, `../langevin/README.md`): two independent codes agree.
+- Super-horizon drift of ln Delta in the last e-fold: 1.09e-3 to 1.15e-3 for all shells
+  (eps1 rises again after its minimum).
