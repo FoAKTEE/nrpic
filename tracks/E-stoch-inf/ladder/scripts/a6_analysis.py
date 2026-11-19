@@ -169,7 +169,8 @@ def main():
             p = o[key][i]
             vals.append(p)
             ok &= bool(lo <= p <= hi)
-        return dict(orders=vals, pass_=ok and len(vals) > 0)
+        # no dump above the rounding level: not applicable (None), not a failure
+        return dict(orders=vals, pass_=(ok if vals else None))
     res["A6"] = {k: band(k) for k in ("R_all", "R_top", "R_low", "phi_pert", "chi_pert",
                                       "K_pert", "phi_mean", "chi_mean", "K_mean")}
     dl = {n: res["D"][n]["max_top"][-1] for n, _ in THETAS}
@@ -204,19 +205,29 @@ def figure(res, modes, outdir):
     tcol = (fs.PAL["yellow"], fs.PAL["green"], fs.PAL["blue"])
     lab = {"T25-T12": r"$\theta=0.25$ vs $0.125$", "T12-T06": r"$\theta=0.125$ vs $0.0625$"}
     a0 = ax[0, 0]
+    s0 = slice(1, None)                       # t = 0: identical slices, difference 0
     for key in ("T25-T12", "T12-T06"):
-        q = res["diff"][key]
-        a0.semilogy(t, q["R_all"], "o-", color=cols[key], ms=3, label=lab[key] + r", $R^{\rm NR}_n$")
-        a0.semilogy(t, q["chi_pert"], "s--", color=cols[key], ms=3, label=lab[key] + r", $\delta\chi$")
-        a0.semilogy(t, q["K_mean"], "^:", color=cols[key], ms=3, label=lab[key] + r", $\langle K\rangle$")
+        q = {k: np.asarray(v)[s0] for k, v in res["diff"][key].items()}
+        a0.semilogy(t[s0], q["R_all"], "o-", color=cols[key], ms=3,
+                    label=lab[key] + r", $R^{\rm NR}_n$")
+        a0.semilogy(t[s0], q["chi_pert"], "s--", color=cols[key], ms=3,
+                    label=lab[key] + r", $\delta\chi$")
+        a0.semilogy(t[s0], q["chi_mean"], "d-.", color=cols[key], ms=3,
+                    label=lab[key] + r", $\langle\chi\rangle$")
+        a0.semilogy(t[s0], q["K_mean"], "^:", color=cols[key], ms=3,
+                    label=lab[key] + r", $\langle K\rangle$")
+    a0.axhline(1e-12, **fs.MASK_LINE)
+    a0.set_ylim(1e-14, 3e-3)
     a0.set_xlabel(r"e-folds $\mathcal{N}-\mathcal{N}_*$")
     a0.set_ylabel("relative difference")
-    a0.legend(fontsize=6, loc="lower right")
+    a0.legend(fontsize=5.5, ncol=2, loc="center", bbox_to_anchor=(0.5, 0.42))
     a1 = ax[0, 1]
     o = res["orders"]
     for key, mk in (("R_all", "o-"), ("R_top", "v-"), ("phi_pert", "s--"),
-                    ("chi_pert", "d--"), ("K_pert", "x--"), ("K_mean", "^:")):
-        a1.plot(t, o[key], mk, ms=3, label=key.replace("_", " "))
+                    ("chi_pert", "d--"), ("K_pert", "x--"), ("chi_mean", "D-."),
+                    ("K_mean", "^:")):
+        lbl = key.replace("_", " ") + (" (at rounding)" if key == "K_mean" else "")
+        a1.plot(t, o[key], mk, ms=3, label=lbl)
     a1.axhspan(3.5, 4.5, color="0.9", zorder=0)
     a1.axhline(4.0, **fs.GUIDE)
     a1.set_ylim(0, 8)
@@ -230,9 +241,11 @@ def figure(res, modes, outdir):
         a2.loglog(k * (1 + 0.02 * (THETAS.index((name, th)) - 1)), d, ".", color=c, ms=2,
                   label=rf"$\theta={th}$")
     a2.axhline(0.02, **fs.GUIDE)
+    a2.set_xticks([1, 2, 4, 8])
+    a2.set_xticklabels(["1", "2", "4", "8"])
     a2.set_xlabel(r"$|n|$")
     a2.set_ylabel(r"$D_n$ at the last dump")
-    a2.legend(fontsize=7, loc="upper left")
+    a2.legend(fontsize=7, loc="lower right")
     a3 = ax[1, 1]
     pr = res["parts"]
     for (name, th), c in zip(THETAS, tcol):
