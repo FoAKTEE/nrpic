@@ -298,3 +298,14 @@ so f from this window is good to a few percent, not to one. A compressible
 (Navier-Stokes-Fourier) reference would remove (ii); a later window would reduce (i).
 Temperature profiles at t = 1, 5.5, 22.5, 56 follow the isobaric reference in shape
 (right panel). The kinetic energy of the slab rings like the mass (lower right).
+
+## 2026-11-19 16:22 T7 at theta = 0.003 with all processor seeds: still PASSED, 1.019 +- 0.004 (runs C-20261119-144545-c606492, C-20261119-155434-8563453; analysis C-20261119-161930-acd257b, which supersedes C-20261119-155257-754a43b)
+
+Seeds 11-14 added at k lambda 0.2 and 0.4: f = 1.0232 +- 0.0039 (0.1, 4 seeds),
+1.0174 +- 0.0047 (0.2, 8 seeds; 0.9913-1.0286), 1.0414 +- 0.0114 (0.4, 8 seeds;
+0.984-1.087). Extrapolated f0 = 1.0192 +- 0.0038, slope 0.098 +- 0.079 in (k lambda)^2,
+chi^2 = 2.4 for one degree of freedom. Pass. The k lambda = 0.4 point lies 2 percent above
+the small-k values (1.2 sd of the slope): a Burnett-order rise of kappa(k) is suggested but
+not resolved. Per-seed scatter at 4e5 particles: 1.3 percent (k lambda 0.2), 3.2 percent
+(0.4), against 2.1 and 3.4 percent from the design Monte Carlo. Number mode alone: 1.052,
+1.111, 1.448. Figure `figs/T7_th0.003_e0.2_cpu.png` replaced (looked at).
