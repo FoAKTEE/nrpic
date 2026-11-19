@@ -46,6 +46,8 @@ HORIZON_REASONS = (2, 3)
 
 def step_cumsum(t_events, w, t_eval):
     """Sum of w over events with t_event <= t_eval (right-continuous step)."""
+    if np.size(t_events) == 0:
+        return np.zeros(np.shape(t_eval))
     order = np.argsort(t_events, kind="stable")
     te, cw = t_events[order], np.cumsum(w[order])
     k = np.searchsorted(te, t_eval, side="right")
