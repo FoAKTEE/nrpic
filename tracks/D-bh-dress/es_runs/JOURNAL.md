@@ -523,3 +523,7 @@ ES-1 minus V-1 by window: [-2.3e-4, +3.2e-4] on 25-50 M, [-2.9e-5, +1.25e-4] on 
 [-1.9e-4, +7.6e-5] on 165-199.5 M. At the +x plateau tracer (R0 = 48 M) Khat and K = Khat +
 2 Theta differ by less than 3e-5/M before t = 100 M and by up to 6e-4/M at t = 200 M
 (Theta grows late); entry 6 quoted K.
+Second correction to entry 4 (same history files): "from t ~ 50 M the lapse is 1.30-1.39
+at every probe outside 10 M" is true from t ~ 150 M on (1.30-1.39 at t = 150 and 200 M);
+at t = 50 M the probes outside 10 M read 1.21-1.67 and at t = 100 M 1.33-1.51 (the
+outgoing gauge waves of entry 7 are still passing).
