@@ -1,0 +1,108 @@
+{
+  "schema": "nrpic-run-manifest/1",
+  "run_id": "F-20261119-144537-4db7530",
+  "track": "F-hills",
+  "gate": "G1",
+  "kind": "scouting",
+  "purpose": "eih scans: q = 10 (r_p 7-17 M) and q = 4 (r_p 9.82-16 M), prograde and retrograde, 360 phases, Newton / EIH (two readings of the start velocities) / HRNA from the same coordinate state at 4 r_t",
+  "preregistered_in": null,
+  "launcher": "local",
+  "command": [
+    "/data/haiyangw/nrpic/scratch/F-hills/venv-gb/bin/python",
+    "tracks/F-hills/eih/scripts/scan.py",
+    "--workers",
+    "13"
+  ],
+  "cwd": ".",
+  "git": {
+    "sha": "4db7530e15613d5a4fd34f344fd062731037dbf3",
+    "branch": "track/F-hills",
+    "dirty": false,
+    "package": [
+      "tracks/F-hills/eih"
+    ],
+    "outside_package": {
+      "count": 11,
+      "first": [
+        "?? tracks/F-hills/nr_first/figures/fig_e10a_s3_s2_compare.png",
+        "?? tracks/F-hills/nr_first/figures/fig_e11_tree_check.png",
+        "?? tracks/F-hills/nr_first/figures/fig_e3_single_gauge.png",
+        "?? tracks/F-hills/nr_first/figures/fig_e7_p1smoke.png",
+        "?? tracks/F-hills/nr_first/results/e10a_s3_s2_compare.json",
+        "?? tracks/F-hills/nr_first/results/e11_tree_check.json",
+        "?? tracks/F-hills/nr_first/results/e11_tree_path.json",
+        "?? tracks/F-hills/nr_first/results/e3_single_analysis.json",
+        "?? tracks/F-hills/nr_first/results/e4_test2_s3_s2.json",
+        "?? tracks/F-hills/nr_first/results/e4_test3_p1smoke.json",
+        "?? tracks/F-hills/nr_first/results/e7_p1smoke_analysis.json"
+      ]
+    },
+    "merge_base_main": "2df11a93a23f279b046047f3e2bed44a85946a3a",
+    "worktree": "wt/F-hills"
+  },
+  "code": {
+    "core_tag": "core-v0.3",
+    "athenak_upstream_sha": "c5a0d7f",
+    "kokkos_sha": "6739bc623081648af9e752b616d9671527922cbf",
+    "problem": null
+  },
+  "env": {
+    "host": "anta",
+    "env_hash": "33c1dbb6673b68919eaa332b0add0b58aeac8be843f2071b9d06e2e0e397a96d",
+    "machine_file_sha256": "0321f40f4caeeb2a36624a9fa9809e60bad31071f366b3517ba23ad45698d2d7",
+    "uv_lock_sha256": "5417f6ba318b914aa3800e5d55f7b11fdd8df13c2688bdda7d419240aa1d5863",
+    "track_requirements_sha256": null,
+    "container_digest": null,
+    "compiler": "g++ 11.4.0",
+    "mpi": "none (Athena_ENABLE_MPI=OFF)",
+    "gpu": null,
+    "python": "3.10.12 /data/haiyangw/nrpic/wt/F-hills/.venv"
+  },
+  "input": null,
+  "inputs": [
+    {
+      "path": "tracks/F-hills/eih/scripts/scan.py",
+      "role": "argv",
+      "sha256": "8ad97a2d73ec78a75abaebf4d3caa99fc2a33f21b38e85a014b44de47f22189c",
+      "bytes": 8314,
+      "tracked": true
+    }
+  ],
+  "batch_entries": null,
+  "resources": {
+    "nodes": 1,
+    "gpus": 0,
+    "cores": 13,
+    "walltime_s": null,
+    "wall_limit": null,
+    "segments_max": null,
+    "gpu_hours_requested": 0.0,
+    "gpu_hours": null,
+    "particles": null
+  },
+  "slurm": null,
+  "outputs": {
+    "dir": "scratch/F-hills/F-20261119-144537-4db7530",
+    "sha256sums": "sha256sums.txt",
+    "sha256sums_sha256": null,
+    "bytes": null,
+    "files": null
+  },
+  "status": "running",
+  "exit_code": null,
+  "registered": "2026-11-19T14:45:37Z",
+  "started": null,
+  "ended": null,
+  "parents": [],
+  "notes": "",
+  "budget_at_submit": {
+    "gpu_hours_allotted": 50.0,
+    "cores_allotted": 16,
+    "gpu_hours_used": 0.3,
+    "gpu_hours_reserved": 1.0,
+    "gpu_hours_without_gate": 0.0,
+    "cores_busy": 1,
+    "runs": 139,
+    "allotment_from": "coord/DECISIONS/0006-compute-budget.md + 0014-budgets-after-wave-1.md"
+  }
+}
