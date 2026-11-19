@@ -706,3 +706,113 @@ Open:
 - The comment of `NrpicCollideOptions::ext` in `particles.hpp` says columns 32 to 35;
   they are 32 to 36 (comment only; left so that the published build matches the source).
 - Shared-file lines touched: `interfaces/collisions.md` section 11.5.
+
+## 2026-11-19 14:00 UTC  closing session of coll2 (wave 2b): reading, state of the card jobs, predictions
+
+Merged `main` (71acd0c: decision 0016, kb/main; no change under `athenak/src`). Read
+`CLAUDE.md`, the charter to the end of "Owners", brief lines 688-706 and 834-860,
+decisions 0010 and 0016, the wave-2 report of this package
+(`scratch/orch/wave2_reports/core.md`, section core:coll2) and the harness report, this
+journal. The previous session ended with card jobs 4484 and 4485 queued; 13 run
+manifests of these jobs were untracked (committed now with a hand-written fourteenth,
+0093aab).
+
+### What the card jobs did (sacct; `CARD_TESTS.log`; logs `scratch/core/tmp/coll2/gpu3_{R.4484,NC.4485}.log`)
+
+- 4484 (part R), 20:39-20:49 UTC on 2026-11-15, completed (0.169 card-hours of
+  allocation): smoke test of the clean card build f46f159 (static metric with
+  collisions, perturbing force) exit 0 and 0; the five existing set-ups
+  (core-20261115-203944-6817f49); the wave-1 collisional boxes rate, relax, repro,
+  conv_dt, curved with the new executable and with the release one
+  (core-20261115-204006, -204416, -204635, -204655, -204831-6817f49 against the release
+  runs -204242, -204534, -204645, -204741, -204921-6817f49).
+- 4485 (parts N, C), 20:49-21:39 UTC, TIMEOUT at its 50-minute limit (0.837
+  card-hours): completed the smoke test, gradient (core-20261115-204949-6817f49, 58 s)
+  and replay (core-20261115-205047-6817f49, 149 s); the G4 run
+  core-20261115-205317-6817f49 ran with the driver's defaults (1e6 particles, 600
+  steps, not the 1e5 and 400 of the processor run) at 2.5 s per step on the card
+  (`athena.log`: 1481 s and 1784 s for 600 steps, the two modes sharing one card):
+  cell_s0 and particle_s0 complete, cell_s1 cut at cycle 528, particle_s1 at cycle
+  335, no analysis. T12/G3 on the card and the cluster (part C) never started.
+- Card time of this package so far: 0.087 (first session) + 0.169 + 0.837 = 1.09
+  card-hours of allocation.
+- The smoke test passed in both jobs: the clean card build runs the decks on which
+  every run of the incremental build crashed (SIGSEGV at start, runs
+  core-20261115-171107 ... -172223-cdd7c88).
+
+### First look at the completed card tests (numbers from the run directories)
+
+- Five existing set-ups (core-20261115-203944-6817f49, `run.log`): c1 and c2 identical
+  to the release; c3, c4, c5 not reproducible run to run on the card in 2, 2, 3 files,
+  and exactly these differ: the verdict of wave 1. First half of Rc held.
+- Gradient (core-20261115-204949-6817f49, `run.log`, `fig_gradient.png` looked at): all
+  four cases within 1.6 standard errors of the reference with the cell rate, both
+  modes; `particle`: change of H_a + H_b per collision 6.7e-17 to 3.6e-16, no pair
+  without a root, rejected shares within 0.9 se. Nc for G1/G2 held on the card.
+- Replay (core-20261115-205047-6817f49, `summary.json`, `fig_replay.png` looked at): 13
+  cases, numbers of tested pairs, collisions, updates equal between card and twin,
+  momenta within 1.43e-14 of max(1, |u|) (criterion 1e-13), untouched particles
+  bit-identical, pairs without a root equal (one in static_particle_factor2 in both).
+  G2(e) held on the card.
+- Collisional boxes against the release card executable (`rerun_wave1_card_f46f159.json`):
+  25 of 43, 108 of 116, 111 of 135, 27 of 46, 18 of 23 files differ, among them particle
+  snapshots (all after the initial one) and `box.nrpic.hst`. The second half of Rc
+  ("particle snapshots byte-identical") FAILED. In the null run of the rate test
+  (sigma = 0, operator on) only `box.coll.hst` differs. Both executables are
+  reproducible on their own: each passes the reproducibility test (identical
+  snapshots for 1, 8, 64 MeshBlocks; runs -204635 and -204645, `summary.json`
+  `mesh_layouts_identical: true`). In the first three rows of the rate history
+  (theta1_plain) n_tested, n_coll, n_updated agree and the pair defects dE (1e-20)
+  differ.
+
+### Predictions before the analyses of this session (14:20 UTC)
+
+D  Card differences (`card_diff.py` on the five pairs above). Candidate cause
+   [JUDGEMENT, to be bounded here]: the card compiler contracts the floating-point
+   operations of the changed collision kernel differently (the processor build, which
+   is byte-identical, does not use fused multiply-adds); the push is not involved.
+   Predicted: (a) every integer column of every differing `coll.hst` (ncycle, n_part,
+   n_cells, n_tested, n_coll, n_updated, n_trunc, max_nsub, min_N, n_bad_cells) is
+   identical in every row; (b) every differing snapshot holds the same particles
+   (tags) and differs by less than 1e-12 in x and in u/max(1, |u|); (c) the first
+   differing snapshot of every run is the first one written after a collision step.
+   Refuted by a differing count or a snapshot difference above 1e-12: then the two
+   executables collide differently (an acceptance flipped, or a behaviour change),
+   and only statistics can be compared.
+G4c Equilibrium in the well on the card (analysis of run core-20261115-205317-6817f49
+   with `run_tolman.py --analyse`; 1e6 particles, 600 steps of 0.01, theta_inf = 0.2,
+   about 85 collisions per particle). Complete runs cell_s0 and particle_s0:
+   `particle`: change of sum M H in the collision steps below 1e-12 of its value,
+   total below 1e-6; late cos(phi) amplitude of ln(theta alpha) within 0.5 percent of
+   zero (the standard error with 1e6 particles is about 0.07 percent, so also within
+   4 se); no pair without a root; rejected share 5.7e-3 of the proposals (reference
+   run core-20261115-163914-74b3e87) within 4 binomial sigma.
+   `cell`: gain of H per collision in the first collision time equal to the reference
+   3.62e-4 within 4 se; total gain between 0.3 and 1.2 of what the initial rate gives;
+   late amplitude between -2 and -10 percent (processor: -3.8 and -3.4 percent).
+   The cut seed-1 runs are reported to their last record, without a verdict.
+   Refuted by any criterion failing on a complete run.
+A  Analysis mode of `run_cluster.py` (new: `--prepare`, `--analyse RUNDIR --ic DIR`):
+   applied to the processor run core-20261115-160913-0656925 (Kn = 0.03, two steps,
+   both modes) it reproduces every number of that run's `summary.json` except the wall
+   times. Refuted by any other difference (the split would then change the analysis).
+Ct Step time of the cluster on the card (P11 deck, Z4c, six levels, 1e4 particles,
+   Kn = 3, cells of 2 M, dt = M/8): wave 1 measured 0.21 s per step for `off`, `kn3`
+   with the operator of core-v0.3 (runs core-20261115-140316-8742cdf,
+   -142625-67f8c1d: 252 s for 1200 steps). Predicted for the new executable: 0.19 to
+   0.25 s per step for off, kn3_cell and kn3_particle alike (the per-particle metric
+   pass of `particle` costs one interpolation per particle, 1e4 particles). Measured
+   with a card batch of the three runs to t = 5 M (40 steps); the full job is sized
+   from it as 3 x 1200 x (measured step time) x 1.3 plus start-up.
+C  Cluster at Kn = 3 over 150 M on the card (restated from 2026-11-15 16:22 UTC with the
+   processor run Cp): `cell`: the collision steps raise sum M W_p by 3.6e-5 to 6.8e-5
+   of its value (wave 1: 5.2e-5) and sum M H_p by more (ratio about 1.5 as in Cp:
+   1.55), between 5e-5 and 1.5e-4. `particle`: the collision steps change sum M H_p by
+   less than 1e-12 of its value (about 5000 collisions); at most five pairs without a
+   root; rejected collisions below 2 percent of the proposals; collisions equal to
+   those of `cell` within 4 sigma; central lapse within 0.01 of the `cell` run at all
+   times; radii of 10, 50, 90 percent of the rest mass within 5 percent of the `cell`
+   run; both modes: rest mass identical to the bit, no particle excised or escaped,
+   deposit identity below 1e-12, collisions against sum_P within 4 sigma. Refuted by a
+   change of sum M H_p in `particle` above 1e-12, or a structural difference beyond
+   these bounds: then `particle` does not work in an evolving metric on the card.

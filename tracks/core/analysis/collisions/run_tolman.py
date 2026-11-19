@@ -16,6 +16,10 @@ Measured: the sum of M H, H = alpha W, of all particles against time and the par
 its change that happens in the collision steps (history columns 32, 33); the amplitude
 of the cos(phi) mode of ln(theta_local alpha) and of the density, from snapshots.
 Writes summary.json and fig_tolman.png.
+With --analyse RUNDIR nothing is run: the run directories RUNDIR/<mode>_s<seed> of an
+earlier call are analysed, also when a run was cut before its last step (it is then
+analysed up to its last history record and snapshot and marked "partial"; the criteria
+are evaluated on the complete runs only).
 """
 import argparse
 import json
@@ -85,6 +89,8 @@ def main():
                          "change of H_a + H_b per collision of coll_energy = cell")
     ap.add_argument("--seeds", type=int, default=2)
     ap.add_argument("--dt", type=float, default=0.01)
+    ap.add_argument("--analyse", default="",
+                    help="run nothing; analyse the run directories RUNDIR/<mode>_s<seed>")
     args = ap.parse_args()
     out = os.path.abspath(args.out)
     os.makedirs(out, exist_ok=True)
@@ -100,8 +106,9 @@ def main():
     jobs, names = [], []
     for seed in range(args.seeds):
         ic = os.path.join(out, f"tolman_s{seed}.nrp")
-        scbox.make_particles(ic, met, args.n, 700 + seed, th, 1.0, 0.0, LENGTHS,
-                             weight="tolman")
+        if not args.analyse:
+            scbox.make_particles(ic, met, args.n, 700 + seed, th, 1.0, 0.0, LENGTHS,
+                                 weight="tolman")
         for mode in ("cell", "particle"):
             name = f"{mode}_s{seed}"
             ov = met.problem_block() + [
@@ -111,7 +118,16 @@ def main():
                 f"particles/snap_dt={snap_dt!r}", f"job/rng_seed={40 + seed}"]
             jobs.append((args.exe, DECK, os.path.join(out, name), ov))
             names.append(name)
-    res = common.run_many(jobs, args.nproc)
+    rdir = os.path.abspath(args.analyse) if args.analyse else out
+    partial = {}
+    if args.analyse:
+        res = []
+        for name in names:
+            lg = open(os.path.join(rdir, name, "athena.log")).read()
+            partial[name] = "Terminating on" not in lg
+            res.append((0, float("nan")))
+    else:
+        res = common.run_many(jobs, args.nproc)
     if any(r[0] != 0 for r in res):
         print("a run failed:", [r[0] for r in res])
         sys.exit(1)
@@ -121,9 +137,18 @@ def main():
                    runs={})
     series = {}
     for name in names:
-        rd = os.path.join(out, name)
+        rd = os.path.join(rdir, name)
         h = collide.read_history(os.path.join(rd, "box.coll.hst"))
-        snaps = [collide.read_snapshot(p) for p in common.snapshots(rd)]
+        snaps = []
+        for p in common.snapshots(rd):
+            try:
+                s = collide.read_snapshot(p)
+            except ValueError:          # a run cut while writing its last snapshot
+                if not args.analyse:
+                    raise
+                continue
+            if len(s["tau"]) == s["n"]:
+                snaps.append(s)
         amps = [mode_amplitudes(met, s, th) for s in snaps]
         tt = np.array([s["time"] for s in snaps])
         e0 = h["sum_MH_particles"][0] - h["dH_particles"][0]
@@ -139,7 +164,8 @@ def main():
         dpz = (common.exact_sum(snaps[-1]["m"]*snaps[-1]["u"][:, 2])
                - common.exact_sum(snaps[0]["m"]*snaps[0]["u"][:, 2]))/ps
         late = [a for a, t in zip(amps, tt) if t > 0.5*tt[-1]]
-        r = dict(collisions=int(ncoll), collisions_per_particle=2.0*ncoll/args.n,
+        r = dict(partial=bool(partial.get(name, False)), steps_done=int(h["ncycle"][-1]),
+                 collisions=int(ncoll), collisions_per_particle=2.0*ncoll/args.n,
                  n_trunc=int(h["n_trunc"].sum()), n_noroot=int(h["n_noroot"].sum()),
                  n_balance=int(h["n_balance"].sum()),
                  max_dlam=float(h["max_dlam"].max()), max_nsub=int(h["max_nsub"].max()),
@@ -167,6 +193,8 @@ def main():
     ok = True
     checks = {}
     for name, r in summary["runs"].items():
+        if r["partial"]:
+            continue
         if name.startswith("particle"):
             c = dict(dH_total=bool(abs(r["dH_total_rel"]) < 1e-6),
                      dH_collisions=bool(abs(r["dH_collisions_rel"]) < 1e-12),
@@ -199,7 +227,7 @@ def main():
               f"dW in collisions {r['dW_collisions_rel']:+.3e}  a_T late "
               f"{r['a_T_late']:+.4f} ({r['a_T_late_se']:.4f})  a_n {r['a_n0']:+.4f} -> "
               f"{r['a_n_late']:+.4f}  noroot {r['n_noroot']} rejected {r['n_balance']}  "
-              f"{checks[name]}")
+              f"{checks.get(name, 'partial run: no criteria')}")
     print("ok:", ok)
 
     fs = common.style()
