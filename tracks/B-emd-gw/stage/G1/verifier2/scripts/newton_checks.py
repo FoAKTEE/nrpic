@@ -116,7 +116,23 @@ def east(n, rundir):
         jj = np.argmin(gaps[i])
         ga, gb = gaps[i - 1, jj], gaps[i, jj]
         a_cross_code = float(a[i - 1] + (a[i] - a[i - 1])*ga/(ga - gb))
-    out = {"n": n, "ntrack": len(tags), "P_total": sh["P_total"],
+    # plane symmetry in the snapshots: spread of x within a sheet, drift of y and z
+    import glob
+    sym = []
+    order0 = np.argsort(snap["tag"])
+    sheet_by_tag = sh["pid_sheet"][order0]
+    y0 = snap["x"][order0, 1:]
+    for f in sorted(glob.glob(os.path.join(rundir, "newton.part.*.bin")))[1:]:
+        sn = athio.read_snap(f)
+        o = np.argsort(sn["tag"])
+        xs = sn["x"][o, 0]
+        dev = (xs - sh["q"][sheet_by_tag] + 0.5) % 1.0 - 0.5
+        mean = np.bincount(sheet_by_tag, weights=dev)/np.bincount(sheet_by_tag)
+        spread = float(np.abs(dev - mean[sheet_by_tag]).max())
+        dyz = float(np.abs((sn["x"][o, 1:] - y0 + 0.5) % 1.0 - 0.5).max())
+        sym.append({"time": sn["time"], "a": (1 + sn["time"]/2)**2, "x_spread_in_sheet": spread,
+                    "max_yz_drift": dyz})
+    out = {"n": n, "ntrack": len(tags), "P_total": sh["P_total"], "plane_symmetry": sym,
            "a_cross_exact_discrete": first_cross_exact(sh),
            "a_cross_code": a_cross_code, "err_at": {}}
     for at in (2, 5, 10, 15, 20):
