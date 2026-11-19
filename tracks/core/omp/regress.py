@@ -14,8 +14,9 @@ configuration. --pairs adds comparisons between two configurations (repeatabilit
 --jobs N runs N cases side by side (the caller keeps N x threads within its cores).
 Output: DIR/<case>/<config>/ per run, DIR/summary.json, a table on stdout. DIR defaults
 to $NRPIC_RUN_DIR (set by nrpic-run). Exit status 0 if no comparison shows a structural
-difference (missing file, other size, non-finite number) or a difference above --tol
-relative to the largest number of the file.
+difference (missing file, other size, non-finite number) or a difference above --tol in
+the measure rel_floor of omplib.number_diff (each number against itself, with a floor of
+1e-6 of the largest number of its file).
 """
 import argparse
 import concurrent.futures
@@ -81,12 +82,12 @@ def main():
         for x, y in pairs:
             r = L.compare_dirs(runs[x]["rundir"], runs[y]["rundir"])
             comps["%s vs %s" % (y, x)] = r
-            flag = r["structural_difference"] or r["worst_rel_file"] > a.tol
+            flag = r["structural_difference"] or r["worst_rel_floor"] > a.tol
             bad += 1 if flag else 0
             nd = len(r["differ"])
             lines.append("%-7s %-22s vs %-14s identical %2d  differ %2d  worst %.2e%s  "
                          "[exit %d, %.1f s]" % (
-                             case, y, x, len(r["identical"]), nd, r["worst_rel_file"],
+                             case, y, x, len(r["identical"]), nd, r["worst_rel_floor"],
                              "  STRUCTURAL" if r["structural_difference"] else "",
                              runs[y]["exit"], runs[y]["wall_s"]))
             for n, v in sorted(r["differ"].items()):

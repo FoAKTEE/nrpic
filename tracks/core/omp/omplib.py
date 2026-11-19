@@ -84,16 +84,20 @@ CASES = {
                   args=["mesh/nx1=64", "mesh/nx2=64", "mesh/nx3=64", "time/nlim=8"],
                   append=RST % 8,
                   what="vacuum puncture, Z4c, uniform 64^3 in eight blocks"),
+    # the deck has its own restart block (output2): with dt = 1e30 it writes the initial
+    # state and, at the end of the run, the final one (no second restart block: AthenaK
+    # refuses two)
     "punc": dict(inp="problems/puncture/horizon_calib.athinput", files=[],
                  args=["time/nlim=5", "fastflow/find_every=4", "refined_region1/level=2",
                        "refined_region2/level=2", "output2/dt=1.0e30"],
-                 append=RST % 5,
                  what="vacuum puncture on a refined mesh, six tracers, horizon finder"),
 }
 REGRESS = ["geo", "boris", "dep", "east", "os", "jeans", "binary", "newton", "coll", "kg",
            "noise", "bench", "punc"]
 
 SKIP = ("run.log", "summary.json", "kernel_timer.txt")
+# floor of the verdict measure rel_floor, as a fraction of the largest number of the file
+FLOOR = 1.0e-6
 LOGKEYS = ("defect", "Potential", "Acceleration", "Error", "L1", "norm")
 
 
@@ -265,7 +269,10 @@ def number_diff(fa, fb):
     kind, n (numbers compared), ndiff (numbers that differ), abs (largest difference),
     rel_file (largest difference over the largest magnitude among the numbers that
     differ: the measure used for the verdict), rel_entry (largest difference relative to
-    the entry itself, 1 for an entry that is rounding noise around zero)."""
+    the entry itself, 1 for an entry that is rounding noise around zero), rel_floor (the
+    measure of the verdict: largest |a - b|/max(|a|, |b|, FLOOR x the largest magnitude
+    of the file), so that a number of moderate size is judged against itself, and rounding
+    noise of a number that cancels to nearly zero against the floor)."""
     name = os.path.basename(fa)
     if os.path.getsize(fa) != os.path.getsize(fb) and not name.endswith((".hst", ".txt",
                                                                          ".dat")):
@@ -306,7 +313,12 @@ def number_diff(fa, fb):
             fscale = float(cscale[~isint].max()) if (~isint).any() else float(cscale.max())
             cold = ad.max(axis=0)
             relc = np.where(cscale > 0, cold/np.where(cscale > 0, cscale, 1.0), 0.0)
+            fl = FLOOR*fscale
+            den = np.maximum(np.maximum(np.abs(fa), np.abs(fb)), fl)
+            relf = np.where(dif & ~bad & (den > 0), ad/np.where(den > 0, den, 1.0), 0.0)
+            relf[:, isint] = 0.0
         return {"kind": kind, "n": int(a2.size), "ndiff": nd, "nonfinite": int(bad.sum()),
+                "rel_floor": float(relf.max()),
                 "abs": float(cold.max()), "scale": fscale,
                 "rel_file": float(cold.max()/fscale) if fscale > 0 else 0.0,
                 "rel_column": float(relc.max()), "worst_column": int(np.argmax(relc)) + 1,
@@ -318,15 +330,20 @@ def number_diff(fa, fb):
         nd = int(dif.sum())
         if nd == 0:
             return {"kind": kind, "n": int(a.size), "ndiff": 0, "abs": 0.0, "rel_file": 0.0,
-                    "rel_entry": 0.0}
+                    "rel_entry": 0.0, "rel_floor": 0.0}
+        fin = np.isfinite(a) & np.isfinite(b)
+        fmax = float(max(np.abs(a[fin]).max(initial=0.0), np.abs(b[fin]).max(initial=0.0)))
         da, db = a[dif], b[dif]
         ad = np.abs(da - db)
         scale = np.maximum(np.abs(da), np.abs(db))
         bad = ~np.isfinite(ad)
         smax = float(np.nanmax(np.where(np.isfinite(scale), scale, 0.0)))
         rel_entry = np.where(scale > 0, ad/np.where(scale > 0, scale, 1.0), 0.0)
+        den = np.maximum(scale, FLOOR*fmax)
+        rel_floor = np.where(den > 0, ad/np.where(den > 0, den, 1.0), 0.0)
         return {"kind": kind, "n": int(a.size), "ndiff": nd,
-                "nonfinite": int(bad.sum()),
+                "nonfinite": int(bad.sum()), "scale_file": fmax,
+                "rel_floor": float(np.nanmax(np.where(bad, 0.0, rel_floor))),
                 "abs": float(np.nanmax(np.where(bad, 0.0, ad))),
                 "rel_file": float(np.nanmax(np.where(bad, 0.0, ad))/smax) if smax > 0
                 else 0.0,
@@ -365,15 +382,16 @@ def compare_dirs(da, db):
             differ["run.log result lines"] = {"kind": "log", "n": len(la),
                                               "ndiff": sum(x != y for x, y in zip(la, lb))
                                               + abs(len(la) - len(lb))}
-    worst = 0.0
+    worst = worst_floor = 0.0
     hard = False
     for v in differ.values():
         if v["kind"] in ("missing", "size", "text-shape") or v.get("nonfinite", 0) \
                 or v.get("int_columns_differ", 0):
             hard = True
         worst = max(worst, v.get("rel_file", 0.0))
+        worst_floor = max(worst_floor, v.get("rel_floor", 0.0))
     return {"identical": same, "differ": differ, "worst_rel_file": worst,
-            "structural_difference": hard}
+            "worst_rel_floor": worst_floor, "structural_difference": hard}
 
 
 def dump(obj, path):

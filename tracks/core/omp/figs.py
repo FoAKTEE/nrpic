@@ -116,21 +116,31 @@ def fig_scaling(a):
 
 
 def fig_diff(a):
-    """Largest difference of each configuration against its reference, per case."""
-    rows = []
+    """Left: largest difference (measure rel_floor of omplib) of each configuration against
+    its reference, per case; open marks: every file byte-identical. Right: conservation
+    identity of the deposit, |int_E - sum_mW|/sum_mW, per configuration. Reads
+    summary_floor.json of recompare.py."""
+    rows, idn = [], []
     for d in a.runs:
-        s = json.load(open(os.path.join(d, "summary.json")))
+        s = json.load(open(os.path.join(d, "summary_floor.json")))
         for case, c in s["cases"].items():
             for key, r in c["comparisons"].items():
-                rows.append((case, key, r["worst_rel_file"], len(r["differ"]),
-                             len(r["identical"]), r["structural_difference"]))
+                rows.append((case, key.replace("O3:", "").replace(":::priv", "p"),
+                             r["worst_rel_floor"], len(r["differ"]), len(r["identical"]),
+                             r["structural_difference"]))
+            for cfg, v in c.get("identity", {}).items():
+                if v:
+                    idn.append((case, cfg.replace("O3:", "").replace(":::priv", "p"),
+                                v["E"]))
     cases = [c for c in ["geo", "boris", "dep", "east", "os", "jeans", "binary", "newton",
                          "coll", "kg", "noise", "bench", "punc"]
              if any(r[0] == c for r in rows)]
     keys = list(dict.fromkeys(r[1] for r in rows))
     fs.use_style()
-    fig, ax = plt.subplots(figsize=(fs.FULL_WIDTH, 3.6))
-    fig.subplots_adjust(left=0.09, right=0.70, bottom=0.14, top=0.95)
+    fig, axs = plt.subplots(1, 2, figsize=(fs.FULL_WIDTH, 3.6),
+                            gridspec_kw={"width_ratios": [2.3, 1.0]})
+    fig.subplots_adjust(left=0.075, right=0.80, bottom=0.14, top=0.95, wspace=0.28)
+    ax = axs[0]
     cols = fs.series_colors(len(keys)) if len(keys) > 5 else fs.SERIES
     floor = 1.0e-18
     for n, key in enumerate(keys):
@@ -141,18 +151,39 @@ def fig_diff(a):
                     xs.append(i + (n - 0.5*(len(keys) - 1))*0.8/len(keys))
                     ys.append(max(r[2], floor))
                     ident.append(r[3] == 0)
-        xs, ys, ident = np.array(xs), np.array(ys), np.array(ident)
+        xs, ys, ident = np.array(xs), np.array(ys), np.array(ident, dtype=bool)
+        if xs.size == 0:
+            continue
         ax.plot(xs[~ident], ys[~ident], "o", color=cols[n % len(cols)], ms=4, label=key)
-        ax.plot(xs[ident], ys[ident], "o", mfc="none", color=cols[n % len(cols)], ms=4)
+        ax.plot(xs[ident], ys[ident], "o", mfc="none", color=cols[n % len(cols)], ms=4,
+                label=None if (~ident).any() else key)
     ax.axhline(a.tol, **fs.GUIDE)
     ax.axhline(floor, **fs.MASK_LINE)
     ax.set_yscale("log")
-    ax.set_ylim(floor/3, 1.0e-6)
+    ax.set_ylim(floor/3, 1.0e-4)
     ax.set_xticks(range(len(cases)))
     ax.set_xticklabels(cases, fontsize=8)
     ax.tick_params(axis="x", which="minor", bottom=False, top=False)
-    ax.set_ylabel("largest difference / largest number of the file")
-    ax.legend(loc="upper left", bbox_to_anchor=(1.01, 1.0), fontsize=7)
+    ax.set_ylabel(r"largest $|a-b|/\max(|a|,|b|,10^{-6}\,a_{\max})$")
+    ax = axs[1]
+    icases = [c for c in cases if any(r[0] == c for r in idn)]
+    for n, key in enumerate(keys + [k for k in dict.fromkeys(r[1] for r in idn)
+                                    if k not in keys]):
+        pts = [(icases.index(r[0]) + (n - 0.5*len(keys))*0.6/max(len(keys), 1),
+                max(r[2], floor)) for r in idn if r[1] == key and r[0] in icases]
+        if pts:
+            ax.plot(*zip(*pts), "o", color=cols[n % len(cols)], ms=4,
+                    label=key if key not in keys else None)
+    ax.set_yscale("log")
+    ax.set_ylim(1.0e-18, 1.0e-4)
+    ax.set_xticks(range(len(icases)))
+    ax.set_xticklabels(icases, fontsize=8)
+    ax.tick_params(axis="x", which="minor", bottom=False, top=False)
+    ax.set_ylabel(r"$\max_t |\int E - \sum mW| / \sum mW$")
+    h, lab = axs[0].get_legend_handles_labels()
+    h2, lab2 = axs[1].get_legend_handles_labels()
+    axs[1].legend(h + h2, lab + lab2, loc="upper left", bbox_to_anchor=(1.03, 1.0),
+                  fontsize=7, title="against", title_fontsize=7)
     fs.save(fig, a.out)
     print("wrote", a.out + ".png")
 
