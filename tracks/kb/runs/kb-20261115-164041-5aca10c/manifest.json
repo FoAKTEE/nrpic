@@ -1,0 +1,25 @@
+{
+ "run_id": "kb-20261115-164041-5aca10c",
+ "owner": "kb",
+ "command": [
+  "python3",
+  "-I",
+  "kb/bin/kb",
+  "snapshot"
+ ],
+ "cwd": "/data/haiyangw/nrpic/wt/kb",
+ "commit": "5aca10c45d04c35e9ceb5d5fb8e9657db555ca1b",
+ "worktree_dirty_kb": false,
+ "inputs": [],
+ "output_dir": "/data/haiyangw/nrpic/scratch/kb/kb-20261115-164041-5aca10c",
+ "purpose": "embed helper: kb snapshot after K4-K5 (vectors of all chunks and equations, tags v3), readers' db/current",
+ "kind": "scouting",
+ "cores": 1,
+ "card_hours": 0,
+ "started_utc": "2026-11-15T16:40:41Z",
+ "started_unix": 1794760841.7463462,
+ "status": "finished",
+ "exit_code": 0,
+ "wall_time_s": 35.82,
+ "finished_utc": "2026-11-15T16:41:17Z"
+}

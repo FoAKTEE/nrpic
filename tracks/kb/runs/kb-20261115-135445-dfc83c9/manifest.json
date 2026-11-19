@@ -1,0 +1,34 @@
+{
+ "run_id": "kb-20261115-135445-dfc83c9",
+ "owner": "kb",
+ "command": [
+  "kb/.venv/bin/python",
+  "-I",
+  "kb/scripts/code_report.py",
+  "/data/haiyangw/nrpic/scratch/kb/kb-20261115-135445-dfc83c9"
+ ],
+ "cwd": "/data/haiyangw/nrpic/wt/kb",
+ "commit": "dfc83c9afadd9e369d3819b505574651f9a18cb0",
+ "worktree_dirty_kb": false,
+ "inputs": [
+  {
+   "path": "/data/haiyangw/nrpic/wt/kb/kb/scripts/code_report.py",
+   "sha256": "486f316e9a928c0126879191640b26ec8d73663a2aa3ebededc5e116a8e90b46"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/wt/kb/kb/kbtool/code_params.py",
+   "sha256": "5d11837d2fc09ca5f7b90cdce318ad051619af004ff9b40134b39ab803566f84"
+  }
+ ],
+ "output_dir": "/data/haiyangw/nrpic/scratch/kb/kb-20261115-135445-dfc83c9",
+ "purpose": "K6 test P4': inputs against code with computed-name patterns and the comment block apart; reports and figures of the code index",
+ "kind": "scouting",
+ "cores": 1,
+ "card_hours": 0,
+ "started_utc": "2026-11-15T13:54:45Z",
+ "started_unix": 1794750885.2460794,
+ "status": "finished",
+ "exit_code": 0,
+ "wall_time_s": 2.85,
+ "finished_utc": "2026-11-15T13:54:48Z"
+}

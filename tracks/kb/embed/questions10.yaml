@@ -1,0 +1,94 @@
+# Retrieval test of stages K4-K5: ten questions with known answer locations, taken from the
+# answers to the first questions of KB-G1 (tracks/kb/stage/KB-G1/FIRST_QUESTIONS.md, item in
+# `from`). Questions are our own wording, written before any retrieval result was seen.
+# A hit: a returned chunk of `paper` whose source range (file and lines of the stored source,
+# through build/tex/<id>/sourcemap.json) overlaps one of `lines` in `file`.
+# Line numbers are those of FIRST_QUESTIONS.md (kb-data/raw/arxiv/<id>/<version>/src/<file>).
+version: 1
+questions:
+  - id: q01
+    from: FQ1 (Sec. 2.3, L625-670)
+    question: What is the order of the shape function used to deposit the particles onto the mesh?
+    paper: "2611.12831"
+    file: main.tex
+    lines: [[625, 670]]
+  - id: q02
+    from: FQ1 (Sec. 2.4.1, L680-686)
+    question: Is the deposited stress-energy smoothed by a filter after deposition, and with which weights?
+    paper: "2611.12831"
+    file: main.tex
+    lines: [[680, 686]]
+  - id: q03
+    from: FQ2 (L888-917)
+    question: How are particles drawn from the continuum density of the Oppenheimer-Snyder dust ball?
+    paper: "2611.12831"
+    file: main.tex
+    lines: [[888, 917], [1442, 1442]]
+  - id: q04
+    from: FQ2 (L1129, L1476, L1509)
+    question: How do constraint violations from particle sampling noise scale with the number of particles?
+    paper: "2611.12831"
+    file: main.tex
+    lines: [[1129, 1129], [1476, 1476], [1509, 1509]]
+  - id: q05
+    from: FQ3 (L371-397)
+    question: Which slicing and shift conditions are used, and how is the shift damping made position dependent near black holes?
+    paper: "2611.12831"
+    file: main.tex
+    lines: [[371, 397]]
+  - id: q06
+    from: FQ4 (L1393)
+    question: Which future research directions do the conclusions of the particle-in-cell numerical relativity paper list?
+    paper: "2611.12831"
+    file: main.tex
+    lines: [[1393, 1393]]
+  - id: q07
+    from: FQ6 (L1084-1102, L1145)
+    question: In particle simulations of primordial black hole formation, which amplitude separates horizon formation from no horizon?
+    paper: "2609.14218"
+    file: MDPBH.tex
+    lines: [[1084, 1102], [1145, 1145]]
+  - id: q08
+    from: FQ6 (Sec. 2.2, L398-469)
+    question: What modified 1+log slicing condition is used for primordial black hole formation in an expanding universe?
+    paper: "2609.14218"
+    file: MDPBH.tex
+    lines: [[398, 469]]
+  - id: q09
+    from: FQ7 (L503-506)
+    question: Which window function coarse-grains the stochastic noise in numerical-relativity stochastic inflation, and how steep is it?
+    paper: "2512.14649"
+    file: PRD_v2.tex
+    lines: [[503, 506]]
+  - id: q10
+    from: FQ8 (L194-211)
+    question: Below which pericentre distance do general-relativistic effects matter for binaries disrupted by a supermassive black hole?
+    paper: "2404.16270"
+    file: article.tex
+    lines: [[194, 211]]
+# Equation lookups (kb eq): label of the expected equation, query in keywords or TeX.
+equations:
+  - id: e1
+    query: first-order B-spline shape function of cloud-in-cell deposition
+    paper: "2611.12831"
+    label: eq:first-order-shape
+  - id: e2
+    query: one plus log slicing condition for the lapse
+    paper: "2611.12831"
+    label: eq:z4c-lapse
+  - id: e3
+    query: 'u^\mu \partial_\mu f - \Gamma^\mu_{\alpha\beta} u^\alpha u^\beta \partial f / \partial u^\mu = 0'
+    paper: "2611.12831"
+    label: eq:vlasov
+  - id: e4
+    query: Gamma-driver shift condition with damping parameter eta
+    paper: "2611.12831"
+    label: eq:z4c-shift
+  - id: e5
+    query: Hamiltonian constraint for the conformal factor of the relativistic Plummer model
+    paper: "2611.12831"
+    label: eq:plummer-hamiltonian
+  - id: e6
+    query: window function with a tanh profile and steepness s for the coarse-graining scale
+    paper: "2512.14649"
+    label: eq:ourWindow

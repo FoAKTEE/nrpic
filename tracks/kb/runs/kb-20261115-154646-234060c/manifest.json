@@ -1,0 +1,28 @@
+{
+ "run_id": "kb-20261115-154646-234060c",
+ "owner": "kb",
+ "command": [
+  "python3",
+  "-I",
+  "kb/bin/kb",
+  "watch",
+  "upstream",
+  "--report",
+  "tracks/kb/served/watch/code_watch_upstream.md"
+ ],
+ "cwd": "/data/haiyangw/nrpic/wt/kb",
+ "commit": "234060c2fd8c6cc37b9b807da96499aefec82513",
+ "worktree_dirty_kb": true,
+ "inputs": [],
+ "output_dir": "/data/haiyangw/nrpic/scratch/kb/kb-20261115-154646-234060c",
+ "purpose": "kb serve: weekly upstream watch of IAS-Astrophysics/athenak (decision 0015); report in tracks/kb/served/watch/",
+ "kind": "scouting",
+ "cores": 1,
+ "card_hours": 0,
+ "started_utc": "2026-11-15T15:46:46Z",
+ "started_unix": 1794757606.3105152,
+ "status": "finished",
+ "exit_code": 0,
+ "wall_time_s": 13.76,
+ "finished_utc": "2026-11-15T15:47:00Z"
+}
