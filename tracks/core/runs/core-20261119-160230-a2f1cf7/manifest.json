@@ -1,0 +1,36 @@
+{
+ "run_id": "core-20261119-160230-a2f1cf7",
+ "owner": "core",
+ "command": [
+  "bash",
+  "/data/haiyangw/nrpic/wt/core-mpi/tracks/core/analysis/mpi/restart_one_rank.sh",
+  ".",
+  "release=/data/haiyangw/nrpic/.work/build_cpu_v03/src/athena",
+  "serial=/data/haiyangw/nrpic/wt/core-mpi/.work/build_cpu/src/athena"
+ ],
+ "cwd": "/data/haiyangw/nrpic/scratch/core/core-20261119-160230-a2f1cf7",
+ "commit": "a2f1cf7",
+ "source_modified_since_commit": false,
+ "inputs": [
+  {
+   "path": "problems/tests/mpi_cluster.athinput",
+   "sha256": "a68ccc15b6e88b73361ba00b1c0ca6dfacaf2589ea5010d28c29511cb16ce38b"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/.work/build_cpu_v03/src/athena",
+   "sha256": "d983155bb21befedbd123d54d84fcfc12a875ee0aaa0baa36f5a51261041c25c"
+  },
+  {
+   "path": ".work/build_cpu/src/athena",
+   "sha256": "6a491d168bff65ade275b06df6c22b686d42355a80ed70c79cfa1c1164b29891"
+  }
+ ],
+ "output_directory": "/data/haiyangw/nrpic/scratch/core/core-20261119-160230-a2f1cf7",
+ "purpose": "mpi R4: is the one-rank restart of the cluster of T3 exact with the release executable (serial) and with the serial build of this branch?",
+ "kind": "scouting",
+ "tag": "mpi-r4-restart-one-rank",
+ "state": "running",
+ "cores": 2,
+ "card_hours": 0.0,
+ "started_utc": "2026-11-19T16:02:30Z"
+}
