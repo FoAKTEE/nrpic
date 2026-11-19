@@ -582,7 +582,7 @@ analysis run, looked at.
   0.0779), projection 0.0008. Generator numbers of the pair: lam = 1.012348, momenta
   -0.118182 and +0.118182 (particle sums), M_ADM 1.98853 moving, 1.97561 at rest.
 
-### Diagnostic of the TB3 leftover: predictions (written 16:03Z, before the run)
+### Diagnostic of the TB3 leftover: predictions (written 16:02Z, before the run)
 
 `tb_residual_diag.py` splits `D_H(corr)` of the TB runs into its projection on the
 residual of the cluster at rest and the rest, measures it within 1 M of the surface
