@@ -300,3 +300,6 @@ checkout (the `cd` applied to a background subshell only); it wrote an export un
   byte-identical; `claims.md` identical once the file:line locators are removed (the "42 -> 43"
   of the compare was the line number of SCOPE.md's derived-parameter row, shifted by one line by
   the locator-key edit). The new `claims.*` are committed into `note/tables/`.
+- Stage checks: `nrpic-stage verify E-stoch-inf G0 --no-checksums` PASS on 1d25517c (16 checks,
+  ledger rerun included); G1 verify PASS on d480131e and rerun after the last commits; reports
+  written with the decision paragraphs (G0: complete for review; G1: not met, not complete).
