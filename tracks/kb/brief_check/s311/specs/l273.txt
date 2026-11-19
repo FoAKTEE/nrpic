@@ -1,0 +1,21 @@
+# brief line 273: related full NR (three or more black holes, cluster of 25, stellar TDE in full GR)
+0710.0879 | first fully relativistic|2
+0710.0879 | equal-mass|2
+0711.1165 | three black holes|3
+1004.1353 | four black holes|3
+1004.1353 | three equal-mass|2
+2505.01495 | 25 equal-mass|3
+2505.01495 | full general relativity|3
+1201.4389 | full general relativistic|3
+1201.4389 | Einstein|4
+1201.4389 | BSSN|3
+1201.4389 | mass ratio|3
+1502.05740 | fully general relativistic|3
+1502.05740 | Einstein|4
+1502.05740 | BSSN|3
+1502.05740 | mass ratio|4
+1502.05740 | background|4
+1408.1695 | full general relativity|3
+1408.1695 | Einstein|3
+1408.1695 | mass ratio|4
+1408.1695 | background|4

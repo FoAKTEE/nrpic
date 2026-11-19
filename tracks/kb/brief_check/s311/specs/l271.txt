@@ -1,0 +1,20 @@
+# brief line 271: gravitational-wave channels
+astro-ph/0507133 | tidal separation|3
+astro-ph/0507133 | eccentricity is nearly zero|2
+2610.13294 | Hills mechanism|3
+1501.07856 | eccentricity|3
+1801.05780 | b-EMRI|3
+1805.09593 | merger times? become shorter|2
+1903.02685 | Kozai|3
+1203.2938 | Kozai|3
+1706.09896 | Kozai|3
+1801.07060 | glitch|3
+1703.10543 | within .*Schwarzschild radii|3
+2105.02230 | frame-dragging|3
+1604.02148 | supermassive|4
+2310.00042 | supermassive|6
+2310.00042 | SMBH|6
+2310.00042 | massive black hole|6
+2310.00042 | Kozai|4
+0704.2612 | binar|8
+0704.2612 | compact object|4

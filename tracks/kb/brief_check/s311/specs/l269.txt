@@ -1,0 +1,25 @@
+# brief line 269: Hills mechanism, tidal radius, ejection speed, capture, HVS / S-star papers
+0911.1136 | r_t=a\(M/m\)\^\{1/3\}|3
+0911.1136 | v_0=\(Gm/a\)|2
+0911.1136 | stays bound|2
+0911.1136 | v_0\(M/m\)\^\{1/6\}|3
+0911.1136 | predicted the existence of HVSs|2
+0911.1136 | survive in 20|3
+astro-ph/0309084 | tidal radius \$\\sim a|2
+astro-ph/0309084 | v\\bh'\\equiv v\\bh|2
+astro-ph/0309084 | exchange collisions occur|2
+astro-ph/0309084 | unbound orbit relative to the BH|2
+astro-ph/0309084 | eccentricity of the bound star is usually high|2
+astro-ph/0309084 | bibitem\[Hills\(1988\)\]|2
+astro-ph/0309084 | thrown onto a high-eccentricity orbit|2
+1201.4794 | 1-e|6
+1201.4794 | Hills.*1988|3
+2404.16270 | tidal radius|4
+2404.16270 | Hills.*1988|3
+2002.10547 | Hills.*1988|3
+2002.10547 | 331|3
+astro-ph/0501177 | hyper-velocity star ejected|2
+astro-ph/0501177 | Hills|3
+astro-ph/0608159 | disruption of binary|3
+1105.1432 | tidal breakup|3
+1210.1901 | S-stars|3

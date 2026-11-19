@@ -1,0 +1,28 @@
+# brief line 272: how far the relativistic treatment has gone
+2404.16270 | Hybrid Relativistic-Newtonian|3
+2404.16270 | less than \$100|2
+2404.16270 | order 1 percent|2
+2404.16270 | Post-Newtonian|3
+2402.02178 | numerical relativity|6
+2402.02178 | parabolic|3
+2402.02178 | new numerical tools|2
+2402.02178 | 10\^4|4
+1203.6185 | fully relativistic treatment|2
+1203.6185 | perturba|3
+2508.03463 | non-spinning|3
+2508.03463 | Schwarzschild|4
+2508.03463 | Newtonian|4
+2508.03463 | geodesic|3
+2601.04870 | geodesic equations|3
+2601.04870 | Kerr|3
+1502.02039 | generali[sz]ed potential|3
+1305.4634 | Newtonian|3
+1305.4634 | relativ|3
+1305.4634 | kick|3
+1411.5022 | tidal disruption|4
+1411.5022 | binary|4
+1411.5022 | relativ|4
+1701.00303 | rotating|3
+1903.09147 | spin|3
+1207.6401 | spin|3
+1207.6401 | geodesic|3

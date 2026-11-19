@@ -1,0 +1,17 @@
+# brief line 270: restricted three-body and scans; full three-body, collisions, double disruptions; repeating partial TDE
+0911.1136 | restricted parabolic three-body approximation|2
+1201.4794 | restricted three-body approximation|3
+1307.1134 | restricted|4
+1307.1134 | Monte Carlo|3
+1804.02911 | restricted|4
+1804.02911 | fits? to the disruption probability|3
+0909.1959 | post-Newtonian N-body|3
+0909.1959 | restricted|3
+astro-ph/0609440 | N-body|3
+2409.09597 | 3-body scattering|3
+2409.09597 | double|4
+1504.02787 | both stars being disrupted|2
+1703.05796 | merge|3
+1703.05796 | restricted|3
+2203.08162 | three-body integrations|2
+2203.08162 | partial disruption|3
