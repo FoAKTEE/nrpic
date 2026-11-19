@@ -29,7 +29,9 @@
  "purpose": "mpi R4: is the one-rank restart of the cluster of T3 exact with the release executable (serial) and with the serial build of this branch?",
  "kind": "scouting",
  "tag": "mpi-r4-restart-one-rank",
- "state": "running",
+ "state": "finished",
+ "wall_time_s": 266.71,
+ "exit_status": 0,
  "cores": 2,
  "card_hours": 0.0,
  "started_utc": "2026-11-19T16:02:30Z"

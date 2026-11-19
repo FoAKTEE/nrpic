@@ -380,3 +380,42 @@ MPI build on one rank, i.e. the inexact restart of this set-up is a property of 
 released module (the claim "restarts are exact" of CLAUDE.md was made for other
 set-ups). Refuted if the release restarts exactly: then the MPI build or this branch
 changes the restart, and that is the next thing to find.
+
+### 08:20 Entry 11: R4 outcome (the one-rank restart departs in the release too); T4 reframed
+
+R4, run core-20261119-160230-a2f1cf7: the release executable `build_cpu_v03` (serial,
+one process) and the serial build of this branch give the same departure of the
+restarted run from the uninterrupted one as the MPI build on one rank, to all printed
+digits (history 1.2e-10, trajectories 8.8e-16, line dump 5.6e-10, constraint statistics
+8.6e-10). P4c held: the inexact restart of this set-up (Z4c with deposit, cluster, tsc,
+compensated filter) is a property of the released module, not of this package; the
+statement "restarts are exact" of CLAUDE.md does not hold for it. Located next (R5,
+below); it is reported to the lead in the final report either way.
+
+R0 with the MPI build on one rank (runs listed in `scratch/core/tmp/mpi/r0_mpi1.json`;
+geo, boris, dep, east identical; os: every file identical but the five mesh restart
+files): the restart files differ in 36 bytes, the same positions 10858 to 10893 in every
+dump, inside the binary header after `<par_end>`; in the release file these bytes hold
+text of the input file ("mber = 0.25 nlim = -1 tlim"), i.e. memory that was never set
+(padding of a structure), in the MPI build other values. Data identical. P0b held in
+substance; the byte comparison of mesh restart files has to skip that header.
+
+T4, reframed (predictions, before the runs). Since one rank does not restart exactly,
+the test of the ranks is that a restart on several ranks adds nothing to that:
+- P4d (exactness of write and read, no step): restarting the dump of cycle 20 with
+  `time/nlim=20` writes, without taking a step, a final dump at cycle 20. For every pair
+  w:r (written on w, read on r, w, r in 1, 2, 4) its particle restart file equals the
+  one read byte for byte (particles in tag order, probe state, the source densities of
+  the coming step of all MeshBlocks), and the mesh restart file equals it after the
+  header. Refuted by any differing byte: then the hand-over of the particles or the
+  scatter of the step sources at a restart loses or reorders something.
+- P4e: the restarted runs 2:2 and 4:4 agree with the restarted run 1:1 as the
+  uninterrupted runs of T3 agree with each other (history 1e-12, positions 1e-14,
+  identity at 1e-15); the cross pairs 1:4, 4:1, 2:4 agree at that level with the restart of the same
+  file on one rank (1:1 for w = 1) or on w ranks (4:4 for 4:1).
+
+R5 (where the one-rank departure starts): `restart_locate.py`, serial build of this
+branch, field dumps of the uninterrupted and the restarted run at cycle 21 compared cell
+by cell. Expectation [JUDGEMENT]: the first record differed only in the proper volume and
+the mean of K, not at the particles or the probe, so the departure sits away from the
+matter, probably next to the outer boundary.

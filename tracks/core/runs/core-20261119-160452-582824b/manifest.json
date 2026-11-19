@@ -1,0 +1,42 @@
+{
+ "run_id": "core-20261119-160452-582824b",
+ "owner": "core",
+ "command": [
+  "bash",
+  "-c",
+  "sbatch --wait /data/haiyangw/nrpic/wt/core-mpi/tracks/core/analysis/mpi/card_job.sh \"$PWD\" /data/haiyangw/nrpic/wt/core-mpi/.work/build_gpu_mpi/src/athena /data/haiyangw/nrpic/wt/core-mpi"
+ ],
+ "cwd": "/data/haiyangw/nrpic/scratch/core/core-20261119-160452-582824b",
+ "commit": "582824b",
+ "source_modified_since_commit": false,
+ "inputs": [
+  {
+   "path": "/data/haiyangw/nrpic/scratch/core/core-20261119-154814-ca46836/t3_cluster/cluster.nrp",
+   "sha256": "edbb3cb773b36d1bc4e860c456cec5b0bd149cda000cdc8be23d4e34718f66e4"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/scratch/core/core-20261119-154814-ca46836/t3_cluster/cluster.tab",
+   "sha256": "b76213c913046126f69ee1793a4c8ceedc45416f13608c6f6c1896303e006c3a"
+  },
+  {
+   "path": "problems/tests/mpi_cluster.athinput",
+   "sha256": "a68ccc15b6e88b73361ba00b1c0ca6dfacaf2589ea5010d28c29511cb16ce38b"
+  },
+  {
+   "path": "problems/tests/mpi_two_card_triple.athinput",
+   "sha256": "c68da7de6cb0e5b5204a738a332193e20139aa2491488cfac8bf67ffee0ebf2e"
+  },
+  {
+   "path": ".work/build_gpu_mpi/src/athena",
+   "sha256": "d53b855082e1375b1ee4c25be4463321e0b073f1cc6b298b7ee2dc5c41df8eec"
+  }
+ ],
+ "output_directory": "/data/haiyangw/nrpic/scratch/core/core-20261119-160452-582824b",
+ "purpose": "mpi card test: cluster of T3 on one card twice and on two cards; Track F's vacuum three-puncture mesh at m/8 (2332 MeshBlocks) on one and two cards and at m/16 (4502 MeshBlocks) on two cards, 10 cycles each: rate and memory per card",
+ "kind": "scouting",
+ "tag": "mpi-card",
+ "state": "running",
+ "cores": 4,
+ "card_hours": 1.0,
+ "started_utc": "2026-11-19T16:04:52Z"
+}
