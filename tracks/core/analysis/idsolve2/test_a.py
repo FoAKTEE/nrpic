@@ -23,6 +23,7 @@ from nrpic import figstyle as fs  # noqa: E402
 import matplotlib
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt  # noqa: E402
+import matplotlib.ticker  # noqa: E402
 
 GAUSS = os.path.join(lib2.WT, "problems/idsolve/gaussian.athinput")
 BOOST = os.path.join(lib2.WT, "problems/idsolve/gaussian_boost.athinput")
@@ -280,6 +281,9 @@ def figure(res, root):
     xs = np.array([0.25, 1.0])
     ax.loglog(xs, 2.0e-3*xs**2, **fs.GUIDE)
     ax.set_xlabel(r"cell size $\Delta x$")
+    ax.set_xticks([0.25, 0.5, 1.0])
+    ax.set_xticklabels(["0.25", "0.5", "1"])
+    ax.xaxis.set_minor_formatter(matplotlib.ticker.NullFormatter())
     ax.set_ylabel("relative error of $W$ at the faces")
     ax.legend(fontsize=5)
     ax = axs[2]
