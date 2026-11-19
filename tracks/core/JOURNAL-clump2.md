@@ -630,7 +630,7 @@ whose derivative is singular at rbar_s), which the code and the reference treat
 differently, and the leftover is a property of the data at this resolution, to be
 documented, not removed.
 
-### Outcome G, processor part (run `core-20261119-160021-b153852`), and TC-early on a processor: predictions (written 16:18Z)
+### Outcome G, processor part (run `core-20261119-160021-b153852`), and TC-early on a processor: predictions (written 16:17Z)
 
 The five card inputs start on a processor (records at t = 0 in `records.json` of the
 run); the comparison with the card waits for jobs 4649 and 4657, which the scheduler
