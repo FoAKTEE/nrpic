@@ -217,3 +217,44 @@ code's E = alpha W - beta^i u_i is NOT the Killing energy, not even at late time
 G2 flux must use the energy fixed per particle by the initial data (`compare.py
 --energy_by_tag`), or E measured at a sphere in a gauge that is stationary and
 normalised to the asymptotic time. Request to core in the README.
+
+## Entry 4 (2026-11-19, before the runs): ES-F, the first matter run after ES-1 (dust filling the bubble)
+
+Design [JUDGEMENT, derivation in README section "ES-F"]: ES-1's mesh, gauge, finder,
+tracer positions and plateau density rho0 = 3.71818e-6 (H = 5.58116e-3/M, eps = H M),
+but the bubble filled: dust from a smooth inner edge over 3 <= R <= 5 M (vacuum core
+around the horizon, as RUNS.md section 4 of secondary_infall) to ES-1's outer edge
+(52-60 M), at rest in the slice with the slicing f^2 = 1 - M/m(R), i.e. every shell has
+the Newtonian energy -M/R0: the unperturbed Hubble flow around the seed, the set-up of
+the wave-2 secondary-infall reference. Then the spatial metric is exactly Schwarzschild
+of mass M (psi = 1 + M/(2 rbar), table u = 0, puncture m_p = M) and the Hamiltonian
+constraint reads 4 KL KT + 2 KT^2 = 16 pi rho. Exact growth law (LTB, no shell crossing
+before the horizon): M_AH = m(R0) when shell R0 crosses R = 2 m(R0), at its proper time
+tau_H(R0) from the cycloid; each particle carries the conserved energy (1 - 2M/R0)^(1/2)
+per unit rest mass (used as --energy_by_tag, because entry 3 showed the code's E is
+gauge-contaminated). A development evaluation of the generator at hp = 2 M gave
+M_AH = 1.0062, 1.0218, 1.0655, 1.1168, 1.1711, 1.2263, 1.2815 at tau = 25, 50, 100, 150,
+200, 250, 300 M (the growth law does not depend on hp).
+
+Predictions:
+1. Data (hp = 1 M): about 8.5e5 dust particles plus 140 tracers; lattice rest mass equal
+   to the continuum rest mass int rho dV_proper to 2e-5 (4.9e-5 at hp = 2); tau_H(R0)
+   increases monotonically (no shell crossing before the horizon); growth law identical to
+   the numbers above.
+2. Offline constraints (esf_check.py), maximum over 0.6 <= rbar <= 330 M between rows:
+   Hamiltonian residual converges at order 4 +- 0.5 from drbar = 0.04 to 0.02 to 0.01
+   (four-point Lagrange interpolation of KL, KT); momentum residual (derivative of the
+   interpolant) at order 3 +- 0.5. Refuted if either residual does not fall or the order
+   is below 3 (H) or 2 (M).
+3. Growth law against the wave-2 Newtonian reference (shells.py, absorbing, capture at the
+   fixed r = 2M, core and edge matched in mass): M_LTB(tau) - M_shells(tau) in
+   [-1e-4, 2e-3] for tau <= 600 M; positive because the LTB shell is inside the horizon
+   at R = 2 m(R0) > 2M, before the proxy captures it (Delta tau below about 2 (m - M)).
+4. Processor smoke run of the ES-F input (2 cycles, executable core_requests-adf
+   athena_cpu, which has the removal record and the flux spheres): reads the table and
+   all particles (np = 140 + n_dust); int_E = sum m W = sum m at t = 0 to 1e-12 relative;
+   finder mass at t = 0 equal to 0.9924 +- 0.002 (ES-1 gave 0.99239 for the same
+   Schwarzschild interior at the same resolution); acc.hst with three spheres, no removal
+   record; history finite. The constraint norms at t = 0 are recorded against ES-1's smoke
+   run D-20261115-172413-6412daf without a criterion (the 1 M lattice deposited on the
+   M/8 to M/2 levels near the hole is noisier than ES-1's dust on 1-2 M cells).
