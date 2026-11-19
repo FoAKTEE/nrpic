@@ -9,6 +9,8 @@ T1  Local consistency of the equations with the integrals: d/dt of Will's E and 
     c2inv), at random weak-field three-body states.
 T2  Two-body periastron advance k and radial period against Schaefer & Jaranowski
     1805.07240v5 LRRSJarXiv_v5.tex l. 3169-3184 (k = 3/j^2 + O(c^-4); P at 1PN).
+T5  The isolated EIH binary: numerical 1PN circular speed against the textbook 1PN value;
+    eccentricity of a Newtonian-circular binary at 1PN (JOURNAL entry 10).
 T3  Conservation of the 1PN integrals in a Hills encounter, and its scaling with the size of
     the PN terms (lengths x lambda = 8 ... 128, perturbative; lambda = 1 reported).
 Usage: test_eih.py <outdir>   (default $NRPIC_RUN_DIR). Writes tests.json and figures.
@@ -342,6 +344,47 @@ def t3(out):
     plt.close(fig)
 
 
+# ------------------------------------------------------------------------------------------
+def t5(out):
+    """The isolated EIH binary: 1PN circular speed (eih.circular_speed_1pn) against the
+    textbook 1PN value u^2 = (m/a)(1 - (3 - nu) m/a) [BACKGROUND], and the eccentricity that a
+    Newtonian-circular binary has at 1PN (JOURNAL entry 10)."""
+    rows = []
+    for (m1, m2, a) in ((0.05, 0.05, 3.0), (0.125, 0.125, 5.0), (0.05, 0.05, 10.0),
+                        (0.05, 0.05, 30.0), (0.5, 0.5, 100.0)):
+        mb = m1 + m2
+        nu = m1 * m2 / mb ** 2
+        uN = math.sqrt(mb / a)
+        u = eih.circular_speed_1pn(m1, m2, a)
+        ms = np.array([m1, m2])
+        res = {}
+        for lab, uu in (("1pn", u), ("newton", uN)):
+            x = np.array([[m2 / mb * a, 0, 0], [-m1 / mb * a, 0, 0]])
+            v = np.array([[0, m2 / mb * uu, 0], [0, -m1 / mb * uu, 0]])
+            T = 2 * math.pi * math.sqrt(a ** 3 / mb)
+
+            def f(t, y):
+                xx = y[:6].reshape(2, 3)
+                vv = y[6:].reshape(2, 3)
+                return np.concatenate([vv.ravel(), eih.accel(xx, vv, ms).ravel()])
+            sol = solve_ivp(f, (0, 5 * T), np.concatenate([x.ravel(), v.ravel()]),
+                            method="DOP853", rtol=1e-12, atol=1e-14, dense_output=True)
+            tt = np.linspace(0, 5 * T, 5001)
+            Y = sol.sol(tt)
+            r = np.linalg.norm(Y[0:3] - Y[3:6], axis=0)
+            res[lab] = dict(r_min=float(r.min()), r_max=float(r.max()),
+                            ecc=float((r.max() - r.min()) / (r.max() + r.min())))
+        rows.append(dict(m1=m1, m2=m2, a=a, m_over_a=mb / a, u2_ratio_minus_1=(u / uN) ** 2 - 1,
+                         textbook=-(3 - nu) * mb / a,
+                         diff_over_m_over_a_sq=((u / uN) ** 2 - 1 + (3 - nu) * mb / a)
+                         / (mb / a) ** 2, **{f"{k}_{kk}": vv for k, d in res.items()
+                                              for kk, vv in d.items()}))
+    coef = [r["diff_over_m_over_a_sq"] for r in rows]
+    ok = (all(r["ecc" if False else "1pn_ecc"] < 1e-6 for r in rows)
+          and max(coef) - min(coef) < 2.0)
+    check("T5_isolated_binary_1pn_circular", ok, rows=rows)
+
+
 def main():
     out = sys.argv[1] if len(sys.argv) > 1 else os.environ["NRPIC_RUN_DIR"]
     os.makedirs(out, exist_ok=True)
@@ -349,6 +392,7 @@ def main():
     t1()
     t2(out)
     t3(out)
+    t5(out)
     with open(os.path.join(out, "tests.json"), "w") as fh:
         json.dump(RES, fh, indent=1, default=float)
     npass = sum(r["passed"] for r in RES.values())

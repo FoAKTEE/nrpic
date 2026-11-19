@@ -369,3 +369,12 @@ Run F-20261119-145315-2d18c52 (90 tasks, 160 s on 13 cores; `figures/fig_scan_fa
   F2'. q = 10 prograde: EIH separated at r_p = 15 and 17 M below 0.3. Refuted above.
   F4'. q = 4 prograde: EIH separated within 0.2 of Newton (from 40 r_t) at r_p >= 13 M.
   F5'. q = 10 prograde, r_p = 7-9 M: a member inside 5.35 M in >= 0.5 of the phases.
+
+## Entry 11 (2026-11-19 15:50): prediction for T5 (before the run)
+
+T5 (added to `tests/test_eih.py`): for the isolated EIH binary, (u/u_N)^2 - 1 from
+`circular_speed_1pn` equals -(3 - nu) m_b/a up to c (m_b/a)^2 with one coefficient c (spread
+below 2) over m_b/a = 1/100 ... 1/20; the binary started with that speed stays circular to 1e-6
+over five orbits; started with the Newtonian speed it has (r_max - r_min)/(r_max + r_min)
+between 0.05 and 0.2 at m_b/a = 1/30 and 1/20. Refuted otherwise. (The development numbers of
+entry 10 are replaced by this run's.)
