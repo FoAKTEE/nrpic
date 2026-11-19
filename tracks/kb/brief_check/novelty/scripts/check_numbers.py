@@ -95,11 +95,13 @@ def main():
                         (0.5, fs.PAL["yellow"], r"$k=0.5$"),
                         (0.0, "k", r"$k=0$ (Kerr, GR)")):
         ax2.loglog(a, a ** k, color=col, label=lab)
-    ax2.fill_between([1.0, growth], [1 - 1e-3] * 2, [1 + 1e-3] * 2, color=fs.PAL["blue"],
-                     alpha=0.6, lw=0)
-    ax2.plot([growth, growth], [0.5, 3.0], color=fs.PAL["blue"], lw=1.0)
-    ax2.text(1.1, 1.6, "NR lattice, 1903.01490:\n" + r"$\Delta M/M\leq10^{-3}$ up to $a\approx e^2$",
-             fontsize=7, color=fs.PAL["blue"])
+    # the lattice band |dM/M| <= 1e-3 is far thinner than a line on this scale: drawn as a
+    # thick segment over the range of a that the lattice run covers
+    ax2.plot([1.0, growth], [1.0, 1.0], color=fs.PAL["blue"], lw=5, alpha=0.7,
+             solid_capstyle="butt", zorder=3)
+    ax2.text(8.5, 0.62, "NR vacuum lattice (1903.01490):\n"
+             + r"$|\Delta M/M|\leq10^{-3}$ for $a/a_i\leq e^2$", fontsize=7,
+             color=fs.PAL["blue"], va="bottom")
     ax2.set_xlabel(r"$a/a_i$")
     ax2.set_ylabel(r"$M/M_i$")
     ax2.set_ylim(0.5, 1e6)

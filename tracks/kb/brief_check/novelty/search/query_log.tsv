@@ -1,3 +1,7 @@
+label	utc	hits_total	status	record	query
+pre_k1	2026-11-19T15:33:02Z	0	ok	/data/haiyangw/nrpic/kb-data/meta/inspire/query/43f0479b3fdf39ab.json	t "cosmological coupling" and t "black hole"
+pre_c1	2026-11-19T15:33:57Z	25291	ok (syntax refersto:arxiv not recognised by INSPIRE, matched everything; discarded)	/data/haiyangw/nrpic/kb-data/meta/inspire/query/79de59130aa53093.json	refersto:arxiv:2302.07878
+pre_k2	2026-11-19T15:34:01Z	7	ok	/data/haiyangw/nrpic/kb-data/meta/inspire/query/0e0dfc74320f590c.json	t cosmological coupling and t black holes
 s4_c1	2026-11-19T15:35:05Z	3	ok	/data/haiyangw/nrpic/kb-data/meta/inspire/query/ec7b4452f3adacfe.json	refersto:recid:2633033 and fulltext:"numerical relativity"
 s4_c2	2026-11-19T15:35:09Z	0	ok	/data/haiyangw/nrpic/kb-data/meta/inspire/query/a94dda7b640e7153.json	refersto:recid:2633033 and (t simulation or t simulations or t numerical)
 s4_k1	2026-11-19T15:35:12Z	13	ok	/data/haiyangw/nrpic/kb-data/meta/inspire/query/a813ef0d7ce822b2.json	t cosmologically coupled
