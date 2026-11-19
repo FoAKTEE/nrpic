@@ -99,12 +99,12 @@ def main():
     # thick segment over the range of a that the lattice run covers
     ax2.plot([1.0, growth], [1.0, 1.0], color=fs.PAL["blue"], lw=5, alpha=0.7,
              solid_capstyle="butt", zorder=3)
-    ax2.text(8.5, 0.62, "NR vacuum lattice (1903.01490):\n"
+    ax2.text(1.1, 0.8, "NR vacuum lattice (1903.01490):\n"
              + r"$|\Delta M/M|\leq10^{-3}$ for $a/a_i\leq e^2$", fontsize=7,
-             color=fs.PAL["blue"], va="bottom")
+             color=fs.PAL["blue"], va="top")
     ax2.set_xlabel(r"$a/a_i$")
     ax2.set_ylabel(r"$M/M_i$")
-    ax2.set_ylim(0.5, 1e6)
+    ax2.set_ylim(0.1, 1e6)
     ax2.legend(fontsize=7, loc="upper left")
     fig.tight_layout()
     fs.save(fig, os.path.join(out, "fig_numbers"))
