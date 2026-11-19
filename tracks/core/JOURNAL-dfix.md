@@ -707,3 +707,30 @@ measured times with the caps; if T7 to cycle 9 takes more than 9/24 of a cap or 
 three-hole case to cycle 4 more than 4/32 of a cap plus its set-up, the second job is
 cancelled before it starts and submitted again with caps from the measurement. Worst case
 of both jobs: 28 card-minutes (0.47 card-hours).
+
+### Outcome of the timing job (run core-20261119-140644-074f8e3, Slurm job 4631, 32 s of
+card time) [VERIFIED, `athena.log` and `*.gpumem.csv` of each case directory]
+
+- Times on the card, from the start and end stamps of `gpu_run.sh`: T5 complete (2 cycles,
+  232 MeshBlocks, three finder calls per cycle) 17 s against 212 s on processors; T7 to
+  cycle 9 (120 MeshBlocks, 4000 particles, finder calls at cycles 0 and 8) 6 s; the
+  three-hole mesh at 2700 slots to cycle 4 (1100 MeshBlocks) 5 s. My expectation for T5
+  (two to four minutes, "mostly the finder's host loop") was wrong by a factor ten: the
+  finder is not the cost it is on processors.
+- The second job (Slurm job 4638, run core-20261119-143036-185800a, still queued) is
+  confirmed by the rule written before: T7 to cycle 9 took 6 s, below 9/24 of its cap
+  (135 s); the three-hole case to cycle 4 took 5 s, below 4/32 of its cap (45 s) plus its
+  set-up. Expected card time of the second job about one minute; it is not cancelled.
+- Memory, timing case of the three-hole mesh at 2700 slots: 70685 MiB at the first sample
+  (0.5 s after the start), peak 70753 MiB from 1.5 s on, unchanged to the end of cycle 4;
+  baseline 14 MiB. Inside the predicted band [68.9e3, 72.9e3] MiB (model 70941 MiB);
+  allocated at the start, as predicted. The history row t = 0 equals that of the 2400-slot
+  run in every printed digit. The full case (32 cycles, rows 0.25 and 0.5) is in job 4638.
+- T5 on a card (case `t5_pair`; `pair.horizon_summary_<n>.txt`): surface 0 (pair 0, 1)
+  has records at both calls, masses 1.019897394183159 and 1.019870373627595 against the
+  processor values 1.019897394183159 and 1.019870373627596 (difference 0 and 1e-15),
+  mean coordinate radius 0.4903048549065925 and 0.4824173321296078 (processors: the same
+  to 1e-16); surfaces 1 and 2 have no record (header line only). As predicted (bound
+  1e-4 on the mass, 1e-3 on the radius); the pair rule acts on a card as on processors.
+  The figure follows with the judgement of job 4638 (the analysis run was refused at
+  14:5x UTC: the 16 cores of core were held by another core session's live run).
