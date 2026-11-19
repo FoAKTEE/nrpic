@@ -21,6 +21,8 @@ RUNS = {  # name: (nmax2, s, mode file)
     "M16p": (16, 1.0, "modes_usr_n16.txt"), "M16m": (16, -1.0, "modes_usr_n16.txt"),
     "M16l": (16, 1.0e-3, "modes_usr_n16.txt"),
     "M64p": (64, 1.0, "modes_usr_n64.txt"), "M64m": (64, -1.0, "modes_usr_n64.txt"),
+    "M16h": (16, 0.5, "modes_usr_n16.txt"),
+    "M16pc": (16, 1.0, "modes_usr_n16.txt"), "M16lc": (16, 1.0e-3, "modes_usr_n16.txt"),
 }
 
 
@@ -145,7 +147,8 @@ def mode_metrics(c, cref, s, kmask=None):
 
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument("--runs", required=True)
+    ap.add_argument("--runs", required=True, nargs="+",
+                    help="run directories; an entry name is taken from the first that has it")
     ap.add_argument("--ref", required=True)
     ap.add_argument("--out", required=True)
     a = ap.parse_args()
@@ -153,27 +156,38 @@ def main():
     r, ci, lm = load_ref(a.ref)
     S = dict(ref_run=r.get("run_id"), runs=a.runs)
 
+    def where(name, fname=None):
+        for d in a.runs:
+            if os.path.isdir(os.path.join(d, name)) and (
+                    fname is None or os.path.exists(os.path.join(d, name, fname))):
+                return d
+        return None
+
     # ---------------- background
     bgc = {}
+    bgdir = {}
     for name in ("BGv03", "BGv03h", "BGs2"):
-        if os.path.exists(os.path.join(a.runs, name, "bg.sf.hst")):
-            S[name], bgc[name] = analyse_bg(a.runs, name, ci, lm)
+        d = where(name, "bg.sf.hst")
+        if d:
+            bgdir[name] = d
+            S[name], bgc[name] = analyse_bg(d, name, ci, lm)
     if "BGv03" in S and "BGv03h" in S:
         S["BG3_order_Pi"] = S["BGv03"]["exact_rel_Pi_end"] / S["BGv03h"]["exact_rel_Pi_end"]
         S["BG3_order_phi"] = S["BGv03"]["exact_rel_phi_end"] / S["BGv03h"]["exact_rel_phi_end"]
     if "BGv03" in S and "BGs2" in S:
-        f1 = open(os.path.join(a.runs, "BGv03", "bg.sf.hst"), "rb").read()
-        f2 = open(os.path.join(a.runs, "BGs2", "bg.sf.hst"), "rb").read()
-        h1 = np.loadtxt(os.path.join(a.runs, "BGv03", "bg.sf.hst"))
-        h2 = np.loadtxt(os.path.join(a.runs, "BGs2", "bg.sf.hst"))
+        f1 = open(os.path.join(bgdir["BGv03"], "BGv03", "bg.sf.hst"), "rb").read()
+        f2 = open(os.path.join(bgdir["BGs2"], "BGs2", "bg.sf.hst"), "rb").read()
+        h1 = np.loadtxt(os.path.join(bgdir["BGv03"], "BGv03", "bg.sf.hst"))
+        h2 = np.loadtxt(os.path.join(bgdir["BGs2"], "BGs2", "bg.sf.hst"))
         S["BG4_bytes_identical"] = f1 == f2
         S["BG4_max_abs_diff"] = float(np.abs(h1 - h2).max()) if h1.shape == h2.shape else None
 
     # ---------------- stochastic runs
     R = {}
     for name in RUNS:
-        if os.path.isdir(os.path.join(a.runs, name)) and ul.dump_list(os.path.join(a.runs, name)):
-            R[name] = analyse_stoch(a.runs, name, ci, a.out)
+        d = where(name, "usr.sf.con.hst")
+        if d and ul.dump_list(os.path.join(d, name)):
+            R[name] = analyse_stoch(d, name, ci, a.out)
     for name, x in R.items():
         m = mode_metrics(x["cnr"], x["cref"], x["s"])
         mst = mode_metrics(x["cnr"], x["cref_st"], x["s"])
@@ -228,9 +242,10 @@ def main():
                 S[name]["M5_phi_rel_vs_M16l_max"] = float(np.max(np.abs(c[:n, 16] - cl[:n, 16]) / np.abs(cl[:n, 16])))
                 S[name]["M5_K_rel_vs_M16l_max"] = float(np.max(np.abs(c[:n, 18] - cl[:n, 18]) / np.abs(cl[:n, 18])))
     # Hamiltonian record against the homogeneous run of the same step (uniform residual H0)
-    bgp = os.path.join(a.runs, "BGv03", "bg.sf.hst")
-    if os.path.exists(bgp):
-        hb = np.loadtxt(bgp)
+    for bgname in ("BGv03", "BGv03h"):
+        if bgname not in bgdir:
+            continue
+        hb = np.loadtxt(os.path.join(bgdir[bgname], bgname, "bg.sf.hst"))
         hbr = hb[:, 10] / hb[:, 16]
         for name, x in R.items():
             c = x["con"]
@@ -238,8 +253,40 @@ def main():
             if np.allclose(c[:n, 0], hb[:n, 0], rtol=0, atol=1e-12):
                 sel = slice(1, n)
                 S[name]["H_record_over_BG_H0"] = dict(
-                    min=float(np.min(c[sel, 3] / hbr[sel])), max=float(np.max(c[sel, 3] / hbr[sel])),
-                    median=float(np.median(c[sel, 3] / hbr[sel])))
+                    bg=bgname, min=float(np.min(c[sel, 3] / hbr[sel])),
+                    max=float(np.max(c[sel, 3] / hbr[sel])),
+                    median=float(np.median(c[sel, 3] / hbr[sel])),
+                    max_H0_over_H=float(np.max(hbr[sel])))
+    # halving: momentum record of s = 1 over s = 1/2 (same steps), and the s^2 part of R
+    if "M16h" in R and "M16p" in R:
+        cp, ch = R["M16p"]["con"], R["M16h"]["con"]
+        n = min(cp.shape[0], ch.shape[0])
+        f = cp[1:n, 6] / ch[1:n, 6]
+        cn = cp[1:n, 2]
+        S["halving_M"] = dict(
+            F_M_entry=[float(f[cn < 1.4].min()), float(f[cn < 1.4].max())],
+            F_M_usr=[float(f[(cn > 2.5) & (cn < 6.55)].min()), float(f[(cn > 2.5) & (cn < 6.55)].max())],
+            F_M_late=[float(f[cn > 7.0].min()), float(f[cn > 7.0].max())],
+            F_H_median=float(np.median(cp[1:n, 3] / ch[1:n, 3])))
+        if "M16" in pairs:
+            P = pairs["M16"]
+            nt = min(P["odd"].shape[0], R["M16h"]["cnr"].shape[0])
+            e2_h = (R["M16h"]["cnr"][:nt] - 0.5 * P["odd"][:nt]) / 0.25
+            e2_p = P["even"][:nt]
+            num = np.sqrt((np.abs(e2_h - e2_p)**2).sum(axis=1))
+            den = np.sqrt((np.abs(e2_p)**2).sum(axis=1))
+            S["halving_R_even"] = dict(
+                rel_diff_end=float(num[-1] / den[-1]),
+                rel_diff_median=float(np.median(num[1:] / den[1:])))
+        S["halving_M_curve"] = dict(cN=cn.tolist(), F_M=f.tolist())
+    # Courant 0.125 against 0.25
+    for lo, hi in (("M16l", "M16lc"), ("M16p", "M16pc")):
+        if lo in S and hi in S:
+            S[f"courant_{lo}_over_{hi}"] = dict(
+                U_A2_cont_max_end=S[lo]["U_A2_cont"]["max_end"] / S[hi]["U_A2_cont"]["max_end"],
+                lock_max_end=(S[lo]["lock_max_end"] / S[hi]["lock_max_end"]
+                              if S[hi]["lock_max_end"] else None),
+                con_H_max=S[lo]["con_H_max"] / S[hi]["con_H_max"])
     # A1 for the stochastic runs: box means against the exact background
     for name, x in R.items():
         c = x["con"]
@@ -249,7 +296,7 @@ def main():
         S[name]["U_A1_K_rel_max"] = float(np.max(np.abs(c[:, 18] - ex[2]) / np.abs(ex[2])))
         S[name]["efolds_end"] = float(c[-1, 2])
         x["exact"] = ex
-    nc = os.path.join(a.runs, "NC16", "usr.sf.con.hst")
+    nc = os.path.join(where("NC16", "usr.sf.con.hst") or a.runs[0], "NC16", "usr.sf.con.hst")
     if os.path.exists(nc):
         cnc = np.loadtxt(nc)
         S["NC16"] = dict(con_H_max=float(cnc[:, 3].max()), con_M_max=float(cnc[:, 6].max()),
@@ -262,6 +309,8 @@ def main():
             S["NC16"]["H_ratio_to_M16p_first_efold_median"] = float(np.median(cnc[:n, 3][first] / cp[:n, 3][first]))
     else:
         cnc = None
+    if "BGv03" in bgdir:
+        S["bgdir_BGv03"] = bgdir["BGv03"]
     with open(os.path.join(a.out, "summary.json"), "w") as fp:
         json.dump(S, fp, indent=1, default=float)
     print(json.dumps(S, indent=1, default=float)[:20000])
@@ -354,6 +403,10 @@ def figures(out, S, bgc, R, pairs, cnc, ref, lm):
                     label="M16l (s = 1e-3), continuum k^2")
         ax.semilogy(x["modes"].k, x["metrics"][1]["per_mode_end"], "+", ms=4, color=fs.PAL["blue"],
                     label="M16l, stencil k^2")
+    if "M16lc" in R:
+        x = R["M16lc"]
+        ax.semilogy(x["modes"].k, x["metrics"][0]["per_mode_end"], "^", ms=3, color=fs.PAL["green"],
+                    label="M16lc (Courant 0.125)")
     for src, col in (("M16", fs.PAL["red"]), ("M64", fs.PAL["orange"])):
         if src in pairs:
             P = pairs[src]
@@ -364,7 +417,8 @@ def figures(out, S, bgc, R, pairs, cnc, ref, lm):
     ax.axhline(0.02, **fs.GUIDE, label="U-A2 0.02")
     ax.set_xlabel(r"$|n| = k/dk$")
     ax.set_ylabel(r"at $N_f$: $|c/c_{\rm ref}-1|$")
-    ax.legend(loc="upper left", fontsize=7, ncol=2)
+    ax.set_ylim(5e-7, 1.0)
+    ax.legend(loc="upper left", fontsize=7, ncol=3)
     fs.save(fig, os.path.join(fd, "fig_run_mode_errors"))
     plt.close(fig)
     # ---- constraints
@@ -373,11 +427,13 @@ def figures(out, S, bgc, R, pairs, cnc, ref, lm):
     cols = dict(M16p=fs.PAL["red"], M16l=fs.PAL["blue"], M64p=fs.PAL["orange"], M16m=fs.PAL["green"])
     for x in ax:
         x.axvspan(usr[0], usr[1], color=fs.PAL["yellow"], alpha=0.15, lw=0)
-    for name in ("M16p", "M16l", "M64p"):
+    cols.update(M16h=fs.PAL["green"], M16pc="purple")
+    for name in ("M16p", "M16l", "M64p", "M16h", "M16pc"):
         if name in R:
             c = R[name]["con"]
-            ax[0].semilogy(c[:, 2], c[:, 3], color=cols[name], label=name)
-            ax[1].semilogy(c[:, 2], c[:, 6], color=cols[name], label=name)
+            ls = "--" if name in ("M16h", "M16pc") else "-"
+            ax[0].semilogy(c[:, 2], c[:, 3], color=cols[name], ls=ls, label=name)
+            ax[1].semilogy(c[:, 2], c[:, 6], color=cols[name], ls=ls, label=name)
     if cnc is not None:
         ax[0].semilogy(cnc[:, 2], cnc[:, 3], color="k", ls=":", label="NC16 (sign flipped)")
         ax[1].semilogy(cnc[:, 2], cnc[:, 6], color="k", ls=":", label="NC16")
@@ -393,7 +449,7 @@ def figures(out, S, bgc, R, pairs, cnc, ref, lm):
     ax.axvspan(usr[0], usr[1], color=fs.PAL["yellow"], alpha=0.15, lw=0)
     if "BGv03" in bgc:
         c = bgc["BGv03"]
-        nb = -0.5 * np.log(np.loadtxt(os.path.join(S["runs"], "BGv03", "bg.sf.hst"))[:, 5])
+        nb = -0.5 * np.log(np.loadtxt(os.path.join(S["bgdir_BGv03"], "BGv03", "bg.sf.hst"))[:, 5])
         ax.semilogy(nb[1:], c["rel_ex_Pi"][1:], color="k", label="BGv03 (homogeneous)")
     for name in ("M16l", "M16p", "M64p"):
         if name in R:

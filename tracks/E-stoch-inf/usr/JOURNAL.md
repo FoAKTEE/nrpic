@@ -231,3 +231,71 @@ Second batch (`inputs/proc2.list`, core_scalar-2, 32^3, nmax2 = 16, to N_f), pre
   2.5e-5 at the end. Per-mode U-A2 error of M16lc at N_f: if the 32^3 value of M16l is set
   by the time step it falls by more than 8; if by the stencils it stays within a factor
   1.5. [No preference stated: this run decides it.]
+
+## Entry 6, 2026-11-19 15:08 UTC: outcomes of the first batch (runs E-20261119-144116-8aa7c22, analysis E-20261119-145842-74b52ec)
+
+All nine runs exited 0 (`status.txt` of the run). Numbers from
+`results/runs/summary_E-20261119-145842-74b52ec.json`; figures `fig/fig_run_*.png` (looked
+at). The last dump of the 32^3 runs is at t = 10.259 (cN = 9.830): dumps fall on the first
+step after each multiple of 0.25, and tlim = 10.4375 is not one; "N_f" below means that
+dump.
+
+Background (release core-v0.3 and core_scalar-2):
+- BG1 (U-A1t): BGv03 against the Z4c twin with the run's own steps: phi 4.1e-14, K 1.6e-14,
+  chi 2.9e-12 relative (confirmed); Pi 1.07e-9 relative against the predicted 1e-9:
+  REFUTED by a hair. The absolute difference is 3.5e-15, the rounding of Pi measured
+  against its early size 0.04 (Pi falls to 2.6e-7); the threshold should have been set on
+  the absolute difference [JUDGEMENT].
+- BG2 (revised in entry 4): Pi off the exact background by 4.125e-4 at the end, phi
+  1.5e-7, K at most 9.3e-8 (the Z4c twin's 9.31e-8; the ADM-form figure "about 1e-8" of
+  entry 3 was wrong by 9), e-folds at the end 9.999993 (dN = -7.0e-6, the twin's value):
+  confirmed. U-A1 passes (4.1e-4 < 1e-3); U-A0 passes, abs(dN) <= 7.0e-6 at all eight
+  landmarks (-1.3e-6 at the eps1 maximum, -1.9e-6 at the USR onset, -3.3e-6 at the
+  inflection point, -4.6e-6 at the USR end, -5.9e-6 at the eps1 minimum).
+- BG3: Courant 0.03125 lowers the Pi error by 16.34 (phi 16.34): fourth order, confirmed.
+- BG4: core_scalar-2 gives a `bg.sf.hst` byte-identical to release core-v0.3: confirmed.
+- What the released code does with this potential [VERIFIED by these runs]: it integrates
+  the homogeneous USR background exactly as its RK4()4[2S] twin predicts (rounding only),
+  through eps1 = 1e-12 and Pi = 2.6e-7 without loss; the time error is the twin's.
+
+Stochastic runs (core_scalar-2, 32^3):
+- M1 (U-A2): M16l at N_f: max over the 128 modes 4.1e-4 against the continuum reference
+  (rms 3.7e-4), 7.2e-4 against the stencil k^2: confirmed (< 5e-3; threshold 0.02). The
+  error is the same, 3.4e-4 to 4.1e-4, for every mode from k = dk to 4 dk
+  (`fig/fig_run_mode_errors.png`) and builds up during the USR growth (cN 4 to 7,
+  `fig/fig_run_modes_M16.png`), so it is not the stencil dispersion of entry 3's guess
+  [JUDGEMENT; the Courant 0.125 runs of entry 5 test it].
+- M2 (U-A2s, U-A2n): odd part of M16p/M16m: 3.9e-4 (confirmed). Even part relative to the
+  odd one: 2.5e-5 at N_f, at most 6.1e-5 (cN = 4.13). Predicted 1e-3 to 5e-2: REFUTED, the
+  second-order part of R^NR is 40 times below the lower bound. M64: 2.2e-5 at N_f, at most
+  4.1e-5 (cN = 3.66), although its R_rms is three times that of M16 (0.067 against 0.021):
+  the ratio does not follow R_rms, so the estimate "even/odd ~ R_rms" was wrong in kind.
+  Whether the even part scales as s^2 is checked with M16h (entry 5).
+- M3 (U-A3): NR power over full-MS power at N_f for every mode with k <= 3 dk:
+  1.0005 to 1.0011 (M16p), 1.0007 to 1.0008 (odd parts of M16 and M64), 1.0007 to 1.0008
+  (M16l): confirmed within 1 percent; the FLRW lattice would give 8.8, 2.1 and 1.4.
+- M4 (U-A4): Hamiltonian part REFUTED (entry 5): the record equals the homogeneous run's
+  |H|/[H] at every cycle (median ratio 1.000000003 for M16p; maximum 1.08e-7 at cN = 2.3);
+  after USR all runs sit on a rounding floor of 5e-15. Momentum part: <abs(M)/[M]> at
+  most 1.6e-5 during the entry and 3.4e-4 during USR (M16p), but 2.2e-2 at the end
+  against the predicted 1e-2: REFUTED as stated. Cause, read off the record: late
+  <abs(M)> is 4.44e-15 in M16p and 4.53e-15 in M16l (s = 1e-3), i.e. a rounding floor
+  independent of the amplitude, while the first-order [M] falls to 2.6e-13 (its terms
+  carry eps1 ~ 1e-12 in the plateau); the ratio late is rounding over a vanishing
+  magnitude, not a constraint violation. M64p (four cells per shortest wavelength) has a
+  plateau of 1.7e-2 during USR (cN = 3.4 to 6), falling to 4.0e-3 at the end; not
+  separated into its parts here (no halving pair at nmax2 = 64). Negative control NC16:
+  <abs(M)/[M]> up to 0.17 and 2.2e4 times M16p's in the first e-fold (median): first
+  order, confirmed; its Hamiltonian ratio is only 5.5 times M16p's (median) because H0
+  dominates both: the "100 times" of M4 REFUTED for H for the same cause.
+- M5: <Pi> of M16p and M64p against M16l: at most 1.6e-8 and 2.3e-7 relative; <phi> 9e-11,
+  <K> 5e-12: confirmed (backreaction on the means is negligible at these amplitudes).
+  U-A1 of the stochastic runs is the background's 4.1e-4.
+- M6: the lockstep record `.modes` against the code-time reference: 4.1e-4 (M16) and
+  5.6e-4 (M64) at N_f, against the predicted 1e-4: REFUTED. Same size as the background
+  Pi error (4.1e-4) and as the per-mode error of M1; the Courant 0.125 runs test whether
+  it is the time step.
+- U-A6: rms of R^NR at N_f 0.02130 (M16p) against 0.02129 of the realisation's linear
+  value; 0.06736 against 0.06738 (M64p).
+- M7: 930 to 974 s per 32^3 run (4.4 s per step, 7.5e3 zone-cycles per second on the
+  loaded machine), not 11 min: REFUTED by 40 percent (the machine had a load of about 100).
