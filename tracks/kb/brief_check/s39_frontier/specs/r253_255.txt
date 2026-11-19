@@ -1,0 +1,15 @@
+2610.32592 | author|Yoann|Rigopoulos|Shellard|Cambridge|Newcastle | 10
+2506.11795 | decoupling limit | 4
+2505.01495 | \\author | 5
+2505.01495 | 25|full general relativity|N-body|puncture|BSSN|Illinois | 8
+2511.20567 | \\author | 3
+2511.20567 | spherical symmetr|Einstein-Maxwell-Vlasov|particle|extremal | 8
+2611.12831 | \\author | 3
+2504.15978 | \\author | 4
+2504.15978 | Maxwell|electrodynamic | 4
+2509.19769 | \\author | 4
+2509.19769 | Elsasser|Alfv | 4
+2601.17117 | \\author | 5
+2601.17117 | Misner|fluid|spherical|3\\times ?10\^\{?-8|apparent horizon | 10
+2506.17641 | \\author | 4
+2506.17641 | general.relativistic instability|0\.3|10\^\{-8\}|10\^\{-10\}|Bondi|criterion|2108\.11967|Feng:2021 | 12

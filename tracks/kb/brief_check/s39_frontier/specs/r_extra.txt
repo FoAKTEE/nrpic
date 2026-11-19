@@ -1,0 +1,9 @@
+2401.08530 | BSSN | 3
+2512.14649 | ultra.slow.roll|USR | 3
+2512.14649 | BSSN | 2
+2402.02178 | disrupt|separat|Hills|break up|ioniz | 6
+2404.16270 | HRNA|Hybrid Relativistic | 3
+2404.16270 | 1PN|Post-Newtonian | 2
+2603.24838 | Einstein Toolkit|\\ET|einsteintoolkit | 3
+2607.17929 | GPU|CUDA | 2
+2512.13673 | T-model|alpha-attractor|\$\\alpha\$-attractor | 2

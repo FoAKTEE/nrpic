@@ -1,0 +1,17 @@
+2607.06441 | spherical symmetry|spherically symmetric|3D|three-dimensional|GRTeclyn|GRChombo|code | 8
+2610.23218 | further work on the gauge|required for this to be stable|best-performing | 4
+2610.32592 | \\author|thesis|supervis|Doctor|PhD | 8
+2401.08530 | \\author | 4
+2512.14649 | \\author | 4
+2606.14853 | \\author | 4
+2606.14853 | freez|H\^4|CosmoLattice|criterion | 8
+2604.00978 | \\author | 4
+2604.00978 | shear-free|freez|super-?horizon | 8
+2506.11795 | \\author | 4
+2506.11795 | freez|super-?horizon|metric perturbation|gravity|backreaction | 8
+2404.16270 | \\author | 4
+2404.16270 | HRNA|post-Newtonian|1PN|three-body|full general relativ | 6
+2402.02178 | \\author | 3
+2402.02178 | Fermi|freely falling|tidal tensor|post-Newtonian|PN|geodesic|numerical relativity | 10
+2610.13294 | \\author | 8
+2610.13294 | three-body|Newtonian|relativistic|Fokker|geodesic|Kerr|Schwarzschild | 12

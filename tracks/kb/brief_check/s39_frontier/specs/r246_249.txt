@@ -1,0 +1,24 @@
+2610.23218 | further work|close proximity|not stable|stabl | 6
+2609.14218 | number of particles|N_\{?p|particles per|spherical symmetr|triaxial|COSMOS | 10
+2603.24838 | \\author | 3
+2603.24838 | Einstein Toolkit|ray.?trac|mescaline|FLRWSolver|ET | 6
+2606.05479 | \\author | 4
+2606.05479 | Einstein Toolkit|ray.?trac|mescaline | 6
+2606.18437 | \\author | 5
+2606.18437 | Einstein Toolkit|ray.?trac|mescaline|numerical relativity | 8
+2607.17929 | \\author | 4
+2607.17929 | weak.?field|Poisson gauge|post-?Newtonian|nonlinear|particle-mesh | 6
+2603.24179 | \\author | 5
+2603.24179 | gevolution|simulation | 6
+2508.20606 | \\author | 4
+2508.20606 | gevolution|weak.?field|Newtonian|N-body|fully relativistic | 8
+2501.13046 | \\author | 4
+2501.13046 | cosmolog|multigrid|CTTK|conformal transverse | 6
+2509.26470 | \\author | 4
+2509.26470 | two branches|strong-field|weak-field|not unique|cease to exist | 6
+2607.21308 | \\author | 3
+2607.21308 | parabolic-hyperbolic|no boundary|periodic | 6
+2512.13673 | \\author | 5
+2512.13673 | GRChombo|GRTeclyn|numerical relativity|BSSN|CCZ4 | 8
+2607.06441 | \\author | 4
+2607.06441 | GRChombo|GRTeclyn|numerical relativity|periodic|bias | 8
