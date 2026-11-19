@@ -27,6 +27,7 @@
 #include "radiation/radiation.hpp"
 #include "driver.hpp"
 #include "particles/particles.hpp"
+#include "particles/nrpic_cosmo_ext.hpp"
 #include "scalar_field/scalar_field.hpp"
 #include "gravity/gravity.hpp"
 #include "utils/utils.hpp"
@@ -552,7 +553,10 @@ void Driver::Execute(Mesh *pmesh, ParameterInput *pin, Outputs *pout, bool wdfla
     if (wall_time > 0.) {
       elapsed_time = UpdateWallClock();
     }
-    while ((pmesh->time < tlim) && (pmesh->ncycle < nlim || nlim < 0) &&
+    // guard of the NRPIC module: stop when the spacetime fields are not finite
+    nrpic::GuardInit(pin, pmesh);
+    const bool guard_stop = nrpic::GuardCheck(pmesh);   // initial data
+    while (!guard_stop && (pmesh->time < tlim) && (pmesh->ncycle < nlim || nlim < 0) &&
            (elapsed_time < wall_time)) {
       if (global_variable::my_rank == 0) {OutputCycleDiagnostics(pmesh);}
       if (wdflag) {WatchDog(0);}
@@ -608,6 +612,9 @@ void Driver::Execute(Mesh *pmesh, ParameterInput *pin, Outputs *pout, bool wdfla
       pmesh->dt_last_completed = pmesh->dt;
       nmb_updated_ += pmesh->nmb_total;
       npart_updated_ += pmesh->nprtcl_total;
+      // NRPIC guard: leave the loop before the scheduled outputs of this cycle;
+      // Driver::Finalize writes every output once
+      if (nrpic::GuardCheck(pmesh)) break;
       // load balancing efficiency
       if (global_variable::nranks > 1) {
         int minnmb = std::numeric_limits<int>::max();
@@ -683,6 +690,8 @@ void Driver::Finalize(Mesh *pmesh, ParameterInput *pin, Outputs *pout) {
         std::cout << std::endl << "Terminating on cycle limit" << std::endl;
       } else if (pmesh->time >= tlim) {
         std::cout << std::endl << "Terminating on time limit" << std::endl;
+      } else if (nrpic::GuardExitStatus() != 0) {
+        std::cout << std::endl << "Terminating on the NRPIC guard" << std::endl;
       } else {
         std::cout << std::endl << "Terminating on wall clock limit" << std::endl;
       }

@@ -89,7 +89,28 @@ class FastFlow {
   Real start_time;
   Real stop_time;
 
+  // Mean coordinate radius of the horizon of the last successful search (NaN before)
+  Real MeanRadius() const { return ah_prop[hmeanradius]; }
+
  private:
+  // ---- periodic meshes, output directory and diagnostics of a failed search ----
+  // In a periodic direction the points of the trial surface are mapped into the mesh,
+  // so that a surface may cross a face of the box and the centre may lie in any image.
+  bool periodic[3] = {false, false, false};
+  Real dom_min[3] = {0.0, 0.0, 0.0}, dom_len[3] = {1.0, 1.0, 1.0};
+  // The summary and verbose files are opened at the first search, after the driver has
+  // changed to the run directory (-d), not in the constructor.
+  bool files_open = false;
+  void OpenOutput();
+  // <fastflow> diagnostics = true: one line per search in
+  // <basename>.horizon_status_<n>.txt with the reason why the search ended
+  bool diagnostics = false;
+  std::string ofname_status;
+  int fail_reason = 0;         // 0 found, 1..6 see FastFlow::Write
+  int n_outside = 0;           // surface points outside the mesh (last iteration)
+  int iter_done = 0;           // flow iterations of the last search
+  Real last_area = 0.0, last_mass = 0.0, last_hmean = 0.0, last_meanradius = 0.0;
+  Real min_abs_hmean = 0.0;    // smallest |mean expansion| reached during the flow
   int npunct; // Number of punctures
   int lmax1; // lmax + 1
   int lmpoints; // lmax * lmax

@@ -41,6 +41,7 @@
 #include "particles/nrpic_kernels.hpp"
 #include "particles/nrpic_metrics.hpp"
 #include "particles/nrpic_mesh.hpp"
+#include "particles/nrpic_cosmo_ext.hpp"
 // last: this header defines the macro NDIM, which collides with a member of Tmunu
 #include "z4c/fastflow.hpp"
 
@@ -270,6 +271,11 @@ void Particles::NrpicInit(ParameterInput *pin) {
     pbval_tm = new MeshBoundaryValuesCC(pmy_pack, pin, false);
     pbval_tm->InitializeBuffers(Tmunu::N_Tmunu);
   }
+  // refined meshes in periodic runs: shape of coarse clouds on fine cells, region norms
+  if (pin->DoesParameterExist("particles", "deposit_fine_shape")) {
+    nropt.deposit_fine = pin->GetBoolean("particles", "deposit_fine_shape");
+  }
+  NrpicRegionInit(pin);
   NrpicKickInit(pin);       // test kick with reproducible random numbers
   NrpicCollideInit(pin);    // Monte Carlo collisions
   if (nropt.newton) { NrpicNewtonInit(pin); }
@@ -706,6 +712,7 @@ void Particles::NrpicDepositSources() {
   const bool per[3] = {nropt.periodic[0], nropt.periodic[1], nropt.periodic[2]};
   const int nb = nropt.deposit_shape + 1;              // cells per direction of a cloud
   const bool newton = nropt.newton;      // Newtonian mode: rest mass instead of energy
+  const bool fine_shape = nropt.deposit_fine;   // coarse clouds sampled on leaf cells
 
   nrpic::MeshMetric proto;
   proto.bspline = nropt.interp_bspline;
@@ -882,6 +889,50 @@ void Particles::NrpicDepositSources() {
               floor((yf - 0.5*h[1] - sz(mb).x2min)/sz(mb).dx2 + 0.5));
           const int k0 = ks + static_cast<int>(
               floor((zf - 0.5*h[2] - sz(mb).x3min)/sz(mb).dx3 + 0.5));
+          if (fine_shape && nsub <= 32) {
+            // <particles> deposit_fine_shape: each leaf cell receives the integral of
+            // the shape of the cloud over it (differences of the cumulative distribution
+            // of the shape at the cell edges) instead of the same density in every leaf
+            // cell of the lattice cell.  The weights of the leaf cells inside a lattice
+            // cell sum to the weight of that cell, so the sums are conserved as before,
+            // and the deposited density of a smooth distribution is smooth on the fine
+            // cells (no staircase at the cell size of the cloud).  The lattice cell may
+            // be a periodic image: the particle is taken in the same image.
+            Real wf[3][32];
+            const Real hf[3] = {sz(mb).dx1, sz(mb).dx2, sz(mb).dx3};
+            const Real xcl[3] = {xf, yf, zf};
+            const Real xcu[3] = {xb[0] + c1*h[0], xb[1] + c2*h[1], xb[2] + c3*h[2]};
+            for (int d=0; d<3; ++d) {
+              const Real xpd = xp[d] + (xcl[d] - xcu[d]);
+              const Real xlo = xcl[d] - 0.5*h[d];
+              Real cprev = nrpic::ShapeCdf(nb - 1, (xlo - xpd)/h[d]);
+              for (int s=0; s<nsub; ++s) {
+                const Real cnext = nrpic::ShapeCdf(nb - 1,
+                                                   (xlo + (s + 1)*hf[d] - xpd)/h[d]);
+                wf[d][s] = cnext - cprev;
+                cprev = cnext;
+              }
+            }
+            const Real ivf = 1.0/(hf[0]*hf[1]*hf[2]);
+            for (int kk=0; kk<nsub; ++kk) {
+              const int k = k0 + kk;
+              if (k < ks || k > ke) continue;
+              for (int jj=0; jj<nsub; ++jj) {
+                const int j = j0 + jj;
+                if (j < js || j > je) continue;
+                for (int ii=0; ii<nsub; ++ii) {
+                  const int i = i0 + ii;
+                  if (i < is || i > ie) continue;
+                  const Real wfv = wf[0][ii]*wf[1][jj]*wf[2][kk]*ivf;
+                  if (wfv == 0.0) continue;
+                  for (int n=0; n<Tmunu::N_Tmunu; ++n) {
+                    Kokkos::atomic_add(&tm(mb,n,k,j,i), wfv*q[n]);
+                  }
+                }
+              }
+            }
+            continue;
+          }
           for (int kk=0; kk<nsub; ++kk) {
             const int k = k0 + kk;
             if (k < ks || k > ke) continue;

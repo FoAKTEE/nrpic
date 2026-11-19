@@ -1254,6 +1254,9 @@ void Particles::NrpicStartup(bool res_flag) {
   if (nropt.cstat_dcycle > 0) {
     NrpicWriteConstraintStats(pm->time, true);
   }
+  if (region.dcycle > 0) {
+    NrpicWriteRegion(pm->time, pm->ncycle, true);
+  }
   if (nropt.line_dcycle > 0) {
     NrpicWriteLine(pm->time, true);
   }
@@ -1292,6 +1295,9 @@ TaskStatus Particles::NrpicDiagnostics(Driver *pdriver, int stage) {
   }
   if (nropt.cstat_dcycle > 0 && (ncyc % nropt.cstat_dcycle == 0)) {
     NrpicWriteConstraintStats(tnew, false);
+  }
+  if (region.dcycle > 0 && (ncyc % region.dcycle == 0)) {
+    NrpicWriteRegion(tnew, ncyc, false);
   }
   if (nropt.line_dcycle > 0 && (ncyc % nropt.line_dcycle == 0)) {
     NrpicWriteLine(tnew, false);

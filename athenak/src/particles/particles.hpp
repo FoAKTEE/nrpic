@@ -110,6 +110,24 @@ struct NrpicOptions {
   Real newton_cfl = 0.0;       // > 0: step at most this fraction of dx/max|dx/dt|
   Real newton_mg_tol = 0.0;    // > 0: the Poisson solve may end when the defect norm
                                // is this fraction of the norm of the source
+  // ---- refined meshes in periodic runs (package cosmo-amr) ----
+  bool deposit_fine = false;   // <particles> deposit_fine_shape: a cloud whose cells are
+                               // coarser than the leaf cells is sampled on the leaf
+                               // cells with its own shape, not spread as a constant
+                               // over each of its cells
+};
+
+//----------------------------------------------------------------------------------------
+//! \struct NrpicRegionOptions
+//  \brief options of the constraint norms inside and outside spheres (nrpic_region.cpp)
+
+struct NrpicRegionOptions {
+  int dcycle = 0;                       // <particles> region_dcycle (0: off)
+  Real center[3] = {0.0, 0.0, 0.0};     // region_x1, region_x2, region_x3
+  int nsphere = 0;                      // number of radii region_radius1..4
+  Real radius[4] = {0.0, 0.0, 0.0, 0.0};
+  int horizon = -1;                     // region_horizon: index of a horizon finder
+  Real horizon_factor = 1.0;            // region_horizon_factor
 };
 
 //----------------------------------------------------------------------------------------
@@ -309,6 +327,11 @@ class Particles {
   DvceArray1D<Real> coll_face;                                     // face positions
   void NrpicCollideInit(ParameterInput *pin);
   TaskStatus NrpicCollide(Driver *pdriver, int stage);
+
+  // constraint norms inside and outside spheres on any mesh (nrpic_region.cpp)
+  NrpicRegionOptions region;
+  void NrpicRegionInit(ParameterInput *pin);
+  void NrpicWriteRegion(Real time, int ncycle, bool header);
 
   // ---- Newtonian mode of the nrpic module (particles/nrpic_newton.cpp) ----
   // The potential of the Poisson equation is held in the lapse slot of met1 (the

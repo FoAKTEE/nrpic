@@ -122,6 +122,10 @@ Z4c::Z4c(MeshBlockPack *ppack, ParameterInput *pin) :
   weyl.rpsi4.InitWithShallowSlice (u_weyl, 0);
   weyl.ipsi4.InitWithShallowSlice (u_weyl, 1);
 
+  // step limit from the coordinate light speed (read only if present)
+  if (pin->DoesParameterExist("z4c", "dt_lightspeed")) {
+    dt_lightspeed = pin->GetReal("z4c", "dt_lightspeed");
+  }
   opt.chi_psi_power = pin->GetOrAddReal("z4c", "chi_psi_power", -4.0);
   opt.chi_div_floor = pin->GetOrAddReal("z4c", "chi_div_floor", -1000.0);
   opt.chi_min_floor = pin->GetOrAddReal("z4c", "chi_min_floor", 1e-12);
