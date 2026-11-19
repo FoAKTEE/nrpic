@@ -906,3 +906,23 @@ core-v0.3: 252 s for 1200 steps, runs core-20261115-140316-8742cdf and
 if its step time (Ct) does not fit (average above 0.40 s per step over the three
 modes), the 150 M job is cancelled before it starts and resubmitted with the measured
 size.
+
+### X, processor part (14:19 UTC): the rebuild; the card part is queued (job 4634)
+
+- Before the change `make -n` in `.work/build_gpu` lists nothing to compile: the
+  incremental build regards the nine objects as up to date, so the card executable
+  built from it would never have been repaired by another incremental build.
+- The nine objects were copied to `scratch/core/tmp/coll2close/stale_objs/` (with their
+  times, `listing_before.txt`) and removed by name; `scripts/build_gpu.sh .work/build_gpu`
+  (43 s) recompiled exactly these nine and relinked (`rebuild.log`). (a) held.
+- Stale against recompiled object: eight have the same size (the bytes differ, as two
+  card compilations of one source do); `particles.cpp.o`, which holds the constructor of
+  the class Particles, is 412312 bytes stale and 411720 recompiled, the constructor and
+  the lambdas of `CreateParticleTags` sit at other offsets, and three symbols of the
+  stale object (a copy constructor of a Kokkos view tracker of `View<int**>`) are absent
+  from the recompiled one. So the stale constructor was compiled from a different
+  definition of the class than the source of 819d588 [VERIFIED by the object files]:
+  the incremental card build linked objects of two class layouts.
+- Relinked executable: `scratch/core/tmp/coll2close/stale_objs/athena_gpu_rebuilt9`
+  (sha256 6adc74ce...); its card run (two smoke decks) is registered as run
+  core-20261119-141940-2e6368f, Slurm job 4634, waiting behind other owners' jobs.
