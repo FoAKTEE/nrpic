@@ -347,3 +347,69 @@ Predictions [JUDGEMENT], written before any of these runs:
   processor executable and the release (`.work/build_cpu_v03`) for the package inputs
   without the options and for problems/puncture/horizon_calib, by_binary, tests/z4c_bench
   and scalar/kg_wave_smr, a few steps each.
+
+## 2026-11-19, entry 7: outcomes of c0, of a1 for the ball, of b1; prediction c0b
+
+Analysis run core-20261119-161035-2bea9be (`an_batch.sh c0_a1ball.txt`; results
+`results/c0.json`, `results/a1_ball.json`, `results/b1_ball.json`; figures
+`figs/c0_monitor.png`, `figs/a1_ball_regions.png`, `figs/a1_ball_spacetime.png`,
+`figs/b1_ball_regions.png`, looked at).
+
+**c0** (run core-20261119-155943-13bb466 against a0b core-20261119-143938-eded041):
+- (c0-a) HELD. Vacuum puncture after one step, boundary cell at the +x face centre:
+  |H| = 1.53e-4 with the falloff fill at order 2 against 1.895e-3 stock (ratio 0.081;
+  predicted 0.086), 7.9e-6 against 9.09e-5 at order 4 (ratio 0.087). The sign flips (G''
+  and chi'' have opposite signs), and the second and third layers fall alike (1.48e-5,
+  8.7e-7 against 1.85e-4, 1.10e-5). The boosted puncture's H falls the same way (0.088 at
+  order 2, 0.108 at order 4).
+- (c0-b) FAILED. Boosted puncture, |M_x| in the boundary cell: ratio 0.51 at order 2 and
+  1.07 at order 4 (predicted 1/3 within a factor 1.5). The prediction assumed that M_x
+  next to the face is the ghost error of A_ij; it is not, after one step: the stock M_x
+  is 1.8e-5 at order 2 and 2.0e-5 at order 4 (larger at the higher order), which is the
+  size of the kink that the Sommerfeld rate makes in one step: for A_xx = 3P/r^2 =
+  3.7e-3 at r = 15.5 the condition gives d_t A = +A/r instead of 0, i.e. 1.5e-5 per step
+  of 1/16, which the first derivatives of M_x read with weight about 1. So the momentum
+  constraint layer of a boosted puncture (and of the clump package's moving clusters) is
+  H2, the wrong fall-off of the boundary operator, from the first step on; c0b tests this.
+- Also seen: for the vacuum puncture M_x is at the level 1e-6 in every variant (the
+  data have K_ij = 0; the step gives it a little).
+
+**a1, ball** (run core-20261119-143745-78506dd against ball_ref of the same run):
+- (a1-b) HELD: along the +x axis the front of the difference to the reference moves in
+  at 1.50 for Khat (predicted sqrt 2 +- 25 per cent) and 1.07 for H (predicted 1 +- 25 per
+  cent); Theta's front at 0.54 (no prediction; it follows H with a lag).
+- (a1-c) HELD: shell (8 <= r < 12) mean |H| at t = 8 is 2.80e-3 with the faces at 16
+  against 7.35e-4 in the same cells of the reference (3.8 times). At t = 4 it is still
+  9.4e-4 against 8.6e-4: the error needs t of about 5 to cross the 4 to 8 units from the
+  faces to the shell at speed 1.
+- Constraint-propagating fields: the Gamma constraint |Gt - Gt(gt)| in the face layer is
+  6.99e-4, 1.82e-3, 5.81e-3 at t = 1, 2, 4 against 1.9e-7, 2.9e-6, 6.5e-5 in the
+  reference (it is the largest of the four measures and grows fastest); Theta in the face
+  layer 2.5e-5, 5.0e-5, 8.9e-5 against 1.0e-7, 1.6e-6, 3.5e-5.
+
+**b1** (run core-20261119-152217-73dccb9; three of its five cases):
+- (b1-a) order 2: FAILED for Khat, held for A_xx: at t = 1 the boundary cell differs from
+  the reference by dKhat = -3.2e-4 (29 per cent of the Sommerfeld value 1.107e-3;
+  predicted below 10 per cent) and dA_xx = 8.0e-5 (7.4 per cent). With order 4: dKhat =
+  -4.8e-5 (4.3 per cent), dA_xx = 1.6e-5 (1.5 per cent). The rest at order 2 is the
+  linear ghost error entering the full right-hand side of cell p, which the non-wave
+  part then carries to the boundary cell.
+- (b1-b) face layer: FAILED at order 2 (mean |H - H_ref| at t = 4 4.4e-4 against 1.45e-3,
+  3.3 times; predicted more than 5), HELD at order 4 (2.6e-4, 5.6 times). Shell at t = 4:
+  HELD (3.3e-5 at order 2, 3.1e-6 at order 4, against 2.2e-4: 6.5 and 70 times); at t = 8
+  5.6e-4 and 2.7e-4 against 2.9e-3.
+- (b1-c) HELD: power 2.5 against 3 changes the face-layer measure by 13 per cent and the
+  shell measure by 20 per cent at t = 4.
+- (b1-d) FAILED in the letter: with nonwave, order 4 beats order 2 by 1.7 in the face
+  layer (predicted more than 2), but by 11 in the shell at t = 4 and 2.1 at t = 8.
+- (b1-e) HELD: all three reach t = 16; the face-layer maximum of |H| stays below that of
+  the Sommerfeld run at every dump (at t = 12: 1.8e-2, 1.35e-2, 2.0e-2 against 2.5e-2).
+- Comparisons after t of about 11 are contaminated: the reference's own faces (at 32)
+  are then felt at r = 16.
+
+Plan c0b (`plans/c0b_step1.json`): the boosted puncture after one step with nonwave:
+stock ghosts order 2 (boost_e2nw), falloff order 2 (boost_g2nw), falloff order 4
+(boost_g4nw). Prediction [JUDGEMENT]: the boundary-cell |M_x| falls below 0.2 of the
+Sommerfeld value of the same ghost fill and order (c0: stock order 2 1.77e-5; falloff
+order 2 8.95e-6; falloff order 4 2.12e-5), i.e. below 3.5e-6, 1.8e-6 and 4.2e-6.
+Refuted if any is above 0.4 of its Sommerfeld value: then the boosted layer is not H2.
