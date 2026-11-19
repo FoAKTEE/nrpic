@@ -8,7 +8,7 @@ orchestrator numbers them when it merges. None of these statements is already in
 check (53 rows: 38 confirmed, 13 confirmed with a precision, 2 corrected) is
 `tracks/kb/brief_check/s33/CHECK.md` (branch `kb/brief-check`), whose row numbers are given as
 "CHECK #". The tally and every locator of CHECK.md were checked by run
-kb-20261119-144723-15a7b14 (file exists, line within the file). Rows s33.1 and s33.6 make for
+kb-20261119-145803-b30688a (file exists, line within the file). Rows s33.1 and s33.6 make for
 line 168 the findings that package s31_32 made for line 149 (its rows s31.2 and s31.8); the
 orchestrator may merge them.
 
@@ -40,7 +40,7 @@ orchestrator may merge them.
 | # | Brief line | What the brief leaves open | Answer | Evidence (locator) | Established by |
 |---|---|---|---|---|---|
 | s33.14 | 180 (§3.3) | "The Green–Wald framework argues that the effective stress–energy of small-scale inhomogeneity is traceless, like radiation and unlike dark energy (arXiv:1011.4920, arXiv:1407.8084) [BACKGROUND]" | Confirmed at the source; the label can be [VERIFIED]. It is a theorem within their framework, not only an argument: if the matter satisfies the weak energy condition (and the framework's assumptions), the effective stress-energy is traceless with positive energy density, "corresponding to the presence of gravitational radiation", and cannot mimic dark energy; on an FLRW background it is a P = rho/3 fluid. Buchert et al. dispute the physical relevance of the proof (1505.07800, confirmed) | `1011.4920/v2/src/inhomogeneities-paper.tex:38-46, 320-328`; `1407.8084/v2/src/main.tex:440-466`; `1505.07800/v2/src/main.tex:106-110`; CHECK #36, #37 | kb (s33) |
-| s33.15 | 164-185 (§3.3) | the [VERIFIED] statements and the unlabelled attributions of section 3.3 | Checked one by one at the TeX sources (53 rows): 38 confirmed as written, 13 confirmed with the precisions of rows s33.3-s33.14, 2 corrected (s33.1, s33.2). Every cited paper is in the knowledge base | CHECK.md; run kb-20261119-144723-15a7b14 (tally and locator check) | kb (s33) |
+| s33.15 | 164-185 (§3.3) | the [VERIFIED] statements and the unlabelled attributions of section 3.3 | Checked one by one at the TeX sources (53 rows): 38 confirmed as written, 13 confirmed with the precisions of rows s33.3-s33.14, 2 corrected (s33.1, s33.2). Every cited paper is in the knowledge base | CHECK.md; run kb-20261119-145803-b30688a (tally and locator check) | kb (s33) |
 
 ## 5. Defects in sources the brief cites (for the knowledge base; not errors of the brief)
 

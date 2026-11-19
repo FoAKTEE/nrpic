@@ -189,3 +189,17 @@ Numbers identical to the previous run (prediction confirmed). Figure looked at: 
 at centre right still touches the end of the line-176 bar (the legend is wider than I
 estimated). Fix: one legend row above both panels, x range 0-10. Prediction for the rerun:
 identical numbers; no overlap of legend and bars.
+
+## Entry 7 (2026-11-19 06:59 PST): outcome of the last figure run; duplicate run
+
+The rerun waited for a free core of the kb allotment (8 cores busy in other kb runs from 06:49
+to 06:57). Two retry loops were running at once (I had wrongly taken the first for finished),
+so the run was registered twice: kb-20261119-145757-12b6579 and kb-20261119-145803-b30688a.
+Both completed with identical stdout and identical `verdicts.json` (cmp). Prediction of entry
+6 confirmed: same numbers (53 rows; 38 / 13 / 2 / 0; 71 locator spans; no problem); the figure
+(`scratch/kb/kb-20261119-145803-b30688a/fig_verdicts.png`, looked at) has the legend in one
+row above both panels, clear of every bar. The second run is the reference in README and
+ERRATA_ROWS.
+
+State: CHECK.md, ERRATA_ROWS.md, README.md complete. Not done: no claim was written to the
+database (not this package's task), no outside literature query was needed.
