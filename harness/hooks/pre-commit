@@ -2,8 +2,11 @@
 """git pre-commit hook of the program (brief 13.1): rejects a commit that
 
   1. adds or changes a file above 5 MB;
-  2. adds a line that looks like a secret (private key block, cloud or chat token, an API key
-     assignment);
+  2. adds a line that looks like a secret (a private key block with its key material, a cloud or
+     chat token, an API key or password assignment). Documentation placeholders are not secrets: a
+     value containing EXAMPLE (the AWS documentation keys), a run of eight consecutive characters
+     (abcdefgh, 12345678) or of one repeated character (xxxxxxxx), a key block whose body has less
+     than 120 base64 characters (a header with a stub, as in the harness's own tests);
   3. adds a run manifest tracks/<ID>/runs/<run_id>/manifest.json that is not a JSON object, whose
      run_id differs from its directory or is not <owner>-<YYYYMMDD-HHMMSS>-<commit7> (decision
      0012; a hand-written manifest with other field names or status words is accepted and noted);
@@ -11,14 +14,21 @@
      OWNERSHIP (main's copy; the branch's own if main has none). Merge commits, proposal/<ID>/<slug>
      branches and main itself are exempt from this check.
 
+In a merge (`git commit` after a conflicted `git merge`; a clean `git merge` does not run pre-commit)
+checks 1 to 3 look only at what the merge itself adds: a file whose content equals that of a merged
+branch (MERGE_HEAD) was checked where it was committed and is skipped, and in a file resolved by hand
+only lines found in neither HEAD nor a merged branch count as added.
+
 Installed for every worktree with `git config core.hooksPath <main checkout>/harness/hooks`
-(decision 0008: not installed until the user confirms). It reads the index git names in
-GIT_INDEX_FILE (path-limited commits use a temporary one) and nothing else from the environment.
-Exit 1 with the reasons on standard error; there is no bypass (--no-verify is denied by the guard).
+(decision 0017 item 4: after the dry run over the history, between waves). It reads the index git
+names in GIT_INDEX_FILE (path-limited commits use a temporary one) and nothing else from the
+environment. Exit 1 with the reasons on standard error; there is no bypass (--no-verify is denied by
+the guard).
 
 The checks are the function evaluate(view): `IndexView` is the commit being made; the dry run over
 the history (harness/tests/precommit_dryrun.py) passes a view of a past commit instead.
 """
+import codecs
 import fnmatch
 import json
 import os
@@ -28,8 +38,9 @@ import sys
 
 LIMIT = 5 * 1024 * 1024
 TRACKS = ("A-emd-pbh", "B-emd-gw", "C-sidm", "D-bh-dress", "E-stoch-inf", "F-hills")
+KEY_BLOCK = re.compile(r"-----BEGIN (?:RSA |DSA |EC |OPENSSH |PGP |ENCRYPTED )?PRIVATE KEY(?: BLOCK)?-----")
+KEY_BODY_MIN = 120          # base64 characters; the smallest real key (EC P-256, SEC1) has about 160
 SECRETS = [
-    (re.compile(r"-----BEGIN (?:RSA |DSA |EC |OPENSSH |PGP |ENCRYPTED )?PRIVATE KEY(?: BLOCK)?-----"), "a private key block"),
     (re.compile(r"\bAKIA[0-9A-Z]{16}\b"), "an AWS access key id"),
     (re.compile(r"aws_secret_access_key\s*[=:]\s*['\"]?[A-Za-z0-9/+]{30,}"), "an AWS secret key"),
     (re.compile(r"\bgh[pousr]_[A-Za-z0-9]{36,}\b"), "a GitHub token"),
@@ -42,8 +53,12 @@ SECRETS = [
      "a key or password assignment"),
 ]
 RUN_ID = re.compile(r"^([A-Za-z][A-Za-z0-9-]*?)-(\d{8})-(\d{6})-([0-9a-f]{7,40})$")
+MANIFEST = re.compile(r"tracks/([^/]+)/runs/([^/]+)/manifest\.json")
 GIT_KEEP = ("GIT_DIR", "GIT_INDEX_FILE", "GIT_WORK_TREE", "GIT_OBJECT_DIRECTORY", "GIT_COMMON_DIR",
             "GIT_ALTERNATE_OBJECT_DIRECTORIES", "GIT_QUARANTINE_PATH")
+# the diff is read with fixed prefixes and unquoted paths, whatever the user's git configuration says
+DIFF_OPTS = ("--no-color", "--no-ext-diff", "--text", "-U0", "--src-prefix=a/", "--dst-prefix=b/", "--no-renames")
+NULL = "0" * 40
 
 
 def env():
@@ -54,8 +69,9 @@ def env():
     return e
 
 
-def git(*args, check=True, binary=False):
-    r = subprocess.run(["git"] + list(args), capture_output=True, env=env())
+def git(*args, check=True, binary=False, input_bytes=None):
+    r = subprocess.run(["git", "-c", "core.quotePath=false"] + list(args), capture_output=True, env=env(),
+                       input=input_bytes)
     if check and r.returncode != 0:
         sys.stderr.write(r.stderr.decode(errors="replace"))
         sys.exit(1)
@@ -92,33 +108,139 @@ def glob_match(rel, pattern):
     return re.fullmatch(rx, rel) is not None or fnmatch.fnmatch(rel, pattern)
 
 
-def name_status(out):
+def parse_raw(out):
+    """`git diff --raw -z` -> [(status, path, new blob id, new mode)]."""
     parts = [p for p in out.split("\0") if p != ""]
-    return [(parts[k][0], parts[k + 1]) for k in range(0, len(parts) - 1, 2)]
+    rows = []
+    for k in range(0, len(parts) - 1, 2):
+        meta = parts[k].lstrip(":").split()
+        rows.append((meta[4][0], parts[k + 1], meta[3], meta[1]))
+    return rows
 
 
-class IndexView:
+def unquote_path(s):
+    """A path as git prints it in a diff header: plain, or C-quoted when it has special characters."""
+    if len(s) >= 2 and s[0] == '"' and s[-1] == '"':
+        return codecs.escape_decode(s[1:-1].encode("utf-8"))[0].decode("utf-8", errors="replace")
+    return s
+
+
+def added_lines_from_diff(diff):
+    """{path: [added line, ...]} from a -U0 diff; '+++ ' is a file name only in a file's header."""
+    out, cur, header = {}, None, False
+    for line in diff.splitlines():
+        if line.startswith("diff --git "):
+            cur, header = None, True
+            continue
+        if header:
+            if line.startswith("+++ "):
+                name = unquote_path(line[4:])
+                cur = name[2:] if name.startswith("b/") else None
+            elif line.startswith("@@"):
+                header = False
+            continue
+        if line.startswith("+") and cur is not None:
+            out.setdefault(cur, []).append(line[1:])
+    return out
+
+
+def placeholder(value):
+    """A documentation placeholder rather than a credential."""
+    if "EXAMPLE" in value:
+        return True
+    run_up = run_same = 1
+    for a, b in zip(value, value[1:]):
+        run_up = run_up + 1 if (b.isalnum() and a.isalnum() and ord(b) == ord(a) + 1) else 1
+        run_same = run_same + 1 if (b == a and b.isalnum()) else 1
+        if run_up >= 8 or run_same >= 8:
+            return True
+    return False
+
+
+def key_body(lines, k, start):
+    """Base64 characters of the key block that begins at lines[k][start:]: runs of at least 40 characters
+    up to the END line (literal \\n escapes of a key written into a string are joined)."""
+    text = "\n".join([lines[k][start:]] + lines[k + 1:k + 60])
+    text = text.split("-----END", 1)[0]
+    text = re.sub(r"\\+[nr]", "", text)
+    return sum(len(r) for r in re.findall(r"[A-Za-z0-9+/=]{40,}", text))
+
+
+def scan_secrets(added):
+    """[(path, what)] for {path: [added lines]}."""
+    hits = []
+    for path, lines in added.items():
+        for k, line in enumerate(lines):
+            what = None
+            m = KEY_BLOCK.search(line)
+            if m and key_body(lines, k, m.end()) >= KEY_BODY_MIN:
+                what = "a private key block"
+            else:
+                for rx, w in SECRETS:
+                    if any(not placeholder(x.group(0)) for x in rx.finditer(line)):
+                        what = w
+                        break
+            if what:
+                hits.append((path, what))
+    return hits
+
+
+class View:
+    """What the checks see of one commit. Subclasses fill: changes [(status, path, blob id, mode)],
+    head (the first parent, a revision), merge_heads, branch, merging, and the methods run (git) and
+    diff (the -U0 diff of the commit against head)."""
+
+    changes, head, merge_heads, branch, merging = [], "HEAD", [], "HEAD", False
+
+    def run(self, *args, check=False, binary=False, input_bytes=None):
+        raise NotImplementedError
+
+    def context(self):
+        pass
+
+    def diff(self):
+        raise NotImplementedError
+
+    def ownership(self, owner):
+        raise NotImplementedError
+
+    def batch_check(self, names):
+        """{name: (type, size)} for object names (ids or <rev>:<path>); missing ones are left out."""
+        if not names:
+            return {}
+        out = self.run("cat-file", "--batch-check=%(objectname) %(objecttype) %(objectsize)",
+                       input_bytes=("\n".join(names) + "\n").encode(), binary=True).decode(errors="replace")
+        res = {}
+        for name, line in zip(names, out.splitlines()):
+            f = line.split()
+            if len(f) == 3 and f[2].isdigit():
+                res[name] = (f[0], f[1], int(f[2]))
+        return res
+
+    def blob(self, sha):
+        return self.run("cat-file", "blob", sha, binary=True) if sha and sha != NULL else b""
+
+
+class IndexView(View):
     """The commit being made: the index (GIT_INDEX_FILE) against HEAD, in the current worktree."""
 
     def __init__(self):
-        self.changes = name_status(git("diff", "--cached", "--name-status", "--no-renames", "-z"))
+        self.changes = parse_raw(git("diff", "--cached", "--raw", "-z", "--no-renames", "--no-abbrev"))
+
+    def run(self, *args, check=False, binary=False, input_bytes=None):
+        return git(*args, check=check, binary=binary, input_bytes=input_bytes)
 
     def context(self):
         self.branch = git("rev-parse", "--abbrev-ref", "HEAD", check=False).strip()
-        top = git("rev-parse", "--show-toplevel").strip()
-        gitdir = git("rev-parse", "--git-dir").strip()
-        self.merging = os.path.exists(os.path.join(gitdir if os.path.isabs(gitdir) else os.path.join(top, gitdir),
-                                                   "MERGE_HEAD"))
-
-    def size(self, path):
-        s = git("cat-file", "-s", f":{path}", check=False).strip()
-        return int(s) if s.isdigit() else None
-
-    def blob(self, path):
-        return git("show", f":{path}", check=False, binary=True)
+        mh = git("rev-parse", "--path-format=absolute", "--git-path", "MERGE_HEAD").strip()
+        self.merging = os.path.isfile(mh)
+        self.merge_heads = []
+        if self.merging:
+            with open(mh) as f:
+                self.merge_heads = [l.strip() for l in f if l.strip()]
 
     def diff(self):
-        return git("diff", "--cached", "-U0", "--no-color", "--no-ext-diff", "--text")
+        return git("diff", "--cached", *DIFF_OPTS)
 
     def ownership(self, owner):
         for rev in ("main", "HEAD"):
@@ -128,41 +250,61 @@ class IndexView:
         return []
 
 
+def merge_added_lines(view, paths):
+    """{path: lines of the merge result found in neither HEAD nor any merged branch}."""
+    out = {}
+    for st, path, sha, mode in paths:
+        if st == "D" or mode == "160000":
+            continue
+        new = view.blob(sha).decode("utf-8", errors="replace").splitlines()
+        old = set()
+        for rev in [view.head] + list(view.merge_heads):
+            ids = view.batch_check([f"{rev}:{path}"])
+            if ids:
+                old.update(view.blob(ids[f"{rev}:{path}"][0]).decode("utf-8", errors="replace").splitlines())
+        lines = [l for l in new if l not in old]
+        if lines:
+            out[path] = lines
+    return out
+
+
 def evaluate(view):
     """The checks. Returns (problems, notes); a problem is (check, path, text), check in
     size, secret, manifest, foreign."""
     problems, notes = [], []
-    staged = view.changes
-    if not staged:
+    if not view.changes:
         return problems, notes
     view.context()
+    staged = view.changes
+    # a merge: content equal to a merged branch's was checked on that branch
+    inherited = set()
+    if view.merging and view.merge_heads:
+        names = [f"{mh}:{p}" for mh in view.merge_heads for st, p, sha, mode in staged if st != "D"]
+        have = view.batch_check(names)
+        for st, p, sha, mode in staged:
+            if st != "D" and any(have.get(f"{mh}:{p}", ("",))[0] == sha for mh in view.merge_heads):
+                inherited.add(p)
+    own = [c for c in staged if c[1] not in inherited]
 
     # 1. size
-    for st, path in staged:
-        if st in ("A", "M", "T"):
-            size = view.size(path)
-            if size is not None and size > LIMIT:
-                problems.append(("size", path, f"{path}: {size / 2**20:.1f} MB, above the 5 MB limit (data stays in "
-                                 "scratch/; commit a small derived table or its checksum)"))
+    sizes = view.batch_check([sha for st, p, sha, mode in own if st in ("A", "M", "T") and sha != NULL
+                              and mode != "160000"])
+    for st, path, sha, mode in own:
+        if st in ("A", "M", "T") and sha in sizes and sizes[sha][1] == "blob" and sizes[sha][2] > LIMIT:
+            problems.append(("size", path, f"{path}: {sizes[sha][2] / 2**20:.1f} MB, above the 5 MB limit (data "
+                             "stays in scratch/; commit a small derived table or its checksum)"))
     # 2. secrets, in the added lines only
-    cur = None
-    for line in view.diff().splitlines():
-        if line.startswith("+++ "):
-            cur = line[6:] if line.startswith("+++ b/") else None
-        elif line.startswith("+") and not line.startswith("+++") and cur:
-            for rx, what in SECRETS:
-                if rx.search(line):
-                    problems.append(("secret", cur, f"{cur}: an added line looks like {what}; remove it (and rotate "
-                                     "it if real)"))
-                    break
+    added = merge_added_lines(view, own) if view.merging else added_lines_from_diff(view.diff())
+    for path, what in scan_secrets(added):
+        problems.append(("secret", path, f"{path}: an added line looks like {what}; remove it (and rotate it if "
+                         "real)"))
     # 3. run manifests
-    for st, path in staged:
-        m = re.fullmatch(r"tracks/([^/]+)/runs/([^/]+)/manifest\.json", path)
+    for st, path, sha, mode in own:
+        m = MANIFEST.fullmatch(path)
         if not m or st == "D":
             continue
-        blob = view.blob(path)
         try:
-            doc = json.loads(blob.decode("utf-8"))
+            doc = json.loads(view.blob(sha).decode("utf-8"))
         except (UnicodeDecodeError, ValueError) as e:
             problems.append(("manifest", path, f"{path}: not JSON ({e})"))
             continue
@@ -181,7 +323,7 @@ def evaluate(view):
     owner = owner_of(view.branch)
     if owner and not view.merging:
         globs = view.ownership(owner)
-        for st, path in staged:
+        for st, path, sha, mode in staged:
             if path.startswith(f"tracks/{owner}/") or any(glob_match(path, g) for g in globs):
                 continue
             problems.append(("foreign", path, f"{path}: outside tracks/{owner}/ and tracks/{owner}/OWNERSHIP; shared "
