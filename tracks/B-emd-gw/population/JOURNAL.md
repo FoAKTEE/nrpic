@@ -111,3 +111,57 @@ was stopped and is resubmitted with the new one. A check of the new code on the 
 outputs (not registered, scratch/B-emd-gw/tmp/analyze) matched the seven halos of a = 20
 to maxima of the initial field within 0.02 to 0.16 (comoving) and gave energies 1.3 to
 240 times the baseline of the matched maximum; the registered numbers follow.
+
+## Entry 4 (08:05 PST): outcomes of P1-P9
+
+Runs: Newtonian fid B-20261119-143828-0ef9b5b, seed 2 B-20261119-143832-85cbe25, 32 cells
+B-20261119-145324-525e4fd, amplitude doubled B-20261119-145328-4b3663f (stopped by me at
+a = 57, past the a = 50 that P4 and P9 need), nc = 4 B-20261119-145715-b18561e. Analyses:
+A-fid B-20261119-154315-c55b30f (fid, seed2, n32; GW of fid at 64^3), A-amp2
+B-20261119-154447-99fa502, A-nc4 B-20261119-155537-d49f8f1, comparison
+B-20261119-155621-68170ca (`results/compare.json`, `figs/pop_compare.png`). Figures
+`figs/pop_halos_fid.png`, `pop_density_fid.png`, `pop_gw_fid.png`, `pop_compare.png`
+looked at (the a = 5 density panel shows a moire of the particle lattice against the
+128-bin projection, cosmetic).
+
+- P1 HOLDS (at the upper edge): first halo (>= 100 particles) at a = 9.0; 25 halos at
+  a = 30.1 (predicted 6 to 25).
+- P2 REFUTED as written, by one halo: 21 halos at a = 100 (predicted 3 to 20); the largest
+  holds 0.4705 of 7.639, 6.2 per cent (predicted 2 to 25). The count plateaus at 18 to 28
+  from a = 25 on: new halos keep forming while others merge; my mass-function argument
+  (M_* ~ a^(3/2)) did not account for the continued formation of cut-scale halos.
+- P3 HOLDS: seed 2 has 25 halos at a = 30 as seed 1 (identical count, by chance).
+- P4 HOLDS except at one epoch: amp2 at a against fid at 2a: counts 1/1, 9/14 (ratio 1.56,
+  outside the 1.5 predicted), 14/14, 25/25, 26/25, 21/22, 19/18, 23/23, 26/28, 21/21; the
+  largest mass and the collapsed fraction agree to 1 to 4 per cent from a_fid = 20 on
+  (`compare.json` P4). The Newtonian evolution depends on sigma1 a only, to the halo-count
+  noise.
+- P5 REFUTED as written: 11 of the 16 halos with >= 300 particles at a = 30 (69 per cent,
+  predicted >= 70) have a 32-cell halo within one 32-cell spacing; the 5 without are the
+  smallest (M = 0.009 to 0.020), below the 32-cell detection limit of 100 particles
+  (M = 0.023) that I did not account for. Every 64-cell halo above that limit is matched,
+  masses within -24 to +12 per cent.
+- P6 HOLDS (at the edge): 35 halos at a = 30 with nc = 4 against 25 (ratio 1.4, predicted
+  1.4 to 3). The BBKS ratio of the maxima is 1.95; mergers and the 100-particle limit
+  (cut-scale halos of nc = 4 are half as massive) reduce it [JUDGEMENT].
+- P7 HOLDS: Layzer-Irvine constant within 4.7e-4 to 8.4e-4 of max a|W| in all five runs.
+- P8 SPLIT. The box measure (TT stress, junk and near field removed) against the baseline
+  sum of design.json: 2.2, 10, 5 and 12 times above it at a = 10, 15, 20, 30 (inside the
+  predicted window), then 206 and 775 times at a = 50 and 100 (outside: the baseline stops
+  at each first crossing and decays as 1/a; the box keeps radiating after collapse:
+  Omega_rad 1.2e-7 at a = 50, 3.0e-7 at a = 70, 2.3e-7 at a = 100). The per-halo
+  quadrupole formula during formation (the ten largest halos of a = 20, followed to
+  a = 30) is 3.4 to 2760 times the baseline energy of the matched maximum (median of the
+  eight matched within 0.1: about 300); refuted for six of them. Sum over those halos
+  Omega = 2.3e-7 at a = 30, 19 times the box measure at that time. [JUDGEMENT on the
+  cause, not tested: at a >= 30 the halo dynamical wave number 9.4/sqrt(a) (design.json
+  k_dyn) approaches the box fundamental 2 pi/L = 1.57; the box holds no mode at the
+  frequency of most of the halo emission, which the isolated-source formula counts.]
+- P9 HOLDS: at equal stage (amp2 at a against fid at 2a) the radiated box measure is 8.0
+  to 18.7 times larger for a_fid = 10 to 100 (predicted 2^(7/2) = 11.3 within a factor
+  2), the near field 6.1 to 11.1 times (predicted 8); `figs/pop_compare.png` middle panel:
+  the rescaled curves lie on each other after a = 10. The sigma^(7/2) law of the emitted
+  energy holds in the Newtonian box with the post-collapse emission included.
+- Near field: Omega_qs = 1.17e-8 at the first snapshot (design formula: 1.18e-8, the
+  (20/3) source at a = 1), 4.95e-7 at a = 20 (twice the linear 1.18e-8 a), then 3.6 to
+  3.8e-7 to a = 100 (a third of the linear extrapolation).
