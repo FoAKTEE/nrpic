@@ -350,8 +350,9 @@ def _decision_texts(wt):
 
 
 def owner_from_short(s):
-    """A -> A-emd-pbh, A-emd-pbh -> A-emd-pbh, core -> core; None if no owner."""
-    if s in OWNER_IDS:
+    """A -> A-emd-pbh, A-emd-pbh -> A-emd-pbh, core -> core, orch -> orch (decision 0016 item 2);
+    None if no owner."""
+    if s in OWNER_IDS or s == "orch":
         return s
     for t in TRACK_IDS:
         if s == t.split("-")[0]:
@@ -474,16 +475,43 @@ STATUS_WORDS = {
     "pending": "submitted",
 }
 RUN_ID_RX = re.compile(r"^(?P<owner>[A-Za-z][A-Za-z0-9-]*?)-(?P<date>\d{8})-(?P<time>\d{6})-(?P<commit>[0-9a-f]{7,40})$")
+STANDARD_STATUS_WORDS = FINAL_STATUSES + ACTIVE_STATUSES      # what manifest_view reads without a default
+# Decision 0016 item 3: hand-written manifests of waves 1 and 2 count as registered; from wave 2b
+# (resumed on 2026-11-19 UTC) on, runs go through `nrpic-run submit`. A run is "of waves 1 and 2"
+# when its date (run id, else the manifest's own dates) lies before this day.
+WAVE_2B_START = "20261119"
 
 
 def parse_run_id(rid):
-    """(owner id, 'YYYYMMDD-HHMMSS', commit) of a run id in either form of decision 0012
-    (A-20261115-..., or the full owner id A-emd-pbh-20261115-... of some wave-1 manifests), or None."""
+    """(owner id, 'YYYYMMDD-HHMMSS', commit) of a run id in either form (decision 0016 item 2: the
+    short form A-20261115-... that nrpic-run writes, with A..F, core, kb, orch; the long form
+    A-emd-pbh-20261115-... of waves 1 and 2 stays valid), or None."""
     m = RUN_ID_RX.match(rid or "")
     if not m:
         return None
     owner = owner_from_short(m.group("owner"))
     return (owner, m.group("date") + "-" + m.group("time"), m.group("commit")) if owner else None
+
+
+def run_date(rid, m=None):
+    """'YYYYMMDD' (UTC) of a run: from its id (either form; also a directory name that only carries
+    `-YYYYMMDD-HHMMSS-<commit>`), else from the manifest's started/registered/ended/date field; None
+    when neither tells."""
+    for s in (rid, m.get("run_id") if isinstance(m, dict) else None):
+        mm = re.search(r"(?:^|-)(\d{8})-\d{6}-[0-9a-f]{7,40}$", s or "")
+        if mm:
+            return mm.group(1)
+    if isinstance(m, dict):
+        for k in ("started", "registered", "ended", "date", "created"):
+            mm = re.match(r"^\s*(\d{4})-?(\d{2})-?(\d{2})", str(m.get(k) or ""))
+            if mm:
+                return "".join(mm.groups())
+    return None
+
+
+def is_wave12(date):
+    """A run date before wave 2b (decision 0016 item 3)."""
+    return bool(date) and date < WAVE_2B_START
 
 
 def _num(x):
@@ -510,17 +538,43 @@ def _first(*vals):
     return None
 
 
+# every top-level key any version of nrpic-run has written (submit and finish)
+NRPIC_RUN_KEYS = ("schema", "run_id", "track", "gate", "kind", "purpose", "preregistered_in", "launcher", "command",
+                  "cwd", "git", "code", "env", "input", "inputs", "batch_entries", "resources", "slurm", "outputs",
+                  "status", "exit_code", "registered", "started", "ended", "finished", "parents", "notes",
+                  "budget_at_submit")
+
+
+def hand_marker(m):
+    """Why a manifest that names the nrpic-run schema was nevertheless written by hand (waves 1 and 2:
+    helpers' registration scripts copied the schema), or '': a `registered_by` field, a launcher other
+    than local, batch, chain ("local (hand registration)"), or another top-level key nrpic-run never
+    writes (card_hours, output_dir, commit, ...)."""
+    if not isinstance(m, dict):
+        return ""
+    if m.get("registered_by"):
+        return f"registered_by: {str(m['registered_by'])[:80]}"
+    la = m.get("launcher")
+    if la is not None and la not in ("local", "batch", "chain"):
+        return f"launcher {str(la)[:60]!r}"
+    extra = sorted(k for k in m if k not in NRPIC_RUN_KEYS)
+    if extra:
+        return "fields nrpic-run never writes: " + ", ".join(extra[:5])
+    return ""
+
+
 def manifest_view(m, home, where=""):
     """One manifest of either kind, read into a fixed shape. Never raises.
 
-    Keys: ok (a JSON object), schema (written by nrpic-run), run_id, owner, status (one of
+    Keys: ok (a JSON object), schema (names the nrpic-run schema), hand (written by hand: no schema, or
+    a hand_marker), run_id, owner, status (one of
     FINAL_STATUSES, ACTIVE_STATUSES or "unknown"), status_raw, final, gate, kind, purpose, launcher,
     outdir (absolute, or None), outdir_rel, gpu_hours (used, None if not recorded),
     gpu_hours_requested, walltime_s, cores, exit_code, sha, inputs (list of {path, sha256, tracked}),
     issues (what was not in the nrpic-run schema), where."""
     v = {"ok": isinstance(m, dict), "where": where, "issues": [], "raw": m}
     if not isinstance(m, dict):
-        v.update(schema=False, run_id=None, owner=None, status="unknown", status_raw=None, final=True,
+        v.update(schema=False, hand=True, run_id=None, owner=None, status="unknown", status_raw=None, final=True,
                  gate=None, kind=None, purpose="", launcher=None, outdir=None, outdir_rel=None,
                  gpu_hours=None, gpu_hours_requested=0.0, walltime_s=None, cores=1, exit_code=None,
                  sha=None, inputs=[])
@@ -587,6 +641,7 @@ def manifest_view(m, home, where=""):
         if isinstance(p, str):
             ins.append({"path": p, "sha256": rec.get("sha256"), "tracked": rec.get("tracked")})
     v["inputs"] = ins
+    v["hand"] = (not v["schema"]) or bool(hand_marker(m))
     if not v["schema"]:
         v["issues"].insert(0, "hand-written (not the nrpic-run schema)")
     if v["run_id"] is None:
@@ -642,7 +697,7 @@ def verify_run(home, root, m, outputs=True):
     v = manifest_view(m, home)
     if not v["ok"]:
         return [v["issues"][0]], notes, 0
-    hand = not v["schema"]
+    hand = v["hand"]
     if v["status"] in ACTIVE_STATUSES:
         problems.append(f"status is {v['status_raw']}: not finished (nrpic-run finish)")
     elif v["status"] == "unknown":
