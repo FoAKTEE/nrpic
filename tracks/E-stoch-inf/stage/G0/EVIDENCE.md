@@ -133,3 +133,14 @@ amplitudes as the reference because they are keyed by wave vector, independent o
   T-N6 as worded; run -131526-629fed8 failed (syntax error).
 - lead: the 64^3 x 300 base case of the unit test was replaced by a scaled case after the
   smoke run timed the processor build (JOURNAL); the noise rerun exit 1 (library-log leaf).
+
+## 5. Added in waves 2 and 2b (lead of wave 2b, 2026-11-19)
+
+| Item | Artefact | Runs |
+|---|---|---|
+| Working note v0 and schematics (C5-C7, C10, C11, C15-C17) | `note/main.tex`, `note/main.pdf`, `note/figures/`, `note/tables/` | E-20261115-173904-3be0405 (final); superseded or failed: -172421-50ac4ce, -172442-78cf53e, -173135-858482f, -173402-641b6e2 |
+| Verifier report (C18) | `stage/G0/VERIFIER.md`, `stage/G0/JOURNAL.md`, `stage/G0/scripts/`, `stage/G0/results/`, `stage/G0/fig/` | E-20261115-174515-4d30c15 (failed), -174600-81652ff (closed by the lead today), -174606-3c67607, -175051-b67c97e, -180056-d62ee5a, -180348-d799c68, -180445-e72dad6 |
+| Measured cost (C4) | `ladder/README.md`, SCOPE.md 8 | E-20261115-172618-f948386 (P256, 0.503 card-hours); core-20261115-143907-cea4c86 (128^3 throughput, core's run) |
+| Lead's re-check of the helpers (C14) | `stage/REVIEW-wave2.md`, `stage/G0/REVIEW.md` | E-20261119-150842-ca70d37, -150238-b81e33f, -150346-a513bc8, -150541-3210cd6; stopped: -145853-ef835c2 |
+| Decision of the gate (C8) | decisions 0013, 0017 | |
+| Errata as knowledge-base claims (C2) | kb claims 603-609, snapshot kb-20261115-44b7406 | kb-20261115-154906-f19880f (kb's locator check) |

@@ -1,0 +1,4 @@
+# Commands nrpic-stage verify runs in the clean export (cwd = export root, the worktree's venv).
+# The note's numerical ledger and the check of the lead's printed numbers against the run
+# outputs (note/tables/ledger.tex, parameters.tex, claims.md, claims.json).
+cd tracks/E-stoch-inf/note/scripts && python ledger.py
