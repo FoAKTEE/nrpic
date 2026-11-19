@@ -9,12 +9,13 @@
 #   build_ic_jitter.sh [<outdir>]   (default $NRPIC_RUN_DIR) writes <outdir>/<name>/... and
 #                                   <outdir>/tool/ (the tool files at the pinned commit)
 # The tool is taken from the pinned commit with git archive, so the run does not depend on
-# the state of core's worktree. CASES: specs name:A:seed:threads.
+# the state of core's worktree. CASES: specs name:A:seed:threads; N the mesh (default 64).
 set -euo pipefail
 out=${1:-${NRPIC_RUN_DIR:?give an output directory}}
 WT=$(cd "$(dirname "${BASH_SOURCE[0]}")/../../../.." && pwd)
 COMMIT=${TOOL_COMMIT:-7db34a5a9ce5216079b6bbc7d458205c21d12883}
 CASES=${CASES:-"jit0p3:0.3:7:2 jit0p1:0.1:7:2 jit0:0.0:7:2"}
+N=${N:-64}
 mkdir -p "$out/tool"
 git -C "$WT" archive "$COMMIT" problems/cosmo/make_waves.py python/nrpic | tar -x -C "$out/tool"
 echo "$COMMIT" > "$out/tool/COMMIT"
@@ -26,7 +27,7 @@ for spec in $CASES; do
   d="$out/$name"
   mkdir -p "$d"
   ( export OMP_NUM_THREADS=$th OPENBLAS_NUM_THREADS=$th MKL_NUM_THREADS=$th
-    exec python3 -B "$out/tool/problems/cosmo/make_waves.py" --delta 0.01 --n 64 --ppc 2 --L 4 \
+    exec python3 -B "$out/tool/problems/cosmo/make_waves.py" --delta 0.01 --n "$N" --ppc 2 --L 4 \
       --ratios 1,0,0 --shape pcs --dep-comp-c 0.16666666666666666 \
       --dep-comp-c2 0.4666666666666667 --nfilter 0 \
       --jitter "$A" --jitter-axes y,z --seed "$seed" --out "$d" ) > "$d.log" 2>&1 &
