@@ -115,6 +115,11 @@ that the orchestrator reviews.
 - Python packages that are missing (for example REBOUND) go into a virtual environment
   of your worktree made with `uv venv` and `uv pip install`; nothing is installed
   system-wide.
+- The cards are shared with other users of the machine (`squeue` shows their jobs), so a
+  job may wait an hour or more. Keep at most two card jobs per owner queued or running,
+  never submit many jobs at once, and never wait idle for one: work on what needs no
+  card and say in your report which runs are pending. Chains resubmit one segment at a
+  time, which shares the queue fairly.
 - 144 cores are shared by all sessions: at most 16 at a time per session; set
   `OMP_NUM_THREADS` and thread counts of numerical libraries explicitly.
 - Never `pkill -f`, `killall` or `kill $(pgrep -f ...)`: the pattern matches your own
