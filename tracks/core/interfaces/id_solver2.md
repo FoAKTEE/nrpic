@@ -156,8 +156,77 @@ stated. All numbers [VERIFIED] in the runs named.
 
 ## 6. Limits and what a track must know
 
-@LIMITS@
+**Before use** (in addition to `id_solver.md` section 9, which stays valid):
+
+- **Judge data in the matter region, never over the whole mesh.** The outflow faces of
+  Z4c dominate whole-mesh norms of |H| and |M| within a few steps whatever the data
+  (first pass, test F; here B (g): the face layer has the same mean |H| at t = 2 in all
+  four data sets of one resolution). Use region norms (interior, shell; the script
+  `test_b.py`, `region_stats`, shows how) or the solver's record.
+- **M_psi of the far-field line is not the ADM mass** of Bowen-York data (their r^-4
+  source outside the sphere of the moments is missing; P1) nor of a table of format 2
+  (its Painleve-Gullstrand exterior carries the mass in K). P_ADM and J_ADM of the line
+  are exact sums of the deposit and the punctures inside that sphere.
+- **Vector part on refined meshes**: with `id_vector_residual = code` the monitor of
+  the momentum constraint stalls at the level boundaries (C: refined torus max|M| 2.0e-2
+  after the solve against 2.6e-4 on the uniform mesh; refined ball 2.6e-4 against
+  2.6e-6), because L W is formed with second-order differences on each level and the
+  monitor differentiates K_ij across prolongated ghost cells. Away from the boundaries
+  the vector part solves as on a uniform mesh (interior mean of |M| the same), and the
+  evolution of the refined Zel'dovich ball matches the uniform run to 1 per cent (C, Z).
+  The scalar part is not affected.
+- **Punctures**: @PUNC@
+- **Large tori**: on a box of many Hubble lengths (G: L H = 100) the Poisson
+  preconditioner of the Newton step is poor (sigma/k_min^2 of order 1e3); the inner
+  solve uses all `id_lin_maxit` = 50 steps in about half of the Newton steps, and the
+  Newton iteration still converges in about 10 steps (G).
+- **Cost** (processor, one core): moving Gaussian at 64 cells with the far field about
+  as the first pass; Zel'dovich ball at 64 cells with both parts in mode code 400 s
+  (44 outer iterations), at 128 cells @COST128@; CMC peak at 64^3 115 to 150 s on two
+  cores.
+
+**Not done or not tested**:
+1. MPI (single rank, as the particle module); adaptive refinement beyond the level
+   structure at t = 0 (the solve runs once, on the mesh as it is at the start).
+2. A fourth-order L W for the vector part on refined meshes (would lower the stall at
+   level boundaries by about (k dx)^2); a far field for meshes with some periodic and
+   some open faces (the plain fill is used there).
+3. Trial metrics that are not conformally flat (fatal error); a field format with a
+   conformal metric (Track A's request 5, second half).
+4. Lapse and shift stay those of the problem generator (a lapse that depends on psi
+   refers to the trial psi).
+5. Puncture combinations not run: punctures with a table of format 2, with `nrpic_cosmo`;
+   spinning punctures with matter.
+6. Card executable: @CARD@
 
 ## 7. Answers to the requests
 
-@ANSWERS@
+**Track A, `20261115T183720Z__to-core__refined-level-constraint-solve.md`** ("whether the
+id-solver handles static refinement, and a date for the nested lattice"): yes, from this
+branch. The solve runs on the level structure of the run (static refinement), with the
+deposit of the module on every level, and in mode code the residual driven to zero is
+the run's own Hamiltonian monitor after the Z4c exchange across levels: at t = 0 the
+monitor is at 1e-11 to 1e-9 on every level, level boundaries included (test C: Gaussian
+on one and two levels, torus with a refined cube; Track A measured 0.077 to 0.18 with data
+interpolated onto refined blocks). Nested lattice: `problems/idsolve/make_ic.py wave
+--nest x0 x1` writes a lattice twice finer inside a cube (used in C, `t_smr`); the same
+in `cosmo/ic/make_field.py` is not done here (not in this package's paths). The momentum
+part on refined meshes has the limit of section 6.
+
+**Track A, `20261115T183719Z__to-core__phase1-generator-cmc.md`** ("whether core/id-solver
+will take this, and a date"): the machinery is in place and tested on Track A's own data
+(test G): with K = -3H held fixed, the trial psi_GE, Ahat_GE from a field file
+(`nrpic_cosmo id = file`, format NRCOSMO1) and particles carrying E and J, the code's
+Newton iteration (variable-coefficient Jacobian sigma, conjugate gradients with the
+multigrid preconditioner) converges from psi = 1 for mu = 0.03 to 0.7 at the paper's
+start eps_i = 0.2 and returns psi_GE to c = 1e-7 to 6e-7 at 64^3; the vector part removes
+the remaining momentum residual (max|M| 1.6e-7 -> 1.7e-9). Acceptance (a) of DESIGN.md 2.3
+is met at 64^3 for mu = 0.03 and 0.5 (c far below O(eps^4) = 1.6e-3); (b) the monitor at
+t = 0 is at 3e-9 or below. Not provided by core: the generator of the gradient-expansion
+fields and particles (Track A's `ge_fields`; `tracks/core/analysis/idsolve2/test_g.py`
+shows a complete use, with one particle per cell at the cell centres), a field format
+with a non-conformally-flat metric, and acceptance (c) (an evolution: Track A's).
+
+**Track F (three punctures) and Track D (dressed punctures)**: punctures of `nrpic_cf`
+enter the solve as psi_s + u (section 1, item 4); P1 to P5 show what is verified.
+@PANSWER@
