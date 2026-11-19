@@ -1,0 +1,119 @@
+{
+ "run_id": "kb-20261119-142015-7620bd4",
+ "track": "kb",
+ "gate": "KB-G1",
+ "package": "tracks/kb/stage/KB-G1",
+ "purpose": "KB-G1 verifier: P (20 papers: equations, sections, bibliography vs own TeX count), C (10 fulltext claims at their locators; excerpts for manual reading), K (10 parameter rows, recall, staleness vs main), Q (equation numbers and locators cited in FIRST_QUESTIONS.md)",
+ "kind": "scouting",
+ "command": [
+  ".venv/bin/python",
+  "-I",
+  "tracks/kb/stage/KB-G1/verifier/run_all.py",
+  "/data/haiyangw/nrpic/scratch/kb/kb-20261119-142015-7620bd4"
+ ],
+ "cwd": "/data/haiyangw/nrpic/wt/kb",
+ "env_vars": {
+  "OMP_NUM_THREADS": "1",
+  "OPENBLAS_NUM_THREADS": "1",
+  "NRPIC_RUN_DIR": "/data/haiyangw/nrpic/scratch/kb/kb-20261119-142015-7620bd4"
+ },
+ "git": {
+  "sha": "7620bd44b4ff5a9135e3ab96df750f4eb9f0d82f",
+  "branch": "kb/main",
+  "dirty": true,
+  "dirty_note": "package and inputs clean at the run; untracked/modified files of other kb helpers in kb/kbtool/ and tracks/kb/ (not used by this run)",
+  "merge_base_main": "71acd0c330b65dad3a9cac337c6f78e8a1bacc44"
+ },
+ "inputs": [
+  {
+   "path": "/data/haiyangw/nrpic/kb-data/db/kb-20261115-a848a06.sqlite",
+   "sha256": "a848a06b1d95654e15a4cb23df991d76b5f25fb795ae3b8e483ec9fe1c9d4b00",
+   "role": "knowledge-base snapshot, opened read-only (db/current)"
+  },
+  {
+   "path": "tracks/kb/stage/KB-G1/verifier/check_answers.py",
+   "sha256": "a13338c3341b725589f8e54b2cddbd183f8d7dce0edf9d95b2154c3ebf2b2d01",
+   "role": "verifier code / verdict table"
+  },
+  {
+   "path": "tracks/kb/stage/KB-G1/verifier/check_claims.py",
+   "sha256": "379cb18bfd17b968509f52b42a904a91077ac7baf84e1f9af3fee72b2fada0fa",
+   "role": "verifier code / verdict table"
+  },
+  {
+   "path": "tracks/kb/stage/KB-G1/verifier/check_papers.py",
+   "sha256": "0e7c8f3abbba5e1d8fb7a678f5dd91f598edf133e6e681f3f52c5479db29aa3b",
+   "role": "verifier code / verdict table"
+  },
+  {
+   "path": "tracks/kb/stage/KB-G1/verifier/check_params.py",
+   "sha256": "0105e289c62aee81bd0e1bffe9245e1b40d02951f428bbac9a97e2e2e2a95115",
+   "role": "verifier code / verdict table"
+  },
+  {
+   "path": "tracks/kb/stage/KB-G1/verifier/fig_papers.py",
+   "sha256": "750c869d7ca09ab1bedb4d8c92dacf1ae15950e3470221745fd3752a0754e466",
+   "role": "verifier code / verdict table"
+  },
+  {
+   "path": "tracks/kb/stage/KB-G1/verifier/fig_summary.py",
+   "sha256": "e5d3da26a266f4f1b75016314393dc7beea08358aadab9adf4e1e833c7bb06d1",
+   "role": "verifier code / verdict table"
+  },
+  {
+   "path": "tracks/kb/stage/KB-G1/verifier/figstyle.py",
+   "sha256": "5d3b78ad8c2c02e428b675e3d7e35a32cbc8f053d1aeedd4fde66f27da55676e",
+   "role": "verifier code / verdict table"
+  },
+  {
+   "path": "tracks/kb/stage/KB-G1/verifier/run_all.py",
+   "sha256": "9413358550e7d0651468fe585ddf9018703a66e9b9590e253a9e605e091b61c1",
+   "role": "verifier code / verdict table"
+  },
+  {
+   "path": "tracks/kb/stage/KB-G1/verifier/texcount.py",
+   "sha256": "1ceb5a8b821f246f84e9f1b88291a5a4729547d79c843a76292f95f2cb78c32d",
+   "role": "verifier code / verdict table"
+  },
+  {
+   "path": "tracks/kb/stage/KB-G1/verifier/verdicts.tsv",
+   "sha256": "bafbb78a1b2054db3a054f5c1b25b82150ea766de92ea716d83610eca808559d",
+   "role": "verifier code / verdict table"
+  },
+  {
+   "path": "kb-data/raw/arxiv/<id>/<version>/src (24 papers: the 20 sampled, the claims' papers, the 4 papers of the first questions)",
+   "sha256": null,
+   "role": "raw TeX sources, read as data; checksums in kb-data/manifests/SHA256SUMS"
+  },
+  {
+   "path": "kb-data/raw/github/IAS-Astrophysics__athenak",
+   "commit": "c5a0d7f9155a70149931bf0be5a4ffb673f2532a",
+   "role": "upstream AthenaK, read as data"
+  },
+  {
+   "path": "git objects of this repository",
+   "commits": [
+    "a1c223753952674ee38819dc45043591dddc3022 (indexed)",
+    "27b2ced9be0f020a4206d89e3cc982ada5c4367c (main)"
+   ],
+   "role": "parameter-index check"
+  }
+ ],
+ "resources": {
+  "nodes": 1,
+  "cores": 1,
+  "gpus": 0,
+  "card_hours": 0.0,
+  "walltime_s": 5.6
+ },
+ "outputs": {
+  "dir": "scratch/kb/kb-20261119-142015-7620bd4",
+  "sha256sums": "sha256sums.txt"
+ },
+ "status": "completed",
+ "exit_code": 0,
+ "started": "2026-11-19T14:20:15Z",
+ "ended": "2026-11-19T14:20:21Z",
+ "parents": [],
+ "notes": "Hand-written manifest (last resort, decision 0016 item 3 and CLAUDE.md rule 4): harness/bin/nrpic-run submit --package tracks/kb/stage/KB-G1 was refused twice (14:16 and 14:19 UTC) because other kb helpers had uncommitted shared code in kb/kbtool/ (pdf_reader.py, meta_*.py) in this shared worktree; the run itself does not use that code. Deterministic: a development run of the same scripts in scratch/kb/tmp/verifier_dev gave identical tables."
+}

@@ -470,6 +470,13 @@ BIBITEM_RE = re.compile(r"\\bibitem(?![A-Za-z])")
 ENTRY_RE = re.compile(r"\\entry\{")
 
 
+def body_pre_hint(srcdir, main):
+    """Preamble of the main file (definitions live there)."""
+    t = clean(read_text(main))
+    a = t.find("\\begin{document}")
+    return t[:a] if a > 0 else ""
+
+
 def bib_counts(srcdir, main, body):
     res = {}
     # inline thebibliography (also catches an \input-ed .bbl)
@@ -529,11 +536,28 @@ def bib_counts(srcdir, main, body):
         res["bib_entries_total"] = len(keys)
         res["bib"] = len(keys) if nocite_all else len(keys & cited)
     res["cited_keys"] = len(cited)
-    # AASTeX reference list: \begin{references} \reference{} ... \end{references}
+    # reference lists outside thebibliography: AASTeX \reference items and REVTeX-3
+    # \bibitem items inside \begin{references} ... \end{references}
     n_aas = 0
+    n_refenv = 0
     for m in re.finditer(r"\\begin\{references\}(.*?)\\end\{references\}", body, re.S):
         n_aas += len(re.findall(r"\\reference(?![A-Za-z])", m.group(1)))
+        n_refenv += len(BIBITEM_RE.findall(m.group(1)))
     res["aastex_references"] = n_aas
+    res["references_env_bibitem"] = n_refenv
+    # macros defined as \bibitem (\def\bi{\bibitem}, \newcommand{\bib}[1]{\bibitem{#1}})
+    al = set(m.group(1) for m in re.finditer(
+        r"\\(?:def|(?:re)?newcommand\*?)\s*\{?\\([A-Za-z]+)\}?\s*(?:\[\d\])?\s*\{\s*\\bibitem(?:\{#1\})?\s*\}",
+        body_pre_hint(srcdir, main) + body))
+    n_alias = 0
+    if al:
+        pat = re.compile(r"\\(" + "|".join(map(re.escape, sorted(al))) + r")(?![A-Za-z])")
+        for m in re.finditer(r"\\begin\{thebibliography\}(.*?)\\end\{thebibliography\}", body, re.S):
+            n_alias += len(pat.findall(m.group(1)))
+    res["bibitem_alias"] = n_alias
+    res["bibitem_alias_names"] = sorted(al)
+    if chosen:
+        res["bbl_harvarditem"] = len(re.findall(r"\\harvarditem(?![A-Za-z])", strip_comments(read_text(chosen))))
     # plain TeX: lines that start with \ref after the last "References" heading
     k = body.rfind("References")
     res["plain_ref_items"] = (len(re.findall(r"(?m)^\s*\\ref(?![A-Za-z])", body[k:])) if k >= 0 else 0)
