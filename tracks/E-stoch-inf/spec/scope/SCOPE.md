@@ -170,6 +170,11 @@ Test ids L0-L9: `../../codebase/DESIGN_REVIEW.md` 8.1; A1-A8: section 4 above; U
 
 ## 6. What core's implementation already shows (`core/scalar-field` 836ac86)
 
+[Record of 2026-11-15, kept as written. Since then: release core-v0.3 (the field merged,
+the window increment formed without cancellation) and core's tested branch `core/scalar-2`
+(initial slice at N*, constraint record, NRSFDMP2 dumps), which the slow-roll ladder used;
+see section 8 and `../../ladder/README.md`.]
+
 Read in the source (`athenak/src/scalar_field/scalar_field_noise.cpp`) [VERIFIED by
 reading]: the kicks of SPEC 2.2 in the sign-safe form, d_t Pi += alpha_b (Pi_b/H) I_R,
 d_t Khat += -alpha_b eps1 I_R, d_t At_ij += alpha_b eps1 (delta_ij I_R/3 - T_ij); the

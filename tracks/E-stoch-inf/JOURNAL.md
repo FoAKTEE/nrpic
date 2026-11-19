@@ -249,3 +249,37 @@ artefacts, then the stage packages G0 and G1. Predictions written before each ch
   48; V1 91, V2 288, V3 2, V4 37, V5 3, V8 9).
 - A12 from the registered checksums: U4 dumps and mode files equal U2's on processors and on
   the card (sha256sums.txt of E-20261115-170727-d15df12, -170645-3b21217, -180526-6b68c33).
+
+### Did / found / evidence / changed my mind about / open
+
+Did: merged main (decision 0016); closed the verifier's stranded run E-20261115-174600-81652ff;
+reviewed the helpers of waves 2 and 2b from their artefacts (`stage/REVIEW-wave2.md`): reruns of
+the ladder's analyses, of the analysis package's tests and of the verifier's computations, my
+own code on the SR ladder, the noise reference fixed and revalidated, every figure relied on
+looked at; corrected SPEC (P-e, the P2 equation name, dead pointer, cost), SCOPE (cost, A2
+wording, locator key FKTT, section 4b with the proposed A4'/A5', note on section 6), RISKS
+(R15-R17); G0 checklist re-collected and every item PASS or NA (REVIEW.md, VERIFY, OPEN,
+EVIDENCE 5); G1 package written (CHECKLIST, STATUS with each criterion met or not, EVIDENCE,
+OPEN, REVIEW, the lead's check script, figure and results); seven outbox messages; seven
+inbox messages acknowledged.
+
+Found: every number of the ladder that I reran or recomputed holds (sections 1-2 of the
+review); G1's spectrum and freezing criteria are met at 256^3 in P1's set-up; the
+constraints converge but the owner's A4 fails in its strict form in P1's set-up, and A4's
+"M/[M] second order" was never consistent with P1:540-541. The Markov-tanh A1 failure of wave 1
+was the reference's, now fixed. The P2 equation we called "eq. (17)" is the 23rd numbered
+environment (kb found it).
+
+Evidence: runs E-20261119-150238-b81e33f, -150842-ca70d37, -150346-a513bc8, -150541-3210cd6;
+stopped -145853-ef835c2; figures looked at: `stage/G1/fig/fig_lead_check.png`, the ladder's
+eight, the note's seven, `analysis/fig/fig_t2_extraction.png`, `fig_plane_constraint_ratios.png`,
+the U6 validator figure.
+
+Changed my mind about: the cost margin (now measured, 0.503 card-hours per SR realisation, and
+the Courant factor justified by A6, so the verifier's theta = 0.025 case is moot); A4 as written
+(it was ill-posed for M and too strict for P1's own resolution).
+
+Open: the orchestrator's ruling on A4'/A5'; a G1 verifier; the G1 schematics and note
+sections; core's release of the scalar-2 set-up; the USR package of wave 3a (`usr/`, not
+reviewed here, run E-20261119-145835-67cde45 in flight); A6 at 64^3 on a card, L5, L9, a
+second seed. Card-hours used this session: none (1.43 of 10 in all).

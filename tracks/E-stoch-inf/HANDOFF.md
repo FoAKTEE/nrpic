@@ -1,58 +1,54 @@
 # HANDOFF of E-stoch-inf
 
-State in three lines: Track E (stochastic inflation in NR, S11) has submitted its G0
-package (feasibility gate) and recommends to continue; the group's decision is pending.
-Core has written the scalar field with the stochastic hook on `core/scalar-field`
-(836ac86); its noise generator passed Track E's validation on processors. G1 (slow-roll
-reproduction) waits for core's initial slice at N*, diagnostics and a card build.
+State in three lines: Track E (stochastic inflation in NR, S11) has a complete G0 package
+(every item PASS or NA, verifier report present) and is working on G1. The slow-roll (SR)
+case of arXiv:2512.14649 runs in this AthenaK with core's tested-branch executable
+`core/scalar-2` (scouting) and passes A1-A3, A5-A7 up to 256^3; G1 is not met because the
+owner's A4 fails in its strict form in P1's set-up (ruling asked of orch) and four G1 products
+are missing (two schematics, the note's G1 sections, a G1 verifier).
 
-Run next (after core delivers; check with `git log --oneline core/scalar-field -5` and the
-replies to `tracks/E-stoch-inf/outbox/20261115T1410Z__to-core__*.md`):
+Run next: cd /data/haiyangw/nrpic/wt/E-stoch-inf && git merge --no-edit main && harness/bin/nrpic-ctx inbox --show
 
-    cd /data/haiyangw/nrpic/wt/E-stoch-inf && git merge --no-edit main && \
-    harness/bin/nrpic-ctx inbox --show
+Then, depending on the answers:
+- orch ruled on A4'/A5' (`outbox/20261119T151727Z__to-orch__a4-a5-rewording.md`): update
+  `spec/scope/SCOPE.md` section 4/4b and `stage/G1/STATUS.md`, `CHECKLIST.md` item C6;
+  `harness/bin/nrpic-stage collect E-stoch-inf G1`, `verify`, `report`.
+- A verifier of the G1 material is to be run (request `20261119T151728Z__to-orch__g1-verifier`):
+  give it `stage/G1/EVIDENCE.md`, not the conclusions.
+- G1 products: updated `note/scripts/schem_architecture.py` (most "new" boxes now exist) and a
+  data-flow schematic (paperfig.py), G1 sections of `note/main.tex` with one script per data
+  figure under `note/scripts/` (data from the registered ladder runs), checker with
+  `--compile`; then `nrpic-stage verify E-stoch-inf G1`.
+- Review the wave-3a package `usr/` (USR case toward G2; its runs E-20261119-143905-f2bcde3,
+  -144116-8aa7c22, -145835-67cde45; journal `usr/JOURNAL.md`), as this session reviewed the
+  others (`stage/REVIEW-wave2.md`).
 
-Then, for the noise only (no core change needed), to repeat the validation on a newer
-processor executable of core (replace EXE):
+Files to read first: `STATUS.md`; `stage/G1/STATUS.md` (each G1 criterion, met or not);
+`stage/G1/OPEN.md`; `stage/REVIEW-wave2.md`; `ladder/README.md` and `ladder/JOURNAL.md`
+entries 1, 8-11; `spec/scope/SCOPE.md` sections 4, 4b, 8; `RISKS.md`; `JOURNAL.md` (last
+entry).
 
-    harness/bin/nrpic-run submit --kind scouting --gate G1 --cores 8 --background \
-      --input tracks/E-stoch-inf/analysis/lead/inputs/u_base32.athinput --input EXE \
-      --purpose "noise unit test U1-U8 on core EXE" -- bash -c 'python3 \
-      tracks/E-stoch-inf/analysis/lead/u_runs.py --exe EXE --base \
-      tracks/E-stoch-inf/analysis/lead/inputs/u_base32.athinput --out "$NRPIC_RUN_DIR" \
-      --threads 1 --jobs 8 --u5-nmax2 36'
-
-(about 6 min; then `bash tracks/E-stoch-inf/analysis/lead/lu_validate.sh <rundir> <outdir>`
-inside a registered run; `nrpic-run finish <run_id>` closes a background run).
-
-Files to read first: `STATUS.md`; `spec/scope/SCOPE.md` (owner's scope v1: parameter
-ranges, the owner's decisions and thresholds A1-A8, test plan, recommendation, timeline);
-`stage/G0/OPEN.md`; `stage/G1/STATUS.md`; `spec/SPEC.md` (equations, errata, section 10
-requests); `codebase/DESIGN_REVIEW.md` sections 5, 8 (kicks, test ladder L0-L9);
-`noise/NOISE_SPEC.md` sections 9-10; `langevin/README.md`; `JOURNAL.md` (last entry).
-
-Decisions pending: the group's G0 decision (continue / shrink / downgrade); confirmation
-of the owner's choices in SCOPE 4 (Courant 0.25, backreaction level 0, thresholds,
-downgrade at 5 card-hours per 256^3 realisation).
+Decisions pending: A4'/A5' (orch); a G1 verifier (orch); release of the scalar-2 set-up
+(core, `outbox/20261119T151729Z__to-core__release-scalar2-sr-setup.md`).
 
 Traps:
-- The processor build of core is serial: 1.35e4 zone-cycles/s; 64^3 x 300 cycles costs
-  95 min per run. Use N = 32 on processors, cards for anything larger.
-- Core's executable lives in another worktree (`wt/core-scalar/.work/exe/`); use it read
-  only, record its sha256 (the run manifest does), and never build in another worktree.
-- `nrpic-run local` uses the worktree venv (`.venv`, made with `harness/bin/nrpic-env
-  create --no-kokkos`); system python3 has no numpy in that environment. Submit refuses a
-  dirty worktree: commit before every submit; background runs are closed with
-  `nrpic-run finish`.
-- Manifest statuses must be completed/failed/stopped, or `nrpic-run budget` crashes.
-- Run ids: `E-<stamp>-<commit>` from nrpic-run, `E-stoch-inf-<stamp>-<commit>` from the
-  helpers' registrars; both are valid records.
-- The validator compares U5a/U5b with their own input files (`--res-lo-input`,
-  `--res-hi-input`); with U1's input it stops at the Nyquist check.
-- The tool guard refuses files named REPORT.md for subagents; the G0 scoping lives in
-  `spec/scope/SCOPE.md`.
-- The langevin scripts write their JSON and figures into `langevin/results/` and
-  `langevin/fig/` as well as into the run directory: a rerun with other arguments
-  overwrites the committed reference files (it happened in run E-20261115-140502-f70b223;
-  restored with `git checkout`). Check `git status` after any langevin run.
-- Never read the brief whole; line ranges: S11 445-465, track sheet 785-802, M11 544-547.
+- The executables of the SR ladder are core's published branch executables
+  `/data/haiyangw/nrpic/scratch/core/exe/core_scalar-2/athena_{cpu,gpu}` (a58e95b); the
+  release core-v0.3 (`.work/build_*_v03`) has no `id = stochastic`, no constraint record and no
+  NRSFDMP2 dump.
+- Cold 128^3-256^3 dumps read through the ladder's numpy memory map crawl (3.6 MB/s against
+  124 MB/s sequential): analyse right after the card job, or read sequentially
+  (`stage/G1/scripts/lead_check.py` reads per variable with seek + fromfile). The full rerun
+  E-20261119-145853-ef835c2 was stopped for this reason.
+- Pairs of runs with different `tlim` compare different times at the last dump (t = 4.500
+  against 4.504-4.516); the ladder's verdicts drop those dumps, `fig_a4_paper.png` still shows
+  the spike.
+- `nrpic-run` refuses a submit above 16 busy cores of the owner: the wave-3a `usr/` package
+  shares this worktree and its runs count.
+- Commit path-limited (`git commit -- <paths>`): other helpers (usr/) commit in this worktree
+  at the same time; never commit their uncommitted files.
+- The langevin scripts write into `langevin/results/` and `langevin/fig/` as well as the run
+  directory; check `git status` after any langevin run.
+- `$NRPIC_RUN_DIR` in a command: single quotes or inside `bash -c '...'` (RULES.md).
+- Never read the brief whole; line ranges: S11 445-465, track sheet 785-802, gates 674-686,
+  context protocol 957-1004, M11 544-547.
