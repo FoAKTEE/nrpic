@@ -125,7 +125,7 @@ load is about 130 on 144 cores, so a question takes about 2 minutes for all vari
 variant lifts the within-paper misses q06, q07, q16, q17; w2-noexpand lifts q11. Not yet an
 outcome; the run continues.
 
-## R4b. Why the windows do not lift the within-paper misses (prediction 06:50 PST)
+## R4b. Why the windows do not lift the within-paper misses (prediction 06:47 PST)
 
 `scripts/diag_rerank.py` on q06, q07, q16, q17, q20 (config w2), 2 threads beside the R4 run.
 Prediction: for q06 and q07 the right paper (2611.12831) is not among the three expanded
