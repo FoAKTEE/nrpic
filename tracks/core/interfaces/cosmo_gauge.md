@@ -53,7 +53,7 @@ As implemented (lines 712-729):
 | `shift_eta` | 2.0 | damping eta_0: constant, or the far value of the profile below | 2.0; 0 cosmology |
 | `shift_eta_profile` (wave 2) | absent = false | eta(x) = eta_0 [1 + sum_A (M_ref/m_A - 1)/(1 + abs(x - x_A)^2/w_A^2)] over the compact-object trackers A with `co_<A>_mass` > 0 (at most 8): the paper's profile (main.tex L388-397). eta tends to eta_0 M_ref/m_A at black hole A and to eta_0 far away | section 7 |
 | `shift_eta_mref` (wave 2) | absent = 1.0 | M_ref | section 7 |
-| `shift_eta_width` (wave 2) | absent = 2.0 | w_A in units of the smallest tracker mass (the paper's 4 m_min^2 is width 2) | section 7 (only 2 is tested) |
+| `shift_eta_width` (wave 2) | absent = 2.0 | w_A in units of the smallest tracker mass (the paper's 4 m_min^2 is width 2) | section 7 (width 2 on one hole and on a pair; 4 and 8 on one hole) |
 | `shift_eta_width_local` (wave 2) | absent = false | true: w_A = `shift_eta_width` m_A | not tested |
 | `shift_advect` | 1.0 | advection | 1; 0 cosmology |
 | `shift_alpha2Gamma` | 0.0 | the paper's form `alpha^2 mu_S Gamma^i` (L376) | 0 |
@@ -203,31 +203,51 @@ other than 1.
 over the trackers with `co_<A>_mass` > 0 (written by `puncture_setup`), positions of the
 current stage; the main loop subtracts shift_eta beta^i, the extra loop
 (eta(x) - shift_eta) beta^i. The paper's profile (main.tex L388-397, width 2); its factor
-on kappa_1 is not implemented. Tests [VERIFIED, journal entry 5; processors,
-half-width 32, so absolute speeds are those of a small mesh]:
+on kappa_1 is not implemented. Tests [VERIFIED, journal entries 5 and 8; processors on
+a small mesh (half-width 32) and a card on the full mesh (half-width 64): the tracker
+speeds of E1 agree to four digits between the two]:
 
 | test | eta at the hole(s) | tracker speed relative to the hole's own-units reference (eta m = 2) | horizon mass |
 |---|---|---|---|
-| E1 one hole, m = 1, t = 4.9 m | constant eta m = 20 / profile eta_0 = 20, M_ref = 0.1 | 0.22 / 0.55 | equal to 1e-5 in all runs |
-| E1, same | constant eta m = 0.2 / profile eta_0 = 0.2, M_ref = 10 | 1.97 / 1.27 | |
-| E2 pair m = 1 and 0.25, t = 2 M | constant 2 / constant 8 / profile 2 and 8 | heavy: 1 / 0.43 / 0.997; light (reference eta = 8): 1.46 / 1 / 1.20 | both found in every search, equal to 5e-4 |
+| E1 one hole, m = 1, t = 4.9 m | constant eta m = 20 / profile to 2 with width 2 / width 8 | 0.22 / 0.55 / 0.86 | equal to 1e-5 in all runs |
+| E1, same | constant eta m = 0.2 / profile to 2 with width 2 / width 4 / width 8 | 1.97 / 1.27 / 1.04 / 1.02 | equal to 1e-5 in all runs |
+| E2 pair m = 1 and 0.25, t = 2 M (processors) | constant 2 / constant 8 / profile 2 and 8, width 2 | heavy: 1 / 0.43 / 0.997; light (reference eta = 8): 1.46 / 1 / 1.20 | both found in every search, equal to 5e-4 |
+| E2, t = 4 M (card) | constant 2 / constant 8 / profile 2 and 8, width 2 | heavy: 1 / 0.33 / 0.992; light: 1.36 / 1 / 1.22 | both found in all 32 searches, equal to 2e-4 |
 
 Reading [JUDGEMENT]: with the width of the paper the profile leaves the heavy hole
-exactly as with its own eta and takes the light hole about half of the way (in the
-logarithm of the speed) from the constant-eta value to that of its own units, because
-the shift that carries a puncture builds up over a region of several m_A in which the
-profile has already relaxed towards shift_eta. Wider profiles (width 4 and 8): __WIDTH__.
-None of the runs shows a loss of a horizon, a growth of the constraint norms or a
-change of a horizon mass; the speeds compared are those of the first few m, before
-the shift has settled.
+exactly as with its own eta and takes the light hole part of the way (in the logarithm
+of the speed: 52 per cent at t = 2 M, 35 per cent at t = 4 M) from the constant-eta
+value to that of its own units, because the shift that carries a puncture builds up
+over a region of several m_A in which the profile has already relaxed towards
+shift_eta. The width is what limits it [VERIFIED on one hole, E1]: with
+`shift_eta_width` = 4 and 8 the under-damped hole follows its own-units reference to 4
+and 2 per cent over the first 5 m, and width 8 brings the over-damped hole from 0.55 to
+0.86. On a pair the wider profiles have no result yet: a card job with widths 4 and 8
+on the pair of E2 (run core-20261119-143517-ec2f4fc, prediction in journal entry 8)
+was still queued when this package closed.
+None of the runs shows a loss of a horizon or a change of a horizon mass; the
+constraint norm at the end is that of the constant-eta runs (E2 has one early spike at
+t = 0.5 M in every run, 2.8 times larger with the profile). The speeds compared are
+those of the first few m, before the shift has settled.
 
 Answer to Track F (request 20261115T1507Z): use `shift_eta = 2/M` with
-`shift_eta_profile = true`, `shift_eta_mref = M` (the heavy mass): the heavy hole keeps
-eta M = 2 and each member gets eta m = 2 at its puncture (input:
-`problems/puncture/by_unequal.athinput`). Constant eta = 2/M for q <= 10 [JUDGEMENT]:
-acceptable for the horizon masses and the constraints (E1: eta m = 0.2 changes neither),
-not for the members' coordinate tracks in the first tens of m (twice as fast as with
-eta m = 2 in E1); the effect on a Hills passage is not tested here (Track F's R4).
+`shift_eta_profile = true`, `shift_eta_mref = M` (the heavy mass) and
+`shift_eta_width = 4` [JUDGEMENT, from E1 on one hole]: the heavy hole keeps eta M = 2
+and each member gets eta m = 2 at its puncture (input:
+`problems/puncture/by_unequal.athinput`, which has width 2; add
+`shift_eta_width = 4.0` to its `<z4c>` block). A wide profile also raises the damping
+at a neighbour within a few widths: at separation D a member of mass m adds
+(M_ref/m - 1)/(1 + D^2/(w m)^2) to eta/shift_eta there (0.18 at the heavy hole of the
+pair of E2, D = 8 M, width 8). For Track F's input `hills_q10_m8.athinput` (members
+m = 0.05 M at a separation of about 3 M, the binary's semi-major axis; periapsis 8 M from
+the heavy hole) width 4 raises eta at
+a member by 0.4 per cent through the other member and at the heavy hole by 2.4 per cent
+through both members at periapsis (width 8: 1.7 and 9.5 per cent). Constant eta = 2/M
+for q <= 10 [JUDGEMENT]: acceptable for the horizon masses and the constraints (E1:
+eta m = 0.2 changes neither), not for the members' coordinate tracks in the first tens
+of m (twice as fast as with eta m = 2 in E1); the effect on a Hills passage is not
+tested here (Track F's R4). Untested: `shift_eta_width_local`, more than two holes, runs
+longer than 6 m.
 
 ### 7.3 A puncture inside expanding dust (Track D)
 
