@@ -441,3 +441,19 @@ Outcome of entry 6 (run D-20261119-142929-bb375ff, `results/es_extra.json`; figu
   of ES-1 oscillates with a period of about 7-8 M and an amplitude of about 5e-5, that of
   V-1 with about 2e-5. (c) The mesh maximum of the lapse reaches 2.13 (ES-1) and 1.95 (V-1)
   after t = 10 M.
+
+## Entry 7 (2026-11-19): inward features in the lapse at the probes, prediction
+
+E2 could not see a front because the slices are 10-25 M apart. The probes (x = 1, 4, 20,
+36, 46, 56, 80, 152 M on the x axis) are written every 0.3125 M. `tools/probe_fronts.py`
+forms d alpha/dt at each probe, removes a 20 M running mean, and finds for each pair of
+neighbouring probes the lag that maximises the cross-correlation over t = 50-200 M
+(positive lag: the outer probe sees the feature first, i.e. inward motion). Written before
+the script was first run.
+Prediction [JUDGEMENT, weak]: if the outflow boundary drives the late drift, the detrended
+lapse rate carries an inward-moving feature: positive lags between 152 -> 80 -> 56 M with
+apparent speeds between 0.8 and 2 (light or gauge speed with alpha ~ 1.2-1.4), in both
+ES-1 and V-1, and the waterfall figure shows a feature reaching x = 4 M between t = 130 and
+175 M. Refuted if the lags on the outer pairs are negative or the correlations below 0.3
+(no coherent inward feature); then the boundary is not the visible carrier, and the slow
+approach of the slicing (or the finder) stays the candidate.
