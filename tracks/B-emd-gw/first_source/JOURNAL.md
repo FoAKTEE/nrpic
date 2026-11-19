@@ -595,3 +595,47 @@ Caveat [JUDGEMENT]: the code's slicing is Newtonian only for the growing mode (P
 mode without peculiar velocity the slicing condition keeps alpha + psi-part fixed at its
 initial value, not Phi = Psi, so slicing-gauge pieces of the cross term are not in this
 prediction; neither is the momentum-constraint violation of the initial data.
+
+## First outcomes of batch A (job 4637, run B-20261119-142833-19edd82, still running) and P16
+
+P12c (run-to-run floor), analyses B-20261119-155418-80d45af (e1_rep) and comparisons
+B-20261119-160535-6714ac1, B-20261119-154528-9306cb1 (`conv_eps1.png` looked at): CONFIRMED
+with a wide margin. The rerun of the eps = 1 baseline on the requests-b card executable
+reproduces the wave-2 release run: c_+(K1) from the double-precision dumps (dbin against the
+wave-2 restart files, same cycles) agrees to 9.5e-13 relative for a <= 40 and 4.7e-13 for
+80 <= a <= 140; from the single-precision dumps to 1.4e-10 and 2.4e-10 (isolated flips of a
+float32 rounding; most dumps identical). The atomic deposition of the card does not grow
+through shell crossing at this resolution, and the two executables give the same run. Any
+difference above ~1e-9 between runs of this round is physical or numerical, not noise of
+the card.
+
+P11, A = 0.3 (analysis B-20261119-160530-7bdcb45, comparison B-20261119-161523-b681b5f,
+`conv_null.png` looked at; A = 0.1 not yet analysed):
+- (a) CONFIRMED: largest TT mode 1.3e-7 to 6.0e-7 at every dump after the first, against
+  2.2e-16 in the plane-symmetric null.
+- (b') box modes CONFIRMED: |measured|/|predicted| at K1 0.93 to 1.33 (median 1.04), phase
+  difference 0.12 to 0.36 rad (median 0.23) for 3 <= a <= 20; at K2 0.74 to 1.00 (median
+  0.94), phase -0.08 to -0.03 rad. The second-order formula with the noise potential read from
+  the initial data, the 3/5 of a mode without peculiar velocity and the noise-noise term
+  predicts the spurious box-mode strain to 5-30 percent.
+- (e) CONFIRMED: |c(K1)| of the null over |c(K1)| of the eps = 0.1 scan run at the same time:
+  at most 1.5 percent for 2 <= a <= 20, 2.5 percent for 20-80, 3.1 percent for 80-140.
+- (d) REFUTED: rms TT of all modes is 3.9e-6 at a = 2.3, 2.8e-6 at a = 6-12, 5.2e-6 at a = 140,
+  12 to 20 times the second-order estimate 2.29e-7 (and 1.2e-5 at the first dump, tau = 0.1,
+  a = 1.10, with rms Lambda tilde A = 1.8e-4 there although it is 2.6e-8 in the initial data).
+  rho_kin/rho_grad 0.37-0.40 at tau = 0.1-0.2, 0.07 at a = 2.3, 0.01 at a = 140. So the bulk of
+  the TT field appears within the first 0.1 of conformal time and is not the second-order
+  response. Not foreseen.
+
+P16 (written before scripts/null_spectrum.py ran). Hypothesis: the rms TT of the jittered null
+is leakage of the grid-scale non-TT part of h through the flat projector: the evolution
+builds longitudinal tensors with sixth-order differences, whose Fourier symbol d(k) is not
+parallel to k near the mesh scale, so Lambda(k) of d_i d_j phi is not zero there; the error
+of the symbol grows as (k h)^6. If so: (i) at least 90 percent of the TT power lies at
+|k|L/2pi >= 16 (k h >= pi/2); (ii) per shell, P_TT/P_nonTT rises with k by at least 1e3 between
+|k|L/2pi = 4 and 24; (iii) the per-shell ratio is nearly the same for A = 0.3 and 0.1 (within a
+factor 2), since leakage is linear in the field; (iv) the plane-symmetric null has no such
+leakage (all its modes lie along x, where d(k) is parallel to k). Refuted if the TT power sits
+at low k or the per-shell ratio is flat in k: then the TT field is a genuine response to the
+noise (or the momentum-constraint violation of the initial data) and P11(d)'s estimate misses a
+first-order source.
