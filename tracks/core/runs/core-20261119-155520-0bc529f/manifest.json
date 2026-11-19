@@ -1,0 +1,22 @@
+{
+ "run_id": "core-20261119-155520-0bc529f",
+ "owner": "core",
+ "command": [
+  "bash",
+  "/data/haiyangw/nrpic/wt/core-omp/tracks/core/omp/regress_punc.sh"
+ ],
+ "cwd": "/data/haiyangw/nrpic/scratch/core/core-20261119-155520-0bc529f",
+ "commit": "0bc529f",
+ "source_modified_since_commit": false,
+ "inputs": [],
+ "output_directory": "/data/haiyangw/nrpic/scratch/core/core-20261119-155520-0bc529f",
+ "purpose": "omp P0 and P11 for the puncture case (deck fixed in 501ba4f): R vs S one thread; O3 at 4 and 16 threads (two runs each) vs one thread of O3. Registered by hand: nrpic-run refused (16 cores of core busy in other sessions)",
+ "kind": "scouting",
+ "tag": "omp-regress-punc",
+ "state": "running",
+ "status": "running",
+ "registered_by_hand": "nrpic-run refused (cores of owner core busy in other sessions)",
+ "cores": 17,
+ "card_hours": 0.0,
+ "started_utc": "2026-11-19T15:55:20Z"
+}
