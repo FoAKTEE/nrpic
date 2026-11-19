@@ -145,6 +145,7 @@ def main():
                     help="extra input parameter block/par=value (repeatable)")
     ap.add_argument("--ref", default=None, help="earlier run directory for a paired comparison")
     a = ap.parse_args()
+    a.deck = os.path.abspath(a.deck)   # the executable runs in the run directory
     des = json.load(open(a.design))["T2"]
     out = bl.outdir()
     thetas = a.only.split(",") if a.only else THETAS

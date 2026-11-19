@@ -129,6 +129,7 @@ def main():
                     help="extra input parameter block/par=value (repeatable)")
     ap.add_argument("--ref", default=None, help="earlier T0b run directory (byte comparison)")
     a = ap.parse_args()
+    a.deck = os.path.abspath(a.deck)   # the executable runs in the run directory
     des = json.load(open(a.design))["T2"]["0.1"]
     out = bl.outdir()
     jobs, runs = [], []

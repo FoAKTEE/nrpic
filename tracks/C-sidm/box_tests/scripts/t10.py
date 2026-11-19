@@ -54,6 +54,7 @@ def main():
     ap.add_argument("--set", action="append", default=[],
                     help="extra input parameter block/par=value (repeatable)")
     a = ap.parse_args()
+    a.deck = os.path.abspath(a.deck)   # the executable runs in the run directory
     out = bl.outdir()
     ic = os.path.join(out, "ic")
     meta = bl.make_box(ic, "twotemp", n=100000, theta=0.3, sigma=SIG, seed=7)
