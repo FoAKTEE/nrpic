@@ -292,6 +292,23 @@ def analyse_collapse(pre, name, man):
                 if ok.any():
                     e.append(np.abs(p["R"][ok] / p["Rex"][ok] - 1.0).max())
             rec["maxabs_eps_" + key] = float(np.max(e)) if e else None
+        # eps of each shell at the record where its exact areal radius first falls below
+        # x Schwarzschild radii of its mass (prediction L3: "off by more than 10 per cent at
+        # R = 2.5 M" for the surface shells): median and largest abs(eps), median signed eps
+        for lim, key in ((1.25, "at_2p5m"), (1.5, "at_3m"), (2.0, "at_4m")):
+            e = []
+            for p in plist:
+                below = np.nonzero(p["Rex"] <= lim * 2.0 * p["m"])[0]
+                if len(below) and below[0] > 0:
+                    i = below[0] - 1
+                    e.append(p["R"][i] / p["Rex"][i] - 1.0)
+            if e:
+                e = np.array(e)
+                rec["eps_" + key] = dict(n=int(len(e)), median_abs=float(np.median(np.abs(e))),
+                                         max_abs=float(np.abs(e).max()),
+                                         median_signed=float(np.median(e)),
+                                         n_above_0p1=int(np.sum(np.abs(e) > 0.1)),
+                                         n_above_0p03=int(np.sum(np.abs(e) > 0.03)))
         rec["tau_last_mean"] = float(np.mean([p["tau"][-1] for p in plist]))
         rec["R_last_over_2m_mean"] = float(np.mean([p["R"][-1] / (2.0 * p["m"]) for p in plist]))
         amax = [p["R"].max() / p["R0"] for p in plist]
@@ -310,7 +327,7 @@ def analyse_collapse(pre, name, man):
     ax[0, 0].plot([], [], color="k", ls="--", lw=0.8, label="exact cycloid")
     ax[0, 0].legend(fontsize=7)
     ax[0, 0].set_xlabel(r"proper time of the shell $\tau/M$", labelpad=-2)
-    ax[0, 0].set_ylabel(r"areal radius $R/M$ (median shell of each group)")
+    ax[0, 0].set_ylabel(r"areal radius $R/M$ (median shell)")
     ax[0, 1].set_xlabel(r"proper time $\tau/M$", labelpad=-2)
     ax[0, 1].set_ylabel(r"$|R/R_{\rm exact}-1|$ while $R_{\rm exact}>2.5\,m$")
     ax[0, 1].set_ylim(1e-6, 1.0)
@@ -343,9 +360,27 @@ def analyse_collapse(pre, name, man):
                               mass_max=float(mh.max()))
         last = th >= th[-1] - 5.0
         res["horizon"]["spread_last_5M"] = float(mh[last].max() - mh[last].min())
-        res["horizon"]["mass_t"] = {f"{tt:g}": float(np.interp(tt, th, mh))
-                                    for tt in (26.0, 28.0, 30.0, 35.0, 40.0, 45.0)
-                                    if th[0] <= tt <= th[-1]}
+        # searches that found no horizon write nan: first found, and masses of the found ones
+        ok = np.isfinite(mh) & (mh > 0.0)
+        res["horizon"]["found"] = int(ok.sum())
+        if ok.any():
+            thf, mhf = th[ok], mh[ok]
+            res["horizon"].update(t_found_first=float(thf[0]), mass_found_first=float(mhf[0]),
+                                  mass_found_min=float(mhf.min()), mass_found_max=float(mhf.max()),
+                                  missed_after_first=int(np.sum(~ok & (th >= thf[0]))))
+            res["horizon"]["mass_t"] = {f"{tt:g}": float(np.interp(tt, thf, mhf))
+                                        for tt in (20.0, 26.0, 28.0, 30.0, 35.0, 40.0, 44.5)
+                                        if thf[0] <= tt <= thf[-1]}
+            # particles left at the end against the horizon's mean coordinate radius then
+            snaps = sorted(glob.glob(os.path.join(out, "ball.part.*.bin")))
+            if snaps:
+                s = idlib.read_snapshot(snaps[-1])
+                rr = np.sqrt(np.sum(s["x"] ** 2, axis=1))
+                rh = float(np.interp(s["time"], thf, hz[ok, 10]))
+                res["horizon"]["left_at_end"] = dict(
+                    snapshot_time=s["time"], n=int(len(rr)),
+                    r_coord_max=float(rr.max()) if len(rr) else None,
+                    horizon_mean_coord_radius=rh, n_outside=int(np.sum(rr > rh)))
         # coordinate time at which the last particle has been removed, and the mass then
         gone = np.nonzero(hst[:, 2] == 0)[0]
         if len(gone) and th[-1] >= t[gone[0]]:
