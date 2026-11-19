@@ -639,3 +639,34 @@ leakage (all its modes lie along x, where d(k) is parallel to k). Refuted if the
 at low k or the per-shell ratio is flat in k: then the TT field is a genuine response to the
 noise (or the momentum-constraint violation of the initial data) and P11(d)'s estimate misses a
 first-order source.
+
+## Outcome of P16, run B-20261119-161734-a3a1366 (`null_spectrum.json`, `.png`, looked at)
+
+Shell spectra of Lambda h and of the traceless non-TT part (|k|L/2pi bins of width 1; the
+per-axis Nyquist number is 32 at 64^3) in the jittered nulls (A = 0.3: tau = 0.1 and a = 2.3,
+12, 140; A = 0.1: a = 2.3, 12), the plane-symmetric null and the eps = 0.1 signal (a = 12, 121).
+- (i) CONFIRMED for a <= 12, not at a = 140: the fraction of the TT power at |k|L/2pi >= 16 is
+  0.9997, 0.984, 0.949 (A = 0.3 at tau = 0.1, a = 2.3, 12), 0.985, 0.952 (A = 0.1), and 0.61 at
+  a = 140, where 19 percent lies below 8 (the low-k TT grows in the nonlinear stage). Beyond the
+  per-axis Nyquist number (>= 32): 72, 52, 20, 8 percent (A = 0.3). The signal run has 0.000 of
+  its TT power above 16 at a = 12 and 6e-5 at a = 121: its TT field is the resolved box modes.
+- (ii) PARTLY: P_TT/P_nonTT per shell rises from 5e-8 to 6e-7 at |k|L/2pi = 4 to 8e-5 to
+  1.6e-3 at 24, 6e-3 to 1.7e-2 at 31 and 4e-2 to 8e-2 at 40: by more than 1e3 between 4 and
+  24 at a = 2.3, 12, 140, by 125 only at tau = 0.1. The rise is not a clean power law (a
+  factor 22 from 16 to 24, where (k h)^12 would give 130).
+- (iii) CONFIRMED: at |k|L/2pi >= 16 the per-shell ratio is the same for A = 0.3 and 0.1 to
+  the printed digits (4.9e-5, 1.1e-3, 7.0e-3 against 4.9e-5, 1.1e-3, 7.2e-3 at 16, 24, 31,
+  a = 2.3; 4.6e-5, 8.4e-4 for both at a = 12); below 8 the ratios differ (there the TT part
+  is the second-order response of P11b').
+- (iv) CONFIRMED: the plane-symmetric null has ratios 3e-27 to 8e-13 below 32 (round-off).
+Reading [JUDGEMENT]: the rms TT of the jittered null (P11(d)) is a grid-scale field, linear in
+the noise, at a fixed fraction of the grid-scale non-TT part in each shell, appearing within
+the first 0.1 of conformal time together with a non-TT part of 3.5e-4. That fits leakage of
+the non-TT part through the spectral projector applied to fields made with sixth-order
+differences, but a genuine TT response linear in the noise (cross term of the noise with the
+x wave at grid-scale wave vectors) is also linear in A and is not excluded by (iii). The
+discriminating run is a jittered lattice without any wave (ratios 0, 0, 0): leakage stays
+proportional to A, the cross term vanishes. Not run in this package (next step). Either way
+the grid-scale TT of a noisy lattice is not a resolved signal (|k| h >= pi/2) and must be cut
+from any spectrum: the resolved band |k|L/2pi < 8 carries 0.3-0.6 percent of the TT power of
+the null for a <= 12, and the box modes follow the second-order prediction (P11b').
