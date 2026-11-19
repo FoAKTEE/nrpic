@@ -1,0 +1,137 @@
+#!/usr/bin/env python3
+"""Read the account's plan usage, and watch it against a threshold.
+
+    harness/bin/nrpic-usage probe                       one reading, printed and stored
+    harness/bin/nrpic-usage watch [--threshold 95] [--interval 240] [--near 90] [--near-interval 75]
+    harness/bin/nrpic-usage show                        last stored reading
+
+How it reads: Claude Code has no command that reports plan usage, but a non-interactive
+call with --output-format stream-json emits a `rate_limit_event` whose `rate_limit_info`
+holds the utilisation (0 to 1) and the reset time of each window (`seven_day`, and
+`five_hour` when present). `probe` makes one minimal call on the small model for that
+event; nothing of the project is sent beyond the fixed one-line prompt.
+
+`watch` probes every --interval seconds (every --near-interval seconds once the weekly
+utilisation is above --near per cent) and exits with status 0 and a line beginning
+`PAUSE` when the weekly utilisation reaches --threshold per cent. It exits with status 3
+after six consecutive probes without a reading (usage unknown is treated as unsafe by
+the caller). Readings are stored in <main checkout>/locks/usage.json and appended to
+locks/usage.log. It never stops anything itself: the session that started it does.
+"""
+import argparse
+import json
+import os
+import subprocess
+import sys
+import time
+
+
+def root():
+    here = os.path.dirname(os.path.abspath(__file__))
+    common = subprocess.run(["git", "-C", here, "rev-parse", "--path-format=absolute", "--git-common-dir"],
+                            check=True, capture_output=True, text=True).stdout.strip()
+    return os.path.dirname(common)
+
+
+def probe(rt):
+    work = os.path.join(rt, "scratch", "orch", "usage")
+    os.makedirs(work, exist_ok=True)
+    cmd = ["claude", "-p", "Reply with the single word ok.", "--model", "haiku",
+           "--output-format", "stream-json", "--verbose", "--no-session-persistence",
+           "--max-turns", "1", "--disallowedTools", "Bash Edit Write Read Agent"]
+    rec = {"ts": int(time.time()), "ok": False}
+    try:
+        p = subprocess.run(cmd, cwd=work, stdin=subprocess.DEVNULL, capture_output=True, text=True, timeout=180)
+    except Exception as e:                                   # timeout, missing executable
+        rec["error"] = repr(e)[:200]
+        return rec
+    rec["exit"] = p.returncode
+    windows = {}
+    for line in p.stdout.splitlines():
+        try:
+            o = json.loads(line)
+        except ValueError:
+            continue
+        if o.get("type") == "rate_limit_event":
+            info = o.get("rate_limit_info") or {}
+            rec["overage_enabled"] = info.get("overageEnabled")
+            rec["using_overage"] = info.get("isUsingOverage")
+            for name, w in (info.get("unifiedWindows") or {}).items():
+                if isinstance(w, dict) and w.get("utilization") is not None:
+                    windows[name] = {"pct": round(100.0 * float(w["utilization"]), 2),
+                                     "resets_at": w.get("resetsAt"), "status": w.get("status")}
+            t = info.get("rateLimitType")
+            if t and t not in windows and info.get("utilization") is not None:
+                windows[t] = {"pct": round(100.0 * float(info["utilization"]), 2),
+                              "resets_at": info.get("resetsAt"), "status": info.get("status")}
+        elif o.get("type") == "result" and o.get("is_error"):
+            rec["error"] = str(o.get("result", ""))[:200]
+    rec["windows"] = windows
+    rec["ok"] = "seven_day" in windows
+    if not rec["ok"] and "error" not in rec:
+        rec["error"] = "no rate_limit_event with a seven_day window in the stream"
+    return rec
+
+
+def store(rt, rec):
+    d = os.path.join(rt, "locks")
+    os.makedirs(d, exist_ok=True)
+    if rec.get("ok"):
+        tmp = os.path.join(d, "usage.json.tmp")
+        json.dump(rec, open(tmp, "w"), indent=1)
+        os.replace(tmp, os.path.join(d, "usage.json"))
+    with open(os.path.join(d, "usage.log"), "a") as f:
+        f.write(json.dumps(rec) + "\n")
+
+
+def line(rec):
+    if not rec.get("ok"):
+        return time.strftime("%F %H:%M:%S") + "  no reading: " + str(rec.get("error"))
+    parts = []
+    for name, w in sorted(rec["windows"].items()):
+        r = time.strftime("%a %H:%M", time.localtime(w["resets_at"])) if w.get("resets_at") else "?"
+        parts.append(f"{name} {w['pct']:.0f}% (resets {r}, {w.get('status')})")
+    return time.strftime("%F %H:%M:%S", time.localtime(rec["ts"])) + "  " + "; ".join(parts)
+
+
+def main():
+    ap = argparse.ArgumentParser()
+    ap.add_argument("cmd", choices=["probe", "watch", "show"])
+    ap.add_argument("--threshold", type=float, default=95.0)
+    ap.add_argument("--interval", type=int, default=240)
+    ap.add_argument("--near", type=float, default=90.0)
+    ap.add_argument("--near-interval", type=int, default=75)
+    a = ap.parse_args()
+    rt = root()
+    if a.cmd == "show":
+        p = os.path.join(rt, "locks", "usage.json")
+        print(line(json.load(open(p))) if os.path.exists(p) else "no stored reading")
+        return 0
+    if a.cmd == "probe":
+        rec = probe(rt)
+        store(rt, rec)
+        print(line(rec))
+        return 0 if rec.get("ok") else 3
+    misses = 0
+    while True:
+        rec = probe(rt)
+        store(rt, rec)
+        print(line(rec), flush=True)
+        if rec.get("ok"):
+            misses = 0
+            w = rec["windows"]["seven_day"]
+            if w["pct"] >= a.threshold:
+                print(f"PAUSE weekly usage {w['pct']:.0f}% >= {a.threshold:.0f}%; resets_at {w.get('resets_at')}", flush=True)
+                return 0
+            wait = a.near_interval if w["pct"] >= a.near else a.interval
+        else:
+            misses += 1
+            if misses >= 6:
+                print("UNKNOWN six probes in a row gave no reading", flush=True)
+                return 3
+            wait = 60
+        time.sleep(wait)
+
+
+if __name__ == "__main__":
+    sys.exit(main())
