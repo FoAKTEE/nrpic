@@ -509,7 +509,7 @@ histories differ from one thread of the processor build O3 by rounding only (rel
 1e-10; card against processor runs of earlier packages differed by 1e-13 to 1e-12), and the
 deposit identity stays below 1e-13. Refuted by a failed run or a larger difference.
 
-## 2026-11-19 08:51 Entry 13: published; what is open
+## 2026-11-19 08:48 Entry 13: published; what is open
 
 Published (tracks/core/omp/publish.sh, 08:47): scratch/core/exe/core_build-openmp/
 athena_cpu (threaded, sha256 8f223f75..., the executable of every threaded run above),
