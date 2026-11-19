@@ -413,6 +413,44 @@ class Particles {
   void NrpicNewtonWriteRestart(const std::string &fname);
   void NrpicNewtonReadRestart(const std::string &fname);
 
+  // ---- Fourier Poisson solver of the Newtonian mode (particles/nrpic_newton_fft.cpp):
+  // <particles> newton_poisson = fft on a uniform mesh that is periodic in all directions
+  bool nw_fft = false;              // the potential comes from the Fourier solver
+  int nw_fft_symbol = 0;            // 0: -1/k^2; 1: symbol of the seven-point Laplacian
+  int nw_fft_n[3] = {0, 0, 0};      // cells of the mesh
+  int nw_fft_nfac[3] = {0, 0, 0};   // prime factors of each of them (2, 3, 5, 7)
+  int nw_fft_fac[3][32];
+  DvceArray4D<Real> nw_fft_a, nw_fft_b;   // work arrays (real and imaginary part; k, j, i)
+  DvceArray1D<int> nw_fft_perm[3];  // source index of each element before the butterflies
+  DvceArray2D<Real> nw_fft_tw[3];   // cos and sin of 2 pi j/n
+  DvceArray1D<Real> nw_fft_k2[3];   // contribution of each direction to the symbol
+  DvceArray2D<int> nw_fft_off;      // first cell of each MeshBlock in the mesh
+  void NrpicNewtonFftInit(ParameterInput *pin);
+  void NrpicNewtonFftSolve();
+  void NrpicNewtonFftLines(const int dir, const bool inverse, DvceArray4D<Real> &src,
+                           DvceArray4D<Real> &dst);
+
+  // ---- second moments of particle groups in the Newtonian mode
+  // (particles/nrpic_newton_groups.cpp): <particles> newton_ngroup and the selection
+  // newton_group<g>_species, _tag_min, _tag_max, _x1.._x3; file <basename>.newton.g<g>.hst
+  static constexpr int kNwGroupMax = 8;
+  static constexpr int kNwGroupSum = 29;
+  int nw_ngroup = 0;
+  int nw_grp_species[kNwGroupMax];              // -1: every species
+  int nw_grp_tag[kNwGroupMax][2];               // first and last tag (-1: no bound)
+  Real nw_grp_ref[kNwGroupMax][3];              // reference point of the nearest image
+  Real nw_grp_sum[kNwGroupMax][kNwGroupSum];    // sums of the last synchronised state
+  Real nw_grp_ddi[kNwGroupMax][12];             // second derivatives one state earlier:
+                                                // comoving (6) and physical (6)
+  Real nw_grp_d3[kNwGroupMax][12];              // third derivatives (difference quotients)
+  Real nw_grp_d3_time[2] = {0.0, 0.0};          // their conformal and cosmic time
+  Real nw_grp_time = 0.0, nw_grp_tcos = 0.0;    // time of the sums: conformal, cosmic
+  Real nw_grp_dt = 0.0;                         // step of the last difference quotient
+  int nw_grp_cycle = -1;                        // cycle of the sums (-1: none)
+  void NrpicNewtonGroupInit(ParameterInput *pin);
+  void NrpicNewtonGroupSums(const Real time, const int ncycle);
+  void NrpicNewtonGroupWrite(Real time, int ncycle, bool header);
+
  private:
   MeshBlockPack* pmy_pack;  // ptr to MeshBlockPack containing this Particles
 };

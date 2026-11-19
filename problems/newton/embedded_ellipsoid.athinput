@@ -1,0 +1,110 @@
+# Newtonian mode of the particle module: a patch of particles (species 0) inside a
+# homogeneous background of particles (species 1) in a periodic expanding box, with the
+# second moments of the patch about its centroid in <basename>.newton.g1.hst (work
+# package newton2, tracks/core/interfaces/newtonian_mode.md section 7). The numbers below
+# are those of the embedded ellipsoid of Track B (model A of its baseline): units
+# G = c = t_k = 1, code time 0 = turnaround of the first axis (t_turn = 9.5316 t_k, a = 1
+# there, Hubble rate 2/(3 t_turn)), box of side 48, 64^3 cells. Particle file:
+#   python3 problems/newton/make_ic.py ball --out embedded.nrp --center 24 24 24 \
+#       --radius 1.5 --mass 0.75 --spacing 0.125 --ntracer 0 --axes S1 S2 S3 \
+#       --vgrad D1 D2 D3 --background 0 48 64 RHO_B
+# with S_i = R_i/R_L, D_i = (V_i/R_i - H) S_i and RHO_B = 1/(6 pi t_turn^2) of the
+# Zel'dovich state at t_turn (tracks/core/analysis/newton2/cases.py, test t4b).
+
+<comment>
+problem   = NRPIC Newtonian mode, ellipsoid embedded in a background, periodic box
+
+<job>
+basename  = newton
+
+<mesh>
+nghost    = 2
+nx1       = 64
+x1min     = 0.0
+x1max     = 48.0
+ix1_bc    = periodic
+ox1_bc    = periodic
+nx2       = 64
+x2min     = 0.0
+x2max     = 48.0
+ix2_bc    = periodic
+ox2_bc    = periodic
+nx3       = 64
+x3min     = 0.0
+x3max     = 48.0
+ix3_bc    = periodic
+ox3_bc    = periodic
+
+<meshblock>
+nx1       = 32
+nx2       = 32
+nx3       = 32
+
+<time>
+evolution  = dynamic
+integrator = rk2          # not used by the particles; the driver needs one
+cfl_number = 1.0
+nlim       = -1
+tlim       = 11.2
+ndiag      = 100
+
+<gravity>
+four_pi_G      = 12.566370614359172   # G = 1
+threshold      = 0.0      # 0: V cycles until the defect stops falling; > 0: defect norm
+niteration     = -1       # fixed number of V cycles when threshold < 0
+npresmooth     = 1
+npostsmooth    = 1
+full_multigrid = false    # false: start from the potential of the previous step
+fmg_ncycle     = 1
+show_defect    = 0
+mg_nghost      = 1
+root_on_host   = false
+
+<particles>
+particle_type  = nrpic
+pusher         = newton    # Newtonian mode: Poisson equation, kick-drift-kick
+interp         = hermite   # potential at the particles: hermite (Catmull-Rom) or bspline
+dt             = 0.02           # step in conformal time
+newton_cfl     = 0.0
+newton_mg_tol  = 0.0       # > 0: the Poisson solve may end at this fraction of the
+                           # norm of the source (0: until the defect stops falling)
+newton_expansion = power   # a = (1 + newton_hubble t/n)^n, n = newton_exponent
+newton_hubble  = 0.06994277280494017
+newton_exponent = 2.0      # 2: matter era
+newton_poisson = fft       # multigrid (default, also when absent) or fft
+newton_fft_symbol = spectral   # spectral: -1/k^2; seven_point: symbol of the
+                           # seven-point Laplacian (the multigrid solution to rounding)
+newton_ngroup  = 1         # particle groups with their own second-moment history
+newton_group1_species = 0  # species of the group (-1: every species)
+newton_group1_tag_min = -1 # first and last tag of the group (-1: no bound)
+newton_group1_tag_max = -1
+newton_group1_x1 = 24.0     # reference point: positions enter as the image nearest to it
+newton_group1_x2 = 24.0
+newton_group1_x3 = 24.0
+deposit        = true
+deposit_shape  = cic       # cloud shape: cic, tsc or pcs
+nfilter        = 0         # binomial passes on the deposited density
+filter_compensate = false
+filter_comp_c  = -1.0
+deposit_comp_c = 0.0
+deposit_comp_limit = 0.0
+deposit_comp_c2 = 0.0
+hist_dcycle    = 1
+traj_dcycle    = 0
+traj_ntrack    = 0
+snap_dt        = 1.4
+probe_x1       = 24.0       # crest of the wave (largest density)
+probe_x2       = 24.0
+probe_x3       = 24.0
+nprobe         = 1
+probe1_x1      = 1.0       # trough
+probe1_x2      = 1.0
+probe1_x3      = 1.0
+particle_file  = embedded.nrp
+
+<problem>
+pgen_name = nrpic_newton   # particles only; nothing is set on the mesh
+
+<output1>
+file_type = rst
+dt        = 1.0e30

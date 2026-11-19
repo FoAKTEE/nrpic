@@ -137,6 +137,8 @@ add_executable(
         particles/nrpic_kick.cpp
         particles/nrpic_collide.cpp
         particles/nrpic_newton.cpp
+        particles/nrpic_newton_fft.cpp
+        particles/nrpic_newton_groups.cpp
         particles/nrpic_accretion.cpp
         outputs/pdf.cpp
 

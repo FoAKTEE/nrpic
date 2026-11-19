@@ -211,6 +211,8 @@ void Particles::NrpicNewtonInit(ParameterInput *pin) {
     NewtonFatal("<particles> pusher = newton requires a step: dt, or newton_cfl > 0");
   }
   for (int n=0; n<NWS_N; ++n) { nw_sum[n] = 0.0; }
+  NrpicNewtonFftInit(pin);       // newton_poisson = fft (nrpic_newton_fft.cpp)
+  NrpicNewtonGroupInit(pin);     // newton_ngroup (nrpic_newton_groups.cpp)
 
   // ghost cells of the potential
   pbval_phi = new MeshBoundaryValuesCC(pmy_pack, pin, false);
@@ -290,6 +292,7 @@ void Particles::NrpicNewtonInitialize() {
   NrpicFilterSources();
   NrpicNewtonPotential();
   NrpicNewtonKick(0.0, pm->time);
+  NrpicNewtonGroupSums(pm->time, pm->ncycle);
   // after a restart the diagnostic state continues from the dump
   if (static_cast<int>(nw_state_restart.size()) == kNewtonState) {
     const std::vector<double> &s = nw_state_restart;
@@ -373,9 +376,15 @@ void Particles::NrpicNewtonPotential() {
         tol = nropt.newton_mg_tol*(pg->four_pi_G)*std::sqrt((var > 0.0) ? var : 0.0);
       }
     }
-    pg->pmgd->SolveSource(nw_driver, tmu, Tmunu::I_Tmunu_E, tol);
-    nw_defect = pg->pmgd->last_defect;
-    nw_ncycle = pg->pmgd->last_ncycle;
+    if (nw_fft) {
+      NrpicNewtonFftSolve();     // Fourier solver: no iteration, no defect
+      nw_defect = 0.0;
+      nw_ncycle = 0;
+    } else {
+      pg->pmgd->SolveSource(nw_driver, tmu, Tmunu::I_Tmunu_E, tol);
+      nw_defect = pg->pmgd->last_defect;
+      nw_ncycle = pg->pmgd->last_ncycle;
+    }
   }
 
   // mesh sums over the active cells: int rho Phi dV, int Phi dV, int rho dV, volume, and
@@ -682,6 +691,7 @@ void Particles::NrpicNewtonFinishStep(Driver *pdriver) {
 
   NrpicNewtonPotential();
   NrpicNewtonKick(0.5*(pm->dt), tnew);
+  NrpicNewtonGroupSums(tnew, pm->ncycle + 1);
 
   if (had) {
     const Real k1 = 0.5*nw_sum[NWS_P2]/(nw_a*nw_a);
@@ -763,6 +773,7 @@ void Particles::NrpicNewtonWriteHistory(Real time, int ncycle, bool header) {
                nw_mesh[4], nw_mesh[5], nw_pmax, nw_gmax, nw_defect,
                (ncycle > 0) ? pmy_pack->pmesh->dt : 0.0, nw_ncycle);
   std::fclose(fp);
+  NrpicNewtonGroupWrite(time, ncycle, header);
 }
 
 //----------------------------------------------------------------------------------------
