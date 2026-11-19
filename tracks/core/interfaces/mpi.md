@@ -199,3 +199,72 @@ written per particle, or a mesh array of the module has to add the matching redu
 options that stop on several ranks in `NrpicMpiInit` (`nrpic_mpi.cpp`). The kernel of
 `NrpicDepositSources` keeps its own copy of the cloud; replacing it by the functions of
 `nrpic_cloud.hpp` is a clean-up for after the merge, with a regression run.
+
+## 6. State reached (2026-11-19)
+
+Every number below is from a registered run (manifests under `tracks/core/runs/`,
+outputs under `scratch/core/<run_id>/`, `compare.json` in each), with the journal entry
+that holds the prediction and the outcome. "Rounding" means differences of the order of
+the double-precision rounding of the sums involved.
+
+| Step | Test | Result | Runs (journal entry) |
+|---|---|---|---|
+| 0 | R0: serial build of this branch against release core-v0.3 (geo, boris, dep, east, os) | identical byte for byte | 8f245d7: `r0_serial.json` (7, 14); final source: PENDING-R0F |
+| 0 | R0: MPI build started on one rank against the release | identical but for 36 bytes of an unset header field of the mesh restart files (uninitialised memory in the release's files) | `r0_mpi1.json` (11); final: PENDING-R0F |
+| 1 | T1: 2000 test particles in Kerr sampled on the mesh, midpoint and Boris; T1p: periodic box | trajectories, metric at the particles, snapshots, particle restart files identical byte for byte on 2 and 4 ranks; counters exact; sums to 3e-13; 2e3 to 1e4 hand-overs | core-20261119-145615/145630/145644-4c98c59 (3) |
+| 2 | T2: deposit and filter in a fixed metric, cic, tsc, pcs, compensated; periodic box and Kerr | mesh integral = particle sum to 1e-14 on 1, 2, 4 ranks; E, S_i at every particle equal to one rank to 8e-16; 6e4 to 4e5 deposit packets | core-20261119-152233/152306/152347/152416/152553/152736-8f245d7 (5, 6) |
+| 3 | T3: self-gravitating cluster (4000 particles, Z4c, 8 MeshBlocks meeting at its centre), plain and with extrapolated step sources | positions 4e-15, history 5e-13, field dumps 6e-12 (t = 7.5 M), identity 1e-15; no feature at the planes between ranks | core-20261119-154814-ca46836, core-20261119-155306-ee6c92c (9, 10) |
+| 4 | T4: restart at cycle 20 on 1:1, 2:2, 4:4, 1:4, 4:1, 2:4 ranks; restart without a step for all nine pairs | particle restart file written after reading equals the one read byte for byte for all nine pairs; the state after reading is the same for every reader count; restarted runs agree with each other as in T3 | core-20261119-155721/155950-89ebf16, -160825-0e90ab7, -161023-9421947, -161159-421d7e3 (10-13) |
+| 4 | caveat, one rank | a restart of this set-up is not exact on one rank either (release too): the mesh restart path refills the ghost cells on the outer boundary, 1e-9 there, 1e-10 in the history after one step | core-20261119-160230-a2f1cf7, -160823-0e90ab7 (11, 12) |
+| 5 | T5: deposit on a statically refined mesh (176 MeshBlocks, 3 levels, 10^4 particles), cic, tsc with level cap, pcs | particles identical byte for byte; sources at particles 4e-16; identity 1e-14 on 1, 2, 4 ranks | core-20261119-161206/161208-421d7e3, -161349-896e22c (14) |
+| 5 | T5: cluster with Z4c on a statically refined mesh | PENDING-SMR | |
+| 5 | T5b: adaptive mesh, refinement at cycle 8 with particles (centred cluster) | same mesh on all rank counts, history 2e-13, positions 1e-15, identity 1e-14; no MeshBlock changed rank | core-20261119-161351-896e22c (15) |
+| 5 | T5b: adaptive mesh with MeshBlocks moved by load balancing (cluster in one octant) | PENDING-AMR | |
+| 6 | card build with MPI on two cards | PENDING-CARD | |
+
+Not ported (the module stops with a message on more than one rank): Newtonian mode
+(`pusher = newton`), collisions, the test kick, curvature records (`curv_dt`). Not tested
+on several ranks: horizon excision (`ah_exc_factor`; the horizon finder and the puncture
+tracker have their own MPI code upstream, but whether the finder's result is the same on
+every rank was not checked), `deposit_adaptive`, the Kerr-Schild analytic metrics with
+more than one rank (particles stay on rank 0; nothing is distributed), periodic boxes with
+Z4c (only with a fixed metric, T1p, T2p), load balancing by cost (AthenaK balances
+MeshBlocks by number; particles do not enter the cost). Not done: replacing the copy of the
+cloud in the deposit kernel by `nrpic_cloud.hpp` (section 5).
+
+Found on the way (not of this package): the one-rank restart departure above; the
+conservation record `cons.hst` prints values of order 1e290 in its last two columns for
+an isolated cluster (|C^E|/D with D = 0 outside the matter), on one rank already.
+
+## 7. How to run on several ranks
+
+Processors (MPI build; Open MPI 5.0.1 of the machine, found through the run path):
+
+    mpirun --bind-to none -np 4 athena_cpu -i problems/tests/mpi_cluster.athinput \
+        -d RUN particles/particle_file=/abs/path/cluster.nrp \
+        problem/comp0_file=/abs/path/cluster.tab
+
+- Nothing in the input changes. The same input runs on any number of ranks; the
+  MeshBlocks must be at least as many as the ranks.
+- Paths of particle files and tables must be absolute (AthenaK works in the output
+  directory). An option can be changed on the command line only if the input file has it.
+- Files: every file of the module keeps its format and is written by rank 0, particles
+  in tag order. New: `<basename>.mpi.hst` (time, cycle, particles handed over and deposit
+  packets since the last record, particles on each rank).
+- Restart: `mpirun -np M athena_cpu -r RUN/rst/<name>.NNNNN.rst -d RUN2` with any M; rank 0
+  reads `<name>.NNNNN.rst.prt` and the first ownership pass distributes the particles.
+- Results agree with one rank to rounding, not byte for byte, once the particles act on
+  the spacetime (order of additions in cells shared by clouds of several ranks); with a
+  fixed metric the particle files are identical byte for byte.
+- Cost on processors: the hand-over and the deposit packets are host-side MPI messages
+  (a few 1e4 packets per step for 1e4 particles); measured wall times are in the
+  manifests. 16 cores at most per session on this machine.
+
+Cards: `mpirun -np 2 tracks/core/analysis/mpi/gpu_bind.sh athena_gpu ...` inside a Slurm job
+with `--gres=gpu:2` (the wrapper gives each rank its own card); example
+`tracks/core/analysis/mpi/card_job.sh`. The particle exchange goes through host memory;
+the mesh exchange of AthenaK passes device buffers to the CUDA-aware Open MPI.
+
+## 8. Answer to Track F (request `two-card-or-larger-blocks`)
+
+Option (1), two cards with MPI, is available: PENDING-CARD.

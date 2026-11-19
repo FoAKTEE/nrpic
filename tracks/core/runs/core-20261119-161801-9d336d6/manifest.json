@@ -1,0 +1,40 @@
+{
+ "run_id": "core-20261119-161801-9d336d6",
+ "owner": "core",
+ "command": [
+  "/data/haiyangw/nrpic/wt/core-mpi/.venv/bin/python",
+  "/data/haiyangw/nrpic/wt/core-mpi/tracks/core/analysis/mpi/mpi_tests.py",
+  "--case",
+  "t5_amr_offset",
+  "--out",
+  "t5_amr_offset"
+ ],
+ "cwd": "/data/haiyangw/nrpic/scratch/core/core-20261119-161801-9d336d6",
+ "commit": "9d336d6",
+ "source_modified_since_commit": false,
+ "inputs": [
+  {
+   "path": "problems/tests/mpi_cluster_amr.athinput",
+   "sha256": "a373a28b995691c300fcf95c80f09f1721887793b3c3ce4ff02e558ea06d239c"
+  },
+  {
+   "path": ".work/build_cpu_mpi/src/athena",
+   "sha256": "45c8d5a477a265d8c4c81c71f079d71cf440422c81c379ffc69223d2074650cd"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/wt/core-mpi/.venv/bin/python",
+   "sha256": "d6bca2b84e73c7775a0dd5e6a76899cfe4ee62863d7c8f88513811d1fda23f49",
+   "role": "executable"
+  }
+ ],
+ "output_directory": "/data/haiyangw/nrpic/scratch/core/core-20261119-161801-9d336d6",
+ "purpose": "mpi T5b (t5_amr_offset): self-gravitating cluster in one octant on an adaptive mesh refined at cycle 8, load balancing moves MeshBlocks and particles, 1, 2 and 4 ranks",
+ "kind": "scouting",
+ "tag": "mpi-t5_amr_offset",
+ "state": "finished",
+ "wall_time_s": 126.71,
+ "exit_status": 0,
+ "cores": 7,
+ "card_hours": 0.0,
+ "started_utc": "2026-11-19T16:18:01Z"
+}

@@ -288,11 +288,12 @@ def fig_selfgravity(case, ranks, base):
         im = ax.imshow(h1, origin="lower", cmap=fs.CMAP["diverging"], vmin=-vmax,
                        vmax=vmax, interpolation="none", rasterized=True)
         ax.set_title("H on 1 rank, t = %.3g" % t, fontsize=10)
+        fs.side_colorbar(fig, ax, im, "")
         ax.set_xlabel("cell in x")
         ax.set_ylabel("cell in y")
         if os.path.exists(g):
             t2, b = read_field(g)
-            ax = fig.add_axes([0.33, 0.16, 0.20, 0.70])
+            ax = fig.add_axes([0.37, 0.16, 0.20, 0.70])
             d = np.abs(b["H"][sl] - h1)/max(vmax, 1.0e-300)
             im2 = ax.imshow(np.log10(np.maximum(d, floor)), origin="lower",
                             cmap=fs.CMAP["dens"], vmin=-18, vmax=-10, interpolation="none",
@@ -300,7 +301,7 @@ def fig_selfgravity(case, ranks, base):
             ax.set_title("log |H(%d) - H(1)| / max|H|" % ranks[-1], fontsize=10)
             ax.set_xlabel("cell in x")
             fs.side_colorbar(fig, ax, im2, "")
-        x0 = 0.64
+        x0 = 0.70
     else:
         x0 = 0.08
     ax = fig.add_axes([x0, 0.16, 0.96 - x0, 0.70])

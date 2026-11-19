@@ -499,7 +499,8 @@ larger on several ranks than on one); 5.7e3 / 8.9e3 particles handed over and 6.
 Run core-20261119-161351-896e22c (t5_amr_cluster): at cycle 8 the eight central
 MeshBlocks are refined on 1, 2 and 4 ranks alike (56 created, 120 MeshBlocks, logs);
 4000 particles throughout; history 2.3e-13 (2 ranks) and 1.5e-13 (4 ranks), positions
-1.3e-15 at t = 1.5, E and S_i at the particles 6.1e-15, identity 7.8e-15 / 3.4e-15 /
+to 1.3e-15 (largest over the seven snapshots to t = 2.25 M; dt halves at the
+refinement), E and S_i at the particles 6.1e-15, identity 7.8e-15 / 3.4e-15 /
 2.5e-15; Hr_max 1.1e-9 (the noise ratio, entry 9). P5c held. But the logs say "0
 communicated for load balancing": the refined MeshBlocks are spread evenly over the
 ranks by the Morton order of the centred cluster, so no MeshBlock changed rank and the
@@ -515,3 +516,14 @@ reports MeshBlocks communicated for load balancing, the record of the ranks show
 hand-overs at cycle 8 of the order of the particles in the moved MeshBlocks, and
 everything else agrees with one rank as in P5c. Refuted by a lost particle, a crash, a
 different mesh, or differences above 1e-9 (Hr_max excepted, as before).
+
+### 09:05 Entry 16: T5 cluster on a refined mesh
+
+Run core-20261119-161503-32b23c0 (t5_smr_cluster, 26 + 8 MeshBlocks, 16 cycles): on 2
+ranks all 4000 particles lie in MeshBlocks of rank 0 throughout (record of the ranks:
+4000 / 0, no hand-over, no packet), and the run is identical to the one-rank run byte for
+byte (trajectories, snapshots, particle restart files; history 30 of 32 columns exact,
+the other two, proper volume and mean K, sums over cells of both ranks, 1.5e-13). On 4
+ranks the particles are split 485 / 3515 over ranks 0 and 1, 3669 hand-overs and 1.1e4
+deposit packets: positions 1.3e-15, history 2.8e-13, E and S_i at the particles 5.3e-15,
+identity 3.4e-15 (one rank 5.9e-15), Hr_mean 6.6e-11. P5b held.
