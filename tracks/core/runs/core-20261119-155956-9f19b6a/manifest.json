@@ -1,0 +1,91 @@
+{
+  "schema": "nrpic-run-manifest/1",
+  "run_id": "core-20261119-155956-9f19b6a",
+  "track": "core",
+  "gate": "G2",
+  "kind": "scouting",
+  "purpose": "Ct and X of coll2-close: card step time of the cluster deck per mode (40 steps) against wave 1, and the smoke deck of the repaired incremental card build against the clean build; numbers and figures",
+  "preregistered_in": null,
+  "launcher": "local",
+  "command": [
+    "bash",
+    "-c",
+    ".venv/bin/python tracks/core/analysis/collisions/fig_close.py \"$NRPIC_RUN_DIR\" --steptime /data/haiyangw/nrpic/scratch/core/core-20261119-141042-70c2f5d --wave1 /data/haiyangw/nrpic/scratch/core/core-20261115-140316-8742cdf/kn3/athena.log /data/haiyangw/nrpic/scratch/core/core-20261115-140316-8742cdf/off/athena.log --x /data/haiyangw/nrpic/scratch/core/core-20261119-141940-2e6368f /data/haiyangw/nrpic/scratch/core/tmp/coll2/smoke_card_4485 > \"$NRPIC_RUN_DIR/analysis.log\" 2>&1"
+  ],
+  "cwd": ".",
+  "git": {
+    "sha": "9f19b6abda7dbbda704805ef55b9a99157d1f7da",
+    "branch": "core/collisions-2",
+    "dirty": false,
+    "merge_base_main": "71acd0c330b65dad3a9cac337c6f78e8a1bacc44",
+    "worktree": "wt/core-coll2"
+  },
+  "code": {
+    "core_tag": "core-v0.3",
+    "athenak_upstream_sha": "c5a0d7f",
+    "kokkos_sha": "6739bc623081648af9e752b616d9671527922cbf",
+    "problem": null
+  },
+  "env": {
+    "host": "anta",
+    "env_hash": "33c1dbb6673b68919eaa332b0add0b58aeac8be843f2071b9d06e2e0e397a96d",
+    "machine_file_sha256": "0321f40f4caeeb2a36624a9fa9809e60bad31071f366b3517ba23ad45698d2d7",
+    "uv_lock_sha256": "5417f6ba318b914aa3800e5d55f7b11fdd8df13c2688bdda7d419240aa1d5863",
+    "track_requirements_sha256": null,
+    "container_digest": null,
+    "compiler": "g++ 11.4.0",
+    "mpi": "none (Athena_ENABLE_MPI=OFF)",
+    "gpu": null,
+    "python": "3.10.12 /data/haiyangw/nrpic/wt/core-coll2/.venv"
+  },
+  "input": null,
+  "inputs": [
+    {
+      "path": "tracks/core/analysis/collisions/fig_close.py",
+      "role": "input",
+      "sha256": "f9b95fa59bbaa3470cf429b8a06fa3355816a5e359d1580fb7ae57df8c33398d",
+      "bytes": 3864,
+      "tracked": true
+    }
+  ],
+  "batch_entries": null,
+  "resources": {
+    "nodes": 1,
+    "gpus": 0,
+    "cores": 1,
+    "walltime_s": null,
+    "wall_limit": null,
+    "segments_max": null,
+    "gpu_hours_requested": 0.0,
+    "gpu_hours": null,
+    "particles": null
+  },
+  "slurm": null,
+  "outputs": {
+    "dir": "scratch/core/core-20261119-155956-9f19b6a",
+    "sha256sums": "sha256sums.txt",
+    "sha256sums_sha256": null,
+    "bytes": null,
+    "files": null
+  },
+  "status": "running",
+  "exit_code": null,
+  "registered": "2026-11-19T15:59:57Z",
+  "started": null,
+  "ended": null,
+  "parents": [
+    "core-20261119-141042-70c2f5d",
+    "core-20261119-141940-2e6368f"
+  ],
+  "notes": "",
+  "budget_at_submit": {
+    "gpu_hours_allotted": 40.0,
+    "cores_allotted": 16,
+    "gpu_hours_used": 2.8029,
+    "gpu_hours_reserved": 6.64,
+    "gpu_hours_without_gate": 5.8613,
+    "cores_busy": 15,
+    "runs": 1110,
+    "allotment_from": "coord/DECISIONS/0006-compute-budget.md + 0014-budgets-after-wave-1.md"
+  }
+}
