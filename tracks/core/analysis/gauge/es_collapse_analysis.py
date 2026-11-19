@@ -14,7 +14,12 @@ are removed, lapse at the centre, apparent-horizon mass.
 Writes es_numbers_<prefix>.json, collapse_numbers_<prefix>.json and
 figs/es_<prefix>_*.png|pdf, figs/collapse_<prefix>_*.png|pdf.
 
-    es_collapse_analysis.py [--prefix gc]
+    es_collapse_analysis.py [--prefix gc] [--batch RUN_ID ...]
+
+Runs: the hand-written manifests of 2026-11-15 with tag <prefix>-es-* and
+<prefix>-collapse-* that ended with exit status 0, and, with --batch, the
+sub-directories es-* and collapse-* of card jobs registered by harness/bin/nrpic-run
+(launcher batch: scratch/core/<run_id>/<name>/).
 """
 import argparse
 import glob
@@ -79,6 +84,41 @@ def ref_plateau(H0, T, a0, tmax, dt=0.01):
     return np.array(out).T
 
 
+def batch_manifests(run_id):
+    """{name: manifest-like dict} of the runs of one card job registered by nrpic-run
+    (launcher batch): the keys the analysis needs, from the job's manifest, its list and
+    the log of each run."""
+    import datetime
+    with open(os.path.join(WT, "tracks/core/runs", run_id, "manifest.json")) as f:
+        m = json.load(f)
+    root = os.path.join("/data/haiyangw/nrpic", m["outputs"]["dir"])
+    out = {}
+    with open(os.path.join(root, "batch.list")) as f:
+        for line in f:
+            w = line.split()
+            if not w or w[0].startswith("#"):
+                continue
+            d = w[0]
+            card_s, rc = None, None
+            try:
+                with open(os.path.join(d, "athena.log")) as fh:
+                    txt = fh.read()
+                fmt = "%Y-%m-%dT%H:%M:%S"
+                t_a = datetime.datetime.strptime(txt.split("start=", 1)[1][:19], fmt)
+                t_b = datetime.datetime.strptime(txt.rsplit("end=", 1)[1][:19], fmt)
+                card_s = (t_b - t_a).total_seconds()
+                rc = int(txt.rsplit("# exit=", 1)[1].split()[0])
+            except (OSError, IndexError, ValueError):
+                pass
+            out[os.path.basename(d)] = dict(
+                run_id=run_id + "/" + os.path.basename(d), command=w[1:],
+                output_directory=d, exit_status=rc, wall_time_s=card_s,
+                card_hours=round(card_s / 3600.0, 5) if card_s is not None else None,
+                inputs=[dict(path=i["path"] if os.path.isabs(i["path"])
+                             else os.path.join(WT, i["path"])) for i in m["inputs"]])
+    return out
+
+
 def args_of(man):
     return {a.split("=")[0]: a.split("=", 1)[1] for a in man["command"] if "=" in a}
 
@@ -119,6 +159,13 @@ def analyse_es(pre, name, man):
                card_hours=man["card_hours"], np_start=int(hst[0, 2]), np_end=int(hst[-1, 2]),
                n_excised=int(hst[-1, 16]), alpha_max=float(hst[:, 29].max()),
                alpha_min_end=float(hst[-1, 15]), groups={})
+    # lapse at the puncture: the probe at the origin and the smallest lapse on the mesh
+    res["puncture_lapse"] = {
+        f"{tt:g}": dict(probe=float(np.interp(tt, hst[:, 0], hst[:, 12])),
+                        smallest=float(np.interp(tt, hst[:, 0], hst[:, 15])))
+        for tt in (0.0, 5.0, 10.0, 20.0, 30.0) if hst[-1, 0] >= tt}
+    res["alpha_max_t"] = {f"{tt:g}": float(np.interp(tt, hst[:, 0], hst[:, 29]))
+                          for tt in (5.0, 10.0, 20.0, 30.0) if hst[-1, 0] >= tt}
 
     fig, ax = plt.subplots(2, 2, figsize=(fs.FULL_WIDTH, 5.4))
     fig.subplots_adjust(left=0.10, right=0.98, bottom=0.09, top=0.96, wspace=0.28, hspace=0.26)
@@ -148,7 +195,9 @@ def analyse_es(pre, name, man):
         R_m = np.mean([v[:n] for v in Rs], axis=0)
         al_m = np.mean([v[:n] for v in alphas], axis=0)
         Rex_m = np.interp(tau_m, rtau, ref[f"R_tracer{i}"])
+        rc_end = [float(np.sqrt(np.sum(tr[tag]["x"][-1] ** 2))) for tag in tags if tag in tr]
         rec = dict(R0=grp["R0"], n=len(taus), maxabs_eps=float(np.nanmax(eps_all)),
+                   r_coord_end_min=float(np.min(rc_end)), r_coord_end_mean=float(np.mean(rc_end)),
                    tau_end=float(tau_m[-1]), R_end=float(R_m[-1]),
                    R_exact_end=float(Rex_m[-1]) if np.isfinite(Rex_m[-1]) else None,
                    alpha_end=float(al_m[-1]), removed=len(t_removed),
@@ -193,7 +242,10 @@ def analyse_es(pre, name, man):
     if len(hz):
         th, mh = hz[:, 1], hz[:, 2]
         res["horizon"] = dict(searches=int(len(th)), t_first=float(th[0]), t_last=float(th[-1]),
-                              mass_first=float(mh[0]), mass_last=float(mh[-1]))
+                              mass_first=float(mh[0]), mass_last=float(mh[-1]),
+                              mass_t={f"{tt:g}": float(np.interp(tt, th, mh))
+                                      for tt in (5.0, 10.0, 15.0, 20.0, 25.0, 30.0)
+                                      if th[-1] >= tt})
         sel = th >= 10.0
         if sel.any():
             m10 = float(np.interp(10.0, th, mh))
@@ -204,8 +256,10 @@ def analyse_es(pre, name, man):
     ax[1, 0].set_xlabel(r"coordinate time $t/M$", labelpad=-2)
     ax[1, 0].set_ylabel(r"horizon mass $M_{\rm AH}/M-1$")
     ax[1, 1].plot(hst[:, 0], hst[:, 29], color=fs.PAL["blue"], label="largest lapse on the mesh")
+    ax[1, 1].plot(hst[:, 0], hst[:, 15], color=fs.PAL["green"], label="smallest lapse (puncture)")
     ax[1, 1].set_xlabel(r"coordinate time $t/M$", labelpad=-2)
     ax[1, 1].set_ylabel("lapse")
+    ax[1, 1].set_ylim(0.0, 1.25)
     ax[1, 1].legend(fontsize=7)
     fs.save(fig, os.path.join(FIGS, f"es_{pre}_{name}"))
     plt.close(fig)
@@ -301,6 +355,14 @@ def analyse_collapse(pre, name, man):
     ax[1, 0].legend(fontsize=7)
     sel = t <= 10.0
     res["alpha_centre_dev_t10"] = float(np.abs(hst[sel, 12] / np.interp(t[sel], rt, ral) - 1.0).max())
+    res["alpha_centre_t"] = {f"{tt:g}": float(np.interp(tt, t, hst[:, 12]))
+                             for tt in (2.0, 4.0, 6.0, 8.0, 10.0, 12.0, 15.0, 20.0, 25.0, 30.0)
+                             if t[-1] >= tt}
+    below = np.nonzero(hst[:, 12] < 0.05)[0]
+    res["t_alpha_centre_below_0p05"] = float(t[below[0]]) if len(below) else None
+    res["history"] = dict(t=t, alpha_c=hst[:, 12], np=hst[:, 2],
+                          th=hz[:, 1] if len(hz) else np.zeros(0),
+                          mh=hz[:, 2] if len(hz) else np.zeros(0))
     res["tau_centre_end"] = float(hst[-1, 14])
     res["n_excised"] = int(hst[-1, 16])
     if len(hz):
@@ -310,6 +372,17 @@ def analyse_collapse(pre, name, man):
                               mass_max=float(mh.max()))
         last = th >= th[-1] - 5.0
         res["horizon"]["spread_last_5M"] = float(mh[last].max() - mh[last].min())
+        res["horizon"]["mass_t"] = {f"{tt:g}": float(np.interp(tt, th, mh))
+                                    for tt in (26.0, 28.0, 30.0, 35.0, 40.0, 45.0)
+                                    if th[0] <= tt <= th[-1]}
+        # coordinate time at which the last particle has been removed, and the mass then
+        gone = np.nonzero(hst[:, 2] == 0)[0]
+        if len(gone) and th[-1] >= t[gone[0]]:
+            res["horizon"]["t_all_removed"] = float(t[gone[0]])
+            res["horizon"]["mass_all_removed"] = float(np.interp(t[gone[0]], th, mh))
+            aft = th >= t[gone[0]]
+            res["horizon"]["max_dev_from_M_after_removed"] = float(
+                np.abs(mh[aft] / meta["M"] - 1.0).max())
         ax[1, 1].plot(th, mh, color=fs.PAL["red"])
         ax[1, 1].axhline(meta["M"], color="k", lw=0.6, ls="--")
         # proper time at the centre when the horizon is first found
@@ -323,20 +396,57 @@ def analyse_collapse(pre, name, man):
     return res
 
 
+def compare_collapse(pre, col):
+    """Central lapse and horizon mass of the collapse runs in one figure."""
+    fig, ax = plt.subplots(1, 3, figsize=(fs.FULL_WIDTH, 2.9))
+    fig.subplots_adjust(left=0.08, right=0.985, bottom=0.17, top=0.95, wspace=0.40)
+    cols = [fs.PAL["red"], fs.PAL["blue"], fs.PAL["green"], fs.PAL["yellow"]]
+    for (name, r), c in zip(sorted(col.items()), cols):
+        h = r["history"]
+        ax[0].semilogy(h["t"], np.maximum(h["alpha_c"], 1e-6), color=c, label=name[len("collapse-"):])
+        ax[1].plot(h["th"], h["mh"], color=c)
+        ax[2].plot(h["t"], h["np"], color=c)
+    ax[0].axhline(0.05, color="k", lw=0.6, ls=":")
+    ax[0].set_ylim(1e-4, 3.0)
+    ax[0].set_xlabel(r"coordinate time $t/M$", labelpad=-2)
+    ax[0].set_ylabel("lapse at the centre")
+    ax[0].legend(fontsize=7)
+    ax[1].axhline(1.0, color="k", lw=0.6, ls="--")
+    ax[1].axhspan(0.97, 1.03, color="0.9", zorder=0)
+    ax[1].set_ylim(0.9, 1.1)
+    ax[1].set_xlabel(r"coordinate time $t/M$", labelpad=-2)
+    ax[1].set_ylabel(r"apparent-horizon mass $/M$")
+    ax[2].set_xlabel(r"coordinate time $t/M$", labelpad=-2)
+    ax[2].set_ylabel("particles in the run")
+    fs.save(fig, os.path.join(FIGS, f"collapse_{pre}_compare"))
+    plt.close(fig)
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--prefix", default="gc")
+    ap.add_argument("--batch", nargs="*", default=[],
+                    help="run ids of card jobs registered by nrpic-run (launcher batch)")
     a = ap.parse_args()
     pre = a.prefix
     os.makedirs(FIGS, exist_ok=True)
     fs.use_style()
     es, col = {}, {}
-    for tag, m in manifests(pre + "-").items():
-        name = tag[len(pre) + 1:]
+    todo = {tag[len(pre) + 1:]: m for tag, m in manifests(pre + "-").items()}
+    for rid in a.batch:
+        todo.update(batch_manifests(rid))
+    for name, m in todo.items():
+        if m.get("exit_status") != 0:
+            print(f"{name}: run {m['run_id']} ended with exit status {m.get('exit_status')}: skipped")
+            continue
         if name.startswith("es-") and os.path.exists(os.path.join(m["output_directory"], "es.traj.bin")):
             es[name] = analyse_es(pre, name, m)
         if name.startswith("collapse-") and os.path.exists(os.path.join(m["output_directory"], "ball.traj.bin")):
             col[name] = analyse_collapse(pre, name, m)
+    if len(col) > 1:
+        compare_collapse(pre, col)
+    for r in col.values():
+        r.pop("history", None)
     if es:
         with open(os.path.join(HERE, f"es_numbers_{pre}.json"), "w") as f:
             json.dump(es, f, indent=1)

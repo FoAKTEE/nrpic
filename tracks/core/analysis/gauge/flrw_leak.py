@@ -124,7 +124,7 @@ def main():
     ax[1].plot([], [], color="k", ls="--", label=r"$a$")
     ax[1].legend(fontsize=7)
     ax[1].set_xlabel(r"coordinate time $t\,H_0$", labelpad=-2)
-    ax[1].set_ylabel("relative difference from the exact solution")
+    ax[1].set_ylabel("relative difference\nfrom the exact solution")
     fs.save(fig, os.path.join(HERE, "figs", a.name))
     with open(os.path.join(a.out, a.name + "_numbers.json"), "w") as f:
         json.dump(numbers, f, indent=1)
