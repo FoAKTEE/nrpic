@@ -171,3 +171,83 @@ at N = 48 on processors (one serial process each, expected 56 and 90 minutes).
 Predictions at N = 48 (same predictor, `wlib/predict.py`): F: 444 steps, amplitude
 -1.58e-7, phase +2.27e-6; X: 524 steps, amplitude +5.52e-7, phase +5.05e-7; criteria as
 F2 and X3 (10 and 20 per cent).
+
+## 2026-11-19 15:00 Provisional outcome at N = 16 and 32 (run B-20261119-145125-51e9f8f)
+
+Analysis of runs B-20261119-142016-ee73a03 (F) and B-20261119-142021-8f4c441 (X). The run
+is recorded as failed (exit 1): `results.json` and the per-dump tables were written, then
+the convergence figure raised a TypeError (`lw` given twice); fixed in `scripts/analyze.py`.
+The figures come with the final analysis.
+
+- F1: at t = 0 the TT amplitudes equal the generator's to 6.0e-12 (N = 16) and 2.7e-12
+  (N = 32) in modulus, 2.4e-11 in the phase of the cross part. Not refuted (threshold
+  1e-10), but the number I wrote (1e-12) was too optimistic: a diagonal component 1 + h
+  with h ~ 1e-6 carries a rounding of 1e-10 of h per cell, averaged by the projection over
+  N^3 cells. The generator's e+, ex are gw_diag's pol_basis(khat): confirmed.
+- F2: confirmed to three to four digits. N = 16: amplitude -1.409e-4 (predicted -1.409e-4),
+  phase +2.531e-4 (+2.531e-4); N = 32: -1.717e-6 (-1.718e-6), +1.218e-5 (+1.217e-5); the
+  cross polarization identical; orders 6.36 and 4.38 (predicted 6.36, 4.38).
+- F3: confirmed: polarization ratio errors <= 6.2e-10 (modulus) and 7.0e-10 (argument).
+- F4: refuted as worded. The backward combination is not constant at |1 - w_h/k|/2; it
+  oscillates with half the wave period between 0 (at every half period, so also at the last
+  dump, 4.9e-10) and |1 - w_h/k| (3.19e-6 at N = 16, 5.08e-8 at N = 32; 1 - w_h/k = 3.2e-6
+  and 5.1e-8). Cause: the generator sets At from the continuum frequency |k|, so the data
+  excite the backward eigenmode of the semi-discrete system with relative amplitude
+  (k/w_h - 1)/2, which beats against the forward error term; zeros, period and maximum
+  follow from that and are what the dumps show (pattern dump by dump in
+  `dumps_flat_N16.json`).
+- F5: confirmed. Order-6 Weyl vs TT 3.07e-5 (N = 16), 4.91e-7 (N = 32), order 5.97;
+  spectral Weyl vs TT 1.2e-11 at both N. With order-6 stencils the Weyl amplitude error is
+  -1.716e-4 / -2.208e-6 (TT -1.409e-4 / -1.717e-6): the stencil error of the diagnostic adds
+  to the evolution error; the Weyl phase error equals the TT one to 3 digits.
+- F6: refuted for the full field: ||h - h^TT||/||h^TT|| reaches 1.44e-4 at the end (bound
+  1e-4), the same at N = 16 and 32 to three digits and growing as t^2 (1.7e-5 at t = 0.79,
+  1.44e-4 at t = 2.31, ratio 8.5 = (2.31/0.79)^2). The TT content outside +-k is 8e-10 and
+  1.2e-9 (bound 1e-5): confirmed. [JUDGEMENT, tested below by the amplitude scan] the
+  non-TT part is the second-order backreaction of periodic_z4c item 3 (A^2 t^2).
+- X1: P = X = 0 and P' to 2.4e-11 (N = 16), 2.0e-11 (N = 32): not refuted (threshold
+  1e-10), number too optimistic for the same rounding reason (K_xx = -1 + Ahat_xx).
+- X2: confirmed: max relative errors over t <= 10: a 5.1e-8 / 4.3e-8, calH 3.6e-8 / 3.4e-8,
+  alpha/a 7.0e-8 / 6.5e-8 (N = 16 / 32).
+- X3: N = 16 confirmed (amplitude -7.05e-5 against -6.97e-5, phase 8.30e-5 against
+  8.36e-5). N = 32: phase confirmed (3.09e-6 against 3.21e-6), amplitude +1.32e-6 against
+  +1.65e-6, 20.0 per cent low: on the bound, counted as failed.
+- X4: confirmed: polarization ratio errors <= 7.9e-9 (modulus), 2.4e-8 (argument).
+- X5: confirmed. Order-6 Weyl vs TT 3.13e-5 / 5.01e-7 (order 5.97); spectral Weyl vs TT
+  1.9e-8 / 2.2e-8 (bound 1e-7), not falling with N.
+- X6: max |beta| = 0 confirmed; ||h - h^TT||/||h^TT|| = 5.6e-4 at both N: refuted (bound
+  1e-4), resolution independent like F6.
+
+Post hoc, not a prediction: after seeing the N = 32 amplitude I integrated the uniform
+background (chi, Khat, Theta, alpha with the code's equations) together with the mode in
+classical RK4 (`predict_flrw_coupled(..., scheme="classical")`): N = 32 amplitude 1.60e-6
+instead of 1.65e-6, a error 6.7e-9 (the code: 4.3e-8). That does not explain the gap.
+
+Trap met (recorded so nobody repeats it): at 14:56 I edited `scripts/run_expanding.sh`
+while run B-20261119-142234-85da208 (N = 48) was executing it; bash reads a script as it
+goes, so the wrapper would have resumed at a shifted offset. I restored the committed bytes
+(`git checkout`, `cmp` equal) a minute later, before its `wait` returned. The scan uses a new
+script `scripts/run_ascan.sh` instead.
+
+## 2026-11-19 15:05 Hypothesis H1 and the amplitude scan: predictions
+
+**H1.** AthenaK's `rk4` is not classical RK4 but RK4()4[2S] of Ketcheson (2010)
+(`athenak/src/driver/driver.cpp` lines 145-176). On a linear problem with constant
+coefficients it has the same stability polynomial (checked: |R - (1 + z + ... + z^4/24)|
+<= 2e-15 for four values of z), which is why F matches to four digits; on the nonlinear
+background coupled to the mode its error constants differ. The predictor with the 2S
+stages (`wlib/predict.py`, step_rk4_2s, fourth order checked on y' = y^2) should give the
+measured X errors: amplitude -7.05e-5 and +1.32e-6 within 5 per cent at N = 16 and 32,
+phase 8.30e-5 and 3.09e-6 within 5 per cent, and an a error within a factor 2 of the
+measured 4.3e-8. Refuted if the N = 32 amplitude is off by more than 10 per cent.
+
+**Amplitude scan** (`scripts/run_ascan.sh`, N = 16, amplitudes x10 and x1/10 for both
+tests; analysis with `--scale-flat/--scale-exp`). Predictions:
+- A1: TT amplitude and phase errors at the end do not change with the amplitude (linear
+  regime): equal to the N = 16 values above within 1e-3 of themselves for x1/10 and within
+  1 per cent for x10.
+- A2: the non-TT fraction is second order: proportional to the amplitude, 1.44e-3 (F, x10),
+  1.44e-5 (F, x1/10), 5.6e-3 and 5.6e-5 (X), each within 20 per cent.
+- A3: the spectral-Weyl vs TT difference of X (1.9e-8) is second order too: 1.9e-7 for x10
+  and 1.9e-9 for x1/10 within a factor 2; refuted if it stays or grows as 1/A (rounding).
+- A4: F1/X1 at t = 0 scale as 1/A (rounding): about 6e-13 (x10) and 6e-11 (x1/10) for F.

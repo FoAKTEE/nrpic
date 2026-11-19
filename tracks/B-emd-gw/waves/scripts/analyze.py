@@ -110,7 +110,16 @@ def main():
     ap.add_argument("--flat", required=True)
     ap.add_argument("--exp", required=True)
     ap.add_argument("--nwork", type=int, default=int(os.environ.get("NWORK", "8")))
+    ap.add_argument("--tag", default="", help="prefix of the output names (e.g. ascan_)")
+    ap.add_argument("--scale-flat", type=float, default=1.0, help="amplitude factor of test F")
+    ap.add_argument("--scale-exp", type=float, default=1.0, help="amplitude factor of test X")
+    ap.add_argument("--no-figures", action="store_true")
     a = ap.parse_args()
+    for key in ("amp", "amp_x"):
+        FLAT[key] *= a.scale_flat
+    for key in ("eps_p", "eps_x"):
+        EXP[key] *= a.scale_exp
+    tag = a.tag
     out = os.environ.get("NRPIC_RUN_DIR", os.path.join(SCR, "tmp", "analyze"))
     os.makedirs(out, exist_ok=True)
     dirs = {}
@@ -138,7 +147,7 @@ def main():
         for n in ns:
             recs_n = sorted(data[test][n], key=lambda r: r["time"])
             data[test][n] = recs_n
-            with open(os.path.join(out, f"dumps_{test}_N{n}.json"), "w") as f:
+            with open(os.path.join(out, f"{tag}dumps_{test}_N{n}.json"), "w") as f:
                 json.dump(recs_n, f, indent=1)
             p = fun(cfg["kvec"], cfg["L"], (n, n, n), cfg["tlim"], cfg["dt_out"])
             s = {k: summarize(recs_n, k) for k in DIAGS}
@@ -170,17 +179,19 @@ def main():
                     [res[test][str(n)][k][q] for n in ns])
         for k in ("weyl6", "weylS"):
             res[test]["orders"][k]["vs_tt_max"] = orders([res[test][str(n)][k]["vs_tt_max"] for n in ns])
-    with open(os.path.join(out, "results.json"), "w") as f:
+    res["scale"] = {"flat": a.scale_flat, "exp": a.scale_exp}
+    with open(os.path.join(out, f"{tag}results.json"), "w") as f:
         json.dump(res, f, indent=1)
-    figures(data, res, ns, out)
-    shutil.copy(os.path.join(out, "results.json"), os.path.join(PKG, "results", "results.json"))
+    if not a.no_figures:
+        figures(data, res, ns, out, tag)
+    shutil.copy(os.path.join(out, f"{tag}results.json"), os.path.join(PKG, "results", f"{tag}results.json"))
     for png in glob.glob(os.path.join(out, "*.png")):
         shutil.copy(png, os.path.join(PKG, "figs", os.path.basename(png)))
     print(json.dumps({t: {n: {k: res[t][n][k] for k in ("tt", "weyl6")} for n in map(str, ns)}
                       for t in ("flat", "exp")}, indent=1)[:6000])
 
 
-def figures(data, res, ns, out):
+def figures(data, res, ns, out, tag=""):
     fs.use_style()
     cols = {16: fs.PAL["yellow"], 32: fs.PAL["red"], 64: fs.PAL["green"]}
     for test in ("flat", "exp"):
@@ -241,8 +252,8 @@ def figures(data, res, ns, out):
         for ax in (axs[0, 1], axs[1, 0], axs[1, 1]):
             ax.set_xlabel("t", labelpad=-2)
             ax.legend(loc="lower right", ncol=2, fontsize=6.5)
-        fig.savefig(os.path.join(out, f"{test}_errors.png"))
-        fig.savefig(os.path.join(out, f"{test}_errors.pdf"))
+        fig.savefig(os.path.join(out, f"{tag}{test}_errors.png"))
+        fig.savefig(os.path.join(out, f"{tag}{test}_errors.pdf"))
         plt.close(fig)
     # convergence
     fig, axs = plt.subplots(1, 2, figsize=(fs.FULL_WIDTH, 3.4))
@@ -260,14 +271,14 @@ def figures(data, res, ns, out):
         ax.loglog(nn, [r[str(n)]["weyl6"]["vs_tt_end"] for n in ns], marker="v", color=fs.PAL["blue"],
                   label="Weyl FD6 vs TT")
         y0 = abs(r[str(ns[0])]["tt"]["phase_p_end"])
-        ax.loglog(nn, y0 * (nn / nn[0]) ** -4, **fs.GUIDE, lw=1.0)
+        ax.loglog(nn, y0 * (nn / nn[0]) ** -4, **dict(fs.GUIDE, lw=1.0))
         ax.loglog(nn, y0 * (nn / nn[0]) ** -6, color="k", ls="-.", lw=1.0)
         ax.set_xlabel("N (cells per side)")
         ax.set_title("flat, oblique" if test == "flat" else "expanding box")
         ax.legend(loc="lower left", ncol=2, fontsize=6.5)
     axs[0].set_ylabel("error at the last dump")
-    fig.savefig(os.path.join(out, "convergence.png"))
-    fig.savefig(os.path.join(out, "convergence.pdf"))
+    fig.savefig(os.path.join(out, f"{tag}convergence.png"))
+    fig.savefig(os.path.join(out, f"{tag}convergence.pdf"))
     plt.close(fig)
 
 
