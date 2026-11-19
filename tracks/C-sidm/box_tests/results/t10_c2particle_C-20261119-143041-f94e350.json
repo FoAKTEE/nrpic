@@ -1,0 +1,135 @@
+{
+ "meta": {
+  "kind": "twotemp",
+  "n": 100000,
+  "box": [
+   1.0,
+   1.0,
+   1.0
+  ],
+  "x0": 10.0,
+  "rho0": 1.0,
+  "sigma": 5.0,
+  "seed": 7,
+  "theta": 0.3,
+  "theta1": 0.3,
+  "theta2": 0.09999999999999999,
+  "n_pop1": 50000,
+  "n_pop2": 50000,
+  "note": "population 1 = tags [0, n_pop1), species 0; population 2 species 1 (species are labels only; collisions must treat all particles as one physical species)",
+  "lambda_mfp": 0.2,
+  "Gamma_coll": 4.2652868213732695,
+  "t_coll": 0.2344508216866025,
+  "knudsen_x": 0.2,
+  "particles_per_lambda3": 800.0000000000002,
+  "recommended": {
+   "cells_x": 20,
+   "note": "cells of at most lambda/4; at least 20 particles per cell; dt at most 0.1 t_coll and below the cell crossing time"
+  }
+ },
+ "runs": {
+  "mb1": {
+   "rc": 0,
+   "wall": 17.16401720046997
+  },
+  "mb8": {
+   "rc": 0,
+   "wall": 17.00503921508789
+  },
+  "mb64": {
+   "rc": 0,
+   "wall": 17.808185338974
+  },
+  "seed8": {
+   "rc": 0,
+   "wall": 18.799115419387817
+  },
+  "rst0": {
+   "rc": 0,
+   "wall": 20.49276638031006,
+   "restart": "/data/haiyangw/nrpic/scratch/C-sidm/C-20261119-143041-f94e350/mb8/rst/box.00000.rst"
+  },
+  "rst1": {
+   "rc": 0,
+   "wall": 14.05702829360962,
+   "restart": "/data/haiyangw/nrpic/scratch/C-sidm/C-20261119-143041-f94e350/mb8/rst/box.00001.rst"
+  },
+  "rst2": {
+   "rc": 0,
+   "wall": 5.141247272491455,
+   "restart": "/data/haiyangw/nrpic/scratch/C-sidm/C-20261119-143041-f94e350/mb8/rst/box.00002.rst"
+  },
+  "rst3": {
+   "rc": 0,
+   "wall": 0.06407380104064941,
+   "restart": "/data/haiyangw/nrpic/scratch/C-sidm/C-20261119-143041-f94e350/mb8/rst/box.00003.rst"
+  }
+ },
+ "compare_to_mb1": {
+  "mb8": {
+   "final_cycle": 99,
+   "final_file": "box.part.00001.bin",
+   "identical": true,
+   "hist_records_compared": 100,
+   "hist_integers_identical": true,
+   "hist_sumP_max_rel": 1.1879386363489175e-14
+  },
+  "mb64": {
+   "final_cycle": 99,
+   "final_file": "box.part.00001.bin",
+   "identical": true,
+   "hist_records_compared": 100,
+   "hist_integers_identical": true,
+   "hist_sumP_max_rel": 1.0325074129013956e-14
+  },
+  "seed8": {
+   "final_cycle": 99,
+   "final_file": "box.part.00001.bin",
+   "identical": false,
+   "hist_records_compared": 100,
+   "hist_integers_identical": false,
+   "hist_sumP_max_rel": 0.004997495111425332,
+   "frac_particles_differ": 1.0,
+   "max_du": 4.595138550106019
+  },
+  "rst0": {
+   "final_cycle": 99,
+   "final_file": "box.part.00001.bin",
+   "identical": true,
+   "hist_records_compared": 100,
+   "hist_integers_identical": true,
+   "hist_sumP_max_rel": 1.1879386363489175e-14
+  },
+  "rst1": {
+   "final_cycle": 99,
+   "final_file": "box.part.00001.bin",
+   "identical": true,
+   "hist_records_compared": 63,
+   "hist_integers_identical": true,
+   "hist_sumP_max_rel": 7.549516567451064e-15
+  },
+  "rst2": {
+   "final_cycle": 99,
+   "final_file": "box.part.00001.bin",
+   "identical": true,
+   "hist_records_compared": 26,
+   "hist_integers_identical": true,
+   "hist_sumP_max_rel": 5.995204332975845e-15
+  },
+  "rst3": {
+   "skipped": true,
+   "why": "resumed from the restart file written at the end of the run (cycle = nlim): no step taken"
+  }
+ },
+ "set": [
+  "particles/coll_energy=particle"
+ ],
+ "deck": "/data/haiyangw/nrpic/wt/C-sidm/tracks/C-sidm/box_tests/inputs/box_c2.athinput",
+ "mb1_n_noroot": 0.0,
+ "mb1_n_balance": 0.0,
+ "mb1_max_dlam": 0.0,
+ "mpi": "not run: the processor build has Athena_ENABLE_MPI=OFF",
+ "collisions_total_mb1": 385554.0,
+ "max_nsub_mb1": 4.0,
+ "pass": true
+}

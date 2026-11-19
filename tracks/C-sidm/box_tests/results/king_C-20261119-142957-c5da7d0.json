@@ -1,0 +1,579 @@
+{
+ "exe": "/data/haiyangw/nrpic/scratch/core/exe/core_collisions-2/athena_cpu",
+ "deck": "/data/haiyangw/nrpic/wt/C-sidm/tracks/C-sidm/box_tests/inputs/king_cc1.athinput",
+ "nlim": 2,
+ "source": "/data/haiyangw/nrpic/scratch/C-sidm/C-20261119-141431-a351ac7",
+ "runs": {
+  "king_kn1_particle": {
+   "run": "/data/haiyangw/nrpic/scratch/C-sidm/C-20261119-141431-a351ac7/king_kn1_particle",
+   "mode": "particle",
+   "records": 2,
+   "n_coll": [
+    249.0,
+    269.0
+   ],
+   "sum_P": [
+    244.1432411046394,
+    245.0148589896103
+   ],
+   "n_tested": [
+    47136.0,
+    47137.0
+   ],
+   "max_P": [
+    0.04668213163336681,
+    0.05325461394304474
+   ],
+   "max_nsub": [
+    1.0,
+    1.0
+   ],
+   "sum_MW_p": [
+    1.131472470437017,
+    1.131473203026299
+   ],
+   "dW_p": [
+    4.638583596369339e-08,
+    -4.111599133340183e-08
+   ],
+   "sum_MH_p": [
+    0.8677203678253029,
+    0.8677196418072417
+   ],
+   "dH_p": [
+    4.302718842368279e-19,
+    4.574035890023334e-19
+   ],
+   "n_noroot": [
+    0.0,
+    0.0
+   ],
+   "n_balance": [
+    0.0,
+    0.0
+   ],
+   "max_dlam": [
+    0.00114555923619386,
+    0.002009329157685924
+   ],
+   "dE_col20": [
+    2.071524951628798e-19,
+    2.428866976251706e-19
+   ],
+   "dW_per_coll_rel": 8.991332531752825e-12,
+   "dH_per_coll_rel": 1.9748979951251122e-21,
+   "dH_per_coll_abs": 1.7136592147474156e-21,
+   "max_abs_dH_step_rel": 5.271329205475593e-19,
+   "dump": "cc.coll_dump.0.bin",
+   "dump_version": 2,
+   "dump_energy_mode": 1,
+   "dump_pmetric_flag": 1,
+   "metric_from": "own dump",
+   "metric_positions_identical": true,
+   "dump_record": 0,
+   "dump_collided": 497,
+   "dump_collisions": 249.0,
+   "hst_n_coll_of_record": 249.0,
+   "dump_dW_sum": 4.638583596369613e-08,
+   "dump_dH_sum": 4.675621868843738e-19,
+   "hst_dW_of_record": 4.638583596369339e-08,
+   "hst_dH_of_record": 4.302718842368279e-19,
+   "dump_sum_MW": 1.131472424051183,
+   "dump_sum_MH": 0.8677203678253086,
+   "hst_sum_MW_p_of_record": 1.131472470437017,
+   "cells_with_collisions": 241,
+   "cell_dW_per_coll_rel": 1.646425435445577e-10,
+   "cell_dW_per_coll_rel_se": 2.432965577915473e-10,
+   "cell_dH_per_coll_rel": 2.1505722886514617e-21,
+   "cell_dH_per_coll_rel_se": 2.835663331658027e-22,
+   "cell_dH_abs_max": 2.0752307207730358e-20,
+   "cell_dW_abs_max": 1.628996061716595e-08,
+   "dump_vs_hst_dW_abs": 2.7396221887756277e-21,
+   "dump_vs_hst_dH_abs": 3.729030264754589e-20,
+   "dump_dW_sum_naive": 4.638583596394685e-08,
+   "dump_dH_sum_naive": 8.673617379884035e-19,
+   "rc": 0,
+   "wall": NaN,
+   "kn": 1.0,
+   "sigma": 168.89536939113694
+  },
+  "king_kn1_cell": {
+   "run": "/data/haiyangw/nrpic/scratch/C-sidm/C-20261119-141431-a351ac7/king_kn1_cell",
+   "mode": "cell",
+   "records": 2,
+   "n_coll": [
+    249.0,
+    269.0
+   ],
+   "sum_P": [
+    244.1674190564503,
+    245.0451279352459
+   ],
+   "n_tested": [
+    47136.0,
+    47137.0
+   ],
+   "max_P": [
+    0.04669194771661989,
+    0.05324917795128407
+   ],
+   "max_nsub": [
+    1.0,
+    1.0
+   ],
+   "sum_MW_p": [
+    1.1314723696090685,
+    1.1314732158181198
+   ],
+   "dW_p": [
+    -5.444211369504925e-08,
+    7.245802618753155e-08
+   ],
+   "sum_MH_p": [
+    0.8677202984982253,
+    0.86771965313673
+   ],
+   "dH_p": [
+    -6.932707798020173e-08,
+    8.063708013979364e-08
+   ],
+   "n_noroot": [
+    0.0,
+    0.0
+   ],
+   "n_balance": [
+    0.0,
+    0.0
+   ],
+   "max_dlam": [
+    0.0,
+    0.0
+   ],
+   "dE_col20": [
+    5.082197683525802e-20,
+    0.0
+   ],
+   "dW_per_coll_rel": 3.073849152720147e-11,
+   "dH_per_coll_rel": 2.5162464265111158e-11,
+   "dH_per_coll_abs": 2.183398100307318e-11,
+   "max_abs_dH_step_rel": 9.292987642759697e-08,
+   "dump": "cc.coll_dump.0.bin",
+   "dump_version": 2,
+   "dump_energy_mode": 0,
+   "dump_pmetric_flag": 1,
+   "metric_from": "own dump",
+   "metric_positions_identical": true,
+   "dump_record": 0,
+   "dump_collided": 497,
+   "dump_collisions": 249.0,
+   "hst_n_coll_of_record": 249.0,
+   "dump_dW_sum": -5.444211369509688e-08,
+   "dump_dH_sum": -6.932707798023331e-08,
+   "hst_dW_of_record": -5.444211369504925e-08,
+   "hst_dH_of_record": -6.932707798020173e-08,
+   "dump_sum_MW": 1.131472424051183,
+   "dump_sum_MH": 0.8677203678253086,
+   "hst_sum_MW_p_of_record": 1.1314723696090685,
+   "cells_with_collisions": 241,
+   "cell_dW_per_coll_rel": -1.9323760989683442e-10,
+   "cell_dW_per_coll_rel_se": 3.44901769026302e-10,
+   "cell_dH_per_coll_rel": -3.2086604192354264e-10,
+   "cell_dH_per_coll_rel_se": 5.431763683736277e-10,
+   "cell_dH_abs_max": 2.723226973011888e-08,
+   "cell_dW_abs_max": 2.2652168490265142e-08,
+   "dump_vs_hst_dW_abs": 4.7632368393253546e-20,
+   "dump_vs_hst_dH_abs": 3.1578447064824385e-20,
+   "dump_dW_sum_naive": -5.444211369481228e-08,
+   "dump_dH_sum_naive": -6.932707798026211e-08,
+   "rc": 0,
+   "wall": NaN,
+   "kn": 1.0,
+   "sigma": 168.89536939113694,
+   "vs_release_smoke": {
+    "smoke": "/data/haiyangw/nrpic/scratch/C-sidm/C-20261115-172003-6422b6a/cc1_kn1",
+    "records": 2,
+    "columns_differ": [
+     "sum_MW_particles",
+     "dE_particles"
+    ],
+    "max_abs_diff": {
+     "sum_MW_particles": 1.6653345369377348e-14,
+     "dE_particles": 1.343306361442153e-15
+    },
+    "identical": false
+   }
+  },
+  "king_kn0.1_particle": {
+   "run": "/data/haiyangw/nrpic/scratch/C-sidm/C-20261119-141431-a351ac7/king_kn0.1_particle",
+   "mode": "particle",
+   "records": 2,
+   "n_coll": [
+    2399.0,
+    2378.0
+   ],
+   "sum_P": [
+    2440.338568822209,
+    2439.060392516098
+   ],
+   "n_tested": [
+    81023.0,
+    81068.0
+   ],
+   "max_P": [
+    0.1022632452709527,
+    0.09774133951007032
+   ],
+   "max_nsub": [
+    7.0,
+    6.0
+   ],
+   "sum_MW_p": [
+    1.1314724245671817,
+    1.1314732115129227
+   ],
+   "dW_p": [
+    5.160011488193732e-10,
+    2.016750226912069e-08
+   ],
+   "sum_MH_p": [
+    0.8677203678253007,
+    0.8677196454284755
+   ],
+   "dH_p": [
+    3.571362533268699e-18,
+    3.593638045709632e-18
+   ],
+   "n_noroot": [
+    0.0,
+    0.0
+   ],
+   "n_balance": [
+    1.0,
+    0.0
+   ],
+   "max_dlam": [
+    0.001761627964690371,
+    0.002228105558416127
+   ],
+   "dE_col20": [
+    1.598801157722094e-18,
+    1.67175187030437e-18
+   ],
+   "dW_per_coll_rel": 3.826704147057116e-12,
+   "dH_per_coll_rel": 1.72854701654464e-21,
+   "dH_per_coll_abs": 1.4998954529994412e-21,
+   "max_abs_dH_step_rel": 4.141473648363824e-18,
+   "dump": "cc.coll_dump.0.bin",
+   "dump_version": 2,
+   "dump_energy_mode": 1,
+   "dump_pmetric_flag": 1,
+   "metric_from": "own dump",
+   "metric_positions_identical": true,
+   "dump_record": 0,
+   "dump_collided": 4615,
+   "dump_collisions": 2399.0,
+   "hst_n_coll_of_record": 2399.0,
+   "dump_dW_sum": 5.16001148720516e-10,
+   "dump_dH_sum": 3.57702013625491e-18,
+   "hst_dW_of_record": 5.160011488193732e-10,
+   "hst_dH_of_record": 3.571362533268699e-18,
+   "dump_sum_MW": 1.131472424051183,
+   "dump_sum_MH": 0.8677203678253086,
+   "hst_sum_MW_p_of_record": 1.1314724245671817,
+   "cells_with_collisions": 1847,
+   "cell_dW_per_coll_rel": 1.9009751801377035e-13,
+   "cell_dW_per_coll_rel_se": 8.296941633375773e-11,
+   "cell_dH_per_coll_rel": 1.713649986138475e-21,
+   "cell_dH_per_coll_rel_se": 9.339072377230224e-23,
+   "cell_dH_abs_max": 3.456953215981613e-20,
+   "cell_dW_abs_max": 2.820087992544227e-08,
+   "dump_vs_hst_dW_abs": 9.885718218682489e-20,
+   "dump_vs_hst_dH_abs": 5.657602986211648e-21,
+   "dump_dW_sum_naive": 5.160011515292773e-10,
+   "dump_dH_sum_naive": 6.938893903907228e-18,
+   "rc": 0,
+   "wall": NaN,
+   "kn": 0.1,
+   "sigma": 1688.9536939113693
+  },
+  "king_kn0.1_cell": {
+   "run": "/data/haiyangw/nrpic/scratch/C-sidm/C-20261119-141431-a351ac7/king_kn0.1_cell",
+   "mode": "cell",
+   "records": 2,
+   "n_coll": [
+    2401.0,
+    2377.0
+   ],
+   "sum_P": [
+    2440.590274694302,
+    2439.368868277465
+   ],
+   "n_tested": [
+    81023.0,
+    81060.0
+   ],
+   "max_P": [
+    0.1022591077177362,
+    0.09776063918015873
+   ],
+   "max_nsub": [
+    7.0,
+    6.0
+   ],
+   "sum_MW_p": [
+    1.1314726761618823,
+    1.1314736076962821
+   ],
+   "dW_p": [
+    2.521106984372894e-07,
+    1.625732325560415e-07
+   ],
+   "sum_MH_p": [
+    0.8677206768664126,
+    0.8677201439081917
+   ],
+   "dH_p": [
+    3.090411100297025e-07,
+    1.891660469101347e-07
+   ],
+   "n_noroot": [
+    0.0,
+    0.0
+   ],
+   "n_balance": [
+    0.0,
+    0.0
+   ],
+   "max_dlam": [
+    0.0,
+    0.0
+   ],
+   "dE_col20": [
+    1.253608761936365e-19,
+    6.776263578034403e-21
+   ],
+   "dW_per_coll_rel": 7.670558574653003e-11,
+   "dH_per_coll_rel": 1.201666268093294e-10,
+   "dH_per_coll_abs": 1.0427106675174492e-10,
+   "max_abs_dH_step_rel": 3.56152755453216e-07,
+   "dump": "cc.coll_dump.0.bin",
+   "dump_version": 2,
+   "dump_energy_mode": 0,
+   "dump_pmetric_flag": 1,
+   "metric_from": "own dump",
+   "metric_positions_identical": true,
+   "dump_record": 0,
+   "dump_collided": 4617,
+   "dump_collisions": 2401.0,
+   "hst_n_coll_of_record": 2401.0,
+   "dump_dW_sum": 2.5211069843712336e-07,
+   "dump_dH_sum": 3.0904111002960737e-07,
+   "hst_dW_of_record": 2.521106984372894e-07,
+   "hst_dH_of_record": 3.090411100297025e-07,
+   "dump_sum_MW": 1.131472424051183,
+   "dump_sum_MH": 0.8677203678253086,
+   "hst_sum_MW_p_of_record": 1.1314726761618823,
+   "cells_with_collisions": 1847,
+   "cell_dW_per_coll_rel": 9.280153110929381e-11,
+   "cell_dW_per_coll_rel_se": 1.2004473674878423e-10,
+   "cell_dH_per_coll_rel": 1.48335227945835e-10,
+   "cell_dH_per_coll_rel_se": 1.8867815220508548e-10,
+   "cell_dH_abs_max": 4.7188225212254923e-08,
+   "cell_dW_abs_max": 3.8925815473901915e-08,
+   "dump_vs_hst_dW_abs": 1.6601845766184287e-19,
+   "dump_vs_hst_dH_abs": 9.513238788849861e-20,
+   "dump_dW_sum_naive": 2.5211069843572576e-07,
+   "dump_dH_sum_naive": 3.090411100289958e-07,
+   "rc": 0,
+   "wall": NaN,
+   "kn": 0.1,
+   "sigma": 1688.9536939113693
+  },
+  "king_kn0.01_particle": {
+   "run": "/data/haiyangw/nrpic/scratch/C-sidm/C-20261119-141431-a351ac7/king_kn0.01_particle",
+   "mode": "particle",
+   "records": 2,
+   "n_coll": [
+    24072.0,
+    24266.0
+   ],
+   "sum_P": [
+    24316.29673413728,
+    24199.23165725685
+   ],
+   "n_tested": [
+    580584.0,
+    598446.0
+   ],
+   "max_P": [
+    0.1117284691786513,
+    0.1104451247930401
+   ],
+   "max_nsub": [
+    61.0,
+    64.0
+   ],
+   "sum_MW_p": [
+    1.131471968074359,
+    1.1314711641552833
+   ],
+   "dW_p": [
+    -4.559768341895452e-07,
+    -1.414006764561182e-06
+   ],
+   "sum_MH_p": [
+    0.8677203678252957,
+    0.8677196667606488
+   ],
+   "dH_p": [
+    3.688666776485931e-17,
+    3.923820681708891e-17
+   ],
+   "n_noroot": [
+    0.0,
+    0.0
+   ],
+   "n_balance": [
+    10.0,
+    3.0
+   ],
+   "max_dlam": [
+    0.003363459808270797,
+    0.005315477041588301
+   ],
+   "dE_col20": [
+    1.734119965001888e-17,
+    1.781069413081418e-17
+   ],
+   "dW_per_coll_rel": -3.419048970567688e-11,
+   "dH_per_coll_rel": 1.814922651933106e-21,
+   "dH_per_coll_abs": 1.574845351109856e-21,
+   "max_abs_dH_step_rel": 4.521991182195061e-17,
+   "dump": "cc.coll_dump.0.bin",
+   "dump_version": 2,
+   "dump_energy_mode": 1,
+   "dump_pmetric_flag": 1,
+   "metric_from": "own dump",
+   "metric_positions_identical": true,
+   "dump_record": 0,
+   "dump_collided": 31600,
+   "dump_collisions": 24072.0,
+   "hst_n_coll_of_record": 24072.0,
+   "dump_dW_sum": -4.5597683418925425e-07,
+   "dump_dH_sum": 3.7358388138650916e-17,
+   "hst_dW_of_record": -4.559768341895452e-07,
+   "hst_dH_of_record": 3.688666776485931e-17,
+   "dump_sum_MW": 1.131472424051183,
+   "dump_sum_MH": 0.8677203678253086,
+   "hst_sum_MW_p_of_record": 1.131471968074359,
+   "cells_with_collisions": 7596,
+   "cell_dW_per_coll_rel": -1.6741201756965403e-11,
+   "cell_dW_per_coll_rel_se": 2.3871342407760722e-11,
+   "cell_dH_per_coll_rel": 1.781796132937099e-21,
+   "cell_dH_per_coll_rel_se": 5.426955180068335e-23,
+   "cell_dH_abs_max": 2.3568691757350907e-19,
+   "cell_dW_abs_max": 7.773193197746883e-08,
+   "dump_vs_hst_dW_abs": 2.9095581738185217e-19,
+   "dump_vs_hst_dH_abs": 4.717203737916048e-19,
+   "dump_dW_sum_naive": -4.559768341794168e-07,
+   "dump_dH_sum_naive": 0.0,
+   "rc": 0,
+   "wall": NaN,
+   "kn": 0.01,
+   "sigma": 16889.536939113692
+  },
+  "king_kn0.01_cell": {
+   "run": "/data/haiyangw/nrpic/scratch/C-sidm/C-20261119-141431-a351ac7/king_kn0.01_cell",
+   "mode": "cell",
+   "records": 2,
+   "n_coll": [
+    24106.0,
+    24277.0
+   ],
+   "sum_P": [
+    24319.0263215489,
+    24206.31878499486
+   ],
+   "n_tested": [
+    580584.0,
+    598694.0
+   ],
+   "max_P": [
+    0.1114492928604454,
+    0.1107806844651588
+   ],
+   "max_nsub": [
+    61.0,
+    64.0
+   ],
+   "sum_MW_p": [
+    1.1314746062269705,
+    1.1314780227097803
+   ],
+   "dW_p": [
+    2.182175779928518e-06,
+    2.805543273280376e-06
+   ],
+   "sum_MH_p": [
+    0.8677230554658677,
+    0.8677257290310341
+   ],
+   "dH_p": [
+    2.687640567857884e-06,
+    3.373392165178455e-06
+   ],
+   "n_noroot": [
+    0.0,
+    0.0
+   ],
+   "n_balance": [
+    0.0,
+    0.0
+   ],
+   "max_dlam": [
+    0.0,
+    0.0
+   ],
+   "dE_col20": [
+    3.252606517456513e-19,
+    3.422013106907373e-19
+   ],
+   "dW_per_coll_rel": 9.110964989515178e-11,
+   "dH_per_coll_rel": 1.4436858479063078e-10,
+   "dH_per_coll_abs": 1.2527194950780934e-10,
+   "max_abs_dH_step_rel": 3.887624916856426e-06,
+   "dump": "cc.coll_dump.0.bin",
+   "dump_version": 2,
+   "dump_energy_mode": 0,
+   "dump_pmetric_flag": 1,
+   "metric_from": "own dump",
+   "metric_positions_identical": true,
+   "dump_record": 0,
+   "dump_collided": 31624,
+   "dump_collisions": 24106.0,
+   "hst_n_coll_of_record": 24106.0,
+   "dump_dW_sum": 2.1821757799288245e-06,
+   "dump_dH_sum": 2.687640567858295e-06,
+   "hst_dW_of_record": 2.182175779928518e-06,
+   "hst_dH_of_record": 2.687640567857884e-06,
+   "dump_sum_MW": 1.131472424051183,
+   "dump_sum_MH": 0.8677203678253086,
+   "hst_sum_MW_p_of_record": 1.1314746062269705,
+   "cells_with_collisions": 7601,
+   "cell_dW_per_coll_rel": 8.000564025839933e-11,
+   "cell_dW_per_coll_rel_se": 3.419614607297545e-11,
+   "cell_dH_per_coll_rel": 1.2848908721473323e-10,
+   "cell_dH_per_coll_rel_se": 5.3804101489706187e-11,
+   "cell_dH_abs_max": 1.3039045806791845e-07,
+   "cell_dW_abs_max": 1.0874158475484864e-07,
+   "dump_vs_hst_dW_abs": 3.066259269060567e-19,
+   "dump_vs_hst_dH_abs": 4.1081097941833566e-19,
+   "dump_dW_sum_naive": 2.18217577996338e-06,
+   "dump_dH_sum_naive": 2.687640567877736e-06,
+   "rc": 0,
+   "wall": NaN,
+   "kn": 0.01,
+   "sigma": 16889.536939113692
+  }
+ }
+}

@@ -31,6 +31,13 @@ Predictions and outcomes, failed ones included: `JOURNAL.md`. Results: section
 | `scripts/t9.py` | T9: unequal masses (nanbu), 8 seeds; refusal with `equal` |
 | `scripts/t11.py` | T11: drifting gas (a, b) and drifting two-temperature start (c) |
 | `scripts/card.py` | card cost per pair and T10b against the processor runs |
+| `inputs/box_c2.athinput` | wave 2b: `box.athinput` plus `coll_energy` (a command line may only override parameters the deck has) |
+| `inputs/box_static.athinput` | wave 2b, T12: the same box in the static homogeneous metric alpha0 = 0.8, psi0 = 1.1 (`static_conformal`, mesh metric) |
+| `inputs/king_cc1.athinput` | wave 2b: threshold_scan's `cc1_kn1.athinput` plus `coll_energy` |
+| `scripts/t12.py` | wave 2b: T12 in the curved box, against its flat twin (same particles at proper positions, step alpha0 dt) and the analytic rate |
+| `scripts/king_defect.py` | wave 2b: first-step energy defect of the King threshold model in both modes, from coll.hst and recomputed from the version-2 dump per collision cell |
+| `scripts/compare_modes.py` | wave 2b: one collision step of `coll_energy = particle` against the option absent, from two T0b dumps |
+| `scripts/timing.py` | wave 2b: cost of `particle` against `cell` and no collisions under equal load |
 | `figs/` | figures of the runs (copied from the run directories; each looked at) |
 | `JOURNAL.md` | predictions before each run, outcomes after |
 
