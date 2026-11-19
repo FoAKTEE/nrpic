@@ -616,7 +616,7 @@ Neither is established if the split is near one half.
   projection on the residual at rest is 0.036, 0.062, 0.138 (v = 0.3), so it is not a
   multiple of the deposit error of the cluster at rest.
 
-### Lattice test: predictions (written 16:08Z, before the run)
+### Lattice test: predictions (written 16:05Z, before the run)
 
 The quiet lattice has the spacing h = 0.25 at every cell count, so an error of its
 sampling at the edge does not fall with the cell size. Run TB again for v = 0.3 at 64
