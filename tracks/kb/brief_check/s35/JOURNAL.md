@@ -214,7 +214,7 @@ wording that 2508.10070 drops (row s35.1, section 5).
 Prediction for run 4 (tally after the change of row 35): 52 rows, tally unchanged (33 / 18 / 1 /
 0), 69 locator spans (one span added to row 35), no problem, exit 0.
 
-## Entry 6 (2026-11-19 07:27 PST): outcome of run 4; package closed
+## Entry 6 (2026-11-19 07:25 PST): outcome of run 4; package closed
 
 Run 4, `kb-20261119-152449-e225d94` (completed, exit 0): 52 rows, tally 33 / 18 / 1 / 0, 69
 locator spans, no problem. Prediction CONFIRMED. Figure
