@@ -1,0 +1,531 @@
+{
+  "schema": "nrpic-run-manifest/1",
+  "run_id": "core-20261119-150317-a1e8ee7",
+  "track": "core",
+  "gate": "G2",
+  "kind": "scouting",
+  "purpose": "U card: inflection (USR) case to t = 10.5 at N = 64 and 128; ladder at nmax2 = 64 (L64, L128) and k_max dx = pi/2 (K64 nmax2 256, K128 nmax2 1024), mode scales 1, +-0.1 or +-0.01, 0",
+  "preregistered_in": null,
+  "launcher": "batch",
+  "command": [
+    "scripts/gpu_batch.sh",
+    "/data/haiyangw/nrpic/scratch/core/core-20261119-150317-a1e8ee7/batch.list"
+  ],
+  "cwd": "scratch/core/core-20261119-150317-a1e8ee7",
+  "git": {
+    "sha": "a1e8ee77ba57872d65c5f0f01e29c661b284e462",
+    "branch": "core/scalar-3",
+    "dirty": false,
+    "package": [
+      "tracks/core/analysis/scalar3"
+    ],
+    "outside_package": {
+      "count": 0,
+      "first": []
+    },
+    "merge_base_main": "27b2ced9be0f020a4206d89e3cc982ada5c4367c",
+    "worktree": "wt/core-scalar3"
+  },
+  "code": {
+    "core_tag": "core-v0.3",
+    "athenak_upstream_sha": "c5a0d7f",
+    "kokkos_sha": "6739bc623081648af9e752b616d9671527922cbf",
+    "problem": "scalar_field",
+    "exe": "/data/haiyangw/nrpic/wt/core-scalar3/.work/exe/athena_gpu_cea3a49",
+    "exe_sha256": "5ef697c198fe0e5b77c487df10d90ab96518ecf05f91521e638097efa32c3e13",
+    "cmake_flags": null,
+    "toolchain": null
+  },
+  "env": {
+    "host": "anta",
+    "env_hash": "33c1dbb6673b68919eaa332b0add0b58aeac8be843f2071b9d06e2e0e397a96d",
+    "machine_file_sha256": "0321f40f4caeeb2a36624a9fa9809e60bad31071f366b3517ba23ad45698d2d7",
+    "uv_lock_sha256": "5417f6ba318b914aa3800e5d55f7b11fdd8df13c2688bdda7d419240aa1d5863",
+    "track_requirements_sha256": null,
+    "container_digest": null,
+    "compiler": "g++ 11.4.0",
+    "mpi": "none (Athena_ENABLE_MPI=OFF)",
+    "gpu": "NVIDIA A100 80GB (Slurm partition preempt)",
+    "python": "3.10.12 /data/haiyangw/nrpic/wt/core-scalar3/.venv"
+  },
+  "input": {
+    "file": "problems/scalar/usr_stochastic.athinput",
+    "sha256": "21e56b0890bec9bf6d4db19846e0b5777d099d9613fa8e6cea86283f234635eb",
+    "overrides": {
+      "mesh/nx1": "64",
+      "mesh/nx2": "64",
+      "mesh/nx3": "64",
+      "meshblock/nx1": "64",
+      "meshblock/nx2": "64",
+      "meshblock/nx3": "64",
+      "scalar_field/noise_nmax2": "64",
+      "scalar_field/noise_mode_file": "/data/haiyangw/nrpic/wt/core-scalar3/problems/scalar/usr_stochastic_modes.txt",
+      "scalar_field/noise_mode_scale": "1.0",
+      "scalar_field/dump_dt": "0.5",
+      "time/tlim": "10.5"
+    }
+  },
+  "inputs": [
+    {
+      "path": "problems/scalar/usr_stochastic_modes.txt",
+      "role": "input",
+      "sha256": "80446214c8c91655b751b30038050b79a05af32fb149dc72afe9daa15cdc31ed",
+      "bytes": 5567,
+      "tracked": true
+    },
+    {
+      "path": "tracks/core/analysis/scalar3/inputs/usr_modes_n256.txt",
+      "role": "input",
+      "sha256": "acaee9a33914fe9066e7d8c15942e0f1a36d4a469a9c495ceb9a62bc0fffcb0b",
+      "bytes": 21818,
+      "tracked": true
+    },
+    {
+      "path": "tracks/core/analysis/scalar3/inputs/usr_modes_n1024.txt",
+      "role": "input",
+      "sha256": "1b95a454dbe199810243b99d72a7b22ea60550951bf5f8a40ecaf72395fd21ef",
+      "bytes": 87197,
+      "tracked": true
+    },
+    {
+      "path": ".work/exe/athena_gpu_cea3a49",
+      "role": "exe",
+      "sha256": "5ef697c198fe0e5b77c487df10d90ab96518ecf05f91521e638097efa32c3e13",
+      "bytes": 103171432,
+      "tracked": false
+    },
+    {
+      "path": "tracks/core/analysis/scalar3/inputs/card_usr.list",
+      "role": "list",
+      "sha256": "d3b3f622894994e2c4948f16c3b92440295cbe8907c010c2e15b5f9cc8b5ff2a",
+      "bytes": 5866,
+      "tracked": true
+    },
+    {
+      "path": "problems/scalar/usr_stochastic.athinput",
+      "role": "athinput:L64p1",
+      "sha256": "21e56b0890bec9bf6d4db19846e0b5777d099d9613fa8e6cea86283f234635eb",
+      "bytes": 3708,
+      "tracked": true
+    },
+    {
+      "path": "problems/scalar/usr_stochastic.athinput",
+      "role": "athinput:L64p01",
+      "sha256": "21e56b0890bec9bf6d4db19846e0b5777d099d9613fa8e6cea86283f234635eb",
+      "bytes": 3708,
+      "tracked": true
+    },
+    {
+      "path": "problems/scalar/usr_stochastic.athinput",
+      "role": "athinput:L64m01",
+      "sha256": "21e56b0890bec9bf6d4db19846e0b5777d099d9613fa8e6cea86283f234635eb",
+      "bytes": 3708,
+      "tracked": true
+    },
+    {
+      "path": "problems/scalar/usr_stochastic.athinput",
+      "role": "athinput:L64z0",
+      "sha256": "21e56b0890bec9bf6d4db19846e0b5777d099d9613fa8e6cea86283f234635eb",
+      "bytes": 3708,
+      "tracked": true
+    },
+    {
+      "path": "problems/scalar/usr_stochastic.athinput",
+      "role": "athinput:K64p1",
+      "sha256": "21e56b0890bec9bf6d4db19846e0b5777d099d9613fa8e6cea86283f234635eb",
+      "bytes": 3708,
+      "tracked": true
+    },
+    {
+      "path": "problems/scalar/usr_stochastic.athinput",
+      "role": "athinput:K64m1",
+      "sha256": "21e56b0890bec9bf6d4db19846e0b5777d099d9613fa8e6cea86283f234635eb",
+      "bytes": 3708,
+      "tracked": true
+    },
+    {
+      "path": "problems/scalar/usr_stochastic.athinput",
+      "role": "athinput:K64p01",
+      "sha256": "21e56b0890bec9bf6d4db19846e0b5777d099d9613fa8e6cea86283f234635eb",
+      "bytes": 3708,
+      "tracked": true
+    },
+    {
+      "path": "problems/scalar/usr_stochastic.athinput",
+      "role": "athinput:K64m01",
+      "sha256": "21e56b0890bec9bf6d4db19846e0b5777d099d9613fa8e6cea86283f234635eb",
+      "bytes": 3708,
+      "tracked": true
+    },
+    {
+      "path": "problems/scalar/usr_stochastic.athinput",
+      "role": "athinput:L128p01",
+      "sha256": "21e56b0890bec9bf6d4db19846e0b5777d099d9613fa8e6cea86283f234635eb",
+      "bytes": 3708,
+      "tracked": true
+    },
+    {
+      "path": "problems/scalar/usr_stochastic.athinput",
+      "role": "athinput:L128m01",
+      "sha256": "21e56b0890bec9bf6d4db19846e0b5777d099d9613fa8e6cea86283f234635eb",
+      "bytes": 3708,
+      "tracked": true
+    },
+    {
+      "path": "problems/scalar/usr_stochastic.athinput",
+      "role": "athinput:L128p1",
+      "sha256": "21e56b0890bec9bf6d4db19846e0b5777d099d9613fa8e6cea86283f234635eb",
+      "bytes": 3708,
+      "tracked": true
+    },
+    {
+      "path": "problems/scalar/usr_stochastic.athinput",
+      "role": "athinput:L128z0",
+      "sha256": "21e56b0890bec9bf6d4db19846e0b5777d099d9613fa8e6cea86283f234635eb",
+      "bytes": 3708,
+      "tracked": true
+    },
+    {
+      "path": "problems/scalar/usr_stochastic.athinput",
+      "role": "athinput:K128p1",
+      "sha256": "21e56b0890bec9bf6d4db19846e0b5777d099d9613fa8e6cea86283f234635eb",
+      "bytes": 3708,
+      "tracked": true
+    },
+    {
+      "path": "problems/scalar/usr_stochastic.athinput",
+      "role": "athinput:K128p001",
+      "sha256": "21e56b0890bec9bf6d4db19846e0b5777d099d9613fa8e6cea86283f234635eb",
+      "bytes": 3708,
+      "tracked": true
+    },
+    {
+      "path": "problems/scalar/usr_stochastic.athinput",
+      "role": "athinput:K128m001",
+      "sha256": "21e56b0890bec9bf6d4db19846e0b5777d099d9613fa8e6cea86283f234635eb",
+      "bytes": 3708,
+      "tracked": true
+    },
+    {
+      "path": "problems/scalar/usr_stochastic.athinput",
+      "role": "athinput:K128m1",
+      "sha256": "21e56b0890bec9bf6d4db19846e0b5777d099d9613fa8e6cea86283f234635eb",
+      "bytes": 3708,
+      "tracked": true
+    }
+  ],
+  "batch_entries": [
+    {
+      "name": "L64p1",
+      "input": "problems/scalar/usr_stochastic.athinput",
+      "args": [
+        "mesh/nx1=64",
+        "mesh/nx2=64",
+        "mesh/nx3=64",
+        "meshblock/nx1=64",
+        "meshblock/nx2=64",
+        "meshblock/nx3=64",
+        "scalar_field/noise_nmax2=64",
+        "scalar_field/noise_mode_file=/data/haiyangw/nrpic/wt/core-scalar3/problems/scalar/usr_stochastic_modes.txt",
+        "scalar_field/noise_mode_scale=1.0",
+        "scalar_field/dump_dt=0.5",
+        "time/tlim=10.5"
+      ]
+    },
+    {
+      "name": "L64p01",
+      "input": "problems/scalar/usr_stochastic.athinput",
+      "args": [
+        "mesh/nx1=64",
+        "mesh/nx2=64",
+        "mesh/nx3=64",
+        "meshblock/nx1=64",
+        "meshblock/nx2=64",
+        "meshblock/nx3=64",
+        "scalar_field/noise_nmax2=64",
+        "scalar_field/noise_mode_file=/data/haiyangw/nrpic/wt/core-scalar3/problems/scalar/usr_stochastic_modes.txt",
+        "scalar_field/noise_mode_scale=0.1",
+        "scalar_field/dump_dt=0.5",
+        "time/tlim=10.5"
+      ]
+    },
+    {
+      "name": "L64m01",
+      "input": "problems/scalar/usr_stochastic.athinput",
+      "args": [
+        "mesh/nx1=64",
+        "mesh/nx2=64",
+        "mesh/nx3=64",
+        "meshblock/nx1=64",
+        "meshblock/nx2=64",
+        "meshblock/nx3=64",
+        "scalar_field/noise_nmax2=64",
+        "scalar_field/noise_mode_file=/data/haiyangw/nrpic/wt/core-scalar3/problems/scalar/usr_stochastic_modes.txt",
+        "scalar_field/noise_mode_scale=-0.1",
+        "scalar_field/dump_dt=0.5",
+        "time/tlim=10.5"
+      ]
+    },
+    {
+      "name": "L64z0",
+      "input": "problems/scalar/usr_stochastic.athinput",
+      "args": [
+        "mesh/nx1=64",
+        "mesh/nx2=64",
+        "mesh/nx3=64",
+        "meshblock/nx1=64",
+        "meshblock/nx2=64",
+        "meshblock/nx3=64",
+        "scalar_field/noise_nmax2=64",
+        "scalar_field/noise_mode_file=/data/haiyangw/nrpic/wt/core-scalar3/problems/scalar/usr_stochastic_modes.txt",
+        "scalar_field/noise_mode_scale=0.0",
+        "scalar_field/dump_dt=0.5",
+        "time/tlim=10.5"
+      ]
+    },
+    {
+      "name": "K64p1",
+      "input": "problems/scalar/usr_stochastic.athinput",
+      "args": [
+        "mesh/nx1=64",
+        "mesh/nx2=64",
+        "mesh/nx3=64",
+        "meshblock/nx1=64",
+        "meshblock/nx2=64",
+        "meshblock/nx3=64",
+        "scalar_field/noise_nmax2=256",
+        "scalar_field/noise_mode_file=/data/haiyangw/nrpic/wt/core-scalar3/tracks/core/analysis/scalar3/inputs/usr_modes_n256.txt",
+        "scalar_field/noise_mode_scale=1.0",
+        "scalar_field/dump_dt=0.5",
+        "time/tlim=10.5"
+      ]
+    },
+    {
+      "name": "K64m1",
+      "input": "problems/scalar/usr_stochastic.athinput",
+      "args": [
+        "mesh/nx1=64",
+        "mesh/nx2=64",
+        "mesh/nx3=64",
+        "meshblock/nx1=64",
+        "meshblock/nx2=64",
+        "meshblock/nx3=64",
+        "scalar_field/noise_nmax2=256",
+        "scalar_field/noise_mode_file=/data/haiyangw/nrpic/wt/core-scalar3/tracks/core/analysis/scalar3/inputs/usr_modes_n256.txt",
+        "scalar_field/noise_mode_scale=-1.0",
+        "scalar_field/dump_dt=0.5",
+        "time/tlim=10.5"
+      ]
+    },
+    {
+      "name": "K64p01",
+      "input": "problems/scalar/usr_stochastic.athinput",
+      "args": [
+        "mesh/nx1=64",
+        "mesh/nx2=64",
+        "mesh/nx3=64",
+        "meshblock/nx1=64",
+        "meshblock/nx2=64",
+        "meshblock/nx3=64",
+        "scalar_field/noise_nmax2=256",
+        "scalar_field/noise_mode_file=/data/haiyangw/nrpic/wt/core-scalar3/tracks/core/analysis/scalar3/inputs/usr_modes_n256.txt",
+        "scalar_field/noise_mode_scale=0.1",
+        "scalar_field/dump_dt=0.5",
+        "time/tlim=10.5"
+      ]
+    },
+    {
+      "name": "K64m01",
+      "input": "problems/scalar/usr_stochastic.athinput",
+      "args": [
+        "mesh/nx1=64",
+        "mesh/nx2=64",
+        "mesh/nx3=64",
+        "meshblock/nx1=64",
+        "meshblock/nx2=64",
+        "meshblock/nx3=64",
+        "scalar_field/noise_nmax2=256",
+        "scalar_field/noise_mode_file=/data/haiyangw/nrpic/wt/core-scalar3/tracks/core/analysis/scalar3/inputs/usr_modes_n256.txt",
+        "scalar_field/noise_mode_scale=-0.1",
+        "scalar_field/dump_dt=0.5",
+        "time/tlim=10.5"
+      ]
+    },
+    {
+      "name": "L128p01",
+      "input": "problems/scalar/usr_stochastic.athinput",
+      "args": [
+        "mesh/nx1=128",
+        "mesh/nx2=128",
+        "mesh/nx3=128",
+        "meshblock/nx1=128",
+        "meshblock/nx2=128",
+        "meshblock/nx3=128",
+        "scalar_field/noise_nmax2=64",
+        "scalar_field/noise_mode_file=/data/haiyangw/nrpic/wt/core-scalar3/problems/scalar/usr_stochastic_modes.txt",
+        "scalar_field/noise_mode_scale=0.1",
+        "scalar_field/dump_dt=1.0",
+        "time/tlim=10.5"
+      ]
+    },
+    {
+      "name": "L128m01",
+      "input": "problems/scalar/usr_stochastic.athinput",
+      "args": [
+        "mesh/nx1=128",
+        "mesh/nx2=128",
+        "mesh/nx3=128",
+        "meshblock/nx1=128",
+        "meshblock/nx2=128",
+        "meshblock/nx3=128",
+        "scalar_field/noise_nmax2=64",
+        "scalar_field/noise_mode_file=/data/haiyangw/nrpic/wt/core-scalar3/problems/scalar/usr_stochastic_modes.txt",
+        "scalar_field/noise_mode_scale=-0.1",
+        "scalar_field/dump_dt=1.0",
+        "time/tlim=10.5"
+      ]
+    },
+    {
+      "name": "L128p1",
+      "input": "problems/scalar/usr_stochastic.athinput",
+      "args": [
+        "mesh/nx1=128",
+        "mesh/nx2=128",
+        "mesh/nx3=128",
+        "meshblock/nx1=128",
+        "meshblock/nx2=128",
+        "meshblock/nx3=128",
+        "scalar_field/noise_nmax2=64",
+        "scalar_field/noise_mode_file=/data/haiyangw/nrpic/wt/core-scalar3/problems/scalar/usr_stochastic_modes.txt",
+        "scalar_field/noise_mode_scale=1.0",
+        "scalar_field/dump_dt=1.0",
+        "time/tlim=10.5"
+      ]
+    },
+    {
+      "name": "L128z0",
+      "input": "problems/scalar/usr_stochastic.athinput",
+      "args": [
+        "mesh/nx1=128",
+        "mesh/nx2=128",
+        "mesh/nx3=128",
+        "meshblock/nx1=128",
+        "meshblock/nx2=128",
+        "meshblock/nx3=128",
+        "scalar_field/noise_nmax2=64",
+        "scalar_field/noise_mode_file=/data/haiyangw/nrpic/wt/core-scalar3/problems/scalar/usr_stochastic_modes.txt",
+        "scalar_field/noise_mode_scale=0.0",
+        "scalar_field/dump_dt=1.0",
+        "time/tlim=10.5"
+      ]
+    },
+    {
+      "name": "K128p1",
+      "input": "problems/scalar/usr_stochastic.athinput",
+      "args": [
+        "mesh/nx1=128",
+        "mesh/nx2=128",
+        "mesh/nx3=128",
+        "meshblock/nx1=128",
+        "meshblock/nx2=128",
+        "meshblock/nx3=128",
+        "scalar_field/noise_nmax2=1024",
+        "scalar_field/noise_mode_file=/data/haiyangw/nrpic/wt/core-scalar3/tracks/core/analysis/scalar3/inputs/usr_modes_n1024.txt",
+        "scalar_field/noise_mode_scale=1.0",
+        "scalar_field/dump_dt=1.0",
+        "time/tlim=10.5"
+      ]
+    },
+    {
+      "name": "K128p001",
+      "input": "problems/scalar/usr_stochastic.athinput",
+      "args": [
+        "mesh/nx1=128",
+        "mesh/nx2=128",
+        "mesh/nx3=128",
+        "meshblock/nx1=128",
+        "meshblock/nx2=128",
+        "meshblock/nx3=128",
+        "scalar_field/noise_nmax2=1024",
+        "scalar_field/noise_mode_file=/data/haiyangw/nrpic/wt/core-scalar3/tracks/core/analysis/scalar3/inputs/usr_modes_n1024.txt",
+        "scalar_field/noise_mode_scale=0.01",
+        "scalar_field/dump_dt=1.0",
+        "time/tlim=10.5"
+      ]
+    },
+    {
+      "name": "K128m001",
+      "input": "problems/scalar/usr_stochastic.athinput",
+      "args": [
+        "mesh/nx1=128",
+        "mesh/nx2=128",
+        "mesh/nx3=128",
+        "meshblock/nx1=128",
+        "meshblock/nx2=128",
+        "meshblock/nx3=128",
+        "scalar_field/noise_nmax2=1024",
+        "scalar_field/noise_mode_file=/data/haiyangw/nrpic/wt/core-scalar3/tracks/core/analysis/scalar3/inputs/usr_modes_n1024.txt",
+        "scalar_field/noise_mode_scale=-0.01",
+        "scalar_field/dump_dt=1.0",
+        "time/tlim=10.5"
+      ]
+    },
+    {
+      "name": "K128m1",
+      "input": "problems/scalar/usr_stochastic.athinput",
+      "args": [
+        "mesh/nx1=128",
+        "mesh/nx2=128",
+        "mesh/nx3=128",
+        "meshblock/nx1=128",
+        "meshblock/nx2=128",
+        "meshblock/nx3=128",
+        "scalar_field/noise_nmax2=1024",
+        "scalar_field/noise_mode_file=/data/haiyangw/nrpic/wt/core-scalar3/tracks/core/analysis/scalar3/inputs/usr_modes_n1024.txt",
+        "scalar_field/noise_mode_scale=-1.0",
+        "scalar_field/dump_dt=1.0",
+        "time/tlim=10.5"
+      ]
+    }
+  ],
+  "resources": {
+    "nodes": 1,
+    "gpus": 1,
+    "cores": 1,
+    "walltime_s": null,
+    "wall_limit": "00:40:00",
+    "segments_max": null,
+    "gpu_hours_requested": 0.6,
+    "gpu_hours": null,
+    "particles": null
+  },
+  "slurm": {
+    "partition": "preempt",
+    "job_name": "core-20261119-150317-a1e8ee7",
+    "job_ids": []
+  },
+  "outputs": {
+    "dir": "scratch/core/core-20261119-150317-a1e8ee7",
+    "sha256sums": "sha256sums.txt",
+    "sha256sums_sha256": null,
+    "bytes": null,
+    "files": null
+  },
+  "status": "submitted",
+  "exit_code": null,
+  "registered": "2026-11-19T15:03:25Z",
+  "started": null,
+  "ended": null,
+  "parents": [],
+  "notes": "",
+  "budget_at_submit": {
+    "gpu_hours_allotted": 40.0,
+    "cores_allotted": 16,
+    "gpu_hours_used": 2.5281,
+    "gpu_hours_reserved": 4.0933,
+    "gpu_hours_without_gate": 5.8613,
+    "cores_busy": 16,
+    "runs": 995,
+    "allotment_from": "coord/DECISIONS/0006-compute-budget.md + 0014-budgets-after-wave-1.md"
+  }
+}
