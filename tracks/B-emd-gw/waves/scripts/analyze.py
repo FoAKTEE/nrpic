@@ -2,9 +2,10 @@
 """Both diagnostics on every dump of tests F and X, errors against the exact solutions,
 orders of convergence, figures.
 
-    python3 analyze.py --flat <run id> --exp <run id> [--ns 16,32,64] [--nwork 8]
+    python3 analyze.py --flat 16=<run id>/N16,32=<run id>/N32,64=<run id>/flatN64 \
+                       --exp 16=<run id>/N16,... [--nwork 8]
 
-Reads scratch/B-emd-gw/<run id>/N<n>/*.z4c.*.bin (double precision); writes into
+Reads scratch/B-emd-gw/<dir>/*.z4c.*.bin (double precision) for every N=<dir>; writes into
 $NRPIC_RUN_DIR: results.json, per-dump tables (dumps_<test>_N<n>.json), figures (PNG, PDF);
 copies results.json and the PNGs into ../results and ../figs.
 """
@@ -74,7 +75,7 @@ def one_dump(args):
 
 
 def read_hst(rundir):
-    fs_ = glob.glob(os.path.join(rundir, "*.z4c.hst"))
+    fs_ = [f for f in glob.glob(os.path.join(rundir, "*.hst")) if ".z4c." in os.path.basename(f)]
     if not fs_:
         return None
     a = np.loadtxt(fs_[0], ndmin=2)
@@ -108,23 +109,27 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--flat", required=True)
     ap.add_argument("--exp", required=True)
-    ap.add_argument("--ns", default="16,32,64")
     ap.add_argument("--nwork", type=int, default=int(os.environ.get("NWORK", "8")))
     a = ap.parse_args()
     out = os.environ.get("NRPIC_RUN_DIR", os.path.join(SCR, "tmp", "analyze"))
     os.makedirs(out, exist_ok=True)
-    ns = [int(v) for v in a.ns.split(",")]
-    runs = {"flat": a.flat, "expanding": a.exp}
-    jobs = []
-    for test, rid in runs.items():
+    dirs = {}
+    for test, spec in (("flat", a.flat), ("exp", a.exp)):
+        dirs[test] = {int(kv.split("=")[0]): kv.split("=")[1] for kv in spec.split(",")}
+    ns = sorted(dirs["flat"])
+    assert ns == sorted(dirs["exp"])
+    runs = dirs
+    jobs, keys = [], []
+    for test in ("flat", "exp"):
         for n in ns:
-            files = sorted(glob.glob(os.path.join(SCR, rid, f"N{n}", "*.z4c.*.bin")))
-            jobs += [(test if test == "flat" else "exp", f) for f in files]
+            files = sorted(glob.glob(os.path.join(SCR, dirs[test][n], "*.z4c.*.bin"))
+                           + glob.glob(os.path.join(SCR, dirs[test][n], "bin", "*.z4c.*.bin")))
+            jobs += [(test, f) for f in files]
+            keys += [(test, n)] * len(files)
     with Pool(a.nwork) as pool:
         recs = pool.map(one_dump, jobs, chunksize=1)
     data = {}
-    for (test, f), r in zip(jobs, recs):
-        n = int(os.path.basename(os.path.dirname(f))[1:])
+    for (test, n), r in zip(keys, recs):
         data.setdefault(test, {}).setdefault(n, []).append(r)
     res = {"runs": runs, "ns": ns, "flat": {}, "exp": {}}
     for test in ("flat", "exp"):
@@ -154,7 +159,7 @@ def main():
                 s["a_rel_err_max"] = float(np.max(np.abs(np.array([r["a"] for r in recs_n]) / ae - 1)))
                 s["calH_rel_err_max"] = float(np.max(np.abs(np.array([r["calH"] for r in recs_n]) / He - 1)))
                 s["alpha_over_a_max"] = float(np.max(np.abs(np.array([r["alpha"] for r in recs_n]) / ae - 1)))
-            h = read_hst(os.path.join(SCR, runs["flat" if test == "flat" else "expanding"], f"N{n}"))
+            h = read_hst(os.path.join(SCR, dirs[test][n]))
             if h is not None:
                 s["H_norm2_max"] = float(np.max(h["H-norm2"]))
                 s["M_norm2_max"] = float(np.max(h["M-norm2"]))
