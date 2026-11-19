@@ -520,3 +520,44 @@ is rerun alone (queue q4).
 against `athena_cpu_cea3a49`; sub-runs -152210 to -153611, manifests committed). PRa
 HOLDS for the seven relativistic set-ups: geo 2, boris 2, dep 1, east 12, os 16, jeans 5,
 binary 1 files, all byte-identical, none differing.
+
+## 2026-11-19, entry 8: test G5, the capped conformal-time lapse with the stochastic sources, predicted
+
+G4 showed the capped conformal-time lapse on the homogeneous background only, and on the
+executable of `core/gauge`, which lacks the initial slice and the sources of this branch.
+What a long inflationary run needs from `core/gauge` is therefore not yet shown: that the
+relaxation term and the sources work together. Test G5 builds both into one processor
+executable, outside the branch: `scratch/core/tmp/gmerge/` holds `git archive` of this
+branch at b8a3c1a plus `git diff f51539c 96b215c -- athenak/src` of `core/gauge` (295
+lines, four files under `z4c/`, applied without conflict: this branch touches nothing
+under `z4c/`), built with `scripts/build_cpu.sh` and `ATHENA_SRC` pointing there
+(`SOURCE.txt`, `gauge.patch` beside it). It is a test executable, not a published one.
+
+G5 (`g1_gauge.py --only geoc` on the executable of this branch, `--only cap` on the
+merged one; quadratic case, 32^3, nmax2 = 64, seed 20261115, s = 1, Courant 1/32, i.e.
+dt = 0.006136, the step of a 256^3 run at Courant 0.25):
+  geoc  geodesic slicing to t = 3.3 (538 steps, 3.27 e-folds), dumps every 0.3
+  cap   lapse_harmonic = 1/3, lapse_leak = 50, lapse_leak_alpha = 8 (as G4), to t = 1.0,
+        dumps every 0.025
+Predictions (none of these runs has been made):
+- PG5a lapse of cap: <alpha> equals a within 1e-4 up to 1.5 e-folds (G4, homogeneous:
+  7.8e-8; the perturbations change the mean at second order only); from 2.6 e-folds on
+  within 1e-3 of the root of ln(alpha/8) = 0.02 H alpha (G4: 6.1e-4). End near 3.15
+  e-folds (alpha = a up to t = 0.88, then dN/dt = H alpha = 9.4) after 163 steps,
+  against 538 steps of geoc for 3.27 e-folds (3.3 times fewer; G4's 5.3 was over 8
+  e-folds).
+- PG5b R^NR per mode against W R alpha of the lockstep record (the comparison of PG1):
+  geoc is at most the deviation of the run geo of G1 (Courant 0.25) in every class: the
+  time error falls by 8^4 and the spatial (lattice k^2) part is the same, so the top
+  classes (all modes with W > 1/2) agree with geo within 30 percent and |n| <= 2 is
+  smaller. cap: within a factor 3 of geo in every class after the cap (its proper-time
+  step, 0.058 at alpha = 9.5, is that of geo, 0.049), and of geoc before. Refuted by a
+  deviation of cap above 3 times that of geo for |n| <= 2: then the kicks are not
+  independent of the slicing at alpha of order 10, or the sources do not follow the
+  proper time of a lapse that changes by a factor 8.
+- PG5c constraints: geoc has no uniform part above 1e-13 (geo: 3e-11 from the time
+  integration, J2 entry 7; 8^4 times less), so its record <|H|/[H]> is the first-order
+  spatial part, within 30 percent of the odd part of geo at equal e-folds. cap: <|H|/[H]>
+  and <|M|/[M]> within a factor 3 of geoc at equal e-folds (the slicing changes the
+  first-order metric perturbations on which the stencil defect acts, by order one at most).
+  Refuted by a ratio above 10 or a growing trend of cap against geoc.
