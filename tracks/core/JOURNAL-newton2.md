@@ -195,3 +195,43 @@ branch start (`scratch/core/exe/core_requests-adf/athena_cpu`) for the Newtonian
 `tracks/core/tools/regress_relativistic.py`, and to release core-v0.3 except where
 `REQUESTS_ADF.md` section 4 (T6) lists a deliberate difference. Refuted by any
 unlisted difference.
+
+### T1 outcome (2026-11-19T14:52Z) [VERIFIED]
+
+Runs: cases core-20261119-144414-c629377 (processors, 5 cases, 307 s on two cores),
+analysis core-20261119-145129-e89a132 (`t1_fft.json`, figure `t1_fft.png`). Two earlier
+analysis attempts are on record: core-20261119-144855-2a2ef23 failed because I started
+it before the last case had ended; core-20261119-144933-515de0f completed but wrote its
+files into a directory named by the unexpanded variable `$NRPIC_RUN_DIR` in the worktree
+(nrpic-run starts the command without a shell); that directory was removed and the script
+now takes the run directory from the environment.
+- T1a seven_point against multigrid (13.1 V cycles per step on average, largest defect
+  norm 1.7e-11): positions within 2.2e-15 of the box at all 13 snapshots, momenta within
+  8.7e-15, K and W of the 601 records within 2.2e-13 relative, Phi_min and Phi_max within
+  6.9e-15. Prediction (1e-10) held with five orders to spare.
+- T1b spectral against the numpy scheme with the symbol -k^2: positions within 3.9e-16 of
+  the box, momenta 1.4e-15. Held. (The seven-point Fourier run and the multigrid run
+  agree with the numpy scheme of the seven-point operator to 2.2e-15 and 1.4e-15.)
+- T1c mixed radix 48 x 80 x 112 (3, 5, 7 times 16): accelerations of 2000 particles
+  against numpy within 1.8e-12 (spectral) and 3.6e-12 (seven_point) of the largest
+  acceleration, rms 1.7e-13 and 3.1e-13. Held (bound 1e-9); the difference is the
+  movement of the particles during the step of 1e-6.
+- The spectral and the seven-point potential energies differ by 1.7 per cent of max |W|
+  at N = 32 through shell crossing (a real difference of the two operators, not an
+  error of either).
+- Cost on one core at 32^3 with 32768 particles: 0.24 s per step with the Fourier
+  solver against 0.34 s with the multigrid; the particle work dominates both.
+
+### T5 closed form, computed before the run (amends the prediction of T5)
+
+Set-up fixed for the processors the allotment leaves: 1e5 dust particles instead of
+Track D's 5e5 (100 000 on the lattice of spacing 0.636 M, dust mass 2.7671 M, edge
+18.35 M), softening `newton_pm_soft = 0.5` M (Plummer, as the track's wave-1 shell
+reference: radial orbits pass through the seed, an unsoftened point mass would give
+unbounded kicks), `newton_cfl = 0.15`, step at most 0.25 M. Closed form from the particle
+file (`t5_infall.py --predict`, unregistered arithmetic on the generated file):
+M_ta = 1.24616, 1.50428, 2.04929, 2.59430 M at a/a_i = 1.5, 2, 3, 4, the same for both
+placements of the seed. The softening changes the force at the turnaround radii
+(r > 8 M) by less than (s/r)^2 = 4e-3 and the turnaround mass by less than that.
+Prediction as written: both placements within 0.3 per cent of these numbers at
+a/a_i = 2 and 4, and within 1e-3 of each other.
