@@ -367,7 +367,8 @@ def main():
     ap.add_argument("--compare-only", action="store_true")
     ap.add_argument("extra", nargs="*", help="further athena arguments (block/key=value)")
     a = ap.parse_args()
-    base = a.out or os.path.join(os.environ.get("NRPIC_RUN_DIR", os.getcwd()), a.case)
+    base = os.path.abspath(a.out or os.path.join(os.environ.get("NRPIC_RUN_DIR",
+                                                                 os.getcwd()), a.case))
     npart, runs = None, {}
     if not a.compare_only:
         npart, runs = run_case(a.case, a.ranks, a.exe, base, a.extra)
