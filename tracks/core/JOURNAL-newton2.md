@@ -399,3 +399,21 @@ ones). Largest |C - C_0| of the Layzer-Irvine combination (column 8) in units of
   of a sheet thinner than a cell is a space-discretisation effect and does not go away
   with a smaller step. The track's own numbers (1.1e-3 to 9.3e-3 of |W_0| at the first
   crossing) are of the size measured here (4.9e-3 at N = 32).
+
+### T10 outcome (regression) [VERIFIED]
+
+Runs: cases core-20261119-152944-b2f41d3 (eleven set-ups, each with the processor
+executable of this branch, of the branch start `scratch/core/exe/core_requests-adf/athena_cpu`
+and of release core-v0.3; 2055 s on one core), judgement core-20261119-160915-40df1d6
+(`t10_regress.json`, figure `t10_regress.png`, looked at). A debugging pass of the judge
+script on the same directory ran outside the registry before (`scratch/core/tmp/n2dbg/t10smoke`).
+- Against the branch start: every output file of geo, boris, dep, east, os, jeans, binary,
+  mesh_static, newton_ball, newton_point, newton_wave identical byte for byte (91 files),
+  and the result lines of every log equal. Held.
+- Against the release: identical except one file each of jeans, newton_ball,
+  newton_point, newton_wave, and in each of them only the line `last_time = ...` of the
+  parameter dump (1 to 5 bytes): the deliberate correction 2 of the branch start
+  (`REQUESTS_ADF.md` section 4, T6). Held: no unlisted difference.
+- None of the new options appears in these inputs, so the Fourier solver and the groups
+  are not exercised here; the plane-wave input `newton_wave` runs the multigrid path through
+  the new branch in `NrpicNewtonPotential` and the group calls with `newton_ngroup = 0`.
