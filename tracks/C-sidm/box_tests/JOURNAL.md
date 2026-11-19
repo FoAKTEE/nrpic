@@ -707,3 +707,18 @@ at. Answer to the package question: the new option leaves of the first-step ener
 defect of the King threshold model a canonical-energy residual of about 2e-21 of the sum
 per collision (1e-11 of the old defect), and no detectable mean change of the deposited
 energy (|mean| < 4e-11 per collision at 1 se against +8(3)e-11 in cell mode).
+
+## 2026-11-19 R3(v') outcome: cost under equal load (run C-20261119-143146-226b0e0)
+
+FAILED prediction. Six concurrent one-core runs (theta = 1, plain, seed 1, 1e6 particles,
+200 steps; 1.049e8 tested pairs and 548627 collisions in both collisional modes, the same
+in both): wall 280.5 and 280.6 s with `particle`, 206.7 and 194.2 s with `cell`, 76.6 and
+87.1 s without collisions. Collision part per tested pair: 1.13e-6 s (`cell`), 1.89e-6 s
+(`particle`); ratio 1.68 (with the spread of the repeats, about 1.5 to 1.9), whole run
+1.40. I predicted 1.0 to 1.5. The particle mode reconstructs the metric at every particle
+of an occupied cell in every step and evaluates the transfer, the energy root and the
+balance ratio per pair even where the metric is flat; the measured extra is about
+4e-7 s per particle and step on a loaded processor core [JUDGEMENT on the split; not
+profiled]. Absolute costs are about twice the unloaded wave-2 values (5.7-6.7e-7 s per
+tested pair, run C-20261115-165500-c67e036): the machine is shared. No figure: four
+numbers per mode, in `timing.json` of the run.
