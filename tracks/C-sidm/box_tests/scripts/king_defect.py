@@ -3,7 +3,10 @@
 model (threshold_scan package, CC1: King b = 1, y0 = 0.334032, N = 1e5, static M/4 mesh).
 
     python3 king_defect.py [--kn 1,0.1,0.01] [--nlim 2] [--nproc 6] [--exe PATH]
-                           [--smoke RUN_DIR] [--tag cpu]
+                           [--smoke RUN_DIR] [--tag cpu] [--from RUN_DIR]
+
+--from: analyse the run directories king_kn*_{cell,particle} of an earlier run of this
+script instead of running AthenaK again (figures and JSON written anew).
 
 For every Knudsen number and both modes (coll_energy = cell, the core-v0.3 operator; and
 particle) the deck inputs/king_cc1.athinput runs nlim cycles on the processor executable
@@ -174,20 +177,25 @@ def main():
     ap.add_argument("--exe", default=bl.EXE_CPU_C2)
     ap.add_argument("--smoke", default=SMOKE)
     ap.add_argument("--tag", default="cpu")
+    ap.add_argument("--from", dest="src", default=None)
     a = ap.parse_args()
     out = bl.outdir()
+    base = a.src if a.src else out
     jobs = []
     for kn in a.kn.split(","):
         sig = K_SIGMA / float(kn)
         for mode in ("cell", "particle"):
-            rd = os.path.join(out, f"king_kn{kn}_{mode}")
+            rd = os.path.join(base, f"king_kn{kn}_{mode}")
             ov = [f"time/nlim={a.nlim}", "particles/snap_dt=-1", "output2/dt=1e9",
                   f"particles/coll_sigma={sig!r}", f"particles/coll_energy={mode}",
                   "particles/coll_dump_cycle=0"]
             jobs.append((kn, mode, rd, ov))
     from concurrent.futures import ThreadPoolExecutor
-    with ThreadPoolExecutor(max_workers=a.nproc) as ex:
-        rr = list(ex.map(lambda j: run(j[2], a.exe, j[3]), jobs))
+    if a.src:
+        rr = [dict(rc=0, wall=float("nan")) for _ in jobs]
+    else:
+        with ThreadPoolExecutor(max_workers=a.nproc) as ex:
+            rr = list(ex.map(lambda j: run(j[2], a.exe, j[3]), jobs))
     res = {}
     for kn in a.kn.split(","):
         pr = None
@@ -205,7 +213,7 @@ def main():
     if os.path.isdir(a.smoke) and "king_kn1_cell" in res and not res["king_kn1_cell"].get("failed"):
         res["king_kn1_cell"]["vs_release_smoke"] = compare_smoke(res["king_kn1_cell"]["run"],
                                                                  a.smoke)
-    summ = dict(exe=a.exe, deck=DECK, nlim=a.nlim,
+    summ = dict(exe=a.exe, deck=DECK, nlim=a.nlim, source=base,
                 runs={k: {kk: vv for kk, vv in v.items() if not kk.startswith("hist_")}
                       for k, v in res.items()})
     bl.save_json(os.path.join(out, f"king_{a.tag}.json"), summ)
@@ -248,11 +256,17 @@ def figure(res, out, tag):
             ax2.step(sW, np.arange(1, sW.size + 1) / sW.size, color=c, ls="--",
                      label=f"{v['mode']}: $|\\Delta\\Sigma MW_p|$")
     ax1.axhline(0, **fs.GUIDE)
+    # predictions of threshold_scan (run C-20261115-170404-af74c6d): +1.74e-10 of
+    # sum M W_p and +2.40e-10 M of the Killing energy per collision (cell mode)
     ax1.axhline(1.74e-10, color="grey", lw=0.6, ls=":")
+    sh = [v["dump_sum_MH"] for v in res.values() if "dump_sum_MH" in v]
+    if sh:
+        ax1.axhline(2.40e-10 / sh[0], color="grey", lw=0.6, ls="--")
     ax1.set_xticks(range(len(kns)))
     ax1.set_xticklabels([f"Kn = {k:g}" for k in kns])
-    ax1.set_ylabel("change per collision / sum (step 1, cells)")
-    ax1.legend(loc="upper right", fontsize=6)
+    ax1.set_ylabel("change per collision / sum (step 1, cells)\n"
+                   r"grey: predicted, $\Sigma MW_p$ dotted, $\Sigma MH_p$ dashed", fontsize=8)
+    ax1.legend(loc="lower right", fontsize=6)
     ax2.set_xscale("log")
     ax2.set_xlabel("per cell: |change| per collision / sum")
     ax2.set_ylabel("cumulative fraction of cells")
