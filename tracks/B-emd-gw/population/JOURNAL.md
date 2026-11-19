@@ -186,7 +186,7 @@ Note (07:59 PST): the clock times in the headers of entries 1 to 5 were first wr
 wrong (estimated, not read); corrected to the commit times of each entry (`git log`).
 The order of predictions and runs is unchanged and is the commit order.
 
-## Entry 6 (08:10 PST): outcomes of P10 and I1
+## Entry 6 (08:06 PST): outcomes of P10 and I1
 
 P10 (analyses A-fid-L8 B-20261119-155808-0942d44 and A-fid-L2 B-20261119-155838-4f1954f
 against A-fid):
