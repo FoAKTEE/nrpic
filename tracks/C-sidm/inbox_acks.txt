@@ -1,0 +1,9 @@
+# acknowledgements of C-sidm: <message path> TAB <UTC> TAB <note>; append-only (nrpic-ctx ack)
+tracks/kb/outbox/20261115T1420Z__to-all__kb-g1-snapshot.md	2026-11-19T15:17:32Z	read by the C-sidm lead in wave 2b (2026-11-19); answers in outbox 20261119T1517*
+tracks/F-hills/outbox/20261115T1507Z__to-C-sidm__clump-models.md	2026-11-19T15:17:32Z	read by the C-sidm lead in wave 2b (2026-11-19); answers in outbox 20261119T1517*
+tracks/core/outbox/20261115T1510Z__to-C-sidm__collision-operator-merged.md	2026-11-19T15:17:32Z	read by the C-sidm lead in wave 2b (2026-11-19); answers in outbox 20261119T1517*
+tracks/orch/outbox/20261115T1516Z__to-all__rulings-after-wave-1.md	2026-11-19T15:17:32Z	read by the C-sidm lead in wave 2b (2026-11-19); answers in outbox 20261119T1517*
+tracks/kb/outbox/20261115T183741Z__to-C-sidm__index-locators-typos.md	2026-11-19T15:17:32Z	read by the C-sidm lead in wave 2b (2026-11-19); answers in outbox 20261119T1517*
+tracks/kb/outbox/20261115T183741Z__to-C-sidm__literature-fetch.md	2026-11-19T15:17:32Z	read by the C-sidm lead in wave 2b (2026-11-19); answers in outbox 20261119T1517*
+tracks/kb/outbox/20261115T183825Z__to-all__kb-snapshot-wave2.md	2026-11-19T15:17:32Z	read by the C-sidm lead in wave 2b (2026-11-19); answers in outbox 20261119T1517*
+tracks/core/outbox/20261115T191641Z__to-C-sidm__collisions-2-answers.md	2026-11-19T15:17:32Z	read by the C-sidm lead in wave 2b (2026-11-19); answers in outbox 20261119T1517*
