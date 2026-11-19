@@ -1,0 +1,31 @@
+{
+ "run_id": "kb-20261115-163830-5aca10c",
+ "owner": "kb",
+ "command": [
+  "python3",
+  "-I",
+  "kb/bin/kb",
+  "eq",
+  "--apply-tags"
+ ],
+ "cwd": "/data/haiyangw/nrpic/wt/kb",
+ "commit": "5aca10c45d04c35e9ceb5d5fb8e9657db555ca1b",
+ "worktree_dirty_kb": false,
+ "inputs": [
+  {
+   "path": "/data/haiyangw/nrpic/wt/kb/kb/curated/equation_tags.yaml",
+   "sha256": "96dc6fac8f77eee3f5a61014c8973a682a80c7fd7691a130ce82482a8f5b5bf7"
+  }
+ ],
+ "output_dir": "/data/haiyangw/nrpic/scratch/kb/kb-20261115-163830-5aca10c",
+ "purpose": "embed helper: K5 tags for the papers ingested during the embedding run (kb eq --apply-tags, rules v3)",
+ "kind": "scouting",
+ "cores": 1,
+ "card_hours": 0,
+ "started_utc": "2026-11-15T16:38:30Z",
+ "started_unix": 1794760710.7380915,
+ "status": "finished",
+ "exit_code": 0,
+ "wall_time_s": 23.35,
+ "finished_utc": "2026-11-15T16:38:54Z"
+}
