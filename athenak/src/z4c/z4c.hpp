@@ -216,7 +216,7 @@ class Z4c {
     int dc_gaussian_center;
   };
   Options opt;
-  SbcExt sbc;             // radiative condition with a non-wave part (z4c_sbc_ext.hpp)
+  SbcExt sbc;             // options of the outer faces (z4c_sbc_ext.hpp)
   Real diss;              // Dissipation parameter
 
   // Boundary communication buffers and functions for u
@@ -267,6 +267,7 @@ class Z4c {
   TaskStatus ADMConstraints_(Driver *d, int stage);
   TaskStatus Z4cBoundaryRHS(Driver *d, int stage);
   TaskStatus Z4cBoundaryRHSNonwave(Driver *d, int stage);  // z4c_sbc_ext.hpp
+  void GhostFalloff(DvceArray5D<Real> u, bool coarse);  // z4c_bcs_falloff.cpp
   TaskStatus RestrictU(Driver *d, int stage);
   TaskStatus RestrictWeyl(Driver *d, int stage);
   TaskStatus CCEDump(Driver *pdrive, int stage);
