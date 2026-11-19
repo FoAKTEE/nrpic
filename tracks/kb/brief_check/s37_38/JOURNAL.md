@@ -89,7 +89,7 @@ P16. Open question 20 / item 6 of section 15: predict that no nonlinear stabilit
     or linearly expanding backgrounds. [Refuted if a search finds a stability theorem for the
     EdS-type (k = 0, Λ = 0) Einstein-Vlasov FLRW solution.]
 
-## Entry 2 (2026-11-19, about 08:05 PST; `date` read after writing): outcomes of the source checks, searches, predictions of the runs
+## Entry 2 (2026-11-19, 07:30 PST from `date` at the end of writing): outcomes of the source checks, searches, predictions of the runs
 
 Source checks done with `scripts/locate.py` and the spec files `specs/l226.txt` ... `specs/l237.txt`,
 `specs/q20.txt`, `specs/q20b.txt`; outputs read in `scratch/kb/tmp/s37_38_loc{1,2,3}.txt`.
