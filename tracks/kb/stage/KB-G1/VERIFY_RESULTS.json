@@ -1,9 +1,9 @@
 {
   "track": "kb",
   "gate": "KB-G1",
-  "commit": "57f2684004cc7c2fdbf4c19c168557de6f3cddb3",
-  "verified_utc": "2026-11-15T18:42:47Z",
-  "export": "/data/haiyangw/nrpic/scratch/kb/tmp/stage-verify/kb-KB-G1-57f2684-20261115T184200Z",
+  "commit": "78282d393e8df6050f8e441093bf6ca0086a1031",
+  "verified_utc": "2026-11-19T16:33:14Z",
+  "export": "/data/haiyangw/nrpic/scratch/kb/tmp/stage-verify/kb-KB-G1-78282d3-20261119T163032Z",
   "result": "PASS",
   "checks": [
     {
@@ -21,7 +21,7 @@
     {
       "check": "export",
       "status": "PASS",
-      "message": "clean export of 57f2684004cc (HEAD) in /data/haiyangw/nrpic/scratch/kb/tmp/stage-verify/kb-KB-G1-57f2684-20261115T184200Z/tree",
+      "message": "clean export of 78282d393e8d (HEAD) in /data/haiyangw/nrpic/scratch/kb/tmp/stage-verify/kb-KB-G1-78282d3-20261119T163032Z/tree",
       "detail": null
     },
     {
@@ -39,7 +39,7 @@
     {
       "check": "package",
       "status": "PASS",
-      "message": "EVIDENCE.md, OPEN.md, CHECKLIST.md present (decision 0012); scoping text: stage/KB-G1/SCOPE.md; REVIEW.md present",
+      "message": "EVIDENCE.md, OPEN.md, CHECKLIST.md present (decision 0012); scoping text: stage/KB-G1/SCOPE.md; REVIEW.md present; verifier's report VERIFIER.md",
       "detail": null
     },
     {
@@ -51,25 +51,25 @@
     {
       "check": "fig-script",
       "status": "PASS",
-      "message": "1 figures, each with its script",
+      "message": "3 figures, each with its script",
       "detail": null
     },
     {
       "check": "min-figs",
       "status": "PASS",
-      "message": "0 schematics and 1 data figures (brief 13.4 asks at least 0 and 0 at KB-G1)",
+      "message": "0 schematics and 3 data figures (brief 13.4 asks at least 0 and 0 at KB-G1)",
       "detail": null
     },
     {
       "check": "runs",
       "status": "PASS",
-      "message": "86 run manifests finished (74 hand-written, read as decision 0012 allows), output checksums verified where recorded",
+      "message": "117 run manifests finished (77 hand-written, read as decision 0012 allows), output checksums verified where recorded",
       "detail": null
     },
     {
       "check": "run-notes",
       "status": "WARN",
-      "message": "74 runs read with defaults or not fully re-verifiable (nrpic-run lint)",
+      "message": "76 runs read with defaults or not fully re-verifiable (nrpic-run lint)",
       "detail": {
         "kb-20261115-112414-6bb2b7d": [
           "status 'finished' read as completed",
@@ -362,24 +362,44 @@
     {
       "check": "status",
       "status": "PASS",
-      "message": "STATUS.md has 34 lines",
+      "message": "STATUS.md has 38 lines",
       "detail": null
     },
     {
       "check": "rerun",
       "status": "PASS",
-      "message": "3 of 3 scripts and commands ran cleanly in the export",
+      "message": "5 of 5 scripts and commands ran cleanly in the export",
       "detail": null
     },
     {
       "check": "compare",
       "status": "PASS",
-      "message": "2 regenerated files compared with the committed ones; 0 differ beyond tolerance (rtol 1e-06, atol 1e-12, PNG rms 0.005)",
+      "message": "6 regenerated files compared with the committed ones; 0 differ beyond tolerance (rtol 1e-06, atol 1e-12, PNG rms 0.005)",
       "detail": [
+        [
+          "note/figures/fig_w2b_review.pdf",
+          "PASS",
+          "regenerated (vector files carry dates; the PNG preview is compared)"
+        ],
+        [
+          "note/figures/fig_kbg2.png",
+          "PASS",
+          "identical"
+        ],
+        [
+          "note/figures/fig_kbg2.pdf",
+          "PASS",
+          "regenerated (vector files carry dates; the PNG preview is compared)"
+        ],
         [
           "note/figures/fig_w2_review.png",
           "PASS",
           "pixel rms 0.0"
+        ],
+        [
+          "note/figures/fig_w2b_review.png",
+          "PASS",
+          "identical"
         ],
         [
           "note/figures/fig_w2_review.pdf",
@@ -391,7 +411,7 @@
     {
       "check": "regenerate",
       "status": "PASS",
-      "message": "all 2 committed figure files regenerated",
+      "message": "all 6 committed figure files regenerated",
       "detail": null
     }
   ]

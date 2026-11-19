@@ -1,24 +1,24 @@
 # Re-verification: kb KB-G1
 
-`harness/bin/nrpic-stage verify kb KB-G1` on 2026-11-15T18:42:47Z, clean export of commit `57f2684004cc` in `scratch/kb/tmp/stage-verify/kb-KB-G1-57f2684-20261115T184200Z`. Result: **PASS**.
+`harness/bin/nrpic-stage verify kb KB-G1` on 2026-11-19T16:33:14Z, clean export of commit `78282d393e8d` in `scratch/kb/tmp/stage-verify/kb-KB-G1-78282d3-20261119T163032Z`. Result: **PASS**.
 
 | Check | Result | Message |
 |---|---|---|
 | clean | PASS | worktree clean (outside the stage directory being assembled) |
 | sync | PASS | main is merged into the branch |
-| export | PASS | clean export of 57f2684004cc (HEAD) in /data/haiyangw/nrpic/scratch/kb/tmp/stage-verify/kb-KB-G1-57f2684-20261115T184200Z/tree |
+| export | PASS | clean export of 78282d393e8d (HEAD) in /data/haiyangw/nrpic/scratch/kb/tmp/stage-verify/kb-KB-G1-78282d3-20261119T163032Z/tree |
 | size | PASS | no committed file of the track above 5 MB |
 | note | WARN | no tracks/<ID>/note/main.tex (working note) |
-| package | PASS | EVIDENCE.md, OPEN.md, CHECKLIST.md present (decision 0012); scoping text: stage/KB-G1/SCOPE.md; REVIEW.md present |
+| package | PASS | EVIDENCE.md, OPEN.md, CHECKLIST.md present (decision 0012); scoping text: stage/KB-G1/SCOPE.md; REVIEW.md present; verifier's report VERIFIER.md |
 | style | PASS | 1 style copies equal harness/style/SHA256SUMS (figstyle.py) |
-| fig-script | PASS | 1 figures, each with its script |
-| min-figs | PASS | 0 schematics and 1 data figures (brief 13.4 asks at least 0 and 0 at KB-G1) |
-| runs | PASS | 86 run manifests finished (74 hand-written, read as decision 0012 allows), output checksums verified where recorded |
-| run-notes | WARN | 74 runs read with defaults or not fully re-verifiable (nrpic-run lint) |
-| status | PASS | STATUS.md has 34 lines |
-| rerun | PASS | 3 of 3 scripts and commands ran cleanly in the export |
-| compare | PASS | 2 regenerated files compared with the committed ones; 0 differ beyond tolerance (rtol 1e-06, atol 1e-12, PNG rms 0.005) |
-| regenerate | PASS | all 2 committed figure files regenerated |
+| fig-script | PASS | 3 figures, each with its script |
+| min-figs | PASS | 0 schematics and 3 data figures (brief 13.4 asks at least 0 and 0 at KB-G1) |
+| runs | PASS | 117 run manifests finished (77 hand-written, read as decision 0012 allows), output checksums verified where recorded |
+| run-notes | WARN | 76 runs read with defaults or not fully re-verifiable (nrpic-run lint) |
+| status | PASS | STATUS.md has 38 lines |
+| rerun | PASS | 5 of 5 scripts and commands ran cleanly in the export |
+| compare | PASS | 6 regenerated files compared with the committed ones; 0 differ beyond tolerance (rtol 1e-06, atol 1e-12, PNG rms 0.005) |
+| regenerate | PASS | all 6 committed figure files regenerated |
 
 ## run-notes
 
@@ -165,9 +165,29 @@
 ```
 [
  [
+  "note/figures/fig_w2b_review.pdf",
+  "PASS",
+  "regenerated (vector files carry dates; the PNG preview is compared)"
+ ],
+ [
+  "note/figures/fig_kbg2.png",
+  "PASS",
+  "identical"
+ ],
+ [
+  "note/figures/fig_kbg2.pdf",
+  "PASS",
+  "regenerated (vector files carry dates; the PNG preview is compared)"
+ ],
+ [
   "note/figures/fig_w2_review.png",
   "PASS",
   "pixel rms 0.0"
+ ],
+ [
+  "note/figures/fig_w2b_review.png",
+  "PASS",
+  "identical"
  ],
  [
   "note/figures/fig_w2_review.pdf",
