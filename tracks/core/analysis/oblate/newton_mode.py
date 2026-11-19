@@ -52,6 +52,26 @@ def cpu_time(d):
     return float(m[-1]) if m else None
 
 
+def crossing_times(files):
+    """First snapshot time at which each particle is on the other side of z = 0 from
+    where it started (nan: never), its starting height over the local half-thickness of
+    the spheroid, |z_0|/(b sqrt(1 - R_0^2/a^2)), and its starting cylindrical radius R_0,
+    in the order of the first snapshot."""
+    t0, d0, tag0, _ = ca.read_snapshot(files[0])
+    n = tag0.max() + 1
+    z0 = np.full(n, np.nan)
+    z0[tag0] = d0[:, 2]
+    R0 = np.full(n, np.nan)
+    R0[tag0] = np.hypot(d0[:, 0], d0[:, 1])
+    tc = np.full(n, np.nan)
+    for p in files[1:]:
+        t, d, tag, _ = ca.read_snapshot(p)
+        new = (np.sign(d[:, 2]) != np.sign(z0[tag])) & ~np.isfinite(tc[tag])
+        tc[tag[new]] = t
+    half = B0 * np.sqrt(np.clip(1.0 - (R0 / A0) ** 2, 1e-6, None))
+    return tc[tag0], (np.abs(z0) / half)[tag0], R0[tag0]
+
+
 def reference(M):
     sol = newt.evolve(A0, B0, M=M, tmax=40.0, amin=0.02)
     t = sol.t
@@ -76,6 +96,19 @@ def analyse(name, d, ref):
         j = int(np.argmin(np.abs(t - tt)))
         return float(arr[j]), float(t[j])
     cr1, tc1 = at(t_p + 1.0, cr)
+    # the second moment of the history (every hist_dcycle cycles): t_p on a finer grid
+    jz = int(np.argmin(h["I_zz"]))
+    # first crossing time of every particle (by tag, on the snapshot grid), and how it
+    # depends on the starting height |z_0| (quartiles of |z_0| / local half-thickness)
+    tc, z0n, R0p = crossing_times(files)
+    def by_bins(v):
+        """10th, 50th, 90th percentile of the crossing time in the bins of v cut at its
+        10, 25, 50, 75, 90 per cent quantiles."""
+        q = np.quantile(v, [0.1, 0.25, 0.5, 0.75, 0.9])
+        b = np.digitize(v, q)
+        return dict(edges=[float(x) for x in q],
+                    t_cross_10_50_90=[[float(x) for x in np.nanquantile(tc[b == i], [0.1, 0.5, 0.9])]
+                                      for i in range(6)])
     out = dict(
         dir=d, snapshots=len(files), particles_first=int(n[0]), particles_last=int(n[-1]),
         z_rms0=float(z0), R_rms0=float(R0),
@@ -86,6 +119,11 @@ def analyse(name, d, ref):
         R_ratio_reference_at_pancake=ref["a_p"] / A0,
         crossed_at_t_p_plus_1=cr1, time_of_that_snapshot=tc1,
         crossed_max=float(np.max(cr)),
+        t_p_history_Izz=float(h["time"][jz]),
+        t_cross_10_50_90=[float(v) for v in np.nanquantile(tc, [0.1, 0.5, 0.9])],
+        never_crossed=int(np.sum(~np.isfinite(tc))),
+        crossing_by_z0_over_halfthickness=by_bins(z0n),
+        crossing_by_R0=by_bins(R0p),
         z_rms_last_over_initial=float(zr[-1] / z0), R_rms_last_over_initial=float(Rr[-1] / R0),
         t_last=float(t[-1]),
         W0=float(h["W"][0]), mass=float(h["mass"][0]),
@@ -129,7 +167,7 @@ def main():
         ax[0].plot(s["t"], s["zr"], color=COLOR.get(name), label=LABEL.get(name, name))
         ax[0].plot(s["t"], s["Rr"], color=COLOR.get(name), ls=":")
         ax[1].plot(s["t"], s["cr"], color=COLOR.get(name), label=LABEL.get(name, name))
-        ax[2].plot(s["th"], s["dE"], color=COLOR.get(name), label=LABEL.get(name, name))
+        ax[2].plot(s["th"], 1e3 * s["dE"], color=COLOR.get(name), label=LABEL.get(name, name))
     for x in ax:
         x.axvline(ref["t_p"], **fs.MASK_LINE)
         x.set_xlabel("$t/M$", labelpad=-2)
@@ -142,7 +180,7 @@ def main():
     ax[1].set_ylim(-0.02, 1.02)
     ax[1].set_xlim(15, 24)
     ax[1].set_title("plane crossing", fontsize=10)
-    ax[2].set_ylabel(r"$\Delta E/|W(0)|$")
+    ax[2].set_ylabel(r"$10^3\,\Delta E/|W(0)|$")
     ax[2].set_title("energy $K + W$", fontsize=10)
     ax[2].legend(fontsize=7)
     os.makedirs(a.figdir, exist_ok=True)
@@ -152,8 +190,8 @@ def main():
     name, d = runs[-1]
     files = ca.particle_history(d)[1]
     times = [0.0, ref["t_p"] - 2.0, res["runs"][name]["t_p"], 23.0]
-    fig, ax = plt.subplots(1, 4, figsize=(fs.FULL_WIDTH, 2.3), sharey=True)
-    fig.subplots_adjust(left=0.07, right=0.99, bottom=0.2, top=0.88, wspace=0.06)
+    fig, ax = plt.subplots(1, 4, figsize=(fs.FULL_WIDTH, 1.75), sharey=True)
+    fig.subplots_adjust(left=0.07, right=0.99, bottom=0.25, top=0.88, wspace=0.06)
     snaps = [ca.read_snapshot(p) for p in files]
     ts = np.array([s[0] for s in snaps])
     for x, tt in zip(ax, times):
