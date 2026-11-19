@@ -348,3 +348,19 @@ the standing wave).
 polarization then follows the 2S prediction like the cross one: amplitude and phase errors
 within 5 per cent of 1.40e-7 and 2.76e-7, and |arg R| <= 1.5e-8 (a tenth of now). Refuted if
 the plus phase error stays near 3.8e-7.
+
+## 2026-11-19 16:40 Correction of the 14:57 trap note; N = 48 runs done
+
+The restore of `scripts/run_expanding.sh` did not protect run B-20261119-142234-85da208:
+my edit (python, `open(..., "w")`) rewrote the file in place, so the running bash, which
+keeps reading the open file, saw the edited bytes; `git checkout` then wrote a new file
+(new inode) that bash never read. After its last command the wrapper read the shifted tail
+of the edited file and stopped with exit 127 ("line 37: ena.log | tr ...: command not
+found"), so nrpic-run recorded the run as failed. AthenaK itself is unaffected: its log
+ends with rc=0 at t = 10 after 524 cycles (predicted 524), and all 41 dumps exist. The
+failed status stays on record; the analysis uses the outputs with this note. Lesson for
+the HANDOFF trap list: a restore with git does not help a running bash script; only never
+editing it does.
+
+F at N = 48: run B-20261119-142233-70d5043 completed (444 cycles as predicted, 88 min).
+X at N = 48: 524 cycles, 2 h 16 min at 7.1e3 zone-cycles per second.

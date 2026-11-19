@@ -207,7 +207,7 @@ def main():
 
 def figures(data, res, ns, out, tag=""):
     fs.use_style()
-    cols = {16: fs.PAL["yellow"], 32: fs.PAL["red"], 64: fs.PAL["green"]}
+    cols = {16: fs.PAL["yellow"], 32: fs.PAL["red"], 48: fs.PAL["orange"], 64: fs.PAL["green"]}
     for test in ("flat", "exp"):
         cfg = FLAT if test == "flat" else EXP
         fun = pr.predict_flat if test == "flat" else pred_exp
