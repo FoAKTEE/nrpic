@@ -201,8 +201,8 @@ def main():
         ax.set_xlabel("statements checked")
         ax.xaxis.set_major_locator(matplotlib.ticker.MaxNLocator(nbins=5, integer=True))
     ax1.set_ylabel("brief line")
-    ax1.set_xlim(0, 13)
-    ax1.legend(loc="lower right", ncol=1)
+    ax1.set_xlim(0, 16)
+    ax1.legend(loc="center right", ncol=1)  # beside the short bars of lines 170-174
     fs.save(fig, os.path.join(out, "fig_verdicts"))
     plt.close(fig)
     if problems:

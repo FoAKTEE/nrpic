@@ -171,3 +171,14 @@ Fix: row 3 now writes its body locator in full (`1807.01711/v2/src/INCAPRD2019.t
 610, 630, 644, 878-880`); the content of the row is unchanged.
 Prediction for the rerun: the same tally, 70 locator spans checked (the four short spans become
 one full span: 70 + 1 = 71), no problem, exit 0.
+
+## Entry 5 (2026-11-19 06:48 PST): outcome of run kb-20261119-144701-10f10d6 and the figure
+
+Outcome: as predicted for the numbers: 53 rows, tally 38 / 13 / 2 / 0 equal to the header,
+71 locator spans checked, no problem, exit 0. The figure
+(`scratch/kb/kb-20261119-144701-10f10d6/fig_verdicts.png`, looked at): right panel as predicted
+(no label 28, VERIFIED 24, BACKGROUND 1); left panel: red segments on lines 168 and 184 as
+predicted, but my sentence "line 176 the longest bar" was wrong (my own numbers said line 184
+has 9 rows against 8 for lines 168 and 176). Defect of the figure: the legend covers the bars
+of lines 182 and 184. Fix: legend at centre right, x range to 16. Prediction for the figure-only
+rerun: identical stdout and verdicts.json; legend clear of every bar.
