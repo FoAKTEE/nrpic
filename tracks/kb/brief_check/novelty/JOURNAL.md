@@ -69,3 +69,53 @@ numerical relativity already gives (line 400; found during the S4 search, 1903.0
 - R1c: |k| <= 5.0e-4 from the lattice (0.1 per cent over a growth of e^2 in a).
 Figure: left M_H(T) with the three printed scalings; right M/M_i against a/a_i for k = 0, 0.5,
 3.11 with the lattice band.
+
+## Entry 3, 2026-11-19 07:55: outcome of R1 and of the source predictions P1-P7
+
+R1 = run kb-20261119-154605-3ee42d2 (`scripts/check_numbers.py`, 1 core, seconds; figure
+`scratch/kb/kb-20261119-154605-3ee42d2/fig_numbers.png`, looked at):
+- R1a held: M_H(1 MeV, g_* = 10.75) = 1.499e5 M_sun; 1607.00612 implies 1.461e5 (2.5 per cent
+  lower, within the 3 per cent predicted); 2109.04896 1e5 (factor 1.5); 2006.16182 4.8e4 (factor
+  3.1). At 1.5 and 2 MeV: 6.7e4 and 3.7e4.
+- R1b held: 0.4884 and 0.4088.
+- R1c held: abs(k) <= 4.9975e-4; a k = 3.11 black hole would have grown by a factor 503 over the
+  same expansion.
+- Figure: the left panel is right (the 1607.00612 scaling lies on top of mine); in the right panel
+  the lattice band was invisible (1e-3 wide on a log axis) and the label crossed the k = 0.5
+  line. Script changed (thick segment, label below); the rerun is R1' (entry 4).
+
+Source predictions (from entry 1):
+- P1 held (decoupling 1-2 MeV in the sources; M_H in band; share 0.41-0.49). The four
+  [BACKGROUND] parts of line 410 are confirmed (CHECK #7-#10).
+- P2 held, more strongly than predicted: no full-GR kinetic calculation found, and the field says
+  so itself (2303.07980 :367, 2406.11417 :507-508). Not foreseen: the leading group expects
+  suppression rather than enhancement, and names the opposite effect too.
+- P3 held for the test itself, with a closer prior than predicted: 1505.02959 is a 3+1 NR test of
+  Isaacson's radiation average (the trace part), more than "related" work.
+- P4 held: the line-434 premise is wrong; and the forward conjecture is now a theorem without
+  symmetry in generalized wave coordinates (2403.03470), which I had not predicted (I expected only
+  special cases).
+- P5 failed in part. No NR test framed against the coupling claim was found (as predicted), but
+  the prediction "the rebuttals are analytic" missed an NR result that already bounds k for
+  ordinary black holes: the vacuum lattice of 1903.01490 (masses constant to 0.1 per cent over a
+  growth of e^2). The null test is partly done.
+- P6 failed. I predicted no full-NR binary in collisionless particles exists and named the
+  two-overdensity run of 2611.12831 as "black holes formed from the particles, not a binary in a
+  dark-matter halo". Reading its section 4 shows a full-NR binary inspiral and merger inside a
+  collisionless envelope, with angular-momentum transfer to the envelope measured: the broad item
+  of line 1749 is done. Only the narrower configuration (pre-existing quasi-circular binary in a
+  light dark-matter distribution, dephasing against vacuum) is open.
+- P7 held: 33 statements, 2 corrected (lines 434 and 1749), 16 with a precision.
+
+## Entry 4, 2026-11-19 07:56: prediction for R1' and R2, before they run
+
+- R1': rerun of check_numbers.py after the figure change; numbers identical to R1 to all printed
+  digits (pure arithmetic, no randomness). Refuted by any change in numbers.json.
+- R2 (`scripts/check_package.py`): CHECK.md has 33 rows, 15/16/2/0, equal to its header; every
+  locator in CHECK.md, ERRATA_ROWS.md and NOVELTY.md resolves (file present, lines within the
+  file; metadata, run manifests, INSPIRE query labels with status ok); every arXiv id in the three
+  files is in the store or among logged INSPIRE hits; the 22 quoted phrases stand at their lines.
+  Two unregistered dry runs (scratch/kb/tmp/novelty/dry, to debug the script) already found and
+  fixed one wrong file name (2409.01939 is `LRCosmo.tex`, not `main.tex`) and four non-locator
+  words; the registered run is predicted to report no problem. Refuted by any entry in
+  "problems". Figures: verdicts per line and label; closest papers per item by arXiv year.

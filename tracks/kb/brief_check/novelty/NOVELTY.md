@@ -22,8 +22,8 @@ reading, [TO VERIFY] not settled here.
 | Binary black holes in a particle dark-matter environment, full NR | **Done in the broad form by 2611.12831** | The target paper itself evolves, in full NR, two black holes that form from clumps, inspiral and merge inside a collisionless envelope (§4 of 2611.12831). Open: a quasi-circular binary of pre-existing holes in a dark-matter particle distribution, with the dephasing measured against vacuum and convergence in particle number |
 
 Common limits of all four searches: INSPIRE title and full-text indices (full text covers mostly
-arXiv papers); a response holds at most 25 records sorted by date, so six broad queries (s5_k1,
-s5_k6, s5_c2, s7_k5, b_k4, b_k12) were read only for their 25 most recent hits; theses,
+arXiv papers); a response holds at most 25 records sorted by date, so five broad queries (s5_k1,
+s5_k6, s5_c2, b_k4, b_k12) were read only for their 25 most recent hits; theses,
 proceedings and papers without arXiv numbers were seen only as titles; papers of the last days
 before 2026-11-19 may not be indexed; four generic web searches per item at most. A negative
 result means "not found by these searches", not "does not exist".
@@ -97,7 +97,7 @@ Closest numerical papers:
   H proportional to L^-2 holds to 3 per cent without and 0.1 per cent with a temporal average,
   even for wavelengths comparable to the Hubble length (`1505.02959/v1/src/letter-GWuni.tex:47-64,
   98-132`). [VERIFIED] The review 2409.01939 lists it as the NR confirmation of Isaacson's formula
-  (`2409.01939/v2/src/main.tex:1072`). This tests the trace part of the Green-Wald and Burnett
+  (`2409.01939/v2/src/LRCosmo.tex:1072`). This tests the trace part of the Green-Wald and Burnett
   statements (radiation-like, traceless effective stress), not the Vlasov structure (momentum
   distribution, transport along null geodesics, anisotropic stress), and there is no matter
   evolution to compare with.
