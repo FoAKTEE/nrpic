@@ -1,0 +1,16 @@
+# arXiv ids for an arXiv-API metadata fetch: the 11 candidates of 2026-11 not cited in the brief, and 4 October items named in FRONTIER.md
+2611.02409
+2611.05880
+2611.05996
+2611.08145
+2611.09546
+2611.13170
+2611.14800
+2611.15169
+2611.15318
+2611.15736
+2611.23627
+2610.33150
+2610.28890
+2610.28745
+2610.01964
