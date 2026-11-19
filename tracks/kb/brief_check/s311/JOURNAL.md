@@ -71,3 +71,31 @@ Prediction: totals unchanged or larger by at most one or two; any record only in
 is not a full-NR calculation of a binary separated by a heavier black hole. Refuted if a new
 record is such a calculation (then line 273 becomes CORRECTED), or if a record of 2026-11-15
 disappeared (then the comparison is not like for like and I say so).
+
+## Entry 3, 2026-11-19 08:05: outcome of run N; prediction for run X (number check)
+
+Outcome of run N (`kb-20261119-153345-ed7ee04`): all four totals unchanged (citations of
+2406.11985: 9; of 2505.03934: 8; k02: 22; k01: 19), and record for record the same sets: no
+record only in the new answers, none dropped. Prediction P9 (second half) holds. The novelty
+statement of line 273 stands as of 2026-11-19 for these four queries; the other queries of
+Track F were not repeated.
+
+Source checks done so far (outcomes of P1-P8 and P10 go to entry 4 with the tally).
+
+Prediction for run X (`scripts/check_numbers.py`, numbers transcribed from the sources):
+- X1. Yu and Tremaine (astro-ph/0309084 `ms.tex:516-526`) report Hills' rms ejection speed as
+  v' = 130 to 160 km/s in v_ej = v' (M/m*)^(1/6) (a_b/0.1 au · Msun/m*)^(-1/2). Written as
+  v_ej = k v_b q^(1/6) with v_b = sqrt(G m_b/a_b), m_b = 2 m*, q = M/m_b, the prefactor k lies
+  in [0.7, 1.5]. Refuted if k is outside [0.5, 2] (then "v_ej ~ v_b q^(1/6)" hides a large
+  constant and must say so).
+- X2. The same formula reproduces their quoted 5e3 and 0.9e3 km/s (M = 3.5e6 Msun, m* = 1 Msun,
+  a_b = 0.01 and 0.3 au; `ms.tex:549-555`) to within the 130-160 band, i.e. ratio 0.8-1.3.
+- X3. 2404.16270: r_t/r_g = (a_0/r_gb) q^(-2/3) with M = 1e6, m_b = 1 Msun, a_0 = 0.01 au gives
+  101.3 (their `article.tex:172`) within 0.1 per cent, and r_t/(4 r_g) gives their
+  beta_max = 25.3 (`article.tex:212`) within 0.3 per cent.
+- X4. Peters as quoted in 1805.09593 (`revised_version.tex:202-204`): for equal masses
+  (5/256) m^3/(m1 m2 m) = 5/64 exactly; their second line, 6.0e3 Gyr for m = 60 Msun and
+  a = 1 au, is reproduced within 2 per cent; the brief's "about 6×10^3 GM/c^3" at a_b = 30 r_gb,
+  q = 10 is 6328 (Track F's number).
+Constants: GM_sun = 1.3271244e20 m^3 s^-2 (IAU 2015 B3 nominal), au = 1.495978707e11 m
+(IAU 2012 B2), c exact, Julian year [BACKGROUND].
