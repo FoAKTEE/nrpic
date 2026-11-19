@@ -12,21 +12,37 @@ set -euo pipefail
 HERE=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
 EXE=${EXE:-O3}; BIND=${BIND:-true}; PLACES=${PLACES:-auto}
 phase=$1
-run() {  # case threads nlim-factor repeats tag
+run() {  # case threads nlim-factor repeats tag [places]
   python3 "$HERE/scaling.py" --exe "$EXE" --cases "$1" --threads "$2" --nlim-factor "$3" \
-      --repeat "$4" --bind "$BIND" --places "$PLACES" --tag "$5" --out .
+      --repeat "$4" --bind "$BIND" --places "${6:-$PLACES}" --tag "$5" --out .
+}
+# Side-by-side phases: the places of the four runs are chosen once (the 4 n least busy
+# cores) and split into four disjoint groups of n; four separate calls of omp_places.py
+# at the same moment pick the same cores (run core-20261119-160404-beddeac, stopped).
+split4() {  # threads -> sets G0..G3
+  local n=$1 all
+  if [[ $PLACES == auto ]]; then
+    all=$(python3 "$HERE/../../../scripts/omp_places.py" $((4*n)))
+    mapfile -t parts < <(sed 's/},{/}\n{/g' <<< "$all")
+    G0=$(IFS=,; echo "${parts[*]:0:n}"); G1=$(IFS=,; echo "${parts[*]:n:n}")
+    G2=$(IFS=,; echo "${parts[*]:$((2*n)):n}"); G3=$(IFS=,; echo "${parts[*]:$((3*n)):n}")
+  else
+    G0=$PLACES; G1=$PLACES; G2=$PLACES; G3=$PLACES
+  fi
 }
 case $phase in
   t1)
-    run punc 1 0.1 1 t1 & run cluster 1 0.19 1 t1 & run cosmo 1 0.25 1 t1 &
-    run newton 1 0.5 1 t1 & wait ;;
+    split4 1
+    run punc 1 0.1 1 t1 "$G0" & run cluster 1 0.19 1 t1 "$G1" & run cosmo 1 0.25 1 t1 "$G2" &
+    run newton 1 0.5 1 t1 "$G3" & wait ;;
   serial)
     EXE=S; BIND=none; PLACES=none
     run punc 1 0.1 1 serial & run cluster 1 0.19 1 serial & run cosmo 1 0.25 1 serial &
     run newton 1 0.5 1 serial & wait ;;
   t4)
-    run punc 4 0.125 2 t4 & run cluster 4 0.25 2 t4 & run cosmo 4 0.25 2 t4 &
-    run newton 4 1.0 2 t4 & wait ;;
+    split4 4
+    run punc 4 0.125 2 t4 "$G0" & run cluster 4 0.25 2 t4 "$G1" & run cosmo 4 0.25 2 t4 "$G2" &
+    run newton 4 1.0 2 t4 "$G3" & wait ;;
   t16|t32|t64)
     n=${phase#t}
     run punc "$n" 0.25 2 "$phase"; run cluster "$n" 0.5 2 "$phase"
