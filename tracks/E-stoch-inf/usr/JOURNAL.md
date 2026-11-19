@@ -203,3 +203,31 @@ Reference numbers for the record [VERIFIED by run E-20261119-143905-f2bcde3]:
   E-stoch-inf-20261115-130137-176cdd6, `../langevin/README.md`): two independent codes agree.
 - Super-horizon drift of ln Delta in the last e-fold: 1.09e-3 to 1.15e-3 for all shells
   (eps1 rises again after its minimum).
+
+## Entry 5, 2026-11-19 14:48 UTC: interim look at the first batch; second batch predicted
+
+Run E-20261119-144116-8aa7c22 is half-way (cycle 70 of 213). Read from its records while
+it runs (development analysis into scratch/E-stoch-inf/tmp/usr/devB, not a result):
+- The homogeneous runs are done; their numbers go into entry 6.
+- <abs(H)/[H]> of M16l, M16p and BGv03 (8^3, same step) agree to 4-5 digits at every
+  cycle: 1.5e-8 at cycle 6, 1.08e-7 at cycle 48, i.e. the record of the perturbed runs is
+  the uniform time-integration residual H0 of the background, independent of the
+  amplitude. Prediction M4 (<= 1e-10 at all times) is therefore REFUTED already; cause
+  checked by the comparison with the homogeneous run of identical step. In the SR case
+  core found H0 = 3e-12 of [H] at Courant 0.25; here the twin's Theta reaches 1.07e-7
+  (entry 4), so the same residual is four orders larger in the USR background. A
+  second-order Hamiltonian test needs H - H0 per cell (dumps with H) or a smaller step.
+- <abs(M)/[M]> of M16l (s = 1e-3) starts at 3.9e-6, which is the rounding of |M| against
+  a first-order [M] a thousand times smaller than at s = 1 [JUDGEMENT]; M16l does not test
+  the momentum constraint.
+
+Second batch (`inputs/proc2.list`, core_scalar-2, 32^3, nmax2 = 16, to N_f), predictions:
+- M16h (s = 0.5): <abs(M)/[M]>(s = 1) / <abs(M)/[M]>(s = 0.5) = 2.0 +- 0.15 at the dumps
+  of the entry (cN < 1.4) and during USR, if M is second order ([M] first order, core's
+  reading of A4); refuted if it stays near 1 (then a first-order part dominates).
+  <abs(H)/[H]> equal to M16p's to 1e-3 relative (H0 dominates).
+- M16pc, M16lc (Courant 0.125): <abs(H)/[H]> lower by 16 +- 3 than at 0.25 where H0
+  dominates (twin: Theta 6.2e-9 against 1.07e-7); <Pi> off the exact background by
+  2.5e-5 at the end. Per-mode U-A2 error of M16lc at N_f: if the 32^3 value of M16l is set
+  by the time step it falls by more than 8; if by the stencils it stays within a factor
+  1.5. [No preference stated: this run decides it.]

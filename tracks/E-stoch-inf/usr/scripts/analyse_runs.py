@@ -204,14 +204,16 @@ def main():
             k3 = xp["modes"].n2 <= 9
             fr = np.abs(odd[-1])**2 / np.abs(xp["cref"][nt - 1])**2
             key = p[:-1] + "_odd"
+            nc = min(xp["con"].shape[0], R[mname]["con"].shape[0])
             S[key] = dict(U_A2s_cont=dict((k, v) for k, v in mo.items() if not isinstance(v, np.ndarray)),
                           U_A2s_stencil=dict((k, v) for k, v in mo_st.items() if not isinstance(v, np.ndarray)),
                           U_A2n_even_over_odd_end=float(ratio_t[-1]),
                           U_A2n_even_over_odd_max=float(ratio_t.max()),
                           U_A2n_max_at_cN=float(xp["cN"][:nt][np.argmax(ratio_t)]),
                           U_A3_power_ratio_k_le_3=dict(min=float(fr[k3].min()), max=float(fr[k3].max())),
-                          mean_Pi_rel_diff_vs_m=float(np.max(np.abs(xp["con"][:, 17] - R[mname]["con"][:, 17])
-                                                             / np.abs(xp["con"][:, 17]))))
+                          mean_Pi_rel_diff_vs_m=float(np.max(
+                              np.abs(xp["con"][:nc, 17] - R[mname]["con"][:nc, 17])
+                              / np.abs(xp["con"][:nc, 17]))))
             pairs[p[:-1]] = dict(odd=odd, even=even, ratio_t=ratio_t, cN=xp["cN"][:nt], mo=mo,
                                  cref=xp["cref"][:nt], modes=xp["modes"])
     # backreaction on the means: M16p and M64p against M16l (record every cycle)

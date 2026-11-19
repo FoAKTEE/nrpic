@@ -1,0 +1,4 @@
+# second batch (JOURNAL entry 5): halving test of the constraints and Courant 0.125
+M16h s2 tracks/E-stoch-inf/usr/inputs/usr_base.athinput scalar_field/noise_mode_scale=0.5
+M16pc s2 tracks/E-stoch-inf/usr/inputs/usr_base.athinput time/cfl_number=0.125
+M16lc s2 tracks/E-stoch-inf/usr/inputs/usr_base.athinput time/cfl_number=0.125 scalar_field/noise_mode_scale=1.0e-3
