@@ -120,7 +120,7 @@ case of the body and the brief rows 45 and 47 become CORRECTED or NOT FOUND for 
 Figure: left, hhat(e,0) with the dust bound and the particle bracket at e = 0.2; right, stated
 against recomputed ratios. I will look at the PNG before using any number.
 
-## Entry 3 (2026-11-19 07:33 PST): outcome of run 1 and of predictions P1-P15
+## Entry 3 (2026-11-19 07:22 PST): outcome of run 1 and of predictions P1-P15
 
 Run `kb-20261119-151804-271859c` (completed, exit 0; processors, one core, seconds): steps ratio
 93.81, step-size ratio 200.0, abundance ratio 19.44, hhat(0.2, 0) = 0.4517 (0.4221 with the
@@ -174,7 +174,7 @@ Outcomes of the predictions of entry 1 (rows of CHECK.md in brackets):
   18 precisions (above the predicted 6-12: I underestimated how many statements are abstract
   wording that the bodies qualify), 0 NOT FOUND (inside).
 
-## Entry 4 (2026-11-19 07:33 PST): predictions for run 2 (tally) and run 3 (figure rerun)
+## Entry 4 (2026-11-19 07:22 PST): predictions for run 2 (tally) and run 3 (figure rerun)
 
 Run 2, `scripts/fig_verdicts.py` (copy of the s33 script, now also checking run-id locators
 against `tracks/kb/runs/<id>/manifest.json`): predicts 52 rows numbered 1-52, tally 33 CONFIRMED,
