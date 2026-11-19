@@ -1,0 +1,163 @@
+{
+  "schema": "nrpic-run-manifest/1",
+  "run_id": "core-20261119-150507-8224d72",
+  "track": "core",
+  "gate": "G2",
+  "kind": "scouting",
+  "purpose": "T10 of cosmo-amr: Track A's above-threshold case S1 (mu = 0.3) with adaptive refinement toward the peak, fine-shape deposit, light-speed step limit, guard, finder status, region norms; how far does it get",
+  "preregistered_in": null,
+  "launcher": "batch",
+  "command": [
+    "scripts/gpu_batch.sh",
+    "/data/haiyangw/nrpic/scratch/core/core-20261119-150507-8224d72/batch.list"
+  ],
+  "cwd": "scratch/core/core-20261119-150507-8224d72",
+  "git": {
+    "sha": "8224d729e2d497fe3807e6496b16d742f98ac559",
+    "branch": "core/cosmo-amr",
+    "dirty": false,
+    "merge_base_main": "27b2ced9be0f020a4206d89e3cc982ada5c4367c",
+    "worktree": "wt/core-cosmo-amr"
+  },
+  "code": {
+    "core_tag": "core-v0.3",
+    "athenak_upstream_sha": "c5a0d7f",
+    "kokkos_sha": "6739bc623081648af9e752b616d9671527922cbf",
+    "problem": "nrpic_cosmo",
+    "exe": "/data/haiyangw/nrpic/wt/core-cosmo-amr/.work/build_gpu/src/athena",
+    "exe_sha256": "6dca616df5ce7938e2ba605ce11bca39d0179b1a45b244d7e787443558ae3c37",
+    "cmake_flags": [
+      "-DPROBLEM=built_in_pgens",
+      "-DAthena_ENABLE_MPI=OFF",
+      "-DAthena_ENABLE_OPENMP=OFF",
+      "-DKokkos_ARCH_ICX=ON",
+      "-DKokkos_ENABLE_DEBUG=OFF",
+      "-DKokkos_ENABLE_DEBUG_BOUNDS_CHECK=OFF",
+      "-DCMAKE_CXX_COMPILER=/data/haiyangw/nrpic/wt/core-cosmo-amr/.work/build_gpu/nvcc_wrapper_pinned",
+      "-DCUDAToolkit_ROOT=/usr/local/cuda-12.6",
+      "-DKokkos_ENABLE_SERIAL=ON",
+      "-DKokkos_ENABLE_CUDA=ON",
+      "-DKokkos_ARCH_AMPERE80=ON",
+      "-DCMAKE_BUILD_TYPE=Release",
+      "-DCMAKE_CXX_FLAGS_RELEASE=-O3 -DNDEBUG"
+    ],
+    "toolchain": "nvcc 12.6 (host g++ 11.4.0)"
+  },
+  "env": {
+    "host": "anta",
+    "env_hash": "33c1dbb6673b68919eaa332b0add0b58aeac8be843f2071b9d06e2e0e397a96d",
+    "machine_file_sha256": "0321f40f4caeeb2a36624a9fa9809e60bad31071f366b3517ba23ad45698d2d7",
+    "uv_lock_sha256": "5417f6ba318b914aa3800e5d55f7b11fdd8df13c2688bdda7d419240aa1d5863",
+    "track_requirements_sha256": null,
+    "container_digest": null,
+    "compiler": "g++ 11.4.0",
+    "mpi": "none (Athena_ENABLE_MPI=OFF)",
+    "gpu": "NVIDIA A100 80GB (Slurm partition preempt)",
+    "python": "3.10.12 /data/haiyangw/nrpic/wt/core-cosmo-amr/.venv"
+  },
+  "input": {
+    "file": "problems/cosmo_amr/peak_amr.athinput",
+    "sha256": "888f3cff78c547ffbaa4da6ae01bde97ba5d9be2997a429eeb6980b7bf9a6e1c",
+    "overrides": {
+      "time/tlim": "16.0",
+      "problem/id_file": "/data/haiyangw/nrpic/scratch/A-emd-pbh/A-emd-pbh-20261115-155802-9a6596f/S_mu0.3/fields.bin",
+      "particles/particle_file": "/data/haiyangw/nrpic/scratch/A-emd-pbh/A-emd-pbh-20261115-155802-9a6596f/S_mu0.3/particles.nrp",
+      "fastflow/start_time_0": "6.0",
+      "fastflow/find_every": "64",
+      "mesh_refinement/max_nmb_per_rank": "2000"
+    }
+  },
+  "inputs": [
+    {
+      "path": "/data/haiyangw/nrpic/scratch/A-emd-pbh/A-emd-pbh-20261115-155802-9a6596f/S_mu0.3/fields.bin",
+      "role": "input",
+      "sha256": "05695312d91e4ac5068c7bcc9851be39c7ebb617b2a089db22e2ad47fc6d8a0b",
+      "bytes": 18874400,
+      "tracked": false,
+      "location": "main checkout data root"
+    },
+    {
+      "path": "/data/haiyangw/nrpic/scratch/A-emd-pbh/A-emd-pbh-20261115-155802-9a6596f/S_mu0.3/particles.nrp",
+      "role": "input",
+      "sha256": "dc4466c95a603afedbe359b53181eea391408ea012f28e213b3955b63a0d3e52",
+      "bytes": 15728656,
+      "tracked": false,
+      "location": "main checkout data root"
+    },
+    {
+      "path": ".work/build_gpu/src/athena",
+      "role": "exe",
+      "sha256": "6dca616df5ce7938e2ba605ce11bca39d0179b1a45b244d7e787443558ae3c37",
+      "bytes": 103105048,
+      "tracked": false
+    },
+    {
+      "path": "tracks/core/analysis/cosmo_amr/t10_scout.list",
+      "role": "list",
+      "sha256": "ab38e9edd642c9f5ca49bb5e4c417b437566ea134c94cea2ac26ff660ae29ea6",
+      "bytes": 547,
+      "tracked": true
+    },
+    {
+      "path": "problems/cosmo_amr/peak_amr.athinput",
+      "role": "athinput:s1amr",
+      "sha256": "888f3cff78c547ffbaa4da6ae01bde97ba5d9be2997a429eeb6980b7bf9a6e1c",
+      "bytes": 5843,
+      "tracked": true
+    }
+  ],
+  "batch_entries": [
+    {
+      "name": "s1amr",
+      "input": "problems/cosmo_amr/peak_amr.athinput",
+      "args": [
+        "time/tlim=16.0",
+        "problem/id_file=/data/haiyangw/nrpic/scratch/A-emd-pbh/A-emd-pbh-20261115-155802-9a6596f/S_mu0.3/fields.bin",
+        "particles/particle_file=/data/haiyangw/nrpic/scratch/A-emd-pbh/A-emd-pbh-20261115-155802-9a6596f/S_mu0.3/particles.nrp",
+        "fastflow/start_time_0=6.0",
+        "fastflow/find_every=64",
+        "mesh_refinement/max_nmb_per_rank=2000"
+      ]
+    }
+  ],
+  "resources": {
+    "nodes": 1,
+    "gpus": 1,
+    "cores": 1,
+    "walltime_s": null,
+    "wall_limit": "00:45:00",
+    "segments_max": null,
+    "gpu_hours_requested": 0.75,
+    "gpu_hours": null,
+    "particles": null
+  },
+  "slurm": {
+    "partition": "preempt",
+    "job_name": "core-20261119-150507-8224d72",
+    "job_ids": []
+  },
+  "outputs": {
+    "dir": "scratch/core/core-20261119-150507-8224d72",
+    "sha256sums": "sha256sums.txt",
+    "sha256sums_sha256": null,
+    "bytes": null,
+    "files": null
+  },
+  "status": "submitted",
+  "exit_code": null,
+  "registered": "2026-11-19T15:05:08Z",
+  "started": null,
+  "ended": null,
+  "parents": [],
+  "notes": "",
+  "budget_at_submit": {
+    "gpu_hours_allotted": 40.0,
+    "cores_allotted": 16,
+    "gpu_hours_used": 2.5281,
+    "gpu_hours_reserved": 4.6933,
+    "gpu_hours_without_gate": 5.8613,
+    "cores_busy": 16,
+    "runs": 996,
+    "allotment_from": "coord/DECISIONS/0006-compute-budget.md + 0014-budgets-after-wave-1.md"
+  }
+}
