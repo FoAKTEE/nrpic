@@ -4,6 +4,7 @@ on the uniform 64^3 mesh and on the same mesh with one static refinement level, 
 the ball crosses (multigrid solver on a refined mesh).
 
     t6_smr.py --run RUNDIR_OF_cases.py_t6 [--out DIR]
+    t6_smr.py --run RUNDIR_OF_cases.py_t6b --cases spin_in_uni64 spin_in_uni128 spin_in_smr
 
 Runs problems/newton/analyze_conservation.py on both cases (drift of the centre of mass
 from uniform motion, of the momentum, of the angular momentum about the centre of mass
@@ -35,15 +36,21 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--run", required=True)
     ap.add_argument("--out", default=os.environ.get("NRPIC_RUN_DIR", ""))
+    ap.add_argument("--cases", nargs="+", default=["spin_uni64", "spin_smr"])
+    ap.add_argument("--fine", type=float, default=1.0,
+                    help="half-width of the refined MeshBlocks (particles inside counted)")
     a = ap.parse_args()
     os.makedirs(a.out, exist_ok=True)
     fs.use_style()
     res = {}
     fig, axs = plt.subplots(1, 3, figsize=(fs.FULL_WIDTH, 2.9))
     fig.subplots_adjust(left=0.085, right=0.985, bottom=0.17, top=0.95, wspace=0.42)
-    cols = {"spin_uni64": fs.PAL["blue"], "spin_smr": fs.PAL["red"]}
-    labs = {"spin_uni64": r"uniform $64^3$", "spin_smr": r"$64^3$ + one level"}
-    for name in ("spin_uni64", "spin_smr"):
+    palette = [fs.PAL["blue"], fs.PAL["red"], fs.PAL["green"], fs.PAL["yellow"]]
+    cols = {n: palette[i % len(palette)] for i, n in enumerate(a.cases)}
+    labs = {n: (r"$64^3$ + one level" if "smr" in n else
+                r"uniform $%s^3$" % "".join(ch for ch in n.split("uni")[-1] if ch.isdigit()))
+            for n in a.cases}
+    for name in a.cases:
         d = os.path.join(a.run, name)
         log = open(os.path.join(d, "athena.log")).read()
         hfile = glob.glob(os.path.join(d, "*.newton.hst"))
@@ -67,7 +74,7 @@ def main():
         for f in sorted(glob.glob(os.path.join(d, "*.part.*.bin"))):
             t, cyc, x, u, m, tag = nw.read_snapshot(f)
             ins = np.zeros(len(tag), dtype=bool)
-            ins[tag] = (np.abs(x) < 1.0).all(axis=1)
+            ins[tag] = (np.abs(x) < a.fine).all(axis=1)
             inside.append(ins)
         if len(inside) > 1:
             out["particles"] = int(len(inside[0]))
@@ -93,8 +100,9 @@ def main():
     axs[1].set_ylabel(r"centre of mass off uniform motion")
     axs[2].set_xlabel(r"$t$", labelpad=-1)
     axs[2].set_ylabel(r"$(E - E_0)/|E_0|$")
-    fs.save(fig, os.path.join(a.out, "t6_smr"))
-    with open(os.path.join(a.out, "t6_smr.json"), "w") as f:
+    stem = "t6_smr" if a.cases == ["spin_uni64", "spin_smr"] else "t6b_smr"
+    fs.save(fig, os.path.join(a.out, stem))
+    with open(os.path.join(a.out, stem + ".json"), "w") as f:
         json.dump(res, f, indent=1)
     print(json.dumps(res, indent=1))
 

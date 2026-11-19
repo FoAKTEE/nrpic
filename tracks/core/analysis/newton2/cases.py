@@ -369,6 +369,26 @@ def t6(out, exe, jobs, rec):
     return run_all(out, cases, exe, jobs, rec)
 
 
+def t6b(out, exe, jobs, rec):
+    """T6 with the ball scaled to radius 0.7 and mass 0.343 (same density), inside the
+    refined MeshBlocks for the whole run: uniform 64^3, uniform 128^3, 64^3 + one level."""
+    ic = os.path.join(out, "ic")
+    os.makedirs(ic, exist_ok=True)
+    pf = os.path.join(ic, "spin.nrp")
+    sh([PY, os.path.join(NEWTON, "make_ic.py"), "ball", "--out", pf, "--center", "0.05",
+        "-0.05", "0.03", "--radius", "0.7", "--mass", "0.343", "--spacing", "0.0625",
+        "--ntracer", "0", "--velocity", "-0.2", "0.15", "-0.1", "--omega", "0.2", "-0.3",
+        "0.6"])
+    p = {"time": {"tlim": 0.8}, "particles": {"particle_file": pf, "dt": 0.002,
+                                               "snap_dt": 0.2, "hist_dcycle": 1}}
+    iso = os.path.join(NEWTON, "isolated.athinput")
+    cases = [Case("spin_in_uni128", deck(iso, merge(cube(128, 32), p))),
+             Case("spin_in_uni64", deck(iso, merge(cube(64, 16), p))),
+             Case("spin_in_smr", deck(os.path.join(NEWTON, "isolated_smr.athinput"),
+                                      merge(cube(64, 16), p)))]
+    return run_all(out, cases, exe, jobs, rec)
+
+
 def t7(out, exe, jobs, rec):
     """Plane wave, N = 32: half the step for the multigrid and the spectral solver
     (their runs at the full step are mg and fftsp of test t1), and the cubic cloud with
@@ -581,7 +601,8 @@ def card(out, exe, jobs, rec):
     return True
 
 
-TESTS = dict(card=card, t1=t1, t2=t2, t3=t3, t4a=t4a, t4b=t4b, t4c=t4c, t5=t5, t6=t6, t7=t7, t8=t8, t10=t10)
+TESTS = dict(card=card, t1=t1, t2=t2, t3=t3, t4a=t4a, t4b=t4b, t4c=t4c, t5=t5, t6=t6, t6b=t6b,
+             t7=t7, t8=t8, t10=t10)
 
 
 def main():
