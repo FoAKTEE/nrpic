@@ -164,3 +164,56 @@ Refuted if E_code at excision matches E_K within 1e-3 for groups 0-2 in both run
 the code's E would be usable as the horizon flux energy in these runs. Consequence either
 way: the G2 flux should use the energy fixed per particle by the initial data (conserved
 Misner-Sharp energy of the shell, known per tag) when the code's E is gauge-contaminated.
+
+### Outcome of entry 2 (run D-20261119-144040-3acb22f; analyses D-20261119-144246-238a592 and, with the per-species breakdown, D-20261119-144600-15dcc67; `results/p1_analysis.json`, `figs/p1_fixed_bh.png`, looked at)
+
+Wall time 86 s (mesh) and 9 s (analytic) on one core.
+1. HELD: 2935 records per case, all reason 2, the removed tags equal my captured set,
+   n_escaped = 0.
+2. FAILED in part: max |E_rec/E_exact - 1| by species, mesh 3.7e-5 (A), 1.8e-4 (B),
+   8.8e-6 (C); analytic 2.3e-6, 8.4e-5, 2.3e-6. Predicted 2e-5 (mesh), 5e-6 (analytic),
+   5e-5 for B on the mesh. The B errors are the same on both metrics and grow with the
+   time spent whirling near the unstable circular orbit (figure, top left): they are
+   pusher errors at dt = 0.05 M, not interpolation; the A excess on the mesh is confined
+   to the earliest removals (r0 near 3 M). Effect on the flux sums: 1.0e-5 relative.
+3. FAILED as worded: record time minus exact t_exc, in steps, by species (min, max,
+   number early, number late): mesh A (-0.019, 1.004, 9, 3), B (-0.446, 1.042, 11, 4),
+   C (-0.010, 1.008, 4, 2); analytic A (-0.0002, 0.9986, 1, 0), B (-0.072, 0.9988, 7, 0),
+   C (0.003, 0.9997, 0, 0). So: exact to rounding on the analytic metric except the
+   whirling B orbits (phase error), and up to 2 per cent of a step for radial infall on
+   the mesh metric (lapse interpolated at r_exc); the B orbits lose up to 0.45 steps.
+4. HELD: final counts 2935/0, 2935/0, 2584/28 on both metrics, no record outside the
+   one-step tolerance; sum m E through r = 2M 0.26748438 (mesh) against 0.26748510,
+   2.7e-6 relative.
+5. FAILED as worded (6865 of 8001 records outside [F(t - dt), F(t)] by more than 1e-9):
+   the 1e-9 tolerance ignored the accumulated energy errors (7e-7 M at the end). With a
+   tolerance of half the smallest m E of one particle, 18 (mesh) and 5 (analytic) of
+   8001 records differ by one particle: crossings registered one step off.
+6. HELD: exact horizon history: max bracket violation 0.011 sigma, closure 1.04e-5
+   (mesh) and 1.06e-5 (analytic); growth x 0.97: 802 sigma, closure -0.030; horizon late
+   by 2 M: 1242 sigma. The bracket F_sph(3M) - F_rem is up to 0.017 M wide during the
+   main infall (figure, bottom right): at a single time it constrains the growth only to
+   that width; the closure after the infall is the sharp test (1e-5 here).
+Lesson for the G2 analysis: judge the closure after the inflow has stopped (or the
+bracket over windows of the lag), not the instantaneous residual.
+
+### Outcome of entry 3 (run D-20261119-144248-0143469; `results/es_apply.json`, `figs/es_tracer_energy.png`, `figs/es1_null_compare.png`, looked at)
+
+(a) As expected from the rows already seen: excised rest mass 1.4e-29 after t0 = 100 M;
+dM_ES(199.5) = -3.40e-4, V-1 envelope sigma = 1.37e-4, max violation 2.6 sigma, inside
+3 sigma at all 200 finder times. V-1 alone against the D-pre-4 floor 2.8e-5: dM =
+-1.36e-4 at the end, 4.6 sigma, 10 per cent of the times outside 3 sigma (the V-1 drift
+after 170 M exceeds the D-pre-4 floor; the null test itself is the es_finish helper's).
+(b) Predictions 1-3 HELD, and the size is large:
+1. E_code(0)/E_K = 1.0593, 1.0517, 1.0322, 1.0043 for groups 0-3 (= psi^-2/E_K).
+2. At excision E_code/E_K = 2.494 (group 0, t = 15 M), 1.654 (group 1, 27 M), 1.347
+   (group 2, 178 M) in ES-1; 2.494, 1.370 in V-1 (group 2 not excised there by 200 M).
+3. Along the paths E_code varies by 91-143 per cent of E_K over the first 50 M; late
+   in the run the ratio of the groups still outside settles near the lapse at the
+   bubble probes (about 1.35 in ES-1, 1.22 in V-1 at t = 200 M; figure, right panel)
+   [JUDGEMENT: E_code ~ N(t) E_K with N the lapse normalisation of the bubble region].
+Consequence [VERIFIED for these runs]: in the moving-puncture gauge of ES-1/V-1 the
+code's E = alpha W - beta^i u_i is NOT the Killing energy, not even at late times; the
+G2 flux must use the energy fixed per particle by the initial data (`compare.py
+--energy_by_tag`), or E measured at a sphere in a gauge that is stationary and
+normalised to the asymptotic time. Request to core in the README.
