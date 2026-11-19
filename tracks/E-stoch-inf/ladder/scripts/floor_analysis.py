@@ -98,6 +98,17 @@ def main():
             H_even=[r1[i]["H_even"] / rh[i]["H_even"] for i in keep],
             M_odd=[r1[i]["M_odd"] / rh[i]["M_odd"] for i in keep],
             dropped=[r1[i]["time"] for i in range(n) if i not in keep])
+    # 3b. the even part (mean removed) at 256 against 128: if the floor is noise that is
+    # uncorrelated between the s = +1 and s = -1 runs, it enters odd and even parts alike,
+    # so even_256^2 = even_128^2 + (odd_256^2 - odd_128^2) where odd_128 is floor as well
+    e128 = np.array(out["parts"]["H_even"][128])
+    e256 = np.array(out["parts"]["H_even"][256])
+    o128 = np.array(out["parts"]["H_odd"][128])
+    o256 = np.array(out["parts"]["H_odd"][256])
+    out["even_check"] = dict(measured_even128_over_even256=(e128 / e256).tolist(),
+                             model=(e128 / np.sqrt(e128**2 + o256**2 - o128**2)).tolist(),
+                             even64_over_even128=(np.array(out["parts"]["H_even"][64]) /
+                                                  e128).tolist())
     # 4. first e-fold with odd > even (paper's set-up) against ln(N/8)
     for tag, name in (("N32", "pair_L32p_L32m.json"), ("N64", "pair_Q64p_Q64m.json"),
                       ("N128", "pair_Q128p_Q128m.json"), ("N256", "pair_P256_P256m.json")):
