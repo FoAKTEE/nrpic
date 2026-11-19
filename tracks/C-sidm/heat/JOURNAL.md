@@ -165,3 +165,18 @@ exceeds P = 1) held: TESTS.md T8's "the deficit is reported" has nothing to repo
 sub-cycling buys is not the rate but the time resolution of successive collisions (T8
 part 1). Figure `figs/T8_t2_nosub.png` (looked at: both ratios scatter by 3-5e-4 per step
 around 1, no trend over 200 steps).
+
+## 2026-11-19 15:31 Outcome T7 collisionless check: confirmed (runs C-20261119-150358-3805fd5, analysis C-20261119-152845-017d186)
+
+k lambda = 100, 4e5 particles, eps = 0.05, theta 0.003, 0.1, 1 (to 6/(k sqrt(theta)) or 6/k).
+Against `mode_collisionless` (ensemble): max |z| = 3.03, 3.08, 2.89 (< 4: pass as written),
+rms z 1.80, 1.89, 2.01. The rms looked systematic in the first analysis (C-20261119-152743-
+2367d74, superseded): the code lies below the ensemble curve by 1-2 noise units at all
+three temperatures. Checked before naming a cause: the free streaming of the same sample
+(deterministic) lies there too (rms z sample vs ensemble 1.80, 1.80, 2.05: make_box draws
+the positions of all three from seed 1 with the same box, so the three runs share one
+noise realization), and the code follows it to rms 0.27, 0.14, 0.05 noise units (max 0.90,
+0.27, 0.09); the remainder grows with the fraction of particles that collided by the end
+(12.5, 11.1, 5.7 percent), as collisions slow the phase mixing. Figure
+`figs/T7_collisionless.png` (looked at; the legend covers the first points of the left
+panel).
