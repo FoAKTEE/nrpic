@@ -479,3 +479,48 @@ with the vector part (mode code). Predictions [JUDGEMENT]:
      Poisson preconditioner against sigma/k_min^2 of order 1e3): for mu >= 0.3 at 64
      cells at least half of the Newton steps use all id_lin_maxit = 50 steps.
 Refuted (machinery) if mu = 0.5 does not converge or c at 64 cells exceeds 1e-3.
+
+## 2026-11-19, entry 7: outcomes of R0 and G
+
+**R0 held** (run core-20261119-154842-de22625, 1 core, `regress_r0.json`, figure
+`figs/regress_r0`, looked at: every bar identical, none differing). Without `id_solve`
+the processor build of 76add0c writes the same bytes as the release executable
+core-v0.3 in all nine set-ups: geo 2 files, boris 2, dep 1, east 12, os 16, jeans 5
+(and the result lines of its log), binary 1, Newtonian isolated 11, periodic 9; both
+executables exit 0 in every case.
+
+**G, Track A's CMC peak with the code's solver** (run core-20261119-160329-ab0aa92,
+2 cores, `test_g_numbers.json`, figure `figs/test_g_cmc`, looked at: the solved profiles
+lie on psi_GE, the difference peaks at the centre at a few 1e-7 for mu >= 0.3 at 64 cells,
+residual histories fall by about a decade per Newton step after the third):
+
+| case | outer it. | c = max\|dpsi - <dpsi>\| / max\|psi_GE - <psi_GE>\| | max\|H\| before -> after | mean offset |
+|---|---|---|---|---|
+| mu = 0.03, 64^3 | 9 | 1.0e-7 | 0.56 -> 3.2e-10 | 0 |
+| mu = 0.3, 64^3 | 10 | 3.6e-7 | 8.6 -> 1.5e-9 | 2e-12 |
+| mu = 0.5, 32^3 | 8 | 1.6e-5 | 19.0 -> 1.2e-9 | -6.5e-10 |
+| mu = 0.5, 64^3 | 10 | 5.2e-7 | 20.4 -> 3.1e-9 | -1.4e-11 |
+| mu = 0.7, 64^3 | 11 | 6.3e-7 | 41.8 -> 2.2e-9 | -6.1e-11 |
+| mu = 0.5, 64^3, vector part | 10 | 5.2e-7 | 20.4 -> 3.1e-9 | -1.4e-11 |
+
+ (a) held: every case converged, mu = 0.5 and 0.7 included (Track A's Python solve
+     diverged at 0.5), in 8 to 11 outer iterations.
+ (b) held: c below 1e-4 at 64 cells for every mu (at most 6.3e-7); for mu = 0.5 it falls by
+     31 from 32 to 64 cells (predicted at least 4).
+ (c) held: max|H| after 3.2e-10 to 3.1e-9 (bound 1e-8); mean offsets at most 6.5e-10.
+ (d) held: with the vector part c is the same to 1e-5 relative; the monitor's max|M|
+     falls from 1.58e-7 to 1.66e-9 (factor 95), ending at id_vector_tol after 10
+     iterations (the GE data satisfy the momentum constraint to the truncation of the
+     monitor).
+ (e) failed for mu = 0.3, held for 0.5 and 0.7: Newton steps that used all 50 inner steps:
+     4 of 10 (mu = 0.3), 6 of 10 (0.5), 6 of 11 (0.7). The inner solve is poorly
+     preconditioned on a box of 100 Hubble lengths, as predicted, but the Newton
+     iteration converges regardless (each step still reduces the residual by about 10).
+ Also seen: the proper density E of the code is uniform to 0.5 per cent on the CMC slice
+ (max E over its mean 1.0047 to 1.0049 for mu >= 0.3), while Ehat = psi^6 E peaks at 4
+ times its mean: the density contrast of the CMC slice is of order eps^2 zeta [JUDGEMENT,
+ consistent with Track A's DESIGN.md 2.2].
+ Consequence for request (5): the machinery of the code solves Track A's CMC data at
+ 64^3 to c of a few 1e-7 where their solver diverged; what the code does not provide is
+ the generator of the trial fields (Track A's `ge_fields`, here copied into the test) and
+ a field format with a non-conformally-flat metric.

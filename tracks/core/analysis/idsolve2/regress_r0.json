@@ -1,0 +1,194 @@
+{
+ "base": "/data/haiyangw/nrpic/.work/build_cpu_v03/src/athena",
+ "new": "/data/haiyangw/nrpic/scratch/core/tmp/idsolve2/exe_76add0c/athena_cpu",
+ "status": {
+  "geo/base": {
+   "exit": 0,
+   "wall_s": 0.0
+  },
+  "geo/new": {
+   "exit": 0,
+   "wall_s": 0.0
+  },
+  "boris/base": {
+   "exit": 0,
+   "wall_s": 0.3
+  },
+  "boris/new": {
+   "exit": 0,
+   "wall_s": 0.3
+  },
+  "dep/base": {
+   "exit": 0,
+   "wall_s": 6.6
+  },
+  "dep/new": {
+   "exit": 0,
+   "wall_s": 5.3
+  },
+  "east/base": {
+   "exit": 0,
+   "wall_s": 14.0
+  },
+  "east/new": {
+   "exit": 0,
+   "wall_s": 16.3
+  },
+  "os/base": {
+   "exit": 0,
+   "wall_s": 577.0
+  },
+  "os/new": {
+   "exit": 0,
+   "wall_s": 472.7
+  },
+  "jeans/base": {
+   "exit": 0,
+   "wall_s": 11.3
+  },
+  "jeans/new": {
+   "exit": 0,
+   "wall_s": 10.3
+  },
+  "binary/base": {
+   "exit": 0,
+   "wall_s": 68.1
+  },
+  "binary/new": {
+   "exit": 0,
+   "wall_s": 81.9
+  },
+  "newton_isolated/base": {
+   "exit": 0,
+   "wall_s": 0.9
+  },
+  "newton_isolated/new": {
+   "exit": 0,
+   "wall_s": 0.9
+  },
+  "newton_periodic/base": {
+   "exit": 0,
+   "wall_s": 3.3
+  },
+  "newton_periodic/new": {
+   "exit": 0,
+   "wall_s": 4.1
+  }
+ },
+ "cases": {
+  "geo": {
+   "identical": [
+    "geo.nrpic.hst",
+    "geo.traj.bin"
+   ],
+   "differ": [],
+   "both_exit_0": true
+  },
+  "boris": {
+   "identical": [
+    "geo.nrpic.hst",
+    "geo.traj.bin"
+   ],
+   "differ": [],
+   "both_exit_0": true
+  },
+  "dep": {
+   "identical": [
+    "dep.nrpic.hst"
+   ],
+   "differ": [],
+   "both_exit_0": true
+  },
+  "east": {
+   "identical": [
+    "east.cstat.hst",
+    "east.nrpic.hst",
+    "east.part.00000.bin",
+    "east.part.00001.bin",
+    "east.part.00002.bin",
+    "east.part.00003.bin",
+    "east.part.00004.bin",
+    "east.part.00005.bin",
+    "east.part.00006.bin",
+    "east.traj.bin",
+    "east.trajmet.bin",
+    "east.z4c.user.hst"
+   ],
+   "differ": [],
+   "both_exit_0": true
+  },
+  "os": {
+   "identical": [
+    "os.nrpic.hst",
+    "os.part.00000.bin",
+    "os.part.00001.bin",
+    "os.part.00002.bin",
+    "os.part.00003.bin",
+    "os.z4c.user.hst",
+    "rst/os.00000.rst",
+    "rst/os.00000.rst.prt",
+    "rst/os.00001.rst",
+    "rst/os.00001.rst.prt",
+    "rst/os.00002.rst",
+    "rst/os.00002.rst.prt",
+    "rst/os.00003.rst",
+    "rst/os.00003.rst.prt",
+    "rst/os.00004.rst",
+    "rst/os.00004.rst.prt"
+   ],
+   "differ": [],
+   "both_exit_0": true
+  },
+  "jeans": {
+   "identical": [
+    "bin/JeansWave.grav_phi.00000.bin",
+    "bin/JeansWave.grav_phi.00001.bin",
+    "bin/JeansWave.hydro_w.00000.bin",
+    "bin/JeansWave.hydro_w.00001.bin",
+    "run.log (280 result lines)"
+   ],
+   "differ": [],
+   "both_exit_0": true
+  },
+  "binary": {
+   "identical": [
+    "run.log (48 result lines)"
+   ],
+   "differ": [],
+   "both_exit_0": true
+  },
+  "newton_isolated": {
+   "identical": [
+    "newton.newton.hst",
+    "newton.nrpic.hst",
+    "newton.part.00000.bin",
+    "newton.part.00001.bin",
+    "newton.part.00002.bin",
+    "rst/newton.00000.rst",
+    "rst/newton.00000.rst.prt",
+    "rst/newton.00000.rst.prt.nwt",
+    "rst/newton.00001.rst",
+    "rst/newton.00001.rst.prt",
+    "rst/newton.00001.rst.prt.nwt"
+   ],
+   "differ": [],
+   "both_exit_0": true
+  },
+  "newton_periodic": {
+   "identical": [
+    "newton.newton.hst",
+    "newton.nrpic.hst",
+    "newton.part.00000.bin",
+    "rst/newton.00000.rst",
+    "rst/newton.00000.rst.prt",
+    "rst/newton.00000.rst.prt.nwt",
+    "rst/newton.00001.rst",
+    "rst/newton.00001.rst.prt",
+    "rst/newton.00001.rst.prt.nwt"
+   ],
+   "differ": [],
+   "both_exit_0": true
+  }
+ },
+ "all_identical": true
+}
