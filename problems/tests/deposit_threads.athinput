@@ -1,0 +1,96 @@
+# Example of <particles> deposit_threads (threaded processor build, scripts/build_cpu_omp.sh;
+# tracks/core/interfaces/threaded_build.md): the deposition test of deposit_smr.athinput
+# (10^4 particles drift across three refinement levels in flat spacetime; the history
+# compares the volume integrals of the deposited sources with the particle sums every
+# cycle) with one private copy of the sources per thread, so that two runs at the same
+# thread count give the same files byte for byte. Particle file: random.nrp from
+# /data/haiyangw/nrpic/scratch/core/regress/ic/ (sha256 aedb53c568f15477...). Run, for example:
+#   OMP_NUM_THREADS=4 OMP_PROC_BIND=true OMP_PLACES=$(scripts/omp_places.py 4) \
+#       athena_cpu -i deposit_threads.athinput time/tlim=2.0 particles/deposit_max_level=1
+# The serial and the card executables accept the option, say so, and add atomically.
+<comment>
+problem   = NRPIC deposition conservation on a refined mesh, private deposit per thread
+
+<job>
+basename  = dep
+
+<mesh>
+nghost    = 2
+nx1       = 64
+x1min     = -16.0
+x1max     = 16.0
+ix1_bc    = outflow
+ox1_bc    = outflow
+nx2       = 64
+x2min     = -16.0
+x2max     = 16.0
+ix2_bc    = outflow
+ox2_bc    = outflow
+nx3       = 64
+x3min     = -16.0
+x3max     = 16.0
+ix3_bc    = outflow
+ox3_bc    = outflow
+
+<meshblock>
+nx1       = 16
+nx2       = 16
+nx3       = 16
+
+<mesh_refinement>
+refinement       = static
+max_nmb_per_rank = 1024
+
+<refined_region1>
+level = 1
+x1min = -5.0
+x1max = 5.0
+x2min = -5.0
+x2max = 5.0
+x3min = -5.0
+x3max = 5.0
+
+<refined_region2>
+level = 2
+x1min = -2.0
+x1max = 2.0
+x2min = -2.0
+x2max = 2.0
+x3min = -2.0
+x3max = 2.0
+
+<time>
+evolution  = dynamic
+integrator = rk2
+cfl_number = 1.0
+nlim       = -1
+tlim       = 8.0
+ndiag      = 50
+
+<adm>
+dynamic = false
+
+<particles>
+particle_type  = nrpic
+pusher         = midpoint
+metric         = mesh
+bh_mass        = 0.0
+bh_spin        = 0.0
+tolerance      = 1.0e-12
+max_iterations = 50
+dt             = 0.1
+deposit        = true
+deposit_threads = private  # atomic (default) | private (OpenMP build: one copy of the sources per thread)
+nfilter        = 0
+filter_compensate = false  # one extra pass cancelling the widening of the binomial passes
+filter_comp_c  = -1.0          # its coefficient; negative: nfilter/4
+deposit_max_level = 31
+deposit_adaptive  = false
+deposit_min_level = 0
+deposit_ppc       = 2.0
+deposit_max_coarsen = 31   # a cloud is at most this many levels coarser than its particle's block
+hist_dcycle    = 1
+particle_file  = random.nrp
+
+<problem>
+pgen_name = nrpic_geodesic
