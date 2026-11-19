@@ -129,3 +129,38 @@ Predictions:
    detects a horizon that responds too late, not only one that grows too little.
 Refuted by any of these failing; a failure of 6 with 1-5 holding would mean the bracket
 argument itself is wrong.
+
+## Entry 3 (2026-11-19, before the analysis): ES-1 and V-1 (card runs of wave 2) through the tools
+
+Data: ES-1 D-20261115-172726-60ba4c2 and V-1 D-20261115-172730-c6d151b (release core-v0.3,
+no removal record; `es.nrpic.hst` has n_excised, m_excised; `traj.bin`/`trajmet.bin` hold
+the 140 tracers, m = 1e-30, every 8 cycles), data set D-20261115-170213-d2c2131
+(`es/es.json`: tracer groups 0-3 at R0 = 6, 10, 20, 28 M inside the bubble, LTB energies
+E_LTB = -1/6, -0.09997, -0.0375, -0.00449). The es_finish helper analyses these runs for
+the null test; this entry only applies the flux tools to them.
+
+(a) Null comparison, NOT blind: I have seen the finder masses of both runs at t = 0, 20,
+..., 199.5 M while checking the file format (ES-1 1.000955 at 100 M and 1.000614 at
+199.5 M; V-1 1.000937 and 1.000801). Expected from those rows: flux m_excised = 4.2e-29
+(tracers only, no dust enters the bubble); dM_ES(199.5) - 0 = -3.4e-4 against a V-1
+envelope of about 1.4e-4 from t0 = 100 M, i.e. a bracket violation near 2.4 sigma at the
+end. Recorded as an application of the tool, not as a test.
+
+(b) Blind test of the energy the code reports in an evolving gauge. In the bubble the
+spacetime is exactly Schwarzschild of mass M (Birkhoff), so each tracer has the conserved
+Killing energy E_K = (1 + 2 E_LTB)^(1/2) = 0.816497, 0.894457, 0.961769, 0.995500 for
+groups 0-3. The code's E = alpha W - beta^i u_i (computed here from traj.bin and
+trajmet.bin at the tracer) is -u_t of the code's time vector, which equals the Killing
+vector only where the gauge is stationary AND normalised to the Schwarzschild time; 1+log
+slicing in this data drives the lapse away from 1 at large radius (dust K < 0; the
+transition region of the f-slice has K != 0 in V-1 too), so I predict:
+1. at t = 0, E_code = alpha_0(R0) (u_i = 0, W = 1) = psi^-2, not E_K;
+2. at excision E_code differs from E_K by more than 1 per cent for at least one of
+   groups 0-2, in both runs, with E_code > E_K where the lapse beyond the tracer has risen
+   above 1 [JUDGEMENT];
+3. E_code is not constant along a tracer path while the gauge evolves (variation above
+   1 per cent over the first 50 M).
+Refuted if E_code at excision matches E_K within 1e-3 for groups 0-2 in both runs: then
+the code's E would be usable as the horizon flux energy in these runs. Consequence either
+way: the G2 flux should use the energy fixed per particle by the initial data (conserved
+Misner-Sharp energy of the shell, known per tag) when the code's E is gauge-contaminated.

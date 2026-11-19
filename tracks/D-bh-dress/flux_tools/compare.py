@@ -52,9 +52,15 @@ def step_cumsum(t_events, w, t_eval):
     return np.where(k > 0, cw[np.maximum(k - 1, 0)], 0.0)
 
 
-def removal_flux(rem, t0, t_eval, reasons=HORIZON_REASONS):
+def removal_flux(rem, t0, t_eval, reasons=HORIZON_REASONS, E_by_tag=None):
+    """Cumulative m E and m of the removal records after t0. E is the code's
+    alpha W - beta^i u_i at removal, or, with E_by_tag (array indexed by tag), the energy
+    fixed per particle by the initial data (the conserved Misner-Sharp/Killing energy of
+    its shell): the code's E depends on the normalisation of the time coordinate and is
+    not the Killing energy in an evolving gauge (journal entry 3)."""
     sel = np.isin(rem["reason"], reasons) & (rem["time"] > t0)
-    t, m, E = rem["time"][sel], rem["m"][sel], rem["E"][sel]
+    t, m = rem["time"][sel], rem["m"][sel]
+    E = rem["E"][sel] if E_by_tag is None else np.asarray(E_by_tag)[rem["tag"][sel]]
     return (step_cumsum(t, m * E, t_eval), step_cumsum(t, m, t_eval), int(sel.sum()))
 
 
@@ -80,7 +86,7 @@ def control_envelope(ctrl, t0, t_eval):
 
 
 def compare(hor, t0, rem=None, acc=None, hst=None, ctrl=None, floor=0.0, finder_tol=1e-5,
-            sphere=1, k_sigma=3.0):
+            sphere=1, k_sigma=3.0, E_by_tag=None):
     t = hor["time"]
     keep = t >= t0
     t, M = t[keep], hor["mass"][keep]
@@ -88,7 +94,7 @@ def compare(hor, t0, rem=None, acc=None, hst=None, ctrl=None, floor=0.0, finder_
     dM = M - M0
     out = dict(t0=t0, M0=float(M0), t=t, dM=dM)
     if rem is not None:
-        out["F_rem"], out["R_rem"], out["n_rem"] = removal_flux(rem, t0, t)
+        out["F_rem"], out["R_rem"], out["n_rem"] = removal_flux(rem, t0, t, E_by_tag=E_by_tag)
     elif hst is not None:
         # release runs: rest mass of the excised particles only (no energies)
         th = hst["time"]
@@ -199,6 +205,8 @@ def main():
     ap.add_argument("--sphere", type=int, default=1)
     ap.add_argument("--out", default=os.environ.get("NRPIC_RUN_DIR", "."))
     ap.add_argument("--label", default="compare")
+    ap.add_argument("--energy_by_tag", help=".npy array of the initial-data energy per tag "
+                    "(used instead of the code's E of the removal records)")
     a = ap.parse_args()
     hor = fluxio.read_horizon(a.horizon)
     rem = fluxio.read_removed(a.removed) if a.removed else None
@@ -206,7 +214,8 @@ def main():
     hst = fluxio.read_hst(a.hst) if a.hst else None
     ctrl = fluxio.read_horizon(a.control) if a.control else None
     res = compare(hor, a.t0, rem=rem, acc=acc, hst=hst, ctrl=ctrl, floor=a.floor,
-                  finder_tol=a.finder_tol, sphere=a.sphere)
+                  finder_tol=a.finder_tol, sphere=a.sphere,
+                  E_by_tag=np.load(a.energy_by_tag) if a.energy_by_tag else None)
     os.makedirs(a.out, exist_ok=True)
     with open(os.path.join(a.out, f"{a.label}.json"), "w") as f:
         json.dump(jsonable(res), f, indent=1)
