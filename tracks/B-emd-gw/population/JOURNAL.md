@@ -89,3 +89,25 @@ step 1/32 (still below a tenth of the halo dynamical time 0.1 sqrt(a) [JUDGEMENT
 unchanged for the new runs. The owner's processor allotment (16 cores, 13 busy with the
 other helpers) and the two queued card jobs of B-emd-gw (Slurm 4635, 4637) limit this
 package to processors and to a few cores at a time: no card job is submitted by me.
+
+## Entry 3 (07:55 PST): runs finished so far; the per-halo quadrupole reworked
+
+Finished: fiducial B-20261119-143828-0ef9b5b (577 cycles, 3396 s on one core), seed 2
+B-20261119-143832-85cbe25 (3425 s), 32 cells B-20261119-145324-525e4fd (227 s). Running:
+amplitude doubled B-20261119-145328-4b3663f, nc = 4 B-20261119-145715-b18561e.
+
+The first analysis of the 32-cell run (B-20261119-153509-02a921f) gave a per-halo
+quadrupole-formula energy (halos of the last snapshot tracked back) of Omega = 1.9e-4,
+four orders above the box TT measure: an artefact. Cause, found by printing the particle
+extent and Q(t) (not a registered run): the Lagrangian regions of the a = 100 halos span up
+to half the box (the largest holds 6.6 per cent of the mass), so unwrapping about one
+particle fails, and the constant anisotropy of a Lagrangian region in the Hubble flow
+alone contributes -Qc(t0) a^(-5/2) to d^3Q/dT^3 (derived: for Q = a^2 Qc, a = s^2,
+s = 1 + t/2, d^3Q/dT^3 = -Qc/s^5). The analysis now takes the halos of a = 20 (compact
+regions), follows them to a = 30, unwraps about the periodic centre of mass, removes the
+constant term (Q = a^2 (Qc(t) - Qc(t0))) and differentiates in conformal time with the
+chain rule. The fiducial analysis started with the old code (B-20261119-153724-a6f1ab5)
+was stopped and is resubmitted with the new one. A check of the new code on the 32-cell
+outputs (not registered, scratch/B-emd-gw/tmp/analyze) matched the seven halos of a = 20
+to maxima of the initial field within 0.02 to 0.16 (comoving) and gave energies 1.3 to
+240 times the baseline of the matched maximum; the registered numbers follow.

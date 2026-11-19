@@ -287,51 +287,75 @@ class TTBox:
 
 
 # ---------------------------------------------------------------------------------------
-def quadrupole_tracks(files, tag_sets, L):
-    """Q_ij(T) of each set of particles (given by tags), physical, about the centre of
-    mass of the set; returns cosmic time T, a, and a list of Q arrays (n, 6)."""
+def circ_centre(x, L):
+    """Periodic centre of a set of points (circular mean per axis)."""
+    ang = 2*np.pi*x/L
+    c = np.angle(np.exp(1j*ang).mean(axis=0))
+    return np.mod(c*L/(2*np.pi), L)
+
+
+def quadrupole_tracks(files, tag_sets, L, a_max):
+    """Comoving traceless second moments Qc_ij(t) = sum m (y_i y_j - y^2 delta_ij/3) of
+    each set of particles (tags) about its periodic centre of mass, for the snapshots
+    with a <= a_max; returns t, a, a list of (n, 6) arrays, and the centres at the first
+    snapshot (Lagrangian centres)."""
     T, A = [], []
     Qs = [[] for _ in tag_sets]
+    cen0 = []
     for fn in files:
         t, _, x, p, m, tag = read_snapshot(fn)
-        order = np.argsort(tag)
         a = float(scale(t))
+        if a > a_max*1.0001:
+            break
+        order = np.argsort(tag)
         for k, ts in enumerate(tag_sets):
             sel = order[np.searchsorted(tag[order], np.sort(ts))]
-            xs = unwrap_about(x[sel], x[sel[0]], L)
+            c = circ_centre(x[sel], L)
+            xs = unwrap_about(x[sel], c, L)
             ms = m[sel]
             xc = (ms[:, None]*xs).sum(0)/ms.sum()
-            r = a*(xs - xc)
-            r2 = (r*r).sum(1)
-            Qs[k].append([(ms*(r[:, i]*r[:, j] - (r2/3.0 if i == j else 0.0))).sum()
+            if not T:
+                cen0.append(np.mod(xc, L))
+            y = xs - xc
+            y2 = (y*y).sum(1)
+            Qs[k].append([(ms*(y[:, i]*y[:, j] - (y2/3.0 if i == j else 0.0))).sum()
                           for (i, j) in ((0, 0), (0, 1), (0, 2), (1, 1), (1, 2), (2, 2))])
         T.append(t)
         A.append(a)
-    t = np.array(T)
-    # cosmic time: dT = a dt  ->  T = int (1 + t/2)^2 dt = (2/3)((1 + t/2)^3 - 1)
-    Tc = (2.0/3.0)*((1 + 0.5*t)**3 - 1.0)
-    return Tc, np.array(A), [np.array(q) for q in Qs]
+    return np.array(T), np.array(A), [np.array(q) for q in Qs], cen0
 
 
-def quad_energy(Tc, Q, win=7):
-    """P = (1/5) Q'''_ij Q'''_ij with Q''' from Savitzky-Golay (cubic, win samples) on a
-    non-uniform grid resampled to uniform T; returns T grid, P, cumulative E."""
-    Tu = np.linspace(Tc[0], Tc[-1], 4*len(Tc))
-    Qu = np.stack([np.interp(Tu, Tc, Q[:, c]) for c in range(6)], axis=1)
-    dT = Tu[1] - Tu[0]
-    d3 = savgol_filter(Qu, 4*win + 1, 3, deriv=3, delta=dT, axis=0)
+def quad_energy(t, Qc, win=7):
+    """Quadrupole-formula power of Q = a^2 (Qc(t) - Qc(t_0)) in cosmic time T (dT = a dt).
+    The constant anisotropy of the Lagrangian region would give a spurious
+    -Qc(t_0) a^(-5/2) (a^2 times a constant in the matter era) and is removed.
+    Derivatives in t by Savitzky-Golay (cubic, win samples, uniform t) and the chain rule
+    f_TTT = f_ttt/a^3 - 3 a' f_tt/a^4 + (3 a'^2 - a a'') f_t/a^5, a = (1 + t/2)^2.
+    Returns P(t) = (1/5) sum_ij (d^3 Q_ij/dT^3)^2 and E(t) = int P a dt."""
+    s = 1 + 0.5*t
+    a, ad, add = s*s, s, 0.5
+    Q = (a[:, None]**2)*(Qc - Qc[0])
+    dt = t[1] - t[0]
+    q1 = savgol_filter(Q, win, 3, deriv=1, delta=dt, axis=0)
+    q2 = savgol_filter(Q, win, 3, deriv=2, delta=dt, axis=0)
+    q3 = savgol_filter(Q, win, 3, deriv=3, delta=dt, axis=0)
+    A1, A2 = a[:, None], ad[:, None]
+    Q3 = q3/A1**3 - 3*A2*q2/A1**4 + (3*A2**2 - A1*add)*q1/A1**5
     wts = np.array([1, 2, 2, 1, 2, 1], dtype=float)
-    P = 0.2*(wts*d3*d3).sum(1)
-    E = np.concatenate([[0.0], np.cumsum(0.5*(P[1:] + P[:-1])*dT)])
-    return Tu, P, E
+    P = 0.2*(wts*Q3*Q3).sum(1)
+    E = np.concatenate([[0.0], np.cumsum(0.5*(P[1:]*a[1:] + P[:-1]*a[:-1])*np.diff(t))])
+    return P, E
 
 
-def analyze_case(name, d, gw, ng, nhalo_q, out):
+def analyze_case(name, d, gw, ng, nhalo_q, out, design=None):
     meta = json.load(open(os.path.join(d, "meta.json")))
     L, n, ppc = meta["L"], meta["n"], meta["ppc"]
     spacing = L/(n*ppc)
     files = snapshots(d)
     res = {"name": name, "dir": d, "meta": meta, "snapshots": len(files)}
+    if not (meta["seed"] == 1 and meta["nc"] == 3.2 and meta["sigma1_target"] == 0.0562
+            and L == 4.0):
+        design = None                      # the maxima of design.json are of this field only
     hst = read_newton_hst(os.path.join(d, "newton.newton.hst"))
     aW = np.abs(hst["a"]*hst["W"])
     res["layzer_irvine"] = {"max_abs_C_change_over_max_aW":
@@ -398,24 +422,41 @@ def analyze_case(name, d, gw, ng, nhalo_q, out):
         # check against (20/3) [dPhi dPhi]^TT at the first snapshot (design.json:
         # quasi_static.Omega_qs_over_a at a = 1)
         res["gw"]["Omega_qs_first"] = rows[0][9]
-        # quadrupole formula for the most massive halos of the last snapshot
+        # quadrupole formula during formation: the halos found at a = a_id (nearest
+        # snapshot), followed from a = 1 to 1.5 a_id (the Lagrangian regions of the
+        # halos of a = 100 span up to half the box and cannot be unwrapped); matched to
+        # the maxima of the initial field (design.json) by their Lagrangian centre
+        a_id = 20.0
+        i_id = int(np.argmin(np.abs(avals - a_id)))
+        t, _, x, p, m, tag = read_snapshot(files[i_id])
+        hal_id, _ = halo_catalog(x, p, m, tag, float(scale(t)), L, spacing)
+        sel_h = hal_id[:nhalo_q]
         qrows = []
-        sel_h = last_halos[:nhalo_q]
-        Tc, aa, Qlist = quadrupole_tracks(files, [h["tags"] for h in sel_h], L)
-        for h, Q in zip(sel_h, Qlist):
-            Tu, P, E = quad_energy(Tc, Q)
-            au = np.interp(Tu, Tc, aa)
-            # comoving GW energy a E_emitted: int P a dT
-            Ea = np.concatenate([[0.0], np.cumsum(0.5*(P[1:]*au[1:] + P[:-1]*au[:-1])
-                                                  * np.diff(Tu))])
-            qrows.append({"M": h["M"], "N": h["N"], "E": float(E[-1]),
-                          "aE_comoving": float(Ea[-1]),
-                          "a_grid": au[::8].tolist(), "P": P[::8].tolist(),
-                          "E_cum": E[::8].tolist()})
+        if sel_h:
+            tq, aq, Qlist, cen0 = quadrupole_tracks(files, [h["tags"] for h in sel_h], L,
+                                                    1.5*a_id)
+            for h, Qc, c0 in zip(sel_h, Qlist, cen0):
+                P, E = quad_energy(tq, Qc)
+                # comoving GW energy: int P a (a dt), emitted energy times its a
+                aE = float(np.sum(0.5*(P[1:]*aq[1:]**2 + P[:-1]*aq[:-1]**2)*np.diff(tq)))
+                qrows.append({"M": h["M"], "N": h["N"], "a_id": float(scale(t)),
+                              "lagrangian_centre": [float(v) for v in c0],
+                              "E": float(E[-1]), "aE_comoving": aE,
+                              "a": aq[::2].tolist(), "P": P[::2].tolist(),
+                              "E_cum": E[::2].tolist()})
         res["quadrupole_halos"] = qrows
-        a_end = rows[-1][1]
-        res["gw"]["Omega_quad_sum_end"] = float(sum(q["aE_comoving"] for q in qrows)
-                                                / (a_end*L**3*RHO_C))
+        res["gw"]["Omega_quad_sum"] = {
+            "a": float(1.5*a_id),
+            "Omega": float(sum(q["aE_comoving"] for q in qrows)/(1.5*a_id*L**3*RHO_C))}
+        if design:
+            pk = [(np.array(r["cell"]) + 0.5)*L/64 for r in design["peaks_seed1"]]
+            for q in qrows:
+                c = np.array(q["lagrangian_centre"])
+                dd = [float(np.sqrt((((pp - c + L/2) % L - L/2)**2).sum())) for pp in pk]
+                j = int(np.argmin(dd))
+                r = design["peaks_seed1"][j]
+                q["match"] = {"distance": dd[j], "nu": r["nu"],
+                              "E_baseline": r.get("E_code_L4"), "a_x": r.get("a_x")}
     return res
 
 
@@ -496,12 +537,15 @@ def figures(results, od, gwname):
         ax.loglog(rows[:, 1], rows[:, 9], color=fs.PAL["blue"], ls="--",
                   label="quasi-static near field")
         if r.get("quadrupole_halos"):
-            ax.plot([rows[-1, 1]], [r["gw"]["Omega_quad_sum_end"]], "s",
-                    color=fs.PAL["green"], label="quadrupole formula, top halos")
+            oq = r["gw"]["Omega_quad_sum"]
+            ax.plot([oq["a"]], [oq["Omega"]], "s", color=fs.PAL["green"],
+                    label="quadrupole formula, halos of a = 20")
         if r.get("design"):
             dz = r["design"]
             ax.loglog(dz["a"], dz["Omega_rad"], color="k", lw=1.0,
                       label="baseline model A (design)")
+        ax.set_ylim(1e-13, 1e-5)
+        ax.set_xlim(1.0, 1.1*rows[-1, 1])
         ax.set_xlabel(r"$a$")
         ax.set_ylabel(r"$\rho_{\rm GW}/\bar\rho$")
         ax.legend(fontsize=7)
@@ -535,12 +579,12 @@ def main():
                                                          "B-emd-gw", "tmp", "analyze")
     os.makedirs(od, exist_ok=True)
     results = []
+    dz = json.load(open(a.design)) if a.design else None
     for c in a.case:
         name, d = c.split(":", 1)
         print("case", name, flush=True)
-        results.append(analyze_case(name, d, name == a.gw, a.ng, a.nhalo_q, od))
+        results.append(analyze_case(name, d, name == a.gw, a.ng, a.nhalo_q, od, dz))
     if a.design:
-        dz = json.load(open(a.design))
         for r in results:
             if r["name"] == a.gw:
                 r["design"] = {"a": dz["press_schechter"]["a"],
@@ -571,7 +615,10 @@ def main():
                   f"fmass={c['f_mass_in_halos']:.3f} Mmax="
                   f"{max(c['masses']) if c['masses'] else 0:.4f}")
         if "gw" in r:
-            print("  GW end", r["gw"]["rows"][-1], "quad", r["gw"].get("Omega_quad_sum_end"))
+            print("  GW end", r["gw"]["rows"][-1], "quad", r["gw"].get("Omega_quad_sum"))
+            for q in r.get("quadrupole_halos", []):
+                print("   halo M=%.4f N=%d E=%.3e match=%s" % (q["M"], q["N"], q["E"],
+                                                             q.get("match")))
 
 
 if __name__ == "__main__":
