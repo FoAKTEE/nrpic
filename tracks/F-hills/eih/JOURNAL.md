@@ -378,3 +378,44 @@ below 2) over m_b/a = 1/100 ... 1/20; the binary started with that speed stays c
 over five orbits; started with the Newtonian speed it has (r_max - r_min)/(r_max + r_min)
 between 0.05 and 0.2 at m_b/a = 1/30 and 1/20. Refuted otherwise. (The development numbers of
 entry 10 are replaced by this run's.)
+
+## Entry 12 (2026-11-19 16:05): outcomes of T5 and of the far-release line with a 1PN-circular binary
+
+T5, run F-20261119-145848-6be68b3 (8 of 8 checks pass). [VERIFIED]
+- (u/u_N)^2 - 1 of the isolated EIH binary: -0.0973 / -0.1507 / -0.0280 / -0.00922 at
+  m_b/a = 1/30, 1/20, 1/100, 1/300; the 1PN formula -(3 - nu) m_b/a gives -0.0917 / -0.1375 /
+  -0.0275 / -0.00917; the difference is c (m_b/a)^2 with c = -5.1, -5.3, -4.9, -4.8 (spread
+  0.4). A binary started with this speed keeps r_max = r_min to 1e-6 over five orbits.
+- Started with the Newtonian speed: (r_max - r_min)/(r_max + r_min) = 0.122 (q = 10 binary,
+  a = 3 = 30 m_b), 0.208 (q = 4 binary, a = 5 = 20 m_b), 0.030 (m_b/a = 1/100), 0.0094 (1/300).
+  Prediction (0.05-0.2 at 1/30 and 1/20): CONFIRMED at 1/30, REFUTED by 0.008 at 1/20.
+  [JUDGEMENT] The binaries of the NR inputs, built with Newtonian-circular momenta at a = 30
+  and 20 m_b, are eccentric at 1PN (e ~ 0.1-0.2) before any tide - in addition to the 1PN
+  effects of the hole's potential.
+
+Far-release line with the 1PN-circular binary, run F-20261119-145826-d4da8e1 (90 tasks,
+131 s; `figures/fig_scan_far.png` now this run, `results/scan_far_summary.json`). [VERIFIED as
+outputs]
+- q = 10 prograde, separated EIH / Newton (40 r_t) / HRNA (2404, 4 r_t): r_p = 7: 0.42/0.89/
+  0.99; 8: 0.45/0.85/0.99; 9: 0.91/0.78/0.99; 10: 0.54/0.71/0.98; 11: 0.72/0.63/0.96; 12: 0.92/
+  0.54/0.97; 13: 0.94/0.39/0.96; 15: 0.94/0.00/0.92; 17: 0.85/0.00/0.86. EIH member inside
+  5.35 M: 1.00, 0.98, 0.94 at 7, 8, 9 M.
+- q = 10 retrograde: EIH separates 0.56-0.08 at 7-12 M (Newton 0 everywhere, HRNA 0.83-0.00),
+  survives 1.00 at 13-17 M.
+- q = 4 prograde: EIH 0.57/0.49/0.37/0.19/0.53/0.91 at 9.82-16 M against Newton 0.81-0.46 and
+  HRNA 0.98-0.94.
+- The 1PN energy changes along the run by a median 0.01-0.44 units, against the binary's
+  binding energy m1 m2/(2a) = 0.23 units (q = 10) and 0.40 units (q = 4).
+- F2' (q = 10 prograde, EIH separated below 0.3 at 15 and 17 M): REFUTED (0.94, 0.85).
+  F4' (q = 4 prograde, EIH within 0.2 of Newton at r_p >= 13 M): REFUTED at 13 M (0.19 against
+  0.69) and 16 M (0.91 against 0.46); holds at 14 M (0.53 against 0.63).
+  F5' (q = 10 prograde, a member inside 5.35 M in >= 0.5 at 7-9 M): CONFIRMED (1.00/0.98/0.94).
+- The fraction is not a smooth function of r_p for EIH (q = 10 prograde 0.91 at 9 M, 0.54 at
+  10 M; q = 4 0.19 at 13 M, 0.91 at 16 M), unlike Newton. [JUDGEMENT] With 360 phases the
+  sampling error is below 0.03, so the jumps are a property of the EIH set-up at fixed release
+  radius; whether they converge in the release radius is the next test.
+
+Prediction for the release-radius test (written before it): if EIH's separation at q = 10
+prograde, r_p = 15 and 17 M, is a tidal effect of the passage, the separated fraction changes
+by less than 0.1 between release at 20, 40 and 80 r_t (Newton is converged there: newton3 P5/P6).
+Refuted if it changes by more than 0.1.
