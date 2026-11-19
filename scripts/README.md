@@ -1,12 +1,17 @@
 # Build and Slurm helpers
 
 Machine: `anta` (2x A100 80 GB, reachable only through Slurm partition `preempt`:
-1 h limit, 4 CPUs in total, preemption cancels jobs). No MPI, no OpenMP.
+1 h limit, 4 CPUs in total, preemption cancels jobs). No MPI. Processor runs: serial
+(`build_cpu.sh`) or threaded with OpenMP (`build_cpu_omp.sh`, section "Threaded processor
+runs").
 
 | Script | Purpose |
 |---|---|
 | `build_gpu.sh [dir]` | Kokkos CUDA build for one A100 (sm_80), default `build_gpu/` |
 | `build_cpu.sh [dir]` | serial CPU build, `-O2 -g`, asserts on, default `build_cpu/` |
+| `build_cpu_omp.sh [dir]` | threaded CPU build (Kokkos OpenMP), `-O3 -DNDEBUG -g`, default `build_omp/` |
+| `cpu_run.sh <rundir> <athinput or .rst> [args]` | one threaded processor run with placement and a log |
+| `omp_places.py N` | `OMP_PLACES` of the N least busy cores of one NUMA node |
 | `gpu_run.sh <rundir> <athinput or .rst> [args]` | one GPU run through `srun` (blocking) or `sbatch` |
 | `submit_chain.sh <rundir> <athinput> [args]` | self-resubmitting run across the 1 h limit |
 | `_build.sh`, `_athena_job.sh` | internals of the scripts above |
@@ -128,3 +133,31 @@ Requirements and behaviour:
 - Default parameters are stored in the restart file as text with 6 significant digits
   (`ParameterInput::GetOrAddReal`), so a default real with more digits comes back
   rounded after a restart. Put such values in the input file explicitly.
+
+## Threaded processor runs (`build_cpu_omp.sh`, `cpu_run.sh`)
+
+```
+scripts/build_cpu_omp.sh                         # -> build_omp/src/athena (Kokkos OpenMP)
+OMP_OPT=debug scripts/build_cpu_omp.sh build_omp_o2   # flags of the serial build (-O2 -g)
+DEBUG=1 scripts/build_cpu_omp.sh                 # Kokkos debug mode, View bounds checks
+THREADS=16 scripts/cpu_run.sh runs/x problems/foo/foo.athinput time/nlim=100
+```
+
+- The build is `_build.sh omp`: `Athena_ENABLE_OPENMP=ON`, Kokkos OpenMP as the default
+  and host space, Serial not compiled in, g++ 11.4, `-O3 -DNDEBUG -g`, `Kokkos_ARCH_ICX`.
+  The serial build (`build_cpu.sh`) is unchanged and stays the reference for byte
+  comparisons with earlier processor runs.
+- Set the thread count explicitly (`OMP_NUM_THREADS`; the OpenMP default is all 144
+  hardware threads) and keep within 16 cores per session (CLAUDE.md).
+- Placement: `cpu_run.sh` (default `PLACES=auto`) binds the threads to the least busy
+  physical cores of one NUMA node, chosen by `omp_places.py` when the run starts
+  (`OMP_PROC_BIND=true`). Do not use `OMP_PLACES=cores` with `OMP_PROC_BIND=spread|close`:
+  every job of every session is then bound to the same cores. Two runs started at the
+  same moment must not each call `omp_places.py` (they pick the same cores): choose 2n
+  cores once and split them (`tracks/core/omp/scaling_series.sh`, function `split4`).
+- Reproducibility (tracks/core/interfaces/threaded_build.md, section 4): without deposit a
+  threaded run repeats itself byte for byte and equals one thread of the same executable
+  in every evolved field; with deposit (atomic additions) it repeats only to rounding,
+  like a card run; `<particles> deposit_threads = private` makes it repeat byte for byte
+  at a fixed thread count. The threaded executable with one thread is a different program
+  from the serial build (other flags) and agrees with it to rounding, not byte for byte.
