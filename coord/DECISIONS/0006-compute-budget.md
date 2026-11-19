@@ -1,6 +1,6 @@
 # 0006 Compute budget and machines (D6)
 
-Status: PROVISIONAL · 2026-11-15
+Status: ACCEPTED by the user on 2026-11-19 (decision 0017); before that provisional · 2026-11-15
 
 Machine: `anta`. Two A100 cards through the Slurm partition `preempt` (one hour per job;
 long runs are chained with `scripts/submit_chain.sh`), 144 processor cores shared by all
