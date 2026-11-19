@@ -14,12 +14,15 @@ resolutions. Predictions and outcomes: `JOURNAL.md`. Status: deliverables exist 
 | `scripts/make_expanding_ic.py` | initial data of test X (particles, NRCOSMO1 fields with a TT Ahat) |
 | `scripts/run_flat.sh`, `scripts/run_expanding.sh` | the runs (serial processor executable of core/requests-b, one process per resolution) |
 | `scripts/predict.py` | predictions from the Fourier symbol of the code's operators (`wlib/predict.py`) |
-| `scripts/analyze.py` | both diagnostics on every dump, errors, orders, figures |
+| `scripts/predict_2s.py` | test of H1: the code's RK4()4[2S] on the background coupled to the mode, against measured errors |
+| `scripts/run_ascan.sh` | amplitude scan (x10, x1/10) of both tests at N = 16 |
+| `inputs/card64.list`, `inputs/card64_x10.list` | card batches: both tests at N = 64; X at N = 64 with A x10 |
+| `scripts/analyze.py` | both diagnostics on every dump, errors, orders, figures (`--tag`, `--scale-flat/--scale-exp`) |
 | `wlib/refs.py` | exact references: flat travelling wave, matter-era tensor mode (spherical Bessel), mode coefficients, error measures |
 | `wlib/weylref.py` | closed-form Psi_4 of a tensor mode on a flat FLRW slice and its inversion to (P, X, P', X') |
 | `wlib/measure.py` | reader of double-precision `bin` dumps; TT and Weyl measurement of one dump |
 | `tests/test_refs.py` | checks of the references (5 tests) |
-| `results/`, `figs/` | JSON results and PNG figures (PDFs in the run directories) |
+| `results/`, `figs/` | JSON results and PNG figures (PDFs in the run directories); `final_*` are the reference set |
 
 ## How to rerun
 
@@ -157,4 +160,22 @@ up to 39 per cent of an error that is itself 4e-7 rad.
 
 ## Requests
 
-(none yet)
+- **B-emd-gw lead.** (1) G1 criterion 1: the evidence is the final analysis run
+  B-20261119-164402-7438a99 with the simulation runs listed under Results; for
+  `stage/G1/` I judge the criterion met (Results, last paragraph), with the open check of
+  the X plus polarization at N >= 48. (2) Trap for HANDOFF.md: restoring a script with git
+  does not protect a bash process that is executing it (bash keeps reading the old inode,
+  which an in-place editor has already changed); run B-20261119-142234-85da208 ended with
+  exit 127 that way after a complete AthenaK run. (3) `wlib/measure.read_bin` reads the
+  double-precision `bin` output; gw_diag's `readers.read_bin` assumes float32 and could
+  take it over (gw_diag is outside this package).
+- **core.** (1) Merge core/requests-b into main (already asked by the lead): both tests
+  depend on its corrected generator and double-precision output. (2) Information, no
+  action: `z4c_linear_wave` sets At from the continuum frequency |k|, so the data carry a
+  backward semi-discrete mode of relative size |1 - w_h/k|/2 (3.2e-6 of the wave at 16
+  cells along (1,1,1)); harmless for the tests, visible in the backward combination.
+  (3) The serial processor build runs Z4c at 0.7e4 to 1.5e4 zone-cycles per second on the
+  loaded machine (N = 48: 1.5 to 2.3 hours); an OpenMP build (wave 3a package `omp`)
+  would make such convergence series cheap on processors. (4) Initial data with a TT
+  metric part (REQUESTS_B.md item 6) would allow a travelling wave in the expanding box;
+  the conformally flat slice with a TT Ahat used here gives the standing wave only.
