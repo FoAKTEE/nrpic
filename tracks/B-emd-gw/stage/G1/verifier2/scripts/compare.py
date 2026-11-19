@@ -170,10 +170,24 @@ def main():
         rel = (c3i - c6)/np.abs(c6)
         rc[e] = {"rel_at": {str(at): float(rel[int(np.argmin(np.abs(a - at)))])
                             for at in (2, 5, 10, 20, 40, 60, 80, 100, 120, 140)},
-                 "max_abs_rel_a_le_80": float(np.abs(rel[a <= 80]).max()),
-                 "max_abs_rel_a_le_100": float(np.abs(rel[a <= 100]).max())}
+                 "max_abs_rel_2_le_a_le_50": float(np.abs(rel[(a >= 2) & (a <= 50)]).max()),
+                 "max_abs_rel_2_le_a_le_80": float(np.abs(rel[(a >= 2) & (a <= 80)]).max()),
+                 "a_of_max_2_80": float(a[(a >= 2) & (a <= 80)][np.argmax(np.abs(rel[(a >= 2) & (a <= 80)]))]),
+                 "max_abs_rel_2_le_a_le_100": float(np.abs(rel[(a >= 2) & (a <= 100)]).max())}
         D[(64, e)]["_res"] = (a, c6, c3i, rel)
     res["res32_vs_64"] = rc
+
+    # ---- single (bin) against double (rst) precision at the same cycles ----
+    bvr = {}
+    for n in (64, 32):
+        for e in ("eps0p1", "eps0p3", "eps1", "eps1_gd"):
+            b = {r["cycle"]: r for r in D[(n, e)]["bin"]}
+            pairs = [(b[r["cycle"]], r) for r in D[(n, e)]["rst"] if r["cycle"] in b and r["time"] > 0.5]
+            rel = [abs(x["h"]["K1"][0] - y["h"]["K1"][0])/abs(y["h"]["K1"][0]) for x, y in pairs]
+            relA = [abs(x["A"]["K1"][0] - y["A"]["K1"][0])/abs(y["A"]["K1"][0]) for x, y in pairs]
+            bvr[f"n{n}_{e}"] = {"n_common": len(pairs), "max_rel_h_K1": float(max(rel)),
+                                "max_rel_A_K1": float(max(relA))}
+    res["bin_vs_rst"] = bvr
 
     # ---- two spatial gauges (raw, no correction) ----
     gg = {}
