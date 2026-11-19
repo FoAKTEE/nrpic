@@ -466,3 +466,95 @@ that leave the box are removed and counted (existing code).
 
 **Not tested at production size.** Largest run: 128^3 cells, 1.1e6 particles (field
 test), 1.4e5 particles (collapse).
+
+## 7. Second pass (work package newton2, branch `core/newton-2`, 2026-11-19)
+
+Requests answered: `tracks/core/interfaces/REQUESTS_NEWTON2.md` (triage, files and lines
+touched). Predictions and outcomes of the tests T1 to T10: `tracks/core/JOURNAL-newton2.md`;
+scripts `tracks/core/analysis/newton2/` (`cases.py` runs the cases, `t<n>_*.py` judge
+them); figures and result files `tracks/core/analysis/newton2/figs/`. Every option below
+is read only if it is present in the input, and without it the output of a run is the
+same as before, byte for byte (7.7).
+
+### 7.1 Fourier Poisson solver on periodic uniform meshes
+
+```
+<particles>
+newton_poisson    = fft        # multigrid (default, also when absent) | fft
+newton_fft_symbol = spectral   # spectral: Phi_k = -four_pi_G rho_k/k^2
+                               # seven_point: the symbol of the seven-point Laplacian
+```
+
+Source: `athenak/src/particles/nrpic_newton_fft.cpp`. Requirements (fatal error
+otherwise): mesh periodic in all directions, no refinement, all MeshBlocks in one pack,
+cells per direction a product of 2, 3, 5 and 7 (64, 96, 128, 192, 256, 384 ...; the
+three directions may differ, and so may the cell sizes). The `<gravity>` block is still
+required (`four_pi_G`; the multigrid module is built, so MeshBlocks must still be cubes
+with a power-of-two size, and is never called). The mode k = 0 is dropped: the mean of
+the density does not act and the mean of the potential is zero, as with the multigrid
+solver on a periodic mesh. Everything else of the mode is unchanged: deposit, filter and
+compensation before the solve; ghost cells, gather of the force, diagnostics and restart
+after it. Columns 48 and 50 of `<basename>.newton.hst` are zero.
+
+What the two symbols are for [VERIFIED, 7.3]:
+- `spectral` removes the truncation error of the seven-point Laplacian, which makes the
+  force on a mode too strong by [(kh/2)/sin(kh/2)]^2 - 1 ~ (kh)^2/12 (Track B's finding
+  in the plane-wave pancake). What remains is the error of the cloud and of the gather
+  (fourth order with the cubic cloud, its compensation and `interp = bspline`) and the
+  discreteness of the particles. It is the operator of `cosmo/newton/pm.py`; the two
+  codes still differ in the gather (here the gradient of the interpolated potential,
+  there the interpolated spectral gradient).
+- `seven_point` gives the potential of the multigrid solver to rounding without its
+  iteration: a check of both solvers, and the faster way to reproduce an existing
+  multigrid run on a periodic mesh.
+
+Cost: six passes over the mesh per solve, each of n log n operations per line of n cells,
+one line per thread; memory four real arrays of the size of the mesh. No Fourier library
+is used (the code base has none): the transform is a mixed-radix kernel of this file.
+
+Example input: `problems/newton/periodic_fft.athinput`.
+
+### 7.2 Second moments of particle groups
+
+```
+<particles>
+newton_ngroup         = 1      # number of groups (at most 8)
+newton_group1_species = 0      # species of group 1 (-1 or absent: every species)
+newton_group1_tag_min = -1     # first and last tag (-1 or absent: no bound); the tag of
+newton_group1_tag_max = -1     # a particle is its position in the particle file
+newton_group1_x1      = 24.0   # reference point (default: the middle of the mesh): in a
+newton_group1_x2      = 24.0   # periodic direction a position enters as its image
+newton_group1_x3      = 24.0   # nearest to this point
+```
+
+Source: `athenak/src/particles/nrpic_newton_groups.cpp`. Output: one file per group,
+`<basename>.newton.g<g>.hst`, one record per record of `<basename>.newton.hst`
+(`hist_dcycle`), 62 columns (six components are xx, xy, xz, yy, yz, zz):
+
+| Columns | Content |
+|---|---|
+| 1-4 | time t of the run, cycle, scale factor a, cosmic time T = int_0^t a dt (T = t without expansion) |
+| 5, 6 | number of particles and rest mass M of the group (tracers and null particles are not counted) |
+| 7-9, 10-12 | centroid X (comoving; the image nearest to the reference point) and its velocity dX/dt |
+| 13-18 | I_ij = sum m (x - X)_i (x - X)_j, comoving |
+| 19-24, 25-30 | dI_ij/dt and d2I_ij/dt2, with v = dx/dt = p/a and the acceleration g/a - (a'/a) v that the kick applies (the external gravity of `newton_pm_mass` and `newton_bg_t0` included); the motion of the centroid is removed |
+| 31-36, 37 | d3I_ij/dt3: difference quotient of columns 25-30 over the last step; the mid-step time it belongs to |
+| 38-43 | J_ij = a^2 I_ij: the second moment in physical coordinates r = a x |
+| 44-49, 50-55 | dJ/dT = 2 a' I + a I' and d2J/dT2 = (2 a''/a) I + (3 a'/a) I' + I'' (primes: derivatives in t) |
+| 56-61, 62 | d3J/dT3: difference quotient of columns 50-55 over the last step in cosmic time; the mid-step cosmic time |
+
+The trace-free quadrupole is Q_ij = J_ij - delta_ij J_kk/3 and the quadrupole-formula
+power (G/5c^5) Q'''_ij Q'''_ij with columns 56-61. For a patch in a background give the
+patch its own species (`make_ic.py ball --background` writes species 0 and 1) or keep
+its particles first in the file and use the tag range.
+Limits: a group must be narrower than half the box around its reference point, or the
+nearest image cuts it; the third derivatives carry the step-to-step fluctuation of the
+mesh force (section 5.4: average over the time scale of interest before squaring); they
+are not formed after a step below 1e-6 of the one before (the remainder step at the end
+of a run), and are zero in the first record. The sums need one more gather per particle
+and are formed only for the recorded states and the states one cycle before them.
+Restart: no state is stored; the sums of the dump's state are formed again at the start
+of the continued run, and the continued files equal the uninterrupted ones (T3d).
+
+Example input: `problems/newton/embedded_ellipsoid.athinput` (a patch as species 0 in
+background particles), and group 1 of `problems/newton/periodic_fft.athinput`.
