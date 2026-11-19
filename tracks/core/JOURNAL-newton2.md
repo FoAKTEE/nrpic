@@ -391,8 +391,8 @@ ones). Largest |C - C_0| of the Layzer-Irvine combination (column 8) in units of
   ("follows the resolution"; the resolution itself was not varied in this test, the
   first pass measured 4.9e-3 at N = 32 and 1.5e-3 at N = 64, `newtonian_mode.md` 5.6).
 - The mesh form of W (column 7) drifts more than the particle form (column 6), by a
-  factor 2.2 to 10; the spectral solver does not remove the drift (it changes it by less
-  than 10 per cent before the crossing).
+  factor 2.2 to 10.4; the spectral solver does not remove the drift (it lowers it by 12
+  per cent before the crossing and raises it by 9 per cent over the run).
 - Answer to Track A: column 6 (W gathered at the particles with the interpolation of the
   force) is the better diagnostic of the two; neither is an invariant of the scheme
   because the cloud (deposit) and the Catmull-Rom gather differ; the jump at the crossing
