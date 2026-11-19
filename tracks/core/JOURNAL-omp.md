@@ -424,3 +424,25 @@ bench, os, punc).
 - P10 HOLDS: every particle snapshot of coll is byte-identical at 4 and 16 threads.
 - P11 HOLDS: bench, punc, kg and noise keep every evolved field (restart data, dumps,
   trajectories, horizon output) byte-identical; only history sums differ.
+
+## 2026-11-19 08:44 Entry 10: outcome of P9 (private copies); the regression analysed again
+
+Runs core-20261119-155057-57325bc/priv (dep, east, os, newton; private at 1, 4, 16
+threads, two runs each) and core-20261119-163724-3aaaee3 (recompare.py over every
+regression run: no failure with the measure of the predictions; figure
+`tracks/core/omp/figs/thread_diff.png`, looked at: every point lies at least four decades
+below the 1e-8 line, and the deposit identity of every configuration lies between 1e-16
+and 1e-12, the one-thread values included).
+
+- P9a HOLDS: with `deposit_threads = private` two runs at 4 threads and two at 16 threads
+  are byte-identical in all four cases (east 18 of 18 files, os 16 of 16, newton 11 of 11
+  including the V-cycle counts, dep 1 of 1).
+- P9b HOLDS: one thread, private against atomic: the data of every file identical; only
+  the restart files differ, in their parameter dump (the added option line).
+- P9c HOLDS: private at 4 and 16 threads against one thread: at most 9.9e-13 (newton),
+  9.3e-13 (east), 3.3e-13 (os), 3.4e-14 (dep) of the largest number of the file.
+- P9d: entry 8 (cosmology box 10 to 14 per cent faster, Newtonian box 40 per cent slower).
+
+So the threaded executable is correct on every case of the regression set within the
+claims of section 4 of the interface text; the open item is the cause of the
+thread-count dependence of the gas multigrid iterates (entry 8).
