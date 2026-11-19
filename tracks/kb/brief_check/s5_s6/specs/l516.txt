@@ -1,0 +1,9 @@
+1910.12152 | variational|4
+1910.12152 | action|3
+0807.0734 | symplectic|3
+1801.02378 | energy.?conserv|4
+1801.02378 | null|4
+1801.02378 | photon|3
+1208.3927 | null|3
+1208.3927 | photon|3
+2611.12831 | puncture|10

@@ -1,0 +1,14 @@
+1101.3555 | dictionary|4
+1101.3555 | Newtonian simulation|3
+1505.04756 | dictionary|4
+1505.04756 | N-body gauge|3
+1711.06681 | dictionary|3
+1711.06681 | Newtonian|3
+2404.02783 | dictionary|4
+2404.02783 | Newtonian|4
+2404.02783 | gevolution|3
+2112.10567 | AMR|3
+2101.12149 | mesh refinement|4
+2101.12149 | AMR|4
+2504.16802 | AthenaK|6
+2504.16802 | particle|4

@@ -1,0 +1,25 @@
+1609.03053 | Gauss|6
+1609.03053 | charge conserv|4
+1609.03053 | Casimir|5
+1609.03053 | long.?time|4
+1609.03053 | energy|4
+1612.06734 | Casimir|4
+1612.06734 | long.?time|4
+1612.06734 | Gauss|4
+1612.06734 | particle.in.cell|4
+2605.15260 | charge.?conserv|5
+2605.15260 | Esirkepov|4
+2605.15260 | Gauss|4
+2111.05282 | Yee|6
+2111.05282 | constrained.?transport|6
+2111.05282 | staggered|4
+2111.05282 | source term|5
+2111.05282 | hyperbolic|6
+2111.05282 | stab|5
+2111.05282 | Maxwell|3
+2211.13659 | dGREM|5
+2211.13659 | 2111.05282|3
+2211.13659 | symmetric hyperbolic|5
+2211.13659 | strongly hyperbolic|4
+2211.13659 | numerical|5
+2211.13659 | stab|5

@@ -1,0 +1,16 @@
+gr-qc/0512031 | perfect fluid|5
+gr-qc/0512031 | heteroclinic|2
+0904.1546 | vacuum|3
+0904.1546 | spike|3
+2010.01399 | vacuum|3
+2010.01399 | spike|3
+2010.01399 | matter|3
+1611.07906 | spindle|3
+1611.07906 | particle|3
+1901.04498 | collisionless|3
+1901.04498 | naked|2
+2402.10190 | Einstein.?Maxwell.?Vlasov|3
+2402.10190 | extremal|3
+2511.20567 | Einstein.?Maxwell.?Vlasov|3
+2511.20567 | extremal|4
+2511.20567 | numerical|3

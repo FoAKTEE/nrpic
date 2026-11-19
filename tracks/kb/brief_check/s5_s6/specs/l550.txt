@@ -1,0 +1,10 @@
+0710.0879 | initial data|4
+0710.0879 | three black holes|3
+0710.0879 | Brandt|3
+0711.1165 | initial data|4
+0711.1165 | puncture|3
+1004.1353 | approximate|5
+1004.1353 | initial data|4
+1004.1353 | four black holes|3
+1305.2619 | adiabatic|4
+1305.2619 | spike|4

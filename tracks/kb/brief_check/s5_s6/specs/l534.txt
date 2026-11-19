@@ -1,0 +1,16 @@
+2211.08133 | invarian|3
+2602.00155 | invarian|3
+2602.00155 | Weyl|3
+2505.15912 | cosmolog|4
+2505.15912 | expanding|4
+2505.15912 | FLRW|3
+2306.11810 | horizon find|4
+2306.11810 | apparent horizon|4
+2304.13284 | spheric|6
+2304.13284 | non.?spheric|5
+2304.13284 | quasi.?local|4
+2609.03051 | quasi.?local|3
+2111.09163 | asymptotic|4
+2111.09163 | transverse.?traceless|3
+2408.03049 | foliation|3
+2409.00024 | foliation|4

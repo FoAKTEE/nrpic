@@ -1,0 +1,14 @@
+1704.04307 | reference|4
+2610.23218 | lapse|6
+2610.23218 | propose|4
+2207.06376 | shock.?avoid|3
+gr-qc/0210050 | gauge shock|3
+1810.05203 | synchronous|8
+1810.05203 | converge|8
+1810.05203 | sheet|6
+1810.05203 | tetrahed|6
+1810.05203 | particle|6
+1809.07010 | gauge|3
+1809.07010 | harmonic|3
+2001.00394 | gauge|3
+2001.00394 | synchronous|4

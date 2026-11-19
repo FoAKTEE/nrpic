@@ -1,0 +1,19 @@
+2508.20606 | periodic|5
+2508.20606 | boundar|5
+2508.20606 | curvature|2
+1305.5576 | integrab|4
+1305.5576 | compatib|4
+1305.5576 | solvab|4
+1305.5576 | integral.{0,60}(vanish|zero)|4
+1305.5576 | periodic|3
+2207.03125 | periodic|6
+2207.03125 | integrab|4
+2207.03125 | (vanish|zero).{0,80}integral|4
+2207.03125 | particle|4
+astro-ph/0602159 | T\^3|5
+astro-ph/0602159 | T\^1|3
+astro-ph/0602159 | 3-torus|4
+astro-ph/0602159 | torus|4
+2210.11426 | torus|5
+2210.11426 | E_?1|3
+2210.11426 | physical effect|3

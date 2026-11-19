@@ -1,0 +1,18 @@
+# INSPIRE queries of package s5_s6, run 2026-11-19 with
+#   python3 -I harness/bin/nrpic-fetch-arxiv --inspire-query "<query>" --size 25
+# result files under /data/haiyangw/nrpic/kb-data/meta/inspire/query/<sha16>.json
+# printed with scripts/inspire_hits.py (copy of the s37_38 script)
+#
+# query | result file | hits | what it was for
+t "Burnett" and t conjecture | 2df18edc988748f9.json | 1 (2402.17530) | L434 proofs of Burnett's conjecture
+t Burnett | af29e98de6a8837b.json | 8 (one relevant: 2402.17530) | L434
+a Huneau, Cecile | b82510271a2e4f4d.json | 12 (2403.03470, 2404.07659, 1907.10743, 1706.09501, 2506.21779 relevant) | L434
+fulltext "Burnett conjecture" and fulltext "numerical relativity" | 372c8aa251508922.json | 2 (obituaries) | L437 S7 novelty
+t Isaacson and t numerical | 907a8e62298d345f.json | 0 | L437
+fulltext "massless Vlasov" and fulltext "high-frequency" and fulltext "numerical simulation" | f540d289b8ecd442.json | 6 (none a numerical test of Burnett) | L437
+t primordial black hole and t neutrino and t free-streaming | 94c8632af3899bd8.json | 0 | L414 S5 novelty
+t primordial black hole and fulltext "Einstein-Vlasov" | fce9109e54ee2379.json | 1 (2403.02878, thesis on PBH formation with NR) | L414
+t primordial black hole and t neutrino | 594fd55ef4b82484.json | 12 (evaporation and neutrino signals; none on formation) | L414
+t primordial black hole and t anisotropic and t formation | 1ff023bcaadb927c.json | 1 (2110.05982, anisotropic perfect fluid) | L414 closest fluid work
+t Vlasov and (t Gowdy or t Mixmaster or t spike or t singularity) and t numerical | 937b48dae3dc1ef2.json | 0 | L441 S8 novelty
+fulltext "Einstein-Vlasov" and fulltext "spikes" and fulltext "numerical" | b6988efd942e7525.json | 25 (dark-matter spikes around black holes, mathematical GR reviews; none numerical Vlasov near cosmological singularities) | L441

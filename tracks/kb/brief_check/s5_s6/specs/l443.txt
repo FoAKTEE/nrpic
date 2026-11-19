@@ -1,0 +1,15 @@
+1904.12879 | sudden|5
+1904.12879 | gradual|5
+1904.12879 | enhance|4
+2003.10455 | sudden|4
+2003.10455 | evaporat|3
+2312.12499 | hybrid|4
+2312.12499 | lattice|3
+2312.12499 | Newtonian|4
+2306.14961 | N-body|4
+2306.14961 | decay|5
+2306.14961 | radiation|4
+2306.14961 | Newtonian|3
+1904.11773 | linear|5
+1904.11773 | relativistic|4
+1904.11773 | Newtonian|3
