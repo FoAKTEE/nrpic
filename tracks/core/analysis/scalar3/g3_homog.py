@@ -3,6 +3,7 @@
 four lapse conditions, at the step of the 32^3 stochastic runs.
 
     python3 g3_homog.py --exe EXE --exe-gauge EXE_OF_CORE_GAUGE [--out DIR]
+                        [--analyse-only --data DIR]
 
   geo    geodesic slicing, to t = 8.44 (8 e-folds)
   conf   lapse_harmonic = 1/3 (conformal time), to t = 0.999 or until the run fails
@@ -45,15 +46,18 @@ def main():
     ap.add_argument("--exe-gauge", required=True)
     ap.add_argument("--out")
     ap.add_argument("--analyse-only", action="store_true")
+    ap.add_argument("--data", help="with --analyse-only: directory of the runs of an "
+                    "earlier execution")
     a = ap.parse_args()
     out = s3.run_dir(a.out)
+    data = os.path.abspath(a.data) if a.data else out
     summ = dict(exe=os.path.abspath(a.exe), exe_gauge=os.path.abspath(a.exe_gauge),
                 runs={})
     case = s3.case("sr", 1)
     v, dv, phi0, pi0 = s3.inf.code_background(case)
     res = {}
     for k, (gauge_exe, args) in SPEC.items():
-        rd = os.path.join(out, k)
+        rd = os.path.join(data, k)
         code = None
         if not a.analyse_only:
             code = run(os.path.abspath(a.exe_gauge if gauge_exe else a.exe), rd, args)
