@@ -210,3 +210,25 @@ ES-1 (D-20261115-172726-60ba4c2) and V-1 (D-20261115-172730-c6d151b). Exact refe
   outside it in coordinate radius by more than 0.1 M. Refuted by any dust particle inside.
 - Y6 cost from the manifests: 0.769 + 0.672 = 1.44 card-hours. ES-1G (Slurm 4636) has used
   no card time at the time of the check.
+
+Outcome of Y1-Y6 (run D-20261119-151039-b2ce968; the same numbers and a figure with legible
+titles in D-20261119-151119-58b2102, `es_finish_check.png` looked at). My first run
+D-20261119-151012-b4afa8a read S_x (trajmet column 15) as the proper time (my index slip:
+the proper time is column 13): its Y2-Y4 are void, Y1, Y5, Y6 are the same; it stays on
+record, superseded.
+- Y1 HELD: M_AH(100 M) - 1 = +9.55e-4 / +9.37e-4; max |drift| over 100-200 M 3.40e-4 /
+  1.37e-4 (both at t ~ 196-200 M; over 100-165 M 9.3e-5 / 4.2e-5); max |ES-1 - V-1| 2.04e-4
+  = 1.49 x V-1's floor; the two horizon masses split by more than 1e-9 from t = 19.5 M.
+- Y2 HELD: wall, tau <= 200 M, max |R/R_w - 1| = 2.196e-3 (ES-1, axis tracers), 1.594e-3
+  (V-1, diagonal tracers), my areal radius from the tangential part of gamma_ij.
+- Y3 HELD: ES-1 14.8263 and 34.4368 M (V-1 14.8263, 34.4365) against exact 14.8269 and
+  34.4423 M; group R0 = 20 M in ES-1: 14 of 14 cross, mean tau 244.33 M at mean t = 177.3 M
+  (exact tau 244.74 M); in V-1 none, largest tau at the end 243.43 M.
+- Y4 HELD: plateau probe 1.2921, 1.6619, 1.6355 at t = 10, 25, 50 M against my own model
+  1.377, 2.096, 3.577 (the A2 failure is real); tau of group R0 = 48 M at t = 200 M
+  279.49-279.88 M (V-1: 248.53-248.62 M).
+- Y5 HELD: smallest margin of dust outside the wall tracer's 10-degree cone 0.154 M
+  (t = 100 M) and 0.126 M (t = 200 M), on the diagonal tracers; 0.38 M on the axis tracers;
+  no dust inside. (The helper's fitted-wall margin 0.136 M at 200 M is the same picture.)
+- Y6 HELD: 0.7694 + 0.6719 = 1.441 card-hours; `nrpic-run budget`: G1 used 3.62, reserved
+  0.98 (ES-1G, Slurm 4636 still pending at 15:12 UTC), left 25.40 of 30.
