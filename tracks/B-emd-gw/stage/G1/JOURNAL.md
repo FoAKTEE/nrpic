@@ -125,3 +125,13 @@ of dI_xx, linear interpolation): 24.065902, 23.895492, 23.860390 t_k at N = 32, 
 relative errors +0.895, +0.181, +0.0336 %; order 2.28; Richardson limit 23.85128
 (-0.0046 %). The ODE started from the lattice moments instead gives 23.9162, 23.8604,
 23.8518 (the lattice start explains part of the N = 32 error, not the N = 128 one).
+
+## After reading the track's review (2026-11-19 06:35 PST)
+
+Comparison run B-20261119-142332-dd28d1d adds max |c_+/(s g) - 1| (the review's measure):
+0.224, 0.222, 0.435 % (64^3), 0.195, 0.190, 0.379 % (32^3), identical to the review's
+numbers; my earlier 0.246/0.478 % are |c_+ - s g|/|s| and differ by g(a = 10) = 1.10.
+Maxima of c_+/s for eps 1: 2.496 at a = 96.1 and 2.547 at a = 123.3, as in the review.
+The review's "linearity 0.050 %" is the pair (0.1, 0.3) in bin (mine 0.0497 %), i.e. the
+single-precision floor. No claim WRONG; F3 (eps 1), F7 (bound for eps 1 and the Gamma
+driver) and N3 (number) NOT CONFIRMED as worded. Report: `VERIFIER.md`.

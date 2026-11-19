@@ -13,6 +13,10 @@
    "cA_plus_t0": 3.280346755269737e-09,
    "hprime0_over_s": 0.0021302174280106814,
    "max_abs_dev_pct_a2_10": 0.24585077085193438,
+   "max_abs_ratio_dev_pct_a2_10": 0.2239368058694069,
+   "max_c_over_s_a_ge_60": 2.064669527295213,
+   "a_of_max_c_over_s": 139.9999999999945,
+   "local_maxima_c_over_s_a_ge_60": [],
    "max_abs_dev_pct_a2_10_s_measured": 0.2392286259089027,
    "max_abs_dev_pct_a2_10_with_hprime0": 0.24573628715560936,
    "max_abs_sin_part_over_s": 2.7143745913723352e-09,
@@ -127,6 +131,10 @@
    "cA_plus_t0": 1.0620740949095133e-08,
    "hprime0_over_s": 0.0022989917870454564,
    "max_abs_dev_pct_a2_10": 0.24366120930691634,
+   "max_abs_ratio_dev_pct_a2_10": 0.2219423700317691,
+   "max_c_over_s_a_ge_60": 2.1982588646440138,
+   "a_of_max_c_over_s": 139.9999999999945,
+   "local_maxima_c_over_s_a_ge_60": [],
    "max_abs_dev_pct_a2_10_s_measured": 0.2363528748969334,
    "max_abs_dev_pct_a2_10_with_hprime0": 0.24353771838491298,
    "max_abs_sin_part_over_s": 8.914347599469006e-10,
@@ -241,6 +249,19 @@
    "cA_plus_t0": 6.49680583114686e-08,
    "hprime0_over_s": 0.004218908363582595,
    "max_abs_dev_pct_a2_10": 0.47784603994937647,
+   "max_abs_ratio_dev_pct_a2_10": 0.435252119329288,
+   "max_c_over_s_a_ge_60": 2.5467980604250404,
+   "a_of_max_c_over_s": 123.33547322213447,
+   "local_maxima_c_over_s_a_ge_60": [
+    [
+     96.05887589856403,
+     2.4962114294244864
+    ],
+    [
+     123.33547322213447,
+     2.5467980604250404
+    ]
+   ],
    "max_abs_dev_pct_a2_10_s_measured": 0.4646060783205873,
    "max_abs_dev_pct_a2_10_with_hprime0": 0.4776207389980037,
    "max_abs_sin_part_over_s": 5.289564264105847e-10,
@@ -355,6 +376,19 @@
    "cA_plus_t0": 6.49680583114686e-08,
    "hprime0_over_s": 0.004218908363582595,
    "max_abs_dev_pct_a2_10": 0.8376614517743509,
+   "max_abs_ratio_dev_pct_a2_10": 0.7629945458040632,
+   "max_c_over_s_a_ge_60": 2.569009050349487,
+   "a_of_max_c_over_s": 96.05887587924944,
+   "local_maxima_c_over_s_a_ge_60": [
+    [
+     96.05887587924944,
+     2.569009050349487
+    ],
+    [
+     120.06051689716725,
+     2.307359191984841
+    ]
+   ],
    "max_abs_dev_pct_a2_10_s_measured": 0.824378285226208,
    "max_abs_dev_pct_a2_10_with_hprime0": 0.837436150737301,
    "max_abs_sin_part_over_s": 3.913353534462767e-11,
@@ -469,6 +503,10 @@
    "cA_plus_t0": 3.2766002258700853e-09,
    "hprime0_over_s": 0.0021277844753653068,
    "max_abs_dev_pct_a2_10": 0.2125641902249768,
+   "max_abs_ratio_dev_pct_a2_10": 0.19545580043534017,
+   "max_c_over_s_a_ge_60": 2.084312242128625,
+   "a_of_max_c_over_s": 139.9999999999945,
+   "local_maxima_c_over_s_a_ge_60": [],
    "max_abs_dev_pct_a2_10_s_measured": 0.20516285777884524,
    "max_abs_dev_pct_a2_10_with_hprime0": 0.2102053890242276,
    "max_abs_sin_part_over_s": 5.058420968286452e-09,
@@ -583,6 +621,10 @@
    "cA_plus_t0": 1.0609504646926616e-08,
    "hprime0_over_s": 0.0022965595426743396,
    "max_abs_dev_pct_a2_10": 0.20662247521131966,
+   "max_abs_ratio_dev_pct_a2_10": 0.18999202984861796,
+   "max_c_over_s_a_ge_60": 2.201217593021382,
+   "a_of_max_c_over_s": 139.9999999999945,
+   "local_maxima_c_over_s_a_ge_60": [],
    "max_abs_dev_pct_a2_10_s_measured": 0.19918354643610162,
    "max_abs_dev_pct_a2_10_with_hprime0": 0.20407687797255364,
    "max_abs_sin_part_over_s": 1.2433732699441768e-09,
@@ -697,6 +739,19 @@
    "cA_plus_t0": 6.492730866823908e-08,
    "hprime0_over_s": 0.0042162621546156616,
    "max_abs_dev_pct_a2_10": 0.41184956736154116,
+   "max_abs_ratio_dev_pct_a2_10": 0.3786946576586514,
+   "max_c_over_s_a_ge_60": 2.535686099694569,
+   "a_of_max_c_over_s": 100.17299976085019,
+   "local_maxima_c_over_s_a_ge_60": [
+    [
+     100.17299976085019,
+     2.535686099694569
+    ],
+    [
+     128.8769006206563,
+     2.458683310817025
+    ]
+   ],
    "max_abs_dev_pct_a2_10_s_measured": 0.3987747370655618,
    "max_abs_dev_pct_a2_10_with_hprime0": 0.4071824335154127,
    "max_abs_sin_part_over_s": 1.1124455514973463e-09,
@@ -811,6 +866,15 @@
    "cA_plus_t0": 6.492730866823908e-08,
    "hprime0_over_s": 0.0042162621546156616,
    "max_abs_dev_pct_a2_10": 0.7830079190585879,
+   "max_abs_ratio_dev_pct_a2_10": 0.7199738861979332,
+   "max_c_over_s_a_ge_60": 2.4699105907828947,
+   "a_of_max_c_over_s": 100.17299447075578,
+   "local_maxima_c_over_s_a_ge_60": [
+    [
+     100.17299447075578,
+     2.4699105907828947
+    ]
+   ],
    "max_abs_dev_pct_a2_10_s_measured": 0.769888636207724,
    "max_abs_dev_pct_a2_10_with_hprime0": 0.7783407625839069,
    "max_abs_sin_part_over_s": 2.333492230044694e-10,
