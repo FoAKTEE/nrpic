@@ -133,7 +133,7 @@ T1, conformal factor on processors (`analysis/oblate/cf_check.py`,
   with dx = M/4. The prolate component (existing code) gives the same picture on the
   same mesh. Refuted by: a relative difference above 1e-4 inside, or |H| above 1e-4 of
   the inside value outside.
-- P1c (restated 14:58Z, before any run of T1: the first wording asked for a core mean of
+- P1c (restated 14:37Z, before any run of T1: the first wording asked for a core mean of
   H within 0.03, which is 1.5 standard deviations of the count noise of a sample with
   four-fold symmetry, 2 per cent; the sharp statements are the integrals). With the 10^4
   sampled particles (`make_ic.py oblate`, seed 1; `problems/tests/oblate_id.athinput`,
