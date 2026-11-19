@@ -469,8 +469,9 @@ class BoostedClusters:
     """Several equilibrium clusters with bulk velocities (and optional Brill-Lindquist or
     Bowen-York punctures) for the problem generator nrpic_cf.
 
-    clusters   list of dicts: yc, mass (ADM mass of the isolated cluster), centre,
-               v (velocity of the clump far from the others)
+    clusters   list of dicts: yc, mass (ADM mass of the isolated cluster), centre, and
+               either v (velocity of the clump; the linear rule is applied with W_v v)
+               or P (its momentum sum m u_i; the rule is applied with P/pmass)
     punctures  list of dicts: mass (bare), centre, P, S
     correction True: second-order correction tables of psi are part of the data.
 
@@ -483,7 +484,8 @@ class BoostedClusters:
         def vec(d, key):
             return np.array(d.get(key, (0.0, 0.0, 0.0)), dtype=float)
         self.spec = [dict(yc=float(c["yc"]), mass=float(c.get("mass", 1.0)),
-                          centre=vec(c, "centre"), v=vec(c, "v")) for c in clusters]
+                          centre=vec(c, "centre"), v=vec(c, "v"),
+                          P=(vec(c, "P") if "P" in c else None)) for c in clusters]
         self.punctures = [dict(mass=float(b["mass"]), centre=vec(b, "centre"),
                                P=vec(b, "P"), S=vec(b, "S")) for b in punctures]
         if not self.spec:
@@ -520,8 +522,12 @@ class BoostedClusters:
             if key not in cache:
                 cache[key] = BoostedST(s["model"], lam=float(lam[c]))
             self.boost.append(cache[key])
-            # velocity of the linear rule: W_v v
-            s["V"] = lorentz(s["v"]) * s["v"]
+            # velocity of the linear rule: W_v v, or the one that gives the momentum P
+            if s["P"] is not None:
+                s["V"] = s["P"] / cache[key].pmass
+                s["v"] = s["V"] / math.sqrt(1.0 + float(np.sum(s["V"] ** 2)))
+            else:
+                s["V"] = lorentz(s["v"]) * s["v"]
         self.M_adm_first_order = (sum(b.conformal_mass for b in self.boost)
                                   + sum(p["mass"] for p in self.punctures))
 

@@ -400,3 +400,33 @@ of TC are in `/data/haiyangw/nrpic/scratch/core/clump2-ic/` with their `SHA256SU
 --prefix v<v>` for v = 0, 0.1, 0.3 at commit e9e35f16; the three radial tables are
 identical, 0c604861..., as are the two boost tables, 73f8c205...). Batch list:
 `tracks/core/analysis/clump2/card_tc.list`.
+
+### Several clusters: generator, and predictions TD (written 15:11Z, before any mesh run of two clusters)
+
+`python/nrpic/boosted_cluster.BoostedClusters` and `make_ic.py boosted` take several
+clusters (and punctures): background `lam_c = 1 + sum (M_j/lam_j)/(2 d_cj)`, the scaling
+of the derivation, and per particle the mass factor that reproduces the isolated
+`m W/psi` in the psi of the code. `--cluster-p` gives a cluster by its momentum
+(`V = P/pmass`), which is what Track F's three-body set-ups specify. Generator output
+for two clusters of mass 1 at x = -20, +20 with v = (M/(2d))^(1/2) = 0.111803 along -y, +y
+(not a registered run; these are properties of the generator's own numbers): lam =
+1.012348, pmass = lam^4 = 1.050312, |P| = 0.118169 each (continuum), first-order ADM mass
+2/lam = 1.975606 (binding energy -0.02439 against the Newtonian -M^2/d = -0.025), with
+the corrections 1.988526 (kinetic 0.01292 against the Newtonian 0.0125).
+
+Test TD (`run_binary_static.py`, `problems/tests/clump_table_binary.athinput`): that
+pair at t = 0 on a uniform mesh of cell size 0.5 ([-48, 48] x [-24, 24]^2), quiet sample
+with spacing 0.25; cases `single` (one cluster alone at x = -20, at rest), `b0` (the
+pair at rest), `bv_none`, `bv_curv`, `bv_corr` (the pair moving: K_ij = 0, the two
+boost tables, tables and corrections). Norms within 14 of the centre of cluster 0.
+- TD1. H-norm of `b0` over that of `single`: 1 +- 0.1 (each cluster keeps the
+  Hamiltonian residual of the isolated one; a factor lam or lam^2 lost in psi, the
+  tables or the particles would show as a residual of 1 to 6 per cent of the matter
+  term, 0.01 to 0.05 in norm).
+- TD2. M-norm `bv_curv`/`bv_none`: the value of TB2 at dx = 0.5 (which does not depend
+  on v) within 30 per cent; a factor lam^2 = 1.025 lost in the momentum, or the table
+  scaled wrongly, leaves at least 0.025.
+- TD3. `|D_H(bv_corr)|/|D_H(bv_curv)|` (differences to `b0`) below 0.1 and within a
+  factor 1.5 of TB3 at dx = 0.5 and v = 0.1; projection within 0.05 of zero.
+Refuted by an H ratio outside 0.85 to 1.15, an M ratio more than twice the TB2 value,
+or a D_H ratio above 0.2.

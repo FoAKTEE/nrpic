@@ -40,8 +40,9 @@ the clump. --sampler lattice puts weighted particles on a lattice of spacing
 --lattice-h (noise-free deposit, for tests).
 
 boosted: equilibrium clusters (monoenergetic model y_c, ADM mass of the isolated
-cluster) that move, each "yc,mass,x,y,z,vx,vy,vz" with the speed v of the clump, and
-optional punctures (python/nrpic/boosted_cluster.py): the static cluster on the maximal
+cluster) that move, each "yc,mass,x,y,z,vx,vy,vz" with the speed v of the clump
+(--cluster-p: with its momentum instead; clusters given by momentum come after those
+given by velocity), and optional punctures (python/nrpic/boosted_cluster.py): the static cluster on the maximal
 slice of its boosted spacetime. Written per cluster k: <stem>_c<k>.tab (radial table),
 <stem>_c<k>.bst (boost table: moments of the momentum density for the curvature, and
 the comoving shift), <stem>_c<k>_corr.tab (second-order correction of psi; not with
@@ -183,6 +184,9 @@ def main(argv=None):
     g.add_argument("--cluster", action="append", default=[],
                    help="yc,mass,x,y,z,vx,vy,vz (repeatable): equilibrium cluster with "
                         "the bulk velocity v")
+    g.add_argument("--cluster-p", action="append", default=[],
+                   help="yc,mass,x,y,z,px,py,pz (repeatable): the same with the momentum "
+                        "sum m u_i of the cluster instead of its velocity")
     g.add_argument("--no-psi-correction", action="store_true",
                    help="leave out the second-order correction of psi")
     g.add_argument("--boost-shift", action="store_true",
@@ -356,14 +360,19 @@ def main(argv=None):
                                "-psi^-12 Abar_ij Abar_ij, second order in P and S")
 
     elif a.model == "boosted":
-        if not a.cluster:
-            p.error("boosted needs at least one --cluster")
+        if not a.cluster and not a.cluster_p:
+            p.error("boosted needs at least one --cluster or --cluster-p")
         cs, bs = [], []
         for spec in a.cluster:
             v = [float(c) for c in spec.split(",")]
             if len(v) != 8:
                 p.error("--cluster needs yc,mass,x,y,z,vx,vy,vz")
             cs.append(dict(yc=v[0], mass=v[1], centre=v[2:5], v=v[5:8]))
+        for spec in a.cluster_p:
+            v = [float(c) for c in spec.split(",")]
+            if len(v) != 8:
+                p.error("--cluster-p needs yc,mass,x,y,z,px,py,pz")
+            cs.append(dict(yc=v[0], mass=v[1], centre=v[2:5], P=v[5:8]))
         for spec in a.puncture:
             v = [float(c) for c in spec.split(",")]
             if len(v) not in (4, 7, 10):
