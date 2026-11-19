@@ -7,7 +7,7 @@ horizon finder, the comparison with its error budget, its tests on core's own ou
 on a processor run of test particles into a fixed hole, an application to the wave-2 card
 runs ES-1/V-1, and the prepared input and predicted growth law of the first matter run
 after the vacuum-bubble benchmark (ES-F: the bubble of ES-1 filled with dust).
-Predictions and outcomes: `JOURNAL.md` (entries 1-4). Card-hours used: 0.
+Predictions and outcomes: `JOURNAL.md` (entries 1-5). Card-hours used: 0. No result here has been checked by a second agent yet.
 Labels [VERIFIED], [JUDGEMENT], [TO VERIFY] as in the charter.
 
 ## Contents
