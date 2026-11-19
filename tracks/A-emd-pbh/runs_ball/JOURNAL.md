@@ -452,3 +452,13 @@ data set 2 (expball/README.md); over all cells the top-hat jumps leave a Hamilto
 that converges at order about 1/2 in L2 and a momentum band whose L2 norm grows as
 h^(-1/2) (expball/README.md, "Over all cells ..."). Refuted by an order below 1.8 away from
 the jumps.
+
+Outcome of (b), run A-20261119-144826-e875712 (figure fig_constraints_ds3.png looked at;
+its x tick labels overlap, cosmetic): HOLDS. Away from the non-smooth radii the orders of
+the last three pairs are 2.02, 2.00, 2.00 (H) and 2.00, 2.00, 2.00 (M) with second-order
+differences, 4.00, 4.00, 4.00 (H and M) with fourth-order ones; L2 residuals at N = 256
+(h = 0.021 M) 1.1e-5 (H) and 1.5e-5 (M) of 6H^2. Over all cells the top-hat jumps give
+H L2 orders 0.51, 0.51, 0.49 and M L2 orders -0.40, -0.47, -0.50 (the h^(-1/2) growth of a
+one-cell band of an O(1/h) residual), as predicted. The data are the exact constraint-
+satisfying slice except at the jumps, where any mesh sees a discontinuity of K_ij and of
+the density; the code will start with that band.
