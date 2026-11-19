@@ -99,3 +99,42 @@ Prediction for run X (`scripts/check_numbers.py`, numbers transcribed from the s
   q = 10 is 6328 (Track F's number).
 Constants: GM_sun = 1.3271244e20 m^3 s^-2 (IAU 2015 B3 nominal), au = 1.495978707e11 m
 (IAU 2012 B2), c exact, Julian year [BACKGROUND].
+
+## Entry 4, 2026-11-19 08:25: outcome of run X; outcomes of P1-P11; prediction for run T (tally)
+
+Run X (`kb-20261119-153659-4688c5b`, completed, figure `fig_numbers.png` read): every number
+inside its preregistered band. X1: k = 1.095 to 1.348 (band [0.7, 1.5]). X2: 5065-6234 km/s
+against 5e3 (ratios 1.01-1.25) and 925-1138 km/s against 0.9e3 (1.03-1.26). X3: r_t/r_g =
+101.311 against 101.3 (1.0001), beta_max = 25.328 against 25.3 (1.0011). X4: 5/64 exact;
+5947 Gyr against 6.0e3 (0.991); the brief's 6x10^3 against 6328 (1.055). In the figure the
+two Yu-Tremaine bars lie right of 1 because Hills' v' band (130-160) is wider than their single
+rounded quote; the right panel shows the Hills band 10-35 per cent above the k = 1 line of
+0911.1136 at every q.
+
+Outcomes of the source predictions (details and locators in CHECK.md):
+- P1 held (r_t = a (M/m)^(1/3), no exact prefactor; 2404.16270 calls it order-of-magnitude).
+- P2 held (k = 1.10-1.35 from Hills' numbers; 0911.1136 writes v_0 (M/m)^(1/6), v_0 = (Gm/a)^(1/2)).
+- P3 held (Nature 331, 687; bound member highly eccentric); added: each member is ejected with
+  50 per cent probability (0911.1136), and separation inside r_t is likely, not certain.
+- P4 held (all six on topic).
+- P5 held in the predicted form: titles right; 2409.09597 is restricted three-body although
+  listed under "full three-body"; 1307.1134 is an application; 0909.1959 follows bound orbits.
+- P6 held and more: three "compact binaries and MBH" entries are secular Kozai-Lidov studies of
+  bound triples (1203.2938, 1706.09896, partly 1903.02685); and one "waveform effects for
+  binaries" entry is not about a binary at all (0704.2612, single compact object, CORRECTED).
+- P7 held for (i) to (iv) with two findings I had not predicted: "about 100 r_g" is a rule of
+  thumb quoted from Tejeda et al. 2017 (order 1 per cent), and among the "single-star"
+  disruption papers 1411.5022 is about stars ejected by massive-black-hole binaries (CORRECTED)
+  and 1305.4634 is Newtonian. "Including spin" holds for 2601.04870 only (predicted).
+- P8 failed in its second half: all three "stellar tidal disruption in full GR" papers do solve
+  the Einstein equations with the star (1201.4389, 1502.05740 with Maya; 1408.1695 with
+  background error subtraction, mostly head-on). The first half held.
+- P9 held (run N); precision: 2406.11985 has a heavier third hole (q = 4, 9) on a bound orbit,
+  not separated (checked in its table myself, `massratio_table.tex`).
+- P10 held (all four on topic).
+- P11 held: line 275 is errata row 1.5; the Peters formula is quoted with 5/256 in 1805.09593.
+
+Prediction for run T (`scripts/fig_verdicts.py`): 66 rows, 45 CONFIRMED, 18 CONFIRMED
+(precision), 3 CORRECTED, 0 NOT FOUND, as the header says; every locator of the locator column
+valid (files exist, line numbers within the files, run manifests present, branch files present).
+Refuted if the tally differs from the header or any locator fails; then I fix CHECK.md and rerun.
