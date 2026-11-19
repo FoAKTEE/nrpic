@@ -276,3 +276,24 @@ Predictions:
    out from the fixed 2M of the proxy; my estimate Delta tau ~ 2(m - M) was too small at
    late times. The wave-2 reference with fixed capture radius is therefore good to 0.25
    per cent of the mass in this run; the exact LTB law is the prediction of record.
+
+## Entry 5 (2026-11-19, before the run): esf_analyse.py on a synthetic ES-F run
+
+`t_esf_synth.py` builds a run from the exact LTB solution of the ES-F data (D-20261119-145022-2208a19):
+code time t = tau/1.4, finder mass = exact growth law plus Gaussian noise of 1e-5, every
+dust shell removed (reason 3) 30 per cent of the way from the horizon to the centre in
+proper time, with the code energy 1.35 E_K (the gauge factor of entry 3), a flux sphere
+at R = 5 M summed with the same contaminated energies; then esf_analyse.py, once on the
+exact history and once with the growth scaled by 0.97. Predictions:
+1. Exact history, initial-data energies: max bracket violation below 4.5 sigma (noise of
+   1 sigma at 401 finder times; sigma = finder tolerance 1e-5, no control) and at least
+   98 per cent of the times inside 3 sigma; per label M_AH(t_rem) - m(R0) >= -4.5e-5;
+   no proper time outside [tau_H, tau_0].
+2. Exact history, code energies: the lower bound F_rem exceeds dM by about 35 per cent of
+   the accreted mass at the end: violation above 1000 sigma. (This is the failure the
+   initial-data energies avoid.)
+3. Growth x 0.97, initial-data energies: violation above 100 sigma (a deficit of
+   about 5e-3 M at the end against a removal lag worth about 5e-4 M); per label minimum
+   M_AH - m(R0) below -1e-3.
+Refuted if 1 fails (then the analysis or the LTB labelling is wrong) or 2 or 3 pass
+(then the comparison cannot see a 3 per cent or a gauge-factor error).

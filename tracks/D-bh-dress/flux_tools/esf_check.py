@@ -117,7 +117,7 @@ def figure(out, fb, rb, curves, sg, tau_s, M_s, M_ltb):
     a.plot(tau_s, M_s, color=figstyle.PAL["red"], ls="--", label="shells (wave 2), capture at $r=2M$")
     a.set_xlim(0, 650)
     a.set_ylim(1, 1.65)
-    a.set_xlabel(r"$\tau\ [M]$ (proper time since the initial slice)")
+    a.set_xlabel(r"$\tau\ [M]$ since the initial slice")
     a.set_ylabel(r"$M_{\rm BH}\ [M]$")
     ins = a.inset_axes([0.55, 0.12, 0.42, 0.35])
     ins.plot(tau_s, (M_ltb - M_s) * 1e3, color="k", lw=0.8)
