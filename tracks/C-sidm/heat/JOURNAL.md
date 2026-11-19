@@ -233,3 +233,32 @@ crossing L/c_s = 1.07 L/<|v|>_2 at theta = 0.0133 [JUDGEMENT: the kinetic transi
 the interfaces launches sound waves]. That is not the diffusive curve I predicted for 0.1:
 there the diffusion time 1/(chi_1 k_1^2) = 0.42 L/<|v|>_2 is shorter than a crossing, so
 neither limit applies. Figure `figs/T6c_transition.png` (looked at).
+
+## 2026-11-19 15:58 Outcome T7 at theta = 0.003 (processors): PASSED, kappa/kappa_1 = 1.021 +- 0.004 (runs C-20261119-144545-c606492, analysis C-20261119-155257-754a43b)
+
+eps = 0.2 (D3), 4 seeds x 4e5 particles per k lambda, dt = 0.1 t_coll, pmax 0.1,
+dx = 0.245 lambda; n_trunc = n_noroot = n_balance = 0 in all 12 runs, 3.4-3.6 sub-steps,
+at least 42 particles in every cell, max dx/lambda_cell 0.43. f = fitted rate of the
+entropy mode A_S over [10 t_coll, 2/Gamma_1] divided by the same fit to the nonlinear
+isobaric reference with kappa_1(T) (seed mean +- standard error of the 4 seeds):
+- k lambda = 0.1: 1.0232 +- 0.0039 (seeds 1.0231, 1.0254, 1.0129, 1.0315)
+- k lambda = 0.2: 1.0170 +- 0.0049 (1.0202, 1.0184, 1.0032, 1.0261)
+- k lambda = 0.4: 1.0341 +- 0.0170 (1.0536, 1.0582, 1.0403, 0.9844)
+Linear in (k lambda)^2: f0 = 1.0208 +- 0.0041, slope 0.016 +- 0.13 (chi^2 = 1.6 for one
+degree of freedom). Pass: f0 in [0.99, 1.06]. Prediction (1.025 +- 0.02) confirmed; the
+Balberg et al. value (0.72) is excluded by 74 standard errors, i.e. the conduction
+coefficient b = 25 sqrt(pi)/32 of Koda & Shapiro and arXiv:2601.17117 is the right one
+for this operator. The seed scatter at k lambda = 0.1 and 0.2 (0.4-0.5 percent) is about
+half of the design Monte Carlo's 1.0-1.1 percent [the Monte Carlo was conservative;
+with four seeds the standard error is itself uncertain by ~40 percent]; at 0.4 it is the
+predicted 1.7 percent. The literal TESTS.md statistic Gamma n c_p/(k^2 kappa_1) with the
+entropy-mode fit: 1.022, 1.016, 1.033 (the -1 percent amplitude bias of eps = 0.2 is
+offset by kappa_1 at the sample's mean temperature, 2 percent below nominal).
+New finding: fitting the number-density mode A_N alone, as TESTS.md T7 writes it, gives
+1.052, 1.112 and 1.433: A_N carries sound waves of about 6 percent of eps launched by the
+initial transient (the start has no heat flux), with periods of 0.8/Gamma_1 at
+k lambda = 0.2 (2 pi/(c_s k) = 444 = 0.80/Gamma_1, seen in the first run) and shorter
+relative to the window at larger k lambda; the entropy combination removes them (sound
+is isentropic). Figure `figs/T7_th0.003_e0.2_cpu.png` (looked at: the entropy mode decays
+smoothly at all three k lambda; k lambda = 0.4 starts with a delay of about one collision
+time before decaying; the extrapolation is flat within its errors).
