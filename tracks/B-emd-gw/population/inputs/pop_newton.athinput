@@ -1,0 +1,94 @@
+# Halo-population box of Track B (package population), Newtonian mode of the particle
+# module (release core-v0.3, coord/INTERFACES/newtonian_mode.md): periodic box of side
+# L = 4 initial Hubble radii, comoving coordinates, conformal time t, a = (1 + t/2)^2
+# (H = 1 at t = 0, a = 1), lap Phi = 4 pi (rho - <rho>) with G = 1; the Newtonian
+# potential is Phi/a. Particles from scripts/make_ic.py (particles_newton.nrp: Zel'dovich
+# lattice of a Gaussian random field with the early-matter-era spectrum, cut at k_c).
+# Numerics of the production configuration of cosmo/README.md for the deposit (cubic
+# cloud, compensation 1/6 and 7/15) and the cubic-spline interpolation (nghost 4); step
+# L/(4 n) as in tracks/B-emd-gw/newton_tests. The mesh size, the step, the end time and
+# the snapshot interval are set on the command line by scripts/run_newton.sh.
+
+<comment>
+problem   = Track B population: Gaussian random field, Newtonian mode, periodic, expanding
+
+<job>
+basename  = newton
+
+<mesh>
+nghost    = 4             # interp = bspline needs four
+nx1       = 64
+x1min     = 0.0
+x1max     = 4.0
+ix1_bc    = periodic
+ox1_bc    = periodic
+nx2       = 64
+x2min     = 0.0
+x2max     = 4.0
+ix2_bc    = periodic
+ox2_bc    = periodic
+nx3       = 64
+x3min     = 0.0
+x3max     = 4.0
+ix3_bc    = periodic
+ox3_bc    = periodic
+
+<meshblock>
+nx1       = 32
+nx2       = 32
+nx3       = 32
+
+<time>
+evolution  = dynamic
+integrator = rk2          # not used by the particles; the driver needs one
+cfl_number = 1.0
+nlim       = -1
+tlim       = 18.0         # a = 100
+ndiag      = 200
+
+<gravity>
+four_pi_G      = 12.566370614359172   # G = 1
+threshold      = 0.0      # V cycles until the defect stops falling
+niteration     = -1
+npresmooth     = 1
+npostsmooth    = 1
+full_multigrid = false
+fmg_ncycle     = 1
+show_defect    = 0
+mg_nghost      = 1
+root_on_host   = false
+
+<particles>
+particle_type  = nrpic
+pusher         = newton
+interp         = bspline
+dt             = 0.015625  # L/(4 n) at n = 64
+newton_cfl     = 0.0
+newton_mg_tol  = 0.0
+newton_expansion = power
+newton_hubble  = 1.0
+newton_exponent = 2.0
+deposit        = true
+deposit_shape  = pcs
+nfilter        = 0
+filter_compensate = false
+filter_comp_c  = -1.0
+deposit_comp_c = 0.16666666666666666
+deposit_comp_limit = 0.0
+deposit_comp_c2 = 0.4666666666666667
+hist_dcycle    = 4
+traj_dcycle    = 0
+traj_ntrack    = 0
+snap_dt        = 0.0625
+probe_x1       = 2.0
+probe_x2       = 2.0
+probe_x3       = 2.0
+nprobe         = 0
+particle_file  = particles_newton.nrp
+
+<problem>
+pgen_name = nrpic_newton
+
+<output1>
+file_type = rst
+dt        = 1.0e30

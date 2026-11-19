@@ -1,0 +1,122 @@
+# Halo-population box of Track B (package population), full relativity (nrpic_cosmo,
+# Z4c, conformal-time lapse d_t alpha = -(1/3) alpha^2 K, zero shift): derived from
+# problems/cosmo/daverio_field.athinput with the production configuration of
+# cosmo/README.md (cubic cloud with compensation 1/6, 7/15; cubic-spline metric at the
+# particles; step limit 0.01 of the expansion time; damping 0.5 per unit conformal time).
+# Box L = 4 initial Hubble radii (override mesh/x?max for other L); a = 1 at t = 0,
+# a = 100 at t = 18. Initial data: scripts/make_ic.py --gr (fields.bin, particles.nrp).
+# Used in this package for timing runs only (time/nlim on the command line).
+
+<comment>
+problem   = Track B population: Gaussian random field, full relativity, timing
+
+<job>
+basename  = pop
+
+<mesh>
+nghost    = 4
+nx1       = 32
+x1min     = 0.0
+x1max     = 4.0
+ix1_bc    = periodic
+ox1_bc    = periodic
+nx2       = 32
+x2min     = 0.0
+x2max     = 4.0
+ix2_bc    = periodic
+ox2_bc    = periodic
+nx3       = 32
+x3min     = 0.0
+x3max     = 4.0
+ix3_bc    = periodic
+ox3_bc    = periodic
+
+<meshblock>
+nx1       = 16
+nx2       = 16
+nx3       = 16
+
+<time>
+evolution  = dynamic
+integrator = rk4
+cfl_number = 0.25
+nlim       = -1
+tlim       = 18.0
+ndiag      = 1000
+
+<z4c>
+lapse_oplog     = 0.0
+lapse_harmonicf = 1.0
+lapse_harmonic  = 0.3333333333333333   # d_t alpha = -(1/3) alpha^2 K
+lapse_volume    = 0.0                  # 1/3 (with lapse_harmonic = 0): alpha - gamma^(1/6) constant
+lapse_advect    = 0.0
+shift_Gamma     = 0.0                  # zero shift
+shift_eta       = 0.0
+shift_advect    = 0.0
+diss            = 0.5
+damp_kappa1     = 0.5 
+damp_kappa1_over_alpha = true          # damping rate kappa1 per unit of conformal time (a constant
+                                       # coefficient becomes stiff when the lapse reaches 1000)
+damp_kappa2     = 0.0
+damp_kappa_gam  = 0.0                  # additional damping of the connection constraint alone
+damp_ch         = 0.0
+damp_ch_dx      = 0.0
+damp_ch_chipow  = 0.0                  # exponent of chi in the relaxation of the Hamiltonian constraint (0: fixed diffusion coefficient in conformal time)
+excise_chi      = 0.0                  # constraint norms over the whole box (chi = 1/a^2 falls)
+
+<particles>
+particle_type  = nrpic
+pusher         = midpoint
+interp         = bspline  # metric at the particles: hermite (Catmull-Rom) or bspline (cubic spline through the nodes)
+dt_expansion   = 0.01    # > 0: step limited to this fraction of the expansion time
+metric         = mesh
+tolerance      = 1.0e-12
+max_iterations = 50
+deposit        = true
+nfilter        = 0
+filter_compensate = false
+filter_comp_c  = -1.0
+deposit_comp_c = 0.16666666666666666    # > 0: compensation of the cloud on the deposited density (1/12, 1/8, 1/6)
+deposit_comp_limit = 0.0  # > 0: that pass limited where neighbouring cells differ strongly
+deposit_comp_c2 = 0.4666666666666667     # fourth-order term of that pass (8/45, 37/120, 7/15)
+deposit_shape  = pcs     # cloud shape: cic, tsc or pcs (B-spline of degree 1, 2, 3)
+deposit_max_level = 31
+deposit_adaptive  = false
+deposit_min_level = 0
+deposit_ppc       = 2.0
+deposit_max_coarsen = 31
+alpha_exc      = -1.0
+ah_exc_factor  = -1.0
+hist_dcycle    = 16
+cstat_dcycle   = 16       # constraint statistics (maximum and mean, absolute and relative)
+cons_dcycle    = 0        # conservation of the deposited matter on the mesh (cycles between records)
+line_dcycle    = 0 
+field_time1    = 1.0e30
+field_time2    = 1.0e30
+field_time3    = 1.0e30
+field_time4    = 1.0e30
+field_constraints = false   # field dumps also hold the constraints, Khat, Theta, lapse
+traj_dcycle    = 0        # trajectories of the fiducial observers (lowest tags)
+traj_ntrack    = 0
+snap_dt        = 100.0
+probe_x1       = 1.0
+probe_x2       = 1.0
+probe_x3       = 1.0
+nprobe         = 1
+probe1_x1      = 2.0
+probe1_x2      = 2.0
+probe1_x3      = 2.0
+lambda         = 0.0
+source_density = true    # densities converted with the volume element of each stage
+source_extrap  = true    # ... extrapolated to the middle of the step
+particle_file  = particles.nrp
+
+<problem>
+pgen_name  = nrpic_cosmo
+id         = file
+id_file    = fields.bin
+hubble     = 1.0
+
+<output1>
+file_type = hst
+dt        = 0.5
