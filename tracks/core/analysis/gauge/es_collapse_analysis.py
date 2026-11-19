@@ -207,6 +207,12 @@ def analyse_es(pre, name, man):
             if tau_m[-1] >= tt:
                 rec[f"R_tau{tt:g}"] = float(np.interp(tt, tau_m, R_m))
                 rec[f"Rex_tau{tt:g}"] = float(np.interp(tt, rtau, ref[f"R_tracer{i}"]))
+        # lapse at the group against coordinate time (where on the mesh the lapse is largest)
+        t_m = np.mean([tr[tag]["t"][:n] for tag in tags if tag in tr], axis=0)
+        rec["alpha_t"] = {f"{tt:g}": float(np.interp(tt, t_m, al_m))
+                          for tt in (5.0, 10.0, 20.0, 30.0) if t_m[-1] >= tt}
+        rec["R_t"] = {f"{tt:g}": float(np.interp(tt, t_m, R_m))
+                      for tt in (5.0, 10.0, 20.0, 30.0) if t_m[-1] >= tt}
         res["groups"][f"{grp['R0']:g}"] = rec
         ax[0, 0].plot(tau_m, R_m, color=c, lw=2.2, alpha=0.6)
         ax[0, 0].plot(rtau, ref[f"R_tracer{i}"], color="k", ls="--", lw=0.8)
