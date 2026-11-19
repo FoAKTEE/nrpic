@@ -425,7 +425,7 @@ bench, os, punc).
 - P11 HOLDS: bench, punc, kg and noise keep every evolved field (restart data, dumps,
   trajectories, horizon output) byte-identical; only history sums differ.
 
-## 2026-11-19 08:44 Entry 10: outcome of P9 (private copies); the regression analysed again
+## 2026-11-19 08:43 Entry 10: outcome of P9 (private copies); the regression analysed again
 
 Runs core-20261119-155057-57325bc/priv (dep, east, os, newton; private at 1, 4, 16
 threads, two runs each) and core-20261119-163724-3aaaee3 (recompare.py over every
