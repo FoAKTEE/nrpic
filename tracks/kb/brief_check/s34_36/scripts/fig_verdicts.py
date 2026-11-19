@@ -199,6 +199,7 @@ def main():
             ax.barh(y, w, left=left, color=COLORS[c], height=0.7, label=c,
                     edgecolor="white", linewidth=0.5)
             left = [a + b for a, b in zip(left, w)]
+        ax.set_xlim(0, 1.1 * max(left))  # margin: the longest bar must not touch the frame
         ax.set_yticks(y)
         ax.set_yticklabels([short.get(k, k) for k in keys])
         ax.tick_params(axis="y", which="minor", left=False, right=False)

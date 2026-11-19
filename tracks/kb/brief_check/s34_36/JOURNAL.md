@@ -188,3 +188,21 @@ the line-188 judgement without verdict. Against entry 1: no NOT FOUND as predict
 against the predicted 1 to 3 (2512.13673 r value and 2505.21885 were predicted as precisions);
 17 precisions against the predicted 10 to 15. `scripts/fig_verdicts.py` adapted (label
 "[title only verified]", automatic axis limits); its prediction is P12 (entry 2).
+
+## Entry 4 (2026-11-19 07:12 PST): outcome of run 2; ERRATA_ROWS.md; prediction of the final tally run
+
+Run kb-20261119-151103-4217175 (`scripts/fig_verdicts.py`, processors, one core, seconds):
+completed, exit 0. P12 CONFIRMED: 66 rows numbered 1-66, tally 45 / 17 / 4 / 0 equal to the
+header, 78 locator spans checked (TeX file exists and every line number lies inside it; metadata
+files exist), no problem; corrected rows 10 (line 190), 35 (219), 61 (222), 66 (222). Figure
+`fig_verdicts.png` looked at: per-line bars (190: 7/2/1; 191: 1/2; 192: 8; 193: 5/1; 194: 4;
+219: 6/2/1; 220: 4/5; 221: 7/4; 222: 3/1/2) and per-label bars (VERIFIED 5/6/2, title only 1,
+no label 39/11/2) match CHECK.md row by row; the line-221 bar ended on the right frame (axis
+limit equal to the longest bar), so a 10 per cent margin was added to the script.
+
+ERRATA_ROWS.md written: 4 rows in section 1 (s34.1, s36.1-3), 9 in section 2 (s34.2-5,
+s36.4-9), 1 in section 3 (s36.10), 1 source defect in section 5 (2512.13673, abstract and :276).
+
+P13 (run 3, same script after the margin change): identical rows, tally, locator count and
+corrected rows as run 2; no bar touches the frame. [Refuted by any difference in verdicts.json
+other than none, or a bar on the frame.]
