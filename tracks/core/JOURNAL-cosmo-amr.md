@@ -545,3 +545,48 @@ from the centre.
 Added to T13 before it runs: Ex, the new example input `problems/cosmo_amr/flrw_tracker.athinput`
 as published (the deck of T5's M with comments), 12 cycles: exit 0, tracker at
 2.5 + 0.5 t.
+
+## 2026-11-19 16:02  outcomes of T0, T1, T9 (executable of 901d8b3, sha256 c1177609...)
+
+**T0, run core-20261119-154346-64067cd** [VERIFIED, `t0_report.json`]: geo, boris, dep,
+east, os, flrw, punc: exit 0 for both, every output file byte-identical to the release
+(3, 3, 2, 13, 17, 5, 11 files), restart files included (no byte differs, not even the 36
+header bytes I had allowed): PASS. The run started from the test directory itself, so
+the summary file of the finder lay in the same place for both (the `-d` question is T4's).
+
+**T1, run core-20261119-154351-64067cd** (`t1_summary.json`, figure `fig_t1_identity`,
+looked at; 90 MeshBlocks on the refined mesh, 27 on the uniform one) [VERIFIED]:
+|int_E/sum mW - 1| at most 1.65e-14 and max_i |int_S_i - sum m u_i|/sum mW at most
+1.1e-16 in all 22 cases (prediction 1e-13): PASS; no cloud loses or duplicates weight at
+a level boundary or at a periodic face between levels. "adapt" equals "root" in every
+case (one particle per root cell: the adaptive cloud level is the root); "finest" with
+and without the fine shape agree (no coarse cloud). With the source filter: 5.1e-4 and
+3.7e-4 on the refined mesh already at t = 0 (prediction: up to 1e-2: PASS; the filter is
+not conservative across levels). On the uniform mesh the filtered integral departs by
+4.7e-3 after four cycles: prediction "at most 1e-13" FAILED. Cause, from the same run: at
+t = 0 the departure is 4.4e-16, and it grows with the spread of chi (0.57 to 0.66 at the
+last record): the filter conserves the coordinate sum of E, while the record is the
+proper-volume integral; once 4096 random particles have made sqrt(gamma)
+non-uniform the two differ. Not a defect of the deposit; the prediction overlooked the
+weight sqrt(gamma). Also measured: with the fine shape and these sparse random
+particles the smallest leaf-cell E is -0.31 E_max (cic), -0.07 (tsc), -0.04 (pcs): the
+negative edge weights of single clouds that I expected, larger than "slightly"; noted in
+the interface text.
+
+**T9, run core-20261119-154404-64067cd** (`t9_summary.json`; figure redrawn by
+`figs_cosmo_amr.py`, run core-20261119-160223-fc3207d, looked at) [VERIFIED]:
+- lohner with this branch: no crash (Track A's request): PASS; 64 -> 176 -> 232 -> 400
+  MeshBlocks at cycles 4, 6, 8; with the release: segmentation fault at the first check
+  (exit -11, cycle 2 record last): PASS.
+- chi_ratio_1 = 0.9 and ppc_refine = 1.05: each flags the central eight blocks at the
+  check of cycle 2 (min chi ratio 0.72; largest particle number per cell 2.87) and the
+  mesh changes at cycle 4 (`refinement_interval` 4): 64 -> 120 blocks, none at the box
+  corners: PASS. The ladder case refines the same eight; ladder, chi and ppc then give
+  identical histories.
+- particle number (32,768) and rest mass unchanged through the regrid (difference 0);
+  identity at most 3.2e-14: PASS.
+- largest relative Hamiltonian constraint after the regrid: 0.0116 (fine shape), 0.0072
+  (uniform spreading), 0.020 (lohner, 400 blocks), all below Track A's 0.047 of the
+  static start: PASS. As in the smoke run, the reconstruction gives the larger jump
+  (entry 15:05 item 3; T3 with and without the filter tests the reading).
+- E stays positive with the fine shape on these data (smallest E 0.025).
