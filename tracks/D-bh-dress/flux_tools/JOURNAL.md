@@ -68,3 +68,26 @@ from the exact one by more than one record interval.
    800 M below 1e-4 in magnitude; the same history with the growth scaled by 0.95 violates
    the bracket by more than 3 sigma at the end (a deficit of 8e-3 M). Refuted by either
    outcome failing: then the comparison logic or the bound argument is wrong.
+
+### Outcome of entry 1 (run D-20261119-143610-818e89f; `results/t_core.json`, `figs/t_core_t3.png`, `figs/t_core_t7.png`, both looked at)
+
+All seven predictions held [VERIFIED, run above]:
+1. 192 records per case, all reason 2, species 0-2; n_excised 192 in acc.hst and
+   nrpic.hst; sum m = 0.192 in records and both histories (equal to 1e-16).
+2. Content identity exact in the counts (0) and to 9.0e-17 in mass, both spheres, all cases.
+3. max |E_rec/E_exact - 1| = 1.15e-5 (mesh, mesh_rs), 3.47e-6 (analytic); sum m E of the
+   records 0.16557095 (mesh), 0.16557102 (analytic) against my exact 0.16557158518 (equal
+   to core's reference to the last printed digit); relative 3.8e-6 and 3.4e-6.
+4. My exact removal times 19.2874140, 28.9255690, 45.4597570 M agree with core's to
+   3e-12; the records lie 0.25, 0.49, 0.80 steps after them, i.e. inside [t_exc, t_exc+dt].
+   Exact horizon (r = 2M) passages: 18.0856, 27.7656, 44.3286 M, so the removal at
+   alpha_exc = 0.62 lags the horizon by 1.13-1.20 M of Kerr-Schild time.
+5. Sphere 4 M: 192 in, 0 out; sphere 10 M: 84 in, 16 out, equal to my exact orbit
+   counts; no acc.hst record outside the one-interval tolerance.
+6. mesh_rs: removal file identical byte for byte, every acc.hst column identical.
+7. Synthetic horizon: max violation 9.7e-4 sigma (none), closure 3.8e-6; growth x 0.95:
+   violation 828 sigma, closure -0.050. The bracket logic separates a 5 per cent deficit.
+T7 (core-20261115-163129-a200caf): the removal file holds 0 records (no particle removed in
+0.75 M), 1021 in / 963 out through the tracker sphere, count identity exact, centre equal
+to the tracker row of the following time to 5.6e-17 over 24 rows (core's labelling rule
+confirmed independently).
