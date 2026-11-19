@@ -1,0 +1,37 @@
+{
+ "run_id": "kb-20261115-132750-bb3da03",
+ "owner": "kb",
+ "command": [
+  "kb/.venv/bin/python",
+  "-I",
+  "kb/bin/kb",
+  "ingest",
+  "repo",
+  "--all",
+  "--this",
+  "--ref",
+  "main"
+ ],
+ "cwd": "/data/haiyangw/nrpic/wt/kb",
+ "commit": "bb3da03be97c6861acfa699652778b2acc5c136e",
+ "worktree_dirty_kb": true,
+ "inputs": [
+  {
+   "path": "/data/haiyangw/nrpic/wt/kb/kb/manifests/github.tsv",
+   "sha256": "23876b7ec1134475c1a9cde1488f970c61363990b699b1240b787272536d2928"
+  }
+ ],
+ "output_dir": "/data/haiyangw/nrpic/scratch/kb/kb-20261115-132750-bb3da03",
+ "purpose": "K6 production code index: 63 cloned repositories and this repository at main (athenak/src, python/nrpic, cosmo, problems), with the symbol end-line fix and the ParameterInput filter",
+ "kind": "production",
+ "cores": 1,
+ "card_hours": 0,
+ "started_utc": "2026-11-15T13:27:50Z",
+ "started_unix": 1794749270.145437,
+ "status": "finished",
+ "pid": 2531310,
+ "wall_time_s": -0.0,
+ "finished_utc": "2026-11-15T13:27:50Z",
+ "exit_code": null,
+ "note": "killed by kb (kill 2531310) after 3 min 46 s without output: the re-ingest deletes the old rows and every deleted code_files row made SQLite scan symbols, code_chunks and params for foreign-key references (no index on file_id); nothing committed (transaction rolled back). Fixed by migration 0004_code_indexes.sql"
+}

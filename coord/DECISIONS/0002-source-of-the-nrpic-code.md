@@ -1,6 +1,6 @@
 # 0002 Source of the NRPIC code (D2)
 
-Status: ACCEPTED for the rebuild; PROVISIONAL for the request to the authors · 2026-11-15
+Status: ACCEPTED for the rebuild; ACCEPTED by the user on 2026-11-19 (decision 0017); before that provisional for the request to the authors · 2026-11-15
 
 Fact. The critical-path risk of the brief (sections 1.9 and 2.2: the particle-spacetime
 coupling is not in public AthenaK) is retired in this repository. An independent rebuild

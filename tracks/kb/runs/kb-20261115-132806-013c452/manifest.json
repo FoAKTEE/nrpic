@@ -1,0 +1,33 @@
+{
+ "run_id": "kb-20261115-132806-013c452",
+ "owner": "kb",
+ "command": [
+  "/data/haiyangw/nrpic/wt/kb/kb/bin/kb",
+  "ingest",
+  "arxiv",
+  "--all",
+  "--extras",
+  "--jobs",
+  "8"
+ ],
+ "cwd": "/data/haiyangw/nrpic/wt/kb",
+ "commit": "013c452f4189f2efdc7b467215a7907baaa259f5",
+ "worktree_dirty_kb": false,
+ "inputs": [
+  {
+   "path": "/data/haiyangw/nrpic/wt/kb/kb/manifests/arxiv.tsv",
+   "sha256": "4012a46dfe997d8f936a15fd62dd0ebe73aac6d64cac2391eb61aee2eb27e4d0"
+  }
+ ],
+ "output_dir": "/data/haiyangw/nrpic/scratch/kb/kb-20261115-132806-013c452",
+ "purpose": "K2-K3: ingest every verified paper of the store (manifest in priority order 3, 2, 1, then the extras added by other sessions), with the texttt/href fix; prediction K2-P7 in kb/JOURNAL.md",
+ "kind": "production",
+ "cores": 8,
+ "card_hours": 0,
+ "started_utc": "2026-11-15T13:28:06Z",
+ "started_unix": 1794749286.1742408,
+ "status": "finished",
+ "exit_code": 1,
+ "wall_time_s": 483.43,
+ "finished_utc": "2026-11-15T13:36:09Z"
+}

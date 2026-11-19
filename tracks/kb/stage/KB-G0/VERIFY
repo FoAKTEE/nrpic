@@ -1,0 +1,3 @@
+# commands nrpic-stage verify reruns in the clean export (one per line)
+cd kb && /data/haiyangw/nrpic/wt/kb/kb/.venv/bin/python -m pytest -q -p no:cacheprovider
+cd kb && python3 -I serve_tests.py
