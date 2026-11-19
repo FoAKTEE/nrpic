@@ -113,23 +113,29 @@ def figures(res, Ns, planes, cvec, rdir):
             ax.loglog(h, y0 * (h / h[-1]) ** p, color="k", lw=1.0, ls=":")
         ax.set_xlabel(r"cell size $h$")
         ax.set_ylabel(lab)
+        fs.no_minor_labels(ax, "x")
     axs[0].legend(ncol=1, fontsize=6.5, loc="lower right")
-    axs[0].set_title("Hamiltonian")
-    axs[1].set_title("momentum")
+    axs[0].set_title("Hamiltonian (red under blue)")
+    axs[1].set_title("momentum (dotted: slopes 2 and 4)")
     common.save_fig(fig, "fig_mesh_constraints", rdir)
     plt.close(fig)
-    # residual maps of the Szekeres model, plane y ~ 0, order 4, largest N
+    # residual maps of the Szekeres model, plane y ~ 0, order 4, largest N; own colour scales
     Hm, Mm = planes
-    fig, axes, cax = fs.slice_mosaic(1, 2)
-    v = max(np.abs(Hm).max(), Mm.max())
+    np.savez_compressed(os.path.join(rdir, "residual_planes.npz"), H=Hm, M=Mm, x=cvec)
+    fig, axs = plt.subplots(1, 2, figsize=(fs.FULL_WIDTH, 3.6))
+    fig.subplots_adjust(left=0.07, right=0.93, bottom=0.13, top=0.92, wspace=0.42)
     ext = [cvec[0], cvec[-1], cvec[0], cvec[-1]]
-    for ax, F, t in ((axes[0][0] if np.ndim(axes) == 2 else axes[0], Hm, r"$H$"),
-                     (axes[0][1] if np.ndim(axes) == 2 else axes[1], Mm, r"$|M|$")):
-        im = ax.imshow(F.T, origin="lower", extent=ext, cmap="RdBu_r", vmin=-v, vmax=v,
+    vH = np.abs(Hm).max()
+    im = axs[0].imshow(Hm.T, origin="lower", extent=ext, cmap="RdBu_r", vmin=-vH, vmax=vH,
                        interpolation="none", rasterized=True)
-        ax.set_title(t + f", order 4, N = {Ns[-1]}")
+    fs.side_colorbar(fig, axs[0], im, r"$H/(16\pi\rho_b)$")
+    im = axs[1].imshow(Mm.T, origin="lower", extent=ext, cmap=fs.CMAP["dens"], vmin=0, vmax=Mm.max(),
+                       interpolation="none", rasterized=True)
+    fs.side_colorbar(fig, axs[1], im, r"$|M|/(16\pi\rho_b)$")
+    for ax, t in zip(axs, ("Hamiltonian", "momentum")):
+        ax.set_title(f"{t}, order 4, N = {Ns[-1]}, plane y = -h/2", fontsize=9)
         ax.set_xlabel("x")
-    fig.colorbar(im, cax=cax, label=r"residual $/(16\pi\rho_b)$")
+        ax.set_ylabel("z", labelpad=-2)
     common.save_fig(fig, "fig_residual_maps", rdir)
     plt.close(fig)
 

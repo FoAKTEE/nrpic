@@ -49,20 +49,23 @@ def read_field(path):
     return {k: (v.reshape(shp).transpose(2, 1, 0) if isinstance(v, np.ndarray) else v) for k, v in out.items()}
 
 
-def launch(N, rdir, szk, cm, tlim):
-    d = os.path.join(rdir, f"N{N}")
+def launch(N, rdir, szk, cm, tlim, extra=(), tag=""):
+    d = os.path.join(rdir, f"N{N}{tag}")
     os.makedirs(d, exist_ok=True)
     f = codeid.slice_on_mesh(cm, N, LH)
     codeid.write_nrcosmo(os.path.join(d, "fields.bin"), f)
     npart = codeid.write_particles(os.path.join(d, "particles.nrp"), f)
     np.savez_compressed(os.path.join(d, "slice_t0.npz"), **{k: v for k, v in f.items()})
+    # one MeshBlock per run: the processor cost of the particle module grows with the number
+    # of MeshBlocks times the number of particles (64^3 in 16^3 blocks: over 100 s a cycle)
     cmd = [EXE, "-i", DECK, "-d", d, f"mesh/nx1={N}", f"mesh/nx2={N}", f"mesh/nx3={N}",
+           f"meshblock/nx1={N}", f"meshblock/nx2={N}", f"meshblock/nx3={N}",
            f"problem/id_file={os.path.join(d, 'fields.bin')}",
-           f"particles/particle_file={os.path.join(d, 'particles.nrp')}", f"time/tlim={tlim}"]
+           f"particles/particle_file={os.path.join(d, 'particles.nrp')}", f"time/tlim={tlim}"] + list(extra)
     log = open(os.path.join(d, "athena.log"), "w")
     p = subprocess.Popen(cmd, cwd=d, stdout=log, stderr=subprocess.STDOUT,
                          env=dict(os.environ, OMP_NUM_THREADS="1"))
-    return dict(N=N, dir=d, proc=p, slice=f, npart=npart, cmd=cmd, t0=time.time())
+    return dict(N=N, tag=tag, dir=d, proc=p, slice=f, npart=npart, cmd=cmd, t0=time.time())
 
 
 def compare(job, szk):
@@ -101,25 +104,37 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--N", type=int, nargs="+", default=[32, 64])
     ap.add_argument("--tlim", type=float, default=40.0)
+    ap.add_argument("--field-times", type=float, nargs="*", default=None,
+                    help="dump times (replace field_time1..4 of the deck; at most 4)")
+    ap.add_argument("--variant", action="append", default=[],
+                    help="TAG:key=value[,key=value]: an extra run per N with these overrides")
     a = ap.parse_args()
+    extra = []
+    if a.field_times:
+        extra = [f"particles/field_time{i + 1}={t}" for i, t in enumerate(a.field_times[:4])]
+        extra += [f"particles/field_time{i + 1}={a.tlim * 10}" for i in range(len(a.field_times), 4)]
     rdir = common.run_dir("code_geodesic")
     _, szk = common.models()
     cm = ConformalMap(szk)
-    jobs = [launch(N, rdir, szk, cm, a.tlim) for N in a.N]
+    jobs = [launch(N, rdir, szk, cm, a.tlim, extra) for N in a.N]
+    for v in a.variant:
+        tag, kv = v.split(":", 1)
+        jobs += [launch(N, rdir, szk, cm, a.tlim, extra + kv.split(","), tag="_" + tag) for N in a.N]
     for j in jobs:
         j["exit"] = j["proc"].wait()
         j["wall"] = time.time() - j["t0"]
-        print(f"N = {j['N']}: exit {j['exit']}, {j['wall']:.0f} s", flush=True)
+        print(f"N = {j['N']}{j['tag']}: exit {j['exit']}, {j['wall']:.0f} s", flush=True)
     out = dict(run_id=common.run_id(), commit=common.git_commit(), exe=EXE, deck=DECK, LH=LH, model=szk.summary(),
                runs={})
     allrows = {}
     for j in jobs:
         rows = compare(j, szk) if j["exit"] == 0 or any(fn.startswith("szk.field.") for fn in os.listdir(j["dir"])) else []
-        allrows[j["N"]] = rows
-        out["runs"][j["N"]] = dict(exit=j["exit"], wall_s=j["wall"], particles=j["npart"], cmd=" ".join(j["cmd"]),
+        key = f"{j['N']}{j['tag']}"
+        allrows[key] = rows
+        out["runs"][key] = dict(exit=j["exit"], wall_s=j["wall"], particles=j["npart"], cmd=" ".join(j["cmd"]),
                                    dumps=[{k: v for k, v in r.items() if k != "_arrays"} for r in rows])
         for r in rows:
-            print(j["N"], f"tau = {r['tau']:.3f}", {k: r[k] for k in ("core", "shell", "outside")}, flush=True)
+            print(key, f"tau = {r['tau']:.3f}", {k: r[k] for k in ("core", "shell", "outside")}, flush=True)
     common.dump(os.path.join(rdir, "code_geodesic.json"), out)
 
     import matplotlib.pyplot as plt
@@ -127,14 +142,14 @@ def main():
     fs.use_style()
     fig, axs = plt.subplots(1, 3, figsize=(fs.FULL_WIDTH, 3.0))
     fig.subplots_adjust(left=0.08, right=0.985, bottom=0.16, top=0.9, wspace=0.36)
-    cols = {N: c for N, c in zip(sorted(allrows), fs.SERIES)}
+    cols = {N: c for N, c in zip(sorted(allrows), fs.SERIES * 3)}
     for N, rows in allrows.items():
         if not rows:
             continue
         tau = [r["tau"] for r in rows]
         for region, ls in (("core", ":"), ("shell", "-"), ("outside", "--")):
             axs[0].semilogy(tau, [max(r[region]["K_rel_max"], 1e-16) for r in rows], ls=ls, marker="o", ms=3,
-                            color=cols[N], label=f"N = {N}, {region}")
+                            color=cols[N], label=f"{N}, {region}")
             axs[1].semilogy(tau, [max(r[region]["E_rel_max"], 1e-16) for r in rows], ls=ls, marker="o", ms=3,
                             color=cols[N])
             axs[2].semilogy(tau, [max(r[region]["H_over_16pirho_rms"], 1e-16) for r in rows], ls=ls, marker="o",
@@ -147,11 +162,12 @@ def main():
     axs[0].legend(fontsize=6.5, ncol=1, loc="lower right")
     common.save_fig(fig, "fig_code_geodesic", rdir)
     # profile along the x axis at the last dump of the largest N
-    Nmax = max(N for N in allrows if allrows[N])
-    rows = allrows[Nmax]
+    plain = [j for j in jobs if not j["tag"] and allrows[f"{j['N']}"]]
+    j = max(plain, key=lambda jb: jb["N"])
+    Nmax = j["N"]
+    rows = allrows[f"{Nmax}"]
     fig, axs = plt.subplots(1, 2, figsize=(fs.FULL_WIDTH, 3.0))
     fig.subplots_adjust(left=0.09, right=0.985, bottom=0.16, top=0.9, wspace=0.3)
-    j = [jb for jb in jobs if jb["N"] == Nmax][0]
     xc = j["slice"]["x"]
     mid = Nmax // 2
     for r, c in zip(rows, fs.series_colors(len(rows))):

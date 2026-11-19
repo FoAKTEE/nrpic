@@ -141,3 +141,33 @@ off), Z4c with nghost = 4, diss = 0.5, damp_kappa1 = 0.5, RK4 at CFL 0.25, to ta
   A-20261119-151452-46f171e) and an amplification of order 10 to tau = 40].
 - P13 The constraint monitor at tau = 0: rms H/(16 pi rho_b) over the shell region below
   1e-2 at N = 32 and smaller by at least 4 at N = 64.
+
+## Entry 4, 2026-11-19 15:40 UTC: what the first AthenaK run shows while it runs; predictions for a second, short run
+
+Run A-20261119-152010-94a9461, from its constraint statistics (`N32/szk.cstat.hst`) before
+its own analysis finishes:
+
+- N = 64 was stopped by me (kill of its process id) after start-up: on the loaded
+  processors one cycle of 64^3 takes tens of seconds, so 640 cycles to tau = 40 would take
+  hours. Its tau = 0 dump exists and is analysed by the run.
+- N = 32 (h = 0.5): the whole-box maximum of |H| jumps from 9.6e-4 at tau = 0 (0.04 of
+  16 pi rho_b, the size of the order-4 finite-difference residual of the data at this h,
+  run A-20261119-152252-2ae031e: Linf 0.054) to 1.3e-2 at tau = 1 and 3.4e-2 at tau = 10;
+  the mean |H| rises from 3.5e-5 to 1.4e-3; K leaves the exact range after tau = 20 and the
+  run turns to NaN between tau = 24 and 28. P11 FAILED at N = 32 (and was not tested at
+  N = 64). The data are under-resolved at h = 0.5: the initial momentum residual at this h
+  is 34 per cent of 16 pi rho_b at its maximum (same mesh run), the smallest density scale
+  is 0.55 (run A-20261119-152232-3d29cc1). Cause not established: resolution, the
+  dissipation term (diss = 0.5 at h = 0.5), or geodesic slicing (no gauge damping) are
+  candidates; none has been tested in a run where it could have failed.
+
+Predictions for run 2 (scripts/run_code_geodesic.py --N 32 64 --tlim 2, dumps at
+tau = 0.5, 1, 2, with a variant diss = 0):
+
+- P14 If the early growth of |H| is a truncation effect of the under-resolved shell, the
+  maximum and rms of H/(16 pi rho_b) over the shell at tau = 1 and 2 fall by at least 4
+  from N = 32 to N = 64, with and without dissipation. If the dissipation drives it, the
+  variant diss = 0 has a growth at least 3 times smaller at both N. Refuted (both
+  hypotheses) if neither happens.
+- P15 The relative error of K against the exact -Theta in the shell at tau = 2 falls by at
+  least 4 from N = 32 to N = 64.

@@ -104,7 +104,7 @@ def main():
     import figstyle as fs
     fs.use_style()
     fig, axs = plt.subplots(1, 2, figsize=(fs.FULL_WIDTH, 3.0))
-    fig.subplots_adjust(left=0.08, right=0.985, bottom=0.16, top=0.91, wspace=0.28)
+    fig.subplots_adjust(left=0.08, right=0.985, bottom=0.16, top=0.91, wspace=0.3)
     cols = fs.series_colors(len(elements))
     for j, (r0, sgn, name) in enumerate(elements):
         aK, _ = resp[name, "drho"]
@@ -120,7 +120,7 @@ def main():
                         color=col, label={"K": r"$\max|K|/\max|\partial K|$",
                                           "rho": r"$\min\,\rho/|\partial\rho|$"}[key])
     axs[1].set_xlabel(r"proper time $\tau$")
-    axs[1].set_ylabel("smallest gradient scale (code coordinates)")
+    axs[1].set_ylabel("gradient scale (code coordinates)")
     axs[1].legend(loc="lower left")
     common.save_fig(fig, "fig_error_budget", rdir)
     print("written", rdir)

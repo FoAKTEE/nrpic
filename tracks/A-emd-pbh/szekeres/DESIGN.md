@@ -41,10 +41,10 @@ Reference model (`scripts/common.py`): the LTB functions of expball data set 2 (
 smoothed top-hat, mean contrast 1 inside R1 = 2.4, Einstein-de Sitter from R2 = 6 on) and
 the dipole b(r) = (eps/r) h(u) e(u), u = (r - 2.4)/3.6, h a C-infinity bump of height 1,
 e(u) turning from z towards x while turning about z, eps = 0.1. A dipole is a coordinate
-effect where M/r^3 and k/r^2 are constant [VERIFIED by the density formula: it is then
-homogeneous], so the model is exactly Einstein-de Sitter in the core's FLRW region only up
-to the dipole of the shell and exactly Einstein-de Sitter for r >= 6: a Szekeres hole cut
-into Einstein-de Sitter, which tiles a periodic box. Margins before the core crunch
+effect where M/r^3 and k/r^2 are constant [the density formula is then homogeneous], so
+the dipole acts only in the transition shell 2.4 < r < 6 (it is supported there anyway);
+the core r < 2.4 is a closed FLRW region and r >= 6 is exactly Einstein-de Sitter: a
+Szekeres hole cut into Einstein-de Sitter, which tiles a periodic box. Margins before the core crunch
 (tau = 44.454): (R'/R)/|b| >= 10.0, (M'/(3M))/|b| >= 3.94 [VERIFIED, run
 A-20261119-151501-986153a]. The density at t_i ranges over 0.39 ... 2.0 of the background;
 at tau = 30 up to 19.5, and the density along +b and -b of one shell differs by up to a
