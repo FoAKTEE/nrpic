@@ -1,4 +1,4 @@
-# first_source (helper package of B-emd-gw, wave 2)
+# first_source (helper package of B-emd-gw, waves 2 and 2b)
 
 The first gravitational-wave source in full relativity (action 1 of `../HANDOFF.md` and
 `../stage/G1/STATUS.md`): crossed waves with amplitude ratios (1, eps, 0), eps = 0, 0.1,
@@ -9,6 +9,12 @@ second spatial gauge (Gamma-driver shift, same slicing condition); analysis with
 late rise of the flat TT part in the full-GR cosmology dumps a wave or a second-order gauge
 effect? Predictions and outcomes, with run ids, in `JOURNAL.md`; the state of each item in
 the section "State" below.
+
+Second round (wave 2b, 2026-11-19; next action 2 of `../stage/REVIEW-wave2.md`): the
+jittered-lattice null, convergence in particle number (1, 8, 27 per cell) and in the mesh
+(128^3), and delta = 0.0025 to widen the window of the second-order formula; predictions
+P11-P15 and outcomes in `JOURNAL.md` (section "Second round"), state in the section "State of
+the second round" below.
 
 ## Contents
 
@@ -32,6 +38,16 @@ the section "State" below.
 | `results/` | small JSON copies of the run outputs (summaries of the scan at 64^3 and 32^3, the reference, T0, the cosmology-dump checks) |
 | `figs/` | PNG copies of the figures that were looked at |
 | `JOURNAL.md` | predictions (written before each run) and outcomes |
+| `inputs/conv.athinput` | second round: the input of the scan with other outputs (Z4c single precision every 0.1, double precision bin `z4cd` every 1.0, restart every 5.0) for the requests-b executable |
+| `inputs/batch_r2a.list`, `inputs/batch_r2bc.list` | second-round card batches (A: rerun, jittered nulls, delta = 0.0025; BC: 1 and 27 per cell, 128^3); `batch_r2b.list`, `batch_r2c.list` are the same runs split in two jobs |
+| `scripts/build_ic2.sh` | second-round initial data with make_east.py (`CASES` = name:delta:n:ppc:eps:threads) |
+| `scripts/build_ic_jitter.sh` | jittered-lattice null with core's make_waves.py, extracted from core/requests-b at 7db34a5 (`CASES` = name:A:seed:threads, `N`) |
+| `scripts/run_cpu_r2.sh` | processor companion of the second round at 32^3 (`name=<ic dir>` arguments) |
+| `scripts/smoke_conv.sh` | 8-cycle processor test of `conv.athinput` (both precisions written and read) |
+| `scripts/parity_check.py` | make_waves without jitter against make_east (P15) |
+| `scripts/null_prediction.py` | P11b': box-mode TT amplitudes of the jittered null predicted from its initial data |
+| `scripts/conv_compare.py` | outcomes of P11-P14 from the case JSON of analyze_scan.py: `conv_summary.json`, figures `conv_null`, `conv_eps1`, `conv_delta` |
+| `fslib/binread.py`, `tests/test_binread.py` | reader of bin output in single and double precision (2 tests) |
 
 ## How to rerun
 
@@ -57,6 +73,28 @@ nrpic-run submit --launcher local --cores 8 ... -- env NWORK=8 python3 tracks/B-
 nrpic-run submit --launcher local ... -- python3 tracks/B-emd-gw/first_source/scripts/plot_scan.py <dir of the case JSON>
 # the wave-1 caveat (28 dumps of 128^3, ~5 min on four processes)
 nrpic-run submit --launcher local --cores 4 ... -- env NWORK=4 python3 tracks/B-emd-gw/first_source/scripts/late_rise.py runs/cosmo/dav_c256_n128_t runs/cosmo/dav_c256_n128_pcs4bt
+```
+
+Second round (from the worktree root, through nrpic-run with `--package
+tracks/B-emd-gw/first_source`; the card executable is
+`scratch/core/exe/core_requests-b/athena_gpu`, passed with `--exe`):
+
+```
+# initial data: delta 0.0025, 1 and 27 per cell, 128^3 (make_east; 27 per cell takes ~1.5 h on one core)
+nrpic-run submit --launcher local --background --cores 7 ... -- env "CASES=..." bash tracks/B-emd-gw/first_source/scripts/build_ic2.sh
+# jittered null (make_waves at 7db34a5; N=32 for the processor companion)
+nrpic-run submit --launcher local --background --cores 6 ... -- bash tracks/B-emd-gw/first_source/scripts/build_ic_jitter.sh
+# checks and the prediction of the null (seconds)
+nrpic-run submit --launcher local ... -- python3 tracks/B-emd-gw/first_source/scripts/parity_check.py <jit0 dir> <make_east eps0 dir>
+nrpic-run submit --launcher local ... -- python3 tracks/B-emd-gw/first_source/scripts/null_prediction.py <ic dirs>
+# cards (edit the initial-data paths in the lists first)
+nrpic-run submit --launcher batch --wall 00:45:00 --exe <requests-b athena_gpu> --list tracks/B-emd-gw/first_source/inputs/batch_r2a.list ...
+nrpic-run submit --launcher batch --wall 00:59:00 --exe <requests-b athena_gpu> --list tracks/B-emd-gw/first_source/inputs/batch_r2bc.list ...
+# processors at 32^3 (~3 h per case on a loaded machine)
+nrpic-run submit --launcher local --background --cores 2 ... -- bash tracks/B-emd-gw/first_source/scripts/run_cpu_r2.sh jit0p3=<ic> jit0p1=<ic>
+# analysis and outcomes
+nrpic-run submit --launcher local --cores 8 ... -- env NWORK=8 python3 tracks/B-emd-gw/first_source/scripts/analyze_scan.py <case dirs>
+nrpic-run submit --launcher local ... -- python3 tracks/B-emd-gw/first_source/scripts/conv_compare.py name=<case json> ... pred=<null_prediction.json>
 ```
 
 ## State (end of the package, 2026-11-15)
