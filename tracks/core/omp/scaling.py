@@ -69,6 +69,8 @@ def main():
     ap.add_argument("--out", default=os.environ.get("NRPIC_RUN_DIR", ""))
     ap.add_argument("--tag", default="")
     ap.add_argument("--extra", default="", help="more athena arguments, comma-separated")
+    ap.add_argument("--profile", action="store_true",
+                    help="time per kernel (tools/kernel_timer.cpp) into each run directory")
     a = ap.parse_args()
     if not a.out:
         ap.error("--out or NRPIC_RUN_DIR")
@@ -90,7 +92,7 @@ def main():
                     (a.tag + "_") if a.tag else "", nt, bind or "nobind",
                     (places or "noplaces").replace(",", "+").replace(":", "-")
                     .replace("{", "").replace("}", ""), r))
-                rec = L.run_case(exe, case, rd, nt, bind, places, spec=spec)
+                rec = L.run_case(exe, case, rd, nt, bind, places, spec=spec, profile=a.profile)
                 rec.update(exe_label=a.exe, repeat=r, nlim=nlim, tag=a.tag,
                            exe_sha256=L.sha256(exe))
                 if rec.get("loop_s") and rec.get("ncycle"):

@@ -91,7 +91,7 @@ CASES = {
 REGRESS = ["geo", "boris", "dep", "east", "os", "jeans", "binary", "newton", "coll", "kg",
            "noise", "bench", "punc"]
 
-SKIP = ("run.log", "summary.json")
+SKIP = ("run.log", "summary.json", "kernel_timer.txt")
 LOGKEYS = ("defect", "Potential", "Acceleration", "Error", "L1", "norm")
 
 
@@ -120,8 +120,11 @@ def thread_env(threads, bind="", places=""):
     return env
 
 
+TIMER_LIB = os.path.join(SCRATCH, "omp", "tools", "libkernel_timer.so")
+
+
 def run_case(exe, case, rundir, threads=1, bind="", places="", extra_args=(), wall=3600,
-             spec=None):
+             spec=None, profile=False):
     """Runs one case in rundir (created); returns a record with the wall time, the time of
     the step loop and the zone-cycles per second that the code prints at the end."""
     c = spec if spec is not None else CASES[case]
@@ -137,6 +140,10 @@ def run_case(exe, case, rundir, threads=1, bind="", places="", extra_args=(), wa
             os.symlink(path, link)
     cmd = [exe, "-i", os.path.basename(deck)] + list(c["args"]) + list(extra_args)
     env = thread_env(threads, bind, places)
+    if profile:
+        # time per kernel through the Kokkos tools interface (tools/kernel_timer.cpp)
+        env["KOKKOS_TOOLS_LIBS"] = TIMER_LIB
+        env["KERNEL_TIMER_OUT"] = "kernel_timer.txt"
     load0 = loadavg()
     t0 = time.time()
     with open(os.path.join(rundir, "run.log"), "w") as log:
@@ -149,7 +156,28 @@ def run_case(exe, case, rundir, threads=1, bind="", places="", extra_args=(), wa
            "cmd": cmd, "rundir": rundir, "exit": rc, "wall_s": round(time.time() - t0, 3),
            "load_before": load0, "load_after": loadavg()}
     rec.update(parse_log(os.path.join(rundir, "run.log")))
+    if profile:
+        rec["kernels"] = read_kernels(os.path.join(rundir, "kernel_timer.txt"))
     return rec
+
+
+def read_kernels(path):
+    """The table of tools/kernel_timer.cpp: {name: [seconds, calls]}, plus the total time
+    in kernels and the run time."""
+    out = {"kernels": {}}
+    try:
+        with open(path) as f:
+            for ln in f:
+                if ln.startswith("# total_in_kernels"):
+                    out["total_in_kernels"] = float(ln.split()[2])
+                elif ln.startswith("# run_time"):
+                    out["run_time"] = float(ln.split()[2])
+                elif not ln.startswith("#"):
+                    sec, calls, typ, name = ln.rstrip("\n").split(" ", 3)
+                    out["kernels"][name] = [float(sec), int(calls)]
+    except OSError:
+        pass
+    return out
 
 
 def parse_log(path):
