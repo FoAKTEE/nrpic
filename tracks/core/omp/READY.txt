@@ -67,3 +67,8 @@ Journal (predictions, outcomes, run ids): tracks/core/JOURNAL-omp.md on the same
    128^3 box (5.1e5 particles) 10.6 / 0.82. One A100 is about 50 to 200 times faster than
    16 threads for runs with Z4c (provisional; card job 4643 pending) and not faster for
    the Newtonian mode. Which runs to move to processors: section 6 of the interface text.
+
+5. Identity of the files: the sha256 of athena_cpu (8f223f75...) and athena_cpu_serial
+   (ae24bb76...) are those recorded by the regression runs above; athena_gpu (5b1e90e7...)
+   is the executable of the card smoke test (run core-20261119-164717-b187f36, Slurm 4666,
+   pending at publication).
