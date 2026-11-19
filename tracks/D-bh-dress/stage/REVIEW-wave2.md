@@ -253,7 +253,7 @@ has checked it. Nothing of it enters the G0 or G1 package. Review: the next lead
 | Claim | Verifier | State now | What the track does |
 |---|---|---|---|
 | C4 r^-9/4 as a G1 criterion | NOT CONFIRMED | proposal `d-pre-3-criterion` open at orch (coord/REQUESTS.md) | G1 item C7 stays OPEN until orch rules; if the wording stays, the Newtonian-mode run to a/a_i = 30-100 (refined mesh, point mass of core/requests-adf; two to four card-hours [JUDGEMENT]) is planned |
-| C8 cost beyond M/16 | WRONG (3200, 4712, 7848 MeshBlocks) | measured at M/8: ES-1 0.769, V-1 0.672 card-hours for 200 M on 344 blocks, 23 per cent below the model of A6 | the G2 ladder is re-costed from `-m` block counts and these rates before any M/16+ submission; `nrpic-run budget`: 25.4 of 30 card-hours left |
+| C8 cost beyond M/16 | WRONG (3200, 4712, 7848 MeshBlocks) | measured at M/8: ES-1 0.769, V-1 0.672 card-hours for 200 M on 344 blocks, 23-25 per cent below the model of A6 | the G2 ladder is re-costed from `-m` block counts and these rates before any M/16+ submission; `nrpic-run budget`: 25.4 of 30 card-hours left |
 | C2 floor caveats (excursions, boundary) | CONFIRMED with caveats | ES-1/V-1 show a late common drift (165-200 M) of unknown cause | the boundary run (V-1 with the outflow boundary at 384 M) and the resolution run (V-1 at M/16 near the hole) are the G2 controls (section 9) |
 | C1 only eps = 5.58e-3 exists | CONFIRMED | unchanged | data at eps = 0.01, 0.03 before G2 |
 | C5, C6, C7 | CONFIRMED with corrected numbers | numbers in `G1/STATUS.md`; errata request `g1-numbers-errata` open at orch | none further |

@@ -1,6 +1,6 @@
 # Checklist: D-bh-dress G0
 
-Collected by `harness/bin/nrpic-stage collect D-bh-dress G0` on 2026-11-15T19:47:07Z from `coord/CHARTER.md` (last changed in b7b431dd) and the brief (sections 13.3 and 13.4).
+Collected by `harness/bin/nrpic-stage collect D-bh-dress G0` on 2026-11-19T15:24:07Z from `coord/CHARTER.md` (last changed in a6118683) and the brief (sections 13.3 and 13.4).
 For each item set `status:` to PASS, FAIL or NA (OPEN until judged) and give the evidence: run ids,
 figure files, KB locators, commits. `nrpic-stage report` reads this file; the automated checks are
 in VERIFY_RESULTS.md (`nrpic-stage verify`), not here.
@@ -67,9 +67,9 @@ in VERIFY_RESULTS.md (`nrpic-stage verify`), not here.
 - [x] **C16** Working note written with /paper-writing; its manuscript checker passed with --compile
   - status: PASS
   - evidence: paper-writing guide and notation (WRITING_GUIDE.md, NOTATION.md); check_manuscript.py --compile after the lead's fix: 0 undefined references or citations, 0 overfull boxes; 2 of 16 checks have candidates, all in the ledger appendix (run ids) and the registration scripts, which the guide exempts
-- [x] **C17** Verifier subagent (fresh context) wrote VERIFIER_REPORT.md; every number of the Supplemental Material recomputed from the manifests
+- [x] **C17** Verifier subagent (fresh context) wrote VERIFIER.md (decision 0016; VERIFIER_REPORT.md accepted too); every number of the Supplemental Material recomputed from the manifests
   - status: PASS
-  - evidence: stage/G0/VERIFIER.md (fresh-context verifier, eight claims recomputed from the artefacts; runs D-20261115-170002-8cefc3e ... -173149-7c6dd72); the file is VERIFIER.md, not VERIFIER_REPORT.md (agent sessions cannot write *REPORT.md files, decision 0012 by analogy); the note's numbers recomputed by note/tables/claims.md (36) and rerun byte for byte by the lead (D-20261115-193951-be7b41d)
+  - evidence: stage/G0/VERIFIER.md (fresh-context verifier of the plan, decision 0016 items 1 and 4: eight claims recomputed from the artefacts; runs D-20261115-170002-8cefc3e, -170224-924d1d9, -171508-94e8cb1, -171532-ba23a99, -171534-ff5b0e9, -171543-d966aba, -171545-d7e01a7, -171953-908afff, -171818-a5aefe8, -173149-7c6dd72); its WRONG (C8 cost) and NOT CONFIRMED (C4 criterion) items with what the track does: ../REVIEW-wave2.md sections 5 and 8; the note's numbers recomputed by note/tables/claims.md (36) and rerun byte for byte by the lead (D-20261115-193951-be7b41d)
 - [x] **C18** Null results and failed runs are on record (manifests and JOURNAL)
   - status: PASS
   - evidence: failed runs kept (EVIDENCE.md); refuted predictions in JOURNAL.md, es_runs/JOURNAL.md, spike/JOURNAL.md, secondary_infall/JOURNAL.md, note/JOURNAL.md, stage/G0/JOURNAL.md; superseded runs D-20261115-170326-dfb2a02, -171733-633d422, -193755-3a53b08

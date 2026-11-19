@@ -1,6 +1,6 @@
 # Checklist: D-bh-dress G1
 
-Collected by `harness/bin/nrpic-stage collect D-bh-dress G1` on 2026-11-15T19:47:08Z from `coord/CHARTER.md` (last changed in b7b431dd) and the brief (sections 13.3 and 13.4).
+Collected by `harness/bin/nrpic-stage collect D-bh-dress G1` on 2026-11-19T15:24:07Z from `coord/CHARTER.md` (last changed in a6118683) and the brief (sections 13.3 and 13.4).
 For each item set `status:` to PASS, FAIL or NA (OPEN until judged) and give the evidence: run ids,
 figure files, KB locators, commits. `nrpic-stage report` reads this file; the automated checks are
 in VERIFY_RESULTS.md (`nrpic-stage verify`), not here.
@@ -67,9 +67,9 @@ in VERIFY_RESULTS.md (`nrpic-stage verify`), not here.
 - [x] **C16** Working note written with /paper-writing; its manuscript checker passed with --compile
   - status: PASS
   - evidence: note/main.pdf; check_manuscript.py --compile: 0 undefined, 0 overfull; 2 of 16 checks with candidates only in the ledger appendix and registration scripts
-- [ ] **C17** Verifier subagent (fresh context) wrote VERIFIER_REPORT.md; every number of the Supplemental Material recomputed from the manifests
+- [ ] **C17** Verifier subagent (fresh context) wrote VERIFIER.md (decision 0016; VERIFIER_REPORT.md accepted too); every number of the Supplemental Material recomputed from the manifests
   - status: OPEN
-  - evidence: stage/G0/VERIFIER.md covers the G0 claims and the wave-1 baselines; the wave-2 baselines (Kerr spike, Newtonian mode, ES runs) were rechecked by the lead (REVIEW-wave2.md) with the helpers' reports in hand, not by a fresh-context verifier
+  - evidence: 
 - [x] **C18** Null results and failed runs are on record (manifests and JOURNAL)
   - status: PASS
   - evidence: failed runs kept: -121837-987643b, -122303-4e8e8af, -125449-60a62b8, -125724-464611f, -171733-633d422 (stopped); refuted predictions in the journals (es_runs entries 1-3, spike K1-K3, secondary_infall wave 2, note P4-P6)
