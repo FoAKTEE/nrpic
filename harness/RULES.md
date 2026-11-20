@@ -130,6 +130,10 @@ status [<run_id>] · finish <run_id> · verify <run_id> · budget · stop <run_i
   `manifest.git.outside_package`, not refused. A tracked file changed outside `tracks/` is refused.
 - A local `python ...` command needs the worktree's `.venv` (`nrpic-env create --no-kokkos`;
   `.venv/` is ignored, the tree stays clean); `--allow-no-venv` for a standard-library script.
+- Batch lists: every deck and restart file of the list is checksummed at submission, so a restart
+  file that an earlier line of the same batch writes cannot be listed: a restart needs a job of its
+  own (E-stoch-inf, wave 2: U4 after U2). Large dumps: read them sequentially or right after the card
+  job (numpy's memory map read cold 128^3-256^3 dumps at 3.6 MB/s where `dd` gave 124 MB/s; E, wave 2b).
 - Cores: a local run asks `--cores N` of the owner's allotment (decision 0006; 0019 item 7: at most
   six per session). When the owner's live local runs leave fewer free (another helper's long runs),
   `--wait SECONDS` waits for them instead of refusing (looks every 30 s, a line every 5 min, at most
