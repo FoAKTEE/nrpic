@@ -115,3 +115,41 @@ file (as in `../usr/scripts/analyse_runs.py`). Error of a mode at N_f: |O/ref - 
 - Cost. USR 128^3 runs 2 to 3 min each on the card, the job 20 to 30 min (0.33 to 0.5
   card-hours); the wall limit is 30 min so that the cap of 0.5 card-hours holds. Refuted
   (and recorded) if a run takes more than 3.5 min.
+
+Submitted 2026-11-20 22:24 UTC as run E-20261120-222424-0eb754b (Slurm job 4740), 16 runs,
+`--gpu-hours 0.5 --wall 00:30:00`. The wall limit is 30 min, not the 45 min of the package
+brief, so that the cap of 0.5 card-hours holds even if the job runs to its limit; the list
+puts the six runs the package needs first and the four extra mirrored runs last.
+
+## Entry 2, 2026-11-20 22:32 UTC: outcome of the linear reference (step 1)
+
+Run E-20261120-222802-bffb812 (`scripts/window_reference.py`, 2 cores, 25 s); outputs copied
+to `results/reference/` (`reference_{usr,sr}.json`, `shells_{usr,sr}.csv`) and
+`fig/fig_ref_{usr,sr}_{windows,crossing}.png` (both looked at). USR 128^3, nmax2 = 1024: 854
+shells, 68532 modes of the hemisphere.
+
+- Self-check: the ensemble rms of W R at N_f for the baseline is 0.49398, the square root of
+  the usr package's lattice variance 0.24402 (run E-20261119-143905-f2bcde3): same sum,
+  independent code. The realisation of the runs (seed 20261115) has 0.49460.
+- Linear prediction at N_f does not depend on the window: max over shells of 1 - W(N_f) is
+  8.2e-15 (s = 2.5), 0 to rounding for the others; the linear power shift against the
+  baseline is at most 1.6e-14 (USR) and 8.9e-12 (SR at N* + 8, s = 2.5). So every window
+  dependence of the NR spectrum at N_f is numerical or nonlinear (entry 0 confirmed).
+- Initial slice at N* per window (W of the shells |n|^2 = 1, 2, 3, 4; shells with W > 1e-3;
+  rms of W R in the slice): b 0.5, 0.030, 0.0041, 0.00098; 3; 5.18e-6. s25 0.5, 0.150, 0.060,
+  0.030; 13; 5.41e-6. s10 0.5, 0.00098, 1.7e-5, 9.5e-7; 1; 5.17e-6. g05 0.00098, 3.1e-5,
+  4.0e-6, 9.5e-7; 0; 1.01e-8. g2 0.999, 0.970, 0.808, 0.5; 13; 1.57e-5. Together with the
+  source reading of entry 0 the slice of each run is its window's coarse-grained state.
+- Crossings (W = 1/2; W = 0.95 of the last shell): b, s25, s10 last at cN = 3.515 (0.95 at
+  3.810, 4.104, 3.662); g05 4.208 (4.503); g2 2.821 (3.116). Shells crossed before the USR
+  onset (cN 2.5234): b, s25, s10 119 shells (k <= 11.87 dk), g05 30 (k <= 5.92), g2 473
+  (k <= 23.77); all others during USR, none after.
+- One-point variance of W R (ensemble) relative to the baseline: cN = 1: s25 0.919, s10
+  1.055, g05 0.41, g2 1.81; cN = 3: 0.984, 1.037, 0.625, 2.92; cN = 4: 0.947, 1.003, 0.479,
+  1.003; cN = 5: 1 within 1e-4 for all; N_f: 1. The window changes the one-point statistics
+  by up to a factor 3 during the passage (cN < 4.5) and not at all afterwards.
+- Predictions of entry 1 unchanged by this (W4 uses k < 11.87 sigma dk for "crossed before
+  USR").
+- SR 64^3, nmax2 = 256 (214 shells, 8538 modes): last crossing cN 2.805 (b), 3.506 (g05),
+  2.103 (g2); the class columns of `shells_sr.csv` refer to the USR landmarks and mean
+  nothing for SR.
